@@ -218,6 +218,9 @@ type
     procedure ReleaseETODist; virtual;
     procedure AfterStyleSet; virtual;
     procedure DoSetCharExtra(Value: Integer); virtual;
+    {$IFDEF SYN_LAZARUS}
+    function GetUseUTF8: boolean;
+    {$ENDIF}
     property StockDC: HDC read FDC;
     property DrawingCount: Integer read FDrawingCount;
     property FontStock: TheFontStock read FFontStock;
@@ -248,6 +251,9 @@ type
     property BackColor: TColor write SetBackColor;
     property Style: TFontStyles write SetStyle;
     property CharExtra: Integer read FCharExtra write SetCharExtra;
+    {$IFDEF SYN_LAZARUS}
+    property UseUTF8: boolean read GetUseUTF8;
+    {$ENDIF}
   end;
 
   { TheTextDrawer2 }
@@ -893,6 +899,15 @@ begin
 
   inherited;
 end;
+
+{$IFDEF SYN_LAZARUS}
+function TheTextDrawer.GetUseUTF8: boolean;
+begin
+  FFontStock.BaseFont.Handle;
+  Result:=FFontStock.BaseFont.CanUTF8;
+  //debugln('TheTextDrawer.GetUseUTF8 ',FFontStock.BaseFont.Name,' ',dbgs(FFontStock.BaseFont.CanUTF8),' ',dbgs(FFontStock.BaseFont.HandleAllocated));
+end;
+{$ENDIF}
 
 procedure TheTextDrawer.ReleaseETODist;
 begin

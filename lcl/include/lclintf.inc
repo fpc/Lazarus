@@ -118,6 +118,11 @@ begin
   Result := InterfaceObject.ExtUTF8Out(DC,X,Y,Options,Rect,Str,Count,Dx);
 end;
 
+function FontCanUTF8(Font: HFont): boolean;
+begin
+  Result := InterfaceObject.FontCanUTF8(Font);
+end;
+
 function Frame(DC: HDC; const ARect: TRect): Integer;
 begin
   Result := InterfaceObject.Frame(DC, ARect);
@@ -542,6 +547,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.27  2004/09/04 22:24:16  mattias
+  added default values for compiler skip options and improved many parts of synedit for UTF8
+
   Revision 1.26  2004/09/02 09:16:59  mattias
   improved double byte char fonts for gtk1, started synedit UTF8 support
 

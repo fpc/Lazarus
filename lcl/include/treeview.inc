@@ -4632,11 +4632,11 @@ begin
   inherited WMNotify(AMessage);
 end;
 
-procedure TCustomTreeView.WMSize(var Msg: TLMSize);
+procedure TCustomTreeView.Resize;
 begin
   FStates:=FStates+[tvsScrollbarChanged,
                     tvsBottomItemNeedsUpdate];
-  inherited WMSize(Msg);
+  inherited Resize;
 end;
 
 procedure TCustomTreeView.InternalSelectionChanged;

@@ -415,6 +415,7 @@ type
 
   TFont = class(TGraphicsObject)
   private
+    FCanUTF8: boolean;
     FColor: TColor;
     FFontData: TFontData;
     FPixelsPerInch: Integer;
@@ -462,6 +463,7 @@ type
     //-----------------
     property Handle: HFONT read GetHandle write SetHandle;
     property PixelsPerInch: Integer read FPixelsPerInch;
+    property CanUTF8: boolean read FCanUTF8;
   published
     property CharSet: TFontCharSet read GetCharSet write SetCharSet default DEFAULT_CHARSET;
     property Color: TColor read FColor write SetColor default clWindowText;
@@ -1744,6 +1746,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.145  2004/09/04 22:24:16  mattias
+  added default values for compiler skip options and improved many parts of synedit for UTF8
+
   Revision 1.144  2004/08/18 13:12:05  mattias
   synedit UTF8 support started   by Mazen
 

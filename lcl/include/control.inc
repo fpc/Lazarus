@@ -2259,7 +2259,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TControl.Resize;
 begin
-  if (csLoading in ComponentState) then exit;
+  if ([csLoading,csDestroying]*ComponentState<>[]) then exit;
   if (FLastResizeWidth<>Width) or (FLastResizeHeight<>Height)
   or (FLastResizeClientWidth<>ClientWidth)
   or (FLastResizeClientHeight<>ClientHeight) then begin
@@ -3275,6 +3275,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.213  2004/09/04 22:24:16  mattias
+  added default values for compiler skip options and improved many parts of synedit for UTF8
+
   Revision 1.212  2004/08/26 19:09:34  mattias
   moved navigation key handling to TApplication and added options for custom navigation
 

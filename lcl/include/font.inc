@@ -848,6 +848,7 @@ begin
       FontResourceCache.Add(FFontData.Handle,ALogFont,Name);
     end;
     FFontHandleCached:=true;
+    FCanUTF8:=FontCanUTF8(FFontData.Handle);
   end;
   
   Result := FFontData.Handle;
@@ -949,6 +950,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.16  2004/09/04 22:24:16  mattias
+  added default values for compiler skip options and improved many parts of synedit for UTF8
+
   Revision 1.15  2004/08/11 22:05:07  mattias
   fixed brush handle cache size
 

@@ -7044,7 +7044,7 @@ var
   SingleCharLen, DoubleCharLen: integer;
 begin
   SingleCharLen:=gdk_text_width(TheFont, 'A', 1);
-  DoubleCharLen:=gdk_text_width(TheFont, 'AA', 2);
+  DoubleCharLen:=gdk_text_width(TheFont, #0'A', 2);
   Result:=(SingleCharLen=0) and (DoubleCharLen>0);
 end;
 {$EndIf}
@@ -7238,6 +7238,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.303  2004/09/04 22:24:16  mattias
+  added default values for compiler skip options and improved many parts of synedit for UTF8
+
   Revision 1.302  2004/09/02 17:59:59  mattias
   removed double KeyPress method in synedit
 

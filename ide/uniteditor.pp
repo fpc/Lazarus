@@ -968,6 +968,7 @@ var
   P: TPoint;
   Texts, Texts2: String;
   Handled: boolean;
+  LogCaret: TPoint;
 Begin
   Handled:=true;
 
@@ -981,18 +982,19 @@ Begin
   ecIdentCompletion :
     if not TCustomSynEdit(Sender).ReadOnly then begin
       CurrentCompletionType:=ctIdentCompletion;
-      TextS := FEditor.LineTextExtended;
-      i := FEditor.CaretX - 1;
+      TextS := FEditor.LineText;
+      LogCaret:=FEditor.PhysicalToLogicalPos(FEditor.CaretXY);
+      i := LogCaret.X - 1;
       if i > length(TextS) then
         TextS2 := ''
       else begin
         while (i > 0) and (TextS[i] in ['a'..'z','A'..'Z','0'..'9','_']) do
           dec(i);
-        TextS2 := Trim(copy(TextS, i + 1, FEditor.CaretX - i - 1));
+        TextS2 := Trim(copy(TextS, i + 1, LogCaret.X - i - 1));
       end;
       with TCustomSynEdit(Sender) do
         P := ClientToScreen(Point(CaretXPix - length(TextS2)*CharWidth
-                , CaretYPix + LineHeight));
+                ,CaretYPix + LineHeight));
       aCompletion.Editor:=TCustomSynEdit(Sender);
       aCompletion.Execute(TextS2,P.X,P.Y);
     end;
@@ -1000,8 +1002,9 @@ Begin
   ecWordCompletion :
     if not TCustomSynEdit(Sender).ReadOnly then begin
       CurrentCompletionType:=ctWordCompletion;
-      TextS := FEditor.LineTextExtended;
-      i := FEditor.CaretX - 1;
+      TextS := FEditor.LineText;
+      LogCaret:=FEditor.PhysicalToLogicalPos(FEditor.CaretXY);
+      i := LogCaret.X - 1;
       if i > length(TextS) then
         TextS2 := ''
       else begin
@@ -1011,7 +1014,7 @@ Begin
       end;
       with TCustomSynEdit(Sender) do
         P := ClientToScreen(Point(CaretXPix - length(TextS2)*CharWidth
-                , CaretYPix + LineHeight));
+                ,CaretYPix + LineHeight));
       aCompletion.Editor:=TCustomSynEdit(Sender);
       aCompletion.Execute(TextS2,P.X,P.Y);
     end;
@@ -2593,7 +2596,8 @@ Begin
         SrcEdit.EditorComponent.SelText:=NewValue;
         if CursorToLeft>0 then
         begin
-          CaretXY:=SrcEdit.EditorComponent.BlockEnd;
+          CaretXY:=SrcEdit.EditorComponent.LogicalToPhysicalPos(
+                                              SrcEdit.EditorComponent.BlockEnd);
           dec(CaretXY.X,CursorToLeft);
           SrcEdit.EditorComponent.CaretXY:=CaretXY;
         end;

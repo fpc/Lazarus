@@ -176,8 +176,8 @@ type
   public
     fChangeReason: TSynChangeReason;
     fChangeSelMode: TSynSelectionMode;
-    fChangeStartPos: TPoint;
-    fChangeEndPos: TPoint;
+    fChangeStartPos: TPoint; // logical position (byte)
+    fChangeEndPos: TPoint; // logical position (byte)
     fChangeStr: string;
     fChangeNumber: integer;                                                     //sbs 2000-11-19
   end;

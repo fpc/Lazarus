@@ -608,7 +608,7 @@ type
     procedure SetColumns(Value: integer);
     procedure SetItemIndex(Value: integer);
     function GetItemIndex: integer;
-    procedure WMSize(var Message: TLMSize); message LM_SIZE;
+    procedure Resize; override;
   protected
     property ItemIndex: integer read GetItemIndex write SetItemIndex default -1;
     property Items: TStrings read FItems write SetItem;
@@ -687,7 +687,6 @@ type
   protected
     procedure SetItems(Value: TStrings);
     procedure SetColumns(Value: integer);
-    procedure WMSize(var Message: TLMSize); message LM_SIZE;
     procedure DefineProperties(Filer: TFiler); override;
     procedure ReadData(Stream: TStream);
     procedure WriteData(Stream: TStream);
@@ -967,6 +966,9 @@ end.
 
  {
   $Log$
+  Revision 1.116  2004/09/04 22:24:16  mattias
+  added default values for compiler skip options and improved many parts of synedit for UTF8
+
   Revision 1.115  2004/08/18 09:31:21  mattias
   removed obsolete unit vclglobals
 

@@ -231,6 +231,7 @@ type
   TProjectCompilationTool = class(TCompilationTool)
   public
     CompileReasons: TCompileReasons;
+    DefaultCompileReasons: TCompileReasons;
     procedure Clear; override;
     function IsEqual(Params: TCompilationTool): boolean; override;
     procedure Assign(Src: TCompilationTool); override;
@@ -2698,16 +2699,20 @@ begin
   end;
 end;
 
-procedure TProjectCompilationTool.LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string; DoSwitchPathDelims: boolean);
+procedure TProjectCompilationTool.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string; DoSwitchPathDelims: boolean);
 begin
   inherited LoadFromXMLConfig(XMLConfig, Path, DoSwitchPathDelims);
-  CompileReasons := LoadXMLCompileReasons(XMLConfig, Path+'CompileReasons/');
+  CompileReasons := LoadXMLCompileReasons(XMLConfig, Path+'CompileReasons/',
+                                          DefaultCompileReasons);
 end;
 
-procedure TProjectCompilationTool.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+procedure TProjectCompilationTool.SaveToXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
 begin
   inherited SaveToXMLConfig(XMLConfig, Path);
-  SaveXMLCompileReasons(XMLConfig, Path+'CompileReasons/', CompileReasons);
+  SaveXMLCompileReasons(XMLConfig, Path+'CompileReasons/', CompileReasons,
+                        DefaultCompileReasons);
 end;
 
 { TProjectCompilerOptions }
@@ -2717,16 +2722,19 @@ begin
   inherited LoadTheCompilerOptions(APath);
   
   // old compatebility
-  if XMLConfigFile.GetValue(APAth+'SkipCompiler/Value',false)
+  if XMLConfigFile.GetValue(APath+'SkipCompiler/Value',false)
   then FCompileReasons := []
-  else FCompileReasons := LoadXMLCompileReasons(XMLConfigFile,APath+'CompileReasons/');
+  else FCompileReasons :=
+                   LoadXMLCompileReasons(XMLConfigFile,APath+'CompileReasons/',
+                                         crAll);
 end;
 
 procedure TProjectCompilerOptions.SaveTheCompilerOptions(const APath: string);
 begin
   inherited SaveTheCompilerOptions(APath);
   
-  SaveXMLCompileReasons(XMLConfigFile, APath+'CompileReasons/', FCompileReasons);
+  SaveXMLCompileReasons(XMLConfigFile, APath+'CompileReasons/', FCompileReasons,
+                        crAll);
 end;
 
 procedure TProjectCompilerOptions.SetTargetCPU(const AValue: string);
@@ -2769,6 +2777,14 @@ begin
   FGlobals := TGlobalCompilerOptions.Create;
   FCompileReasons := [crCompile, crBuild, crRun];
   inherited Create(AOwner, TProjectCompilationTool);
+  with TProjectCompilationTool(ExecuteBefore) do begin
+    DefaultCompileReasons:=crAll;
+    CompileReasons:=DefaultCompileReasons;
+  end;
+  with TProjectCompilationTool(ExecuteAfter) do begin
+    DefaultCompileReasons:=crAll;
+    CompileReasons:=DefaultCompileReasons;
+  end;
   UpdateGlobals;
   if AOwner <> nil
   then FOwnerProject := AOwner as TProject;
@@ -2904,6 +2920,9 @@ end.
 
 {
   $Log$
+  Revision 1.162  2004/09/04 22:24:15  mattias
+  added default values for compiler skip options and improved many parts of synedit for UTF8
+
   Revision 1.161  2004/09/04 21:54:08  marc
   + Added option to skip compiler step on compile, build or run
   * Fixed adding of runtime watches

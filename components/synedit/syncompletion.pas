@@ -217,8 +217,11 @@ type
     procedure backspace(Sender: TObject);
     procedure Cancel(Sender: TObject);
     procedure Validate(Sender: TObject; Shift: TShiftState);
-    procedure KeyPress(Sender: TObject; var Key: char);
+    {$IFDEF SYN_LAZARUS}
     procedure UTF8KeyPress(Sender: TObject; var Key: TUTF8Char);
+    {$ELSE}
+    procedure KeyPress(Sender: TObject; var Key: char);
+    {$ENDIF}
     procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure EditorKeyPress(Sender: TObject; var Key: char);
     function GetPreviousToken(FEditor: TCustomSynEdit): string;
@@ -964,28 +967,30 @@ var
   Value, CurLine: string;
   {$IFDEF SYN_LAZARUS}
   NewCaretXY, NewBlockBegin: TPoint;
+  LogCaret: TPoint;
   {$Else}
   Pos: TPoint;
   {$ENDIF}
 begin
   F := Sender as TSynBaseCompletionForm;
-  if F.CurrentEditor <> nil then
-    with F.CurrentEditor as TCustomSynEdit do begin
+  if F.CurrentEditor is TCustomSynEdit then
+    with TCustomSynEdit(F.CurrentEditor) do begin
       BeginUndoBlock;
       {$IFDEF SYN_LAZARUS}
-      NewBlockBegin:=CaretXY;
-      CurLine:=TSynEditStringList(Lines).ExpandedStrings[NewBlockBegin.Y - 1];
+      LogCaret:=PhysicalToLogicalPos(CaretXY);
+      NewBlockBegin:=LogCaret;
+      CurLine:=Lines[NewBlockBegin.Y - 1];
       while (NewBlockBegin.X>1) and (NewBlockBegin.X-1<=length(CurLine))
       and (CurLine[NewBlockBegin.X-1] in ['a'..'z','A'..'Z','0'..'9','_']) do
         dec(NewBlockBegin.X);
       BlockBegin:=NewBlockBegin;
       if ssShift in Shift then begin
         // replace only prefix
-        BlockEnd := Point(CaretX, CaretY);
+        BlockEnd := LogCaret;
       end else begin
         // replace the whole word
-        NewCaretXY:=CaretXY;
-        CurLine:=TSynEditStringList(Lines).ExpandedStrings[NewCaretXY.Y - 1];
+        NewCaretXY:=LogCaret;
+        CurLine:=Lines[NewCaretXY.Y - 1];
         while (NewCaretXY.X<=length(CurLine))
         and (CurLine[NewCaretXY.X] in ['a'..'z','A'..'Z','0'..'9','_']) do
           inc(NewCaretXY.X);
@@ -1016,19 +1021,11 @@ begin
     end;
 end;
 
-procedure TSynCompletion.KeyPress(Sender: TObject; var Key: char);
-var
-  F: TSynBaseCompletionForm;
-begin
-  F := Sender as TSynBaseCompletionForm;
-  if F.CurrentEditor <> nil then begin
-    with F.CurrentEditor as TCustomSynEdit do begin
-      CommandProcessor(ecChar, Key, nil);
-    end;
-  end;
-end;
-
+{$IFDEF SYN_LAZARUS}
 procedure TSynCompletion.UTF8KeyPress(Sender: TObject; var Key: TUTF8Char);
+{$ELSE}
+procedure TSynCompletion.KeyPress(Sender: TObject; var Key: char);
+{$ENDIF}
 var
   F: TSynBaseCompletionForm;
 begin
@@ -1057,8 +1054,11 @@ end;
 constructor TSynCompletion.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Form.OnKeyPress := {$IFDEF FPC}@{$ENDIF}KeyPress;
+  {$IFDEF SYN_LAZARUS}
   Form.OnUTF8KeyPress := {$IFDEF FPC}@{$ENDIF}UTF8KeyPress;
+  {$ELSE}
+  Form.OnKeyPress := {$IFDEF FPC}@{$ENDIF}KeyPress;
+  {$ENDIF}
   Form.OnKeyDelete := {$IFDEF FPC}@{$ENDIF}Backspace;
   Form.OnValidate := {$IFDEF FPC}@{$ENDIF}Validate;
   Form.OnCancel := {$IFDEF FPC}@{$ENDIF}Cancel;

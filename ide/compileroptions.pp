@@ -152,7 +152,6 @@ const
   crAll = [crCompile, crBuild, crRun];
   
 type
-  TCompilationToolClass = class of TCompilationTool;
   TCompilationTool = class
   public
     Command: string;
@@ -166,7 +165,8 @@ type
                                 DoSwitchPathDelims: boolean); virtual;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string); virtual;
   end;
-  
+  TCompilationToolClass = class of TCompilationTool;
+
   TCompilationGenerateCode = (
     cgcNormalCode,
     cgcFasterCode,
@@ -536,8 +536,10 @@ function ConvertOptionsToCmdLine(const Delim, Switch, OptionStr: string): string
 function CompilationGenerateCodeNameToType(
   const Name: string): TCompilationGenerateCode;
 
-function LoadXMLCompileReasons(const AConfig: TXMLConfig; const APath: String): TCompileReasons;
-procedure SaveXMLCompileReasons(const AConfig: TXMLConfig; const APath: String; const AFlags: TCompileReasons);
+function LoadXMLCompileReasons(const AConfig: TXMLConfig;
+  const APath: String; const DefaultReasons: TCompileReasons): TCompileReasons;
+procedure SaveXMLCompileReasons(const AConfig: TXMLConfig; const APath: String;
+  const AFlags, DefaultFlags: TCompileReasons);
 
 implementation
 
@@ -756,22 +758,24 @@ begin
   Result:=cgcNormalCode;
 end;
 
-function LoadXMLCompileReasons(const AConfig: TXMLConfig; const APath: String): TCompileReasons;
+function LoadXMLCompileReasons(const AConfig: TXMLConfig; const APath: String;
+  const DefaultReasons: TCompileReasons): TCompileReasons;
 begin
   Result := [];
-  if AConfig.GetValue(APath+'Compile',false)
+  if AConfig.GetValue(APath+'Compile',crCompile in DefaultReasons)
   then Include(Result, crCompile);
-  if AConfig.GetValue(APath+'Build',false)
+  if AConfig.GetValue(APath+'Build',crBuild in DefaultReasons)
   then Include(Result, crBuild);
-  if AConfig.GetValue(APath+'Run',false)
+  if AConfig.GetValue(APath+'Run',crRun in DefaultReasons)
   then Include(Result, crRun);
 end;
 
-procedure SaveXMLCompileReasons(const AConfig: TXMLConfig; const APath: String; const AFlags: TCompileReasons);
+procedure SaveXMLCompileReasons(const AConfig: TXMLConfig; const APath: String;
+  const AFlags, DefaultFlags: TCompileReasons);
 begin
-  AConfig.SetDeleteValue(APath+'Compile', crCompile in AFlags, False);
-  AConfig.SetDeleteValue(APath+'Build', crBuild in AFlags, False);
-  AConfig.SetDeleteValue(APath+'Run', crRun in AFlags, False);
+  AConfig.SetDeleteValue(APath+'Compile', crCompile in AFlags, crCompile in DefaultFlags);
+  AConfig.SetDeleteValue(APath+'Build', crBuild in AFlags, crBuild in DefaultFlags);
+  AConfig.SetDeleteValue(APath+'Run', crRun in AFlags, crRun in DefaultFlags);
 end;
 
 
@@ -780,7 +784,8 @@ end;
 {------------------------------------------------------------------------------
   TBaseCompilerOptions Constructor
 ------------------------------------------------------------------------------}
-constructor TBaseCompilerOptions.Create(const AOwner: TObject; const AToolClass: TCompilationToolClass);
+constructor TBaseCompilerOptions.Create(const AOwner: TObject;
+  const AToolClass: TCompilationToolClass);
 begin
   inherited Create;
   FOwner := AOwner;
@@ -1014,8 +1019,6 @@ var
     end;
   end;
 
-var
-  SkipCompiler: Boolean; // old compatebility
 begin
   { Load the compiler options from the XML file }
   p:=Path;

@@ -152,12 +152,19 @@ function DbgStr(const StringWithSpecialChars: string): string;
 
 function DbgS(const i1,i2,i3,i4: integer): string;
 
+// UTF utility functions
+// MG: Should be moved to the RTL
 function UTF8CharacterLength(p: PChar): integer;
 function UTF8Length(const s: string): integer;
 function UTF8Length(p: PChar; Count: integer): integer;
 function UTF8CharacterToUnicode(p: PChar; var CharLen: integer): Cardinal;
+function UnicodeToUTF8(u: cardinal): string;
 function UTF8ToDoubleByteString(const s: string): string;
 function UTF8ToDoubleByte(UTF8Str: PChar; Len: integer; DBStr: PByte): integer;
+function UTF8FindNearestCharStart(UTF8Str: PChar; Len: integer;
+                                  BytePos: integer): integer;
+// find the n-th UTF8 character, ignoring BIDI
+function UTF8CharStart(UTF8Str: PChar; Len, Index: integer): PChar;
 
 
 implementation
@@ -924,7 +931,7 @@ begin
   i:=1;
   while (i<=length(Result)) do begin
     case Result[i] of
-    ' '..'z': inc(i);
+    ' '..#126: inc(i);
     else
       s:='#'+IntToStr(ord(Result[i]));
       Result:=copy(Result,1,i-1)+s+copy(Result,i+1,length(Result)-i);
@@ -997,7 +1004,7 @@ function UTF8CharacterToUnicode(p: PChar; var CharLen: integer): Cardinal;
 begin
   if p<>nil then begin
     if ord(p^)<%11000000 then begin
-      // regular single byte character (#0 is single byte, this is pascal ;)
+      // regular single byte character (#0 is a normal char, this is pascal ;)
       Result:=ord(p^);
       CharLen:=1;
     end
@@ -1050,6 +1057,46 @@ begin
   end;
 end;
 
+function UnicodeToUTF8(u: cardinal): string;
+
+  procedure RaiseInvalidUnicode;
+  begin
+    raise Exception.Create('UnicodeToUTF8: invalid unicode: '+IntToStr(u));
+  end;
+
+begin
+  case u of
+    0..$7f:
+      begin
+        SetLength(Result,1);
+        Result[1]:=char(byte(u));
+      end;
+    $80..$7ff:
+      begin
+        SetLength(Result,2);
+        Result[1]:=char(byte($c0 or (u shr 6)));
+        Result[2]:=char(byte($80 or (u and $3f)));
+      end;
+    $800..$ffff:
+      begin
+        SetLength(Result,3);
+        Result[1]:=char(byte($e0 or (u shr 12)));
+        Result[2]:=char(byte((u shr 6) and $3f) or $80);
+        Result[3]:=char(byte(u and $3f) or $80);
+      end;
+    $10000..$1fffff:
+      begin
+        SetLength(Result,4);
+        Result[1]:=char(byte($f0 or (u shr 18)));
+        Result[2]:=char(byte((u shr 12) and $3f) or $80);
+        Result[3]:=char(byte((u shr 6) and $3f) or $80);
+        Result[4]:=char(byte(u and $3f) or $80);
+      end;
+  else
+    RaiseInvalidUnicode;
+  end;
+end;
+
 function UTF8ToDoubleByteString(const s: string): string;
 var
   Len: Integer;
@@ -1080,6 +1127,41 @@ begin
     inc(SrcPos,CharLen);
     dec(Len,CharLen);
     inc(Result);
+  end;
+end;
+
+function UTF8FindNearestCharStart(UTF8Str: PChar; Len: integer;
+  BytePos: integer): integer;
+var
+  CharLen: LongInt;
+begin
+  Result:=0;
+  if UTF8Str<>nil then begin
+    if BytePos>Len then BytePos:=Len;
+    while (BytePos>0) do begin
+      CharLen:=UTF8CharacterLength(UTF8Str);
+      dec(BytePos,CharLen);
+      if (BytePos<0) then exit;
+      inc(Result,CharLen);
+      if (BytePos=0) then exit;
+    end;
+  end;
+end;
+
+function UTF8CharStart(UTF8Str: PChar; Len, Index: integer): PChar;
+var
+  CharLen: LongInt;
+begin
+  Result:=UTF8Str;
+  if Result<>nil then begin
+    while (Index>0) and (Len>0) do begin
+      CharLen:=UTF8CharacterLength(Result);
+      dec(Len,CharLen);
+      dec(Index);
+      inc(Result,CharLen);
+    end;
+    if (Index>0) or (Len<0) then
+      Result:=nil;
   end;
 end;
 

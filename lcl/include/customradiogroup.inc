@@ -271,16 +271,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TCustomRadioGroup.WMSize
-  Params:  Message: TLMSize
-  Returns: none
+  Method: TCustomRadioGroup.Resize
 
   Reposition buttons on resize
  ------------------------------------------------------------------------------}
-procedure TCustomRadioGroup.WMSize(var Message: TLMSize);
+procedure TCustomRadioGroup.Resize;
 begin
   if HandleAllocated then DoPositionButtons;
-  inherited WMSize(Message);
+  inherited Resize;
 end;
 
 {------------------------------------------------------------------------------
@@ -398,6 +396,9 @@ end;
 
 {
   $Log$
+  Revision 1.33  2004/09/04 22:24:16  mattias
+  added default values for compiler skip options and improved many parts of synedit for UTF8
+
   Revision 1.32  2004/07/16 21:49:00  mattias
   added RTTI controls
 

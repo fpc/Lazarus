@@ -92,9 +92,9 @@ begin
   end;
 end;
 
-procedure TScrollingWinControl.WMSize(var Message: TLMSize);
+procedure TScrollingWinControl.DoOnResize;
 begin
-  inherited WMSize(Message);
+  inherited DoOnResize;
   if AutoScroll or HorzScrollBar.Visible or VertScrollBar.Visible
   then
     UpdateScrollBars;

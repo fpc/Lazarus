@@ -35,6 +35,8 @@ function DrawSplitter(DC: HDC; const ARect: TRect; Horizontal: boolean): boolean
 function ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect;
   Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;
 
+function FontCanUTF8(Font: HFont): boolean; override;
+
 function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String; override;
 function GetControlConstraints(Constraints: TObject): boolean; override;
 function GetLCLOwnerObject(Handle: HWnd): TObject; override;
@@ -57,6 +59,9 @@ procedure StatusBarUpdate(StatusBar: TObject); override;
 { =============================================================================
 
   $Log$
+  Revision 1.19  2004/09/04 22:24:16  mattias
+  added default values for compiler skip options and improved many parts of synedit for UTF8
+
   Revision 1.18  2004/09/02 09:17:00  mattias
   improved double byte char fonts for gtk1, started synedit UTF8 support
 

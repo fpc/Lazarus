@@ -2033,7 +2033,7 @@ type
     procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
     procedure WMLButtonDown(var AMessage: TLMLButtonDown); message LM_LBUTTONDOWN;
     procedure WMNotify(var AMessage: TLMNotify); message LM_NOTIFY;
-    procedure WMSize(var Msg: TLMSize); message LM_SIZE;
+    procedure Resize; override;
   protected
     property AutoExpand: Boolean read GetAutoExpand write SetAutoExpand default False;
     property BorderStyle default bsSingle;
@@ -2306,6 +2306,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.144  2004/09/04 22:24:16  mattias
+  added default values for compiler skip options and improved many parts of synedit for UTF8
+
   Revision 1.143  2004/08/18 09:31:21  mattias
   removed obsolete unit vclglobals
 

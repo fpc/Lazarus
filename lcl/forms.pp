@@ -153,7 +153,7 @@ type
     procedure CreateWnd; override;
     Procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
     procedure WMPaint(var message: TLMPaint); message LM_PAINT;
-    procedure WMSize(var Message: TLMSize); message LM_Size;
+    procedure DoOnResize; override;
     Procedure WMHScroll(var Message : TLMHScroll); message LM_HScroll;
     Procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
     procedure ScrollBy(DeltaX, DeltaY: Integer);

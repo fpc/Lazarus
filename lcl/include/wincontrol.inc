@@ -496,7 +496,6 @@ begin
     if AlignWork then
     begin
       AdjustClientRect(ARect);
-      FAdjustClientRectRealized:=ARect;
       //DebugLn('[TWinControl.AlignControls] ',Name,':',Classname,' ',Left,',',Top,',',Width,',',Height,' ClientRect=',ARect.Left,',',ARect.Top,',',ARect.Right,',',ARect.Bottom);
       AlignList := TList.Create;
       try
@@ -662,21 +661,17 @@ End;
 procedure TWinControl.DoAdjustClientRectChange;
 var r: TRect;
 begin
-  if (csLoading in ComponentState) then exit;
   r:=GetClientRect;
   AdjustClientRect(r);
-//DebugLn(' TWinControl.DoAdjustClientRectChange ',Name,':',ClassName,' ',r.Right,',',r.Bottom);
-  if (r.Left<>FAdjustClientRectRealized.Left)
-  or (r.Top<>FAdjustClientRectRealized.Top)
-  or (r.Right<>FAdjustClientRectRealized.Right)
-  or (r.Bottom<>FAdjustClientRectRealized.Bottom)
-  then begin
+  //DebugLn(' TWinControl.DoAdjustClientRectChange ',Name,':',ClassName,' ',dbgs(r.Right),',',dbgs(r.Bottom));
+  if not CompareRect(@r,@FAdjustClientRectRealized) then begin
     // client rect changed since last AlignControl
     {$IFDEF VerboseClientRectBugFix}
     DebugLn('UUU TWinControl.DoAdjustClientRectChange ClientRect changed ',Name,':',ClassName,
       ' Old=',FAdjustClientRectRealized.Right,'x',FAdjustClientRectRealized.Bottom,
       ' New=',r.RIght,'x',r.Bottom);
     {$ENDIF}
+    FAdjustClientRectRealized:=r;
     ReAlign;
     Resize;
   end;
@@ -2376,8 +2371,8 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TWinControl.Invalidate;
 Begin
-  if HandleAllocated and (not (csDestroying in ComponentState))
-  then CNSendMessage(LM_Invalidate,Self,Nil);
+  if HandleAllocated and ([csDestroying,csLoading]*ComponentState=[]) then
+    CNSendMessage(LM_Invalidate,Self,Nil);
 end;
 
 {------------------------------------------------------------------------------}
@@ -2480,7 +2475,8 @@ end;
 ------------------------------------------------------------------------------}
 procedure TWinControl.ReAlign;
 begin
-  if (csLoading in ComponentState) or (not HandleAllocated) then begin
+  if ([csLoading,csDestroying]*ComponentState<>[]) or (not HandleAllocated) then
+  begin
     Include(FFlags,wcfReAlignNeeded);
     exit;
   end;
@@ -2506,7 +2502,6 @@ begin
     AControl.FParent := Nil;
   end;
 End;
-
 
 {------------------------------------------------------------------------------}
 {  TWinControl RemoveFocus                                                      }
@@ -3917,6 +3912,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.272  2004/09/04 22:24:16  mattias
+  added default values for compiler skip options and improved many parts of synedit for UTF8
+
   Revision 1.271  2004/09/02 17:59:59  mattias
   removed double KeyPress method in synedit
 

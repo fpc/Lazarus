@@ -34,13 +34,8 @@ located at http://SynEdit.SourceForge.net
 
 Known Issues:
 
-  -TForm.Deactivate
-  -Registry
-  -Docking
-  -ShellAPI
   -DoubleBuffered
   -Font.CharSet
-  -DropFiles
   -THintWindow
   -DragAcceptFiles
   -Font DBCS / MBCS  double, multi byte character set
@@ -162,22 +157,59 @@ type
     );                                           //mh 2000-10-30
   TSynStateFlags = set of TSynStateFlag;
 
-  TSynEditorOption = (eoAltSetsColumnMode, eoAutoIndent,
+  TSynEditorOption = (
+    eoAltSetsColumnMode,       // Holding down the Alt Key will put the selection mode into columnar format
+    eoAutoIndent,              // Will indent the caret on new lines with the same amount of leading white space as the preceding line
+    eoAutoSizeMaxScrollWidth,  //TODO Automatically resizes the MaxScrollWidth property when inserting text
+    eoDisableScrollArrows,     //TODO Disables the scroll bar arrow buttons when you can't scroll in that direction any more
+    eoDragDropEditing,         // Allows you to select a block of text and drag it within the document to another location
+    eoDropFiles,               //TODO Allows the editor accept OLE file drops
+    eoEnhanceHomeKey,          //TODO enhances home key positioning, similar to visual studio
+    eoGroupUndo,               //TODO When undoing/redoing actions, handle all continous changes of the same kind in one call instead undoing/redoing each command separately
+    eoHalfPageScroll,          // When scrolling with page-up and page-down commands, only scroll a half page at a time
+    eoHideShowScrollbars,      //TODO if enabled, then the scrollbars will only show when necessary.  If you have ScrollPastEOL, then it the horizontal bar will always be there (it uses MaxLength instead)
+    eoKeepCaretX,              // When moving through lines w/o Cursor Past EOL, keeps the X position of the cursor
+    eoNoCaret,                 // Makes it so the caret is never visible
+    eoNoSelection,             // Disables selecting text
+    eoRightMouseMovesCursor,   //TODO When clicking with the right mouse for a popup menu, move the cursor to that location
+    eoScrollByOneLess,         // Forces scrolling to be one less
+    eoScrollHintFollows,       //TODO The scroll hint follows the mouse when scrolling vertically
+    eoScrollPastEof,           // Allows the cursor to go past the end of file marker
+    eoScrollPastEol,           // Allows the cursor to go past the last character into the white space at the end of a line
+    eoShowScrollHint,          // Shows a hint of the visible line numbers when scrolling vertically
+    eoShowSpecialChars,        //TODO Shows the special Characters
+    eoSmartTabDelete,          //TODO similar to Smart Tabs, but when you delete characters
+    eoSmartTabs,               // When tabbing, the cursor will go to the next non-white space character of the previous line
+    eoSpecialLineDefaultFg,    //TODO disables the foreground text color override when using the OnSpecialLineColor event
+    eoTabIndent,               //TODO When active <Tab> and <Shift><Tab> act as block indent, unindent when text is selected
+    eoTabsToSpaces,            // Converts a tab character to a specified number of space characters
+    eoTrimTrailingSpaces,      // Spaces at the end of lines will be trimmed and not saved
     {$IFDEF SYN_LAZARUS}
-    eoBracketHighlight, eoDoubleClickSelectsLine, eoHideRightMargin,
-    eoPersistentCaret, eoShowCtrlMouseLinks, eoAutoIndentOnPaste,
+    eoBracketHighlight,        // highlight matching bracket
+    eoDoubleClickSelectsLine,  // select line on double click
+    eoHideRightMargin,         // hides the right margin line
+    eoPersistentCaret,         // do not hide caret when focus lost
+    eoShowCtrlMouseLinks,      // pressing Ctrl will highlight the word under the mouse cursor
+    eoAutoIndentOnPaste        // indent text inserted from clipboard
     {$ENDIF}
-    eoDragDropEditing,     //mh 2000-11-20
-    eoDropFiles, eoHalfPageScroll, eoKeepCaretX, eoNoCaret, eoNoSelection,
-    eoScrollByOneLess, eoScrollPastEof, eoScrollPastEol, eoShowScrollHint,
-    eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces);
+    );
   TSynEditorOptions = set of TSynEditorOption;
 
 const
-  SYNEDIT_DEFAULT_OPTIONS = [eoAutoIndent,
-    {$IFDEF SYN_LAZARUS}eoBracketHighlight,{$ENDIF}
-    eoDragDropEditing, eoScrollPastEol,
-    eoShowScrollHint, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces];
+  SYNEDIT_DEFAULT_OPTIONS = [
+    eoAutoIndent,
+    eoDragDropEditing,
+    eoScrollPastEol,
+    eoShowScrollHint,
+    eoSmartTabs,
+    eoTabsToSpaces,
+    eoTrimTrailingSpaces,
+    eoSmartTabDelete,
+    eoGroupUndo,
+    {$IFDEF SYN_LAZARUS}
+    eoBracketHighlight
+    {$ENDIF}
+    ];
 
 type
 // use scAll to update a statusbar when another TCustomSynEdit got the focus
@@ -267,9 +299,6 @@ type
   TCustomSynEdit = class(TCustomControl)
   private
     procedure WMDropFiles(var Msg: TMessage); message WM_DROPFILES;
-    {$IFDEF SYN_LAZARUS}
-    procedure WMExit(var Message: TLMExit); message LM_EXIT;
-    {$ENDIF}
     procedure WMEraseBkgnd(var Msg: TMessage); message WM_ERASEBKGND;
     procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
     procedure WMHScroll(var Msg: TWMScroll); message WM_HSCROLL;
@@ -278,25 +307,28 @@ type
     procedure WMImeNotify(var Msg: TMessage); message WM_IME_NOTIFY;
 {$ENDIF}
     procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
-{$IFNDEF SYN_LAZARUS}
+    {$IFDEF SYN_LAZARUS}
+    procedure WMExit(var Message: TLMExit); message LM_EXIT;
+    procedure Resize; override;
+    {$ELSE}
     procedure WMMouseWheel(var Msg: TMessage); message WM_MOUSEWHEEL;
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
-{$ENDIF}
-    procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+    {$ENDIF}
+    procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
     procedure WMVScroll(var Msg: TWMScroll); message WM_VSCROLL;
   private
-    fBlockBegin: TPoint;
-    fBlockEnd: TPoint;
+    fBlockBegin: TPoint;   // logical position (byte)
+    fBlockEnd: TPoint;     // logical position (byte)
     fBlockIndent: integer;
-    fCaretX: Integer;
+    fCaretX: Integer;      // physical position (screen)
     {$IFDEF SYN_LAZARUS}
     fBracketHighlightCaret: TPoint;
     fBracketHighlightPos: TPoint;
     fBracketHighlightAntiPos: TPoint;
     fCtrlMouseActive: boolean;
     {$ENDIF}
-    fLastCaretX: integer;                                                       //mh 2000-10-19
+    fLastCaretX: integer;  // physical position (screen)                        //mh 2000-10-19
     fCaretY: Integer;
     fCharsInWindow: Integer;
     fCharWidth: Integer;
@@ -307,21 +339,22 @@ type
 {$ENDIF}
     fInserting: Boolean;
     {$IFDEF SYN_LAZARUS}
-    fLastMouseCaret: TPoint;
+    fLastMouseCaret: TPoint;  // physical (screen)
     fLastControlIsPressed: boolean;
     fLastCtrlMouseLinkY: integer;
-    fLastCtrlMouseLinkX1: integer;
-    fLastCtrlMouseLinkX2: integer;
+    fLastCtrlMouseLinkX1: integer; // logical (byte)
+    fLastCtrlMouseLinkX2: integer; // logical (byte)
     {$ENDIF}
     fLines: TStrings;
     fLinesInWindow: Integer;
-    fLeftChar: Integer;
-    fMaxLeftChar: Integer;
+    fLeftChar: Integer;    // first visible screen column
+    fMaxLeftChar: Integer; // 1024
     fPaintLock: Integer;
     fReadOnly: Boolean;
     fRightEdge: Integer;
     fRightEdgeColor: TColor;
     FScrollBars: TScrollStyle;
+    FTabChar: char;
     fTextHeight: Integer;
     fTextOffset: Integer;
     fTopLine: Integer;
@@ -346,6 +379,7 @@ type
     fMarkList: TSynEditMarkList;
     fExtraLineSpacing: integer;
     fSelectionMode: TSynSelectionMode;
+    FUseUTF8: boolean;
     fWantTabs: boolean;
     fGutter: TSynGutter;
     fTabWidth: integer;
@@ -397,13 +431,15 @@ type
     function GetHookedCommandHandlersCount: integer;
     function GetLineText: string;
     {$IFDEF SYN_LAZARUS}
-    function GetLineTextExtended: string;
+    function GetCharLen(const Line: string; CharStartPos: integer): integer;
+    function AdjustBytePosToCharacterStart(Line: integer; BytePos: integer): integer;
     {$ENDIF}
     function GetMaxUndo: Integer;
     function GetSelAvail: Boolean;
     function GetSelText: string;
-    function SynGetText: string; 
+    function SynGetText: string;
     {$IFDEF SYN_LAZARUS}
+    procedure SetTabChar(const AValue: Char);
     function RealGetText: string; override;
     {$ENDIF}
     procedure GutterChanged(Sender: TObject);
@@ -413,8 +449,14 @@ type
     procedure LinesChanging(Sender: TObject);
     procedure LinesChanged(Sender: TObject);
     procedure LockUndo;
-    procedure MoveCaretAndSelection(ptBefore, ptAfter: TPoint;
+    procedure MoveCaretAndSelection(
+      {$IFDEF SYN_LAZARUS}const {$ENDIF}ptBefore, ptAfter: TPoint;
       SelectionCommand: boolean);
+    {$IFDEF SYN_LAZARUS}
+    procedure MoveCaretAndSelectionPhysical(
+      const ptBeforePhysical, ptAfterPhysical: TPoint;
+      SelectionCommand: boolean);
+    {$ENDIF}
     procedure MoveCaretHorz(DX: integer; SelectionCommand: boolean);
     procedure MoveCaretVert(DY: integer; SelectionCommand: boolean);
     procedure PluginsAfterPaint(ACanvas: TCanvas; AClip: TRect;
@@ -433,7 +475,8 @@ type
     {$ELSE}
     procedure SetBorderStyle(Value: TBorderStyle);
     {$ENDIF}
-    procedure SetCaretAndSelection(ptCaret, ptBefore, ptAfter: TPoint);
+    procedure SetCaretAndSelection({$IFDEF SYN_LAZARUS}const {$ENDIF}ptCaret,
+                                   ptBefore, ptAfter: TPoint);
     procedure SetCaretX(Value: Integer);
     procedure SetCaretY(Value: Integer);
     procedure SetExtraLineSpacing(const Value: integer);
@@ -496,11 +539,11 @@ type
       State: TDragState; var Accept: Boolean); override;
     procedure FindMatchingBracket; virtual;
     {$IFDEF SYN_LAZARUS}
-    function FindMatchingBracket(StartBracket: TPoint;
+    function FindMatchingBracket(PhysStartBracket: TPoint;
                                  StartIncludeNeighborChars, MoveCaret,
                                  SelectBrackets, OnlyVisible: boolean
                                  ): TPoint; virtual;
-    procedure FindMatchingBracketPair(const ACaret: TPoint;
+    procedure FindMatchingBracketPair(const PhysCaret: TPoint;
                                       var StartBracket, EndBracket: TPoint;
                                       OnlyVisible: boolean);
     {$ENDIF}
@@ -626,7 +669,7 @@ type
     function GetHighlighterAttriAtRowCol(XY: TPoint; var Token: string;
       var Attri: TSynHighlighterAttributes): boolean;
     {$IFDEF SYN_LAZARUS}
-    procedure GetWordBoundsAtRowCol(XY: TPoint; var StartX, EndX: integer);
+    procedure GetWordBoundsAtRowCol(const XY: TPoint; var StartX, EndX: integer);
     {$ENDIF}
     function GetWordAtRowCol(XY: TPoint): string;
     procedure GotoBookMark(BookMark: Integer);
@@ -634,10 +677,20 @@ type
     procedure InvalidateGutter;
     procedure InvalidateLine(Line: integer);
     function IsBookmark(BookMark: integer): boolean;
-    function LogicalToPhysicalPos(p: TPoint): TPoint;
     {$IFDEF SYN_LAZARUS}
-    function PhysicalToLogicalPos(p: TPoint): TPoint;                           //sblbg 2001-12-17
+    function LogicalToPhysicalPos(const p: TPoint): TPoint;
+    function LogicalToPhysicalCol(const Line: string;
+                                  LogicalPos: integer): integer;
+    function LogicalToPhysicalCol(Line: PChar; LineLen: integer;
+                  LogicalPos, StartBytePos, StartPhysicalPos: integer): integer;
+    function PhysicalToLogicalPos(const p: TPoint): TPoint;
+    function PhysicalToLogicalCol(const Line: string;
+                                  PhysicalPos: integer): integer;
+    function PhysicalToLogicalCol(const Line: string;
+                 PhysicalPos, StartBytePos, StartPhysicalPos: integer): integer;
     function NextTokenPos: TPoint; virtual;
+    {$ELSE}
+    function LogicalToPhysicalPos(p: TPoint): TPoint;
     {$ENDIF}
     function NextWordPos: TPoint; virtual;
     procedure Notification(AComponent: TComponent;
@@ -651,7 +704,8 @@ type
     procedure Redo;
     procedure RegisterCommandHandler(AHandlerProc: THookedCommandEvent;
       AHandlerData: pointer);
-    function RowColumnToPixels(RowCol: TPoint): TPoint;
+    function RowColumnToPixels(
+                      {$IFDEF SYN_LAZARUS}const {$ENDIF}RowCol: TPoint): TPoint;
     function SearchReplace(const ASearch, AReplace: string;
       AOptions: TSynSearchOptions): integer;
     procedure SelectAll;
@@ -692,9 +746,6 @@ type
     property LineHeight: integer read fTextHeight;
     property LinesInWindow: Integer read fLinesInWindow;
     property LineText: string read GetLineText write SetLineText;
-    {$IFDEF SYN_LAZARUS}
-    property LineTextExtended: string read GetLineTextExtended write SetLineText;
-    {$ENDIF}
     property Lines: TStrings read fLines write SetLines;
     property Marks: TSynEditMarkList read fMarkList;
     property MaxLeftChar: integer read fMaxLeftChar write SetMaxLeftChar
@@ -707,6 +758,7 @@ type
     property Text: string read SynGetText write SynSetText;
     property TopLine: Integer read fTopLine write SetTopLine;
     {$IFDEF SYN_LAZARUS}
+    property UseUTF8: boolean read FUseUTF8;
     procedure Update; override;
     procedure Invalidate; override;
     {$ENDIF}
@@ -748,6 +800,9 @@ type
       read FSelectedColor write FSelectedColor;
     property SelectionMode: TSynSelectionMode
       read FSelectionMode write SetSelectionMode default smNormal;
+    {$IFDEF SYN_LAZARUS}
+    property TabChar: char read FTabChar write SetTabChar;
+    {$ENDIF}
     property TabWidth: integer read fTabWidth write SetTabWidth default 8;
     property WantTabs: boolean read fWantTabs write SetWantTabs default FALSE;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -1009,7 +1064,8 @@ begin
 end;
 {$ENDIF}
 
-function TCustomSynEdit.RowColumnToPixels(RowCol: TPoint): TPoint;
+function TCustomSynEdit.RowColumnToPixels(
+  {$IFDEF SYN_LAZARUS}const {$ENDIF}RowCol: TPoint): TPoint;
 begin
   Result:=RowCol;
   Result.X := (Result.X - 1) * fCharWidth + fTextOffset;
@@ -1018,7 +1074,7 @@ end;
 
 procedure TCustomSynEdit.ComputeCaret(X, Y: Integer);
 begin
-  CaretXY := PixelsToLogicalPos(Point(X,Y));
+  CaretXY := PixelsToRowColumn(Point(X,Y));
 end;
 
 procedure TCustomSynEdit.DoCopyToClipboard(const SText: string);
@@ -1200,6 +1256,7 @@ begin
   fLastCtrlMouseLinkY := -1;
   fLastControlIsPressed := false;
   fBlockIndent := 2;
+  FTabChar := ' ';
 {$ELSE}
   Color := clWindow;
   fFontDummy.Name := 'Courier New';
@@ -1368,7 +1425,7 @@ function TCustomSynEdit.CaretXPix: Integer;
 var
   p: TPoint;
 begin
-  p := LogicalToPhysicalPos(Point(fCaretX, fCaretY));
+  p := Point(fCaretX, fCaretY);
   Result := RowColumnToPixels(p).X;
 end;
 
@@ -1397,12 +1454,29 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
-function TCustomSynEdit.GetLineTextExtended: string;
+function TCustomSynEdit.GetCharLen(const Line: string; CharStartPos: integer
+  ): integer;
 begin
-  if (CaretY >= 1) and (CaretY <= Lines.Count) then
-    Result := TSynEditStringList(Lines).ExpandedStrings[CaretY - 1]
+  if UseUTF8 and (length(Line)>=CharStartPos) then
+    Result:=UTF8CharacterLength(@Line[CharStartPos])
   else
-    Result := '';
+    Result:=1;
+end;
+
+function TCustomSynEdit.AdjustBytePosToCharacterStart(Line: integer;
+  BytePos: integer): integer;
+var
+  s: string;
+begin
+  Result:=BytePos;
+  if Result<1 then
+    Result:=1
+  else if (Line>=1) and (Line<=Lines.Count) then begin
+    s:=Lines[Line-1];
+    if (Result<=length(s)) and UseUTF8 then
+      Result:=UTF8FindNearestCharStart(PChar(s),length(s),Result);
+  end else
+    Result:=1;
 end;
 {$ENDIF}
 
@@ -1464,13 +1538,9 @@ function TCustomSynEdit.GetSelText: string;
     Inc(P, Len);
   end;
 
-{$IFDEF SYN_LAZARUS}
-var
-  sLineBreak: string;
-{$ELSE}
+
 const
-  sLineBreak = #$0D#$0A;
-{$ENDIF}
+  sLineBreak = {$IFDEF SYN_LAZARUS}LineEnding{$ELSE}#$0D#$0A{$ENDIF};
 var
   First, Last, TotalLen: Integer;
   ColFrom, ColTo: Integer;
@@ -1483,9 +1553,6 @@ var
 {$ENDIF}
   P: PChar;
 begin
-  {$IFDEF SYN_LAZARUS}
-  sLineBreak:=AdjustLineBreaks(#13#10);
-  {$ENDIF}
   if not SelAvail then
     Result := ''
   else begin
@@ -1593,6 +1660,13 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
+procedure TCustomSynEdit.SetTabChar(const AValue: Char);
+begin
+  if FTabChar=AValue then exit;
+  FTabChar:=AValue;
+  Invalidate;
+end;
+
 function TCustomSynEdit.RealGetText: string;
 begin
   if fLines<>nil then
@@ -1769,19 +1843,21 @@ begin
   end;
 end;
 
-procedure TCustomSynEdit.FindMatchingBracketPair(const ACaret: TPoint;
+procedure TCustomSynEdit.FindMatchingBracketPair(const PhysCaret: TPoint;
   var StartBracket, EndBracket: TPoint; OnlyVisible: boolean);
 var
   StartLine: string;
+  LogCaretXY: TPoint;
 begin
   StartBracket.Y:=-1;
   EndBracket.Y:=-1;
-  if (ACaret.Y<1) or (ACaret.Y>Lines.Count) or (ACaret.X<1) then exit;
-  StartLine := TSynEditStringList(Lines).ExpandedStrings[ACaret.Y - 1];
-  if (length(StartLine)<ACaret.X)
-  or (not (StartLine[ACaret.X] in ['(',')','{','}','[',']'])) then exit;
-  StartBracket:=ACaret;
-  EndBracket:=FindMatchingBracket(ACaret,false,false,false,OnlyVisible);
+  if (PhysCaret.Y<1) or (PhysCaret.Y>Lines.Count) or (PhysCaret.X<1) then exit;
+  StartLine := Lines[PhysCaret.Y - 1];
+  LogCaretXY:=PhysicalToLogicalPos(PhysCaret);
+  if (length(StartLine)<LogCaretXY.X)
+  or (not (StartLine[LogCaretXY.X] in ['(',')','{','}','[',']'])) then exit;
+  StartBracket:=PhysCaret;
+  EndBracket:=FindMatchingBracket(PhysCaret,false,false,false,OnlyVisible);
 end;
 {$ENDIF}
 
@@ -1892,7 +1968,8 @@ begin
   Exclude(fStateFlags, sfLinesChanging);
   if HandleAllocated then begin
     UpdateScrollBars;
-    SetBlockBegin(CaretXY);
+    SetBlockBegin({$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(CaretXY)
+                  {$ELSE}CaretXY{$ENDIF});
     InvalidateRect(Handle, @fInvalidateRect, False);
     FillChar(fInvalidateRect, SizeOf(TRect), 0);
     if fGutter.ShowLineNumbers and fGutter.AutoSize then
@@ -1911,6 +1988,7 @@ var
   PrimarySelText: string;
   StartOfBlock: TPoint;
   EndOfBlock: TPoint;
+  LogCaretXY: TPoint;
   {$ENDIF}
 begin
 //DebugLn('TCustomSynEdit.MouseDown START Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
@@ -1920,7 +1998,7 @@ begin
     inherited MouseDown(Button, Shift, X, Y);
     exit;
   end;
-  LastMouseCaret:=PixelsToLogicalPos(Point(X,Y));
+  LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
   fMouseDownX := X;
   fMouseDownY := Y;
   {$ENDIF}
@@ -1944,6 +2022,9 @@ begin
   {$ENDIF}
   inherited MouseDown(Button, Shift, X, Y);
   ComputeCaret(X, Y);
+  {$IFDEF SYN_LAZARUS}
+  LogCaretXY:=PhysicalToLogicalPos(CaretXY);
+  {$ENDIF}
   fLastCaretX := fCaretX;                                                       //mh 2000-10-19
   if Button = mbLeft then begin
 //DebugLn('====================== START CAPTURE ===========================');
@@ -1951,7 +2032,8 @@ begin
     //if mousedown occured in selected block then begin drag operation
     Exclude(fStateFlags, sfWaitForDragging);
     if bWasSel and (eoDragDropEditing in fOptions) and (X >= fGutterWidth + 2)
-      and (SelectionMode = smNormal) and IsPointInSelection(CaretXY)
+      and (SelectionMode = smNormal)
+      and IsPointInSelection({$IFDEF SYN_LAZARUS}LogCaretXY{$ELSE}CaretXY{$ENDIF})
     then
       bStartDrag := TRUE;
   end;
@@ -1964,9 +2046,11 @@ begin
     if (sfDblClicked in fStateFlags) then begin
     {$ENDIF}
       if ssShift in Shift then
-        SetBlockEnd(CaretXY)
+        SetBlockEnd({$IFDEF SYN_LAZARUS}LogCaretXY
+                    {$ELSE}CaretXY{$ENDIF})
       else begin
-        SetBlockBegin(CaretXY);
+        SetBlockBegin({$IFDEF SYN_LAZARUS}LogCaretXY
+                      {$ELSE}CaretXY{$ENDIF});
 {begin}                                                                         //mh 2000-11-20
         if (eoAltSetsColumnMode in Options) and (SelectionMode <> smLine) then
         begin
@@ -2014,7 +2098,7 @@ var
 begin
   inherited MouseMove(Shift, x, y);
   {$IFDEF SYN_LAZARUS}
-  LastMouseCaret:=PixelsToLogicalPos(Point(X,Y));
+  LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
   {$ENDIF}
 
   if (X >= fGutterWidth)
@@ -2045,7 +2129,8 @@ begin
       and (Y < ClientHeight{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF})
     then
       ComputeCaret(X, Y);
-    SetBlockEnd(CaretXY);
+    SetBlockEnd({$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(CaretXY)
+                {$ELSE}CaretXY{$ENDIF});
     // should we begin scrolling?
     Dec(X, fGutterWidth);
     // calculate chars past right
@@ -2136,7 +2221,8 @@ begin
       if fScrollDeltaX > 0 then  // scrolling right?
         Inc(X, CharsInWindow);
       CaretXY := Point(X, C.Y);
-      SetBlockEnd(CaretXY);
+      SetBlockEnd({$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(CaretXY)
+                  {$ELSE}CaretXY{$ENDIF});
     end;
     if fScrollDeltaY <> 0 then begin
       if GetKeyState(VK_SHIFT) < 0 then
@@ -2147,7 +2233,8 @@ begin
       if fScrollDeltaY > 0 then  // scrolling down?
         Inc(Y, LinesInWindow - 1);
       CaretXY := Point(C.X, Y);
-      SetBlockEnd(CaretXY);
+      SetBlockEnd({$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(CaretXY)
+                  {$ELSE}CaretXY{$ENDIF});
     end;
   finally
     DecPaintLock;
@@ -2166,7 +2253,7 @@ begin
   begin
     exit;
   end;
-  LastMouseCaret:=PixelsToLogicalPos(Point(X,Y));
+  LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
   {$ENDIF}
   if (Button = mbRight) and (Shift = [ssRight]) and Assigned(PopupMenu) then
   begin
@@ -2185,8 +2272,10 @@ begin
       sfWaitForDragging] = [sfWaitForDragging] then
   begin
     ComputeCaret(X, Y);
-    SetBlockBegin(CaretXY);
-    SetBlockEnd(CaretXY);
+    SetBlockBegin({$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(CaretXY)
+                  {$ELSE}CaretXY{$ENDIF});
+    SetBlockEnd({$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(CaretXY)
+                  {$ELSE}CaretXY{$ENDIF});
     Exclude(fStateFlags, sfWaitForDragging);
   end;
   if (Button=mbLeft)
@@ -2437,6 +2526,969 @@ end;
 
 procedure TCustomSynEdit.PaintTextLines(AClip: TRect; FirstLine, LastLine,
   FirstCol, LastCol: integer);
+{$IFDEF SYN_LAZARUS}
+// FirstLine, LastLine are based 1
+// FirstCol, LastCol are screen based without scrolling (physical position).
+//  i.e. the real screen position is fTextOffset+Pred(FirstCol)*CharWidth
+var
+  bDoRightEdge: boolean; // right edge
+  nRightEdge: integer;
+    // selection info
+  bSelectionVisible: boolean; // any selection visible?
+  nSelL1, nSelCol1: integer; // start of selected area (physical)
+  nSelL2, nSelCol2: integer; // end of selected area (physical)
+    // info about normal and selected text and background colors
+  bSpecialLine, bLineSelected: boolean;
+  colFG, colBG: TColor;
+  colSelFG, colSelBG: TColor;
+  colEditorBG: TColor;
+    // info about selection of the current line
+  nSelStart, nSelEnd: integer; // start, end of selected area in current line (physical)
+  bComplexLine: boolean; // selected and unselected area in current line
+  FirstColLogical: integer; // FirstCol converted to logical in current line
+  LastColLogical: integer; // LastCol converted to logical in current line
+  SelStartLogical: integer; // nSelStart converted to logical in current line
+  SelEndLogical: integer; // nSelEnd converted to logical in current line
+    // painting the background and the text
+  rcLine, rcToken: TRect;
+  TokenAccu: record
+    // Note: s is not managed as a string, it will only grow!!!
+    // Never use AppendStr or "+", use Len and MaxLen instead and
+    // copy the string chars directly. This is for efficiency.
+    Len, MaxLen: integer;
+    CharsBefore: integer;
+    PhysicalStartPos, PhysicalEndPos: integer;
+    s: string;
+    FG, BG: TColor;
+    Style: TFontStyles;
+  end;
+  dc: HDC;
+  
+  ExpandedPaintToken: string; // used to create the string sent to TextDrawer
+
+  // logical (byte) positions of highlight brackets, the X are zero based
+  nBracketX: integer; // zero based (logical)
+  nBracketY: integer; // one based
+  nAntiBracketX: integer; // zero based (logical)
+  nAntiBracketY: integer; // one based
+  
+  LinkFGCol: TColor;
+
+{ local procedures }
+
+  procedure ComputeSelectionInfo;
+  var
+    p: TPoint;
+  begin
+    bSelectionVisible := FALSE;
+    // Only if selection is visible anyway.
+    if (not HideSelection or Self.Focused) then begin
+      bSelectionVisible := TRUE;
+      // Get the *real* start of the selected area.
+      if (fBlockBegin.Y < fBlockEnd.Y) then begin
+        nSelL1 := fBlockBegin.Y;
+        nSelCol1 := fBlockBegin.X;
+        nSelL2 := fBlockEnd.Y;
+        nSelCol2 := fBlockEnd.X;
+      end else if (fBlockBegin.Y > fBlockEnd.Y) then begin
+        nSelL2 := fBlockBegin.Y;
+        nSelCol2 := fBlockBegin.X;
+        nSelL1 := fBlockEnd.Y;
+        nSelCol1 := fBlockEnd.X;
+      end else if (fBlockBegin.X <> fBlockEnd.X) then begin
+        // No selection at all, or it is only on this line.
+        nSelL1 := fBlockBegin.Y;
+        nSelL2 := nSelL1;
+        if (fBlockBegin.X < fBlockEnd.X) then begin
+          nSelCol1 := fBlockBegin.X;
+          nSelCol2 := fBlockEnd.X;
+        end else begin
+          nSelCol2 := fBlockBegin.X;
+          nSelCol1 := fBlockEnd.X;
+        end;
+      end else
+        bSelectionVisible := FALSE;
+      // If there is any visible selection so far, then test if there is an
+      // intersection with the area to be painted.
+      if bSelectionVisible then begin
+        // Don't care if the selection is not visible.
+        bSelectionVisible := (nSelL2 >= FirstLine) and (nSelL1 <= LastLine);
+        // In the column selection mode sort the begin and end of the selection,
+        // this makes the painting code simpler.
+        if (SelectionMode = smColumn) and (nSelCol1 > nSelCol2) then
+          SwapInt(nSelCol1, nSelCol2);
+        if bSelectionVisible then begin
+          // Transform the selection from text space into screen space
+          p := LogicalToPhysicalPos(Point(nSelCol1, nSelL1));
+          nSelCol1 := p.x;
+          nSelL1 := p.y;
+          p := LogicalToPhysicalPos(point(nSelCol2, nSelL2));
+          nSelCol2 := p.x;
+          nSelL2 := p.y;
+        end;
+      end;
+    end;
+  end;
+
+  procedure SetDrawingColors(Selected: boolean);
+  begin
+    with fTextDrawer do
+      if Selected then begin
+        SetBackColor(colSelBG);
+        SetForeColor(colSelFG);
+      end else begin
+        SetBackColor(colBG);
+        SetForeColor(colFG);
+      end;
+  end;
+
+  function ScreenColumnToXValue(Col: integer): integer;
+  // map screen column to screen pixel
+  begin
+    Result := fTextOffset + Pred(Col) * fCharWidth;
+  end;
+  
+  procedure ExpandSpecialChars(var p: PChar; var Count: integer;
+    PhysicalStartPos: integer);
+  // if there are no tabs: keep p and Count untouched
+  // if there are tabs: copy p into ExpandedPaintToken buffer,
+  //                    convert tabs to spaces, and return the buffer
+  var
+    i: integer;
+    TabCount, LengthNeeded: Integer;
+    DestPos: Integer;
+    SrcPos: Integer;
+    Dest: PChar;
+    c: Char;
+    ScreenPos: Integer;
+    SpaceCount: Integer;
+    CharLen: Integer;
+  begin
+    TabCount:=0;
+    for i:=0 to Count-1 do
+      if p[i]=#9 then inc(TabCount);
+    if TabCount=0 then exit;
+    LengthNeeded:=Count+TabCount*8;
+    if length(ExpandedPaintToken)<LengthNeeded then
+      SetLength(ExpandedPaintToken,LengthNeeded+CharsInWindow);
+    SrcPos:=0;
+    DestPos:=0;
+    ScreenPos:=1;
+    Dest:=PChar(ExpandedPaintToken);
+    while SrcPos<Count do begin
+      c:=p[SrcPos];
+      case c of
+
+      #196..#255:
+        begin
+          // could be UTF8 char
+          if UseUTF8 then
+            CharLen:=UTF8CharacterLength(@p[SrcPos])
+          else
+            CharLen:=1;
+          for i:=1 to CharLen do begin
+            Dest[DestPos]:=p[SrcPos];
+            inc(DestPos);
+            inc(SrcPos);
+          end;
+          inc(ScreenPos);
+        end;
+        
+      #9:
+        begin
+          // tab char
+          SpaceCount:=TabWidth - ((ScreenPos-1) mod TabWidth);
+          for i:=1 to SpaceCount do begin
+            Dest[DestPos]:=FTabChar;
+            inc(DestPos);
+            inc(ScreenPos);
+          end;
+          inc(SrcPos);
+        end;
+      
+      else
+        begin
+          // normal char
+          Dest[DestPos]:=p[SrcPos];
+          inc(DestPos);
+          inc(SrcPos);
+          inc(ScreenPos);
+        end;
+      end;
+    end;
+    p:=PChar(ExpandedPaintToken);
+    Count:=DestPos;
+    //debugln('Token with Tabs: "',copy(ExpandedPaintToken,1,Count),'"');
+  end;
+
+  procedure PaintToken(
+    const Token: string;
+    TokenLen,     // TokenLen is the maximum logical (byte) position for Token
+    CharsBefore,  // CharsBefore tells if Token starts at column one or not
+    FirstPhysical,// FirstPhysical is the physical (screen without scrolling)
+                  //   column of the first character
+    First, Last   // First, Last minus CharsBefore are logical (byte) positions in Token
+    : integer);
+  var
+    pszText: PChar;
+    nCharsToPaint: integer;
+    nX: integer;
+  const
+    ETOOptions = ETO_OPAQUE; // Note: clipping is slow and not needed
+  begin
+    {debugln('PaintToken A TokenLen=',dbgs(TokenLen),
+      ' CharsBefore=',dbgs(CharsBefore),
+      ' FirstPhysical=',dbgs(FirstPhysical),
+      ' First='+dbgs(First),' Last=',dbgs(Last),
+      ' Tok="'+copy(Token,First-CharsBefore,Last-First+1),'"',
+      ' rcToken='+dbgs(rcToken.Left)+'-'+dbgs(rcToken.Right));}
+    if (Last < First) or (rcToken.Right <= rcToken.Left) then exit;
+    Dec(First, CharsBefore);
+    Dec(Last, CharsBefore);
+    if (First > TokenLen) then begin
+      pszText := nil;
+      nCharsToPaint := 0;
+    end else begin
+      pszText := PChar(@Token[First]);
+      nCharsToPaint := Min(Last - First + 1, TokenLen - First + 1);
+      ExpandSpecialChars(pszText,nCharsToPaint,FirstPhysical);
+    end;
+    // Draw the right edge under the text if necessary
+    nX := ScreenColumnToXValue(FirstPhysical);
+    if bDoRightEdge and (not (eoHideRightMargin in Options))
+    and (nRightEdge<rcToken.Right) and (nRightEdge>=rcToken.Left)
+    then begin
+      // draw background
+      InternalFillRect(dc,rcToken);
+      // draw edge
+      LCLIntf.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
+      LCLIntf.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
+      // draw text
+      fTextDrawer.ExtTextOut(nX, rcToken.Top, ETOOptions-ETO_OPAQUE, rcToken,
+        pszText, nCharsToPaint);
+    end else begin
+      // draw text with background
+      //debugln('PaintToken nX=',nX,' Token=',dbgstr(copy(pszText,1,nCharsToPaint)));
+      fTextDrawer.ExtTextOut(nX, rcToken.Top, ETOOptions, rcToken,
+        pszText, nCharsToPaint);
+    end;
+    rcToken.Left := rcToken.Right;
+  end;
+
+  procedure PaintHighlightToken(bFillToEOL: boolean);
+  var
+    bComplexToken: boolean;
+    nC1, nC2, nC1Sel, nC2Sel: integer; // logical (byte)
+    bU1, bSel, bU2: boolean;
+    nX1, nX2: integer;
+    C1Phys: integer;
+    C1SelPhys: integer;
+    C2Phys: integer;
+    C2SelPhys: LongInt;
+  begin
+    // Compute some helper variables.
+    nC1 := Max(FirstColLogical, TokenAccu.CharsBefore + 1);
+    nC2 := Min(LastColLogical, TokenAccu.CharsBefore + TokenAccu.Len);
+    if bComplexLine then begin
+      bU1 := (nC1 < SelStartLogical);
+      bSel := (nC1 < SelEndLogical) and (nC2 >= SelStartLogical);
+      bU2 := (nC2 >= SelEndLogical);
+      bComplexToken := bSel and (bU1 or bU2);
+    end else begin
+      bU1 := False;
+      bSel := bLineSelected;
+      bU2 := False;
+      bComplexToken := FALSE;
+    end;
+    {debugln('PaintHighlightToken A TokenAccu: CharsBefore=',dbgs(TokenAccu.CharsBefore),
+      ' Len=',dbgs(TokenAccu.Len),
+      ' PhysicalStartPos=',dbgs(TokenAccu.PhysicalStartPos),
+      ' PhysicalEndPos=',dbgs(TokenAccu.PhysicalEndPos),
+      ' Complex=',dbgs(bComplexToken),
+      ' "',copy(TokenAccu.s,1,TokenAccu.Len),'"');}
+
+    // Any token chars accumulated?
+    if (TokenAccu.Len > 0) then begin
+      // Initialize the colors and the font style.
+      if not bSpecialLine then begin
+        colBG := TokenAccu.BG;
+        colFG := TokenAccu.FG;
+      end;
+      fTextDrawer.SetStyle(TokenAccu.Style);
+      // Paint the chars
+      if bComplexToken then begin
+        // first unselected part of the token
+        C1Phys := Max(FirstCol, TokenAccu.PhysicalStartPos);
+        if bU1 then begin
+          SetDrawingColors(FALSE);
+          rcToken.Right := ScreenColumnToXValue(nSelStart);
+          with TokenAccu do
+            PaintToken(s,Len,CharsBefore,C1Phys,nC1,SelStartLogical);
+        end;
+        // selected part of the token
+        SetDrawingColors(TRUE);
+        nC1Sel := Max(SelStartLogical, nC1);
+        nC2Sel := Min(SelEndLogical, nC2);
+        C2Phys := Min(LastCol, TokenAccu.PhysicalEndPos+1);
+        C1SelPhys := Max(nSelStart, C1Phys);
+        C2SelPhys := Min(nSelEnd, C2Phys);
+        rcToken.Right := ScreenColumnToXValue(C2SelPhys);
+        with TokenAccu do PaintToken(s,Len,CharsBefore,C1SelPhys,nC1Sel,nC2Sel);
+        // second unselected part of the token
+        if bU2 then begin
+          SetDrawingColors(FALSE);
+          rcToken.Right := ScreenColumnToXValue(C2Phys);
+          with TokenAccu do
+            PaintToken(s,Len,CharsBefore,nSelEnd,SelEndLogical,nC2);
+        end;
+      end else begin
+        C1Phys := Max(FirstCol, TokenAccu.PhysicalStartPos);
+        C2Phys := Min(LastCol, TokenAccu.PhysicalEndPos+1);
+        SetDrawingColors(bSel);
+        rcToken.Right := ScreenColumnToXValue(C2Phys);
+        with TokenAccu do PaintToken(s, Len, CharsBefore, C1Phys, nC1, nC2);
+      end;
+    end;
+    
+    // Fill the background to the end of this line if necessary.
+    if bFillToEOL and (rcToken.Left < rcLine.Right) then begin
+      if not bSpecialLine then colBG := colEditorBG;
+      if bComplexLine then begin
+        nX1 := ScreenColumnToXValue(nSelStart);
+        nX2 := ScreenColumnToXValue(nSelEnd);
+        if (rcToken.Left < nX1) then begin
+          SetDrawingColors(FALSE);
+          rcToken.Right := nX1;
+          InternalFillRect(dc, rcToken);
+          rcToken.Left := nX1;
+        end;
+        if (rcToken.Left < nX2) then begin
+          SetDrawingColors(TRUE);
+          rcToken.Right := nX2;
+          InternalFillRect(dc, rcToken);
+          rcToken.Left := nX2;
+        end;
+        if (rcToken.Left < rcLine.Right) then begin
+          SetDrawingColors(FALSE);
+          rcToken.Right := rcLine.Right;
+          InternalFillRect(dc, rcToken);
+        end;
+      end else begin
+        SetDrawingColors(bLineSelected);
+        rcToken.Right := rcLine.Right;
+        InternalFillRect(dc, rcToken);
+      end;
+      // Draw the right edge if necessary.
+      if bDoRightEdge and (not (eoHideRightMargin in Options))
+      and (nRightEdge>=rcToken.Left) then begin
+        LCLIntf.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
+        LCLIntf.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
+      end;
+    end;
+  end;
+
+  procedure AddHighlightToken(
+    Token: PChar;
+    CharsBefore, TokenLen, PhysicalStartPos, PhysicalEndPos: integer;
+    Foreground, Background: TColor;
+    Style: TFontStyles);
+  var
+    bCanAppend: boolean;
+    bSpacesTest, bIsSpaces: boolean;
+    i: integer;
+
+    function TokenIsSpaces: boolean;
+    var
+      pTok: PChar;
+      SpaceCnt: Integer;
+    begin
+      if not bSpacesTest then begin
+        bSpacesTest := TRUE;
+        pTok := PChar(Token);
+        SpaceCnt:=0;
+        while (pTok^ in [' ',#9]) do begin
+          Inc(pTok);
+          inc(SpaceCnt);
+        end;
+        bIsSpaces := (SpaceCnt>=TokenLen);
+      end;
+      Result := bIsSpaces;
+    end;
+
+  begin
+    {DebugLn('AddHighlightToken A CharsBefore=',dbgs(CharsBefore),
+      ' TokenLen=',dbgs(TokenLen),
+      ' PhysicalStartPos=',dbgs(PhysicalStartPos),' PhysicalEndPos=',dbgs(PhysicalEndPos),
+      ' Tok="',copy(Token,1,TokenLen),'"');}
+    if Background = clNone then Background := colEditorBG;
+    if Foreground = clNone then Foreground := Font.Color;
+    // Do we have to paint the old chars first, or can we just append?
+    bCanAppend := FALSE;
+    bSpacesTest := FALSE;
+    if (TokenAccu.Len > 0) then begin
+      // font style must be the same or token is only spaces
+      if (TokenAccu.Style = Style)
+      or (not (fsUnderline in Style) and not (fsUnderline in TokenAccu.Style)
+          and TokenIsSpaces)
+      then
+        // either special colors or same colors
+        if bSpecialLine or bLineSelected or
+        // background color must be the same and
+        ((TokenAccu.BG = Background) and
+        // foreground color must be the same or token is only spaces
+        ((TokenAccu.FG = Foreground) or TokenIsSpaces))
+        then
+          bCanAppend := TRUE;
+      // If we can't append it, then we have to paint the old token chars first.
+      if not bCanAppend then
+        PaintHighlightToken(FALSE);
+    end;
+    // Don't use AppendStr because it's more expensive.
+    if bCanAppend then begin
+      if (TokenAccu.Len + TokenLen > TokenAccu.MaxLen) then begin
+        TokenAccu.MaxLen := TokenAccu.Len + TokenLen + 32;
+        SetLength(TokenAccu.s, TokenAccu.MaxLen);
+      end;
+      for i := 1 to TokenLen do begin
+        TokenAccu.s[TokenAccu.Len + i] := Token[i-1];
+      end;
+      Inc(TokenAccu.Len, TokenLen);
+      TokenAccu.PhysicalEndPos := PhysicalEndPos;
+    end else begin
+      TokenAccu.Len := TokenLen;
+      if (TokenAccu.Len > TokenAccu.MaxLen) then begin
+        TokenAccu.MaxLen := TokenAccu.Len + 32;
+        SetLength(TokenAccu.s, TokenAccu.MaxLen);
+      end;
+      for i := 1 to TokenLen do begin
+        TokenAccu.s[i] := Token[i-1];
+      end;
+      TokenAccu.CharsBefore := CharsBefore;
+      TokenAccu.PhysicalStartPos := PhysicalStartPos;
+      TokenAccu.PhysicalEndPos := PhysicalEndPos;
+      TokenAccu.FG := Foreground;
+      TokenAccu.BG := Background;
+      TokenAccu.Style := Style;
+    end;
+    {debugln('AddHighlightToken END bCanAppend=',dbgs(bCanAppend),
+      ' TokenAccu: CharsBefore=',dbgs(TokenAccu.CharsBefore),
+      ' Len=',dbgs(TokenAccu.Len),
+      ' PhysicalStartPos=',dbgs(TokenAccu.PhysicalStartPos),
+      ' PhysicalEndPos=',dbgs(TokenAccu.PhysicalEndPos),
+      ' "',copy(TokenAccu.s,1,TokenAccu.Len),'"');}
+  end;
+
+  procedure DrawHilightBracketToken(attr: TSynHighlighterAttributes;
+    sToken: PChar; nLine, nTokenPos, nTokenLen,
+    PhysicalStartPos: integer);
+  // Bracket Highlighting
+  var
+    BracketFGCol, BracketBGCol: TColor;
+    BracketStyle, TokenStyle: TFontStyles;
+
+    procedure PaintSubToken(SubTokenLen: integer; Hilight: boolean);
+    var
+      PhysicalEndPos: integer;
+      PaintStyle: TFontStyles;
+    begin
+      if SubTokenLen=0 then exit;
+      if Hilight then
+        PaintStyle:=BracketStyle
+      else
+        PaintStyle:=TokenStyle;
+      PhysicalEndPos:=LogicalToPhysicalCol(sToken,nTokenLen,
+        SubTokenLen+1,1,PhysicalStartPos)-1;
+      AddHighlightToken(sToken, nTokenPos, SubTokenLen,
+        PhysicalStartPos, PhysicalEndPos,
+        BracketFGCol, BracketBGCol, PaintStyle);
+      PhysicalStartPos:=PhysicalEndPos+1;
+      inc(nTokenPos,SubTokenLen);
+      dec(nTokenLen,SubTokenLen);
+      inc(sToken,SubTokenLen);
+    end;
+
+  var
+    LeftBracketX, RightBracketX, Dummy: integer;
+  begin
+    // get bracket positions
+    if (nLine=nBracketY)
+    and (nBracketX>=nTokenPos) and (nBracketX<nTokenPos+nTokenLen) then
+      LeftBracketX:=nBracketX
+    else
+      LeftBracketX:=-1;
+    if (nLine=nAntiBracketY)
+    and (nAntiBracketX>=nTokenPos) and (nAntiBracketX<nTokenPos+nTokenLen) then
+      RightBracketX:=nAntiBracketX
+    else
+      RightBracketX:=-1;
+    if (LeftBracketX<0) and (RightBracketX>=0) then begin
+      LeftBracketX:=RightBracketX;
+      RightBracketX:=-1;
+    end;
+    if (RightBracketX>=0) and (RightBracketX<LeftBracketX) then begin
+      Dummy:=LeftBracketX;
+      LeftBracketX:=RightBracketX;
+      RightBracketX:=Dummy;
+    end;
+    if LeftBracketX<0 then exit;
+
+    // get style
+    if Assigned(attr) then begin
+      BracketFGCol:=attr.Foreground;
+      BracketBGCol:=attr.Background;
+      TokenStyle:=attr.Style;
+      BracketStyle:=TokenStyle;
+    end else begin
+      BracketFGCol:=colFG;
+      BracketBGCol:=colBG;
+      TokenStyle:=Font.Style;
+      BracketStyle:=TokenStyle;
+    end;
+    if fsBold in BracketStyle then
+      Exclude(BracketStyle,fsBold)
+    else
+      Include(BracketStyle,fsBold);
+
+    // draw non hilight left of token
+    PaintSubToken(LeftBracketX-nTokenPos,false);
+    // draw left hilight bracket
+    PaintSubToken(1,true);
+    if RightBracketX>=0 then begin
+      // draw middle
+      PaintSubToken(RightBracketX-nTokenPos,false);
+      // draw right hilight bracket
+      PaintSubToken(1,true);
+    end;
+    // draw rest
+    PaintSubToken(nTokenLen,false);
+  end;
+
+  procedure DrawCtrlMouseToken(attr: TSynHighlighterAttributes;
+    sToken: PChar; nLine, nTokenPos, nTokenLen,
+    PhysicalStartPos, PhysicalEndPos: integer);
+  var
+    LinkBGCol: TColor;
+    LinkStyle: TFontStyles;
+    fRed, fGreen, fBlue: integer;
+    {bRed, bGreen,} bBlue: integer;
+    NewRed, NewGreen, NewBlue: integer;
+  begin
+    if Assigned(attr) then begin
+      LinkFGCol:=attr.Foreground;
+      LinkBGCol:=attr.Background;
+      LinkStyle:=attr.Style;
+    end else begin
+      LinkFGCol:=colFG;
+      LinkBGCol:=colBG;
+      LinkStyle:=Font.Style;
+    end;
+    if LinkBGCol = clNone then LinkBGCol := colEditorBG;
+    if LinkFGCol = clNone then LinkFGCol := Font.Color;
+
+    // change FG color
+    fRed  :=(LinkFGCol and $ff);
+    fGreen:=(LinkFGCol shr 8) and $ff;
+    fBlue :=(LinkFGCol shr 16) and $ff;
+    //bRed  :=(LinkBGCol and $ff);
+    //bGreen:=(LinkBGCol shr 8) and $ff;
+    bBlue :=(LinkBGCol shr 16) and $ff;
+    NewRed  :=fRed;
+    NewGreen:=fGreen;
+    NewBlue :=bBlue;
+    if Abs(NewBlue-fBlue)<128 then
+      NewBlue:=(255-fBlue) and $ff;
+    LinkFGCol:=NewRed+(NewGreen shl 8)+(NewBlue shl 16);
+
+    AddHighlightToken(sToken, nTokenPos, nTokenLen,
+      PhysicalStartPos, PhysicalEndPos,
+      LinkFGCol, LinkBGCol, LinkStyle);
+  end;
+
+  procedure PaintLines;
+  var
+    nLine: integer; // line index for the loop
+    sLine: string; // the current line
+    sToken: PChar; // highlighter token info
+    nTokenPos, nTokenLen: integer;
+    TokenPhysStart: integer; // nTokenPos converted to physical (screen)
+    TokenPhysEnd: integer; // nTokenPos+nTokenLen converted to physical (screen)
+    attr: TSynHighlighterAttributes;
+    LastTokenPosLogical: Integer;
+    LastTokenPosPhyscial: Integer;
+  begin
+    // Initialize rcLine for drawing. Note that Top and Bottom are updated
+    // inside the loop. Get only the starting point for this.
+    rcLine := AClip;
+    rcLine.Bottom := (FirstLine - TopLine) * fTextHeight;
+    // Make sure the token accumulator string doesn't get reassigned to often.
+    if Assigned(fHighlighter) then begin
+      TokenAccu.MaxLen := Max(128, fCharsInWindow * 4);
+      SetLength(TokenAccu.s, TokenAccu.MaxLen);
+    end;
+    // Now loop through all the lines. The indices are valid for Lines.
+    for nLine := FirstLine to LastLine do begin
+      // Get the line.
+      sLine := Lines[nLine - 1];
+      // Get the information about the line selection. Three different parts
+      // are possible (unselected before, selected, unselected after), only
+      // unselected or only selected means bComplexLine will be FALSE. Start
+      // with no selection, compute based on the visible columns.
+      bComplexLine := FALSE;
+      nSelStart := 0;
+      nSelEnd := 0;
+      SelStartLogical:= 0;
+      SelEndLogical:= 0;
+      // Does the selection intersect the visible area?
+      if bSelectionVisible and (nLine >= nSelL1) and (nLine <= nSelL2) then begin
+        // Default to a fully selected line. This is correct for the smLine
+        // selection mode and a good start for the smNormal mode.
+        nSelStart := FirstCol;
+        nSelEnd := LastCol + 1;
+        if (SelectionMode = smColumn) or
+          ((SelectionMode = smNormal) and (nLine = nSelL1))
+        then
+          if (nSelCol1 > LastCol) then begin
+            nSelStart := 0;
+            nSelEnd := 0;
+          end else if (nSelCol1 > FirstCol) then begin
+            nSelStart := nSelCol1;
+            bComplexLine := TRUE;
+          end;
+        if (SelectionMode = smColumn) or
+          ((SelectionMode = smNormal) and (nLine = nSelL2))
+        then
+          if (nSelCol2 < FirstCol) then begin
+            nSelStart := 0;
+            nSelEnd := 0;
+          end else if (nSelCol2 < LastCol) then begin
+            nSelEnd := nSelCol2;
+            bComplexLine := TRUE;
+          end;
+      end;
+      //debugln('PaintLines A nSelStart=',dbgs(nSelStart),' nSelEnd=',dbgs(nSelEnd));
+      
+      // Update the rcLine rect to this line.
+      rcLine.Top := rcLine.Bottom;
+      Inc(rcLine.Bottom, fTextHeight);
+      // Initialize the text and background colors, maybe the line should
+      // use special values for them.
+      colFG := Font.Color;
+      colBG := colEditorBG;
+      bSpecialLine := DoOnSpecialLineColors(nLine, colFG, colBG);
+      if bSpecialLine then begin
+        // The selection colors are just swapped, like seen in Delphi.
+        colSelFG := colBG;
+        colSelBG := colFG;
+      end else begin
+        colSelFG := fSelectedColor.Foreground;
+        colSelBG := fSelectedColor.Background;
+      end;
+      // Paint the lines depending on the assigned highlighter.
+      bLineSelected := not bComplexLine and (nSelStart > 0);
+      rcToken := rcLine;
+      FirstColLogical:=PhysicalToLogicalCol(sLine,FirstCol);
+      LastColLogical:=PhysicalToLogicalCol(sLine,LastCol,
+                                           FirstColLogical,FirstCol);
+      if nSelStart>0 then begin
+        SelStartLogical:=PhysicalToLogicalCol(sLine,nSelStart,
+                                              FirstColLogical,FirstCol);
+        SelEndLogical:=PhysicalToLogicalCol(sLine,nSelEnd,
+                                            SelStartLogical,nSelStart);
+      end;
+      if not Assigned(fHighlighter) then begin
+        // Note: The PaintToken procedure will take care of invalid parameters
+        // like empty token rect or invalid indices into sLine.
+        nTokenLen := Length(sLine);
+        if bComplexLine then begin
+          SetDrawingColors(FALSE);
+          // paint unselected text in front of selection
+          rcToken.Left := Max(rcLine.Left, ScreenColumnToXValue(FirstCol));
+          rcToken.Right := Min(rcLine.Right, ScreenColumnToXValue(nSelStart));
+          PaintToken(sLine, nTokenLen, 0, FirstCol,
+                     FirstColLogical, SelStartLogical-1);
+          // paint unselected text behind selection
+          rcToken.Left := Max(rcLine.Left, ScreenColumnToXValue(nSelEnd));
+          rcToken.Right := Min(rcLine.Right, ScreenColumnToXValue(LastCol));
+          PaintToken(sLine, nTokenLen, 0, nSelEnd,
+                     SelEndLogical, LastColLogical);
+          // paint selection
+          SetDrawingColors(TRUE);
+          rcToken.Left := Max(rcLine.Left, ScreenColumnToXValue(nSelStart));
+          rcToken.Right := Min(rcLine.Right, ScreenColumnToXValue(nSelEnd));
+          PaintToken(sLine, nTokenLen, 0, nSelStart,
+                     SelStartLogical, SelEndLogical-1);
+        end else begin
+          SetDrawingColors(bLineSelected);
+          PaintToken(sLine, nTokenLen, 0, FirstCol,
+                     FirstColLogical, LastColLogical);
+        end;
+      end else begin
+        // Initialize highlighter with line text and range info. It is
+        // necessary because we probably did not scan to the end of the last
+        // line - the internal highlighter range might be wrong.
+//        fHighlighter.SetRange(Lines.Objects[nLine - 1]);
+        fHighlighter.SetRange(TSynEditStringList(Lines).Ranges[nLine - 1]);     //mh 2000-10-10
+        fHighlighter.SetLine(sLine, nLine - 1);
+        // Try to concatenate as many tokens as possible to minimize the count
+        // of ExtTextOut calls necessary. This depends on the selection state
+        // or the line having special colors. For spaces the foreground color
+        // is ignored as well.
+        TokenAccu.Len := 0;
+        LastTokenPosLogical:=1;
+        LastTokenPosPhyscial:=1;
+        //debugln('PaintLines A FirstColLogical=',dbgs(FirstColLogical));
+        while not fHighlighter.GetEol do begin
+          // Test first whether anything of this token is visible.
+          nTokenPos := fHighlighter.GetTokenPos; // zero-based
+          fHighlighter.GetTokenEx(sToken,nTokenLen);
+          //debugln('Paintlines B nTokenPos=',dbgs(nTokenPos),' nTokenLen=',dbgs(nTokenLen),' "',copy(sLine,nTokenPos+1,ntokenLen),'"');
+          if (nTokenPos + nTokenLen + 1>= FirstColLogical) then begin
+            // It's at least partially visible.
+            // convert nTokenPos to physical (screen)
+            TokenPhysStart:=LogicalToPhysicalCol(PChar(sLine),length(sLine),
+                                      nTokenPos+1,
+                                      LastTokenPosLogical,LastTokenPosPhyscial);
+            LastTokenPosLogical:=nTokenPos+nTokenLen+1;
+            LastTokenPosPhyscial:=LogicalToPhysicalCol(
+                                PChar(sLine),length(sLine),
+                                LastTokenPosLogical,nTokenPos+1,TokenPhysStart);
+            TokenPhysEnd:=LastTokenPosPhyscial-1;
+            {debugln('Paintlines C nTokenPos=',dbgs(nTokenPos),' nTokenLen=',dbgs(nTokenLen),' "',copy(sLine,nTokenPos+1,ntokenLen),'"',
+              ' TokenPhysStart=',dbgs(TokenPhysStart),' TokenPhysEnd=',dbgs(TokenPhysEnd));}
+            // Get the token attributes now.
+            attr := fHighlighter.GetTokenAttribute;
+            // Store the token chars with the attributes in the TokenAccu
+            // record. This will paint any chars already stored if there is
+            // a (visible) change in the attributes.
+            if (fLastCtrlMouseLinkY<>nLine)
+            or (nTokenPos+1<>fLastCtrlMouseLinkX1)
+            then begin
+              if ((nBracketY<>nLine) or (nTokenPos+nTokenLen<=nBracketX)
+                or (nTokenPos>nBracketX))
+              and ((nAntiBracketY<>nLine) or (nTokenPos+nTokenLen<=nAntiBracketX)
+                or (nTokenPos>nAntiBracketX)) then
+              begin
+                // normal token
+                if Assigned(attr) then
+                  AddHighlightToken(sToken, nTokenPos, nTokenLen,
+                    TokenPhysStart, TokenPhysEnd,
+                    attr.Foreground, attr.Background, attr.Style)
+                else
+                  AddHighlightToken(sToken, nTokenPos, nTokenLen,
+                    TokenPhysStart, TokenPhysEnd,
+                    colFG, colBG, Font.Style);
+              end else begin
+                // token with bracket hilighting
+                DrawHilightBracketToken(attr,sToken,nLine,
+                  nTokenPos,nTokenLen,TokenPhysStart);
+              end;
+            end else begin
+              // token is link
+              DrawCtrlMouseToken(attr,sToken,nLine,nTokenPos,nTokenLen,
+                                 TokenPhysStart,TokenPhysEnd);
+            end;
+          end;
+          // Let the highlighter scan the next token.
+          fHighlighter.Next;
+        end;
+        // Draw anything that's left in the TokenAccu record. Fill to the end
+        // of the invalid area with the correct colors.
+        PaintHighlightToken(TRUE);
+      end;
+    end;
+  end;
+
+  procedure InitializeHighlightBrackets;
+  // test if caret over bracket and search anti bracket
+  const
+    Brackets: array[0..5] of char = ('(', ')', '[', ']', '{', '}');
+  var
+    sLine: string;
+    i, PosX, PosY, Len: integer;
+    CurChar, BracketInc, BracketDec: char;
+    NumBrackets: integer;
+    LogCaret: TPoint;
+  begin
+    // check for bracket under the cursor
+    nBracketY:=0;
+    nAntiBracketY:=0;
+    if not (eoBracketHighlight in fOptions) then exit;
+    if (fCaretY < FirstLine) or (fCaretY > LastLine) then exit;
+    sLine := Lines[fCaretY - 1];
+    Len := Length(sLine);
+    LogCaret:=PhysicalToLogicalPos(CaretXY);
+    if (LogCaret.X < 1) or (LogCaret.X > Len) then exit;
+    BracketInc := sLine[LogCaret.X];
+    if not (BracketInc in ['(',')','[',']','{','}']) then exit;
+    nBracketY:=LogCaret.Y;
+    nBracketX:=LogCaret.X-1; // zero based
+    // find antibracket
+    NumBrackets := 1;
+    PosX:=LogCaret.X;
+    PosY:=LogCaret.Y;
+    i:=0;
+    while Brackets[i]<>BracketInc do inc(i);
+    BracketDec := Brackets[i xor 1]; // 0 -> 1, 1 -> 0, ...
+    if Odd(i) then begin
+      // closing bracket -> search opening bracket
+      repeat
+        // search until start of line
+        while PosX > 1 do begin
+          Dec(PosX);
+          CurChar := sLine[PosX];
+          if CurChar=BracketInc then
+            Inc(NumBrackets)
+          else if CurChar=BracketDec then begin
+            Dec(NumBrackets);
+            if NumBrackets = 0 then begin
+              // matching bracket found, set caret and bail out
+              nAntiBracketX:=PosX-1; // zero based
+              nAntiBracketY:=PosY;
+              break;
+            end;
+          end;
+        end;
+        // get previous line if possible
+        if (nAntiBracketY>0) or (PosY <=FirstLine) then break;
+        Dec(PosY);
+        sLine := Lines[PosY - 1];
+        PosX := Length(sLine) + 1;
+      until FALSE;
+    end else begin
+      // opening bracket -> search closing bracket
+      repeat
+        // search until end of line
+        Len := Length(sLine);
+        while PosX < Len do begin
+          Inc(PosX);
+          CurChar := sLine[PosX];
+          if CurChar=BracketInc then
+            Inc(NumBrackets)
+          else if CurChar=BracketDec then begin
+            Dec(NumBrackets);
+            if NumBrackets = 0 then begin
+              // matching bracket found, set caret and bail out
+              nAntiBracketX:=PosX-1; // zero based
+              nAntiBracketY:=PosY;
+              break;
+            end;
+          end;
+        end;
+        // get next line if possible
+        if (nAntiBracketY>0) or (PosY >= LastLine) then break;
+        Inc(PosY);
+        sLine := Lines[PosY - 1];
+        PosX := 0;
+      until FALSE;
+    end;
+    {debugln('InitializeHighlightBrackets END nBracketY=',dbgs(nBracketY),
+      ' nBracketX=',dbgs(nBracketX),
+      ' nAntiBracketY=',dbgs(nAntiBracketY),
+      ' nAntiBracketX=',dbgs(nAntiBracketX));}
+  end;
+
+  procedure CalculateCtrlMouseLink;
+  begin
+    fLastCtrlMouseLinkY:=-1;
+    if (not (eoShowCtrlMouseLinks in Options))
+    or (fLastMouseCaret.X<1) or (fLastMouseCaret.Y<1)
+    or (not fLastControlIsPressed) then
+      exit;
+    GetWordBoundsAtRowCol(PhysicalToLogicalPos(fLastMouseCaret),
+                          fLastCtrlMouseLinkX1,fLastCtrlMouseLinkX2);
+    if fLastCtrlMouseLinkX1=fLastCtrlMouseLinkX2 then
+      exit;
+    fLastCtrlMouseLinkY:=fLastMouseCaret.Y;
+    LinkFGCol:=clBlue;
+  end;
+
+  procedure PaintCtrlMouseLinkLine;
+  var
+    LineLeft, LineTop, LineRight: integer;
+    s: string;
+    PhysLinkStart: LongInt;
+    PhysLinkEnd: LongInt;
+  begin
+    if fLastCtrlMouseLinkY<1 then exit;
+    LineTop:=(fLastCtrlMouseLinkY-TopLine+1)*fTextHeight-1;
+    s:=Lines[fLastCtrlMouseLinkY-1];
+    PhysLinkStart:=Max(FirstCol,LogicalToPhysicalCol(s,fLastCtrlMouseLinkX1));
+    PhysLinkEnd:=Min(LastCol,LogicalToPhysicalCol(s,fLastCtrlMouseLinkX2));
+    LineLeft:=ScreenColumnToXValue(PhysLinkStart);
+    LineRight:=ScreenColumnToXValue(PhysLinkEnd);
+    Canvas.Pen.Color:=LinkFGCol;
+    Canvas.MoveTo(LineLeft,LineTop);
+    Canvas.LineTo(LineRight,LineTop);
+  end;
+
+{ end local procedures }
+
+begin
+  colEditorBG := Color;
+  if Assigned(Highlighter) and Assigned(Highlighter.WhitespaceAttribute) then
+  begin
+    colBG := Highlighter.WhitespaceAttribute.Background;
+    if colBG <> clNone then
+      colEditorBG := colBG;
+  end;
+  // If the right edge is visible and in the invalid area, prepare to paint it.
+  // Do this first to realize the pen when getting the dc variable.
+  bDoRightEdge := FALSE;
+  if (fRightEdge > 0) then begin // column value
+    nRightEdge := fTextOffset + fRightEdge * fCharWidth; // pixel value
+    if (nRightEdge >= AClip.Left) and (nRightEdge <= AClip.Right) then begin
+      bDoRightEdge := TRUE;
+      Canvas.Pen.Color := fRightEdgeColor;
+      Canvas.Pen.Width := 1;
+    end;
+  end;
+  // Do everything else with API calls. This (maybe) realizes the new pen color.
+  dc := Canvas.Handle;
+
+  // If anything of the two pixel space before the text area is visible, then
+  // fill it with the component background color.
+  if (AClip.Left < fGutterWidth + 2) then begin
+    rcToken := AClip;
+    rcToken.Left := Max(AClip.Left, fGutterWidth);
+    rcToken.Right := fGutterWidth + 2;
+    SetBkColor(dc,colEditorBG);
+    InternalFillRect(dc, rcToken);
+    // Adjust the invalid area to not include this area.
+    AClip.Left := rcToken.Right;
+  end;
+  if (LastLine >= FirstLine) then begin
+    InitializeHighlightBrackets;
+    CalculateCtrlMouseLink;
+    // Paint the visible text lines. To make this easier, compute first the
+    // necessary information about the selected area: is there any visible
+    // selected area, and what are its lines / columns?
+    // Moved to two local procedures to make it easier to read.
+    ComputeSelectionInfo;
+    fTextDrawer.Style := Font.Style;
+    fTextDrawer.BeginDrawing(dc);
+    try
+      PaintLines;
+    finally
+      fTextDrawer.EndDrawing;
+    end;
+  end;
+
+  // If there is anything visible below the last line, then fill this as well.
+  rcToken := AClip;
+  rcToken.Top := (LastLine - TopLine + 1) * fTextHeight;
+  if (rcToken.Top < rcToken.Bottom) then begin
+    SetBkColor(dc, ColorToRGB(colEditorBG));
+    InternalFillRect(dc, rcToken);
+    // Draw the right edge if necessary.
+    if bDoRightEdge and (not (eoHideRightMargin in Options)) then begin
+      LCLIntf.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
+      LCLIntf.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
+    end;
+  end;
+
+  PaintCtrlMouseLinkLine;
+end;
+{$ELSE below for NOT SYN_LAZARUS ----------------------------------------------}
 var
   bDoRightEdge: boolean; // right edge
   nRightEdge: integer;
@@ -2464,11 +3516,6 @@ var
     Style: TFontStyles;
   end;
   dc: HDC;
-  {$IFDEF SYN_LAZARUS}
-  // positions of highlight brackets, the X are zero based
-  nBracketX, nBracketY, nAntiBracketX, nAntiBracketY: integer;
-  LinkFGCol: TColor;
-  {$ENDIF}
 
 { local procedures }
 
@@ -2539,6 +3586,7 @@ var
   end;
 
   function ColumnToXValue(Col: integer): integer;
+  // map screen column to screen pixel
   begin
     Result := fTextOffset + Pred(Col) * fCharWidth;
   end;
@@ -2548,14 +3596,10 @@ var
   // CharsBefore tells if Token starts at column one or not
   var
     pszText: PChar;
-    nX, nCharsToPaint: integer;
+    nCharsToPaint: integer;
+    nX: integer;
   const
-    ETOOptions =
-      {$IFNDEF SYN_LAZARUS}
-      // clipping is slow and not needed for lazarus
-      ETO_CLIPPED or
-      {$ENDIF}
-      ETO_OPAQUE;
+    ETOOptions = ETO_CLIPPED or ETO_OPAQUE;
   begin
     if (Last >= First) and (rcToken.Right > rcToken.Left) then begin
       nX := ColumnToXValue(First);
@@ -2574,29 +3618,8 @@ var
         pszText := PChar(@Token[First]);
         nCharsToPaint := Min(Last - First + 1, TokenLen - First + 1);
       end;
-      {$IFDEF SYN_LAZARUS}
-      // Draw the right edge under the text if necessary
-      if bDoRightEdge and (not (eoHideRightMargin in Options))
-      and (nRightEdge<rcToken.Right) and (nRightEdge>=rcToken.Left)
-      then begin
-        // draw background
-        InternalFillRect(dc,rcToken);
-        // draw edge
-        LCLIntf.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
-        LCLIntf.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
-        // draw text
-        fTextDrawer.ExtTextOut(nX, rcToken.Top, ETOOptions-ETO_OPAQUE, rcToken,
-          pszText, nCharsToPaint);
-      end else begin
-        // draw text with background
-        //debugln('PaintToken nX=',nX,' Token=',dbgstr(copy(pszText,1,nCharsToPaint)));
-        fTextDrawer.ExtTextOut(nX, rcToken.Top, ETOOptions, rcToken,
-          pszText, nCharsToPaint);
-      end;
-      {$ELSE}
       fTextDrawer.ExtTextOut(nX, rcToken.Top, ETOOptions, rcToken,
         pszText, nCharsToPaint);
-      {$ENDIF}
       rcToken.Left := rcToken.Right;
     end;
   end;
@@ -2684,23 +3707,11 @@ var
         rcToken.Right := rcLine.Right;
         InternalFillRect(dc, rcToken);
       end;
-      {$IFDEF SYN_LAZARUS}
-      // Draw the right edge if necessary.
-      if bDoRightEdge and (not (eoHideRightMargin in Options))
-      and (nRightEdge>=rcToken.Left) then begin
-        LCLIntf.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
-        LCLIntf.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
-      end;
-      {$ENDIF}
     end;
   end;
 
   procedure AddHighlightToken(
-    {$IFDEF SYN_LAZARUS}
-    Token: PChar;
-    {$ELSE}
     const Token: AnsiString;
-    {$ENDIF}
     CharsBefore, TokenLen: integer;
     Foreground, Background: TColor;
     Style: TFontStyles);
@@ -2756,7 +3767,7 @@ var
         SetLength(TokenAccu.s, TokenAccu.MaxLen);
       end;
       for i := 1 to TokenLen do begin
-        TokenAccu.s[TokenAccu.Len + i] := Token[i{$IFDEF SYN_LAZARUS}-1{$ENDIF}];
+        TokenAccu.s[TokenAccu.Len + i] := Token[i];
       end;
       Inc(TokenAccu.Len, TokenLen);
     end else begin
@@ -2766,7 +3777,7 @@ var
         SetLength(TokenAccu.s, TokenAccu.MaxLen);
       end;
       for i := 1 to TokenLen do begin
-        TokenAccu.s[i] := Token[i{$IFDEF SYN_LAZARUS}-1{$ENDIF}];
+        TokenAccu.s[i] := Token[i];
       end;
       TokenAccu.CharsBefore := CharsBefore;
       TokenAccu.FG := Foreground;
@@ -2775,134 +3786,12 @@ var
     end;
   end;
 
-  {$IFDEF SYN_LAZARUS}
-  procedure DrawHilightBracketToken(attr: TSynHighlighterAttributes;
-    sToken: PChar; nLine, nTokenPos, nTokenLen: integer);
-  // Bracket Highlighting
-  var
-    BracketFGCol, BracketBGCol: TColor;
-    BracketStyle, TokenStyle: TFontStyles;
-
-    procedure PaintSubToken(SubTokenLen: integer; Hilight: boolean);
-    begin
-      if SubTokenLen=0 then exit;
-      if Hilight then
-        AddHighlightToken(sToken, nTokenPos, SubTokenLen,
-          BracketFGCol, BracketBGCol, BracketStyle)
-      else
-        AddHighlightToken(sToken, nTokenPos, SubTokenLen,
-          BracketFGCol, BracketBGCol, TokenStyle);
-      inc(sToken,SubTokenLen);
-      dec(nTokenLen,SubTokenLen);
-      inc(nTokenPos,SubTokenLen);
-    end;
-
-  var
-    LeftBracketX, RightBracketX, Dummy: integer;
-  begin
-    // get bracket positions
-    if (nLine=nBracketY)
-    and (nBracketX>=nTokenPos) and (nBracketX<nTokenPos+nTokenLen) then
-      LeftBracketX:=nBracketX
-    else
-      LeftBracketX:=-1;
-    if (nLine=nAntiBracketY)
-    and (nAntiBracketX>=nTokenPos) and (nAntiBracketX<nTokenPos+nTokenLen) then
-      RightBracketX:=nAntiBracketX
-    else
-      RightBracketX:=-1;
-    if (LeftBracketX<0) and (RightBracketX>=0) then begin
-      LeftBracketX:=RightBracketX;
-      RightBracketX:=-1;
-    end;
-    if (RightBracketX>=0) and (RightBracketX<LeftBracketX) then begin
-      Dummy:=LeftBracketX;
-      LeftBracketX:=RightBracketX;
-      RightBracketX:=Dummy;
-    end;
-    if LeftBracketX<0 then exit;
-
-    // get style
-    if Assigned(attr) then begin
-      BracketFGCol:=attr.Foreground;
-      BracketBGCol:=attr.Background;
-      TokenStyle:=attr.Style;
-      BracketStyle:=TokenStyle;
-    end else begin
-      BracketFGCol:=colFG;
-      BracketBGCol:=colBG;
-      TokenStyle:=Font.Style;
-      BracketStyle:=TokenStyle;
-    end;
-    if fsBold in BracketStyle then
-      Exclude(BracketStyle,fsBold)
-    else
-      Include(BracketStyle,fsBold);
-
-    // draw non hilight left of token
-    PaintSubToken(LeftBracketX-nTokenPos,false);
-    // draw left hilight bracket
-    PaintSubToken(1,true);
-    if RightBracketX>=0 then begin
-      // draw middle
-      PaintSubToken(RightBracketX-nTokenPos,false);
-      // draw right hilight bracket
-      PaintSubToken(1,true);
-    end;
-    // draw rest
-    PaintSubToken(nTokenLen,false);
-  end;
-
-  procedure DrawCtrlMouseToken(attr: TSynHighlighterAttributes;
-    sToken: PChar; nLine, nTokenPos, nTokenLen: integer);
-  var
-    LinkBGCol: TColor;
-    LinkStyle: TFontStyles;
-    fRed, fGreen, fBlue: integer;
-    {bRed, bGreen,} bBlue: integer;
-    NewRed, NewGreen, NewBlue: integer;
-  begin
-    if Assigned(attr) then begin
-      LinkFGCol:=attr.Foreground;
-      LinkBGCol:=attr.Background;
-      LinkStyle:=attr.Style;
-    end else begin
-      LinkFGCol:=colFG;
-      LinkBGCol:=colBG;
-      LinkStyle:=Font.Style;
-    end;
-    if LinkBGCol = clNone then LinkBGCol := colEditorBG;
-    if LinkFGCol = clNone then LinkFGCol := Font.Color;
-
-    // change FG color
-    fRed  :=(LinkFGCol and $ff);
-    fGreen:=(LinkFGCol shr 8) and $ff;
-    fBlue :=(LinkFGCol shr 16) and $ff;
-    //bRed  :=(LinkBGCol and $ff);
-    //bGreen:=(LinkBGCol shr 8) and $ff;
-    bBlue :=(LinkBGCol shr 16) and $ff;
-    NewRed  :=fRed;
-    NewGreen:=fGreen;
-    NewBlue :=bBlue;
-    if Abs(NewBlue-fBlue)<128 then
-      NewBlue:=(255-fBlue) and $ff;
-    LinkFGCol:=NewRed+(NewGreen shl 8)+(NewBlue shl 16);
-
-    AddHighlightToken(sToken, nTokenPos, nTokenLen,
-      LinkFGCol, LinkBGCol, LinkStyle);
-  end;
-  {$ENDIF}
-
   procedure PaintLines;
   var
     nLine: integer; // line index for the loop
     sLine: string; // the current line (expanded)
 //    pConvert: TConvertTabsProc;                                               //mh 2000-10-19
-    {$IFDEF SYN_LAZARUS}
-    sToken: PChar;  // highlighter token info
-    {$ELSE}
     sToken: string; // highlighter token info
-    {$ENDIF}
     nTokenPos, nTokenLen: integer;
     attr: TSynHighlighterAttributes;
   begin
@@ -2990,16 +3879,14 @@ var
           SetDrawingColors(FALSE);
           rcToken.Left := Max(rcLine.Left, ColumnToXValue(FirstCol));
           rcToken.Right := Min(rcLine.Right, ColumnToXValue(nSelStart));
-          PaintToken(sLine, nTokenLen, 0, FirstCol,
-                     nSelStart{$IFDEF SYN_LAZARUS}-1{$ENDIF});
+          PaintToken(sLine, nTokenLen, 0, FirstCol, nSelStart);
           rcToken.Left := Max(rcLine.Left, ColumnToXValue(nSelEnd));
           rcToken.Right := Min(rcLine.Right, ColumnToXValue(LastCol));
           PaintToken(sLine, nTokenLen, 0, nSelEnd, LastCol);
           SetDrawingColors(TRUE);
           rcToken.Left := Max(rcLine.Left, ColumnToXValue(nSelStart));
           rcToken.Right := Min(rcLine.Right, ColumnToXValue(nSelEnd));
-          PaintToken(sLine, nTokenLen, 0, nSelStart,
-                     nSelEnd{$IFDEF SYN_LAZARUS}-1{$ENDIF});
+          PaintToken(sLine, nTokenLen, 0, nSelStart, nSelEnd);
         end else begin
           SetDrawingColors(bLineSelected);
           PaintToken(sLine, nTokenLen, 0, FirstCol, LastCol);
@@ -3019,49 +3906,20 @@ var
         while not fHighlighter.GetEol do begin
           // Test first whether anything of this token is visible.
           nTokenPos := fHighlighter.GetTokenPos; // zero-based
-          {$IFDEF SYN_LAZARUS}
-          fHighlighter.GetTokenEx(sToken,nTokenLen);
-          {$ELSE}
           sToken := fHighlighter.GetToken;
           nTokenLen := Length(sToken);
-          {$ENDIF}
           if (nTokenPos + nTokenLen >= FirstCol) then begin
             // It's at least partially visible. Get the token attributes now.
             attr := fHighlighter.GetTokenAttribute;
             // Store the token chars with the attributes in the TokenAccu
             // record. This will paint any chars already stored if there is
             // a (visible) change in the attributes.
-            {$IFDEF SYN_LAZARUS}
-            if (fLastCtrlMouseLinkY<>nLine) or (nTokenPos<>fLastCtrlMouseLinkX1)
-            then begin
-              if ((nBracketY<>nLine) or (nTokenPos+nTokenLen<=nBracketX)
-                or (nTokenPos>nBracketX))
-              and ((nAntiBracketY<>nLine) or (nTokenPos+nTokenLen<=nAntiBracketX)
-                or (nTokenPos>nAntiBracketX)) then
-              begin
-                // normal token
-                if Assigned(attr) then
-                  AddHighlightToken(sToken, nTokenPos, nTokenLen,
-                    attr.Foreground, attr.Background, attr.Style)
-                else
-                  AddHighlightToken(sToken, nTokenPos, nTokenLen, colFG, colBG,
-                    Font.Style);
-              end else begin
-                // token with bracket hilighting
-                DrawHilightBracketToken(attr,sToken,nLine,nTokenPos,nTokenLen);
-              end;
-            end else begin
-              // token is link
-              DrawCtrlMouseToken(attr,sToken,nLine,nTokenPos,nTokenLen);
-            end;
-            {$ELSE}
             if Assigned(attr) then
               AddHighlightToken(sToken, nTokenPos, nTokenLen, attr.Foreground,
                 attr.Background, attr.Style)
             else
               AddHighlightToken(sToken, nTokenPos, nTokenLen, colFG, colBG,
                 Font.Style);
-            {$ENDIF}
           end;
           // Let the highlighter scan the next token.
           fHighlighter.Next;
@@ -3070,7 +3928,6 @@ var
         // of the invalid area with the correct colors.
         PaintHighlightToken(TRUE);
       end;
-      {$IFNDEF SYN_LAZARUS}
       // Now paint the right edge if necessary. We do it line by line to reduce
       // the flicker. Should not cost very much anyway, compared to the many
       // calls to ExtTextOut.
@@ -3078,127 +3935,9 @@ var
         Windows.MoveToEx(dc, nRightEdge, rcLine.Top, nil);
         Windows.LineTo(dc, nRightEdge, rcLine.Bottom + 1);
       end;
-      {$ENDIF}
     end;
   end;
 
-  {$IFDEF SYN_LAZARUS}
-  procedure InitializeHighlightBrackets;
-  // test if caret over bracket and search anti bracket
-  const
-    Brackets: array[0..5] of char = ('(', ')', '[', ']', '{', '}');
-  var
-    sLine: string;
-    i, PosX, PosY, Len: integer;
-    CurChar, BracketInc, BracketDec: char;
-    NumBrackets: integer;
-  begin
-    // check for bracket under the cursor
-    nBracketY:=0;
-    nAntiBracketY:=0;
-    if not (eoBracketHighlight in fOptions) then exit;
-    if (fCaretY >= FirstLine) and (fCaretY <= LastLine) then begin
-      sLine := TSynEditStringList(Lines).ExpandedStrings[fCaretY - 1];
-      Len := Length(sLine);
-      if (fCaretX >= 1) and (fCaretX <= Len) then begin
-        if (sLine[fCaretX] in ['(',')','[',']','{','}']) then begin
-          nBracketY:=fCaretY;
-          nBracketX:=fCaretX-1; // zero based
-          // find antibracket
-          NumBrackets := 1;
-          PosX:=fCaretX;
-          PosY:=fCaretY;
-          BracketInc := sLine[fCaretX];
-          i:=0;
-          while Brackets[i]<>BracketInc do inc(i);
-          BracketDec := Brackets[i xor 1]; // 0 -> 1, 1 -> 0, ...
-          if Odd(i) then begin
-            // closing bracket -> search opening bracket
-            repeat
-              // search until start of line
-              while PosX > 1 do begin
-                Dec(PosX);
-                CurChar := sLine[PosX];
-                if CurChar=BracketInc then
-                  Inc(NumBrackets)
-                else if CurChar=BracketDec then begin
-                  Dec(NumBrackets);
-                  if NumBrackets = 0 then begin
-                    // matching bracket found, set caret and bail out
-                    nAntiBracketX:=PosX-1; // zero based
-                    nAntiBracketY:=PosY;
-                    break;
-                  end;
-                end;
-              end;
-              // get previous line if possible
-              if (nAntiBracketY>0) or (PosY <=FirstLine) then break;
-              Dec(PosY);
-              sLine := Lines[PosY - 1];
-              PosX := Length(sLine) + 1;
-            until FALSE;
-          end else begin
-            // opening bracket -> search closing bracket
-            repeat
-              // search until end of line
-              Len := Length(sLine);
-              while PosX < Len do begin
-                Inc(PosX);
-                CurChar := sLine[PosX];
-                if CurChar=BracketInc then
-                  Inc(NumBrackets)
-                else if CurChar=BracketDec then begin
-                  Dec(NumBrackets);
-                  if NumBrackets = 0 then begin
-                    // matching bracket found, set caret and bail out
-                    nAntiBracketX:=PosX-1; // zero based
-                    nAntiBracketY:=PosY;
-                    break;
-                  end;
-                end;
-              end;
-              // get next line if possible
-              if (nAntiBracketY>0) or (PosY >= LastLine) then break;
-              Inc(PosY);
-              sLine := Lines[PosY - 1];
-              PosX := 0;
-            until FALSE;
-          end;
-        end;
-      end;
-    end;
-  end;
-
-  procedure CalculateCtrlMouseLink;
-  begin
-    fLastCtrlMouseLinkY:=-1;
-    if (not (eoShowCtrlMouseLinks in Options))
-    or (fLastMouseCaret.X<1) or (fLastMouseCaret.Y<1)
-    or (not fLastControlIsPressed) then
-      exit;
-    GetWordBoundsAtRowCol(fLastMouseCaret,
-                          fLastCtrlMouseLinkX1,fLastCtrlMouseLinkX2);
-    dec(fLastCtrlMouseLinkX1);
-    dec(fLastCtrlMouseLinkX2);
-    if fLastCtrlMouseLinkX1=fLastCtrlMouseLinkX2 then
-      exit;
-    fLastCtrlMouseLinkY:=fLastMouseCaret.Y;
-    LinkFGCol:=clBlue;
-  end;
-
-  procedure PaintCtrlMouseLinkLine;
-  var
-    LineLeft, LineTop, LineRight: integer;
-  begin
-    if fLastCtrlMouseLinkY<1 then exit;
-    LineTop:=(fLastCtrlMouseLinkY-TopLine+1)*fTextHeight-1;
-    LineLeft:=fGutterWidth + 2 + fLastCtrlMouseLinkX1*fCharWidth;
-    LineRight:=LineLeft+fCharWidth*(fLastCtrlMouseLinkX2-fLastCtrlMouseLinkX1);
-    Canvas.Pen.Color:=LinkFGCol;
-    Canvas.MoveTo(LineLeft,LineTop);
-    Canvas.LineTo(LineRight,LineTop);
-  end;
-  {$ENDIF}
 
 { end local procedures }
 
@@ -3230,17 +3969,12 @@ begin
     rcToken := AClip;
     rcToken.Left := Max(AClip.Left, fGutterWidth);
     rcToken.Right := fGutterWidth + 2;
-    SetBkColor(dc,
-         {$IFDEF SYN_LAZARUS}colEditorBG{$ELSE}ColorToRGB(colEditorBG){$ENDIF});
+    SetBkColor(dc,ColorToRGB(colEditorBG));
     InternalFillRect(dc, rcToken);
     // Adjust the invalid area to not include this area.
     AClip.Left := rcToken.Right;
   end;
   if (LastLine >= FirstLine) then begin
-    {$IFDEF SYN_LAZARUS}
-    InitializeHighlightBrackets;
-    CalculateCtrlMouseLink;
-    {$ENDIF}
     // Paint the visible text lines. To make this easier, compute first the
     // necessary information about the selected area: is there any visible
     // selected area, and what are its lines / columns?
@@ -3263,20 +3997,12 @@ begin
     InternalFillRect(dc, rcToken);
     // Draw the right edge if necessary.
     if bDoRightEdge and (not (eoHideRightMargin in Options)) then begin
-      {$IFDEF SYN_LAZARUS}
-      LCLIntf.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
-      LCLIntf.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
-      {$ELSE}
       Windows.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
       Windows.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
-      {$ENDIF}
     end;
   end;
-
-  {$IFDEF SYN_LAZARUS}
-  PaintCtrlMouseLinkLine;
-  {$ENDIF}
 end;
+{$ENDIF not SYN_LAZARUS}
 
 {$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.StartPaintBuffer(const ClipRect: TRect);
@@ -3333,6 +4059,7 @@ end;
 procedure TCustomSynEdit.Invalidate;
 begin
   //DebugLn('TCustomSynEdit.Invalidate A');
+  //RaiseGDBException('');
   inherited Invalidate;
 end;
 
@@ -3394,7 +4121,11 @@ begin
               // smLine type
               StartOfBlock.X := 1;
           end else
-            StartOfBlock := Point(CaretX, CaretY);
+            StartOfBlock := {$IFDEF SYN_LAZARUS}
+                            PhysicalToLogicalPos(CaretXY);
+                            {$ELSE}
+                            Point(CaretX, CaretY);
+                            {$ENDIF}
           DummyTag := 0;
           SetSelTextPrimitive(PasteMode, P, @DummyTag);
           EndOfBlock := BlockEnd;
@@ -3456,7 +4187,13 @@ begin
     Inc(LastPt.x, Length(Lines[LastPt.y - 1]))
   else
     LastPt.y  := 1;
-  SetCaretAndSelection(LastPt, Point(1, 1), LastPt);
+  SetCaretAndSelection(
+    {$IFDEF SYN_LAZARUS}
+    LogicalToPhysicalPos(LastPt),
+    {$ELSE}
+    LastPt,
+    {$ENDIF}
+    Point(1, 1), LastPt);
   // Selection should have changed...
   StatusChanged([scSelection]);
 end;
@@ -3479,6 +4216,7 @@ end;
 {$ENDIF}
 
 procedure TCustomSynEdit.SetBlockBegin(Value: TPoint);
+// logical position (byte)
 var
   nInval1, nInval2: integer;
   SelChanged: boolean;
@@ -3486,9 +4224,13 @@ begin
   Value.x := MinMax(Value.x, 1, fMaxLeftChar);
   Value.y := MinMax(Value.y, 1, Lines.Count);
   if (SelectionMode = smNormal) then
-    if (Value.y >= 1) and (Value.y <= Lines.Count) then
-      Value.x := Min(Value.x, Length(Lines[Value.y - 1]) + 1)
-    else
+    if (Value.y >= 1) and (Value.y <= Lines.Count) then begin
+      {$IFDEF SYN_LAZARUS}
+      Value.x := AdjustBytePosToCharacterStart(Value.y,Value.x);
+      {$ELSE}
+      Value.x := Min(Value.x, Length(Lines[Value.y - 1]) + 1);
+      {$ENDIF}
+    end else
       Value.x := 1;
   if SelAvail then begin
     if fBlockBegin.Y < fBlockEnd.Y then begin
@@ -3513,6 +4255,7 @@ begin
 end;
 
 procedure TCustomSynEdit.SetBlockEnd(Value: TPoint);
+// logical position (byte)
 var
   nLine: integer;
 {$IFDEF SYN_MBCSSUPPORT}
@@ -3524,7 +4267,11 @@ begin
     Value.y := MinMax(Value.y, 1, Lines.Count);
     if (SelectionMode = smNormal) then
       if (Value.y >= 1) and (Value.y <= Lines.Count) then
+        {$IFDEF SYN_LAZARUS}
+        Value.x := AdjustBytePosToCharacterStart(Value.y,Value.x)
+        {$ELSE}
         Value.x := Min(Value.x, Length(Lines[Value.y - 1]) + 1)
+        {$ENDIF}
       else
         Value.x := 1;
     if (Value.X <> fBlockEnd.X) or (Value.Y <> fBlockEnd.Y) then begin
@@ -3580,6 +4327,7 @@ begin
 end;
 
 procedure TCustomSynEdit.SetCaretXY(Value: TPoint);
+// physical position (screen)
 var
   nMaxX: integer;
 begin
@@ -3613,7 +4361,10 @@ begin
       end;
       EnsureCursorPosVisible;
       Include(fStateFlags, sfCaretChanged);
+      {$IFDEF SYN_LAZARUS}
+      {$ELSE}
       Include(fStateFlags, sfScrollbarChanged);
+      {$ENDIF}
     finally
       DecPaintLock;
     end;
@@ -3679,6 +4430,7 @@ begin
       {$IFDEF SYN_LAZARUS}
       fCharsInWindow := Max(1,(ClientWidth - fGutterWidth - 2 - ScrollBarWidth)
                               div fCharWidth);
+      //debugln('TCustomSynEdit.SetGutterWidth A ClientWidth=',dbgs(ClientWidth),' fGutterWidth=',dbgs(fGutterWidth),' ScrollBarWidth=',dbgs(ScrollBarWidth),' fCharWidth=',dbgs(fCharWidth));
       {$ELSE}
       fCharsInWindow := Max(1,Max(0,(ClientWidth - fGutterWidth - 2
                                      - ScrollBarWidth) div Max(1,fCharWidth)));
@@ -3794,7 +4546,8 @@ var
             Lines[BB.Y - 1] := TempString;
           end;
           UpdateMarks := TRUE;
-          CaretXY := BB;
+          CaretXY := {$IFDEF SYN_LAZARUS}LogicalToPhysicalPos(BB)
+                     {$ELSE}BB{$ENDIF};
         end;
       smColumn:
         begin
@@ -3822,7 +4575,11 @@ var
             TrimmedSetLine(x, TempString);
           end;
             // Lines never get deleted completely, so keep caret at end.
-          CaretXY := Point(BB.X, fBlockEnd.Y);
+          CaretXY := {$IFDEF SYN_LAZARUS}
+                     LogicalToPhysicalPos(Point(BB.X, fBlockEnd.Y))
+                     {$ELSE}
+                     Point(BB.X, fBlockEnd.Y)
+                     {$ENDIF};
             // Column deletion never removes a line entirely, so no mark
             // updating is needed here.
         end;
@@ -3863,13 +4620,6 @@ var
     end;
 {end}
 
-    {$IFDEF SYN_LAZARUS}
-    procedure AutoIndentPasteText;
-    begin
-      // TODO
-    end;
-    {$ENDIF}                                                                        // djlp 2000-09-07
-
     function InsertNormal: Integer;
     var
       sLeftSide: string;
@@ -3877,23 +4627,32 @@ var
       Str: string;
       Start: PChar;
       P: PChar;
+      {$IFDEF SYN_LAZARUS}
+      LogCaretXY: TPoint;
+      PhysicalLineEndPos: LongInt;
+      {$ENDIF}
     begin
       Result := 0;
-      sLeftSide := Copy(LineText, 1, CaretX - 1);
       {$IFDEF SYN_LAZARUS}
-      AutoIndentPasteText;
-      {$ENDIF}
-      if CaretX - 1 > Length(sLeftSide) then begin
-        {$IFDEF SYN_LAZARUS}
+      LogCaretXY:=PhysicalToLogicalPos(CaretXY);
+      sLeftSide := Copy(LineText, 1, LogCaretXY.X - 1);
+      if LogCaretXY.X - 1 > Length(sLeftSide) then begin
+        PhysicalLineEndPos:=
+                        LogicalToPhysicalPos(Point(Length(sLeftSide),CaretY)).X;
         sLeftSide := sLeftSide
                      + CreateTabsAndSpaces(CaretX,
-                                           CaretX-1-Length(sLeftSide),TabWidth,
-                                           eoTabsToSpaces in Options);
-        {$ELSE}
+                                           CaretX-1-PhysicalLineEndPos,
+                                           TabWidth, eoTabsToSpaces in Options);
+      end;
+      sRightSide := Copy(LineText, LogCaretXY.X,
+                         Length(LineText) - (LogCaretXY.X - 1));
+      {$ELSE}
+      sLeftSide := Copy(LineText, 1, CaretX - 1);
+      if CaretX - 1 > Length(sLeftSide) then begin
         sLeftSide := sLeftSide + StringOfChar(' ', CaretX-1-Length(sLeftSide));
-        {$ENDIF}
       end;
       sRightSide := Copy(LineText, CaretX, Length(LineText) - (CaretX - 1));
+      {$ENDIF}
       if eoTrimTrailingSpaces in Options then
         sRightSide := TrimRight(sRightSide);
       // step1: insert the first line of Value into current line
@@ -3936,7 +4695,13 @@ var
           Lines[CaretY - 1] := TrimRight(Lines[CaretY - 1]);
         Inc(Result);
       end;
+      {$IFDEF SYN_LAZARUS}
+      fCaretX := LogicalToPhysicalPos(
+                   Point(1 + Length(Lines[CaretY - 1]) - Length(sRightSide),
+                         CaretY)).X;
+      {$ELSE}
       fCaretX := 1 + Length(Lines[CaretY - 1]) - Length(sRightSide);
+      {$ENDIF}
       StatusChanged([scCaretX]);
     end;
 
@@ -3947,6 +4712,9 @@ var
       P: PChar;
       Len: Integer;
       InsertPos: Integer;
+      {$IFDEF SYN_LAZARUS}
+      LogicalInsertPos: Integer;
+      {$ENDIF}
     begin
       // Insert string at current position
       InsertPos := CaretX;
@@ -3961,28 +4729,45 @@ var
           else begin
             TempString := Lines[CaretY - 1];
             Len := Length(TempString);
-            if Len < InsertPos then begin
+            {$IFDEF SYN_LAZARUS}
+            LogicalInsertPos:=PhysicalToLogicalCol(TempString,InsertPos);
+            {$ENDIF}
+            if Len<{$IFDEF SYN_LAZARUS}LogicalInsertPos{$ELSE}InsertPos{$ENDIF}
+            then begin
               TempString :=
-                TempString + StringOfChar(' ', InsertPos - Len - 1) + Str
+                TempString + StringOfChar(' ',
+                    {$IFDEF SYN_LAZARUS}LogicalInsertPos{$ELSE}InsertPos{$ENDIF}
+                    - Len - 1)
+                    + Str
             end else begin
-{$IFDEF SYN_MBCSSUPPORT}
+              {$IFDEF SYN_MBCSSUPPORT}
               if mbTrailByte = ByteType(TempString, InsertPos) then
                 Insert(Str, TempString, InsertPos + 1)
               else
-{$ENDIF}
-                System.Insert(Str, TempString, InsertPos);
+              {$ENDIF}
+                System.Insert(Str, TempString,
+                {$IFDEF SYN_LAZARUS}LogicalInsertPos{$ELSE}InsertPos{$ENDIF});
             end;
             TrimmedSetLine(CaretY - 1, TempString);                             //JGF 2000-09-23
           end;
         end;
         if ATag <> nil then
           ATag^ := P - Start;
+        {$IFDEF SYN_LAZARUS}
+        if p^ in [#10,#13] then begin
+          if (p[1] in [#10,#13]) and (p[1]<>p^) then
+            inc(p,2)
+          else
+            Inc(P);
+          Inc(fCaretY);
+        end;
+        {$ELSE}
         if P^ = #13 then begin
           Inc(P);
           if P^ = #10 then
             Inc(P);
-          Inc(fCaretY);
         end;
+        {$ENDIF}
         Start := P;
       until P^ = #0;
       Inc(fCaretX, Length(Str));
@@ -4113,19 +4898,19 @@ begin
     fTopLine := Value;
     UpdateScrollBars;
     if Abs(Delta) < fLinesInWindow then
-{$ifndef SYN_LAZARUS}    
+{$ifndef SYN_LAZARUS}
       ScrollWindow(Handle, 0, fTextHeight * Delta, nil, nil);
-{$else}      
+{$else}
     begin
       // TODO: SW_SMOOTHSCROLL --> can't get it work
-      if not ScrollWindowEx(Handle, 0, fTextHeight * Delta, nil, nil, 0, nil, 
+      if not ScrollWindowEx(Handle, 0, fTextHeight * Delta, nil, nil, 0, nil,
         SW_INVALIDATE) then
       begin
         // scrollwindow failed, invalidate all
         Invalidate;
       end;
     end
-{$endif}      
+{$endif}
     else
       Invalidate;
     StatusChanged([scTopLine]);
@@ -4227,7 +5012,7 @@ begin
         ScrollInfo.nPos := LeftChar;
         {$IFDEF SYN_LAZARUS}
         { for win32 target, need to call showscrollbar before setscrollinfo }
-        ShowScrollBar(Handle, SB_HORZ, True); 
+        ShowScrollBar(Handle, SB_HORZ, True);
         {$ENDIF}
         SetScrollInfo(Handle, SB_HORZ, ScrollInfo, True);
         //DebugLn('>>>>>>>>>> [TCustomSynEdit.UpdateScrollbars] nMin=',ScrollInfo.nMin,
@@ -4374,11 +5159,16 @@ begin
   //DebugLn('[TCustomSynEdit.WMSetFocus] END');
 end;
 
+{$IFDEF SYN_LAZARUS}
+procedure TCustomSynEdit.Resize;
+{$ELSE}
 procedure TCustomSynEdit.WMSize(var Msg: TWMSize);
+{$ENDIF}
 begin
   inherited;
   SizeOrFontChanged(FALSE);
-//  SetLeftChar(LeftChar);                                                      //mh 2000-10-19
+  //debugln('TCustomSynEdit.Resize ',dbgs(Width),',',dbgs(Height),',',dbgs(ClientWidth),',',dbgs(ClientHeight));
+  // SetLeftChar(LeftChar);                                                     //mh 2000-10-19
 end;
 
 {$IFNDEF SYN_LAZARUS}
@@ -4946,7 +5736,9 @@ end;
 procedure TCustomSynEdit.InsertBlock(BB, BE: TPoint; ChangeStr: PChar);
 // used by BlockIndent and Redo
 begin
-  SetCaretAndSelection(BB, BB, BE);
+  SetCaretAndSelection(
+    {$IFDEF SYN_LAZARUS}LogicalToPhysicalPos(BB){$ELSE}BB{$ENDIF},
+    BB, BE);
   fSelectionMode := smColumn;
   SetSelTextPrimitive(smColumn, ChangeStr, nil);
   StatusChanged([scSelection]);
@@ -4983,6 +5775,10 @@ var
   TempString: string;
   CaretPt: TPoint;
   ChangeScrollPastEol: boolean;                                                 //mh 2000-10-30
+  {$IFDEF SYN_LAZARUS}
+  PhysStartPos: TPoint;
+  PhysEndPos: TPoint;
+  {$ENDIF}
 begin
   OldSelMode := SelectionMode;
   ChangeScrollPastEol := not (eoScrollPastEol in Options);                      //mh 2000-10-30
@@ -4992,39 +5788,62 @@ begin
     IncPaintLock;
     Include(fOptions, eoScrollPastEol);                                         //mh 2000-10-30
     Include(fStateFlags, sfInsideRedo);                                         //mh 2000-10-30
+    {$IFDEF SYN_LAZARUS}
+    PhysStartPos:=LogicalToPhysicalPos(Item.fChangeStartPos);
+    PhysEndPos:=LogicalToPhysicalPos(Item.fChangeEndPos);
+    {$ENDIF}
     case Item.fChangeReason of
       crInsert, crPaste, crDragDropInsert:
         begin
-          SetCaretAndSelection(Item.fChangeStartPos, Item.fChangeStartPos,
-            Item.fChangeStartPos);
+          SetCaretAndSelection(
+            {$IFDEF SYN_LAZARUS}PhysStartPos{$ELSE}Item.fChangeStartPos{$ENDIF},
+            Item.fChangeStartPos, Item.fChangeStartPos
+            );
           SetSelTextPrimitive(Item.fChangeSelMode, PChar(Item.fChangeStr), nil);
+          {$IFDEF SYN_LAZARUS}
+          CaretXY := PhysEndPos;
+          {$ELSE}
           CaretXY := Item.fChangeEndPos;                                        //mh 2000-10-30
+          {$ENDIF}
           fUndoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
             Item.fChangeEndPos, GetSelText, Item.fChangeSelMode);
 {begin}                                                                         //mh 2000-11-20
           if Item.fChangeReason = crDragDropInsert then begin
-            SetCaretAndSelection(Item.fChangeStartPos, Item.fChangeStartPos,
-              Item.fChangeEndPos);
+            SetCaretAndSelection(
+              {$IFDEF SYN_LAZARUS}PhysStartPos{$ELSE}Item.fChangeStartPos{$ENDIF},
+              Item.fChangeStartPos, Item.fChangeEndPos);
           end;
 {end}                                                                           //mh 2000-11-20
         end;
       crDeleteAfterCursor, crSilentDeleteAfterCursor:                           //mh 2000-10-30
         begin
-          SetCaretAndSelection(Item.fChangeStartPos, Item.fChangeStartPos,
-            Item.fChangeEndPos);
+          SetCaretAndSelection(
+            {$IFDEF SYN_LAZARUS}PhysStartPos{$ELSE}Item.fChangeStartPos{$ENDIF},
+            Item.fChangeStartPos, Item.fChangeStartPos
+            );
           fUndoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
             Item.fChangeEndPos, GetSelText, Item.fChangeSelMode);
           SetSelTextPrimitive(Item.fChangeSelMode, PChar(Item.fChangeStr), nil);
+          {$IFDEF SYN_LAZARUS}
+          CaretXY := PhysStartPos;
+          {$ELSE}
           CaretXY := Item.fChangeStartPos;
+          {$ENDIF}
         end;
       crDelete, {crDragDropDelete, crSelDelete, }crSilentDelete:                //mh 2000-10-30, 2000-11-20
         begin
-          SetCaretAndSelection(Item.fChangeStartPos, Item.fChangeStartPos,
-            Item.fChangeEndPos);
+          SetCaretAndSelection(
+            {$IFDEF SYN_LAZARUS}PhysStartPos{$ELSE}Item.fChangeStartPos{$ENDIF},
+            Item.fChangeStartPos, Item.fChangeStartPos
+            );
           fUndoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
             Item.fChangeEndPos, GetSelText, Item.fChangeSelMode);
           SetSelTextPrimitive(Item.fChangeSelMode, PChar(Item.fChangeStr), nil);
+          {$IFDEF SYN_LAZARUS}
+          CaretXY := PhysStartPos;
+          {$ELSE}
           CaretXY := Item.fChangeStartPos;
+          {$ENDIF}
 {begin}                                                                         //mh 2000-11-20
 (*
           // process next entry? This is awkward, and should be replaced by
@@ -5042,8 +5861,13 @@ begin
 {begin}                                                                         //sbs 2000-11-20
 //        CommandProcessor(ecLineBreak, #13, nil);
         begin
+          {$IFDEF SYN_LAZARUS}
+          SetCaretAndSelection(PhysStartPos, Item.fChangeStartPos,
+                               Item.fChangeStartPos);
+          {$ELSE}
           CaretPt := Item.fChangeStartPos;
           SetCaretAndSelection(CaretPt, CaretPt, CaretPt);
+          {$ENDIF}
           CommandProcessor(ecLineBreak, #13, nil);
         end;
 {end}                                                                           //sbs 2000-11-20
@@ -5064,10 +5888,13 @@ begin
           fUndoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
             Item.fChangeEndPos, Item.fChangeStr, Item.fChangeSelMode);
           // restore the selection
-          SetCaretAndSelection(Point(1, Item.fChangeEndPos.Y + 1),
-            Point(Item.fChangeStartPos.x +
-                    {$IFDEF SYN_LAZARUS}fBlockIndent{$ELSE}fTabWidth{$ENDIF},
-                  Item.fChangeStartPos.y),
+          SetCaretAndSelection(
+            {$IFDEF SYN_LAZARUS}
+            LogicalToPhysicalPos(Point(1, Item.fChangeEndPos.Y + 1)),
+            {$ELSE}
+            Point(1, Item.fChangeEndPos.Y + 1),
+            {$ENDIF}
+            Point(Item.fChangeStartPos.x + fTabWidth,Item.fChangeStartPos.y),
             Point(x, Item.fChangeEndPos.y));
         end;
       crUnindent :
@@ -5088,20 +5915,36 @@ begin
               Lines[CaretY - 1] := TempString;
             end else
               Len := 0;
+            {$IFDEF SYN_LAZARUS}
+            if Run^ in [#10,#13] then begin
+              if (Run[1] in [#10,#13]) and (Run^<>Run[1]) then
+                Inc(Run,2)
+              else
+                Inc(Run);
+              Inc(fCaretY);
+            end;
+            {$ELSE}
             if Run^ = #13 then begin
               Inc(Run);
               if Run^ = #10 then
                 Inc(Run);
               Inc(fCaretY);
             end;
+            {$ENDIF}
             StrToDelete := Run;
           until Run^ = #0;
           // restore selection
-          CaretPt := Point(Item.fChangeStartPos.x -
-                        {$IFDEF SYN_LAZARUS}fBlockIndent{$ELSE}fTabWidth{$ENDIF},
-                      Item.fChangeStartPos.y);
-          SetCaretAndSelection(CaretPt, CaretPt,
-            Point(Item.fChangeEndPos.x - Len, Item.fChangeEndPos.y));
+          CaretPt := Point(Item.fChangeStartPos.x - fTabWidth,
+                           Item.fChangeStartPos.y);
+          SetCaretAndSelection(
+            {$IFDEF SYN_LAZARUS}
+            LogicalToPhysicalPos(CaretPt),
+            {$ELSE}
+            CaretPt,
+            {$ENDIF}
+            CaretPt,
+            Point(Item.fChangeEndPos.x - Len, Item.fChangeEndPos.y)
+            );
         end;
     end;
   finally
@@ -5147,6 +5990,9 @@ var
   TmpPos: TPoint;
   TmpStr: string;
   ChangeScrollPastEol: boolean;                                                 //mh 2000-10-30
+  {$IFDEF SYN_LAZARUS}
+  PhysStartPos: TPoint;
+  {$ENDIF}
 begin
   OldSelMode := SelectionMode;
   ChangeScrollPastEol := not (eoScrollPastEol in Options);                      //mh 2000-10-30
@@ -5155,15 +6001,20 @@ begin
     SelectionMode := Item.fChangeSelMode;
     IncPaintLock;
     Include(fOptions, eoScrollPastEol);                                         //mh 2000-10-30
+    {$IFDEF SYN_LAZARUS}
+    PhysStartPos:=LogicalToPhysicalPos(Item.fChangeStartPos);
+    {$ENDIF}
     case Item.fChangeReason of
       crInsert, crPaste, crDragDropInsert:
         begin
-          SetCaretAndSelection(Item.fChangeStartPos, Item.fChangeStartPos,
-            Item.fChangeEndPos);
+          SetCaretAndSelection(
+            {$IFDEF SYN_LAZARUS}PhysStartPos{$ELSE}Item.fChangeStartPos{$ENDIF},
+            Item.fChangeStartPos, Item.fChangeEndPos);
           fRedoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
             Item.fChangeEndPos, GetSelText, Item.fChangeSelMode);
           SetSelTextPrimitive(Item.fChangeSelMode, PChar(Item.fChangeStr), nil);
-          CaretXY := Item.fChangeStartPos;
+          CaretXY := {$IFDEF SYN_LAZARUS}PhysStartPos
+                     {$ELSE}Item.fChangeStartPos{$ENDIF};
 {begin}                                                                         //mh 2000-11-20
 (*
           // process next entry? This is awkward, and should be replaced by
@@ -5195,7 +6046,13 @@ begin
             // this stinks!!!
             CommandProcessor(ecLineBreak, #13, nil);
           end;
-          SetCaretAndSelection(TmpPos, TmpPos, TmpPos);
+          SetCaretAndSelection(
+            {$IFDEF SYN_LAZARUS}
+            LogicalToPhysicalPos(TmpPos),
+            {$ELSE}
+            TmpPos,
+            {$ENDIF}
+            TmpPos, TmpPos);
           SetSelTextPrimitive(Item.fChangeSelMode, PChar(Item.fChangeStr), nil);
 {begin}                                                                         //mh 2000-10-30
           if Item.fChangeReason in [crDeleteAfterCursor,
@@ -5206,10 +6063,16 @@ begin
             TmpPos := Item.fChangeEndPos;
           if Item.fChangeReason in [crSilentDelete, crSilentDeleteAfterCursor]
           then
-            CaretXY := TmpPos
+            CaretXY :={$IFDEF SYN_LAZARUS}LogicalToPhysicalPos(TmpPos)
+                      {$ELSE}TmpPos{$ENDIF}
           else begin
-            SetCaretAndSelection(TmpPos, Item.fChangeStartPos,
-              Item.fChangeEndPos);
+            SetCaretAndSelection(
+              {$IFDEF SYN_LAZARUS}
+              LogicalToPhysicalPos(TmpPos),
+              {$ELSE}
+              TmpPos,
+              {$ENDIF}
+              Item.fChangeStartPos, Item.fChangeEndPos);
           end;
 {end}                                                                           //mh 2000-10-30
           fRedoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
@@ -5231,7 +6094,8 @@ begin
               AppendStr(TmpStr, StringOfChar(' ', CaretX - 1 - Length(TmpStr)));
             Lines.Delete(Item.fChangeEndPos.y);
           end;
-          CaretXY := Item.fChangeStartPos;
+          CaretXY := {$IFDEF SYN_LAZARUS}PhysStartPos
+                     {$ELSE}Item.fChangeStartPos{$ENDIF};
           TrimmedSetLine(CaretY - 1, TmpStr + Item.fChangeStr);
           DoLinesDeleted(CaretY, 1);
         end;
@@ -5250,8 +6114,13 @@ begin
           // remove the column
           SetSelTextPrimitive(Item.fChangeSelMode, nil, nil);
           // restore the selection
-          SetCaretAndSelection(Item.fChangeEndPos, Item.fChangeStartPos,
-            Item.fChangeEndPos);
+          SetCaretAndSelection(
+            {$IFDEF SYN_LAZARUS}
+            LogicalToPhysicalPos(Item.fChangeEndPos),
+            {$ELSE}
+            Item.fChangeEndPos,
+            {$ENDIF}
+            Item.fChangeStartPos, Item.fChangeEndPos);
         end;
       crUnindent: // reinsert the (raggered) column that was deleted
         begin
@@ -5260,8 +6129,13 @@ begin
           // reinsert the string
           InsertBlock(Point(1, Item.fChangeStartPos.y),
             Point(1, Item.fChangeEndPos.y), PChar(Item.fChangeStr));
-          SetCaretAndSelection(Item.fChangeStartPos, Item.fChangeStartPos,
-            Item.fChangeEndPos);
+          SetCaretAndSelection(
+            {$IFDEF SYN_LAZARUS}
+            LogicalToPhysicalPos(Item.fChangeStartPos),
+            {$ELSE}
+            Item.fChangeStartPos,
+            {$ENDIF}
+            Item.fChangeStartPos, Item.fChangeEndPos);
         end;
     end;
   finally
@@ -5287,9 +6161,7 @@ begin
   and (fLastMouseCaret.X>0) and (fLastMouseCaret.Y>0) then begin
     // show link
     NewY:=fLastMouseCaret.Y;
-    GetWordBoundsAtRowCol(fLastMouseCaret,NewX1,NewX2);
-    dec(NewX1);
-    dec(NewX2);
+    GetWordBoundsAtRowCol(PhysicalToLogicalPos(fLastMouseCaret),NewX1,NewX2);
     if NewX1<>NewX2 then begin
       // there is a word to underline as link
       if (NewY<>fLastCtrlMouseLinkY)
@@ -5491,15 +6363,27 @@ begin
           end;
           // save undo information
           if Source = Self then begin
-            fUndoList.AddChange(crDragDropInsert, NewCaret, BlockEnd, SelText,
-              SelectionMode);
+            fUndoList.AddChange(crDragDropInsert,
+              {$IFDEF SYN_LAZARUS}
+              PhysicalToLogicalPos(NewCaret),
+              {$ELSE}
+              NewCaret,
+              {$ENDIF}
+              BlockEnd, SelText, SelectionMode);
           end else begin
-            fUndoList.AddChange(crInsert, NewCaret, BlockEnd,
-              SelText, SelectionMode);
+            fUndoList.AddChange(crInsert,
+              {$IFDEF SYN_LAZARUS}
+              PhysicalToLogicalPos(NewCaret),
+              {$ELSE}
+              NewCaret,
+              {$ENDIF}
+              BlockEnd, SelText, SelectionMode);
           end;
-          BlockBegin := NewCaret;
-          BlockEnd := CaretXY;
-          CaretXY := BlockBegin;
+          BlockBegin := {$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(NewCaret)
+                        {$ELSE}NewCaret{$ENDIF};
+          BlockEnd := {$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(CaretXY)
+                        {$ELSE}CaretXY{$ENDIF};
+          CaretXY := NewCaret;
         finally
           EndUndoBlock;
         end;
@@ -5706,9 +6590,9 @@ begin
   try
     // Make sure X is visible
     //DebugLn('[TCustomSynEdit.EnsureCursorPosVisible] A CaretX=',CaretX,' LeftChar=',LeftChar,' CharsInWindow=',CharsInWindow,' ClientWidth=',ClientWidth);
-    PhysCaretXY:=LogicalToPhysicalPos(CaretXY);
+    PhysCaretXY:=CaretXY;
     {$IFDEF SYN_LAZARUS}
-    // try also to make the current selection visible
+    // try to make the current selection visible as well
     MinX:=PhysCaretXY.X;
     MaxX:=PhysCaretXY.X;
     PhysBlockBeginXY:=LogicalToPhysicalPos(BlockBegin);
@@ -5726,13 +6610,13 @@ begin
       if MaxX<PhysBlockEndXY.X then
         MaxX:=Min(PhysBlockEndXY.X,MinX+CharsInWindow-1);
     end;
-    {DebugLn('TCustomSynEdit.EnsureCursorPosVisible A CaretX=',PhysCaretXY.X,
-    ' BlockX=',PhysBlockBeginXY.X,'-',PhysBlockEndXY.X,
-    ' ChrInWnd=',CharsInWindow,
-    ' MinX=',MinX,
-    ' MaxX=',MaxX,
-    ' LeftChar=',LeftChar,
-    '');}
+    {DebugLn('TCustomSynEdit.EnsureCursorPosVisible A CaretX=',dbgs(PhysCaretXY.X),
+      ' BlockX=',dbgs(PhysBlockBeginXY.X)+'-'+dbgs(PhysBlockEndXY.X),
+      ' CharsInWindow='+dbgs(CharsInWindow),
+      ' MinX='+dbgs(MinX),
+      ' MaxX='+dbgs(MaxX),
+      ' LeftChar='+dbgs(LeftChar),
+      '');}
     if MinX < LeftChar then
       LeftChar := MinX
     else if LeftChar < MaxX - (CharsInWindow - 1) then
@@ -5869,6 +6753,9 @@ var
 {$ENDIF}
   counter: Integer;
   InsDelta: integer;
+  {$IFDEF SYN_LAZARUS}
+  LogCaretXY: TPoint;
+  {$ENDIF}
 
 {begin}                                                                         //mh 2000-10-30
   procedure SetSelectedTextEmpty;
@@ -5909,14 +6796,23 @@ begin
 {begin}                                                                         //mh 2000-10-19
       ecLineStart, ecSelLineStart:
         begin
-          MoveCaretAndSelection(CaretXY, Point(1, CaretY),
-            Command = ecSelLineStart);
+          {$IFDEF SYN_LAZARUS}
+          MoveCaretAndSelectionPhysical
+          {$ELSE}
+          MoveCaretAndSelection
+          {$ENDIF}
+            (CaretXY,Point(1, CaretY), Command = ecSelLineStart);
           fLastCaretX := fCaretX;
         end;
       ecLineEnd, ecSelLineEnd:
         begin
-          MoveCaretAndSelection(CaretXY, Point(1 + Length(LineText), CaretY),
-            Command = ecSelLineEnd);
+          {$IFDEF SYN_LAZARUS}
+          MoveCaretAndSelectionPhysical
+          {$ELSE}
+          MoveCaretAndSelection
+          {$ENDIF}
+            (CaretXY, Point(1 + Length(LineText), CaretY),
+             Command = ecSelLineEnd);
           fLastCaretX := fCaretX;
         end;
 {end}                                                                           //mh 2000-10-19
@@ -5948,19 +6844,33 @@ begin
         end;
       ecPageTop, ecSelPageTop:
         begin
-          MoveCaretAndSelection(CaretXY, Point(CaretX, TopLine),
-            Command = ecSelPageTop);
+          {$IFDEF SYN_LAZARUS}
+          MoveCaretAndSelectionPhysical
+          {$ELSE}
+          MoveCaretAndSelection
+          {$ENDIF}
+            (CaretXY, Point(CaretX, TopLine), Command = ecSelPageTop);
           Update;
         end;
       ecPageBottom, ecSelPageBottom:
         begin
           CaretNew := Point(CaretX, TopLine + LinesInWindow - 1);
-          MoveCaretAndSelection(CaretXY, CaretNew, Command = ecSelPageBottom);
+          {$IFDEF SYN_LAZARUS}
+          MoveCaretAndSelectionPhysical
+          {$ELSE}
+          MoveCaretAndSelection
+          {$ENDIF}
+            (CaretXY, CaretNew, Command = ecSelPageBottom);
           Update;
         end;
       ecEditorTop, ecSelEditorTop:
         begin
-          MoveCaretAndSelection(CaretXY, Point(1, 1), Command = ecSelEditorTop);
+          {$IFDEF SYN_LAZARUS}
+          MoveCaretAndSelectionPhysical
+          {$ELSE}
+          MoveCaretAndSelection
+          {$ENDIF}
+            (CaretXY, Point(1, 1), Command = ecSelEditorTop);
           Update;
         end;
       ecEditorBottom, ecSelEditorBottom:
@@ -5968,13 +6878,24 @@ begin
           CaretNew := Point(1, Lines.Count);
           if (CaretNew.Y > 0) then
             CaretNew.X := Length(Lines[CaretNew.Y - 1]) + 1;
-          MoveCaretAndSelection(CaretXY, CaretNew, Command = ecSelEditorBottom);
+          MoveCaretAndSelection(
+            {$IFDEF SYN_LAZARUS}
+            PhysicalToLogicalPos(CaretXY),
+            {$ELSE}
+            CaretXY,
+            {$ENDIF}
+            CaretNew, Command = ecSelEditorBottom);
           Update;
         end;
 // goto special line / column position
       ecGotoXY, ecSelGotoXY:
         if Assigned(Data) then begin
-          MoveCaretAndSelection(CaretXY, PPoint(Data)^, Command = ecSelGotoXY);
+          {$IFDEF SYN_LAZARUS}
+          MoveCaretAndSelectionPhysical
+          {$ELSE}
+          MoveCaretAndSelection
+          {$ENDIF}
+            (CaretXY, PPoint(Data)^, Command = ecSelGotoXY);
           fLastCaretX := fCaretX;                                               //mh 2000-10-19
           Update;
         end;
@@ -5983,7 +6904,12 @@ begin
         begin
           Caret := CaretXY;
           CaretNew := PrevWordPos;
-          MoveCaretAndSelection(Caret, CaretNew, Command = ecSelWordLeft);
+          {$IFDEF SYN_LAZARUS}
+          MoveCaretAndSelectionPhysical
+          {$ELSE}
+          MoveCaretAndSelection
+          {$ENDIF}
+            (Caret, CaretNew, Command = ecSelWordLeft);
           fLastCaretX := fCaretX;                                               //mh 2000-10-19
           {$IFDEF SYN_LAZARUS}
           Update;
@@ -5993,7 +6919,12 @@ begin
         begin
           Caret := CaretXY;
           CaretNew := NextWordPos;
-          MoveCaretAndSelection(Caret, CaretNew, Command = ecSelWordRight);
+          {$IFDEF SYN_LAZARUS}
+          MoveCaretAndSelectionPhysical
+          {$ELSE}
+          MoveCaretAndSelection
+          {$ENDIF}
+            (Caret, CaretNew, Command = ecSelWordRight);
           fLastCaretX := fCaretX;                                               //mh 2000-10-19
           {$IFDEF SYN_LAZARUS}
           Update;
@@ -6026,7 +6957,7 @@ begin
                 if eoTrimTrailingSpaces in Options then
                   Temp := TrimRight(Temp);
                 LineText := LineText + Temp;
-                Helper := #13#10;
+                Helper := {$IFDEF SYN_LAZARUS}LineEnding{$ELSE}#13#10{$ENDIF};
               end;
             end else begin
               // delete text before the caret
@@ -6066,8 +6997,13 @@ begin
               end;
             end;
             if (Caret.X <> CaretX) or (Caret.Y <> CaretY) then begin
-              fUndoList.AddChange(crSilentDelete, CaretXY, Caret, Helper,
-                smNormal);
+              fUndoList.AddChange(crSilentDelete,
+                {$IFDEF SYN_LAZARUS}
+                PhysicalToLogicalPos(CaretXY), PhysicalToLogicalPos(Caret),
+                {$ELSE}
+                CaretXY, Caret,
+                {$ENDIF}
+                Helper, smNormal);
             end;
           end;
         end;
@@ -6078,37 +7014,61 @@ begin
           else begin
             Temp := LineText;
             Len := Length(Temp);
-            if CaretX <= Len then begin
+            {$IFDEF SYN_LAZARUS}
+            LogCaretXY:=PhysicalToLogicalPos(CaretXY);
+            {$ENDIF}
+            if {$IFDEF SynEdit}LogCaretXY.XP{$ELSE}CaretX{$ENDIF} <= Len then
+            begin
               // delete char
-              counter := 1;
-{$IFDEF SYN_MBCSSUPPORT}
-              if ByteType(Temp, CaretX) = mbLeadByte then
-                Inc(counter);
-{$ENDIF}
-              Helper := Copy(Temp, CaretX, counter);
-              Caret := Point(CaretX + counter, CaretY);
-              Delete(Temp, CaretX, counter);
-              TrimmedSetLine(CaretY - 1, Temp);
+              {$IFDEF SYN_LAZARUS}
+                LogCaretXY.X:=
+                       AdjustBytePosToCharacterStart(LogCaretXY.Y,LogCaretXY.X);
+                Counter:=GetCharLen(Temp,LogCaretXY.X);
+                Helper := Copy(Temp, LogCaretXY.X, Counter);
+                Caret.X := LogicalToPhysicalCol(Temp,LogCaretXY.X+Counter);
+                Caret.Y := CaretY;
+                System.Delete(Temp, LogCaretXY.X, Counter);
+                TrimmedSetLine(CaretY - 1, Temp);
+              {$ELSE}
+                counter := 1;
+                {$IFDEF SYN_MBCSSUPPORT}
+                if ByteType(Temp, CaretX) = mbLeadByte then
+                  Inc(counter);
+                {$ENDIF}
+                Helper := Copy(Temp, CaretX, counter);
+                Caret := Point(CaretX + counter, CaretY);
+                Delete(Temp, CaretX, counter);
+                TrimmedSetLine(CaretY - 1, Temp);
+              {$ENDIF}
             end else begin
               // join line with the line after
               if CaretY < Lines.Count then begin
                 Helper := StringOfChar(' ', CaretX - 1 - Len);
                 TrimmedSetLine(CaretY - 1, Temp + Helper + Lines[CaretY]);
                 Caret := Point(1, CaretY + 1);
-                Helper := #13#10;
+                Helper := {$IFDEF SYN_LAZARUS}LineEnding{$ELSE}#13#10{$ENDIF};
                 Lines.Delete(CaretY);
                 DoLinesDeleted(CaretY - 1, 1);
               end;
             end;
             if (Caret.X <> CaretX) or (Caret.Y <> CaretY) then begin
-              fUndoList.AddChange(crSilentDeleteAfterCursor, CaretXY, Caret,
+              fUndoList.AddChange(crSilentDeleteAfterCursor,
+                {$IFDEF SYN_LAZARUS}
+                PhysicalToLogicalPos(CaretXY), PhysicalToLogicalPos(Caret),
+                {$ELSE}
+                CaretXY, Caret,
+                {$ENDIF}
                 Helper, smNormal);
             end;
           end;
         end;
       ecDeleteWord, ecDeleteEOL:
         if not ReadOnly then begin
+          {$IFDEF SYN_LAZARUS}
+          Len := LogicalToPhysicalCol(LineText,Length(LineText)+1)-1;
+          {$ELSE}
           Len := Length(LineText);
+          {$ENDIF}
           if Command = ecDeleteWord then begin
             if CaretX > Len + 1 then
               CaretX := Len + 1;
@@ -6123,9 +7083,16 @@ begin
             OldSelMode := fSelectionMode;
             try
               fSelectionMode := smNormal;
-              SetBlockBegin(CaretXY);
-              SetBlockEnd(WP);
-              fUndoList.AddChange(crSilentDeleteAfterCursor, CaretXY, WP,
+              SetBlockBegin({$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(CaretXY)
+                            {$ELSE}CaretXY{$ENDIF});
+              SetBlockEnd({$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(WP)
+                            {$ELSE}WP{$ENDIF});
+              fUndoList.AddChange(crSilentDeleteAfterCursor,
+                {$IFDEF SYN_LAZARUS}
+                PhysicalToLogicalPos(CaretXY), PhysicalToLogicalPos(WP),
+                {$ELSE}
+                CaretXY, WP,
+                {$ENDIF}
                 SelText, smNormal);
               SetSelText('');
             finally
@@ -6144,10 +7111,20 @@ begin
             OldSelMode := fSelectionMode;
             try
               fSelectionMode := smNormal;
+              {$IFDEF SYN_LAZARUS}
+              SetBlockBegin(PhysicalToLogicalPos(CaretXY));
+              SetBlockEnd(PhysicalToLogicalPos(WP));
+              {$ELSE}
               SetBlockBegin(CaretXY);
               SetBlockEnd(WP);
-              fUndoList.AddChange(crSilentDelete, WP, CaretXY, SelText,
-                smNormal);
+              {$ENDIF}
+              fUndoList.AddChange(crSilentDelete,
+                {$IFDEF SYN_LAZARUS}
+                PhysicalToLogicalPos(WP), PhysicalToLogicalPos(CaretXY),
+                {$ELSE}
+                WP, CaretXY,
+                {$ENDIF}
+                SelText, smNormal);
               SetSelText('');
             finally
               fSelectionMode := OldSelMode;
@@ -6160,14 +7137,29 @@ begin
         if not ReadOnly and not ((Lines.Count = 1) and (Length(Lines[0]) = 0))
         then begin
           if SelAvail then
-            SetBlockBegin(CaretXY);
+            SetBlockBegin({$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(CaretXY)
+                          {$ELSE}CaretXY{$ENDIF});
           if Lines.Count = 1 then begin
-            fUndoList.AddChange(crDeleteAfterCursor, Point(1, CaretY),
-              CaretXY, LineText, smNormal);
+            fUndoList.AddChange(crDeleteAfterCursor,
+              {$IFDEF SYN_LAZARUS}
+              PhysicalToLogicalPos(Point(1, CaretY)),
+              PhysicalToLogicalPos(CaretXY),
+              {$ELSE}
+              Point(1, CaretY), CaretXY,
+              {$ENDIF}
+              LineText, smNormal);
             Lines[0] := '';
           end else begin
-            fUndoList.AddChange(crDeleteAfterCursor, Point(1, CaretY),
-              CaretXY, LineText + #13#10, smNormal);
+            fUndoList.AddChange(crDeleteAfterCursor,
+              {$IFDEF SYN_LAZARUS}
+              PhysicalToLogicalPos(Point(1, CaretY)),
+              PhysicalToLogicalPos(CaretXY),
+              LineText + LineEnding,
+              {$ELSE}
+              Point(1, CaretY), CaretXY,
+              LineText + #13#10,
+              {$ENDIF}
+              smNormal);
             Lines.Delete(CaretY - 1);
           end;
           DoLinesDeleted(CaretY - 1, 1);
@@ -6191,25 +7183,38 @@ begin
 // This is sloppy, but the Right Thing would be to track the column of markers
 // too, so they could be moved depending on whether they are after the caret...
           InsDelta := Ord(CaretX = 1);
+          {$IFDEF SYN_LAZARUS}
+          LogCaretXY:=PhysicalToLogicalPos(CaretXY);
+          {$ENDIF}
           Len := Length(Temp);
           if Len > 0 then begin
-            if Len >= CaretX then begin
-              if CaretX > 1 then begin
+            if Len >= LogCaretXY.X then begin
+              if LogCaretXY.X > 1 then begin
                 SpaceCount1 := LeftSpaces(Temp);
 {begin}                                                                         //JGF 2000-09-23
-                Temp := Copy(LineText, 1, CaretX - 1);
+                Temp := Copy(LineText, 1, LogCaretXY.X - 1);
                 TrimmedSetLine(CaretY - 1, Temp);
-                Delete(Temp2, 1, CaretX - 1);
-                fUndoList.AddChange(crLineBreak, CaretXY, CaretXY, Temp2,
-                  smNormal);
+                Delete(Temp2, 1, LogCaretXY.X - 1);
+                fUndoList.AddChange(crLineBreak,
+                  {$IFDEF SYN_LAZARUS}
+                  LogCaretXY, LogCaretXY,
+                  {$ELSE}
+                  CaretXY, CaretXY,
+                  {$ENDIF}
+                  Temp2, smNormal);
                 Lines.Insert(CaretY, StringOfChar(' ', SpaceCount1) + Temp2);
                 if Command = ecLineBreak then
                   CaretXY := Point(SpaceCount1 + 1, CaretY + 1);
 {end}                                                                           //JGF 2000-09-23
               end else begin
                 Lines.Insert(CaretY - 1, '');
-                fUndoList.AddChange(crLineBreak, CaretXY, CaretXY, Temp2,
-                  smNormal);
+                fUndoList.AddChange(crLineBreak,
+                  {$IFDEF SYN_LAZARUS}
+                  LogCaretXY, LogCaretXY,
+                  {$ELSE}
+                  CaretXY, CaretXY,
+                  {$ENDIF}
+                  Temp2, smNormal);
                 if Command = ecLineBreak then
                   CaretY := CaretY + 1;
               end;
@@ -6238,7 +7243,13 @@ begin
                 CaretX := SpaceCount2 + 1;
               end;
 *)
-              fUndoList.AddChange(crLineBreak, CaretXY, CaretXY, '', smNormal);
+              fUndoList.AddChange(crLineBreak,
+                {$IFDEF SYN_LAZARUS}
+                LogCaretXY, LogCaretXY,
+                {$ELSE}
+                CaretXY, CaretXY,
+                {$ENDIF}
+                '', smNormal);
               SpaceCount2 := 0;
               if eoAutoIndent in Options then begin
                 BackCounter := CaretY;
@@ -6265,7 +7276,13 @@ begin
               if Length(Lines[BackCounter]) > 0 then break;
               dec(BackCounter);
             end;
-            fUndoList.AddChange(crLineBreak, CaretXY, CaretXY, '', smNormal);
+            fUndoList.AddChange(crLineBreak,
+              {$IFDEF SYN_LAZARUS}
+              LogCaretXY, LogCaretXY,
+              {$ELSE}
+              CaretXY, CaretXY,
+              {$ENDIF}
+              '', smNormal);
             if Command = ecLineBreak then
               CaretX := SpaceCount2 + 1;
             Lines.Insert(CaretY - 1, '');
@@ -6309,26 +7326,76 @@ begin
 // character which will be overwritten with the typed character.  If we put the
 // extra space in in insert mode, it would be left at the end of the line and
 // cause problems unless eoTrimTrailingSpaces is set.
+            {$IFDEF SYN_LAZARUS}
+            LogCaretXY:=PhysicalToLogicalPos(CaretXY);
+            LogCaretXY.X:=AdjustBytePosToCharacterStart(LogCaretXY.Y,LogCaretXY.X);
+            {debugln('ecChar CaretXY=',dbgs(CaretXY),
+                    ' LogCaretXY=',dbgs(PhysicalToLogicalPos(CaretXY)),
+                    ' Adjusted LogCaretXY=',dbgs(LogCaretXY),
+                    ' fInserting=',dbgs(fInserting),
+                    ' Temp=',dbgstr(Temp),
+                    '" UseUTF8=',dbgs(UseUTF8));}
+            bChangeScroll := not (eoScrollPastEol in fOptions);
+            try
+              if bChangeScroll then Include(fOptions, eoScrollPastEol);
+              StartOfBlock := LogCaretXY;
+              if fInserting then begin
+                // insert mode
+                {$IFDEF USE_UTF8BIDI_LCL}
+                CaretNew.X := CaretX;
+                // TODO: improve utf8bidi for tabs
+                utf8bidi.Insert(Temp, AChar, CaretNew.X);
+                CaretX := CaretNew.X;
+                {$ELSE}
+                Len := Length(Temp);
+                if Len < LogCaretXY.X then
+                  Temp := Temp + StringOfChar(' ', LogCaretXY.X - Len);
+                System.Insert(AChar, Temp, LogCaretXY.X);
+                CaretX := CaretX + 1;
+                {$ENDIF}
+                TrimmedSetLine(CaretY - 1, Temp);
+                fUndoList.AddChange(crInsert, StartOfBlock,
+                  PhysicalToLogicalPos(CaretXY), '', smNormal);
+              end else begin
+                // overwrite mode
+                Counter := GetCharLen(Temp,LogCaretXY.X);
+                Helper := Copy(Temp, LogCaretXY.X, Counter);
+                {$IFDEF USE_UTF8BIDI_LCL}
+                CaretNew.X := CaretX;
+                // TODO: improve utf8bidi for tabs
+                utf8bidi.insert(AChar,Temp,CaretNew.X);
+                CaretX := CaretNew.X;
+                {$ELSE}
+                Temp:=copy(Temp,1,LogCaretXY.X-1)+AChar
+                     +copy(Temp,LogCaretXY.X+Counter,length(Temp));
+                {$ENDIF}
+                CaretNew := Point((CaretX + 1), CaretY);
+                TrimmedSetLine(CaretY - 1, Temp);
+                fUndoList.AddChange(crInsert,
+                  StartOfBlock, PhysicalToLogicalPos(CaretNew),
+                  Helper, smNormal);
+                CaretX := CaretX + 1;
+              end;
+              if CaretX >= LeftChar + fCharsInWindow then
+                LeftChar := LeftChar + Min(25, fCharsInWindow - 1);
+            finally
+              if bChangeScroll then Exclude(fOptions, eoScrollPastEol);
+            end;
+            {$ELSE below for NOT SYN_LAZARUS ----------------------------------}
             bChangeScroll := not (eoScrollPastEol in fOptions);
             try
               if bChangeScroll then Include(fOptions, eoScrollPastEol);
               StartOfBlock := CaretXY;
               if fInserting then begin
-                {$IFDEF USE_UTF8BIDI_LCL}
-                CaretNew.X := CaretX;
-                utf8bidi.Insert(Temp, AChar, CaretNew.X);
-                CaretX := CaretNew.X;
-                {$ELSE USE_UTF8BIDI_LCL}
                 Len := Length(Temp);
                 if Len < CaretX then
 //              Temp := Temp + StringOfChar(' ', CaretX - Len);
                   Temp := Temp + StringOfChar(' ', CaretX - Len - Ord(fInserting)); //JGF 2000-09-23
                 System.Insert(AChar, Temp, CaretX);
                 CaretX := CaretX + 1;
-                {$ENDIF not USE_UTF8BIDI_LCL}
                 TrimmedSetLine(CaretY - 1, Temp);                               //JGF 2000-09-23
-                fUndoList.AddChange(crInsert, StartOfBlock, CaretXY, '',
-                  smNormal);
+                fUndoList.AddChange(crInsert, StartOfBlock,
+                  CaretXY, '', smNormal);
               end else begin
 // Processing of case character covers on LeadByte.
                 counter := 1;
@@ -6338,17 +7405,7 @@ begin
                 end;
 {$ENDIF}
                 Helper := Copy(Temp, CaretX, counter);
-                {$IFDEF SYN_LAZARUS}
-{$IFDEF USE_UTF8BIDI_LCL}
-                CaretNew.X := CaretX;
-                utf8bidi.insert(AChar,Temp,CaretNew.X);
-                CaretX := CaretNew.X;
-{$ELSE USE_UTF8BIDI_LCL}
-                System.insert(AChar,Temp,CaretX);
-{$ENDIF USE_UTF8BIDI_LCL}
-                {$ELSE}
                 Temp[CaretX] := AChar;
-                {$ENDIF}
 {$IFDEF SYN_MBCSSUPPORT}
                 if (counter > 1) then begin
                   Temp[CaretX + 1] := ' ';
@@ -6356,8 +7413,8 @@ begin
 {$ENDIF}
                 CaretNew := Point((CaretX + counter), CaretY);
                 TrimmedSetLine(CaretY - 1, Temp);                               //JGF 2000-09-23
-                fUndoList.AddChange(crInsert, StartOfBlock, CaretNew, Helper,
-                  smNormal);
+                fUndoList.AddChange(crInsert, StartOfBlock, CaretNew,
+                  Helper, smNormal);
                 CaretX := CaretX + 1;
               end;
               if CaretX >= LeftChar + fCharsInWindow then
@@ -6365,6 +7422,7 @@ begin
             finally
               if bChangeScroll then Exclude(fOptions, eoScrollPastEol);
             end;
+            {$ENDIF}
           end;
         end;
       ecUndo:
@@ -6492,8 +7550,13 @@ begin
               TrimmedSetLine(CaretY - 1, Temp);                                 //JGF 2000-09-23
               if fInserting then
                 Helper := '';
-              fUndoList.AddChange(crInsert, StartOfBlock, CaretXY, Helper,
-                smNormal);
+              fUndoList.AddChange(crInsert, StartOfBlock,
+                {$IFDEF SYN_LAZARUS}
+                PhysicalToLogicalPos(CaretXY),
+                {$ELSE}
+                CaretXY,
+                {$ENDIF}
+                Helper, smNormal);
               if CaretX >= LeftChar + fCharsInWindow then
                 LeftChar := LeftChar + min(25, fCharsInWindow - 1);
             finally
@@ -6547,11 +7610,12 @@ var
   CurIdentChars, WhiteChars: TSynIdentChars;
   nTokenPos, nTokenLen: integer;
   sToken: PChar;
+  LogCaret: TPoint;
 
   procedure FindFirstNonWhiteSpaceCharInNextLine;
   begin
     if CY < Lines.Count then begin
-      Line := TSynEditStringList(Lines).ExpandedStrings[CY];
+      Line := Lines[CY];
       LineLen := Length(Line);
       Inc(CY);
       CX:=1;
@@ -6561,11 +7625,12 @@ var
   end;
 
 begin
-  CX := CaretX;
-  CY := CaretY;
+  LogCaret:=PhysicalToLogicalPos(CaretXY);
+  CX := LogCaret.X;
+  CY := LogCaret.Y;
   // valid line?
   if (CY >= 1) and (CY <= Lines.Count) then begin
-    Line := TSynEditStringList(Lines).ExpandedStrings[CY - 1];
+    Line := Lines[CY - 1];
     LineLen := Length(Line);
     WhiteChars := [#9,' '];
     if CX > LineLen then begin
@@ -6603,7 +7668,7 @@ begin
       end;
     end;
   end;
-  Result := Point(CX, CY);
+  Result := LogicalToPhysicalPos(Point(CX, CY));
 end;
 {$ENDIF}
 
@@ -6612,9 +7677,18 @@ var
   CX, CY, LineLen: integer;
   Line: string;
   CurIdentChars, WhiteChars: TSynIdentChars;
+  {$IFDEF SYN_LAZARUS}
+  LogCaret: TPoint;
+  {$ENDIF}
 begin
+  {$IFDEF SYN_LAZARUS}
+  LogCaret:=PhysicalToLogicalPos(CaretXY);
+  CX := LogCaret.X;
+  CY := LogCaret.Y;
+  {$ELSE}
   CX := CaretX;
   CY := CaretY;
+  {$ENDIF}
   // valid line?
   if (CY >= 1) and (CY <= Lines.Count) then begin
     Line := Lines[CY - 1];
@@ -6640,7 +7714,11 @@ begin
         CX := LineLen + 1;
     end;
   end;
+  {$IFDEF SYN_LAZARUS}
+  Result := LogicalToPhysicalPos(Point(CX, CY));
+  {$ELSE}
   Result := Point(CX, CY);
+  {$ENDIF}
 end;
 
 function TCustomSynEdit.PrevWordPos: TPoint;
@@ -6648,9 +7726,18 @@ var
   CX, CY: integer;
   Line: string;
   CurIdentChars, WhiteChars: TSynIdentChars;
+  {$IFDEF SYN_LAZARUS}
+  LogCaret: TPoint;
+  {$ENDIF}
 begin
+  {$IFDEF SYN_LAZARUS}
+  LogCaret:=PhysicalToLogicalPos(CaretXY);
+  CX := LogCaret.X;
+  CY := LogCaret.Y;
+  {$ELSE}
   CX := CaretX;
   CY := CaretY;
+  {$ENDIF}
   // valid line?
   if (CY >= 1) and (CY <= Lines.Count) then begin
     Line := Lines[CY - 1];
@@ -6680,7 +7767,11 @@ begin
         end;
     end;
   end;
+  {$IFDEF SYN_LAZARUS}
+  Result := LogicalToPhysicalPos(Point(CX, CY));
+  {$ELSE}
   Result := Point(CX, CY);
+  {$ENDIF}
 end;
 
 procedure TCustomSynEdit.SetSelectionMode(const Value: TSynSelectionMode);
@@ -7100,7 +8191,7 @@ end;
 
 {$IFNDEF SYN_LAZARUS}
 { LCL never sends WM_SETCURSOR messages, use OnMouseMove and then set cursor }
-    
+
 procedure TCustomSynEdit.WMSetCursor(var Msg: TWMSetCursor);
 var
   ptCursor, ptLineCol: TPoint;
@@ -7203,6 +8294,7 @@ begin
     fCharsInWindow := Max(1,(ClientWidth - fGutterWidth - 2 - ScrollBarWidth)
                             div fCharWidth);
     fLinesInWindow := Max(0,ClientHeight - ScrollBarWidth) div Max(1,fTextHeight);
+    //debugln('TCustomSynEdit.SizeOrFontChanged A ClientWidth=',dbgs(ClientWidth),' fGutterWidth=',dbgs(fGutterWidth),' ScrollBarWidth=',dbgs(ScrollBarWidth),' fCharWidth=',dbgs(fCharWidth),' fCharsInWindow=',dbgs(fCharsInWindow),' Width=',dbgs(Width));
     {$ELSE}
     fCharsInWindow := Max(1,Max(0,(ClientWidth - fGutterWidth - 2
                                    - ScrollBarWidth) div Max(1,fCharWidth)));
@@ -7229,6 +8321,48 @@ begin
 end;
 
 procedure TCustomSynEdit.MoveCaretHorz(DX: integer; SelectionCommand: boolean);
+{$IFDEF SYN_LAZARUS}
+var
+  NewCaret: TPoint;
+  s: String;
+  PhysicalLineLen: Integer;
+begin
+  NewCaret:=Point(CaretX+DX,CaretY);
+  if NewCaret.X<1 then begin
+    if (eoScrollPastEol in fOptions) or (NewCaret.Y=1) then
+      NewCaret.X:=1
+    else begin
+      // move to end of prev line
+      dec(NewCaret.Y);
+      s:=Lines[NewCaret.Y];
+      PhysicalLineLen:=LogicalToPhysicalPos(Point(length(s)+1,NewCaret.Y)).X-1;
+      NewCaret.X:=PhysicalLineLen;
+    end;
+  end else if not (eoScrollPastEol in fOptions) then begin
+    s:=LineText;
+    PhysicalLineLen:=LogicalToPhysicalPos(Point(length(s)+1,CaretY)).X-1;
+    if NewCaret.X>PhysicalLineLen then begin
+      // move to start of next line
+      NewCaret.X:=1;
+      inc(NewCaret.Y);
+    end;
+  end;
+
+  // adjust selection
+  IncPaintLock;
+  if SelectionCommand then begin
+    //debugln('TCustomSynEdit.MoveCaretHorz A CaretXY=',dbgs(CaretXY),' NewCaret=',dbgs(NewCaret));
+    if not SelAvail then SetBlockBegin(PhysicalToLogicalPos(CaretXY));
+    SetBlockEnd(PhysicalToLogicalPos(NewCaret));
+    //debugln('TCustomSynEdit.MoveCaretHorz B BB=',dbgs(BlockBegin),' BE=',dbgs(BlockEnd));
+    AquirePrimarySelection;
+  end else
+    SetBlockBegin(PhysicalToLogicalPos(NewCaret));
+  // commit new caret
+  CaretXY := NewCaret;
+  DecPaintLock;
+end;
+{$ELSE}
 var
   ptO, ptDst: TPoint;
   s: string;
@@ -7274,8 +8408,37 @@ begin
   MoveCaretAndSelection(ptO, ptDst, SelectionCommand);
   fLastCaretX := fCaretX;                                                       //mh 2000-10-19
 end;
+{$ENDIF}
 
 procedure TCustomSynEdit.MoveCaretVert(DY: integer; SelectionCommand: boolean);
+{$IFDEF SYN_LAZARUS}
+var
+  NewCaret: TPoint;
+  LogCaret: TPoint;
+begin
+  NewCaret:=CaretXY;
+  with NewCaret do begin
+    Inc(Y, DY);
+    if DY >= 0 then begin
+      if (Y > Lines.Count) or (CaretY > Y) then
+        Y := Lines.Count;
+    end else
+      if (Y < 1) or (CaretY < Y) then
+        Y := 1;
+  end;
+  // set caret and block begin / end
+  LogCaret:=PhysicalToLogicalPos(NewCaret);
+  IncPaintLock;
+  if SelectionCommand then begin
+    if not SelAvail then SetBlockBegin(PhysicalToLogicalPos(CaretXY));
+    SetBlockEnd(LogCaret);
+    AquirePrimarySelection;
+  end else
+    SetBlockBegin(LogCaret);
+  CaretXY:=NewCaret;
+  DecPaintLock;
+end;
+{$ELSE below for NOT SYN_LAZARUS ----------------------------------------------}
 var
   ptO, ptDst: TPoint;
 {$IFDEF SYN_MBCSSUPPORT}
@@ -7284,7 +8447,7 @@ var
 {$ENDIF}
   SaveLastCaretX: Integer;
 begin
-  ptO := LogicalToPhysicalPos(CaretXY);                                         // sblbg 2001-12-17
+  ptO := CaretXY;                                                               // sblbg 2001-12-17
   ptDst := ptO;
   with ptDst do begin
     Inc(Y, DY);
@@ -7331,8 +8494,10 @@ begin
 {$ENDIF}
   fLastCaretX := SaveLastCaretX;                                                //jr 2002-04-26
 end;
+{$ENDIF}
 
-procedure TCustomSynEdit.MoveCaretAndSelection(ptBefore, ptAfter: TPoint;
+procedure TCustomSynEdit.MoveCaretAndSelection(
+  {$IFDEF SYN_LAZARUS}const {$ENDIF}ptBefore, ptAfter: TPoint;
   SelectionCommand: boolean);
 begin
   IncPaintLock;
@@ -7344,12 +8509,25 @@ begin
     {$ENDIF}
   end else
     SetBlockBegin(ptAfter);
-  CaretXY := ptAfter;
+  CaretXY := {$IFDEF SYN_LAZARUS}LogicalToPhysicalPos(ptAfter)
+             {$ELSE}ptAfter{$ENDIF};
   DecPaintLock;
 end;
 
-procedure TCustomSynEdit.SetCaretAndSelection(ptCaret, ptBefore,
-  ptAfter: TPoint);
+{$IFDEF SYN_LAZARUS}
+procedure TCustomSynEdit.MoveCaretAndSelectionPhysical(const ptBeforePhysical,
+  ptAfterPhysical: TPoint; SelectionCommand: boolean);
+begin
+  MoveCaretAndSelection(PhysicalToLogicalPos(ptBeforePhysical),
+                        PhysicalToLogicalPos(ptAfterPhysical),
+                        SelectionCommand);
+end;
+{$ENDIF}
+
+procedure TCustomSynEdit.SetCaretAndSelection(
+  {$IFDEF SYN_LAZARUS}const {$ENDIF}ptCaret, ptBefore, ptAfter: TPoint);
+// caret is physical (screen)
+// Before, After is logical (byte)
 begin
   IncPaintLock;
   CaretXY := ptCaret;
@@ -7389,6 +8567,10 @@ begin
     BaseStyle := BoldStyles[UsesFontStyle(fsBold)];
     fCharWidth := CharWidth;
   end;
+  {$IFDEF SYN_LAZARUS}
+  FUseUTF8:=fTextDrawer.UseUTF8;
+  //debugln('TCustomSynEdit.RecalcCharExtent UseUTF8=',dbgs(UseUTF8),' Font.CanUTF8=',dbgs(Font.CanUTF8));
+  {$ENDIF}
 end;
 
 procedure TCustomSynEdit.HighlighterAttrChanged(Sender: TObject);
@@ -7420,14 +8602,15 @@ begin
     iLine := CaretY - 1;
     if (iLine > 0) and (iLine < Lines.Count) then begin
       Dec(iLine);
+      {$IFNDEF SYN_LAZARUS  ! NOT}
       MinLen := CaretX;
+      {$ENDIF}
       repeat
-// NOTE mh: after throwing in real tabs we have to use:
-//      PrevLine := pConvert(Lines[iLine], TabWidth);
-        {$IFDEF SYN_LAZARUS}
-        PrevLine := TSynEditStringList(fLines).ExpandedStrings[iLine];
-        {$ELSE}
+        // NOTE mh: after throwing in real tabs we have to use:
+        //      PrevLine := pConvert(Lines[iLine], TabWidth);
         PrevLine := Lines[iLine];
+        {$IFDEF SYN_LAZARUS}
+        MinLen := PhysicalToLogicalCol(PrevLine,CaretX);
         {$ENDIF}
         if (Length(PrevLine) >= MinLen) then begin
           p := @PrevLine[MinLen];
@@ -7481,7 +8664,13 @@ begin
 //    Lines[i] := TrimRight(Lines[i]);
 //  EnsureCursorPosVisible;
 //  if Length(Lines[i]) >= StartOfBlock.X then
-    fUndoList.AddChange(crInsert, StartOfBlock, CaretXY, GetSelText,
+    fUndoList.AddChange(crInsert, StartOfBlock,
+      {$IFDEF SYN_LAZARUS}
+      PhysicalToLogicalPos(CaretXY),
+      {$ELSE}
+      CaretXY,
+      {$ENDIF}
+      GetSelText,
       SelectionMode);
   EnsureCursorPosVisible;
 {end}                                                                           //mh 2000-10-01
@@ -7533,11 +8722,12 @@ var
   Spaces           : String;
   OrgSelectionMode : TSynSelectionMode;
 begin
+  if not SelAvail then exit;
   OrgSelectionMode := fSelectionMode;
   OrgCaretPos := CaretXY;
   x := 1;
   StrToInsert := nil;
-  if SelAvail then
+  fSelectionMode := smColumn;
   try
     // keep current selection detail
     BB := BlockBegin;
@@ -7551,9 +8741,12 @@ begin
       e := BE.y;
       x := BE.x + {$IFDEF SYN_LAZARUS}fBlockIndent{$ELSE}fTabWidth{$ENDIF};
     end;
-    InsertStrLen := ({$IFDEF SYN_LAZARUS}fBlockIndent{$ELSE}fTabWidth{$ENDIF}+2)
-                     * (e - BB.y)
-                     + {$IFDEF SYN_LAZARUS}fBlockIndent{$ELSE}fTabWidth{$ENDIF}+1;
+    InsertStrLen := ({$IFDEF SYN_LAZARUS}
+                     (fBlockIndent+length(LineEnding))* (e - BB.y)+fBlockIndent+1
+                     {$ELSE}
+                     (fTabWidth+2)* (e - BB.y) + TabWidth +1
+                     {$ENDIF}
+                     );
     //               chars per line * lines-1    + last line + null char
     StrToInsert := StrAlloc(InsertStrLen);
     try
@@ -7562,8 +8755,9 @@ begin
                        {$IFDEF SYN_LAZARUS}fBlockIndent{$ELSE}fTabWidth{$ENDIF});
       for i := BB.Y to e-1 do
       begin
-        StrPCopy(Run, Spaces+#13#10);
-        Inc(Run,{$IFDEF SYN_LAZARUS}fBlockIndent{$ELSE}fTabWidth{$ENDIF}+2);
+        StrPCopy(Run, Spaces+{$IFDEF SYN_LAZARUS}LineEnding{$ELSE}#13#10{$ENDIF});
+        Inc(Run,{$IFDEF SYN_LAZARUS}fBlockIndent+length(LineEnding)
+                {$ELSE}fTabWidth+2{$ENDIF});
       end;
       StrPCopy(Run, Spaces);
 
@@ -7574,8 +8768,9 @@ begin
     end;
   finally
     fSelectionMode := OrgSelectionMode;
-    SetCaretAndSelection(OrgCaretPos, Point(BB.x +
-      {$IFDEF SYN_LAZARUS}fBlockIndent{$ELSE}fTabWidth{$ENDIF}, BB.y),
+    SetCaretAndSelection(OrgCaretPos,
+      Point(BB.x + {$IFDEF SYN_LAZARUS}fBlockIndent{$ELSE}fTabWidth{$ENDIF},
+            BB.y),
       Point(x, BE.y));
   end;
 end;
@@ -7630,9 +8825,15 @@ begin
 
     // build string to delete
     StrToDeleteLen :=
-       ({$IFDEF SYN_LAZARUS}fBlockIndent{$ELSE}fTabWidth{$ENDIF}+2) * (e - BB.y)
-      + {$IFDEF SYN_LAZARUS}fBlockIndent{$ELSE}fTabWidth{$ENDIF}
+      {$IFDEF SYN_LAZARUS}
+       (fBlockIndent+length(LineEnding)) * (e - BB.y)
+      + fBlockIndent
       + 1;
+      {$ELSE}
+       (fTabWidth+2) * (e - BB.y)
+      + fTabWidth
+      + 1;
+      {$ENDIF}
     //                 chars per line * lines-1    + last line + null char
     FullStrToDelete := StrAlloc(StrToDeleteLen);
     try
@@ -7643,7 +8844,8 @@ begin
         Line := PChar(Lines[x-1]);
         TempString:=StringOfChar(' ', GetDelLen);
         StrCat(FullStrToDelete,PChar(TempString));
-        StrCat(FullStrToDelete,PChar(#13#10));
+        StrCat(FullStrToDelete,
+                    PChar({$IFDEF SYN_LAZARUS}LineEnding{$ELSE}#13#10{$ENDIF}));
       end;
       Line := PChar(Lines[e-1]);
       TempString:=StringOfChar(' ', GetDelLen);
@@ -7667,6 +8869,15 @@ begin
               Delete(TempString, 1, Len);
             Lines[CaretY - 1] := TempString;
           end;
+          {$IFDEF SYN_LAZARUS}
+          if Run^ in [#10,#13] then  begin
+            if (Run[1] in [#10,#13]) and (Run^<>Run[1]) then
+              Inc(Run,2)
+            else
+              Inc(Run);
+            inc(fCaretY);
+          end;
+          {$ELSE}
           if Run^ = #13 then
           begin
             Inc(Run);
@@ -7674,6 +8885,7 @@ begin
               Inc(Run);
             Inc(fCaretY);
           end;
+          {$ENDIF}
           StrToDelete := Run;
         until Run^ = #0;
         LastIndent := Len;
@@ -7881,9 +9093,10 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
-function TCustomSynEdit.FindMatchingBracket(StartBracket: TPoint;
+function TCustomSynEdit.FindMatchingBracket(PhysStartBracket: TPoint;
   StartIncludeNeighborChars, MoveCaret, SelectBrackets, OnlyVisible: boolean
   ): TPoint;
+// returns physical (screen) position of end bracket
 const
   Brackets: array[0..5] of char = ('(', ')', '[', ']', '{', '}');
 var
@@ -7897,7 +9110,7 @@ var
     EndPt, DummyPt: TPoint;
   begin
     // matching bracket found, set caret and bail out
-    Result := Point(PosX, PosY);
+    Result := Point(PosX, PosY); // start with logical (byte) position
     if SelectBrackets then begin
       EndPt:=Result;
       if (EndPt.Y < StartPt.Y)
@@ -7912,7 +9125,9 @@ var
       // Selection should have changed...
       StatusChanged([scSelection]);
     end else if MoveCaret then
-      CaretXY := Result;
+      CaretXY := LogicalToPhysicalPos(Result)
+    else
+      Result := LogicalToPhysicalPos(Result);
   end;
 
   procedure DoFindMatchingBracket(i: integer);
@@ -8004,7 +9219,7 @@ begin
   Result.Y:=-1;
 
   // get char at caret
-  LogicalStart:=PhysicalToLogicalPos(StartBracket);
+  LogicalStart:=PhysicalToLogicalPos(PhysStartBracket);
   PosX := LogicalStart.X;
   PosY := LogicalStart.Y;
   if (PosY<1) or (PosY>Lines.Count) then exit;
@@ -8032,7 +9247,7 @@ begin
     end;
   finally
     if Result.Y>0 then begin
-      Result:=PhysicalToLogicalPos(Result);
+      Result:=LogicalToPhysicalPos(Result);
     end;
   end;
 end;
@@ -8071,13 +9286,15 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
-procedure TCustomSynEdit.GetWordBoundsAtRowCol(XY: TPoint; var StartX,
+procedure TCustomSynEdit.GetWordBoundsAtRowCol(const XY: TPoint; var StartX,
   EndX: integer);
+// all params are logical (byte) positions
 var
   Line: string;
   IdChars: TSynIdentChars;
   Len: integer;
 begin
+  //debugln('TCustomSynEdit.GetWordBoundsAtRowCol A ',dbgs(XY));
   StartX:=XY.X;
   EndX:=XY.X;
   if (XY.Y >= 1) and (XY.Y <= Lines.Count) then begin
@@ -8269,9 +9486,19 @@ begin
   end;
 end;
 
+{$IFDEF SYN_LAZARUS}
+function TCustomSynEdit.LogicalToPhysicalPos(const p: TPoint): TPoint;
 // LogicalToPhysicalPos takes a position in the text and transforms it into
 // the row and column it appears to be on the screen
+begin
+  Result := p;
+  if Result.Y - 1 < Lines.Count then
+    Result.X:=LogicalToPhysicalCol(Lines[Result.Y - 1],Result.X);
+end;
+{$ELSE}
 function TCustomSynEdit.LogicalToPhysicalPos(p: TPoint): TPoint;
+// LogicalToPhysicalPos takes a position in the text and transforms it into
+// the row and column it appears to be on the screen
 var
   s: string;
   i, L: integer;
@@ -8279,43 +9506,110 @@ var
 begin
   if p.Y - 1 < Lines.Count then begin
     s := Lines[p.Y - 1];
-    l := Length(s);
-    x := 0;
-    for i := 1 to p.x - 1 do begin
-      if (i <= l) and (s[i] = #9) then
-        inc(x, TabWidth - (x mod TabWidth))
-      else
-        inc(x);
+    if UseUTF8 then begin
+    end else begin
+      l := Length(s);
+      x := 0;
+      for i := 1 to p.x - 1 do begin
+        if (i <= l) and (s[i] = #9) then
+          inc(x, TabWidth - (x mod TabWidth))
+        else
+          inc(x);
+      end;
+      p.x := x + 1;
     end;
-    p.x := x + 1;
   end;
   Result := p;
 end;
+{$ENDIF}
 
 {$IFDEF SYN_LAZARUS}
-// copied from synedit 1.4
-function TCustomSynEdit.PhysicalToLogicalPos(p: TPoint): TPoint;
-var
-  s: string;
-  i, L: integer;
-  x: integer;
+function TCustomSynEdit.LogicalToPhysicalCol(const Line: string;
+  LogicalPos: integer): integer;
 begin
-  if p.Y <= lines.Count then begin
-    s := Lines[p.Y - 1];
-    l := Length(s);
-    x := 0;
-    i := 0;
+  Result:=LogicalToPhysicalCol(PChar(Line),length(Line),LogicalPos,1,1);
+end;
 
-    while x < p.X  do begin
-      inc(i);
-      if (i <= l) and (s[i] = #9) then
-        inc(x, TabWidth - (x mod TabWidth))
-      else
-        inc(x);
+function TCustomSynEdit.LogicalToPhysicalCol(Line: PChar; LineLen: integer;
+  LogicalPos, StartBytePos, StartPhysicalPos: integer): integer;
+// Note: LogicalPos, StartBytePos, StartPhysicalPos start at 1
+var
+  BytePos, ByteLen: integer;
+  ScreenPos: integer;
+begin
+  ByteLen := LineLen;
+  // map UTF8 and Tab chars
+  ScreenPos := StartPhysicalPos;
+  BytePos:= StartBytePos;
+  while BytePos<LogicalPos do begin
+    if (BytePos <= ByteLen) then begin
+      if Line[BytePos-1] = #9 then begin
+        inc(ScreenPos, TabWidth - ((ScreenPos-1) mod TabWidth));
+        inc(BytePos);
+      end else begin
+        inc(ScreenPos);
+        if UseUTF8 then
+          inc(BytePos,UTF8CharacterLength(@Line[BytePos-1]))
+        else
+          inc(BytePos);
+      end;
+    end else begin
+      // beyond end of line
+      inc(ScreenPos,LogicalPos-BytePos);
+      break;
     end;
-    p.X := i;
   end;
+  if (BytePos>LogicalPos) and (ScreenPos>StartPhysicalPos) then
+    dec(ScreenPos);
+  Result := ScreenPos;
+end;
+
+function TCustomSynEdit.PhysicalToLogicalPos(const p: TPoint): TPoint;
+// converts physical (screen) to logical (bytes)
+begin
   Result := p;
+  if (Result.Y>=1) and (Result.Y <= Lines.Count) then
+    Result.X:=PhysicalToLogicalCol(Lines[Result.Y - 1],Result.X,1,1);
+end;
+
+function TCustomSynEdit.PhysicalToLogicalCol(const Line: string;
+  PhysicalPos: integer): integer;
+begin
+  Result:=PhysicalToLogicalCol(Line,PhysicalPos,1,1);
+end;
+
+function TCustomSynEdit.PhysicalToLogicalCol(const Line: string;
+  PhysicalPos, StartBytePos, StartPhysicalPos: integer): integer;
+// converts physical (screen) to logical (bytes)
+var
+  BytePos, ByteLen: integer;
+  ScreenPos: integer;
+begin
+  ByteLen := Length(Line);
+  ScreenPos := StartPhysicalPos;
+  BytePos := StartBytePos;
+  // map utf and tab chars
+  while ScreenPos < PhysicalPos do begin
+    if (BytePos <= ByteLen) then begin
+      if (Line[BytePos] = #9) then begin
+        inc(ScreenPos, TabWidth - ((ScreenPos-1) mod TabWidth));
+        inc(BytePos);
+      end else begin
+        inc(ScreenPos);
+        if UseUTF8 then
+          inc(BytePos,UTF8CharacterLength(@Line[BytePos]))
+        else
+          inc(BytePos);
+      end;
+    end else begin
+      // beyond end of line
+      inc(BytePos,PhysicalPos-ScreenPos);
+      break;
+    end;
+  end;
+  if (ScreenPos>PhysicalPos) and (BytePos>1) then
+    dec(BytePos);
+  Result := BytePos;
 end;
 {$ENDIF}
 
@@ -8549,7 +9843,7 @@ end;
 
 function TSynEditMarkList.Remove(Item: TSynEditMark): Integer;
 begin
-  result := inherited Remove(Item);
+  Result := inherited Remove(Item);
   DoChange;
 end;
 

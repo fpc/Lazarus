@@ -60,6 +60,7 @@ procedure DrawArrow(Arrow: TComponent; Canvas: TPersistent); {$IFDEF IF_BASE_MEM
 
 function ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
+function FontCanUTF8(Font: HFont): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function Frame(DC: HDC; const ARect: TRect): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function Frame3d(DC: HDC; var ARect: TRect; const FrameWidth : integer; const Style : TGraphicsBevelCut): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
@@ -153,6 +154,9 @@ procedure RaiseLastOSError;
 { =============================================================================
 
   $Log$
+  Revision 1.26  2004/09/04 22:24:16  mattias
+  added default values for compiler skip options and improved many parts of synedit for UTF8
+
   Revision 1.25  2004/09/02 09:16:59  mattias
   improved double byte char fonts for gtk1, started synedit UTF8 support
 

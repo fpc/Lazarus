@@ -120,6 +120,11 @@ begin
   Result:=ExtTextOut(DC,X,Y,Options,Rect,Str,Count,Dx);
 end;
 
+function TWidgetSet.FontCanUTF8(Font: HFont): boolean;
+begin
+  Result:=false;
+end;
+
 function TWidgetSet.Frame(DC: HDC; const ARect: TRect) : integer;
 begin
   Result:= 0;
@@ -641,6 +646,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.30  2004/09/04 22:24:16  mattias
+  added default values for compiler skip options and improved many parts of synedit for UTF8
+
   Revision 1.29  2004/09/02 09:16:59  mattias
   improved double byte char fonts for gtk1, started synedit UTF8 support
 

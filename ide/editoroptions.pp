@@ -1576,7 +1576,7 @@ begin
       DefFGCol:=clWhite;
     end;
   end
-  else if lowercase(SynColorScheme)='ocean'  then begin
+  else if lowercase(SynColorScheme)='ocean' then begin
     // default for ocean color scheme
     DefBGCol:=clNavy;
     DefFGCol:=clYellow;

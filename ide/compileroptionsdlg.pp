@@ -993,11 +993,12 @@ begin
   Options.ExecuteBefore.ShowAllMessages:=ExecuteBeforeShowAllCheckBox.Checked;
   if Options.ExecuteBefore is TProjectCompilationTool
   then begin
-    TProjectCompilationTool(Options.ExecuteBefore).CompileReasons := MakeCompileReasons(
-      chkExecBeforeCompile,
-      chkExecBeforeBuild,
-      chkExecBeforeRun
-    );
+    TProjectCompilationTool(Options.ExecuteBefore).CompileReasons :=
+      MakeCompileReasons(
+        chkExecBeforeCompile,
+        chkExecBeforeBuild,
+        chkExecBeforeRun
+      );
   end;
 
   Options.CompilerPath := edtCompiler.Text;

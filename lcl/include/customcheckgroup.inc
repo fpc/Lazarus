@@ -202,12 +202,6 @@ begin
   end;
 end;
 
-procedure TCustomCheckGroup.WMSize(var Message: TLMSize);
-begin
-  DoPositionButtons;
-  inherited WMSize(Message);
-end;
-
 procedure TCustomCheckGroup.DefineProperties(Filer: TFiler);
 begin
   inherited DefineProperties(Filer);
@@ -278,6 +272,9 @@ end;
 
 {
   $Log$
+  Revision 1.10  2004/09/04 22:24:16  mattias
+  added default values for compiler skip options and improved many parts of synedit for UTF8
+
   Revision 1.9  2004/08/15 17:00:58  mattias
   improved DefineProperties to read/write endian independent
 

@@ -104,6 +104,17 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TGTKWidgetSet.FontCanUTF8(Font: HFont): boolean;
+  
+  True if font recognizes Unicode.
+ ------------------------------------------------------------------------------}
+function TGTKWidgetSet.FontCanUTF8(Font: HFont): boolean;
+begin
+  Result:=IsValidGDIObject(Font)
+          and FontIsDoubleByteCharsFont(PGdiObject(Font)^.GDIFontObject);
+end;
+
+{------------------------------------------------------------------------------
   Function: GetAcceleratorString
   Params: AVKey:
           AShiftState:
@@ -501,6 +512,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.31  2004/09/04 22:24:16  mattias
+  added default values for compiler skip options and improved many parts of synedit for UTF8
+
   Revision 1.30  2004/09/02 09:17:00  mattias
   improved double byte char fonts for gtk1, started synedit UTF8 support
 
