@@ -3575,9 +3575,9 @@ begin
     begin
       if ALCLObject is TCustomComboBox then begin
         ConnectSenderSignalAfter(PgtkObject(PgtkCombo(gObject)^.popwin),
-          'show', @gtkComboBoxShowCB);
+          'show', @gtkComboBoxShowAfter);
         ConnectSenderSignalAfter(PgtkObject(PgtkCombo(gObject)^.popwin),
-          'hide', @gtkComboBoxHideCB);
+          'hide', @gtkComboBoxHideAfter);
       end;
     end;
     
@@ -3585,7 +3585,7 @@ begin
     begin
       if ALCLObject is TCustomListBox then begin
         ConnectSenderSignalAfter(PgtkObject(gCore),
-          'selection_changed', @gtkListBoxSelectionChangedCB);
+          'selection_changed', @gtkListBoxSelectionChangedAfter);
       end;
     end;
 
@@ -7010,6 +7010,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.628  2005/02/17 02:10:52  mattias
+  fixed gtk2 intf checking if signal already connected
+
   Revision 1.627  2005/02/17 00:05:25  mattias
   fixed some gtk2 intf warnings
 

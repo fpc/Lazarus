@@ -1191,7 +1191,7 @@ begin
     if (not (TControl(Data) is TCustomNoteBook))
     or (event^.Button<>1) then begin
       g_signal_stop_emission_by_name(PGTKObject(Widget),'button-press-event');
-			result := false;
+      result := false;
     end;
   end;
   //debugln('[gtkMouseBtnPress] calling DeliverMouseDownMessage');
@@ -1329,11 +1329,10 @@ begin
 
   {$IFDEF VerboseMouseBugfix}
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseRelease);
-  DebugLn('[gtkMouseBtnRelease] A ',
-    TComponent(Data).Name,':',TObject(Data).ClassName,' ',
+  DebugLn('[gtkMouseBtnRelease] A ',DbgSName(TObject(Data)),' ',
     ' Widget=',HexStr(Cardinal(Widget),8),
-    ' DSO=',DesignOnlySignal,
-    ' ',TruncToInt(Event^.X),',',TruncToInt(Event^.Y),' Btn=',event^.Button);
+    ' DSO=',dbgs(DesignOnlySignal),
+    ' ',dbgs(TruncToInt(Event^.X)),',',dbgs(TruncToInt(Event^.Y)),' Btn=',dbgs(event^.Button));
   {$ENDIF}
 
   //DebugLn('EEE1 MouseRelease Widget=',HexStr(Cardinal(Widget),8),
@@ -1372,11 +1371,11 @@ function gtkMouseBtnReleaseAfter(widget: PGtkWidget; event : pgdkEventButton;
 begin
   Result := CallBackDefaultReturn;
 
-  {$IFDEF VerboseMouseBugfix}
-  {DebugLn('[gtkMouseBtnReleaseAfter] ',
-    TControl(Data).Name,':',TObject(Data).ClassName,' ',
-    TruncToInt(Event^.X),',',TruncToInt(Event^.Y));}
-  {$ENDIF}
+  { $IFDEF VerboseMouseBugfix}
+  DebugLn('[gtkMouseBtnReleaseAfter] ',DbgSName(TObject(Data)),' ',
+    ' Widget=',HexStr(Cardinal(Widget),8),
+    ' ',dbgs(TruncToInt(Event^.X)),',',dbgs(TruncToInt(Event^.Y)),' Btn=',dbgs(event^.Button));
+  { $ENDIF}
 
   // stop the signal, so that it is not sent to the parent widgets
   g_signal_stop_emission_by_name(PGTKObject(Widget),'button-release-event');
@@ -2935,15 +2934,15 @@ begin
   //ReleaseAllStyles;
 end;
 
-function gtkListBoxSelectionChangedCB(widget: PGtkWidget; data: gPointer
+function gtkListBoxSelectionChangedAfter(widget: PGtkWidget; data: gPointer
   ): GBoolean; cdecl;
 var
   Mess: TLMessage;
 begin
-  //debugln('gtkListBoxSelectionChangedCB ',GetWidgetDebugReport(Widget));
+  //debugln('gtkListBoxSelectionChangedAfter ',GetWidgetDebugReport(Widget));
   Result := CallBackDefaultReturn;
 
-  EventTrace('selection_changed', data);
+  EventTrace('gtkListBoxSelectionChangedAfter', data);
   FillChar(Mess,SizeOf(Mess),0);
   Mess.msg := LM_SelChange;
   DeliverMessage(Data, Mess);
@@ -2964,6 +2963,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.267  2005/02/17 02:10:52  mattias
+  fixed gtk2 intf checking if signal already connected
+
   Revision 1.266  2005/02/17 00:05:25  mattias
   fixed some gtk2 intf warnings
 

@@ -157,6 +157,7 @@ function dbgMemStream(MemStream: TCustomMemoryStream; Count: integer): string;
 function dbgObjMem(AnObject: TObject): string;
 
 function DbgS(const i1,i2,i3,i4: integer): string;
+function DbgS(const Shift: TShiftState): string;
 
 // UTF utility functions
 // MG: Should be moved to the RTL
@@ -1110,6 +1111,35 @@ end;
 function DbgS(const i1, i2, i3, i4: integer): string;
 begin
   Result:=dbgs(i1)+','+dbgs(i2)+','+dbgs(i3)+','+dbgs(i4);
+end;
+
+function DbgS(const Shift: TShiftState): string;
+
+  procedure Add(const s: string);
+  begin
+    if Result<>'' then Result:=Result+',';
+    Result:=Result+s;
+  end;
+
+begin
+  Result:='';
+  if ssShift in Shift then Add('ssShift');
+  if ssAlt in Shift then Add('ssAlt');
+  if ssCtrl in Shift then Add('ssCtrl');
+  if ssLeft in Shift then Add('ssLeft');
+  if ssRight in Shift then Add('ssRight');
+  if ssMiddle in Shift then Add('ssMiddle');
+  if ssDouble in Shift then Add('ssDouble');
+  if ssMeta in Shift then Add('ssMeta');
+  if ssSuper in Shift then Add('ssSuper');
+  if ssHyper in Shift then Add('ssHyper');
+  if ssAltGr in Shift then Add('ssAltGr');
+  if ssCaps in Shift then Add('ssCaps');
+  if ssNum in Shift then Add('ssNum');
+  if ssScroll in Shift then Add('ssScroll');
+  if ssTriple in Shift then Add('ssTriple');
+  if ssQuad in Shift then Add('ssQuad');
+  Result:='['+Result+']';
 end;
 
 function UTF8CharacterLength(p: PChar): integer;

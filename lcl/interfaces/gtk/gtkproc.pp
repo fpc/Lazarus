@@ -233,7 +233,7 @@ function ClipboardSelectionLostOwnershipHandler(TargetWidget: PGtkWidget;
 
 procedure GTKStyleChanged(Widget: PGtkWidget; previous_style :
   PGTKStyle; Data: Pointer); cdecl;
-function gtkListBoxSelectionChangedCB(widget: PGtkWidget;
+function gtkListBoxSelectionChangedAfter(widget: PGtkWidget;
                                       data: gPointer): GBoolean; cdecl;
 
 // gtkDragCallback.inc headers
@@ -275,8 +275,8 @@ function gtkLVUnSelectAll(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
 function gtkLVEndSelection(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
 
 // gtkcomboboxcallbacks.inc headers
-function gtkComboBoxShowCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
-function gtkComboBoxHideCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkComboBoxShowAfter(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkComboBoxHideAfter(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 
 // gtkpagecallbacks.inc headers
 function PageIconWidgetExposeAfter(Widget: PGtkWidget; Event: PGDKEventExpose;

@@ -4427,74 +4427,85 @@ begin
           and DesignSignalMasks[DesignSignalType])<>0;
 end;
 
-procedure ConnectSignal(const AnObject:PGTKObject; const ASignal: PChar;
+function SignalConnected(const AnObject:PGTKObject; const ASignal: PChar;
   const ACallBackProc: Pointer; const ALCLObject: TObject;
-  const AReqSignalMask: TGdkEventMask; const ASFlags: TConnectSignalFlags);
+  const ASFlags: TConnectSignalFlags): boolean;
+{$IFDEF Gtk1}
 var
-  RealizeHandler, Handler: PGTKHandler;
-  RealizeID, SignalID: guint;
-  WinWidgetInfo: PWinWidgetInfo;
-  MainWidget: PGtkWidget;
-  OldDesignMask, NewDesignMask: TDesignSignalMask;
-  DesignSignalType: TDesignSignalType;
+  Handler: PGTKHandler;
+  SignalID: guint;
 begin
-  if ACallBackProc = nil then exit;
-
-  // first loop through the handlers to:
-  // - check if a handler already exists
-  // - Find the realize handler to change data
   Handler := gtk_object_get_data_by_id (AnObject, gtk_handler_quark);
   SignalID := g_signal_lookup(ASignal, GTK_OBJECT_TYPE(AnObject));
   if SignalID<0 then
-    RaiseGDBException('ConnectSignal');
-  if csfConnectRealize in ASFlags then
-    RealizeID := g_signal_lookup('realize', GTK_OBJECT_TYPE(AnObject))
-  else
-    RealizeID := 0;
-  RealizeHandler := nil;
-  DesignSignalType:=DesignSignalNameToType(ASignal,csfAfter in ASFlags);
+    RaiseGDBException('SignalConnected');
 
   while (Handler <> nil) do begin
     with Handler^ do
     begin
       // check if signal is already connected
+      //debugln('ConnectSignal Id=',dbgs(Id));
       if  (Id > 0)
       and (Signal_ID = SignalID)
       and (Func = TGTKSignalFunc(ACallBackProc))
       and (func_data = Pointer(ALCLObject))
       and (((flags and bmSignalAfter)<>0)=(csfAfter in ASFlags))
       then begin
-        Assert(False, Format('Trace:WARNING: [ConnectSignal] %s signal <%s> set twice', [ALCLObject.ClassName, ASignal]));
         // signal is already connected
-        // update the DesignSignalMask
-        if (DesignSignalType <> dstUnknown)
-        and (not (csfDesignOnly in ASFlags))
-        then begin
-          OldDesignMask := GetDesignSignalMask(PGtkWidget(AnObject));
-          NewDesignMask :=
-            OldDesignMask and not DesignSignalMasks[DesignSignalType];
-          if OldDesignMask <> NewDesignMask
-          then SetDesignSignalMask(PGtkWidget(AnObject),NewDesignMask);
-        end;
+        Result:=true;
         Exit;
       end;
-
-      // look for realize handler
-      if  (csfConnectRealize in ASFlags)
-      and (Id > 0)
-      and (Signal_ID = RealizeID)
-      and (Func = TGTKSignalFunc(@GTKRealizeCB))
-      and (func_data = Pointer(ALCLObject))
-      and ((flags and bmSignalAfter)=0) // test if not after
-      then RealizeHandler := Handler;
 
       Handler := Next;
     end;
   end;
+  Result:=false;
+end;
+{$ELSE}
+begin
+  Result:= g_signal_handler_find(AnObject,
+    G_SIGNAL_MATCH_FUNC or G_SIGNAL_MATCH_DATA,
+    0,0,nil,ACallBackProc,ALCLObject)<>0;
+end;
+{$ENDIF}
 
+procedure ConnectSignal(const AnObject:PGTKObject; const ASignal: PChar;
+  const ACallBackProc: Pointer; const ALCLObject: TObject;
+  const AReqSignalMask: TGdkEventMask; const ASFlags: TConnectSignalFlags);
+var
+  WinWidgetInfo: PWinWidgetInfo;
+  MainWidget: PGtkWidget;
+  OldDesignMask, NewDesignMask: TDesignSignalMask;
+  DesignSignalType: TDesignSignalType;
+  RealizeConnected: Boolean;
+  HasRealizeSignal: Boolean;
+begin
+  if ACallBackProc = nil then exit;
+
+  // first loop through the handlers to:
+  // - check if a handler already exists
+  // - Find the realize handler to change data
+  DesignSignalType:=DesignSignalNameToType(ASignal,csfAfter in ASFlags);
+  if SignalConnected(AnObject,ASignal,ACallBackProc,ALCLObject,ASFlags) then
+  begin
+    // signal is already connected
+    // update the DesignSignalMask
+    if (DesignSignalType <> dstUnknown)
+    and (not (csfDesignOnly in ASFlags))
+    then begin
+      OldDesignMask := GetDesignSignalMask(PGtkWidget(AnObject));
+      NewDesignMask :=
+        OldDesignMask and not DesignSignalMasks[DesignSignalType];
+      if OldDesignMask <> NewDesignMask
+      then SetDesignSignalMask(PGtkWidget(AnObject),NewDesignMask);
+    end;
+    Exit;
+  end;
+  
   // if we are here, then no handler was defined yet
   // -> register handler
   //if (Msg=LM_LBUTTONUP) then DebugLn('CONNECT ',ReqSignalMask,' Widget=',HexStr(Cardinal(AnObject),8));
+  //debugln('ConnectSignal ',DbgSName(ALCLObject),' ',ASignal,' After=',dbgs(csfAfter in ASFlags));
   if csfAfter in ASFlags then
     g_signal_connect_after(AnObject, ASignal,
                            TGTKSignalFunc(ACallBackProc), ALCLObject)
@@ -4511,15 +4522,20 @@ begin
     WinWidgetInfo := GetWidgetInfo(MainWidget,true);
     WinWidgetInfo^.EventMask := WinWidgetInfo^.EventMask or AReqSignalMask;
   end;
+  
   // -> register realize handler
-  if (csfConnectRealize in ASFlags)
-  and (RealizeHandler = nil) and (RealizeID<>0)
-  then begin
-    //DebugLn('REALIZE CONNECT Widget=',HexStr(Cardinal(AnObject),8));
-    g_signal_connect(AnObject, 'realize',
-      TGTKSignalFunc(@GTKRealizeCB), ALCLObject);
-    g_signal_connect_after(AnObject, 'realize',
-      TGTKSignalFunc(@GTKRealizeAfterCB), ALCLObject);
+  if (csfConnectRealize in ASFlags) then begin
+    HasRealizeSignal:=g_signal_lookup('realize', GTK_OBJECT_TYPE(AnObject))>0;
+    if HasRealizeSignal then begin
+      RealizeConnected:=SignalConnected(AnObject,'realize',@GTKRealizeCB,
+                                        ALCLObject,[]);
+      if not RealizeConnected then begin
+        g_signal_connect(AnObject, 'realize',
+          TGTKSignalFunc(@GTKRealizeCB), ALCLObject);
+        g_signal_connect_after(AnObject, 'realize',
+          TGTKSignalFunc(@GTKRealizeAfterCB), ALCLObject);
+      end;
+    end;
   end;
 
   // update the DesignSignalMask
@@ -7995,6 +8011,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.335  2005/02/17 02:10:53  mattias
+  fixed gtk2 intf checking if signal already connected
+
   Revision 1.334  2005/02/16 23:31:16  mattias
   fixed define templates quotes
 

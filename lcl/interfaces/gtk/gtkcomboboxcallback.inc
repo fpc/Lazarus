@@ -15,12 +15,12 @@
  *****************************************************************************
 }
 
-function gtkComboBoxShowCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkComboBoxShowAfter(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 var
   Mess : TLMCommand;
 begin
   Result := True;
-  EventTrace('ComboBoxShow', data);
+  EventTrace('ComboBoxShowAfter', data);
   
   if (Widget=nil) then ;
   FillChar(Mess,SizeOf(Mess),0);
@@ -30,13 +30,13 @@ begin
   Result := DeliverMessage(Data, Mess) = 0;
 end;
 
-function gtkComboBoxHideCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkComboBoxHideAfter(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 var
   Mess : TLMCommand;
 begin
   Result := True;
   if (Widget=nil) then ;
-  EventTrace('ComboBoxHide', data);
+  EventTrace('ComboBoxHideAfter', data);
   FillChar(Mess,SizeOf(Mess),0);
   Mess.Msg := CN_Command;
   Mess.NotifyCode := CBN_CLOSEUP;
