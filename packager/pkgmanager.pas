@@ -54,6 +54,7 @@ uses
 type
   TPkgManager = class(TBasePkgManager)
     procedure MainIDEitmPkgOpenPackageFileClick(Sender: TObject);
+    procedure MainIDEitmPkgPkgGraphClick(Sender: TObject);
     function OnPackageEditorCreateFile(Sender: TObject;
       const Params: TAddToPkgResult): TModalResult;
     procedure OnPackageEditorGetUnitRegisterInfo(Sender: TObject;
@@ -63,7 +64,7 @@ type
       ): TModalResult;
     procedure OnPackageEditorSavePackage(Sender: TObject);
     procedure mnuConfigCustomCompsClicked(Sender: TObject);
-    procedure mnuOpenInstalledPckClicked(Sender: TObject);
+    procedure mnuPkgEditPackageClicked(Sender: TObject);
     procedure mnuOpenRecentPackageClicked(Sender: TObject);
   private
     function DoShowSavePackageAsDialog(APackage: TLazPackage): TModalResult;
@@ -88,6 +89,7 @@ type
                          Flags: TPkgOpenFlags): TModalResult; override;
     function DoSavePackage(APackage: TLazPackage;
                            Flags: TPkgSaveFlags): TModalResult; override;
+    function DoShowPackageGraph: TModalResult;
   end;
 
 implementation
@@ -120,6 +122,11 @@ begin
   finally
     OpenDialog.Free;
   end;
+end;
+
+procedure TPkgManager.MainIDEitmPkgPkgGraphClick(Sender: TObject);
+begin
+  DoShowPackageGraph;
 end;
 
 function TPkgManager.OnPackageEditorCreateFile(Sender: TObject;
@@ -210,7 +217,7 @@ begin
   ShowConfigureCustomComponents;
 end;
 
-procedure TPkgManager.mnuOpenInstalledPckClicked(Sender: TObject);
+procedure TPkgManager.mnuPkgEditPackageClicked(Sender: TObject);
 begin
   DoShowOpenInstalledPckDlg;
 end;
@@ -430,8 +437,9 @@ procedure TPkgManager.ConnectMainBarEvents;
 begin
   with MainIDE do begin
     itmCompsConfigCustomComps.OnClick :=@mnuConfigCustomCompsClicked;
-    itmPkgOpenInstalled.OnClick :=@mnuOpenInstalledPckClicked;
+    itmPkgEditPackage.OnClick :=@mnuPkgEditPackageClicked;
     itmPkgOpenPackageFile.OnClick:=@MainIDEitmPkgOpenPackageFileClick;
+    itmPkgPkgGraph.OnClick:=@MainIDEitmPkgPkgGraphClick;
   end;
   
   SetRecentPackagesMenu;
@@ -659,6 +667,11 @@ begin
   end;
 
   Result:=mrOk;
+end;
+
+function TPkgManager.DoShowPackageGraph: TModalResult;
+begin
+  Result:=mrCancel;
 end;
 
 end.

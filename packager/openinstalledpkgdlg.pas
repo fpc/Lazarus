@@ -219,7 +219,7 @@ constructor TOpenInstalledPackagesDlg.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   Name:='OpenInstalledPackagesDlg';
-  Caption:='Open installed package';
+  Caption:='Open loaded package';
   SetupComponents;
   OnResize:=@OpenInstalledPackagesDlgResize;
   Position:=poScreenCenter;

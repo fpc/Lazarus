@@ -1074,7 +1074,6 @@ begin
     FDirectory:=FFilename
   else
     FDirectory:=ExtractFilePath(FFilename);
-writeln('TLazPackage.SetFilename A "',FFilename,'" "',FDirectory,'" HasDirectory=',HasDirectory);
   Modified:=true;
 end;
 

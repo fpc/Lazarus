@@ -206,9 +206,10 @@ resourcestring
   lisMenuRunParameters = 'Run Parameters ...';
   
   lisMenuConfigCustomComps = 'Configure custom components';
-  lisMenuOpenInstalledPkg = 'Open installed package';
+  lisMenuEditPackage = 'Edit package';
   lisMenuOpenRecentPkg = 'Open recent package';
   lisMenuOpenPackageFile = 'Open package file';
+  lisMenuPackageGraph = 'Package Graph';
 
   lisMenuSettings = 'Configure custom tools ...';
   lisMenuQuickSyntaxCheck = 'Quick syntax check';
@@ -456,7 +457,7 @@ resourcestring
   dlgScrollByOneLess = 'Scroll By One Less';
   dlgScrollPastEndFile = 'Scroll Past End of File';
   dlgScrollPastEndLine = 'Scroll Past End of Line';
-  dlgCloseButtonsNotebook = 'Close buttons in notebook';
+  dlgCloseButtonsNotebook = 'Show Close Buttons in notebook';
   dlgShowScrollHint = 'Show Scroll Hint';
   dlgMouseLinks = 'Mouse links';
   dlgSmartTabs = 'Smart Tabs';

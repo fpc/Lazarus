@@ -281,9 +281,10 @@ type
     
     // components menu
     itmCompsConfigCustomComps: TMenuItem;
-    itmPkgOpenInstalled: TMenuItem;
+    itmPkgEditPackage: TMenuItem;
     itmPkgOpenPackageFile: TMenuItem;
     itmPkgOpenRecent: TMenuItem;
+    itmPkgPkgGraph: TMenuItem;
 
     // tools menu
     itmToolConfigure: TMenuItem;
@@ -863,6 +864,7 @@ begin
   itmViewCodeExplorer := TMenuItem.Create(Self);
   itmViewCodeExplorer.Name:='itmViewCodeExplorer';
   itmViewCodeExplorer.Caption := lisMenuViewCodeExplorer;
+  itmViewCodeExplorer.Enabled := false;
   mnuView.Add(itmViewCodeExplorer);
 
   mnuView.Add(CreateMenuSeparator);
@@ -1082,11 +1084,11 @@ begin
   mnuComponents.Add(CreateMenuSeparator);
   {$ENDIF}
 
-  itmPkgOpenInstalled := TMenuItem.Create(Self);
-  itmPkgOpenInstalled.Name:='itmPkgOpenInstalled';
-  itmPkgOpenInstalled.Caption := lisMenuOpenInstalledPkg;
+  itmPkgEditPackage := TMenuItem.Create(Self);
+  itmPkgEditPackage.Name:='itmPkgEditPackage';
+  itmPkgEditPackage.Caption := lisMenuEditPackage;
   {$IFDEF EnablePkgs}
-  mnuComponents.Add(itmPkgOpenInstalled);
+  mnuComponents.Add(itmPkgEditPackage);
   {$ENDIF}
 
   itmPkgOpenPackageFile := TMenuItem.Create(Self);
@@ -1101,6 +1103,17 @@ begin
   itmPkgOpenRecent.Caption := lisMenuOpenRecentPkg;
   {$IFDEF EnablePkgs}
   mnuComponents.Add(itmPkgOpenRecent);
+  {$ENDIF}
+
+  {$IFDEF EnablePkgs}
+  mnuComponents.Add(CreateMenuSeparator);
+  {$ENDIF}
+
+  itmPkgPkgGraph := TMenuItem.Create(Self);
+  itmPkgPkgGraph.Name:='itmPkgPkgGraph';
+  itmPkgPkgGraph.Caption := lisMenuPackageGraph;
+  {$IFDEF EnablePkgs}
+  mnuComponents.Add(itmPkgPkgGraph);
   {$ENDIF}
 end;
 
@@ -1305,8 +1318,9 @@ begin
 
     // components menu
     itmCompsConfigCustomComps.ShortCut:=CommandToShortCut(ecConfigCustomComps);
-    itmPkgOpenInstalled.ShortCut:=CommandToShortCut(ecOpenInstalledPkg);
+    itmPkgEditPackage.ShortCut:=CommandToShortCut(ecEditPackage);
     itmPkgOpenPackageFile.ShortCut:=CommandToShortCut(ecOpenPackageFile);
+    itmPkgPkgGraph.ShortCut:=CommandToShortCut(ecPackageGraph);
 
     // tools menu
     itmToolConfigure.ShortCut:=CommandToShortCut(ecExtToolSettings);
