@@ -1,4 +1,4 @@
-program listboxtest;
+program memotest;
 
 {$mode objfpc}
 
@@ -8,14 +8,17 @@ uses
 type
   TMemoTestForm = class(TForm)
   public
-    Button1, Button2, Button3, Button4:   TButton;
+    Button1, Button2, Button3, Button4, Button5, Button6:   TButton;
     Memo1, Memo2:  TMemo;
     MyLabel: TLabel;
+    Edit1: TEdit;
     constructor Create(AOwner: TComponent); override;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
+    procedure Button5Click(Sender: TObject);
+    procedure Button6Click(Sender: TObject);
   end;
 
 var
@@ -27,17 +30,37 @@ var
 constructor TMemoTestForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Width := 300;
-  Height := 200;
+  Width := 350;
+  Height := 245;
   Left := 200;
   Top := 200;
 
   // create childs
+  Button5 := TButton.Create(Self);
+  Button5.OnClick := @button5click;
+  Button5.Parent := Self;
+  Button5.left := 10;
+  Button5.top := 210;
+  Button5.width := 50;
+  Button5.height := 25;
+  Button5.caption := 'Add';
+  Button5.Show;
+
+  Button3 := TButton.Create(Self);
+  Button3.OnClick := @Button3Click;
+  Button3.Parent := Self;
+  Button3.left := 65;
+  Button3.top := 210;
+  Button3.width := 50;
+  Button3.height := 25;
+  Button3.caption := 'Clear 1';
+  Button3.Show;
+
   Button1 := TButton.Create(Self);
   Button1.OnClick := @Button1Click;
   Button1.Parent := Self;
-  Button1.left := 40;
-  Button1.top :=  170;
+  Button1.left := 120;
+  Button1.top :=  210;
   Button1.width := 50;
   Button1.height := 25;
   Button1.caption := '->';
@@ -46,32 +69,40 @@ begin
   Button2 := TButton.Create(Self);
   Button2.OnClick := @Button2Click;
   Button2.Parent := Self;
-  Button2.left := 95;
-  Button2.top := 170;
+  Button2.left := 175;
+  Button2.top := 210;
   Button2.width := 50;
   Button2.height := 25;
   Button2.caption := '<-';
   Button2.Show;
 
-  Button3 := TButton.Create(Self);
-  Button3.OnClick := @Button3Click;
-  Button3.Parent := Self;
-  Button3.left := 150;
-  Button3.top := 170;
-  Button3.width := 50;
-  Button3.height := 25;
-  Button3.caption := 'Clear 1';
-  Button3.Show;
-
   Button4 := TButton.Create(Self);
   Button4.OnClick := @button4click;
   Button4.Parent := Self;
-  Button4.left := 205;
-  Button4.top := 170;
+  Button4.left := 230;
+  Button4.top := 210;
   Button4.width := 50;
   Button4.height := 25;
   Button4.caption := 'Clear 2';
   Button4.Show;
+  
+  Button6 := TButton.Create(Self);
+  Button6.OnClick := @button6click;
+  Button6.Parent := Self;
+  Button6.left := 285;
+  Button6.top := 210;
+  Button6.width := 50;
+  Button6.height := 25;
+  Button6.caption := 'Add';
+  Button6.Show;
+
+  Edit1 := TEdit.Create(Self);
+  Edit1.Parent := Self;
+  Edit1.Top := 180;
+  Edit1.Height := 25;
+  Edit1.Left := 10;
+  Edit1.Width := 325;
+  Edit1.Visible := True;
 
   MyLabel := TLabel.Create(Self);
   with MyLabel
@@ -88,23 +119,26 @@ begin
   Memo1 := TMemo.Create(Self);
   with Memo1
   do begin
+    WordWrap := True;
     Parent := Self;
     Left := 10;
     Top := 20;
-    Width := 135;
+    Width := 160;
     Height := 155;
+    Scrollbars := ssVertical;
     Show;
   end;
 
   Memo2 := TMemo.Create(Self);
   with Memo2
   do begin
+    WordWrap := False;
     Parent := Self;
-    WordWrap := false;
-    Left := 145;
+    Left := 175;
     Top := 20;
-    Width := 135;
+    Width := 160;
     Height := 155;
+    Scrollbars := ssBoth;
     Show;
   end;
 end;
@@ -127,6 +161,16 @@ end;
 procedure TMemoTestForm.Button4Click(Sender: TObject);
 begin
   Memo2.Text := '';
+end;
+
+procedure TMemoTestForm.Button5Click(Sender: TObject);
+begin
+  Memo1.Lines.Add(Edit1.Text);
+end;
+
+procedure TMemoTestForm.Button6Click(Sender: TObject);
+begin
+  Memo2.Lines.Add(Edit1.Text);
 end;
 
 begin

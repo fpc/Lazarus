@@ -1174,22 +1174,28 @@ procedure TControl.SetText(const Value: TCaption);
 var
   pStr : PChar;
 begin
-   if GetText <> value
-   then begin
-//  added on 3/21/2000.  Need to set FCaption otherwise those components that simply
-//  check FCaption will always be wrong.
+  if GetText <> value
+  then begin
+    //  added on 3/21/2000.  Need to set FCaption otherwise those components that simply
+    //  check FCaption will always be wrong.
     FCaption := Value;
 
-     //We shouldn't NEED to create our own PCHAR.  We should be able
-     //to typecast VALUE as a PCHAR but it doesn't work.
-     pStr := StrAlloc(length(Value) + 1);
-     try
-       StrPCopy(pStr, value);
-       SetTextBuf(pStr);
-     finally
-       strDispose(pStr);
-     end;
-   end;
+  {$IFOPT H+}
+    SetTextBuf(PChar(FCaption));
+  {$ELSE}
+    //We shouldn't NEED to create our own PCHAR.  We should be able
+    //to typecast VALUE as a PCHAR but it doesn't work.
+    //
+    // MWE: that's because strings were short strings
+    pStr := StrAlloc(length(Value) + 1);
+    try
+      StrPCopy(pStr, value);
+      SetTextBuf(pStr);
+    finally
+      strDispose(pStr);
+    end;
+  {$ENDIF}
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1302,6 +1308,11 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.18  2001/03/27 21:12:53  lazarus
+  MWE:
+    + Turned on longstrings
+    + modified memotest to add lines
+
   Revision 1.17  2001/03/21 23:48:29  lazarus
   MG: fixed window positions
 

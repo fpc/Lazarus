@@ -28,7 +28,7 @@ Detailed description of the Unit.
 unit InterfaceBase;
 
 {$mode objfpc}
-
+{$LONGSTRINGS ON}
 interface
 
 {$ifdef Trace}
@@ -81,6 +81,11 @@ end.
 
 {
   $Log$
+  Revision 1.3  2001/03/27 21:12:53  lazarus
+  MWE:
+    + Turned on longstrings
+    + modified memotest to add lines
+
   Revision 1.2  2001/02/01 19:34:50  lazarus
   TScrollbar created and a lot of code added.
 

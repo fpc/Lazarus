@@ -28,7 +28,7 @@ Detailed description of the Unit.
 unit stdctrls;
 
 {$mode objfpc}
-{$H+}
+{$LONGSTRINGS ON}
 interface
 
 uses  vclglobals, classes, sysutils, Graphics, LMessages, Controls, forms;
@@ -570,6 +570,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.14  2001/03/27 21:12:53  lazarus
+  MWE:
+    + Turned on longstrings
+    + modified memotest to add lines
+
   Revision 1.13  2001/02/02 14:23:38  lazarus
   Start of code completion code.
   Shane

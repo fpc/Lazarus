@@ -59,37 +59,50 @@ begin
     dec(n);
   end;
 
-  if (FDeviceContexts.Count > 0) or (FGDIObjects.Count > 0)
+  if (FDeviceContexts.Count > 0)
   then begin
-    WriteLN(Format('[TgtkObject.Destroy] WARNING: There are %d unreleased DCs and %d unreleased GDIObjects' ,[FDeviceContexts.Count, FGDIObjects.Count]));
+    WriteLN(Format('[TgtkObject.Destroy] WARNING: There are %d unreleased DCs, a detailed dump follows:' ,[FDeviceContexts.Count]));
+    
     n:=0;
-    write('DCs:  ');
+    write('[TgtkObject.Destroy]   DCs:  ');
     HashItem:=FDeviceContexts.FirstHashItem;
-    while (n<7) and (HashItem<>nil) do begin
+    while (n<7) and (HashItem<>nil) do 
+    begin
       write(' ',HexStr(Cardinal(HashItem^.Item),8));
       HashItem:=HashItem^.Next;
       inc(n);
     end;
     writeln();
-    n:=0;
-    write('GDIOs:');
-    HashItem:=FGDIObjects.FirstHashItem;
-    for GDIType := Low(GDIType) to High(GDIType) do 
-      GDITypeCount[GDIType] := 0;
-    while (HashItem<>nil) do begin
-      if n<7 then write(' ',HexStr(Cardinal(HashItem^.Item),8));
-      Inc(GDITypeCount[PGdiObject(HashItem^.Item)^.GDIType]);
-      HashItem:=HashItem^.Next;
-      inc(n);
-    end; 
-    writeln();
+  end;
+
+  if (FGDIObjects.Count > 0)  
+  then begin  
+    WriteLN(Format('[TgtkObject.Destroy] WARNING: There are %d unreleased GDIObjects, a detailed dump follows:' ,[FGDIObjects.Count]));  
     for GDIType := Low(GDIType) to High(GDIType) do 
     begin
-      if GDITypeCount[GDIType] > 0 
-      then WriteLN(Format('[TgtkObject.Destroy]   %s: %d',
-        [GDITYPENAME[GDIType], GDITypeCount[GDIType]]));
-    end
+      for GDIType := Low(GDIType) to High(GDIType) do 
+        GDITypeCount[GDIType] := 0;
+        
+      n:=0;
+      write('[TgtkObject.Destroy]   GDIOs:');
+      HashItem := FGDIObjects.FirstHashItem;
+      while (HashItem <> nil) do 
+      begin
+        if n < 7 
+        then write(' ',HexStr(Cardinal(HashItem^.Item),8));
+        
+        Inc(GDITypeCount[PGdiObject(HashItem^.Item)^.GDIType]);
+        HashItem := HashItem^.Next;
+        Inc(n);
+      end; 
+      Writeln();
+      
+      for GDIType := Low(GDIType) to High(GDIType) do 
+        if GDITypeCount[GDIType] > 0 
+        then WriteLN(Format('[TgtkObject.Destroy]   %s: %d', [GDITYPENAME[GDIType], GDITypeCount[GDIType]]));
+    end;
   end;
+
   if FMessageQueue.Count > 0 
   then begin
     WriteLN(Format('[TgtkObject.Destroy] WARNING: There are %d messages left in the queue! I''ll free them' ,[FMessageQueue.Count]));
@@ -1858,7 +1871,28 @@ begin
 
       csMemo :
       begin
-         // Assert(False, 'Trace:Creating a MEMO...');
+        P := gtk_scrolled_window_new(nil, nil);
+        TempWidget := gtk_text_new(nil, nil);
+        gtk_text_set_editable (PGtkText(TempWidget), not (Sender as TMemo).ReadOnly);
+        gtk_text_set_word_wrap(PGtkText(TempWidget), Integer((Sender as TCustomMemo).WordWrap));
+        gtk_widget_show(TempWidget);
+        
+        gtk_container_add(p, TempWidget); 
+        case (Sender as TCustomMemo).Scrollbars of 
+          ssHorizontal: gtk_scrolled_window_set_policy(p, GTK_POLICY_ALWAYS, GTK_POLICY_NEVER);
+          ssVertical:   gtk_scrolled_window_set_policy(p, GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+          ssBoth:       gtk_scrolled_window_set_policy(p, GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
+        else
+          gtk_scrolled_window_set_policy(p, GTK_POLICY_NEVER, GTK_POLICY_NEVER);
+        end;
+
+        //--------------------------
+        // MWE: will be obsoleted
+        SetCoreChildWidget(p, TempWidget);
+        //--------------------------
+        GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
+        
+(*         // Assert(False, 'Trace:Creating a MEMO...');
          P := gtk_hbox_new(false, 0);
          TempWidget := gtk_text_new(nil,nil);
          gtk_text_set_editable (PGtkText(TempWidget), not (Sender as TMemo).ReadOnly);
@@ -1873,15 +1907,23 @@ begin
          GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
          SetMainWidget(p, TempWidget);
 
-         case (Sender as TCustomMemo).Scrollbars of
-         ssVertical, ssBoth:
-           begin
-             TempWidget := gtk_vscrollbar_new(PGtkText(TempWidget)^.vadj);
-             gtk_box_pack_start(PGtkBox(P), TempWidget, false, false, 0);
-             gtk_widget_show(TempWidget);
-             SetMainWidget(p, TempWidget);
-           end;
+         if (Sender as TCustomMemo).Scrollbars in [ssVertical, ssBoth]
+         then begin
+           TempWidget := gtk_vscrollbar_new(PGtkText(TempWidget)^.vadj);
+           gtk_box_pack_start(PGtkBox(P), TempWidget, false, false, 0);
+           gtk_widget_show(TempWidget);
+           SetMainWidget(p, TempWidget);
          end;
+{
+         if (Sender as TCustomMemo).Scrollbars in [ssHorizontal, ssBoth]
+         then begin
+           TempWidget := gtk_hscrollbar_new(PGtkText(TempWidget)^.hadj);
+           gtk_box_pack_start(PGtkBox(P), TempWidget, false, false, 0);
+           gtk_widget_show(TempWidget);
+           SetMainWidget(p, TempWidget);
+         end;
+}
+*)
          gtk_widget_show(P);
       end;
 
@@ -2775,6 +2817,11 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.42  2001/03/27 21:12:54  lazarus
+  MWE:
+    + Turned on longstrings
+    + modified memotest to add lines
+
   Revision 1.41  2001/03/27 14:27:43  lazarus
   Changes from Nagy Zsolt
   Shane

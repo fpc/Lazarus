@@ -21,6 +21,7 @@
 unit gtkint;
  
 {$mode objfpc} 
+{$LONGSTRINGS ON}
 
 interface
 
@@ -248,6 +249,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.12  2001/03/27 21:12:54  lazarus
+  MWE:
+    + Turned on longstrings
+    + modified memotest to add lines
+
   Revision 1.11  2001/03/19 18:51:57  lazarus
   MG: added dynhasharray and renamed tsynautocompletion
 

@@ -21,6 +21,7 @@
 unit controls;
      
 {$mode objfpc}
+{$LONGSTRINGS ON}
 
 interface
 
@@ -1130,6 +1131,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.18  2001/03/27 21:12:53  lazarus
+  MWE:
+    + Turned on longstrings
+    + modified memotest to add lines
+
   Revision 1.17  2001/03/26 14:58:31  lazarus
   MG: setwindowpos + bugfixes
 
