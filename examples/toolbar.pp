@@ -81,23 +81,16 @@ with ToolButton1 do
     OnClick := @Button1Click;
     Show;
   end;
-writeln('AAA1');
 Toolbutton2 := TToolButton.Create(Toolbar1);
 with ToolButton2 do
   Begin
     Name:='Toolbutton2';
-writeln('AAA2');
     Parent := Toolbar1;
-writeln('AAA3');
     Caption := '2';
-writeln('AAA3');
     Style := tbsButton;
-writeln('AAA4');
     OnClick := @Button2Click;
-writeln('AAA5');
     Show;
   end;
-writeln('AAA2');
 Toolbutton3 := TToolButton.Create(Toolbar1);
 with ToolButton3 do
   Begin
