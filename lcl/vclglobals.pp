@@ -97,6 +97,8 @@ const
   
   csNonLCL = 53; // for non LCL controls, that create their own handles
 
+  csCheckListBox = 54;
+
 const
   {Mouse message key states}
   MK_LBUTTON  = 1;
