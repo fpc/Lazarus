@@ -302,7 +302,7 @@ msgstr "Choisir un fichier de modèle de code (*.dci)"
 
 #: lazarusidestrconsts:lischoosedirectory
 msgid "Choose directory"
-msgstr ""
+msgstr "Choisissez le répertoire"
 
 #: lazarusidestrconsts:dlgcdtclassorder
 msgid "Class order"
@@ -934,7 +934,7 @@ msgstr "Italique"
 
 #: lazarusidestrconsts:dlgoiitemheight
 msgid "Item height"
-msgstr ""
+msgstr "Heuteur d'élément"
 
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
@@ -1134,7 +1134,7 @@ msgstr "Politique d'insertion des méthodes"
 
 #: lazarusidestrconsts:dlgminimizeallonminimizemain
 msgid "Minimize all on minimize main"
-msgstr ""
+msgstr "Réduire toutes les fenêtre en me temps que la principale"
 
 #: lazarusidestrconsts:fdmmirrorhorizontal
 msgid "Mirror horizontal"

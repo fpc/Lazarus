@@ -28,6 +28,8 @@ Property editor for TImageList objects
 
 History
  26-Feb-2003 OG - Update for use assign.
+ 27-feb-2003 OG - If possible zoom x2 the selected image.
+                - Fix the superposition of images
  
 Todo :
   - Rogne and truncate image capability
@@ -92,30 +94,27 @@ Implementation
 
 //If Select item, preview the image
 procedure TImageListEditorDlg.OnLVLSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
-Var bmp : TBitMap;
+Var Bmp : TBitMap;
 begin
   if Assigned(Item) and Selected then
   begin
     if (Item.ImageIndex<>-1) then
     begin
+      //Clear old image
+      fImg.Picture.BitMap.Canvas.Brush.Color:=clWhite;
+      fImg.Picture.BitMap.Canvas.FillRect(Rect(0,0,fImg.Width,fImg.Height));
+
+      //Draw new image
+      //The created bitmap will be freed by fImg
       Bmp:=TBitMap.Create;
-      Try
-        Bmp.Width :=fImgL.Width;
-        Bmp.Height:=fImgL.Height;
-        Bmp.Canvas.Brush.Color:=clWhite;
-        Bmp.Canvas.FillRect(0,0,Bmp.Width,Bmp.Height);
-        
-        fImgL.GetBitmap(Item.ImageIndex,Bmp);
+      fImgL.GetBitmap(Item.ImageIndex,Bmp);
 
-        fImg.Picture.Assign(nil);
-        fImg.Picture.BitMap.Assign(Bmp);
+      fImg.Picture.BitMap:=Bmp;
 
-        fBtnDel.Enabled:=True;
-        fImg.Visible:=True;
-        fBtnClear.Enabled:=True;
-      finally
-        Bmp.Free;
-      end;
+      fBtnDel.Enabled:=True;
+      fImg.Visible:=True;
+      fBtnClear.Enabled:=True;
+      fImg.Invalidate;
     end;
   end;
 end;
@@ -227,7 +226,8 @@ constructor TImageListEditorDlg.Create(aOwner: TComponent);
 Var Cmp : TWinControl;
 begin
   inherited Create(aOwner);
-
+  BorderStyle:=bssingle;
+  
   //Temporary list
   fImgL:=TImageList.Create(self);
 
@@ -380,6 +380,27 @@ begin
       IL:=fLV.Items.Add;
       Il.ImageIndex:=i;
       IL.Caption:=IntToStr(i);
+    end;
+    
+    //If possible zoom the selected image
+    if (fImgL.Width*2<97) and (fImgL.Height*2<97) then
+    begin
+      fImg.Width  :=fImgL.Width*2;
+      fImg.Height :=fImgL.Height*2;
+      fImg.Stretch:=True;
+
+      //Center the image
+      fImg.Left:=12+((97-fImg.Width) div 2);
+      fImg.Top := 7+((97-fImg.Height) div 2);
+    end
+    else
+    begin
+      //Restore the default position
+      fImg.Width  :=97;
+      fImg.Height :=97;
+      fImg.Top    :=7;
+      fImg.Left   :=12;
+      fImg.Stretch:=True;
     end;
     
     fBtnDel.Enabled:=(fImgL.Count<>0);

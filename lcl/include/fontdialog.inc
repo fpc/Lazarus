@@ -39,7 +39,7 @@ constructor TFontDialog.Create (AOwner : TComponent);
 begin
   inherited Create(AOwner);
   fCompStyle := csFontDialog;
-  FTitle:= 'Select a font:';
+  FTitle:= rsSelectFontTitle;
   FFont := TFont.Create;
   FOptions := [fdEffects];
 end;
@@ -59,6 +59,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2003/02/28 10:21:16  mattias
+  lcl localization from Olivier
+
   Revision 1.4  2002/10/25 10:06:34  lazarus
   MG: broke interfacebase uses circles
 

@@ -33,10 +33,8 @@ unit LCLStrConsts;
 
 interface
 
-uses
-  Classes, SysUtils;
-
 ResourceString
+
    rsMbYes          = '&Yes';
    rsMbNo           = '&No';
    rsMbOK           = '&OK';
@@ -56,7 +54,25 @@ ResourceString
    rsMtConfirmation = 'Confirmation';
    rsMtCustom       = 'Custom';
 
-
+   //file dialog
+   rsfdOpenFile          = 'Open existing file';
+   rsfdOverwriteFile     = 'Overwrite file ?';
+   rsfdFileAlreadyExists = 'The file "%s" already exists.'#13'Overwrite ?';
+   rsfdPathMustExist     = 'Path must exist';
+   rsfdPathNoExist       = 'The path "%s" does not exist.';
+   rsfdFileMustExist     = 'File must exist';
+   rsfdFileNotExist      = 'The file "%s" does not exist.';
+   rsfdFileReadOnlyTitle = 'File is not writable';
+   rsfdFileReadOnly      = 'The file "%s" is not writable.';
+   rsfdFileSaveAs        = 'Save file as';
+   
+   //Select color dialog
+   rsSelectcolorTitle    = 'Select color';
+   
+   //Select font dialog
+   rsSelectFontTitle     = 'Select a font';
+   
+   
 implementation
 
 end.

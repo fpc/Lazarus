@@ -102,7 +102,7 @@ Begin
   Bitmap1.Handle := LoadStockPixmap(BitBtnImages[Value]);
   Glyph := Bitmap1;
 
-  Caption := BitBtnCaption[fKind];
+  Caption :=GetCaptionOfKind(fKind);
   ModalResult := BitBtnModalResults[Value];
   if not (csLoading in ComponentState) then
     Default := FKind in [bkOk,bkYes];
@@ -123,6 +123,26 @@ Begin
   if HandleAllocated then
     //still send the layout message because it still calls the same procedure
     CNSendMessage(LM_LAYOUTCHANGED,Self,nil);
+end;
+
+//Return the caption associed with the akind value.
+//This function replace BitBtnCaption const because the localizing
+//dont work with an const (optimisation of FPC i supose)
+function TBitBtn.GetCaptionOfKind(aKind: TBitBtnKind): String;
+begin
+  Result:='';
+  Case aKind of
+    bkOK       : Result:=rsmbOK;
+    bkCancel   : Result:=rsmbCancel;
+    bkHelp     : Result:=rsmbHelp;
+    bkYes      : Result:=rsmbYes;
+    bkNo       : Result:=rsmbNo;
+    bkClose    : Result:=rsmbClose;
+    bkAbort    : Result:=rsmbAbort;
+    bkRetry    : Result:=rsmbRetry;
+    bkIgnore   : Result:=rsmbIgnore;
+    bkAll      : Result:=rsmbAll;
+  end;
 end;
 
 // included by buttons.pp
