@@ -672,6 +672,8 @@ CheckHeap('TCustomFormEditor.CreateComponent D '+IntToStr(GetMem_Cnt));
     Writeln('ParentCI <> nil');
     TempName := Temp.FControl.ClassName;
     delete(TempName,1,1);
+    //make it more presentable
+    TempName := TempName[1] + lowercase(Copy(TempName,2,length(tempname)));
     writeln('TempName is '''+TempName+'''');
     Num := 0;
     Found := True;
