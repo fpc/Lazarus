@@ -32,7 +32,7 @@ interface
 
 uses
   Classes, SysUtils; 
-  
+
 ResourceString
   // codetree
   ctsUnknownSubDescriptor = '(unknown subdescriptor %s)';
@@ -159,6 +159,7 @@ ResourceString
                                   'Source filenames for the standard fpc units';
   ctsFreePascalSourceDir = 'Free Pascal Source Directory';
   ctsSrcPathInitialization = 'SrcPath Initialization';
+  ctsNestedCommentsOn = 'Nested Comments On';
   ctsCompiler = 'Compiler';
   ctsRuntimeLibrary = 'Runtime library';
   ctsProcessorSpecific = 'processor specific';

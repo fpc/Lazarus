@@ -49,6 +49,8 @@ uses
 
 const
   PascalCompilerDefine = ExternalMacroStart+'Compiler';
+  NestedCompilerDefine = ExternalMacroStart+'NestedComments';
+
   MissingIncludeFileCode = 1;
 
 type
@@ -217,6 +219,7 @@ type
     FSkipIfLevel: integer;
     FCompilerMode: TCompilerMode;
     FPascalCompiler: TPascalCompiler;
+    procedure SetCompilerMode(const AValue: TCompilerMode);
     procedure SkipTillEndifElse;
     function SkipIfDirective: boolean;
     function IfdefDirective: boolean;
@@ -272,6 +275,8 @@ type
 
     EndOfInterfaceFound: boolean;
     EndOfSourceFound: boolean;
+    
+    function MainFilename: string;
 
     // links
     property Links[Index: integer]: TSourceLink read GetLinks write SetLinks;
@@ -349,7 +354,8 @@ type
     property IncludeFileIsMissing: boolean
         read GetIncludeFileIsMissing;
     property NestedComments: boolean read FNestedComments;
-    property CompilerMode: TCompilerMode read FCompilerMode write FCompilerMode;
+    property CompilerMode: TCompilerMode
+        read FCompilerMode write SetCompilerMode;
     property PascalCompiler: TPascalCompiler
         read FPascalCompiler write FPascalCompiler;
     property ScanTillInterfaceEnd: boolean
@@ -961,6 +967,7 @@ begin
   EndOfSourceFound:=false;
   CommentStyle:=CommentNone;
   CommentLevel:=0;
+  FNestedComments:=false;
   CompilerMode:=cmFPC;
   PascalCompiler:=pcFPC;
   IfLevel:=0;
@@ -969,15 +976,25 @@ begin
     FInitValues.Assign(FOnGetInitValues(FMainCode,FInitValuesChangeStep));
   //writeln('TLinkScanner.Scan D --------');
   Values.Assign(FInitValues);
-  for cm:=Low(TCompilerMode) to High(TCompilerMode) do
-    if FInitValues.IsDefined(CompilerModeVars[cm]) then begin
-      CompilerMode:=cm;
-    end;
+
+  // compiler
   s:=FInitValues.Variables[PascalCompilerDefine];
   for pc:=Low(TPascalCompiler) to High(TPascalCompiler) do
-    if (s=PascalCompilerNames[pc]) then begin
+    if (s=PascalCompilerNames[pc]) then
       PascalCompiler:=pc;
-    end;
+
+  // compiler mode
+  for cm:=Low(TCompilerMode) to High(TCompilerMode) do
+    if FInitValues.IsDefined(CompilerModeVars[cm]) then
+      CompilerMode:=cm;
+
+  // nested comments
+  if (PascalCompiler=pcFPC) and (CompilerMode in [cmFPC,cmOBJFPC])
+  and ((FInitValues.IsDefined(NestedCompilerDefine))
+    or (CompareFileExt(MainFilename,'pp',false)=0))
+  then
+    FNestedComments:=true;
+    
   //writeln(Values.AsString);
   //writeln('TLinkScanner.Scan E --------');
   FMacrosOn:=(Values.Variables['MACROS']<>'0');
@@ -2475,6 +2492,14 @@ begin
   end;
 end;
 
+procedure TLinkScanner.SetCompilerMode(const AValue: TCompilerMode);
+begin
+  if FCompilerMode=AValue then exit;
+  FCompilerMode:=AValue;
+  FNestedComments:=(PascalCompiler=pcFPC)
+                   and (FCompilerMode in [cmFPC,cmOBJFPC]);
+end;
+
 function TLinkScanner.SkipIfDirective: boolean;
 begin
   inc(IfLevel);
@@ -2718,6 +2743,14 @@ begin
   FForceUpdateNeeded:=true;
   // raise abort exception
   RaiseExceptionClass('Abort',ELinkScannerAbort);
+end;
+
+function TLinkScanner.MainFilename: string;
+begin
+  if Assigned(OnGetFileName) and (Code<>nil) then
+    Result:=OnGetFileName(Self,Code)
+  else
+    Result:='';
 end;
 
 { ELinkScannerError }

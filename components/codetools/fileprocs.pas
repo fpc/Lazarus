@@ -53,6 +53,8 @@ const
   {$endif}
 
 function CompareFilenames(const Filename1, Filename2: string): integer;
+function CompareFileExt(const Filename, Ext: string;
+  CaseSensitive: boolean): integer;
 function DirectoryExists(DirectoryName: string): boolean;
 function ExtractFileNameOnly(const AFilename: string): string;
 function FilenameIsAbsolute(TheFilename: string):boolean;
@@ -69,8 +71,6 @@ function SearchFileInPath(const Filename, BasePath, SearchPath,
                           Delimiter: string; SearchLoUpCase: boolean): string;
 function FilenameIsMatching(const Mask, Filename: string;
   MatchExactly: boolean): boolean;
-function CompareFileExt(const Filename, Ext: string;
-  CaseSensitive: boolean): integer;
 
 implementation
 

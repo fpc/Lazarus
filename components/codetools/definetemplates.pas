@@ -2320,6 +2320,10 @@ begin
   DefTempl:=TDefineTemplate.Create('Reset SrcPath',
     ctsSrcPathInitialization,ExternalMacroStart+'SrcPath','',da_DefineRecurse);
   MainDir.AddChild(DefTempl);
+  // turn Nested comments on
+  DefTempl:=TDefineTemplate.Create('Nested Comments',
+    ctsNestedCommentsOn,ExternalMacroStart+'NestedComments','',da_DefineRecurse);
+  MainDir.AddChild(DefTempl);
 
   // compiler
   CompilerDir:=TDefineTemplate.Create('Compiler',ctsCompiler,'','compiler',
@@ -2422,7 +2426,10 @@ begin
     ExternalMacroStart+'IncPath',
     'include;include'+ds+TargetOS,
     da_Define));
-    
+  // turn Nested comments on
+  MainDir.AddChild(TDefineTemplate.Create('Nested Comments',
+    ctsNestedCommentsOn,ExternalMacroStart+'NestedComments','',da_DefineRecurse));
+
   // examples
   DirTempl:=TDefineTemplate.Create('Examples',
     Format(ctsNamedDirectory,['Examples']),
