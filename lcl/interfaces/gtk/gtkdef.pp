@@ -33,7 +33,7 @@ unit GtkDef;
 interface
 
 uses
-  gtk, gdk, LCLLinux, LCLType, VclGlobals, Classes;
+  gtk, gdk, LCLLinux, LCLType, VclGlobals, Classes, LCLMemManager;
 
 type
   TGDIType = (gdiBitmap, gdiBrush, gdiFont, gdiPen, gdiRegion);
@@ -56,6 +56,7 @@ type
   
   PGDIObject = ^TGDIObject;
   TGDIObject = record
+    Next: PGDIObject;
     case GDIType: TGDIType of
       gdiBitmap: (
         GDIBitmapMaskObject: PGdkPixmap;
@@ -101,6 +102,7 @@ type
     ClipRegion : hRGN;
     SavedContext: PDeviceContext; // linked list of saved DCs
   end;
+  
 
   // Info needed by the API of a HWND (=Widget) 
   PWinWidgetInfo = ^TWinWidgetInfo;
@@ -137,13 +139,102 @@ const
     );
   
 
+function NewPGDIObject: PGDIObject;
+procedure DisposePGDIObject(GDIObject: PGdiObject);
+
+
 implementation
+
+
+{$IFOpt R+}{$Define RangeChecksOn}{$Endif}
+
+type
+  // memory system for PGDIObject(s)
+  TGDIObjectMemManager = class(TLCLMemManager)
+  protected
+    procedure FreeFirstItem; override;
+  public
+    procedure DisposeGDIObject(AGDIObject: PGDIObject);
+    function NewGDIObject: PGDIObject;
+  end;
+  
+const
+  GDIObjectMemManager: TGDIObjectMemManager = nil;
+
+function NewPGDIObject: PGDIObject;
+begin
+  if GDIObjectMemManager=nil then begin
+    GDIObjectMemManager:=TGDIObjectMemManager.Create;
+    GDIObjectMemManager.MinimumFreeCount:=1000;
+  end;
+  Result:=GDIObjectMemManager.NewGDIObject;
+end;
+
+procedure DisposePGDIObject(GDIObject: PGdiObject);
+begin
+  GDIObjectMemManager.DisposeGDIObject(GDIObject);
+end;
+
+{ TGDIObjectMemManager }
+
+procedure TGDIObjectMemManager.FreeFirstItem;
+var AGDIObject: PGDIObject;
+begin
+  AGDIObject:=PGDIObject(FFirstFree);
+  PGDIObject(FFirstFree):=AGDIObject^.Next;
+  Dispose(AGDIObject);
+end;
+
+procedure TGDIObjectMemManager.DisposeGDIObject(AGDIObject: PGDIObject);
+begin
+  if (FFreeCount<FMinFree) or (FFreeCount<((FCount shr 3)*FMaxFreeRatio)) then
+  begin
+    // add AGDIObject to Free list
+    AGDIObject^.Next:=PGDIObject(FFirstFree);
+    PGDIObject(FFirstFree):=AGDIObject;
+    inc(FFreeCount);
+  end else begin
+    // free list full -> free the ANode
+    Dispose(AGDIObject);
+    {$R-}
+    inc(FFreedCount);
+    {$IfDef RangeChecksOn}{$R+}{$Endif}
+  end;
+  dec(FCount);
+end;
+
+function TGDIObjectMemManager.NewGDIObject: PGDIObject;
+begin
+  if FFirstFree<>nil then begin
+    // take from free list
+    Result:=PGDIObject(FFirstFree);
+    PGDIObject(FFirstFree):=Result^.Next;
+    dec(FFreeCount);
+  end else begin
+    // free list empty -> create new node
+    New(Result);
+    {$R-}
+    inc(FAllocatedCount);
+    {$IfDef RangeChecksOn}{$R+}{$Endif}
+  end;
+  FillChar(Result^, SizeOf(TGDIObject), 0);
+  inc(FCount);
+end;
+
+
+//------------------------------------------------------------------------------
+finalization
+  GDIObjectMemManager.Free;
+  GDIObjectMemManager:=nil;
 
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.11  2002/08/21 08:13:37  lazarus
+  MG: accelerated new/dispose of gdiobjects
+
   Revision 1.10  2002/08/15 15:46:49  lazarus
   MG: added changes from Andrew (Clipping)
 
