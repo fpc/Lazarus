@@ -453,7 +453,7 @@ begin
         ' Blinking=',Blinking,' HasFocus=',gtk_widget_has_focus(PGtkWidget(Client)),
         ' ShowHideOnFocus=',ShowHideOnFocus,
         ' Window=',PGtkWidget(Client)^.Window<>nil,
-        ' Style=',PGTKStyle(PGtkWidget(Client)^.theStyle)<>nil);
+        ' Style=',{$IFDEF gtk2}gtk_widget_get_style(PGtkWidget(Client)){$else}PGTKStyle(PGtkWidget(Client)^.theStyle){$endif}<>nil);
     end;
   end;
 end;
@@ -619,7 +619,7 @@ begin
         ' Blinking=',Blinking,' HasFocus=',gtk_widget_has_focus(PGtkWidget(Client)),
         ' ShowHideOnFocus=',ShowHideOnFocus,
         ' Window=',PGtkWidget(Client)^.Window<>nil,
-        ' Style=',PGTKStyle(PGtkWidget(Client)^.theStyle)<>nil);
+        ' Style=',{$IFDEF gtk2}gtk_widget_get_style(PGtkWidget(Client)){$else}PGTKStyle(PGtkWidget(Client)^.theStyle){$endif}<>nil);
     end;
   end;
 end;
@@ -971,6 +971,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.52  2004/03/09 15:30:15  peter
+    * fixed gtk2 compilation
+
   Revision 1.51  2004/01/10 22:34:20  mattias
   started double buffering for gtk intf
 

@@ -91,8 +91,10 @@ begin
   LabelFromAmpersands(Caption, Pattern, AccelKey);
   Result := THandle(gtk_button_new_with_label(PChar(Caption)));
   if Result = 0 then Exit;
-  
+
+{$ifdef gtk1}
   gtk_label_set_pattern(PGtkLabel(PGtkButton(Result)^.Child), PChar(Pattern));
+{$endif gtk1}
   Accelerate(Button, PGtkWidget(Result), Ord(AccelKey), 0, 'clicked');
   
   WidgetInfo := CreateWidgetInfo(Result, Button, AParams);
@@ -1048,6 +1050,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.19  2004/03/09 15:30:15  peter
+    * fixed gtk2 compilation
+
   Revision 1.18  2004/03/05 00:31:52  marc
   * Renamed TGtkObject to TGtkWidgetSet
 

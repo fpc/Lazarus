@@ -393,8 +393,8 @@ var
   Attr : PPangoAttribute;
   Extents : TPangoRectangle;
 begin
-  GetStyle('default');
-  Layout := gtk_widget_create_pango_layout (GetStyleWidget('default'), nil);
+  GetStyle(lgsDefault);
+  Layout := gtk_widget_create_pango_layout (GetStyleWidget(lgsDefault), nil);
   pango_layout_set_font_description(Layout, FontDesc);
   AttrList := pango_layout_get_attributes(Layout);
 
@@ -657,8 +657,11 @@ begin
   GDK_WINDOW_CHILD: TypeAsStr:='Child';
   GDK_WINDOW_DIALOG: TypeAsStr:='Dialog';
   GDK_WINDOW_TEMP: TypeAsStr:='Temp';
+{$ifdef gtk1}
   GDK_WINDOW_PIXMAP: TypeAsStr:='Pixmap';
+{$endif gtk1}
   GDK_WINDOW_FOREIGN: TypeAsStr:='Foreign';
+  else TypeAsStr:='Unknown';
   end;
   Result:=Result+' Type='+TypeAsStr;
   
@@ -668,7 +671,7 @@ begin
   then begin
     p:=nil;
     gdk_window_get_user_data(AWindow,p);
-    if GtkWidgetIsA(PGTKWidget(p),GTK_WIDGET_TYPE) then begin
+    if GtkWidgetIsA(PGTKWidget(p),GTKAPIWidget_GetType) then begin
       Widget:=PGTKWidget(p);
       Result:=Result+'<Widget['+GetWidgetDebugReport(Widget)+']>';
     end else begin
@@ -680,6 +683,7 @@ begin
   gdk_window_get_size(AWindow,@Width,@Height);
   Result:=Result+' Size='+IntToStr(Width)+'x'+IntToStr(Height);
 
+{$ifdef gtk1}
   // visual
   Visual:=gdk_window_get_visual(AWindow);
   if Visual<>nil then begin
@@ -687,6 +691,7 @@ begin
       Result:=Result+' Depth='+IntToStr(Visual^.bits_per_rgb);
     end;
   end;
+{$endif gtk1}
 end;
 
 {------------------------------------------------------------------------------
@@ -5406,7 +5411,7 @@ begin
       If AnsiCompareText(WName,'button')=0 then begin
         if StyleObject^.Style^.light_gc[GTK_STATE_NORMAL]=nil then begin
           //writeln('GetStyleWithName ',WName);
-          if not GtkWidgetIsA(StyleObject^.Widget,GTK_WINDOW_TYPE) then begin
+          if not GtkWidgetIsA(StyleObject^.Widget,GTK_WINDOW_GET_TYPE) then begin
             gtk_widget_realize(StyleObject^.Widget);
           end;
         end;
@@ -6587,7 +6592,7 @@ begin
    XFreeFontNames(theFonts);
   {$ENDIF UNIX}
   {$ELSE}
-   Widget := GetStyleWidget('default');
+   Widget := GetStyleWidget(lgsDefault);
    if Widget = nil then begin
      exit;//raise an error here I guess
    end;
@@ -6630,6 +6635,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.268  2004/03/09 15:30:15  peter
+    * fixed gtk2 compilation
+
   Revision 1.267  2004/03/06 17:12:19  mattias
   fixed CreateBrushIndirect
 

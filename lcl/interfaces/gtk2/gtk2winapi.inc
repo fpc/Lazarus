@@ -241,8 +241,8 @@ begin
 
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
 
-        GetStyle('default');
-        Layout := gtk_widget_create_pango_layout (GetStyleWidget('default'), nil);
+        GetStyle(lgsdefault);
+        Layout := gtk_widget_create_pango_layout (GetStyleWidget(lgsdefault), nil);
         pango_layout_set_font_description(Layout, UseFontDesc);
         AttrList := pango_layout_get_attributes(Layout);
 
@@ -263,7 +263,7 @@ begin
         SelectedColors := dcscCustom;
         EnsureGCColor(DC, dccCurrentTextColor, True, False);
 
-        RGBColor := ColorToRGB(CurrentTextColor.ColorRef)
+        RGBColor := ColorToRGB(CurrentTextColor.ColorRef);
 
         Attr := pango_attr_foreground_new(gushort(GetRValue(RGBColor)) shl 8,
                                         gushort(GetGValue(RGBColor)) shl 8,
@@ -458,14 +458,14 @@ begin
         StrikeOut := CurrentFont^.StrikeOut;
       end;
       
-      GetStyle('default');
-      If (UseFontDesc = nil) or (GetStyleWidget('default')=nil) then
+      GetStyle(lgsdefault);
+      If (UseFontDesc = nil) or (GetStyleWidget(lgsdefault)=nil) then
         WriteLn('WARNING: [TGtk2WidgetSet.ExtTextOut] Missing Font')
       else begin
         // to reduce flickering calculate first and then paint
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
 
-        Layout := gtk_widget_create_pango_layout (GetStyleWidget('default'), nil);
+        Layout := gtk_widget_create_pango_layout (GetStyleWidget(lgsdefault), nil);
 
         If (Layout = nil) then
           WriteLn('WARNING: [TGtk2WidgetSet.ExtTextOut] Missing Pango Layout')
@@ -515,7 +515,7 @@ begin
           end;
 
           EnsureGCColor(DC, dccCurrentTextColor, True, False);
-          RGBColor := ColorToRGB(CurrentTextColor.ColorRef)
+          RGBColor := ColorToRGB(CurrentTextColor.ColorRef);
 
           Attr := pango_attr_foreground_new(gushort(GetRValue(RGBColor)) shl 8,
                                             gushort(GetGValue(RGBColor)) shl 8,
@@ -647,8 +647,8 @@ begin
         WriteLn('WARNING: [TGtk2WidgetSet.GetTextExtentPoint] Missing Font')
       else begin
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
-        GetStyle('default');
-        Layout := gtk_widget_create_pango_layout (GetStyleWidget('default'), nil);
+        GetStyle(lgsdefault);
+        Layout := gtk_widget_create_pango_layout (GetStyleWidget(lgsdefault), nil);
         pango_layout_set_font_description(Layout, UseFontDesc);
         AttrList := pango_layout_get_attributes(Layout);
 
@@ -753,8 +753,8 @@ begin
         WriteLn('WARNING: [TGtk2WidgetSet.TextOut] Missing Font')
       else begin
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
-        GetStyle('default');
-        Layout := gtk_widget_create_pango_layout (GetStyleWidget('default'), nil);
+        GetStyle(lgsdefault);
+        Layout := gtk_widget_create_pango_layout (GetStyleWidget(lgsdefault), nil);
         pango_layout_set_font_description(Layout, UseFontDesc);
         AttrList := pango_layout_get_attributes(Layout);
 
@@ -826,6 +826,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2004/03/09 15:30:15  peter
+    * fixed gtk2 compilation
+
   Revision 1.7  2004/03/05 00:41:15  marc
   * Renamed TGtk2Object to TGtk2WidgetSet
 

@@ -52,12 +52,12 @@ type
   TGtk2WidgetSet = class(TGtkWidgetSet)
   protected
     procedure AppendText(Sender: TObject; Str: PChar); override;
-    procedure CreateComponent(Sender : TObject); override;
+    function CreateComponent(Sender : TObject): THandle; override;
     function GetText(Sender: TComponent; var Text: String): Boolean; override;
-    procedure HookSignals(Sender: TObject); override;
+    procedure HookSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject); override;
     function IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer; override;
     function LoadStockPixmap(StockID: longint) : HBitmap; override;
-    procedure SetCallback(Msg : LongInt; Sender: TObject); override;
+    procedure SetCallback(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject);override;
     procedure SetLabel(Sender : TObject; Data : Pointer); override;
     function SetProperties(Sender : TObject) : integer; override;
     procedure SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
@@ -561,6 +561,9 @@ end.
 
 {
   $Log$
+  Revision 1.30  2004/03/09 15:30:15  peter
+    * fixed gtk2 compilation
+
   Revision 1.29  2004/03/05 00:41:15  marc
   * Renamed TGtk2Object to TGtk2WidgetSet
 

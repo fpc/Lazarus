@@ -4926,7 +4926,7 @@ var
 begin
   MainWidget := Widget;
   if MainWidget = nil then Exit;
-  if GtkWidgetIsA(Widget,GTK_MENU_ITEM_TYPE) then exit;
+  if GtkWidgetIsA(Widget,GTK_MENU_ITEM_GET_TYPE) then exit;
 
   ClientWidget:=GetFixedWidget(MainWidget);
   WinWidgetInfo:=GetWidgetInfo(MainWidget,false);
@@ -5058,7 +5058,7 @@ begin
   RemoveCallbacks(Widget);
 
   // childs
-  if GtkWidgetIsA(Widget,GTK_COMBO_TYPE) then begin
+  if GtkWidgetIsA(Widget,GTK_COMBO_GET_TYPE) then begin
     SetComboBoxText(PGtkCombo(Widget),nil);
     FreeWinWidgetInfo(PGtkCombo(Widget)^.Entry);
     FreeWinWidgetInfo(PGtkCombo(Widget)^.Button);
@@ -6147,7 +6147,7 @@ begin
 
   AStatusBar:=StatusBar as TStatusBar;
   HBox:=PGtkWidget(StatusBarWidget);
-  if (not GtkWidgetIsA(StatusBarWidget,GTK_HBOX_TYPE)) then
+  if (not GtkWidgetIsA(StatusBarWidget,GTK_HBOX_GET_TYPE)) then
     RaiseGDBException('');
 
   // create needed panels
@@ -6220,7 +6220,7 @@ begin
   //  ' thelabel=',GetWidgetClassName(PGTKStatusBar(StatusPanelWidget)^.thelabel),
   // '');
   FrameWidget:=PGTKStatusBar(StatusPanelWidget)^.frame;
-  LabelWidget:=PGtkLabel(PGTKStatusBar(StatusPanelWidget)^.thelabel);
+  LabelWidget:=PGtkLabel({$ifdef gtk2}PGTKStatusBar(StatusPanelWidget)^._label{$else}PGTKStatusBar(StatusPanelWidget)^.thelabel{$endif});
 
   // Text
   if AStatusBar.SimplePanel then
@@ -9283,6 +9283,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.479  2004/03/09 15:30:15  peter
+    * fixed gtk2 compilation
+
   Revision 1.478  2004/03/06 21:57:14  mattias
   fixed compilation under fpc 1.9.3
 

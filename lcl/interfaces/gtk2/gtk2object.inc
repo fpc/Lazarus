@@ -203,7 +203,7 @@ begin
   end;
 end;
 
-procedure TGtk2WidgetSet.CreateComponent(Sender : TObject);
+function TGtk2WidgetSet.CreateComponent(Sender : TObject): THandle;
 var
   Caption : ansistring;          // the caption of "Sender"
   StrTemp : PChar;               // same as "caption" but as PChar
@@ -319,12 +319,13 @@ begin
     end;
     else begin
       StrDispose(StrTemp);
-      Inherited CreateComponent(Sender);
+      Result:=Inherited CreateComponent(Sender);
       Exit;
     end;
   end; //end case
   StrDispose(StrTemp);
   FinishComponentCreate(Sender, P, SetupProps);
+  Result := THandle(P);
 end;
 
 function TGtk2WidgetSet.GetText(Sender: TComponent; var Text: String): Boolean;
@@ -357,40 +358,41 @@ begin
   end;
 end;
 
-procedure TGtk2WidgetSet.HookSignals(Sender: TObject);
+
+procedure Tgtk2widgetset.HookSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject);
 begin
-  if (Sender is TWinControl) then
+  if (ALCLObject is TWinControl) then
      Begin
-       inherited HookSignals(Sender);
+       inherited HookSignals(AGTKObject,ALCLObject);
      End;
 
-  if (Sender is TControl) then
+  if (ALCLObject is TControl) then
     Begin
-      case TControl(sender).FCompStyle of
+      case TControl(ALCLObject).FCompStyle of
         csEdit:
         begin
-          SetCallback(LM_CHANGED, Sender);
-          SetCallback(LM_ACTIVATE, Sender);
-          SetCallback(LM_CUTTOCLIP, Sender);
-          SetCallback(LM_COPYTOCLIP, Sender);
-          SetCallback(LM_PASTEFROMCLIP, Sender);
+          SetCallback(LM_CHANGED, AGTKObject, ALCLObject);
+          SetCallback(LM_ACTIVATE, AGTKObject,ALCLObject);
+          SetCallback(LM_CUTTOCLIP, AGTKObject,ALCLObject);
+          SetCallback(LM_COPYTOCLIP, AGTKObject,ALCLObject);
+          SetCallback(LM_PASTEFROMCLIP, AGTKObject,ALCLObject);
         end;
 
 	csMemo:
 	begin
-         // SetCallback(LM_CHANGED, Sender);
-          //SetCallback(LM_ACTIVATE, Sender);
-          SetCallback(LM_CUTTOCLIP, Sender);
-          SetCallback(LM_COPYTOCLIP, Sender);
-          SetCallback(LM_PASTEFROMCLIP, Sender);
-	  //SetCallback(LM_INSERTTEXT, Sender);
+         // SetCallback(LM_CHANGED, AGTKObject,ALCLObject);
+          //SetCallback(LM_ACTIVATE, AGTKObject,ALCLObject);
+          SetCallback(LM_CUTTOCLIP, AGTKObject,ALCLObject);
+          SetCallback(LM_COPYTOCLIP, AGTKObject,ALCLObject);
+          SetCallback(LM_PASTEFROMCLIP, AGTKObject,ALCLObject);
+	  //SetCallback(LM_INSERTTEXT, AGTKObject,ALCLObject);
 	end;
       end; //case
     end
     else
-    If (Sender is TMenuItem) then
+    If (ALCLObject is TMenuItem) then
       Begin
-        SetCallback(LM_ACTIVATE,Sender);
+        SetCallback(LM_ACTIVATE,AGTKObject,ALCLObject);
       end;
 end;
 
@@ -811,24 +813,24 @@ end;
 
   Applies a Message to the sender
  ------------------------------------------------------------------------------}
-procedure TGtk2WidgetSet.SetCallback(Msg : LongInt; Sender: TObject);
+procedure TGTK2WidgetSet.SetCallback(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject);
 
   procedure ConnectSenderSignal(const AnObject:PGTKObject; const ASignal: PChar;
     const ACallBackProc: Pointer);
   begin
-    ConnectSignal(AnObject,ASignal,ACallBackProc,TComponent(Sender));
+    ConnectSignal(AnObject,ASignal,ACallBackProc,TComponent(ALCLObject));
   end;
 
   procedure ConnectSenderSignalAfter(const AnObject:PGTKObject;
     const ASignal: PChar; const ACallBackProc: Pointer);
   begin
-    ConnectSignalAfter(AnObject,ASignal,ACallBackProc,TComponent(Sender));
+    ConnectSignalAfter(AnObject,ASignal,ACallBackProc,TComponent(ALCLObject));
   end;
 
   procedure ConnectSenderSignal(const AnObject:PGTKObject; const ASignal: PChar;
     const ACallBackProc: Pointer; const ReqSignalMask: TGdkEventMask);
   begin
-    ConnectSignal(AnObject,ASignal,ACallBackProc,TComponent(Sender),
+    ConnectSignal(AnObject,ASignal,ACallBackProc,ALCLObject,
                   ReqSignalMask);
   end;
 
@@ -836,7 +838,7 @@ procedure TGtk2WidgetSet.SetCallback(Msg : LongInt; Sender: TObject);
     const ASignal: PChar; const ACallBackProc: Pointer;
     const ReqSignalMask: TGdkEventMask);
   begin
-    ConnectSignalAfter(AnObject,ASignal,ACallBackProc,TComponent(Sender),
+    ConnectSignalAfter(AnObject,ASignal,ACallBackProc,ALCLObject,
                        ReqSignalMask);
   end;
 
@@ -851,7 +853,7 @@ procedure TGtk2WidgetSet.SetCallback(Msg : LongInt; Sender: TObject);
 var
   gObject, gFixed, gCore, Scroll: PGTKObject;
 begin
-  gObject := ObjectToGTKObject(Sender);
+  gObject := AGTKObject;
   if gObject = nil then Exit;
 
   // gFixed is the widget with the client area (e.g. TGroupBox, TForm have this)
@@ -861,10 +863,10 @@ begin
   // gCore is the main widget (e.g. TListView has this)
   gCore:= PGtkObject(GetWidgetInfo(gObject, True)^.ImplementationWidget);
 
-  case Msg of
+  case AMsg of
     LM_FOCUS :
     begin
-      if (Sender is TCustomComboBox) then begin
+      if (ALCLObject is TCustomComboBox) then begin
         ConnectFocusEvents(PgtkObject(PgtkCombo(gObject)^.entry));
         ConnectFocusEvents(PgtkObject(PgtkCombo(gObject)^.list));
       end else begin
@@ -880,13 +882,13 @@ begin
     LM_SYSKEYDOWN,
     LM_SYSKEYUP:
     begin
-      if (Sender is TCustomComboBox) then begin
+      if (ALCLObject is TCustomComboBox) then begin
         ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
           'key-press-event', @GTK2KeyUpDown, GDK_KEY_PRESS_MASK);
         ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
           'key-release-event', @GTK2KeyUpDown, GDK_KEY_RELEASE_MASK);
       end
-      else if (Sender is TCustomForm) then begin
+      else if (ALCLObject is TCustomForm) then begin
         ConnectSenderSignal(gObject, 'key-press-event', @GTK2KeyUpDown,
                             GDK_KEY_PRESS_MASK);
         ConnectSenderSignal(gObject, 'key-release-event', @GTK2KeyUpDown,
@@ -906,7 +908,7 @@ begin
     end;
 
   else
-    Inherited SetCallback(Msg, Sender);
+    Inherited SetCallback(AMsg, AGTKObject, ALCLObject);
   end;
 end;
 
@@ -937,9 +939,9 @@ begin
   end;
 
   if (StockID >= idButtonBase) and (StockID <= idDialogBase) then
-    IconSet := gtk_style_lookup_icon_set(GetStyle('button'), StockName)
+    IconSet := gtk_style_lookup_icon_set(GetStyle(lgsButton), StockName)
   else
-    IconSet := gtk_style_lookup_icon_set(GetStyle('window'), StockName);
+    IconSet := gtk_style_lookup_icon_set(GetStyle(lgsWindow), StockName);
 
   If (IconSet = nil) then begin
     Result := inherited LoadStockPixmap(StockID);
@@ -947,9 +949,9 @@ begin
   end;
 
   if (StockID >= idButtonBase) and (StockID <= idDialogBase) then
-    pixbuf := gtk_icon_set_render_icon(IconSet, GetStyle('button'), GTK_TEXT_DIR_NONE, GTK_STATE_NORMAL, GTK_ICON_SIZE_BUTTON, GetStyleWidget('button'), nil)
+    pixbuf := gtk_icon_set_render_icon(IconSet, GetStyle(lgsbutton), GTK_TEXT_DIR_NONE, GTK_STATE_NORMAL, GTK_ICON_SIZE_BUTTON, GetStyleWidget(lgsbutton), nil)
   else
-    pixbuf := gtk_icon_set_render_icon(IconSet, GetStyle('window'), GTK_TEXT_DIR_NONE, GTK_STATE_NORMAL, GTK_ICON_SIZE_DIALOG, GetStyleWidget('window'), nil);
+    pixbuf := gtk_icon_set_render_icon(IconSet, GetStyle(lgswindow), GTK_TEXT_DIR_NONE, GTK_STATE_NORMAL, GTK_ICON_SIZE_DIALOG, GetStyleWidget(lgswindow), nil);
 
   Pixmap := NewGDIObject(gdiBitmap);
   With Pixmap^ do begin
@@ -1287,7 +1289,7 @@ begin
       If UseFontDesc = nil then
         WriteLn('WARNING: [TGtk2WidgetSet.GetTextMetrics] Missing font')
       else begin
-        Layout := gtk_widget_create_pango_layout (GetStyleWidget('default'), nil);
+        Layout := gtk_widget_create_pango_layout (GetStyleWidget(lgsdefault), nil);
         pango_layout_set_font_description(Layout, UseFontDesc);
         AttrList := pango_layout_get_attributes(Layout);
 
@@ -1375,6 +1377,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.9  2004/03/09 15:30:15  peter
+    * fixed gtk2 compilation
+
   Revision 1.8  2004/03/05 00:41:15  marc
   * Renamed TGtk2Object to TGtk2WidgetSet
 

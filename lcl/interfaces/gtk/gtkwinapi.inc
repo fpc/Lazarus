@@ -122,13 +122,13 @@ end;
 
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc;
-{$IFDEF Gtk1}
 var
+{$IFDEF Gtk1}
   Widget: PGtkWidget;
   TargetObject: TObject;
-  IsDoubleBuffered: Boolean;
   PaintWidget: Pointer;
 {$ENDIF}
+  IsDoubleBuffered: Boolean;
 begin
   {$IFDEF Gtk1}
   Widget:=PGtkWidget(Handle);
@@ -212,7 +212,9 @@ begin
       gdk_window_raise(GdkWindow);
       EndGDKErrorTrap;
       // how to set the keyboard focus to the raised window?
-      //gtk_window_activate_focus(PGtkWindow(hWnd));
+{$ifdef gtk2}
+      gtk_window_present(PGtkWindow(hWnd));
+{$endif gtk2}
     end;
   end;
 end;
@@ -8724,6 +8726,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.339  2004/03/09 15:30:15  peter
+    * fixed gtk2 compilation
+
   Revision 1.338  2004/03/06 17:12:19  mattias
   fixed CreateBrushIndirect
 

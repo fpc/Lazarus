@@ -55,6 +55,7 @@ function GetControlConstraints(Constraints: TObject): boolean; override;
 function GetLCLOwnerObject(Handle: HWnd): TObject; override;
 function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer; override;
 function GetListBoxItemRect(ListBox: TComponent; Index: integer; var ARect: TRect): boolean; override;
+{$ifdef gtk1}
 function GroupBoxCreateHandle(const AGroupBox: TObject; const AParams: TCreateParams): THandle; override;
 
 function HintWindowCreateHandle(const AHintWindow: TObject; const AParams: TCreateParams): THandle; override;
@@ -69,6 +70,7 @@ function ListViewCreateHandle(const AListView: TObject; const AParams: TCreatePa
 function MainMenuCreateHandle(const AMainMenu: TObject): THandle; override;
 function MemoCreateHandle(const AMemo: TObject; const AParams: TCreateParams): THandle; override;
 function MenuItemCreateHandle(const AMenuItem: TObject): THandle; override;
+{$endif gtk1}
 function MenuItemSetCheck(BaseMenuItem: TComponent): Boolean; override;
 function MenuItemSetEnable(BaseMenuItem: TComponent): Boolean; override;
 
@@ -111,6 +113,9 @@ function WincontrolCreateHandle(const AFixed: TObject; const AParams: TCreatePar
 { =============================================================================
 
   $Log$
+  Revision 1.14  2004/03/09 15:30:15  peter
+    * fixed gtk2 compilation
+
   Revision 1.13  2004/02/27 00:42:41  marc
   * Interface CreateComponent splitup
   * Implemented CreateButtonHandle on GTK interface

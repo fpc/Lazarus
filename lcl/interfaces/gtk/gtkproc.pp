@@ -448,7 +448,9 @@ const
     true,  // dstMousePress
     true,  // dstMouseMotion
     true,  // dstMouseRelease
+{$Ifdef GTK1}
     false, // dstDrawAfter
+{$Endif GTK1}
     false  // dstExposeAfter
     );
 
@@ -457,7 +459,9 @@ const
     false, // dstMousePress
     false, // dstMouseMotion
     false, // dstMouseRelease
+{$Ifdef GTK1}
     false, // dstDrawAfter
+{$Endif GTK1}
     false  // dstExposeAfter
     );
 
@@ -466,7 +470,9 @@ const
     'button-press-event',
     'motion-notify-event',
     'button-release-event',
+{$Ifdef GTK1}
     'draw',
+{$Endif GTK1}
     'expose-event'
     );
 
@@ -475,7 +481,9 @@ const
     @gtkMouseBtnPress,
     @gtkMotionNotify,
     @gtkMouseBtnRelease,
+{$Ifdef GTK1}
     @gtkDrawAfter,
+{$Endif GTK1}
     @gtkExposeEventAfter
     );
 
@@ -754,7 +762,7 @@ type
 
 constructor TLCLHandledKeyEvent.Create(Event: PGdkEventKey);
 begin
-  thetype:=Event^.theType;
+  thetype:={$ifdef gtk2}gdk_event_get_type(Event){$else}Event^.theType{$endif};
   window:=Event^.window;
   send_event:=Event^.send_event;
   time:=Event^.time;
@@ -762,7 +770,7 @@ end;
 
 function TLCLHandledKeyEvent.IsEqual(Event: PGdkEventKey): boolean;
 begin
-  Result:=(thetype=Event^.theType)
+  Result:=({$ifdef gtk2}gdk_event_get_type(Event){$else}Event^.theType{$endif}=thetype)
       and (window=Event^.window)
       and (send_event=Event^.send_event)
       and (time=Event^.time);
