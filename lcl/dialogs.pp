@@ -37,8 +37,9 @@ unit Dialogs;
 interface
 
 uses
-  Classes, SysUtils, LCLlinux, FileCtrl, LCLStrConsts, LCLType, VCLGlobals,
-  LMessages, Forms, Controls, GraphType, Graphics, Buttons, StdCtrls;
+  Classes, SysUtils, LCLlinux, InterfaceBase, FileCtrl, LCLStrConsts, LCLType,
+  VCLGlobals, LMessages, Forms, Controls, GraphType, Graphics, Buttons,
+  StdCtrls;
 
 
 type
@@ -295,13 +296,21 @@ type
   Function InputBox(const ACaption, APrompt, ADefault : String) : String;
   Function PasswordBox(const ACaption, APrompt : String) : String;
   
+  {Directory Selection}
+type
+  TSelectDirectoryProc = function(const Caption: String; const Root: string;
+                           var Directory: string; ShowHidden: Boolean): Boolean;
+       
+  function SelectDirectory(const Caption: String; const Root: string;
+                           var Directory: string; ShowHidden: Boolean): Boolean;
 
+var
+  SelectDirectoryProc: TSelectDirectoryProc;
+
+  
 procedure Register;
 
 implementation
-
-uses
-  InterfaceBase;
 
 const
   //
@@ -364,6 +373,14 @@ begin
   Result := MessageDlg(Caption,Text,DlgType,Buttons,0);
 end;
 
+function SelectDirectory(const Caption: String; const Root: string;
+  var Directory: string; ShowHidden: Boolean): Boolean;
+begin
+  Result:=false;
+  if Assigned(SelectDirectoryProc) then
+    Result:=SelectDirectoryProc(Caption,Root,Directory,ShowHidden);
+end;
+
 
 {$I colordialog.inc}
 {$I commondialog.inc}
@@ -378,6 +395,7 @@ initialization
   Forms.MessageBoxFunction:=@ShowMessageBox;
   InterfaceBase.InputDialogFunction:=@ShowInputDialog;
   InterfaceBase.PromptDialogFunction:=@ShowPromptDialog;
+  SelectDirectoryProc:=nil;
 
 finalization
 
@@ -386,6 +404,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.33  2003/08/01 09:44:52  mattias
+  added SelectDirectory dialog
+
   Revision 1.32  2003/06/13 21:32:17  mattias
   moved TColorButton to misc palette
 

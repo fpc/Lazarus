@@ -38,7 +38,7 @@ uses
   Buttons, Extctrls, Registry, Calendar, Clipbrd, Forms, LCLLinux, Spin,
   Comctrls, Graphics, StdCtrls, Arrow, Controls, ImgList, Menus, Toolwin,
   Dialogs, Messages, Clistbox, ActnList, Grids, MaskEdit,
-  Printers, PostScriptPrinter, CheckLst, PairSplitter;
+  Printers, PostScriptPrinter, CheckLst, PairSplitter, DirSel;
 
 implementation
 
@@ -47,6 +47,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.26  2003/08/01 09:44:52  mattias
+  added SelectDirectory dialog
+
   Revision 1.25  2003/07/31 17:16:32  mattias
   added ToDo for textstrings.pas
 
