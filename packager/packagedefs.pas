@@ -2515,7 +2515,8 @@ begin
     i:=Cnt-1;
     while (i>=0) and (NewList[i]=FFiles[i]) do dec(i);
     if i<0 then exit;
-    FFiles.Assign(NewList);
+    FFiles.Clear;
+    for i:= 0 to Cnt-1 do FFiles.Add(NewList[i]);
     Modified:=true;
   finally
     NewList.Free;
