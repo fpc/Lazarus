@@ -182,6 +182,8 @@ end;
 
 procedure FinishCreateWindow(const AWinControl: TWinControl; var Params: TCreateWindowExParams;
   const AlternateCreateWindow: boolean);
+var
+  lhFont: HFONT;
 begin
   if not AlternateCreateWindow then
   begin
@@ -224,14 +226,19 @@ begin
       if SubClassWndProc <> nil then
         WindowInfo^.DefWndProc := Windows.WNDPROC(Windows.SetWindowLong(
           Window, GWL_WNDPROC, LongInt(SubClassWndProc)));
-      Windows.SendMessage(Window, WM_SETFONT, 
-        WParam(TWin32WidgetSet(InterfaceObject).MessageFont), 0);
+      if AWinControl.Font.IsDefault then
+        lhFont := GetStockObject(DEFAULT_GUI_FONT)
+      else
+        lhFont := AWinControl.Font.Handle;
+      Windows.SendMessage(Window, WM_SETFONT, lhFont, 0)
     end;
   end;
 end;
 
 procedure WindowCreateInitBuddy(const AWinControl: TWinControl; 
   var Params: TCreateWindowExParams);
+var
+  lhFont: HFONT;
 begin
   with Params do
     if Buddy <> HWND(Nil) then
@@ -240,8 +247,11 @@ begin
       BuddyWindowInfo^.AWinControl := AWinControl;
       BuddyWindowInfo^.DefWndProc := Windows.WNDPROC(Windows.SetWindowLong(
         Buddy, GWL_WNDPROC, LongInt(SubClassWndProc)));
-      Windows.SendMessage(Buddy, WM_SETFONT, 
-        WParam(TWin32WidgetSet(InterfaceObject).MessageFont), 0);
+      if AWinControl.Font.IsDefault then
+        lhFont := GetStockObject(DEFAULT_GUI_FONT)
+      else
+        lhFont := AWinControl.Font.Handle;
+      Windows.SendMessage(Buddy, WM_SETFONT, lhFont, 0);
     end
     else
       BuddyWindowInfo := nil;
