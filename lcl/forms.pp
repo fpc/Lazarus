@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, Controls, VCLGlobals, SysUtils, GraphType, Graphics, Menus,
-  LCLLinux, LCLType, LMessages, CustomTimer;
+  LCLLinux, LCLType, LMessages, CustomTimer. SdtCtrls;
 
 type
   TPosition = (poDesigned, poDefault, poDefaultPosOnly, poDefaultSizeOnly,
@@ -201,7 +201,6 @@ type
     FActive : Boolean;
     FActiveControl : TWinControl;
     FBorderStyle : TFormBorderStyle;
-   // FCanvas : TControlCanvas;
     FDesigner : TIDesigner;
     FFormStyle : TFormStyle;
     FFormState: TFormState;
@@ -215,7 +214,6 @@ type
     FOnDestroy: TNotifyEvent;
     FOnHide: TNotifyEvent;
     FOnShow: TNotifyEvent;
-//    FOnPaint: TNotifyEvent;
     FOnClose: TCloseEvent;
     FOnCloseQuery : TCloseQueryEvent;
     FPosition : TPosition;
@@ -234,7 +232,6 @@ type
     procedure SetPosition(Value : TPosition);
     procedure SetVisible(Value: boolean);
     procedure SetWindowState(Value : TWIndowState);
-   // function GetCanvas: TControlCanvas;
     function IsForm : Boolean;
     procedure IconChanged(Sender: TObject);
     function IsIconStored: Boolean;
@@ -280,7 +277,6 @@ type
     property OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
     property OnHide: TNotifyEvent read FOnHide write FOnHide;
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
-  //  property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
     property OnResize stored IsForm;
     property Position : TPosition read FPosition write SetPosition default poDesigned;
   public
@@ -515,7 +511,7 @@ implementation
 
 
 uses 
-  StdCtrls, Interfaces, LResources, Math;
+  Interfaces, LResources, Math;
 
 const
   FocusMessages : Boolean = true;
