@@ -128,7 +128,7 @@ type
     procedure DoShow; dynamic;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     {$IFDEF ClientRectBugFix}
-    // Delphi needed GetClientRect for window specific things
+    // Delphi needed GetClientRect for window specific things, LCL not
     // Function GetClientRect : TRect ; Override;
     {$ELSE}
     Function GetClientRect : TRect ; Override;

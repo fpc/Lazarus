@@ -920,9 +920,9 @@ procedure TCustomForm.UpdateShowing;
 var 
   X, Y : integer;
 begin
-{$IFDEF CHECK_POSITION}
-writeln('[TCustomForm.UpdateShowing] A Class=',Classname);
-{$ENDIF}
+  {$IFDEF CHECK_POSITION}
+  writeln('[TCustomForm.UpdateShowing] A  Class=',Name,':',Classname,' Pos=',Left,',',Top,' Visible=',Visible);
+  {$ENDIF}
   { If the the form is about to show, calculate its metrics }
   if Visible then begin
     // first make sure X and Y are assigned
@@ -957,13 +957,13 @@ writeln('[TCustomForm.UpdateShowing] A Class=',Classname);
     if Y < 0 then Y := 0;
     SetBounds(X, Y, Width, Height);
   end;
-{$IFDEF CHECK_POSITION}
-writeln('[TCustomForm.UpdateShowing] B Class=',Classname);
-{$ENDIF}
+  {$IFDEF CHECK_POSITION}
+  writeln('[TCustomForm.UpdateShowing] B  ',Name,':',Classname,' Pos=',Left,',',Top);
+  {$ENDIF}
   inherited UpdateShowing;
-{$IFDEF CHECK_POSITION}
-writeln('[TCustomForm.UpdateShowing] END Class=',Classname);
-{$ENDIF}
+  {$IFDEF CHECK_POSITION}
+  writeln('[TCustomForm.UpdateShowing] END  ',Name,':',Classname,' Pos=',Left,',',Top);
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------}
@@ -1031,6 +1031,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.45  2002/05/13 15:26:13  lazarus
+  MG: fixed form positioning when show, hide, show
+
   Revision 1.44  2002/05/10 06:05:51  lazarus
   MG: changed license to LGPL
 
