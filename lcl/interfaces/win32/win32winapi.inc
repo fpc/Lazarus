@@ -1364,8 +1364,24 @@ begin
 end;
 
 function TWin32Object.GetDesignerDC(WindowHandle: HWND): HDC;
+var
+  OverlayWindow: HWND;
+  ARect: Windows.RECT;
 begin
-  Result := Windows.GetDC(0);
+  OverlayWindow := HWND(Windows.GetProp(WindowHandle, 'Overlay'));
+  if OverlayWindow = HWND(nil) then
+  begin
+    // create 'overlay' window
+    Windows.GetClientRect(WindowHandle, @ARect);
+    OverlayWindow := Windows.CreateWindowEx(WS_EX_TRANSPARENT,
+        'STATIC', '', WS_CHILD or WS_VISIBLE,
+        ARect.Left, ARect.Top, ARect.Right, ARect.Bottom,
+        WindowHandle, HMENU(nil), HInstance, nil);
+    Windows.SetProp(OverlayWindow, 'DefWndProc', Windows.SetWindowLong(
+        OverlayWindow, GWL_WNDPROC, LongInt(@OverlayWindowProc)));
+    Windows.SetProp(WindowHandle, 'Overlay', OverlayWindow);
+  end;
+  Result := Windows.GetDC(OverlayWindow);
 end;
 
 function TWin32Object.GetDeviceSize(DC: HDC; var P: TPoint): Boolean;
@@ -2320,7 +2336,7 @@ End;
 Function TWin32Object.ReleaseDesignerDC(HWnd: HWND; DC: HDC): Integer;
 Begin
   Assert(False, Format('Trace:> [TWin32Object.ReleaseDC] DC:0x%x', [DC]));
-  Result := Windows.ReleaseDC(0, DC);
+  Result := Windows.ReleaseDC(HWnd, DC);
   Assert(False, Format('Trace:< [TWin32Object.ReleaseDC] DC:0x%x', [DC]));
 End;
 
@@ -2887,6 +2903,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.92  2004/01/12 08:20:50  micha
+  implement overlay window for designer
+
   Revision 1.91  2004/01/03 21:06:06  micha
   - fix win32/checklistbox
   - implement proper lcl to interface move/size notify via setwindowpos

@@ -74,6 +74,43 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
+ Function: OverlayWindowProc
+ Params: Window - The window that receives a message
+         Msg    - The message received
+         WParam - Word parameter
+         LParam - Long-integer parameter
+  Returns: 0 if Msg is handled; non-zero long-integer result otherwise
+
+  Handles messages specifically for the window used by GetDesignerDC
+ ------------------------------------------------------------------------------}
+function OverlayWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+var
+  PS: PAINTSTRUCT;
+  PrevWndProc: Pointer;
+begin
+  case Msg of
+    WM_ERASEBKGND:
+    begin
+      Result := 1;
+    end;
+    WM_PAINT:
+    begin
+      Windows.BeginPaint(Window, @PS);
+      Windows.EndPaint(Window, @PS);
+      Result := 1;
+    end;
+  else
+    // default handling of message
+    PrevWndProc := GetProp(Window, 'DefWndProc');
+    if PrevWndProc = nil then
+      Result := Windows.DefWindowProc(Window, Msg, WParam, LParam)
+    else
+      Result := Windows.CallWindowProc(Windows.WNDPROC(PrevWndProc), Window, Msg, WParam, LParam);
+  end;
+end;
+
+{------------------------------------------------------------------------------
  Function: WindowProc
  Params: Window - The window that receives a message
          Msg    - The message received
@@ -733,10 +770,9 @@ Begin
         Unused := WParam;
         WindowPos := PWindowPos(LParam);
       End;
-//      GetClientRect(Window, R);
-//      SendMessage(Window, WM_MOVE, 0, MakeLParam(PWindowPos(LParam)^.x, PWindowPos(LParam)^.y));
-//      SendMessage(Window, WM_SIZE, 0, MakeLParam(R.right-R.left, R.bottom-R.top));
-//      WinProcess:=false;
+      // cross-interface compatible: complete invalidate on resize
+      if (PWindowPos(LParam)^.flags and SWP_NOSIZE) = 0 then
+        Windows.InvalidateRect(Window, nil, true);
     End;
     WM_MEASUREITEM:
     Begin
@@ -938,6 +974,9 @@ end;
 
 {
   $Log$
+  Revision 1.87  2004/01/12 08:20:50  micha
+  implement overlay window for designer
+
   Revision 1.86  2004/01/07 18:05:46  micha
   add TWinControl.DoubleBuffered property which is a hint for the interface to do double-buffering for this control
 
