@@ -648,6 +648,7 @@ examples/grid_semaphor/example/unit1.lfm svneol=native#text/plain
 examples/grid_semaphor/example/unit1.lrs svneol=native#text/pascal
 examples/grid_semaphor/example/unit1.pas svneol=native#text/pascal
 examples/grid_semaphor/readme.txt svneol=native#text/plain
+examples/grid_semaphor/semaphordbgridicon.lrs svneol=native#text/pascal
 examples/grid_semaphor/semaphorgridlpk.lpk svneol=native#text/pascal
 examples/grid_semaphor/semaphorgridlpk.pas svneol=native#text/pascal
 examples/grid_semaphor/semaphorgrids.pas svneol=native#text/pascal

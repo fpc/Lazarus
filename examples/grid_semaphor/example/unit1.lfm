@@ -1,17 +1,17 @@
 object Form1: TForm1
-  ActiveControl = Button1
   Caption = 'Try SemaphorGrid'
   ClientHeight = 299
   ClientWidth = 536
   OnCreate = Form1Create
   PixelsPerInch = 96
-  HorzScrollBar.Page = 537
-  VertScrollBar.Page = 300
+  HorzScrollBar.Page = 535
+  VertScrollBar.Page = 298
   Left = 18
   Height = 299
   Top = 141
   Width = 536
   object Button1: TButton
+    BorderSpacing.OnChange = nil
     Caption = 'Toggle Semaphor'
     OnClick = Button1Click
     TabOrder = 0
@@ -21,6 +21,7 @@ object Form1: TForm1
     Width = 112
   end
   object Button2: TButton
+    BorderSpacing.OnChange = nil
     Caption = 'Next Semafore Style'
     OnClick = Button2Click
     TabOrder = 1
@@ -30,6 +31,7 @@ object Form1: TForm1
     Width = 126
   end
   object Button3: TButton
+    BorderSpacing.OnChange = nil
     Caption = 'Next Alignment'
     OnClick = Button3Click
     TabOrder = 2
@@ -39,6 +41,7 @@ object Form1: TForm1
     Width = 114
   end
   object Button4: TButton
+    BorderSpacing.OnChange = nil
     Caption = 'Close'
     OnClick = Button4Click
     TabOrder = 3
@@ -48,6 +51,7 @@ object Form1: TForm1
     Width = 75
   end
   object Button5: TButton
+    BorderSpacing.OnChange = nil
     Caption = 'Save to File'
     OnClick = Button5Click
     TabOrder = 4
@@ -57,6 +61,7 @@ object Form1: TForm1
     Width = 88
   end
   object Button6: TButton
+    BorderSpacing.OnChange = nil
     Caption = 'Load from File'
     OnClick = Button6Click
     TabOrder = 5
@@ -66,6 +71,7 @@ object Form1: TForm1
     Width = 96
   end
   object Button7: TButton
+    BorderSpacing.OnChange = nil
     Caption = 'AutoWidth'
     OnClick = Button7Click
     TabOrder = 6
@@ -75,6 +81,7 @@ object Form1: TForm1
     Width = 67
   end
   object Button8: TButton
+    BorderSpacing.OnChange = nil
     Caption = 'AutoHeight'
     OnClick = Button8Click
     TabOrder = 7
@@ -84,6 +91,7 @@ object Form1: TForm1
     Width = 72
   end
   object Button9: TButton
+    BorderSpacing.OnChange = nil
     Caption = 'Sort Cols[4]'
     OnClick = Button9Click
     TabOrder = 8
@@ -93,6 +101,7 @@ object Form1: TForm1
     Width = 75
   end
   object RadioButton1: TRadioButton
+    BorderSpacing.OnChange = nil
     Caption = 'Ascending'
     Checked = True
     State = cbChecked
@@ -103,6 +112,7 @@ object Form1: TForm1
     Width = 92
   end
   object RadioButton2: TRadioButton
+    BorderSpacing.OnChange = nil
     Caption = 'Descending'
     TabOrder = 10
     Left = 259
@@ -111,6 +121,7 @@ object Form1: TForm1
     Width = 102
   end
   object Button10: TButton
+    BorderSpacing.OnChange = nil
     Caption = 'Hide/Show Cols[1]'
     OnClick = Button10Click
     TabOrder = 11
@@ -120,6 +131,7 @@ object Form1: TForm1
     Width = 142
   end
   object Button11: TButton
+    BorderSpacing.OnChange = nil
     Caption = 'Clear'
     OnClick = Button11Click
     TabOrder = 12
@@ -129,6 +141,7 @@ object Form1: TForm1
     Width = 44
   end
   object CheckBox1: TCheckBox
+    BorderSpacing.OnChange = nil
     Caption = 'OnlyValue'
     TabOrder = 13
     Left = 60
@@ -137,6 +150,7 @@ object Form1: TForm1
     Width = 90
   end
   object Panel1: TPanel
+    BorderSpacing.OnChange = nil
     Caption = 'Panel1'
     ClientHeight = 154
     ClientWidth = 464
@@ -154,6 +168,7 @@ object Form1: TForm1
       StringYellow = 'maybe'
       StringGreen = 'yes'
       SemaphorShape = ssDisk
+      BorderSpacing.OnChange = nil
       Color = clWhite
       ColCount = 5
       DefaultColWidth = 64
@@ -169,6 +184,20 @@ object Form1: TForm1
       VisibleRowCount = 4
       Height = 148
       Width = 456
+      ColWidths = (
+        64
+        64
+        64
+        64
+        64
+      )
+      RowHeights = (
+        24
+        24
+        24
+        24
+        24
+      )
       Cells = (
         24
         0
@@ -247,6 +276,7 @@ object Form1: TForm1
     end
   end
   object Button12: TButton
+    BorderSpacing.OnChange = nil
     Caption = 'Sort Cols[1]'
     OnClick = Button12Click
     TabOrder = 15
@@ -256,6 +286,7 @@ object Form1: TForm1
     Width = 75
   end
   object ToggleBox1: TToggleBox
+    BorderSpacing.OnChange = nil
     Caption = 'UnEditable'
     OnClick = ToggleBox1Click
     TabOrder = 16
@@ -265,6 +296,7 @@ object Form1: TForm1
     Width = 90
   end
   object CheckBox2: TCheckBox
+    BorderSpacing.OnChange = nil
     Caption = 'Only Float'
     OnClick = CheckBox2Click
     TabOrder = 17
@@ -276,12 +308,14 @@ object Form1: TForm1
   object SaveDialog1: TSaveDialog
     Title = 'Save file as'
     FilterIndex = 0
+    Title = 'Save file as'
     left = 40
     top = 360
   end
   object OpenDialog1: TOpenDialog
     Title = 'Open existing file'
     FilterIndex = 0
+    Title = 'Open existing file'
     left = 8
     top = 360
   end

@@ -4,17 +4,12 @@
     <PathDelim Value="\"/>
     <Name Value="SemaphorGridLPK"/>
     <CompilerOptions>
-      <Version Value="3"/>
+      <Version Value="5"/>
       <PathDelim Value="\"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib\"/>
         <SrcPath Value="$(LazarusDir)\lcl\;$(LazarusDir)\lcl\interfaces\$(LCLWidgetType)\"/>
       </SearchPaths>
-      <Parsing>
-        <SymantecChecking>
-          <DelphiCompat Value="True"/>
-        </SymantecChecking>
-      </Parsing>
       <CodeGeneration>
         <Generate Value="Faster"/>
       </CodeGeneration>
@@ -26,12 +21,17 @@
       </Other>
     </CompilerOptions>
     <Version Major="1"/>
-    <Files Count="1">
+    <Files Count="2">
       <Item1>
         <Filename Value="semaphorgrids.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="SemaphorGrids"/>
       </Item1>
+      <Item2>
+        <Filename Value="semaphordbgrids.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="SemaphorDBGrids"/>
+      </Item2>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

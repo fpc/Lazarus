@@ -35,15 +35,33 @@ the Grid with the method SortFromColumn with indipendent sorting method (maybe
 it should be better to use onCompareCell)
 That's all
 Enjoy! Salvatore
+
+Date: 15-Jan-2005
+- Changed SortFromColumn: now it use SortColRow, OnCompareCells and
+  DoCompareChange (from Jesus Rejes A.);
+- Removed SortDate, SortNumeric, uses Windows (now useless)
+- Correct some repainting problems (from Jesus Rejes A.)
+- removed ReDrawGrid (now useless)
+
+Date: 03-Apr-2005
+- Some sources cleaning
+- introduced System Metrics in AutoWidth and AutoHeight (keep in count
+  scrollbars);
+
+knowed bug:
+  re-sorting a column that have two or more cells equal, the
+  corrispondent rows are swapped, so there are more than one grid sorted by
+  the same column.
 }
+
 unit SemaphorGrids;
 {$mode objfpc}
 {$H+}
 interface
 
 uses
-{$ifdef win32}Windows,{$endif win32} Classes, SysUtils,
-  LResources, LCLtype, Forms, Controls, Graphics, Dialogs, Grids;
+  Classes, SysUtils, LResources, LCLProc, LCLIntf, LCLType, Forms, Controls,
+  Graphics, Dialogs, Grids;
 
 const
   SemaphorMarker='S_M_0_1';
@@ -57,6 +75,9 @@ type
   TTypeSort = (tsAlphabetic, tsDate, tsNumeric, tsAutomatic);
 
 type
+
+  { TSemaphorGrid }
+
   TSemaphorGrid = class(TStringGrid)
   private
     { Private declarations }
@@ -71,31 +92,22 @@ type
     FSemaphorShape : TSemaphorShape;
     FSemaphorCaseSensitive : boolean;
     FSemaphorOnlyFloat : boolean;
-    procedure AutoInitialize;
+    FSortDirection: TDirection;
+    FSortType: TTypeSort;
     procedure SetAlignment(Value: TAlignment);
-    function GetAlignment: TAlignment;
-    function GetCHSEP : Char;
     procedure SetCHSEP(Value : Char);
-    function GetSemaphor : boolean;
     procedure SetSemaphor(Value : boolean);
-    function GetStringRed : string;
     procedure SetStringRed(Value : string);
-    function GetStringYellow : string;
     procedure SetStringYellow(Value : string);
-    function GetStringGreen : string;
     procedure SetStringGreen(Value : string);
-    function GetSemaphorShape : TSemaphorShape;
     procedure SetSemaphorShape(Value : TSemaphorShape);
-    function GetSemaphorCaseSensitive : boolean;
     procedure SetSemaphorCaseSensitive(Value : boolean);
-    function GetSemaphorOnlyFloat : boolean;
     procedure SetSemaphorOnlyFloat(Value : boolean);
   protected
     { Protected declarations }
     procedure DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); override;
+    function  DoCompareCells(Acol,ARow,Bcol,BRow: Integer): Integer; override;
     procedure KeyPress(var Key: Char); override;
-    procedure SortDate(var SL: TStringList);
-    procedure SortNumeric(var SL: TStringList);
   public
     { Public declarations }
     procedure LoadFromFileG(FileName:string;autoadjust:boolean);
@@ -112,93 +124,31 @@ type
     function Duplicate(var SG:TSemaphorGrid):boolean;
     procedure ClearColRow(isColumn:boolean; i:integer);
     procedure Clear(OnlyValue:boolean);
-    procedure ReDrawGrid;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
     { Published declarations }
     property Constraints;
-    property Alignment: TAlignment read GetAlignment write SetAlignment;
-    property CHSEP : Char read GetCHSEP write SetCHSEP;
-    property Semaphor : boolean read GetSemaphor write SetSemaphor;
-    property StringRed : string read GetStringRed write SetStringRed;
-    property StringYellow : string read GetStringYellow write SetStringYellow;
-    property StringGreen : string read GetStringGreen write SetStringGreen;
-    property SemaphorShape : TSemaphorShape read GetSemaphorShape write SetSemaphorShape;
-    property SemaphorCaseSensitive : boolean read GetSemaphorCaseSensitive write SetSemaphorCaseSensitive;
-    property SemaphorOnlyFloat : boolean read GetSemaphorOnlyFloat write SetSemaphorOnlyFloat;
+    property Alignment: TAlignment read  FAlignment write SetAlignment;
+    property CHSEP : Char read FCHSEP write SetCHSEP;
+    property Semaphor : boolean read FSemaphor write SetSemaphor;
+    property StringRed : string read FStringRed write SetStringRed;
+    property StringYellow : string read FStringYellow write SetStringYellow;
+    property StringGreen : string read FStringGreen write SetStringGreen;
+    property SemaphorShape : TSemaphorShape read FSemaphorShape write SetSemaphorShape;
+    property SemaphorCaseSensitive : boolean read FSemaphorCaseSensitive write SetSemaphorCaseSensitive;
+    property SemaphorOnlyFloat : boolean read FSemaphorOnlyFloat write SetSemaphorOnlyFloat;
   end;
 
 procedure Register;
 
 implementation
 
-procedure TSemaphorGrid.SortDate(var SL: TStringList);
-var i,j:integer;
-    date1, date2:TDate;
-    str1,str2:string;
-    founded:boolean;
-begin
-  for i:=0 to SL.Count-2 do begin
-    j:=i+1;
-    str1:=SL.Strings[j];
-    date1:=StrToDate(Copy(str1,1,pos(CHSEP,str1)-1));
-    founded:=false;
-    while (j<>0)and(not founded)do begin
-      str2:=SL.Strings[j-1];
-      date2:=StrToDate(Copy(str2,1,pos(CHSEP,str2)-1));
-      if date1>=date2 then
-        founded:=true
-      else begin
-        SL.Strings[j]:=SL.Strings[j-1];
-        j:=j-1
-      end;
-      SL.Strings[j]:=str1;
-    end;
-  end;
-end;
-
-procedure TSemaphorGrid.SortNumeric(var SL: TStringList);
-var i,j:integer;
-    num1, num2:double;
-    str1,str2:string;
-    strn1,strn2:string;
-    founded:boolean;
-begin
-  for i:=0 to SL.Count-2 do begin
-    j:=i+1;
-    str1:=SL.Strings[j];
-    strn1:=Copy(str1,1,pos(CHSEP,str1)-1);
-    try
-      num1:=StrToFloat(strn1);
-    except
-      num1:=0;
-    end;
-    founded:=false;
-    while (j<>0)and(not founded)do begin
-      str2:=SL.Strings[j-1];
-      strn2:=Copy(str2,1,pos(CHSEP,str2)-1);
-      try
-        num2:=StrToFloat(strn2);
-      except
-        num2:=0;
-      end;
-      if num1>=num2 then
-        founded:=true
-      else begin
-        SL.Strings[j]:=SL.Strings[j-1];
-        j:=j-1
-      end;
-      SL.Strings[j]:=str1;
-    end;
-  end;
-end;
-
 procedure TSemaphorGrid.DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState);
-const
-  dr=4;
+const dr=4;
 var Rect:TRect;
     MyStyle:TTextStyle;
+    OldBrushColor: TColor;
 begin
   PrepareCanvas(aCol,aRow,aState);
   Canvas.FillRect(aRect);
@@ -442,25 +392,33 @@ begin
 end;
 
 procedure TSemaphorGrid.AutoWidth;
-const dx=3;
-var j:integer;
+var j,Wtmp:integer;
 begin
-  Width:=0;
+  Wtmp:=0;
   if BorderStyle=bsSingle then
-    Width:=Width+2*dx;
+    Wtmp:=Wtmp+2*GetSystemMetrics(SM_CXFIXEDFRAME);
   for j:=0 to ColCount-1 do
-    Width:=Width+ColWidths[j];
+    Wtmp:=Wtmp+GridLineWidth+ColWidths[j];
+  Wtmp:=Wtmp-2*GridLineWidth;
+  if ScrollBarIsVisible(SB_Vert) then begin
+    Wtmp:=Wtmp+GetSystemMetrics(SM_CXVSCROLL);//+GetSystemMetrics(SM_CXEDGE);
+  end;
+  Width:=Wtmp;
 end;
 
 procedure TSemaphorGrid.AutoHeight;
-const dy=3;
-var i:integer;
+var i,Htmp:integer;
 begin
-  Height:=0;
+  Htmp:=0;
   if BorderStyle=bsSingle then
-    Height:=Height+2*dy;
+    Htmp:=Htmp+2*GetSystemMetrics(SM_CYFIXEDFRAME);
   for i:=0 to RowCount-1 do
-    Height:=Height+RowHeights[i];
+    Htmp:=Htmp+GridLineWidth+RowHeights[i];
+  Htmp:=Htmp-2*GridLineWidth;
+  if ScrollBarIsVisible(SB_Horz) then begin
+    Htmp:=Htmp+GetSystemMetrics(SM_CYVSCROLL);
+  end;
+  Height:=Htmp;
 end;
 
 { FileName: file to export data; SelfExt: if true SemaphorGrid change the file
@@ -485,6 +443,46 @@ begin
   CHSEP:=CHSEPOld
 end;
 
+function TSemaphorGrid.DoCompareCells(Acol, ARow, Bcol, BRow: Integer): Integer;
+var
+  S1,S2: String;
+  V1,V2: Extended;
+  D1,D2: TDate;
+begin
+  case FSortType of
+    tsAlphabetic:
+      begin
+        S1 := Cells[ACol,ARow];
+        S2 := Cells[BCol,BRow];
+        if S1>S2 then Result := 1 else
+        if S1<S2 then Result := -1
+        else result := 0;
+      end;
+    tsNumeric, tsDate:
+      begin
+        if fSortType = tsNumeric then begin
+          V1 := StrToFloatDef(Cells[ACol,ARow], 0.0);
+          V2 := StrToFloatDef(Cells[BCol,BRow], 0.0);
+        end else begin
+          V1 := StrToDate(Cells[ACol,ARow]);
+          V2 := StrToDate(Cells[BCol,BRow]);
+        end;
+        if V1>V2 then
+          Result := 1
+        else if V1<V2 then
+          Result := -1
+        else
+          result := 0;
+      end;
+  end;
+  if FSortDirection=sdDescending then begin
+    if Result<0 then result:=1 else
+    if result>0 then result:=-1;
+  end;
+  if assigned(OnCompareCells) then
+    OnCompareCells(Self, ACol,ARow,BCol,BRow, Result);
+end;
+
 procedure TSemaphorGrid.DeleteColumn(j:integer);
 begin
   DeleteColRow(true,j);
@@ -496,88 +494,42 @@ begin
 end;
 
 procedure TSemaphorGrid.SortFromColumn(j:integer; TS:TTypeSort; SD:TDirection; autoadjust:boolean);
-label uscita;
-const basename='namerow';
-      FileTemp='Filetemp.tmp';
-var i,fr:integer;
-    valNum:double;
-    valDate:TDate;
-    strNomeFiletmp,WinTemp:string;
-    MyStringsList:TStringList;
-{$ifndef linux}
-    buffer: array [0..Max_path] of Char;
-{$endif linux}
+  function AutomaticSortType: TTypeSort;
+  var i: Integer;
+  begin
+    // returns the sort type of a omogeneus column j
+    // for non omogeneus, Alphabetical is assumed
+    Result:=tsNumeric;
+    for i:=FixedRows to RowCount-1 do
+      if Cells[j,i]<>'' then
+        try
+          StrToFloat(Cells[j,i]);
+        except
+          Result:=tsDate;
+          break;
+        end;
+    if Result=tsNumeric then
+      exit;
+    for i:=FixedRows to RowCount-1 do
+      if Cells[j,i]<>'' then
+        try
+          StrToDate(Cells[j,i]);
+        except
+          Result:=tsAlphabetic;
+          break;
+        end;
+  end;
 begin
-  if RowCount-FixedRows<=1 then
-    exit;
-  if TS=tsAutomatic then begin
-    TS:=tsAlphabetic;
-    for i:=FixedRows to RowCount-1 do begin
-      if Cells[j,i]<>'' then
-        try
-          valNum:=StrToFloat(Cells[j,i]);
-        except
-          break;
-        end;
-      TS:=tsNumeric;
-      goto uscita;
-    end;
-    for i:=FixedRows to RowCount-1 do begin
-      if Cells[j,i]<>'' then
-        try
-          valDate:=StrToDate(Cells[j,i]);
-        except
-          break;
-        end;
-      TS:=tsDate;
-      goto uscita;
-    end;
-  end;
-uscita:
-{$ifdef linux}WinTemp:='/tmp';{$else linux}
-  GetTempPath(SizeOf(buffer),buffer);//uses Windows
-  WinTemp:=buffer;
-{$endif linux}
-  fr:=FixedRows; //save the FixedRows begin
-  for i:=1 to fr do begin
-    strNomeFiletmp:=WinTemp+basename+IntToStr(i)+'.tmp';
-    Rows[0].SaveToFile(strNomeFiletmp);
-    DeleteRow(0);
-  end;//save the FixedRows end
-
-  ExchangeColRow(true,0,j);
-
-  MyStringsList:=TStringList.Create;
-  SaveToFileG(WinTemp+FileTemp,false);
-  MyStringsList.LoadFromFile(WinTemp+FileTemp);
-  case TS of
-    tsAlphabetic: MyStringsList.Sort;
-    tsDate: SortDate(MyStringsList);
-    tsNumeric: SortNumeric(MyStringsList);
-  end;
-
-  if SD=sdDescending then
-    for i:=0 to ((MyStringsList.Count-1)div 2) do
-      MyStringsList.Exchange(i,MyStringsList.Count-1-i);
-
-  MyStringsList.SaveToFile(WinTemp+FileTemp);
-  LoadFromFileG(WinTemp+FileTemp,autoadjust);
-  DeleteFile(pchar(WinTemp+FileTemp));
-  MyStringsList.Free;
-
-  ExchangeColRow(true,0,j);
-  for i:=fr downto 1 do begin   //restore the FixedRows begin
-    RowCount:=RowCount+1;
-    strNomeFiletmp:=WinTemp+basename+IntToStr(i)+'.tmp';
-    MyStringsList:=TStringList.Create;
-    MyStringsList.LoadFromFile(strNomeFiletmp);
-    Rows[RowCount-1]:=MyStringsList;
-    MyStringsList.Free;
-    MoveColRow(false,RowCount-1,0);
-    DeleteFile(PChar(strNomeFiletmp));
-  end;                          //restore the FixedRows end
+  if Ts=tsAutomatic then
+    FSortType := AutomaticSortType
+  else
+    FSortType := Ts;
+  FSortDirection := SD;
+  BeginUpdate;
+  SortColRow(True, J);
   if autoadjust then
     AutoAdjustColumns;
+  EndUpdate(true);
 end;
 
 procedure TSemaphorGrid.HideCol(j:integer);
@@ -623,14 +575,14 @@ begin
     ExWidths.Delete(1);
     ExWidths.Delete(0);
   end;
-(* alternativa
+(* as different solution
   for j:=0 to ColCount-1 do
     ShowCol(j);
 *)
 end;
 
 function TSemaphorGrid.Duplicate(var SG:TSemaphorGrid):Boolean;
-var i,j:integer;  //from Coppola da migliorare
+var i,j:integer;  // da migliorare
     duptmp:Boolean;
 begin
   duptmp:=True;
@@ -669,25 +621,63 @@ begin
   end
 end;
 
-procedure TSemaphorGrid.ReDrawGrid;
-var aCol,aRow:integer;
-    aRect:TRect;
-    aState:TGridDrawState;
+procedure TSemaphorGrid.SetAlignment(Value: TAlignment);
 begin
-  for aRow:=0 to RowCount-1 do
-    for aCol:=0 to ColCount-1 do begin
-      aRect:=CellRect(aCol,aRow);
-      aState:=[];
-      if (aCol<FixedCols)or(aRow<FixedRows) then
-        aState:=aState+[gdFixed];
-      if (aCol=Col)and(aRow=Row) then
-        aState:=aState+[gdFocused];
-      DrawCell(aCol,aRow,aRect,aState);
-    end
+  If FAlignment <> Value then begin
+    FAlignment := Value;
+    Invalidate;
+  end;
 end;
 
-procedure TSemaphorGrid.AutoInitialize;
+procedure TSemaphorGrid.SetCHSEP(Value : Char);
 begin
+  FCHSEP:=Value;
+end;
+
+procedure TSemaphorGrid.SetSemaphor(Value : boolean);
+begin
+  FSemaphor:=Value;
+  Invalidate;
+end;
+
+procedure TSemaphorGrid.SetStringRed(Value : string);
+begin
+  FStringRed:=Value;
+  Invalidate;
+end;
+
+procedure TSemaphorGrid.SetStringYellow(Value : string);
+begin
+  FStringYellow:=Value;
+  Invalidate;
+end;
+
+procedure TSemaphorGrid.SetStringGreen(Value : string);
+begin
+  FStringGreen:=Value;
+  Invalidate;
+end;
+
+procedure TSemaphorGrid.SetSemaphorShape(Value : TSemaphorShape);
+begin
+  FSemaphorShape:=Value;
+  Invalidate;
+end;
+
+procedure TSemaphorGrid.SetSemaphorCaseSensitive(Value : boolean);
+begin
+  FSemaphorCaseSensitive:=Value;
+  invalidate;
+end;
+
+procedure TSemaphorGrid.SetSemaphorOnlyFloat(Value : boolean);
+begin
+  FSemaphorOnlyFloat:=Value;
+end;
+
+constructor TSemaphorGrid.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
   FCHSEP:=#255;
   Semaphor:=False;
   StringRed:='no';
@@ -699,105 +689,6 @@ begin
   Alignment:=taLeftJustify;
   WidthZero:=GridLineWidth;
   ExWidths:=TStringList.Create;
-end;
-
-procedure TSemaphorGrid.SetAlignment(Value: TAlignment);
-begin
-  If FAlignment <> Value then begin
-    FAlignment := Value;
-    Invalidate;
-  end;
-end;
-
-function TSemaphorGrid.GetAlignment: TAlignment;
-begin
-  Result := FAlignment;
-end;
-
-function TSemaphorGrid.GetCHSEP : Char;
-begin
-  Result:=FCHSEP;
-end;
-
-procedure TSemaphorGrid.SetCHSEP(Value : Char);
-begin
-  FCHSEP:=Value;
-end;
-
-function TSemaphorGrid.GetSemaphor : boolean;
-begin
-  Result:=FSemaphor;
-end;
-
-procedure TSemaphorGrid.SetSemaphor(Value : boolean);
-begin
-  FSemaphor:=Value;
-end;
-
-function TSemaphorGrid.GetStringRed : string;
-begin
-  Result:=FStringRed;
-end;
-
-procedure TSemaphorGrid.SetStringRed(Value : string);
-begin
-  FStringRed:=Value;
-end;
-
-function TSemaphorGrid.GetStringYellow : string;
-begin
-  Result:=FStringYellow;
-end;
-
-procedure TSemaphorGrid.SetStringYellow(Value : string);
-begin
-  FStringYellow:=Value;
-end;
-
-function TSemaphorGrid.GetStringGreen : string;
-begin
-  Result:=FStringGreen;
-end;
-
-procedure TSemaphorGrid.SetStringGreen(Value : string);
-begin
-  FStringGreen:=Value;
-end;
-
-function TSemaphorGrid.GetSemaphorShape : TSemaphorShape;
-begin
-  Result:=FSemaphorShape;
-end;
-
-procedure TSemaphorGrid.SetSemaphorShape(Value : TSemaphorShape);
-begin
-  FSemaphorShape:=Value;
-end;
-
-function TSemaphorGrid.GetSemaphorCaseSensitive : boolean;
-begin
-  Result:=FSemaphorCaseSensitive;
-end;
-
-procedure TSemaphorGrid.SetSemaphorCaseSensitive(Value : boolean);
-begin
-  FSemaphorCaseSensitive:=Value;
-end;
-
-function TSemaphorGrid.GetSemaphorOnlyFloat : boolean;
-begin
-  Result:=FSemaphorOnlyFloat;
-end;
-
-procedure TSemaphorGrid.SetSemaphorOnlyFloat(Value : boolean);
-begin
-  FSemaphorOnlyFloat:=Value;
-end;
-
-constructor TSemaphorGrid.Create(AOwner: TComponent);
-begin
-  AutoInitialize;
-  inherited Create(AOwner);
 end;
 
 destructor TSemaphorGrid.Destroy;
@@ -815,5 +706,4 @@ initialization
   {$I SemaphorGridsicon.lrs}
 
 end.
-
 

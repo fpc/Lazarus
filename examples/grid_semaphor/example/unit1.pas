@@ -86,7 +86,6 @@ implementation
 procedure TForm1.Button1Click(Sender: TObject);
 begin
   SemaphorGrid1.Semaphor:=not SemaphorGrid1.Semaphor;
-  SemaphorGrid1.ReDrawGrid;//should not are here
 end;
 
 procedure TForm1.Button10Click(Sender: TObject);
@@ -119,7 +118,6 @@ begin
       SemaphorShape:=succ(SemaphorShape)
     else
       SemaphorShape:=ssTopBar;
-    ReDrawGrid;//should not are here
   end;
 end;
 
