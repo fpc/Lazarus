@@ -95,27 +95,6 @@ const
   csPanel = 51;
   csScrollBox = 52;
 
-type
-
-//TODO: check this against lcllinux
-
-  TgComponentStyle = LongInt;
-  AnsiChar = Char;  //Should be moved
-  WideChar = Char;
-  Short = SmallInt;
-  HFont = LongWord;
-  THAndle = Integer;
-  hwnd    = THandle;
-  TCaption = string;
-  //TMessage = Pointer;
-  HMENU = type LongWord;
-  HPEN = type LongWord;
-  HBitmap = type LongWord;
-  HPalette = type LongWord;
-
-  HDC = type LongWord;
-  HBRUSH = type LongWord;
-
 const
   {Mouse message key states}
   MK_LBUTTON  = 1;
