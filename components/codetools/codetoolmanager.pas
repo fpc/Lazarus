@@ -1192,7 +1192,8 @@ begin
   {$ENDIF}
   try
     Result:=GetResourceTool.AddLazarusResourceHeaderComment(Code,
-      '{ '+CommentText+' }'+SourceChangeCache.BeautifyCodeOptions.LineEnd);
+      '{ '+CommentText+' }'+SourceChangeCache.BeautifyCodeOptions.LineEnd
+      +SourceChangeCache.BeautifyCodeOptions.LineEnd);
   except
     on e: Exception do HandleException(e);
   end;

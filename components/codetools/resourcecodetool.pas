@@ -186,13 +186,14 @@ begin
     // not found -> add at end of file
     InsertAtom.StartPos:=ResourceCode.SourceLength+1;
     InsertAtom.EndPos:=ResourceCode.SourceLength+1;
+  end else begin
+    InsertAtom.StartPos:=BasicCodeTools.FindLineEndOrCodeInFrontOfPosition(Src,
+                                     InsertAtom.StartPos,1,false,true);
+    InsertAtom.EndPos:=BasicCodeTools.FindLineEndOrCodeAfterPosition(Src,
+                                     InsertAtom.EndPos,SrcLen,false);
   end;
-  InsertAtom.StartPos:=BasicCodeTools.FindLineEndOrCodeInFrontOfPosition(Src,
-                                   InsertAtom.StartPos,1,false,true)+1;
   if CodeIsOnlySpace(Src,1,InsertAtom.StartPos-1) then
     InsertAtom.StartPos:=1;
-  InsertAtom.EndPos:=BasicCodeTools.FindLineEndOrCodeAfterPosition(Src,
-                                   InsertAtom.EndPos,SrcLen,false);
   if CodeIsOnlySpace(Src,InsertAtom.EndPos+1,SrcLen) then
     InsertAtom.EndPos:=SrcLen+1;
 
@@ -248,7 +249,8 @@ begin
       CurResPos:=ResourcePositions[i];
       CurResPos.EndPos:=BasicCodeTools.FindLineEndOrCodeAfterPosition(Src,
                              CurResPos.EndPos,SrcLen,false);
-      ResourceCode.Delete(CurResPos.StartPos,CurResPos.EndPos-CurResPos.StartPos);
+      ResourceCode.Delete(CurResPos.StartPos,
+                          CurResPos.EndPos-CurResPos.StartPos);
     end;
     if ResourcePositions.Count>0 then begin
       First:=ResourcePositions[0];

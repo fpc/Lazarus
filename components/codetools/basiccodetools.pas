@@ -1470,6 +1470,7 @@ begin
     case Source[Result] of
       '}',')':
         if not ReadComment(Result) then exit;
+        
       #10,#13:
         begin
           // line end in code found
@@ -1499,13 +1500,14 @@ begin
           end;
           Result:=TestPos;
         end;
+        
+      ' ',';',',':
+        dec(Result);
+        
     else
-      begin
-        if (Source[Result]<=' ') or (Source[Result] in [';',',']) then
-          dec(Result)
-        else
-          exit;
-      end;
+      // code found
+      inc(Result);
+      exit;
     end;
   end;
   if Result<SrcStart then Result:=SrcStart;
