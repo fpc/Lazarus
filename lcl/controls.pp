@@ -253,7 +253,7 @@ type
                           csReflector,
                           csActionClient,
                           csMenuEvents,
-			  csNoFocus);
+                          csNoFocus);
 
   TControlState = set of (csLButtonDown,
                           csClicked,
@@ -1180,7 +1180,16 @@ end;
 procedure SetCaptureControl(Control : TControl);
 begin
   {$IFDEF VerboseMouseCapture}
-  writeln('SetCaptureControl ',HexStr(Cardinal(Control),8),' ',HexStr(Cardinal(CaptureControl),8));
+  write('SetCaptureControl');
+  if CaptureControl<>nil then
+    write(' Old=',CaptureControl.Name,':',CaptureControl.ClassName)
+  else
+    write(' Old=nil');
+  if Control<>nil then
+    write(' New=',Control.Name,':',Control.ClassName)
+  else
+    write(' New=nil');
+  writeln('');
   {$ENDIF}
   ReleaseCapture;
   CaptureControl := nil;
@@ -1307,6 +1316,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.60  2002/08/24 12:54:59  lazarus
+  MG: fixed mouse capturing, OI edit focus
+
   Revision 1.59  2002/08/23 19:00:15  lazarus
   MG: implemented Ctrl+Mouse links in source editor
 
