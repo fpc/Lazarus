@@ -525,8 +525,15 @@ Begin
               DestroyWindow(Handle);
           End
           Else If Sender Is TMenu Then
+          Begin
             If Handle <> 0 Then
               DestroyMenu(Handle)
+          End
+          Else If Sender Is TMenuItem Then
+          Begin
+            DeleteMenu((Sender as TMenuItem).Parent.Handle, Handle, MF_BYCOMMAND);
+            DrawMenuBar(((Sender as TMenuItem).Owner as TWinControl).Handle);
+          End
           Else
             Assert(False, Format('Trace:I don''t know how to destroy component %S', [Sender.ClassName]));
         End;
@@ -2568,10 +2575,30 @@ Procedure TWin32Object.AttachMenu(Sender: TObject);
 var MenuInfo: MENUITEMINFO;
     MenuHandle: HMenu;
     ParentMenuHandle: HMenu;
+    ParentOfParent: HMenu;
     Style: integer;
     Mask: integer;
     Msg: TLMShortCut;
 Begin
+  ParentMenuHandle := (Sender as TMenuItem).Parent.Handle;
+  
+  {Following part fixes the case when an item is added in runtime
+  but the parent item has not defined the submenu flag (hSubmenu=0) }
+  if (Sender as TMenuItem).Parent.Parent<>nil then
+  begin
+    ParentOfParent := (Sender as TMenuItem).Parent.Parent.Handle;
+    with MenuInfo do begin
+      cbSize:=sizeof(MENUITEMINFO);
+      fMask:=MIIM_SUBMENU;
+    end;
+    GetMenuItemInfo(ParentOfParent, ParentMenuHandle, false, @MenuInfo);
+    if MenuInfo.hSubmenu=0 then // the parent menu item is not yet defined with submenu flag
+    begin
+      MenuInfo.hSubmenu:=ParentMenuHandle;
+      SetMenuItemInfo(ParentOfParent, ParentMenuHandle, false, MenuInfo);
+    end;
+  end;
+  
   Mask := MIIM_ID or MIIM_DATA;
   if ((Sender as TMenuItem).Count > 0) then Mask := Mask or MIIM_SUBMENU;
   MenuHandle := (Sender as TMenuItem).Handle;
@@ -2588,7 +2615,6 @@ Begin
     {dwTypeData:=LPSTR((Sender as TmenuItem).Caption);}
     {cch:=length((Sender as TMenuItem).Caption);} {not needed}
   end;
-  ParentMenuHandle := (Sender as TMenuItem).Parent.Handle;
   InsertMenuItem(ParentMenuHandle, 0, false, @MenuInfo);
   if (Sender as TMenuItem).ShortCut <> 0 then
   begin
@@ -2633,6 +2659,9 @@ End;
 
 {
   $Log$
+  Revision 1.51  2003/03/25 08:12:39  mattias
+  patch from Martin Smat for menu items and default messages
+
   Revision 1.50  2003/03/18 18:23:07  mattias
   popupmenus for win32 intf from Martin Smat
 

@@ -1391,6 +1391,16 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: IsWindowVisible
+  Params: handle - window handle
+  Returns: true if window is visible, false otherwise
+ ------------------------------------------------------------------------------}
+function TWin32Object.IsWindowVisible(handle: HWND): boolean;
+begin
+  Result := Windows.IsWindowVisible(handle);
+end;
+
+{------------------------------------------------------------------------------
   Method:  LineTo
   Params:  DC - device context handle
            X  - x-coordinate of line's ending point 
@@ -2312,6 +2322,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.33  2003/03/25 08:12:39  mattias
+  patch from Martin Smat for menu items and default messages
+
   Revision 1.32  2003/03/18 18:23:07  mattias
   popupmenus for win32 intf from Martin Smat
 

@@ -108,7 +108,7 @@ Function HideCaret(HWnd: HWND): Boolean; Override;
 
 function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer; override;
 Function InvalidateRect(AHandle: HWND; Rect: PRect; BErase: Boolean): Boolean; Override;
-
+function IsWindowVisible(handle: HWND): boolean; override;
 Function LineTo(DC: HDC; X, Y: Integer): Boolean; Override;
 
 Function MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; Override;
@@ -173,6 +173,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.23  2003/03/25 08:12:39  mattias
+  patch from Martin Smat for menu items and default messages
+
   Revision 1.22  2003/03/06 17:15:49  mattias
   applied patch from Martin Smat fixing LM_SETSIZE, LM_SETDESIGNING, LM_SCREENINIT
 

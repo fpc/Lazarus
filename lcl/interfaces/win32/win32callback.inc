@@ -482,6 +482,9 @@ Begin
     End;
   End;
 
+  If WinProcess Then
+    Result := DefWindowProc(Window, Msg, WParam, LParam);
+
   {$IFDEF VER1_1} 
     List := TMsgArray(GetProp(Window, 'MsgList'));
     If Pointer(List) <> Nil Then
@@ -495,9 +498,6 @@ Begin
     If (OwnerObject <> Nil) And (LMessage.Msg <> -1) Then
       DeliverMessage(OwnerObject, LMessage);
   {$ENDIF VER1_1}
-
-  If WinProcess Then
-    Result := DefWindowProc(Window, Msg, WParam, LParam);
 
   Assert(False, 'Trace:WindowProc - Exit');
 End;
@@ -545,6 +545,9 @@ end;
 
 {
   $Log$
+  Revision 1.26  2003/03/25 08:12:39  mattias
+  patch from Martin Smat for menu items and default messages
+
   Revision 1.25  2003/03/18 18:23:07  mattias
   popupmenus for win32 intf from Martin Smat
 
