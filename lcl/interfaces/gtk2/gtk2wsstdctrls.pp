@@ -88,10 +88,18 @@ type
   private
   protected
   public
-    class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
-    class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
+    class function  GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
     class function  GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
     class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
+    class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
+    class function  GetTopIndex(const ACustomListBox: TCustomListBox): integer; override;
+    class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); override;
+    class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
+    class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
+    class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect,
+      AMultiSelect: boolean); override;
+    class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
+    class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); override;
   end;
 
   { TGtk2WSListBox }
@@ -247,12 +255,55 @@ begin
 
 end;
 
+function TGtk2WSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox
+  ): integer;
+begin
+  Result:=inherited GetTopIndex(ACustomListBox);
+end;
+
+procedure TGtk2WSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox;
+  AIndex: integer; ASelected: boolean);
+var
+  Handle: HWND;
+  Widget: PGtkWidget; // pointer to gtk-widget (local use when neccessary)
+  Selection: PGtkTreeSelection;
+  ListStoreModel: PGtkTreeModel;
+  Iter  : TGtkTreeIter;
+begin
+  Handle := ACustomListBox.Handle;
+  Widget:=GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
+  ListStoreModel := gtk_tree_view_get_model(PGtkTreeView(Widget));
+  Selection := gtk_tree_view_get_selection(PGtkTreeView(Widget));
+
+  if gtk_tree_model_iter_nth_child(ListStoreModel, @Iter, nil, AIndex) then begin
+    case ASelected of
+      True:
+      begin
+        if not gtk_tree_selection_iter_is_selected(Selection, @Iter) then
+          gtk_tree_selection_select_iter(Selection, @Iter);
+      end;
+      False:
+      begin
+        if gtk_tree_selection_iter_is_selected(Selection, @Iter) then
+          gtk_tree_selection_unselect_iter(Selection, @Iter);
+      end;
+    end;
+  end;
+end;
+
+procedure TGtk2WSCustomListBox.SetBorder(const ACustomListBox: TCustomListBox);
+begin
+  inherited SetBorder(ACustomListBox);
+end;
+
 procedure TGtk2WSCustomListBox.SetItemIndex(
   const ACustomListBox: TCustomListBox; const AIndex: integer);
 var
   Handle: HWND;
   Widget: PGtkWidget;
+  ListStoreModel: PGtkTreeModel;
   Selection: PGtkTreeSelection;
+  Iter: TGtkTreeIter;
 begin
   Handle := ACustomListBox.Handle;
   if Handle<>0 then
@@ -262,14 +313,73 @@ begin
       Selection := Gtk_tree_view_get_selection(PGtkTreeView(Widget));
       if AIndex >= 0 then
       begin
-        gtk_tree_selection_select_path(Selection, PGtkTreePath(@AIndex));
-        //gtk_list_select_item(PGtkList(Widget), AIndex)
+        ListStoreModel := gtk_tree_view_get_model(PGtkTreeView(Widget));
+        if gtk_tree_model_iter_nth_child(ListStoreModel, @Iter, nil, AIndex) then begin
+          gtk_tree_selection_select_iter(Selection, @Iter);
+        end;
       end else
         gtk_tree_selection_unselect_all(Selection);
-        //gtk_list_unselect_all(PGtkList(Widget));
     end else
       raise Exception.Create('');
   end;
+end;
+
+procedure TGtk2WSCustomListBox.SetSelectionMode(
+  const ACustomListBox: TCustomListBox; const AExtendedSelect,
+  AMultiSelect: boolean);
+var
+  Handle: HWND;
+  Widget: PGtkWidget; // pointer to gtk-widget (local use when neccessary)
+  Selection: PGtkTreeSelection;
+begin
+  Handle := ACustomListBox.Handle;
+  Widget:=GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
+  Selection := gtk_tree_view_get_selection(PGtkTreeView(Widget));
+
+  case AMultiSelect of
+    True : gtk_tree_selection_set_mode(Selection, GTK_SELECTION_MULTIPLE);
+    False: gtk_tree_selection_set_mode(Selection, GTK_SELECTION_SINGLE);
+    //GTK_SELECTION_NONE,
+    //GTK_SELECTION_SINGLE,
+    //GTK_SELECTION_BROWSE,
+    //GTK_SELECTION_MULTIPLE
+  end;
+end;
+
+procedure TGtk2WSCustomListBox.SetSorted(const ACustomListBox: TCustomListBox;
+  AList: TStrings; ASorted: boolean);
+begin
+  if AList is TGtkListStoreStringList then
+    TGtkListStoreStringList(AList).Sorted := ASorted
+  //else if AList is TGtkCListStringList then
+  //  TGtkCListStringList(AList).Sorted := ASorted
+  else
+    raise Exception.Create('');
+end;
+
+procedure TGtk2WSCustomListBox.SetTopIndex(
+  const ACustomListBox: TCustomListBox; const NewTopIndex: integer);
+begin
+  inherited SetTopIndex(ACustomListBox, NewTopIndex);
+end;
+
+function TGtk2WSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox
+  ): integer;
+var
+  Handle: HWND;
+  Widget: PGtkWidget; // pointer to gtk-widget (local use when neccessary)
+  Selection: PGtkTreeSelection;
+  ListStoreModel: PGtkTreeModel;
+  Rows: PGList;
+begin
+  Result := 0;
+  Handle := ACustomListBox.Handle;
+  Widget:=GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
+  Selection := gtk_tree_view_get_selection(PGtkTreeView(Widget));
+
+  Rows := gtk_tree_selection_get_selected_rows(Selection, @ListStoreModel);
+  Result := g_list_length(Rows);
+  g_list_free(Rows);
 end;
 
 function TGtk2WSCustomListBox.GetSelected(const ACustomListBox: TCustomListBox;
@@ -279,7 +389,7 @@ var
   Widget: PGtkWidget; // pointer to gtk-widget (local use when neccessary)
   Selection: PGtkTreeSelection;
   ListStoreModel: PGtkTreeModel;
-  Item  : PGtkTreeIter;
+  Item  : TGtkTreeIter;
 begin
   Result := false;      { assume: nothing found }
   Handle := ACustomListBox.Handle;
@@ -287,8 +397,8 @@ begin
   ListStoreModel := gtk_tree_view_get_model(PGtkTreeView(Widget));
   Selection := gtk_tree_view_get_selection(PGtkTreeView(Widget));
 
-  if gtk_tree_model_iter_nth_child(ListStoreModel, Item, nil, AIndex) then begin
-    Result := gtk_tree_selection_iter_is_selected(Selection, Item);
+  if gtk_tree_model_iter_nth_child(ListStoreModel, @Item, nil, AIndex) then begin
+    Result := gtk_tree_selection_iter_is_selected(Selection, @Item);
   end;
 end;
 

@@ -458,17 +458,17 @@ end;
 
 function TGtkListStoreStringList.GetObject(Index: Integer): TObject;
 var
-  ListItem : TGtkTreeIter;
+  ListItem : PGtkTreeIter;
 begin
   Result:=nil;
   if (Index < 0) or (Index >= Count) then
     RaiseException('TGtkListStoreStringList.GetObject Out of bounds.')
   else if FGtkListStore<>nil then begin
     UpdateItemCache;
-    ListItem:=FCachedItems[Index];
-    {if ListItem<>nil then begin
-      Result:=TObject(gtk_object_get_data(PGtkObject(ListItem),'LCLStringsObject'));
-    end;}
+    ListItem:=@FCachedItems[Index];
+    if ListItem<>nil then begin
+      //Result:=TObject(gtk_object_get_data(PGtkObject(ListItem),'LCLStringsObject'));
+    end;
   end;
 end;
 
@@ -599,6 +599,9 @@ end.
 
 {
   $Log$
+  Revision 1.40  2005/02/08 18:31:56  mattias
+  further completions for gtk2 listbox and listview
+
   Revision 1.39  2005/02/05 09:09:52  mattias
   implemented TListView for gtk2   From Andrew Haines
 

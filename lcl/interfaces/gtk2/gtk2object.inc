@@ -393,30 +393,54 @@ begin
   GtkTreeView:=gtk_tree_view_new_with_model(PGtkTreeModel(ListStore));
   g_object_unref (G_OBJECT (ListStore));
   
+  if ListView.Columns.Count > 0 then begin
+    column := gtk_tree_view_column_new();
+    if ListView.Columns.Count> 0 then
+      gtk_tree_view_column_set_title(column, PChar(ListView.Columns.Items[0].Caption));
+    //set width
+    gtk_tree_view_column_set_fixed_width(Column, ListView.Columns.Items[0].Width+Ord(ListView.Columns.Items[0].Width=0));
 
-  column := gtk_tree_view_column_new();
-  if ListView.Columns.Count> 0 then
-    gtk_tree_view_column_set_title(column, PChar(ListView.Columns.Items[0].Caption));
+    // set Visible
+    gtk_tree_view_column_set_visible(Column, ListView.Columns.Items[0].Visible);
+    // set MinWidth
+    if ListView.Columns.Items[0].MinWidth > 0 then
+      gtk_tree_view_column_set_min_width(Column, ListView.Columns.Items[0].MinWidth);
+    // set MaxWidth
+    if ListView.Columns.Items[0].MaxWidth > 0 then
+      gtk_tree_view_column_set_max_width(Column, ListView.Columns.Items[0].MaxWidth);
+    
+    //Add an Icon renderer and a text renderer to the first column
+    //for Icons
+    renderer := gtk_cell_renderer_pixbuf_new();
+    gtk_tree_view_column_pack_start(column, renderer, FALSE);
+    gtk_tree_view_column_set_attributes(column, renderer,['pixbuf', 0, nil]);
 
-  //Add an Icon renderer and a text renderer to the first column
-  //for Icons
-  renderer := gtk_cell_renderer_pixbuf_new();
-  gtk_tree_view_column_pack_start(column, renderer, FALSE);
-  gtk_tree_view_column_set_attributes(column, renderer,['pixbuf', 0, nil]);
-
-  renderer := gtk_cell_renderer_text_new();
-  gtk_tree_view_column_pack_start(column, renderer, True);
-  gtk_tree_view_column_set_attributes(column, renderer, ['text', 1, nil]);
-
-  gtk_tree_view_append_column(GTK_TREE_VIEW(GtkTreeview), column);
-  gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
-  
-  for i := 1 to ListView.Columns.Count-1 do begin;
     renderer := gtk_cell_renderer_text_new();
-    column := gtk_tree_view_column_new_with_attributes ('LISTITEMS', renderer, ['text', i, nil]);
-    gtk_tree_view_column_set_title(column, PChar(ListView.Columns.Items[i].Caption));
-    gtk_tree_view_append_column (GTK_TREE_VIEW (GtkTreeView), column);
+    gtk_tree_view_column_pack_start(column, renderer, True);
+    gtk_tree_view_column_set_attributes(column, renderer, ['text', 1, nil]);
+
+
+    gtk_tree_view_append_column(GTK_TREE_VIEW(GtkTreeview), column);
     gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
+  
+    for i := 1 to ListView.Columns.Count-1 do begin;
+      renderer := gtk_cell_renderer_text_new();
+      column := gtk_tree_view_column_new_with_attributes ('LISTITEMS', renderer, ['text', i+1, nil]);
+      gtk_tree_view_column_set_title(column, PChar(ListView.Columns.Items[i].Caption));
+    
+      //set width
+      gtk_tree_view_column_set_fixed_width(Column, ListView.Columns.Items[i].Width);
+      // set Visible
+      gtk_tree_view_column_set_visible(Column, ListView.Columns.Items[i].Visible);
+      // set MinWidth
+      if ListView.Columns.Items[i].MinWidth > 0 then
+        gtk_tree_view_column_set_min_width(Column, ListView.Columns.Items[i].MinWidth);
+      // set MaxWidth
+      if ListView.Columns.Items[i].MaxWidth > 0 then
+        gtk_tree_view_column_set_max_width(Column, ListView.Columns.Items[i].MaxWidth);
+      gtk_tree_view_append_column (GTK_TREE_VIEW (GtkTreeView), column);
+      gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
+    end;
   end;
 
   gtk_tree_view_set_headers_visible(GTK_TREE_VIEW (GtkTreeView), ListView.ViewStyle = vsReport);
@@ -1480,6 +1504,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.23  2005/02/08 18:31:56  mattias
+  further completions for gtk2 listbox and listview
+
   Revision 1.22  2005/02/05 09:09:52  mattias
   implemented TListView for gtk2   From Andrew Haines
 
