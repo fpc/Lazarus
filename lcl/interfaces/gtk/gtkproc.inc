@@ -289,6 +289,11 @@ begin
       SpecialOrigin := SourceDC.SpecialOrigin;
       PenPos := SourceDC.PenPos;
       
+      if (dcfTextMetricsValid in SourceDC.DCFlags) then begin
+        Include(DCFlags,dcfTextMetricsValid);
+        DCTextMetric := SourceDC.DCTextMetric;
+      end else
+        Exclude(DCFlags,dcfTextMetricsValid);
       CurrentBitmap := SourceDC.CurrentBitmap;
       CurrentFont := SourceDC.CurrentFont;
       CurrentPen := SourceDC.CurrentPen;
@@ -297,8 +302,8 @@ begin
       CurrentTextColor := SourceDC.CurrentTextColor;
       CurrentBackColor := SourceDC.CurrentBackColor;
       ClipRegion := SourceDC.ClipRegion;
-      
-      SelectedColors:=dcscCustom;
+
+      SelectedColors := dcscCustom;
       SavedContext := nil;
     end;
   end;
@@ -3452,6 +3457,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.123  2002/10/10 19:43:17  lazarus
+  MG: accelerated GetTextMetrics
+
   Revision 1.122  2002/10/10 08:57:25  lazarus
   MG: applied cyrillic patch from vasily
 
