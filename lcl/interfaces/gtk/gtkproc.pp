@@ -20,7 +20,7 @@ interface
 
 uses
   {$Ifndef Win32}
-  X,XLib,//Font retrieval
+  X, XLib,//Font retrieval
   {$EndIf}
   InterfaceBase, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} gtk, gdk,
   glib, SysUtils, LMessages, Classes, Controls, Forms, VclGlobals,
