@@ -51,18 +51,23 @@ RPM:
 
 Creating the fpc and the fpcsrc rpm:
 
-  There are two versions of the compiler: the stable 1.0.11 and the unstable
-  developer version 1.9. To build them, you must install fpc first. Install the
-  stable fpc release (1.0.10). Note: The 1.0.11 can not be built with a 1.9
-  compiler and the recommended startup compiler for the 1.9.x is the released
-  fpc 1.0.10.
+  There are two versions of the compiler: the old 1.0.11 and the new (but not
+  yet released) developer version 1.9. To build them, you must install fpc
+  first. Install the stable fpc release (1.0.10). Note: The 1.0.11 can not be
+  built with a 1.9 compiler and the recommended startup compiler for the 1.9.x
+  is the released fpc 1.0.10.
 
-  If you have your own fpc sources you can build the rpm with:
+  If you have your own fpc sources you can build the fpc rpm with:
     Become root and do:
     cd <lazarus_directory>/tools/install
-    ./build_fpc_rpm.sh nodocs /path/to/your/fpc/sources/new19/fpc 040501
+    ./build_fpc_rpm.sh nodocs /path/to/your/fpc/sources/fpc 040501
 
   The 040501 stands for: 2004 may 1st
+  
+  Then build the fpcsrc rpm. Become root and do:
+    cd <lazarus_directory>/tools/install
+    ./build_fpcsrc_rpm.sh /path/to/your/fpc/sources/fpc 040501
+
 
   The create_fpc_rpm.sh works nearly automatically. Become root and execute it.
     For 1.0.11: ./create_fpc_rpm.sh stable
