@@ -1775,9 +1775,10 @@ begin
     exit;
   end;
   LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
+  fMouseDownX := X;
+  fMouseDownY := Y;
   {$ENDIF}
-//writeln('TCustomSynEdit.MouseDown Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
-//  if (Button = mbRight) and (Shift = [ssRight]) and Assigned(PopupMenu) and SelAvail
+  Exclude(fStateFlags, sfPossibleGutterClick);
   if (Button = mbRight) and SelAvail then                                       //lt 2000-10-12
     exit;
   bWasSel := false;
@@ -1787,8 +1788,6 @@ begin
     if SelAvail then begin
       //remember selection state, as it will be cleared later
       bWasSel := true;
-      fMouseDownX := X;
-      fMouseDownY := Y;
     end;
   end;
   {$IFDEF SYN_LAZARUS}
@@ -1850,12 +1849,14 @@ begin
       {$ENDIF}
     end;
   end;
-  if (fMouseDownX < fGutterWidth) then
-    Include(fStateFlags, sfPossibleGutterClick);
   {$IFDEF SYN_LAZARUS}
+  if (X < fGutterWidth) then
+    Include(fStateFlags, sfPossibleGutterClick);
   LCLLinux.SetFocus(Handle);
   UpdateCaret;
   {$ELSE}
+  if (fMouseDownX < fGutterWidth) then
+    Include(fStateFlags, sfPossibleGutterClick);
   Windows.SetFocus(Handle);
   {$ENDIF}
 //writeln('TCustomSynEdit.MouseDown END Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
@@ -2020,7 +2021,13 @@ begin
   LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
   {$ENDIF}
   if (Button = mbRight) and (Shift = [ssRight]) and Assigned(PopupMenu) then
+  begin
+    {$IFDEF SYN_LAZARUS}
+    fStateFlags:=fStateFlags-[sfDblClicked,sfTripleClicked,sfQuadClicked,
+                              sfPossibleGutterClick];
+    {$ENDIF}
     exit;
+  end;
   MouseCapture := False;
   if (sfPossibleGutterClick in fStateFlags) and (X < fGutterWidth) then
     DoOnGutterClick(X, Y)
