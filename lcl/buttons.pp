@@ -240,8 +240,6 @@ type
   end;
 
 
-{$I defaultbitbtnimages.inc}
-
 implementation
 
 uses LCLStrConsts;
@@ -255,31 +253,17 @@ const
     '', rsmbOK, rsmbCancel, rsmbHelp, rsmbYes, rsmbNo,
     rsmbClose, rsmbAbort, rsmbRetry, rsmbIgnore, rsmbAll);
 
-
-var
-  BitBtnImages : array[TBitBtnKind] of PCharArray;
+  BitBtnImages : array[TBitBtnKind] of Longint = (
+    idButtonOk, idButtonOk, idButtonCancel, idButtonHelp, idButtonYes,
+    idButtonNo, idButtonClose, idButtonAbort, idButtonRetry, idButtonIgnore,
+    idButtonAll);
 
 {$I buttons.inc}
 {$I bitbtn.inc}
 {$I buttonglyph.inc}
 {$I speedbutton.inc}
 
-procedure ButtonInit;
-var
-  BitBtnKind: TBitBtnKind;
-begin
-  for BitBtnKind:=Low(TBitBtnKind) to High(TBitBtnKind) do
-    BitBtnImages[BitBtnKind]:=IMGOK_Check;
-  BitbtnImages[bkOK] := IMGOK_Check;
-  BitbtnImages[bkCancel] := IMGCancel_X;
-  BitbtnImages[bkClose] := IMGClose;
-  BitbtnImages[bkHelp] := IMGHELP;
-  BitbtnImages[bkAll] := IMGAll_Check;
-end;
-
 initialization
-  ButtonInit;
-
 finalization
 
 end.
@@ -289,6 +273,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.30  2002/10/10 13:29:08  lazarus
+  AJ: added LoadStockPixmap routine & minor fixes to/for GNOMEInt
+
   Revision 1.29  2002/10/01 18:00:02  lazarus
   AJ: Initial TUpDown, minor property additions to improve reading Delphi created forms.
 
