@@ -512,66 +512,83 @@ end;
 
 procedure TUnitInfo.CreateStartCode(NewUnitType: TNewUnitType;
   const NewUnitName: string);
-var ResourceFilename:string;
-  NewSource: TStringList;
+var ResourceFilename :string;
+  NewSource, LE: string;
+  
+  function Beautified(const s: string): string;
+  begin
+    Result:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.
+                  BeautifyStatement(s,0);
+  end;
+  
 begin
   if fSource=nil then exit;
-  NewSource:=TStringList.Create;
-  if NewUnitType in [nuForm,nuUnit] then with NewSource do begin
+  NewSource:='';
+  LE:=EndOfLine;
+  if NewUnitType in [nuForm,nuUnit] then begin
     fUnitName:=NewUnitName;
     ResourceFilename:=fUnitName+ResourceFileExt;
-    Add('unit '+fUnitName+';');
-    Add('');
-    Add('{$mode objfpc}{$H+}');
-    Add('');
-    Add('interface');
-    Add('');
-    Add('uses');
+    NewSource:=Beautified(
+       'unit '+fUnitName+';'+LE
+      +LE
+      +'{$mode objfpc}{$H+}'+LE
+      ++LE
+      +'interface'+LE
+      ++LE
+      +'uses'+LE);
     case NewUnitType of
      nuUnit:
       begin
-        Add('  Classes, SysUtils;');
-        Add('');
-        Add('implementation');
+        NewSource:=NewSource+Beautified(
+          '  Classes, SysUtils;'+LE
+          +LE
+          +'implementation'+LE);
       end;
      nuForm:
       begin
-        Add('  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources;');
-        Add('');
-        Add('type');
-        Add('  T'+fFormName+' = class(TForm)');
-        Add('  private');
-        Add('    { private declarations }');
-        Add('  public');
-        Add('    { public declarations }');
-        Add('  end;');
-        Add('');
-        Add('var');
-        Add('  '+fFormName+': T'+fFormName+';');
-        Add('');
-        Add('implementation');
-        Add('');
-        Add('initialization');
-        Add('  {$I '+ResourceFilename+'}');
+        NewSource:=NewSource+Beautified(
+          '  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources;'+LE
+          +LE
+          +'type'+LE
+          +'  T'+fFormName+' = class(TForm)'+LE
+          +'  private'+LE);
+        NewSource:=NewSource
+          +'    { private declarations }'+LE;
+        NewSource:=NewSource+Beautified(
+          +'  public'+LE);
+        NewSource:=NewSource
+          +'    { public declarations }'+LE;
+        NewSource:=NewSource+Beautified(
+          +'  end;'+LE
+          +LE
+          +'var'+LE
+          +'  '+fFormName+': T'+fFormName+';'+LE
+          +LE
+          +'implementation'+LE
+          +LE
+          +'initialization'+LE);
+        NewSource:=NewSource
+          +'  {$I '+ResourceFilename+'}'+LE);
       end;
     end;
-    Add('');
-    Add('end.');
-    Add('');
-  end else if NewUnitType in [nuCustomProgram] then with NewSource do begin
-    Add('program CustomProgram;');
-    Add('');
-    Add('{$mode objfpc}{$H+}');
-    Add('');
-    Add('uses');
-    Add('  Classes, SysUtils;');
-    Add('');
-    Add('begin');
-    Add('end.');
-    Add('');
+    NewSource:=NewSource+Beautified(
+      +LE
+      +'end.'+LE
+      +LE);
+  end else if NewUnitType in [nuCustomProgram] then begin
+    NewSource:=NewSource+Beautified(
+      +'program CustomProgram;'+LE
+      +LE
+      +'{$mode objfpc}{$H+}'+LE
+      +LE
+      +'uses'+LE
+      +'  Classes, SysUtils;'+LE
+      +LE
+      +'begin'+LE
+      +'end.'+LE
+      +LE);
   end;
-  fSource.Assign(NewSource);
-  NewSource.Free;
+  fSource.Source:=NewSource;
   fModified:=true;
 end;
 
@@ -1312,6 +1329,9 @@ end.
 
 {
   $Log$
+  Revision 1.53  2002/03/21 23:59:59  lazarus
+  MG: code creation options applied to new unit source
+
   Revision 1.52  2002/03/21 22:44:08  lazarus
   MG: fixes for save-as and form streaming exceptions
 
