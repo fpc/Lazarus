@@ -593,6 +593,7 @@ type
     procedure CMHintShow(var Message: TLMessage); message CM_HINTSHOW;
     procedure CMVisibleChanged(var Message : TLMessage); message CM_VISIBLECHANGED;
     procedure ConstrainedResize(var MinWidth, MinHeight, MaxWidth, MaxHeight : TConstraintSize); virtual;
+    function  GetPalette: HPalette; virtual;
     procedure Resize;
     procedure RequestAlign; dynamic;
     procedure BeginAutoDrag; dynamic;
@@ -1433,6 +1434,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.96  2002/12/25 10:21:05  mattias
+  made Form.Close more Delphish, added some windows compatibility functions
+
   Revision 1.95  2002/12/18 17:52:18  mattias
   fixed lazarus xml files for fpc 1.1
 
