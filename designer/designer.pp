@@ -756,7 +756,7 @@ var
     ControlSelection.EndUpdate;
     {$IFDEF VerboseDesigner}
     with ControlSelection.Grabbers[0] do
-      writeln('AAA1 ',Left,',',Top,',',Width,',',Height);
+      writeln('RubberbandSelect ',Left,',',Top,',',Width,',',Height);
     {$ENDIF}
     Form.Invalidate;
   end;
@@ -1337,7 +1337,7 @@ var
   IconCanvas: TCanvas;
 begin
   for i:=0 to FCustomForm.ComponentCount-1 do begin
-    if not (FCustomForm.Components[i] is TControl) then begin
+    if (not (FCustomForm.Components[i] is TControl)) then begin
       Diff:=aDDC.FormOrigin;
       // non-visual component
       ItemLeftTop:=NonVisualComponentLeftTop(FCustomForm.Components[i]);
@@ -1437,7 +1437,7 @@ var i: integer;
 begin
   for i:=FCustomForm.ComponentCount-1 downto 0 do begin
     Result:=FCustomForm.Components[i];
-    if not (Result is TControl) then begin
+    if (not (Result is TControl)) then begin
       with Result do begin
         LeftTop:=NonVisualComponentLeftTop(Result);
         if (LeftTop.x<=x) and (LeftTop.y<=y)
