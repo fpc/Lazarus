@@ -681,7 +681,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TSpeedButton.CMMouseLeave(var Message :TLMessage);
 begin
-writeln('TSpeedButton.CMMouseLeave A ',FMouseInControl,' ',Enabled,' ',FDragging);
   inherited CMMouseLeave(Message);
   if csDesigning in ComponentState then exit;
 
@@ -705,6 +704,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.34  2003/02/06 20:46:51  mattias
+  default fpc src dirs and clean ups
+
   Revision 1.33  2003/02/06 06:33:57  mattias
   fixed message
 
