@@ -53,8 +53,8 @@ uses
   {$ELSE}
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
-  SysUtils, LMessages, Classes, Controls, Forms, LCLStrConsts, VclGlobals,
-  LCLProc, LCLLinux, LCLType, gtkDef, DynHashArray, LazQueue,
+  SysUtils, LMessages, Classes, Controls, Forms, LCLStrConsts,
+  VclGlobals, LCLProc, LCLLinux, LCLType, gtkDef, DynHashArray, LazQueue,
   GraphType, GraphMath;
 
 
@@ -109,7 +109,8 @@ type
     function CreateAPIWidget(AWinControl: TWinControl): PGtkWidget;
     function CreateForm(ACustomForm: TCustomForm): PGtkWidget;
     procedure CreateComponent(Sender : TObject);virtual;
-    procedure DestroyLCLComponent(Sender : TObject);virtual;
+    procedure DestroyEmptySubmenu(Sender: TObject);virtual;
+    procedure DestroyLCLComponent(Sender: TObject);virtual;
     function  RecreateWnd(Sender: TObject): Integer; virtual;
     procedure AddChild(Parent,Child : Pointer; Left,Top: Integer);virtual;
     procedure AssignSelf(Child ,Data : Pointer);virtual;
@@ -338,6 +339,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.128  2003/05/18 10:42:58  mattias
+  implemented deleting empty submenus
+
   Revision 1.127  2003/04/29 19:00:43  mattias
   added package gtkopengl
 
