@@ -941,7 +941,6 @@ begin
     CNSendMessage(LM_SETCOLOR, Self, nil)
   else
     Include(FFlags,wcfColorChanged);
-writeln('TWinControl.SetColor ',Name,':',ClassName,' ',wcfColorChanged in FFlags);
 end;
 
 procedure TWinControl.PaintHandler(var TheMessage: TLMPaint);
@@ -2580,6 +2579,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.114  2003/01/01 13:04:26  mattias
+  clean ups
+
   Revision 1.113  2003/01/01 13:01:01  mattias
   fixed setcolor for streamed components
 
