@@ -103,13 +103,6 @@ var
 
 implementation
 
-const
-  {$IFDEF Win32}
-  FindMask = '*.*';
-  {$ELSE}
-  FindMask = '*';
-  {$ENDIF}
-
 { TSearchForm }
 
 procedure TSearchForm.btnAbortCLICK(Sender: TObject);
@@ -395,7 +388,7 @@ begin
     end;//for
     //If selected then Look for and search subdirectories
     if (frecursive) then begin
-      if (SysUtils.FindFirst(TempDir+FindMask,faAnyFile,FileInfo)=0) then
+      if (SysUtils.FindFirst(TempDir+GetAllFilesMask,faAnyFile,FileInfo)=0) then
       begin
         repeat
           // check if directory and not special file
@@ -467,7 +460,7 @@ begin
   end//if
   else
   begin
-    fParsedMasks.Add(FindMask) //OS Independent Mask
+    fParsedMasks.Add(GetAllFilesMask) //OS Independent Mask
   end;//else
 end;//ParseMask
 

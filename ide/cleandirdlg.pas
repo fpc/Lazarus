@@ -272,7 +272,7 @@ var
   begin
     Result:=false;
     if (not DirPathExists(MainDirectory)) or (Lvl>20) then exit;
-    if SysUtils.FindFirst(MainDirectory+FindMask,
+    if SysUtils.FindFirst(MainDirectory+GetAllFilesMask,
                           faAnyFile,FileInfo)=0
     then begin
       repeat

@@ -1110,7 +1110,7 @@ begin
     in [afaAsk,afaAutoDelete,afaAutoRename]
   then begin
     ADirectory:=AppendPathDelim(ExtractFilePath(Filename));
-    if SysUtils.FindFirst(ADirectory+FindMask,faAnyFile,FileInfo)=0 then begin
+    if SysUtils.FindFirst(ADirectory+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
       ShortFilename:=ExtractFileName(Filename);
       IsPascalUnit:=FilenameIsPascalUnit(ShortFilename);
       UnitName:=ExtractFilenameOnly(ShortFilename);
@@ -1215,7 +1215,7 @@ begin
         CurDir:=AppendPathDelim(TrimFilename(copy(
                                              UnitPath,StartPos,EndPos-StartPos)));
         FileInfoNeedClose:=true;
-        if SysUtils.FindFirst(CurDir+FindMask,faAnyFile,FileInfo)=0 then begin
+        if SysUtils.FindFirst(CurDir+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
           repeat
             if (FileInfo.Name='.') or (FileInfo.Name='..')
             or ((FileInfo.Attr and faDirectory)<>0) then continue;

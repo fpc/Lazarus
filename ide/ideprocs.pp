@@ -170,13 +170,6 @@ procedure CheckList(List: TList; TestListNil, TestDoubles, TestNils: boolean);
 procedure CheckEmptyListCut(List1, List2: TList);
 function AnsiSearchInStringList(List: TStrings; const s: string): integer;
 
-const
-  {$IFDEF Win32}
-  FindMask = '*.*';
-  {$ELSE}
-  FindMask = '*';
-  {$ENDIF}
-
 
 implementation
 
@@ -237,7 +230,7 @@ var
   FileInfo: TSearchRec;
 begin
   Result:=nil;
-  if SysUtils.FindFirst(AppendPathDelim(Directory)+FindMask,
+  if SysUtils.FindFirst(AppendPathDelim(Directory)+GetAllFilesMask,
                         faAnyFile,FileInfo)=0
   then begin
     repeat
@@ -272,7 +265,7 @@ var
 begin
   Result:='';
   ADirectory:=ExtractFilePath(Filename);
-  if SysUtils.FindFirst(AppendPathDelim(ADirectory)+FindMask,
+  if SysUtils.FindFirst(AppendPathDelim(ADirectory)+GetAllFilesMask,
                         faAnyFile,FileInfo)=0
   then begin
     ShortFilename:=ExtractFilename(Filename);
@@ -722,7 +715,7 @@ var
   FileInfo: TSearchRec;
 begin
   Result:='';
-  if SysUtils.FindFirst(AppendPathDelim(Directory)+FindMask,
+  if SysUtils.FindFirst(AppendPathDelim(Directory)+GetAllFilesMask,
                         faAnyFile,FileInfo)=0
   then begin
     repeat
@@ -1833,7 +1826,7 @@ function CopyDirectoryWithMethods(const SrcDirectory, DestDirectory: string;
     if not ForceDirectory(CurDestDir)
     and not HandleError(ceCreatingDirectory,CurDestDir,'') then exit;
     
-    if SysUtils.FindFirst(CurSrcDir+FindMask,faAnyFile,FileInfo)=0 then begin
+    if SysUtils.FindFirst(CurSrcDir+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
       repeat
         // check if special file
         if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;

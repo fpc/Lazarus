@@ -33,11 +33,6 @@ begin
   Result:=TTabSheet(inherited ActivePageComponent);
 end;
 
-function TPageControl.GetOnChange: TNotifyEvent;
-begin
-  Result := inherited OnPageChanged;
-end;
-
 function TPageControl.GetTabIndex: Integer;
 begin
   Result:=inherited PageIndex;
@@ -56,11 +51,6 @@ end;
 procedure TPageControl.SetActiveTabSheet(const AValue: TTabSheet);
 begin
   ActivePageComponent:=AValue;
-end;
-
-procedure TPageControl.SetOnChange(const AValue: TNotifyEvent);
-begin
-  inherited OnPageChanged := AValue;
 end;
 
 procedure TPageControl.SetTabIndex(const AValue: Integer);

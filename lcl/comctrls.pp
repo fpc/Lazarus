@@ -197,12 +197,10 @@ type
     FOnChanging: TTabChangingEvent;
     function GetActivePageIndex: Integer;
     function GetActiveTabSheet: TTabSheet;
-    function GetOnChange: TNotifyEvent;
     function GetTabIndex: Integer;
     function GetTabSheet(Index: Integer): TTabSheet;
     procedure SetActivePageIndex(const AValue: Integer);
     procedure SetActiveTabSheet(const AValue: TTabSheet);
-    procedure SetOnChange(const AValue: TNotifyEvent);
     procedure SetTabIndex(const AValue: Integer);
   public
     constructor Create(TheOwner: TComponent); override;
@@ -244,7 +242,7 @@ type
     property TabStop;
     //property TabWidth;
     property Visible;
-    property OnChange: TNotifyEvent read GetOnChange write SetOnChange;
+    property OnChange: TNotifyEvent read fOnPageChanged write fOnPageChanged;
     property OnChanging: TTabChangingEvent read FOnChanging write FOnChanging;
     property OnContextPopup;
     //property OnDockDrop;
@@ -2256,6 +2254,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.131  2004/06/05 10:29:15  mattias
+  replaced FindMask by global function   from Vincent
+
   Revision 1.130  2004/06/01 09:58:34  mattias
   implemented setting TCustomPage.PageIndex  from Andrew Haines
 
