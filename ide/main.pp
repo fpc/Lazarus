@@ -898,23 +898,17 @@ procedure TMainIDE.OnPropHookGetMethods(TypeData:PTypeData;
   Proc:TGetStringProc);
 var ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
-  NewSource: TCodeBuffer;
-  NewX, NewY, NewTopLine: integer;
 begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,true) then exit;
 {$IFDEF IDE_DEBUG}
 writeln('');
 writeln('[TMainIDE.OnPropHookGetMethods] ************');
 {$ENDIF}
-  if CodeToolBoss.FindDeclaration(ActiveUnitInfo.Source,
-    ActiveSrcEdit.EditorComponent.CaretX,
-    ActiveSrcEdit.EditorComponent.CaretY,
-    NewSource,NewX,NewY,NewTopLine) then
+  if not CodeToolBoss.GetCompatibleMethods(ActiveUnitInfo.Source,
+    ActiveUnitInfo.Form.ClassName,TypeData,Proc) then
   begin
-    DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo,
-      NewSource, NewX, NewY, NewTopLine, true);
-  end else
     DoJumpToCodeToolBossError;
+  end;
 end;
 
 Procedure TMainIDE.ToolButtonClick(Sender : TObject);
@@ -5817,13 +5811,15 @@ procedure TMainIDE.DoSwitchToFormSrc(var ActiveSourceEditor: TSourceEditor;
   var ActiveUnitInfo: TUnitInfo);
 var i: integer;
 begin
-  i:=Project.IndexOfUnitWithForm(PropertyEditorHook1.LookupRoot,false);
-  if (i>=0) then begin
-    i:=Project.Units[i].EditorIndex;
+  if PropertyEditorHook1.LookupRoot<>nil then begin
+    i:=Project.IndexOfUnitWithForm(PropertyEditorHook1.LookupRoot,false);
     if (i>=0) then begin
-      SourceNoteBook.NoteBook.PageIndex:=i;
-      GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
-      exit;
+      i:=Project.Units[i].EditorIndex;
+      if (i>=0) then begin
+        SourceNoteBook.NoteBook.PageIndex:=i;
+        GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
+        exit;
+      end;
     end;
   end;
   ActiveSourceEditor:=nil;
@@ -5844,6 +5840,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.220  2002/02/09 22:24:50  lazarus
+  MG: get compatible published methods now works
+
   Revision 1.219  2002/02/09 21:09:19  lazarus
   MG: fixed sourcenotebook closing and form-unit switching
 

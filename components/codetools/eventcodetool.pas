@@ -50,6 +50,8 @@ type
   TEventsCodeTool = class(TMethodJumpingCodeTool)
   private
     GetCompatibleMethodsProc: TGetStringProc;
+    SearchedExprList: TExprTypeList;
+    SearchedCompatibilityList: TTypeCompatibilityList;
   protected
     function InsertNewMethodToClass(ClassSectionNode: TCodeTreeNode;
         const AMethodName,NewMethod: string;
@@ -57,10 +59,10 @@ type
     function CollectPublishedMethods(Params: TFindDeclarationParams;
       FoundContext: TFindContext): TIdentifierFoundResult;
   public
-    procedure GetCompatiblePublishedMethods(const UpperClassName: string;
-        TypeData: PTypeData; Proc: TGetStringProc);
-    procedure GetCompatiblePublishedMethods(ClassNode: TCodeTreeNode;
-        TypeData: PTypeData; Proc: TGetStringProc);
+    function GetCompatiblePublishedMethods(const UpperClassName: string;
+        TypeData: PTypeData; Proc: TGetStringProc): boolean;
+    function GetCompatiblePublishedMethods(ClassNode: TCodeTreeNode;
+        TypeData: PTypeData; Proc: TGetStringProc): boolean;
     function PublishedMethodExists(const UpperClassName,
         UpperMethodName: string; TypeData: PTypeData): boolean;
     function PublishedMethodExists(ClassNode: TCodeTreeNode;
@@ -177,47 +179,81 @@ begin
   Result:=Result+';';
 end;
 
-procedure TEventsCodeTool.GetCompatiblePublishedMethods(
-  const UpperClassName: string; TypeData: PTypeData; Proc: TGetStringProc);
+function TEventsCodeTool.GetCompatiblePublishedMethods(
+  const UpperClassName: string; TypeData: PTypeData;
+  Proc: TGetStringProc): boolean;
 var ClassNode: TCodeTreeNode;
 begin
-  BuildTree(true);
-  if not InterfaceSectionFound then exit;
-  ClassNode:=FindClassNodeInInterface(UpperClassName,true,false);
-  GetCompatiblePublishedMethods(ClassNode,TypeData,Proc);
+  Result:=false;
+  ActivateGlobalWriteLock;
+  try
+{$IFDEF CTDEBUG}
+writeln('[TEventsCodeTool.GetCompatiblePublishedMethods] A UpperClassName=',UpperClassName);
+{$ENDIF}
+    BuildTree(true);
+    if not InterfaceSectionFound then exit;
+    ClassNode:=FindClassNodeInInterface(UpperClassName,true,false);
+{$IFDEF CTDEBUG}
+writeln('[TEventsCodeTool.GetCompatiblePublishedMethods] B ',ClassNode<>nil);
+{$ENDIF}
+    Result:=GetCompatiblePublishedMethods(ClassNode,TypeData,Proc);
+  finally
+    DeactivateGlobalWriteLock;
+  end;
 end;
 
-procedure TEventsCodeTool.GetCompatiblePublishedMethods(
-  ClassNode: TCodeTreeNode; TypeData: PTypeData; Proc: TGetStringProc);
+function TEventsCodeTool.GetCompatiblePublishedMethods(
+  ClassNode: TCodeTreeNode; TypeData: PTypeData; Proc: TGetStringProc): boolean;
 var //SearchedProc: string;
   //SectionNode, ANode: TCodeTreeNode;
   //CurProcHead, CurProcName: string;
   Params: TFindDeclarationParams;
-  ExprList: TExprTypeList;
+  CompListSize: integer;
 begin
+  Result:=false;
+{$IFDEF CTDEBUG}
+writeln('[TEventsCodeTool.GetCompatiblePublishedMethods] C ',ClassNode<>nil);
+{$ENDIF}
   if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (TypeData=nil)
   or (Proc=nil) then exit;
-  BuildSubTreeForClass(ClassNode);
+  ActivateGlobalWriteLock;
+  try
+    BuildSubTreeForClass(ClassNode);
 {$IFDEF CTDEBUG}
 writeln('[TEventsCodeTool.GetCompatiblePublishedMethods]');
 {$ENDIF}
-  // 1. convert the TypeData to an expression type list
-  Params:=TFindDeclarationParams.Create;
-  try
-    Params.ContextNode:=ClassNode.Parent;
-    ExprList:=CreateExprListFromMethodTypeData(TypeData,Params);
+    // 1. convert the TypeData to an expression type list
+    Params:=TFindDeclarationParams.Create;
     try
-      // 2. search all compatible published procs
-      GetCompatibleMethodsProc:=Proc;
-      Params.ContextNode:=ClassNode;
-      Params.Flags:=[fdfCollect,fdfSearchInAncestors,fdfClassPublished];
-      Params.SetIdentifier(Self,nil,@CollectPublishedMethods);
-      FindIdentifierInContext(Params);
+      Params.ContextNode:=ClassNode.Parent;
+      SearchedExprList:=CreateExprListFromMethodTypeData(TypeData,Params);
+      // create compatibility list
+      CompListSize:=SizeOf(TTypeCompatibility)*SearchedExprList.Count;
+      if CompListSize>0 then begin
+        GetMem(SearchedCompatibilityList,CompListSize);
+      end else begin
+        SearchedCompatibilityList:=nil;
+      end;
+      try
+        // 2. search all compatible published procs
+        GetCompatibleMethodsProc:=Proc;
+        Params.ContextNode:=ClassNode;
+        Params.Flags:=[fdfCollect,fdfSearchInAncestors,fdfClassPublished];
+        Params.SetIdentifier(Self,nil,@CollectPublishedMethods);
+        FindIdentifierInContext(Params);
+      finally
+        SearchedExprList.Free;
+        SearchedExprList:=nil;
+        if SearchedCompatibilityList<>nil then
+          FreeMem(SearchedCompatibilityList);
+        SearchedCompatibilityList:=nil;
+      end;
     finally
-      ExprList.Free;
+      Params.Free;
     end;
+    Result:=true;
   finally
-    Params.Free;
+    DeactivateGlobalWriteLock;
   end;
   {
   SearchedProc:=MethodTypeDataToStr(TypeData,[phpInUpperCase]);
@@ -781,12 +817,34 @@ end;
 function TEventsCodeTool.CollectPublishedMethods(
   Params: TFindDeclarationParams; FoundContext: TFindContext
   ): TIdentifierFoundResult;
+var
+  ParamCompatibility: TTypeCompatibility;
+  FirstParameterNode: TCodeTreeNode;
 begin
+  if (FoundContext.Node.Desc=ctnProcedure) then begin
 {$IFDEF CTDEBUG}
 writeln('[TEventsCodeTool.CollectPublishedMethods] ',
 ' Node=',FoundContext.Node.DescAsString,
+' "',copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,20),'"',
 ' Tool=',FoundContext.Tool.MainFilename);
 {$ENDIF}
+    FirstParameterNode:=FoundContext.Tool.GetFirstParameterNode(
+      FoundContext.Node);
+    ParamCompatibility:=FoundContext.Tool.IsParamListCompatible(
+      FirstParameterNode,
+      SearchedExprList,false,
+      Params,SearchedCompatibilityList);
+    if ParamCompatibility=tcExact then begin
+{$IFDEF CTDEBUG}
+writeln('ParamCompatibility=',TypeCompatibilityNames[ParamCompatibility]);
+{$ENDIF}
+
+      // ToDo: ppu, ppw, dcu
+
+      GetCompatibleMethodsProc(
+        FoundContext.Tool.ExtractProcName(FoundContext.Node,false));
+    end;
+  end;
   Result:=ifrProceedSearch;
 end;
 

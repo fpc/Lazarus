@@ -268,20 +268,6 @@ type
       Params: TFindDeclarationParams): boolean;
     function FindIdentifierInUsedUnit(const AnUnitName: string;
       Params: TFindDeclarationParams): boolean;
-    // expressions, operands, variables
-    function FindEndOfVariable(StartPos: integer): integer;
-    function FindExpressionTypeOfVariable(StartPos: integer;
-      Params: TFindDeclarationParams; var EndPos: integer): TExpressionType;
-    function ConvertNodeToExpressionType(Node: TCodeTreeNode;
-      Params: TFindDeclarationParams): TExpressionType;
-    function ReadOperandTypeAtCursor(
-      Params: TFindDeclarationParams): TExpressionType;
-    function CalculateBinaryOperator(LeftOperand, RightOperand: TExpressionType;
-      BinaryOperator: TAtomPosition;
-      Params: TFindDeclarationParams): TExpressionType;
-    function GetParameterNode(Node: TCodeTreeNode): TCodeTreeNode;
-    function GetFirstParameterNode(Node: TCodeTreeNode): TCodeTreeNode;
-    function PredefinedIdentToTypeDesc(Identifier: PChar): TExpressionTypeDesc;
   protected
     procedure DoDeleteNodes; override;
     procedure ClearNodeCaches(Force: boolean);
@@ -333,6 +319,20 @@ type
       Params: TFindDeclarationParams): TTypeCompatibility;
     function IsCompatible(Node: TCodeTreeNode; ExpressionType: TExpressionType;
       Params: TFindDeclarationParams): TTypeCompatibility;
+    // expressions, operands, variables
+    function FindEndOfVariable(StartPos: integer): integer;
+    function FindExpressionTypeOfVariable(StartPos: integer;
+      Params: TFindDeclarationParams; var EndPos: integer): TExpressionType;
+    function ConvertNodeToExpressionType(Node: TCodeTreeNode;
+      Params: TFindDeclarationParams): TExpressionType;
+    function ReadOperandTypeAtCursor(
+      Params: TFindDeclarationParams): TExpressionType;
+    function CalculateBinaryOperator(LeftOperand, RightOperand: TExpressionType;
+      BinaryOperator: TAtomPosition;
+      Params: TFindDeclarationParams): TExpressionType;
+    function GetParameterNode(Node: TCodeTreeNode): TCodeTreeNode;
+    function GetFirstParameterNode(Node: TCodeTreeNode): TCodeTreeNode;
+    function PredefinedIdentToTypeDesc(Identifier: PChar): TExpressionTypeDesc;
   public
     destructor Destroy; override;
     function FindDeclaration(CursorPos: TCodeXYPosition;
@@ -1080,14 +1080,14 @@ writeln('[TFindDeclarationTool.FindIdentifierInContext] no prior node accessible
 {$IFDEF ShowTriedContexts}
 //writeln('[TFindDeclarationTool.FindIdentifierInContext] Searching prior node of ',ContextNode.DescAsString);
 {$ENDIF}
-          if (ContextNode.Desc=ctnClass)
-          and (fdfSearchInAncestors in Params.Flags) then
-          begin
+          if (ContextNode.Desc=ctnClass) then begin
+            if (fdfSearchInAncestors in Params.Flags) then begin
           
-            // ToDo: check for circles in ancestors
-          
-            Result:=FindIdentifierInAncestors(ContextNode,Params);
-            if Result then exit;
+              // ToDo: check for circles in ancestors
+
+              Result:=FindIdentifierInAncestors(ContextNode,Params);
+              if Result then exit;
+            end;
           end;
           
           if ((not (fdfSearchForward in Params.Flags))
@@ -1115,7 +1115,10 @@ writeln('[TFindDeclarationTool.FindIdentifierInContext] Searching in PriorBrothe
             else
               break;
             end;
-          end else if ContextNode.Parent<>nil then begin
+          end else if (ContextNode.Parent<>nil)
+          and ((fdfSearchInParentNodes in Params.Flags)
+            or (ContextNode.HasAsParent(StartContextNode))) then
+          begin
             // search next in parent
             ContextNode:=ContextNode.Parent;
 {$IFDEF ShowTriedContexts}
@@ -1697,7 +1700,12 @@ writeln('[TFindDeclarationTool.FindBaseTypeOfNode] LOOP Result=',Result.Node.Des
 {$ENDIF}
       if (Result.Node.Desc in AllIdentifierDefinitions) then begin
         // instead of variable/const/type definition, return the type
-        Result.Node:=FindTypeNodeOfDefinition(Result.Node);
+        DummyNode:=FindTypeNodeOfDefinition(Result.Node);
+        if (DummyNode<>nil) or (Result.Node.Parent.Desc<>ctnParameterList) then
+          Result.Node:=DummyNode
+        else
+          // in parameter lists are definitions without type allowed
+          exit;
       end else
       if (Result.Node.Desc=ctnClass)
       and ((Result.Node.SubDesc and ctnsForwardDeclaration)>0) then
@@ -1835,11 +1843,11 @@ writeln('[TFindDeclarationTool.FindBaseTypeOfNode] Class is forward');
         break;
     end;
     if (Result.Node=nil) and (fdfExceptionOnNotFound in Params.Flags) then begin
-      if Result.Tool<>nil then begin
+      if (Result.Tool<>nil) and (Params.Identifier<>nil) then begin
 
         // ToDo ppu, ppw, dcu
 
-        if not Params.IdentifierTool.IsPCharInSrc(Params.Identifier) then
+        if (not Params.IdentifierTool.IsPCharInSrc(Params.Identifier)) then
           Params.IdentifierTool.RaiseException(
             '[TFindDeclarationTool.FindBaseTypeOfNode]'
            +' internal error: not IsPCharInSrc(Params.Identifier) '
@@ -2906,6 +2914,8 @@ writeln('[TFindDeclarationTool.ConvertNodeToExpressionType] B',
       // predefined identifiers
       if UpAtomIs('NIL') then
         Result.Desc:=xtNil
+      else if UpAtomIs('POINTER') then
+        Result.Desc:=xtPointer
       else if UpAtomIs('TRUE') or UpAtomIs('FALSE') then
         Result.Desc:=xtConstBoolean
       else if UpAtomIs('STRING') then

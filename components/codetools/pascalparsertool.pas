@@ -2798,8 +2798,6 @@ begin
     ProcNode:=ProcNode.Parent;
   if ProcNode=nil then exit;
   ProcHeadNode:=ProcNode.FirstChild;
-  while (ProcHeadNode<>nil) and (ProcHeadNode.Desc<>ctnProcedureHead) do
-    ProcHeadNode:=ProcHeadNode.NextBrother;
   if (ProcHeadNode=nil) or (ProcHeadNode.StartPos<1) then exit;
   MoveCursorToNodeStart(ProcHeadNode);
   repeat
