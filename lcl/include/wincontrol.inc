@@ -219,8 +219,8 @@ var
     if (AControl <> nil) and
        ((AAlign = alNone)
     or AControl.Visible
-	  or (csDesigning in AControl.ComponentState)
-	  and not (csNoDesignVisible in AControl.ControlStyle))
+    or (csDesigning in AControl.ComponentState)
+    and not (csNoDesignVisible in AControl.ControlStyle))
     and (AControl.Align = AAlign) then
       AlignList.Add(AControl);
 
@@ -229,8 +229,12 @@ var
       Control := Controls[I];
 
       if (Control.Align = AAlign) 
-      and ((AAlign = alNone) or (Control.Visible or (Control.ControlStyle * [csAcceptsControls, csNoDesignVisible] =
-          [csAcceptsControls, csNoDesignVisible])) or (csDesigning in Control.ComponentState) and not (csNoDesignVisible in Control.ControlStyle)) then
+      and ((AAlign = alNone)
+        or (Control.Visible
+          or (Control.ControlStyle * [csAcceptsControls, csNoDesignVisible] =
+            [csAcceptsControls, csNoDesignVisible]))
+        or (csDesigning in Control.ComponentState)
+          and not (csNoDesignVisible in Control.ControlStyle)) then
       begin
         if Control = AControl then Continue;
 
@@ -626,13 +630,13 @@ var
   n: Integer;
   ok: boolean;
 begin
-  bShow := (FVisible or (csDesigning in ComponentState) 
-    and not (csNoDesignVisible in ControlStyle))
-    and not (csReadingState in ControlState);
+  bShow := (FVisible or (csDesigning in ComponentState)
+          and not (csNoDesignVisible in ControlStyle))
+          and not (csReadingState in ControlState);
 
   if bShow then
   begin
-    if FHandle = 0 then CreateHandle;
+    if not HandleAllocated then CreateHandle;
     if FWinControls <> nil 
     then begin
       for n := 0 to FWinControls.Count - 1 do
@@ -640,8 +644,7 @@ begin
     end;
   end;
 
-  if FHandle <> 0 
-  then begin
+  if HandleAllocated then begin
     if FShowing <> bShow 
     then begin
       FShowing := bShow;
@@ -2232,7 +2235,7 @@ end;
 
   Performs actions when visibility has changed
  ------------------------------------------------------------------------------}
-procedure TWinControl.CMVisibleChanged(var Message : TLMessage);
+procedure TWinControl.CMVisibleChanged(var TheMessage : TLMessage);
 begin
   if not FVisible and (Parent <> nil)
   then RemoveFocus(False);
@@ -2288,6 +2291,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.73  2002/06/19 19:46:09  lazarus
+  MG: Form Editing: snapping, guidelines, modified on move/resize, creating components in csDesigning, ...
+
   Revision 1.72  2002/06/11 13:41:09  lazarus
   MG: fixed mouse coords and fixed mouse clicked thru bug
 
