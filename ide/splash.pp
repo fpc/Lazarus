@@ -328,7 +328,6 @@ begin
     OnTimer := @HideFormTimer;
     Enabled := False;
   end;
-  Paint;
 end;
 
 destructor TSplashForm.Destroy;
@@ -377,6 +376,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.9  2002/03/30 07:29:15  lazarus
+  MG: fixed splash screen, fixed parser of resource strings
+
   Revision 1.8  2002/03/18 11:44:41  lazarus
   MG: TForm.Position will now considered before creating form on 0,0
 

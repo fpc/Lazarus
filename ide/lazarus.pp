@@ -20,7 +20,7 @@
  ***************************************************************************/
  }
 
-program lazarus;
+program Lazarus;
 
 {$mode objfpc}{$H+}
 
@@ -52,6 +52,7 @@ begin
     Show;
     Paint;
   end;
+  Application.ProcessMessages; // process splash paint messages
 
   Application.CreateForm(TMainIDE, MainIDE);
 {$IFDEF IDE_MEM_CHECK}
@@ -71,6 +72,9 @@ end.
 
 {
   $Log$
+  Revision 1.30  2002/03/30 07:29:15  lazarus
+  MG: fixed splash screen, fixed parser of resource strings
+
   Revision 1.29  2002/03/27 09:18:11  lazarus
   MG: splitted main.pp: TMainIDE has now an ancestor TMainIDEBar
 

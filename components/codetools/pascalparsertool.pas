@@ -2270,8 +2270,9 @@ begin
       ReadNextAtom;
       if not AtomIsStringConstant then
         RaiseExceptionFmt(ctsUnexpectedKeyword,[ctsStringConstant,GetAtom]);
+      ReadConstant(true,false,[]);
       // read ;
-      if not ReadNextAtomIsChar(';') then
+      if not AtomIsChar(';') then
         RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
       CurNode.EndPos:=CurPos.EndPos;
       EndChildNode;
