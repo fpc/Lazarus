@@ -91,10 +91,9 @@ type
   private
     FOnStart: TNotifyEvent;
     FProcess: TProcess;
-    FLazarusPath: string;
     FWantsRestart: boolean;
   public
-    constructor Create(const LazarusPath: string);
+    constructor Create(const LazarusPath: string; const CommandLine: string);
     destructor Destroy; override;
     procedure Execute;
     procedure WaitOnExit;
@@ -111,6 +110,7 @@ type
     FLazarusPID: Integer;
     FCmdLineParams: TStrings;
     procedure ParseCommandLine;
+    function GetCommandLineParameters: string;
     function GetLazarusPath(const FileName: string): string;
     function RenameLazarusExecutables: TModalResult;
     procedure LazarusProcessStart(Sender: TObject);
@@ -165,6 +165,15 @@ begin
   end;
 end;
 
+function TLazarusManager.GetCommandLineParameters: string;
+var
+  i: Integer;
+begin
+  Result := ' --no-splash-screen --started-by-startlazarus';
+  for i := 0 to FCmdLineParams.Count - 1 do
+    Result := Result + ' ' + FCmdLineParams[i];
+end;
+
 function TLazarusManager.GetLazarusPath(const FileName: string) : string;
 begin
   Result := AppendPathDelim(FStartLazarusOptions.LazarusDir) + FileName +
@@ -210,7 +219,7 @@ procedure TLazarusManager.WaitForLazarus;
     ProcessHandle: THandle;
   begin
     ProcessHandle := OpenProcess(SYNCHRONIZE, false, PID);
-    if ProcessHandle<>HWND(nil) then begin
+    if ProcessHandle<>0 then begin
       WaitForSingleObject(ProcessHandle, INFINITE);
       CloseHandle(ProcessHandle);
     end;
@@ -248,7 +257,8 @@ begin
     Application.ProcessMessages;
     Restart := false;
     if RenameLazarusExecutables=mrOK then begin
-      FLazarusProcess := TLazarusProcess.Create(FLazarusPath);
+      FLazarusProcess :=
+        TLazarusProcess.Create(FLazarusPath, GetCommandLineParameters);
       FLazarusProcess.OnStart := @LazarusProcessStart;
       FLazarusProcess.Execute;
       FLazarusProcess.WaitOnExit;
@@ -270,13 +280,13 @@ end;
 
 { TLazarusProcess }
 
-constructor TLazarusProcess.Create(const LazarusPath: string);
+constructor TLazarusProcess.Create(const LazarusPath: string;
+  const CommandLine: string);
 begin
-  FLazarusPath := LazarusPath;
   FProcess := TProcess.Create(nil);
   FProcess.Options := [];
   FProcess.ShowWindow := swoShow;
-  FProcess.CommandLine := FLazarusPath + ' --no-splash-screen --started-by-startlazarus';
+  FProcess.CommandLine := LazarusPath + CommandLine;
 end;
 
 destructor TLazarusProcess.Destroy;
@@ -304,6 +314,9 @@ end;
 end.
 {
   $Log$
+  Revision 1.17  2005/01/10 08:49:28  vincents
+  implemented passing command line parameters to lazarus
+
   Revision 1.16  2004/12/06 12:22:45  vincents
   fixed startlazarus description
 
