@@ -2042,10 +2042,6 @@ Begin
       Flags := Flags or WS_VSCROLL or CBS_AUTOHSCROLL or CBS_HASSTRINGS;
       SubClassWndProc := @ComboBoxWindowProc;
     End;
-    csImage:
-    Begin
-      // nothing to do
-    End;
     csListBox, csCheckListBox:
     Begin
       With TCustomListBox(Sender) do
@@ -2321,6 +2317,10 @@ Begin
           Window := CreateFont(LFHeight, LFWidth, LFEscapement, LFOrientation, LFWeight, LFItalic, LFUnderLine, LFStrikeOut, LFCharSet, LFOutPrecision, LFClipPrecision, LFQuality, LFPitchAndFamily, LFFaceName);
       End;
 *)      
+      csImage:
+      Begin
+        // nothing to do
+      End;
       csMainMenu, csMenuBar, csMenuItem:
       Begin
         Window := CreateMenu;
@@ -3025,6 +3025,9 @@ End;
 
 {
   $Log$
+  Revision 1.182  2004/03/07 12:55:53  micha
+  don't create window for image
+
   Revision 1.181  2004/03/05 15:41:42  micha
   fix appendtext to actually *append* text, not replace
 
