@@ -25,10 +25,10 @@ unit AllUnits;
 interface
 
 uses
-  InterfaceBase, Interfaces,      LCLStrConsts,
-	Buttons,       Extctrls,        Registry,     VCLGlobals,   Calendar,
-	Clipbrd,       Filectrl,        Forms,        LCLLinux,     Spin,
-	Comctrls,      Graphics,        LMessages,    Stdctrls,     Arrow,
+  InterfaceBase, Interfaces,      LCLStrConsts, StringHashList,
+  Buttons,       Extctrls,        Registry,     VCLGlobals,   Calendar,
+  Clipbrd,       Filectrl,        Forms,        LCLLinux,     Spin,
+  Comctrls,      Graphics,        LMessages,    Stdctrls,     Arrow,
   Controls,      Imglist,         Menus,        Toolwin,      Dialogs,
   Messages,      UTrace,          DynHashArray, Clistbox,     Lazqueue,
   ActnList,      GraphicsMath,    LCLMemManager;
@@ -40,6 +40,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.15  2002/09/11 15:04:49  lazarus
+  MG: added stringhashlist.pas
+
   Revision 1.14  2002/08/21 08:13:37  lazarus
   MG: accelerated new/dispose of gdiobjects
 
