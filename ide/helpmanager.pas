@@ -85,6 +85,7 @@ type
   private
     FMainHelpDB: THelpDatabase;
     FFCLHelpDB: THelpDatabase;
+    FLCLHelpDB: THelpDatabase;
     procedure RegisterIDEHelpDatabases;
     procedure RegisterDefaultIDEHelpViewers;
   public
@@ -113,6 +114,8 @@ const
   lihcStartPage = 'StartPage';
   lihcFCLStartPage = 'FCLStartPage';
   lihcFCLUnits = 'FCLUnits';
+  lihcLCLStartPage = 'LCLStartPage';
+  lihcLCLUnits = 'LCLUnits';
 
 var
   HelpBoss: TBaseHelpManager;
@@ -384,9 +387,39 @@ procedure THelpManager.RegisterIDEHelpDatabases;
     HTMLHelp.RegisterItem(DirItem);
   end;
 
+  procedure CreateLCLHelpDB;
+  var
+    HTMLHelp: TFPDocHTMLHelpDatabase;
+    StartNode: THelpNode;
+    FPDocNode: THelpNode;
+    DirItem: THelpDBISourceDirectory;
+  begin
+    FLCLHelpDB:=HelpDatabases.CreateHelpDatabase('LCL',TFPDocHTMLHelpDatabase,
+                                                 true);
+    HTMLHelp:=FLCLHelpDB as TFPDocHTMLHelpDatabase;
+    HTMLHelp.BasePathObject:=Self;
+
+    // LCL
+    StartNode:=THelpNode.CreateURLID(HTMLHelp,
+                   'LCL - Lazarus Component Library',
+                   'file://$(LazarusDir)/docs/html/index.html',
+                   lihcLCLStartPage);
+    HTMLHelp.TOCNode:=THelpNode.Create(HTMLHelp,StartNode);
+    HTMLHelp.RegisterItemWithNode(StartNode);
+
+    // FPDoc: units in the LCL
+    FPDocNode:=THelpNode.CreateURL(HTMLHelp,
+                   'LCL - Lazarus Component Library Units',
+                   'file://$(LazarusDir)/docs/html/index.html');
+    DirItem:=THelpDBISourceDirectory.Create(FPDocNode,'$(LazarusDir)/lcl',
+                   '*.pp;*.pas',false);
+    HTMLHelp.RegisterItem(DirItem);
+  end;
+
 begin
   CreateMainIDEHelpDB;
   CreateFCLHelpDB;
+  CreateLCLHelpDB;
 end;
 
 procedure THelpManager.RegisterDefaultIDEHelpViewers;

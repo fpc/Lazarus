@@ -101,7 +101,7 @@ begin
           //debugln('B TheBaseURL=',TheBaseURL);
           TheBaseURL:=ExtractURLDirectory(TheBaseURL);
           //debugln('C TheBaseURL=',TheBaseURL);
-          DebugLn('TFPDocHTMLHelpDatabase.ShowHelp Node Base URL TheBaseURL=',TheBaseURL);
+          DebugLn('TFPDocHTMLHelpDatabase.ShowHelp BaseURL of Node.URL=',TheBaseURL);
         end;
 
         if TheBaseURL='' then
@@ -112,7 +112,7 @@ begin
           URL:=TheBaseURL+Filename
         else
           URL:=FilenameToURL(Filename);
-        Result:=ShowURL(URL,NewNode.Title,ErrMsg);
+        Result:=ShowURL(TrimUrl(URL),NewNode.Title,ErrMsg);
         exit;
       end;
     end;

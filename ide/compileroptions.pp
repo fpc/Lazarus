@@ -3322,7 +3322,6 @@ begin
     Caption := dlgDelphi2Ext+' (-S2)';
     Top := y;
     Left := 5;
-    Height := 16;
     Width := Parent.ClientWidth-20;
   end;
 
@@ -3334,7 +3333,6 @@ begin
     Caption := dlgCOCOps+' (-Sc)';
     Top := y;
     Left := 5;
-    Height := 16;
     Width := Parent.ClientWidth-20;
   end;
 
@@ -3346,7 +3344,6 @@ begin
     Caption := dlgAssertCode+' (-Sa)';
     Top := y;
     Left := 5;
-    Height := 16;
     Width := Parent.ClientWidth-20;
   end;
   
@@ -3358,7 +3355,6 @@ begin
     Caption := dlgLabelGoto+' (-Sg)';
     Top := y;
     Left := 5;
-    Height := 16;
     Width := Parent.ClientWidth-20;
   end;
 
@@ -3370,7 +3366,6 @@ begin
     Caption := dlgCppInline+' (-Si)';
     Top := y;
     Left := 5;
-    Height := 16;
     Width := Parent.ClientWidth-20;
   end;
 
@@ -3382,7 +3377,6 @@ begin
     Caption := dlgCMacro+' (-Sm)';
     Top := y;
     Left := 5;
-    Height := 16;
     Width := Parent.ClientWidth-20;
   end;
 
@@ -3394,7 +3388,6 @@ begin
     Caption := dlgBP7Cptb+' (-So)';
     Top := y;
     Left := 5;
-    Height := 16;
     Width := Parent.ClientWidth-20;
   end;
 
@@ -3406,7 +3399,6 @@ begin
     Caption := dlgInitDoneOnly+' (-Ss)';
     Top := y;
     Left := 5;
-    Height := 16;
     Width := Parent.ClientWidth-20;
   end;
 
@@ -3418,7 +3410,6 @@ begin
     Caption := dlgStaticKeyword+' (-St)';
     Top := y;
     Left := 5;
-    Height := 16;
     Width := Parent.ClientWidth-20;
   end;
   
@@ -3430,7 +3421,6 @@ begin
     Caption := dlgDeplhiComp+' (-Sd)';
     Top := y;
     Left := 5;
-    Height := 16;
     Width := Parent.ClientWidth-20;
   end;
 
@@ -3442,7 +3432,6 @@ begin
     Caption := dlgCOAnsiStr+' (-Sh)';
     Top := y;
     Left := 5;
-    Height := 16;
     Width := Parent.ClientWidth-20;
   end;
 
@@ -3454,7 +3443,6 @@ begin
     Caption := dlgGPCComp+' (-Sp)';
     Top := y;
     Left := 5;
-    Height := 16;
     Width := Parent.ClientWidth-20;
   end;
 end;
@@ -3505,7 +3493,6 @@ begin
     Caption := 'I/O (-Ci)';
     Top := 2;
     Left := 2;
-    Height := 16;
     Width := 100;
   end;
 
@@ -3516,7 +3503,6 @@ begin
     Caption := dlgCORange+' (-Cr)';
     Top := 2;
     Left := 102;
-    Height := 16;
     Width := 100;
   end;
 
@@ -3527,7 +3513,6 @@ begin
     Caption := dlgCOOverflow+' (-Co)';
     Top := 27;
     Left := 2;
-    Height := 16;
     Width := 100;
   end;
 
@@ -3538,7 +3523,6 @@ begin
     Caption := dlgCOStack+' (-Cs)';
     Top := 27;
     Left := 102;
-    Height := 16;
     Width := 100;
   end;
 
@@ -3586,7 +3570,6 @@ begin
     Parent := grpGenerate;
     Top := 5;
     Left := 5;
-    Height := 16;
     Width := 140;
     Caption := dlgCONormal+' (none)';
   end;
@@ -3597,7 +3580,6 @@ begin
     Parent := grpGenerate;
     Top := 28;
     Left := 5;
-    Height := 16;
     Width := 140;
     Caption := dlgCOFast+' (-OG)';
   end;
@@ -3608,7 +3590,6 @@ begin
     Parent := grpGenerate;
     Top := 51;
     Left := 5;
-    Height := 16;
     Width := 140;
     Caption := dlgCOSmaller+' (-Og)';
   end;
@@ -3654,7 +3635,6 @@ begin
     Caption :=  dlgLevelNoneOpt+' (none)';
     Top := 5;
     Left := 5;
-    Height := 16;
     Width := w;
   end;
 
@@ -3665,7 +3645,6 @@ begin
     Caption :=  dlgLevel1Opt+' (-O1)';
     Top := 26;
     Left := 5;
-    Height := 16;
     Width := w;
   end;
 
@@ -3676,7 +3655,6 @@ begin
     Caption := dlgLevel2Opt+' (-O2)';
     Top := 47;
     Left := 5;
-    Height := 16;
     Width := w;
   end;
 
@@ -3687,7 +3665,6 @@ begin
     Caption := dlgLevel3Opt+' (-O3)';
     Top := 68;
     Left := 5;
-    Height := 16;
     Width := w;
   end;
 
@@ -3698,7 +3675,6 @@ begin
     Caption := dlgCOKeepVarsReg+' (-Or)';
     Top := 89;
     Left := 5;
-    Height := 16;
     Width := w;
   end;
 
@@ -3709,7 +3685,6 @@ begin
     Caption := dlgUncertOpt+' (-Ou)';
     Top := 110;
     Left := 5;
-    Height := 16;
     Width := w;
   end;
   
@@ -3770,7 +3745,6 @@ begin
     Caption := dlgCOGDB+' (-g)';
     Top := 6;
     Left := 8;
-    Height := 16;
     Width := 360;
   end;
 
@@ -3781,7 +3755,6 @@ begin
     Caption := dlgCODBX+' (-gd)';
     Top := 27;
     Left := 8;
-    Height := 16;
     Width := 360;
   end;
 
@@ -3792,7 +3765,6 @@ begin
     Caption := dlgLNumsBct+' (-gl)';
     Top := 48;
     Left := 8;
-    Height := 16;
     Width := 360;
   end;
 
@@ -3803,7 +3775,6 @@ begin
     Caption := dlgCOHeaptrc+' (-gh)';
     Top := 69;
     Left := 8;
-    Height := 16;
     Width := 360;
   end;
 
@@ -3814,7 +3785,6 @@ begin
     Caption := dlgCOValgrind+' (-gv)';
     Top := 90;
     Left := 8;
-    Height := 16;
     Width := 360;
   end;
 
@@ -3825,7 +3795,6 @@ begin
     Caption := dlgGPROF+' (-pg)';
     Top := 111;
     Left := 8;
-    Height := 16;
     Width := 360;
   end;
 
@@ -3836,7 +3805,6 @@ begin
     Caption := dlgCOStrip+' (-Xs)';
     Top := 132;
     Left := 8;
-    Height := 16;
     Width := 360;
   end;
 
@@ -3929,7 +3897,6 @@ begin
     Caption := dlgPassOptsLinker;
     Top := 6;
     Left := 8;
-    Height := 16;
     Width := 330;
   end;
 
@@ -3971,7 +3938,6 @@ begin
     Caption := dlgCOShowErr+' (-ve)';
     Top := 6;
     Left := 8;
-    Height := 16;
     Width := (grpVerbosity.ClientWidth div 2)-12;
   end;
 
@@ -4059,7 +4025,6 @@ begin
     Caption := dlgShowDebugInfo+' (-vd)';
     Top := 6;
     Left := (grpVerbosity.ClientWidth div 2)+4;
-    Height := 16;
     Width := (grpVerbosity.ClientWidth div 2)-12;
   end;
 
@@ -4198,7 +4163,6 @@ begin
     Caption := dlgUseFpcCfg+' (none, not is -n)';
     Top := 6;
     Left := 8;
-    Height := 16;
     Width := 330;
   end;
 
@@ -4209,7 +4173,6 @@ begin
     Caption := dlgUseAdditionalConfig+' (@)';
     Top := 27;
     Left := 8;
-    Height := 16;
     Width := 330;
     OnClick:=@chkAdditionalConfigFileClick;
   end;

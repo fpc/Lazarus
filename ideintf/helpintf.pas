@@ -598,6 +598,7 @@ function URLFilenameIsAbsolute(const Filename: string): boolean;
 function FindURLPathEnd(const URL: string): integer;
 function ChompURLParams(const URL: string): string;
 function ExtractURLDirectory(const URL: string): string;
+function TrimUrl(const URL: string): string;
 
 implementation
 
@@ -784,6 +785,14 @@ begin
   p:=FindURLPathEnd(URL);
   while (p>0) and (URL[p]<>'/') do dec(p);
   Result:=copy(URL,1,p);
+end;
+
+function TrimUrl(const URL: string): string;
+var
+  URLType, URLPath, URLParams: string;
+begin
+  SplitURL(URL,URLType,URLPath,URLParams);
+  Result:=CombineURL(URLType,TrimFilename(URLPath),URLParams);
 end;
 
 procedure CreateListAndAdd(const AnObject: TObject; var List: TList;
