@@ -294,9 +294,9 @@ end;
 function TCustomListBox.GetSelCount : integer;
 begin
   if HandleAllocated then
-    Result:= CNSendMessage(LM_GETSELCOUNT, Self, nil)
+    Result := TWSCustomListBoxClass(WidgetSetClass).GetSelCount(Self)
   else
-    Result:=0;
+    Result := 0;
 end;
 
 function TCustomListBox.GetItemHeight: Integer;

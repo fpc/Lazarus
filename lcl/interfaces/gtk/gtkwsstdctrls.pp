@@ -97,6 +97,7 @@ type
   private
   protected
   public
+    class function  GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
     class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
     class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
@@ -296,6 +297,25 @@ begin
 
   {$IFdef GTK2}
   DebugLn('TODO: TGtkWSCustomListBox.GetItemIndex');
+  {$EndIf}
+end;
+
+function  TGtkWSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox): integer;
+var
+  Handle: HWND;
+begin
+  {$IFdef GTK2}
+  DebugLn('TODO: TGtkWidgetSet.IntSendMessage3 LM_GETSELCOUNT');
+  {$Else}
+  Handle := ACustomListBox.Handle;
+  case ACustomListBox.fCompStyle of
+    csListBox, csCheckListBox :
+      Result:=g_list_length(PGtkList(GetWidgetInfo(Pointer(Handle),
+                         True)^.CoreWidget)^.selection);
+    csCListBox:
+      Result:= g_list_length(PGtkCList(GetWidgetInfo(Pointer(Handle),
+                         True)^.CoreWidget)^.selection);
+  end;
   {$EndIf}
 end;
 

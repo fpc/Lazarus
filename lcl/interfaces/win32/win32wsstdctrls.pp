@@ -97,6 +97,7 @@ type
   private
   protected
   public
+    class function  GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
     class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
     class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
@@ -253,6 +254,19 @@ begin
     begin
       Result := SendMessage(Handle, TCM_GETCURSEL, 0, 0);
     end;
+  end;
+end;
+
+function  TWin32WSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox): integer;
+begin
+  // GetSelCount only works for multiple-selection listboxes
+  if ACustomListBox.MultiSelect then
+    Result := Windows.SendMessage(ACustomListBox.Handle, LB_GETSELCOUNT, 0, 0)
+  else begin
+    if Windows.SendMessage(ACustomListBox.Handle, LB_GETCURSEL, 0, 0) = LB_ERR then
+      Result := 0
+    else
+      Result := 1;
   end;
 end;
 

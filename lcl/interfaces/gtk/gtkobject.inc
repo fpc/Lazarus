@@ -3126,24 +3126,6 @@ begin
         PLMScreenInit(Data)^.ColorDepth:= gdk_visual_get_system^.depth;
       end;
 
-      LM_GETSELCOUNT :
-      {$IFdef GTK2}
-      begin
-        DebugLn('TODO: TGtkWidgetSet.IntSendMessage3 LM_GETSELCOUNT');
-      end;
-      {$Else}
-      begin
-        case (Sender as TControl).fCompStyle of
-          csListBox, csCheckListBox :
-            Result:=g_list_length(PGtkList(GetWidgetInfo(Pointer(Handle),
-                               True)^.CoreWidget)^.selection);
-          csCListBox:
-            Result:= g_list_length(PGtkCList(GetWidgetInfo(Pointer(Handle),
-                               True)^.CoreWidget)^.selection);
-        end;
-      end;
-      {$EndIf}
-
       LM_GETSEL :
       {$IFdef GTK2}
       begin
@@ -8067,6 +8049,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.572  2004/09/15 19:04:39  micha
+  convert LM_GETSELCOUNT message to interface method
+
   Revision 1.571  2004/09/15 18:50:33  micha
   remove LM_GETLINECOUNT message as it is not used by the LCL
 

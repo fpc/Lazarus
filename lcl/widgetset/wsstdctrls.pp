@@ -92,6 +92,7 @@ type
 
   TWSCustomListBox = class(TWSWinControl)
   public
+    class function  GetSelCount(const ACustomListBox: TCustomListBox): integer; virtual;
     class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; virtual;
     class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; virtual;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); virtual;
@@ -187,6 +188,11 @@ implementation
 { TWSCustomListBox }
 
 function  TWSCustomListBox.GetItemIndex(const ACustomListBox: TCustomListBox): integer;
+begin
+  Result := 0;
+end;
+
+function  TWSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox): integer;
 begin
   Result := 0;
 end;

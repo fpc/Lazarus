@@ -330,20 +330,6 @@ Begin
         Else
           Assert(False, Format('Trace:I don''t know how to destroy component %S', [Sender.ClassName]));
       End;
-      LM_GETSELCOUNT:
-      Begin
-        If Sender Is TCustomListBox then
-        begin
-          // LB_GETSELCOUNT only works for multiple-selection listboxes
-          if TCustomListBox(Sender).MultiSelect then
-            Result := Windows.SendMessage(Handle, LB_GETSELCOUNT, 0, 0)
-          else
-            if Windows.SendMessage(Handle, LB_GETCURSEL, 0, 0) = LB_ERR then
-              Result := 0
-            else
-              Result := 1;
-        end;
-      End;
       LM_GETSEL:
       Begin
         If Sender Is TCustomListBox then
@@ -2150,6 +2136,9 @@ End;
 
 {
   $Log$
+  Revision 1.265  2004/09/15 19:04:39  micha
+  convert LM_GETSELCOUNT message to interface method
+
   Revision 1.264  2004/09/15 18:50:34  micha
   remove LM_GETLINECOUNT message as it is not used by the LCL
 
