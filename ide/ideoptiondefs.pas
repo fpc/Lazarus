@@ -147,6 +147,8 @@ type
                                         var Bounds: TRect) of object;
   TOnApplyIDEWindowLayout = procedure(Layout: TIDEWindowLayout) of object;
                                         
+  { TIDEWindowLayout }
+
   TIDEWindowLayout = class
   private
     FVisible: boolean;
@@ -226,6 +228,8 @@ type
     property OnApply: TOnApplyIDEWindowLayout read fOnApply write fOnApply;
   end;
   
+  { TIDEWindowLayoutList }
+
   TIDEWindowLayoutList = class(TList)
   private
     function GetItems(Index: Integer): TIDEWindowLayout;
@@ -684,6 +688,14 @@ end;
 procedure TIDEWindowLayout.ReadCurrentState;
 begin
   Visible:=(Form<>nil) and Form.Visible;
+  if Form<>nil then begin
+    case Form.WindowState of
+    wsMinimized: fWindowState:=iwsMinimized;
+    wsMaximized: fWindowState:=iwsMaximized;
+    else
+      fWindowState:=iwsNormal;
+    end;
+  end;
 end;
 
 procedure TIDEWindowLayout.Assign(Layout: TIDEWindowLayout);

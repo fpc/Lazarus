@@ -11202,40 +11202,57 @@ begin
   if (ALayout=nil) or (ALayout.Form=nil) then exit;
   // writeln('AAA TMainIDE.OnApplyWindowLayout ',ALayout.Form.Name,' ',ALayout.Form.Classname,' ',IDEWindowPlacementNames[ALayout.WindowPlacement],' ',ALayout.CustomCoordinatesAreValid,' ',ALayout.Left,' ',ALayout.Top,' ',ALayout.Width,' ',ALayout.Height);
   if (ALayout.WindowPlacement in [iwpCustomPosition,iwpRestoreWindowGeometry])
-  and (ALayout.CustomCoordinatesAreValid) then begin
-    // explicit position
-    ALayout.Form.SetBounds(
-      ALayout.Left,ALayout.Top,ALayout.Width,ALayout.Height)
-  end
-  else if (not (ALayout.WindowPlacement in [iwpDocked,iwpUseWindowManagerSetting]))
   then begin
-    BarBottom:=MainIDEBar.Top+MainIDEBar.Height;
-    // default window positions
-    l:=NonModalIDEFormIDToEnum(ALayout.FormID);
-    case l of
-    nmiwMainIDEName:
-      ALayout.Form.SetBounds(0,0,Screen.Width-10,95);
-    nmiwSourceNoteBookName:
-      ALayout.Form.SetBounds(250,BarBottom+30,Max(50,Screen.Width-300),
-        Max(50,Screen.Height-200-BarBottom));
-    nmiwUnitDependenciesName:
-      ALayout.Form.SetBounds(200,200,400,300);
-    nmiwCodeExplorerName:
-      ALayout.Form.SetBounds(Screen.Width-200,130,170,Max(50,Screen.Height-230));
-    nmiwClipbrdHistoryName:
-      ALayout.Form.SetBounds(250,Screen.Height-400,400,300);
-    nmiwPkgGraphExplorer:
-      ALayout.Form.SetBounds(250,150,500,350);
-    nmiwProjectInspector:
-      ALayout.Form.SetBounds(210,150,400,300);
-    nmiwMessagesViewName:
-      ALayout.Form.SetBounds(260,SourceNotebook.Top+SourceNotebook.Height+30,
-        Max(50,Screen.Width-300),80);
-    else
-      if ALayout.FormID=DefaultObjectInspectorName then begin
-        ALayout.Form.SetBounds(
-          MainIDEBar.Left,BarBottom+30,230,Max(Screen.Height-BarBottom-120,50));
+    case ALayout.WindowState of
+    iwsMinimized:
+      begin
+        ALayout.Form.WindowState:=wsMinimized;
+        exit;
       end;
+    iwsMaximized:
+      begin
+        ALayout.Form.WindowState:=wsMaximized;
+        exit;
+      end;
+    else
+      if (ALayout.CustomCoordinatesAreValid) then begin
+        // explicit position
+        ALayout.Form.SetBounds(
+          ALayout.Left,ALayout.Top,ALayout.Width,ALayout.Height);
+        exit;
+      end;
+    end;
+  end else if ALayout.WindowPlacement in [iwpDocked,iwpUseWindowManagerSetting]
+  then begin
+    exit;
+  end;
+  // no layout found => use default
+  BarBottom:=MainIDEBar.Top+MainIDEBar.Height;
+  // default window positions
+  l:=NonModalIDEFormIDToEnum(ALayout.FormID);
+  case l of
+  nmiwMainIDEName:
+    ALayout.Form.SetBounds(0,0,Screen.Width-10,95);
+  nmiwSourceNoteBookName:
+    ALayout.Form.SetBounds(250,BarBottom+30,Max(50,Screen.Width-300),
+      Max(50,Screen.Height-200-BarBottom));
+  nmiwUnitDependenciesName:
+    ALayout.Form.SetBounds(200,200,400,300);
+  nmiwCodeExplorerName:
+    ALayout.Form.SetBounds(Screen.Width-200,130,170,Max(50,Screen.Height-230));
+  nmiwClipbrdHistoryName:
+    ALayout.Form.SetBounds(250,Screen.Height-400,400,300);
+  nmiwPkgGraphExplorer:
+    ALayout.Form.SetBounds(250,150,500,350);
+  nmiwProjectInspector:
+    ALayout.Form.SetBounds(210,150,400,300);
+  nmiwMessagesViewName:
+    ALayout.Form.SetBounds(260,SourceNotebook.Top+SourceNotebook.Height+30,
+      Max(50,Screen.Width-300),80);
+  else
+    if ALayout.FormID=DefaultObjectInspectorName then begin
+      ALayout.Form.SetBounds(
+        MainIDEBar.Left,BarBottom+30,230,Max(Screen.Height-BarBottom-120,50));
     end;
   end;
 end;
@@ -11275,6 +11292,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.818  2005/01/03 12:09:24  mattias
+  implemented saving minimized/maximized state
+
   Revision 1.817  2005/01/01 18:56:46  mattias
   implemented TTIProgressBar
 
