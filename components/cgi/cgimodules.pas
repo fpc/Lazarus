@@ -50,7 +50,8 @@ Type
   TModuledCGIApplication = Class(TCGIApplication)
     FMainModule : TCGIDatamodule;
   public
-    Procedure CreateForm(Var AForm : TCGIDatamodule; AClass : TCGIDataModuleClass);
+    Procedure CreateForm(AClass: TCGIDataModuleClass;
+                         Var Reference: TCGIDataModule);
     Procedure DoRun; Override;
     Property MainModule : TCGIDatamodule Read FMainModule;
   end;
@@ -77,12 +78,12 @@ end;
 
 { TModuledCGIApplication }
 
-procedure TModuledCGIApplication.CreateForm(Var AForm: TCGIDatamodule;
-  AClass: TCGIDataModuleClass);
+procedure TModuledCGIApplication.CreateForm(AClass: TCGIDataModuleClass;
+  Var Reference: TCGIDataModule);
 begin
-  AForm:=AClass.CreateNew(Self,0);
+  Reference:=AClass.CreateNew(Self,0);
   If FMainModule=Nil then
-    FMainModule:=AForm;
+    FMainModule:=Reference;
 end;
 
 procedure TModuledCGIApplication.DoRun;
