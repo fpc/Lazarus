@@ -991,7 +991,7 @@ Begin
   //  FInCMParentBiDiModeChanged := False;
   {apply a drawing surface}
   FKeyPreview :=  False;
-  Color := clBtnface;
+  Color := clBtnFace;
   //  FPixelsPerInch := Screen.PixelsPerInch;
   //  FPrintScale := poProportional;
   //  FloatingDockSiteClass := TWinControlClass(ClassType);
@@ -1426,6 +1426,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.111  2003/08/28 12:08:30  mattias
+  fixed register color prop edit
+
   Revision 1.110  2003/08/27 09:20:44  mattias
   added TFrame definition, no implementation
 

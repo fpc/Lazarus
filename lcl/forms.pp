@@ -481,7 +481,7 @@ type
   TForm = class(TCustomForm)
   private
     FClientHandle: HWND;
-    FDummyPPI : longint;
+    FDummyPPI: longint;
   public
     property ClientHandle: HWND read FClientHandle;
   published
@@ -492,7 +492,7 @@ type
     property Caption;
     property ClientHeight;
     property ClientWidth;
-    property Color;
+    property Color default clBtnFace;
     property Constraints;
     property Enabled;
     property Font;

@@ -148,7 +148,7 @@ type
     InsertFilePathBitBtn: TBitBtn;
     
     // preview
-    DefinePreview: TCodeToolsDefinesPreview;
+    //DefinePreview: TCodeToolsDefinesPreview;
 
     // misc
     procedure FormResize(Sender: TObject);
@@ -581,13 +581,13 @@ end;
 
 procedure TCodeToolsDefinesEditor.OpenPreviewMenuItemClick(Sender: TObject);
 begin
-  if DefinePreview=nil then begin
-    DefinePreview:=TCodeToolsDefinesPreview.Create(Self);
-    DefinePreview.DefineTree:=DefineTree;
-    DefinePreview.Show;
-  end;
-  RefreshPreview;
-  BringWindowToTop(DefinePreview.Handle);
+  //if DefinePreview=nil then begin
+  //  DefinePreview:=TCodeToolsDefinesPreview.Create(Self);
+  //  DefinePreview.DefineTree:=DefineTree;
+  //  DefinePreview.Show;
+  //end;
+  //RefreshPreview;
+  //BringWindowToTop(DefinePreview.Handle);
 end;
 
 procedure TCodeToolsDefinesEditor.InsertFPCProjectDefinesTemplateMenuItemClick(
@@ -959,8 +959,8 @@ end;
 
 procedure TCodeToolsDefinesEditor.RefreshPreview;
 begin
-  if DefinePreview=nil then exit;
-  DefinePreview.ShowDefines;
+  //if DefinePreview=nil then exit;
+  //DefinePreview.ShowDefines;
 end;
 
 procedure TCodeToolsDefinesEditor.CreateComponents;

@@ -836,7 +836,7 @@ initialization
   // Normally it should use something like this;
   // RegisterPropertyEditor(TypeInfo(TColor),nil,'',TColorPropertyEditor);
   DummyClassForPropTypes:=TDummyClassForGraphPropTypes.Create;
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TColor'),
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TGraphicsColor'),
     nil,'',TColorPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TBrushStyle'),
     nil,'',TBrushStylePropertyEditor);
