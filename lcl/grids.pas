@@ -178,8 +178,6 @@ type
     procedure msg_GetValue(var Msg: TGridMessage); message GM_GETVALUE;
     procedure msg_SetGrid(var Msg: TGridMessage); message GM_SETGRID;
     procedure msg_SelectAll(var Msg: TGridMessage); message GM_SELECTALL;
-  public
-    constructor Create(AOwner: TComponent); override;
   end;
 
   TButtonCellEditor = class(TButton)
@@ -456,11 +454,13 @@ type
     FAutoFillColumns: boolean;
     FDefaultDrawing: Boolean;
     FEditor: TWinControl;
+    FEditorBorderStyle: TBorderStyle;
     FEditorHiding: Boolean;
     FEditorMode: Boolean;
     FEditorShowing: Boolean;
     FEditorKey: Boolean;
     FEditorOptions: Integer;
+    FFastEditing: boolean;
     FFlat: Boolean;
     FOnCompareCells: TOnCompareCells;
     FGridLineStyle: TPenStyle;
@@ -513,6 +513,7 @@ type
     procedure SetAutoFillColumns(const AValue: boolean);
     procedure SetColumns(const AValue: TGridColumns);
     procedure SetEditorOptions(const AValue: Integer);
+    procedure SetEditorBorderStyle(const AValue: TBorderStyle);
     procedure SetFlat(const AValue: Boolean);
     procedure SetFocusRectVisible(const AValue: Boolean);
     procedure SetTitleFont(const AValue: TFont);
@@ -727,6 +728,7 @@ type
     property DefaultTextStyle: TTextStyle read FDefaultTextStyle write FDefaultTextStyle;
     property DragDx: Integer read FDragDx write FDragDx;
     property Editor: TWinControl read FEditor write SetEditor;
+    property EditorBorderStyle: TBorderStyle read FEditorBorderStyle write SetEditorBorderStyle;
     property EditorMode: Boolean read FEditorMode write EditorSetMode;
     property EditorKey: boolean read FEditorKey write FEditorKey;
     property EditorHiding: boolean read FEditorHiding write FEditorHiding;
@@ -734,6 +736,7 @@ type
     property EditorShowing: boolean read FEditorShowing write FEditorShowing;
     property ExtendedColSizing: boolean read FExtendedColSizing write FExtendedColSizing;
     property ExtendedRowSizing: boolean read FExtendedRowSizing write FExtendedRowSizing;
+    property FastEditing: boolean read FFastEditing write FFastEditing;
     property FixedCols: Integer read FFixedCols write SetFixedCols default 1;
     property FixedRows: Integer read FFixedRows write SetFixedRows default 1;
     property FixedColor: TColor read GetFixedColor write SetFixedcolor;
@@ -848,6 +851,7 @@ type
     property Col;
     property ColWidths;
     property Editor;
+    property EditorBorderStyle;
     property EditorMode;
     property ExtendedColSizing;
     property FocusColor;
@@ -2564,20 +2568,25 @@ begin
         Gds:=[];
         if (i=Fcol)and(FRow=ARow) then begin
           // Focused Cell
+          if not EditorMode then begin
           Include(gds, gdFocused);
           // Check if need to be selected
           if (goDrawFocusSelected in Options) or
-             (Rs and not(goRelaxedRowSelect in Options)) then Include(gds, gdSelected);
+               (Rs and not(goRelaxedRowSelect in Options)) then
+              Include(gds, gdSelected);
+          end;
         end else
         if IsCellSelected(i, ARow) then Include(gds, gdSelected);
 
         DrawCell(i,aRow, R, gds);
       end;
+      
       // Draw the focus Rect
       if FFocusRectVisible and (ARow=FRow) and
          ((Rs and (ARow>=Top) and (ARow<=Bottom)) or IsCellVisible(FCol,ARow))
       then begin
-        if EditorAlwaysShown and (FEditor<>nil) and FEditor.Visible then begin
+        if EditorMode then begin
+        //if EditorAlwaysShown and (FEditor<>nil) and FEditor.Visible then begin
           //DebugLn('No Draw Focus Rect');
         end else begin
           ColRowToOffset(True, True, FCol, R.Left, R.Right);
@@ -2588,6 +2597,7 @@ begin
           DrawFocusRect(FCol,FRow, R);
         end;
       end;
+      
     end; // else begin
 
   // Draw Fixed Columns
@@ -3173,6 +3183,15 @@ begin
   end;
 end;
 
+procedure TCustomGrid.SetEditorBorderStyle(const AValue: TBorderStyle);
+begin
+  if FStringEditor.BorderStyle<>AValue then begin
+    FStringEditor.BorderStyle := AValue;
+    if (Editor=FStringEditor) and EditorMode then
+      EditorPos;
+  end;
+end;
+
 procedure TCustomGrid.SetFlat(const AValue: Boolean);
 begin
   if FFlat=AValue then exit;
@@ -3695,6 +3714,10 @@ begin
                 FSelectActive:=true;
               end;
             end;
+          end else if (FSplitter.X=Col) and (FSplitter.Y=Row) then begin
+            SelectEditor;
+            EditorShow(True);
+            exit;
           end;
           if not MoveExtend(False, FSplitter.X, FSplitter.Y) then begin
             if EditorAlwaysShown then begin
@@ -4560,6 +4583,9 @@ begin
   if FEditor<>nil then begin
     Msg.CellRect:=CellRect(FCol,FRow);
     if FEditorOptions and EO_AUTOSIZE = EO_AUTOSIZE then begin
+      if (FEditor=FStringEditor) and
+        (FStringEditor.BorderStyle=bsNone) then
+          InflateRect(Msg.CellRect, -1, -1);
       with Msg.CellRect do begin
         Right:=Right-Left;
         Bottom:=Bottom-Top;
@@ -5528,12 +5554,6 @@ end;
 }
 { TStringCellEditor }
 
-constructor TStringCellEditor.Create(AOWner: TComponent);
-begin
-  inherited Create(AOwner);
-  BorderStyle := bsNone;
-end;
-
 procedure TStringCellEditor.Change;
 begin
   inherited Change;
@@ -5564,6 +5584,13 @@ procedure TStringCellEditor.KeyDown(var Key: Word; Shift: TShiftState);
     if FGrid<>nil then
       FGrid.KeyDown(Key, shift);
   end;
+  function GetFastEntry: boolean;
+  begin
+    if FGrid<>nil then
+      Result := FGrid.FastEditing
+    else
+      Result := False;
+  end;
 var
   IntSel: boolean;
 begin
@@ -5572,60 +5599,27 @@ begin
   {$Endif}
   inherited KeyDown(Key,Shift);
   case Key of
-    VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN:
-      begin
-        IntSel:= ((Key=VK_LEFT) and not AtStart) or ((Key=VK_RIGHT) and not AtEnd);
-        if not IntSel then begin
-          doGridKeyDown;
-        end;
-      end;
-    else begin
-      doEditorKeyDown;
-    end;
-  end;
-
-  {
-  case Key of
-    VK_RETURN:
-      begin
-        doEditorKeyDown;
-        Key := 0;
-      end;
-  end;
-  }
-  {
-  case Key of
-    VK_RETURN:
+    VK_F2:
       if AllSelected then begin
         SelLength := 0;
         SelStart := Length(Text);
-        Key := 0;
-      end else begin
-        doEditorKeyDown;
-        exit;
       end;
-    VK_BACK, VK_INSERT:;
-
-    else begin
-      IntSel:= ((Key=VK_LEFT) and not AtStart) or ((Key=VK_RIGHT) and not AtEnd);
+    VK_UP, VK_DOWN:
+      doGridKeyDown;
+    VK_LEFT, VK_RIGHT:
+      if GetFastEntry then begin
+        IntSel:=
+          ((Key=VK_LEFT) and not AtStart) or
+          ((Key=VK_RIGHT) and not AtEnd);
       if not IntSel then begin
-        doEditorKeyDown;
-        exit;
+          doGridKeyDown;
       end;
     end;
+    VK_END, VK_HOME:
+      ;
+    else
+      doEditorKeyDown;
   end;
-  inherited KeyDown(key, shift);
-  }
-
-  {
-  if FGrid<>nil then begin
-    if ((key=VK_LEFT) and not AtStart) or
-      ((key=VK_RIGHT) and not AtEnd) then begin
-    end else
-      Fgrid.EditorKeyDown(Self, Key, Shift);
-  end else
-    inherited keyDown(key, shift);
-  }
   {$IfDef dbg}
   DebugLn('FIN: Key=',Key,' SelStart=',SelStart,' SelLenght=',SelLength);
   {$Endif}

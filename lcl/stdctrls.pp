@@ -591,6 +591,7 @@ type
     procedure CutToClipboard; virtual;
     procedure PasteFromClipboard; virtual;
   public
+    property BorderStyle;
     property CharCase: TEditCharCase read FCharCase write SetCharCase default ecNormal;
     property EchoMode: TEchoMode read FEchoMode write SetEchoMode default emNormal;
     property MaxLength: Integer read FMaxLength write SetMaxLength default -1;
@@ -1226,6 +1227,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.197  2005/03/08 10:32:47  mattias
+  BorderStyle for TCustomEdit in win32 intf  from Jesus
+
   Revision 1.196  2005/02/26 17:08:41  marc
   * Reworked listviews to match new interface
 

@@ -296,6 +296,7 @@ type
   TdbGrid=class(TCustomDbGrid)
   public
     property Canvas;
+    property EditorBorderStyle;
     property ExtendedColSizing;
     property FocusColor;
     property FocusRectVisible;
@@ -2044,6 +2045,9 @@ end.
 
 {
   $Log$
+  Revision 1.35  2005/03/08 10:32:47  mattias
+  BorderStyle for TCustomEdit in win32 intf  from Jesus
+
   Revision 1.34  2005/03/07 23:21:36  mattias
   fixed DefaultRowHeight=18 and various published properties  from Jesus
 

@@ -54,6 +54,7 @@ begin
   TabStop := true;
   SetInitialBounds(0,0,80,23);
   FEchoMode := emNormal;
+  BorderStyle := bsSingle;
 end;
 
 {------------------------------------------------------------------------------
@@ -368,6 +369,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.38  2005/03/08 10:32:47  mattias
+  BorderStyle for TCustomEdit in win32 intf  from Jesus
+
   Revision 1.37  2005/01/26 23:39:16  mattias
   added TMemo.SelLength negative check
 

@@ -738,6 +738,8 @@ begin
   // customization of Params
   with Params do
   begin
+    if (AWinControl is TCustomEdit) then
+      if TCustomEdit(AWinControl).BorderStyle=bsSingle then
     FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
     pClassName := 'EDIT';
     WindowTitle := StrCaption;
