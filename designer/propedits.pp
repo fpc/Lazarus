@@ -3044,7 +3044,7 @@ begin
 
   // XXX workaround for missing typeinfo function
   DummyClassForPropTypes:=TDummyClassForPropTypes.Create;
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('longint'),nil
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TColor'),nil
     ,'Color',TColorPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TComponent'),nil
     ,'',TComponentPropertyEditor);
