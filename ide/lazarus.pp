@@ -40,17 +40,13 @@ uses
   MsgView,
   FindReplaceDialog;
 
-var
-  SplashForm: TSplashForm;
-
 begin
   Application.Initialize;
     // calls InitProcedure which starts up the interface (e.g. GTK)
    
   // Show splashform
   SplashForm := TSplashForm.Create(nil);
-  with SplashForm do
-  begin
+  with SplashForm do begin
     Show;
     Paint;
   end;
@@ -71,8 +67,8 @@ end.
 
 {
   $Log$
-  Revision 1.21  2001/10/15 13:11:27  lazarus
-  MG: added complete code
+  Revision 1.22  2001/10/15 17:41:30  lazarus
+  MG: fixed splashform showing
 
   Revision 1.20  2001/08/02 12:58:35  lazarus
   MG: win32 interface patch from Keith Bowes

@@ -38,7 +38,7 @@ uses
   FindReplaceDialog, EditorOptions, CustomFormEditor, KeyMapping, StdCtrls,
   Compiler, MsgView, WordCompletion, CodeToolManager, CodeCache, SourceLog,
   SynEdit, SynEditHighlighter, SynHighlighterPas, SynEditAutoComplete,
-  SynEditKeyCmds,SynCompletion, Graphics, Extctrls, Menus;
+  SynEditKeyCmds,SynCompletion, Graphics, Extctrls, Menus, Splash;
 
 type
   // --------------------------------------------------------------------------
@@ -1089,7 +1089,9 @@ var
   NewName: string;
   i: integer;
 Begin
+{$IFDEF IDE_DEBUG}
 writeln('TSourceEditor.CreateEditor  A ');
+{$ENDIF}
   if not assigned(FEditor) then Begin
     i:=0;
     repeat
@@ -1550,6 +1552,8 @@ begin
   IdentCompletionTimer := TTimer.Create(self);
   IdentCompletionTimer.Enabled := False;
   IdentCompletionTimer.Interval := 500;
+
+  Visible:=false;
 end;
 
 destructor TSourceNotebook.Destroy;
@@ -2091,17 +2095,25 @@ End;
 
 Function TSourceNotebook.NewSE(PageNum : Integer) : TSourceEditor;
 Begin
+{$IFDEF IDE_DEBUG}
 writeln('TSourceNotebook.NewSE A ');
+{$ENDIF}
   if CreateNotebook then Pagenum := 0;
+{$IFDEF IDE_DEBUG}
 writeln('TSourceNotebook.NewSE A2 ');
+{$ENDIF}
   if Pagenum < 0 then begin
     // add a new page right to the current
     Pagenum := Notebook.PageIndex+1;
     Notebook.Pages.Insert(PageNum,FindUniquePageName('',-1));
   end;
+{$IFDEF IDE_DEBUG}
 writeln('TSourceNotebook.NewSE B  ',Notebook.PageIndex,',',NoteBook.Pages.Count);
+{$ENDIF}
   Result := TSourceEditor.Create(Self,Notebook.Page[PageNum]);
+{$IFDEF IDE_DEBUG}
 writeln('TSourceNotebook.NewSE C ');
+{$ENDIF}
   FSourceEditorList.Add(Result);
   Result.FShortName:=Notebook.Pages[PageNum];
   Result.CodeTemplates:=CodeTemplateModul;
@@ -2109,7 +2121,9 @@ writeln('TSourceNotebook.NewSE C ');
   Result.EditorComponent.BookMarkOptions.BookmarkImages := MarksImgList;
   Result.PopupMenu:=SrcPopupMenu;
   Result.OnEditorChange := @EditorChanged;
+{$IFDEF IDE_DEBUG}
 writeln('TSourceNotebook.NewSE end ');
+{$ENDIF}
 end;
 
 Procedure TSourceNotebook.DisplayCodeforControl(Control : TObject);
@@ -2424,13 +2438,24 @@ Begin
 writeln('[TSourceNotebook.NewFile] A ');
 {$ENDIF}
   TempEditor := NewSE(-1);
+{$IFDEF IDE_DEBUG}
 writeln('[TSourceNotebook.NewFile] B ');
+{$ENDIF}
   TempEditor.ShortName := NewShortName;
+{$IFDEF IDE_DEBUG}
 writeln('[TSourceNotebook.NewFile] C ');
+{$ENDIF}
   TempEditor.CodeBuffer:=ASource;
+{$IFDEF IDE_DEBUG}
 writeln('[TSourceNotebook.NewFile] D ');
+{$ENDIF}
   Notebook.Pages[Notebook.PageIndex] :=
     FindUniquePageName(NewShortName,Notebook.PageIndex);
+  if (SplashForm.Visible) and (Notebook.Pages.Count=1) then begin
+    SplashForm.Hide;
+    SplashForm.Show;
+    Application.ProcessMessages;
+  end;
 {$IFDEF IDE_DEBUG}
 writeln('[TSourceNotebook.NewFile] end');
 {$ENDIF}

@@ -36,12 +36,16 @@ type
     procedure HideFormTimer(Sender : TObject);
   protected
     procedure Click; override;
-    procedure Paint; override;
   public
+    procedure Paint; override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure StartTimer;
   end;
+
+var
+  SplashForm: TSplashForm;
+
 
 implementation
 
@@ -320,7 +324,7 @@ begin
   FTimer := TTimer.Create(self);
   with FTimer do
   begin
-    Interval := 2000;
+    Interval := 500;
     OnTimer := @HideFormTimer;
     Enabled := False;
   end;
@@ -338,12 +342,14 @@ end;
 procedure TSplashForm.Click; 
 begin
   Hide;
-  FTimer.Enabled := False;
-  //Release resources
-  FTimer.Free;
-  FTimer:=nil;
-  FBitmap.Free;
-  FBitmap:=nil;
+  if FTimer<>nil then begin
+    FTimer.Enabled := False;
+    //Release resources
+    FTimer.Free;
+    FTimer:=nil;
+    FBitmap.Free;
+    FBitmap:=nil;
+  end;
 end;
 
 procedure TSplashForm.HideFormTimer(Sender : TObject);
@@ -369,6 +375,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.5  2001/10/15 17:41:31  lazarus
+  MG: fixed splashform showing
+
   Revision 1.4  2001/03/20 16:59:15  lazarus
   MG: fixed many bugs (mem leaks, canvas)
 

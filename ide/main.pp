@@ -3773,7 +3773,9 @@ procedure TMainIDE.OnControlSelectionChanged(Sender: TObject);
 var NewSelectedComponents : TComponentSelectionList;
   i: integer;
 begin
+{$IFDEF IDE_DEBUG}
 writeln('[TMainIDE.OnControlSelectionChanged]');
+{$ENDIF}
   if (TheControlSelection=nil) or (FormEditor1=nil) then exit;
   NewSelectedComponents:=TComponentSelectionList.Create;
   for i:=0 to TheControlSelection.Count-1 do begin
@@ -3781,7 +3783,9 @@ writeln('[TMainIDE.OnControlSelectionChanged]');
   end;
   FormEditor1.SelectedComponents:=NewSelectedComponents;
   NewSelectedComponents.Free;
+{$IFDEF IDE_DEBUG}
 writeln('[TMainIDE.OnControlSelectionChanged] END');
+{$ENDIF}
 end;
 
 // -----------------------------------------------------------------------------
@@ -4018,8 +4022,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.120  2001/10/15 13:11:27  lazarus
-  MG: added complete code
+  Revision 1.121  2001/10/15 17:41:30  lazarus
+  MG: fixed splashform showing
 
   Revision 1.115  2001/10/09 09:46:49  lazarus
   MG: added codetools, fixed synedit unindent, fixed MCatureHandle
