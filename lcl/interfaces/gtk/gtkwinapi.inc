@@ -178,6 +178,19 @@ begin
                        Height, ROP);
 end;
 
+{$IFDEF GTK1}
+function InternalGtkShowWindow(AForm: TCustomForm): gint; cdecl;
+var
+  XDisplay: PDisplay;
+  XWindow: TWindow;
+begin
+  Result := 0;
+  XWindow := GDK_WINDOW_XWINDOW (PGdkWindowPrivate(PGtkWidget(AForm.Handle)^.window));
+  XDisplay := GDK_WINDOW_XDISPLAY (PGdkWindowPrivate(PGtkWidget(AForm.Handle)^.window));
+  if (XDisplay<>nil) and (XWindow>0) then
+    XSetInputFocus(XDisplay, XWindow, RevertToNone, CurrentTime);
+end;
+{$ENDIF}
 {------------------------------------------------------------------------------
   Function: BringWindowToTop
   Params: hWnd:
@@ -191,6 +204,10 @@ var
   {$ENDIF}
   GdkWindow: PGdkWindow;
   AForm: TCustomForm;
+  {$IFDEF GTK1}
+  XDisplay: PDisplay;
+  XWindow: TWindow;
+  {$ENDIF}
 begin
   {$IFDEF VerboseFocus}
   DbgOut('TGtkWidgetSet.BringWindowToTop hWnd=',DbgS(hWnd));
@@ -215,6 +232,13 @@ begin
       EndGDKErrorTrap;
       {$ENDIF}
       // how to set the keyboard focus to the raised window?
+      {$IFDEF GTK1}
+      XWindow := GDK_WINDOW_XWINDOW (PGdkWindowPrivate(PGtkWidget(AForm.Handle)^.window));
+      XDisplay := GDK_WINDOW_XDISPLAY (PGdkWindowPrivate(PGtkWidget(AForm.Handle)^.window));
+      XMapWindow(XDisplay, XWindow);
+      // a horrible horrible hack to give "something" time to unminimize the window
+      gtk_timeout_add(50, TGtkFunction(@InternalGtkShowWindow), AForm);
+      {$ENDIF}
 {$ifdef gtk2}
       gtk_window_present(PGtkWindow(hWnd));
 {$endif gtk2}
@@ -8966,6 +8990,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.409  2005/03/16 11:36:21  mattias
+  improved gtk1 intf switching focus to another form  from Andrew Haines
+
   Revision 1.408  2005/03/13 22:35:17  mattias
   fixed deleting selected TListBox item under gtk1  from Collin
 
