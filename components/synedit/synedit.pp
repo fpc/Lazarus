@@ -4538,6 +4538,9 @@ var
   var
     x, MarkOffset: Integer;
     UpdateMarks: boolean;
+    {$IFDEF SYN_LAZARUS}
+    NewCaretXY: TPoint;
+    {$ENDIF}
 {$IFDEF SYN_MBCSSUPPORT}
     l, r: Integer;
 {$ENDIF}
@@ -4547,13 +4550,16 @@ var
     case SelectionMode of
       smNormal:
         begin
+          {$IFDEF SYN_LAZARUS}
+          NewCaretXY:=LogicalToPhysicalPos(BB);
+          {$ENDIF}
           if Lines.Count > 0 then begin
               // Create a string that contains everything on the first line up
               // to the selection mark, and everything on the last line after
               // the selection mark.
             TempString := Copy(Lines[BB.Y - 1], 1, BB.X - 1) +
               Copy(Lines[BE.Y - 1], BE.X, MaxInt);
-              // Delete all lines in the selection range.
+            // Delete all lines in the selection range.
 {begin}                                                                         // djlp 2000-09-13
             TSynEditStringList(Lines).DeleteLines(BB.Y, BE.Y - BB.Y);
 //            for x := BE.Y - 1 downto BB.Y do
@@ -4568,8 +4574,7 @@ var
             Lines[BB.Y - 1] := TempString;
           end;
           UpdateMarks := TRUE;
-          CaretXY := {$IFDEF SYN_LAZARUS}LogicalToPhysicalPos(BB)
-                     {$ELSE}BB{$ENDIF};
+          CaretXY := {$IFDEF SYN_LAZARUS}NewCaretXY{$ELSE}BB{$ENDIF};
         end;
       smColumn:
         begin
@@ -4584,6 +4589,9 @@ var
             BE.X := x;
           end;
 {$ENDIF}
+          {$IFDEF SYN_LAZARUS}
+          NewCaretXY:=LogicalToPhysicalPos(Point(BB.X,fBlockEnd.Y));
+          {$ENDIF}
           for x := BB.Y - 1 to BE.Y - 1 do begin
             TempString := Lines[x];
 {$IFNDEF SYN_MBCSSUPPORT}
@@ -4602,7 +4610,7 @@ var
           end;
             // Lines never get deleted completely, so keep caret at end.
           CaretXY := {$IFDEF SYN_LAZARUS}
-                     LogicalToPhysicalPos(Point(BB.X, fBlockEnd.Y))
+                     NewCaretXY
                      {$ELSE}
                      Point(BB.X, fBlockEnd.Y)
                      {$ENDIF};
