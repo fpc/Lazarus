@@ -860,7 +860,7 @@ activate_time :	the time at which the activation event occurred.
         Case (Sender as TControl).FCompStyle Of
           csComboBox:
           Begin
-            Result:=SendMessage(Handle, CB_GETCURSEL, 0, 0);
+            Result := SendMessage(Handle, CB_GETCURSEL, 0, 0);
             if Result = LB_ERR Then
             Begin
               Assert(False, 'Trace:[TWin32Object.IntSendMessage3] Could not retrieve item index via LM_GETITEMINDEX; try selecting an item first');
@@ -954,12 +954,21 @@ activate_time :	the time at which the activation event occurred.
       LM_GETSELCOUNT:
       Begin
         If Sender Is TCustomListBox then
-          Result := SendMessage(Handle, LB_GETSELCOUNT, 0, 0);
+        begin
+          // LB_GETSELCOUNT only works for multiple-selection listboxes
+          if TCustomListBox(Sender).MultiSelect then
+            Result := Windows.SendMessage(Handle, LB_GETSELCOUNT, 0, 0)
+          else
+            if Windows.SendMessage(Handle, LB_GETCURSEL, 0, 0) = LB_ERR then
+              Result := 0
+            else
+              Result := 1;
+        end;
       End;
       LM_GETSEL:
       Begin
         If Sender Is TCustomListBox then
-           Result := Windows.SendMessage(Handle, LB_GETSEL, Windows.WParam(Data^), 0);
+          Result := Windows.SendMessage(Handle, LB_GETSEL, Windows.WParam(Data^), 0);
       End;
       LM_SETLIMITTEXT:
       Begin
@@ -2904,6 +2913,9 @@ End;
 
 {
   $Log$
+  Revision 1.157  2004/01/07 18:04:09  micha
+  fix getselcount message for non-multiple-selection listbox
+
   Revision 1.156  2004/01/03 11:57:48  mattias
   applied implementation for LM_LB_GETINDEXAT  from Vincent
 
