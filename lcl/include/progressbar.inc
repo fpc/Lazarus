@@ -1,3 +1,4 @@
+// included by comctrls.pp
 {******************************************************************************
                                   TProgressBar
  ******************************************************************************
@@ -41,16 +42,17 @@
  ------------------------------------------------------------------------------}
 constructor TProgressBar.Create (AOwner : TComponent);
 begin
-   inherited Create (AOwner);
-   fCompStyle := csProgressBar;
-   FPosition  := 0;
-   FStep      := 10;
-   FMin	      := 0;
-   FMax	      := 100;	
-   FSmooth    := false;
-   FOrientation      := pbHorizontal;
-   FBarShowText      := false;
-   FBarTextFormat    := '%v from [%l-%u] (=%p%%)';
+  inherited Create (AOwner);
+  fCompStyle := csProgressBar;
+  FPosition  := 0;
+  FStep      := 10;
+  FMin	      := 0;
+  FMax	      := 100;
+  FSmooth    := false;
+  FOrientation      := pbHorizontal;
+  FBarShowText      := false;
+  FBarTextFormat    := '%v from [%l-%u] (=%p%%)';
+  SetInitialBounds(0,0,100,20);
 end;   
 
 {------------------------------------------------------------------------------
@@ -63,8 +65,14 @@ end;
  ------------------------------------------------------------------------------}
 procedure TProgressBar.InitializeWnd;
 begin
-   inherited InitializeWnd;	
-   ApplyChanges;	
+  inherited InitializeWnd;
+  ApplyChanges;
+end;
+
+procedure TProgressBar.Loaded;
+begin
+  inherited Loaded;
+  ApplyChanges;
 end;
 
 {------------------------------------------------------------------------------
@@ -76,9 +84,8 @@ end;
  ------------------------------------------------------------------------------}
 function TProgressBar.GetMin: Integer;
 begin
-   result := FMin;	
+  Result := FMin;
 end;
-
 
 {------------------------------------------------------------------------------
   Method: TProgressBar.GetMax
@@ -89,9 +96,8 @@ end;
  ------------------------------------------------------------------------------}
 function TProgressBar.GetMax: Integer;
 begin
-   result := FMax;	
+  Result := FMax;
 end;
-
 
 {------------------------------------------------------------------------------
   Method: TProgressBar.GetPosition
@@ -102,9 +108,8 @@ end;
  ------------------------------------------------------------------------------}
 function TProgressBar.GetPosition: Integer;
 begin
-   result := FPosition;	
+  Result := FPosition;
 end;
-
 
 {------------------------------------------------------------------------------
   Method: TProgressBar.SetParams
@@ -115,8 +120,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TProgressBar.SetParams(AMin, AMax: Integer);
 begin
-   SetMax (AMax);
-   SetMin (AMin);
+  SetMax (AMax);
+  SetMin (AMin);
 end;
 
 
@@ -129,11 +134,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TProgressBar.SetMin(Value: Integer);
 begin
-   if FMin <> Value then
-   begin
-      FMin := Value;
-      ApplyChanges;
-   end;
+  if FMin <> Value then
+  begin
+    FMin := Value;
+    ApplyChanges;
+  end;
 end;
 
 
@@ -146,13 +151,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TProgressBar.SetMax(Value: Integer);
 begin
-   if FMax <> Value then
-   begin
-      FMax := Value;
-      ApplyChanges;
-   end;
+  if FMax <> Value then
+  begin
+    FMax := Value;
+    ApplyChanges;
+  end;
 end;
-
 
 {------------------------------------------------------------------------------
   Method: TProgressBar.SetPosition
@@ -163,11 +167,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TProgressBar.SetPosition(Value: Integer);
 begin
-   if FPosition <> Value then
-   begin
-      FPosition := Value;
-      ApplyChanges;
-   end;
+  if FPosition <> Value then
+  begin
+    FPosition := Value;
+    ApplyChanges;
+  end;
 end;
 
 
@@ -180,11 +184,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TProgressBar.SetStep(Value: Integer);
 begin
-   if FStep <> Value then
-   begin
-      FStep := Value;
-      ApplyChanges;
-   end;
+  if FStep <> Value then
+  begin
+    FStep := Value;
+    ApplyChanges;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -196,11 +200,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TProgressBar.SetOrientation (Value : TProgressBarOrientation);
 begin
-   if FOrientation <> Value then
-   begin
-      Forientation := Value;
-      ApplyChanges;
-   end;
+  if FOrientation <> Value then
+  begin
+    Forientation := Value;
+    ApplyChanges;
+  end;
 end;
  
 {------------------------------------------------------------------------------
@@ -215,7 +219,7 @@ begin
   inc (FPosition, FStep);
   if FPosition > FMax then FPosition := FMax;
   if FPosition < FMin then FPosition := FMin;
-  CNSendMessage (LM_SetValue, Self, @FPosition);
+  CNSendMessage(LM_SetValue, Self, @FPosition);
 end;
 
 
@@ -237,7 +241,6 @@ begin
   StepIt;
 end;
 
-
 {------------------------------------------------------------------------------
   Method: TProgressBar.ApplyChanges
   Params:  Nothing
@@ -247,8 +250,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TProgressBar.ApplyChanges;
 begin
-   if HandleAllocated
-      then CNSendMessage (LM_SETPROPERTIES, Self, nil);
+  if HandleAllocated and (not (csLoading in ComponentState)) then
+    CNSendMessage(LM_SETPROPERTIES, Self, nil);
 end;
 
 
@@ -261,11 +264,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TProgressBar.SetSmooth (Value : boolean);
 begin
-   if FSmooth <> value then
-   begin
-      FSmooth := value;
-      ApplyChanges;
-   end;
+  if FSmooth <> value then
+  begin
+    FSmooth := value;
+    ApplyChanges;
+  end;
 end;
 
 
@@ -282,23 +285,20 @@ end;
  ------------------------------------------------------------------------------}
 procedure TProgressBar.SetBarShowText (Value : boolean);
 begin
-   if FBarShowText <> Value then
-   begin
-      FBarShowText      := Value;
-      ApplyChanges;
-   end;
+  if FBarShowText <> Value then
+  begin
+    FBarShowText      := Value;
+    ApplyChanges;
+  end;
 end;
 
-{
-procedure TProgressBar.SetBarTextFormat (value : string);
-begin
-    FBarTextFormat    := Value;
-    ApplyChanges; 
-end;
-}
+// included by comctrls.pp
 
 {
   $Log$
+  Revision 1.4  2003/06/25 21:02:20  mattias
+  reduced TProgressBar setproperties calls
+
   Revision 1.3  2002/05/10 06:05:55  lazarus
   MG: changed license to LGPL
 

@@ -457,6 +457,7 @@ type
   protected
     procedure ApplyChanges;
     procedure InitializeWnd; override;
+    procedure Loaded; override;
 {    procedure SetBarTextFormat; }
   public
     constructor Create(AOwner: TComponent); override;
@@ -1800,6 +1801,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.80  2003/06/25 21:02:19  mattias
+  reduced TProgressBar setproperties calls
+
   Revision 1.79  2003/06/19 16:36:35  mattias
   started codeexplorer
 
