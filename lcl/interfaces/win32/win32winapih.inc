@@ -58,6 +58,7 @@ Function DeleteObject(GDIObject: HGDIOBJ): Boolean; Override;
 Function DestroyCaret(Handle: HWND): Boolean; Override;
 Function DrawFrameControl(DC: HDC; Var Rect: TRect; UType, UState: Cardinal): Boolean; Override;
 Function DrawEdge(DC: HDC; Var Rect: TRect; Edge: Cardinal; GrfFlags: Cardinal): Boolean; Override;
+function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; Override;
 
 Function Ellipse(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; Override;
 Function EmptyClipBoard: Boolean;
@@ -89,6 +90,7 @@ Function GetScrollInfo(Handle: HWND; BarFlag: Integer; Var ScrollInfo: TScrollIn
 Function GetStockObject(Value: Integer): LongInt; Override;
 Function GetSysColor(NIndex: Integer): DWORD; Override;
 Function GetSystemMetrics(NIndex: Integer): Integer; Override;
+Function GetTextColor(DC: HDC): TColorRef; Override;
 Function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; Var Size: TSize): Boolean; Override;
 Function GetTextMetrics(DC: HDC; Var TM: TTextMetric): Boolean; Override;
 Function GetWindowLong(Handle: HWND; Int: Integer): LongInt; Override;
@@ -160,10 +162,19 @@ Function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; X
 Function TextOut(DC: HDC; X, Y: Integer; Str: PChar; Count: Integer): Boolean; Override;
 
 Function WindowFromPoint(Point: TPoint): HWND; Override;
+
+Procedure InitializeCriticalSection(var CritSection: TCriticalSection); Override;
+Procedure EnterCriticalSection(var CritSection: TCriticalSection); Override;
+Procedure LeaveCriticalSection(var CritSection: TCriticalSection); Override;
+Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
+
 //##apiwiz##eps##   // Do not remove
 { =============================================================================
 
   $Log$
+  Revision 1.11  2002/08/19 20:34:49  lazarus
+  MG: improved Clipping, TextOut, Polygon functions
+
   Revision 1.10  2002/08/15 15:46:50  lazarus
   MG: added changes from Andrew (Clipping)
 

@@ -519,7 +519,7 @@ type
      property OnStartDrag;
    end;
 
-
+Function DeleteAmpersands(var Str : String) : Longint;
 
 implementation
 
@@ -566,6 +566,39 @@ const
 
   SScrollBarRange = 'ScrollBar property out of range';
 
+Function DeleteAmpersands(var Str : String) : Longint;
+var
+  I : Integer;
+  Tmp : String;
+begin
+  I := 1;
+  Result := -1;
+  SetLength(Tmp,0);
+  While I <= Length(Str) do
+    Case Str[I] of
+      '&' :
+         If I + 1 <= Length(Str) then begin
+           If Str[I+1] = '&' then begin
+             I += 2;
+             Tmp := Tmp + '&';
+           end
+           else begin
+             If Result  < 0 then
+               Result := Length(Tmp) + 1;
+             I += 1;
+           end;
+         end
+         else
+           I += 1;
+      else begin
+        Tmp := Tmp + Str[I];
+        I += 1;
+      end;
+    end;
+  SetLength(Str,0);
+  Str := Tmp;
+end;
+
 {$I customgroupbox.inc}
 {$I customcombobox.inc}                                                                                            
 {$I customlistbox.inc}
@@ -589,6 +622,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.33  2002/08/19 20:34:47  lazarus
+  MG: improved Clipping, TextOut, Polygon functions
+
   Revision 1.32  2002/08/17 15:45:32  lazarus
   MG: removed ClientRectBugfix defines
 

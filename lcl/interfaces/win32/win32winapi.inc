@@ -718,6 +718,21 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
+  Method:  DrawText
+  Params:  DC, Str, Count, Rect, Flags
+  Returns: If the string was drawn, or CalcRect run
+
+ ------------------------------------------------------------------------------}
+function TWin32Object.DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer;
+begin
+  Assert(False, Format('trace:> [TWin32Object.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
+    [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
+  Result := Windows.DrawText(DC, Str, Count, @Rect, Flags);
+  Assert(False, Format('trace:> [TWin32Object.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
+    [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
+end;
+
+{------------------------------------------------------------------------------
   Method:   Ellipse
   Params:   
             DC - handle to device context
@@ -1159,6 +1174,11 @@ Begin
   Assert(False, Format('Trace:[TWin32Object.GetSystemMetrics] %s --> 0x%S (%s)', [IntToStr(NIndex), IntToHex(Result, 8), IntToStr(Result)]));
 End;
 
+Function TWin32Object.GetTextColor(DC: HDC): TColorRef;
+Begin
+  Result := Windows.GetTextColor(DC);
+End;
+
 {------------------------------------------------------------------------------
   Method:  GetTextExtentPoint
   Params:  DC    - handle of device context 
@@ -1450,19 +1470,9 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
   Filled, Continuous: Boolean): Boolean;
-var
-  APoints : PPoint;
-  ACount : Longint;
 Begin
-  If Filled or (not Continuous) then begin
-    APoints := nil;
-    PolyBezier2Polyline(Points,NumPts,APoints,ACount,Continuous);
-    If Filled then
-      Result := Polygon(DC,APoints,ACount, False)
-    else
-      Result := Polyline(DC,APoints,ACount);
-    ReallocMem(APoints,0);
-  end
+  If Filled or (not Continuous) then
+    Result := Inherited PolyBezier(DC,Points,NumPts, Filled, Continuous)
   else
     Result := Windows.PolyBezier(DC, LPPOINT(Points)^, NumPts);
 End;
@@ -1494,7 +1504,7 @@ var
   PFMode : Longint;
 Begin
   Assert(False, Format('Trace:TWin32Object.Polygon --> DC: 0x%X, Number of points: %D, Use winding fill: %S', [DC, NumPts, BOOL_RESULT[Winding]]));
-  If not Winding then
+  If Winding then
     PFMode := SetPolyFillMode(DC, Windows.WINDING)
   else
     PFMode := SetPolyFillMode(DC, Windows.ALTERNATE);
@@ -2159,6 +2169,90 @@ Begin
   Result := Windows.WindowFromPoint(Windows.POINT(Point));
 End;
 
+Procedure TWin32Object.InitializeCriticalSection(var CritSection: TCriticalSection);
+var
+  Crit : LPCRITICAL_SECTION;
+begin
+  { An OS Compatible TCriticalSection needs to be defined}
+  If CritSection <> 0 then
+    Try
+      Crit := LPCRITICAL_SECTION(CritSection);
+      Dispose(Crit);
+    except
+      CritSection := 0;
+    end;
+  New(Crit);
+  Windows.InitializeCriticalSection(Crit^);
+  CritSection := Longint(Crit);
+end;
+
+Procedure TWin32Object.EnterCriticalSection(var CritSection: TCriticalSection);
+var
+  Crit,
+  tmp : LPCRITICAL_SECTION;
+begin
+  { An OS Compatible TCriticalSection needs to be defined}
+  New(Crit);
+  If CritSection <> 0 then
+    Try
+      Crit^ := LPCRITICAL_SECTION(CritSection)^;
+    except
+      begin
+        CritSection := Longint(Crit);
+        exit;
+      end;
+    end;
+  Windows.EnterCriticalSection(Crit^);
+  tmp := LPCRITICAL_SECTION(CritSection);
+  CritSection := Longint(Crit);
+  Dispose(Tmp);
+end;
+
+Procedure TWin32Object.LeaveCriticalSection(var CritSection: TCriticalSection);
+var
+  Crit,
+  tmp : LPCRITICAL_SECTION;
+begin
+  { An OS Compatible TCriticalSection needs to be defined}
+  New(Crit);
+  If CritSection <> 0 then
+    Try
+      Crit^ := LPCRITICAL_SECTION(CritSection)^;
+    except
+      begin
+        CritSection := Longint(Crit);
+        exit;
+      end;
+    end;
+  Windows.LeaveCriticalSection(Crit^);
+  tmp := LPCRITICAL_SECTION(CritSection);
+  CritSection := Longint(Crit);
+  Dispose(Tmp);
+end;
+
+Procedure TWin32Object.DeleteCriticalSection(var CritSection: TCriticalSection);
+var
+  Crit,
+  tmp : LPCRITICAL_SECTION;
+begin
+  { An OS Compatible TCriticalSection needs to be defined}
+  New(Crit);
+  If CritSection <> 0 then
+    Try
+      Crit^ := LPCRITICAL_SECTION(CritSection)^;
+    except
+      begin
+        CritSection := Longint(Crit);
+        exit;
+      end;
+    end;
+  Windows.DeleteCriticalSection(Crit^);
+  Dispose(Crit);
+  tmp := LPCRITICAL_SECTION(CritSection);
+  CritSection := 0;
+  Dispose(Tmp);
+end;
+
 //##apiwiz##eps##   // Do not remove
 
 {$IFDEF ASSERT_IS_ON}
@@ -2169,6 +2263,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.14  2002/08/19 20:34:48  lazarus
+  MG: improved Clipping, TextOut, Polygon functions
+
   Revision 1.13  2002/08/15 15:46:50  lazarus
   MG: added changes from Andrew (Clipping)
 

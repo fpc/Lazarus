@@ -102,18 +102,27 @@ Procedure SplitBezier(Bezier : TBezier; var Left, Right : TBezier);
 Operator + (Addend1, Addend2 : TFloatPoint) : TFloatPoint;
 Operator + (Addend1 : TFloatPoint; Addend2 : Extended) : TFloatPoint;
 Operator + (Addend1 : Extended; Addend2 : TFloatPoint) : TFloatPoint;
+Operator + (Addend1 : TFloatPoint; Addend2 : TPoint) : TFloatPoint;
+Operator + (Addend1 : TPoint; Addend2 : TFloatPoint) : TFloatPoint;
 
 Operator - (Minuend : TFloatPoint; Subtrahend : Extended) : TFloatPoint;
 Operator - (Minuend, Subtrahend : TFloatPoint) : TFloatPoint;
+Operator - (Minuend : TFloatPoint; Subtrahend : TPoint) : TFloatPoint;
+Operator - (Minuend : TPoint; Subtrahend : TFloatPoint) : TFloatPoint;
 
 Operator * (Multiplicand, Multiplier : TFloatPoint) : TFloatPoint;
-Operator * (Multiplicand : TFloatPoint; Multiplier : Extended) : 
-TFloatPoint;
-Operator * (Multiplicand : Extended; Multiplier : TFloatPoint) : 
-TFloatPoint;
+Operator * (Multiplicand : TFloatPoint; Multiplier : Extended) : TFloatPoint;
+Operator * (Multiplicand : Extended; Multiplier : TFloatPoint) : TFloatPoint;
+Operator * (Multiplicand : TFloatPoint; Multiplier : TPoint) : TFloatPoint;
+Operator * (Multiplicand : TPoint; Multiplier : TFloatPoint) : TFloatPoint;
 
 Operator / (Dividend, Divisor : TFloatPoint) : TFloatPoint;
 Operator / (Dividend : TFloatPoint; Divisor : Extended) : TFloatPoint;
+Operator / (Dividend : TFloatPoint; Divisor : TPoint) : TFloatPoint;
+Operator / (Dividend : TPoint; Divisor : TFloatPoint) : TFloatPoint;
+
+Operator = (Compare1, Compare2  : TPoint) : Boolean;
+Operator = (Compare1, Compare2  : TFloatPoint) : Boolean;
 
 implementation
 
@@ -138,6 +147,19 @@ begin
   Result := Addend2 + Addend1;
 end;
 
+Operator + (Addend1 : TFloatPoint; Addend2 : TPoint) : TFloatPoint;
+Begin
+  With Result do begin
+    X := Addend1.X + Addend2.X;
+    Y := Addend1.Y + Addend2.Y;
+  end;
+end;
+
+Operator + (Addend1 : TPoint; Addend2 : TFloatPoint) : TFloatPoint;
+begin
+  Result := Addend2 + Addend1;
+end;
+
 Operator - (Minuend, Subtrahend:TFloatPoint) : TFloatPoint;
 Begin
   With Result do begin
@@ -149,8 +171,24 @@ end;
 Operator - (Minuend : TFloatPoint; Subtrahend : Extended) : TFloatPoint;
 Begin
   With Result do begin
-    X:= Minuend.X - Subtrahend;
-    Y:= Minuend.Y - Subtrahend;
+    X := Minuend.X - Subtrahend;
+    Y := Minuend.Y - Subtrahend;
+  end;
+end;
+
+Operator - (Minuend : TFloatPoint; Subtrahend : TPoint) : TFloatPoint;
+begin
+  With Result do begin
+    X := Minuend.X - Subtrahend.X;
+    Y := Minuend.Y - Subtrahend.Y;
+  end;
+end;
+
+Operator - (Minuend : TPoint; Subtrahend : TFloatPoint) : TFloatPoint;
+begin
+  With Result do begin
+    X := Minuend.X - Subtrahend.X;
+    Y := Minuend.Y - Subtrahend.Y;
   end;
 end;
 
@@ -162,8 +200,7 @@ Begin
   end;
 end;
 
-Operator * (Multiplicand : TFloatPoint; Multiplier : Extended) : 
-TFloatPoint;
+Operator * (Multiplicand : TFloatPoint; Multiplier : Extended) : TFloatPoint;
 Begin
   With Result do begin
     X := Multiplicand.X * Multiplier;
@@ -171,9 +208,21 @@ Begin
   end;
 end;
 
-Operator * (Multiplicand : Extended; Multiplier : TFloatPoint) : 
-TFloatPoint;
+Operator * (Multiplicand : Extended; Multiplier : TFloatPoint) : TFloatPoint;
 Begin
+  Result := Multiplier*Multiplicand;
+end;
+
+Operator * (Multiplicand : TFloatPoint; Multiplier : TPoint) : TFloatPoint;
+begin
+  With Result do begin
+    X := Multiplicand.X * Multiplier.X;
+    Y := Multiplicand.Y * Multiplier.Y;
+  end;
+end;
+
+Operator * (Multiplicand : TPoint; Multiplier : TFloatPoint) : TFloatPoint;
+begin
   Result := Multiplier*Multiplicand;
 end;
 
@@ -191,6 +240,32 @@ begin
     X := Dividend.X / Divisor;
     Y := Dividend.Y / Divisor;
   end;
+end;
+
+Operator / (Dividend : TFloatPoint; Divisor : TPoint) : TFloatPoint;
+begin
+  With Result do begin
+    X := Dividend.X / Divisor.X;
+    Y := Dividend.Y / Divisor.Y;
+  end;
+end;
+
+Operator / (Dividend : TPoint; Divisor : TFloatPoint) : TFloatPoint;
+begin
+  With Result do begin
+    X := Dividend.X / Divisor.X;
+    Y := Dividend.Y / Divisor.Y;
+  end;
+end;
+
+Operator = (Compare1, Compare2  : TPoint) : Boolean;
+begin
+  Result := (Compare1.X = Compare2.X) and (Compare1.Y = Compare2.Y);
+end;
+
+Operator = (Compare1, Compare2  : TFloatPoint) : Boolean;
+begin
+  Result := (Compare1.X = Compare2.X) and (Compare1.Y = Compare2.Y);
 end;
 
 {------------------------------------------------------------------------------
@@ -258,11 +333,6 @@ Procedure Arc2Bezier(X, Y, Width, Height : Longint; Angle1, Angle2,
     Result.Y := Point.X*SinA - Point.Y*CosA;
   end;
 
-  Function Translate(Point : TFloatPoint; Translation : TPoint) : TFloatPoint;
-  begin
-    Result := Point + FloatPoint(Translation.X,Translation.Y);
-  end;
-
   Function Scale(Point : TFloatPoint; ScaleX, ScaleY : Extended) : TFloatPoint;
   begin
     Result := Point*FloatPoint(ScaleX,ScaleY);
@@ -296,7 +366,7 @@ begin
       ScaleY := Height / Width;
       B := A;
     end;
-  end;  
+  end;
 
   Angle1 := DegToRad(Angle1/16);
   Angle2 := DegToRad(Angle2/16);
@@ -322,9 +392,9 @@ begin
 
   For I := 0 to 3 do
   begin
-    Points[I] := Scale(P[I],ScaleX, ScaleY);
-    Points[I] := Rotate(Points[I], Rotation);
-    Points[I] := Translate(Points[I], PT);
+    Points[I] := Scale(P[I],ScaleX, ScaleY); //Scale to proper size
+    Points[I] := Rotate(Points[I], Rotation); //Rotate Counter-Clockwise
+    Points[I] := Points[I] + PT; //Translate to Center
   end;
 end;
 
@@ -974,4 +1044,14 @@ begin
 end;
 
 end.
+{ =============================================================================
 
+  $Log$
+  Revision 1.5  2002/08/19 20:34:47  lazarus
+  MG: improved Clipping, TextOut, Polygon functions
+
+
+  Revision 1.5  2002/08/15
+  Andrew: Added more overloaded operations for use with TFloatPoint & TPoint
+
+}

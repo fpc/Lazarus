@@ -58,6 +58,10 @@ type
   PANSICHAR = ^AnsiChar;
   PWideChar = ^WideChar;
   UINT = LongWord;
+
+  TCriticalSection = longint;
+  PCriticalSection = ^TCriticalSection;
+
   { Provided for compatibility with Windows registry ONLY }
   HKEY = Integer;
   PHKEY = ^HKEY;
@@ -129,6 +133,21 @@ const
   RGN_XOR = 3;
   RGN_DIFF = 4;
   RGN_COPY = 5;
+
+//------------
+// DrawText flags
+//------------
+  DT_TOP = 0;
+  DT_LEFT = 0;
+  DT_CENTER = 1;
+  DT_RIGHT = 2;
+  DT_VCENTER = 4;
+  DT_BOTTOM = 8;
+  DT_WORDBREAK = $10;
+  DT_SINGLELINE = $20;
+  DT_NOCLIP = $100;
+  DT_CALCRECT = $400;
+  DT_NOPREFIX = $800;
 
 //==============================================
 // Draw frame constants
@@ -1442,6 +1461,9 @@ end.
 
 {
   $Log$
+  Revision 1.11  2002/08/19 20:34:47  lazarus
+  MG: improved Clipping, TextOut, Polygon functions
+
   Revision 1.10  2002/08/16 20:13:09  lazarus
   MG: custom external tools are now shown in the menu
 

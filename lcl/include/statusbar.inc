@@ -123,32 +123,43 @@ End;
 Procedure TStatusBar.WMPaint(var Msg: TLMPaint);
 var
   I : Integer;
-  X,Y,X2 : Integer;
+  Style : TTextStyle;
+  R : TRect;
 Begin
   inherited;
-  X2:=(Height-Canvas.TextHeight('L')) div 2;
+  Style := Canvas.TextStyle;
+  With Style do begin
+    Layout := tlCenter;
+    Alignment := taLeftJustify;
+    WordBreak := False;
+    SingleLine := True;
+    Clipping := False;
+    ShowPrefix := False;
+    Opaque := False;
+  end;
+  R := Rect(Left, Top, Left + ClientWidth, Top + ClientHeight);
   if SimplePanel = False then
   Begin
     if Panels.Count = 0 then exit;
-    Y := Top; //this shouldn't be needed but it is...
-    X := Left;
-
     For I := 0 to Panels.Count-1 do
       Begin
         if I = Panels.Count-1 then
           // this sets the last panel to the width of the statusbar
-          Panels[I].Width := ClientWidth-X;
-        DrawBevel(X,I);
-        Canvas.TextOut(X+2,Y+X2,Panels[i].Text);
+          Panels[I].Width := ClientWidth-R.Left;
+        R.Right := R.Left + Panels[I].Width;
+        DrawBevel(R.Left,I);
+        InflateRect(R, -1, -1);
+        Style.Alignment := Panels[I].Alignment;
+        Canvas.TextRect(R, 1, 0, Panels[i].Text, Style);
+        InflateRect(R, 1, 1);
         //draw divider
         if I < Panels.Count-1 then
-          DrawDivider(X+Panels[i].Width);
-        inc(X);
-        X := X + Panels[i].Width+1;
+          DrawDivider(R.Right);
+        R.Left := R.Right;
       end;
   end
   else
-    Canvas.TextOut(Left+2,Top+X2,SimpleText);
+    Canvas.TextRect(R, 2, 0, SimpleText, Style);
 End;
 // included by comctrls.pp
 
