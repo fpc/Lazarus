@@ -1254,6 +1254,7 @@ type
     FRealizeBoundsLockCount: integer;
     FHandle: Hwnd;
     FShowing: Boolean;
+    FShowingValid: Boolean;
     FTabList: TList;
     FUseDockManager: Boolean;
     FWinControls: TList;
@@ -2240,6 +2241,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.194  2004/04/09 23:52:01  mattias
+  fixed hiding uninitialized controls
+
   Revision 1.193  2004/04/04 12:32:21  mattias
   TWinControl.CanTab now checks for CanFocus
 

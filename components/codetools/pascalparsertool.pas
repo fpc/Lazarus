@@ -1178,6 +1178,7 @@ function TPascalParserTool.ReadTilProcedureHeadEnd(
    class function X: integer;
    function QWidget_mouseGrabber(): QWidgetH; cdecl;
    procedure Intf.Method = ImplementingMethodName;
+   function CommitUrlCacheEntry; // only Delphi
 
  proc specifiers without parameters:
    stdcall, virtual, abstract, dynamic, overload, override, cdecl, inline

@@ -1083,9 +1083,10 @@ begin
   end;
 
   if HandleAllocated then begin
-    if FShowing <> bShow
-    then begin
+    //writeln('TWinControl.UpdateShowing A ',Name,':',ClassName,' FShowing=',FShowing,' bShow=',bShow);
+    if (not FShowingValid) or (FShowing <> bShow) then begin
       FShowing := bShow;
+      FShowingValid := true;
       ok:=false;
       try
         Perform(CM_SHOWINGCHANGED, 0, 0);
@@ -2241,7 +2242,7 @@ end;
 {  TWinControl UpdateControlState                                                      }
 {------------------------------------------------------------------------------}
 procedure TWinControl.UpdateControlState;
-var AWinControl : TWinControl;
+var AWinControl: TWinControl;
 begin
   AWinControl:= Self;
   { If any of the parent is not visible, exit }
@@ -3422,7 +3423,6 @@ begin
   // ToDo: do not send this while loading, send it after loading.
   if HandleAllocated and ([csDestroying]*ComponentState=[])then
     CNSendMessage(LM_ShowHide, Self, nil);
-//  SetWindowPos(Handle, 0, 0, 0, 0, 0, ShowFlags[FShowing]);
 end;
 
 {------------------------------------------------------------------------------
@@ -3446,6 +3446,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.216  2004/04/09 23:52:01  mattias
+  fixed hiding uninitialized controls
+
   Revision 1.215  2004/04/04 12:32:21  mattias
   TWinControl.CanTab now checks for CanFocus
 
