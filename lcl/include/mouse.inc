@@ -3,7 +3,7 @@
 {******************************************************************************
                                      TMouse
  ******************************************************************************
- 
+
  *****************************************************************************
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
@@ -53,7 +53,7 @@ Function TMouse.GetCursorPos : TPoint;
 var
   p : TPoint;
 Begin
-  GetCaretPos(p);
+  InterfaceObject.GetCursorPos(p);
   Result := P;
 end;
 

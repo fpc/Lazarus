@@ -1,7 +1,7 @@
 {******************************************************************************
                                    TApplication
  ******************************************************************************
- 
+
  *****************************************************************************
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
@@ -47,9 +47,9 @@ begin
       (Result.Control<>nil)
       and (Application<>nil) and (Application.ShowHint)
       and (GetCapture=0)
-      and (GetKeyState(VK_LBUTTON)=0)
-      and (GetKeyState(VK_MBUTTON)=0)
-      and (GetKeyState(VK_RBUTTON)=0);
+      and ((GetKeyState(VK_LBUTTON) and $80)=0)
+      and ((GetKeyState(VK_MBUTTON) and $80)=0)
+      and ((GetKeyState(VK_RBUTTON) and $80)=0);
     if Result.ControlHasHint then begin
       // if there is a modal form, then don't show hints for other forms
       if (Screen.FFocusedForm<>nil)
@@ -99,7 +99,7 @@ begin
   // shutting down
   CancelHint;
   ShowHint := False;
-  
+
   // destroying
   ApplicationActionComponent:=nil;
   FreeThenNil(FIcon);
@@ -109,7 +109,7 @@ begin
   FreeThenNil(FOnUserInputHandler);
   FreeThenNil(FOnKeyDownHandler);
   inherited Destroy;
-  
+
   // restore exception handling
   CaptureExceptions:=false;
   LCLProc.SendApplicationMessageFunction:=nil;
@@ -168,7 +168,7 @@ end;
   Params: None
   Returns:  Nothing
 
-  
+
  ------------------------------------------------------------------------------}
 procedure TApplication.ControlDestroyed(AControl: TControl);
 begin
@@ -234,7 +234,7 @@ end;
   Params: None
   Returns:  Nothing
 
-  Handles mouse Idle  
+  Handles mouse Idle
  ------------------------------------------------------------------------------}
 procedure TApplication.MouseIdle(const CurrentControl: TControl);
 var
@@ -280,7 +280,7 @@ end;
   Params: None
   Returns:  Nothing
 
-  Invoked when the application enters the idle state 
+  Invoked when the application enters the idle state
  ------------------------------------------------------------------------------}
 procedure TApplication.Idle;
 var
@@ -290,12 +290,12 @@ var
 begin
   GetCursorPos(P);
   CurrentControl := FindDragTarget(P, True);
-  if (CurrentControl <> nil) 
-  and (csDesigning in CurrentControl.ComponentState) 
+  if (CurrentControl <> nil)
+  and (csDesigning in CurrentControl.ComponentState)
   then CurrentControl := nil;
 
   MouseIdle(CurrentControl);
-  
+
   Done := True;
   if Assigned(FOnIdle) then FOnIdle(Self, Done);
   NotifyIdleHandler;
@@ -500,11 +500,11 @@ begin
   CurHeight:=GetCursorHeightMargin;
   HintInfo.HintControl := FHintControl;
   HintInfo.HintPos := Info.MousePos;
-  
+
   // to reduce flicker
   HintInfo.HintPos.X:=HintInfo.HintPos.X and (not $F);
   HintInfo.HintPos.Y:=HintInfo.HintPos.Y and (not $F);
-  
+
   Inc(HintInfo.HintPos.Y, CurHeight);
   HintInfo.HintMaxWidth := Screen.Width;
   HintInfo.HintColor := FHintColor;
@@ -542,7 +542,7 @@ begin
         AutoHide := False;
       end;
     end;
-    
+
     { make the hint have the same BiDiMode as the activating control }
     //FHintWindow.BiDiMode := FHintControl.BiDiMode;
     { calculate the width of the hint based on HintStr and MaxWidth }
@@ -566,7 +566,7 @@ begin
     end;}
 
     FHintWindow.Color := HintInfo.HintColor;
-    
+
     FHintWindow.ActivateHint(HintWinRect,HintInfo.HintStr);
     // start hide timer
     StartHintTimer(HintHidePause,ahtHideHint);
@@ -607,7 +607,7 @@ begin
   OldHintTimerType:=FHintTimerType;
   StopHintTimer;
   case OldHintTimerType of
-  
+
   ahtShowHint:
     begin
       Info:=GetHintInfoAtMouse;
@@ -716,7 +716,7 @@ end;
   Params: None
   Returns:  Nothing
 
-  Handles all messages first then the Idle 
+  Handles all messages first then the Idle
  ------------------------------------------------------------------------------}
 procedure TApplication.HandleMessage;
 begin
@@ -1056,10 +1056,10 @@ end;
 
 {------------------------------------------------------------------------------
   TApplication CreateForm
-  
+
   Note: The name is confusing and only kept for Delphi compatibility. It can
   create any kind of components.
-       
+
   Create a Component instance and sets the pointer to the component variable
   and loads the component. If it is a form it will be added to the applications
   forms list
@@ -1104,7 +1104,7 @@ end;
 
 {------------------------------------------------------------------------------
   function TApplication.HandleAllocated: boolean;
-  
+
   Checks if Handle is allocated.
 ------------------------------------------------------------------------------}
 function TApplication.HandleAllocated: boolean;
@@ -1115,6 +1115,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.64  2003/11/07 18:47:30  micha
+  hintwindow fixes
+
   Revision 1.63  2003/10/21 18:44:10  mattias
   removed CustApp defines
 
