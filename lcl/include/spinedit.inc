@@ -213,6 +213,7 @@ begin
 
   SetInitialBounds(0,0,50,20);
   ParentColor := false;
+  TabStop := true;
 end;
 
 {-----------------------------------------------------------------------------}

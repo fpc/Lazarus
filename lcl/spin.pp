@@ -94,6 +94,7 @@ type
     property Climb_Rate : Single read fClimbRate write SetClimbRate stored Climb_RateIsStored;
     property MinValue: single read FMinValue write SetMinValue stored MinValueIsStored;
     property MaxValue: single read FMaxValue write SetMaxValue stored MaxValueIsStored;
+    property TabStop default true;
     property Value: Single read GetValue write SetValue stored ValueIsStored;
     property ValueEmpty: boolean read FValueEmpty write SetValueEmpty default False;
   end;
