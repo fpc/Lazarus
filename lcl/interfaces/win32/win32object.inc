@@ -645,7 +645,7 @@ activate_time :	the time at which the activation event occurred.
               end
               else if TControl(Sender).FCompStyle = csPage then
               begin
-                if (Sender As TWinControl).Parent.Handle<>0 then
+                if (Sender As TWinControl).Parent.HandleAllocated then
                 begin
                   Windows.SendMessage((Sender As TWinControl).Parent.Handle, TCM_AdjustRect, 0, LPARAM(@R));
                   Left := R.Left;
@@ -657,7 +657,8 @@ activate_time :	the time at which the activation event occurred.
 //              if (Windows.GetWindowLong(TWinControl(Sender).Handle, GWL_STYLE) and WS_VSCROLL) <> 0 then
 //                R.Right := R.Right + GetSystemMetrics(SM_CXVSCROLL);
 //              if (Windows.GetWindowLong(TWinControl(Sender).Handle, GWL_STYLE) and WS_HSCROLL) <> 0 then
-//                R.Bottom := R.Bottom + GetSystemMetrics(SM_CYHSCROLL);                  ResizeChild(Sender, R.Left, R.Top, R.Right , R.Bottom);
+//                R.Bottom := R.Bottom + GetSystemMetrics(SM_CYHSCROLL);
+              ResizeChild(Sender, R.Left, R.Top, R.Right , R.Bottom);
             end;
           end;
         End;
@@ -2734,6 +2735,9 @@ End;
 
 {
   $Log$
+  Revision 1.84  2003/08/12 16:09:54  mattias
+  fixed sizing from Vincent
+
   Revision 1.83  2003/08/12 14:02:54  mattias
   fixed keypress/keyup, createcaret on synedit focus
 
