@@ -458,7 +458,7 @@ var
   // size
   // date
   // time
-  mode:mode_t;
+  mode: {$ifdef ver1_0}longint{$else}mode_t {$endif};
 {$ENDIF}
 begin
   Result:='';
@@ -896,6 +896,9 @@ end;
 
 {
   $Log$
+  Revision 1.35  2003/11/05 19:07:45  marco
+   * minor corrections on yesterdays patch
+
   Revision 1.34  2003/11/04 11:41:15  marco
    * Small 1.1 fixe
 
