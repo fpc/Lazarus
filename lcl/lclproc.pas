@@ -260,7 +260,7 @@ end;
 procedure OwnerFormDesignerModified(AComponent: TComponent);
 begin
   if ([csDesigning,csLoading,csDestroying]*AComponent.ComponentState
-    =[csDesigning]
+    =[csDesigning])
   then begin
     if OwnerFormDesignerModifiedProc<>nil then
       OwnerFormDesignerModifiedProc(AComponent);

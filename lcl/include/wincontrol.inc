@@ -2855,6 +2855,8 @@ begin
     WriteLn(Format('WARNING: [TWinControl.CreateWnd] %s --> FCompstyle = csNone', [ClassName]));
     Exit;
   end;
+  
+  if (csDestroying in ComponentState) then exit;
 
   CreateParams(Params);
   with Params do begin
@@ -2997,7 +2999,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.HandleNeeded;
 begin
-  if not HandleAllocated then
+  if (not HandleAllocated) and (not (csDestroying in ComponentState)) then
   begin
     if Parent = Self
     then begin
@@ -3283,6 +3285,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.197  2004/02/04 17:39:30  mattias
+  quick fixed TToolBar destruction
+
   Revision 1.196  2004/02/02 16:59:28  mattias
   more Actions  TAction, TBasicAction, ...
 
