@@ -32,7 +32,7 @@ msgstr "&Lisää"
 
 #: objinspstrconsts:oiscancel
 msgid "&Cancel"
-msgstr ""
+msgstr "Peru"
 
 #: objinspstrconsts:oiscdelete
 msgid "&Delete"
@@ -48,7 +48,7 @@ msgstr ""
 
 #: objinspstrconsts:oissave
 msgid "&Save"
-msgstr ""
+msgstr "&Tallenna"
 
 #: objinspstrconsts:cactionlisteditorallcategory
 msgid "(All)"
@@ -80,11 +80,11 @@ msgstr ""
 
 #: objinspstrconsts:oisallfiles
 msgid "All files (*.*)|*.*"
-msgstr ""
+msgstr "Kaikki tiedostot (*.*)|*.*"
 
 #: objinspstrconsts:oisarray
 msgid "Array"
-msgstr ""
+msgstr "Taulukko"
 
 #: objinspstrconsts:oisboolean
 msgid "Boolean"
@@ -112,7 +112,7 @@ msgstr ""
 
 #: objinspstrconsts:oisclass
 msgid "Class"
-msgstr ""
+msgstr "Luokka"
 
 #: objinspstrconsts:sccsilbtnclear
 msgid "Clear"
@@ -140,7 +140,7 @@ msgstr ""
 
 #: objinspstrconsts:oisenumeration
 msgid "Enumeration"
-msgstr ""
+msgstr "Lueteltu tyyppi"
 
 #: objinspstrconsts:oiserror
 msgid "Error"
@@ -224,11 +224,11 @@ msgstr ""
 
 #: objinspstrconsts:oisloadimagedialog
 msgid "Load Image Dialog"
-msgstr ""
+msgstr "Tuo kuva"
 
 #: objinspstrconsts:oismethod
 msgid "Method"
-msgstr ""
+msgstr "Metodi"
 
 #: objinspstrconsts:sccslvedtbtnadd
 msgid "New"
@@ -252,11 +252,11 @@ msgstr "Ominaisuudet"
 
 #: objinspstrconsts:oisrecord
 msgid "Record"
-msgstr ""
+msgstr "Tietue"
 
 #: objinspstrconsts:oisselectafile
 msgid "Select a file"
-msgstr ""
+msgstr "Valitse tiedosto"
 
 #: objinspstrconsts:oisset
 msgid "Set"
@@ -272,7 +272,7 @@ msgstr ""
 
 #: objinspstrconsts:oissort
 msgid "Sort"
-msgstr ""
+msgstr "Lajittele"
 
 #: objinspstrconsts:oisstring
 msgid "String"
@@ -308,7 +308,7 @@ msgstr ""
 
 #: objinspstrconsts:oisvalue
 msgid "Value:"
-msgstr ""
+msgstr "Arvo:"
 
 #: objinspstrconsts:oisvariant
 msgid "Variant"
