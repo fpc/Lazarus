@@ -2396,7 +2396,7 @@ begin
         {$ENDIF}
         MemStream:=TMemoryStream.Create;
         try
-          // the gtk-interface provides autiomatically some formats, that the lcl
+          // the gtk-interface provides automatically some formats, that the lcl
           // does not know. Wrapping them to lcl formats ...
           FormatID:=SelectionData^.Target;
           if ((FormatID=gdk_atom_intern('COMPOUND_TEXT',1))
@@ -2530,6 +2530,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.162  2003/01/06 10:51:41  mattias
+  freeing stopped external tools
+
   Revision 1.161  2002/12/28 12:42:38  mattias
   focus fixes, reduced lpi size
 
