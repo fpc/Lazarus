@@ -373,8 +373,6 @@ TCMDialogKey = TLMKEY;
     FLastheight : Integer;
     FLastWidth : Integer;
     FLeft: Integer;
-//    FOwner : TComponent;
-//    FName: TComponentName;
     FOnActivate : TNotifyEvent;
     FOnResize: TNotifyEvent;
     FOnClick: TNotifyEvent;
@@ -462,6 +460,7 @@ TCMDialogKey = TLMKEY;
     procedure SetHint(const Value: String); virtual;
     procedure SetName(const Value: TComponentName); override;
     procedure SetParent(AParent : TWinControl); virtual;
+    Procedure SetParentComponent(Value : TComponent); override;
     procedure SetCallback(Msg : LongInt);
     Procedure SetZOrder(Topmost: Boolean) ; dynamic;
     procedure RemoveCallbacks;
@@ -707,6 +706,7 @@ TCMDialogKey = TLMKEY;
     procedure Repaint; override;
     Procedure SetFocus; virtual;
     procedure Show; virtual;
+    Function FindChildControl(ControlName : String) : TControl;
     function HandleAllocated : Boolean;
     procedure HandleNeeded;
     property Brush: TBrush read FBrush;
@@ -1125,6 +1125,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.9  2000/12/29 13:14:05  lazarus
+  Using the lresources.pp and registering components.
+  This is a major change but will create much more flexibility for the IDE.
+  Shane
+
   Revision 1.8  2000/12/22 19:55:37  lazarus
   Added the Popupmenu code to the LCL.
   Now you can right click on the editor and a PopupMenu appears.

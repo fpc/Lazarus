@@ -939,6 +939,14 @@ end;
 
 
 {------------------------------------------------------------------------------}
+{  TControl SetParentComponent                                                 }
+{------------------------------------------------------------------------------}
+Procedure TControl.SetParentComponent(Value : TComponent);
+Begin
+if (Value is TWinControl) then Setparent(TWinControl(Value));
+end;
+
+{------------------------------------------------------------------------------}
 {  TControl SetParentShowHint                                                                 }
 {------------------------------------------------------------------------------}
 Procedure TControl.SetParentShowHint(Value : Boolean);
@@ -1275,6 +1283,11 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.6  2000/12/29 13:14:05  lazarus
+  Using the lresources.pp and registering components.
+  This is a major change but will create much more flexibility for the IDE.
+  Shane
+
   Revision 1.5  2000/12/22 19:55:37  lazarus
   Added the Popupmenu code to the LCL.
   Now you can right click on the editor and a PopupMenu appears.

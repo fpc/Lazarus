@@ -32,7 +32,7 @@ uses
   Spin, project,sysutils, global,
   compileroptions, Controls, graphics, extctrls, Dialogs, dlgMEssage,
   Designer, process, idecomp, Find_dlg, FormEditor, AbstractFormEditor,
-  CustomFormEditor, ObjectInspector, ControlSelection, PropEdits, UnitEditor;
+  CustomFormEditor, ObjectInspector, ControlSelection, PropEdits, UnitEditor,CompReg;
 
 const
   STANDARDBTNCOUNT = 50;
@@ -48,6 +48,7 @@ type
     Toolbutton2  : TToolButton;
     Toolbutton3  : TToolButton;
     Toolbutton4  : TToolButton;
+    GlobalMouseSpeedButton : TSpeedButton;
     Pixmap1      : TPixmap;//used to assign the tspeedbutton its image
     Bitmap1      : TBitmap;
     SpeedButton1 : TSpeedButton;
@@ -155,7 +156,6 @@ type
     FCodeLastActivated : Boolean; //used for toggling between code and forms
     FControlLastActivated : TObject;
     Function CreateSeperator : TMenuItem;
-    Procedure SetBtnDefaults(Control : Pointer;I,Page : Integer);
     Function ReturnActiveUnitList : TUnitInfo;
     Procedure UpdateViewDialogs;
  protected
@@ -167,8 +167,7 @@ type
 //    Procedure Paint; override;
     Function ReturnFormName(Source : TStringList) : String;
 
-    Standardbtn : Array[1..STANDARDBTNCOUNT] of TSpeedbutton;
-
+    SelectedComponent : TRegisteredComponent;
   public
     constructor Create(AOwner: TComponent); override; 
     procedure LoadMainMenu;
@@ -202,20 +201,52 @@ var
   TagInc : Integer;
 
 
+
 implementation
 
 uses
-  TestForm, ViewUnit_dlg,ViewForm_dlg, Math;
+  TestForm, ViewUnit_dlg,ViewForm_dlg, Math,lresources;
+
 
 { TForm1 }
 
-constructor TForm1.Create(AOwner: TComponent);  
+constructor TForm1.Create(AOwner: TComponent);
+
+
+
+
+  function LoadResource(ResourceName:string; PixMap:TPixMap):boolean;
+  var
+    ms:TMemoryStream;
+    res:LResource;
+  begin
+    Result:=false;
+    res:=LazarusResources.Find(ResourceName);
+    if (res.Value<>'') then begin
+      if res.ValueType='XPM' then begin
+        ms:=TMemoryStream.Create;
+        try
+          ms.Write(res.Value[1],length(res.Value));
+          ms.Position:=0;
+          PixMap.LoadFromStream(ms);
+          Result:=true;
+        finally
+          ms.Free;
+        end;
+      end;
+    end;
+  end;
+
 var
   Filename : String;
   S : TStream;
-  i : Integer;
+  i,x : Integer;
   R : TRect;
   IDEControl : pointer;
+
+  RegComp     : TRegisteredComponent;
+  RegCompPage : TRegisteredComponentPage;
+  IDeComponent : TIdeComponent;
 begin
   inherited Create(AOwner);
 
@@ -248,7 +279,8 @@ begin
     Width := ClientWidth;
     Show;
   end;
-} 
+}
+
   Notebook1 := TNotebook.Create(Self);
   Notebook1.Parent := Self;
   Notebook1.Align := alBottom;
@@ -257,24 +289,68 @@ begin
   Notebook1.Top :=50+ 2;
   Notebook1.Width := ClientWidth;
   Notebook1.Height := 100; //ClientHeight - Notebook1.Top;
-  Notebook1.Pages.Strings[0] := 'Standard';
-  Notebook1.Pages.Add('Additional');
-  Notebook1.Pages.Add('Samples');
-  Notebook1.Pages.Add('System');
-  Notebook1.Pages.Add('Internet');
+
+
+  Pixmap1:=TPixMap.Create;
+  Pixmap1.TransparentColor:=clBtnFace;
+  if not LoadResource('tmouse',Pixmap1) then
+  begin
+    LoadResource('default',Pixmap1);
+  end;
+
+
+
+  For I := 0 to RegCompList.PageCount-1 do
+      Begin
+        Writeln('I = '+inttostr(i));
+        RegCompPage := RegCompList.Pages[i];
+          if I = 0 then
+             Notebook1.Pages.Strings[i] := RegCompPage.Name
+          else
+             Notebook1.Pages.Add(RegCompPage.Name);
+
+             GlobalMouseSpeedButton := TSpeedButton.Create(Self);
+             with GlobalMouseSPeedButton do
+             Begin
+                Parent := Notebook1.page[I];
+                Enabled := True;
+                Width := 25;
+                Height := 25;
+                OnClick := @ControlClick;
+                Glyph := Pixmap1;
+                Visible := True;
+                Flat := True;
+                Name := 'GlobalMouseSpeedButton'+inttostr(i);
+             end;
+
+             Writeln('REGCOMPPAGE.COUNT is '+Inttostr(RegCompPage.Count));
+             for x := 0 to RegCompPage.Count-1 do
+                 begin
+                  Writeln('X = '+inttostr(x));
+		  RegComp := RegCompPage.Items[x];
+                  IDEComponent := TIDEComponent.Create;
+                  IdeComponent.RegisteredComponent := RegComp;
+                  IDEComponent._SpeedButton(Self,Notebook1.Page[i]);
+                  IDEComponent.SpeedButton.OnClick := @ControlClick;
+                  IDEComponent.SpeedButton.Hint := RegComp.ComponentClass.ClassName;
+                  IDEComponent.SpeedButton.ShowHint := True;
+                 end;
+           
+
+      end;
+
   Notebook1.PageIndex := 0;   // Set it to the first page
   Notebook1.Show;
   Notebook1.OnPageChanged := @ControlClick;
   Notebook1.Name := 'Notebook1';
-  S := TFileStream.Create('./images/viewunits.xpm', fmOpenRead);
-  try
-    Pixmap1 := TPixmap.Create;
-    Pixmap1.TransparentColor := clBtnFace;
-    Pixmap1.LoadFromStream(S);
-  finally
-    S.Free;
-  end;
 
+
+  Pixmap1:=TPixMap.Create;
+  Pixmap1.TransparentColor:=clBtnFace;
+  if not LoadResource('btn_viewunits',Pixmap1) then
+  begin
+    LoadResource('default',Pixmap1);
+  end;
   SpeedButton1 := TSpeedButton.Create(Self);
   with Speedbutton1 do
    Begin
@@ -289,13 +365,11 @@ begin
    end;
 
 
-  S := TFileStream.Create('./images/viewforms.xpm', fmOpenRead);
-  try
-    Pixmap1 := TPixmap.Create;
-    Pixmap1.TransparentColor := clBtnFace;
-    Pixmap1.LoadFromStream(S);
-  finally
-    S.Free;
+  Pixmap1:=TPixMap.Create;
+  Pixmap1.TransparentColor:=clBtnFace;
+  if not LoadResource('btn_viewforms',Pixmap1) then
+  begin
+    LoadResource('default',Pixmap1);
   end;
 
   SpeedButton2 := TSpeedButton.Create(Self);
@@ -311,15 +385,11 @@ begin
     Name := 'Speedbutton2';
    end;
 
-
-
-  S := TFileStream.Create('./images/newunit.xpm', fmOpenRead);
-  try
-    Pixmap1 := TPixmap.Create;
-    Pixmap1.TransparentColor := clBtnFace;
-    Pixmap1.LoadFromStream(S);
-  finally
-    S.Free;
+  Pixmap1:=TPixMap.Create;
+  Pixmap1.TransparentColor:=clBtnFace;
+  if not LoadResource('btn_newunit',Pixmap1) then
+  begin
+    LoadResource('default',Pixmap1);
   end;
 
   SpeedButton3 := TSpeedButton.Create(Self);
@@ -335,13 +405,12 @@ begin
     Name := 'Speedbutton3';
    end;
 
-  S := TFileStream.Create('./images/openfile.xpm', fmOpenRead);
-  try
-    Pixmap1 := TPixmap.Create;
-    Pixmap1.TransparentColor := clBtnFace;
-    Pixmap1.LoadFromStream(S);
-  finally
-    S.Free;
+
+  Pixmap1:=TPixMap.Create;
+  Pixmap1.TransparentColor:=clBtnFace;
+  if not LoadResource('btn_openfile',Pixmap1) then
+  begin
+    LoadResource('default',Pixmap1);
   end;
 
   SpeedButton4 := TSpeedButton.Create(Self);
@@ -357,13 +426,11 @@ begin
     Name := 'Speedbutton4';
    end;
 
-  S := TFileStream.Create('./images/save.xpm', fmOpenRead);
-  try
-    Pixmap1 := TPixmap.Create;
-    Pixmap1.TransparentColor := clBtnFace;
-    Pixmap1.LoadFromStream(S);
-  finally
-    S.Free;
+  Pixmap1:=TPixMap.Create;
+  Pixmap1.TransparentColor:=clBtnFace;
+  if not LoadResource('btn_save',Pixmap1) then
+  begin
+    LoadResource('default',Pixmap1);
   end;
 
   SpeedButton5 := TSpeedButton.Create(Self);
@@ -379,13 +446,11 @@ begin
     Name := 'Speedbutton5';
    end;
 
-  S := TFileStream.Create('./images/saveall.xpm', fmOpenRead);
-  try
-    Pixmap1 := TPixmap.Create;
-    Pixmap1.TransparentColor := clBtnFace;
-    Pixmap1.LoadFromStream(S);
-  finally
-    S.Free;
+  Pixmap1:=TPixMap.Create;
+  Pixmap1.TransparentColor:=clBtnFace;
+  if not LoadResource('btn_saveall',Pixmap1) then
+  begin
+    LoadResource('default',Pixmap1);
   end;
 
   SpeedButton6 := TSpeedButton.Create(Self);
@@ -401,13 +466,11 @@ begin
     Name := 'Speedbutton6';
    end;
 
-  S := TFileStream.Create('./images/toggleform.xpm', fmOpenRead);
-  try
-    Pixmap1 := TPixmap.Create;
-    Pixmap1.TransparentColor := clBtnFace;
-    Pixmap1.LoadFromStream(S);
-  finally
-    S.Free;
+  Pixmap1:=TPixMap.Create;
+  Pixmap1.TransparentColor:=clBtnFace;
+  if not LoadResource('btn_toggleform',Pixmap1) then
+  begin
+    LoadResource('default',Pixmap1);
   end;
 
   SpeedButton7 := TSpeedButton.Create(Self);
@@ -423,13 +486,11 @@ begin
     Name := 'Speedbutton7';
    end;
 
-  S := TFileStream.Create('./images/newform.xpm', fmOpenRead);
-  try
-    Pixmap1 := TPixmap.Create;
-    Pixmap1.TransparentColor := clBtnFace;
-    Pixmap1.LoadFromStream(S);
-  finally
-    S.Free;
+  Pixmap1:=TPixMap.Create;
+  Pixmap1.TransparentColor:=clBtnFace;
+  if not LoadResource('btn_newform',Pixmap1) then
+  begin
+    LoadResource('default',Pixmap1);
   end;
 
   SpeedButton8 := TSpeedButton.Create(Self);
@@ -444,111 +505,6 @@ begin
     Visible := True;
     Name := 'Speedbutton8';
    end;
-
-  //start creating the components based on the TIDECOmponent classes
-  I := 1;
-  idecontrol := TIDEMouse.Create;
-  SetBtnDefaults(idecontrol,i,0);
-  inc(i);
-  idecontrol := TIDEMenu.Create;
-  SetBtnDefaults(idecontrol,I,0);
-  inc(i);
-  idecontrol := TIDEPopup.Create;
-  SetBtnDefaults(idecontrol,I,0);
-  inc(i);
-  idecontrol := TIDEEdit.Create;
-  SetBtnDefaults(idecontrol,I,0);
-  inc(i);
-  idecontrol := TIDELabel.Create;
-  SetBtnDefaults(idecontrol,I,0);
-  inc(i);
-  idecontrol := TIDEButton.Create;
-  SetBtnDefaults(idecontrol,I,0);
-  inc(i);
-  idecontrol := TIDEMemo.Create;
-  SetBtnDefaults(idecontrol,I,0);
-  inc(i);
-  idecontrol := TIDECheckbox.Create;
-  SetBtnDefaults(idecontrol,I,0);
-  inc(i);
-  idecontrol := TIDERadioButton.Create;
-  SetBtnDefaults(idecontrol,I,0);
-  inc(i);
-  idecontrol := TIDEListbox.Create;
-  SetBtnDefaults(idecontrol,I,0);
-  inc(i);
-  idecontrol := TIDEComboBox.Create;
-  SetBtnDefaults(idecontrol,I,0);
-  inc(i);
-
-  //we want the mouse on the second tab too!
-  SetBtnDefaults(ideCompList.Items[0],i,1);
-  StandardBtn[i].Tag := 1;
-  inc(i);
-  idecontrol := TIDEBitbtn.Create;
-  SetBtnDefaults(idecontrol,I,1);
-  inc(i);
-  idecontrol := TIDESpeedbutton.Create;
-  SetBtnDefaults(idecontrol,I,1);
-  inc(i);
-  idecontrol := TIDENotebook.Create;
-  SetBtnDefaults(idecontrol,I,1);
-  inc(i);
-
-  //we want the mouse on the second tab too!
-  SetBtnDefaults(ideCompList.Items[0],i,2);
-  StandardBtn[i].Tag := 1;
-  inc(i);
-  idecontrol := TIDESpinEdit.Create;
-  SetBtnDefaults(idecontrol,I,2);
-  inc(i);
-
-
-  StandardBtn[1].Down := True;
-  bpressed := 1;  //the speedbutton that's pressed
-
-{  This spin edit code crashes}
-{  Setting the parent is what does it}
-
-{   SpinEdit1 := TSpinEdit.Create(self);
-   with SpinEdit1 do
-     Begin
-    Parent := Notebook1.Page[0];
-    Left := 350;
-    Width := 100;
-    Height := 25;
-//    Parent := Self;
-    Visible := True;
-//    OnClick := @ButtonClick;
-      end;
- }
-
-{  cmdTest := TButton.Create(Self);
-  with cmdTest do
-  begin
-    Left := 350;
-    Width := 100;
-    Height := 25;
-    Parent := Notebook1.Page[0];
-//    Parent := Self;
-    Caption := 'TestForm / Editor';
-    Visible := True;
-    OnClick := @ButtonClick; 
-  end;
- }
-{  ListBox1 := TListBox.Create(Self);
-  ListBox1.Parent:= Notebook1.Page[1];
-  ListBox1.Left := 20;
-  ListBox1.Top := 20;
-  ListBox1.Height := 100;
-  ListBox1.Width := 100;
-  ListBox1.Align:= alClient;
-  ListBox1.Items.Add('Hello');
-  ListBox1.Items.Add('world.');
-  ListBox1.Items.Add('It''s just a perfect day.');
-  ListBox1.Visible:= true;
-
- }
 
 
   if Assigned(Toolbar1) then
@@ -960,20 +916,6 @@ end;
 {------------------------------------------------------------------------------}
 {PRIVATE METHOD}
 
-procedure TForm1.SetBtnDefaults(Control : Pointer; I,Page : Integer);
-begin
-  ideCompList.Add(Control);
-  StandardBtn[i] := TIDEMouse(Control).Speedbutton(self,Notebook1.page[Page]);
-  if I > 1 then
-  StandardBtn[i].left := (Notebook1.page[Page].ControlCount-1)*26
-  else
-  StandardBtn[i].left := 0;  //the mouse
-
-  StandardBtn[i].Top := 2;
-  StandardBtn[i].Tag := I;
-  StandardBtn[i].OnClick := @controlclick;
-end;
-
 function TForm1.CreateSeperator : TMenuItem;
 begin
   itmSeperator := TMenuItem.Create(Self);
@@ -1129,48 +1071,84 @@ Procedure TForm1.ControlClick(Sender : TObject);
 var
   Page : Integer;
   I : Integer;
+  IDECOmp : TIDEComponent;
+  Speedbutton : TSpeedbutton;
+  Temp : TControl;
 begin
-  if bpressed > -1 then
-  if (bpressed = 1) and (sender <> Notebook1) then
-    // 1 is really just the FIRST one on the notebook page.
-    Begin
-    //raise the 1st button on that page.
-    Page := Notebook1.Pageindex;
-    For I := 0 to Notebook1.Page[Page].ControlCount-1 do
-       Begin
-         if (Notebook1.PAge[page].Controls[i] is TSpeedButton) then
-	     Begin
-              TSpeedButton(Notebook1.PAge[page].Controls[i]).Down := False;
-              break;
-             end;
-       end;
+  if Sender is TSpeedButton then
+     Begin
+       SpeedButton := TSPeedButton(Sender);
+       Writeln('Speedbutton s Name is '+SpeedButton.name);
+       //find the IDECOmponent that has this speedbutton
+       IDEComp := IDECompList.FindCompbySpeedButton(SpeedButton);
+       if SelectedComponent <> nil then
+          TIDeComponent(IdeCompList.FindCompByRegComponent(SelectedComponent)).SpeedButton.Down := False
+          else
+          begin
+             Temp := nil;
+             Writeln('1');
+             for i := 0 to Notebook1.Page[Notebook1.Pageindex].ControlCount-1 do
+                 begin
+                 if CompareText(TControl(Notebook1.Page[Notebook1.Pageindex].Controls[I]).Name, 'GlobalMouseSpeedButton'+inttostr(Notebook1.Pageindex)) = 0 then
+                    begin
+                      temp := TControl(Notebook1.Page[Notebook1.Pageindex].Controls[i]);
+                      Break;
+                    end;
+                 end;
+            if temp <> nil then
+               TSpeedButton(Temp).down := False
+               else
+               Writeln('*****************ERROR - Control '+'GlobalMouseSpeedButton'+inttostr(Notebook1.Pageindex)+' not found');
+          end;
+       if IDECOmp <> nil then
+            Begin
+              //draw this button down
+              SpeedButton.Down := True;
+              SelectedComponent := IDEComp.RegisteredComponent;
+            end
+            else
+            begin
+              SelectedComponent := nil;
+             Temp := nil;
+             Writeln('2');
+             for i := 0 to Notebook1.Page[Notebook1.Pageindex].ControlCount-1 do
+                 begin
+                 if CompareText(TControl(Notebook1.Page[Notebook1.Pageindex].Controls[I]).Name, 'GlobalMouseSpeedButton'+inttostr(Notebook1.Pageindex)) = 0 then
+                    begin
+                      temp := TControl(Notebook1.Page[Notebook1.Pageindex].Controls[i]);
+                      Break;
+                    end;
+                 end;
+            if temp <> nil then
+               TSpeedButton(Temp).down := True
+               else
+               Writeln('*****************ERROR - Control '+'GlobalMouseSpeedButton'+inttostr(Notebook1.Pageindex)+' not found');
+            end;
 
-   end
-   else
-   StandardBtn[bpressed].Down := False;
+     end
+     else
+     Begin
+        //draw old speedbutton up
+       if SelectedComponent <> nil then
+          TIDeComponent(IdeCompList.FindCompByRegComponent(SelectedComponent)).SpeedButton.Down := False;
+       SelectedComponent := nil;
+       writeln('Setting speedbutton down');
+             Temp := nil;
+             Writeln('3');
+             for i := 0 to Notebook1.Page[Notebook1.Pageindex].ControlCount-1 do
+                 begin
+                 if CompareText(TControl(Notebook1.Page[Notebook1.Pageindex].Controls[I]).Name, 'GlobalMouseSpeedButton'+inttostr(Notebook1.Pageindex)) = 0 then
+                    begin
+                      temp := TControl(Notebook1.Page[Notebook1.Pageindex].Controls[i]);
+                      Break;
+                    end;
+                 end;
+            if temp <> nil then
+               TSpeedButton(Temp).down := True
+               else
+               Writeln('*****************ERROR - Control '+'GlobalMouseSpeedButton'+inttostr(Notebook1.Pageindex)+' not found');
 
-if (Sender = Notebook1) then
-begin
-bpressed := 1;
-end
-else
-bpressed := tspeedbutton(Sender).Tag;
-
-if bpressed = 1 then
-   begin
-    //depress the 1st button on that page.
-   Page := Notebook1.Pageindex;
-   For I := 0 to Notebook1.Page[Page].ControlCount-1 do
-       Begin
-         if (Notebook1.PAge[page].Controls[i] is TSpeedButton) then
-	     Begin
-              TSpeedButton(Notebook1.PAge[page].Controls[i]).Down := True;
-              Break;
-             end;
-      end;
-   end
-   else
-   StandardBtn[bpressed].Down := True;
+     end;
 
 end;
 
@@ -1352,7 +1330,7 @@ Begin
   end;
   Writeln(TComponent(Sender).Name+'.OnMouseUp at '+inttostr(x)+','+inttostr(y));
 
-  if BPressed = 1 then
+  if SelectedComponent = nil then
   Begin //mouse pointer button pressed.
     if Sender is TCustomForm then
       SelectOnlyThisComponent(TComponent(Sender));
@@ -1376,8 +1354,7 @@ Begin
         NewWidth:=0;
         NewHeight:=0;
       end;
-      NewCI := TComponentInterface(FormEditor1.CreateComponent(ParentCI,
-        TComponentClass(TIdeComponent(ideComplist.items[bpressed-1]).ClassType)
+      NewCI := TComponentInterface(FormEditor1.CreateComponent(ParentCI,SelectedComponent.ComponentClass
         ,NewLeft,NewTop,NewWidth,NewHeight));
       NewCI.SetPropByName('Visible',True); //Control).Visible := True;
 
@@ -1748,6 +1725,9 @@ Begin
 
 end;
 
+initialization
+{$I images/laz_images.lrs}
+
 
 end.
 
@@ -1756,6 +1736,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.24  2000/12/29 13:14:04  lazarus
+  Using the lresources.pp and registering components.
+  This is a major change but will create much more flexibility for the IDE.
+  Shane
+
   Revision 1.23  2000/12/21 20:28:33  lazarus
   Project - RUN will run the program IF the program is the active unit in the Editor.
   Shane

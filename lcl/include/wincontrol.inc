@@ -410,6 +410,23 @@ Begin
 end;
 
 {------------------------------------------------------------------------------}
+{  TWinControl FindChildControl                                               }
+{------------------------------------------------------------------------------}
+function TWinControl.FindChildControl(ControlName: string): TControl;
+var
+  I: Integer;
+begin
+  Result := nil;
+  if FWinControls <> nil then
+    for I := 0 to FWinControls.Count - 1 do
+      if CompareText(TWinControl(FWinControls[I]).Name, ControlName) = 0 then
+      begin
+        Result := TControl(FWinControls[I]);
+        Exit;
+      end;
+end;
+
+{------------------------------------------------------------------------------}
 {  TWinControl IsControlMouseMsg                                               }
 {------------------------------------------------------------------------------}
 function TWinControl.IsControlMouseMsg(var Message : TLMMouse) : Boolean;
@@ -1875,6 +1892,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2000/12/29 13:14:05  lazarus
+  Using the lresources.pp and registering components.
+  This is a major change but will create much more flexibility for the IDE.
+  Shane
+
   Revision 1.4  2000/12/20 17:35:58  lazarus
   Added GetChildren
   Shane
