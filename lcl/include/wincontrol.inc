@@ -1431,7 +1431,10 @@ begin
       KeyDown(CharCode, ShiftState);
       if CharCode = VK_UNKNOWN then Exit;
     end;
+    if Application<>nil then
+      Application.NotifyKeyDownHandler(CharCode, ShiftState);
   end;
+  
   Result := False;
 end;
 
@@ -2593,6 +2596,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.127  2003/04/11 10:23:23  mattias
+  added Application OnKeyDownHandler
+
   Revision 1.126  2003/04/10 09:22:42  mattias
   implemented changing dependency version
 
