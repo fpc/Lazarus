@@ -1906,6 +1906,18 @@ end;
 
 procedure TMainIDE.LoadDesktopSettings(
   TheEnvironmentOptions: TEnvironmentOptions);
+var
+  MacroValueChanged: boolean;
+  
+  procedure ChangeMacroValue(const MacroName, NewValue: string);
+  begin
+    with CodeToolBoss.GlobalValues do begin
+      if Variables[ExternalMacroStart+MacroName]=NewValue then exit;
+      Variables[ExternalMacroStart+MacroName]:=NewValue;
+    end;
+    MacroValueChanged:=true;
+  end;
+  
 begin
   with TheEnvironmentOptions do begin
     if WindowPositionsValid then begin
@@ -1920,16 +1932,12 @@ begin
     end;
   end;
   // set global variables
-  with CodeToolBoss.GlobalValues do begin
-    Variables[ExternalMacroStart+'LazarusSrcDir']:=
-      TheEnvironmentOptions.LazarusDirectory;
-    // ToDo: rebuild define template if changed
-    
-    Variables[ExternalMacroStart+'FPCSrcDir']:=
-      TheEnvironmentOptions.FPCSourceDirectory;
-    // ToDo: rebuild define template if changed
-    
-  end;
+  ChangeMacroValue('LazarusSrcDir',TheEnvironmentOptions.LazarusDirectory);
+  ChangeMacroValue('FPCSrcDir',TheEnvironmentOptions.FPCSourceDirectory);
+  if MacroValueChanged then CodeToolBoss.DefineTree.ClearCache;
+  // ToDo:
+  //  - rescan compiler
+  //  - rescan fpc source directory
 end;
 
 procedure TMainIDE.OnLoadEnvironmentSettings(Sender: TObject; 
@@ -4428,7 +4436,7 @@ begin
       CodeToolBoss.DefineTree.Add(ADefTempl.CreateCopy);
     end;
     // create compiler macros to simulate the Makefiles of the FPC sources
-    ADefTempl:=CreateFPCSrcTemplate(EnvironmentOptions.FPCSourceDirectory,
+    ADefTempl:=CreateFPCSrcTemplate('$('+ExternalMacroStart+'FPCSrcDir)',
                           CompilerUnitSearchPath);
     if ADefTempl=nil then begin
       writeln('');
@@ -4439,7 +4447,9 @@ begin
       CodeToolBoss.DefineTree.Add(ADefTempl.CreateCopy);
     end;
     // create compiler macros for the lazarus sources 
-    ADefTempl:=CreateLazarusSrcTemplate('$(#LazarusSrcDir)','$(#LCLWidgetType)');
+    ADefTempl:=CreateLazarusSrcTemplate(
+      '$('+ExternalMacroStart+'LazarusSrcDir)',
+      '$('+ExternalMacroStart+'LCLWidgetType)');
     if ADefTempl=nil then begin
       writeln('');
       writeln(
@@ -4644,6 +4654,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.146  2001/11/17 10:16:23  lazarus
+  MG: clear define cache on changing env paths
+
   Revision 1.145  2001/11/15 13:49:49  lazarus
   MG: fixed open non existing file and unitname in save project as
 
