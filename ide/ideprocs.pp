@@ -1115,6 +1115,13 @@ var
   SearchPath: string;
   Delim: char;
 begin
+  if FilenameIsAbsolute(Programname) then begin
+    if FileExists(Programname) then
+      Result:=Programname
+    else
+      Result:='';
+    exit;
+  end;
   Flags:=[];
   if not WithBaseDirectory then
     Include(Flags,sffDontSearchInBasePath);
