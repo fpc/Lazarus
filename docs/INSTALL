@@ -70,7 +70,14 @@ properly:
 
     ToDo: Write me.
     
-    See www.freepascal.org.
+  See http://www.freepascal.org/down-win32.html. You can find a list of mirrors
+  at http://www.freepascal.org/sdown.html. Download for example fpc as one big
+  file, unzip it and run the install.exe. Then extend your PATH variable to the
+  fpc directory. For example under win98: Edit autoexec.bat and add the line
+  PATH=%PATH%;C:\pp\bin\bin\win32
+  Then restart win98.
+
+  ToDo: explain how to download fpc sources and build the compiler
 
 
 --------------------------------------------------------------------------------

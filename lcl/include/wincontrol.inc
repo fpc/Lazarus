@@ -2570,8 +2570,6 @@ end;
   created. Place cached property code here.
  ------------------------------------------------------------------------------}
 procedure TWinControl.InitializeWnd;
-var 
-  R: TRect;
 begin
   Assert(False, Format('Trace:[TWinControl.InitializeWnd]  %s', [ClassName]));
   // set all cached properties
@@ -2579,10 +2577,9 @@ begin
   // MWE:All of this should be handled to the interface create routine
   Assert(False, 'Trace:TODO: [TWinControl.InitializeWnd] move this code to the interface');
   
-  R:= Rect(Left, Top, Width, Height);
 //writeln('[TWinControl.InitializeWnd] ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
   FBoundsRealized:=Bounds(Left, Top, Width, Height);
-  CNSendMessage(LM_SETSIZE, Self, @R);
+  CNSendMessage(LM_SETSIZE, Self, @FBoundsRealized);
   CNSendMessage(LM_SHOWHIDE, Self, nil);
   CNSendMessage(LM_SETCOLOR, Self, nil);
   Exclude(FFlags,wcfColorChanged);
@@ -2874,6 +2871,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.145  2003/06/28 12:10:02  mattias
+  fixed LM_SETSIZE in InitializeWnd
+
   Revision 1.144  2003/06/27 23:42:38  mattias
   fixed TScrollBar resizing
 

@@ -1,8 +1,15 @@
 #!/bin/bash
+#
+# Author: Mattias Gaertner
+#
+# Script to download fpc and create the rpms 'fpc' and 'fpcsrc'.
 
 set -x
 set -e
 
+#------------------------------------------------------------------------------
+# parse parameters
+#------------------------------------------------------------------------------
 Usage="Usage: $0 devel|stable [nodocs]"
 
 FPCVersion=$1
@@ -66,41 +73,13 @@ cd $TmpDir
 tar xzf $SrcTGZ
 cd -
 
-# patch sources
-patch -p2 -d $TmpDir/fpc/ < $SrcPatch
- 
-# change spec file
-cat $SpecFile | \
-  sed -e 's/^Version: .*/Version: '"$LazVersion/" \
-      -e 's/^Release: .*/Release: '"$LazRelease/" \
-  > $SpecFile.New
-#      -e 's/^\%{fpcdir}\/samplecfg .*/%{fpcdir}\/samplecfg %{_libdir}\/fpc\/\\\$version/' \
-mv $SpecFile.New $SpecFile
-if [ "$WithDOCS" = "no" ]; then
-  cat $SpecFile | \
-    sed -e 's/^\(.*\bmake\b.*\bdocs\b\)/#\1/g' \
-  > $SpecFile.New
-  mv $SpecFile.New $SpecFile
-fi
-
-# change Makefile for new rpmbuild
-cd $TmpDir/fpc
-cat Makefile | \
-  sed -e 's/rpm\( --nodeps -ba .*\)$/rpm\1 || rpmbuild\1/g' \
-  > New.Makefile
-mv New.Makefile Makefile
-cd -
-
 # compile
-cd $TmpDir/fpc
-make rtl
-make compiler
+Params="notemp $TmpDir/fpc $LazRelease"
 if [ "$WithDOCS" = "no" ]; then
-  make rpm NODOCS=1
-else
-  make rpm
+  Params="nodocs $Params"
 fi
-cd -
+./build_fpc_rpm.sh $Params
+
 
 
 echo

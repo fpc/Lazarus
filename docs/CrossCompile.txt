@@ -1,0 +1,48 @@
+Hints to cross compile win32 binaries under linux
+
+
+UNDER CONSTRUCTION
+
+
+Thanks to Vincent Snijders for the hints.
+
+1. Download the GNU Binary Utility Development Utilities. Most packages are
+outdated. So probably you want to compile them yourself:
+
+Download sources:
+  []$ export CVSROOT=:pserver:anoncvs@sources.redhat.com:/cvs/src
+  []$ cvs login  # password is anoncvs
+  []$ cvs -z3 co binutils
+  
+Configure:
+  []$ rm -rf build-binutils # remove up old build directory
+  []$ mkdir build-binutils  # create a build directory (important)
+  []$ cd build-binutils
+  []$ ../src/configure --prefix=/usr/bin/crosswin32 --target=i386-pc-winnt
+  
+Build:
+  []$ make
+  
+Install:
+  []$ su    # become root to install
+  []$ rm -rf /usr/bin/crosswin32  # remove old install
+  []$ rm -rf /usr/bin/{asw,ldw,windres,dlltool}
+  []$ make install
+  []$ ln -s /usr/bin/crosswin32/bin/i386-pc-winnt-as /usr/bin/asw
+  []$ ln -s /usr/bin/crosswin32/bin/i386-pc-winnt-ld /usr/bin/ldw
+  ToDo: dlltool, windres
+
+   
+4. Download or compile the win32 units (ppw,ow files for rtl, fcl). These files
+must be compatible (depending on the compiler probably 1.0.8 as of now).
+Install them next to the linux units in /usr/lib/fpc/1.0.x/units.
+
+4.1 Download the win32 units: Currently you can download the win32 snapshots at
+ftp://ftp.freepascal.org/pub/fpc/snapshot/v10/win32-i386/
+
+4.2 Compile the win32 units:
+Download the fpc sources. If you have already download them for linux, you can
+use them also for win32, because the compiled files have different names.
+
+  ToDo: rtl, fcl, ...
+  

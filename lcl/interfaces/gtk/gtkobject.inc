@@ -2161,14 +2161,15 @@ begin
         SetFocus(Handle);
       end;
 
-      LM_SetSize :
+      LM_SetSize:
       begin
         Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> LM_SetSize(%d, %d, %d, %d)', [Sender.ClassNAme, PRect(Data)^.Left,PRect(Data)^.Top,PRect(Data)^.Right,PRect(Data)^.Bottom]));
         //writeln('[IntSendMessage3.lm_setsize] Left=',PRect(Data)^.Left,' Top=',PRect(Data)^.Top,
         //  ' Right=',PRect(Data)^.Right,' Bottom=',PRect(Data)^.Bottom);
         //writeln('[LM_SetSize] A ',Sender.ClassName,' ',PgtkWidget(Handle)^.window<>nil);
         ResizeChild(Sender,PRect(Data)^.Left,PRect(Data)^.Top,
-             PRect(Data)^.Right,PRect(Data)^.Bottom);
+             PRect(Data)^.Right-PRect(Data)^.Left,
+             PRect(Data)^.Bottom-PRect(Data)^.Top);
         //writeln('[LM_SetSize] B ',Sender.ClassName,' ',PgtkWidget(Handle)^.window<>nil);
       end;
 
@@ -2176,9 +2177,9 @@ begin
       
       LM_TB_BUTTONCOUNT:
       begin
-         if (Sender is TToolbar)
-           then Result := pgtkToolbar(handle)^.num_Children
-           else Result := -1;
+        if (Sender is TToolbar)
+        then Result := pgtkToolbar(Handle)^.num_Children
+        else Result := -1;
       end;
 
 //SH: think of TCanvas.handle!!!!
@@ -7488,6 +7489,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.385  2003/06/28 12:10:02  mattias
+  fixed LM_SETSIZE in InitializeWnd
+
   Revision 1.384  2003/06/27 23:42:38  mattias
   fixed TScrollBar resizing
 
