@@ -39,7 +39,7 @@ uses
   IDEComp, AbstractFormEditor, FormEditor, CustomFormEditor, ObjectInspector,
   PropEdits, ControlSelection, UnitEditor, CompilerOptions, EditorOptions,
   EnvironmentOpts, TransferMacros, KeyMapping, ProjectOpts, IDEProcs, Process,
-  UnitInfoDlg, Debugger, RunParamsOpts, ExtToolDialog, MacroPromptDlg,
+  UnitInfoDlg, Debugger, DBGWatch,RunParamsOpts, ExtToolDialog, MacroPromptDlg,
   LMessages, ProjectDefs,Watchesdlg;
 
 const
@@ -254,12 +254,15 @@ type
     // Debugger Events
     procedure OnDebuggerChangeState(Sender: TObject);
     procedure OnDebuggerCurrentLine(Sender: TObject; const ALocation: TDBGLocationRec);
-                               
+    Procedure OnDebuggerWatchChanged(Sender : TObject);
     // MessagesView Events
     procedure MessagesViewSelectionChanged(sender : TObject);
     
     //Hint Timer
     Procedure HintTimer1Timer(Sender : TObject);
+    
+    //Watch Dialog
+    Procedure OnWatchAdded(Sender : TObject; _Expression : String);
     
     Procedure MainMouseMoved(Sender: TObject; Shift: TShiftState; X,Y: Integer);
     Procedure MainMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X,Y: Integer);
@@ -280,7 +283,7 @@ type
 
   protected
     procedure ToolButtonClick(Sender : TObject);
-
+    Procedure AddWatch(_Expression : String);
   public
     ToolStatus: TIDEToolStatus;
  
@@ -687,7 +690,12 @@ begin
   MacroList.Add(TTransferMacro.Create('TargetFile','',
                     'Target filename of project',nil));
   MacroList.OnSubstitution:=@OnMacroSubstitution;
+  
+  //twatcheslgd
+  Watches_Dlg := TWatchesDlg.Create(Self);
+  Watches_Dlg.OnWatchAddedEvent := @OnWatchAdded;
 
+  TheDebugger := TDebugger.Create;
   // control selection (selected components on edited form)
   TheControlSelection:=TControlSelection.Create;
   TheControlSelection.OnChange:=@OnControlSelectionChanged;
@@ -748,6 +756,9 @@ CheckHeap(IntToStr(GetMem_Cnt));
   EnvironmentOptions:=nil;
   HIntTimer1.Free;
   HintWindow1.Free;
+  Watches_Dlg.Free;
+  
+  TheDebugger.Free;
 writeln('[TMainIDE.Destroy] B  -> inherited Destroy...');
 {$IFDEF IDE_MEM_CHECK}
 CheckHeap(IntToStr(GetMem_Cnt));
@@ -5158,19 +5169,72 @@ end;
 Procedure TMainIDE.OnSrcNotebookAddWatchesAtCursor(Sender : TObject);
 var
   SE : TSourceEditor;
+  WatchVar : String;
 begin
-  Writeln('in MAIN.pp ADD WATCHES');
   //get the sourceEditor.
   Se := TSourceNotebook(sender).GetActiveSE;
   if not Assigned(se) then Exit;
-  
+  WatchVar := SE.GetWordAtCurrentCaret;
+  if WatchVar = ''  then Exit;
+
+  AddWatch(WatchVar);
 end;
 
 procedure TMainIDE.mnuViewWatchesClick(Sender : TObject);
 begin
   Watches_dlg.Show;
 //  CreateLFM(Watches_Dlg);
-  CreateLFM(Insertwatch);
+//  CreateLFM(Insertwatch);
+end;
+
+Procedure TMainIDE.OnDebuggerWatchChanged(Sender : TObject);
+begin
+  Writeln('OnDebuggerWatchChanged');
+  //watch changed.
+end;
+
+//This adds the watch to the TWatches TCollection and to the watches dialog
+Procedure TMainIDE.AddWatch(_Expression : String);
+Var
+  NewWatch : TdbgWatch;
+begin
+
+    if not Watches_Dlg.Visible then Watches_Dlg.Show;
+  NewWatch := TdbgWatch(TheDebugger.watches.Add);
+  with NewWatch do
+    Begin
+      Expression := _Expression;
+      OnChange := @OnDebuggerWatchChanged;
+      Enabled := True;
+
+    end;
+
+  Watches_Dlg.AddWatch(NewWatch.Expression+':'+NewWatch.Value);
+
+end;
+
+
+Procedure TMainIDE.OnWatchAdded(Sender : TObject; _Expression : String);
+Var
+  NewWatch : TdbgWatch;
+begin
+
+  if not Watches_Dlg.Visible then Watches_Dlg.Show;
+
+  if Pos(':',_Expression) > 0 then
+     _Expression := Copy(_Expression,1,pos(':',_Expression)-1);
+     
+  NewWatch := TdbgWatch(TheDebugger.watches.Add);
+  with NewWatch do
+    Begin
+      Expression := _Expression;
+      OnChange := @OnDebuggerWatchChanged;
+      Enabled := True;
+
+    end;
+
+  Watches_Dlg.UpdateWatch(NewWatch.Expression,NewWatch.Value);
+
 end;
 
 //-----------------------------------------------------------------------------
@@ -5187,6 +5251,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.175  2001/12/11 16:51:36  lazarus
+  Modified the Watches dialog
+  Shane
+
   Revision 1.174  2001/12/11 15:43:35  lazarus
   MG: TCodeBuffer.LoadFromFile now checks file date
 

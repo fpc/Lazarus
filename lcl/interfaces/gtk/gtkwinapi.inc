@@ -2674,6 +2674,10 @@ begin
     gdkRect.Y := Rect^.Top;
     gdkRect.Width := (Rect^.Right - Rect^.Left);
     gdkRect.Height := (Rect^.Bottom - Rect^.Top);
+
+  if bErase then
+    gdk_window_clear_area(PgtkWidget(aHandle)^.Window,gdkREct.X,gdkRect.y,gdkRect.Width,gdkRect.Height);
+    
     gtk_widget_draw(PgtkWidget(aHandle), @gdkRect);
   except
     Result := False;
@@ -4068,6 +4072,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.50  2001/12/11 16:51:37  lazarus
+  Modified the Watches dialog
+  Shane
+
   Revision 1.49  2001/11/14 17:46:59  lazarus
   Changes to make toggling between form and unit work.
   Added BringWindowToTop

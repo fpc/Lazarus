@@ -1637,10 +1637,9 @@ begin
       else
       if (sender is TCustomListBox) then
         Begin
-        Writeln('------------------------------------------------------------------');
+        //TODO:listbox is STILL not sendig keypress events even wtih these lines.
         ConnectSignal(PgtkObject(GetCoreChildWidget(PgtkWidget(TCustomListBox(sender).handle))), 'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
         ConnectSignal(PgtkObject(GetCoreChildWidget(PgtkWidget(TCustomListBox(sender).handle))), 'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
-        Writeln('------------------------------------------------------------------');
         end;
       ConnectSignal(gFixed, 'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
       ConnectSignal(gFixed, 'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
@@ -3480,6 +3479,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.84  2001/12/11 16:51:37  lazarus
+  Modified the Watches dialog
+  Shane
+
   Revision 1.83  2001/12/11 14:36:41  lazarus
   MG: started multiselection for TOpenDialog
 

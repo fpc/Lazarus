@@ -39,8 +39,7 @@ uses
   Main,
   MsgView,
   FindReplaceDialog,
-  FindInFilesDlg,
-  WatchesDlg;
+  FindInFilesDlg;
 
 begin
   Application.Initialize;
@@ -58,7 +57,7 @@ begin
 CheckHeap('TMainIDE created');
 {$ENDIF}
   Application.CreateForm(TMessagesView, MessagesView);
-  Application.CreateForm(TWatchesDlg, Watches_Dlg);
+
   Application.CreateForm(TLazFindReplaceDialog, FindReplaceDlg);
   Application.CreateForm(TLazFindInFilesDialog, FindInFilesDialog);
   SplashForm.StartTimer;
@@ -71,6 +70,10 @@ end.
 
 {
   $Log$
+  Revision 1.26  2001/12/11 16:51:36  lazarus
+  Modified the Watches dialog
+  Shane
+
   Revision 1.25  2001/12/07 20:12:13  lazarus
   Added a watch dialog.
   Shane

@@ -8,18 +8,22 @@ uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources, StdCtrls,Buttons,Extctrls;
 
 type
+
+  TWatchAddedEvent = procedure (sender : TObject; Expression : String) of Object;
   TWatchesdlg = class(TForm)
     Listbox1: TLISTBOX;
   private
     { private declarations }
-    
+    FOnWatchAddedEvent : TWatchAddedEvent;
   protected
-    Procedure Listbox1KeyPress(Sender : TObject;  var Key: Char);
     Procedure Listbox1KeyDown(Sender: TObject; var Key: Word; Shift:TShiftState);
   public
     { public declarations }
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
+    Procedure AddWatch(WatchVar : String);
+    Procedure UpdateWatch(WatchVar, NewDisplay : String);
+    property OnWatchAddedEvent : TWatchAddedEvent read FOnWatchAddedEvent write FOnWatchAddedEvent;
     
   end;
 
@@ -60,7 +64,6 @@ Begin
       Align := alClient;
       Visible := True;
       Name := 'ListBox1';
-      OnKeyPress := @Listbox1KeyPress;
       OnKeyDown := @Listbox1KeyDown;
       
     end;
@@ -75,7 +78,6 @@ Begin
   end;
   
   //unitl events are saved in the lfm
-  Listbox1.OnKeyPress := @Listbox1KeyPress;
   Listbox1.OnKeyDown := @Listbox1KeyDown;
   //until the listbox events actually fire...
   OnKeyDown := @ListBox1KeyDown;
@@ -89,13 +91,6 @@ Begin
   inherited;
 end;
 
-Procedure TWatchesDlg.Listbox1KeyPress(Sender : TObject; var Key : Char);
-Begin
-
-Writeln('Key is ',Key);
-
-
-end;
 
 Procedure TWatchesDlg.Listbox1KeyDown(Sender : TObject; var Key : Word; Shift : TShiftState);
 var
@@ -109,7 +104,7 @@ case Key of
              Begin
                 //just for now...
                 if InsertWatch.edtExpression.Text <> '' then
-                      ListBox1.Items.Add(InsertWatch.edtExpression.Text);
+                      AddWatch(InsertWatch.edtExpression.Text);
              end;
              
         end;
@@ -126,6 +121,40 @@ case Key of
         end;
    end; //case
 end;
+
+
+//This is used by MAIN to add a watch to the list.  It should have already been added to TDebugger.
+//In the future, maybe pass in a TWatch or something similiar
+Procedure TWatchesDlg.AddWatch(WatchVar : String);
+Begin
+  if pos(':',WatchVar) = 0 then
+  ListBox1.Items.Add(WatchVar+':')
+  else
+  ListBox1.Items.Add(WatchVar);
+  
+  if Assigned(OnWatchAddedEvent) then
+     OnWatchAddedEvent(self,watchVar);
+end;
+
+{This is used by MAin.pp.  It passed the Watchvar, we look for it in our list and then set that line to display NewDisplay.
+ New display is added to WatchVar so we end up with WatchVar ':'+ NewDisplay.
+ Watchvar is usually sometyhnig like
+ I
+ or
+ Texts
+ a Colon is added, then we search.  When found we add Watchvar + ':' + Newdisplay
+ }
+Procedure TWatchesDlg.UpdateWatch(WatchVar, NewDisplay : String);
+Var
+  I : Integer;
+
+Begin
+  //search for watchvar
+  for I := 0 to ListBox1.Items.count-1 do
+       if pos(WatchVar+':',Listbox1.Items[i]) = 1 then
+            Listbox1.Items[i] := WatchVar+':'+NewDisplay;
+end;
+
 
 { TInsertWatch }
 constructor TInsertWatch.Create(AOwner : TComponent);
