@@ -128,13 +128,12 @@ End;
 procedure TControl.ChangeBounds(ALeft, ATop, AWidth, AHeight : integer);
 var
   SizeChanged, PosChanged : boolean;
-  ARight: Integer;
-  ABottom: Integer;
   OldLeft: Integer;
   OldTop: Integer;
   OldWidth: Integer;
   OldHeight: Integer;
   CurBounds: TRect;
+  NewBounds: TRect;
 
   function UpdatePosSizeChanged: boolean;
   begin
@@ -151,14 +150,9 @@ begin
   DoConstrainedResize(AWidth, AHeight);
 
   // check, if we are already processing this bound change
-  ARight:=ALeft+AWidth;
-  ABottom:=ATop+AHeight;
-  if (ALeft=FLastChangeboundRect.Left)
-  and (ATop=FLastChangeboundRect.Top)
-  and (ARight=FLastChangeboundRect.Right)
-  and (ABottom=FLastChangeboundRect.Bottom)
-  then exit;
-  FLastChangeboundRect:=Rect(ALeft,ATop,AWidth,AHeight);
+  NewBounds:=Bounds(ALeft,ATop,AWidth,AHeight);
+  if CompareRect(@FLastChangebounds,@NewBounds) then exit;
+  FLastChangebounds:=NewBounds;
 
   OldLeft:=FLeft;
   OldTop:=FTop;
@@ -2462,6 +2456,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.145  2003/08/04 08:43:20  mattias
+  fixed breaking circle in ChangeBounds
+
   Revision 1.144  2003/07/31 19:56:50  mattias
   fixed double messages SETLabel
 

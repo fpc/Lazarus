@@ -578,7 +578,7 @@ type
     FHostDockSite : TWinControl;
     FIsControl : Boolean;
     fLastAlignedBounds: TRect;
-    FLastChangeboundRect: TRect;
+    FLastChangebounds: TRect;
     FLastDoChangeBounds: TRect;
     FLastResizeClientHeight: integer;
     FLastResizeClientWidth: integer;
@@ -1632,6 +1632,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.139  2003/08/04 08:43:20  mattias
+  fixed breaking circle in ChangeBounds
+
   Revision 1.138  2003/07/30 13:03:44  mattias
   replaced label with memo
 

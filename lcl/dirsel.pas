@@ -83,7 +83,6 @@ function HasSubDirs(const Dir: string; IgnoreHidden: boolean): Boolean;
 var
   //Result of FindFirst, FindNext
   FileInfo: TSearchRec;
-  i: integer;
   FCurrentDir: string;
 begin
  //Assume No
@@ -92,7 +91,6 @@ begin
  begin
    FCurrentDir:= Dir;
    FileCtrl.AppendPathDelim(FCurrentDir);
-   i:= length(Dir);
    FCurrentDir:= Dir + FindMask;
    Try
      if SysUtils.FindFirst(FCurrentDir, (faAnyFile),FileInfo)=0 then
