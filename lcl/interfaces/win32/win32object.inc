@@ -2679,15 +2679,7 @@ Begin
   Case TControl(Sender).FCompStyle Of
     csArrow:
     Begin
-      Case TLMArrow(Data^).ArrowType Of
-        atUp:
-          Cur := IDC_UPARROW;
-        atLeft, atRight:
-          Cur := IDC_SIZEWE;
-        atDown:
-          Cur := IDC_SIZENS;
-      End;
-      SetClassLong(Handle, GCL_HCursor, LoadCursor(HInst(Nil), Cur));
+      // TODO: Add code to implement arrow-widget handling
     End;
     csCalendar:
     Begin
@@ -3033,6 +3025,9 @@ End;
 
 {
   $Log$
+  Revision 1.180  2004/03/05 13:57:25  micha
+  fix bug 208: cursor changes when creating submenu
+
   Revision 1.179  2004/03/05 01:04:21  marc
   * Renamed TWin32Object to TWin32WidgetSet
 
