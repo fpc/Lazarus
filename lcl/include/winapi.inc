@@ -895,11 +895,6 @@ Begin
   Result := InterfaceObject.SetProp(Handle,Str,Data);
 end;
 
-function SetRadioButtonGroupMode(Handle: hWnd; AutoGroup: boolean): Boolean;
-begin
-  Result := InterfaceObject.SetRadioButtonGroupMode(Handle,AutoGroup);
-end;
-
 Function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint;
 begin
   Result := InterfaceObject.SelectClipRGN(DC, RGN);
@@ -1578,6 +1573,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.78  2003/03/17 20:53:16  mattias
+  removed SetRadioButtonGroupMode
+
   Revision 1.77  2003/03/17 20:50:30  mattias
   fixed TRadioGroup.ItemIndex=-1
 
