@@ -4115,6 +4115,7 @@ var
   NewUnitInfo:TUnitInfo;
   NewBuf: TCodeBuffer;
   OtherUnitIndex: Integer;
+  FilenameNoPath: String;
 begin
   {$IFDEF IDE_VERBOSE}
   writeln('');
@@ -4124,9 +4125,12 @@ begin
   Result:=mrCancel;
 
   AFilename:=TrimFilename(AFilename);
-
+  FilenameNoPath:=ExtractFilename(AFilename);
+  
+  // check to not open directories
   if (not (ofRevert in Flags))
-  and (ExtractFilenameOnly(AFilename)='') then
+  and ((FilenameNoPath='') or (FilenameNoPath='.') or (FilenameNoPath='..'))
+  then
     exit;
 
   if ([ofAddToRecent,ofRevert,ofVirtualFile]*Flags=[ofAddToRecent])
@@ -4146,7 +4150,8 @@ begin
   
   // check for .lpi files
   if ([ofRegularFile,ofRevert,ofProjectLoading]*Flags=[]) then begin
-    if CompareFileExt(AFilename,'.lpi',false)=0 then begin
+    if (CompareFileExt(AFilename,'.lpi',false)=0)
+    and (FileExists(AFilename)) then begin
       if MessageDlg('Open Project?',
         'Open the project '+AFilename+'?'#13
         +'Answer No to load it as xml file.',
@@ -8111,6 +8116,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.506  2003/04/03 15:02:23  mattias
+  fixed loading .files
+
   Revision 1.505  2003/04/02 17:06:27  mattias
   improved deb creation
 
