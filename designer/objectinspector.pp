@@ -23,7 +23,7 @@ unit objectinspector;
    - a lot more ...  see XXX
 }
 
-{$MODE OBJFPC}
+{$MODE OBJFPC}{$H+}
 
 interface
 
@@ -234,7 +234,6 @@ begin
     SetBounds(1,1,200,300);
     ControlStyle:=ControlStyle+[csAcceptsControls,csOpaque];
     BorderWidth:=1;
-//    Align := alClient;
   end;
     
   FComponentList:=TComponentSelectionList.Create;
@@ -467,6 +466,7 @@ begin
       try
         CurRow.Editor.SetValue(NewValue);
       except
+writeln('[TOIPropertyGrid.SetRowValue] OH NO');
       end;
     end;
   end;
@@ -505,8 +505,10 @@ begin
 end;
 
 procedure TOIPropertyGrid.ValueComboBoxChange(Sender: TObject);
+var i:integer;
 begin
-  SetRowValue;
+  i:=TComboBox(Sender).Items.IndexOf(TComboBox(Sender).Text);
+  if i>=0 then SetRowValue;
 end;
 
 procedure TOIPropertyGrid.ValueComboBoxKeyDown(Sender: TObject; var Key: Word;
@@ -838,6 +840,7 @@ begin
     FTopY:=NewValue;
     if FTopY<0 then FTopY:=0;
     UpdateScrollBar;
+    ItemIndex:=-1;
     Invalidate;
   end;
 end;
@@ -1191,7 +1194,6 @@ begin
     Style:=csDropDown;
     Text:='';
     OnChange:=@AvailComboBoxChange;
-//    Align := alTop;
     //Sorted:=true;
     Show;
   end;
@@ -1203,7 +1205,6 @@ begin
     Parent:=Self;
     Pages.Strings[0]:='Properties';
     Pages.Add('Events');
-//    Align := alClient;
     Show;
   end;
 
@@ -1220,7 +1221,7 @@ begin
     ValueComboBox.Parent:=Parent;
     ValueButton.Parent:=Parent;
     Selections:=Self.FComponentList;
-    Align := alClient;
+    Align:=alClient;
     Show;
   end;
 
@@ -1330,7 +1331,7 @@ end;
 procedure TObjectinspector.SetSelections(
   const NewSelections:TComponentSelectionList);
 begin
-writeln('OI: Set Selections');
+//writeln('[TObjectinspector.SetSelections]');
   if FComponentList.IsEqual(NewSelections) then exit;
   FComponentList.Assign(NewSelections);
   if FComponentList.Count=1 then begin

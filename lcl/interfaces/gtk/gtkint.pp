@@ -84,6 +84,8 @@ type
       Cursor_Hand1 : pGDKCursor;
       Cursor_XTerm : pGDKCursor;
       Cursor_StdArrow : pGDKCursor;
+      Cursor_HSplit : pGDKCursor;
+
    public
       constructor Create; 
       destructor Destroy; override;
@@ -240,6 +242,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.7  2001/02/20 16:53:27  lazarus
+  Changes for wordcompletion and many other things from Mattias.
+  Shane
+
   Revision 1.6  2001/02/06 18:19:38  lazarus
   Shane
 

@@ -436,6 +436,7 @@ TCMDialogKey = TLMKEY;
     procedure WMMButtonUp(var Message: TLMMButtonUp); message LM_MBUTTONUP;
     procedure WMWindowPosChanged(var Message: TLMWindowPosChanged); message LM_WINDOWPOSCHANGED;
     procedure WMDragStart(Var Message: TLMessage); message LM_DRAGSTART;  //not in delphi
+    procedure LMCaptureChanged(Var Message: TLMessage); message LM_CaptureChanged;
     procedure CMEnabledChanged(var Message: TLMEssage); message CM_ENABLEDCHANGED;
     procedure CMHitTest(Var Message: TCMHittest) ; Message CM_HITTEST;
     Procedure CMMouseEnter(var Message :TLMessage); message CM_MouseEnter;
@@ -1126,6 +1127,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.13  2001/02/20 16:53:27  lazarus
+  Changes for wordcompletion and many other things from Mattias.
+  Shane
+
   Revision 1.12  2001/02/04 04:18:12  lazarus
   Code cleanup and JITFOrms bug fix.
   Shane

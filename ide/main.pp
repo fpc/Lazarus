@@ -32,7 +32,7 @@ uses
   Classes, LclLinux, compiler, stdctrls, forms, buttons, menus, comctrls,
   Spin, project,sysutils,
   compileroptions, Controls, graphics, extctrls, Dialogs, dlgMEssage,
-  process, idecomp, Find_dlg, FormEditor, AbstractFormEditor,
+  process, idecomp, FormEditor, AbstractFormEditor,
   CustomFormEditor,ObjectInspector, ControlSelection, PropEdits, UnitEditor, EditorOptions,CodeTemplateDialog,
   CompReg;
 
@@ -255,7 +255,7 @@ begin
 
   Left := 0;
   Top := 0;
-  Width := Screen.Width-5;
+  Width := Screen.Width-10;
   height := 125;
   Position:= poDesigned;
   Name := 'MainIDE';
@@ -638,9 +638,6 @@ begin
   
   FontDialog1 := TFontDialog.Create(self);
   ColorDialog1 := TColorDialog.Create(self);
-  FindDialog1 := TFindDialog.Create(self);
-  FindDialog1.OnFind := @DoFind;
-
   //?? dont need these handlers.
   // Form will kill itself
   //OnDestroy := @FormKill;
@@ -649,17 +646,12 @@ begin
 
   Project := TProject.Create;
   Self.OnShow := @FormShow;
-{  MessageDlg := TMessageDlg.Create(self);
-  MessageDlg.Caption := 'Compiler Messages';
-  MessageDlg.MessageView.OnDblClick := @MessageViewDblClick;
- }
+
   Compiler1 := TCompiler.Create;
-//messagedlg.add is not available at this time.  It's not yet created.
-//  Compiler1.OutputString := @Messagedlg.Add;
 
 { Create other forms }
   ObjectInspector1 := TObjectInspector.Create(Self);
-  ObjectInspector1.SetBounds(0,Top+Height+5,230,600);
+  ObjectInspector1.SetBounds(0,Top+Height+30,230,500);
   ObjectInspector1.OnAddAvailComponent:=@OIOnAddAvailableComponent;
   ObjectInspector1.OnSelectComponentInOI:=@OIOnSelectComponent;
   PropertyEditorHook1:=TPropertyEditorHook.Create;
@@ -1167,33 +1159,6 @@ begin
 end;
 
 
-{function TMainIDE.FindDesigner(ChildComponent:TComponent):TDesigner;
-begin
-  if ChildComponent is TForm then
-    Result:=TDesigner(TForm(ChildComponent).Designer)
-  else if Assigned(ChildComponent.Owner)
-  and (ChildComponent.Owner is TForm) then
-    Result:=TDesigner(TForm(ChildComponent.Owner).Designer)
-  else
-    Result:=nil;
-end;
- }
-
-{procedure TMainIDE.SelectOnlyThisComponent(AComponent:TComponent);
-var
-  CurDesigner:TDesigner;
-begin
-  // select control in Designer
-  CurDesigner:=FindDesigner(AComponent);
-  if (CurDesigner<>nil) then begin
-    CurDesigner.ControlSelection.Clear;
-    CurDesigner.ControlSelection.Add(TControl(AComponent));
-  end;
-  FormEditor1.ClearSelected;
-  // this will automatically inform the object inspector
-  FormEditor1.AddSelected(AComponent);
-end;
- }
 
 {------------------------------------------------------------------------------}
 procedure TMainIDE.mnuNewFormClicked(Sender : TObject);
@@ -1685,6 +1650,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.60  2001/02/20 16:53:24  lazarus
+  Changes for wordcompletion and many other things from Mattias.
+  Shane
+
   Revision 1.59  2001/02/16 19:13:29  lazarus
   Added some functions
   Shane

@@ -10,7 +10,6 @@ unit editoroptions;
 
   ToDo:
    - Code template deleting, value editing, saving
-   - key mappings
    - color schemes, key mapping schemes
    - Resizing
    - SetSynEditSettings
@@ -97,11 +96,11 @@ type
     fDisabledBreakPointElement:TSynHighlightElement;
     fErrorLineElement:TSynHighlightElement;
 
-    // Code Insight options
+    // Code tools options
     fAutoCodeCompletion:boolean;
     fAutoCodeParameters:boolean;
     fAutoToolTipExprEval:boolean;
-    fAutoToolTipSymbInsight:boolean;
+    fAutoToolTipSymbTools:boolean;
     fAutoDelayInMSec:integer;
     fCodeTemplateFileName:Ansistring;
 
@@ -177,15 +176,15 @@ type
     property ErrorLineElement:TSynHighlightElement
        read fErrorLineElement write fErrorLineElement;
 
-    // Code Insight options
+    // Code Tools options
     property AutoCodeCompletion:boolean
        read fAutoCodeCompletion write fAutoCodeCompletion default true;
     property AutoCodeParameters:boolean
        read fAutoCodeParameters write fAutoCodeParameters default true;
     property AutoToolTipExprEval:boolean
        read fAutoToolTipExprEval write fAutoToolTipExprEval default true;
-    property AutoToolTipSymbInsight:boolean
-       read fAutoToolTipSymbInsight write fAutoToolTipSymbInsight default true;
+    property AutoToolTipSymbTools:boolean
+       read fAutoToolTipSymbTools write fAutoToolTipSymbTools default true;
     property AutoDelayInMSec:integer
        read fAutoDelayInMSec write fAutoDelayInMSec default 1000;
     property CodeTemplateFileName:Ansistring
@@ -198,11 +197,17 @@ type
     FOnColorChanged:TNotifyEvent;
     FButtonColor:TColor;
     FColorDialog:TColorDialog;
+    FBorderWidth:integer;
   protected
     procedure Paint; override;
-    procedure MouseDown(Button:TMouseButton; Shift:TShiftState; X,Y:integer); override;
+    procedure MouseDown(Button:TMouseButton; Shift:TShiftState;
+       X,Y:integer); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
+       X, Y: Integer); override;
     procedure SetButtonColor(Value:TColor);
   published
+    property BorderWidth:integer read FBorderWidth write FBorderWidth;
     property ButtonColor:TColor read FButtonColor write SetButtonColor;
     property OnColorChanged:TNotifyEvent read FOnColorChanged write FOnColorChanged;
   end;
@@ -272,6 +277,7 @@ type
     KeyMappingSchemeComboBox:TComboBox;
     KeyMappingHelpLabel:TLabel;
     KeyMappingListBox:TListBox;
+    KeyMappingConsistencyCheckButton:TButton;
 
     // Color options
     ColorSchemeComboBox:TComboBox;
@@ -290,12 +296,12 @@ type
     BackGroundUseDefaultCheckBox:TCheckBox;
     ColorPreview:TPreviewEditor;
 
-    // Code Insight options
+    // Code Tools options
     AutomaticFeaturesGroupBox:TGroupBox;
     AutoCodeCompletionCheckBox:TCheckBox;
     AutoCodeParametersCheckBox:TCheckBox;
     AutoToolTipExprEvalCheckBox:TCheckBox;
-    AutoToolTipSymbInsightCheckBox:TCheckBox;
+    AutoToolTipSymbToolsCheckBox:TCheckBox;
     AutoDelayLabel:TLabel;
     AutoDelayTrackBar:TTrackBar;
     AutoDelayMinLabel:TLabel;
@@ -330,6 +336,7 @@ type
     // key mapping
     procedure KeyMappingListBoxMouseUp(Sender:TObject;
        Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
+    procedure KeyMappingConsistencyCheckButtonClick(Sender: TObject);
 
     // color
     procedure ColorElementListBoxMouseUp(Sender:TObject;
@@ -339,7 +346,7 @@ type
     procedure OnSpecialLineColors(Sender: TObject; Line: integer;
        var Special: boolean; var FG, BG: TColor);
 
-    // code insight
+    // code Tools
     procedure CodeTemplateListBoxMouseUp(Sender:TObject;
        Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
     procedure CodeTemplateFileNameButtonClick(Sender:TObject);
@@ -359,7 +366,7 @@ type
     procedure SetupDisplayPage;
     procedure SetupKeyMappingsPage;
     procedure SetupColorPage;
-    procedure SetupCodeInsightPage;
+    procedure SetupCodeToolsPage;
     procedure SetComboBoxText(AComboBox:TComboBox;AText:AnsiString);
     procedure FillCodeTemplateListBox;
     function KeyMappingRelationToString(Index:integer):AnsiString;
@@ -381,6 +388,8 @@ var
 function ShowEditorOptionsDialog:TModalResult;
 
 implementation
+
+uses math;
 
 function ShowEditorOptionsDialog:TModalResult;
 var
@@ -468,7 +477,7 @@ begin
   fErrorLineElement:=
      TSynHighlightElement.Create(AdditionalHiglightAttributes[4]);
 
-  // Code Insight options
+  // Code Tools options
   fCodeTemplateFileName:=SetDirSeparators(GetPrimaryConfigPath+'/lazarus.dci');
 end;
 
@@ -577,19 +586,19 @@ begin
   ReadAttribute(fDisabledBreakPointElement);
   ReadAttribute(fErrorLineElement);
 
-  // Code Insight options
+  // Code Tools options
   fAutoCodeCompletion:=
-    XMLConfig.GetValue('EditorOptions/CodeInsight/AutoCodeCompletion',true);
+    XMLConfig.GetValue('EditorOptions/CodeTools/AutoCodeCompletion',true);
   fAutoCodeParameters:=
-    XMLConfig.GetValue('EditorOptions/CodeInsight/AutoCodeParameters',true);
+    XMLConfig.GetValue('EditorOptions/CodeTools/AutoCodeParameters',true);
   fAutoToolTipExprEval:=
-    XMLConfig.GetValue('EditorOptions/CodeInsight/AutoToolTipExprEval',true);
-  fAutoToolTipSymbInsight:=
-    XMLConfig.GetValue('EditorOptions/CodeInsight/AutoToolTipSymbInsight',true);
+    XMLConfig.GetValue('EditorOptions/CodeTools/AutoToolTipExprEval',true);
+  fAutoToolTipSymbTools:=
+    XMLConfig.GetValue('EditorOptions/CodeTools/AutoToolTipSymbTools',true);
   fAutoDelayInMSec:=
-    XMLConfig.GetValue('EditorOptions/CodeInsight/AutoDelayInMSec',1000);
+    XMLConfig.GetValue('EditorOptions/CodeTools/AutoDelayInMSec',1000);
   fCodeTemplateFileName:=
-    XMLConfig.GetValue('EditorOptions/CodeInsight/CodeTemplateFileName'
+    XMLConfig.GetValue('EditorOptions/CodeTools/CodeTemplateFileName'
       ,SetDirSeparators(GetPrimaryConfigPath+'/lazarus.dci'));
 end;
 
@@ -672,18 +681,18 @@ begin
   WriteAttribute(fDisabledBreakPointElement);
   WriteAttribute(fErrorLineElement);
 
-  // Code Insight options
-  XMLConfig.SetValue('EditorOptions/CodeInsight/AutoCodeCompletion'
+  // Code Tools options
+  XMLConfig.SetValue('EditorOptions/CodeTools/AutoCodeCompletion'
     ,fAutoCodeCompletion);
-  XMLConfig.SetValue('EditorOptions/CodeInsight/AutoCodeParameters'
+  XMLConfig.SetValue('EditorOptions/CodeTools/AutoCodeParameters'
     ,fAutoCodeParameters);
-  XMLConfig.SetValue('EditorOptions/CodeInsight/AutoToolTipExprEval'
+  XMLConfig.SetValue('EditorOptions/CodeTools/AutoToolTipExprEval'
     ,fAutoToolTipExprEval);
-  XMLConfig.SetValue('EditorOptions/CodeInsight/AutoToolTipSymbInsight'
-    ,fAutoToolTipSymbInsight);
-  XMLConfig.SetValue('EditorOptions/CodeInsight/AutoDelayInMSec'
+  XMLConfig.SetValue('EditorOptions/CodeTools/AutoToolTipSymbTools'
+    ,fAutoToolTipSymbTools);
+  XMLConfig.SetValue('EditorOptions/CodeTools/AutoDelayInMSec'
     ,fAutoDelayInMSec);
-  XMLConfig.SetValue('EditorOptions/CodeInsight/CodeTemplateFileName'
+  XMLConfig.SetValue('EditorOptions/CodeTools/CodeTemplateFileName'
     ,fCodeTemplateFileName);
 
   XMLConfig.Flush;
@@ -854,27 +863,16 @@ end;
 { TColorButton }
 
 procedure TColorButton.Paint;
-var a:integer;
+var PaintRect:TRect;
 begin
-  inherited Paint;
+  //inherited Paint;
+  PaintRect := Bounds(Left, Top, Width, Height);
   with Canvas do begin
-    Pen.Color:=cl3DLight;
-    for a:=0 to BorderWidth-1 do begin
-      MoveTo(a,Height-a);
-      LineTo(a,a);
-      LineTo(Width-1,a);
-    end;
-    Pen.Color:=cl3DDkShadow;
-    for a:=0 to BorderWidth-1 do begin
-      MoveTo(Width-a-1,a);
-      LineTo(Width-a-1,Height-a-1);
-      MoveTo(Width-a,Height-a-1);
-      LineTo(a,Height-a-1);
-    end;
     Brush.Color:=ButtonColor;
-    FillRect(
-      Rect(BorderWidth,BorderWidth,Width-BorderWidth,Height-BorderWidth));
+    FillRect(PaintRect);
   end;
+  DrawFrameControl(Canvas.Handle, PaintRect, DFC_BUTTON
+      ,DFCS_BUTTONPUSH or DFCS_ADJUSTRECT);
 end;
 
 procedure TColorButton.SetButtonColor(Value:TColor);
@@ -888,21 +886,35 @@ begin
 end;
 
 procedure TColorButton.MouseDown(Button:TMouseButton; Shift:TShiftState;
-X,Y:integer);
+  X,Y:integer);
+begin
+
+end;
+
+procedure TColorButton.MouseMove(Shift: TShiftState; X, Y: Integer);
+begin
+  
+end;
+
+procedure TColorButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+var NewColor:TColor;
 begin
   if FColorDialog<>nil then exit;
+  if not Enabled then exit;
+  NewColor:=ButtonColor;
   FColorDialog:=TColorDialog.Create(Application);
   try
     FColorDialog.Color:=ButtonColor;
     if FColorDialog.Execute then begin
-      ButtonColor:=FColorDialog.Color;
-      Invalidate;
+      NewColor:=FColorDialog.Color;
     end;
   finally
     FColorDialog.Free;
     FColorDialog:=nil;
   end;
-  inherited MouseDown(Button,Shift,X,Y);
+  ButtonColor:=NewColor;
+  Invalidate;
 end;
 
 { TEditorOptionsForm }
@@ -914,9 +926,9 @@ begin
   inherited Create(AOwner);
 
   EditorOpts.Load;
+
   if LazarusResources.Find(ClassName)=nil then begin  
-    Height:=455;
-    Width:=459;
+    SetBounds((Screen.Width-470) div 2,(Screen.Height-480) div 2, 455,459);
     Caption:='Editor Options';
     PreviewPasSyn:=TPreviewPasSyn.Create(Self);
     SynAutoComplete:=TSynAutoComplete.Create(Self);
@@ -932,14 +944,14 @@ begin
       Pages.Add('Display');
       Pages.Add('Key Mappings');
       Pages.Add('Color');
-      Pages.Add('Code Insight');
+      Pages.Add('Code Tools');
     end;
 
     SetupGeneralPage;
     SetupDisplayPage;
     SetupKeyMappingsPage;
     SetupColorPage;
-    SetupCodeInsightPage;
+    SetupCodeToolsPage;
 
     MainNoteBook.Show;
 
@@ -985,7 +997,7 @@ begin
   // display options
   // key mappings
   // color options
-  // code insight options
+  // code Tools options
 
   FindCurHighlightElement;
   FillCodeTemplateListBox;
@@ -993,7 +1005,6 @@ begin
 //  with CodeTemplateListBox do
 //    if Items.Count>0 then Selected[0]:=true;
 //  ShowCurCodeTemplate;
-writeln('************************* 7');
 
 end;
 
@@ -1373,6 +1384,82 @@ begin
   end;
 end;
 
+type
+  TKeyMapErrorsForm = class(TForm)
+    ListBox: TListBox;
+    BackButton: TButton;
+    procedure BackButtonClick(Sender: TObject);
+  public
+    constructor Create(AOwner: TComponent); override;
+  end;
+
+constructor TKeyMapErrorsForm.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  if LazarusResources.Find(ClassName)=nil then begin
+    SetBounds((Screen.Width-410) div 2,(Screen.Height-260) div 2, 400,250);
+    Caption:='Key mapping errors';
+
+    ListBox:=TListBox.Create(Self);
+    with ListBox do begin
+      Name:='ListBox';
+      Parent:=Self;
+      Left:=0;
+      Top:=0;
+      Width:=Self.ClientWidth-4;
+      Height:=Self.ClientHeight-50;
+      Show;
+    end;
+
+    BackButton:=TButton.Create(Self);
+    with BackButton do begin
+      Name:='BackButton';
+      Parent:=Self;
+      Width:=60;
+      Height:=25;
+      Caption:='Back';
+      Left:=((Self.ClientWidth-4)-Width) div 2;
+      Top:=Self.ClientHeight-38;
+      OnClick:=@BackButtonClick;
+      Show;
+    end;
+  end;
+end;
+
+procedure TKeyMapErrorsForm.BackButtonClick(Sender: TObject);
+begin
+  ModalResult:=mrOk;
+end;
+
+procedure TEditorOptionsForm.KeyMappingConsistencyCheckButtonClick(
+  Sender: TObject);
+var Protocol:TStringList;
+  ErrorCount, Index1, Index2:integer;
+  ACaption,AText:AnsiString;
+  KeyMapErrorsForm:TKeyMapErrorsForm;
+begin
+  Protocol:=TStringList.Create;
+  try
+    ErrorCount:=KeyStrokesConsistencyErrors(DisplayPreview.KeyStrokes
+        ,Protocol, Index1, Index2);
+    if ErrorCount>0 then begin
+      KeyMapErrorsForm:=TKeyMapErrorsForm.Create(Application);
+      try
+        KeyMapErrorsForm.ListBox.Items.Assign(Protocol);
+        KeyMapErrorsForm.ShowModal;
+      finally
+        KeyMapErrorsForm.Free;
+      end;
+    end else begin
+      ACaption:='Report';
+      AText:='No errors in key mapping found.';
+      Application.MessageBox(PChar(AText),PChar(ACaption),mb_ok);
+    end;
+  finally
+    Protocol.Free;
+  end;
+end;
+
 procedure TEditorOptionsForm.ColorElementListBoxMouseUp(Sender:TObject;
   Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
 begin
@@ -1386,18 +1473,16 @@ var NewIndex:integer;
   Attri:TSynHighlightElement;
   MouseXY,XY:TPoint;
 begin
-  MouseXY.x:=X;
-  MouseXY.y:=Y;
+  MouseXY:=Point(X,Y);
   XY:=ColorPreview.PixelsToRowColumn(MouseXY);
   NewIndex:=ColorElementListBox.ItemIndex;
-  case ColorPreview.CaretY of
+  case XY.Y of
     13:NewIndex:=8;
     14:NewIndex:=9;
     16:NewIndex:=10;
     17:NewIndex:=11;
     18:NewIndex:=12;
   else
-    XY:=ColorPreview.CaretXY;
     ColorPreview.GetHighlighterAttriAtRowCol(XY,Token,Attri);
     if Attri<>nil then begin
       AName:=uppercase(Attri.Name);
@@ -1405,11 +1490,10 @@ begin
       else if AName='COMMENT' then NewIndex:=1
       else if AName='IDENTIFIER' then NewIndex:=2
       else if AName='RESERVED WORD' then NewIndex:=3
-      else if AName='IDENTIFIER' then NewIndex:=4
-      else if AName='NUMBER' then NewIndex:=5
-      else if AName='SPACE' then NewIndex:=6
-      else if AName='STRING' then NewIndex:=7
-      else if AName='SYMBOL' then NewIndex:=8;
+      else if AName='NUMBER' then NewIndex:=4
+      else if AName='SPACE' then NewIndex:=5
+      else if AName='STRING' then NewIndex:=6
+      else if AName='SYMBOL' then NewIndex:=7;
     end;
   end;
   if NewIndex<>ColorElementListBox.ItemIndex then begin
@@ -2344,6 +2428,20 @@ begin
     Show;
   end;
 
+  KeyMappingConsistencyCheckButton:=TButton.Create(Self);
+  with KeyMappingConsistencyCheckButton do begin
+    Name:='KeyMappingConsistencyCheckButton';
+    Parent:=MainNoteBook.Page[2];
+    Top:=5;
+    Left:=Max(KeyMappingSchemeComboBox.Left+KeyMappingSchemeComboBox.Width
+            ,MaxX-150);
+    Width:=130;
+    Height:=23;
+    Caption:='Check consistency';
+    OnClick:=@KeyMappingConsistencyCheckButtonClick;
+    Show;
+  end;
+
   KeyMappingHelpLabel:=TLabel.Create(Self);
   with KeyMappingHelpLabel do begin
     Name:='KeyMappingHelpLabel';
@@ -2581,13 +2679,13 @@ begin
     for a:=Low(ExampleSource) to High(ExampleSource) do
       Lines.Add(ExampleSource[a]);
     OnSpecialLineColors:=@Self.OnSpecialLineColors;
-    OnMouseUp:=@ColorPreviewMouseUp;
+    OnMouseDown:=@ColorPreviewMouseUp;
     ReadOnly:=true;
     Show;
   end; 
 end;
 
-procedure TEditorOptionsForm.SetupCodeInsightPage;
+procedure TEditorOptionsForm.SetupCodeToolsPage;
 var MaxX:integer;
 begin
   MaxX:=Width-9;
@@ -2642,16 +2740,16 @@ begin
     Show;
   end;
 
-  AutoToolTipSymbInsightCheckBox:=TCheckBox.Create(Self);
-  with AutoToolTipSymbInsightCheckBox do begin
-    Name:='AutoToolTipSymbInsightCheckBox';
+  AutoToolTipSymbToolsCheckBox:=TCheckBox.Create(Self);
+  with AutoToolTipSymbToolsCheckBox do begin
+    Name:='AutoToolTipSymbToolsCheckBox';
     Parent:=AutomaticFeaturesGroupBox;
     Top:=AutoToolTipExprEvalCheckBox.Top+AutoToolTipExprEvalCheckBox.Height+20;
     Left:=AutoCodeCompletionCheckBox.Left;
     Width:=AutoCodeCompletionCheckBox.Width;
     Height:=AutoCodeCompletionCheckBox.Height;
-    Caption:='Tooltip symbol insight';
-    Checked:=EditorOpts.AutoToolTipSymbInsight;
+    Caption:='Tooltip symbol Tools';
+    Checked:=EditorOpts.AutoToolTipSymbTools;
     Show;
   end;
 
@@ -2886,10 +2984,10 @@ begin
   EditorOpts.CreateBackupFiles:=CreateBackupFilesCheckBox.Checked;
   EditorOpts.SyntaxExtensions:=SyntaxExtensionsComboBox.Text;
 
-  // code insight
+  // code Tools
   EditorOpts.AutoCodeCompletion:=AutoCodeCompletionCheckBox.Checked;
   EditorOpts.AutoCodeParameters:=AutoCodeParametersCheckBox.Checked;
-  EditorOpts.AutoToolTipSymbInsight:=AutoToolTipSymbInsightCheckBox.Checked;
+  EditorOpts.AutoToolTipSymbTools:=AutoToolTipSymbToolsCheckBox.Checked;
   EditorOpts.AutoToolTipExprEval:=AutoToolTipExprEvalCheckBox.Checked;
   EditorOpts.AutoDelayInMSec:=AutoDelayTrackBar.Position*250;
   EditorOpts.CodeTemplateFileName:=CodeTemplateFileNameComboBox.Text;

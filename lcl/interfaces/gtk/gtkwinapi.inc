@@ -2836,6 +2836,8 @@ end;
 
  ------------------------------------------------------------------------------}
 function TgtkObject.SetCapture(Value: Longint): Longint;
+var
+  Sender : TObject;
 begin
   Assert(False, Format('Trace:> [TgtkObject.SetCapture] 0x%x', [Value]));
   
@@ -2855,7 +2857,7 @@ begin
   if MCaptureHandle <> 0
   then begin
     WriteLN(Format('[TgtkObject.SetCapture] Current widget 0x%p', [gtk_grab_get_current]));
-//shane    gtk_grab_add(Pointer(MCaptureHandle));
+    gtk_grab_add(Pointer(MCaptureHandle));
     WriteLN(Format('[TgtkObject.SetCapture] handle: 0x%p gtk: 0x%p', [Pointer(MCaptureHandle), gtk_grab_get_current]));
 
 
@@ -2873,8 +2875,9 @@ begin
       assert(False, Format('trace:[TgtkObject.SetCapture] 0x%x failed', [Value]));
     end;
 }
-    if Result <>  0 
-    then SendMessage(Result, LM_CAPTURECHANGED, 0, MCaptureHandle);
+ Writeln('SetCapture result is '+inttostr(result));
+   if MCaptureHandle <>  0 then
+            SendMessage(MCaptureHandle, LM_CAPTURECHANGED, 0, Result);
   end;
      
   Assert(False, Format('Trace:< [TgtkObject.SetCapture] 0x%x --> 0x%x', [Value, Result]));
@@ -3355,6 +3358,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.21  2001/02/20 16:53:27  lazarus
+  Changes for wordcompletion and many other things from Mattias.
+  Shane
+
   Revision 1.20  2001/02/16 19:13:31  lazarus
   Added some functions
   Shane

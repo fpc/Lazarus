@@ -125,6 +125,12 @@ begin
 end;
 
 
+Procedure TControl.LMCaptureChanged(Var Message: TLMessage);
+Begin
+Writeln('[LMCaptureChanged for '+classname+']');
+End;
+
+
 {------------------------------------------------------------------------------}
 {       TControl.CMENABLEDCHANGED
 }
@@ -1292,6 +1298,10 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.15  2001/02/20 16:53:27  lazarus
+  Changes for wordcompletion and many other things from Mattias.
+  Shane
+
   Revision 1.14  2001/02/06 20:59:16  lazarus
   Trying to get the last control of the last form focused when a dialog closes.
   Still working on it.

@@ -21,35 +21,37 @@ uses
 
 const
   // editor commands constants. see syneditkeycmds.pp for more
-  ecFind             = ecUserFirst+1;
-  ecFindAgain        = ecUserFirst+2;
-  ecReplace          = ecUserFirst+3;
-  ecFindProcedureDefinition = ecUserFirst+4;
-  ecFindProcedureMethod = ecUserFirst+5;
-  ecGotoLineNumber   = ecUserFirst+6;
+  ecFind               = ecUserFirst + 1;
+  ecFindAgain          = ecUserFirst + 2;
+  ecReplace            = ecUserFirst + 3;
+  ecFindProcedureDefinition = ecUserFirst + 4;
+  ecFindProcedureMethod = ecUserFirst + 5;
+  ecGotoLineNumber     = ecUserFirst + 6;
 
-  ecNextEditor       = ecUserFirst+7;
-  ecPrevEditor       = ecUserFirst+8;
+  ecNextEditor         = ecUserFirst + 7;
+  ecPrevEditor         = ecUserFirst + 8;
 
-  ecPeriod           = ecUserFirst+9;
+  ecPeriod             = ecUserFirst + 9;
 
-  ecFirstParent      = ecUserFirst+1000;
-  ecSave             = ecFirstParent+1;
-  ecOpen             = ecFirstParent+2;
-  ecClose            = ecFirstParent+3;
+  ecWordCompletion     = ecUserFirst + 100;
+  ecCodeCompletion     = ecUserFirst + 101;
 
-  ecJumpToEditor     = ecFirstParent+4;
+  ecSave               = ecUserFirst + 200;
+  ecOpen               = ecSave + 1;
+  ecClose              = ecOpen + 2;
 
-  ecGotoEditor0      = ecUserFirst + 2000;
-  ecGotoEditor1      = ecGotoEditor0 + 1;
-  ecGotoEditor2      = ecGotoEditor1 + 1;
-  ecGotoEditor3      = ecGotoEditor2 + 1;
-  ecGotoEditor4      = ecGotoEditor3 + 1;
-  ecGotoEditor5      = ecGotoEditor4 + 1;
-  ecGotoEditor6      = ecGotoEditor5 + 1;
-  ecGotoEditor7      = ecGotoEditor6 + 1;
-  ecGotoEditor8      = ecGotoEditor7 + 1;
-  ecGotoEditor9      = ecGotoEditor8 + 1;
+  ecJumpToEditor       = ecUserFirst + 300;
+
+  ecGotoEditor1        = ecUserFirst + 2000;
+  ecGotoEditor2        = ecGotoEditor1 + 1;
+  ecGotoEditor3        = ecGotoEditor2 + 1;
+  ecGotoEditor4        = ecGotoEditor3 + 1;
+  ecGotoEditor5        = ecGotoEditor4 + 1;
+  ecGotoEditor6        = ecGotoEditor5 + 1;
+  ecGotoEditor7        = ecGotoEditor6 + 1;
+  ecGotoEditor8        = ecGotoEditor7 + 1;
+  ecGotoEditor9        = ecGotoEditor8 + 1;
+  ecGotoEditor0        = ecGotoEditor9 + 1;
 
 
 type
@@ -82,6 +84,7 @@ type
     property Relations[Index:integer]:TKeyCommandRelation read GetRelation;
     function Count:integer;
     function Find(AKey:Word; AShiftState:TShiftState):TKeyCommandRelation;
+    function FindByCommand(ACommand:TSynEditorCommand):TKeyCommandRelation;
     function LoadFromXMLConfig(XMLConfig:TXMLConfig; Prefix:AnsiString):boolean;
     function SaveToXMLConfig(XMLConfig:TXMLConfig; Prefix:AnsiString):boolean;
     procedure AssignTo(ASynEditKeyStrokes:TSynEditKeyStrokes);
@@ -116,6 +119,9 @@ type
 function KeyAndShiftStateToStr(Key:Word; ShiftState:TShiftState):AnsiString;
 function ShowKeyMappingEditForm(Index:integer;
    AKeyCommandRelationList:TKeyCommandRelationList):TModalResult;
+function KeyStrokesConsistencyErrors(ASynEditKeyStrokes:TSynEditKeyStrokes;
+   Protocol: TStrings; var Index1,Index2:integer):integer;
+function EditorCommandToDescriptionString(cmd: TSynEditorCommand):AnsiString;
 
 var KeyMappingEditForm:TKeyMappingEditForm;
 
@@ -156,6 +162,172 @@ begin
       Free;
       KeyMappingEditForm:=nil;
     end;
+end;
+
+function EditorCommandToDescriptionString(cmd: TSynEditorCommand):AnsiString;
+begin
+  case cmd of
+    ecNone: Result:= 'None';
+    ecLeft: Result:= 'Left';
+    ecRight: Result:= 'Right';
+    ecUp: Result:= 'Up';
+    ecDown: Result:= 'Down';
+    ecWordLeft: Result:= 'WordLeft';
+    ecWordRight: Result:= 'WordRight';
+    ecLineStart: Result:= 'LineStart';
+    ecLineEnd: Result:= 'LineEnd';
+    ecPageUp: Result:= 'PageUp';
+    ecPageDown: Result:= 'PageDown';
+    ecPageLeft: Result:= 'PageLeft';
+    ecPageRight: Result:= 'PageRight';
+    ecPageTop: Result:= 'PageTop';
+    ecPageBottom: Result:= 'PageBottom';
+    ecEditorTop: Result:= 'EditorTop';
+    ecEditorBottom: Result:= 'EditorBottom';
+    ecGotoXY: Result:= 'GotoXY';
+    ecSelLeft: Result:= 'SelLeft';
+    ecSelRight: Result:= 'SelRight';
+    ecSelUp: Result:= 'SelUp';
+    ecSelDown: Result:= 'SelDown';
+    ecSelWordLeft: Result:= 'SelWordLeft';
+    ecSelWordRight: Result:= 'SelWordRight';
+    ecSelLineStart: Result:= 'SelLineStart';
+    ecSelLineEnd: Result:= 'SelLineEnd';
+    ecSelPageUp: Result:= 'SelPageUp';
+    ecSelPageDown: Result:= 'SelPageDown';
+    ecSelPageLeft: Result:= 'SelPageLeft';
+    ecSelPageRight: Result:= 'SelPageRight';
+    ecSelPageTop: Result:= 'SelPageTop';
+    ecSelPageBottom: Result:= 'SelPageBottom';
+    ecSelEditorTop: Result:= 'SelEditorTop';
+    ecSelEditorBottom: Result:= 'SelEditorBottom';
+    ecSelGotoXY: Result:= 'SelGotoXY';
+    ecSelectAll: Result:= 'SelectAll';
+    ecDeleteLastChar: Result:= 'DeleteLastChar';
+    ecDeleteChar: Result:= 'DeleteChar';
+    ecDeleteWord: Result:= 'DeleteWord';
+    ecDeleteLastWord: Result:= 'DeleteLastWord';
+    ecDeleteBOL: Result:= 'DeleteBOL';
+    ecDeleteEOL: Result:= 'DeleteEOL';
+    ecDeleteLine: Result:= 'DeleteLine';
+    ecClearAll: Result:= 'ClearAll';
+    ecLineBreak: Result:= 'LineBreak';
+    ecInsertLine: Result:= 'InsertLine';
+    ecChar: Result:= 'Char';
+    ecImeStr: Result:= 'ImeStr';
+    ecUndo: Result:= 'Undo';
+    ecRedo: Result:= 'Redo';
+    ecCut: Result:= 'Cut';
+    ecCopy: Result:= 'Copy';
+    ecPaste: Result:= 'Paste';
+    ecScrollUp: Result:= 'ScrollUp';
+    ecScrollDown: Result:= 'ScrollDown';
+    ecScrollLeft: Result:= 'ScrollLeft';
+    ecScrollRight: Result:= 'ScrollRight';
+    ecInsertMode: Result:= 'InsertMode';
+    ecOverwriteMode: Result:= 'OverwriteMode';
+    ecToggleMode: Result:= 'ToggleMode';
+    ecBlockIndent: Result:= 'BlockIndent';
+    ecBlockUnindent: Result:= 'BlockUnindent';
+    ecTab: Result:= 'Tab';
+    ecShiftTab: Result:= 'ShiftTab';
+    ecMatchBracket: Result:= 'MatchBracket';
+    ecNormalSelect: Result:= 'NormalSelect';
+    ecColumnSelect: Result:= 'ColumnSelect';
+    ecLineSelect: Result:= 'LineSelect';
+    ecAutoCompletion: Result:= 'AutoCompletion';
+    ecUserFirst: Result:= 'UserFirst';
+    ecGotoMarker0: Result:= 'GotoMarker0';
+    ecGotoMarker1: Result:= 'GotoMarker1';
+    ecGotoMarker2: Result:= 'GotoMarker2';
+    ecGotoMarker3: Result:= 'GotoMarker3';
+    ecGotoMarker4: Result:= 'GotoMarker4';
+    ecGotoMarker5: Result:= 'GotoMarker5';
+    ecGotoMarker6: Result:= 'GotoMarker6';
+    ecGotoMarker7: Result:= 'GotoMarker7';
+    ecGotoMarker8: Result:= 'GotoMarker8';
+    ecGotoMarker9: Result:= 'GotoMarker9';
+    ecSetMarker0: Result:= 'SetMarker0';
+    ecSetMarker1: Result:= 'SetMarker1';
+    ecSetMarker2: Result:= 'SetMarker2';
+    ecSetMarker3: Result:= 'SetMarker3';
+    ecSetMarker4: Result:= 'SetMarker4';
+    ecSetMarker5: Result:= 'SetMarker5';
+    ecSetMarker6: Result:= 'SetMarker6';
+    ecSetMarker7: Result:= 'SetMarker7';
+    ecSetMarker8: Result:= 'SetMarker8';
+    ecSetMarker9: Result:= 'SetMarker9';
+
+    ecFind: Result:= 'Find text';
+    ecFindAgain: Result:= 'Find again';
+    ecReplace: Result:= 'Replace text';
+    ecFindProcedureDefinition: Result:= 'find procedure definition';
+    ecFindProcedureMethod: Result:= 'find procedure method';
+    ecGotoLineNumber: Result:= 'goto line number';
+    ecNextEditor: Result:= 'next editor';
+    ecPrevEditor: Result:= 'previous editor';
+    ecPeriod: Result:= 'period';
+    ecWordCompletion: Result:= 'word completion';
+    ecCodeCompletion: Result:= 'code completion';
+    ecSave: Result:= 'save';
+    ecOpen: Result:= 'open';
+    ecClose: Result:= 'close';
+    ecJumpToEditor: Result:='jump to editor';
+    ecGotoEditor1: Result:= 'goto editor 1';
+    ecGotoEditor2: Result:= 'goto editor 2';
+    ecGotoEditor3: Result:= 'goto editor 3';
+    ecGotoEditor4: Result:= 'goto editor 4';
+    ecGotoEditor5: Result:= 'goto editor 5';
+    ecGotoEditor6: Result:= 'goto editor 6';
+    ecGotoEditor7: Result:= 'goto editor 7';
+    ecGotoEditor8: Result:= 'goto editor 8';
+    ecGotoEditor9: Result:= 'goto editor 9';
+    ecGotoEditor0: Result:= 'goto editor 10';
+    
+    else
+      Result:='unknown editor command';
+  end;
+end;
+
+function KeyStrokesConsistencyErrors(ASynEditKeyStrokes:TSynEditKeyStrokes;
+   Protocol: TStrings; var Index1,Index2:integer):integer;
+// 0 = ok, no errors
+// >0 number of errors found
+var a,b:integer;
+  Key1,Key2:TSynEditKeyStroke;
+begin
+  Result:=0;
+  for a:=0 to ASynEditKeyStrokes.Count-1 do begin
+    Key1:=ASynEditKeyStrokes[a];
+    for b:=a+1 to ASynEditKeyStrokes.Count-1 do begin
+      Key2:=ASynEditKeyStrokes[b];
+      if (Key1.Command<>Key2.Command) 
+      and (Key1.Key<>VK_UNKNOWN)
+      and (Key1.Key=Key2.Key) and (Key1.Shift=Key2.Shift) then begin
+        if (Key1.Key2=VK_UNKNOWN) or (Key2.Key2=VK_UNKNOWN)
+        or ((Key1.Key2=Key2.Key2) and (Key1.Shift2=Key2.Shift2)) then begin
+          // consistency error
+          if Result=0 then begin
+            Index1:=a;
+            Index2:=b;
+          end;
+          inc(Result);
+          if Protocol<>nil then begin
+            Protocol.Add('Conflict '+IntToStr(Result));
+            Protocol.Add('    command1 "'
+              +EditorCommandToDescriptionString(Key1.Command)+'"'
+              +'->'+KeyAndShiftStateToStr(Key1.Key,Key1.Shift));
+            Protocol.Add(' conflicts with ');
+            Protocol.Add('    command2 "'
+              +EditorCommandToDescriptionString(Key2.Command)+'"'
+              +'->'+KeyAndShiftStateToStr(Key2.Key,Key2.Shift)
+             );
+            Protocol.Add('');
+          end;
+        end;
+      end;
+    end;
+  end;
 end;
 
 function KeyAndShiftStateToStr(Key:Word; ShiftState:TShiftState):AnsiString;
@@ -236,9 +408,8 @@ var a:integer;
 begin
   inherited Create(AOwner);
   if LazarusResources.Find(ClassName)=nil then begin
+    SetBounds((Screen.Width-200) div 2,(Screen.Height-270) div 2,220,250);
     Caption:='Edit keys for command';
-    Width:=220;
-    Height:=250;
 
     OkButton:=TButton.Create(Self);
     with OkButton do begin
@@ -280,7 +451,7 @@ begin
     with Key1GroupBox do begin
       Name:='Key1GroupBox';
       Parent:=Self;
-      Caption:='Key 1';
+      Caption:='Key';
       Left:=5;
       Top:=CommandLabel.Top+CommandLabel.Height+8;
       Width:=Self.ClientWidth-4-Left-Left;
@@ -347,7 +518,7 @@ begin
     with Key2GroupBox do begin
       Name:='Key2GroupBox';
       Parent:=Self;
-      Caption:='Key 2';
+      Caption:='Alternative Key';
       Left:=5;
       Top:=Key1GroupBox.Top+Key1GroupBox.Height+8;
       Width:=Key1GroupBox.Width;
@@ -540,6 +711,9 @@ begin
   Add('Code template completion',ecAutoCompletion,VK_J,[ssCtrl],VK_UNKNOWN,[]);
 
   // user defined commands
+  Add('Word completion',ecWordCompletion,VK_W,[ssCtrl],VK_UNKNOWN,[]);
+  Add('Code completion',ecCodeCompletion,VK_SPACE,[ssCtrl],VK_UNKNOWN,[]);
+
   Add('Find text',ecFind,VK_F,[SSCtrl],VK_UNKNOWN,[]);
   Add('Find text again',ecFindAgain,VK_F3,[],VK_UNKNOWN,[]);
   Add('Replace text',ecReplace,VK_R,[SSCtrl],VK_UNKNOWN,[]);
@@ -556,7 +730,6 @@ begin
   Add('Open',ecOpen,VK_O,[ssCtrl],VK_UNKNOWN,[]);
   Add('Close',ecClose,VK_F4,[ssCtrl],VK_UNKNOWN,[]);
 
-  Add('Go to source editor 0',ecGotoEditor0,VK_0,[ssAlt],VK_UNKNOWN,[]);
   Add('Go to source editor 1',ecGotoEditor0,VK_1,[ssAlt],VK_UNKNOWN,[]);
   Add('Go to source editor 2',ecGotoEditor0,VK_2,[ssAlt],VK_UNKNOWN,[]);
   Add('Go to source editor 3',ecGotoEditor0,VK_3,[ssAlt],VK_UNKNOWN,[]);
@@ -566,6 +739,7 @@ begin
   Add('Go to source editor 7',ecGotoEditor0,VK_7,[ssAlt],VK_UNKNOWN,[]);
   Add('Go to source editor 8',ecGotoEditor0,VK_8,[ssAlt],VK_UNKNOWN,[]);
   Add('Go to source editor 9',ecGotoEditor0,VK_9,[ssAlt],VK_UNKNOWN,[]);
+  Add('Go to source editor 10',ecGotoEditor0,VK_0,[ssAlt],VK_UNKNOWN,[]);
 end;
 
 destructor TKeyCommandRelationList.Destroy;
@@ -685,6 +859,18 @@ begin
   for a:=0 to FRelations.Count-1 do with Relations[a] do
     if ((Key1=AKey) and (Shift1=AShiftState)) 
     or ((Key2=AKey) and (Shift2=AShiftState)) then begin
+      Result:=Relations[a];
+      exit;
+    end;
+end;
+
+function TKeyCommandRelationList.FindByCommand(
+  ACommand:TSynEditorCommand):TKeyCommandRelation;
+var a:integer;
+begin
+  Result:=nil;
+  for a:=0 to FRelations.Count-1 do with Relations[a] do
+    if (Command=ACommand) then begin
       Result:=Relations[a];
       exit;
     end;

@@ -316,6 +316,7 @@ var
   ShiftState: TShiftState;
 begin
 
+
   ShiftState := GTKEventState2ShiftState(Event^.State);
   with Msg do
   begin
@@ -334,6 +335,8 @@ begin
     Writeln('Y_root = ');
     Writeln('  '+inttostr(round(Event^.Y_Root)));
     writeln('widget is ='+inttostr(longint(widget)));
+    if (TObject(data) is TCOntrol) then
+    writeln('Control is ='+TControl(data).classname);
     Writeln('------------------');
  }
     Keys := 0;
@@ -1077,6 +1080,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.22  2001/02/20 16:53:27  lazarus
+  Changes for wordcompletion and many other things from Mattias.
+  Shane
+
   Revision 1.21  2001/01/31 21:16:45  lazarus
   Changed to TCOmboBox focusing.
   Shane

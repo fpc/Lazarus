@@ -52,6 +52,11 @@ uses
   Classes, SynEdit, SynEditKeyCmds;
 
 type
+  {$IFDEF SYN_LAZARUS}
+  TOnTokenNotFound = procedure(Sender: TObject; AToken: string; 
+                           AEditor: TCustomSynEdit; var Index:integer) of object;
+  {$ENDIF}
+
   TCustomSynAutoComplete = class(TComponent)
   protected
     fAutoCompleteList: TStrings;
@@ -63,6 +68,9 @@ type
     fEOTokenChars: string;
     fCaseSensitive: boolean;
     fParsed: boolean;
+    {$IFDEF SYN_LAZARUS}
+    fOnTokenNotFound: TOnTokenNotFound;
+    {$ENDIF}
     procedure CompletionListChanged(Sender: TObject);
     function GetCompletions: TStrings;
     function GetCompletionComments: TStrings;
@@ -99,6 +107,10 @@ type
     property EditorCount: integer read GetEditorCount;
     property Editors[Index: integer]: TCustomSynEdit read GetNthEditor;
     property EndOfTokenChr: string read fEOTokenChars write fEOTokenChars;
+    {$IFDEF SYN_LAZARUS}
+    property OnTokenNotFound: TOnTokenNotFound
+      read fOnTokenNotFound write fOnTokenNotFound;
+    {$ENDIF}
   end;
 
   TSynAutoComplete = class(TCustomSynAutoComplete)
@@ -107,6 +119,9 @@ type
     property CaseSensitive;
     property Editor;
     property EndOfTokenChr;
+    {$IFDEF SYN_LAZARUS}
+    property OnTokenNotFound;
+    {$ENDIF}
   end;
 
 implementation
@@ -186,6 +201,14 @@ begin
       Inc(i);
       s := Copy(s, i, j - i);
       ExecuteCompletion(s, AEditor);
+    end else begin
+      {$IFDEF SYN_LAZARUS}
+      i:=-1;
+      if Assigned(fOnTokenNotFound) then
+        fOnTokenNotFound(Self,'',AEditor,i);
+      if i>=0 then
+        ExecuteCompletion(FCompletions[i], AEditor);
+      {$ENDIF}
     end;
   end;
 end;
@@ -203,6 +226,7 @@ begin
   if not fParsed then
     ParseCompletionList;
   Len := Length(AToken);
+writeln('OnTokenNotFound... ',Assigned(fOnTokenNotFound),' "',AToken,'"');
   if (Len > 0) and (AEditor <> nil) and not AEditor.ReadOnly
     and (fCompletions.Count > 0)
   then begin
@@ -235,6 +259,11 @@ begin
     end;
     if (i = -1) and (NumMaybe = 1) then
       i := IdxMaybe;
+writeln('OnTokenNotFound... ',Assigned(fOnTokenNotFound),' ',i);
+    {$IFDEF SYN_LAZARUS}
+    if (i < 0) and Assigned(fOnTokenNotFound) then
+      fOnTokenNotFound(Self,AToken,AEditor,i);
+    {$ENDIF}
     if i > -1 then begin
       // select token in editor
       p := AEditor.CaretXY;

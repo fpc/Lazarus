@@ -55,6 +55,7 @@ type
   TCodeCompletionEvent = procedure(var Value: string; Shift: TShiftState)
     of object;
   TValidateEvent = procedure(Sender: TObject; Shift: TShiftState) of object;
+  TSynBaseCompletionSearchPosition = procedure(var Position :integer) of object;
 
   TSynBaseCompletionForm = class(TForm)
   protected
@@ -71,6 +72,9 @@ type
     FOnCancel: TNotifyEvent;
     FClSelect: TColor;
     FAnsi: boolean;
+    {$IFDEF SYN_LAZARUS}
+    FOnSearchPosition:TSynBaseCompletionSearchPosition;
+    {$ENDIF}
     procedure SetCurrentString(const Value: string);
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: char); override;
@@ -86,6 +90,9 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure StringListChange(Sender: TObject);
+    {$IFDEF SYN_LAZARUS}
+    procedure SetFontHeight(NewFontHeight :integer);
+    {$ENDIF}
   private
     Bitmap: TBitmap; // used for drawing
     fCurrentEditor: TComponent;
@@ -107,6 +114,11 @@ type
     property ClSelect: TColor read FClSelect write FClSelect;
     property ffAnsi: boolean read fansi write fansi;
     property CurrentEditor: tComponent read fCurrentEditor write fCurrentEditor;
+    {$IFDEF SYN_LAZARUS}
+    property FontHeight:integer read FFontHeight write SetFontHeight;
+    property OnSearchPosition:TSynBaseCompletionSearchPosition
+      read FOnSearchPosition write FOnSearchPosition;
+    {$ENDIF}
   end;
 
   TSynBaseCompletion = class(TComponent)
@@ -137,6 +149,12 @@ type
     procedure RFAnsi(const Value: boolean);
     function SFAnsi: boolean;
     procedure SetWidth(Value: Integer);
+    {$IFDEF SYN_LAZARUS}
+    function GetFontHeight:integer;
+    procedure SetFontHeight(NewFontHeight :integer);
+    function GetOnSearchPosition:TSynBaseCompletionSearchPosition;
+    procedure SetOnSearchPosition(NewValue :TSynBaseCompletionSearchPosition);
+    {$ENDIF}
   public
     constructor Create(Aowner: TComponent); override;
     destructor Destroy; override;
@@ -155,6 +173,11 @@ type
     property Position: Integer read GetPosition write SetPosition;
     property NbLinesInWindow: Integer read GetNbLinesInWindow
       write SetNbLinesInWindow;
+    {$IFDEF SYN_LAZARUS}
+    property FontHeight:integer read GetFontHeight write SetFontHeight;
+    property OnSearchPosition:TSynBaseCompletionSearchPosition
+      read GetOnSearchPosition write SetOnSearchPosition;
+    {$ENDIF}
     property ClSelect: TColor read GetClSelect write SetClSelect;
     property AnsiStrings: boolean read SFAnsi write RFAnsi;
     property Width: Integer read FWidth write SetWidth;
@@ -233,7 +256,7 @@ type
     property ShortCut: TShortCut read FShortCut write SetShortCut;
   end;
 
-procedure PretyTextOut(c: TCanvas; x, y: integer; s: string);
+procedure PrettyTextOut(c: TCanvas; x, y: integer; s: string);
 
 implementation
 
@@ -249,9 +272,9 @@ begin
 {$ELSE}
   {$IFDEF FPC}
     CreateNew(AOwner,0);
-  {$ENDIF}
-{$ELSE}
+  {$ELSE}
   CreateNew(AOwner);
+  {$ENDIF}
 {$ENDIF}
   FItemList := TStringList.Create;
   BorderStyle := bsNone;
@@ -271,7 +294,6 @@ begin
   bitmap := TBitmap.Create;
   NbLinesInWindow := 6;
   ShowHint := True;
-
 end;
 
 procedure TSynBaseCompletionForm.Deactivate;
@@ -292,7 +314,7 @@ procedure TSynBaseCompletionForm.KeyDown(var Key: Word;
 var
   i: integer;
 begin
-  Writeln('[TSynBaseCompletionForm] KeyDown');
+//  Writeln('[TSynBaseCompletionForm] KeyDown ',Key);
   case Key of
 // added the VK_XXX codes to make it more readable / maintainable
     VK_RETURN:
@@ -333,16 +355,16 @@ procedure TSynBaseCompletionForm.KeyPress(var Key: char);
 begin
   case key of //
     #33..'z': begin
-        CurrentString := CurrentString + key;
         if Assigned(OnKeyPress) then
           OnKeyPress(self, Key);
+        CurrentString := CurrentString + key;
       end;
     #8:
       if Assigned(OnKeyPress) then OnKeyPress(self, Key); 
   else if Assigned(OnCancel) then
     OnCancel(Self);
   end; // case
-  paint;
+  Paint;
 end;
 
 procedure TSynBaseCompletionForm.MouseDown(Button: TMouseButton;
@@ -355,7 +377,6 @@ end;
 procedure TSynBaseCompletionForm.Paint;
 var
   i: integer;
-  S1,S2 : String;
 
   function Min(a, b: integer): integer;
   begin
@@ -366,8 +387,7 @@ var
   end;
 
 begin
-Writeln('[TSynBaseCompletionForm.Paint]');
-  Writeln('ItemList.Count = '+inttostr(ItemList.Count));
+//Writeln('[TSynBaseCompletionForm.Paint]');
 
   // update scroll bar
   if ItemList.Count - NbLinesInWindow < 0 then
@@ -384,8 +404,10 @@ Writeln('[TSynBaseCompletionForm.Paint]');
   Canvas.LineTo(Width - 1, Height - 1);
   Canvas.LineTo(0, Height - 1);
   Canvas.LineTo(0, 0);
-//comments below are because canvas.draw is unfinished.
-//  with bitmap do begin
+  {$IFNDEF SYN_LAZARUS}
+  // canvas.draw is unfinished in lcl
+  with bitmap do begin
+  {$ENDIF}
     canvas.pen.color := color;
     canvas.brush.color := color;
     canvas.Rectangle(0, 0, Width, Height);
@@ -409,13 +431,13 @@ Writeln('[TSynBaseCompletionForm.Paint]');
         or not OnPaintItem(ItemList[Scroll.Position + i], Canvas, 0, FFontHeight * i)
       then
         Begin
-           Writeln('Drawing to canvas');
-//           Canvas.Font.Color := clBlack;
            Canvas.TextOut(2, FFontHeight * i, ItemList[Scroll.Position + i]);
         end;
     end;
-  //end;
-  //canvas.Draw(1, 1, bitmap);
+  {$IFNDEF SYN_LAZARUS}
+  end;
+  canvas.Draw(1, 1, bitmap);
+  {$ENDIF}
 end;
 
 procedure TSynBaseCompletionForm.ScrollChange(Sender: TObject);
@@ -449,28 +471,52 @@ var
   i: integer;
 begin
   FCurrentString := Value;
-  if ffAnsi then begin
-    for i := 0 to Pred(ItemList.Count) do
-      if 0 = CompareText(fCurrentString,
-        Copy(ItemList[i], 1, Length(fCurrentString)))
-        then begin
-        Position := i;
-        break;
-      end;
+  {$IFDEF SYN_LAZARUS}
+  if Assigned(FOnSearchPosition) then begin
+    i:=Position;
+    FOnSearchPosition(i);
+    Position:=i;
   end else begin
-    for i := 0 to Pred(ItemList.Count) do
-      if 0 = CompareStr(fCurrentString,
-        Copy(ItemList[i], 1, Length(fCurrentString)))
+  {$ENDIF}
+    if ffAnsi then begin
+      for i := 0 to Pred(ItemList.Count) do
+        if 0 = CompareText(fCurrentString,
+          Copy(ItemList[i], 1, Length(fCurrentString)))
         then begin
-        Position := i;
-        break;
-      end;
+          Position := i;
+          break;
+        end;
+    end else begin
+      for i := 0 to Pred(ItemList.Count) do
+        if 0 = CompareStr(fCurrentString,
+          Copy(ItemList[i], 1, Length(fCurrentString)))
+        then begin
+          Position := i;
+          break;
+        end;
+    end;
+  {$IFDEF SYN_LAZARUS}
+  end;
+  {$ENDIF}
+end;
+
+{$IFDEF SYN_LAZARUS}
+procedure TSynBaseCompletionForm.SetFontHeight(NewFontHeight:integer);
+begin
+  if NewFontHeight<>FFontHeight then begin
+    FFontHeight:=NewFontHeight;
+    SetNblinesInWindow(FNbLinesInWindow);
   end;
 end;
+{$ENDIF}
 
 procedure TSynBaseCompletionForm.SetItemList(const Value: TStrings);
 begin
   FItemList.Assign(Value);
+  {$IFDEF SYN_LAZARUS}
+  if Position>=FItemList.Count then Position:=-1;
+  Invalidate;
+  {$ENDIF}
 end;
 
 procedure TSynBaseCompletionForm.SetNbLinesInWindow(
@@ -487,7 +533,7 @@ end;
 
 procedure TSynBaseCompletionForm.SetPosition(const Value: Integer);
 begin
-  if Value <= ItemList.Count - 1 then begin
+  if Value < ItemList.Count then begin
     if FPosition <> Value then begin
       FPosition := Value;
       if Position < Scroll.Position then
@@ -524,12 +570,30 @@ begin
   inherited Destroy;
 end;
 
+{$IFDEF SYN_LAZARUS}
+function TSynBaseCompletion.GetFontHeight:integer;
+begin
+  Result:=Form.FontHeight;
+end;
+
+procedure TSynBaseCompletion.SetFontHeight(NewFontHeight :integer);
+begin
+  Form.FontHeight:=NewFontHeight;
+end;
+
+function TSynBaseCompletion.GetOnSearchPosition:TSynBaseCompletionSearchPosition;
+begin
+  Result:=Form.OnSearchPosition;
+end;
+
+procedure TSynBaseCompletion.SetOnSearchPosition(NewValue :TSynBaseCompletionSearchPosition);
+begin
+  Form.OnSearchPosition:=NewValue;
+end;
+{$ENDIF}
+
 procedure TSynBaseCompletion.Execute(s: string; x, y: integer);
 begin
-Writeln('[TSynBaseComplete.Execute] ');
-Writeln('s is '+s);
-Writeln('X,Y is '+inttostr(x)+','+Inttostr(y));
-
   form.top := y;
   form.left := x;
   CurrentString := s;
@@ -661,16 +725,28 @@ begin
   if Assigned(Form) then Form.Deactivate;
 end;
 
-procedure PretyTextOut(c: TCanvas; x, y: integer; s: string);
+procedure PrettyTextOut(c: TCanvas; x, y: integer; s: string);
 var
   i: integer;
+  {$IFNDEF SYN_LAZARUS}
   b: TBrush;
   f: TFont;
+  {$ELSE}
+  OldFontColor: TColor;
+  OldFontStyle: TFontStyles;
+  {$ENDIF}
 begin
+  {$IFDEF SYN_LAZARUS}
+  OldFontColor:=c.Font.Color;
+  OldFontStyle:=c.Font.Style;
+  c.Font.Style:=[];
+  c.Font.Color:=clBlack;
+  {$ELSE}
   b := TBrush.Create;
   b.Assign(c.Brush);
   f := TFont.Create;
   f.Assign(c.Font);
+  {$ENDIF}
   try
     i := 1;
     while i <= Length(s) do
@@ -701,10 +777,15 @@ begin
       end;
   except
   end;
+  {$IFDEF SYN_LAZARUS}
+  c.Font.Color:=OldFontColor;
+  c.Font.Style:=OldFontStyle;
+  {$ELSE}
   c.Font.Assign(f);
   f.Free;
   c.Brush.Assign(b);
   b.Free;
+  {$ENDIF}
 end;
 
 { TSynCompletion }
@@ -783,6 +864,7 @@ end;
 procedure TSynCompletion.SetEditor(const Value: TCustomSynEdit);
 begin
   AddEditor(Value);
+  Form.FCurrentEditor:=Value;
 end;
 
 procedure TSynCompletion.Notification(AComponent: TComponent;
@@ -819,23 +901,18 @@ var
   ShortCutKey: Word;
   ShortCutShift: TShiftState;
 begin
-  Writeln('[TSynCompletion] EditorKeyDown');
-
+  if Key=VK_UNKNOWN then exit;
   ShortCutToKey(FShortCut, ShortCutKey, ShortCutShift);
+  if (Shift <> ShortCutShift) or (Key <> ShortCutKey) then exit;
 
-//inserted by shane
-  ShortCutKey := word(' ');
-  ShortCutShift := [ssCtrl];
-//shane
-
-  i := fEditors.indexOf(Sender);
+  i := fEditors.IndexOf(Sender);
   if i <> -1 then
     with sender as TCustomSynEdit do begin
       if not ReadOnly and (Shift = ShortCutShift) and (Key = ShortCutKey) then begin
         p := ClientToScreen(Point(CaretXPix, CaretYPix + LineHeight));
         Form.CurrentEditor := Sender as TCustomSynEdit;
         Execute(GetPreviousToken(Sender as TCustomSynEdit), p.x, p.y);
-        Key := 0;
+        Key := VK_UNKNOWN;
         TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).NoNextKey := true;
       end;
       if assigned(TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).kd) then
@@ -848,18 +925,13 @@ var
   s: string;
   i: integer;
 begin
-Writeln('[TSynCompletion.GetPreviousToken]');
-
   if FEditor <> nil then begin
     s := FEditor.LineText;
-    Writeln('S = '+S);
     i := FEditor.CaretX - 1;
-    Writeln('I is '+inttostr(i));
-    Writeln('Length(s) is= '+inttostr(length(s)));
     if i > length(s) then
       result := ''
     else begin
-      while (i > 0) and (s[i] > ' ') {commented out by shane and (pos(s[i], FEndOfTokenChr) = 0)} do
+      while (i > 0) and (s[i] > ' ') and (pos(s[i], FEndOfTokenChr) = 0) do
         Begin
           dec(i);
         end;
@@ -900,17 +972,21 @@ end;
 
 function TSynCompletion.GetFEditor: TCustomSynEdit;
 begin
+  {$IFDEF SYN_LAZARUS}
+  Result:=TCustomSynEdit(Form.fCurrentEditor);
+  {$ELSE}
   if EditorsCount > 0 then
     result := Editors[0]
   else
     result := nil;
+  {$ENDIF}
 end;
 
 procedure TSynCompletion.AddEditor(aEditor: TCustomSynEdit);
 var
   p: PRecordUsedToStoreEachEditorVars;
 begin
-  if fEditors.IndexOf(Editor) = -1 then begin
+  if fEditors.IndexOf(aEditor) = -1 then begin
     fEditors.Add(aEditor);
     new(p);
     p^.kp := aEditor.OnKeyPress;
@@ -1057,8 +1133,7 @@ var
   i, j, prevspace: integer;
   StartOfBlock: tpoint;
 begin
-Writeln('[TSynAutoComplete.Execute] ');
-Writeln('Token is '+Token);
+Writeln('[TSynAutoComplete.Execute] Token is "',Token,'"');
   i := AutoCompleteList.IndexOf(token);
   if i <> -1 then begin
     TRecordUsedToStoreEachEditorVars(fEditstuffs[fEditors.IndexOf(aEditor)]^).NoNextKey := true;

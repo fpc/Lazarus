@@ -117,6 +117,7 @@ begin
    gdk_Cursor_Destroy(Cursor_Hand1);
    gdk_Cursor_Destroy(Cursor_XTerm);
    gdk_Cursor_Destroy(Cursor_StdArrow);
+   gdk_Cursor_Destroy(Cursor_HSplit);
 
    gtk_object_unref(PGTKObject(FGTKToolTips));
    FGTKToolTips := nil; 
@@ -156,7 +157,8 @@ begin
    Cursor_Cross := gdk_Cursor_New(gdk_Cross);
    Cursor_Hand1 := gdk_Cursor_New(gdk_Hand1);
    Cursor_XTerm := gdk_Cursor_New(gdk_XTerm);
-   Cursor_StdArrow := gdk_Cursor_New(4);
+   Cursor_StdArrow := gdk_Cursor_New(GDK_LEft_Ptr);
+   Cursor_HSplit := gdk_Cursor_New(GDK_SB_H_DOUBLE_ARROW);
 
    gtk_key_snooper_install(@GTKKeySnooper, @FKeyStateList);
 
@@ -1022,7 +1024,9 @@ begin
      crIBeam    : gdk_window_set_cursor (pgtkWidget(TWinControl(Sender).Handle)^.window, Cursor_XTerm); 
      crHourGlass: gdk_window_set_cursor (pgtkWidget(TWinControl(Sender).Handle)^.window, Cursor_Watch);
      crDefault  : gdk_window_set_cursor (pgtkWidget(TWinControl(Sender).Handle)^.window, Cursor_StdArrow);
-  else 
+     crHSplit   : gdk_window_set_cursor (pgtkWidget(TWinControl(Sender).Handle)^.window, Cursor_HSplit);
+
+  else
      Exit;
   end; 
 end;
@@ -2677,6 +2681,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.30  2001/02/20 16:53:27  lazarus
+  Changes for wordcompletion and many other things from Mattias.
+  Shane
+
   Revision 1.29  2001/02/06 18:19:38  lazarus
   Shane
 

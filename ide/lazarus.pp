@@ -36,7 +36,8 @@ uses
   viewunit_dlg,  //dialog used to list the units in a project
   viewform_dlg,  //dialog to display the forms in the project
   editoroptions,
-  codetemplatedialog;
+  codetemplatedialog,
+  FindReplaceDialog;
 
 var
   SplashForm: TSplashForm;
@@ -58,6 +59,7 @@ begin
    Application.CreateForm(TfrmCompilerOptions, frmCompilerOptions);
    Application.CreateForm(TViewForms1, ViewForms1);
    Application.CreateForm(TEditorOptionsForm,EditorOptionsForm );
+   Application.CreateForm(TLazFindReplaceDialog, FindReplaceDlg);
    SplashForm.StartTimer;
    Application.Run;
 end.
@@ -65,6 +67,10 @@ end.
 
 {
   $Log$
+  Revision 1.13  2001/02/20 16:53:24  lazarus
+  Changes for wordcompletion and many other things from Mattias.
+  Shane
+
   Revision 1.12  2001/01/31 13:03:33  lazarus
   Commitng source with new editor.
   Shane

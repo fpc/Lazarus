@@ -834,7 +834,6 @@ begin
   end;
   fMBCSStepAside := False;
 {$ENDIF}
-
   // now fix up for any TAB characters in the line
   if Result.Y <= lines.Count then begin
     s := Lines[Result.Y - 1];
@@ -1488,12 +1487,14 @@ var
   C: char;
   Cmd: TSynEditorCommand;
 begin
+//writeln('[TCustomSynEdit.KeyDown]');
   inherited;
   Data := nil;
   C := #0;
   try
     Cmd := TranslateKeyCode(Key, Shift, Data);
     if Cmd <> ecNone then begin
+//writeln('[TCustomSynEdit.KeyDown] key translated ',cmd);
       Key := 0; // eat it.
       Include(fStateFlags, sfIgnoreNextChar);
       CommandProcessor(Cmd, C, Data);
@@ -1642,7 +1643,7 @@ exit;
   {$IFDEF SYN_LAZARUS}
   if (X>=ClientWidth-ScrollBarWidth) or (Y>=ClientHeight-ScrollBarWidth) then
   begin
-    exit;
+
   end;
   {$ENDIF}
   if MouseCapture and (sfWaitForDragging in fStateFlags) then begin
@@ -1727,7 +1728,9 @@ end;
 procedure TCustomSynEdit.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
+writeln('TCustomSynEdit.MouseUp 1');
   inherited MouseUp(Button, Shift, X, Y);
+writeln('TCustomSynEdit.MouseUp 2');
   {$IFDEF SYN_LAZARUS}
   if (X>=ClientWidth-ScrollBarWidth) or (Y>=ClientHeight-ScrollBarWidth) then
   begin

@@ -9,7 +9,6 @@ unit propedits;
     For more information see the big comment part below.
 
   ToDo:
-    -TypInfo.GetPropList is unable to work with nil. incombatibility to delphi
     -digits for floattypes -> I hope, I have guessed right
     -TIntegerSet missing -> taking my own
     -Save ColorDialog settings
@@ -21,14 +20,12 @@ unit propedits;
     -StrToInt64 has a bug. It prints infinitly "something happened"
        -> taking my own
     -TFont property editors
-    -register ModalResultPropertyEditor
     -Message Dialogoues on errors
-    -TStrings property editor
 
     -many more... see XXX
 }
 
-{$mode objfpc}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -42,12 +39,7 @@ const
   srUnknown = 'unknown';
 
 type
-  // XXX
-  // The IntegerSet (a set of size of an integer)
-  // don't know if this is always valid
-  TIntegerSet = set of 0..SizeOf(Integer) * 8 - 1;
-
-  TGetStringProc = procedure(const s:string) of object;
+  TGetStringProc = procedure(const s:ansistring) of object;
 
   TComponentSelectionList = class;
 
@@ -248,7 +240,7 @@ type
     FComponents:TComponentSelectionList;
     FPropList:PInstPropList;
     FPropCount:Integer;
-    function GetPrivateDirectory:string;
+    function GetPrivateDirectory:ansistring;
     procedure SetPropEntry(Index:Integer; AInstance:TPersistent;
       APropInfo:PPropInfo);
   protected
@@ -285,32 +277,32 @@ type
     function GetAttributes:TPropertyAttributes; virtual;
     function GetComponent(Index:Integer):TPersistent;
     function GetEditLimit:Integer; virtual;
-    function GetName:string; virtual;
+    function GetName:shortstring; virtual;
     procedure GetProperties(Proc:TGetPropEditProc); virtual;
     function GetPropType:PTypeInfo;
-    function GetValue:string; virtual;
-    function GetVisualValue:string;
+    function GetValue:ansistring; virtual;
+    function GetVisualValue:ansistring;
     procedure GetValues(Proc:TGetStringProc); virtual;
     procedure Initialize; virtual;
     procedure Revert;
-    procedure SetValue(const NewValue:string); virtual;
+    procedure SetValue(const NewValue:ansistring); virtual;
     function ValueAvailable:Boolean;
-    procedure ListMeasureWidth(const NewValue:string; Index:integer;
+    procedure ListMeasureWidth(const NewValue:ansistring; Index:integer;
       ACanvas:TCanvas;  var AWidth:Integer); dynamic;
-    procedure ListMeasureHeight(const NewValue:string; Index:integer;
+    procedure ListMeasureHeight(const NewValue:ansistring; Index:integer;
       ACanvas:TCanvas;  var AHeight:Integer); dynamic;
-    procedure ListDrawValue(const NewValue:string; Index:integer;
+    procedure ListDrawValue(const NewValue:ansistring; Index:integer;
       ACanvas:TCanvas;  const ARect:TRect; AState: TPropEditDrawState); dynamic;
-    procedure PropMeasureHeight(const NewValue:string;  ACanvas:TCanvas;
+    procedure PropMeasureHeight(const NewValue:ansistring;  ACanvas:TCanvas;
       var AHeight:Integer); dynamic;
     procedure PropDrawName(ACanvas:TCanvas; const ARect:TRect;
       AState:TPropEditDrawState); dynamic;
     procedure PropDrawValue(ACanvas:TCanvas; const ARect:TRect;
       AState:TPropEditDrawState); dynamic;
     property PropertyHook:TPropertyEditorHook read FPropertyHook;
-    property PrivateDirectory:string read GetPrivateDirectory;
+    property PrivateDirectory:ansistring read GetPrivateDirectory;
     property PropCount:Integer read FPropCount;
-    property FirstValue:string read GetValue write SetValue;
+    property FirstValue:ansistring read GetValue write SetValue;
   end;
 
   TPropertyEditorClass=class of TPropertyEditor;
@@ -331,8 +323,8 @@ type
 
   TIntegerPropertyEditor = class(TOrdinalPropertyEditor)
   public
-    function GetValue: string; override;
-    procedure SetValue(const NewValue: string);  override;
+    function GetValue: ansistring; override;
+    procedure SetValue(const NewValue: ansistring);  override;
   end;
 
 { TCharPropertyEditor
@@ -341,8 +333,8 @@ type
 
   TCharPropertyEditor = class(TOrdinalPropertyEditor)
   public
-    function GetValue: string; override;
-    procedure SetValue(const NewValue: string); override;
+    function GetValue: ansistring; override;
+    procedure SetValue(const NewValue: ansistring); override;
   end;
 
 { TEnumPropertyEditor
@@ -352,18 +344,18 @@ type
   TEnumPropertyEditor = class(TOrdinalPropertyEditor)
   public
     function GetAttributes: TPropertyAttributes; override;
-    function GetValue: string; override;
+    function GetValue: ansistring; override;
     procedure GetValues(Proc: TGetStringProc); override;
-    procedure SetValue(const NewValue: string); override;
+    procedure SetValue(const NewValue: ansistring); override;
   end;
 
 { TBoolPropertyEditor
   Default property editor for all boolean properties }
 
   TBoolPropertyEditor = class(TEnumPropertyEditor)
-    function GetValue: string; override;
+    function GetValue: ansistring; override;
     procedure GetValues(Proc: TGetStringProc); override;
-    procedure SetValue(const NewValue: string); override;
+    procedure SetValue(const NewValue: ansistring); override;
   end;
 
 { TInt64PropertyEditor
@@ -373,8 +365,8 @@ type
   public
     function AllEqual: Boolean; override;
     function GetEditLimit: Integer; override;
-    function GetValue: string; override;
-    procedure SetValue(const NewValue: string); override;
+    function GetValue: ansistring; override;
+    procedure SetValue(const NewValue: ansistring); override;
   end;
 
 { TFloatPropertyEditor
@@ -384,8 +376,8 @@ type
   TFloatPropertyEditor = class(TPropertyEditor)
   public
     function AllEqual: Boolean; override;
-    function GetValue: string; override;
-    procedure SetValue(const NewValue: string); override;
+    function GetValue: ansistring; override;
+    procedure SetValue(const NewValue: ansistring); override;
   end;
 
 { TStringPropertyEditor
@@ -396,8 +388,8 @@ type
   public
     function AllEqual: Boolean; override;
     function GetEditLimit: Integer; override;
-    function GetValue: string; override;
-    procedure SetValue(const NewValue: string); override;
+    function GetValue: ansistring; override;
+    procedure SetValue(const NewValue: ansistring); override;
   end;
 
 { TNestedPropertyEditor
@@ -424,10 +416,10 @@ type
     constructor Create(Parent: TPropertyEditor; AElement: Integer);
     function AllEqual: Boolean; override;
     function GetAttributes: TPropertyAttributes; override;
-    function GetName: string; override;
-    function GetValue: string; override;
+    function GetName: shortstring; override;
+    function GetValue: ansistring; override;
     procedure GetValues(Proc: TGetStringProc); override;
-    procedure SetValue(const NewValue: string); override;
+    procedure SetValue(const NewValue: ansistring); override;
    end;
 
 { TSetPropertyEditor
@@ -439,7 +431,7 @@ type
   public
     function GetAttributes: TPropertyAttributes; override;
     procedure GetProperties(Proc: TGetPropEditProc); override;
-    function GetValue: string; override;
+    function GetValue: ansistring; override;
   end;
 
 { TClassPropertyEditor
@@ -451,7 +443,7 @@ type
   public
     function GetAttributes: TPropertyAttributes; override;
     procedure GetProperties(Proc: TGetPropEditProc); override;
-    function GetValue: string; override;
+    function GetValue: ansistring; override;
   end;
 
 { TMethodPropertyEditor
@@ -463,11 +455,11 @@ type
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
     function GetEditLimit: Integer; override;
-    function GetValue: string; override;
+    function GetValue: ansistring; override;
     procedure GetValues(Proc: TGetStringProc); override;
-    procedure SetValue(const AValue: string); override;
-    function GetFormMethodName: string; virtual;
-    function GetTrimmedEventName: string;
+    procedure SetValue(const AValue: ansistring); override;
+    function GetFormMethodName: shortstring; virtual;
+    function GetTrimmedEventName: shortstring;
   end;
 
 { TComponentPropertyEditor
@@ -481,9 +473,9 @@ type
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
     function GetEditLimit: Integer; override;
-    function GetValue: string; override;
+    function GetValue: ansistring; override;
     procedure GetValues(Proc: TGetStringProc); override;
-    procedure SetValue(const NewValue: string); override;
+    procedure SetValue(const NewValue: ansistring); override;
   end;
 
 { TComponentNamePropertyEditor
@@ -494,8 +486,8 @@ type
   public
     function GetAttributes: TPropertyAttributes; override;
     function GetEditLimit: Integer; override;
-    function GetValue: string; override;
-    procedure SetValue(const NewValue: string); override;
+    function GetValue: ansistring; override;
+    procedure SetValue(const NewValue: ansistring); override;
   end;
 
 { TModalResultPropertyEditor }
@@ -503,9 +495,9 @@ type
   TModalResultPropertyEditor = class(TIntegerPropertyEditor)
   public
     function GetAttributes: TPropertyAttributes; override;
-    function GetValue: string; override;
+    function GetValue: ansistring; override;
     procedure GetValues(Proc: TGetStringProc); override;
-    procedure SetValue(const NewValue: string); override;
+    procedure SetValue(const NewValue:ansistring); override;
   end;
 
 { TColorPropertyEditor
@@ -517,13 +509,13 @@ type
   public
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
-    function GetValue: string; override;
+    function GetValue: ansistring; override;
     procedure GetValues(Proc: TGetStringProc); override;
-    procedure SetValue(const NewValue: string); override;
+    procedure SetValue(const NewValue: ansistring); override;
 
-    procedure ListMeasureWidth(const CurValue:string; Index:integer;
+    procedure ListMeasureWidth(const CurValue:ansistring; Index:integer;
       ACanvas:TCanvas;  var AWidth:Integer);  override;
-    procedure ListDrawValue(const CurValue:string; Index:integer;
+    procedure ListDrawValue(const CurValue:ansistring; Index:integer;
       ACanvas:TCanvas;  const ARect:TRect; AState: TPropEditDrawState); override;
     procedure PropDrawValue(ACanvas:TCanvas; const ARect:TRect;
       AState:TPropEditDrawState); override;
@@ -534,9 +526,9 @@ type
 
   TBrushStylePropertyEditor = class(TEnumPropertyEditor)
   public
-    procedure ListMeasureWidth(const CurValue: string; Index:integer;
+    procedure ListMeasureWidth(const CurValue: ansistring; Index:integer;
       ACanvas: TCanvas;  var AWidth: Integer); override;
-    procedure ListDrawValue(const CurValue: string; Index:integer;
+    procedure ListDrawValue(const CurValue: ansistring; Index:integer;
       ACanvas: TCanvas;  const ARect: TRect; AState: TPropEditDrawState); override;
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
       AState:TPropEditDrawState); override;
@@ -547,9 +539,9 @@ type
 
   TPenStylePropertyEditor = class(TEnumPropertyEditor)
   public
-    procedure ListMeasureWidth(const CurValue: string; Index:integer;
+    procedure ListMeasureWidth(const CurValue: ansistring; Index:integer;
       ACanvas: TCanvas;  var AWidth: Integer); override;
-    procedure ListDrawValue(const CurValue: string; Index:integer;
+    procedure ListDrawValue(const CurValue: ansistring; Index:integer;
       ACanvas: TCanvas;  const ARect: TRect; AState: TPropEditDrawState); override;
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
       AState:TPropEditDrawState); override;
@@ -636,7 +628,7 @@ type
       The class will be created by calling EditorClass.Create. }
 
 procedure RegisterPropertyEditor(PropertyType:PTypeInfo;
-  ComponentClass:TClass;  const PropertyName:string;
+  ComponentClass:TClass;  const PropertyName:shortstring;
   EditorClass:TPropertyEditorClass);
 
 type
@@ -812,7 +804,8 @@ type
     FTabOrder:integer;
     FCaption:TCaption;
     FLines:TStrings;
-    function PTypeInfos(const PropName:string):PTypeInfo;
+    FModalResult:TModalResult;
+    function PTypeInfos(const PropName:shortstring):PTypeInfo;
     constructor Create;
     destructor Destroy;  override;
   published
@@ -825,6 +818,7 @@ type
     property TabOrder:integer read FTabOrder;
     property Caption:TCaption read FCaption;
     property Lines:TStrings read FLines;
+    property ModalResult:TModalResult read FModalResult write FModalResult;
   end;
 
 //==============================================================================
@@ -842,7 +836,7 @@ type
     constructor Create(AOwner: TComponent); override;
   end;
 
-procedure ShowMessageDialog(const s:string);
+procedure ShowMessageDialog(const s:ansistring);
 
 //==============================================================================
 
@@ -853,7 +847,7 @@ uses Dialogs, Math;
 //==============================================================================
 // simple error messages
 
-procedure ShowMessageDialog(const s:string);
+procedure ShowMessageDialog(const s:ansistring);
 var MessageDialog:TMessageDialog;
 begin
   MessageDialog:=TMessageDialog.Create(Application);
@@ -869,8 +863,8 @@ constructor TMessageDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   //Position:=poFormCenter;
-  Width:=400;
-  Height:=100;
+  SetBounds((Screen.Width-400) div 2,(Screen.Height-100) div 2,400,100);
+
   // OkButton
   OkButton:=TButton.Create(Self);
   with OkButton do begin
@@ -881,6 +875,7 @@ begin
     OnClick:=@OkButtonClick;
     Show;
   end;
+
   // TextLabel
   TextLabel:=TLabel.Create(Self);
   with TextLabel do begin
@@ -894,7 +889,7 @@ end;
 
 procedure TMessageDialog.OkButtonClick(Sender:TObject);
 begin
-  ModalResult:=1;
+  ModalResult:=mrOk;
 end;
 
 //==============================================================================
@@ -904,9 +899,8 @@ const
        TTypeKind = (tkUnknown,tkInteger,tkChar,tkEnumeration,
                    tkFloat,tkSet,tkMethod,tkSString,tkLString,tkAString,
                    tkWString,tkVariant,tkArray,tkRecord,tkInterface,
-                   tkClass,tkObject,tkWChar,tkBool,tkInt64,tkQWord);
-  and 2 new kinds in version VER1_1_0 :
-                   tkDynArray,tkInterfaceRaw
+                   tkClass,tkObject,tkWChar,tkBool,tkInt64,tkQWord,
+                   tkDynArray,tkInterfaceRaw);
 }
 
   PropClassMap:array[TypInfo.TTypeKind] of TPropertyEditorClass=(
@@ -938,7 +932,7 @@ const
 
 // XXX ToDo: These variables/functions have bugs. Thus I provide my own ------
 
-function StrToInt64(const s:string):int64;
+function StrToInt64(const s:ansistring):int64;
 var p:integer;
   negated:boolean;
 begin
@@ -1013,7 +1007,7 @@ begin
   Result := IntToIdent(Color, Ident, Colors);
 end;
 
-function IdentToColor(const Ident: string; var Color: Longint): Boolean;
+function IdentToColor(const Ident: shortstring; var Color: Longint): Boolean;
 begin
   Result := IdentToInt(Ident, Color, Colors);
 end;
@@ -1031,7 +1025,7 @@ begin
     Result:='$'+HexStr(Color,8);
 end;
 
-function StringToColor(const S: string): TColor;
+function StringToColor(const S: shortstring): TColor;
 begin
   if not IdentToColor(S, Longint(Result)) then
     Result := TColor(StrToInt(S));
@@ -1056,7 +1050,7 @@ type
     // XXX
     //Group:Integer;
     PropertyType:PTypeInfo;
-    PropertyName:string;
+    PropertyName:shortstring;
     ComponentClass:TClass;
     EditorClass:TPropertyEditorClass;
   end;
@@ -1155,7 +1149,7 @@ end;
 { GetComponentProperties }
 
 procedure RegisterPropertyEditor(PropertyType:PTypeInfo;
-ComponentClass:TClass;  const PropertyName:string;
+ComponentClass:TClass;  const PropertyName:shortstring;
 EditorClass:TPropertyEditorClass);
 var
   P:PPropertyClassRec;
@@ -1366,7 +1360,7 @@ end;
 
 procedure TPropertyEditor.Edit;
 type
-  TGetStrFunc=function(const StrValue:string):Integer of object;
+  TGetStrFunc=function(const StrValue:ansistring):Integer of object;
 var
   I:Integer;
   Values:TStringList;
@@ -1428,7 +1422,7 @@ begin
   Result:=255;
 end;
 
-function TPropertyEditor.GetName:string;
+function TPropertyEditor.GetName:shortstring;
 begin
   Result:=FPropList^[0].PropInfo^.Name;
 end;
@@ -1443,7 +1437,7 @@ begin
   with FPropList^[Index] do Result:=GetOrdProp(Instance,PropInfo);
 end;
 
-function TPropertyEditor.GetPrivateDirectory:string;
+function TPropertyEditor.GetPrivateDirectory:ansistring;
 begin
   Result:='';
   if PropertyHook<>nil then
@@ -1484,12 +1478,12 @@ begin
   with FPropList^[Index] do Result:=GetVariantProp(Instance,PropInfo);
 end;
 
-function TPropertyEditor.GetValue:string;
+function TPropertyEditor.GetValue:ansistring;
 begin
   Result:=srUnknown;
 end;
 
-function TPropertyEditor.GetVisualValue:string;
+function TPropertyEditor.GetVisualValue:ansistring;
 begin
   if AllEqual then
     Result:=GetValue
@@ -1574,7 +1568,7 @@ begin
       with FPropList^[I] do PropertyHook.Revert(Instance,PropInfo);
 end;
 
-procedure TPropertyEditor.SetValue(const NewValue:string);
+procedure TPropertyEditor.SetValue(const NewValue:ansistring);
 begin
 end;
 
@@ -1622,19 +1616,19 @@ end;
   object/property inspector's drop down list editor. You don't need to
   override the two measure procedures if the default width or height don't
   need to be changed. }
-procedure TPropertyEditor.ListMeasureHeight(const NewValue:string;
+procedure TPropertyEditor.ListMeasureHeight(const NewValue:ansistring;
 Index:integer;  ACanvas:TCanvas;  var AHeight:Integer);
 begin
   //
 end;
 
-procedure TPropertyEditor.ListMeasureWidth(const NewValue:string; Index:integer;
+procedure TPropertyEditor.ListMeasureWidth(const NewValue:ansistring; Index:integer;
   ACanvas:TCanvas;  var AWidth:Integer);
 begin
   //
 end;
 
-procedure TPropertyEditor.ListDrawValue(const NewValue:string; Index:integer;
+procedure TPropertyEditor.ListDrawValue(const NewValue:ansistring; Index:integer;
   ACanvas:TCanvas; const ARect:TRect; AState: TPropEditDrawState);
 var TextY:integer;
 begin
@@ -1648,7 +1642,7 @@ end;
 { these three procedures implement the default render behavior of the
   object/property inspector. You don't need to override the measure procedure
   if the default width or height don't need to be changed.  }
-procedure TPropertyEditor.PropMeasureHeight(const NewValue:string;
+procedure TPropertyEditor.PropMeasureHeight(const NewValue:ansistring;
   ACanvas:TCanvas;  var AHeight:Integer);
 begin
   //
@@ -1697,7 +1691,7 @@ end;
 
 { TIntegerPropertyEditor }
 
-function TIntegerPropertyEditor.GetValue: string;
+function TIntegerPropertyEditor.GetValue: ansistring;
 begin
   with GetTypeData(GetPropType)^ do
     if OrdType = otULong then // unsigned
@@ -1706,7 +1700,7 @@ begin
       Result := IntToStr(GetOrdValue);
 end;
 
-procedure TIntegerPropertyEditor.SetValue(const NewValue: String);
+procedure TIntegerPropertyEditor.SetValue(const NewValue: AnsiString);
 
   procedure Error(const Args: array of const);
   begin
@@ -1736,7 +1730,7 @@ end;
 
 { TCharPropertyEditor }
 
-function TCharPropertyEditor.GetValue: string;
+function TCharPropertyEditor.GetValue: ansistring;
 var
   Ch: Char;
 begin
@@ -1747,7 +1741,7 @@ begin
     Result:='#'+IntToStr(Ord(Ch));
 end;
 
-procedure TCharPropertyEditor.SetValue(const NewValue: string);
+procedure TCharPropertyEditor.SetValue(const NewValue: ansistring);
 var
   L: Longint;
 begin
@@ -1773,7 +1767,7 @@ begin
   Result := [paMultiSelect, paValueList, paSortList, paRevertable];
 end;
 
-function TEnumPropertyEditor.GetValue: string;
+function TEnumPropertyEditor.GetValue: ansistring;
 var
   L: Longint;
 begin
@@ -1787,17 +1781,20 @@ procedure TEnumPropertyEditor.GetValues(Proc: TGetStringProc);
 var
   I: Integer;
   EnumType: PTypeInfo;
+  s: ShortString;
 begin
   EnumType := GetPropType;
   with GetTypeData(EnumType)^ do
-    for I := MinValue to MaxValue do Proc(GetEnumName(EnumType, I));
+    for I := MinValue to MaxValue do begin
+      s := GetEnumName(EnumType, I);
+      Proc(s);
+    end;
 end;
 
-procedure TEnumPropertyEditor.SetValue(const NewValue: string);
+procedure TEnumPropertyEditor.SetValue(const NewValue: ansistring);
 var
   I: Integer;
 begin
-exit;
   I := GetEnumValue(GetPropType, NewValue);
   if I < 0 then begin
     {raise EPropertyError.CreateRes(@SInvalidPropertyValue)};
@@ -1808,7 +1805,7 @@ end;
 
 { TBoolPropertyEditor  }
 
-function TBoolPropertyEditor.GetValue: string;
+function TBoolPropertyEditor.GetValue: ansistring;
 begin
   if GetOrdValue = 0 then
     Result := 'False'
@@ -1822,7 +1819,7 @@ begin
   Proc('True');
 end;
 
-procedure TBoolPropertyEditor.SetValue(const NewValue: string);
+procedure TBoolPropertyEditor.SetValue(const NewValue: ansistring);
 var
   I: Integer;
 begin
@@ -1857,12 +1854,12 @@ begin
   Result := 63;
 end;
 
-function TInt64PropertyEditor.GetValue: string;
+function TInt64PropertyEditor.GetValue: ansistring;
 begin
   Result := IntToStr(GetInt64Value);
 end;
 
-procedure TInt64PropertyEditor.SetValue(const NewValue: string);
+procedure TInt64PropertyEditor.SetValue(const NewValue: ansistring);
 begin
   SetInt64Value(StrToInt64(NewValue));
 end;
@@ -1885,7 +1882,7 @@ begin
   Result := True;
 end;
 
-function TFloatPropertyEditor.GetValue: string;
+function TFloatPropertyEditor.GetValue: ansistring;
 const
   Precisions: array[TFloatType] of Integer = (7, 15, 19, 19, 19, 15, 31);
 begin
@@ -1893,7 +1890,7 @@ begin
     Precisions[GetTypeData(GetPropType)^.FloatType], 0);
 end;
 
-procedure TFloatPropertyEditor.SetValue(const NewValue: string);
+procedure TFloatPropertyEditor.SetValue(const NewValue: ansistring);
 begin
   SetFloatValue(StrToFloat(NewValue));
 end;
@@ -1903,7 +1900,7 @@ end;
 function TStringPropertyEditor.AllEqual: Boolean;
 var
   I: Integer;
-  V: string;
+  V: ansistring;
 begin
   Result := False;
   if PropCount > 1 then begin
@@ -1921,12 +1918,12 @@ begin
     Result := 255;
 end;
 
-function TStringPropertyEditor.GetValue: string;
+function TStringPropertyEditor.GetValue: ansistring;
 begin
   Result := GetStrValue;
 end;
 
-procedure TStringPropertyEditor.SetValue(const NewValue: string);
+procedure TStringPropertyEditor.SetValue(const NewValue: ansistring);
 begin
   SetStrValue(NewValue);
 end;
@@ -1954,6 +1951,12 @@ begin
   FElement := AElement;
 end;
 
+// XXX
+// The IntegerSet (a set of size of an integer)
+// don't know if this is always valid
+type
+  TIntegerSet = set of 0..SizeOf(Integer) * 8 - 1;
+
 function TSetElementPropertyEditor.AllEqual: Boolean;
 var
   I: Integer;
@@ -1977,12 +1980,12 @@ begin
   Result := [paMultiSelect, paValueList, paSortList];
 end;
 
-function TSetElementPropertyEditor.GetName: string;
+function TSetElementPropertyEditor.GetName: shortstring;
 begin
   Result := GetEnumName(GetTypeData(GetPropType)^.CompType, FElement);
 end;
 
-function TSetElementPropertyEditor.GetValue: string;
+function TSetElementPropertyEditor.GetValue: ansistring;
 var
   S: TIntegerSet;
 begin
@@ -1996,7 +1999,7 @@ begin
   Proc(BooleanIdents[True]);
 end;
 
-procedure TSetElementPropertyEditor.SetValue(const NewValue: string);
+procedure TSetElementPropertyEditor.SetValue(const NewValue: ansistring);
 var
   S: TIntegerSet;
 begin
@@ -2023,7 +2026,7 @@ begin
       Proc(TSetElementPropertyEditor.Create(Self, I));
 end;
 
-function TSetPropertyEditor.GetValue: string;
+function TSetPropertyEditor.GetValue: ansistring;
 var
   S: TIntegerSet;
   TypeInfo: PTypeInfo;
@@ -2067,7 +2070,7 @@ begin
   end;
 end;
 
-function TClassPropertyEditor.GetValue: string;
+function TClassPropertyEditor.GetValue: ansistring;
 begin
   Result:='('+GetPropType^.Name+')';
 end;
@@ -2092,7 +2095,7 @@ end;
 
 procedure TMethodPropertyEditor.Edit;
 var
-  FormMethodName: string;
+  FormMethodName: shortstring;
 begin
   FormMethodName := GetValue;
   if (FormMethodName = '')
@@ -2118,7 +2121,7 @@ begin
   Result := MaxIdentLength;
 end;
 
-function TMethodPropertyEditor.GetFormMethodName: string;
+function TMethodPropertyEditor.GetFormMethodName: shortstring;
 var I: Integer;
 begin
   Result:='';
@@ -2140,7 +2143,7 @@ begin
   Result := Result + GetTrimmedEventName;
 end;
 
-function TMethodPropertyEditor.GetTrimmedEventName: string;
+function TMethodPropertyEditor.GetTrimmedEventName: shortstring;
 begin
   Result := GetName;
   if (Length(Result) >= 2) and
@@ -2148,7 +2151,7 @@ begin
     Delete(Result,1,2);
 end;
 
-function TMethodPropertyEditor.GetValue: string;
+function TMethodPropertyEditor.GetValue: ansistring;
 begin
   Result:=PropertyHook.GetMethodName(GetMethodValue);
 end;
@@ -2158,13 +2161,13 @@ begin
   PropertyHook.GetMethods(GetTypeData(GetPropType), Proc);
 end;
 
-procedure TMethodPropertyEditor.SetValue(const AValue: string);
+procedure TMethodPropertyEditor.SetValue(const AValue: ansistring);
 
-  procedure CheckChainCall(const MethodName: string; Method: TMethod);
+  procedure CheckChainCall(const MethodName: shortstring; Method: TMethod);
   var
     Persistent: TPersistent;
     Component: TComponent;
-    InstanceMethod: string;
+    InstanceMethod: shortstring;
     Instance: TComponent;
   begin
     Persistent := GetComponent(0);
@@ -2186,7 +2189,7 @@ procedure TMethodPropertyEditor.SetValue(const AValue: string);
 
 var
   NewMethod: Boolean;
-  CurValue: string;
+  CurValue: ansistring;
   OldMethod: TMethod;
   NewMethodExists: boolean;
 begin
@@ -2233,7 +2236,7 @@ begin
   Result := MaxIdentLength;
 end;
 
-function TComponentPropertyEditor.GetValue: string;
+function TComponentPropertyEditor.GetValue: ansistring;
 var Component: TComponent;
 begin
   Component:=TComponent(GetOrdValue);
@@ -2252,7 +2255,7 @@ begin
   PropertyHook.GetComponentNames(GetTypeData(GetPropType), Proc);
 end;
 
-procedure TComponentPropertyEditor.SetValue(const NewValue: string);
+procedure TComponentPropertyEditor.SetValue(const NewValue: ansistring);
 var Component: TComponent;
 begin
   if NewValue = '' then Component := nil else
@@ -2279,22 +2282,20 @@ begin
   Result := MaxIdentLength;
 end;
 
-function TComponentNamePropertyEditor.GetValue: string;
+function TComponentNamePropertyEditor.GetValue: ansistring;
 begin
   Result:=inherited GetValue;
-  //writeln('OI: Get ComponentName Len'+IntToStr(length(Result))+',Name='''+Result+'''');
 end;
 
-procedure TComponentNamePropertyEditor.SetValue(const NewValue: string);
+procedure TComponentNamePropertyEditor.SetValue(const NewValue: ansistring);
 begin
   inherited SetValue(NewValue);
-  //writeln('OI: Set ComponentName Len'+IntToStr(length(Value))+',Name='''+Value+'''');
 end;
 
 { TModalResultPropertyEditor }
 
 const
-  ModalResults: array[mrNone..mrYesToAll] of string = (
+  ModalResults: array[mrNone..mrYesToAll] of shortstring = (
     'mrNone',
     'mrOk',
     'mrCancel',
@@ -2312,7 +2313,7 @@ begin
   Result := [paMultiSelect, paValueList, paRevertable];
 end;
 
-function TModalResultPropertyEditor.GetValue: string;
+function TModalResultPropertyEditor.GetValue: ansistring;
 var
   CurValue: Longint;
 begin
@@ -2332,7 +2333,7 @@ begin
   for I := Low(ModalResults) to High(ModalResults) do Proc(ModalResults[I]);
 end;
 
-procedure TModalResultPropertyEditor.SetValue(const NewValue: string);
+procedure TModalResultPropertyEditor.SetValue(const NewValue: ansistring);
 var
   I: Integer;
 begin
@@ -2370,7 +2371,7 @@ var
   procedure SaveCustomColors;
   var
     I, P: Integer;
-    S: string;
+    S: ansistring;
   begin
     if IniFile <> nil then
       with ColorDialog do
@@ -2406,7 +2407,7 @@ begin
   Result := [paMultiSelect, paDialog, paValueList, paRevertable];
 end;
 
-function TColorPropertyEditor.GetValue: string;
+function TColorPropertyEditor.GetValue: ansistring;
 begin
   Result := ColorToString(TColor(GetOrdValue));
 end;
@@ -2425,7 +2426,7 @@ begin
     inherited PropDrawValue(ACanvas, ARect, AState);
 end;
 
-procedure TColorPropertyEditor.ListDrawValue(const CurValue:string;
+procedure TColorPropertyEditor.ListDrawValue(const CurValue:ansistring;
 Index:integer; ACanvas:TCanvas;  const ARect:TRect; AState: TPropEditDrawState);
 
   function ColorToBorderColor(AColor: TColor): TColor;
@@ -2477,13 +2478,13 @@ begin
   end;
 end;
 
-procedure TColorPropertyEditor.ListMeasureWidth(const CurValue:string;
+procedure TColorPropertyEditor.ListMeasureWidth(const CurValue:ansistring;
   Index:integer;  ACanvas:TCanvas;  var AWidth:Integer);
 begin
   AWidth := AWidth + ACanvas.TextHeight('M') {* 2};
 end;
 
-procedure TColorPropertyEditor.SetValue(const NewValue: string);
+procedure TColorPropertyEditor.SetValue(const NewValue: ansistring);
 var
   CValue: Longint;
 begin
@@ -2504,7 +2505,7 @@ begin
     inherited PropDrawValue(ACanvas, ARect, AState);
 end;
 
-procedure TBrushStylePropertyEditor.ListDrawValue(const CurValue: string;
+procedure TBrushStylePropertyEditor.ListDrawValue(const CurValue: ansistring;
   Index:integer;  ACanvas: TCanvas; const ARect: TRect; AState:TPropEditDrawState);
 var
   vRight, vBottom: Integer;
@@ -2551,7 +2552,7 @@ begin
   end;
 end;
 
-procedure TBrushStylePropertyEditor.ListMeasureWidth(const CurValue: string;
+procedure TBrushStylePropertyEditor.ListMeasureWidth(const CurValue: ansistring;
   Index:integer;  ACanvas: TCanvas; var AWidth: Integer);
 begin
   AWidth := AWidth + ACanvas.TextHeight('A') {* 2};
@@ -2568,7 +2569,7 @@ begin
     inherited PropDrawValue(ACanvas, ARect, AState);
 end;
 
-procedure TPenStylePropertyEditor.ListDrawValue(const CurValue: string;
+procedure TPenStylePropertyEditor.ListDrawValue(const CurValue: ansistring;
   Index:integer;  ACanvas: TCanvas; const ARect: TRect; AState:TPropEditDrawState);
 var
   vRight, vTop, vBottom: Integer;
@@ -2613,7 +2614,7 @@ begin
   end;
 end;
 
-procedure TPenStylePropertyEditor.ListMeasureWidth(const CurValue: string;
+procedure TPenStylePropertyEditor.ListMeasureWidth(const CurValue: ansistring;
   Index:integer;  ACanvas: TCanvas; var AWidth: Integer);
 begin
   AWidth := AWidth + ACanvas.TextHeight('X') * 2;
@@ -2834,7 +2835,7 @@ begin
   end;
 end;
 
-function TPropertyEditorHook.GetMethodName(const Method:TMethod): SHortString;
+function TPropertyEditorHook.GetMethodName(const Method:TMethod): ShortString;
 begin
   if Assigned(FOnGetMethodName) then
     Result:=FOnGetMethodName(Method)
@@ -2994,13 +2995,12 @@ begin
   inherited Destroy;
 end;
 
-function TDummyClassForPropTypes.PTypeInfos(const PropName:string):PTypeInfo;
+function TDummyClassForPropTypes.PTypeInfos(const PropName:shortstring):PTypeInfo;
 var Index:integer;
 begin
   Index:=FCount-1;
   while (Index>=0) do begin
     Result:=FList^[Index]^.PropType;
-    //writeln(Result^.Name);
     if (uppercase(Result^.Name)=uppercase(PropName)) then exit;
     dec(Index);
   end;
@@ -3035,6 +3035,8 @@ initialization
     nil,'',TCaptionPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TStrings'),
     nil,'Lines',TStringsPropertyEditor);
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TModalResult'),
+    nil,'ModalResult',TModalResultPropertyEditor);
 
 finalization
   PropertyEditorMapperList.Free;  PropertyEditorMapperList:=nil;
@@ -3043,3 +3045,4 @@ finalization
   DummyClassForPropTypes.Free;
 
 end.
+
