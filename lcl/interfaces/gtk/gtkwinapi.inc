@@ -6490,6 +6490,7 @@ var
   CurX, CurY, CurWidth, CurHeight, CurItemHeight, BorderX, BorderY,
   NewWidth, NewHeight: integer;
   ComboPopup: PGtkScrolledWindow;
+  item_requisition: TGtkRequisition;
 begin
   Result:=true;
   if not (GtkWidgetIsA(PgtkWidget(Handle),GTK_COMBO_TYPE)) then
@@ -6505,7 +6506,9 @@ begin
     FirstChild:=PGTkList(ListWidget)^.children;
     if FirstChild<>nil then begin
       FirstChildWidget:=PGtkWidget(FirstChild^.Data);
-      CurItemHeight:=FirstChildWidget^.Allocation.Height;
+      gtk_widget_size_request(FirstChildWidget,@item_requisition);
+      CurItemHeight:=Max(FirstChildWidget^.Allocation.Height,
+                         item_requisition.Height);
       if MinItemsHeight<CurItemHeight*MinItemCount then
         MinItemsHeight:=CurItemHeight*MinItemCount;
     end;
@@ -8042,6 +8045,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.231  2003/04/11 09:05:41  mattias
+  fixed adding items on TComboBox.DropDown
+
   Revision 1.230  2003/04/03 17:42:13  mattias
   added exception handling for createpixmapindirect
 
