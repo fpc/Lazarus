@@ -873,31 +873,6 @@ begin
   Result:=FState in [dsRun,dsPause];
 end;
 
-(*
-procedure TDebugger.LoadFromXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string; const OnLoadFilename: TOnLoadFilenameFromConfig);
-begin
-  Arguments:=XMLConfig.GetValue(Path+'Arguments/Value','');
-  BreakPointGroups.LoadFromXMLConfig(XMLConfig,Path+XMLBreakPointGroupsNode+'/');
-  BreakPoints.LoadFromXMLConfig(XMLConfig,Path+XMLBreakPointsNode+'/',
-                               OnLoadFilename,@BreakPointGroups.GetGroupByName);
-  Watches.LoadFromXMLConfig(XMLConfig,Path+XMLWatchesNode+'/');
-  // the environment is controlled by the run parameters, so don't load it
-  Environment.Clear;
-end;
-
-procedure TDebugger.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-  const OnSaveFilename: TOnSaveFilenameToConfig);
-begin
-  XMLConfig.SetDeleteValue(Path+'Arguments/Value',Arguments,'');
-  BreakPointGroups.SaveToXMLConfig(XMLConfig,Path+XMLBreakPointGroupsNode+'/');
-  BreakPoints.SaveToXMLConfig(XMLConfig,Path+XMLBreakPointsNode+'/',
-                              OnSaveFilename);
-  Watches.SaveToXMLConfig(XMLConfig,Path+XMLWatchesNode+'/');
-  // the environment is controlled by the run parameters, so don't save it
-end;
-*)
-
 procedure TDebugger.Pause;
 begin
   ReqCmd(dcPause, []);
@@ -1889,13 +1864,13 @@ var
 begin
   Clear;
   NewCount:=XMLConfig.GetValue(Path+'Count',0);
-  writeln('TIDEBreakPointGroups.LoadFromXMLConfig Count=',NewCount);
+  //writeln('TIDEBreakPointGroups.LoadFromXMLConfig Count=',NewCount);
   for i:=0 to NewCount-1 do begin
     NewGroup:=TIDEBreakPointGroup(inherited Add);
     NewGroup.LoadFromXMLConfig(XMLConfig,
                                Path+'Item'+IntToStr(i+1)+'/');
     OldGroup:=FindGroupByName(NewGroup.Name,NewGroup);
-    writeln('TIDEBreakPointGroups.LoadFromXMLConfig i=',i,' ',NewGroup.Name,' OldGroup=',OldGroup<>nil);
+    //writeln('TIDEBreakPointGroups.LoadFromXMLConfig i=',i,' ',NewGroup.Name,' OldGroup=',OldGroup<>nil);
     if OldGroup<>nil then
       NewGroup.Free;
   end;
@@ -2209,11 +2184,11 @@ var
 begin
   Clear;
   NewCount:=XMLConfig.GetValue(Path+'Count',0);
-  writeln('TDBGWatches.LoadFromXMLConfig Count=',NewCount);
+  //writeln('TDBGWatches.LoadFromXMLConfig Count=',NewCount);
   for i:=0 to NewCount-1 do begin
     NewWatch:=TDBGWatch(inherited Add);
     NewWatch.LoadFromXMLConfig(XMLConfig,Path+'Item'+IntToStr(i+1)+'/');
-    writeln('TDBGWatches.LoadFromXMLConfig i=',i,' ',NewWatch.Expression);
+    //writeln('TDBGWatches.LoadFromXMLConfig i=',i,' ',NewWatch.Expression);
   end;
 end;
 
@@ -2450,6 +2425,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.43  2003/06/11 22:29:42  mattias
+  fixed realizing bounds after loading form
+
   Revision 1.42  2003/06/09 15:58:05  mattias
   implemented view call stack key and jumping to last stack frame with debug info
 
