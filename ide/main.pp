@@ -123,9 +123,11 @@ type
     procedure mnuSaveAllClicked(Sender : TObject);
     procedure mnuCloseClicked(Sender : TObject);
     procedure mnuQuitClicked(Sender : TObject);
+    procedure mnuViewInspectorClicked(Sender : TObject);
     procedure mnuViewCompilerSettingsClicked(Sender : TObject);
     Procedure mnuViewUnitsClicked(Sender : TObject);
     Procedure mnuViewFormsClicked(Sender : TObject);
+
     Procedure mnuViewColorClicked(Sender : TObject);
     Procedure mnuViewFontClicked(Sender : TObject);
     procedure mnuNewProjectClicked(Sender : TObject);
@@ -622,7 +624,7 @@ begin
 
   ObjectInspector1 := TObjectInspector.Create(Self);
   ObjectInspector1.left := 0;
-  ObjectInspector1.Top := Top+Height;
+  ObjectInspector1.Top := Top+Height+25;
   ObjectInspector1.Height := 400;
 
   ObjectInspector1.Show;
@@ -819,6 +821,7 @@ itmFileNew := TMenuItem.Create(Self);
 
   itmViewInspector := TMenuItem.Create(Self);
   itmViewInspector.Caption := 'Object Inspector';
+  itmViewInspector.OnClick := @mnuViewInspectorClicked;
   mnuView.Add(itmViewInspector);
 
   itmViewProject  := TMenuItem.Create(Self);
@@ -1750,6 +1753,15 @@ Project1.UnitList.Free;
 
 Close;
 end;
+
+
+{------------------------------------------------------------------------------}
+procedure TForm1.mnuViewInspectorClicked(Sender : TObject);
+begin
+ ObjectInspector1.Show;
+end;
+
+
 {------------------------------------------------------------------------------}
 procedure TForm1.mnuViewCompilerSettingsClicked(Sender : TObject);
 begin
@@ -2377,9 +2389,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.6  2000/11/27 18:52:37  lazarus
-  Added the Object Inspector code.
-  Added more form editor code.
+  Revision 1.7  2000/11/27 18:59:01  lazarus
+  Changed the View Inspector menu item so it works.
   Shane
 
   Revision 1.5  2000/08/10 13:22:51  lazarus
