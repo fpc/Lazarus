@@ -433,13 +433,12 @@ Begin
     End;
     WM_SIZE:
     Begin
-      Windows.GetClientRect(Window, @R);
       With TLMSize(LMessage) Do
       Begin
         Msg := LM_SIZE;
-        SizeType := Size_SourceIsInterface; //WParam;
-        Width := R.Right - R.Left;
-        Height := R.Bottom - R.Top;
+        SizeType := WParam or Size_SourceIsInterface;
+        Width := LoWord(LParam);
+        Height := HiWord(LParam);
       End;
     End;
     WM_SYSKEYDOWN:
@@ -560,6 +559,9 @@ end;
 
 {
   $Log$
+  Revision 1.39  2003/07/07 07:59:34  mattias
+  made Size_SourceIsInterface a flag
+
   Revision 1.38  2003/07/06 21:35:55  mattias
   fixed typo
 

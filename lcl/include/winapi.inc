@@ -595,17 +595,36 @@ begin
   Result := InterfaceObject.GetWindowLong(Handle, int);
 end;
 
+{------------------------------------------------------------------------------
+  Function GetWindowRect(Handle : hwnd; var Rect : TRect): Integer;
+
+  After the call, ARect will be the control area in screen coordinates.
+  That means, Left and Top will be the screen coordinate of the TopLeft pixel
+  of the Handle object and Right and Bottom will be the screen coordinate of
+  the BottomRight pixel.
+------------------------------------------------------------------------------}
 Function GetWindowRect(Handle : hwnd; var Rect : TRect): Integer;
 begin
   Result := InterfaceObject.GetWindowRect(Handle, Rect);
 end;
 
+{------------------------------------------------------------------------------
+  function GetWindowRelativePosition(Handle: hwnd;
+    var Left, Top: integer): boolean;
+
+  Returns the Left, Top, relative to the client origin of its parent.
+------------------------------------------------------------------------------}
 function GetWindowRelativePosition(Handle : hwnd;
   var Left, Top: integer): boolean;
 begin
   Result := InterfaceObject.GetWindowRelativePosition(Handle,Left,Top);
 end;
 
+{------------------------------------------------------------------------------
+  Function GetWindowSize(Handle: hwnd; var Width, Height: integer): boolean;
+
+  Returns the Width and Height
+------------------------------------------------------------------------------}
 Function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean;
 begin
   Result := InterfaceObject.GetWindowSize(Handle, Width, Height);
@@ -1640,6 +1659,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.91  2003/07/07 07:59:34  mattias
+  made Size_SourceIsInterface a flag
+
   Revision 1.90  2003/07/06 20:40:34  mattias
   TWinControl.WmSize/Move now updates interface messages smarter
 

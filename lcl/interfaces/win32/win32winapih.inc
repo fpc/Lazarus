@@ -105,6 +105,7 @@ Function GetTextMetrics(DC: HDC; Var TM: TTextMetric): Boolean; Override;
 Function GetWindowLong(Handle: HWND; Int: Integer): LongInt; Override;
 Function GetWindowOrgEx(DC: HDC; P: PPoint): Integer; Override;
 Function GetWindowRect(Handle: HWND; Var Rect: TRect): Integer; Override;
+Function GetWindowRelativePosition(Handle : HWND; var Left, Top:integer): boolean; Override;
 Function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean; override;
 
 Function HideCaret(HWnd: HWND): Boolean; Override;
@@ -177,6 +178,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.27  2003/07/07 07:59:34  mattias
+  made Size_SourceIsInterface a flag
+
   Revision 1.26  2003/07/04 10:12:16  mattias
   added default message handler to win32 interface
 

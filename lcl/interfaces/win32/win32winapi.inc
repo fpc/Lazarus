@@ -1384,6 +1384,20 @@ Begin
   Result := Integer(Windows.GetWindowRect(Handle, @Rect));
 End;
 
+{------------------------------------------------------------------------------
+  Function: GetWindowRelativePosition
+  Params:  Handle : HWND;
+  Returns: true on success
+
+  returns the current widget Left, Top, relative to the client origin of its
+  parent
+ ------------------------------------------------------------------------------}
+Function TWin32Object.GetWindowRelativePosition(Handle : HWND;
+  var Left, Top:integer): boolean;
+begin
+  Result := inherited GetWindowRelativePosition(Handle,Left,Top);
+end;
+
 Function TWin32Object.GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean;
 var
   R: TRect;
@@ -2338,6 +2352,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.44  2003/07/07 07:59:34  mattias
+  made Size_SourceIsInterface a flag
+
   Revision 1.43  2003/07/04 17:46:27  mattias
   fixed notebook positioning from Micha
 

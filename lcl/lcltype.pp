@@ -575,12 +575,12 @@ const
   SWP_NOACTIVATE = 5;
 
 { WMSIZE Message Constants}
-  Size_Restored = 0;
+  Size_Restored = 0; // the default
   Size_Minimized = 1;
   Size_Maximized = 2;
   Size_MaxShow = 3;
   Size_MaxHide = 4;
-  Size_SourceIsInterface = 128;
+  Size_SourceIsInterface = 128; // this is flag. Can be combined with the above
 
   SIZENORMAL = Size_Restored;
   SIZEICONIC = Size_Minimized;
@@ -589,7 +589,8 @@ const
   SIZEZOOMHIDE = Size_MaxHide;
   
 { WMMove Message Constants }
-  Move_SourceIsInterface = 128;
+  Move_Default = 0;
+  Move_SourceIsInterface = 128; // this is flag. Can be combined with the above
 
 { Window Styles }
   WS_OVERLAPPED = 0;
@@ -1812,6 +1813,9 @@ end.
 
 {
   $Log$
+  Revision 1.40  2003/07/07 07:59:34  mattias
+  made Size_SourceIsInterface a flag
+
   Revision 1.39  2003/07/02 10:02:51  mattias
   fixed TPaintStruct
 

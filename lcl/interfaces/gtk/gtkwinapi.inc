@@ -5066,7 +5066,7 @@ end;
   Params:  none
   Returns: 0
   
-  After the call, Rect will be the control area in screen coordinates.
+  After the call, ARect will be the control area in screen coordinates.
   That means, Left and Top will be the screen coordinate of the TopLeft pixel
   of the Handle object and Right and Bottom will be the screen coordinate of
   the BottomRight pixel.
@@ -5104,8 +5104,7 @@ end;
   Params:  Handle : hwnd;
   Returns: true on success
 
-  returns the current widget Left, Top, relative to the client origin of its
-  parent
+  Returns the Left, Top, relative to the client origin of its parent
  ------------------------------------------------------------------------------}
 function TgtkObject.GetWindowRelativePosition(Handle : hwnd;
   var Left, Top: integer): boolean;
@@ -5123,7 +5122,7 @@ end;
   Params:  Handle : hwnd;
   Returns: true on success
 
-  returns the current widget Width and Height
+  Returns the current widget Width and Height
  ------------------------------------------------------------------------------}
 Function TgtkObject.GetWindowSize(Handle : hwnd;
   var Width, Height: integer): boolean;
@@ -8590,6 +8589,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.261  2003/07/07 07:59:34  mattias
+  made Size_SourceIsInterface a flag
+
   Revision 1.260  2003/07/06 20:40:34  mattias
   TWinControl.WmSize/Move now updates interface messages smarter
 

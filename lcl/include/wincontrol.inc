@@ -756,7 +756,7 @@ function TWinControl.GetClientRect: TRect;
                       or (FClientHeight<>NewClientRect.Bottom);
       FClientWidth:=NewClientRect.Right;
       FClientHeight:=NewClientRect.Bottom;
-      {$IFDEF VerboseClientRectBugFix}
+      {$IFDEF VerboseSizeMsg}
       writeln('StoreClientRect ',Name,':',ClassName,' ',FClientWidth,',',FClientHeight);
       {$ENDIF}
       if ClientSizeChanged then begin
@@ -767,7 +767,8 @@ function TWinControl.GetClientRect: TRect;
     end;
   end;
 
-var //r: TRect;
+var
+  //r: TRect;
   InterfaceWidth, InterfaceHeight: integer;
 begin
   if not HandleAllocated then begin
@@ -2345,7 +2346,7 @@ begin
   {$ENDIF}
   NewLeft:=Left;
   NewTop:=Top;
-  if Message.SizeType=Size_SourceIsInterface then begin
+  if (Message.SizeType and Size_SourceIsInterface)>0 then begin
     // interface widget has resized
     // -> update position and realized bounds
     NewLeft:=FBoundsRealized.Left;
@@ -2914,6 +2915,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.153  2003/07/07 07:59:34  mattias
+  made Size_SourceIsInterface a flag
+
   Revision 1.152  2003/07/06 20:40:34  mattias
   TWinControl.WmSize/Move now updates interface messages smarter
 

@@ -2425,31 +2425,17 @@ end;
   Params:   Message : TLMSize
   Returns:  nothing
 
-  event handler.
-  
-  Message.SizeType=Size_Restored is the default. All other values will result in
-  a ReAlign.
+  Event handler for LMSize messages.
+  Overriden by TWinControl.WMSize.
  ------------------------------------------------------------------------------}
 procedure TControl.WMSize(Var Message : TLMSize);
-var
-  Locked: boolean;
 begin
-  if (Message.SizeType = Size_Restored)
-  and (FWidth = Message.Width) and (FHeight = Message.Height) then exit;
-
   {$IFDEF CHECK_POSITION}
   writeln('[TControl.WMSize] Name=',Name,':',ClassName,' Message.Width=',Message.Width,' Message.Height=',Message.Height,' Width=',Width,' Height=',Height);
   {$ENDIF}
   Assert(False, Format('Trace:[TWinControl.WMSize] %s', [ClassName]));
 
-  Locked:=Parent<>nil;
-  if Locked then LockBaseBounds;
-  try
-    SetBounds(Left, Top, Message.Width, Message.Height);
-    if not (csLoading in ComponentState) then Resize;
-  finally
-    if Locked then UnlockBaseBounds;
-  end;
+  SetBoundsKeepBase(Left,Top,Message.Width,Message.Height,Parent<>nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -2463,9 +2449,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMMove(var Message: TLMMove);
 begin
-  if (Message.MoveType = 0)
-  and (FLeft = Message.XPos) and (FTop = Message.YPos) then
-    Exit;
   {$IFDEF CHECK_POSITION}
   writeln('[TControl.WMMove] Name=',Name,':',ClassName,' Message.XPos=',Message.XPos,' Message.YPos=',Message.YPos,' OldLeft=',Left,' OldTop=',Top);
   {$ENDIF}
@@ -2483,6 +2466,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.142  2003/07/07 07:59:34  mattias
+  made Size_SourceIsInterface a flag
+
   Revision 1.141  2003/07/06 20:40:34  mattias
   TWinControl.WmSize/Move now updates interface messages smarter
 
