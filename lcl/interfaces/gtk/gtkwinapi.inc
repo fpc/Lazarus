@@ -2314,6 +2314,7 @@ end;
 
 function MessageButtonClicked(Widget : PGtkWidget; data: gPointer) : GBoolean; cdecl;
 begin
+writeln('[MessageButtonClicked] ',Integer(data^),' ',Integer(gtk_object_get_data(PGtkObject(Widget), 'modal_result')));
   if Integer(data^) = 0 then
     Integer(data^):= Integer(gtk_object_get_data(PGtkObject(Widget), 'modal_result'));
   Result:=false;
@@ -2411,7 +2412,7 @@ begin
   gtk_window_set_modal(PGtkWindow(Dialog), true);  
   gtk_widget_show_all(Dialog);
   while ADialogResult = 0 do begin
-    Application.ProcessMessages;
+    Application.HandleMessage;
   end;
   gtk_widget_destroy(Dialog);
   Result:= ADialogResult;
@@ -3106,7 +3107,9 @@ begin
     then begin
 //writeln('> TgtkObject.SetFocus E');
       gtk_window_set_focus(PGTKWindow(TopLevel), PGTKWidget(hWND));
-    end;
+//writeln('> TgtkObject.SetFocus F ',HexStr(Cardinal(GetFocus),8)
+//,' ',HexStr(Cardinal(TopLevel),8),' ',HexStr(Cardinal(hWnd),8));
+   end;
   end;
 //writeln('>  TgtkObject.SetFocus End');
 end;
@@ -3493,6 +3496,7 @@ function TgtkObject.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
 begin
   Assert(True, Format('trace:> [TgtkObject.StretchBlt] DestDC:0x%x; X:%d, Y:%d, Width:%d, Height:%d; SrcDC:0x%x; XSrc:%d, YSrc:%d, SrcWidth:%d, SrcHeight:%d; Rop:0x%x', [DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop]));
   Result := IsValidDC(DestDC) and IsValidDC(SrcDC);
+//writeln('[TgtkObject.StretchBlt] ',Result);
   if Result then begin
     gdk_gc_set_function(PDeviceContext(DestDC)^.GC, GDK_COPY);
     // TODO: Add scaling and ROP
@@ -3505,6 +3509,7 @@ begin
       gdk_draw_pixmap(PDeviceContext(DestDC)^.Drawable,PDeviceContext(DestDC)^.GC,
         PgdkDrawable(pixmapwid^.window),
         XSrc, YSrc, X, Y, SrcWidth, SrcHeight);}
+//writeln('[TgtkObject.StretchBlt] B ');
       gdk_draw_pixmap(PDeviceContext(DestDC)^.Drawable,
         PDeviceContext(DestDC)^.GC, PDeviceContext(SrcDC)^.Drawable,
         XSrc, YSrc, X, Y, SrcWidth, SrcHeight);
@@ -3513,6 +3518,7 @@ begin
         PDeviceContext(DestDC)^.GC, PDeviceContext(SrcDC)^.Drawable,
         XSrc, YSrc, X, Y, SrcWidth, SrcHeight);
     end;
+//writeln('[TgtkObject.StretchBlt] C ');
   end;
   Assert(True, Format('trace:< [TgtkObject.StretchBlt] DestDC:0x%x --> %s', [DestDC, BOOL_TEXT[Result]]));
 end;
@@ -3598,8 +3604,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.42  2001/10/10 17:55:06  lazarus
-  MG: fixed caret lost, gtk cleanup, bracket lvls, bookmark saving
+  Revision 1.43  2001/10/16 10:51:10  lazarus
+  MG: added clicked event to TButton, MessageDialog reacts to return key
 
   Revision 1.41  2001/09/30 08:34:52  lazarus
   MG: fixed mem leaks and fixed range check errors

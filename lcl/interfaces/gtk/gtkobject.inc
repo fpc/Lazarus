@@ -670,7 +670,7 @@ activate_time :	the time at which the activation event occurred.
 
       LM_SETFOCUS:
       begin
-writeln('[TgtkObject.IntSendMessage3] ',TObject(Sender).ClassName);
+writeln('[TgtkObject.IntSendMessage3] LM_SETFOCUS ',TObject(Sender).ClassName);
         if GTK_WIDGET_CAN_FOCUS(PgtkWidget(Handle)) then
           gtk_widget_grab_focus(PgtkWidget(handle))
         else
@@ -1451,7 +1451,6 @@ begin
   gFixed := PGTKObject(GetFixedWidget(gObject));
   if gFixed = nil then gFixed := gObject;
 
-
   case Msg of
     LM_SHOWWINDOW :
     begin
@@ -1499,7 +1498,6 @@ begin
 
     LM_CLICKED :
     begin
-      Assert(False, 'Trace:OBSOLETE: [TGTKObject.SetCallback] LM_CLICKED');
       ConnectSignal(gObject, 'clicked', @gtkclickedCB);
     end;
 
@@ -3094,8 +3092,8 @@ end;
  { =============================================================================
 
   $Log$
-  Revision 1.61  2001/10/10 17:55:05  lazarus
-  MG: fixed caret lost, gtk cleanup, bracket lvls, bookmark saving
+  Revision 1.62  2001/10/16 10:51:10  lazarus
+  MG: added clicked event to TButton, MessageDialog reacts to return key
 
   Revision 1.60  2001/10/09 09:46:59  lazarus
   MG: added codetools, fixed synedit unindent, fixed MCatureHandle

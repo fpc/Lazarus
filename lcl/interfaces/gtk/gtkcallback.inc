@@ -462,16 +462,15 @@ begin
 end;
 
 function gtkclickedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
-//var
-//   Mess : TLMessage;
+var
+   Mess : TLMessage;
 begin
-(*
-   Result := True;
-   EventTrace('clicked', data);
-   Assert(False, Format('Trace:OBSOLETE: [gtkclickedCB] ', []));
-   Mess.msg := LM_CLICKED;
-   Result:= DeliverMessage(Data, Mess) = 0;
-*)
+writeln('[gtkclickedCB] ',TObject(Data).ClassName);
+  EventTrace('clicked', data);
+  Assert(False, Format('Trace:OBSOLETE: [gtkclickedCB] ', []));
+  Mess.Msg := LM_CLICKED;
+  Result:= DeliverMessage(Data, Mess) = 0;
+
   Result := True;
 end;
 
@@ -1157,8 +1156,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.36  2001/10/10 17:55:04  lazarus
-  MG: fixed caret lost, gtk cleanup, bracket lvls, bookmark saving
+  Revision 1.37  2001/10/16 10:51:10  lazarus
+  MG: added clicked event to TButton, MessageDialog reacts to return key
 
   Revision 1.35  2001/10/09 09:46:58  lazarus
   MG: added codetools, fixed synedit unindent, fixed MCatureHandle

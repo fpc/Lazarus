@@ -2,6 +2,21 @@
                                    TButton
  ******************************************************************************)
 
+{------------------------------------------------------------------------------
+  Method:  TButton.AttachSignals
+  Params:  none
+  Returns: Nothing
+
+  Gets called after the window is created but before the controls are created 
+  and the cached propeties are set. 
+  This is the only place where a call to SetCallBack is made.
+ ------------------------------------------------------------------------------}
+procedure TButton.AttachSignals;
+begin
+  inherited AttachSignals;
+  SetCallback(LM_CLICKED);
+end;
+
 {------------------------------------------------------------------------------}
 {       TButton Constructor                                                    }
 {------------------------------------------------------------------------------}
@@ -94,9 +109,24 @@ begin
     FOnLeave(Self);
 end; 
 
+{------------------------------------------------------------------------------
+  Method:  TButton.CMDefaultClicked
+  Params:  None
+  Returns: Nothing
+
+  Handles the event when the button Leaves
+ ------------------------------------------------------------------------------}
+procedure TButton.WMDefaultClicked(var Message: TMessage);
+begin
+  Click;
+end;
+
 { =============================================================================
 
   $Log$
+  Revision 1.4  2001/10/16 10:51:10  lazarus
+  MG: added clicked event to TButton, MessageDialog reacts to return key
+
   Revision 1.3  2001/06/06 12:30:41  lazarus
   MG: bugfixes
 

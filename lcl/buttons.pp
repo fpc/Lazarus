@@ -58,7 +58,9 @@ type
     Procedure SetDefault(Value : Boolean);
     procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER; 
     procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
+    procedure WMDefaultClicked(var Message: TMessage); message LM_CLICKED;
   protected
+    procedure AttachSignals; override;
     procedure Click; override;      
     //TODO: make this compatible
     procedure CreateWnd; override;
@@ -235,6 +237,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.10  2001/10/16 10:51:09  lazarus
+  MG: added clicked event to TButton, MessageDialog reacts to return key
+
   Revision 1.9  2001/06/14 14:57:58  lazarus
   MG: small bugfixes and less notes
 

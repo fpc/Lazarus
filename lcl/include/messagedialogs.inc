@@ -45,6 +45,7 @@ type
     constructor Create (AOwner : TComponent); override;
     destructor Destroy; override;
     procedure Paint; override;
+    procedure FormActivate(Sender: TObject);
     property TheMessage : string read GetMessage write SetMessage;
     property DialogType : TMsgDlgType write SetDialogType;
     property Buttons : TMsgDlgButtons write SetButtons;
@@ -86,6 +87,7 @@ begin
   FButtons    := [mbOk];
   FRelayoutNeeded := false;
   FUpdateCounter := 0;
+  OnActivate:=@FormActivate;
 end;
 
 {------------------------------------------------------------------------------
@@ -100,6 +102,24 @@ begin
   FBitmap.Free;
   FMsgLines.Free;
   inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TMessageBox.FormActivate
+  Params:  ---
+  Returns: Nothing
+
+  
+ ------------------------------------------------------------------------------}
+procedure TMessageBox.FormActivate(Sender: TObject);
+var i: integer;
+begin
+  for i:=0 to ComponentCount-1 do begin
+    if (Components[i] is TBitBtn) and (TBitBtn(Components[i]).Default) then begin
+  //    TBitBtn(Components[i]).SetFocus;
+      break;
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -231,7 +251,8 @@ var
   LabelHeight : integer;
   TempLabel   : TLabel;     // temporary label components
   LabelIndex  : integer;
-  i, j        : integer;
+  i, j          : integer;
+  ButtonIndex : integer;
 begin
   if FUpdateCounter>0 then exit;
   
@@ -257,7 +278,7 @@ begin
   reqWidth:=reqBtnWidth;
   if reqWidth < LabelWidth then reqWidth:=LabelWidth;
   LabelLeft := ((reqWidth - LabelWidth) div 2) + cMinLeft;
-  ButtonLeft := ((reqWidth - reqBtnWidth) div 2) + cMinLeft + (25 div 2);
+  ButtonLeft := cMinLeft + ((reqWidth - reqBtnWidth) div 2) + (25 div 2);
 
   // set size of form
   SetBounds(Left,Top,reqWidth+cMinLeft+cLabelSpacing,
@@ -297,8 +318,10 @@ begin
   end;
   
   // create the buttons
+  ButtonIndex := -1;
   for curBtn := low(TMsgDlgBtn) to high(TMsgDlgBtn) do begin
     if curBtn in FButtons then begin
+      inc(ButtonIndex);
       aButton := TBitBtn.Create(self);
       With aButton do begin
         Parent  := Self;
@@ -314,11 +337,20 @@ begin
         Glyph   := aBitmap;
         ModalResult := cMbResult[curBtn];
         Caption := cMbCaption[curBtn];
+        if ButtonIndex=0 then Default := true;
         if curbtn in [mbOK, mbYes] then Default := true;
         Visible:=true;
       end;
     end;
   end;
+  
+  for i:=0 to ComponentCount-1 do begin
+    if (Components[i] is TBitBtn) and (TBitBtn(Components[i]).Default) then begin
+      TBitBtn(Components[i]).SetFocus;
+      break;
+    end;
+  end;
+  
   FRelayoutNeeded:=false;
 end;
 
@@ -431,6 +463,9 @@ end;
 
 {
    $Log$
+   Revision 1.7  2001/10/16 10:51:10  lazarus
+   MG: added clicked event to TButton, MessageDialog reacts to return key
+
    Revision 1.6  2001/10/07 07:35:28  lazarus
    MG: minor fix
 

@@ -1,6 +1,9 @@
 {******************************************************************************
                                    TNBPages
  ******************************************************************************}
+
+{ $DEFINE NOTEBOOK_DEBUG}
+
 {------------------------------------------------------------------------------
   TNBPages Constructor
  ------------------------------------------------------------------------------}
@@ -53,7 +56,13 @@ begin
     Msg.Child := TPage(fPageList[Index]);
     Msg.fCompStyle := fNotebook.fCompStyle;
     Msg.Str := S;
+{$IFDEF NOTEBOOK_DEBUG}
+writeln('[TNBPages.Put] A ',Index,' ',S);
+{$ENDIF}
     CNSendMessage(LM_SETTEXT, fNotebook, @Msg);
+{$IFDEF NOTEBOOK_DEBUG}
+writeln('[TNBPages.Put] B ');
+{$ENDIF}
   end;
 end;
 
@@ -78,8 +87,10 @@ var
   NewPageIndex: integer;
 begin
   // Make sure Index is in the range of valid pages to delete 
+{$IFDEF NOTEBOOK_DEBUG}
 //writeln('TNBPages.Delete A Index=',Index);
-//writeln('TNBPages.Delete B Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
+writeln('TNBPages.Delete B Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
+{$ENDIF}
   if (Index >= 0) and
      (Index < fPageList.Count) then
   begin
@@ -109,7 +120,9 @@ begin
     if NewPageIndex>=Index then
       fNoteBook.PageIndex:=NewPageIndex-1;
   end;
-//writeln('TNBPages.Delete END Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
+{$IFDEF NOTEBOOK_DEBUG}
+writeln('TNBPages.Delete END Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
+{$ENDIF}
 end;
 
 
@@ -148,7 +161,13 @@ begin
     Msg.fCompStyle := fNotebook.fCompStyle;
     Msg.Page := Index;
 
+{$IFDEF NOTEBOOK_DEBUG}
+writeln('[TNBPages.InsertPage] A ',Index);
+{$ENDIF}
     CNSendMessage(LM_ADDPAGE, fNotebook, @Msg);
+{$IFDEF NOTEBOOK_DEBUG}
+writeln('[TNBPages.InsertPage] B ');
+{$ENDIF}
 
     fNoteBook.PageIndex := Index;
   end;
@@ -209,7 +228,13 @@ var
   n: Integer;
   Msg: TLMNotebookEvent;
 begin
+{$IFDEF NOTEBOOK_DEBUG}
+writeln('[TCustomNotebook.CreateWnd] A');
+{$ENDIF}
   inherited CreateWnd;
+{$IFDEF NOTEBOOK_DEBUG}
+writeln('[TCustomNotebook.CreateWnd] B');
+{$ENDIF}
 
   Assert(False, 'Trace:[TCustomNotebook.CreateWnd] add pages');
   for n := 0 to FPageList.Count -1 do
@@ -220,7 +245,13 @@ begin
     Msg.Child := TControl(FPageList[n]);
     Msg.fCompStyle := FCompStyle;
     Msg.Page := n;
+{$IFDEF NOTEBOOK_DEBUG}
+writeln('[TCustomNotebook.CreateWnd] C ',n);
+{$ENDIF}
     CNSendMessage(LM_ADDPAGE, Self, @Msg);
+{$IFDEF NOTEBOOK_DEBUG}
+writeln('[TCustomNotebook.CreateWnd] D');
+{$ENDIF}
   end;
 
   SetShowTabs(FShowTabs);
@@ -228,6 +259,9 @@ begin
   SetPageIndex(FPageIndex);
 
   SetCallback(LM_CHANGED);
+{$IFDEF NOTEBOOK_DEBUG}
+writeln('[TCustomNotebook.CreateWnd] END');
+{$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -283,7 +317,13 @@ begin
     Msg.Parent := Self;
     Msg.fCompStyle := fCompStyle;
     Msg.Page := Value;
+{$IFDEF NOTEBOOK_DEBUG}
+writeln('[TCustomNotebook.SetPageIndex] A');
+{$ENDIF}
     CNSendMessage(LM_SETITEMINDEX, Self, @Msg);
+{$IFDEF NOTEBOOK_DEBUG}
+writeln('[TCustomNotebook.SetPageIndex] B');
+{$ENDIF}
   end;
 end;
 
@@ -335,7 +375,13 @@ begin
     Msg.Parent := Self;
     Msg.fCompStyle := fCompStyle;
     Msg.ShowTabs := fShowTabs;
+{$IFDEF NOTEBOOK_DEBUG}
+writeln('[TCustomNotebook.SetShowTabs] A');
+{$ENDIF}
     CNSendMessage(LM_SHOWTABS, Self, @Msg);
+{$IFDEF NOTEBOOK_DEBUG}
+writeln('[TCustomNotebook.SetShowTabs] B');
+{$ENDIF}
   end;
 end;
 
@@ -353,7 +399,13 @@ begin
     Msg.fCompStyle := fCompStyle;
     Msg.TabPosition := @fTabPosition;
     //InterfaceObject.IntCNSendMessage2(LM_SETTABPOSITION, Self, nil, @fTabPosition);
+{$IFDEF NOTEBOOK_DEBUG}
+writeln('[TCustomNotebook.SetTabPosition] A');
+{$ENDIF}
     CNSendMessage(LM_SETTABPOSITION, Self, @Msg);
+{$IFDEF NOTEBOOK_DEBUG}
+writeln('[TCustomNotebook.SetTabPosition] B');
+{$ENDIF}
   end;
 end;
 
@@ -436,7 +488,11 @@ Begin
           Change;
         end;
     else
-      writeln('[TCustomNotebook.CNNotify]');
+      begin
+        writeln('');
+        writeln('[TCustomNotebook.CNNotify]');
+        writeln('');
+      end;
     end;
 end;
 
@@ -444,6 +500,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2001/10/16 10:51:10  lazarus
+  MG: added clicked event to TButton, MessageDialog reacts to return key
+
   Revision 1.9  2001/09/30 08:34:49  lazarus
   MG: fixed mem leaks and fixed range check errors
 
