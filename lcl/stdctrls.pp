@@ -264,9 +264,7 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
 
     property DropDownCount: Integer read FDropDownCount write SetDropDownCount default 8;
-    property Items: TStrings read FItems write SetItems;
     property ItemHeight: Integer read GetItemHeight write SetItemHeight;
-    property ItemIndex: integer read GetItemIndex write SetItemIndex;
     property ItemWidth: Integer read GetItemWidth write SetItemWidth;
     property MaxLength: integer read GetMaxLength write SetMaxLength default -1;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -296,10 +294,13 @@ type
     property ArrowKeysTraverseList: Boolean read FArrowKeysTraverseList
                                     write SetArrowKeysTraverseList default True;
     property Canvas: TCanvas read FCanvas;
+    property Items: TStrings read FItems write SetItems;
+    property ItemIndex: integer read GetItemIndex write SetItemIndex;
     property SelLength: integer read GetSelLength write SetSelLength;
     property SelStart: integer read GetSelStart write SetSelStart;
     property SelText: String read GetSelText write SetSelText;
     property Style: TComboBoxStyle read FStyle write SetStyle;
+    property Text;
   published
     property TabStop default true;
   end;
@@ -1182,6 +1183,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.173  2004/12/16 20:13:27  vincents
+  made some protected TCustomCombobox properties public, so they can be used by the win32 widget set.
+
   Revision 1.172  2004/12/13 16:43:37  mattias
   fixed loading project flags and added RTTI example for readonly properties
 
