@@ -1425,28 +1425,66 @@ end;
 Procedure TMainIDE.OnSrcNotebookProcessCommand(Sender: TObject;
   Command: integer;  var Handled: boolean);
 begin
+  Handled:=true;
   case Command of
    ecBuild:
     begin
-      Handled:=true;
       DoBuildProject;
     end;
    ecRun:
     begin
-      Handled:=true;
-      if DoBuildProject<>mrOk then exit;
+      if ToolStatus=itNone then
+        if DoBuildProject<>mrOk then begin
+          Handled:=false;
+          exit;
+        end;
       DoRunProject;
+    end;
+   ecPause:
+    begin
+      DoPauseProject;
+    end;
+   ecStepInto:
+    begin
+      if ToolStatus=itNone then
+        if DoBuildProject<>mrOk then begin
+          Handled:=false;
+          exit;
+        end;
+      DoStepIntoProject;
+    end;
+   ecStepOver:
+    begin
+      if ToolStatus=itNone then
+        if DoBuildProject<>mrOk then begin
+          Handled:=false;
+          exit;
+        end;
+      DoStepOverProject;
+    end;
+   ecRunToCursor:
+    begin
+      if ToolStatus=itNone then
+        if DoBuildProject<>mrOk then begin
+          Handled:=false;
+          exit;
+        end;
+      DoRunToCursor;
+    end;
+   ecStopProgram:
+    begin
+      DoStopProject;
     end;
    ecFindProcedureDefinition,ecFindProcedureMethod:
     begin
-      Handled:=true;
       DoJumpToProcedureSection;
     end;
    ecCompleteCode:
     begin
-      Handled:=true;
       DoCompleteCodeAtCursor;
     end;
+  else
+    Handled:=false;
   end;
 end;
 
@@ -4295,8 +4333,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.124  2001/10/18 13:01:30  lazarus
-  MG: fixed speedbuttons numglyphs>1 and started IDE debugging
+  Revision 1.125  2001/10/18 13:34:03  lazarus
+  MG: keys for debugging
 
   Revision 1.123  2001/10/17 13:43:15  lazarus
   MG: added find previous to source editor

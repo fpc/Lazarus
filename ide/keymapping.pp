@@ -49,6 +49,8 @@ const
   ecPause              = ecRun       + 1;
   ecStepInto          = ecPause     + 1;
   ecStepOver          = ecStepInto  + 1;
+  ecRunToCursor      = ecStepOver  + 1;
+  ecStopProgram      = ecRunToCursor + 1;
 
   ecJumpToEditor       = ecUserFirst + 300;
   ecToggleFormUnit     = ecUserFirst + 301;
@@ -315,6 +317,8 @@ begin
     ecPause: Result:= 'pause program';
     ecStepInto: Result:= 'step into';
     ecStepOver: Result:= 'step over';
+    ecRunToCursor: Result:= 'run to cursor';
+    ecStopProgram: Result:= 'stop program';
     ecJumpToEditor: Result:='jump to editor';
     ecToggleFormUnit: Result:='toggle between form and unit';
     ecGotoEditor1: Result:= 'goto editor 1';
@@ -907,6 +911,8 @@ begin
   Add('Pause program',ecPause,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add('Step into',ecStepInto,VK_F7,[],VK_UNKNOWN,[]);
   Add('Step over',ecStepOver,VK_F8,[],VK_UNKNOWN,[]);
+  Add('Run to cursor',ecStepOver,VK_F4,[],VK_UNKNOWN,[]);
+  Add('Stop program',ecStepOver,VK_F2,[SSCtrl],VK_UNKNOWN,[]);
 
   Add('Go to source editor 1',ecGotoEditor0,VK_1,[ssAlt],VK_UNKNOWN,[]);
   Add('Go to source editor 2',ecGotoEditor0,VK_2,[ssAlt],VK_UNKNOWN,[]);
