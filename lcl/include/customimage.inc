@@ -27,6 +27,7 @@ begin
   FTransparent := True;
   FPicture := TPicture.Create;
   FPicture.OnChange := @PictureChanged;
+  FUseParentCanvas := false;
   SetInitialBounds(0,0,100,100);
 end;
 
@@ -42,7 +43,7 @@ function TCustomImage.GetCanvas: TCanvas;
 var
   TempBitmap: TBitmap;
 begin
-  if FPicture.Graphic = nil then
+  if not FUseParentCanvas and (FPicture.Graphic = nil) then
   begin
     // make a new bitmap to draw on
     TempBitmap := TBitmap.Create;
@@ -55,7 +56,7 @@ begin
     end;
   end;
   // try draw on the bitmap, not on the form's canvas
-  if FPicture.Graphic is TBitmap then
+  if not FUseParentCanvas and (FPicture.Graphic is TBitmap) then
     Result := TBitmap(FPicture.Graphic).Canvas
   else
     Result := inherited Canvas;
@@ -206,6 +207,9 @@ var
   iRect : TRect;
   BackgroundColor: Integer;
 begin
+  // detect loop
+  if FUseParentCanvas then exit;
+  
   With inherited Canvas do begin
     DrawFrame;
     If Picture.Graphic = nil then
@@ -225,8 +229,13 @@ begin
     end;
     StretchDraw(iRect, Picture.Graphic);
   end;
-
-  inherited Paint;
+  
+  try
+    FUseParentCanvas := true;
+    inherited Paint;
+  finally
+    FUseParentCanvas := false;
+  end;
 end;
 
 // included by extctrls.pp

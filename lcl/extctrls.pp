@@ -492,6 +492,7 @@ type
     FProportional: Boolean;
     FTransparent: Boolean;
     FStretch: Boolean;
+    FUseParentCanvas: boolean;
     function  GetCanvas: TCanvas;
     procedure SetPicture(const AValue: TPicture);
     procedure SetCenter(Value : Boolean);
@@ -988,6 +989,9 @@ end.
 
  {
   $Log$
+  Revision 1.130  2005/01/17 12:49:48  micha
+  properly support TImage.OnPaint event, fix infinite loop
+
   Revision 1.129  2005/01/16 19:46:39  micha
   fix bug 464 and 514: create bitmap handle to back image drawing up
 
