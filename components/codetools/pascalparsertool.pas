@@ -72,12 +72,25 @@ type
     destructor Destroy; override;
   end;
 
-  TProcHeadAttribute = (phpWithStart, phpAddClassname, phpWithoutClassName,
-      phpWithoutName, phpWithVarModifiers, phpWithParameterNames,
-      phpWithDefaultValues, phpWithResultType, phpWithComments, phpInUpperCase,
-      phpWithoutBrackets, phpIgnoreForwards, phpIgnoreProcsWithBody,
-      phpOnlyWithClassname, phpFindCleanPosition, phpWithoutParamList,
-      phpCreateNodes);
+  TProcHeadAttribute = (
+      phpWithStart,          // proc keyword e.g. 'function', 'class procedure'
+      phpAddClassname,       // extract/add 'ClassName.'
+      phpWithoutClassName,   // skip classname
+      phpWithoutName,        // skip function name
+      phpWithVarModifiers,   // extract 'var', 'out', 'const'
+      phpWithParameterNames, // extract parameter names
+      phpWithDefaultValues,  // extract default values
+      phpWithResultType,     // extract colon + result type
+      phpWithComments,       // extract comments
+      phpInUpperCase,        // turn to uppercase
+      phpWithoutBrackets,    // skip start- and end-bracket of parameter list
+      phpIgnoreForwards,     // skip forward procs
+      phpIgnoreProcsWithBody,// skip procs with begin..end
+      phpOnlyWithClassname,  // skip procs without the right classname
+      phpFindCleanPosition,  // read til ExtractSearchPos
+      phpWithoutParamList,   // skip param list
+      phpCreateNodes         // create nodes during reading
+    );
   TProcHeadAttributes = set of TProcHeadAttribute;
   
   TProcHeadExtractPos = (phepNone, phepStart, phepName, phepParamList);
@@ -999,6 +1012,14 @@ begin
             Node:=Node.PriorBrother;
           end;
         end;
+      end;
+    end else begin
+      // no type -> variant
+      if (phpCreateNodes in Attr) then begin
+        CreateChildNode;
+        CurNode.Desc:=ctnVariantType;
+        CurNode.EndPos:=CurNode.StartPos;
+        EndChildNode;
       end;
     end;
     if (phpCreateNodes in Attr) then begin

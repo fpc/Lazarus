@@ -178,18 +178,22 @@ type
           var NewX, NewY, NewTopLine: integer): boolean;
 
     // functions for events in the object inspector
-    function GetCompatibleMethods(Code: TCodeBuffer; const AClassName: string;
-          TypeData: PTypeData; Proc: TGetStringProc): boolean;
-    function MethodExists(Code:TCodeBuffer; const AClassName,
-          AMethodName: string; TypeData: PTypeData): boolean;
-    function JumpToMethodBody(Code: TCodeBuffer;
+    function GetCompatiblePublishedMethods(Code: TCodeBuffer;
+          const AClassName: string; TypeData: PTypeData;
+          Proc: TGetStringProc): boolean;
+    function PublishedMethodExists(Code:TCodeBuffer; const AClassName,
+          AMethodName: string; TypeData: PTypeData;
+          var MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean
+          ): boolean;
+    function JumpToPublishedMethodBody(Code: TCodeBuffer;
           const AClassName, AMethodName: string;  TypeData: PTypeData;
           var NewCode: TCodeBuffer;
           var NewX, NewY, NewTopLine: integer): boolean;
-    function RenameMethod(Code: TCodeBuffer; const AClassName, OldMethodName,
-          NewMethodName: string; TypeData: PTypeData): boolean;
-    function CreateMethod(Code: TCodeBuffer; const AClassName,
-          NewMethodName: string; TypeData: PTypeData): boolean;
+    function RenamePublishedMethod(Code: TCodeBuffer;
+          const AClassName, OldMethodName,
+          NewMethodName: string): boolean;
+    function CreatePublishedMethod(Code: TCodeBuffer; const AClassName,
+          NewMethodName: string; ATypeInfo: PTypeInfo): boolean;
           
     // code completion = auto class completion, auto forward proc completion
     function CompleteCode(Code: TCodeBuffer; X,Y: integer;
@@ -712,11 +716,11 @@ writeln('TCodeToolManager.GuessUnclosedBlock END ');
 {$ENDIF}
 end;
 
-function TCodeToolManager.GetCompatibleMethods(Code: TCodeBuffer;
+function TCodeToolManager.GetCompatiblePublishedMethods(Code: TCodeBuffer;
   const AClassName: string; TypeData: PTypeData; Proc: TGetStringProc): boolean;
 begin
 {$IFDEF CTDEBUG}
-writeln('TCodeToolManager.GetCompatibleMethods A ',Code.Filename,' Classname=',AClassname);
+writeln('TCodeToolManager.GetCompatiblePublishedMethods A ',Code.Filename,' Classname=',AClassname);
 {$ENDIF}
   Result:=InitCurCodeTool(Code);
   if not InitCurCodeTool(Code) then exit;
@@ -728,29 +732,31 @@ writeln('TCodeToolManager.GetCompatibleMethods A ',Code.Filename,' Classname=',A
   end;
 end;
 
-function TCodeToolManager.MethodExists(Code:TCodeBuffer;
-  const AClassName, AMethodName: string;  TypeData: PTypeData): boolean;
+function TCodeToolManager.PublishedMethodExists(Code:TCodeBuffer;
+  const AClassName, AMethodName: string; TypeData: PTypeData;
+  var MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean): boolean;
 begin
 {$IFDEF CTDEBUG}
-writeln('TCodeToolManager.MethodExists A ',Code.Filename,' ',AClassName,':',AMethodName);
+writeln('TCodeToolManager.PublishedMethodExists A ',Code.Filename,' ',AClassName,':',AMethodName);
 {$ENDIF}
   Result:=InitCurCodeTool(Code);
   if not Result then exit;
   try
     Result:=FCurCodeTool.PublishedMethodExists(UpperCaseStr(AClassName),
-              UpperCaseStr(AMethodName),TypeData);
+              UpperCaseStr(AMethodName),TypeData,
+              MethodIsCompatible,MethodIsPublished,IdentIsMethod);
   except
     on e: Exception do Result:=HandleException(e);
   end;
 end;
 
-function TCodeToolManager.JumpToMethodBody(Code: TCodeBuffer;
+function TCodeToolManager.JumpToPublishedMethodBody(Code: TCodeBuffer;
   const AClassName, AMethodName: string;  TypeData: PTypeData;
   var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer): boolean;
 var NewPos: TCodeXYPosition;
 begin
 {$IFDEF CTDEBUG}
-writeln('TCodeToolManager.JumpToMethodBody A ',Code.Filename,' ',AClassName,':',AMethodName);
+writeln('TCodeToolManager.JumpToPublishedMethodBody A ',Code.Filename,' ',AClassName,':',AMethodName);
 {$ENDIF}
   Result:=InitCurCodeTool(Code);
   if not Result then exit;
@@ -767,36 +773,36 @@ writeln('TCodeToolManager.JumpToMethodBody A ',Code.Filename,' ',AClassName,':',
   end;
 end;
 
-function TCodeToolManager.RenameMethod(Code: TCodeBuffer; const AClassName,
-  OldMethodName, NewMethodName: string; TypeData: PTypeData): boolean;
+function TCodeToolManager.RenamePublishedMethod(Code: TCodeBuffer;
+  const AClassName, OldMethodName, NewMethodName: string): boolean;
 begin
 {$IFDEF CTDEBUG}
-writeln('TCodeToolManager.RenameMethod A');
+writeln('TCodeToolManager.RenamePublishedMethod A');
 {$ENDIF}
   Result:=InitCurCodeTool(Code);
   if not Result then exit;
   try
     SourceChangeCache.Clear;
     Result:=FCurCodeTool.RenamePublishedMethod(UpperCaseStr(AClassName),
-              UpperCaseStr(OldMethodName),NewMethodName,TypeData,
+              UpperCaseStr(OldMethodName),NewMethodName,
               SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
   end;
 end;
 
-function TCodeToolManager.CreateMethod(Code: TCodeBuffer; const AClassName,
-  NewMethodName: string; TypeData: PTypeData): boolean;
+function TCodeToolManager.CreatePublishedMethod(Code: TCodeBuffer;
+  const AClassName, NewMethodName: string; ATypeInfo: PTypeInfo): boolean;
 begin
 {$IFDEF CTDEBUG}
-writeln('TCodeToolManager.CreateMethod A');
+writeln('TCodeToolManager.CreatePublishedMethod A');
 {$ENDIF}
   Result:=InitCurCodeTool(Code);
   if not Result then exit;
   try
     SourceChangeCache.Clear;
     Result:=FCurCodeTool.CreatePublishedMethod(UpperCaseStr(AClassName),
-              NewMethodName,TypeData,SourceChangeCache);
+              NewMethodName,ATypeInfo,SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
   end;
@@ -1385,11 +1391,17 @@ begin
       FWriteLockStep:=-$7fffffff;
   end;
   inc(FWriteLockCount);
+{$IFDEF CTDEBUG}
+writeln('[TCodeToolManager.ActivateWriteLock] FWriteLockCount=',FWriteLockCount,' FWriteLockStep=',FWriteLockStep);
+{$ENDIF}
 end;
 
 procedure TCodeToolManager.DeactivateWriteLock;
 begin
   if FWriteLockCount>0 then dec(FWriteLockCount);
+{$IFDEF CTDEBUG}
+writeln('[TCodeToolManager.DeactivateWriteLock] FWriteLockCount=',FWriteLockCount,' FWriteLockStep=',FWriteLockStep);
+{$ENDIF}
 end;
 
 procedure TCodeToolManager.OnToolGetWriteLockInfo(var WriteLockIsSet: boolean;

@@ -52,6 +52,8 @@ type
     GetCompatibleMethodsProc: TGetStringProc;
     SearchedExprList: TExprTypeList;
     SearchedCompatibilityList: TTypeCompatibilityList;
+    function FindIdentifierNodeInClass(ClassNode: TCodeTreeNode;
+      Identifier: PChar): TCodeTreeNode;
   protected
     function InsertNewMethodToClass(ClassSectionNode: TCodeTreeNode;
         const AMethodName,NewMethod: string;
@@ -64,23 +66,26 @@ type
     function GetCompatiblePublishedMethods(ClassNode: TCodeTreeNode;
         TypeData: PTypeData; Proc: TGetStringProc): boolean;
     function PublishedMethodExists(const UpperClassName,
-        UpperMethodName: string; TypeData: PTypeData): boolean;
+        UpperMethodName: string; TypeData: PTypeData;
+        var MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean
+        ): boolean;
     function PublishedMethodExists(ClassNode: TCodeTreeNode;
-        const UpperMethodName: string; TypeData: PTypeData): boolean;
+        const UpperMethodName: string; TypeData: PTypeData;
+        var MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean
+        ): boolean;
     function JumpToPublishedMethodBody(const UpperClassName,
         UpperMethodName: string; TypeData: PTypeData;
         var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
     function RenamePublishedMethod(const UpperClassName, UpperOldMethodName,
-        NewMethodName: string; TypeData: PTypeData;
-        SourceChangeCache: TSourceChangeCache): boolean;
+        NewMethodName: string; SourceChangeCache: TSourceChangeCache): boolean;
     function RenamePublishedMethod(ClassNode: TCodeTreeNode;
-        const UpperOldMethodName, NewMethodName: string; TypeData: PTypeData;
+        const UpperOldMethodName, NewMethodName: string;
         SourceChangeCache: TSourceChangeCache): boolean;
     function CreatePublishedMethod(const UpperClassName,
-        AMethodName: string; TypeData: PTypeData;
+        AMethodName: string; ATypeInfo: PTypeInfo;
         SourceChangeCache: TSourceChangeCache): boolean;
     function CreatePublishedMethod(ClassNode: TCodeTreeNode;
-        const AMethodName: string; TypeData: PTypeData;
+        const AMethodName: string; ATypeInfo: PTypeInfo;
         SourceChangeCache: TSourceChangeCache): boolean;
 
     function MethodTypeDataToStr(TypeData: PTypeData;
@@ -88,10 +93,10 @@ type
     function CreateExprListFromMethodTypeData(TypeData: PTypeData;
         Params: TFindDeclarationParams): TExprTypeList;
     function FindPublishedMethodNodeInClass(ClassNode: TCodeTreeNode;
-        const UpperMethodName: string; TypeData: PTypeData): TCodeTreeNode;
+        const UpperMethodName: string): TFindContext;
     function FindProcNodeInImplementation(const UpperClassName,
-        UpperMethodName: string; TypeData: PTypeData;
-        BuildTreeBefore: boolean): TCodeTreeNode;
+        UpperMethodName: string; BuildTreeBefore: boolean): TCodeTreeNode;
+    function MethodTypeInfoToStr(ATypeInfo: PTypeInfo): string;
   end;
 
 
@@ -204,9 +209,7 @@ end;
 
 function TEventsCodeTool.GetCompatiblePublishedMethods(
   ClassNode: TCodeTreeNode; TypeData: PTypeData; Proc: TGetStringProc): boolean;
-var //SearchedProc: string;
-  //SectionNode, ANode: TCodeTreeNode;
-  //CurProcHead, CurProcName: string;
+var
   Params: TFindDeclarationParams;
   CompListSize: integer;
 begin
@@ -255,109 +258,63 @@ writeln('[TEventsCodeTool.GetCompatiblePublishedMethods]');
   finally
     DeactivateGlobalWriteLock;
   end;
-  {
-  SearchedProc:=MethodTypeDataToStr(TypeData,[phpInUpperCase]);
-  SectionNode:=ClassNode.FirstChild;
-  while (SectionNode<>nil) do begin
-    while (SectionNode.Desc<>ctnClassPublished) or (SectionNode.FirstChild=nil)
-    do begin
-      SectionNode:=SectionNode.NextBrother;
-      if SectionNode=nil then exit;
-    end;
-    ANode:=SectionNode.FirstChild;
-    repeat
-      if (ANode.Desc=ctnProcedure) then begin
-        CurProcHead:=ExtractProcHead(ANode,[phpInUpperCase,phpWithoutName]);
-        if (CurProcHead<>'')
-        and (CompareTextIgnoringSpace(CurProcHead,SearchedProc,true)=0) then
-        begin
-          CurProcName:=ExtractProcName(ANode,false);
-          if (CurProcName<>'') and (length(CurProcName)<256) then
-            Proc(CurProcName);
-        end;
-      end;
-      ANode:=ANode.NextBrother;
-    until ANode=nil;
-    SectionNode:=SectionNode.NextBrother;
-  end;
-  }
 end;
 
 function TEventsCodeTool.FindPublishedMethodNodeInClass(
-  ClassNode: TCodeTreeNode; const UpperMethodName: string;
-  TypeData: PTypeData): TCodeTreeNode;
+  ClassNode: TCodeTreeNode; const UpperMethodName: string): TFindContext;
 var
-  SectionNode, ANode: TCodeTreeNode;
-  SearchedProcHead, CurProcHead: string;
+  Params: TFindDeclarationParams;
 begin
-  Result:=nil;
+  Result:=CleanFindContext;
   if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (UpperMethodName='')
-  or (Scanner=nil) or (TypeData=nil) then exit;
-  SearchedProcHead:=UpperMethodName+MethodTypeDataToStr(TypeData,
-                       [phpInUpperCase]);
-{$IFDEF CTDEBUG}
-writeln('TEventsCodeTool.FindPublishedMethodNodeInClass A SearchedProcHead="',
-SearchedProcHead,'"');
-{$ENDIF}
-  BuildSubTreeForClass(ClassNode);
-  SectionNode:=ClassNode.FirstChild;
-  while (SectionNode<>nil) do begin
-    while (SectionNode.Desc<>ctnClassPublished) or (SectionNode.FirstChild=nil)
-    do begin
-      SectionNode:=SectionNode.NextBrother;
-      if SectionNode=nil then exit;
-    end;
-    ANode:=SectionNode.FirstChild;
-    repeat
-      if (ANode.Desc=ctnProcedure) then begin
-        CurProcHead:=ExtractProcHead(ANode,[phpInUpperCase]);
-{$IFDEF CTDEBUG}
-writeln('TEventsCodeTool.FindPublishedMethodNodeInClass "',SearchedProcHead,
-'"="',CurProcHead,'"');
-{$ENDIF}
-        if (CurProcHead<>'')
-        and (CompareTextIgnoringSpace(CurProcHead,SearchedProcHead,true)=0) then
-        begin
-          Result:=ANode;
-          exit;
-        end;
+  or (Scanner=nil) then exit;
+  ActivateGlobalWriteLock;
+  try
+    Params:=TFindDeclarationParams.Create;
+    try
+      Params.ContextNode:=ClassNode;
+      Params.SetIdentifier(Self,@UpperMethodName[1],nil);
+      Params.Flags:=[fdfSearchInAncestors,fdfClassPublished];
+      if FindIdentifierInContext(Params)
+      and (Params.NewNode.Desc=ctnProcedure) then begin
+        Result:=CreateFindContext(Params);
       end;
-      ANode:=ANode.NextBrother;
-    until ANode=nil;
-    SectionNode:=SectionNode.NextBrother;
+    finally
+      Params.Free;
+    end;
+  finally
+    DeactivateGlobalWriteLock;
   end;
 end;
 
 function TEventsCodeTool.FindProcNodeInImplementation(const UpperClassName,
-  UpperMethodName: string; TypeData: PTypeData;
-  BuildTreeBefore: boolean): TCodeTreeNode;
+  UpperMethodName: string; BuildTreeBefore: boolean): TCodeTreeNode;
 var SectionNode, ANode: TCodeTreeNode;
-  SearchedProcHead, CurProcHead: string;
 begin
   Result:=nil;
+  if (UpperMethodName='') or (UpperClassName='') then exit;
   if BuildTreeBefore then BuildTree(false);
   // find implementation node
-  SectionNode:=Tree.Root;
-  while (SectionNode<>nil) and (SectionNode.Desc<>ctnImplementation) do
-    SectionNode:=SectionNode.NextBrother;
+  SectionNode:=FindImplementationNode;
   if SectionNode=nil then exit;
   ANode:=SectionNode.FirstChild;
-  SearchedProcHead:=UpperClassName+'.'+UpperMethodName
-       +MethodTypeDataToStr(TypeData,[phpInUpperCase,phpWithParameterNames]);
 {$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.FindProcNodeInImplementation] SearchedProcHead=',SearchedProcHead);
+writeln('[TEventsCodeTool.FindProcNodeInImplementation] A');
 {$ENDIF}
   while (ANode<>nil) do begin
-    if (ANode.Desc=ctnProcedure) then begin
-      CurProcHead:=ExtractProcHead(ANode,[phpInUpperCase]);
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.FindProcNodeInImplementation] CurProcHead=',CurProcHead);
-{$ENDIF}
-      if (CurProcHead<>'')
-      and (CompareTextIgnoringSpace(CurProcHead,SearchedProcHead,true)=0) then
-      begin
-        Result:=ANode;
-        exit;
+    if (ANode.Desc=ctnProcedure) and (ANode.FirstChild<>nil)
+    and CompareSrcIdentifiers(ANode.FirstChild.StartPos,@UpperClassName[1])
+    then begin
+      MoveCursorToNodeStart(ANode.FirstChild);
+      ReadNextAtom; // read class name
+      ReadNextAtom; // read '.'
+      if AtomIsChar('.') then begin
+        ReadNextAtom;
+        if CompareSrcIdentifiers(CurPos.StartPos,@UpperMethodName[1]) then
+        begin
+          Result:=ANode;
+          exit;
+        end;
       end;
     end;
     ANode:=ANode.NextBrother;
@@ -365,20 +322,95 @@ writeln('[TEventsCodeTool.FindProcNodeInImplementation] CurProcHead=',CurProcHea
 end;
 
 function TEventsCodeTool.PublishedMethodExists(const UpperClassName,
-  UpperMethodName: string; TypeData: PTypeData): boolean;
+  UpperMethodName: string; TypeData: PTypeData;
+  var MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean): boolean;
 var ClassNode: TCodeTreeNode;
 begin
-  BuildTree(true);
-  if not InterfaceSectionFound then exit;
-  ClassNode:=FindClassNodeInInterface(UpperClassName,true,false);
-  Result:=PublishedMethodExists(ClassNode,UpperMethodName,TypeData);
+  ActivateGlobalWriteLock;
+  try
+{$IFDEF CTDEBUG}
+writeln('[TEventsCodeTool.PublishedMethodExists] A UpperClassName=',UpperClassName);
+{$ENDIF}
+    BuildTree(true);
+    if not InterfaceSectionFound then exit;
+    ClassNode:=FindClassNodeInInterface(UpperClassName,true,false);
+{$IFDEF CTDEBUG}
+writeln('[TEventsCodeTool.PublishedMethodExists] B ',ClassNode<>nil);
+{$ENDIF}
+    Result:=PublishedMethodExists(ClassNode,UpperMethodName,TypeData,
+               MethodIsCompatible,MethodIsPublished,IdentIsMethod);
+  finally
+    DeactivateGlobalWriteLock;
+  end;
 end;
 
 function TEventsCodeTool.PublishedMethodExists(ClassNode: TCodeTreeNode;
-  const UpperMethodName: string; TypeData: PTypeData): boolean;
+  const UpperMethodName: string; TypeData: PTypeData;
+  var MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean): boolean;
+var
+  FoundContext: TFindContext;
+  CompListSize: integer;
+  ParamCompatibility: TTypeCompatibility;
+  FirstParameterNode: TCodeTreeNode;
+  Params: TFindDeclarationParams;
 begin
-  Result:=(FindPublishedMethodNodeInClass(ClassNode,UpperMethodName,TypeData)
-            <>nil);
+  Result:=false;
+  MethodIsCompatible:=false;
+  IdentIsmethod:=false;
+  MethodIsPublished:=false;
+  ActivateGlobalWriteLock;
+  try
+    Params:=TFindDeclarationParams.Create;
+    try
+      // first search a published method definition with same name
+      Params.ContextNode:=ClassNode;
+      Params.SetIdentifier(Self,@UpperMethodName[1],nil);
+      Params.Flags:=[fdfSearchInAncestors,fdfClassPublished];
+      if FindIdentifierInContext(Params) then begin
+        IdentIsmethod:=(Params.NewNode.Desc=ctnProcedure);
+        MethodIsPublished:=(Params.NewNode.Parent.Desc=ctnClassPublished);
+        if IdentIsmethod and MethodIsPublished then begin
+          // published method with same name found
+          FoundContext:=CreateFindContext(Params);
+          // -> test for compatibility
+
+          // convert the TypeData to an expression type list
+          Params.ContextNode:=Params.NewNode;
+          SearchedExprList:=CreateExprListFromMethodTypeData(TypeData,Params);
+          // create compatibility list
+          CompListSize:=SizeOf(TTypeCompatibility)*SearchedExprList.Count;
+          if CompListSize>0 then begin
+            GetMem(SearchedCompatibilityList,CompListSize);
+          end else begin
+            SearchedCompatibilityList:=nil;
+          end;
+          try
+            // check for compatibility
+            FirstParameterNode:=FoundContext.Tool.GetFirstParameterNode(
+              FoundContext.Node);
+            ParamCompatibility:=FoundContext.Tool.IsParamListCompatible(
+              FirstParameterNode,
+              SearchedExprList,false,
+              Params,SearchedCompatibilityList);
+            if ParamCompatibility=tcExact then begin
+              MethodIsCompatible:=true;
+            end;
+          finally
+            SearchedExprList.Free;
+            SearchedExprList:=nil;
+            if SearchedCompatibilityList<>nil then
+              FreeMem(SearchedCompatibilityList);
+            SearchedCompatibilityList:=nil;
+          end;
+          Result:=true;
+        end;
+      end;
+    finally
+      Params.Free;
+    end;
+  finally
+    DeactivateGlobalWriteLock;
+  end;
 end;
 
 function TEventsCodeTool.JumpToPublishedMethodBody(const UpperClassName,
@@ -387,13 +419,12 @@ function TEventsCodeTool.JumpToPublishedMethodBody(const UpperClassName,
 var ANode: TCodeTreeNode;
 begin
   Result:=false;
-  ANode:=FindProcNodeInImplementation(UpperClassName,UpperMethodName,TypeData,
-            true);
+  ANode:=FindProcNodeInImplementation(UpperClassName,UpperMethodName,true);
   Result:=FindJumpPointInProcNode(ANode,NewPos,NewTopLine);
 end;
 
 function TEventsCodeTool.RenamePublishedMethod(const UpperClassName,
-  UpperOldMethodName, NewMethodName: string; TypeData: PTypeData;
+  UpperOldMethodName, NewMethodName: string;
   SourceChangeCache: TSourceChangeCache): boolean;
 var ClassNode: TCodeTreeNode;
 begin
@@ -401,12 +432,12 @@ begin
   if not EndOfSourceFound then exit;
   ClassNode:=FindClassNodeInInterface(UpperClassName,true,false);
   Result:=RenamePublishedMethod(ClassNode,UpperOldMethodName,NewMethodName,
-                 TypeData,SourceChangeCache);
+                                SourceChangeCache);
 end;
 
 function TEventsCodeTool.RenamePublishedMethod(ClassNode: TCodeTreeNode;
-    const UpperOldMethodName, NewMethodName: string; TypeData: PTypeData;
-    SourceChangeCache: TSourceChangeCache): boolean;
+  const UpperOldMethodName, NewMethodName: string;
+  SourceChangeCache: TSourceChangeCache): boolean;
 // rename published method in class and in procedure itself
 var ANode, ProcHeadNode: TCodeTreeNode;
   NameStart, NameEnd: integer;
@@ -414,15 +445,19 @@ var ANode, ProcHeadNode: TCodeTreeNode;
 begin
   Result:=false;
   if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (UpperOldMethodName='')
-  or (NewMethodName='') or (SourceChangeCache=nil) or (Scanner=nil)
-  or (TypeData=nil) then exit;
+  or (NewMethodName='') or (SourceChangeCache=nil) or (Scanner=nil) then
+    exit;
   SourceChangeCache.MainScanner:=Scanner;
   // rename in class
-  ANode:=FindPublishedMethodNodeInClass(ClassNode,UpperOldMethodName,TypeData);
-{$IFDEF CTDEBUG}
-writeln('TEventsCodeTool.RenamePublishedMethod A ',ANode<>nil);
-{$ENDIF}
-  if ANode=nil then exit;
+  ANode:=FindIdentifierNodeInClass(ClassNode,@UpperOldMethodName[1]);
+  if (ANode=nil) then begin
+    MoveCursorToNodeStart(ClassNode);
+    RaiseException('old method not found: '+UpperOldMethodName);
+  end;
+  if (ANode.Desc<>ctnProcedure) then begin
+    MoveCursorToNodeStart(ANode);
+    RaiseException('old method not found: '+UpperOldMethodName);
+  end;
   ProcHeadNode:=ANode.FirstChild;
   if ProcHeadNode=nil then exit;
   NameStart:=ProcHeadNode.StartPos;
@@ -433,14 +468,7 @@ writeln('TEventsCodeTool.RenamePublishedMethod A ',ANode<>nil);
       NewMethodName) then exit;
   // rename procedure itself -> find implementation node
   UpperClassName:=ExtractClassName(ClassNode,true);
-{$IFDEF CTDEBUG}
-writeln('TEventsCodeTool.RenamePublishedMethod B ClassName=',UpperClassName);
-{$ENDIF}
-  ANode:=FindProcNodeInImplementation(UpperClassName,UpperOldMethodName,
-              TypeData,false);
-{$IFDEF CTDEBUG}
-writeln('TEventsCodeTool.RenamePublishedMethod C ',ANode<>nil);
-{$ENDIF}
+  ANode:=FindProcNodeInImplementation(UpperClassName,UpperOldMethodName,false);
   if ANode=nil then exit;
   ProcHeadNode:=ANode.FirstChild;
   if ProcHeadNode=nil then exit;
@@ -448,50 +476,62 @@ writeln('TEventsCodeTool.RenamePublishedMethod C ',ANode<>nil);
   ReadNextAtom; // read class name
   ReadNextAtom; // read '.'
   ReadNextAtom; // read method name
-{$IFDEF CTDEBUG}
-writeln('TEventsCodeTool.RenamePublishedMethod D "',GetAtom,'"');
-{$ENDIF}
   Result:=SourceChangeCache.Replace(gtNone,gtNone,
       CurPos.StartPos,CurPos.EndPos,NewMethodName);
 end;
 
 function TEventsCodeTool.CreatePublishedMethod(const UpperClassName,
-  AMethodName: string; TypeData: PTypeData;
+  AMethodName: string; ATypeInfo: PTypeInfo;
   SourceChangeCache: TSourceChangeCache): boolean;
 var ClassNode: TCodeTreeNode;
 begin
-  BuildTree(false);
-  if not EndOfSourceFound then exit;
-  ClassNode:=FindClassNodeInInterface(UpperClassName,true,false);
-  Result:=CreatePublishedMethod(ClassNode,AMethodName,TypeData,
-               SourceChangeCache);
+  ActivateGlobalWriteLock;
+  try
+    BuildTree(false);
+    if not EndOfSourceFound then exit;
+    ClassNode:=FindClassNodeInInterface(UpperClassName,true,false);
+    Result:=CreatePublishedMethod(ClassNode,AMethodName,ATypeInfo,
+                 SourceChangeCache);
+  finally
+    DeactivateGlobalWriteLock;
+  end;
 end;
 
 function TEventsCodeTool.CreatePublishedMethod(ClassNode: TCodeTreeNode;
-  const AMethodName: string; TypeData: PTypeData;
+  const AMethodName: string; ATypeInfo: PTypeInfo;
   SourceChangeCache: TSourceChangeCache): boolean;
-var PublishedNode: TCodeTreeNode;
+var PublishedNode, ANode: TCodeTreeNode;
   NewMethod: string;
 begin
   Result:=false;
   if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (AMethodName='')
-  or (TypeData=nil) or (SourceChangeCache=nil) or (Scanner=nil) then exit;
-  SourceChangeCache.MainScanner:=Scanner;
-  // add method to published section
-  BuildSubTreeForClass(ClassNode);
-  PublishedNode:=ClassNode.FirstChild;
-  if PublishedNode=nil then exit;
-  if (PublishedNode.StartPos=PublishedNode.EndPos)
-  and (PublishedNode.NextBrother<>nil)
-  and (PublishedNode.NextBrother.Desc=ctnClassPublished) then
-    PublishedNode:=PublishedNode.NextBrother;
-  NewMethod:=MethodKindAsString[TypeData^.MethodKind]+' '+AMethodName+
-      MethodTypeDataToStr(TypeData,[phpWithVarModifiers,phpWithParameterNames]);
+  or (ATypeInfo=nil) or (SourceChangeCache=nil) or (Scanner=nil) then exit;
+  ActivateGlobalWriteLock;
+  try
+    // convert TypeInfo to string
+    NewMethod:=MethodTypeInfoToStr(ATypeInfo);
 {$IFDEF CTDEBUG}
 writeln('[TEventsCodeTool.CreatePublishedMethod] A NewMethod="',NewMethod,'"');
 {$ENDIF}
-  Result:=InsertNewMethodToClass(PublishedNode,AMethodName,NewMethod,
-              SourceChangeCache);
+    // add method to published section
+    SourceChangeCache.MainScanner:=Scanner;
+    BuildSubTreeForClass(ClassNode);
+    PublishedNode:=ClassNode.FirstChild;
+    if PublishedNode=nil then exit;
+    if (PublishedNode.StartPos=PublishedNode.EndPos)
+    and (PublishedNode.NextBrother<>nil)
+    and (PublishedNode.NextBrother.Desc=ctnClassPublished) then
+      PublishedNode:=PublishedNode.NextBrother;
+//    NewMethod:=MethodKindAsString[TypeData^.MethodKind]+' '+AMethodName+
+//        MethodTypeDataToStr(TypeData,[phpWithVarModifiers,phpWithParameterNames]);
+
+    // ToDo: check if parts already exists
+
+    Result:=InsertNewMethodToClass(PublishedNode,AMethodName,NewMethod,
+                SourceChangeCache);
+  finally
+    DeactivateGlobalWriteLock;
+  end;
 end;
 
 function TEventsCodeTool.InsertNewMethodToClass(
@@ -847,6 +887,66 @@ writeln('ParamCompatibility=',TypeCompatibilityNames[ParamCompatibility]);
   end;
   Result:=ifrProceedSearch;
 end;
+
+function TEventsCodeTool.MethodTypeInfoToStr(ATypeInfo: PTypeInfo): string;
+var TypeName: string;
+  Params: TFindDeclarationParams;
+begin
+  ActivateGlobalWriteLock;
+  try
+    // find method type declaration
+    TypeName:=ATypeInfo^.Name;
+    Params:=TFindDeclarationParams.Create;
+    try
+      // find method type in used units
+      Params.ContextNode:=FindMainUsesSection;
+      if Params.ContextNode=nil then
+        Params.ContextNode:=Tree.Root;
+      Params.SetIdentifier(Self,@TypeName[1],nil);
+      Params.Flags:=[fdfExceptionOnNotFound,fdfSearchInParentNodes];
+      FindIdentifierInContext(Params);
+      // find proc node
+      if Params.NewNode.Desc<>ctnTypeDefinition then begin
+        Params.NewCodeTool.MoveCursorToNodeStart(Params.NewNode);
+        Params.NewCodeTool.RaiseException('method type definition not found');
+      end;
+      Params.NewNode:=FindTypeNodeOfDefinition(Params.NewNode);
+      if Params.NewNode.Desc<>ctnProcedure then begin
+        Params.NewCodeTool.MoveCursorToNodeStart(Params.NewNode);
+        Params.NewCodeTool.RaiseException('method type definition not found');
+      end;
+      Result:=Params.NewCodeTool.ExtractProcHead(Params.NewNode,
+                  [phpWithStart, phpWithoutClassName, phpWithVarModifiers,
+                   phpWithParameterNames, phpWithResultType, phpWithComments]);
+    finally
+      Params.Free;
+    end;
+  finally
+    DeactivateGlobalWriteLock;
+  end;
+end;
+
+function TEventsCodeTool.FindIdentifierNodeInClass(ClassNode: TCodeTreeNode;
+  Identifier: PChar): TCodeTreeNode;
+var
+  VisibilityNode: TCodeTreeNode;
+begin
+  BuildSubTreeForClass(ClassNode);
+  VisibilityNode:=ClassNode.FirstChild;
+  while (VisibilityNode<>nil) do begin
+    Result:=VisibilityNode.FirstChild;
+    while Result<>nil do begin
+      if CompareSrcIdentifiers(Result.FirstChild.StartPos,Identifier) then
+      begin
+        exit;
+      end;
+      Result:=Result.NextBrother;
+    end;
+    VisibilityNode:=VisibilityNode.NextBrother;
+  end;
+  Result:=nil;
+end;
+
 
 
 end.

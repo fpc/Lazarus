@@ -271,10 +271,15 @@ type
     
     // ObjectInspector + PropertyEditorHook events
     procedure OIOnAddAvailableComponent(AComponent:TComponent;
-       var Allowed:boolean);
+      var Allowed:boolean);
     procedure OIOnSelectComponent(AComponent:TComponent);
     procedure OnPropHookGetMethods(TypeData:PTypeData; Proc:TGetStringProc);
-
+    function OnPropHookMethodExists(const AMethodName:ShortString;
+      TypeData: PTypeData;
+      var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean):boolean;
+    function OnPropHookCreateMethod(const AMethodName:ShortString;
+      ATypeInfo:PTypeInfo): TMethod;
+    
     // Environment options dialog events
     procedure OnLoadEnvironmentSettings(Sender: TObject; 
        TheEnvironmentOptions: TEnvironmentOptions);
@@ -701,6 +706,7 @@ begin
   PropertyEditorHook1:=TPropertyEditorHook.Create;
   {$IFDEF TestEvents}
   PropertyEditorHook1.OnGetMethods:=@OnPropHookGetMethods;
+  PropertyEditorHook1.OnMethodExists:=@OnPropHookMethodExists;
   {$ENDIF}
   ObjectInspector1.PropertyEditorHook:=PropertyEditorHook1;
   ObjectInspector1.Show;
@@ -904,7 +910,7 @@ begin
 writeln('');
 writeln('[TMainIDE.OnPropHookGetMethods] ************');
 {$ENDIF}
-  if not CodeToolBoss.GetCompatibleMethods(ActiveUnitInfo.Source,
+  if not CodeToolBoss.GetCompatiblePublishedMethods(ActiveUnitInfo.Source,
     ActiveUnitInfo.Form.ClassName,TypeData,Proc) then
   begin
     DoJumpToCodeToolBossError;
@@ -5826,6 +5832,49 @@ begin
   ActiveUnitInfo:=nil;
 end;
 
+function TMainIDE.OnPropHookMethodExists(const AMethodName: ShortString;
+  TypeData: PTypeData;
+  var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean): boolean;
+var ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+begin
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,true) then exit;
+{$IFDEF IDE_DEBUG}
+writeln('');
+writeln('[TMainIDE.OnPropHookMethodExists] ************');
+{$ENDIF}
+  Result:=CodeToolBoss.PublishedMethodExists(ActiveUnitInfo.Source,
+                            ActiveUnitInfo.Form.ClassName,AMethodName,TypeData,
+                            MethodIsCompatible,MethodIsPublished,IdentIsMethod);
+  if CodeToolBoss.ErrorMessage<>'' then begin
+    DoJumpToCodeToolBossError;
+  end;
+end;
+
+function TMainIDE.OnPropHookCreateMethod(const AMethodName: ShortString;
+  ATypeInfo: PTypeInfo): TMethod;
+var ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+begin
+  Result.Code:=nil;
+  Result.Data:=nil;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,true) then exit;
+{$IFDEF IDE_DEBUG}
+writeln('');
+writeln('[TMainIDE.OnPropHookCreateMethod] ************');
+{$ENDIF}
+  // create published method
+  if CodeToolBoss.CreatePublishedMethod(ActiveUnitInfo.Source,
+              ActiveUnitInfo.Form.ClassName,AMethodName,ATypeInfo) then
+  begin
+
+    // ToDo: create published method in form
+
+  end else begin
+    DoJumpToCodeToolBossError;
+  end;
+end;
+
 
 //-----------------------------------------------------------------------------
 
@@ -5840,6 +5889,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.221  2002/02/10 20:44:00  lazarus
+  MG: fixed a node cache range bug
+
   Revision 1.220  2002/02/09 22:24:50  lazarus
   MG: get compatible published methods now works
 
