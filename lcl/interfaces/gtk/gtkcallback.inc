@@ -589,7 +589,12 @@ begin
   EventTrace('destroy', data);
   Mess.msg := LM_DESTROY;
   Result := DeliverMessage(Data, Mess) = 0;
-  if longint(widget)=MCaptureHandle then Uncapturehandle;
+
+  // This is a safety check, when the normal destruction fails because of bugs,
+  // ! A wrong mouse capture can freeze X !
+  if (MCaptureHandle<>0)
+  and (GetLCLObject(widget)=GetLCLObject(Pointer(MCaptureHandle))) then
+    Uncapturehandle;
    
   // NOTE: if the destroy message is posted
   // we should post an info destroy message as well
@@ -603,8 +608,13 @@ begin
   Mess.Msg:= LM_CLOSEQUERY;
   { Message results : True - do nothing, False - destroy or hide window }
   Result:= DeliverMessage(Data, Mess) = 0;
-  if longint(widget)=MCaptureHandle then Uncapturehandle;
-  
+
+  // This is a safety check, when the normal destruction fails because of bugs,
+  // ! A wrong mouse capture can freeze X !
+  if (MCaptureHandle<>0)
+  and (GetLCLObject(widget)=GetLCLObject(Pointer(MCaptureHandle))) then
+    Uncapturehandle;
+
 end;
 
 function gtkresizeCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
@@ -1289,7 +1299,7 @@ begin
   Result := True;
   theDialog := TCommonDialog(data);
   FPointer := Pointer(theDialog.Handle);
-//   gtk_grab_remove(PgtkWidget(TCommonDialog(data).Handle));
+  
   if theDialog is TFileDialog then
   begin
     if theDialog is TOpenDialog then
@@ -1380,7 +1390,6 @@ var
 begin
   Result := True;
   theDialog := TCommonDialog(data);
-//   gtk_grab_remove(PgtkWidget(TCommonDialog(data).Handle));
   if theDialog is TFileDialog then
   begin
     TFileDialog(data).FileName := '';
@@ -1427,7 +1436,6 @@ var
 begin
   Result := True;
   theDialog := TCommonDialog(data);
-//   gtk_grab_remove(PgtkWidget(TCommonDialog(data).Handle));
   if (theDialog is TFontDialog)
   and (fdApplyButton in TFontDialog(theDialog).Options)
   and (Assigned(TFontDialog(theDialog).OnApplyClicked)) then begin
@@ -2505,6 +2513,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.149  2002/10/17 15:09:31  lazarus
+  MG: made mouse capturing more strict
+
   Revision 1.148  2002/10/15 16:01:36  lazarus
   MG: fixed timers
 
