@@ -302,6 +302,10 @@ end;
 {------------------------------------------------------------------------------}
 procedure TCustomListView.SetSelection(const AValue: TListItem);
 begin
+  if FSelected=AValue then exit;
+  // ToDo: send message to interface
+  //FSelected := AValue;
+  //DoSelectItem(FSelected, True);
 end;
 
 procedure TCustomListView.SetMultiSelect(const AValue: Boolean);
@@ -493,6 +497,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.20  2002/08/28 10:44:45  lazarus
+  MG: implemented run param environment variables
+
   Revision 1.19  2002/05/28 14:58:30  lazarus
   MG: added scrollbars for TListView
 

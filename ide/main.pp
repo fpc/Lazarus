@@ -4636,7 +4636,8 @@ begin
         WorkingDir:=ExtractFilePath(GetProjectTargetFilename);
       MacroList.SubstituteStr(WorkingDir);
       FRunProcess.CurrentDirectory:=ExpandFilename(WorkingDir);
-                                  
+      Project1.RunParameterOptions.AssignEnvironmentTo(FRunProcess.Environment);
+
       FRunProcess.Options:= [poNoConsole];
       FRunProcess.ShowWindow := swoNone;
     except
@@ -6702,6 +6703,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.355  2002/08/28 10:44:43  lazarus
+  MG: implemented run param environment variables
+
   Revision 1.354  2002/08/27 09:22:44  lazarus
   MG: not existing files will now be removed from recent lists
 

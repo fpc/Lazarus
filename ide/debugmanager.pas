@@ -463,6 +463,7 @@ begin
   
   FDebugger.FileName := LaunchingApplication;
   FDebugger.Arguments := LaunchingParams;
+  Project1.RunParameterOptions.AssignEnvironmentTo(FDebugger.Environment);
 
   if FDialogs[ddtOutput] <> nil
   then TDbgOutputForm(FDialogs[ddtOutput]).Clear;

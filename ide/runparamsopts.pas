@@ -80,6 +80,7 @@ type
     procedure Clear;
     function Load(XMLConfig: TXMLConfig; const Path: string): TModalResult;
     function Save(XMLConfig: TXMLConfig; const Path: string): TModalResult;
+    procedure AssignEnvironmentTo(Strings: TStrings);
     
     // local options
     property HostApplicationFilename: string
@@ -146,6 +147,7 @@ type
     procedure ResizeLocalPage;
     procedure ResizeEnvironmentPage;
     procedure SetOptions(NewOptions: TRunParamsOptions);
+    procedure FillListView(ListView: TListView; sl: TStringList);
     procedure FillSystemVariablesListView;
     procedure FillUserOverridesListView;
     procedure SaveToOptions;
@@ -182,7 +184,22 @@ begin
   end;
 end;
 
-
+function EnvironmentAsStringList: TStringList;
+var
+  i, SysVarCount, e: integer;
+  Variable, Value: string;
+Begin
+  Result:=TStringList.Create;
+  SysVarCount:=EnvCount;
+  for i:=0 to SysVarCount-1 do begin
+    Variable:=EnvStr(i+1);
+    e:=1;
+    while (e<=length(Variable)) and (Variable[e]<>'=') do inc(e);
+    Value:=copy(Variable,e+1,length(Variable)-e);
+    Variable:=LeftStr(Variable,e-1);
+    Result.Values[Variable]:=Value;
+  end;
+end;
 
 { TRunParamsOptions }
 
@@ -301,6 +318,27 @@ begin
     fIncludeSystemVariables);
   
   Result:=mrOk;
+end;
+
+procedure TRunParamsOptions.AssignEnvironmentTo(Strings: TStrings);
+var
+  EnvList: TStringList;
+  i: integer;
+  Variable, Value: string;
+begin
+  // get system environment
+  EnvList:=EnvironmentAsStringList;
+  try
+    // merge user overrides
+    for i:=0 to UserOverrides.Count-1 do begin
+      Variable:=UserOverrides.Names[i];
+      Value:=UserOverrides.Values[Variable];
+      EnvList.Values[Variable]:=Value;
+    end;
+    Strings.Assign(EnvList);
+  finally
+    EnvList.Free;
+  end;
 end;
 
 
@@ -604,6 +642,7 @@ begin
     SetBounds(5,UserOverridesGroupBox.Top+UserOverridesGroupBox.Height+10,w,25);
     Caption:='Include system variables';
     Checked:=false;
+    Enabled:=false;
     Visible:=true;
   end;
 end;
@@ -814,7 +853,7 @@ begin
   if ShowSysVarUserOverrideDialog(Variable,Value)=mrOk then begin
     NewLI:=UserOverridesListView.Items.Add;
     NewLI.Caption:=Variable;
-    NewLI.SubItems[0]:=Value;
+    NewLI.SubItems.Add(Value);
     UserOverridesListView.Selected:=NewLI;
   end;
 end;
@@ -910,20 +949,16 @@ begin
   IncludeSystemVariablesCheckBox.Checked:=fOptions.IncludeSystemVariables;
 end;
 
-procedure TRunParamsOptsDlg.FillSystemVariablesListView;
+procedure TRunParamsOptsDlg.FillListView(ListView: TListView; sl: TStringList);
 var
-  i, SysVarCount, e: integer;
+  i: integer;
   Variable, Value: string;
 Begin
-  with SystemVariablesListView.Items do begin
+  with ListView.Items do begin
     //BeginUpdate;
-    SysVarCount:=EnvCount;
-    for i:=0 to SysVarCount-1 do begin
-      Variable:=EnvStr(i+1);
-      e:=1;
-      while (e<=length(Variable)) and (Variable[e]<>'=') do inc(e);
-      Value:=copy(Variable,e+1,length(Variable)-e);
-      Variable:=LeftStr(Variable,e-1);
+    for i:=0 to sl.Count-1 do begin
+      Variable:=sl.Names[i];
+      Value:=sl.Values[Variable];
       if Count<=i then begin
         // add line to listview
         Add;
@@ -932,34 +967,24 @@ Begin
       Item[i].Caption:=Variable;
       Item[i].SubItems[0]:=Value;
     end;
-    while Count>EnvCount do
+    while Count>sl.Count do
       Delete(Count-1);
     //EndUpdate;
   end;
 end;
 
-procedure TRunParamsOptsDlg.FillUserOverridesListView;
+procedure TRunParamsOptsDlg.FillSystemVariablesListView;
 var
-  i: integer;
-  Variable, Value: string;
+  EnvList: TStringList;
 Begin
-  with UserOverridesListView.Items do begin
-    //BeginUpdate;
-    for i:=0 to Options.UserOverrides.Count-1 do begin
-      Variable:=Options.UserOverrides.Names[i];
-      Value:=Options.UserOverrides.Values[Variable];
-      if Count<=i then begin
-        // add line to listview
-        Add;
-        Item[i].SubItems.Add('');
-      end;
-      Item[i].Caption:=Variable;
-      Item[i].SubItems[0]:=Value;
-    end;
-    while Count>Options.UserOverrides.Count do
-      Delete(Count-1);
-    //EndUpdate;
-  end;
+  EnvList:=EnvironmentAsStringList;
+  FillListView(SystemVariablesListView,EnvList);
+  EnvList.Free;
+end;
+
+procedure TRunParamsOptsDlg.FillUserOverridesListView;
+Begin
+  FillListView(UserOverridesListView,Options.UserOverrides);
 end;
 
 

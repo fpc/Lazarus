@@ -348,6 +348,7 @@ type
     FArguments: String;
     FBreakPoints: TDBGBreakPoints;
     FBreakPointGroups: TDBGBreakPointGroups;
+    FEnvironment: TStrings;
     FExitCode: Integer;
     FExternalDebugger: String;
     FFileName: String;
@@ -362,6 +363,7 @@ type
     FOnState: TNotifyEvent;
     function  GetState: TDBGState;
     function  ReqCmd(const ACommand: TDBGCommand; const AParams: array of const): Boolean;
+    procedure SetEnvironment(const AValue: TStrings);
     procedure SetFileName(const AValue: String);
   protected
     function  CreateBreakPoints: TDBGBreakPoints; virtual;
@@ -403,6 +405,7 @@ type
     property BreakPointGroups: TDBGBreakPointGroups read FBreakPointGroups;      // list of all breakpointgroups
     property Commands: TDBGCommands read GetCommands;                            // All current available commands of the debugger
     property CallStack: TDBGCallStack read FCallStack;
+    property Environment: TStrings read FEnvironment write SetEnvironment;
     property ExitCode: Integer read FExitCode;
     property ExternalDebugger: String read FExternalDebugger;
     property FileName: String read FFileName write SetFileName;                  // The name of the exe to be debugged
@@ -457,6 +460,7 @@ begin
   FWatches := CreateWatches;
   FBreakPointGroups := TDBGBreakPointGroups.Create;
   FExitCode := 0;
+  FEnvironment:=TStringList.Create;
 end;
 
 function TDebugger.CreateBreakPoints: TDBGBreakPoints;
@@ -500,6 +504,7 @@ begin
   FreeAndNil(FLocals);     
   FreeAndNil(FCallStack);
   FreeAndNil(FWatches);
+  FreeAndNil(FEnvironment);
   inherited;
 end;
 
@@ -581,6 +586,11 @@ begin
   if ACommand in Commands
   then Result := RequestCommand(ACommand, AParams)
   else Result := False;
+end;
+
+procedure TDebugger.SetEnvironment(const AValue: TStrings);
+begin
+  FEnvironment.Assign(AValue);
 end;
 
 procedure TDebugger.Run;
@@ -1461,6 +1471,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.16  2002/08/28 10:44:44  lazarus
+  MG: implemented run param environment variables
+
   Revision 1.15  2002/05/10 06:57:47  lazarus
   MG: updated licenses
 
