@@ -6591,6 +6591,10 @@ begin
   TopLevel := gtk_widget_get_toplevel(Widget);
   {$IfDef VerboseFocus}
   write('[TgtkObject.SetFocus] B hWnd=',HexStr(Cardinal(hWnd),8));
+  write(' HndVisible=',GTK_WIDGET_VISIBLE(Widget));
+  write(' HndRealized=',GTK_WIDGET_REALIZED(Widget));
+  write(' HndMapped=',GTK_WIDGET_MAPPED(Widget));
+  writeln(''); write('   ');
   write(' TopLevel=',HexStr(Cardinal(TopLevel),8));
   write(' OldFocus=',HexStr(Cardinal(Result),8));
   AWinControl:=TWinControl(GetParentLCLObject(PGtkWidget(Result)));
@@ -6599,6 +6603,8 @@ begin
   else
     write(' OldLCLParent=nil');
   writeln('');
+  if not GTK_WIDGET_VISIBLE(Widget) then
+    RaiseException('TgtkObject.SetFocus: Widget is not visible');
   {$EndIf}
 
   if GtkWidgetIsA(TopLevel, gtk_window_get_type)
@@ -6646,22 +6652,27 @@ begin
       end;
     end;
     if (NewFocusWidget=nil) then begin
-      {$IfDef VerboseFocus}
-      writeln('  F taking default');
-      {$EndIf}
       NewFocusWidget:=Widget;
+      {$IfDef VerboseFocus}
+      writeln('  F taking default ');
+      {$EndIf}
     end;
+    {$IfDef VerboseFocus}
+    write('  G NewFocusWidget=',HexStr(Cardinal(NewFocusWidget),8));
+    write(' WidVisible=',GTK_WIDGET_VISIBLE(PGtkWidget(NewFocusWidget)));
+    write(' WidRealized=',GTK_WIDGET_REALIZED(PGtkWidget(NewFocusWidget)));
+    write(' WidMapped=',GTK_WIDGET_MAPPED(PGtkWidget(NewFocusWidget)));
+    write(' WidCanfocus=',GTK_WIDGET_CAN_FOCUS(PGtkWidget(NewFocusWidget)));
+    write(' TopLvlVisible=',GTK_WIDGET_VISIBLE(PGtkWidget(TopLevel)));
+    writeln('');
+    {$EndIf}
     if (NewFocusWidget<>nil)
     and (PGtkWindow(TopLevel)^.Focus_Widget<>NewFocusWidget)
     and (GTK_WIDGET_CAN_FOCUS(NewFocusWidget)) then begin
       {$IfDef VerboseFocus}
-      writeln('  G NewFocusWidget=',HexStr(Cardinal(NewFocusWidget),8));
+      writeln('  H SETTING NewFocusWidget=',HexStr(Cardinal(NewFocusWidget),8));
       {$EndIf}
       gtk_window_set_focus(PGtkWindow(TopLevel),NewFocusWidget);
-      {$IfDef VerboseFocus}
-      writeln('  H NewTopLevel FocusWidget=',HexStr(Cardinal(PGtkWindow(TopLevel)^.Focus_Widget),8));
-      {$EndIf}
-      //gtk_window_activate_focus(PGtkWindow(TopLevel));
       {$IfDef VerboseFocus}
       writeln('  I NewTopLevel FocusWidget=',HexStr(Cardinal(PGtkWindow(TopLevel)^.Focus_Widget),8));
       {$EndIf}
@@ -7934,6 +7945,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.221  2003/03/18 13:04:25  mattias
+  improved focus debugging output
+
   Revision 1.220  2003/03/17 20:53:16  mattias
   removed SetRadioButtonGroupMode
 
