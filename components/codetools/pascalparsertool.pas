@@ -2960,8 +2960,7 @@ begin
     if (GrandPaNode=nil) or (GrandPaNode.Desc<>ctnClass) then exit;
     GrandPaNode:=GrandPaNode.Parent;
     if GrandPaNode.Desc<>ctnTypeDefinition then exit;
-    CurPos.StartPos:=GrandPaNode.StartPos;
-    CurPos.EndPos:=CurPos.StartPos;
+    MoveCursorToCleanPos(GrandPaNode.StartPos);
     ReadNextAtom;
     if not AtomIsWord then exit;
     TheClassName:=GetAtom;

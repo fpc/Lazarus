@@ -68,6 +68,7 @@ type
     SrcLen: integer;
     CurNode: TCodeTreeNode;
     LastAtoms: TAtomRing;
+    NextPos: TAtomPosition;
     
     CheckFilesOnDisk: boolean;
     IndentSize: integer;
@@ -199,6 +200,7 @@ begin
   CurPos.StartPos:=1;
   CurPos.EndPos:=-1;
   LastAtoms.Clear;
+  NextPos.StartPos:=-1;
 end;
 
 procedure TCustomCodeTool.RaiseException(const AMessage: string);
@@ -539,11 +541,16 @@ procedure TCustomCodeTool.ReadNextAtom;
 var c1, c2: char;
   CommentLvl: integer;
 begin
-  // Skip all spaces and comments
-  CommentLvl:=0;
   if (CurPos.StartPos<CurPos.EndPos) and (CurPos.StartPos>=1) then
     LastAtoms.Add(CurPos);
+  if NextPos.StartPos>=1 then begin
+    CurPos:=NextPos;
+    NextPos.StartPos:=-1;
+    exit;
+  end;
   CurPos.StartPos:=CurPos.EndPos;
+  // Skip all spaces and comments
+  CommentLvl:=0;
   //if CurPos.StartPos<1 then CurPos.StartPos:=SrcLen+1;
   while CurPos.StartPos<=SrcLen do begin
     if IsCommentStartChar[Src[CurPos.StartPos]] then begin
@@ -747,6 +754,7 @@ begin
     UndoReadNextAtom;
     exit;
   end;
+  NextPos:=CurPos;
   // Skip all spaces and comments
   CommentLvl:=0;
   dec(CurPos.StartPos);
@@ -1009,6 +1017,7 @@ end;
 procedure TCustomCodeTool.UndoReadNextAtom;
 begin
   if LastAtoms.Count>0 then begin
+    NextPos:=CurPos;
     CurPos:=LastAtoms.GetValueAt(0);
     LastAtoms.UndoLastAdd;
   end else
@@ -1147,15 +1156,14 @@ begin
   CurPos.StartPos:=1;
   CurPos.EndPos:=1;
   LastAtoms.Clear;
+  NextPos.StartPos:=-1;
   CurNode:=nil;
   if DeleteNodes then DoDeleteNodes;
 end;
 
 procedure TCustomCodeTool.MoveCursorToNodeStart(ANode: TCodeTreeNode);
 begin
-  CurPos.StartPos:=ANode.StartPos;
-  CurPos.EndPos:=ANode.StartPos;
-  LastAtoms.Clear;
+  MoveCursorToCleanPos(ANode.StartPos);
   CurNode:=ANode;
 end;
 
@@ -1164,6 +1172,7 @@ begin
   CurPos.StartPos:=ACleanPos;
   CurPos.EndPos:=ACleanPos;
   LastAtoms.Clear;
+  NextPos.StartPos:=-1;
   CurNode:=nil;
 end;
 
@@ -1368,6 +1377,7 @@ begin
       // search first atom in line
       CurPos.StartPos:=ALineStart;
       CurPos.EndPos:=ALineStart;
+      NextPos.StartPos:=-1;
       ReadNextAtom;
       AFirstAtomStart:=CurPos.StartPos;
       // search last atom in line

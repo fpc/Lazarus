@@ -34,31 +34,27 @@ end;
 function TGraphic.Equals(Graphic: TGraphic): Boolean;
 var
   SelfImage, GraphicsImage: TMemoryStream;
+  IsEmpty: boolean;
 begin
-  Result := (Graphic <> nil);
+  Result := (Graphic <> nil) and (ClassType = Graphic.ClassType);
   if not Result then exit;
-  Result:=(ClassType = Graphic.ClassType);
-  if not Result then exit;
-  if Empty or Graphic.Empty then
-  begin
-    Result := Empty and Graphic.Empty;
-    Exit;
-  end;
-  if Result then begin
-    SelfImage := TMemoryStream.Create;
+  IsEmpty:=Empty;
+  Result:=(IsEmpty=Graphic.Empty);
+  if (not Result) or IsEmpty or (Self=Graphic) then exit;
+  // ToDo: check for same resource
+  SelfImage := TMemoryStream.Create;
+  try
+    WriteData(SelfImage);
+    GraphicsImage := TMemoryStream.Create;
     try
-      WriteData(SelfImage);
-      GraphicsImage := TMemoryStream.Create;
-      try
-        Graphic.WriteData(GraphicsImage);
-        Result := (SelfImage.Size = GraphicsImage.Size) and
-          CompareMem(SelfImage.Memory, GraphicsImage.Memory, SelfImage.Size);
-      finally
-        GraphicsImage.Free;
-      end;
+      Graphic.WriteData(GraphicsImage);
+      Result := (SelfImage.Size = GraphicsImage.Size) and
+        CompareMem(SelfImage.Memory, GraphicsImage.Memory, SelfImage.Size);
     finally
-      SelfImage.Free;
+      GraphicsImage.Free;
     end;
+  finally
+    SelfImage.Free;
   end;
 end;
 
@@ -104,17 +100,16 @@ end;
 procedure TGraphic.SetModified(Value: Boolean);
 begin
   if Value then
-    FModified := true // Changed(Self);
+    Changed(Self);
   else
     FModified := False;
 end;
 
 procedure TGraphic.SetTransparent(Value: Boolean);
 begin
-  if Value <> FTransparent then
-  begin
+  if Value <> FTransparent then begin
     FTransparent := Value;
-    //Changed(Self);
+    Changed(Self);
   end;
 end;
 
