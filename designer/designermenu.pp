@@ -95,7 +95,7 @@ type
     fSelectedDesignerMenuItem: string;
     fMenu:TMenu;
     fDefaultComponentEditor: TDefaultComponentEditor;
-    DesignerPopupMenu: TPopupMenu;
+    fDesignerPopupMenu: TPopupMenu;
     TemplateMenuForm: TTemplateMenuForm;
     function GetDesigner: TComponentEditorDesigner;
   public
@@ -109,7 +109,6 @@ type
     property DesignerMenuItemIdent: Integer read FDesignerMenuItemIdent write FDesignerMenuItemIdent;
     property SelectedDesignerMenuItem: string read FSelectedDesignerMenuItem write FSelectedDesignerMenuItem;
     property ParentCanvas: TCanvas read FParentCanvas write FParentCanvas;
-    property MainPopupMenu: TPopupMenu read DesignerPopupMenu;
     property Menu: TMenu read fMenu;
 
     // Loading menu functions and initialization function
@@ -210,72 +209,72 @@ begin
   XMLConfig:=TXMLConfig.Create(SetDirSeparators(GetPrimaryConfigPath + '/' + MenuTemplatesFile));
   
   // creates PopupMenu for and its items the menu editor
-  DesignerPopupMenu:=TPopupMenu.Create(aOwner);
+  fDesignerPopupMenu:=TPopupMenu.Create(aOwner);
   PopupMenuItem:=TMenuItem.Create(aOwner);
   PopupMenuItem.Caption:=lisMenuEditorInsertNewItemAfter;
   PopupMenuItem.OnClick:=@AddNewItemAfterClick;
-  DesignerPopupMenu.Items.Add(PopupMenuItem);
+  fDesignerPopupMenu.Items.Add(PopupMenuItem);
 
   PopupMenuItem:=TMenuItem.Create(aOwner);
   PopupMenuItem.Caption:=lisMenuEditorInsertNewItemBefore;
   PopupMenuItem.OnClick:=@AddNewItemBeforeClick;
-  DesignerPopupMenu.Items.Add(PopupMenuItem);
+  fDesignerPopupMenu.Items.Add(PopupMenuItem);
 
   PopupMenuItem:=TMenuItem.Create(aOwner);
   PopupMenuItem.Caption:=lisMenuEditorDeleteItem;
   PopupMenuItem.OnClick:=@DeleteItemClick;
-  DesignerPopupMenu.Items.Add(PopupMenuItem);
+  fDesignerPopupMenu.Items.Add(PopupMenuItem);
   
   PopupMenuItem:=TMenuItem.Create(aOwner);
   PopupMenuItem.Caption:='-';
-  DesignerPopupMenu.Items.Add(PopupMenuItem);
+  fDesignerPopupMenu.Items.Add(PopupMenuItem);
 
   PopupMenuItem:=TMenuItem.Create(aOwner);
   PopupMenuItem.Caption:=lisMenuEditorCreateSubMenu;
   PopupMenuItem.OnClick:=@AddSubMenuClick;
-  DesignerPopupMenu.Items.Add(PopupMenuItem);
+  fDesignerPopupMenu.Items.Add(PopupMenuItem);
 
   PopupMenuItem:=TMenuItem.Create(aOwner);
   PopupMenuItem.Caption:='-';
-  DesignerPopupMenu.Items.Add(PopupMenuItem);
+  fDesignerPopupMenu.Items.Add(PopupMenuItem);
   
   PopupMenuItem:=TMenuItem.Create(aOwner);
   PopupMenuItem.Caption:=lisMenuEditorHandleOnClickEvent;
   PopupMenuItem.OnClick:=@HandleOnCLickEventClick;
-  DesignerPopupMenu.Items.Add(PopupMenuItem);
+  fDesignerPopupMenu.Items.Add(PopupMenuItem);
 
   PopupMenuItem:=TMenuItem.Create(aOwner);
   PopupMenuItem.Caption:='-';
-  DesignerPopupMenu.Items.Add(PopupMenuItem);
+  fDesignerPopupMenu.Items.Add(PopupMenuItem);
 
   PopupMenuItem:=TMenuItem.Create(aOwner);
   PopupMenuItem.Caption:=lisMenuEditorMoveUp;
   PopupMenuItem.OnClick:=@MoveUpClick;
-  DesignerPopupMenu.Items.Add(PopupMenuItem);
+  fDesignerPopupMenu.Items.Add(PopupMenuItem);
   
   PopupMenuItem:=TMenuItem.Create(aOwner);
   PopupMenuItem.Caption:=lisMenuEditorMoveDown;
   PopupMenuItem.OnClick:=@MoveDownClick;
-  DesignerPopupMenu.Items.Add(PopupMenuItem);
+  fDesignerPopupMenu.Items.Add(PopupMenuItem);
   
   PopupMenuItem:=TMenuItem.Create(aOwner);
   PopupMenuItem.Caption:='-';
-  DesignerPopupMenu.Items.Add(PopupMenuItem);
+  fDesignerPopupMenu.Items.Add(PopupMenuItem);
 
   PopupMenuItem:=TMenuItem.Create(aOwner);
   PopupMenuItem.Caption:=lisMenuEditorInsertFromTemplate;
   PopupMenuItem.OnClick:=@InsertFromTemplateClick;
-  DesignerPopupMenu.Items.Add(PopupMenuItem);
+  fDesignerPopupMenu.Items.Add(PopupMenuItem);
 
   PopupMenuItem:=TMenuItem.Create(aOwner);
   PopupMenuItem.Caption:=lisMenuEditorSaveAsTemplate;
   PopupMenuItem.OnClick:=@SaveAsTemplateClick;
-  DesignerPopupMenu.Items.Add(PopupMenuItem);
+  fDesignerPopupMenu.Items.Add(PopupMenuItem);
 
   PopupMenuItem:=TMenuItem.Create(aOwner);
   PopupMenuItem.Caption:=lisMenuEditorDeleteFromTemplate;
   PopupMenuItem.OnClick:=@DeleteFromTemplateClick;
-  DesignerPopupMenu.Items.Add(PopupMenuItem);
+  fDesignerPopupMenu.Items.Add(PopupMenuItem);
 
   //Handler for renaming a caption in the OI for some menuitem to rename also a
   // designermenuitem
@@ -329,6 +328,7 @@ begin
   MenuItem^.SelfPanel.Height:=DESIGNER_MENU_ITEM_HEIGHT;
   Menuitem^.SelfPanel.OnMouseDown:=@MenuItemMouseDown;
   Menuitem^.SelfPanel.OnDblClick:=@MenuItemDblClick;
+  MenuItem^.SelfPanel.PopupMenu := fDesignerPopupMenu;
 
   MenuItem^.CaptionLabel:=TLabel.Create(self);
   MenuItem^.CaptionLabel.Name:='CaptionLabel_' + MenuItem^.ID;

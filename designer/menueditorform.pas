@@ -142,8 +142,6 @@ begin
     SetCoordinates(10,10,0,DesignerMainMenu.Root);
   end;
 
-  PopupMenu:=DesignerMainMenu.MainPopupMenu;
-
   Invalidate;
 end;
 
