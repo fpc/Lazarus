@@ -1575,10 +1575,10 @@ begin
       end;
 
       if CharSetCoding =  '*' then begin
-        {if lfCharset=fcsISO_8859_2 then begin
+        if lfCharset=fcs_ISO_8859_2 then begin
           CharSetRegistry:='iso8859';
           CharSetCoding:='2';
-        end;}
+        end;
       end; 
     end;
      
@@ -8740,6 +8740,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.374  2004/11/20 11:49:15  mattias
+  implemented stopping project on close project
+
   Revision 1.373  2004/11/20 11:20:06  mattias
   implemented creating classes at run time from any TComponent descendant
 

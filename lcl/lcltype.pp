@@ -1153,6 +1153,7 @@ const
   ANSI_CHARSET        = 0;
   DEFAULT_CHARSET     = 1;
   SYMBOL_CHARSET      = 2;
+  FCS_ISO_8859_2       = 3;   // added for ISO_8859_2 under gtk
   MAC_CHARSET         = 77;
   SHIFTJIS_CHARSET    = 128;
   HANGEUL_CHARSET     = 129;
@@ -2247,6 +2248,9 @@ end.
 
 {
   $Log$
+  Revision 1.69  2004/11/20 11:49:15  mattias
+  implemented stopping project on close project
+
   Revision 1.68  2004/11/20 11:20:06  mattias
   implemented creating classes at run time from any TComponent descendant
 

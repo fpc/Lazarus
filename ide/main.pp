@@ -5533,8 +5533,13 @@ begin
   {$IFDEF IDE_VERBOSE}
   writeln('TMainIDE.DoCloseProject A');
   {$ENDIF}
-  // close all loaded files
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoCloseProject A');{$ENDIF}
+  Result:=DebugBoss.DoStopProject;
+  if Result<>mrOk then begin
+    debugln('TMainIDE.DoCloseProject DebugBoss.DoStopProject failed');
+    exit;
+  end;
+  // close all loaded files
   while SourceNotebook.NoteBook<>nil do begin
     Result:=DoCloseEditorFile(SourceNotebook.Notebook.PageCount-1,
                               [cfProjectClosing]);
@@ -11006,6 +11011,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.795  2004/11/20 11:49:15  mattias
+  implemented stopping project on close project
+
   Revision 1.794  2004/11/20 11:20:05  mattias
   implemented creating classes at run time from any TComponent descendant
 
