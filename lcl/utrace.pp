@@ -22,15 +22,7 @@ interface
 uses sysutils;
 
 type
-  // The fpc 1.0.x and the old 1.1 (older than January 2003) defines the
-  // type of TheAddr as longint.
-  // The current fpc 1.1 defines it as pointer. There is no flag to distinguish
-  // the new from the old 1.1, so we have to define our own. Because the current
-  // 1.1 does not compile an expression in synedit and is much more unstable
-  // than the old 1.1, the old is the default for the 1.1 series.
-  // To compile the LCL with a current fpc, you have to add -dNEW1_1 to the
-  // options. i.e. add -dNEW1_1 to the build lazarus options.
-  TAssertErrorAddrType = {$IFDEF NEW1_1}Pointer{$ELSE}Longint{$ENDIF};
+  TAssertErrorAddrType = {$IFDEF VER1_1}Pointer{$ELSE}Longint{$ENDIF};
 
   TAssertErrorProc = procedure(Const Msg,FN :ShortString;
         LineNo: LongInt; TheAddr: TAssertErrorAddrType);

@@ -1368,10 +1368,10 @@ const
   outputstr : shortstring = '';
 
 const
-  NullCall = {$IFDEF NEW1_1}nil{$ELSE}0{$ENDIF};
+  NullCall = nil;
   
 type
-  TCall = {$IFDEF New1_1}pointer{$ELSE}longint{$ENDIF};
+  TCall = pointer;
 
   pheap_extra_info = ^theap_extra_info;
   theap_extra_info = record
@@ -2567,6 +2567,9 @@ end.
 
 {
   $Log$
+  Revision 1.24  2003/10/30 21:41:11  mattias
+  replaced NEW1_1 defines
+
   Revision 1.23  2003/10/23 16:15:30  micha
   compatibility with new 1.1
 
