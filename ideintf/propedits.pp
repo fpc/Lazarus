@@ -368,6 +368,13 @@ type
   end;
 
   TPropertyEditorClass=class of TPropertyEditor;
+  
+{ THiddenPropertyEditor
+  A property editor, to hide a published property. If you can't unpublish it,
+  hide it. }
+  
+  THiddenPropertyEditor = class(TPropertyEditor)
+  end;
 
 { TOrdinalPropertyEditor
   The base class of all ordinal property editors.  It establishes that ordinal
@@ -533,17 +540,17 @@ type
     function GetFormMethodName: shortstring; virtual;
     function GetTrimmedEventName: shortstring;
   end;
+  
+{ TPersistentPropertyEditor
+  A base editor for TPersistent.  It does allow editing of the properties.
+  It allows the user to set the value of this property to point to a component
+  in the same form that is type compatible with the property being edited
+  (e.g. the ActiveControl property). }
 
-{ TComponentPropertyEditor
-  The default editor for TComponents.  It does not allow editing of the
-  properties of the component.  It allow the user to set the value of this
-  property to point to a component in the same form that is type compatible
-  with the property being edited (e.g. the ActiveControl property). }
-
-  TComponentPropertyEditor = class(TPropertyEditor)
+  TPersistentPropertyEditor = class(TPropertyEditor)
   protected
     function FilterFunc(const ATestEditor: TPropertyEditor{IProperty}): Boolean;
-    function GetComponentReference: TComponent; virtual;
+    function GetPersistentReference: TPersistent; virtual;
     function GetSelections: TPersistentSelectionList{IDesignerSelections}; virtual;
   public
     function AllEqual: Boolean; override;
@@ -554,6 +561,19 @@ type
     function GetValue: AnsiString; override;
     procedure GetValues(Proc: TGetStringProc); override;
     procedure SetValue(const NewValue: ansistring); override;
+  end;
+
+{ TComponentPropertyEditor
+  The default editor for TComponents.  It does allow editing of the
+  properties of the component.  It allows the user to set the value of this
+  property to point to a component in the same form that is type compatible
+  with the property being edited (e.g. the ActiveControl property). }
+
+  TComponentPropertyEditor = class(TPersistentPropertyEditor)
+  protected
+    function GetComponentReference: TComponent; virtual;
+  public
+    function AllEqual: Boolean; override;
   end;
 
 { TInterfaceProperty
@@ -850,7 +870,7 @@ type
   TSetProperty =            TSetPropertyEditor;
   TClassProperty =          TClassPropertyEditor;
   TMethodProperty =         TMethodPropertyEditor;
-  TComponentProperty =      TComponentPropertyEditor;
+  TComponentProperty =      TPersistentPropertyEditor;
   TComponentNameProperty =  TComponentNamePropertyEditor;
 //  TImeNameProperty =        TImeNamePropertyEditor;
   TCursorProperty =         TCursorPropertyEditor;
@@ -1612,59 +1632,63 @@ begin
     for I:=0 to PropertyEditorMapperList.Count-1 do begin
       with PPropertyEditorMapperRec(PropertyEditorMapperList[I])^ do begin
         Result:=Mapper(Obj,PropInfo);
-        if Result<>nil then Exit;
+        if Result<>nil then break;
       end;
     end;
   end;
-  PropType:=PropInfo^.PropType;
-  I:=0;
-  C:=nil;
-  while I < PropertyClassList.Count do begin
-    P:=PropertyClassList[I];
+  if Result<>nil then begin
+    PropType:=PropInfo^.PropType;
+    I:=0;
+    C:=nil;
+    while I < PropertyClassList.Count do begin
+      P:=PropertyClassList[I];
 
-    if ((P^.PropertyType=PropType) or
-         ((P^.PropertyType^.Kind=PropType^.Kind) and
-          (P^.PropertyType^.Name=PropType^.Name)
+      if ((P^.PropertyType=PropType) or
+           ((P^.PropertyType^.Kind=PropType^.Kind) and
+            (P^.PropertyType^.Name=PropType^.Name)
+           )
+         ) or
+         ( (PropType^.Kind=tkClass) and
+           (P^.PropertyType^.Kind=tkClass) and
+           GetTypeData(PropType)^.ClassType.InheritsFrom(
+             GetTypeData(P^.PropertyType)^.ClassType)
          )
-       ) or
-       ( (PropType^.Kind=tkClass) and
-         (P^.PropertyType^.Kind=tkClass) and
-         GetTypeData(PropType)^.ClassType.InheritsFrom(
-           GetTypeData(P^.PropertyType)^.ClassType)
-       )
-    then
-      if ((P^.PersistentClass=nil) or (Obj.InheritsFrom(P^.PersistentClass))) and
-         ((P^.PropertyName='')
-         or (CompareText(PropInfo^.Name,P^.PropertyName)=0))
       then
-        if (C=nil) or   // see if P is better match than C
-           ((C^.PersistentClass=nil) and (P^.PersistentClass<>nil)) or
-           ((C^.PropertyName='') and (P^.PropertyName<>''))
-           or  // P's proptype match is exact,but C's does not
-           ((C^.PropertyType<>PropType) and (P^.PropertyType=PropType))
-           or  // P's proptype is more specific than C's proptype
-           ((P^.PropertyType<>C^.PropertyType) and
-            (P^.PropertyType^.Kind=tkClass) and
-            (C^.PropertyType^.Kind=tkClass) and
-            GetTypeData(P^.PropertyType)^.ClassType.InheritsFrom(
-              GetTypeData(C^.PropertyType)^.ClassType))
-           or // P's component class is more specific than C's component class
-           ((P^.PersistentClass<>nil) and (C^.PersistentClass<>nil) and
-            (P^.PersistentClass<>C^.PersistentClass) and
-            (P^.PersistentClass.InheritsFrom(C^.PersistentClass)))
+        if ((P^.PersistentClass=nil) or (Obj.InheritsFrom(P^.PersistentClass))) and
+           ((P^.PropertyName='')
+           or (CompareText(PropInfo^.Name,P^.PropertyName)=0))
         then
-          C:=P;
-    Inc(I);
+          if (C=nil) or   // see if P is better match than C
+             ((C^.PersistentClass=nil) and (P^.PersistentClass<>nil)) or
+             ((C^.PropertyName='') and (P^.PropertyName<>''))
+             or  // P's proptype match is exact,but C's does not
+             ((C^.PropertyType<>PropType) and (P^.PropertyType=PropType))
+             or  // P's proptype is more specific than C's proptype
+             ((P^.PropertyType<>C^.PropertyType) and
+              (P^.PropertyType^.Kind=tkClass) and
+              (C^.PropertyType^.Kind=tkClass) and
+              GetTypeData(P^.PropertyType)^.ClassType.InheritsFrom(
+                GetTypeData(C^.PropertyType)^.ClassType))
+             or // P's component class is more specific than C's component class
+             ((P^.PersistentClass<>nil) and (C^.PersistentClass<>nil) and
+              (P^.PersistentClass<>C^.PersistentClass) and
+              (P^.PersistentClass.InheritsFrom(C^.PersistentClass)))
+          then
+            C:=P;
+      Inc(I);
+    end;
+    if C<>nil then
+      Result:=C^.EditorClass
+    else begin
+      if (PropType^.Kind<>tkClass)
+      or (GetTypeData(PropType)^.ClassType.InheritsFrom(TPersistent)) then
+        Result:=PropClassMap[PropType^.Kind]
+      else
+        Result:=nil;
+    end;
   end;
-  if C<>nil then
-    Result:=C^.EditorClass
-  else begin
-    if (PropType^.Kind<>tkClass)
-    or (GetTypeData(PropType)^.ClassType.InheritsFrom(TPersistent)) then
-      Result:=PropClassMap[PropType^.Kind]
-    else
-      Result:=nil;
-  end;
+  if (Result<>nil) and Result.InheritsFrom(THiddenPropertyEditor) then
+    Result:=nil;
 end;
 
 procedure GetPersistentProperties(ASelection: TPersistentSelectionList;
@@ -3685,118 +3709,126 @@ begin
 writeln('### TMethodPropertyEditor.SetValue END  NewValue=',GetValue);
 end;
 
-{ TComponentPropertyEditor }
+{ TPersistentPropertyEditor }
 
-function TComponentPropertyEditor.FilterFunc(
+function TPersistentPropertyEditor.FilterFunc(
   const ATestEditor: TPropertyEditor{IProperty}): Boolean;
 begin
   Result := not (paNotNestable in ATestEditor.GetAttributes);
 end;
 
-function TComponentPropertyEditor.GetComponentReference: TComponent;
+function TPersistentPropertyEditor.GetPersistentReference: TPersistent;
 begin
-  Result := TComponent(GetOrdValue);
+  Result := TPersistent(GetOrdValue);
 end;
 
-function TComponentPropertyEditor.GetSelections:
+function TPersistentPropertyEditor.GetSelections:
   TPersistentSelectionList{IDesignerSelections};
 var
   I: Integer;
 begin
   Result := nil;
-  if (GetComponentReference <> nil) and AllEqual then
+  if (GetPersistentReference <> nil) and AllEqual then
   begin
     Result := TPersistentSelectionList.Create;
     for I := 0 to PropCount - 1 do
-      Result.Add(TComponent(GetOrdValueAt(I)));
+      Result.Add(TPersistent(GetOrdValueAt(I)));
   end;
 end;
 
-function TComponentPropertyEditor.AllEqual: Boolean;
+function TPersistentPropertyEditor.AllEqual: Boolean;
 var
   I: Integer;
-  LInstance: TComponent;
+  LInstance: TPersistent;
 begin
   Result := False;
-  LInstance := TComponent(GetOrdValue);
+  LInstance := TPersistent(GetOrdValue);
   if PropCount > 1 then
     for I := 1 to PropCount - 1 do
-      if TComponent(GetOrdValueAt(I)) <> LInstance then
+      if TPersistent(GetOrdValueAt(I)) <> LInstance then
         Exit;
-  Result := FindRootDesigner(LInstance)<>nil;
-            //Supports(FindRootDesigner(LInstance), IDesigner);
+  Result := LInstance<>nil;
 end;
 
-procedure TComponentPropertyEditor.Edit;
+procedure TPersistentPropertyEditor.Edit;
 var
-  Temp: TComponent;
+  Temp: TPersistent;
   Designer: TIDesigner;
+  AComponent: TComponent;
 begin
-  Temp := GetComponentReference;
-  if Temp<>nil then begin
-    Designer:=FindRootDesigner(Temp);
+  Temp := GetPersistentReference;
+  if Temp is TComponent then begin
+    AComponent:=TComponent(Temp);
+    Designer:=FindRootDesigner(AComponent);
     if (Designer.GetShiftState * [ssCtrl, ssLeft] = [ssCtrl, ssLeft]) then
-      Designer.SelectOnlyThisComponent(Temp)
+      Designer.SelectOnlyThisComponent(AComponent)
     else
       inherited Edit;
   end else
     inherited Edit;
 end;
 
-function TComponentPropertyEditor.GetAttributes: TPropertyAttributes;
+function TPersistentPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect];
   if Assigned(GetPropInfo^.SetProc) then
     Result := Result + [paValueList, paSortList, paRevertable]
   else
     Result := Result + [paReadOnly];
-  if GReferenceExpandable and (GetComponentReference <> nil) and AllEqual then
+  if GReferenceExpandable and (GetPersistentReference <> nil) and AllEqual then
     Result := Result + [paSubProperties, paVolatileSubProperties];
 end;
 
-procedure TComponentPropertyEditor.GetProperties(Proc:TGetPropEditProc);
+procedure TPersistentPropertyEditor.GetProperties(Proc:TGetPropEditProc);
 var
-  LComponents: TPersistentSelectionList;
+  LPersistents: TPersistentSelectionList;
   //LDesigner: TIDesigner;
 begin
-  LComponents := GetSelections;
-  if LComponents <> nil then
+  LPersistents := GetSelections;
+  if LPersistents <> nil then
   begin
-    //if not Supports(FindRootDesigner(LComponents[0]), IDesigner, LDesigner) then
+    //if not Supports(FindRootDesigner(LPersistents[0]), IDesigner, LDesigner) then
     //  LDesigner := Designer;
-    GetPersistentProperties(LComponents, tkAny, PropertyHook, Proc, nil);
+    GetPersistentProperties(LPersistents, tkAny, PropertyHook, Proc, nil);
   end;
 end;
 
-function TComponentPropertyEditor.GetEditLimit: Integer;
+function TPersistentPropertyEditor.GetEditLimit: Integer;
 begin
   Result := MaxIdentLength;
 end;
 
-function TComponentPropertyEditor.GetValue: AnsiString;
-var Component: TComponent;
+function TPersistentPropertyEditor.GetValue: AnsiString;
+var
+  Component: TComponent;
+  APersistent: TPersistent;
 begin
-  Component:=TComponent(GetOrdValue);
-  if Assigned(PropertyHook) then begin
-    Result:=PropertyHook.GetComponentName(Component);
-  end else begin
-    if Assigned(Component) then
-      Result:=Component.Name
-    else
-      Result:='';
+  Result:='';
+  APersistent:=GetPersistentReference;
+  if APersistent is TComponent then begin
+    Component:=TComponent(APersistent);
+    if Assigned(PropertyHook) then begin
+      Result:=PropertyHook.GetComponentName(Component);
+    end else begin
+      if Assigned(Component) then
+        Result:=Component.Name;
+    end;
+  end else if APersistent<>nil then begin
+    Result:='('+APersistent.ClassName+')';
   end;
 end;
 
-procedure TComponentPropertyEditor.GetValues(Proc: TGetStringProc);
+procedure TPersistentPropertyEditor.GetValues(Proc: TGetStringProc);
 begin
   Proc('(none)');
   if Assigned(PropertyHook) then
     PropertyHook.GetComponentNames(GetTypeData(GetPropType), Proc);
 end;
 
-procedure TComponentPropertyEditor.SetValue(const NewValue: ansistring);
+procedure TPersistentPropertyEditor.SetValue(const NewValue: ansistring);
 var Component: TComponent;
 begin
+  if NewValue=GetValue then exit;
   if (NewValue = '') or (NewValue='(none)') then
     Component := nil
   else begin
@@ -3808,6 +3840,19 @@ begin
     end;
   end;
   SetOrdValue(Longint(Component));
+end;
+
+{ TComponentPropertyEditor }
+
+function TComponentPropertyEditor.GetComponentReference: TComponent;
+begin
+  Result := TComponent(GetOrdValue);
+end;
+
+function TComponentPropertyEditor.AllEqual: Boolean;
+begin
+  Result:=(inherited AllEqual)
+          and (FindRootDesigner(GetComponentReference)<>nil);
 end;
 
 
@@ -4440,7 +4485,7 @@ begin
   if s=nil then ;
   Result:=TStringsPropEditorDlg.Create(Application);
   Result.Editor:=Self;
-  Result.Memo.Text:= s.Text;
+  Result.Memo.Text:=s.Text;
 end;
 
 function TStringsPropertyEditor.GetAttributes: TPropertyAttributes;
@@ -5551,6 +5596,8 @@ begin
     nil,'Name',TComponentNamePropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
     TCustomLabel, 'Caption', TStringMultilinePropertyEditor);
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
+    TCustomStaticText, 'Caption', TStringMultilinePropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
     TControl, 'Hint', TStringMultilinePropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('longint'),

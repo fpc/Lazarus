@@ -170,20 +170,20 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TStatusBar, TQtWSStatusBar);
-//  RegisterWSComponent(TTabSheet, TQtWSTabSheet);
-//  RegisterWSComponent(TPageControl, TQtWSPageControl);
+//  RegisterWSComponent(TCustomStatusBar, TQtWSStatusBar);
+//  RegisterWSComponent(TCustomTabSheet, TQtWSTabSheet);
+//  RegisterWSComponent(TCustomPageControl, TQtWSPageControl);
 //  RegisterWSComponent(TCustomListView, TQtWSCustomListView);
-//  RegisterWSComponent(TListView, TQtWSListView);
-//  RegisterWSComponent(TProgressBar, TQtWSProgressBar);
+//  RegisterWSComponent(TCustomListView, TQtWSListView);
+//  RegisterWSComponent(TCustomProgressBar, TQtWSProgressBar);
 //  RegisterWSComponent(TCustomUpDown, TQtWSCustomUpDown);
-//  RegisterWSComponent(TUpDown, TQtWSUpDown);
-//  RegisterWSComponent(TToolButton, TQtWSToolButton);
-//  RegisterWSComponent(TToolBar, TQtWSToolBar);
-//  RegisterWSComponent(TToolButton, TQtWSToolButton);
-//  RegisterWSComponent(TToolBar, TQtWSToolBar);
-//  RegisterWSComponent(TTrackBar, TQtWSTrackBar);
+//  RegisterWSComponent(TCustomUpDown, TQtWSUpDown);
+//  RegisterWSComponent(TCustomToolButton, TQtWSToolButton);
+//  RegisterWSComponent(TCustomToolBar, TQtWSToolBar);
+//  RegisterWSComponent(TCustomToolButton, TQtWSToolButton);
+//  RegisterWSComponent(TCustomToolBar, TQtWSToolBar);
+//  RegisterWSComponent(TCustomTrackBar, TQtWSTrackBar);
 //  RegisterWSComponent(TCustomTreeView, TQtWSCustomTreeView);
-//  RegisterWSComponent(TTreeView, TQtWSTreeView);
+//  RegisterWSComponent(TCustomTreeView, TQtWSTreeView);
 ////////////////////////////////////////////////////
 end.

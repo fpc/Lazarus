@@ -60,6 +60,7 @@ end;
 
 procedure TCustomCheckGroup.DoClick(Index: integer);
 begin
+  if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then exit;
   EditingDone;
   if Assigned(OnItemClick) then OnItemClick(Self,Index);
 end;
@@ -277,6 +278,9 @@ end;
 
 {
   $Log$
+  Revision 1.8  2004/07/16 21:49:00  mattias
+  added RTTI controls
+
   Revision 1.7  2004/07/13 10:34:15  mattias
   fixed lcl package unit file name checklist.pas
 

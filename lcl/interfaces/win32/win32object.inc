@@ -3118,7 +3118,7 @@ begin
     End;
 
   csTrackbar:
-    With(TTrackBar(Sender)) Do
+    With(TCustomTrackBar(Sender)) Do
     Begin
       Windows.SendMessage(Handle, TBM_SETRANGEMAX, Windows.WPARAM(True), Max);
       Windows.SendMessage(Handle, TBM_SETRANGEMIN, Windows.WPARAM(True), Min);
@@ -3342,6 +3342,9 @@ End;
 
 {
   $Log$
+  Revision 1.223  2004/07/16 21:49:00  mattias
+  added RTTI controls
+
   Revision 1.222  2004/07/15 10:43:39  mattias
   added TCustomButton, TCustomBitBtn, TCustomSpeedButton
 

@@ -36,6 +36,13 @@ begin
     SendItemSelected(AIndex, True);
 end;
 
+procedure TCustomListBox.Loaded;
+begin
+  inherited Loaded;
+  if HandleAllocated then
+    SendItemIndex;
+end;
+
 {------------------------------------------------------------------------------
  procedure TCustomListBox.AssignItemDataToCache
 ------------------------------------------------------------------------------}
@@ -54,6 +61,7 @@ var
   i, cnt: integer;
   OldItems: TExtendedStringList;
 begin
+  LockSelectionChange;
   //DebugLn('[TCustomListBox.CreateHandle] A ',FItems.ClassName);
   inherited CreateHandle;
   //DebugLn('[TCustomListBox.CreateHandle] B ',FItems.ClassName);
@@ -70,7 +78,7 @@ begin
   FItems:= NewStrings;
   FCacheValid := False;
 
-  CNSendMessage(LM_SETITEMINDEX, Self, Pointer(FItemIndex));
+  SendItemIndex;
 
   // copy items attributes
   cnt := OldItems.Count;
@@ -79,7 +87,7 @@ begin
 
   // free old items
   OldItems.Free;
-
+  UnlockSelectionChange;
   //DebugLn('[TCustomListBox.CreateHandle] END ',FItems.ClassName);
 end;
 
@@ -91,6 +99,7 @@ var
   NewStrings : TExtendedStringList;
   i, Cnt: integer;
 begin
+  LockSelectionChange;
   //DebugLn('[TCustomListBox.DestroyHandle] A ',FItems.ClassName);
   // create internal item list
   NewStrings:= TExtendedStringList.Create(GetCachedDataSize);
@@ -110,6 +119,7 @@ begin
   //DebugLn('[TCustomListBox.DestroyHandle] B ',FItems.ClassName);
   inherited DestroyHandle;
   //DebugLn('[TCustomListBox.DestroyHandle] END ',FItems.ClassName);
+  UnlockSelectionChange;
 end;
 
 {------------------------------------------------------------------------------}
@@ -122,7 +132,9 @@ begin
   if not HandleAllocated then exit;
   Msg.ExtendedSelect:= ExtendedSelect;
   Msg.MultiSelect:= MultiSelect;
+  LockSelectionChange;
   CNSendMessage(LM_SETSELMODE, Self, @Msg);
+  UnlockSelectionChange;
 end;
 
 {------------------------------------------------------------------------------
@@ -159,7 +171,9 @@ begin
     List:= FItems;
     IsSorted:= FSorted;
   end;
+  LockSelectionChange;
   CNSendMessage(LM_SORT, Self, @AMessage);
+  UnlockSelectionChange;
 end;
 
 {------------------------------------------------------------------------------
@@ -192,6 +206,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TCustomListBox.LMSelChange(var TheMessage);
+------------------------------------------------------------------------------}
+procedure TCustomListBox.LMSelChange(var TheMessage);
+begin
+  if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then exit;
+  //debugln('TCustomListBox.LMSelChange ',Name,':',ClassName,' ItemIndex=',dbgs(ItemIndex),' FLockSelectionChange=',dbgs(FLockSelectionChange));
+  if FLockSelectionChange=0 then
+    EditingDone;
+  DoSelectionChange(FLockSelectionChange=0);
+end;
+
+{------------------------------------------------------------------------------
   procedure TCustomListBox.SendItemSelected(Index: integer; IsSelected: boolean);
 
   Tell the interface whether an item is selected.
@@ -201,9 +227,11 @@ var
   Msg : TLMSetSel;
 begin
   if HandleAllocated then begin
+    LockSelectionChange;
     Msg.Index:= Index;
     Msg.Selected:= IsSelected;
     CNSendMessage(LM_SETSEL, Self, @Msg);
+    UnlockSelectionChange;
   end;
 end;
 
@@ -336,6 +364,24 @@ begin
   end;
 end;
 
+procedure TCustomListBox.DoSelectionChange(User: Boolean);
+begin
+  if Assigned(OnSelectionChange) then
+    OnSelectionChange(Self,User);
+  if User and ClickOnSelChange then Click;
+end;
+
+procedure TCustomListBox.SendItemIndex;
+begin
+  LockSelectionChange;
+  try
+    // TODO 64bit
+    CNSendMessage(LM_SETITEMINDEX, Self, Pointer(FItemIndex));
+  finally
+    UnlockSelectionChange;
+  end;
+end;
+
 {------------------------------------------------------------------------------}
 {  function TCustomListBox.GetCachedData                                       }
 {------------------------------------------------------------------------------}
@@ -363,7 +409,9 @@ procedure TCustomListBox.SetItems(Value : TStrings);
 begin
   if (Value <> FItems) then begin
 //DebugLn('[TCustomListBox.SetItems] A FItems=',FItems.ClassName,' Value=',Value.ClassName);
+    LockSelectionChange;
     FItems.Assign(Value);
+    UnlockSelectionChange;
   end;
 end;
 
@@ -373,6 +421,7 @@ end;
 constructor TCustomListBox.Create(TheOwner : TComponent);
 begin
   inherited Create(TheOwner);
+  LockSelectionChange;
   fCompStyle := csListBox;
   BorderStyle:= bsSingle;
   FItems := TExtendedStringList.Create(GetCachedDataSize);
@@ -383,6 +432,7 @@ begin
   ParentColor := false;
   TabStop := true;
   SetInitialBounds(0, 0, 100, 80);
+  UnlockSelectionChange;
 end;
 
 {------------------------------------------------------------------------------}
@@ -415,8 +465,8 @@ begin
   if Val<0 then Val:=-1;
 //DebugLn('[TCustomListBox.SetItemIndex] A ',FItems.ClassName,' ',Val);
   FItemIndex:=Val;
-  if HandleAllocated then
-    CNSendMessage(LM_SETITEMINDEX, Self, Pointer(Val));
+  if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
+    SendItemIndex;
 //DebugLn('[TCustomListBox.SetItemIndex] END ',FItems.ClassName);
 end;
 
@@ -438,6 +488,16 @@ end;
 procedure TCustomListBox.Clear;
 begin
   FItems.Clear;
+end;
+
+procedure TCustomListBox.LockSelectionChange;
+begin
+  inc(FLockSelectionChange);
+end;
+
+procedure TCustomListBox.UnlockSelectionChange;
+begin
+  dec(FLockSelectionChange);
 end;
 
 {------------------------------------------------------------------------------
@@ -501,7 +561,7 @@ end;
 {------------------------------------------------------------------------------
   function TCustomListBox.ItemVisible(Index: Integer): boolean;
 
-  Returns true if Item is visible.
+  Returns true if Item is partially visible.
 ------------------------------------------------------------------------------}
 function TCustomListBox.ItemVisible(Index: Integer): boolean;
 var
@@ -511,6 +571,22 @@ begin
   if (Index<0) or (Index>=Items.Count) then exit;
   if not GetListBoxItemRect(Self,Index,ARect) then exit;
   if (ARect.Bottom<0) or (ARect.Top>ClientHeight) then exit;
+  Result:=true;
+end;
+
+{------------------------------------------------------------------------------
+  function TCustomListBox.ItemFullyVisible(Index: Integer): boolean;
+
+  Returns true if Item is fully visible.
+------------------------------------------------------------------------------}
+function TCustomListBox.ItemFullyVisible(Index: Integer): boolean;
+var
+  ARect: TRect;
+begin
+  Result:=false;
+  if (Index<0) or (Index>=Items.Count) then exit;
+  if not GetListBoxItemRect(Self,Index,ARect) then exit;
+  if (ARect.Top<0) or (ARect.Bottom>ClientHeight) then exit;
   Result:=true;
 end;
 

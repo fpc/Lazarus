@@ -1,0 +1,13 @@
+RTTI Controls for LCL
+
+RTTI stands for the FreePascal Run Time Type Information.
+The RTTI controls can be connected to published properties of TPersistant
+objects (e.g. any LCL or FCL component). For example you can connect a
+TTICheckBox to the Visible property of a TButton.
+The IDE uses the RTTI for the Object Inspector and defines a lot of property
+editors. The RTTI controls use these property editors, so it can edit anything
+the Object Inspector can edit. But contrary to the Inspector the RTTI controls
+are not limited to TEdit and TComboBox.
+
+
+

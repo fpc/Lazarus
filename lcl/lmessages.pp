@@ -361,6 +361,8 @@ const
   LM_PARENTNOTIFY      = $0210;
   LM_CAPTURECHANGED    = $0215;
   LM_DROPFILES         = $0233;
+  
+  LM_SELCHANGE         = $0234;
 
 
   //-------------
@@ -1078,6 +1080,9 @@ end.
 
 {
   $Log$
+  Revision 1.67  2004/07/16 21:49:00  mattias
+  added RTTI controls
+
   Revision 1.66  2004/07/11 17:20:47  marc
   * Implemented most of TListColoum/Item in the Ws for gtk and win32
 

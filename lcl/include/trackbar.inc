@@ -296,8 +296,9 @@ begin
   CNSendMessage (LM_GetValue, Self, @tmpPosition);
   Assert(True, 'Trace:Trackbar received a message -CHANGE');
   FPosition := TmpPosition;
-  if Assigned (FOnChange)
-  then FOnChange(Self);
+  if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then exit;
+  EditingDone;
+  if Assigned (FOnChange) then FOnChange(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -333,6 +334,9 @@ end;
 { -------------------- unimplemented stuff below ------------------------------}
 {
   $Log$
+  Revision 1.13  2004/07/16 21:49:00  mattias
+  added RTTI controls
+
   Revision 1.12  2004/07/11 13:03:54  mattias
   extended RolesForForm to manage multiple roles for on control
 

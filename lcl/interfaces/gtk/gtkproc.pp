@@ -195,10 +195,13 @@ function gtkFocusOutNotifyCB (widget: PGtkWidget; event: PGdkEvent;
 function GTKHScrollCB(Adjustment: PGTKAdjustment; data: GPointer): GBoolean; cdecl;
 function GTKVScrollCB(Adjustment: PGTKAdjustment;
   data: GPointer): GBoolean; cdecl;
-function GTKCheckMenuToggeledCB(AMenuItem: PGTKCheckMenuItem; AData: gPointer): GBoolean; cdecl;
+function GTKCheckMenuToggeledCB(AMenuItem: PGTKCheckMenuItem;
+                                AData: gPointer): GBoolean; cdecl;
 function GTKKeySnooper(Widget: PGtkWidget; Event: PGdkEventKey;
   FuncData: gPointer): gInt; cdecl;
 function gtkYearChanged(Widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+
+// clipboard
 procedure ClipboardSelectionReceivedHandler(TargetWidget: PGtkWidget;
   SelectionData: PGtkSelectionData; TimeID: cardinal; Data: Pointer); cdecl;
 procedure ClipboardSelectionRequestHandler(TargetWidget: PGtkWidget;
@@ -206,8 +209,11 @@ procedure ClipboardSelectionRequestHandler(TargetWidget: PGtkWidget;
   Data: Pointer); cdecl;
 function ClipboardSelectionLostOwnershipHandler(TargetWidget: PGtkWidget;
   EventSelection: PGdkEventSelection;  Data: Pointer): cardinal; cdecl;
-Procedure GTKStyleChanged(Widget: PGtkWidget; previous_style :
+
+procedure GTKStyleChanged(Widget: PGtkWidget; previous_style :
   PGTKStyle; Data: Pointer); cdecl;
+function gtkListBoxSelectionChangedCB(widget: PGtkWidget;
+                                      data: gPointer): GBoolean; cdecl;
 
 // gtkDragCallback.inc headers
 Function edit_drag_data_received(widget: pgtkWidget;
@@ -229,7 +235,6 @@ Function Edit_source_drag_data_delete (widget: pGtkWidget;
 			                data: gpointer): gBoolean ; cdecl;
 
 // gtklistviewcallbacks.inc headers
-
 function gtkLVHScroll(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
 function gtkLVVScroll(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
 function gtkLVAbortColumnResize(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;

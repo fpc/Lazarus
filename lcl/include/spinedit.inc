@@ -158,6 +158,7 @@ end;
 
 procedure TCustomSpinEdit.Change;
 begin
+  if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then exit;
   EditingDone;
   if Assigned(FOnChange) then FOnChange(Self);
 end;

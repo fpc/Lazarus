@@ -212,6 +212,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.CloseUp;
 begin
+  if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then exit;
   EditingDone;
   if Assigned(FOnCloseUp) then FOnCloseUp(Self);
 end;
@@ -789,6 +790,9 @@ end;
 
 {
   $Log$
+  Revision 1.41  2004/07/16 21:49:00  mattias
+  added RTTI controls
+
   Revision 1.40  2004/07/10 18:17:30  mattias
   added Delphi ToDo support, Application.WndProc, small bugfixes  from Colin
 

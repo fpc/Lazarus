@@ -1013,9 +1013,9 @@ end;
 
 function gtkdestroyCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
-   Mess: TLMessage;
-   Status : GBoolean;
-   Info: PWinWidgetInfo;
+  Mess: TLMessage;
+  Status : GBoolean;
+  Info: PWinWidgetInfo;
 begin
   Result := CallBackDefaultReturn;
 
@@ -2196,7 +2196,6 @@ begin
   end;
 
   Mess.msg := CM_MOUSEENTER;
-DebugLn('gtkEnterCB');
   Status := DeliverMessage(Data, Mess) = 0;
 
   {$ifdef GTK2}
@@ -2221,7 +2220,6 @@ begin
   end;
 
   Mess.msg := CM_MOUSELEAVE;
-DebugLn('gtkLeaveCB');
   Status := DeliverMessage(Data, Mess) = 0;
 
   {$ifdef GTK2}
@@ -3100,6 +3098,21 @@ begin
   //ReleaseAllStyles;
 end;
 
+function gtkListBoxSelectionChangedCB(widget: PGtkWidget; data: gPointer
+  ): GBoolean; cdecl;
+var
+  Mess: TLMessage;
+begin
+  //debugln('gtkListBoxSelectionChangedCB ',GetWidgetDebugReport(Widget));
+  Result := CallBackDefaultReturn;
+
+  EventTrace('selection_changed', data);
+  FillChar(Mess,SizeOf(Mess),0);
+  Mess.msg := LM_SelChange;
+  DeliverMessage(Data, Mess);
+end;
+
+
 {$I gtkDragCallback.inc}
 {$I gtkListViewCallback.inc}
 {$I gtkComboBoxCallback.inc}
@@ -3114,6 +3127,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.240  2004/07/16 21:49:00  mattias
+  added RTTI controls
+
   Revision 1.239  2004/07/15 10:43:38  mattias
   added TCustomButton, TCustomBitBtn, TCustomSpeedButton
 

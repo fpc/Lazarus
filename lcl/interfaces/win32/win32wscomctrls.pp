@@ -458,20 +458,20 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TStatusBar, TWin32WSStatusBar);
-//  RegisterWSComponent(TTabSheet, TWin32WSTabSheet);
-//  RegisterWSComponent(TPageControl, TWin32WSPageControl);
+//  RegisterWSComponent(TCustomStatusBar, TWin32WSStatusBar);
+//  RegisterWSComponent(TCustomTabSheet, TWin32WSTabSheet);
+//  RegisterWSComponent(TCustomPageControl, TWin32WSPageControl);
   RegisterWSComponent(TCustomListView, TWin32WSCustomListView);
-//  RegisterWSComponent(TListView, TWin32WSListView);
-//  RegisterWSComponent(TProgressBar, TWin32WSProgressBar);
+//  RegisterWSComponent(TCustomListView, TWin32WSListView);
+//  RegisterWSComponent(TCustomProgressBar, TWin32WSProgressBar);
 //  RegisterWSComponent(TCustomUpDown, TWin32WSCustomUpDown);
-//  RegisterWSComponent(TUpDown, TWin32WSUpDown);
-//  RegisterWSComponent(TToolButton, TWin32WSToolButton);
-//  RegisterWSComponent(TToolBar, TWin32WSToolBar);
-//  RegisterWSComponent(TToolButton, TWin32WSToolButton);
-//  RegisterWSComponent(TToolBar, TWin32WSToolBar);
-//  RegisterWSComponent(TTrackBar, TWin32WSTrackBar);
+//  RegisterWSComponent(TCustomUpDown, TWin32WSUpDown);
+//  RegisterWSComponent(TCustomToolButton, TWin32WSToolButton);
+//  RegisterWSComponent(TCustomToolBar, TWin32WSToolBar);
+//  RegisterWSComponent(TCustomToolButton, TWin32WSToolButton);
+//  RegisterWSComponent(TCustomToolBar, TWin32WSToolBar);
+//  RegisterWSComponent(TCustomTrackBar, TWin32WSTrackBar);
 //  RegisterWSComponent(TCustomTreeView, TWin32WSCustomTreeView);
-//  RegisterWSComponent(TTreeView, TWin32WSTreeView);
+//  RegisterWSComponent(TCustomTreeView, TWin32WSTreeView);
 ////////////////////////////////////////////////////
 end.

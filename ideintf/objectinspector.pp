@@ -499,12 +499,6 @@ begin
   FCurrentEdit:=nil;
   FCurrentButton:=nil;
 
-  if LazarusResources.Find(ClassName)=nil then begin
-    SetBounds(1,1,200,300);
-    ControlStyle:=ControlStyle+[csAcceptsControls,csOpaque];
-    BorderWidth:=1;
-  end;
-    
   // visible values
   FTopY:=0;
   FSplitterX:=100;
@@ -517,15 +511,20 @@ begin
   FValueFont.Color:=clMaroon;
   FDefaultValueFont:=TFont.Create;
   FDefaultValueFont.Color:=clActiveCaption;
+
+  SetInitialBounds(0,0,200,130);
+  ControlStyle:=ControlStyle+[csAcceptsControls,csOpaque];
+  BorderWidth:=1;
   BorderStyle := bsSingle;
 
   // create sub components
   ValueEdit:=TEdit.Create(Self);
   with ValueEdit do begin
     Name:='ValueEdit';
-    Parent:=Self;
     Visible:=false;
     Enabled:=false;
+    SetBounds(0,-30,80,25); // hidden
+    Parent:=Self;
     OnMouseDown := @ValueEditMouseDown;
     OnDblClick := @ValueEditDblClick;
     OnExit:=@ValueEditExit;
@@ -539,6 +538,7 @@ begin
     Name:='ValueComboBox';
     Visible:=false;
     Enabled:=false;
+    SetBounds(0,-30,80,25); // hidden
     Parent:=Self;
     OnMouseDown := @ValueEditMouseDown;
     OnDblClick := @ValueEditDblClick;
@@ -559,6 +559,7 @@ begin
     Enabled:=false;
     OnClick:=@ValueButtonClick;
     Caption := '...';
+    SetBounds(0,-30,25,25); // hidden
     Parent:=Self;
   end;
 

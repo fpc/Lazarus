@@ -40,7 +40,7 @@ procedure TButtonControl.DoOnChange;
 begin
   if Checked=fLastCheckedOnChange then exit;
   fLastCheckedOnChange:=Checked;
-  if csLoading in ComponentState then exit;
+  if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then exit;
   EditingDone;
   if UseOnChange and Assigned(OnChange) then OnChange(Self);
 end;

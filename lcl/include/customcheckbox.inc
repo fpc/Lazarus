@@ -97,7 +97,7 @@ begin
   FState       := cbUnchecked;
   FAllowGrayed := True;
   TabStop := true;
-  Height := 20;
+  SetInitialBounds(0,0,90,23);
   AutoSize:=true;
 end;
 
@@ -211,6 +211,9 @@ end;
 
 {
   $Log$
+  Revision 1.23  2004/07/16 21:49:00  mattias
+  added RTTI controls
+
   Revision 1.22  2004/07/10 18:17:30  mattias
   added Delphi ToDo support, Application.WndProc, small bugfixes  from Colin
 

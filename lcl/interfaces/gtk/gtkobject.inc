@@ -4457,7 +4457,7 @@ begin
 
     LM_CHANGED :
     begin
-       if ALCLObject is TTrackBar then
+       if ALCLObject is TCustomTrackBar then
        begin
          ConnectSenderSignal(gtk_Object(
                    gtk_range_get_adjustment(GTK_RANGE(gObject))) ,
@@ -4867,6 +4867,14 @@ begin
           'hide', @gtkComboBoxHideCB);
       end;
     end;
+    
+    LM_SelChange:
+    begin
+      if ALCLObject is TCustomListBox then begin
+        ConnectSenderSignalAfter(PgtkObject(gCore),
+          'selection_changed', @gtkListBoxSelectionChangedCB);
+      end;
+    end;
 
 (*
     LM_WINDOWPOSCHANGED:
@@ -5114,6 +5122,11 @@ begin
       Begin
         SetCallback(LM_CHANGED, AGTKObject, ALCLObject);
         SetCallback(LM_COMMAND, AGTKObject, ALCLObject);
+      End;
+      
+      csListBox:
+      Begin
+        SetCallback(LM_SELCHANGE, AGTKObject, ALCLObject);
       End;
 
       csNotebook,csTrackBar :
@@ -6704,7 +6717,7 @@ begin
     end;
 
   csTrackBar:
-    with (TTrackBar (Sender)) do
+    with (TCustomTrackBar (Sender)) do
     begin
        TempWidget := PGtkWidget( gtk_adjustment_new (Position, Min, Max, linesize, pagesize, 0));
        if (Orientation = trHorizontal) then
@@ -7854,7 +7867,7 @@ begin
          end;
 
   csTrackbar   :
-     with (TTrackBar (Sender)) do
+     with (TCustomTrackBar (Sender)) do
      begin
         Widget := GTK_WIDGET(gtk_range_get_adjustment (GTK_RANGE(wHandle)));
         GTK_ADJUSTMENT(Widget)^.lower := Min;
@@ -9197,6 +9210,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.515  2004/07/16 21:49:00  mattias
+  added RTTI controls
+
   Revision 1.514  2004/07/15 10:43:39  mattias
   added TCustomButton, TCustomBitBtn, TCustomSpeedButton
 

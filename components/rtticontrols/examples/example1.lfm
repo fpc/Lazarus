@@ -1,0 +1,121 @@
+object Form1: TForm1
+  Caption = 'RTTI Controls Example'
+  ClientHeight = 357
+  ClientWidth = 590
+  HorzScrollBar.Page = 591
+  VertScrollBar.Page = 358
+  Left = 291
+  Height = 357
+  Top = 163
+  Width = 590
+  object TIEdit1: TTIEdit
+    Link.TIObject = TICheckBox1
+    Link.TIPropertyName = 'Caption'
+    TabStop = True
+    TabOrder = 0
+    TabOrder = 0
+    Left = 8
+    Height = 23
+    Top = 136
+    Width = 144
+  end
+  object TICheckBox1: TTICheckBox
+    AllowGrayed = True
+    AutoSize = True
+    Caption = 'TICheckBox1'
+    DragCursor = 65524
+    Link.Options = [ploReadOnIdle]
+    Link.TIObject = TIEdit1
+    Link.TIPropertyName = 'Visible'
+    State = cbChecked
+    TabOrder = 1
+    TabStop = True
+    Left = 176
+    Height = 20
+    Top = 136
+    Width = 109
+  end
+  object TIListBox1: TTIListBox
+    BorderStyle = bsSingle
+    ClickOnSelChange = False
+    Link.TIObject = StaticText1
+    Link.TIPropertyName = 'Color'
+    TabOrder = 2
+    TabStop = True
+    Left = 11
+    Height = 70
+    Top = 200
+    Width = 117
+  end
+  object StaticText1: TStaticText
+    Caption = 'Edit caption of right TTICheckbox'
+    Color = clOlive
+    TabOrder = 3
+    TabStop = True
+    Left = 8
+    Height = 17
+    Top = 112
+    Width = 193
+  end
+  object StaticText2: TStaticText
+    Caption = 'Edit Color of above TStaticText'
+    ParentColor = True
+    TabOrder = 4
+    TabStop = True
+    Left = 11
+    Height = 17
+    Top = 176
+    Width = 194
+  end
+  object TIComboBox1: TTIComboBox
+    Link.Options = [ploReadOnIdle]
+    Link.TIObject = TICheckBox1
+    Link.TIPropertyName = 'Enabled'
+    MaxLength = 0
+    TabOrder = 5
+    TabStop = True
+    Left = 16
+    Height = 25
+    Top = 306
+    Width = 180
+  end
+  object StaticText3: TStaticText
+    Caption = 'Edit TTICheckBox1.Enabled'
+    ParentColor = True
+    TabOrder = 6
+    TabStop = True
+    Left = 15
+    Height = 17
+    Top = 283
+    Width = 186
+  end
+  object StaticText4: TStaticText
+    Caption = 'Edit this TStaticText with the TTIPropertyGrid below'
+    ParentColor = True
+    TabOrder = 7
+    TabStop = True
+    Left = 352
+    Height = 80
+    Top = 16
+    Width = 145
+  end
+  object TIPropertyGrid1: TTIPropertyGrid
+    BorderStyle = bsSingle
+    DefaultValueFont.Color = clActiveCaption
+    Tabstop = True
+    TIObject = StaticText4
+    ValueFont.Color = clMaroon
+    Left = 312
+    Height = 225
+    Top = 119
+    Width = 242
+  end
+  object Label1: TLabel
+    Caption = 'This is a demonstration of a few RTTI Controls.'#10'The RTTI controls allows you to edit properties of objects.'#10'The whole example requires not one line of code.'
+    WordWrap = True
+    Left = 10
+    Height = 87
+    Top = 9
+    Width = 286
+  end
+end

@@ -1,0 +1,39 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TForm1','FORMDATA',[
+  'TPF0'#6'TForm1'#5'Form1'#7'Caption'#6#21'RTTI Controls Example'#12'ClientHei'
+  +'ght'#3'e'#1#11'ClientWidth'#3'N'#2#18'HorzScrollBar.Page'#3'O'#2#18'VertScr'
+  +'ollBar.Page'#3'f'#1#4'Left'#3'#'#1#6'Height'#3'e'#1#3'Top'#3#163#0#5'Width'
+  +#3'N'#2#0#7'TTIEdit'#7'TIEdit1'#13'Link.TIObject'#7#11'TICheckBox1'#19'Link.'
+  +'TIPropertyName'#6#7'Caption'#7'TabStop'#9#8'TabOrder'#2#0#8'TabOrder'#2#0#4
+  +'Left'#2#8#6'Height'#2#23#3'Top'#3#136#0#5'Width'#3#144#0#0#0#11'TTICheckBox'
+  +#11'TICheckBox1'#11'AllowGrayed'#9#8'AutoSize'#9#7'Caption'#6#11'TICheckBox1'
+  +#10'DragCursor'#4#244#255#0#0#12'Link.Options'#11#13'ploReadOnIdle'#0#13'Lin'
+  +'k.TIObject'#7#7'TIEdit1'#19'Link.TIPropertyName'#6#7'Visible'#5'State'#7#9
+  +'cbChecked'#8'TabOrder'#2#1#7'TabStop'#9#4'Left'#3#176#0#6'Height'#2#20#3'To'
+  +'p'#3#136#0#5'Width'#2'm'#0#0#10'TTIListBox'#10'TIListBox1'#11'BorderStyle'#7
+  +#8'bsSingle'#16'ClickOnSelChange'#8#13'Link.TIObject'#7#11'StaticText1'#19'L'
+  +'ink.TIPropertyName'#6#5'Color'#8'TabOrder'#2#2#7'TabStop'#9#4'Left'#2#11#6
+  +'Height'#2'F'#3'Top'#3#200#0#5'Width'#2'u'#0#0#11'TStaticText'#11'StaticText'
+  +'1'#7'Caption'#6'!Edit caption of right TTICheckbox'#5'Color'#7#7'clOlive'#8
+  +'TabOrder'#2#3#7'TabStop'#9#4'Left'#2#8#6'Height'#2#17#3'Top'#2'p'#5'Width'#3
+  +#193#0#0#0#11'TStaticText'#11'StaticText2'#7'Caption'#6#31'Edit Color of abo'
+  +'ve TStaticText'#11'ParentColor'#9#8'TabOrder'#2#4#7'TabStop'#9#4'Left'#2#11
+  +#6'Height'#2#17#3'Top'#3#176#0#5'Width'#3#194#0#0#0#11'TTIComboBox'#11'TICom'
+  +'boBox1'#12'Link.Options'#11#13'ploReadOnIdle'#0#13'Link.TIObject'#7#11'TICh'
+  +'eckBox1'#19'Link.TIPropertyName'#6#7'Enabled'#9'MaxLength'#2#0#8'TabOrder'#2
+  +#5#7'TabStop'#9#4'Left'#2#16#6'Height'#2#25#3'Top'#3'2'#1#5'Width'#3#180#0#0
+  +#0#11'TStaticText'#11'StaticText3'#7'Caption'#6#25'Edit TTICheckBox1.Enabled'
+  +#11'ParentColor'#9#8'TabOrder'#2#6#7'TabStop'#9#4'Left'#2#15#6'Height'#2#17#3
+  +'Top'#3#27#1#5'Width'#3#186#0#0#0#11'TStaticText'#11'StaticText4'#7'Caption'
+  +#6'4Edit this TStaticText with the TTIPropertyGrid below'#11'ParentColor'#9#8
+  +'TabOrder'#2#7#7'TabStop'#9#4'Left'#3'`'#1#6'Height'#2'P'#3'Top'#2#16#5'Widt'
+  +'h'#3#145#0#0#0#15'TTIPropertyGrid'#15'TIPropertyGrid1'#11'BorderStyle'#7#8
+  +'bsSingle'#22'DefaultValueFont.Color'#7#15'clActiveCaption'#7'Tabstop'#9#8'T'
+  +'IObject'#7#11'StaticText4'#15'ValueFont.Color'#7#8'clMaroon'#4'Left'#3'8'#1
+  +#6'Height'#3#225#0#3'Top'#2'w'#5'Width'#3#242#0#0#0#6'TLabel'#6'Label1'#7'Ca'
+  +'ption'#6#156'This is a demonstration of a few RTTI Controls.'#10'The RTTI c'
+  +'ontrols allows you to edit properties of objects.'#10'The whole example req'
+  +'uires not one line of code.'#8'WordWrap'#9#4'Left'#2#10#6'Height'#2'W'#3'To'
+  +'p'#2#9#5'Width'#3#30#1#0#0#0
+]);

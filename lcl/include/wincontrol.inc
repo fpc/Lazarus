@@ -2843,7 +2843,8 @@ procedure TWinControl.WMKillFocus(var Message: TLMKillFocus);
 begin
   //DebugLn('TWinControl.WMKillFocus A ',Name,':',ClassName);
   Assert(False, Format('Trace: %s', [ClassName]));
-  EditingDone;
+  if [csLoading,csDestroying,csDesigning]*ComponentState=[] then
+    EditingDone;
   DoExit;
 end;
 
@@ -3768,6 +3769,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.256  2004/07/16 21:49:00  mattias
+  added RTTI controls
+
   Revision 1.255  2004/07/11 17:20:47  marc
   * Implemented most of TListColoum/Item in the Ws for gtk and win32
 
