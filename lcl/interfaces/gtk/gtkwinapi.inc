@@ -3105,9 +3105,8 @@ var
   UnRef : Boolean;
   DCOrigin: TPoint;
   UnderLine: boolean;
-
-  buffer : PGdkPixmap;
-  buffered : boolean;
+  buffer: PGdkDrawable;
+  buffered: Boolean;
 
   procedure DrawTextLine;
   var
@@ -3202,25 +3201,12 @@ begin
         end;
       end;
 
-      //If we don't have double buffering, try and buffer each block of text,
-      //otherwise most text "flashes" by disapearing and then redrawing on account
-      //of the two passes, first one to draw bg and then another to draw fg.
-
-      //By doing it this way the "constant" flashing is replaced by more occasional
-      //flashing, and is primarily restricted to the larger blocks of text. Far
-      //more pleasant to work with, especially in the Lazarus Source Editor where
-      //each keyword, string, etc is its own block drawn individually, thus is
-      //constantly flashing during code changes, resizing,  scrolling, etc.
       if ((Options and ETO_OPAQUE) <> 0) then
       begin
         Width := Rect^.Right - Rect^.Left;
         Height := Rect^.Bottom - Rect^.Top;
         SelectedColors := dcscCustom;
         EnsureGCColor(DC, dccCurrentBackColor, True, False);
-        {$IFDEF EnableDoubleBuf}
-        buffered := True;
-        buffer := gdk_pixmap_new(Drawable, Width, Height, -1);
-        {$ENDIF}
         if buffered then begin
           Left:=0;
           Top:=0;
@@ -3284,13 +3270,6 @@ begin
           EndGDKErrorTrap;
           {$ENDIF}
         end;
-      end;
-      if buffered then begin
-        BeginGDKErrorTrap;
-        gdk_draw_pixmap(drawable, gc, buffer, 0,0, Rect^.Left+DCOrigin.X,
-          Rect^.Top+DCOrigin.Y, Width, Height);
-        gdk_pixmap_unref(buffer);
-        EndGDKErrorTrap;
       end;
     end;
   end;
@@ -8715,6 +8694,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.346  2004/04/12 22:36:29  mattias
+  made TIcon more independent of TBitmap  from Colin
+
   Revision 1.345  2004/04/03 16:47:46  mattias
   implemented converting gdkbitmap to RawImage mask
 

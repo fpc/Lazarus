@@ -50,9 +50,7 @@ begin
   {$IFNDEF DisableFPImage}
   Add('png', 'Portable Network Graphic', TPortableNetworkGraphic);
   {$ENDIF}
-  {$IFDEF HasIconGraphic}
   Add('ico', 'Icon', TIcon);
-  {$ENDIF}
 end;
 
 procedure TPicFileFormatsList.Clear;

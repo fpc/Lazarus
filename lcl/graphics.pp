@@ -38,7 +38,7 @@ interface
 
 
 uses
-  SysUtils, Classes, FPCAdds,
+  SysUtils, Classes, Contnrs, FPCAdds,
   {$IFNDEF DisableFPImage}
   FPImage, FPReadPNG, FPWritePNG, FPReadBMP, FPWriteBMP, IntfGraphics,
   {$ENDIF}
@@ -998,9 +998,6 @@ type
     procedure WriteData(Stream: TStream); override;
     procedure StoreOriginalStream(Stream: TStream; Size: integer); virtual;
     {$IFNDEF DisableFPImage}
-    procedure ReadStreamWithFPImage(Stream: TStream; UseSize: boolean;
-                               Size: Longint;
-                               ReaderClass: TFPCustomImageReaderClass); virtual;
     procedure WriteStreamWithFPImage(Stream: TStream; WriteSize: boolean;
                                WriterClass: TFPCustomImageWriterClass); virtual;
     procedure InitFPImageReader(ImgReader: TFPCustomImageReader); virtual;
@@ -1041,6 +1038,9 @@ type
       const FileExtension: string): TFPCustomImageWriterClass; override;
     class function GetDefaultFPReader: TFPCustomImageReaderClass; override;
     class function GetDefaultFPWriter: TFPCustomImageWriterClass; override;
+    procedure ReadStreamWithFPImage(Stream: TStream; UseSize: boolean;
+                               Size: Longint;
+                               ReaderClass: TFPCustomImageReaderClass); virtual;
     procedure WriteNativeStream(Stream: TStream; WriteSize: Boolean;
       SaveStreamType: TBitmapNativeType); virtual;
     {$ENDIF}
@@ -1110,11 +1110,25 @@ type
   { TIcon }
   {
     TIcon reads and writes .ICO file format.
-    ! Currently it is almost a TBitmap !
+    A .ico file typically contains several versions of the same image. When loading,
+    the largest/most colourful image is loaded as the TBitmap and so can be handled
+    as any other bitmap. Any other versions of the images are available via the
+    Bitmaps property
+    Writing is not (yet) implemented.
   }
   TIcon = class(TBitmap)
+  {$IFNDEF DisableFPImage}
+  private
+    FBitmaps: TObjectList;
   protected
     procedure ReadData(Stream: TStream); override;
+    procedure InitFPImageReader(ImgReader: TFPCustomImageReader); override;
+  public
+    class function GetFileExtensions: string; override;
+    property Bitmaps: TObjectList read FBitmaps;
+    destructor Destroy; override;
+    procedure AddBitmap(Bitmap: TBitmap); { Note that Ownership passes to TIcon }
+  {$ENDIF}
   end;
 
 
@@ -1588,6 +1602,11 @@ end;
 
 { TIcon }
 
+{$IFNDEF DisableFPImage}
+
+const
+  IconSignature: array [0..3] of char = #0#0#1#0;
+  
 function TestStreamIsIcon(const AStream: TStream): boolean;
 var
   Signature: array[0..3] of char;
@@ -1596,7 +1615,7 @@ var
 begin
   OldPosition:=AStream.Position;
   ReadSize:=AStream.Read(Signature, SizeOf(Signature));
-  Result:=(ReadSize=SizeOf(Signature)) and (Signature=#0#0#1#0);
+  Result:=(ReadSize=SizeOf(Signature)) and CompareMem(@Signature,@IconSignature,4);
   AStream.Position:=OldPosition;
 end;
 
@@ -1606,14 +1625,40 @@ var
   Position: TStreamSeekType;
 begin
   Position := Stream.Position;
-  Stream.Read(Size, SizeOf(Size));
-  if Size = $10000 then begin // Icon starts 00 00 01 00
+  Stream.Read(Size, 4); // Beware BigEndian and LowEndian sytems
+  if CompareMem(@Size,@IconSignature,4) then begin
     // Assume Icon - stream without explicit size
     Stream.Position := Position;
     ReadStream(Stream, false, Size);
   end else
     ReadStream(Stream, true, Size);
 end;
+
+procedure TIcon.InitFPImageReader(ImgReader: TFPCustomImageReader);
+begin
+  inherited InitFPImageReader(ImgReader);
+  if ImgReader is TLazReaderIcon then
+    TLazReaderIcon(ImgReader).Icon := self;
+end;
+
+function TIcon.GetFileExtensions: string;
+begin
+  Result:='ico';
+end;
+
+destructor TIcon.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FBitmaps);
+end;
+
+procedure TIcon.AddBitmap(Bitmap: TBitmap);
+begin
+  if not Assigned(FBitmaps) then
+    FBitmaps := TObjectList.create(True);
+  FBitmaps.Add(Bitmap);
+end;
+{$ENDIF}
 
 initialization
   PicClipboardFormats:=nil;
@@ -1636,6 +1681,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.134  2004/04/12 22:36:29  mattias
+  made TIcon more independent of TBitmap  from Colin
+
   Revision 1.133  2004/04/10 14:20:20  mattias
   fixed saving findtext  from vincent
 

@@ -128,6 +128,7 @@ type
     FAlphaReadRawImageBits: TOnReadRawImageBits;
     FAlphaWriteRawImageBits: TOnWriteRawImageBits;
     procedure SetAutoCreateMask(const AValue: boolean);
+    procedure SetUsePalette (Value:boolean);override;
   protected
     OnGetInternalColor: TOnGetLazIntfImagePixel;
     OnSetInternalColor: TOnSetLazIntfImagePixel;
@@ -321,38 +322,53 @@ type
   { TLazReaderBMP }
   { This is an imroved FPImage writer for bmp images. }
   TLazReaderBMP = class (TFPCustomImageReader)
-    Private
-      Procedure FreeBufs;       // Free (and nil) buffers.
-    protected
-      ReadSize: Integer;       // Size (in bytes) of 1 scanline.
-      BFI: TBitMapInfoHeader;  // The header as read from the stream.
-      FPalette: PFPcolor;      // Buffer with Palette entries.
-      LineBuf: PByte;          // Buffer for 1 scanline. Can be Byte, Word, TColorRGB or TColorRGBA
+  Private
+    Procedure FreeBufs;      // Free (and nil) buffers.
+  protected
+    ReadSize: Integer;       // Size (in bytes) of 1 scanline.
+    BFI: TBitMapInfoHeader;  // The header as read from the stream.
+    FPalette: PFPcolor;      // Buffer with Palette entries.
+    LineBuf: PByte;          // Buffer for 1 scanline. Can be Byte, Word, TColorRGB or TColorRGBA
 
-      // SetupRead will allocate the needed buffers, and read the colormap if needed.
-      procedure SetupRead(nPalette, nRowBits: Integer; Stream: TStream;
-        ReadPalette: Boolean); virtual;
-      procedure ReadScanLine(Row: Integer; Stream: TStream); virtual;
-      procedure WriteScanLine(Row: Integer; Img: TFPCustomImage); virtual;
-      // required by TFPCustomImageReader
-      procedure InternalRead(Stream: TStream; Img: TFPCustomImage); override;
-      procedure InternalReadBody(Stream: TStream; Img: TFPCustomImage);
-      function  InternalCheck(Stream: TStream) : boolean; override;
-    public
-      constructor Create; override;
-      destructor Destroy; override;
+    // SetupRead will allocate the needed buffers, and read the colormap if needed.
+    procedure SetupRead(nPalette, nRowBits: Integer; Stream: TStream;
+      ReadPalette: Boolean); virtual;
+    procedure ReadScanLine(Row: Integer; Stream: TStream); virtual;
+    procedure WriteScanLine(Row: Integer; Img: TFPCustomImage); virtual;
+    function BmpRGBAToFPColor(Const RGBA: TColorRGBA): TFPcolor; virtual;
+    // required by TFPCustomImageReader
+    procedure InternalRead(Stream: TStream; Img: TFPCustomImage); override;
+    procedure InternalReadBody(Stream: TStream; Img: TFPCustomImage);
+    function  InternalCheck(Stream: TStream) : boolean; override;
+  public
+    constructor Create; override;
+    destructor Destroy; override;
+  end;
+
+  { TLazReaderPartIcon }
+  { This is a FPImage writer for a single icon from an icon file }
+  TLazReaderPartIcon = class (TLazReaderBMP)
+  protected
+    // required by TFPCustomImageReader
+    procedure InternalRead(Stream: TStream; Img: TFPCustomImage); override;
+    function  InternalCheck(Stream: TStream) : boolean; override;
+    function BmpRGBAToFPColor(Const RGBA: TColorRGBA): TFPcolor; override;
   end;
 
   { TLazReaderIcon }
   { This is a FPImage writer for icon images. }
-  TLazReaderIcon = class (TLazReaderBMP)
-    private
-      FnIcons: Integer;
-      FnStartPos: TStreamSeekType;
-    protected
-      // required by TFPCustomImageReader
-      procedure InternalRead(Stream: TStream; Img: TFPCustomImage); override;
-      function  InternalCheck(Stream: TStream) : boolean; override;
+  TLazReaderIcon = class (TLazReaderPartIcon)
+  private
+    FIcon: TObject; { Actually TIcon, but this would give rise to a circular reference }
+    FnIcons: Integer;
+    FnStartPos: TStreamSeekType;
+    procedure SetIcon(const AValue: TObject);
+  protected
+    // required by TFPCustomImageReader
+    procedure InternalRead(Stream: TStream; Img: TFPCustomImage); override;
+    function  InternalCheck(Stream: TStream) : boolean; override;
+  public
+    property Icon: TObject read FIcon write SetIcon;
   end;
 
 function ReadCompleteStreamToString(Str: TStream; StartSize: integer): string;
@@ -360,6 +376,8 @@ procedure ReadCompleteStreamToStream(SrcStream, DestStream: TStream;
                                      StartSize: integer);
 
 implementation
+
+uses Graphics;
 
 var
   IsSpaceChar, IsNumberChar, IsHexNumberChar: array[char] of Boolean;
@@ -1372,6 +1390,11 @@ begin
     CreateMaskData
   else
     FreeMaskData;
+end;
+
+procedure TLazIntfImage.SetUsePalette(Value: boolean);
+begin
+  inherited SetUsePalette(False);  // Can't handle palettes at the moment
 end;
 
 procedure TLazIntfImage.SetInternalColor(x, y: integer; const Value: TFPColor);
@@ -2870,34 +2893,19 @@ end;
 
 { TLazReaderBMP }
 
-type
-  TColorBmpRGB=packed record
-    B,G,R: Byte;
-  end;
-  PColorBmpRGB = ^TColorBmpRGB;
-
-  TColorBmpRGBA=packed record
-  case Boolean of
-    False:(B,G,R,A: Byte);
-    True:(RGB: TColorBmpRGB);
-  end;
-  PColorBmpRGBA = ^TColorBmpRGBA;
-
-function BmpRGBAToFPColor(Const RGBA: TColorBmpRGBA): TFPcolor;
-var
-  NewAlpha: Byte;
+function TLazReaderBMP.BmpRGBAToFPColor(Const RGBA: TColorRGBA): TFPcolor;
 begin
   with Result, RGBA do
     begin
     Red   :=(R shl 8) or R;
     Green :=(G shl 8) or G;
     Blue  :=(B shl 8) or B;
-    NewAlpha:=255-A;
-    alpha :=(NewAlpha shl 8) or NewAlpha;
+    // Specification for bitmap files has these bits always zero - unused
+    alpha := alphaOpaque;
     end;
 end;
 
-Function BmpRGBToFPColor(Const RGB: TColorBmpRGB) : TFPColor;
+Function BmpRGBToFPColor(Const RGB: TColorRGB) : TFPColor;
 begin
   with Result,RGB do
     begin
@@ -2941,48 +2949,55 @@ procedure TLazReaderBMP.SetupRead(nPalette, nRowBits: Integer; Stream: TStream;
   ReadPalette: Boolean);
 {$ifdef VER1_0}
 type
-  tcolinfo = ARRAY [0..0] OF TColorBmpRGBA;
+  tcolinfo = ARRAY [0..0] OF TColorRGBA;
   pcolinfo = ^tcolinfo;
 var
   ColInfo: pcolinfo;
 {$else}
 var
-  ColInfo: ARRAY OF TColorBmpRGBA;
+  ColInfo: ARRAY OF TColorRGBA;
 {$endif}
   i: Integer;
+  FPcolor: TFPcolor;
 begin
   if nPalette>0 then
     begin
     GetMem(FPalette, nPalette*SizeOf(TFPColor));
     {$ifdef VER1_0}
-    GetMem(ColInfo, nPalette*Sizeof(TColorBmpRGBA));
+    GetMem(ColInfo, nPalette*Sizeof(TColorRGBA));
     if ReadPalette then begin
       if BFI.biClrUsed>0 then
-        Stream.Read(ColInfo^[0],BFI.biClrUsed*SizeOf(TColorBmpRGBA))
+        Stream.Read(ColInfo^[0],BFI.biClrUsed*SizeOf(TColorRGBA))
       else // Seems to me that this is dangerous.
-        Stream.Read(ColInfo^[0],nPalette*SizeOf(TColorBmpRGBA));
-      for i := 0 to nPalette-1 do
-        FPalette[i] := BmpRGBAToFPColor(ColInfo^[i]);
+        Stream.Read(ColInfo^[0],nPalette*SizeOf(TColorRGBA));
+      for i := 0 to nPalette-1 do begin
+        FPcolor := BmpRGBAToFPColor(ColInfo^[i]);
+        FPcolor.alpha := alphaOpaque; { No transparency info in palette }
+        FPalette[i] := FPcolor;
+      end;
     end;
     {$else}
     SetLength(ColInfo, nPalette);
     if ReadPalette then begin
       if BFI.biClrUsed>0 then
-        Stream.Read(ColInfo[0],BFI.biClrUsed*SizeOf(TColorBmpRGBA))
+        Stream.Read(ColInfo[0],BFI.biClrUsed*SizeOf(TColorRGBA))
       else // Seems to me that this is dangerous.
-        Stream.Read(ColInfo[0],nPalette*SizeOf(TColorBmpRGBA));
-      for i := 0 to High(ColInfo) do
-        FPalette[i] := BmpRGBAToFPColor(ColInfo[i]);
+        Stream.Read(ColInfo[0],nPalette*SizeOf(TColorRGBA));
+      for i := 0 to nPalette-1 do begin
+        FPcolor := BmpRGBAToFPColor(ColInfo[i]);
+        FPcolor.alpha := alphaOpaque; { No transparency info in palette }
+        FPalette[i] := FPcolor;
+      end;
     end;
     {$endif}
     end
   else if BFI.biClrUsed>0 then { Skip palette }
     Stream.Position := Stream.Position
-                      + TStreamSeekType(BFI.biClrUsed*SizeOf(TColorBmpRGBA));
+                      + TStreamSeekType(BFI.biClrUsed*SizeOf(TColorRGBA));
   ReadSize:=((nRowBits + 31) div 32) shl 2;
   GetMem(LineBuf,ReadSize);
   {$ifdef VER1_0}
-  FreeMem(ColInfo, nPalette*Sizeof(TColorBmpRGBA));
+  FreeMem(ColInfo, nPalette*Sizeof(TColorRGBA));
   {$endif}
 end;
 
@@ -3016,10 +3031,10 @@ begin
         img.colors[Column,Row]:=Bmp16BitToFPColor(PWord(LineBuf)[Column]);
    24 :
       for Column:=0 to img.Width-1 do
-        img.colors[Column,Row]:=BmpRGBToFPColor(PColorBmpRGB(LineBuf)[Column]);
+        img.colors[Column,Row]:=BmpRGBToFPColor(PColorRGB(LineBuf)[Column]);
    32 :
       for Column:=0 to img.Width-1 do
-        img.colors[Column,Row]:=BmpRGBAToFPColor(PColorBmpRGBA(LineBuf)[Column]);
+        img.colors[Column,Row]:=BmpRGBAToFPColor(PColorRGBA(LineBuf)[Column]);
     end;
 end;
 
@@ -3034,7 +3049,7 @@ Var
   Row : Integer;
 begin
   { This will move past any junk after the BFI header }
-  Stream.Position:=Stream.Position-TStreamSeekType(SizeOf(BFI)-BFI.biSize);
+  Stream.Position:=Stream.Position+TStreamSeekType(BFI.biSize-SizeOf(BFI));
   with BFI do
     begin
     if (biCompression<>0) then
@@ -3138,6 +3153,43 @@ begin
   end;
 end;
 
+{ TLazReaderPartIcon }
+
+procedure TLazReaderPartIcon.InternalRead(Stream: TStream; Img: TFPCustomImage);
+var
+  Row, Column: Integer;
+begin
+  Stream.Read(BFI,SizeOf(BFI));
+  BFI.biHeight := BFI.biHeight div 2; { Height field is doubled, to (sort of) accomodate mask }
+  InternalReadBody(Stream, Img); { Now read standard bitmap }
+  { Mask immediately follows unless bitmap was 32 bit - monchrome bitmap with no header }
+  if BFI.biBitCount < 32 then begin
+    ReadSize:=((Img.Width + 31) div 32) shl 2;
+    SetupRead(2,Img.Width,Stream,False);
+    try
+      for Row:=Img.Height-1 downto 0 do begin
+        ReadScanLine(Row,Stream); // Scanline in LineBuf with Size ReadSize.
+        for Column:=0 to Img.Width-1 do
+          if ((LineBuf[Column div 8] shr (7-(Column and 7)) ) and 1) <> 0 then
+            img.colors[Column,Row]:=colTransparent
+      end;
+    finally
+      FreeBufs;
+    end;
+  end;
+end;
+
+function TLazReaderPartIcon.InternalCheck(Stream: TStream): boolean;
+begin
+  Result:=True; { Assumes stream in the correct place }
+end;
+
+function TLazReaderPartIcon.BmpRGBAToFPColor(const RGBA: TColorRGBA): TFPcolor;
+begin
+  Result:=inherited BmpRGBAToFPColor(RGBA);
+  Result.alpha := (RGBA.A shl 8) or RGBA.A; { For icon files (only) upper byte is used for transparency }
+end;
+
 { TLazReaderIcon }
 
 type
@@ -3158,45 +3210,63 @@ type
                              XOR, AND     and bitmap info header}
     dwImageOffset: Longint;  {pos of image as offset from the beginning of file}
   end;
+  
+  PIconDirEntry = ^TIconDirEntry;
+
+procedure TLazReaderIcon.SetIcon(const AValue: TObject);
+begin
+  if AValue is TIcon then
+    FIcon:=AValue;
+end;
 
 procedure TLazReaderIcon.InternalRead(Stream: TStream; Img: TFPCustomImage);
 var
-  CurrentDirEntry, BestDirEntry: TIconDirEntry;
-  Row, Column, i: Integer;
+  CurrentDirEntry, BestDirEntry, IconDir: PIconDirEntry;
+  i: Integer;
+  Bitmap: TBitmap;
 begin
-  { For the time being, read the largest and/or most colourful icon }
-  Stream.Read(BestDirEntry, Sizeof(BestDirEntry));
-  CurrentDirEntry := BestDirEntry;
-  for i := 2 to FnIcons do begin
-    Stream.Read(CurrentDirEntry, Sizeof(CurrentDirEntry));
-    if ((CurrentDirEntry.bWidth > BestDirEntry.bWidth)
-         and (CurrentDirEntry.bHeight > BestDirEntry.bHeight))
-       or ((CurrentDirEntry.bWidth = BestDirEntry.bWidth)
-           and (CurrentDirEntry.bHeight = BestDirEntry.bHeight)
-           and (CurrentDirEntry.dwBytesInRes > BestDirEntry.dwBytesInRes)) then
-      BestDirEntry := CurrentDirEntry;
-  end;
-  Stream.Position := FnStartPos + BestDirEntry.dwImageOffset;
-  Stream.Read(BFI,SizeOf(BFI));
-  BFI.biHeight := BFI.biHeight div 2; { Height field is doubled, to (sort of) accomodate mask }
-  InternalReadBody(Stream, Img); { Now read standard bitmap }
-  { Mask immediately follows unless bitmap was 32 bit - monchrome bitmap with no header }
-  if BFI.biBitCount < 32 then begin
-    ReadSize:=((Img.Width + 31) div 32) shl 2;
-    SetupRead(2,Img.Width,Stream,False);
-    try
-      for Row:=Img.Height-1 downto 0 do begin
-        ReadScanLine(Row,Stream); // Scanline in LineBuf with Size ReadSize.
-        for Column:=0 to Img.Width-1 do
-          if ((LineBuf[Column div 8] shr (7-(Column and 7)) ) and 1) <> 0 then
-            img.colors[Column,Row]:=colTransparent
-      end;
-    finally
-      FreeBufs;
+  GetMem(IconDir, FnIcons*Sizeof(TIconDirEntry));
+  try
+    Stream.Read(IconDir^, FnIcons*Sizeof(TIconDirEntry));
+    BestDirEntry := IconDir;
+    CurrentDirEntry := IconDir+1;
+    { First locate largest and/or most colourful icon as the default image }
+    for i := 2 to FnIcons do begin
+      if ((CurrentDirEntry^.bWidth > BestDirEntry^.bWidth)
+           and (CurrentDirEntry^.bHeight > BestDirEntry^.bHeight))
+         or ((CurrentDirEntry^.bWidth = BestDirEntry^.bWidth)
+             and (CurrentDirEntry^.bHeight = BestDirEntry^.bHeight)
+             and (CurrentDirEntry^.dwBytesInRes > BestDirEntry^.dwBytesInRes)) then
+        BestDirEntry := CurrentDirEntry;
+      Inc(CurrentDirEntry);
     end;
+    if Assigned(Icon) then begin
+      CurrentDirEntry := IconDir;
+      for i := 1 to FnIcons do begin
+        Stream.Position := FnStartPos + CurrentDirEntry^.dwImageOffset;
+        if CurrentDirEntry = BestDirEntry then
+         inherited InternalRead(Stream, Img)
+        else begin
+          Bitmap := TBitmap.Create;
+          try
+            Bitmap.ReadStreamWithFPImage(Stream, False, 0, TLazReaderPartIcon);
+          except
+            Bitmap.Free;
+            raise;
+          end;
+          TIcon(Icon).AddBitmap(Bitmap);
+        end;
+        Inc(CurrentDirEntry);
+      end;
+    end else begin
+      Stream.Position := FnStartPos + BestDirEntry^.dwImageOffset;
+      inherited InternalRead(Stream, Img);
+      { Finally skip remaining icons }
+      Stream.Position := FnStartPos + CurrentDirEntry^.dwImageOffset + CurrentDirEntry^.dwBytesInRes;
+    end;
+  finally
+    FreeMem(IconDir);
   end;
-  { Finally skip remaining icons }
-  Stream.Position := FnStartPos + BestDirEntry.dwImageOffset + BestDirEntry.dwBytesInRes;
 end;
 
 function TLazReaderIcon.InternalCheck(Stream: TStream): boolean;
