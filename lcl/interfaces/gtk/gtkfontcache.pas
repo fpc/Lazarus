@@ -51,6 +51,7 @@ type
     destructor Destroy; override;
     procedure IncreaseRefCount;
     procedure DecreaseRefCount;
+    function DebugReport: string;
   end;
 
   { TGdkFontCache }
@@ -170,6 +171,32 @@ begin
     Free;
 end;
 
+function TGdkFontCacheItem.DebugReport: string;
+var
+  i: Integer;
+begin
+  Result:=HexStr(Cardinal(GdkFont),8)
+    +' LongFontName="'+LongFontName+'" '
+    +' lfFaceName="'+LogFont.lfFaceName+'" '
+    +' CharSet='+dbgs(LogFont.lfCharSet)
+    +' ClipPrecision='+dbgs(LogFont.lfClipPrecision)
+    +' Escapement='+dbgs(LogFont.lfEscapement)
+    +' Height='+dbgs(LogFont.lfHeight)
+    +' Italic='+dbgs(LogFont.lfItalic)
+    +' Orientation='+dbgs(LogFont.lfOrientation)
+    +' OutPrecision='+dbgs(LogFont.lfOutPrecision)
+    +' PitchAndFamily='+dbgs(LogFont.lfPitchAndFamily)
+    +' Quality='+dbgs(LogFont.lfQuality)
+    +' StrikeOut='+dbgs(LogFont.lfStrikeOut)
+    +' Underline='+dbgs(LogFont.lfUnderline)
+    +' Weight='+dbgs(LogFont.lfWeight)
+    +' Width='+dbgs(LogFont.lfWidth)
+    +#13;
+  for i:=0 to SizeOf(LogFont)-1 do
+    Result:=Result+hexstr(ord(PChar(@LogFont)[i]),2);
+  Result:=Result+#13;
+end;
+
 { TGdkFontCache }
 
 constructor TGdkFontCache.Create;
@@ -230,6 +257,14 @@ end;
 procedure TGdkFontCache.Add(Item: TGdkFontCacheItem);
 var
   OldItem: TGdkFontCacheItem;
+  
+  procedure RaiseGDKFontAlreadyAdded;
+  begin
+    debugln('TGdkFontCache.Add New='+Item.DebugReport);
+    debugln('TGdkFontCache.Add Old='+OldItem.DebugReport);
+    RaiseGDBException('TGdkFontCache.Add');
+  end;
+  
   //ANode: TAvgLvlTreeNode;
 begin
   {$IFDEF VerboseFontCache}
@@ -237,11 +272,8 @@ begin
     ' LongFontName=',Item.LongFontName,' lfFaceName=',Item.LogFont.lfFaceName);
   {$ENDIF}
   OldItem:=FindGDKFont(Item.GdkFont);
-  if OldItem<>nil then begin
-    debugln('TGdkFontCache.Add New=',Item.LongFontName,'/',Item.LogFont.lfFaceName);
-    debugln('TGdkFontCache.Add Old=',OldItem.LongFontName,'/',OldItem.LogFont.lfFaceName);
-    RaiseGDBException('TGdkFontCache.Add');
-  end;
+  if OldItem<>nil then
+    RaiseGDKFontAlreadyAdded;
   FItemsSortedForGdkFont.Add(Item);
   FItemsSortedForLogFont.Add(Item);
   
@@ -272,31 +304,12 @@ procedure TGdkFontCache.Add(TheGdkFont: PGDKFont; const LogFont: TLogFont;
   const LongFontName: string);
 var
   NewItem: TGdkFontCacheItem;
-  i: Integer;
 begin
   if FindGDKFont(LogFont,LongFontName)<>nil then
     RaiseGDBException('TGdkFontCache.Add Already exists');
   NewItem:=CreateNewItem(TheGdkFont);
   NewItem.LogFont:=LogFont;
   NewItem.LongFontName:=LongFontName;
-  {debugln('TGdkFontCache.Add ',HexStr(Cardinal(TheGdkFont),8),
-  ' LongFontName=',LongFontName,' lfFaceName=',LogFont.lfFaceName,
-     ' '+dbgs(LogFont.lfCharSet)
-    +' '+dbgs(LogFont.lfClipPrecision)
-    +' '+dbgs(LogFont.lfEscapement)
-    +' '+dbgs(LogFont.lfHeight)
-    +' '+dbgs(LogFont.lfItalic)
-    +' '+dbgs(LogFont.lfOrientation)
-    +' '+dbgs(LogFont.lfOutPrecision)
-    +' '+dbgs(LogFont.lfPitchAndFamily)
-    +' '+dbgs(LogFont.lfQuality)
-    +' '+dbgs(LogFont.lfStrikeOut)
-    +' '+dbgs(LogFont.lfUnderline)
-    +' '+dbgs(LogFont.lfWeight)
-    +' '+dbgs(LogFont.lfWidth));
-  for i:=0 to SizeOf(LogFont)-1 do
-    write(hexstr(ord(PChar(@LogFont)[i]),2));
-  writeln('');}
   Add(NewItem);
   if FindGDKFont(LogFont,LongFontName)=nil then
     RaiseGDBException('TGdkFontCache.Add added where?');
