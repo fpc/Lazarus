@@ -9,6 +9,8 @@ version=0.2a
 
 [compiler]
 options=-gl -dHL_LAZARUS
+unittargetdir=units/$(CPU_TARGET)/$(OS_TARGET)
+unitdir=../../lcl/units/$(CPU_TARGET)/$(OS_TARGET) .
 
 [target]
 units=htmllite
@@ -16,13 +18,18 @@ implicitunits=htmllite litepars litesubs litedith litegif2 litereadthd liteun2 \
   litesbs1
 
 [clean]
-files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT)) \
+  $(COMPILER_UNITTARGETDIR)/$(wildcard *$(OEXT)) \
+  $(COMPILER_UNITTARGETDIR)/$(wildcard *$(PPUEXT)) \
+  $(COMPILER_UNITTARGETDIR)/$(wildcard *$(RSTEXT))
 
 [require]
-packages=lcl
+# Adding lcl does not work, because it adds the source path.
+#packages=lcl
+packages=fcl
 
 [default]
-lcldir=../../lcl
+#lcldir=../../lcl
 
 [rules]
 .PHONY: cleartarget all

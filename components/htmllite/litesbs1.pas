@@ -13,8 +13,8 @@ unit LiteSbs1;
 interface
 uses
   {$IFDEF HL_LAZARUS}
-  Classes, SysUtils, LCLType, LCLIntf, Messages, GraphType, Graphics, Controls,
-  Forms, Dialogs, StdCtrls, ExtCtrls, LiteUn2, LiteSubs;
+  Classes, SysUtils, LCLType, LCLIntf, GraphType, Graphics, Controls,
+  Forms, Dialogs, StdCtrls, LiteUn2, LiteSubs;
   {$ELSE}
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, ExtCtrls, LiteUn2, LiteGif2, LiteSubs;

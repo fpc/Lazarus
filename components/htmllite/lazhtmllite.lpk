@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="2">
+    <Name Value="LazHTMLLite"/>
+    <Author Value="Mattias Gaertner"/>
+    <CompilerOptions>
+      <SearchPaths>
+        <UnitOutputDirectory Value="units/$(TargetCPU)/$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CustomOptions Value="-dHL_LAZARUS
+"/>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="HTMLLite"/>
+    <License Value="GPL"/>
+    <Version Minor="1" Release="1"/>
+    <Files Count="9">
+      <Item1>
+        <Filename Value="htmllite.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="HTMLLite"/>
+      </Item1>
+      <Item2>
+        <Filename Value="litecons.inc"/>
+        <Type Value="Include"/>
+      </Item2>
+      <Item3>
+        <Filename Value="litedith.pas"/>
+        <UnitName Value="LiteDith"/>
+      </Item3>
+      <Item4>
+        <Filename Value="litepars.pas"/>
+        <UnitName Value="LitePars"/>
+      </Item4>
+      <Item5>
+        <Filename Value="litereadthd.pas"/>
+        <UnitName Value="LiteReadThd"/>
+      </Item5>
+      <Item6>
+        <Filename Value="litesbs1.pas"/>
+        <UnitName Value="LiteSbs1"/>
+      </Item6>
+      <Item7>
+        <Filename Value="litesubs.pas"/>
+        <UnitName Value="LiteSubs"/>
+      </Item7>
+      <Item8>
+        <Filename Value="liteun2.pas"/>
+        <UnitName Value="LiteUn2"/>
+      </Item8>
+      <Item9>
+        <Filename Value="litegif2.pas"/>
+        <UnitName Value="LiteGIF2"/>
+      </Item9>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="1">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)/"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

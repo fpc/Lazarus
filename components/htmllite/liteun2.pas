@@ -13,8 +13,8 @@ unit LiteUn2;
 interface
 uses
   {$IFDEF HL_LAZARUS}
-  LCLIntf, LCLType, VCLGlobals, SysUtils, Messages, Classes, GraphType,
-  Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls;
+  LCLIntf, LCLType, VCLGlobals, SysUtils, Classes, GraphType,
+  Graphics, Controls, Forms, Dialogs, StdCtrls;
   {$ELSE}
   Windows, SysUtils, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, ExtCtrls;
@@ -305,7 +305,7 @@ implementation
 
 uses
   {$IFDEF HL_LAZARUS}
-  HTMLLite, LiteSubs, LiteDith, LiteGif2;
+  LiteSubs, LiteDith, LiteGif2;
   {$ELSE not HL_LAZARUS}
   {$ifdef ver100_plus}
      jpeg, LiteDith,

@@ -61,9 +61,14 @@ type
     procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_EraseBkgnd;
     procedure WMLButtonDblClk(var Message: TWMMouse); message WM_LButtonDblClk;
     procedure DoBackground(ACanvas: TCanvas; WmErase: boolean);
+    {$IFNDEF HL_LAZARUS}
     constructor CreateIt(AOwner: TComponent; Viewer: TComponent);
+    {$ENDIF}
     property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
   public
+    {$IFDEF HL_LAZARUS}
+    constructor CreateIt(AOwner: TComponent; Viewer: TComponent);
+    {$ENDIF}
     procedure Paint; override;
     procedure CreateWnd; override;
     procedure DestroyWnd; override;
