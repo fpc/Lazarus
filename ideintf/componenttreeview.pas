@@ -165,7 +165,7 @@ begin
   Node:=GetNodeAt(X, Y);
   if Assigned(Node) and Assigned(Node.Data) then begin
     AnObject:=TObject(Node.Data);
-    if AnObject is TWinControl and (csAcceptsControls in TWinControl(AnObject).ControlStyle) then
+    if (AnObject is TWinControl) and (csAcceptsControls in TWinControl(AnObject).ControlStyle) then
     begin
       AContainer := TWinControl(AnObject);
       AcceptContainer := True;
