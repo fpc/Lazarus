@@ -812,17 +812,16 @@ end;
 
 function BorderStyleToWin32Flags(Style: TFormBorderStyle): DWORD;
 begin
-  Result := WS_OVERLAPPEDWINDOW or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
+  Result := WS_CLIPCHILDREN or WS_CLIPSIBLINGS;
   case Style of
-  //bsSizeable:; -> Default
-  bsSingle:
-    Result := Result and DWORD(not WS_THICKFRAME);
+  bsSizeable, bsSizeToolWin:
+    Result := Result or (WS_POPUP or WS_THICKFRAME or WS_CAPTION);
+  bsSingle, bsToolWindow:
+    Result := Result or (WS_OVERLAPPED or WS_BORDER or WS_CAPTION);
   bsDialog:
-    Result := Result and DWORD(not (WS_THICKFRAME or WS_MINIMIZEBOX or WS_MAXIMIZEBOX));
+    Result := Result or (WS_POPUP or WS_BORDER or WS_CAPTION);
   bsNone:
-    Result := WS_POPUP or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
-  bsToolWindow:
-    Result := Result and DWORD(not WS_THICKFRAME);
+    Result := Result or WS_POPUP;
   end;
 end;
 
@@ -830,6 +829,8 @@ function BorderStyleToWin32FlagsEx(Style: TFormBorderStyle): DWORD;
 begin
   Result := 0;
   case Style of
+  bsDialog:
+    Result := WS_EX_DLGMODALFRAME or WS_EX_WINDOWEDGE;
   bsToolWindow, bsSizeToolWin:
     Result := WS_EX_TOOLWINDOW;
   end;

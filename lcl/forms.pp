@@ -310,6 +310,9 @@ type
 
   TIDesigner = class;
 
+  TBorderIcon = (biSystemMenu, biMinimize, biMaximize, biHelp);
+  TBorderIcons = set of TBorderIcon;
+    
   TCloseEvent = procedure(Sender: TObject; var CloseAction: TCloseAction) of object;
   TCloseQueryEvent = procedure(Sender : TObject;
                                var CanClose : boolean) of object;
@@ -339,6 +342,7 @@ type
   private
     FActive: Boolean;
     FActiveControl: TWinControl;
+    FBorderIcons: TBorderIcons;
     FDefaultControl: TControl;
     FCancelControl: TControl;
     FDesigner: TIDesigner;
@@ -376,6 +380,7 @@ type
     function IsKeyPreviewStored: boolean;
     procedure SetActive(AValue: Boolean);
     procedure SetActiveControl(AWinControl: TWinControl);
+    procedure SetBorderIcons(NewIcons: TBorderIcons);
     procedure SetFormBorderStyle(NewStyle: TFormBorderStyle);
     procedure SetCancelControl(NewControl: TControl);
     procedure SetDefaultControl(NewControl: TControl);
@@ -472,6 +477,8 @@ type
   public
     property Active: Boolean read FActive;
     property ActiveControl: TWinControl read FActiveControl write SetActiveControl;
+    property BorderIcons: TBorderIcons read FBorderIcons write SetBorderIcons 
+      default [biSystemMenu, biMinimize, biMaximize];
     property BorderStyle: TFormBorderStyle
                       read FFormBorderStyle write SetFormBorderStyle default bsSizeable;
     property CancelControl: TControl read FCancelControl write SetCancelControl;
@@ -525,6 +532,7 @@ type
     property ActiveControl;
     property Align;
     property AutoSize;
+    property BorderIcons;
     property BorderStyle;
     property Caption;
     property ClientHeight;

@@ -80,6 +80,8 @@ type
   private
   protected
   public
+    class procedure SetBorderIcons(const AForm: TCustomForm;
+          const ABorderIcons: TBorderIcons); override;
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure SetIcon(const AForm: TCustomForm; const AIcon: HICON); override;
@@ -174,21 +176,45 @@ end;
 
 { TWin32WSCustomForm }
 
+function CalcBorderIconsFlags(const AForm: TCustomForm): dword;
+var
+  BorderIcons: TBorderIcons;
+begin
+  Result := 0;
+  if not (AForm.BorderStyle in [bsNone, bsDialog, bsToolWindow]) then
+  begin
+    BorderIcons := AForm.BorderIcons;
+    if biSystemMenu in BorderIcons then
+    begin
+      Result := Result or WS_SYSMENU;
+      if biMinimize in BorderIcons then
+        Result := Result or WS_MINIMIZEBOX;
+      if biMaximize in BorderIcons then
+        Result := Result or WS_MAXIMIZEBOX;
+    end;
+  end;
+end;
+
 function TWin32WSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
+  lForm: TCustomForm;
+  BorderStyle: TFormBorderStyle;
 begin
   // general initialization of Params
   PrepareCreateWindow(AWinControl, Params);
   // customization of Params
   with Params do
   begin
-    Flags := BorderStyleToWin32Flags(TCustomForm(AWinControl).BorderStyle);
-    FlagsEx := BorderStyleToWin32FlagsEx(TCustomForm(AWinControl).BorderStyle);
-    if (TCustomForm(AWinControl).FormStyle in fsAllStayOnTop)
-    and (not (csDesigning in TCustomForm(AWinControl).ComponentState)) then
+    lForm := TCustomForm(AWinControl);
+    BorderStyle := lForm.BorderStyle;
+    Flags := BorderStyleToWin32Flags(BorderStyle);
+    FlagsEx := BorderStyleToWin32FlagsEx(BorderStyle);
+    if (lForm.FormStyle in fsAllStayOnTop) and 
+        (not (csDesigning in lForm.ComponentState)) then
       FlagsEx := FlagsEx or WS_EX_TOPMOST;
+    Flags := Flags or CalcBorderIconsFlags(lForm);
     pClassName := @ClsName;
     WindowTitle := StrCaption;
     Left := LongInt(CW_USEDEFAULT);
@@ -200,6 +226,13 @@ begin
   // create window
   FinishCreateWindow(AWinControl, Params, false);
   Result := Params.Window;
+end;
+
+procedure TWin32WSCustomForm.SetBorderIcons(const AForm: TCustomForm;
+          const ABorderIcons: TBorderIcons);
+begin
+  UpdateWindowStyle(AForm.Handle, CalcBorderIconsFlags(AForm), 
+    WS_SYSMENU or WS_MINIMIZEBOX or WS_MAXIMIZEBOX);
 end;
 
 procedure TWin32WSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);

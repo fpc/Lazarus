@@ -1045,6 +1045,16 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
+{       TCustomForm SetBorderIcons                                             }
+{------------------------------------------------------------------------------}
+procedure TCustomForm.SetBorderIcons(NewIcons: TBorderIcons);
+begin
+  if FBorderIcons = NewIcons then exit;
+  if HandleAllocated then
+    TWSCustomFormClass(WidgetSetClass).SetBorderIcons(Self, NewIcons);
+end;
+
+{------------------------------------------------------------------------------}
 {       TCustomForm SetFormBorderStyle                                         }
 {------------------------------------------------------------------------------}
 procedure TCustomForm.SetFormBorderStyle(NewStyle: TFormBorderStyle);
@@ -1808,6 +1818,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.160  2004/10/24 18:54:57  micha
+  add TCustomForm.BorderIcons (delphi compat)
+  tweak win32 window dialog flags, to create better dialog look
+
   Revision 1.159  2004/09/23 09:00:42  vincents
   fix type cast of WidgetSetClass
 
