@@ -177,6 +177,7 @@ type
     FEditingColumn: Integer;
     FOldPosition: Integer;
     FDefaultColWidths: boolean;
+    procedure EmptyGrid;
     function GetCurrentField: TField;
     function GetDataSource: TDataSource;
     function GetRecordCount: Integer;
@@ -261,6 +262,7 @@ type
     procedure Loaded; override;
     procedure MoveSelection; override;
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
+    procedure PrepareCanvas(aCol,aRow: Integer; aState:TGridDrawState); override;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
     function  ScrollBarAutomatic(Which: TScrollStyle): boolean; override;
     function  SelectCell(aCol, aRow: Integer): boolean; override;
@@ -441,6 +443,15 @@ end;
 function TCustomDbGrid.GetThumbTracking: boolean;
 begin
   Result :=  goThumbTracking in inherited Options;
+end;
+
+procedure TCustomDbGrid.EmptyGrid;
+begin
+  ColCount := 2;
+  RowCount := 2;
+  FixedCols := 1;
+  FixedRows := 1;
+  ColWidths[0]:=12;
 end;
 
 function TCustomDbGrid.GetCurrentField: TField;
@@ -942,7 +953,7 @@ begin
   if csDestroying in ComponentState then
     exit;
   if UpdateGridCounts=0 then
-    Clear;
+    EmptyGrid;
   UpdateScrollBarRange;
 end;
 {
@@ -1025,7 +1036,7 @@ begin
       if (i>=0)and(j>=0) then
         Columns[i].Index := J;
     end
-    else if (FDataLink.DataSet<>nil)and FDatalink.Active then begin
+    else if FDatalink.Active and (FDataLink.DataSet<>nil) then begin
       F := GetDsFieldFromGridColumn(FromIndex);
       if F<>nil then begin
         {$IFNDEF VER1_0}
@@ -1267,7 +1278,7 @@ begin
   if csDesigning in componentState then Exit;
   if not GCache.ValidGrid then Exit;
   
-  Gz:=MouseToGridZone(X,Y, False);
+  Gz:=MouseToGridZone(X,Y);
   case Gz of
     gzFixedRows, gzFixedCols: inherited MouseDown(Button, Shift, X, Y);
     else
@@ -1283,6 +1294,15 @@ begin
         end;
       end;
   end;
+end;
+
+procedure TCustomDbGrid.PrepareCanvas(aCol, aRow: Integer;
+  aState: TGridDrawState);
+begin
+  inherited PrepareCanvas(aCol, aRow, aState);
+  if (not FDatalink.Active) and ((gdSelected in aState) or
+    (gdFocused in aState)) then
+    Canvas.Brush.Color := Self.Color;
 end;
 
 procedure TCustomDbGrid.SetEditText(ACol, ARow: Longint; const Value: string);
@@ -1477,7 +1497,8 @@ end;
 procedure TCustomDbGrid.DrawFocusRect(aCol, aRow: Integer; ARect: TRect);
 begin
   // Draw focused cell if we have the focus
-  if {Self.Focused and }(dgAlwaysShowSelection in Options) then
+  if {Self.Focused and }(dgAlwaysShowSelection in Options) and
+    FDatalink.Active then
   begin
     CalcFocusRect(aRect);
     DrawRubberRect(Canvas, aRect, FocusColor);
@@ -2002,6 +2023,9 @@ end.
 
 {
   $Log$
+  Revision 1.32  2005/02/08 11:33:16  mattias
+  fixes for empty dbgrid  from Jesus
+
   Revision 1.31  2005/02/06 22:43:38  mattias
   dbgrid.ThumbTracking and fixes  from Jesus
 
