@@ -3820,6 +3820,8 @@ end;
 
  ------------------------------------------------------------------------------}
 function TgtkObject.GetSystemMetrics(nIndex: Integer): Integer;
+var
+  P : Pointer;
 begin
   Assert(False, Format('Trace:> [TgtkObject.GetSystemMetrics] %d', [nIndex]));
   case nIndex of
@@ -3893,11 +3895,17 @@ begin
       end;
     SM_CXHSCROLL:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CXHSCROLL        ');
+        P := GTK_hscrollbar_new(nil);
+        gtk_widget_show(P);
+        Result := GTK_Widget(P)^.requisition.Width;
+        GTK_Widget_Destroy(P);
       end;
     SM_CYHSCROLL:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CYHSCROLL        ');
+        P := GTK_hscrollbar_new(nil);
+        gtk_widget_show(P);
+        Result := GTK_Widget(P)^.requisition.Height;
+        GTK_Widget_Destroy(P);
       end;
     SM_CXHTHUMB:
       begin
@@ -4025,11 +4033,17 @@ begin
       end;
     SM_CXVSCROLL:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CXVSCROLL        ');
+        P := GTK_vscrollbar_new(nil);
+        gtk_widget_show(P);
+        Result := GTK_Widget(P)^.requisition.Width;
+        GTK_Widget_Destroy(P);
       end;
     SM_CYVSCROLL:
       begin
-        Assert(False, 'Trace:TODO: [TgtkObject.GetSystemMetrics] --> SM_CYVSCROLL        ');
+        P := GTK_vscrollbar_new(nil);
+        gtk_widget_show(P);
+        Result := GTK_Widget(P)^.requisition.Height;
+        GTK_Widget_Destroy(P);
       end;
     SM_CYCAPTION:
       begin
@@ -7453,6 +7467,12 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.169  2002/10/23 20:47:27  lazarus
+  AJ: Started Form Scrolling
+      Started StaticText FocusControl
+      Fixed Misc Dialog Problems
+      Added TApplication.Title
+
   Revision 1.168  2002/10/21 22:12:49  lazarus
   MG: fixed frmactivate
 
