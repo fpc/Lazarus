@@ -173,7 +173,10 @@ var
 begin
   ARecord:=Records[Index];
   if ARecord=nil then
+  begin
     CreateRecord(Index);
+    ARecord:=Records[Index];
+  end;
   TObject(ARecord^):=AnObject;
 end;
 
