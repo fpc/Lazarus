@@ -101,7 +101,7 @@ implementation
 function GetDefaultTargetCPU: string;
 begin
   {$IFDEF CPUPowerPC}
-  Result:='ppc';
+  Result:='powerpc';
   {$ENDIF}
   {$IFDEF CPUM68k}
   Result:='m68k';
@@ -157,6 +157,9 @@ end.
 
 {
   $Log$
+  Revision 1.27  2004/08/06 07:06:09  mattias
+  changed cpu target ppc to powerpc
+
   Revision 1.26  2004/07/30 15:38:16  vincents
   make executable location is a environment option now.
 
