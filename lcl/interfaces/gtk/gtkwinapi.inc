@@ -2337,7 +2337,7 @@ begin
       Result := 1;
     end;
   end;
-  Assert(False, Format('trace:< [TgtkObject.ReleaseDC] DC:0x%x', [hDC]));
+  Assert(False, Format('trace:< [TgtkObject.ReleaseDC] FDeviceContexts[%d] DC:0x%x', [nIndex, hDC]));
 end;
 
 {------------------------------------------------------------------------------
@@ -2359,37 +2359,53 @@ function TgtkObject.RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
   end;
 
 var
-  pDC, OldDC: PDeviceContext;
+  pDC, pSaved: PDeviceContext;
   count: Integer;
 begin
-  Assert(False, Format('Trace:> [TgtkObject.RestoreDC]  0x%x, Saved: %d', [DC, SavedDC]));
+  Assert(False, Format('Trace:> [TgtkObject.RestoreDC] DC:0x%x, SavedDC: %d', [DC, SavedDC]));
   Result := IsValidDC(DC) and (SavedDC <> 0);
   if Result 
   then begin
     pDC := PDeviceContext(DC);
     Count := CountSaved(pDC);
     Result := (Abs(SavedDC) <= Count);
-    if Result 
-    then begin
-      if SavedDC > 0 then Dec(SavedDc, Count + 1); // make relative
-      while (SavedDC < 0) and (pDC <> nil) do
-      begin
-        OldDC := pDC;
-        pDC := pDC^.SavedContext;
-        Inc(SavedDC);
-        // TODO copy bitmap allso 
-        // DeleteDC(OldDC); 
-        // fornow  unref GC
-        if OldDC^.GC <> nil 
-        then begin 
-          gdk_gc_unref(OldDC^.GC);
-          OldDC^.GC := nil;
-        end;
+    
+    if SavedDC > 0 then Dec(SavedDc, Count + 1); // make relative
+    
+    while (SavedDC < 0) and (pDC <> nil) and Result do
+    begin
+      Assert(False, Format('Trace:< [TgtkObject.RestoreDC] Unwinding#: %d', [SavedDC]));
+      pSaved := pDC^.SavedContext;
+      Inc(SavedDC);
+      // TODO copy bitmap allso 
+      
+      pDC^.SavedContext := pSaved^.SavedContext;
+      pSaved^.SavedContext := nil;
+      
+      //prevent deleting of copied objects; 
+      if pSaved^.CurrentBitmap = pDC^.CurrentBitmap 
+      then pSaved^.CurrentBitmap := nil;  
+      if pSaved^.CurrentFont = pDC^.CurrentFont 
+      then pSaved^.CurrentFont := nil;    
+      if pSaved^.CurrentPen = pDC^.CurrentPen 
+      then pSaved^.CurrentPen := nil;     
+      if pSaved^.CurrentBrush = pDC^.CurrentBrush 
+      then pSaved^.CurrentBrush := nil;   
+      
+      Result := CopyDCData(pDC, pSaved);
+
+      DeleteDC(HGDIOBJ(pSaved)); 
+      // fornow  unref GC
+(*
+      if OldDC^.GC <> nil 
+      then begin 
+        gdk_gc_unref(OldDC^.GC);
+        OldDC^.GC := nil;
       end;
-      Result := CopyDCData(PDeviceContext(DC), pDC);
+*)
     end;
   end;
-  Assert(False, Format('Trace:< [TgtkObject.RestoreDC]  0x%x, Saved: %d --> %s', [Integer(DC), SavedDC, BOOL_TEXT[Result]]));
+  Assert(False, Format('Trace:< [TgtkObject.RestoreDC] DC:0x%x, Saved: %d --> %s', [Integer(DC), SavedDC, BOOL_TEXT[Result]]));
 end;
 
 
@@ -3101,6 +3117,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2000/10/09 22:50:33  lazarus
+  MWE:
+    * fixed some selection code
+    + Added selection sample
+
   Revision 1.8  2000/09/10 23:08:31  lazarus
   MWE:
     + Added CreateCompatibeleBitamp function

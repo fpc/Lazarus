@@ -322,8 +322,10 @@ begin
   with Msg do
   begin
     Msg := LM_MouseMove;
-    XPos := Trunc(Event^.X);
-    YPos := trunc(Event^.Y);
+    XPos := Round(Event^.X);
+    YPos := Round(Event^.Y);
+//    XPos := Trunc(Event^.X);
+//    YPos := trunc(Event^.Y);
 {    Writeln('MOUSEMOVE Signal');
     Writeln('X = ');
     Writeln('  '+inttostr(XPos));
@@ -1075,6 +1077,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2000/10/09 22:50:32  lazarus
+  MWE:
+    * fixed some selection code
+    + Added selection sample
+
   Revision 1.6  2000/09/10 23:08:31  lazarus
   MWE:
     + Added CreateCompatibeleBitamp function

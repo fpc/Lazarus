@@ -4,7 +4,7 @@
 
 [targets]
 programs=hello notebk comdialogs progressbar trackbar listboxtest \
-         bitbutton combobox checkbox
+         bitbutton combobox checkbox selection
 
 [clean]
 units=$(basename $(wildcard *$(PPUEXT))) 
@@ -14,7 +14,7 @@ packages=fcl gtk
 
 [dirs]
 targetdir=.
-unitdir=. ../lcl/units ../components/units 
+unitdir=. ../lcl/units ../components/units ../designer
 
 [presettings]
 

@@ -7,6 +7,12 @@
      GTKCallback
  ******************************************************************************)
 
+{$IFOPT C-}
+// Uncomment for local trace
+//  {$C+}
+//  {$DEFINE ASSERT_IS_ON}
+{$ENDIF}
+
 {------------------------------------------------------------------------------
   Function: NewGDIRawImage
   Params:  Width, Height: Size of the image
@@ -57,7 +63,7 @@ function CopyDCData(const DestinationDC, SourceDC: PDeviceContext): Boolean;
 var
   GCValues: TGDKGCValues;
 begin
-  Assert(False, 'Trace:[CopyDCData]');
+  Assert(False, Format('Trace:> [CopyDCData] DestDC:0x%x, SourceDC:0x%x', [Integer(DestinationDC), Integer(SourceDC)]));
   Result := (DestinationDC <> nil) and (SourceDC <> nil);
   if Result
   then begin
@@ -82,6 +88,7 @@ begin
       SavedContext := SourceDC^.SavedContext;
     end;
   end;
+  Assert(False, Format('Trace:< [CopyDCData] DestDC:0x%x, SourceDC:0x%x --> %d', [Integer(DestinationDC), Integer(SourceDC), Integer(Result)]));
 end;
 
 {------------------------------------------------------------------------------
@@ -653,8 +660,19 @@ Assert(False, 'Trace:OBSOLETE gtkproc.inc GetPen');
 end;
 
 
- {
+{$IFDEF ASSERT_IS_ON}
+  {$UNDEF ASSERT_IS_ON}
+  {$C-}
+{$ENDIF}
+
+ { =============================================================================
+
   $Log$
+  Revision 1.5  2000/10/09 22:50:32  lazarus
+  MWE:
+    * fixed some selection code
+    + Added selection sample
+
   Revision 1.4  2000/09/10 23:08:31  lazarus
   MWE:
     + Added CreateCompatibeleBitamp function

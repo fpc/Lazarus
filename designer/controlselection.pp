@@ -72,7 +72,7 @@ type
     procedure ControlMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure DOChange;
     procedure SetGrabbers;
-    procedure SizeContent(dx, dy: Integer);
+    procedure SizeContent;
     procedure MoveContent(dx, dy: Integer);
     procedure SetVisible(const Value: Boolean);
     procedure GrabberMove(Sender: TObject; dx, dy: Integer);
@@ -174,7 +174,7 @@ end;
 
 procedure TGrabber.PaintWindow(DC: HDC);
 begin
-  WriteLn(Format('[TGrabber.PaintWindow] 0x%x', [DC]));
+//  WriteLn(Format('[TGrabber.PaintWindow] 0x%x', [DC]));
   FillRect(DC, Rect(0, 0, Width, Height), GetStockObject(BLACK_BRUSH));
 end;
 
@@ -205,35 +205,39 @@ var
   n: Integer;
 begin
   if AControl <> nil
-  then with AControl do
-  begin
+  then begin
     if Initial
     then begin
-      FLeft := Left;
-      FTop := Top;
-      FWidth := Width;
-      FHeight := Height;
+      FLeft := AControl.Left;
+      FTop := AControl.Top;
+      FWidth := AControl.Width;
+      FHeight := AControl.Height;
+      WriteLn(Format('[TControlSelection.AdjustSize] Initializing to X:%d, Y:%d, W:%d, H: %d', [FLeft, FTop, FWidth, FHeight])); 
     end
     else begin
-      n := FLeft - Left;
+      WriteLn(Format('[TControlSelection.AdjustSize] current X:%d, Y:%d, W:%d, H: %d', [FLeft, FTop, FWidth, FHeight])); 
+      with AControl do
+        WriteLn(Format('[TControlSelection.AdjustSize] Adjust for %s --> X:%d, Y:%d, W:%d, H: %d', [Classname, Left, Top, Width, Height])); 
+      n := FLeft - AControl.Left;
       if n > 0
       then begin
-        FLeft := Left;
+        FLeft := AControl.Left;
         Inc(FWidth , n);
       end;
 
-      n := FTop - Top;
+      n := FTop - AControl.Top;
       if n > 0
       then begin
-        FTop := Top;
+        FTop := AControl.Top;
         Inc(FHeight, n);
       end;
 
-      n := Max(FLeft + FWidth, Left + Width);
+      n := Max(FLeft + FWidth, AControl.Left + AControl.Width);
       FWidth := n - FLeft;
 
-      n := Max(FTop + FHeight, Top + Height);
+      n := Max(FTop + FHeight, AControl.Top + AControl.Height);
       FHeight := n - FTop;
+      WriteLn(Format('[TControlSelection.AdjustSize] Adjusted to X:%d, Y:%d, W:%d, H: %d', [FLeft, FTop, FWidth, FHeight])); 
     end;
   end;
 end;
@@ -308,6 +312,7 @@ begin
 
   for GrabPos := Low(TGrabIndex) to High(TGrabIndex) do
   begin
+    WriteLN(Format('[TControlSelection.Create] Create grabber %d',  [Ord(GrabPos)]));
     FGrabbers[GrabPos] := TGrabber.Create(AOwner);
     with FGrabbers[GrabPos] do
     begin
@@ -356,11 +361,12 @@ end;
 
 procedure TControlSelection.GrabberMoved(Sender: TObject; dx, dy: Integer);
 begin
-  SizeContent(dx, dy);
+  SizeContent;
 end;
 
 function TControlSelection.IsSelected(AControl: TControl): Boolean;
 begin
+  WriteLn(Format('[TControlSelection.IsSelected] %s --> index %d', [AControl.ClassName, FControlList.IndexOf(AControl)]));
   Result := FControlList.IndexOf(AControl) <> -1;
 end;
 
@@ -370,33 +376,38 @@ var
 begin
   with FControlList do
     for n := 0 to Count -1 do
-      with TControl(Items[n])  do
-        SetBounds(Left + dx, Top + dy, Width, Height);
+      with TControl(Items[n]) do
+      begin
+        Left := Left + dx;
+        Top := Top + dy;
+      end;
 end;
 
 procedure TControlSelection.Remove(AControl: TControl);
 var
   n: Integer;
 begin
-  with FControlList do
-    if (Remove(AControl) <> -1)
-    then begin
-      if Count > 0
-      then begin
-        for n := 0 to Count -1 do AdjustSize(Items[n], n = 0);
-      end
-      else FVisible := False;
-      SetGrabbers;
+  with AControl do
+     WriteLn(Format('[TControlSelection.AdjustSize] Remove %s --> X:%d, Y:%d, W:%d, H: %d', [Classname, Left, Top, Width, Height])); 
 
-      with TSelectControl(AControl) do
-      begin
-        OnMouseDown := nil;
-        OnMouseMove := nil;
-        OnMouseUp := nil;
-      end;
-      FDragging := False;
-      DoChange;
+  if (FControlList.Remove(AControl) <> -1)
+  then begin
+    if FControlList.Count > 0
+    then begin
+      for n := 0 to FControlList.Count - 1 do AdjustSize(FControlList[n], n = 0);
+    end
+    else FVisible := False;
+    SetGrabbers;
+
+    with TSelectControl(AControl) do
+    begin
+      OnMouseDown := nil;
+      OnMouseMove := nil;
+      OnMouseUp := nil;
     end;
+    FDragging := False;
+    DoChange;
+  end;
 end;
 
 procedure TControlSelection.SetGrabbers;
@@ -404,25 +415,51 @@ var
   GrabPos: TGrabIndex;
   Grabber: TGrabber;
 begin
+  WriteLn(Format('[TControlSelection.SetGrabbers] Selection --> X:%d, Y:%d, W:%d, H:%d', [FLeft, FTop, FWidth, FHeight])); 
   for GrabPos := Low(TGrabIndex) to High(TGrabIndex) do
   begin
     Grabber := FGrabbers[GrabPos]; 
     if FVisible
     then begin
+      Write(Format('[TControlSelection.SetGrabbers] Setting grabber %d --> ',  [Ord(GrabPos)]));
       if gpLeft in Grabber.Positions
-      then Grabber.Left := FLeft - GRAB_SIZE
-      else if gpRight in Grabber.Positions
-        then Grabber.Left := FLeft + FWidth
-        else Grabber.Left := FLeft + (FWidth - GRAB_SIZE) div 2;
+      then begin
+        Write('Left,   ');
+        Grabber.Left := FLeft - GRAB_SIZE
+      end
+      else begin
+        if gpRight in Grabber.Positions
+        then begin
+          Write('Right,  ');
+          Grabber.Left := FLeft + FWidth
+        end
+        else begin
+          Write('Center, ');
+          Grabber.Left := FLeft + (FWidth - GRAB_SIZE) div 2;
+        end;
+      end;
 
       if gpTop in Grabber.Positions
-      then Grabber.Top := FTop - GRAB_SIZE
-      else if gpBottom in Grabber.Positions
-        then Grabber.Top := FTop + FHeight
-        else Grabber.Top := FTop + (FHeight - GRAB_SIZE) div 2;
+      then begin
+        Write('Top    ');
+        Grabber.Top := FTop - GRAB_SIZE
+      end
+      else begin
+        if gpBottom in Grabber.Positions
+        then begin
+          Write('Bottom ');
+          Grabber.Top := FTop + FHeight
+        end
+        else begin
+          Write('Center ');
+          Grabber.Top := FTop + (FHeight - GRAB_SIZE) div 2;
+        end
+      end;
+      
+      WriteLN(Format('X:%d, Y:%d',  [Grabber.Left, Grabber.Top]));
     end;
-
     Grabber.Visible := FVisible;
+
   end;
 end;
 
@@ -435,7 +472,7 @@ begin
   end;
 end;
 
-procedure TControlSelection.SizeContent(dx, dy: Integer);
+procedure TControlSelection.SizeContent;
 begin
   if FControlList.Count = 1 then
   begin

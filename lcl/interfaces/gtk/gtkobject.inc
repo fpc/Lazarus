@@ -2565,7 +2565,38 @@ begin
   n := FDeviceContexts.Add(Result);
   Assert(False, Format('Trace:< [TgtkObject.NewDC] FDeviceContexts[%d] --> 0x%p', [n, Result]));
 end;
+(*
+{------------------------------------------------------------------------------
+  Function: FreeDC
+  Params:  ADC: A DC to Free
+  Returns: nothing
 
+  Frees an initial DC
+ ------------------------------------------------------------------------------}
+function TgtkObject.FreeDC(ADC: PDeviceContext);
+var
+  n: Integer;
+begin
+  Assert(False, Format('Trace:> [TgtkObject.FreeDC] DC:0x%p', [ADC]));
+  if ADC <> nil
+  then begin
+    if ADC^.SavedContext <> nil 
+    then FreeDC(ADC^.SavedContext);
+
+    Assert(ADC^.CurrentBitmap = nil, 'trace:  [TgtkObject.FreeDC] CurrentBitmap <> nil');
+    Assert(ADC^.CurrentFont = nil, 'trace:  [TgtkObject.FreeDC] CurrentFont <> nil'); 
+    Assert(ADC^.CurrentPen = nil, 'trace:  [TgtkObject.FreeDC] CurrentPen <> nil');
+    Assert(ADC^.CurrentBrush = nil, 'trace:  [TgtkObject.FreeDC] CurrentBrush <> nil');
+
+    if ADC^.GC <> nil 
+    then gdk_gc_unref(ADC^.GC);
+    n := FDeviceContexts.Remove(ADC);
+    Dispose(ADC);
+  end;
+  
+  Assert(False, Format('Trace:< [TgtkObject.FreeDC] FDeviceContexts[%d]', [n]));
+end;
+*)
 {------------------------------------------------------------------------------
   Function: NewGDIObject
   Params:  none
@@ -2635,6 +2666,11 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.9  2000/10/09 22:50:32  lazarus
+  MWE:
+    * fixed some selection code
+    + Added selection sample
+
   Revision 1.8  2000/09/10 23:08:31  lazarus
   MWE:
     + Added CreateCompatibeleBitamp function
