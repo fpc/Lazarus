@@ -502,12 +502,20 @@ msgstr ""
 msgid "If LCLWidgetType=gtk2 then"
 msgstr ""
 
+#: codetoolsstrconsts:ctselse
+msgid "else"
+msgstr ""
+
 #: codetoolsstrconsts:ctsiftargetosisnotwin32
 msgid "If TargetOS<>win32 then"
 msgstr ""
 
 #: codetoolsstrconsts:ctsiflclwidgettypeequalsgnome2
 msgid "If LCLWidgetType=gnome2 then"
+msgstr ""
+
+#: codetoolsstrconsts:ctsdefinemacrogtk1
+msgid "Define macro gtk1"
 msgstr ""
 
 #: codetoolsstrconsts:ctsdefinemacrogtk2
@@ -540,6 +548,10 @@ msgstr ""
 
 #: codetoolsstrconsts:ctsdesignerdirectory
 msgid "Designer Directory"
+msgstr ""
+
+#: codetoolsstrconsts:ctsideintfdirectory
+msgid "IDEIntf Directory"
 msgstr ""
 
 #: codetoolsstrconsts:ctsjitformdirectory

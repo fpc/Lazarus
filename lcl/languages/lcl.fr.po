@@ -132,6 +132,10 @@ msgstr "Abandonner"
 msgid "Blank"
 msgstr "Blanc"
 
+#: lclstrconsts:rscalculator
+msgid "Calculator"
+msgstr ""
+
 #: lclstrconsts:rscannotfocus
 msgid "Can not focus"
 msgstr ""
@@ -335,6 +339,10 @@ msgstr "Enregistrer le fichier sous"
 #: lclstrconsts:rsscrollbaroutofrange
 msgid "ScrollBar property out of range"
 msgstr "Propriété ScrollBar hors limite"
+
+#: lclstrconsts:rspickdate
+msgid "Select a date"
+msgstr ""
 
 #: lclstrconsts:rsselectfonttitle
 msgid "Select a font"

@@ -82,3 +82,11 @@ msgstr ""
 msgid "Confirme clear all images ?"
 msgstr ""
 
+#: objinspstrconsts:cesstringgrideditor
+msgid "StringGrid Editor ..."
+msgstr ""
+
+#: objinspstrconsts:cesstringgrideditor2
+msgid "StringGrid Editor"
+msgstr ""
+

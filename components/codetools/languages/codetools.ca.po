@@ -206,6 +206,10 @@ msgstr "Definir macro %s"
 msgid "Define macro gnome2"
 msgstr "definir macro gnome2"
 
+#: codetoolsstrconsts:ctsdefinemacrogtk1
+msgid "Define macro gtk1"
+msgstr ""
+
 #: codetoolsstrconsts:ctsdefinemacrogtk2
 msgid "Define macro gtk2"
 msgstr "Definir macro gtk2"
@@ -233,6 +237,10 @@ msgstr ""
 #: codetoolsstrconsts:ctsduplicateidentifier
 msgid "duplicate identifier: %s"
 msgstr "identificador duplicat: %s"
+
+#: codetoolsstrconsts:ctselse
+msgid "else"
+msgstr ""
 
 #: codetoolsstrconsts:ctsendforrecordnotfound
 msgid "end for record not found"
@@ -305,6 +313,10 @@ msgstr "directori d'interfície gnome"
 #: codetoolsstrconsts:ctsgtk2intfdirectory
 msgid "gtk2 interface directory"
 msgstr "directori d'interfície gtk2"
+
+#: codetoolsstrconsts:ctsideintfdirectory
+msgid "IDEIntf Directory"
+msgstr ""
 
 #: codetoolsstrconsts:ctsidentifier
 msgid "identifier"

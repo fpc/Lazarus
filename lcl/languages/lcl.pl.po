@@ -132,6 +132,10 @@ msgstr "Porzuæ"
 msgid "Blank"
 msgstr "Pusty"
 
+#: lclstrconsts:rscalculator
+msgid "Calculator"
+msgstr ""
+
 #: lclstrconsts:rscannotfocus
 msgid "Can not focus"
 msgstr "Nie mo¿na ustawiæ ogniska."
@@ -335,6 +339,10 @@ msgstr "Zapisz plik jako"
 #: lclstrconsts:rsscrollbaroutofrange
 msgid "ScrollBar property out of range"
 msgstr "W³a¶ciwo¶æ ScrollBar'u poza zakresem"
+
+#: lclstrconsts:rspickdate
+msgid "Select a date"
+msgstr ""
 
 #: lclstrconsts:rsselectfonttitle
 msgid "Select a font"

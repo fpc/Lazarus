@@ -132,6 +132,10 @@ msgstr "Abortar"
 msgid "Blank"
 msgstr "Vacío"
 
+#: lclstrconsts:rscalculator
+msgid "Calculator"
+msgstr ""
+
 #: lclstrconsts:rscannotfocus
 msgid "Can not focus"
 msgstr "No se puede establecer el foco"
@@ -335,6 +339,10 @@ msgstr "Guardar archivo como"
 #: lclstrconsts:rsscrollbaroutofrange
 msgid "ScrollBar property out of range"
 msgstr "Propiedad ScrollBar fuera de rango"
+
+#: lclstrconsts:rspickdate
+msgid "Select a date"
+msgstr ""
 
 #: lclstrconsts:rsselectfonttitle
 msgid "Select a font"

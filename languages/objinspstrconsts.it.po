@@ -84,6 +84,14 @@ msgstr "Ispettore oggetti"
 msgid "Properties"
 msgstr "Proprietà"
 
+#: objinspstrconsts:cesstringgrideditor2
+msgid "StringGrid Editor"
+msgstr ""
+
+#: objinspstrconsts:cesstringgrideditor
+msgid "StringGrid Editor ..."
+msgstr ""
+
 #: objinspstrconsts:sccslvedtbtnaddsub
 msgid "Sub item"
 msgstr "Voce sottostante"

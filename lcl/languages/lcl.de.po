@@ -128,6 +128,10 @@ msgstr "Abbruch"
 msgid "Blank"
 msgstr ""
 
+#: lclstrconsts:rscalculator
+msgid "Calculator"
+msgstr ""
+
 #: lclstrconsts:rscannotfocus
 msgid "Can not focus"
 msgstr ""
@@ -330,6 +334,10 @@ msgstr ""
 
 #: lclstrconsts:rsscrollbaroutofrange
 msgid "ScrollBar property out of range"
+msgstr ""
+
+#: lclstrconsts:rspickdate
+msgid "Select a date"
 msgstr ""
 
 #: lclstrconsts:rsselectfonttitle

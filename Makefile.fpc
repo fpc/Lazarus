@@ -64,7 +64,7 @@ export LAZARUS_CONFIG_DIR
 LAZARUS_IDE_CONFIG=$(LAZARUS_CONFIG_DIR)/idemake.cfg
 
 [rules]
-.PHONY: lcl components ide idepkg tools all clean
+.PHONY: lcl components ideintf packager ide idepkg tools all clean cleanide
 .SUFFIXES: .rc .res
 
 %.res: %.rc
@@ -102,5 +102,7 @@ ifeq ($(OS_TARGET), win32)
 endif
 
 clean: cleanall cleanide
+
+#install: $(INSTALLTARGET) $(addsuffix _install,$(TARGET_DIRS))
 # end.
 

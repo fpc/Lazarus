@@ -669,6 +669,10 @@ msgstr "Construir Archivo"
 msgid "Build IDE"
 msgstr "Construir IDE"
 
+#: lazarusidestrconsts:lisbuildideintf
+msgid "Build IDE Interface"
+msgstr ""
+
 #: lazarusidestrconsts:lisbuildjitform
 msgid "Build JIT Form"
 msgstr "Construir Formulario JIT"
@@ -1309,6 +1313,10 @@ msgstr "Línea del cursor en el editor actual"
 msgid "Custom"
 msgstr "Personalizado"
 
+#: lazarusidestrconsts:liskeycatcustom
+msgid "Custom commands"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrcustomidentifier
 msgid "Custom Identifier"
 msgstr "Identificador Personalizado"
@@ -1316,6 +1324,10 @@ msgstr "Identificador Personalizado"
 #: lazarusidestrconsts:rsiwpcustomposition
 msgid "Custom position"
 msgstr "Posición personalizada"
+
+#: lazarusidestrconsts:srkmeccustomtool
+msgid "Custom tool %d"
+msgstr ""
 
 #: lazarusidestrconsts:lismenucut
 msgid "Cut"
@@ -3641,6 +3653,10 @@ msgstr "Ayuda en línea no implementada todavía"
 msgid "Only selection"
 msgstr "Sólo selección"
 
+#: lazarusidestrconsts:lisfindfileonlytextfiles
+msgid "Only text files"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuopen
 msgid "Open"
 msgstr "Abrir"
@@ -4853,6 +4869,10 @@ msgstr "¿Debería renombrarse a minúsculas el archivo %s%s%s%s?"
 msgid "Show All"
 msgstr "Mostrar Todo"
 
+#: lazarusidestrconsts:liscoshowallmessages
+msgid "Show all messages"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowprocserror
 msgid "Show all procs on error"
 msgstr "Mostrar todos los procs de error"
@@ -4922,8 +4942,8 @@ msgid "Show Hints"
 msgstr "Mostrar sugerencias"
 
 #: lazarusidestrconsts:dlghintsunused
-msgid "Show Hints for unused project units"
-msgstr "Mostrar sugerencias para unidades de proyecto sin uso"
+msgid "Show Hints for unused units in main source"
+msgstr ""
 
 #: lazarusidestrconsts:dlgshowlinenumbers
 msgid "Show line numbers"
@@ -5201,6 +5221,10 @@ msgstr "Tabulaciones a espacios"
 msgid "Tabs to spaces in selection"
 msgstr "Tabulaciones a espacios en selección"
 
+#: lazarusidestrconsts:listargetcpu
+msgid "Target CPU"
+msgstr ""
+
 #: lazarusidestrconsts:lislazbuildtargetdirectory
 msgid "Target Directory:"
 msgstr "Directorio objetivo"
@@ -5217,7 +5241,7 @@ msgstr "Archivo + parámetros"
 msgid "Target filename of project"
 msgstr "Nombre del archivo target del proyecto"
 
-#: lazarusidestrconsts:dlgtargetos
+#: lazarusidestrconsts:listargetos
 msgid "Target OS"
 msgstr "OS objetivo:"
 
@@ -5646,7 +5670,7 @@ msgid "There is a FPC unit with the same name as a package:%s%s%s%s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthereisafpcunitwiththesamenamefrom
-msgid "There is a FPC unit with the same name:%s%s%s%s%s from %s%s%s"
+msgid "There is a FPC unit with the same name as:%s%s%s%s%s from %s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts:lisexttoolthereisamaximumoftools

@@ -2284,7 +2284,7 @@ makefiles: fpc_makefiles
 ifneq ($(wildcard fpcmake.loc),)
 include fpcmake.loc
 endif
-.PHONY: lcl components ide idepkg tools all clean
+.PHONY: lcl components ideintf packager ide idepkg tools all clean cleanide
 .SUFFIXES: .rc .res
 %.res: %.rc
 	windres -i $< -o $@ --preprocessor $(RCPP)

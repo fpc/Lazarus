@@ -390,3 +390,15 @@ msgstr ""
 msgid "Resource %s not found"
 msgstr ""
 
+#: lclstrconsts:rscalculator
+msgid "Calculator"
+msgstr ""
+
+#: lclstrconsts:rserror
+msgid "Error"
+msgstr ""
+
+#: lclstrconsts:rspickdate
+msgid "Select a date"
+msgstr ""
+

@@ -122,6 +122,10 @@ msgstr "Сброс"
 msgid "Blank"
 msgstr "Пустой"
 
+#: lclstrconsts:rscalculator
+msgid "Calculator"
+msgstr ""
+
 #: lclstrconsts:rscannotfocus
 msgid "Can not focus"
 msgstr "Не могу принять фокус"
@@ -325,6 +329,10 @@ msgstr "Сохранить файл как"
 #: lclstrconsts:rsscrollbaroutofrange
 msgid "ScrollBar property out of range"
 msgstr "свойство ScrollBar вне диапазона"
+
+#: lclstrconsts:rspickdate
+msgid "Select a date"
+msgstr ""
 
 #: lclstrconsts:rsselectfonttitle
 msgid "Select a font"

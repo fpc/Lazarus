@@ -130,6 +130,10 @@ msgstr "Blocca"
 msgid "Blank"
 msgstr "Vuoto"
 
+#: lclstrconsts:rscalculator
+msgid "Calculator"
+msgstr ""
+
 #: lclstrconsts:rscannotfocus
 msgid "Can not focus"
 msgstr "Impossibile spostare il focus"
@@ -333,6 +337,10 @@ msgstr "Salva con nome"
 #: lclstrconsts:rsscrollbaroutofrange
 msgid "ScrollBar property out of range"
 msgstr "Proprietà barra di scorrimento fuori dal range"
+
+#: lclstrconsts:rspickdate
+msgid "Select a date"
+msgstr ""
 
 #: lclstrconsts:rsselectfonttitle
 msgid "Select a font"
