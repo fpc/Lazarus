@@ -120,14 +120,7 @@ begin
   SizeChanged:= (FWidth <> AWidth) or (FHeight <> AHeight);
   PosChanged:= (FLeft <> ALeft) or (FTop <> ATop);
   if SizeChanged or PosChanged then begin
-    {$IFDEF ClientRectBugFix}
     DoSetBounds(ALeft,ATop,AWidth,AHeight);
-    {$ELSE}
-    FLeft:= ALeft;
-    FTop:= ATop;
-    FWidth:= AWidth;
-    FHeight:= AHeight;
-    {$ENDIF}
     if SizeChanged then Invalidate;
 //    UpdateAnchorRules;
     BoundsChanged;
@@ -170,7 +163,6 @@ begin
   end;    
 end;
 
-{$IFDEF ClientRectBugFix}
 {-------------------------------------------------------------------------------
   TControl.DoSetBounds
   Params: ALeft, ATop, AWidth, AHeight : integer
@@ -184,7 +176,6 @@ begin
   FWidth:= AWidth;
   FHeight:= AHeight;
 end;
-{$ENDIF}
 
 {------------------------------------------------------------------------------}
 {       TControl.ChangeScale
@@ -912,7 +903,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMLButtonUp(var Message: TLMLButtonUp);
 begin
-//  Writeln('TCONTROL WMLBUTTONUP A ',Name,':',ClassName);
+//Writeln('TCONTROL WMLBUTTONUP A ',Name,':',ClassName,' csCaptureMouse=',csCaptureMouse in ControlStyle,' csClicked=',csClicked in ControlState);
   if csCaptureMouse in ControlStyle then
      MouseCapture := False;
 
@@ -1633,18 +1624,6 @@ begin
   CNSendMessage(LM_CREATE, Self, nil);
 end;
 
-{$IFDEF ClientRectBugFix}
-{$ELSE}
-{------------------------------------------------------------------------------}
-{  TControl DoEvents                                                           }
-{------------------------------------------------------------------------------}
-procedure TControl.DoEvents;
-begin
-  // used to make sure that events are handled while in long loops.
-  InterfaceObject.DoEvents;
-end;
-{$ENDIF}
-
 {------------------------------------------------------------------------------}
 {  TControl Destroy Component                                                  }
 {------------------------------------------------------------------------------}
@@ -1769,6 +1748,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.61  2002/08/17 15:45:32  lazarus
+  MG: removed ClientRectBugfix defines
+
   Revision 1.60  2002/08/17 07:57:05  lazarus
   MG: added TPopupMenu.OnPopup and SourceEditor PopupMenu checks
 
