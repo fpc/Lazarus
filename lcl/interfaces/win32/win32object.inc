@@ -200,8 +200,6 @@ Function TWin32WidgetSet.GetText(Sender: TComponent; Handle: HWND; var Data: Str
 Var
   CapLen: Cardinal;
   Caption: PChar;
-  Ctrl: TCustomNotebook;
-  TCI: TC_ITEM;
 Begin
   Assert(False, Format('Trace:TWin32WidgetSet.GetText - Start --> %S', [Sender.ClassName]));
   Data := '';
@@ -223,26 +221,6 @@ Begin
       GetWindowText(Handle, Caption, CapLen + 1);
       Data := StrPas(Caption);
       StrDispose(Caption);
-    End;
-    csPage:
-    Begin
-      Assert(False, 'Trace:TWin32WidgetSet.GetText - csPage: Start');
-      Ctrl := (TCustomPage(Sender).Parent As TCustomNotebook);
-      Caption := StrAlloc(MAX_PATH);
-      try
-        TCI.mask := TCIF_TEXT;
-        TCI.cchTextMax := MAX_PATH;
-        TCI.pszText := Caption;
-        Assert(False, 'Trace:TWin32WidgetSet.GetText - Getting the text');
-        Result := (Windows.Sendmessage(Ctrl.Handle, TCM_GETITEM,
-          TCustomPage(Sender).PageIndex, LPARAM(@TCI))<>0);
-        if Result
-          then Data := StrPas(Caption);
-        Assert(False, Format('Trace:TWin32WidgetSet.GetText - Returning the text --> %S', [Data]));
-      finally
-        StrDispose(Caption);
-      end;
-      Assert(False, 'Trace:TWin32WidgetSet.GetText - csPage: Exit');
     End;
     Else
       Result := False;
@@ -288,6 +266,33 @@ Procedure TWin32WidgetSet.SetLabel(Sender: TObject; Data: Pointer);
 	([csLoading,csDestroying] * TWinControl(TMenuItem(Sender).Owner).ComponentState = []) then
       DrawMenuBar(TWinControl(TMenuItem(Sender).Owner).Handle);
   End;
+  
+  procedure SetPageCaption(const Page:TCustomPage);
+  var
+    TCI: TC_ITEM;
+    PageIndex: integer;
+    NotebookHandle: HWND;
+  begin
+    Assert(False, 'Trace: TWin32WidgetSet.SetLabel - Got csPage');
+    PageIndex := Page.PageIndex;
+    NotebookHandle := Page.Parent.Handle;
+    // We can't set label of a page not yet added,
+    // Check for valid page index
+    if (PageIndex>=0) and
+      (PageIndex < Windows.SendMessage(NotebookHandle, TCM_GETITEMCOUNT,0,0)) then
+    begin
+      // retrieve page handle from tab as extra check (in case page isn't added yet).
+      TCI.mask := TCIF_PARAM;
+      Windows.SendMessage(NotebookHandle, TCM_GETITEM, PageIndex, LPARAM(@TCI));
+      if TCI.lParam=Page.Handle then
+      begin
+        Assert(False, Format('Trace:TWin32WidgetSet.SetLabel - label --> %S', [String(PChar(Data))]));
+        TCI.mask := TCIF_TEXT;
+        TCI.pszText := Data;
+        Windows.SendMessage(NotebookHandle, TCM_SETITEM, PageIndex, LPARAM(@TCI));
+      end;
+    end;
+  end;
 
 Var
   Handle: HWnd;
@@ -350,17 +355,7 @@ Begin
       end
     End;
     csPage:
-    begin
-      Assert(False, 'Trace: TWin32WidgetSet.SetLabel - Got csPage');
-      // We can't set label of a page not yet added
-      if TCustomPage(Sender).PageIndex < Windows.SendMessage(TCustomPage(Sender).Parent.Handle, TCM_GETITEMCOUNT,0,0) then
-      begin
-        Assert(False, Format('Trace:TWin32WidgetSet.SetLabel - label --> %S', [String(PChar(Data))]));
-        TCI.mask := TCIF_TEXT;
-        TCI.pszText := Data;
-        Windows.SendMessage(TCustomPage(Sender).Parent.Handle, TCM_SETITEM, TCustomPage(Sender).PageIndex, LPARAM(@TCI));
-      end;
-    End;
+      SetPageCaption(TCustomPage(Sender));
     csToolButton:
     Begin
       Data := StrCat(Data, TermChar);
@@ -2422,22 +2417,18 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32WidgetSet.AddNBPage(Notebook: TCustomNotebook; NewPage: TCustomPage; Index: Integer);
 Var
-  TabControlItem: TC_ITEM;
-  PageCaption: string;
+  TCI: TC_ITEM;
   OldPageIndex: integer;
   R: TRect;
 Begin
   Assert(False, 'Trace:TWin32WidgetSet.AddNBPage - Start');
-  With Notebook, TabControlItem do
+  With Notebook do
   Begin
-    Mask := 0;
-    // Before adding, the page caption comes from TControl.FCaption.
-    // After adding, it is read from the TabControl,
-    // so we cache it temporarily for later use.
-    PageCaption := NewPage.Caption;
-    Windows.SendMessage(Handle, TCM_INSERTITEM, Index, integer(@TabControlItem));
-    // Set page caption in tabcontrol
-    SetLabel(NewPage, PChar(PageCaption));
+    TCI.Mask := TCIF_TEXT or TCIF_PARAM;
+    TCI.pszText := PChar(NewPage.Caption);
+    // store handle as extra data, so we can verify we got the right page later
+    TCI.lParam := NewPage.Handle;
+    Windows.SendMessage(Handle, TCM_INSERTITEM, Index, LPARAM(@TCI));
     // Adjust page size to fit in tabcontrol, need bounds of notebook in client of parent
     Self.GetClientRect(Handle, R);
     IntSendMessage3(LM_SETSIZE, NewPage, @R);
@@ -2957,6 +2948,9 @@ End;
 
 {
   $Log$
+  Revision 1.195  2004/05/16 20:59:53  vincents
+  page caption not retrieved from interface, fixed setting caption for page not yet added
+
   Revision 1.194  2004/05/14 17:48:39  micha
   fix itemheight of listbox, handle measureitem message
 
