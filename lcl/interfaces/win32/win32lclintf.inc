@@ -29,6 +29,24 @@
 //##apiwiz##sps##   // Do not remove
 
 {------------------------------------------------------------------------------
+  Function: GetListBoxIndexAtY
+  Params: ListBox:
+          y:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWin32Object.GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer;
+begin
+  Result := -1;
+  if ListBox is TCustomListBox then begin
+    Result := Windows.SendMessage(TCustomListBox(ListBox).Handle, LB_ITEMFROMPOINT, 0, MakeLParam(0,y));
+    if hi(Result)=0 then
+      Result := lo(Result)
+    else Result := -1;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Function: LCLCheckMenuItem
   Params:  BaseMenuItem
   Returns: Nothing
@@ -73,6 +91,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2004/01/03 11:57:48  mattias
+  applied implementation for LM_LB_GETINDEXAT  from Vincent
+
   Revision 1.4  2003/12/29 14:22:22  micha
   fix a lot of range check errors win32
 

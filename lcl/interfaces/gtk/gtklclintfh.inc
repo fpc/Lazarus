@@ -30,6 +30,7 @@
 }
 
 //##apiwiz##sps##   // Do not remove
+function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer; override;
 
 function LclCheckMenuItem(BaseMenuItem: TComponent): Boolean; override;
 function LclEnableMenuItem(BaseMenuItem: TComponent): Boolean; override;
@@ -40,6 +41,9 @@ function LclEnableMenuItem(BaseMenuItem: TComponent): Boolean; override;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2004/01/03 11:57:48  mattias
+  applied implementation for LM_LB_GETINDEXAT  from Vincent
+
   Revision 1.4  2003/11/27 23:02:30  mattias
   removed menutype.pas
 

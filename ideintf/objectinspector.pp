@@ -633,7 +633,7 @@ end;
 
 procedure TOIPropertyGrid.SetSelections(
   const NewSelections:TComponentSelectionList);
-var a:integer;
+var
   CurRow:TOIPropertyGridRow;
   OldSelectedRowPath:string;
 begin

@@ -836,6 +836,7 @@ begin
   with ItemsListBox do begin
     Name:='ItemsListBox';
     Parent:=Self;
+    Style:= lbOwnerDrawFixed;
     OnMouseDown:=@ItemsListBoxMouseDown;
     OnDrawItem:=@ItemsListBoxDrawItem;
     ItemHeight:=ImageList.Height+6;

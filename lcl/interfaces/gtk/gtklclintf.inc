@@ -29,6 +29,54 @@
 //##apiwiz##sps##   // Do not remove
 
 {------------------------------------------------------------------------------
+  Function: GetListBoxIndexAtY
+  Params: ListBox:
+          y:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer;
+{$IFdef GTK2}
+begin
+  writeln('TODO: TgtkObject.GetListBoxIndexAtY');
+end;
+{$Else}
+var
+  ScrolledWindow: PGtkScrolledWindow;
+  VertAdj: PGTKAdjustment;
+  AdjValue: integer;
+  ListWidget: PGtkList;
+  AWidget: PGtkWidget;
+  GListItem: PGList;
+  ListItemWidget: PGtkWidget;
+begin
+  Result:=-1;
+  if not (ListBox is TCustomListbox) then exit;
+
+  if TCustomListbox(ListBox).FCompStyle in [csListBox, csCheckListBox] then begin
+    AWidget:=PGtkWidget(TCustomListbox(ListBox).Handle);
+    ListWidget:=PGtkList(GetWidgetInfo(AWidget, True)^.ImplementationWidget);
+    ScrolledWindow:=PGtkScrolledWindow(AWidget);
+    VertAdj:=gtk_scrolled_window_get_vadjustment(ScrolledWindow);
+    if VertAdj=nil then
+      AdjValue:=y
+    else
+      AdjValue:=round(VertAdj^.value)+y;
+    GListItem:=ListWidget^.children;
+    while GListItem<>nil do begin
+      inc(Result);
+      ListItemWidget:=PGtkWidget(GListItem^.data);
+      dec(AdjValue,ListItemWidget^.Allocation.Height);
+      if AdjValue<0 then exit;
+      GListItem:=GListItem^.next;
+    end;
+    Result:=-1;
+  end;
+
+end;
+{$EndIf}
+
+{------------------------------------------------------------------------------
   Function: LCLCheckMenuItem
   Params:  BaseMenuItem
   Returns: Nothing
@@ -87,6 +135,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2004/01/03 11:57:48  mattias
+  applied implementation for LM_LB_GETINDEXAT  from Vincent
+
   Revision 1.4  2003/11/27 23:02:30  mattias
   removed menutype.pas
 

@@ -225,7 +225,6 @@ type
     // listbox
     function GetTopIndex(Sender: TObject): integer;virtual;
     function SetTopIndex(Sender: TObject; NewTopIndex: integer): integer;virtual;
-    function GetIndexAtY(Sender: TObject; PointerToY: Pointer): integer;virtual;
     procedure SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
                                MultiSelect, ExtendedSelect: boolean); virtual;
 
@@ -410,6 +409,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.163  2004/01/03 11:57:47  mattias
+  applied implementation for LM_LB_GETINDEXAT  from Vincent
+
   Revision 1.162  2003/12/25 14:17:07  mattias
   fixed many range check warnings
 

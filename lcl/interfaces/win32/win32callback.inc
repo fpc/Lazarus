@@ -108,6 +108,7 @@ Var
   LMMouseEvent: TLMMouseEvent; // used by WM_MOUSEWHEEL
   LMMove: TLMMove; // used by WM_MOVE
   LMNotify: TLMNotify; // used by WM_NOTIFY
+  DrawListItemStruct: TDrawListItemStruct; //used by WM_DRAWITEM
 {$IFDEF VER1_1_MSG}  // should be 'ifndef VER1_0' when we fix TMsgArray
   List: TMsgArray;
   C: Integer;
@@ -377,6 +378,29 @@ Begin
       EnumProps(Window, @PropEnumProc);
       LMessage.Msg := LM_DESTROY;
       PostQuitMessage(0);
+    End;
+    WM_DRAWITEM:
+    Begin
+      GetChildOwnerObject(WParam);
+      if OwnerObject is TCustomListbox then begin
+        LMessage.Msg := LM_DRAWLISTITEM;
+        TLMDrawListItem(LMessage).DrawListItemStruct := @DrawListItemStruct;
+        with DrawListItemStruct do begin
+          ItemID := PDrawItemStruct(LParam)^.itemID;
+          Area := PDrawItemStruct(LParam)^.rcItem;
+          ItemState := TOwnerDrawState(PDrawItemStruct(LParam)^.itemState);
+          DC := PDrawItemStruct(LParam)^._hDC;
+        end;
+      end
+      else begin
+        with TLMDrawItems(LMessage) do
+        begin
+          Msg := LM_DRAWITEM;
+          Ctl := 0;
+          DrawItemStruct := PDrawItemStruct(LParam);
+        end;
+        WinProcess := false;
+      end;
     End;
     WM_ENABLE:
     Begin
@@ -714,17 +738,6 @@ Begin
       LMessage.LParam := LParam;
       LMessage.WParam := WParam;
     End;
-    WM_DRAWITEM:
-    Begin
-      GetChildOwnerObject(WParam);
-      with TLMDrawItems(LMessage) do
-      begin
-        Msg := LM_DRAWITEM;
-        Ctl := 0;
-        DrawItemStruct := PDrawItemStruct(LParam);
-      end;
-      WinProcess := false;
-    End;
   End;
 
   If WinProcess Then
@@ -918,6 +931,9 @@ end;
 
 {
   $Log$
+  Revision 1.84  2004/01/03 11:57:48  mattias
+  applied implementation for LM_LB_GETINDEXAT  from Vincent
+
   Revision 1.83  2003/12/30 08:38:03  micha
   enable selection of checklistbox items (from vincent)
 

@@ -448,7 +448,7 @@ function TCustomListBox.GetIndexAtY(Y: integer): integer;
 begin
   Result:=-1;
   if (not HandleAllocated) then exit;
-  Result:=CNSendMessage(LM_LB_GETINDEXAT, Self, @Y);
+  Result:=GetListBoxIndexAtY(Self, Y);
 end;
 
 

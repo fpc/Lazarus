@@ -150,8 +150,7 @@ const
   LM_LB_First          = LM_NB_Last +1;
   LM_LB_GETTOPINDEX    = LM_LB_First   +0;
   LM_LB_SETTOPINDEX    = LM_LB_First   +1;
-  LM_LB_GETINDEXAT     = LM_LB_First   +2;
-  LM_LB_Last           = LM_LB_GETINDEXAT;
+  LM_LB_Last           = LM_LB_SETTOPINDEX;
 
   // TCheckListBox
   LM_CLB_FIRST         = LM_LB_Last + 1;
@@ -1093,6 +1092,9 @@ end.
 
 {
   $Log$
+  Revision 1.59  2004/01/03 11:57:47  mattias
+  applied implementation for LM_LB_GETINDEXAT  from Vincent
+
   Revision 1.58  2003/12/29 14:22:22  micha
   fix a lot of range check errors win32
 

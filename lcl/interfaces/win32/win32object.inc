@@ -1956,7 +1956,11 @@ Begin
           else
             Flags:= Flags or LBS_MULTIPLESEL;
         if CompStyle = csCheckListBox then
-          Flags := Flags or LBS_OWNERDRAWFIXED;
+          Flags := Flags or LBS_OWNERDRAWFIXED
+        else case Style of
+          lbOwnerDrawFixed: Flags := Flags or LBS_OWNERDRAWFIXED;
+          lbOwnerDrawVariable: Flags := Flags or LBS_OWNERDRAWVARIABLE;
+        end;
       end;
       FlagsEx := WS_EX_CLIENTEDGE;
       pClassName := 'LISTBOX';
@@ -2900,6 +2904,9 @@ End;
 
 {
   $Log$
+  Revision 1.156  2004/01/03 11:57:48  mattias
+  applied implementation for LM_LB_GETINDEXAT  from Vincent
+
   Revision 1.155  2003/12/29 21:56:08  micha
   fix menuitem icon and index (from martin)
 

@@ -172,6 +172,11 @@ begin
   Result := InterfaceObject.GetDeviceSize(DC,p);
 end;
 
+function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer;
+begin
+  Result := InterfaceObject.GetListBoxIndexAtY(ListBox, y);
+end;
+
 function GetNotebookTabIndexAtPos(Handle: HWND;
   const ClientPos: TPoint): integer;
 begin
@@ -448,6 +453,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2004/01/03 11:57:47  mattias
+  applied implementation for LM_LB_GETINDEXAT  from Vincent
+
   Revision 1.5  2003/11/27 23:02:30  mattias
   removed menutype.pas
 

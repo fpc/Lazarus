@@ -2294,11 +2294,8 @@ end;
   function TgtkObject.GetTopIndex(Sender: TObject): integer;
 ------------------------------------------------------------------------------}
 function TgtkObject.GetTopIndex(Sender: TObject): integer;
-var
-  y: Integer;
 begin
-  y:=0;
-  Result:=GetIndexAtY(Sender,@y);
+  Result:=GetListBoxIndexAtY(Sender as TComponent,0);
 end;
 
 {------------------------------------------------------------------------------
@@ -2345,54 +2342,6 @@ begin
       MaxAdjValue:=RoundToInt(VertAdj^.upper-VertAdj^.page_size);
       if AdjValue>MaxAdjValue then AdjValue:=MaxAdjValue;
       gtk_adjustment_set_value(VertAdj,AdjValue);
-    end;
-
-  end;
-end;
-{$EndIf}
-{------------------------------------------------------------------------------
-  function TgtkObject.GetIndexAtY(Sender: TObject; PointerToY: Pointer): integer;
-------------------------------------------------------------------------------}
-function TgtkObject.GetIndexAtY(Sender: TObject; PointerToY: Pointer): integer;
-{$IFdef GTK2}
-begin
-  writeln('TODO: TgtkObject.GetIndexAtY');
-end;
-{$Else}
-var
-  ScrolledWindow: PGtkScrolledWindow;
-  VertAdj: PGTKAdjustment;
-  AdjValue: integer;
-  ListWidget: PGtkList;
-  AWidget: PGtkWidget;
-  GListItem: PGList;
-  ListItemWidget: PGtkWidget;
-  Y: integer;
-begin
-  Result:=-1;
-  if not (Sender is TWinControl) then exit;
-  Y:=PInteger(PointerToY)^;
-  case TWinControl(Sender).fCompStyle of
-
-  csListBox, csCheckListBox:
-    begin
-      AWidget:=PGtkWidget(TWinControl(Sender).Handle);
-      ListWidget:=PGtkList(GetWidgetInfo(AWidget, True)^.ImplementationWidget);
-      ScrolledWindow:=PGtkScrolledWindow(AWidget);
-      VertAdj:=gtk_scrolled_window_get_vadjustment(ScrolledWindow);
-      if VertAdj=nil then
-        AdjValue:=y
-      else
-        AdjValue:=round(VertAdj^.value)+y;
-      GListItem:=ListWidget^.children;
-      while GListItem<>nil do begin
-        inc(Result);
-        ListItemWidget:=PGtkWidget(GListItem^.data);
-        dec(AdjValue,ListItemWidget^.Allocation.Height);
-        if AdjValue<0 then exit;
-        GListItem:=GListItem^.next;
-      end;
-      Result:=-1;
     end;
 
   end;
@@ -2549,7 +2498,6 @@ begin
   
   LM_LB_GETTOPINDEX: Result:=GetTopIndex(Sender);
   LM_LB_SETTOPINDEX: Result:=SetTopIndex(Sender,integer(Data));
-  LM_LB_GETINDEXAT:  Result:=GetIndexAtY(Sender,Data);
 
   else
     begin
@@ -8469,6 +8417,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.444  2004/01/03 11:57:48  mattias
+  applied implementation for LM_LB_GETINDEXAT  from Vincent
+
   Revision 1.443  2003/12/25 14:17:07  mattias
   fixed many range check warnings
 

@@ -159,6 +159,11 @@ begin
   Result:=GetDC(WindowHandle);
 end;
 
+function TInterfaceBase.GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer;
+begin
+  Result := -1;
+end;
+
 function TInterfaceBase.GetNotebookTabIndexAtPos(Handle: HWND;
   const ClientPos: TPoint): integer;
 begin
@@ -469,6 +474,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2004/01/03 11:57:47  mattias
+  applied implementation for LM_LB_GETINDEXAT  from Vincent
+
   Revision 1.6  2003/12/25 14:17:07  mattias
   fixed many range check warnings
 
