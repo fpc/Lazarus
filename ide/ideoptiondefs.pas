@@ -33,7 +33,7 @@ unit IDEOptionDefs;
 interface
 
 uses
-  Classes, SysUtils, Laz_XMLCfg, Forms, Controls, StdCtrls, Buttons,
+  Classes, SysUtils, Laz_XMLCfg, LCLProc, Forms, Controls, StdCtrls, Buttons,
   LazarusIDEStrConsts;
 
 type
@@ -736,6 +736,8 @@ procedure TIDEWindowLayoutList.Apply(AForm: TForm; const ID: string);
 var ALayout: TIDEWindowLayout;
 begin
   ALayout:=ItemByFormID(ID);
+  if ALayout=nil then
+    RaiseGDBException(ID);
   ALayout.Form:=AForm;
   ALayout.Apply;
 end;

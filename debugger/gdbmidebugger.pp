@@ -1511,7 +1511,7 @@ begin
 
   if Debugger.State = dsRun
   then TGDBMIDebugger(Debugger).GDBPause(True);
-  writeln('TGDBMIBreakPoint.UpdateEnable Line=',Line,' Enabled=',Enabled,' InitialEnabled=',InitialEnabled);
+  //writeln('TGDBMIBreakPoint.UpdateEnable Line=',Line,' Enabled=',Enabled,' InitialEnabled=',InitialEnabled);
   TGDBMIDebugger(Debugger).ExecuteCommand('-break-%s %d',
                                           [CMD[Enabled], FBreakID], []);
 end;
@@ -2065,6 +2065,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.37  2003/08/08 10:24:48  mattias
+  fixed initialenabled, debuggertype, linkscaner open string constant
+
   Revision 1.36  2003/08/08 07:49:56  mattias
   fixed mem leaks in debugger
 

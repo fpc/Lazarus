@@ -841,6 +841,7 @@ procedure TLinkScanner.ReadNextToken;
   begin
     Result:=false;
     if not ReturnFromIncludeFile then begin
+      SrcPos:=SrcLen+1; // make sure SrcPos stands somewhere
       TokenStart:=SrcPos;
       TokenType:=lsttSrcEnd;
       Result:=true;
@@ -909,10 +910,19 @@ begin
           '''':
             begin
               inc(SrcPos);
-              while (SrcPos<=SrcLen)
-              and (Src[SrcPos]<>'''') do
-                inc(SrcPos);
-              inc(SrcPos);
+              while (SrcPos<=SrcLen) do begin
+                case Src[SrcPos] of
+                '''':
+                  begin
+                    inc(SrcPos);
+                    break;
+                  end;
+                #10,#13:
+                  break;
+                else
+                  inc(SrcPos);
+                end;
+              end;
             end;
           else
             break;
@@ -1073,19 +1083,17 @@ begin
         end;
         ReadNextToken;
         //writeln('TLinkScanner.Scan G "',copy(Src,TokenStart,SrcPos-TokenStart),'"');
-        if (SrcPos<=SrcLen+1) then begin
-          if (TokenType=lsttEndOfInterface) and (LastTokenType<>lsttEqual) then
-          begin
-            EndOfInterfaceFound:=true;
-            if ScanTillInterfaceEnd then break;
-          end else if (LastTokenType=lsttEnd) and (TokenType=lsttPoint) then begin
-            EndOfInterfaceFound:=true;
-            EndOfSourceFound:=true;
-            break;
-          end;
-          LastTokenType:=TokenType;
-        end else
+        if (TokenType=lsttEndOfInterface) and (LastTokenType<>lsttEqual) then
+        begin
+          EndOfInterfaceFound:=true;
+          if ScanTillInterfaceEnd then break;
+        end else if (LastTokenType=lsttEnd) and (TokenType=lsttPoint) then begin
+          EndOfInterfaceFound:=true;
+          EndOfSourceFound:=true;
           break;
+        end else if SrcPos>SrcLen then
+          break;
+        LastTokenType:=TokenType;
       until false;
     finally
       if not FSkippingTillEndif then begin

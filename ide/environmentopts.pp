@@ -191,7 +191,6 @@ type
     FDebuggerClass: string;
     FDebuggerFilename: string;         // per debugger class
     FDebuggerFileHistory: TStringList; // per debugger class
-    FDebuggerType: TDebuggerType; // obsolete
     FTestBuildDirectory: string;
     FTestBuildDirHistory: TStringList;
 
@@ -222,7 +221,6 @@ type
     
     procedure SetCompilerFilename(const AValue: string);
     procedure SetDebuggerFilename(const AValue: string);
-    procedure SetDebuggerType (const AValue: TDebuggerType );
     procedure SetFPCSourceDirectory(const AValue: string);
     procedure SetLazarusDirectory(const AValue: string);
     procedure SetOnApplyWindowLayout(const AValue: TOnApplyIDEWindowLayout);
@@ -243,9 +241,10 @@ type
     procedure SetLazarusDefaultFilename;
     procedure GetDefaultFPCSourceDirectory;
     procedure CreateWindowLayout(const TheFormID: string);
+    function DebuggerClassIsDefined: boolean;
     property OnApplyWindowLayout: TOnApplyIDEWindowLayout
                          read FOnApplyWindowLayout write SetOnApplyWindowLayout;
-    
+
     // auto save
     property AutoSaveEditorFiles: boolean read FAutoSaveEditorFiles
                                           write FAutoSaveEditorFiles;
@@ -322,8 +321,6 @@ type
                                       write SetDebuggerFilename;
     property DebuggerFileHistory: TStringList read FDebuggerFileHistory
                                               write FDebuggerFileHistory;
-    property DebuggerType: TDebuggerType read FDebuggerType
-                                         write SetDebuggerType;
     property TestBuildDirectory: string read FTestBuildDirectory
                                         write SetTestBuildDirectory;
     property TestBuildDirHistory: TStringList read FTestBuildDirHistory
@@ -807,7 +804,6 @@ begin
   FFPCSourceDirHistory:=TStringList.Create;
   DebuggerFilename:='';
   FDebuggerFileHistory:=TStringList.Create;
-  FDebuggerType:=dtNone;
   TestBuildDirectory:={$ifdef win32}'c:\temp\'{$else}'/tmp/'{$endif};
   FTestBuildDirHistory:=TStringList.Create;
 
@@ -890,6 +886,8 @@ end;
 procedure TEnvironmentOptions.Load(OnlyDesktop:boolean);
 var XMLConfig: TXMLConfig;
   FileVersion: integer;
+  CurDebuggerClass: String;
+  OldDebuggerType: TDebuggerType;
 
   procedure LoadBackupInfo(var BackupInfo: TBackupInfo; const Path:string);
   var i:integer;
@@ -914,13 +912,13 @@ var XMLConfig: TXMLConfig;
     end;
   end;
 
-  procedure LoadDebuggerType(var ADebuggerType: TDebuggerType; 
+  procedure LoadDebuggerType(var ADebuggerType: TDebuggerType;
     const Path: string);
   begin
     ADebuggerType:=DebuggerNameToType(
                                    XMLConfig.GetValue(Path+'Debugger/Type',''));
   end;
-  
+
   procedure LoadPascalFileExt(const Path: string);
   begin
     fPascalFileExtension:=PascalExtToType(XMLConfig.GetValue(
@@ -1064,10 +1062,16 @@ begin
       // Debugger
       // first try to load the old type
       // it will be overwritten by Class if found
-      DebuggerType := DebuggerNameToType(XMLConfig.GetValue(
-         'EnvironmentOptions/Debugger/Type',''));
-      DebuggerClass := XMLConfig.GetValue(
-         'EnvironmentOptions/Debugger/Class',FDebuggerClass);
+      CurDebuggerClass := XMLConfig.GetValue(
+         'EnvironmentOptions/Debugger/Class','');
+      if CurDebuggerClass='' then begin
+        // try old format
+        OldDebuggerType := DebuggerNameToType(XMLConfig.GetValue(
+          'EnvironmentOptions/Debugger/Type',''));
+        if OldDebuggerType=dtGnuDebugger then
+          CurDebuggerClass:='TGDBMIDEBUGGER';
+      end;
+      DebuggerClass:=CurDebuggerClass;
       DebuggerFilename:=XMLConfig.GetValue(
          'EnvironmentOptions/DebuggerFilename/Value',FDebuggerFilename);
       LoadRecentList(XMLConfig,FDebuggerFileHistory,
@@ -1254,14 +1258,12 @@ begin
         ,'EnvironmentOptions/BackupOtherFiles/');
         
       // debugger
-      XMLConfig.SetValue('EnvironmentOptions/Debugger/Class', FDebuggerClass);
-      XMLConfig.SetValue(
-         'EnvironmentOptions/DebuggerFilename/Value',FDebuggerFilename);
+      XMLConfig.SetDeleteValue('EnvironmentOptions/Debugger/Class',
+          FDebuggerClass,'');
+      XMLConfig.SetDeleteValue('EnvironmentOptions/DebuggerFilename/Value',
+          FDebuggerFilename,'');
       SaveRecentList(XMLConfig,FDebuggerFileHistory,
          'EnvironmentOptions/DebuggerFilename/History/');
-      //TODO: remove when registerdebugger is operational
-      // SaveDebuggerType(DebuggerType,'EnvironmentOptions/');
-      //--
     end;
 
     // hints
@@ -1375,6 +1377,12 @@ begin
   IDEWindowLayoutList.Add(NewLayout);
 end;
 
+function TEnvironmentOptions.DebuggerClassIsDefined: boolean;
+begin
+  Result:=(FDebuggerClass='')
+          or (AnsiCompareText(FDebuggerClass,DebuggerName[dtNone])=0);
+end;
+
 function TEnvironmentOptions.FileHasChangedOnDisk: boolean;
 begin
   Result:=FFileHasChangedOnDisk
@@ -1445,18 +1453,6 @@ begin
     inc(SpacePos);
   FDebuggerFilename:=Trim(copy(FDebuggerFilename,1,SpacePos-1))+
     copy(FDebuggerFilename,SpacePos,length(FDebuggerFilename)-SpacePos+1);
-end;
-
-procedure TEnvironmentOptions.SetDebuggerType(const AValue: TDebuggerType);
-const
-  CLASSNAMES: array[TDebuggerType] of String = (
-    '', 'TGDBMIDEBUGGER', 'TSSHGDBMIDEBUGGER'
-  );
-begin
-  if FDebuggerType = AValue then Exit;
-  
-  FDebuggerType := AValue;
-  DebuggerClass := CLASSNAMES[FDebuggerType];
 end;
 
 //==============================================================================

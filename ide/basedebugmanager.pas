@@ -72,7 +72,7 @@ type
     function DoStopProject: TModalResult; virtual; abstract;
     procedure DoToggleCallStack; virtual; abstract;
 
-    procedure RunDebugger; virtual; abstract;
+    function RunDebugger: TModalResult; virtual; abstract;
     procedure EndDebugging; virtual; abstract;
     function Evaluate(const AExpression: String; var AResult: String
                      ): Boolean; virtual; abstract; // Evaluates the given expression, returns true if valid
@@ -148,6 +148,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.18  2003/08/08 10:24:47  mattias
+  fixed initialenabled, debuggertype, linkscaner open string constant
+
   Revision 1.17  2003/07/31 00:42:20  marc
   * Fixed classof to object cast
 

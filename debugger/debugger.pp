@@ -196,13 +196,14 @@ type
 
     procedure SetEnabled(const AValue: Boolean); virtual;
     procedure SetExpression(const AValue: String); virtual;
+    procedure SetInitialEnabled(const AValue: Boolean); virtual;
   public
     constructor Create(ACollection: TCollection); override;
     function GetSourceLine: integer; virtual;
     property Enabled: Boolean read GetEnabled write SetEnabled;
     property Expression: String read GetExpression write SetExpression;
     property HitCount: Integer read GetHitCount;
-    property InitialEnabled: Boolean read FInitialEnabled write FInitialEnabled;
+    property InitialEnabled: Boolean read FInitialEnabled write SetInitialEnabled;
     property Line: Integer read GetLine;
     property Source: String read GetSource;
     property Valid: TValidState read GetValid;
@@ -1358,6 +1359,13 @@ end;
   TBaseBreakPoint
   =========================================================================== }
 
+procedure TBaseBreakPoint.SetInitialEnabled(const AValue: Boolean);
+begin
+  if FInitialEnabled=AValue then exit;
+  //writeln('TBaseBreakPoint.SetInitialEnabled A Self=',HexStr(Cardinal(Self),8),' ',ClassName,' Line=',Line,' AValue=',AValue);
+  FInitialEnabled:=AValue;
+end;
+
 procedure TBaseBreakPoint.AssignTo(Dest: TPersistent);
 var
   DestBreakPoint: TBaseBreakPoint;
@@ -1369,6 +1377,7 @@ begin
     DestBreakPoint.SetLocation(FSource, FLine);
     DestBreakPoint.SetExpression(FExpression);
     DestBreakPoint.SetEnabled(FEnabled);
+    //writeln('TBaseBreakPoint.AssignTo A ',Line,' Enabled=',Enabled,' InitialEnabled=',InitialEnabled);
     DestBreakPoint.InitialEnabled := FInitialEnabled;
   end
   else inherited;
@@ -2261,35 +2270,6 @@ begin
     Items[i].Enabled:=Items[i].InitialEnabled;
 end;
 
-(*
-procedure TIDEBreakPointGroups.Regroup(SrcGroups: TIDEBreakPointGroups;
-  SrcBreakPoints, DestBreakPoints: TIDEBreakPoints);
-var
-  BreakPointCnt: Integer;
-  i: Integer;
-  SrcBreakPoint: TIDEBreakPoint;
-  DestBreakPoint: TIDEBreakPoint;
-begin
-  // copy the groups
-  Assign(SrcGroups);
-  // copy the groups of the SrcBreakPoints to the DestBreakPoints by using
-  // the new groups
-  BreakPointCnt:=SrcBreakPoints.Count;
-  if BreakPointCnt<>DestBreakPoints.Count then
-    RaiseException('TIDEBreakPointGroups.Regroup Src<>Dest breakpoints');
-  for i:=0 to BreakPointCnt-1 do begin
-    SrcBreakPoint:=SrcBreakPoints[i];
-    DestBreakPoint:=DestBreakPoints[i];
-    // copy group of breakpoint
-    if SrcBreakPoint.Group<>nil then
-      DestBreakPoint.Group:=GetGroupByName(SrcBreakPoint.Group.Name)
-    else
-      DestBreakPoint.Group:=nil;
-    // copy group lists of breakpoint
-    DestBreakPoint.CopyAllGroupLists(SrcBreakPoint,Self);
-  end;
-end;
-*)
 function TIDEBreakPointGroups.GetItem(const AnIndex: Integer
   ): TIDEBreakPointGroup;
 begin
@@ -3114,6 +3094,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.51  2003/08/08 10:24:48  mattias
+  fixed initialenabled, debuggertype, linkscaner open string constant
+
   Revision 1.50  2003/08/08 07:49:56  mattias
   fixed mem leaks in debugger
 

@@ -5670,12 +5670,13 @@ begin
     Result := mrAbort;
     Exit;
   end;
+  //Writeln('[TMainIDE.DoRunProject] B ',EnvironmentOptions.DebuggerClass);
 
   Result := mrCancel;
 
-  if EnvironmentOptions.DebuggerType <> dtNone then begin
-    DebugBoss.RunDebugger;
-    Result := mrOK;
+  if not EnvironmentOptions.DebuggerClassIsDefined then begin
+    Result := DebugBoss.RunDebugger;
+    if Result<>mrOk then exit;
   end else begin
     if FRunProcess = nil then Exit;
     try
@@ -9367,6 +9368,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.630  2003/08/08 10:24:47  mattias
+  fixed initialenabled, debuggertype, linkscaner open string constant
+
   Revision 1.629  2003/08/03 10:27:30  mattias
   fixed fpc src defines for bsd
 

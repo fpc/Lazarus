@@ -138,7 +138,7 @@ type
     function DoStopProject: TModalResult; override;
     procedure DoToggleCallStack; override;
 
-    procedure RunDebugger; override;
+    function RunDebugger: TModalResult; override;
     procedure EndDebugging; override;
     function Evaluate(const AExpression: String;
                       var AResult: String): Boolean; override;
@@ -181,6 +181,7 @@ type
     procedure OnDeleteMenuItemClick(Sender: TObject);
     procedure OnViewPropertiesMenuItemClick(Sender: TObject);
     procedure SetEnabled(const AValue: Boolean); override;
+    procedure SetInitialEnabled(const AValue: Boolean); override;
     procedure SetExpression(const AValue: String); override;
     procedure SetLocation(const ASource: String; const ALine: Integer); override;
     procedure SetSourceMark(const AValue: TSourceMark);
@@ -530,6 +531,13 @@ begin
   if Enabled = AValue then exit;
   inherited SetEnabled(AValue);
   if FMaster <> nil then FMaster.Enabled := AValue;
+end;
+
+procedure TManagedBreakPoint.SetInitialEnabled(const AValue: Boolean);
+begin
+  if InitialEnabled = AValue then exit;
+  inherited SetInitialEnabled(AValue);
+  if FMaster <> nil then FMaster.InitialEnabled := AValue;
 end;
 
 procedure TManagedBreakPoint.SetExpression(const AValue: String);
@@ -951,7 +959,6 @@ begin
     ddtLocals:      InitLocalsDlg;
     ddtCallStack:   InitCallStackDlg;
     end;
-    //DoInitDebugger;
     CurDialog.Debugger := FDebugger;
   end else begin
     CurDialog:=FDialogs[ADialogType];
@@ -1266,8 +1273,12 @@ var
   procedure RestoreDebuggerItems;
   begin
     // restore the watches
-    if OldWatches<>nil then
-      FWatches.Assign(OldWatches);
+    if (OldWatches<>nil) then begin
+      if FWatches=nil then
+        FWatches:=OldWatches
+      else if FWatches<>OldWatches then
+        FWatches.Assign(OldWatches);
+    end;
   end;
   
   procedure FreeDebugger;
@@ -1334,7 +1345,8 @@ begin
         RestoreDebuggerItems;
       end;
     finally
-      OldWatches.Free;
+      if FWatches<>OldWatches then
+        OldWatches.Free;
     end;
     
     FDebugger.OnState     := @OnDebuggerChangeState;
@@ -1423,10 +1435,16 @@ begin
   ViewDebugDialog(ddtCallStack);
 end;
 
-procedure TDebugManager.RunDebugger;
+function TDebugManager.RunDebugger: TModalResult;
 begin
+  //writeln('TDebugManager.RunDebugger A ',FDebugger<>nil,' Destroying=',Destroying);
+  Result:=mrCancel;
   if Destroying then exit;
-  if (FDebugger <> nil) then FDebugger.Run;
+  if (FDebugger <> nil) then begin
+    writeln('TDebugManager.RunDebugger B ',FDebugger.ClassName);
+    FDebugger.Run;
+    Result:=mrOk;
+  end;
 end;
 
 procedure TDebugManager.EndDebugging;
@@ -1505,6 +1523,7 @@ var
   ActiveUnitInfo: TUnitInfo;
   UnitFilename: string;
 begin
+  writeln('TDebugManager.DoRunToCursor A');
   if (MainIDE.DoInitProjectRun <> mrOK)
   or (MainIDE.ToolStatus <> itDebugger)
   or (FDebugger = nil) or Destroying
@@ -1512,14 +1531,16 @@ begin
     Result := mrAbort;
     Exit;
   end;
+  writeln('TDebugManager.DoRunToCursor B');
 
   Result := mrCancel;
 
-  MainIDE.GetCurrentUnit(ActiveSrcEdit, ActiveUnitInfo);
+  MainIDE.GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
   if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil)
   then begin
     MessageDlg(lisRunToFailed, lisPleaseOpenAUnitBeforeRun, mtError,
       [mbCancel],0);
+    Result := mrCancel;
     Exit;
   end;
 
@@ -1527,9 +1548,11 @@ begin
   then UnitFilename:=ActiveUnitInfo.Filename
   else UnitFilename:=MainIDE.GetTestUnitFilename(ActiveUnitInfo);
 
+  writeln('TDebugManager.DoRunToCursor C');
   FDebugger.RunTo(ExtractFilename(UnitFilename),
                   ActiveSrcEdit.EditorComponent.CaretY);
 
+  writeln('TDebugManager.DoRunToCursor D');
   Result := mrOK;
 end;
 
@@ -1551,6 +1574,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.60  2003/08/08 10:24:47  mattias
+  fixed initialenabled, debuggertype, linkscaner open string constant
+
   Revision 1.59  2003/08/08 07:49:56  mattias
   fixed mem leaks in debugger
 
