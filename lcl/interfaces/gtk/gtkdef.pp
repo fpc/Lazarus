@@ -33,7 +33,8 @@ unit GtkDef;
 interface
 
 uses
-  gtk, gdk, LCLLinux, LCLType, VclGlobals, Classes, LCLMemManager;
+  gtk, gdk, LCLLinux, LCLType, VclGlobals, Classes, LCLMemManager,
+  DynHashArray;
 
 type
   TGDIType = (gdiBitmap, gdiBrush, gdiFont, gdiPen, gdiRegion, gdiPalette);
@@ -54,6 +55,12 @@ type
     Data: array[0..0] of TGDIRGB;
   end;
   
+  TGDIColor = record
+    ColorRef : TColorRef;//Color passed - can be a SYSCOLOR or RGB
+    Color : TGDKColor;//Actual GDK Color(If any) for use with GC's
+    COlormap : PGDKColormap;//Colormap GDKColor was allocated with
+  end;
+
   PGDIObject = ^TGDIObject;
   TGDIObject = record
     Next: PGDIObject; // 'Next' is used by the internal mem manager
@@ -69,7 +76,7 @@ type
       );
       gdiBrush: ( 
         // ToDo: add bitmap mask
-        GDIBrushColor: TGdkColor;
+        GDIBrushColor : TGDIColor;
         GDIBrushFill: TGdkFill;
         GDIBrushPixMap: PGdkPixmap;
       );
@@ -78,7 +85,8 @@ type
         LogFont: TLogFont;// for now font info is stored as well, later query font params
       ); 
       gdiPen: (
-        GDIPenColor: TGdkColor;
+        IsNullPen : Boolean;//GDK will bomb with a NULL Pen Hatch
+        GDIPenColor: TGDIColor;
         GDIPenWidth: Integer;
         GDIPenStyle: Word;
       ); 
@@ -86,23 +94,24 @@ type
         GDIRegionObject: PGdkRegion;
       );
       gdiPalette: (
-        //Has it been added to the system palette?
-        Realized : Boolean;
+        //Is this the system palette?
+        SystemPalette : Boolean;
+
+        //or, Has it been added to the system palette?
+        PaletteRealized : Boolean;
 
         //Type of visual expected
         VisualType  : TGdkVisualType;
 
         //Actual visual created
-        PalleteVisual : PGDKVisual;
+        PaletteVisual : PGDKVisual;
 
         //Colormap for mapping colors
-        PalleteColormap : PGDKColormap;
+        PaletteColormap : PGDKColormap;
 
-        //For use when VisualType <> PalleteVisual^.Type
-        RGBEntries : Array[0..0] of Longint;
-        
-        //For mapping from Index to Colormap Pixel
-        PixelEntries : Array[0..0] of Longint;
+        //For mapping from Index to RGB
+        RGBTable : TDynHashArray;
+        IndexTable : TDynHashArray;
       );
   end;
 
@@ -120,8 +129,9 @@ type
     CurrentFont: PGdiObject;
     CurrentPen: PGdiObject;
     CurrentBrush: PGdiObject;
-    CurrentTextColor: TGdkColor;
-    CurrentBackColor: TGdkColor;
+    CurrentPalette: PGdiObject;
+    CurrentTextColor: TGDIColor;
+    CurrentBackColor: TGDIColor;
     ClipRegion : hRGN;
     SavedContext: PDeviceContext; // linked list of saved DCs
   end;
@@ -347,6 +357,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.19  2002/09/18 17:07:28  lazarus
+  MG: added patch from Andrew
+
   Revision 1.18  2002/09/12 05:56:15  lazarus
   MG: gradient fill, minor issues from Andrew
 

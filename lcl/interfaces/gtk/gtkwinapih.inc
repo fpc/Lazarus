@@ -140,6 +140,7 @@ Function ReleaseCapture : Boolean; override;
 function ReleaseDC(hWnd: HWND; DC: HDC): Integer; override;
 function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; override;
 function RightJustifyMenuItem(HndMenu: HMenu; bRightJustify: boolean): Boolean; override;
+Function RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean;  override;
 
 function SaveDC(DC: HDC): Integer; override;
 Function ScreenToClient(Handle : HWND; var P : TPoint) : Integer; override;
@@ -186,6 +187,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.47  2002/09/18 17:07:30  lazarus
+  MG: added patch from Andrew
+
   Revision 1.46  2002/09/12 05:56:17  lazarus
   MG: gradient fill, minor issues from Andrew
 
