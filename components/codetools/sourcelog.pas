@@ -722,7 +722,8 @@ begin
   if IsEqual(sl) then exit;
   IncreaseHookLock;
   Clear;
-  fSrcLen:=sl.Count*2;
+  sl.Text;
+  fSrcLen:=sl.Count*{$IFDEF win32}2{$ELSE}1{$ENDIF};
   for y:=0 to sl.Count-1 do inc(fSrcLen,length(sl[y]));
   fSource:='';
   SetLength(fSource,fSrcLen);
@@ -735,8 +736,10 @@ begin
       System.Move(s[1],fSource[p],LineLen);
       inc(p,LineLen);
     end;
+    {$IFDEF win32}
     fSource[p]:=#13;
     inc(p);
+    {$ENDIF}
     fSource[p]:=#10;
     inc(p);
   end;
