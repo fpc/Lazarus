@@ -25,7 +25,7 @@ unit DlgForm;
 
 interface
 
-uses Interfaces, Classes, Forms, Buttons, Dialogs, Graphics;
+uses Classes, Forms, Buttons, Dialogs, Graphics;
 
 type
   TSampleDialogs = class(TForm)
