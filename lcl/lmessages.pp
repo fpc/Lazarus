@@ -79,7 +79,7 @@ LM_TB_BUTTONCOUNT = LM_ComUser+45;
 LM_INSERTTOOLBUTTON = LM_ComUser+46;
 LM_DELETETOOLBUTTON = LM_ComUser+47;
 
-LM_SetCursor = LM_ComUser+48;
+//LM_SetCursor = LM_ComUser+48;  We define this later for Windows compatability.
 
 LM_IMAGECHANGED = LM_ComUser+49;
 LM_LAYOUTCHANGED = LM_ComUser+50;
@@ -139,7 +139,7 @@ LM_ERASEBKGND = $0014;
 LM_SHOWWINDOW   = $0018;
 
 LM_CANCELMODE   = $001F;
-
+LM_SETCURSOR = $0020;
 LM_DRAWITEM     = $002B;
 LM_MEASUREITEM  = $002C;
 LM_DELETEITEM   = $002D;
@@ -199,6 +199,8 @@ LM_MBUTTONUP = $0208;
 LM_MBUTTONDBLCLK = $0209;
 LM_MOUSEWHEEL = $020A;
 LM_MOUSELAST = $020A;
+
+LM_DROPFILES = $0233;
 
 LM_PARENTNOTIFY  = $0210;
 
@@ -293,7 +295,16 @@ TLMScreenInit = record
   PixelsPerInchX : Integer;
   PixelsPerInchY : Integer;
   ColorDepth : Integer;
-end;  
+end;
+
+TLMSETCURSOR = record
+  Msg : Cardinal;
+  CursorWnd : HWND;
+  HitText : Word;
+  MOuseMsg : Word;
+  Result : Longint;
+end;
+
 PLMScreenInit = ^TLMScreenInit;
 
 TLMCanvasCreate = Record
@@ -748,6 +759,11 @@ end.
 
 {
   $Log$
+  Revision 1.4  2000/08/11 14:59:09  lazarus
+  Adding all the Synedit files.
+  Changed the GDK_KEY_PRESS and GDK_KEY_RELEASE stuff to fix the problem in the editor with the shift key being ignored.
+  Shane
+
   Revision 1.3  2000/07/30 21:48:32  lazarus
   MWE:
     = Moved ObjectToGTKObject to GTKProc unit

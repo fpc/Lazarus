@@ -69,6 +69,7 @@ type
   HCURSOR = HICON;
   Bool = LongBool;
   pByte = ^byte;
+  HGLOBAL = THAndle;
 var
   hInstance :HINST;
 
@@ -667,6 +668,13 @@ const
 
   GCP_DBCS = 1;
 
+
+//==============================================
+// Background Modes
+//==============================================
+TRANSPARENT = 1;
+OPAQUE = 2;
+BKMODE_LAST = 2;
 
 //==============================================
 // Font constants
@@ -1352,12 +1360,9 @@ end.
 
 {
   $Log$
-  Revision 1.2  2000/08/10 18:56:24  lazarus
-  Added some winapi calls.
-  Most don't have code yet.
-  SetTextCharacterExtra
-  CharLowerBuff
-  IsCharAlphaNumeric
+  Revision 1.3  2000/08/11 14:59:09  lazarus
+  Adding all the Synedit files.
+  Changed the GDK_KEY_PRESS and GDK_KEY_RELEASE stuff to fix the problem in the editor with the shift key being ignored.
   Shane
 
   Revision 1.1  2000/07/13 10:28:24  michael

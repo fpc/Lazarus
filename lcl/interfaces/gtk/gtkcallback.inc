@@ -184,6 +184,42 @@ begin
   Msg.KeyData := Msg.KeyData or (Flags shl 16);
   
   case Event^.theType of
+
+    GDK_KEY_RELEASE:
+      begin
+        EventTrace('key up', data);
+        if SysKey
+        then Msg.msg := LM_SYSKEYUP
+        else Msg.msg := LM_KEYUP;
+        Msg.KeyData := Msg.KeyData or 0{TODO: previous keystate} or $0001 {TODO:  repeatcount};
+        Result := DeliverPostMessage(data, msg);
+
+      end;
+    GDK_KEY_PRESS:
+      begin
+        EventTrace('key down', data);
+        if SysKey
+        then Msg.msg := LM_SYSKEYDOWN
+        else Msg.msg := LM_KEYDOWN;
+
+        Flags := KF_UP or KF_REPEAT;
+        Msg.KeyData := Msg.KeyData or (Flags shl 16) or $0001 {allways};
+        Result := DeliverPostMessage(data, msg);
+
+        if KeyCode <> $FFFF
+        then begin
+          EventTrace('char', data);
+          if SysKey then Msg.msg := LM_SYSCHAR
+          else Msg.msg := LM_CHAR;
+          Msg.CharCode := KeyCode;
+          Result := DeliverPostMessage(data, msg);
+        end;
+      end;
+  end;
+
+(*  Shane 08/11/2000
+    I changed the way order the info is sent.
+    I send the key info on the DOWN event instead of the UP event.
     GDK_KEY_PRESS:
       begin
         EventTrace('key down', data);
@@ -215,6 +251,7 @@ begin
         end;
       end;
   end;
+*)
 end;
 
 function GTKFocusCB( widget: PGtkWidget; event:PGdkEventFocus; data: gPointer) : GBoolean; cdecl;
@@ -1032,6 +1069,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2000/08/11 14:59:09  lazarus
+  Adding all the Synedit files.
+  Changed the GDK_KEY_PRESS and GDK_KEY_RELEASE stuff to fix the problem in the editor with the shift key being ignored.
+  Shane
+
   Revision 1.3  2000/08/10 10:55:45  lazarus
   Changed TCustomDialog to TCommonDialog
   Shane

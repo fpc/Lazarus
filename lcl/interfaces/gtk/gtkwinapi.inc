@@ -2529,6 +2529,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: SetBkMode
+  Params: DC:
+          bkMode:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+Function TGTKObject.SetBkMode(DC: HDC; bkMode : Integer) : Integer;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
   Function: SetCapture
   Params:  Value: Handle of window to capture
   Returns: Nothing
@@ -2956,6 +2968,21 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: TextOut
+  Params: DC:
+          X:
+          Y:
+          Str:
+          Count:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+Function TGTKObject.TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
   Function: WindowFromPoint
   Params: Point: Specifies the x and y Coords
   Returns: The handle of the gtkwidget.  If none exist, then NULL is returned.
@@ -2994,6 +3021,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2000/08/11 14:59:09  lazarus
+  Adding all the Synedit files.
+  Changed the GDK_KEY_PRESS and GDK_KEY_RELEASE stuff to fix the problem in the editor with the shift key being ignored.
+  Shane
+
   Revision 1.5  2000/08/10 18:56:24  lazarus
   Added some winapi calls.
   Most don't have code yet.

@@ -301,6 +301,12 @@ begin
   Result := 0;
 end;
 
+Function TInterfaceBase.SetBkMode(DC: HDC; bkMode : Integer) : Integer;
+begin
+  // Your default here
+  // Result := 
+end;
+
 Function TInterfaceBase.SetCapture(value : Longint) : Longint;
 Begin
   Result := 0;
@@ -372,6 +378,12 @@ begin
   Result := False;
 end;
 
+Function TInterfaceBase.TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean;
+begin
+  // Your default here
+  // Result := 
+end;
+
 Function TInterfaceBase.WindowFromPoint(Point : TPoint) : HWND;
 begin
   // Your default here
@@ -382,6 +394,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2000/08/11 14:59:09  lazarus
+  Adding all the Synedit files.
+  Changed the GDK_KEY_PRESS and GDK_KEY_RELEASE stuff to fix the problem in the editor with the shift key being ignored.
+  Shane
+
   Revision 1.3  2000/08/10 18:56:24  lazarus
   Added some winapi calls.
   Most don't have code yet.

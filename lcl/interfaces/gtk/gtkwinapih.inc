@@ -73,6 +73,7 @@ function SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;  override;
 function SelectPalette(DC: HDC; Palette: HPALETTE; ForceBackground: Boolean): HPALETTE; override;
 function SendMessage(hWnd: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt): Integer; override;
 function SetBkColor(DC: HDC; Color: TColorRef): TColorRef; override;
+Function SetBkMode(DC: HDC; bkMode : Integer) : Integer; override;
 Function SetCapture(Value : Longint): Longint; override;
 function SetCaretPos(X, Y: Integer): Boolean; override;
 function SetFocus(hWnd: HWND): HWND; override;
@@ -88,12 +89,19 @@ function ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean; ov
 function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: Cardinal): Boolean; override;
 function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; override;
 
+Function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean; override;
+
 
 Function WindowFromPoint(Point : TPoint) : HWND; override;
 //##apiwiz##eps##   // Do not remove
 { =============================================================================
 
   $Log$
+  Revision 1.4  2000/08/11 14:59:09  lazarus
+  Adding all the Synedit files.
+  Changed the GDK_KEY_PRESS and GDK_KEY_RELEASE stuff to fix the problem in the editor with the shift key being ignored.
+  Shane
+
   Revision 1.3  2000/08/10 18:56:24  lazarus
   Added some winapi calls.
   Most don't have code yet.
