@@ -257,6 +257,7 @@ resourcestring
   lisThereAreOtherFilesInTheDirectoryWithTheSameName = 'There are other files '
     +'in the directory with the same name,%swhich only differ in case:%s%s%'
     +'sDelete them?';
+  lisDeleteOldFile = 'Delete old file %s%s%s?';
   lisDeletingOfFileFailed = 'Deleting of file %s%s%s failed.';
   lisStreamingError = 'Streaming error';
   lisUnableToStreamT = 'Unable to stream %s:T%s.';
@@ -371,6 +372,11 @@ resourcestring
   lisUnableToRenameFileTo = 'Unable to rename file %s%s%s to %s%s%s!';
   lisBackupFileFailed = 'Backup file failed';
   lisUnableToBackupFileTo = 'Unable to backup file %s%s%s to %s%s%s!';
+  lisFileNotLowercase = 'File not lowercase';
+  lisTheUnitIsNotLowercaseTheFreePascalCompiler10XNeeds = 'The unit %s%s%s is '
+    +'not lowercase.%sThe FreePascal compiler 1.0.x needs lowercase '
+    +'filenames. If you do not use the fpc 1.0.x to compile this unit, you '
+    +'can ignore this message.%s%sRename file?';
   lisDeleteAmbigiousFile = 'Delete ambigious file?';
   lisAmbigiousFileFoundThisFileCanBeMistakenWithDelete = 'Ambigious file '
     +'found: %s%s%s%sThis file can be mistaken with %s%s%s%s%sDelete the '

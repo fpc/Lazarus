@@ -150,12 +150,13 @@ type
     function WriteUnitSourceToFile(const AFileName: string): TModalResult;
     procedure Clear;
     procedure CreateStartCode(NewUnitType: TNewUnitType;
-         const NewUnitName: string);
+                              const NewUnitName: string);
     procedure DecreaseAutoRevertLock;
     procedure IgnoreCurrentFileDateOnDisk;
     procedure IncreaseAutoRevertLock;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure ReadUnitNameFromSource;
+    function CreateUnitName: string;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure UpdateUsageCount(Min, IfBelowThis, IncIfBelow: extended);
     procedure UpdateUsageCount(TheUsage: TUnitUsage; Factor: extended);
@@ -664,6 +665,13 @@ end;
 procedure TUnitInfo.ReadUnitNameFromSource;
 begin
   fUnitName:=CodeToolBoss.GetSourceName(fSource,false);
+end;
+
+function TUnitInfo.CreateUnitName: string;
+begin
+  Result:=UnitName;
+  if (Result='') and FilenameIsPascalUnit(Filename) then
+    Result:=ExtractFilenameOnly(Filename);
 end;
 
 {------------------------------------------------------------------------------
@@ -2639,6 +2647,9 @@ end.
 
 {
   $Log$
+  Revision 1.128  2003/06/08 11:05:45  mattias
+  implemented filename case check before adding to project
+
   Revision 1.127  2003/06/03 16:12:14  mattias
   fixed loading bookmarks for editor index 0
 
