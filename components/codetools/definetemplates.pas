@@ -2925,6 +2925,9 @@ var
   UtilsDir, DebugSvrDir: TDefineTemplate;
   s: string;
   RTLWin32Dir: TDefineTemplate;
+  FCLDBDir: TDefineTemplate;
+  FCLDBInterbaseDir: TDefineTemplate;
+  SrcPathMacro: String;
 begin
   //writeln('CreateFPCSrcTemplate ',FPCSrcDir,': ',length(UnitSearchPath),' Valid=',UnitLinkListValid,' PPUExt=',PPUExt);
   Result:=nil;
@@ -2936,6 +2939,7 @@ begin
   SrcOS:='$('+ExternalMacroStart+'SrcOS)';
   TargetProcessor:='$('+ExternalMacroStart+'TargetProcessor)';
   IncPathMacro:='$('+ExternalMacroStart+'IncPath)';
+  SrcPathMacro:='$('+ExternalMacroStart+'SrcPath)';
   UnitLinks:=ExternalMacroStart+'UnitLinks';
   UnitTree:=nil;
 
@@ -3022,6 +3026,17 @@ begin
     +';'+Dir+'fcl'+DS+'inc'+DS
     +';'+Dir+'fcl'+DS+SrcOS+DS
     ,da_DefineRecurse));
+  FCLDBDir:=TDefineTemplate.Create('DB','DB','','db',da_Directory);
+  FCLDir.AddChild(FCLDBDir);
+  FCLDBInterbaseDir:=TDefineTemplate.Create('interbase','interbase','',
+    'interbase',da_Directory);
+  FCLDBDir.AddChild(FCLDBInterbaseDir);
+  FCLDBInterbaseDir.AddChild(TDefineTemplate.Create('SrcPath',
+    'SrcPath addition',
+    ExternalMacroStart+'SrcPath',
+    SrcPathMacro
+    +';'+Dir+'packages'+DS+'base'+DS+'ibase'
+    ,da_Define));
 
   // packages
   PackagesDir:=TDefineTemplate.Create('Packages',ctsPackageDirectories,'',
