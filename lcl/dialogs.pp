@@ -131,6 +131,7 @@ type
     property Files: TStrings read FFiles;
     property HistoryList: TStrings read FHistoryList write SetHistoryList;
   published
+    property Title;
     property DefaultExt: string read FDefaultExt write SetDefaultExt;
     property FileName: String read FFileName write SetFileName;
     property Filter: String read FFilter write SetFilter;
@@ -225,6 +226,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
   published
+    property Title;
     property Color: TColor read FColor write FColor;
   end;
 
@@ -289,6 +291,7 @@ type
     constructor Create (AOwner : TComponent); override;
     destructor Destroy; override;
   published
+    property Title;
     property Font: TFont read FFont write SetFont;
     property MinFontSize: Integer read FMinFontSize write FMinFontSize;
     property MaxFontSize: Integer read FMaxFontSize write FMaxFontSize;
@@ -416,6 +419,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.50  2004/08/01 14:35:26  micha
+  publish Title property on dialogs for .dfm streaming
+
   Revision 1.49  2004/04/03 13:10:20  mattias
   fixed TCalendarDialog.DialogTitle
 
