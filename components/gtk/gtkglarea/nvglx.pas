@@ -3,17 +3,16 @@
 
   Author: Mattias Gaertner
 
-  This file is distributed under the Library GNU General Public License
-  with the following modification:
-
-  - object files and libraries linked into an application may be
-    distributed without source code.
-
-  If you didn't receive a copy of the file COPYING, contact:
-        Free Software Foundation
-        675 Mass Ave
-        Cambridge, MA  02139
-        USA
+ *****************************************************************************
+ *                                                                           *
+ *  See the file COPYING.modifiedLGPL, included in this distribution,        *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
 }
 unit NVGLX;
 
