@@ -77,7 +77,7 @@ implementation
 
 constructor TColumnDlg.Create(AOwner : TComponent);
 Begin
-  inherited;
+  inherited Create(AOwner);
 //  if LazarusResources.Find(Classname)=nil then
   begin
      Caption := 'Column Editor';

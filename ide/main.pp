@@ -1519,7 +1519,7 @@ end;
 
 procedure TMainIDE.SetupFileMenu;
 begin
-  inherited;
+  inherited SetupFileMenu;
   itmFileNewUnit.OnClick := @mnuNewUnitClicked;
   itmFileNewForm.OnClick := @mnuNewFormClicked;
   itmFileNewOther.OnClick := @mnuNewOtherClicked;
@@ -1539,7 +1539,7 @@ end;
 
 procedure TMainIDE.SetupEditMenu;
 begin
-  inherited;
+  inherited SetupEditMenu;
   itmEditUndo.OnClick:=@mnuEditUndoClicked;
   itmEditRedo.OnClick:=@mnuEditRedoClicked;
   itmEditCut.OnClick:=@mnuEditCutClicked;
@@ -1584,13 +1584,13 @@ end;
 
 procedure TMainIDE.SetupSearchMenu;
 begin
-  inherited;
+  inherited SetupSearchMenu;
   itmGotoIncludeDirective.OnClick:=@mnuGotoIncludeDirectiveClicked;
 end;
 
 procedure TMainIDE.SetupViewMenu;
 begin
-  inherited;
+  inherited SetupViewMenu;
   itmViewInspector.OnClick := @mnuViewInspectorClicked;
   itmViewSourceEditor.OnClick := @mnuViewSourceEditorClicked;
   itmViewCodeExplorer.OnClick := @mnuViewCodeExplorerClick;
@@ -1604,7 +1604,7 @@ end;
 
 procedure TMainIDE.SetupProjectMenu;
 begin
-  inherited;
+  inherited SetupProjectMenu;
   itmProjectNew.OnClick := @mnuNewProjectClicked;
   itmProjectNewFromFile.OnClick := @mnuNewProjectFromFileClicked;
   itmProjectOpen.OnClick := @mnuOpenProjectClicked;
@@ -1622,7 +1622,7 @@ end;
 
 procedure TMainIDE.SetupRunMenu;
 begin
-  inherited;
+  inherited SetupRunMenu;
   itmRunMenuBuild.OnClick := @mnuBuildProjectClicked;
   itmRunMenuBuildAll.OnClick := @mnuBuildAllProjectClicked;
   itmRunMenuAbortBuild.OnClick := @mnuAbortBuildProjectClicked;
@@ -1647,7 +1647,7 @@ end;
 
 procedure TMainIDE.SetupToolsMenu;
 begin
-  inherited;
+  inherited SetupToolsMenu;
   itmToolConfigure.OnClick := @mnuToolConfigureClicked;
   itmToolSyntaxCheck.OnClick := @mnuToolSyntaxCheckClicked;
   itmToolGuessUnclosedBlock.OnClick := @mnuToolGuessUnclosedBlockClicked;
@@ -1664,7 +1664,7 @@ end;
 
 procedure TMainIDE.SetupEnvironmentMenu;
 begin
-  inherited;
+  inherited SetupEnvironmentMenu;
   itmEnvGeneralOptions.OnClick := @mnuEnvGeneralOptionsClicked;
   itmEnvEditorOptions.OnClick := @mnuEnvEditorOptionsClicked;
   itmEnvCodeToolsOptions.OnClick := @mnuEnvCodeToolsOptionsClicked;
@@ -1679,7 +1679,7 @@ end;
 
 procedure TMainIDE.SetupHelpMenu;
 begin
-  inherited;
+  inherited SetupHelpMenu;
   itmHelpAboutLazarus.OnClick := @mnuHelpAboutLazarusClicked;
 end;
 
@@ -10247,6 +10247,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.683  2003/12/21 16:01:58  mattias
+  workaround for inherited bug in fpc 1.9
+
   Revision 1.682  2003/12/21 13:58:05  mattias
   renamed DirectoryExists to DirPathExists to reduce ambigiousity
 

@@ -127,7 +127,7 @@ begin
   and (TCustomNotebook(Parent).ActivePageComponent<>Self) then
     Message.Result:=0 // no hit
   else
-    inherited;
+    inherited CMHitTest(Message);
   {writeln('TCustomPage.CMHitTest A ',Name,' ',(Parent<>nil),' ',
     (Parent is TCustomNotebook),' ',
     (TCustomNotebook(Parent).ActivePageComponent<>Self),

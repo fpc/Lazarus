@@ -279,7 +279,7 @@ end;
 procedure TCustomRadioGroup.WMSize(var Message: TLMSize);
 begin
   if HandleAllocated then DoPositionButtons;
-  inherited;
+  inherited WMSize(Message);
 end;
 
 {------------------------------------------------------------------------------
@@ -395,6 +395,9 @@ end;
 
 {
   $Log$
+  Revision 1.25  2003/12/21 16:01:58  mattias
+  workaround for inherited bug in fpc 1.9
+
   Revision 1.24  2003/11/15 13:38:21  mattias
   fixed using protected member
 

@@ -46,7 +46,7 @@ destructor THintWindow.Destroy;
 begin
   fAutoHideTimer.Free;
   fAutoHideTimer:=nil;
-  inherited;
+  inherited Destroy;
 end;
 
 Procedure THintWindow.SetHideInterval(Value : Integer);

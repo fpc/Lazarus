@@ -579,7 +579,7 @@ end;
 
 procedure TOIPropertyGrid.WMSize(var Msg: TWMSize);
 begin
-  inherited;
+  inherited WMSize(Msg);
   UpdateScrollBar;
 end;
 

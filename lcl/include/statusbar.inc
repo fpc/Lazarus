@@ -189,7 +189,7 @@ var
   R : TRect;
   PW : Longint;
 Begin
-  inherited;
+  inherited WMPaint(Msg);
   FillChar(Style, SizeOf(Style),0);
   With Style do begin
     Layout := tlCenter;

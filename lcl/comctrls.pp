@@ -552,7 +552,7 @@ type
     property OnColumnClick;
     property OnDblClick;
     property OnMouseDown;
-    property OnMOuseUp;
+    property OnMouseUp;
     property OnKeyPress;
     property OnKeyUp;
     property OnKeyDown;
@@ -1595,11 +1595,6 @@ type
     procedure UpdateMaxRight;
     procedure UpdateTopItem;
     procedure UpdateScrollbars;
-    procedure WMHScroll(var Msg: TLMScroll); message LM_HSCROLL;
-    procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
-    procedure WMLButtonDown(var AMessage: TLMLButtonDown); message LM_LBUTTONDOWN;
-    procedure WMNotify(var AMessage: TLMNotify); message LM_NOTIFY;
-    procedure WMSize(var Msg: TLMSize); message LM_SIZE;
     procedure InternalSelectionChanged;
   protected
     FChangeTimer: TTimer;
@@ -1657,6 +1652,11 @@ type
     procedure WndProc(var Message: TLMessage); override;
     procedure UpdateInsertMark(X,Y: integer); virtual;
     procedure DoSelectionChanged; virtual;
+    procedure WMHScroll(var Msg: TLMScroll); message LM_HSCROLL;
+    procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
+    procedure WMLButtonDown(var AMessage: TLMLButtonDown); message LM_LBUTTONDOWN;
+    procedure WMNotify(var AMessage: TLMNotify); message LM_NOTIFY;
+    procedure WMSize(var Msg: TLMSize); message LM_SIZE;
   protected
     property AutoExpand: Boolean read GetAutoExpand write SetAutoExpand default False;
     property BorderStyle: TBorderStyle
@@ -1936,6 +1936,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.93  2003/12/21 16:01:58  mattias
+  workaround for inherited bug in fpc 1.9
+
   Revision 1.92  2003/11/30 18:35:19  mattias
   fixed fpc 1.9.1 warns
 

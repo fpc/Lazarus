@@ -61,12 +61,12 @@ end;
 
 constructor TFormEditor.Create;
 Begin
-  inherited;
+  inherited Create;
 end;
 
 destructor TFormEditor.destroy;
 Begin
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TFormEditor.PaintAllDesignerItems;

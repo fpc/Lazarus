@@ -2756,34 +2756,6 @@ begin
   end;
 end;
 
-{procedure TCustomTreeView.CMColorChanged(var Message: TLMessage);
-begin
-  inherited;
-  RecreateWnd;
-end;}
-
-{procedure TCustomTreeView.CMCtl3DChanged(var Message: TLMessage);
-begin
-  inherited;
-  if FBorderStyle = bsSingle then RecreateWnd;
-end;}
-
-{procedure TCustomTreeView.CMFontChanged(var Message: TLMessage);
-begin
-  inherited;
-  TreeView_SetTextColor(Handle, ColorToRGB(Font.Color));
-end;}
-
-{procedure TCustomTreeView.CMSysColorChange(var Message: TLMessage);
-begin
-  inherited;
-  if not (csLoading in ComponentState) then
-  begin
-    Message.Msg := WM_SYSCOLORCHANGE;
-    DefaultHandler(Message);
-  end;
-end;}
-
 procedure TCustomTreeView.BeginUpdate;
 begin
   inc(FUpdateCount);
@@ -2969,7 +2941,7 @@ begin
   // ToDo: implement Drag&Drop
   //if Value <> DragMode then
   //  SetComCtlStyle(Self, TVS_DISABLEDRAGDROP, Value = dmManual);
-  inherited;
+  inherited SetDragMode(Value);
 end;
 
 procedure TCustomTreeView.SetOptions(NewOptions: TTreeViewOptions);
@@ -4955,14 +4927,14 @@ begin
       Result := 1;
     end
     else}
-  inherited;
+  inherited WMNotify(AMessage);
 end;
 
 procedure TCustomTreeView.WMSize(var Msg: TLMSize);
 begin
   FStates:=FStates+[tvsScrollbarChanged,
                     tvsBottomItemNeedsUpdate];
-  inherited;
+  inherited WMSize(Msg);
 end;
 
 procedure TCustomTreeView.InternalSelectionChanged;

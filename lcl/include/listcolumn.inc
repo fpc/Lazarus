@@ -39,7 +39,7 @@ end;
 
 constructor TListColumn.Create(ACollection: TCollection);
 begin
-  inherited;
+  inherited Create(ACollection);
   FAlignment := taLeftJustify;
   FCaption := '';
   FWidth := 50;
@@ -53,7 +53,7 @@ end;
 
 destructor TListColumn.Destroy;
 begin
-  inherited;
+  inherited Destroy;
   Changed(False);  
 end;
 
@@ -121,6 +121,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2003/12/21 16:01:58  mattias
+  workaround for inherited bug in fpc 1.9
+
   Revision 1.4  2002/10/09 11:46:04  lazarus
   MG: fixed loading TListView from stream
 

@@ -161,7 +161,7 @@ end;
 procedure TCustomCheckGroup.WMSize(var Message: TLMSize);
 begin
   DoPositionButtons;
-  inherited;
+  inherited WMSize(Message);
 end;
 
 procedure TCustomCheckGroup.DefineProperties(Filer: TFiler);
@@ -256,6 +256,9 @@ end;
 
 {
   $Log$
+  Revision 1.3  2003/12/21 16:01:58  mattias
+  workaround for inherited bug in fpc 1.9
+
   Revision 1.2  2003/03/18 00:00:05  mattias
   added TCheckGroup.CheckEnabled
 

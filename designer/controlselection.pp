@@ -706,7 +706,7 @@ end;
 constructor TControlSelection.Create;
 var g:TGrabIndex;
 begin
-  inherited;
+  inherited Create;
   FControls:=TList.Create;
   FGrabberSize:=5;
   FMarkerSize:=5;

@@ -35,7 +35,7 @@ begin
   FPicture.OnChange := nil;
   FPicture.Graphic := nil;
   FPicture.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TCustomImage.SetPicture(const AValue: TPicture);

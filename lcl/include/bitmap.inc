@@ -83,7 +83,7 @@ begin
     end;
   {$ENDIF}
   end else
-    inherited;
+    inherited Assign(Source);
 end;
 
 procedure TBitmap.Draw(ACanvas: TCanvas; const ARect: TRect);
@@ -1013,6 +1013,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.54  2003/12/21 16:01:58  mattias
+  workaround for inherited bug in fpc 1.9
+
   Revision 1.53  2003/11/26 22:05:57  mattias
   fixed TIcon
 

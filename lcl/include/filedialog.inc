@@ -36,7 +36,7 @@ destructor TFileDialog.Destroy;
 begin
   FHistoryList.Free;
   FFiles.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 {------------------------------------------------------------------------------}
@@ -265,6 +265,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2003/12/21 16:01:58  mattias
+  workaround for inherited bug in fpc 1.9
+
   Revision 1.12  2003/09/08 12:21:48  mattias
   added fpImage reader/writer hooks to TBitmap
 

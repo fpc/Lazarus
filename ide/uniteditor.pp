@@ -4505,7 +4505,7 @@ end;
 
 constructor TSynEditPlugin1.Create(AOwner: TCustomSynEdit);
 Begin
-  inherited;
+  inherited Create(AOwner);
 end;
 
 procedure TSynEditPlugin1.AfterPaint(ACanvas: TCanvas; AClip: TRect; FirstLine,

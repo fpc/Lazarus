@@ -664,7 +664,7 @@ begin
   FComponentInterfaces.Free;
   FSelectedComponents.Free;
   FNonControlForms.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TCustomFormEditor.SetSelectedComponents(
