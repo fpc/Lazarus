@@ -4970,6 +4970,15 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TgtkObject.IsWindowVisible(handle: HWND): boolean;
+
+ ------------------------------------------------------------------------------}
+function TgtkObject.IsWindowVisible(handle: HWND): boolean;
+begin
+  Result:=(handle<>0) and GTK_WIDGET_VISIBLE(PGtkWidget(handle));
+end;
+
+{------------------------------------------------------------------------------
   Function: LineTo
   Params:  none
   Returns: Nothing
@@ -7921,6 +7930,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.218  2003/03/17 08:51:09  mattias
+  added IsWindowVisible
+
   Revision 1.217  2003/03/16 09:41:06  mattias
   fixed checking menuitems
 
