@@ -605,6 +605,8 @@ end;
 
 procedure TDiffOutput.WriteLinesOfText(const s, Prefix: string;
   const StartLine, EndLine: TLineExtends);
+{ Write all lines in front of EndLine, starting with StartLine
+}
 var
   Line: TLineExtends;
 begin
@@ -732,14 +734,42 @@ procedure TDiffOutput.AddContextDiff(
     - If a part contains no changed lines, its lines can be left out
 }
 begin
-  exit;
   // start a new block
   WriteStrToStream(DiffStream,'***************');
+
+  // init part 1
   Part1.StartLine:=Start1.LineNumber-ContextLineCount;
   if Part1.StartLine<1 then Part1.StartLine:=1;
   Part1.EndLine:=End1.LineNumber+ContextLineCount;
+  Part1.Position:=Start1;
+  while Part1.Position.LineNumber>Part1.StartLine do
+    GetPrevLineExtends(Text1,Part1.Position);
 
-  // ToDo
+  // init part 2
+  Part2.StartLine:=Start2.LineNumber-ContextLineCount;
+  if Part2.StartLine<1 then Part2.StartLine:=1;
+  Part2.EndLine:=End2.LineNumber+ContextLineCount;
+  while Part2.Position.LineNumber>Part2.StartLine do
+    GetPrevLineExtends(Text2,Part2.Position);
+
+  // write part1
+  WriteStrToStream(DiffStream,'*** '
+                 +IntToStr(Part1.StartLine)+','+IntToStr(Part1.EndLine)
+                 +' ****');
+  // write the unchanged lines in front (part1)
+  WriteLinesOfText(Text1,'  ',Part1.Position,Start1);
+  // write the changed lines (part1)
+  WriteLinesOfText(Text1,'! ',Start1,End1);
+
+
+  // write part2
+  WriteStrToStream(DiffStream,'--- '
+                 +IntToStr(Part2.StartLine)+','+IntToStr(Part2.EndLine)
+                 +' ----');
+  // write the unchanged lines in front (part1)
+  WriteLinesOfText(Text2,'  ',Part2.Position,Start2);
+  // write the changed lines (part1)
+  WriteLinesOfText(Text2,'! ',Start2,End2);
 
 end;
 
