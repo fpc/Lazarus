@@ -169,8 +169,10 @@ const
   ecEditorOptions        = ecUserFirst + 805;
   ecCodeToolsOptions     = ecUserFirst + 806;
   ecCodeToolsDefinesEd   = ecUserFirst + 807;
+  
+  ecConfigCustomComps    = ecUserFirst + 900;
 
-  ecAboutLazarus         = ecUserFirst + 900;
+  ecAboutLazarus         = ecUserFirst + 1000;
   
   ecGotoEditor1          = ecUserFirst + 2000;
   ecGotoEditor2          = ecGotoEditor1 + 1;
@@ -608,6 +610,9 @@ begin
     ecRunParameters         : Result:= srkmecRunParameters;
     ecCompilerOptions       : Result:= srkmecCompilerOptions;
     
+    // components menu
+    ecConfigCustomComps     : Result:= lisMenuConfigCustomComps;
+    
     // tools menu
     ecExtToolSettings       : Result:= srkmecExtToolSettings;
     ecConfigBuildLazarus    : Result:= lismenuconfigurebuildlazarus;
@@ -622,7 +627,7 @@ begin
     ecEditorOptions         : Result:= lismenueditoroptions;
     ecCodeToolsOptions      : Result:= srkmecCodeToolsOptions;
     ecCodeToolsDefinesEd    : Result:= srkmecCodeToolsDefinesEd;
-
+    
     // help menu
     ecAboutLazarus          : Result:= lisMenuAboutLazarus;
 
@@ -1438,6 +1443,10 @@ begin
   Add(C,'Stop program',ecStopProgram,VK_F2,[SSCtrl],VK_UNKNOWN,[]);
   Add(C,'Compiler options',ecCompilerOptions,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Run parameters',ecRunParameters,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // components menu
+  C:=Categories[AddCategory('Components',srkmCatComponentsMenu,caAll)];
+  Add(C,'Configure custom components',ecConfigCustomComps,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // tools menu
   C:=Categories[AddCategory(KeyCategoryToolMenuName,srkmCatToolMenu,caAll)];

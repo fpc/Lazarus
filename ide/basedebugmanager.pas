@@ -68,10 +68,13 @@ type
     
   end;
 
-const
-  DebugBoss: TBaseDebugManager = nil;
+var
+  DebugBoss: TBaseDebugManager;
 
 implementation
+
+initialization
+  DebugBoss:=nil;
 
 end.
 

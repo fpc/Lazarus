@@ -18,6 +18,7 @@ Providing an icon for a component:
 
 The IDE searches for an XPM resource with the classname of the component. It
 should not be bigger than 23x23 pixels.
+
 For example:
 Adding an icon for TCheckBook in checkbook.pas:
 Use your favourite paint program to create a transparent image of size 23x23

@@ -140,11 +140,13 @@ type
     mnuView: TMenuItem;
     mnuProject: TMenuItem;
     mnuRun: TMenuItem;
+    mnuComponents: TMenuItem;
     mnuTools: TMenuItem;
     mnuEnvironment: TMenuItem;
     mnuWindows: TMenuItem;
     mnuHelp: TMenuItem;
 
+    // file menu
     itmFileNewUnit: TMenuItem;
     itmFileNewForm: TMenuItem;
     itmFileNewOther: TMenuItem;
@@ -158,6 +160,7 @@ type
     itmFileCloseAll: TMenuItem;
     itmFileQuit: TMenuItem;
 
+    // edit menu
     itmEditUndo: TMenuItem;
     itmEditRedo: TMenuItem;
     itmEditCut: TMenuItem;
@@ -198,6 +201,7 @@ type
     itmEditInsertDateTime: TMenuItem;
     itmEditInsertChangeLogEntry: TMenuItem;
     
+    // search menu
     itmSearchFind: TMenuItem;
     itmSearchFindNext: TMenuItem;
     itmSearchFindPrevious: TMenuItem;
@@ -215,6 +219,7 @@ type
     itmOpenFileAtCursor: TMenuItem;
     itmGotoIncludeDirective: TMenuItem;
 
+    // view menu
     itmViewInspector: TMenuItem;
     itmViewProjectExplorer: TMenuItem;
     itmViewUnits : TMenuItem;
@@ -230,6 +235,7 @@ type
     itmViewDebugOutput: TMenuItem;
     itmViewToggleFormUnit: TMenuItem;
 
+    // project menu
     itmProjectNew: TMenuItem;
     itmProjectNewFromFile: TMenuItem;
     itmProjectOpen: TMenuItem;
@@ -243,6 +249,7 @@ type
     itmProjectViewToDos: TMenuItem;
     itmProjectOptions: TMenuItem;
 
+    // run menu
     itmProjectBuild: TMenuItem;
     itmProjectBuildAll: TMenuItem;
     itmProjectRun: TMenuItem;
@@ -253,7 +260,11 @@ type
     itmProjectStop: TMenuItem;
     itmProjectCompilerSettings: TMenuItem;
     itmProjectRunParameters: TMenuItem;
+    
+    // components menu
+    itmCompsConfigCustomComps: TMenuItem;
 
+    // tools menu
     itmToolConfigure: TMenuItem;
     itmToolSyntaxCheck: TMenuItem;
     itmToolGuessUnclosedBlock: TMenuItem;
@@ -264,11 +275,13 @@ type
     itmToolBuildLazarus: TMenuItem;
     itmToolConfigureBuildLazarus: TMenuItem;
 
+    // environment menu
     itmEnvGeneralOptions: TMenuItem;
     itmEnvEditorOptions: TMenuItem;
     itmEnvCodeToolsOptions: TMenuItem;
     itmEnvCodeToolsDefinesEditor: TMenuItem;
 
+    // help menu
     itmHelpAboutLazarus: TMenuItem;
 
     // component palette
@@ -291,6 +304,7 @@ type
     procedure SetupViewMenu; virtual;
     procedure SetupProjectMenu; virtual;
     procedure SetupRunMenu; virtual;
+    procedure SetupComponentsMenu; virtual;
     procedure SetupToolsMenu; virtual;
     procedure SetupEnvironmentMenu; virtual;
     procedure SetupWindowsMenu; virtual;
@@ -1021,6 +1035,14 @@ begin
   mnuRun.Add(itmProjectRunParameters);
 end;
 
+procedure TMainIDEBar.SetupComponentsMenu;
+begin
+  itmCompsConfigCustomComps := TMenuItem.Create(Self);
+  itmCompsConfigCustomComps.Name:='itmCompsConfigCustomComps';
+  itmCompsConfigCustomComps.Caption := lisMenuConfigCustomComps;
+  mnuComponents.Add(itmCompsConfigCustomComps);
+end;
+
 procedure TMainIDEBar.SetupToolsMenu;
 begin
   itmToolConfigure := TMenuItem.Create(Self);
@@ -1119,12 +1141,12 @@ end;
 procedure TMainIDEBar.LoadMenuShortCuts;
 begin
   with EditorOpts.KeyMap do begin
+    // file menu
     itmFileNewUnit.ShortCut:=CommandToShortCut(ecNewUnit);
     itmFileNewForm.ShortCut:=CommandToShortCut(ecNewForm);
     itmFileNewOther.ShortCut:=CommandToShortCut(ecNew);
     itmFileOpen.ShortCut:=CommandToShortCut(ecOpen);
     itmFileRevert.ShortCut:=CommandToShortCut(ecRevert);
-    //itmFileRecentOpen.ShortCut:=CommandToShortCut(ec);
     itmFileSave.ShortCut:=CommandToShortCut(ecSave);
     itmFileSaveAs.ShortCut:=CommandToShortCut(ecSaveAs);
     itmFileSaveAll.ShortCut:=CommandToShortCut(ecSaveAll);
@@ -1132,6 +1154,7 @@ begin
     itmFileCloseAll.ShortCut:=CommandToShortCut(ecCloseAll);
     itmFileQuit.ShortCut:=CommandToShortCut(ecQuit);
 
+    // edit menu
     itmEditUndo.ShortCut:=CommandToShortCut(ecUndo);
     itmEditRedo.ShortCut:=CommandToShortCut(ecRedo);
     itmEditCut.ShortCut:=CommandToShortCut(ecCut);
@@ -1167,6 +1190,7 @@ begin
     itmEditInsertDateTime.ShortCut:=CommandToShortCut(ecInsertDateTime);
     itmEditInsertChangeLogEntry.ShortCut:=CommandToShortCut(ecInsertChangeLogEntry);
 
+    // search menu
     itmSearchFind.ShortCut:=CommandToShortCut(ecFind);
     itmSearchFindNext.ShortCut:=CommandToShortCut(ecFindNext);
     itmSearchFindPrevious.ShortCut:=CommandToShortCut(ecFindPrevious);
@@ -1184,6 +1208,7 @@ begin
     itmOpenFileAtCursor.ShortCut:=CommandToShortCut(ecOpenFileAtCursor);
     itmGotoIncludeDirective.ShortCut:=CommandToShortCut(ecGotoIncludeDirective);
 
+    // view menu
     itmViewInspector.ShortCut:=CommandToShortCut(ecToggleObjectInsp);
     itmViewProjectExplorer.ShortCut:=CommandToShortCut(ecToggleProjectExpl);
     itmViewUnits.ShortCut:=CommandToShortCut(ecViewUnits);
@@ -1193,6 +1218,7 @@ begin
     itmViewToggleFormUnit.ShortCut:=CommandToShortCut(ecToggleFormUnit);
     itmViewMessage.ShortCut:=CommandToShortCut(ecToggleMessages);
 
+    // project menu
     itmProjectNew.ShortCut:=CommandToShortCut(ecNewProject);
     itmProjectNewFromFile.ShortCut:=CommandToShortCut(ecNewProjectFromFile);
     itmProjectOpen.ShortCut:=CommandToShortCut(ecOpenProject);
@@ -1205,6 +1231,7 @@ begin
     itmProjectViewSource.ShortCut:=CommandToShortCut(ecViewProjectSource);
     itmProjectOptions.ShortCut:=CommandToShortCut(ecProjectOptions);
 
+    // run menu
     itmProjectBuild.ShortCut:=CommandToShortCut(ecBuild);
     itmProjectBuildAll.ShortCut:=CommandToShortCut(ecBuildAll);
     itmProjectRun.ShortCut:=CommandToShortCut(ecRun);
@@ -1216,6 +1243,10 @@ begin
     itmProjectCompilerSettings.ShortCut:=CommandToShortCut(ecCompilerOptions);
     itmProjectRunParameters.ShortCut:=CommandToShortCut(ecRunParameters);
 
+    // components menu
+    itmCompsConfigCustomComps.ShortCut:=CommandToShortCut(ecConfigCustomComps);
+
+    // tools menu
     itmToolConfigure.ShortCut:=CommandToShortCut(ecExtToolSettings);
     itmToolSyntaxCheck.ShortCut:=CommandToShortCut(ecSyntaxCheck);
     itmToolGuessUnclosedBlock.ShortCut:=CommandToShortCut(ecGuessUnclosedBlock);
@@ -1226,11 +1257,13 @@ begin
     itmToolBuildLazarus.ShortCut:=CommandToShortCut(ecBuildLazarus);
     itmToolConfigureBuildLazarus.ShortCut:=CommandToShortCut(ecConfigBuildLazarus);
 
+    // environment menu
     itmEnvGeneralOptions.ShortCut:=CommandToShortCut(ecEnvironmentOptions);
     itmEnvEditorOptions.ShortCut:=CommandToShortCut(ecEditorOptions);
     itmEnvCodeToolsOptions.ShortCut:=CommandToShortCut(ecCodeToolsOptions);
     itmEnvCodeToolsDefinesEditor.ShortCut:=CommandToShortCut(ecCodeToolsDefinesEd);
 
+    // help menu
     itmHelpAboutLazarus.ShortCut:=CommandToShortCut(ecAboutLazarus);
   end;
 end;

@@ -100,6 +100,7 @@ resourcestring
   lisMenuView = '&View';
   lisMenuProject = '&Project';
   lisMenuRun = '&Run';
+  lisMenuComponents = '&Components';
   lisMenuTools = '&Tools';
   lisMenuEnvironent = 'E&nvironment';
   lisMenuWindows = '&Windows';
@@ -204,6 +205,8 @@ resourcestring
   lisMenuCompilerOptions = 'Compiler Options...';
   lisMenuRunParameters = 'Run Parameters ...';
   
+  lisMenuConfigCustomComps = 'Configure custom components';
+
   lisMenuSettings = 'Configure custom tools ...';
   lisMenuQuickSyntaxCheck = 'Quick syntax check';
   lisMenuGuessUnclosedBlock = 'Guess unclosed block';
@@ -977,6 +980,7 @@ resourcestring
   srkmCatViewMenu       = 'View menu commands';
   srkmCatProjectMenu    = 'Project menu commands';
   srkmCatRunMenu        = 'Run menu commands';
+  srkmCatComponentsMenu = 'Components menu commands';
   srkmCatToolMenu       = 'Tools menu commands';
   srkmCatEnvMenu        = 'Environment menu commands';
   srkmCarHelpMenu       = 'Help menu commands';
