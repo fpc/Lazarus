@@ -2038,7 +2038,6 @@ procedure TDesigner.DrawDesignerItems(OnlyIfNeeded: boolean);
 var
   DesignerDC: HDC;
 begin
-  //writeln('TDesigner.DrawDesignerItems A ',dfNeedPainting in FFlags);
   if OnlyIfNeeded and (not (dfNeedPainting in FFlags)) then exit;
   Exclude(FFlags,dfNeedPainting);
 

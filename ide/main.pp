@@ -9656,7 +9656,6 @@ begin
   GetDefaultProcessList.FreeStoppedProcesses;
   EnvironmentOptions.ExternalTools.FreeStoppedProcesses;
   if (SplashForm<>nil) then FreeThenNil(SplashForm);
-
   FormEditor1.PaintAllDesignerItems;
 end;
 
@@ -10313,6 +10312,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.707  2004/02/03 20:01:29  mattias
+  fixed gtk intf WaitMessages
+
   Revision 1.706  2004/02/02 16:59:27  mattias
   more Actions  TAction, TBasicAction, ...
 

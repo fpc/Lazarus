@@ -1386,14 +1386,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TgtkObject.WaitMessage;
 begin
-  // process messages already in the queues
-  HandleEvents;
-  // wait till something happens
   WaitingForMessages:=true;
   gtk_main_iteration_do(True);
   WaitingForMessages:=false;
-  // process new messages
-  HandleEvents;
 end;
 
 
@@ -9188,6 +9183,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.461  2004/02/03 20:01:29  mattias
+  fixed gtk intf WaitMessages
+
   Revision 1.460  2004/02/02 19:48:01  mattias
   fixed removing TStatusBar panels in gtk
 
