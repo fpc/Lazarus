@@ -766,6 +766,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TControl.VisibleChanging;
+------------------------------------------------------------------------------}
+procedure TControl.VisibleChanging;
+begin
+
+end;
+
+{------------------------------------------------------------------------------
        TControl GetClientRect
 ------------------------------------------------------------------------------}
 function TControl.GetClientRect: TRect;
@@ -1346,10 +1354,10 @@ end;
 procedure TControl.Show;
 begin
   if Parent <> nil then Parent.ShowControl(Self);
-  if not (csDesigning in ComponentState)
-  or (csNoDesignVisible in ControlStyle) then begin
-    Visible := true;
-  end;
+  if (csDesigning in ComponentState) and (csNoDesignVisible in ControlStyle)
+  then
+    exit;
+  Visible := true;
 end;
 
 {------------------------------------------------------------------------------
@@ -1361,7 +1369,6 @@ begin
   if Operation = opRemove then
     if AComponent = PopupMenu then PopupMenu := nil;
 end;
-
 
 {------------------------------------------------------------------------------
   TControl GetText
@@ -1746,6 +1753,7 @@ procedure TControl.SetVisible(Value : Boolean);
 begin
   if FVisible <> Value then
   begin
+    VisibleChanging;
     FVisible := Value;
     Perform(CM_VISIBLECHANGED, Ord(Value), 0);
     RequestAlign;
@@ -2055,6 +2063,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.116  2003/03/11 22:56:41  mattias
+  added visiblechanging
+
   Revision 1.115  2003/01/18 21:31:43  mattias
   fixed scrolling offset of TScrollingWinControl
 
