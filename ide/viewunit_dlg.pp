@@ -156,7 +156,8 @@ begin
     end;
 
     Listbox:= TListBox.Create(Self);
-    with Listbox do begin
+    with Listbox do
+    begin
       Parent:= Self;
       Top:= Pad;
       Left:= Pad;
@@ -165,6 +166,7 @@ begin
       MultiSelect:= false;
       Name := 'Listbox';
       Visible:= true;
+      OnDblClick:=@btnOKClick;
     end;
     
     MultiselectCheckBox:=TCheckBox.Create(Self);
@@ -247,6 +249,9 @@ initialization
 end.
 {
   $Log$
+  Revision 1.15  2003/03/08 01:33:35  mattias
+  localization from Olivier
+
   Revision 1.14  2003/02/28 19:10:25  mattias
   added new ... dialog
 

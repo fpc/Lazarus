@@ -71,7 +71,9 @@ const
     '',
     'Text block',
     'Execution point',
-    'Enabled breakpoint','Disabled breakpoint','Invalid breakpoint',
+    'Enabled breakpoint',
+    'Disabled breakpoint',
+    'Invalid breakpoint',
     'Error line'
   );
   
@@ -1919,17 +1921,20 @@ var a:integer;
 begin
   inherited Create(AnOwner);
   FormCreating:=true;
-
-  if LazarusResources.Find(ClassName)=nil then begin  
+  Caption:=lismenueditoroptions;
+    
+  if LazarusResources.Find(ClassName)=nil then
+  begin  
     Position:=poScreenCenter;
+    Caption:=lismenueditoroptions;
     IDEDialogLayoutList.ApplyLayout(Self,480,459);
-    Caption:=dlgEdOptsCap;
     OnResize:=@EditorOptionsFormResize;
     
     SynAutoComplete:=TSynEditAutoComplete.Create(Self);
 
     MainNoteBook:=TNoteBook.Create(Self);
-    with MainNoteBook do begin
+    with MainNoteBook do
+    begin
       Parent:=Self;
       Top:=0;
       Left:=0;
@@ -1939,10 +1944,11 @@ begin
         Pages.Strings[0]:=lisMenuInsertGeneral//by VVI - it will solve a problem
       else
         Pages.Add(lisMenuInsertGeneral);
+        
       Pages.Add(dlgEdDisplay);
       Pages.Add(dlgKeyMapping);
       Pages.Add(dlgEdColor);
-      Pages.Add('Code Tools'); //by VVI - it seems to be a proper name
+      Pages.Add(dlgCodeToolsTab); //by VVI - it seems to be a proper name
       PageIndex:=0;
     end;
     
@@ -1980,14 +1986,17 @@ begin
   PreviewEdits[1]:=DisplayPreview;
   PreviewEdits[2]:=ColorPreview;
   PreviewEdits[3]:=CodeTemplateCodePreview;
-  for a:=Low(PreviewEdits) to High(PreviewEdits) do begin
+  for a:=Low(PreviewEdits) to High(PreviewEdits) do
+  begin
     if PreviewEdits[a]<>nil then
-      with PreviewEdits[a] do begin
+      with PreviewEdits[a] do
+      begin
         if EditorOpts.UseSyntaxHighlight then
           Highlighter:=PreviewSyn;
         EditorOpts.GetSynEditSettings(PreviewEdits[a]);
         EditorOpts.KeyMap.AssignTo(PreviewEdits[a].KeyStrokes,[caSourceEditor]);
-        if a<>3 then begin
+        if a<>3 then
+        begin
           Lines.Text:=EditorOpts.HighlighterList[CurLanguageID].SampleSource;
           PreviewEdits[a].Options:=PreviewEdits[a].Options
                 +[eoNoCaret, eoNoSelection]
@@ -2686,19 +2695,23 @@ end;
 procedure TEditorOptionsForm.FillColorElementListBox;
 var i: integer;
 begin
-  with ColorElementListBox.Items do begin
+  with ColorElementListBox.Items do
+  begin
     BeginUpdate;
     Clear;
+
     for i:=0 to PreviewSyn.AttrCount-1 do
       if PreviewSyn.Attribute[i].Name<>'' then
         Add(PreviewSyn.Attribute[i].Name);
     EndUpdate;
   end;
-  if ColorElementListBox.Items.Count>0 then begin
+
+  if ColorElementListBox.Items.Count>0 then
+  begin
     ColorElementListBox.Selected[0]:=true;
     CurHighlightElement:=PreviewSyn.Attribute[0];
-  end else
-    CurHighlightElement:=nil;
+  end
+  else CurHighlightElement:=nil;
 end;
 
 procedure TEditorOptionsForm.ColorPreviewMouseUp(Sender:TObject;
@@ -3129,14 +3142,15 @@ begin
   ChkBoxW:=(MaxX-20) div 2;
 
   EditorOptionsGroupBox:=TGroupBox.Create(Self);
-  with EditorOptionsGroupBox do begin
+  with EditorOptionsGroupBox do
+  begin
     Name:='EditorOptionsGroupBox';
     Parent:=MainNoteBook.Page[0];
     Top:=5;
     Left:=5;
     Width:=MaxX-10;
     Height:=24*11; // 24 pixels per line
-    Caption:=dlgEdOptsCap;
+    Caption:=lismenueditoroptions;
     Show;
   end;
 
@@ -3921,7 +3935,7 @@ begin
     Left:=MarginAndGutterGroupBox.Left;
     Width:=MarginAndGutterGroupBox.Width;
     Height:=120;
-    Caption:='Default editor font';
+    Caption:=dlgDefaultEditorFont;
     Show;
   end;
 
@@ -4309,14 +4323,16 @@ begin
   MaxY:=377;
 
   LanguageComboBox:=TComboBox.Create(Self);
-  with LanguageComboBox do begin
+  with LanguageComboBox do
+  begin
     Name:='LanguageComboBox';
     Parent:=MainNoteBook.Page[3];
     Top:=5;
     Left:=75;
     Width:=170;
     Height:=20;
-    with Items do begin
+    with Items do
+    begin
       BeginUpdate;
       for a:=0 to EditorOpts.HighlighterList.Count-1 do
         Add(TCustomSynClass(
@@ -4330,7 +4346,8 @@ begin
   end;
   
   LanguageLabel:=TLabel.Create(Self);
-  with LanguageLabel do begin
+  with LanguageLabel do
+  begin
     Name:='LanguageLabel';
     Parent:=MainNoteBook.Page[3];
     Top:=7;
@@ -4342,7 +4359,8 @@ begin
   end;
 
   ColorSchemeComboBox:=TComboBox.Create(Self);
-  with ColorSchemeComboBox do begin
+  with ColorSchemeComboBox do
+  begin
     Name:='ColorSchemeComboBox';
     Parent:=MainNoteBook.Page[3];
     Top:=LanguageComboBox.Top;
@@ -4368,7 +4386,7 @@ begin
     Name:='ColorSchemeLabel';
     Parent:=MainNoteBook.Page[3];
     Top:=ColorSchemeComboBox.Top+2;
-    Left:=ColorSchemeComboBox.Left-90;
+    Left:=ColorSchemeComboBox.Left-80;
     Width:=ColorSchemeComboBox.Left-Left;
     Height:=16;
     Caption:=dlgClrScheme ;
@@ -4421,7 +4439,8 @@ begin
   end;
 
   ColorElementListBox:=TListBox.Create(Self);
-  with ColorElementListBox do begin
+  with ColorElementListBox do
+  begin
     Name:='ColorElementListBox';
     Parent:=MainNoteBook.Page[3];
     Top:=ColorElementLabel.Top+ColorElementLabel.Height+2;
@@ -4434,7 +4453,8 @@ begin
   end;
 
   SetAttributeToDefaultButton:=TButton.Create(Self);
-  with SetAttributeToDefaultButton do begin
+  with SetAttributeToDefaultButton do
+  begin
     Name:='SetAttributeToDefaultButton';
     Parent:=MainNoteBook.Page[3];
     Top:=ColorElementLabel.Top;
@@ -4447,7 +4467,8 @@ begin
   end;
   
   SetAllAttributesToDefaultButton:=TButton.Create(Self);
-  with SetAllAttributesToDefaultButton do begin
+  with SetAllAttributesToDefaultButton do
+  begin
     Name:='SetAllAttributesToDefaultButton';
     Parent:=MainNoteBook.Page[3];
     Top:=SetAttributeToDefaultButton.Top+SetAttributeToDefaultButton.Height+2;
@@ -4460,7 +4481,8 @@ begin
   end;
 
   ForeGroundGroupBox:=TGroupBox.Create(Self);
-  with ForeGroundGroupBox do begin
+  with ForeGroundGroupBox do
+  begin
     Name:='ForeGroundGroupBox';
     Parent:=MainNoteBook.Page[3];
     Top:=SetAllAttributesToDefaultButton.Top
@@ -4473,7 +4495,8 @@ begin
   end;
 
   ForeGroundColorButton:=TColorButton.Create(Self);
-  with ForegroundColorButton do begin
+  with ForegroundColorButton do
+  begin
     Name:='ForegroundColorButton';
     Parent:=ForeGroundGroupBox;
     BorderWidth:=2;
@@ -4487,7 +4510,8 @@ begin
   end;
 
   ForeGroundUseDefaultCheckBox:=TCheckBox.Create(Self);
-  with ForeGroundUseDefaultCheckBox do begin
+  with ForeGroundUseDefaultCheckBox do
+  begin
     Name:='ForeGroundUseDefaultCheckBox';
     Parent:=ForeGroundGroupBox;
     Top:=ForeGroundColorButton.Top;
@@ -4500,7 +4524,8 @@ begin
   end;
 
   BackGroundGroupBox:=TGroupBox.Create(Self);
-  with BackGroundGroupBox do begin
+  with BackGroundGroupBox do
+  begin
     Name:='BackGroundGroupBox';
     Parent:=MainNoteBook.Page[3];
     Top:=ForeGroundGroupBox.Top+ForeGroundGroupBox.Height+5;
@@ -4512,7 +4537,8 @@ begin
   end;
 
   BackGroundColorButton:=TColorButton.Create(Self);
-  with BackgroundColorButton do begin
+  with BackgroundColorButton do
+  begin
     Name:='BackgroundColorButton';
     Parent:=BackGroundGroupBox;
     BorderWidth:=2;
@@ -4526,7 +4552,8 @@ begin
   end;
 
   BackGroundUseDefaultCheckBox:=TCheckBox.Create(Self);
-  with BackGroundUseDefaultCheckBox do begin
+  with BackGroundUseDefaultCheckBox do
+  begin
     Name:='BackGroundUseDefaultCheckBox';
     Parent:=BackGroundGroupBox;
     Top:=BackGroundColorButton.Top;
@@ -4539,7 +4566,8 @@ begin
   end;
 
   TextAttributesGroupBox:=TGroupBox.Create(Self);
-  with TextAttributesGroupBox do begin
+  with TextAttributesGroupBox do
+  begin
     Name:='TextAttributesGroupBox';
     Parent:=MainNoteBook.Page[3];
     Top:=BackGroundGroupBox.Top+BackGroundGroupBox.Height+5;
@@ -4551,7 +4579,8 @@ begin
   end;
 
   TextBoldCheckBox:=TCheckBox.Create(Self);
-  with TextBoldCheckBox do begin
+  with TextBoldCheckBox do
+  begin
     Name:='TextBoldCheckBox';
     Parent:=TextAttributesGroupBox;
     Top:=5;
@@ -4564,12 +4593,13 @@ begin
   end;
 
   TextItalicCheckBox:=TCheckBox.Create(Self);
-  with TextItalicCheckBox do begin
+  with TextItalicCheckBox do
+  begin
     Name:='TextItalicCheckBox';
     Parent:=TextAttributesGroupBox;
     Top:=TextBoldCheckBox.Top;
     Left:=TextBoldCheckBox.Left+TextBoldCheckBox.Width+5;
-    Width:=50;
+    Width:=95;
     Height:=TextBoldCheckBox.Height;
     Caption:=dlgEdItal ;
     OnClick:=@GeneralCheckBoxOnClick;
@@ -4577,11 +4607,12 @@ begin
   end;
 
   TextUnderlineCheckBox:=TCheckBox.Create(Self);
-  with TextUnderlineCheckBox do begin
+  with TextUnderlineCheckBox do
+  begin
     Name:='TextUnderlineCheckBox';
     Parent:=TextAttributesGroupBox;
     Top:=TextBoldCheckBox.Top;
-    Left:=TextItalicCheckBox.Left+TextItalicCheckBox.Width+5;
+    Left:=TextItalicCheckBox.Left+TextItalicCheckBox.Width+20;
     Width:=75;
     Height:=TextItalicCheckBox.Height;
     Caption:=dlgEdUnder ;
@@ -4590,7 +4621,8 @@ begin
   end;
 
   ColorPreview:=TPreviewEditor.Create(Self);
-  with ColorPreview do begin
+  with ColorPreview do
+  begin
     Name:='ColorPreview';
     Parent:=MainNoteBook.Page[3];
     Left:=5;

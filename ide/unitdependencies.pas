@@ -424,17 +424,20 @@ constructor TUnitDependenciesView.Create(TheOwner: TComponent);
   
 var
   ALayout: TIDEWindowLayout;
+  W      : Integer;
 begin
   inherited Create(TheOwner);
-  if LazarusResources.Find(ClassName)=nil then begin
+  if LazarusResources.Find(ClassName)=nil then
+  begin
     Name:=DefaultUnitDependenciesName;
-    Caption := 'Unit Dependencies';
+    Caption := dlgUnitDepCaption;
     ALayout:=EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(Name);
     ALayout.Form:=TForm(Self);
     ALayout.Apply;
     
     SrcTypeImageList:=TImageList.Create(Self);
-    with SrcTypeImageList do begin
+    with SrcTypeImageList do
+    begin
       Name:='SrcTypeImageList';
       Width:=22;
       Height:=22;
@@ -450,7 +453,8 @@ begin
     end;
 
     UnitHistoryList:=TComboBox.Create(Self);
-    with UnitHistoryList do begin
+    with UnitHistoryList do
+    begin
       Name:='UnitHistoryList';
       Parent:=Self;
       Left:=0;
@@ -462,40 +466,44 @@ begin
       Visible:=true;
     end;
     
+    W:=90; //Used foro simplified the update
     SelectUnitButton:=TBitBtn.Create(Self);
-    with SelectUnitButton do begin
+    with SelectUnitButton do
+    begin
       Name:='SelectUnitButton';
       Parent:=Self;
       Left:=0;
       Top:=UnitHistoryList.Top+UnitHistoryList.Height+2;
-      Width:=70;
-      Caption:='Browse';
+      Width:=W;
+      Caption:=dlgUnitDepBrowse;
       OnClick:=@SelectUnitButtonClick;
       Visible:=true;
     end;
     
     RefreshButton:=TBitBtn.Create(Self);
-    with RefreshButton do begin
+    with RefreshButton do
+    begin
       Name:='RefreshButton';
       Parent:=Self;
       Left:=SelectUnitButton.Left+SelectUnitButton.Width+5;
       Top:=SelectUnitButton.Top;
-      Width:=70;
+      Width:=W;
       Height:=SelectUnitButton.Height;
-      Caption:='Refresh';
+      Caption:=dlgUnitDepRefresh;
       OnClick:=@RefreshButtonClick;
       Visible:=true;
     end;
     
     ShowProjectButton:=TBitBtn.Create(Self);
-    with ShowProjectButton do begin
+    with ShowProjectButton do
+    begin
       Name:='ShowProjectButton';
       Parent:=Self;
       Left:=RefreshButton.Left+RefreshButton.Width+5;
       Top:=RefreshButton.Top;
-      Width:=70;
+      Width:=W;
       Height:=RefreshButton.Height;
-      Caption:='Project';
+      Caption:=dlgEnvProject;
       OnClick:=@ShowProjectButtonClick;
       Visible:=true;
     end;

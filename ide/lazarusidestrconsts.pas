@@ -398,7 +398,7 @@ resourcestring
   lisEnvOptDlgTestDirNotFoundMsg = 'Test directory "%s" not found.';
 
   // editor options
-  dlgEdOptsCap = 'Editor Options';
+  //dlgEdOptsCap = 'Editor Options'; = lismenueditoroptions
   dlgEdDisplay = 'Display';
   dlgKeyMapping = 'Key Mappings';
   dlgEdColor = 'Color';
@@ -442,6 +442,7 @@ resourcestring
   dlgGutterWidth = 'Gutter width';// as I am food technology bachelor
   dlgGutterColor = 'Gutter color';// and fish technology engineer :) - VVI
   dlgEditorFont = 'Editor font';
+  dlgDefaultEditorFont='Default editor font';
   dlgEditorFontHeight = 'Editor font height';
   dlgExtraLineSpacing = 'Extra line spacing';
   dlgKeyMappingScheme = 'Key Mapping Scheme';
@@ -471,7 +472,8 @@ resourcestring
   dlgEdEdit = 'Edit...';
   dlgEdDelete = 'Delete';
   dlgIndentCodeTo = 'Indent code to';
-
+  dlgCodeToolsTab = 'Code Tools';
+  
   //CodeTools dialogue
   dlgCodeToolsOpts = 'CodeTools Options';
   dlgCodeCreation = 'Code Creation';
@@ -954,6 +956,11 @@ resourcestring
    rsLanguageSpanish     = 'Español';
    rsLanguageFrench      = 'French';
 
+   //Units dependencies
+   dlgUnitDepCaption     = 'Unit dependencies';
+   dlgUnitDepBrowse      = 'Browse...';
+   dlgUnitDepRefresh     = 'Refresh';
+   
 implementation
 end.
 

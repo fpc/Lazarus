@@ -865,7 +865,7 @@ msgstr "Du code rapide"
 
 #: lazarusidestrconsts:dlgfileexts
 msgid "File extensions:"
-msgstr "Extensions de fichier"
+msgstr "Extensions "
 
 #: lazarusidestrconsts:uefilerocap
 msgid "File is readonly"
@@ -2593,7 +2593,7 @@ msgstr "Le répertoire de tests \"%s\" non trouvé."
 
 #: lazarusidestrconsts:dlgtextattributes
 msgid "Text attributes"
-msgstr "Attributs texte"
+msgstr "Attributs"
 
 #: lazarusidestrconsts:srkmcatediting
 msgid "Text editing commands"

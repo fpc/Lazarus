@@ -10,6 +10,7 @@ URL: http://www.lazarus.freepascal.org/
 BuildRoot: %{_tmppath}/lazarus-build
 BuildRequires: fpc >= 1.0.7
 Requires: fpcsrc >= 1.0.7
+Conflicts: fpcsrc >= 1.1
 
 %define lazdir %{_datadir}/lazarus
 
