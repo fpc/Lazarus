@@ -4770,9 +4770,9 @@ begin
   csRadioButton :
     with TRadioButton(Sender) do
     begin
-      { Look for our parent's control and use the first radio we find for grouping }
+      // Look for our parent's control and use the first radio we find for grouping
       TempWidget:= nil;
-      if Parent <> nil then begin
+      if AutoGroup and (Parent <> nil) then begin
         for TempInt:= 0 to Parent.ControlCount - 1 do begin
           if (Parent.Controls[TempInt] is TRadioButton) 
           and TWinControl(Parent.Controls[TempInt]).HandleAllocated then begin
@@ -5641,7 +5641,7 @@ end;
   of an object has changed (e.g. the position of a trackbar). If more than
   one property changed use the SetProperties function instead;
  ------------------------------------------------------------------------------}
-function TgtkObject.SetValue (Sender : TObject; data : pointer) : integer;
+function TgtkObject.SetValue(Sender : TObject; data : pointer) : integer;
 var
    Handle    : Pointer;
    //used for csCalendar
@@ -7041,6 +7041,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.335  2003/03/17 20:50:30  mattias
+  fixed TRadioGroup.ItemIndex=-1
+
   Revision 1.334  2003/03/17 13:54:34  mattias
   fixed setting activecontrol after createwnd
 
