@@ -45,8 +45,8 @@ interface
 {$endif}
 
 uses
-  SysUtils, Classes, LCLStrConsts, LCLProc, Controls, Forms, StdCtrls,
-  vclGlobals, lMessages, GraphType, Graphics, LCLIntf, CustomTimer;
+  SysUtils, Classes, LCLStrConsts, LCLProc, LResources, Controls, Forms,
+  StdCtrls, vclGlobals, lMessages, GraphType, Graphics, LCLIntf, CustomTimer;
 
 type
   { workaround problem with fcl }
@@ -967,6 +967,9 @@ end.
 
  {
   $Log$
+  Revision 1.114  2004/08/15 17:00:58  mattias
+  improved DefineProperties to read/write endian independent
+
   Revision 1.113  2004/08/04 09:57:17  mattias
   TStaticText.CanTab=false
 

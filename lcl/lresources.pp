@@ -192,21 +192,58 @@ function FindLFMClassName(LFMStream: TStream):AnsiString;
 function CreateLFMFile(AComponent: TComponent; LFMStream: TStream): integer;
 
 type
-  TDelphiStreamOriginalFormat = (sofUnknown, sofBinary, sofText);
+  TLRSStreamOriginalFormat = (sofUnknown, sofBinary, sofText);
   
-procedure DelphiObjectBinaryToText(Input, Output: TStream);
-procedure DelphiObjectToText(Input, Output: TStream;
-  var OriginalFormat: TDelphiStreamOriginalFormat);
+procedure LRSObjectBinaryToText(Input, Output: TStream);
+procedure LRSObjectToText(Input, Output: TStream;
+  var OriginalFormat: TLRSStreamOriginalFormat);
 
-procedure DelphiObjectResourceToText(Input, Output: TStream);
-procedure DelphiObjectResToText(Input, Output: TStream;
-  var OriginalFormat: TDelphiStreamOriginalFormat);
+procedure LRSObjectResourceToText(Input, Output: TStream);
+procedure LRSObjectResToText(Input, Output: TStream;
+  var OriginalFormat: TLRSStreamOriginalFormat);
   
-function TestFormStreamFormat(Stream: TStream): TDelphiStreamOriginalFormat;
+function TestFormStreamFormat(Stream: TStream): TLRSStreamOriginalFormat;
 procedure FormDataToText(FormStream, TextStream: TStream);
+
 
 procedure ReverseBytes(p: Pointer; Count: integer);
 procedure ReverseByteOrderInWords(p: PWord; Count: integer);
+
+function ReadLRSWord(s: TStream): word;
+function ReadLRSInteger(s: TStream): integer;
+function ReadLRSCardinal(s: TStream): cardinal;
+function ReadLRSInt64(s: TStream): int64;
+function ReadLRSSingle(s: TStream): Single;
+function ReadLRSDouble(s: TStream): Double;
+function ReadLRSExtended(s: TStream): Extended;
+{$ifdef HASCURRENCY}
+function ReadLRSCurrency(s: TStream): Currency;
+{$endif HASCURRENCY}
+{$ifdef HASWIDESTRING}
+function ReadLRSWideString(s: TStream): WideString;
+{$endif HASWIDESTRING}
+
+procedure WriteLRSWord(s: TStream; const w: word);
+procedure WriteLRSInteger(s: TStream; const i: integer);
+procedure WriteLRSCardinal(s: TStream; const c: cardinal);
+procedure WriteLRSSingle(s: TStream; const si: Single);
+procedure WriteLRSDouble(s: TStream; const d: Double);
+procedure WriteLRSExtended(s: TStream; const e: extended);
+procedure WriteLRSInt64(s: TStream; const i: int64);
+{$ifdef HASCURRENCY}
+procedure WriteLRSCurrency(s: TStream; const c: Currency);
+{$endif HASCURRENCY}
+{$ifdef HASWIDESTRING}
+procedure WriteLRSWideStringContent(s: TStream; const w: WideString);
+{$endif HASWIDESTRING}
+
+procedure WriteLRSReversedWord(s: TStream; w: word);
+procedure WriteLRS4BytesReversed(s: TStream; p: Pointer);
+procedure WriteLRS8BytesReversed(s: TStream; p: Pointer);
+procedure WriteLRS10BytesReversed(s: TStream; p: Pointer);
+procedure WriteLRSNull(s: TStream; Count: integer);
+procedure WriteLRSEndianBigDoubleAsEndianLittleExtended(s: TStream;
+  PPCDouble: PByte);
 
 
 implementation
@@ -1114,7 +1151,7 @@ begin
   end;
 end;
 
-procedure DelphiObjectBinaryToText(Input, Output: TStream);
+procedure LRSObjectBinaryToText(Input, Output: TStream);
 var
   NestingLevel: Integer;
   SaveSeparator: Char;
@@ -1449,7 +1486,7 @@ begin
   end;
 end;
 
-function TestFormStreamFormat(Stream: TStream): TDelphiStreamOriginalFormat;
+function TestFormStreamFormat(Stream: TStream): TLRSStreamOriginalFormat;
 var
   Pos: TStreamSeekType;
   Signature: Integer;
@@ -1470,8 +1507,8 @@ end;
 type
   TObjectTextConvertProc = procedure (Input, Output: TStream);
 
-procedure InternalDelphiBinaryToText(Input, Output: TStream;
-  var OriginalFormat: TDelphiStreamOriginalFormat;
+procedure InternalLRSBinaryToText(Input, Output: TStream;
+  var OriginalFormat: TLRSStreamOriginalFormat;
   ConvertProc: TObjectTextConvertProc;
   BinarySignature: Integer; SignatureLength: Byte);
 var
@@ -1517,31 +1554,31 @@ begin
   end;
 end;
 
-procedure DelphiObjectToText(Input, Output: TStream;
-  var OriginalFormat: TDelphiStreamOriginalFormat);
+procedure LRSObjectToText(Input, Output: TStream;
+  var OriginalFormat: TLRSStreamOriginalFormat);
 begin
-  InternalDelphiBinaryToText(Input, Output, OriginalFormat,
-    @DelphiObjectBinaryToText, Integer(FilerSignature), sizeof(Integer));
+  InternalLRSBinaryToText(Input, Output, OriginalFormat,
+    @LRSObjectBinaryToText, Integer(FilerSignature), sizeof(Integer));
 end;
 
-procedure DelphiObjectResToText(Input, Output: TStream;
-  var OriginalFormat: TDelphiStreamOriginalFormat);
+procedure LRSObjectResToText(Input, Output: TStream;
+  var OriginalFormat: TLRSStreamOriginalFormat);
 begin
-  InternalDelphiBinaryToText(Input, Output, OriginalFormat,
-    @DelphiObjectResourceToText, $FF, 1);
+  InternalLRSBinaryToText(Input, Output, OriginalFormat,
+    @LRSObjectResourceToText, $FF, 1);
 end;
 
-procedure DelphiObjectResourceToText(Input, Output: TStream);
+procedure LRSObjectResourceToText(Input, Output: TStream);
 begin
   Input.ReadResHeader;
-  DelphiObjectBinaryToText(Input, Output);
+  LRSObjectBinaryToText(Input, Output);
 end;
 
 procedure FormDataToText(FormStream, TextStream: TStream);
 begin
   case TestFormStreamFormat(FormStream) of
   sofBinary:
-    DelphiObjectResourceToText(FormStream, TextStream);
+    LRSObjectResourceToText(FormStream, TextStream);
 
   sofText:
     TextStream.CopyFrom(FormStream,FormStream.Size);
@@ -1662,6 +1699,261 @@ begin
   DestroyDriver:=true;
   Result:=TWriter.Create(Driver);
 end;
+
+function ReadLRSWord(s: TStream): word;
+begin
+  s.Read(Result,2);
+  {$IFDEF Endian_BIG}
+  Result:=((Result and $ff) shl 8) or (Result shr 8);
+  {$ENDIF}
+end;
+
+function ReadLRSInteger(s: TStream): integer;
+begin
+  s.Read(Result,4);
+  {$IFDEF Endian_BIG}
+  ReverseBytes(@Result,4);
+  {$ENDIF}
+end;
+
+function ReadLRSCardinal(s: TStream): cardinal;
+begin
+  s.Read(Result,4);
+  {$IFDEF Endian_BIG}
+  ReverseBytes(@Result,4);
+  {$ENDIF}
+end;
+
+function ReadLRSInt64(s: TStream): int64;
+begin
+  s.Read(Result,8);
+  {$IFDEF Endian_BIG}
+  ReverseBytes(@Result,8);
+  {$ENDIF}
+end;
+
+function ReadLRSSingle(s: TStream): Single;
+begin
+  s.Read(Result,4);
+  {$IFDEF Endian_BIG}
+  ReverseBytes(@Result,4);
+  {$ENDIF}
+end;
+
+function ReadLRSDouble(s: TStream): Double;
+begin
+  s.Read(Result,8);
+  {$IFDEF Endian_BIG}
+  ReverseBytes(@Result,8);
+  {$ENDIF}
+end;
+
+{$IFDEF CPUPowerPC}
+function ReadLRSExtentedAndConvertToExtended(s: TStream): Extended;
+// TODO - does not work
+const
+  F: extended = 1.0/65536.0 ;
+var
+  le: array [1..5] of word;
+begin { Ignores NaN & Inf }
+  s.Read(le[1],10);
+  ReverseBytes(@le[1],10);
+  Result := 2.0 * (((le[2]*F+le[3])*F+le[4])*F+le[5])*F;
+  if le[1]>32767 then Result := -Result ;
+  Result:=intpower(2,integer(le[1] and $7fff)-$4000);
+end;
+{$ENDIF}
+
+function ReadLRSExtended(s: TStream): Extended;
+begin
+  {$IFDEF CPUi386}
+  s.Read(Result,10);
+  {$ENDIF}
+  {$IFDEF CPUPowerPC}
+  Result:=ReadLRSExtentedAndConvertToExtended(s);
+  {$ENDIF}
+end;
+
+{$ifdef HASCURRENCY}
+function ReadLRSCurrency(s: TStream): Currency;
+begin
+  s.Read(Result,8);
+  {$IFDEF Endian_BIG}
+  ReverseBytes(@Result,8);
+  {$ENDIF}
+end;
+{$endif HASCURRENCY}
+
+{$ifdef HASWIDESTRING}
+function ReadLRSWideString(s: TStream): WideString;
+var
+  Len: LongInt;
+begin
+  Len:=ReadLRSInteger(s);
+  SetLength(Result,Len);
+  if Len>0 then begin
+    s.Read(Result[1],Len*2);
+    {$IFDEF Endian_BIG}
+    ReverseByteOrderInWords(PWord(@Result[1]),Len);
+    {$ENDIF}
+  end;
+end;
+{$endif HASWIDESTRING}
+
+procedure WriteLRSReversedWord(s: TStream; w: word);
+begin
+  w:=(w shr 8) or ((w and $ff) shl 8);
+  s.Write(w,2);
+end;
+
+procedure WriteLRS4BytesReversed(s: TStream; p: Pointer);
+var
+  a: array[0..3] of char;
+  i: Integer;
+begin
+  for i:=0 to 3 do
+    a[i]:=PChar(p)[3-i];
+  s.Write(a[0],4);
+end;
+
+procedure WriteLRS8BytesReversed(s: TStream; p: Pointer);
+var
+  a: array[0..7] of char;
+  i: Integer;
+begin
+  for i:=0 to 7 do
+    a[i]:=PChar(p)[7-i];
+  s.Write(a[0],8);
+end;
+
+procedure WriteLRS10BytesReversed(s: TStream; p: Pointer);
+var
+  a: array[0..9] of char;
+  i: Integer;
+begin
+  for i:=0 to 9 do
+    a[i]:=PChar(p)[9-i];
+  s.Write(a[0],10);
+end;
+
+procedure WriteLRSNull(s: TStream; Count: integer);
+var
+  c: char;
+  i: Integer;
+begin
+  c:=#0;
+  for i:=0 to Count-1 do
+    s.Write(c,1);
+end;
+
+procedure WriteLRSEndianBigDoubleAsEndianLittleExtended(s: TStream;
+  PPCDouble: PByte);
+// TODO
+var
+  i: Integer;
+begin
+  i:=0;
+  s.Write(i,4);
+  s.Write(i,4);
+  s.Write(i,2);
+end;
+
+procedure WriteLRSWord(s: TStream; const w: word);
+begin
+  {$IFDEF Endian_Little}
+  s.Write(w,2);
+  {$ELSE}
+  WriteLRSReversedWord(s,w);
+  {$ENDIF}
+end;
+
+procedure WriteLRSInteger(s: TStream; const i: integer);
+begin
+  {$IFDEF Endian_Little}
+  s.Write(i,4);
+  {$ELSE}
+  WriteLRS4BytesReversed(s,@i);
+  {$ENDIF}
+end;
+
+procedure WriteLRSCardinal(s: TStream; const c: cardinal);
+begin
+  {$IFDEF Endian_Little}
+  s.Write(c,4);
+  {$ELSE}
+  WriteLRS4BytesReversed(s,@c);
+  {$ENDIF}
+end;
+
+procedure WriteLRSSingle(s: TStream; const si: Single);
+begin
+  {$IFDEF Endian_Little}
+  s.Write(si,4);
+  {$ELSE}
+  WriteLRS4BytesReversed(s,@si);
+  {$ENDIF}
+end;
+
+procedure WriteLRSDouble(s: TStream; const d: Double);
+begin
+  {$IFDEF Endian_Little}
+  s.Write(d,8);
+  {$ELSE}
+  WriteLRS8BytesReversed(s,@d);
+  {$ENDIF}
+end;
+
+procedure WriteLRSExtended(s: TStream; const e: extended);
+begin
+  {$IFDEF CPUi386}
+  s.Write(e,10);
+  {$ENDIF}
+  {$IFDEF CPUPowerPC}
+  if SizeOf(e)=10 then
+    WriteLRS10BytesReversed(s,@e)
+  else if SizeOf(e)=8 then
+    WriteLRSEndianBigDoubleAsEndianLittleExtended(s,@e)
+  else begin
+    debugln('WARNING: WriteLRSExtended not implemented yet for PowerPC');
+    WriteLRSNull(s,10);
+  end;
+  {$ENDIF}
+end;
+
+procedure WriteLRSInt64(s: TStream; const i: int64);
+begin
+  {$IFDEF Endian_Little}
+  s.Write(i,8);
+  {$ELSE}
+  WriteLRS8BytesReversed(s,@i);
+  {$ENDIF}
+end;
+
+{$ifdef HASCURRENCY}
+procedure WriteLRSCurrency(s: TStream; const c: Currency);
+begin
+  {$IFDEF Endian_Little}
+  s.Write(c,8);
+  {$ELSE}
+  WriteLRS8BytesReversed(s,@c);
+  {$ENDIF}
+end;
+{$endif HASCURRENCY}
+
+{$ifdef HASWIDESTRING}
+procedure WriteLRSWideStringContent(s: TStream; const w: WideString);
+var
+  Size: Integer;
+begin
+  Size:=length(w);
+  if Size=0 then exit;
+  {$IFDEF Endian_Little}
+  s.Write(w[1], Size * 2);
+  {$ELSE}
+  WriteLRSReversedWords(s,@w[1],Size);
+  {$ENDIF}
+end;
+{$endif HASWIDESTRING}
 
 { TLRSObjectReader }
 

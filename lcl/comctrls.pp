@@ -37,9 +37,10 @@ unit ComCtrls;
 interface
 
 uses
-  SysUtils, Classes, Math, FPCAdds, LCLStrConsts, LCLIntf, LCLType, LCLProc,
-  AvgLvlTree, vclGlobals, LMessages, ImgList, ActnList, GraphType, Graphics,
-  Menus, Controls, Forms, StdCtrls, ExtCtrls, ToolWin, CommCtrl, Buttons;
+  SysUtils, Classes, Math, FPCAdds, LCLStrConsts, LResources, LCLIntf, LCLType,
+  LCLProc, AvgLvlTree, vclGlobals, LMessages, ImgList, ActnList, GraphType,
+  Graphics, Menus, Controls, Forms, StdCtrls, ExtCtrls, ToolWin, CommCtrl,
+  Buttons;
 
 type
   TStatusPanelStyle = (psText, psOwnerDraw);
@@ -2306,6 +2307,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.142  2004/08/15 17:00:58  mattias
+  improved DefineProperties to read/write endian independent
+
   Revision 1.141  2004/08/04 09:35:38  mattias
   implemented setting TTabSheet.TabIndex
 

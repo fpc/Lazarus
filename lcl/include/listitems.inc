@@ -278,17 +278,25 @@ var
 begin
   Clear;
   //Flag:=False;
-  Stream.ReadBuffer(Size, SizeOf(Integer));
+  Size:=ReadLRSInteger(Stream);
   ItemHeader := AllocMem(Size);
   Owner.BeginUpdate;
   try
-    Stream.ReadBuffer(ItemHeader^.Count, Size - SizeOf(Integer));
+    ItemHeader^.Count:=ReadLRSInteger(Stream);
+    Stream.ReadBuffer(ItemHeader^.Items, Size - 8);
     ItemInfo := @ItemHeader^.Items;
     PStr := nil;
     for I := 0 to ItemHeader^.Count - 1 do
     begin
       with Add do
       begin
+        {$IFDEF Endian_BIG}
+        ReverseBytes(@ItemInfo^.ImageIndex,4);
+        ReverseBytes(@ItemInfo^.StateIndex,4);
+        ReverseBytes(@ItemInfo^.OverlayIndex,4);
+        ReverseBytes(@ItemInfo^.SubItemCount,4);
+        ReverseBytes(@ItemInfo^.Data,4);
+        {$ENDIF}
         //Flag:=True;
         Caption := ItemInfo^.Caption;
         ImageIndex := ItemInfo^.ImageIndex;
@@ -317,6 +325,9 @@ begin
         then begin
           for J := 0 to Item[I].SubItems.Count - 1 do
           begin
+            {$ifdef Endian_Little}
+            ReverseBytes(@PInt,4);
+            {$endif}
             Item[I].SubItemImages[J] := PInt^;
             Inc(PInt);
           end;
@@ -364,6 +375,10 @@ begin
   try
     ItemHeader^.Size := Size;
     ItemHeader^.Count := Count;
+    {$ifdef Endian_Little}
+    ReverseBytes(@ItemHeader^.Size,4);
+    ReverseBytes(@ItemHeader^.Count,4);
+    {$endif}
     ItemInfo := @ItemHeader^.Items;
     PStr := nil;
     for I := 0 to Count - 1 do
@@ -372,10 +387,17 @@ begin
       begin
         ItemInfo^.Caption := Caption;
         ItemInfo^.ImageIndex := ImageIndex;
-        ItemInfo^.OverlayIndex := -1 {OverlayIndex};
         ItemInfo^.StateIndex := -1 {StateIndex};
-        ItemInfo^.Data := Data;
+        ItemInfo^.OverlayIndex := -1 {OverlayIndex};
         ItemInfo^.SubItemCount := SubItems.Count;
+        ItemInfo^.Data := Data;
+        {$IFDEF Endian_BIG}
+        ReverseBytes(@ItemInfo^.ImageIndex,4);
+        ReverseBytes(@ItemInfo^.StateIndex,4);
+        ReverseBytes(@ItemInfo^.OverlayIndex,4);
+        ReverseBytes(@ItemInfo^.SubItemCount,4);
+        ReverseBytes(@ItemInfo^.Data,4);
+        {$ENDIF}
         PStr := @ItemInfo^.Caption;
         Inc(Integer(PStr), Length(ItemInfo^.Caption) + 1);
         Len := 0;
@@ -397,8 +419,11 @@ begin
     begin
       for J := 0 to  Item[I].SubItems.Count - 1 do
       begin
-         PInt^ :=  Item[I].SubItemImages[J];
-         Inc(PInt);
+        PInt^ :=  Item[I].SubItemImages[J];
+        {$ifdef Endian_Little}
+        ReverseBytes(@PInt,4);
+        {$endif}
+        Inc(PInt);
       end;
     end;
 
@@ -411,6 +436,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.24  2004/08/15 17:00:58  mattias
+  improved DefineProperties to read/write endian independent
+
   Revision 1.23  2004/07/11 17:20:47  marc
   * Implemented most of TListColoum/Item in the Ws for gtk and win32
 

@@ -35,7 +35,7 @@ History
      - Add TCustomImageList.Assign()
      - Add TCustomImageList.WriteData()
      - Add TCustomImageList.ReadData()
-     - Add overrite TCustomImageList.DefineProperties()
+     - Add override TCustomImageList.DefineProperties()
        Warning : the delphi or kylix format of datas is not compatible.
      - Modify Delete and Clear for preserve memory
 }
@@ -219,6 +219,9 @@ end.
 
 {
   $Log$
+  Revision 1.23  2004/08/15 17:00:58  mattias
+  improved DefineProperties to read/write endian independent
+
   Revision 1.22  2004/04/29 18:08:17  mattias
   fixed 1.0.10 compilation
 

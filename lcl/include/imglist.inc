@@ -792,7 +792,7 @@ begin
   AStream.Write(Signature,SizeOf(Signature));
 
   //Count of image
-  AStream.WriteWord(Count);
+  WriteLRSWord(AStream,Count);
 
   for i:=0 to Count-1 do
   begin
@@ -805,9 +805,9 @@ begin
   AStream.Write(Signature,SizeOf(Signature));
 
   //Count of image
-  AStream.WriteDWord(Count);
-  AStream.WriteDWord(Width);
-  AStream.WriteDWord(Height);
+  WriteLRSInteger(AStream,Count);
+  WriteLRSInteger(AStream,Width);
+  WriteLRSInteger(AStream,Height);
 
   for i:=0 to Count-1 do
   begin
@@ -842,7 +842,7 @@ var
     for i := 0 to NewCount - 1 do
     begin
       bmp := TBitMap.Create;
-      AStream.Read(Size, SizeOf(Size));
+      Size:=ReadLRSInteger(AStream);
       bmp.ReadStream(AStream, True, Size);
       bmp.Transparent := True;
       AddDirect(bmp, nil);
@@ -855,15 +855,15 @@ var
     bmp: TBitmap;
   begin
     //DebugLn('TCustomImageList.ReadData DoReadLaz2');
-    NewCount := AStream.ReadDWord;
-    Width := AStream.ReadDWord;
-    Height := AStream.ReadDWord;
+    NewCount := ReadLRSCardinal(AStream);
+    Width := ReadLRSCardinal(AStream);
+    Height := ReadLRSCardinal(AStream);
     //DebugLn('TCustomImageList.ReadData DoReadLaz2 NewCount=',NewCount,' Width=',Width,' Height=',Height);
     for i := 0 to NewCount - 1 do
     begin
       bmp := TBitMap.Create;
       //DebugLn('TCustomImageList.ReadData DoReadLaz2 i=',i,' ',AStream.Position);
-      AStream.Read(Size, SizeOf(Size));
+      Size:=ReadLRSCardinal(AStream);
       //DebugLn('TCustomImageList.ReadData DoReadLaz2 Size=',Size,' ',AStream.Position);
       bmp.ReadStream(AStream, True, Size);
       AddDirect(bmp, nil);
@@ -1004,17 +1004,17 @@ begin
   if Signature = SIG_D3
   then begin
     AStream.ReadWord; //Skip ?
-    NewCount := AStream.ReadWord;
+    NewCount := ReadLRSWord(AStream);
     //DebugLn('NewCount=',NewCount);
     AStream.ReadWord; //Skip Capacity
     AStream.ReadWord; //Skip Grow
-    FWidth := AStream.ReadWord;
+    FWidth := ReadLRSWord(AStream);
     //DebugLn('NewWidth=',FWidth);
-    FHeight := AStream.ReadWord;
+    FHeight := ReadLRSWord(AStream);
     //DebugLn('NewHeight=',FHeight);
-    FBKColor := TColor(AStream.ReadDWord);
+    FBKColor := TColor(ReadLRSInteger(AStream));
     {$IFNDEF DisableFPImage}
-    HasMask := (AStream.ReadWord and 1) = 1;
+    HasMask := (ReadLRSWord(AStream) and 1) = 1;
     AStream.ReadDWord; //Skip ?
     AStream.ReadDWord; //Skip ?
 
@@ -1024,12 +1024,13 @@ begin
   else begin
     // D2 has no signature, so restore original position
     AStream.Position := StreamPos;
-    AStream.ReadBuffer(Size, SizeOf(Size));
-    AStream.ReadBuffer(NewCount, SizeOf(NewCount));
+    Size:=ReadLRSInteger(AStream);
+    NewCount:=ReadLRSInteger(AStream);
 
     {$IFNDEF DisableFPImage}
     ReadDelphiImageAndMask(false,NewCount);
     {$ENDIF}
+    AStream.Position := StreamPos+Size;
   end;
 end;
 
@@ -1261,6 +1262,9 @@ end;
 {
 
   $Log$
+  Revision 1.40  2004/08/15 17:00:58  mattias
+  improved DefineProperties to read/write endian independent
+
   Revision 1.39  2004/05/11 11:42:27  mattias
   replaced writeln by debugln
 

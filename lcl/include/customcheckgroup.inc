@@ -221,7 +221,7 @@ var
   i: Integer;
   v: Integer;
 begin
-  Stream.ReadBuffer(ChecksCount, SizeOf(Integer));
+  ChecksCount:=ReadLRSInteger(Stream);
   if ChecksCount>0 then begin
     SetLength(Checks,ChecksCount);
     Stream.ReadBuffer(Checks[1], ChecksCount);
@@ -241,7 +241,7 @@ var
   v: Integer;
 begin
   ChecksCount:=FItems.Count;
-  Stream.WriteBuffer(ChecksCount, SizeOf(Integer));
+  WriteLRSInteger(Stream,ChecksCount);
   if ChecksCount>0 then begin
     SetLength(Checks,ChecksCount);
     for i:=0 to ChecksCount-1 do begin
@@ -278,6 +278,9 @@ end;
 
 {
   $Log$
+  Revision 1.9  2004/08/15 17:00:58  mattias
+  improved DefineProperties to read/write endian independent
+
   Revision 1.8  2004/07/16 21:49:00  mattias
   added RTTI controls
 
