@@ -117,6 +117,7 @@ type
 
     // project menu
     procedure mnuNewProjectClicked(Sender : TObject);
+    procedure mnuNewProjectFromFileClicked(Sender : TObject);
     procedure mnuOpenProjectClicked(Sender : TObject);
     procedure mnuSaveProjectClicked(Sender : TObject);
     procedure mnuSaveProjectAsClicked(Sender : TObject);
@@ -264,6 +265,7 @@ type
   protected
     procedure ToolButtonClick(Sender : TObject);
     procedure OnApplyWindowLayout(ALayout: TIDEWindowLayout);
+    procedure AddRecentFileToEnvironment(const AFilename: string);
     
     // methods for start
     procedure LoadGlobalOptions;
@@ -1302,6 +1304,7 @@ procedure TMainIDE.SetupProjectMenu;
 begin
   inherited;
   itmProjectNew.OnClick := @mnuNewProjectClicked;
+  itmProjectNewFromFile.OnClick := @mnuNewProjectFromFileClicked;
   itmProjectOpen.OnClick := @mnuOpenProjectClicked;
   SetRecentProjectFilesMenu;
   itmProjectSave.OnClick := @mnuSaveProjectClicked;
@@ -1879,17 +1882,44 @@ Begin
   DoNewProject(NewprojectType);
 end;
 
-Procedure TMainIDE.mnuOpenProjectClicked(Sender : TObject);
-var OpenDialog:TOpenDialog;
-  AFileName: string;
-
-  procedure UpdateEnvironment;
-  begin
-    EnvironmentOptions.AddToRecentProjectFiles(AFilename);
-    SetRecentProjectFilesMenu;
-    SaveEnvironment;
+procedure TMainIDE.mnuNewProjectFromFileClicked(Sender: TObject);
+var
+  OpenDialog:TOpenDialog;
+  AFilename: string;
+  PreReadBuf: TCodeBuffer;
+Begin
+  OpenDialog:=TOpenDialog.Create(Application);
+  try
+    InputHistories.ApplyFileDialogSettings(OpenDialog);
+    OpenDialog.Title:='Choose program source (*.pp,*.pas,*.lpr)';
+    OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist,ofFileMustExist];
+    if OpenDialog.Execute then begin
+      AFilename:=ExpandFilename(OpenDialog.Filename);
+      if not FilenameIsPascalSource(AFilename) then begin
+        MessageDlg('Invalid file extension',
+          'Program source must have a pascal extension like .pas, .pp or .lpr',
+          mtError,[mbOk],0);
+        exit;
+      end;
+      if mrOk<>DoLoadCodeBuffer(PreReadBuf,AFileName,
+                          [lbfCheckIfText,lbfUpdateFromDisk,lbfRevert])
+      then
+        exit;
+      if DoCreateProjectForProgram(PreReadBuf)=mrOk then begin
+      
+        exit;
+      end;
+    end;
+  finally
+    InputHistories.StoreFileDialogSettings(OpenDialog);
+    OpenDialog.Free;
   end;
+end;
 
+Procedure TMainIDE.mnuOpenProjectClicked(Sender : TObject);
+var
+  OpenDialog:TOpenDialog;
+  AFileName: string;
 begin
   if Sender=itmProjectOpen then begin
     OpenDialog:=TOpenDialog.Create(Application);
@@ -1900,7 +1930,7 @@ begin
       if OpenDialog.Execute then begin
         AFilename:=ExpandFilename(OpenDialog.Filename);
         if DoOpenProjectFile(AFilename)=mrOk then begin
-          UpdateEnvironment;
+          AddRecentFileToEnvironment(AFilename);
         end;
       end;
       InputHistories.StoreFileDialogSettings(OpenDialog);
@@ -1910,12 +1940,12 @@ begin
   end else if Sender is TMenuItem then begin
     AFileName:=ExpandFilename(TMenuItem(Sender).Caption);
     if DoOpenProjectFile(AFilename)=mrOk then begin
-      UpdateEnvironment;
+      AddRecentFileToEnvironment(AFilename);
     end else begin
       // open failed
       if not FileExists(AFilename) then begin
         EnvironmentOptions.RemoveFromRecentProjectFiles(AFilename);
-        UpdateEnvironment;
+        AddRecentFileToEnvironment(AFilename);
       end;
     end;
   end;
@@ -6862,6 +6892,13 @@ begin
   end;
 end;
 
+procedure TMainIDE.AddRecentFileToEnvironment(const AFilename: string);
+begin
+  EnvironmentOptions.AddToRecentProjectFiles(AFilename);
+  SetRecentProjectFilesMenu;
+  SaveEnvironment;
+end;
+
 procedure TMainIDE.mnuSearchFindBlockOtherEnd(Sender: TObject);
 begin
   DoGoToPascalBlockOtherEnd;
@@ -6892,6 +6929,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.371  2002/09/10 18:17:30  lazarus
+  MG: added  new project from file
+
   Revision 1.370  2002/09/10 17:45:02  lazarus
   MG: fixed creating project with program source
 
