@@ -108,6 +108,10 @@ type
                         standard outline format. If GetProperties will
                         generate property objects then this attribute should
                         be set.
+        paDynamicSubProps:The sub properties can change. All designer tools
+                        (e.g. property editors, component editors) that change
+                        the list should call UpdateListPropertyEditors, so that
+                        the object inspector will reread the subproperties.
         paDialog:       Indicates that the Edit method will bring up a
                         dialog.  This will cause the '...' button to be
                         displayed to the right of the property in the Object
@@ -127,6 +131,14 @@ type
         paFullWidthName:Tells the object inspector that the value does not
                         need to be rendered and as such the name should be
                         rendered the full width of the inspector.
+        paVolatileSubProperties: Any change of property value causes any shown
+                         subproperties to be recollected.
+        paReference:     Property contains a reference to something else.  When
+                         used in conjunction with paSubProperties the referenced
+                         object should be displayed as sub properties to this
+                         property.
+        paNotNestable:   Indicates that the property is not safe to show when
+                         showing the properties of an expanded reference.
 
     GetComponent
       Returns the Index'th component being edited by this property editor.  This
@@ -226,6 +238,7 @@ type
   TPropertyAttribute=(
     paValueList,
     paSubProperties,
+    paDynamicSubProps,
     paDialog,
     paMultiSelect,
     paAutoUpdate,
@@ -233,6 +246,8 @@ type
     paReadOnly,
     paRevertable,
     paFullWidthName,
+    paVolatileSubProperties,
+    paReference,
     paNotNestable
     );
   TPropertyAttributes=set of TPropertyAttribute;
@@ -459,32 +474,6 @@ type
     function GetValue: AnsiString; override;
   end;
   
-{ TListPropertyEditor
-  UNDER CONSTRUCTION by Mattias}
-  TListPropertyEditor = class(TPropertyEditor)
-  private
-    FSaveElementLock: integer;
-    FSubPropertiesChanged: boolean;
-  protected
-    OldList: TObject;
-    OldElements: TList;
-    function GetElementCount: integer; virtual;
-    function GetElement(Index: integer): TObject; virtual;
-    function GetElementPropertyEditor(Index: integer): TPropertyEditor; virtual;
-    procedure BeginSaveElement;
-    procedure EndSaveElement;
-    property SaveElementLock: integer read FSaveElementLock;
-  public
-    constructor Create(Hook:TPropertyEditorHook;
-      ComponentList: TComponentSelectionList;  APropCount:Integer); override;
-    destructor Destroy; override;
-    function GetAttributes: TPropertyAttributes; override;
-    procedure GetProperties(Proc: TGetPropEditProc); override;
-    function GetValue: AnsiString; override;
-    procedure SaveElements; virtual;
-    function SubPropertiesNeedsUpdate: boolean; override;
-  end;
-
 { TClassPropertyEditor
   Default property editor for all objects.  Does not allow modifying the
   property but does display the class name of the object and will allow the
@@ -521,9 +510,9 @@ type
 
   TComponentPropertyEditor = class(TPropertyEditor)
   protected
-    function FilterFunc(const ATestEditor: Pointer{IProperty}): Boolean;
+    function FilterFunc(const ATestEditor: TPropertyEditor{IProperty}): Boolean;
     function GetComponentReference: TComponent; virtual;
-    function GetSelections: Pointer{IDesignerSelections}; virtual;
+    function GetSelections: TComponentSelectionList{IDesignerSelections}; virtual;
   public
     function AllEqual: Boolean; override;
     procedure Edit; override;
@@ -548,7 +537,7 @@ type
     procedure ReceiveComponentNames(const S: string);
     function GetComponent(const AInterface: Pointer {IInterface}): TComponent;
     function GetComponentReference: TComponent; override;
-    function GetSelections: Pointer{IDesignerSelections}; override;
+    function GetSelections: TComponentSelectionList{IDesignerSelections}; override;
   public
     function AllEqual: Boolean; override;
     procedure GetValues(Proc: TGetStrProc); override;
@@ -685,6 +674,54 @@ type
     procedure SetValue(const NewValue: ansistring); override;
   end;
 
+{ TListElementPropertyEditor
+  UNDER CONSTRUCTION by Mattias}
+  TListPropertyEditor = class;
+
+  TListElementPropertyEditor = class(TPropertyEditor)
+  protected
+
+  public
+
+  end;
+
+{ TListPropertyEditor
+  A property editor with dynamic sub properties representing a list of objects.
+  UNDER CONSTRUCTION by Mattias}
+
+  TListPropertyEditor = class(TPropertyEditor)
+  private
+    FSaveElementLock: integer;
+    FSubPropertiesChanged: boolean;
+  protected
+    procedure BeginSaveElement;
+    procedure EndSaveElement;
+    function IsSaving: boolean;
+    property SaveElementLock: integer read FSaveElementLock;
+  protected
+    // methods and variables usable for descendent property editors:
+    SavedList: TObject;
+    SavedElements: TList;
+    SavedPropertyEditors: TList;
+    function ReadElementCount: integer; virtual;
+    function ReadElement(Index: integer): TObject; virtual;
+    function CreateElementPropEditor(Index: integer): TListElementPropertyEditor; virtual;
+    procedure DoSaveElements; virtual;
+    procedure FreeElementPropertyEditors; virtual;
+  public
+    constructor Create(Hook:TPropertyEditorHook;
+      ComponentList: TComponentSelectionList;  APropCount:Integer); override;
+    destructor Destroy; override;
+    function GetAttributes: TPropertyAttributes; override;
+    procedure GetProperties(Proc: TGetPropEditProc); override;
+    function GetValue: AnsiString; override;
+    procedure SaveElements;
+    function SubPropertiesNeedsUpdate: boolean; override;
+    function GetElementCount: integer;
+    function GetElement(Index: integer): TObject;
+    function GetElementPropEditor(Index: integer): TListElementPropertyEditor;
+  end;
+
 
 //==============================================================================
 
@@ -738,8 +775,13 @@ type
 
 procedure RegisterPropertyEditorMapper(Mapper:TPropertyEditorMapperFunc);
 
-procedure GetComponentProperties(PropertyEditorHook:TPropertyEditorHook;
-  Components:TComponentSelectionList; Filter:TTypeKinds; Proc:TGetPropEditProc);
+type
+  TPropertyEditorFilterFunc =
+    function(const ATestEditor: TPropertyEditor): Boolean of object;
+
+procedure GetComponentProperties(Components: TComponentSelectionList;
+  Filter: TTypeKinds; Hook: TPropertyEditorHook; Proc: TGetPropEditProc;
+  EditorFilterFunc: TPropertyEditorFilterFunc);
 
 function GetEditorClass(PropInfo:PPropInfo;
   Obj:TPersistent): TPropertyEditorClass;
@@ -1294,93 +1336,108 @@ begin
   end;
 end;
 
-procedure GetComponentProperties(PropertyEditorHook:TPropertyEditorHook;
-Components:TComponentSelectionList;  Filter:TTypeKinds; Proc:TGetPropEditProc);
+procedure GetComponentProperties(Components: TComponentSelectionList;
+  Filter: TTypeKinds; Hook: TPropertyEditorHook; Proc: TGetPropEditProc;
+  EditorFilterFunc: TPropertyEditorFilterFunc);
 var
-  I,J,CompCount:Integer;
-  CompType:TClass;
-  Candidates:TPropInfoList;
-  PropLists:TList;
-  Editor:TPropertyEditor;
-  EditClass:TPropertyEditorClass;
-  PropInfo:PPropInfo;
-  AddEditor:Boolean;
-  Obj:TPersistent;
+  I, J, CompCount: Integer;
+  CompType: TClass;
+  Candidates: TPropInfoList;
+  PropLists: TList;
+  PropEditor: TPropertyEditor;
+  EdClass: TPropertyEditorClass;
+  PropInfo: PPropInfo;
+  AddEditor: Boolean;
+  Obj: TComponent;
 begin
-  if (Components=nil) or (Components.Count=0) then Exit;
-  CompCount:=Components.Count;
-  Obj:=Components[0];
-  CompType:=Components[0].ClassType;
-  Candidates:=TPropInfoList.Create(Components[0],Filter);
+  if (Components = nil) or (Components.Count = 0) then Exit;
+  CompCount := Components.Count;
+  Obj := Components[0];
+  CompType := Components[0].ClassType;
+  // Create a property candidate list of all properties that can be found in
+  // every component in the list and in the Filter
+  Candidates := TPropInfoList.Create(Components[0], Filter);
   try
-    for I:=Candidates.Count-1 downto 0 do begin
-      PropInfo:=Candidates[I];
-      EditClass:=GetEditorClass(PropInfo,Obj);
-      if EditClass=nil then
+    // check each property candidate
+    for I := Candidates.Count - 1 downto 0 do
+    begin
+      PropInfo := Candidates[I];
+      // check if property is readable
+      if (PropInfo^.GetProc=nil)
+      or (not GShowReadOnlyProps and ((PropInfo^.PropType^.Kind <> tkClass)
+          and (PropInfo^.SetProc = nil)))
+      then begin
+        Candidates.Delete(I);
+        continue;
+      end;
+      EdClass := GetEditorClass(PropInfo, Obj);
+      if EdClass = nil then
         Candidates.Delete(I)
-      else begin
-        Editor:=EditClass.Create(PropertyEditorHook,Components,1);
-        try
-          Editor.SetPropEntry(0,Components[0],PropInfo);
-          Editor.Initialize;
-          with PropInfo^ do
-            if (GetProc=nil)
-            or ((PropType^.Kind<>tkClass) and (SetProc=nil))
-            or ((CompCount > 1) and not (paMultiSelect in Editor.GetAttributes))
-            or (not Editor.ValueAvailable) then
-              Candidates.Delete(I);
-        finally
-          Editor.Free;
-        end;
+      else
+      begin
+        // create a test property editor for the property
+        PropEditor := EdClass.Create(Hook,Components,1);
+        PropEditor.SetPropEntry(0, Components[0], PropInfo);
+        PropEditor.Initialize;
+        with PropInfo^ do
+          // check for multiselection, ValueAvailable and customfilter
+          if ((CompCount > 1)
+              and not (paMultiSelect in PropEditor.GetAttributes))
+          or not PropEditor.ValueAvailable
+          or (Assigned(EditorFilterFunc) and not EditorFilterFunc(PropEditor))
+          then
+            Candidates.Delete(I);
       end;
     end;
-    PropLists:=TList.Create;
+    PropLists := TList.Create;
     try
-      PropLists.Capacity:=CompCount;
-      for I:=0 to CompCount-1 do
-        PropLists.Add(TPropInfoList.Create(Components[I],Filter));
-      for I:=0 to CompCount-1 do
+      PropLists.Capacity := CompCount;
+      // Create a property info list for each component in the selection
+      for I := 0 to CompCount - 1 do
+        PropLists.Add(TPropInfoList.Create(Components[I], Filter));
+      // Eliminate each property in Candidates that is not in all property lists
+      for I := 0 to CompCount - 1 do
         Candidates.Intersect(TPropInfoList(PropLists[I]));
-      for I:=0 to CompCount-1 do
+      // Eliminate each property in the property list that are not in Candidates
+      for I := 0 to CompCount - 1 do
         TPropInfoList(PropLists[I]).Intersect(Candidates);
-      for I:=0 to Candidates.Count-1 do begin
-        EditClass:=GetEditorClass(Candidates[I],Obj);
-        if EditClass=nil then continue;
-        Editor:=EditClass.Create(PropertyEditorHook,Components,CompCount);
-        try
-          AddEditor:=true;
-          for j:=0 to CompCount-1 do begin
-            if (Components[j].ClassType<>CompType) and
-              (GetEditorClass(TPropInfoList(PropLists[j])[I],Components[j])
-              <>Editor.ClassType) then
-            begin
-              AddEditor:=false;
-              break;
-            end;
-            Editor.SetPropEntry(J,Components[J],
-              TPropInfoList(PropLists[J])[I]);
+      // PropList now has a matrix of PropInfo's.
+      // -> create property editors for each property
+      //    with given each the array of PropInfos
+      for I := 0 to Candidates.Count - 1 do
+      begin
+        EdClass := GetEditorClass(Candidates[I], Obj);
+        if EdClass = nil then Continue;
+        PropEditor := EdClass.Create(Hook, Components, CompCount);
+        AddEditor := True;
+        for J := 0 to CompCount - 1 do
+        begin
+          if (Components[J].ClassType <> CompType) and
+            (GetEditorClass(TPropInfoList(PropLists[J])[I],
+              Components[J]) <> EdClass) then
+          begin
+            AddEditor := False;
+            Break;
           end;
-        except
-          Editor.Free;
-          raise;
+          PropEditor.SetPropEntry(J, Components[J],
+            TPropInfoList(PropLists[J])[I]);
         end;
         if AddEditor then
         begin
-          Editor.Initialize;
-          if Editor.ValueAvailable then
-            Proc(Editor) else
-            Editor.Free;
-        end
-        else Editor.Free;
+          PropEditor.Initialize;
+          if PropEditor.ValueAvailable then Proc(PropEditor);
+        end else
+          PropEditor.Free;
       end;
     finally
-      for I:=0 to PropLists.Count-1 do TPropInfoList(PropLists[I]).Free;
+      for I := 0 to PropLists.Count - 1 do TPropInfoList(PropLists[I]).Free;
       PropLists.Free;
     end;
   finally
     Candidates.Free;
   end;
 end;
+
 
 { TPropertyEditor }
 
@@ -2144,62 +2201,46 @@ end;
 { TListPropertyEditor }
 
 function TListPropertyEditor.GetElementCount: integer;
-var
-  TheList: TList;
 begin
-  Result:=0;
-  TheList:=TList(GetComponent(0));
-  if (TheList<>nil) and (TheList is TList) then
-    Result:=TheList.Count
+  if not IsSaving then
+    Result:=SavedElements.Count
   else
-    Result:=0;
+    Result:=ReadElementCount;
 end;
 
 function TListPropertyEditor.GetElement(Index: integer): TObject;
 var
-  TheList: TList;
   ElementCount: integer;
-  TheObject: TObject;
 begin
-  Result:=nil;
+  // do some checks
   if (Index<0) then
     raise Exception('TListPropertyEditor.GetElement Index='+IntToStr(Index));
   ElementCount:=GetElementCount;
   if Index>=ElementCount then
     raise Exception('TListPropertyEditor.GetElement Index='+IntToStr(Index)
       +' Count='+IntToStr(ElementCount));
-  TheList:=TList(GetComponent(0));
-  if (TheList<>nil) and (TheList is TList) then
-    TheObject:=TObject(TheList[Index])
+  // get element
+  if not IsSaving then
+    Result:=TObject(SavedElements[Index])
   else
-    TheObject:=nil;
-  if TheObject<>nil then begin
-    // create a corresponding TPropertyEditor
-
-  end else begin
-    // create a TNilPropertyEditor
-    
-  end;
+    Result:=ReadElement(Index);
 end;
 
-function TListPropertyEditor.GetElementPropertyEditor(Index: integer
-  ): TPropertyEditor;
+function TListPropertyEditor.GetElementPropEditor(Index: integer
+  ): TListElementPropertyEditor;
 begin
-  Result:=nil;
+  if not IsSaving then
+    Result:=TListElementPropertyEditor(SavedPropertyEditors[Index])
+  else
+    Result:=CreateElementPropEditor(Index);
 end;
 
 procedure TListPropertyEditor.SaveElements;
-var
-  i, ElementCount: integer;
 begin
-  if SaveElementLock>0 then exit;
+  if IsSaving then exit;
   BeginSaveElement;
-  OldList:=GetComponent(0);
-  ElementCount:=GetElementCount;
-  OldElements.Count:=ElementCount;
-  for i:=0 to ElementCount-1 do
-    OldElements[i]:=GetElement(i);
-  FSubPropertiesChanged:=true;
+  DoSaveElements;
+  FSubPropertiesChanged:=false;
   EndSaveElement;
 end;
 
@@ -2209,12 +2250,35 @@ begin
   Result:=true;
   if FSubPropertiesChanged then exit;
   FSubPropertiesChanged:=true;
-  if OldList<>GetComponent(0) then exit;
-  if GetElementCount<>OldElements.Count then exit;
-  for i:=0 to OldElements.Count-1 do
-    if TObject(OldElements[i])<>GetElement(i) then exit;
+  if SavedList<>GetComponent(0) then exit;
+  if ReadElementCount<>SavedElements.Count then exit;
+  for i:=0 to SavedElements.Count-1 do
+    if TObject(SavedElements[i])<>ReadElement(i) then exit;
   Result:=false;
   FSubPropertiesChanged:=false;
+end;
+
+function TListPropertyEditor.ReadElementCount: integer;
+var
+  TheList: TList;
+begin
+  TheList:=TList(GetComponent(0));
+  if (TheList<>nil) and (TheList is TList) then
+    Result:=TheList.Count
+  else
+    Result:=0;
+end;
+
+function TListPropertyEditor.ReadElement(Index: integer): TObject;
+begin
+  Result:=TObject(TList(GetComponent(0)).Items[Index]);
+end;
+
+function TListPropertyEditor.CreateElementPropEditor(Index: integer
+  ): TListElementPropertyEditor;
+begin
+  // ToDo
+  Result:=nil;//  Result:=TListElementPropertyEditor.Create;
 end;
 
 procedure TListPropertyEditor.BeginSaveElement;
@@ -2229,11 +2293,40 @@ begin
     writeln('TListPropertyEditor.EndSaveElement ERROR: FSaveElementLock=',FSaveElementLock);
 end;
 
+procedure TListPropertyEditor.DoSaveElements;
+var
+  i, ElementCount: integer;
+begin
+  SavedList:=GetComponent(0);
+  ElementCount:=GetElementCount;
+  SavedElements.Count:=ElementCount;
+  for i:=0 to ElementCount-1 do
+    SavedElements[i]:=GetElement(i);
+  SavedPropertyEditors.Count:=ElementCount;
+  for i:=0 to ElementCount-1 do
+    SavedPropertyEditors[i]:=GetElementPropEditor(i);
+end;
+
+procedure TListPropertyEditor.FreeElementPropertyEditors;
+var
+  i: integer;
+begin
+  for i:=0 to SavedPropertyEditors.Count do
+    TObject(SavedPropertyEditors[i]).Free;
+  SavedPropertyEditors.Clear;
+end;
+
+function TListPropertyEditor.IsSaving: boolean;
+begin
+  Result:=SaveElementLock>0;
+end;
+
 constructor TListPropertyEditor.Create(Hook: TPropertyEditorHook;
   ComponentList: TComponentSelectionList; APropCount: Integer);
 begin
   inherited Create(Hook, ComponentList, APropCount);
-  OldElements:=TList.Create;
+  SavedElements:=TList.Create;
+  SavedPropertyEditors:=TList.Create;
   if (ComponentList<>nil) and (ComponentList.Count=1) then
     RegisterListPropertyEditor(Self);
   SaveElements;
@@ -2242,13 +2335,14 @@ end;
 destructor TListPropertyEditor.Destroy;
 begin
   UnregisterListPropertyEditor(Self);
-  FreeAndNil(OldElements);
+  FreeAndNil(SavedPropertyEditors);
+  FreeAndNil(SavedElements);
   inherited Destroy;
 end;
 
 function TListPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result:= [paSubProperties, paReadOnly];
+  Result:= [paSubProperties, paDynamicSubProps, paReadOnly];
 end;
 
 procedure TListPropertyEditor.GetProperties(Proc: TGetPropEditProc);
@@ -2258,7 +2352,7 @@ begin
   SaveElements;
   ElementCount:=GetElementCount;
   for i:=0 to ElementCount-1 do
-    Proc(GetElementPropertyEditor(i));
+    Proc(GetElementPropEditor(i));
 end;
 
 function TListPropertyEditor.GetValue: AnsiString;
@@ -2295,7 +2389,7 @@ begin
       if SubComponent<>nil then
         Components.Add(SubComponent);
     end;
-    GetComponentProperties(PropertyHook,Components,tkProperties,Proc);
+    GetComponentProperties(Components,tkProperties,PropertyHook,Proc,nil);
   finally
     Components.Free;
   end;
@@ -2496,9 +2590,9 @@ end;
 { TComponentPropertyEditor }
 
 function TComponentPropertyEditor.FilterFunc(
-  const ATestEditor: Pointer{IProperty}): Boolean;
+  const ATestEditor: TPropertyEditor{IProperty}): Boolean;
 begin
-  Result := false; //not (paNotNestable in ATestEditor.GetAttributes);
+  Result := not (paNotNestable in ATestEditor.GetAttributes);
 end;
 
 function TComponentPropertyEditor.GetComponentReference: TComponent;
@@ -2506,17 +2600,18 @@ begin
   Result := TComponent(GetOrdValue);
 end;
 
-function TComponentPropertyEditor.GetSelections: Pointer{IDesignerSelections};
-{var
-  I: Integer;}
+function TComponentPropertyEditor.GetSelections:
+  TComponentSelectionList{IDesignerSelections};
+var
+  I: Integer;
 begin
   Result := nil;
-  {if (GetComponentReference <> nil) and AllEqual then
+  if (GetComponentReference <> nil) and AllEqual then
   begin
-    Result := TDesignerSelections.Create;
+    Result := TComponentSelectionList.Create;
     for I := 0 to PropCount - 1 do
       Result.Add(TComponent(GetOrdValueAt(I)));
-  end;}
+  end;
 end;
 
 function TComponentPropertyEditor.AllEqual: Boolean;
@@ -2530,22 +2625,23 @@ begin
     for I := 1 to PropCount - 1 do
       if TComponent(GetOrdValueAt(I)) <> LInstance then
         Exit;
-  Result := True; //Supports(FindRootDesigner(LInstance), IDesigner);
+  Result := FindRootDesigner(LInstance)<>nil;
+            //Supports(FindRootDesigner(LInstance), IDesigner);
 end;
 
 procedure TComponentPropertyEditor.Edit;
-{var
-  Temp: TComponent;}
+var
+  Temp: TComponent;
+  Designer: TIDesigner;
 begin
-  {if (Designer.GetShiftState * [ssCtrl, ssLeft] = [ssCtrl, ssLeft]) then
-  begin
-    Temp := GetComponentReference;
-    if Temp <> nil then
-      Designer.SelectComponent(Temp)
+  Temp := GetComponentReference;
+  if Temp<>nil then begin
+    Designer:=FindRootDesigner(Temp);
+    if (Designer.GetShiftState * [ssCtrl, ssLeft] = [ssCtrl, ssLeft]) then
+      Designer.SelectOnlyThisComponent(Temp)
     else
       inherited Edit;
-  end
-  else}
+  end else
     inherited Edit;
 end;
 
@@ -2556,24 +2652,22 @@ begin
     Result := Result + [paValueList, paSortList, paRevertable]
   else
     Result := Result + [paReadOnly];
-  //if GReferenceExpandable and (GetComponentReference <> nil) and AllEqual then
-  //  Result := Result + [paSubProperties, paVolatileSubProperties];
+  if GReferenceExpandable and (GetComponentReference <> nil) and AllEqual then
+    Result := Result + [paSubProperties, paVolatileSubProperties];
 end;
 
 procedure TComponentPropertyEditor.GetProperties(Proc:TGetPropEditProc);
-begin
-  inherited GetProperties(Proc);
-{var
-  LComponents: IDesignerSelections;
-  LDesigner: IDesigner;
+var
+  LComponents: TComponentSelectionList;
+  //LDesigner: TIDesigner;
 begin
   LComponents := GetSelections;
   if LComponents <> nil then
   begin
-    if not Supports(FindRootDesigner(LComponents[0]), IDesigner, LDesigner) then
-      LDesigner := Designer;
-    GetComponentProperties(LComponents, tkAny, LDesigner, Proc, FilterFunc);
-  end;}
+    //if not Supports(FindRootDesigner(LComponents[0]), IDesigner, LDesigner) then
+    //  LDesigner := Designer;
+    GetComponentProperties(LComponents, tkAny, PropertyHook, Proc, nil);
+  end;
 end;
 
 function TComponentPropertyEditor.GetEditLimit: Integer;
@@ -2597,6 +2691,7 @@ end;
 
 procedure TComponentPropertyEditor.GetValues(Proc: TGetStringProc);
 begin
+  Proc('(none)');
   if Assigned(PropertyHook) then
     PropertyHook.GetComponentNames(GetTypeData(GetPropType), Proc);
 end;
@@ -2604,7 +2699,8 @@ end;
 procedure TComponentPropertyEditor.SetValue(const NewValue: ansistring);
 var Component: TComponent;
 begin
-  if NewValue = '' then Component := nil
+  if (NewValue = '') or (NewValue='(none)') then
+    Component := nil
   else begin
     if Assigned(PropertyHook) then begin
       Component := PropertyHook.GetComponent(NewValue);
@@ -2650,7 +2746,7 @@ begin
   Result := nil; //GetComponent(GetIntfValue);
 end;
 
-function TInterfaceProperty.GetSelections: Pointer{IDesignerSelections};
+function TInterfaceProperty.GetSelections: TComponentSelectionList{IDesignerSelections};
 {var
   I: Integer;}
 begin
@@ -3224,7 +3320,6 @@ end;
 
 procedure TListColumnsPropertyEditor.Edit;
 var
-
   ListColumns : TListColumns;
   ColumnDlg: TColumnDlg;
 begin
@@ -3242,7 +3337,7 @@ end;
 
 function TListColumnsPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paMultiSelect, paDialog, paRevertable, paReadOnly];
+  Result := [paDialog, paRevertable, paReadOnly];
 end;
 
 //==============================================================================
