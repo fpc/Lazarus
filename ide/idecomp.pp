@@ -120,7 +120,8 @@ type
      property Count : Integer read GetCount;
 
      procedure OnGetNonVisualCompIconCanvas(Sender: TObject;
-        AComponent: TComponent; var IconCanvas: TCanvas);
+        AComponent: TComponent; var IconCanvas: TCanvas;
+        var IconWidth, IconHeight: integer);
    end;
 
    {-------------------------------------------
@@ -202,12 +203,18 @@ begin
 end;
 
 procedure TIDECompList.OnGetNonVisualCompIconCanvas(Sender: TObject;
-  AComponent: TComponent; var IconCanvas: TCanvas);
-var AnIDEComp: TIdeComponent;
+  AComponent: TComponent; var IconCanvas: TCanvas;
+  var IconWidth, IconHeight: integer);
+var
+  AnIDEComp: TIdeComponent;
+  APixmap: TPixmap;
 begin
   AnIDEComp:=IDECompList.FindCompbyClass(TComponentClass(AComponent.ClassType));
   if AnIDEComp<>nil then begin
-    IconCanvas:=TPixmap(AnIDEComp.SpeedButton.Glyph).Canvas;
+    APixmap:=TPixmap(AnIDEComp.SpeedButton.Glyph);
+    IconCanvas:=APixmap.Canvas;
+    IconWidth:=APixmap.Width;
+    IconHeight:=APixmap.Height;
   end;
 end;
 

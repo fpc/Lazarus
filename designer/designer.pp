@@ -51,7 +51,8 @@ type
   TOnRemoveComponent = procedure(Sender: TObject; Component: TComponent)
     of object;
   TOnGetNonVisualCompIconCanvas = procedure(Sender: TObject;
-    AComponent: TComponent; var IconCanvas: TCanvas) of object;
+    AComponent: TComponent; var IconCanvas: TCanvas;
+    var IconWidth, IconHeight: integer) of object;
   TOnRenameComponent = procedure(Designer: TDesigner; AComponent: TComponent;
     const NewName: string) of object;
 
@@ -898,7 +899,9 @@ Begin
 end;
 
 procedure TDesigner.DrawNonVisualComponents(DC: HDC);
-var i, j, ItemLeft, ItemTop, ItemRight, ItemBottom: integer;
+var
+  i, j, ItemLeft, ItemTop, ItemRight, ItemBottom,
+  IconWidth, IconHeight: integer;
   FormOrigin, DCOrigin, Diff: TPoint;
   SaveIndex: HDC;
   IconRect: TRect;
@@ -940,10 +943,13 @@ begin
       if Assigned(FOnGetNonVisualCompIconCanvas) then begin
         IconCanvas:=nil;
         FOnGetNonVisualCompIconCanvas(Self,FCustomForm.Components[i]
-             ,IconCanvas);
-        if IconCanvas<>nil then
+             ,IconCanvas,IconWidth,IconHeight);
+        if IconCanvas<>nil then begin
+          inc(IconRect.Left,((IconRect.Right-IconRect.Left)-IconWidth) div 2);
+          inc(IconRect.Top,((IconRect.Bottom-IconRect.Top)-IconHeight) div 2);
           FCustomForm.Canvas.CopyRect(IconRect, IconCanvas,
-             Rect(0,0,NonVisualCompIconWidth,NonVisualCompIconWidth));
+             Rect(0,0,IconWidth,IconHeight));
+        end;
       end;
       if (ControlSelection.Count>1)
       and (ControlSelection.IsSelected(FCustomForm.Components[i])) then
