@@ -5841,7 +5841,9 @@ var
   ComboWidget: PGtkCombo;
   DropDownWidget, ListWidget, FirstChildWidget: PGtkWidget;
   FirstChild: PGList;
-  CurWidth, CurHeight, CurItemHeight, BorderX, BorderY: integer;
+  CurWidth, CurHeight, CurItemHeight, BorderX, BorderY,
+  NewWidth, NewHeight: integer;
+  ComboPopup: PGtkScrolledWindow;
 begin
   Result:=true;
   if not (GtkWidgetIsA(PgtkWidget(Handle),GTK_COMBO_TYPE)) then
@@ -5862,21 +5864,31 @@ begin
         MinItemsHeight:=CurItemHeight*MinItemCount;
     end;
   end;
-  if (CurWidth>=MinItemsWidth) and (CurHeight>=MinItemsHeight) then exit;
 
   // calculate new width and height
-  // ToDo: scrollbars
-  if MinItemsWidth<CurWidth then MinItemsWidth:=CurWidth;
-  if MinItemsHeight<CurWidth then MinItemsHeight:=CurHeight;
   DropDownWidget:=ComboWidget^.popwin;
   if DropDownWidget=nil then exit;
+  ComboPopup:=PGtkScrolledWindow(ComboWidget^.popup);
+  if ComboPopup=nil then exit;
+  // ToDo: add scrollbars only if needed
   BorderX:=DropDownWidget^.Allocation.Width-CurWidth;
   if BorderX<0 then BorderX:=0;
+  inc(BorderX,
+    ComboPopup^.hscrollbar^.requisition.height
+    {+GTK_SCROLLED_WINDOW_GET_CLASS(ComboWidget^.popup)^.scrollbar_spacing});
   BorderY:=DropDownWidget^.Allocation.Height-CurHeight;
   if BorderY<0 then BorderY:=0;
+  inc(BorderX,
+    ComboPopup^.vscrollbar^.requisition.width
+    {+GTK_SCROLLED_WINDOW_GET_CLASS(ComboWidget^.popup)^.scrollbar_spacing});
+  NewWidth:=MinItemsWidth+BorderX;
+  NewHeight:=MinItemsHeight+BorderY;
+  if NewWidth<CurWidth then NewWidth:=CurWidth;
+  if NewHeight<CurHeight then NewHeight:=CurHeight;
+  //writeln('NewWidth=',NewWidth,' NewHeight=',NewHeight,' CurWidth=',CurWidth,' CurHeight=',CurHeight);
+  if (NewWidth=CurWidth) and (NewHeight=CurHeight) then exit;
 
-  gtk_widget_set_usize(DropDownWidget,
-                       MinItemsWidth+BorderX,MinItemsHeight+BorderY);
+  gtk_widget_set_usize(DropDownWidget,NewWidth,NewHeight);
 end;
 
 {------------------------------------------------------------------------------
@@ -7217,6 +7229,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.143  2002/10/04 22:59:14  lazarus
+  MG: added OnDrawItem to OI
+
   Revision 1.142  2002/10/04 14:24:17  lazarus
   MG: added DrawItem to TComboBox/TListBox
 
