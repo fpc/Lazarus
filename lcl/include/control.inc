@@ -284,6 +284,11 @@ begin
   Result := ClientRect.Right;
 end;
 
+function TControl.IsHelpContextStored: boolean;
+begin
+  Result:=false;
+end;
+
 {------------------------------------------------------------------------------}
 {       TControl GetTabOrder                                                   }
 {------------------------------------------------------------------------------}
@@ -369,9 +374,21 @@ Begin
     FParent.Perform(CM_MOUSELEAVE,0,longint(Self));
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl.CMVisibleChanged                                              }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  procedure TControl.CMHintShow(var Message: TLMessage);
+------------------------------------------------------------------------------}
+procedure TControl.CMHintShow(var Message: TLMessage);
+begin
+  DoOnShowHint(@TCMHintShow(Message).HintInfo);
+  if (ActionLink <> nil)
+  and not ActionLink.DoShowHint(TCMHintShow(Message).HintInfo^.HintStr)
+  then
+    Message.Result := 1;
+end;
+
+{------------------------------------------------------------------------------
+       TControl.CMVisibleChanged
+------------------------------------------------------------------------------}
 procedure TControl.CMVisibleChanged(var Message : TLMessage);
 begin
   if (not (csDesigning in ComponentState)
@@ -728,6 +745,15 @@ end;
 function TControl.GetPopupMenu: TPopupMenu;
 begin
   Result := FPopupMenu;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TControl.DoOnShowHint(var HintInfo: THintInfo);
+------------------------------------------------------------------------------}
+procedure TControl.DoOnShowHint(HintInfo: Pointer);
+begin
+  if Assigned(OnShowHint) then
+    OnShowHint(Self,HintInfo);
 end;
 
 {------------------------------------------------------------------------------
@@ -1541,6 +1567,18 @@ begin
   SetBounds(FLeft, FTop, FWidth, Value);
 end;
 
+procedure TControl.SetHelpContext(const AValue: THelpContext);
+begin
+  if FHelpContext=AValue then exit;
+  FHelpContext:=AValue;
+end;
+
+procedure TControl.SetHelpKeyword(const AValue: String);
+begin
+  if FHelpKeyword=AValue then exit;
+  FHelpKeyword:=AValue;
+end;
+
 {------------------------------------------------------------------------------}
 {  TControl SetParent                                                                 }
 {------------------------------------------------------------------------------}
@@ -2003,6 +2041,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.99  2002/11/06 15:59:24  lazarus
+  MG: fixed codetools abort
+
   Revision 1.98  2002/11/04 19:49:36  lazarus
   MG: added persistent hints for main ide bar
 
