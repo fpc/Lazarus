@@ -615,7 +615,8 @@ type
 
   TMethodNameTable = packed record
     Count : DWord;
-    Entries : packed array[0..0] of TMethodNameRec;
+    // for runtime range checking it is important to give a range
+    Entries : packed array[0..1000000] of TMethodNameRec;
   end;
 
   PMethodNameTable =  ^TMethodNameTable;
