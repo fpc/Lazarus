@@ -5683,6 +5683,8 @@ begin
                          EnvironmentOptions.ExternalTools,MacroList,
                          '',Flags+[blfWithoutIDE]);
     if Result<>mrOk then exit;
+    if ([blfWithStaticPackages,blfOnlyIDE]*Flags=[])
+    and (MiscellaneousOptions.BuildLazOpts.ItemIDE.MakeMode=mmNone) then exit;
 
     // prepare static auto install packages
     PkgOptions:='';
@@ -8637,6 +8639,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.549  2003/05/01 20:48:47  mattias
+  fixed building lazarus without IDE
+
   Revision 1.548  2003/05/01 11:44:03  mattias
   fixed changing menuitem separator and normal
 
