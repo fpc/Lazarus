@@ -212,6 +212,7 @@ end;
 constructor TOpenDialog.Create (AOwner : TComponent);
 begin
   inherited Create(AOwner);
+  fCompStyle:=csOpenFileDialog;
   FTitle:= rsfdOpenFile;
   FOptions := [ofEnableSizing, ofViewDetail];
 end;
@@ -229,13 +230,30 @@ end;
 constructor TSaveDialog.Create (AOwner : TComponent);
 begin
   inherited Create(AOwner);
-  fCompStyle := csFileDialog;
+  fCompStyle:=csSaveFileDialog;
   FTitle:= rsfdFileSaveAs;
 end;
+
+{******************************************************************************
+                             TSelectDirectoryDialog
+ ******************************************************************************}
+
+{ TSelectDirectoryDialog }
+
+constructor TSelectDirectoryDialog.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  fCompStyle:=csSelectDirectoryDialog;
+  FTitle:= rsfdSelectDirectory;
+end;
+
 
 { =============================================================================
 
   $Log$
+  Revision 1.10  2003/08/14 10:36:55  mattias
+  added TSelectDirectoryDialog
+
   Revision 1.9  2003/08/13 22:29:28  mattias
   started check compiler options
 

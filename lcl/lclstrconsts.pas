@@ -65,7 +65,8 @@ ResourceString
   rsfdFileReadOnlyTitle = 'File is not writable';
   rsfdFileReadOnly      = 'The file "%s" is not writable.';
   rsfdFileSaveAs        = 'Save file as';
-   
+  rsfdSelectDirectory   = 'Select Directory';
+
   // Select color dialog
   rsSelectcolorTitle    = 'Select color';
    

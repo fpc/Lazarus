@@ -281,7 +281,8 @@ Begin
   Case TControl(Sender).FCompStyle Of
     csBitBtn:
       IntSendMessage3(LM_IMAGECHANGED, Sender, Nil);
-    csColorDialog, csFileDialog, csFontDialog:
+    csFileDialog, csOpenFileDialog, csSaveFileDialog, csSelectDirectoryDialog,
+    csColorDialog, csFontDialog:
     Begin
       Assert(False, Format('Trace:TWin32Object.SetLabel - Got %S', [CS_To_String(TControl(Sender).FCompStyle)]));
       Assert(False, 'Trace:TWin32Object.SetLabel - I''m not sure if this''ll work');
@@ -1880,7 +1881,8 @@ Begin
       Window := CreateWindowEx(WS_EX_CLIENTEDGE, 'EDIT', StrTemp, Flags Or ES_AUTOHSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
     End;
-    csColorDialog, csFileDialog, csFontDialog:
+    csFileDialog, csOpenFileDialog, csSaveFileDialog, csSelectDirectoryDialog,
+    csColorDialog, csFontDialog:
     Begin
       CreateCommonDialog(TCommonDialog(Sender));
     End;
@@ -2740,6 +2742,9 @@ End;
 
 {
   $Log$
+  Revision 1.87  2003/08/14 10:36:55  mattias
+  added TSelectDirectoryDialog
+
   Revision 1.86  2003/08/13 21:23:10  mattias
   fixed log
 

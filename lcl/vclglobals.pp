@@ -99,7 +99,12 @@ const
   csPairSplitter = 54;
   csPairSplitterSide = 55;
 
-  csNonLCL = 56; // for non LCL controls, that create their own handles
+  csOpenFileDialog = 56;
+  csSaveFileDialog = 57;
+  csSelectDirectoryDialog = 58;
+
+
+  csNonLCL = 59; // for non LCL controls, that create their own handles
 
 
 const
@@ -167,6 +172,12 @@ Begin
       Result := 'csNotebook';
     csFileDialog:
       Result := 'csFileDialog';
+    csOpenFileDialog:
+      Result := 'csOpenFileDialog';
+    csSaveFileDialog:
+      Result := 'csSaveFileDialog';
+    csSelectDirectoryDialog:
+      Result := 'csSelectDirectoryDialog';
     csRadioButton:
       Result := 'csRadioButton';
     csScrolledWinDow:
@@ -231,6 +242,14 @@ Begin
       Result := 'csCalEndar';
     csArrow:
       Result := 'csArrow';
+    csCheckListBox:
+      Result := 'csCheckListBox';
+    csPairSplitter:
+      Result := 'csPairSplitter';
+    csPairSplitterSide:
+      Result := 'csPairSplitterSide';
+    csNonLCL:
+      Result := 'csNonLCL';
     Else
       Result := Format('Unknown component style %D', [CompStyle]);
   End; {Case}

@@ -116,20 +116,20 @@ type
     FOnHelpClicked: TNotifyEvent;
     procedure SetDefaultExt(const AValue: string);
   protected
-    function DoExecute : boolean; override;
-    procedure SetFileName(value :String); virtual;
-    procedure SetFilter(value :String); virtual;
+    function DoExecute: boolean; override;
+    procedure SetFileName(Value: String); virtual;
+    procedure SetFilter(Value: String); virtual;
     procedure SetHistoryList(const AValue: TStrings); virtual;
   public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
-    function Execute : boolean; override;
+    function Execute: boolean; override;
     property Files: TStrings read FFiles;
     property HistoryList: TStrings read FHistoryList write SetHistoryList;
   published
     property DefaultExt: string read FDefaultExt write SetDefaultExt;
-    property FileName : String read FFileName write SetFileName;
-    property Filter : String read FFilter write SetFilter;
+    property FileName: String read FFileName write SetFileName;
+    property Filter: String read FFilter write SetFilter;
     property FilterIndex: Integer read FFilterIndex write FFilterIndex default 1;
     property InitialDir: string read FInitialDir write FInitialDir;
     property OnHelpClicked: TNotifyEvent read FOnHelpClicked write FOnHelpClicked;
@@ -187,6 +187,14 @@ type
   { TSaveDialog }
   
   TSaveDialog = class(TOpenDialog)
+  public
+    constructor Create(AOwner : TComponent); override;
+  end;
+  
+  
+  { TSelectDirectoryDialog }
+  
+  TSelectDirectoryDialog = class(TOpenDialog)
   public
     constructor Create(AOwner : TComponent); override;
   end;
@@ -296,7 +304,7 @@ type
   Function InputBox(const ACaption, APrompt, ADefault : String) : String;
   Function PasswordBox(const ACaption, APrompt : String) : String;
   
-  {Directory Selection}
+  { Directory Selection }
 type
   TSelectDirectoryProc = function(const Caption: String; const Root: string;
                            var Directory: string; ShowHidden: Boolean): Boolean;
@@ -324,8 +332,8 @@ const
 
 procedure Register;
 begin
-  RegisterComponents('Dialogs',[TOpenDialog,TSaveDialog,
-                                    TColorDialog,TFontDialog]);
+  RegisterComponents('Dialogs',[TOpenDialog,TSaveDialog,TSelectDirectoryDialog,
+                                TColorDialog,TFontDialog]);
   RegisterComponents('Misc',[TColorButton]);
 end;
 
@@ -404,6 +412,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.34  2003/08/14 10:36:55  mattias
+  added TSelectDirectoryDialog
+
   Revision 1.33  2003/08/01 09:44:52  mattias
   added SelectDirectory dialog
 

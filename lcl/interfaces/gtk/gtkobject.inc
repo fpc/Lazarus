@@ -3594,7 +3594,7 @@ begin
     end;
 
   csForm, 
-  csFileDialog, 
+  csFileDialog, csOpenFileDialog, csSaveFileDialog, csSelectDirectoryDialog,
   csColorDialog,
   csFontDialog  : gtk_window_set_title(pGtkWindow(p),PLabel);
 
@@ -5466,7 +5466,7 @@ begin
   csEdit :
     p :=  gtk_entry_new();
 
-  csFileDialog :
+  csFileDialog, csOpenFileDialog, csSaveFileDialog, csSelectDirectoryDialog:
     InitializeFileDialog(TFileDialog(Sender),p,StrTemp);
 
   csFontDialog :
@@ -8038,6 +8038,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.397  2003/08/14 10:36:55  mattias
+  added TSelectDirectoryDialog
+
   Revision 1.396  2003/08/13 00:02:06  marc
   + introduced interface exceptions
   - Removed ifdefs for implemented gtkwin32 functions
