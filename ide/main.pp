@@ -728,7 +728,7 @@ end;
 destructor TMainIDE.Destroy;
 begin
   writeln('[TMainIDE.Destroy] A');
-  {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy A ');{$ENDIF}
   if DebugBoss<>nil then DebugBoss.EndDebugging;
 
   FreeThenNil(Project1);
@@ -750,9 +750,9 @@ begin
   FreeThenNil(HintWindow1);
 
   writeln('[TMainIDE.Destroy] B  -> inherited Destroy...');
-  {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy B ');{$ENDIF}
   inherited Destroy;
-  {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy C ');{$ENDIF}
   writeln('[TMainIDE.Destroy] END');
 end;
 
@@ -1144,7 +1144,7 @@ begin
   {$IFDEF IDE_DEBUG}
   writeln('TMainIDE.Create A ***********');
   {$ENDIF}
-  {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.SetupStartProject A');{$ENDIF}
   // load command line project or last project or create a new project
   if (ParamCount>0) and (ParamStr(ParamCount)[1]<>'-')
   and (ExtractFileExt(ParamStr(ParamCount))='.lpi')
@@ -1158,7 +1158,7 @@ begin
   {$IFDEF IDE_DEBUG}
   writeln('TMainIDE.Create last project loaded successfully');
   {$ENDIF}
-  {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.SetupStartProject B');{$ENDIF}
   end else
     // create new project
     DoNewProject(ptApplication);
@@ -1166,7 +1166,7 @@ begin
   {$IFDEF IDE_DEBUG}
   writeln('TMainIDE.Create B');
   {$ENDIF}
-  {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.SetupStartProject C');{$ENDIF}
 end;
 
 
@@ -3521,7 +3521,7 @@ begin
     FCodeLastActivated:=true;
   end;
   writeln('TMainIDE.DoNewUnit end ',NewUnitInfo.Filename);
-  {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoNewUnit end');{$ENDIF}
 end;
 
 function TMainIDE.DoSaveEditorFile(PageIndex:integer;
@@ -3534,7 +3534,7 @@ begin
   {$IFDEF IDE_VERBOSE}
   writeln('TMainIDE.DoSaveEditorFile A PageIndex=',PageIndex,' Flags=',SaveFlagsToString(Flags));
   {$ENDIF}
-  {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoSaveEditorFile A');{$ENDIF}
   Result:=mrCancel;
   if not (ToolStatus in [itNone,itDebugger]) then begin
     Result:=mrAbort;
@@ -3620,7 +3620,7 @@ begin
   {$IFDEF IDE_DEBUG}
   writeln('*** HasResources=',ActiveUnitInfo.HasResources);
   {$ENDIF}
-  {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoSaveEditorFile B');{$ENDIF}
   // save resource file and lfm file
   if (ResourceCode<>nil) or (ActiveUnitInfo.Form<>nil) then begin
     Result:=DoSaveFileResources(ActiveUnitInfo,ResourceCode,LFMCode,Flags);
@@ -3714,7 +3714,7 @@ begin
   writeln('');
   writeln('*** TMainIDE.DoOpenEditorFile START "',AFilename,'" ',OpenFlagsToString(Flags));
   {$ENDIF}
-  {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenEditorFile START');{$ENDIF}
   Result:=mrCancel;
   
   if (not (ofRevert in Flags))
@@ -3828,7 +3828,7 @@ begin
 
   Result:=mrOk;
   writeln('TMainIDE.DoOpenEditorFile END "',AFilename,'"');
-  {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenEditorFile END');{$ENDIF}
 end;
 
 function TMainIDE.DoOpenMainUnit(ProjectLoading: boolean): TModalResult;
@@ -4297,16 +4297,16 @@ begin
   writeln('TMainIDE.DoCloseProject A');
   {$ENDIF}
   // close all loaded files
-  {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoCloseProject A');{$ENDIF}
   while SourceNotebook.NoteBook<>nil do begin
     Result:=DoCloseEditorFile(SourceNotebook.Notebook.Pages.Count-1,
                               [cfProjectClosing]);
     if Result=mrAbort then exit;
   end;
-  {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoCloseProject B');{$ENDIF}
   // close Project
   FreeThenNil(Project1);
-  {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoCloseProject C');{$ENDIF}
   Result:=mrOk;
   {$IFDEF IDE_VERBOSE}
   writeln('TMainIDE.DoCloseProject end ',CodeToolBoss.ConsistencyCheck);
@@ -4321,7 +4321,7 @@ begin
   {$IFDEF IDE_VERBOSE}
   writeln('TMainIDE.DoOpenProjectFile A "'+AFileName+'"');
   {$ENDIF}
-  {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile A');{$ENDIF}
   Result:=mrCancel;
   if ExtractFileNameOnly(AFileName)='' then exit;
   
@@ -4370,7 +4370,7 @@ begin
   {$IFDEF IDE_VERBOSE}
   writeln('TMainIDE.DoOpenProjectFile B');
   {$ENDIF}
-  {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile B');{$ENDIF}
   Project1:=TProject.Create(ptProgram);
   Project1.OnFileBackup:=@DoBackupFile;
   // read project info file
@@ -4389,7 +4389,7 @@ begin
   {$IFDEF IDE_DEBUG}
   writeln('TMainIDE.DoOpenProjectFile C');
   {$ENDIF}
-  {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile C');{$ENDIF}
 
   // restore files
   LastEditorIndex:=-1;
@@ -4467,7 +4467,7 @@ begin
   {$IFDEF IDE_VERBOSE}
   writeln('TMainIDE.DoOpenProjectFile end  CodeToolBoss.ConsistencyCheck=',CodeToolBoss.ConsistencyCheck);
   {$ENDIF}
-  {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile end');{$ENDIF}
 end;
 
 function TMainIDE.DoCreateProjectForProgram(
@@ -6128,7 +6128,7 @@ begin
   writeln('');
   writeln('[TMainIDE.DoFindDeclarationAtCaret] ************');
   {$ENDIF}
-  {$IFDEF IDE_MEM_CHECK}CheckHeap('TMainIDE.DoFindDeclarationAtCaret '+IntToStr(GetMem_Cnt));{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoFindDeclarationAtCaret A');{$ENDIF}
   if CodeToolBoss.FindDeclaration(ActiveUnitInfo.Source,
     CaretXY.X,CaretXY.Y,
     NewSource,NewX,NewY,NewTopLine) then
@@ -6137,7 +6137,7 @@ begin
       NewSource, NewX, NewY, NewTopLine, true);
   end else
     DoJumpToCodeToolBossError;
-  {$IFDEF IDE_MEM_CHECK}CheckHeap('TMainIDE.DoFindDeclarationAtCaret '+IntToStr(GetMem_Cnt));{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoFindDeclarationAtCaret B');{$ENDIF}
 end;
 
 procedure TMainIDE.DoGoToPascalBlockOtherEnd;
@@ -7056,6 +7056,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.377  2002/09/13 07:01:17  lazarus
+  MG: fixed memcheck
+
   Revision 1.376  2002/09/11 13:19:54  lazarus
   MG: added  CVS keywords
 
