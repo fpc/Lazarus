@@ -285,6 +285,7 @@ var
   Mess : TLMessage;
 begin
   Result := True;
+  if LockOnChange(PgtkObject(Widget),0)>0 then exit;
   EventTrace('changed_editbox', data);
 
   Mess.Msg := CM_TEXTCHANGED;
@@ -296,6 +297,7 @@ var
   MSG: TLMessage;
 begin
   Result := True;
+  if LockOnChange(PgtkObject(Widget),0)>0 then exit;
   EventTrace('day changed', data);
   MSG.Msg := LM_DAYCHANGED;
   Result := DeliverPostMessage(Data, MSG);
@@ -2672,6 +2674,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.175  2003/04/10 09:22:42  mattias
+  implemented changing dependency version
+
   Revision 1.174  2003/03/26 00:21:25  mattias
   implemented build lazarus extra options -d
 
