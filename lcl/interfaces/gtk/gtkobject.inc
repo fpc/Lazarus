@@ -1145,6 +1145,20 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TgtkObject.BringFormToFront(Sender: TObject);
+------------------------------------------------------------------------------}
+procedure TgtkObject.BringFormToFront(Sender: TObject);
+var
+  AWindow: PGdkWindow;
+  Widget: PGtkWidget;
+begin
+  Widget := PgtkWidget(TCustomForm(Sender).Handle);
+  AWindow:=GetControlWindow(Widget);
+  if AWindow<>nil then
+    gdk_window_raise(AWindow);
+end;
+
+{------------------------------------------------------------------------------
   Method: TGtkObject.IntSendMessage3
   Params:  LM_Message - message to be processed by GTK
            Sender     - sending control
@@ -1177,6 +1191,7 @@ var
   Titles    : Array [0..1] of PChar;
   Geometry  : TGdkGeometry;
   Accel     : integer;
+  AWindow   : PGdkWindow;
 begin
   Result := 0;   //default value just in case nothing sets it
 
@@ -1198,7 +1213,11 @@ begin
 
     LM_GETPixel : GetPixel(Sender,Data); 
 
-    LM_ShowHide : ShowHide(Sender);
+    LM_ShowHide :
+      begin
+        //writeln('LM_ShowHide');
+        ShowHide(Sender);
+      end;
 
     LM_SetCursor : SetCursor(TWinControl(Sender), Data);
 
@@ -1302,10 +1321,7 @@ begin
     end;
     }
         if (Sender is TCustomForm) then
-        Begin
-          Widget := PgtkWidget(TCustomForm(Sender).Handle);
-          gdk_window_raise(GetControlWindow(Widget));
-        end;
+          BringFormToFront(Sender);
       end;
 
       LM_BTNDEFAULT_CHANGED :
@@ -1698,14 +1714,15 @@ begin
           if (Handle<>0) and (Data<>nil) then begin
             FormIconGdiObject:=Data;
             //writeln('LM_SETFORMICON ',FormIconGdiObject<>nil,' ',pgtkWidget(Handle)^.Window<>nil);
-            if (FormIconGdiObject<>nil)
-            and (GetControlWindow(PGtkWidget(Handle))<>nil)
-            then begin
-              gdk_window_set_icon(GetControlWindow(PgtkWidget(Handle)), nil,
-                FormIconGdiObject^.GDIBitmapObject,
-                FormIconGdiObject^.GDIBitmapMaskObject);
+            if (FormIconGdiObject<>nil) then begin
+              AWindow:=GetControlWindow(PGtkWidget(Handle));
+              if AWindow<>nil then begin
+                gdk_window_set_icon(AWindow, nil,
+                  FormIconGdiObject^.GDIBitmapObject,
+                  FormIconGdiObject^.GDIBitmapMaskObject);
               end;
             end;
+          end;
         end;
       end;
 
@@ -3881,6 +3898,7 @@ var
   SetupProps : boolean;
   Titles: PPGChar;
   ABorderStyle: TFormBorderStyle;
+  AWindow: PGdkWindow;
 begin
   p := nil;
   SetupProps:= false;
@@ -4076,9 +4094,10 @@ begin
        TCustomForm(Sender).FormStyle := fsStayOnTop;
        TCustomForm(Sender).BorderStyle := bsNone;
        gtk_widget_realize(p);
-       gdk_window_set_decorations(GetControlWindow(P),
+       AWindow:=GetControlWindow(P);
+       gdk_window_set_decorations(AWindow,
          GetWindowDecorations(TCustomForm(Sender)));
-       gdk_window_set_functions(GetControlWindow(P),
+       gdk_window_set_functions(AWindow,
          GetWindowFunction(TCustomForm(Sender)));
        gtk_widget_show_all(p);
     end;
@@ -4439,15 +4458,26 @@ end;
 {       *Note: Show or hide a widget                                           }
 {------------------------------------------------------------------------------}
 procedure TgtkObject.ShowHide(Sender : TObject);
+
+  procedure RaiseWrongClass;
+  begin
+    RaiseException('TgtkObject.ShowHide Sender.ClassName='+Sender.ClassName);
+  end;
+
 var FormIconGdiObject: PGDIObject;
   SenderWidget, ParentFixed, ParentWidget: PGTKWidget;
   LCLControl: TWinControl;
   Decor, Func : Longint;
+  AWindow: PGdkWindow;
 begin
+  if not (Sender is TWinControl) then
+    RaiseWrongClass;
+
   LCLControl:=TWinControl(Sender);
+  if not LCLControl.HandleAllocated then exit;
   SenderWidget:=PgtkWidget(LCLControl.Handle);
   //if Sender is TForm then
-  //  writeln('[TgtkObject.ShowHide] START ',Sender.ClassName,' Visible=',TControl(Sender).Visible);
+  //  writeln('[TgtkObject.ShowHide] START ',TControl(Sender).Name,':',Sender.ClassName,' Visible=',TControl(Sender).Visible,' GtkVisible=',gtk_widget_visible(SenderWidget));
   if LCLControl.Visible
   or ((csDesigning in LCLControl.ComponentState)
     and not (csNoDesignVisible in LCLControl.ControlStyle)) then
@@ -4497,8 +4527,9 @@ begin
         Decor := GetWindowDecorations(TCustomForm(Sender));
         Func := GetWindowFunction(TCustomForm(Sender));
         gtk_widget_realize(SenderWidget);
-        gdk_window_set_decorations(GetControlWindow(SenderWidget), decor);
-        gdk_window_set_functions(GetControlWindow(SenderWidget), func);
+        AWindow:=GetControlWindow(SenderWidget);
+        gdk_window_set_decorations(AWindow, decor);
+        gdk_window_set_functions(AWindow, func);
       end;
       ShareWindowAccelGroups(SenderWidget);
     end;
@@ -4506,12 +4537,15 @@ begin
     gtk_widget_show(SenderWidget);
     
     SetColor(Sender);
-    if (Sender is TCustomForm) and (GetControlWindow(SenderWidget)<>nil) then begin
-      FormIconGdiObject:=PGDIObject(TCustomForm(Sender).GetIconHandle);
-      if (FormIconGdiObject<>nil) then begin
-        gdk_window_set_icon(GetControlWindow(SenderWidget), nil,
-                FormIconGdiObject^.GDIBitmapObject,
-                FormIconGdiObject^.GDIBitmapMaskObject);
+    if (Sender is TCustomForm) then begin
+      AWindow:=GetControlWindow(SenderWidget);
+      if (AWindow<>nil) then begin
+        FormIconGdiObject:=PGDIObject(TCustomForm(Sender).GetIconHandle);
+        if (FormIconGdiObject<>nil) then begin
+          gdk_window_set_icon(AWindow, nil,
+                  FormIconGdiObject^.GDIBitmapObject,
+                  FormIconGdiObject^.GDIBitmapMaskObject);
+        end;
       end;
     end;
   end
@@ -4937,12 +4971,15 @@ begin
   fWindow := GetControlWindow(widget);
   //gc := gdk_gc_new(PgdkWindow(fWindow));
 
-  gdk_draw_pixmap(fwindow,
-    PGtkStyle(widget^.TheStyle)^.fg_gc[GTK_WIDGET_STATE (widget)],
-    pixmap,
-    0,0,
-    0,0,
-    pgtkwidget(widget)^.allocation.width, pgtkwidget(widget)^.allocation.height);
+  if fWindow<>nil then begin
+    gdk_draw_pixmap(fwindow,
+      PGtkStyle(widget^.TheStyle)^.fg_gc[GTK_WIDGET_STATE (widget)],
+      pixmap,
+      0,0,
+      0,0,
+      pgtkwidget(widget)^.allocation.width,
+      pgtkwidget(widget)^.allocation.height);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -4968,7 +5005,9 @@ begin
 
   Image := gtk_Object_get_data(pgtkobject(widget),'Image');
   if Image = nil then begin
-    Image := gdk_image_get(GetControlWindow(widget),0,0,
+    fWindow:=GetControlWindow(widget);
+    if fWindow=nil then exit;
+    Image := gdk_image_get(fWindow,0,0,
                             widget^.allocation.width,widget^.allocation.height);
     if Image = nil then exit;
     gtk_Object_set_data(pgtkobject(Widget),'Image',Image);
@@ -4984,7 +5023,8 @@ begin
   pFixed := GetFixedWidget(Widget);
   if pFixed <> nil then Widget:=PgtkWidget(pFixed);
   fWindow := GetControlWindow(Widget);
-  gdk_draw_image(fwindow,
+  if fWindow<>nil then
+    gdk_draw_image(fwindow,
       PGtkStyle(widget^.TheStyle)^.fg_gc[GTK_WIDGET_STATE (Widget)], 
       Image,
       TLMSetGetPixel(Data^).X,TLMSetGetPixel(data^).Y,
@@ -5007,6 +5047,7 @@ var
   Widget : PgtkWidget;
   GDKColor: TGDKColor;
   GdkColorContext: PGdkColorContext;
+  AWindow: PGdkWindow;
 begin
   aDC := TDeviceContext(TCanvas(Sender).Handle);
   if aDC = nil then exit;
@@ -5014,7 +5055,9 @@ begin
 
   Image := gtk_Object_get_data(pgtkobject(Widget),'Image');
   if Image = nil then begin
-    Image := gdk_image_get(GetControlWindow(widget),0,0,
+    AWindow:=GetControlWindow(widget);
+    if AWindow=nil then exit;
+    Image := gdk_image_get(AWindow,0,0,
       widget^.allocation.width,widget^.allocation.height);
     if Image = nil then exit;
     gtk_Object_set_data(pgtkobject(Widget),'Image',Image);
@@ -5486,17 +5529,6 @@ begin
         end;
       end;
            
-    {csImage:  MG: TImage is not a TWinControl. This code makes no sense. ToDo.
-      begin
-        //Image changed.
-        Widget := PgtkWidget(TBitmap(Sender).Handle);
-        Image := gdk_image_get(GetControlWindow(widget),0,0,
-                            widget^.allocation.width,widget^.allocation.height);
-        if Handle = nil 
-        then TWinControl(sender).Handle := THandle(gtk_image_new(Image,nil))
-        else gtk_image_set(PgtkImage(handle),Image,nil);
-      end;}
-      
     csSpinEdit:
       Begin
         // ToDo: set climb_rate
@@ -5851,6 +5883,8 @@ begin
         //force creation
         gtk_widget_realize(ClientWidget);
         TheWindow := GetControlWindow(ClientWidget);
+        if TheWindow=nil then
+          RaiseException('TgtkObject.CreateDCForWidget: Unable to realize GdkWindow');
       end;
     end else
       ClientWidget:=TheWidget;
@@ -6542,6 +6576,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.281  2002/11/09 18:13:33  lazarus
+  MG: fixed gdkwindow checks
+
   Revision 1.280  2002/11/09 15:02:07  lazarus
   MG: fixed LM_LVChangedItem, OnShowHint, small bugs
 
