@@ -205,6 +205,8 @@ type
 
 const
   // Cursor constants
+  crHigh        = TCursor(0);
+  
   crDefault     = TCursor(0);
   crNone        = TCursor(-1);
   crArrow       = TCursor(-2);
@@ -228,7 +230,8 @@ const
   crHelp        = TCursor(-20);
   crHandPoint   = TCursor(-21);
   crSizeAll     = TCursor(-22);
-
+  
+  crLow         = TCursor(-22);
 
 type
   TWndMethod = procedure(var TheMessage : TLMessage) of Object;
@@ -1379,6 +1382,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.83  2002/10/30 12:37:25  lazarus
+  MG: mouse cursors are now allocated on demand
+
   Revision 1.82  2002/10/26 15:15:45  lazarus
   MG: broke LCL<->interface circles
 
