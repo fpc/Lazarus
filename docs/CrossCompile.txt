@@ -6,43 +6,64 @@ UNDER CONSTRUCTION
 
 Thanks to Vincent Snijders for the hints.
 
-1. Download the GNU Binary Utility Development Utilities. Most packages are
-outdated. So probably you want to compile them yourself:
+1. Download the GNU Binary Utility Development Utilities. Some rpms, debs, tgz
+packages are outdated. The following works:
+  http://jrfonseca.dyndns.org/projects/gnu-win32/documentation/cross/
+Download all files into a directory. There is a small bug in xmingw32.mak.
+Search for '#$(GCC' and remove the '#'. Then do as root 'make -f xmingw.mak'.
+This will download the binutils, the gcc and the mingw32 files and will compile
+them. After installation link the following files:
 
-Download sources:
-  []$ export CVSROOT=:pserver:anoncvs@sources.redhat.com:/cvs/src
-  []$ cvs login  # password is anoncvs
-  []$ cvs -z3 co binutils
-  
-Configure:
-  []$ rm -rf build-binutils # remove up old build directory
-  []$ mkdir build-binutils  # create a build directory (important)
-  []$ cd build-binutils
-  []$ ../src/configure --prefix=/usr/bin/crosswin32 --target=i386-pc-winnt
-  
-Build:
-  []$ make
-  
-Install:
-  []$ su    # become root to install
-  []$ rm -rf /usr/bin/crosswin32  # remove old install
-  []$ rm -rf /usr/bin/{asw,ldw,windres,dlltool}
-  []$ make install
-  []$ ln -s /usr/bin/crosswin32/bin/i386-pc-winnt-as /usr/bin/asw
-  []$ ln -s /usr/bin/crosswin32/bin/i386-pc-winnt-ld /usr/bin/ldw
-  ToDo: dlltool, windres
+[]$ ln -s /usr/local/xmingw32/bin/mingw32-as /usr/bin/asw
+[]$ ln -s /usr/local/xmingw32/bin/mingw32-ld /usr/bin/ldw
+[]$ ln -s /usr/local/xmingw32/bin/mingw32-windres /usr/bin/windres
+[]$ ln -s /usr/local/xmingw32/bin/mingw32-dlltool /usr/bin/dlltool
 
-   
-4. Download or compile the win32 units (ppw,ow files for rtl, fcl). These files
+
+2. Download or compile the win32 units (ppw,ow files for rtl, fcl). These files
 must be compatible (depending on the compiler probably 1.0.8 as of now).
 Install them next to the linux units in /usr/lib/fpc/1.0.x/units.
 
-4.1 Download the win32 units: Currently you can download the win32 snapshots at
+
+2.1 Download the win32 units: Currently you can download the win32 snapshots at
 ftp://ftp.freepascal.org/pub/fpc/snapshot/v10/win32-i386/
+and unzip them into $UsrLib/fpc/$FPCVersion/units/win32. $UsrLib is the place
+where fpc is installed. Probably /usr/lib/ or /usr/local/lib.
 
-4.2 Compile the win32 units:
-Download the fpc sources. If you have already download them for linux, you can
-use them also for win32, because the compiled files have different names.
 
-  ToDo: rtl, fcl, ...
-  
+2.2 Compile the win32 units:
+Download the fpc sources, compile them and install them. This makes sure your
+compiler is compatible to the source. The same source directory can be used for
+win32, because the output files have different names (.ppu <> .ppw, .o <> .ow).
+Then compile the win32 units (.ppw, .pw):
+
+[]$ cd compiler; make cycle OS_TARGET=win32; cd ..
+[]$ make fcl packages OS_TARGET=win32
+
+Install the units:
+
+[]$ make -C rtl install OS_TARGET=win32
+[]$ make -C fcl install OS_TARGET=win32
+
+This will create the correct directory structure, but probably in the wrong
+directory. Move the /usr/local/lib/fpc/<version>/i386-win32/units directory to
+your fpc install directory. For example if your linux units (e.g. classes.ppu)
+is located in /usr/lib/fpc/1.0.8/units/linux/ then do
+[]$ rm -rf /usr/lib/fpc/1.0.8/units/win32
+[]$ mv /usr/local/lib/fpc/<version>/i386-win32/units /usr/lib/fpc/1.0.8/units/win32
+
+
+3. Making /etc/fpc.cfg target independent:
+Make sure that your /etc/fpc.cfg contains target independent paths:
+-Fu/usr/lib/fpc/$version/units/$target
+-Fu/usr/lib/fpc/$version/units/$target/*
+-Fu/usr/lib/fpc/$version/units/$target/rtl
+You should now be able to cross compile simple pascal programs with
+'ppc386 -Twin32 pascalfile.pas'
+
+
+4. Compiling the LCL
+4.1 Command line: cd lazarus/lcl; make OS_TARGET=win32
+4.2 In the IDE: Set LCL to Clean+Build, set LCL interface to win32 and
+    set 'Target OS' to win32. Then build lazarus.
+

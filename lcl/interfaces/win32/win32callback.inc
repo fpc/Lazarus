@@ -53,8 +53,6 @@ End;
  ------------------------------------------------------------------------------}
 Function WindowProc(Window: HWnd; Msg: UInt; WParam: WParam; LParam: LParam): LResult; stdcall;
 Var
-  C: Cardinal;
-  List: TMsgArray;
   LMessage: TLMessage;
   R: TRect;
   OwnerObject: TObject;
@@ -547,6 +545,9 @@ end;
 
 {
   $Log$
+  Revision 1.30  2003/06/28 16:20:19  mattias
+  fixed some win32 intf warnings
+
   Revision 1.29  2003/06/28 06:33:11  mattias
   fixed control resizing from Karl Brandt
 

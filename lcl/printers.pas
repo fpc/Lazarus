@@ -196,8 +196,10 @@ end;
 
 { Close current page and print document }
 procedure TPrinter.EndDoc;
+{$IFDEF Linux}
 var
-   printcmd: String;
+  printcmd: String;
+{$ENDIF}
 begin
 
     // print it using postscript

@@ -348,7 +348,7 @@ Function TWin32Object.IntSendMessage3(LM_Message: Integer; Sender: TObject; Data
 Var
   XPMFIle : TFileStream;
   Bitmap: HBITMAP; // Pixel map type image
-  CBI: COMBOBOXINFO;
+  //CBI: COMBOBOXINFO;
   DC: HDC;
   Handle: HWND;
   I, Num: Integer;
@@ -356,7 +356,7 @@ Var
   LVI: LV_ITEM;
   PStr, PStr2: PChar;
   R, R2: TRECT;
-  SelectionMode: DWORD; // currently only used for listboxes
+  //SelectionMode: DWORD; // currently only used for listboxes
   TBB: TBBUTTON;
   WindowStyle: Integer; //used by LM_SETTABPOSITION
   OldPageIndex: Integer; //used by LM_SETITEMINDEX of a csNotebook
@@ -849,7 +849,8 @@ activate_time :	the time at which the activation event occurred.
         End;
         LM_SETSELSTART:
         Begin
-          If (Sender Is TControl) And (TControl(Sender).FCompStyle = csComboBox) Then
+          If (Sender Is TControl)
+          And (TControl(Sender).FCompStyle = csComboBox) Then
             SendMessage(Handle, CB_SETEDITSEL, 0, MakeLParam(Word(Integer(Data)), -1));
         End;
         LM_SETSELLEN:
@@ -959,7 +960,9 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32Object.SetCallback(Msg: LongInt; Sender: TObject);
 Var
+  {$IFDEF VER1_1}
   List: TMsgArray;
+  {$ENDIF}
   Window: HWnd;
 Begin
   Assert(False, 'Trace:TWin32Object.SetCallback - Start');
@@ -971,6 +974,7 @@ Begin
     Window := (Sender As TCustomForm).Handle
   Else
     Window := (Sender as TWinControl).Handle;
+  if Window=0 then exit;
 
   {$IFDEF VER1_1}
     List := TMsgArray(GetProp(Window, 'MsgList'));
@@ -992,7 +996,9 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32Object.RemoveCallbacks(Sender: TObject);
 Var
+  {$IFDEF VER1_1}
   List: TMsgArray;
+  {$ENDIF}
   Window: HWnd;
 Begin
   If Sender Is TControlCanvas Then
@@ -1001,6 +1007,7 @@ Begin
     Window := (Sender As TCustomForm).Handle
   Else
     Window := (Sender as TWinControl).Handle;
+  if Window=0 then exit;
 
   {$IFDEF VER1_1}
     List := TMsgArray(GetProp(Window, 'MsgList'));
@@ -1061,6 +1068,8 @@ Begin
     MainForm := Application.MainForm
   Else If FMainForm <> Nil then
     MainForm := FMainForm;
+  if MainForm=nil then exit;
+  // ToDo:
 End;
 
 {------------------------------------------------------------------------------
@@ -1601,18 +1610,18 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32Object.CreateComponent(Sender: TObject);
 Var
-  AccelIndex: Byte;
+  //AccelIndex: Byte;
   AProcess: TProcess;
   Buddy, Handle, Window: HWnd;
   Caption : String;
-  CompStyle, I, J, K, Left, Top: Integer;
+  CompStyle, Left, Top: Integer;
   DC: HDC;
   Flags: DWord;
   Height, Width: Integer;
   Parent: HWND;
   PStr, StrTemp: PChar;
   R: TRect;
-  TCI: TC_ITEM;
+  //TCI: TC_ITEM;
 Const
   BitsPerPixel: Array[Boolean] Of Cardinal = (3, 1);
 Begin
@@ -1685,6 +1694,7 @@ Begin
     csAlignment:
     Begin
       Assert(False, 'Trace:TODO: Code csAlignment.  If anyone knows how to do this, please do.');
+      Handle:=TWinControl(Sender).Handle;
       GetClientRect(Handle, R);
       MoveWindow(Handle, R.Right - Left, R.Bottom - Top, (R.Right - R.Left) - (Left Div 2), (R.Bottom - R.Top) - (Top Div 2), True);
       Window := Handle;
@@ -2659,6 +2669,9 @@ End;
 
 {
   $Log$
+  Revision 1.62  2003/06/28 16:20:19  mattias
+  fixed some win32 intf warnings
+
   Revision 1.61  2003/06/28 13:11:40  mattias
   fixed destroying windows from Micha
 

@@ -132,7 +132,8 @@ Begin
   Until InsPt = 0;
 End;
 
-Function Split(Const Str: String; SplitStr: String; Count: Integer; Const CaseSensitive: Boolean): TStringList;
+Function Split(Const Str: String; SplitStr: String; Count: Integer;
+  Const CaseSensitive: Boolean): TStringList;
 Var
   LastP, P: Byte;
   OrigCt: Integer;
@@ -148,6 +149,7 @@ Begin
   Else
     S := Str;
   P := Pos(SplitStr, Str);
+  LastP:=0;
   Repeat
     S := Copy(S, P + 1, Length(S));
     Result.Capacity := Result.Count;

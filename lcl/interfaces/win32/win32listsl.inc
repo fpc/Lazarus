@@ -33,6 +33,8 @@ Function DefaultCompareFunc(A, B: HWND): Integer; CDecl;
 Var
   AStr, BStr: PChar;
 Begin
+  AStr:=nil;
+  BStr:=nil;
   GetWindowText(A, AStr, GetWindowTextLength(A) + 1);
   GetWindowText(B, BStr, GetWindowTextLength(B) + 1);
   Result := StrComp(AStr, BStr);
@@ -377,6 +379,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2003/06/28 16:20:19  mattias
+  fixed some win32 intf warnings
+
   Revision 1.8  2003/01/01 10:46:59  mattias
   fixes for win32 listbox/combobox from Karl Brandt
 

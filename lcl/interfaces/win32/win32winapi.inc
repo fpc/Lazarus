@@ -639,6 +639,9 @@ Begin
     hdcBitmap := CreateCompatibleDC(hdcScreen);
     hbmBitmap := CreateCompatibleBitmap(hdcScreen, Width, Height);
     OldObject := SelectObject(hdcBitmap, hbmBitmap);
+    if OldObject<>0 then begin
+      // ToDo: Do we need to free anything here?
+    end;
     CreateColorMap;
     DoDrawBitmap;
     DestroyColorMap;
@@ -2322,6 +2325,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.35  2003/06/28 16:20:19  mattias
+  fixed some win32 intf warnings
+
   Revision 1.34  2003/06/24 15:57:55  mattias
   applied win32 menu patch from Micha Nelissen
 
