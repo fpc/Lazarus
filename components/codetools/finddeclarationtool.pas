@@ -87,7 +87,7 @@ interface
 { $DEFINE CTDEBUG}
 { $DEFINE ShowTriedFiles}
 { $DEFINE ShowTriedContexts}
-{ $DEFINE ShowExprEval}
+{$DEFINE ShowExprEval}
 { $DEFINE ShowFoundIdentifier}
 { $DEFINE ShowCachedIdentifiers}
 
@@ -122,7 +122,10 @@ type
     fdfIgnoreMissingParams, // found proc fits, even if parameters are missing
     fdfFirstIdentFound,     // a first identifier was found, now searching for
                             // the a better one (used for proc overloading)
-    fdfOnlyCompatibleProc   // incompatible procs are ignored
+    fdfOnlyCompatibleProc,  // incompatible procs are ignored
+    fdfNoExceptionOnStringChar// the bracket operator after a predefined string
+                            // is of type char, which is also predefined, so it
+                            // can not be resolved normally
     );
   TFindDeclarationFlags = set of TFindDeclarationFlag;
 
@@ -145,7 +148,7 @@ type
     xtExtended, xtCurrency, xtComp, xtInt64, xtCardinal, xtQWord, xtBoolean,
     xtByteBool, xtLongBool, xtString, xtAnsiString, xtShortString, xtWideString,
     xtPChar, xtPointer, xtConstOrdInteger, xtConstString, xtConstReal,
-    xtConstSet, xtConstBoolean, xtNil);
+    xtConstSet, xtConstBoolean, xtAddress, xtNil);
   TExpressionTypeDescs = set of TExpressionTypeDesc;
   
 const
@@ -154,7 +157,7 @@ const
     'Extended', 'Currency', 'Comp', 'Int64', 'Cardinal', 'QWord', 'Boolean',
     'ByteBool', 'LongBool', 'String', 'AnsiString', 'ShortString', 'WideString',
     'PChar', 'Pointer', 'ConstOrdInt', 'ConstString', 'ConstReal', 'ConstSet',
-    'ConstBoolean', 'Nil'
+    'ConstBoolean', '@-Operator', 'Nil'
   );
 
   xtAllTypes = [xtContext..High(TExpressionTypeDesc)];
@@ -169,7 +172,7 @@ const
   xtAllRealConvertibles = xtAllRealTypes+xtAllIntegerTypes;
   xtAllStringConvertibles = xtAllStringTypes+[xtChar,xtPChar];
   xtAllBooleanConvertibles = xtAllBooleanTypes+[xtConstBoolean];
-  xtAllPointerConvertibles = xtAllPointerTypes+[xtPChar];
+  xtAllPointerConvertibles = xtAllPointerTypes+[xtPChar,xtAddress];
 
 type
   { TExpressionType is used for compatibility check
@@ -327,8 +330,6 @@ type
     function FindIdentifierInUsedUnit(const AnUnitName: string;
       Params: TFindDeclarationParams): boolean;
     function FindEndOfVariable(StartPos: integer): integer;
-    function FindTypeOfVariable(StartPos: integer;
-      Params: TFindDeclarationParams; var EndPos: integer): TFindContext;
     function FindExpressionTypeOfVariable(StartPos: integer;
       Params: TFindDeclarationParams; var EndPos: integer): TExpressionType;
     function ConvertNodeToExpressionType(Node: TCodeTreeNode;
@@ -1458,7 +1459,6 @@ writeln('');
                       +(fdfGlobals*Params.Flags);
         if CurAtomType=atPreDefIdentifier then
           Exclude(Params.Flags,fdfExceptionOnNotFound);
-//writeln('  AAA ',Result.Node=Params.ContextNode,' ',Result.Node.DescAsString,',',Params.ContextNode.DescAsString);
         if Result.Node=Params.ContextNode then begin
           // there is no special context -> also search in parent contexts
           Params.Flags:=Params.Flags
@@ -1552,12 +1552,14 @@ writeln('');
 
   atEdgedBracketClose:
     begin
-      // for example:  a[]
-      //   this could be:
-      //     1. ranged array
-      //     2. dynamic array
-      //     3. indexed pointer
-      //     4. default property
+      { for example:  a[]
+          this could be:
+            1. ranged array
+            2. dynamic array
+            3. indexed pointer
+            4. default property
+            5. string character
+      }
       if not (NextAtomType in [atSpace,atPoint,atAs,atUp,atRoundBracketClose,
         atRoundBracketOpen,atEdgedBracketClose,atEdgedBracketOpen]) then
       begin
@@ -1586,12 +1588,28 @@ writeln('');
             Params.SetIdentifier(Self,'[',nil);
             Params.ContextNode:=Result.Node;
             Result.Tool.FindIdentifierInContext(Params);
-            Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,Params.NewNode);
+            Result:=Params.NewCodeTool.FindBaseTypeOfNode(
+                                                         Params,Params.NewNode);
             Params.Load(OldInput);
           end;
-
+          
+        ctnIdentifier:
+          begin
+            MoveCursorToNodeStart(Result.Node);
+            ReadNextAtom;
+            if UpAtomIs('STRING') or UpAtomIs('ANSISTRING')
+            or UpAtomIs('SHORTSTRING') then begin
+              if not (fdfNoExceptionOnStringChar in Params.Flags) then begin
+                MoveCursorToCleanPos(CurAtom.StartPos);
+                ReadNextAtom;
+                RaiseException('illegal qualifier');
+              end;
+            end;
+          end;
+          
         else
           MoveCursorToCleanPos(CurAtom.StartPos);
+          ReadNextAtom;
           RaiseException('illegal qualifier');
         end;
       end;
@@ -2769,16 +2787,10 @@ begin
         break;
     until false;
     if not AtomIsChar('.') then break;
+    ReadNextAtom;
   until false;
-  Result:=CurPos.StartPos;
-end;
-
-function TFindDeclarationTool.FindTypeOfVariable(StartPos: integer;
-  Params: TFindDeclarationParams; var EndPos: integer): TFindContext;
-begin
-  EndPos:=FindEndOfVariable(StartPos);
-  MoveCursorToCleanPos(EndPos);
-  Result:=FindContextNodeAtCursor(Params);
+  UndoReadNextAtom;
+  Result:=CurPos.EndPos;
 end;
 
 function TFindDeclarationTool.FindExpressionTypeOfVariable(StartPos: integer;
@@ -2786,6 +2798,7 @@ function TFindDeclarationTool.FindExpressionTypeOfVariable(StartPos: integer;
 var
   OldInputFlags: TFindDeclarationFlags;
   IsPredefinedIdentifier: boolean;
+  CouldBeStringChar: boolean;
 begin
   OldInputFlags:=Params.Flags;
   IsPredefinedIdentifier:=WordIsPredefinedIdentifier.DoIt(@Src[StartPos]);
@@ -2797,17 +2810,35 @@ writeln('[TFindDeclarationTool.FindExpressionTypeOfVariable] ',
     Exclude(Params.Flags,fdfExceptionOnNotFound)
   else
     Include(Params.Flags,fdfExceptionOnNotFound);
-  Result.Context:=FindTypeOfVariable(StartPos,Params,EndPos);
+  EndPos:=FindEndOfVariable(StartPos);
+  CouldBeStringChar:=AtomIsChar(']');
+  MoveCursorToCleanPos(EndPos);
+  Include(Params.Flags,fdfNoExceptionOnStringChar);
+  Result.Context:=FindContextNodeAtCursor(Params);
   Params.Flags:=OldInputFlags;
-  if Result.Context.Node=nil then begin
+  if Result.Context.Node<>nil then begin
+    if CouldBeStringChar then begin
+      CouldBeStringChar:=(Result.Context.Node.Desc=ctnIdentifier);
+      if CouldBeStringChar then begin
+        MoveCursorToNodeStart(Result.Context.Node);
+        ReadNextAtom;
+        CouldBeStringChar:=UpAtomIs('STRING') or UpAtomIs('ANSISTRING')
+                         or UpAtomIs('SHORTSTRING');
+        if CouldBeStringChar then begin
+          Result.Context.Node:=nil;
+          Result.Desc:=xtChar;
+          exit;
+        end;
+      end;
+    end;
+    Result:=Result.Context.Tool.ConvertNodeToExpressionType(Result.Context.Node,
+                                                          Params);
+  end else begin
     if IsPredefinedIdentifier then begin
       Result:=CleanExpressionType;
       Result.Desc:=PredefinedIdentToTypeDesc(@Src[StartPos]);
     end else
       RaiseException('identifier expected, but '+GetAtom+' found');
-  end else begin
-    Result:=Result.Context.Tool.ConvertNodeToExpressionType(Result.Context.Node,
-                                                          Params);
   end;
 end;
 
@@ -3568,6 +3599,7 @@ writeln('[TFindDeclarationTool.IsCompatible] B ',
 ' TargetType=',ExpressionTypeDescNames[TargetType.Desc],
 ' ExpressionType=',ExpressionTypeDescNames[ExpressionType.Desc]);
 {$ENDIF}
+  Result:=tcIncompatible;
   if (TargetType.Desc=ExpressionType.Desc)
   and (not (TargetType.Desc in [xtNone,xtContext])) then begin
     Result:=tcExact;
