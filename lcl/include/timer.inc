@@ -18,7 +18,7 @@
  *****************************************************************************
 
 }
-{
+(*{
   TTimer Delphi compatibility:
 
     nearly 100% compatible, only WndProc is missing
@@ -181,11 +181,15 @@ begin
     UpdateTimer;
   end;
 end;
+*)
 
 // included by extctrls.pp
 
 {
   $Log$
+  Revision 1.8  2002/10/24 10:27:52  lazarus
+  MG: broke extctrls.pp <-> forms.pp circle
+
   Revision 1.7  2002/10/15 16:01:36  lazarus
   MG: fixed timers
 

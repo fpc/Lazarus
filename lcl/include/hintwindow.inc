@@ -25,7 +25,7 @@
 
 constructor THintWindow.Create(AOwner: TComponent);
 var
-  TheTimer: TTimer;
+  TheTimer: TCustomTimer;
 begin
   inherited Create(AOwner);
   fCompStyle := csHintWindow;
@@ -35,7 +35,7 @@ begin
   Caption := 'THintWindow';
   SetBounds(1,1,25,25);
   FHideInterval := 3000;
-  TheTimer := TTimer.Create(self);
+  TheTimer := TCustomTimer.Create(self);
   FAutoHideTimer := TheTimer;
   TheTimer.Interval := HideInterval;
   TheTimer.Enabled := False;
@@ -53,21 +53,21 @@ Procedure THintWindow.SetHideInterval(Value : Integer);
 Begin
   FHideInterval := Value;
   if FAutoHideTimer<>nil then
-    TTimer(FAutoHideTimer).Interval := FHideInterval;
+    TCustomTimer(FAutoHideTimer).Interval := FHideInterval;
 end;
 
 Procedure THintWindow.SetAutoHide(Value : Boolean);
 Begin
   FAutoHide := Value;
   if not (value) and (FAutoHideTimer<>nil) then
-    TTimer(FAutoHideTimer).Enabled := False;
+    TCustomTimer(FAutoHideTimer).Enabled := False;
 end;
 
 
 Procedure THintWindow.AutoHideHint(Sender : TObject);
 Begin
   if FAutoHideTimer<>nil then
-    TTimer(FAutoHideTimer).Enabled := False;
+    TCustomTimer(FAutoHideTimer).Enabled := False;
   if Visible then
     Visible := False;//Hide;
 End;
@@ -112,8 +112,8 @@ begin
     SetBounds(ARect.Left, ARect.Top,
               ARect.Right - ARect.Left, ARect.Bottom - ARect.Top);
     Visible := True;
-    TTimer(FAutoHideTimer).Enabled := False;
-    TTimer(FAutoHideTimer).Enabled := FAutoHide;
+    TCustomTimer(FAutoHideTimer).Enabled := False;
+    TCustomTimer(FAutoHideTimer).Enabled := FAutoHide;
   finally
     FActivating := False;
   end;

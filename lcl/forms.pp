@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, Controls, VCLGlobals, SysUtils, GraphType, Graphics, Menus,
-  LCLLinux, LCLType, LMessages;
+  LCLLinux, LCLType, LMessages, CustomTimer;
 
 type
   TPosition = (poDesigned, poDefault, poDefaultPosOnly, poDefaultSizeOnly,
@@ -514,7 +514,7 @@ implementation
 
 
 uses 
-  StdCtrls, Interfaces, LResources, Dialogs, ExtCtrls, Math;
+  StdCtrls, Interfaces, LResources, Dialogs, {ExtCtrls, }Math;
 
 const
   FocusMessages : Boolean = true;
