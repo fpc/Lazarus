@@ -2466,15 +2466,15 @@ begin
     if (not AWinControl.Showing) or (not AWinControl.HandleAllocated) then Exit;
   end;
 
-  if (AWinControl is TCustomForm)
-  or (AWinControl.FParentWindow <> 0)
-  then UpdateShowing;
+  if ((AWinControl is TCustomForm) and (AWinControl.Parent=nil))
+  or (AWinControl.FParentWindow <> 0) then
+    UpdateShowing;
 end;
 
 {------------------------------------------------------------------------------}
 {  TWinControl InsertControl                                                   }
 {------------------------------------------------------------------------------}
-Procedure TWinControl.InsertControl(AControl : TControl);
+Procedure TWinControl.InsertControl(AControl: TControl);
 Begin
   InsertControl(AControl,ControlCount);
 End;
@@ -2502,19 +2502,19 @@ begin
   Perform(CM_CONTROLCHANGE, WParam(AControl), LParam(True));
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl removeControl                                                   }
-{------------------------------------------------------------------------------}
-Procedure TWinControl.RemoveControl(AControl : TControl);
+{------------------------------------------------------------------------------
+  TWinControl removeControl
+------------------------------------------------------------------------------}
+Procedure TWinControl.RemoveControl(AControl: TControl);
+var
+  AWinControl: TWinControl;
 Begin
   Perform(CM_CONTROLCHANGE, WParam(AControl), LParam(False));
-  if AControl is TWinControl then
-    with TWinControl(AControl) do
-    begin
-      RemoveFocus(True);
-      if HandleAllocated then DestroyHandle;
-    end
-  else
+  if AControl is TWinControl then begin
+    AWinControl:=TWinControl(AControl);
+    AWinControl.RemoveFocus(True);
+    if AWinControl.HandleAllocated then AWinControl.DestroyHandle;
+  end else
     if HandleAllocated then
       AControl.InvalidateControl(AControl.Visible, False, True);
   Remove(AControl);
@@ -2522,9 +2522,9 @@ Begin
   Realign;
 End;
 
-{------------------------------------------------------------------------------}
-{  TWinControl AlignControl                                                    }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl AlignControl
+------------------------------------------------------------------------------}
 procedure TWinControl.AlignControl(AControl: TControl);
 var
   ARect: TRect;
@@ -3793,6 +3793,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.263  2004/08/18 20:49:02  mattias
+  simple forms can now be child controls
+
   Revision 1.262  2004/08/17 19:01:36  mattias
   gtk intf now ignores size notifications of unrealized widgets
 

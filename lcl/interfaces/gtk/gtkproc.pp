@@ -835,6 +835,7 @@ var
 procedure Set_RC_Name(Sender: TObject; AWidget: PGtkWidget);
 var RCName: string;
   AComponent: TComponent;
+  ACustomForm: TCustomForm;
 begin
   {$IFDEF NoStyle}
   exit;
@@ -858,11 +859,14 @@ begin
     gtk_widget_set_name(AWidget,PChar(RCName));
     gtk_widget_set_rc_style(AWidget);
   end;
-  if (Sender is TCustomForm)
-  and ((Application.MainForm=TCustomForm(Sender))
-    or (Application.MainForm=nil))
-  then
-    UpdateSysColorMap(AWidget);
+  if (Sender is TCustomForm) then begin
+    ACustomForm:=TCustomForm(Sender);
+    if (ACustomForm.Parent=nil)
+    and ((Application.MainForm=ACustomForm)
+      or (Application.MainForm=nil))
+    then
+      UpdateSysColorMap(AWidget);
+  end;
 end;
 
 {$IFDEF UNIX}

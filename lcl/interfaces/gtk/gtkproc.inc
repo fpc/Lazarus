@@ -4260,7 +4260,8 @@ begin
   if (TheForm=nil) or (not (TheForm is TCustomForm))
   or (not TheForm.Visible) or (TheForm.Parent<>nil)
   or (csDesigning in TheForm.ComponentState)
-  then exit;
+  then
+    exit;
   
   // check if modal form
   if fsModal in TheForm.FormState then begin
@@ -7129,6 +7130,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.294  2004/08/18 20:49:02  mattias
+  simple forms can now be child controls
+
   Revision 1.293  2004/08/17 19:01:37  mattias
   gtk intf now ignores size notifications of unrealized widgets
 

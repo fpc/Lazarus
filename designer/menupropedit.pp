@@ -123,30 +123,15 @@ begin
   MenuEditorDlg.Show;
 end;
 
-//This function find the Designer of a Component
-function GetDesignerOfComponent(aComponent : TComponent): TComponentEditorDesigner;
+//This function finds the Designer of a Component
+function GetDesignerOfComponent(aComponent: TComponent): TComponentEditorDesigner;
 var
   OwnerForm: TCustomForm;
 begin
   Result:=nil;
-  if (aComponent is TCustomForm) and (TCustomForm(aComponent).Parent=nil) then
-      OwnerForm:=TCustomForm(aComponent)
-  else
-  begin
-    OwnerForm:=TCustomForm(aComponent.Owner);
-    if OwnerForm=nil then
-    begin
-      raise Exception.Create('TComponentInterface.GetDesigner: '
-        +aComponent.Name+' Owner=nil');
-    end;
-
-    if not (OwnerForm is TCustomForm) then
-    begin
-      raise Exception.Create('TComponentInterface.GetDesigner: '
-          +aComponent.Name+' OwnerForm='+OwnerForm.ClassName);
-    end;
-    Result:=TComponentEditorDesigner(OwnerForm.Designer);
-  end;
+  OwnerForm:=GetDesignerForm(AComponent);
+  if (OwnerForm<>nil) then
+    Result:=OwnerForm.Designer as TComponentEditorDesigner;
 end;
 
 

@@ -1014,9 +1014,9 @@ var
   OwnerComponent: TComponent;
 begin
   Result:=nil;
-  OwnerComponent:=AComponent.Owner;
-  if OwnerComponent=nil then
-    OwnerComponent:=AComponent;
+  OwnerComponent:=AComponent;
+  while OwnerComponent.Owner<>nil do
+    OwnerComponent:=OwnerComponent.Owner;
   if OwnerComponent is TCustomForm then
     Result:=TCustomForm(OwnerComponent)
   else
@@ -1628,14 +1628,11 @@ begin
   or (FSelection.Count <= 0) then Exit;
   
   Instance := FSelection[0];
-  if Instance is TCustomForm
-  then CustomForm:=TCustomForm(Instance)
-  else if (Instance is TComponent)
-      and (TComponent(Instance).Owner <> nil)
-      and (TComponent(Instance).Owner is TCustomForm)
-      then CustomForm:=TCustomForm(TComponent(Instance).Owner)
-      else CustomForm:=nil;
-      
+  if Instance is TComponent then
+    CustomForm:=GetDesignerForm(TComponent(Instance))
+  else
+    CustomForm:=nil;
+
   if (CustomForm<>nil) and (CustomForm.Designer<>nil) then
     CustomForm.Designer.Modified;
 end;

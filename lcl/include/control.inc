@@ -51,9 +51,6 @@ procedure TControl.BeginDrag(Immediate: Boolean; Threshold: Integer);
 var
   P : TPoint;
 begin
-  if (Self is TCustomForm) and (FDragKind <> dkDock) then
-    raise EInvalidOperation.Create('Forms can not be dragged, only docked');
-
   // start a drag operation, if not already running
   if (DragControl = nil) then begin
 
@@ -102,8 +99,10 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.DoDock(NewDockSite: TWinControl; var ARect: TRect);
 begin
-  BoundsRect := ARect;
   if (NewDockSite = nil) then Parent := nil;
+  //debugln('TControl.DoDock BEFORE MOVE ',Name,' BoundsRect=',dbgs(BoundsRect),' NewRect=',dbgs(ARect));
+  BoundsRect := ARect;
+  //debugln('TControl.DoDock AFTER MOVE ',Name,' BoundsRect=',dbgs(BoundsRect),' NewRect=',dbgs(ARect));
 end;
 
 {------------------------------------------------------------------------------
@@ -968,13 +967,11 @@ Function TControl.PerformTab(ForwardTab: boolean): Boolean;
   Function TopLevelAncestor(TopControl : TControl) : TWinControl;
   begin
     Result := nil;
-
-    If TopControl = nil then
-      exit;
-
-    If TopControl is TForm then
-      Result := TForm(TopControl)
-    else
+    If TopControl = nil then exit;
+    If (TopControl.Parent=nil) then begin
+      if TopControl is TWinControl then
+        Result := TWinControl(TopControl)
+    end else
       Result := TopLevelAncestor(TopControl.Parent);
   end;
 
@@ -2852,7 +2849,7 @@ begin
   // create new float dock site and dock this control into it.
   if Result then begin
     FloatHost := CreateFloatingDockSite(TheScreenRect);
-    //debugln('TControl.ManualFloat A '+Name,':',ClassName,' ',dbgs(TheScreenRect));
+    debugln('TControl.ManualFloat A '+Name,':',ClassName,' ',dbgs(TheScreenRect),' FloatHost=',dbgs(FloatHost<>nil));
     if FloatHost<>nil then
       Dock(FloatHost,Rect(0,0,FloatHost.ClientWidth,FloatHost.ClientHeight))
     else
@@ -3230,6 +3227,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.210  2004/08/18 20:49:02  mattias
+  simple forms can now be child controls
+
   Revision 1.209  2004/08/18 09:08:34  mattias
   fixed deleting of collection item in prop editor
 

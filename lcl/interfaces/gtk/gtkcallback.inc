@@ -137,17 +137,19 @@ begin
   if (Data<>nil) then begin
     if TObject(Data) is TCustomForm then begin
       TheForm:=TCustomForm(Data);
-      TheWindow:=GetControlWindow(Widget);
+      if TheForm.Parent=nil then begin
+        TheWindow:=GetControlWindow(Widget);
 
-      //apart from none and sizeable, this will
-      //only work if WM supports motif flags
-      //properly, which very few actually do.
+        //apart from none and sizeable, this will
+        //only work if WM supports motif flags
+        //properly, which very few actually do.
 
-      Decor := GetWindowDecorations(TheForm);
-      Func := GetWindowFunction(TheForm);
+        Decor := GetWindowDecorations(TheForm);
+        Func := GetWindowFunction(TheForm);
 
-      gdk_window_set_decorations(TheWindow, decor);
-      gdk_window_set_functions(TheWindow, func);
+        gdk_window_set_decorations(TheWindow, decor);
+        gdk_window_set_functions(TheWindow, func);
+      end;
     end;
 
     if (TObject(Data) is TWinControl) then
@@ -2877,6 +2879,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.245  2004/08/18 20:49:02  mattias
+  simple forms can now be child controls
+
   Revision 1.244  2004/08/17 19:01:36  mattias
   gtk intf now ignores size notifications of unrealized widgets
 

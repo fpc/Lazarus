@@ -420,6 +420,7 @@ type
     procedure PaintWindow(dc : Hdc); override;
     procedure RequestAlign; override;
     procedure SetZOrder(Topmost: Boolean); override;
+    procedure SetParent(NewParent: TWinControl); override;
     procedure UpdateShowing; override;
     procedure DoFirstShow; virtual;
     procedure UpdateWindowState;
@@ -1280,15 +1281,16 @@ end;
 
 function GetDesignerForm(AComponent: TComponent): TCustomForm;
 var
-  Owner: TComponent;
+  OwnerComponent: TComponent;
 begin
   Result:=nil;
   if AComponent=nil then exit;
   if Assigned(OnGetDesignerForm) then
     Result:=OnGetDesignerForm(AComponent)
   else begin
-    Owner:=AComponent.Owner;
-    if Owner is TCustomForm then Result:=TCustomForm(Owner);
+    OwnerComponent:=AComponent;
+    while OwnerComponent.Owner<>nil do OwnerComponent:=OwnerComponent.Owner;
+    if OwnerComponent is TCustomForm then Result:=TCustomForm(OwnerComponent);
   end;
 end;
 

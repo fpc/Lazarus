@@ -446,6 +446,7 @@ end;
 procedure TGtkWidgetSet.ShowModal(Sender: TObject);
 var
   GtkWindow: PGtkWindow;
+  ACustomForm: TCustomForm;
 begin
   ReleaseMouseCapture;
    
@@ -458,11 +459,14 @@ begin
                           TColorDialog(Sender).Color);
     gtk_window_set_position(GtkWindow, GTK_WIN_POS_CENTER);
   end else if (Sender is TCustomForm) then begin
-    GtkWindow:=PGtkWindow(TCustomForm(Sender).Handle);
-    gtk_window_set_default_size(GtkWindow,
-                  Max(1,TControl(Sender).Width),Max(1,TControl(Sender).Height));
-    gtk_widget_set_uposition(PGtkWidget(GtkWindow),
-                             TControl(Sender).Left, TControl(Sender).Top);
+    ACustomForm:=TCustomForm(Sender);
+    if ACustomForm.Parent=nil then begin
+      GtkWindow:=PGtkWindow(ACustomForm.Handle);
+      gtk_window_set_default_size(GtkWindow,
+                            Max(1,ACustomForm.Width),Max(1,ACustomForm.Height));
+      gtk_widget_set_uposition(PGtkWidget(GtkWindow),
+                               ACustomForm.Left, ACustomForm.Top);
+    end;
   end else begin
     GtkWindow:=nil;
     DebugLn('WARNING: TGtkWidgetSet.ShowModal ',Sender.ClassName);
@@ -550,7 +554,8 @@ begin
           ATransientWindow^.IsModal:=(ATransientWindow^.SortIndex>=0)
             and (GTK_WIDGET_VISIBLE(PGtkWidget(Window)));
           if not ATransientWindow^.IsModal then begin
-            if LCLObject is TCustomForm then
+            if (LCLObject is TCustomForm)
+            and (TCustomForm(LCLObject).Parent=nil) then
               ATransientWindow^.SortIndex:=
                 Screen.CustomFormIndex(TCustomForm(LCLObject));
           end;
@@ -3152,13 +3157,13 @@ begin
 
       LM_AddChild :
       begin
-        Assert(False, 'Trace:Adding a child to Parent');
         {$IFDEF OldToolBar}
         If (TControl(Sender).Parent is TToolbar) then Begin
           exit;
         end;
         {$ENDIF}
         AParent := (Sender as TWinControl).Parent;
+        //debugln('LM_AddChild: ',TWinControl(Sender).Name,' ',dbgs(AParent<>nil));
         if Not Assigned(AParent) then Begin
           Assert(true, Format('Trace: [TGtkWidgetSet.IntSendMessage3] %s --> Parent is not assigned', [Sender.ClassName]));
         end
@@ -3202,7 +3207,7 @@ begin
           DebugLn('Inserted control ', TControl(Sender).Name);
         end;
     }
-        if (Sender is TCustomForm) then
+        if (Sender is TCustomForm) and (TCustomForm(Sender).Parent=nil) then
           BringFormToFront(Sender);
       end;
 
@@ -3479,18 +3484,17 @@ begin
 
       LM_SETFORMICON :
       begin
-        if Sender is TCustomForm then begin
+        if (Sender is TCustomForm) and (TCustomForm(Sender).Parent=nil) then
+        begin
           if (Handle<>0) and (Data<>nil) then begin
             FormIconGdiObject:=Data;
             //DebugLn('LM_SETFORMICON ',FormIconGdiObject<>nil,' ',pgtkWidget(Handle)^.Window<>nil);
             if (FormIconGdiObject<>nil) then begin
               AWindow:=GetControlWindow(PGtkWidget(Handle));
               if AWindow<>nil then begin
-                BeginGDKErrorTrap;
                 gdk_window_set_icon(AWindow, nil,
                   FormIconGdiObject^.GDIBitmapObject,
                   FormIconGdiObject^.GDIBitmapMaskObject);
-                EndGDKErrorTrap;
               end;
             end;
           end;
@@ -4278,7 +4282,9 @@ begin
   csFileDialog, csOpenFileDialog, csSaveFileDialog, csSelectDirectoryDialog,
   csPreviewFileDialog,
   csColorDialog,
-  csFontDialog  : gtk_window_set_title(pGtkWindow(p),PLabel);
+  csFontDialog:
+    if GtkWidgetIsA(p,GTK_WINDOW_TYPE) then
+      gtk_window_set_title(pGtkWindow(p),PLabel);
 
   csLabel:
     begin
@@ -4465,7 +4471,8 @@ begin
 
     LM_ACTIVATE :
     begin
-      if (ALCLObject is TCustomForm) then begin
+      if (ALCLObject is TCustomForm) and (TCustomForm(ALCLObject).Parent=nil)
+      then begin
         ConnectSenderSignalAfter(gObject, 'focus-in-event', @gtkfrmactivateAfter);
         ConnectSenderSignalAfter(gObject, 'focus-out-event', @gtkfrmdeactivateAfter);
       end else if ALCLObject is TCustomMemo then
@@ -5187,11 +5194,11 @@ begin
 
       csForm:
       Begin
-        SetCallback(LM_CONFIGUREEVENT, AGTKObject, ALCLObject);
-        SetCallback(LM_CLOSEQUERY, AGTKObject, ALCLObject);
-        SetCallBack(LM_Activate, AGTKObject, ALCLObject);
-        //SetCallback(LM_MOUSEENTER, AGTKObject, ALCLObject);
-        //SetCallback(LM_MOUSELEAVE, AGTKObject, ALCLObject);
+        if (TControl(ALCLObject).Parent=nil) then begin
+          SetCallback(LM_CONFIGUREEVENT, AGTKObject, ALCLObject);
+          SetCallback(LM_CLOSEQUERY, AGTKObject, ALCLObject);
+          SetCallBack(LM_Activate, AGTKObject, ALCLObject);
+        end;
       end;
 
       csLabel:
@@ -5844,7 +5851,7 @@ begin
 
   if AGTKObject <> nil then begin
     {$IFNDEF NoStyle}
-    if ALCLObject is TCustomForm then
+    if (ALCLObject is TCustomForm) and (TCustomForm(ALCLObject).Parent=nil) then
       gtk_widget_set_app_paintable(AGTKObject, true);
     {$ENDIF}
     HookSignals(AGTKObject, ALCLObject);
@@ -5925,44 +5932,59 @@ var
   PCaption: PChar;
   WindowType: TGtkWindowType;
 begin
-  if csDesigning in ACustomForm.ComponentState then
-    ABorderStyle:=bsSizeable
-  else
-    ABorderStyle:=ACustomForm.BorderStyle;
+  if ACustomForm.Parent=nil then begin
+    if csDesigning in ACustomForm.ComponentState then
+      ABorderStyle:=bsSizeable
+    else
+      ABorderStyle:=ACustomForm.BorderStyle;
+  end else
+    ABorderStyle:=bsNone;
   WindowType:=FormStyleMap[ABorderStyle];
   if (ABorderStyle=bsNone) and (ACustomForm.FormStyle in fsAllStayOnTop)
   and (not (csDesigning in ACustomForm.ComponentState)) then begin
     WindowType:=GTK_WINDOW_POPUP;
   end;
 
-  Result := gtk_window_new(WindowType);
+  if ACustomForm.Parent=nil then begin
+    // create a floating form
+    Result := gtk_window_new(WindowType);
+    
+    gtk_window_set_policy(GTK_WINDOW(Result), FormResizableMap[ABorderStyle],
+      FormResizableMap[ABorderStyle], 0);
+    PCaption:=PChar(ACustomForm.Caption);
+    if PCaption=nil then PCaption:=#0;
+    gtk_window_set_title(pGtkWindow(Result), PCaption);
 
-  gtk_window_set_policy(GTK_WINDOW(Result), FormResizableMap[ABorderStyle],
-    FormResizableMap[ABorderStyle], 0);
-  PCaption:=PChar(ACustomForm.Caption);
-  if PCaption=nil then PCaption:=#0;
-  gtk_window_set_title(pGtkWindow(Result), PCaption);
+    // the clipboard needs a widget
+    if ClipboardWidget=nil then
+      SetClipboardWidget(Result);
 
-  // the clipboard needs a widget
-  if ClipboardWidget=nil then
-    SetClipboardWidget(Result);
+    //drag icons
+    if Drag_Icon = nil then begin
+      {$IFDEF DebugGDKTraps}
+      BeginGDKErrorTrap;
+      {$ENDIF}
+      Drag_Icon := gdk_pixmap_colormap_create_from_xpm_d (nil,
+                           gtk_widget_get_colormap (Result), Drag_Mask,
+                           nil, @IMGDrag_Icon);
+      {$IFDEF DebugGDKTraps}
+      EndGDKErrorTrap;
+      {$ENDIF}
+    end;
+  end else begin
+    // create a form as child control
+    Result := gtk_hbox_new(false,0);
+  end;
 
   Box := CreateFormContents(ACustomForm,Result);
   gtk_container_add(PGtkContainer(Result), Box);
+
   {$IfDef GTK2}
   //so we can double buffer ourselves, eg, the Form Designer
   gtk_widget_set_double_buffered(Box, False);
   {$EndIf}
   gtk_widget_show(Box);
 
-  //drag icons
-  if Drag_Icon = nil then begin
-    BeginGDKErrorTrap;
-    Drag_Icon := gdk_pixmap_colormap_create_from_xpm_d (nil,
-                         gtk_widget_get_colormap (Result), Drag_Mask,
-                         nil, @IMGDrag_Icon);
-    EndGDKErrorTrap;
-  end;
   // main menu
   if (ACustomForm.Menu<>nil)
   and (ACustomForm.Menu.HandleAllocated) then begin
@@ -6438,7 +6460,7 @@ begin
   csWinControl:
     p:=CreateAPIWidget(TWinControl(Sender));
 
-  csForm :
+  csForm:
     p:=CreateForm(TCustomForm(Sender));
 (*
   csFrame :
@@ -6847,7 +6869,7 @@ var FormIconGdiObject: PGDIObject;
 begin
   if not (Sender is TWinControl) then
     RaiseWrongClass;
-  if Sender is TCustomForm then
+  if (Sender is TCustomForm) then
     ACustomForm:=TCustomForm(Sender)
   else
     ACustomForm:=nil;
@@ -6863,7 +6885,7 @@ begin
   //    ' Should=',LCLControl.HandleObjectShouldBeVisible);
   if LCLControl.HandleObjectShouldBeVisible then
   begin
-    if (Sender is TCustomForm) then begin
+    if (ACustomForm<>nil) and (ACustomForm.Parent=nil) then begin
       // update shared accelerators
       ShareWindowAccelGroups(SenderWidget);
     end;
@@ -6873,7 +6895,7 @@ begin
 
     // before making the widget visible, set the position and size
     if FWidgetsWithResizeRequest.Contains(SenderWidget) then begin
-      if (ACustomForm<>nil) and (LCLControl.Parent=nil) then begin
+      if (ACustomForm<>nil) and (ACustomForm.Parent=nil) then begin
         // top level control (a form without parent)
         {$IFDEF VerboseFormPositioning}
         DebugLn('VFP [TGtkWidgetSet.ShowHide] A set bounds ',
@@ -6901,7 +6923,7 @@ begin
       UnsetResizeRequest(SenderWidget);
     end;
 
-    if (ACustomForm<>nil) then begin
+    if (ACustomForm<>nil) and (ACustomForm.Parent=nil) then begin
       If (ACustomForm.BorderStyle <> bsSizeable) or
         ((ACustomForm.FormStyle in fsAllStayOnTop)
          and (not (csDesigning in ACustomForm.ComponentState)))
@@ -6925,7 +6947,7 @@ begin
 
     UpdateWidgetStyleOfControl(LCLControl);
 
-    if (ACustomForm<>nil) then begin
+    if (ACustomForm<>nil) and (ACustomForm.Parent=nil) then begin
       AWindow:=GetControlWindow(SenderWidget);
       if (AWindow<>nil) and (ACustomForm.Icon<>nil) then begin
         FormIconGdiObject:=PGDIObject(ACustomForm.GetIconHandle);
@@ -9250,6 +9272,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.529  2004/08/18 20:49:02  mattias
+  simple forms can now be child controls
+
   Revision 1.528  2004/08/18 09:08:34  mattias
   fixed deleting of collection item in prop editor
 

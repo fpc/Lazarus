@@ -206,11 +206,15 @@ begin
     GdkWindow:=GetControlWindow(PgtkWidget(hwnd));
     if GdkWindow<>nil then begin
       AForm:=TCustomForm(GetLCLObject(PgtkWidget(hwnd)));
-      if (AForm<>nil) and (AForm is TCustomForm) then
+      if (AForm<>nil) and (AForm is TCustomForm) and (AForm.Parent=nil) then
         Screen.MoveFormToZFront(AForm);
+      {$IFDEF DebugGDKTraps}
       BeginGDKErrorTrap;
+      {$ENDIF}
       gdk_window_raise(GdkWindow);
+      {$IFDEF DebugGDKTraps}
       EndGDKErrorTrap;
+      {$ENDIF}
       // how to set the keyboard focus to the raised window?
 {$ifdef gtk2}
       gtk_window_present(PGtkWindow(hWnd));
@@ -8705,6 +8709,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.361  2004/08/18 20:49:03  mattias
+  simple forms can now be child controls
+
   Revision 1.360  2004/08/13 20:40:27  mattias
   fixed DebugLn for VerboseRawImage
 

@@ -53,7 +53,7 @@ type
     procedure InitStockItems; override;
     procedure FreeStockItems; override;
 
-    procedure CreateComponent(Sender : TObject); override;
+    function CreateComponent(Sender: TObject): THandle; override;
   public
     {$I gnomewinapih.inc}
   end;
@@ -194,17 +194,18 @@ begin
   Dispose(LAZBTNIGNORE);
 end;
 
-procedure TGnomeWidgetSet.CreateComponent(Sender : TObject);
+function TGnomeWidgetSet.CreateComponent(Sender : TObject): THandle;
 var
   //Caption : AnsiString;
-  StrTemp : PChar;               // same as "caption" but as PChar
-  p          : pointer;          // ptr to the newly created GtkWidget
-  Box       : Pointer;           // currently only used for TCustomBitBtn
-                                 // and TCustomForm and TCustomListView
+  StrTemp : PChar;            // same as "caption" but as PChar
+  p       : pointer;          // ptr to the newly created GtkWidget
+  Box     : Pointer;          // currently only used for TCustomBitBtn
+                              // and TCustomForm and TCustomListView
   ParentForm: TCustomForm;
   CompStyle : Longint;
   DoFinishComp,
   SetupProps : Boolean;
+  ACustomForm: TCustomForm;
 begin
   P := nil;
   DoFinishComp := True;
@@ -217,31 +218,45 @@ begin
   Case CompStyle of
     csForm:
       begin
-        Assert(Sender is TCustomForm);
-        With TCustomForm(Sender) do begin
-          If Caption > '' then begin
-            strTemp := StrAlloc(length(Caption) + 1);
-            StrPCopy(strTemp, Caption);
+        ACustomForm:=TCustomForm(Sender);
+        if ACustomForm.Parent=nil then begin
+          If ACustomForm.Caption <> '' then begin
+            strTemp := StrAlloc(length(ACustomForm.Caption) + 1);
+            StrPCopy(strTemp, ACustomForm.Caption);
           end;
         
           P := GNOME_APP_NEW(Argv[0], strTemp);
           gnome_app_enable_layout_config(p, True);
-          gtk_window_set_policy (GTK_WINDOW (p), FormResizableMap[BorderStyle],
-            FormResizableMap[BorderStyle], 0);
+          gtk_window_set_policy (GTK_WINDOW (p),
+            FormResizableMap[ACustomForm.BorderStyle],
+            FormResizableMap[ACustomForm.BorderStyle], 0);
 
           // the clipboard needs a widget
           if ClipboardWidget=nil then
             SetClipboardWidget(p);
+        end else begin
+          P:=gtk_hbox_new(false,1);
+        end;
 
-          Box := CreateFormContents(P);
+        Box := CreateFormContents(ACustomForm,P);
+        
+        if ACustomForm.Parent=nil then begin
           gnome_app_set_contents(p, Box);
-          gtk_widget_show(Box);
-
           //drag icons
           if Drag_Icon = nil then
             Drag_Icon := gdk_pixmap_colormap_create_from_xpm_d (nil,
                gtk_widget_get_colormap (p), Drag_Mask,
                nil, IMGDrag_Icon);
+        end else begin
+          gtk_container_add(PGtkContainer(P), Box);
+        end;
+        
+        gtk_widget_show(Box);
+
+        // main menu
+        if (ACustomForm.Menu<>nil)
+        and (ACustomForm.Menu.HandleAllocated) then begin
+          gtk_box_pack_start(Box, PGtkWidget(ACustomForm.Menu.Handle),False,False,0);
         end;
       end;
     csMainMenu:
@@ -257,7 +272,7 @@ begin
       end;
     else
       begin
-        inherited CreateComponent(Sender);
+        P:=Pointer(inherited CreateComponent(Sender));
         DoFinishComp := False;
       end;
   end;
@@ -270,6 +285,8 @@ begin
 
   If DoFinishComp then
     FinishComponentCreate(Sender, P, SetupProps);
+    
+  Result:=THandle(P);
 end;
 
 {$I gnomewinapi.inc}
@@ -278,6 +295,9 @@ end.
 
 {
   $Log$
+  Revision 1.28  2004/08/18 20:49:02  mattias
+  simple forms can now be child controls
+
   Revision 1.27  2004/08/18 09:31:21  mattias
   removed obsolete unit vclglobals
 

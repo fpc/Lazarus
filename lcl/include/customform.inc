@@ -730,6 +730,15 @@ begin
   inherited SetZOrder(Topmost);
 end;
 
+procedure TCustomForm.SetParent(NewParent: TWinControl);
+begin
+  if Parent=NewParent then exit;
+  if HandleAllocated then DestroyHandle;
+  inherited SetParent(NewParent);
+  if (Parent=nil) and Visible then
+    HandleNeeded;
+end;
+
 {------------------------------------------------------------------------------
   procedure TCustomForm.VisibleChanging;
 ------------------------------------------------------------------------------}
@@ -1170,7 +1179,9 @@ begin
     begin
 //    WndParent := Application.Handle;
       { TODO : No application handle }
-      Style := Style and not Cardinal(WS_CHILD or WS_GROUP or WS_TABSTOP);
+      Style := Style and not Cardinal(WS_GROUP or WS_TABSTOP);
+      if Parent=nil then
+        Style := Style and not Cardinal(WS_CHILD);
     end;
   end;
 end;
@@ -1296,10 +1307,20 @@ end;
   TCustomForm Method SetFocusedControl
 ------------------------------------------------------------------------------}
 function TCustomForm.SetFocusedControl(Control: TWinControl): Boolean;
+var
+  ParentForm: TCustomForm;
 begin
   Result := False;
   
   if (csDestroying in Control.ComponentState) then exit;
+  
+  if (Parent<>nil) then begin
+    ParentForm:=GetParentForm(Self);
+    if ParentForm<>nil then
+      ParentForm.SetFocusedControl(Control);
+    exit;
+  end;
+  
 
   // update FActiveControl
   if FDesigner = nil then
@@ -1318,8 +1339,8 @@ begin
     Screen.FActiveForm := nil;
 
   {$IFDEF VerboseFocus}
-  write('TCustomForm.SetFocusedControl Self=',Name,':',ClassName,' ');
-  write(' Control=',Control.Name,':',Control.ClassName,' Control.HandleAllocated=',Control.HandleAllocated);
+  DbgOut('TCustomForm.SetFocusedControl Self=',Name,':',ClassName,' ');
+  DbgOut(' Control=',Control.Name,':',Control.ClassName,' Control.HandleAllocated=',dbgs(Control.HandleAllocated));
   DebugLn();
   {$ENDIF}
 
@@ -1411,14 +1432,23 @@ end;
 procedure TCustomForm.CreateWnd;
 var
   DC: HDC;
+  ParentForm: TCustomForm;
 begin
   //DebugLn('TCustomForm.CreateWnd START ',ClassName);
   FFormState:=FFormState-[fsBorderStyleChanged,fsFormStyleChanged];
   inherited CreateWnd;
-  CNSendMessage(LM_SETFORMICON, Self, Pointer(GetIconHandle));
-  DC:=GetDC(Handle);
-  FPixelsPerInch:=GetDeviceCaps(DC,LOGPIXELSX);
-  ReleaseDC(Handle,DC);
+  
+  if Parent=nil then begin
+    CNSendMessage(LM_SETFORMICON, Self, Pointer(GetIconHandle));
+    DC:=GetDC(Handle);
+    FPixelsPerInch:=GetDeviceCaps(DC,LOGPIXELSX);
+    ReleaseDC(Handle,DC);
+  end else begin
+    ParentForm:=GetParentForm(Self);
+    if ParentForm<>nil then begin
+      FPixelsPerInch:=ParentForm.PixelsPerInch;
+    end;
+  end;
 
   Assert(False, 'Trace:[TCustomForm.CreateWnd] FMenu.HandleNeeded');
   if FMenu <> nil then
@@ -1489,40 +1519,42 @@ begin
   {$ENDIF}
   { If the the form is about to show, calculate its metrics }
   if Visible then begin
-    // first make sure X and Y are assigned
-    X := Left;
-    Y := Top;
+    if Parent=nil then begin
+      // first make sure X and Y are assigned
+      X := Left;
+      Y := Top;
 
-    if  (Position = poMainFormCenter)
-    and (FormStyle = fsMDIChild)
-    and (Self <> Application.Mainform)
-    then begin
-      X:= (Application.Mainform.ClientWidth - Width) div 2;
-      Y:= (Application.Mainform.ClientHeight - Height) div 2;
-    end
-    else begin
-      case Position of
-      //TODO:poDefault, poDefaultPosOnly, poDefaultSizeOnly
-      poScreenCenter, poDesktopCenter :
-        begin
-          X:= (Screen.Width - Width) div 2;
-          Y:= (Screen.Height - Height) div 2;
-        end;
-      poMainFormCenter :
-        if (Self <> Application.MainForm) then begin
-          X:= ((Application.MainForm.Width - Width) div 2) + Application.MainForm.Left;
-          Y:= ((Application.MainForm.Height - Height) div 2) + Application.MainForm.Top;
-        end;
-      poOwnerFormCenter :
-        if (Owner is TCustomForm) then begin
-          X:= ((TCustomForm(Owner).Width - Width) div 2) + TCustomForm(Owner).Left;
-          Y:= ((TCustomForm(Owner).Height - Height) div 2) + TCustomForm(Owner).Top;
+      if  (Position = poMainFormCenter)
+      and (FormStyle = fsMDIChild)
+      and (Self <> Application.Mainform)
+      then begin
+        X:= (Application.Mainform.ClientWidth - Width) div 2;
+        Y:= (Application.Mainform.ClientHeight - Height) div 2;
+      end
+      else begin
+        case Position of
+        //TODO:poDefault, poDefaultPosOnly, poDefaultSizeOnly
+        poScreenCenter, poDesktopCenter :
+          begin
+            X:= (Screen.Width - Width) div 2;
+            Y:= (Screen.Height - Height) div 2;
+          end;
+        poMainFormCenter :
+          if (Self <> Application.MainForm) then begin
+            X:= ((Application.MainForm.Width - Width) div 2) + Application.MainForm.Left;
+            Y:= ((Application.MainForm.Height - Height) div 2) + Application.MainForm.Top;
+          end;
+        poOwnerFormCenter :
+          if (Owner is TCustomForm) then begin
+            X:= ((TCustomForm(Owner).Width - Width) div 2) + TCustomForm(Owner).Left;
+            Y:= ((TCustomForm(Owner).Height - Height) div 2) + TCustomForm(Owner).Top;
+          end;
         end;
       end;
+      if X < 0 then X := 0;
+      if Y < 0 then Y := 0;
+      SetBounds(X, Y, Width, Height);
     end;
-    if X < 0 then X := 0;
-    if Y < 0 then Y := 0;
-    SetBounds(X, Y, Width, Height);
     
     if (fsFirstShow in FFormState) then begin
       Exclude(FFormState,fsFirstShow);
@@ -1722,6 +1754,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.152  2004/08/18 20:49:02  mattias
+  simple forms can now be child controls
+
   Revision 1.151  2004/08/18 14:24:55  mattias
   implemented TCustomForm.Release
 

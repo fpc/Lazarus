@@ -138,7 +138,7 @@ type
     // create and destroy
     function CreateComboBox(ComboBoxObject: TObject): Pointer;
     function CreateAPIWidget(AWinControl: TWinControl): PGtkWidget;
-    function CreateForm(ACustomForm: TCustomForm): PGtkWidget;
+    function CreateForm(ACustomForm: TCustomForm): PGtkWidget; virtual;
     function CreateListView(ListViewObject: TObject): PGtkWidget;
     function CreatePairSplitter(PairSplitterObject: TObject): PGtkWidget;
     function CreateStatusBar(StatusBar: TObject): PGtkWidget;
@@ -459,6 +459,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.186  2004/08/18 20:49:02  mattias
+  simple forms can now be child controls
+
   Revision 1.185  2004/08/18 09:31:21  mattias
   removed obsolete unit vclglobals
 
