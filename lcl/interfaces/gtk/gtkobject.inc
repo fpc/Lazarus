@@ -609,7 +609,7 @@ begin
   with Context do begin
     MainWidget:=PGtkWidget(WinControl.Handle);
     if MainWidget=nil then exit;
-    if MainWindow<>nil then
+    if MainWidget<>nil then
       MainWindow:=GetControlWindow(MainWidget)
     else
       exit;
@@ -6535,6 +6535,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.277  2002/11/03 20:53:37  lazarus
+  MG: fixed typo
+
   Revision 1.276  2002/11/02 22:25:36  lazarus
   MG: implemented TMethodList and Application Idle handlers
 
