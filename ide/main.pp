@@ -2031,8 +2031,8 @@ procedure TMainIDE.UpdateIDEComponentPalette;
 var
   ShowControlsInComponentalette: Boolean;
 begin
-  ShowControlsInComponentalette:=(FLastFormActivated<>nil)
-    and (TDesigner(FLastFormActivated.Designer).LookupRoot is TControl);
+  ShowControlsInComponentalette:=(FLastFormActivated=nil)
+    or (TDesigner(FLastFormActivated.Designer).LookupRoot is TControl);
   IDEComponentPalette.ShowHideControls(ShowControlsInComponentalette);
 end;
 
@@ -9032,6 +9032,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.600  2003/06/06 08:46:12  mattias
+  showing all palette components when no form shown
+
   Revision 1.599  2003/06/06 08:34:18  mattias
   fixed unhiding components
 
