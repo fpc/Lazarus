@@ -568,7 +568,7 @@ type
     destructor Destroy; override;
     procedure ControlDestroyed(AControl: TControl);
     Procedure BringToFront;
-    procedure CreateForm(NewForm : TFormClass; var ref);
+    procedure CreateForm(InstanceClass: TComponentClass; var Reference);
     function HandleAllocated: boolean;
     procedure HandleException(Sender: TObject);
     procedure HandleMessage;
