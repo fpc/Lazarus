@@ -240,7 +240,7 @@ procedure GetGTKKeyInfo(const Event: PGDKEventKey; var KeyCode,VirtualKey: Word;
   var SysKey, Extended, Toggle: Boolean);
 procedure StoreCommonDialogSetup(ADialog: TCommonDialog);
 procedure DestroyCommonDialogAddOns(ADialog: TCommonDialog);
-function ObjectToGTKObject(const AObject: TObject): gtk_object;
+function ObjectToGTKObject(const AObject: TObject): PGtkObject;
 function GetMainWidget(const Widget: Pointer): Pointer;
 procedure SetMainWidget(const ParentWidget, ChildWidget: Pointer);
 function GetFixedWidget(const Widget: Pointer): Pointer;
