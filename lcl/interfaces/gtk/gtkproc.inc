@@ -678,6 +678,21 @@ begin
   Result := Integer(gtk_object_get_data(Widget, 'AccelKey'));
 end;
 
+procedure Accelerate(const Widget : Pointer; const Msg : TLMShortCut);
+var GDKModifier : integer;
+    GDKKey : word;
+begin
+  if Msg.OldKey <> 0 then gtk_widget_remove_accelerators(Widget, 'activate_item', false);
+  { Map the shift states }
+  GDKModifier:= 0;
+  if ssShift in Msg.NewModifier then GDKModifier:= GDK_SHIFT_MASK;
+  if ssAlt in Msg.NewModifier then GDKModifier:= GDKModifier + GDK_MOD1_MASK;
+  if ssCtrl in Msg.NewModifier then GDKModifier:= GDKModifier + GDK_CONTROL_MASK;
+  GDKKey:= VK2GDK(Msg.NewKey);
+  { Set the accelerator }
+  gtk_widget_add_accelerator(Widget, 'activate_item', gtk_accel_group_get_default(), GDKKey, GDKModifier, GTK_ACCEL_VISIBLE);
+end;
+
 // ----------------------------------------------------------------------
 // OBSOLETE ???
 // ----------------------------------------------------------------------
@@ -896,6 +911,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.29  2002/02/18 22:46:11  lazarus
+  Implented TMenuItem.ShortCut (not much tested).
+
   Revision 1.28  2001/12/10 11:16:00  lazarus
   MG: added GDK_dead_circumflex key
 
