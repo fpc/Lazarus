@@ -27,10 +27,15 @@
 
   ToDo:
     - ignore errors behind cursor (implemented, not tested)
+    - high level expression comparison
+      (i.e. at the moment: integer+integer=longint
+                   wanted: integer+integer=integer)
+    - caching for procs
     - variants
-    - Get and Set property access parameter lists
-    - predefined funcs Low, High for arrays
+    - 'class of'
     - find declaration in dead code
+    - multi pass find declaration
+    - Get and Set property access parameter lists
     - make @Proc context sensitive (started, but not complete)
     - operator overloading
     - ppu, ppw, dcu files
@@ -143,7 +148,7 @@ type
     fdfExceptionOnNotFound, // raise exception if identifier not found
                             //    predefined identifiers will not raise
     fdfExceptionOnPredefinedIdent,// raise an exception even if the identifier
-                            // is an predefined exception
+                            // is an predefined identifier
                             
     fdfIgnoreClassVisibility,//find inaccessible private+protected fields
 
@@ -156,12 +161,20 @@ type
     fdfFunctionResult,      // if function is found, return result type
     
     fdfCollect,             // return every reachable identifier
-    fdfTopLvlResolving      // set, when searching for an identifier of the
+    fdfTopLvlResolving,     // set, when searching for an identifier of the
                             //   top lvl variable
+    fdfDoNotCache           // result will not be cached
     );
   TFindDeclarationFlags = set of TFindDeclarationFlag;
   
 const
+  fdfGlobals = [fdfExceptionOnNotFound, fdfTopLvlResolving];
+  fdfGlobalsSameIdent = fdfGlobals+[fdfExceptionOnPredefinedIdent,
+                fdfIgnoreMissingParams, fdfIgnoreUsedUnits, fdfDoNotCache,
+                fdfOnlyCompatibleProc, fdfSearchInAncestors, fdfCollect];
+  fdfDefaultForExpressions = [fdfSearchInParentNodes, fdfSearchInAncestors,
+                              fdfExceptionOnNotFound];
+
   // for nicer output
   FindDeclarationFlagNames: array[TFindDeclarationFlag] of string = (
     'fdfSearchInAncestors',
@@ -178,19 +191,20 @@ const
     'fdfFindVariable',
     'fdfFunctionResult',
     'fdfCollect',
-    'fdfTopLvlResolving'
+    'fdfTopLvlResolving',
+    'fdfDoNotCache'
   );
 
 type
   // flags/states for result
   TFoundDeclarationFlag = (
-      fdfDoNotCache
+    fodDoNotCache
     );
   TFoundDeclarationFlags = set of TFoundDeclarationFlag;
   
 const
   FoundDeclarationFlagNames: array[TFoundDeclarationFlag] of string = (
-      'fdfDoNotCache'
+      'fodDoNotCache'
     );
 
   //----------------------------------------------------------------------------
@@ -428,7 +442,7 @@ type
       ProcCompatibility: TTypeCompatibility;
       ParamCompatibilityList: TTypeCompatibilityList);
     procedure ConvertResultCleanPosToCaretPos;
-    procedure ClearResult;
+    procedure ClearResult(CopyCacheFlags: boolean);
     procedure ClearInput;
     procedure ClearFoundProc;
     procedure WriteDebugReport;
@@ -628,14 +642,6 @@ type
     property OnGetCodeToolForBuffer: TOnGetCodeToolForBuffer
       read FOnGetCodeToolForBuffer write FOnGetCodeToolForBuffer;
   end;
-
-const
-  fdfGlobals = [fdfExceptionOnNotFound, fdfTopLvlResolving];
-  fdfGlobalsSameIdent = fdfGlobals+[fdfExceptionOnPredefinedIdent,
-                fdfIgnoreMissingParams, fdfIgnoreUsedUnits,
-                fdfOnlyCompatibleProc, fdfSearchInAncestors, fdfCollect];
-  fdfDefaultForExpressions = [fdfSearchInParentNodes, fdfSearchInAncestors,
-                              fdfExceptionOnNotFound];
 
 function ExprTypeToString(const ExprType: TExpressionType): string;
 function CreateFindContext(NewTool: TFindDeclarationTool;
@@ -1679,10 +1685,12 @@ var
   
   procedure CacheResult(Found: boolean);
   begin
-    if Found and ([fdfDoNotCache,fdfCollect]*Params.NewFlags=[])
+    if Found and ([fdfDoNotCache,fdfCollect]*Params.Flags=[])
+    and ([fodDoNotCache]*Params.NewFlags=[])
     and (FirstSearchedNode<>nil) then begin
       // cache result
       if (Params.NewNode<>nil) and (Params.NewNode.Desc=ctnProcedure) then begin
+        //writeln('NOTE: TFindDeclarationTool.FindIdentifierInContext.CacheResult Node is proc');
         // ToDo:
         // The search range is from start to end of search.
         // This does not work for overloaded procs.
@@ -3246,16 +3254,22 @@ begin
     FInterfaceIdentifierCache:=TInterfaceIdentifierCache.Create(Self);
   if Result and (Params.NewCodeTool=Self) then begin
     // identifier exists in interface
-    if (not (fdfDoNotCache in Params.NewFlags))
-    and (not (fdfCollect in Params.Flags)) then begin
-      FInterfaceIdentifierCache.Add(OldInput.Identifier,Params.NewNode,
-        Params.NewCleanPos);
+    if ([fdfDoNotCache,fdfCollect]*Params.Flags=[])
+    and ([fodDoNotCache]*Params.NewFlags=[]) then begin
+      if (Params.NewNode<>nil) and (Params.NewNode.Desc=ctnProcedure) then begin
+        //writeln('NOTE: TFindDeclarationTool.FindIdentifierInInterface Node is proc');
+        // ToDo: add param list to cache
+        // -> do not cache
+        Result:=false;
+      end else
+        FInterfaceIdentifierCache.Add(OldInput.Identifier,Params.NewNode,
+          Params.NewCleanPos);
     end else begin
       // do not save proc identifiers or collect results
       Result:=false;
     end;
   end else begin
-    // identifier does not exist in interface
+    // identifier does not exist in this interface
     FInterfaceIdentifierCache.Add(OldInput.Identifier,nil,-1);
     Result:=false;
   end;
@@ -4722,7 +4736,17 @@ begin
   {$ENDIF}
   if FoundContext.Node.Desc=ctnProcedure then begin
     // the found node is a proc
-    Include(Params.NewFlags,fdfDoNotCache);
+    
+    // 1. the current identifier cache is blind for parameter lists
+    // => proc identifiers can not be identified by the name alone
+    // -> do not cache
+    // 2. Even if there is only one proc. With different search flags,
+    // different routes will be searched and then there can be another proc.
+    // The only solution is to store the param expression list and all flags
+    // in the cache. This is a ToDo
+    Include(Params.Flags,fdfDoNotCache);
+    Include(Params.NewFlags,fodDoNotCache);
+
     if (fdfIgnoreOverloadedProcs in Params.Flags) then begin
       // do not check for overloaded procs -> ident found
       Result:=ifrSuccess;
@@ -4732,6 +4756,15 @@ begin
     // Procs can be overloaded, that means there can be several procs with the
     // same name, but with different param lists.
     // The search must go on, and the most compatible proc is returned.
+    
+    if not Params.IdentifierTool.IsPCharInSrc(Params.Identifier) then begin
+      // Params.Identifier is not in the source of this tool
+      // => impossible to check param list, because the context is unknown
+      // -> identifier found
+      Result:=ifrSuccess;
+      exit;
+    end;
+
     Result:=ifrProceedSearch;
     if (Params.FoundProc=nil) then begin
       // this is the first proc found
@@ -4740,15 +4773,7 @@ begin
       exit;
     end;
     
-    // this is another overloaded proc
     // -> check which one is more compatible
-    if not Params.IdentifierTool.IsPCharInSrc(Params.Identifier) then begin
-      // Params.Identifier is not in the source of this tool
-      // => impossible to check param list, because the context is unknown
-      // -> identifier found
-      Result:=ifrSuccess;
-    end;
-
     // create the input expression list
     // (the expressions in the brackets are parsed and converted to types)
     if Params.FoundProc^.ExprInputList=nil then begin
@@ -4771,8 +4796,8 @@ begin
           Params.OnIdentifierFound:=@Params.IdentifierTool.CheckSrcIdentifier;
           Params.IdentifierTool.ReadNextAtom;
           Params.FoundProc^.ExprInputList:=
-                              Params.IdentifierTool.CreateParamExprList(
-                                      Params.IdentifierTool.CurPos.EndPos,Params);
+            Params.IdentifierTool.CreateParamExprList(
+                                    Params.IdentifierTool.CurPos.EndPos,Params);
           Params.Load(OldInput);
         end;
       end;
@@ -5822,7 +5847,7 @@ end;
 procedure TFindDeclarationParams.Clear;
 begin
   ClearInput;
-  ClearResult;
+  ClearResult(false);
   OnTopLvlIdentifierFound:=nil;
 end;
 
@@ -5849,7 +5874,7 @@ begin
   Input.FoundProc:=FoundProc;
 end;
 
-procedure TFindDeclarationParams.ClearResult;
+procedure TFindDeclarationParams.ClearResult(CopyCacheFlags: boolean);
 begin
   NewPos.Code:=nil;
   NewPos.X:=-1;
@@ -5859,11 +5884,13 @@ begin
   NewCleanPos:=-1;
   NewCodeTool:=nil;
   NewFlags:=[];
+  if CopyCacheFlags and (fdfDoNotCache in Flags) then
+    Include(NewFlags,fodDoNotCache);
 end;
 
 procedure TFindDeclarationParams.SetResult(const AFindContext: TFindContext);
 begin
-  ClearResult;
+  ClearResult(true);
   NewCodeTool:=AFindContext.Tool;
   NewNode:=AFindContext.Node;
 end;
@@ -5871,7 +5898,7 @@ end;
 procedure TFindDeclarationParams.SetResult(ANewCodeTool: TFindDeclarationTool;
   ANewNode: TCodeTreeNode);
 begin
-  ClearResult;
+  ClearResult(true);
   NewCodeTool:=ANewCodeTool;
   NewNode:=ANewNode;
 end;
@@ -5879,7 +5906,7 @@ end;
 procedure TFindDeclarationParams.SetResult(ANewCodeTool: TFindDeclarationTool;
   ANewNode: TCodeTreeNode; ANewCleanPos: integer);
 begin
-  ClearResult;
+  ClearResult(true);
   NewCodeTool:=ANewCodeTool;
   NewNode:=ANewNode;
   NewCleanPos:=ANewCleanPos;
@@ -5998,11 +6025,10 @@ end;
 procedure TFindDeclarationParams.SetResult(
   NodeCacheEntry: PCodeTreeNodeCacheEntry);
 begin
-  ClearResult;
+  ClearResult(true);
   NewCodeTool:=TFindDeclarationTool(NodeCacheEntry^.NewTool);
   NewNode:=NodeCacheEntry^.NewNode;
   NewCleanPos:=NodeCacheEntry^.NewCleanPos;
-  NewFlags:=[fdfDoNotCache];
 end;
 
 
