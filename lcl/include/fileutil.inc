@@ -1068,6 +1068,9 @@ end;
 
 {
   $Log$
+  Revision 1.1  2004/09/27 22:16:04  vincents
+  renamed filectrl.inc to fileutil.inc
+
   Revision 1.50  2004/09/27 10:35:51  vincents
   Added CopyFile with PerserveTime parameter
 

@@ -1,3 +1,23 @@
+{
+ /***************************************************************************
+                               fileutil.pas
+                               -----------
+
+ ***************************************************************************/
+
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+}
 unit FileUtil;
 
 {$mode objfpc}{$H+}
@@ -77,7 +97,7 @@ var
   UpChars: array[char] of char;
 
 
-{$I filectrl.inc}
+{$I fileutil.inc}
 
 procedure InternalInit;
 var
@@ -92,4 +112,11 @@ initialization
   InternalInit;
 
 end.
+
+{
+  $Log$
+  Revision 1.2  2004/09/27 22:16:04  vincents
+  renamed filectrl.inc to fileutil.inc
+
+}
 
