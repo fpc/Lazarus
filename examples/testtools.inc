@@ -2493,8 +2493,8 @@ var
   P: TPoint;
 begin 
   GetCursorPos(P);  
-  CurControl := FindDragTarget(P, True);  
-  if FFocusControl <> CurControl then  
+  CurControl := FindControlAtPosition(P, True);
+  if FFocusControl <> CurControl then
     begin  
     if FFocusControl <> nil then  
       VirOnLeave(FFocusControl);  
@@ -2886,6 +2886,9 @@ begin
 end;
 {
   $Log$
+  Revision 1.15  2004/03/08 00:12:42  mattias
+  fixed compilation
+
   Revision 1.14  2004/02/19 09:45:40  mattias
   fixed compilation   from Vincent
 
