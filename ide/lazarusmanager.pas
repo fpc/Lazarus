@@ -127,7 +127,7 @@ implementation
 constructor TLazarusManager.Create;
 begin
   inherited Create(nil);
-  SplashForm := TSplashForm.Create(Self);
+  SplashForm := nil;
   ShowSplash;
   FStartLazarusOptions := TStartLazarusOptions.Create;
   ParseCommandLine;
@@ -208,7 +208,7 @@ end;
 
 procedure TLazarusManager.LazarusProcessStart(Sender: TObject);
 begin
-  SplashForm.Hide;
+  if SplashForm<>nil then SplashForm.Hide;
   FreeThenNil(SplashForm);
   Application.ProcessMessages;
 end;
@@ -254,8 +254,7 @@ var
 begin
   WaitForLazarus;
   repeat
-    SplashForm.Show;
-    Application.ProcessMessages;
+    ShowSplash;
     Restart := false;
     if RenameLazarusExecutables=mrOK then begin
       FLazarusProcess :=
@@ -272,6 +271,7 @@ end;
 
 procedure TLazarusManager.ShowSplash;
 begin
+  if SplashForm=nil then SplashForm := TSplashForm.Create(Self);
   with SplashForm do begin
     Show;
     Paint;
@@ -315,6 +315,9 @@ end;
 end.
 {
   $Log$
+  Revision 1.19  2005/01/14 15:19:18  mattias
+  fixed creating splashform on show
+
   Revision 1.18  2005/01/14 14:46:35  mattias
   fixed freeing brush handle on SetColor and fixed freeing splashform
 
