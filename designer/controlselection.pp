@@ -165,8 +165,6 @@ begin
 end;
 
 procedure TGrabber.MouseMove(Shift: TShiftState; X, Y: Integer);
-var
-  dx, dy: Integer;
 begin
   if (CaptureGrabber<>nil) and (CaptureGrabber<>Self) then begin
     CaptureGrabber.CaptureMouseMove(Self,Shift, X, Y);
@@ -180,8 +178,6 @@ begin
 end;
 
 procedure TGrabber.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var
-  dx, dy: Integer;
 begin
 //Writeln('MouseUp in TGrabber');
 

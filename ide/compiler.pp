@@ -38,8 +38,6 @@ type
   
   TCompiler = class(TObject)
   private
-    FProjectFile: String;
-    FOutputFile: String;
     FOutputString : TOutString;
     FOutputList : TStringList;
   public
@@ -87,7 +85,6 @@ var
   Buf : Array[1..BUFSIZE] of char;
   I,Count : longint;
   Texts : String;
-  NUm : Integer;
   WriteMessage : Boolean;
 
   TheProcess : TProcess;
@@ -200,29 +197,18 @@ end;
             TCompiler GetMessageType
 ---------------------------------------------------------------------------}
 function TCompiler.GetMessageType(Value : String) : TErrorType;
-var
-  Texts : String;
-  num : Integer;
-  Temp : String;
 begin
   {This assumes the error message will have the line number
    in the format like:
    (123,45)
   }
-  
   Result := etNone;
-  
-  Texts := Value;
 end;
 
 {--------------------------------------------------------------------------
             TCompiler GetUnitname
 ---------------------------------------------------------------------------}
 function TCompiler.GetUnitName(Value : String) : String;
-var
-  Texts : String;
-  num : Integer;
-  Temp : String;
 begin
   {This assumes the error message will have the line number
    in the format like:
@@ -236,6 +222,10 @@ end.
 
 {
   $Log$
+  Revision 1.6  2001/02/04 18:24:41  lazarus
+  Code cleanup
+  Shane
+
   Revision 1.5  2001/01/31 06:26:23  lazarus
   Removed global unit.                                         CAW
 

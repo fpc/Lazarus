@@ -288,7 +288,7 @@ type
     btnApply: TButton;
     
     { Other variables }
-    fPath: String;
+//    fPath: String;
 
     { Procedures }
     procedure CreateForm(Sender: TObject);
@@ -327,9 +327,6 @@ const
 {  TCompilerOptions Constructor                                                }
 {------------------------------------------------------------------------------}
 constructor TCompilerOptions.Create;
-var
-  confPath: String;
-  fn: String;
 begin
   inherited Create;
   Assert(False, 'Trace:Compiler Options Class Created');

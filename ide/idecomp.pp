@@ -66,8 +66,6 @@ type
    private
      {The list of @link(TIdeComponent)s used in the IDE.}
      FItems : TList;
-     {The count of @link(TIdeComponent)s used in the IDE.}
-     FCount : Integer;
      {Used to count the @link(TIdeComponent)s used in the IDE.  Checks FItems.Count}
      Function GetCount : Integer;
    public

@@ -459,6 +459,7 @@ begin
   // your code here
   //TODO:WINAPI call CHARLOWERBUFF
   Writeln('TODO: WINAPI call CHARLOWERBUFF');
+  Result := -1;
 end;
 
 
@@ -944,6 +945,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2001/02/04 18:24:42  lazarus
+  Code cleanup
+  Shane
+
   Revision 1.9  2001/01/23 19:13:57  lazarus
   Fixxed the errors I commited with Unionrect
   Shane

@@ -39,7 +39,6 @@ type
   TRegisteredComponentPage = class
   // describes the components in a single component page
   private
-    FCount:integer;
     FPageIndex:integer;
     FName:ShortString;
     FItems:TList;

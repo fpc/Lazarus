@@ -373,9 +373,10 @@ type
     FMaskHandle: HBITMAP;
     FPalette: HPALETTE;
     FDIBHandle: HBITMAP;
-    FDIB: TDIBSection;
+{    FDIB: TDIBSection;
     FOS2Format: Boolean;
     FHalftone: Boolean;
+}
   protected
     procedure FreeHandle; override;
   public
@@ -475,7 +476,7 @@ type
     procedure CreateHandle; override;
   public
     constructor Create(ABitMap : TBitmap);
-    destructor Destroy;
+    destructor Destroy; override;
     // TODO: replace this by property BitmapHandle;
     // MWE: Not needed
     //property Bitmap: TBitmap read FBitmap;
@@ -511,6 +512,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.4  2001/02/04 18:24:41  lazarus
+  Code cleanup
+  Shane
+
   Revision 1.3  2001/01/31 21:16:45  lazarus
   Changed to TCOmboBox focusing.
   Shane

@@ -1045,7 +1045,6 @@ function GetStrProp(Instance: TObject; PropInfo: PPropInfo): AnsiString;
 var
   Index, IValue: LongInt;
   ShortResult: ShortString;
-  AnsiResult: AnsiString;
 begin
   SetIndexValues(PropInfo, Index, IValue);
   case Propinfo^.PropType^.Kind of
@@ -1077,8 +1076,6 @@ begin
 	        Pointer(Result) := Pointer(LongWord(CallIntegerFunc(Instance,
    	        PPointer(Pointer(Instance.ClassType) + LongWord(PropInfo^.GetProc))^, Index, IValue)));
   	  end;
-      AnsiResult:=Result;
-      Pointer(AnsiResult):=nil;
      end;
     else
 	  // Property is neither of type AnsiString nor of type ShortString
@@ -1133,14 +1130,10 @@ procedure SetAStrProp(Instance : TObject;PropInfo : PPropInfo;
 //Dirty trick based on fact that AnsiString is just a pointer,
 //hence can be treated like an integer type.
 var
-  s: AnsiString;
   Index,Ivalue : Longint;
 begin
   { Another dirty trick which is necessary to increase the reference
    counter of Value... }
-  s := Value;
-  Pointer(s) := nil;
-
   SetIndexValues(PropInfo,Index,IValue);
   case (PropInfo^.PropProcs shr 2) and 3 of
     ptfield:

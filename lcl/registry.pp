@@ -74,7 +74,6 @@ type
     fRootKey: HKEY;
     fLazyWrite: Boolean;
     fCurrentPath: string;
-    fCloseRootKey: Boolean;
 
     procedure SetRootKey(Value: HKEY);
   protected
@@ -185,6 +184,10 @@ end.
 
 {
   $Log$
+  Revision 1.2  2001/02/04 18:24:41  lazarus
+  Code cleanup
+  Shane
+
   Revision 1.1  2000/07/13 10:28:24  michael
   + Initial import
 

@@ -147,13 +147,8 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TCanvas.SetAutoReDraw(Value : Boolean);
-var
-   Msg : String;
-
 begin
-
    FAutoRedraw := Value;
-   msg := '';
    If FAutoReDraw then
       CNSendMessage(LM_REDraw, Self, nil);
 end;
@@ -526,6 +521,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2001/02/04 18:24:41  lazarus
+  Code cleanup
+  Shane
+
   Revision 1.2  2000/08/10 18:56:24  lazarus
   Added some winapi calls.
   Most don't have code yet.

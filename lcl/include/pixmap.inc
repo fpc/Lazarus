@@ -19,7 +19,7 @@ var
   BufPtr: ^PChar;
   P : PChar;
   S : TStringList;
-  n, BufIndex: Integer;
+  n : Integer;
   t : String;
 begin
   FreeContext;
@@ -34,7 +34,6 @@ begin
     Buf := GetMem(S.Count * SizeOf(PCharArray));
     BufPtr := Pointer(Buf);
     try
-      BufIndex := 0;
       for n := 0 to S.Count - 1 do
       if S.Strings[n][1] = '"'
       then begin
@@ -42,12 +41,9 @@ begin
         p := @S.Strings[n][2]; 
         //---
         BufPtr^ := @S.Strings[n][2];
-//        Buf^[BufIndex] := @S.Strings[n][2];
         P := StrScan(BufPtr^, '"');
-//        P := StrScan(Buf^[BufIndex], '"');
         if p <>  nil then p^ := #0;
         Inc(BufPtr);
-//        Inc(BufIndex);
       end;
       if FTransparentColor = clNone 
       then Handle := CreatePixmapIndirect(Buf, -1)
@@ -81,6 +77,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2001/02/04 18:24:41  lazarus
+  Code cleanup
+  Shane
+
   Revision 1.5  2001/01/04 16:12:54  lazarus
   Removed some writelns and changed the property editor for TStrings a bit.
   Shane
