@@ -40,7 +40,7 @@ interface
 uses
   LazarusPackageIntf,
   Menus, Buttons, StdCtrls, ExtCtrls, ComCtrls, Forms, Grids, Controls,
-  Dialogs, Spin, Arrow, Calendar;
+  Dialogs, Spin, Arrow, Calendar, MaskEdit;
   
 procedure Register;
 
@@ -53,6 +53,7 @@ begin
   RegisterUnit('StdCtrls',@StdCtrls.Register);
   RegisterUnit('ExtCtrls',@ExtCtrls.Register);
   RegisterUnit('ComCtrls',@ComCtrls.Register);
+  RegisterUnit('MaskEdit',@MaskEdit.Register);
   RegisterUnit('Forms',@Forms.Register);
   RegisterUnit('Grids',@Grids.Register);
   RegisterUnit('Controls',@Controls.Register);

@@ -189,7 +189,14 @@ function MaskGetMaskSave(const EditMask: string): Boolean;
 function MaskGetMaskBlank(const EditMask: string): Char;
 function MaskGetFldSeparator(const EditMask: string): Integer;
 
+procedure Register;
+
 implementation
+
+procedure Register;
+begin
+  RegisterComponents('Additional',[TMaskEdit]);
+end;
 
 function ByteType(const S: string; Index: Integer): TMbcsByteType;
 begin

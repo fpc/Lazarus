@@ -825,6 +825,7 @@ begin
     AddFile('stdctrls.pp','StdCtrls',pftUnit,[pffHasRegisterProc],cpLCL);
     AddFile('extctrls.pp','ExtCtrls',pftUnit,[pffHasRegisterProc],cpLCL);
     AddFile('comctrls.pp','ComCtrls',pftUnit,[pffHasRegisterProc],cpLCL);
+    AddFile('maskedit.pp','MaskEdit',pftUnit,[pffHasRegisterProc],cpLCL);
     AddFile('forms.pp','Forms',pftUnit,[pffHasRegisterProc],cpLCL);
     AddFile('grids.pas','Grids',pftUnit,[pffHasRegisterProc],cpLCL);
     AddFile('controls.pp','Controls',pftUnit,[pffHasRegisterProc],cpLCL);

@@ -130,12 +130,12 @@ type
     FPackage: TLazPackage;
     FUnitName: string;
     function GetComponents(Index: integer): TPkgComponent;
-    function GetHasRegisteredProc: boolean;
+    function GetHasRegisterProc: boolean;
     procedure SetRemoved(const AValue: boolean);
     procedure SetFilename(const AValue: string);
     procedure SetFileType(const AValue: TPkgFileType);
     procedure SetFlags(const AValue: TPkgFileFlags);
-    procedure SetHasRegisteredProc(const AValue: boolean);
+    procedure SetHasRegisterProc(const AValue: boolean);
     procedure UpdateUnitName;
     function GetComponentList: TList;
   public
@@ -158,8 +158,8 @@ type
     property Filename: string read FFilename write SetFilename;
     property FileType: TPkgFileType read FFileType write SetFileType;
     property Flags: TPkgFileFlags read FFlags write SetFlags;
-    property HasRegisteredProc: boolean
-      read GetHasRegisteredProc write SetHasRegisteredProc;
+    property HasRegisterProc: boolean
+      read GetHasRegisterProc write SetHasRegisterProc;
     property LazPackage: TLazPackage read FPackage;
     property UnitName: string read FUnitName write FUnitName;
     property ComponentPriority: TComponentPriority read FComponentPriority
@@ -765,7 +765,7 @@ begin
   UpdateUnitName;
 end;
 
-function TPkgFile.GetHasRegisteredProc: boolean;
+function TPkgFile.GetHasRegisterProc: boolean;
 begin
   Result:=pffHasRegisterProc in FFlags;
 end;
@@ -793,9 +793,9 @@ begin
   FFlags:=AValue;
 end;
 
-procedure TPkgFile.SetHasRegisteredProc(const AValue: boolean);
+procedure TPkgFile.SetHasRegisterProc(const AValue: boolean);
 begin
-  if HasRegisteredProc=AValue then exit;
+  if HasRegisterProc=AValue then exit;
   if AValue then
     Include(FFlags,pffHasRegisterProc)
   else
@@ -857,7 +857,7 @@ begin
   FPackage.LongenFilename(AFilename);
   Filename:=AFilename;
   FileType:=PkgFileTypeIdentToType(XMLConfig.GetValue(Path+'Type/Value',''));
-  HasRegisteredProc:=XMLConfig.GetValue(Path+'HasRegisteredProc/Value',false);
+  HasRegisterProc:=XMLConfig.GetValue(Path+'HasRegisterProc/Value',false);
   fUnitName:=XMLConfig.GetValue(Path+'UnitName/Value','');
 end;
 
@@ -868,7 +868,7 @@ begin
   TmpFilename:=Filename;
   FPackage.ShortenFilename(TmpFilename);
   XMLConfig.SetDeleteValue(Path+'Filename/Value',TmpFilename,'');
-  XMLConfig.SetDeleteValue(Path+'HasRegisteredProc/Value',HasRegisteredProc,
+  XMLConfig.SetDeleteValue(Path+'HasRegisterProc/Value',HasRegisterProc,
                            false);
   XMLConfig.SetDeleteValue(Path+'Type/Value',PkgFileTypeIdents[FileType],
                            PkgFileTypeIdents[pftUnit]);

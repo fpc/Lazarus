@@ -933,9 +933,17 @@ begin
   Result:=MainIDE.DoSaveForBuild;
   if Result<>mrOk then exit;
   
+  // update dependencies
+  
+  // ToDo
+  
+  
   // create package main source file
   Result:=DoSavePackageMainSource(APackage,Flags);
   if Result<>mrOk then exit;
+  
+  // compile package
+  
 
   Result:=mrOk;
 end;
@@ -951,6 +959,8 @@ var
   CurFile: TPkgFile;
   CodeBuffer: TCodeBuffer;
   CurUnitName: String;
+  RegistrationCode: String;
+  fs: TFileStream;
 begin
   // check if package is ready for saving
   if not APackage.HasDirectory then begin
@@ -971,7 +981,9 @@ begin
   if Result=mrAbort then exit;
 
   // collect unitnames
+  e:=EndOfLine;
   UsedUnits:='';
+  RegistrationCode:='';
   for i:=0 to APackage.FileCount-1 do begin
     CurFile:=APackage.Files[i];
     // update unitname
@@ -992,21 +1004,20 @@ begin
         if UsedUnits<>'' then
           UsedUnits:=UsedUnits+', ';
         UsedUnits:=UsedUnits+CurUnitName;
+        if CurFile.HasRegisterProc then begin
+          RegistrationCode:=RegistrationCode+
+            '  RegisterUnit('''+CurUnitName+''',@'+CurUnitName+'.Register);'+e;
+        end;
       end;
     end;
   end;
 
+
   // create source
-  e:=EndOfLine;
-  Src:='{ This is an automatically created source file. Do not edit!'+e
-      +'  This source is only used to compile and install'+e
-      +'  the package '+APackage.IDAsString+'.'+e
-      +'}'+e
-      +e
-      +'interface'+e
+  Src:='interface'+e
       +e
       +'uses'+e
-      +'  '+UsedUnits+', Classes;'+e
+      +'  '+UsedUnits+', LazarusPackageIntf;'+e
       +e
       +'procedure Register;'+e
       +e
@@ -1014,12 +1025,36 @@ begin
       +e
       +'procedure Register;'+e
       +'begin'+e
-      +e
+      +RegistrationCode
       +'end;'+e
       +e
       +'end.'+e;
-  writeln(Src);
-      
+  Src:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.
+                  BeautifyStatement(Src,0);
+  Src:='{ This file was automatically created by Lazarus. Do not edit!'+e
+      +'  This source is only used to compile and install'+e
+      +'  the package '+APackage.IDAsString+'.'+e
+      +'}'+e
+      +e
+      +Src;
+
+  // save source
+  try
+    fs:=TFileStream.Create(SrcFilename,fmCreate);
+    try
+      fs.Write(Src[1],length(Src));
+    finally
+      fs.Free;
+    end;
+  except
+    on E: Exception do begin
+      Result:=MessageDlg('Error writing file',
+        'Unable to write package main source file'#13
+        +'"'+SrcFilename+'".',
+        mtError,[mbCancel,mbAbort],0);
+      exit;
+    end;
+  end;
 
   Result:=mrOk;
 end;

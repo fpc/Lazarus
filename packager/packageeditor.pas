@@ -720,7 +720,7 @@ begin
     NodeIndex:=CurNode.Index;
     if NodeIndex>=LazPackage.FileCount then exit;
     CurFile:=LazPackage.Files[NodeIndex];
-    CurFile.HasRegisteredProc:=CallRegisterProcCheckBox.Checked;
+    CurFile.HasRegisterProc:=CallRegisterProcCheckBox.Checked;
     LazPackage.Modified:=true;
     UpdateAll;
   end;
@@ -728,7 +728,7 @@ begin
     NodeIndex:=CurNode.Index;
     if NodeIndex>=LazPackage.RemovedFilesCount then exit;
     CurFile:=LazPackage.RemovedFiles[NodeIndex];
-    CurFile.HasRegisteredProc:=CallRegisterProcCheckBox.Checked;
+    CurFile.HasRegisterProc:=CallRegisterProcCheckBox.Checked;
     UpdateAll;
   end;
 end;
@@ -1052,7 +1052,7 @@ procedure TPackageEditorForm.UpdateFiles;
   begin
     case PkgFile.FileType of
     pftUnit:
-      if PkgFile.HasRegisteredProc then
+      if PkgFile.HasRegisterProc then
         ANode.ImageIndex:=ImageIndexRegisterUnit
       else
         ANode.ImageIndex:=ImageIndexUnit;
