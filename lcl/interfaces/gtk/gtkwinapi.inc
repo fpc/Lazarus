@@ -342,7 +342,7 @@ var FormatAtom, FormatTry: Cardinal;
 
 begin
   {$IfDef DEBUG_CLIPBOARD}
-  writeln('[TgtkObject.ClipboardGetData] A ClipboardWidget=',HexStr(Cardinal(ClipboardWidget),8),' Format=',ClipboardFormatToMimeType(FormatID));
+  writeln('[TgtkObject.ClipboardGetData] A ClipboardWidget=',HexStr(Cardinal(ClipboardWidget),8),' Format=',ClipboardFormatToMimeType(FormatID),' Now=',Now);
   {$EndIf}
   Result:=false;
   if (FormatID=0) or (Stream=nil) then exit;
@@ -389,7 +389,7 @@ begin
     end;
 
     {$IfDef DEBUG_CLIPBOARD}
-    writeln('[TgtkObject.ClipboardGetData] B  Format=',ClipboardFormatToMimeType(FormatAtom));
+    writeln('[TgtkObject.ClipboardGetData] B  Format=',ClipboardFormatToMimeType(FormatAtom),' Now=',Now);
     {$EndIf}
     if FormatAtom=0 then exit;
    
@@ -397,7 +397,7 @@ begin
     SelData:=RequestSelectionData(ClipboardWidget,ClipboardType,FormatAtom);
     try
       {$IfDef DEBUG_CLIPBOARD}
-      writeln('[TgtkObject.ClipboardGetData] C  Length=',SelData.Length);
+      writeln('[TgtkObject.ClipboardGetData] C  Length=',SelData.Length,' Now=',Now);
       {$EndIf}
       if (SelData.Selection<>ClipboardTypeAtoms[ClipboardType])
       or (SelData.Target<>FormatAtom) then
@@ -412,7 +412,7 @@ begin
             CompoundTextCount:=gdk_text_property_to_text_list(SelData.theType,
               SelData.Format,SelData.Data,SelData.Length,@CompoundTextList);
             {$IfDef DEBUG_CLIPBOARD}
-            writeln('[TgtkObject.ClipboardGetData] D  CompoundTextCount=',CompoundTextCount);
+            writeln('[TgtkObject.ClipboardGetData] D  CompoundTextCount=',CompoundTextCount,' Now=',Now);
             {$EndIf}
             for i:=0 to CompoundTextCount-1 do
               if (CompoundTextList[i]<>nil) then
@@ -426,7 +426,7 @@ begin
       end;
       
       {$IfDef DEBUG_CLIPBOARD}
-      writeln('[TgtkObject.ClipboardGetData] END');
+      writeln('[TgtkObject.ClipboardGetData] END ',' Now=',Now);
       {$EndIf}
     finally
       if SelData.Data<>nil then FreeMem(SelData.Data);
@@ -461,9 +461,9 @@ var AllID: cardinal;
   begin
     if Format<>0 then begin
       for a:=0 to Cnt-1 do begin
-{$IfDef DEBUG_CLIPBOARD}
-writeln('  IsFormatSupported ',Format,'  ',FormatAtoms[a]);
-{$EndIf}
+        {$IfDef DEBUG_CLIPBOARD}
+        writeln('  IsFormatSupported ',Format,'  ',FormatAtoms[a]);
+        {$EndIf}
         if FormatAtoms[a]=Format then begin
           Result:=true;
           exit;
@@ -489,9 +489,9 @@ writeln('  IsFormatSupported ',Format,'  ',FormatAtoms[a]);
   
   
 begin
-{$IfDef DEBUG_CLIPBOARD}
-writeln('[TgtkObject.ClipboardGetFormats] A ClipboardWidget=',HexStr(Cardinal(ClipboardWidget),8));
-{$EndIf}
+  {$IfDef DEBUG_CLIPBOARD}
+  writeln('[TgtkObject.ClipboardGetFormats] A ClipboardWidget=',HexStr(Cardinal(ClipboardWidget),8),' Now=',Now);
+  {$EndIf}
   Result:=false;
   Count:=0;
   List:=nil;
@@ -502,12 +502,26 @@ writeln('[TgtkObject.ClipboardGetFormats] A ClipboardWidget=',HexStr(Cardinal(Cl
   SelData:=RequestSelectionData(ClipboardWidget,ClipboardType,AllID);
   
   try
-{$IfDef DEBUG_CLIPBOARD}
-writeln('[TgtkObject.ClipboardGetFormats] A2 ',AllID);
-{$EndIf}
+    {$IfDef DEBUG_CLIPBOARD}
+    writeln('[TgtkObject.ClipboardGetFormats] Checking TARGETS answer ',
+      ' selection: ',SelData.Selection,'=',ClipboardTypeAtoms[ClipboardType],
+                ' "',gdk_atom_name(SelData.Selection),'"',
+      ' target: ',SelData.Target,'=',AllID,
+                ' "',gdk_atom_name(SelData.Target),'"',
+      ' theType: ',SelData.TheType,'=',gdk_atom_intern('ATOM',0),
+                ' "',gdk_atom_name(SelData.theType),'"',
+      ' Length=',SelData.Length,
+      ' Format=',SelData.Format,
+      ' Data=',HexStr(Cardinal(SelData.Data),8),
+      ' Now=',Now
+      );
+    {$EndIf}
     if (SelData.Selection<>ClipboardTypeAtoms[ClipboardType])
     or (SelData.Target<>AllID)
-    or (SelData.TheType<>gdk_atom_intern('ATOM',0)) then
+    or (SelData.Format<=0)
+    or ((SelData.TheType<>gdk_atom_intern('ATOM',0))
+         and (SelData.TheType<>AllID))
+    then
       exit;
   
     Cnt:=SelData.Length div (SelData.Format shr 3);
@@ -533,10 +547,11 @@ writeln('[TgtkObject.ClipboardGetFormats] A2 ',AllID);
       GetMem(List,SizeOf(TClipboardFormat)*Count);
       i:=0;
       while (i<Cnt) do begin
-{$IfDef DEBUG_CLIPBOARD}
-writeln('  ',i,':  ',FormatAtoms[i]);
-writeln('         "',ClipboardFormatToMimeType(FormatAtoms[i]),'"');
-{$EndIf}
+        {$IfDef DEBUG_CLIPBOARD}
+        writeln('[TgtkObject.ClipboardGetFormats] Supported formats: ',
+                i,'/',Cnt,':  ',FormatAtoms[i]);
+        writeln('  MimeType="',ClipboardFormatToMimeType(FormatAtoms[i]),'"');
+        {$EndIf}
         List[i]:=FormatAtoms[i];
         inc(i);
       end;
@@ -7645,6 +7660,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.207  2003/01/24 11:58:01  mattias
+  fixed clipboard waiting and kwrite targets
+
   Revision 1.206  2003/01/06 14:41:24  mattias
   fixed synedit mouse pos to logical column
 
