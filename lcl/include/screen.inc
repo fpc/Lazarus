@@ -109,6 +109,15 @@ begin
   FCustomFormsZOrdered.Insert(0, ACustomForm);
 end;
 
+procedure TScreen.UpdateScreen;
+var
+  DC: HDC;
+begin
+  DC:=GetDC(0);
+  FPixelsPerInch:=GetDeviceCaps(DC,LOGPIXELSX);
+  ReleaseDC(0,DC);
+end;
+
 procedure TScreen.AddHandlerFormAdded(OnFormAdded: TScreenFormEvent);
 begin
   AddHandler(snFormAdded,TMethod(OnFormAdded));

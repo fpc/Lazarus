@@ -202,7 +202,6 @@ begin
   // ToDo
 end;
 
-
 {------------------------------------------------------------------------------
        TApplication Initialize
        Makes a call to the coponent engine to provide any initialization that
@@ -219,6 +218,7 @@ begin
   end;
   InterfaceObject.AppInit;
   CNSendMessage(LM_SCREENINIT, nil, @ScreenInfo);
+  Screen.UpdateScreen;
   // application icon
   if LazarusResources.Find('MAINICON')<>nil then begin
     if FIcon=nil then begin
@@ -1113,6 +1113,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.66  2003/11/17 23:09:39  mattias
+  started PixelsPerInch
+
   Revision 1.65  2003/11/17 22:53:26  mattias
   updated Makefiles
 

@@ -1240,11 +1240,16 @@ end;
   Creates the interface object.
  ------------------------------------------------------------------------------}
 procedure TCustomForm.CreateWnd;
+var
+  DC: HDC;
 begin
   //writeln('TCustomForm.CreateWnd START ',ClassName);
   FFormState:=FFormState-[fsBorderStyleChanged,fsFormStyleChanged];
   inherited CreateWnd;
   CNSendMessage(LM_SETFORMICON, Self, Pointer(GetIconHandle));
+  DC:=GetDC(Handle);
+  FPixelsPerInch:=GetDeviceCaps(DC,LOGPIXELSX);
+  ReleaseDC(Handle,DC);
 
   Assert(False, 'Trace:[TCustomForm.CreateWnd] FMenu.HandleNeeded');  
   if FMenu <> nil then FMenu.HandleNeeded;
@@ -1439,6 +1444,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.117  2003/11/17 23:09:39  mattias
+  started PixelsPerInch
+
   Revision 1.116  2003/10/07 14:54:59  mattias
   moved some lazarus resource code to LResources.pp
 

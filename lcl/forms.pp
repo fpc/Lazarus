@@ -358,6 +358,7 @@ type
     FOnHide: TNotifyEvent;
     FOnShow: TNotifyEvent;
     FOnWindowStateChanged: TNotifyEvent;
+    FPixelsPerInch: Longint;
     FPosition: TPosition;
     FWindowState: TWindowState;
     function IsForm : Boolean;
@@ -464,6 +465,7 @@ type
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
     property OnWindowStateChanged: TNotifyEvent
                          read fOnWindowStateChanged write fOnWindowStateChanged;
+    property PixelsPerInch: Longint read FPixelsPerInch write FPixelsPerInch stored False;
     property Position: TPosition read FPosition write SetPosition default poDesigned;
     property TextHeight: Longint read FDummyTextHeight write FDummyTextHeight
                                  stored False;
@@ -478,7 +480,6 @@ type
   TForm = class(TCustomForm)
   private
     FClientHandle: HWND;
-    FDummyPPI: longint;
   public
     property ClientHandle: HWND read FClientHandle;
   published
@@ -517,7 +518,7 @@ type
     property OnResize;
     property OnShow;
     property ParentFont;
-    property PixelsPerInch : Longint read FDummyPPI write FDummyPPI stored False;
+    property PixelsPerInch stored False;
     property PopupMenu;
     property Position;
     property ShowHint;
@@ -632,6 +633,7 @@ type
     function CustomFormZIndex(AForm: TCustomForm): integer;
     procedure MoveFormToFocusFront(ACustomForm: TCustomForm);
     procedure MoveFormToZFront(ACustomForm: TCustomForm);
+    procedure UpdateScreen;
     // handler
     procedure AddHandlerFormAdded(OnFormAdded: TScreenFormEvent);
     procedure RemoveHandlerFormAdded(OnFormAdded: TScreenFormEvent);
@@ -666,7 +668,7 @@ type
                                                  write FOnActiveControlChange;
     property OnActiveFormChange: TNotifyEvent read FOnActiveFormChange
                                               write FOnActiveFormChange;
-    property PixelsPerInch : integer read FPixelsPerInch;
+    property PixelsPerInch: integer read FPixelsPerInch;
   end;
 
 
