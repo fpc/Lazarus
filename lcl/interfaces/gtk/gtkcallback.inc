@@ -298,8 +298,8 @@ begin
   
   MSG.Msg := LM_GtkPAINT;
   MSG.Widget := Widget;
-  MSG.Unused1 := 0;
-  MSG.Unused2 := 0;
+  MSG.State := GtkPaint_LCLWidget;
+  MSG.Unused := 0;
   
   Result := DeliverPostMessage(Data, MSG);
 end;
@@ -326,8 +326,8 @@ begin
 
   MSG.Msg := LM_GtkPAINT;
   MSG.Widget := Widget;
-  MSG.Unused1 := 0;
-  MSG.Unused2 := 0;
+  MSG.State := GtkPaint_LCLWidget;
+  MSG.Unused := 0;
 
   Result := DeliverPostMessage(Data, MSG);
 end;
@@ -355,8 +355,8 @@ begin
 
   MSG.Msg := LM_GtkPAINT;
   MSG.Widget := Widget;
-  MSG.Unused1 := 0;
-  MSG.Unused2 := 0;
+  MSG.State := GtkPaint_LCLWidget;
+  MSG.Unused := 0;
 
   Result := DeliverPostMessage(Data, MSG);
 end;
@@ -2464,6 +2464,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.144  2002/10/10 08:51:13  lazarus
+  MG: added paint messages for some gtk internal widgets
+
   Revision 1.143  2002/10/09 10:22:54  lazarus
   MG: fixed client origin coordinates
 
