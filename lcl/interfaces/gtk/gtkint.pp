@@ -222,10 +222,6 @@ type
     procedure AddDummyNoteBookPage(NoteBookWidget: PGtkNoteBook);virtual;
     procedure MoveNBPage(ANoteBook, APage: TObject; NewIndex: Integer);virtual;
 
-    // listbox
-    function GetTopIndex(Sender: TObject): integer;virtual;
-    function SetTopIndex(Sender: TObject; NewTopIndex: integer): integer;virtual;
-
     // forms and dialogs
     procedure BringFormToFront(Sender: TObject);
     procedure SetWindowSizeAndPosition(Window: PGtkWindow;
@@ -453,6 +449,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.213  2004/09/24 15:31:01  micha
+  convert LM_LB_GETTOPINDEX and LM_LB_SETTOPINDEX message to interface methods
+
   Revision 1.212  2004/09/24 14:50:57  micha
   convert LM_SETDESIGNING message to TWidgetSet method
 

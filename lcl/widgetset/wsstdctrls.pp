@@ -99,6 +99,7 @@ type
     class function  GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; virtual;
     class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; virtual;
     class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; virtual;
+    class function  GetTopIndex(const ACustomListBox: TCustomListBox): integer; virtual;
     class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); virtual;
     class procedure SetBorder(const ACustomListBox: TCustomListBox); virtual;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); virtual;
@@ -106,6 +107,7 @@ type
       AMultiSelect: boolean); virtual;
     class procedure SetStyle(const ACustomListBox: TCustomListBox); virtual;
     class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); virtual;
+    class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); virtual;
   end;
   TWSCustomListBoxClass = class of TWSCustomListBox;
   
@@ -234,6 +236,11 @@ begin
   Result := nil;
 end;
 
+function  TWSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox): integer;
+begin
+  Result := 0;
+end;
+
 procedure TWSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean);
 begin
 end;
@@ -256,6 +263,10 @@ begin
 end;
 
 procedure TWSCustomListBox.SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean);
+begin
+end;
+
+procedure TWSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer);
 begin
 end;
 

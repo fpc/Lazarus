@@ -2933,64 +2933,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TGtkWidgetSet.GetTopIndex(Sender: TObject): integer;
-------------------------------------------------------------------------------}
-function TGtkWidgetSet.GetTopIndex(Sender: TObject): integer;
-begin
-  Result:=GetListBoxIndexAtY(Sender as TComponent,0);
-end;
-
-{------------------------------------------------------------------------------
-  function TGtkWidgetSet.SetTopIndex(Sender: TObject; NewTopIndex: integer
-    ): integer;
-------------------------------------------------------------------------------}
-function TGtkWidgetSet.SetTopIndex(Sender: TObject; NewTopIndex: integer
-  ): integer;
-{$IFdef GTK2}
-begin
-  DebugLn('TODO: TGtkWidgetSet.SetTopIndex');
-end;
-{$Else}
-var
-  ScrolledWindow: PGtkScrolledWindow;
-  VertAdj: PGTKAdjustment;
-  AdjValue, MaxAdjValue: integer;
-  ListWidget: PGtkList;
-  AWidget: PGtkWidget;
-  GListItem: PGList;
-  ListItemWidget: PGtkWidget;
-  i: Integer;
-begin
-  Result:=0;
-  if not (Sender is TWinControl) then exit;
-  case TWinControl(Sender).fCompStyle of
-
-  csListBox, csCheckListBox:
-    begin
-      AWidget:=PGtkWidget(TWinControl(Sender).Handle);
-      ListWidget:=PGtkList(GetWidgetInfo(AWidget, True)^.CoreWidget);
-      ScrolledWindow:=PGtkScrolledWindow(AWidget);
-      AdjValue:=0;
-      GListItem:=ListWidget^.children;
-      i:=0;
-      while GListItem<>nil do begin
-        ListItemWidget:=PGtkWidget(GListItem^.data);
-        if i>=NewTopIndex then break;
-        inc(AdjValue,ListItemWidget^.Allocation.Height);
-        inc(i);
-        GListItem:=GListItem^.next;
-      end;
-      VertAdj:=gtk_scrolled_window_get_vadjustment(ScrolledWindow);
-      MaxAdjValue:=RoundToInt(VertAdj^.upper-VertAdj^.page_size);
-      if AdjValue>MaxAdjValue then AdjValue:=MaxAdjValue;
-      gtk_adjustment_set_value(VertAdj,AdjValue);
-    end;
-
-  end;
-end;
-{$EndIf}
-
-{------------------------------------------------------------------------------
   procedure TGtkWidgetSet.SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
     MultiSelect, ExtendedSelect: boolean);
 ------------------------------------------------------------------------------}
@@ -3091,9 +3033,6 @@ begin
   LM_Create   : CreateComponent(Sender);
 
   LM_NB_UpdateTab: UpdateNotebookPageTab(nil,TCustomPage(Sender));
-
-  LM_LB_GETTOPINDEX: Result:=GetTopIndex(Sender);
-  LM_LB_SETTOPINDEX: Result:=SetTopIndex(Sender,integer(Data));
 
   else
     begin
@@ -7358,6 +7297,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.599  2004/09/24 15:31:01  micha
+  convert LM_LB_GETTOPINDEX and LM_LB_SETTOPINDEX message to interface methods
+
   Revision 1.598  2004/09/24 14:50:57  micha
   convert LM_SETDESIGNING message to TWidgetSet method
 

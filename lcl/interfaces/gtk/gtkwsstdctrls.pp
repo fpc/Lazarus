@@ -33,7 +33,7 @@ uses
   {$ELSE}
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} GtkFontCache,
   {$ENDIF}
-  WSStdCtrls, WSLCLClasses, GtkInt, Classes, LCLType, GtkDef,
+  WSStdCtrls, WSLCLClasses, GtkInt, Classes, LCLType, GtkDef, LCLProc,
   GTKWinApiWindow, gtkglobals, gtkproc, InterfaceBase;
 
 
@@ -105,12 +105,14 @@ type
     class function  GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
     class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
     class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
+    class function  GetTopIndex(const ACustomListBox: TCustomListBox): integer; override;
     class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); override;
     class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
     class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect,
       AMultiSelect: boolean); override;
     class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
+    class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); override;
   end;
 
   { TGtkWSListBox }
@@ -440,6 +442,11 @@ begin
   {$endif}
 end;
 
+function  TGtkWSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox): integer;
+begin
+  Result:=TGtkWidgetSet(InterfaceObject).GetListBoxIndexAtY(ACustomListBox, 0);
+end;
+
 procedure TGtkWSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean);
 var
   Widget      : PGtkWidget;            // pointer to gtk-widget (local use when neccessary)
@@ -554,6 +561,42 @@ begin
   {$Endif}
   end
 end;
+
+procedure TGtkWSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer);
+{$IFdef GTK2}
+begin
+  DebugLn('TODO: TGtkWSCustomListBox.SetTopIndex');
+end;
+{$Else}
+var
+  ScrolledWindow: PGtkScrolledWindow;
+  VertAdj: PGTKAdjustment;
+  AdjValue, MaxAdjValue: integer;
+  ListWidget: PGtkList;
+  AWidget: PGtkWidget;
+  GListItem: PGList;
+  ListItemWidget: PGtkWidget;
+  i: Integer;
+begin
+  AWidget:=PGtkWidget(ACustomListBox.Handle);
+  ListWidget:=PGtkList(GetWidgetInfo(AWidget, True)^.CoreWidget);
+  ScrolledWindow:=PGtkScrolledWindow(AWidget);
+  AdjValue:=0;
+  GListItem:=ListWidget^.children;
+  i:=0;
+  while GListItem<>nil do begin
+    ListItemWidget:=PGtkWidget(GListItem^.data);
+    if i>=NewTopIndex then break;
+    inc(AdjValue,ListItemWidget^.Allocation.Height);
+    inc(i);
+    GListItem:=GListItem^.next;
+  end;
+  VertAdj:=gtk_scrolled_window_get_vadjustment(ScrolledWindow);
+  MaxAdjValue:=RoundToInt(VertAdj^.upper-VertAdj^.page_size);
+  if AdjValue>MaxAdjValue then AdjValue:=MaxAdjValue;
+  gtk_adjustment_set_value(VertAdj,AdjValue);
+end;
+{$EndIf}
 
 { TGtkWSCustomComboBox }
 

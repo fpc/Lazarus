@@ -105,6 +105,7 @@ type
     class function  GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
     class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
     class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
+    class function  GetTopIndex(const ACustomListBox: TCustomListBox): integer; override;
     class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); override;
     class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
@@ -112,6 +113,7 @@ type
       AMultiSelect: boolean); override;
     class procedure SetStyle(const ACustomListBox: TCustomListBox); override;
     class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
+    class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); override;
   end;
     
   { TWin32WSListBox }
@@ -331,6 +333,12 @@ begin
   Windows.SetProp(Handle, 'List', dword(Result));
 end;
 
+function  TWin32WSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox): integer;
+begin
+  // TODO: implement me!
+  Result := 0;
+end;
+
 procedure TWin32WSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean);
 begin
   if ACustomListBox.FCompStyle = csListBox then
@@ -387,6 +395,11 @@ begin
     csCListBox:
       TWin32CListStringList(AList).Sorted := ASorted;
   end;
+end;
+
+procedure TWin32WSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer);
+begin
+  // TODO: implement me!
 end;
 
 { TWin32WSCustomComboBox }

@@ -140,7 +140,7 @@ end;
 function TCustomListBox.GetTopIndex: Integer;
 begin
   if HandleAllocated then
-    FTopIndex:=CNSendMessage(LM_LB_GETTOPINDEX, Self, nil);
+    FTopIndex := TWSCustomListBoxClass(WidgetSetClass).GetTopIndex(Self);
   Result := FTopIndex;
 end;
 
@@ -153,7 +153,7 @@ begin
   // will make it complete visible.
   FTopIndex:=AValue;
   if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
-    CNSendMessage(LM_LB_SETTOPINDEX, Self, Pointer(FTopIndex));
+    TWSCustomListBoxClass(WidgetSetClass).SetTopIndex(Self, AValue);
 end;
 
 {------------------------------------------------------------------------------

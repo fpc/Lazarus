@@ -54,12 +54,6 @@ const
   LM_NB_UpdateTab   = LM_NB_First+0;
   LM_NB_Last        = LM_NB_UpdateTab;
 
-  // TListBox
-  LM_LB_First          = LM_NB_Last +1;
-  LM_LB_GETTOPINDEX    = LM_LB_First   +0;
-  LM_LB_SETTOPINDEX    = LM_LB_First   +1;
-  LM_LB_Last           = LM_LB_SETTOPINDEX;
-
 
   //-------------
   // lcl messages
@@ -748,12 +742,6 @@ begin
   LM_NB_UpdateTab   :Result:='LM_NB_UpdateTab';
   //LM_NB_Last        :Result:='LM_NB_Last';
 
-  // TListBox
-  //LM_LB_First          :Result:='LM_B_First';
-  LM_LB_GETTOPINDEX    :Result:='LM_LB_GETTOPINDEX';
-  LM_LB_SETTOPINDEX    :Result:='LM_LB_SETTOPINDEX';
-  //LM_LB_Last           :Result:='LM_LB_Last';
-
   //-------------
   // lcl messages
   //
@@ -843,6 +831,9 @@ end.
 
 {
   $Log$
+  Revision 1.120  2004/09/24 15:31:01  micha
+  convert LM_LB_GETTOPINDEX and LM_LB_SETTOPINDEX message to interface methods
+
   Revision 1.119  2004/09/24 14:50:57  micha
   convert LM_SETDESIGNING message to TWidgetSet method
 
