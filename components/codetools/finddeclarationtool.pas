@@ -309,13 +309,16 @@ const
   xtAllRealTypes = [xtReal, xtConstReal, xtSingle, xtDouble, xtExtended,
                     xtCurrency, xtComp];
   xtAllStringTypes = [xtConstString, xtShortString, xtString, xtAnsiString];
-  xtAllStringCompatibleTypes = xtAllStringTypes+[xtChar];
   xtAllWideStringTypes = [xtConstString, xtWideString];
-  xtAllWideStringCompatibleTypes = xtAllWideStringTypes+[xtWideChar,xtChar];
   xtAllPointerTypes = [xtPointer, xtNil];
+
+  xtAllStringCompatibleTypes = xtAllStringTypes+[xtChar];
+  xtAllWideStringCompatibleTypes = xtAllWideStringTypes+[xtWideChar,xtChar];
+
   xtAllIntegerConvertibles = xtAllIntegerTypes;
   xtAllRealConvertibles = xtAllRealTypes+xtAllIntegerTypes;
-  xtAllStringConvertibles = xtAllStringTypes+[xtChar,xtPChar];
+  xtAllStringConvertibles = xtAllStringCompatibleTypes+[xtPChar];
+  xtAllWideStringConvertibles = xtAllWideStringCompatibleTypes+[xtPChar];
   xtAllBooleanConvertibles = xtAllBooleanTypes+[xtConstBoolean];
   xtAllPointerConvertibles = xtAllPointerTypes+[xtPChar];
 
@@ -597,12 +600,18 @@ type
     function GetInterfaceNode: TCodeTreeNode;
     function CompatibilityList1IsBetter(List1, List2: TTypeCompatibilityList;
       ListCount: integer): boolean;
-    function IsParamListCompatible(FirstParameterNode: TCodeTreeNode;
-      ExprParamList: TExprTypeList; IgnoreMissingParameters: boolean;
+    function IsParamExprListCompatibleToNodeList(
+      FirstTargetParameterNode: TCodeTreeNode;
+      SourceExprParamList: TExprTypeList; IgnoreMissingParameters: boolean;
       Params: TFindDeclarationParams;
       CompatibilityList: TTypeCompatibilityList): TTypeCompatibility;
-    function IsParamListCompatible(FirstParameterNode1,
-      FirstParameterNode2: TCodeTreeNode;
+    function IsParamNodeListCompatibleToExprList(
+      TargetExprParamList: TExprTypeList;
+      FirstSourceParameterNode: TCodeTreeNode;
+      Params: TFindDeclarationParams;
+      CompatibilityList: TTypeCompatibilityList): TTypeCompatibility;
+    function IsParamNodeListCompatibleToParamNodeList(FirstTargetParameterNode,
+      FirstSourceParameterNode: TCodeTreeNode;
       Params: TFindDeclarationParams;
       CompatibilityList: TTypeCompatibilityList): TTypeCompatibility;
     function CreateParamExprListFromStatement(StartPos: integer;
@@ -4760,19 +4769,19 @@ begin
     Result:=RightOperand;
 end;
 
-function TFindDeclarationTool.IsParamListCompatible(
-  FirstParameterNode: TCodeTreeNode;
-  ExprParamList: TExprTypeList;  IgnoreMissingParameters: boolean;
+function TFindDeclarationTool.IsParamExprListCompatibleToNodeList(
+  FirstTargetParameterNode: TCodeTreeNode;
+  SourceExprParamList: TExprTypeList;  IgnoreMissingParameters: boolean;
   Params: TFindDeclarationParams;
   CompatibilityList: TTypeCompatibilityList): TTypeCompatibility;
-// tests if ExprParamList fits into the FirstParameterNode
+// tests if SourceExprParamList fits into the TargetFirstParameterNode
 var
   ParamNode: TCodeTreeNode;
   i, MinParamCnt, MaxParamCnt: integer;
   ParamCompatibility: TTypeCompatibility;
 begin
   // quick check: parameter count
-  ParamNode:=FirstParameterNode;
+  ParamNode:=FirstTargetParameterNode;
   MinParamCnt:=0;
   while (ParamNode<>nil)
   and ((ParamNode.SubDesc and ctnsHasDefaultValue)=0) do begin
@@ -4786,28 +4795,29 @@ begin
   end;
 
   {$IFDEF ShowExprEval}
-  writeln('[TFindDeclarationTool.IsParamListCompatible] ',
-  ' ExprParamList.Count=',ExprParamList.Count,
+  writeln('[TFindDeclarationTool.IsParamExprListCompatibleToNodeList] ',
+  ' ExprParamList.Count=',SourceExprParamList.Count,
   ' MinParamCnt=',MinParamCnt,' MaxParamCnt=',MaxParamCnt
   );
     try
   {$ENDIF}
   Result:=tcExact;
 
-  if (ExprParamlist.Count>MaxParamCnt)
-  or ((not IgnoreMissingParameters) and (ExprParamList.Count<MinParamCnt)) then
-  begin
+  if (SourceExprParamlist.Count>MaxParamCnt)
+  or ((not IgnoreMissingParameters) and (SourceExprParamList.Count<MinParamCnt))
+  then begin
     Result:=tcIncompatible;
     exit;
   end;
 
   // check each parameter for compatibility
-  ParamNode:=FirstParameterNode;
+  ParamNode:=FirstTargetParameterNode;
   i:=0;
-  while (ParamNode<>nil) and (i<ExprParamList.Count) do begin
-    ParamCompatibility:=IsCompatible(ParamNode,ExprParamList.Items[i],Params);
+  while (ParamNode<>nil) and (i<SourceExprParamList.Count) do begin
+    ParamCompatibility:=IsCompatible(ParamNode,SourceExprParamList.Items[i],
+                                     Params);
     {$IFDEF ShowExprEval}
-    writeln('[TFindDeclarationTool.IsParamListCompatible] B ',ExprTypeToString(ExprParamList.Items[i]));
+    writeln('[TFindDeclarationTool.IsParamExprListCompatibleToNodeList] B ',ExprTypeToString(SourceExprParamList.Items[i]));
     {$ENDIF}
     if CompatibilityList<>nil then
       CompatibilityList[i]:=ParamCompatibility;
@@ -4820,7 +4830,7 @@ begin
     ParamNode:=ParamNode.NextBrother;
     inc(i);
   end;
-  if (i<ExprParamList.Count) then begin
+  if (i<SourceExprParamList.Count) then begin
     // there are more expressions, then the param list has variables
     Result:=tcIncompatible;
   end else if (ParamNode<>nil) then begin
@@ -4842,26 +4852,95 @@ begin
   end;
   {$IFDEF ShowExprEval}
     finally
-      writeln('[TFindDeclarationTool.IsParamListCompatible] END ',
+      writeln('[TFindDeclarationTool.IsParamExprListCompatibleToNodeList] END ',
       ' Result=',TypeCompatibilityNames[Result],' ! ONLY VALID if no error !'
       );
     end;
   {$ENDIF}
 end;
 
-function TFindDeclarationTool.IsParamListCompatible(FirstParameterNode1,
-  FirstParameterNode2: TCodeTreeNode; Params: TFindDeclarationParams;
+function TFindDeclarationTool.IsParamNodeListCompatibleToExprList(
+  TargetExprParamList: TExprTypeList; FirstSourceParameterNode: TCodeTreeNode;
+  Params: TFindDeclarationParams;
+  CompatibilityList: TTypeCompatibilityList): TTypeCompatibility;
+// tests if FirstSourceParameterNode fits into the TargetExprParamList
+var
+  ParamNode: TCodeTreeNode;
+  i, MinParamCnt, MaxParamCnt: integer;
+  ParamCompatibility: TTypeCompatibility;
+  SourceExprType: TExpressionType;
+begin
+  // quick check: parameter count
+
+  MinParamCnt:=0;
+  ParamNode:=FirstSourceParameterNode;
+  while (ParamNode<>nil) do begin
+    ParamNode:=ParamNode.NextBrother;
+    inc(MinParamCnt);
+  end;
+  MaxParamCnt:=MinParamCnt;
+
+  {$IFDEF ShowExprEval}
+  writeln('[TFindDeclarationTool.IsParamNodeListCompatibleToExprList] ',
+  ' ExprParamList.Count=',TargetExprParamList.Count,
+  ' MinParamCnt=',MinParamCnt,' MaxParamCnt=',MaxParamCnt
+  );
+    try
+  {$ENDIF}
+  Result:=tcExact;
+
+  if (TargetExprParamList.Count<>MaxParamCnt) then begin
+    Result:=tcIncompatible;
+    exit;
+  end;
+
+  // check each parameter for compatibility
+  ParamNode:=FirstSourceParameterNode;
+  i:=0;
+  while (ParamNode<>nil) and (i<TargetExprParamList.Count) do begin
+    SourceExprType:=ConvertNodeToExpressionType(ParamNode,Params);
+    ParamCompatibility:=IsCompatible(TargetExprParamList.Items[i],
+                                     SourceExprType,Params);
+    {$IFDEF ShowExprEval}
+    writeln('[TFindDeclarationTool.IsParamNodeListCompatibleToExprList] B ',ExprTypeToString(TargetExprParamList.Items[i]));
+    {$ENDIF}
+    if CompatibilityList<>nil then
+      CompatibilityList[i]:=ParamCompatibility;
+    if ParamCompatibility=tcIncompatible then begin
+      Result:=tcIncompatible;
+      exit;
+    end else if ParamCompatibility=tcCompatible then begin
+      Result:=tcCompatible;
+    end;
+    ParamNode:=ParamNode.NextBrother;
+    inc(i);
+  end;
+  if (ParamNode<>nil) or (i<TargetExprParamList.Count) then
+    RaiseException('Internal Error: one param list has changed');
+    
+  {$IFDEF ShowExprEval}
+    finally
+      writeln('[TFindDeclarationTool.IsParamNodeListCompatibleToExprList] END ',
+      ' Result=',TypeCompatibilityNames[Result],' ! ONLY VALID if no error !'
+      );
+    end;
+  {$ENDIF}
+end;
+
+function TFindDeclarationTool.IsParamNodeListCompatibleToParamNodeList(
+  FirstTargetParameterNode, FirstSourceParameterNode: TCodeTreeNode;
+  Params: TFindDeclarationParams;
   CompatibilityList: TTypeCompatibilityList): TTypeCompatibility;
 var
   CurParamNode1, CurParamNode2: TCodeTreeNode;
   ParamCompatibility: TTypeCompatibility;
-  ExprType1, ExprType2: TExpressionType;
+  SourceExprType, TargetExprType: TExpressionType;
   OldFlags: TFindDeclarationFlags;
   i: integer;
 begin
   // quick check: parameter count
-  CurParamNode1:=FirstParameterNode1;
-  CurParamNode2:=FirstParameterNode2;
+  CurParamNode1:=FirstTargetParameterNode;
+  CurParamNode2:=FirstSourceParameterNode;
   while (CurParamNode1<>nil) and (CurParamNode2<>nil) do begin
     CurParamNode1:=CurParamNode1.NextBrother;
     CurParamNode2:=CurParamNode2.NextBrother;
@@ -4874,14 +4953,14 @@ begin
   // check each parameter
   OldFlags:=Params.Flags;
   Params.Flags:=Params.Flags-[fdfFindVariable]+[fdfIgnoreOverloadedProcs];
-  CurParamNode1:=FirstParameterNode1;
-  CurParamNode2:=FirstParameterNode2;
+  CurParamNode1:=FirstTargetParameterNode;
+  CurParamNode2:=FirstSourceParameterNode;
   Result:=tcExact;
   i:=0;
   while (CurParamNode1<>nil) and (CurParamNode2<>nil) do begin
-    ExprType1:=ConvertNodeToExpressionType(CurParamNode1,Params);
-    ExprType2:=ConvertNodeToExpressionType(CurParamNode2,Params);
-    ParamCompatibility:=IsBaseCompatible(ExprType1,ExprType2,Params);
+    TargetExprType:=ConvertNodeToExpressionType(CurParamNode1,Params);
+    SourceExprType:=ConvertNodeToExpressionType(CurParamNode2,Params);
+    ParamCompatibility:=IsBaseCompatible(TargetExprType,SourceExprType,Params);
     if CompatibilityList<>nil then
       CompatibilityList[i]:=ParamCompatibility;
     if ParamCompatibility=tcIncompatible then begin
@@ -5067,7 +5146,7 @@ begin
               Params.FoundProc^.Context.Node);
       Params.Save(OldInput);
       ParamCompatibility:=
-        Params.FoundProc^.Context.Tool.IsParamListCompatible(
+        Params.FoundProc^.Context.Tool.IsParamExprListCompatibleToNodeList(
           FirstParameterNode,
           Params.FoundProc^.ExprInputList,
           fdfIgnoreMissingParams in Params.Flags,
@@ -5108,7 +5187,7 @@ begin
         FoundContext.Tool.GetFirstParameterNode(FoundContext.Node);
       Params.Save(OldInput);
       ParamCompatibility:=
-        FoundContext.Tool.IsParamListCompatible(
+        FoundContext.Tool.IsParamExprListCompatibleToNodeList(
           FirstParameterNode,
           Params.FoundProc^.ExprInputList,
           fdfIgnoreMissingParams in Params.Flags,
@@ -5423,8 +5502,8 @@ var TargetNode, ExprNode: TCodeTreeNode;
 begin
   {$IFDEF ShowExprEval}
   writeln('[TFindDeclarationTool.IsBaseCompatible] B ',
-  ' TargetType=',ExpressionTypeDescNames[TargetType.Desc],
-  ' ExpressionType=',ExpressionTypeDescNames[ExpressionType.Desc]);
+  ' TargetType=',ExprTypeToString(TargetType),
+  ' ExpressionType=',ExprTypeToString(ExpressionType));
   {$ENDIF}
   Result:=tcIncompatible;
   if (TargetType.Desc=ExpressionType.Desc) then begin
@@ -5472,12 +5551,21 @@ begin
       Result:=tcExact;
     end;
     
+  end else if ((TargetType.Desc=xtPointer)
+      and (ExpressionType.Desc=xtContext)
+      and (ExpressionType.Context.Node.Desc in [ctnClass,ctnClassInterface]))
+  then begin
+    // assigning a class to a pointer
+    Result:=tcExact;
+    
   end else begin
     // check, if ExpressionType can be auto converted into TargetType
     if ((TargetType.Desc in xtAllRealTypes)
       and (ExpressionType.Desc in xtAllRealConvertibles))
     or ((TargetType.Desc in xtAllStringTypes)
       and (ExpressionType.Desc in xtAllStringConvertibles))
+    or ((TargetType.Desc in xtAllWideStringTypes)
+      and (ExpressionType.Desc in xtAllWideStringCompatibleTypes))
     or ((TargetType.Desc in xtAllIntegerTypes)
       and (ExpressionType.Desc in xtAllIntegerConvertibles))
     or ((TargetType.Desc in xtAllBooleanTypes)

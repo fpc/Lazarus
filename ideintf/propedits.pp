@@ -5069,6 +5069,84 @@ begin
   inherited Destroy;
 end;
 
+
+{ TBackupComponentList }
+
+function TBackupComponentList.GetComponents(Index: integer): TComponent;
+begin
+  Result:=TComponent(FComponentList[Index]);
+end;
+
+procedure TBackupComponentList.SetComponents(Index: integer;
+  const AValue: TComponent);
+begin
+  FComponentList[Index]:=AValue;
+end;
+
+procedure TBackupComponentList.SetLookupRoot(const AValue: TPersistent);
+var
+  i: Integer;
+begin
+  FLookupRoot:=AValue;
+  FComponentList.Clear;
+  if (FLookupRoot<>nil) and (FLookupRoot is TComponent) then
+    for i:=0 to TComponent(FLookupRoot).ComponentCount-1 do
+      FComponentList.Add(TComponent(FLookupRoot).Components[i]);
+  FSelection.Clear;
+end;
+
+procedure TBackupComponentList.SetSelection(
+  const AValue: TPersistentSelectionList);
+begin
+  if FSelection=AValue then exit;
+  FSelection.Assign(AValue);
+end;
+
+constructor TBackupComponentList.Create;
+begin
+  FSelection:=TPersistentSelectionList.Create;
+  FComponentList:=TList.Create;
+end;
+
+destructor TBackupComponentList.Destroy;
+begin
+  FreeAndNil(FSelection);
+  FreeAndNil(FComponentList);
+  inherited Destroy;
+end;
+
+function TBackupComponentList.IndexOf(AComponent: TComponent): integer;
+begin
+  Result:=FComponentList.IndexOf(AComponent);
+end;
+
+procedure TBackupComponentList.Clear;
+begin
+  LookupRoot:=nil;
+end;
+
+function TBackupComponentList.ComponentCount: integer;
+begin
+  Result:=FComponentList.Count;
+end;
+
+function TBackupComponentList.IsEqual(ALookupRoot: TPersistent;
+  ASelection: TPersistentSelectionList): boolean;
+var
+  i: Integer;
+begin
+  Result:=false;
+  if ALookupRoot<>LookupRoot then exit;
+  if not FSelection.IsEqual(ASelection) then exit;
+  if (ALookupRoot<>nil) and (FLookupRoot is TComponent) then begin
+    if ComponentCount<>TComponent(ALookupRoot).ComponentCount then exit;
+    for i:=0 to FComponentList.Count-1 do
+      if TComponent(FComponentList[i])<>TComponent(ALookupRoot).Components[i]
+      then exit;
+  end;
+  Result:=true;
+end;
+
 //******************************************************************************
 // XXX
 // workaround for missing typeinfo function
@@ -5183,84 +5261,6 @@ begin
 
   // XXX workaround for missing typeinfo function
   DummyClassForPropTypes.Free;
-end;
-
-
-{ TBackupComponentList }
-
-function TBackupComponentList.GetComponents(Index: integer): TComponent;
-begin
-  Result:=TComponent(FComponentList[Index]);
-end;
-
-procedure TBackupComponentList.SetComponents(Index: integer;
-  const AValue: TComponent);
-begin
-  FComponentList[Index]:=AValue;
-end;
-
-procedure TBackupComponentList.SetLookupRoot(const AValue: TPersistent);
-var
-  i: Integer;
-begin
-  FLookupRoot:=AValue;
-  FComponentList.Clear;
-  if (FLookupRoot<>nil) and (FLookupRoot is TComponent) then
-    for i:=0 to TComponent(FLookupRoot).ComponentCount-1 do
-      FComponentList.Add(TComponent(FLookupRoot).Components[i]);
-  FSelection.Clear;
-end;
-
-procedure TBackupComponentList.SetSelection(
-  const AValue: TPersistentSelectionList);
-begin
-  if FSelection=AValue then exit;
-  FSelection.Assign(AValue);
-end;
-
-constructor TBackupComponentList.Create;
-begin
-  FSelection:=TPersistentSelectionList.Create;
-  FComponentList:=TList.Create;
-end;
-
-destructor TBackupComponentList.Destroy;
-begin
-  FreeAndNil(FSelection);
-  FreeAndNil(FComponentList);
-  inherited Destroy;
-end;
-
-function TBackupComponentList.IndexOf(AComponent: TComponent): integer;
-begin
-  Result:=FComponentList.IndexOf(AComponent);
-end;
-
-procedure TBackupComponentList.Clear;
-begin
-  LookupRoot:=nil;
-end;
-
-function TBackupComponentList.ComponentCount: integer;
-begin
-  Result:=FComponentList.Count;
-end;
-
-function TBackupComponentList.IsEqual(ALookupRoot: TPersistent;
-  ASelection: TPersistentSelectionList): boolean;
-var
-  i: Integer;
-begin
-  Result:=false;
-  if ALookupRoot<>LookupRoot then exit;
-  if not FSelection.IsEqual(ASelection) then exit;
-  if (ALookupRoot<>nil) and (FLookupRoot is TComponent) then begin
-    if ComponentCount<>TComponent(ALookupRoot).ComponentCount then exit;
-    for i:=0 to FComponentList.Count-1 do
-      if TComponent(FComponentList[i])<>TComponent(ALookupRoot).Components[i]
-      then exit;
-  end;
-  Result:=true;
 end;
 
 initialization

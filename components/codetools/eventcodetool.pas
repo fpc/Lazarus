@@ -434,13 +434,14 @@ begin
             SearchedCompatibilityList:=nil;
           end;
           try
-            // check for compatibility
+            // check if the method fits into the TypeData
             FirstParameterNode:=FoundContext.Tool.GetFirstParameterNode(
               FoundContext.Node);
-            ParamCompatibility:=FoundContext.Tool.IsParamListCompatible(
-              FirstParameterNode,
-              SearchedExprList,false,
-              Params,SearchedCompatibilityList);
+            ParamCompatibility:=
+              FoundContext.Tool.IsParamNodeListCompatibleToExprList(
+                SearchedExprList,
+                FirstParameterNode,
+                Params,SearchedCompatibilityList);
             if ParamCompatibility=tcExact then begin
               MethodIsCompatible:=true;
             end;
@@ -701,9 +702,11 @@ begin
     {$ENDIF}
     FirstParameterNode:=FoundContext.Tool.GetFirstParameterNode(
       FoundContext.Node);
-    ParamCompatibility:=FoundContext.Tool.IsParamListCompatible(
+    // check if the found proc fits into
+    // the method mask (= current expression list)
+    ParamCompatibility:=FoundContext.Tool.IsParamNodeListCompatibleToExprList(
+      SearchedExprList,
       FirstParameterNode,
-      SearchedExprList,false,
       Params,SearchedCompatibilityList);
     {$IFDEF ShowAllProcs}
     writeln('[TEventsCodeTool.CollectPublishedMethods] A',

@@ -2359,7 +2359,6 @@ Begin
       then
         exit;
       if DoCreateProjectForProgram(PreReadBuf)=mrOk then begin
-
         exit;
       end;
     end;
@@ -4596,7 +4595,7 @@ begin
   // check for special files
   if ([ofRegularFile,ofRevert,ofProjectLoading]*Flags=[])
   and FilenameIsAbsolute(AFilename) and FileExists(AFilename) then begin
-    // check for project information files (.lpi)
+    // check if file is a lazarus project (.lpi)
     if (CompareFileExt(AFilename,'.lpi',false)=0) then begin
       if MessageDlg(lisOpenProject,
         Format(lisOpenTheProjectAnswerNoToLoadItAsXmlFile, [AFilename, #13]),
@@ -4606,6 +4605,7 @@ begin
         exit;
       end;
     end;
+    // check if file is a lazarus package (.lpi)
     if (CompareFileExt(AFilename,'.lpk',false)=0) then begin
       if MessageDlg(lisOpenPackage,
         Format(lisOpenThePackageAnswerNoToLoadItAsXmlFile, [AFilename, #13]),
@@ -10267,6 +10267,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.696  2004/01/08 16:13:47  mattias
+  implemented class to Pointer assignment compatibility check
+
   Revision 1.695  2004/01/05 15:22:41  mattias
   improved debugger: saved log, error handling in initialization, better reinitialize
 
