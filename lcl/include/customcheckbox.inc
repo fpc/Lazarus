@@ -180,7 +180,7 @@ end;
 procedure TCustomCheckBox.ApplyChanges;
 begin
   if HandleAllocated and (not (csLoading in ComponentState)) then begin
-    CNSendMessage(LM_SetValue,Self,@fState);
+    TWSCustomCheckBoxClass(WidgetSetClass).SetState(Self, FState);
   end;
 end;
 
@@ -210,6 +210,9 @@ end;
 
 {
   $Log$
+  Revision 1.26  2004/09/19 18:50:28  micha
+  convert LM_SETVALUE message to interface methods
+
   Revision 1.25  2004/09/18 17:07:57  micha
   convert LM_GETVALUE message to interface method
 

@@ -101,7 +101,9 @@ type
 
   { TWSProgressBar }
 
+  TWSProgressBarClass = class of TWSProgressBar;
   TWSProgressBar = class(TWSWinControl)
+    class procedure SetPosition(const AProgressBar: TProgressBar; const NewPosition: integer); virtual;
   end;
 
   { TWSCustomUpDown }
@@ -135,6 +137,7 @@ type
   TWSTrackBarClass = class of TWSTrackBar;
   TWSTrackBar = class(TWSWinControl)
     class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; virtual;
+    class procedure SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer); virtual;
   end;
 
   { TWSCustomTreeView }
@@ -231,6 +234,12 @@ procedure TWSCustomListView.ItemShow(const ALV: TCustomListView; const AIndex: I
 begin
 end;
 
+{ TWSProgressBar }
+
+procedure TWSProgressBar.SetPosition(const AProgressBar: TProgressBar; const NewPosition: integer);
+begin
+end;
+
 { TWSToolbar }
 
 {$ifdef OldToolbar}
@@ -255,6 +264,10 @@ end;
 function  TWSTrackBar.GetPosition(const ATrackBar: TCustomTrackBar): integer;
 begin
   Result := 0;
+end;
+
+procedure TWSTrackBar.SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer);
+begin
 end;
 
 initialization

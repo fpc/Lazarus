@@ -191,6 +191,7 @@ type
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
     class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox;
           const OldShortCut, NewShortCut: TShortCut); override;
+    class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
   end;
 
   { TWin32WSCheckBox }
@@ -524,6 +525,19 @@ procedure TWin32WSCustomCheckBox.SetShortCut(const ACustomCheckBox: TCustomCheck
   const OldShortCut, NewShortCut: TShortCut);
 begin
   // TODO: implement me!
+end;
+
+procedure TWin32WSCustomCheckBox.SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
+var
+  Flags: WPARAM;
+begin
+  case NewState of
+    cbChecked: Flags := Windows.WParam(BST_CHECKED);
+    cbUnchecked: Flags := Windows.WParam(BST_UNCHECKED);
+  else
+    Flags := Windows.WParam(BST_INDETERMINATE);
+  end;
+  Windows.SendMessage(ACustomCheckBox.Handle, BM_SETCHECK, Flags, 0);
 end;
 
 initialization

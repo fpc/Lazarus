@@ -57,7 +57,6 @@ const
   LM_CANVASCREATE   = LM_ComUser+19;
 
   LM_SETPROPERTIES  = LM_ComUser+39;         // update object to reflect current properties
-  LM_SETVALUE       = LM_ComUser+40;         // set actual value of object to visual object
 
   LM_MINIMIZE       = LM_COMUSER+59;
 
@@ -777,7 +776,6 @@ begin
   LM_CANVASCREATE   :Result:='LM_CANVASCREATE';
 
   LM_SETPROPERTIES  :Result:='LM_SETPROPERTIES';
-  LM_SETVALUE       :Result:='LM_SETVALUE';
 
   LM_MINIMIZE       :Result:='LM_MINIMIZE';
 
@@ -895,6 +893,9 @@ end.
 
 {
   $Log$
+  Revision 1.114  2004/09/19 18:50:28  micha
+  convert LM_SETVALUE message to interface methods
+
   Revision 1.113  2004/09/18 17:07:57  micha
   convert LM_GETVALUE message to interface method
 

@@ -245,8 +245,6 @@ type
 
     // misc
     Function GetCaption(Sender : TObject) : String; virtual;
-    function  GetValue(Sender : TObject; Data : pointer) : integer;virtual;
-    function  SetValue(Sender : TObject; Data : pointer) : integer;virtual;
     function  SetProperties (Sender: TObject) : integer;virtual;
     procedure WordWrap(DC: HDC; AText: PChar; MaxWidthInPixel: integer;
       var Lines: PPChar; var LineCount: integer);
@@ -331,7 +329,7 @@ uses
 // uncomment only those units with implementation
 ////////////////////////////////////////////////////
 // GtkWSActnList,
-// GtkWSArrow,
+ GtkWSArrow,
  GtkWSButtons,
  GtkWSCalendar,
  GtkWSCheckLst,
@@ -455,6 +453,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.210  2004/09/19 18:50:28  micha
+  convert LM_SETVALUE message to interface methods
+
   Revision 1.209  2004/09/18 17:07:57  micha
   convert LM_GETVALUE message to interface method
 

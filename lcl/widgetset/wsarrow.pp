@@ -44,18 +44,28 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  Arrow,
+  Arrow,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSControls;
 
 type
   { TWSArrow }
-
+  
+  TWSArrowClass = class of TWSArrow;
   TWSArrow = class(TWSCustomControl)
+    class procedure SetType(const AArrow: TArrow; const AArrowType: TArrowType; 
+      const AShadowType: TShadowType); virtual;
   end;
 
 
 implementation
+
+{ TWSArrow }
+
+procedure TWSArrow.SetType(const AArrow: TArrow; const AArrowType: TArrowType; 
+  const AShadowType: TShadowType);
+begin
+end;
 
 initialization
 

@@ -103,6 +103,7 @@ type
   private
   protected
   public
+    class procedure SetPosition(const AProgressBar: TProgressBar; const NewPosition: integer); override;
   end;
 
   { TWin32WSCustomUpDown }
@@ -149,6 +150,7 @@ type
   protected
   public
     class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
+    class procedure SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer); override;
   end;
 
   { TWin32WSCustomTreeView }
@@ -454,6 +456,13 @@ begin
   ListView_EnsureVisible(ALV.Handle, AIndex, Ord(PartialOK));
 end;
 
+{ TWin32WSProgressBar }
+
+procedure TWin32WSProgressBar.SetPosition(const AProgressBar: TProgressBar; const NewPosition: integer);
+begin
+  Windows.SendMessage(AProgressBar.Handle, PBM_SETPOS, Windows.WPARAM(NewPosition), 0);
+end;
+
 { TWin32WSToolbar}
 
 {$ifdef OldToolbar}
@@ -530,6 +539,11 @@ begin
     Result := 0;
 end;
 
+procedure TWin32WSTrackBar.SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer);
+begin
+  Windows.SendMessage(ATrackBar.Handle, TBM_SETPOS, Windows.WPARAM(true), Windows.LPARAM(NewPosition));
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -543,7 +557,7 @@ initialization
 //  RegisterWSComponent(TCustomPageControl, TWin32WSPageControl);
   RegisterWSComponent(TCustomListView, TWin32WSCustomListView);
 //  RegisterWSComponent(TCustomListView, TWin32WSListView);
-//  RegisterWSComponent(TCustomProgressBar, TWin32WSProgressBar);
+  RegisterWSComponent(TProgressBar, TWin32WSProgressBar);
 //  RegisterWSComponent(TCustomUpDown, TWin32WSCustomUpDown);
 //  RegisterWSComponent(TCustomUpDown, TWin32WSUpDown);
 //  RegisterWSComponent(TCustomToolButton, TWin32WSToolButton);

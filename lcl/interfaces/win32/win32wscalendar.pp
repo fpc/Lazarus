@@ -46,6 +46,9 @@ type
   protected
   public
     class function  GetDateTime(const ACalendar: TCustomCalendar): TDateTime; override;
+    class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); override;
+    class procedure SetDisplaySettings(const ACalendar: TCustomCalendar; const ASettings: TDisplaySettings); override;
+    class procedure SetReadOnly(const ACalendar: TCustomCalendar; const AReadOnly: boolean); override;
   end;
 
 
@@ -58,6 +61,24 @@ begin
   SendMessage(ACalendar.Handle, MCM_GETCURSEL, 0, LPARAM(@ST));
   with ST do
     Result := EncodeDate(WYear,WMonth,WDay);
+end;
+
+procedure TWin32WSCalendar.SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime);
+var
+  ST: SystemTime;
+begin
+  DecodeDate(ADateTime, ST.WYear, ST.WMonth, ST.WDay);
+  SendMessage(ACalendar.Handle, MCM_SETCURSEL, 0, Windows.LParam(@ST));
+end;
+
+procedure TWin32WSCalendar.SetDisplaySettings(const ACalendar: TCustomCalendar; const ASettings: TDisplaySettings);
+begin
+  // TODO: implement me!
+end;
+
+procedure TWin32WSCalendar.SetReadOnly(const ACalendar: TCustomCalendar; const AReadOnly: boolean);
+begin
+  // TODO: implement me!
 end;
 
 initialization

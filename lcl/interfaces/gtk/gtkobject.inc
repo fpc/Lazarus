@@ -3083,8 +3083,6 @@ begin
   case LM_Message of
   LM_Create   : CreateComponent(Sender);
 
-  LM_SETVALUE  : Result := SetValue(Sender, data);
-
   LM_SETPROPERTIES: Result := SetProperties(Sender);
 
   LM_SETDESIGNING :
@@ -6221,170 +6219,13 @@ begin
   Result := TGDKColorToTColor(GDKColor);
 end;
 
-{------------------------------------------------------------------------------
-  Method: TGtkWidgetSet.GetValue
-  Params:  Sender : the lcl object which called this func via SenMessage
-           Data   : pointer to component specific variable
-  Returns: currently always 0
-
-  Depending on the compStyle, this function will get the current value
-  of a GTK object and save it in the variable referenced by 'data'.
-
-  This function should be used to synchronize the state of an lcl-object
-  with the corresponding GTK-object.
- ------------------------------------------------------------------------------}
-function TGtkWidgetSet.GetValue (Sender : TObject; data : pointer) : integer;
-type
-  PCheckBoxState = ^TCheckBoxState;
-var
-  Handle    : Pointer;
-begin
-  Result := 0;     // default if nobody sets it
-
-  if Sender is TWinControl then
-    Assert(False, Format('Trace:  [TGtkWidgetSet.GetValue] %s', [Sender.ClassName]))
-  else
-    Assert(False, Format('Trace:WARNING: [TGtkWidgetSet.GetValue] %s --> No Decendant of TWinControl', [Sender.ClassName]));
-
-  Handle    := Pointer(TWinControl(Sender).Handle);
-  Assert (Handle = nil, 'WARNING: [TGtkWidgetSet.GetValue] --> got nil pointer (no gtkobject)');
-
-  case TControl(Sender).fCompStyle of
+{ TODO: move this ``LM_GETVALUE'' spinedit code someplace useful
 
   csSpinEdit :
     Begin
       Single(Data^):=gtk_spin_button_get_value_As_Float(PgtkSpinButton(Handle));
     end;
-
-  else
-    DebugLn('Warning: TGtkWidgetSet.GetValue not implemented for ',Sender.ClassName);
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TGtkWidgetSet.SetValue
-  Params:  Sender : the lcl object which called this func via SendMessage
-           Data   : pointer to component specific variable
-  Returns: currently always 0
-
-  Depending on the compStyle, this function will apply the parameter 'data'
-  to the GTK object repesenting the lcl-object which called the function.
-
-  This function should for be used in cases where the most common property
-  of an object has changed (e.g. the position of a trackbar). If more than
-  one property changed use the SetProperties function instead;
- ------------------------------------------------------------------------------}
-function TGtkWidgetSet.SetValue(Sender : TObject; data : pointer) : integer;
-var
-   Handle    : Pointer;
-   //used for csCalendar
-   Date : TDateTime;
-   Year,Month,Day : String;
-   gtkcalendardisplayoptions : TGtkCalendarDisplayOptions;
-   Num : Integer;
-
-   ArrowType : TGTKArrowType;
-   ShadowType : TGTKShadowType;
-begin
-  result := 0;     // default if nobody sets it
-
-  if Sender is TWinControl
-  then Assert(False, Format('Trace:  [TGtkWidgetSet.SetValue] %s', [Sender.ClassName]))
-  else Assert(False, Format('Trace:WARNING: [TGtkWidgetSet.SetValue] %s --> No Decendant of TWinControl', [Sender.ClassName]));
-
-  Handle    := Pointer(TWinControl(Sender).Handle);
-//   Assert (Handle = nil, 'WARNING: [TGtkWidgetSet.SetValue] --> got nil pointer (no gtkobject)');
-
-  case TControl(Sender).fCompStyle of
-  csProgressBar: gtk_progress_set_value (GTK_PROGRESS (handle), integer (data^));
-
-  csTrackbar   :
-    begin
-      if Handle = nil then Exit;
-      gtk_range_get_adjustment (GTK_RANGE (handle))^.value := integer (data^);
-      g_signal_emit_by_name (PGtkObject
-         (gtk_range_get_adjustment (
-             GTK_RANGE (handle))), 'value_changed');
-    end;
-
-  csRadiobutton,
-  csCheckbox,
-  csToggleBox:
-    begin
-      LockOnChange(PGtkObject(Handle),1);
-      gtk_toggle_button_set_active(PGtkToggleButton(handle),
-        (TCheckBoxState(data^) = cbChecked));
-      LockOnChange(PGtkObject(Handle),-1);
-    end;
-
-  csCalendar   :
-    Begin
-       Date := TLMCalendar(data^).Date;
-       Year := FormatDateTime('yyyy',Date);
-       Month := FormatDateTime('mm',Date);
-       Day := FormatDateTime('dd',Date);
-       gtk_calendar_select_month(PgtkCalendar(handle),StrtoInt(Month)-1,StrToInt(Year));
-       gtk_calendar_select_day(PgtkCalendar(handle),StrToInt(Day));
-
-       //set display options
-       Num := 0;
-       if (dsShowHeadings in TLMCalendar(data^).DisplaySettings) then
-          num := Num + (1 shl 0);
-
-       if (dsShowDayNames in TLMCalendar(data^).DisplaySettings) then
-          num := Num  + (1 shl 1);
-
-       if (dsNoMonthChange in TLMCalendar(data^).DisplaySettings) then
-          num := Num  + (1 shl 2);
-
-       if (dsShowWeekNumbers in TLMCalendar(data^).DisplaySettings) then
-           num := Num  + (1 shl 3);
-
-       if (dsStartMonday in TLMCalendar(data^).DisplaySettings) then
-           num := Num  + (1 shl 4);
-
-       gtkCalendarDisplayOptions := TgtkCalendarDisplayOPtions(num);
-
-       gtk_Calendar_Display_options(PgtkCalendar(handle),gtkCalendarDisplayOptions);
-
-       //readonly
-       if TLMCalendar(data^).ReadOnly then
-          gtk_calendar_freeze(PgtkCalendar(handle))
-       else
-          gtk_calendar_thaw(PgtkCalendar(handle));
-
-     end;
-
-  csArrow :
-    begin
-      if TLmArrow(data^).ArrowType = atUp then
-        ArrowType := GTK_ARROW_UP
-      else
-      if TLMArrow(data^).ArrowType = atLeft then
-        ArrowType := GTK_ARROW_LEFT
-      else
-      if TLMArrow(data^).ArrowType = atRight then
-        ArrowType := GTK_ARROW_RIGHT
-      else
-        ArrowType := GTK_ARROW_DOWN;
-
-      case TLMArrow(data^).ShadowType of
-        stNONE : ShadowType := GTK_SHADOW_NONE;
-        stIN : ShadowType := GTK_SHADOW_IN;
-        stOut : ShadowType := GTK_SHADOW_OUT;
-        stEtchedIn : ShadowType := GTK_SHADOW_ETCHED_IN;
-        stEtchedOut : ShadowType := GTK_SHADOW_ETCHED_OUT;
-      else
-        ShadowType := GTK_SHADOW_NONE;
-      end;
-
-      gtk_arrow_set(PgtkArrow(handle),ArrowType,ShadowType);
-    end;
-
-  else
-    Assert (true, Format ('WARNING:[TGtkWidgetSet.SetValue] failed for %s', [Sender.ClassName]));
-  end;
-end;
+}
 
 {------------------------------------------------------------------------------
   Method: TGtkWidgetSet.SetProperties
@@ -7863,6 +7704,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.585  2004/09/19 18:50:28  micha
+  convert LM_SETVALUE message to interface methods
+
   Revision 1.584  2004/09/18 17:07:57  micha
   convert LM_GETVALUE message to interface method
 

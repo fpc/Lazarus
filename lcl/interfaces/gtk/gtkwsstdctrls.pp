@@ -188,6 +188,7 @@ type
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
     class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; 
       const OldShortCut, NewShortCut: TShortCut); override;
+    class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
   end;
 
   { TGtkWSCheckBox }
@@ -628,6 +629,16 @@ begin
   CurMemoLen := gtk_text_get_length(PGtkText(Widget));
   gtk_editable_insert_text(PGtkOldEditable(Widget), PChar(AText), Length(AText), @CurMemoLen);
   gtk_text_thaw(PGtkText(Widget));
+end;
+
+procedure TGtkWSCustomCheckBox.SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
+var
+  GtkObject: PGtkObject;
+begin
+  GtkObject := PGtkObject(ACustomCheckBox.Handle);
+  LockOnChange(GtkObject,1);
+  gtk_toggle_button_set_active(PGtkToggleButton(GtkObject), NewState = cbChecked);
+  LockOnChange(GtkObject,-1);
 end;
 
 initialization

@@ -265,8 +265,6 @@ Begin
   Case LM_Message Of
     LM_CREATE:
       CreateComponent(Sender);
-    LM_SETVALUE:
-      Result := SetValue(Sender, Data);
     LM_SETPROPERTIES:
       Result := SetProperties(Sender);
     LM_SETDESIGNING:
@@ -1678,70 +1676,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.SetValue
-  Params:  Sender - the lcl object which called this func via SendMessage
-           Data   - pointer to component specific variable
-  Returns: currently always 0
-
-  Depending on the CompStyle, this function will apply the parameter 'data'
-  to the Windows object repesenting the lcl-object which called the function.
-
-  This function should be used in cases where the most common property
-  of an object has changed (e.g. the position of a trackbar). If more than
-  one property changed use the SetProperties function instead;
- ------------------------------------------------------------------------------}
-Function TWin32WidgetSet.SetValue(Sender: TObject; Data: Pointer): Integer;
-Var
-  Handle: HWnd;
-  ST: SystemTime;
-  
-Begin
-  Result := 0;     // default if nobody sets it
-
-  If Sender Is TWinControl Then
-    Assert(False, Format('Trace:[TWin32WidgetSet.SetValue] %S', [Sender.ClassName]))
-  Else
-    Assert(False, Format('Trace:WARNING:[TWin32WidgetSet.SetValue] %S --> No Decendant of TWinControl', [Sender.ClassName]));
-
-  Handle := TWinControl(Sender).Handle;
-  If Handle = HWnd(Nil) Then
-    Assert (False, 'Trace:WARNING:[TWin32WidgetSet.SetValue] --> got no window');
-
-  Case TControl(Sender).FCompStyle Of
-    csArrow:
-    Begin
-      // TODO: Add code to implement arrow-widget handling
-    End;
-    csCalendar:
-    Begin
-      With ST Do
-        DecodeDate(TLMCalendar(Data^).Date,WYear,WMonth,WDay);
-      SendMessage(Handle,MCM_SETCURSEL, 0, Integer(@ST));
-    End;
-    csProgressBar:
-      Windows.SendMessage(Handle, PBM_SETPOS, Windows.WPARAM(Data^), 0);
-    csTrackbar:
-    Begin
-      If Handle = HWnd(Nil) Then
-        Exit;
-      Assert(False, 'TRACE:Setting the track bar value.');
-      Windows.SendMessage(Handle, TBM_SETPOS, Windows.WPARAM(True), Windows.LPARAM(Data^));
-    End;
-    csRadioButton, csCheckbox:
-    Begin
-      If TCheckBoxState(Data^) = cbChecked Then
-        Windows.SendMessage(Handle, BM_SETCHECK, Windows.WParam(BST_CHECKED), 0)
-      Else If TCheckboxState(Data^) = cbUnchecked Then
-        Windows.SendMessage(Handle, BM_SETCHECK, Windows.WParam(BST_UNCHECKED), 0)
-      Else
-        Windows.SendMessage(Handle, BM_SETCHECK, Windows.WParam(BST_INDETERMINATE), 0);
-    End
-    Else
-      Assert (True, Format('Trace:WARNING: [TWin32WidgetSet.SetValue] failed for %S', [Sender.ClassName]));
-  End;
-End;
-
-{------------------------------------------------------------------------------
   Method: TWin32WidgetSet.SetProperties
   Params:  Sender - the lcl object which called this func via SenMessage
   Returns: currently always 0
@@ -1956,6 +1890,9 @@ End;
 
 {
   $Log$
+  Revision 1.276  2004/09/19 18:50:28  micha
+  convert LM_SETVALUE message to interface methods
+
   Revision 1.275  2004/09/18 17:07:58  micha
   convert LM_GETVALUE message to interface method
 

@@ -164,8 +164,8 @@ begin
   if FPosition <> Value then
   begin
     FPosition := Value;
-    if HandleAllocated
-    then CNSendMessage(LM_SetValue, Self, @FPosition);
+    if HandleAllocated then 
+      TWSTrackBarClass(WidgetSetClass).SetPosition(Self, FPosition);
   end;
 end;
 
@@ -331,6 +331,9 @@ end;
 { -------------------- unimplemented stuff below ------------------------------}
 {
   $Log$
+  Revision 1.15  2004/09/19 18:50:28  micha
+  convert LM_SETVALUE message to interface methods
+
   Revision 1.14  2004/09/18 17:07:57  micha
   convert LM_GETVALUE message to interface method
 

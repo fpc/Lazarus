@@ -134,7 +134,6 @@ Type
     Procedure AssignSelf(Window: HWnd; Data: Pointer);
 
     Procedure SetText(Window: HWND; Data: Pointer);
-    Function SetValue (Sender: TObject; Data: Pointer): Integer;
     Function SetProperties(Sender: TObject): Integer;
 
     Procedure AllocAndCopy(const BitmapInfo: Windows.TBitmap; const SrcRect: TRect; var Data: PByte; var Size: Cardinal);
@@ -212,7 +211,7 @@ Uses
 // uncomment only those units with implementation
 ////////////////////////////////////////////////////
 // Win32WSActnList,
-// Win32WSArrow,
+ Win32WSArrow,
  Win32WSButtons,
  Win32WSCalendar,
  Win32WSCheckLst,
@@ -276,6 +275,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.115  2004/09/19 18:50:28  micha
+  convert LM_SETVALUE message to interface methods
+
   Revision 1.114  2004/09/18 17:07:58  micha
   convert LM_GETVALUE message to interface method
 

@@ -219,7 +219,7 @@ begin
   inc (FPosition, FStep);
   if FPosition > FMax then FPosition := FMax;
   if FPosition < FMin then FPosition := FMin;
-  CNSendMessage(LM_SetValue, Self, @FPosition);
+  TWSProgressBarClass(WidgetSetClass).SetPosition(Self, FPosition);
 end;
 
 
@@ -296,6 +296,9 @@ end;
 
 {
   $Log$
+  Revision 1.8  2004/09/19 18:50:28  micha
+  convert LM_SETVALUE message to interface methods
+
   Revision 1.7  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

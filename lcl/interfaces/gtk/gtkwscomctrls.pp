@@ -112,6 +112,7 @@ type
   private
   protected
   public
+    class procedure SetPosition(const AProgressBar: TProgressBar; const NewPosition: integer); override;
   end;
 
   { TGtkWSCustomUpDown }
@@ -158,6 +159,7 @@ type
   protected
   public
     class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
+    class procedure SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer); override;
   end;
 
   { TGtkWSCustomTreeView }
@@ -770,6 +772,13 @@ begin
 end;
 {$ENDIF}
 
+{ TGtkWSProgressBar }
+
+procedure TGtkWSProgressBar.SetPosition(const AProgressBar: TProgressBar; const NewPosition: integer);
+begin
+  gtk_progress_set_value(GTK_PROGRESS(AProgressBar.Handle), NewPosition);
+end;
+
 { TGtkWSToolbar }
 
 {$ifdef OldToolbar}
@@ -836,6 +845,16 @@ begin
     Result := 0;
 end;
 
+procedure TGtkWSTrackBar.SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer);
+var
+  Handle: HWND;
+begin
+  Handle := ATrackBar.Handle;
+  gtk_range_get_adjustment(GTK_RANGE(Handle))^.value := NewPosition;
+  g_signal_emit_by_name(PGtkObject(
+    gtk_range_get_adjustment(GTK_RANGE(Handle))), 'value_changed');
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -849,7 +868,7 @@ initialization
 //  RegisterWSComponent(TCustomPageControl, TGtkWSPageControl);
   RegisterWSComponent(TCustomListView, TGtkWSCustomListView);
 //  RegisterWSComponent(TCustomListView, TGtkWSListView);
-//  RegisterWSComponent(TCustomProgressBar, TGtkWSProgressBar);
+  RegisterWSComponent(TProgressBar, TGtkWSProgressBar);
 //  RegisterWSComponent(TCustomUpDown, TGtkWSCustomUpDown);
 //  RegisterWSComponent(TCustomUpDown, TGtkWSUpDown);
 //  RegisterWSComponent(TCustomToolButton, TGtkWSToolButton);

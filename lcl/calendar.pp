@@ -43,12 +43,6 @@ Type
                      dsShowWeekNumbers,dsStartMonday);
   TDisplaySettings = set of TDisplaySetting;
   
-  TLMCalendar = record
-    Date : TDateTime;
-    DisplaySettings : TDisplaySettings;
-    Readonly : Boolean;
-  end;
-  
   EInvalidDate = class(Exception);
   
   TCustomCalendar = class(TWinControl)
@@ -251,20 +245,17 @@ begin
 end;
 
 Procedure TCustomCalendar.SetProps;
-var
-  Temp : TLMCalendar;
 begin
   if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
   begin
     FPropsChanged:=false;
-    Temp.Date := FDate;
-    Temp.DisplaySettings := FDisplaySettings;
-    Temp.ReadOnly := fReadOnly;
     {$IFDEF VerboseCalenderSetDate}
     DebugLn('TCustomCalendar.SetProps A ',FDate,' ',FDateAsString);
     {$ENDIF}
-    CNSendMessage(LM_SETVALUE, Self, @temp);	// Get the info
-  End else begin
+    TWSCalendarClass(WidgetSetClass).SetDateTime(Self, FDate);
+    TWSCalendarClass(WidgetSetClass).SetDisplaySettings(Self, FDisplaySettings);
+    TWSCalendarClass(WidgetSetClass).SetReadOnly(Self, FReadOnly);
+  end else begin
     FPropsChanged:=true;
   end;
 end;

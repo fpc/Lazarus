@@ -41,11 +41,6 @@ Type
   TArrowType = (atUp, atDown, atLeft, atRight);
   TShadowType = (stNone, stIn, stOut, stEtchedIn, stEtchedOut);
 
-  TLMArrow = record
-    ArrowType : TArrowType;
-    ShadowType : TShadowType;
-  end;
-
   TArrow = class(TCustomControl)
   private
     FArrowType : TArrowType;
@@ -81,7 +76,7 @@ procedure Register;
 implementation
 
 uses
-  InterfaceBase;
+  InterfaceBase, WSArrow;
 
 procedure Register;
 begin
@@ -140,15 +135,9 @@ begin
 end;
 
 procedure TArrow.SetProps;
-var
-  Temp : TLMArrow;
 begin
   if HandleAllocated and (not (csLoading in ComponentState)) then
-  begin
-    Temp.ArrowType := FArrowType;
-    Temp.ShadowType := FShadowType;
-    CNSendMessage(LM_SetValue,self,@Temp);
-  end;
+    TWSArrowClass(WidgetSetClass).SetType(Self, FArrowType, FShadowType);
 end;
 
 procedure TArrow.SetShadowType(const AValue: TShadowType);

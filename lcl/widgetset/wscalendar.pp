@@ -53,15 +53,32 @@ type
 
   TWSCalendarClass = class of TWSCalendar;
   TWSCalendar = class(TWSWinControl)
-    class function  GetDateTime(const ACalender: TCustomCalendar): TDateTime; virtual;
+    class function  GetDateTime(const ACalendar: TCustomCalendar): TDateTime; virtual;
+    class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); virtual;
+    class procedure SetDisplaySettings(const ACalendar: TCustomCalendar; 
+      const ADisplaySettings: TDisplaySettings); virtual;
+    class procedure SetReadOnly(const ACalendar: TCustomCalendar; const AReadOnly: boolean); virtual;
   end;
 
 
 implementation
 
-function  TWSCalendar.GetDateTime(const ACalender: TCustomCalendar): TDateTime;
+function  TWSCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;
 begin
   Result := 0.0;
+end;
+
+procedure TWSCalendar.SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime);
+begin
+end;
+
+procedure TWSCalendar.SetDisplaySettings(const ACalendar: TCustomCalendar; 
+  const ADisplaySettings: TDisplaySettings);
+begin
+end;
+
+procedure TWSCalendar.SetReadOnly(const ACalendar: TCustomCalendar; const AReadOnly: boolean);
+begin
 end;
 
 initialization
