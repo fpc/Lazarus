@@ -1188,7 +1188,7 @@ begin
     Left:=ShowHintsForComponentPaletteCheckBox.Left;
     Top:=ShowHintsForComponentPaletteCheckBox.Top
          +ShowHintsForComponentPaletteCheckBox.Height+5;
-    Width:=250;
+    Width:=300;
     Height:=20;
     Caption:='Hints for main speed buttons (open, save, ...)';
     Visible:=true;
