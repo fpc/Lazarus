@@ -323,6 +323,7 @@ type
     function UnitWithEditorIndex(Index:integer): TUnitInfo;
     Function UnitWithForm(AForm: TComponent): TUnitInfo;
     function UnitInfoWithFilename(const AFilename: string): TUnitInfo;
+    function UnitWithUnitname(const AnUnitname: string): TUnitInfo;
 
     procedure CloseEditorIndex(EditorIndex:integer);
     procedure InsertEditorIndex(EditorIndex:integer);
@@ -2120,6 +2121,17 @@ begin
     Result:=nil;
 end;
 
+function TProject.UnitWithUnitname(const AnUnitname: string): TUnitInfo;
+var
+  i: Integer;
+begin
+  i:=IndexOfUnitWithName(AnUnitName,true,nil);
+  if i>=0 then
+    Result:=Units[i]
+  else
+    Result:=nil;
+end;
+
 function TProject.IndexOfFilename(const AFilename: string): integer;
 begin
   Result:=UnitCount-1;
@@ -2360,6 +2372,9 @@ end.
 
 {
   $Log$
+  Revision 1.109  2003/04/20 07:36:29  mattias
+  fixed loading form name
+
   Revision 1.108  2003/04/18 15:32:51  mattias
   implemented file reference list
 

@@ -106,6 +106,7 @@ type
     DependMaxVersionEdit: TEdit;
     NewDependButton: TButton;
     CancelDependButton: TButton;
+    procedure AddToPackageDlgClose(Sender: TObject; var Action: TCloseAction);
     procedure AddUnitButtonClick(Sender: TObject);
     procedure AddUnitFileBrowseButtonClick(Sender: TObject);
     procedure AddUnitPageResize(Sender: TObject);
@@ -176,7 +177,6 @@ begin
   Result:=AddDlg.ShowModal;
   if Result=mrOk then
     Params:=AddDlg.Params;
-  IDEDialogLayoutList.SaveLayout(AddDlg);
   AddDlg.Free;
 end;
 
@@ -370,6 +370,12 @@ begin
 
   // add it ...
   ModalResult:=mrOk;
+end;
+
+procedure TAddToPackageDlg.AddToPackageDlgClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
 end;
 
 procedure TAddToPackageDlg.AddUnitFileBrowseButtonClick(Sender: TObject);
@@ -972,7 +978,7 @@ begin
   end;
 
 
-  // add require
+  // add required package
   
   DependPkgNameLabel:=TLabel.Create(Self);
   with DependPkgNameLabel do begin
@@ -1116,11 +1122,13 @@ end;
 constructor TAddToPackageDlg.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  Name:='AddToPackageDlg';
   fPkgComponents:=TAVLTree.Create(@CompareIDEComponentByClassName);
   fPackages:=TAVLTree.Create(@CompareLazPackageID);
   Position:=poScreenCenter;
   IDEDialogLayoutList.ApplyLayout(Self,500,300);
   SetupComponents;
+  OnClose:=@AddToPackageDlgClose;
 end;
 
 destructor TAddToPackageDlg.Destroy;

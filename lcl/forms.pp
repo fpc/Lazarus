@@ -919,6 +919,9 @@ function InitResourceComponent(Instance: TComponent;
       MemStream.Position:=0;
       //writeln('Form Stream "',ClassType.ClassName,'" Signature=',copy(CompResource.Value,1,4));
       try
+        if Instance.Name='' then begin
+
+        end;
         Instance:=MemStream.ReadComponent(Instance);
       except
         on E: Exception do begin

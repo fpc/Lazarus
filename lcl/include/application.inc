@@ -23,6 +23,11 @@ const
   DefHintShortPause = 0;    { default reshow pause }
   DefHintHidePause = DefHintPause * 5; { default pause before hint is hidden }
 
+function FindApplicationComponent(const ComponentName: string): TComponent;
+begin
+  Result:=Application.FindComponent(ComponentName);
+end;
+
 function GetHintControl(Control: TControl): TControl;
 begin
   Result := Control;
@@ -952,6 +957,7 @@ procedure TApplication.CreateForm(InstanceClass: TComponentClass;
 var
   Instance: TComponent;
   ok: boolean;
+  OldFindGlobalComponent: TFindGlobalComponent;
 begin
   // Allocate the form instance, without calling the constructor
   Instance := TComponent(InstanceClass.NewInstance);
@@ -959,12 +965,17 @@ begin
   // events and constructors can refer to it
   TComponent(Reference) := Instance;
   ok:=false;
+  if FindGlobalComponent=nil then begin
+    OldFindGlobalComponent:=FindGlobalComponent;
+    FindGlobalComponent:=@FindApplicationComponent;
+  end;
   try
     Instance.Create(Self);
     ok:=true;
   finally
     if not ok then
       TComponent(Reference) := nil;
+    FindGlobalComponent:=OldFindGlobalComponent;
   end;
 
   if (Instance is TForm) then begin
@@ -992,6 +1003,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.51  2003/04/20 07:36:29  mattias
+  fixed loading form name
+
   Revision 1.50  2003/04/11 10:31:57  mattias
   added Sender to Application OnKeyDownHandler
 

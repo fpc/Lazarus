@@ -101,7 +101,7 @@ type
     ofRevert,        // reload file if already open
     ofQuiet,         // less messages
     ofAddToRecent,   // add file to recent files
-    ofRegularFile,   // open as regular file (e.g. not a whole project)
+    ofRegularFile,   // open as regular file (e.g. do not open projects)
     ofVirtualFile,   // open the virtual file
     ofConvertMacros  // replace macros in filename
     );

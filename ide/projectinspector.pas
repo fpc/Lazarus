@@ -41,9 +41,12 @@ uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Buttons, ComCtrls,
   StdCtrls, ExtCtrls, Menus, Dialogs, Graphics, FileCtrl,
   LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, EnvironmentOpts,
-  Project;
+  Project, AddToProjectDlg;
   
 type
+  TOnAddUnitToProject =
+    function(Sender: TObject; AnUnitInfo: TUnitInfo): TModalresult of object;
+
   TProjectInspectorFlag = (
     pifItemsChanged,
     pifButtonsChanged,
@@ -67,6 +70,9 @@ type
     procedure ProjectInspectorFormShow(Sender: TObject);
     procedure RemoveBitBtnClick(Sender: TObject);
   private
+    FOnAddUnitToProject: TOnAddUnitToProject;
+    FOnOpen: TNotifyEvent;
+    FOnShowOptions: TNotifyEvent;
     FUpdateLock: integer;
     FLazProject: TProject;
     FilesNode: TTreeNode;
@@ -86,7 +92,6 @@ type
     procedure UpdateRequiredPackages;
     procedure UpdateRemovedRequiredPackages;
     function GetImageIndexOfFile(AFile: TUnitInfo): integer;
-    function GetSelectedFile: TUnitInfo;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -97,8 +102,13 @@ type
     procedure UpdateTitle;
     procedure UpdateButtons;
     procedure UpdateItems;
+    function GetSelectedFile: TUnitInfo;
   public
     property LazProject: TProject read FLazProject write SetLazProject;
+    property OnOpen: TNotifyEvent read FOnOpen write FOnOpen;
+    property OnShowOptions: TNotifyEvent read FOnShowOptions write FOnShowOptions;
+    property OnAddUnitToProject: TOnAddUnitToProject read FOnAddUnitToProject
+                                                     write FOnAddUnitToProject;
   end;
   
 var
@@ -154,18 +164,44 @@ begin
 end;
 
 procedure TProjectInspectorForm.AddBitBtnClick(Sender: TObject);
+var
+  AddResult: TAddToProjectResult;
+  NewFile: TUnitInfo;
+  i: Integer;
 begin
-
+  if ShowAddToProjectDlg(LazProject,AddResult)<>mrOk then exit;
+  
+  case AddResult.AddType of
+  a2pFiles:
+    begin
+      BeginUpdate;
+      for i:=0 to AddResult.Files.Count-1 do begin
+        NewFile:=TUnitInfo(AddResult.Files[i]);
+        NewFile.IsPartOfProject:=true;
+        if Assigned(OnAddUnitToProject) then begin
+          if OnAddUnitToProject(Self,NewFile)<>mrOk then break;
+        end;
+      end;
+      UpdateAll;
+      EndUpdate;
+    end;
+  
+  a2pRequiredPkg:
+    ;
+  
+  end;
+  
+  AddResult.Free;
 end;
 
 procedure TProjectInspectorForm.OpenBitBtnClick(Sender: TObject);
 begin
-
+  if Assigned(OnOpen) then OnOpen(Self);
 end;
 
 procedure TProjectInspectorForm.OptionsBitBtnClick(Sender: TObject);
 begin
-
+  if Assigned(OnShowOptions) then OnShowOptions(Self);
 end;
 
 procedure TProjectInspectorForm.ProjectInspectorFormShow(Sender: TObject);
@@ -376,7 +412,9 @@ begin
   if FUpdateLock=0 then RaiseException('TProjectInspectorForm.EndUpdate');
   dec(FUpdateLock);
   if FUpdateLock=0 then begin
-
+    if pifTitleChanged in FFlags then UpdateTitle;
+    if pifButtonsChanged in FFlags then UpdateButtons;
+    if pifItemsChanged in FFlags then UpdateItems;
   end;
 end;
 
