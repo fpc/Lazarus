@@ -1885,7 +1885,7 @@ begin
   Desc^.ColorCount:=0;
   // BitsPerPixel
   case Desc^.Depth of
-  0..8:   Desc^.BitsPerPixel:=8;
+  0..8:   Desc^.BitsPerPixel:=Desc^.Depth;
   9..16:  Desc^.BitsPerPixel:=16;
   17..32: Desc^.BitsPerPixel:=32;
   else    Desc^.BitsPerPixel:=64;
@@ -1893,8 +1893,7 @@ begin
   // LineEnd
   case Desc^.Depth of
   0..8:   Desc^.LineEnd:=rileByteBoundary;
-  9..16:  Desc^.LineEnd:=rileWordBoundary;
-  17..32: Desc^.LineEnd:=rileDWordBoundary;
+  9..32:  Desc^.LineEnd:=rileDWordBoundary;
   else    Desc^.LineEnd:=rileQWordBoundary;
   end;
   // Precisions and Shifts
@@ -1909,7 +1908,7 @@ begin
   Desc^.AlphaShift:=0;
   // AlphaBitsPerPixel and AlphaLineEnd
   Desc^.AlphaBitsPerPixel:=Desc^.AlphaPrec;
-  Desc^.AlphaLineEnd:=rileDWordBoundary;
+  Desc^.AlphaLineEnd:=rileByteBoundary;
 
   with Desc^ do begin
     writeln('TgtkObject.GetDeviceRawImageDescription A ',
@@ -7882,6 +7881,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.390  2003/07/04 08:54:53  mattias
+  implemented 16bit rawimages for gtk
+
   Revision 1.389  2003/07/03 18:10:55  mattias
   added fontdialog options to win32 intf from Wojciech Malinowski
 

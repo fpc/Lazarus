@@ -541,7 +541,7 @@ type
     procedure Chord(x,y,width,height,SX,SY,EX,EY : Integer);
     Procedure CopyRect(const Dest : TRect; Canvas : TCanvas; const Source : TRect);
     Procedure Draw(X,Y: Integer; Graphic : TGraphic);
-    procedure StretchDraw(const Rect: TRect; Graphic: TGraphic);
+    procedure StretchDraw(const ARect: TRect; Graphic: TGraphic);
     procedure Ellipse(const ARect: TRect);
     procedure Ellipse(x1, y1, x2, y2: Integer);
     Procedure FillRect(const ARect : TRect);
@@ -1028,6 +1028,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.77  2003/07/04 08:54:53  mattias
+  implemented 16bit rawimages for gtk
+
   Revision 1.76  2003/07/01 15:37:03  mattias
   fixed exception handling
 

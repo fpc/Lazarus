@@ -40,12 +40,12 @@ end;
 {-----------------------------------------------}
 {--  TCanvas.StretchDraw --}
 {-----------------------------------------------}
-procedure TCanvas.StretchDraw(const Rect: TRect; Graphic: TGraphic);
+procedure TCanvas.StretchDraw(const ARect: TRect; Graphic: TGraphic);
 begin
   if Assigned(Graphic) then
   begin
     RequiredState([csHandleValid, csPenValid]);
-    Graphic.Draw(Self, Rect);
+    Graphic.Draw(Self, ARect);
   end;
 end;
 
@@ -1216,6 +1216,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.50  2003/07/04 08:54:53  mattias
+  implemented 16bit rawimages for gtk
+
   Revision 1.49  2003/06/30 10:09:46  mattias
   fixed Get/SetPixel for DC without widget
 

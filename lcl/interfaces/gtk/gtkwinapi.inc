@@ -850,77 +850,91 @@ begin
   Result:=false;
   Bitmap:=0;
   MaskBitmap:=0;
-  
+
   if (RawImage.Description.Width=0) or (RawImage.Description.Height=0) then
     exit;
-  
-  writeln('TgtkObject.CreateBitmapFromRawImage A ',
-    ' Depth=',RawImage.Description.Depth,
-    ' Width=',RawImage.Description.Width,
-    ' Height=',RawImage.Description.Height,
-    ' Data=',HexStr(Cardinal(RawImage.Data),8),
-    ' DataSize=',RawImage.DataSize,
-    ' Mask=',HexStr(Cardinal(RawImage.Mask),8),
-    ' MaskSize=',RawImage.MaskSize,
-    ' Palette=',HexStr(Cardinal(RawImage.Palette),8),
-    ' PaletteSize=',RawImage.PaletteSize,
-    '');
-  
-  // ToDo: check description
-  
-  DefGdkWindow := nil;
-  GdiObject := NewGDIObject(gdiBitmap);
-  GdiObject^.GDIBitmapType := gbPixmap;
+    
+  try
+    writeln('TgtkObject.CreateBitmapFromRawImage A ',
+      ' Depth=',RawImage.Description.Depth,
+      ' Width=',RawImage.Description.Width,
+      ' Height=',RawImage.Description.Height,
+      ' Data=',HexStr(Cardinal(RawImage.Data),8),
+      ' DataSize=',RawImage.DataSize,
+      ' Mask=',HexStr(Cardinal(RawImage.Mask),8),
+      ' MaskSize=',RawImage.MaskSize,
+      ' Palette=',HexStr(Cardinal(RawImage.Palette),8),
+      ' PaletteSize=',RawImage.PaletteSize,
+      ' BitsPerPixel=',RawImage.Description.BitsPerPixel,
+      '');
 
-  if RawImage.Data<>nil then begin
-    { The gdk_pixmap_create_from_data seems to be buggy.
-      It only creates pixmaps of Depth 1
-        gdk_pixmap_create_from_data(DefGdkWindow,PGChar(RawImage.Data),
-                      RawImage.Description.Width, RawImage.Description.Height,
-                      RawImage.Description.Depth, @fg,@bg);}
-    ImgData:=PDWord(RawImage.Data);
-    ImgDataSize:=RawImage.DataSize;
+    // ToDo: check description
+
+    DefGdkWindow := nil;
+    GdiObject := NewGDIObject(gdiBitmap);
+    GdiObject^.GDIBitmapType := gbPixmap;
+
     ImgWidth:=RawImage.Description.Width;
     ImgHeight:=RawImage.Description.Height;
-    ImgDepth:=RawImage.Description.Depth;
-    GdiObject^.GDIPixmapObject :=
-        gdk_pixmap_new(DefGdkWindow,ImgWidth,imgHeight,ImgDepth);
-    GDkWindow:=PGdkWindow(GdiObject^.GDIPixmapObject);
+    if RawImage.Data<>nil then begin
+      { The gdk_pixmap_create_from_data seems to be buggy.
+        It only creates pixmaps of Depth 1
+          gdk_pixmap_create_from_data(DefGdkWindow,PGChar(RawImage.Data),
+                        RawImage.Description.Width, RawImage.Description.Height,
+                        RawImage.Description.Depth, @fg,@bg);}
+      ImgData:=PDWord(RawImage.Data);
+      ImgDataSize:=RawImage.DataSize;
+      ImgDepth:=RawImage.Description.Depth;
+      GdiObject^.GDIPixmapObject :=
+                       gdk_pixmap_new(DefGdkWindow,ImgWidth,ImgHeight,ImgDepth);
+      GDkWindow:=PGdkWindow(GdiObject^.GDIPixmapObject);
 
-    Visual:=gdk_visual_get_best_with_depth(ImgDepth);
-    GdkImage:=gdk_image_new(GDK_IMAGE_FASTEST,Visual,ImgWidth,ImgHeight);
-    if ImgDataSize<>GdkImage^.bpl*ImgHeight then
-      RaiseGDBException('TgtkObject.CreateBitmapFromRawImage Incompatible DataSize');
-    System.Move(ImgData^,GdkImage^.mem^,ImgDataSize);
-    {for y:=0 to ImgHeight-1 do begin
-      for x:=0 to ImgWidth-1 do begin
-        gdk_image_put_pixel(GdkImage,X,Y,ImgData[X+Y*ImgWidth]);
-      end;
-    end;}
-    GC:=gdk_gc_new(GDkWindow);
-    gdk_draw_image(PGDKDrawable(GdiObject^.GDIPixmapObject),GC,
-                   GdkImage,0,0,0,0,ImgWidth,ImgHeight);
-    gdk_gc_unref(GC);
-    gdk_image_destroy(GdkImage);
-  end else
-    GdiObject^.GDIPixmapObject :=
-        gdk_pixmap_new(DefGdkWindow,
-                       RawImage.Description.Width, RawImage.Description.Height,
-                       RawImage.Description.Depth);
-  GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIPixmapObject);
-  Bitmap:=HBITMAP(GdiObject);
-
-  If (RawImage.Mask<>nil) then begin
-    GdiObject := NewGDIObject(gdiBitmap);
-    GdiObject^.GDIBitmapType := gbBitmap;
-    GdiObject^.GDIBitmapObject :=
-        gdk_bitmap_create_from_data(DefGdkWindow,PGChar(RawImage.Mask),
-                      RawImage.Description.Width, RawImage.Description.Height);
+      Visual:=gdk_visual_get_best_with_depth(ImgDepth);
+      GdkImage:=gdk_image_new(GDK_IMAGE_FASTEST,Visual,ImgWidth,ImgHeight);
+      writeln('TgtkObject.CreateBitmapFromRawImage GdkImage: ',
+        ' BytesPerLine=',GdkImage^.bpl,
+        ' BytesPerPixel=',GdkImage^.bpp,
+        ' ByteOrder=',GdkImage^.byte_order,
+        '');
+      if (RawImage.Description.BitsPerPixel<>(GdkImage^.bpp shl 3)) then
+        RaiseGDBException('TgtkObject.CreateBitmapFromRawImage Incompatible BitsPerPixel');
+      if (ImgDataSize<>GdkImage^.bpl*ImgHeight) then
+        RaiseGDBException('TgtkObject.CreateBitmapFromRawImage Incompatible DataSize');
+      System.Move(ImgData^,GdkImage^.mem^,ImgDataSize);
+      {for y:=0 to ImgHeight-1 do begin
+        for x:=0 to ImgWidth-1 do begin
+          gdk_image_put_pixel(GdkImage,X,Y,ImgData[X+Y*ImgWidth]);
+        end;
+      end;}
+      GC:=gdk_gc_new(GDkWindow);
+      gdk_draw_image(PGDKDrawable(GdiObject^.GDIPixmapObject),GC,
+                     GdkImage,0,0,0,0,ImgWidth,ImgHeight);
+      gdk_gc_unref(GC);
+      gdk_image_destroy(GdkImage);
+    end else
+      GdiObject^.GDIPixmapObject :=
+          gdk_pixmap_new(DefGdkWindow,
+                         RawImage.Description.Width, RawImage.Description.Height,
+                         RawImage.Description.Depth);
     GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIPixmapObject);
-    MaskBitmap:=HBITMAP(GdiObject);
+    Bitmap:=HBITMAP(GdiObject);
+    
+    // mask
+    If (RawImage.Mask<>nil) then begin
+      GdiObject^.GDIBitmapMaskObject :=
+          gdk_bitmap_create_from_data(DefGdkWindow,PGChar(RawImage.Mask),
+                       RawImage.Description.Width, RawImage.Description.Height);
+    end;
+
+    Result:=true;
+  finally
+    if not Result then begin
+      if Bitmap<>0 then DeleteObject(Bitmap);
+      Bitmap:=0;
+      if MaskBitmap<>0 then DeleteObject(MaskBitmap);
+      MaskBitmap:=0;
+    end;
   end;
-  
-  Result:=true;
 end;
 
 {------------------------------------------------------------------------------
@@ -8550,6 +8564,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.258  2003/07/04 08:54:53  mattias
+  implemented 16bit rawimages for gtk
+
   Revision 1.257  2003/07/03 18:10:55  mattias
   added fontdialog options to win32 intf from Wojciech Malinowski
 
