@@ -6279,10 +6279,12 @@ end;
   procedure TGtkObject.WordWrap(AText: PChar; MaxWidthInPixel: integer;
     var Lines: PPChar; var LineCount: integer); virtual;
 
-  Breaks AText into several lines and creates a list of PChar.
+  Breaks AText into several lines and creates a list of PChar. The last entry
+  will be nil.
   Lines break at new line chars and at spaces if a line is longer than
   MaxWidthInPixel or in a word.
-  Lines will be one memory block.
+  Lines will be one memory block so that you can free the list and all lines
+  with FreeMem(Lines).
 ------------------------------------------------------------------------------}
 procedure TGtkObject.WordWrap(DC: HDC; AText: PChar; MaxWidthInPixel: integer;
   var Lines: PPChar; var LineCount: integer);
@@ -6378,17 +6380,18 @@ var
 
 var
   LinesList: TList;
-  LineStart, LineEnd: integer;
-  TotalSize: integer;
+  LineStart, LineEnd, LineLen: integer;
+  ArraySize, TotalSize: integer;
   i: integer;
+  CurLineEntry: PPChar;
+  CurLineStart: PChar;
 begin
-  writeln('MG: TGtkObject.WordWrap  NOT completed !!!');
-
   if IsEmptyText then exit;
   InitFont;
   LinesList:=TList.Create;
   LineStart:=0;
 
+  // find all line starts and line ends
   repeat
     LinesList.Add(Pointer(LineStart));
     // find line end
@@ -6409,18 +6412,43 @@ begin
     end;
   until AText[LineStart]=#0;
 
-  // create array of PChar
-  LineCount:=LinesList.Count div 2;
-  TotalSize:=(LineCount+1)*SizeOf(PChar);
+  // create mem block for 'Lines': array of PChar + all lines
+  LineCount:=LinesList.Count shr 1;
+  ArraySize:=(LineCount+1)*SizeOf(PChar);
+  TotalSize:=ArraySize;
   i:=0;
   while i<LinesList.Count do begin
-    inc(TotalSize,Cardinal(LinesList[i+1])-Cardinal(LinesList[i])+1);
+    // add  LineEnd - LineStart + 1 for the #0
+    LineLen:=Cardinal(LinesList[i+1])-Cardinal(LinesList[i])+1;
+    inc(TotalSize,LineLen);
     inc(i,2);
   end;
   GetMem(Lines,TotalSize);
 
   // create Lines
-  // ToDo
+  CurLineEntry:=Lines;
+  CurLineStart:=PChar(Lines)+ArraySize;
+  i:=0;
+  while i<LinesList.Count do begin
+    // set the pointer to the start of the current line
+    CurLineEntry[i shr 1]:=CurLineStart;
+    // copy the line
+    LineStart:=Integer(LinesList[i]);
+    LineEnd:=Integer(LinesList[i+1]);
+    LineLen:=LineEnd-LineStart;
+    if LineLen>0 then
+      Move(AText[LineStart],CurLineStart^,LineLen);
+    inc(CurLineStart,LineLen);
+    // add #0 as line end
+    CurLineStart^:=#0;
+    inc(CurLineStart);
+    // next line
+    inc(i,2);
+  end;
+  if Integer(Lines)+TotalSize<>Integer(CurLineStart) then
+    RaiseException('TGtkObject.WordWrap Consistency Error:'
+      +' Lines+TotalSize<>CurLineStart');
+  CurLineEntry[i shr 1]:=nil;
 
   LinesList.Free;
   CleanUpFont;
@@ -6435,6 +6463,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.249  2002/10/15 14:18:29  lazarus
+  MG: added TGtkObject.WordWrap
+
   Revision 1.248  2002/10/15 07:01:29  lazarus
   MG: fixed timer checking
 
