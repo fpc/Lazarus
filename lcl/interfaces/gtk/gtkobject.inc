@@ -183,6 +183,7 @@ procedure TgtkObject.SetWindowSizeAndPosition(Window: PGtkWindow;
   AWinControl: TWinControl);
 var
   Width, Height: integer;
+  //Info: PGtkWindowGeometryInfo;
 begin
   Width:=AWinControl.Width;
   if Width<0 then
@@ -190,9 +191,22 @@ begin
   Height:=AWinControl.Height;
   if Height<0 then
     Height:=0;
-  gtk_window_set_default_size(Window,Width,Height);
-  gtk_widget_set_usize(PGtkWidget(Window), -1,-1);
-  gtk_widget_set_usize(PGtkWidget(Window),Width,Height);
+    
+  //writeln('TgtkObject.SetWindowSizeAndPosition ',AWinControl.Name,':',AWinControl.ClassName,' ',AWinControl.Visible,' Old=',PGtkWidget(Window)^.allocation.Width,',',PGtkWidget(Window)^.allocation.Width,' New=',Width,',',Height);
+  // set geometry default size
+  //Info:=gtk_window_get_geometry_info(Window, TRUE);
+  //if (Info^.default_width<>Width) or (Info^.default_height<>Height) then
+    gtk_window_set_default_size(Window,Width,Height);
+    
+  // resize
+  if (PGtkWidget(Window)^.allocation.Width<>Width)
+  and (PGtkWidget(Window)^.allocation.Height<>Height) then begin
+    gtk_widget_set_usize(PGtkWidget(Window), -1,-1);
+    gtk_widget_set_usize(PGtkWidget(Window),Width,Height);
+  end;
+  
+  // reposition
+  //writeln('TgtkObject.SetWindowSizeAndPosition B ',AWinControl.Name,':',AWinControl.ClassName,' ',AWinControl.Visible,' Old=',PGtkWidget(Window)^.allocation.X,',',PGtkWidget(Window)^.allocation.Y,' New=',AWinControl.Left,',',AWinControl.Top);
   gtk_widget_set_uposition(PGtkWidget(Window),AWinControl.Left,AWinControl.Top);
 end;
 
@@ -6532,6 +6546,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.279  2002/11/06 17:46:36  lazarus
+  MG: reduced showing forms during creation
+
   Revision 1.278  2002/11/04 19:49:36  lazarus
   MG: added persistent hints for main ide bar
 
