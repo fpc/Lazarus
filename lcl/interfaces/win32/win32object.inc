@@ -420,6 +420,7 @@ Var
   TBB: TBBUTTON;
   WindowStyle: Integer; //used by LM_SETTABPOSITION
   AMenu: TMenu;
+  AccelTable: HACCEL;
   TheWinControl: TWinControl;
 
 Begin
@@ -609,7 +610,9 @@ Begin
         Begin
           If Handle <> 0 Then
           begin
-            DestroyAcceleratorTable(Windows.GetProp(Handle, 'Accel'));
+            AccelTable := Windows.GetProp(Handle, 'Accel');
+            if AccelTable <> 0 then
+              DestroyAcceleratorTable(AccelTable);
             DestroyWindow(Handle);
           end;
         End
@@ -3338,6 +3341,9 @@ End;
 
 {
   $Log$
+  Revision 1.221  2004/07/08 20:42:24  micha
+  cleanup: do not free nil resource
+
   Revision 1.220  2004/07/08 20:29:05  micha
   fix win95 compatibility, do not send seperate lm_setshortcut message
 
