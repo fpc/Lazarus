@@ -676,7 +676,6 @@ var
   P: TPoint;
   Texts, Texts2, TheName : String;
 Begin
-Writeln('[ProcessUserCommand]  --------------');
   case Command of
   ecCodeCompletion :
     if TCustomSynEdit(Sender).ReadOnly=false then begin
@@ -1570,7 +1569,6 @@ var
 
 Begin
   CompInt := nil;
-  Writeln('[ccExecute]');
   sCompl := TSynBaseCompletion(Sender);
   S := TStringList.Create;
   Prefix := sCompl.CurrentString;

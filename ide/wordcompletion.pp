@@ -26,14 +26,15 @@ type
     FOnGetSource:TWordCompletionGetSource;
     function GetWordBufferCapacity:integer;
     procedure SetWordBufferCapacity(NewCapacity: integer);
-    function CaseInsensitiveIndexOf(AWord:string):integer;
+    function CaseInsensitiveIndexOf(const AWord:string):integer;
   public
-    procedure AddWord(AWord:string);
+    procedure AddWord(const AWord:string);
     property WordBufferCapacity:integer
        read GetWordBufferCapacity write SetWordBufferCapacity;
-    procedure GetWordList(AWordList:TStrings; Prefix:String;
+    procedure GetWordList(AWordList:TStrings; const Prefix:String;
        CaseSensitive:boolean; MaxResults:integer);
-    property OnGetSource:TWordCompletionGetSource read FOnGetSource write FOnGetSource;
+    property OnGetSource:TWordCompletionGetSource
+       read FOnGetSource write FOnGetSource;
     constructor Create;
     destructor Destroy; override;
   end;
@@ -62,28 +63,29 @@ end;
 
 { TWordCompletion }
 
-procedure TWordCompletion.GetWordList(AWordList:TStrings; Prefix:String;
+procedure TWordCompletion.GetWordList(AWordList:TStrings; const Prefix:String;
   CaseSensitive:boolean; MaxResults:integer);
 var i,line,x,PrefixLen,MaxHash:integer;
   PrefixLow,s:string;
   SourceText:TStringList;
-  HashList:^integer; // index list. Every entry points to a word in the AWordList
+  HashList:^integer;// index list. Every entry points to a word in the AWordList
   SourceTextIndex:integer;
   LastCharType:TCharType;
   
-  procedure Add(AWord:string);
+  procedure Add(const AWord:string);
   // if AWord is not already in list then add it to AWordList
   var a,Hash,HashTry:integer;
     ALowWord:string;
   begin
-    if (CaseSensitive and (copy(AWord,1,PrefixLen)<>Prefix))
-    or (not CaseSensitive and (lowercase(copy(AWord,1,PrefixLen))<>PrefixLow))
-    then exit;
+    if CaseSensitive then begin
+      if copy(AWord,1,PrefixLen)<>Prefix then exit;
+    end else if lowercase(copy(AWord,1,PrefixLen))<>PrefixLow then exit
+    else if (AWord=Prefix) then exit;
     ALowWord:=lowercase(AWord);
     Hash:=0;
     a:=0;
-    while (a<length(AWord)) and (a<20) do begin
-      inc(Hash,a and $3f);
+    while (a<=length(ALowWord)) and (a<20) do begin
+      inc(Hash,ord(ALowWord[a]) and $3f);
       inc(a);
     end;
     Hash:=(Hash*137) mod MaxHash;
@@ -91,8 +93,7 @@ var i,line,x,PrefixLen,MaxHash:integer;
     while (HashTry<MaxHash) do begin
       a:=HashList[(Hash+HashTry) mod MaxHash];
       if a>=0 then begin
-        if (CaseSensitive and (AWordList[a]=AWord))
-        or (not CaseSensitive and (lowercase(AWordList[a])=ALowWord)) then
+        if (AWordList[a]=AWord) then
           // word already in list -> do not add
           exit;
       end else begin
@@ -104,7 +105,7 @@ var i,line,x,PrefixLen,MaxHash:integer;
     end;
   end;
 
-  
+// TWordCompletion.GetWordList
 begin
   AWordList.Clear;
   if MaxResults<1 then MaxResults:=1;
@@ -200,7 +201,7 @@ begin
   end;
 end;
 
-procedure TWordCompletion.AddWord(AWord:string);
+procedure TWordCompletion.AddWord(const AWord:string);
 var OldIndex:integer;
 begin
   OldIndex:=FWordBuffer.IndexOf(AWord);
@@ -215,11 +216,13 @@ begin
   end;
 end;
 
-function TWordCompletion.CaseInsensitiveIndexOf(AWord:string):integer;
+function TWordCompletion.CaseInsensitiveIndexOf(const AWord:string):integer;
+var LowWord: string;
 begin
-  AWord:=lowercase(AWord);
+  LowWord:=lowercase(AWord);
   Result:=FWordBuffer.Count-1;
-  while (Result>=0) and (lowercase(FWordBuffer[Result])<>AWord) do dec(Result);
+  while (Result>=0) and (lowercase(FWordBuffer[Result])<>LowWord) do
+    dec(Result);
 end;
 
 initialization

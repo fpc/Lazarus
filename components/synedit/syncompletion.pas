@@ -599,6 +599,12 @@ begin
   CurrentString := s;
   if assigned(OnExecute) then
     OnExecute(Self);
+  {$IFDEF SYN_LAZARUS}
+  if (ItemList.Count=1) and Assigned(OnValidate) then begin
+    OnValidate(Form, []);
+    exit;
+  end;
+  {$ENDIF}
   form.Show;
 end;
 
