@@ -616,6 +616,8 @@ Begin
         DestroySpinEditBuddy(TCustomSpinEdit(lWinControl));
       if lWinControl is TCustomComboBox then
         DisposeComboEditWindowInfo(TCustomComboBox(lWinControl));
+      if WindowInfo^.Overlay<>HWND(nil) then
+        Windows.DestroyWindow(WindowInfo^.Overlay);
       EnumProps(Window, @PropEnumProc);
       LMessage.Msg := LM_DESTROY;
       PostQuitMessage(0);
@@ -1321,6 +1323,11 @@ begin
       // parent of overlay is the form
       Windows.PostMessage(Windows.GetParent(Window), Msg, WParam, LParam);
     end;
+    WM_NCDESTROY:
+    begin
+      // free our own data associated with window
+      DisposeWindowInfo(Window)
+    end;
   else
     Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
   end;
@@ -1466,6 +1473,9 @@ end;
 
 {
   $Log$
+  Revision 1.166  2004/11/18 14:58:06  vincents
+  destroy overlay window, when destroying the owner
+
   Revision 1.165  2004/11/17 23:06:29  vincents
   centralized dispose windowinfo
   removed debug info
