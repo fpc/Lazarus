@@ -2277,7 +2277,7 @@ begin
 
     XMLConfig.SetDeleteValue('ObjectInspectorOptions/GridBackgroundColor',
                              FGridBackgroundColor,clBackground);
-    XMLConfig.SetDeleteValue('ObjectInspectorOptions/ShowHints',FShowHints,true);
+    XMLConfig.SetDeleteValue('ObjectInspectorOptions/ShowHints',FShowHints,false);
 
     if XMLConfig<>CustomXMLCfg then XMLConfig.Flush;
   except

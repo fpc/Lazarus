@@ -503,6 +503,7 @@ type
     OIMiscGroupBox: TGroupBox;
     OIDefaultItemHeightSpinEdit: TSpinEdit;
     OIDefaultItemHeightLabel: TLabel;
+    OIShowHintCheckBox: TCheckBox;
 
     // Files
     MaxRecentOpenFilesLabel: TLabel;
@@ -2924,7 +2925,7 @@ begin
     Left:=ObjectInspectorColorsGroupBox.Left;
     Top:=ObjectInspectorColorsGroupBox.Top+ObjectInspectorColorsGroupBox.Height+5;
     Width:=200;
-    Height:=55;
+    Height:=77;
   end;
 end;
 
@@ -3652,6 +3653,8 @@ begin
        ObjectInspectorOptions.GridBackgroundColor;
     OIDefaultItemHeightSpinEdit.Value:=
        ObjectInspectorOptions.DefaultItemHeight;
+    OIShowHintCheckBox.Checked :=
+       ObjectInspectorOptions.ShowHints;
        
     // window minimizing and hiding
     MinimizeAllOnMinimizeMainCheckBox.Checked:=MinimizeAllOnMinimizeMain;
@@ -3785,6 +3788,8 @@ begin
        OIBackgroundColorButton.ButtonColor;
     ObjectInspectorOptions.DefaultItemHeight:=
       RoundToInt(OIDefaultItemHeightSpinEdit.Value);
+    ObjectInspectorOptions.ShowHints :=
+      OIShowHintCheckBox.Checked;
 
     // window minimizing
     MinimizeAllOnMinimizeMain:=MinimizeAllOnMinimizeMainCheckBox.Checked;
@@ -3937,7 +3942,7 @@ begin
     Left:=ObjectInspectorColorsGroupBox.Left;
     Top:=ObjectInspectorColorsGroupBox.Top+ObjectInspectorColorsGroupBox.Height+5;
     Width:=200;
-    Height:=55;
+    Height:=77;
     Caption:=dlgOIMiscellaneous;
     OnResize:=@OIMiscGroupBoxResize;
   end;
@@ -3953,6 +3958,16 @@ begin
     Decimal_Places:=0;
     MinValue:=0;
     MaxValue:=100;
+  end;
+  
+  OIShowHintCheckBox :=TCheckBox.Create(Self);
+  with OIShowHintCheckBox do begin
+    Name := 'OIShowHintCheckBox';
+    Parent := OIMiscGroupBox;
+    Left := 6;
+    Top := 33;
+    Height := 25;
+    Caption := 'Show hints';
   end;
 
   OIDefaultItemHeightLabel:=TLabel.Create(Self);
