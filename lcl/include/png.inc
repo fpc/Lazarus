@@ -20,12 +20,12 @@
 
 { TPortableNetworkGraphic }
 
-{$IFNDEF DisableFPImage}
 function TPortableNetworkGraphic.GetFileExtensions: string;
 begin
   Result:='png';
 end;
 
+{$IFNDEF DisableFPImage}
 function TPortableNetworkGraphic.GetDefaultFPReader: TFPCustomImageReaderClass;
 begin
   Result:=TFPReaderPNG;
