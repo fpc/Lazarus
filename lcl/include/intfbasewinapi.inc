@@ -1089,7 +1089,7 @@ var
   CombineResult: Integer;
 begin
   Result:=false;
-  if (ARect.Left>=ARect.Right) or (ARect.Top>ARect.Bottom)
+  if (ARect.Left>=ARect.Right) or (ARect.Top>=ARect.Bottom)
     or not DCClipRegionValid(DC)
   then exit;
   ClipRGN:=CreateEmptyRegion;
@@ -1398,6 +1398,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2004/02/17 00:32:25  mattias
+  fixed TCustomImage.DoAutoSize fixing uninitialized vars
+
   Revision 1.5  2004/02/10 00:05:03  mattias
   TSpeedButton now uses MaskBlt
 

@@ -931,8 +931,8 @@ type
     FCompStyle: Byte;       // enables (valid) use of 'IN' operator
     Function PerformTab(ForwardTab: boolean): Boolean; Virtual;
     // use overload to simulate default
-    procedure BeginDrag(Immediate: Boolean; Threshold: Integer); //overload;
-    procedure BeginDrag(Immediate: Boolean); //overload;
+    procedure BeginDrag(Immediate: Boolean; Threshold: Integer);
+    procedure BeginDrag(Immediate: Boolean);
     procedure BringToFront;
     function ColorIsStored: boolean; virtual;
     constructor Create(AOwner: TComponent);override;
@@ -1662,7 +1662,8 @@ const
 function CNSendMessage(LM_Message: integer; Sender: TObject; data: pointer) : integer;
 Function FindDragTarget(const Pos: TPoint; AllowDisabled: Boolean): TControl;
 Function FindLCLWindow(const ScreenPos : TPoint) : TWinControl;
-Function FindControl(Handle : hwnd) : TWinControl;
+Function FindControl(Handle: hwnd): TWinControl;
+Function FindOwnerControl(Handle: hwnd): TWinControl;
 function FindLCLControl(const ScreenPos: TPoint) : TControl;
 
 function SendAppMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): Longint;
@@ -1718,17 +1719,31 @@ begin
   Result := SendMsgToInterface(LM_Message, Sender, Data);
 end;
 
-{------------------------------------------------------------------------------}
-{  FindControl                                                                 }
-{------------------------------------------------------------------------------}
-function FindControl(Handle : hwnd) : TWinControl;
+{------------------------------------------------------------------------------
+  FindControl
+  
+  Returns the TWinControl owning the Handle. Handle can also be a child handle,
+  and does not need to be the Handle property of the Result.
+  IMPORTANT: So, in most cases: Result.Handle <> Handle in the params.
+------------------------------------------------------------------------------}
+function FindControl(Handle: hwnd): TWinControl;
 begin
   if Handle <> 0
   then Result := TWinControl(GetProp(Handle,'WinControl'))
   else Result := nil;
 end;
 
-function FindLCLControl(const ScreenPos : TPoint) : TControl;
+function FindOwnerControl(Handle: hwnd): TWinControl;
+begin
+  While Handle<>0 do begin
+    Result:=FindControl(Handle);
+    if Result<>nil then exit;
+    Handle:=GetParent(Handle);
+  end;
+  Result:=nil;
+end;
+
+function FindLCLControl(const ScreenPos: TPoint) : TControl;
 var
   AWinControl: TWinControl;
   ClientPos: TPoint;
@@ -1763,12 +1778,12 @@ begin
   MoveWindowOrgEx(dc,X,Y);
 end;
 
-function DoControlMsg(handle:hwnd; var Message) : Boolean;
+function DoControlMsg(Handle: hwnd; var Message) : Boolean;
 var
   Control : TWinControl;
 begin
   Result := False;
-  Control := FindControl(handle);
+  Control := FindOwnerControl(Handle);
   if Control <> nil then
     with TLMessage(Message) do
     Begin
@@ -1779,19 +1794,38 @@ end;
 
 
 {-------------------------------------------------------------------------------
+  procedure ClearDragObject;
+
+  Set the global variable DragObject to nil.
+  If DragObjectAutoFree is set, then the DragObject was auto created by the LCL
+  and is freed here.
+-------------------------------------------------------------------------------}
+procedure ClearDragObject;
+begin
+  if DragObjectAutoFree then begin
+    DragObjectAutoFree:=false;
+    FreeThenNil(DragObject);
+  end else
+    DragObject := nil;
+end;
+
+{-------------------------------------------------------------------------------
   Procedure DragInit(aDragObject: TDragObject; Immediate: Boolean;
     Threshold: Integer);
+
+  Set the global variable DragObject.
 -------------------------------------------------------------------------------}
 Procedure DragInit(aDragObject: TDragObject; Immediate: Boolean;
   Threshold: Integer);
 Begin
+  if DragObject<>ADragObject then
+    ClearDragObject;
   DragObject := ADragObject;
   DragObject.DragTarget := nil;
   GetCursorPos(DragStartPos);
   DragObject.DragPos := DragStartPos;
   DragCapture := DragObject.Capture;
   DragThreshold := Threshold;
-  //save the cursor yet
 end;
 
 {-------------------------------------------------------------------------------
@@ -1803,20 +1837,20 @@ var
   DragObject: TDragObject;
   ok: boolean;
 begin
+  {$IFDEF VerboseDrag}
+  writeln('DragInitControl ',Control.Name,':',Control.ClassName,' Immediate=',Immediate);
+  {$ENDIF}
+  ClearDragObject;
   DragControl := Control;
   ok:=false;
   try
-    DragObject := nil;
-    DragObjectAutoFree := False;
-    if Control.fDragKind = dkDrag then
-    begin
+    if Control.fDragKind = dkDrag then begin
       // initialize the DragControl. Note: This can change the DragControl
       Control.DoStartDrag(DragObject);
       // check if initialization was successful
       if DragControl = nil then Exit;
       // initialize DragObject, if not already done
-      if DragObject = nil then
-      Begin
+      if DragObject = nil then Begin
         DragObject := TDragControlObject.Create(Control);
         DragObjectAutoFree := True;
       End;
@@ -1826,19 +1860,26 @@ begin
     DragInit(DragObject,Immediate,Threshold);
     ok:=true;
   finally
-    if not ok then
+    if not ok then begin
       DragControl := nil;
+      ClearDragObject;
+    end;
   end;
 end;
 
 {-------------------------------------------------------------------------------
-  Procedure DragTo(P : TPoint);
+  Procedure DragTo(const P : TPoint);
+  
+  
 -------------------------------------------------------------------------------}
-Procedure DragTo(P : TPoint);
+Procedure DragTo(const P: TPoint);
 Begin
+  {$IFDEF VerboseDrag}
+  writeln('DragTo P=',P.X,',',P.Y);
+  {$ENDIF}
   if (ActiveDrag = dopNone)
   and (Abs(DragStartPos.X - P.X) < DragThreshold)
-  and (Abs(DragStartPos.Y - P.Y) > DragThreshold) then
+  and (Abs(DragStartPos.Y - P.Y) < DragThreshold) then
     exit;
 
 
@@ -1849,9 +1890,6 @@ Function DragMessage(Handle: HWND; Msg: TDragMessage; Source: TDragObject;
 var
   DragRec : TDragRec;
 Begin
-  Assert(False, 'Trace:******');
-  Assert(False, 'Trace:DragMessage');
-
   Result := 0;
   if Handle <> 0 then Begin
     DragRec.Pos := Pos;
@@ -1862,19 +1900,33 @@ Begin
   end;
 end;
 
+{-------------------------------------------------------------------------------
+  Procedure DragDone(Drop : Boolean);
+
+  Ends the current dragging operation.
+  Invokes DragMessage,
+  Frees the DragObject if autocreated by the LCL,
+  Finish: DragSave.Finished
+-------------------------------------------------------------------------------}
 Procedure DragDone(Drop : Boolean);
 var
   Accepted : Boolean;
   DragSave : TDragObject;
   DragMsg : TDragMEssage;
   TargetPos : TPoint;
+  DragSaveAutoFree: Boolean;
 Begin
-  Assert(False, 'Trace:*************************');
-  Assert(False, 'Trace:*********DRAGDONE********');
-
+  {$IFDEF VerboseDrag}
+  writeln('DragDone Drop=',Drop);
+  {$ENDIF}
   Accepted:=false;
-  if (DragObject = nil) or (DragObject.Cancelling) then Exit;
+  if (DragObject = nil) or DragObject.Cancelling then Exit;
+  
+  // take over the DragObject
+  // (to prevent auto destruction during the next operations)
   DragSave := DragObject;
+  DragSaveAutoFree:=DragObjectAutoFree;
+  DragObjectAutoFree:=false;
   try
     DragObject.Cancelling := True;
     DragObject.ReleaseCapture(DragCapture);
@@ -1882,26 +1934,27 @@ Begin
     if DragObject.DragTarget <> nil then
     Begin
       dragMsg := dmDragDrop;
-      if not Accepted then
-      begin
+      if not Accepted then begin
         DragMsg := dmDragCancel;
         DragSave.FDragPos.X := 0;
         DragSave.FDragPos.Y := 0;
         TargetPos.X := 0;
         TargetPos.Y := 0;
       end;
+      // this can change DragObject
       DragMessage(DragSave.DragHandle,DragMsg,DragSave,
                  DragSave.DragTarget,DragSave.DragPos);
     end;
     DragSave.Cancelling := False;
     DragSave.Finished(TObject(DragSave.DragTarget),TargetPos.X,TargetPos.Y,Accepted);
-    DragSave := nil;
   finally
     DragControl := nil;
+    if DragSaveAutoFree then begin
+      if DragSave=DragObject then
+        DragObject:=nil;
+      DragSave.Free;
+    end;
   end;
-  DragObject := nil;
-  if DragObjectAutoFree then DragSave.Free;
-  DragObjectAutoFree := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -1915,15 +1968,7 @@ var
   Handle : HWND;
 begin
   Handle := WindowFromPoint(ScreenPos);
-  Result := nil;
-  while Handle <> 0 do
-  begin
-    Result := FindControl(Handle);
-    if Result <> nil then begin
-      Exit;
-    end;
-    Handle := GetParent(Handle);
-  end;
+  Result := FindOwnerControl(Handle);
 end;
 
 {------------------------------------------------------------------------------
@@ -1959,9 +2004,9 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function GetCaptureControl : TControl;
+function GetCaptureControl: TControl;
 begin
-  Result := FindControl(GetCapture);
+  Result := FindOwnerControl(GetCapture);
   if (Result <> nil)
   and (CaptureControl <> nil)
   and (CaptureControl.Parent = Result)
@@ -2312,6 +2357,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.176  2004/02/17 00:32:25  mattias
+  fixed TCustomImage.DoAutoSize fixing uninitialized vars
+
   Revision 1.175  2004/02/13 15:49:54  mattias
   started advanced LCL auto sizing
 

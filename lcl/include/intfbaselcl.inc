@@ -229,6 +229,11 @@ begin
   Result := '';
 end;
 
+function TInterfaceBase.GetControlConstraints(Constraints: TObject): boolean;
+begin
+  Result:=true;
+end;
+
 function TInterfaceBase.GetDeviceRawImageDescription(DC: HDC;
   Desc: PRawImageDescription): boolean;
 begin
@@ -242,11 +247,6 @@ begin
   Result := false;
 end;
 
-function TInterfaceBase.GetControlConstraints(Constraints: TObject): boolean;
-begin
-  Result:=true;
-end;
-
 function TInterfaceBase.GetDCOriginRelativeToWindow(PaintDC: HDC;
   WindowHandle: HWND; var OriginDiff: TPoint): boolean;
 begin
@@ -258,6 +258,13 @@ end;
 function TInterfaceBase.GetDesignerDC(WindowHandle: HWND): HDC;
 begin
   Result:=GetDC(WindowHandle);
+end;
+
+function TInterfaceBase.GetLCLOwnerObject(Handle: HWnd): TObject;
+begin
+  if Handle <> 0
+  then Result := TObject(GetProp(Handle,'WinControl'))
+  else Result := nil;
 end;
 
 function TInterfaceBase.GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer;
@@ -606,6 +613,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.17  2004/02/17 00:32:25  mattias
+  fixed TCustomImage.DoAutoSize fixing uninitialized vars
+
   Revision 1.16  2004/02/03 08:54:09  mattias
   Frame3D rect now var again
 

@@ -51,15 +51,32 @@ var
   ModifyHeight : Boolean;
   NewWidth: Integer;
   NewHeight: Integer;
+  
+  procedure OutOfBounds;
+  begin
+    writeln('TCustomImage.DoAutoSize NewWidth=',NewWidth,
+      ' NewHeight=',NewHeight,
+      ' ModifyWidth=',ModifyWidth,
+      ' Picture.Width=',Picture.Width,
+      ' ModifyHeight=',ModifyHeight,
+      ' Picture.Height=',Picture.Height,
+      '');
+    RaiseGDBException('');
+  end;
+  
 begin
   If AutoSize and not AutoSizing then begin
     AutoSizing := True;
     ModifyWidth := Align in [alLeft,alRight,alNone];
     ModifyHeight := Align in [alTop,alBottom,alNone];
+    NewWidth:=Width;
+    NewHeight:=Height;
     If ModifyWidth and (Picture.Width > 0) then
       NewWidth := Max(Picture.Width, Constraints.MinWidth);
     If ModifyHeight and (Picture.Height > 0) then
       NewHeight := Max(Picture.Height, Constraints.MinHeight);
+    if (NewWidth>100000) or (NewHeight>100000) then
+      OutOfBounds;
     if (NewWidth<>Width) or (NewHeight<>Height) then begin
       SetBounds(Left,Top,NewWidth,NewHeight);
       PictureChanged(Self);

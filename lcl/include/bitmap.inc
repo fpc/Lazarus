@@ -858,6 +858,7 @@ var
   IntfImg: TLazIntfImage;
   ImgWriter: TFPCustomImageWriter;
 begin
+  writeln('WriteStreamWithFPImage Self=',HexStr(Cardinal(Self),8),' ',Width,',',Height,' Using SaveStream=',(FImage.SaveStream<>nil) and (FImage.SaveStream.Size>0));
   if (FImage.SaveStream<>nil) and (FImage.SaveStream.Size>0) then begin
     DoWriteOriginal;
     exit;
@@ -1058,6 +1059,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.65  2004/02/17 00:32:25  mattias
+  fixed TCustomImage.DoAutoSize fixing uninitialized vars
+
   Revision 1.64  2004/02/11 11:40:18  mattias
   fixes for compilation under fpc 1.0.10
 

@@ -40,7 +40,8 @@ end;
 {------------------------------------------------------------------------------
   Method: TControl.BeginDrag
   Params: Immediate: Drag behaviour
-          Threshold: default -1, distance to move before dragging starts
+          Threshold: distance to move before dragging starts
+                     -1 uses the default value of Mouse.DragThreshold
   Returns: Nothing
 
   Starts the dragging of a control. If the Immediate flag is set, dragging
@@ -331,7 +332,19 @@ end;
   store bounds in private variables
 -------------------------------------------------------------------------------}
 procedure TControl.DoSetBounds(ALeft, ATop, AWidth, AHeight : integer);
+
+  procedure BoundsOutOfBounds;
+  begin
+    writeln('TControl.DoSetBounds ',Name,':',ClassName,
+      ' Old=',Left,',',Top,',',Width,',',Height,
+      ' New=',aLeft,',',aTop,',',aWidth,',',aHeight,
+      '');
+    RaiseGDBException('TControl.DoSetBounds '+Name+':'+ClassName+' Invalid bounds');
+  end;
+
 begin
+  if (AWidth>100000) or (AHeight>100000) then
+    BoundsOutOfBounds;
   {$IFDEF CHECK_POSITION}
   if csDesigning in ComponentState then
     writeln('TControl.DoSetBounds ',Name,':',ClassName,
@@ -969,6 +982,9 @@ var
   S: TObject;
   P: TPoint;
 Begin
+  {$IFDEF VerboseDrag}
+  writeln('TControl.DoDragMsg DragMsg.DragMessage=',ord(DragMsg.DragMessage));
+  {$ENDIF}
   S := DragMsg.Dragrec^.Source;
   Accepts := True;
   P:=ScreenToClient(DragMsg.Dragrec^.pos);
@@ -976,11 +992,14 @@ Begin
    dmDragEnter, dmDragLeave, dmDragMove:
     begin
       case DragMsg.DragMessage of
-        dmDragEnter : DragOver(S,P.X,P.Y,dsDragEnter,Accepts);
-        dmDragLeave : DragOver(S,P.X,P.Y,dsDragLeave,Accepts);
+        dmDragEnter: DragOver(S,P.X,P.Y,dsDragEnter,Accepts);
+        dmDragLeave: DragOver(S,P.X,P.Y,dsDragLeave,Accepts);
         dmDragMove : DragOver(S,P.X,P.Y,dsDragMove,Accepts);
       end;
-      DragMsg.Result := ord(Accepts);
+      if Accepts then
+        DragMsg.Result := 1
+      else
+        DragMsg.Result := 0;
     end;
   end; //case
 end;
@@ -989,15 +1008,14 @@ end;
 {       TControl.DragOver
 }
 {------------------------------------------------------------------------------}
-Procedure TControl.DragOver(Source: TObject; X,Y : Integer; State : TDragState; var Accept:Boolean);
+Procedure TControl.DragOver(Source: TObject; X,Y : Integer; State: TDragState;
+  var Accept:Boolean);
 begin
   Accept := False;
-  if Assigned(FOnDragOver)
-  then begin
+  if Assigned(FOnDragOver) then begin
     Accept := True;
-  //Do something else yet....
+    FOnDragOver(Self,Source,X,Y,State,Accept);
   end;
-
 end;
 
 {------------------------------------------------------------------------------}
@@ -2753,6 +2771,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.169  2004/02/17 00:32:25  mattias
+  fixed TCustomImage.DoAutoSize fixing uninitialized vars
+
   Revision 1.168  2004/02/13 15:49:54  mattias
   started advanced LCL auto sizing
 

@@ -32,6 +32,7 @@
 //##apiwiz##sps##   // Do not remove
 function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String; override;
 function GetControlConstraints(Constraints: TObject): boolean; override;
+function GetLCLOwnerObject(Handle: HWnd): TObject; override;
 function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer; override;
 function GetListBoxItemRect(ListBox: TComponent; Index: integer; var ARect: TRect): boolean; override;
 
@@ -47,6 +48,9 @@ procedure StatusBarUpdate(StatusBar: TObject); override;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2004/02/17 00:32:25  mattias
+  fixed TCustomImage.DoAutoSize fixing uninitialized vars
+
   Revision 1.11  2004/02/02 15:46:19  mattias
   implemented basic TSplitter, still many ToDos
 

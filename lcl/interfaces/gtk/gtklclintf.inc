@@ -97,6 +97,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TGTKObject.GetLCLOwnerObject(Handle: HWnd): TObject;
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.GetLCLOwnerObject(Handle: HWnd): TObject;
+begin
+  if Handle<>0 then
+    Result:=GetNearestLCLObject(PGtkWidget(Handle))
+  else
+    Result:=nil;
+end;
+
+{------------------------------------------------------------------------------
   Function: GetListBoxIndexAtY
   Params: ListBox:
           y:
@@ -395,6 +407,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.15  2004/02/17 00:32:25  mattias
+  fixed TCustomImage.DoAutoSize fixing uninitialized vars
+
   Revision 1.14  2004/02/02 15:46:19  mattias
   implemented basic TSplitter, still many ToDos
 

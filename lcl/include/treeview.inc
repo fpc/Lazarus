@@ -4024,33 +4024,31 @@ begin
 end;
 
 procedure TCustomTreeView.DoStartDrag(var DragObject: TDragObject);
-{var
-  ImageHandle: HImageList;
-  DragNode: TTreeNode;
-  P: TPoint;}
+var
+  P: TPoint;
 begin
+  {$IFDEF VerboseDrag}
+  writeln('TCustomTreeView.DoStartDrag A ');
+  {$ENDIF}
   inherited DoStartDrag(DragObject);
-  {DragNode := FDragNode;
   FLastDropTarget := nil;
-  FDragNode := nil;
-  if DragNode = nil then begin
+  if FDragNode = nil then begin
     GetCursorPos(P);
-    with ScreenToClient(P) do DragNode := GetNodeAt(X, Y);
+    with ScreenToClient(P) do FDragNode := GetNodeAt(X, Y);
+    {$IFDEF VerboseDrag}
+    if FDragNode<>nil then
+      writeln('TCustomTreeView.DoStartDrag DragNode=',FDragNode.Text)
+    else
+      writeln('TCustomTreeView.DoStartDrag DragNode=nil');
+    {$ENDIF}
   end;
-  if DragNode <> nil then begin
-    // ToDo: implement Drag&Drop
-    ImageHandle := 0; TreeView_CreateDragImage(Handle, DragNode.ItemId);
-    if ImageHandle <> 0 then
-      with FDragImage do
-      begin
-        Handle := ImageHandle;
-        SetDragImage(0, 2, 2);
-      end;
-  end;}
 end;
 
 procedure TCustomTreeView.DoEndDrag(Target: TObject; X, Y: Integer);
 begin
+  {$IFDEF VerboseDrag}
+  writeln('TCustomTreeView.DoEndDrag A ');
+  {$ENDIF}
   inherited DoEndDrag(Target, X, Y);
   FLastDropTarget := nil;
 end;
@@ -4060,7 +4058,9 @@ var
   P: TPoint;
 begin
   inherited CMDrag(AMessage);
+  {$IFDEF VerboseDrag}
   writeln('TCustomTreeView.CMDrag ',ord(AMessage.DragMessage));
+  {$ENDIF}
   with AMessage, DragRec^ do
     case DragMessage of
       dmDragMove:
@@ -4085,7 +4085,9 @@ var
   Node: TTreeNode;
 begin
   Node := GetNodeAt(X, Y);
+  {$IFDEF VerboseDrag}
   writeln('TCustomTreeView.DoDragOver ',Node<>nil,' ',Node <> DropTarget,' ',Node = FLastDropTarget);
+  {$ENDIF}
   if (Node <> nil)
   and ((Node <> DropTarget) or (Node = FLastDropTarget)) then
   begin
@@ -4609,7 +4611,11 @@ begin
         CursorNode.Expanded:=not CursorNode.Expanded;
       end else if x>=CursorNode.DisplayTextLeft then begin
         // mousedown occured in text -> select node and begin drag operation
-        Include(FStates,tvsMouseCapture);
+        {$IFDEF VerboseDrag}
+        writeln('TCustomTreeView.MouseDown In Text ',Name,':',ClassName,' MouseCapture=',MouseCapture);
+        {$ENDIF}
+        if MouseCapture then
+          Include(FStates,tvsMouseCapture);
         if not (tvoAllowMultiselect in Options) then begin
           Selected:=CursorNode;
         end else begin
@@ -4626,7 +4632,7 @@ begin
             end;
           end;
         end;
-        bStartDrag := true;
+        bStartDrag := tvsMouseCapture in FStates;
       end;
     end;
     if (bStartDrag) then begin
@@ -4634,20 +4640,15 @@ begin
       writeln('TCustomTreeView.MouseDown A bStartDrag ',Name,':',ClassName,' ');
       {$ENDIF}
       FDragNode:=CursorNode;
-      Include(fStates, tvsWaitForDragging);
-    end;
-    if Button=mbMiddle then begin
-      // insert primary selection text
-
+      Include(fStates,tvsWaitForDragging);
     end;
   end;
-  //LCLLinux.SetFocus(Handle);
 end;
 
 procedure TCustomTreeView.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseMove(Shift, x, y);
-  if {MouseCapture and} (tvsWaitForDragging in fStates) then begin
+  if (tvsWaitForDragging in fStates) then begin
     if (Abs(fMouseDownX - X) >= GetSystemMetrics(SM_CXDRAG))
     or (Abs(fMouseDownY - Y) >= GetSystemMetrics(SM_CYDRAG))
     then begin

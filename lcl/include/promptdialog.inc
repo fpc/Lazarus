@@ -68,7 +68,7 @@ begin
     // focus the next button to the left or right
     
     // search old focused button
-    OldFocusControl:=FindControl(LCLIntf.GetFocus);
+    OldFocusControl:=FindOwnerControl(LCLIntf.GetFocus);
     if (OldFocusControl=nil) or (GetParentForm(OldFocusControl)<>Self)
     or (not (OldFocusControl is TButton)) then
     begin
@@ -377,6 +377,9 @@ end;
 
 {
    $Log$
+   Revision 1.11  2004/02/17 00:32:25  mattias
+   fixed TCustomImage.DoAutoSize fixing uninitialized vars
+
    Revision 1.10  2003/10/16 16:43:57  ajgenius
    fix opaque brush
 

@@ -8191,7 +8191,7 @@ function TgtkObject.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
     end;
     if (OldListItem=AfterListItem) or (OldListItem^.next=AfterListItem) then
       exit;
-    writeln('TgtkObject.SetWindowPos Moving GList entry');
+    //writeln('TgtkObject.SetWindowPos Moving GList entry');
     
     // reorder
     // This trick does not work properly
@@ -8206,7 +8206,7 @@ function TgtkObject.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
   
   procedure SetZOrderOnLayoutWidget(Widget, LayoutWidget: PGtkWidget);
   begin
-    writeln('ToDO: SetZOrderOnLayoutWidget');
+    //writeln('ToDO: SetZOrderOnLayoutWidget');
   end;
 
 var
@@ -8214,12 +8214,12 @@ var
   FixedWidget: PGtkWidget;
 begin
   Widget:=PGtkWidget(hWnd);
-  writeln('[TgtkObject.SetWindowPos] ',GetWidgetDebugReport(Widget),
+  {writeln('[TgtkObject.SetWindowPos] ',GetWidgetDebugReport(Widget),
     ' Top=',hWndInsertAfter=HWND_TOP,
     ' SWP_NOZORDER=',(SWP_NOZORDER and uFlags)<>0,
     ' SWP_NOSIZE=',(SWP_NOSIZE and uFlags)<>0,
     ' SWP_NOMOVE=',(SWP_NOMOVE and uFlags)<>0,
-    '');
+    '');}
   if GtkWidgetIsA(Widget,GTK_TYPE_WINDOW) then begin
     { case hWndInsertAfter of
         HWND_BOTTOM: ;  //gdk_window_lower(Widget^.Window);
@@ -8231,7 +8231,7 @@ begin
     FixedWidget:=Widget^.Parent;
     if FixedWidget=nil then exit;
     
-    writeln('TgtkObject.SetWindowPos ZOrdering .. on ',GetWidgetDebugReport(FixedWidget));
+    //writeln('TgtkObject.SetWindowPos ZOrdering .. on ',GetWidgetDebugReport(FixedWidget));
     if GtkWidgetIsA(FixedWidget,GTK_Fixed_Get_Type) then begin
       // parent's client area is a gtk_fixed widget
       SetZOrderOnFixedWidget(Widget,FixedWidget);
@@ -8743,6 +8743,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.330  2004/02/17 00:32:25  mattias
+  fixed TCustomImage.DoAutoSize fixing uninitialized vars
+
   Revision 1.329  2004/02/13 15:49:54  mattias
   started advanced LCL auto sizing
 

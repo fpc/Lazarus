@@ -194,6 +194,11 @@ begin
   Result := InterfaceObject.GetDeviceSize(DC,p);
 end;
 
+function GetLCLOwnerObject(Handle: HWnd): TObject;
+begin
+  Result := InterfaceObject.GetLCLOwnerObject(Handle);
+end;
+
 function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer;
 begin
   Result := InterfaceObject.GetListBoxIndexAtY(ListBox, y);
@@ -506,6 +511,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.15  2004/02/17 00:32:25  mattias
+  fixed TCustomImage.DoAutoSize fixing uninitialized vars
+
   Revision 1.14  2004/02/03 08:54:09  mattias
   Frame3D rect now var again
 
