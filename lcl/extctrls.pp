@@ -45,8 +45,8 @@ interface
 {$endif}
 
 uses
-  SysUtils, Classes, LCLProc, Controls, Forms, StdCtrls, vclGlobals, lMessages,
-  GraphType, Graphics, LCLLinux, CustomTimer;
+  SysUtils, Classes, LCLStrConsts, LCLProc, Controls, Forms, StdCtrls,
+  vclGlobals, lMessages, GraphType, Graphics, LCLLinux, CustomTimer;
 
 type
   { workaround problem with fcl }
@@ -562,6 +562,9 @@ end.
 
  {
   $Log$
+  Revision 1.51  2003/03/11 07:46:43  mattias
+  more localization for gtk- and win32-interface and lcl
+
   Revision 1.50  2003/01/27 13:49:16  mattias
   reduced speedbutton invalidates, added TCanvas.Frame
 
