@@ -587,12 +587,13 @@ begin
     // TODO: add other debugger menuitems
     // TODO: implement by actions
 
-    ToolStatus := TOOLSTATEMAP[FDebugger.State];
+    if ToolStatus in [itNone,itDebugger] then
+      ToolStatus := TOOLSTATEMAP[FDebugger.State];
   end;
 
   if (FDebugger.State in [dsRun]) then begin
     // hide IDE during run
-    if EnvironmentOptions.HideIDEOnRun then
+    if EnvironmentOptions.HideIDEOnRun and (MainIDE.ToolStatus=itDebugger) then
       MainIDE.HideIDE;
   end else if (OldState in [dsRun]) then begin
     // unhide IDE
@@ -925,7 +926,7 @@ procedure TDebugManager.BreakpointAdded(const ASender: TIDEBreakPoints;
 var
   BP: TBaseBreakPoint;
 begin
-writeln('TDebugManager.BreakpointAdded A ',ABreakpoint.Source,' ',ABreakpoint.Line);
+  writeln('TDebugManager.BreakpointAdded A ',ABreakpoint.Source,' ',ABreakpoint.Line);
   ABreakpoint.InitialEnabled := True;
   ABreakpoint.Enabled := True;
   if FDebugger <> nil
@@ -940,7 +941,7 @@ end;
 procedure TDebugManager.BreakpointRemoved(const ASender: TIDEBreakPoints;
   const ABreakpoint: TIDEBreakPoint);
 begin
-writeln('TDebugManager.BreakpointRemoved A ',ABreakpoint.Source,' ',ABreakpoint.Line,' ',TManagedBreakPoint(ABreakpoint).SourceMark<>nil);
+  writeln('TDebugManager.BreakpointRemoved A ',ABreakpoint.Source,' ',ABreakpoint.Line,' ',TManagedBreakPoint(ABreakpoint).SourceMark<>nil);
   if TManagedBreakPoint(ABreakpoint).SourceMark<>nil then
     TManagedBreakPoint(ABreakpoint).SourceMark.Free;
   if Project1<>nil then
@@ -1195,15 +1196,9 @@ end;
 function TDebugManager.DoBeginChangeDebugger: TModalResult;
 begin
   Result:=mrCancel;
-  if MainIDE.ToolStatus=itBuilder then begin
-    MessageDlg('Compiling',
-      'You can not change any debugger item while the IDE is compiling.',
-      mtError,[mbCancel],0);
-    exit;
-  end;
   inc(FDebuggerUpdateLock);
   if FDebuggerUpdateLock=1 then begin
-    // the update has begun
+    // the update begins
     if FDebugger<>nil then begin
       // switch the debugger into a state, where the IDE can change its items
 
@@ -1369,6 +1364,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.45  2003/06/04 12:44:55  mattias
+  implemented setting breakpoint while compiling
+
   Revision 1.44  2003/06/03 16:12:14  mattias
   fixed loading bookmarks for editor index 0
 
