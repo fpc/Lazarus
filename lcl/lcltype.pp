@@ -641,6 +641,13 @@ const
   DIB_RGB_COLORS = 0;     { color table in RGBs  }
   DIB_PAL_COLORS = 1;     { color table in palette indices  }
 
+const
+  { Gradient Fill Modes }
+  GRADIENT_FILL_RECT_H = 0;
+  GRADIENT_FILL_RECT_V = 1;
+  GRADIENT_FILL_TRIANGLE = 2;
+
+
 type
 
   PNMHdr = ^TNMHdr;
@@ -717,6 +724,33 @@ type
   TSize = tagSIZE;
   SIZE = tagSIZE;
 
+
+{GradientFill Structures}
+  PTriVertex = ^tagTriVertex;
+  tagTRIVERTEX = packed record
+    x: Longint;
+    y: Longint;
+    Red: Shortint;
+    Green: Shortint;
+    Blue: Shortint;
+    Alpha: Shortint;
+  end;
+  TRIVERTEX = tagTRIVERTEX;
+
+  PGradientTriangle = ^tagGradientTriangle;
+  tagGRADIENTTRIANGLE = packed record
+    Vertex1: Longint;
+    Vertex2: Longint;
+    Vertex3: Longint;
+  end;
+  GRADIENTTRIANGLE = tagGRADIENTTRIANGLE;
+
+  PGradientRect = ^tagGradientRect;
+  tagGRADIENTRECT = packed record
+    UpperLeft: Longint;
+    LowerRight: Longint;
+  end;
+  GRADIENTRECT = tagGRADIENTRECT;
 
 { Bitmap Header Definition }
   PBitmap = ^TagBitmap;
@@ -1158,6 +1192,17 @@ const
   SM_MOUSEWHEELPRESENT = 75;
   SM_CMETRICS = 76;
 
+//==============================================
+// GetDeviceCaps constants
+//==============================================
+  HORZSIZE      = 4;
+  VERTSIZE      = 6;
+  HORZRES       = 8;
+  VERTRES       = 10;
+  BITSPIXEL     = 12;
+  LOGPIXELSX    = 88;
+  LOGPIXELSY    = 90;
+
 type
 
   TFarProc = Pointer;
@@ -1516,6 +1561,9 @@ end.
 
 {
   $Log$
+  Revision 1.16  2002/09/12 05:56:15  lazarus
+  MG: gradient fill, minor issues from Andrew
+
   Revision 1.15  2002/09/11 15:04:49  lazarus
   MG: added stringhashlist.pas
 

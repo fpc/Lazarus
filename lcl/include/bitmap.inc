@@ -27,9 +27,9 @@ begin
   ACanvas.CopyRect(Rect, Self.Canvas, Classes.Rect(0, 0, Width, Height));
 end;
 
-constructor TBitmap.Create;
+constructor TBitmap.VirtualCreate;
 begin
-  inherited Create;
+  inherited VirtualCreate;
   FPixelFormat := pfDevice;
   FCanvas := TBitmapCanvas.Create(Self);
   FImage := TBitmapImage.Create;
@@ -154,8 +154,8 @@ end;
 
 Procedure TBitmap.LoadFromFile(Const Filename : String);
 begin
-  Inherited;
-  //LoadFromXPMFile(FileName);
+  //Inherited;
+  LoadFromXPMFile(FileName);
 end;
 
 Procedure TBitmap.NewImage(NHandle: HBITMAP; NPallette: HPALETTE;
@@ -460,6 +460,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.18  2002/09/12 05:56:15  lazarus
+  MG: gradient fill, minor issues from Andrew
+
   Revision 1.17  2002/09/10 06:49:19  lazarus
   MG: scrollingwincontrol from Andrew
 

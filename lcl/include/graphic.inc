@@ -12,9 +12,15 @@
  *                                                                           *
  *****************************************************************************
 }
+
 constructor TGraphic.Create;
 begin
-  inherited Create;
+  VirtualCreate;
+end;
+
+constructor TGraphic.VirtualCreate;
+begin
+  Inherited Create;
 end;
 
 procedure TGraphic.DefineProperties(Filer: TFiler);

@@ -4205,7 +4205,7 @@ begin
     Left:=0;
     Width:=MaxX-Left-Left;
     Height:=MaxY-Top;
-    Options:=[tvoAutoExpand, tvoReadOnly, tvoShowButtons, tvoShowRoot,
+    Options:=[tvoReadOnly, tvoShowButtons, tvoShowRoot,
       tvoShowLines, tvoRowSelect, tvoKeepCollapsedNodes, tvoShowSeparators];
     OnMouseUp:=@KeyMappingTreeViewMouseUp;
     Images:=Self.ImageList;

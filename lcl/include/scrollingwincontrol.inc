@@ -23,7 +23,7 @@ procedure TControlScrollBar.SetPosition(Value: Integer);
     FPosition := Value;
     FControl.ScrollBy(0, Tmp - FPosition);
     if GetScrollPos(FControl.Handle, SB_VERT) <> FPosition then
-      SetScrollPos(FControl.Handle, SB_VERT, FPosition, True);
+      SetScrollPos(FControl.Handle, SB_VERT, FPosition, Visible);
   end;
 
   Procedure SetHPosition;
@@ -34,7 +34,7 @@ procedure TControlScrollBar.SetPosition(Value: Integer);
     FPosition := Value;
     FControl.ScrollBy(Tmp - FPosition, 0);
     if GetScrollPos(FControl.Handle, SB_HORZ) <> FPosition then
-      SetScrollPos(FControl.Handle, SB_HORZ, FPosition, True);
+      SetScrollPos(FControl.Handle, SB_HORZ, FPosition, Visible);
   end;
 
 begin
@@ -43,18 +43,21 @@ begin
     exit;
   end;
 
-  if FAutoRange < 0 then
-    AutoCalcRange;
+  If fControl.AutoScroll then begin
+    if FAutoRange < 0 then
+      AutoCalcRange;
 
-  if Value > FAutoRange then begin
-    SetPosition(FAutoRange);
-    exit;
+    if Value > FAutoRange then begin
+      SetPosition(FAutoRange);
+      exit;
+    end;
   end;
 
   if Kind = sbVertical then
     SetVPosition
   else
     SetHPosition;
+  FControl.UpdateScrollBars;
 end;
 
 procedure TControlScrollBar.SetRange(Value: Integer);
@@ -63,7 +66,6 @@ begin
     Range := 0;
     exit;
   end;
-  FControl.FAutoScroll := False;
   FRange := Value;
   FControl.UpdateScrollBars;
 end;
@@ -71,6 +73,12 @@ end;
 procedure TControlScrollBar.SetVisible(Value: Boolean);
 begin
   FVisible := Value;
+  FControl.UpdateScrollBars;
+end;
+
+procedure TControlScrollBar.SetSmooth(Value: Boolean);
+begin
+  FSmooth := Value;
   FControl.UpdateScrollBars;
 end;
 
@@ -112,11 +120,12 @@ procedure TControlScrollBar.AutoCalcRange;
 
 begin
   if FControl.FAutoScroll then begin
+    FVisible := True;
     if Kind = sbVertical then
       AutoCalcVRange
     else
       AutoCalcHRange;
-    FControl.FAutoScroll := True;
+    FControl.UpdateScrollBars;
   end;
 end;
 
@@ -127,7 +136,8 @@ var
   procedure UpdateVScroll;
   begin
     With FControl do begin
-      ScrollInfo.nPage := ClientHeight + 1;
+      Page := ClientHeight + 1;
+      ScrollInfo.nPage := Page;
 
       if Visible then begin
         FAutoRange := (Range - ClientHeight)*Shortint(Range >= ClientHeight);
@@ -135,15 +145,22 @@ var
       end
       else
         ScrollInfo.nMax := 0;
-      SetScrollInfo(Handle, SB_VERT, ScrollInfo, FVisible or
-        (FAutoScroll and (ScrollInfo.nMax > 0) and (ScrollInfo.nMax > Height)));
+
+      If (Self.Visible and not FAutoScroll) or (FAutoScroll and (ScrollInfo.nMax > 0) and
+        (ScrollInfo.nMax > Height))
+      then
+        Self.FVisible := True
+      else
+        Self.FVisible := False;
+      SetScrollInfo(Handle, SB_VERT, ScrollInfo, Self.Visible);
     end;
   end;
 
   procedure UpdateHScroll;
   begin
     With FControl do begin
-      ScrollInfo.nPage := ClientWidth + 1;
+      Page := ClientWidth + 1;
+      ScrollInfo.nPage := Page;
 
       if Visible then begin
         FAutoRange := (Range - ClientWidth)*Shortint(Range >= ClientWidth);
@@ -151,8 +168,14 @@ var
       end
       else
         ScrollInfo.nMax := 0;
-      SetScrollInfo(Handle, SB_HORZ, ScrollInfo, FVisible or
-        (FAutoScroll and (ScrollInfo.nMax > 0) and (ScrollInfo.nMax > Width)));
+
+      If (Self.Visible and not FAutoScroll) or (FAutoScroll and (ScrollInfo.nMax > 0) and
+        (ScrollInfo.nMax > Width))
+      then
+        Self.FVisible := True
+      else
+        Self.FVisible := False;
+      SetScrollInfo(Handle, SB_HORZ, ScrollInfo, Self.Visible);
     end;
   end;
 
@@ -170,7 +193,44 @@ begin
   else
     UpdateHScroll;
 
-  SetPosition(FPosition);
+  SetPosition(ScrollInfo.nTrackPos);
+
+  //I am not positive that this is right
+  //but it apeared to be when I compared
+  //results to Delphi 4
+  if Smooth then
+    Increment := Page div 10;
+end;
+
+procedure TControlScrollBar.ScrollHandler(var Message: TLMScroll);
+var
+  NewPos: Longint;
+begin
+  If (csDesigning in FControl.ComponentState) then
+    exit;//prevent wierdness in IDE.
+  with Message do
+  begin
+    NewPos := FPosition;
+    case TScrollCode(ScrollCode) of
+      scLineUp:
+        Dec(NewPos, FIncrement);
+      scLineDown:
+        Inc(NewPos, FIncrement);
+      scPageUp:
+        Dec(NewPos, FPage);
+      scPageDown:
+        Inc(NewPos, FPage);
+      scPosition, scTrack:
+        NewPos := Pos;
+      scTop:
+        NewPos := 0;
+      scBottom:
+        NewPos := Range;
+    end;
+    if NewPos < 0 then NewPos := 0;
+    if NewPos > Range then NewPos := Range;
+    SetPosition(NewPos);
+  end;
 end;
 
 constructor TControlScrollBar.Create(AControl: TScrollingWinControl; AKind: TScrollBarKind);
@@ -178,6 +238,12 @@ begin
   Inherited Create;
   FControl := AControl;
   FKind := AKind;
+  FPage := 80;
+  FIncrement := 8;
+  FPosition := 0;
+  FRange := 0;
+  //FSmooth := True;
+  //FVisible := True;
 end;
 
 procedure TControlScrollBar.Assign(Source: TPersistent);
@@ -197,7 +263,7 @@ end;
 function TControlScrollBar.IsScrollBarVisible: Boolean;
 begin
   Result := (FControl <> nil) and FControl.HandleAllocated and
-            (FControl.Visible) and FVisible;
+            (FControl.Visible) and (Self.Visible);
 end;
 
 function TControlScrollBar.ScrollPos: Integer;
@@ -210,14 +276,11 @@ begin
   if FAutoScroll <> Value then
   begin
     FAutoScroll := Value;
-    if not Value then begin
-      HorzScrollBar.Range := 0;
-      VertScrollBar.Range := 0;
-    end
-    else begin
+    if Value then begin
       HorzScrollBar.AutoCalcRange;
       VertScrollBar.AutoCalcRange;
     end;
+    UpdateScrollBars;
   end;
 end;
 
@@ -231,12 +294,15 @@ procedure TScrollingWinControl.AlignControls(AControl: TControl; var ARect: TRec
 begin
   HorzScrollBar.AutoCalcRange;
   VertScrollBar.AutoCalcRange;
+  If not AutoScroll then
+    UpdateScrollBars;
   inherited AlignControls(AControl, ARect);
 end;
 
 Procedure TScrollingWinControl.WMEraseBkgnd(var Message: TLMEraseBkgnd);
 begin
-  with Message do
+  with Message do begin
+    FCanvas.Lock;
     try
       FCanvas.Handle := DC;
       try
@@ -248,6 +314,7 @@ begin
     finally
       FCanvas.Unlock;
     end;
+  end;
 end;
 
 procedure TScrollingWinControl.WMPaint(var Message: TLMPaint);
@@ -322,23 +389,27 @@ end;
 
 Procedure TScrollingWinControl.WMVScroll(var Message : TLMVScroll);
 begin
-  VertScrollbar.Position := Message.Pos;
+  VertScrollbar.ScrollHandler(Message);
 end;
 
 Procedure TScrollingWinControl.WMHScroll(var Message : TLMHScroll);
 begin
-  HorzScrollbar.Position := Message.Pos;
+  HorzScrollbar.ScrollHandler(Message);
 end;
 
 Constructor TScrollingWinControl.Create(AOwner : TComponent);
 begin
   Inherited Create(AOwner);
+
   FCanvas := TControlCanvas.Create;
   FCanvas.Control := Self;
 
-  FAutoScroll := True;
   FVertScrollbar := TControlScrollBar.Create(Self, sbVertical);
   FHorzScrollbar := TControlScrollBar.Create(Self, sbHorizontal);
+
+  ControlStyle := [csAcceptsControls, csClickEvents, csDoubleClicks];
+
+  SetBounds(0,0, 200, 200);
 end;
 
 Destructor TScrollingWinControl.Destroy;

@@ -62,16 +62,20 @@ type
     FKind: TScrollBarKind;
 
     FIncrement: TScrollBarInc;
+    FPage: TScrollBarInc;
     FPosition: Integer;
     FRange: Integer;
+    FSmooth : Boolean;
     FVisible: Boolean;
 
     procedure SetPosition(Value: Integer);
     procedure SetRange(Value: Integer);
+    procedure SetSmooth(Value: Boolean);
     procedure SetVisible(Value: Boolean);
   protected
     procedure AutoCalcRange;
     Procedure UpdateScrollBar;
+    procedure ScrollHandler(var Message: TLMScroll);
   public
     constructor Create(AControl: TScrollingWinControl; AKind: TScrollBarKind);
 
@@ -84,9 +88,11 @@ type
     property Kind: TScrollBarKind read FKind;
   published
     property Increment: TScrollBarInc read FIncrement write FIncrement default 8;
+    property Page: TScrollBarInc read FPage write FPage default 80;
+    property Smooth : Boolean read FSmooth write SetSmooth;// default True
     property Position: Integer read FPosition write SetPosition default 0;
     property Range: Integer read FRange write SetRange default 0;
-    property Visible: Boolean read FVisible write SetVisible default True;
+    property Visible: Boolean read FVisible write SetVisible;// default True;
   end;
 
   TScrollingWinControl = class(TWinControl)
@@ -94,9 +100,9 @@ type
     FHorzScrollBar : TControlScrollBar;
     FVertScrollBar : TControlScrollBar;
     FAutoScroll    : Boolean;
-    
+
     FOnPaint: TNotifyEvent;
-    
+
     FCanvas : TControlCanvas;
 
     IsUpdating : Boolean;
@@ -108,7 +114,6 @@ type
   Protected
     procedure AlignControls(AControl: TControl; var ARect: TRect); override;
     procedure CreateWnd; override;
-    property AutoScroll: Boolean read FAutoScroll write SetAutoScroll default True;
     Procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
     procedure WMPaint(var message: TLMPaint); message LM_PAINT;
     procedure WMSize(var Message: TLMSize); message LM_Size;
@@ -127,20 +132,19 @@ type
 
     property Canvas: TControlCanvas read FCanvas;
   published
+    property AutoScroll: Boolean read FAutoScroll write SetAutoScroll;
     property HorzScrollBar: TControlScrollBar read FHorzScrollBar write SetHorzScrollBar stored StoreScrollBars;
     property VertScrollBar: TControlScrollBar read FVertScrollBar write SetVertScrollBar stored StoreScrollBars;
   end;
 
   TScrollBox = class(TScrollingWinControl)
-  private
-    Procedure DoAutoSize; Override;
   public
     constructor Create(AOwner: TComponent); override;
   published
     property Align;
     property Anchors;
-    property AutoScroll default True;
-    property AutoSize;
+    property AutoSize default True;
+    //property AutoScroll;
     //property BiDiMode;
     //property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
     property Constraints;

@@ -39,7 +39,7 @@ uses
 ResourceString
    rsMbYes          = '&Yes';
    rsMbNo           = '&No';
-   rsMbOK           = 'OK';
+   rsMbOK           = '&OK';
    rsMbCancel       = 'Cancel';
    rsMbAbort        = 'Abort';
    rsMbRetry        = '&Retry';

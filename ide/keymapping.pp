@@ -319,31 +319,25 @@ const
 function StrToVKCode(const s: string): integer;
 var
   i: integer;
+  Data: Pointer;
 begin
   Result:=VK_UNKNOWN;
-  if VirtualKeyStrings=nil then
-    VirtualKeyStrings:=TStringHashList.Create(true);
-  i:=-1; //VirtualKeyStrings(s);
-  if i>=0 then begin
-  
-  end else begin
-    if (length(UnknownVKPrefix)<length(s))
-    and (AnsiStrLComp(PChar(s),PChar(UnknownVKPrefix),length(UnknownVKPrefix))=0)
-    then
-      Result:=StrToIntDef(copy(s,7,length(s)-8),VK_UNKNOWN)
-    else if s<>'none' then begin
+  if (length(UnknownVKPrefix)<length(s))
+  and (AnsiStrLComp(PChar(s),PChar(UnknownVKPrefix),length(UnknownVKPrefix))=0)
+  then
+    Result:=StrToIntDef(copy(s,7,length(s)-8),VK_UNKNOWN)
+  else if s<>'none' then begin
+    if VirtualKeyStrings=nil then begin
+      VirtualKeyStrings:=TStringHashList.Create(true);
       for i:=1 to 300 do
-        if KeyAndShiftStateToStr(i,[])=s then begin
-          Result:=i;
-          exit;
-        end;
+        VirtualKeyStrings.Add(KeyAndShiftStateToStr(i,[]),Pointer(i));
       for i:=VK_IRREGULAR+33 to VK_IRREGULAR+255 do
-        if KeyAndShiftStateToStr(i,[])=s then begin
-          Result:=i;
-          exit;
-        end;
+        VirtualKeyStrings.Add(KeyAndShiftStateToStr(i,[]),Pointer(i));
     end;
   end;
+  Data:=VirtualKeyStrings.Data[s];
+  if Data<>nil then
+    Result:=integer(Data);
 end;
 
 function ShowKeyMappingEditForm(Index:integer;
