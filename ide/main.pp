@@ -324,6 +324,8 @@ type
     // code explorer events
     procedure OnCodeExplorerGetCodeTree(Sender: TObject;
                                         var ACodeTool: TCodeTool);
+    procedure OnCodeExplorerJumpToCode(Sender: TObject; const Filename: string;
+                                       CleanPos: integer)
 
     // view project ToDo list events
     procedure ViewProjectTodosOpenFile(Sender: TObject;
@@ -4681,6 +4683,7 @@ begin
   if CodeExplorerView=nil then begin
     CodeExplorerView:=TCodeExplorerView.Create(Self);
     CodeExplorerView.OnGetCodeTree:=@OnCodeExplorerGetCodeTree;
+    CodeExplorerView.OnJumpToCode:=@OnCodeExplorerJumpToCode;
   end;
 
   EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(nmiwCodeExplorerName).Apply;
@@ -7461,6 +7464,20 @@ begin
   CodeToolBoss.Explore(ActiveUnitInfo.Source,ACodeTool,false);
 end;
 
+procedure TMainIDE.OnCodeExplorerJumpToCode(Sender: TObject;
+  const Filename: string; CleanPos: integer)
+var
+  CodeBuffer: TCodeBuffer;
+  ACodeTool: TCodeTool;
+begin
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
+  CodeBuffer:=CodeToolBoss.FindFile(Filename);
+  if CodeBuffer=nil then exit;
+  ACodeTool:=nil;
+  CodeToolBoss.Explore(CodeBuffer,ACodeTool,false);
+  
+end;
+
 procedure TMainIDE.ViewProjectTodosOpenFile(Sender: TObject;
   const Filename: string);
 begin
@@ -9261,6 +9278,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.612  2003/06/20 12:56:53  mattias
+  reduced paint messages on destroy
+
   Revision 1.611  2003/06/19 23:10:57  mattias
   implemented two step compiling of IDE, needed for designtime packages
 
