@@ -525,7 +525,8 @@ type
     procedure ViewJumpHistoryClicked(Sender: TObject);
     
     procedure ActivateHint(const ScreenPos: TPoint; const TheHint: string);
-    
+    procedure HideHint;
+
     Procedure NewFile(const NewShortName: String; ASource : TCodeBuffer;
                       FocusIt: boolean);
     Procedure CloseFile(PageIndex:integer);
@@ -3317,6 +3318,16 @@ begin
   FHintWindow.ActivateHint(HintWinRect,TheHint);
 end;
 
+procedure TSourceNotebook.HideHint;
+begin
+  if FHintTimer<>nil then
+    FHintTimer.Enabled:=false;
+  if IdentCompletionTimer<>nil then
+    IdentCompletionTimer.Enabled:=false;
+  if FHintWindow<>nil then
+    FHintWindow.Visible:=false;
+end;
+
 Procedure TSourceNotebook.BookMarkSetClicked(Sender : TObject);
 // popup menu:  set bookmark clicked
 var
@@ -3939,12 +3950,7 @@ end;
 procedure TSourceNotebook.OnApplicationUserInput(Sender: TObject; Msg: Cardinal
   );
 begin
-  if FHintTimer<>nil then
-    FHintTimer.Enabled:=false;
-  if IdentCompletionTimer<>nil then
-    IdentCompletionTimer.Enabled:=false;
-  if FHintWindow<>nil then
-    FHintWindow.Visible:=false;
+  HideHint;
 end;
 
 procedure TSourceNotebook.EditorMouseUp(Sender: TObject; Button: TMouseButton;
