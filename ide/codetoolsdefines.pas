@@ -1108,7 +1108,7 @@ procedure TCodeToolsDefinesEditor.CreateComponents;
   procedure AddMenuItem(var AMenuItem: TMenuItem; const AName, ACaption: string;
     AParent: TMenuItem);
   begin
-    AMenuItem:=TMenuItem.Create(nil);
+    AMenuItem:=TMenuItem.Create(Self);
     AMenuItem.Name:=AName;
     AMenuItem.Caption:=ACaption;
     if AParent=nil then
