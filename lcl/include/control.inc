@@ -928,8 +928,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMRButtonUp(var Message: TLMRButtonUp);
 begin
-//  inherited;
   DoMouseUp(Message, mbRight);
+writeln('TControl.WMRButtonUp ',Name,':',ClassName,' ',Message.Result);
   if Message.Result = 0 then CheckMenuPopup(Message.pos);
 end;
 
@@ -1326,8 +1326,6 @@ begin
     if FParent <> nil then FParent.RemoveControl(Self);
     if AParent <> nil then AParent.InsertControl(Self);
   end;
-
-
 end;
 
 
@@ -1751,6 +1749,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.63  2002/08/24 12:54:59  lazarus
+  MG: fixed mouse capturing, OI edit focus
+
   Revision 1.62  2002/08/22 16:22:39  lazarus
   MG: started debugging of mouse capturing
 
