@@ -61,7 +61,7 @@ end;
 destructor TgtkObject.Destroy;
 const
   GDITYPENAME: array[TGDIType] of String = ('gdiBitmap', 'gdiBrush'
-    ,'gdiFont', 'gdiPen', 'gdiRegion');
+    ,'gdiFont', 'gdiPen', 'gdiRegion', 'gdiPalette');
 var
   n: Integer;
   p: PMsg;
@@ -238,7 +238,7 @@ procedure TgtkObject.SendCachedLCLMessages;
         ParentWidget:=pgtkWidget(LCLControl.Parent.Handle);
         ParentFixed := GetFixedWidget(ParentWidget);
         if GtkWidgetIsA(ParentFixed,GTK_FIXED_GET_TYPE)
-        or GtkWidgetIsA(ParentWidget,GTK_LAYOUT_GET_TYPE) then begin
+        or GtkWidgetIsA(ParentFixed,GTK_LAYOUT_GET_TYPE) then begin
           FixedMoveControl(ParentFixed, Widget,
                          LCLControl.Left, LCLControl.Top);
         end else if not (LCLControl.Parent is TNoteBook) then begin
@@ -787,6 +787,12 @@ begin
   GdiObject^.GDIBitmapType:=gbPixmap;
   gdk_window_get_geometry(GdiObject^.GDIPixmapObject,
     nil, nil, @Width, @Height, @Depth);
+
+ If GdiObject^.Visual <> nil then
+   GDK_Visual_UnRef(GdiObject^.Visual);
+
+ If GdiObject^.Colormap <> nil then
+   GDK_Colormap_UnRef(GdiObject^.Colormap);
 
   GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIpixmapObject);
   If GdiObject^.Visual = nil then
@@ -2031,7 +2037,7 @@ var
 begin
 Assert(False, 'Trace:ADDCHILD');
    pFixed := GetFixedWidget(PGtkWidget(Parent));
-   if pFixed <> nil then
+   if pFixed <> Parent then
      FixedPutControl(pFixed, Child, Left, Top);
 //   gtk_object_set_data(PgtkObject(Child),'Owner',Parent);
 end;
@@ -2255,7 +2261,7 @@ begin
       Widget:=PGtkWidget(Handle);
       FixWidget:=GetFixedWidget(Widget);
 
-      If FixWidget <> nil then Widget := FixWidget;
+      If FixWidget <> Widget then Widget := FixWidget;
 
       RCStyle:=gtk_rc_style_new;
       RCStyle^.bg[GTK_STATE_NORMAL]:=TColortoTGDKColor(Color);
@@ -4254,7 +4260,8 @@ begin
         // move widget on the fixed widget of parent control
         ParentWidget:=pgtkWidget(LCLControl.Parent.Handle);
         ParentFixed := GetFixedWidget(ParentWidget);
-        if ParentFixed <> nil then begin
+        if GtkWidgetIsA(ParentFixed,GTK_FIXED_GET_TYPE)
+        or GtkWidgetIsA(ParentFixed,GTK_LAYOUT_GET_TYPE) then begin
           FixedMoveControl(ParentFixed, SenderWidget,
                          LCLControl.Left, LCLControl.Top);
         end else if not (LCLControl.Parent is TNoteBook) then begin
@@ -5827,6 +5834,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.211  2002/09/12 05:56:16  lazarus
+  MG: gradient fill, minor issues from Andrew
+
   Revision 1.210  2002/09/10 17:30:16  lazarus
   MG: added TLabel.WordWrap for gtk-interface from Vincent
 
