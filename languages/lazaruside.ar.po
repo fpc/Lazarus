@@ -749,6 +749,10 @@ msgstr ""
 msgid "build program/project"
 msgstr ""
 
+#: lazarusidestrconsts:lisbuildstarter
+msgid "Build Starter"
+msgstr ""
+
 #: lazarusidestrconsts:lisbuildsynedit
 msgid "Build SynEdit"
 msgstr ""

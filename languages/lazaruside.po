@@ -4366,6 +4366,10 @@ msgstr ""
 msgid "Build IDE"
 msgstr ""
 
+#: lazarusidestrconsts:lisbuildstarter
+msgid "Build Starter"
+msgstr ""
+
 #: lazarusidestrconsts:lisbuildexamples
 msgid "Build Examples"
 msgstr ""

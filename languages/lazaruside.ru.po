@@ -738,6 +738,10 @@ msgstr "Зарегистрировать пакет"
 msgid "build program/project"
 msgstr "собрать программу/проект"
 
+#: lazarusidestrconsts:lisbuildstarter
+msgid "Build Starter"
+msgstr ""
+
 #: lazarusidestrconsts:lisbuildsynedit
 msgid "Build SynEdit"
 msgstr "Собрать SynEdit"

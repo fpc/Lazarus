@@ -748,6 +748,10 @@ msgstr "Esegui build della registrazione del pacchetto"
 msgid "build program/project"
 msgstr "esegui build del programma/progetto"
 
+#: lazarusidestrconsts:lisbuildstarter
+msgid "Build Starter"
+msgstr ""
+
 #: lazarusidestrconsts:lisbuildsynedit
 msgid "Build SynEdit"
 msgstr "Esegui build del SynEdit"
