@@ -481,8 +481,8 @@ begin
     begin
     
       {writeln('[GTKKeyUpDown] PRESS ',TControl(Data).Name,':',TControl(Data).ClassName,
-        ' Widget=',HexStr(Cardinal(Widget),8));}
-      {writeln('  Event^.KeyVal=',Event^.KeyVal,
+        ' Widget=',HexStr(Cardinal(Widget),8));
+      writeln('  Event^.KeyVal=',Event^.KeyVal,
         ' State=',HexStr(Cardinal(Event^.State),8),
         ' KeyCode=',KeyCode,
         ' VK=',Msg.CharCode,
@@ -2670,6 +2670,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.173  2003/03/25 13:00:39  mattias
+  implemented TMemo.SelLength, improved OI hints
+
   Revision 1.172  2003/03/25 10:45:41  mattias
   reduced focus handling and improved focus setting
 
