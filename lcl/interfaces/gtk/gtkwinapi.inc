@@ -2082,7 +2082,7 @@ function TGtkWidgetSet.ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolea
     if  GTK_LIST (combo^.list)^.children = nil then
       list_requisition^.height := list_requisition^.height + EMPTY_LIST_HEIGHT;
 
-    alloc_width := (widget^.allocation.width -
+    alloc_width := (cardinal(widget^.allocation.width) -
       2 * cardinal(gtk_widget_get_xthickness(gtk_bin_get_child(popwin))) -
       2 * border_width(GTK_CONTAINER (gtk_bin_get_child(popwin))^) -
       2 * border_width(GTK_CONTAINER (combo^.popup)^) -
@@ -7462,10 +7462,12 @@ var
   
   procedure PreparePaintMessage(TargetObject: TObject; var AMessage: TLMessage);
   var
-    PaintDC: HDC;
     GtkPaintData: TLMGtkPaintData;
-    DCOrigin: TPoint;
     OldGtkPaintMsg: TLMGtkPaint;
+    {$IFNDEF Gtk2}
+    PaintDC: HDC;
+    DCOrigin: TPoint;
+    {$ENDIF}
   begin
     (* MG: old trick. Not used anymore, but it might be, that someday there
            will be component, that works better with this, so it is kept.
@@ -8893,6 +8895,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.396  2005/02/17 00:05:25  mattias
+  fixed some gtk2 intf warnings
+
   Revision 1.395  2005/02/05 22:48:51  mattias
   clean up
 

@@ -2289,7 +2289,8 @@ begin
     DebugLn('TGtkWidgetSet.GetRawImageFromGdkWindow G Width=',dbgs(AnImage^.Width),' Height=',dbgs(AnImage^.Height),
       ' BitsPerPixel=',dbgs(NewRawImage.Description.BitsPerPixel),' bpl=',dbgs(AnImage^.bpl));
     {$ENDIF}
-    if NewRawImage.DataSize<>cardinal(AnImage^.bpl) * AnImage^.Height then
+    if NewRawImage.DataSize<>cardinal(AnImage^.bpl) * cardinal(AnImage^.Height)
+    then
       RaiseGDBException('NewRawImage.DataSize<>AnImage^.bpl*AnImage^.Height');
 
     // copy data
@@ -2384,7 +2385,8 @@ begin
     {$IFDEF VerboseRawImage}
     DebugLn('TGtkWidgetSet.GetRawImageFromGdkWindow G Width=',dbgs(AnImage^.Width),' Height=',dbgs(AnImage^.Height),' BitsPerPixel=',dbgs(RawImage.Description.AlphaBitsPerPixel),' bpl=',dbgs(AnImage^.bpl));
     {$ENDIF}
-    if RawImage.MaskSize<>cardinal(AnImage^.bpl) * AnImage^.Height then
+    if RawImage.MaskSize<>cardinal(AnImage^.bpl) * cardinal(AnImage^.Height)
+    then
       RaiseGDBException('RawImage.MaskSize<>AnImage^.bpl*AnImage^.Height');
 
     // copy data
@@ -7008,6 +7010,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.627  2005/02/17 00:05:25  mattias
+  fixed some gtk2 intf warnings
+
   Revision 1.626  2005/02/16 22:55:59  mattias
   improved gtk intf file dialog filter  from C Western
 

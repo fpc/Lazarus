@@ -618,15 +618,14 @@ end;
 procedure TGtk2WSCustomListView.UpdateProperties(
   const ACustomListView: TCustomListView);
 var
-Widgets: TTVWidgets;
-GtkColumn: PGtkTreeViewColumn;
-Column: TListColumn;
-GtkAlign: gfloat;
-Iter: TGtkTreeIter;
-Item: TListItem;
-X, Y: Integer;
-Count: Integer;
-BitImage: TBitmap;
+  Widgets: TTVWidgets;
+  GtkColumn: PGtkTreeViewColumn;
+  Column: TListColumn;
+  Iter: TGtkTreeIter;
+  Item: TListItem;
+  X, Y: Integer;
+  Count: Integer;
+  BitImage: TBitmap;
 begin
   if Not(ACustomListView.HandleAllocated) then exit;
 
@@ -642,8 +641,9 @@ begin
     gtk_tree_view_column_set_alignment(GtkColumn, AlignToGtkAlign(Column.Alignment));
     // set auto sizing
     case Column.AutoSize of
-      // The gtk2 docs say that GTK_TREE_VIEW_COLUMN_AUTOSIZE is inefficient for large views
-      // so perhaps this should be GTK_TREE_VIEW_COLUMN_GROW_ONLY
+      // The gtk2 docs say that GTK_TREE_VIEW_COLUMN_AUTOSIZE is inefficient
+      // for large views, so perhaps this should be
+      // GTK_TREE_VIEW_COLUMN_GROW_ONLY
       True : gtk_tree_view_column_set_sizing(GtkColumn, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
       //True : gtk_tree_view_column_set_sizing(GtkColumn, GTK_TREE_VIEW_COLUMN_GROW_ONLY);
       False: gtk_tree_view_column_set_sizing(GtkColumn, GTK_TREE_VIEW_COLUMN_FIXED);
@@ -654,21 +654,19 @@ begin
     // set Visible
     gtk_tree_view_column_set_visible(GtkColumn, Column.Visible);
     // set MinWidth
-    gtk_tree_view_column_set_min_width(GtkColumn, Column.MinWidth-Ord(Column.MinWidth=0));
+    gtk_tree_view_column_set_min_width(GtkColumn,
+                                       Column.MinWidth-Ord(Column.MinWidth=0));
     // set MaxWidth
-    gtk_tree_view_column_set_max_width(GtkColumn, Column.MaxWidth-Ord(Column.MaxWidth=0));
+    gtk_tree_view_column_set_max_width(GtkColumn,
+                                       Column.MaxWidth-Ord(Column.MaxWidth=0));
   end;
   
   // ViewStyle
   case ACustomListView.ViewStyle of
     vsReport:
-    begin
       gtk_tree_view_set_headers_visible(TreeView, True);
-    end;
     vsList:
-    begin
       gtk_tree_view_set_headers_visible(TreeView, False);
-    end;
   end;
   
   //sorting

@@ -1919,26 +1919,20 @@ end;
 function gtkPressedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
-  Status : GBoolean;
 begin
   Result := CallBackDefaultReturn;
 
   if (Widget=nil) then ;
   EventTrace('pressed', data);
   Mess.msg := LM_PRESSED;
-  Status := DeliverMessage(Data, Mess) = 0;
+  DeliverMessage(Data, Mess);
 
-  {$ifdef GTK2}
-  Result := False;
-  {$Else}
-  Result := Status;
-  {$endif}
+  Result := CallBackDefaultReturn;
 end;
 
 function gtkEnterCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
-   Mess : TLMessage;
-   Status : GBoolean;
+  Mess : TLMessage;
 begin
   Result := CallBackDefaultReturn;
 
@@ -1950,19 +1944,14 @@ begin
   end;
 
   Mess.msg := CM_MOUSEENTER;
-  Status := DeliverMessage(Data, Mess) = 0;
+  DeliverMessage(Data, Mess);
 
-  {$ifdef GTK2}
   Result := CallBackDefaultReturn;
-  {$Else}
-  Result := Status;
-  {$endif}
 end;
 
 function gtkLeaveCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
-  Status : GBoolean;
 begin
   Result := CallBackDefaultReturn;
 
@@ -1974,13 +1963,9 @@ begin
   end;
 
   Mess.msg := CM_MOUSELEAVE;
-  Status := DeliverMessage(Data, Mess) = 0;
+  DeliverMessage(Data, Mess);
 
-  {$ifdef GTK2}
   Result := CallBackDefaultReturn;
-  {$Else}
-  Result := Status;
-  {$endif}
 end;
 
 function gtkMoveCursorCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
@@ -2979,6 +2964,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.266  2005/02/17 00:05:25  mattias
+  fixed some gtk2 intf warnings
+
   Revision 1.265  2005/02/16 23:56:51  mattias
   fixed some gtk2 intf mem leaks, clean ups
 

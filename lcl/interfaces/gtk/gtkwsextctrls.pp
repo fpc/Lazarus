@@ -310,7 +310,9 @@ function TGtkWSCustomNotebook.GetNotebookMinTabHeight(
 var
   NBWidget: PGTKWidget;
   BorderWidth: Integer;
+  {$IFDEF Gtk1}
   Requisition: TGtkRequisition;
+  {$ENDIF}
   Page: PGtkNotebookPage;
 begin
   Result:=inherited GetNotebookMinTabHeight(AWinControl);
@@ -338,9 +340,11 @@ begin
     Page:=PGtkNoteBook(NBWidget)^.cur_page;
 
   Result:=BorderWidth;
-{$IFDEF GTK2}
-  {$WARNING TODO}
-{$ELSE GTK2}
+  {$IFDEF GTK2}
+  if (Page<>nil) then begin
+    debugln('TGtkWSCustomNotebook.RemovePage TODO');
+  end;
+  {$ELSE GTK2}
   if (NBWidget^.thestyle<>nil) and (PGtkStyle(NBWidget^.thestyle)^.klass<>nil) then
     inc(Result,PGtkStyle(NBWidget^.thestyle)^.klass^.ythickness);
   if (Page<>nil) and (Page^.child<>nil) then begin
@@ -350,9 +354,9 @@ begin
       ' ',GetWidgetDebugReport(Page^.child),' Requisition=',dbgs(Requisition.height));
     inc(Result,Page^.child^.allocation.height);
   end;
+  {$ENDIF GTK2}
   debugln('TGtkWSCustomNotebook.GetNotebookMinTabHeight END ',dbgs(Result),' ',
     GetWidgetDebugReport(NBWidget));
-{$ENDIF GTK2}
 end;
 
 function TGtkWSCustomNotebook.GetNotebookMinTabWidth(
