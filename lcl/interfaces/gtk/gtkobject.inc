@@ -6276,8 +6276,10 @@ begin
   gtk_widget_show(ClientWidget);
   SetFixedWidget(Result,ClientWidget);
   SetMainWidget(Result,ClientWidget);
+  {$IFDEF GTK1}
   gtk_toolbar_set_space_size(PGTKToolbar(Result),0);
   gtk_toolbar_set_space_style(PGTKToolbar(Result),GTK_TOOLBAR_SPACE_EMPTY);
+  {$ENDIF GTK1}
   {$ENDIF}
   gtk_widget_show(Result);
 end;
@@ -9211,6 +9213,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.517  2004/07/30 14:20:29  mazen
+  - space style and space size are not set by program in GTK2 but by theme
+
   Revision 1.516  2004/07/23 16:44:27  mattias
   activated new TToolbar, old can be activated with -dOldToolBar
 
