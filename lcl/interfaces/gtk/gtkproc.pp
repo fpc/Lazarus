@@ -337,6 +337,7 @@ type
   end;
 
 procedure InitKeyboardTables;
+procedure DoneKeyboardTables;
 function CharToVKandFlags(const AChar: Char): Word;
 function GetVKeyInfo(const AVKey: Byte): TVKeyInfo;
 function IsToggleKey(const AVKey: Byte): Boolean;
@@ -741,5 +742,7 @@ finalization
 
   GdkTrapCalls := 0;
   EndGDKErrorTrap;
+  
+  DoneKeyboardTables;
 end.
 

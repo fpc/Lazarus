@@ -1940,6 +1940,40 @@ end;
 {$ENDIF}
 
 {------------------------------------------------------------------------------
+  Procedure: DoneKeyboardTables
+  Params:    none
+  Returns:   none
+
+  Frees the dynamic keyboard tables
+ ------------------------------------------------------------------------------}
+procedure DoneKeyboardTables;
+var
+  n1, n2, n3: Byte;
+  K1: PVKeyArray1;
+  K2: PVKeyArray2;
+  K3: PVKeyArray3;
+begin
+  for n3 := 0 to 255 do
+  begin
+    K3 := MKeySymToVK[n3];
+    if K3 = nil then Continue;
+    for n2 := 0 to 255 do
+    begin
+      K2 := K3^[n2];
+      if K2 = nil then Continue;
+      for n1 := 0 to 255 do
+      begin
+        K1 := K2^[n1];
+        if K1 = nil then Continue;
+        Dispose(K1);
+      end;
+      Dispose(K2);
+    end;
+    Dispose(K3);
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Function:  CharToVKandFlags
   Params:    AChar: A character to translate
   Returns:   LoByte: The VK code
@@ -5484,6 +5518,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.222  2003/10/24 21:28:16  marc
+  Added cleanup code for keyboard tables
+
   Revision 1.221  2003/10/22 20:37:31  ajgenius
   fix accel group test to remove GTK2 warnings
 
