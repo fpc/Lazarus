@@ -162,13 +162,20 @@ end;
   Returns the DC offset for the DC Origin.
  ------------------------------------------------------------------------------}
 function GetDCOffset(DC: PDeviceContext): TPoint;
+var
+  Adjustment: PGtkAdjustment;
 begin
   if (DC<>nil) then begin
     Result:=DC^.Origin;
     if (DC^.SpecialOrigin) and (DC^.hWnd<>0) then begin
       if GtkWidgetIsA(PGtkWidget(DC^.hWnd),GTK_LAYOUT_GET_TYPE) then begin
-        // ToDo: add code to offset scrolled left, top
-        
+        // ToDo: add comment
+        Adjustment:=gtk_layout_get_hadjustment(PGtkLayout(DC^.hWnd));
+        if Adjustment<>nil then
+          dec(Result.X,Trunc(Adjustment^.Value));
+        Adjustment:=gtk_layout_get_vadjustment(PGtkLayout(DC^.hWnd));
+        if Adjustment<>nil then
+          dec(Result.Y,Trunc(Adjustment^.Value));
       end;
     end;
   end else begin
@@ -2757,6 +2764,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.91  2002/09/06 16:46:17  lazarus
+  MG: improved GetDCOffset
+
   Revision 1.90  2002/09/06 16:38:25  lazarus
   MG: added GetDCOffset
 
