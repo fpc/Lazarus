@@ -186,6 +186,8 @@ begin
     OutputLine:=OutputLine+copy(Buf,LineStart,Count-LineStart+1);
   until Count=0;
   TheProcess.WaitOnExit;
+  if TheProcess.ExitStatus<>0 then
+    ErrorExists:=true;
   if ErrorExists and (ofoExceptionOnError in Options) then
     raise EOutputFilterError.Create('there was an error');
 end;
@@ -227,50 +229,107 @@ var i, j, FilenameEndPos: integer;
   CurCompHistory: string;
   CurFilenameLen: Integer;
   CurCompHistLen: Integer;
+  
+  function CheckForCompilingState: boolean;
+  begin
+    Result:=false;
+    if ('Compiling '=copy(s,1,length('Compiling '))) then begin
+      // for example 'Compiling ./subdir/unit1.pas'
+      fLastMessageType:=omtFPC;
+      fLastErrorType:=etNone;
+      Result:=true;
+      // add path to history
+      if fCompilingHistory=nil then fCompilingHistory:=TStringList.Create;
+      i:=length('Compiling ');
+      if (length(s)>=i+2) and (s[i+1]='.') and (s[i+2]=PathDelim) then
+        inc(i,2);
+      Filename:=TrimFilename(copy(s,i+1,length(s)-i));
+      fCompilingHistory.Add(Filename);
+    end;
+  end;
+  
+  function CheckForAssemblingState: boolean;
+  begin
+    Result:=false;
+    if ('Assembling '=copy(s,1,length('Assembling ')))
+    then begin
+      fLastMessageType:=omtFPC;
+      fLastErrorType:=etNone;
+      Result:=true;
+    end;
+  end;
+  
+  function CheckForUrgentMessages: boolean;
+  begin
+    Result:=false;
+    if ('Fatal: '=copy(s,1,length('Fatal: ')))
+    or ('Panic'=copy(s,1,length('Panic')))
+    or ('Closing script ppas.sh'=s)
+    then begin
+      // always show fatal, panic and linker errors
+      fLastMessageType:=omtFPC;
+      if ('Panic'=copy(s,1,length('Panic'))) then
+        fLastErrorType:=etPanic
+      else if ('Fatal: '=copy(s,1,length('Fatal: '))) then
+        fLastErrorType:=etFatal
+      else if ('Closing script ppas.sh'=s) then begin
+        // linker error
+        fLastMessageType:=omtLinker;
+        fLastErrorType:=etFatal;
+      end;
+      DoAddFilteredLine(s);
+      if (ofoExceptionOnError in Options) then
+        raise EOutputFilterError.Create(s);
+      Result:=true;
+      exit;
+    end;
+  end;
+  
+  function CheckForNumber(const Str: string; var p: integer): boolean;
+  var
+    OldP: Integer;
+  begin
+    OldP:=p;
+    while (p<=length(Str)) and (Str[p] in ['0'..'9']) do inc(p);
+    Result:=OldP<>p;
+  end;
+  
+  function CheckForChar(const Str: string; var p: integer; c: char): boolean;
+  begin
+    Result:=(p<=length(Str)) and (Str[p]=c);
+    if Result then inc(p);
+  end;
+
+  function CheckForLineProgress: boolean;
+  var
+    p: Integer;
+  begin
+    Result:=false;
+    p:=1;
+    if not CheckForNumber(s,p) then exit;
+    if not CheckForChar(s,p,' ') then exit;
+    if not CheckForNumber(s,p) then exit;
+    if not CheckForChar(s,p,'/') then exit;
+    if not CheckForNumber(s,p) then exit;
+    if not CheckForChar(s,p,' ') then exit;
+    Result:=true;
+  end;
+  
 begin
   Result:=false;
-  if ('Compiling '=copy(s,1,length('Compiling '))) then begin
-    // for example 'Compiling ./subdir/unit1.pas'
-    fLastMessageType:=omtFPC;
-    fLastErrorType:=etNone;
-    Result:=true;
-    // add path to history
-    if fCompilingHistory=nil then fCompilingHistory:=TStringList.Create;
-    i:=length('Compiling ');
-    if (length(s)>=i+2) and (s[i+1]='.') and (s[i+2]=PathDelim) then
-      inc(i,2);
-    Filename:=TrimFilename(copy(s,i+1,length(s)-i));
-    fCompilingHistory.Add(Filename);
-    exit;
-  end;
-  if ('Assembling '=copy(s,1,length('Assembling ')))
-  then begin
-    fLastMessageType:=omtFPC;
-    fLastErrorType:=etNone;
-    Result:=true;
-    exit;
-  end;
-  if ('Fatal: '=copy(s,1,length('Fatal: ')))
-  or ('Panic'=copy(s,1,length('Panic')))
-  or ('Closing script ppas.sh'=s)
-  then begin
-    // always show fatal, panic and linker errors
-    fLastMessageType:=omtFPC;
-    if ('Panic'=copy(s,1,length('Panic'))) then
-      fLastErrorType:=etPanic
-    else if ('Fatal: '=copy(s,1,length('Fatal: '))) then
-      fLastErrorType:=etFatal
-    else if ('Closing script ppas.sh'=s) then begin
-      // linker error
-      fLastMessageType:=omtLinker;
-      fLastErrorType:=etFatal;
-    end;
-    DoAddFilteredLine(s);
-    if (ofoExceptionOnError in Options) then
-      raise EOutputFilterError.Create(s);
-    Result:=true;
-    exit;
-  end;
+  if s='' then exit;
+  // check for 'Compiling <filename>'
+  Result:=CheckForCompilingState;
+  if Result then exit;
+  // check for 'Assembling <filename>'
+  Result:=CheckForAssemblingState;
+  if Result then exit;
+  // check for 'Fatal: ', 'Panic: ', 'Closing script ppas.sh'
+  Result:=CheckForUrgentMessages;
+  if Result then exit;
+  // check for '<line> <kb>/<kb> Kb Free'
+  Result:=CheckForLineProgress;
+  if Result then exit;
   // search for round bracket open
   i:=1;
   while (i<=length(s)) and (s[i]<>'(') do inc(i);

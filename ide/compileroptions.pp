@@ -127,6 +127,18 @@ type
     ccloNoLinkerOpts  // exclude linker options
     );
   TCompilerCmdLineOptions = set of TCompilerCmdLineOption;
+  
+  TCompilationTool = class
+  public
+    Command: string;
+    ScanForFPCMessages: boolean;
+    ScanForMakeMessages: boolean;
+    procedure Clear;
+    function IsEqual(Params: TCompilationTool): boolean;
+    procedure Assign(Src: TCompilationTool);
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+  end;
 
   TBaseCompilerOptions = class
   private
@@ -145,13 +157,12 @@ type
     fXMLFile: String;
     xmlconfig: TXMLConfig;
 
-    // Search Paths:
+    // Paths:
     fIncludeFiles: String;
     fLibraries: String;
     fOtherUnitFiles: String;
     FObjectPath: string;
     FSrcPath: string;
-    fCompilerPath: String;
     fUnitOutputDir: string;
     fLCLWidgetType: string;
 
@@ -224,6 +235,13 @@ type
     fAdditionalConfigFile: Boolean;
     fConfigFilePath: String;
     fCustomOptions: string;
+    
+    // Compilation
+    fCompilerPath: String;
+    fSkipCompiler: boolean;
+    fExecuteBefore: TCompilationTool;
+    fExecuteAfter: TCompilationTool;
+
   protected
     procedure SetBaseDirectory(const AValue: string); virtual;
     procedure SetCompilerPath(const AValue: String); virtual;
@@ -293,7 +311,6 @@ type
     property OtherUnitFiles: String read fOtherUnitFiles write SetOtherUnitFiles;
     property ObjectPath: string read FObjectPath write SetObjectPath;
     property SrcPath: string read FSrcPath write SetSrcPath;
-    property CompilerPath: String read fCompilerPath write SetCompilerPath;
     property UnitOutputDirectory: string read fUnitOutputDir write SetUnitOutputDir;
     property LCLWidgetType: string read fLCLWidgetType write fLCLWidgetType;
 
@@ -368,6 +385,12 @@ type
     property AdditionalConfigFile: Boolean read fAdditionalConfigFile write fAdditionalConfigFile;
     property ConfigFilePath: String read fConfigFilePath write fConfigFilePath;
     property CustomOptions: string read fCustomOptions write SetCustomOptions;
+
+    // compilation
+    property CompilerPath: String read fCompilerPath write SetCompilerPath;
+    property SkipCompiler: boolean read fSkipCompiler write fSkipCompiler;
+    property ExecuteBefore: TCompilationTool read fExecuteBefore;
+    property ExecuteAfter: TCompilationTool read fExecuteAfter;
   end;
   
   
@@ -447,10 +470,6 @@ type
     grpLibraries: TGroupBox;
     edtLibraries: TEdit;
     LibrariesPathEditBtn: TPathEditorButton;
-
-    grpCompiler: TGroupBox;
-    edtCompiler: TEdit;
-    btnCompiler: TButton;
 
     grpUnitOutputDir: TGroupBox;
     edtUnitOutputDir: TEdit;
@@ -568,6 +587,26 @@ type
     InhTreeView: TTreeView;
     InhItemMemo: TMemo;
 
+    { Compilation }
+    CompilationPage: TPage;
+    
+    ExecuteBeforeGroupBox: TGroupBox;
+    ExecuteBeforeCommandLabel: TLabel;
+    ExecuteBeforeCommandEdit: TEdit;
+    ExecuteBeforeScanFPCCheckBox: TCheckBox;
+    ExecuteBeforeScanMakeCheckBox: TCheckBox;
+
+    grpCompiler: TGroupBox;
+    edtCompiler: TEdit;
+    btnCompiler: TButton;
+    chkSkipCompiler: TCheckBox;
+
+    ExecuteAfterGroupBox: TGroupBox;
+    ExecuteAfterCommandLabel: TLabel;
+    ExecuteAfterCommandEdit: TEdit;
+    ExecuteAfterScanFPCCheckBox: TCheckBox;
+    ExecuteAfterScanMakeCheckBox: TCheckBox;
+
     { Buttons }
     btnTest: TButton;
     btnOK: TButton;
@@ -579,6 +618,8 @@ type
     procedure ButtonCancelClicked(Sender: TObject);
     procedure ButtonApplyClicked(Sender: TObject);
     procedure ButtonTestClicked(Sender: TObject);
+    procedure ExecuteAfterGroupBoxResize(Sender: TObject);
+    procedure ExecuteBeforeGroupBoxResize(Sender: TObject);
     procedure FileBrowseBtnClick(Sender: TObject);
     procedure InhTreeViewSelectionChanged(Sender: TObject);
     procedure InheritedPageResize(Sender: TObject);
@@ -596,6 +637,7 @@ type
     procedure SetupMessagesTab(Page: integer);
     procedure SetupOtherTab(Page: integer);
     procedure SetupInheritedTab(Page: integer);
+    procedure SetupCompilationTab(Page: integer);
     procedure SetupButtonBar;
   private
     FReadOnly: boolean;
@@ -871,6 +913,8 @@ begin
   inherited Create;
   fOwner:=TheOwner;
   FParsedOpts:=TParsedCompilerOptions.Create;
+  fExecuteBefore:=TCompilationTool.Create;
+  fExecuteAfter:=TCompilationTool.Create;
   Clear;
 end;
 
@@ -879,6 +923,8 @@ end;
 ------------------------------------------------------------------------------}
 destructor TBaseCompilerOptions.Destroy;
 begin
+  FreeThenNil(fExecuteBefore);
+  FreeThenNil(fExecuteAfter);
   FreeThenNil(FParsedOpts);
   inherited Destroy;
 end;
@@ -1034,7 +1080,6 @@ begin
   IncludeFiles := XMLConfigFile.GetValue(p+'IncludeFiles/Value', '');
   Libraries := XMLConfigFile.GetValue(p+'Libraries/Value', '');
   OtherUnitFiles := XMLConfigFile.GetValue(p+'OtherUnitFiles/Value', '');
-  CompilerPath := XMLConfigFile.GetValue(p+'CompilerPath/Value', '$(CompPath)');
   UnitOutputDirectory := XMLConfigFile.GetValue(p+'UnitOutputDirectory/Value', '');
   LCLWidgetType := XMLConfigFile.GetValue(p+'LCLWidgetType/Value', 'gtk');
   ObjectPath := XMLConfigFile.GetValue(p+'ObjectPath/Value', '');
@@ -1112,6 +1157,12 @@ begin
   AdditionalConfigFile := XMLConfigFile.GetValue(p+'ConfigFile/AdditionalConfigFile/Value', false);
   ConfigFilePath := XMLConfigFile.GetValue(p+'ConfigFile/ConfigFilePath/Value', './fpc.cfg');
   CustomOptions := XMLConfigFile.GetValue(p+'CustomOptions/Value', '');
+
+  { Compilation }
+  CompilerPath := XMLConfigFile.GetValue(p+'CompilerPath/Value','$(CompPath)');
+  fSkipCompiler := XMLConfigFile.GetValue(p+'SkipCompiler/Value',false);
+  ExecuteBefore.LoadFromXMLConfig(XMLConfig,p+'ExecuteBefore/');
+  ExecuteAfter.LoadFromXMLConfig(XMLConfig,p+'ExecuteAfter/');
 end;
 
 {------------------------------------------------------------------------------}
@@ -1163,7 +1214,6 @@ begin
   XMLConfigFile.SetDeleteValue(p+'IncludeFiles/Value', IncludeFiles,'');
   XMLConfigFile.SetDeleteValue(p+'Libraries/Value', Libraries,'');
   XMLConfigFile.SetDeleteValue(p+'OtherUnitFiles/Value', OtherUnitFiles,'');
-  XMLConfigFile.SetDeleteValue(p+'CompilerPath/Value', CompilerPath,'');
   XMLConfigFile.SetDeleteValue(p+'UnitOutputDirectory/Value', UnitOutputDirectory,'');
   XMLConfigFile.SetDeleteValue(p+'LCLWidgetType/Value', LCLWidgetType,'');
   XMLConfigFile.SetDeleteValue(p+'ObjectPath/Value', ObjectPath,'');
@@ -1242,6 +1292,13 @@ begin
   XMLConfigFile.SetDeleteValue(p+'ConfigFile/ConfigFilePath/Value', ConfigFilePath,'./fpc.cfg');
   XMLConfigFile.SetDeleteValue(p+'CustomOptions/Value', CustomOptions,'');
 
+  { Compilation }
+  XMLConfigFile.SetDeleteValue(p+'CompilerPath/Value', CompilerPath,'');
+  XMLConfigFile.SetDeleteValue(p+'SkipCompiler/Value',fSkipCompiler,false);
+  ExecuteBefore.SaveToXMLConfig(XMLConfig,p+'ExecuteBefore/');
+  ExecuteAfter.SaveToXMLConfig(XMLConfig,p+'ExecuteAfter/');
+
+  // write
   XMLConfigFile.Flush;
 end;
 
@@ -1976,7 +2033,6 @@ begin
   IncludeFiles := '';
   Libraries := '';
   OtherUnitFiles := '';
-  CompilerPath := '$(CompPath)';
   UnitOutputDirectory := '';
   ObjectPath:='';
   SrcPath:='';
@@ -2050,6 +2106,12 @@ begin
   
   // inherited
   ClearInheritedOptions;
+
+  // compilation
+  CompilerPath := '$(CompPath)';
+  SkipCompiler:=false;
+  fExecuteBefore.Clear;
+  fExecuteAfter.Clear;
 end;
 
 procedure TBaseCompilerOptions.Assign(CompOpts: TBaseCompilerOptions);
@@ -2061,7 +2123,6 @@ begin
   IncludeFiles := CompOpts.fIncludeFiles;
   Libraries := CompOpts.fLibraries;
   OtherUnitFiles := CompOpts.fOtherUnitFiles;
-  CompilerPath := CompOpts.fCompilerPath;
   UnitOutputDirectory := CompOpts.fUnitOutputDir;
   fLCLWidgetType := CompOpts.fLCLWidgetType;
   ObjectPath := CompOpts.FObjectPath;
@@ -2134,6 +2195,12 @@ begin
   fAdditionalConfigFile := CompOpts.fAdditionalConfigFile;
   fConfigFilePath := CompOpts.fConfigFilePath;
   CustomOptions := CompOpts.fCustomOptions;
+
+  // compilation
+  CompilerPath := CompOpts.fCompilerPath;
+  fSkipCompiler:= CompOpts.fSkipCompiler;
+  ExecuteBefore.Assign(CompOpts.ExecuteBefore);
+  ExecuteAfter.Assign(CompOpts.ExecuteAfter);
 end;
 
 function TBaseCompilerOptions.IsEqual(CompOpts: TBaseCompilerOptions): boolean;
@@ -2143,7 +2210,6 @@ begin
         (fIncludeFiles = CompOpts.fIncludeFiles)
     and (fLibraries = CompOpts.fLibraries)
     and (fOtherUnitFiles = CompOpts.fOtherUnitFiles)
-    and (fCompilerPath = CompOpts.fCompilerPath)
     and (fUnitOutputDir = CompOpts.fUnitOutputDir)
     and (FObjectPath = CompOpts.FObjectPath)
     and (FSrcPath = CompOpts.FSrcPath)
@@ -2217,6 +2283,12 @@ begin
     and (fConfigFilePath = CompOpts.fConfigFilePath)
     and (fStopAfterErrCount = CompOpts.fStopAfterErrCount)
     and (fCustomOptions = CompOpts.fCustomOptions)
+
+    // compilation
+    and (fCompilerPath = CompOpts.fCompilerPath)
+    and (fSkipCompiler = CompOpts.fSkipCompiler)
+    and ExecuteBefore.IsEqual(CompOpts.ExecuteBefore)
+    and ExecuteAfter.IsEqual(CompOpts.ExecuteAfter)
     ;
 end;
 
@@ -2272,6 +2344,7 @@ begin
     Add(dlgCOMessages);
     Add(dlgCOOther);
     Add(dlgCOInherited);
+    Add(dlgCOCompilation);
   end;
   nbMain.PageIndex:=0;
 
@@ -2303,6 +2376,10 @@ begin
 
   { Inherited Tab }
   SetupInheritedTab(Page);
+  inc(Page);
+
+  { Compilation Tab }
+  SetupCompilationTab(Page);
   inc(Page);
 
   { Bottom Buttons }
@@ -2385,6 +2462,60 @@ begin
     [mbOk],0);
 end;
 
+procedure TfrmCompilerOptions.ExecuteAfterGroupBoxResize(Sender: TObject);
+var
+  x: Integer;
+  y: Integer;
+  w: Integer;
+begin
+  x:=5;
+  y:=2;
+  w:=ExecuteAfterGroupBox.ClientWidth-2*x;
+
+  with ExecuteAfterCommandLabel do
+    SetBounds(x,y+3,90,Height);
+
+  with ExecuteAfterCommandEdit do begin
+    SetBounds(x+90,y,w-x-90,Height);
+    inc(y,Height+5);
+  end;
+
+  with ExecuteAfterScanFPCCheckBox do begin
+    SetBounds(x,y,w,Height);
+    inc(y,Height+5);
+  end;
+
+  with ExecuteAfterScanMakeCheckBox do
+    SetBounds(x,y,w,Height);
+end;
+
+procedure TfrmCompilerOptions.ExecuteBeforeGroupBoxResize(Sender: TObject);
+var
+  x: Integer;
+  y: Integer;
+  w: Integer;
+begin
+  x:=5;
+  y:=2;
+  w:=ExecuteBeforeGroupBox.ClientWidth-2*x;
+  
+  with ExecuteBeforeCommandLabel do
+    SetBounds(x,y+3,90,Height);
+
+  with ExecuteBeforeCommandEdit do begin
+    SetBounds(x+90,y,w-x-90,Height);
+    inc(y,Height+5);
+  end;
+
+  with ExecuteBeforeScanFPCCheckBox do begin
+    SetBounds(x,y,w,Height);
+    inc(y,Height+5);
+  end;
+
+  with ExecuteBeforeScanMakeCheckBox do
+    SetBounds(x,y,w,Height);
+end;
+
 procedure TfrmCompilerOptions.FileBrowseBtnClick(Sender: TObject);
 var
   OpenDialog: TOpenDialog;
@@ -2463,6 +2594,23 @@ begin
   EnabledLinkerOpts:=CompilerOpts.NeedsLinkerOpts;
   
   { Get the compiler options and apply them to the dialog }
+
+  // paths
+  edtOtherUnits.Text := CompilerOpts.OtherUnitFiles;
+  edtIncludeFiles.Text := CompilerOpts.IncludeFiles;
+  edtLibraries.Text := CompilerOpts.Libraries;
+  grpLibraries.Enabled:=EnabledLinkerOpts;
+  edtOtherSources.Text := CompilerOpts.SrcPath;
+  edtUnitOutputDir.Text := CompilerOpts.UnitOutputDirectory;
+
+  i:=LCLWidgetTypeRadioGroup.Items.IndexOf(CompilerOpts.LCLWidgetType);
+  if i<0 then i:=0;
+  LCLWidgetTypeRadioGroup.ItemIndex:=i;
+  i:=TargetOSRadioGroup.Items.IndexOf(CompilerOpts.TargetOS);
+  if i<0 then i:=0;
+  TargetOSRadioGroup.ItemIndex:=i;
+
+  // parsing
   case CompilerOpts.Style of
       1: radStyleIntel.Checked := true;
       2: radStyleATT.Checked := true;
@@ -2482,6 +2630,7 @@ begin
   chkSymUseAnsiStrings.Checked := CompilerOpts.UseAnsiStrings;
   chkSymGPCCompat.Checked := CompilerOpts.GPCCompat;
 
+  // code generation
   grpUnitStyle.ItemIndex:=CompilerOpts.UnitStyle;
 
   chkChecksIO.Checked := CompilerOpts.IOChecks;
@@ -2512,6 +2661,7 @@ begin
     3: radOptLevel3.Checked := true;
   end;
 
+  // linking
   chkDebugGDB.Checked := CompilerOpts.GenerateDebugInfo;
   chkDebugDBX.Checked := CompilerOpts.GenerateDebugDBX;
   chkUseLineInfoUnit.Checked := CompilerOpts.UseLineInfoUnit;
@@ -2531,6 +2681,7 @@ begin
   edtOptionsLinkOpt.Text := CompilerOpts.LinkerOptions;
   grpOptions.Enabled:=EnabledLinkerOpts;
 
+  // messages
   chkErrors.Checked := CompilerOpts.ShowErrors;
   chkWarnings.Checked := CompilerOpts.ShowWarn;
   chkNotes.Checked := CompilerOpts.ShowNotes;
@@ -2551,6 +2702,7 @@ begin
 
   chkFPCLogo.Checked := CompilerOpts.WriteFPCLogo;
 
+  // other
   chkConfigFile.Checked := not CompilerOpts.DontUseConfigFile;
   chkAdditionalConfigFile.Checked := CompilerOpts.AdditionalConfigFile;
   edtConfigPath.Enabled := chkAdditionalConfigFile.Checked;
@@ -2558,24 +2710,23 @@ begin
   memCustomOptions.Text := CompilerOpts.CustomOptions;
   
   edtErrorCnt.Text := IntToStr(CompilerOpts.StopAfterErrCount);
-    
-  edtOtherUnits.Text := CompilerOpts.OtherUnitFiles;
-  edtIncludeFiles.Text := CompilerOpts.IncludeFiles;
-  edtLibraries.Text := CompilerOpts.Libraries;
-  grpLibraries.Enabled:=EnabledLinkerOpts;
-  edtOtherSources.Text := CompilerOpts.SrcPath;
-  edtCompiler.Text := CompilerOpts.CompilerPath;
-  edtUnitOutputDir.Text := CompilerOpts.UnitOutputDirectory;
-  
-  i:=LCLWidgetTypeRadioGroup.Items.IndexOf(CompilerOpts.LCLWidgetType);
-  if i<0 then i:=0;
-  LCLWidgetTypeRadioGroup.ItemIndex:=i;
-  i:=TargetOSRadioGroup.Items.IndexOf(CompilerOpts.TargetOS);
-  if i<0 then i:=0;
-  TargetOSRadioGroup.ItemIndex:=i;
-  
+
   // inherited tab
   UpdateInheritedTab;
+
+  // compilation
+  ExecuteBeforeCommandEdit.Text:=CompilerOpts.ExecuteBefore.Command;
+  ExecuteBeforeScanFPCCheckBox.Checked:=
+                                  CompilerOpts.ExecuteBefore.ScanForFPCMessages;
+  ExecuteBeforeScanMakeCheckBox.Checked:=
+                                 CompilerOpts.ExecuteBefore.ScanForMakeMessages;
+  edtCompiler.Text := CompilerOpts.CompilerPath;
+  chkSkipCompiler.Checked := CompilerOpts.SkipCompiler;
+  ExecuteAfterCommandEdit.Text:=CompilerOpts.ExecuteAfter.Command;
+  ExecuteAfterScanFPCCheckBox.Checked:=
+                                   CompilerOpts.ExecuteAfter.ScanForFPCMessages;
+  ExecuteAfterScanMakeCheckBox.Checked:=
+                                  CompilerOpts.ExecuteAfter.ScanForMakeMessages;
 end;
 
 {------------------------------------------------------------------------------}
@@ -2594,6 +2745,18 @@ begin
   OldCompOpts:=TBaseCompilerOptions.Create(nil);
   OldCompOpts.Assign(CompilerOpts);
 
+  // paths
+  CompilerOpts.IncludeFiles := edtIncludeFiles.Text;
+  CompilerOpts.Libraries := edtLibraries.Text;
+  CompilerOpts.OtherUnitFiles := edtOtherUnits.Text;
+  CompilerOpts.SrcPath := edtOtherSources.Text;
+  CompilerOpts.UnitOutputDirectory := edtUnitOutputDir.Text;
+
+  i:=LCLWidgetTypeRadioGroup.Itemindex;
+  if i<0 then i:=0;
+  CompilerOpts.LCLWidgetType:= LCLWidgetTypeRadioGroup.Items[i];
+
+  // parsing
   if (radStyleIntel.Checked) then
     CompilerOpts.Style := 1
   else if (radStyleATT.Checked) then
@@ -2616,7 +2779,7 @@ begin
   CompilerOpts.UseAnsiStrings := chkSymUseAnsiStrings.Checked;
   CompilerOpts.GPCCompat := chkSymGPCCompat.Checked;
 
-  
+  // code generation
   CompilerOpts.UnitStyle := grpUnitStyle.ItemIndex;
 
   CompilerOpts.IOChecks := chkChecksIO.Checked;
@@ -2658,6 +2821,7 @@ begin
   else
     CompilerOpts.OptimizationLevel := 1;
 
+  // linking
   CompilerOpts.GenerateDebugInfo := chkDebugGDB.Checked;
   CompilerOpts.GenerateDebugDBX := chkDebugDBX.Checked;
   CompilerOpts.UseLineInfoUnit := chkUseLineInfoUnit.Checked;
@@ -2677,6 +2841,7 @@ begin
   else
     CompilerOpts.LinkStyle := 1;
   
+  // messages
   CompilerOpts.ShowErrors := chkErrors.Checked;
   CompilerOpts.ShowWarn := chkWarnings.Checked;
   CompilerOpts.ShowNotes := chkNotes.Checked;
@@ -2696,6 +2861,7 @@ begin
 
   CompilerOpts.WriteFPCLogo := chkFPCLogo.Checked;
 
+  // other
   CompilerOpts.DontUseConfigFile := not chkConfigFile.Checked;
   CompilerOpts.AdditionalConfigFile := chkAdditionalConfigFile.Checked;
   CompilerOpts.ConfigFilePath := edtConfigPath.Text;
@@ -2703,21 +2869,27 @@ begin
   
   CompilerOpts.StopAfterErrCount := StrToIntDef(edtErrorCnt.Text,1);
     
-  CompilerOpts.IncludeFiles := edtIncludeFiles.Text;
-  CompilerOpts.Libraries := edtLibraries.Text;
-  CompilerOpts.OtherUnitFiles := edtOtherUnits.Text;
-  CompilerOpts.SrcPath := edtOtherSources.Text;
-  CompilerOpts.CompilerPath := edtCompiler.Text;
-  CompilerOpts.UnitOutputDirectory := edtUnitOutputDir.Text;
-  
-  i:=LCLWidgetTypeRadioGroup.Itemindex;
-  if i<0 then i:=0;
-  CompilerOpts.LCLWidgetType:= LCLWidgetTypeRadioGroup.Items[i];
 
   i:=TargetOSRadioGroup.Itemindex;
   if i<0 then i:=0;
   CompilerOpts.TargetOS:= TargetOSRadioGroup.Items[i];
-  
+
+  // compilation
+  CompilerOpts.ExecuteBefore.Command := ExecuteBeforeCommandEdit.Text;
+  CompilerOpts.ExecuteBefore.ScanForFPCMessages :=
+                                           ExecuteBeforeScanFPCCheckBox.Checked;
+  CompilerOpts.ExecuteBefore.ScanForMakeMessages :=
+                                          ExecuteBeforeScanMakeCheckBox.Checked;
+  CompilerOpts.CompilerPath := edtCompiler.Text;
+  CompilerOpts.SkipCompiler := chkSkipCompiler.Checked;
+  CompilerOpts.ExecuteAfter.Command := ExecuteAfterCommandEdit.Text;
+  CompilerOpts.ExecuteAfter.ScanForFPCMessages :=
+                                            ExecuteAfterScanFPCCheckBox.Checked;
+  CompilerOpts.ExecuteAfter.ScanForMakeMessages :=
+                                           ExecuteAfterScanMakeCheckBox.Checked;
+
+
+  // check for change and save
   if not OldCompOpts.IsEqual(CompilerOpts) then
     CompilerOpts.Modified:=true;
   OldCompOpts.Free;
@@ -3821,6 +3993,145 @@ begin
   end;
 end;
 
+procedure TfrmCompilerOptions.SetupCompilationTab(Page: integer);
+var
+  y: Integer;
+  x: Integer;
+  w: Integer;
+begin
+  CompilationPage:=nbMain.Page[Page];
+  x:=5;
+  w:=ClientWidth-20;
+  y:=5;
+  
+  {------------------------------------------------------------}
+
+  ExecuteBeforeGroupBox:=TGroupBox.Create(Self);
+  with ExecuteBeforeGroupBox do begin
+    Name:='ExecuteBeforeGroupBox';
+    Parent:=CompilationPage;
+    SetBounds(x,y,w,100);
+    inc(y,Height+10);
+    Caption:=lisCOExecuteBefore;
+    OnResize:=@ExecuteBeforeGroupBoxResize;
+  end;
+  
+  ExecuteBeforeCommandLabel:=TLabel.Create(Self);
+  with ExecuteBeforeCommandLabel do begin
+    Name:='ExecuteBeforeCommandLabel';
+    Parent:=ExecuteBeforeGroupBox;
+    Caption:=lisCOCommand;
+  end;
+
+  ExecuteBeforeCommandEdit:=TEdit.Create(Self);
+  with ExecuteBeforeCommandEdit do begin
+    Name:='ExecuteBeforeCommandEdit';
+    Parent:=ExecuteBeforeGroupBox;
+    Text:='';
+  end;
+
+  ExecuteBeforeScanFPCCheckBox:=TCheckBox.Create(Self);
+  with ExecuteBeforeScanFPCCheckBox do begin
+    Name:='ExecuteBeforeScanFPCCheckBox';
+    Parent:=ExecuteBeforeGroupBox;
+    Caption:=lisCOScanForFPCMessages;
+  end;
+
+  ExecuteBeforeScanMakeCheckBox:=TCheckBox.Create(Self);
+  with ExecuteBeforeScanMakeCheckBox do begin
+    Name:='ExecuteBeforeScanMakeCheckBox';
+    Parent:=ExecuteBeforeGroupBox;
+    Caption:=lisCOScanForMakeMessages;
+  end;
+
+  {------------------------------------------------------------}
+
+  grpCompiler := TGroupBox.Create(Self);
+  with grpCompiler do
+  begin
+    Parent := CompilationPage;
+    Top := y;
+    Left := x;
+    Width := w;
+    Height := 70;
+    Caption := dlgToFPCPath;
+    inc(y,Height+10);
+  end;
+
+  edtCompiler := TEdit.Create(grpCompiler);
+  with edtCompiler do
+  begin
+    Parent := grpCompiler;
+    Left := 2;
+    Top := 2;
+    Width := Parent.ClientWidth-Left-37;
+    Text := '';
+  end;
+
+  btnCompiler:=TButton.Create(Self);
+  with btnCompiler do begin
+    Name:='btnCompiler';
+    Parent:=grpCompiler;
+    Left:=edtCompiler.Left+edtCompiler.Width+3;
+    Top:=edtCompiler.Top;
+    Width:=25;
+    Height:=edtCompiler.Height;
+    Caption:='...';
+    OnClick:=@FileBrowseBtnClick;
+  end;
+  
+  chkSkipCompiler:=TCheckBox.Create(Self);
+  with chkSkipCompiler do begin
+    Name:='chkSkipCompiler';
+    Parent:=grpCompiler;
+    Left:=5;
+    Top:=27;
+    Width:=Parent.ClientWidth-2*Left;
+    Caption:=lisCOSkipCallingCompiler;
+  end;
+
+  {------------------------------------------------------------}
+
+  ExecuteAfterGroupBox:=TGroupBox.Create(Self);
+  with ExecuteAfterGroupBox do begin
+    Name:='ExecuteAfterGroupBox';
+    Parent:=CompilationPage;
+    SetBounds(x,y,w,100);
+    inc(y,Height+10);
+    Caption:=lisCOExecuteAfter;
+    OnResize:=@ExecuteAfterGroupBoxResize;
+  end;
+
+  ExecuteAfterCommandLabel:=TLabel.Create(Self);
+  with ExecuteAfterCommandLabel do begin
+    Name:='ExecuteAfterCommandLabel';
+    Parent:=ExecuteAfterGroupBox;
+    Caption:=lisCOCommand;
+  end;
+
+  ExecuteAfterCommandEdit:=TEdit.Create(Self);
+  with ExecuteAfterCommandEdit do begin
+    Name:='ExecuteAfterCommandEdit';
+    Parent:=ExecuteAfterGroupBox;
+    Text:='';
+  end;
+
+  ExecuteAfterScanFPCCheckBox:=TCheckBox.Create(Self);
+  with ExecuteAfterScanFPCCheckBox do begin
+    Name:='ExecuteAfterScanFPCCheckBox';
+    Parent:=ExecuteAfterGroupBox;
+    Caption:=lisCOScanForFPCMessages;
+  end;
+
+  ExecuteAfterScanMakeCheckBox:=TCheckBox.Create(Self);
+  with ExecuteAfterScanMakeCheckBox do begin
+    Name:='ExecuteAfterScanMakeCheckBox';
+    Parent:=ExecuteAfterGroupBox;
+    Caption:=lisCOScanForMakeMessages;
+  end;
+
+end;
+
 {------------------------------------------------------------------------------
   TfrmCompilerOptions SetupSearchPathsTab
 ------------------------------------------------------------------------------}
@@ -3842,6 +4153,7 @@ begin
     Width := Self.ClientWidth-28;
     Height := 45;
     Caption := dlgOtherUnitFiles ;
+    inc(y,Height+5);
   end;
 
   edtOtherUnits := TEdit.Create(grpOtherUnits);
@@ -3867,6 +4179,7 @@ begin
     OnExecuted:=@PathEditBtnExecuted;
   end;
   
+
   {------------------------------------------------------------}
   
   grpIncludeFiles := TGroupBox.Create(Self);
@@ -3874,10 +4187,11 @@ begin
   begin
     Parent := PathPage;
     Left := grpOtherUnits.Left;
-    Top := grpOtherUnits.Top+grpOtherUnits.Height+5;
+    Top := y;
     Width := grpOtherUnits.Width;
     Height := grpOtherUnits.Height;
     Caption := dlgCOIncFiles ;
+    inc(y,Height+5);
   end;
 
   edtIncludeFiles := TEdit.Create(grpIncludeFiles);
@@ -3909,11 +4223,12 @@ begin
   with grpOtherSources do
   begin
     Parent := PathPage;
-    Top := grpIncludeFiles.Top+grpIncludeFiles.Height+5;
+    Top := y;
     Left := grpOtherUnits.Left;
     Width := grpOtherUnits.Width;
     Height := grpOtherUnits.Height;
     Caption := dlgCOSources ;
+    inc(y,Height+5);
   end;
 
   edtOtherSources := TEdit.Create(grpIncludeFiles);
@@ -3945,11 +4260,12 @@ begin
   with grpLibraries do
   begin
     Parent := PathPage;
-    Top := grpOtherSources.Top + grpOtherSources.Height + 5;
+    Top := y;
     Left := grpOtherUnits.Left;
     Width := grpOtherUnits.Width;
     Height := grpOtherUnits.Height;
     Caption := dlgCOLibraries ;
+    inc(y,Height+5);
   end;
 
   edtLibraries := TEdit.Create(grpLibraries);
@@ -3977,50 +4293,16 @@ begin
 
   {------------------------------------------------------------}
 
-  grpCompiler := TGroupBox.Create(Self);
-  with grpCompiler do
-  begin
-    Parent := PathPage;
-    Top := grpLibraries.Top + grpLibraries.Height + 5;
-    Left := grpOtherUnits.Left;
-    Width := grpOtherUnits.Width;
-    Height := grpOtherUnits.Height;
-    Caption := dlgToFPCPath ;
-  end;
-
-  edtCompiler := TEdit.Create(grpCompiler);
-  with edtCompiler do
-  begin
-    Parent := grpCompiler;
-    Left := edtOtherUnits.Left;
-    Top := edtOtherUnits.Top;
-    Width := Parent.ClientWidth-Left-37;
-    Text := '';
-  end;
-  
-  btnCompiler:=TButton.Create(Self);
-  with btnCompiler do begin
-    Name:='btnCompiler';
-    Parent:=grpCompiler;
-    Left:=edtCompiler.Left+edtCompiler.Width+3;
-    Top:=edtCompiler.Top;
-    Width:=25;
-    Height:=edtCompiler.Height;
-    Caption:='...';
-    OnClick:=@FileBrowseBtnClick;
-  end;
-
-  {------------------------------------------------------------}
-
   grpUnitOutputDir := TGroupBox.Create(Self);
   with grpUnitOutputDir do
   begin
     Parent := PathPage;
-    Top := grpCompiler.Top + grpCompiler.Height + 5;
+    Top := y;
     Left := grpOtherUnits.Left;
     Width := grpOtherUnits.Width;
     Height := grpOtherUnits.Height;
     Caption := dlgUnitOutp ;
+    inc(y,Height+5);
   end;
 
   edtUnitOutputDir := TEdit.Create(grpCompiler);
@@ -4052,7 +4334,7 @@ begin
     Name:='LCLWidgetTypeRadioGroup';
     Parent := PathPage;
     Left := grpOtherUnits.Left;
-    Top:=grpUnitOutputDir.Top+grpUnitOutputDir.Height+5;
+    Top:= y;
     Width:=300;
     Height:=45;
     Caption:=dlgLCLWidgetType;
@@ -4433,6 +4715,49 @@ end;
 procedure TCompilerOptions.Clear;
 begin
   inherited Clear;
+end;
+
+{ TCompilationTool }
+
+procedure TCompilationTool.Clear;
+begin
+  Command:='';
+  ScanForFPCMessages:=false;
+  ScanForMakeMessages:=false;
+end;
+
+function TCompilationTool.IsEqual(Params: TCompilationTool
+  ): boolean;
+begin
+  Result:= (Command=Params.Command)
+        and ScanForFPCMessages=Params.ScanForFPCMessages
+        and ScanForMakeMessages=Params.ScanForMakeMessages
+        ;
+end;
+
+procedure TCompilationTool.Assign(Src: TCompilationTool);
+begin
+  Command:=Src.Command;
+  ScanForFPCMessages:=Src.ScanForFPCMessages;
+  ScanForMakeMessages:=Src.ScanForMakeMessages;
+end;
+
+procedure TCompilationTool.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+begin
+  Command:=XMLConfig.GetValue(Path+'Command/Value','');
+  ScanForFPCMessages:=XMLConfig.GetValue(Path+'ScanForFPCMsgs/Value',false);
+  ScanForMakeMessages:=XMLConfig.GetValue(Path+'ScanForMakeMsgs/Value',false);
+end;
+
+procedure TCompilationTool.SaveToXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+begin
+  XMLConfig.SetDeleteValue(Path+'Command/Value',Command,'');
+  XMLConfig.SetDeleteValue(Path+'ScanForFPCMsgs/Value',
+                           ScanForFPCMessages,false);
+  XMLConfig.SetDeleteValue(Path+'ScanForMakeMsgs/Value',
+                           ScanForMakeMessages,false);
 end;
 
 initialization

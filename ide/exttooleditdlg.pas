@@ -62,11 +62,13 @@ type
     FEnvironmentOverrides: TStringList;
     fFilename: string;
     fKey: word;
+    FScanOutput: boolean;
     fScanOutputForFPCMessages: boolean;
     fScanOutputForMakeMessages: boolean;
     fShift: TShiftState;
     fTitle: string;
     fWorkingDirectory: string;
+    procedure SetScanOutput(const AValue: boolean);
   public
     procedure Assign(Source: TExternalToolOptions);
     constructor Create;
@@ -90,6 +92,7 @@ type
     property WorkingDirectory: string
       read fWorkingDirectory write fWorkingDirectory;
     property EnvironmentOverrides: TStringList read FEnvironmentOverrides;
+    property ScanOutput: boolean read FScanOutput write SetScanOutput;
   end;
 
   {
@@ -172,6 +175,12 @@ begin
 end;
 
 { TExternalToolOptions }
+
+procedure TExternalToolOptions.SetScanOutput(const AValue: boolean);
+begin
+  if FScanOutput=AValue then exit;
+  FScanOutput:=AValue;
+end;
 
 procedure TExternalToolOptions.Assign(Source: TExternalToolOptions);
 begin
@@ -262,7 +271,7 @@ end;
 
 function TExternalToolOptions.NeedsOutputFilter: boolean;
 begin
-  Result:=ScanOutputForFPCMessages or ScanOutputForMakeMessages;
+  Result:=ScanOutput or ScanOutputForFPCMessages or ScanOutputForMakeMessages;
 end;
 
 

@@ -402,6 +402,9 @@ type
     function DoShowProjectInspector: TModalResult; virtual; abstract;
 
     function DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult; virtual; abstract;
+    function DoExecuteCompilationTool(Tool: TCompilationTool;
+                                      const WorkingDir, ToolTitle: string
+                                      ): TModalResult; virtual; abstract;
     function DoSaveForBuild: TModalResult; virtual; abstract;
     function DoCheckFilesOnDisk: TModalResult; virtual; abstract;
     function DoPublishModul(Options: TPublishModuleOptions;

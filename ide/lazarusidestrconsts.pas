@@ -744,13 +744,14 @@ resourcestring
   
   // compiler options
   dlgCompilerOptions = 'Compiler Options';
-  dlgSearchPaths = 'Search Paths';
+  dlgSearchPaths = 'Paths';
   dlgCOParsing = 'Parsing';
-  dlgCodeGeneration = 'Code Generation';
+  dlgCodeGeneration = 'Code';
   dlgCOLinking = 'Linking';
   dlgCOMessages = 'Messages';
   dlgCOOther = 'Other';
   dlgCOInherited = 'Inherited';
+  dlgCOCompilation = 'Compilation';
   dlgShowCompilerOptions = 'Show compiler options';
   dlgCOOpts = 'Options: ';
   dlgCOStyle = 'Style:';
@@ -826,6 +827,12 @@ resourcestring
   dlgCOSources = 'Other Sources:  (.pp/.pas files)';
   dlgCOLibraries = 'Libraries:';
   dlgToFPCPath = 'Path To Compiler:';
+  lisCOSkipCallingCompiler = 'Skip calling Compiler';
+  lisCOExecuteAfter = 'Execute after';
+  lisCOExecuteBefore = 'Execute before';
+  lisCOCommand = 'Command:';
+  lisCOScanForFPCMessages = 'Scan for FPC messages';
+  lisCOScanForMakeMessages = 'Scan for Make messages';
   dlgUnitOutp = 'Unit output directory:';
   dlgLCLWidgetType = 'LCL Widget Type';
   dlgButApply = 'Apply';
