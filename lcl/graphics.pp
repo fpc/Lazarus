@@ -494,9 +494,10 @@ type
     procedure DoDeAllocateResources; override;
     procedure DoCopyProps(From: TFPCanvasHelper); override;
     procedure SetFlags(Index: integer; AValue: boolean); override;
+    procedure SetColor(const NewColor: TColor; const NewFPColor: TFPColor); virtual;
     procedure SetName(AValue: string); override;
     procedure SetSize(AValue: integer); override;
-    procedure SetFPColor(AValue: TFPColor); override;
+    procedure SetFPColor(const AValue: TFPColor); override;
     {$ELSE}
     procedure SetName(const AValue: string);
     procedure SetSize(AValue: Integer);
@@ -1874,6 +1875,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.167  2005/01/07 18:40:10  mattias
+  clean up, added GetRGBValues
+
   Revision 1.166  2005/01/07 17:40:59  mattias
   fixed TTabSheet.SetPageControl
 

@@ -984,6 +984,21 @@ begin
   Result := (RGB shr 16) and $ff;
 end;
 
+procedure GetRGBValues(RGB : DWORD; var R, G, B: Byte);
+begin
+  R := RGB and $ff;
+  G := (RGB shr 8) and $ff;
+  B := (RGB shr 16) and $ff;
+end;
+
+procedure GetRGBIntValues(RGB : DWORD; var R, G, B: integer);
+begin
+  R := RGB and $ff;
+  G := (RGB shr 8) and $ff;
+  B := (RGB shr 16) and $ff;
+end;
+
+
 {------------------------------------------------------------------------------
   Function: GetScrollRange
   Params:   Handle, nBar, lpMinPos, lpMaxPos
@@ -1300,6 +1315,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.115  2005/01/07 18:40:10  mattias
+  clean up, added GetRGBValues
+
   Revision 1.114  2004/08/10 22:09:03  mattias
   fixed uninitialised LogFont
 

@@ -5668,20 +5668,20 @@ function TGtkWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices :
   Procedure GetGradientBrush(BeginColor, EndColor : TColorRef; Position,
     TotalSteps : Longint; var GradientBrush : hBrush);
   var
-    R, G, B : Byte;
+    R1, G1, B1 : Integer;
+    R2, G2, B2 : Integer;
     NewBrush : TLogBrush;
   begin
-    R := GetRValue(BeginColor);
-    G := GetGValue(BeginColor);
-    B := GetBValue(BeginColor);
+    GetRGBIntValues(BeginColor,R1,G1,B1);
+    GetRGBIntValues(EndColor,R2,G2,B2);
 
-    R := R + (Position*(GetRValue(EndColor) - R) div TotalSteps);
-    G := G + (Position*(GetGValue(EndColor) - G) div TotalSteps);
-    B := B + (Position*(GetBValue(EndColor) - B) div TotalSteps);
+    R1 := R1 + (Position*(R2 - R1) div TotalSteps);
+    G1 := G1 + (Position*(G2 - G1) div TotalSteps);
+    B1 := B1 + (Position*(B2 - B1) div TotalSteps);
 
     With NewBrush do begin
       lbStyle := BS_SOLID;
-      lbColor := RGB(R,G,B);
+      lbColor := RGB(R1,G1,B1);
     end;
 
     If GradientBrush <> 0 then
@@ -8826,6 +8826,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.383  2005/01/07 18:40:10  mattias
+  clean up, added GetRGBValues
+
   Revision 1.382  2005/01/01 20:17:32  mattias
   implemented gtk GetTextExtentPoint for UTF8
 

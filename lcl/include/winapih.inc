@@ -284,6 +284,8 @@ function UnionRect(var DestRect: TRect; const SrcRect1, SrcRect2: TRect): Boolea
 function GetRValue(RGB : DWORD) : BYTE;
 function GetGValue(RGB : DWORD) : BYTE;
 function GetBValue(RGB : DWORD) : BYTE;
+procedure GetRGBValues(RGB : DWORD; var R, G, B: Byte);
+procedure GetRGBIntValues(RGB : DWORD; var R, G, B: integer);
 
 function RGB(R, G, B : Byte) : TColorRef;
 
@@ -295,6 +297,9 @@ function RGB(R, G, B : Byte) : TColorRef;
 { =============================================================================
 
   $Log$
+  Revision 1.102  2005/01/07 18:40:10  mattias
+  clean up, added GetRGBValues
+
   Revision 1.101  2005/01/01 20:17:30  mattias
   implemented gtk GetTextExtentPoint for UTF8
 

@@ -756,13 +756,13 @@ end;
  ------------------------------------------------------------------------------}
 procedure TFont.SetColor(Value : TColor);
 begin
-  if FColor <> Value
-  then begin
-    FColor := Value;
+  if FColor <> Value then begin
     {$IFDEF UseFPCanvas}
-    inherited SetFPColor(TColorToFPColor(FColor));
-    {$ENDIF}
+    SetColor(Value,FPColorToTColor(Value));
+    {$ELSE}
+    FColor := Value;
     Changed;
+    {$ENDIF}
   end;
 end;
 
@@ -855,6 +855,25 @@ begin
   7: SetStyleFlag(fsUnderline,AValue);
   8: SetStyleFlag(fsStrikeOut,AValue);
   end;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TFont.SetFPColor(const AValue: TFPColor);
+
+  Set FPColor and Color
+ ------------------------------------------------------------------------------}
+procedure TFont.SetFPColor(const AValue: TFPColor);
+begin
+  if FPColor=AValue then exit;
+  SetColor(FPColorToTColor(AValue),AValue);
+end;
+
+procedure TFont.SetColor(const NewColor: TColor; const NewFPColor: TFPColor);
+begin
+  if (NewColor=Color) and (NewFPColor=FPColor) then exit;
+  FColor:=NewColor;
+  inherited SetFPColor(NewFPColor);
+  Changed;
 end;
 {$ENDIF}
 
@@ -1074,6 +1093,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.25  2005/01/07 18:40:10  mattias
+  clean up, added GetRGBValues
+
   Revision 1.24  2005/01/07 17:40:59  mattias
   fixed TTabSheet.SetPageControl
 
