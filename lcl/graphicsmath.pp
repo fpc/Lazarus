@@ -247,50 +247,84 @@ end;
 ------------------------------------------------------------------------------}
 Procedure Arc2Bezier(X, Y, Width, Height : Longint; Angle1, Angle2,
   Rotation : Extended; var Points : TBezier);
+
+  Function Rotate(Point : TFloatPoint; Rotation : Extended) : TFloatPoint;
+  var
+    SinA,CosA : Extended;
+  begin
+    CosA := cos(Rotation);
+    SinA := Sin(Rotation);
+    Result.X := Point.X*CosA + Point.Y*SinA;
+    Result.Y := Point.X*SinA - Point.Y*CosA;
+  end;
+
+  Function Translate(Point : TFloatPoint; Translation : TPoint) : TFloatPoint;
+  begin
+    Result := Point + FloatPoint(Translation.X,Translation.Y);
+  end;
+
+  Function Scale(Point : TFloatPoint; ScaleX, ScaleY : Extended) : TFloatPoint;
+  begin
+    Result := Point*FloatPoint(ScaleX,ScaleY);
+  end;
+
 var
   Beta : Extended;
   P : array[0..3] of TFLoatPoint;
   SinA,CosA : Extended;
-  A,B,Temp : Extended;
+  A,B : Extended;
   I : Longint;
   PT : TPoint;
+  ScaleX, ScaleY : Extended;
 begin
   If ABS(Angle2) > 90*16 then
     exit;
   If Angle2 = 0 then
     exit;
-  Angle1 := Angle1 + Rotation;
-  Beta := 4*(1 - Cos(DegToRad(Angle2/32)))/(3*Sin(DegToRad(Angle2/32)));
+
   B := Height / 2;
   A := Width / 2;
+
+  If A <> B then begin
+    If A > B then begin
+      ScaleX := Width / Height;
+      ScaleY := 1;
+      A := B;
+    end
+    else begin
+      ScaleX := 1;
+      ScaleY := Height / Width;
+      B := A;
+    end;
+  end;  
+
+  Angle1 := DegToRad(Angle1/16);
+  Angle2 := DegToRad(Angle2/16);
+  Rotation := -DegToRad(Rotation/16);
+  Beta := (4/3)*(1 - Cos(Angle2/2))/(Sin(Angle2/2));
   PT := CenterPoint(Rect(X, Y, X+Width, Y + Height));
-  Temp := DegToRad(Angle1/16);
-  CosA := cos(Temp);
-  SinA := sin(Temp);
+
+  CosA := cos(Angle1);
+  SinA := sin(Angle1);
 
   P[0].X := A *CosA;
   P[0].Y := B *SinA;
-  SinA := Beta * A * SinA;
-  CosA := Beta * B * CosA;
-  P[1].X := P[0].X - SinA;
-  P[1].Y := P[0].Y + CosA;
+  P[1].X := P[0].X - Beta * A * SinA;
+  P[1].Y := P[0].Y + Beta * B * CosA;
 
-  Temp := DegToRad((Angle1 + Angle2)/16);
-  CosA := cos(Temp);
-  SinA := sin(Temp);
+  CosA := cos(Angle1 + Angle2);
+  SinA := sin(Angle1 + Angle2);
+
   P[3].X := A *CosA;
   P[3].Y := B *SinA;
-  SinA := Beta * A * SinA;
-  CosA := Beta * B * CosA;
-  P[2].X := P[3].X + SinA;
-  P[2].Y := P[3].Y - CosA;
+  P[2].X := P[3].X + Beta * A * SinA;
+  P[2].Y := P[3].Y - Beta * B * CosA;
 
-  CosA := cos(DegToRad(Rotation/16));
-  SinA := Sin(DegToRad(Rotation/16));
   For I := 0 to 3 do
   begin
-    Points[I].X := P[I].X*CosA - P[I].Y*SinA + PT.X;
-    Points[I].Y := P[I].X*SinA - P[I].Y*CosA + PT.Y;
+    Points[I] := Scale(P[I],ScaleX, ScaleY);
+    Points[I] := Rotate(Points[I], Rotation);
+    Points[I] := Translate(Points[I], PT);
   end;
 end;
 

@@ -80,7 +80,8 @@ type
         GDIPenStyle: Word;
       ); 
       gdiRegion: (
-      ); 
+        GDIRegionObject: PGdkRegion;
+      );
   end;
 
 
@@ -97,6 +98,7 @@ type
     CurrentBrush: PGdiObject;
     CurrentTextColor: TGdkColor;
     CurrentBackColor: TGdkColor;
+    ClipRegion : hRGN;
     SavedContext: PDeviceContext; // linked list of saved DCs
   end;
 
@@ -142,6 +144,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.10  2002/08/15 15:46:49  lazarus
+  MG: added changes from Andrew (Clipping)
+
   Revision 1.9  2002/06/09 14:00:41  lazarus
   MG: fixed persistent caret and implemented Form.BorderStyle=bsNone
 

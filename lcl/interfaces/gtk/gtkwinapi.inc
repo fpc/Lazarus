@@ -214,7 +214,7 @@ end;
   Params:  hndMenu: HMENU; uIDEnableItem: Integer; bChecked: Boolean
   Returns: Nothing
   
-  
+
  ------------------------------------------------------------------------------}
 function TgtkObject.CheckMenuItem(hndMenu: HMENU; uIDEnableItem: Integer;
   bChecked: Boolean): Boolean;
@@ -585,7 +585,7 @@ writeln('  AddTargetEntry ',FormatName);
     TargetEntries[Index].Info:=Index;
     inc(Index);
   end;
-  
+
 type
   TAddedFormats = array[TGtkClipboardFormat] of boolean;
 
@@ -970,7 +970,7 @@ begin
   pNewDC^.CurrentFont := CreateDefaultFont;
   pNewDC^.CurrentBrush := CreateDefaultBrush;
   pNewDC^.CurrentPen := CreateDefaultPen;
-
+  
   Result := HDC(pNewDC);
   Assert(False,Format('trace:  [TgtkObject.CreateCompatibleDC] DC: 0x%x --> 0x%x', [Integer(DC), Integer(Result)]));
 end;
@@ -1017,7 +1017,7 @@ var
     GdiObject^.GDIFontObject := gdk_font_load(PChar(s));
     //writeln('  Trying "',S,'" Success=',GdiObject^.GDIFontObject<>nil);
   end;
-  
+
   procedure LoadDefaultFont;
   begin
     FGDIObjects.Remove(GdiObject);
@@ -1362,6 +1362,71 @@ begin
   Result := HBITMAP(GdiObject);
 end;
 
+Function RegionType(RGN : PGDKRegion) : Longint;
+var
+  aRect : TGDKRectangle;
+  rRGN  : hRGN;
+begin
+  If RGN = nil then
+    Result := ERROR
+  else
+    If gdk_region_empty(RGN) then
+      Result := NULLREGION
+  else begin
+    gdk_region_get_clipbox(RGN,@aRect);
+    With aRect do
+      rRGN := CreateRectRgn(X, Y, X + Width, Y + Height);
+    if gdk_region_equal(PGDIObject(rRGN)^.GDIRegionObject, RGN) then
+      Result := SIMPLEREGION
+    else
+      Result := COMPLEXREGION;
+    DeleteObject(rRGN);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  CreatePolygonRgn
+  Params:  Points, NumPts, Winding
+  Returns: the handle to the region
+
+  Creates a Polygon, a closed many-sided shaped region. The Points parameter is
+  an array of points that give the vertices of the polygon. Winding determines
+  what points are going to be included in the region. When Winding is True,
+  points are selected by using the Winding fill algorithm. When Winding is
+  False, points are selected by using using the even-odd (alternative) fill
+  algorithm. NumPts indicates the number of points to use.
+  The first point is always connected to the last point.
+ ------------------------------------------------------------------------------}
+Function TgtkObject.CreatePolygonRgn(Points: PPoint; NumPts: Integer;
+  Winding : Boolean): HRGN;
+var
+  i: integer;
+  PointArray: PGDKPoint;
+  GObject: PGdiObject;
+  fr : TGDKFillRule;
+begin
+  Result := 0;
+  if NumPts<=0 then exit;
+  GObject := NewGDIObject(gdiRegion);
+
+  GetMem(PointArray,SizeOf(TGdkPoint)*NumPts);
+  for i:=0 to NumPts-1 do begin
+    PointArray[i].x:=Points[i].x;
+    PointArray[i].y:=Points[i].y;
+  end;
+
+  If Winding then
+    fr := GDK_WINDING_RULE
+  else
+    fr := GDK_EVEN_ODD_RULE;
+
+  GObject^.GDIRegionObject := gdk_region_polygon(PointArray, NumPts, fr);
+
+  FreeMem(PointArray);
+
+  Result := HRGN(GObject);
+end;
+
 {------------------------------------------------------------------------------
   Function: CreateRectRgn
   Params:  none
@@ -1370,16 +1435,160 @@ end;
 
  ------------------------------------------------------------------------------}
 function TgtkObject.CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN;
-Begin
-//TODO: CREATERECTRGN in gtkwinapi.inc
-Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!');
-Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!');
-Assert(False, 'Trace:TODO: CREATERECTRGN in gtkwinapi.inc');
-Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!');
-Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!');
+var
+  R : TGDKRectangle;
+  RRGN : PGDKRegion;
+  GObject: PGdiObject;
+begin
+  GObject := NewGDIObject(gdiRegion);
+  R.X := X1;
+  R.Y := Y1;
+  R.Width := X2 - X1;
+  R.Height := Y2 - Y1;
+  RRGN := GDK_Region_New;
+  GObject^.GDIRegionObject := gdk_region_union_with_rect(RRGN,@R);
+  gdk_region_destroy(RRGN);
+  Result := HRGN(GObject);
+end;
 
-  Result := Cardinal(-1);
+{------------------------------------------------------------------------------
+  Function: CombineRgn
+  Params:  Dest, Src1, Src2, fnCombineMode
+  Returns: longint
 
+  Combine the 2 Source Regions into the Destination Region using the specified
+  Combine Mode. The Destination must already be initialized. The Return value 
+  is the Destination's Region type, or ERROR.
+  
+  The Combine Mode can be one of the following:
+      RGN_AND  : Gets a region of all points which are in both source regions
+
+      RGN_COPY : Gets an exact copy of the first source region
+
+      RGN_DIFF : Gets a region of all points which are in the first source 
+                 region but not in the second.(Source1 - Source2)
+
+      RGN_OR   : Gets a region of all points which are in either the first 
+                 source region or in the second.(Source1 + Source2)
+
+      RGN_XOR  : Gets all points which are in either the first Source Region 
+                 or in the second, but not in both.
+
+  The result can be one of the following constants
+      Error
+      NullRegion
+      SimpleRegion
+      ComplexRegion
+
+ ------------------------------------------------------------------------------}
+Function TgtkObject.CombineRgn(Dest, Src1, Src2 : HRGN; fnCombineMode : Longint) : Longint;
+var
+  Continue : Boolean;
+  D, S1, S2 : PGDKRegion;
+  Tmp1 : PGDKRegion;
+  DObj, S1Obj, S2Obj : PGDIObject;
+begin
+  Result := SIMPLEREGION;
+  DObj := PGdiObject(Dest);
+  S1Obj := PGdiObject(Src1);
+  S2Obj := PGdiObject(Src2);
+  Continue :=  IsValidGDIObject(Dest) and IsValidGDIObject(Src1);
+  Continue := Continue and (IsValidGDIObject(Src2) or (fnCombineMode = RGN_COPY));
+  If Not Continue then begin
+    WriteLn('WARNING: [TgtkObject.CombineRgn] Invalid HRGN');
+    Result := Error;
+  end
+  else begin
+    Continue :=  (DObj^.GDIType = gdiRegion);
+    If fnCombineMode <> RGN_COPY then
+      Continue := Continue and (S2Obj^.GDIType = gdiRegion);
+    If Not Continue then begin
+      WriteLn('WARNING: [TgtkObject.CombineRgn] NOT AN HRGN!!');
+      Result := ERROR;
+    end
+    else
+      If (S1Obj^.GDIRegionObject = nil) or ((S2Obj^.GDIRegionObject = nil) and
+         (fnCombineMode <> RGN_COPY))
+      then begin
+        WriteLn('WARNING: [TgtkObject.CombineRgn] Uninitialized HRGN');
+        Result := ERROR;
+      end
+    else begin
+      If DObj^.GDIRegionObject <> nil then
+        GDK_Region_Destroy(DObj^.GDIRegionObject);
+      S1 := S1Obj^.GDIRegionObject;
+      S2 := S2Obj^.GDIRegionObject;
+      Case fnCombineMode of 
+        RGN_AND :
+          D := gdk_regions_intersect(S1, S2);
+        RGN_COPY :
+          begin
+            Tmp1 := gdk_region_new;
+            D := gdk_regions_union(S1, Tmp1);
+            gdk_region_destroy(Tmp1);
+          end;
+        RGN_DIFF :
+          D := gdk_regions_subtract(S1, S2);
+        RGN_OR :
+          D := gdk_regions_union(S1, S2);
+        RGN_XOR :
+          D := gdk_regions_xor(S1, S2);
+        else
+          Result:= ERROR;
+      end;
+      DObj^.GDIRegionObject := D;
+      Result := RegionType(D);
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: ExtSelectClipRGN
+  Params:  dc, RGN, Mode
+  Returns: integer
+
+  Combines the passed Region with the current clipping region in the device
+  context (dc), using the specified mode.
+
+  The Combine Mode can be one of the following:
+      RGN_AND  : all points which are in both regions
+
+      RGN_COPY : an exact copy of the source region, same as SelectClipRGN
+
+      RGN_DIFF : all points which are in the Clipping Region but
+                 but not in the Source.(Clip - RGN)
+
+      RGN_OR   : all points which are in either the Clip Region or
+                 in the Source.(Clip + RGN)
+
+      RGN_XOR  : all points which are in either the Clip Region
+                 or in the Source, but not in both.
+
+  The result can be one of the following constants
+      Error
+      NullRegion
+      SimpleRegion
+      ComplexRegion
+
+
+ ------------------------------------------------------------------------------}
+function TgtkObject.ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;
+var
+  OldC,
+  Clip : hRGN;
+begin
+  OldC := CreateRectRGN(0,0,1,1);
+  Clip := CreateRectRGN(0,0,1,1);
+  If GetClipRGN(DC, OldC) < 0 then
+    Result := ERROR
+  else begin
+    Result := CombineRGN(Clip, OldC, RGN, Mode);
+    If Result <> ERROR then begin
+      Result := SelectClipRGN(DC, Clip);
+    end
+  end;
+  DeleteObject(Clip);
+  DeleteObject(OldC);
 end;
 
 {------------------------------------------------------------------------------
@@ -1436,6 +1645,11 @@ begin
           begin
             gdk_colormap_free_colors(gdk_colormap_get_system, @GDIPenColor, 1);
           end;
+        gdiRegion:
+          begin
+            if Result and (GDIRegionObject <> nil) then
+               gdk_region_destroy(GDIRegionObject);
+          end;
         else begin
           Result:= false;
           writeln('[TgtkObject.DeleteObject] TODO : Unimplemented GDI type');
@@ -1443,7 +1657,7 @@ begin
         end;
       end;
     end;
-    
+
   { Dispose of the GDI object }
 //writeln('[TgtkObject.DeleteObject] ',Result,'  ',HexStr(GDIObject,8),'  ',FGDIObjects.Count);
   if GDIObjectExists then begin
@@ -1851,22 +2065,56 @@ end;
   Params:  dc: hdc; Left, Top, Right, Bottom : Integer
   Returns: integer
 
+  Subtracts all intersecting points of the passed bounding rectangle
+  (Left, Top, Right, Bottom) from the Current clipping region in the
+  device context (dc).
+
+  The result can be one of the following constants
+      Error
+      NullRegion
+      SimpleRegion
+      ComplexRegion
+
 
  ------------------------------------------------------------------------------}
 function TgtkObject.ExcludeClipRect(dc: hdc;
   Left, Top, Right, Bottom : Integer) : Integer;
+var
+  CRGN, RRGN : hRGN;
+  X, Y : Longint;
 begin
-  // ToDo:
-  Result:=SimpleRegion;
+  If not IsValidDC(DC) then
+    Result := ERROR;
+  if Result <> ERROR
+  then with PDeviceContext(DC)^ do
+  begin
+    if GC = nil
+    then begin
+      WriteLn('WARNING: [TgtkObject.ExcludeClipRect] Uninitialized GC');
+      Result := ERROR;
+    end
+    else begin
+      If Not IsValidGDIObject(ClipRegion) then begin
+        gdk_window_get_size(Drawable, @X, @Y);
+        ClipRegion := CreateRectRgn(0, 0, X, Y);
+      end;
+      RRGN := CreateRectRgn(Left, Top, Right, Bottom);
+      CRGN := CreateRectRgn(0,0,0,0);
+      Result := CombineRGN(CRGN, ClipRegion, RRGN, RGN_DIFF);
+      DeleteObject(RRGN);
+      DeleteObject(ClipRegion);
+      ClipRegion := CRGN;
+      SelectGDIRegion(DC);
+    end;
+  end;
 end;
 
 Function TextPoint(X, Y : Integer; Font : PGDKFont) : TPoint;
 const
-  Buffer : PChar = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  Buffer : PChar = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890 ';
 begin
-  //This is not entirely accurate, nor the proper way to do things, 
-  //but it should help take care of many issues anyway
-  Result.Y := Y + GDK_String_Height(Font,Buffer) - 3 + Font^.descent div 2;
+  //I THINK this is accurate now...
+  Result.Y := Y + GDK_String_Height(Font,Buffer) - Font^.descent div 2;
   Result.X := X;
 end;
 
@@ -1912,7 +2160,7 @@ begin
         begin
           Width := Rect^.Right - Rect^.Left;
           Height := Rect^.Bottom - Rect^.Top;
-          //SelectGDKBrushProps(DC);
+         // SelectGDKBrushProps(DC);
           gdk_gc_set_fill(GC, GDK_SOLID);
           gdk_gc_set_foreground(GC, @CurrentBackColor);
           gdk_draw_rectangle(Drawable, GC, 1, Rect^.Left, Rect^.Top, Width, Height);
@@ -2217,6 +2465,98 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: GetClipBox
+  Params: dc, lprect
+  Returns: Integer
+ 
+  Returns the smallest rectangle which includes the entire current
+  Clipping Region, or if no Clipping Region is set, the current
+  dimensions of the Drawable.
+
+  The result can be one of the following constants
+      Error
+      NullRegion
+      SimpleRegion
+      ComplexRegion
+
+
+ ------------------------------------------------------------------------------}
+Function TGTKObject.GetClipBox(DC : hDC; lpRect : PRect) : Longint;
+var
+  CRect : TGDKRectangle;
+  X, Y : Longint;
+begin
+  If not IsValidDC(DC) then
+    Result := ERROR;
+  If lpRect <> nil then
+    lpRect^ := Rect(0,0,0,0);
+  if Result <> ERROR
+  then with PDeviceContext(DC)^ do
+  begin
+    If Not IsValidGDIObject(ClipRegion) then begin
+      gdk_window_get_size(Drawable, @X, @Y);  
+      lpRect^ := Rect(0, 0, X, Y);
+      Result := SIMPLEREGION;
+    end
+    else begin
+      Result := RegionType(PGDIObject(ClipRegion)^.GDIRegionObject);    
+      gdk_region_get_clipbox(PGDIObject(ClipRegion)^.GDIRegionObject, 
+        @CRect);
+      With lpRect^,CRect do begin
+	Left   := X;
+	Top    := Y;
+	Right  := X + Width;
+	Bottom := Y + Height;
+      end;  
+    end;
+  end;  
+end;
+
+{------------------------------------------------------------------------------
+  Function: GetClipRGN
+  Params: dc, rgn
+  Returns: Integer
+ 
+  Returns the current Clipping Region.
+
+  The result can be one of the following constants
+      Error
+      NullRegion
+      SimpleRegion
+      ComplexRegion
+
+
+ ------------------------------------------------------------------------------}
+Function TGTKObject.GetClipRGN(DC : hDC; RGN : hRGN) : Integer; 
+begin
+  If not IsValidDC(DC) then
+    Result := ERROR;
+  if Result <> ERROR
+  then with PDeviceContext(DC)^ do
+  begin
+    If Not IsValidGDIObject(RGN) then begin
+      Result := ERROR;
+      WriteLn('WARNING: [TgtkObject.CombineRgn] Invalid HRGN');
+    end
+    else begin
+      If Not IsValidGDIObject(ClipRegion) then begin
+        Result := 0;
+      end
+      else begin
+        Result := CombineRGN(RGN, ClipRegion, ClipRegion, RGN_COPY);
+        If Result = NULLREGION then
+          Result := 0
+        else
+          If Result <> ERROR then
+            Result := 1;  
+      end;
+    end;  
+  end;
+  If Result = ERROR then
+    Result := -1;  
+end;
+
+{------------------------------------------------------------------------------
   Function: GetCmdLineParamDescForInterface
   Params: none
   Returns: ansistring
@@ -2283,6 +2623,7 @@ var
   pFixed: PGTKFixed;
   GdiObject: PGdiObject;
   Values: TGdkGCValues;
+  X,Y : Longint;
   //Color: TGdkColor;
   //nIndex: Integer;
 begin
@@ -2317,6 +2658,7 @@ begin
     p^.Drawable := PGTKFixed(pFixed)^.Container.Widget.Window;
     p^.GC := gdk_gc_new(p^.Drawable);
 
+    gdk_window_get_size(P^.Drawable, @X, @Y);
     gdk_gc_set_function(p^.GC, GDK_COPY);
 
     gdk_gc_get_values(p^.GC, @Values);
@@ -2530,17 +2872,15 @@ begin
       Result := FStockNullBrush;
     WHITE_BRUSH:         // White brush.
       Result := FStockWhiteBrush;
-(*
+
     BLACK_PEN:           // Black pen.
-      begin
-      end;  
+      Result := FStockBlackPen;
     NULL_PEN:            // Null pen.
-      begin
-      end;  
+      Result := FStockNullPen;
     WHITE_PEN:           // White pen.
-      begin
-      end;  
-    ANSI_FIXED_FONT:     // Fixed-pitch (monospace) system font.
+      Result := FStockWhitePen;
+      
+   (* ANSI_FIXED_FONT:     // Fixed-pitch (monospace) system font.
       begin
       end;  
     ANSI_VAR_FONT:       // Variable-pitch (proportional space) system font.
@@ -2898,12 +3238,7 @@ begin
   if Result
   then with PDeviceContext(DC)^ do
   begin
-    {if GC = nil
-    then begin
-      Assert(False, 'Trace:[TgtkObject.GetTextExtentPoint] Uninitialized GC');
-      Result := False;
-    end
-    else} if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
+    if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
     then begin
       WriteLn('WARNING: [TgtkObject.GetTextExtentPoint] Missing font');
       Result := False;
@@ -2911,7 +3246,8 @@ begin
     else begin
       gdk_text_extents(CurrentFont^.GDIFontObject, Str, Count, @lbearing, @rBearing, @width, @ascent, @descent);
       Size.cX := Width;
-      Size.cY := ascent + descent;
+      //I THINK this is accurate...
+      Size.cY := GDK_String_Height(CurrentFont^.GDIFontObject, Str) + descent div 2;
     end;
   end;
   Assert(False, 'trace:< [TgtkObject.GetTextExtentPoint]');
@@ -3140,22 +3476,48 @@ end;
   Params:  dc: hdc; Left, Top, Right, Bottom: Integer
   Returns: Integer
 
-  Shrinks the current clipping region in the device context dc to the boundary
-  defined by Left, Top, Right, Bottom.
+  Shrinks the clipping region in the device context dc to a region of all
+  intersecting points between the boundary defined by Left, Top, Right,
+  Bottom , and the Current clipping region.
 
   The result can be one of the following constants
       Error
       NullRegion
       SimpleRegion
       ComplexRegion
-      Region_Error
 
  ------------------------------------------------------------------------------}
 function TGTKObject.IntersectClipRect(dc: hdc;
   Left, Top, Right, Bottom: Integer): Integer;
+var
+  CRGN, RRGN : hRGN;
 begin
-  // ToDo:
-  Result:=SimpleRegion;
+  If not IsValidDC(DC) then
+    Result := ERROR;
+  if Result <> ERROR
+  then with PDeviceContext(DC)^ do
+  begin
+    if GC = nil
+    then begin
+      WriteLn('WARNING: [TgtkObject.IntersectClipRect] Uninitialized GC');
+      Result := ERROR;
+    end
+    else begin
+      RRGN := CreateRectRgn(Left, Top, Right, Bottom);
+      If IsValidGDIObject(ClipRegion) then begin
+	CRGN := CreateRectRgn(0,0,1,1);
+	Result := CombineRGN(CRGN, ClipRegion, RRGN, RGN_AND);
+        DeleteObject(RRGN);
+        DeleteObject(ClipRegion);
+	ClipRegion := CRGN;
+      end
+      else begin
+        ClipRegion := RRGN;
+        Result := RegionType(PGDIObject(ClipRegion)^.GDIRegionObject);
+      end;
+      SelectGDIRegion(DC);
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -3546,8 +3908,11 @@ End;
 }
 function TgtkObject.Polygon(DC: HDC; Points: PPoint; NumPts: Integer;
   Winding: Boolean): boolean; 
-var i: integer;
+var 
+  i: integer;
   PointArray: PGDKPoint;
+  CLIP, RGN : hRGN;
+  ClipRect : TRect;
 begin
   Result := IsValidDC(DC);
   if Result
@@ -3566,13 +3931,39 @@ begin
         PointArray[i].y:=Points[i].y;
       end;
 
-      // dummy statement to prevent compiler hint that winding is not used
-      if Winding xor Winding then 
-        writeln('Polygon: winding not available under gtk');
-    
+      If (Points[NumPts-1].X <> Points[0].X) or 
+        (Points[NumPts-1].Y <> Points[0].Y) 
+      then begin
+        Inc(NumPts);
+        ReallocMem(PointArray,SizeOf(TGdkPoint)*NumPts);
+        PointArray[NumPts - 1].x:=Points[0].x;
+        PointArray[NumPts - 1].y:=Points[0].y;
+      end;
+        
       // first draw interior in brush color
       SelectGDKBrushProps(DC);
-      gdk_draw_polygon(Drawable, GC, 1, PointArray, NumPts);
+
+      if Winding then begin
+        Clip := ClipRegion;
+        RGN := CreatePolygonRgn(Points, NumPts, True);
+        If IsValidGDIObject(Clip) then begin
+	  ClipRegion := CreateRectRGN(0,0,0,0);
+	  CombineRGN(ClipRegion, RGN, Clip, RGN_AND);
+	  DeleteObject(RGN);
+	end
+	else
+	  ClipRegion := RGN;
+
+        SelectGDIRegion(DC);
+        GetClipBox(DC, @ClipRect);
+	FillRect(DC, ClipRect, HBrush(CurrentBrush));
+        DeleteObject(ClipRegion);
+        ClipRegion := Clip;
+        SelectGDIRegion(DC);
+      end else
+        gdk_draw_polygon(Drawable, GC, 1, PointArray, NumPts);
+ 
+      
       // draw outline
       SelectGDKPenProps(DC);
       gdk_draw_polygon(Drawable, GC, 0, PointArray, NumPts);
@@ -3594,7 +3985,7 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TgtkObject.Polygon] Uninitialized GC');
+      WriteLn('WARNING: [TgtkObject.Polyline] Uninitialized GC');
       Result := False;
     end
     else begin
@@ -3861,6 +4252,8 @@ begin
         then pDC^.CurrentPen := nil;     
         if pSavedDC^.CurrentBrush = pDC^.CurrentBrush 
         then pDC^.CurrentBrush := nil;   
+        if pSavedDC^.ClipRegion = pDC^.ClipRegion 
+        then pDC^.ClipRegion := 0;   
         ReleaseDC(0,HDC(pSavedDC));
         pDC^.SavedContext:=nil;
       end;
@@ -3869,6 +4262,7 @@ begin
       DeleteObject(HGDIObj(pDC^.CurrentPen));
       DeleteObject(HGDIObj(pDC^.CurrentFont));
       DeleteObject(HGDIObj(pDC^.CurrentBitmap));
+      DeleteObject(pDC^.ClipRegion);
       try
         { On root window, we don't allocate a graphics context }
         if pDC^.GC <> nil then
@@ -3927,6 +4321,8 @@ begin
     then pSavedDC^.CurrentPen := nil;     
     if pSavedDC^.CurrentBrush = pDC^.CurrentBrush 
     then pSavedDC^.CurrentBrush := nil;   
+    if pSavedDC^.ClipRegion = pDC^.ClipRegion
+    then pSavedDC^.ClipRegion := 0;   
       
     DeleteDC(HGDIOBJ(pSavedDC));
   end;
@@ -4043,6 +4439,54 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: SelectClipRGN
+  Params:  DC, RGN
+  Returns: longint
+
+  Sets the DeviceContext's ClipRegion. The Return value 
+  is the new clip regions type, or ERROR.
+
+  The result can be one of the following constants
+      Error
+      NullRegion
+      SimpleRegion
+      ComplexRegion
+
+ ------------------------------------------------------------------------------}
+Function TgtkObject.SelectClipRGN(DC : hDC; RGN : HRGN) : Longint;
+begin
+  If not IsValidDC(DC) then
+    Result := ERROR;
+  if Result <> ERROR
+  then with PDeviceContext(DC)^ do
+  begin
+    if GC = nil
+    then begin
+      WriteLn('WARNING: [TgtkObject.SelectClipRGN] Uninitialized GC');
+      Result := ERROR;
+    end
+    else begin
+      If RGN = 0 then begin
+        DeleteObject(ClipRegion);
+	ClipRegion := 0;
+	Result := SIMPLEREGION;
+      end
+      else
+        If IsValidGDIObject(RGN) then begin
+          DeleteObject(ClipRegion);
+	  ClipRegion := CreateRectRGN(0,0,0,0);
+	  Result := CombineRGN(ClipRegion, RGN, RGN, RGN_COPY);
+        end
+        else begin
+          Result := ERROR;
+          WriteLn('WARNING: [TgtkObject.SelectClipRGN] Invalid RGN');	  
+        end;
+      SelectGDIRegion(DC);
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Function: SelectObject
   Params:  none
   Returns: Nothing
@@ -4115,7 +4559,13 @@ begin
         end;
       gdiRegion:
       begin
-        Assert(False, Format('Trace:TODO: [TgtkObject.SelectObject] DC: 0x%x, Type: Region', [DC]));
+        with PDeviceContext(DC)^ do
+        begin
+          Result := ClipRegion;
+          ClipRegion := GDIObj;
+          if GC <> nil then 
+	    SelectGDIRegion(DC);
+        end;
       end;
     end;
   end;
@@ -4950,9 +5400,9 @@ var
           Scale := PGdiObject(ScaleBMP);
           SetRasterOperation(ScaleROPGC);
           Result := True;
-          exit; //skip scaling
+	  exit; //skip scaling
         end;
-    else begin
+	else begin
            ScaleBMP := CreateCompatibleBitmap(-1, SRCWidth, SRCHeight);
            Scale := PGdiObject(ScaleBMP);
         end;
@@ -5272,6 +5722,7 @@ Function TGTKObject.TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer)
 var
   aRect : TRect;
   txtpt : TPoint;
+  sz : TSize;
 begin
   Result := IsValidDC(DC);
   if Result
@@ -5289,13 +5740,13 @@ begin
       Result := False;
     end
     else begin
+      GetTextExtentPoint(DC, Str, Count, Sz);
+      aRect := Rect(X,Y,X + Sz.CX, Sz.CY);
+      FillRect(DC,aRect,hBrush(CurrentBrush));	
       SelectGDKTextProps(DC);
       TxtPt := TextPoint(X, Y, CurrentFont^.GDIFontObject);
-      aRect := Rect(X,Y,X + GDK_String_Width(CurrentFont^.GDIFontObject,str), TxtPt.Y);
-      FillRect(DC,aRect,hBrush(CurrentBrush));
-      SelectGDKTextProps(DC);
       gdk_draw_text(Drawable,CurrentFont^.GDIFontObject,
-        GC, X, aRect.Bottom, Str, Count);      
+        GC, TxtPt.X, TxtPt.Y, Str, Count);      
       Result := True;
     end;
   end;
@@ -5340,6 +5791,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.93  2002/08/15 15:46:50  lazarus
+  MG: added changes from Andrew (Clipping)
+
   Revision 1.92  2002/08/15 13:37:58  lazarus
   MG: started menuitem icon, checked, radio and groupindex
 

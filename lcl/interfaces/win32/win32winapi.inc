@@ -268,6 +268,41 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
+  Function: CombineRgn
+  Params:  Dest, Src1, Src2, fnCombineMode
+  Returns: longint
+
+  Combine the 2 Source Regions into the Destination Region using the specified
+  Combine Mode. The Destination must already be initialized. The Return value 
+  is the Destination's Region type, or ERROR.
+  
+  The Combine Mode can be one of the following:
+      RGN_AND  : Gets a region of all points which are in both source regions
+
+      RGN_COPY : Gets an exact copy of the first source region
+
+      RGN_DIFF : Gets a region of all points which are in the first source 
+                 region but not in the second.(Source1 - Source2)
+
+      RGN_OR   : Gets a region of all points which are in either the first 
+                 source region or in the second.(Source1 + Source2)
+
+      RGN_XOR  : Gets all points which are in either the first Source Region 
+                 or in the second, but not in both.
+
+  The result can be one of the following constants
+      Error
+      NullRegion
+      SimpleRegion
+      ComplexRegion
+
+ ------------------------------------------------------------------------------}
+Function TWin32Object.CombineRgn(Dest, Src1, Src2 : HRGN; fnCombineMode : Longint) : Longint;
+begin
+  Result := Windows.CombineRgn(Dest, Src1, Src2, fnCombineMode);
+end;
+
+{------------------------------------------------------------------------------
   Method:  CreateBitmap
   Params:  Width      - bitmap width, in pixels
            Height     - bitmap height, in pixels
@@ -570,6 +605,31 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
+  Method:  CreatePolygonRgn
+  Params:  Points, NumPts, Winding
+  Returns: the handle to the region
+
+  Creates a Polygon, a closed many-sided shaped region. The Points parameter is
+  an array of points that give the vertices of the polygon. Winding determines
+  what points are going to be included in the region. When Winding is True,
+  points are selected by using the Winding fill algorithm. When Winding is
+  False, points are selected by using using the even-odd (alternative) fill
+  algorithm. NumPts indicates the number of points to use.
+  The first point is always connected to the last point.
+ ------------------------------------------------------------------------------}
+Function TWin32Object.CreatePolygonRgn(Points: PPoint; NumPts: Integer;
+  Winding : Boolean): HRGN;
+var
+  fm : Longint;
+Begin
+  If Winding then
+    fm := Windows.Winding
+  else
+    fm := Windows.Alternate;
+  Result := Windows.CreatePolygonRgn(LPPOINT(Points)^, NumPts, fm);
+End;
+
+{------------------------------------------------------------------------------
   Method:  CreateRectRgn
   Params:  X1 - x-coordinate of region's upper-left corner
            Y1 - y-coordinate of region's upper-left corner
@@ -736,14 +796,37 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
+  Function: ExcludeClipRect
+  Params:  dc, Left, Top, Right, Bottom
+  Returns: integer
+
+  Subtracts all intersecting points of the passed bounding rectangle
+  (Left, Top, Right, Bottom) from the Current clipping region in the
+  device context (dc).
+
+  The result can be one of the following constants
+      Error
+      NullRegion
+      SimpleRegion
+      ComplexRegion
+
+
+ ------------------------------------------------------------------------------}
+function TWin32Object.ExcludeClipRect(dc: hdc;
+  Left, Top, Right, Bottom : Integer) : Integer;
+begin
+  Result := Windows.ExcludeClipRect(dc, Left, Top, Right, Bottom);
+end;
+
+{------------------------------------------------------------------------------
   Method:  ExtTextOut
-  Params:  DC      - handle to device context 
-           X       - x-coordinate of reference point 
-           Y       - x-coordinate of reference point 
+  Params:  DC      - handle to device context
+           X       - x-coordinate of reference point
+           Y       - x-coordinate of reference point
            Options - text-output options
-           Rect    - optional clipping and/or opaquing rectangle 
+           Rect    - optional clipping and/or opaquing rectangle
            Str     - character string to be drawn
-           Count   - number of characters in string 
+           Count   - number of characters in string
            Dx      - pointer to array of intercharacter spacing values
   Returns: If the string was drawn.
 
@@ -755,6 +838,41 @@ Begin
   Result := Windows.ExtTextOut(DC, X, Y, Options, LPRECT(Rect), Str, Count, Dx);
   Assert(False, Format('trace:< [TWin32Object.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
 End;
+
+{------------------------------------------------------------------------------
+  Function: ExtSelectClipRGN
+  Params:  dc, RGN, Mode
+  Returns: integer
+
+  Combines the passed Region with the current clipping region in the device
+  context (dc), using the specified mode.
+
+  The Combine Mode can be one of the following:
+      RGN_AND  : all points which are in both regions
+
+      RGN_COPY : an exact copy of the source region, same as SelectClipRGN
+
+      RGN_DIFF : all points which are in the Clipping Region but
+                 but not in the Source.(Clip - RGN)
+
+      RGN_OR   : all points which are in either the Clip Region or
+                 in the Source.(Clip + RGN)
+
+      RGN_XOR  : all points which are in either the Clip Region
+                 or in the Source, but not in both.
+
+  The result can be one of the following constants
+      Error
+      NullRegion
+      SimpleRegion
+      ComplexRegion
+
+
+ ------------------------------------------------------------------------------}
+function TWin32Object.ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;
+begin
+  Result := Windows.ExtSelectClipRGN(DC, RGN, Mode);
+end;
 
 {------------------------------------------------------------------------------
   Method:  FillRect
@@ -860,6 +978,47 @@ Function TWin32Object.GetClientRect(Handle: HWND; Var Rect: TRect): Boolean;
 Begin
   Result := Windows.GetClientRect(Handle, @Rect);
 End;
+
+{------------------------------------------------------------------------------
+  Function: GetClipBox
+  Params: dc, lprect
+  Returns: Integer
+ 
+  Returns the smallest rectangle which includes the entire current
+  Clipping Region.
+
+  The result can be one of the following constants
+      Error
+      NullRegion
+      SimpleRegion
+      ComplexRegion
+
+
+ ------------------------------------------------------------------------------}
+Function TWin32Object.GetClipBox(DC : hDC; lpRect : PRect) : Longint;
+begin
+  Result := Windows.GetClipBox(DC, Windows.LPRECT(lpRect));
+end;
+
+{------------------------------------------------------------------------------
+  Function: GetClipRGN
+  Params: dc, rgn
+  Returns: Integer
+ 
+  Returns the current Clipping Region.
+
+  The result can be one of the following constants
+      Error
+      NullRegion
+      SimpleRegion
+      ComplexRegion
+
+
+ ------------------------------------------------------------------------------}
+Function TWin32Object.GetClipRGN(DC : hDC; RGN : hRGN) : Integer; 
+begin
+  Result := Windows.GetClipRGN(DC, RGN);
+end;
 
 {------------------------------------------------------------------------------
   Method:  GetDC
@@ -1117,6 +1276,28 @@ Function TWin32Object.InvalidateRect(aHandle: HWND; Rect: PRect; BErase: Boolean
 Begin
   Result := Windows.InvalidateRect(aHandle, Windows.RECT(Rect^), bErase);
 End;
+
+{------------------------------------------------------------------------------
+  Function: IntersectClipRect
+  Params:  dc, Left, Top, Right, Bottom
+  Returns: Integer
+
+  Shrinks the clipping region in the device context dc to a region of all 
+  intersecting points between the boundary defined by Left, Top, Right, 
+  Bottom , and the Current clipping region.
+
+  The result can be one of the following constants
+      Error
+      NullRegion
+      SimpleRegion
+      ComplexRegion
+
+ ------------------------------------------------------------------------------}
+function TWin32Object.IntersectClipRect(dc: hdc;
+  Left, Top, Right, Bottom: Integer): Integer;
+begin
+  Result := Windows.IntersectClipRect(DC, Left, Top, Right, Bottom);
+end;
 
 {------------------------------------------------------------------------------
   Method:  KillTimer
@@ -1526,6 +1707,26 @@ Function TWin32Object.ScrollWindowEx(HWnd: HWND; DX, DY: Integer; PRcScroll, PRc
 Begin
   Result := Windows.ScrollWindowEx(HWnd, DX, DY, Windows.RECT(PRcScroll^), Windows.RECT(PRcClip^), HRgnUpdate, LPRECT(PRcUpdate), Flags) <> ERROR;
 End;
+
+{------------------------------------------------------------------------------
+  Function: SelectClipRGN
+  Params:  DC, RGN
+  Returns: longint
+
+  Sets the DeviceContext's ClipRegion. The Return value 
+  is the new clip regions type, or ERROR.
+
+  The result can be one of the following constants
+      Error
+      NullRegion
+      SimpleRegion
+      ComplexRegion
+
+ ------------------------------------------------------------------------------}
+Function TWin32Object.SelectClipRGN(DC : hDC; RGN : HRGN) : Longint;
+begin
+  Result := Windows.SelectClipRGN(DC, RGN);
+end;
 
 {------------------------------------------------------------------------------
   Method:  SelectObject
@@ -1968,6 +2169,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2002/08/15 15:46:50  lazarus
+  MG: added changes from Andrew (Clipping)
+
   Revision 1.12  2002/08/13 07:08:25  lazarus
   MG: added gdkpixbuf.pp and changes from Andrew Johnson
 

@@ -40,6 +40,7 @@ Function ClipboardGetOwnerShip(ClipboardType: TClipboardType; OnRequestProc: TCl
 { Registers a clip board format }
 Function ClipboardRegisterFormat(Const AMimeType: String): TClipboardFormat; Override;
 
+Function CombineRgn(Dest, Src1, Src2 : HRGN; fnCombineMode : Longint) : Longint;  override;
 Function CreateBitmap(Width, Height: Integer; Planes, BitCount: LongInt; BitmapBits: Pointer): HBITMAP; Override;
 Function CreateBrushIndirect(Const LogBrush: TLogBrush): HBRUSH; Override;
 Function CreateCaret(Handle: HWND; Bitmap: HBITMAP; Width, Height: Integer): Boolean; Override;
@@ -49,6 +50,7 @@ Function CreateFontIndirect(Const LogFont: TLogFont): HFONT; Override;
 Function CreatePenIndirect(Const LogPen: TLogPen): HPEN; Override;
 { Creates a bitmap from raw pixmap data }
 Function CreatePixmapIndirect(Const Data: Pointer; Const TransColor: LongInt): HBITMAP; Override;
+Function CreatePolygonRgn(Points: PPoint; NumPts: Integer; Winding : Boolean): HRGN; Override;
 Function CreateRectRgn(X1, Y1, X2, Y2: Integer): HRGN; Override;
 
 Function DeleteDC(HDC: HDC): Boolean; Override;
@@ -62,7 +64,9 @@ Function EmptyClipBoard: Boolean;
 Function EnableMenuItem(HMenu: HMENU; UIDEnableItem: Integer; BEnable: Boolean): Boolean; Override;
 Function EnableScrollBar(Wnd: HWND; WSBFlags, WArrows: Cardinal): Boolean; Override;
 Function EnableWindow(HWnd: HWND; BEnable: Boolean): Boolean; Override;
+Function ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer; override;
 Function ExtTextOut(DC: HDC; X, Y: Integer; Options: LongInt; Rect: PRect; Str: PChar; Count: LongInt; Dx: PInteger): Boolean; Override;
+function ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer; override;
 
 Function FillRect(DC: HDC; Const Rect: TRect; Brush: HBRUSH): Boolean; Override;
 { Draws a 3D border in GTK native style. }
@@ -73,6 +77,8 @@ Function GetCapture: HWND; Override;
 Function GetCaretPos(Var LPPoint: TPoint): Boolean; Override;
 Function GetCharABCWidths(DC: HDC; P2, P3: UINT; Const ABCStructs): Boolean; Override;
 Function GetClientRect(Handle: HWND; Var Rect: TRect): Boolean; Override;
+Function GetClipBox(DC : hDC; lpRect : PRect) : Longint; Override;
+Function GetClipRGN(DC : hDC; RGN : hRGN) : Longint; override;
 Function GetDC(HWnd: HWND): HDC; Override;
 Function GetFocus: HWND; Override;
 Function GetKeyState(NVirtKey: Integer): SmallInt; Override;
@@ -95,6 +101,7 @@ Function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean;
 
 Function HideCaret(HWnd: HWND): Boolean; Override;
 
+function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer; override;
 Function InvalidateRect(AHandle: HWND; Rect: PRect; BErase: Boolean): Boolean; Override;
 
 Function KillTimer (HWnd: HWND; UIDEvent: Cardinal): Boolean; Override;
@@ -124,6 +131,7 @@ Function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; Override;
 Function SaveDC(DC: HDC): Integer; Override;
 Function ScreenToClient(Handle: HWND; Var P: TPoint): Integer; Override;
 Function ScrollWindowEx(HWnd: HWND; DX, DY: Integer; PRcScroll, PRcClip: PRect; HRgnUpdate: HRGN; PRcUpdate: PRect; Flags: UINT): Boolean; Override;
+Function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint; override;
 Function SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ; Override;
 Function SelectPalette(DC: HDC; Palette: HPALETTE; ForceBackground: Boolean): HPALETTE; Override;
 Function SendMessage(HandleWnd: HWND; Msg: Cardinal; WParam: LongInt; LParam: LongInt): Integer; Override;
@@ -156,6 +164,9 @@ Function WindowFromPoint(Point: TPoint): HWND; Override;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2002/08/15 15:46:50  lazarus
+  MG: added changes from Andrew (Clipping)
+
   Revision 1.9  2002/08/13 07:08:25  lazarus
   MG: added gdkpixbuf.pp and changes from Andrew Johnson
 

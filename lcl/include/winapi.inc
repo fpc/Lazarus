@@ -103,6 +103,10 @@ begin
 end;
 
 
+Function CombineRgn(Dest, Src1, Src2 : HRGN; fnCombineMode : Longint) : Longint;
+begin
+  Result := InterfaceObject.CombineRgn(Dest, Src1, Src2, fnCombineMode);
+end;
 
 function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP;
 begin
@@ -148,6 +152,11 @@ end;
 function CreatePixmapIndirect(const Data: Pointer; const TransColor: Longint): HBITMAP;
 begin
   Result := InterfaceObject.CreatePixmapIndirect(Data, TransColor);
+end;
+
+function CreatePolygonRgn(Points: PPoint; NumPts: Integer; Winding : Boolean): HRGN;
+Begin
+  Result := InterfaceObject.CreatePolygonRgn(Points, NumPts, Winding);
 end;
 
 function CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN;
@@ -205,9 +214,35 @@ begin
   Result := InterfaceObject.ExcludeClipRect(DC,Left,Top,Right,Bottom);
 end;
 
+{------------------------------------------------------------------------------
+  Function: ExcludeClipRgn
+  Params:  dc, RGN
+  Returns: integer
+
+  Subtracts all intersecting points of the passed Region from the Current
+  clipping region in the device context (dc).
+
+  The result can be one of the following constants
+      Error
+      NullRegion
+      SimpleRegion
+      ComplexRegion
+
+
+ ------------------------------------------------------------------------------}
+function ExcludeClipRgn(dc: hdc; rgn : hrgn) : Integer;
+begin
+  Result := ExtSelectClipRGN(DC, RGN, RGN_DIFF);
+end;
+
 function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 begin
   Result := InterfaceObject.ExtTextOut(DC, X, Y, Options, Rect, Str, Count, Dx);
+end;
+
+function ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;
+begin
+  Result := InterfaceObject.ExtSelectClipRGN(DC, RGN, Mode);
 end;
 
 function FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean;
@@ -269,6 +304,16 @@ end;
 Function GetClientRect(handle : HWND; var Rect : TRect) : Boolean;
 begin
   Result := InterfaceObject.GetClientRect(handle, Rect);
+end;
+
+Function GetClipBox(DC : hDC; lpRect : PRect) : Longint;
+begin
+  Result := InterfaceObject.GetClipBox(DC, lpRect);
+end;
+
+Function GetClipRGN(DC : hDC; RGN : hRGN) : Longint;
+begin
+  Result := InterfaceObject.GetClipRGN(DC, RGN);
 end;
 
 {------------------------------------------------------------------------------
@@ -578,6 +623,11 @@ end;
 Function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean;
 Begin
   Result := InterfaceObject.SetProp(Handle,Str,Data);
+end;
+
+Function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint;
+begin
+  Result := InterfaceObject.SelectClipRGN(DC, RGN);
 end;
 
 function SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
@@ -1141,6 +1191,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.41  2002/08/15 15:46:49  lazarus
+  MG: added changes from Andrew (Clipping)
+
   Revision 1.40  2002/08/15 13:37:57  lazarus
   MG: started menuitem icon, checked, radio and groupindex
 

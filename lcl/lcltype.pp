@@ -121,6 +121,15 @@ const
   CS_VREDRAW = dword(1);
   CS_HREDRAW = dword(2);
 
+//------------
+// CombineRgn Mode flags
+//------------
+  RGN_AND = 1;
+  RGN_OR = 2;
+  RGN_XOR = 3;
+  RGN_DIFF = 4;
+  RGN_COPY = 5;
+
 //==============================================
 // Draw frame constants
 //==============================================
@@ -1405,6 +1414,9 @@ end.
 
 {
   $Log$
+  Revision 1.9  2002/08/15 15:46:48  lazarus
+  MG: added changes from Andrew (Clipping)
+
   Revision 1.8  2002/07/29 13:39:07  lazarus
   MG: removed ambigious TBitmap from LCLType and added Escape key to MessageDlgs
 

@@ -41,11 +41,8 @@ end;
 {-----------------------------------------------}
 function TCanvas.GetCanvasClipRect: TRect;
 begin
-// quick cheat to get code working
-     Result.Left := 0;
-     Result.Top := 0;
-     Result.Right := 2000;
-     Result.Bottom := 2000;
+  If GetClipBox(FHandle, @Result) = ERROR then
+    Result := Rect(0,0,2000,2000);{Just in Case}
 end;
 
 
@@ -119,8 +116,8 @@ begin
   if (OldHandle<>Brush.Handle) and (FSavedBrushHandle=0) then
     FSavedBrushHandle:=OldHandle;
   Include(FState, csBrushValid);
-//  SetBkColor(FHandle, not ColorToRGB(Brush.Color));
-//  SetBkMode(FHandle, TRANSPARENT);
+  SetBkColor(FHandle, ColorToRGB(Brush.Color));
+  SetBkMode(FHandle, TRANSPARENT);
 end;
 
 {------------------------------------------------------------------------------
@@ -961,6 +958,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.22  2002/08/15 15:46:48  lazarus
+  MG: added changes from Andrew (Clipping)
+
   Revision 1.21  2002/08/13 07:08:24  lazarus
   MG: added gdkpixbuf.pp and changes from Andrew Johnson
 
