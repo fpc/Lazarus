@@ -1365,7 +1365,6 @@ var
   
 begin
   RestoreBrush:=false;
-writeln('TControlSelection.DrawMarkerAt A ');
   FillRect(ALeft,ATop,ALeft+MarkerSize,ATop+MarkerSize);
   FillRect(ALeft,ATop+AHeight-MarkerSize,ALeft+MarkerSize,ATop+AHeight);
   FillRect(ALeft+AWidth-MarkerSize,ATop,ALeft+AWidth,ATop+MarkerSize);
@@ -1401,10 +1400,14 @@ begin
 end;
 
 procedure TControlSelection.DrawRubberband(DC: TDesignerDeviceContext);
-var Diff: TPoint;
+var
+  Diff: TPoint;
 
   procedure DrawInvertFrameRect(x1,y1,x2,y2:integer);
   var i:integer;
+  var
+    OldPenColor: TColor;
+    RestorePen: boolean;
 
     procedure InvertPixel(x,y:integer);
     //var c:TColor;
@@ -1415,35 +1418,47 @@ var Diff: TPoint;
       DC.Canvas.MoveTo(x-Diff.X,y-Diff.Y);
       DC.Canvas.LineTo(x-Diff.X+1,y-Diff.Y);
     end;
-
-  var OldPenColor: TColor;
+    
+    procedure DrawRubberLine(StartX, StartY, EndX, EndY: integer);
+    begin
+      if not DC.RectVisible(StartX, StartY, EndX, EndY) then exit;
+      if not RestorePen then begin
+        DC.Save;
+        with DC.Canvas do begin
+          OldPenColor:=Pen.Color;
+          Pen.Color:=clBlack;
+        end;
+        RestorePen:=true;
+      end;
+      if StartX<EndX then begin
+        while StartX<EndX do begin
+          InvertPixel(StartX,StartY);
+          inc(StartX,3);
+        end;
+      end else begin
+        while StartY<EndY do begin
+          InvertPixel(StartX,StartY);
+          inc(StartY,3);
+        end;
+      end;
+    end;
+    
   begin
+    RestorePen:=false;
     if x1>x2 then begin i:=x1; x1:=x2; x2:=i; end;
     if y1>y2 then begin i:=y1; y1:=y2; y2:=i; end;
-    with DC.Canvas do begin
-      OldPenColor:=Brush.Color;
-      Pen.Color:=clBlack;
-      i:=x1+1;
-      while i<x2-1 do begin
-        InvertPixel(i,y1);
-        InvertPixel(i,y2);
-        inc(i,2);
-      end;
-      i:=y1;
-      while i<y2 do begin
-        InvertPixel(x1,i);
-        InvertPixel(x2,i);
-        inc(i,2);
-      end;
-      Pen.Color:=OldPenColor;
-    end;
+    DrawRubberLine(x1,y1,x2,y1);
+    DrawRubberLine(x1,y2,x2,y2);
+    DrawRubberLine(x1,y1,x1,y2);
+    DrawRubberLine(x2,y1,x2,y2);
+    if RestorePen then
+      DC.Canvas.Pen.Color:=OldPenColor;
   end;
 
 // DrawRubberband
 begin
   if (FCustomForm=nil) then exit;
   Diff:=DC.FormOrigin;
-  DC.Save;
   with FRubberBandBounds do
     DrawInvertFrameRect(Left,Top,Right,Bottom);
 end;
