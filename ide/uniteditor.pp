@@ -54,7 +54,7 @@ uses
   FindReplaceDialog, WordCompletion, FindInFilesDlg, IDEProcs, IDEOptionDefs,
   MsgView, SearchResultView, InputHistory, LazarusIDEStrConsts,
   BaseDebugManager, Debugger, LResources, LazConf, EnvironmentOpts,
-  SortSelectionDlg, EncloseSelectionDlg, DiffDialog,
+  SortSelectionDlg, EncloseSelectionDlg, DiffDialog, ConDef,
   SourceEditProcs, SourceMarks, CharacterMapDlg, frmSearch;
 
 type
@@ -225,6 +225,7 @@ type
     procedure TabsToSpacesInSelection;
     procedure CommentSelection;
     procedure UncommentSelection;
+    procedure ConditionalSelection;
     procedure SortSelection;
     procedure BreakLinesInSelection;
     procedure SelectToBrace;
@@ -1048,6 +1049,9 @@ Begin
   ecSelectionUnComment:
     UncommentSelection;
 
+  ecSelectionConditional:
+    ConditionalSelection;
+
   ecSelectionSort:
     SortSelection;
 
@@ -1256,6 +1260,32 @@ begin
   FEditor.EndUndoBlock;
   FEditor.EndUpdate;
 end;
+
+procedure TSourceEditor.ConditionalSelection;
+var
+  IsPascal: Boolean;
+  i: Integer;
+  P: TPoint;
+begin
+  FEditor.BeginUpdate;
+  FEditor.BeginUndoBlock;
+  if not EditorComponent.SelAvail then begin
+    P := FEditor.CaretXY;
+    P.X := 0;
+    FEditor.BlockBegin := P;
+    Inc(P.Y);
+    FEditor.BlockEnd := P;
+  end;
+  // ToDo: replace step by step to keep bookmarks and breakpoints
+  IsPascal := True;
+  i:=EditorOpts.HighlighterList.FindByHighlighter(FEditor.Highlighter);
+  if i>=0 then
+    IsPascal := EditorOpts.HighlighterList[i].DefaultCommentType <> comtCPP;
+  FEditor.SelText:=AddConditional(EditorComponent.SelText, IsPascal);
+  FEditor.EndUndoBlock;
+  FEditor.EndUpdate;
+end;
+
 
 procedure TSourceEditor.SortSelection;
 var

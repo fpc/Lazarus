@@ -130,6 +130,7 @@ resourcestring
   lisMenuEncloseSelection = 'Enclose selection';
   lisMenuCommentSelection = 'Comment selection';
   lisMenuUncommentSelection = 'Uncomment selection';
+  lisMenuConditionalSelection = 'Insert $IFDEF...';
   lisMenuSortSelection = 'Sort selection';
   lisMenuBeakLinesInSelection = 'Break Lines in selection';
   lisMenuSelect = 'Select';

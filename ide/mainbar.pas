@@ -210,6 +210,7 @@ type
     itmEditTabsToSpacesBlock: TMenuItem;
     itmEditCommentBlock: TMenuItem;
     itmEditUncommentBlock: TMenuItem;
+    itmEditConditionalBlock: TMenuItem;
     itmEditSortBlock: TMenuItem;
     itmEditSelectionBreakLines: TMenuItem;
     itmEditSelect: TMenuItem;
@@ -659,6 +660,7 @@ begin
 
   CreateMenuItem(mnuEdit,itmEditCommentBlock,'itmEditCommentBlock',lisMenuCommentSelection);  
   CreateMenuItem(mnuEdit,itmEditUncommentBlock,'itmEditUncommentBlock',lisMenuUncommentSelection);  
+  CreateMenuItem(mnuEdit,itmEditConditionalBlock,'itmEditConditionalBlock',lisMenuConditionalSelection);  
   CreateMenuItem(mnuEdit,itmEditSortBlock,'itmEditSortBlock',lisMenuSortSelection);  
 
   mnuEdit.Add(CreateMenuSeparator);
@@ -911,6 +913,7 @@ begin
     itmEditTabsToSpacesBlock.ShortCut:=CommandToShortCut(ecSelectionTabs2Spaces);
     itmEditCommentBlock.ShortCut:=CommandToShortCut(ecSelectionComment);
     itmEditUncommentBlock.ShortCut:=CommandToShortCut(ecSelectionUncomment);
+    itmEditConditionalBlock.ShortCut:=CommandToShortCut(ecSelectionConditional);
     itmEditSortBlock.ShortCut:=CommandToShortCut(ecSelectionSort);
     itmEditSelectionBreakLines.ShortCut:=CommandToShortCut(ecSelectionBreakLines);
     itmEditSelectAll.ShortCut:=CommandToShortCut(ecSelectAll);

@@ -131,6 +131,7 @@ type
     procedure mnuEditTabsToSpacesBlockClicked(Sender: TObject);
     procedure mnuEditCommentBlockClicked(Sender: TObject);
     procedure mnuEditUncommentBlockClicked(Sender: TObject);
+    procedure mnuEditConditionalBlockClicked(Sender: TObject);
     procedure mnuEditSortBlockClicked(Sender: TObject);
     procedure mnuEditSelectionBreakLinesClicked(Sender: TObject);
     procedure mnuEditSelectAllClick(Sender: TObject);
@@ -1532,6 +1533,7 @@ begin
   itmEditTabsToSpacesBlock.OnClick:=@mnuEditTabsToSpacesBlockClicked;
   itmEditCommentBlock.OnClick:=@mnuEditCommentBlockClicked;
   itmEditUncommentBlock.OnClick:=@mnuEditUncommentBlockClicked;
+  itmEditConditionalBlock.OnClick:=@mnuEditConditionalBlockClicked;
   itmEditSortBlock.OnClick:=@mnuEditSortBlockClicked;
   itmEditSelectionBreakLines.OnClick:=@mnuEditSelectionBreakLinesClicked;
   itmEditSelectAll.OnClick:=@mnuEditSelectAllClick;
@@ -10223,6 +10225,11 @@ begin
   DoEditMenuCommand(ecSelectionUncomment);
 end;
 
+procedure TMainIDE.mnuEditConditionalBlockClicked(Sender: TObject);
+begin
+  DoEditMenuCommand(ecSelectionConditional);
+end;
+
 procedure TMainIDE.mnuEditSortBlockClicked(Sender: TObject);
 begin
   DoEditMenuCommand(ecSelectionSort);
@@ -10441,6 +10448,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.735  2004/07/03 15:10:57  mattias
+  added insert IFDEF tool from Colin
+
   Revision 1.734  2004/07/03 13:06:28  mattias
   improved key handling for OI
 

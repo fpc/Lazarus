@@ -92,6 +92,7 @@ const
   ecSelectCodeBlock      = ecUserFirst + 59;
   ecSelectLine           = ecUserFirst + 60;
   ecSelectParagraph      = ecUserFirst + 61;
+  ecSelectionConditional = ecUserFirst + 65;
 
   // insert text
   ecInsertCharacter      = ecUserFirst + 80;
@@ -472,6 +473,7 @@ begin
   ecSelectionEnclose: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
   ecSelectionComment: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
   ecSelectionUncomment: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+  ecSelectionConditional: SetResult(VK_D, [ssShift,ssCtrl],VK_UNKNOWN,[]);
   ecSelectionSort: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
   ecSelectionBreakLines: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
 
@@ -1084,6 +1086,7 @@ begin
     ecSelectionEnclose      : Result:= lismenucommentselection;
     ecSelectionComment      : Result:= lismenucommentselection;
     ecSelectionUncomment    : Result:= lismenuuncommentselection;
+    ecSelectionConditional  : Result:= lisMenuConditionalSelection;
     ecSelectionSort         : Result:= lismenusortselection;
     ecSelectionBreakLines   : Result:= lismenusortselection;
     ecSelectToBrace         : Result:= lismenuselecttobrace;
@@ -1841,6 +1844,7 @@ begin
   AddDefault(C,'Enclose selection',ecSelectionEnclose);
   AddDefault(C,'Comment selection',ecSelectionComment);
   AddDefault(C,'Uncomment selection',ecSelectionUncomment);
+  AddDefault(C,'Insert $IFDEF',ecSelectionConditional);
   AddDefault(C,'Sort selection',ecSelectionSort);
   AddDefault(C,'Break Lines in selection',ecSelectionBreakLines);
 

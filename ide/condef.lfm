@@ -1,0 +1,151 @@
+object CondForm: TCondForm
+  ActiveControl = ListBox
+  Caption = 'Conditional Defines'
+  ClientHeight = 239
+  ClientWidth = 218
+  OnClose = CondFormCLOSE
+  OnCreate = CondFormCREATE
+  OnDestroy = FormDestroy
+  OnShow = FormShow
+  Position = poMainFormCenter
+  TextHeight = 13
+  HorzScrollBar.Page = 219
+  HorzScrollBar.Range = 186
+  VertScrollBar.Page = 240
+  VertScrollBar.Range = 157
+  Left = 776
+  Height = 239
+  Top = 158
+  Width = 218
+  object Label1: TLabel
+    Caption = '&First test'
+    FocusControl = FirstTest
+    Left = 6
+    Height = 13
+    Top = 2
+    Width = 50
+  end
+  object Label2: TLabel
+    Caption = '&Second test'
+    FocusControl = SecondTest
+    Left = 6
+    Height = 13
+    Top = 34
+    Width = 73
+  end
+  object FirstTest: TComboBox
+    Anchors = [akTop, akLeft, akRight]
+    ItemHeight = 13
+    Items.Strings = (
+      'MSWINDOWS'
+      'UNIX'
+      'LINUX'
+      'WIN32'
+      'CLX_'
+      'LCL_'
+      'VCL_'
+      'FPC'
+      'KYLIX'
+      'VER1_0'
+    )
+    MaxLength = 0
+    ParentCtl3D = False
+    TabOrder = 0
+    Text = 'MSWINDOWS'
+    Left = 5
+    Height = 21
+    Top = 14
+    Width = 123
+  end
+  object ListBox: TListBox
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ItemHeight = 13
+    OnKeyDown = ListBoxKeyDown
+    TabOrder = 2
+    TopIndex = -1
+    Left = 5
+    Height = 160
+    Top = 72
+    Width = 123
+  end
+  object SecondTest: TComboBox
+    Anchors = [akTop, akLeft, akRight]
+    ItemHeight = 13
+    Items.Strings = (
+      'NONE'
+      'ELSE'
+    )
+    MaxLength = 0
+    ParentCtl3D = False
+    TabOrder = 1
+    Text = 'NONE'
+    Left = 5
+    Height = 21
+    Top = 47
+    Width = 123
+  end
+  object AddBtn: TBitBtn
+    Anchors = [akTop, akRight]
+    OnClick = AddBtnClick
+    Anchors = [akTop, akRight]
+    Caption = '&Add'
+    TabOrder = 3
+    OnClick = AddBtnClick
+    Left = 134
+    Height = 25
+    Top = 6
+    Width = 82
+  end
+  object RemoveBtn: TBitBtn
+    Anchors = [akTop, akRight]
+    OnClick = RemoveBtnClick
+    Anchors = [akTop, akRight]
+    Caption = '&Remove'
+    TabOrder = 5
+    OnClick = RemoveBtnClick
+    Left = 133
+    Height = 25
+    Top = 64
+    Width = 82
+  end
+  object OkBtn: TBitBtn
+    Anchors = [akTop, akRight]
+    Default = True
+    Kind = bkOK
+    ModalResult = 1
+    Anchors = [akTop, akRight]
+    Default = True
+    ModalResult = 1
+    Caption = '&OK'
+    TabOrder = 6
+    Left = 134
+    Height = 25
+    Top = 95
+    Width = 82
+  end
+  object BitBtn1: TBitBtn
+    Anchors = [akTop, akRight]
+    Kind = bkCancel
+    ModalResult = 2
+    Anchors = [akTop, akRight]
+    ModalResult = 2
+    Cancel = True
+    Caption = 'Cancel'
+    TabOrder = 7
+    Left = 136
+    Height = 25
+    Top = 125
+    Width = 82
+  end
+  object AddInverse: TButton
+    Anchors = [akTop, akRight]
+    Caption = 'Add Inverse'
+    TabOrder = 4
+    OnClick = AddInverseCLICK
+    Left = 134
+    Height = 25
+    Top = 34
+    Width = 82
+    HelpType = htKeyword
+  end
+end
