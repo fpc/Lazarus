@@ -1545,7 +1545,10 @@ begin
   then begin
      TargetPIDPart := GetPart(['child process ', 'child thread '], [' ', '.'], S, True);
      FTargetPID := StrToIntDef(TargetPIDPart, 0);
-
+     if FTargetPID <= 0 then begin
+       TargetPIDPart := GetPart(['LWP '], [' ', ')'], S, True);
+       FTargetPID := StrToIntDef(TargetPIDPart, 0);
+     end;
      WriteLN('[Debugger] Target PID: ', FTargetPID);
   end
   else begin
@@ -2261,6 +2264,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.45  2004/04/13 20:14:26  mattias
+  fixed debugging under fedora core  from Colin
+
   Revision 1.44  2004/03/13 00:01:53  marc
   * fixed debugtarget PID parsing (for win32)
 
