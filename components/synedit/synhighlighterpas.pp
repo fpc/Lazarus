@@ -153,6 +153,9 @@ type
     function Func103: TtkTokenKind;
     function Func105: TtkTokenKind;
     function Func106: TtkTokenKind;
+    {$ifdef SYN_LAZARUS}
+    function Func108: TtkTokenKind;  // "operator"
+    {$endif}
     function Func117: TtkTokenKind;
     function Func126: TtkTokenKind;
     function Func129: TtkTokenKind;
@@ -333,6 +336,9 @@ begin
   fIdentFuncTable[103] := @Func103;
   fIdentFuncTable[105] := @Func105;
   fIdentFuncTable[106] := @Func106;
+  {$ifdef SYN_LAZARUS}
+  fIdentFuncTable[108] := @Func108; // "operator"
+  {$endif}
   fIdentFuncTable[117] := @Func117;
   fIdentFuncTable[126] := @Func126;
   fIdentFuncTable[129] := @Func129;
@@ -791,6 +797,13 @@ begin
   if KeyComp('Protected') then Result := tkKey else Result := tkIdentifier;
 end;
 
+{$ifdef SYN_LAZARUS}
+function TSynPasSyn.Func108: TtkTokenKind;
+begin
+  if KeyComp('Operator') then Result := tkKey else Result := tkIdentifier;
+end;
+{$endif}
+
 function TSynPasSyn.Func117: TtkTokenKind;
 begin
   if KeyComp('Exports') then Result := tkKey else Result := tkIdentifier;
@@ -975,6 +988,10 @@ begin
   fRange := rsUnknown;
   fAsmStart := False;
   fDefaultFilter := SYNS_FilterPascal;
+  
+writeln('SYNPASSYN ---------------- operator=',KeyHash('operator'));  
+writeln('SYNPASSYN ---------------- as=',KeyHash('as'));  
+  
 end; { Create }
 
 procedure TSynPasSyn.SetLine(NewValue: string; LineNumber:Integer);
