@@ -81,6 +81,7 @@ components/synedit/synedittypes.pp svneol=native#text/pascal
 components/synedit/synexporthtml.pas svneol=native#text/pascal
 components/synedit/synhighlightercpp.pp svneol=native#text/pascal
 components/synedit/synhighlighterhtml.pp svneol=native#text/pascal
+components/synedit/synhighlighterjava.pas svneol=native#text/pascal
 components/synedit/synhighlighterlfm.pas svneol=native#text/pascal
 components/synedit/synhighlightermulti.pas svneol=native#text/pascal
 components/synedit/synhighlighterpas.pp svneol=native#text/pascal

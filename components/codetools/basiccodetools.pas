@@ -1301,7 +1301,7 @@ begin
   i:=1;
   LastLineEndPos:=0;
   Result:=0;
-  while i<length(Txt) do begin
+  while i<=length(Txt) do begin
     if (Txt[i] in [#10,#13]) then begin
       inc(Result);
       inc(i);

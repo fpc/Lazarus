@@ -47,7 +47,7 @@ uses
 {$ifdef NEW_EDITOR_SYNEDIT}
   SynEdit, SynEditHighlighter, SynEditAutoComplete, SynEditKeyCmds,
   SynHighlighterPas, SynHighlighterHTML, SynHighlighterCPP, SynHighlighterXML,
-  SynHighlighterLFM, SynHighlighterPerl,
+  SynHighlighterLFM, SynHighlighterPerl, SynHighlighterJava,
 {$else}
   mwCustomEdit, mwPasSyn, mwHighlighter,
 {$endif}
@@ -70,7 +70,7 @@ type
 
   TLazSyntaxHighlighter =
     (lshNone, lshText, lshFreePascal, lshDelphi, lshLFM, lshXML, lshHTML,
-     lshCPP, lshPerl);
+     lshCPP, lshPerl, lshJava);
 
   TAdditionalHilightAttribute = (ahaNone, ahaTextBlock, ahaExecutionPoint,
     ahaEnabledBreakpoint, ahaDisabledBreakpoint, ahaInvalidBreakpoint,
@@ -90,7 +90,7 @@ const
   
   LazSyntaxHighlighterClasses: array[TLazSyntaxHighlighter] of TCustomSynClass =
     ( nil, nil, TSynPasSyn, TSynPasSyn, TSynLFMSyn, TSynXMLSyn, TSynHTMLSyn,
-      TSynCPPSyn, TSynPerlSyn);
+      TSynCPPSyn, TSynPerlSyn, TSynJavaSyn);
     
 
   { Comments }
@@ -104,7 +104,8 @@ const
       comtHtml,  // lshXML
       comtHtml,  // lshHTML
       comtCPP,   // lshCPP
-      comtPerl   // lshPerl
+      comtPerl,  // lshPerl
+      comtCPP    // lshJava
     );
     
 const
@@ -535,7 +536,8 @@ const
      'XML',
      'HTML',
      'C++',
-     'Perl'
+     'Perl',
+     'Java'
    );
 
 var
@@ -560,7 +562,7 @@ const
   CompatibleLazSyntaxHilighter:
     array[TLazSyntaxHighlighter] of TLazSyntaxHighlighter= (
         lshNone, lshText, lshFreePascal, lshFreePascal, lshLFM, lshXML, lshHTML,
-        lshCPP, lshPerl
+        lshCPP, lshPerl, lshJava
       );
       
   DefaultColorScheme = 'Default';
@@ -940,6 +942,42 @@ begin
       Add('NumberAttri=Number');
       Add('SpaceAttri=Space');
       Add('StringAttri=String');
+      Add('Symbol=Symbol');
+    end;
+  end;
+  Add(NewInfo);
+
+  // create info for Perl
+  NewInfo:=TEditOptLanguageInfo.Create;
+  with NewInfo do begin
+    TheType:=CompatibleLazSyntaxHilighter[lshJava];
+    DefaultCommentType:=DefaultCommentTypes[TheType];
+    SynClass:=LazSyntaxHighlighterClasses[TheType];
+    FileExtensions:='java';
+    SampleSource:=
+            '/* Java syntax highlighting */'#13#10 +
+            'import java.util.*;'#13#10 +
+            #13#10 +
+            '/** Example class */'#13#10 +
+            'public class Sample {'#13#10 +
+            '  public static void main(String[] args) {'#13#10 +
+            '    int i = 0;'#13#10 +
+            '    for(i = 0; i < 10; i++)'#13#10 +
+            '      System.out.println("Hello world");'#13#10 +
+            '  }'#13#10 +
+            '}'#13#10 +
+            '/* Text Block */'#13#10 +
+            #13#10;
+    AddAttrSampleLines[ahaTextBlock]:=12;
+    MappedAttributes:=TStringList.Create;
+    with MappedAttributes do begin
+      Add('Comment=Comment');
+      Add('Documentation=Comment');
+      Add('Identifier=Identifier');
+      Add('Reserved_word=Reserved_word');
+      Add('Number=Number');
+      Add('Space=Space');
+      Add('String=String');
       Add('Symbol=Symbol');
     end;
   end;

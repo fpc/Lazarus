@@ -20,7 +20,7 @@ uses
   SynEditAutoComplete, SynhighlighterHTML, SynhighlighterCPP, SynHighlighterXML,
   SynHighlighterLFM, SynHighlighterPerl, SynHighlighterMulti, SynRegExpr,
   SynEditExport, SynExportHTML, SynMemo, SynMacroRecorder, SynEditPlugins,
-  SynEditRegexSearch, SynHighlighterPosition;
+  SynEditRegexSearch, SynHighlighterPosition, SynHighlighterJava;
 
 implementation
 
@@ -29,6 +29,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.15  2003/01/15 10:17:49  mattias
+  added java syntax highlighter
+
   Revision 1.14  2002/12/02 16:38:13  mattias
   started position highlighter
 
