@@ -6807,19 +6807,31 @@ begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   {$IFDEF IDE_DEBUG}
   writeln('');
-  writeln('[TMainIDE.DoGotoIncludeDirective] ************');
+  writeln('[TMainIDE.DoMakeResourceString] ************');
   {$ENDIF}
   // calculate start and end of expression in source
-  if ActiveSrcEdit.EditorComponent.SelText='' then begin
-    if CodeToolBoss.GetStringConstBounds(ActiveUnitInfo.Source,
-      ActiveSrcEdit.EditorComponent.CaretX,
-      ActiveSrcEdit.EditorComponent.CaretY,
-      StartCode,StartPos.X,StartPos.Y,
-      EndCode,EndPos.X,EndPos.Y,
-      true) then
-    begin
-      if (StartCode<>ActiveUnitInfo.Source)
-      or (EndCode<>ActiveUnitInfo.Source) then begin
+  if CodeToolBoss.GetStringConstBounds(ActiveUnitInfo.Source,
+    ActiveSrcEdit.EditorComponent.CaretX,
+    ActiveSrcEdit.EditorComponent.CaretY,
+    StartCode,StartPos.X,StartPos.Y,
+    EndCode,EndPos.X,EndPos.Y,
+    true) then
+  begin
+    // the codetools have calculated the maximum bounds
+    if (StartCode=EndCode) and (CompareCaret(StartPos,EndPos)=0) then begin
+      MessageDlg('No String Constant Found',
+      +'Hint: The Make Resourcestring Function expects a string constant.'#13
+      +'Please select the expression and try again.',
+      mtError,[mbCancel],0);
+      exit;
+    end;
+    // the user can shorten this range by selecting text
+    if (Trim(ActiveSrcEdit.EditorComponent.SelText)='') then begin
+      // the user has not selected text
+      // -> check if the string constant is in single file
+      // (replacing code that contains an $include directive is ambigious)
+      if (StartCode<>ActiveUnitInfo.Source) or (EndCode<>ActiveUnitInfo.Source)
+      then begin
         MessageDlg('No String Constant Found','Invalid expression.'#13
         +'Hint: The Make Resourcestring Function expects a string constant'
         +' in a single file. Please select the expression and try again.',
@@ -6827,21 +6839,40 @@ begin
         exit;
       end;
     end else begin
-      DoJumpToCodeToolBossError;
-      exit;
+      // the user has selected text
+      // -> check if the selection is only part of the maximum bounds
+      if (CompareCaret(ActiveSrcEdit.EditorComponent.BlockBegin,StartPos)<0)
+      or (CompareCaret(ActiveSrcEdit.EditorComponent.BlockEnd,EndPos)>0)
+      then begin
+        MessageDlg('Selection exceeds string constant',
+        +'Hint: The Make Resourcestring Function expects a string constant.'#13
+        +'Please select only a string expression and try again.',
+        mtError,[mbCancel],0);
+        exit;
+      end;
     end;
   end else begin
-    StartPos:=ActiveSrcEdit.EditorComponent.BlockBegin;
-    EndPos:=ActiveSrcEdit.EditorComponent.BlockEnd;
+    DoJumpToCodeToolBossError;
+    exit;
   end;
   
-  // check that the expression is a string constant
-  
+  // gather all reachable resourcestring sections
   
   // ToDo:
+  {if not CodeToolBoss.FindAllResourceStringSections(ActiveUnitInfo.Source,
+    ActiveSrcEdit.EditorComponent.CaretX,
+    ActiveSrcEdit.EditorComponent.CaretY,
+    CurResStrCode,CurResStrPos)
+  then begin
+    DoJumpToCodeToolBossError;
+    exit;
+  end;}
+
+
+  // ToDo:
   // - write and open wizard
-  MessageDlg('Not implemented yet','Sorry, not implemented yet.',mtInformation,
-    [mbCancel],0);
+  MessageDlg('Not implemented yet','Sorry, DoMakeResourceString is not implemented yet.',
+    mtInformation,[mbCancel],0);
   Result:=mrCancel;
 end;
 
@@ -7689,6 +7720,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.458  2003/02/05 13:46:57  mattias
+  fixed TCustomEdit.SelStart when nothing selected
+
   Revision 1.457  2003/02/03 22:28:08  mattias
   small bugfixes and fixed non checked menu items activate
 
