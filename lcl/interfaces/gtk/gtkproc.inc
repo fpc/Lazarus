@@ -2004,6 +2004,7 @@ var
   function CanSendChar: Boolean;
   begin
     Result := False;
+    //debugln('GDK_KEY_PRESS CanSendChar BeforeEvent=',dbgs(BeforeEvent),' Event^.Length=',dbgs(Event^.Length),' Event^.KeyVal=',dbgs(Event^.KeyVal),'=$',HexStr(Event^.KeyVal,4),' ',binStr(Event^.State,16));
     if Event^.Length > 1 then Exit;
 
     // to be delphi compatible we should not send a space here
@@ -2026,7 +2027,8 @@ var
       end;
       Exit;
     end;
-    Result := Event^.KeyVal < $F000;
+    Result := (Event^.Length>0);
+              //and (not (Event^.KeyVal in [0..$F000,GDK_KP_0..GDK_KP_9]);
   end;
 
 var
@@ -2201,7 +2203,7 @@ begin
           KeyPressesChar := chr(byte(Event^.KeyVal));
           //{$ENDIF}
         end;
-        //debugln('GDK_KEY_PRESS ',dbgs(ord(KeyPressesChar)),' BeforeEvent=',dbgs(BeforeEvent),' ',DbgSName(TObject(TargetData)));
+        //debugln('GDK_KEY_PRESS ',dbgs(ord(KeyPressesChar)),' BeforeEvent=',dbgs(BeforeEvent),' ',DbgSName(TObject(TargetData)),' SysKey=',dbgs(SysKey));
 
         if KeyPressesChar<>#0 then begin
           // ASCII key: send a normal KeyPress Event for Delphi compatibility
@@ -8097,6 +8099,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.348  2005/03/05 20:40:57  mattias
+  allowing gtk1 ascii keys
+
   Revision 1.347  2005/03/04 12:21:56  mattias
   fixed TShape FPCanvas issue
 
