@@ -834,7 +834,6 @@ var
   Titles    : Array [0..255] of PChar;
   BitImage : TBitmap;
   Geometry : TGdkGeometry;
-  Accel : Longint;
 begin
   Result := 0;   //default value just in case nothing sets it
 
@@ -1108,12 +1107,15 @@ begin
            PixMapWid := gtk_pixmap_new(pixmap,nil);
          end;
 
-         pStr := StrAlloc(length(TBitBtn(Sender).Caption) + 1);
+         {pStr := StrAlloc(length(TBitBtn(Sender).Caption) + 1);
          StrPCopy(pStr, TBitBtn(Sender).Caption);
          Accel := Ampersands2Underscore(pStr);
          pLabel := gtk_label_new(pstr);
          If Accel <> -1 then
-           gtk_label_parse_uline(PGtkLabel(pLabel), pStr);
+           gtk_label_parse_uline(PGtkLabel(pLabel), pStr);}
+         pStr := Ampersands2Underscore(PChar(TBitBtn(Sender).Caption));
+         pLabel := gtk_label_new(pstr);
+         gtk_label_parse_uline(PGtkLabel(pLabel), pStr);
          StrDispose(pStr);
          if (TBitBtn(Sender).Layout = blGlyphLeft)
          or (TBitBtn(Sender).Layout = blGlyphTop) then
@@ -1961,7 +1963,6 @@ var
   P : Pointer;
   aLabel,
   pLabel: pchar;
-  Accel : Longint;
 begin
   if Sender is TMenuItem then begin
     SetMenuItemCaption;
@@ -1985,27 +1986,29 @@ begin
   csBitBtn      : IntSendMessage3(LM_IMAGECHANGED,Sender,nil);
 
   csButton,
-  csToolButton  : with PgtkButton(P)^ do
-                  begin
-                    aLabel := StrAlloc(Length(AnsiString(PLabel)) + 1);
-                    Try
-                      StrPCopy(aLabel, AnsiString(PLabel));
-                      Accel := Ampersands2Underscore(aLabel);
-                      if Child = nil then
-                      begin
-                        Assert(False, Format('trace:  [TgtkObject.SetLabel] %s has no child label', [Sender.ClassName]));
-                        child := gtk_label_new(aLabel)
-                      end
-                      else begin
-                        Assert(False, Format('trace:  [TgtkObject.SetLabel] %s has child label', [Sender.ClassName]));
-                        gtk_label_set_text(pgtkLabel(Child), aLabel);
-                      end;
-                      If Accel <> -1 then
-                        gtk_label_parse_uline(PGtkLabel(Child), aLabel);
-                    Finally
-                      StrDispose(aLabel);
-                    end;
-                  end;
+  csToolButton  :
+    with PgtkButton(P)^ do
+    begin
+      //aLabel := StrAlloc(Length(AnsiString(PLabel)) + 1);
+      aLabel := Ampersands2Underscore(PLabel);
+      Try
+        //StrPCopy(aLabel, AnsiString(PLabel));
+        //Accel := Ampersands2Underscore(aLabel);
+        if Child = nil then
+        begin
+          Assert(False, Format('trace:  [TgtkObject.SetLabel] %s has no child label', [Sender.ClassName]));
+          child := gtk_label_new(aLabel)
+        end
+        else begin
+          Assert(False, Format('trace:  [TgtkObject.SetLabel] %s has child label', [Sender.ClassName]));
+          gtk_label_set_text(pgtkLabel(Child), aLabel);
+        end;
+        //If Accel <> -1 then
+        gtk_label_parse_uline(PGtkLabel(Child), aLabel);
+      Finally
+        StrDispose(aLabel);
+      end;
+    end;
 
   csForm, 
   csFileDialog, 
@@ -3315,7 +3318,7 @@ begin
   gtk_entry_set_max_length(PGtkEntry(ComboWidget^.entry),ComboBox.MaxLength);
 
   // Text
-  writeln('CreateComboBox: ',ComboBox.Text);
+  //writeln('CreateComboBox: ',ComboBox.Text);
   SetComboBoxText(ComboWidget,PChar(ComboBox.Text));
 end;
 
@@ -3367,7 +3370,7 @@ var
    //TempStr   : String;            // currently only used for TBitBtn to load default pixmap
    //pStr      : PChar;             // currently only used for TBitBtn to load default pixmap
    ParentForm: TCustomForm;
-   Accel : Longint;
+   Accel : PChar;
 
   procedure Set_RC_Name(AWidget: PGtkWidget);
   var RCName: string;
@@ -3469,10 +3472,11 @@ begin
   csButton :
     begin
       Accel := Ampersands2Underscore(StrTemp);
-      p := gtk_button_new_with_label(StrTemp);
-      If Accel <> -1 then
+      p := gtk_button_new_with_label(Accel);
+      //If Accel <> -1 then
         With PGTKButton(P)^ do
-          gtk_label_parse_uline(PGtkLabel(Child), StrTemp);
+          gtk_label_parse_uline(PGtkLabel(Child), Accel);
+      StrDispose(Accel);
     end;
 
   csCalendar :
@@ -3903,18 +3907,15 @@ begin
     csToolButton:
     begin
       Accel := Ampersands2Underscore(StrTemp);
-      p := gtk_button_new_with_label(StrTemp);
+      //p := gtk_button_new_with_label(StrTemp);
+      p := gtk_button_new_with_label(Accel);
       if TToolButton(Sender).Style = tbsButton then
       Begin
-        p := gtk_button_new_with_label(StrTemp);
-        If Accel <> -1 then
+        //If Accel <> -1 then
           With PGTKButton(P)^ do
-            gtk_label_parse_uline(PGtkLabel(Child), StrTemp);
-      end
-      else
-      Begin
-        p := gtk_button_new_with_label(StrTemp);
+            gtk_label_parse_uline(PGtkLabel(Child), Accel);
       end;
+      StrDispose(Accel);
       gtk_widget_show (P);
     end;
 
@@ -5504,6 +5505,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.190  2002/08/31 10:55:15  lazarus
+  MG: fixed range check error in ampersands2underscore
+
   Revision 1.189  2002/08/31 07:58:21  lazarus
   MG: fixed resetting comobobox text
 
