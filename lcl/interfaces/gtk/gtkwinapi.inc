@@ -3243,17 +3243,25 @@ end;
 function TGtkObject.Frame3d(DC : HDC; var ARect : TRect;
   const FrameWidth : integer; const Style : TBevelCut) : boolean;
   
-const GTKShadowType: array[TBevelCut] of integer =
+const GTKThinShadowType: array[TBevelCut] of integer =
   (GTK_SHADOW_NONE, GTK_SHADOW_IN, GTK_SHADOW_OUT);
-  
+const GTKStrongShadowType: array[TBevelCut] of integer =
+  (GTK_SHADOW_NONE, GTK_SHADOW_ETCHED_IN, GTK_SHADOW_ETCHED_OUT);
+
 var
   Widget, ClientWidget: PGtkWidget;
   i : integer;
   DCOrigin: TPoint;
   AWindow: PGdkWindow;
+  TheStyle: PGtkStyle;
+  Area: TGdkRectangle;
+  ShadowType: Integer;
+  //LeftTopGC: PGdkGC;
+  //RightBottomGC: PGdkGC;
 begin
   Result := IsValidDC(DC);
   if Result then
+    if FrameWidth=0 then exit;
     with TDeviceContext(DC) do
     begin
       if GC = nil then begin
@@ -3267,12 +3275,60 @@ begin
         AWindow:=GetControlWindow(ClientWidget);
         if AWindow<>nil then begin
           DCOrigin:=GetDCOffset(TDeviceContext(DC));
+          TheStyle:=GetStyle('button');
+          Area.X:=ARect.Left+DCOrigin.X;
+          Area.Y:=ARect.Top+DCOrigin.Y;
+          Area.Width:=ARect.Right-ARect.Left;
+          Area.Height:=ARect.Bottom-ARect.Top;
+          {case Style of
+          bvLowered:
+            begin
+              LeftTopGC:=TheStyle^.light_gc[GTK_STATE_NORMAL];
+              RightBottomGC:=TheStyle^.dark_gc[GTK_STATE_NORMAL];
+            end;
+          bvRaised:
+            begin
+              LeftTopGC:=TheStyle^.dark_gc[GTK_STATE_NORMAL];
+              RightBottomGC:=TheStyle^.light_gc[GTK_STATE_NORMAL];
+            end;
+          else
+            begin
+              LeftTopGC:=TheStyle^.mid_gc[GTK_STATE_NORMAL];
+              RightBottomGC:=TheStyle^.mid_gc[GTK_STATE_NORMAL];
+            end;
+          end;
+          gdk_gc_set_clip_rectangle (LeftTopGC, @Area);
+          gdk_gc_set_clip_rectangle (RightBottomGC, @Area);}
+          if FrameWidth=1 then
+            ShadowType:=GTKThinShadowType[Style]
+          else
+            ShadowType:=GTKStrongShadowType[Style];
+
           for i:= 1 to FrameWidth do begin
-            gtk_draw_shadow(ClientWidget^.thestyle,
+           { // left edge
+            gdk_draw_line(Drawable, LeftTopGC,
+                       ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
+                       ARect.Left+DCOrigin.X, ARect.Bottom+DCOrigin.Y);
+            // top edge
+            gdk_draw_line(Drawable, LeftTopGC,
+                       ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
+                       ARect.Right+DCOrigin.X, ARect.Top+DCOrigin.Y);
+            // right edge
+            gdk_draw_line(Drawable, RightBottomGC,
+                       ARect.Right+DCOrigin.X, ARect.Top+DCOrigin.Y,
+                       ARect.Right+DCOrigin.X, ARect.Bottom+DCOrigin.Y);
+            // bottom edge
+            gdk_draw_line(Drawable, RightBottomGC,
+                       ARect.Left+DCOrigin.X, ARect.Bottom+DCOrigin.Y,
+                       ARect.Right+DCOrigin.X, ARect.Bottom+DCOrigin.Y);}
+            gtk_paint_shadow(TheStyle,
                             AWindow, GTK_STATE_NORMAL,
-                            GtkShadowType[Style],
+                            ShadowType,
+                            @Area,
+                            ClientWidget,
+                            'button',
                             ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
-                            ARect.Right - ARect.Left-1, ARect.Bottom-ARect.Top-1);
+                            ARect.Right-ARect.Left, ARect.Bottom-ARect.Top);
             InflateRect(ARect, -1, -1);
           end;
         end;
@@ -8200,6 +8256,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.243  2003/06/13 21:08:53  mattias
+  moved TColorButton to dialogs.pp
+
   Revision 1.242  2003/06/13 10:37:20  mattias
   fixed AV on StretchDraw 0x0
 
