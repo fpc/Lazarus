@@ -50,6 +50,7 @@ uses
   InputHistory, IDEDefs, UComponentManMain, Project, ComponentReg,
   PackageEditor, AddToPackageDlg, PackageDefs, PackageLinks, PackageSystem,
   OpenInstalledPkgDlg, PkgGraphExplorer, BrokenDependenciesDlg, CompilerOptions,
+  ExtToolDialog, ExtToolEditDlg,
   BasePkgManager, MainBar;
 
 type
@@ -904,6 +905,9 @@ function TPkgManager.DoCompilePackage(APackage: TLazPackage;
   Flags: TPkgCompileFlags): TModalResult;
 var
   PathList: TList;
+  PkgCompileTool: TExternalToolOptions;
+  OutputDir: String;
+  SrcFilename: String;
 begin
   Result:=mrCancel;
   
@@ -929,6 +933,16 @@ begin
     exit;
   end;
   
+  // create the output directory
+  OutputDir:=APackage.GetOutputDirectory;
+  if not ForceDirectory(OutputDir) then begin
+    Result:=MessageDlg('Unable to create directory',
+      'Unable to create output directory "'+OutputDir+'"'#13
+      +'for package '+APackage.IDAsString+'.',
+      mtError,[mbCancel,mbAbort],0);
+    exit;
+  end;
+
   // save everything
   Result:=MainIDE.DoSaveForBuild;
   if Result<>mrOk then exit;
@@ -941,9 +955,28 @@ begin
   // create package main source file
   Result:=DoSavePackageMainSource(APackage,Flags);
   if Result<>mrOk then exit;
-  
+  SrcFilename:=CreateRelativePath(OutputDir+APackage.GetCompileSourceFilename,
+                                  APackage.Directory);
+
+  // create external tool to run the compiler
+  PkgCompileTool:=TExternalToolOptions.Create;
+  PkgCompileTool.Title:='Compiling package '+APackage.IDAsString;
+  PkgCompileTool.Filename:=APackage.CompilerOptions.CompilerPath;
+  PkgCompileTool.ScanOutputForFPCMessages:=true;
+  PkgCompileTool.ScanOutputForMakeMessages:=true;
+  PkgCompileTool.WorkingDirectory:=APackage.Directory;
+  PkgCompileTool.CmdLineParams:=APackage.CompilerOptions.MakeOptionsString
+                                +' '+SrcFilename;
+
+  // clear old errors
+  SourceNotebook.ClearErrorLines;
+
   // compile package
-  
+  Result:=EnvironmentOptions.ExternalTools.Run(PkgCompileTool,MainIDE.MacroList);
+
+  // clean up
+  PkgCompileTool.Free;
+  MainIDE.DoCheckFilesOnDisk;
 
   Result:=mrOk;
 end;
@@ -961,16 +994,20 @@ var
   CurUnitName: String;
   RegistrationCode: String;
   fs: TFileStream;
+  HeaderSrc: String;
+  OutputDir: String;
 begin
   // check if package is ready for saving
-  if not APackage.HasDirectory then begin
-    Result:=MessageDlg('Package has no directory',
-      'Package "'+APackage.IDAsString+'" has no valid directory.',
+  OutputDir:=APackage.GetOutputDirectory;
+  if not DirectoryExists(OutputDir) then begin
+    Result:=MessageDlg('Directory not found',
+      'Package "'+APackage.IDAsString+'" has no valid output directory:'#13
+      +'"'+OutputDir+'"',
       mtError,[mbCancel,mbAbort],0);
     exit;
   end;
 
-  SrcFilename:=APackage.Directory+APackage.GetCompileSourceFilename;
+  SrcFilename:=OutputDir+APackage.GetCompileSourceFilename;
 
   // backup old file
   Result:=MainIDE.DoBackupFile(SrcFilename,false);
@@ -1014,7 +1051,15 @@ begin
 
 
   // create source
-  Src:='interface'+e
+  HeaderSrc:=
+       '{ This file was automatically created by Lazarus. Do not edit!'+e
+      +'  This source is only used to compile and install'+e
+      +'  the package '+APackage.IDAsString+'.'+e
+      +'}'+e
+      +e;
+  Src:='unit '+APackage.Name+';'+e
+      +e
+      +'interface'+e
       +e
       +'uses'+e
       +'  '+UsedUnits+', LazarusPackageIntf;'+e
@@ -1031,12 +1076,7 @@ begin
       +'end.'+e;
   Src:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.
                   BeautifyStatement(Src,0);
-  Src:='{ This file was automatically created by Lazarus. Do not edit!'+e
-      +'  This source is only used to compile and install'+e
-      +'  the package '+APackage.IDAsString+'.'+e
-      +'}'+e
-      +e
-      +Src;
+  Src:=HeaderSrc+Src;
 
   // save source
   try

@@ -428,6 +428,7 @@ type
     procedure UpdateEditorRect;
     procedure GetInheritedCompilerOptions(var OptionsList: TList);
     function GetCompileSourceFilename: string;
+    function GetOutputDirectory: string;
     // files
     function FindPkgFile(const AFilename: string;
                          ResolveLinks, IgnoreRemoved: boolean): TPkgFile;
@@ -2061,6 +2062,14 @@ end;
 function TLazPackage.GetCompileSourceFilename: string;
 begin
   Result:=ChangeFileExt(ExtractFilename(Filename),'.pas');
+end;
+
+function TLazPackage.GetOutputDirectory: string;
+begin
+  if HasDirectory then begin
+    Result:=CompilerOptions.ParsedOpts.GetParsedValue(pcosOutputDir);
+  end else
+    Result:='';
 end;
 
 { TPkgComponent }

@@ -43,9 +43,10 @@ uses
   Classes, LazarusIDEStrConsts, LCLType, LclLinux, Compiler, StdCtrls, Forms,
   Buttons, Menus, ComCtrls, Spin, ProjectDefs, Project, SysUtils, FileCtrl,
   Controls, Graphics, ExtCtrls, Dialogs, LazConf, CompReg, CodeToolManager,
-  Splash, ObjectInspector, PropEdits, SynEditKeyCmds, OutputFilter, IDEDefs,
-  MsgView, EnvironmentOpts, EditorOptions, IDEComp, FormEditor, CompilerOptions,
-  KeyMapping, IDEProcs, UnitEditor, Debugger, IDEOptionDefs, CodeToolsDefines;
+  Splash, TransferMacros, ObjectInspector, PropEdits, SynEditKeyCmds,
+  OutputFilter, IDEDefs, MsgView, EnvironmentOpts, EditorOptions, IDEComp,
+  FormEditor, CompilerOptions, KeyMapping, IDEProcs, UnitEditor, Debugger,
+  IDEOptionDefs, CodeToolsDefines;
 
 type
   // The IDE is at anytime in a specific state:
@@ -336,7 +337,8 @@ type
   public
     ToolStatus: TIDEToolStatus;
     CurrentParsedCompilerOption: TParsedCompilerOptions;
-    
+    MacroList: TTransferMacroList;
+
     function FindUnitFile(const AFilename: string): string; virtual; abstract;
     procedure GetCurrentUnit(var ActiveSourceEditor:TSourceEditor;
       var ActiveUnitInfo:TUnitInfo); virtual; abstract;

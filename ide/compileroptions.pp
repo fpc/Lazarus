@@ -80,8 +80,10 @@ type
 const
   ParsedCompilerSearchPaths = [pcosUnitPath,pcosIncludePath,
                                pcosObjectPath,pcosLibraryPath];
-  ParsedCompilerFilenames = [pcosOutputDir,pcosCompilerPath];
-  ParsedCompilerFiles = ParsedCompilerSearchPaths+ParsedCompilerFilenames;
+  ParsedCompilerFilenames = [pcosCompilerPath];
+  ParsedCompilerDirectories = [pcosOutputDir];
+  ParsedCompilerFiles =
+    ParsedCompilerSearchPaths+ParsedCompilerFilenames+ParsedCompilerDirectories;
 
 type
   TLocalSubstitutionEvent = function(const s: string): string of object;
@@ -240,13 +242,14 @@ type
     function MakeOptionsString: String;
     function MakeOptionsString(const MainSourceFileName: string): String; virtual;
     function CustomOptionsAsString: string;
-    function ParseSearchPaths(const switch, paths: String): String;
-    function ParseOptions(const Delim, Switch, OptionStr: string): string;
+    function ConvertSearchPathToCmdLine(const switch, paths: String): String;
+    function ConvertOptionsToCmdLine(const Delim, Switch, OptionStr: string): string;
     function GetXMLConfigPath: String; virtual;
     function CreateTargetFilename(const MainSourceFileName: string): string; virtual;
     procedure GetInheritedCompilerOptions(var OptionsList: TList); virtual;
     function GetOwnerName: string; virtual;
-    function GetInheritedOption(Option: TInheritedCompilerOption): string; virtual;
+    function GetInheritedOption(Option: TInheritedCompilerOption;
+                                RelativeToBaseDir: boolean): string; virtual;
     function MergeLinkerOptions(const OldOptions, AddOptions: string): string;
     function MergeCustomOptions(const OldOptions, AddOptions: string): string;
     function GetDefaultMainSourceFileName: string; virtual;
@@ -1063,10 +1066,10 @@ end;
 
 {------------------------------------------------------------------------------
   function TBaseCompilerOptions.GetInheritedOption(
-    Option: TInheritedCompilerOption): string;
+    Option: TInheritedCompilerOption; RelativeToBaseDir: boolean): string;
 ------------------------------------------------------------------------------}
 function TBaseCompilerOptions.GetInheritedOption(
-  Option: TInheritedCompilerOption): string;
+  Option: TInheritedCompilerOption; RelativeToBaseDir: boolean): string;
 var
   OptionsList: TList;
   i: Integer;
@@ -1114,6 +1117,10 @@ begin
     fInheritedOptGraphStamps:=CompilerGraphStamp;
   end;
   Result:=fInheritedOptions[Option];
+  if RelativeToBaseDir then begin
+    if Option in [icoUnitPath,icoIncludePath,icoObjectPath,icoLibraryPath] then
+      Result:=CreateRelativeSearchPath(Result,BaseDirectory);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1528,13 +1535,13 @@ Processor specific options:
   if PassLinkerOptions then begin
     CurLinkerOptions:=ParsedOpts.GetParsedValue(pcosLinkerOptions);
     if (CurLinkerOptions<>'') then
-      switches := switches + ' ' + ParseOptions(' ','-k', CurLinkerOptions);
+      switches := switches + ' ' + ConvertOptionsToCmdLine(' ','-k', CurLinkerOptions);
   end;
 
   // inherited Linker options
-  InhLinkerOpts:=GetInheritedOption(icoLinkerOptions);
+  InhLinkerOpts:=GetInheritedOption(icoLinkerOptions,true);
   if InhLinkerOpts<>'' then
-    switches := switches + ' ' + ParseOptions(' ','-k', InhLinkerOpts);
+    switches := switches + ' ' + ConvertOptionsToCmdLine(' ','-k', InhLinkerOpts);
 
   { ---------------- Other Tab -------------------- }
 
@@ -1602,42 +1609,44 @@ Processor specific options:
   // include path
   CurIncludePath:=ParsedOpts.GetParsedValue(pcosIncludePath);
   if (CurIncludePath <> '') then
-    switches := switches + ' ' + ParseSearchPaths('-Fi', CurIncludePath);
+    switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fi', CurIncludePath);
     
   // inherited include path
-  InhIncludePath:=GetInheritedOption(icoIncludePath);
+  InhIncludePath:=GetInheritedOption(icoIncludePath,true);
   if (InhIncludePath <> '') then
-    switches := switches + ' ' + ParseSearchPaths('-Fi', InhIncludePath);
+    switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fi', InhIncludePath);
 
   // library path
   CurLibraryPath:=ParsedOpts.GetParsedValue(pcosLibraryPath);
   if (CurLibraryPath <> '') then
-    switches := switches + ' ' + ParseSearchPaths('-Fl', CurLibraryPath);
+    switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fl', CurLibraryPath);
     
   // inherited library path
-  InhLibraryPath:=GetInheritedOption(icoLibraryPath);
+  InhLibraryPath:=GetInheritedOption(icoLibraryPath,true);
   if (InhLibraryPath <> '') then
-    switches := switches + ' ' + ParseSearchPaths('-Fl', InhLibraryPath);
+    switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fl', InhLibraryPath);
 
   // object path
   CurObjectPath:=ParsedOpts.GetParsedValue(pcosObjectPath);
   if (CurObjectPath <> '') then
-    switches := switches + ' ' + ParseSearchPaths('-Fo', CurObjectPath);
+    switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fo', CurObjectPath);
 
   // inherited object path
-  InhObjectPath:=GetInheritedOption(icoObjectPath);
+  InhObjectPath:=GetInheritedOption(icoObjectPath,true);
   if (InhObjectPath <> '') then
-    switches := switches + ' ' + ParseSearchPaths('-Fo', InhObjectPath);
+    switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fo', InhObjectPath);
 
   // unit path
   CurUnitPath:=ParsedOpts.GetParsedValue(pcosUnitPath);
-  if (CurUnitPath <> '') then
-    switches := switches + ' ' + ParseSearchPaths('-Fu', CurUnitPath);
+  // always add the current directory to the unit path, so that the compiler
+  // checks for changed files in the directory
+  CurUnitPath:=CurUnitPath+';.';
+  switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fu', CurUnitPath);
 
   // inherited unit path
-  InhUnitPath:=GetInheritedOption(icoUnitPath);
+  InhUnitPath:=GetInheritedOption(icoUnitPath,true);
   if (InhUnitPath <> '') then
-    switches := switches + ' ' + ParseSearchPaths('-Fu', InhUnitPath);
+    switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fu', InhUnitPath);
 
 
   { CompilerPath - Nothing needs to be done with this one }
@@ -1711,7 +1720,7 @@ Processor specific options:
     Switches:=Switches+' '+CurCustomOptions;
     
   // inherited custom options
-  InhCustomOptions:=GetInheritedOption(icoCustomOptions);
+  InhCustomOptions:=GetInheritedOption(icoCustomOptions,true);
   if InhCustomOptions<>'' then
     Switches:=Switches+' '+InhCustomOptions;
 
@@ -1733,9 +1742,10 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{  TBaseCompilerOptions ParseSearchPaths                                           }
+{  TBaseCompilerOptions ConvertSearchPathToCmdLine                                           }
 {------------------------------------------------------------------------------}
-function TBaseCompilerOptions.ParseSearchPaths(const switch, paths: String): String;
+function TBaseCompilerOptions.ConvertSearchPathToCmdLine(
+  const switch, paths: String): String;
 var
   tempsw, SS, Delim: String;
   M: Integer;
@@ -1779,9 +1789,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TBaseCompilerOptions ParseOptions
+  TBaseCompilerOptions ConvertOptionsToCmdLine
  ------------------------------------------------------------------------------}
-function TBaseCompilerOptions.ParseOptions(const Delim, Switch,
+function TBaseCompilerOptions.ConvertOptionsToCmdLine(const Delim, Switch,
   OptionStr: string): string;
 var Startpos, EndPos: integer;
 begin
@@ -1813,10 +1823,9 @@ begin
   CopySecondaryConfigFile(fn);
 end;
 
-
-{------------------------------------------------------------------------------}
-{  TBaseCompilerOptions Clear                                                      }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TBaseCompilerOptions Clear
+------------------------------------------------------------------------------}
 procedure TBaseCompilerOptions.Clear;
 begin
   fOptionsString := '';
@@ -2570,20 +2579,16 @@ begin
     AncestorNode.SelectedIndex:=AncestorNode.ImageIndex;
     with CompilerOpts do begin
       AddChildNode('unit path',
-        CreateRelativeSearchPath(GetInheritedOption(icoUnitPath),
-        BaseDirectory),icoUnitPath);
+        GetInheritedOption(icoUnitPath,true),icoUnitPath);
       AddChildNode('include path',
-        CreateRelativeSearchPath(GetInheritedOption(icoIncludePath),
-        BaseDirectory),icoIncludePath);
+        GetInheritedOption(icoIncludePath,true),icoIncludePath);
       AddChildNode('object path',
-        CreateRelativeSearchPath(GetInheritedOption(icoObjectPath),
-        BaseDirectory),icoObjectPath);
+        GetInheritedOption(icoObjectPath,true),icoObjectPath);
       AddChildNode('library path',
-        CreateRelativeSearchPath(GetInheritedOption(icoLibraryPath),
-        BaseDirectory),icoLibraryPath);
-      AddChildNode('linker options',GetInheritedOption(icoLinkerOptions),
+        GetInheritedOption(icoLibraryPath,true),icoLibraryPath);
+      AddChildNode('linker options',GetInheritedOption(icoLinkerOptions,true),
         icoLinkerOptions);
-      AddChildNode('custom options',GetInheritedOption(icoCustomOptions),
+      AddChildNode('custom options',GetInheritedOption(icoCustomOptions,true),
         icoCustomOptions);
     end;
     AncestorNode.Expanded:=true;
@@ -4157,6 +4162,14 @@ begin
       BaseDirectory:=GetParsedValue(pcosBaseDir);
       if (BaseDirectory<>'') and (not FilenameIsAbsolute(s)) then
         s:=BaseDirectory+s;
+    end
+    else if Option in ParsedCompilerDirectories then begin
+      // make directory absolute
+      s:=TrimFilename(s);
+      BaseDirectory:=GetParsedValue(pcosBaseDir);
+      if (BaseDirectory<>'') and (not FilenameIsAbsolute(s)) then
+        s:=BaseDirectory+s;
+      s:=AppendPathDelim(s);
     end
     else if Option in ParsedCompilerSearchPaths then begin
       // make search paths absolute

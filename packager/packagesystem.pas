@@ -792,9 +792,11 @@ begin
     PackageType:=lptDesignTime;
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='';
-    UsageOptions.UnitPath:='';
+    
+    // add lazarus registration unit path
+    UsageOptions.UnitPath:='$(LazarusDir)/packager/units';
 
-    // add files
+    // add registering units
     AddFile('inc/process.pp','Process',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('db/db.pp','DB',pftUnit,[pffHasRegisterProc],cpBase);
 
@@ -819,7 +821,7 @@ begin
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='';
 
-    // add files
+    // add registering units
     AddFile('menus.pp','Menus',pftUnit,[pffHasRegisterProc],cpLCL);
     AddFile('buttons.pp','Buttons',pftUnit,[pffHasRegisterProc],cpLCL);
     AddFile('stdctrls.pp','StdCtrls',pftUnit,[pffHasRegisterProc],cpLCL);

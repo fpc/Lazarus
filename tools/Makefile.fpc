@@ -46,3 +46,6 @@ makefile: Makefile.fpc
         -$(FPCMAKE) -w
        
 makefiles: makefile
+
+# end.
+
