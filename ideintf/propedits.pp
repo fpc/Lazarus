@@ -4586,7 +4586,7 @@ begin
   while GetNextHandlerIndex(htModified,i) do
     TPropHookModified(FHandlers[htModified][i])(Sender);
   if (FLookupRoot<>nil) and (FLookupRoot is TComponent) then begin
-    AForm:=GetDesignerForm(FLookupRoot);
+    AForm:=GetDesignerForm(TComponent(FLookupRoot));
     if (AForm<>nil) and (AForm.Designer<>nil) then
       AForm.Designer.Modified;
   end;
