@@ -1,0 +1,47 @@
+object Form1: TForm1
+  CAPTION = 'TreeView Example 1'
+  CLIENTHEIGHT = 427
+  CLIENTWIDTH = 455
+  FONT.HEIGHT = -11
+  FONT.NAME = 'MS Sans Serif'
+  TEXTHEIGHT = 13
+  HORZSCROLLBAR.PAGE = 456
+  VERTSCROLLBAR.PAGE = 428
+  LEFT = 570
+  HEIGHT = 427
+  TOP = 249
+  WIDTH = 455
+  object tv_eg1: TTREEVIEW
+    ALIGN = alleft
+    BACKGROUNDCOLOR = 16777215
+    BORDERWIDTH = 2
+    DEFAULTITEMHEIGHT = 17
+    DRAGCURSOR = 0
+    HIDESELECTION = False
+    INDENT = 19
+    PARENTCTL3D = False
+    SELECTIONCOLOR = -2147483635
+    TABORDER = 0
+    OPTIONS = [tvoautoitemheight, tvokeepcollapsednodes, tvoshowbuttons, tvoshowlines, tvoshowroot, tvotooltips]
+    HEIGHT = 427
+    WIDTH = 196
+  end
+  object but_Add: TBUTTON
+    CAPTION = 'Add'
+    TABORDER = 1
+    ONCLICK = but_AddClick
+    LEFT = 208
+    HEIGHT = 25
+    TOP = 8
+    WIDTH = 75
+  end
+  object but_Remove: TBUTTON
+    CAPTION = 'Remove'
+    TABORDER = 2
+    ONCLICK = but_RemoveClick
+    LEFT = 208
+    HEIGHT = 25
+    TOP = 40
+    WIDTH = 75
+  end
+end
