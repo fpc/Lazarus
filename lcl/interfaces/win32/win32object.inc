@@ -312,21 +312,6 @@ Begin
           End;
         End;
       End;
-      LM_CLB_SETCHECKED:
-      begin
-        with TLMSetChecked(Data^) do
-        begin
-          TWin32CheckListBoxStrings((Sender as TCheckListBox).Items).Checked[Index] := Checked;
-
-          // redraw control
-          Windows.SendMessage(Handle, LB_GETITEMRECT, Index, LPARAM(@SizeRect));
-          Windows.InvalidateRect(Handle, @SizeRect, FALSE);
-        end;
-      end;
-      LM_CLB_GETCHECKED:
-      begin
-        Result := integer(TWin32CheckListBoxStrings((Sender as TCheckListBox).Items).Checked[PInteger(data)^]);
-      end;
       LM_BRINGTOFRONT:
       Begin
         Assert(False, 'Trace:TODO: [TWin32WidgetSet.IntSendMessage3] - LM_BRINGTOFRONT');
@@ -2620,6 +2605,9 @@ End;
 
 {
   $Log$
+  Revision 1.241  2004/09/10 20:19:13  micha
+  convert LM_CLB_G/SETCHECKED to interface methods
+
   Revision 1.240  2004/09/10 18:58:22  micha
   convert LM_ATTACHMENU to interface method
 

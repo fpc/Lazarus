@@ -33,22 +33,46 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  CheckLst,
+  CheckLst,
 ////////////////////////////////////////////////////
-  WSCheckLst, WSLCLClasses;
+  WSCheckLst, WSLCLClasses, Win32Int, Windows;
 
 type
 
   { TWin32WSCheckListBox }
 
-  TWin32WSCheckListBox = class(TWSCheckListBox)
+  TWin32WSCustomCheckListBox = class(TWSCustomCheckListBox)
   private
   protected
   public
+    class function  GetChecked(const ACheckListBox: TCustomCheckListBox;
+      const AIndex: integer): boolean; override;
+    class procedure SetChecked(const ACheckListBox: TCustomCheckListBox;
+      const AIndex: integer; const AChecked: boolean); override;
   end;
 
 
 implementation
+
+function  TWin32WSCustomCheckListBox.GetChecked(const ACheckListBox: TCustomCheckListBox;
+  const AIndex: integer): boolean;
+begin
+  Result := TWin32CheckListBoxStrings(ACheckListBox.Items).Checked[AIndex];
+end;
+
+procedure TWin32WSCustomCheckListBox.SetChecked(const ACheckListBox: TCustomCheckListBox;
+  const AIndex: integer; const AChecked: boolean);
+var
+  SizeRect: Windows.RECT;
+  Handle: HWND;
+begin
+  TWin32CheckListBoxStrings(ACheckListBox.Items).Checked[AIndex] := AChecked;
+
+  // redraw control
+  Handle := ACheckListBox.Handle;
+  Windows.SendMessage(Handle, LB_GETITEMRECT, AIndex, LPARAM(@SizeRect));
+  Windows.InvalidateRect(Handle, @SizeRect, false);
+end;
 
 initialization
 
@@ -58,6 +82,6 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TCheckListBox, TWin32WSCheckListBox);
+  RegisterWSComponent(TCustomCheckListBox, TWin32WSCustomCheckListBox);
 ////////////////////////////////////////////////////
 end.

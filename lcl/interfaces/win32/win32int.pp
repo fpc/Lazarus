@@ -219,7 +219,7 @@ Uses
 // Win32WSArrow,
  Win32WSButtons,
 // Win32WSCalendar,
-// Win32WSCheckLst,
+ Win32WSCheckLst,
 // Win32WSCListBox,
  Win32WSComCtrls,
  Win32WSControls,
@@ -280,6 +280,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.103  2004/09/10 20:19:13  micha
+  convert LM_CLB_G/SETCHECKED to interface methods
+
   Revision 1.102  2004/09/10 18:58:22  micha
   convert LM_ATTACHMENU to interface method
 

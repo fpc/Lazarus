@@ -3096,7 +3096,6 @@ var
   handle      : hwnd;                  // handle of sender
   pStr        : PChar;                 // temporary string pointer, must be allocated/disposed when used!
   Widget      : PGtkWidget;            // pointer to gtk-widget (local use when neccessary)
-  ChildWidget : PGtkWidget;            // generic pointer to a child gtk-widget (local use when neccessary)
   AParent     : TWinControl;           // only used twice, replace with typecasts!
   GList       : pGList;                // Only used for listboxes, replace with widget!!!!!
   ListItem    : PGtkListItem;          // currently only used for listboxes
@@ -3658,57 +3657,6 @@ begin
               end;
             end;
           end;
-      end;
-      {$EndIf}
-
-      LM_CLB_GETCHECKED :
-      {$IFdef GTK2}
-      begin
-        DebugLn('TODO: TGtkWidgetSet.IntSendMessage3 LM_CLB_GETCHECKED');
-      end;
-      {$Else}
-      begin
-        Result := 0;
-        if Assigned(Data)
-        and (Sender is TControl)
-        and (TControl(Sender).fCompStyle = csCheckListBox)
-        then begin
-          { Get the child in question of that index }
-          Widget := GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
-          ListItem := g_list_nth_data(PGtkList(Widget)^.children, Integer(Data^));
-          if ListItem <> nil
-          then begin
-             ChildWidget := PPointer(PGTKBox(PGtkBin(ListItem)^.child)^.Children^.Data)^;
-             if (ChildWidget <> nil)
-             and gtk_toggle_button_get_active(PGTKToggleButton(ChildWidget))
-             then Result := 1;
-          end;
-        end;
-      end;
-      {$EndIf}
-
-      LM_CLB_SETCHECKED :
-      {$IFdef GTK2}
-      begin
-        DebugLn('TODO: TGtkWidgetSet.IntSendMessage3 LM_CLB_SETCHECKED');
-      end;
-      {$Else}
-      begin
-        if Assigned(Data)
-        and (Sender is TControl)
-        and (TControl(Sender).fCompStyle = csCheckListBox)
-        then begin
-          Widget := GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
-          ListItem := g_list_nth_data(PGtkList(Widget)^.children,
-                                      TLMSetChecked(Data^).Index);
-          if ListItem <> nil
-          then begin
-             ChildWidget := PPointer(PGTKBox(PGtkBin(ListItem)^.child)^.Children^.Data)^;
-             if (ChildWidget <> nil)
-             then gtk_toggle_button_set_active(PGTKToggleButton(ChildWidget),
-                                                TLMSetChecked(Data^).Checked);
-          end;
-        end;
       end;
       {$EndIf}
 
@@ -8748,6 +8696,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.549  2004/09/10 20:19:13  micha
+  convert LM_CLB_G/SETCHECKED to interface methods
+
   Revision 1.548  2004/09/10 18:58:22  micha
   convert LM_ATTACHMENU to interface method
 

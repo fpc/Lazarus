@@ -27,20 +27,74 @@ unit GtkWSCheckLst;
 interface
 
 uses
-  CheckLst, WSCheckLst, WSLCLClasses;
+  CheckLst, WSCheckLst, WSLCLClasses,
+  {$IFDEF gtk2}
+  glib2, gdk2pixbuf, gdk2, gtk2, Pango,
+  {$ELSE}
+  glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} GtkFontCache,
+  {$ENDIF}
+  GtkInt, Classes, GTKWinApiWindow, gtkglobals, gtkproc;
 
 type
 
-  { TGtkWSCheckListBox }
+  { TGtkWSCustomCheckListBox }
 
-  TGtkWSCheckListBox = class(TWSCheckListBox)
+  TGtkWSCustomCheckListBox = class(TWSCustomCheckListBox)
   private
   protected
   public
+    class function  GetChecked(const ACheckListBox: TCustomCheckListBox;
+      const AIndex: integer): boolean; override;
+    class procedure SetChecked(const ACheckListBox: TCustomCheckListBox;
+      const AIndex: integer; const AChecked: boolean); override;
   end;
 
 
 implementation
+
+function  TGtkWSCustomCheckListBox.GetChecked(const ACheckListBox: TCustomCheckListBox;
+  const AIndex: integer): boolean;
+var
+  Widget      : PGtkWidget;            // pointer to gtk-widget (local use when neccessary)
+  ChildWidget : PGtkWidget;            // generic pointer to a child gtk-widget (local use when neccessary)
+  ListItem    : PGtkListItem;
+begin
+  {$IFdef GTK2}
+  DebugLn('TODO: TGtkWSCustomCheckListBox.GetChecked');
+  {$Else}
+  Result := false;
+  { Get the child in question of that index }
+  Widget := GetWidgetInfo(Pointer(ACheckListBox.Handle),True)^.CoreWidget;
+  ListItem := g_list_nth_data(PGtkList(Widget)^.children, AIndex);
+  if ListItem <> nil then 
+  begin
+    ChildWidget := PPointer(PGTKBox(PGtkBin(ListItem)^.child)^.Children^.Data)^;
+    if (ChildWidget <> nil)
+      and gtk_toggle_button_get_active(PGTKToggleButton(ChildWidget))
+    then Result := true;
+  end;
+  {$EndIf}
+end;
+
+procedure TGtkWSCustomCheckListBox.SetChecked(const ACheckListBox: TCustomCheckListBox;
+  const AIndex: integer; const AChecked: boolean);
+var
+  Widget, ChildWidget: PGtkWidget;
+  ListItem: PGtkListItem;
+begin
+  {$IFdef GTK2}
+  DebugLn('TODO: TGtkWSCustomCheckList.SetChecked');
+  {$Else}
+  Widget := GetWidgetInfo(Pointer(ACheckListBox.Handle), True)^.CoreWidget;
+  ListItem := g_list_nth_data(PGtkList(Widget)^.children, AIndex);
+  if ListItem <> nil then 
+  begin
+    ChildWidget := PPointer(PGTKBox(PGtkBin(ListItem)^.child)^.Children^.Data)^;
+    if (ChildWidget <> nil)
+    then gtk_toggle_button_set_active(PGTKToggleButton(ChildWidget), AChecked);
+  end;
+  {$EndIf}
+end;
 
 initialization
 
@@ -50,6 +104,6 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TCheckListBox, TGtkWSCheckListBox);
+  RegisterWSComponent(TCustomCheckListBox, TGtkWSCustomCheckListBox);
 ////////////////////////////////////////////////////
 end.

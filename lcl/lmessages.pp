@@ -125,12 +125,6 @@ const
   LM_LB_SETTOPINDEX    = LM_LB_First   +1;
   LM_LB_Last           = LM_LB_SETTOPINDEX;
 
-  // TCheckListBox
-  LM_CLB_FIRST         = LM_LB_Last + 1;
-  LM_CLB_GETCHECKED    = LM_CLB_FIRST + 0;
-  LM_CLB_SETCHECKED    = LM_CLB_FIRST + 1;
-  LM_CLB_LAST          = LM_CLB_SETCHECKED;
-
 
   //-------------
   // lcl messages
@@ -932,10 +926,6 @@ begin
   LM_LB_SETTOPINDEX    :Result:='LM_LB_SETTOPINDEX';
   //LM_LB_Last           :Result:='LM_LB_Last';
 
-  // TCheckListBox
-  LM_CLB_GETCHECKED    :Result:='LM_CLB_GETCHECKED';
-  LM_CLB_SETCHECKED    :Result:='LM_CLB_SETCHECKED';
-
   //-------------
   // lcl messages
   //
@@ -1029,6 +1019,9 @@ end.
 
 {
   $Log$
+  Revision 1.83  2004/09/10 20:19:13  micha
+  convert LM_CLB_G/SETCHECKED to interface methods
+
   Revision 1.82  2004/09/10 18:58:21  micha
   convert LM_ATTACHMENU to interface method
 

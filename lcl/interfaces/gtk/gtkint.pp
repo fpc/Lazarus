@@ -337,7 +337,7 @@ uses
 // GtkWSArrow,
  GtkWSButtons,
 // GtkWSCalendar,
-// GtkWSCheckLst,
+ GtkWSCheckLst,
 // GtkWSCListBox,
  GtkWSComCtrls,
  GtkWSControls,
@@ -458,6 +458,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.198  2004/09/10 20:19:13  micha
+  convert LM_CLB_G/SETCHECKED to interface methods
+
   Revision 1.197  2004/09/10 18:58:22  micha
   convert LM_ATTACHMENU to interface method
 

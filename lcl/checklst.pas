@@ -90,6 +90,9 @@ procedure Register;
 
 implementation
 
+uses
+  WSCheckLst;
+
 procedure Register;
 begin
   RegisterComponents('Additional',[TCheckListBox]);
@@ -132,20 +135,14 @@ begin
   CheckIndex(AIndex);
 
   if HandleAllocated
-  then Result := (CNSendMessage(LM_CLB_GETCHECKED, Self, @AIndex) <> 0)
+  then Result := TWSCustomCheckListBoxClass(WidgetSetClass).GetChecked(Self, AIndex)
   else Result := PCachedItemData(GetCachedData(AIndex) + FItemDataOffset)^;
 end;
 
 procedure TCustomCheckListBox.SendItemChecked(const AIndex: Integer; const AChecked: Boolean);
-var
-  Msg : TLMSetChecked;
 begin
-  if HandleAllocated
-  then begin
-    Msg.Index:= AIndex;
-    Msg.Checked := AChecked;
-    CNSendMessage(LM_CLB_SETCHECKED, Self, @Msg);
-  end;
+  if HandleAllocated then
+    TWSCustomCheckListBoxClass(WidgetSetClass).SetChecked(Self, AIndex, AChecked);
 end;
 
 procedure TCustomCheckListBox.SetChecked(const AIndex: Integer; const AValue: Boolean);
@@ -162,6 +159,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.8  2004/09/10 20:19:13  micha
+  convert LM_CLB_G/SETCHECKED to interface methods
+
   Revision 1.7  2004/08/18 09:31:21  mattias
   removed obsolete unit vclglobals
 

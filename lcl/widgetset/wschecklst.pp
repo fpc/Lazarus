@@ -44,18 +44,35 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  CheckLst,
+  CheckLst,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSStdCtrls;
 
 type
   { TWSCheckListBox }
 
-  TWSCheckListBox = class(TWSCustomListBox)
+  TWSCustomCheckListBox = class(TWSCustomListBox)
+  public
+    class function  GetChecked(const ACheckListBox: TCustomCheckListBox; 
+      const AIndex: integer): boolean; virtual;
+    class procedure SetChecked(const ACheckListBox: TCustomCheckListBox; 
+      const AIndex: integer; const AChecked: boolean); virtual;
   end;
+  TWSCustomCheckListBoxClass = class of TWSCustomCheckListBox;
 
 
 implementation
+
+function  TWSCustomCheckListBox.GetChecked(const ACheckListBox: TCustomCheckListBox; 
+  const AIndex: integer): boolean;
+begin
+  result := false;
+end;
+
+procedure TWSCustomCheckListBox.SetChecked(const ACheckListBox: TCustomCheckListBox; 
+  const AIndex: integer; const AChecked: boolean);
+begin
+end;
 
 initialization
 
@@ -63,6 +80,6 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TCheckListBox, TWSCheckListBox);
+  RegisterWSComponent(TCustomCheckListBox, TWSCustomCheckListBox);
 ////////////////////////////////////////////////////
 end.
