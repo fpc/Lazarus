@@ -140,10 +140,10 @@ const
 
 
   // CodeTreeNodeSubDescriptors
-  ctnsNone               = 0;
-  ctnsForwardDeclaration = 1;
-  ctnsNeedJITParsing     = 2;
-  ctnsHasDefaultValue    = 4;
+  ctnsNone                = 0;
+  ctnsForwardDeclaration  = 1 shl 0;
+  ctnsNeedJITParsing      = 1 shl 1;
+  ctnsHasDefaultValue     = 1 shl 2;
 
   
 type
@@ -245,6 +245,8 @@ var
 function NodeDescriptionAsString(Desc: TCodeTreeNodeDesc): string;
 function CompareCodeTreeNodeExt(NodeData1, NodeData2: pointer): integer;
 function CompareCodeTreeNodeExtWithPos(NodeData1, NodeData2: pointer): integer;
+function CompareCodeTreeNodeExtWithNodeStartPos(
+  NodeData1, NodeData2: pointer): integer;
 
 
 implementation
@@ -329,6 +331,20 @@ var NodeExt1Pos, NodeExt2Pos: integer;
 begin
   NodeExt1Pos:=TCodeTreeNodeExtension(NodeData1).Position;
   NodeExt2Pos:=TCodeTreeNodeExtension(NodeData2).Position;
+  if NodeExt1Pos<NodeExt2Pos then
+    Result:=1
+  else if NodeExt1Pos>NodeExt2Pos then
+    Result:=-1
+  else
+    Result:=0;
+end;
+
+function CompareCodeTreeNodeExtWithNodeStartPos(
+  NodeData1, NodeData2: pointer): integer;
+var NodeExt1Pos, NodeExt2Pos: integer;
+begin
+  NodeExt1Pos:=TCodeTreeNodeExtension(NodeData1).Node.StartPos;
+  NodeExt2Pos:=TCodeTreeNodeExtension(NodeData2).Node.StartPos;
   if NodeExt1Pos<NodeExt2Pos then
     Result:=1
   else if NodeExt1Pos>NodeExt2Pos then

@@ -89,6 +89,10 @@ type
     function CreateMissingProcBodies: boolean;
     function NodeExtIsVariable(ANodeExt: TCodeTreeNodeExtension): boolean;
     function NodeExtIsPrivate(ANodeExt: TCodeTreeNodeExtension): boolean;
+    procedure FindInsertPositionForForwardProc(
+      SourceChangeCache: TSourceChangeCache;
+      ProcNode: TCodeTreeNode;
+      var Indent, InsertPos: integer);
     property CodeCompleteClassNode: TCodeTreeNode
       read ClassNode write SetCodeCompleteClassNode;
     property CodeCompleteSrcChgCache: TSourceChangeCache
@@ -295,6 +299,176 @@ function TCodeCompletionCodeTool.NodeExtIsPrivate(
 begin
   Result:=(ANodeExt.Flags=ord(ncpPrivateVars))
        or (ANodeExt.Flags=ord(ncpPrivateProcs));
+end;
+
+procedure TCodeCompletionCodeTool.FindInsertPositionForForwardProc(
+  SourceChangeCache: TSourceChangeCache; ProcNode: TCodeTreeNode; var Indent,
+  InsertPos: integer);
+
+  procedure SetIndentAndInsertPos(Node: TCodeTreeNode; Behind: boolean);
+  begin
+    Indent:=GetLineIndent(Src,Node.StartPos);
+    if Behind then
+      InsertPos:=FindLineEndOrCodeAfterPosition(Node.EndPos)
+    else
+      InsertPos:=FindLineEndOrCodeInFrontOfPosition(Node.StartPos);
+  end;
+
+var
+  NearestProcNode, StartSearchProc: TCodeTreeNode;
+  IsInInterface: boolean;
+  ProcBodyNodes, ForwardProcNodes: TAVLTree;
+  ProcAVLNode, NearestAVLNode: TAVLTreeNode;
+  ProcNodeExt, NearestNodeExt: TCodeTreeNodeExtension;
+  InsertBehind: boolean;
+begin
+  IsInInterface:=ProcNode.HasParentOfType(ctnInterface);
+  if IsInInterface then begin
+    // forward proc in interface
+    StartSearchProc:=FindImplementationNode;
+    if StartSearchProc=nil then
+      RaiseException('Implementation section not found');
+    if StartSearchProc.FirstChild<>nil then begin
+      // implementation not empty
+      StartSearchProc:=StartSearchProc.FirstChild
+    end else begin
+      // implementation is empty
+      // -> add it as first body
+      Indent:=GetLineIndent(Src,StartSearchProc.StartPos);
+      InsertPos:=StartSearchProc.StartPos+length('implementation');
+      exit;
+    end;
+  end else begin
+    // forward proc in code
+    // start searching for bodies behind proc
+    StartSearchProc:=ProcNode.NextBrother;
+    if StartSearchProc=nil then begin
+      // There are no nodes behind
+      // -> insert code directly behind
+      SetIndentAndInsertPos(ProcNode,true);
+      exit;
+    end;
+  end;
+
+  if SourceChangeCache.BeautifyCodeOptions.KeepForwardProcOrder then begin
+    // KeepForwardProcOrder: gather all procs and try to insert the new body
+    //  in the same order of other forward proc definitions.
+    ForwardProcNodes:=nil;
+    ProcAVLNode:=nil;
+    ProcBodyNodes:=nil;
+    ProcNodeExt:=nil;
+    
+    try
+      // gather all forward procs definitions on the same level
+      ForwardProcNodes:=GatherProcNodes(ProcNode.Parent.FirstChild,
+                 [phpInUpperCase,phpIgnoreProcsWithBody,phpIgnoreMethods],'');
+
+      // gather all proc bodies
+      ProcBodyNodes:=GatherProcNodes(StartSearchProc,
+                     [phpInUpperCase,phpIgnoreForwards,phpIgnoreMethods],'');
+                     
+      // delete current proc from tree
+      ProcAVLNode:=FindAVLNodeWithNode(ForwardProcNodes,ProcNode);
+      if ProcAVLNode=nil then
+        RaiseException('TCodeCompletionCodeTool.FindInsertPositionForForwardProc '
+         +' Internal Error, current forward proc not found');
+      ProcNodeExt:=TCodeTreeNodeExtension(ProcAVLNode.Data);
+      ForwardProcNodes.Delete(ProcAVLNode);
+
+      // remove all forward procs without bodies
+      IntersectProcNodes(ForwardProcNodes,ProcBodyNodes,true);
+      
+      // sort forward proc definitions with source position
+      ForwardProcNodes.OnCompare:=@CompareCodeTreeNodeExtWithNodeStartPos;
+      
+      {ProcAVLNode:=ForwardProcNodes.FindLowest;
+      while ProcAVLNode<>nil do begin
+        NearestProcNode:=TCodeTreeNodeExtension(ProcAVLNode.Data).Node;
+        writeln('AAA1 ',NearestProcNode.StartPos,' "',copy(Src,NearestProcNode.StartPos,20),'"');
+        ProcAVLNode:=ForwardProcNodes.FindSuccessor(ProcAVLNode);
+      end;}
+
+      // find nearest forward proc
+      NearestAVLNode:=ForwardProcNodes.FindNearest(ProcNodeExt);
+      if NearestAVLNode<>nil then begin
+        NearestNodeExt:=TCodeTreeNodeExtension(NearestAVLNode.Data);
+        NearestProcNode:=NearestNodeExt.Node;
+        //writeln('AAA1 ',NearestProcNode.StartPos,' "',copy(Src,NearestProcNode.StartPos,20),'"');
+        InsertBehind:=NearestProcNode.StartPos<ProcNode.StartPos;
+
+        // the corresponding body was linked by IntersectProcNodes in Data
+        NearestAVLNode:=TAVLTreeNode(NearestNodeExt.Data);
+        NearestNodeExt:=TCodeTreeNodeExtension(NearestAVLNode.Data);
+        NearestProcNode:=NearestNodeExt.Node;
+        SetIndentAndInsertPos(NearestProcNode,InsertBehind);
+        exit;
+      end;
+      
+    finally
+      // clean up
+      ProcNodeExt.Free;
+      if ProcBodyNodes<>nil then begin
+        ProcBodyNodes.FreeAndClear;
+        ProcBodyNodes.Free;
+      end;
+      if ForwardProcNodes<>nil then begin
+        ForwardProcNodes.FreeAndClear;
+        ForwardProcNodes.Free;
+      end;
+    end;
+  end;
+  
+  if SourceChangeCache.BeautifyCodeOptions.ForwardProcInsertPolicy
+    = fpipInFrontOfMethods
+  then begin
+    // Try to insert new proc in front of existing methods
+    
+    // find first method
+    NearestProcNode:=StartSearchProc;
+    while (NearestProcNode<>nil) and (not NodeIsMethodBody(NearestProcNode)) do
+      NearestProcNode:=NearestProcNode.NextBrother;
+    if NearestProcNode<>nil then begin
+      // the comments in front of the first method probably belong to the class
+      // Therefore insert behind the node in front of the first method
+      if NearestProcNode.PriorBrother<>nil then
+        SetIndentAndInsertPos(NearestProcNode.PriorBrother,true)
+      else begin
+        Indent:=GetLineIndent(Src,NearestProcNode.StartPos);
+        InsertPos:=NearestProcNode.Parent.StartPos;
+        while (InsertPos<=NearestProcNode.StartPos)
+        and (not IsSpaceChar[Src[InsertPos]]) do
+          inc(InsertPos);
+      end;
+      exit;
+    end;
+  end else if SourceChangeCache.BeautifyCodeOptions.ForwardProcInsertPolicy
+    = fpipBehindMethods
+  then begin
+    // Try to insert new proc behind existing methods
+
+    // find last method (go to last brother and search backwards)
+    NearestProcNode:=StartSearchProc;
+    while (NearestProcNode.NextBrother<>nil) do
+      NearestProcNode:=NearestProcNode.NextBrother;
+    while (NearestProcNode<>nil) and (not NodeIsMethodBody(NearestProcNode)) do
+      NearestProcNode:=NearestProcNode.PriorBrother;
+    if NearestProcNode<>nil then begin
+      SetIndentAndInsertPos(NearestProcNode,true);
+      exit;
+    end;
+  end;
+  
+  // Default position: Insert behind last node
+  NearestProcNode:=StartSearchProc;
+  while (NearestProcNode.NextBrother<>nil) do
+    NearestProcNode:=NearestProcNode.NextBrother;
+  if NearestProcNode<>nil then begin
+    SetIndentAndInsertPos(NearestProcNode,true);
+    exit;
+  end;
+
+  RaiseException('TCodeCompletionCodeTool.FindInsertPositionForForwardProc '
+   +' Internal Error: no insert position found');
 end;
 
 function TCodeCompletionCodeTool.AddPublishedVariable(const UpperClassName,
@@ -1541,8 +1715,7 @@ var CleanCursorPos, Indent, insertPos: integer;
   CursorNode, ProcNode, ImplementationNode, SectionNode, AClassNode,
   ANode: TCodeTreeNode;
   ProcCode: string;
-  RevertableJump: boolean;
-  
+
   procedure CompleteClass;
   begin
     {$IFDEF CTDEBUG}
@@ -1643,6 +1816,8 @@ var CleanCursorPos, Indent, insertPos: integer;
   end;
   
   procedure CompleteForwardProc;
+  var
+    RevertableJump: boolean;
   begin
     {$IFDEF CTDEBUG}
     writeln('TCodeCompletionCodeTool.CompleteCode in a forward procedure ... ');
@@ -1654,21 +1829,9 @@ var CleanCursorPos, Indent, insertPos: integer;
            [phpInUpperCase])<>nil
     then exit;
 
-    {$IFDEF CTDEBUG}
-    writeln('TCodeCompletionCodeTool.CompleteCode Body not found -> create it ... ');
-    {$ENDIF}
-    // -> create proc body at end of implementation
-
-    Indent:=GetLineIndent(Src,ImplementationNode.StartPos);
-    if (ImplementationNode.LastChild=nil)
-    or (ImplementationNode.LastChild.Desc<>ctnBeginBlock) then
-      // insert at end of code
-      InsertPos:=FindLineEndOrCodeInFrontOfPosition(ImplementationNode.EndPos)
-    else begin
-      // insert in front of main program begin..end.
-      InsertPos:=FindLineEndOrCodeInFrontOfPosition(
-                                         ImplementationNode.LastChild.StartPos);
-    end;
+    // find a nice insert position
+    FindInsertPositionForForwardProc(SourceChangeCache,ProcNode,
+                                     Indent,InsertPos);
 
     // build nice proc
     ProcCode:=ExtractProcHead(ProcNode,[phpWithStart,phpWithoutClassKeyword,
@@ -1687,7 +1850,7 @@ var CleanCursorPos, Indent, insertPos: integer;
     // reparse code and find jump point into new proc
     Result:=FindJumpPoint(CursorPos,NewPos,NewTopLine,RevertableJump);
   end;
-  
+
   function IsEventAssignment: boolean;
   var SearchedClassName: string;
   { examples:
