@@ -2114,6 +2114,9 @@ begin
     
   ecToggleMessages:
     DoShowMessagesView;
+    
+  ecToggleCodeExpl:
+    DoShowCodeExplorer;
 
   ecConfigCustomComps:
     PkgBoss.ShowConfigureCustomComponents;
@@ -2474,6 +2477,7 @@ var
 Begin
   NewProjectDesc:=nil;
   if ChooseNewProject(NewProjectDesc)<>mrOk then exit;
+  debugln('TMainIDE.mnuNewProjectClicked ',dbgsName(NewProjectDesc));
   DoNewProject(NewProjectDesc);
 end;
 
@@ -4643,6 +4647,7 @@ begin
                                      '','',[nfOpenInEditor,nfCreateDefaultSrc]);
     end else if NewIDEItem is TNewItemProject then begin
       // project
+      //debugln('TMainIDE.DoNewOther ',dbgsName(TNewItemProject(NewIDEItem).Descriptor));
       Result:=DoNewProject(TNewItemProject(NewIDEItem).Descriptor);
     end else if NewIDEItem is TNewItemPackage then begin
       // packages
@@ -11260,6 +11265,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.814  2005/01/01 11:32:16  mattias
+  fixed New dialog getting new item
+
   Revision 1.813  2004/12/31 11:27:34  mattias
   skip FillRect in TStaticText.Paint when Color=clNone
 

@@ -47,8 +47,8 @@ uses
   // codetools
   CodeToolManager, CodeCache, SourceLog,
   // synedit
-  SynEditTypes, SynEdit, SynRegExpr, SynEditHighlighter, //SynHighlighterPas,
-  SynEditAutoComplete, SynEditKeyCmds, SynCompletion,
+  SynEditTypes, SynEdit, SynRegExpr, SynEditHighlighter, SynEditAutoComplete,
+  SynEditKeyCmds, SynCompletion,
   // IDE interface
   HelpIntf, SrcEditorIntf,
   // IDE units
@@ -90,7 +90,6 @@ type
       read FOnLinesDeleted write FOnLinesDeleted;
 
     constructor Create(AOwner: TCustomSynEdit);
-//    destructor Destroy; override;
   end;
 
 

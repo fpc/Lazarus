@@ -1,0 +1,64 @@
+object CodeExplorerDlg: TCodeExplorerDlg
+  Caption = 'CodeExplorerDlg'
+  ClientHeight = 300
+  ClientWidth = 400
+  OnCreate = CodeExplorerDlgCreate
+  OnDestroy = CodeExplorerDlgDestroy
+  PixelsPerInch = 90
+  HorzScrollBar.Page = 401
+  VertScrollBar.Page = 301
+  Left = 290
+  Height = 300
+  Top = 163
+  Width = 400
+  object OkButton: TButton
+    Anchors = [akRight, akBottom]
+    Caption = 'OkButton'
+    OnClick = OkButtonClick
+    TabOrder = 0
+    Left = 143
+    Height = 25
+    Top = 264
+    Width = 103
+  end
+  object CancelButton: TButton
+    Anchors = [akRight, akBottom]
+    Caption = 'CancelButton'
+    ModalResult = 2
+    TabOrder = 1
+    Left = 280
+    Height = 25
+    Top = 264
+    Width = 103
+  end
+  object MainNotebook: TNotebook
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    PageIndex = 0
+    Left = 8
+    Height = 248
+    Top = 8
+    Width = 384
+    object UpdatePage: TPage
+      Caption = 'UpdatePage'
+      ClientWidth = 380
+      ClientHeight = 218
+      Left = 2
+      Height = 218
+      Top = 28
+      Width = 380
+      object RefreshRadioGroup: TRadioGroup
+        Caption = 'RefreshRadioGroup'
+        Items.Strings = (
+          'Manual'
+          'SwitchPage'
+          'Idle'
+        )
+        ParentColor = True
+        Left = 14
+        Height = 105
+        Top = 11
+        Width = 354
+      end
+    end
+  end
+end

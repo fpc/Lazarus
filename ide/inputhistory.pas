@@ -460,8 +460,9 @@ begin
     LoadFromXMLConfig(XMLConfig,'InputHistory/');
     XMLConfig.Free;
   except
-    // ToDo
-    DebugLn('[TCodeToolsOptions.Load]  error reading "',FFilename,'"');
+    on E: Exception do begin
+      DebugLn('[TCodeToolsOptions.Load]  error reading "',FFilename,'" ',E.Message);
+    end;
   end;
 end;
 
@@ -478,7 +479,7 @@ begin
     XMLConfig.Free;
   except
     on E: Exception do begin
-      DebugLn('[TEnvironmentOptions.Save]  error writing "',FFilename,'" ',E.Message);
+      DebugLn('[TInputHistories.Save]  error writing "',FFilename,'" ',E.Message);
     end;
   end;
 end;

@@ -136,13 +136,14 @@ type
     procedure NewOtherDialogResize(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
   private
+    FNewItem: TNewIDEItemTemplate;
     procedure FillItemsTree;
     procedure SetupComponents;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
   public
-    function GetNewItem: TNewIDEItemTemplate;
+    property NewItem: TNewIDEItemTemplate read FNewItem;
   end;
   
 function ShowNewIDEItemDialog(var NewItem: TNewIDEItemTemplate): TModalResult;
@@ -159,7 +160,7 @@ begin
   NewOtherDialog:=TNewOtherDialog.Create(nil);
   Result:=NewOtherDialog.ShowModal;
   if Result=mrOk then begin
-    NewItem:=NewOtherDialog.GetNewItem;
+    NewItem:=NewOtherDialog.NewItem;
   end;
   IDEDialogLayoutList.SaveLayout(NewOtherDialog);
   NewOtherDialog.Free;
@@ -201,9 +202,10 @@ begin
   then begin
     MessageDlg(lisNewDlgNoItemSelected,
       lisNewDlgPleaseSelectAnItemFirst, mtInformation, [mbOk], 0);
+    FNewItem:=nil;
     exit;
   end;
-
+  FNewItem:=TNewIDEItemTemplate(ANode.Data);
   ModalResult:=mrOk;
 end;
 
@@ -321,17 +323,6 @@ end;
 destructor TNewOtherDialog.Destroy;
 begin
   inherited Destroy;
-end;
-
-function TNewOtherDialog.GetNewItem: TNewIDEItemTemplate;
-var
-  ANode: TTreeNode;
-begin
-  ANode:=ItemsTreeView.Selected;
-  if (ANode=nil) or (ANode.Data=nil)
-  or (not (TObject(ANode.Data) is TNewIDEItemTemplate))
-  then exit;
-  Result:=TNewIDEItemTemplate(ANode.Data).CreateCopy;
 end;
 
 { TNewLazIDEItemCategory }

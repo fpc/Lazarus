@@ -145,7 +145,7 @@
         <UsageCount Value="30"/>
       </Unit1>
       <Unit2>
-        <CursorPos X="6" Y="30"/>
+        <CursorPos X="18" Y="24"/>
         <EditorIndex Value="1"/>
         <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/rtticontrols/rttictrls.pas"/>
         <Loaded Value="True"/>

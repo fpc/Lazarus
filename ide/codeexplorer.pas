@@ -33,11 +33,11 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  Buttons, ComCtrls,
+  Buttons, ComCtrls, Menus,
   CodeToolManager, CodeAtom, CodeCache, CodeTree, PascalParserTool,
   IDECommands,
-  EnvironmentOpts, IDEOptionDefs, LazarusIDEStrConsts, InputHistory, IDEProcs,
-  Menus;
+  LazarusIDEStrConsts, EnvironmentOpts, IDEOptionDefs, InputHistory, IDEProcs,
+  CodeExplOpts;
 
 type
   TCodeExplorerView = class;
@@ -67,6 +67,7 @@ type
     procedure CodeTreeviewDBLCLICK(Sender: TObject);
     procedure CodeTreeviewDELETION(Sender: TObject; Node: TTreeNode);
     procedure JumpToMenuitemCLICK(Sender: TObject);
+    procedure OptionsButtonClick(Sender: TObject);
     procedure RefreshButtonCLICK(Sender: TObject);
     procedure RefreshMenuitemCLICK(Sender: TObject);
   private
@@ -111,8 +112,14 @@ type
 
 var
   CodeExplorerView: TCodeExplorerView;
+  
+procedure InitCodeExplorerOptions;
+procedure LoadCodeExplorerOptions;
+procedure SaveCodeExplorerOptions;
+
 
 implementation
+
 
 type
   TViewNodeData = class
@@ -122,6 +129,23 @@ type
     StartPos, EndPos: integer;
     constructor Create(CodeNode: TCodeTreeNode);
   end;
+
+procedure InitCodeExplorerOptions;
+begin
+  if CodeExplorerOptions=nil then
+   CodeExplorerOptions:=TCodeExplorerOptions.Create;
+end;
+
+procedure LoadCodeExplorerOptions;
+begin
+  InitCodeExplorerOptions;
+  CodeExplorerOptions.Load;
+end;
+
+procedure SaveCodeExplorerOptions;
+begin
+  CodeExplorerOptions.Save;
+end;
 
 { TViewNodeData }
 
@@ -149,6 +173,8 @@ procedure TCodeExplorerView.CodeExplorerViewCREATE(Sender: TObject);
   end;
 
 begin
+  LoadCodeExplorerOptions;
+
   Name:=NonModalIDEWindowNames[nmiwCodeExplorerName];
   Caption := lisMenuViewCodeExplorer;
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self,Name);
@@ -224,6 +250,12 @@ end;
 procedure TCodeExplorerView.JumpToMenuitemCLICK(Sender: TObject);
 begin
   JumpToSelection;
+end;
+
+procedure TCodeExplorerView.OptionsButtonClick(Sender: TObject);
+begin
+  if ShowCodeExplorerOptions=mrOk then
+    SaveCodeExplorerOptions;
 end;
 
 procedure TCodeExplorerView.RefreshButtonCLICK(Sender: TObject);
