@@ -92,6 +92,7 @@ Var
   MsgObject: TObject;
   TheWinControl: TWinControl;
   WinProcess: Boolean;
+  NotifyUserInput: Boolean;
   PrevWndProc: Pointer;
   NewPos: Integer; //Used by TScrollingWindow
   {$IFDEF Ver1_1}
@@ -108,6 +109,10 @@ Var
   LMMouseEvent: TLMMouseEvent; // used by WM_MOUSEWHEEL
   LMMove: TLMMove; // used by WM_MOVE
   LMNotify: TLMNotify; // used by WM_NOTIFY
+{$IFDEF VER1_1_MSG}
+  List: TMsgArray;
+  C: Integer;
+{$ENDIF}
 
   procedure ShowHideTabPage(NotebookHandle: HWnd; Showing: boolean);
   var
@@ -147,7 +152,7 @@ Var
       Result := TObject(MenuInfo.dwItemData);
     end;
   end;
-  
+
   function SendPaintMessage: boolean;
   var
     DC,MemDC : HDC;
@@ -207,6 +212,7 @@ Begin
   LMessage.Msg := -1;
   PLMsg := @LMessage;
   WinProcess := True;
+  NotifyUserInput := False;
 
   Assert(False, 'Trace:WindowProc - Getting Object With Callback Procedure');
   OwnerObject := TObject(GetProp(Window, 'Lazarus'));
@@ -214,7 +220,7 @@ Begin
 
   Assert(False, 'Trace:WindowProc - Checking Proc');
   Assert(False, Format('Trace:WindowProc - Window Value: $%S-%d; Msg Value: %S; WParam: $%S; LParam: $%S', [IntToHex(Window, 4), Window, WM_To_String(Msg), IntToHex(WParam, 4), IntToHex(LParam, 4)]));
-  
+
   Case Msg Of
     LM_MONTHCHANGED..LM_DAYCHANGED:
     Begin
@@ -262,7 +268,7 @@ Begin
         Msg := LM_CHAR;
         KeyData := LParam;
         CharCode := WParam;
-        Assert(False,Format('WM_CHAR KeyData= %d CharCode= %d ',[KeyData,CharCode])); 
+        Assert(False,Format('WM_CHAR KeyData= %d CharCode= %d ',[KeyData,CharCode]));
       End;
     End;
     WM_CLOSE:
@@ -327,7 +333,7 @@ Begin
       Assert(False, 'Trace:WindowProc - Got WM_DESTROY');
       If OwnerObject Is TCustomForm then
         If fsModal in TCustomForm(OwnerObject).FormState then
-          EnumThreadWindows(GetWindowThreadProcessId(Window,nil),@EnableWindowsProc, Window); 
+          EnumThreadWindows(GetWindowThreadProcessId(Window,nil),@EnableWindowsProc, Window);
       EnumProps(Window, @PropEnumProc);
       LMessage.Msg := LM_DESTROY;
       PostQuitMessage(0);
@@ -388,25 +394,27 @@ Begin
     End;
     WM_KEYDOWN:
     Begin
+      NotifyUserInput := True;
       PLMsg:=@LMKey;
       With LMKey Do
       Begin
         Msg := LM_KEYDOWN;
         KeyData := LParam;
         CharCode := WParam;
-        Assert(False,Format('WM_KEYDOWN KeyData= %d CharCode= %d ',[KeyData,CharCode])); 
+        Assert(False,Format('WM_KEYDOWN KeyData= %d CharCode= %d ',[KeyData,CharCode]));
         Assert(False,'  OwnerObject= '+TComponent(OwnerObject).Name+':'+OwnerObject.ClassName);
       End;
     End;
     WM_KEYUP:
     Begin
+      NotifyUserInput := True;
       PLMsg:=@LMKey;
       With LMKey Do
       Begin
         Msg := LM_KEYUP;
         KeyData := LParam;
         CharCode := WParam;
-        Assert(False,Format('WM_KEYUP KeyData= %d CharCode= %d ',[KeyData,CharCode])); 
+        Assert(False,Format('WM_KEYUP KeyData= %d CharCode= %d ',[KeyData,CharCode]));
       End;
     End;
     WM_KILLFOCUS:
@@ -416,6 +424,7 @@ Begin
     //TODO:LM_KILLCHAR,LM_KILLWORD,LM_KILLLINE
     WM_LBUTTONDBLCLK:
     Begin
+      NotifyUserInput := True;
       PLMsg:=@LMMouse;
       With LMMouse Do
       Begin
@@ -427,6 +436,7 @@ Begin
     End;
     WM_LBUTTONDOWN:
     Begin
+      NotifyUserInput := True;
       PLMsg:=@LMMouse;
       With LMMouse Do
       Begin
@@ -438,6 +448,7 @@ Begin
     End;
     WM_LBUTTONUP:
     Begin
+      NotifyUserInput := True;
       PLMsg:=@LMMouse;
       With LMMouse Do
       Begin
@@ -449,6 +460,7 @@ Begin
     End;
     WM_MBUTTONDBLCLK:
     Begin
+      NotifyUserInput := True;
       PLMsg:=@LMMouse;
       With LMMouse Do
       Begin
@@ -460,6 +472,7 @@ Begin
     End;
     WM_MBUTTONDOWN:
     Begin
+      NotifyUserInput := True;
       PLMsg:=@LMMouse;
       With LMMouse Do
       Begin
@@ -471,6 +484,7 @@ Begin
     End;
     WM_MBUTTONUP:
     Begin
+      NotifyUserInput := True;
       PLMsg:=@LMMouse;
       With LMMouse Do
       Begin
@@ -482,14 +496,17 @@ Begin
     End;
     WM_MOUSEHOVER:
     Begin
+      NotifyUserInput := True;
       LMessage.Msg := LM_ENTER;
     End;
     WM_MOUSELEAVE:
     Begin
+      NotifyUserInput := True;
       LMessage.Msg := LM_LEAVE;
     End;
     WM_MOUSEMOVE:
     Begin
+      NotifyUserInput := True;
       PLMsg:=@LMMouseMove;
       With LMMouseMove Do
       Begin
@@ -501,6 +518,7 @@ Begin
     End;
     WM_MOUSEWHEEL:
     Begin
+      NotifyUserInput := True;
       PLMsg:=@LMMouseEvent;
       With LMMouseEvent Do
       Begin
@@ -515,6 +533,7 @@ Begin
     //TODO:LM_MOVEPAGE,LM_MOVETOROW,LM_MOVETOCOLUMN
     WM_NCLBUTTONDOWN:
     Begin
+      NotifyUserInput := True;
       Assert(False, 'Trace:WindowProc - Got WM_NCLBUTTONDOWN');
     End;
     WM_NOTIFY:
@@ -548,6 +567,7 @@ Begin
     End;
     WM_RBUTTONDBLCLK:
     Begin
+      NotifyUserInput := True;
       PLMsg:=@LMMouse;
       With LMMouse Do
       Begin
@@ -559,6 +579,7 @@ Begin
     End;
     WM_RBUTTONDOWN:
     Begin
+      NotifyUserInput := True;
       PLMsg:=@LMMouse;
       With LMMouse Do
       Begin
@@ -570,6 +591,7 @@ Begin
     End;
     WM_RBUTTONUP:
     Begin
+      NotifyUserInput := True;
       PLMsg:=@LMMouse;
       With LMMouse Do
       Begin
@@ -596,6 +618,7 @@ Begin
     End;
     WM_SYSKEYDOWN:
     Begin
+      NotifyUserInput := True;
       PLMsg:=@LMKey;
       With LMKey Do
       Begin
@@ -606,6 +629,7 @@ Begin
     End;
     WM_SYSKEYUP:
     Begin
+      NotifyUserInput := True;
       PLMsg:=@LMKey;
       With LMKey Do
       Begin
@@ -689,7 +713,7 @@ Begin
     else
       Result := CallWindowProc(PrevWndProc, Window, Msg, WParam, LParam);
   end;
-  
+
   Case Msg Of
     WM_MOVE:
     Begin
@@ -771,7 +795,11 @@ Begin
   end;
 
 
-  {$IFDEF VER1_1} 
+  // application processing
+  if NotifyUserInput then
+    NotifyApplicationUserInput(PLMsg^.Msg);
+
+  {$IFDEF VER1_1_MSG}
     List := TMsgArray(GetProp(Window, 'MsgList'));
     If Pointer(List) <> Nil Then
       For C := 0 To Length(List) Do
@@ -780,10 +808,12 @@ Begin
           DeliverMessage(OwnerObject, PLMsg^);
           Exit;
         End;
-  {$ELSE VER1_1}
+  {$ELSE VER1_1_MSG}
     If (OwnerObject <> Nil) And (PLMsg^.Msg <> -1) Then
+    Begin
       DeliverMessage(OwnerObject, PLMsg^);
-  {$ENDIF VER1_1}
+    End;
+  {$ENDIF VER1_1_MSG}
 
   Assert(False, 'Trace:WindowProc - Exit');
 End;
@@ -858,6 +888,9 @@ end;
 
 {
   $Log$
+  Revision 1.65  2003/10/21 15:06:27  micha
+  spinedit fix; variables cleanup
+
   Revision 1.64  2003/10/16 20:35:37  mattias
   added missing definitions
 

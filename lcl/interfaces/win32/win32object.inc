@@ -31,10 +31,6 @@ Var
   R1,R2:TRect;
 Begin
   Inherited Create;
-  FKeyStateList := TList.Create;
-  FDeviceContexts := TDynHashArray.Create(-1);
-  FGDIObjects := TDynHashArray.Create(-1);
-  FMessageQueue := TList.Create;
   FAccelGroup := 0;
   FTimerData  := TList.Create;
   // Retrieves the height of a win32 menu
@@ -78,12 +74,6 @@ Begin
     end;
   end;
 
-  if FToolTipWindow <> 0 then
-  begin
-    DestroyWindow(FToolTipWindow);
-    FToolTipWindow := 0;
-  end;
-
   if FStockNullBrush <> 0 then
   begin
     DeleteObject(FStockNullBrush);
@@ -94,10 +84,6 @@ Begin
     DeleteObject(FStockWhiteBrush);
   end;
 
-  FMessageQueue.Free;
-  FDeviceContexts.Free;
-  FGDIObjects.Free;
-  FKeyStateList.Free;
   FTimerData.Free;
 
   if FAccelGroup <> 0 then
@@ -132,9 +118,6 @@ Begin
     Assert(False, 'Trace:Win32Object.Init - Toolbar button Register Failed');
     Exit;
   End;
-
-  FToolTipWindow := CreateWindowEx(WS_EX_TOPMOST, TOOLTIPS_CLASS, nil, WS_POPUP Or TTS_NOPREFIX Or TTS_ALWAYSTIP, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, FParentWindow, HMENU(nil), HInstance, nil);
-  Windows.SendMessage(FParentWindow, TTM_ACTIVATE, WPARAM(True), 0);
 
   //Init stock objects;
   LogBrush.lbStyle := BS_NULL;
@@ -380,7 +363,7 @@ Var
   OldPageIndex: Integer; //used by LM_SETITEMINDEX of a csNotebook
   AMenu: TMenu;
   TheWinControl: TWinControl;
-  
+
   Procedure DrawOwnerButton;
   var flags:integer; // How the button looks like (pressed or not pressed)
       BitmapHandle: HBITMAP; // Handle of bitmap
@@ -436,7 +419,7 @@ Var
       DeleteDC(hdcBitmap);
     end;
   end;
-  
+
 Begin
   Result := 0;   //default value just in case nothing sets it
   Assert(False, 'Trace:IntSendMessage3 - Start, Received (' + GetMessageName(LM_Message) + ')');
@@ -679,7 +662,7 @@ activate_time :	the time at which the activation event occurred.
             LPOpenFileName(@Sender)^.LPStrFilter := PStr; <- Invalid Typecast
           Finally
             StrDispose(pStr);
-          End; }       
+          End; }
         End;
         LM_SETFILENAME:
         Begin
@@ -700,12 +683,12 @@ activate_time :	the time at which the activation event occurred.
         End;
         LM_SETSIZE:
         Begin
-          If (Sender Is TWinControl) Then // Handle is already tested --> see above 
+          If (Sender Is TWinControl) Then // Handle is already tested --> see above
           With PRect(Data)^ do
           begin
             TheWinControl:=TWinControl(Sender);
             SizeRect := PRect(Data)^;
-            Case TheWinControl.FCompStyle of            
+            Case TheWinControl.FCompStyle of
             csForm:
             begin
               // the LCL defines the size of a form without border, win32 with.
@@ -726,15 +709,15 @@ activate_time :	the time at which the activation event occurred.
                 SizeRect.Left:=Left;
               end;
             end; //case
-            ResizeChild(TheWinControl, Left, Top, 
+            ResizeChild(TheWinControl, Left, Top,
                SizeRect.Right - SizeRect.Left, SizeRect.Bottom - SizeRect.Top);
           end; //with
         end; //LM_SETSIZE
         LM_SHOWMODAL:
         Begin
-          If Sender Is TCommonDialog Then 
+          If Sender Is TCommonDialog Then
             Exit
-          Else begin          
+          Else begin
             EnumThreadWindows(GetWindowThreadProcessId(Handle,nil),@DisableWindowsProc, Handle);
             ShowWindow(Handle, SW_Show);
           end;
@@ -1056,7 +1039,7 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32Object.SetCallback(Msg: LongInt; Sender: TObject);
 Var
-  {$IFDEF VER1_1}
+  {$IFDEF VER1_1_MSG}
   List: TMsgArray;
   {$ENDIF}
   Window: HWnd;
@@ -1072,7 +1055,7 @@ Begin
     Window := TWinControl(Sender).Handle;
   if Window=0 then exit;
 
-  {$IFDEF VER1_1}
+  {$IFDEF VER1_1_MSG}
     List := TMsgArray(GetProp(Window, 'MsgList'));
     SetLength(List, Length(List) + 1);
     List[Length(List) + 1] := Msg;
@@ -1091,7 +1074,7 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32Object.RemoveCallbacks(Sender: TObject);
 Var
-  {$IFDEF VER1_1}
+  {$IFDEF VER1_1_MSG}
   List: TMsgArray;
   {$ENDIF}
   Window: HWnd;
@@ -1104,7 +1087,7 @@ Begin
     Window := (Sender as TWinControl).Handle;
   if Window=0 then exit;
 
-  {$IFDEF VER1_1}
+  {$IFDEF VER1_1_MSG}
     List := TMsgArray(GetProp(Window, 'MsgList'));
     Pointer(List) := Nil;
     SetProp(Window, 'MsgList', Pointer(List));
@@ -1179,7 +1162,7 @@ Begin
     Parent := AParent;
     Result:= Integer(Sender.Handle <> 0);
     ResizeChild(Sender,Left,Top,Width,Height);
-    ShowHide(Sender);    
+    ShowHide(Sender);
   End;
 End;
 
@@ -1475,7 +1458,7 @@ Var
   begin
     I:=Length(FName);
     If I < OpenFile.nFileOffset then begin
-      Inc(FName,Succ(I)); 
+      Inc(FName,Succ(I));
       I:=Length(FName);
       While I > 0 do
       begin
@@ -1489,7 +1472,7 @@ Var
   end;
 
   Procedure SetFilesPropertyForOldStyle(AFiles:TStrings);
-  Var 
+  Var
     SelectedStr:String;
     I,Start:Integer;
   begin
@@ -1527,13 +1510,13 @@ Begin
     End;
     Ret := ChooseColor(@CC)
    End;
-  csOpenFileDialog, csSaveFileDialog: 
+  csOpenFileDialog, csSaveFileDialog:
   With TOpenDialog(Sender) do
   Begin
     //TODO: HistoryList
     If ofAllowMultiSelect in Options Then
       SizeStr:=15*MAX_PATH  // Tested with 210 selected files
-    Else 
+    Else
       SizeStr:=256;
     GetMem(FName,SizeStr);
     StrPCopy(FName,Filename);
@@ -1555,11 +1538,11 @@ Begin
       NMaxFile := SizeStr;
       Flags := GetFlagsFromOptions(Options);
     End;
-    If CompStyle = csSaveFileDialog Then 
+    If CompStyle = csSaveFileDialog Then
       Ret := GetSaveFileName(@OpenFile)
-    Else 
+    Else
       Ret := GetOpenFileName(@OpenFile);
-    
+
     Files.Clear;
     If Ret Then Begin
       If Not (ofOldStyleDialog In Options) Then // Win32 returns diferent types of strings
@@ -1570,10 +1553,10 @@ Begin
     End
     Else
       FileName := '';
-    
+
     FreeMem(OpenFile.LPStrFile,SizeStr); // FName Address is changed, so free the initial @
   End;
-  csFontDialog: 
+  csFontDialog:
   With TFontDialog(Sender) do
   Begin
     ZeroMemory(@CF, SizeOf(TChooseFont));
@@ -1605,7 +1588,7 @@ Begin
     If CompStyle = csFontDialog then  Begin
       TFontDialog(Sender).Font.Assign(LF);
       TFontDialog(Sender).Font.Color := CF.RGBColors;
-    End 
+    End
     Else If CompStyle = csColorDialog then
       TColorDialog(Sender).Color := CC.RGBResult;
     Sender.UserChoice := mrOK;
@@ -1725,11 +1708,12 @@ End;
 Procedure TWin32Object.ResizeChild(Sender: TWinControl;
   Left, Top, Width, Height: Integer);
 
+Var
 {$IFDEF VerboseSizeMsg}
-Var    
   OldLeft: Integer;
   OldTop: Integer;
 {$ENDIF}
+  WinHandle, BuddyHandle: HWND;
 Begin
   // if not Sender.HandleAllocated then exit; --> Already checked (LM_SETSIZE and LM_RECREATEWND)
   {$IFDEF VerboseSizeMsg}
@@ -1743,7 +1727,17 @@ Begin
     ' Win32=',Left,',',Top,',',Width,',',Height,
     '');
   {$ENDIF}
-  MoveWindow(Sender.Handle, Left, Top, Width, Height, True);
+  WinHandle := Sender.Handle;
+  if Sender.FCompStyle = csSpinEdit then
+  begin
+    // detach from buddy first
+    BuddyHandle := Windows.SendMessage(WinHandle, UDM_SETBUDDY, 0, 0);
+    MoveWindow(BuddyHandle, Left, Top, Width, Height, True);
+    // reattach
+    Windows.SendMessage(WinHandle, UDM_SETBUDDY, BuddyHandle, 0);
+  end else begin
+    MoveWindow(WinHandle, Left, Top, Width, Height, True);
+  end;
   LCLControlSizeNeedsUpdate(Sender,False);
 End;
 
@@ -1832,6 +1826,7 @@ Begin
   Flags := WS_Child Or WS_Visible or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
   Assert(False, 'Trace:Setting flags');
   Window := HWND(Nil);
+  Buddy := HWND(Nil);
   Assert(False, 'Trace:Setting window');
 
   If (Sender Is TWinControl) And (TWinControl(Sender).Parent <> Nil) Then
@@ -1921,8 +1916,8 @@ Begin
     End;
     csCalendar:
     Begin
-      Window := CreateWindow('SysMonthCal32', StrTemp, WS_Child Or WS_Visible, Left, Top, Width, Height, Parent, HMenu(Nil), HInstance, Nil);    
-      DoSubClass := False;  
+      Window := CreateWindow('SysMonthCal32', StrTemp, WS_Child Or WS_Visible, Left, Top, Width, Height, Parent, HMenu(Nil), HInstance, Nil);
+      DoSubClass := False;
     End;
     csCheckbox:
     Begin
@@ -1937,9 +1932,9 @@ Begin
     End;
     csImage:
     Begin
-     writeln('WARNING: Creation of csImage inside LM_CREATE - It shouldn''t be here');   
+     writeln('WARNING: Creation of csImage inside LM_CREATE - It shouldn''t be here');
      // The bitmap creation is done inside TBitMap.HandleNeeded
-     // For now, just commented the code. Todo: remove it later if really not needed 
+     // For now, just commented the code. Todo: remove it later if really not needed
      // DC := Windows.GetDC(Handle);
      // With TImage(Sender).Picture.Bitmap Do
      //  Window := CreateBitmap(Width, Height, GetDeviceCaps(DC, PLANES), BitsPerPixel[Monochrome], Nil);
@@ -1952,7 +1947,7 @@ Begin
       Begin
         If Sorted Then
           Flags:= Flags or LBS_SORT;
-        If MultiSelect Then 
+        If MultiSelect Then
           if ExtendedSelect then
             Flags:= Flags or LBS_EXTENDEDSEL
           else
@@ -1966,7 +1961,7 @@ Begin
       Begin
         If Sorted Then
           Flags:= Flags or LBS_SORT;
-        If MultiSelect Then 
+        If MultiSelect Then
           if ExtendedSelect then
             Flags:= Flags or LBS_EXTENDEDSEL
           else
@@ -2107,7 +2102,7 @@ Begin
     End;
     csScrollBox:
     Begin
-      //Todo: Make control respond to user scroll request  
+      //Todo: Make control respond to user scroll request
       Window := CreateWindowEx(WS_EX_CLIENTEDGE, @ClsName, Nil, Flags or WS_HSCROLL or WS_VSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       DoSubClass:=False;
     End;
@@ -2123,7 +2118,13 @@ Begin
       //this needs to be created in the actual code because it requires a gtkadjustment Win32Control
       Inc(FControlIndex);
       Buddy := CreateWindowEx(WS_EX_CLIENTEDGE, 'EDIT', StrTemp, Flags Or ES_AUTOHSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
-      Window := CreateUpDownControl(Flags Or WS_Border, Left + Width + 10, Top, 10, Height, Parent, FControlIndex, HInstance, Buddy, 0, 100, Trunc(TSpinEdit(Sender).Value));
+      Window := CreateUpDownControl(Flags Or WS_Border or UDS_ALIGNRIGHT or UDS_NOTHOUSANDS or UDS_ARROWKEYS or UDS_WRAP or UDS_SETBUDDYINT,
+        0, 0,       // pos -  ignored for buddy
+        0, 0,       // size - ignored for buddy
+        Parent, 0, {FControlIndex,} HInstance, Buddy,
+        Trunc(TSpinEdit(Sender).MaxValue),
+        Trunc(TSpinEdit(Sender).MinValue),
+        Trunc(TSpinEdit(Sender).Value));
       Assert(False, 'TRACE:Spin edit control not created');
     End;
     csStatusBar:
@@ -2204,6 +2205,8 @@ Begin
         SetProp(Window, 'DefWndProc', Pointer(SetWindowLong(Window, GWL_WNDPROC, LongInt(@WindowProc))));
       SendMessage(Window, WM_SETFONT, GetStockObject(DEFAULT_GUI_FONT), 0);
     end;
+    If Buddy <> HWND(Nil) Then
+      SendMessage(Buddy, WM_SETFONT, GetStockObject(DEFAULT_GUI_FONT), 0);
   End
   Else If (Sender Is TMenuItem) Then
     TMenuItem(Sender).Handle := Window
@@ -2278,7 +2281,7 @@ Begin
     Assert(False, 'TRACE: [TWin32Object.ShowHide] Hiding the window');
     If Sender Is TCustomForm then
       If fsModal in TCustomForm(Sender).FormState then
-        EnumThreadWindows(GetWindowThreadProcessId(Handle,nil),@EnableWindowsProc, Handle); 
+        EnumThreadWindows(GetWindowThreadProcessId(Handle,nil),@EnableWindowsProc, Handle);
     ShowWindow(Handle, SW_HIDE);
   End;
 End;
@@ -2433,7 +2436,7 @@ Begin
     csRadiobutton, csCheckbox:
       case SendMessage(Handle, BM_GETCHECK, 0, 0) of
         BST_CHECKED: TCheckBoxState(Data^) := cbChecked;
-        BST_INDETERMINATE: TCheckBoxState(Data^) := cbGrayed;	
+        BST_INDETERMINATE: TCheckBoxState(Data^) := cbGrayed;
         BST_UNCHECKED: TCheckBoxState(Data^) := cbUnChecked;
       end;
     csCalendar:
@@ -2469,7 +2472,7 @@ Var
   Cur: PChar;
   Handle: HWnd;
   ST: SystemTime;
-  
+
 Begin
   Result := 0;     // default if nobody sets it
 
@@ -2499,7 +2502,7 @@ Begin
     Begin
       With ST Do
         DecodeDate(TLMCalendar(Data^).Date,WYear,WMonth,WDay);
-      SendMessage(Handle,MCM_SETCURSEL, 0, Integer(@ST));      
+      SendMessage(Handle,MCM_SETCURSEL, 0, Integer(@ST));
     End;
     csProgressBar:
       SendMessage(Handle, PBM_SETPOS, WPARAM(Data^), 0);
@@ -2558,9 +2561,9 @@ begin
       SendMessage(Handle, EM_SETREADONLY, WPARAM(ReadOnly), 0);
       SendMessage(Handle, EM_LIMITTEXT, MaxLength, 0);
     End;
-    
+
   csListView:
-    With TCustomListView(Sender) Do
+    With TListView(Sender) Do
     Begin
       If ViewStyle = vsReport Then
       Begin
@@ -2623,6 +2626,7 @@ begin
 
   csSpinEdit:
     Begin
+      SendMessage(Handle, UDM_SETRANGE, 0, MakeLong(Trunc(TSpinEdit(Sender).MaxValue), Trunc(TSpinEdit(Sender).MinValue)));
       SendMessage(Handle, UDM_SETPOS, 0, MakeLong(Trunc(TSpinEdit(Sender).Value), 0));
     End;
 
@@ -2781,6 +2785,9 @@ End;
 
 {
   $Log$
+  Revision 1.119  2003/10/21 15:06:27  micha
+  spinedit fix; variables cleanup
+
   Revision 1.118  2003/10/06 10:53:25  mattias
   fixed redrawing BitBtns from Micha
 

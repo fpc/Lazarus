@@ -54,11 +54,6 @@ Type
   { Win32 interface-object class }
   TWin32Object = Class(TInterfaceBase)
   Private
-    FKeyStateList: TList; // Keeps track of which keys are pressed
-    FDeviceContexts: TDynHashArray;
-    FGDIObjects: TDynHashArray;
-    FMessageQueue: TList;
-    FToolTipWindow: HWND;
     FAccelGroup: HACCEL;
     FControlIndex: Cardinal; // Win32-API control index
     FMenu: HMENU; // Main menu/menu bar
@@ -136,7 +131,7 @@ Type
 Implementation
 
 Uses
-  Arrow, Buttons, Calendar, CListBox, Menus, Process, Spin, WinExt;
+  Arrow, Buttons, Calendar, CListBox, Menus, Spin, WinExt;
 
 Type
   TEventType = (etNotify, etKey, etKeyPress, etMouseWheeel, etMouseUpDown);
@@ -149,7 +144,7 @@ Type
     Next: PLazObject;
   End;
 
-  {$IFDEF VER1_1}
+  {$IFDEF VER1_1_MSG}
     TMsgArray = Array Of Integer;
   {$ELSE}
     TMsgArray = Array[0..1] Of Integer;
@@ -185,6 +180,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.45  2003/10/21 15:06:27  micha
+  spinedit fix; variables cleanup
+
   Revision 1.44  2003/09/30 13:05:59  mattias
   removed FMainForm by Micha
 

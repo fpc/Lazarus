@@ -1910,10 +1910,9 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.ReleaseDC(HWnd: HWND; DC: HDC): Integer;
 Begin
-//writeln('[TWin32Object.ReleaseDC] ',HexStr(DC, 8),'  ',FDeviceContexts.Count);
   Assert(False, Format('Trace:> [TWin32Object.ReleaseDC] DC:0x%x', [DC]));
   Result := Windows.ReleaseDC(HWnd, DC);
-  Assert(False, Format('Trace:< [TWin32Object.ReleaseDC] FDeviceContexts DC:0x%x', [DC]));
+  Assert(False, Format('Trace:< [TWin32Object.ReleaseDC] DC:0x%x', [DC]));
 End;
 
 {------------------------------------------------------------------------------
@@ -2476,6 +2475,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.65  2003/10/21 15:06:27  micha
+  spinedit fix; variables cleanup
+
   Revision 1.64  2003/10/16 16:55:16  ajgenius
   translate COLOR_FORM to COLOR_BTNFACE
 
