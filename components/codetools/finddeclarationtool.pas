@@ -787,38 +787,55 @@ function TFindDeclarationTool.FindIdentifierInContext(
 var LastContextNode, StartContextNode, ContextNode: TCodeTreeNode;
   IsForward: boolean;
   IdentifierFoundResult: TIdentifierFoundResult;
-  Node: TCodeTreeNode;
   ParentsNodeCache: TCodeTreeNodeCache;
-  NodeCacheEntry: PCodeTreeNodeCacheEntry;
+  NearestNodeCacheEntry: PCodeTreeNodeCacheEntry;
+  
+  function FindInNodeCache: boolean;
+  var Node: TCodeTreeNode;
+  begin
+    Result:=false;
+    Node:=ContextNode.Parent;
+    if (Node<>nil) and (Node.Desc in [ctnClassPublic,ctnClassPrivate,
+      ctnClassProtected,ctnClassPublished])
+    then
+      Node:=Node.Parent;
+    if (Node<>nil) and (Node.Cache<>nil) then begin
+      // parent node has a cache object
+      if (Node.Cache is TCodeTreeNodeCache) then begin
+        // parent has node cache
+        // -> search if result already in cache
+        if ParentsNodeCache<>TCodeTreeNodeCache(Node.Cache) then begin
+          // parent cache changed -> search new nearest node
+          ParentsNodeCache:=TCodeTreeNodeCache(Node.Cache);
+          NearestNodeCacheEntry:=ParentsNodeCache.FindNearest(
+              Params.Identifier,
+              ContextNode.StartPos,ContextNode.EndPos,
+              not (fdfSearchForward in Params.Flags));
+        end;
+        if (NearestNodeCacheEntry<>nil)
+        and (NearestNodeCacheEntry^.CleanStartPos<ContextNode.EndPos)
+        and (NearestNodeCacheEntry^.CleanEndPos>ContextNode.StartPos) then begin
+          // cached result found
+          Params.SetResult(NearestNodeCacheEntry);
+          Result:=true;
+          exit;
+        end;
+      end;
+    end;
+  end;
+  
 begin
   ContextNode:=Params.ContextNode;
   StartContextNode:=ContextNode;
   Result:=false;
 
   if ContextNode<>nil then begin
-    ParentsNodeCache:=nil;
-    NodeCacheEntry:=nil;
-    Node:=ContextNode.Parent;
-    if (Node<>nil) and (Node.Cache<>nil) then begin
-      // parent node has a cache object
-      if Node.Cache is TCodeTreeNodeCache then begin
-        // parent has node cache
-        // -> search if result already in cache
-        ParentsNodeCache:=TCodeTreeNodeCache(Node.Cache);
-        NodeCacheEntry:=ParentsNodeCache.FindNearest(Params.Identifier,
-          ContextNode.StartPos,ContextNode.EndPos,
-          not (fdfSearchForward in Params.Flags));
-        if (NodeCacheEntry<>nil)
-        and (NodeCacheEntry^.CleanStartPos<ContextNode.EndPos)
-        and (NodeCacheEntry^.CleanEndPos>ContextNode.StartPos) then begin
-          // cached result found
-          Params.SetResult(NodeCacheEntry);
-          Result:=true;
-          exit;
-        end;
-      end;
-    end;
   
+    // initialize cache search
+    ParentsNodeCache:=nil;
+    NearestNodeCacheEntry:=nil;
+
+    // search ...
     repeat
 {$IFDEF ShowTriedContexts}
 writeln('[TFindDeclarationTool.FindIdentifierInContext] A Ident=',
@@ -831,6 +848,11 @@ writeln('[TFindDeclarationTool.FindIdentifierInContext] A Ident=',
 if (ContextNode.Desc=ctnClass) then
   writeln('  ContextNode.LastChild=',ContextNode.LastChild<>nil);
 {$ENDIF}
+      // search in cache
+      Result:=FindInNodeCache;
+      if Result then exit;
+      
+      // search identifier in current context
       LastContextNode:=ContextNode;
       if not (fdfIgnoreCurContextNode in Params.Flags) then begin
         case ContextNode.Desc of
@@ -1013,6 +1035,7 @@ writeln('[TFindDeclarationTool.FindIdentifierInContext] no prior node accessible
               and (ContextNode.NextBrother<>nil)
               and (ContextNode.NextBrother.Desc<>ctnImplementation)) then
           begin
+            // search next in prior/next brother
             if not (fdfSearchForward in Params.Flags) then
               ContextNode:=ContextNode.PriorBrother
             else
@@ -1024,14 +1047,15 @@ writeln('[TFindDeclarationTool.FindIdentifierInContext] Searching in PriorBrothe
 
             // -> test if class visibility valid
             case ContextNode.Desc of
-            ctnClassPublished: if (fdfClassPublished in Params.Flags) then break;
-            ctnClassPublic:    if (fdfClassPublic    in Params.Flags) then break;
-            ctnClassProtected: if (fdfClassProtected in Params.Flags) then break;
-            ctnClassPrivate:   if (fdfClassPrivate   in Params.Flags) then break;
+            ctnClassPublished:if (fdfClassPublished in Params.Flags) then break;
+            ctnClassPublic:   if (fdfClassPublic    in Params.Flags) then break;
+            ctnClassProtected:if (fdfClassProtected in Params.Flags) then break;
+            ctnClassPrivate:  if (fdfClassPrivate   in Params.Flags) then break;
             else
               break;
             end;
           end else if ContextNode.Parent<>nil then begin
+            // search next in parent
             ContextNode:=ContextNode.Parent;
 {$IFDEF ShowTriedContexts}
 writeln('[TFindDeclarationTool.FindIdentifierInContext] Searching in Parent  ContextNode=',ContextNode.DescAsString);
@@ -3671,6 +3695,7 @@ begin
   NewCodeTool:=TFindDeclarationTool(NodeCacheEntry^.NewTool);
   NewNode:=NodeCacheEntry^.NewNode;
   NewCleanPos:=NodeCacheEntry^.NewCleanPos;
+  NewFlags:=[fdfDoNotCache];
 end;
 
 

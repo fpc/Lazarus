@@ -88,6 +88,11 @@ type
          - class nodes
        this cache must be deleted, every time the code tree changes, or
        one of the used units changes.
+       
+       
+       
+       
+       
   }
   PCodeTreeNodeCacheEntry = ^TCodeTreeNodeCacheEntry;
   TCodeTreeNodeCacheEntry = record
