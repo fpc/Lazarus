@@ -314,6 +314,7 @@ procedure TGtkObject.SendCachedGtkMessages;
     
   begin
     LCLControl:=TWinControl(GetLCLObject(MainWidget));
+    if LCLControl=nil then exit;
     {$IFDEF VerboseSizeMsg}
     writeln('JJJ1 SendSizeNotificationToLCL ',LCLControl.Name,':',LCLControl.ClassName);
     {$ENDIF}
@@ -5494,6 +5495,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.188  2002/08/30 13:46:32  lazarus
+  MG: added failure exit
+
   Revision 1.187  2002/08/30 12:32:22  lazarus
   MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
 
