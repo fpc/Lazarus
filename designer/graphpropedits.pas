@@ -745,11 +745,13 @@ begin
 end;
 
 procedure TPenStylePropertyEditor.ListDrawValue(const CurValue: ansistring;
-  Index:integer;  ACanvas: TCanvas; const ARect: TRect; AState:TPropEditDrawState);
+  Index:integer;  ACanvas: TCanvas;
+  const ARect: TRect; AState:TPropEditDrawState);
 var
   vRight, vTop, vBottom: Integer;
   vOldPenColor, vOldBrushColor: TColor;
   vOldPenStyle: TPenStyle;
+  i: Integer;
 begin
   vRight := (ARect.Bottom - ARect.Top) * 2 + ARect.Left;
   vTop := (ARect.Bottom - ARect.Top) div 2 + ARect.Top;
@@ -772,7 +774,8 @@ begin
 
     // set thing up and do work
     Pen.Color := clWindowText;
-    Pen.Style := TPenStyle(GetEnumValue(GetPropInfo^.PropType, CurValue));
+    i:=GetEnumValue(GetPropInfo^.PropType, CurValue);
+    Pen.Style := TPenStyle(i);
     MoveTo(ARect.Left + 1, vTop);
     LineTo(vRight - 1, vTop);
     MoveTo(ARect.Left + 1, vTop + 1);

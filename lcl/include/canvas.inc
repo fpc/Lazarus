@@ -849,7 +849,6 @@ begin
   if csFontValid in FState
   then begin
     Exclude(FState, csFontValid);
-    //TODO: Select stock object;
   end;
 end;
 
@@ -865,7 +864,6 @@ begin
   if csPenValid in FState
   then begin
     Exclude(FState, csPenValid);
-    //TODO: Select stock object;
   end;
 end;
 
@@ -881,7 +879,6 @@ begin
   if csRegionValid in FState
   then begin
     Exclude(FState, csRegionValid);
-    //TODO: Select stock object;
   end;
 end;
 
@@ -1028,7 +1025,7 @@ end;
 procedure TCanvas.DeselectHandles;
 begin
   if (FHandle<>0) 
-  and (FState - [csPenValid, csBrushValid, csFontValid] <> FState) then begin
+  and (FState * [csPenValid, csBrushValid, csFontValid] <> []) then begin
     // select default sub handles in the device context without deleting owns
     if FSavedBrushHandle<>0 then begin
       SelectObject(FHandle,FSavedBrushHandle);
@@ -1172,6 +1169,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.46  2002/08/18 04:57:01  mattias
+  fixed csDashDot
+
   Revision 1.45  2003/06/13 21:08:53  mattias
   moved TColorButton to dialogs.pp
 

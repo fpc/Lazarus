@@ -6573,11 +6573,12 @@ procedure TGTKObject.SelectGDKPenProps(DC: HDC);
   end;
 
 begin
-  if TDeviceContext(DC).SelectedColors=dcscPen then exit;
-  
-  with TDeviceContext(DC), CurrentPen^ do begin
-    EnsureGCColor(DC, dccCurrentBackColor, True, True);//BKColor
-    EnsureGCColor(DC, dccGDIPenColor, False, False);//Pen Color
+  if TDeviceContext(DC).SelectedColors<>dcscPen then begin
+    with TDeviceContext(DC), CurrentPen^ do begin
+      EnsureGCColor(DC, dccCurrentBackColor, True, True);//BKColor
+      EnsureGCColor(DC, dccGDIPenColor, False, False);//Pen Color
+    end;
+    TDeviceContext(DC).SelectedColors:=dcscPen;
   end;
 
   if (not (dcfPenSelected in TDeviceContext(DC).DCFlags)) then begin
@@ -6595,9 +6596,9 @@ begin
           case GDIPenStyle of
             PS_DASH:       SetDashes([4,4]);
             PS_DOT:        SetDashes([2,2]);
-            PS_DASHDOT:    SetDashes([4,2,2,2,0]);
+            PS_DASHDOT:    SetDashes([4,2,2,2]);
             PS_DASHDOTDOT: SetDashes([4,2,2,2,2,2]);
-           {This is DEADLY!!!}
+            //This is DEADLY!!!
             //PS_NULL:       gdk_gc_set_dashes(GC, 0, [0,4], 2);
           end;
         end;
@@ -6605,7 +6606,6 @@ begin
       Include(TDeviceContext(DC).DCFlags,dcfPenSelected);
     end;
   end;
-  TDeviceContext(DC).SelectedColors:=dcscPen;
 end;
 
 {------------------------------------------------------------------------------
@@ -7420,6 +7420,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.379  2002/08/18 04:57:01  mattias
+  fixed csDashDot
+
   Revision 1.378  2002/08/17 23:41:34  mattias
   many clipping fixes
 

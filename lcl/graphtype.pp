@@ -87,7 +87,8 @@ type
     SystemFont : Boolean;     // Use the system font instead of Canvas Font
   end;
 
-  TPenStyle = (psSolid, psDash, psDot, psDashDot, psDashDotDot, psClear, psInsideframe);
+  TPenStyle = (psSolid, psDash, psDot, psDashDot, psDashDotDot, psClear,
+               psInsideframe);
   TPenMode = (pmBlack, pmWhite, pmNop, pmNot, pmCopy, pmNotCopy, pmMergePenNot,
               pmMaskPenNot, pmMergeNotPen, pmMaskNotPen, pmMerge,pmNotMerge, pmMask,
               pmNotMask, pmXor, pmNotXor
@@ -100,14 +101,16 @@ type
     Style : TPenStyle;
   end;
 
-  TBrushStyle = (bsSolid, bsClear, bsHorizontal, bsVertical, bsFDiagonal, bsBDiagonal, bsCross, bsDiagCross);
+  TBrushStyle = (bsSolid, bsClear, bsHorizontal, bsVertical, bsFDiagonal,
+                 bsBDiagonal, bsCross, bsDiagCross);
 
   TFillStyle = (fsSurface, fsBorder);
   TFillMode = (fmAlternate, fmWinding);
 
   TCopymode = longint;
 
-  TCanvasStates = (csHandleValid, csFontValid, csPenvalid, csBrushValid, csRegionValid);
+  TCanvasStates = (csHandleValid, csFontValid, csPenvalid, csBrushValid,
+                   csRegionValid);
   TCanvasState = set of TCanvasStates;
   TCanvasOrientation = (csLefttoRight, coRighttoLeft);
 
@@ -165,6 +168,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.10  2002/08/18 04:57:01  mattias
+  fixed csDashDot
+
   Revision 1.9  2003/01/27 13:49:16  mattias
   reduced speedbutton invalidates, added TCanvas.Frame
 

@@ -229,7 +229,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
-    property Handle : HPEN read GetHandle write SetHandle;
+    property Handle: HPEN read GetHandle write SetHandle;
   published
     property Color: TColor read FPenData.Color write SetColor default clBlack;
     property Mode: TPenMode read FMode write SetMode default pmCopy;
@@ -962,6 +962,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.69  2002/08/18 04:57:01  mattias
+  fixed csDashDot
+
   Revision 1.68  2003/06/13 21:08:53  mattias
   moved TColorButton to dialogs.pp
 

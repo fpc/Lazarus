@@ -161,7 +161,8 @@ end;
  ------------------------------------------------------------------------------}
 function TPen.GetHandle: HPEN;
 const
-  PEN_STYLES: array[TPenStyle] of Word = (PS_SOLID, PS_DASH, PS_DOT, PS_DASHDOT, PS_DASHDOTDOT, PS_NULL,PS_INSIDEFRAME);
+  PEN_STYLES: array[TPenStyle] of Word = (
+    PS_SOLID,PS_DASH,PS_DOT,PS_DASHDOT,PS_DASHDOTDOT,PS_NULL,PS_INSIDEFRAME);
 var
   LogPen: TLogPen;
 begin
@@ -199,6 +200,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2002/08/18 04:57:01  mattias
+  fixed csDashDot
+
   Revision 1.4  2002/10/31 04:27:59  lazarus
   AJ: added TShape
 

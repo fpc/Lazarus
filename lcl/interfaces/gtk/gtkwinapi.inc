@@ -6574,6 +6574,7 @@ begin
   if IsValidDC(DC) and IsValidGDIObject(GDIObj)
   then begin
     case PGdiObject(GDIObj)^.GDIType of
+    
       gdiBitmap:
         with TDeviceContext(DC) do
         begin
@@ -6598,6 +6599,7 @@ begin
           gdk_gc_set_function(GC, GDK_COPY);
           SelectedColors := dcscCustom;
         end;
+        
       gdiBrush:
         with TDeviceContext(DC), PGdiObject(GDIObj)^ do
         begin
@@ -6614,6 +6616,7 @@ begin
           end;
           SelectedColors := dcscCustom;
         end;
+        
       gdiFont:
         with TDeviceContext(DC) do
         begin
@@ -6627,15 +6630,17 @@ begin
           Exclude(DCFlags,dcfTextMetricsValid);
           SelectedColors := dcscCustom;
         end;
+        
       gdiPen:
         with TDeviceContext(DC) do
         begin
           Result := HPEN(CurrentPen);
           CurrentPen := PGDIObject(GDIObj);
-          DCFlags:=DCFlags-[dcfPenSelected,dcfPenInvalid];
+          DCFlags:=DCFlags-[dcfPenSelected];
           if GC <> nil then SelectGDKPenProps(DC);
           SelectedColors := dcscCustom;
         end;
+        
       gdiRegion:
       begin
         with TDeviceContext(DC) do
@@ -8431,6 +8436,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.248  2002/08/18 04:57:01  mattias
+  fixed csDashDot
+
   Revision 1.247  2002/08/17 23:41:35  mattias
   many clipping fixes
 

@@ -66,9 +66,7 @@ end;
 
 procedure TShape.StyleChanged(Sender: TObject);
 begin
-  {avoid pointless re-painting}
-  If (Parent <> nil) and Visible and
-    Parent.HandleAllocated
+  If (Parent <> nil) and Visible and Parent.HandleAllocated
   then
     Invalidate;
 end;
@@ -97,6 +95,9 @@ end;
 { =============================================================================
 
  $Log$
+ Revision 1.2  2002/08/18 04:57:01  mattias
+ fixed csDashDot
+
  Revision 1.1  2002/10/31 04:27:59  lazarus
  AJ: added TShape
 
