@@ -464,8 +464,13 @@ begin
   
   {$ENDIF}
   // date + time
-  Result:=Result+'  modified '+FormatDateTime('DD/MM/YYYY hh:mm',
-                         FileDateToDateTime(FileAge(AFilename)));
+  Result:=Result+'  modified ';
+  try
+    Result:=Result+FormatDateTime('DD/MM/YYYY hh:mm',
+                           FileDateToDateTime(FileAge(AFilename)));
+  except
+    Result:=Result+'?';
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -772,6 +777,9 @@ end;
 
 {
   $Log$
+  Revision 1.13  2003/02/19 13:10:01  mattias
+  fixed parsing invalid date
+
   Revision 1.12  2003/02/09 16:01:49  mattias
   fixed win32 compilation
 

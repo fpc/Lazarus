@@ -194,7 +194,7 @@ Fatal: Can't find unit GLIB
 
    1. Check a clean rebuild: do a 'make clean all'
 
-   2. Check if the compiler has the correct version (1.0.6 or 1.0.7)
+   2. Check if the compiler has the correct version (1.0.7 or 1.1)
 
    3. Check if the compiler is using the right config file. The normal
       installation creates /etc/fpc.cfg. But fpc also searches for
