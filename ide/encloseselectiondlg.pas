@@ -47,6 +47,7 @@ type
     estForBeginEnd,
     estWhileDoBeginEnd,
     estRepeatUntil,
+    estWith,
     estPascalComment
     );
     
@@ -86,6 +87,7 @@ begin
   estForBeginEnd: Result:='For | do begin..end';
   estWhileDoBeginEnd: Result:='While | do begin..end';
   estRepeatUntil: Result:='Repeat..Until |';
+  estWith: Result:='With | do begin..end';
   estPascalComment: Result:='{..}';
   else
     RaiseException('EncloseSelectionTypeDescription');
@@ -141,6 +143,11 @@ begin
     Template:='repeat'+LineEnding
              +'  <selection>'+LineEnding
              +'until |;'+LineEnding;
+
+  estWith:
+    Template:='with | do begin'+LineEnding
+             +'  <selection>'+LineEnding
+             +'until;'+LineEnding;
 
   estPascalComment:
     Template:='{'+LineEnding
