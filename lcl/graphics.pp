@@ -256,7 +256,11 @@ const
   cmWhiteness = WHITENESS;
 
 
-const  // New TFont instances are initialized with the values in this structure:
+const
+  // New TFont instances are initialized with the values in this structure.
+  // About font default values: The default font is chosen by the interfaces
+  // depending on the context. For example, there can be a different default
+  // font for a button and a groupbox.
   DefFontData: TFontData = (
     Handle: 0;
     Height: 0;
@@ -271,10 +275,10 @@ type
   TCanvas = class;
 
   // standard LCL graphic formats
-  TBitmap = class;
-  TPixmap = class;
-  TIcon = class;
-  TPortableNetworkGraphic = class;
+  TBitmap = class;                  // bmp
+  TPixmap = class;                  // xpm
+  TIcon = class;                    // ico
+  TPortableNetworkGraphic = class;  // png
 
 
   { TGraphicsObject }
@@ -1257,6 +1261,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.102  2003/12/26 09:55:08  mattias
+  fixed range check type conversion
+
   Revision 1.101  2003/12/25 14:17:07  mattias
   fixed many range check warnings
 
