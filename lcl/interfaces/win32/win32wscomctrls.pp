@@ -87,6 +87,8 @@ type
     class procedure ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean); override;
     class procedure ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer; const AText: String); override;
     class procedure ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean); override;
+  
+    class procedure UpdateProperties(const ACustomListView: TCustomListView); override;
   end;
 
   { TWin32WSListView }
@@ -454,6 +456,58 @@ begin
   then Exit;  
   
   ListView_EnsureVisible(ALV.Handle, AIndex, Ord(PartialOK));
+end;
+
+procedure TWin32WSCustomListView.UpdateProperties(const ACustomListView: TCustomListView);
+const
+  LVS_TYPEMASK = LVS_LIST or LVS_REPORT or LVS_SMALLICON or LVS_ICON;
+  LISTVIEWSTYLES: array[TViewStyle] of DWORD = (
+    LVS_LIST, LVS_REPORT);
+var
+  I, Count: Integer;
+  LVC: LV_COLUMN;
+  Style: dword;
+  H: THandle;
+begin
+  with TListView(ACustomListView) do
+  begin
+    Style := dword(GetWindowLong(Handle, GWL_STYLE));
+    if (Style and LVS_TYPEMASK) <> LISTVIEWSTYLES[ViewStyle]
+    then begin
+      Style := Style and not LVS_TYPEMASK or LISTVIEWSTYLES[ViewStyle];
+      SetWindowLong(Handle, GWL_STYLE, Style);
+    end;
+    
+    if ViewStyle = vsReport then
+    begin 
+//        H := ListView_GetHeader(Handle);
+      H := SendMessage(Handle, $1000 + 31 {LVM_GETHEADER}, 0, 0);
+      Count := Header_GetItemCount(H);
+      
+      for I := 0 to Columns.Count - 1 do
+      begin
+        with LVC do
+        begin
+          Mask := LVCF_FMT or LVCF_TEXT or LVCF_WIDTH;
+          Fmt := Integer(Columns.Items[I].Alignment);
+          CX := Columns.Items[I].Width;
+          PSzText := PChar(Columns.Items[I].Caption);
+        end;
+        if i >= Count 
+        then ListView_InsertColumn(Handle, i, lvc)
+        else ListView_SetColumn(Handle, I, LVC);
+      end;
+      for i := Columns.Count to Count - 1 do
+        ListView_DeleteColumn(Handle, i);  
+      Count := Header_GetItemCount(H);
+    end;
+    //If Sorted Then
+      //ListView_SortItems(Handle, @CompareFunc, 0);
+    if MultiSelect then
+      SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) and not LVS_SINGLESEL);
+    if SmallImages <> Nil then
+      ListView_SetImageList(Handle, SmallImages.Handle, LVSIL_NORMAL);
+  end;
 end;
 
 { TWin32WSProgressBar }

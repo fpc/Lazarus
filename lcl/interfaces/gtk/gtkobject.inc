@@ -6241,11 +6241,8 @@ const
   cLabelAlignY : array[TTextLayout] of gfloat = (0.0, 0.5, 1.0);
   cLabelAlign : array[TAlignment] of TGtkJustification = (GTK_JUSTIFY_LEFT, GTK_JUSTIFY_RIGHT, GTK_JUSTIFY_CENTER);
 var
-  wHandle    : Pointer;
   Widget   : PGtkWidget;
-  I,X         : Integer;
-  pRowText : PChar;
-  BitImage : TBitMap;
+  wHandle    : Pointer;
   AnAdjustment: PGtkAdjustment;
 
 begin
@@ -6339,105 +6336,6 @@ begin
     DebugLn('TODO: TGtkWidgetSet.SetProperties csListView');
   {$Else}
     begin
-      // set up columns..
-
-      Widget:= GetWidgetInfo(wHandle, True)^.CoreWidget;
-
-      gtk_clist_freeze(GTK_CLIST(Widget));
-
-
-      for I := 0 to TListview(sender).Columns.Count-1 do
-      begin
-        gtk_clist_set_column_title(GTK_CLIST(Widget),I,
-                               PChar(TListview(sender).Columns[i].Caption));
-
-        // set column alignment
-        gtk_clist_set_column_justification(GTK_CLIST(Widget),I,
-                 aGTKJUSTIFICATION[TListview(sender).Columns[i].Alignment]);
-        // set auto sizing
-        gtk_clist_set_column_auto_resize(GTK_CLIST(Widget),I,
-                 TListview(sender).Columns[i].AutoSize);
-        // set width
-        gtk_clist_set_column_width(GTK_CLIST(Widget),I,
-                 TListview(sender).Columns[i].Width);
-        // set Visible
-        gtk_clist_set_column_visibility(GTK_CLIST(Widget),I,
-                 TListview(sender).Columns[i].Visible);
-        // set MinWidth
-        if TListview(sender).Columns[i].MinWidth>0 then
-          gtk_clist_set_column_min_width(GTK_CLIST(Widget), I,
-                                     TListview(sender).Columns[i].MinWidth);
-        // set MaxWidth
-        if (TListview(sender).Columns[i].MaxWidth>=
-          TListview(sender).Columns[i].MinWidth)
-        and (TListview(sender).Columns[i].MaxWidth>0) then
-          gtk_clist_set_column_max_width(GTK_CLIST(Widget), I,
-                                     TListview(sender).Columns[i].MaxWidth);
-      end;
-
-      //sorting
-      if (TListview(sender).ViewStyle = vsReport)
-      then gtk_clist_column_titles_show(GTK_CLIST(Widget))
-      else gtk_clist_column_titles_Hide(GTK_CLIST(Widget));
-
-      gtk_clist_set_sort_column(GTK_CLIST(Widget),
-        TListview(sender).SortColumn);
-
-      //multiselect
-      gtk_clist_set_selection_mode(GTK_CLIST(Widget),
-        aGTkSelectionMode[TListview(sender).MultiSelect]);
-
-//TODO:This doesn't work right now
-//                gtk_clist_set_auto_sort(PgtkCList(handle),TListview(sender).Sorted);
-      //
-      //do items...
-      //
-      for I := 0 to TListview(sender).Items.Count-1 do
-      begin
-        pRowText:=PChar(TListItem(TListview(sender).Items[i]).Caption);
-        gtk_clist_set_text(GTK_CLIST(Widget),I,0,pRowText);
-
-        //do image if one is assigned....
-        // TODO: Largeimage support
-        if  (TListview(sender).SmallImages <> nil)
-        and (TListItem(TListview(sender).Items[i]).ImageIndex > -1)
-        then begin
-          DebugLn('Checking images');
-          if (TListItem(TListview(sender).Items[i]).ImageIndex
-            < TListview(sender).SmallImages.Count)
-          then begin
-            //draw image
-            //DebugLn('drawing image');
-            //DebugLn('TListItem(TListview(sender).Items[i]).ImageIndex is ',TListItem(TListview(sender).Items[i]).ImageIndex);
-
-            BitImage := TBitmap.Create;
-            TListview(sender).SmallImages.GetBitmap(
-               TListItem(TListview(sender).Items[i]).ImageIndex,BitImage);
-
-            gtk_clist_set_pixmap(GTK_CLIST(Widget),I,0,
-              pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),
-              nil);
-            gtk_clist_set_pixtext(GTK_CLIST(Widget),I,0,pRowText,3,
-              pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),
-              nil);
-//                      bitimage.Free;
-          end;
-        end;
-
-        if (TListview(sender).ViewStyle = vsReport)
-        then begin //columns showing
-          for X := 1 to TListview(sender).Columns.Count-1 do
-          begin
-            if ( X <= TListItem(TListview(sender).Items[i]).SubItems.Count)
-            then begin
-              pRowText:=PChar(TListItem(
-                TListview(sender).Items[i]).SubItems.Strings[X-1]);
-              gtk_clist_set_text(GTK_CLIST(Widget),I,X,pRowText);
-            end;
-          end;  //for loop
-        end;
-      end;
-      gtk_clist_thaw(GTK_CLIST(Widget));
     end;
   {$EndIf}
   
@@ -7597,6 +7495,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.593  2004/09/22 18:06:32  micha
+  convert LM_SETPROPERTIES message to interface methods for TCustomListView
+
   Revision 1.592  2004/09/22 16:13:01  micha
   convert LM_SETPROPERTIES message to interface methods for TCustomMemo
 

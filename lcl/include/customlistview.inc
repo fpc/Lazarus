@@ -165,14 +165,14 @@ begin
     exit;
   end;
   Exclude(FStates,lvPropertiesNeedsUpdate);
-  CNSendMessage(LM_SETPROPERTIES,self,nil);
+  TWSCustomListViewClass(WidgetSetClass).UpdateProperties(Self);
 end;
 
 procedure TCustomListView.InitializeWnd;
 begin
   inherited InitializeWnd;
   Exclude(FStates,lvPropertiesNeedsUpdate);
-  CNSendMessage(LM_SETPROPERTIES,Self,nil);
+  TWSCustomListViewClass(WidgetSetClass).UpdateProperties(Self);
   if FSelected <> nil 
   then TWSCustomListViewClass(WidgetSetClass).ItemSetState(Self, FSelected.Index, FSelected, lisSelected, True);
 end;
@@ -615,6 +615,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.41  2004/09/22 18:06:32  micha
+  convert LM_SETPROPERTIES message to interface methods for TCustomListView
+
   Revision 1.40  2004/09/08 23:05:35  mattias
   improved TListView.SetItemVisible  from Andrew Haines
 

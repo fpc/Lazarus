@@ -95,6 +95,8 @@ type
     class procedure ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean); override;
     class procedure ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer; const AText: String); override;
     class procedure ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean); override;
+
+    class procedure UpdateProperties(const ACustomListView: TCustomListView); override;
 {$ENDIF}
   end;
 
@@ -770,6 +772,113 @@ begin
         //                      0 = your row will be at the top.
         //                      1 = it will be at the bottom.
 end;
+
+procedure TGtkWSCustomListView.UpdateProperties(const ACustomListView: TCustomListView);
+var
+  Widget   : PGtkWidget;
+  pRowText : PChar;
+  BitImage : TBitMap;
+  I, X: integer;
+begin
+  // set up columns..
+  Widget:= GetWidgetInfo(PGtkWidget(ACustomListView.Handle), True)^.CoreWidget;
+
+  gtk_clist_freeze(GTK_CLIST(Widget));
+
+  for I := 0 to TListView(ACustomListView).Columns.Count-1 do
+  begin
+    gtk_clist_set_column_title(GTK_CLIST(Widget),I,
+                           PChar(TListView(ACustomListView).Columns[i].Caption));
+
+    // set column alignment
+    gtk_clist_set_column_justification(GTK_CLIST(Widget),I,
+             aGTKJUSTIFICATION[TListView(ACustomListView).Columns[i].Alignment]);
+    // set auto sizing
+    gtk_clist_set_column_auto_resize(GTK_CLIST(Widget),I,
+             TListView(ACustomListView).Columns[i].AutoSize);
+    // set width
+    gtk_clist_set_column_width(GTK_CLIST(Widget),I,
+             TListView(ACustomListView).Columns[i].Width);
+    // set Visible
+    gtk_clist_set_column_visibility(GTK_CLIST(Widget),I,
+             TListView(ACustomListView).Columns[i].Visible);
+    // set MinWidth
+    if TListView(ACustomListView).Columns[i].MinWidth>0 then
+      gtk_clist_set_column_min_width(GTK_CLIST(Widget), I,
+                                 TListView(ACustomListView).Columns[i].MinWidth);
+    // set MaxWidth
+    if (TListView(ACustomListView).Columns[i].MaxWidth>=
+      TListView(ACustomListView).Columns[i].MinWidth)
+    and (TListView(ACustomListView).Columns[i].MaxWidth>0) then
+      gtk_clist_set_column_max_width(GTK_CLIST(Widget), I,
+                                 TListView(ACustomListView).Columns[i].MaxWidth);
+  end;
+
+  //sorting
+  if (TListView(ACustomListView).ViewStyle = vsReport)
+  then gtk_clist_column_titles_show(GTK_CLIST(Widget))
+  else gtk_clist_column_titles_Hide(GTK_CLIST(Widget));
+
+  gtk_clist_set_sort_column(GTK_CLIST(Widget),
+    TListView(ACustomListView).SortColumn);
+
+  //multiselect
+  gtk_clist_set_selection_mode(GTK_CLIST(Widget),
+    aGTkSelectionMode[TListView(ACustomListView).MultiSelect]);
+
+//TODO:This doesn't work right now
+//                gtk_clist_set_auto_sort(PgtkCList(handle),TListView(ACustomListView).Sorted);
+  //
+  //do items...
+  //
+  for I := 0 to TListView(ACustomListView).Items.Count-1 do
+  begin
+    pRowText:=PChar(TListItem(TListView(ACustomListView).Items[i]).Caption);
+    gtk_clist_set_text(GTK_CLIST(Widget),I,0,pRowText);
+
+    //do image if one is assigned....
+    // TODO: Largeimage support
+    if  (TListView(ACustomListView).SmallImages <> nil)
+    and (TListItem(TListView(ACustomListView).Items[i]).ImageIndex > -1)
+    then begin
+      DebugLn('Checking images');
+      if (TListItem(TListView(ACustomListView).Items[i]).ImageIndex
+        < TListView(ACustomListView).SmallImages.Count)
+      then begin
+        //draw image
+        //DebugLn('drawing image');
+        //DebugLn('TListItem(TListView(ACustomListView).Items[i]).ImageIndex is ',TListItem(TListView(ACustomListView).Items[i]).ImageIndex);
+
+        BitImage := TBitmap.Create;
+        TListView(ACustomListView).SmallImages.GetBitmap(
+           TListItem(TListView(ACustomListView).Items[i]).ImageIndex,BitImage);
+
+        gtk_clist_set_pixmap(GTK_CLIST(Widget),I,0,
+          pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),
+          nil);
+        gtk_clist_set_pixtext(GTK_CLIST(Widget),I,0,pRowText,3,
+          pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),
+          nil);
+//                      bitimage.Free;
+      end;
+    end;
+
+    if (TListView(ACustomListView).ViewStyle = vsReport)
+    then begin //columns showing
+      for X := 1 to TListView(ACustomListView).Columns.Count-1 do
+      begin
+        if ( X <= TListItem(TListView(ACustomListView).Items[i]).SubItems.Count)
+        then begin
+          pRowText:=PChar(TListItem(
+            TListView(ACustomListView).Items[i]).SubItems.Strings[X-1]);
+          gtk_clist_set_text(GTK_CLIST(Widget),I,X,pRowText);
+        end;
+      end;  //for loop
+    end;
+  end;
+  gtk_clist_thaw(GTK_CLIST(Widget));
+end;
+
 {$ENDIF}
 
 { TGtkWSProgressBar }

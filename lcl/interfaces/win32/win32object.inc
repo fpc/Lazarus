@@ -1684,16 +1684,8 @@ end;
   the calling object to the corresponding Window.
  ------------------------------------------------------------------------------}
 Function TWin32WidgetSet.SetProperties(Sender: TObject): Integer;
-const
-  LVS_TYPEMASK = LVS_LIST or LVS_REPORT or LVS_SMALLICON or LVS_ICON;
-  LISTVIEWSTYLES: array[TViewStyle] of DWORD = (
-    LVS_LIST, LVS_REPORT);
 Var
   Handle: HWND;
-  I, Count: Integer;
-  LVC: LV_COLUMN;
-  Style: dword;
-  H: THandle;
 begin
   Result := 0; // default if nobody sets it
 
@@ -1707,47 +1699,6 @@ begin
     Assert (False, 'Trace:WARNING: [TWin32WidgetSet.SetProperties] --> got nil pointer');
 
   Case TControl(Sender).FCompStyle Of
-
-  csListView:
-    With TListView(Sender) Do
-    Begin
-      Style := dword(GetWindowLong(Handle, GWL_STYLE));
-      if (Style and LVS_TYPEMASK) <> LISTVIEWSTYLES[ViewStyle]
-      then begin
-        Style := Style and not LVS_TYPEMASK or LISTVIEWSTYLES[ViewStyle];
-        SetWindowLong(Handle, GWL_STYLE, Style);
-      end;
-      
-      if ViewStyle = vsReport Then
-      Begin 
-//        H := ListView_GetHeader(Handle);
-        H := SendMessage(Handle, $1000 + 31 {LVM_GETHEADER}, 0, 0);
-        Count := Header_GetItemCount(H);
-        
-        For I := 0 To Columns.Count - 1 Do
-        Begin
-          With LVC Do
-          Begin
-            Mask := LVCF_FMT Or LVCF_TEXT Or LVCF_WIDTH;
-            Fmt := Integer(Columns.Items[I].Alignment);
-            CX := Columns.Items[I].Width;
-            PSzText := PChar(Columns.Items[I].Caption);
-          End;
-          if i >= Count 
-          then ListView_InsertColumn(Handle, i, lvc)
-          else ListView_SetColumn(Handle, I, LVC);
-        End;
-        for i := Columns.Count to Count - 1 do
-          ListView_DeleteColumn(Handle, i);  
-        Count := Header_GetItemCount(H);
-      End;
-      //If Sorted Then
-        //ListView_SortItems(Handle, @CompareFunc, 0);
-      If MultiSelect Then
-        SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) And Not LVS_SINGLESEL);
-      If SmallImages <> Nil Then
-        ListView_SetImageList(Handle, SmallImages.Handle, LVSIL_NORMAL);
-    End;
 
   csProgressBar:
     With TProgressBar(Sender) Do
@@ -1846,6 +1797,9 @@ End;
 
 {
   $Log$
+  Revision 1.281  2004/09/22 18:06:32  micha
+  convert LM_SETPROPERTIES message to interface methods for TCustomListView
+
   Revision 1.280  2004/09/22 14:50:18  micha
   convert LM_SETPROPERTIES message for tcustomlabel to interface methods
 
