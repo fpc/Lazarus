@@ -333,10 +333,10 @@ resourcestring
   lisCommandAfterPublishingProject = 'Command after publishing project';
   lisUnableToAddToProjectBecauseThereIsAlreadyAUnitWith = 'Unable to add %s '
     +'to project, because there is already a unit with the same name in the '
-    +'Project1.';
+    +'Project.';
   lisAddToProject = 'Add %s to project?';
   lisTheFile = 'The file %s%s%s';
-  lisisAlreadyPartOfTheProject1 = '%s is already part of the Project1.';
+  lisisAlreadyPartOfTheProject = '%s is already part of the Project.';
   lisRemoveFromProject = 'Remove from project';
   lisCreateAProjectFirst = 'Create a project first!';
   lisTheTestDirectoryCouldNotBeFoundSeeEnvironmentOpt = 'The Test Directory '
@@ -615,7 +615,6 @@ resourcestring
   lisEnvOptDlgTestDirNotFoundMsg = 'Test directory "%s" not found.';
 
   // editor options
-  //dlgEdOptsCap = 'Editor Options'; = lismenueditoroptions
   dlgEdDisplay = 'Display';
   dlgKeyMapping = 'Key Mappings';
   dlgEdColor = 'Color';
@@ -1675,7 +1674,7 @@ resourcestring
     +'name %s%s%s is not a valid package name%sPlease choose another name (e.'
     +'g. package1.lpk)';
   lisPkgMangRenameFileLowercase = 'Rename File lowercase?';
-  lisPkgMangShouldTheFileRenamedLowercaseTo = 'Should the file renamed '
+  lisPkgMangShouldTheFileRenamedLowercaseTo = 'Should the file be renamed '
     +'lowercase to%s%s%s%s?';
   lisPkgMangPackageNameAlreadyExists = 'Package name already exists';
   lisPkgMangThereIsAlreadyAnotherPackageWithTheName = 'There is already '

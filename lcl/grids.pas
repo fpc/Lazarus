@@ -30,7 +30,7 @@ interface
 uses
   Classes, SysUtils, LCLStrConsts, LCLProc, LCLType, LCLLinux, Controls,
   GraphType, Graphics, Forms, VCLGlobals, DynamicArray, LMessages, Messages,
-  XMLCfg, StdCtrls, LResources;
+  XMLCfg, StdCtrls, LResources, MaskEdit;
 
 Const
   //GRIDFILEVERSION = 1; // Original
@@ -159,8 +159,8 @@ Type
     Procedure(Sender: TObject; Col,Row: Integer) of Object;
     
   TOnCellAttrEvent =
-    Procedure(Sender:TObject; const Col, Row:Integer; aState: TGridDrawState;
-              Var CellProps: TCellAttr) of Object;
+    Procedure(Sender:TObject; const Col, Row:Integer; State: TGridDrawState;
+              Var Attr: TCellAttr) of Object;
   TGridOperationEvent =
     Procedure (Sender: TObject; IsColumn:Boolean;
                sIndex,tIndex: Integer) of object;
@@ -279,11 +279,11 @@ Type
     Procedure AdjustCount(IsColumn:Boolean; OldValue, NewValue:Integer);
     Procedure CheckFixedCount(aCol,aRow,aFCol,aFRow: Integer);
     Procedure CacheVisibleGrid;
-    function GetSelection: TGridRect;
     Function doColSizing(X,Y: Integer): Boolean;
     Function doRowSizing(X,Y: Integer): Boolean;
     Procedure doColMoving(X,Y: Integer);
     Procedure doRowMoving(X,Y: Integer);
+    Procedure doTopleftChange(DimChg: Boolean);
     
     Function OffsetToColRow(IsCol,Fisical:Boolean; Offset:Integer; Var Rest:Integer): Integer;
     Function ColRowToOffset(IsCol,Fisical:Boolean; Index: Integer; Var Ini,Fin:Integer): Boolean;
@@ -292,10 +292,11 @@ Type
     function GetTopRow: Longint;
     function GetVisibleColCount: Integer;
     function GetVisibleRowCount: Integer;
-    Function Getrowheights(Arow: Integer): Integer;
-    Function Getcolcount: Integer;
-    Function Getrowcount: Integer;
-    Function Getcolwidths(Acol: Integer): Integer;
+    Function GetColCount: Integer;
+    Function GetRowCount: Integer;
+    Function GetRowHeights(Arow: Integer): Integer;
+    function GetSelection: TGridRect;
+    Function GetColWidths(Acol: Integer): Integer;
     Function GetVisibleGrid: TRect;
     Procedure MyTextRect(R: TRect; Offx,Offy:Integer; S:String; Ts: TTextStyle);
     Function ScrollToCell(Const aCol,aRow: Integer): Boolean;
@@ -322,13 +323,14 @@ Type
     Procedure SetDefRowHeight(Valor: Integer);
     Procedure SetCol(Valor: Integer);
     Procedure SetRow(Valor: Integer);
-    Procedure doTopleftChange(DimChg: Boolean);
     Procedure TryScrollTo(aCol,aRow: integer);
     Procedure UpdateScrollBarPos(Which: TControlScrollbar);
     Procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
     Procedure WMHScroll(var Message : TLMHScroll); message LM_HScroll;
     Procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+    procedure WMChar(var Message: TLMChar); message LM_CHAR;
+    
     
   protected
     fGridState: TGridState;
@@ -374,7 +376,7 @@ Type
     Procedure MouseMove(Shift: TShiftState; X,Y: Integer);Override;
     Procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     Function  MoveExtend(Relative: Boolean; DCol, DRow: Integer): Boolean;
-    Function  MoveNextSelectable(DCol, DRow: Integer): Boolean;
+    Function  MoveNextSelectable(Relative:Boolean; DCol, DRow: Integer): Boolean;
     Function  TryMoveSelection(Relative: Boolean; Var DCol, DRow: Integer): Boolean;
     Procedure ProcessEditor(LastEditor:TWinControl; DCol,DRow: Integer; WasVis: Boolean);
     
@@ -411,6 +413,7 @@ Type
     Procedure doEditorSetValue; Virtual;
     Procedure SelectEditor; Virtual;
     Function ShouldEdit: Boolean;
+    Procedure EditorShowChar(Ch: Char);
   Public
     Procedure EditorExit(Sender: TObject);
     procedure EditorKeyDown(Sender: TObject; var Key:Word; Shift:TShiftState);
@@ -1822,6 +1825,17 @@ begin
   visualChange;
 end;
 
+procedure TCustomGrid.WMChar(var Message: TLMChar);
+Var
+  Ch: Char;
+begin
+  Ch:=Char(Message.CharCode);
+  WriteLn(ClassName,'.WMchar CharCode= ',Message.CharCode);
+  if (goEditing in Options) and (Ch in [^H, #32..#255]) then EditorShowChar(Ch)
+  else inherited;
+end;
+
+
 procedure TCustomGrid.WndProc(var TheMessage: TLMessage);
 begin
   {
@@ -2260,26 +2274,21 @@ begin
               FSelectActive:=true;
             End;
           End;
-          If TryMoveSelection(False, FSplitter.X, FSplitter.Y) Then Begin
-            MoveExtend(False, FSplitter.X, FSplitter.Y);
-          End Else begin
-            // user clicked on selected cell
-            // -> fire an OnSelection event
-            MoveSelection;
+        End;
+        
+        If Not MoveExtend(False, FSplitter.X, FSplitter.Y) Then begin
+          If ShouldEdit Then begin
+            SelectEditor;
+            EditorShow;
           End;
-        End Else begin
-          If TryMoveSelection(False, FSplitter.X, FSplitter.Y) Then Begin
-            MoveExtend(False, FSplitter.X, FSplitter.Y);
-          End Else begin
-            If ShouldEdit Then begin
-              SelectEditor;
-              EditorShow;
-            End;
-          End;
-          If (FEditor=nil) And Not Focused then begin
-            {$IfDef dbgFocus} WriteLn('  AUTO-FOCUSING '); {$Endif}
-            LCLLinux.SetFocus(Self.Handle);
-          End;
+          // user clicked on selected cell
+          // -> fire an OnSelection event
+          MoveSelection;
+          // Click();
+        End;
+        If (GoEditing in Options)And(FEditor=nil) And Not Focused then begin
+          {$IfDef dbgFocus} WriteLn('  AUTO-FOCUSING '); {$Endif}
+          LCLLinux.SetFocus(Self.Handle);
         End;
       End;
   End;
@@ -2405,16 +2414,18 @@ Var
   Sh: Boolean;
   
   Procedure MoveSel(Rel: Boolean; aCol,aRow: Integer);
-  Var SmallMove: Boolean;
+  //Var SmallMove: Boolean;
   begin
     // Always reset Offset in kerboard Events
     FGCache.TLColOff:=0;
     FGCache.TLRowOff:=0;
     SelectActive:=Sh;
+    MoveNextSelectable(Rel, aCol, aRow);
+    {
     SmallMove:= Rel and (Abs(ACol)<2)And(Abs(Arow)<2);
     If SmallMove And SkipUnSelectable Then MoveNextSelectable(acol,aRow)
     Else                                   MoveExtend(Rel,aCol,aRow);
-    
+    }
     Key:=0;
   End;
 Var
@@ -2496,12 +2507,19 @@ begin
         If Key=VK_RETURN Then EditorSelectAll;
         Key:=0;
       End;
+    VK_BACK:
+      Begin
+        // Workaround: LM_CHAR doesnt trigger with BACKSPACE
+        EditorShowChar(^H);
+        key:=0;
+      End;
 
     {$IfDef Dbg}
-    Else WriteLn('KeyDown: ', Key);
+    Else WriteLn(ClassName,'.KeyDown: ', Key);
     {$Endif}
   End;
 end;
+
 
 procedure TCustomGrid.KeyUp(var Key: Word; Shift: TShiftState);
 begin
@@ -2622,33 +2640,41 @@ begin
   {$IfDef dbgFocus}WriteLn(' MoveExtend FIN FCol= ',FCol, ' FRow= ',FRow);{$Endif}
 end;
 
-function TCustomGrid.MoveNextSelectable(DCol, DRow: Integer
+function TCustomGrid.MoveNextSelectable(Relative: Boolean; DCol, DRow: Integer
   ): Boolean;
 Var
-  ODCol,ODRow: Integer;
   CInc,RInc: Integer;
+  NCol,NRow: Integer;
+  SelOk: Boolean;
 begin
-
+  // Reference
+  If Not Relative Then begin
+    NCol:=DCol;
+    NRow:=DRow;
+    DCol:=NCol-FCol;
+    DRow:=NRow-FRow;
+  End else Begin
+    NCol:=FCol + DCol;
+    NRow:=FRow + DRow;
+  End;
+  // Increment
   If DCol<0 Then CInc:=-1 Else
   If DCol>0 Then CInc:= 1
   Else           CInc:= 0;
   If DRow<0 Then RInc:=-1 Else
   If DRow>0 Then RInc:= 1
   Else           RInc:= 0;
-
-  If TryMoveSelection(True,DCol,DRow) Then Result:=MoveExtend(False,DCol,DROW)
-  Else begin
-    Repeat
-      ODCol:=DCol; ODRow:=DRow;
-      Inc(DCol, CInc);
-      Inc(DRow, RInc);
-      If TryMoveSelection(False,DCol,DRow) Then begin
-        Result:=MoveExtend(False,DCol,DRow);
-        Exit;
-      End;
-    Until (ODCol=DCol)And(ODRow=DRow);
-    Result:=False;
+  // Calculation
+  SelOk:=CanSelect(NCol,NRow);
+  Result:=False;
+  While Not SelOk do begin
+    If  (NRow>RowCount-1)or(NRow<FFixedRows) or
+        (NCol>ColCount-1)or(NCol<FFixedCols) Then Exit;
+    Inc(NCol, CInc);
+    Inc(NRow, RInc);
+    SelOk:=CanSelect(NCol, NRow);
   End;
+  Result:=MoveExtend(False, NCol, NRow);
 end;
 
 function TCustomGrid.TryMoveSelection(Relative: Boolean; Var DCol, DRow: Integer
@@ -2940,6 +2966,28 @@ end;
 function TCustomGrid.ShouldEdit: Boolean;
 begin
   Result:=(goEditing in Options)And(goAlwaysShowEditor in Options);
+end;
+
+procedure TCustomGrid.EditorShowChar(Ch: Char);
+Var
+  msg: TGridMessage;
+begin
+  SelectEditor;
+  If FEditor<>nil Then Begin
+    EditorShow;
+    EditorSelectAll;
+    //PostMessage(FEditor.Handle, LM_CHAR, Word(Ch), 0);
+    //
+    // Note. this is a workaround because the call above doesn't work
+    ///
+    Msg.MsgID:=GM_SETVALUE;
+    Msg.Grid:=Self;
+    Msg.Col:=FCol;
+    Msg.Row:=FRow;
+    If Ch=^H then Msg.Value:=''
+    Else          Msg.Value:=ch;
+    FEditor.Dispatch(Msg);
+  End;
 end;
 
 procedure TCustomGrid.EditorCancel;
@@ -3472,16 +3520,38 @@ end;
 }
 { TStringCellEditor }
 procedure TStringCellEditor.KeyDown(var Key: Word; Shift: TShiftState);
+  procedure doInherited;
+  Begin
+    inherited keyDown(key, shift);
+    key:=0;
+  End;
+  Function AtStart: Boolean;
+  begin
+    Result:= (SelStart=0);
+  End;
+  Function AtEnd: Boolean;
+  begin
+    Result:= (SelStart+1)>Length(Text);
+  End;
 begin
   {$IfDef dbg}
   WriteLn('INI: Key=',Key,' SelStart=',SelStart,' SelLenght=',SelLength);
   {$Endif}
-  If FGrid<>nil then Fgrid.EditorKeyDown(Self, Key, Shift);
+  {
+  Case Key of
+    VK_LEFT:  if AtStart Then doInherited;
+    VK_RIGHT: if AtEnd Then doInherited;
+  End;
+  }
+  If FGrid<>nil then begin
+    Fgrid.EditorKeyDown(Self, Key, Shift);
+  End;
+  inherited keyDown(key, shift);
   {$IfDef dbg}
   WriteLn('FIN: Key=',Key,' SelStart=',SelStart,' SelLenght=',SelLength);
   {$Endif}
-  inherited KeyDown(Key, Shift);
 end;
+
 
 procedure TStringCellEditor.msg_SetValue(var Msg: TGridMessage);
 begin
@@ -4266,6 +4336,7 @@ begin
   if Not (csDesigning in componentState) Then begin
     FDefEditor:=TStringCellEditor.Create(nil);
     FDefEditor.Name:='Default_StringCellEditor';
+    FDefEditor.Text:='';
     FDefEditor.Visible:=False;
     FDefEditor.Align:=alNone;
   End Else Begin

@@ -1,7 +1,7 @@
 Name: lazarus
 Version: LAZVERSION
 Release: LAZRELEASE
-Copyright: GPL
+Copyright: LGPL2
 Group: Development/Tools
 Source: LAZSOURCE
 Summary: Lazarus Component Library and IDE
@@ -10,11 +10,13 @@ URL: http://www.lazarus.freepascal.org/
 BuildRoot: %{_tmppath}/lazarus-build
 BuildRequires: fpc >= 1.0.7
 Requires: fpcsrc >= 1.0.7
+Requires: gdk-pixbuf-devel >= 0.14.0
 
 %define lazdir %{_datadir}/lazarus
 
 %description
-Lazarus is a free RAD tool for freepascal using the lazarus component library.
+Lazarus is a free and opensource RAD tool for freepascal using the lazarus
+component library - LCL, which is also included in this package.
 
 %prep
 %setup -c
