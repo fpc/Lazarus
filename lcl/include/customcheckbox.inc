@@ -51,11 +51,11 @@
  ------------------------------------------------------------------------------}
 procedure TCustomCheckBox.SetState(Value : TCheckBoxState);
 begin
-   if FState <> Value then
-   begin
-      FState := Value;
-      ApplyChanges;
-   end;
+  if FState <> Value then
+  begin
+    FState := Value;
+    ApplyChanges;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -68,9 +68,9 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomCheckBox.GetState : TCheckBoxState;
 begin
-   if HandleAllocated
-      then CNSendMessage (LM_GETVALUE, Self, @fState);	// get the actual state of the component
-   GetState := fState;
+  if HandleAllocated
+  then CNSendMessage (LM_GETVALUE, Self, @fState);	// get the actual state of the component
+  GetState := fState;
 end;
 
 {------------------------------------------------------------------------------
@@ -82,10 +82,10 @@ end;
  ------------------------------------------------------------------------------}
 constructor TCustomCheckBox.Create(AOwner : TComponent);
 begin
-   Inherited Create(AOwner);
-   FState       := cbUnchecked;
-   FAllowGrayed := True;
-   Height:=20;
+  Inherited Create(AOwner);
+  FState       := cbUnchecked;
+  FAllowGrayed := True;
+  Height:=20;
 end;
 
 {------------------------------------------------------------------------------
@@ -98,8 +98,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomCheckBox.InitializeWnd;
 begin
-   inherited InitializeWnd;
-   ApplyChanges;
+  inherited InitializeWnd;
+  ApplyChanges;
 end;
 
 {------------------------------------------------------------------------------
@@ -161,12 +161,15 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomCheckBox.ApplyChanges;
 begin
-  if HandleAllocated then
+  if HandleAllocated and (not (csLoading in ComponentState)) then
     CNSendMessage(LM_SetValue,Self,@fState);
 end;
 
 {
   $Log$
+  Revision 1.7  2002/09/10 07:33:37  lazarus
+  MG: fixed TCheckBox.DoAutoSize on loading
+
   Revision 1.6  2002/08/27 14:33:37  lazarus
   MG: fixed designer component deletion
 

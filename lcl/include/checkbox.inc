@@ -17,12 +17,9 @@
 
 constructor TCheckbox.Create(AOwner : TComponent);
 begin
-   if assigned(AOwner) then
-   begin
-      inherited Create(AOwner);
-      fCompStyle := csCheckbox;
-      AutoSize := True;
-   end;
+  inherited Create(AOwner);
+  fCompStyle := csCheckbox;
+  AutoSize := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -52,7 +49,7 @@ var
 begin
   If AutoSizing or not AutoSize then
     Exit;
-  if not HandleAllocated then exit;
+  if (not HandleAllocated) or (csLoading in ComponentState) then exit;
   AutoSizing := True;
   DC := GetDC(Handle);
   Try
@@ -73,6 +70,9 @@ end;
 
 {
   $Log$
+  Revision 1.7  2002/09/10 07:33:37  lazarus
+  MG: fixed TCheckBox.DoAutoSize on loading
+
   Revision 1.6  2002/09/03 08:07:19  lazarus
   MG: image support, TScrollBox, and many other things from Andrew
 
