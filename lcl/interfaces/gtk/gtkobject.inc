@@ -726,8 +726,8 @@ begin
 
     LM_ShowHide :
     begin
-       Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Show/Hide', [Sender.ClassNAme]));
-       ShowHide(Sender);
+      Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Show/Hide', [Sender.ClassNAme]));
+      ShowHide(Sender);
     end;
 
     LM_SetCursor : SetCursor(Sender);
@@ -1112,13 +1112,21 @@ begin
             StrPCopy(pStr, TCommonDialog(Sender).Title);
             gtk_window_set_title(PGtkWindow(handle), pStr);
           finally
-             StrDispose(pStr);
+            StrDispose(pStr);
           end;
         end;
         gtk_window_set_position(PGtkWindow(handle), GTK_WIN_POS_CENTER);
         if Sender is TColorDialog then
           SetColorDialogColor(Pointer(Handle),TColorDialog(Sender).Color);
           
+        {$IFDEF ClientRectBugFix}
+        if (Sender is TCustomForm) then begin
+          gtk_window_set_default_size(PgtkWindow(handle),
+                                TControl(Sender).Width,TControl(Sender).Height);
+          gtk_widget_set_uposition(PgtkWidget(handle),
+                                   TControl(Sender).Left, TControl(Sender).Top);
+        end;
+        {$ENDIF}
         gtk_widget_show(PGtkWidget(handle));
         gtk_window_set_modal(PGtkWindow(handle), true);
       end;
@@ -3200,9 +3208,17 @@ var FormIconGdiObject: PGDIObject;
   FormWidget: PGTKWidget;
 begin
   FormWidget:=PgtkWidget(TWinControl(Sender).Handle);
-//if Sender is TForm then
-//writeln('[TgtkObject.ShowHide] START ',Sender.ClassName,' Visible=',TControl(Sender).Visible,' Window=',FormWidget^.Window<>nil);
+  //if Sender is TForm then
+  //  writeln('[TgtkObject.ShowHide] START ',Sender.ClassName,' Visible=',TControl(Sender).Visible,' Window=',FormWidget^.Window<>nil);
   if TControl(Sender).Visible then begin
+    {$IFDEF ClientRectBugFix}
+    if (Sender is TCustomForm) then begin
+      gtk_window_set_default_size(PgtkWindow(FormWidget),
+                               TControl(Sender).Width,TControl(Sender).Height);
+      gtk_widget_set_uposition(PgtkWidget(FormWidget),
+                               TControl(Sender).Left, TControl(Sender).Top);
+    end;
+    {$ENDIF}
     gtk_widget_show(FormWidget);
     if (Sender is TCustomForm) and (FormWidget^.Window<>nil) then begin
       FormIconGdiObject:=PGDIObject(TCustomForm(Sender).GetIconHandle);
@@ -3216,8 +3232,8 @@ begin
   else Begin
     gtk_widget_hide(FormWidget);
   end;
-//if Sender is TForm then
-//writeln('[TgtkObject.ShowHide] END ',Sender.ClassName,' Window=',FormWidget^.Window<>nil);
+  //if Sender is TForm then
+  //  writeln('[TgtkObject.ShowHide] END ',Sender.ClassName,' Window=',FormWidget^.Window<>nil);
 end;
 
 {------------------------------------------------------------------------------}
@@ -4290,6 +4306,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.123  2002/05/13 15:26:14  lazarus
+  MG: fixed form positioning when show, hide, show
+
   Revision 1.122  2002/05/13 14:47:01  lazarus
   MG: fixed client rectangles, TRadioGroup, RecreateWnd
 
