@@ -88,7 +88,7 @@ type
   PGTKAPIWidgetClient = ^TGTKAPIWidgetClient;
   TGTKAPIWidgetClient = record
     // ! the Widget must be the first attribute of the record !
-    Widget: TGTKFixed;
+    Widget: TGTKWidget;
     OtherWindow: PGDKWindow;
     Caret: TCaretInfo;
   end;
@@ -314,7 +314,7 @@ const
   );
 begin
   if (TheType = 0) 
-  then TheType := gtk_type_unique(gtk_fixed_get_type, @Info);
+  then TheType := gtk_type_unique(gtk_widget_get_type, @Info);
   Result := TheType;
 end;
 
@@ -732,6 +732,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.37  2002/02/09 02:13:38  mattias
+  undid the TWinControls can now contain childs in gtk, due to slowness
+
   Revision 1.36  2002/02/09 01:48:23  mattias
   renamed TinterfaceObject.Init to AppInit and TWinControls can now contain childs in gtk
 
