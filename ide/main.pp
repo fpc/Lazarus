@@ -458,6 +458,7 @@ type
     function DoAddActiveUnitToProject: TModalResult;
     function DoRemoveFromProjectDialog: TModalResult;
     procedure DoWarnAmbigiousFiles;
+    function DoSaveForBuild: TModalResult; override;
     function DoBuildProject(BuildAll: boolean): TModalResult;
     function DoInitProjectRun: TModalResult; override;
     function DoRunProject: TModalResult;
@@ -5312,6 +5313,31 @@ begin
   end;
 end;
 
+function TMainIDE.DoSaveForBuild: TModalResult;
+begin
+  Result:=mrCancel;
+  if ToolStatus<>itNone then begin
+    Result:=mrAbort;
+    exit;
+  end;
+  if Project1=nil then Begin
+    MessageDlg('Create a project first!',mterror,[mbok],0);
+    Exit;
+  end;
+
+  // check for a main file to compile
+  if Project1.MainFilename='' then exit;
+
+  // save all files
+  if not Project1.IsVirtual then
+    Result:=DoSaveAll([sfCheckAmbigiousFiles])
+  else
+    Result:=DoSaveProjectToTestDirectory;
+  if Result<>mrOk then exit;
+    
+  Result:=PkgBoss.DoSaveAllPackages([]);
+end;
+
 function TMainIDE.DoSaveProjectToTestDirectory: TModalResult;
 begin
   Result:=mrCancel;
@@ -5358,35 +5384,19 @@ function TMainIDE.DoBuildProject(BuildAll: boolean): TModalResult;
 var
   DefaultFilename: string;
 begin
-  Result:=mrCancel;
-  if ToolStatus<>itNone then begin
-    Result:=mrAbort;
-    exit;
-  end;
-  if Project1=nil then Begin
-    MessageDlg('Create a project first!',mterror,[mbok],0);
-    Exit;
-  end;
+  Result:=DoSaveForBuild;
+  if Result<>mrOk then exit;
+  
+  // get main source filename
+  if not Project1.IsVirtual then
+    DefaultFilename:=''
+  else
+    DefaultFilename:=GetTestUnitFilename(Project1.MainUnitInfo);
+
+  // clear old error lines
+  SourceNotebook.ClearErrorLines;
+
   try
-    // check for a main file to compile
-    if Project1.MainFilename='' then exit;
-    
-    // save all files
-    if not Project1.IsVirtual then
-      Result:=DoSaveAll([sfCheckAmbigiousFiles])
-    else
-      Result:=DoSaveProjectToTestDirectory;
-    if Result<>mrOk then exit;
-    
-    // get main source filename
-    if not Project1.IsVirtual then
-      DefaultFilename:=''
-    else
-      DefaultFilename:=GetTestUnitFilename(Project1.MainUnitInfo);
-
-    // clear old error lines
-    SourceNotebook.ClearErrorLines;
-
     // change tool status
     ToolStatus:=itBuilder;
     
@@ -8318,6 +8328,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.524  2003/04/16 22:11:35  mattias
+  fixed codetools Makefile, fixed default prop not found error
+
   Revision 1.523  2003/04/15 17:58:28  mattias
   implemented inherited Compiler Options View
 
