@@ -33,9 +33,9 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  ExtCtrls, Classes,
+  Windows, ExtCtrls, Classes,
 ////////////////////////////////////////////////////
-  WSExtCtrls, WSLCLClasses, Windows, WinExt, Win32Int, InterfaceBase, Win32WSControls;
+  WSExtCtrls, WSLCLClasses, WinExt, Win32Int, InterfaceBase, Win32WSControls;
 
 type
 
