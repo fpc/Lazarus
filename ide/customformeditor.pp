@@ -908,115 +908,186 @@ Var
   Temp: TComponentInterface;
   NewJITIndex: Integer;
   CompLeft, CompTop, CompWidth, CompHeight: integer;
+  NewComponent: TComponent;
   OwnerComponent: TComponent;
   ParentComponent: TComponent;
   JITList: TJITComponentList;
   AControl: TControl;
+  NewComponentName: String;
 Begin
-  writeln('[TCustomFormEditor.CreateComponent] Class='''+TypeClass.ClassName+'''');
-  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TCustomFormEditor.CreateComponent A');{$ENDIF}
-  Temp := TComponentInterface.Create;
+  Result:=nil;
+  Temp:=nil;
+  try
+    writeln('[TCustomFormEditor.CreateComponent] Class='''+TypeClass.ClassName+'''');
+    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TCustomFormEditor.CreateComponent A');{$ENDIF}
 
-  OwnerComponent:=nil;
-  if Assigned(ParentCI) then
-  begin
-    // add as child control
-    ParentComponent:=TComponentInterface(ParentCI).Component;
-    OwnerComponent:=ParentComponent;
-    if OwnerComponent.Owner<>nil then
-      OwnerComponent:=OwnerComponent.Owner;
-    Temp.FComponent := TypeClass.Create(OwnerComponent);
-    // set parent
-    if Temp.IsTControl then begin
-      if (ParentComponent is TWinControl)
-      and (csAcceptsControls in TWinControl(ParentComponent).ControlStyle) then
-      begin
-        TWinControl(Temp.Component).Parent :=
-          TWinControl(ParentComponent);
-        writeln('Parent is '''+TWinControl(Temp.Component).Parent.Name+'''');
-      end
-      else begin
-        TControl(Temp.Component).Parent :=
-          TControl(ParentComponent).Parent;
-        writeln('Parent is '''+TControl(Temp.Component).Parent.Name+'''');
+    OwnerComponent:=nil;
+    if Assigned(ParentCI) then
+    begin
+      // add as child component
+      ParentComponent:=TComponentInterface(ParentCI).Component;
+      OwnerComponent:=ParentComponent;
+      if OwnerComponent.Owner<>nil then
+        OwnerComponent:=OwnerComponent.Owner;
+      try
+        NewComponent := TypeClass.Create(OwnerComponent);
+      except
+        on e: Exception do begin
+          MessageDlg('Error creating component',
+            'Error creating component: '+TypeClass.ClassName,
+            mtError,[mbCancel],0);
+          exit;
+        end;
+      end;
+      // check if Owner was properly set
+      if NewComponent.Owner<>OwnerComponent then begin
+        MessageDlg('Invalid component owner',
+          'The component of type '+NewComponent.ClassName
+          +' failed to set its owner to '
+          +OwnerComponent.Name+':'+OwnerComponent.ClassName,
+          mtError,[mbCancel],0);
+        exit;
+      end;
+      
+      // create component interface
+      Temp := TComponentInterface.Create;
+      Temp.FComponent:=NewComponent;
+      
+      // set parent
+      if Temp.IsTControl then begin
+        if (ParentComponent is TWinControl)
+        and (csAcceptsControls in TWinControl(ParentComponent).ControlStyle) then
+        begin
+          TWinControl(Temp.Component).Parent :=
+            TWinControl(ParentComponent);
+          writeln('Parent is '''+TWinControl(Temp.Component).Parent.Name+'''');
+        end
+        else begin
+          TControl(Temp.Component).Parent :=
+            TControl(ParentComponent).Parent;
+          writeln('Parent is '''+TControl(Temp.Component).Parent.Name+'''');
+        end;
+      end;
+    end else begin
+      // create a toplevel control -> a form or a datamodule
+      ParentComponent:=nil;
+      JITList:=GetJITListOfType(TypeClass);
+      if JITList=nil then
+        RaiseException('TCustomFormEditor.CreateComponent '+TypeClass.ClassName);
+      NewJITIndex := JITList.AddNewJITComponent;
+      if NewJITIndex >= 0 then begin
+        // create component interface
+        Temp := TComponentInterface.Create;
+        Temp.FComponent := JITList[NewJITIndex]
+      end else begin
+        exit;
       end;
     end;
-  end else begin
-    // create a toplevel control -> a form or a datamodule
-    ParentComponent:=nil;
-    JITList:=GetJITListOfType(TypeClass);
-    if JITList=nil then
-      RaiseException('TCustomFormEditor.CreateComponent '+TypeClass.ClassName);
-    NewJITIndex := JITList.AddNewJITComponent;
-    if NewJITIndex >= 0 then
-      Temp.FComponent := JITList[NewJITIndex]
-    else begin
-      Result:=nil;
-      exit;
+    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TCustomFormEditor.CreateComponent D ');{$ENDIF}
+    try
+      NewComponentName := CreateUniqueComponentName(Temp.Component);
+      Temp.Component.Name := NewComponentName;
+    except
+      on e: Exception do begin
+        MessageDlg('Error naming component',
+          'Error setting the name of a component '
+          +Temp.Component.Name+':'+Temp.Component.ClassName
+          +' to '+NewComponentName,
+          mtError,[mbCancel],0);
+        exit;
+      end;
+    end;
+
+    try
+      // set bounds
+      CompLeft:=X;
+      CompTop:=Y;
+      CompWidth:=W;
+      CompHeight:=H;
+      if (Temp.Component is TControl) then
+      Begin
+        AControl:=TControl(Temp.Component);
+        if CompWidth<=0 then CompWidth:=Max(5,AControl.Width);
+        if CompHeight<=0 then CompHeight:=Max(5,AControl.Height);
+        if CompLeft<0 then begin
+          if AControl.Parent<>nil then
+            CompLeft:=(AControl.Parent.Width - CompWidth) div 2
+          else if AControl is TCustomForm then
+            CompLeft:=Max(1,Min(250,Screen.Width-CompWidth-50))
+          else
+            CompLeft:=0;
+        end;
+        if CompTop<0 then begin
+          if AControl.Parent<>nil then
+            CompTop:=(AControl.Parent.Height - CompHeight) div 2
+          else if AControl is TCustomForm then
+            CompTop:=Max(1,Min(250,Screen.Height-CompHeight-50))
+          else
+            CompTop:=0;
+        end;
+        AControl.SetBounds(CompLeft,CompTop,CompWidth,CompHeight);
+      end
+      else if (Temp.Component is TDataModule) then begin
+        // data module
+        with TDataModule(Temp.Component) do begin
+          if CompWidth<=0 then CompWidth:=Max(50,DesignSize.X);
+          if CompHeight<=0 then CompHeight:=Max(50,DesignSize.Y);
+          if CompLeft<0 then
+            CompLeft:=Max(1,Min(250,Screen.Width-CompWidth-50));
+          if CompTop<0 then
+            CompTop:=Max(1,Min(250,Screen.Height-CompHeight-50));
+          DesignOffset.X:=CompLeft;
+          DesignOffset.Y:=CompTop;
+          DesignSize.X:=CompWidth;
+          DesignSize.Y:=CompHeight;
+        end;
+      end
+      else begin
+        // non TControl
+        with LongRec(Temp.Component.DesignInfo) do begin
+          Lo:=word(Min(32000,CompLeft));
+          Hi:=word(Min(32000,CompTop));
+        end;
+      end;
+    except
+      on e: Exception do begin
+        MessageDlg('Error moving component',
+          'Error moving component '
+          +Temp.Component.Name+':'+Temp.Component.ClassName,
+          mtError,[mbCancel],0);
+        exit;
+      end;
+    end;
+
+    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TCustomFormEditor.CreateComponent F ');{$ENDIF}
+    // add to component list
+    FComponentInterfaces.Add(Temp);
+
+    if Temp.Component.Owner<>nil then
+      CreateChildComponentInterfaces(Temp.Component.Owner);
+
+    Result := Temp;
+  finally
+    // clean up carefully
+    if Result=nil then begin
+      if Temp=nil then begin
+        if NewComponent<>nil then begin
+          try
+            NewComponent.Free;
+            NewComponent:=nil;
+          except
+            MessageDlg('Error destroying component',
+              'Error destroying component of type '+TypeClass.ClassName,
+              mtError,[mbCancel],0);
+          end;
+        end;
+      end;
+      if (Result<>Temp) then begin
+        Temp.Free;
+        Temp:=nil;
+      end;
     end;
   end;
-  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TCustomFormEditor.CreateComponent D ');{$ENDIF}
-  Temp.Component.Name := CreateUniqueComponentName(Temp.Component);
-
-  // set bounds
-  CompLeft:=X;
-  CompTop:=Y;
-  CompWidth:=W;
-  CompHeight:=H;
-  if (Temp.Component is TControl) then
-  Begin
-    AControl:=TControl(Temp.Component);
-    if CompWidth<=0 then CompWidth:=Max(5,AControl.Width);
-    if CompHeight<=0 then CompHeight:=Max(5,AControl.Height);
-    if CompLeft<0 then begin
-      if AControl.Parent<>nil then
-        CompLeft:=(AControl.Parent.Width - CompWidth) div 2
-      else if AControl is TCustomForm then
-        CompLeft:=Max(1,Min(250,Screen.Width-CompWidth-50))
-      else
-        CompLeft:=0;
-    end;
-    if CompTop<0 then begin
-      if AControl.Parent<>nil then
-        CompTop:=(AControl.Parent.Height - CompHeight) div 2
-      else if AControl is TCustomForm then
-        CompTop:=Max(1,Min(250,Screen.Height-CompHeight-50))
-      else
-        CompTop:=0;
-    end;
-    AControl.SetBounds(CompLeft,CompTop,CompWidth,CompHeight);
-  end
-  else if (Temp.Component is TDataModule) then begin
-    // data module
-    with TDataModule(Temp.Component) do begin
-      if CompWidth<=0 then CompWidth:=Max(50,DesignSize.X);
-      if CompHeight<=0 then CompHeight:=Max(50,DesignSize.Y);
-      if CompLeft<0 then
-        CompLeft:=Max(1,Min(250,Screen.Width-CompWidth-50));
-      if CompTop<0 then
-        CompTop:=Max(1,Min(250,Screen.Height-CompHeight-50));
-      DesignOffset.X:=CompLeft;
-      DesignOffset.Y:=CompTop;
-      DesignSize.X:=CompWidth;
-      DesignSize.Y:=CompHeight;
-    end;
-  end
-  else begin
-    // non TControl
-    with LongRec(Temp.Component.DesignInfo) do begin
-      Lo:=word(Min(32000,CompLeft));
-      Hi:=word(Min(32000,CompTop));
-    end;
-  end;
-
-  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TCustomFormEditor.CreateComponent F ');{$ENDIF}
-  // add to component list
-  FComponentInterfaces.Add(Temp);
-
-  if Temp.Component.Owner<>nil then
-    CreateChildComponentInterfaces(Temp.Component.Owner);
-
-  Result := Temp;
 end;
 
 Function TCustomFormEditor.CreateComponentFromStream(

@@ -1135,6 +1135,7 @@ var
   var
     NewParent: TComponent;
     NewParentControl: TWinControl;
+    NewComponent: TComponent;
   begin
     if MouseDownComponent=nil then exit;
 
@@ -1143,7 +1144,6 @@ var
     ControlSelection.Clear;
 
     // find a parent for the new component
-writeln('AddComponent A ',FLookupRoot is TCustomForm);
     if FLookupRoot is TCustomForm then begin
       if MouseDownComponent is TWinControl then
         NewParentControl:=TWinControl(MouseDownComponent)
@@ -1192,19 +1192,21 @@ writeln('AddComponent A ',FLookupRoot is TCustomForm);
     NewCI := TComponentInterface(TheFormEditor.CreateComponent(
        ParentCI,SelectedCompClass.ComponentClass
       ,NewLeft,NewTop,NewWidth,NewHeight));
+    if NewCI=nil then exit;
+    NewComponent:=NewCI.Component;
 
     // set initial properties
-    if NewCI.Component is TControl then
-      TControl(NewCI.Component).Visible:=true;
+    if NewComponent is TControl then
+      TControl(NewComponent).Visible:=true;
     if Assigned(FOnSetDesigning) then
-      FOnSetDesigning(Self,NewCI.Component,True);
+      FOnSetDesigning(Self,NewComponent,True);
 
     // tell IDE about the new component (e.g. add it to the source)
-    NotifyComponentAdded(NewCI.Component);
+    NotifyComponentAdded(NewComponent);
 
     // creation completed
     // -> select new component
-    SelectOnlyThisComponent(TComponent(NewCI.Component));
+    SelectOnlyThisComponent(NewComponent);
     if not (ssShift in Shift) then
       if Assigned(FOnUnselectComponentClass) then
         // this resets the component palette to the selection tool
@@ -1212,7 +1214,7 @@ writeln('AddComponent A ',FLookupRoot is TCustomForm);
 
     {$IFDEF VerboseDesigner}
     writeln('NEW COMPONENT ADDED: Form.ComponentCount=',Form.ComponentCount,
-       '  NewCI.Control.Owner.Name=',NewCI.Component.Owner.Name);
+       '  NewComponent.Owner.Name=',NewComponent.Owner.Name);
     {$ENDIF}
   end;
 
