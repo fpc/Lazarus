@@ -1539,28 +1539,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure SetCursor(AWinControl : TWinControl; Data: Pointer);
 
-  function Cursor2GTKCursor(ACursor : TCursor) : PGdkCursor;
-  begin
-    case ACursor of
-      crAppStart : Result:= Cursor_Watch;
-      crArrow    : Result:= Cursor_Arrow;
-      crCross    : Result:= Cursor_Cross;
-      crHandPoint: Result:= Cursor_hand1;
-      crHelp     : Result:= Cursor_Help;
-      crIBeam    : Result:= Cursor_XTerm;
-      crHourGlass: Result:= Cursor_Watch;
-      crDefault  : Result:= Cursor_StdArrow;
-      crHSplit   : Result:= Cursor_HSplit;
-      crVSplit   : Result:= Cursor_VSplit;
-      crSizeNWSE : Result:= Cursor_SizeNWSE;
-      crSizeNS   : Result:= Cursor_SizeNS;
-      crSizeNESW : Result:= Cursor_SizeNESW;
-      crSizeWE   : Result:= Cursor_SizeWE;
-      crSizeAll  : Result:= Cursor_SizeAll;
-      else Result:= nil;
-    end;
-  end;
-
   procedure DoSetCursor(AWindow: PGdkWindow; Cursor: pGDKCursor);
   begin
     if Cursor <> nil then
@@ -1597,9 +1575,9 @@ begin
     AWindow:=GetControlWindow(AWidget);
     if AWindow = nil then exit;
     if Data = nil then
-      SetDesigningCursor(AWindow, Cursor_StdArrow)
+      SetDesigningCursor(AWindow, GetGDKMouseCursor(crDefault))
     else begin
-      NewCursor:= Cursor2GTKCursor(Integer(Data));
+      NewCursor:= GetGDKMouseCursor(Integer(Data));
       if NewCursor <> nil then SetDesigningCursor(AWindow, NewCursor);
     end;  
     
@@ -1609,7 +1587,7 @@ begin
     AWindow:= GetControlWindow(FixWidget);
     if AWindow = nil then exit;
     
-    NewCursor:= Cursor2GTKCursor(AWinControl.Cursor);
+    NewCursor:= GetGDKMouseCursor(AWinControl.Cursor);
     if NewCursor <> nil then DoSetCursor(AWindow, NewCursor);
 
   end;
@@ -3918,49 +3896,25 @@ begin
   end;
 end;
 
-Procedure LoadGDKCursors;
+function GetGDKMouseCursor(Cursor: TCursor): PGdkCursor;
 begin
-  // Create default cursor types
-  Cursor_Watch := gdk_cursor_new(gdk_Watch);
-  Cursor_Arrow := gdk_cursor_new(gdk_Arrow);
-  Cursor_Cross := gdk_cursor_new(gdk_Cross);
-  Cursor_Hand1 := gdk_cursor_new(gdk_Hand1);
-  Cursor_XTerm := gdk_cursor_new(gdk_XTerm);
-  Cursor_StdArrow := gdk_cursor_new(GDK_LEFT_PTR);
-  Cursor_HSplit := gdk_cursor_new(GDK_SB_H_DOUBLE_ARROW);
-  Cursor_VSplit := gdk_cursor_new(GDK_SB_V_DOUBLE_ARROW);
-  Cursor_SizeNWSE := gdk_cursor_new(GDK_TOP_LEFT_CORNER);
-  Cursor_SizeNS := gdk_cursor_new(GDK_SB_V_DOUBLE_ARROW);
-  Cursor_SizeNESW := gdk_cursor_new(GDK_BOTTOM_LEFT_CORNER);
-  Cursor_SizeWE := gdk_cursor_new(GDK_SB_H_DOUBLE_ARROW);
-  Cursor_SizeAll:= gdk_cursor_new(GDK_FLEUR);
-  Cursor_Help := gdk_cursor_new(GDK_QUESTION_ARROW);
+  if (Cursor<crLow) or (Cursor>crHigh) then
+    Cursor:=crDefault;
+  if GDKMouseCursors[Cursor]=nil then
+    GDKMouseCursors[Cursor]:=gdk_cursor_new(CursorToGDKCursor[Cursor]);
+  Result:=GDKMouseCursors[Cursor];
 end;
 
 Procedure FreeGDKCursors;
-
-  procedure DestroyGdkCursor(var Cursor: pGDKCursor);
-  begin
-    gdk_Cursor_Destroy(Cursor);
-    Cursor:=nil;
-  end;
-
+var
+  i: integer;
 begin
-  // Destroy default cursor types
-  DestroyGdkCursor(Cursor_Watch);
-  DestroyGdkCursor(Cursor_Arrow);
-  DestroyGdkCursor(Cursor_Cross);
-  DestroyGdkCursor(Cursor_Hand1);
-  DestroyGdkCursor(Cursor_XTerm);
-  DestroyGdkCursor(Cursor_StdArrow);
-  DestroyGdkCursor(Cursor_HSplit);
-  DestroyGdkCursor(Cursor_VSplit);
-  DestroyGdkCursor(Cursor_SizeNWSE);
-  DestroyGdkCursor(Cursor_SizeNS);
-  DestroyGdkCursor(Cursor_SizeNESW);
-  DestroyGdkCursor(Cursor_SizeWE);
-  DestroyGdkCursor(Cursor_Help);
-  DestroyGdkCursor(Cursor_SizeAll);
+  for i:=Low(GDKMouseCursors) to High(GDKMouseCursors) do begin
+    if GDKMouseCursors[i]<>nil then begin
+      gdk_Cursor_Destroy(GDKMouseCursors[i]);
+      GDKMouseCursors[i]:=nil;
+    end;
+  end;
 end;
 
 Procedure FillScreenFonts(ScreenFonts : TStrings);
@@ -3993,6 +3947,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.146  2002/10/30 12:37:26  lazarus
+  MG: mouse cursors are now allocated on demand
+
   Revision 1.145  2002/10/28 21:04:26  lazarus
   AJ: fixed mem leek in FillScreenFonts
 
