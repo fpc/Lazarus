@@ -1072,6 +1072,11 @@ begin
   Result := False;
 end;
 
+procedure TInterfaceBase.PassCmdLineOptions;
+begin
+
+end;
+
 Function TInterfaceBase.PromptUser(const DialogCaption, DialogMessage : String;
   DialogType : longint; Buttons : PLongint;
   ButtonCount, DefaultIndex, EscapeResult : Longint) : Longint;
@@ -1506,6 +1511,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.71  2002/02/09 01:48:23  mattias
+  renamed TinterfaceObject.Init to AppInit and TWinControls can now contain childs in gtk
+
   Revision 1.70  2002/12/05 22:16:29  mattias
   double byte char font started
 

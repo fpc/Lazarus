@@ -47,6 +47,7 @@ uses
 type
   TGnomeObject = class(TGtkObject)
   private
+    procedure PassCmdLineOptions; override;
     Function PromptUserWidget(const DialogCaption, DialogMessage : String;
       DialogType : longint; Buttons : PLongint; ButtonCount, DefaultIndex : Longint) : Pointer;
   protected
@@ -54,7 +55,6 @@ type
     procedure FreeStockItems; override;
 
     procedure CreateComponent(Sender : TObject); override;
-    procedure Init; override;
   public
     {$I gnomewinapih.inc}
   end;
@@ -81,6 +81,12 @@ uses
   Graphics, Buttons, Menus, GTKWinApiWindow, StdCtrls, ComCtrls, CListBox,
   KeyMap, Calendar, Arrow, Spin, CommCtrl, ExtCtrls, Dialogs, FileCtrl,
   LResources, Math, gtkglobals, gtkproc, LCLStrConsts;
+
+procedure TGnomeObject.PassCmdLineOptions;
+begin
+  // call init and pass cmd line args
+  gnome_init(PChar(Application.Title), '0.8.5a', argc, argv);
+end;
 
 Procedure TGnomeObject.InitStockItems;
 begin
@@ -155,39 +161,6 @@ begin
   Dispose(LAZBTNABORT);
   Dispose(LAZBTNRETRY);
   Dispose(LAZBTNIGNORE);
-end;
-
-procedure TGnomeObject.Init;
-begin
-  // initialize app level gtk engine
-  gtk_set_locale ();
-
-  // call init and pass cmd line args
-  gnome_init(PChar(Application.Title), '0.8.5a', argc, argv);
-
-  If Assigned(Screen) then
-    FillScreenFonts(Screen.Fonts);
-
-  // read gtk rc file
-  ParseRCFile;
-
-  // Initialize Stringlist for holding styles
-  Styles := TStringlist.Create;
-
-  gtk_key_snooper_install(@GTKKeySnooper, @FKeyStateList);
-
-  // Init tooltips
-  FGTKToolTips := gtk_tooltips_new;
-  gtk_object_ref(PGTKObject(FGTKToolTips));
-  gtk_toolTips_Enable(FGTKToolTips);
-
-  // Init stock objects;
-  InitStockItems;
-
-  // clipboard
-  ClipboardTypeAtoms[ctPrimarySelection]:=GDK_SELECTION_PRIMARY;
-  ClipboardTypeAtoms[ctSecondarySelection]:=GDK_SELECTION_SECONDARY;
-  ClipboardTypeAtoms[ctClipboard]:=gdk_atom_intern('CLIPBOARD',0);
 end;
 
 procedure TGnomeObject.CreateComponent(Sender : TObject);
@@ -273,6 +246,9 @@ end.
 
 {
   $Log$
+  Revision 1.15  2002/02/09 01:48:23  mattias
+  renamed TinterfaceObject.Init to AppInit and TWinControls can now contain childs in gtk
+
   Revision 1.14  2002/11/03 22:40:00  lazarus
   MG: fixed ControlAtPos
 

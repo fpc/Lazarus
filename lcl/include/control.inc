@@ -118,9 +118,8 @@ End;
 }
 {------------------------------------------------------------------------------}
 procedure TControl.ChangeBounds(ALeft, ATop, AWidth, AHeight : integer);
-var SizeChanged, PosChanged : boolean;
-    SizeMsg : TLMSize;
-    MoveMsg : TLMMove;
+var
+  SizeChanged, PosChanged : boolean;
 begin
   DoConstrainedResize(AWidth, AHeight);
   SizeChanged:= (FWidth <> AWidth) or (FHeight <> AHeight);
@@ -153,38 +152,7 @@ begin
     RequestAlign;
     if (not (csLoading in ComponentState)) then begin
       Resize;
-      Perform(LM_WindowposChanged, 0, 0);
-
-      { TODO : Replace this with LCL functions eventually.
-          Right now we have to call these messages as some
-          descendents incorrectly depend on it, so force it
-          down their throat }
-
-      if SizeChanged then begin
-        with SizeMsg do begin
-          Msg:= LM_SIZE;
-          SizeType:= 6; // force realign
-          Width:= FWidth;
-          Height:= FHeight;
-          {$IFDEF CHECK_POSITION}
-          writeln(' [TControl.ChangeBounds] ',Name,':',ClassName,' SizeMsg Width=',Width,' Height=',Height);
-          {$ENDIF}
-        end;
-        WindowProc(TLMessage(SizeMsg));
-      end;
-
-      if PosChanged then begin
-        with MoveMsg do begin
-          Msg:= LM_MOVE;
-          MoveType:= 1;
-          XPos:= FLeft;
-          YPos:= FTop;
-          {$IFDEF CHECK_POSITION}
-          writeln(' [TControl.ChangeBounds] ',Name,':',ClassName,' MoveMsg XPos=',XPos,' YPos=',YPos);
-          {$ENDIF}
-        end;
-        WindowProc(TLMessage(MoveMsg));
-      end;
+      SendMoveSizeMessages(SizeChanged,PosChanged);
     end;
     If Parent <> nil then
       Parent.DoAutoSize;
@@ -463,10 +431,17 @@ begin
   AdjustSize;
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl.DragCanceled
-}
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  procedure TControl.SendMoveSizeMessages(SizeChanged, PosChanged: boolean);
+------------------------------------------------------------------------------}
+procedure TControl.SendMoveSizeMessages(SizeChanged, PosChanged: boolean);
+begin
+
+end;
+
+{------------------------------------------------------------------------------
+       TControl.DragCanceled
+------------------------------------------------------------------------------}
 procedure TControl.DragCanceled;
 begin
 end;
@@ -2082,6 +2057,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.108  2002/02/09 01:48:23  mattias
+  renamed TinterfaceObject.Init to AppInit and TWinControls can now contain childs in gtk
+
   Revision 1.107  2002/12/04 20:39:14  mattias
   patch from Vincent: clean ups and fixed crash on destroying window
 

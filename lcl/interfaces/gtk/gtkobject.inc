@@ -32,11 +32,15 @@
 constructor TGtkObject.Create; 
 begin
   inherited Create;
-  FKeyStateList := TList.Create;
+  
+  // DCs, GDIObjects
   FDeviceContexts := TDynHashArray.Create(-1);
   FDeviceContexts.Options:=FDeviceContexts.Options+[dhaoCacheContains];
   FGDIObjects := TDynHashArray.Create(-1);
   FGDIObjects.Options:=FGDIObjects.Options+[dhaoCacheContains];
+  FDefaultFont:= nil;
+
+  // messages
   FMessageQueue := TLazQueue.Create;
   FPaintMessages := TDynHashArray.Create(-1);
   FPaintMessages.OwnerHashFunction := @HashPaintMessage;
@@ -47,10 +51,51 @@ begin
   FWidgetsResized := TDynHashArray.Create(-1);
   FWidgetsResized.Options:=FWidgetsResized.Options+[dhaoCacheContains];
   FFixWidgetsResized := TDynHashArray.Create(-1);
+  
   FTimerData  := TList.Create;
-  FDefaultFont:= nil;
+  FKeyStateList := TList.Create;
+
   FRCFilename := ChangeFileExt(ParamStr(0),'.gtkrc');
   FRCFileParsed := false;
+
+  // initialize app level gtk engine
+  gtk_set_locale ();
+
+  // call init and pass cmd line args
+  PassCmdLineOptions;
+
+  // read gtk rc file
+  ParseRCFile;
+
+  // Initialize Stringlist for holding styles
+  Styles := TStringlist.Create;
+
+  gtk_key_snooper_install(@GTKKeySnooper, @FKeyStateList);
+
+  // Init tooltips
+  FGTKToolTips := gtk_tooltips_new;
+  gtk_object_ref(PGTKObject(FGTKToolTips));
+  gtk_toolTips_Enable(FGTKToolTips);
+
+  // Init stock objects;
+  InitStockItems;
+
+  // clipboard
+  ClipboardTypeAtoms[ctPrimarySelection]:=GDK_SELECTION_PRIMARY;
+  ClipboardTypeAtoms[ctSecondarySelection]:=GDK_SELECTION_SECONDARY;
+  ClipboardTypeAtoms[ctClipboard]:=gdk_atom_intern('CLIPBOARD',0);
+end;
+
+{------------------------------------------------------------------------------
+  Method: Tgtkobject.PassCmdLineOptions
+  Params:  None
+  Returns: Nothing
+
+  Passes command line options to the gtk engine
+ ------------------------------------------------------------------------------}
+procedure Tgtkobject.PassCmdLineOptions;
+begin
+  gtk_init (@argc, @argv);
 end;
 
 {------------------------------------------------------------------------------
@@ -831,43 +876,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGtkObject.Init
+  Method: TGtkObject.AppInit
   Params:  None
   Returns: Nothing
 
-  *Note: Initialite GTK engine
+  *Note: Initialize GTK engine
+  (is called by TApplication.Initialize which is typically after all
+   finalization sections)
  ------------------------------------------------------------------------------}
-procedure TGtkObject.Init;
+procedure TGtkObject.AppInit;
 begin
-  // initialize app level gtk engine 
-  gtk_set_locale ();
-
-  // call init and pass cmd line args
-  gtk_init (@argc, @argv);
-  
   If Assigned(Screen) then
     FillScreenFonts(Screen.Fonts);
-
-  // read gtk rc file
-  ParseRCFile;
-
-  // Initialize Stringlist for holding styles
-  Styles := TStringlist.Create;
-  
-  gtk_key_snooper_install(@GTKKeySnooper, @FKeyStateList);
-
-  // Init tooltips
-  FGTKToolTips := gtk_tooltips_new;
-  gtk_object_ref(PGTKObject(FGTKToolTips));
-  gtk_toolTips_Enable(FGTKToolTips);
-
-  // Init stock objects;
-  InitStockItems;
-
-  // clipboard
-  ClipboardTypeAtoms[ctPrimarySelection]:=GDK_SELECTION_PRIMARY;
-  ClipboardTypeAtoms[ctSecondarySelection]:=GDK_SELECTION_SECONDARY;
-  ClipboardTypeAtoms[ctClipboard]:=gdk_atom_intern('CLIPBOARD',0);
 end;
 
 
@@ -4009,10 +4029,6 @@ end;
   Tells GTK Engine to create a widget
  ------------------------------------------------------------------------------}
 procedure TgtkObject.CreateComponent(Sender : TObject);
-
-//unused:type
-//unused:   Tpixdata = Array[1..20] of String;
-
 var
   Caption : ansistring;          // the caption of "Sender"
   StrTemp : PChar;               // same as "caption" but as PChar
@@ -6701,6 +6717,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.298  2002/02/09 01:48:23  mattias
+  renamed TinterfaceObject.Init to AppInit and TWinControls can now contain childs in gtk
+
   Revision 1.297  2002/12/12 17:47:46  mattias
   new constants for compatibility
 

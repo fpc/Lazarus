@@ -202,7 +202,7 @@ begin
     writeln('ERROR: ',NoInterfaceObject);
     raise Exception.Create(NoInterfaceObject);
   end;
-  InterfaceObject.Init;
+  InterfaceObject.AppInit;
   CNSendMessage(LM_SCREENINIT, nil, @ScreenInfo);
   if LazarusResources.Find('MAINICON')<>nil then begin
     if FIcon=nil then begin
@@ -834,6 +834,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.41  2002/02/09 01:48:23  mattias
+  renamed TinterfaceObject.Init to AppInit and TWinControls can now contain childs in gtk
+
   Revision 1.40  2002/11/29 15:14:47  mattias
   replaced many invalidates by invalidaterect
 

@@ -563,6 +563,7 @@ type
     procedure SetAutoSize(const Value : Boolean); virtual;
     procedure BoundsChanged; dynamic;
     procedure DoConstraintsChange(Sender : TObject); virtual;
+    procedure SendMoveSizeMessages(SizeChanged, PosChanged: boolean); virtual;
     procedure Changed;
     procedure WMLButtonDown(Var Message: TLMLButtonDown); message LM_LBUTTONDOWN;
     procedure WMRButtonDown(Var Message: TLMRButtonDown); message LM_RBUTTONDOWN;
@@ -863,6 +864,7 @@ type
     function  IsControlMouseMsg(var TheMessage : TLMMouse): Boolean;
     procedure SetZOrderPosition(Position: Integer); override;
     procedure SetZOrder(Topmost: Boolean); override;
+    procedure SendMoveSizeMessages(SizeChanged, PosChanged: boolean); override;
 
     property  BorderWidth : TBorderWidth read FBorderWidth write SetBorderWidth default 0;
     property  DefWndProc: Pointer read FDefWndProc write FDefWndPRoc;
@@ -1447,6 +1449,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.94  2002/02/09 01:48:23  mattias
+  renamed TinterfaceObject.Init to AppInit and TWinControls can now contain childs in gtk
+
   Revision 1.93  2002/12/04 20:39:14  mattias
   patch from Vincent: clean ups and fixed crash on destroying window
 

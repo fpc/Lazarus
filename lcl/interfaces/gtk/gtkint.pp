@@ -89,6 +89,7 @@ type
 
     procedure InitStockItems; virtual;
     procedure FreeStockItems; virtual;
+    procedure PassCmdLineOptions; override;
 
     Procedure FinishComponentCreate(Sender : TObject; Handle : Pointer;
       SetupProps : Boolean); Virtual;
@@ -194,7 +195,7 @@ type
     procedure WaitMessage; override;
     procedure SendCachedLCLMessages; override;
     procedure AppTerminate; override;
-    procedure Init; override;
+    procedure AppInit; override;
 
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer; override;
     function DestroyTimer(TimerHandle: integer) : boolean; override;
@@ -305,6 +306,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.111  2002/02/09 01:48:23  mattias
+  renamed TinterfaceObject.Init to AppInit and TWinControls can now contain childs in gtk
+
   Revision 1.110  2002/12/04 20:39:15  mattias
   patch from Vincent: clean ups and fixed crash on destroying window
 

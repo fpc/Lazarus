@@ -117,7 +117,7 @@ Type
     { Destructor of the class }
     Destructor Destroy; Override;
     { Initialize the API }
-    Procedure Init; Override;
+    Procedure AppInit; Override;
     Function IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer) : Integer; Override;
     Procedure HandleEvents; Override;
     Procedure WaitMessage; Override;
@@ -187,6 +187,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.24  2002/02/09 01:48:23  mattias
+  renamed TinterfaceObject.Init to AppInit and TWinControls can now contain childs in gtk
+
   Revision 1.23  2002/12/04 20:39:16  mattias
   patch from Vincent: clean ups and fixed crash on destroying window
 

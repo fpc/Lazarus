@@ -53,13 +53,15 @@ type
     Currently maintained by Marc Weustink <weus@quicknet.nl>
   }
   TInterfaceBase = Class(TObject)
+  protected
+    procedure PassCmdLineOptions; virtual;
   public
     constructor Create;
     destructor Destroy; override;
-    procedure AppTerminate; virtual; abstract;
     procedure HandleEvents; virtual; abstract;
     procedure WaitMessage; virtual; abstract;
-    procedure Init; virtual; abstract;
+    procedure AppInit; virtual; abstract;
+    procedure AppTerminate; virtual; abstract;
     function IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer; virtual; abstract;
 
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer; virtual; abstract;
@@ -107,6 +109,9 @@ end.
 
 {
   $Log$
+  Revision 1.28  2002/02/09 01:48:23  mattias
+  renamed TinterfaceObject.Init to AppInit and TWinControls can now contain childs in gtk
+
   Revision 1.27  2002/12/04 20:39:14  mattias
   patch from Vincent: clean ups and fixed crash on destroying window
 

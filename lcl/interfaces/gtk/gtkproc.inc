@@ -1190,7 +1190,10 @@ begin
   else If GTKWidgetIsA(Parent, GTK_Layout_Get_Type) then
     gtk_Layout_Put(PGtkLayout(Parent), Child, Left, Top)
   else
-    WriteLn('[FixedPutControl] WARNING: Invalid Fixed Widget');
+    WriteLn('[FixedPutControl] WARNING: Invalid Fixed Widget.',
+      ' Parent=',HexStr(Cardinal(Parent),8),
+      ' Child=',HexStr(Cardinal(Child),8)
+      );
 end;
 
 {------------------------------------------------------------------------------
@@ -3945,6 +3948,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.152  2002/02/09 01:48:23  mattias
+  renamed TinterfaceObject.Init to AppInit and TWinControls can now contain childs in gtk
+
   Revision 1.151  2002/12/05 22:16:32  mattias
   double byte char font started
 

@@ -84,13 +84,13 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.Init
+  Method: TWin32Object.AppInit
   Params:  None
   Returns: Nothing
 
   Initialize Windows
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.Init;
+Procedure TWin32Object.AppInit;
 Var
   LogBrush: TLOGBRUSH;
 Begin
@@ -2575,6 +2575,9 @@ End;
 
 {
   $Log$
+  Revision 1.32  2002/02/09 01:48:23  mattias
+  renamed TinterfaceObject.Init to AppInit and TWinControls can now contain childs in gtk
+
   Revision 1.31  2002/12/13 10:10:44  mattias
   fixed illegal type cast
 

@@ -672,6 +672,48 @@ begin
   end;
 end;
 
+procedure TWinControl.SendMoveSizeMessages(SizeChanged, PosChanged: boolean);
+var
+  SizeMsg : TLMSize;
+  MoveMsg : TLMMove;
+begin
+  if (not HandleAllocated)
+  or ((not SizeChanged) and (not PosChanged)) then exit;
+
+  { TODO : Replace this with LCL functions eventually.
+      Right now we have to call these messages as some
+      descendents incorrectly depend on it, so force it
+      down their throat }
+      
+  Perform(LM_WindowposChanged, 0, 0);
+
+  if SizeChanged then begin
+    with SizeMsg do begin
+      Msg:= LM_SIZE;
+      SizeType:= 6; // force realign
+      Width:= FWidth;
+      Height:= FHeight;
+      {$IFDEF CHECK_POSITION}
+      writeln(' [TControl.ChangeBounds] ',Name,':',ClassName,' SizeMsg Width=',Width,' Height=',Height);
+      {$ENDIF}
+    end;
+    WindowProc(TLMessage(SizeMsg));
+  end;
+
+  if PosChanged then begin
+    with MoveMsg do begin
+      Msg:= LM_MOVE;
+      MoveType:= 1;
+      XPos:= FLeft;
+      YPos:= FTop;
+      {$IFDEF CHECK_POSITION}
+      writeln(' [TControl.ChangeBounds] ',Name,':',ClassName,' MoveMsg XPos=',XPos,' YPos=',YPos);
+      {$ENDIF}
+    end;
+    WindowProc(TLMessage(MoveMsg));
+  end;
+end;
+
 {------------------------------------------------------------------------------}
 {  TWinControl UpdateShowing                                                   }
 {------------------------------------------------------------------------------}
@@ -2483,6 +2525,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.107  2002/02/09 01:48:23  mattias
+  renamed TinterfaceObject.Init to AppInit and TWinControls can now contain childs in gtk
+
   Revision 1.106  2002/12/04 20:39:15  mattias
   patch from Vincent: clean ups and fixed crash on destroying window
 
