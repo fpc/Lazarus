@@ -134,7 +134,6 @@ clean: cleanall cleanide
 purge: cleanall cleanide
         $(MAKE) -C examples clean
         $(MAKE) -C tools clean
-        $(DEL) startlazarus$(EXEEXT)
 
 #install: $(INSTALLTARGET) $(addsuffix _install,$(TARGET_DIRS))
 # end.
