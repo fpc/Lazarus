@@ -42,7 +42,6 @@ type
     TheDefaultIndex : Longint;
 
     FBitmap : TBitmap;
-    FLabel : TLabel;
     MSG : AnsiString;
     NumButtons : Longint;
     Buttons : PLongint;
@@ -168,9 +167,6 @@ begin
   MSG         := AMSG;
   Buttons     := nil;
   FBitmap := nil;
-  FLabel := TLabel.Create(Self);
-  FLabel.Parent := Self;
-  FLabel.Caption := '';
 
   Case DialogType of
     idDialogConfirm,
@@ -338,7 +334,8 @@ begin
   end;
 
   for i:=0 to ComponentCount-1 do begin
-    if (Components[i] is TBitBtn) and (TBitBtn(Components[i]).Default) then begin
+    if (Components[i] is TBitBtn) and (TBitBtn(Components[i]).Default) then
+    begin
       ActiveControl:=TBitBtn(Components[i]);
       break;
     end;
@@ -379,6 +376,9 @@ end;
 
 {
    $Log$
+   Revision 1.6  2003/07/04 10:30:02  mattias
+   removed unused label from Micha
+
    Revision 1.5  2003/06/23 09:42:09  mattias
    fixes for debugging lazarus
 
