@@ -107,7 +107,6 @@ type
     Procedure SetCurrentCursorXLine(num : Integer);
     Function GetCurrentCursorYLine : Integer;
     Procedure SetCurrentCursorYLine(num : Integer);
-    Function GetAncestor : String;
     Function GetModified : Boolean;
     procedure SetModified(NewValue:boolean);
     Function GetInsertMode : Boolean;
@@ -155,8 +154,6 @@ type
   public
     constructor Create(AOwner : TComponent; AParent : TWinControl);
     destructor Destroy; override;
-    Procedure AddControlCode(_Control : TComponent);
-    Procedure RemoveControlCode(_Control : TComponent);
     Procedure SelectText(LineNum,CharStart,LineNum2,CharEnd : Integer);
     Procedure CreateFormUnit(AForm : TCustomForm);
     Procedure CreateNewUnit;
@@ -1108,105 +1105,6 @@ writeln('TSourceEditor.CreateEditor  freeing old FEditor');
   FEditor.SetFocus;
 end;
 
-Procedure TSourceEditor.AddControlCode(_Control : TComponent);
-var
-  PI : PTypeInfo;
-  nmControlType : String;
-  I : Integer;
-  NewSource : String;
-  TempSource : TStringList;
-  Ancestor : String;
-begin
-  TempSource := TStringList.Create;
-  TempSource.Assign(Source);
-
-  //get the control name
-  PI := _Control.ClassInfo;
-  nmControlType := PI^.Name;
-  Ancestor := GetAncestor;
-  Ancestor := 'TFORM';
-
-//find the place in the code to add this now.
-//Anyone have good method sfor parsing the source to find spots like this?
-//here I look for the Name of the customform, the word "Class", and it's ancestor on the same line
-//not very good because it could be a comment or just a description of the class.
-//but for now I'll use it.
-For I := 0 to TempSource.Count-1 do
-    begin
-    Writeln('Ancestor is '+Ancestor);
-    Writeln('TWinControl(_Control.Owner).Name is '+TWinControl(_Control.Owner).Name);
-    Writeln('Line is '+TempSource.Strings[i]);
-    if (pos(Ancestor,TempSource.Strings[i]) <> 0)
-    and (pos(lowercase(TWinControl(_Control.Owner).Name),
-          lowercase(TempSource.Strings[i])) <> 0)
-    and (pos('CLASS',Uppercase(TempSource.Strings[i])) <> 0) then
-      Break;
-    end;
-
-
-  //if I => FSource.Count then I didn't find the line...
-  If I < TempSource.Count-1 then
-     Begin
-       //alphabetical
-       inc(i);
-       NewSource := _Control.Name+' : '+nmControlType+';';
-
-       //  Here I decide if I need to try and insert the control's text code in any certain order.
-       //if there's no controls then I just insert it, otherwise...
-       if TWincontrol(_Control.Owner).ControlCount > 0 then
-       while NewSource > (trim(TempSource.Strings[i])) do
-         inc(i);
-
-          TempSource.Insert(i,'       '+NewSource);
-     end;
-
-
-Source := TempSource;
-end;
-
-
-{Called when a control is deleted from the form}
-Procedure TSourceEditor.RemoveControlCode(_Control : TComponent);
-var
-  nmControlType : String;
-  I : Integer;
-  NewSource : String;
-  TempSource : TStringList;
-  Ancestor : String;
-begin
-  TempSource := TStringList.Create;
-  TempSource.Assign(Source);
-
-  //get the control name
-  nmControlType := _Control.name;
-  writeln('Calling GetAncestor');
-  Ancestor := GetAncestor;
-  Writeln('Called');
-//find the place in the code to start looking for it
-
-For I := 0 to TempSource.Count-1 do
-    if (pos(Ancestor,TempSource.Strings[i]) <> 0)
-    and (pos(TWinControl(_Control.Owner).Name,TempSource.Strings[i]) <> 0)
-    and (pos('CLASS',Uppercase(TempSource.Strings[i])) <> 0) then
-        Break;
-
-  //if I => FSource.Count then I didn't find the line...
-  If I < TempSource.Count then
-     Begin
-       //alphabetical
-       inc(i);
-       NewSource := _Control.Name+' : '+nmControlType+';';
-
-       while NewSource < (trim(TempSource.Strings[i])) do
-         inc(i);
-
-         If NewSource = (trim(TempSource.Strings[i])) then
-             TempSource.Delete(I);
-     end;
-Source := TempSource;
-end;
-
-
 Procedure TSourceEditor.DisplayControl;
 Begin
 if FControl = nil then Exit;
@@ -1282,26 +1180,6 @@ Function TSourceEditor.GetInsertMode : Boolean;
 Begin
   Result := FEditor.Insertmode;
 end;
-
-
-//Get's the ancestor of the FControl.
-//For example the ancestor of a TForm1 = class(xxxx) is the xxxx
-Function TSourceEditor.GetAncestor : String;
-var
-  PI : PTypeInfo;
-begin
-  writeln('In Get Ancewstor');
-  if (FControl <> nil) then
-  Begin
-    PI := FControl.ClassInfo;
-    Writeln('1');
-    Result := PI^.Name;
-    Writeln('2');
-    Delete(Result,1,1);
-    Writeln('3');
- end;
-end;
-
 
 Procedure TSourceEditor.CreateFormUnit(AForm  : TCustomForm);
 Var

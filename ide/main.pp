@@ -28,10 +28,11 @@ interface
 
 uses
   Classes, LclLinux, Compiler, StdCtrls, Forms, Buttons, Menus, ComCtrls, Spin,
-  Project, Sysutils,  Controls, Graphics, ExtCtrls, Dialogs, CompReg, CodeTools,
-  MsgView, NewProjectDlg, Process, IDEComp, AbstractFormEditor, FormEditor,
-  CustomFormEditor, ObjectInspector, ControlSelection, PropEdits, UnitEditor,
-  CompilerOptions, EditorOptions, EnvironmentOpts, TransferMacros, KeyMapping;
+  Project, Sysutils, FileCtrl, Controls, Graphics, ExtCtrls, Dialogs, CompReg,
+  CodeTools, MsgView, NewProjectDlg, Process, IDEComp, AbstractFormEditor,
+  FormEditor, CustomFormEditor, ObjectInspector, ControlSelection, PropEdits,
+  UnitEditor, CompilerOptions, EditorOptions, EnvironmentOpts, TransferMacros,
+  KeyMapping;
 
 const
   Version_String = '0.7';
@@ -258,6 +259,7 @@ type
     procedure OnDesignerPropertiesChanged(Sender: TObject);
     procedure OnDesignerAddComponent(Sender: TObject; Component: TComponent;
       ComponentClass: TRegisteredComponent);
+    procedure OnDesignerRemoveComponent(Sender: TObject; Component: TComponent);
     procedure OnControlSelectionChanged(Sender: TObject);
 
     procedure SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
@@ -1344,6 +1346,7 @@ writeln('[TMainIDE.SetDefaultsforForm] 2');
     OnComponentListChanged:=@OnDesignerComponentListChanged;
     OnPropertiesChanged:=@OnDesignerPropertiesChanged;
     OnAddComponent:=@OnDesignerAddComponent;
+    OnRemoveComponent:=@OnDesignerRemoveComponent;
 writeln('[TMainIDE.SetDefaultsforForm] 3');
   end;
 end;
@@ -2027,6 +2030,7 @@ writeln('TMainIDE.DoOpenEditorFile');
   NewSrcEdit.SyntaxHighlighterType:=NewUnitInfo.SyntaxHighlighter;
   NewSrcEdit.EditorComponent.CaretXY:=NewUnitInfo.CursorPos;
   NewSrcEdit.EditorComponent.TopLine:=NewUnitInfo.TopLine;
+  NewSrcEdit.EditorComponent.LeftChar:=0;
   NewUnitInfo.Loaded:=true;
   // read form data
   if (NewUnitInfo.Unitname<>'') then begin
@@ -2705,38 +2709,133 @@ end;
 
 function TMainIDE.DoBackupFile(Filename:string; 
   IsPartOfProject:boolean): TModalResult;
-var BackupFilename:string;
+var BackupFilename, CounterFilename: string;
   AText,ACaption:string;
+  BackupInfo: TBackupInfo;
+  FilePath, FileNameOnly, FileExt, SubDir: string;
+  i: integer;
 begin
   // ToDo: implement the other backup methods
   Result:=mrOk;
-  BackupFilename:=FileName+'.bak';
-  // remove old backup file
-  repeat
-    if FileExists(BackupFilename) then begin
-      if not DeleteFile(BackupFilename) then begin
-        ACaption:='Delete file failed';
-        AText:='Unable to remove old backup file "'+BackupFilename+'"!';
-        Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
-          ,MB_ABORTRETRYIGNORE);
-        if Result=mrAbort then exit;
-        if Result=mrIgnore then Result:=mrOk;
-      end;
-    end;
-  until Result<>mrRetry;
-  // backup file
-  if FileExists(Filename) then begin
+  if not (FileExists(Filename)) then exit;
+  if IsPartOfProject then
+    BackupInfo:=EnvironmentOptions.BackupInfoProjectFiles
+  else
+    BackupInfo:=EnvironmentOptions.BackupInfoOtherFiles;
+  if (BackupInfo.BackupType=bakNone)
+  or ((BackupInfo.BackupType=bakSameName) and (BackupInfo.SubDirectory='')) then
+    exit;
+  FilePath:=ExtractFilePath(Filename);
+  FileExt:=ExtractFileExt(Filename);
+  FileNameOnly:=copy(Filename,1,length(Filename)-length(FileExt));
+  if BackupInfo.SubDirectory<>'' then begin
+    SubDir:=FilePath+BackupInfo.SubDirectory;
     repeat
-      if not RenameFile(Filename,BackupFilename) then begin
-        ACaption:='Rename file failed';
-        AText:='Unable to rename file "'+Filename+'" to "'+BackupFilename+'"!';
-        Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
-          ,MB_ABORTRETRYIGNORE);
-        if Result=mrAbort then exit;
-        if Result=mrIgnore then Result:=mrOk;
+      if not DirectoryExists(SubDir) then begin
+        if not CreateDir(SubDir) then begin
+          Result:=MessageDlg('Unable to create backup directory "'+SubDir+'".'
+                ,mtWarning,[mbAbort,mbRetry,mbIgnore],0);
+          if Result=mrAbort then exit;
+          if Result=mrIgnore then Result:=mrOk;
+        end;
       end;
     until Result<>mrRetry;
   end;
+  if BackupInfo.BackupType in
+   [bakSymbolInFront,bakSymbolBehind,bakUserDefinedAddExt,bakSameName] then
+  begin
+    case BackupInfo.BackupType of
+      bakSymbolInFront:
+        BackupFilename:=FileNameOnly+'.~'+copy(FileExt,2,length(FileExt)-1);
+      bakSymbolBehind:
+        BackupFilename:=FileNameOnly+FileExt+'~';
+      bakUserDefinedAddExt:
+        BackupFilename:=FileNameOnly+FileExt+'.'+BackupInfo.AdditionalExtension;
+      bakSameName:
+        BackupFilename:=FileNameOnly+FileExt;
+    end;
+    if BackupInfo.SubDirectory<>'' then
+      BackupFilename:=SubDir+OSDirSeparator+BackupFilename
+    else
+      BackupFilename:=FilePath+BackupFilename;
+    // remove old backup file
+    repeat
+      if FileExists(BackupFilename) then begin
+        if not DeleteFile(BackupFilename) then begin
+          ACaption:='Delete file failed';
+          AText:='Unable to remove old backup file "'+BackupFilename+'"!';
+          Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
+            ,MB_ABORTRETRYIGNORE);
+          if Result=mrAbort then exit;
+          if Result=mrIgnore then Result:=mrOk;
+        end;
+      end;
+    until Result<>mrRetry;
+  end else begin
+    // backup with counter
+    if BackupInfo.SubDirectory<>'' then
+      BackupFilename:=SubDir+OSDirSeparator+FileNameOnly+FileExt+';'
+    else
+      BackupFilename:=Filename+';';
+    if BackupInfo.MaxCounter<=0 then begin
+      // search first non existing backup filename
+      i:=1;
+      while FileExists(BackupFilename+IntToStr(i)) do inc(i);
+      BackupFilename:=BackupFilename+IntToStr(i);
+    end else begin
+      // rename all backup files (increase number)
+      i:=1;
+      while FileExists(BackupFilename+IntToStr(i))
+      and (i<=BackupInfo.MaxCounter) do inc(i);
+      if i>BackupInfo.MaxCounter then begin
+        dec(i);
+        CounterFilename:=BackupFilename+IntToStr(BackupInfo.MaxCounter);
+        // remove old backup file
+        repeat
+          if FileExists(CounterFilename) then begin
+            if not DeleteFile(CounterFilename) then begin
+              ACaption:='Delete file failed';
+              AText:='Unable to remove old backup file "'+CounterFilename+'"!';
+              Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
+                ,MB_ABORTRETRYIGNORE);
+              if Result=mrAbort then exit;
+              if Result=mrIgnore then Result:=mrOk;
+            end;
+          end;
+        until Result<>mrRetry;
+      end;
+      // rename all old backup files
+      dec(i);
+      while i>=1 do begin
+        repeat
+          if not RenameFile(BackupFilename+IntToStr(i),
+             BackupFilename+IntToStr(i+1)) then
+          begin
+            ACaption:='Rename file failed';
+            AText:='Unable to rename file "'+BackupFilename+IntToStr(i)
+                  +'" to "'+BackupFilename+IntToStr(i+1)+'"!';
+            Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
+              ,MB_ABORTRETRYIGNORE);
+            if Result=mrAbort then exit;
+            if Result=mrIgnore then Result:=mrOk;
+          end;
+        until Result<>mrRetry;
+        dec(i);
+      end;
+      BackupFilename:=BackupFilename+'1';
+    end;
+  end;
+  // backup file
+  repeat
+    if not RenameFile(Filename,BackupFilename) then begin
+      ACaption:='Rename file failed';
+      AText:='Unable to rename file "'+Filename+'" to "'+BackupFilename+'"!';
+      Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
+        ,MB_ABORTRETRYIGNORE);
+      if Result=mrAbort then exit;
+      if Result=mrIgnore then Result:=mrOk;
+    end;
+  until Result<>mrRetry;
 end;
 
 procedure TMainIDE.UpdateCaption;
@@ -3010,6 +3109,56 @@ begin
   end;
 end;
 
+procedure TMainIDE.OnDesignerRemoveComponent(Sender: TObject;
+  Component: TComponent);
+var i: integer;
+  ActiveForm: TCustomForm;
+  ActiveUnitInfo: TUnitInfo;
+  SrcTxtChanged: boolean;
+  ActiveSrcEdit: TSourceEditor;
+  FormClassName: string;
+  FormClassNameStartPos, FormBodyStartPos: integer;
+begin
+  ActiveForm:=TDesigner(Sender).Form;
+  if ActiveForm=nil then begin
+    writeln('[TMainIDE.OnDesignerAddComponent] Error: TDesigner without a form');
+    halt;
+  end;
+  // find source for form
+  i:=Project.UnitCount-1;
+  while (i>=0) do begin
+    if (Project.Units[i].Loaded) 
+    and (Project.Units[i].Form=ActiveForm) then break;
+    dec(i);
+  end;
+  if i<0 then begin
+    writeln('[TMainIDE.OnDesignerAddComponent] Error: form without source');
+    halt;
+  end;
+  ActiveUnitInfo:=Project.Units[i];
+  SrcTxtChanged:=false;
+  // remove component definition to form source
+  FormClassName:=ActiveForm.ClassName;
+  if FindFormClassDefinitionInSource(ActiveUnitInfo.Source.Source,FormClassName,
+     FormClassNameStartPos, FormBodyStartPos) then begin
+    if RemoveFormComponentFromSource(ActiveUnitInfo.Source,FormBodyStartPos,
+      Component.Name, Component.ClassName) then begin
+      SrcTxtChanged:=true;
+    end;
+  end else begin
+    // the form is not mentioned in the source?
+    // ignore silently
+  end;
+  // update source
+  if SrcTxtChanged then begin
+    ActiveUnitInfo.Modified:=true;
+    ActiveSrcEdit:=SourceNoteBook.FindSourceEditorWithPageIndex(
+        ActiveUnitInfo.EditorIndex);
+    ActiveSrcEdit.Source.Text:=ActiveUnitInfo.Source.Source;
+    ActiveSrcEdit.EditorComponent.Modified:=true;
+  end;
+end;
+
 procedure TMainIDE.OnControlSelectionChanged(Sender: TObject);
 var NewSelectedComponents : TComponentSelectionList;
   i: integer;
@@ -3034,6 +3183,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.83  2001/03/28 14:08:45  lazarus
+  MG: added backup code and fixed removing controls
+
   Revision 1.82  2001/03/27 11:11:13  lazarus
   MG: fixed mouse msg, added filedialog initialdir
 

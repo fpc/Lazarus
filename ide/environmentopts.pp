@@ -19,7 +19,7 @@ uses
   ExtCtrls, StdCtrls, EditorOptions, LResources, LazConf, Dialogs;
 
 const
-  EnvOptsVersion: integer = 100;
+  EnvOptsVersion: integer = 101;
 
 type
   //----------------------------------------------------------------------------
@@ -28,8 +28,8 @@ type
      bakSymbolInFront,    // .~pp
      bakSymbolBehind,     // .pp~
      bakCounter,          // .pp;1
-     bakSameName,         // .pp  only available if backuping into subdirectory
-     bakUserDefinedAddExt // .pp.xxx
+     bakUserDefinedAddExt,// .pp.xxx
+     bakSameName          // .pp  only available if backuping into subdirectory
    );
 
   TBackupInfo = record
@@ -71,7 +71,7 @@ type
     FObjectInspectorOptions: TOIOptions;
     
     // backup
-    FBackupInfoRepositoryFiles: TBackupInfo;
+    FBackupInfoProjectFiles: TBackupInfo;
     FBackupInfoOtherFiles: TBackupInfo;
 
     // recent files and directories
@@ -126,8 +126,8 @@ type
        read FObjectInspectorOptions write FObjectInspectorOptions;
 
     // backup
-    property BackupInfoRepositoryFiles: TBackupInfo 
-       read FBackupInfoRepositoryFiles write FBackupInfoRepositoryFiles;
+    property BackupInfoProjectFiles: TBackupInfo 
+       read FBackupInfoProjectFiles write FBackupInfoProjectFiles;
     property BackupInfoOtherFiles: TBackupInfo
        read FBackupInfoOtherFiles write FBackupInfoOtherFiles;
 
@@ -149,6 +149,7 @@ type
     FOnLoadEnvironmentSettings: TOnLoadEnvironmentSettings;
     FOnSaveEnvironmentSettings: TOnSaveEnvironmentSettings;
     procedure SetupDesktopPage;
+    procedure SetupBackupPage;
     procedure SetComboBoxText(AComboBox:TComboBox; AText:AnsiString);
 
   published
@@ -187,10 +188,30 @@ type
     BackgroundColorLabel: TLabel;
     BackgroundColorButton: TColorButton;
 
+    // backup
+    BackupHelpLabel: TLabel;
+    BackupProjectGroupBox: TGroupBox;
+    BakProjTypeRadioGroup: TRadioGroup;
+    BakProjAddExtLabel: TLabel;
+    BakProjAddExtComboBox: TComboBox;
+    BakProjMaxCounterLabel: TLabel;
+    BakProjMaxCounterComboBox: TComboBox;
+    BakProjSubDirLabel: TLabel;
+    BakProjSubDirComboBox: TComboBox;
+    BackupOtherGroupBox: TGroupBox;
+    BakOtherTypeRadioGroup: TRadioGroup;
+    BakOtherAddExtLabel: TLabel;
+    BakOtherAddExtComboBox: TComboBox;
+    BakOtherMaxCounterLabel: TLabel;
+    BakOtherMaxCounterComboBox: TComboBox;
+    BakOtherSubDirLabel: TLabel;
+    BakOtherSubDirComboBox: TComboBox;
+
     // buttons at bottom
     OkButton: TButton;
     CancelButton: TButton;
     
+    procedure BakTypeRadioGroupClick(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
     procedure SaveDesktopSettingsToFileButtonClick(Sender: TObject);
@@ -217,7 +238,10 @@ implementation
 
 { TEnvironmentOptions }
 
-const EnvOptsConfFileName='environmentoptions.xml';
+const
+  EnvOptsConfFileName='environmentoptions.xml';
+  BakMaxCounterInfiniteTxt = 'infinite';
+  BakNoSubDirTxt = '(none)';
 
 constructor TEnvironmentOptions.Create;
 begin
@@ -252,17 +276,17 @@ begin
   FObjectInspectorOptions:=TOIOptions.Create;
 
   // backup
-  with FBackupInfoRepositoryFiles do begin
+  with FBackupInfoProjectFiles do begin
     BackupType:=bakSameName;
     AdditionalExtension:='bak';  // for bakUserDefinedAddExt
-    MaxCounter:=9;               // for bakCounter
-    SubDirectory:='backup';    
+    MaxCounter:=3;               // for bakCounter
+    SubDirectory:='';
   end;
   with FBackupInfoOtherFiles do begin
     BackupType:=bakUserDefinedAddExt;
     AdditionalExtension:='bak';  // for bakUserDefinedAddExt
-    MaxCounter:=9;               // for bakCounter
-    SubDirectory:='backup';    
+    MaxCounter:=3;               // for bakCounter
+    SubDirectory:='';
   end;
 
   // recent files and directories
@@ -327,7 +351,10 @@ var XMLConfig: TXMLConfig;
       end;
       AdditionalExtension:=XMLConfig.GetValue(Path+'AdditionalExtension','bak');
       MaxCounter:=XMLConfig.GetValue(Path+'MaxCounter',9);
-      SubDirectory:=XMLConfig.GetValue(Path+'SubDirectory','backup');
+      if FileVersion<101 then
+        SubDirectory:=''
+      else
+        SubDirectory:=XMLConfig.GetValue(Path+'SubDirectory','backup');
     end;
   end;
 
@@ -382,8 +409,8 @@ begin
 
     if not OnlyDesktop then begin
       // backup
-      LoadBackupInfo(FBackupInfoRepositoryFiles
-        ,'EnvironmentOptions/BackupRepositoryFiles/');
+      LoadBackupInfo(FBackupInfoProjectFiles
+        ,'EnvironmentOptions/BackupProjectFiles/');
       LoadBackupInfo(FBackupInfoOtherFiles
         ,'EnvironmentOptions/BackupOtherFiles/');
     end;
@@ -478,8 +505,8 @@ begin
 
     if not OnlyDesktop then begin
       // backup
-      SaveBackupInfo(FBackupInfoRepositoryFiles
-        ,'EnvironmentOptions/BackupRepositoryFiles/');
+      SaveBackupInfo(FBackupInfoProjectFiles
+        ,'EnvironmentOptions/BackupProjectFiles/');
       SaveBackupInfo(FBackupInfoOtherFiles
         ,'EnvironmentOptions/BackupOtherFiles/');
     end;
@@ -510,7 +537,7 @@ constructor TEnvironmentOptionsDialog.Create(AOwner:TComponent);
 begin
   inherited Create(AOwner);
   if LazarusResources.Find(ClassName)=nil then begin
-    SetBounds((Screen.Width-480) div 2,(Screen.Height-350) div 2, 485, 355);
+    SetBounds((Screen.Width-480) div 2,(Screen.Height-400) div 2, 485, 405);
     Caption:='Environment Options';
     
     NoteBook:=TNoteBook.Create(Self);
@@ -519,9 +546,11 @@ begin
       Parent:=Self;
       SetBounds(0,0,Self.ClientWidth-4,Self.ClientHeight-50);
       Pages[0]:='Desktop';
+      Pages.Add('Backup');
     end;
 
     SetupDesktopPage;
+    SetupBackupPage;
     
     NoteBook.Show;
 
@@ -839,7 +868,7 @@ begin
   ObjectInspectorGroupBox:=TGroupBox.Create(Self);
   with ObjectInspectorGroupBox do begin
     Name:='ObjectInspectorGroupBox';
-    Parent:=NoteBook.Page[0];;
+    Parent:=NoteBook.Page[0];
     Left:=FormEditorGroupBox.Left;
     Top:=FormEditorGroupBox.Top+FormEditorGroupBox.Height+5;
     Width:=FormEditorGroupBox.Width;
@@ -852,7 +881,7 @@ begin
   with BackgroundColorButton do begin
     Name:='BackgroundColorButton';
     Parent:=ObjectInspectorGroupBox;
-    Left:=2;
+    Left:=5;
     Top:=2;
     Width:=50;
     Height:=25;
@@ -864,13 +893,301 @@ begin
     Name:='BackgroundColorLabel';
     Parent:=ObjectInspectorGroupBox;
     Left:=BackgroundColorButton.Left+BackgroundColorButton.Width+5;
-    Top:=BackgroundColorButton.Top+2;
+    Top:=BackgroundColorButton.Top;
     Width:=ObjectInspectorGroupBox.ClientWidth-Left-5;
     Height:=23;
     Caption:='Background color';
     Show;
   end;
 
+end;
+
+procedure TEnvironmentOptionsDialog.SetupBackupPage;
+var MaxX:integer;
+begin
+  MaxX:=ClientWidth-5;
+
+  BackupHelpLabel:=TLabel.Create(Self);
+  with BackupHelpLabel do begin
+    Name:='BackupHelpLabel';
+    Parent:=NoteBook.Page[1];
+    Left:=5;
+    Top:=2;
+    Width:=MaxX-Left*2;
+    Height:=23;
+    Caption:='Notes: ';
+    Show;
+  end;
+
+  BackupProjectGroupBox:=TGroupBox.Create(Self);
+  with BackupProjectGroupBox do begin
+    Name:='BackupProjectGroupBox';
+    Parent:=NoteBook.Page[1];
+    Left:=4;
+    Top:=BackupHelpLabel.Top+BackupHelpLabel.Height+4;
+    Width:=(MaxX div 2) - 11;
+    Height:=260;
+    Caption:='Project files';
+    Show;
+  end;
+
+  BakProjTypeRadioGroup:=TRadioGroup.Create(Self);
+  with BakProjTypeRadioGroup do begin
+    Name:='BakProjTypeRadioGroup';
+    Parent:=BackupProjectGroupBox;
+    Left:=5;
+    Top:=4;
+    Width:=BackupProjectGroupBox.ClientWidth-Left-Left-4;
+    Height:=140;
+    Caption:='Type';
+    with Items do begin
+      BeginUpdate;
+      Add('None');
+      Add('Symbol in front (.~pp)');
+      Add('Symbol behind (.pp~)');
+      Add('Counter (.pp;1)');
+      Add('User defined extension (.pp.xxx)');
+      Add('Same name (in subdirectory)');
+      EndUpdate;
+    end;
+    OnClick:=@BakTypeRadioGroupClick;
+    Show;
+  end;
+
+  BakProjAddExtLabel:=TLabel.Create(Self);
+  with BakProjAddExtLabel do begin
+    Name:='BakProjAddExtLabel';
+    Parent:=BackupProjectGroupBox;
+    Left:=5;
+    Top:=BakProjTypeRadioGroup.Top+BakProjTypeRadioGroup.Height+5;
+    Width:=BakProjTypeRadioGroup.Width-62;
+    Height:=23;
+    Caption:='User defined extension';
+    Show;
+  end;
+
+  BakProjAddExtComboBox:=TComboBox.Create(Self);
+  with BakProjAddExtComboBox do begin
+    Name:='BakProjAddExtComboBox';
+    Parent:=BackupProjectGroupBox;
+    Left:=BakProjAddExtLabel.Left+BakProjAddExtLabel.Width+2;
+    Top:=BakProjAddExtLabel.Top;
+    Width:=60;
+    Height:=25;
+    with Items do begin
+      BeginUpdate;
+      Add('bak');
+      Add('old');
+      EndUpdate;
+    end;
+    Show;
+  end;
+
+  BakProjMaxCounterLabel:=TLabel.Create(Self);
+  with BakProjMaxCounterLabel do begin
+    Name:='BakProjMaxCounterLabel';
+    Parent:=BackupProjectGroupBox;
+    Left:=5;
+    Top:=BakProjAddExtLabel.Top+BakProjAddExtLabel.Height+5;
+    Width:=110;
+    Height:=23;
+    Caption:='Maximum counter';
+    Show;
+  end;
+
+  BakProjMaxCounterComboBox:=TComboBox.Create(Self);
+  with BakProjMaxCounterComboBox do begin
+    Name:='BakProjMaxCounterComboBox';
+    Parent:=BackupProjectGroupBox;
+    Left:=BakProjMaxCounterLabel.Left+BakProjMaxCounterLabel.Width+2;
+    Top:=BakProjMaxCounterLabel.Top;
+    Width:=100;
+    Height:=25;
+    with Items do begin
+      BeginUpdate;
+      Add('1');
+      Add('2');
+      Add('3');
+      Add('5');
+      Add('9');
+      Add(BakMaxCounterInfiniteTxt);
+      EndUpdate;
+    end;
+    Show;
+  end;
+
+  BakProjSubDirLabel:=TLabel.Create(Self);
+  with BakProjSubDirLabel do begin
+    Name:='BakProjSubDirLabel';
+    Parent:=BackupProjectGroupBox;
+    Left:=5;
+    Top:=BakProjMaxCounterLabel.Top+BakProjMaxCounterLabel.Height+5;
+    Width:=110;
+    Height:=23;
+    Caption:='Sub directory';
+    Show;
+  end;
+
+  BakProjSubDirComboBox:=TComboBox.Create(Self);
+  with BakProjSubDirComboBox do begin
+    Name:='BakProjSubDirComboBox';
+    Parent:=BackupProjectGroupBox;
+    Left:=BakProjSubDirLabel.Left+BakProjSubDirLabel.Width+2;
+    Top:=BakProjSubDirLabel.Top;
+    Width:=100;
+    Height:=25;
+    with Items do begin
+      BeginUpdate;
+      Add(BakNoSubDirTxt);
+      Add('backup');
+      EndUpdate;
+    end;
+    Show;
+  end;
+
+  BackupOtherGroupBox:=TGroupBox.Create(Self);
+  with BackupOtherGroupBox do begin
+    Name:='BackupOtherGroupBox';
+    Parent:=NoteBook.Page[1];
+    Left:=BackupProjectGroupBox.Left+BackupProjectGroupBox.Width+10;
+    Top:=BackupHelpLabel.Top+BackupHelpLabel.Height+4;
+    Width:=(MaxX div 2) - 11;
+    Height:=260;
+    Caption:='Other files';
+    Show;
+  end;
+
+  BakOtherTypeRadioGroup:=TRadioGroup.Create(Self);
+  with BakOtherTypeRadioGroup do begin
+    Name:='BakOtherTypeRadioGroup';
+    Parent:=BackupOtherGroupBox;
+    Left:=5;
+    Top:=4;
+    Width:=BackupOtherGroupBox.ClientWidth-Left-Left-4;
+    Height:=140;
+    Caption:='Type';
+    with Items do begin
+      BeginUpdate;
+      Add('None');
+      Add('Symbol in front (.~pp)');
+      Add('Symbol behind (.pp~)');
+      Add('Counter (.pp;1)');
+      Add('User defined extension (.pp.xxx)');
+      Add('Same name (in subdirectory)');
+      EndUpdate;
+    end;
+    OnClick:=@BakTypeRadioGroupClick;
+    Show;
+  end;
+
+  BakOtherAddExtLabel:=TLabel.Create(Self);
+  with BakOtherAddExtLabel do begin
+    Name:='BakOtherAddExtLabel';
+    Parent:=BackupOtherGroupBox;
+    Left:=5;
+    Top:=BakOtherTypeRadioGroup.Top+BakOtherTypeRadioGroup.Height+5;
+    Width:=BakOtherTypeRadioGroup.Width-62;
+    Height:=23;
+    Caption:='User defined extension';
+    Show;
+  end;
+
+  BakOtherAddExtComboBox:=TComboBox.Create(Self);
+  with BakOtherAddExtComboBox do begin
+    Name:='BakOtherAddExtComboBox';
+    Parent:=BackupOtherGroupBox;
+    Left:=BakOtherAddExtLabel.Left+BakOtherAddExtLabel.Width+2;
+    Top:=BakOtherAddExtLabel.Top;
+    Width:=60;
+    Height:=25;
+    with Items do begin
+      BeginUpdate;
+      Add('bak');
+      Add('old');
+      EndUpdate;
+    end;
+    Show;
+  end;
+
+  BakOtherMaxCounterLabel:=TLabel.Create(Self);
+  with BakOtherMaxCounterLabel do begin
+    Name:='BakOtherMaxCounterLabel';
+    Parent:=BackupOtherGroupBox;
+    Left:=5;
+    Top:=BakOtherAddExtLabel.Top+BakOtherAddExtLabel.Height+5;
+    Width:=110;
+    Height:=23;
+    Caption:='Maximum counter';
+    Show;
+  end;
+
+  BakOtherMaxCounterComboBox:=TComboBox.Create(Self);
+  with BakOtherMaxCounterComboBox do begin
+    Name:='BakOtherMaxCounterComboBox';
+    Parent:=BackupOtherGroupBox;
+    Left:=BakOtherMaxCounterLabel.Left+BakOtherMaxCounterLabel.Width+2;
+    Top:=BakOtherMaxCounterLabel.Top;
+    Width:=100;
+    Height:=25;
+    with Items do begin
+      BeginUpdate;
+      Add('1');
+      Add('2');
+      Add('3');
+      Add('5');
+      Add('9');
+      Add(BakMaxCounterInfiniteTxt);
+      EndUpdate;
+    end;
+    Show;
+  end;
+
+  BakOtherSubDirLabel:=TLabel.Create(Self);
+  with BakOtherSubDirLabel do begin
+    Name:='BakOtherSubDirLabel';
+    Parent:=BackupOtherGroupBox;
+    Left:=5;
+    Top:=BakOtherMaxCounterLabel.Top+BakOtherMaxCounterLabel.Height+5;
+    Width:=110;
+    Height:=23;
+    Caption:='Sub directory';
+    Show;
+  end;
+
+  BakOtherSubDirComboBox:=TComboBox.Create(Self);
+  with BakOtherSubDirComboBox do begin
+    Name:='BakOtherSubDirComboBox';
+    Parent:=BackupOtherGroupBox;
+    Left:=BakOtherSubDirLabel.Left+BakOtherSubDirLabel.Width+2;
+    Top:=BakOtherSubDirLabel.Top;
+    Width:=100;
+    Height:=25;
+    with Items do begin
+      BeginUpdate;
+      Add('(no subdirectoy)');
+      Add('backup');
+      EndUpdate;
+    end;
+    Show;
+  end;
+end;
+
+procedure TEnvironmentOptionsDialog.BakTypeRadioGroupClick(Sender: TObject);
+var i: integer;
+begin
+  i:=TRadioGroup(Sender).ItemIndex;
+  if Sender=BakProjTypeRadioGroup then begin
+writeln('[TEnvironmentOptionsDialog.BakTypeRadioGroupClick] ',i);
+    BakProjAddExtComboBox.Enabled:=(i=4);
+    BakProjAddExtLabel.Enabled:=BakProjAddExtComboBox.Enabled;
+    BakProjMaxCounterComboBox.Enabled:=(i=3);
+    BakProjMaxCounterLabel.EnableD:=BakProjMaxCounterComboBox.Enabled;
+  end else begin
+    BakOtherAddExtComboBox.Enabled:=(i=4);
+    BakOtherAddExtLabel.Enabled:=BakOtherAddExtComboBox.Enabled;
+    BakOtherMaxCounterComboBox.Enabled:=(i=3);
+    BakOtherMaxCounterLabel.EnableD:=BakOtherMaxCounterComboBox.Enabled;
+  end;
 end;
 
 procedure TEnvironmentOptionsDialog.OkButtonClick(Sender: TObject);
@@ -973,6 +1290,48 @@ begin
     AutoCreateFormsCheckBox.Checked:=AutoCreateForms;
     SetComboBoxText(GridSizeXComboBox,IntToStr(GridSizeX));
     SetComboBoxText(GridSizeYComboBox,IntToStr(GridSizeY));
+
+    // backup
+    with BackupInfoProjectFiles do begin
+      case BackupType of
+       bakNone:          BakProjTypeRadioGroup.ItemIndex:=0;
+       bakSymbolInFront: BakProjTypeRadioGroup.ItemIndex:=1;
+       bakSymbolBehind:  BakProjTypeRadioGroup.ItemIndex:=2;
+       bakCounter:       BakProjTypeRadioGroup.ItemIndex:=3;
+       bakUserDefinedAddExt: BakProjTypeRadioGroup.ItemIndex:=4;
+       bakSameName:      BakProjTypeRadioGroup.ItemIndex:=5;
+      end;
+      SetComboBoxText(BakProjAddExtComboBox,AdditionalExtension);
+      if MaxCounter<=0 then
+        SetComboBoxText(BakProjMaxCounterComboBox,BakMaxCounterInfiniteTxt)
+      else
+        SetComboBoxText(BakProjMaxCounterComboBox,IntToStr(MaxCounter));
+      if SubDirectory<>'' then
+        SetComboBoxText(BakProjSubDirComboBox,SubDirectory)
+      else
+        SetComboBoxText(BakProjSubDirComboBox,BakNoSubDirTxt);      
+    end;
+    BakTypeRadioGroupClick(BakProjTypeRadioGroup);
+    with BackupInfoOtherFiles do begin
+      case BackupType of
+       bakNone:          BakOtherTypeRadioGroup.ItemIndex:=0;
+       bakSymbolInFront: BakOtherTypeRadioGroup.ItemIndex:=1;
+       bakSymbolBehind:  BakOtherTypeRadioGroup.ItemIndex:=2;
+       bakCounter:       BakOtherTypeRadioGroup.ItemIndex:=3;
+       bakUserDefinedAddExt: BakOtherTypeRadioGroup.ItemIndex:=4;
+       bakSameName:      BakOtherTypeRadioGroup.ItemIndex:=5;
+      end;
+      SetComboBoxText(BakOtherAddExtComboBox,AdditionalExtension);
+      if MaxCounter<=0 then
+        SetComboBoxText(BakOtherMaxCounterComboBox,BakMaxCounterInfiniteTxt)
+      else
+        SetComboBoxText(BakOtherMaxCounterComboBox,IntToStr(MaxCounter));
+      if SubDirectory<>'' then
+        SetComboBoxText(BakOtherSubDirComboBox,SubDirectory)
+      else
+        SetComboBoxText(BakOtherSubDirComboBox,BakNoSubDirTxt);      
+    end;
+    BakTypeRadioGroupClick(BakOtherTypeRadioGroup);
   end;
 end;
 
@@ -1001,6 +1360,46 @@ begin
     AutoCreateForms:=AutoCreateFormsCheckBox.Checked;
     GridSizeX:=StrToIntDef(GridSizeXComboBox.Text,GridSizeX);
     GridSizeY:=StrToIntDef(GridSizeYComboBox.Text,GridSizeY);
+
+    // backup
+    with BackupInfoProjectFiles do begin
+      case BakProjTypeRadioGroup.ItemIndex of
+       0: BackupType:=bakNone;
+       1: BackupType:=bakSymbolInFront;
+       2: BackupType:=bakSymbolBehind;
+       3: BackupType:=bakCounter;
+       4: BackupType:=bakUserDefinedAddExt;
+       5: BackupType:=bakSameName;
+      end;
+      AdditionalExtension:=BakProjAddExtComboBox.Text;
+      if BakProjMaxCounterComboBox.Text=BakMaxCounterInfiniteTxt then
+        MaxCounter:=0
+      else
+        MaxCounter:=StrToIntDef(BakProjMaxCounterComboBox.Text,1);
+      if BakProjSubDirComboBox.Text=BakNoSubDirTxt then
+        SubDirectory:=''
+      else
+        SubDirectory:=BakProjSubDirComboBox.Text;
+    end;
+    with BackupInfoOtherFiles do begin
+      case BakOtherTypeRadioGroup.ItemIndex of
+       0: BackupType:=bakNone;
+       1: BackupType:=bakSymbolInFront;
+       2: BackupType:=bakSymbolBehind;
+       3: BackupType:=bakCounter;
+       4: BackupType:=bakUserDefinedAddExt;
+       5: BackupType:=bakSameName;
+      end;
+      AdditionalExtension:=BakOtherAddExtComboBox.Text;
+      if BakOtherMaxCounterComboBox.Text=BakMaxCounterInfiniteTxt then
+        MaxCounter:=0
+      else
+        MaxCounter:=StrToIntDef(BakOtherMaxCounterComboBox.Text,1);
+      if BakOtherSubDirComboBox.Text=BakNoSubDirTxt then
+        SubDirectory:=''
+      else
+        SubDirectory:=BakOtherSubDirComboBox.Text;
+    end;
   end;
 end;
 

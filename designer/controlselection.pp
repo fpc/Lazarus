@@ -128,6 +128,7 @@ type
     FUpdateLock: integer;
     FChangedDuringLock: boolean;
     FIsResizing: boolean;
+    FNotSaveBounds: boolean;
 
     FOnChange: TNotifyEvent;
 
@@ -157,6 +158,7 @@ type
     procedure Clear;
     procedure Assign(AControlSelection:TControlSelection);
     procedure AdjustSize;
+    property IsResizing: boolean read FIsResizing;
     function IsSelected(AComponent: TComponent): Boolean;
     procedure SaveBounds;
     procedure MoveSelection(dx, dy: integer);
@@ -372,6 +374,7 @@ begin
   FChangedDuringLock:=false;
   FRubberbandActive:=false;
   FIsResizing:=false;
+  FNotSaveBounds:=false;
 end;
 
 destructor TControlSelection.Destroy;
@@ -509,6 +512,7 @@ procedure TControlSelection.SaveBounds;
 var i:integer;
   g:TGrabIndex;
 begin
+  if FNotSaveBounds then exit;
 writeln('TControlSelection.SaveBounds');
   for i:=0 to FControls.Count-1 do Items[i].SaveBounds;
   for g:=Low(TGrabIndex) to High(TGrabIndex) do FGrabbers[g].SaveBounds;
@@ -543,6 +547,7 @@ begin
   Result:=FControls.Add(NewSelectedControl);
   if Count=1 then SetCustomForm;
   AdjustSize;
+  SaveBounds;
   EndUpdate;
   DoChange;  
 end;
@@ -561,6 +566,7 @@ begin
   FControls.Delete(Index);
   if Count=0 then SetCustomForm;
   AdjustSize;
+  SaveBounds;
   DoChange;
 end;
 
@@ -571,6 +577,7 @@ begin
   FControls.Clear;
   FCustomForm:=nil;
   AdjustSize;
+  SaveBounds;
   DoChange;
 end;
 
@@ -578,6 +585,7 @@ procedure TControlSelection.Assign(AControlSelection:TControlSelection);
 var i:integer;
 begin
   if AControlSelection=Self then exit;
+  FNotSaveBounds:=true;
   BeginUpdate;
   Clear;
   FControls.Capacity:=AControlSelection.Count;
@@ -585,6 +593,8 @@ begin
     Add(AControlSelection[i].Component);
   SetCustomForm;
   AdjustSize;
+  FNotSaveBounds:=false;
+  SaveBounds;
   EndUpdate;
   DoChange;
 end;
@@ -621,8 +631,10 @@ procedure TControlSelection.SizeSelection(dx, dy: integer);
 // if ActiveGrabber=nil then Left,Top
 var i:integer;
   GrabberPos:TGrabPositions;
+  NewLeft, NewTop, NewRight, NewBottom: integer;
 begin
-  if Count=0 then exit;
+  if (Count=0) or (FIsResizing) then exit;
+writeln('[TControlSelection.SizeSelection] A  ',dx,',',dy);
   BeginUpdate;
   FIsResizing:=true;
   if FActiveGrabber<>nil then
@@ -633,37 +645,49 @@ begin
   if [gpLeft,gpRight] * GrabberPos = [] then dx:=0;
   if (dx=0) and (dy=0) then exit;
   if gpLeft in GrabberPos then begin
-    FLeft:=FOldLeft+dx;
-    FWidth:=FOldWidth-dx;
+    FLeft:=FLeft+dx;
+    FWidth:=FWidth-dx;
   end;
   if gpRight in GrabberPos then begin
-    FWidth:=FOldWidth+dx;
+    FWidth:=FWidth+dx;
   end;
   if gpTop in GrabberPos then begin
-    FTop:=FOldTop+dy;
-    FHeight:=FOldHeight-dy;
+    FTop:=FTop+dy;
+    FHeight:=FHeight-dy;
   end;
   if gpBottom in GrabberPos then begin
-    FHeight:=FOldHeight+dy;
+    FHeight:=FHeight+dy;
   end;
   AdjustGrabber;
   if Count=1 then begin
     // single selection
-    Items[0].SetBounds(FLeft,FTop,FWidth,FHeight);
+    NewLeft:=FLeft;
+    NewTop:=FTop;
+    NewRight:=FLeft+FWidth;
+    NewBottom:=FTop+FHeight;
+    Items[0].SetBounds(
+      Min(NewLeft,NewRight),
+      Min(NewTop,NewBottom),
+      Abs(FWidth),
+      Abs(FHeight)
+    );
   end else if Count>1 then begin
     // multi selection
     if (FOldWidth<>0) and (FOldHeight<>0) then begin
       for i:=0 to Count-1 do begin
-        Items[i].SetBounds(
-          FOldLeft + (((Items[i].OldLeft-FOldLeft) * FWidth) div FOldWidth),
-          FOldTop + (((Items[i].OldTop-FOldTop) * FHeight) div FOldHeight),
-          Max(1,Abs((Items[i].OldWidth * FWidth) div FOldWidth)),
-          Max(1,Abs((Items[i].OldHeight * FHeight) div FOldHeight))
-        );
+        NewLeft:=FOldLeft + (((Items[i].OldLeft-FOldLeft) * FWidth) div FOldWidth);
+        NewTop:=FOldTop + (((Items[i].OldTop-FOldTop) * FHeight) div FOldHeight);
+        NewRight:=Max(1,Abs(FOldLeft +
+                    (((Items[i].OldLeft+Items[i].OldWidth-FOldLeft) * FWidth)
+                    div FOldWidth)));
+        NewBottom:=Max(1,Abs(FOldTop +
+                    (((Items[i].OldTop+Items[i].OldHeight-FOldTop) * FHeight)
+                    div FOldHeight)));
+        Items[i].SetBounds(NewLeft,NewTop,NewRight-NewLeft,NewBottom-NewTop);
+writeln('[TControlSelection.SizeSelection] i=',i,' ',Items[i].Width,' ',Items[i].Height);
       end;
     end;
   end;
-  SaveBounds;
   EndUpdate;
   FIsResizing:=false;
 end;
@@ -672,6 +696,8 @@ function TControlSelection.GrabberAtPos(X,Y:integer):TGrabber;
 var g:TGrabIndex;
 begin
   if FControls.Count>0 then begin
+writeln('[TControlSelection.GrabberAtPos] ',x,',',y,'  '
+,FGrabbers[4].Left,',',FGrabbers[4].Top);
     for g:=Low(TGrabIndex) to High(TGrabIndex) do
       if (FGrabbers[g].Left<=x) and (FGrabbers[g].Top<=y)
       and (FGrabbers[g].Left+FGrabbers[g].Width>x)

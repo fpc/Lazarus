@@ -98,17 +98,83 @@ type
     destructor Destroy; override;
   end;
 
+
+//----------------------------------------------------------------------------
+// compiler switches
+const
+  CompilerSwitchesNames:array['A'..'Z'] of string=(
+         'ALIGN'          // A
+        ,'BOOLEVAL'       // B
+        ,'ASSERTIONS'     // C
+        ,'DEBUGINFO'      // D
+        ,''               // E
+        ,''               // F
+        ,''               // G
+        ,'LONGSTRINGS'    // H
+        ,'IOCHECKS'       // I
+        ,''               // J
+        ,''               // K
+        ,'LOCALSYMBOLS'   // L
+        ,'TYPEINFO'       // M
+        ,''               // N
+        ,''               // O
+        ,'OPENSTRINGS'    // P
+        ,'OVERFLOWCHECKS' // Q
+        ,'RANGECHECKS'    // R
+        ,''               // S
+        ,'TYPEADDRESS'    // T
+        ,''               // U
+        ,'VARSTRINGCHECKS'// V
+        ,'STACKFRAMES'    // W
+        ,'EXTENDEDSYNTAX' // X
+        ,'REFERENCEINFO'  // Y
+        ,''               // Z
+     );
+
 //-----------------------------------------------------------------------------
 type
+  TKeyWordFunction = function: boolean of object;
+
+  TKeyWordFunctionListItem = class
+  private
+    IsLast: boolean;
+    KeyWord: shortstring;
+    DoIt: TKeyWordFunction;
+  end;
+
+  TKeyWordFunctionList = class
+  private
+    FItems: TList; // list of TKeyWordFunctionListItem;
+    FSorted: boolean;
+    FHashIndex: ^integer;
+    FMaxHashIndex: integer;
+    function KeyWordToHashIndex(const AKeyWord: shortstring): integer;
+  public
+    DefaultKeyWordFunction: TKeyWordFunction;
+    function DoIt(const AKeyWord: shortstring): boolean;
+    procedure Clear;
+    procedure Add(const AKeyWord: shortstring; AFunction: TKeyWordFunction);
+    procedure Sort;
+    property Sorted: boolean read FSorted;
+    constructor Create;
+    destructor Destroy;  override;
+  end;
+
+
+//-----------------------------------------------------------------------------
+// a TCodeTree is the product of a code tool. Every TCodeToolNode describes a
+// logical block in the code (e.g. a class or a procedure).
+
+type
   TCodeTreeNodeDesc = (
-      ctnNone,
-      ctnClass,
-      ctnClassPublished, ctnClassPrivate, ctnClassProtected, ctnPublic,
-      ctnProcedureHead,
-      ctnProcedureName, ctnParameterList,
-      ctnFunctionType, ctnProcedureModifier,
-      ctnBeginBlock, ctnAsmBlock,
-      ctnInterface, ctnImplementation, ctnInitialization, ctnFinalization
+      ctnNone:=0,
+      ctnClass:=1,
+      ctnClassPublished:=2, ctnClassPrivate:=3, ctnClassProtected:=4, ctnPublic:=5,
+      ctnProcedureHead:=6,
+      ctnProcedureName:=7, ctnParameterList:=8,
+      ctnFunctionType:=9, ctnProcedureModifier:=10,
+      ctnBeginBlock:=11, ctnAsmBlock:=12,
+      ctnInterface:=20, ctnImplementation:=21, ctnInitialization:=22, ctnFinalization:=23
     );
   TCodeTreeNodeDescs = set of TCodeTreeNodeDesc;
 
@@ -133,7 +199,7 @@ type
   public
     Desc: TCodeTreeNodeDesc;
     SubDesc: Word;
-    Parent, NextBrother, PriorBrother, FirstChild: TCodeTreeNode;
+    Parent, NextBrother, PriorBrother, FirstChild, LastChild: TCodeTreeNode;
     StartPos, EndPos: TCodePosition;
     function Next: TCodeTreeNode;
     function Prior: TCodeTreeNode;
@@ -152,12 +218,19 @@ type
     function SourcesCount: integer;
     function AddSource(NewSource: TSourceLog): integer;
     procedure DeleteNode(ANode: TCodeTreeNode);
+    procedure AddNodeAsLastChild(ParentNode, ANode: TCodeTreeNode);
     procedure Clear;
     constructor Create;
     destructor Destroy; override;
   end;
 
 //-----------------------------------------------------------------------------
+// TCustomCodeTool is the ancestor class for code tools which parses code
+// beginning with the Main Source code. It can parse atoms, the smallest code
+// elements in source code, create new code tree nodes and provides several
+// useful functions for parsing and changing code.
+type
+  TSyntaxType = (SyntaxType_Delphi, SyntaxType_FreePascal);
 
   TCustomCodeTool = class(TObject)
   private
@@ -165,15 +238,27 @@ type
     FIgnoreCompilerDirectives: boolean;
     FInitValues: TExpressionEvaluator;
   protected
+    function DefaultKeyWordFunc: boolean;
+    KeyWordFuncList: TKeyWordFunctionList;
     function GetMainSource: TSourceLog;
     procedure SetMainSource(ASource: TSourceLog);
+    procedure SetDefaultKeyWordFunctions; virtual;
   public
     Tree: TCodeTree;
+    SyntaxType: TSyntaxType;
+
+    // current Values, Position, Node ...
     Values: TExpressionEvaluator;
     Pos: TCodePosition;
     AtomStart: integer;
-    Atom: string;
+    Atom, UpAtom: string;
+    Node: TCodeTreeNode;
+
+    procedure BeginParsing; virtual;
+    procedure CreateChildNode; virtual;
+    procedure EndChildNode; virtual;
     property MainSource: TSourceLog read GetMainSource write SetMainSource;
+    function DoIt(const AnAtom: shortstring): boolean; virtual;
     procedure ReadNextPascalAtom; virtual;
     function ReadTilSection(SectionType: TCodeTreeNodeDesc): boolean;
     function ReadTilBracketClose: boolean;
@@ -184,14 +269,45 @@ type
     property InitCompilerValues: TExpressionEvaluator
         read FInitValues write FInitValues;
     procedure Clear; virtual;
+
     constructor Create;
     destructor Destroy; override;
   end;
 
-  TClassAndProcCodeTool = class(TCustomCodeTool)
+  TMultiKeyWordListCodeTool = class(TCustomCodeTool)
   private
+    FKeyWordLists: TList; // list of TKeyWordFunctionList
+    FCurKeyWordListID: integer;
+  protected
+    procedure SetKeyWordListID(NewID: integer);
   public
+    property KeyWordListID: integer read FCurKeyWordListID write SetKeyWordListID;
+    property CurKeyWordFuncList: TKeyWordFunctionList read KeyWordFuncList;
+    function AddKeyWordFuncList(AKeyWordFuncList: TKeyWordFunctionList): integer;
+    procedure ClearKeyWordFuncLists;
+
+    constructor Create;
+    destructor Destroy; override;
+  end;
+
+  TClassAndProcCodeTool = class(TMultiKeyWordListCodeTool)
+  private
+  protected
+    function KeyWordFuncSection: boolean;
+    function KeyWordFuncEnd: boolean;
+    function KeyWordFuncClass: boolean;
+    function KeyWordFuncMethod: boolean;
+    function KeyWordFuncForward: boolean;
+    function KeyWordFuncBeginEnd: boolean;
+  public
+    LastPos: TCodePosition;
+    LastAtomStart: integer;
+    LastAtom: string;
+    CurSection: TCodeTreeNodeDesc;
+
+    function DoIt(const AnAtom: shortstring): boolean; override;
     procedure BuildTree; virtual;
+    procedure SetDefaultKeyWordFunctions; override;
     constructor Create;
     destructor Destroy; override;
   end;
@@ -267,6 +383,8 @@ function FindFormComponentInSource(Source: string; FormBodyStartPos: integer;
   ComponentName, ComponentClassName: string): integer;
 function AddFormComponentToSource(Source:TSourceLog; FormBodyStartPos: integer;
   ComponentName, ComponentClassName: string): boolean;
+function RemoveFormComponentFromSource(Source:TSourceLog; FormBodyStartPos: integer;
+  ComponentName, ComponentClassName: string): boolean;
 
 // code search
 function SearchCodeInSource(Source,Find:string; StartPos:integer;
@@ -281,17 +399,22 @@ function ReadRawNextPascalAtom(Source:string;
 // utilities
 function LineEndCount(Txt: string; var LengthOfLastLine: integer): integer;
 
-const MaxLineLength:integer=80;
-
+const
+  MaxLineLength:integer=80;
 
 implementation
 
 
 const
-  IdentifierStartChar = ['a'..'z','A'..'Z','_'];
-  IdentifierChar = ['a'..'z','A'..'Z','_','0'..'9'];
   // ToDo: find the constant in the fpc units.
   EndOfLine:shortstring={$IFDEF win32}#13+{$ENDIF}#10;
+
+var
+  IsIDChar,          // ['a'..'z','A'..'Z','0'..'9','_']
+  IsIDStartChar      // ['a'..'z','A'..'Z','_']
+     :array[#0..#255] of boolean;
+
+  CharToHash: array[#0..#255] of integer;
   
 
 type
@@ -350,7 +473,7 @@ begin
       DirEnd:=length(Directive)-1;
     end;
     EndPos:=DirStart;
-    while (EndPos<DirEnd) and (Directive[EndPos] in IdentifierChar) do
+    while (EndPos<DirEnd) and (IsIDChar[Directive[EndPos]]) do
       inc(EndPos);
     DirectiveName:=lowercase(copy(Directive,DirStart,EndPos-DirStart));
     Parameters:=copy(Directive,EndPos+1,DirEnd-EndPos-1);
@@ -849,7 +972,7 @@ begin
   Result:=FormBodyStartPos;
   repeat
     Atom:=lowercase(ReadNextPascalAtom(Source,Result,AtomStart));
-    if (Atom='public') or (Atom='published') or (Atom='private') or (Atom='end')
+    if (Atom='public') or (Atom='private') or (Atom='end')
     or (Atom='protected') or (Atom='') then begin
       Result:=-1;
       exit;
@@ -904,6 +1027,46 @@ begin
     end;
   until Position>length(Source.Source);
   Result:=false;
+end;
+
+function RemoveFormComponentFromSource(Source:TSourceLog; FormBodyStartPos: integer;
+  ComponentName, ComponentClassName: string): boolean;
+var AtomStart, Position, ComponentStart, LineStart, LineEnd: integer;
+  Atom: string;
+begin
+writeln('[RemoveFormComponentFromSource] A ',FormBodyStartPos);
+  ComponentName:=lowercase(ComponentName);
+  ComponentClassName:=lowercase(ComponentClassName);
+  Position:=FormBodyStartPos;
+  repeat
+    Atom:=lowercase(ReadNextPascalAtom(Source.Source,Position,AtomStart));
+    if (Atom='public') or (Atom='private') or (Atom='end')
+    or (Atom='protected') or (Atom='') then begin
+      Result:=false;
+      exit;
+    end;
+    if (Atom=ComponentName) then begin
+      ComponentStart:=AtomStart;
+      if (ReadNextPascalAtom(Source.Source,Position,AtomStart)=':')
+      and (lowercase(ReadNextPascalAtom(Source.Source,Position,AtomStart))=
+         ComponentClassName)
+      then begin
+        GetLineStartEndAtPosition(Source.Source,ComponentStart,LineStart,LineEnd);
+        if (LineEnd<=length(Source.Source))
+        and (Source.Source[LineEnd] in [#10,#13]) then begin
+          inc(LineEnd);
+          if (LineEnd<=length(Source.Source))
+          and (Source.Source[LineEnd] in [#10,#13])
+          and (Source.Source[LineEnd]<>Source.Source[LineEnd-1]) then
+            inc(LineEnd);
+        end;
+        Source.Delete(LineStart,LineEnd-LineStart);
+        Result:=true;
+        exit;
+      end;
+    end;
+  until Atom='';
+  Result:=true;
 end;
 
 function SearchCodeInSource(Source,Find:string; StartPos:integer;
@@ -986,7 +1149,7 @@ begin
         DirEnd:=length(Result)-1;
       end;        
       EndPos:=DirStart;
-      while (EndPos<DirEnd) and (Result[EndPos] in IdentifierChar) do inc(EndPos);
+      while (EndPos<DirEnd) and (IsIDChar[Result[EndPos]]) do inc(EndPos);
       DirectiveName:=lowercase(copy(Result,DirStart,EndPos-DirStart));
       if (length(DirectiveName)=1) and (Result[DirEnd] in ['+','-']) then begin
         // switch
@@ -1057,81 +1220,81 @@ begin
   AtomStart:=Position;
   if Position<=Len then begin
     c1:=Source[Position];
-    case c1 of
-     'a'..'z','A'..'Z','_':  // identifier
-      begin
+    if IsIDStartChar[c1] then begin
+      // identifier
+      inc(Position);
+      while (Position<=Len) and (IsIDChar[Source[Position]]) do
         inc(Position);
-        while (Position<=Len) and (Source[Position] in IdentifierChar) do
+    end else begin
+      case c1 of
+       '0'..'9': // number
+        begin
           inc(Position);
-      end;
-     '0'..'9': // number
-      begin
-        inc(Position);
-        // read numbers
-        while (Position<=Len) and (Source[Position] in ['0'..'9']) do 
-          inc(Position);
-        if (Position<Len) and (Source[Position]='.') and (Source[Position]<>'.')
-        then begin
-          // real type number
-          inc(Position);
+          // read numbers
           while (Position<=Len) and (Source[Position] in ['0'..'9']) do 
             inc(Position);
-          if (Position<=Len) and (Source[Position] in ['e','E']) then begin
-            // read exponent
+          if (Position<Len) and (Source[Position]='.') and (Source[Position]<>'.')
+          then begin
+            // real type number
             inc(Position);
-            if (Position<=Len) and (Source[Position]='-') then inc(Position);
             while (Position<=Len) and (Source[Position] in ['0'..'9']) do 
               inc(Position);
+            if (Position<=Len) and (Source[Position] in ['e','E']) then begin
+              // read exponent
+              inc(Position);
+              if (Position<=Len) and (Source[Position]='-') then inc(Position);
+              while (Position<=Len) and (Source[Position] in ['0'..'9']) do 
+                inc(Position);
+            end;
           end;
         end;
-      end;
-     '''':  // string constant
-      begin
-        inc(Position);
-        while (Position<=Len) do begin
-          if Source[Position]='''' then begin
+       '''':  // string constant
+        begin
+          inc(Position);
+          while (Position<=Len) do begin
+            if Source[Position]='''' then begin
+              inc(Position);
+              if (Position<=Len) and (Source[Position]<>'''') then break;
+            end;
             inc(Position);
-            if (Position<=Len) and (Source[Position]<>'''') then break;
           end;
+        end;
+       '$':  // hex constant
+        begin
+          inc(Position);
+          while (Position<=Len)
+          and (Source[Position] in ['0'..'9','A'..'F','a'..'f']) do 
+            inc(Position);
+        end;
+       '{':  // compiler directive
+        begin
+          inc(Position);
+          while (Position<=Len) and (Source[Position]<>'}') do 
+            inc(Position);
           inc(Position);
         end;
-      end;
-     '$':  // hex constant
-      begin
-        inc(Position);
-        while (Position<=Len)
-        and (Source[Position] in ['0'..'9','A'..'F','a'..'f']) do 
+       '(':  // bracket or compiler directive
+        if (Position<Len) and (Source[Position]='*') then begin
+          // compiler directive -> read til comment end
+          inc(Position,2);
+          while (Position<Len) 
+          and ((Source[Position]<>'*') or (Source[Position]<>')')) do
+            inc(Position);
+          inc(Position,2);
+        end else
+          // round bracket open
           inc(Position);
-      end;
-     '{':  // compiler directive
-      begin
+      else
         inc(Position);
-        while (Position<=Len) and (Source[Position]<>'}') do 
-          inc(Position);
-        inc(Position);
-      end;
-     '(':  // bracket or compiler directive
-      if (Position<Len) and (Source[Position]='*') then begin
-        // compiler directive -> read til comment end
-        inc(Position,2);
-        while (Position<Len) 
-        and ((Source[Position]<>'*') or (Source[Position]<>')')) do
-          inc(Position);
-        inc(Position,2);
-      end else
-        // round bracket open
-        inc(Position);
-    else
-      inc(Position);
-      if Position<=Len then begin
-        c2:=Source[Position];
-        // test for double char operator :=, +=, -=, /=, *=, <>, <=, >=, **, ..
-        if ((c2='=') and  (c1 in [':','+','-','/','*','<','>']))
-        or ((c1='<') and (c2='>'))
-        or ((c1='>') and (c2='<'))
-        or ((c1='.') and (c2='.'))
-        or ((c1='*') and (c2='*'))
-        then inc(Position);
+        if Position<=Len then begin
+          c2:=Source[Position];
+          // test for double char operators :=, +=, -=, /=, *=, <>, <=, >=, **
+          if ((c2='=') and  (c1 in [':','+','-','/','*','<','>']))
+          or ((c1='<') and (c2='>'))
+          or ((c1='.') and (c2='.'))
+          or ((c1='*') and (c2='*'))
+          then inc(Position);
+        end;
       end;
     end;
   end;
@@ -1452,6 +1615,132 @@ begin
   until false;
 end;
 
+{ TKeyWordFunctionList }
+
+constructor TKeyWordFunctionList.Create;
+begin
+  inherited Create;
+  FItems:=TList.Create; // list of TKeyWordFunctionListItem;
+  FSorted:=true;
+  FHashIndex:=nil;
+  FMaxHashIndex:=-1;
+end;
+
+destructor TKeyWordFunctionList.Destroy;
+begin
+  Clear;
+  FItems.Free;
+  inherited Destroy;
+end;
+
+procedure TKeyWordFunctionList.Clear;
+var i: integer;
+begin
+  for i:=0 to FItems.Count-1 do TKeyWordFunctionListItem(FItems[i]).Free;
+  FItems.Clear;
+  if FHashIndex<>nil then begin
+    FreeMem(FHashIndex);
+    FHashIndex:=nil;
+  end;
+  FMaxHashIndex:=-1;  
+  FSorted:=true;
+end;
+
+function TKeyWordFunctionList.KeyWordToHashIndex(
+  const AKeyWord: shortstring): integer;
+var KeyWordLen, i: integer;
+begin
+  KeyWordLen:=length(AKeyWord);
+  if KeyWordLen>20 then KeyWordLen:=20;
+  Result:=0;
+  for i:=1 to KeyWordLen do
+    inc(Result,CharToHash[AKeyWord[i]]);
+  if Result>FMaxHashIndex then Result:=-1;
+end;
+
+function TKeyWordFunctionList.DoIt(const AKeyWord: shortstring): boolean;
+var i: integer;
+begin
+  if not FSorted then Sort;
+  i:=KeyWordToHashIndex(AKeyWord);
+  if i>=0 then begin
+    i:=FHashIndex[i];
+    if i>=0 then begin
+      repeat
+        if (TKeyWordFunctionListItem(FItems[i]).KeyWord=AKeyWord) then begin
+          if TKeyWordFunctionListItem(FItems[i]).DoIt<>nil then
+            Result:=TKeyWordFunctionListItem(FItems[i]).DoIt()
+          else
+            Result:=DefaultKeyWordFunction();
+          exit;  
+        end;
+        if (TKeyWordFunctionListItem(FItems[i])).IsLast then break;
+        inc(i);
+      until false;
+    end;
+  end;
+  Result:=DefaultKeyWordFunction();
+end;
+
+procedure TKeyWordFunctionList.Add(const AKeyWord: shortstring;
+  AFunction: TKeyWordFunction);
+var NewKeyWordFunction: TKeyWordFunctionListItem;
+begin
+  FSorted:=false;
+  NewKeyWordFunction:=TKeyWordFunctionListItem.Create;
+  with NewKeyWordFunction do begin
+    KeyWord:=AKeyWord;
+    DoIt:=AFunction;
+  end;
+  FItems.Add(NewKeyWordFunction);
+end;
+
+procedure TKeyWordFunctionList.Sort;
+// bucketsort
+var i, h, NewMaxHashIndex: integer;
+  UnsortedItems: ^pointer;
+begin
+  if FSorted then exit;
+  if FHashIndex<>nil then begin
+    FreeMem(FHashIndex);
+    FHashIndex:=nil;
+  end;
+  // find maximum hash index
+  FMaxHashIndex:=99999;
+  NewMaxHashIndex:=0;
+  for i:=0 to FItems.Count-1 do begin
+    h:=KeyWordToHashIndex(TKeyWordFunctionListItem(FItems[i]).KeyWord);
+    if h>NewMaxHashIndex then NewMaxHashIndex:=h;
+  end;
+  FMaxHashIndex:=NewMaxHashIndex;
+  // create hash index
+  GetMem(FHashIndex,FMaxHashIndex * SizeOf(integer));
+  // compute every hash value count
+  for i:=0 to FMaxHashIndex-1 do FHashIndex[i]:=0;
+  for i:=0 to FItems.Count-1 do begin
+    h:=KeyWordToHashIndex(TKeyWordFunctionListItem(FItems[i]).KeyWord);
+    if h>=0 then inc(FHashIndex[h]);
+  end;
+  // change hash-count-index to hash-last-index
+  for i:=1 to FMaxHashIndex-1 do 
+    inc(FHashIndex[i],FHashIndex[i-1]);
+  // copy all items
+  GetMem(UnsortedItems,sizeof(pointer)*FItems.Count);
+  for i:=0 to FItems.Count-1 do
+    UnsortedItems[i]:=FItems[i];
+  // copy unsorted items to Items back and do the bucket sort
+  for i:=FItems.Count-1 downto 0 do begin
+    h:=KeyWordToHashIndex(TKeyWordFunctionListItem(FItems[i]).KeyWord);
+    if h>=0 then begin
+      dec(FHashIndex[h]);
+      FItems[FHashIndex[h]]:=UnsortedItems[i];
+    end;
+  end;
+  // tidy up
+  FreeMem(UnsortedItems);
+  FSorted:=true;
+end;
+
 { TCodeTreeNode }
 
 constructor TCodeTreeNode.Create;
@@ -1467,6 +1756,7 @@ begin
   NextBrother:=nil;
   PriorBrother:=nil;
   FirstChild:=nil;
+  LastChild:=nil;
   StartPos.P:=-1;
   EndPos.P:=-1;
 end;
@@ -1533,14 +1823,34 @@ begin
   if ANode=nil then exit;
   while (ANode.FirstChild<>nil) do DeleteNode(ANode.FirstChild);
   with ANode do begin
-    if (Parent<>nil) and (Parent.FirstChild=ANode) then
-      Parent.FirstChild:=NextBrother;
+    if (Parent<>nil) then begin
+      if (Parent.FirstChild=ANode) then
+        Parent.FirstChild:=NextBrother;
+      if (Parent.LastChild=ANode) then
+        Parent.LastChild:=PriorBrother;
+    end;
     if NextBrother<>nil then NextBrother.PriorBrother:=PriorBrother;
     if PriorBrother<>nil then PriorBrother.NextBrother:=NextBrother;
     NextBrother:=nil;
     PriorBrother:=nil;
   end;
+  if ANode=Root then Root:=nil;
   NodeMemManager.DisposeNode(ANode);
+end;
+
+procedure TCodeTree.AddNodeAsLastChild(ParentNode, ANode: TCodeTreeNode);
+begin
+  if Root=nil then Root:=ANode;
+  if ParentNode<>nil then begin
+    if ParentNode.FirstChild=nil then begin
+      ParentNode.FirstChild:=ANode;
+      ParentNode.LastChild:=ANode;
+    end else begin
+      ANode.PriorBrother:=ParentNode.LastChild;
+      ParentNode.LastChild:=ANode;
+      if ANode.PriorBrother<>nil then ANode.PriorBrother.NextBrother:=ANode;
+    end;
+  end;
 end;
 
 { TCodeTreeNodeMemManager }
@@ -1575,12 +1885,16 @@ begin
   FInitValues:=nil;
   Tree:=TCodeTree.Create;
   Values:=nil;
+  SyntaxType:=SyntaxType_FreePascal;
+  KeyWordFuncList:=TKeyWordFunctionList.Create;
+  SetDefaultKeyWordFunctions;
   Clear;
 end;
 
 destructor TCustomCodeTool.Destroy;
 begin
   Clear;
+  KeyWordFuncList.Free;
   inherited Destroy;
 end;
 
@@ -1623,10 +1937,10 @@ begin
         DirEnd:=length(Atom)-1;
       end;        
       EndPos:=DirStart;
-      while (EndPos<DirEnd) and (Atom[EndPos] in IdentifierChar) do inc(EndPos);
+      while (EndPos<DirEnd) and (IsIDChar[Atom[EndPos]]) do inc(EndPos);
       DirectiveName:=lowercase(copy(Atom,DirStart,EndPos-DirStart));
       if (length(DirectiveName)=1) and (Atom[DirEnd] in ['+','-']) then begin
-        // switch
+        // compiler short switch
 
       end else if (DirectiveName='i') or (DirectiveName='include') then begin
         // include directive
@@ -1635,6 +1949,7 @@ begin
     end else
       break;
   until false;
+  UpAtom:=uppercase(Atom);
 end;
 
 function TCustomCodeTool.ReadTilSection(
@@ -1673,6 +1988,93 @@ begin
   Result:=true;
 end;
 
+procedure TCustomCodeTool.BeginParsing;
+begin
+  Pos.P:=1;
+  Pos.CodeID:=0;
+  if not IgnoreCompilerDirectives then begin
+    if Values=nil then Values:=TExpressionEvaluator.Create;
+    Values.Assign(FInitValues);
+  end;
+  Node:=nil;
+  Tree.DeleteNode(Tree.Root);
+end;
+
+procedure TCustomCodeTool.CreateChildNode;
+var NewNode: TCodeTreeNode;
+begin
+  NewNode:=NodeMemManager.CreateNode;
+  Tree.AddNodeAsLastChild(Node,NewNode);
+  Node:=NewNode;
+end;
+
+procedure TCustomCodeTool.EndChildNode;
+begin
+  Node:=Node.Parent;
+end;
+
+procedure TCustomCodeTool.SetDefaultKeyWordFunctions;
+begin
+  KeyWordFuncList.Clear;
+  KeyWordFuncList.DefaultKeyWordFunction:=@DefaultKeyWordFunc;
+end;
+
+function TCustomCodeTool.DoIt(const AnAtom: shortstring): boolean;
+begin
+  if AnAtom='' then exit(false)
+  else if IsIDStartChar[AnAtom[1]] then 
+    Result:=KeyWordFuncList.DoIt(AnAtom)
+  else
+    Result:=true;
+end;
+
+function TCustomCodeTool.DefaultKeyWordFunc: boolean;
+begin
+  Result:=true;
+end;
+
+{ TMultiKeyWordListCodeTool }
+
+constructor TMultiKeyWordListCodeTool.Create;
+begin
+  inherited Create;
+  FKeyWordLists:=TList.Create; // list of TKeyWordFunctionList
+  AddKeyWordFuncList(KeyWordFuncList);
+  FCurKeyWordListID:=0;
+end;
+
+destructor TMultiKeyWordListCodeTool.Destroy;
+begin
+  ClearKeyWordFuncLists;
+  FKeyWordLists.Free;
+  inherited Destroy;
+end;
+
+procedure TMultiKeyWordListCodeTool.SetKeyWordListID(NewID: integer);
+begin
+  if FCurKeyWordListID=NewID then exit;
+  FCurKeyWordListID:=NewID;
+  KeyWordFuncList:=TKeyWordFunctionList(FKeyWordLists[NewID]);
+end;
+
+function TMultiKeyWordListCodeTool.AddKeyWordFuncList(
+  AKeyWordFuncList: TKeyWordFunctionList): integer;
+begin
+  Result:=FKeyWordLists.Add(AKeyWordFuncList);
+end;
+
+procedure TMultiKeyWordListCodeTool.ClearKeyWordFuncLists;
+var i: integer;
+begin
+  KeyWordListID:=0;
+  for i:=FKeyWordLists.Count-1 downto 1 do begin
+    TKeyWordFunctionList(FKeyWordLists[i]).Free;
+    FKeyWordLists.Delete(i);
+  end;
+  KeyWordFuncList.Clear;
+end;
+
+
 { TClassAndProcCodeTool }
 
 constructor TClassAndProcCodeTool.Create;
@@ -1685,127 +2087,176 @@ begin
   inherited Destroy;
 end;
 
-procedure TClassAndProcCodeTool.BuildTree;
-var LastPos: TCodePosition;
-  LastAtomStart: integer;
-  LowAtom: string;
-  CurSection: TCodeTreeNodeDesc;
-  ANode, ParentNode, LastParentChild: TCodeTreeNode;
+procedure TClassAndProcCodeTool.SetDefaultKeyWordFunctions;
 begin
-  Pos.P:=1;
-  Pos.CodeID:=0;
-  if not IgnoreCompilerDirectives then begin
-    if Values=nil then Values:=TExpressionEvaluator.Create;
-    Values.Assign(FInitValues);
+  inherited SetDefaultKeyWordFunctions;
+  with KeyWordFuncList do begin
+    Add('INTERFACE',@KeyWordFuncSection);
+    Add('IMPLEMENTATION',@KeyWordFuncSection);
+    Add('INITIALIZATION',@KeyWordFuncSection);
+    Add('FINALIZATION',@KeyWordFuncSection);
+
+    Add('END',@KeyWordFuncEnd);
+
+    Add('CLASS',@KeyWordFuncClass);
+    Add('OBJECT',@KeyWordFuncClass);
+
+    Add('PROCEDURE',@KeyWordFuncMethod);
+    Add('FUNCTION',@KeyWordFuncMethod);
+    Add('CONSTRUCTOR',@KeyWordFuncMethod);
+    Add('DESTRUCTOR',@KeyWordFuncMethod);
+
+    Add('FORWARD',@KeyWordFuncForward);
+
+    Add('BEGIN',@KeyWordFuncBeginEnd);
+    Add('ASM',@KeyWordFuncBeginEnd);
+    Add('CASE',@KeyWordFuncBeginEnd);
+    Add('TRY',@KeyWordFuncBeginEnd);
   end;
+end;
+
+procedure TClassAndProcCodeTool.BuildTree;
+begin
+  BeginParsing;
   // parse interface and implementation section
   // store all class definitions and method heads along with their method bodies
   if not ReadTilSection(ctnInterface) then 
     raise ECodeToolError.Create('interface section not found');
-  ANode:=NodeMemManager.CreateNode;
-  ANode.Desc:=ctnInterface;
-  ANode.StartPos:=Pos;
-  Tree.DeleteNode(Tree.Root);
-  Tree.Root:=ANode;
-  ParentNode:=ANode;
-  LastParentChild:=nil;
+  CreateChildNode;
+  Node.Desc:=ctnInterface;
+  Node.StartPos:=Pos;
   CurSection:=ctnInterface;
   repeat
     LastPos:=Pos;
     LastAtomStart:=AtomStart;
+    LastAtom:=Atom;
     ReadNextPascalAtom;
-    LowAtom:=lowercase(Atom);
-    if LowAtom='=' then begin
-      ReadNextPascalAtom;
-      if (LowAtom='class') or (LowAtom='object') then begin
-        // find end of class
-        ReadNextPascalAtom;
-        if Atom='(' then
-          if not ReadTilBracketClose then
-            raise ECodeToolError.Create(
-              'syntax error: close bracket not found');
-        ANode:=NodeMemManager.CreateNode;
-        ANode.Desc:=ctnClass;
-        ANode.StartPos.P:=LastAtomStart;
-        ANode.StartPos.CodeID:=LastPos.CodeID;
-        if Atom=';' then begin
-          // forward class definition found
-          ANode.SubDesc:=ctnsForwardDeclaration;
-        end else begin
-          while (lowercase(Atom)<>'end') and (Atom<>'') do
-            ReadNextPascalAtom;
-          if Atom='' then
-            raise ECodeToolError.Create(
-              'syntax error: "end" for class/object not found');
-        end;
-        ANode.EndPos:=Pos;
-        ANode.Parent:=ParentNode;
-        ANode.PriorBrother:=LastParentChild;
-        if ANode.PriorBrother<>nil then
-          ANode.PriorBrother.NextBrother:=ANode
-        else
-          ParentNode.FirstChild:=ANode;
-        LastParentChild:=ANode;
-      end;
-    end else begin
-      if (LowAtom='procedure') or (LowAtom='function')
-      or (LowAtom='constructor') or (LowAtom='destructor') then begin
-        // last atom can not be '=' => this is a method declaration
-        // read til semicolon
-        repeat
-          ReadNextPascalAtom;
-          if (Atom='(') then begin
-            if not ReadTilBracketClose then
-              raise ECodeToolError.Create(
-                'syntax error: missing semicolon after method declaration');
-          end;
-        until (Atom=';') or (Atom='');
-        ANode:=NodeMemManager.CreateNode;
-        ANode.Desc:=ctnProcedureHead;
-        ANode.StartPos.P:=LastAtomStart;
-        ANode.StartPos.CodeID:=LastPos.CodeID;
-        ANode.EndPos:=Pos;
-        ANode.Parent:=ParentNode;
-        ANode.PriorBrother:=LastParentChild;
-        if ANode.PriorBrother<>nil then
-          ANode.PriorBrother.NextBrother:=ANode
-        else
-          ParentNode.FirstChild:=ANode;
-        LastParentChild:=ANode;
-      end else if (CurSection=ctnInterface) and (LowAtom='implementation') then
-      begin
-        // close interface section node
-        Tree.Root.EndPos:=Pos;
-        // start implementation section node
-        ANode:=NodeMemManager.CreateNode;
-        ANode.Desc:=ctnProcedureHead;
-        ANode.StartPos:=Pos;
-        ParentNode:=ANode;
-        LastParentChild:=nil;
-        CurSection:=ctnImplementation;
-        Tree.Root.NextBrother:=ANode;
-        ANode.PriorBrother:=Tree.Root;
-      end else if (CurSection=ctnImplementation) then begin
-        if (LowAtom='initialization') or (LowAtom='finalization') then begin
-          break;
-        end else if (LowAtom='end') then begin
-          ReadNextPascalAtom;
-          if Atom<>'.' then
-            raise ECodeToolError.Create(
-              'syntax error: "end." expected, but "end '+Atom+'" found');
-        end;
-      end;
-    end;
+    if not DoIt(UpAtom) then break;
   until (Atom='');
 end;
 
+function TClassAndProcCodeTool.DoIt(const AnAtom: shortstring): boolean;
+begin
+  if AnAtom='' then exit(false)
+  else if IsIDStartChar[AnAtom[1]] then
+    Result:=CurKeyWordFuncList.DoIt(AnAtom)
+  else begin
 
-//-----------------------------------------------------------------------------
+    Result:=true;
+  end;
+end;
+
+function TClassAndProcCodeTool.KeyWordFuncSection: boolean;
+begin
+  case CurSection of
+   ctnInterface:
+    begin
+      // close interface section node
+      Node.EndPos:=Pos;
+      EndChildNode;
+      if UpAtom='IMPLEMENTATION' then begin
+        // start implementation section node
+        CreateChildNode;
+        Node.Desc:=ctnProcedureHead;
+        Node.StartPos:=Pos;
+        CurSection:=ctnImplementation;
+        Result:=true;
+      end else begin
+        CurSection:=ctnNone;
+        Result:=true;
+      end;
+    end;
+   ctnImplementation:
+    begin
+      // close implementation section node
+      Node.EndPos:=Pos;
+      EndChildNode;
+      CurSection:=ctnNone;
+      Result:=true;
+    end;
+  else
+    Result:=false;
+  end;
+end;
+
+function TClassAndProcCodeTool.KeyWordFuncEnd: boolean;
+begin
+  Result:=false;
+end;
+
+function TClassAndProcCodeTool.KeyWordFuncClass: boolean;
+begin
+  if LastAtom<>'=' then exit(true);
+  // class start found
+  CreateChildNode;
+  Node.Desc:=ctnClass;
+  Node.StartPos.P:=LastAtomStart;
+  Node.StartPos.CodeID:=LastPos.CodeID;
+  // find end of class
+  ReadNextPascalAtom;
+  if Atom='(' then
+    // read inheritage brackets
+    if not ReadTilBracketClose then
+      raise ECodeToolError.Create(
+        'syntax error: close bracket not found');
+  if Atom=';' then begin
+    // forward class definition found
+    Node.SubDesc:=ctnsForwardDeclaration;
+  end else begin
+    while (lowercase(Atom)<>'end') and (Atom<>'') do
+      ReadNextPascalAtom;
+    if Atom='' then
+      raise ECodeToolError.Create(
+        'syntax error: "end" for class/object not found');
+  end;
+  Node.EndPos:=Pos;
+  EndChildNode;
+  Result:=true;
+end;
+
+function TClassAndProcCodeTool.KeyWordFuncMethod: boolean;
+begin
+  Result:=false;
+end;
+
+function TClassAndProcCodeTool.KeyWordFuncForward: boolean;
+begin
+  Result:=false;
+end;
+
+function TClassAndProcCodeTool.KeyWordFuncBeginEnd: boolean;
+begin
+  Result:=false;
+end;
+
+
+//=============================================================================
+
+procedure CodeToolInit;
+var c: char;
+begin
+  for c:=#0 to #255 do begin
+    IsIDChar[c]:=(c in ['a'..'z','A'..'Z','0'..'9','_']);
+    IsIDStartChar[c]:=(c in ['a'..'z','A'..'Z','_']);
+    case c of
+    'a'..'z':CharToHash[c]:=ord(c)-ord('a')+1;
+    'A'..'Z':CharToHash[c]:=ord(c)-ord('A')+1;
+    else CharToHash[c]:=0;
+    end;
+  end;
+  NodeMemManager:=TCodeTreeNodeMemManager.Create;
+end;
+
+procedure CodeToolFinal;
+begin
+  NodeMemManager.Free;
+end;
+
 
 initialization
-  NodeMemManager:=TCodeTreeNodeMemManager.Create;
+  CodeToolInit;
 
 finalization
-  NodeMemManager.Free;
+  CodeToolFinal;
 
 end.

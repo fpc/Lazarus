@@ -40,6 +40,8 @@ type
     Value: boolean) of object;
   TOnAddComponent = procedure(Sender: TObject; Component: TComponent;
     ComponentClass: TRegisteredComponent) of object;
+  TOnRemoveComponent = procedure(Sender: TObject; Component: TComponent)
+     of object;
 
   TDesigner = class(TIDesigner)
   private
@@ -52,6 +54,7 @@ type
     FOnComponentListChanged: TNotifyEvent;
     FOnPropertiesChanged: TNotifyEvent;
     FOnAddComponent: TOnAddComponent;
+    FOnRemoveComponent: TOnRemoveComponent;
     FHasSized: boolean;
     FGridColor: TColor;
 
@@ -71,8 +74,8 @@ type
     Procedure KeyUP(Sender : TControl; Message:TLMKEY);
 
     Procedure RemoveControl(Control : TComponent);
-    Procedure NudgeControl(Value1,Value2 : Integer);
-    Procedure NudgeSize(Value1,Value2 : Integer);
+    Procedure NudgeControl(DiffX, DiffY: Integer);
+    Procedure NudgeSize(DiffX, DiffY: Integer);
 
   public
     ControlSelection : TControlSelection;
@@ -101,6 +104,8 @@ type
     property OnPropertiesChanged: TNotifyEvent
        read FOnPropertiesChanged write FOnPropertiesChanged;
     property OnAddComponent: TOnAddComponent read FOnAddComponent write FOnAddComponent;
+    property OnRemoveComponent: TOnRemoveComponent
+       read FOnRemoveComponent write FOnRemoveComponent;
   end;
 
 
@@ -139,7 +144,8 @@ end;
 Procedure TDesigner.RemoveControl(Control : TComponent);
 Begin
   Writeln('[TDesigner.RemoveControl] ',Control.Name,':',Control.ClassName);
-  FSourceEditor.RemoveControlCode(Control);
+  if Assigned(FOnRemoveComponent) then
+    FOnRemoveComponent(Self,Control);
   Writeln('[TDesigner.RemoveControl] 1');
   FCustomForm.RemoveControl(TCOntrol(Control));
   //this send a message to notification and removes it from the controlselection
@@ -148,16 +154,16 @@ Begin
   Writeln('[TDesigner.RemoveControl] end');
 end;
 
-Procedure TDesigner.NudgeControl(Value1,Value2 : Integer);
+Procedure TDesigner.NudgeControl(DiffX, DiffY : Integer);
 Begin
   Writeln('[TDesigner.NudgeControl]');
-  ControlSelection.MoveSelection(Value1,Value2);
+  ControlSelection.MoveSelection(DiffX, DiffY);
 end;
 
-Procedure TDesigner.NudgeSize(Value1,Value2 : Integer);
+Procedure TDesigner.NudgeSize(DiffX, DiffY: Integer);
 Begin
   Writeln('[TDesigner.NudgeSize]');
-  ControlSelection.SizeSelection(Value1,Value2);
+  ControlSelection.SizeSelection(DiffX, DiffY);
 end;
 
 procedure TDesigner.SelectOnlyThisComponent(AComponent:TComponent);
@@ -190,9 +196,11 @@ begin
   if (ControlSelection.IsSelected(Sender)) then begin
     writeln('***  LM_Size ',Sender.Name,':',Sender.ClassName,' Type=',Message.SizeType
  ,' ',Message.Width,',',Message.Height,' Pos=',Sender.Left,',',Sender.Top);
-    ControlSelection.AdjustSize;
-    if Assigned(FOnPropertiesChanged) then
-      FOnPropertiesChanged(Self);
+    if not ControlSelection.IsResizing then begin
+      ControlSelection.AdjustSize;
+      if Assigned(FOnPropertiesChanged) then
+        FOnPropertiesChanged(Self);
+    end;
   end;
 end;
 
@@ -244,9 +252,12 @@ Begin
   else
     Writeln(', No CTRL down');
 
-  if (Message.Keys and MK_LButton) > 0 then 
+writeln('HALLLo ',Message.Keys and MK_LButton);
+  if (Message.Keys and MK_LButton) > 0 then begin
     ControlSelection.ActiveGrabber:=
-      ControlSelection.GrabberAtPos(MouseDownPos.X,MouseDownPos.Y);
+      ControlSelection.GrabberAtPos(MouseDownPos.X,MouseDownPos.Y)
+  end else
+    ControlSelection.ActiveGrabber:=nil;
 
   if Assigned(FOnGetSelectedComponentClass) then
     FOnGetSelectedComponentClass(Self,SelectedCompClass)
@@ -296,12 +307,16 @@ Begin
             AControlSelection.Free;
           end;  
         end;
+      end else begin
+        // mouse down on grabber -> begin sizing
+        // grabber is already activated
+        // the sizing is handled in mousemove
+writeln('[TDesigner.MouseDownOnControl] Grabber activated');
       end;
     end else begin
       // add component mode  -> handled in mousemove and mouseup
     end;
   end;
-  ControlSelection.SaveBounds;
 
 writeln('[TDesigner.MouseDownOnControl] END');
 End;
@@ -324,9 +339,9 @@ Begin
   RubberBandWasActive:=ControlSelection.RubberBandActive;
 
   Shift := [];
-  if (TLMMouse(Message).keys and MK_Shift) = MK_Shift then
+  if (Message.keys and MK_Shift) = MK_Shift then
     Shift := [ssShift];
-  if (TLMMouse(Message).keys and MK_Control) = MK_Control then
+  if (Message.keys and MK_Control) = MK_Control then
     Shift := Shift +[ssCTRL];
 
 
@@ -349,6 +364,7 @@ Begin
   else
     SelectedCompClass:=nil;
 
+writeln('UND JETZT ',Message.Keys and MK_LButton);
   if (Message.Keys and MK_LButton) > 0 then begin
     // left mouse button
     if SelectedCompClass = nil then begin
@@ -413,7 +429,6 @@ Begin
       end;
     end;
   end;
-  ControlSelection.SaveBounds;
   LastMouseMovePos.X:=-1;
   FHasSized:=false;
 
@@ -422,44 +437,33 @@ writeln('[TDesigner.MouseUpOnControl] END');
 end;
 
 Procedure TDesigner.MouseMoveOnControl(Sender : TControl; var Message : TLMMouse);
-const
-  mk_lbutton = 1;
-  mk_rbutton = 2;
-  mk_shift = 4;
-  mk_control = 8;
-  mk_mbutton = $10;
 var
   Shift : TShiftState;
   SenderOrigin:TPoint;
   SenderParentForm:TCustomForm;
   MouseX, MouseY :integer;
-  AGrabber: TGrabber;
 Begin
   SenderParentForm:=GetParentForm(Sender);
   if SenderParentForm=nil then exit;
   SenderOrigin:=GetFormRelativeControlTopLeft(Sender);
-  if (Message.keys and MK_LButton) = MK_LButton then begin
+{  if (Message.keys and MK_LButton) = MK_LButton then begin
     MouseX:=Message.Pos.X;
     MouseY:=Message.Pos.Y;
-  end else begin
+  end else begin}
     MouseX:=Message.Pos.X+SenderOrigin.X;
     MouseY:=Message.Pos.Y+SenderOrigin.Y;
-  end;
-
-  AGrabber:=ControlSelection.GrabberAtPos(MouseX,MouseY);
-  if AGrabber=nil then begin
-
-  end else begin
-
-  end;
+//  end;
 
   if MouseDownControl=nil then exit;
 
   if true then begin
-    Write('MouseMoveOnControl');
-    Write(' ',Sender.Name,':',Sender.ClassName,' Origin=',SenderOrigin.X,',',SenderOrigin.Y);
-    Write(' Msg=',Message.Pos.x,',',Message.Pos.Y);
-    Write(' Mouse=',MouseX,',',MouseY);
+    Write('MouseMoveOnControl'
+          ,' ',Sender.Name,':',Sender.ClassName
+          ,' ',Sender.Left,',',Sender.Top
+          ,' Origin=',SenderOrigin.X,',',SenderOrigin.Y
+          ,' Msg=',Message.Pos.x,',',Message.Pos.Y
+          ,' Mouse=',MouseX,',',MouseY
+    );
     writeln();
   end;
 
@@ -469,15 +473,14 @@ Begin
   if (TLMMouse(Message).keys and MK_Control) = MK_Control then
     Shift := Shift + [ssCTRL];
 
-  if ControlSelection.ActiveGrabber<>nil then begin
-    if (Message.keys and MK_LButton) = MK_LButton then begin
+  if (Message.keys and MK_LButton) = MK_LButton then begin
+    if ControlSelection.ActiveGrabber<>nil then begin
       FHasSized:=true;
-      ControlSelection.SizeSelection(MouseX-MouseDownPos.X, MouseY-LastMouseMovePos.Y);
+      ControlSelection.SizeSelection(
+         MouseX-LastMouseMovePos.X, MouseY-LastMouseMovePos.Y);
       if Assigned(FOnPropertiesChanged) then
         FOnPropertiesChanged(Self);
-    end;
-  end else begin
-    if (Message.keys and MK_LButton) = MK_LButton then begin
+    end else begin
       if (not (MouseDownControl is TCustomForm)) and (ControlSelection.Count>=1)
       and not (ControlSelection[0].Component is TCustomForm) then begin
         // move selection
@@ -493,6 +496,8 @@ Begin
         SenderParentForm.Invalidate;
       end;
     end;
+  end else begin
+    ControlSelection.ActiveGrabber:=nil;
   end;
   LastMouseMovePos:=Point(MouseX,MouseY);
 end;
