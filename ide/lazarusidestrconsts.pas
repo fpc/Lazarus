@@ -422,6 +422,8 @@ resourcestring
 
   // file dialogs
   lisOpenFile = 'Open file';
+  lisDebugUnableToLoadFile = 'Unable to load file';
+  lisDebugUnableToLoadFile2 = 'Unable to load file %s%s%s.';
   lisOpenProjectFile = 'Open Project File';
   lisOpenPackageFile = 'Open Package File';
   lisSaveSpace = 'Save ';

@@ -434,6 +434,9 @@ type
     procedure SaveEnvironment; virtual; abstract;
     procedure SetRecentSubMenu(ParentMenuItem: TMenuItem; FileList: TStringList;
        OnClickEvent: TNotifyEvent); virtual;
+    function DoJumpToSourcePos(const Filename: string;
+                               NewX, NewY, NewTopLine: integer;
+                               AddJumpPoint: boolean): TModalResult; virtual; abstract;
     function DoJumpToCodePos(
       ActiveSrcEdit: TSourceEditor; ActiveUnitInfo: TUnitInfo;
       NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;

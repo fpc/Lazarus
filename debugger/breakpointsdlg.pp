@@ -61,6 +61,7 @@ type
     popEnableAll: TMenuItem;
     popDeleteAll: TMenuItem;
     procedure lvBreakPointsClick(Sender: TObject);
+    procedure lvBreakPointsDBLCLICK(Sender: TObject);
     procedure lvBreakPointsSelectItem(Sender: TObject; AItem: TListItem;
       Selected: Boolean);
     procedure mnuPopupPopup(Sender: TObject);
@@ -91,6 +92,7 @@ type
   protected
     procedure DoEndUpdate; override;
     procedure BreakPointsUpdate; virtual;
+    procedure DoJumpToCurrentBreakPoint; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -195,8 +197,24 @@ begin
     BreakPointUpdate(FBreakPoints,FBreakPoints.Items[i]);
 end;
 
+procedure TBreakPointsDlg.DoJumpToCurrentBreakPoint;
+var
+  CurItem: TListItem;
+  CurBreakPoint: TDBGBreakPoint;
+begin
+  CurItem:=lvBreakPoints.Selected;
+  if CurItem=nil then exit;
+  CurBreakPoint:=TDBGBreakPoint(CurItem.Data);
+  DoJumpToCodePos(CurBreakPoint.Source,CurBreakPoint.Line,0);
+end;
+
 procedure TBreakPointsDlg.lvBreakPointsClick(Sender: TObject);
 begin
+end;
+
+procedure TBreakPointsDlg.lvBreakPointsDBLCLICK(Sender: TObject);
+begin
+  DoJumpToCurrentBreakPoint;
 end;
 
 procedure TBreakPointsDlg.lvBreakPointsSelectItem(Sender: TObject;
@@ -384,6 +402,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.16  2003/05/29 23:14:17  mattias
+  implemented jump to code on double click for breakpoints and callstack dlg
+
   Revision 1.15  2003/05/28 15:56:19  mattias
   implemented sourcemarks
 

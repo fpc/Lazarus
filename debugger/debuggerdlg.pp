@@ -37,14 +37,24 @@ unit DebuggerDlg;
 interface
 
 uses
-  Classes, Forms, IDEProcs, Debugger, EnvironmentOpts;
+  Classes, Forms, Controls, IDEProcs, Debugger, EnvironmentOpts;
 
 type
+  TDebuggerDlg = class;
+  TJumpToCodePosEvent = function(Sender: TDebuggerDlg;
+                                 const Filename: string; Line, Column: integer
+                                 ): TModalresult of object;
+  TGetFullDebugFilenameEvent =
+    function(Sender: TDebuggerDlg; var Filename: string;
+             AskUserIfNotFound: boolean): TModalresult of object;
+
   TDebuggerDlgClass = class of TDebuggerDlg;
   
   TDebuggerDlg = class(TForm)
   private
     FDebugger: TDebugger;
+    FOnGetFullDebugFilename: TGetFullDebugFilenameEvent;
+    FOnJumpToCodePos: TJumpToCodePosEvent;
     FUpdateCount: integer;
   protected                                              
     procedure SetDebugger(const ADebugger: TDebugger); virtual;
@@ -56,7 +66,15 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     function UpdateCount: integer;
+    function DoJumpToCodePos(const Filename: string; Line, Column: integer
+                             ): TModalresult;
+    function DoGetFullDebugFilename(var Filename: string; AskUser: boolean
+                                    ): TModalresult;
     property Debugger: TDebugger read FDebugger write SetDebugger;
+    property OnJumpToCodePos: TJumpToCodePosEvent read FOnJumpToCodePos
+                                                  write FOnJumpToCodePos;
+    property OnGetFullDebugFilename: TGetFullDebugFilenameEvent
+                     read FOnGetFullDebugFilename write FOnGetFullDebugFilename;
   end;
 
 implementation 
@@ -86,6 +104,24 @@ begin
   Result:=FUpdateCount;
 end;
 
+function TDebuggerDlg.DoJumpToCodePos(const Filename: string; Line,
+  Column: integer): TModalresult;
+begin
+  if Assigned(OnJumpToCodePos) then
+    Result:=OnJumpToCodePos(Self,Filename,Line,Column)
+  else
+    Result:=mrCancel;
+end;
+
+function TDebuggerDlg.DoGetFullDebugFilename(var Filename: string;
+  AskUser: boolean): TModalresult;
+begin
+  if Assigned(OnGetFullDebugFilename) then
+    Result:=OnGetFullDebugFilename(Self,Filename,AskUser)
+  else
+    Result:=mrCancel;
+end;
+
 procedure TDebuggerDlg.SetDebugger(const ADebugger: TDebugger);
 begin
   FDebugger := ADebugger; 
@@ -109,6 +145,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.6  2003/05/29 23:14:17  mattias
+  implemented jump to code on double click for breakpoints and callstack dlg
+
   Revision 1.5  2003/05/28 08:46:24  mattias
   break;points dialog now gets the items without debugger
 

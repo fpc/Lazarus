@@ -1,104 +1,106 @@
 object BreakpointsDlg: TBreakpointsDlg
-  Caption = 'Breakpoint list'
-  ClientHeight = 205
-  ClientWidth = 629
-  Visible = True
-  HorzScrollBar.Page = 630
-  VertScrollBar.Page = 206
-  Left = 340
-  Height = 205
-  Top = 117
-  Width = 629
-  HelpType = htkeyword
-  object lvBreakPoints: TListView
-    Align = alclient
-    Columns = <    
+  CAPTION = 'Breakpoint list'
+  CLIENTHEIGHT = 205
+  CLIENTWIDTH = 629
+  VISIBLE = True
+  HORZSCROLLBAR.PAGE = 630
+  VERTSCROLLBAR.PAGE = 206
+  LEFT = 340
+  HEIGHT = 205
+  TOP = 117
+  WIDTH = 629
+  HELPTYPE = htkeyword
+  object lvBreakPoints: TLISTVIEW
+    ALIGN = alclient
+    ANCHORS = [aktop, akleft]
+    COLUMNS = <    
       item
-        Caption = 'State'
-        Visible = True
-        Width = 50
+        CAPTION = 'State'
+        VISIBLE = True
+        WIDTH = 50
       end    
       item
-        Caption = 'Filename/Address'
-        Visible = True
-        Width = 150
+        CAPTION = 'Filename/Address'
+        VISIBLE = True
+        WIDTH = 150
       end    
       item
-        Caption = 'Line/Length'
-        Visible = True
-        Width = 100
+        CAPTION = 'Line/Length'
+        VISIBLE = True
+        WIDTH = 100
       end    
       item
-        Caption = 'Condition'
-        Visible = True
-        Width = 75
+        CAPTION = 'Condition'
+        VISIBLE = True
+        WIDTH = 75
       end    
       item
-        Caption = 'Action'
-        Visible = True
-        Width = 50
+        CAPTION = 'Action'
+        VISIBLE = True
+        WIDTH = 50
       end    
       item
-        Caption = 'Pass Count'
-        Visible = True
-        Width = 100
+        CAPTION = 'Pass Count'
+        VISIBLE = True
+        WIDTH = 100
       end    
       item
-        Caption = 'Group'
-        Visible = True
-        Width = 50
+        CAPTION = 'Group'
+        VISIBLE = True
+        WIDTH = 50
       end>
-    MultiSelect = True
-    PopupMenu = mnuPopup
-    ViewStyle = vsreport
-    OnClick = lvBreakPointsClick
-    OnSelectItem = lvBreakPointsSelectItem
-    Height = 205
-    Width = 629
-    HelpType = htkeyword
+    MULTISELECT = True
+    POPUPMENU = mnuPopup
+    VIEWSTYLE = vsreport
+    ONCLICK = lvBreakPointsClick
+    ONDBLCLICK = lvBreakPointsDBLCLICK
+    ONSELECTITEM = lvBreakPointsSelectItem
+    HEIGHT = 205
+    WIDTH = 629
+    HELPTYPE = htkeyword
   end
-  object mnuPopup: TPopupMenu
-    OnPopup = mnuPopupPopup
+  object mnuPopup: TPOPUPMENU
+    ONPOPUP = mnuPopupPopup
     left = 100
     top = 96
-    object popAdd: TMenuItem
-      Caption = 'Add...'
-      object popAddSourceBP: TMenuItem
-        Caption = '&Source breakpoint'
-        Enabled = False
-        OnClick = popAddSourceBPClick
+    object popAdd: TMENUITEM
+      CAPTION = 'Add...'
+      object popAddSourceBP: TMENUITEM
+        CAPTION = '&Source breakpoint'
+        ENABLED = False
+        ONCLICK = popAddSourceBPClick
       end
     end
-    object N1: TMenuItem
-      Caption = '-'
+    object N1: TMENUITEM
+      CAPTION = '-'
     end
-    object popProperties: TMenuItem
-      Caption = '&Properties'
-      OnClick = popPropertiesClick
+    object popProperties: TMENUITEM
+      CAPTION = '&Properties'
+      ONCLICK = popPropertiesClick
     end
-    object popEnabled: TMenuItem
-      Caption = '&Enabled'
-      ShowAlwaysCheckable = True
-      OnClick = popEnabledClick
+    object popEnabled: TMENUITEM
+      CAPTION = '&Enabled'
+      SHOWALWAYSCHECKABLE = True
+      ONCLICK = popEnabledClick
     end
-    object popDelete: TMenuItem
-      Caption = '&Delete'
-      OnClick = popDeleteClick
+    object popDelete: TMENUITEM
+      CAPTION = '&Delete'
+      ONCLICK = popDeleteClick
     end
-    object N2: TMenuItem
-      Caption = '-'
+    object N2: TMENUITEM
+      CAPTION = '-'
     end
-    object popDisableAll: TMenuItem
-      Caption = 'D&isable All'
-      OnClick = popDisableAllClick
+    object popDisableAll: TMENUITEM
+      CAPTION = 'D&isable All'
+      ONCLICK = popDisableAllClick
     end
-    object popEnableAll: TMenuItem
-      Caption = '&Enable All'
-      OnClick = popEnableAllClick
+    object popEnableAll: TMENUITEM
+      CAPTION = '&Enable All'
+      ONCLICK = popEnableAllClick
     end
-    object popDeleteAll: TMenuItem
-      Caption = '&Delete All'
-      OnClick = popDeleteAllClick
+    object popDeleteAll: TMENUITEM
+      CAPTION = '&Delete All'
+      ONCLICK = popDeleteAllClick
     end
   end
 end

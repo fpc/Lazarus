@@ -573,8 +573,6 @@ begin
   EditorAndLine.Line:=ALine;
   AVLNode:=fSortedItems.FindLeftMostKey(@EditorAndLine,
                                         @CompareEditorAndLineWithMark);
-if ALine=50 then
-  writeln('TSourceMarks.GetMarksForLine ',Aline,' ',AVLNode<>nil);
   while (AVLNode<>nil) do begin
     CurMark:=TSourceMark(AVLNode.Data);
     if CompareEditorAndLineWithMark(@EditorAndLine,CurMark)<>0 then break;

@@ -73,6 +73,13 @@ type
     procedure OnDebuggerOutput(Sender: TObject; const AText: String);
     procedure OnDebuggerException(Sender: TObject; const AExceptionClass: String;
                                   const AExceptionText: String);
+
+    // debugger dialog events
+    function DebuggerDlgJumpToCodePos(Sender: TDebuggerDlg;
+      const Filename: string; Line, Column: integer): TModalresult;
+    procedure DebugDialogDestroy(Sender: TObject);
+    function DebuggerDlgGetFullFilename(Sender: TDebuggerDlg;
+      var Filename: string; AskUserIfNotFound: boolean): TModalresult;
   private
     FDebugger: TDebugger;
     FDebuggerUpdateLock: integer;
@@ -101,7 +108,6 @@ type
                                            var ASrcEdit: TSourceEditor);
 
     // Dialog routines
-    procedure DebugDialogDestroy(Sender: TObject);
     procedure ViewDebugDialog(const ADialogType: TDebugDialogType);
     procedure DestroyDebugDialog(const ADialogType: TDebugDialogType);
     procedure InitDebugOutputDlg;
@@ -412,6 +418,86 @@ end;
 // Menu events
 //-----------------------------------------------------------------------------
 
+function TDebugManager.DebuggerDlgJumpToCodePos(Sender: TDebuggerDlg;
+  const Filename: string; Line, Column: integer): TModalresult;
+begin
+  if not Destroying then
+    Result:=MainIDE.DoJumpToSourcePos(Filename,Column,Line,0,true)
+  else
+    Result:=mrCancel;
+end;
+
+function TDebugManager.DebuggerDlgGetFullFilename(Sender: TDebuggerDlg;
+  var Filename: string; AskUserIfNotFound: boolean): TModalresult;
+var
+  SrcFile: String;
+  n: Integer;
+  UserFilename: string;
+  OpenDialog: TOpenDialog;
+begin
+  Result:=mrCancel;
+  if Destroying then exit;
+
+  SrcFile := Filename;
+  SrcFile := MainIDE.FindSourceFile(SrcFile,Project1.ProjectDirectory,
+                      [fsfSearchForProject,fsfUseIncludePaths,fsfUseDebugPath]);
+  if SrcFile = '' then SrcFile := Filename;
+
+  if not FilenameIsAbsolute(SrcFile)
+  then begin
+    // first attempt to get a longer name
+    // short file, look in the user list
+    for n := 0 to FUserSourceFiles.Count - 1 do
+    begin
+      UserFilename := FUserSourceFiles[n];
+      if CompareFileNames(ExtractFilenameOnly(SrcFile),
+        ExtractFilenameOnly(UserFilename)) = 0
+      then begin
+        if FileExists(UserFilename)
+        then begin
+          FUserSourceFiles.Move(n, 0); // move most recent first
+          SrcFile := UserFilename;
+          Break;
+        end;
+      end;
+    end;
+  end;
+
+  if ((not FilenameIsAbsolute(SrcFile)) or (not FileExists(SrcFile)))
+  and AskUserIfNotFound
+  then begin
+
+    if MessageDlg(lisFileNotFound,
+      Format(lisTheFileWasNotFoundDoYouWantToLocateItYourself, ['"',
+        SrcFile, '"', #13, #13, #13])
+      ,mtConfirmation, [mbYes, mbNo], 0) <> mrYes
+    then Exit;
+
+    repeat
+      OpenDialog:=TOpenDialog.Create(Application);
+      try
+        InputHistories.ApplyFileDialogSettings(OpenDialog);
+        OpenDialog.Title:=lisOpenFile+' '+SrcFile;
+        OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist];
+        OpenDialog.FileName := SrcFile;
+        if not OpenDialog.Execute then
+          exit;
+        SrcFile:=CleanAndExpandFilename(OpenDialog.FileName);
+        InputHistories.StoreFileDialogSettings(OpenDialog);
+      finally
+        OpenDialog.Free;
+      end;
+    until FilenameIsAbsolute(SrcFile) and FileExists(SrcFile);
+
+    FUserSourceFiles.Insert(0, SrcFile);
+  end;
+  
+  if SrcFile<>'' then begin
+    Filename:=SrcFile;
+    Result:=mrOk;
+  end;
+end;
+
 procedure TDebugManager.mnuViewDebugDialogClick(Sender: TObject);
 begin                       
   ViewDebugDialog(TDebugDialogType(TMenuItem(Sender).Tag));
@@ -563,11 +649,9 @@ procedure TDebugManager.OnDebuggerCurrentLine(Sender: TObject;
 // -> show the current execution line in editor
 // if SrcLine = -1 then no source is available
 var
-  S, SrcFile: String;
-  OpenDialog: TOpenDialog;
+  SrcFile: String;
   NewSource: TCodeBuffer;
   Editor: TSourceEditor;
-  n: Integer;
 begin
   if (Sender<>FDebugger) or (Sender=nil) then exit;
   if Destroying then exit;
@@ -582,60 +666,15 @@ begin
     
     Exit;
   end;
-
-  SrcFile := MainIDE.FindSourceFile(ALocation.SrcFile,Project1.ProjectDirectory,
-                      [fsfSearchForProject,fsfUseIncludePaths,fsfUseDebugPath]);
-  if SrcFile = '' then SrcFile := ALocation.SrcFile;
   
-  if not FilenameIsAbsolute(SrcFile)
-  then begin
-    // first attempt to get a longer name
-    // short file, look in the user list
-    for n := 0 to FUserSourceFiles.Count - 1 do
-    begin
-      S := FUserSourceFiles[n];
-      if CompareFileNames(ExtractFilenameOnly(SrcFile), ExtractFilenameOnly(S)) = 0
-      then begin
-        if FileExists(S)
-        then begin
-          FUserSourceFiles.Move(n, 0); // move most recent first
-          SrcFile := S;
-          Break;
-        end;
-      end;
-    end;
-  end;
-    
-  if (not FilenameIsAbsolute(SrcFile)) or (not FileExists(SrcFile))
-  then begin
-
-    if MessageDlg(lisFileNotFound,
-      Format(lisTheFileWasNotFoundDoYouWantToLocateItYourself, ['"',
-        SrcFile, '"', #13, #13, #13])
-      ,mtConfirmation, [mbYes, mbNo], 0) <> mrYes
-    then Exit;
-
-    repeat
-      OpenDialog:=TOpenDialog.Create(Application);
-      try
-        InputHistories.ApplyFileDialogSettings(OpenDialog);
-        OpenDialog.Title:=lisOpenFile+' '+SrcFile;
-        OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist];
-        OpenDialog.FileName := SrcFile;
-        if not OpenDialog.Execute then
-          exit;
-        SrcFile:=CleanAndExpandFilename(OpenDialog.FileName);
-        InputHistories.StoreFileDialogSettings(OpenDialog);
-      finally
-        OpenDialog.Free;
-      end;
-    until FilenameIsAbsolute(SrcFile) and FileExists(SrcFile);
-
-    FUserSourceFiles.Insert(0, SrcFile);
-  end;
+  SrcFile:=ALocation.SrcFile;
+  if DebuggerDlgGetFullFilename(nil,SrcFile,true)<>mrOk then exit;
 
   NewSource:=CodeToolBoss.LoadFile(SrcFile,true,false);
   if NewSource=nil then begin
+    MessageDlg(lisDebugUnableToLoadFile,
+      Format(lisDebugUnableToLoadFile2, ['"', SrcFile, '"']),
+      mtError,[mbCancel],0);
     exit;
   end;
 
@@ -687,6 +726,8 @@ begin
     CurDialog.Name:=NonModalIDEWindowNames[DebugDlgIDEWindow[ADialogType]];
     CurDialog.Tag := Integer(ADialogType);
     CurDialog.OnDestroy := @DebugDialogDestroy;
+    CurDialog.OnJumpToCodePos:=@DebuggerDlgJumpToCodePos;
+    CurDialog.OnGetFullDebugFilename:=@DebuggerDlgGetFullFilename;
     EnvironmentOptions.IDEWindowLayoutList.Apply(CurDialog,CurDialog.Name);
     case ADialogType of
     ddtOutput:      InitDebugOutputDlg;
@@ -1348,6 +1389,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.39  2003/05/29 23:14:17  mattias
+  implemented jump to code on double click for breakpoints and callstack dlg
+
   Revision 1.38  2003/05/29 18:47:27  mattias
   fixed reposition sourcemark
 
