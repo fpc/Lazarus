@@ -5,7 +5,7 @@ program debugtest;
 
 
 uses
-  Classes, Forms, DebugTestForm;
+  Classes, Forms, DebugTestForm, BreakpointsDlg;
 
 begin
    Application.Initialize; 

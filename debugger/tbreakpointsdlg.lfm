@@ -1,0 +1,39 @@
+object BreakpointsDlg: TBreakpointsDlg
+  Left = 340
+  Top = 117
+  Width = 554
+  Height = 200
+  Caption = 'Breakpoints'
+  object ListView1: TListView
+    Left = 0
+    Top = 0
+    Width = 546
+    Height = 171
+    Align = alClient
+    Columns = <
+      item
+        Caption = 'Filename/Address'
+        Width = 150
+      end
+      item
+        Caption = 'Line/Length'
+        Width = 100
+      end
+      item
+        Caption = 'Condition'
+        Width = 75
+      end
+      item
+        Caption = 'Action'
+      end
+      item
+        Caption = 'Pass Count'
+        Width = 100
+      end
+      item
+        Caption = 'Group'
+      end>
+    MultiSelect = True 
+    ViewStyle = vsReport 
+  end
+end

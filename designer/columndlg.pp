@@ -9,6 +9,7 @@ uses
   StdCtrls, Buttons, ExtCtrls;
 
 type
+  // TODO create more generic collection editor.
   TColumnDlg = class(TForm)
     Listbox1: TLISTBOX;
     Label1: TLABEL;
@@ -26,11 +27,10 @@ type
     cbAutoSize : TCheckBox;
   private
     { private declarations }
-    FItems : TList;
+    FColumns: TListColumns;
     FSelectedIndex : Integer;
-    function GetCount: Integer;
-    function GetItem(Index : Integer): TViewColumn;
-    Procedure DisplayColumn(Value : Integer);
+    procedure DisplayColumn(Value : Integer);
+    procedure SetColumns(const AValue: TListColumns);
   protected
     procedure Button1OnClick(sender : TObject);
     procedure Button2OnClick(sender : TObject);
@@ -46,11 +46,7 @@ type
   public
     { public declarations }
     constructor Create(AOwner : TComponent); override;
-    procedure Clear;
-    Function  Add(S : String) : Integer;
-    property Count : Integer read GetCount;
-    property Item[Index : Integer]: TViewColumn read GetItem; default;
-//    property Items : TList read FItems write FItems;
+    property Columns: TListColumns read FColumns write SetColumns;
   end;
 
 
@@ -234,21 +230,20 @@ Begin
        end;
 
   end;
-  FItems := TList.Create;
+  FColumns := TListColumns.Create(nil);
   FSelectedIndex:= -1;
-
 end;
 
 
 procedure TColumnDlg.Button1OnClick(sender : TObject);
 var
-  ViewColumn : TViewColumn;
+  Column : TListColumn;
 Begin
   //add
-  ViewColumn := TViewColumn.Create;
-  ViewColumn.Caption := 'Caption';
-  FSelectedIndex := FItems.Add(ViewColumn);
-  Listbox1.Items.Add(ViewColumn.Caption);
+  Column := FColumns.Add;
+  Column.Caption := 'Caption';
+  FSelectedIndex := Column.Index;
+  Listbox1.Items.Add(Column.Caption);
   Listbox1.Selected[FSelectedIndex] := True;
   DisplayColumn(FSelectedIndex);
 end;
@@ -270,26 +265,26 @@ end;
 
 Procedure TColumnDlg.Edit1OnChange(Sender : TObject);
 Var
-  ViewColumn : TViewColumn;
+  ListColumn : TListColumn;
 begin
   if FSelectedIndex = -1 then Exit;
-  ViewColumn := TViewColumn(FItems.Items[FSelectedIndex]);
-  ViewColumn.Caption := Edit1.Caption;
+  ListColumn := FColumns[FSelectedIndex];
+  ListColumn.Caption := Edit1.Caption;
   Listbox1.Items[FSelectedIndex] := Edit1.Caption;
   Listbox1.Selected[FSelectedIndex] := True;
 end;
 
 Procedure TColumnDlg.Edit2OnChange(Sender : TObject);
 Var
-  ViewColumn : TViewColumn;
+  ListColumn : TListColumn;
 begin
   if FSelectedIndex = -1 then Exit;
-  ViewColumn := TViewColumn(FItems.Items[FSelectedIndex]);
+  ListColumn := FColumns[FSelectedIndex];
   if Edit2.Caption = '' then
-    ViewColumn.Width := 0
+    ListColumn.Width := 0
     else
     try
-      ViewColumn.Width := StrtoInt(Edit2.Caption);
+      ListColumn.Width := StrtoInt(Edit2.Caption);
     except
         raise Exception.Create('Invalid numeric Value');
         Edit2.Caption := '0';
@@ -302,39 +297,37 @@ var
 begin
   //delete
   if FSelectedIndex = -1 then Exit;
+
   Index := FSelectedIndex;
   FSelectedIndex := -1;
-  FItems.Delete(Index);
+  FColumns[Index].Free;
   Listbox1.Items.Delete(Index);
   if Index > 0 then
   Listbox1.Selected[Index-1] := True;
   DisplayColumn(Index-1);
-
 end;
 
 procedure TColumnDlg.Button3OnClick(sender : TObject);
 Var
-  ViewColumn : TViewColumn;
+  ListColumn : TListColumn;
   Index : Integer;
 begin
   //move up
   if FSelectedIndex <= 0 then Exit;
   Index := FSelectedIndex;
   FSelectedIndex := -1;
-  ViewColumn := TViewColumn(FItems.Items[Index]);
+  ListColumn := FColumns[Index];
+  ListColumn.Index := Index - 1;
   
-  FItems.Insert(Index-1,ViewColumn);
-  FItems.Delete(Index+1);
-  Listbox1.Items.Insert(Index-1,ViewColumn.Caption);
+  Listbox1.Items.Insert(Index-1,ListColumn.Caption);
   Listbox1.Items.Delete(Index+1);
   Listbox1.Selected[Index-1] := True;
   DisplayColumn(Index-1);
-
 end;
 
 procedure TColumnDlg.Button4OnClick(sender : TObject);
 Var
-  ViewColumn : TViewColumn;
+  ListColumn : TListColumn;
   Index : Integer;
 begin
   //move down
@@ -344,11 +337,10 @@ begin
   Index := FSelectedIndex;
   FSelectedIndex := -1;
 
-  ViewColumn := TViewColumn(FItems.Items[Index]);
+  ListColumn := FColumns[Index];
+  ListColumn.Index := Index + 1;
 
-  FItems.Insert(Index+2,ViewColumn);
-  FItems.Delete(Index);
-  Listbox1.Items.Insert(Index+2,ViewColumn.Caption);
+  Listbox1.Items.Insert(Index+2,ListColumn.Caption);
   Listbox1.Items.Delete(Index);
   Listbox1.Selected[Index+1] := True;
   DisplayColumn(Index+1);
@@ -356,107 +348,71 @@ end;
 
 Procedure TColumnDlg.DisplayColumn(Value : Integer);
 Var
-  ViewColumn : TViewColumn;
+  ListColumn : TListColumn;
 begin
   FSelectedIndex := -1;
   if Value = -1 then exit;
 
-  ViewColumn := TViewColumn(FItems.Items[Value]);
-  Edit1.Caption := ViewColumn.Caption;
-  Edit2.Caption := Inttostr(ViewColumn.Width);
+  ListColumn := FColumns[Value];
+  Edit1.Caption := ListColumn.Caption;
+  Edit2.Caption := Inttostr(Integer(ListColumn.Width));
 
-  case ViewColumn.Alignment of
-    caLEft :  RadioGroup1.ItemIndex := 0;
-    caCenter:RadioGroup1.ItemIndex := 1;
-    caRight : RadioGroup1.ItemIndex := 2;
+  case ListColumn.Alignment of
+    taLeftJustify :  RadioGroup1.ItemIndex := 0;
+    taCenter:        RadioGroup1.ItemIndex := 1;
+    taRightJustify : RadioGroup1.ItemIndex := 2;
   end;  //case
   
-  cbVisible.Checked := ViewColumn.Visible;
-  cbAutoSize.Checked := ViewColumn.AutoSize;
-
+  cbVisible.Checked := ListColumn.Visible;
+  cbAutoSize.Checked := ListColumn.AutoSize;
 
   FSelectedIndex := Value;
-  
+end;
+
+procedure TColumnDlg.SetColumns(const AValue: TListColumns);
+begin
+  FColumns.Assign(AValue);
 end;
 
 procedure TColumnDlg.RadioGroup1OnClick(sender : TObject);
 Var
-  ViewColumn : TViewColumn;
+  ListColumn : TListColumn;
 begin
   if FSelectedIndex = -1 then Exit;
-  ViewColumn := TViewColumn(FItems.Items[FSelectedIndex]);
+  ListColumn := FColumns[FSelectedIndex];
   case  RadioGroup1.ItemIndex of
-     0 : ViewColumn.Alignment := caLeft;
-     1 : ViewColumn.Alignment := caCenter;
-     2 : ViewColumn.Alignment := caRight;
+     0 : ListColumn.Alignment := taLeftJustify;
+     1 : ListColumn.Alignment := taCenter;
+     2 : ListColumn.Alignment := taRightJustify;
   end;
 end;
 
 Procedure TColumnDlg.FormOnShow(Sender : TObject);
 var
   I : Integer;
-  ViewColumn : TViewColumn;
 begin
   //clear the listbox and display the items if any...
   Listbox1.Items.Clear;
-  for I := 0 to FItems.Count-1 do
-    Begin
-     ViewColumn := TViewColumn(FItems.Items[I]);
-     Listbox1.Items.Add(ViewColumn.Caption);
-    end;
+  for I := 0 to FColumns.Count-1 do
+    Listbox1.Items.Add(FColumns[i].Caption);
+
   if Listbox1.Items.Count > 0 then
   begin
     Listbox1.Selected[0] := True;
     DisplayColumn(0);
   end;
-  
 end;
 
-procedure TColumnDlg.Clear;
-begin
-  FItems.Clear;
-end;
-
-function TColumnDlg.GetItem(Index : Integer): TViewColumn;
-begin
-    Result := nil;
-    if Index > FItems.Count-1 then exit;
-    Result := TViewColumn(FItems.Items[Index]);
-end;
-
-function TColumnDlg.GetCount: Integer;
-begin
-  Result := FItems.Count;
-end;
-
-Function TColumnDlg.Add(S : String) : Integer;
-var
-  ViewColumn : TViewColumn;
-begin
-    ViewColumn := TViewColumn.Create;
-    ViewColumn.Caption := S;
-    Result := FItems.Add(ViewColumn);
-end;
-
-Procedure TColumnDlg.cbVisibleOnClick(Sender : TObject);
-Var
-  ViewColumn : TViewColumn;
+procedure TColumnDlg.cbVisibleOnClick(Sender : TObject);
 begin
   if FSelectedIndex = -1 then Exit;
-  ViewColumn := TViewColumn(FItems.Items[FSelectedIndex]);
-
-  ViewColumn.Visible := cbVisible.Checked;
-
+  FColumns[FSelectedIndex].Visible := cbVisible.Checked;
 end;
 
-Procedure TColumnDlg.cbAutoSizeOnClick(Sender : TObject);
-Var
-  ViewColumn : TViewColumn;
+procedure TColumnDlg.cbAutoSizeOnClick(Sender : TObject);
 begin
   if FSelectedIndex = -1 then Exit;
-  ViewColumn := TViewColumn(FItems.Items[FSelectedIndex]);
-
-  ViewColumn.AutoSize := cbAutoSize.Checked;
+  FColumns[FSelectedIndex].AutoSize := cbAutoSize.Checked;
 end;
 
 initialization

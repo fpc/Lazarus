@@ -1,8 +1,12 @@
 unit TestWait;
-
+{$mode objfpc}{$H+}
 interface
 
-procedure Wait(const ATime: Integer);
+type
+  TWait = class
+    constructor Create(const ATime: Integer);
+    procedure Wait(const ATime: Integer);
+  end;
 
 implementation
 
@@ -16,7 +20,21 @@ begin
   time := now;
   while (now - time) * SecsPerDay < ATime  do;
 end;
-           
+
+constructor TWait.Create(const ATime: Integer);
+var
+  n: Integer;
+begin
+  inherited Create; 
+  n := 0;
+  while n < ATime do Inc(n); //something useles 
+end;
+
+procedure TWait.Wait(const ATime: Integer);
+begin
+  TestWait.Wait(ATime);
+end;
+
   
 var
   n: Integer;

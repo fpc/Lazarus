@@ -583,11 +583,11 @@ type
     function GetAttributes: TPropertyAttributes; override;
   end;
 
-{ TViewColumnsPropertyEditor
-  PropertyEditor editor for the TViewColumns properties.
+{ TListColumnsPropertyEditor
+  PropertyEditor editor for the TListColumns properties.
   Brings up the dialog for entering test. }
 
-  TViewColumnsPropertyEditor = class(TClassPropertyEditor)
+  TListColumnsPropertyEditor = class(TClassPropertyEditor)
   public
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
@@ -817,7 +817,7 @@ type
     FTabOrder:integer;
     FCaption:TCaption;
     FLines:TStrings;
-    FColumns: TViewColumns;
+    FColumns: TListColumns;
     FModalResult:TModalResult;
     function PTypeInfos(const PropName:shortstring):PTypeInfo;
     constructor Create;
@@ -832,7 +832,7 @@ type
     property TabOrder:integer read FTabOrder;
     property Caption:TCaption read FCaption;
     property Lines:TStrings read FLines;
-    property Columns:TViewColumns;
+    property Columns:TListColumns;
     property ModalResult:TModalResult read FModalResult write FModalResult;
   end;
 
@@ -2688,48 +2688,29 @@ begin
   Result := [paMultiSelect, paDialog, paRevertable, paReadOnly];
 end;
 
-{ TViewColumnsPropertyEditor }
+{ TListColumnsPropertyEditor }
 
-procedure TViewColumnsPropertyEditor.Edit;
+procedure TListColumnsPropertyEditor.Edit;
 var
 
-  ViewColumns : TViewColumns;
-  Column : TViewColumn;
+  ListColumns : TListColumns;
+  Column : TListColumn;
   ColumnDlg: TColumnDlg;
   I,X        : Integer;
 begin
   ColumnDlg:=TColumnDlg.Create(Application);
   try
-    ViewColumns := TViewColumns(GetOrdValue);
-    ColumnDlg.Clear;
-    for I := 0 to ViewColumns.Count-1 do
-       Begin
-         X := ColumnDlg.Add(ViewColumns.Item[i].Caption);
-         ColumnDlg.Item[x].Width :=ViewColumns.Item[i].Width;
-         ColumnDlg.Item[x].Alignment :=ViewColumns.Item[i].Alignment;
-         ColumnDlg.Item[x].Visible :=ViewColumns.Item[i].Visible;
-         ColumnDlg.Item[x].AutoSize :=ViewColumns.Item[i].AutoSize;
-       end;
+    ListColumns := TListColumns(GetOrdValue);
+    ColumnDlg.Columns.Assign(ListColumns);
        
-    if ColumnDlg.ShowModal = mrOK then
-       Begin
-         ViewColumns.Clear;
-         for I := 0 to ColumnDlg.Count-1 do
-           Begin
-             Column := TViewColumn(ColumnDlg.Item[i]);
-             X := ViewColumns.Add(Column.Caption);
-             ViewColumns.Item[x].Width := Column.Width;
-             ViewColumns.Item[x].Alignment := Column.Alignment;
-             ViewColumns.Item[x].Visible := Column.Visible;
-             ViewColumns.Item[x].AutoSize := Column.AutoSize;
-           End;
-        end;
+    if ColumnDlg.ShowModal = mrOK 
+    then ListColumns.Assign(ColumnDlg.Columns);
   finally
     ColumnDlg.Free;
   end;
 end;
 
-function TViewColumnsPropertyEditor.GetAttributes: TPropertyAttributes;
+function TListColumnsPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paDialog, paRevertable, paReadOnly];
 end;
@@ -3067,8 +3048,8 @@ begin
     nil,'',TCaptionPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TStrings'),
     nil,'',TStringsPropertyEditor);
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TViewColumns'),
-    nil,'',TViewColumnsPropertyEditor);
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TListColumns'),
+    nil,'',TListColumnsPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TModalResult'),
     nil,'ModalResult',TModalResultPropertyEditor);
 end;
