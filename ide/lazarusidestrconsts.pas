@@ -1060,6 +1060,8 @@ resourcestring
   dlgGlobal = 'Global';
   dlgSelectedText = 'Selected Text';
   dlgDirection = 'Direction';
+  lisFRForwardSearch = 'Forward search';
+  lisFRBackwardSearch = 'Backward search';
   dlgUpWord = 'Up';
   dlgDownWord = 'Down';
   dlgReplaceAll = 'Replace All';

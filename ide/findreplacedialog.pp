@@ -160,7 +160,7 @@ begin
   ReplaceWithLabel:=TLabel.Create(Self);
   with ReplaceWithLabel do begin
     Name:='ReplaceWithLabel';
-    Parent:=Self;	
+    Parent:=Self;
     SetBounds(x,y+3,ComboX-x,Height);
     Caption:=dlgReplaceWith;
     FocusControl:= ReplaceTextComboBox;
@@ -289,8 +289,8 @@ begin
     with Items do begin
       BeginUpdate;
       Clear;
-      Add(dlgUpWord);
-      Add(dlgDownWord);
+      Add(lisFRForwardSearch);
+      Add(lisFRBackwardSearch);
       EndUpdate;
     end;
     ItemIndex:=1;
