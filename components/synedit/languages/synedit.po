@@ -30,10 +30,6 @@ msgstr ""
 msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
 msgstr ""
 
-#: syneditstrconst:syns_duplicateshortcutmsg2
-msgid "The keystroke \"%s\" is already assigned to another editor command.\015\nThe shortcut for this item has not been changed."
-msgstr ""
-
 #: syneditstrconst:syns_filterpascal
 msgid "Pascal Files (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc"
 msgstr ""

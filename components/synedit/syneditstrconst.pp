@@ -170,9 +170,6 @@ resourcestring
   SYNS_ShortcutNone             =  '<none>';
   SYNS_DuplicateShortcutMsg     =  'The keystroke "%s" is already assigned ' +
                                    'to another editor command. (%s)';
-  SYNS_DuplicateShortcutMsg2    =  'The keystroke "%s" is already assigned ' +
-                                   'to another editor command.'#13#10'The ' +
-                                   'shortcut for this item has not been changed.';
 
   // Filters used for open/save dialog
   SYNS_FilterPascal             =  'Pascal Files (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc';

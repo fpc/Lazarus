@@ -182,10 +182,6 @@ msgstr ""
 msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
 msgstr "La seqüència \"%s\" ja està assignat a un altre comandament d'editor. (%s)"
 
-#: syneditstrconst:syns_duplicateshortcutmsg2
-msgid "The keystroke \"%s\" is already assigned to another editor command.\015\nThe shortcut for this item has not been changed."
-msgstr "La seqüència \"%s\" ja està assignat a un altre comandament d'editor. \015\n La drecera per aquest element no ha canviat"
-
 #: syneditstrconst:syns_scrollinfofmttop
 msgid "Top Line: %d"
 msgstr "Primera línia: %d"

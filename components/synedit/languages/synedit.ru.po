@@ -182,10 +182,6 @@ msgstr ""
 msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
 msgstr "Комбинация \"%s\" уже присвоена другой команде редактора. (%s)"
 
-#: syneditstrconst:syns_duplicateshortcutmsg2
-msgid "The keystroke \"%s\" is already assigned to another editor command.\015\nThe shortcut for this item has not been changed."
-msgstr "Комбинация \"%s\" уже присвоена другой команде редактора. (%s). \015\nСвязь с этим элементом не может быть изменена."
-
 #: syneditstrconst:syns_scrollinfofmttop
 msgid "Top Line: %d"
 msgstr "Верхняя строка: %d"

@@ -193,10 +193,6 @@ msgstr "File TeX (*.tex)|*.tex"
 msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
 msgstr "Il tasto \"%s\" è già assegnato ad un altro comando dell'editor. (%s)"
 
-#: syneditstrconst:syns_duplicateshortcutmsg2
-msgid "The keystroke \"%s\" is already assigned to another editor command.\015\nThe shortcut for this item has not been changed."
-msgstr ""
-
 #: syneditstrconst:syns_scrollinfofmttop
 msgid "Top Line: %d"
 msgstr "Linea in cima: %d"

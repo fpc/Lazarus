@@ -42,7 +42,7 @@ CodeTools_RST=`find components/units -name codetoolsstrconsts.rst | xargs ls -1t
 rstconv -i $CodeTools_RST \
   -o components/codetools/languages/codetools.po
 ./tools/updatepofiles components/codetools/languages/codetools.po
-for lang in ca de es fi fr it pl pliso plwin ru ruwin ; do
+for lang in ca de es fi fr it itiso pl pliso plwin ru ruwin ; do
   msgfmt components/codetools/languages/codetools.$lang.po \
     -o components/codetools/languages/codetools.$lang.mo
 done
@@ -71,7 +71,7 @@ done
 LCL_RST=`find lcl/units -name lclstrconsts.rst | xargs ls -1t | head -1`;
 rstconv -i $LCL_RST -o lcl/languages/lcl.po
 ./tools/updatepofiles lcl/languages/lcl.po
-for lang in ca de es fi fr it pl pliso plwin ru ruwin ; do
+for lang in ca de es fi fr it itiso pl pliso plwin ru ruwin ; do
   msgfmt lcl/languages/lcl.$lang.po -o lcl/languages/lcl.$lang.mo || true
 done
 

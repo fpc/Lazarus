@@ -7,7 +7,6 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Il tasto \"%s\" è già assegnato ad un altro comando dell'editor.\015\nLa scorciatoia per questa voce non è stata cambiata"
 
 #: syneditstrconst:syns_scrollinfofmt
 msgid "%d - %d"
@@ -192,10 +191,6 @@ msgstr "File TeX (*.tex)|*.tex"
 #: syneditstrconst:syns_duplicateshortcutmsg
 msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
 msgstr "Il tasto \"%s\" è già assegnato ad un altro comando dell'editor. (%s)"
-
-#: syneditstrconst:syns_duplicateshortcutmsg2
-msgid "The keystroke \"%s\" is already assigned to another editor command.\015\nThe shortcut for this item has not been changed."
-msgstr ""
 
 #: syneditstrconst:syns_scrollinfofmttop
 msgid "Top Line: %d"

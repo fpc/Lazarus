@@ -193,10 +193,6 @@ msgstr ""
 msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
 msgstr "Klawisz \"%s\" jest już przypisany do innego polecenia edytora. (%s)"
 
-#: syneditstrconst:syns_duplicateshortcutmsg2
-msgid "The keystroke \"%s\" is already assigned to another editor command.\015\nThe shortcut for this item has not been changed."
-msgstr "Klawisz \"%s\" jest już przypisany do innego polecenia edytora.\015\nSkrót nie został zmieniony."
-
 #: syneditstrconst:syns_scrollinfofmttop
 msgid "Top Line: %d"
 msgstr "Górna linia: %d"
