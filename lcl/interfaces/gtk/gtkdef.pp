@@ -30,7 +30,7 @@ unit GTKDef;
 {$LONGSTRINGS ON}
 
 {$IFDEF gtk2}
-{off $DEFINE USE_PANGO}
+{$DEFINE USE_PANGO}
 {$EndIf}
 
 interface
@@ -465,6 +465,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.46  2003/09/15 03:10:46  ajgenius
+  PANGO support for GTK2 now works.. sorta. TextOut/ExtTextOut broken?
+
   Revision 1.45  2003/09/09 20:46:38  ajgenius
   more implementation toward pango for gtk2
 

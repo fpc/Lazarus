@@ -30,7 +30,7 @@ interface
 {$ASSERTIONS ON}
 {$endif}
 
-{off $DEFINE USE_PANGO}
+{$DEFINE USE_PANGO}
 
 uses
   Classes, SysUtils,
@@ -520,8 +520,12 @@ function Tgtk2Object.CreateFontIndirectEx(const LogFont: TLogFont;
   const LongFontName: string): HFONT;
 var
   GdiObject: PGdiObject;
-  FamilyName : string;
-
+  FontNameRegistry, Foundry, FamilyName, WeightName,
+  Slant, SetwidthName, AddStyleName, PixelSize,
+  PointSize, ResolutionX, ResolutionY, Spacing, AverageWidth,
+  CharSetRegistry, CharSetCoding: string;
+  FullString : AnsiString;
+  
   procedure LoadDefaultFont;
   begin
     DisposeGDIObject(GdiObject);
@@ -531,33 +535,91 @@ var
 begin
   Result := 0;
   GDIObject := NewGDIObject(gdiFont);
+  Try
+    // set default values
+    FontNameRegistry := '*';
+    Foundry := '*';
+    FamilyName := '*';
+    WeightName := '*';
+    Slant := '*';
+    SetwidthName := '*';
+    AddStyleName := '*';
+    PixelSize := '*';
+    PointSize := '*';
+    ResolutionX := '*';
+    ResolutionY := '*';
+    Spacing := '*';
+    AverageWidth := '*';
+    CharSetRegistry := '*';
+    CharSetCoding := '*';
 
-  with LogFont do begin
-    if lfFaceName[0] = #0
-    then begin
-      Assert(false,'ERROR: [Tgt2kObject.CreateFontIndirectEx] No fontname');
-      Exit;
-    end;
+    // check if LongFontName is in XLFD format
+    if IsFontNameXLogicalFontDesc(LongFontName) then begin
+      FontNameRegistry := ExtractXLFDItem(LongFontName,0);
+      Foundry          := ExtractXLFDItem(LongFontName,1);
+      FamilyName       := ExtractXLFDItem(LongFontName,2);
+      WeightName       := ExtractXLFDItem(LongFontName,3);
+      Slant            := ExtractXLFDItem(LongFontName,4);
+      SetwidthName     := ExtractXLFDItem(LongFontName,5);
+      AddStyleName     := ExtractXLFDItem(LongFontName,6);
+      PixelSize        := ExtractXLFDItem(LongFontName,7);
+      PointSize        := ExtractXLFDItem(LongFontName,8);
+      ResolutionX      := ExtractXLFDItem(LongFontName,9);
+      ResolutionY      := ExtractXLFDItem(LongFontName,10);
+      Spacing          := ExtractXLFDItem(LongFontName,11);
+      AverageWidth     := ExtractXLFDItem(LongFontName,12);
+      CharSetRegistry  := ExtractXLFDItem(LongFontName,13);
+      CharSetCoding    := ExtractXLFDItem(LongFontName,14);
+    end else
+      if (LongFontName <> '') and (Screen.Fonts.IndexOf(LongFontName) > 0) then
+        FamilyName := LongFontName;
 
-    FamilyName := StrPas(lfFaceName); //StringReplace(FaceName, ' ', '*');
-    if AnsiCompareText(FamilyName,'default')=0 then begin
-      LoadDefaultFont;
-      exit;
-    end;
+    with LogFont do begin
+      if lfFaceName[0] = #0
+      then begin
+        Assert(false,'ERROR: [Tgt2kObject.CreateFontIndirectEx] No fontname');
+        Exit;
+      end;
 
-    GdiObject^.GDIFontObject := pango_font_description_from_string(PChar(AnsiString(FamilyName + ' ' + IntToStr(Abs(lfHeight)))));
-    If lfWeight <> FW_DONTCARE then
-      pango_font_description_set_weight(GdiObject^.GDIFontObject, lfWeight);
+      if (FamilyName = '') or (AnsiCompareText(FamilyName,'*')=0) then begin
+        FamilyName := StrPas(lfFaceName);
+        if AnsiCompareText(FamilyName,'default')=0 then begin
+          LoadDefaultFont;
+          exit;
+        end;
+        FullString := AnsiString(FamilyName + ' ' + IntToStr(Abs(lfHeight)));
+      end
+      else begin
+        FullString := AnsiString(FamilyName);
+        if (PointSize = '') or (AnsiCompareText(PointSize,'*')=0) then
+          FullString := FullString + ' 12'
+        else
+          FullString := FullString + ' ' + PointSize;
+      end;
       
-    if lfItalic = 0 then
-      pango_font_description_set_style(GdiObject^.GDIFontObject,PANGO_STYLE_NORMAL)
-    else
-      pango_font_description_set_style(GdiObject^.GDIFontObject,PANGO_STYLE_ITALIC);
+      GdiObject^.GDIFontObject := pango_font_description_from_string(PChar(FullString));
+      If lfWeight <> FW_DONTCARE then
+        pango_font_description_set_weight(GdiObject^.GDIFontObject, lfWeight);
+      
+      if lfItalic = 0 then
+        pango_font_description_set_style(GdiObject^.GDIFontObject,PANGO_STYLE_NORMAL)
+      else
+        pango_font_description_set_style(GdiObject^.GDIFontObject,PANGO_STYLE_ITALIC);
 
-    GdiObject^.StrikeOut := lfStrikeOut <> 0;
-    GdiObject^.Underline := lfUnderline <> 0;
+      GdiObject^.StrikeOut := lfStrikeOut <> 0;
+      GdiObject^.Underline := lfUnderline <> 0;
 
-    Result := HFONT(GdiObject);
+      Result := HFONT(GdiObject);
+    end;
+  finally
+    if GdiObject^.GDIFontObject = nil
+    then begin
+      DisposeGDIObject(GdiObject);
+      Result := 0;
+    end
+    else begin
+      Result := HFONT(GdiObject);
+    end;
   end;
 end;
 
@@ -582,11 +644,6 @@ begin
   if Result and (Count>0)
   then with TDeviceContext(DC) do
   begin
-    if GC = nil
-    then begin
-      WriteLn('WARNING: [Tgtk2Object.GetTextExtentPoint] Uninitialized GC');
-    end
-    else begin
       if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
       then begin
         UseFontDesc := GetDefaultFontDesc(true);
@@ -605,7 +662,7 @@ begin
         WriteLn('WARNING: [Tgtk2Object.GetTextExtentPoint] Missing Font')
       else begin
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
-
+        GetStyle('default');
         Layout := gtk_widget_create_pango_layout (GetStyleWidget('default'), nil);
         pango_layout_set_font_description(Layout, UseFontDesc);
         AttrList := pango_layout_get_attributes(Layout);
@@ -659,7 +716,6 @@ begin
         If UnRef then
           pango_font_description_free(UseFontDesc);
       end;
-    end;
   end;
 end;
 
@@ -898,6 +954,9 @@ end.
 
 {
   $Log$
+  Revision 1.11  2003/09/15 03:10:46  ajgenius
+  PANGO support for GTK2 now works.. sorta. TextOut/ExtTextOut broken?
+
   Revision 1.10  2003/09/12 17:40:46  ajgenius
   fixes for GTK2(accel groups, menu accel, 'draw'),
   more work toward Pango(DrawText now works, UpdateDCTextMetric mostly works)

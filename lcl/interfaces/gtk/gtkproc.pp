@@ -25,7 +25,7 @@ interface
 {$ENDIF}
 
 {$IFDEF gtk2}
-{off $DEFINE USE_PANGO}
+{$DEFINE USE_PANGO}
 {$EndIf}
 uses
   SysUtils, Classes,

@@ -2,6 +2,15 @@
 <CONFIG>
   <Package>
     <Name Value="GTK2Interface"/>
+    <CompilerOptions>
+      <SearchPaths>
+        <LCLWidgetType Value="gtk"/>
+        <SrcPath Value="$(LazarusDir)/;$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/"/>
+      </SearchPaths>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
     <Files Count="20">
       <Item1>
         <Filename Value="interfaces.pas"/>
@@ -102,15 +111,4 @@
       <IgnoreBinaries Value="False"/>
     </PublishOptions>
   </Package>
-  <CompilerOptions>
-    <SearchPaths>
-      <OtherUnitFiles Value="../gtk/;../../units/"/>
-      <UnitOutputDirectory Value="../../units/gtk2"/>
-      <LCLWidgetType Value="gtk"/>
-    </SearchPaths>
-    <Other>
-      <CustomOptions Value="-dGTK2"/>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
-  </CompilerOptions>
 </CONFIG>

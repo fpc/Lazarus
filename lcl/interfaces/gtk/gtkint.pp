@@ -47,7 +47,7 @@ interface
 {off $Define Disable_GC_SysColors}
 
 {$IFDEF gtk2}
-{off $DEFINE USE_PANGO}
+{$DEFINE USE_PANGO}
 {$EndIf}
 
 uses
@@ -372,6 +372,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.146  2003/09/15 03:10:46  ajgenius
+  PANGO support for GTK2 now works.. sorta. TextOut/ExtTextOut broken?
+
   Revision 1.145  2003/09/12 17:40:45  ajgenius
   fixes for GTK2(accel groups, menu accel, 'draw'),
   more work toward Pango(DrawText now works, UpdateDCTextMetric mostly works)
