@@ -48,10 +48,14 @@ uses
   gtkDef, gtkInt;
 
 type
+
+  { TGtk2WidgetSet }
+
   TGtk2WidgetSet = class(TGtkWidgetSet)
   protected
     procedure AppendText(Sender: TObject; Str: PChar);
     function CreateComponent(Sender : TObject): THandle; override;
+    function CreateListView(ListViewObject: TObject): PGtkWidget; override;
     function GetText(Sender: TComponent; var Text: String): Boolean;
     procedure HookSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject); override;
     //function IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer; override;
@@ -142,7 +146,7 @@ uses
 // Gtk2WSCalendar,
 // Gtk2WSCheckLst,
 // Gtk2WSCListBox,
-// Gtk2WSComCtrls,
+ Gtk2WSComCtrls,
 // Gtk2WSControls,
 // Gtk2WSDbCtrls,
 // Gtk2WSDBGrids,
@@ -595,6 +599,9 @@ end.
 
 {
   $Log$
+  Revision 1.39  2005/02/05 09:09:52  mattias
+  implemented TListView for gtk2   From Andrew Haines
+
   Revision 1.38  2005/02/03 16:51:29  mattias
   improved gtk2 listbox  from Andrew Haines
 

@@ -4664,13 +4664,6 @@ begin
 end;
 
 function TGtkWidgetSet.CreateListView(ListViewObject: TObject): PGtkWidget;
-{$IFdef GTK2}
-begin
-  Result:=gtk_scrolled_window_new(nil, nil);//create something just in case
-  gtk_widget_show(result);
-  DebugLn('TODO: TGtkWidgetSet.CreateListView');
-end;
-{$Else}
 var
   MainWidget: PGtkWidget;
   i: Integer;
@@ -4748,7 +4741,6 @@ begin
 
   Result:=MainWidget;
 end;
-{$EndIF}
 {------------------------------------------------------------------------------
   function TGtkWidgetSet.CreatePairSplitter(PairSplitterObject: TObject
     ): PGtkWidget;
@@ -7016,6 +7008,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.622  2005/02/05 09:09:52  mattias
+  implemented TListView for gtk2   From Andrew Haines
+
   Revision 1.621  2005/01/28 17:55:48  mattias
   fixed mem leak
 

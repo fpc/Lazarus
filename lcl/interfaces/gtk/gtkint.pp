@@ -133,7 +133,7 @@ type
     function CreateComboBox(ComboBoxObject: TObject): Pointer;
     function CreateAPIWidget(AWinControl: TWinControl): PGtkWidget;
     function CreateForm(ACustomForm: TCustomForm): PGtkWidget; virtual;
-    function CreateListView(ListViewObject: TObject): PGtkWidget;
+    function CreateListView(ListViewObject: TObject): PGtkWidget; virtual;
     function CreatePairSplitter(PairSplitterObject: TObject): PGtkWidget;
     function CreateStatusBar(StatusBar: TObject): PGtkWidget;
     function OldCreateStatusBarPanel(StatusBar: TObject; Index: integer): PGtkWidget;
@@ -442,6 +442,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.221  2005/02/05 09:09:52  mattias
+  implemented TListView for gtk2   From Andrew Haines
+
   Revision 1.220  2005/02/03 21:10:07  vincents
   fixed compilation of gtk2 interface on windows
 
