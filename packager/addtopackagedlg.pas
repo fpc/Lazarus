@@ -643,7 +643,6 @@ begin
   VirtualFile:=AddUnitIsVirtualCheckBox.Checked;
   AddUnitFileBrowseButton.Enabled:=not VirtualFile;
   AddUnitFileShortenButton.Enabled:=not VirtualFile;
-  AddUnitHasRegisterCheckBox.Enabled:=not VirtualFile;
   AddUnitUpdateButton.Enabled:=not VirtualFile;
   AddSecondaryFilesCheckBox.Enabled:=not VirtualFile;
 end;

@@ -994,28 +994,15 @@ end;
 
 procedure TPackageEditorForm.CallRegisterProcCheckBoxClick(Sender: TObject);
 var
-  CurNode: TTreeNode;
-  NodeIndex: Integer;
   CurFile: TPkgFile;
+  Removed: boolean;
 begin
   if LazPackage=nil then exit;
-  CurNode:=FilesTreeView.Selected;
-  if (CurNode=nil) then exit;
-  if (CurNode.Parent=FilesNode) then begin
-    NodeIndex:=CurNode.Index;
-    if NodeIndex>=LazPackage.FileCount then exit;
-    CurFile:=LazPackage.Files[NodeIndex];
-    CurFile.HasRegisterProc:=CallRegisterProcCheckBox.Checked;
-    LazPackage.Modified:=true;
-    UpdateAll;
-  end;
-  if (RemovedFilesNode<>nil) and (CurNode.Parent=RemovedFilesNode) then begin
-    NodeIndex:=CurNode.Index;
-    if NodeIndex>=LazPackage.RemovedFilesCount then exit;
-    CurFile:=LazPackage.RemovedFiles[NodeIndex];
-    CurFile.HasRegisterProc:=CallRegisterProcCheckBox.Checked;
-    UpdateAll;
-  end;
+  CurFile:=GetCurrentFile(Removed);
+  if (CurFile=nil) then exit;
+  CurFile.HasRegisterProc:=CallRegisterProcCheckBox.Checked;
+  LazPackage.Modified:=not Removed;
+  UpdateAll;
 end;
 
 procedure TPackageEditorForm.ChangeFileTypeMenuItemClick(Sender: TObject);
@@ -1545,11 +1532,10 @@ var
 begin
   if LazPackage=nil then exit;
   FPlugins.Clear;
+  Dependency:=nil;
   CurFile:=GetCurrentFile(Removed);
   if CurFile=nil then
-    Dependency:=GetCurrentDependency(Removed)
-  else
-    Dependency:=nil;
+    Dependency:=GetCurrentDependency(Removed);
 
   // make components visible
   UseMinVersionCheckBox.Visible:=Dependency<>nil;
@@ -1557,7 +1543,7 @@ begin
   UseMaxVersionCheckBox.Visible:=Dependency<>nil;
   MaxVersionEdit.Visible:=Dependency<>nil;
   ApplyDependencyButton.Visible:=Dependency<>nil;
-  
+
   CallRegisterProcCheckBox.Visible:=CurFile<>nil;
   RegisteredPluginsGroupBox.Visible:=CurFile<>nil;
 
@@ -1566,7 +1552,7 @@ begin
     FilePropsGroupBox.Caption:=lisPckEditFileProperties;
     // set Register Unit checkbox
     CallRegisterProcCheckBox.Enabled:=(not LazPackage.ReadOnly)
-                                      and (CurFile.FileType=pftUnit);
+                             and (CurFile.FileType in [pftUnit,pftVirtualUnit]);
     CallRegisterProcCheckBox.Checked:=pffHasRegisterProc in CurFile.Flags;
     // fetch all registered plugins
     CurListIndex:=0;

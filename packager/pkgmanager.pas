@@ -2195,7 +2195,7 @@ begin
     CurFile:=APackage.Files[i];
     // update unitname
     if FilenameIsPascalUnit(CurFile.Filename)
-    and (CurFile.FileType=pftUnit) then begin
+    and (CurFile.FileType in [pftUnit,pftVirtualUnit]) then begin
       CodeBuffer:=CodeToolBoss.LoadFile(CurFile.Filename,false,false);
       if CodeBuffer<>nil then begin
         // if the unit is edited, the unitname is probably already cached
