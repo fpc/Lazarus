@@ -358,7 +358,7 @@ procedure SaveXMLCompileReasons(const AConfig: TXMLConfig; const APath: String;
 implementation
 
 const
-  CompilerOptionsVersion = 3;
+  CompilerOptionsVersion = 4;
   Config_Filename = 'compileroptions.xml';
   MaxParseStamp = $7fffffff;
   MinParseStamp = -$7fffffff;
@@ -940,7 +940,10 @@ begin
   { Other }
   p:=Path+'Other/';
   DontUseConfigFile := XMLConfigFile.GetValue(p+'ConfigFile/DontUseConfigFile/Value', false);
-  AdditionalConfigFile := XMLConfigFile.GetValue(p+'ConfigFile/AdditionalConfigFile/Value', false);
+  if FileVersion<=3 then
+    CustomConfigFile := XMLConfigFile.GetValue(p+'ConfigFile/AdditionalConfigFile/Value', false)
+  else
+    CustomConfigFile := XMLConfigFile.GetValue(p+'ConfigFile/CustomConfigFile/Value', false);
   ConfigFilePath := f(XMLConfigFile.GetValue(p+'ConfigFile/ConfigFilePath/Value', './fpc.cfg'));
   CustomOptions := XMLConfigFile.GetValue(p+'CustomOptions/Value', '');
 
@@ -1077,7 +1080,7 @@ begin
   { Other }
   p:=Path+'Other/';
   XMLConfigFile.SetDeleteValue(p+'ConfigFile/DontUseConfigFile/Value', DontUseConfigFile,false);
-  XMLConfigFile.SetDeleteValue(p+'ConfigFile/AdditionalConfigFile/Value', AdditionalConfigFile,false);
+  XMLConfigFile.SetDeleteValue(p+'ConfigFile/CustomConfigFile/Value', CustomConfigFile,false);
   XMLConfigFile.SetDeleteValue(p+'ConfigFile/ConfigFilePath/Value', ConfigFilePath,'./fpc.cfg');
   XMLConfigFile.SetDeleteValue(p+'CustomOptions/Value', CustomOptions,'');
 
@@ -1740,8 +1743,8 @@ Processor specific options:
   if DontUseConfigFile then
     switches := switches + ' -n';
 
-  { Use Additional Config File     @ = yes and path }
-  if (AdditionalConfigFile) and (ConfigFilePath<>'') then
+  { Use Custom Config File     @ = yes and path }
+  if (CustomConfigFile) and (ConfigFilePath<>'') then
     switches := switches + ' ' + PrepareCmdLineOption('@' + ConfigFilePath);
 
 
@@ -1953,7 +1956,7 @@ begin
 
   // other
   fDontUseConfigFile := false;
-  fAdditionalConfigFile := false;
+  fCustomConfigFile := false;
   fConfigFilePath := './fpc.cfg';
   CustomOptions := '';
   
@@ -2055,7 +2058,7 @@ begin
 
   // Other
   fDontUseConfigFile := CompOpts.fDontUseConfigFile;
-  fAdditionalConfigFile := CompOpts.fAdditionalConfigFile;
+  fCustomConfigFile := CompOpts.fCustomConfigFile;
   fConfigFilePath := CompOpts.fConfigFilePath;
   CustomOptions := CompOpts.fCustomOptions;
 
@@ -2145,7 +2148,7 @@ begin
     
     // other
     and (fDontUseConfigFile = CompOpts.fDontUseConfigFile)
-    and (fAdditionalConfigFile = CompOpts.fAdditionalConfigFile)
+    and (fCustomConfigFile = CompOpts.fCustomConfigFile)
     and (fConfigFilePath = CompOpts.fConfigFilePath)
     and (fStopAfterErrCount = CompOpts.fStopAfterErrCount)
     and (fCustomOptions = CompOpts.fCustomOptions)

@@ -241,7 +241,7 @@ begin
 
     StackChecks
     DontUseConfigFile
-    AdditionalConfigFile
+    CustomConfigFile
   }
 
   // FPC modes ----------------------------------------------------------------

@@ -955,7 +955,7 @@ resourcestring
   dlgHintsUnused = 'Show Hints for unused units in main source';
   dlgConfigFiles = 'Config Files:';
   dlgUseFpcCfg = 'Use Compiler Config File (fpc.cfg)';
-  dlgUseAdditionalConfig = 'Use Additional Compiler Config File';
+  dlgUseCustomConfig = 'Use custom Compiler Config File';
   lisCustomOptions2 = 'Custom options';
   dlgStopAfterNrErr = 'Stop after number of errors:';
   dlgOtherUnitFiles = 'Other Unit Files (-Fu) (Delimiter is semicolon):';

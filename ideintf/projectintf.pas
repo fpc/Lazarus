@@ -131,7 +131,7 @@ type
 
     // Other:
     fDontUseConfigFile: Boolean;
-    fAdditionalConfigFile: Boolean;
+    fCustomConfigFile: Boolean;
     fConfigFilePath: String;
     fCustomOptions: string;
   protected
@@ -241,8 +241,8 @@ type
     // other
     property DontUseConfigFile: Boolean read fDontUseConfigFile
                                         write fDontUseConfigFile;
-    property AdditionalConfigFile: Boolean read fAdditionalConfigFile
-                                           write fAdditionalConfigFile;
+    property CustomConfigFile: Boolean read fCustomConfigFile
+                                       write fCustomConfigFile;
     property ConfigFilePath: String read fConfigFilePath write fConfigFilePath;
     property CustomOptions: string read fCustomOptions write SetCustomOptions;
   end;

@@ -175,7 +175,7 @@ type
     OtherPage: TPage;
     grpConfigFile: TGroupBox;
     chkConfigFile: TCheckBox;
-    chkAdditionalConfigFile: TCheckBox;
+    chkCustomConfigFile: TCheckBox;
     edtConfigPath: TEdit;
     grpCustomOptions: TGroupBox;
     memCustomOptions: TMemo;
@@ -241,7 +241,7 @@ type
     procedure FileBrowseBtnClick(Sender: TObject);
     procedure InhTreeViewSelectionChanged(Sender: TObject);
     procedure InheritedPageResize(Sender: TObject);
-    procedure chkAdditionalConfigFileClick(Sender: TObject);
+    procedure chkCustomConfigFileClick(Sender: TObject);
     procedure PathEditBtnClick(Sender: TObject);
     procedure PathEditBtnExecuted(Sender: TObject);
     procedure frmCompilerOptionsClose(Sender: TObject;
@@ -284,9 +284,6 @@ type
     property OnImExportCompilerOptions: TNotifyEvent
                read FOnImExportCompilerOptions write FOnImExportCompilerOptions;
   end;
-
-
-
 
 
 implementation
@@ -743,8 +740,8 @@ begin
 
   // other
   chkConfigFile.Checked := not Options.DontUseConfigFile;
-  chkAdditionalConfigFile.Checked := Options.AdditionalConfigFile;
-  edtConfigPath.Enabled := chkAdditionalConfigFile.Checked;
+  chkCustomConfigFile.Checked := Options.CustomConfigFile;
+  edtConfigPath.Enabled := chkCustomConfigFile.Checked;
   edtConfigPath.Text := Options.ConfigFilePath;
   memCustomOptions.Text := Options.CustomOptions;
 
@@ -961,7 +958,7 @@ begin
 
   // other
   Options.DontUseConfigFile := not chkConfigFile.Checked;
-  Options.AdditionalConfigFile := chkAdditionalConfigFile.Checked;
+  Options.CustomConfigFile := chkCustomConfigFile.Checked;
   Options.ConfigFilePath := edtConfigPath.Text;
   Options.CustomOptions := memCustomOptions.Text;
 
@@ -2019,15 +2016,15 @@ begin
     Width := 330;
   end;
 
-  chkAdditionalConfigFile := TCheckBox.Create(Self);
-  with chkAdditionalConfigFile do
+  chkCustomConfigFile := TCheckBox.Create(Self);
+  with chkCustomConfigFile do
   begin
     Parent := grpConfigFile;
-    Caption := dlgUseAdditionalConfig+' (@)';
+    Caption := dlgUseCustomConfig+' (@)';
     Top := 27;
     Left := 8;
     Width := 330;
-    OnClick:=@chkAdditionalConfigFileClick;
+    OnClick:=@chkCustomConfigFileClick;
   end;
 
   edtConfigPath := TEdit.Create(grpConfigFile);
@@ -2629,9 +2626,9 @@ begin
   end;
 end;
 
-procedure TfrmCompilerOptions.chkAdditionalConfigFileClick(Sender: TObject);
+procedure TfrmCompilerOptions.chkCustomConfigFileClick(Sender: TObject);
 begin
-  edtConfigPath.Enabled:=chkAdditionalConfigFile.Checked;
+  edtConfigPath.Enabled:=chkCustomConfigFile.Checked;
 end;
 
 procedure TfrmCompilerOptions.PathEditBtnClick(Sender: TObject);
