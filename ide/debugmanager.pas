@@ -616,6 +616,7 @@ end;
 function TDebugManager.Evaluate(const AExpression: String; var AResult: String): Boolean;
 begin
   Result := (MainIDE.ToolStatus = itDebugger)
+        and (dcEvaluate in DebugBoss.Commands)
         and (FDebugger <> nil)
         and FDebugger.Evaluate(AExpression, AResult);
 end;
@@ -671,6 +672,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.12  2003/04/02 17:06:27  mattias
+  improved deb creation
+
   Revision 1.11  2003/03/11 09:57:51  mattias
   implemented ProjectOpt: AutoCreateNewForms, added designer Show Options
 

@@ -500,7 +500,7 @@ begin
       Result:='Create a new unit with a LCL form.';
 
     niiText:
-      Result:='Create a new text file.';
+      Result:='Create a new empty text file.';
       
     niiApplication:
       Result:='Create a new graphical application.'#13#13
@@ -512,7 +512,12 @@ begin
 
     niiCustomProject:
       Result:='Create a new program.';
-      
+
+    niiPackage:
+      Result:='Create a new package.'#13#13
+             +'A package is a collection of units and components. '
+             +'For example a library.';
+
   else
     Result:=''
   end;
@@ -554,7 +559,7 @@ begin
   NewCategory.Add(
     TNewIDEItemTemplate.Create(niiCustomProject,'Custom Project',niifCopy,[]));
 
-  {$IFDEF EnablePackageSystem}
+  {$IFDEF EnablePkgs}
   // category package
   NewCategory:=TNewIDEItemCategory.Create('Package');
   Add(NewCategory);

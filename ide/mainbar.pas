@@ -60,7 +60,15 @@ type
     itCodeToolAborting,// the CodeToolBoss is working and is about to abort
     itCustom     // this state is not used yet.
     );
-    
+
+  // window in front
+  TDisplayState = (
+    dsSource,     // focussing sourcenotebook
+    dsInspector,  // focussing object inspector after Source
+    dsForm,       // focussing designer form
+    dsInspector2  // focussing object inspector after form
+    );
+
   // new file flags
   TNewFlag = (nfIsPartOfProject // force IsPartOfProject,
                                 //   default is to use a heuristic

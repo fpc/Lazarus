@@ -1,7 +1,7 @@
-fpcsrc (1.0.7-1)
+fpcsrc (FPCVERSION)
 
 	  * Started package
 
-	 -- Mattias Gaertner <mattias@cvs.freepascal.org>  2003-02-18
+	 -- Mattias Gaertner <mattias@cvs.freepascal.org>  FPCDATE
 
 	

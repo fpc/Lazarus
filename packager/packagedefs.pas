@@ -253,6 +253,7 @@ type
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     function IsVirtual: boolean;
     procedure CheckInnerDependencies;
+    function Compare(Package2: TLazPackage): integer;
   public
     property Author: string read FAuthor write SetAuthor;
     property AutoIncrementVersionOnBuild: boolean
@@ -294,7 +295,6 @@ type
   
   TBasePackageEditor = class(TForm)
   public
-  
   end;
   
 
@@ -321,6 +321,8 @@ const
 function PkgFileTypeIdentToType(const s: string): TPkgFileType;
 function LazPackageTypeIdentToType(const s: string): TLazPackageType;
 procedure SortDependencyList(Dependencies: TList);
+function CompareLazPackage(Data1, Data2: Pointer): integer;
+
 
 implementation
 
@@ -371,6 +373,16 @@ begin
       end;
     end;
   end;
+end;
+
+function CompareLazPackage(Data1, Data2: Pointer): integer;
+var
+  Pkg1: TLazPackage;
+  Pkg2: TLazPackage;
+begin
+  Pkg1:=TLazPackage(Data1);
+  Pkg2:=TLazPackage(Data2);
+  Result:=Pkg1.Compare(Pkg2);
 end;
 
 { TPkgFile }
@@ -966,7 +978,14 @@ end;
 
 procedure TLazPackage.CheckInnerDependencies;
 begin
+  // ToDo: make some checks like deactivating double requirements
+end;
 
+function TLazPackage.Compare(Package2: TLazPackage): integer;
+begin
+  Result:=AnsiCompareText(Name,Package2.Name);
+  if Result<>0 then exit;
+  Result:=Version.Compare(Package2.Version);
 end;
 
 { TPkgComponent }

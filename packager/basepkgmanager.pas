@@ -54,6 +54,7 @@ type
     procedure SetupMainBarShortCuts; virtual; abstract;
     
     function ShowConfigureCustomComponents: TModalResult; virtual; abstract;
+    function DoNewPackage: TModalResult; virtual; abstract;
   end;
   
 var

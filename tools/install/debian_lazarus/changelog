@@ -1,7 +1,7 @@
-lazarus (0.8.5-1)
+lazarus (LAZVERSION)
 
 	  * Started package
 
-	 -- Mattias Gaertner <mattias@cvs.freepascal.org>  2003-02-18
+	 -- Mattias Gaertner <mattias@cvs.freepascal.org>  LAZDATE
 
 	

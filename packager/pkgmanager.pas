@@ -44,13 +44,15 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Forms, KeyMapping, EnvironmentOpts,
-  UComponentManMain, PackageEditor, PackageDefs, PackageLinks, BasePkgManager,
-  MainBar;
+  Classes, SysUtils, Forms, COntrols, KeyMapping, EnvironmentOpts,
+  UComponentManMain, PackageEditor, PackageDefs, PackageLinks, PackageSystem,
+  BasePkgManager, MainBar;
 
 type
   TPkgManager = class(TBasePkgManager)
     procedure mnuConfigCustomCompsClicked(Sender: TObject);
+  private
+    function GetUniquePackageName(const Prefix: string): string;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -60,6 +62,7 @@ type
     procedure SetupMainBarShortCuts; override;
 
     function ShowConfigureCustomComponents: TModalResult; override;
+    function DoNewPackage: TModalResult; override;
   end;
 
 implementation
@@ -69,6 +72,12 @@ implementation
 procedure TPkgManager.mnuConfigCustomCompsClicked(Sender: TObject);
 begin
   ShowConfigureCustomComponents;
+end;
+
+function TPkgManager.GetUniquePackageName(const Prefix: string): string;
+begin
+  // ToDo
+  Result:=Prefix;
 end;
 
 constructor TPkgManager.Create(TheOwner: TComponent);
@@ -101,6 +110,14 @@ end;
 function TPkgManager.ShowConfigureCustomComponents: TModalResult;
 begin
   Result:=ShowConfigureCustomComponentDlg(EnvironmentOptions.LazarusDirectory);
+end;
+
+function TPkgManager.DoNewPackage: TModalResult;
+begin
+  Result:=mrCancel;
+  //NewPackage:=TLazPackage.Create;
+  //NewPackage.Name:=GetUniquePackageName;
+  Result:=mrOk;
 end;
 
 end.
