@@ -3178,6 +3178,7 @@ var
   Info: TSearchRec;
   DirName: PChar;
   Dir: string;
+  StrList: TStringList;
   
   procedure Add(List: PGtkCList; const s: string);
   begin
@@ -3185,7 +3186,16 @@ var
     gtk_clist_append(List, Text);
   end;
   
+  procedure AddList(List: PGtkCList);
+  var
+    i: integer;
+  begin
+    for i:=0 to StrList.Count-1 do
+      Add(List, StrList[i]);
+  end;
+  
 begin
+  StrList := TStringList.Create;
   dirs := PGtkCList(FileSelection^.dir_list);
   files := PGtkCList(FileSelection^.file_list);
   DirName := gtk_file_selection_get_filename(FileSelection);
@@ -3200,25 +3210,30 @@ begin
   gtk_clist_freeze(Files);
   gtk_clist_clear(Files);
   { Add all directories }
-  Add(dirs, '..'+PathDelim);
+  Strlist.Add('..'+PathDelim);
   if FindFirst(AppendPathDelim(Dir)+GetAllFilesMask, faAnyFile and faDirectory,
     Info) = 0
   then
     repeat
       if ((Info.Attr and faDirectory) = faDirectory) and (Info.Name <> '.')
       and (Info.Name <> '..') then
-        Add(Dirs, AppendPathDelim(Info.Name));
+        StrList.Add(AppendPathDelim(Info.Name));
     until FindNext(Info) <> 0;
   FindClose(Info);
+  StrList.Sorted := True;
+  AddList(Dirs);
   // add required files
+  StrList.Clear;
   Dir := AppendPathDelim(Dir)+Mask;
   if Mask = '' then Dir := Dir + GetAllFilesMask;
   if FindFirst(Dir, faAnyFile, Info) = 0 then
     repeat
       if (Info.Attr and faDirectory) <> faDirectory then
-        Add(Files, Info.Name);
+        Strlist.Add(Info.Name);
     until FindNext(Info) <> 0;
   FindClose(Info);
+  AddList(Files);
+  StrList.Free;
   gtk_clist_thaw(Dirs);
   gtk_clist_thaw(Files);
 end;
@@ -8099,6 +8114,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.351  2005/03/21 08:24:59  mattias
+  gtk intf sorting directories in filedialg  from Jesus
+
   Revision 1.350  2005/03/07 21:59:45  vincents
   changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
 
