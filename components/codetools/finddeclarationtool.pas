@@ -1061,7 +1061,8 @@ begin
       NewPos.Code:=FindUnitSource(UnitName,UnitInFilename);
       if NewPos.Code=nil then
         RaiseExceptionInstance(
-          ECodeToolUnitNotFound.Create(Self,ctsUnitNotFound,UnitName));
+          ECodeToolUnitNotFound.Create(Self,Format(ctsUnitNotFound,[UnitName]),
+            UnitName));
       NewPos.X:=1;
       NewPos.Y:=1;
       NewTopLine:=1;
@@ -3060,7 +3061,8 @@ begin
       if NewCodeTool=nil then begin
         MoveCursorToCleanPos(UnitNameAtom.StartPos);
         RaiseExceptionInstance(
-          ECodeToolUnitNotFound.Create(Self,ctsUnitNotFound,
+          ECodeToolUnitNotFound.Create(Self,
+                                       Format(ctsUnitNotFound,[GetAtom(UnitNameAtom)]),
                                        GetAtom(UnitNameAtom)));
       end else if NewCodeTool=Self then begin
         MoveCursorToCleanPos(UnitNameAtom.StartPos);
@@ -3259,7 +3261,7 @@ begin
     // no source found
     CurPos.StartPos:=-1;
     RaiseExceptionInstance(
-      ECodeToolUnitNotFound.Create(Self,ctsUnitNotFound,AnUnitName));
+      ECodeToolUnitNotFound.Create(Self,Format(ctsUnitNotFound,[AnUnitName]),AnUnitName));
   end else if NewCode=TCodeBuffer(Scanner.MainCode) then begin
     // Searching again in hidden unit
     writeln('WARNING: Searching again in hidden unit: "',NewCode.Filename,'"');
@@ -3275,7 +3277,8 @@ begin
       if NewCodeTool=nil then begin
         CurPos.StartPos:=-1;
         RaiseExceptionInstance(
-          ECodeToolUnitNotFound.Create(Self,ctsUnitNotFound,AnUnitName));
+          ECodeToolUnitNotFound.Create(Self,Format(ctsUnitNotFound,[AnUnitName]),
+            AnUnitName));
       end;
     end else if NewCode=TCodeBuffer(Scanner.MainCode) then begin
       NewCodeTool:=Self;
