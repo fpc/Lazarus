@@ -328,6 +328,7 @@ type
     function  GetRowCount: Integer;
     function  GetRowHeights(Arow: Integer): Integer;
     function  GetSelection: TGridRect;
+    function  GetSystemMetricsGapSize(const Index: Integer): Integer;
     function  GetTopRow: Longint;
     function  GetVisibleColCount: Integer;
     function  GetVisibleGrid: TRect;
@@ -1190,7 +1191,7 @@ begin
     FGCache.AccumWidth[Tw]:=Pointer(FGCache.GridWidth);
     FGCache.GridWidth:=FGCache.GridWidth + GetColWidths(Tw);
     if Tw<FixedCols then FGCache.FixedWidth:=FGCache.GridWidth;
-    {$IfDef dbgScroll}
+    {$IfDef dbgVisualChange}
     DebugLn('FGCache.AccumWidth[',Tw,']=',Integer(FGCache.AccumWidth[Tw]));
     {$Endif}
   end;
@@ -1200,7 +1201,7 @@ begin
     FGCache.AccumHeight[Tw]:=Pointer(FGCache.Gridheight);
     FGCache.Gridheight:=FGCache.Gridheight+GetRowHeights(Tw);
     if Tw<FixedRows then FGCache.FixedHeight:=FGCache.GridHeight;
-    {$IfDef dbgScroll}
+    {$IfDef dbgVisualChange}
     DebugLn('FGCache.AccumHeight[',Tw,']=',Integer(FGCache.AccumHeight[Tw]));
     {$Endif}
   end;
@@ -1241,9 +1242,17 @@ begin
   Dec(FGCache.ClientWidth, DV);
   Dec(FGCache.ClientHeight, DH);
   
-  {$Ifdef DbgScroll}
-  DebugLn('Width=',Width,' Height=',height, ' GWidth=',TW,' GHeight=',TH,' HsbRange=',HsbRange, ' VsbRange=',VSbRange, ' Vbar=',VSbVisible, ' HSb=',HsbVisible);
-  DebugLn('ClientWidth=', FGCAche.ClientWidth, ' ClientHeight=', FGCache.ClientHeight);
+  {$Ifdef DbgVisualChange}
+  DbgOut('Width=',IntTostr(Width));
+  DbgOut(' Height=',IntToStr(height));
+  DbgOut(' GWidth=',IntTostr(TW));
+  DbgOut(' GHeight=',IntToStr(TH));
+  DbgOut(' HsbRange=',IntToStr(HsbRange));
+  DbgOut(' VsbRange=',IntToStr(VSbRange));
+  DbgOut(' Vbar=',IntToStr(VSbVisible));
+  DebugLn(' HSb=',IntToStr(HsbVisible));
+  DbgOut('ClientWidth=', IntToStr(FGCAche.ClientWidth));
+  DebugLn(' ClientHeight=', IntToStr(FGCache.ClientHeight));
   {$endif}
 
   //FGCache.ClientWidth:= Width - DV;
@@ -1252,7 +1261,7 @@ begin
   FGCache.ScrollHeight:=FGCache.ClientHeight-FGCache.FixedHeight;
 
   FGCache.MaxTopLeft:=CalcMaxTopLeft;
-  {$Ifdef DbgScroll}
+  {$Ifdef DbgVisualChange}
   DebugPoint('MaxTopLeft',FGCache.MaxTopLeft);
   {$Endif}
   FGCache.HScrDiv:=0;
@@ -1316,7 +1325,7 @@ var
 begin
   if HandleAllocated then begin
     {$Ifdef DbgScroll}
-    DebugLn('ScrollbarRange: Which=',Which,' Range=',aRange);
+    DebugLn('ScrollbarRange: Which=',IntToStr(Which),' Range=',IntToStr(aRange));
     {$endif}
     ScrollInfo.cbSize := SizeOf(ScrollInfo);
     ScrollInfo.fMask := SIF_RANGE or SIF_PAGE or SIF_DISABLENOSCROLL;
@@ -1340,7 +1349,7 @@ var
 begin
   if HandleAllocated then begin
     {$Ifdef DbgScroll}
-    DebugLn('ScrollbarPosition: Which=',Which, ' Value= ',Value);
+    DebugLn('ScrollbarPosition: Which=',IntToStr(Which), ' Value= ',IntToStr(Value));
     {$endif}
     if Which = SB_VERT then Vis := FVSbVisible else
     if Which = SB_HORZ then Vis := FHSbVisible
@@ -1376,7 +1385,7 @@ procedure TCustomGrid.ScrollBarShow(Which: Integer; aValue: boolean);
 begin
   if HandleAllocated then begin
     {$Ifdef DbgScroll}
-    DebugLn('ScrollbarShow: Which=',Which, ' Avalue=',AValue);
+    DebugLn('ScrollbarShow: Which=',IntToStr(Which), ' Avalue=',BoolToStr(AValue));
     {$endif}
     ShowScrollBar(Handle,Which,aValue);
     if Which in [SB_BOTH, SB_VERT] then FVSbVisible := AValue else
@@ -1961,7 +1970,7 @@ begin
   }
 
   {$IfDef dbgScroll}
-  DebugLn('HSCROLL: Code=',message.ScrollCode,' Position=', message.Pos);
+  DebugLn('HSCROLL: Code=',IntToStr(message.ScrollCode),' Position=', IntToStr(message.Pos));
   {$Endif}
 
 
@@ -1978,16 +1987,16 @@ begin
     end;
   end else begin
 
-    TL:=  Integer(FGCache.AccumWidth[ FGCache.MaxTopLeft.X ]);
-    CTL:= Integer(FGCache.AccumWidth[ FtopLeft.X ]);
+    TL:=  Integer(FGCache.AccumWidth[ FGCache.MaxTopLeft.X ]) - FGCAche.FixedWidth;
+    CTL:= Integer(FGCache.AccumWidth[ FtopLeft.X ]) - FGCache.FixedWidth;
 
     case message.ScrollCode of
         // Scrolls to start / end of the text
       SB_TOP:        C := 0;
       SB_BOTTOM:     C := TL;
         // Scrolls one line up / down
-      SB_LINEDOWN:   C := CTL + FDefColWidth;
-      SB_LINEUP:     C := CTL - FDefColWidth;
+      SB_LINEDOWN:   C := CTL + GetColWidths( FTopLeft.X );
+      SB_LINEUP:     C := CTL - GetColWidths( FTopLeft.X - 1);
         // Scrolls one page of lines up / down
       SB_PAGEDOWN:   C := CTL + FGCache.ClientWidth;
       SB_PAGEUP:     C := CTL - FGCache.ClientWidth;
@@ -1997,18 +2006,22 @@ begin
         // Ends scrolling
       SB_ENDSCROLL: Exit;
     end;
+    
+    if C > TL then C := TL else
+    if C < 0 then C := 0;
+    
 
     {$Ifdef dbgScroll}
-    DebugLn('---- Position=',C, ' FixedWidth=',FGCache.FixedWidth);
+    DebugLn('---- Position=',IntToStr(C), ' FixedWidth=',IntToStr(FGCache.FixedWidth));
     {$Endif}
     ScrollBarPosition(SB_HORZ, C);
     C:= C + FGCache.FixedWidth + Integer(BorderStyle);
     {$Ifdef dbgScroll}
-    DebugLn('---- Position=',C, ' FixedWidth=',FGCache.FixedWidth);
+    DebugLn('---- Position=',IntToStr(C), ' FixedWidth=',IntToStr(FGCache.FixedWidth));
     {$Endif}
     TL:=OffsetToColRow(True, False, C, FGCache.TLColOff);
     {$Ifdef dbgScroll}
-    DebugLn('---- Offset=',C, ' TL=',TL,' TLColOFf=', FGCache.TLColOff);
+    DebugLn('---- Offset=',IntToStr(C), ' TL=',IntToStr(TL),' TLColOFf=', IntToStr(FGCache.TLColOff));
     {$Endif}
     if not (goSmoothScroll in Options) then FGCache.TLColOff:=0;
 
@@ -2042,7 +2055,7 @@ begin
   EndUpdate(uoNone);
   }
   {$IfDef dbgScroll}
-  DebugLn('VSCROLL: Code=',message.ScrollCode,' Position=', message.Pos);
+  DebugLn('VSCROLL: Code=',IntToStr(message.ScrollCode),' Position=', IntToStr(message.Pos));
   {$Endif}
 
   if FGCache.VScrDiv<=0 then Exit;
@@ -2056,16 +2069,16 @@ begin
     end;
   end else begin
 
-    TL:=  Integer(FGCache.AccumHeight[ FGCache.MaxTopLeft.Y ]);
-    CTL:= Integer(FGCache.AccumHeight[ FtopLeft.Y ]);
+    TL:=  Integer(FGCache.AccumHeight[ FGCache.MaxTopLeft.Y ]) - FGCache.FixedHeight;
+    CTL:= Integer(FGCache.AccumHeight[ FtopLeft.Y ]) - FGCache.FixedHeight;
 
     case message.ScrollCode of
         // Scrolls to start / end of the text
       SB_TOP:        C := 0;
       SB_BOTTOM:     C := TL;
         // Scrolls one line up / down
-      SB_LINEDOWN:   C := CTL + FDefRowHeight;
-      SB_LINEUP:     C := CTL - FDefRowHeight;
+      SB_LINEDOWN:   C := CTL + GetRowHeights( FTopleft.Y );
+      SB_LINEUP:     C := CTL - GetRowHeights( FTopleft.Y - 1 );
         // Scrolls one page of lines up / down
       SB_PAGEDOWN:   C := CTL + FGCache.ClientHeight;
       SB_PAGEUP:     C := CTL - FGCache.ClientHeight;
@@ -2075,18 +2088,21 @@ begin
         // Ends scrolling
       SB_ENDSCROLL: Exit;
     end;
+    
+    if C > Tl then C := TL else
+    if C < 0 then C := 0;
 
     {$Ifdef dbgScroll}
-    DebugLn('---- Position=',C, ' FixedHeight=',FGCache.FixedHeight);
+    DebugLn('---- Position=',IntToStr(C), ' FixedHeight=',IntToStr(FGCache.FixedHeight));
     {$Endif}
     ScrollBarPosition(SB_VERT, C);
     C:= C + FGCache.FixedHeight + Integer(BorderStyle);
     {$Ifdef dbgScroll}
-    DebugLn('---- NewPosition=',C);
+    DebugLn('---- NewPosition=',IntToStr(C));
     {$Endif}
     TL:=OffsetToColRow(False, False, C, FGCache.TLRowOff);
     {$Ifdef dbgScroll}
-    DebugLn('---- Offset=',C, ' TL=',TL, ' TLRowOFf=', FGCache.TLRowOff);
+    DebugLn('---- Offset=',IntToStr(C), ' TL=',IntToStr(TL), ' TLRowOFf=', IntToStr(FGCache.TLRowOff));
     {$Endif}
     if not (goSmoothScroll in Options) then FGCache.TLRowOff:=0;
 
@@ -2343,6 +2359,15 @@ end;
 function TCustomGrid.GetSelection: TGridRect;
 begin
   Result:=FRange;
+end;
+
+function TCustomGrid.GetSystemMetricsGapSize(const Index: Integer): Integer;
+begin
+  {$ifdef Win32}
+    result := 0;
+  {$else}
+    result := 3;
+  {$endif}
 end;
 
 procedure TCustomGrid.SetDefaultDrawing(const AValue: Boolean);
@@ -3716,8 +3741,8 @@ begin
   FRows:=TList.Create;
   FGCache.AccumWidth:=TList.Create;
   FGCache.AccumHeight:=TList.Create;
-  FGSMHBar := GetSystemMetrics(SM_CYHSCROLL) + 3;
-  FGSMVBar := GetSystemMetrics(SM_CXVSCROLL) + 3;
+  FGSMHBar := GetSystemMetrics(SM_CYHSCROLL) + GetSystemMetricsGapSize(SM_CYHSCROLL);
+  FGSMVBar := GetSystemMetrics(SM_CXVSCROLL) + GetSystemMetricsGapSize(SM_CXVSCROLL);
   //DebugLn('FGSMHBar= ', FGSMHBar, ' FGSMVBar= ', FGSMVBar);
   inherited Create(AOwner);
   FFocusRectVisible := True;
