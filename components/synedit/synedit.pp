@@ -433,6 +433,8 @@ type
     {$IFDEF SYN_LAZARUS}
     function GetCharLen(const Line: string; CharStartPos: integer): integer;
     function AdjustBytePosToCharacterStart(Line: integer; BytePos: integer): integer;
+    function GetLogicalCaretXY: TPoint;
+    procedure SetLogicalCaretXY(const NewLogCaretXY: TPoint);
     {$ENDIF}
     function GetMaxUndo: Integer;
     function GetSelAvail: Boolean;
@@ -738,6 +740,7 @@ type
     property Color default clWhite;
     {$IFDEF SYN_LAZARUS}
     property CtrlMouseActive: boolean read fCtrlMouseActive;
+    property LogicalCaretXY: TPoint read GetLogicalCaretXY write SetLogicalCaretXY;
     {$ENDIF}
     property Font: TFont read GetFont write SetFont;
     property Highlighter: TSynCustomHighlighter
@@ -1477,6 +1480,16 @@ begin
       Result:=UTF8FindNearestCharStart(PChar(s),length(s),Result);
   end else
     Result:=1;
+end;
+
+function TCustomSynEdit.GetLogicalCaretXY: TPoint;
+begin
+  Result:=PhysicalToLogicalPos(CaretXY);
+end;
+
+procedure TCustomSynEdit.SetLogicalCaretXY(const NewLogCaretXY: TPoint);
+begin
+  CaretXY:=LogicalToPhysicalPos(NewLogCaretXY);
 end;
 {$ENDIF}
 

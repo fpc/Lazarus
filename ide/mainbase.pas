@@ -469,6 +469,7 @@ begin
     CreateMenuItem(ParentMI,itmSearchFindNext,'itmSearchFindNext',lisMenuFindNext);
     CreateMenuItem(ParentMI,itmSearchFindPrevious,'itmSearchFindPrevious',lisMenuFindPrevious);
     CreateMenuItem(ParentMI,itmSearchFindInFiles,'itmSearchFindInFiles',lisMenuFindInFiles);
+    CreateMenuItem(ParentMI,itmSearchFindIdentifierRefs,'itmSearchFindIdentifierRefs',lisMenuFindIdentifierRefs);
     CreateMenuItem(ParentMI,itmSearchReplace,'itmSearchReplace',lisMenuReplace);
     CreateMenuItem(ParentMI,itmIncrementalFind,'itmIncrementalFind',lisMenuIncrementalFind);
 
@@ -759,6 +760,7 @@ begin
     itmSearchFindNext.ShortCut:=CommandToShortCut(ecFindNext);
     itmSearchFindPrevious.ShortCut:=CommandToShortCut(ecFindPrevious);
     itmSearchFindInFiles.ShortCut:=CommandToShortCut(ecFindInFiles);
+    itmSearchFindIdentifierRefs.ShortCut:=CommandToShortCut(ecFindIdentifierRefs);
     itmSearchReplace.ShortCut:=CommandToShortCut(ecReplace);
     itmIncrementalFind.ShortCut:=CommandToShortCut(ecIncrementalFind);
     itmGotoLine.ShortCut:=CommandToShortCut(ecGotoLineNumber);

@@ -101,6 +101,7 @@ uses
   MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory, ProcessList,
   InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList, DialogProcs,
   FindReplaceDialog, FindInFilesDlg, CodeExplorer, BuildFileDlg, ExtractProcDlg,
+  FindRenameIdentifier,
   DelphiUnit2Laz, CleanDirDlg,
   // main ide
   MainBar, MainIntf, MainBase;
@@ -180,6 +181,7 @@ type
 
     // search menu
     procedure mnuSearchFindInFiles(Sender: TObject);
+    procedure mnuSearchFindIdentifierRefsClicked(Sender: TObject);
     procedure mnuSearchFindBlockOtherEnd(Sender: TObject);
     procedure mnuSearchFindBlockStart(Sender: TObject);
     procedure mnuSearchFindDeclaration(Sender: TObject);
@@ -680,7 +682,8 @@ type
     procedure ApplyCodeToolChanges;
     procedure DoJumpToProcedureSection;
     procedure DoFindDeclarationAtCursor;
-    procedure DoFindDeclarationAtCaret(CaretXY: TPoint);
+    procedure DoFindDeclarationAtCaret(const LogCaretXY: TPoint);
+    procedure DoFindIdentifierReferences;
     function DoInitIdentCompletion: boolean;
     procedure DoCompleteCodeAtCursor;
     procedure DoExtractProcFromSelection;
@@ -1640,6 +1643,7 @@ procedure TMainIDE.SetupSearchMenu;
 begin
   inherited SetupSearchMenu;
   with MainIDEBar do begin
+    itmSearchFindIdentifierRefs.OnClick:=@mnuSearchFindIdentifierRefsClicked;
     itmGotoIncludeDirective.OnClick:=@mnuGotoIncludeDirectiveClicked;
   end;
 end;
@@ -2058,6 +2062,9 @@ begin
 
   ecFindDeclaration:
     DoFindDeclarationAtCursor;
+
+  ecFindIdentifierRefs:
+    DoFindIdentifierReferences;
 
   ecFindBlockOtherEnd:
     DoGoToPascalBlockOtherEnd;
@@ -5229,7 +5236,8 @@ begin
   if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then exit;
 
   // parse filename at cursor
-  FName:=GetFilenameAtRowCol(ActiveSrcEdit.EditorComponent.CaretXY,
+  IsIncludeDirective:=false;
+  FName:=GetFilenameAtRowCol(ActiveSrcEdit.EditorComponent.LogicalCaretXY,
                              IsIncludeDirective);
   if FName='' then exit;
 
@@ -7584,7 +7592,7 @@ begin
   end else if MacroName='curtoken' then begin
     if (SourceNoteBook<>nil) and (SourceNoteBook.NoteBook<>nil) then
       with SourceNoteBook.GetActiveSE.EditorComponent do
-        s:=GetWordAtRowCol(CaretXY);
+        s:=GetWordAtRowCol(LogicalCaretXY);
   end else if MacroName='lazarusdir' then begin
     s:=EnvironmentOptions.LazarusDirectory;
   end else if MacroName='lclwidgettype' then begin
@@ -7712,7 +7720,7 @@ function TMainIDE.DoJumpToCompilerMessage(Index:integer;
   FocusEditor: boolean): boolean;
 var MaxMessages: integer;
   Filename, SearchedFilename: string;
-  CaretXY: TPoint;
+  LogCaretXY: TPoint;
   TopLine: integer;
   MsgType: TErrorType;
   SrcEdit: TSourceEditor;
@@ -7729,7 +7737,7 @@ begin
     while (Index<MaxMessages) do begin
       CurMsg:=MessagesView.VisibleItems[Index].Msg;
       if (TheOutputFilter.GetSourcePosition(
-        CurMsg,Filename,CaretXY,MsgType)) then
+        CurMsg,Filename,LogCaretXY,MsgType)) then
       begin
         if MsgType in [etError,etFatal,etPanic] then break;
       end;
@@ -7739,7 +7747,7 @@ begin
     MessagesView.SelectedMessageIndex:=Index;
   end;
   MessagesView.GetVisibleMessageAt(Index,CurMsg,CurDir);
-  if TheOutputFilter.GetSourcePosition(CurMsg,Filename,CaretXY,MsgType)
+  if TheOutputFilter.GetSourcePosition(CurMsg,Filename,LogCaretXY,MsgType)
   then begin
     if (not FilenameIsAbsolute(Filename)) and (CurDir<>'') then begin
       // the directory was just hidden, re-append it
@@ -7765,9 +7773,9 @@ begin
         // set caret position
         SourceNotebook.AddJumpPointClicked(Self);
         SrcEdit:=SourceNoteBook.GetActiveSE;
-        if CaretXY.Y>SrcEdit.EditorComponent.Lines.Count then
-          CaretXY.Y:=SrcEdit.EditorComponent.Lines.Count;
-        TopLine:=CaretXY.Y-(SrcEdit.EditorComponent.LinesInWindow div 2);
+        if LogCaretXY.Y>SrcEdit.EditorComponent.Lines.Count then
+          LogCaretXY.Y:=SrcEdit.EditorComponent.Lines.Count;
+        TopLine:=LogCaretXY.Y-(SrcEdit.EditorComponent.LinesInWindow div 2);
         if TopLine<1 then TopLine:=1;
         if FocusEditor then begin
           //SourceNotebook.BringToFront;
@@ -7775,14 +7783,14 @@ begin
           SourceNoteBook.ShowOnTop;
           SourceNotebook.FocusEditor;
         end;
-        SrcEdit.EditorComponent.CaretXY:=CaretXY;
+        SrcEdit.EditorComponent.LogicalCaretXY:=LogCaretXY;
         SrcEdit.EditorComponent.TopLine:=TopLine;
         with SrcEdit.EditorComponent do begin
-          BlockBegin:=CaretXY;
-          BlockEnd:=CaretXY;
-          LeftChar:=Max(CaretXY.X-CharsInWindow,1);
+          BlockBegin:=LogCaretXY;
+          BlockEnd:=LogCaretXY;
+          LeftChar:=Max(LogCaretXY.X-CharsInWindow,1);
         end;
-        SrcEdit.ErrorLine:=CaretXY.Y;
+        SrcEdit.ErrorLine:=LogCaretXY.Y;
       end;
     end else begin
       if FilenameIsAbsolute(Filename) then begin
@@ -7804,7 +7812,7 @@ var
   MaxMessages: integer;
   CurMsg: String;
   Filename: string;
-  CaretXY: TPoint;
+  LogCaretXY: TPoint;
   MsgType: TErrorType;
   OldIndex: integer;
   RoundCount: Integer;
@@ -7834,7 +7842,7 @@ begin
     // check if it is an error
     CurMsg:=MessagesView.VisibleItems[Index].Msg;
     if (TheOutputFilter.GetSourcePosition(
-      CurMsg,Filename,CaretXY,MsgType)) then
+      CurMsg,Filename,LogCaretXY,MsgType)) then
     begin
       if MsgType in [etError,etFatal,etPanic] then break;
     end;
@@ -7847,7 +7855,7 @@ function TMainIDE.DoJumpToSearchResult(FocusEditor: boolean): boolean;
 var
   AFileName: string;
   SearchedFilename: string;
-  CaretXY: TPoint;
+  LogCaretXY: TPoint;
   TopLine: integer;
   OpenFlags: TOpenFlags;
   SrcEdit: TSourceEditor;
@@ -7856,7 +7864,7 @@ begin
   if pos('(',SearchResultsView.GetSelectedText) > 0 then
   begin
     AFileName:= SearchResultsView.GetSourceFileName;
-    CaretXY:= SearchResultsView.GetSourcePositon;
+    LogCaretXY:= SearchResultsView.GetSourcePositon;
     OpenFlags:=[ofOnlyIfExists,ofRegularFile];
     if IsTestUnitFilename(AFilename) then begin
       SearchedFilename := ExtractFileName(AFilename);
@@ -7871,9 +7879,9 @@ begin
         // set caret position
         SourceNotebook.AddJumpPointClicked(Self);
         SrcEdit:=SourceNoteBook.GetActiveSE;
-        if CaretXY.Y>SrcEdit.EditorComponent.Lines.Count then
-          CaretXY.Y:=SrcEdit.EditorComponent.Lines.Count;
-        TopLine:=CaretXY.Y-(SrcEdit.EditorComponent.LinesInWindow div 2);
+        if LogCaretXY.Y>SrcEdit.EditorComponent.Lines.Count then
+          LogCaretXY.Y:=SrcEdit.EditorComponent.Lines.Count;
+        TopLine:=LogCaretXY.Y-(SrcEdit.EditorComponent.LinesInWindow div 2);
         if TopLine<1 then TopLine:=1;
         if FocusEditor then begin
           //SourceNotebook.BringToFront;
@@ -7881,14 +7889,14 @@ begin
           SourceNoteBook.ShowOnTop;
           SourceNotebook.FocusEditor;
         end;
-        SrcEdit.EditorComponent.CaretXY:=CaretXY;
+        SrcEdit.EditorComponent.LogicalCaretXY:=LogCaretXY;
         SrcEdit.EditorComponent.TopLine:=TopLine;
         with SrcEdit.EditorComponent do begin
-          BlockBegin:=CaretXY;
-          BlockEnd:=CaretXY;
-          LeftChar:= Math.Max(CaretXY.X-CharsInWindow,1);
+          BlockBegin:=LogCaretXY;
+          BlockEnd:=LogCaretXY;
+          LeftChar:= Math.Max(LogCaretXY.X-CharsInWindow,1);
         end;
-        SrcEdit.ErrorLine:=CaretXY.Y;
+        SrcEdit.ErrorLine:=LogCaretXY.Y;
       end;
     end else begin
       if FilenameIsAbsolute(AFilename) then begin
@@ -9073,9 +9081,9 @@ begin
     NewTopLine:=Max(1,NewY-(NewSrcEdit.EditorComponent.LinesInWindow div 2));
   //writeln('[TMainIDE.DoJumpToCodePos] ',NewX,',',NewY,',',NewTopLine);
   with NewSrcEdit.EditorComponent do begin
-    CaretXY:=Point(NewX,NewY);
-    BlockBegin:=CaretXY;
-    BlockEnd:=CaretXY;
+    LogicalCaretXY:=Point(NewX,NewY);
+    BlockBegin:=LogicalCaretXY;
+    BlockEnd:=BlockBegin;
     TopLine:=NewTopLine;
     LeftChar:=Max(NewX-CharsInWindow,1);
   end;
@@ -9187,9 +9195,9 @@ begin
       MessagesView.ShowOnTop;
       SourceNoteBook.ShowOnTop;
       with ActiveSrcEdit.EditorComponent do begin
-        CaretXY:=ErrorCaret;
-        BlockBegin:=CaretXY;
-        BlockEnd:=CaretXY;
+        LogicalCaretXY:=ErrorCaret;
+        BlockBegin:=ErrorCaret;
+        BlockEnd:=ErrorCaret;
         if ErrorTopLine>0 then
           TopLine:=ErrorTopLine;
       end;
@@ -9208,10 +9216,10 @@ var
 begin
   GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
   if ActiveSrcEdit=nil then exit;
-  DoFindDeclarationAtCaret(ActiveSrcEdit.EditorComponent.CaretXY);
+  DoFindDeclarationAtCaret(ActiveSrcEdit.EditorComponent.LogicalCaretXY);
 end;
 
-procedure TMainIDE.DoFindDeclarationAtCaret(CaretXY: TPoint);
+procedure TMainIDE.DoFindDeclarationAtCaret(const LogCaretXY: TPoint);
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
@@ -9225,7 +9233,7 @@ begin
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoFindDeclarationAtCaret A');{$ENDIF}
   if CodeToolBoss.FindDeclaration(ActiveUnitInfo.Source,
-    CaretXY.X,CaretXY.Y,
+    LogCaretXY.X,LogCaretXY.Y,
     NewSource,NewX,NewY,NewTopLine) then
   begin
     DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo,
@@ -9236,11 +9244,71 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoFindDeclarationAtCaret B');{$ENDIF}
 end;
 
+{-------------------------------------------------------------------------------
+  procedure TMainIDE.DoFindIdentifierReferences;
+
+-------------------------------------------------------------------------------}
+procedure TMainIDE.DoFindIdentifierReferences;
+var
+  ActiveSrcEdit, DeclarationSrcEdit: TSourceEditor;
+  ActiveUnitInfo, DeclarationUnitInfo: TUnitInfo;
+  NewSource: TCodeBuffer;
+  NewX, NewY, NewTopLine: integer;
+  LogCaretXY, DeclarationCaretXY: TPoint;
+  ListOfPCodeXYPosition: TList;
+begin
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
+  
+  // find the main declaration
+  LogCaretXY:=ActiveSrcEdit.EditorComponent.LogicalCaretXY;
+  if not CodeToolBoss.FindMainDeclaration(ActiveUnitInfo.Source,
+    LogCaretXY.X,LogCaretXY.Y,
+    NewSource,NewX,NewY,NewTopLine) then
+  begin
+    DoJumpToCodeToolBossError;
+    exit;
+  end;
+  DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo,
+    NewSource, NewX, NewY, NewTopLine, true);
+  GetCurrentUnit(DeclarationSrcEdit,DeclarationUnitInfo);
+  DeclarationCaretXY:=DeclarationSrcEdit.EditorComponent.LogicalCaretXY;
+  
+  // let user choose the search scope
+  if ShowFindRenameIdentifierDialog(DeclarationUnitInfo.Source.Filename,
+    LogCaretXY,false)<>mrOk
+  then exit;
+  
+  ListOfPCodeXYPosition:=nil;
+  try
+    // search
+    if not CodeToolBoss.FindReferences(
+      DeclarationUnitInfo.Source,DeclarationCaretXY.X,DeclarationCaretXY.Y,
+      ActiveUnitInfo.Source,
+      not MiscellaneousOptions.FindRenameIdentifierOptions.SearchInComments,
+      ListOfPCodeXYPosition) then
+    begin
+      DoJumpToCodeToolBossError;
+      exit;
+    end;
+    
+    // show result
+    CreateSearchResultWindow;
+    ShowReferences(DeclarationUnitInfo.Source,DeclarationCaretXY,
+                   ActiveUnitInfo.Source,ListOfPCodeXYPosition);
+
+  finally
+    CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  function TMainIDE.DoInitIdentCompletion: boolean;
+-------------------------------------------------------------------------------}
 function TMainIDE.DoInitIdentCompletion: boolean;
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
-  CaretXY: TPoint;
+  LogCaretXY: TPoint;
 begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   {$IFDEF IDE_DEBUG}
@@ -9248,9 +9316,9 @@ begin
   writeln('[TMainIDE.DoInitIdentCompletion] ************');
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoInitIdentCompletion A');{$ENDIF}
-  CaretXY:=ActiveSrcEdit.EditorComponent.CaretXY;
+  LogCaretXY:=ActiveSrcEdit.EditorComponent.LogicalCaretXY;
   Result:=CodeToolBoss.GatherIdentifiers(ActiveUnitInfo.Source,
-                                         CaretXY.X,CaretXY.Y);
+                                         LogCaretXY.X,LogCaretXY.Y);
   if not Result then begin
     DoJumpToCodeToolBossError;
     exit;
@@ -9413,7 +9481,7 @@ begin
     {$ENDIF}
     // calculate start and end of expression in source
     CursorCode:=ActiveUnitInfo.Source;
-    CursorXY:=ActiveSrcEdit.EditorComponent.CaretXY;
+    CursorXY:=ActiveSrcEdit.EditorComponent.LogicalCaretXY;
     if CodeToolBoss.GetStringConstBounds(
       CursorCode,CursorXY.X,CursorXY.Y,
       StartCode,StartPos.X,StartPos.Y,
@@ -9928,7 +9996,8 @@ begin
     GetCurrentUnit(ASrcEdit,AnUnitInfo);
     if (ASrcEdit<>nil) and (AnUnitInfo<>nil) then begin
       CursorPoint:=TProjectJumpHistoryPosition.Create(AnUnitInfo.Filename,
-        ASrcEdit.EditorComponent.CaretXY,ASrcEdit.EditorComponent.TopLine);
+        ASrcEdit.EditorComponent.LogicalCaretXY,
+        ASrcEdit.EditorComponent.TopLine);
       {$IFDEF VerboseJumpHistory}
       writeln('  Current Position: ',CursorPoint.Filename,
               ' ',CursorPoint.CaretXY.X,',',CursorPoint.CaretXY.Y);
@@ -10553,6 +10622,11 @@ begin
   DoFindInFiles;
 end;
 
+procedure TMainIDE.mnuSearchFindIdentifierRefsClicked(Sender: TObject);
+begin
+  DoFindIdentifierReferences;
+end;
+
 procedure TMainIDE.mnuEditCompleteCodeClicked(Sender: TObject);
 begin
   DoCompleteCodeAtCursor;
@@ -10708,6 +10782,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.773  2004/09/18 01:02:23  mattias
+  started new feature: find identifier references
+
   Revision 1.772  2004/09/17 20:04:34  vincents
   replaced writeln by DebugLn
 

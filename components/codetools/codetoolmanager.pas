@@ -234,6 +234,9 @@ type
     procedure GetFPCVersionForDirectory(const Directory: string;
                                  var FPCVersion, FPCRelease, FPCPatch: integer);
 
+    // data function
+    procedure FreeListOfPCodeXYPosition(var List: TList);
+
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     
     // code exploring
@@ -282,11 +285,19 @@ type
           var NewX, NewY, NewTopLine: integer): boolean;
     function FindDeclarationsAndAncestors(Code: TCodeBuffer; X,Y: integer;
           var ListOfPCodeXYPosition: TList): boolean;
-    
+    function FindMainDeclaration(Code: TCodeBuffer; X,Y: integer;
+          var NewCode: TCodeBuffer;
+          var NewX, NewY, NewTopLine: integer): boolean;
+
     // gather identifiers (i.e. all visible)
     function GatherIdentifiers(Code: TCodeBuffer; X,Y: integer): boolean;
     function GetIdentifierAt(Code: TCodeBuffer; X,Y: integer;
           var Identifier: string): boolean;
+
+    // rename identifier
+    function FindReferences(IdentifierCode: TCodeBuffer;
+          X, Y: integer; TargetCode: TCodeBuffer; SkipComments: boolean;
+          var ListOfPCodeXYPosition: TList): boolean;
 
     // resourcestring sections
     function GatherResourceStringSections(
@@ -975,6 +986,19 @@ begin
   end;
 end;
 
+procedure TCodeToolManager.FreeListOfPCodeXYPosition(var List: TList);
+var
+  i: Integer;
+begin
+  if List<>nil then begin
+    for i:=0 to List.Count-1 do begin
+      Dispose(PCodeXYPosition(List[i]));
+    end;
+    List.Free;
+    List:=nil;
+  end;
+end;
+
 function TCodeToolManager.Explore(Code: TCodeBuffer;
   var ACodeTool: TCodeTool; WithStatements: boolean): boolean;
 begin
@@ -1273,6 +1297,35 @@ begin
   {$ENDIF}
 end;
 
+function TCodeToolManager.FindMainDeclaration(Code: TCodeBuffer; X, Y: integer;
+  var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer): boolean;
+var
+  CursorPos: TCodeXYPosition;
+  NewPos: TCodeXYPosition;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindMainDeclaration A ',Code.Filename,' x=',dbgs(x),' y=',dbgs(y));
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+  try
+    Result:=FCurCodeTool.FindMainDeclaration(CursorPos,NewPos,NewTopLine);
+    if Result then begin
+      NewX:=NewPos.X;
+      NewY:=NewPos.Y;
+      NewCode:=NewPos.Code;
+    end;
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindMainDeclaration END ');
+  {$ENDIF}
+end;
+
 function TCodeToolManager.GatherIdentifiers(Code: TCodeBuffer; X, Y: integer
   ): boolean;
 var
@@ -1317,6 +1370,39 @@ begin
     Identifier:='';
     Result:=false;
   end;
+end;
+
+function TCodeToolManager.FindReferences(IdentifierCode: TCodeBuffer;
+  X, Y: integer; TargetCode: TCodeBuffer; SkipComments: boolean;
+  var ListOfPCodeXYPosition: TList): boolean;
+var
+  CursorPos: TCodeXYPosition;
+  NewCode: TCodeBuffer;
+  NewX, NewY, NewTopLine: integer;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindReferences A ',IdentifierCode.Filename,' x=',dbgs(x),' y=',dbgs(y));
+  {$ENDIF}
+  ListOfPCodeXYPosition:=nil;
+  if not FindMainDeclaration(IdentifierCode,X,Y,NewCode,NewX,NewY,NewTopLine)
+  then exit;
+  if not InitCurCodeTool(TargetCode) then exit;
+  CursorPos.X:=NewX;
+  CursorPos.Y:=NewY;
+  CursorPos.Code:=NewCode;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindReferences B ',dbgs(FCurCodeTool.Scanner<>nil));
+  {$ENDIF}
+  try
+    Result:=FCurCodeTool.FindReferences(CursorPos,SkipComments,
+                                        ListOfPCodeXYPosition);
+  except
+    on e: Exception do HandleException(e);
+  end;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindReferences END ');
+  {$ENDIF}
 end;
 
 function TCodeToolManager.GatherResourceStringSections(Code: TCodeBuffer;

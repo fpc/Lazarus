@@ -42,7 +42,6 @@ uses
   IDEOptionDefs, LazarusIDEStrConsts, EnvironmentOpts, InputHistory,
   FindInFilesDlg, Project, MainIntf;
 
-
 type
   { TLazSearchMatchPos }
   

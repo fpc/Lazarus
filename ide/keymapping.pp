@@ -124,6 +124,7 @@ const
   ecMakeResourceString   = ecUserFirst + 110;
   ecDiff                 = ecUserFirst + 111;
   ecExtractProc          = ecUserFirst + 112;
+  ecFindIdentifierRefs   = ecUserFirst + 113;
 
   // file menu
   ecNew                  = ecUserFirst + 201;
@@ -567,6 +568,7 @@ begin
   ecCompleteCode: SetResult(VK_C,[ssCtrl,ssShift],VK_UNKNOWN,[]);
   ecIdentCompletion: SetResult(VK_SPACE,[ssCtrl],VK_UNKNOWN,[]);
   ecExtractProc: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecFindIdentifierRefs: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecSyntaxCheck: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGuessUnclosedBlock: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGuessMisplacedIFDEF: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1172,6 +1174,7 @@ begin
     ecCompleteCode          : Result:= srkmecCompleteCode;
     ecIdentCompletion       : Result:= dlgedidcomlet;
     ecExtractProc           : Result:= srkmecExtractProc;
+    ecFindIdentifierRefs    : Result:= srkmecFindIdentifierRefs;
     ecSyntaxCheck           : Result:= srkmecSyntaxCheck;
     ecGuessUnclosedBlock    : Result:= lismenuguessunclosedblock;
     ecGuessMisplacedIFDEF   : Result:= srkmecGuessMisplacedIFDEF;
@@ -1982,6 +1985,7 @@ begin
   AddDefault(C,'Complete code',ecCompleteCode);
   AddDefault(C,'Identifier completion',ecIdentCompletion);
   AddDefault(C,'Extract proc',ecExtractProc);
+  AddDefault(C,'Find identifier references',ecFindIdentifierRefs);
   AddDefault(C,'Syntax check',ecSyntaxCheck);
   AddDefault(C,'Guess unclosed block',ecGuessUnclosedBlock);
   AddDefault(C,'Guess misplaced $IFDEF',ecGuessMisplacedIFDEF);

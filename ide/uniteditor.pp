@@ -341,6 +341,7 @@ type
     OpenFileAtCursorMenuItem: TMenuItem;
     ReadOnlyMenuItem: TMenuItem;
     RefactorMenuItem: TMenuItem;
+    FindIdentifierReferencesMenuItem: TMenuItem;
     RunToCursorMenuItem: TMenuItem;
     SetBookmarkMenuItem: TMenuItem;
     ShowLineNumbersMenuItem: TMenuItem;
@@ -353,6 +354,7 @@ type
     Procedure DeleteBreakpointClicked(Sender: TObject);
     procedure EncloseSelectionMenuItemClick(Sender: TObject);
     procedure ExtractProcMenuItemClick(Sender: TObject);
+    procedure FindIdentifierReferencesMenuItemClick(Sender: TObject);
     procedure RunToClicked(Sender: TObject);
     procedure ViewCallStackClick(Sender: TObject);
     Procedure AddWatchAtCursor(Sender: TObject);
@@ -714,7 +716,7 @@ Var
   TopLine: integer;
 Begin
   TSourceNotebook(Owner).AddJumpPointClicked(Self);
-  P.X := 0;
+  P.X := 1;
   P.Y := Value;
   TopLine := P.Y - (FEditor.LinesInWindow div 2);
   if TopLine < 1 then TopLine:=1;
@@ -782,7 +784,7 @@ begin
       if SelAvail and (BlockBegin.Y = BlockEnd.Y) then
         FindReplaceDlg.FindText := SelText
       else
-        FindReplaceDlg.FindText := GetWordAtRowCol(CaretXY);
+        FindReplaceDlg.FindText := GetWordAtRowCol(LogicalCaretXY);
     end else begin
       FindReplaceDlg.FindText:='';
     end;
@@ -837,9 +839,9 @@ begin
   OldCaretXY:=EditorComponent.CaretXY;
   if EditorComponent.SelAvail then begin
     if ssoBackwards in FindReplaceDlg.Options then
-      EditorComponent.CaretXY:=EditorComponent.BlockBegin
+      EditorComponent.LogicalCaretXY:=EditorComponent.BlockBegin
     else
-      EditorComponent.CaretXY:=EditorComponent.BlockEnd
+      EditorComponent.LogicalCaretXY:=EditorComponent.BlockEnd
   end;
   try
     EditorComponent.SearchReplace(
@@ -990,7 +992,7 @@ Begin
     if not TCustomSynEdit(Sender).ReadOnly then begin
       CurrentCompletionType:=ctIdentCompletion;
       TextS := FEditor.LineText;
-      LogCaret:=FEditor.PhysicalToLogicalPos(FEditor.CaretXY);
+      LogCaret:=FEditor.LogicalCaretXY;
       i := LogCaret.X - 1;
       if i > length(TextS) then
         TextS2 := ''
@@ -1010,7 +1012,7 @@ Begin
     if not TCustomSynEdit(Sender).ReadOnly then begin
       CurrentCompletionType:=ctWordCompletion;
       TextS := FEditor.LineText;
-      LogCaret:=FEditor.PhysicalToLogicalPos(FEditor.CaretXY);
+      LogCaret:=FEditor.LogicalCaretXY;
       i := LogCaret.X - 1;
       if i > length(TextS) then
         TextS2 := ''
@@ -1293,8 +1295,8 @@ begin
   FEditor.BeginUpdate;
   FEditor.BeginUndoBlock;
   if not EditorComponent.SelAvail then begin
-    P := FEditor.CaretXY;
-    P.X := 0;
+    P.Y := FEditor.CaretY;
+    P.X := 1;
     FEditor.BlockBegin := P;
     Inc(P.Y);
     FEditor.BlockEnd := P;
@@ -1429,7 +1431,7 @@ end;
 procedure TSourceEditor.FindHelpForSourceAtCursor;
 begin
   DebugLn('TSourceEditor.FindHelpForSourceAtCursor A');
-  ShowHelpOrErrorForSourcePosition(Filename,FEditor.CaretXY);
+  ShowHelpOrErrorForSourcePosition(Filename,FEditor.LogicalCaretXY);
 end;
 
 procedure TSourceEditor.OnGutterClick(Sender: TObject; X, Y, Line: integer;
@@ -1624,42 +1626,42 @@ end;
 procedure TSourceEditor.OnCodeBufferChanged(Sender: TSourceLog;
   SrcLogEntry: TSourceLogEntry);
 
-  procedure InsertTxt(StartPos: TPoint; const Txt: string);
+  procedure InsertTxt(const StartPos: TPoint; const Txt: string);
   begin
-    FEditor.CaretXY:=StartPos;
+    FEditor.LogicalCaretXY:=StartPos;
     FEditor.BlockBegin:=StartPos;
     FEditor.BlockEnd:=StartPos;
     FEditor.SelText:=Txt;
   end;
 
-  procedure DeleteTxt(StartPos, EndPos: TPoint);
+  procedure DeleteTxt(const StartPos, EndPos: TPoint);
   begin
-    FEditor.CaretXY:=StartPos;
+    FEditor.LogicalCaretXY:=StartPos;
     FEditor.BlockBegin:=StartPos;
     FEditor.BlockEnd:=EndPos;
     FEditor.SelText:='';
   end;
 
-  procedure MoveTxt(StartPos, EndPos, MoveToPos: TPoint;
+  procedure MoveTxt(const StartPos, EndPos, MoveToPos: TPoint;
     DirectionForward: boolean);
   var Txt: string;
   begin
-    FEditor.CaretXY:=StartPos;
+    FEditor.LogicalCaretXY:=StartPos;
     FEditor.BlockBegin:=StartPos;
     FEditor.BlockEnd:=EndPos;
     Txt:=FEditor.SelText;
     if DirectionForward then begin
-      FEditor.CaretXY:=MoveToPos;
+      FEditor.LogicalCaretXY:=MoveToPos;
       FEditor.BlockBegin:=MoveToPos;
       FEditor.BlockEnd:=MoveToPos;
       FEditor.SelText:=Txt;
-      FEditor.CaretXY:=StartPos;
+      FEditor.LogicalCaretXY:=StartPos;
       FEditor.BlockBegin:=StartPos;
       FEditor.BlockEnd:=EndPos;
       FEditor.SelText:='';
     end else begin
       FEditor.SelText:='';
-      FEditor.CaretXY:=MoveToPos;
+      FEditor.LogicalCaretXY:=MoveToPos;
       FEditor.BlockBegin:=MoveToPos;
       FEditor.BlockEnd:=MoveToPos;
       FEditor.SelText:=Txt;
@@ -1820,8 +1822,8 @@ var
 begin
   if ReadOnly then exit;
   if not FEditor.SelAvail then begin
-    FEditor.BlockBegin:=FEditor.CaretXY;
-    FEditor.BlockEnd:=FEditor.CaretXY;
+    FEditor.BlockBegin:=FEditor.LogicalCaretXY;
+    FEditor.BlockEnd:=FEditor.BlockBegin;
   end;
   if ShowEncloseSelectionDialog(EncloseType)<>mrOk then exit;
   GetEncloseSelectionParams(EncloseType,EncloseTemplate);
@@ -1832,7 +1834,7 @@ begin
   //writeln('TSourceEditor.EncloseSelection A NewCaretXY=',NewCaretXY.X,',',NewCaretXY.Y,
   //  ' "',NewSelection,'"');
   FEditor.SelText:=NewSelection;
-  FEditor.CaretXY:=NewCaretXY;
+  FEditor.LogicalCaretXY:=NewCaretXY;
 end;
 
 Function TSourceEditor.GetModified: Boolean;
@@ -2381,7 +2383,7 @@ begin
   if NewPrefix<>OldPrefix then begin
     AddPrefix:=copy(NewPrefix,length(OldPrefix)+1,length(NewPrefix));
     CurCompletionControl.Editor.SelText:=AddPrefix;
-    CurCompletionControl.Editor.CaretXY:=
+    CurCompletionControl.Editor.LogicalCaretXY:=
       CurCompletionControl.Editor.BlockBegin;
     SL:=TStringList.Create;
     try
@@ -2585,7 +2587,7 @@ var
   p1, p2: integer;
   ValueType: TIdentComplValue;
   SrcEdit: TSourceEditor;
-  CaretXY: TPoint;
+  NewCaretXY: TPoint;
   CursorToLeft: integer;
   NewValue: String;
 Begin
@@ -2604,10 +2606,9 @@ Begin
         SrcEdit.EditorComponent.SelText:=NewValue;
         if CursorToLeft>0 then
         begin
-          CaretXY:=SrcEdit.EditorComponent.LogicalToPhysicalPos(
-                                              SrcEdit.EditorComponent.BlockEnd);
-          dec(CaretXY.X,CursorToLeft);
-          SrcEdit.EditorComponent.CaretXY:=CaretXY;
+          NewCaretXY:=SrcEdit.EditorComponent.BlockEnd;
+          dec(NewCaretXY.X,CursorToLeft);
+          SrcEdit.EditorComponent.LogicalCaretXY:=NewCaretXY;
         end;
         ccSelection := '';
         Value:='';
@@ -2809,6 +2810,8 @@ var
   i: Integer;
   CurMark: TSourceMark;
   EditorPopupPoint: TPoint;
+  SelAvail: Boolean;
+  SelAvailAndWritable: Boolean;
 begin
   if not (Sender is TPopupMenu) then exit;
 
@@ -2851,6 +2854,12 @@ begin
   EditorPopupPoint:=EditorComp.ScreenToClient(SrcPopUpMenu.PopupPoint);
   if EditorPopupPoint.X>EditorComp.Gutter.Width then begin
     // user clicked on text
+    SelAvail:=ASrcEdit.EditorComponent.SelAvail;
+    SelAvailAndWritable:=SelAvail and (not ASrcEdit.ReadOnly);
+    EncloseSelectionMenuItem.Enabled:=SelAvailAndWritable;
+    ExtractProcMenuItem.Enabled:=SelAvailAndWritable;
+    FindIdentifierReferencesMenuItem.Enabled:=
+                                   IsValidIdent(ASrcEdit.GetWordAtCurrentCaret);
 
   end else begin
     // user clicked on gutter
@@ -3099,6 +3108,14 @@ Begin
         OnClick :=@ExtractProcMenuItemClick;
       end;
       RefactorMenuItem.Add(ExtractProcMenuItem);
+
+      FindIdentifierReferencesMenuItem := TMenuItem.Create(Self);
+      with FindIdentifierReferencesMenuItem do begin
+        Name := 'FindIdentifierReferencesMenuItem';
+        Caption := uemFindIdentifierReferences;
+        OnClick :=@FindIdentifierReferencesMenuItemClick;
+      end;
+      RefactorMenuItem.Add(FindIdentifierReferencesMenuItem);
 
   SrcPopupMenu.Items.Add(Seperator);
 
@@ -3456,7 +3473,7 @@ begin
   TempEditor:=GetActiveSE;
   if TempEditor = nil then exit;
   Include(States,snIncrementalFind);
-  fIncrementalSearchStartPos:=TempEditor.EditorComponent.CaretXY;
+  fIncrementalSearchStartPos:=TempEditor.EditorComponent.LogicalCaretXY;
   IncrementalSearchStr:='';
   UpdateStatusBar;
 end;
@@ -3556,7 +3573,7 @@ begin
   finally
     FreeAndNil(SearchForm);
   end;
-end;//FIFSearchDir;
+end;
 
 Procedure TSourceNoteBook.DoFindInFiles(ASearchForm: TSearchForm);
 var
@@ -3581,12 +3598,12 @@ begin
       on E: ERegExpr do
         MessageDlg(lisUEErrorInRegularExpression, E.Message,mtError,
                    [mbCancel],0);
-    end;//except
+    end;
   finally
     SearchResultsView.EndUpdate(ListIndex);
     SearchResultsView.ShowOnTop;
-  end;//finally
-end;//DoFindInFiles
+  end;
+end;
 
 procedure TSourceNoteBook.FIFSearchOpenFiles(ADialog: TLazFindInFilesDialog);
 var
@@ -3643,7 +3660,7 @@ Begin
     then begin
       if SelAvail and (BlockBegin.Y = BlockEnd.Y) 
       then FindText := SelText
-      else FindText := GetWordAtRowCol(CaretXY);
+      else FindText := GetWordAtRowCol(LogicalCaretXY);
     end 
   end;
   
@@ -3702,9 +3719,9 @@ begin
       NoteBook.PageIndex:=NewPageIndex;
       with SrcEdit.EditorComponent do begin
         TopLine:=NewTopLine;
-        CaretXY:=NewCaretXY;
-        BlockBegin:=CaretXY;
-        BlockEnd:=CaretXY;
+        LogicalCaretXY:=NewCaretXY;
+        BlockBegin:=NewCaretXY;
+        BlockEnd:=NewCaretXY;
       end;
     end;
   end;
@@ -3726,7 +3743,7 @@ begin
   if Assigned(OnAddJumpPoint) then begin
     SrcEdit:=GetActiveSE;
     if SrcEdit<>nil then begin
-      OnAddJumpPoint(SrcEdit.EditorComponent.CaretXY,
+      OnAddJumpPoint(SrcEdit.EditorComponent.LogicalCaretXY,
         SrcEdit.EditorComponent.TopLine, Notebook.PageIndex, true);
     end;
   end;
@@ -3914,6 +3931,12 @@ end;
 procedure TSourceNotebook.ExtractProcMenuItemClick(Sender: TObject);
 begin
   MainIDEInterface.DoCommand(ecExtractProc);
+end;
+
+procedure TSourceNotebook.FindIdentifierReferencesMenuItemClick(Sender: TObject
+  );
+begin
+  MainIDEInterface.DoCommand(ecFindIdentifierRefs);
 end;
 
 procedure TSourceNotebook.RunToClicked(Sender: TObject);
@@ -4528,14 +4551,14 @@ begin
     // search string
     CurEdit:=GetActiveSE.EditorComponent;
     CurEdit.BeginUpdate;
-    CurEdit.CaretXY:=fIncrementalSearchStartPos;
+    CurEdit.LogicalCaretXY:=fIncrementalSearchStartPos;
     if fIncrementalSearchStr<>'' then begin
       CurEdit.SearchReplace(fIncrementalSearchStr,'',[]);
-      CurEdit.CaretXY:=CurEdit.BlockEnd;
+      CurEdit.LogicalCaretXY:=CurEdit.BlockEnd;
       FIncrementalSearchStr:=CurEdit.SelText;
     end else begin
-      CurEdit.BlockBegin:=CurEdit.CaretXY;
-      CurEdit.BlockEnd:=CurEdit.CaretXY;
+      CurEdit.BlockBegin:=CurEdit.LogicalCaretXY;
+      CurEdit.BlockEnd:=CurEdit.BlockBegin;
     end;
     CurEdit.EndUpdate;
   end;

@@ -147,6 +147,7 @@ resourcestring
   lisMenuInsertGeneral = 'General';
   lisMenuCompleteCode = 'Complete Code';
   lisMenuExtractProc = 'Extract procedure';
+  lisMenuFindIdentifierRefs = 'Find Identifier References';
 
   lisMenuInsertGPLNotice = 'GPL notice';
   lisMenuInsertLGPLNotice = 'LGPL notice';
@@ -749,14 +750,15 @@ resourcestring
   dlgBlockIndent = 'Block indent:';
   dlgUndoLimit = 'Undo limit:';
   dlgTabWidths = 'Tab widths:';
-  dlgMarginGutter = 'Margin and gutter';//What is gutter?
+  dlgMarginGutter = 'Margin and gutter';
   dlgVisibleRightMargin = 'Visible right margin';
-  dlgVisibleGutter = 'Visible gutter';//I know only about fish guts... :( :)
-  dlgShowLineNumbers = 'Show compiling line numbers';
+  dlgVisibleGutter = 'Visible gutter';
+  dlgShowLineNumbers = 'Show line numbers';
+  dlgShowCompilingLineNumbers = 'Show line numbers';
   dlgRightMargin = 'Right margin';
   dlgRightMarginColor = 'Right margin color';
-  dlgGutterWidth = 'Gutter width';// as I am food technology bachelor
-  dlgGutterColor = 'Gutter color';// and fish technology engineer :) - VVI
+  dlgGutterWidth = 'Gutter width';
+  dlgGutterColor = 'Gutter color';
   dlgEditorFont = 'Editor font';
   dlgDefaultEditorFont='Default editor font';
   dlgEditorFontHeight = 'Editor font height';
@@ -1060,6 +1062,7 @@ resourcestring
   uemCompleteCode = 'Complete Code';
   uemEncloseSelection = 'Enclose Selection';
   uemExtractProc = 'Extract Procedure';
+  uemFindIdentifierReferences = 'Find Identifier References';
   uemEditorproperties='Editor properties';
   ueNotImplCap='Not implemented yet';
   ueNotImplText='If You can help us to implement this feature, mail to '
@@ -1259,6 +1262,7 @@ resourcestring
   srkmecWordCompletion            = 'Word completion';
   srkmecCompletecode              = 'Complete code';
   srkmecExtractProc               = 'Extract procedure';
+  srkmecFindIdentifierRefs        = 'FInd identifier references';
   srkmecSyntaxCheck               = 'Syntax check';
   srkmecGuessMisplacedIFDEF       = 'Guess misplaced $IFDEF';
   srkmecFindDeclaration           = 'Find declaration';

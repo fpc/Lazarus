@@ -210,6 +210,10 @@ type
     procedure BuildSubTreeForProcHead(ProcNode: TCodeTreeNode;
         var FunctionResult: TCodeTreeNode);
     procedure BuildSubTree(CleanCursorPos: integer); virtual;
+    procedure BuildSubTree(ANode: TCodeTreeNode); virtual;
+    function NodeNeedsBuildSubTree(ANode: TCodeTreeNode): boolean; virtual;
+    function BuildSubTreeAndFindDeepestNodeAtPos(StartNode: TCodeTreeNode;
+      P: integer; ExceptionOnNotFound: boolean): TCodeTreeNode;
 
     function DoAtom: boolean; override;
 
@@ -631,20 +635,20 @@ procedure TPascalParserTool.BuildSubTreeForBeginBlock(BeginNode: TCodeTreeNode);
 
 var MaxPos, OldPhase: integer;
 begin
+  if BeginNode=nil then
+    SaveRaiseException(
+       'TPascalParserTool.BuildSubTreeForBeginBlock: BeginNode=nil');
+  if BeginNode.Desc<>ctnBeginBlock then
+    SaveRaiseException(
+       'TPascalParserTool.BuildSubTreeForBeginBlock: BeginNode.Desc='
+       +BeginNode.DescAsString);
+  if (BeginNode.FirstChild<>nil)
+  or ((BeginNode.SubDesc and ctnsNeedJITParsing)=0) then
+    // block already parsed
+    exit;
   OldPhase:=CurrentPhase;
   CurrentPhase:=CodeToolPhaseParse;
   try
-    if BeginNode=nil then
-      SaveRaiseException(
-         'TPascalParserTool.BuildSubTreeForBeginBlock: BeginNode=nil');
-    if BeginNode.Desc<>ctnBeginBlock then
-      SaveRaiseException(
-         'TPascalParserTool.BuildSubTreeForBeginBlock: BeginNode.Desc='
-         +BeginNode.DescAsString);
-    if (BeginNode.FirstChild<>nil)
-    or ((BeginNode.SubDesc and ctnsNeedJITParsing)=0) then
-      // block already parsed
-      exit;
     // set CursorPos on 'begin'
     MoveCursorToNodeStart(BeginNode);
     ReadNextAtom;
@@ -2684,14 +2688,14 @@ begin
     ReadTilBracketClose(true);
     ReadNextAtom;
   end;
-  if ChildCreated and (CurNode.Desc=ctnClass) then
-    CurNode.SubDesc:=ctnsNeedJITParsing; // will not create sub nodes now
   if CurPos.Flag=cafSemicolon then begin
     if ChildCreated and (CurNode.Desc=ctnClass) then begin
       // forward class definition found
       CurNode.SubDesc:=CurNode.SubDesc+ctnsForwardDeclaration;
     end;
   end else begin
+    if ChildCreated and (CurNode.Desc=ctnClass) then
+      CurNode.SubDesc:=CurNode.SubDesc+ctnsNeedJITParsing; // will not create sub nodes now
     Level:=1;
     while (CurPos.StartPos<=SrcLen) do begin
       if CurPos.Flag=cafEND then begin
@@ -3498,15 +3502,15 @@ var HasForwardModifier, IsFunction, IsOperator, IsMethod: boolean;
   ParseAttr: TParseProcHeadAttributes;
   OldPhase: integer;
 begin
+  if ProcNode.Desc=ctnProcedureHead then ProcNode:=ProcNode.Parent;
+  if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedure)
+  or (ProcNode.FirstChild=nil) then
+    SaveRaiseException('[TPascalParserTool.BuildSubTreeForProcHead] '
+      +'internal error: invalid ProcNode');
+  if (ProcNode.FirstChild.SubDesc and ctnsNeedJITParsing)=0 then exit;
   OldPhase:=CurrentPhase;
   CurrentPhase:=CodeToolPhaseParse;
   try
-    if ProcNode.Desc=ctnProcedureHead then ProcNode:=ProcNode.Parent;
-    if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedure)
-    or (ProcNode.FirstChild=nil) then
-      SaveRaiseException('[TPascalParserTool.BuildSubTreeForProcHead] '
-        +'internal error: invalid ProcNode');
-    if (ProcNode.FirstChild.SubDesc and ctnsNeedJITParsing)=0 then exit;
     IsMethod:=ProcNode.HasParentOfType(ctnClass);
     MoveCursorToNodeStart(ProcNode);
     ReadNextAtom;
@@ -3552,10 +3556,12 @@ begin
 end;
 
 procedure TPascalParserTool.BuildSubTree(CleanCursorPos: integer);
-var
-  ANode: TCodeTreeNode;
 begin
-  ANode:=FindDeepestNodeAtPos(CleanCursorPos,false);
+  BuildSubTree(FindDeepestNodeAtPos(CleanCursorPos,false));
+end;
+
+procedure TPascalParserTool.BuildSubTree(ANode: TCodeTreeNode);
+begin
   if ANode=nil then exit;
   case ANode.Desc of
   ctnClass,ctnClassInterface:
@@ -3564,6 +3570,29 @@ begin
     BuildSubTreeForProcHead(ANode);
   ctnBeginBlock:
     BuildSubTreeForBeginBlock(ANode);
+  end;
+end;
+
+function TPascalParserTool.NodeNeedsBuildSubTree(ANode: TCodeTreeNode
+  ): boolean;
+begin
+  Result:=false;
+  if ANode=nil then exit;
+  case ANode.Desc of
+  ctnClass,ctnClassInterface,ctnProcedure,ctnBeginBlock:
+    Result:=(ANode.SubDesc and ctnsNeedJITParsing)>0;
+  end;
+end;
+
+function TPascalParserTool.BuildSubTreeAndFindDeepestNodeAtPos(
+  StartNode: TCodeTreeNode; P: integer; ExceptionOnNotFound: boolean
+  ): TCodeTreeNode;
+begin
+  Result:=FindDeepestNodeAtPos(StartNode,P,ExceptionOnNotFound);
+  //debugln('TPascalParserTool.BuildSubTreeAndFindDeepestNodeAtPos A ');
+  if NodeNeedsBuildSubTree(Result) then begin
+    BuildSubTree(Result);
+    Result:=FindDeepestNodeAtPos(Result,P,ExceptionOnNotFound);
   end;
 end;
 

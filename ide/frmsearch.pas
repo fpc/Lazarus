@@ -483,7 +483,6 @@ end;//ParseMask
 
 procedure TSearchForm.UpdateMatches;
 begin
-  Application.ProcessMessages;
   inc(fMatches);
   lblMatches.Caption:= IntToStr(fMatches);
 end;//UpdateMatches

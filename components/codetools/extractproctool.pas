@@ -31,7 +31,6 @@
 
   ToDo:
     - check if selection bounds on statement bounds
-    - heuristic for parameter specifiers 'var'
     - with statements
 }
 unit ExtractProcTool;

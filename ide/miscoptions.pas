@@ -30,15 +30,42 @@ unit MiscOptions;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, BuildLazDialog, CodeToolsStructs, LazConf,
-  Laz_XMLCfg, TextTools, LazarusIDEStrConsts;
+  Classes, SysUtils, LCLProc, BuildLazDialog, CodeToolsStructs, Laz_XMLCfg,
+  TextTools, LazConf, LazarusIDEStrConsts, IDEProcs;
 
 type
+  { TFindRenameIdentifierOptions }
+
+  TFindRenameScope = (
+    frCurrentUnit,
+    frCurrentProjectPackage, // the project/package the current unit beongs to
+    frAllOpenProjectsAndPackages
+    );
+
+  TFindRenameIdentifierOptions = class
+  public
+    IdentifierFilename: string;
+    IdentifierPosition: TPoint;
+    Rename: boolean;
+    RenameTo: string;
+    SearchInComments: boolean;
+    Scope: TFindRenameScope;
+    ExtraFiles: TStrings;
+    constructor Create;
+    destructor Destroy; override;
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+  end;
+  
+  
+  { TMiscellaneousOptions }
+
   TMiscellaneousOptions = class
   private
     fBuildLazOpts: TBuildLazarusOptions;
     FExtractProcName: string;
     fFilename: string;
+    FFindRenameIdentifierOptions: TFindRenameIdentifierOptions;
     FMakeResourceStringInsertPolicy: TResourcestringInsertPolicy;
     FSortSelDirection: TSortDirection;
     FSortSelDomain: TSortDomain;
@@ -50,8 +77,7 @@ type
     procedure Save;
     property Filename: string read GetFilename;
 
-    property BuildLazOpts: TBuildLazarusOptions
-                                         read fBuildLazOpts write fBuildLazOpts;
+    property BuildLazOpts: TBuildLazarusOptions read fBuildLazOpts;
     property ExtractProcName: string read FExtractProcName write FExtractProcName;
     property SortSelDirection: TSortDirection read FSortSelDirection
                                               write FSortSelDirection;
@@ -59,6 +85,8 @@ type
     property MakeResourceStringInsertPolicy: TResourcestringInsertPolicy
                                           read FMakeResourceStringInsertPolicy
                                           write FMakeResourceStringInsertPolicy;
+    property FindRenameIdentifierOptions: TFindRenameIdentifierOptions
+                                              read FFindRenameIdentifierOptions;
   end;
 
 const
@@ -68,6 +96,9 @@ const
     'Words', 'Lines', 'Paragraphs');
   ResourcestringInsertPolicyNames: array[TResourcestringInsertPolicy] of string
     = ('None', 'Append', 'Alphabetically', 'Context');
+  FindRenameScopeNames: array[TFindRenameScope] of string = (
+    'CurrentUnit', 'CurrentProjectPackage', 'AllOpenProjectsAndPackages'
+    );
 
 var MiscellaneousOptions: TMiscellaneousOptions;
 
@@ -75,6 +106,8 @@ function SortDirectionNameToType(const s: string): TSortDirection;
 function SortDomainNameToType(const s: string): TSortDomain;
 function ResourcestringInsertPolicyNameToType(
   const s: string): TResourcestringInsertPolicy;
+function FindRenameScopeNameToScope(const s: string): TFindRenameScope;
+
 
 implementation
 
@@ -106,21 +139,30 @@ begin
   Result:=rsipAppend;
 end;
 
+function FindRenameScopeNameToScope(const s: string): TFindRenameScope;
+begin
+  for Result:=Low(TFindRenameScope) to High(TFindRenameScope) do
+    if AnsiCompareText(FindRenameScopeNames[Result],s)=0 then exit;
+  Result:=frAllOpenProjectsAndPackages;
+end;
+
 { TMiscellaneousOptions }
 
 constructor TMiscellaneousOptions.Create;
 begin
   inherited Create;
-  BuildLazOpts:=TBuildLazarusOptions.Create;
+  FBuildLazOpts:=TBuildLazarusOptions.Create;
   FExtractProcName:='NewProc';
   fSortSelDirection:=sdAscending;
   fSortSelDomain:=sdLines;
   fMakeResourceStringInsertPolicy:=rsipAppend;
+  FFindRenameIdentifierOptions:=TFindRenameIdentifierOptions.Create;
 end;
 
 destructor TMiscellaneousOptions.Destroy;
 begin
-  BuildLazOpts.Free;
+  FBuildLazOpts.Free;
+  FFindRenameIdentifierOptions.Free;
   inherited Destroy;
 end;
 
@@ -168,6 +210,8 @@ begin
                               ResourcestringInsertPolicyNames[rsipAppend]));
       ExtractProcName:=XMLConfig.GetValue(
                                         Path+'ExtractProcName/Value','NewProc');
+      FindRenameIdentifierOptions.LoadFromXMLConfig(XMLConfig,
+                                                  Path+'FindRenameIdentifier/');
     finally
       XMLConfig.Free;
     end;
@@ -208,6 +252,8 @@ begin
            ResourcestringInsertPolicyNames[rsipAppend]);
       XMLConfig.SetDeleteValue(Path+'ExtractProcName/Value',ExtractProcName,
                                'NewProc');
+      FindRenameIdentifierOptions.SaveToXMLConfig(XMLConfig,
+                                                  Path+'FindRenameIdentifier/');
       XMLConfig.Flush;
     finally
       XMLConfig.Free;
@@ -217,6 +263,45 @@ begin
       DebugLn('ERROR: unable read miscellaneous options from "',XMLFilename,'": ',E.Message);
     end;
   end;
+end;
+
+{ TFindRenameIdentifierOptions }
+
+constructor TFindRenameIdentifierOptions.Create;
+begin
+  ExtraFiles:=TStringList.Create;
+end;
+
+destructor TFindRenameIdentifierOptions.Destroy;
+begin
+  ExtraFiles.Free;
+  inherited Destroy;
+end;
+
+procedure TFindRenameIdentifierOptions.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+begin
+  IdentifierFilename:=XMLConfig.GetValue(Path+'Identifier/Filename','');
+  LoadPoint(XMLConfig,Path+'Identifier/',IdentifierPosition,Point(0,0));
+  Rename:=XMLConfig.GetValue(Path+'Rename/Value',false);
+  RenameTo:=XMLConfig.GetValue(Path+'Rename/Identifier','');
+  SearchInComments:=XMLConfig.GetValue(Path+'SearchInComments/Value',true);
+  Scope:=FindRenameScopeNameToScope(XMLConfig.GetValue(Path+'Scope/Value',
+                           FindRenameScopeNames[frAllOpenProjectsAndPackages]));
+  LoadStringList(XMLConfig,ExtraFiles,Path+'ExtraFiles/');
+end;
+
+procedure TFindRenameIdentifierOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+begin
+  XMLConfig.SetDeleteValue(Path+'Identifier/Filename',IdentifierFilename,'');
+  SavePoint(XMLConfig,Path+'Identifier/',IdentifierPosition,Point(0,0));
+  XMLConfig.SetDeleteValue(Path+'Rename/Value',Rename,false);
+  XMLConfig.SetDeleteValue(Path+'Rename/Identifier',RenameTo,'');
+  XMLConfig.SetDeleteValue(Path+'SearchInComments/Value',SearchInComments,true);
+  XMLConfig.SetDeleteValue(Path+'Scope/Value',FindRenameScopeNames[Scope],
+                            FindRenameScopeNames[frAllOpenProjectsAndPackages]);
+  SaveStringList(XMLConfig,ExtraFiles,Path+'ExtraFiles/');
 end;
 
 end.

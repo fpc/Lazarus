@@ -124,12 +124,24 @@ procedure SaveRecentList(XMLConfig: TXMLConfig; List: TStrings;
 function AddToRecentList(const s: string; RecentList: TStrings;
   Max: integer): boolean;
 procedure RemoveFromRecentList(const s: string; RecentList: TStrings);
-procedure LoadRect(XMLConfig: TXMLConfig; const Path:string; var ARect:TRect);
-procedure SaveRect(XMLConfig: TXMLConfig; const Path:string; var ARect:TRect);
+procedure LoadRect(XMLConfig: TXMLConfig; const Path:string;
+                   var ARect:TRect);
+procedure LoadRect(XMLConfig: TXMLConfig; const Path:string;
+                   var ARect:TRect; const DefaultRect: TRect);
+procedure SaveRect(XMLConfig: TXMLConfig; const Path:string;
+                   const ARect: TRect);
+procedure SaveRect(XMLConfig: TXMLConfig; const Path:string;
+                   const ARect, DefaultRect: TRect);
+procedure LoadPoint(XMLConfig: TXMLConfig; const Path:string;
+                    var APoint:TPoint; const DefaultPoint: TPoint);
+procedure SavePoint(XMLConfig: TXMLConfig; const Path:string;
+                    const APoint, DefaultPoint:TPoint);
 procedure LoadStringList(XMLConfig: TXMLConfig; List: TStrings;
   const Path: string);
 procedure SaveStringList(XMLConfig: TXMLConfig; List: TStrings;
   const Path: string);
+  
+
 function FindProgram(const Programname, BaseDirectory: string;
   WithBaseDirectory: boolean): string;
 
@@ -137,6 +149,9 @@ const DateAsCfgStrFormat='YYYYMMDD';
 
 function DateToCfgStr(const Date: TDateTime): string;
 function CfgStrToDate(const s: string; var Date: TDateTime): boolean;
+function PointToCfgStr(const Point: TPoint): string;
+procedure CfgStrToPoint(const s: string; var Point: TPoint;
+                        const DefaultPoint: TPoint);
 
 // text conversion
 function TabsToSpaces(const s: string; TabWidth: integer): string;
@@ -144,12 +159,14 @@ function CommentLines(const s: string): string;
 function CommentText(const s: string; CommentType: TCommentType): string;
 function UncommentLines(const s: string): string;
 function CrossReplaceChars(const Src: string; PrefixChar: char;
-  const SpecialChars: string): string;
+                           const SpecialChars: string): string;
 function SimpleSyntaxToRegExpr(const Src: string): string;
 function NameToValidIdentifier(const s: string): string;
 function BinaryStrToText(const s: string): string;
 function SplitString(const s: string; Delimiter: char): TStringList;
 function SpecialCharsToSpaces(const s: string): string;
+function StringListToText(List: TStrings; const Delimiter: string;
+                          IgnoreEmptyLines: boolean): string;
 
 // translation/internationalization/localization
 procedure TranslateResourceStrings(const BaseDirectory, CustomLang: string);
@@ -733,6 +750,20 @@ begin
   LoadStringList(XMLConfig,List,Path);
 end;
 
+procedure LoadPoint(XMLConfig: TXMLConfig; const Path: string;
+                    var APoint: TPoint; const DefaultPoint: TPoint);
+begin
+  APoint.X:=XMLConfig.GetValue(Path+'X',DefaultPoint.X);
+  APoint.Y:=XMLConfig.GetValue(Path+'Y',DefaultPoint.Y);
+end;
+
+procedure SavePoint(XMLConfig: TXMLConfig; const Path: string;
+                    const APoint, DefaultPoint: TPoint);
+begin
+  XMLConfig.SetDeleteValue(Path+'X',APoint.X,DefaultPoint.X);
+  XMLConfig.SetDeleteValue(Path+'Y',APoint.Y,DefaultPoint.Y);
+end;
+
 procedure LoadStringList(XMLConfig: TXMLConfig; List: TStrings;
   const Path: string);
 var i,Count: integer;
@@ -755,20 +786,34 @@ begin
     XMLConfig.SetDeleteValue(Path+'Item'+IntToStr(i+1)+'/Value',List[i],'');
 end;
 
-procedure LoadRect(XMLConfig: TXMLConfig; const Path:string; var ARect:TRect);
+procedure LoadRect(XMLConfig: TXMLConfig; const Path: string;
+  var ARect: TRect);
 begin
-  ARect.Left:=XMLConfig.GetValue(Path+'Left',ARect.Left);
-  ARect.Top:=XMLConfig.GetValue(Path+'Top',ARect.Top);
-  ARect.Right:=XMLConfig.GetValue(Path+'Right',ARect.Right);
-  ARect.Bottom:=XMLConfig.GetValue(Path+'Bottom',ARect.Bottom);
+  LoadRect(XMLConfig,Path,ARect,Rect(0,0,0,0));
 end;
 
-procedure SaveRect(XMLConfig: TXMLConfig; const Path:string; var ARect:TRect);
+procedure LoadRect(XMLConfig: TXMLConfig; const Path:string; var ARect:TRect;
+  const DefaultRect: TRect);
 begin
-  XMLConfig.SetDeleteValue(Path+'Left',ARect.Left,0);
-  XMLConfig.SetDeleteValue(Path+'Top',ARect.Top,0);
-  XMLConfig.SetDeleteValue(Path+'Right',ARect.Right,0);
-  XMLConfig.SetDeleteValue(Path+'Bottom',ARect.Bottom,0);
+  ARect.Left:=XMLConfig.GetValue(Path+'Left',DefaultRect.Left);
+  ARect.Top:=XMLConfig.GetValue(Path+'Top',DefaultRect.Top);
+  ARect.Right:=XMLConfig.GetValue(Path+'Right',DefaultRect.Right);
+  ARect.Bottom:=XMLConfig.GetValue(Path+'Bottom',DefaultRect.Bottom);
+end;
+
+procedure SaveRect(XMLConfig: TXMLConfig; const Path: string;
+                   const ARect: TRect);
+begin
+  SaveRect(XMLConfig,Path,ARect,Rect(0,0,0,0));
+end;
+
+procedure SaveRect(XMLConfig: TXMLConfig; const Path:string;
+  const ARect, DefaultRect: TRect);
+begin
+  XMLConfig.SetDeleteValue(Path+'Left',ARect.Left,DefaultRect.Left);
+  XMLConfig.SetDeleteValue(Path+'Top',ARect.Top,DefaultRect.Top);
+  XMLConfig.SetDeleteValue(Path+'Right',ARect.Right,DefaultRect.Right);
+  XMLConfig.SetDeleteValue(Path+'Bottom',ARect.Bottom,DefaultRect.Bottom);
 end;
 
 function CompareFilenames(const Filename1, Filename2: string): integer;
@@ -1245,6 +1290,22 @@ begin
   end;
 end;
 
+function PointToCfgStr(const Point: TPoint): string;
+begin
+  Result:=IntToStr(Point.X)+','+IntToStr(Point.Y);
+end;
+
+procedure CfgStrToPoint(const s: string; var Point: TPoint;
+  const DefaultPoint: TPoint);
+var
+  p: Integer;
+begin
+  p:=1;
+  while (p<=length(s)) and (s[p]<>',') do inc(p);
+  Point.X:=StrToIntDef(copy(s,1,p-1),DefaultPoint.X);
+  Point.Y:=StrToIntDef(copy(s,p+1,length(s)-p),DefaultPoint.Y);
+end;
+
 {-------------------------------------------------------------------------------
   TabsToSpaces
 
@@ -1362,6 +1423,44 @@ begin
   if Result='' then exit;
   if (Result[1]=' ') or (Result[length(Result)]=' ') then
     Result:=Trim(Result);
+end;
+
+function StringListToText(List: TStrings; const Delimiter: string;
+  IgnoreEmptyLines: boolean): string;
+var
+  i: Integer;
+  s: string;
+  Size: Integer;
+  p: Integer;
+begin
+  if List=nil then begin
+    Result:='';
+    exit;
+  end;
+  // calculate size
+  Size:=0;
+  for i:=0 to List.Count-1 do begin
+    s:=List[i];
+    if IgnoreEmptyLines and (s='') then continue;
+    if Size>0 then
+      inc(Size,length(Delimiter));
+    inc(Size,length(s));
+  end;
+  // build string
+  SetLength(Result,Size);
+  p:=1;
+  for i:=0 to List.Count-1 do begin
+    s:=List[i];
+    if IgnoreEmptyLines and (s='') then continue;
+    if (p>1) and (Delimiter<>'') then begin
+      System.Move(Delimiter[1],Result[p],length(Delimiter));
+      inc(p,length(Delimiter));
+    end;
+    if s<>'' then begin
+      System.Move(s[1],Result[p],length(s));
+      inc(p,length(s));
+    end;
+  end;
 end;
 
 {-------------------------------------------------------------------------------

@@ -1,0 +1,156 @@
+object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
+  Caption = 'FindRenameIdentifierDialog'
+  ClientHeight = 400
+  ClientWidth = 450
+  OnClose = FindRenameIdentifierDialogClose
+  OnCreate = FindRenameIdentifierDialogCreate
+  PixelsPerInch = 90
+  Position = poScreenCenter
+  HorzScrollBar.Page = 451
+  VertScrollBar.Page = 401
+  Left = 291
+  Height = 400
+  Top = 163
+  Width = 450
+  object CurrentGroupBox: TGroupBox
+    Anchors = [akTop, akLeft, akRight]
+    Caption = 'CurrentGroupBox'
+    ClientHeight = 55
+    ClientWidth = 432
+    DragCursor = 65524
+    ParentColor = True
+    TabOrder = 0
+    Left = 8
+    Height = 72
+    Top = 8
+    Width = 436
+    object CurrentListBox: TListBox
+      Align = alClient
+      ClickOnSelChange = False
+      TabOrder = 0
+      TopIndex = -1
+      Height = 55
+      Width = 432
+    end
+  end
+  object NewGroupBox: TGroupBox
+    Anchors = [akTop, akLeft, akRight]
+    Caption = 'NewGroupBox'
+    ClientHeight = 36
+    ClientWidth = 432
+    DragCursor = 65524
+    ParentColor = True
+    TabOrder = 1
+    Left = 8
+    Height = 53
+    Top = 91
+    Width = 436
+    object NewEdit: TEdit
+      Anchors = [akTop, akLeft, akRight]
+      TabOrder = 0
+      Text = 'NewEdit'
+      TabOrder = 0
+      Left = 6
+      Height = 23
+      Top = 6
+      Width = 260
+    end
+    object RenameCheckBox: TCheckBox
+      AllowGrayed = True
+      Anchors = [akTop, akRight]
+      AutoSize = True
+      Caption = 'RenameCheckBox'
+      DragCursor = 65524
+      OnChange = RenameCheckBoxChange
+      TabOrder = 1
+      UseOnChange = True
+      Left = 274
+      Height = 23
+      Top = 6
+      Width = 151
+    end
+  end
+  object ScopeGroupBox: TGroupBox
+    Anchors = [akTop, akLeft, akRight]
+    Caption = 'ScopeGroupBox'
+    ClientHeight = 187
+    ClientWidth = 433
+    DragCursor = 65524
+    ParentColor = True
+    TabOrder = 2
+    Left = 8
+    Height = 204
+    Top = 156
+    Width = 437
+    object ScopeCommentsCheckBox: TCheckBox
+      AllowGrayed = True
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      Caption = 'ScopeCommentsCheckBox'
+      DragCursor = 65524
+      TabOrder = 0
+      Left = 6
+      Height = 23
+      Top = 157
+      Width = 417
+    end
+    object ScopeRadioGroup: TRadioGroup
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'ScopeRadioGroup'
+      Enabled = False
+      Items.Strings = (
+        'In current Unit'
+        'In current Project/Package'
+        'In all open projects and packages'
+      )
+      ParentColor = True
+      Left = 6
+      Height = 88
+      Top = 5
+      Width = 417
+    end
+    object ExtraFilesGroupBox: TGroupBox
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'ExtraFilesGroupBox'
+      ClientHeight = 27
+      ClientWidth = 413
+      DragCursor = 65524
+      Enabled = False
+      ParentColor = True
+      TabOrder = 2
+      Left = 6
+      Height = 44
+      Top = 101
+      Width = 417
+      object ExtraFilesEdit: TEdit
+        Anchors = [akTop, akLeft, akRight]
+        TabOrder = 0
+        Text = 'ExtraFilesEdit'
+        TabOrder = 0
+        Left = 6
+        Height = 23
+        Width = 404
+      end
+    end
+  end
+  object FindOrRenameButton: TButton
+    Anchors = [akTop, akRight]
+    Caption = 'FindOrRenameButton'
+    OnClick = FindOrRenameButtonClick
+    TabOrder = 3
+    Left = 88
+    Height = 25
+    Top = 368
+    Width = 233
+  end
+  object CancelButton: TButton
+    Anchors = [akTop, akRight]
+    Caption = 'CancelButton'
+    ModalResult = 2
+    TabOrder = 4
+    Left = 336
+    Height = 25
+    Top = 368
+    Width = 89
+  end
+end

@@ -235,6 +235,7 @@ type
     function ReadBackTilBracketOpen(ExceptionOnNotFound: boolean): boolean;
     procedure ReadTillCommentEnd;
     
+    // read atoms
     function AtomIs(const AnAtom: shortstring): boolean;
     function UpAtomIs(const AnAtom: shortstring): boolean;
     function ReadNextAtomIs(const AnAtom: shortstring): boolean;
@@ -258,6 +259,7 @@ type
     function FreeUpAtomIs(const FreeAtomPos: TAtomPosition;
         const AnAtom: shortstring): boolean;
     
+    // identifiers
     function CompareNodeIdentChars(ANode: TCodeTreeNode;
         const AnUpperIdent: string): integer;
     function CompareSrcIdentifiers(
@@ -273,6 +275,7 @@ type
     procedure EndChildNode;
     function DoAtom: boolean; virtual;
 
+    // write lock
     procedure ActivateGlobalWriteLock; virtual;
     procedure DeactivateGlobalWriteLock; virtual;
     property OnGetGlobalWriteLockInfo: TOnGetWriteLockInfo
@@ -280,6 +283,7 @@ type
     property OnSetGlobalWriteLock: TOnSetWriteLock
       read FOnSetGlobalWriteLock write FOnSetGlobalWriteLock;
       
+    // error handling
     property IgnoreErrorAfter: TCodePosition
       read FIgnoreErrorAfter write SetIgnoreErrorAfter;
     procedure ClearIgnoreErrorAfter;
@@ -291,6 +295,7 @@ type
     property OnParserProgress: TOnParserProgress
       read FOnParserProgress write FOnParserProgress;
 
+    // debugging
     procedure Clear; virtual;
     function NodeDescToStr(Desc: integer): string;
     function NodeSubDescToStr(Desc, SubDesc: integer): string;

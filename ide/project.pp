@@ -196,7 +196,7 @@ type
              read FComponentLastLRSStreamSize write FComponentLastLRSStreamSize;
     property ComponentLastLFMStreamSize: TStreamSeekType
              read FComponentLastLFMStreamSize write FComponentLastLFMStreamSize;
-    property CursorPos: TPoint read fCursorPos write fCursorPos;
+    property CursorPos: TPoint read fCursorPos write fCursorPos; // physical (screen) position
     property CustomHighlighter: boolean
                                read fCustomHighlighter write fCustomHighlighter;
     property EditorIndex: integer read fEditorIndex write SetEditorIndex;
@@ -2920,6 +2920,9 @@ end.
 
 {
   $Log$
+  Revision 1.164  2004/09/18 01:02:23  mattias
+  started new feature: find identifier references
+
   Revision 1.163  2004/09/17 20:04:35  vincents
   replaced writeln by DebugLn
 

@@ -184,7 +184,7 @@ type
     function IsSimilar(APosition: TProjectJumpHistoryPosition): boolean;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    property CaretXY: TPoint read FCaretXY write FCaretXY;
+    property CaretXY: TPoint read FCaretXY write FCaretXY; // logical (byte) position
     property Filename: string read FFilename write FFilename;
     property TopLine: integer read FTopLine write FTopLine;
     property OnLoadSaveFilename: TOnLoadSaveFilename

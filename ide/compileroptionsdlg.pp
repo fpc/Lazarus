@@ -1871,7 +1871,7 @@ begin
   with chkLineNumbers do
   begin
     Parent := grpVerbosity;
-    Caption := dlgShowLineNumbers+' (-vl)';
+    Caption := dlgShowCompilingLineNumbers+' (-vl)';
     Top := 111;
     Left := chkErrors.Left;
     Height := chkErrors.Height;

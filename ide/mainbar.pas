@@ -148,6 +148,7 @@ type
     itmSearchFindNext: TMenuItem;
     itmSearchFindPrevious: TMenuItem;
     itmSearchFindInFiles: TMenuItem;
+    itmSearchFindIdentifierRefs: TMenuItem;
     itmSearchReplace: TMenuItem;
     itmIncrementalFind: TMenuItem;
     itmGotoLine: TMenuItem;
