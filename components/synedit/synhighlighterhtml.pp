@@ -2225,7 +2225,7 @@ end;
 procedure TSynHTMLSyn.GetTokenEx(var TokenStart: PChar;
   var TokenLength: integer);
 begin
-  TokenLength:=fTokenPos-Run;
+  TokenLength:=Run-fTokenPos;
   TokenStart:=FLine + fTokenPos;
 end;
 {$ENDIF}
