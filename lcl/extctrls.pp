@@ -159,6 +159,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    property Page;
   published
     property ActivePage;
     property PageIndex;
@@ -323,6 +324,10 @@ end.
 
  {
   $Log$
+  Revision 1.6  2001/01/09 21:06:06  lazarus
+  Started taking KeyDown messages in TDesigner
+  Shane
+
   Revision 1.5  2001/01/09 18:23:20  lazarus
   Worked on moving controls.  It's just not working with the X and Y coord's I'm getting.
   Shane

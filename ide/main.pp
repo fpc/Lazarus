@@ -182,7 +182,7 @@ type
     Function ReturnFormName(Source : TStringList) : String;
 
   public
-    constructor Create(AOwner: TComponent); override; 
+    constructor Create(AOwner: TComponent); override;
     procedure LoadMainMenu;
     Procedure FormKill(Sender : TObject);
     Procedure SetFlags(SLIst : TUnitInfo);
@@ -223,7 +223,8 @@ uses
 
 { TMainIDE }
 
-constructor TMainIDE.Create(AOwner: TComponent);
+
+  constructor TMainIDE.Create(AOwner: TComponent);
 
 
 
@@ -1572,6 +1573,7 @@ If TSourceEditor(Sender).IsControlUnit then
 //   Writeln('Result = '+Inttostr(CreateLFM(ViewForms1)));
 //   Writeln('Result = '+Inttostr(CreateLFM(MessageDlg)));
 //   Writeln('Result = '+Inttostr(CreateLFM(FindDialog1)));
+   Writeln('Result = '+Inttostr(CreateLFM(MainIDE)));
    end;
 end;
 
@@ -1881,6 +1883,8 @@ initialization
 {$I dlgmessage.lrs}
 {$I viewunits1.lrs}
 {$I viewforms1.lrs}
+{ $I mainide.lrs}
+{ $I finddialog1.lrs}
 
 
 end.
@@ -1890,6 +1894,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.38  2001/01/09 21:06:06  lazarus
+  Started taking KeyDown messages in TDesigner
+  Shane
+
   Revision 1.37  2001/01/09 18:23:20  lazarus
   Worked on moving controls.  It's just not working with the X and Y coord's I'm getting.
   Shane

@@ -49,11 +49,15 @@ type
     procedure MouseMoveOnControl(Sender : TControl; var Message : TLMessage);
     Procedure MouseUpOnControl(Sender : TControl; Message:TLMessage);
 
+    Procedure KeyDown(Sender : TControl; Message:TLMKEY);
+    Procedure RemoveControl(Control : TComponent);
+
   public
     ControlSelection : TControlSelection;
     constructor Create(customform : TCustomform);
     destructor Destroy; override;
     Procedure AddControlCode(Control : TComponent);
+
     procedure CreateNew(FileName : string);
     procedure LoadFile(FileName: string);
 
@@ -107,8 +111,18 @@ begin
 
 end;
 
+
+Procedure TDesigner.RemoveControl(Control : TComponent);
+Begin
+    Writeln('RemoveControl called');
+    FSourceEditor.RemoveControlCode(Control);
+    Control.Destroy;
+end;
+
+
 procedure TDesigner.SelectOnlyThisComponent(AComponent:TComponent);
 begin
+Writeln('Control Added '+TCOntrol(aComponent).name);
     ControlSelection.Clear;
     ControlSelection.Add(TControl(AComponent));
 
@@ -338,6 +352,46 @@ Begin
     end;
 end;
 
+{
+-----------------------------K E Y D O W N -------------------
+}
+{
+ Handles the keydown messages.  DEL deletes the selected controls, CTRL-UPARROR/DOWNARROW
+ moves the selction up one, etc.
+}
+Procedure TDesigner.KeyDown(Sender : TControl; Message:TLMKEY);
+var
+  I : Integer;
+Begin
+Writeln('KEYDOWN');
+with MEssage do
+  Begin
+  Writeln('CHARCODE = '+inttostr(charcode));
+  Writeln('KEYDATA = '+inttostr(KeyData));
+  end;
+
+if Message.CharCode = 46 then //DEL KEY
+   begin
+    for  I := 0 to FCustomForm.ComponentCount-1 do
+      Begin
+        Writeln('I = '+inttostr(i));
+        if (FCustomForm.Components[i] is TControl) and
+           ControlSelection.IsSelected(TControl(FCustomForm.Components[i])) then
+           Begin
+              RemoveControl(TControl(FCustomForm.Components[i]));
+           end;
+      end;
+    FFormEditor.ClearSelected;
+  // this will automatically inform the object inspector
+    ControlSelection.Add(FCustomForm);
+    FFormEditor.AddSelected(FCustomForm);
+
+
+   end;
+
+end;
+
+
 function TDesigner.IsDesignMsg(Sender: TControl; var Message: TLMessage): Boolean;
 Begin
 result := false;
@@ -347,6 +401,7 @@ else
 if ((Message.msg >= LM_KeyFIRST) and (Message.msg <= LM_KeyLAST)) then
     Begin
      Writeln('KEY MESSAGE in IsDesignMsg');
+     KeyDown(Sender,TLMKey(Message));
      Result := true;
     end;
 

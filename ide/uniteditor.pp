@@ -104,6 +104,7 @@ type
     constructor Create(AOwner : TComponent; AParent : TWinControl);
     destructor Destroy; override;
     Procedure AddControlCode(_Control : TComponent);
+    Procedure RemoveControlCode(_Control : TComponent);
     Procedure SelectText(LineNum,CharStart,LineNum2,CharEnd : Integer);
     Procedure KeyPressed(Sender : TObject; var key: char);
     Procedure CreateFormUnit(AForm : TCustomForm);
@@ -455,6 +456,49 @@ For I := 0 to TempSource.Count-1 do
 
 Source := TempSource;
 end;
+
+
+{Called when a control is deleted from the form}
+Procedure TSourceEditor.RemoveControlCode(_Control : TComponent);
+var
+  PT : PTypeData;
+  PI : PTypeInfo;
+  nmControlType : String;
+  I : Integer;
+  NewSource : String;
+  TempSource : TStringList;
+  Ancestor : String;
+begin
+  TempSource := TStringList.Create;
+  TempSource.Assign(Source);
+
+  //get the control name
+  PI := _Control.ClassInfo;
+  nmControlType := _Control.name;
+  Ancestor := GetAncestor;
+
+//find the place in the code to start looking for it
+
+For I := 0 to TempSource.Count-1 do
+    if (pos(Ancestor,TempSource.Strings[i]) <> 0) and (pos(TWinControl(_Control.Owner).Name,TempSource.Strings[i]) <> 0) and (pos('CLASS',Uppercase(TempSource.Strings[i])) <> 0) then
+        Break;
+
+  //if I => FSource.Count then I didn't find the line...
+  If I < TempSource.Count then
+     Begin
+       //alphabetical
+       inc(i);
+       NewSource := _Control.Name+' : '+nmControlType+';';
+
+       while NewSource < (trim(TempSource.Strings[i])) do
+         inc(i);
+
+         If NewSource = (trim(TempSource.Strings[i])) then
+             TempSource.Delete(I);
+     end;
+Source := TempSource;
+end;
+
 
 Procedure TSourceEditor.DisplayControl;
 Begin

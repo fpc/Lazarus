@@ -186,16 +186,17 @@ type
       constructor Create(AOwner : TCOmponent) ; override;
       destructor Destroy; override;
       procedure Click; override;
-      property Glyph : TBitmap read GetGlyph write SetGlyph;
     published
       property AllowAllUp : Boolean read FAllowAllUp write SetAllowAllUp default false;
       property Down : Boolean read FDown write SetDown default False;
       property Enabled;
       property Flat : Boolean read FFlat write SetFlat default False;
+      property Glyph : TBitmap read GetGlyph write SetGlyph;
       property GroupIndex : Integer read FGroupIndex write SetGroupIndex default 0;
       property NumGlyphs : Integer read GetNumGlyphs write SetNumGlyphs default 1;
       property Transparent : Boolean read FTransparent write FTransparent default false;
       property Visible;
+      property OnClick;
      end;
 
 
@@ -234,6 +235,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.7  2001/01/09 21:06:06  lazarus
+  Started taking KeyDown messages in TDesigner
+  Shane
+
   Revision 1.6  2001/01/03 18:44:54  lazarus
   The Speedbutton now has a numglyphs setting.
   I started the TStringPropertyEditor
