@@ -3766,7 +3766,7 @@ begin
   while ADialogResult = 0 do begin
     Application.HandleMessage;
   end;
-  gtk_widget_destroy(Dialog);
+  DestroyWidget(Dialog);
   Result:= ADialogResult;
 end;
 
@@ -5980,6 +5980,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.99  2002/08/21 11:29:36  lazarus
+  MG: fixed mem some leaks in ide and gtk
+
   Revision 1.98  2002/08/21 10:46:37  lazarus
   MG: fixed unreleased gdiRegions
 
