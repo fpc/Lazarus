@@ -216,7 +216,7 @@ begin
     LCLMenuItem:=TMenuItem(GetLCLObject(Pointer(hndMenu)));
     if LCLMenuItem<>nil then begin
       LCLMenuItem.RecreateHandle;
-      Result:=true;
+      Result := true;
     end else
       Result := false;
   end;
@@ -5995,6 +5995,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.107  2002/08/22 13:45:58  lazarus
+  MG: fixed non AutoCheck menuitems and editor bookmark popupmenu
+
   Revision 1.106  2002/08/22 12:25:00  lazarus
   MG: fixed mouse events
 
