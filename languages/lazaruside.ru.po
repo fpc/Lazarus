@@ -286,6 +286,10 @@ msgstr "Добавить активный модуль к проекту"
 msgid "Add an item"
 msgstr "Добавить элемент"
 
+#: lazarusidestrconsts:srkmecaddbreakpoint
+msgid "add break point"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetempladdcodetemplate
 msgid "Add code template"
 msgstr "Добавить шаблон кода"
@@ -1338,6 +1342,10 @@ msgstr "Ключ CVS"
 msgid "Data Access"
 msgstr "Доступ к данным"
 
+#: lazarusidestrconsts:lisdate
+msgid "Date"
+msgstr ""
+
 #: lazarusidestrconsts:uemdebugword
 msgid "Debug"
 msgstr "Отладка"
@@ -1975,8 +1983,8 @@ msgid "File is used"
 msgstr "Файл используется"
 
 #: lazarusidestrconsts:lisfindfilefilemaskbak
-msgid "File mask (*, *.*, *.bak?)"
-msgstr "Маска файла (*, *.*, *.bak?)"
+msgid "File mask (*;*.*;*.bak?)"
+msgstr ""
 
 #: lazarusidestrconsts:srkmcatfilemenu
 msgid "File menu commands"
@@ -2361,6 +2369,10 @@ msgstr "Имеет проц-ру Register"
 #: lazarusidestrconsts:dlgheapsize
 msgid "Heap Size"
 msgstr "Размер кучи"
+
+#: lazarusidestrconsts:rslanguagehebrew
+msgid "Hebrew"
+msgstr ""
 
 #: lazarusidestrconsts:dlgheightpos
 msgid "Height:"
@@ -2949,6 +2961,14 @@ msgstr "Переход назад"
 #: lazarusidestrconsts:lismenujumpforward
 msgid "Jump forward"
 msgstr "Переход вперед"
+
+#: lazarusidestrconsts:lismenujumptonexterror
+msgid "Jump to next error"
+msgstr ""
+
+#: lazarusidestrconsts:lismenujumptopreverror
+msgid "Jump to previous error"
+msgstr ""
 
 #: lazarusidestrconsts:dlgjumpingetc
 msgid "Jumping (e.g. Method Jumping)"
@@ -3998,10 +4018,6 @@ msgstr "Клавиша Pause"
 msgid "pause program"
 msgstr "приостановить программу"
 
-#: lazarusidestrconsts:srkmecperiod
-msgid "period"
-msgstr "период"
-
 #: lazarusidestrconsts:dlgpersistentcaret
 msgid "Persistent Caret"
 msgstr "\"Неподвижный\" курсор"
@@ -4305,6 +4321,10 @@ msgstr "Удалить"
 #: lazarusidestrconsts:lisremoveallinvalidproperties
 msgid "Remove all invalid properties"
 msgstr "Удалить все некорректные свойства"
+
+#: lazarusidestrconsts:srkmecremovebreakpoint
+msgid "remove break point"
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditremovedependency
 msgid "Remove dependency"
@@ -5970,9 +5990,9 @@ msgstr "Не могу найти секцию ResourceStribg в этом или любом используемом модуле
 msgid "Unable to find file %s%s%s."
 msgstr "Не могу найти файл %s%s%s."
 
-#: lazarusidestrconsts:lisunabletofindfilechecksearchpathinruncompileroption
-msgid "Unable to find file %s%s%s.%sCheck search path in%sRun->Compiler Options...->Search Paths->Other Unit Files"
-msgstr "Не могу найти файл %s%s%s.%sПроверьте путь поиска в%sЗапуск->Настройки компилятора...->Пути поиска->Другие файлы модулей"
+#: lazarusidestrconsts:lisunabletofindfilechecksearchpathinprojectcompileroption
+msgid "Unable to find file %s%s%s.%sCheck search path in%sProject->Compiler Options...->Search Paths->Other Unit Files"
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletofindmethodplzfixtheerrorshowninthemessage
 msgid "Unable to find method. Plz fix the error shown in the message window."

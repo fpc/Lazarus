@@ -282,6 +282,10 @@ msgstr "нет доступа дл€ выполнени€ %s"
 msgid "expected end., but %s found"
 msgstr "ожидаетс€ end., а найдено %s"
 
+#: codetoolsstrconsts:ctsexportsclauseonlyallowedinlibraries
+msgid "exports clause only allowed in libraries"
+msgstr ""
+
 #: codetoolsstrconsts:ctsexprtypemustbeclassorrecord
 msgid "expression type must be class or record type"
 msgstr "тип выражени€ должен быть объектом или записью"

@@ -100,7 +100,8 @@ type
     llRussian,
     llRussianCP1251,
     llSpanish,
-    llFinnish
+    llFinnish,
+    llHebrew
     );
   
 const
@@ -119,11 +120,12 @@ const
     'Russian',
     'Russian(CP1251)',
     'Spanish',
-    'Finnish'
+    'Finnish',
+    'Hebrew'
   );
 
   LazarusLanguageIDs: array[TLazarusLanguage] of string = (
-    '', 'ca', 'en', 'fr', 'de', 'it', 'pl', 'pliso', 'plwin', 'ru', 'ruwin', 'es', 'fi'
+    '', 'ca', 'en', 'fr', 'de', 'it', 'pl', 'pliso', 'plwin', 'ru', 'ruwin', 'es', 'fi', 'he'
   );
   
   
@@ -669,19 +671,20 @@ function GetLazarusLanguageNames(aLangId: TLazarusLanguage) : String;
 begin
   Result := '?';
   Case aLangId of
-    llAutomatic: Result:=rsLanguageAutomatic;
-    llEnglish  : Result:=rsLanguageEnglish;
-    llGerman   : Result:=rsLanguageDeutsch;
-    llSpanish  : Result:=rsLanguageSpanish;
-    llFrench   : Result:=rsLanguageFrench;
-    llRussian  : Result:=rsLanguageRussian;
-    llRussianCP1251: Result:=rsLanguageRussianWin;
-    llPolish   : Result:=rsLanguagePolish;
-    llPolishISO_8859_2   : Result:=rsLanguagePolishISO;    
-    llPolishCP1251   : Result:=rsLanguagePolishWin;        
-    llItalian  : Result:=rsLanguageItalian;
-    llCatalan  : Result:=rsLanguageCatalan;
-    llFinnish  : Result:=rsLanguageFinnish;
+    llAutomatic        : Result := rsLanguageAutomatic;
+    llEnglish          : Result := rsLanguageEnglish;
+    llGerman           : Result := rsLanguageDeutsch;
+    llSpanish          : Result := rsLanguageSpanish;
+    llFrench           : Result := rsLanguageFrench;
+    llRussian          : Result := rsLanguageRussian;
+    llRussianCP1251    : Result := rsLanguageRussianWin;
+    llPolish           : Result := rsLanguagePolish;
+    llPolishISO_8859_2 : Result := rsLanguagePolishISO;
+    llPolishCP1251     : Result := rsLanguagePolishWin;
+    llItalian          : Result := rsLanguageItalian;
+    llCatalan          : Result := rsLanguageCatalan;
+    llFinnish          : Result := rsLanguageFinnish;
+    llHebrew           : Result := rsLanguageHebrew;
   end;
 end;
 

@@ -430,6 +430,14 @@ msgstr ""
 msgid "Goto include directive"
 msgstr ""
 
+#: lazarusidestrconsts:lismenujumptonexterror
+msgid "Jump to next error"
+msgstr ""
+
+#: lazarusidestrconsts:lismenujumptopreverror
+msgid "Jump to previous error"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewobjectinspector
 msgid "Object Inspector"
 msgstr ""
@@ -1150,8 +1158,8 @@ msgstr ""
 msgid "Unable to find file %s%s%s."
 msgstr ""
 
-#: lazarusidestrconsts:lisunabletofindfilechecksearchpathinruncompileroption
-msgid "Unable to find file %s%s%s.%sCheck search path in%sRun->Compiler Options...->Search Paths->Other Unit Files"
+#: lazarusidestrconsts:lisunabletofindfilechecksearchpathinprojectcompileroption
+msgid "Unable to find file %s%s%s.%sCheck search path in%sProject->Compiler Options...->Search Paths->Other Unit Files"
 msgstr ""
 
 #: lazarusidestrconsts:lisnotecouldnotcreatedefinetemplateforfreepascal
@@ -1328,6 +1336,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisversion
 msgid "Version"
+msgstr ""
+
+#: lazarusidestrconsts:lisdate
+msgid "Date"
 msgstr ""
 
 #: lazarusidestrconsts:lisclose
@@ -3454,10 +3466,6 @@ msgstr ""
 msgid "Set Marker %d"
 msgstr ""
 
-#: lazarusidestrconsts:srkmecperiod
-msgid "period"
-msgstr ""
-
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
 msgstr ""
@@ -3724,6 +3732,14 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecresetdebugger
 msgid "reset debugger"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecaddbreakpoint
+msgid "add break point"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecremovebreakpoint
+msgid "remove break point"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecrunparameters
@@ -4080,6 +4096,10 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguagefinnish
 msgid "Finnish"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguagehebrew
+msgid "Hebrew"
 msgstr ""
 
 #: lazarusidestrconsts:dlgunitdepcaption
@@ -5571,7 +5591,7 @@ msgid "Directory options"
 msgstr ""
 
 #: lazarusidestrconsts:lisfindfilefilemaskbak
-msgid "File mask (*, *.*, *.bak?)"
+msgid "File mask (*;*.*;*.bak?)"
 msgstr ""
 
 #: lazarusidestrconsts:lisfindfileincludesubdirectories

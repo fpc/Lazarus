@@ -292,6 +292,10 @@ msgstr "droits d'exécution refusés pour %s"
 msgid "expected end., but %s found"
 msgstr "end. attendu , mais %s trouvé"
 
+#: codetoolsstrconsts:ctsexportsclauseonlyallowedinlibraries
+msgid "exports clause only allowed in libraries"
+msgstr ""
+
 #: codetoolsstrconsts:ctsexprtypemustbeclassorrecord
 msgid "expression type must be class or record type"
 msgstr "le type d'expression doit être classe ou record"

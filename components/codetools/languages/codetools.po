@@ -218,6 +218,10 @@ msgstr ""
 msgid "invalid subrange"
 msgstr ""
 
+#: codetoolsstrconsts:ctsexportsclauseonlyallowedinlibraries
+msgid "exports clause only allowed in libraries"
+msgstr ""
+
 #: codetoolsstrconsts:ctsunitnotfound
 msgid "unit not found: %s"
 msgstr ""

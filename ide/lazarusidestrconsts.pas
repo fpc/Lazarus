@@ -1292,6 +1292,7 @@ resourcestring
   rsLanguageItalian     = 'Italian';
   rsLanguageCatalan     = 'Catalan';
   rsLanguageFinnish     = 'Finnish';
+	rsLanguageHebrew      = 'Hebrew';
 
   // Unit dependencies
   dlgUnitDepCaption     = 'Unit dependencies';

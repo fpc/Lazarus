@@ -296,6 +296,10 @@ msgstr ""
 msgid "Add an item"
 msgstr ""
 
+#: lazarusidestrconsts:srkmecaddbreakpoint
+msgid "add break point"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetempladdcodetemplate
 msgid "Add code template"
 msgstr ""
@@ -1348,6 +1352,10 @@ msgstr ""
 msgid "Data Access"
 msgstr ""
 
+#: lazarusidestrconsts:lisdate
+msgid "Date"
+msgstr ""
+
 #: lazarusidestrconsts:uemdebugword
 msgid "Debug"
 msgstr ""
@@ -1985,7 +1993,7 @@ msgid "File is used"
 msgstr ""
 
 #: lazarusidestrconsts:lisfindfilefilemaskbak
-msgid "File mask (*, *.*, *.bak?)"
+msgid "File mask (*;*.*;*.bak?)"
 msgstr ""
 
 #: lazarusidestrconsts:srkmcatfilemenu
@@ -2370,6 +2378,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgheapsize
 msgid "Heap Size"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguagehebrew
+msgid "Hebrew"
 msgstr ""
 
 #: lazarusidestrconsts:dlgheightpos
@@ -2959,6 +2971,14 @@ msgstr "Spring zurueck"
 #: lazarusidestrconsts:lismenujumpforward
 msgid "Jump forward"
 msgstr "Spring vorwaerts"
+
+#: lazarusidestrconsts:lismenujumptonexterror
+msgid "Jump to next error"
+msgstr ""
+
+#: lazarusidestrconsts:lismenujumptopreverror
+msgid "Jump to previous error"
+msgstr ""
 
 #: lazarusidestrconsts:dlgjumpingetc
 msgid "Jumping (e.g. Method Jumping)"
@@ -4008,10 +4028,6 @@ msgstr ""
 msgid "pause program"
 msgstr ""
 
-#: lazarusidestrconsts:srkmecperiod
-msgid "period"
-msgstr ""
-
 #: lazarusidestrconsts:dlgpersistentcaret
 msgid "Persistent Caret"
 msgstr ""
@@ -4314,6 +4330,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisremoveallinvalidproperties
 msgid "Remove all invalid properties"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecremovebreakpoint
+msgid "remove break point"
 msgstr ""
 
 #: lazarusidestrconsts:lispckeditremovedependency
@@ -5980,8 +6000,8 @@ msgstr ""
 msgid "Unable to find file %s%s%s."
 msgstr ""
 
-#: lazarusidestrconsts:lisunabletofindfilechecksearchpathinruncompileroption
-msgid "Unable to find file %s%s%s.%sCheck search path in%sRun->Compiler Options...->Search Paths->Other Unit Files"
+#: lazarusidestrconsts:lisunabletofindfilechecksearchpathinprojectcompileroption
+msgid "Unable to find file %s%s%s.%sCheck search path in%sProject->Compiler Options...->Search Paths->Other Unit Files"
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletofindmethodplzfixtheerrorshowninthemessage

@@ -295,6 +295,10 @@ msgstr "Aggiungi unit ad un pacchetto"
 msgid "Add an item"
 msgstr "Aggiungi una voce"
 
+#: lazarusidestrconsts:srkmecaddbreakpoint
+msgid "add break point"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetempladdcodetemplate
 msgid "Add code template"
 msgstr "Aggiungi template di codice"
@@ -1347,6 +1351,10 @@ msgstr "Comando CVS"
 msgid "Data Access"
 msgstr "Accesso ai dati"
 
+#: lazarusidestrconsts:lisdate
+msgid "Date"
+msgstr ""
+
 #: lazarusidestrconsts:uemdebugword
 msgid "Debug"
 msgstr "Debug"
@@ -1984,8 +1992,8 @@ msgid "File is used"
 msgstr "Il file è in uso"
 
 #: lazarusidestrconsts:lisfindfilefilemaskbak
-msgid "File mask (*, *.*, *.bak?)"
-msgstr "Maschera dei file (*, *.*, *.bak?)"
+msgid "File mask (*;*.*;*.bak?)"
+msgstr ""
 
 #: lazarusidestrconsts:srkmcatfilemenu
 msgid "File menu commands"
@@ -2370,6 +2378,10 @@ msgstr "Possiede una procedura di registrazione"
 #: lazarusidestrconsts:dlgheapsize
 msgid "Heap Size"
 msgstr "Ampiezza dell'Heap"
+
+#: lazarusidestrconsts:rslanguagehebrew
+msgid "Hebrew"
+msgstr ""
 
 #: lazarusidestrconsts:dlgheightpos
 msgid "Height:"
@@ -2958,6 +2970,14 @@ msgstr "Salta indietro"
 #: lazarusidestrconsts:lismenujumpforward
 msgid "Jump forward"
 msgstr "Salta avanti"
+
+#: lazarusidestrconsts:lismenujumptonexterror
+msgid "Jump to next error"
+msgstr ""
+
+#: lazarusidestrconsts:lismenujumptopreverror
+msgid "Jump to previous error"
+msgstr ""
 
 #: lazarusidestrconsts:dlgjumpingetc
 msgid "Jumping (e.g. Method Jumping)"
@@ -4007,10 +4027,6 @@ msgstr "Tasto pausa"
 msgid "pause program"
 msgstr "poni in pausa il programma"
 
-#: lazarusidestrconsts:srkmecperiod
-msgid "period"
-msgstr "punto"
-
 #: lazarusidestrconsts:dlgpersistentcaret
 msgid "Persistent Caret"
 msgstr "Apice persistente"
@@ -4313,6 +4329,10 @@ msgstr "Rimuovi"
 
 #: lazarusidestrconsts:lisremoveallinvalidproperties
 msgid "Remove all invalid properties"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecremovebreakpoint
+msgid "remove break point"
 msgstr ""
 
 #: lazarusidestrconsts:lispckeditremovedependency
@@ -5979,9 +5999,9 @@ msgstr "Impossibile trovare una sezione ResourceString nè in questa nè in ness
 msgid "Unable to find file %s%s%s."
 msgstr "Impossibile trovare il file %s%s%s."
 
-#: lazarusidestrconsts:lisunabletofindfilechecksearchpathinruncompileroption
-msgid "Unable to find file %s%s%s.%sCheck search path in%sRun->Compiler Options...->Search Paths->Other Unit Files"
-msgstr "Impossibile trovare il file %s%s%s.%sControllare il percorso di ricerca in%sRun->Opzioni compilatore...->Percorsi di ricerca->Altri file delle unit"
+#: lazarusidestrconsts:lisunabletofindfilechecksearchpathinprojectcompileroption
+msgid "Unable to find file %s%s%s.%sCheck search path in%sProject->Compiler Options...->Search Paths->Other Unit Files"
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletofindmethodplzfixtheerrorshowninthemessage
 msgid "Unable to find method. Plz fix the error shown in the message window."

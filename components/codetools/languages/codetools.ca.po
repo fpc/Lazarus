@@ -282,6 +282,10 @@ msgstr "Denegat l'accés d'execució per: %s"
 msgid "expected end., but %s found"
 msgstr "S'esperava end., però s'ha trobat %s"
 
+#: codetoolsstrconsts:ctsexportsclauseonlyallowedinlibraries
+msgid "exports clause only allowed in libraries"
+msgstr ""
+
 #: codetoolsstrconsts:ctsexprtypemustbeclassorrecord
 msgid "expression type must be class or record type"
 msgstr "el tipus d'expressió ha de ser del tipus class o record"
