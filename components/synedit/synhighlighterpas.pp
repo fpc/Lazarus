@@ -238,7 +238,7 @@ type
     function GetRange: Pointer; override;
     function GetToken: string; override;
     {$IFDEF SYN_LAZARUS}
-    procedure GetTokenEx(var StartPos, EndPos: integer); override;
+    procedure GetTokenEx(var TokenStart: PChar; var TokenLength: integer); override;
     {$ENDIF}
     function GetTokenAttribute: TSynHighlighterAttributes; override;
     function GetTokenID: TtkTokenKind;
@@ -1505,10 +1505,14 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
-procedure TSynPasSyn.GetTokenEx(var StartPos, EndPos: integer);
+procedure TSynPasSyn.GetTokenEx(var TokenStart: PChar; var TokenLength: integer);
 begin
-  StartPos:=fTokenPos;
-  EndPos:=Run;
+  TokenLength:=Run-fTokenPos;
+  if TokenLength>0 then begin
+    TokenStart:=@fLine[fTokenPos];
+  end else begin
+    TokenStart:=nil;
+  end;
 end;
 {$ENDIF}
 
