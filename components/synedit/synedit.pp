@@ -2018,7 +2018,7 @@ begin
   // don't fire the event if key is to be ignored
   if not (sfIgnoreNextChar in fStateFlags) then begin
     {$IFDEF VerboseKeyboard}
-    DebugLn('TCustomSynEdit.UTF8KeyPress ',DbgSName(Self),' Key="',DbgStr(Key),'" UseUTF8=',dbgs(UseUTF8));
+    DebugLn('TCustomSynEdit.KeyPress ',DbgSName(Self),' Key="',DbgStr(Key),'" UseUTF8=',dbgs(UseUTF8));
     {$ENDIF}
     if Assigned(OnKeyPress) then OnKeyPress(Self, Key);
     CommandProcessor(ecChar, Key, nil);

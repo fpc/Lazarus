@@ -84,7 +84,7 @@ uses
   // help manager
   HelpManager,
   // designer
-  ComponentPalette, ComponentReg,
+  ComponentPalette, ComponentReg, ObjInspExt,
   Designer, FormEditor, CustomFormEditor,
   ControlSelection, AnchorEditor,
   {$DEFINE UseNewMenuEditor}
@@ -333,11 +333,13 @@ type
     procedure OIOnShowOptions(Sender: TObject);
     procedure OIRemainingKeyUp(Sender: TObject; var Key: Word;
        Shift: TShiftState);
-    procedure OnPropHookGetMethods(TypeData:PTypeData; Proc:TGetStringProc);
-    function OnPropHookMethodExists(const AMethodName:ShortString;
+    procedure OIOnAddToFavourites(Sender: TObject);
+    procedure OIOnRemoveFromFavourites(Sender: TObject);
+    procedure OnPropHookGetMethods(TypeData: PTypeData; Proc:TGetStringProc);
+    function OnPropHookMethodExists(const AMethodName: ShortString;
                                     TypeData: PTypeData;
                                     var MethodIsCompatible, MethodIsPublished,
-                                        IdentIsMethod: boolean): boolean;
+                                    IdentIsMethod: boolean): boolean;
     function OnPropHookCreateMethod(const AMethodName:ShortString;
                                     ATypeInfo:PTypeInfo): TMethod;
     procedure OnPropHookShowMethod(const AMethodName:ShortString);
@@ -451,7 +453,6 @@ type
     procedure Notification(AComponent: TComponent;
                            Operation: TOperation); override;
 
-    procedure ToolButtonClick(Sender: TObject);
     procedure OnApplyWindowLayout(ALayout: TIDEWindowLayout);
     procedure AddRecentProjectFileToEnvironment(const AFilename: string);
 
@@ -1123,6 +1124,16 @@ begin
   OnExecuteIDECommand(Sender,Key,Shift,caDesign);
 end;
 
+procedure TMainIDE.OIOnAddToFavourites(Sender: TObject);
+begin
+  ShowAddRemoveFavouriteDialog(ObjectInspector1,true);
+end;
+
+procedure TMainIDE.OIOnRemoveFromFavourites(Sender: TObject);
+begin
+  ShowAddRemoveFavouriteDialog(ObjectInspector1,false);
+end;
+
 procedure TMainIDE.OnPropHookGetMethods(TypeData:PTypeData;
   Proc:TGetStringProc);
 var ActiveSrcEdit: TSourceEditor;
@@ -1139,12 +1150,6 @@ begin
   begin
     DoJumpToCodeToolBossError;
   end;
-end;
-
-Procedure TMainIDE.ToolButtonClick(Sender: TObject);
-Begin
-  Assert(False, 'Trace:TOOL BUTTON CLICK!');
-
 end;
 
 {------------------------------------------------------------------------------}
@@ -1333,6 +1338,12 @@ begin
   ObjectInspector1.OnSelectPersistentsInOI:=@OIOnSelectPersistents;
   ObjectInspector1.OnShowOptions:=@OIOnShowOptions;
   ObjectInspector1.OnRemainingKeyUp:=@OIRemainingKeyUp;
+  {$IFDEF EnableOIFavourites}
+  ObjectInspector1.ShowFavouritePage:=true;
+  {$ENDIF}
+  ObjectInspector1.Favourites:=LoadOIFavouriteProperties;
+  ObjectInspector1.OnAddToFavourites:=@OIOnAddToFavourites;
+  ObjectInspector1.OnRemoveFromFavourites:=@OIOnRemoveFromFavourites;
 
   GlobalDesignHook:=TPropertyEditorHook.Create;
   GlobalDesignHook.GetPrivateDirectory:=AppendPathDelim(GetPrimaryConfigPath);
@@ -11533,6 +11544,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.863  2005/03/29 09:30:14  mattias
+  started OI favourites
+
   Revision 1.862  2005/03/23 10:45:05  mattias
   fixed ambigious with ambiguous
 

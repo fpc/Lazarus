@@ -1078,6 +1078,7 @@ var
   Params: TFindDeclarationParams;
 begin
   if (iliBaseExprTypeValid in Flags) then exit;
+  BaseExprType:=CleanExpressionType;
   BaseExprType.Desc:=xtNone;
   if (Node<>nil) and (Tool<>nil) then begin
     Tool.ActivateGlobalWriteLock;

@@ -42,11 +42,62 @@ uses
   PropEdits, GraphPropEdits, ListViewPropEdit, ImageListEditor,
   ComponentTreeView;
 
+const
+  OIOptionsFileVersion = 2;
 
 type
   EObjectInspectorException = class(Exception);
   
   TObjectInspector = class;
+
+  // standard ObjectInspector pages
+  TObjectInspectorPage = (
+    oipgpProperties,
+    oipgpEvents,
+    oipgpFavourite
+    );
+  TObjectInspectorPages = set of TObjectInspectorPage;
+  
+  
+  { TOIFavouriteProperty
+    BaseClassName }
+  TOIFavouriteProperty = class
+  public
+    BaseClass: TPersistentClass;
+    BaseClassname: string;
+    PropertyName: string;
+    Include: boolean; // include or exclude
+    constructor Create(ABaseClass: TPersistentClass;
+                       const APropertyName: string; TheInclude: boolean);
+    function Constrains(AnItem: TOIFavouriteProperty): boolean;
+    function IsFavourite(AClass: TPersistentClass;
+                         const APropertyName: string): boolean;
+  end;
+
+  { TOIFavouriteProperties }
+
+  TOIFavouriteProperties = class
+  private
+    FItems: TList;
+    FCount: integer;
+    function GetItems(Index: integer): TOIFavouriteProperty;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    procedure Add(NewItem: TOIFavouriteProperty);
+    procedure Remove(AnItem: TOIFavouriteProperty);
+    procedure DeleteConstraints(AnItem: TOIFavouriteProperty);
+    function IsFavourite(AClass: TPersistentClass;
+                         const PropertyName: string): boolean;
+    function AreFavourites(Selection: TPersistentSelectionList;
+                           const PropertyName: string): boolean;
+    procedure LoadFromConfig(ConfigStore: TConfigStorage; const Path: string);
+    procedure SaveToConfig(ConfigStore: TConfigStorage; const Path: string);
+  public
+    property Items[Index: integer]: TOIFavouriteProperty read GetItems; default;
+    property Count: integer read FCount;
+  end;
 
 
   { TOIOptions }
@@ -63,11 +114,13 @@ type
     FTop: integer;
     FWidth: integer;
     FHeight: integer;
-    FPropertyGridSplitterX: integer;
-    FEventGridSplitterX: integer;
+    FGridSplitterX: array[TObjectInspectorPage] of integer;
 
     FGridBackgroundColor: TColor;
     FShowHints: boolean;
+    function FPropertyGridSplitterX(Page: TObjectInspectorPage): integer;
+    procedure FPropertyGridSplitterX(Page: TObjectInspectorPage;
+      const AValue: integer);
   public
     constructor Create;
     function Load: boolean;
@@ -82,10 +135,8 @@ type
     property Top:integer read FTop write FTop;
     property Width:integer read FWidth write FWidth;
     property Height:integer read FHeight write FHeight;
-    property PropertyGridSplitterX:integer read FPropertyGridSplitterX
-                                           write FPropertyGridSplitterX;
-    property EventGridSplitterX:integer read FEventGridSplitterX
-                                        write FEventGridSplitterX;
+    property GridSplitterX[Page: TObjectInspectorPage]:integer
+                       read FPropertyGridSplitterX write FPropertyGridSplitterX;
     property DefaultItemHeight: integer read FDefaultItemHeight
                                         write FDefaultItemHeight;
     property ShowComponentTree: boolean read FShowComponentTree
@@ -168,6 +219,7 @@ type
     FDragging: boolean;
     FExpandedProperties: TStringList;
     FExpandingRow: TOIPropertyGridRow;
+    FFavourites: TOIFavouriteProperties;
     FFilter: TTypeKinds;
     FIndent: integer;
     FItemIndex: integer;
@@ -176,7 +228,7 @@ type
     FOnModified: TNotifyEvent;
     FPreferredSplitterX: integer; // best splitter position
     FPropertyEditorHook: TPropertyEditorHook;
-    FRows:TList;
+    FRows: TList;
     FSelection: TPersistentSelectionList;
     FSplitterX: integer; // current splitter position
     FStates: TOIPropertyGridStates;
@@ -196,6 +248,7 @@ type
     procedure ClearRows;
     function GetCurrentEditValue: string;
     procedure SetCurrentEditValue(const NewValue: string);
+    procedure SetFavourites(const AValue: TOIFavouriteProperties);
     procedure SetItemIndex(NewIndex:integer);
 
     procedure SetItemsTops;
@@ -274,17 +327,17 @@ type
     function GetActiveRow: TOIPropertyGridRow;
     function GetHintTypeAt(RowIndex: integer; X: integer): TPropEditHint;
 
-    function GetRowByPath(const PropPath:string): TOIPropertyGridRow;
-    function GridHeight:integer;
-    function MouseToIndex(y:integer;MustExist:boolean):integer;
-    function PropertyPath(Index:integer):string;
-    function TopMax:integer;
+    function GetRowByPath(const PropPath: string): TOIPropertyGridRow;
+    function GridHeight: integer;
+    function MouseToIndex(y: integer; MustExist: boolean):integer;
+    function PropertyPath(Index: integer):string;
+    function TopMax: integer;
     procedure BuildPropertyList;
     procedure Clear;
     procedure Paint;  override;
     procedure PropEditLookupRootChange;
     procedure RefreshPropertyValues;
-    procedure SetBounds(aLeft,aTop,aWidth,aHeight:integer); override;
+    procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
     procedure SetCurrentRowValue(const NewValue: string);
   public
     property BackgroundColor: TColor read FBackgroundColor
@@ -294,24 +347,26 @@ type
                                       write SetCurrentEditValue;
     property DefaultItemHeight:integer read FDefaultItemHeight
                                        write FDefaultItemHeight default 25;
-    property DefaultValueFont:TFont read FDefaultValueFont write FDefaultValueFont;
-    property ExpandedProperties:TStringList read FExpandedProperties
+    property DefaultValueFont: TFont read FDefaultValueFont write FDefaultValueFont;
+    property ExpandedProperties: TStringList read FExpandedProperties
                                             write FExpandedProperties;
-    property Indent:integer read FIndent write FIndent default 9;
-    property ItemIndex:integer read FItemIndex write SetItemIndex;
-    property NameFont:TFont read FNameFont write FNameFont;
+    property Indent: integer read FIndent write FIndent default 9;
+    property ItemIndex: integer read FItemIndex write SetItemIndex;
+    property NameFont: TFont read FNameFont write FNameFont;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
     property PrefferedSplitterX: integer read FPreferredSplitterX
                                          write FPreferredSplitterX default 100;
     property PropertyEditorHook: TPropertyEditorHook read FPropertyEditorHook
                                                     write SetPropertyEditorHook;
-    property RowCount:integer read GetRowCount;
-    property Rows[Index:integer]:TOIPropertyGridRow read GetRow;
+    property RowCount: integer read GetRowCount;
+    property Rows[Index: integer]:TOIPropertyGridRow read GetRow;
     property Selection: TPersistentSelectionList read FSelection
                                                  write SetSelection;
-    property SplitterX:integer read FSplitterX write SetSplitterX default 100;
-    property TopY:integer read FTopY write SetTopY default 0;
-    property ValueFont:TFont read FValueFont write FValueFont;
+    property SplitterX: integer read FSplitterX write SetSplitterX default 100;
+    property TopY: integer read FTopY write SetTopY default 0;
+    property ValueFont: TFont read FValueFont write FValueFont;
+    property Favourites: TOIFavouriteProperties read FFavourites
+                                                write SetFavourites;
   end;
   
   
@@ -383,6 +438,8 @@ type
     oifRebuildPropListsNeeded
     );
   TOIFlags = set of TOIFlag;
+  
+  { TObjectInspector }
 
   TObjectInspector = class (TForm)
     AvailPersistentComboBox: TComboBox;
@@ -391,10 +448,13 @@ type
     NoteBook: TNoteBook;
     PropertyGrid: TOICustomPropertyGrid;
     EventGrid: TOICustomPropertyGrid;
+    FavouriteGrid: TOICustomPropertyGrid;
     StatusBar: TStatusBar;
     MainPopupMenu: TPopupMenu;
     ColorsPopupMenuItem: TMenuItem;
     SetDefaultPopupMenuItem: TMenuItem;
+    AddToFavouritesPopupMenuItem: TMenuItem;
+    RemoveFromFavouritesPopupMenuItem: TMenuItem;
     UndoPropertyPopupMenuItem: TMenuItem;
     BackgroundColPopupMenuItem: TMenuItem;
     ShowHintsPopupMenuItem: TMenuItem;
@@ -405,15 +465,19 @@ type
     procedure ObjectInspectorResize(Sender: TObject);
     procedure OnGriddKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure OnSetDefaultPopupmenuItemClick(Sender: TObject);
+    procedure OnAddToFavouritesPopupmenuItemClick(Sender: TObject);
+    procedure OnRemoveFromFavouritesPopupmenuItemClick(Sender: TObject);
     procedure OnUndoPopupmenuItemClick(Sender: TObject);
     procedure OnBackgroundColPopupMenuItemClick(Sender: TObject);
     procedure OnShowHintPopupMenuItemClick(Sender: TObject);
     procedure OnShowOptionsPopupMenuItemClick(Sender: TObject);
     procedure OnShowComponentTreePopupMenuItemClick(Sender: TObject);
     procedure OnMainPopupMenuPopup(Sender: TObject);
-    procedure HookRefreshPropertyValues;
   private
+    FFavourites: TOIFavouriteProperties;
+    FOnAddToFavourites: TNotifyEvent;
     FOnRemainingKeyUp: TKeyEvent;
+    FOnRemoveFromFavourites: TNotifyEvent;
     FSelection: TPersistentSelectionList;
     FComponentTreeHeight: integer;
     FDefaultItemHeight: integer;
@@ -424,27 +488,32 @@ type
     FOnSelectPersistentsInOI: TNotifyEvent;
     FOnModified: TNotifyEvent;
     FShowComponentTree: boolean;
+    FShowFavouritePage: boolean;
     FUpdateLock: integer;
     FUpdatingAvailComboBox: boolean;
     FUsePairSplitter: boolean;
-  protected
-    function PersistentToString(APersistent: TPersistent): string;
+    function GetGridControl(Page: TObjectInspectorPage): TOICustomPropertyGrid;
+    procedure SetFavourites(const AValue: TOIFavouriteProperties);
+    procedure SetShowFavouritePage(const AValue: boolean);
     procedure SetComponentTreeHeight(const AValue: integer);
     procedure SetDefaultItemHeight(const AValue: integer);
     procedure SetOnShowOptions(const AValue: TNotifyEvent);
     procedure SetPropertyEditorHook(NewValue: TPropertyEditorHook);
     procedure SetSelection(const ASelection: TPersistentSelectionList);
+    procedure SetShowComponentTree(const AValue: boolean);
+    procedure SetUsePairSplitter(const AValue: boolean);
+  protected
+    function PersistentToString(APersistent: TPersistent): string;
     procedure AddPersistentToList(APersistent: TPersistent; List: TStrings);
     procedure HookLookupRootChange;
     procedure OnGridModified(Sender: TObject);
     procedure SetAvailComboBoxText;
     procedure HookGetSelection(const ASelection: TPersistentSelectionList);
     procedure HookSetSelection(const ASelection: TPersistentSelectionList);
-    procedure SetShowComponentTree(const AValue: boolean);
-    procedure SetUsePairSplitter(const AValue: boolean);
     procedure CreatePairSplitter;
     procedure DestroyNoteBook;
     procedure CreateNoteBook;
+    procedure CreateFavouritePage;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
   public
@@ -459,6 +528,7 @@ type
     function GetActivePropertyGrid: TOICustomPropertyGrid;
     function GetActivePropertyRow: TOIPropertyGridRow;
     function GetCurRowDefaultValue(var DefaultStr: string): boolean;
+    procedure HookRefreshPropertyValues;
   public
     property DefaultItemHeight: integer read FDefaultItemHeight
                                         write SetDefaultItemHeight;
@@ -471,15 +541,41 @@ type
     property PropertyEditorHook: TPropertyEditorHook
                            read FPropertyEditorHook write SetPropertyEditorHook;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
-    property OnShowOptions: TNotifyEvent read FOnShowOptions write SetOnShowOptions;
-    property OnRemainingKeyUp: TKeyEvent read FOnRemainingKeyUp write FOnRemainingKeyUp;
-    property ShowComponentTree: boolean read FShowComponentTree write SetShowComponentTree;
-    property ComponentTreeHeight: integer read FComponentTreeHeight write SetComponentTreeHeight;
-    property UsePairSplitter: boolean read FUsePairSplitter write SetUsePairSplitter;
+    property OnShowOptions: TNotifyEvent read FOnShowOptions
+                                         write SetOnShowOptions;
+    property OnRemainingKeyUp: TKeyEvent read FOnRemainingKeyUp
+                                         write FOnRemainingKeyUp;
+    property ShowComponentTree: boolean read FShowComponentTree
+                                        write SetShowComponentTree;
+    property ComponentTreeHeight: integer read FComponentTreeHeight
+                                          write SetComponentTreeHeight;
+    property UsePairSplitter: boolean read FUsePairSplitter
+                                      write SetUsePairSplitter;
+    property ShowFavouritePage: boolean read FShowFavouritePage
+                                        write SetShowFavouritePage;
+    property GridControl[Page: TObjectInspectorPage]: TOICustomPropertyGrid
+                                                            read GetGridControl;
+    property Favourites: TOIFavouriteProperties read FFavourites write SetFavourites;
+    property OnAddToFavourites: TNotifyEvent read FOnAddToFavourites
+                                             write FOnAddToFavourites;
+    property OnRemoveFromFavourites: TNotifyEvent read FOnRemoveFromFavourites
+                                                  write FOnRemoveFromFavourites;
   end;
 
 const
   DefaultObjectInspectorName: string = 'ObjectInspector';
+  
+  DefaultOIPageNames: array[TObjectInspectorPage] of shortstring = (
+    'PropertyPage',
+    'EventPage',
+    'FavouritePage'
+    );
+  DefaultOIGridNames: array[TObjectInspectorPage] of shortstring = (
+    'PropertyGrid',
+    'EventGrid',
+    'FavouriteGrid'
+    );
+
 
 
 //******************************************************************************
@@ -1118,8 +1214,16 @@ begin
 end;
 
 procedure TOICustomPropertyGrid.AddPropertyEditor(PropEditor: TPropertyEditor);
-var NewRow:TOIPropertyGridRow;
+var
+  NewRow: TOIPropertyGridRow;
 begin
+  if Favourites<>nil then begin
+    //debugln('TOICustomPropertyGrid.AddPropertyEditor A ',PropEditor.GetName);
+    if not Favourites.AreFavourites(Selection,PropEditor.GetName) then begin
+      PropEditor.Free;
+      exit;
+    end;
+  end;
   NewRow:=TOIPropertyGridRow.Create(Self,PropEditor,nil);
   FRows.Add(NewRow);
   if FRows.Count>1 then begin
@@ -1830,6 +1934,15 @@ begin
     ValueComboBox.Text:=NewValue;
 end;
 
+procedure TOICustomPropertyGrid.SetFavourites(
+  const AValue: TOIFavouriteProperties);
+begin
+  //debugln('TOICustomPropertyGrid.SetFavourites ',dbgsName(Self));
+  if FFavourites=AValue then exit;
+  FFavourites:=AValue;
+  BuildPropertyList;
+end;
+
 procedure TOICustomPropertyGrid.Clear;
 begin
   ClearRows;
@@ -2230,7 +2343,20 @@ end;
 
 { TOIOptions }
 
+function TOIOptions.FPropertyGridSplitterX(Page: TObjectInspectorPage): integer;
+begin
+  Result:=FGridSplitterX[Page];
+end;
+
+procedure TOIOptions.FPropertyGridSplitterX(Page: TObjectInspectorPage;
+  const AValue: integer);
+begin
+  FGridSplitterX[Page]:=AValue;
+end;
+
 constructor TOIOptions.Create;
+var
+  p: TObjectInspectorPage;
 begin
   inherited Create;
 
@@ -2239,8 +2365,8 @@ begin
   FTop:=0;
   FWidth:=250;
   FHeight:=400;
-  FPropertyGridSplitterX:=110;
-  FEventGridSplitterX:=110;
+  for p:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
+    FGridSplitterX[p]:=110;
   FDefaultItemHeight:=20;
   FShowComponentTree:=true;
   FComponentTreeHeight:=100;
@@ -2249,36 +2375,51 @@ begin
 end;
 
 function TOIOptions.Load: boolean;
+var
+  Path: String;
+  FileVersion: integer;
+  Page: TObjectInspectorPage;
 begin
   Result:=false;
   if ConfigStore=nil then exit;
   try
-    FSaveBounds:=ConfigStore.GetValue('ObjectInspectorOptions/Bounds/Valid'
+    Path:='ObjectInspectorOptions/';
+    FileVersion:=ConfigStore.GetValue(Path+'Version/Value',0);
+  
+    FSaveBounds:=ConfigStore.GetValue(Path+'Bounds/Valid'
                                       ,false);
     if FSaveBounds then begin
-      FLeft:=ConfigStore.GetValue('ObjectInspectorOptions/Bounds/Left',0);
-      FTop:=ConfigStore.GetValue('ObjectInspectorOptions/Bounds/Top',0);
-      FWidth:=ConfigStore.GetValue('ObjectInspectorOptions/Bounds/Width',250);
-      FHeight:=ConfigStore.GetValue('ObjectInspectorOptions/Bounds/Height',400);
+      FLeft:=ConfigStore.GetValue(Path+'Bounds/Left',0);
+      FTop:=ConfigStore.GetValue(Path+'Bounds/Top',0);
+      FWidth:=ConfigStore.GetValue(Path+'Bounds/Width',250);
+      FHeight:=ConfigStore.GetValue(Path+'Bounds/Height',400);
     end;
-    FPropertyGridSplitterX:=ConfigStore.GetValue(
-       'ObjectInspectorOptions/Bounds/PropertyGridSplitterX',110);
-    if FPropertyGridSplitterX<10 then FPropertyGridSplitterX:=10;
-    FEventGridSplitterX:=ConfigStore.GetValue(
-       'ObjectInspectorOptions/Bounds/EventGridSplitterX',110);
-    if FEventGridSplitterX<10 then FEventGridSplitterX:=10;
+
+    if FileVersion>=2 then begin
+      for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
+        FGridSplitterX[oipgpProperties]:=ConfigStore.GetValue(
+           Path+'Bounds/'+DefaultOIPageNames[Page]+'/SplitterX',110);
+    end else begin
+      FGridSplitterX[oipgpProperties]:=ConfigStore.GetValue(
+         Path+'Bounds/PropertyGridSplitterX',110);
+      FGridSplitterX[oipgpEvents]:=ConfigStore.GetValue(
+         Path+'Bounds/EventGridSplitterX',110);
+    end;
+    for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
+      if FGridSplitterX[Page]<10 then FGridSplitterX[Page]:=10;
+
     FDefaultItemHeight:=ConfigStore.GetValue(
-       'ObjectInspectorOptions/Bounds/DefaultItemHeight',20);
+       Path+'Bounds/DefaultItemHeight',20);
     if FDefaultItemHeight<0 then FDefaultItemHeight:=20;
     FShowComponentTree:=ConfigStore.GetValue(
-       'ObjectInspectorOptions/ComponentTree/Show/Value',true);
+       Path+'ComponentTree/Show/Value',true);
     FComponentTreeHeight:=ConfigStore.GetValue(
-       'ObjectInspectorOptions/ComponentTree/Height/Value',100);
+       Path+'ComponentTree/Height/Value',100);
 
     FGridBackgroundColor:=ConfigStore.GetValue(
-         'ObjectInspectorOptions/GridBackgroundColor',clBtnFace);
+         Path+'GridBackgroundColor',clBtnFace);
     FShowHints:=ConfigStore.GetValue(
-         'ObjectInspectorOptions/ShowHints',false);
+         Path+'ShowHints',false);
   except
     on E: Exception do begin
       DebugLn('ERROR: TOIOptions.Load: ',E.Message);
@@ -2289,34 +2430,41 @@ begin
 end;
 
 function TOIOptions.Save: boolean;
+var
+  Page: TObjectInspectorPage;
+  Path: String;
 begin
   Result:=false;
   if ConfigStore=nil then exit;
   try
-    ConfigStore.SetDeleteValue('ObjectInspectorOptions/Bounds/Valid',FSaveBounds,
+    Path:='ObjectInspectorOptions/';
+    ConfigStore.SetValue(Path+'Version/Value',OIOptionsFileVersion);
+
+    ConfigStore.SetDeleteValue(Path+'Bounds/Valid',FSaveBounds,
+                             false);
+
+    ConfigStore.SetDeleteValue(Path+'Bounds/Valid',FSaveBounds,
                              false);
     if FSaveBounds then begin
-      ConfigStore.SetValue('ObjectInspectorOptions/Bounds/Left',FLeft);
-      ConfigStore.SetValue('ObjectInspectorOptions/Bounds/Top',FTop);
-      ConfigStore.SetValue('ObjectInspectorOptions/Bounds/Width',FWidth);
-      ConfigStore.SetValue('ObjectInspectorOptions/Bounds/Height',FHeight);
+      ConfigStore.SetValue(Path+'Bounds/Left',FLeft);
+      ConfigStore.SetValue(Path+'Bounds/Top',FTop);
+      ConfigStore.SetValue(Path+'Bounds/Width',FWidth);
+      ConfigStore.SetValue(Path+'Bounds/Height',FHeight);
     end;
-    ConfigStore.SetDeleteValue(
-      'ObjectInspectorOptions/Bounds/PropertyGridSplitterX',
-      FPropertyGridSplitterX, 110);
-    ConfigStore.SetDeleteValue(
-      'ObjectInspectorOptions/Bounds/EventGridSplitterX',
-      FEventGridSplitterX, 110);
-    ConfigStore.SetDeleteValue('ObjectInspectorOptions/Bounds/DefaultItemHeight',
+    for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
+      ConfigStore.SetDeleteValue(
+         Path+'Bounds/'+DefaultOIPageNames[Page]+'/SplitterX',
+         FGridSplitterX[Page],110);
+    ConfigStore.SetDeleteValue(Path+'Bounds/DefaultItemHeight',
                              FDefaultItemHeight,20);
-    ConfigStore.SetDeleteValue('ObjectInspectorOptions/ComponentTree/Show/Value',
+    ConfigStore.SetDeleteValue(Path+'ComponentTree/Show/Value',
                              FShowComponentTree,true);
-    ConfigStore.SetDeleteValue('ObjectInspectorOptions/ComponentTree/Height/Value',
+    ConfigStore.SetDeleteValue(Path+'ComponentTree/Height/Value',
                              FComponentTreeHeight,100);
 
-    ConfigStore.SetDeleteValue('ObjectInspectorOptions/GridBackgroundColor',
+    ConfigStore.SetDeleteValue(Path+'GridBackgroundColor',
                              FGridBackgroundColor,clBackground);
-    ConfigStore.SetDeleteValue('ObjectInspectorOptions/ShowHints',FShowHints,
+    ConfigStore.SetDeleteValue(Path+'ShowHints',FShowHints,
                              false);
   except
     on E: Exception do begin
@@ -2328,13 +2476,16 @@ begin
 end;
 
 procedure TOIOptions.Assign(AnObjInspector: TObjectInspector);
+var
+  Page: TObjectInspectorPage;
 begin
   FLeft:=AnObjInspector.Left;
   FTop:=AnObjInspector.Top;
   FWidth:=AnObjInspector.Width;
   FHeight:=AnObjInspector.Height;
-  FPropertyGridSplitterX:=AnObjInspector.PropertyGrid.PrefferedSplitterX;
-  FEventGridSplitterX:=AnObjInspector.EventGrid.PrefferedSplitterX;
+  for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
+    if AnObjInspector.GridControl[Page]<>nil then
+      FGridSplitterX[Page]:=AnObjInspector.GridControl[Page].PrefferedSplitterX;
   FDefaultItemHeight:=AnObjInspector.DefaultItemHeight;
   FShowComponentTree:=AnObjInspector.ShowComponentTree;
   FComponentTreeHeight:=AnObjInspector.ComponentTreeHeight;
@@ -2343,21 +2494,24 @@ begin
 end;
 
 procedure TOIOptions.AssignTo(AnObjInspector: TObjectInspector);
+var
+  Page: TObjectInspectorPage;
+  Grid: TOICustomPropertyGrid;
 begin
   if FSaveBounds then begin
     AnObjInspector.SetBounds(FLeft,FTop,FWidth,FHeight);
   end;
-  AnObjInspector.PropertyGrid.PrefferedSplitterX:=FPropertyGridSplitterX;
-  AnObjInspector.PropertyGrid.SplitterX:=FPropertyGridSplitterX;
-  AnObjInspector.EventGrid.PrefferedSplitterX:=FEventGridSplitterX;
-  AnObjInspector.EventGrid.SplitterX:=FEventGridSplitterX;
+  for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do begin
+    Grid:=AnObjInspector.GridControl[Page];
+    if Grid=nil then continue;
+    Grid.PrefferedSplitterX:=FGridSplitterX[Page];
+    Grid.SplitterX:=FGridSplitterX[Page];
+    Grid.BackgroundColor:=FGridBackgroundColor;
+    Grid.ShowHint:=FShowHints;
+  end;
   AnObjInspector.DefaultItemHeight:=FDefaultItemHeight;
   AnObjInspector.ShowComponentTree:=FShowComponentTree;
   AnObjInspector.ComponentTreeHeight:=FComponentTreeHeight;
-  AnObjInspector.PropertyGrid.BackgroundColor:=FGridBackgroundColor;
-  AnObjInspector.PropertyGrid.ShowHint:=FShowHints;
-  AnObjInspector.EventGrid.BackgroundColor:=FGridBackgroundColor;
-  AnObjInspector.EventGrid.ShowHint:=FShowHints;
 end;
 
 
@@ -2414,6 +2568,7 @@ begin
   FComponentTreeHeight:=100;
   FShowComponentTree:=true;
   FUsePairSplitter:=TPairSplitter.IsSupportedByInterface;
+  FShowFavouritePage:=false;
 
   Caption := oisObjectInspector;
   Name := DefaultObjectInspectorName;
@@ -2436,8 +2591,15 @@ begin
     AutoPopup:=true;
   end;
   AddPopupMenuItem(SetDefaultPopupmenuItem,nil,'SetDefaultPopupMenuItem',
-     'Set to Default Value','Set property value to Default',
+     'Set to Default value','Set property value to Default',
      @OnSetDefaultPopupmenuItemClick,false,true,true);
+  AddPopupMenuItem(AddToFavouritesPopupMenuItem,nil,'AddToFavouritePopupMenuItem',
+     'Add to favourites','Add property to favourites properties',
+     @OnAddToFavouritesPopupmenuItemClick,false,true,true);
+  AddPopupMenuItem(RemoveFromFavouritesPopupMenuItem,nil,
+     'RemoveFromFavouritesPopupMenuItem',
+     'Remove from favourites','Remove property from favourites properties',
+     @OnRemoveFromFavouritesPopupmenuItemClick,false,true,true);
   AddPopupMenuItem(UndoPropertyPopupMenuItem,nil,'UndoPropertyPopupMenuItem',
      'Undo','Set property value to last valid value',
      @OnUndoPopupmenuItemClick,false,true,true);
@@ -2502,9 +2664,12 @@ destructor TObjectInspector.Destroy;
 begin
   FreeAndNil(FSelection);
   inherited Destroy;
+  FreeAndNil(FFavourites);
 end;
 
 procedure TObjectInspector.SetPropertyEditorHook(NewValue:TPropertyEditorHook);
+var
+  Page: TObjectInspectorPage;
 begin
   if FPropertyEditorHook=NewValue then exit;
   if FPropertyEditorHook<>nil then begin
@@ -2523,8 +2688,9 @@ begin
     and (FPropertyEditorHook.LookupRoot is TComponent) then
       FSelection.Add(TComponent(FPropertyEditorHook.LookupRoot));
     FillPersistentComboBox;
-    PropertyGrid.PropertyEditorHook:=FPropertyEditorHook;
-    EventGrid.PropertyEditorHook:=FPropertyEditorHook;
+    for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
+      if GridControl[Page]<>nil then
+        GridControl[Page].PropertyEditorHook:=FPropertyEditorHook;
     ComponentTree.PropertyEditorHook:=FPropertyEditorHook;
     RefreshSelection;
   end;
@@ -2547,6 +2713,7 @@ end;
 procedure TObjectInspector.SetDefaultItemHeight(const AValue: integer);
 var
   NewValue: Integer;
+  Page: TObjectInspectorPage;
 begin
   NewValue:=AValue;
   if NewValue<0 then
@@ -2558,8 +2725,9 @@ begin
   else if NewValue>100 then NewValue:=100;
   if FDefaultItemHeight=NewValue then exit;
   FDefaultItemHeight:=NewValue;
-  PropertyGrid.DefaultItemHeight:=FDefaultItemHeight;
-  EventGrid.DefaultItemHeight:=FDefaultItemHeight;
+  for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
+    if GridControl[Page]<>nil then
+      GridControl[Page].DefaultItemHeight:=FDefaultItemHeight;
   RebuildPropertyLists;
 end;
 
@@ -2585,9 +2753,12 @@ begin
 end;
 
 procedure TObjectInspector.HookLookupRootChange;
+var
+  Page: TObjectInspectorPage;
 begin
-  PropertyGrid.PropEditLookupRootChange;
-  EventGrid.PropEditLookupRootChange;
+  for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
+    if GridControl[Page]<>nil then
+      GridControl[Page].PropEditLookupRootChange;
   FillPersistentComboBox;
 end;
 
@@ -2658,10 +2829,11 @@ function TObjectInspector.GetActivePropertyGrid: TOICustomPropertyGrid;
 begin
   Result:=nil;
   if NoteBook=nil then exit;
-  if NoteBook.PageIndex=0 then
-    Result:=PropertyGrid
-  else if NoteBook.PageIndex=1 then
-    Result:=EventGrid;
+  case NoteBook.PageIndex of
+  0: Result:=PropertyGrid;
+  1: Result:=EventGrid;
+  2: Result:=FavouriteGrid;
+  end;
 end;
 
 function TObjectInspector.GetActivePropertyRow: TOIPropertyGridRow;
@@ -2705,9 +2877,12 @@ begin
 end;
 
 procedure TObjectInspector.RefreshSelection;
+var
+  Page: TObjectInspectorPage;
 begin
-  PropertyGrid.Selection := FSelection;
-  EventGrid.Selection := FSelection;
+  for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
+    if GridControl[Page]<>nil then
+      GridControl[Page].Selection := FSelection;
   ComponentTree.Selection := FSelection;
   ComponentTree.MakeSelectionVisible;
   if (not Visible) and (FSelection.Count>0) then
@@ -2715,19 +2890,25 @@ begin
 end;
 
 procedure TObjectInspector.RefreshPropertyValues;
+var
+  Page: TObjectInspectorPage;
 begin
-  PropertyGrid.RefreshPropertyValues;
-  EventGrid.RefreshPropertyValues;
+  for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
+    if GridControl[Page]<>nil then
+      GridControl[Page].RefreshPropertyValues;
 end;
 
 procedure TObjectInspector.RebuildPropertyLists;
+var
+  Page: TObjectInspectorPage;
 begin
   if FUpdateLock>0 then
     Include(FFLags,oifRebuildPropListsNeeded)
   else begin
     Exclude(FFLags,oifRebuildPropListsNeeded);
-    PropertyGrid.BuildPropertyList;
-    EventGrid.BuildPropertyList;
+    for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
+      if GridControl[Page]<>nil then
+        GridControl[Page].BuildPropertyList;
   end;
 end;
 
@@ -2805,6 +2986,18 @@ begin
   RefreshPropertyValues;
 end;
 
+procedure TObjectInspector.OnAddToFavouritesPopupmenuItemClick(Sender: TObject);
+begin
+  //debugln('TObjectInspector.OnAddToFavouritePopupmenuItemClick');
+  if Assigned(OnAddToFavourites) then OnAddToFavourites(Self);
+end;
+
+procedure TObjectInspector.OnRemoveFromFavouritesPopupmenuItemClick(
+  Sender: TObject);
+begin
+  if Assigned(OnRemoveFromFavourites) then OnRemoveFromFavourites(Self);
+end;
+
 procedure TObjectInspector.OnUndoPopupmenuItemClick(Sender: TObject);
 var
   CurGrid: TOICustomPropertyGrid;
@@ -2817,15 +3010,18 @@ begin
 end;
 
 procedure TObjectInspector.OnBackgroundColPopupMenuItemClick(Sender :TObject);
-var ColorDialog:TColorDialog;
+var
+  ColorDialog:TColorDialog;
+  Page: TObjectInspectorPage;
 begin
   ColorDialog:=TColorDialog.Create(nil);
   try
     with ColorDialog do begin
       Color:=PropertyGrid.BackgroundColor;
       if Execute then begin
-        PropertyGrid.BackgroundColor:=Color;
-        EventGrid.BackgroundColor:=Color;
+        for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
+          if GridControl[Page]<>nil then
+            GridControl[Page].BackgroundColor:=Color;
       end;
     end;
   finally
@@ -2925,18 +3121,10 @@ procedure TObjectInspector.DestroyNoteBook;
 begin
   if NoteBook<>nil then
     NoteBook.Visible:=false;
-  if PropertyGrid<>nil then begin
-    PropertyGrid.Free;
-    PropertyGrid:=nil;
-  end;
-  if EventGrid<>nil then begin
-    EventGrid.Free;
-    EventGrid:=nil;
-  end;
-  if NoteBook<>nil then begin
-    NoteBook.Free;
-    NoteBook:=nil;
-  end;
+  FreeAndNil(PropertyGrid);
+  FreeAndNil(EventGrid);
+  FreeAndNil(FavouriteGrid);
+  FreeAndNil(NoteBook);
 end;
 
 procedure TObjectInspector.CreateNoteBook;
@@ -2957,9 +3145,9 @@ begin
       Pages.Strings[0]:=oisProperties
     else
       Pages.Add(oisProperties);
-    Page[0].Name:='PropertyPage';
+    Page[0].Name:=DefaultOIPageNames[oipgpProperties];
     Pages.Add(oisEvents);
-    Page[1].Name:='EventPage';
+    Page[1].Name:=DefaultOIPageNames[oipgpEvents];
     PageIndex:=0;
     PopupMenu:=MainPopupMenu;
   end;
@@ -2972,13 +3160,8 @@ begin
       , tkInt64, tkQWord],
       FDefaultItemHeight);
   with PropertyGrid do begin
-    Name:='PropertyGrid';
+    Name:=DefaultOIGridNames[oipgpProperties];
     Parent:=NoteBook.Page[0];
-{    
-    ValueEdit.Parent:=Parent;
-    ValueComboBox.Parent:=Parent;
-    ValueButton.Parent:=Parent;
-}    
     Selection:=Self.FSelection;
     Align:=alClient;
     PopupMenu:=MainPopupMenu;
@@ -2990,18 +3173,56 @@ begin
   EventGrid:=TOICustomPropertyGrid.CreateWithParams(Self,PropertyEditorHook,
                                               [tkMethod],FDefaultItemHeight);
   with EventGrid do begin
-    Name:='EventGrid';
+    Name:=DefaultOIGridNames[oipgpEvents];
     Parent:=NoteBook.Page[1];
-{    
-    ValueEdit.Parent:=Parent;
-    ValueComboBox.Parent:=Parent;
-    ValueButton.Parent:=Parent;
-}
     Selection:=Self.FSelection;
     Align:=alClient;
     PopupMenu:=MainPopupMenu;
     OnModified:=@OnGridModified;
     OnKeyUp:=@OnGriddKeyUp;
+  end;
+  
+  CreateFavouritePage;
+end;
+
+procedure TObjectInspector.CreateFavouritePage;
+var
+  NewPage: TPage;
+  i: LongInt;
+begin
+  if FShowFavouritePage then begin
+    if FavouriteGrid=nil then begin
+      // create favourite page
+      NoteBook.Pages.Add(oisFavourites);
+      NewPage:=NoteBook.Page[NoteBook.PageCount-1];
+      NewPage.Name:=DefaultOIPageNames[oipgpFavourite];
+
+      // create favourite property grid
+      FavouriteGrid:=TOICustomPropertyGrid.CreateWithParams(Self,PropertyEditorHook
+          ,[tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat, tkSet, tkMethod
+          , tkSString, tkLString, tkAString, tkWString, tkVariant
+          {, tkArray, tkRecord, tkInterface}, tkClass, tkObject, tkWChar, tkBool
+          , tkInt64, tkQWord],
+          FDefaultItemHeight);
+      with FavouriteGrid do begin
+        Name:=DefaultOIGridNames[oipgpFavourite];
+        Parent:=NewPage;
+        Selection:=Self.FSelection;
+        Align:=alClient;
+        PopupMenu:=MainPopupMenu;
+        OnModified:=@OnGridModified;
+        OnKeyUp:=@OnGriddKeyUp;
+      end;
+      FavouriteGrid.Favourites:=FFavourites;
+    end;
+  end else begin
+    if FavouriteGrid<>nil then begin
+      // free and remove favourite page
+      i:=NoteBook.PageList.IndexOf(FavouriteGrid.Parent);
+      FreeAndNil(FavouriteGrid);
+      if i>=0 then
+        NoteBook.Pages.Delete(i);
+    end;
   end;
 end;
 
@@ -3025,9 +3246,12 @@ begin
 end;
 
 procedure TObjectInspector.OnShowHintPopupMenuItemClick(Sender : TObject);
+var
+  Page: TObjectInspectorPage;
 begin
-  PropertyGrid.ShowHint:=not PropertyGrid.ShowHint;
-  EventGrid.ShowHint:=not EventGrid.ShowHint;
+  for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
+    if GridControl[Page]<>nil then
+      GridControl[Page].ShowHint:=not GridControl[Page].ShowHint;
 end;
 
 procedure TObjectInspector.OnShowOptionsPopupMenuItemClick(Sender: TObject);
@@ -3053,6 +3277,13 @@ begin
   else
     SetDefaultPopupMenuItem.Caption:=oisSetToDefaultValue;
     
+  AddToFavouritesPopupMenuItem.Visible:=(Favourites<>nil)
+                and (GetActivePropertyGrid<>FavouriteGrid)
+                and Assigned(OnAddToFavourites) and (GetActivePropertyRow<>nil);
+  RemoveFromFavouritesPopupMenuItem.Visible:=(Favourites<>nil)
+           and (GetActivePropertyGrid=FavouriteGrid)
+           and Assigned(OnRemoveFromFavourites) and (GetActivePropertyRow<>nil);
+
   CurGrid:=GetActivePropertyGrid;
   CurRow:=GetActivePropertyRow;
   if (CurRow<>nil) and (CurRow.Editor.GetVisualValue<>CurGrid.CurrentEditValue)
@@ -3066,6 +3297,32 @@ end;
 procedure TObjectInspector.HookRefreshPropertyValues;
 begin
   RefreshPropertyValues;
+end;
+
+procedure TObjectInspector.SetShowFavouritePage(const AValue: boolean);
+begin
+  if FShowFavouritePage=AValue then exit;
+  FShowFavouritePage:=AValue;
+  CreateFavouritePage;
+end;
+
+function TObjectInspector.GetGridControl(Page: TObjectInspectorPage
+  ): TOICustomPropertyGrid;
+begin
+  case Page of
+  oipgpFavourite: Result:=FavouriteGrid;
+  oipgpEvents: Result:=EventGrid;
+  else  Result:=PropertyGrid;
+  end;
+end;
+
+procedure TObjectInspector.SetFavourites(const AValue: TOIFavouriteProperties);
+begin
+  //debugln('TObjectInspector.SetFavourites ',dbgsName(Self));
+  if FFavourites=AValue then exit;
+  FFavourites:=AValue;
+  if FavouriteGrid<>nil then
+    FavouriteGrid.Favourites:=FFavourites;
 end;
 
 { TCustomPropertiesGrid }
@@ -3123,6 +3380,178 @@ begin
   if FAutoFreeHook then
     FPropertyEditorHook.Free;
   inherited Destroy;
+end;
+
+{ TOIFavouriteProperties }
+
+function TOIFavouriteProperties.GetItems(Index: integer): TOIFavouriteProperty;
+begin
+  Result:=TOIFavouriteProperty(FItems[Index]);
+end;
+
+constructor TOIFavouriteProperties.Create;
+begin
+  FItems:=TList.Create;
+end;
+
+destructor TOIFavouriteProperties.Destroy;
+begin
+  Clear;
+  FreeAndNil(FItems);
+  inherited Destroy;
+end;
+
+procedure TOIFavouriteProperties.Clear;
+var
+  i: Integer;
+begin
+  for i:=0 to FItems.Count-1 do
+    TObject(FItems[i]).Free;
+  FItems.Clear;
+end;
+
+procedure TOIFavouriteProperties.Add(NewItem: TOIFavouriteProperty);
+begin
+  FItems.Add(NewItem);
+  FCount:=FItems.Count;
+end;
+
+procedure TOIFavouriteProperties.Remove(AnItem: TOIFavouriteProperty);
+begin
+  FItems.Remove(AnItem);
+  FCount:=FItems.Count;
+end;
+
+procedure TOIFavouriteProperties.DeleteConstraints(
+  AnItem: TOIFavouriteProperty);
+// delete all items, that would constrain AnItem
+var
+  i: Integer;
+  CurItem: TOIFavouriteProperty;
+begin
+  for i:=Count-1 downto 0 do begin
+    CurItem:=Items[i];
+    if CurItem.Constrains(AnItem) then begin
+      FItems.Delete(i);
+      CurItem.Free;
+    end;
+  end;
+end;
+
+function TOIFavouriteProperties.IsFavourite(AClass: TPersistentClass;
+  const PropertyName: string): boolean;
+var
+  i: Integer;
+  CurItem: TOIFavouriteProperty;
+  BestItem: TOIFavouriteProperty;
+begin
+  if (AClass=nil) or (PropertyName='') then begin
+    Result:=false;
+    exit;
+  end;
+  BestItem:=nil;
+  for i:=0 to FCount-1 do begin
+    CurItem:=Items[i];
+    if not CurItem.IsFavourite(AClass,PropertyName) then continue;
+    if (BestItem=nil)
+    or (AClass.InheritsFrom(BestItem.BaseClass)) then begin
+      //debugln('TOIFavouriteProperties.IsFavourite ',AClass.ClassName,' ',PropertyName);
+      BestItem:=CurItem;
+    end;
+  end;
+  Result:=(BestItem<>nil) and BestItem.Include;
+end;
+
+function TOIFavouriteProperties.AreFavourites(
+  Selection: TPersistentSelectionList; const PropertyName: string): boolean;
+var
+  i: Integer;
+begin
+  Result:=(Selection<>nil) and (Selection.Count>0);
+  if not Result then exit;
+  for i:=0 to Selection.Count-1 do begin
+    if not IsFavourite(TPersistentClass(Selection[i].ClassType),PropertyName)
+    then begin
+      Result:=false;
+      exit;
+    end;
+  end;
+end;
+
+procedure TOIFavouriteProperties.LoadFromConfig(ConfigStore: TConfigStorage;
+  const Path: string);
+var
+  NewCount: LongInt;
+  i: Integer;
+  NewItem: TOIFavouriteProperty;
+  p: String;
+  NewPropertyName: String;
+  NewInclude: Boolean;
+  NewBaseClassname: String;
+  NewBaseClass: TPersistentClass;
+begin
+  Clear;
+  NewCount:=ConfigStore.GetValue(Path+'Count',0);
+  for i:=0 to NewCount-1 do begin
+    p:=Path+'Item'+IntToStr(i)+'/';
+    NewPropertyName:=ConfigStore.GetValue(p+'PropertyName','');
+    if (NewPropertyName='') or (not IsValidIdent(NewPropertyName)) then
+      continue;
+    NewInclude:=ConfigStore.GetValue(p+'Include',true);
+    NewBaseClassname:=ConfigStore.GetValue(p+'BaseClass','');
+    if (NewBaseClassname='') or (not IsValidIdent(NewBaseClassname))  then
+      continue;
+    NewBaseClass:=GetClass(NewBaseClassname);
+    NewItem:=TOIFavouriteProperty.Create(NewBaseClass,NewPropertyName,
+                                         NewInclude);
+    NewItem.BaseClassName:=NewBaseClassname;
+    Add(NewItem);
+  end;
+end;
+
+procedure TOIFavouriteProperties.SaveToConfig(ConfigStore: TConfigStorage;
+  const Path: string);
+var
+  i: Integer;
+  p: String;
+  CurItem: TOIFavouriteProperty;
+begin
+  ConfigStore.SetDeleteValue(Path+'Count',Count,0);
+  for i:=0 to Count-1 do begin
+    CurItem:=Items[i];
+    p:=Path+'Item'+IntToStr(i)+'/';
+    ConfigStore.SetDeleteValue(p+'BaseClass',CurItem.BaseClass.ClassName,'');
+    ConfigStore.SetDeleteValue(p+'PropertyName',CurItem.PropertyName,'');
+    ConfigStore.SetDeleteValue(p+'Include',CurItem.Include,true);
+  end;
+end;
+
+{ TOIFavouriteProperty }
+
+constructor TOIFavouriteProperty.Create(ABaseClass: TPersistentClass;
+  const APropertyName: string; TheInclude: boolean);
+begin
+  BaseClass:=ABaseClass;
+  PropertyName:=APropertyName;
+  Include:=TheInclude;
+end;
+
+function TOIFavouriteProperty.Constrains(AnItem: TOIFavouriteProperty
+  ): boolean;
+// true if this item constrains AnItem
+// This item constrains AnItem, if this is the opposite (Include) and
+// AnItem has the same or greater scope
+begin
+  Result:=(Include<>AnItem.Include)
+          and (CompareText(PropertyName,AnItem.PropertyName)=0)
+          and (BaseClass.InheritsFrom(AnItem.BaseClass));
+end;
+
+function TOIFavouriteProperty.IsFavourite(AClass: TPersistentClass;
+  const APropertyName: string): boolean;
+begin
+  Result:=(CompareText(PropertyName,APropertyName)=0)
+          and (AClass.InheritsFrom(BaseClass));
 end;
 
 end.

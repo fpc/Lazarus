@@ -36,7 +36,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, BasicCodeTools, CodeTree, CodeToolManager,
   PascalParserTool, IdentCompletionTool, GraphType, Graphics, EditorOptions,
-  SynEdit, SynCompletion;
+  SynEdit, SynCompletion, MainIntf;
 
 type
   TCompletionType = (
@@ -283,12 +283,17 @@ begin
   Result:='';
   CursorToLeft:=0;
   CursorAtEnd:=true;
+  ValueType:=icvIdentifier;
   Index:=aCompletion.Position;
   IdentList:=CodeToolBoss.IdentifierList;
+
   IdentItem:=IdentList.FilteredItems[Index];
-  IdentItem.CheckHasChilds;
-  ValueType:=icvIdentifier;
   if IdentItem=nil then exit;
+
+  if not CodeToolBoss.IdentItemCheckHasChilds(IdentItem) then begin
+    MainIDEInterface.DoJumpToCodeToolBossError;
+    exit;
+  end;
 
   Result:=GetIdentifier(IdentItem.Identifier);
 

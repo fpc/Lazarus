@@ -65,6 +65,8 @@ type
     const PersistentClassName, AncestorClassName, Identifier: string;
     var IsDefined: boolean) of object;
 
+  { TCodeToolManager }
+
   TCodeToolManager = class
   private
     FAbortable: boolean;
@@ -304,6 +306,7 @@ type
     function GatherIdentifiers(Code: TCodeBuffer; X,Y: integer): boolean;
     function GetIdentifierAt(Code: TCodeBuffer; X,Y: integer;
           var Identifier: string): boolean;
+    function IdentItemCheckHasChilds(IdentItem: TIdentifierListItem): boolean;
 
     // rename identifier
     function FindReferences(IdentifierCode: TCodeBuffer;
@@ -1458,6 +1461,21 @@ begin
   end else begin
     Identifier:='';
     Result:=false;
+  end;
+end;
+
+function TCodeToolManager.IdentItemCheckHasChilds(IdentItem: TIdentifierListItem
+  ): boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.IdentItemCheckHasChilds A ');
+  {$ENDIF}
+  try
+    IdentItem.CheckHasChilds;
+    Result:=true;
+  except
+    on e: Exception do HandleException(e);
   end;
 end;
 

@@ -43,6 +43,7 @@ resourcestring
 
   oisProperties='Properties';
   oisEvents='Events';
+  oisFavourites = 'Favourites';
   oisSetToDefault = 'Set to default: %s';
   oisSetToDefaultValue = 'Set to default value';
   
