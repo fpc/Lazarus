@@ -3082,7 +3082,10 @@ procedure ShareWindowAccelGroups(AWindow: PGtkWidget);
   procedure AttachUnique(TheWindow: PGtkWidget; TheAccelGroup: PGTKAccelGroup);
   begin
     {$IfDef GTK2}
-    if (TheWindow=nil) or (TheAccelGroup=nil) then exit;
+    if (TheWindow=nil) or (TheAccelGroup=nil)
+      or (TheAccelGroup^.acceleratables=nil)
+      or (g_slist_find(TheAccelGroup^.acceleratables, TheWindow)=nil) then
+    exit;
     gtk_window_add_accel_group(GTK_WINDOW(TheWindow), TheAccelGroup);
     {$else}
     if (TheAccelGroup=nil)
@@ -3147,7 +3150,10 @@ procedure UnshareWindowAccelGroups(AWindow: PGtkWidget);
   procedure Detach(TheWindow: PGtkWidget; TheAccelGroup: PGTKAccelGroup);
   begin
     {$IfDef GTK2}
-    if (TheWindow=nil) or (TheAccelGroup=nil) then exit;
+    if (TheWindow=nil) or (TheAccelGroup=nil)
+      or (TheAccelGroup^.acceleratables=nil)
+      or (g_slist_find(TheAccelGroup^.acceleratables, TheWindow)=nil) then
+    exit;
     gtk_window_remove_accel_group(GTK_WINDOW(TheWindow), TheAccelGroup);
     {$else}
     if (TheAccelGroup=nil)
@@ -5478,6 +5484,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.221  2003/10/22 20:37:31  ajgenius
+  fix accel group test to remove GTK2 warnings
+
   Revision 1.220  2003/10/22 17:50:16  mattias
   updated rpm scripts
 
