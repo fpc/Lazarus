@@ -268,7 +268,6 @@ var
 begin
   if (FGroupIndex <> 0) and (Parent <> nil) 
   then begin
-    Assert(False,'Trace:UpdateExclusive-FGroupIndex <> 0 and Parent <> nil');
     MSg.MSg := CM_ButtonPressed;
     Msg.WParam := FGroupIndex;
     Msg.LParam := Longint(self);
@@ -704,6 +703,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.36  2003/03/11 07:46:44  mattias
+  more localization for gtk- and win32-interface and lcl
+
   Revision 1.35  2003/02/16 01:40:43  mattias
   fixed uninitialized style
 
