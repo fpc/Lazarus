@@ -3544,61 +3544,75 @@ var
 begin
   if not (tvsScrollbarChanged in FStates) then exit;
   
-  if not HandleAllocated or (FUpdateCount>0) then begin
-    //Include(FStates,tvsScrollbarChanged);
-  end else begin
-    if ScrolledLeft>GetMaxScrollLeft then ScrolledLeft:=GetMaxScrollLeft;
-    if ScrolledTop>GetMaxScrollTop then ScrolledTop:=GetMaxScrollTop;
-    Exclude(FStates,tvsScrollbarChanged);
-    if fScrollBars in [ssBoth, ssHorizontal] then begin
-      // horizontal scrollbar
-      ScrollInfo.cbSize := SizeOf(ScrollInfo);
-      ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL;
-      ScrollInfo.nTrackPos := 0;
-      ScrollInfo.nMin := 0;
-      ScrollInfo.nPage := Max(1,(ClientWidth-ScrollBarWidth)-2*BorderWidth);
-      ScrollInfo.nMax := Max(1,GetMaxScrollLeft+integer(ScrollInfo.nPage));
-      ScrollInfo.nPos := Max(FScrolledLeft,0);
-      if not CompareMem(@ScrollInfo,@FLastHorzScrollInfo,SizeOf(TScrollInfo))
-      then begin
+  if not HandleAllocated or (FUpdateCount>0) then
+    exit;
+
+  if ScrolledLeft>GetMaxScrollLeft then ScrolledLeft:=GetMaxScrollLeft;
+  if ScrolledTop>GetMaxScrollTop then ScrolledTop:=GetMaxScrollTop;
+  Exclude(FStates,tvsScrollbarChanged);
+
+  if fScrollBars in [ssBoth, ssHorizontal, ssAutoBoth, ssAutoHorizontal] then
+  begin
+    // horizontal scrollbar
+    ScrollInfo.cbSize := SizeOf(ScrollInfo);
+    ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL;
+    ScrollInfo.nTrackPos := 0;
+    ScrollInfo.nMin := 0;
+    ScrollInfo.nPage := Max(1,(ClientWidth-ScrollBarWidth)-2*BorderWidth);
+    ScrollInfo.nMax := Max(1,GetMaxScrollLeft+integer(ScrollInfo.nPage));
+    ScrollInfo.nPos := Max(FScrolledLeft,0);
+    if not CompareMem(@ScrollInfo,@FLastHorzScrollInfo,SizeOf(TScrollInfo))
+    then begin
+      if (fScrollBars in [ssAutoBoth, ssAutoHorizontal])
+      and (ScrollInfo.nPage>=cardinal(ScrollInfo.nMax)) then begin
+        FLastHorzScrollInfo.cbSize:=0;
+        ShowScrollBar(Handle,SB_HORZ,false);
+      end else begin
         FLastHorzScrollInfo:=ScrollInfo;
         SetScrollInfo(Handle, SB_HORZ, ScrollInfo, True);
         ShowScrollBar(Handle,SB_HORZ,True);
       end;
-      //writeln('>>>>>>>>>> [TCustomTreeView.UpdateScrollbars] nMin=',ScrollInfo.nMin,
-      //' nMax=',ScrollInfo.nMax,' nPage=',ScrollInfo.nPage,
-      //' nPos=',ScrollInfo.nPos,' GetMaxScrollLeft=',GetMaxScrollLeft,
-      //' ClientW=',ClientWidth,
-      //' MaxRight=',FMaxRight
-      //);
-    end else begin
-      FLastHorzScrollInfo.cbSize:=0;
-      ShowScrollBar(Handle,SB_HORZ,false);
     end;
-    if fScrollBars in [ssBoth, ssVertical] then begin
-      // vertical scrollbar
-      ScrollInfo.cbSize := SizeOf(ScrollInfo);
-      ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL;
-      ScrollInfo.nTrackPos := 0;
-      ScrollInfo.nMin := 0;
-      ScrollInfo.nPage := Max(1,(ClientHeight-ScrollBarWidth)-FDefItemHeight);
-      ScrollInfo.nMax := Max(1,GetMaxScrollTop+integer(ScrollInfo.nPage));
-      ScrollInfo.nTrackPos := 0;
-      ScrollInfo.nPos := Max(0,FScrolledTop);
-      if not CompareMem(@ScrollInfo,@FLastVertScrollInfo,SizeOf(TScrollInfo))
-      then begin
+    //writeln('>>>>>>>>>> [TCustomTreeView.UpdateScrollbars] nMin=',ScrollInfo.nMin,
+    //' nMax=',ScrollInfo.nMax,' nPage=',ScrollInfo.nPage,
+    //' nPos=',ScrollInfo.nPos,' GetMaxScrollLeft=',GetMaxScrollLeft,
+    //' ClientW=',ClientWidth,
+    //' MaxRight=',FMaxRight
+    //);
+  end else begin
+    FLastHorzScrollInfo.cbSize:=0;
+    ShowScrollBar(Handle,SB_HORZ,false);
+  end;
+
+  if fScrollBars in [ssBoth, ssVertical, ssAutoBoth, ssAutoVertical] then begin
+    // vertical scrollbar
+    ScrollInfo.cbSize := SizeOf(ScrollInfo);
+    ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL;
+    ScrollInfo.nTrackPos := 0;
+    ScrollInfo.nMin := 0;
+    ScrollInfo.nPage := Max(1,(ClientHeight-ScrollBarWidth)-FDefItemHeight);
+    ScrollInfo.nMax := Max(1,GetMaxScrollTop+integer(ScrollInfo.nPage));
+    ScrollInfo.nTrackPos := 0;
+    ScrollInfo.nPos := Max(0,FScrolledTop);
+    if not CompareMem(@ScrollInfo,@FLastVertScrollInfo,SizeOf(TScrollInfo))
+    then begin
+      if (fScrollBars in [ssAutoBoth, ssAutoVertical])
+      and (ScrollInfo.nPage>=cardinal(ScrollInfo.nMax)) then begin
+        FLastVertScrollInfo.cbSize:=0;
+        ShowScrollBar(Handle,SB_VERT,false);
+      end else begin
         FLastVertScrollInfo:=ScrollInfo;
         SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
         ShowScrollBar(Handle,SB_VERT,True);
       end;
-      //writeln('>>>>>>>>>> [TCustomTreeView.UpdateScrollbars] Vert On nMin=',ScrollInfo.nMin,
-      //' nMax=',ScrollInfo.nMax,' nPage=',ScrollInfo.nPage,
-      //' nPos=',ScrollInfo.nPos,' GetMaxScrollTop=',GetMaxScrollTop);
-    end else begin
-      //writeln('>>>>>>>>>> [TCustomTreeView.UpdateScrollbars] Vert Off ');
-      FLastVertScrollInfo.cbSize:=0;
-      ShowScrollBar(Handle,SB_VERT,false);
     end;
+    //writeln('>>>>>>>>>> [TCustomTreeView.UpdateScrollbars] Vert On nMin=',ScrollInfo.nMin,
+    //' nMax=',ScrollInfo.nMax,' nPage=',ScrollInfo.nPage,
+    //' nPos=',ScrollInfo.nPos,' GetMaxScrollTop=',GetMaxScrollTop);
+  end else begin
+    //writeln('>>>>>>>>>> [TCustomTreeView.UpdateScrollbars] Vert Off ');
+    FLastVertScrollInfo.cbSize:=0;
+    ShowScrollBar(Handle,SB_VERT,false);
   end;
 end;
 
