@@ -188,7 +188,7 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.CallNextHookEx(hhk : HHOOK; ncode : Integer; wParam, lParam : Longint) : Integer;
+function TgtkObject.CallNextHookEx(hhk : HHOOK; ncode : Integer; wParam: WParam; lParam : LParam) : Integer;
 begin
   Result := 0;
   //TODO: Does anything need to be done here?
@@ -210,7 +210,7 @@ end;
 
  ------------------------------------------------------------------------------}
 Function TGTKObject.CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND;
-  Msg : UINT; wParam ,lParam : LongInt) : Integer;
+  Msg : UINT; wParam: WParam; lParam : LParam) : Integer;
 var
   Proc : TWndMethod;
   Mess : TLMessage;
@@ -6223,8 +6223,8 @@ end;
   The PostMessage function places (posts) a message in the message queue and
   then returns without waiting.
  ------------------------------------------------------------------------------}
-function TGTKObject.PostMessage(Handle: HWND; Msg: Cardinal; wParam: LongInt;
-  lParam: LongInt): Boolean;
+function TGTKObject.PostMessage(Handle: HWND; Msg: Cardinal; wParam: WParam;
+  lParam: LParam): Boolean;
 
   function ParentPaintMessageInQueue: boolean;
   var
@@ -7201,8 +7201,8 @@ end;
   The function calls the window procedure for the specified window and does
   not return until the window procedure has processed the message.
  ------------------------------------------------------------------------------}
-function TGTKObject.SendMessage(HandleWnd: HWND; Msg: Cardinal; wParam: LongInt;
-  lParam: LongInt): Integer;
+function TGTKObject.SendMessage(HandleWnd: HWND; Msg: Cardinal; wParam: WParam;
+  lParam: LParam): LResult;
 var
   AMessage: TLMessage;
   Target: TObject;
@@ -9036,6 +9036,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.307  2003/12/30 21:05:13  micha
+  fix gtk interface due to lcl interface change (from vincent
+
   Revision 1.306  2003/12/25 14:17:07  mattias
   fixed many range check warnings
 
