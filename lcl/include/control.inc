@@ -552,7 +552,7 @@ end;
 {       TControl.ScreenToClient
 }
 {------------------------------------------------------------------------------}
-Function TControl.ScreenToCLient(const Point : TPoint) : TPoint;
+Function TControl.ScreenToClient(const Point : TPoint) : TPoint;
 var
   P : TPoint;
 begin
@@ -562,10 +562,10 @@ begin
   Assert(False, Format('Trace:[TControl.ScreenToCLient] %s: Point(%d, %d) Org(%d, %d) --> (%d, %d)',  [Classname, Point.x,  point.y, p.x, p.y, result.x, result.y]));
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl.ClienttoScreen
-}
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  Function TControl.ClientToScreen(const Point : TPoint) : TPoint;
+  
+------------------------------------------------------------------------------}
 Function TControl.ClientToScreen(const Point : TPoint) : TPoint;
 var
   P : TPoint;
@@ -730,9 +730,9 @@ begin
   Result := FPopupMenu;
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl GetClientRect                                 }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TControl GetClientRect
+------------------------------------------------------------------------------}
 function TControl.GetClientRect: TRect;
 begin
   Result.Left := 0;
@@ -741,9 +741,21 @@ begin
   Result.Bottom := Height;
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl WndPRoc                                 }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  function TControl.GetChildsRect(Scrolled: boolean): TRect;
+  
+  Returns the Client rectangle relative to the controls left, top.
+  If Scrolled is true, the rectangle is moved by the current scrolling values
+  (for an example see TScrollingWincontrol).
+------------------------------------------------------------------------------}
+function TControl.GetChildsRect(Scrolled: boolean): TRect;
+begin
+  Result:=ClientRect;
+end;
+
+{------------------------------------------------------------------------------
+       TControl WndPRoc
+------------------------------------------------------------------------------}
 procedure TControl.WndProc(var TheMessage : TLMessage);
 Var
   Form : TCustomForm;
@@ -1940,6 +1952,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.96  2002/11/01 14:40:31  lazarus
+  MG: fixed mouse coords on scrolling wincontrols
+
   Revision 1.95  2002/10/30 13:20:10  lazarus
   MG: fixed example
 
