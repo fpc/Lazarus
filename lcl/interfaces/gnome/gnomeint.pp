@@ -195,96 +195,100 @@ end;
 
 procedure TGnomeObject.CreateComponent(Sender : TObject);
 var
+  Caption : AnsiString;
   StrTemp : PChar;               // same as "caption" but as PChar
   TempWidget,
   TempWidget2 : PGTKWidget;       // pointer to gtk-widget (local use when neccessary)
   p          : pointer;          // ptr to the newly created GtkWidget
   Box       : Pointer;           // currently only used for TBitBtn and TForm and TListView
   ParentForm: TCustomForm;
+  CompStyle : Longint;
+  DoFinishComp,
+  SetupProps : Boolean;
 begin
-  if (Sender is TCustomForm) and (TControl(Sender).FCompStyle = csForm) then begin
-    With (Sender as TCustomForm) do begin
-      If Caption > '' then begin
-        strTemp := StrAlloc(length(Caption) + 1);
-        StrPCopy(strTemp, Caption);
-      end
-      else
-        strTemp := nil;
+  P := nil;
+  DoFinishComp := True;
+  SetupProps := False;
 
-      P := GNOME_APP_NEW(Argv[0], strTemp);
-      gnome_app_enable_layout_config(p, True);
-      gtk_window_set_policy (GTK_WINDOW (p), FormResizableMap[BorderStyle],
-        FormResizableMap[BorderStyle], 0);
+  CompStyle := GetCompStyle(Sender);
+  Caption   := GetCaption(Sender);
+  strTemp := nil;
 
-      // the clipboard needs a widget
-      if ClipboardWidget=nil then
-        SetClipboardWidget(p);
+  Case CompStyle of
+    csForm:
+      begin
+        Assert(Sender is TCustomForm);
+        With TCustomForm(Sender) do begin
+          If Caption > '' then begin
+            strTemp := StrAlloc(length(Caption) + 1);
+            StrPCopy(strTemp, Caption);
+          end;
+        
+          P := GNOME_APP_NEW(Argv[0], strTemp);
+          gnome_app_enable_layout_config(p, True);
+          gtk_window_set_policy (GTK_WINDOW (p), FormResizableMap[BorderStyle],
+            FormResizableMap[BorderStyle], 0);
 
-      Box := gtk_vbox_new(False, 0);
-      gnome_app_set_contents(p, Box);
-      gtk_widget_show(Box);
+          // the clipboard needs a widget
+          if ClipboardWidget=nil then
+            SetClipboardWidget(p);
 
-      // Create the form client area
-      TempWidget := gtk_scrolled_window_new(nil,nil);
-      gtk_box_pack_end(Box, TempWidget, True, True, 0);
-      gtk_widget_show(TempWidget);
+          Box := gtk_vbox_new(False, 0);
+          gnome_app_set_contents(p, Box);
+          gtk_widget_show(Box);
 
-      gtk_object_set_data(P,'scroll_area', TempWidget);
+          // Create the form client area
+          TempWidget := gtk_scrolled_window_new(nil,nil);
+          gtk_box_pack_end(Box, TempWidget, True, True, 0);
+          gtk_widget_show(TempWidget);
 
-      TempWidget2 := gtk_layout_new(nil, nil);
-      gtk_container_add(PGTKContainer(TempWidget), TempWidget2);
-      gtk_widget_show(TempWidget2);
-      SetFixedWidget(p, TempWidget2);
-      SetMainWidget(p, TempWidget2);
+          gtk_object_set_data(P,'scroll_area', TempWidget);
 
-      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(TempWidget)^.hscrollbar, GTK_CAN_FOCUS);
-      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(TempWidget)^.vscrollbar, GTK_CAN_FOCUS);
-      gtk_scrolled_window_set_policy(PGtkScrolledWindow(TempWidget),
+          TempWidget2 := gtk_layout_new(nil, nil);
+          gtk_container_add(PGTKContainer(TempWidget), TempWidget2);
+          gtk_widget_show(TempWidget2);
+          SetFixedWidget(p, TempWidget2);
+          SetMainWidget(p, TempWidget2);
+
+          GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(TempWidget)^.hscrollbar, GTK_CAN_FOCUS);
+          GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(TempWidget)^.vscrollbar, GTK_CAN_FOCUS);
+          gtk_scrolled_window_set_policy(PGtkScrolledWindow(TempWidget),
                                      GTK_POLICY_NEVER,
                                      GTK_POLICY_NEVER);
 
-      //drag icons
-      if Drag_Icon = nil then
-        Drag_Icon := gdk_pixmap_colormap_create_from_xpm_d (nil,
-           gtk_widget_get_colormap (p), @Drag_Mask,
-           nil, @IMGDrag_Icon);
-
-      SetLCLObject(p, Sender);
-      gtk_object_set_data(pgtkObject(p),'Style',0);
-      gtk_object_set_data(pgtkObject(p),'ExStyle',0);
-
-      Handle := THandle(p);
-      gtk_object_set_data(pgtkobject(p),'Sender',Sender);
-      SetResizeRequest(p);
-
-      Set_RC_Name(sender, p);
-
-      StrDispose(StrTemp);
-      gtk_widget_set_app_paintable(p,true);
-      HookSignals(Sender);
-    end;
-  end
-  else
-    If (Sender is TMenu) and (TMenu(Sender).FCompStyle = csMainMenu) then
-    begin
-      p := gtk_menu_bar_new();
-      ParentForm:=TCustomForm(TMenu(Sender).Parent);
-      if (ParentForm=nil) or (not (ParentForm is TCustomForm)) then
-        RaiseException('MainMenu without form');
-      if ParentForm.Menu<>TMenu(Sender) then
-        RaiseException('form has already a MainMenu');
-      gtk_widget_show(p);
-      gnome_app_set_menus(Pointer(ParentForm.Handle), p);
-      TMenu(Sender).Items.Handle := HMenu(p);
-    end
-  else begin
-    inherited CreateComponent(Sender);
-    If (Sender is TCustomEdit) then
-      With (Sender as TCustomEdit) do
-        If Popupmenu = nil then
-          If Pointer(Handle) <> nil then
-            gnome_widget_add_help(Pointer(Handle), nil)
+          //drag icons
+          if Drag_Icon = nil then
+            Drag_Icon := gdk_pixmap_colormap_create_from_xpm_d (nil,
+               gtk_widget_get_colormap (p), @Drag_Mask,
+               nil, @IMGDrag_Icon);
+        end;
+      end;
+    csMainMenu:
+      begin
+        p := gtk_menu_bar_new();
+        ParentForm:=TCustomForm(TMenu(Sender).Parent);
+        if (ParentForm=nil) or (not (ParentForm is TCustomForm)) then
+          RaiseException('MainMenu without form');
+        if ParentForm.Menu<>TMenu(Sender) then
+          RaiseException('form has already a MainMenu');
+        gtk_widget_show(p);
+        gnome_app_set_menus(Pointer(ParentForm.Handle), p);
+      end;
+    else
+      begin
+        inherited CreateComponent(Sender);
+        DoFinishComp := False;
+      end;
   end;
+
+  If (Sender is TCustomEdit) then
+    With (Sender as TCustomEdit) do
+      If Popupmenu = nil then
+        If Pointer(Handle) <> nil then
+          gnome_widget_add_help(Pointer(Handle), nil);
+
+  If DoFinishComp then
+    FinishComponentCreate(Sender, P, SetupProps);
 end;
 
 {$I gnomewinapi.inc}
@@ -293,6 +297,9 @@ end.
 
 {
   $Log$
+  Revision 1.10  2002/10/24 22:10:39  lazarus
+  AJ: More changes for better code reuse between gnome & gtk interfaces
+
   Revision 1.9  2002/10/23 20:47:27  lazarus
   AJ: Started Form Scrolling
       Started StaticText FocusControl
