@@ -1452,8 +1452,8 @@ begin
     
     LM_NB_UpdateTab: UpdateNotebookPageTab(nil,TPage(Sender));
     
-    LB_GETTOPINDEX: Result:=GetTopIndex(Sender);
-    LB_SETTOPINDEX: Result:=SetTopIndex(Sender,integer(Data));
+    LM_LB_GETTOPINDEX: Result:=GetTopIndex(Sender);
+    LM_LB_SETTOPINDEX: Result:=SetTopIndex(Sender,integer(Data));
 
   else begin
     handle := hwnd(ObjectToGtkObject(Sender));
@@ -6164,7 +6164,6 @@ function TgtkObject.NewGDIObject(const GDIType: TGDIType): PGdiObject;
 begin
   Assert(False, Format('Trace:> [TgtkObject.NewGDIObject]', []));
   Result:=GtkDef.NewPGDIObject;
-  FillChar(Result^,SizeOf(TGDIObject),0);
   Result^.GDIType := GDIType;
   FGDIObjects.Add(Result);
 //writeln('[TgtkObject.NewGDIObject] ',HexStr(Cardinal(Result),8),'  ',FGDIObjects.Count);
@@ -6821,6 +6820,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.310  2002/12/27 17:12:38  mattias
+  added more Delphi win32 compatibility functions
+
   Revision 1.309  2002/12/27 10:23:40  mattias
   implemented TListBox.TopIndex
 
