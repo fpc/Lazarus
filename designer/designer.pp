@@ -37,7 +37,12 @@ interface
 
 uses
   Classes, LCLType, LCLLinux, Forms, Controls, LMessages, GraphType, Graphics,
-  Dialogs, ControlSelection, CustomFormEditor, UnitEditor, CompReg, Menus,
+  Dialogs, ControlSelection, CustomFormEditor, UnitEditor, Menus,
+  {$IFDEF EnablePkgs}
+  ComponentReg,
+  {$ELSE}
+  CompReg,
+  {$ENDIF}
   AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, ExtCtrls, EnvironmentOpts,
   DesignerProcs, PropEdits, ComponentEditors, KeyMapping,LazarusIDEStrConsts;
 
