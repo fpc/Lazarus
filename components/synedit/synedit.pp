@@ -6795,7 +6795,6 @@ end;
 
 {$IFDEF SYN_LAZARUS}
 {$IFDEF USE_SYNEDIT_MOUSEWHEEL}
-
 procedure TCustomSynEdit.WMMouseWheel(var Msg: TLMMouseEvent);
 var
   nDelta: integer;
@@ -6831,7 +6830,6 @@ begin
   TopLine := TopLine - (nDelta * nWheelClicks);
   Update;
 end;
-
 {$ENDIF}
 {$ELSE}
 

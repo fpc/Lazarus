@@ -1191,7 +1191,10 @@ var
       if LoadFile(ADir+AnUnitName+'.pp',Result) then exit;
       if LoadFile(ADir+AnUnitName+'.pas',Result) then exit;
     end else begin
+      {$IFNDEF win32}
       if LoadFile(ADir+lowercase(AnUnitName)+CompiledSrcExt,Result) then exit;
+      {$ENDIF}
+      if LoadFile(ADir+AnUnitName+CompiledSrcExt,Result) then exit;
     end;
     Result:=nil;
   end;
