@@ -70,8 +70,8 @@ type
   public
     constructor Create;
     destructor Destroy;  override;
-    function Load:boolean;
-    function Save:boolean;
+    function Load: boolean;
+    function Save: boolean;
     procedure Assign(AnObjInspector: TObjectInspector);
     procedure AssignTo(AnObjInspector: TObjectInspector);
     property Filename:string read FFilename write SetFilename;
@@ -311,6 +311,7 @@ type
     procedure AddComponentToAvailComboBox(AComponent:TComponent);
     procedure PropEditLookupRootChange;
     procedure OnGridModified(Sender: TObject);
+    procedure SetAvailComboBoxText;
   public
     property Selections:TComponentSelectionList 
       read FComponentList write SetSelections;
@@ -2180,8 +2181,12 @@ begin
 //,' ',FPropertyEditorHook<>nil,'  ',FPropertyEditorHook.LookupRoot<>nil);
   if FUpdatingAvailComboBox then exit;
   FUpdatingAvailComboBox:=true;
+  
   AvailCompsComboBox.Items.BeginUpdate;
-  OldText:=AvailCompsComboBox.Text;
+  if AvailCompsComboBox.Items.Count=1 then
+    OldText:=AvailCompsComboBox.Text
+  else
+    OldText:='';
   AvailCompsComboBox.Items.Clear;
   if (FPropertyEditorHook<>nil)
   and (FPropertyEditorHook.LookupRoot<>nil) then begin
@@ -2194,12 +2199,9 @@ begin
   AvailCompsComboBox.Items.EndUpdate;
   FUpdatingAvailComboBox:=false;
   a:=AvailCompsComboBox.Items.IndexOf(OldText);
-  if (OldText='') or (a<0) then begin
-    if AvailCompsComboBox.Items.Count>0 then
-      AvailCompsComboBox.Text:=AvailCompsComboBox.Items[0]
-    else
-      AvailCompsComboBox.Text:='';
-  end else
+  if (OldText='') or (a<0) then
+    SetAvailComboBoxText
+  else
     AvailCompsComboBox.ItemIndex:=a;
 end;
 
@@ -2209,11 +2211,7 @@ begin
 //writeln('[TObjectInspector.SetSelections]');
   if FComponentList.IsEqual(NewSelections) then exit;
   FComponentList.Assign(NewSelections);
-  if FComponentList.Count=1 then begin
-    AvailCompsComboBox.Text:=ComponentToString(FComponentList[0]);
-  end else begin
-    AvailCompsComboBox.Text:='';
-  end;
+  SetAvailComboBoxText;
   RefreshSelections;
 end;
 
@@ -2287,6 +2285,16 @@ end;
 procedure TObjectInspector.OnGridModified(Sender: TObject);
 begin
   if Assigned(FOnModified) then FOnModified(Self);
+end;
+
+procedure TObjectInspector.SetAvailComboBoxText;
+begin
+  if FComponentList.Count=1 then
+    AvailCompsComboBox.Text:=ComponentToString(FComponentList[0])
+  else if FComponentList.Count>1 then
+    AvailCompsComboBox.Text:=IntToStr(FComponentList.Count)+oisItemsSelected
+  else
+    AvailCompsComboBox.Text:='';
 end;
 
 procedure TObjectInspector.OnShowHintPopupMenuItemClick(Sender : TObject);

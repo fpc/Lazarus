@@ -19,6 +19,8 @@ interface
 resourcestring
   //
   oisObjectInspector = 'Object Inspector';
+  oisItemsSelected = ' items selected';
+  
   oiscAdd = '&Add';
   oiscDelete = '&Delete';
 
