@@ -896,7 +896,7 @@ begin
   end;
   FreeThenNil(FormEditor1);
   FreeThenNil(PkgBoss);
-  FreeThenNil(GlobalHook);
+  FreeThenNil(GlobalDesignHook);
   FreeThenNil(TheCompiler);
   FreeThenNil(TheOutputFilter);
   FreeThenNil(MacroList);
@@ -1200,15 +1200,16 @@ begin
   ObjectInspector1.OnSelectComponentInOI:=@OIOnSelectComponent;
   ObjectInspector1.OnShowOptions:=@OIOnShowOptions;
   
-  GlobalHook:=TPropertyEditorHook.Create;
-  GlobalHook.AddHandlerGetMethods(@OnPropHookGetMethods);
-  GlobalHook.AddHandlerMethodExists(@OnPropHookMethodExists);
-  GlobalHook.AddHandlerCreateMethod(@OnPropHookCreateMethod);
-  GlobalHook.AddHandlerShowMethod(@OnPropHookShowMethod);
-  GlobalHook.AddHandlerRenameMethod(@OnPropHookRenameMethod);
-  GlobalHook.AddHandlerComponentRenamed(@OnPropHookComponentRenamed);
-  GlobalHook.AddHandlerComponentAdded(@OnPropHookComponentAdded);
-  ObjectInspector1.PropertyEditorHook:=GlobalHook;
+  GlobalDesignHook:=TPropertyEditorHook.Create;
+  GlobalDesignHook.GetPrivateDirectory:=AppendPathDelim(GetPrimaryConfigPath);
+  GlobalDesignHook.AddHandlerGetMethods(@OnPropHookGetMethods);
+  GlobalDesignHook.AddHandlerMethodExists(@OnPropHookMethodExists);
+  GlobalDesignHook.AddHandlerCreateMethod(@OnPropHookCreateMethod);
+  GlobalDesignHook.AddHandlerShowMethod(@OnPropHookShowMethod);
+  GlobalDesignHook.AddHandlerRenameMethod(@OnPropHookRenameMethod);
+  GlobalDesignHook.AddHandlerComponentRenamed(@OnPropHookComponentRenamed);
+  GlobalDesignHook.AddHandlerComponentAdded(@OnPropHookComponentAdded);
+  ObjectInspector1.PropertyEditorHook:=GlobalDesignHook;
   EnvironmentOptions.IDEWindowLayoutList.Apply(TForm(ObjectInspector1),
                                                DefaultObjectInspectorName);
   with EnvironmentOptions do begin
@@ -2826,7 +2827,7 @@ begin
   FDisplayState:= dsForm;
 
   // select the new form (object inspector, formeditor, control selection)
-  GlobalHook.LookupRoot := AForm;
+  GlobalDesignHook.LookupRoot := AForm;
   TDesigner(AForm.Designer).SelectOnlyThisComponent(AForm);
   AForm.ShowOnTop;
 end;
@@ -3549,7 +3550,7 @@ begin
 
           // select the new form (object inspector, formeditor, control selection)
           if not (ofProjectLoading in Flags) then begin
-            GlobalHook.LookupRoot := TempForm;
+            GlobalDesignHook.LookupRoot := TempForm;
             TDesigner(TempForm.Designer).SelectOnlyThisComponent(TempForm);
           end;
           FLastFormActivated:=TempForm;
@@ -5148,7 +5149,7 @@ begin
     
   // select a form (object inspector, formeditor, control selection)
   if FLastFormActivated<>nil then begin
-    GlobalHook.LookupRoot := FLastFormActivated;
+    GlobalDesignHook.LookupRoot := FLastFormActivated;
     TDesigner(FLastFormActivated.Designer).SelectOnlyThisComponent(
                                                             FLastFormActivated);
   end;
@@ -6283,7 +6284,7 @@ begin
   AForm.ShowOnTop;
   if TheControlSelection.SelectionForm<>AForm then begin
     // select the new form (object inspector, formeditor, control selection)
-    GlobalHook.LookupRoot := AForm;
+    GlobalDesignHook.LookupRoot := AForm;
     TDesigner(AForm.Designer).SelectOnlyThisComponent(AForm);
   end;
 end;
@@ -8174,8 +8175,8 @@ var i: integer;
 begin
   if (ADesigner<>nil) then
     i:=Project1.IndexOfUnitWithForm(ADesigner.Form,false,nil)
-  else if GlobalHook.LookupRoot<>nil then
-    i:=Project1.IndexOfUnitWithForm(GlobalHook.LookupRoot,false,nil)
+  else if GlobalDesignHook.LookupRoot<>nil then
+    i:=Project1.IndexOfUnitWithForm(GlobalDesignHook.LookupRoot,false,nil)
   else
     i:=-1;
   if (i>=0) then begin
@@ -8637,6 +8638,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.570  2003/05/20 07:46:01  mattias
+  added GlobalDesignHook GetSelectedComponents
+
   Revision 1.569  2003/05/19 15:53:08  mattias
   added ComponentDeleting event
 
