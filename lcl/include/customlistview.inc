@@ -15,7 +15,7 @@ begin
   FListItems := TListITems.Create(self);
   FBorderStyle := bsSingle;
   FScrollBars:=ssBoth;
-  FImages := NIL;
+  FSmallImages := nil;
   fCompStyle := csListView;
   fViewStyle := vsList;
   fSorted := False;
@@ -141,19 +141,19 @@ begin
      
 end;
 
-procedure TCustomListView.SetImages(const AValue: TCustomImageList);
+procedure TCustomListView.SetSmallImages(const AValue: TCustomImageList);
 begin
-    if AValue <> FImages then
+    if AValue <> FSmallImages then
      Begin
-        if FImages <> nil then
-           FImages.UnregisterChanges(FImageChangeLink);
+        if FSmallImages <> nil then
+           FSmallImages.UnregisterChanges(FImageChangeLink);
 
-           FImages := AValue;
+           FSmallImages := AValue;
 
-        if FImages <> nil then
+        if FSmallImages <> nil then
            Begin
-             FImages.RegisterChanges(FImageChangeLink);
-             FImages.FreeNotification(self);
+             FSmallImages.RegisterChanges(FImageChangeLink);
+             FSmallImages.FreeNotification(self);
            end;
         CNSendMessage(LM_SETPROPERTIES,self,nil);
      end;
