@@ -2549,10 +2549,10 @@ Initialization
   LoadEnvironment;
   { heaptrc can be disabled from the environment }
   if useheaptrace then
-   TraceInit;
+    TraceInit;
 finalization
   if useheaptrace then
-   TraceExit;
+    TraceExit;
 end.
 
 {$endif VER1_1}
@@ -2560,6 +2560,9 @@ end.
 
 {
   $Log$
+  Revision 1.20  2003/04/28 11:44:58  mattias
+  implemented showing auto installed packages
+
   Revision 1.19  2003/04/12 09:26:58  mattias
   fixes for current fpc 1.1
 

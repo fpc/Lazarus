@@ -1902,14 +1902,28 @@ begin
         if UsedUnits<>'' then
           UsedUnits:=UsedUnits+', ';
         UsedUnits:=UsedUnits+CurUnitName;
-        if CurFile.HasRegisterProc then begin
+        if (APackage.PackageType in [lptDesignTime,lptRunAndDesignTime])
+        and CurFile.HasRegisterProc then begin
           RegistrationCode:=RegistrationCode+
             '  RegisterUnit('''+CurUnitName+''',@'+CurUnitName+'.Register);'+e;
         end;
       end;
     end;
   end;
-
+  // append registration code only for design time packages
+  if (APackage.PackageType in [lptDesignTime,lptRunAndDesignTime]) then begin
+    RegistrationCode:=
+      +'procedure Register;'+e
+      +'begin'+e
+      +RegistrationCode
+      +'end;'+e
+      +e
+      +'initialization'+e
+      +'  RegisterPackage('''+APackage.Name+''',@Register)'
+      +e;
+    if UsedUnits<>'' then UsedUnits:=UsedUnits+', ';
+    UsedUnits:=UsedUnits+'LazarusPackageIntf';
+  end;
 
   // create source
   HeaderSrc:=
@@ -1921,20 +1935,16 @@ begin
   Src:='unit '+APackage.Name+';'+e
       +e
       +'interface'+e
-      +e
+      +e;
+  if UsedUnits<>'' then
+    Src:=Src
       +'uses'+e
-      +'  '+UsedUnits+', LazarusPackageIntf;'+e
-      +e
+      +'  '+UsedUnits+';'+e
+      +e;
+  Src:=Src+
       +'implementation'+e
       +e
-      +'procedure Register;'+e
-      +'begin'+e
       +RegistrationCode
-      +'end;'+e
-      +e
-      +'initialization'+e
-      +'  RegisterPackage('''+APackage.Name+''',@Register)'
-      +e
       +'end.'+e;
   Src:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.
                   BeautifyStatement(Src,0);
@@ -2036,8 +2046,14 @@ end;
 function TPkgManager.DoInstallPackage(APackage: TLazPackage): TModalResult;
 var
   Dependency: TPkgDependency;
+  PkgList: TList;
+  i: Integer;
+  s: String;
+  NeedSaving: Boolean;
+  RequiredPackage: TLazPackage;
 begin
   PackageGraph.BeginUpdate(false);
+  PkgList:=nil;
   try
     // check if package is designtime package
     if APackage.PackageType=lptRunTime then begin
@@ -2057,16 +2073,46 @@ begin
     // check consistency
     Result:=CheckPackageGraphForCompilation(APackage,nil);
     if Result<>mrOk then exit;
-
-    // add package to auto installed packages
-    if APackage.AutoInstall=pitNope then begin
-      APackage.AutoInstall:=pitStatic;
-      Dependency:=APackage.CreateDependencyForThisPkg;
-      Dependency.AddToList(FirstAutoInstallDependency,pdlRequires);
-      PackageGraph.OpenDependency(Dependency);
-      SaveAutoInstallDependencies;
-    end;
     
+    // get all required packages, which will also be auto installed
+    APackage.GetAllRequiredPackages(PkgList);
+    if PkgList=nil then PkgList:=TList.Create;
+    
+    for i:=PkgList.Count-1 downto 0 do begin
+      RequiredPackage:=TLazPackage(PkgList[i]);
+      if RequiredPackage.AutoInstall<>pitNope then
+        PkgList.Delete(i);
+    end;
+    if PkgList.Count>0 then begin
+      s:='';
+      for i:=0 to PkgList.Count-1 do begin
+        RequiredPackage:=TLazPackage(PkgList[i]);
+        s:=s+RequiredPackage.IDAsString+#13;
+      end;
+      Result:=MessageDlg('Automatically installed packages',
+        'Installing the package '+APackage.IDAsString+' will automatically '
+        +'install the package(s):'#13
+        +s,
+        mtConfirmation,[mbOk,mbCancel,mbAbort],0);
+      if Result<>mrOk then exit;
+    end;
+
+    // add packages to auto installed packages
+    PkgList.Add(APackage);
+    NeedSaving:=false;
+    for i:=0 to PkgList.Count-1 do begin
+      RequiredPackage:=TLazPackage(PkgList[i]);
+      if RequiredPackage.AutoInstall=pitNope then begin
+        RequiredPackage.AutoInstall:=pitStatic;
+        Dependency:=RequiredPackage.CreateDependencyForThisPkg;
+        Dependency.AddToList(FirstAutoInstallDependency,pdlRequires);
+        PackageGraph.OpenDependency(Dependency);
+        NeedSaving:=true;
+      end;
+    end;
+    if NeedSaving then
+      SaveAutoInstallDependencies;
+
     // ask user to rebuilt Lazarus now
     Result:=MessageDlg('Rebuild Lazarus?',
       'The package "'+APackage.IDAsString+'" was marked for installation.'#13
@@ -2086,6 +2132,7 @@ begin
 
   finally
     PackageGraph.EndUpdate;
+    PkgList.Free;
   end;
   Result:=mrOk;
 end;

@@ -125,6 +125,9 @@ begin
        'Filename:  '+CurPkg.Filename;
     if CurPkg.AutoCreated then
       HintStr:=HintStr+EndOfLine+'This package was automatically created';
+    if CurPkg.Missing then
+      HintStr:=HintStr+EndOfLine+'This package is installed, '
+                                +'but the lpk file was not found';
     HintStr:=HintStr+EndOfLine+'Description:  '
                     +BreakString(CurPkg.Description,60,length('Description:  '));
     HintMemo.Text:=HintStr;
@@ -242,7 +245,7 @@ begin
   Cnt:=PackageGraph.Count;
   for i:=0 to Cnt-1 do begin
     CurPkg:=PackageGraph[i];
-    if not (CurPkg.Installed in [pitStatic,pitDynamic]) then continue;
+    //if not (CurPkg.Installed in [pitStatic,pitDynamic]) then continue;
     if PkgListView.Items.Count>i then begin
       CurListItem:=PkgListView.Items[i];
       CurListItem.SubItems[0]:=CurPkg.Version.AsString;
