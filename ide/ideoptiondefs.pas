@@ -42,6 +42,7 @@ const
   DefaultMessagesViewName = 'MessagesView';
   DefaultUnitDependenciesName = 'UnitDependencies';
   DefaultCodeExplorerName = 'CodeExplorer';
+  DefaultClipbrdHistoryName = 'ClipBrdHistory';
 
 type
   { TIDEWindowLayout stores information about the position, min/maximized state

@@ -16,8 +16,8 @@ options=-gl
 units=allcodetoolunits
 implicitunits=codetoolsstrconsts avl_tree basiccodetools codecache sourcelog \
    customcodetool multikeywordlisttool pascalparsertool finddeclarationtool \
-   stdcodetools resourcecodetool methodjumptool eventcodetool \
-   codecompletiontool codeatom codetree definetemplates expreval \
+   identcompletiontool stdcodetools resourcecodetool methodjumptool \
+   eventcodetool codecompletiontool codeatom codetree definetemplates expreval \
    keywordfunclists linkscanner sourcechanger fileprocs \
    memcheck
 

@@ -41,7 +41,7 @@ interface
 uses
   Classes, LclLinux, Process,StdCtrls, Forms, Buttons, Menus, ComCtrls, Arrow,
   Spin, SysUtils, Controls, CompReg, Graphics, ExtCtrls, Dialogs, Calendar,
-  ImgList, LResources
+  ImgList, Grids, LResources
   {$IFDEF DATABASE}
   ,db
   {$ENDIF}
@@ -322,12 +322,13 @@ begin
   RegisterComponents('Standard','Buttons',[TButton]);
   RegisterComponents('Standard','StdCtrls',[TToggleBox, TCheckBox,
           TRadioButton, TListBox,TComboBox,TScrollBar,TGroupBox]);
-  RegisterComponents('Standard', 'ExtCtrls',[TRadioGroup,TPanel]);
+  RegisterComponents('Standard','ExtCtrls',[TRadioGroup,TPanel]);
 
   RegisterComponents('Additional','Buttons',[TBitBtn,TSpeedButton]);
   RegisterComponents('Additional','ExtCtrls',[TImage, TShape, TBevel, TPaintBox]);
   RegisterComponents('Additional','ComCtrls',[TStaticText, TScrollBox]);
   RegisterComponents('Additional','ExtCtrls',[TNoteBook]);
+  RegisterComponents('Additional','Grids',[TStringGrid,TDrawGrid]);
 
   RegisterComponents('Common Controls','ImgList',[TImageList]);
   RegisterComponents('Common Controls','ComCtrls',[TTrackbar, TProgressBar,
