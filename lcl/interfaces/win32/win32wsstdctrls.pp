@@ -548,7 +548,7 @@ initialization
 //  RegisterWSComponent(TCustomLabel, TWin32WSCustomLabel);
 //  RegisterWSComponent(TLabel, TWin32WSLabel);
 //  RegisterWSComponent(TButtonControl, TWin32WSButtonControl);
-//  RegisterWSComponent(TCustomCheckBox, TWin32WSCustomCheckBox);
+  RegisterWSComponent(TCustomCheckBox, TWin32WSCustomCheckBox);
 //  RegisterWSComponent(TCheckBox, TWin32WSCheckBox);
 //  RegisterWSComponent(TCheckBox, TWin32WSCheckBox);
 //  RegisterWSComponent(TToggleBox, TWin32WSToggleBox);
