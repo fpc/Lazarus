@@ -73,6 +73,15 @@ begin
     else begin
       // Draw outline
       SelectGDKPenProps(DC);
+
+      If not IsValidGDIObject(hPen(CurrentPen)) then
+        exit;//cowardly refuse to continue
+
+      If CurrentPen^.IsNullPen then begin
+        Result := True;//not an error
+        Exit;//Skip out.
+      end;
+
       DCOrigin:=GetDCOffset(PDeviceContext(DC));
       inc(X,DCOrigin.X);
       inc(Y,DCOrigin.Y);
@@ -800,10 +809,11 @@ function TgtkObject.CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
 const
   HATCH_NULL      : array[0..7] of Byte = ($00, $00, $00, $00, $00, $00, $00, $00);
   HATCH_BDIAGONAL : array[0..7] of Byte = ($80, $40, $20, $10, $08, $04, $02, $01);
-  HATCH_CROSS     : array[0..7] of Byte = ($22, $22, $FF, $22, $22, $22, $FF, $22);
+  HATCH_CROSS     : array[0..7] of Byte = ($08, $08, $08, $FF, $08, $08, $08, $08);
+  {This is too fine for a Cross Hatch ($22, $22, $FF, $22, $22, $22, $FF, $22);}
   HATCH_DIAGCROSS : array[0..7] of Byte = ($81, $42, $24, $18, $18, $24, $42, $81);
   HATCH_FDIAGONAL : array[0..7] of Byte = ($01, $02, $04, $08, $10, $20, $40, $80);
-  HATCH_HORIZONTAL: array[0..7] of Byte = ($00, $00, $00, $00, $FF, $00, $00, $00);
+  HATCH_HORIZONTAL: array[0..7] of Byte = ($00, $00, $00, $FF, $00, $00, $00, $00);
   HATCH_VERTICAL  : array[0..7] of Byte = ($08, $08, $08, $08, $08, $08, $08, $08);
 var
   GObject: PGdiObject;
@@ -884,15 +894,8 @@ begin
                         , [lbStyle]);
     end;
 
-    with GObject^.GDIBrushColor do
-    begin
-       Red :=   ((lbColor shl 8) and $00FF00) or ((lbColor       ) and $0000FF);
-       Green := ((lbColor      ) and $00FF00) or ((lbColor shr 8 ) and $0000FF);
-       Blue :=  ((lbColor shr 8) and $00FF00) or ((lbColor shr 16) and $0000FF);
-    end;
-    gdk_colormap_alloc_color(gdk_colormap_get_system, @GObject^.GDIBrushColor, False, True);
-    with GObject^.GDIBrushColor do
-      Assert(False, Format('Trace:  [TgtkObject.CreateBrushIndirect]  Allocated R: %2x, G: %2x, B: %2x', [Red, Green, Blue]));
+    GObject^.GDIBrushColor.ColorRef := lbColor;
+    GObject^.GDIBrushColor.Color.Pixel := -1;
   end;
   if sError = '' then
     Result := HBRUSH(GObject)
@@ -1557,15 +1560,7 @@ begin
   begin
     GObject^.GDIPenStyle := lopnStyle;
     GObject^.GDIPenWidth := lopnWidth.X;
-
-//    with GObject^.GDIPenColor do
-//    begin
-//      Red :=   ((lopnColor shl 8) and $00FF00) or ((lopnColor       ) and $0000FF);
-//      Green := ((lopnColor      ) and $00FF00) or ((lopnColor shr 8 ) and $0000FF);
-//      Blue :=  ((lopnColor shr 8) and $00FF00) or ((lopnColor shr 16) and $0000FF);
-//    end;
-//    gdk_colormap_alloc_color(gdk_colormap_get_system, @GObject^.GDIPenColor, False, True);
-    GObject^.GDIPenColor := AllocGDKColor(lopnColor);
+    GObject^.GDIPenColor.ColorRef := lopnColor;
   end;
 
   Result := HPEN(GObject);
@@ -1623,28 +1618,6 @@ begin
   
   GdiObject^.GDIBitmapType:=gbPixmap;
   Result := HBITMAP(GdiObject);
-end;
-
-Function RegionType(RGN : PGDKRegion) : Longint;
-var
-  aRect : TGDKRectangle;
-  rRGN  : hRGN;
-begin
-  If RGN = nil then
-    Result := ERROR
-  else
-    If gdk_region_empty(RGN) then
-      Result := NULLREGION
-  else begin
-    gdk_region_get_clipbox(RGN,@aRect);
-    With aRect do
-      rRGN := CreateRectRgn(X, Y, X + Width, Y + Height);
-    if gdk_region_equal(PGDIObject(rRGN)^.GDIRegionObject, RGN) then
-      Result := SIMPLEREGION
-    else
-      Result := COMPLEXREGION;
-    DeleteObject(rRGN);
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1918,7 +1891,8 @@ begin
             if (GDIBrushPixmap <> nil)
             then gdk_bitmap_unref(GDIBrushPixmap);
             
-            gdk_colormap_free_colors(gdk_colormap_get_system, @GDIBrushColor, 1);
+            If (GDIBrushColor.Color.Pixel <> -1) and (GDIBrushColor.Colormap <> nil) then
+              gdk_colormap_free_colors(GDIBrushColor.Colormap,@GDIBrushColor.Color, 1);
           end;
         gdiBitmap:
           begin
@@ -1931,7 +1905,8 @@ begin
           end;
         gdiPen:
           begin
-            gdk_colormap_free_colors(gdk_colormap_get_system, @GDIPenColor, 1);
+            If (GDIPenColor.Color.Pixel <> -1) and (GDIPenColor.Colormap <> nil) then
+              gdk_colormap_free_colors(GDIPenColor.Colormap,@GDIPenColor.Color, 1);
           end;
         gdiRegion:
           begin
@@ -2093,6 +2068,144 @@ var
     end;
   end;
   
+  procedure DrawButtonCheck;
+  var
+    State: TGtkStateType;
+    Shadow: TGtkShadowType;
+    aStyle : PGTKStyle;
+    pDC: PDeviceContext;
+    DCOrigin: TPoint;
+  begin
+    // use the gtk paint functions to draw a widget style dependent checkbox
+
+    // set State (the interior filling style)
+    if (DFCS_INACTIVE and uState)<>0 then begin
+      // button disabled
+      State:=GTK_STATE_INSENSITIVE;
+    end else begin
+      if (DFCS_PUSHED and uState)<>0 then begin
+        // button enabled, down
+        if (DFCS_CHECKED and uState)<>0 then begin
+          // button enabled, down, special (e.g. mouse over)
+          State:=GTK_STATE_ACTIVE;
+        end else begin
+          // button enabled, down, normal
+          State:=GTK_STATE_SELECTED;
+        end;
+      end else begin
+        // button enabled, up
+        if (DFCS_CHECKED and uState)<>0 then begin
+          // button enabled, up, special (e.g. mouse over)
+          State:=GTK_STATE_PRELIGHT;
+        end else begin
+          // button enabled, up, normal
+          State:=GTK_STATE_NORMAL;
+        end;
+      end;
+    end;
+    // set Shadow (the border style)
+    if (DFCS_PUSHED and uState)<>0 then begin
+      // button down
+      Shadow:=GTK_SHADOW_IN;
+    end else begin
+      if (((DFCS_FLAT+DFCS_CHECKED) and uState)=DFCS_FLAT) then begin
+       // button up, flat, no special
+        Shadow:=GTK_SHADOW_NONE;
+      end else begin
+        // button up
+        Shadow:=GTK_SHADOW_OUT;
+      end;
+    end;
+
+    aStyle := GetStyle('checkbox');
+    If aStyle = nil then
+      aStyle := Widget^.theStyle
+    else
+      If State = GTK_STATE_SELECTED then
+        State := GTK_STATE_ACTIVE;
+
+    pDC:=PDeviceContext(DC);
+    DCOrigin:=GetDCOffset(pDC);
+
+    Case Shadow of
+      GTK_SHADOW_NONE:
+        gtk_paint_flat_box(aStyle,GetControlWindow(Widget),
+          State, Shadow, nil, Widget, 'checkbutton',
+          Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
+          Rect.Right-Rect.Left,Rect.Bottom-Rect.Top);
+      else
+        gtk_paint_box(aStyle,GetControlWindow(Widget),
+          State, Shadow, nil, Widget, 'checkbutton',
+          Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
+          Rect.Right-Rect.Left,Rect.Bottom-Rect.Top);
+    end;
+  end;
+
+  procedure DrawCheck;
+  var
+    State: TGtkStateType;
+    Shadow: TGtkShadowType;
+    aStyle : PGTKStyle;
+    pDC: PDeviceContext;
+    DCOrigin: TPoint;
+  begin
+    // use the gtk paint functions to draw a widget style dependent check
+
+    // set State (the interior filling style)
+    if (DFCS_INACTIVE and uState)<>0 then begin
+      // button disabled
+      State:=GTK_STATE_INSENSITIVE;
+    end else begin
+      if (DFCS_PUSHED and uState)<>0 then begin
+        // button enabled, down
+        if (DFCS_CHECKED and uState)<>0 then begin
+          // button enabled, down, special (e.g. mouse over)
+          State:=GTK_STATE_ACTIVE;
+        end else begin
+          // button enabled, down, normal
+          State:=GTK_STATE_SELECTED;
+        end;
+      end else begin
+        // button enabled, up
+        if (DFCS_CHECKED and uState)<>0 then begin
+          // button enabled, up, special (e.g. mouse over)
+          State:=GTK_STATE_PRELIGHT;
+        end else begin
+          // button enabled, up, normal
+          State:=GTK_STATE_NORMAL;
+        end;
+      end;
+    end;
+    // set Shadow (the border style)
+    if (DFCS_PUSHED and uState)<>0 then begin
+      // button down
+      Shadow:=GTK_SHADOW_IN;
+    end else begin
+      if (((DFCS_FLAT+DFCS_CHECKED) and uState)=DFCS_FLAT) then begin
+       // button up, flat, no special
+        Shadow:=GTK_SHADOW_NONE;
+      end else begin
+        // button up
+        Shadow:=GTK_SHADOW_OUT;
+      end;
+    end;
+
+    aStyle := GetStyle('checkbox');
+    If aStyle = nil then
+      aStyle := Widget^.theStyle
+    else
+      If State = GTK_STATE_SELECTED then
+        State := GTK_STATE_ACTIVE;
+
+    pDC:=PDeviceContext(DC);
+    DCOrigin:=GetDCOffset(pDC);
+
+    gtk_paint_check(aStyle,GetControlWindow(Widget),
+      State, Shadow, nil, Widget, 'checkbutton',
+      Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
+      Rect.Right-Rect.Left,Rect.Bottom-Rect.Top);
+  end;
+
 var ClientWidget: PGtkWidget;
 begin
   if IsValidDC(DC) then begin
@@ -2143,16 +2256,9 @@ begin
           DFCS_BUTTONCHECK:
             begin
               Assert(False, 'Trace:State ButtonCheck');
-              Result := DrawEdge(DC, Rect,
-                                 PUSH_EDGE_FLAG2[(uState and DFCS_FLAT) <> 0],
-                                 BF_RECT or ADJUST_FLAG[
-                                            (uState and DFCS_ADJUSTRECT) <> 0]
-                                 );
+              DrawButtonCheck;
               if (uState and DFCS_CHECKED) <> 0 then
-                 Begin
-                 //TODO:write the code to draw a check inside the box defined by Rect
-
-                 end;
+                DrawCheck;
             end;
         else  
           WriteLn(Format('ERROR: [TgtkObject.DrawFrameControl] Unknown State 0x%x', [uState]));
@@ -2421,7 +2527,17 @@ begin
       gdk_draw_arc(Drawable, GC, 1, x+DCOrigin.X, y+DCOrigin.Y, Width, Height,
                    0, 360 shl 6);
       // Draw outline
+
       SelectGDKPenProps(DC);
+
+      If not IsValidGDIObject(hPen(CurrentPen)) then
+        exit;//cowardly refuse to continue
+
+      If CurrentPen^.IsNullPen then begin
+        Result := True;//not an error
+        Exit;//Skip out.
+      end;
+
       gdk_draw_arc(Drawable, GC, 0, x+DCOrigin.X, y+DCOrigin.Y, Width, Height,
                    0, 360 shl 6);
       Result := True;
@@ -2519,8 +2635,7 @@ begin
       begin
         Width := Rect^.Right - Rect^.Left;
         Height := Rect^.Bottom - Rect^.Top;
-        gdk_gc_set_fill(GC, GDK_SOLID);
-        gdk_gc_set_foreground(GC, @CurrentBackColor);
+        EnsureGCColor(DC, GC, CurrentBackColor, True, False);
         gdk_draw_rectangle(Drawable, GC, 1,
                            Rect^.Left+DCOrigin.X, Rect^.Top+DCOrigin.Y,
                            Width, Height);
@@ -3810,7 +3925,7 @@ begin
   if IsValidDC(DC) then
     with PDeviceContext(DC)^ do
     begin
-      Result := TGDKColorToTColor(CurrentTextColor);
+      Result := CurrentTextColor.ColorRef;
     end;
 end;
 
@@ -4409,6 +4524,15 @@ begin
     else begin
       DCOrigin:=GetDCOffset(PDeviceContext(DC));
       SelectGDKPenProps(DC);
+
+      If not IsValidGDIObject(hPen(CurrentPen)) then
+        exit;//cowardly refuse to continue
+
+      If CurrentPen^.IsNullPen then begin
+        Result := True;//not an error
+        Exit;//Skip out.
+      end;
+
       gdk_draw_line(Drawable, GC, PenPos.X+DCOrigin.X, PenPos.Y+DCOrigin.Y,
                     X+DCOrigin.X, Y+DCOrigin.Y);
       PenPos:= Point(X, Y);
@@ -4759,15 +4883,27 @@ begin
         ExtSelectClipRGN(DC, RGN, RGN_AND);
         DeleteObject(RGN);
         GetClipBox(DC, @ClipRect);
-        FillRect(DC, ClipRect, HBrush(CurrentBrush));
+	FillRect(DC, ClipRect, HBrush(CurrentBrush));
         SelectClipRGN(DC, Tmp);
         DeleteObject(Tmp);
-      end else begin
+      end else
         gdk_draw_polygon(Drawable, GC, 1, PointArray, NumPts);
-      end;
 
       // draw outline
+
       SelectGDKPenProps(DC);
+
+      If not IsValidGDIObject(hPen(CurrentPen)) then begin
+        FreeMem(PointArray); //don't forget too free
+        exit;//cowardly refuse to continue
+      end;
+
+      If CurrentPen^.IsNullPen then begin
+        Result := True;//not an error
+        FreeMem(PointArray); //don't forget too free
+        Exit;//Skip out.
+      end;
+
       gdk_draw_polygon(Drawable, GC, 0, PointArray, NumPts);
 
       FreeMem(PointArray);
@@ -4802,6 +4938,18 @@ begin
 
       // draw outline
       SelectGDKPenProps(DC);
+
+      If not IsValidGDIObject(hPen(CurrentPen)) then begin
+        FreeMem(PointArray); //don't forget too free
+        exit;//cowardly refuse to continue
+      end;
+
+      If CurrentPen^.IsNullPen then begin
+        Result := True;//not an error
+        FreeMem(PointArray); //don't forget too free
+        Exit;//Skip out.
+      end;
+
       gdk_draw_lines(Drawable, GC, PointArray, NumPts);
       FreeMem(PointArray);
       
@@ -5055,6 +5203,15 @@ begin
 
       // Draw outline
       SelectGDKPenProps(DC);
+
+      If not IsValidGDIObject(hPen(CurrentPen)) then
+        exit;//cowardly refuse to continue
+
+      If CurrentPen^.IsNullPen then begin
+        Result := True;//not an error
+        Exit;//Skip out.
+      end;
+
       gdk_draw_rectangle(Drawable, GC, 0, Left+DCOrigin.X, Top+DCOrigin.Y,
                          Width, Height);
       Result := True;
@@ -5256,6 +5413,33 @@ begin
     MenuItemWidget^.flag0:=MenuItemWidget^.flag0 and (not bm_right_justify);
   gtk_widget_queue_resize(GTK_WIDGET(MenuItemWidget));
   Result:=false;
+end;
+
+{------------------------------------------------------------------------------
+  Method:   RoundRect
+  Params:   X1, Y1, X2, Y2, RX, RY
+  Returns:  If succesfull
+
+  Draws a Rectangle with optional rounded corners. RY is the radial height
+  of the corner arcs, RX is the radial width. If either is less than or equal to
+  0, the routine simly calls to standard Rectangle.
+ ------------------------------------------------------------------------------}
+Function TgtkObject.RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean;
+begin
+  Assert(False, Format('trace:> [TgtkObject.RoundRect] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d, RX:%d, RY:%d', [DC, X1, Y1, X2, Y2, RX, RY]));
+  Result := IsValidDC(DC);
+  if Result
+  then with PDeviceContext(DC)^ do
+  begin
+    if GC = nil
+    then begin
+      WriteLn('WARNING: [TgtkObject.RoundRect] Uninitialized GC');
+      Result := False;
+    end
+    else
+      Result := Inherited RoundRect(DC, X1, Y1, X2, Y2, RX, RY);
+  end;
+  Assert(False, Format('trace:< [TgtkObject.RoundRect] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d, RX:%d, RY:%d', [DC, X1, Y1, X2, Y2, RX, RY]));
 end;
 
 {------------------------------------------------------------------------------
@@ -5578,31 +5762,15 @@ end;
 
  ------------------------------------------------------------------------------}
 function TgtkObject.SetBKColor(DC: HDC; Color: TColorRef): TColorRef;
-const
-  HI_MASK = LongWord($FF00);
-  LO_MASK = LongWord($FF);
 begin
   Assert(False, Format('trace:> [TgtkObject.SetBKColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
   Result := CLR_INVALID;
   if IsValidDC(DC)
   then begin
-    with PDeviceContext(DC)^, CurrentBackColor do
+    with PDeviceContext(DC)^ do
     begin
-      Result := ((Red and HI_MASK) shr 8)
-              or (Green and HI_MASK)
-              or ((Blue and HI_MASK) shl 8);
-
-      if Result <> Color then
-      begin
-        gdk_colormap_free_colors(gdk_colormap_get_system, @CurrentBackColor, 1);
-
-        Red :=   ((Color shl 8) and HI_MASK) or ((Color       ) and LO_MASK);
-        Green := ((Color      ) and HI_MASK) or ((Color shr 8 ) and LO_MASK);
-        Blue :=  ((Color shr 8) and HI_MASK) or ((Color shr 16) and LO_MASK);
-
-        gdk_colormap_alloc_color(gdk_colormap_get_system, @CurrentBackColor,
-                                 False, True);
-      end;
+      Result := CurrentBackColor.ColorRef;
+      CurrentBackColor.ColorRef := Color;
     end;
 
   end;
@@ -6057,33 +6225,16 @@ end;
   context to the specified color.
  ------------------------------------------------------------------------------}
 function TgtkObject.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
-const
-  HI_MASK = LongWord($FF00);
-  LO_MASK = LongWord($FF);
 begin
   Assert(False, Format('trace:> [TgtkObject.SetTextColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
   Result := CLR_INVALID;
   if IsValidDC(DC)
   then begin
-    with PDeviceContext(DC)^, CurrentTextColor do
+    with PDeviceContext(DC)^ do
     begin
-      Result := ((Red and HI_MASK) shr 8)
-              or (Green and HI_MASK)
-              or ((Blue and HI_MASK) shl 8);
-
-      if Result <> Color
-      then begin
-        gdk_colormap_free_colors(gdk_colormap_get_system, @CurrentTextColor, 1);
-
-        Red :=   ((Color shl 8) and HI_MASK) or ((Color       ) and LO_MASK);
-        Green := ((Color      ) and HI_MASK) or ((Color shr 8 ) and LO_MASK);
-        Blue :=  ((Color shr 8) and HI_MASK) or ((Color shr 16) and LO_MASK);
-
-        gdk_colormap_alloc_color(gdk_colormap_get_system, @CurrentTextColor,
-                                 False, True);
-      end;
+      Result := CurrentTextColor.ColorRef;
+      CurrentTextColor.ColorRef := Color;
     end;
-
   end;
   Assert(False, Format('trace:< [TgtkObject.SetTextColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
 end;
@@ -6977,6 +7128,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.134  2002/09/18 17:07:29  lazarus
+  MG: added patch from Andrew
+
   Revision 1.133  2002/09/13 16:58:28  lazarus
   MG: removed the 1x1 bitmap from TBitBtn
 
