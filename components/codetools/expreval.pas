@@ -70,6 +70,7 @@ type
     function Eval(const Expression:string):string;
     property ErrorPosition:integer read ErrorPos;
     property OnChange: TOnValuesChanged read FOnChange write FOnChange;
+    function Items(Index: integer): string;
     procedure Clear;
     function AsString: string;
     constructor Create;
@@ -188,6 +189,11 @@ begin
     Result:='';  exit;
   end;
   Result:=s;
+end;
+
+function TExpressionEvaluator.Items(Index: integer): string;
+begin
+  Result:=FNames[Index]+'='+FValues[Index];
 end;
 
 function TExpressionEvaluator.EvalAtPos: string;

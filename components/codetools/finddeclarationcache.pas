@@ -97,7 +97,7 @@ const
 type
   TNodeCacheEntryFlag = (ncefSearchedInParents, ncefSearchedInAncestors);
   TNodeCacheEntryFlags = set of TNodeCacheEntryFlag;
-
+  
   PCodeTreeNodeCacheEntry = ^TCodeTreeNodeCacheEntry;
   TCodeTreeNodeCacheEntry = record
     Identifier: PChar;
@@ -244,6 +244,9 @@ type
 
 const
   ncefAllSearchRanges = [ncefSearchedInAncestors,ncefSearchedInParents];
+  NodeCacheEntryFlagNames: array[TNodeCacheEntryFlag] of string = (
+      'SearchedInParents', 'SearchedInAncestors'
+    );
 
 var
   GlobalIdentifierTree: TGlobalIdentifierTree;
@@ -253,9 +256,23 @@ var
   BaseTypeCacheMemManager: TBaseTypeCacheMemManager;
 
 
+function NodeCacheEntryFlagsAsString(Flags: TNodeCacheEntryFlags): string;
+
 
 implementation
 
+
+function NodeCacheEntryFlagsAsString(Flags: TNodeCacheEntryFlags): string;
+var f: TNodeCacheEntryFlag;
+begin
+  Result:='';
+  for f:=Low(TNodeCacheEntryFlag) to High(TNodeCacheEntryFlag) do begin
+    if f in Flags then begin
+      if Result<>'' then Result:=rEsult+', ';
+      Result:=Result+NodeCacheEntryFlagNames[f];
+    end;
+  end;
+end;
 
 { TNodeCacheEntryMemManager }
 
@@ -597,6 +614,7 @@ procedure TCodeTreeNodeCache.Add(Identifier: PChar;
     NewEntry^.NewNode:=NewNode;
     NewEntry^.NewTool:=NewTool;
     NewEntry^.NewCleanPos:=NewCleanPos;
+    NewEntry^.Flags:=Flags;
     FItems.Add(NewEntry);
   end;
   
@@ -635,6 +653,15 @@ begin
   if CleanStartPos>=CleanEndPos then
     raise Exception.Create('[TCodeTreeNodeCache.Add] internal error:'
       +' CleanStartPos>=CleanEndPos');
+{if GetIdentifier(Identifier)='TDefineAction' then begin
+  writeln('[[[[======================================================');
+  writeln('[TCodeTreeNodeCache.Add] Ident=',GetIdentifier(Identifier),
+     ' CleanStartPos=',CleanStartPos,' CleanEndPos=',CleanEndPos,
+     ' Flags=[',NodeCacheEntryFlagsAsString(Flags),']',
+     ' NewNode=',NewNode<>nil
+     );
+  writeln('======================================================]]]]');
+end;}
   if FItems=nil then
     FItems:=TAVLTree.Create(@CompareTCodeTreeNodeCacheEntry);
   // if identifier already exists, try to combine them
@@ -644,8 +671,8 @@ begin
     AddNewEntry;
   end else begin
     // identifier was already searched in this range
-    NewSearchRangeFlags:=(ncefAllSearchRanges * (OldEntry^.Flags+Flags));
     OldEntry:=PCodeTreeNodeCacheEntry(OldNode.Data);
+    NewSearchRangeFlags:=(ncefAllSearchRanges * (OldEntry^.Flags+Flags));
     if ((NewNode=OldEntry^.NewNode)
     and (NewTool=OldEntry^.NewTool))
     or ((OldEntry^.NewNode=nil) and (NewSearchRangeFlags<>[])) then
@@ -656,7 +683,7 @@ begin
         OldEntry^.CleanStartPos:=CleanStartPos;
       if OldEntry^.CleanEndPos<CleanEndPos then
         OldEntry^.CleanEndPos:=CleanEndPos;
-      OldEntry^.Flags:=OldEntry^.Flags+NewSearchRangeFlags;
+      OldEntry^.Flags:=NewSearchRangeFlags;
     end else begin
       // different FindContext with overlapping search ranges
       RaiseConflictException;
@@ -821,6 +848,8 @@ begin
     while Node<>nil do begin
       Entry:=PCodeTreeNodeCacheEntry(Node.Data);
       write(Prefix,' Ident="',GetIdentifier(Entry^.Identifier),'"');
+      write(' Flags=[',NodeCacheEntryFlagsAsString(Entry^.Flags),']');
+      write(' Node=',Entry^.NewNode<>nil);
       writeln('');
       Node:=FItems.FindSuccessor(Node);
     end;

@@ -210,28 +210,28 @@ type
   protected
     function FindDirectoryInCache(const Path: string): TDirectoryDefines;
   public
-    function GetDefinesForDirectory(const Path: string): TExpressionEvaluator;
-    function GetDefinesForVirtualDirectory: TExpressionEvaluator;
     property RootTemplate: TDefineTemplate
         read FFirstDefineTemplate write FFirstDefineTemplate;
+    property OnReadValue: TOnReadValue read FOnReadValue write FOnReadValue;
+    property ErrorTemplate: TDefineTemplate read FErrorTemplate;
+    property ErrorDescription: string read FErrorDescription;
+    function  GetDefinesForDirectory(const Path: string): TExpressionEvaluator;
+    function  GetDefinesForVirtualDirectory: TExpressionEvaluator;
     procedure AddFirst(ADefineTemplate: TDefineTemplate);
     procedure Add(ADefineTemplate: TDefineTemplate);
-    function FindDefineTemplateByName(const AName: string;
+    function  FindDefineTemplateByName(const AName: string;
       OnlyRoots: boolean): TDefineTemplate;
     procedure ReplaceRootSameName(ADefineTemplate: TDefineTemplate);
     procedure ReplaceRootSameNameAddFirst(ADefineTemplate: TDefineTemplate);
     procedure RemoveRootDefineTemplateByName(const AName: string);
-    property OnReadValue: TOnReadValue read FOnReadValue write FOnReadValue;
-    property ErrorTemplate: TDefineTemplate read FErrorTemplate;
-    property ErrorDescription: string read FErrorDescription;
-    function LoadFromXMLConfig(XMLConfig: TXMLConfig;
+    function  LoadFromXMLConfig(XMLConfig: TXMLConfig;
         const Path: string; Policy: TDefineTreeLoadPolicy;
         const NewNamePrefix: string): boolean;
-    function SaveToXMLConfig(XMLConfig: TXMLConfig;
+    function  SaveToXMLConfig(XMLConfig: TXMLConfig;
         const Path: string; Policy: TDefineTreeSavePolicy): boolean;
     procedure ClearCache;
     procedure Clear;
-    function IsEqual(SrcDefineTree: TDefineTree): boolean;
+    function  IsEqual(SrcDefineTree: TDefineTree): boolean;
     procedure Assign(SrcDefineTree: TDefineTree);
     procedure RemoveMarked;
     procedure RemoveGlobals;
@@ -240,7 +240,7 @@ type
     procedure RemoveNonAutoCreated;
     constructor Create;
     destructor Destroy; override;
-    function ConsistencyCheck: integer; // 0 = ok
+    function  ConsistencyCheck: integer; // 0 = ok
     procedure WriteDebugReport;
   end;
 
@@ -1813,13 +1813,15 @@ function TDefinePool.CreateFPCTemplate(
       NewDefTempl:=TDefineTemplate.Create('Define '+MacroName,
            'Default ppc386 macro',MacroName,'',da_DefineRecurse);
     end else if copy(UpLine,1,6)='MACRO ' then begin
-      Line:=copy(Line,7,length(Line)-6);
+      System.Delete(Line,1,6);
+      System.Delete(UpLine,1,6);
       i:=1;
       while (i<=length(Line)) and (Line[i]<>' ') do inc(i);
       MacroName:=copy(UpLine,1,i-1);
       inc(i);
-      Line:=copy(Line,i,length(Line)-i+1);
-      if copy(Line,1,7)='set to ' then begin
+      System.Delete(Line,1,i-1);
+      System.Delete(UpLine,1,i-1);
+      if copy(UpLine,1,7)='SET TO ' then begin
         MacroValue:=copy(Line,8,length(Line)-7);
         NewDefTempl:=TDefineTemplate.Create('Define '+MacroName,
              'Default ppc386 macro',MacroName,MacroValue,da_DefineRecurse);

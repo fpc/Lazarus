@@ -55,7 +55,7 @@ type
     FPropertyStoredIdentPostfix: string;
     FPrivatVariablePrefix: string;
     FSetPropertyVariablename: string;
-
+    
     procedure SetFilename(const AValue: string);
   public
     constructor Create;

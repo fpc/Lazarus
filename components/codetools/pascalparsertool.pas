@@ -231,6 +231,7 @@ type
     function GetSourceType: TCodeTreeNodeDesc;
     function NodeHasParentOfType(ANode: TCodeTreeNode;
         NodeDesc: TCodeTreeNodeDesc): boolean;
+    function NodeIsPartOfTypeDefinition(ANode: TCodeTreeNode): boolean;
     function PropertyIsDefault(PropertyNode: TCodeTreeNode): boolean;
 
     constructor Create;
@@ -3250,6 +3251,20 @@ begin
     until (ANode=nil) or (ANode.Desc=NodeDesc);
   end;
   Result:=(ANode<>nil);
+end;
+
+function TPascalParserTool.NodeIsPartOfTypeDefinition(ANode: TCodeTreeNode
+  ): boolean;
+begin
+  ANode:=ANode.Parent;
+  while ANode<>nil do begin
+    if ANode.Desc in (AllIdentifierDefinitions+AllPascalTypes) then begin
+      Result:=true;
+      exit;
+    end;
+    ANode:=ANode.Parent;
+  end;
+  Result:=false;
 end;
 
 function TPascalParserTool.CleanPosIsInComment(CleanPos,

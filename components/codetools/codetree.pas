@@ -100,7 +100,7 @@ const
   ctnPointerType     = 74;
   ctnClassOfType     = 75;
   ctnVariantType     = 76;
-  
+
   ctnBeginBlock      = 80;
   ctnAsmBlock        = 81;
 
@@ -150,6 +150,7 @@ type
     function Next: TCodeTreeNode;
     function Prior: TCodeTreeNode;
     function HasAsParent(Node: TCodeTreeNode): boolean;
+    function HasParentOfType(ParentDesc: TCodeTreeNodeDesc): boolean;
     function DescAsString: string;
     procedure Clear;
     constructor Create;
@@ -386,6 +387,15 @@ begin
     end;
     CurNode:=CurNode.Parent;
   end;
+end;
+
+function TCodeTreeNode.HasParentOfType(ParentDesc: TCodeTreeNodeDesc): boolean;
+var ANode: TCodeTreeNode;
+begin
+  ANode:=Parent;
+  while (ANode<>nil) and (ANode.Desc<>ParentDesc) do
+    ANode:=ANode.Parent;
+  Result:=ANode<>nil;
 end;
 
 function TCodeTreeNode.DescAsString: string;

@@ -36,7 +36,7 @@ interface
 uses
   Classes, SysUtils, LCLLinux, Forms, Controls, Buttons, StdCtrls, ComCtrls,
   ExtCtrls, Menus, LResources, Graphics, Dialogs, ImgList, SynEdit, XMLCfg,
-  DefineTemplates, CodeToolManager, CodeToolsOptions;
+  DefineTemplates, CodeToolManager, CodeToolsOptions, CodeToolsDefPreview;
 
 type
   TCodeToolsDefinesEditor = class(TForm)
@@ -125,12 +125,16 @@ type
     MoveFilePathDownBitBtn: TBitBtn;
     DeleteFilePathBitBtn: TBitBtn;
     InsertFilePathBitBtn: TBitBtn;
+    
+    // preview
+    DefinePreview: TCodeToolsDefinesPreview;
 
     // misc
     procedure FormResize(Sender: TObject);
     procedure DefineTreeViewMouseUp(Sender: TObject; Button: TMouseButton;
                                     Shift: TShiftState;  X,Y: integer);
     procedure ProjectSpecificCheckBoxClick(Sender: TObject);
+    procedure RefreshPreview;
 
     // exit menu
     procedure SaveAndExitMenuItemClick(Sender: TObject);
@@ -151,6 +155,9 @@ type
     procedure MoveNodeLvlDownMenuItemClick(Sender: TObject);
     procedure DeleteNodeMenuItemClick(Sender: TObject);
     procedure ConvertActionMenuItemClick(Sender: TObject);
+    
+    // tools menu
+    procedure OpenPreviewMenuItemClick(Sender: TObject);
   private
     FDefineTree: TDefineTree;
     FLastSelectedNode: TTreeNode;
@@ -161,7 +168,7 @@ type
       WithChilds,WithNextSiblings: boolean);
     procedure SetNodeImages(ANode: TTreeNode; WithSubNodes: boolean);
     procedure ValueAsPathToValueAsText;
-    procedure SaveSelectedValues(ATreeNode: TTreeNode);
+    procedure SaveValues(ATreeNode: TTreeNode);
     procedure ShowSelectedValues;
     procedure SetTypeLabel;
     function ValueToFilePathText(const AValue: string): string;
@@ -179,13 +186,134 @@ type
 
 function ShowCodeToolsDefinesEditor(ACodeToolBoss: TCodeToolManager;
   Options: TCodeToolsOptions): TModalResult;
+function SaveGlobalCodeToolsDefines(ACodeToolBoss: TCodeToolManager;
+  Options: TCodeToolsOptions): TModalResult;
+function SaveProjectSpecificCodeToolsDefines(ACodeToolBoss: TCodeToolManager;
+  const ProjectInfoFile: string): TModalResult;
+function LoadCodeToolsDefines(ACodeToolBoss: TCodeToolManager;
+  Options: TCodeToolsOptions; const ProjectInfoFile: string): TModalResult;
 
 
 implementation
 
+
 type
   TWinControlClass = class of TWinControl;
 
+function SaveGlobalCodeToolsDefines(ACodeToolBoss: TCodeToolManager;
+  Options: TCodeToolsOptions): TModalResult;
+var
+  XMLConfig: TXMLConfig;
+begin
+  Result:=mrCancel;
+  try
+    XMLConfig:=TXMLConfig.Create(Options.Filename);
+    try
+      ACodeToolBoss.DefineTree.SaveToXMLConfig(XMLConfig,
+        'CodeToolsGlobalDefines/',dtspGlobals);
+      XMLConfig.Flush;
+    finally
+      XMLConfig.Free;
+    end;
+    Result:=mrOk;
+  except
+    on e: Exception do
+      Result:=MessageDlg('Write error','Error while writing "'
+          +Options.Filename+'"'#13+e.Message,mtError,[mbIgnore, mbAbort],0);
+  end;
+end;
+
+function SaveProjectSpecificCodeToolsDefines(ACodeToolBoss: TCodeToolManager;
+  const ProjectInfoFile: string): TModalResult;
+var
+  XMLConfig: TXMLConfig;
+  
+{  procedure WriteTime;
+  var hour, minutes, secs, msecs, usecs: word;
+  begin
+    GetTime(hour, minutes, secs, msecs, usecs);
+    writeln('hour=',hour,' minutes=',minutes,' secs=',secs,' msecs=',msecs);
+  end;}
+  
+begin
+  Result:=mrCancel;
+  try
+    XMLConfig:=TXMLConfig.Create(ProjectInfoFile);
+    try
+      ACodeToolBoss.DefineTree.SaveToXMLConfig(XMLConfig,
+        'ProjectSpecificCodeToolsDefines/',dtspProjectSpecific);
+      XMLConfig.Flush;
+    finally
+      XMLConfig.Free;
+    end;
+    Result:=mrOk;
+  except
+    on e: Exception do
+      Result:=MessageDlg('Write error','Error while writing "'
+          +ProjectInfoFile+'"'#13+e.Message,mtError,[mbIgnore, mbAbort],0);
+  end;
+end;
+
+function LoadCodeToolsDefines(ACodeToolBoss: TCodeToolManager;
+  Options: TCodeToolsOptions; const ProjectInfoFile: string): TModalResult;
+// replaces globals and project defines if changed
+var
+  NewDefineTree: TDefineTree;
+  XMLConfig: TXMLConfig;
+begin
+  Result:=mrCancel;
+  NewDefineTree:=TDefineTree.Create;
+  try
+    // create a temporary copy of current defines
+    NewDefineTree.Assign(ACodeToolBoss.DefineTree);
+    // remove non auto generated = all globals and project specific defines
+    NewDefineTree.RemoveNonAutoCreated;
+    if (Options<>nil) and (Options.Filename<>'') then begin
+      // load global defines
+      try
+        XMLConfig:=TXMLConfig.Create(Options.Filename);
+        try
+          NewDefineTree.LoadFromXMLConfig(XMLConfig,
+            'CodeToolsGlobalDefines/',dtlpGlobals,'Global');
+        finally
+          XMLConfig.Free;
+        end;
+        Result:=mrOk;
+      except
+        on e: Exception do
+          Result:=MessageDlg('Read error','Error reading "'
+              +Options.Filename+'"'#13+e.Message,mtError,[mbIgnore, mbAbort],0);
+      end;
+      if Result<>mrOk then exit;
+    end;
+    if ProjectInfoFile<>'' then begin
+      // load project specific defines
+      try
+        XMLConfig:=TXMLConfig.Create(ProjectInfoFile);
+        try
+          NewDefineTree.LoadFromXMLConfig(XMLConfig,
+            'ProjectSpecificCodeToolsDefines/',dtlpProjectSpecific,
+            'ProjectSpecific');
+        finally
+          XMLConfig.Free;
+        end;
+        Result:=mrOk;
+      except
+        on e: Exception do
+          Result:=MessageDlg('Read error','Error reading "'
+              +ProjectInfoFile+'"'#13+e.Message,mtError,[mbIgnore, mbAbort],0);
+      end;
+      if Result<>mrOk then exit;
+    end;
+    // check if something changed (so the caches are only cleared if neccesary)
+    if not NewDefineTree.IsEqual(ACodeToolBoss.DefineTree) then begin
+      ACodeToolBoss.DefineTree.Assign(NewDefineTree);
+    end;
+    Result:=mrOk;
+  finally
+    NewDefineTree.Free;
+  end;
+end;
 
 function ShowCodeToolsDefinesEditor(ACodeToolBoss: TCodeToolManager;
   Options: TCodeToolsOptions): TModalResult;
@@ -194,43 +322,22 @@ begin
   CodeToolsDefinesEditor:=TCodeToolsDefinesEditor.Create(Application);
   CodeToolsDefinesEditor.Assign(ACodeToolBoss,Options);
   Result:=CodeToolsDefinesEditor.ShowModal;
+  if Result=mrOk then begin
+    if not CodeToolsDefinesEditor.DefineTree.IsEqual(ACodeToolBoss.DefineTree)
+    then begin
+      ACodeToolBoss.DefineTree.Assign(CodeToolsDefinesEditor.DefineTree);
+      Result:=SaveGlobalCodeToolsDefines(ACodeToolBoss,Options);
+    end;
+  end;
   CodeToolsDefinesEditor.Free;
 end;
 
 { TCodeToolsDefinesEditor }
 
 procedure TCodeToolsDefinesEditor.SaveAndExitMenuItemClick(Sender: TObject);
-var XMLConfig: TXMLConfig;
-  t: TDefineTree;
 begin
-  SaveSelectedValues(DefineTreeView.Selected);
-  FLastSelectedNode:=nil;
-
-  t:=TDefineTree.Create;
-  t.Assign(DefineTree);
-  
-  writeln(' WWW TCodeToolsDefinesEditor.SaveAndExitMenuItemClick 0 ',t.IsEqual(DefineTree),' Consistency=',ConsistencyCheck);
-  XMLConfig:=TXMLConfig.Create('/home/mattias/pascal/defines.xml');
-  writeln(' WWW TCodeToolsDefinesEditor.SaveAndExitMenuItemClick A');
-  DefineTree.SaveToXMLConfig(XMLConfig,'Globals/',dtspGlobals);
-  writeln(' WWW TCodeToolsDefinesEditor.SaveAndExitMenuItemClick B');
-  DefineTree.SaveToXMLConfig(XMLConfig,'Project/',dtspProjectSpecific);
-  XMLConfig.Flush;
-
-  writeln(' WWW TCodeToolsDefinesEditor.SaveAndExitMenuItemClick C ');
-  DefineTree.LoadFromXMLConfig(XMLConfig,'Globals/',dtlpGlobals,'Global');
-
-  writeln(' WWW TCodeToolsDefinesEditor.SaveAndExitMenuItemClick C ');
-  DefineTree.LoadFromXMLConfig(XMLConfig,'Project/',dtlpProjectSpecific,'Project');
-  
-  writeln(' WWW TCodeToolsDefinesEditor.SaveAndExitMenuItemClick D ',t.IsEqual(DefineTree),' Consistency=',ConsistencyCheck);
-  RebuildDefineTreeView;
-  
-  writeln(' WWW TCodeToolsDefinesEditor.SaveAndExitMenuItemClick END',' Consistency=',ConsistencyCheck);
-  t.Free;
-  XMLConfig.Free;
-
-  //ModalResult:=mrOk;
+  SaveValues(DefineTreeView.Selected);
+  ModalResult:=mrOk;
 end;
 
 procedure TCodeToolsDefinesEditor.DontSaveAndExitMenuItemClick(Sender: TObject);
@@ -433,6 +540,7 @@ var
   SelDefNode, PrevDefNode: TDefineTemplate;
 begin
   SelTreeNode:=DefineTreeView.Selected;
+  SaveValues(SelTreeNode);
   if (SelTreeNode=nil) or (SelTreeNode.GetPrevSibling=nil) then exit;
   SelDefNode:=TDefineTemplate(SelTreeNode.Data);
   PrevDefNode:=SelDefNode.Prior;
@@ -450,6 +558,7 @@ var
   SelDefNode, NextDefNode: TDefineTemplate;
 begin
   SelTreeNode:=DefineTreeView.Selected;
+  SaveValues(SelTreeNode);
   if (SelTreeNode=nil) or (SelTreeNode.GetNextSibling=nil) then exit;
   SelDefNode:=TDefineTemplate(SelTreeNode.Data);
   NextDefNode:=SelDefNode.Next;
@@ -470,6 +579,7 @@ var
   SelDefNode, PrevDefNode: TDefineTemplate;
 begin
   SelTreeNode:=DefineTreeView.Selected;
+  SaveValues(SelTreeNode);
   if (SelTreeNode=nil) or (SelTreeNode.Parent=nil) then exit;
   SelDefNode:=TDefineTemplate(SelTreeNode.Data);
   if SelDefNode.IsAutoGenerated then begin
@@ -496,6 +606,7 @@ var
   SelDefNode, PrevDefNode: TDefineTemplate;
 begin
   SelTreeNode:=DefineTreeView.Selected;
+  SaveValues(SelTreeNode);
   if (SelTreeNode=nil) or (SelTreeNode.GetPrevSibling=nil) then exit;
   SelDefNode:=TDefineTemplate(SelTreeNode.Data);
   PrevDefNode:=SelDefNode.Prior;
@@ -525,6 +636,7 @@ var
   SelDefNode: TDefineTemplate;
 begin
   SelTreeNode:=DefineTreeView.Selected;
+  SaveValues(SelTreeNode);
   if (SelTreeNode=nil) then exit;
   SelDefNode:=TDefineTemplate(SelTreeNode.Data);
   if (SelDefNode.IsAutoGenerated) then begin
@@ -533,13 +645,11 @@ begin
     exit;
   end;
   if FLastSelectedNode=SelTreeNode then FLastSelectedNode:=nil;
-writeln(' AAA1 ',ConsistencyCheck);
   // delete node in TreeView
   SelTreeNode.Free;
   // delete node in DefineTree
   SelDefNode.Unbind;
   SelDefNode.Free;
-writeln(' AAA2 ',ConsistencyCheck);
 end;
 
 procedure TCodeToolsDefinesEditor.ConvertActionMenuItemClick(Sender: TObject);
@@ -549,6 +659,7 @@ var
   SelDefNode: TDefineTemplate;
 begin
   SelTreeNode:=DefineTreeView.Selected;
+  SaveValues(SelTreeNode);
   if SelTreeNode=nil then exit;
   SelDefNode:=TDefineTemplate(SelTreeNode.Data);
   if (SelDefNode.IsAutoGenerated) then begin
@@ -573,6 +684,17 @@ begin
   SetTypeLabel;
 end;
 
+procedure TCodeToolsDefinesEditor.OpenPreviewMenuItemClick(Sender: TObject);
+begin
+  if DefinePreview=nil then begin
+    DefinePreview:=TCodeToolsDefinesPreview.Create(Self);
+    DefinePreview.DefineTree:=DefineTree;
+    DefinePreview.Show;
+  end;
+  RefreshPreview;
+  BringWindowToTop(DefinePreview.Handle);
+end;
+
 procedure TCodeToolsDefinesEditor.ProjectSpecificCheckBoxClick(Sender: TObject);
 var
   SelTreeNode: TTreeNode;
@@ -594,6 +716,12 @@ begin
     Exclude(SelDefNode.Flags,dtfProjectSpecific);
   SetNodeImages(SelTreeNode,true);
   SetTypeLabel;
+end;
+
+procedure TCodeToolsDefinesEditor.RefreshPreview;
+begin
+  if DefinePreview=nil then exit;
+  DefinePreview.ShowDefines;
 end;
 
 procedure TCodeToolsDefinesEditor.CreateComponents;
@@ -821,9 +949,11 @@ begin
       ConvertActionMenuItem[i].OnClick:=@ConvertActionMenuItemClick;
 
   // tools
-{  AddMenuItem(ToolsMenuItem,'ToolsMenuItem','Tools',nil);
+  {AddMenuItem(ToolsMenuItem,'ToolsMenuItem','Tools',nil);
   AddMenuItem(OpenPreviewMenuItem,'OpenPreviewMenuItem','Open Preview',
               ToolsMenuItem);
+  OpenPreviewMenuItem.OnClick:=@OpenPreviewMenuItemClick;
+              
   AddMenuItem(ShowMacroListMenuItem,'ShowMacroListMenuItem','Show Macros',
               ToolsMenuItem);}
 
@@ -1017,7 +1147,7 @@ begin
   ValueAsTextSynEdit.Text:=s;
 end;
 
-procedure TCodeToolsDefinesEditor.SaveSelectedValues(ATreeNode: TTreeNode);
+procedure TCodeToolsDefinesEditor.SaveValues(ATreeNode: TTreeNode);
 var
   ADefNode: TDefineTemplate;
   s: string;
@@ -1043,6 +1173,7 @@ begin
       end;
       ADefNode.Value:=s;
     end;
+    FLastSelectedNode:=nil;
   end;
 end;
 
@@ -1053,7 +1184,7 @@ var
 begin
   SelTreeNode:=DefineTreeView.Selected;
   if SelTreeNode<>FLastSelectedNode then begin
-    SaveSelectedValues(FLastSelectedNode);
+    SaveValues(FLastSelectedNode);
   end;
   if SelTreeNode<>nil then begin
     SelDefNode:=TDefineTemplate(SelTreeNode.Data);
@@ -1122,6 +1253,7 @@ var SelTreeNode, NodeInFront, ParentNode,
   NewName, NewDescription, NewVariable, NewValue: string;
 begin
   SelTreeNode:=DefineTreeView.Selected;
+  SaveValues(SelTreeNode);
   NodeInFront:=nil;
   ParentNode:=nil;
   if SelTreeNode<>nil then begin

@@ -3430,6 +3430,7 @@ writeln('TMainIDE.DoNewProject A');
     end;
   end;
   
+  Result:=LoadCodeToolsDefines(CodeToolBoss,CodeToolsOpts,'');
   CreateProjectDefineTemplate(Project.CompilerOptions,Project.SrcPath);
  
   // set all modified to false
@@ -3613,6 +3614,9 @@ writeln('AnUnitInfo.Filename=',AnUnitInfo.Filename);
   if not SaveToTestDir then begin
     Result:=Project.WriteProject;
     if Result=mrAbort then exit;
+    Result:=SaveProjectSpecificCodeToolsDefines(CodeToolBoss,
+                                                Project.ProjectInfoFile);
+    if Result=mrAbort then exit;
   end;
   // save main source
   if MainUnitInfo<>nil then begin
@@ -3740,6 +3744,9 @@ CheckHeap(IntToStr(GetMem_Cnt));
   LPIFilename:=ChangeFileExt(AFilename,'.lpi');
   Project:=TProject.Create(ptProgram);
   Project.ReadProject(LPIFilename);
+  Result:=LoadCodeToolsDefines(CodeToolBoss,CodeToolsOpts,
+                               Project.ProjectInfoFile);
+  if Result<>mrOk then exit;
   if Project.MainUnit>=0 then begin
     // read MainUnit Source
     Result:=DoLoadCodeBuffer(NewBuf,Project.Units[Project.MainUnit].Filename,
@@ -6216,6 +6223,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.241  2002/03/07 14:14:23  lazarus
+  MG: fixed find declaration new nodecache flags, find next
+
   Revision 1.240  2002/03/05 14:52:15  lazarus
   MG: updates for codetools defines
 
