@@ -1356,8 +1356,10 @@ procedure TApplication.CreateForm(InstanceClass: TComponentClass;
 var
   Instance: TComponent;
   ok: boolean;
-  OldFindGlobalComponent: TFindGlobalComponent;
   AForm: TForm;
+  {$IFNDEF RegisterFindGlobalComponent}
+  OldFindGlobalComponent: TFindGlobalComponent;
+  {$ENDIF}
 begin
   // Allocate the instance, without calling the constructor
   Instance := TComponent(InstanceClass.NewInstance);
@@ -1365,8 +1367,12 @@ begin
   // events and constructors can refer to it
   TComponent(Reference) := Instance;
 
+  {$IFDEF RegisterFindGlobalComponent}
+  RegisterFindGlobalComponentProc(@FindApplicationComponent);
+  {$ELSE}
   OldFindGlobalComponent:=FindGlobalComponent;
   FindGlobalComponent:=@FindApplicationComponent;
+  {$ENDIF}
   ok:=false;
   try
     Instance.Create(Self);
@@ -1374,7 +1380,11 @@ begin
   finally
     if not ok then
       TComponent(Reference) := nil;
+    {$IFDEF RegisterFindGlobalComponent}
+    UnregisterFindGlobalComponentProc(@FindApplicationComponent);
+    {$ELSE}
     FindGlobalComponent:=OldFindGlobalComponent;
+    {$ENDIF}
   end;
 
   if (Instance is TForm) then begin
@@ -1438,6 +1448,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.107  2005/03/02 15:16:55  mattias
+  fixed fpc 1.9.9 compilation
+
   Revision 1.106  2005/03/02 11:30:16  mattias
   implemented updating TApplication.Hint
 

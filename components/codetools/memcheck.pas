@@ -43,6 +43,10 @@ interface
 
 {$IFNDEF VER1_0}
 
+{$IFNDEF VER1_9_8}
+  {$DEFINE HasSysFPCGetHeapStatus}
+{$ENDIF}
+
 {$goto on}
 
 Procedure DumpHeap;
@@ -882,7 +886,11 @@ var
   i : ptrint;
 {$IFDEF HASGETHEAPSTATUS}
   ExpectedHeapFree : ptrint;
-  status : THeapStatus;
+  {$IFDEF HasSysFPCGetHeapStatus}
+    status : TFPCHeapStatus;
+  {$ELSE}
+    status : THeapStatus;
+  {$ENDIF}
 {$ELSE}
   ExpectedMemAvail : ptrint;
 {$ENDIF}
@@ -893,7 +901,11 @@ begin
   Writeln(ptext^,freemem_cnt,' memory blocks freed     : ',freemem_size,'/',freemem8_size);
   Writeln(ptext^,getmem_cnt-freemem_cnt,' unfreed memory blocks : ',getmem_size-freemem_size);
 {$IFDEF HASGETHEAPSTATUS}
-  SysGetHeapStatus(status);
+  {$IFDEF HasSysFPCGetHeapStatus}
+    status:=SysFPCGetHeapStatus;
+  {$ELSE}
+    SysGetHeapStatus(status);
+  {$ENDIF}
   Write(ptext^,'True heap size : ',status.CurrHeapSize);
 {$ELSE}
   Write(ptext^,'True heap size : ',system.HeapSize);
@@ -982,10 +994,22 @@ end;
 *****************************************************************************}
 
 {$IFDEF HASGETHEAPSTATUS}
-procedure TraceGetHeapStatus(var status:THeapStatus);
-begin
-  SysGetHeapStatus(status);
-end;
+  {$IFDEF HasSysFPCGetHeapStatus}
+  function TraceGetHeapStatus: THeapStatus;
+  begin
+    Result:=SysGetHeapStatus;
+  end;
+
+  function TraceGetFPCHeapStatus: TFPCHeapStatus;
+  begin
+    Result:=SysFPCGetHeapStatus;
+  end;
+  {$ELSE}
+  procedure TraceGetHeapStatus(var status:THeapStatus);
+  begin
+    SysGetHeapStatus(status);
+  end;
+  {$ENDIF}
 {$ELSE}
 function TraceMemAvail:ptrint;
 begin
@@ -1054,6 +1078,9 @@ const
     MemSize : @TraceMemSize;
 {$IFDEF HASGETHEAPSTATUS}
     GetHeapStatus : @TraceGetHeapStatus;
+    {$IFDEF HasSysFPCGetHeapStatus}
+      GetFPCHeapStatus : @TraceGetFPCHeapStatus;
+    {$ENDIF}
 {$ELSE}
     MemAvail : @TraceMemAvail;
     MaxAvail : @TraceMaxAvail;
@@ -1065,12 +1092,21 @@ const
 procedure TraceInit;
 {$IFDEF HASGETHEAPSTATUS}
 var
-  initheapstatus : THeapStatus;
+  {$IFDEF HasSysFPCGetHeapStatus}
+    initheapstatus : TFPCHeapStatus;
+  {$ELSE}
+    initheapstatus : THeapStatus;
+  {$ENDIF}
 {$ENDIF}
 begin
 {$IFDEF HASGETHEAPSTATUS}
+  {$IFDEF HasSysFPCGetHeapStatus}
+  initheapstatus:=SysFPCGetHeapStatus;
+  EntryMemUsed:=initheapstatus.CurrHeapUsed;
+  {$ELSE}
   SysGetHeapStatus(initheapstatus);
   EntryMemUsed:=initheapstatus.CurrHeapUsed;
+  {$ENDIF}
 {$ELSE}
   EntryMemUsed:=System.HeapSize-MemAvail;
 {$ENDIF}
@@ -2359,6 +2395,9 @@ end.
 
 {
   $Log$
+  Revision 1.39  2005/03/02 15:16:55  mattias
+  fixed fpc 1.9.9 compilation
+
   Revision 1.38  2004/11/26 16:57:22  mattias
   replaced some mosuedown with selectionchanged events   from Vincent
 

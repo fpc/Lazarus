@@ -39,7 +39,7 @@ interface
 { $DEFINE MEM_CHECK}
 
 // verbosity
-{$DEFINE CTDEBUG}
+{ $DEFINE CTDEBUG}
 { $DEFINE ShowFoundIdents}
 { $DEFINE ShowFilteredIdents}
 { $DEFINE ShowHistory}
@@ -413,9 +413,10 @@ begin
   if not (ilfFilteredListNeedsUpdate in FFlags) then exit;
   if FFilteredList=nil then FFilteredList:=TList.Create;
   FFilteredList.Clear;
-  {$IFDEF CTDEBUG}
+  FFilteredList.Capacity:=FItems.Count;
+  { $IFDEF CTDEBUG}
   DebugLn('TIdentifierList.UpdateFilteredList Prefix="',Prefix,'"');
-  {$ENDIF}
+  { $ENDIF}
   AnAVLNode:=FItems.FindLowest;
   while AnAVLNode<>nil do begin
     CurItem:=TIdentifierListItem(AnAVLNode.Data);
@@ -428,9 +429,9 @@ begin
     end;
     AnAVLNode:=FItems.FindSuccessor(AnAVLNode);
   end;
-  {$IFDEF CTDEBUG}
+  { $IFDEF CTDEBUG}
   DebugLn('TIdentifierList.UpdateFilteredList ',dbgs(FFilteredList.Count),' of ',dbgs(FItems.Count));
-  {$ENDIF}
+  { $ENDIF}
   Exclude(FFlags,ilfFilteredListNeedsUpdate);
 end;
 
@@ -849,7 +850,7 @@ begin
     DebugLn('TIdentCompletionTool.GatherIdentifiers A CursorPos=',dbgs(CursorPos.X),',',dbgs(CursorPos.Y));
     {$ENDIF}
     BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
-             [{$IFDEF IgnoreErrorAfterCursor}btSetIgnoreErrorPos,{$ENDIF}]);
+                 [{$IFDEF IgnoreErrorAfterCursor}btSetIgnoreErrorPos,{$ENDIF}]);
                   
     // find node at position
     CursorNode:=FindDeepestExpandedNodeAtPos(CleanCursorPos,true);
