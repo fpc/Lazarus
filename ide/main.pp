@@ -385,6 +385,8 @@ type
     FOpenEditorsOnCodeToolChange: boolean;
 
     FRunProcess: TProcess; // temp solution, will be replaced by dummydebugger
+    procedure CreateMainMenuItem(MainMenu:TMainMenu;MenuItem:TMenuItem;MenuItemName,MenuItemCaption:String);
+
 
   protected
     procedure SetToolStatus(const AValue: TIDEToolStatus); override;
@@ -1430,6 +1432,13 @@ begin
   end;
 end;
 
+procedure TMainIDE.CreateMainMenuItem(MainMenu:TMainMenu;MenuItem:TMenuItem;MenuItemName,MenuItemCaption:String);
+begin
+  MenuItem:=TMenuItem.Create(Self);
+  MenuItem.Name:=MenuItemName;
+  MenuItem.Caption := MenuItemCaption;
+  MainMenu.items.Add(MenuItem);
+end;
 
 {------------------------------------------------------------------------------}
 procedure TMainIDE.SetupMainMenu;
@@ -1437,62 +1446,18 @@ begin
   mnuMain := TMainMenu.Create(Self);
   mnuMain.Name:='mnuMainMenu';
   Menu := mnuMain;
-
-  mnuFile := TMenuItem.Create(Self);
-  mnuFile.Name:='mnuFile';
-  mnuFile.Caption := lisMenuFile;
-  mnuMain.Items.Add(mnuFile);
-
-  mnuEdit := TMenuItem.Create(Self);
-  mnuEdit.Name:='mnuEdit';
-  mnuEdit.Caption := lisMenuEdit;
-  mnuMain.Items.Add(mnuEdit);
-
-  mnuSearch := TMenuItem.Create(Self);
-  mnuSearch.Name:='mnuSearch';
-  mnuSearch.Caption := lisMenuSearch;
-  mnuMain.Items.Add(mnuSearch);
-
-  mnuView := TMenuItem.Create(Self);
-  mnuView.Name:='mnuView';
-  mnuView.Caption := lisMenuView;
-  mnuMain.Items.Add(mnuView);
-
-  mnuProject := TMenuItem.Create(Self);
-  mnuProject.Name:='mnuProject';
-  mnuProject.Caption := lisMenuProject;
-  mnuMain.Items.Add(mnuProject);
-
-  mnuRun := TMenuItem.Create(Self);
-  mnuRun.Name:='mnuRun';
-  mnuRun.Caption := lisMenuRun;
-  mnuMain.Items.Add(mnuRun);
-
-  mnuComponents := TMenuItem.Create(Self);
-  mnuComponents.Name:='mnuComponents';
-  mnuComponents.Caption := lisMenuComponents;
-  mnuMain.Items.Add(mnuComponents);
-
-  mnuTools := TMenuItem.Create(Self);
-  mnuTools.Name:='mnuTools';
-  mnuTools.Caption := lisMenuTools;
-  mnuMain.Items.Add(mnuTools);
-
-  mnuEnvironment := TMenuItem.Create(Self);
-  mnuEnvironment.Name:='mnuEnvironment';
-  mnuEnvironment.Caption := lisMenuEnvironent;
-  mnuMain.Items.Add(mnuEnvironment);
-
-  mnuWindows := TMenuItem.Create(Self);
-  mnuWindows.Name:='mnuWindows';
-  mnuWindows.Caption := lisMenuWindows;
-  mnuMain.Items.Add(mnuWindows);
-
-  mnuHelp := TMenuItem.Create(Self);
-  mnuHelp.Name:='mnuHelp';
-  mnuHelp.Caption := lisMenuHelp;
-  mnuMain.Items.Add(mnuHelp);
-
+  CreateMainMenuItem(mnuMain,mnuFile,'mnuFile',lisMenuFile);
+  CreateMainMenuItem(mnuMain,mnuEdit,'mnuEdit',lisMenuEdit);
+  CreateMainMenuItem(mnuMain,mnuSearch,'mnuSearch',lisMenuSearch);
+  CreateMainMenuItem(mnuMain,mnuView,'mnuView',lisMenuView);
+  CreateMainMenuItem(mnuMain,mnuProject,'mnuProject',lisMenuProject);
+  CreateMainMenuItem(mnuMain,mnuRun,'mnuRun',lisMenuRun);
+  CreateMainMenuItem(mnuMain,mnuComponents,'mnuComponents',lisMenuComponents);
+  CreateMainMenuItem(mnuMain,mnuTools,'mnuTools',lisMenuTools);
+  CreateMainMenuItem(mnuMain,mnuEnvironment,'mnuEnvironment',lisMenuEnvironent);
+  CreateMainMenuItem(mnuMain,mnuWindows,'mnuWindows',lisMenuWindows);
+  CreateMainMenuItem(mnuMain,mnuHelp,'mnuHelp',lisMenuHelp);
+  
   SetupFileMenu;
   SetupEditMenu;
   SetupSearchMenu;
@@ -10315,6 +10280,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.718  2004/04/03 09:16:13  mattias
+  reduced redundancy  from GongYu
+
   Revision 1.717  2004/03/17 11:28:35  mattias
   fixed setting project LCLWidgetSet in defines
 

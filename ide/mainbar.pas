@@ -357,6 +357,8 @@ type
     TheOutputFilter: TOutputFilter;
     
     function CreateMenuSeparator : TMenuItem;
+    procedure CreateMenuItem(MenuItemParent,MenuItem:TMenuItem;MenuItemName,MenuItemCaption:String;bmpName:String='';mnuEnabled:Boolean=true);
+    procedure CreateMenuItemPkg(MenuItemParent,MenuItem:TMenuItem;MenuItemName,MenuItemCaption:String;bmpName:String='');
     procedure SetupFileMenu; virtual;
     procedure SetupEditMenu; virtual;
     procedure SetupSearchMenu; virtual;
@@ -534,13 +536,6 @@ begin
   Result:='['+Result+']';
 end;
 
-function LoadPixmap(const ResourceName:string): TPixmap;
-begin
-  Result:=TPixmap.Create;
-  Result.LoadFromLazarusResource(ResourceName);
-end;
-
-
 { TMainIDEBar }
 
 procedure TMainIDEBar.mnuWindowsItemClick(Sender: TObject);
@@ -570,841 +565,302 @@ begin
   Result.Caption := '-';
 end;
 
+procedure TMainIDEBar.CreateMenuItem(MenuItemParent,MenuItem:TMenuItem;MenuItemName,MenuItemCaption:String;bmpName:String='';mnuEnabled:Boolean=true);
+begin
+  MenuItem:=TMenuItem.Create(Self);
+  MenuItem.Name:=MenuItemName;
+  MenuItem.Caption := MenuItemCaption;
+  if not mnuEnabled then
+   MenuItem.enabled:=mnuEnabled;
+  if bmpName<>'' then
+   MenuItem.Bitmap.LoadFromLazarusResource(bmpName);
+  MenuItemParent.Add(MenuItem);
+end;
+procedure TMainIDEBar.CreateMenuItemPkg(MenuItemParent,MenuItem:TMenuItem;MenuItemName,MenuItemCaption:String;bmpName:String='');
+begin
+  MenuItem := TMenuItem.Create(Self);
+  MenuItem.Name:=MenuItemName;
+  MenuItem.Caption := MenuItemCaption;
+  if bmpName<>'' then
+   MenuItem.Bitmap.LoadFromLazarusResource(bmpName);
+  {$IFNDEF DisablePkgs}
+  MenuItemParent.Add(MenuItem);
+  {$ENDIF}  
+end;
+
 procedure TMainIDEBar.SetupFileMenu;
 begin
-  itmFileNewUnit := TMenuItem.Create(Self);
-  itmFileNewUnit.Name:='itmFileNewUnit';
-  itmFileNewUnit.Caption := lisMenuNewUnit;
-  itmFileNewUnit.Bitmap.LoadFromLazarusResource('menu_new');
-  mnuFile.Add(itmFileNewUnit);
 
-  itmFileNewForm := TMenuItem.Create(Self);
-  itmFileNewForm.Name:='itmFileNewForm';
-  itmFileNewForm.Caption := lisMenuNewForm;
-  itmFileNewForm.Bitmap.LoadFromLazarusResource('menu_new');
-  mnuFile.Add(itmFileNewForm);
-
-  itmFileNewOther := TMenuItem.Create(Self);
-  itmFileNewOther.Name:='itmFileNewOther';
-  itmFileNewOther.Caption := lisMenuNewOther;
-  itmFileNewOther.Bitmap.LoadFromLazarusResource('menu_new');
-  mnuFile.Add(itmFileNewOther);
+  CreateMenuItem(mnuFile,itmFileNewUnit,'itmFileNewUnit',lisMenuNewUnit,'menu_new');
+  CreateMenuItem(mnuFile,itmFileNewForm,'itmFileNewForm',lisMenuNewForm,'menu_new');
+  CreateMenuItem(mnuFile,itmFileNewOther,'itmFileNewOther',lisMenuNewOther,'menu_new');
+    
+  mnuFile.Add(CreateMenuSeparator);
+ 
+  CreateMenuItem(mnuFile,itmFileOpen,'itmFileOpen',lisMenuOpen,'menu_open');
+  CreateMenuItem(mnuFile,itmFileRevert,'itmFileRevert',lisMenuRevert,'menu_undo');
+  CreateMenuItem(mnuFile,itmFileRecentOpen,'itmFileRecentOpen',lisMenuOpenRecent,'');
+  CreateMenuItem(mnuFile,itmFileSave,'itmFileSave',lisMenuSave,'menu_save');
+  CreateMenuItem(mnuFile,itmFileSaveAs,'itmFileSaveAs',lisMenuSaveAs,'menu_save');
+  CreateMenuItem(mnuFile,itmFileSaveAll,'itmFileSaveAll',lisMenuSaveAll,'menu_save');
+  CreateMenuItem(mnuFile,itmFileClose,'itmFileClose',lisMenuClose,'',false);
+  CreateMenuItem(mnuFile,itmFileCloseAll,'itmFileCloseAll',lisMenuCloseAll,'',false);
 
   mnuFile.Add(CreateMenuSeparator);
-
-  itmFileOpen := TMenuItem.Create(Self);
-  itmFileOpen.Name:='itmFileOpen';
-  itmFileOpen.Caption := lisMenuOpen;
-  itmFileOpen.Bitmap.LoadFromLazarusResource('menu_open');
-  mnuFile.Add(itmFileOpen);
-
-  itmFileRevert := TMenuItem.Create(Self);
-  itmFileRevert.Name:='itmFileRevert';
-  itmFileRevert.Caption := lisMenuRevert;
-  itmFileRevert.Bitmap.LoadFromLazarusResource('menu_undo');
-  mnuFile.Add(itmFileRevert);
-
-  itmFileRecentOpen := TMenuItem.Create(Self);
-  itmFileRecentOpen.Name:='itmFileRecentOpen';
-  itmFileRecentOpen.Caption := lisMenuOpenRecent;
-  mnuFile.Add(itmFileRecentOpen);
-
-  itmFileSave := TMenuItem.Create(Self);
-  itmFileSave.Name:='itmFileSave';
-  itmFileSave.Caption := lisMenuSave;
-  itmFileSave.Bitmap.LoadFromLazarusResource('menu_save');
-  mnuFile.Add(itmFileSave);
-
-  itmFileSaveAs := TMenuItem.Create(Self);
-  itmFileSaveAs.Name:='itmFileSaveAs';
-  itmFileSaveAs.Caption := lisMenuSaveAs;
-  itmFileSaveAs.Bitmap.LoadFromLazarusResource('menu_save');
-  mnuFile.Add(itmFileSaveAs);
-
-  itmFileSaveAll := TMenuItem.Create(Self);
-  itmFileSaveAll.Name:='itmFileSaveAll';
-  itmFileSaveAll.Caption := lisMenuSaveAll;
-  itmFileSaveAll.Bitmap.LoadFromLazarusResource('menu_save');
-  mnuFile.Add(itmFileSaveAll);
-
-  itmFileClose := TMenuItem.Create(Self);
-  itmFileClose.Name:='itmFileClose';
-  itmFileClose.Caption := lisMenuClose;
-  itmFileClose.Enabled := False;
-  mnuFile.Add(itmFileClose);
-
-  itmFileCloseAll := TMenuItem.Create(Self);
-  itmFileCloseAll.Name:='itmFileCloseAll';
-  itmFileCloseAll.Caption := lisMenuCloseAll;
-  itmFileCloseAll.Enabled := False;
-  mnuFile.Add(itmFileCloseAll);
-
+  
+  CreateMenuItem(mnuFile,itmFileCleanDirectory,'itmFileCleanDirectory',lisMenuCleanDirectory);
+  
   mnuFile.Add(CreateMenuSeparator);
+  
+  CreateMenuItem(mnuFile,itmFileQuit,'itmFileQuit',lisMenuQuit);
 
-  itmFileCleanDirectory := TMenuItem.Create(Self);
-  itmFileCleanDirectory.Name:='itmFileCleanDirectory';
-  itmFileCleanDirectory.Caption := lisMenuCleanDirectory;
-  mnuFile.Add(itmFileCleanDirectory);
-
-  mnuFile.Add(CreateMenuSeparator);
-
-  itmFileQuit := TMenuItem.Create(Self);
-  itmFileQuit.Name:='itmFileQuit';
-  itmFileQuit.Caption := lisMenuQuit;
-  mnuFile.Add(itmFileQuit);
 end;
 
 procedure TMainIDEBar.SetupEditMenu;
 begin
-  itmEditUndo := TMenuItem.Create(Self);
-  itmEditUndo.Name:='itmEditUndo';
-  itmEditUndo.Caption := lisMenuUndo;
-  itmEditUndo.Bitmap.LoadFromLazarusResource('menu_undo');
-  mnuEdit.Add(itmEditUndo);
-
-  itmEditRedo := TMenuItem.Create(Self);
-  itmEditRedo.Name:='itmEditRedo';
-  itmEditRedo.Caption := lisMenuRedo;
-  itmEditRedo.Bitmap.LoadFromLazarusResource('menu_redo');
-  mnuEdit.Add(itmEditRedo);
+  CreateMenuItem(mnuEdit,itmEditUndo,'itmEditUndo',lisMenuUndo,'menu_undo');
+  CreateMenuItem(mnuEdit,itmEditRedo,'itmEditRedo',lisMenuRedo,'menu_redo');
+  
+  mnuEdit.Add(CreateMenuSeparator);
+  
+  CreateMenuItem(mnuEdit,itmEditCut,'itmEditCut',lisMenuCut,'menu_cut');  
+  CreateMenuItem(mnuEdit,itmEditCopy,'itmEditCopy',lisMenuCopy,'menu_copy');  
+  CreateMenuItem(mnuEdit,itmEditPaste,'itmEditPaste',lisMenuPaste,'menu_paste');  
+  
+  mnuEdit.Add(CreateMenuSeparator);
+  
+  CreateMenuItem(mnuEdit,itmEditIndentBlock,'itmEditIndentBlock',lisMenuIndentSelection,'menu_indent');  
+  CreateMenuItem(mnuEdit,itmEditUnindentBlock,'itmEditUnindentBlock',lisMenuUnindentSelection,'menu_unindent');  
+  CreateMenuItem(mnuEdit,itmEditEncloseBlock,'itmEditEncloseBlock',lisMenuEncloseSelection);  
+  
+  mnuEdit.Add(CreateMenuSeparator);
+  
+  CreateMenuItem(mnuEdit,itmEditUpperCaseBlock,'itmEditUpperCaseBlock',lisMenuUpperCaseSelection);  
+  CreateMenuItem(mnuEdit,itmEditLowerCaseBlock,'itmEditLowerCaseBlock',lisMenuLowerCaseSelection);  
 
   mnuEdit.Add(CreateMenuSeparator);
 
-  itmEditCut  := TMenuItem.Create(Self);
-  itmEditCut.Name:='itmEditCut';
-  itmEditCut.Caption := lisMenuCut;
-  itmEditCut.Bitmap.LoadFromLazarusResource('menu_cut');
-  mnuEdit.Add(itmEditCut);
 
-  itmEditCopy := TMenuItem.Create(Self);
-  itmEditCopy.Name:='itmEditCopy';
-  itmEditCopy.Caption := lisMenuCopy;
-  itmEditCopy.Bitmap.LoadFromLazarusResource('menu_copy');
-  mnuEdit.Add(itmEditCopy);
-
-  itmEditPaste := TMenuItem.Create(Self);
-  itmEditPaste.Name:='itmEditPaste';
-  itmEditPaste.Caption := lisMenuPaste;
-  itmEditPaste.Bitmap.LoadFromLazarusResource('menu_paste');
-  mnuEdit.Add(itmEditPaste);
+  CreateMenuItem(mnuEdit,itmEditTabsToSpacesBlock,'itmEditTabsToSpacesBlock',lisMenuTabsToSpacesSelection);  
+  CreateMenuItem(mnuEdit,itmEditSelectionBreakLines,'itmEditSelectionBreakLines',lisMenuBeakLinesInSelection);  
 
   mnuEdit.Add(CreateMenuSeparator);
 
-  itmEditIndentBlock := TMenuItem.Create(Self);
-  itmEditIndentBlock.Name:='itmEditIndentBlock';
-  itmEditIndentBlock.Caption := lisMenuIndentSelection;
-  itmEditIndentBlock.Bitmap.LoadFromLazarusResource('menu_indent');
-  mnuEdit.Add(itmEditIndentBlock);
-
-  itmEditUnindentBlock := TMenuItem.Create(Self);
-  itmEditUnindentBlock.Name:='itmEditUnindentBlock';
-  itmEditUnindentBlock.Caption := lisMenuUnindentSelection;
-  itmEditUnindentBlock.Bitmap.LoadFromLazarusResource('menu_unindent');
-  mnuEdit.Add(itmEditUnindentBlock);
-
-  itmEditEncloseBlock := TMenuItem.Create(Self);
-  itmEditEncloseBlock.Name:='itmEditEncloseBlock';
-  itmEditEncloseBlock.Caption := lisMenuEncloseSelection;
-  mnuEdit.Add(itmEditEncloseBlock);
+  CreateMenuItem(mnuEdit,itmEditCommentBlock,'itmEditCommentBlock',lisMenuCommentSelection);  
+  CreateMenuItem(mnuEdit,itmEditUncommentBlock,'itmEditUncommentBlock',lisMenuUncommentSelection);  
+  CreateMenuItem(mnuEdit,itmEditSortBlock,'itmEditSortBlock',lisMenuSortSelection);  
 
   mnuEdit.Add(CreateMenuSeparator);
 
-  itmEditUpperCaseBlock := TMenuItem.Create(Self);
-  itmEditUpperCaseBlock.Name:='itmEditUpperCaseBlock';
-  itmEditUpperCaseBlock.Caption := lisMenuUpperCaseSelection;
-  mnuEdit.Add(itmEditUpperCaseBlock);
-
-  itmEditLowerCaseBlock := TMenuItem.Create(Self);
-  itmEditLowerCaseBlock.Name:='itmEditLowerCaseBlock';
-  itmEditLowerCaseBlock.Caption := lisMenuLowerCaseSelection;
-  mnuEdit.Add(itmEditLowerCaseBlock);
-
-  mnuEdit.Add(CreateMenuSeparator);
-
-  itmEditTabsToSpacesBlock := TMenuItem.Create(Self);
-  itmEditTabsToSpacesBlock.Name:='itmEditTabsToSpacesBlock';
-  itmEditTabsToSpacesBlock.Caption := lisMenuTabsToSpacesSelection;
-  mnuEdit.Add(itmEditTabsToSpacesBlock);
-
-  itmEditSelectionBreakLines := TMenuItem.Create(Self);
-  itmEditSelectionBreakLines.Name:='itmEditSelectionBreakLines';
-  itmEditSelectionBreakLines.Caption := lisMenuBeakLinesInSelection;
-  mnuEdit.Add(itmEditSelectionBreakLines);
-
-  mnuEdit.Add(CreateMenuSeparator);
-
-  itmEditCommentBlock := TMenuItem.Create(Self);
-  itmEditCommentBlock.Name:='itmEditCommentBlock';
-  itmEditCommentBlock.Caption := lisMenuCommentSelection;
-  mnuEdit.Add(itmEditCommentBlock);
-
-  itmEditUncommentBlock := TMenuItem.Create(Self);
-  itmEditUncommentBlock.Name:='itmEditUncommentBlock';
-  itmEditUncommentBlock.Caption := lisMenuUncommentSelection;
-  mnuEdit.Add(itmEditUncommentBlock);
-
-  itmEditSortBlock := TMenuItem.Create(Self);
-  itmEditSortBlock.Name:='itmEditSortBlock';
-  itmEditSortBlock.Caption := lisMenuSortSelection;
-  mnuEdit.Add(itmEditSortBlock);
-
-  mnuEdit.Add(CreateMenuSeparator);
-
-  itmEditSelect := TMenuItem.Create(Self);
-  itmEditSelect.Name:='itmEditSelect';
-  itmEditSelect.Caption := lisMenuSelect;
-  mnuEdit.Add(itmEditSelect);
-
+  CreateMenuItem(mnuEdit,itmEditSelect,'itmEditSelect',lisMenuSelect);  
   begin
-    // select sub menu items
-    itmEditSelectAll := TMenuItem.Create(Self);
-    itmEditSelectAll.Name:='itmEditSelectAll';
-    itmEditSelectAll.Caption := lisMenuSelectAll;
-    itmEditSelect.Add(itmEditSelectAll);
-
-    itmEditSelectToBrace := TMenuItem.Create(Self);
-    itmEditSelectToBrace.Name:='itmEditSelectToBrace';
-    itmEditSelectToBrace.Caption := lisMenuSelectToBrace;
-    itmEditSelect.Add(itmEditSelectToBrace);
-
-    itmEditSelectCodeBlock := TMenuItem.Create(Self);
-    itmEditSelectCodeBlock.Name:='itmEditSelectCodeBlock';
-    itmEditSelectCodeBlock.Caption := lisMenuSelectCodeBlock;
-    itmEditSelectCodeBlock.Enabled:=false;
-    itmEditSelect.Add(itmEditSelectCodeBlock);
-
-    itmEditSelectLine := TMenuItem.Create(Self);
-    itmEditSelectLine.Name:='itmEditSelectLine';
-    itmEditSelectLine.Caption := lisMenuSelectLine;
-    itmEditSelect.Add(itmEditSelectLine);
-
-    itmEditSelectParagraph := TMenuItem.Create(Self);
-    itmEditSelectParagraph.Name:='itmEditSelectParagraph';
-    itmEditSelectParagraph.Caption := lisMenuSelectParagraph;
-    itmEditSelect.Add(itmEditSelectParagraph);
+     // select sub menu items
+    CreateMenuItem(itmEditSelect,itmEditSelectAll,'itmEditSelectAll',lisMenuSelectAll);  
+    CreateMenuItem(itmEditSelect,itmEditSelectToBrace,'itmEditSelectToBrace',lisMenuSelectToBrace);  
+    CreateMenuItem(itmEditSelect,itmEditSelectCodeBlock,'itmEditSelectCodeBlock',lisMenuSelectCodeBlock);  
+    CreateMenuItem(itmEditSelect,itmEditSelectLine,'itmEditSelectLine',lisMenuSelectLine);  
+    CreateMenuItem(itmEditSelect,itmEditSelectParagraph,'itmEditSelectParagraph',lisMenuSelectParagraph);  
   end;
-
-  itmEditInsertCharacter := TMenuItem.Create(Self);
-  itmEditInsertCharacter.Name:='itmEditInsertCharacter';
-  itmEditInsertCharacter.Caption := lisMenuInsertCharacter;
-  mnuEdit.Add(itmEditInsertCharacter);
-
-  itmEditInsertText := TMenuItem.Create(Self);
-  itmEditInsertText.Name:='itmEditInsertText';
-  itmEditInsertText.Caption := lisMenuInsertText;
-  mnuEdit.Add(itmEditInsertText);
-
-  begin
+  
+  CreateMenuItem(mnuEdit,itmEditInsertCharacter,'itmEditInsertCharacter',lisMenuInsertCharacter);  
+  CreateMenuItem(mnuEdit,itmEditInsertText,'itmEditInsertText',lisMenuInsertText);  
+   begin
     // insert text sub menu items
-    itmEditInsertCVSKeyWord := TMenuItem.Create(Self);
-    itmEditInsertCVSKeyWord.Name:='itmEditInsertCVSKeyWord';
-    itmEditInsertCVSKeyWord.Caption := lisMenuInsertCVSKeyword;
-    itmEditInsertText.Add(itmEditInsertCVSKeyWord);
-
+    CreateMenuItem(itmEditInsertText,itmEditInsertCVSKeyWord,'itmEditInsertCVSKeyWord',lisMenuInsertCVSKeyword);  
     begin
       // insert CVS keyword sub menu items
-      itmEditInsertCVSAuthor := TMenuItem.Create(Self);
-      itmEditInsertCVSAuthor.Name:='itmEditInsertCVSAuthor';
-      itmEditInsertCVSAuthor.Caption := 'Author';
-      itmEditInsertCVSKeyWord.Add(itmEditInsertCVSAuthor);
-      
-      itmEditInsertCVSDate := TMenuItem.Create(Self);
-      itmEditInsertCVSDate.Name:='itmEditInsertCVSDate';
-      itmEditInsertCVSDate.Caption := 'Date';
-      itmEditInsertCVSKeyWord.Add(itmEditInsertCVSDate);
-
-      itmEditInsertCVSHeader := TMenuItem.Create(Self);
-      itmEditInsertCVSHeader.Name:='itmEditInsertCVSHeader';
-      itmEditInsertCVSHeader.Caption := 'Header';
-      itmEditInsertCVSKeyWord.Add(itmEditInsertCVSHeader);
-
-      itmEditInsertCVSID := TMenuItem.Create(Self);
-      itmEditInsertCVSID.Name:='itmEditInsertCVSID';
-      itmEditInsertCVSID.Caption := 'ID';
-      itmEditInsertCVSKeyWord.Add(itmEditInsertCVSID);
-
-      itmEditInsertCVSLog := TMenuItem.Create(Self);
-      itmEditInsertCVSLog.Name:='itmEditInsertCVSLog';
-      itmEditInsertCVSLog.Caption := 'Log';
-      itmEditInsertCVSKeyWord.Add(itmEditInsertCVSLog);
-
-      itmEditInsertCVSName := TMenuItem.Create(Self);
-      itmEditInsertCVSName.Name:='itmEditInsertCVSName';
-      itmEditInsertCVSName.Caption := 'Name';
-      itmEditInsertCVSKeyWord.Add(itmEditInsertCVSName);
-
-      itmEditInsertCVSRevision := TMenuItem.Create(Self);
-      itmEditInsertCVSRevision.Name:='itmEditInsertCVSRevision';
-      itmEditInsertCVSRevision.Caption := 'Revision';
-      itmEditInsertCVSKeyWord.Add(itmEditInsertCVSRevision);
-
-      itmEditInsertCVSSource := TMenuItem.Create(Self);
-      itmEditInsertCVSSource.Name:='itmEditInsertCVSSource';
-      itmEditInsertCVSSource.Caption := 'Source';
-      itmEditInsertCVSKeyWord.Add(itmEditInsertCVSSource);
+      CreateMenuItem(itmEditInsertCVSKeyWord,itmEditInsertCVSAuthor,'itmEditInsertCVSAuthor','Author');  
+      CreateMenuItem(itmEditInsertCVSKeyWord,itmEditInsertCVSDate,'itmEditInsertCVSDate','Date');  
+      CreateMenuItem(itmEditInsertCVSKeyWord,itmEditInsertCVSHeader,'itmEditInsertCVSHeader','Header');  
+      CreateMenuItem(itmEditInsertCVSKeyWord,itmEditInsertCVSID,'itmEditInsertCVSID','ID');  
+      CreateMenuItem(itmEditInsertCVSKeyWord,itmEditInsertCVSLog,'itmEditInsertCVSLog','Log');  
+      CreateMenuItem(itmEditInsertCVSKeyWord,itmEditInsertCVSName,'itmEditInsertCVSName','Name');  
+      CreateMenuItem(itmEditInsertCVSKeyWord,itmEditInsertCVSRevision,'itmEditInsertCVSRevision','Revision');  
+      CreateMenuItem(itmEditInsertCVSKeyWord,itmEditInsertCVSSource,'itmEditInsertCVSSource','Source');  
     end;
     
-    itmEditInsertGeneral := TMenuItem.Create(Self);
-    itmEditInsertGeneral.Name:='itmEditInsertGeneral';
-    itmEditInsertGeneral.Caption := lisMenuInsertGeneral;
-    itmEditInsertText.Add(itmEditInsertGeneral);
-    
+    CreateMenuItem(itmEditInsertText,itmEditInsertGeneral,'itmEditInsertGeneral',lisMenuInsertGeneral);  
     begin
       // insert general text sub menu items
-      itmEditInsertGPLNotice := TMenuItem.Create(Self);
-      itmEditInsertGPLNotice.Name:='itmEditInsertGPLNotice';
-      itmEditInsertGPLNotice.Caption := lisMenuInsertGPLNotice;
-      itmEditInsertGeneral.Add(itmEditInsertGPLNotice);
-
-      itmEditInsertLGPLNotice := TMenuItem.Create(Self);
-      itmEditInsertLGPLNotice.Name:='itmEditInsertLGPLNotice';
-      itmEditInsertLGPLNotice.Caption := lisMenuInsertLGPLNotice;
-      itmEditInsertGeneral.Add(itmEditInsertLGPLNotice);
-
-      itmEditInsertUsername := TMenuItem.Create(Self);
-      itmEditInsertUsername.Name:='itmEditInsertUsername';
-      itmEditInsertUsername.Caption := lisMenuInsertUsername;
-      itmEditInsertGeneral.Add(itmEditInsertUsername);
-
-      itmEditInsertDateTime := TMenuItem.Create(Self);
-      itmEditInsertDateTime.Name:='itmEditInsertDateTime';
-      itmEditInsertDateTime.Caption := lisMenuInsertDateTime;
-      itmEditInsertGeneral.Add(itmEditInsertDateTime);
-
-      itmEditInsertChangeLogEntry := TMenuItem.Create(Self);
-      itmEditInsertChangeLogEntry.Name:='itmEditInsertChangeLogEntry';
-      itmEditInsertChangeLogEntry.Caption := lisMenuInsertChangeLogEntry;
-      itmEditInsertGeneral.Add(itmEditInsertChangeLogEntry);
+      CreateMenuItem(itmEditInsertGeneral,itmEditInsertGPLNotice,'itmEditInsertGPLNotice',lisMenuInsertGPLNotice);  
+      CreateMenuItem(itmEditInsertGeneral,itmEditInsertLGPLNotice,'itmEditInsertLGPLNotice',lisMenuInsertLGPLNotice);  
+      CreateMenuItem(itmEditInsertGeneral,itmEditInsertUsername,'itmEditInsertUsername',lisMenuInsertUsername);  
+      CreateMenuItem(itmEditInsertGeneral,itmEditInsertDateTime,'itmEditInsertDateTime',lisMenuInsertDateTime);  
+      CreateMenuItem(itmEditInsertGeneral,itmEditInsertChangeLogEntry,'itmEditInsertChangeLogEntry',lisMenuInsertChangeLogEntry);  
     end;
   end;
-
+  
   mnuEdit.Add(CreateMenuSeparator);
+  
+ CreateMenuItem(mnuEdit,itmEditCompleteCode,'itmEditCompleteCode',lisMenuCompleteCode);  
+ CreateMenuItem(mnuEdit,itmEditExtractProc,'itmEditExtractProc',lisMenuExtractProc);  
 
-  itmEditCompleteCode := TMenuItem.Create(Self);
-  itmEditCompleteCode.Name:='itmEditCompleteCode';
-  itmEditCompleteCode.Caption := lisMenuCompleteCode;
-  mnuEdit.Add(itmEditCompleteCode);
-
-  itmEditExtractProc := TMenuItem.Create(Self);
-  itmEditExtractProc.Name:='itmEditExtractProc';
-  itmEditExtractProc.Caption := lisMenuExtractProc;
-  mnuEdit.Add(itmEditExtractProc);
 end;
 
 procedure TMainIDEBar.SetupSearchMenu;
 begin
-  itmSearchFind := TMenuItem.Create(Self);
-  itmSearchFind.Name:='itmSearchFind';
-  itmSearchFind.Caption := lisMenuFind;
-  mnuSearch.add(itmSearchFind);
+  CreateMenuItem(mnuSearch,itmSearchFind,'itmSearchFind',lisMenuFind); 
+  CreateMenuItem(mnuSearch,itmSearchFindNext,'itmSearchFindNext',lisMenuFindNext); 
+  CreateMenuItem(mnuSearch,itmSearchFindPrevious,'itmSearchFindPrevious',lisMenuFindPrevious); 
+  CreateMenuItem(mnuSearch,itmSearchFindInFiles,'itmSearchFindInFiles',lisMenuFindInFiles); 
+  CreateMenuItem(mnuSearch,itmSearchReplace,'itmSearchReplace',lisMenuReplace); 
+  CreateMenuItem(mnuSearch,itmIncrementalFind,'itmIncrementalFind',lisMenuIncrementalFind); 
 
-  itmSearchFindNext := TMenuItem.Create(Self);
-  itmSearchFindNext.Name:='itmSearchFindNext';
-  itmSearchFindNext.Caption := lisMenuFindNext;
-  mnuSearch.add(itmSearchFindNext);
-
-  itmSearchFindPrevious := TMenuItem.Create(Self);
-  itmSearchFindPrevious.Name:='itmSearchFindPrevious';
-  itmSearchFindPrevious.Caption := lisMenuFindPrevious;
-  mnuSearch.add(itmSearchFindPrevious);
-
-  itmSearchFindInFiles := TMenuItem.Create(Self);
-  itmSearchFindInFiles.Name:='itmSearchFindInFiles';
-  itmSearchFindInFiles.Caption := lisMenuFindInFiles;
-  mnuSearch.add(itmSearchFindInFiles);
-
-  itmSearchReplace := TMenuItem.Create(Self);
-  itmSearchReplace.Name:='itmSearchReplace';
-  itmSearchReplace.Caption := lisMenuReplace;
-  mnuSearch.add(itmSearchReplace);
-
-  itmIncrementalFind := TMenuItem.Create(Self);
-  itmIncrementalFind.Name:='itmIncrementalFind';
-  itmIncrementalFind.Caption := lisMenuIncrementalFind;
-  mnuSearch.add(itmIncrementalFind);
+  mnuSearch.Add(CreateMenuSeparator);
+  
+  CreateMenuItem(mnuSearch,itmGotoLine,'itmGotoLine',lisMenuGotoLine); 
 
   mnuSearch.Add(CreateMenuSeparator);
 
-  itmGotoLine := TMenuItem.Create(Self);
-  itmGotoLine.Name:='itmGotoLine';
-  itmGotoLine.Caption := lisMenuGotoLine;
-  mnuSearch.add(itmGotoLine);
+  CreateMenuItem(mnuSearch,itmJumpBack,'itmJumpBack',lisMenuJumpBack); 
+  CreateMenuItem(mnuSearch,itmJumpForward,'itmJumpForward',lisMenuJumpForward); 
+  CreateMenuItem(mnuSearch,itmAddJumpPoint,'itmAddJumpPoint',lisMenuAddJumpPointToHistory); 
+  CreateMenuItem(mnuSearch,itmJumpHistory,'itmJumpHistory',lisMenuViewJumpHistory); 
 
   mnuSearch.Add(CreateMenuSeparator);
 
-  itmJumpBack := TMenuItem.Create(Self);
-  itmJumpBack.Name:='itmJumpBack';
-  itmJumpBack.Caption := lisMenuJumpBack;
-  mnuSearch.add(itmJumpBack);
-
-  itmJumpForward := TMenuItem.Create(Self);
-  itmJumpForward.Name:='itmJumpForward';
-  itmJumpForward.Caption := lisMenuJumpForward;
-  mnuSearch.add(itmJumpForward);
-
-  itmAddJumpPoint := TMenuItem.Create(Self);
-  itmAddJumpPoint.Name:='itmAddJumpPoint';
-  itmAddJumpPoint.Caption := lisMenuAddJumpPointToHistory;
-  mnuSearch.add(itmAddJumpPoint);
-
-  itmJumpHistory := TMenuItem.Create(Self);
-  itmJumpHistory.Name:='itmJumpHistory';
-  itmJumpHistory.Caption := lisMenuViewJumpHistory;
-  mnuSearch.add(itmJumpHistory);
+  CreateMenuItem(mnuSearch,itmFindBlockOtherEnd,'itmFindBlockOtherEnd',lisMenuFindBlockOtherEndOfCodeBlock); 
+  CreateMenuItem(mnuSearch,itmFindBlockStart,'itmFindBlockStart',lisMenuFindCodeBlockStart); 
 
   mnuSearch.Add(CreateMenuSeparator);
 
-  itmFindBlockOtherEnd := TMenuItem.Create(Self);
-  itmFindBlockOtherEnd.Name:='itmFindBlockOtherEnd';
-  itmFindBlockOtherEnd.Caption := lisMenuFindBlockOtherEndOfCodeBlock;
-  mnuSearch.add(itmFindBlockOtherEnd);
-
-  itmFindBlockStart := TMenuItem.Create(Self);
-  itmFindBlockStart.Name:='itmFindBlockStart';
-  itmFindBlockStart.Caption := lisMenuFindCodeBlockStart;
-  mnuSearch.add(itmFindBlockStart);
-
-  mnuSearch.Add(CreateMenuSeparator);
-
-  itmFindDeclaration := TMenuItem.Create(Self);
-  itmFindDeclaration.Name:='itmFindDeclaration';
-  itmFindDeclaration.Caption := lisMenuFindDeclarationAtCursor;
-  mnuSearch.add(itmFindDeclaration);
-
-  itmOpenFileAtCursor := TMenuItem.Create(Self);
-  itmOpenFileAtCursor.Name:='itmOpenFileAtCursor';
-  itmOpenFileAtCursor.Caption := lisMenuOpenFilenameAtCursor;
-  mnuSearch.add(itmOpenFileAtCursor);
-
-  itmGotoIncludeDirective := TMenuItem.Create(Self);
-  itmGotoIncludeDirective.Name:='itmGotoIncludeDirective';
-  itmGotoIncludeDirective.Caption := lisMenuGotoIncludeDirective;
-  mnuSearch.add(itmGotoIncludeDirective);
+  CreateMenuItem(mnuSearch,itmFindDeclaration,'itmFindDeclaration',lisMenuFindDeclarationAtCursor); 
+  CreateMenuItem(mnuSearch,itmOpenFileAtCursor,'itmOpenFileAtCursor',lisMenuOpenFilenameAtCursor); 
+  CreateMenuItem(mnuSearch,itmGotoIncludeDirective,'itmGotoIncludeDirective',lisMenuGotoIncludeDirective); 
 end;
 
 procedure TMainIDEBar.SetupViewMenu;
 begin
-  itmViewInspector := TMenuItem.Create(Self);
-  itmViewInspector.Name:='itmViewInspector';
-  itmViewInspector.Caption := lisMenuViewObjectInspector;
-  mnuView.Add(itmViewInspector);
-
-  itmViewSourceEditor := TMenuItem.Create(Self);
-  itmViewSourceEditor.Name:='itmViewSourceEditor';
-  itmViewSourceEditor.Caption := lisMenuViewSourceEditor;
-  mnuView.Add(itmViewSourceEditor);
-
-  itmViewCodeExplorer := TMenuItem.Create(Self);
-  itmViewCodeExplorer.Name:='itmViewCodeExplorer';
-  itmViewCodeExplorer.Caption := lisMenuViewCodeExplorer;
-  mnuView.Add(itmViewCodeExplorer);
-
+  CreateMenuItem(mnuView,itmViewInspector,'itmViewInspector',lisMenuViewObjectInspector); 
+  CreateMenuItem(mnuView,itmViewSourceEditor,'itmViewSourceEditor',lisMenuViewSourceEditor); 
+  CreateMenuItem(mnuView,itmViewCodeExplorer,'itmViewCodeExplorer',lisMenuViewCodeExplorer); 
   mnuView.Add(CreateMenuSeparator);
-
-  itmViewUnits := TMenuItem.Create(Self);
-  itmViewUnits.Name:='itmViewUnits';
-  itmViewUnits.Caption := lisMenuViewUnits;
-  mnuView.Add(itmViewUnits);
-
-  itmViewForms := TMenuItem.Create(Self);
-  itmViewForms.Name:='itmViewForms';
-  itmViewForms.Caption := lisMenuViewForms;
-  mnuView.Add(itmViewForms);
-
-  itmViewUnitDependencies := TMenuItem.Create(Self);
-  itmViewUnitDependencies.Name:='itmViewUnitDependencies';
-  itmViewUnitDependencies.Caption := lisMenuViewUnitDependencies;
-  mnuView.Add(itmViewUnitDependencies);
-
+  
+  CreateMenuItem(mnuView,itmViewUnits,'itmViewUnits',lisMenuViewUnits); 
+  CreateMenuItem(mnuView,itmViewForms,'itmViewForms',lisMenuViewForms); 
+  CreateMenuItem(mnuView,itmViewUnitDependencies,'itmViewUnitDependencies',lisMenuViewUnitDependencies); 
   mnuView.Add(CreateMenuSeparator);
-
-  itmViewToggleFormUnit := TMenuItem.Create(Self);
-  itmViewToggleFormUnit.Name:='itmViewToggleFormUnit';
-  itmViewToggleFormUnit.Caption := lisMenuViewToggleFormUnit;
-  mnuView.Add(itmViewToggleFormUnit);
-
+  
+  CreateMenuItem(mnuView,itmViewToggleFormUnit,'itmViewToggleFormUnit',lisMenuViewToggleFormUnit); 
   mnuView.Add(CreateMenuSeparator);
-
-  itmViewMessage := TMenuItem.Create(Self);
-  itmViewMessage.Name:='itmViewMessage';
-  itmViewMessage.Caption := lisMenuViewMessages;
-  mnuView.Add(itmViewMessage);
-
-  itmViewSearchResults := TMenuItem.Create(Self);
-  itmViewSearchResults.Name:='itmViewSearchResults';
-  itmViewSearchResults.Caption := lisMenuViewSearchResults;
-  mnuView.Add(itmViewSearchResults);
-
-  itmViewDebugWindows := TMenuItem.Create(Self);
-  itmViewDebugWindows.Name := 'itmViewDebugWindows';
-  itmViewDebugWindows.Caption := lisMenuDebugWindows;
-  itmViewDebugWindows.Bitmap.LoadFromLazarusResource('menu_debugger');
-  mnuView.Add(itmViewDebugWindows);
-
-  itmViewWatches := TMenuItem.Create(Self);
-  itmViewWatches.Name:='itmViewWatches';
-  itmViewWatches.Caption := lisMenuViewWatches;
-  itmViewWatches.Bitmap.LoadFromLazarusResource('menu_watches');
-  itmViewDebugWindows.Add(itmViewWatches);
-
-  itmViewBreakPoints := TMenuItem.Create(Self);
-  itmViewBreakPoints.Name:='itmViewBreakPoints';
-  itmViewBreakPoints.Caption := lisMenuViewBreakPoints;
-  itmViewBreakPoints.Bitmap.LoadFromLazarusResource('menu_breakpoints');
-  itmViewDebugWindows.Add(itmViewBreakPoints);
-
-  itmViewLocals := TMenuItem.Create(Self);
-  itmViewLocals.Name:='itmViewLocals';
-  itmViewLocals.Caption := lisMenuViewLocalVariables;
-  itmViewDebugWindows.Add(itmViewLocals);
-
-  itmViewCallStack := TMenuItem.Create(Self);
-  itmViewCallStack.Name:='itmViewCallStack';
-  itmViewCallStack.Caption := lisMenuViewCallStack;
-  itmViewCallStack.Bitmap.LoadFromLazarusResource('menu_callstack');
-  itmViewDebugWindows.Add(itmViewCallStack);
-
-  itmViewDebugOutput := TMenuItem.Create(Self);
-  itmViewDebugOutput.Name:='itmViewDebugOutput';
-  itmViewDebugOutput.Caption := lisMenuViewDebugOutput;
-  itmViewDebugOutput.Bitmap.LoadFromLazarusResource('menu_debugoutput');
-  itmViewDebugWindows.Add(itmViewDebugOutput);
+  
+  CreateMenuItem(mnuView,itmViewMessage,'itmViewMessage',lisMenuViewMessages); 
+  CreateMenuItem(mnuView,itmViewSearchResults,'itmViewSearchResults',lisMenuViewSearchResults); 
+  CreateMenuItem(mnuView,itmViewDebugWindows,'itmViewDebugWindows',lisMenuDebugWindows,'menu_debugger'); 
+  CreateMenuItem(mnuView,itmViewWatches,'itmViewWatches',lisMenuViewWatches,'menu_watches'); 
+  CreateMenuItem(mnuView,itmViewBreakPoints,'itmViewBreakPoints',lisMenuViewBreakPoints,'menu_breakpoints'); 
+  CreateMenuItem(mnuView,itmViewLocals,'itmViewLocals',lisMenuViewLocalVariables,''); 
+  CreateMenuItem(mnuView,itmViewCallStack,'itmViewCallStack',lisMenuViewCallStack,'menu_callstack'); 
+  CreateMenuItem(mnuView,itmViewDebugOutput,'itmViewDebugOutput',lisMenuViewDebugOutput,'menu_debugoutput'); 
 end;
 
 procedure TMainIDEBar.SetupProjectMenu;
 begin
-  itmProjectNew := TMenuItem.Create(Self);
-  itmProjectNew.Name:='itmProjectNew';
-  itmProjectNew.Caption := lisMenuNewProject;
-  mnuProject.Add(itmProjectNew);
+  CreateMenuItem(mnuProject,itmProjectNew,'itmProjectNew',lisMenuNewProject); 
+  CreateMenuItem(mnuProject,itmProjectNewFromFile,'itmProjectNewFromFile',lisMenuNewProjectFromFile); 
+  mnuProject.Add(CreateMenuSeparator);
+  
+  CreateMenuItem(mnuProject,itmProjectOpen,'itmProjectOpen',lisMenuOpenProject,'menu_openproject'); 
+  CreateMenuItem(mnuProject,itmProjectRecentOpen,'itmProjectRecentOpen',lisMenuOpenRecentProject); 
+  mnuProject.Add(CreateMenuSeparator);
+  
 
-  itmProjectNewFromFile := TMenuItem.Create(Self);
-  itmProjectNewFromFile.Name:='itmProjectNewFromFile';
-  itmProjectNewFromFile.Caption := lisMenuNewProjectFromFile;
-  mnuProject.Add(itmProjectNewFromFile);
-
+  CreateMenuItem(mnuProject,itmProjectSave,'itmProjectSave',lisMenuSaveProject); 
+  CreateMenuItem(mnuProject,itmProjectSaveAs,'itmProjectSaveAs',lisMenuSaveProjectAs); 
+  CreateMenuItem(mnuProject,itmProjectPublish,'itmProjectPublish',lisMenuPublishProject); 
+  mnuProject.Add(CreateMenuSeparator);
+  
+  CreateMenuItem(mnuProject,itmProjectInspector,'itmProjectInspector',lisMenuProjectInspector,'menu_projectinspector'); 
+  CreateMenuItem(mnuProject,itmProjectOptions,'itmProjectOptions',lisMenuProjectOptions,'menu_projectoptions'); 
+  CreateMenuItem(mnuProject,itmProjectCompilerOptions,'itmProjectCompilerOptions',lisMenuCompilerOptions); 
   mnuProject.Add(CreateMenuSeparator);
 
-  itmProjectOpen := TMenuItem.Create(Self);
-  itmProjectOpen.Name:='itmProjectOpen';
-  itmProjectOpen.Caption := lisMenuOpenProject;
-  itmProjectOpen.Bitmap.LoadFromLazarusResource('menu_openproject');
-  mnuProject.Add(itmProjectOpen);
-
-  itmProjectRecentOpen := TMenuItem.Create(Self);
-  itmProjectRecentOpen.Name:='itmProjectRecentOpen';
-  itmProjectRecentOpen.Caption := lisMenuOpenRecentProject;
-  mnuProject.Add(itmProjectRecentOpen);
-
+  CreateMenuItem(mnuProject,itmProjectAddTo,'itmProjectAddTo',lisMenuAddToProject); 
+  CreateMenuItem(mnuProject,itmProjectRemoveFrom,'itmProjectRemoveFrom',lisMenuRemoveFromProject); 
   mnuProject.Add(CreateMenuSeparator);
-
-  itmProjectSave := TMenuItem.Create(Self);
-  itmProjectSave.Name:='itmProjectSave';
-  itmProjectSave.Caption := lisMenuSaveProject;
-  mnuProject.Add(itmProjectSave);
-
-  itmProjectSaveAs := TMenuItem.Create(Self);
-  itmProjectSaveAs.Name:='itmProjectSaveAs';
-  itmProjectSaveAs.Caption := lisMenuSaveProjectAs;
-  mnuProject.Add(itmProjectSaveAs);
-
-  itmProjectPublish := TMenuItem.Create(Self);
-  itmProjectPublish.Name:='itmProjectPublish';
-  itmProjectPublish.Caption := lisMenuPublishProject;
-  mnuProject.Add(itmProjectPublish);
-
-  mnuProject.Add(CreateMenuSeparator);
-
-  itmProjectInspector := TMenuItem.Create(Self);
-  itmProjectInspector.Name:='itmProjectInspector';
-  itmProjectInspector.Caption := lisMenuProjectInspector;
-  itmProjectInspector.Bitmap.LoadFromLazarusResource('menu_projectinspector');
-
-  itmProjectOptions := TMenuItem.Create(Self);
-  itmProjectOptions.Name:='itmProjectOptions';
-  itmProjectOptions.Caption := lisMenuProjectOptions;
-  itmProjectOptions.Bitmap.LoadFromLazarusResource('menu_projectoptions');
-  mnuProject.Add(itmProjectOptions);
-
-  itmProjectCompilerOptions := TMenuItem.Create(Self);
-  itmProjectCompilerOptions.Name:='itmProjectCompilerOptions';
-  itmProjectCompilerOptions.Caption := lisMenuCompilerOptions;
-  mnuRun.Add(itmProjectCompilerOptions);
-
-  mnuProject.Add(itmProjectInspector);
-
-  itmProjectAddTo := TMenuItem.Create(Self);
-  itmProjectAddTo.Name:='itmProjectAddTo';
-  itmProjectAddTo.Caption := lisMenuAddToProject;
-  mnuProject.Add(itmProjectAddTo);
-
-  itmProjectRemoveFrom := TMenuItem.Create(Self);
-  itmProjectRemoveFrom.Name:='itmProjectRemoveFrom';
-  itmProjectRemoveFrom.Caption := lisMenuRemoveFromProject;
-  mnuProject.Add(itmProjectRemoveFrom);
-
-  mnuProject.Add(CreateMenuSeparator);
-
-  itmProjectViewSource := TMenuItem.Create(Self);
-  itmProjectViewSource.Name:='itmProjectViewSource';
-  itmProjectViewSource.Caption := lisMenuViewSource;
-  mnuProject.Add(itmProjectViewSource);
-
-  itmProjectViewToDos := TMenuItem.Create(Self);
-  itmProjectViewToDos.Name:='itmProjectViewToDos';
-  itmProjectViewToDos.Caption := lisMenuViewProjectTodos;
-  mnuProject.Add(itmProjectViewToDos);
+ 
+  CreateMenuItem(mnuProject,itmProjectViewSource,'itmProjectViewSource',lisMenuViewSource); 
+  CreateMenuItem(mnuProject,itmProjectViewToDos,'itmProjectViewToDos',lisMenuViewProjectTodos); 
 end;
 
 procedure TMainIDEBar.SetupRunMenu;
 begin
-  itmRunMenuBuild := TMenuItem.Create(Self);
-  itmRunMenuBuild.Name:='itmRunMenuBuild';
-  itmRunMenuBuild.Caption := lisMenuBuild;
-  itmRunMenuBuild.Bitmap.LoadFromLazarusResource('menu_build');
-  mnuRun.Add(itmRunMenuBuild);
-
-  itmRunMenuBuildAll := TMenuItem.Create(Self);
-  itmRunMenuBuildAll.Name:='itmRunMenuBuildAll';
-  itmRunMenuBuildAll.Caption := lisMenuBuildAll;
-  itmRunMenuBuildAll.Bitmap.LoadFromLazarusResource('menu_buildall');
-  mnuRun.Add(itmRunMenuBuildAll);
-
-  itmRunMenuAbortBuild := TMenuItem.Create(Self);
-  itmRunMenuAbortBuild.Name:='itmRunMenuAbortBuild';
-  itmRunMenuAbortBuild.Caption := lisMenuAbortBuild;
-  mnuRun.Add(itmRunMenuAbortBuild);
-
+  CreateMenuItem(mnuRun,itmRunMenuBuild,'itmRunMenuBuild',lisMenuBuild,'menu_build'); 
+  CreateMenuItem(mnuRun,itmRunMenuBuildAll,'itmRunMenuBuildAll',lisMenuBuildAll,'menu_buildall'); 
+  CreateMenuItem(mnuRun,itmRunMenuAbortBuild,'itmRunMenuAbortBuild',lisMenuAbortBuild); 
   mnuRun.Add(CreateMenuSeparator);
 
-  itmRunMenuRun := TMenuItem.Create(Self);
-  itmRunMenuRun.Name:='itmRunMenuRun';
-  itmRunMenuRun.Caption := lisMenuProjectRun;
-  itmRunMenuRun.Bitmap.LoadFromLazarusResource('menu_run');
-  mnuRun.Add(itmRunMenuRun);
-
-  itmRunMenuPause := TMenuItem.Create(Self);
-  itmRunMenuPause.Name:='itmRunMenuPause';
-  itmRunMenuPause.Caption := lisMenuPause;
-  itmRunMenuPause.Enabled := false;
-  itmRunMenuPause.Bitmap.LoadFromLazarusResource('menu_pause');
-  mnuRun.Add(itmRunMenuPause);
-
-  itmRunMenuStepInto := TMenuItem.Create(Self);
-  itmRunMenuStepInto.Name:='itmRunMenuStepInto';
-  itmRunMenuStepInto.Caption := lisMenuStepInto;
-  itmRunMenuStepInto.Bitmap.LoadFromLazarusResource('menu_stepinto');
-  mnuRun.Add(itmRunMenuStepInto);
-
-  itmRunMenuStepOver := TMenuItem.Create(Self);
-  itmRunMenuStepOver.Name:='itmRunMenuStepOver';
-  itmRunMenuStepOver.Caption := lisMenuStepOver;
-  itmRunMenuStepOver.Bitmap.LoadFromLazarusResource('menu_stepover');
-  mnuRun.Add(itmRunMenuStepOver);
-
-  itmRunMenuRunToCursor := TMenuItem.Create(Self);
-  itmRunMenuRunToCursor.Name:='itmRunMenuRunToCursor';
-  itmRunMenuRunToCursor.Caption := lisMenuRunToCursor;
-  mnuRun.Add(itmRunMenuRunToCursor);
-
-  itmRunMenuStop := TMenuItem.Create(Self);
-  itmRunMenuStop.Name:='itmRunMenuStop';
-  itmRunMenuStop.Caption := lisMenuStop;
-  mnuRun.Add(itmRunMenuStop);
-
+  CreateMenuItem(mnuRun,itmRunMenuRun,'itmRunMenuRun',lisMenuProjectRun,'menu_run'); 
+  CreateMenuItem(mnuRun,itmRunMenuPause,'itmRunMenuPause',lisMenuPause,'menu_pause'); 
+  CreateMenuItem(mnuRun,itmRunMenuStepInto,'itmRunMenuStepInto',lisMenuStepInto,'menu_stepinto'); 
+  CreateMenuItem(mnuRun,itmRunMenuStepOver,'itmRunMenuStepOver',lisMenuStepOver,'menu_stepover'); 
+  CreateMenuItem(mnuRun,itmRunMenuRunToCursor,'itmRunMenuRunToCursor',lisMenuRunToCursor); 
+  CreateMenuItem(mnuRun,itmRunMenuStop,'itmRunMenuStop',lisMenuStop,''); 
   mnuRun.Add(CreateMenuSeparator);
 
-  itmRunMenuRunParameters := TMenuItem.Create(Self);
-  itmRunMenuRunParameters.Name:='itmRunMenuRunParameters';
-  itmRunMenuRunParameters.Caption := lisMenuRunParameters;
-  mnuRun.Add(itmRunMenuRunParameters);
-
-  itmRunMenuResetDebugger := TMenuItem.Create(Self);
-  itmRunMenuResetDebugger.Name:='itmRunMenuResetDebugger';
-  itmRunMenuResetDebugger.Caption := lisMenuResetDebugger;
-  mnuRun.Add(itmRunMenuResetDebugger);
-
+  CreateMenuItem(mnuRun,itmRunMenuRunParameters,'itmRunMenuRunParameters',lisMenuRunParameters); 
+  CreateMenuItem(mnuRun,itmRunMenuResetDebugger,'itmRunMenuResetDebugger',lisMenuResetDebugger); 
   mnuRun.Add(CreateMenuSeparator);
 
-  itmRunMenuBuildFile := TMenuItem.Create(Self);
-  itmRunMenuBuildFile.Name:='itmRunMenuBuildFile';
-  itmRunMenuBuildFile.Caption := lisMenuBuildFile;
-  mnuRun.Add(itmRunMenuBuildFile);
-
-  itmRunMenuRunFile := TMenuItem.Create(Self);
-  itmRunMenuRunFile.Name:='itmRunMenuRunFile';
-  itmRunMenuRunFile.Caption := lisMenuRunFile;
-  mnuRun.Add(itmRunMenuRunFile);
-
-  itmRunMenuConfigBuildFile := TMenuItem.Create(Self);
-  itmRunMenuConfigBuildFile.Name:='itmRunMenuConfigBuildFile';
-  itmRunMenuConfigBuildFile.Caption := lisMenuConfigBuildFile;
-  mnuRun.Add(itmRunMenuConfigBuildFile);
+  CreateMenuItem(mnuRun,itmRunMenuBuildFile,'itmRunMenuBuildFile',lisMenuBuildFile); 
+  CreateMenuItem(mnuRun,itmRunMenuRunFile,'itmRunMenuRunFile',lisMenuRunFile); 
+  CreateMenuItem(mnuRun,itmRunMenuConfigBuildFile,'itmRunMenuConfigBuildFile',lisMenuConfigBuildFile); 
 end;
 
 procedure TMainIDEBar.SetupComponentsMenu;
 begin
-  itmPkgOpenPackage := TMenuItem.Create(Self);
-  itmPkgOpenPackage.Name:='itmPkgOpenPackage';
-  itmPkgOpenPackage.Caption := lisMenuOpenPackage;
-  itmPkgOpenPackage.Bitmap.LoadFromLazarusResource('pkg_package');
+  CreateMenuItemPkg(mnuComponents,itmPkgOpenPackage,'itmPkgOpenPackage',lisMenuOpenPackage,'pkg_package'); 
+  CreateMenuItemPkg(mnuComponents,itmPkgOpenPackageFile,'itmPkgOpenPackageFile',lisMenuOpenPackageFile,'pkg_package'); 
+  CreateMenuItemPkg(mnuComponents,itmPkgOpenRecent,'itmPkgOpenRecent',lisMenuOpenRecentPkg,'pkg_package'); 
   {$IFNDEF DisablePkgs}
-  mnuComponents.Add(itmPkgOpenPackage);
+  mnuComponents.Add(CreateMenuSeparator);
   {$ENDIF}
-
-  itmPkgOpenPackageFile := TMenuItem.Create(Self);
-  itmPkgOpenPackageFile.Name:='itmPkgOpenPackageFile';
-  itmPkgOpenPackageFile.Caption := lisMenuOpenPackageFile;
-  itmPkgOpenPackageFile.Bitmap.LoadFromLazarusResource('pkg_package');
-  {$IFNDEF DisablePkgs}
-  mnuComponents.Add(itmPkgOpenPackageFile);
-  {$ENDIF}
-
-  itmPkgOpenRecent := TMenuItem.Create(Self);
-  itmPkgOpenRecent.Name:='itmPkgOpenRecent';
-  itmPkgOpenRecent.Caption := lisMenuOpenRecentPkg;
-  itmPkgOpenRecent.Bitmap.LoadFromLazarusResource('pkg_package');
-  {$IFNDEF DisablePkgs}
-  mnuComponents.Add(itmPkgOpenRecent);
-  {$ENDIF}
-
+  
+  CreateMenuItemPkg(mnuComponents,itmPkgAddCurUnitToPkg,'itmPkgAddCurUnitToPkg',lisMenuAddCurUnitToPkg,'pkg_addunittopackage'); 
   {$IFNDEF DisablePkgs}
   mnuComponents.Add(CreateMenuSeparator);
   {$ENDIF}
 
-  itmPkgAddCurUnitToPkg := TMenuItem.Create(Self);
-  itmPkgAddCurUnitToPkg.Name:='itmPkgAddCurUnitToPkg';
-  itmPkgAddCurUnitToPkg.Caption := lisMenuAddCurUnitToPkg;
-  itmPkgAddCurUnitToPkg.Bitmap.LoadFromLazarusResource('pkg_addunittopackage');
-  {$IFNDEF DisablePkgs}
-  mnuComponents.Add(itmPkgAddCurUnitToPkg);
-  {$ENDIF}
+  CreateMenuItemPkg(mnuComponents,itmPkgPkgGraph,'itmPkgPkgGraph',lisMenuPackageGraph,'pkg_packagegraph'); 
 
   {$IFNDEF DisablePkgs}
   mnuComponents.Add(CreateMenuSeparator);
   {$ENDIF}
-
-  itmPkgPkgGraph := TMenuItem.Create(Self);
-  itmPkgPkgGraph.Name:='itmPkgPkgGraph';
-  itmPkgPkgGraph.Caption := lisMenuPackageGraph;
-  itmPkgPkgGraph.Bitmap.LoadFromLazarusResource('pkg_packagegraph');
-  {$IFNDEF DisablePkgs}
-  mnuComponents.Add(itmPkgPkgGraph);
-  {$ENDIF}
-
-  {$IFNDEF DisablePkgs}
-  mnuComponents.Add(CreateMenuSeparator);
-  {$ENDIF}
-
-  itmCompsConfigCustomComps := TMenuItem.Create(Self);
-  itmCompsConfigCustomComps.Name:='itmCompsConfigCustomComps';
-  itmCompsConfigCustomComps.Caption := lisMenuConfigCustomComps;
-  mnuComponents.Add(itmCompsConfigCustomComps);
+  
+  CreateMenuItem(mnuComponents,itmCompsConfigCustomComps,'itmCompsConfigCustomComps',lisMenuConfigCustomComps); 
+   
 end;
 
 procedure TMainIDEBar.SetupToolsMenu;
 begin
-  itmToolConfigure := TMenuItem.Create(Self);
-  itmToolConfigure.Name:='itmToolConfigure';
-  itmToolConfigure.Caption := lisMenuSettings;
-  mnuTools.Add(itmToolConfigure);
-
+  CreateMenuItem(mnuTools,itmToolConfigure,'itmToolConfigure',lisMenuSettings); 
   mnuTools.Add(CreateMenuSeparator);
 
-  itmToolSyntaxCheck := TMenuItem.Create(Self);
-  itmToolSyntaxCheck.Name:='itmToolSyntaxCheck';
-  itmToolSyntaxCheck.Caption := lisMenuQuickSyntaxCheck;
-  mnuTools.Add(itmToolSyntaxCheck);
-
-  itmToolGuessUnclosedBlock := TMenuItem.Create(Self);
-  itmToolGuessUnclosedBlock.Name:='itmToolGuessUnclosedBlock';
-  itmToolGuessUnclosedBlock.Caption := lisMenuGuessUnclosedBlock;
-  mnuTools.Add(itmToolGuessUnclosedBlock);
-
-  itmToolGuessMisplacedIFDEF := TMenuItem.Create(Self);
-  itmToolGuessMisplacedIFDEF.Name:='itmToolGuessMisplacedIFDEF';
-  itmToolGuessMisplacedIFDEF.Caption := lisMenuGuessMisplacedIFDEF;
-  mnuTools.Add(itmToolGuessMisplacedIFDEF);
-
-  itmToolMakeResourceString := TMenuItem.Create(Self);
-  itmToolMakeResourceString.Name:='itmToolMakeResourceString';
-  itmToolMakeResourceString.Caption := lisMenuMakeResourceString;
-  mnuTools.Add(itmToolMakeResourceString);
-
-  itmToolDiff := TMenuItem.Create(Self);
-  itmToolDiff.Name:='itmToolDiff';
-  itmToolDiff.Caption := lisMenuDiff;
-  mnuTools.Add(itmToolDiff);
-
+  CreateMenuItem(mnuTools,itmToolSyntaxCheck,'itmToolSyntaxCheck',lisMenuQuickSyntaxCheck); 
+  CreateMenuItem(mnuTools,itmToolGuessUnclosedBlock,'itmToolGuessUnclosedBlock',lisMenuGuessUnclosedBlock); 
+  CreateMenuItem(mnuTools,itmToolGuessMisplacedIFDEF,'itmToolGuessMisplacedIFDEF',lisMenuGuessMisplacedIFDEF); 
+  CreateMenuItem(mnuTools,itmToolMakeResourceString,'itmToolMakeResourceString',lisMenuMakeResourceString); 
+  CreateMenuItem(mnuTools,itmToolDiff,'itmToolDiff',lisMenuDiff); 
   mnuTools.Add(CreateMenuSeparator);
 
-  itmToolCheckLFM := TMenuItem.Create(Self);
-  itmToolCheckLFM.Name:='itmToolCheckLFM';
-  itmToolCheckLFM.Caption := lisMenuCheckLFM;
-  mnuTools.Add(itmToolCheckLFM);
-
-  itmToolConvertDelphiUnit := TMenuItem.Create(Self);
-  itmToolConvertDelphiUnit.Name:='itmToolConvertDelphiUnit';
-  itmToolConvertDelphiUnit.Caption := lisMenuConvertDelphiUnit;
-  mnuTools.Add(itmToolConvertDelphiUnit);
-
-  itmToolConvertDFMtoLFM := TMenuItem.Create(Self);
-  itmToolConvertDFMtoLFM.Name:='itmToolConvertDFMtoLFM';
-  itmToolConvertDFMtoLFM.Caption := lisMenuConvertDFMtoLFM;
-  mnuTools.Add(itmToolConvertDFMtoLFM);
-
+  CreateMenuItem(mnuTools,itmToolCheckLFM,'itmToolCheckLFM',lisMenuCheckLFM); 
+  CreateMenuItem(mnuTools,itmToolConvertDelphiUnit,'itmToolConvertDelphiUnit',lisMenuConvertDelphiUnit); 
+  CreateMenuItem(mnuTools,itmToolConvertDFMtoLFM,'itmToolConvertDFMtoLFM',lisMenuConvertDFMtoLFM); 
   mnuTools.Add(CreateMenuSeparator);
-
-  itmToolBuildLazarus := TMenuItem.Create(Self);
-  itmToolBuildLazarus.Name:='itmToolBuildLazarus';
-  itmToolBuildLazarus.Caption := lisMenuBuildLazarus;
-  itmToolBuildLazarus.Bitmap.LoadFromLazarusResource('menu_buildlazarus');
-  mnuTools.Add(itmToolBuildLazarus);
-
-  itmToolConfigureBuildLazarus := TMenuItem.Create(Self);
-  itmToolConfigureBuildLazarus.Name:='itmToolConfigureBuildLazarus';
-  itmToolConfigureBuildLazarus.Caption := lisMenuConfigureBuildLazarus;
-  mnuTools.Add(itmToolConfigureBuildLazarus);
+  
+  CreateMenuItem(mnuTools,itmToolBuildLazarus,'itmToolBuildLazarus',lisMenuBuildLazarus,'menu_buildlazarus'); 
+  CreateMenuItem(mnuTools,itmToolConfigureBuildLazarus,'itmToolConfigureBuildLazarus',lisMenuConfigureBuildLazarus); 
 end;
 
 procedure TMainIDEBar.SetupEnvironmentMenu;
 begin
-  itmEnvGeneralOptions := TMenuItem.Create(Self);
-  itmEnvGeneralOptions.Name:='itmEnvGeneralOptions';
-  itmEnvGeneralOptions.Caption := lisMenuGeneralOptions;
-  itmEnvGeneralOptions.Bitmap.LoadFromLazarusResource('menu_environmentoptions');
-  mnuEnvironment.Add(itmEnvGeneralOptions);
-
-  itmEnvEditorOptions := TMenuItem.Create(Self);
-  itmEnvEditorOptions.Name:='itmEnvEditorOptions';
-  itmEnvEditorOptions.Caption := lisMenuEditorOptions;
-  itmEnvEditorOptions.Bitmap.LoadFromLazarusResource('menu_editoroptions');
-  mnuEnvironment.Add(itmEnvEditorOptions);
-
-  itmEnvDebuggerOptions := TMenuItem.Create(Self);
-  itmEnvDebuggerOptions.Name:='itmEnvDebuggerOptions';
-  itmEnvDebuggerOptions.Caption := lisMenDebuggerOptions;
-//  itmEnvDebuggerOptions.Bitmap.LoadFromLazarusResource('menu_editoroptions');
-  mnuEnvironment.Add(itmEnvDebuggerOptions);
-
-  itmEnvCodeToolsOptions := TMenuItem.Create(Self);
-  itmEnvCodeToolsOptions.Name:='itmEnvCodeToolsOptions';
-  itmEnvCodeToolsOptions.Caption := lisMenuCodeToolsOptions;
-  itmEnvCodeToolsOptions.Bitmap.LoadFromLazarusResource('menu_codetoolsoptions');
-  mnuEnvironment.Add(itmEnvCodeToolsOptions);
-
-  itmEnvCodeToolsDefinesEditor := TMenuItem.Create(Self);
-  itmEnvCodeToolsDefinesEditor.Name:='itmEnvCodeToolsDefinesEditor';
-  itmEnvCodeToolsDefinesEditor.Caption := lisMenuCodeToolsDefinesEditor;
-  itmEnvCodeToolsDefinesEditor.Bitmap.LoadFromLazarusResource('menu_codetoolsdefineseditor');
-  mnuEnvironment.Add(itmEnvCodeToolsDefinesEditor);
-
+  CreateMenuItem(mnuEnvironment,itmEnvGeneralOptions,'itmEnvGeneralOptions',lisMenuGeneralOptions,'menu_environmentoptions'); 
+  CreateMenuItem(mnuEnvironment,itmEnvEditorOptions,'itmEnvEditorOptions',lisMenuEditorOptions,'menu_editoroptions'); 
+  CreateMenuItem(mnuEnvironment,itmEnvDebuggerOptions,'itmEnvDebuggerOptions',lisMenDebuggerOptions,''); 
+  CreateMenuItem(mnuEnvironment,itmEnvCodeToolsOptions,'itmEnvCodeToolsOptions',lisMenuCodeToolsOptions,'menu_codetoolsoptions'); 
+  CreateMenuItem(mnuEnvironment,itmEnvCodeToolsDefinesEditor,'itmEnvCodeToolsDefinesEditor',lisMenuCodeToolsDefinesEditor,'menu_codetoolsdefineseditor'); 
   mnuEnvironment.Add(CreateMenuSeparator);
-
-  itmEnvRescanFPCSrcDir := TMenuItem.Create(Self);
-  itmEnvRescanFPCSrcDir.Name:='itmEnvRescanFPCSrcDir';
-  itmEnvRescanFPCSrcDir.Caption := lisMenuRescanFPCSourceDirectory;
-  mnuEnvironment.Add(itmEnvRescanFPCSrcDir);
+  CreateMenuItem(mnuEnvironment,itmEnvRescanFPCSrcDir,'itmEnvRescanFPCSrcDir',lisMenuRescanFPCSourceDirectory); 
 end;
 
 procedure TMainIDEBar.SetupWindowsMenu;
@@ -1414,10 +870,7 @@ end;
 
 procedure TMainIDEBar.SetupHelpMenu;
 begin
-  itmHelpAboutLazarus := TMenuItem.Create(Self);
-  itmHelpAboutLazarus.Name:='itmHelpAboutLazarus';
-  itmHelpAboutLazarus.Caption := lisMenuAboutLazarus;
-  mnuHelp.Add(itmHelpAboutLazarus);
+  CreateMenuItem(mnuHelp,itmHelpAboutLazarus,'itmHelpAboutLazarus',lisMenuAboutLazarus); 
 end;
 
 procedure TMainIDEBar.LoadMenuShortCuts;
