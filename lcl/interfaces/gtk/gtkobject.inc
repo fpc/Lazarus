@@ -219,9 +219,8 @@ procedure TgtkObject.SendCachedLCLMessages;
       // resize widget
       LCLControl:=TControl(GetLCLObject(Widget));
       if (LCLControl=nil) or (not (LCLControl is TControl)) then begin
-        writeln('ERROR: TgtkObject.SendCachedLCLMessages Widget ',
-          HexStr(Cardinal(Widget),8),' without LCL control');
-        Halt;
+        RaiseException('ERROR: TgtkObject.SendCachedLCLMessages Widget '
+          +HexStr(Cardinal(Widget),8)+' without LCL control');
       end;
       {$IFDEF VerboseSizeMsg}
       writeln('SendCachedLCLMessages ',LCLControl.Name,':',LCLControl.ClassName,
@@ -5834,6 +5833,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.216  2002/09/16 16:06:21  lazarus
+  MG: replaced halt with raiseexception
+
   Revision 1.215  2002/09/16 15:56:01  lazarus
   Resize cursors in designer.
 
