@@ -937,7 +937,7 @@ var
   F: TSynBaseCompletionForm;
   Value, CurLine: string;
   {$IFDEF SYN_LAZARUS}
-  NewCaretXY: TPoint;
+  NewCaretXY, NewBlockBegin: TPoint;
   {$Else}
   Pos: TPoint;
   {$ENDIF}
@@ -946,8 +946,13 @@ begin
   if F.CurrentEditor <> nil then
     with F.CurrentEditor as TCustomSynEdit do begin
       BeginUndoBlock;
-      BlockBegin := Point(CaretX - length(CurrentString), CaretY);
       {$IFDEF SYN_LAZARUS}
+      NewBlockBegin:=CaretXY;
+      CurLine:=TSynEditStringList(Lines).ExpandedStrings[NewBlockBegin.Y - 1];
+      while (NewBlockBegin.X>1)
+      and (CurLine[NewBlockBegin.X-1] in ['a'..'z','A'..'Z','0'..'9','_']) do
+        dec(NewBlockBegin.X);
+      BlockBegin:=NewBlockBegin;
       if ssShift in Shift then begin
         // replace only prefix
         BlockEnd := Point(CaretX, CaretY);
@@ -961,6 +966,7 @@ begin
         BlockEnd := NewCaretXY;
       end;
       {$ELSE}
+      BlockBegin := Point(CaretX - length(CurrentString), CaretY);
       BlockEnd := Point(CaretX, CaretY);
       {$ENDIF}
       if Position>=0 then begin

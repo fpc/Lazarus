@@ -65,6 +65,8 @@ type
     property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
   public
     procedure Paint; override;
+    procedure CreateWnd; override;
+    procedure DestroyWnd; override;
   end;
 
   T32ScrollBar = Class(TScrollBar)   {a 32 bit scrollbar}
@@ -2724,16 +2726,12 @@ var
   ABitmap: HBitmap;
   ARect: TRect;
   OldPal: HPalette;
-  p: TPoint;
 begin
 if (FViewer as ThtmlLite).DontDraw then Exit;
-GetWindowOrgEx(Canvas.Handle,@p);
-writeln('TPaintPanel.PaintA Canvas.Handle=',HexStr(Cardinal(Canvas.Handle),8),
-' ',Width,',',Height,' ',ClientWidth,',',ClientHeight,' ',
-' ',p.x,',',p.y,' ',Visible);
+
   Canvas.Brush.Color:=clGreen;
   Canvas.FillRect(Rect(0,0,200,200));
-  exit;
+
 ThtmlLite(FViewer).DrawBorder;
 OldPal := 0;
 Canvas.Font := Font;
@@ -2757,10 +2755,8 @@ try
         SetWindowOrgEx(memDC, Left, Top, Nil);
         Canvas2.Handle := MemDC;
   {$ENDIF}
-        //DoBackground(Canvas2, False);
-  Canvas2.Brush.Color:=clBlue;
-  Canvas2.FillRect(Rect(0,0,200,200));
-        //if Assigned(FOnPaint) then FOnPaint(Self);
+        DoBackground(Canvas2, False);
+        if Assigned(FOnPaint) then FOnPaint(Self);
   {$IFDEF HL_LAZARUS}
   {$ELSE}
         OldPal := SelectPalette(Canvas.Handle, ThePalette, False);
@@ -2784,6 +2780,18 @@ writeln('TPaintPanel.Paint B Canvas.Handle=',HexStr(Cardinal(Canvas.Handle),8));
   {$ENDIF}
   Canvas2.Free;
   end;
+end;
+
+procedure TPaintPanel.CreateWnd;
+begin
+  inherited CreateWnd;
+  writeln('TPaintPanel.CreateWnd ',HexStr(Cardinal(Self),8),' ',HexStr(Cardinal(Handle),8));
+end;
+
+procedure TPaintPanel.DestroyWnd;
+begin
+  writeln('TPaintPanel.DestroyWnd ',HexStr(Cardinal(Self),8));
+  inherited DestroyWnd;
 end;
 
 procedure TPaintPanel.DoBackground(ACanvas: TCanvas; WmErase: boolean);
