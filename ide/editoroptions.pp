@@ -28,9 +28,7 @@
     Currently only for TSynEdit.
 
   ToDo:
-   - Code template adding does not scroll listbox
    - key mapping schemes
-   - SetSynEditSettings
    - nicer TColorButton
 }
 unit EditorOptions;
@@ -46,6 +44,7 @@ uses
   SynEdit, SynEditHighlighter, SynEditAutoComplete, SynEditKeyCmds,
   SynHighlighterPas, SynHighlighterHTML, SynHighlighterCPP, SynHighlighterXML,
   SynHighlighterLFM, SynHighlighterPerl, SynHighlighterJava,
+  SynHighlighterUNIXShellScript,
   Laz_XMLCfg, CodeTemplateDialog, KeyMapping, InputHistory, IDEOptionDefs,
   LazarusIDEStrConsts;
 
@@ -58,7 +57,7 @@ type
 
   TLazSyntaxHighlighter =
     (lshNone, lshText, lshFreePascal, lshDelphi, lshLFM, lshXML, lshHTML,
-     lshCPP, lshPerl, lshJava);
+     lshCPP, lshPerl, lshJava, lshBash);
 
   TAdditionalHilightAttribute = (ahaNone, ahaTextBlock, ahaExecutionPoint,
     ahaEnabledBreakpoint, ahaDisabledBreakpoint,
@@ -82,7 +81,7 @@ const
   
   LazSyntaxHighlighterClasses: array[TLazSyntaxHighlighter] of TCustomSynClass =
     ( nil, nil, TSynPasSyn, TSynPasSyn, TSynLFMSyn, TSynXMLSyn, TSynHTMLSyn,
-      TSynCPPSyn, TSynPerlSyn, TSynJavaSyn);
+      TSynCPPSyn, TSynPerlSyn, TSynJavaSyn, TSynUNIXShellScriptSyn);
     
 
   { Comments }
@@ -97,7 +96,8 @@ const
       comtHtml,  // lshHTML
       comtCPP,   // lshCPP
       comtPerl,  // lshPerl
-      comtCPP    // lshJava
+      comtCPP,   // lshJava
+      comtPerl   // lshBash
     );
     
 const
@@ -537,7 +537,8 @@ const
      'HTML',
      'C++',
      'Perl',
-     'Java'
+     'Java',
+     'Bash'
    );
 
 var
@@ -562,7 +563,7 @@ const
   CompatibleLazSyntaxHilighter:
     array[TLazSyntaxHighlighter] of TLazSyntaxHighlighter= (
         lshNone, lshText, lshFreePascal, lshFreePascal, lshLFM, lshXML, lshHTML,
-        lshCPP, lshPerl, lshJava
+        lshCPP, lshPerl, lshJava, lshBash
       );
       
   DefaultColorScheme = 'Default';
@@ -951,7 +952,7 @@ begin
   end;
   Add(NewInfo);
 
-  // create info for Perl
+  // create info for Java
   NewInfo:=TEditOptLanguageInfo.Create;
   with NewInfo do begin
     TheType:=CompatibleLazSyntaxHilighter[lshJava];
@@ -979,6 +980,40 @@ begin
       Add('Documentation=Comment');
       Add('Identifier=Identifier');
       Add('Reserved_word=Reserved_word');
+      Add('Number=Number');
+      Add('Space=Space');
+      Add('String=String');
+      Add('Symbol=Symbol');
+    end;
+  end;
+  Add(NewInfo);
+
+  // create info for Bash
+  NewInfo:=TEditOptLanguageInfo.Create;
+  with NewInfo do begin
+    TheType:=CompatibleLazSyntaxHilighter[lshBash];
+    DefaultCommentType:=DefaultCommentTypes[TheType];
+    SynClass:=LazSyntaxHighlighterClasses[TheType];
+    FileExtensions:='sh';
+    SampleSource:=
+            '#!/bin/bash'#13#13+
+            '# Bash syntax highlighting'#13#10 +
+            'set -x'#13#10 +
+            'set -e'#13#10 +
+            'Usage="Usage: $0 devel|stable"'#13#10 +
+            'FPCVersion=$1'#13#10 +
+            'for ver in devel stable; do'#13#10 +
+            '  if [ "x$FPCVersion" = "x$ver" ]; then'#13#10 +
+            '  fi'#13#10 +
+            'done'#13#10 +
+            '# Text Block'#13#10+
+            #13#10;
+    AddAttrSampleLines[ahaTextBlock]:=12;
+    MappedAttributes:=TStringList.Create;
+    with MappedAttributes do begin
+      Add('Comment=Comment');
+      Add('Variable=Identifier');
+      Add('Key=Reserved_word');
       Add('Number=Number');
       Add('Space=Space');
       Add('String=String');

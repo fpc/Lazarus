@@ -42,7 +42,7 @@ uses
   SynEditLazDsgn, SynEdit, SynCompletion, SynExportHTML, SynMacroRecorder,
   SynMemo, SynHighlighterPas, SynHighlighterCPP, SynHighlighterJava,
   SynHighlighterPerl, SynHighlighterHTML, SynHighlighterXML,
-  SynHighlighterLFM, SynHighlighterMulti,
+  SynHighlighterLFM, SynHighlighterMulti, SynHighlighterUNIXShellScript,
   LazarusPackageIntf, LazarusIDEStrConsts;
 
 procedure Register;
@@ -109,6 +109,11 @@ begin
   RegisterComponents('SynEdit',[TSynLFMSyn]);
 end;
 
+procedure RegisterSynHighlighterUNIXShellScript;
+begin
+  RegisterComponents('SynEdit',[TSynUNIXShellScriptSyn]);
+end;
+
 procedure RegisterSynHighlighterMulti;
 begin
   RegisterComponents('SynEdit',[TSynMultiSyn]);
@@ -128,6 +133,8 @@ begin
   RegisterUnit('SynHighlighterHTML',@RegisterSynHighlighterHTML);
   RegisterUnit('SynHighlighterXML',@RegisterSynHighlighterXML);
   RegisterUnit('SynHighlighterLFM',@RegisterSynHighlighterLFM);
+  RegisterUnit('SynHighlighterUNIXShellScript',
+                                        @RegisterSynHighlighterUNIXShellScript);
   RegisterUnit('SynHighlighterMulti',@RegisterSynHighlighterMulti);
 end;
 

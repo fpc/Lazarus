@@ -21,6 +21,7 @@ uses
   SynHighlighterLFM, SynHighlighterPerl, SynHighlighterMulti, SynRegExpr,
   SynEditExport, SynExportHTML, SynMemo, SynMacroRecorder, SynEditPlugins,
   SynEditRegexSearch, SynHighlighterPosition, SynHighlighterJava,
+  SynHighlighterUNIXShellScript,
   SynEditLazDsgn;
 
 implementation
@@ -30,6 +31,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.17  2003/06/11 22:56:09  mattias
+  added bash scripts highlighter from Tom Lisjac
+
   Revision 1.16  2003/02/20 00:44:01  mattias
   added synedit to component palette
 

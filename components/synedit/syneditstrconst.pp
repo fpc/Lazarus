@@ -212,6 +212,7 @@ resourcestring
   SYNS_FilterXML                =  'XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd';
   SYNS_FilterGWS                =  'GW-TEL Script Files (*.gws)|*.gws';
   SYNS_FilterSynGenMsgfiles     =  'Msg files (*.msg)|*.msg';
+  SYNS_FilterUNIXShellScript    = 'UNIX Shell Scripts (*.sh)|*.sh';
 
 {$IFDEF SYN_LAZARUS}
 // Currently the language names are used to identify the language

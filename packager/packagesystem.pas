@@ -930,6 +930,8 @@ begin
     AddFile('synhighlighterhtml.pp','SynHighlighterHTML',pftUnit,[],cpBase);
     AddFile('synhighlighterxml.pas','SynHighlighterXML',pftUnit,[],cpBase);
     AddFile('synhighlighterlfm.pas','SynHighlighterLFM',pftUnit,[],cpBase);
+    AddFile('synhighlighterunixshellscript.pas','SynHighlighterUNIXShellScript',
+                                                             pftUnit,[],cpBase);
     AddFile('synhighlightermulti.pas','SynHighlighterMulti',pftUnit,[],cpBase);
 
     // add unit paths
