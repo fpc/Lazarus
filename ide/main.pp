@@ -504,6 +504,7 @@ type
       const AFilename: string; Flags: TLoadBufferFlags): TModalResult;
     function DoBackupFile(const Filename:string;
       IsPartOfProject:boolean): TModalResult; override;
+    function DoDeleteAmbigiousFiles(const Filename:string): TModalResult; override;
     function DoCheckFilesOnDisk: TModalResult; override;
 
     // useful frontend methods
@@ -1635,9 +1636,9 @@ begin
         Include(OpenFlags,ofRegularFile);
       For I := 0 to OpenDialog.Files.Count-1 do
         Begin
-          AFilename:=ExpandFilename(OpenDialog.Files.Strings[i]);
-          if DoOpenEditorFile(AFilename,-1,OpenFlags)=mrOk then begin
-          
+          AFilename:=CleanAndExpandFilename(OpenDialog.Files.Strings[i]);
+          if DoOpenEditorFile(AFilename,-1,OpenFlags)=mrAbort then begin
+            break;
           end;
         end;
       UpdateEnvironment;
@@ -4199,16 +4200,27 @@ begin
     exit;
   end;
   
-  // check for .lpi files
-  if ([ofRegularFile,ofRevert,ofProjectLoading]*Flags=[]) then begin
-    if (CompareFileExt(AFilename,'.lpi',false)=0)
-    and (FileExists(AFilename)) then begin
+  // check for special files
+  if ([ofRegularFile,ofRevert,ofProjectLoading]*Flags=[])
+  and FileExists(AFilename) then begin
+    // check for project information files (.lpi)
+    if (CompareFileExt(AFilename,'.lpi',false)=0) then begin
       if MessageDlg('Open Project?',
         'Open the project '+AFilename+'?'#13
         +'Answer No to load it as xml file.',
         mtConfirmation,[mbYes,mbNo],0)=mrYes
       then begin
         Result:=DoOpenProjectFile(AFilename,[ofAddToRecent]);
+        exit;
+      end;
+    end;
+    if (CompareFileExt(AFilename,'.lpk',false)=0) then begin
+      if MessageDlg('Open Package?',
+        'Open the package '+AFilename+'?'#13
+        +'Answer No to load it as xml file.',
+        mtConfirmation,[mbYes,mbNo],0)=mrYes
+      then begin
+        Result:=PkgBoss.DoOpenPackageFile(AFilename,[pofAddToRecent]);
         exit;
       end;
     end;
@@ -5937,6 +5949,54 @@ begin
       if Result=mrIgnore then Result:=mrOk;
     end;
   until Result<>mrRetry;
+end;
+
+function TMainIDE.DoDeleteAmbigiousFiles(const Filename: string): TModalResult;
+var
+  ADirectory: String;
+  FileInfo: TSearchRec;
+  ShortFilename: String;
+  CurFilename: String;
+begin
+  Result:=mrOk;
+  if EnvironmentOptions.AmbigiousFileAction=afaIgnore then exit;
+  if EnvironmentOptions.AmbigiousFileAction
+    in [afaAsk,afaAutoDelete,afaAutoRename]
+  then begin
+    ADirectory:=AppendPathDelim(ExtractFilePath(Filename));
+    if SysUtils.FindFirst(ADirectory+FindMask,faAnyFile,FileInfo)=0 then begin
+      ShortFilename:=ExtractFileName(Filename);
+      repeat
+        if (FileInfo.Name='.') or (FileInfo.Name='..')
+        or ((FileInfo.Attr and faDirectory)<>0) then continue;
+        if (ShortFilename<>FileInfo.Name)
+        and (AnsiCompareText(ShortFilename,FileInfo.Name)=0)
+        then begin
+          CurFilename:=ADirectory+FileInfo.Name;
+          if EnvironmentOptions.AmbigiousFileAction=afaAsk then begin
+            if MessageDlg('Delete ambigious file?',
+              'Delete ambigious file "'+CurFilename+'"?',
+              mtConfirmation,[mbYes,mbNo],0)=mrNo
+            then continue;
+          end;
+          if EnvironmentOptions.AmbigiousFileAction in [afaAutoDelete,afaAsk]
+          then begin
+            if not DeleteFile(CurFilename) then begin
+              MessageDlg('Delete file failed',
+                'Unable to delete file "'+CurFilename+'".',
+                mtError,[mbOk],0);
+            end;
+          end else if EnvironmentOptions.AmbigiousFileAction=afaAutoRename then
+          begin
+            Result:=DoBackupFile(CurFilename,false);
+            if Result=mrABort then exit;
+            Result:=mrOk;
+          end;
+        end;
+      until SysUtils.FindNext(FileInfo)<>0;
+    end;
+    FindClose(FileInfo);
+  end;
 end;
 
 function TMainIDE.DoCheckFilesOnDisk: TModalResult;
@@ -8190,6 +8250,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.514  2003/04/08 22:02:15  mattias
+  implemented open package file
+
   Revision 1.513  2003/04/08 20:14:26  mattias
   implemented open package
 
