@@ -840,8 +840,6 @@ begin
     Flags := Flags or ES_AUTOVSCROLL or ES_MULTILINE or ES_WANTRETURN;
     if TCustomMemo(AWinControl).ReadOnly then
       Flags := Flags or ES_READONLY;
-    if not TCustomMemo(AWinControl).WordWrap then
-      Flags := Flags or ES_AUTOHSCROLL;
     case TCustomMemo(AWinControl).ScrollBars of
       ssHorizontal, ssAutoHorizontal:
         Flags := Flags or WS_HSCROLL;
@@ -850,6 +848,10 @@ begin
       ssBoth, ssAutoBoth:
         Flags := Flags or WS_HSCROLL or WS_VSCROLL;
     end;
+    if TCustomMemo(AWinControl).WordWrap then
+      Flags := Flags and not WS_HSCROLL
+    else
+      Flags := Flags or ES_AUTOHSCROLL;
     FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
     pClassName := 'EDIT';
     WindowTitle := StrCaption;
