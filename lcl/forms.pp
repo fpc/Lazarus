@@ -656,6 +656,7 @@ type
 
   TApplication = class(TComponent)
   private
+    FCaptureExceptions: boolean;
     FFlags: TApplicationFlags;
     FHandle : THandle;
     //FHelpSystem : IHelpSystem;
@@ -674,6 +675,7 @@ type
     FList: TList;
     FMainForm : TForm;
     FMouseControl: TControl;
+    FOldExceptProc: TExceptProc;
     FOnException: TExceptionEvent;
     FOnHelp: THelpEvent;
     FOnHint: TNotifyEvent;
@@ -697,6 +699,7 @@ type
     procedure Idle;
     function InvokeHelp(Command: Word; Data: Longint): Boolean;
     procedure MouseIdle(const CurrentControl: TControl);
+    procedure SetCaptureExceptions(const AValue: boolean);
     procedure SetHint(const AValue: string);
     procedure SetHintColor(const AValue: TColor);
     procedure SetIcon(AValue: TIcon);
@@ -773,6 +776,7 @@ type
     property OnUserInput: TOnUserInputEvent read FOnUserInput write FOnUserInput;
     property ShowHint: Boolean read FShowHint write SetShowHint;
     property Title: String read GetTitle write FTitle;
+    property CaptureExceptions: boolean read FCaptureExceptions write SetCaptureExceptions;
   end;
   
   

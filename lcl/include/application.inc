@@ -89,7 +89,7 @@ begin
   ApplicationActionComponent:=Self;
 
   inherited Create(AOwner);
-  ExceptProc := @ExceptionOccurred;
+  CaptureExceptions:=true;
 end;
 
 {------------------------------------------------------------------------------}
@@ -110,6 +110,8 @@ begin
   FreeThenNil(FOnUserInputHandler);
   FreeThenNil(FOnKeyDownHandler);
   inherited Destroy;
+  
+  CaptureExceptions:=false;
   LCLProc.SendApplicationMessageFunction:=nil;
 end;
 
@@ -249,6 +251,26 @@ begin
     FMouseControl := CurrentControl;
     if IsOther and (FMouseControl<>nil) then
       FMouseControl.Perform(CM_MOUSEENTER, 0, 0);
+  end;
+end;
+
+procedure TApplication.SetCaptureExceptions(const AValue: boolean);
+begin
+  if FCaptureExceptions=AValue then exit;
+  FCaptureExceptions:=AValue;
+  if FCaptureExceptions then begin
+    // capture exceptions
+    // store old exceptproc
+    if FOldExceptProc=nil then
+      FOldExceptProc:=ExceptProc;
+    ExceptProc:=@ExceptionOccurred;
+  end else begin
+    // do not capture exceptions
+    if ExceptProc=@ExceptionOccurred then begin
+      // restore old exceptproc
+      ExceptProc:=FOldExceptProc;
+      FOldExceptProc:=nil;
+    end;
   end;
 end;
 
@@ -791,19 +813,30 @@ end;
   MainForm is loaded and control is passed to event processor.
 ------------------------------------------------------------------------------}
 procedure TApplication.Run;
+
+  procedure RunMessage;
+  begin
+    HandleMessage;
+    if Assigned(FMainForm) and (FMainForm.ModalResult = mrCancel)
+    then Terminate;
+  end;
+
 begin
   if FMainForm <> nil
   then FMainForm.Show;
-  try
-    repeat
-      HandleMessage;
-      if Assigned(FMainForm) and (FMainForm.ModalResult = mrCancel)
-      then Terminate;
-    until Terminated;
-  except
-    on E: Exception do
-      HandleException(E);
-  end;
+  repeat
+    if CaptureExceptions then begin
+      // run with try..except
+      try
+        RunMessage;
+      except
+        on E: Exception do HandleException(E);
+      end;
+    end else begin
+      // run without try..except
+      RunMessage;
+    end;
+  until Terminated;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1065,6 +1098,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.59  2003/07/16 16:53:59  mattias
+  added TApplication.CaptureExceptions
+
   Revision 1.58  2003/07/01 15:37:03  mattias
   fixed exception handling
 
