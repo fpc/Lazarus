@@ -668,6 +668,7 @@ Begin
 	State := GetShiftState;
 	UserData := Pointer(GetWindowLong(Window, GWL_USERDATA));
       End;
+      WinProcess := false;
     End;
     //TODO:LM_MOVEPAGE,LM_MOVETOROW,LM_MOVETOCOLUMN
     WM_NCHITTEST:
@@ -963,6 +964,7 @@ Begin
   else if PLMsg = @LMMouseMove 	then Result := LMMouseMove.Result
   else if PLMsg = @LMMove 	then Result := LMMove.Result
   else if PLMsg = @LMNotify 	then Result := LMNotify.Result
+  else if PLMsg = @LMMouseEvent then Result := 1
   else 				     Result := PLMsg^.Result;
   
   Assert(False, 'Trace:WindowProc - Exit');
@@ -1156,6 +1158,9 @@ end;
 
 {
   $Log$
+  Revision 1.107  2004/05/23 13:35:19  micha
+  fix multiple mouse wheel messages
+
   Revision 1.106  2004/05/20 21:28:54  marc
   * Fixed win32 listview
 
