@@ -703,6 +703,8 @@ end;
 procedure TCustomComboBox.SetItemIndex(Val : integer);
 begin
   if Val=GetItemIndex then exit;
+  if Val>=Items.Count then exit;
+
   FItemIndex:= Val;
   //if (FItemIndex>=0) and (not (csLoading in ComponentState)) then
   //  Text:=FItems[FItemIndex];
@@ -771,6 +773,9 @@ end;
 
 {
   $Log$
+  Revision 1.52  2005/02/04 15:36:50  mattias
+  published TComboBox.ItemIndex  from Sergios
+
   Revision 1.51  2005/01/20 16:58:16  mattias
   published TComboBox.OnDbClick
 

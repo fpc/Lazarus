@@ -315,7 +315,7 @@ type
                                     write SetArrowKeysTraverseList default True;
     property Canvas: TCanvas read FCanvas;
     property Items: TStrings read FItems write SetItems;
-    property ItemIndex: integer read GetItemIndex write SetItemIndex;
+    property ItemIndex: integer read GetItemIndex write SetItemIndex default -1;
     property SelLength: integer read GetSelLength write SetSelLength;
     property SelStart: integer read GetSelStart write SetSelStart;
     property SelText: String read GetSelText write SetSelText;
@@ -329,8 +329,6 @@ type
   { TComboBox }
 
   TComboBox = class(TCustomComboBox)
-  public
-    property ItemIndex;
   published
     property Align;
     property Anchors;
@@ -343,6 +341,7 @@ type
     property Font;
     property ItemHeight;
     property Items;
+    property ItemIndex;
     property ItemWidth;
     property MaxLength;
     property OnChange;
@@ -1218,6 +1217,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.191  2005/02/04 15:36:50  mattias
+  published TComboBox.ItemIndex  from Sergios
+
   Revision 1.190  2005/02/04 15:24:56  mattias
   published TEdit.OnEditingDone
 
