@@ -3384,6 +3384,7 @@ end;
 
 procedure TCustomTreeView.SetDefaultItemHeight(Value: integer);
 begin
+  if tvoAutoItemHeight in FOptions then exit;
   if Value<=0 then Value:=20;
   if Value=FDefItemHeight then exit;
   FDefItemHeight:=Value;
