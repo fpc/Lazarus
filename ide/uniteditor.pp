@@ -1256,18 +1256,14 @@ end;
 
 procedure TSourceEditor.SortSelection;
 var
-  SortSelectionDialog: TSortSelectionDialog;
-  OldSelText: string;
+  OldSelText, NewSortedText: string;
 begin
   OldSelText:=EditorComponent.SelText;
   if OldSelText='' then exit;
-  SortSelectionDialog:=TSortSelectionDialog.Create(Application);
-  SortSelectionDialog.PreviewSynEdit.Highlighter:=EditorComponent.Highlighter;
-  EditorOpts.GetSynEditSelectedColor(SortSelectionDialog.PreviewSynEdit);
-  SortSelectionDialog.TheText:=OldSelText;
-  if SortSelectionDialog.ShowModal=mrOk then
-    EditorComponent.SelText:=SortSelectionDialog.SortedText;
-  SortSelectionDialog.Free;
+  if ShowSortSelectionDialog(OldSelText,EditorComponent.Highlighter,
+                             NewSortedText)=mrOk
+  then
+    EditorComponent.SelText:=NewSortedText;
 end;
 
 procedure TSourceEditor.SelectToBrace;
