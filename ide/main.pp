@@ -808,9 +808,8 @@ begin
   PkgBoss:=TPkgManager.Create(Self);
   PkgBoss.ConnectMainBarEvents;
 
-  // setup the rest ...
+  // setup the IDE components
   LoadMenuShortCuts;
-  SetupComponentTabs;
   SetupOutputFilter;
   SetupCompilerInterface;
   SetupObjectInspector;
@@ -818,12 +817,16 @@ begin
   SetupSourceNotebook;
   SetupTransferMacros;
   SetupControlSelection;
+  SetupComponentTabs;
 
-  UpdateWindowsMenu;
-  
   // Main IDE bar created and setup completed -> Show it
   Show;
-  
+
+  // load packages
+  PkgBoss.LoadInstalledPackages;
+
+  UpdateWindowsMenu;
+
   // Now load a project
   SetupStartProject;
   
@@ -8121,6 +8124,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.508  2003/04/04 22:14:32  mattias
+  implemented LCL and FCL packages, started package registration
+
   Revision 1.507  2003/04/03 20:05:43  mattias
   added menueditor from Martin Patik, not yet working
 
