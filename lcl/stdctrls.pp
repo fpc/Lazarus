@@ -219,9 +219,8 @@ type
     procedure DestroyWnd; override;
     procedure DrawItem(Index: Integer; ARect: TRect;
       State: TOwnerDrawState); virtual;
-    procedure DoChange(var msg); message LM_CHANGED;
+    procedure LMChange(var msg); message LM_CHANGED;
     procedure Change; dynamic;
-    procedure Loaded; override;
     procedure Select; dynamic;
     procedure DropDown; dynamic;
     procedure CloseUp; dynamic;
@@ -1496,6 +1495,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.131  2004/02/13 18:21:31  mattias
+  fixed combo chane
+
   Revision 1.130  2004/02/09 19:52:52  mattias
   implemented ByteOrder for TLazIntfImage and added call of to LM_SETFONT
 

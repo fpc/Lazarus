@@ -168,9 +168,9 @@ end;
 
   Call handler for "OnChange"-event if one is assigned.
  ------------------------------------------------------------------------------}
-procedure TCustomComboBox.DoChange(var Msg);
+procedure TCustomComboBox.LMChange(var Msg);
 begin
-  if Assigned(FOnChange) then FOnChange(Self);
+  Change;
 end;
 
 {------------------------------------------------------------------------------
@@ -182,16 +182,6 @@ procedure TCustomComboBox.Change;
 begin
   inherited Changed;
   if Assigned(FOnChange) then FOnChange(Self);
-end;
-
-{------------------------------------------------------------------------------
-  procedure TCustomComboBox.Loaded;
-
-  Called after stream reading.
- ------------------------------------------------------------------------------}
-procedure TCustomComboBox.Loaded;
-begin
-  inherited Loaded;
 end;
 
 {------------------------------------------------------------------------------
@@ -799,6 +789,9 @@ end;
 
 {
   $Log$
+  Revision 1.35  2004/02/13 18:21:31  mattias
+  fixed combo chane
+
   Revision 1.34  2004/01/21 10:19:16  micha
   enable tabstops for controls; implement tabstops in win32 intf
 
