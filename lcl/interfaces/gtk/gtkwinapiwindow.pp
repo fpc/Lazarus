@@ -995,12 +995,14 @@ begin
   Result := wawType;
 end;
 
+function Laz_GTK_OBJECT_CONSTRUCTED(AnObject: PGtkObject): gboolean; cdecl;external gtkdll name 'gtk_object_constructed';
+
 function GTKAPIWidget_new: PGTKWidget;
 var
   APIWidget: PGTKAPIWidget;
 {$IFNDEF gtk2}
 var
-  Args: array[0..1] of TGTKArg;
+  NewArgs: array[0..1] of TGTKArg;
 {$ENDIF}
 begin
 {$IFDEF gtk2}
@@ -1009,12 +1011,21 @@ begin
   //      TODO: check if we still need to pass the args in gtk1
   Result := gtk_widget_new(GTKAPIWidget_GetType, nil);
 {$ELSE}
-  FillChar(Args[0],SizeOf(TGTKArg)*(High(Args)-Low(Args)+1),0);
-  Args[0].theType:=GTK_ADJUSTMENT_TYPE;
-  Args[0].name:='hadjustment';
-  Args[1].theType:=GTK_ADJUSTMENT_TYPE;
-  Args[1].name:='vadjustment';
-  Result := gtk_widget_newv(GTKAPIWidget_GetType, 2, @ARGS[0]);
+  FillChar(NewArgs[0],SizeOf(TGTKArg)*(High(NewArgs)-Low(NewArgs)+1),0);
+  NewArgs[0].theType:=GTK_ADJUSTMENT_TYPE;
+  NewArgs[0].name:='hadjustment';
+  NewArgs[1].theType:=GTK_ADJUSTMENT_TYPE;
+  NewArgs[1].name:='vadjustment';
+  
+  // something is rotten with gtk_widget_newv on some platforms
+  //Result := gtk_widget_newv(GTKAPIWidget_GetType, 2, @ARGS[0]);
+  
+  // do it step by step
+  Result:=gtk_type_new(GTKAPIWidget_GetType);
+  gtk_object_arg_set (PGtkObject(Result), @NewArgs[0], NULL);
+  gtk_object_arg_set (PGtkObject(Result), @NewArgs[1], NULL);
+  if (not Laz_GTK_OBJECT_CONSTRUCTED (PGtkObject(Result))) then
+    gtk_object_default_construct (PGtkObject(Result));
 {$ENDIF}
 
   APIWidget := PGTKAPIWidget(Result);
@@ -1135,6 +1146,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.61  2004/08/15 16:11:32  mattias
+  replaced rotten gtk_widget_newv by gtk_type_new
+
   Revision 1.60  2004/08/13 17:41:18  mattias
   fixed initialization of GTKAPIWidget_new
 

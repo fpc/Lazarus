@@ -2334,7 +2334,7 @@ var
   i: Integer;
   b: Byte;
 begin
-  writeln('TLRSObjectWriter.WriteInteger Value=',Value);
+  //writeln('TLRSObjectWriter.WriteInteger Value=',Value);
   // Use the smallest possible integer type for the given value:
   if (Value >= -128) and (Value <= 127) then
   begin
@@ -2353,11 +2353,8 @@ begin
     WriteIntegerContent(i);
   end else
   begin
-  writeln('TLRSObjectWriter.WriteInteger Value=',Value,' FBufPos=',FBufPos);
     WriteValue(vaInt64);
-  writeln('TLRSObjectWriter.WriteInteger B FBufPos=',FBufPos);
     WriteInt64Content(Value);
-  writeln('TLRSObjectWriter.WriteInteger C FBufPos=',FBufPos);
   end;
 end;
 
