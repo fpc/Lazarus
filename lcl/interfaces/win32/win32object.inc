@@ -2614,6 +2614,7 @@ Begin
     fMask:=Mask;
     fType:=Style;
     {fState:=MFS_ENABLED;} {not needed}
+    wID:=(Sender as TMenuItem).Command; {value may only be 16 bit wide!}
     hSubmenu:=MenuHandle;
     {hbmpChecked:=0;
     hbmpUnchecked:=0;} {not needed}
@@ -2665,6 +2666,9 @@ End;
 
 {
   $Log$
+  Revision 1.54  2003/06/24 21:40:23  mattias
+  fixed menu
+
   Revision 1.53  2003/06/24 15:57:55  mattias
   applied win32 menu patch from Micha Nelissen
 
