@@ -24,7 +24,7 @@ done
 # objectinspector
 rstconv -i objinspstrconsts.rst -o languages/objinspstrconsts.po
 tools/updatepofiles languages/objinspstrconsts.po
-for lang in de es fr; do
+for lang in de es fr ru; do
   msgfmt languages/objinspstrconsts.$lang.po \
     -o languages/objinspstrconsts.$lang.mo
 done

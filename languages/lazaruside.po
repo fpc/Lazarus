@@ -506,6 +506,10 @@ msgstr ""
 msgid "Guess misplaced IFDEF/ENDIF"
 msgstr ""
 
+#: lazarusidestrconsts:lismenumakeresourcestring
+msgid "Make Resource String"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuconvertdfmtolfm
 msgid "Convert DFM file to LFM"
 msgstr ""

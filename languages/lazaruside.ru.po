@@ -1078,6 +1078,10 @@ msgstr "Только 1я буква заглавная"
 msgid "Main Menu"
 msgstr "Главное меню"
 
+#: lazarusidestrconsts:lismenumakeresourcestring
+msgid "Make Resource String"
+msgstr ""
+
 #: lazarusidestrconsts:dlgmargingutter
 msgid "Margin and gutter"
 msgstr "Границы"

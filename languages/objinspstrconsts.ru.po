@@ -1,0 +1,34 @@
+msgid ""
+msgstr ""
+""
+"Last-Translator: Vasily <vvi@localhost.localdomain>\n"
+"PO-Revision-Date: 2003-01-15 22:38+0300\n"
+"Language-Team: ru_RU.koi8r <ru@li.org>\n"
+"Content-Type: text/plain; charset=KOI8-R\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.6\n"
+
+#: objinspstrconsts:oisitemsselected
+msgid " items selected"
+msgstr " элементов выбрано"
+
+#: objinspstrconsts:oiscadd
+msgid "&Add"
+msgstr "&Добавить"
+
+#: objinspstrconsts:oiscdelete
+msgid "&Delete"
+msgstr "&Удалить"
+
+#: objinspstrconsts:oisevents
+msgid "Events"
+msgstr "События"
+
+#: objinspstrconsts:oisobjectinspector
+msgid "Object Inspector"
+msgstr "Инспектор объектов"
+
+#: objinspstrconsts:oisproperties
+msgid "Properties"
+msgstr "Свойства"
+

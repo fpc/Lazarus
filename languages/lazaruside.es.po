@@ -1078,6 +1078,10 @@ msgstr "Minúsculas, primera letra mayúscula"
 msgid "Main Menu"
 msgstr "Menú principal"
 
+#: lazarusidestrconsts:lismenumakeresourcestring
+msgid "Make Resource String"
+msgstr ""
+
 #: lazarusidestrconsts:dlgmargingutter
 msgid "Margin and gutter"
 msgstr "Margen y canal"

@@ -1078,6 +1078,10 @@ msgstr ""
 msgid "Main Menu"
 msgstr ""
 
+#: lazarusidestrconsts:lismenumakeresourcestring
+msgid "Make Resource String"
+msgstr ""
+
 #: lazarusidestrconsts:dlgmargingutter
 msgid "Margin and gutter"
 msgstr ""
