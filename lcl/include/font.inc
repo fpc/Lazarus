@@ -326,7 +326,7 @@ begin
   else if AnsiCompareText(Item,'P')=0 then
     Result.lfPitchAndFamily:=VARIABLE_PITCH
   else if AnsiCompareText(Item,'C')=0 then
-    Result.lfPitchAndFamily:=FIXED_PITCH;
+    Result.lfPitchAndFamily:=VARIABLE_PITCH;
 
   GetNextItem; // read AverageWidth
   // ToDo
@@ -855,6 +855,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2002/12/07 08:42:08  mattias
+  improved ExtTxtOut: support for char dist array
+
   Revision 1.9  2002/10/01 18:00:04  lazarus
   AJ: Initial TUpDown, minor property additions to improve reading Delphi created forms.
 

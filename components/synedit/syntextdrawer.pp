@@ -1273,23 +1273,25 @@ begin
   //  a. the text does not containing any multi-byte characters
   // AND
   //   a-1. current font is TrueType.
-  //   a-2. current font is RasterType and it is not italicic.
+  //   a-2. current font is RasterType and it is not italic.
   with ARect do
-    if Assigned(Text) and (Length > 0) and
-       (Left = X) and (Top = Y) and
-       ((Bottom - Top) = GetCharHeight) and
-       (Left + GetCharWidth * (Length + 1) > Right) then
-    {$IFDEF SYN_LAZARUS}
-    LCLLinux.TextOut(StockDC, X, Y, Text, Length)
-    {$ELSE}
-    Windows.TextOut(StockDC, X, Y, Text, Length)
-    {$ENDIF}
-  else
-    {$IFDEF SYN_LAZARUS}
-    LCLLinux.ExtTextOut(StockDC, X, Y, fuOptions, @ARect, Text, Length, nil)
-    {$ELSE}
-    Windows.ExtTextOut(StockDC, X, Y, fuOptions, @ARect, Text, Length, nil)
-    {$ENDIF}
+    if Assigned(Text) and (Length > 0)
+    and (Left = X) and (Top = Y)
+    and ((Bottom - Top) = GetCharHeight)
+      and
+       (Left + GetCharWidth * (Length + 1) > Right)
+    then
+      {$IFDEF SYN_LAZARUS}
+      LCLLinux.TextOut(StockDC, X, Y, Text, Length)
+      {$ELSE}
+      Windows.TextOut(StockDC, X, Y, Text, Length)
+      {$ENDIF}
+    else
+      {$IFDEF SYN_LAZARUS}
+      LCLLinux.ExtTextOut(StockDC, X, Y, fuOptions, @ARect, Text, Length, nil)
+      {$ELSE}
+      Windows.ExtTextOut(StockDC, X, Y, fuOptions, @ARect, Text, Length, nil)
+      {$ENDIF}
 end;
 
 {$IFNDEF HE_LEADBYTES}
