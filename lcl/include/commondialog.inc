@@ -38,9 +38,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.2  2000/08/10 10:55:45  lazarus
-  Changed TCustomDialog to TCommonDialog
-  Shane
+  Revision 1.1  2000/08/10 11:01:06  lazarus
+  Adding commondialog.pp and removing customdialog.inc
 
   Revision 1.1  2000/07/13 10:28:25  michael
   + Initial import
