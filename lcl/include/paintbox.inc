@@ -20,22 +20,27 @@ constructor TPaintBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csReplicatable];
-  setbounds(0,0,105,105);
+  SetInitialBounds(0,0,105,105);
 end;
 
 procedure TPaintBox.Paint;
 begin
-  Canvas.Font := Font;
-  Canvas.Brush.Color := Color;
-  if csDesigning in ComponentState then
-   with Canvas do
+  if csDesigning in ComponentState then begin
+    Canvas.Font := Font;
+    Canvas.Brush.Color := Color;
+    with Canvas do
     begin
       Pen.Style := psDash;
       Brush.Style := bsClear;
       Rectangle(0, 0, Width - 1, Height - 1);
     end;
-  if Assigned(FOnPaint) then
+    exit;
+  end;
+  if Assigned(FOnPaint) then begin
+    Canvas.Font := Font;
+    Canvas.Brush.Color := Color;
     FOnPaint(Self);
+  end;
 end;
 
 // included by extctrls.pp
