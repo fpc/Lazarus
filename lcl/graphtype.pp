@@ -184,7 +184,7 @@ type
     ricfRGB,    // like ricfRGBA, but alpha is stored separate in a mask.
                 // If AlphaPrec=0 then there is no alpha.
     ricfGray,   // R=G=B. The Red stores the Gray.
-    ricfPalette // The Red is color index and ColorCount is set
+    ricfPalette // The Red is color index and ColorCount is valid
     );
 
   TRawImageByteOrder = (
@@ -238,6 +238,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.14  2003/07/01 15:37:03  mattias
+  fixed exception handling
+
   Revision 1.13  2003/07/01 13:49:36  mattias
   clean up
 

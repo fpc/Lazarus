@@ -119,9 +119,11 @@ begin
   Result := InterfaceObject.ComboBoxDropDown(Handle,DropDown);
 end;
 
-function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP;
+function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint;
+  BitmapBits: Pointer): HBITMAP;
 begin
-  Result := InterfaceObject.CreateBitmap(Width, Height, Planes, BitCount, BitmapBits);
+  Result := InterfaceObject.CreateBitmap(Width, Height, Planes, BitCount,
+                                         BitmapBits);
 end;
 
 function CreateDIBitmap(DC: HDC; var InfoHeader: TBitmapInfoHeader;
@@ -1601,6 +1603,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.86  2003/07/01 15:37:03  mattias
+  fixed exception handling
+
   Revision 1.85  2003/07/01 14:06:45  mattias
   made Begin/EndPaint interface dependent
 

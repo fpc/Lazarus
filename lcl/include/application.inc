@@ -652,12 +652,15 @@ begin
     // there was an exception during showing the exception -> break the circle
     writeln('TApplication.HandleException: ',
       'there was another exception during showing the first exception');
-    exit;
+    HaltingProgram:=true;
+    Halt;
   end;
   Include(FFlags,AppHandlingException);
   // before we do anything, write it down
   if ExceptObject is Exception then begin
     writeln('TApplication.HandleException ',Exception(ExceptObject).Message);
+  end else begin
+    writeln('TApplication.HandleException Strange Exception ');
   end;
   // release capture and hide all forms with stay on top, so that
   // a message can be shown
@@ -665,8 +668,6 @@ begin
   HideAllFormsWithStayOnTop;
   // handle the exception
   if ExceptObject is Exception then begin
-    writeln('TApplication.HandleException Handling ',
-            '"',Exception(ExceptObject).Message,'" ...');
     if not (ExceptObject is EAbort) then
       if Assigned(FOnException) then
         FOnException(Sender, Exception(ExceptObject))
@@ -1064,6 +1065,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.58  2003/07/01 15:37:03  mattias
+  fixed exception handling
+
   Revision 1.57  2003/06/23 09:42:09  mattias
   fixes for debugging lazarus
 

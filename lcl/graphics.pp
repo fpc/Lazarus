@@ -33,9 +33,6 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF UseFPImage}
-  FPImage,
-  {$ENDIF}
   LCLStrConsts, vclGlobals, LMessages, LCLType, LCLProc, LCLLinux, LResources,
   GraphType, GraphMath;
 
@@ -1031,6 +1028,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.76  2003/07/01 15:37:03  mattias
+  fixed exception handling
+
   Revision 1.75  2003/07/01 09:29:51  mattias
   attaching menuitems topdown
 

@@ -83,6 +83,7 @@ end;
 procedure TForm1.Button1Click(Sender : TObject);
 Begin
    if assigned (progre1) then begin
+     raise Exception.Create('BLA');
         Progre1.Position := 0;
    	progre1.Min := progre1.Min - 1
    end;
