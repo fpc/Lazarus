@@ -4,7 +4,7 @@
 
 [targets]
 programs=hello notebk comdialogs progressbar trackbar listboxtest \
-         bitbutton combobox checkbox selection scrollbar
+         bitbutton combobox checkbox selection scrollbar testall
 
 [clean]
 units=$(notdir $(basename $(wildcard *$(PPUEXT)))) 
