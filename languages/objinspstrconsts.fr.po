@@ -76,5 +76,5 @@ msgstr "Propriétés"
 
 #: objinspstrconsts:sccslvedtbtnaddsub
 msgid "Sub item"
-msgstr ""
+msgstr "Sous élément"
 

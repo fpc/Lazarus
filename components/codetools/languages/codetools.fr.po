@@ -198,7 +198,7 @@ msgstr "Macro gtk2 définie"
 
 #: codetoolsstrconsts:ctsdefineprozessortype
 msgid "Define processor type"
-msgstr ""
+msgstr "Type de micro processeur"
 
 #: codetoolsstrconsts:ctsdefsforlazarussources
 msgid "Definitions for the Lazarus Sources"
@@ -306,7 +306,7 @@ msgstr "identificateur %s non trouvé"
 
 #: codetoolsstrconsts:ctsiflclwidgettypeequalsgtk2
 msgid "If LCLWidgetType=gtk2 then"
-msgstr ""
+msgstr "si LCLWidgetType=gtk2 alors"
 
 #: codetoolsstrconsts:ctsillegalcircleinusedunits
 msgid "illegal circle using unit: %s"
@@ -454,7 +454,7 @@ msgstr "Répertoires de paquet"
 
 #: codetoolsstrconsts:ctspackagerdirectory
 msgid "Packager Directory"
-msgstr ""
+msgstr "Répertoire de paquet"
 
 #: codetoolsstrconsts:ctsprocedureorfunction
 msgid "procedure or function"

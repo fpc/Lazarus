@@ -297,7 +297,7 @@ msgstr "Mettre au premier plan"
 
 #: lazarusidestrconsts:dlgunitdepbrowse
 msgid "Browse..."
-msgstr ""
+msgstr "Parcourir..."
 
 #: lazarusidestrconsts:lismenubuild
 msgid "Build"
@@ -429,7 +429,7 @@ msgstr "Modèles de code"
 
 #: lazarusidestrconsts:dlgcodetoolstab
 msgid "Code Tools"
-msgstr ""
+msgstr "Outils de code"
 
 #: lazarusidestrconsts:srkmcatcodetools
 msgid "CodeTools commands"
@@ -641,7 +641,7 @@ msgstr "Défaut"
 
 #: lazarusidestrconsts:dlgdefaulteditorfont
 msgid "Default editor font"
-msgstr ""
+msgstr "Police par défaut"
 
 #: lazarusidestrconsts:dlgpasext
 msgid "Default pascal extension"
@@ -1113,7 +1113,7 @@ msgstr "Taille de grille Y"
 
 #: lazarusidestrconsts:srkmecguessmisplacedifdef
 msgid "Guess misplaced $IFDEF"
-msgstr ""
+msgstr "Identifier les $IFDEF mal placés"
 
 #: lazarusidestrconsts:lismenuguessmisplacedifdef
 msgid "Guess misplaced IFDEF/ENDIF"
@@ -2009,7 +2009,7 @@ msgstr "Refaire"
 
 #: lazarusidestrconsts:dlgunitdeprefresh
 msgid "Refresh"
-msgstr ""
+msgstr "Refraichir"
 
 #: lazarusidestrconsts:dlgregularexpressions
 msgid "Regular Expressions"
@@ -2029,7 +2029,7 @@ msgstr "Remplacer tout"
 
 #: lazarusidestrconsts:srkmecreplace
 msgid "Replace text"
-msgstr ""
+msgstr "Texte à remplacer"
 
 #: lazarusidestrconsts:dlgreport
 msgid "Report"
@@ -2745,7 +2745,7 @@ msgstr "Désindenter la sélection"
 
 #: lazarusidestrconsts:dlgunitdepcaption
 msgid "Unit dependencies"
-msgstr ""
+msgstr "Dépendences d'unités"
 
 #: lazarusidestrconsts:uemunitinfo
 msgid "Unit Info"
