@@ -282,7 +282,7 @@ writeln('TMethodJumpingCodeTool.FindJumpPoint N ',DiffTxtPos);
 {$IFDEF CTDEBUG}
 writeln('TMethodJumpingCodeTool.FindJumpPoint 2A ',ProcNode<>nil);
 {$ENDIF}
-  if ProcNode<>nil then begin
+  while (ProcNode<>nil) and (ProcNode.Desc=ctnProcedure) do begin
     if (ProcNode.SubDesc and ctnsForwardDeclaration)>0 then begin
       // forward declaration -> search procedure
 {$IFDEF CTDEBUG}
@@ -292,13 +292,9 @@ writeln('TMethodJumpingCodeTool.FindJumpPoint 2B ');
       // build the method name + parameter list (without default values)
       Result:=FindBestProcNode(ProcNode,[phpInUpperCase],
                                ProcNode,[phpInUpperCase,phpIgnoreForwards]);
-      // find good position in procedure body
-{$IFDEF CTDEBUG}
-writeln('TMethodJumpingCodeTool.FindJumpPoint 2D');
-{$ENDIF}
-      //Result:=FindJumpPointInProcNode(ProcNode,NewPos,NewTopLine);
+      exit;
     end else begin
-      // procedure without forward, search on same level
+      // procedure is not forward, search on same proc level
 {$IFDEF CTDEBUG}
 writeln('TMethodJumpingCodeTool.FindJumpPoint 4A');
 {$ENDIF}
@@ -328,10 +324,6 @@ writeln('TMethodJumpingCodeTool.FindJumpPoint 4D ',StartNode<>nil);
 {$ENDIF}
         if StartNode=nil then exit;
         StartNode:=StartNode.FirstChild;
-        //SearchedProc:=ExtractProcHead(ProcNode,
-        //             [phpWithoutClassName,phpInUpperCase]);
-        //if SearchedProc='' then exit;
-        //ProcNode:=FindProcNode(StartNode,SearchedProc,[phpInUpperCase]);
         Result:=FindBestProcNode(ProcNode,[phpWithoutClassName,phpInUpperCase],
                                  StartNode,[phpInUpperCase]);
 {$IFDEF CTDEBUG}
@@ -370,19 +362,28 @@ writeln('TMethodJumpingCodeTool.FindJumpPoint 4G ',DiffNode<>nil);
               end else
                 // find good position in procedure body
                 Result:=FindJumpPointInProcNode(ProcNode,NewPos,NewTopLine);
+              exit;
             end;
           finally
             NodeExtMemManager.DisposeAVLTree(SearchForNodes);
             NodeExtMemManager.DisposeAVLTree(SearchInNodes);
           end;
         end;
+        exit;
       end else begin
         // search forward procedure
         Result:=FindBestProcNode(ProcNode,[phpInUpperCase],
                              StartNode,[phpInUpperCase,phpIgnoreProcsWithBody]);
       end;
     end;
-  end;
+    if Result then begin
+      exit;
+    end else begin
+      // no proc found
+      ProcNode:=ProcNode.Parent;
+      // try parent proc ...
+    end;
+  end; //while (ProcNode<>nil) and (ProcNode.Desc=ctnProcedure) do begin
 end;
 
 function TMethodJumpingCodeTool.FindJumpPointInProcNode(ProcNode: TCodeTreeNode;
