@@ -3278,15 +3278,14 @@ begin
         SelectGDKBrushProps(DC);
         If not CurrentBrush^.IsNullBrush then begin
           DCOrigin:=GetDCOffset(TDeviceContext(DC));
-          //writeln('FillRect DC=',HexStr(Cardinal(DC),8),' Drawable',HexStr(Cardinal(Drawable),8));
           if (CurrentBrush^.GDIBrushFill = GDK_SOLID)
           and (IsBackgroundColor(TColor(CurrentBrush^.GDIBrushColor.ColorRef)))
-          then
+          then begin
             StyleFillRectangle(drawable, GC,
                                CurrentBrush^.GDIBrushColor.ColorRef,
                                Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y,
                                Width, Height)
-          else
+          end else
             gdk_draw_rectangle(Drawable, GC, 1,
                                Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y,
                                Width, Height);
@@ -9061,6 +9060,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.301  2003/11/23 13:13:35  mattias
+  added clWindow for gtklistitem
+
   Revision 1.300  2003/11/23 10:58:47  mattias
   fixed de-associating TUpDown
 

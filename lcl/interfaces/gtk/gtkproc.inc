@@ -520,6 +520,34 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function GetWidgetClassName(Widget: PGtkWidget): string;
+
+  Returns the gtk class name of Widget.
+ ------------------------------------------------------------------------------}
+function GetWidgetClassName(Widget: PGtkWidget): string;
+var
+  AType: TGtkType;
+  ClassPGChar: Pgchar;
+  ClassLen: Integer;
+begin
+  Result:='';
+  if (gtk_object_get_class(Widget)=nil) then begin
+    Result:='<Widget without class>';
+    exit;
+  end;
+  AType:=gtk_class_get_type(gtk_object_get_class(Widget));
+  ClassPGChar:=gtk_type_name(AType);
+  if ClassPGChar=nil then begin
+    Result:='<Widget without classname>';
+    exit;
+  end;
+  ClassLen:=strlen(ClassPGChar);
+  SetLength(Result,ClassLen);
+  if ClassLen>0 then
+    Move(ClassPGChar[0],Result[1],ClassLen);
+end;
+
+{------------------------------------------------------------------------------
   function WidgetIsDestroyingHandle(Widget: PGtkWidget): boolean;
 
   Tests if Destruction Mark is set.
@@ -937,12 +965,13 @@ var
   Procedure EnsureAsGCValues;
   var
     AllocFG : Boolean;
-    SyGCValues: TGdkGCValues;
+    SysGCValues: TGdkGCValues;
   begin
     FreeGDIColor(GDIColor);
-    SyGCValues:=GetSysGCValues(GDIColor^.ColorRef);
-    With SyGCValues do begin
-      BeginGDKErrorTrap;
+    SysGCValues:=GetSysGCValues(GDIColor^.ColorRef,
+                               PGtkWidget(TDeviceContext(DC).Wnd));
+    {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
+    With SysGCValues do begin
       gdk_gc_set_fill(GC, fill);
       AllocFG := Foreground.Pixel = 0;
       If AllocFG then
@@ -950,9 +979,11 @@ var
                                         True,True)
         then begin
           writeln('NOTE: EnsureGCColor.EnsureAsGCValues gdk_colormap_alloc_color failed ',
+            ' Foreground=',
             HexStr(Cardinal(Foreground.red),4),',',
             HexStr(Cardinal(Foreground.green),4),',',
-            HexStr(Cardinal(Foreground.blue),4)
+            HexStr(Cardinal(Foreground.blue),4),
+            ' GDIColor^.ColorRef=',HexStr(Cardinal(GDIColor^.ColorRef),8)
             );
         end;
       gdk_gc_set_foreground(GC, @foreground);
@@ -973,21 +1004,21 @@ var
       end;
       If AllocFG then
         gdk_colormap_free_colors(GDK_Colormap_get_system, @Foreground,1);
-      EndGDKErrorTrap;
     end;
+    {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
   end;
 
   Procedure EnsureAsColor;
   begin
     AllocGDIColor(DC, GDIColor);
-    BeginGDKErrorTrap;
+    {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
     If AsBackground then
       gdk_gc_set_background(GC, @(GDIColor^.Color))
     else begin
       gdk_gc_set_fill(GC, GDK_SOLID);
       gdk_gc_set_foreground(GC, @(GDIColor^.Color));
     end;
-    EndGDKErrorTrap;
+    {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
   end;
 
 begin
@@ -1022,6 +1053,7 @@ begin
     clHighlight,
     clHighlightText,
     clBtnFace,
+    clWindow,
     clForm:
       //often have a BK Pixmap
       If IsSolidBrush then
@@ -1033,7 +1065,6 @@ begin
     clBtnHighlight,
     clBtnText,
     clInfoText,
-    clWindow,
     clWindowText,
     clMenuText,
     clGrayText:
@@ -4614,6 +4645,9 @@ begin
       If AnsiCompareText(WName,'menuitem')=0 then
         StyleObject^.Widget := GTK_MENU_ITEM_NEW
     else
+      If AnsiCompareText(WName,'list')=0 then
+        StyleObject^.Widget := GTK_LIST_NEW
+    else
       If AnsiCompareText(WName,'scrollbar')=0 then
         StyleObject^.Widget := gtk_hscrollbar_new(nil)//can't dif. between Horiz/Vert. Styles
     else
@@ -4735,13 +4769,30 @@ begin
 end;
 {$EndIf}
 
-Function GetSysGCValues(Color : TColorRef) : TGDKGCValues;
+Function GetSysGCValues(Color: TColorRef;
+  ThemeWidget: PGtkWidget): TGDKGCValues;
+// ThemeWidget can be nil
+
+  function GetWidgetWithBackgroundWindow(Widget: PGtkWidget): PGtkWidget;
+  // returns the gtk widget which has the background gdk window
+  var
+    WindowOwnerWidget: PGtkWidget;
+  begin
+    Result:=Widget;
+    if Result=nil then exit;
+    if Result^.window=nil then exit;
+    gdk_window_get_user_data(Result^.window,@WindowOwnerWidget);
+    Result:=WindowOwnerWidget;
+    if Result=nil then exit;
+  end;
+
 var
   Style: PGTKStyle;
   GC: PGDKGC;
   Pixmap: PGDKPixmap;
   SysColor: TColorRef;
   BaseColor: TColorRef;
+  Red, Green, Blue: byte;
 begin
   BaseColor := Color and $FF;
 
@@ -4753,9 +4804,10 @@ begin
 
   SysColor := GetSysColor(BaseColor);
   Result.Fill := GDK_Solid;
-  Result.foreground.Red := RGB(0,GetRValue(SysColor),0);
-  Result.foreground.Green := RGB(0,GetGValue(SysColor),0);
-  Result.foreground.Blue := RGB(0,GetBValue(SysColor),0);
+  RedGreenBlue(TColor(SysColor),Red,Green,Blue);
+  Result.foreground.Red:=gushort(Red) shl 8+Red;
+  Result.foreground.Green:=gushort(Green) shl 8+Green;
+  Result.foreground.Blue:=gushort(Blue) shl 8+Blue;
 
   {$IfDef Disable_GC_SysColors}
   exit;
@@ -4926,14 +4978,24 @@ begin
 
     COLOR_WINDOW :
       begin
-        Style := GetStyle('default');
+        ThemeWidget:=GetWidgetWithBackgroundWindow(ThemeWidget);
+        if ThemeWidget<>nil then begin
+          if GtkWidgetIsA(ThemeWidget,GTK_LIST_ITEM_TYPE) then
+            Style:=GetStyle('list');
+          if Style=nil then
+            Style:=PGtkStyle(ThemeWidget^.thestyle);
+        end;
+        if Style=nil then
+          Style := GetStyle('default');
         If Style = nil then
           exit;
         GC := Style^.base_gc[GTK_STATE_NORMAL];
-        If GC = nil then begin
+        If (GC = nil) then begin
           Result.Fill := GDK_Solid;
-          if Style^.base[GTK_STATE_NORMAL].Pixel<>0 then
+          if Style^.base[GTK_STATE_NORMAL].Pixel<>0 then begin
             Result.foreground := Style^.base[GTK_STATE_NORMAL];
+            Result.background := Style^.base[GTK_STATE_NORMAL];
+          end;
         end
         else
           GDK_GC_Get_Values(GC, @Result);
@@ -5539,6 +5601,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.228  2003/11/23 13:13:35  mattias
+  added clWindow for gtklistitem
+
   Revision 1.227  2003/11/16 01:56:15  mattias
   changed TMenuItem.Graphic to TMenuItem.Bitmap
 

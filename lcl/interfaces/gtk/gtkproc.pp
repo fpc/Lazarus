@@ -255,6 +255,7 @@ function ComparePChar(P1, P2: PChar): boolean;
 function FindChar(c: char; p:PChar; Max: integer): integer;
 
 function GtkWidgetIsA(Widget: PGtkWidget; AType: TGtkType): boolean;
+function GetWidgetClassName(Widget: PGtkWidget): string;
 function WidgetIsDestroyingHandle(Widget: PGtkWidget): boolean;
 procedure SetWidgetIsDestroyingHandle(Widget: PGtkWidget);
 function ComponentIsDestroyingHandle(AWinControl: TWinControl): boolean;
@@ -514,7 +515,7 @@ function LoadDefaultFontDesc: PPangoFontDescription;
 function LoadDefaultFont: PGDKFont;
 {$EndIf}
 
-Function GetSysGCValues(Color : TColorRef) : TGDKGCValues;
+Function GetSysGCValues(Color: TColorRef; ThemeWidget: PGtkWidget) : TGDKGCValues;
 
 {$Ifdef GTK1}
 function FontIsDoubleByteCharsFont(TheFont: PGdkFont): boolean;
