@@ -2581,6 +2581,7 @@ Begin
   end;
 
   CurCompletionControl.ItemList := S;
+  S.Free;
   CurCompletionControl.CurrentString:=Prefix;
   // set colors
   if (ActiveEditor<>nil) and (CurCompletionControl.TheForm<>nil) then begin
