@@ -41,11 +41,9 @@ begin
   FMessageQueue := TLazQueue.Create;
   FPaintMessages := TDynHashArray.Create(-1);
   FPaintMessages.OwnerHashFunction := @HashPaintMessage;
-  {$IFDEF ClientRectBugFix}
   FWidgetsWithResizeRequest := TDynHashArray.Create(-1);
   FWidgetsResized := TDynHashArray.Create(-1);
   FFixWidgetsResized := TDynHashArray.Create(-1);
-  {$ENDIF}
   FAccelGroup := gtk_accel_group_new();
   FTimerData  := TList.Create;
   FDefaultFont:= nil;
@@ -161,11 +159,9 @@ begin
     end;
   end;
 
-  {$IFDEF ClientRectBugFix}
   FreeAndNil(FWidgetsWithResizeRequest);
   FreeAndNil(FWidgetsResized);
   FreeAndNil(FFixWidgetsResized);
-  {$ENDIF}
   FMessageQueue.Free;
   FPaintMessages.Free;
   FDeviceContexts.Free;
@@ -202,7 +198,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TgtkObject.SendCachedLCLMessages;
 
-{$IFDEF ClientRectBugFix}
   procedure SendCachedLCLResizeRequests;
   var
     Widget, ParentFixed, ParentWidget: PGtkWidget;
@@ -267,12 +262,9 @@ procedure TgtkObject.SendCachedLCLMessages;
     TopologicalList.Free;
     FWidgetsWithResizeRequest.Clear;
   end;
-{$ENDIF}
 
 begin
-  {$IFDEF ClientRectBugFix}
   SendCachedLCLResizeRequests;
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -561,23 +553,6 @@ begin
   SendCachedLCLMessages;
   gtk_main_iteration_do(True);
 end;
-
-{$IFDEF ClientRectBugFix}
-{$ELSE}
-{------------------------------------------------------------------------------
-  Method: TGtkObject.DoEvents
-  Params:  None
-  Returns: Nothing
-
-  *Note: Tells GTK Engine to process pending events
- ------------------------------------------------------------------------------}
-procedure TgtkObject.DoEvents;
-begin
-  // dont block waiting for an event
-  //gtk_main_iteration_do(False);
-  gtk_main_iteration;
-end;
-{$ENDIF}
 
 {------------------------------------------------------------------------------
   Method: TGtkObject.AppTerminate
@@ -1157,7 +1132,6 @@ begin
         if Sender is TColorDialog then
           SetColorDialogColor(Pointer(Handle),TColorDialog(Sender).Color);
           
-        {$IFDEF ClientRectBugFix}
         if (Sender is TCustomForm) then begin
           gtk_window_set_default_size(PgtkWindow(handle),
                                 TControl(Sender).Width,TControl(Sender).Height);
@@ -1167,7 +1141,7 @@ begin
           gtk_window_set_position(PGtkWindow(handle), GTK_WIN_POS_CENTER);
         end;
         UnsetResizeRequest(PGtkWidget(Handle));
-        {$ENDIF}
+
         gtk_window_set_modal(PGtkWindow(handle), true);
         gtk_widget_show(PGtkWidget(handle));
       end;
@@ -1683,20 +1657,6 @@ procedure TgtkObject.ResizeChild(Sender : TObject;
   Left, Top, Width, Height : Integer);
 var
   Widget: PGtkWidget;
-  {$IFDEF ClientRectBugFix}
-  {$ELSE}
-  {$IFDEF VerboseResizeChild}
-  DummyWidget: PGtkWidget;
-  Dummy: TPoint;
-  OldFixWidgetWidth, OldFixWidgetHeight, OldWidgetWidth, OldWidgetHeight,
-  NewFixWidgetWidth, NewFixWidgetHeight: integer;
-  pClientWidget: PGTKWidget;
-  {$ENDIF}
-  ParentFixed: PGTKFixed;
-  ParentWidget: PGTKWidget;
-  Parent: TWinControl;
-  IsTopLevelWidget: boolean;
-  {$ENDIF}
 begin
   //writeln('[TgtkObject.ResizeChild] START ',TControl(Sender).Name,':',Sender.Classname,' Left=',Left,' Top=',Top,' Width=',Width,' Height=',Height);
   Assert(false, (Format('trace:  [TgtkObject.ResizeChild] %s --> Resize', [Sender.ClassNAme])));
@@ -1951,7 +1911,7 @@ procedure TGTKObject.SetCallback(Msg : LongInt; Sender : TObject);
   begin
     if ACallBackProc <> nil then
     begin
-      // first loop though the handlers to:
+      // first loop through the handlers to:
       // - check if a handler already exists
       // - Find the realize handler to change data
       Handler := gtk_object_get_data_by_id (AnObject, gtk_handler_quark);
@@ -1987,6 +1947,7 @@ procedure TGTKObject.SetCallback(Msg : LongInt; Sender : TObject);
       
       // if we are here no handler was defined yet
       // -> register handler
+      //if (Msg=LM_LBUTTONUP) then writeln('CONNECT ',ReqSignalMask,' Widget=',HexStr(Cardinal(AnObject),8));
       if ConnectBefore then
         gtk_signal_connect      (AnObject, ASignal,
                                  TGTKSignalFunc(ACallBackProc),Sender)
@@ -2001,6 +1962,7 @@ procedure TGTKObject.SetCallback(Msg : LongInt; Sender : TObject);
       end;
       // -> register realize handler
       if (RealizeHandler = nil) and (RealizeID<>0) then begin
+        //writeln('REALIZE CONNECT Widget=',HexStr(Cardinal(AnObject),8));
         gtk_signal_connect(AnObject, 'realize',
           TGTKSignalFunc(@GTKRealizeCB), Sender);
         gtk_signal_connect_after(AnObject, 'realize',
@@ -2039,10 +2001,12 @@ begin
   gObject := ObjectToGTKObject(Sender);
   if gObject = nil then Exit;
   
+  // gFixed is the widget with the client area (e.g. TGroupBox, TForm have this)
   gFixed := PGTKObject(GetFixedWidget(gObject));
-  gCore := GetCoreChildWidget(gObject);
-
   if gFixed = nil then gFixed := gObject;
+
+  // gCore is the main widget (e.g. TListView has this)
+  gCore := GetCoreChildWidget(gObject);
 
   case Msg of
     LM_SHOWWINDOW :
@@ -2270,6 +2234,7 @@ begin
         //                GDK_BUTTON_RELEASE_MASK);
       end
       else begin
+        //writeln('AAA1 ',TControl(Sender).Name,':',Sender.ClassName,' Widget=',HexStr(Cardinal(gFixed),8));
         ConnectSignal(gFixed, 'button-release-event', @gtkMouseBtnRelease,
                       GDK_BUTTON_RELEASE_MASK);
         ConnectSignalAfter(gFixed, 'button-release-event',
@@ -2301,11 +2266,9 @@ begin
     LM_WINDOWPOSCHANGED: //LM_SIZEALLOCATE, LM_RESIZE :
     begin
       ConnectSignal(gObject, 'size-allocate', @gtksize_allocateCB);
-      {$IFDEF ClientRectBugFix}
       if gObject<>gFixed then begin
         ConnectSignal(gFixed, 'size-allocate', @gtksize_allocate_client);
       end;
-      {$ENDIF}
     end;
 
     LM_CHECKRESIZE :
@@ -2516,20 +2479,15 @@ var
   QueueItem, OldQueueItem: PLazQueueItem;
   MsgPtr: PMsg;
   Widget: PGtkWidget;
-  {$IFDEF ClientRectBugFix}
   FixWidget: PGtkWidget;
-  {$ENDIF}
 begin
   RemoveCallbacks(Sender);
   Handle := hwnd(ObjectToGtkObject(Sender));
   if Handle=0 then exit;
   
   Widget:=PGtkWidget(Handle);
-  {$IFDEF ClientRectBugFix}
   FixWidget:=GetFixedWidget(Widget);
-  {$ENDIF}
 
-  {$IFDEF ClientRectBugFix}
   // remove pending size messages
   {$IFDEF VerboseClientRectBugFix}
   writeln('QQQ1 REMOVE Widget=',HexStr(Cardinal(Widget),8),' FixWidget=',HexStr(Cardinal(FixWidget),8));
@@ -2540,7 +2498,6 @@ begin
   {$ENDIF}
   FWidgetsResized.Remove(Widget);
   FFixWidgetsResized.Remove(FixWidget);
-  {$ENDIF}
 
   if (Sender is TWinControl) or (Sender is TCommonDialog) then
   begin
@@ -5305,6 +5262,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.148  2002/07/20 13:47:03  lazarus
+  MG: fixed eventmask for realized windows
+
   Revision 1.147  2002/07/09 17:46:58  lazarus
   MG: fixed setcolor
 
