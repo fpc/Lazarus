@@ -1894,6 +1894,8 @@ begin
     {$ENDIF}
     Result:=gtk_accel_group_new;
     SetAccelGroup(Widget,Result);
+    if GtkWidgetIsA(Widget,GTK_WINDOW_TYPE) then
+      ShareWindowAccelGroups(Widget);
   end;
 end;
 
@@ -1909,8 +1911,9 @@ begin
     {$ENDIF}
     if GtkWidgetIsA(Widget,GTK_MENU_TYPE) then
       gtk_menu_set_accel_group(PGtkMenu(Widget), AnAccelGroup)
-    else
+    else begin
       gtk_accel_group_attach(AnAccelGroup, PGtkObject(Widget));
+    end;
   end;
 end;
 
@@ -1925,6 +1928,111 @@ begin
     {$ENDIF}
     gtk_accel_group_unref(AccelGroup);
     SetAccelGroup(Widget,nil);
+  end;
+end;
+
+procedure ShareWindowAccelGroups(AWindow: PGtkWidget);
+
+  procedure AttachUnique(TheWindow: PGtkWidget; TheAccelGroup: PGTKAccelGroup);
+  begin
+    if (TheAccelGroup=nil)
+    or ((TheAccelGroup^.attach_objects<>nil)
+      and (g_slist_find(TheAccelGroup^.attach_objects, TheWindow)<>nil))
+    then
+      exit;
+    gtk_accel_group_attach(TheAccelGroup, PGtkObject(TheWindow));
+  end;
+
+var
+  TheForm, CurForm: TCustomForm;
+  i: integer;
+  TheAccelGroup, CurAccelGroup: PGTKAccelGroup;
+  CurWindow: PGtkWidget;
+begin
+  TheForm:=TCustomForm(GetLCLObject(AWindow));
+
+  // check if visible TCustomForm (not frame)
+  if (TheForm=nil) or (not (TheForm is TCustomForm))
+  or (not TheForm.Visible) or (TheForm.Parent<>nil)
+  or (csDesigning in TheForm.ComponentState)
+  then exit;
+  
+  // check if modal form
+  if fsModal in TheForm.FormState then begin
+    // a modal form does not share accelerators
+    exit;
+  end;
+
+  // check if there is an accelerator group
+  TheAccelGroup:=GetAccelGroup(AWindow,false);
+
+  // this is a normal form
+  // -> share accelerators with all other visible normal forms
+  for i:=0 to Screen.FormCount-1 do begin
+    CurForm:=Screen.Forms[i];
+    if (CurForm=TheForm)
+    or (not CurForm.HandleAllocated)
+    or (not CurForm.Visible)
+    or (fsModal in CurForm.FormState)
+    or (CurForm.Parent<>nil)
+    or (csDesigning in CurForm.ComponentState)
+    then continue;
+    
+    CurWindow:=PGtkWidget(CurForm.Handle);
+    CurAccelGroup:=GetAccelGroup(CurWindow,false);
+    {$IFDEF VerboseAccelerator}
+    writeln('ShareWindowAccelGroups ',TheForm.Name,':',TheForm.ClassName,
+            ' <-> ',CurForm.Name,':',CurForm.ClassName);
+    {$ENDIF}
+
+    // cross connect
+    AttachUnique(CurWindow,TheAccelGroup);
+    AttachUnique(AWindow,CurAccelGroup);
+  end;
+end;
+
+procedure UnshareWindowAccelGroups(AWindow: PGtkWidget);
+
+  procedure Detach(TheWindow: PGtkWidget; TheAccelGroup: PGTKAccelGroup);
+  begin
+    if (TheAccelGroup=nil)
+    or (TheAccelGroup^.attach_objects=nil)
+    or (g_slist_find(TheAccelGroup^.attach_objects, TheWindow)=nil) then
+      exit;
+    gtk_accel_group_detach(TheAccelGroup, PGtkObject(TheWindow));
+  end;
+
+var
+  TheForm, CurForm: TCustomForm;
+  i: integer;
+  TheAccelGroup, CurAccelGroup: PGTKAccelGroup;
+  CurWindow: PGtkWidget;
+begin
+  TheForm:=TCustomForm(GetLCLObject(AWindow));
+
+  // check if TCustomForm
+  if (TheForm=nil) or (not (TheForm is TCustomForm))
+  then exit;
+
+  TheAccelGroup:=GetAccelGroup(AWindow,false);
+
+  // -> unshare accelerators with all other forms
+  for i:=0 to Screen.FormCount-1 do begin
+    CurForm:=Screen.Forms[i];
+    if (CurForm=TheForm)
+    or (not CurForm.HandleAllocated)
+    then continue;
+
+    CurWindow:=PGtkWidget(CurForm.Handle);
+    CurAccelGroup:=GetAccelGroup(CurWindow,false);
+    {$IFDEF VerboseAccelerator}
+    writeln('UnshareWindowAccelGroups ',TheForm.Name,':',TheForm.ClassName,
+            ' <-> ',CurForm.Name,':',CurForm.ClassName);
+    {$ENDIF}
+
+    // unlink
+    Detach(CurWindow,TheAccelGroup);
+    Detach(AWindow,CurAccelGroup);
   end;
 end;
 
@@ -2094,7 +2202,8 @@ begin
 
   // Set the accelerator
   SetAccelKey(Widget,Key,Mods,Signal);
-  if Key<>GDK_VOIDSYMBOL then
+  if (Key<>GDK_VOIDSYMBOL) and (not (csDesigning in Component.ComponentState))
+  then
     RealizeAccelerator(Component,Widget);
 end;
 
@@ -3834,6 +3943,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.140  2002/10/22 12:12:09  lazarus
+  MG: accelerators are now shared between non modal forms
+
   Revision 1.139  2002/10/21 22:12:48  lazarus
   MG: fixed frmactivate
 
