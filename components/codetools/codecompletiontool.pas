@@ -631,14 +631,14 @@ function TCodeCompletionCodeTool.CompleteProperty(
    property Items[Index1, Index2: integer]: integer read GetItems; default;
    property X: integer index 1 read GetCoords write SetCoords stored IsStored;
    property C: char read GetC stored False default 'A';
-   property Col8: ICol8 read FCol8 write FCol8 implements ICol8;
+   property Col8: ICol8 read FCol8 write FCol8 implements ICol8, IColor;
 
    property specifiers without parameters:
      ;nodefault, ;default
 
    property specifiers with parameters:
-     index <constant>, read <id>, write <id>, implements <id>,
-     stored <id>, default <constant>
+     index <id or number>, read <id>, write <id>, stored <id>,
+     default <constant>, implements <id>[,<id>...]
 }
 type
   TPropPart = (ppName,       // property name
@@ -757,8 +757,8 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
   
   procedure ReadOptionalSpecifiers;
   begin
-    while (CurPos.StartPos<PropNode.EndPos) and (not AtomIsChar(';'))
-    and (not UpAtomIs('END')) do begin
+    while (CurPos.StartPos<PropNode.EndPos)
+    and (not (CurPos.Flag in [cafSemicolon,cafEnd])) do begin
       if UpAtomIs('STORED') then begin
         ReadSimpleSpec(ppStoredWord,ppStored);
       end else if UpAtomIs('DEFAULT') then begin
@@ -772,13 +772,21 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
         Parts[ppDefault].StartPos:=CurPos.StartPos;
         ReadConstant(true,false,[]);
         Parts[ppDefault].EndPos:=LastAtoms.GetValueAt(0).EndPos;
-      end else if UpAtomIs('IMPLEMENTS') then begin
-        ReadSimpleSpec(ppImplementsWord,ppImplements);
       end else if UpAtomIs('NODEFAULT') then begin
         if Parts[ppNoDefaultWord].StartPos>=1 then
           RaiseException(ctsNodefaultSpecifierDefinedTwice);
         Parts[ppNoDefaultWord]:=CurPos;
         ReadNextAtom;
+      end else if UpAtomIs('IMPLEMENTS') then begin
+        ReadSimpleSpec(ppImplementsWord,ppImplements);
+        while CurPos.Flag=cafComma do begin
+          ReadNextAtom;
+          AtomIsIdentifier(true);
+          if WordIsPropertySpecifier.DoItUpperCase(UpperSrc,CurPos.StartPos,
+            CurPos.EndPos-CurPos.StartPos) then
+            RaiseExceptionFmt(ctsIndexParameterExpectedButAtomFound,[GetAtom]);
+          ReadNextAtom;
+        end;
       end else
         RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
     end;
