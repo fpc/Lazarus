@@ -332,7 +332,8 @@ type
     procedure LoadFromLazarusResource(const ResName: String); virtual; abstract;
     procedure LoadFromClipboardFormat(FormatID: TClipboardFormat); virtual; abstract;
     procedure SaveToClipboardFormat(FormatID: TClipboardFormat); virtual; abstract;
-    constructor Create; virtual;
+    constructor Create;
+    constructor VirtualCreate; virtual;
     property Empty: Boolean read GetEmpty;
     property Height: Integer read GetHeight write SetHeight;
     property Modified: Boolean read FModified write SetModified;
@@ -618,7 +619,7 @@ type
     procedure WriteData(Stream: TStream); override;
     procedure WriteStream(Stream: TStream; WriteSize: Boolean); virtual;
   public
-    constructor Create; override;
+    constructor VirtualCreate; override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure FreeImage;
@@ -868,6 +869,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.44  2002/09/12 05:56:15  lazarus
+  MG: gradient fill, minor issues from Andrew
+
   Revision 1.43  2002/09/10 06:49:18  lazarus
   MG: scrollingwincontrol from Andrew
 
