@@ -181,10 +181,13 @@ type
       var NewTopLine, NewPageIndex: integer; Action: TJumpHistoryAction);
     Procedure OnSrcNotebookProcessCommand(Sender: TObject; Command: integer;
       var Handled: boolean);
+    Procedure OnSrcNoteBookCtrlMouseUp(Sender : TObject;
+      Button : TMouseButton; Shift: TShiftstate; X, Y: Integer);
     Procedure OnSrcNotebookSaveAll(Sender : TObject);
     procedure OnSrcNoteBookShowUnitInfo(Sender: TObject);
     Procedure OnSrcNotebookToggleFormUnit(Sender : TObject);
     Procedure OnSrcNotebookViewJumpHistory(Sender : TObject);
+
     
     // ObjectInspector + PropertyEditorHook events
     procedure OIOnAddAvailableComponent(AComponent:TComponent;
@@ -420,6 +423,7 @@ type
     procedure ApplyCodeToolChanges;
     procedure DoJumpToProcedureSection;
     procedure DoFindDeclarationAtCursor;
+    procedure DoFindDeclarationAtCaret(CaretXY: TPoint);
     procedure DoCompleteCodeAtCursor;
     function DoCheckSyntax: TModalResult;
     procedure DoGoToPascalBlockOtherEnd;
@@ -1024,6 +1028,7 @@ begin
   SourceNotebook.OnOpenClicked := @OnSrcNotebookFileOpen;
   SourceNotebook.OnOpenFileAtCursorClicked := @OnSrcNotebookFileOpenAtCursor;
   SourceNotebook.OnProcessUserCommand := @OnSrcNotebookProcessCommand;
+  SourceNotebook.OnCtrlMouseUp := @OnSrcNoteBookCtrlMouseUp;
   SourceNotebook.OnSaveClicked := @OnSrcNotebookFileSave;
   SourceNotebook.OnSaveAsClicked := @OnSrcNotebookFileSaveAs;
   SourceNotebook.OnSaveAllClicked := @OnSrcNotebookSaveAll;
@@ -1612,6 +1617,18 @@ begin
   else
     Handled:=false;
   end;
+end;
+
+procedure TMainIDE.OnSrcNoteBookCtrlMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftstate; X, Y: Integer);
+var
+  ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+begin
+  GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
+  if ActiveSrcEdit=nil then exit;
+  DoFindDeclarationAtCaret(
+    ActiveSrcEdit.EditorComponent.PixelsToRowColumn(Point(X,Y)));
 end;
 
 procedure TMainIDE.OnSrcNoteBookShowUnitInfo(Sender: TObject);
@@ -5859,7 +5876,18 @@ begin
 end;
 
 procedure TMainIDE.DoFindDeclarationAtCursor;
-var ActiveSrcEdit: TSourceEditor;
+var
+  ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+begin
+  GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
+  if ActiveSrcEdit=nil then exit;
+  DoFindDeclarationAtCaret(ActiveSrcEdit.EditorComponent.CaretXY);
+end;
+
+procedure TMainIDE.DoFindDeclarationAtCaret(CaretXY: TPoint);
+var
+  ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   NewSource: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
@@ -5867,19 +5895,18 @@ begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,false) then exit;
   {$IFDEF IDE_DEBUG}
   writeln('');
-  writeln('[TMainIDE.DoFindDeclarationAtCursor] ************');
+  writeln('[TMainIDE.DoFindDeclarationAtCaret] ************');
   {$ENDIF}
-  {$IFDEF IDE_MEM_CHECK}CheckHeap('TMainIDE.DoFindDeclarationAtCursor ',IntToStr(GetMem_Cnt));{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeap('TMainIDE.DoFindDeclarationAtCaret ',IntToStr(GetMem_Cnt));{$ENDIF}
   if CodeToolBoss.FindDeclaration(ActiveUnitInfo.Source,
-    ActiveSrcEdit.EditorComponent.CaretX,
-    ActiveSrcEdit.EditorComponent.CaretY,
+    CaretXY.X,CaretXY.Y,
     NewSource,NewX,NewY,NewTopLine) then
   begin
-    DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo, 
+    DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo,
       NewSource, NewX, NewY, NewTopLine, true);
-  end else 
+  end else
     DoJumpToCodeToolBossError;
-  {$IFDEF IDE_MEM_CHECK}CheckHeap('TMainIDE.DoFindDeclarationAtCursor ',IntToStr(GetMem_Cnt));{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeap('TMainIDE.DoFindDeclarationAtCaret ',IntToStr(GetMem_Cnt));{$ENDIF}
 end;
 
 procedure TMainIDE.DoGoToPascalBlockOtherEnd;
@@ -6648,6 +6675,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.349  2002/08/23 19:00:12  lazarus
+  MG: implemented Ctrl+Mouse links in source editor
+
   Revision 1.348  2002/08/23 11:33:03  lazarus
   MG: imroved error handling for renamed forms
 
