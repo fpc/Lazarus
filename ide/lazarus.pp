@@ -80,7 +80,6 @@ begin
   if (SplashForm<>nil) then
     SplashForm.StartTimer;
   try
-  writeln(Application.MainForm.ClassName);
     Application.Run;
   except
     writeln('lazarus.pp - unhandled exception');
@@ -100,6 +99,9 @@ end.
 
 {
   $Log$
+  Revision 1.58  2004/04/24 21:00:41  mattias
+  clean up
+
   Revision 1.57  2004/04/24 20:57:18  mattias
   fixed gtk2 for drawing list item  from Ladislav
 
