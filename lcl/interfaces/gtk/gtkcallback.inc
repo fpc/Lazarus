@@ -87,9 +87,10 @@ function gtkNoteBookCloseBtnClicked(Widget: PGtkWidget;
   Data: Pointer): GBoolean; cdecl;
 var APage: TPage;
 begin
+  Result:=true; // handled = true
+  if ComponentIsDestroyingHandle(TWinControl(Data)) then exit;
   APage:=TPage(Data);
   TCustomNoteBook(APage.Parent).DoCloseTabClicked(APage);
-  Result:=true; // handled = true
 end;
 
 {-------------------------------------------------------------------------------
@@ -103,6 +104,7 @@ end;
 -------------------------------------------------------------------------------}
 function gtkRealizeCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
 begin
+  Result := True;
   EventTrace('realize', nil);
 
   if Data<>nil then begin
@@ -113,8 +115,6 @@ begin
       end;
     end;
   end;
-      
-  Result := True;
 end;
 
 {-------------------------------------------------------------------------------
@@ -137,6 +137,7 @@ var
   ClientWidget: PGtkWidget;
   MainWidget: PGtkWidget;
 begin
+  Result := True;
   EventTrace('realizeafter', nil);
 
   HiddenLCLObject:=GetHiddenLCLObject(Widget);
@@ -183,8 +184,6 @@ begin
     if HiddenLCLObject is TWinControl then
       ConnectInternalWidgetsSignals(Widget,TWinControl(HiddenLCLObject));
   end;
-
-  Result := True;
 end;
 
 function gtkshowCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
@@ -216,7 +215,7 @@ var
   Mess : TLMessage;
   LCLMenuItem: TMenuItem;
 begin
-  Result:=true;
+  Result := True;
   EventTrace('activate', data);
   if GTK_IS_CHECK_MENU_ITEM(widget) then begin
     LCLMenuItem:=TMenuItem(GetLCLObject(Widget));
@@ -250,6 +249,7 @@ var
   NewText: string;
 begin
   Result := True;
+  if ComponentIsDestroyingHandle(TWinControl(Data)) then exit;
   EventTrace('changed', data);
   
   if TObject(Data) is TControl then begin
@@ -2279,6 +2279,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.118  2002/08/31 11:37:10  lazarus
+  MG: fixed destroying combobox
+
   Revision 1.117  2002/08/31 07:58:21  lazarus
   MG: fixed resetting comobobox text
 
