@@ -4773,10 +4773,14 @@ begin
   If Result <> nil then
     Result := gdk_font_ref(Result);
 end;
+{$EndIf}
 
 function GetDefaultFontName: string;
 var
   Style: PGtkStyle;
+  {$IFDEF GTK2}
+  PangoFontDesc: PPangoFontDescription;
+  {$ENDIF}
 begin
   Result:='';
   Style := GetStyle('default');
@@ -4784,16 +4788,24 @@ begin
     Style := GetStyle('gtk_default');
 
   If Style <> nil then begin
-    {$IFNDEF NoStyle}
-    If (Style^.RC_Style <> nil) then begin
-      if (Style^.RC_Style^.font_name <> nil) then
-        Result := Style^.RC_Style^.font_name;
+    {$IFDEF GTK1}
+      {$IFNDEF NoStyle}
+      If (Style^.RC_Style <> nil) then begin
+        if (Style^.RC_Style^.font_name <> nil) then
+          Result := Style^.RC_Style^.font_name;
+      end;
+      {$ENDIF}
+    {$ENDIF}
+    {$IFDEF GTK2}
+    If (Style <> nil) then begin
+      PangoFontDesc := pango_font_description_copy(Style^.font_desc);
+      if PangoFontDesc<>nil then begin
+        Result:=pango_font_description_get_family(PangoFontDesc);
+      end;
     end;
     {$ENDIF}
   end;
 end;
-
-{$EndIf}
 
 procedure RealizeGDKColor(ColorMap: PGdkColormap; Color: PGDKColor);
 var
@@ -5642,6 +5654,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.238  2004/01/04 16:44:33  mattias
+  updated gtk2 package
+
   Revision 1.237  2004/01/03 23:14:59  mattias
   default font can now change height and fixed gtk crash
 

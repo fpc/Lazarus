@@ -4,8 +4,8 @@
     <Name Value="GTK2Interface"/>
     <CompilerOptions>
       <SearchPaths>
-        <OtherUnitFiles Value="../gtk/;../../units/"/>
-        <UnitOutputDirectory Value="../../units/gtk2"/>
+        <OtherUnitFiles Value="../gtk/;../../units/$(TargetCPU)/$(TargetOS)/"/>
+        <UnitOutputDirectory Value="../../units/$(TargetCPU)/$(TargetOS)/gtk2"/>
         <LCLWidgetType Value="gtk"/>
       </SearchPaths>
       <Other>
@@ -15,20 +15,20 @@
     </CompilerOptions>
     <Files Count="21">
       <Item1>
-        <Filename Value="interfaces.pas"/>
-        <UnitName Value="Interfaces"/>
-      </Item1>
-      <Item2>
         <Filename Value="gtk2int.pas"/>
         <UnitName Value="Gtk2Int"/>
+      </Item1>
+      <Item2>
+        <Filename Value="gtk2object.inc"/>
+        <Type Value="Include"/>
       </Item2>
       <Item3>
-        <Filename Value="../gtk/gtkglobals.pp"/>
-        <UnitName Value="GTKGlobals"/>
+        <Filename Value="gtk2winapi.inc"/>
+        <Type Value="Include"/>
       </Item3>
       <Item4>
-        <Filename Value="../gtk/gtkmsgqueue.pp"/>
-        <UnitName Value="GtkMsgQueue"/>
+        <Filename Value="interfaces.pas"/>
+        <UnitName Value="Interfaces"/>
       </Item4>
       <Item5>
         <Filename Value="../gtk/gtkcallback.inc"/>
@@ -47,56 +47,56 @@
         <Type Value="Include"/>
       </Item8>
       <Item9>
-        <Filename Value="../gtk/gtkimages.lrs"/>
-        <Type Value="LRS"/>
+        <Filename Value="../gtk/gtkglobals.pp"/>
+        <UnitName Value="GTKGlobals"/>
       </Item9>
       <Item10>
-        <Filename Value="../gtk/gtkint.pp"/>
-        <UnitName Value="GtkInt"/>
+        <Filename Value="../gtk/gtkimages.lrs"/>
+        <Type Value="LRS"/>
       </Item10>
       <Item11>
-        <Filename Value="../gtk/gtklistsl.inc"/>
-        <Type Value="Include"/>
+        <Filename Value="../gtk/gtkint.pp"/>
+        <UnitName Value="GtkInt"/>
       </Item11>
       <Item12>
-        <Filename Value="../gtk/gtklistslh.inc"/>
+        <Filename Value="../gtk/gtklistsl.inc"/>
         <Type Value="Include"/>
       </Item12>
       <Item13>
-        <Filename Value="../gtk/gtklistviewcallback.inc"/>
+        <Filename Value="../gtk/gtklistslh.inc"/>
         <Type Value="Include"/>
       </Item13>
       <Item14>
-        <Filename Value="../gtk/gtkobject.inc"/>
+        <Filename Value="../gtk/gtklistviewcallback.inc"/>
         <Type Value="Include"/>
       </Item14>
       <Item15>
-        <Filename Value="../gtk/gtkproc.inc"/>
-        <Type Value="Include"/>
+        <Filename Value="../gtk/gtkmsgqueue.pp"/>
+        <UnitName Value="GtkMsgQueue"/>
       </Item15>
       <Item16>
-        <Filename Value="../gtk/gtkproc.pp"/>
-        <UnitName Value="GTKProc"/>
+        <Filename Value="../gtk/gtkobject.inc"/>
+        <Type Value="Include"/>
       </Item16>
       <Item17>
-        <Filename Value="../gtk/gtkwinapi.inc"/>
-        <Type Value="Include"/>
+        <Filename Value="../gtk/gtkproc.pp"/>
+        <UnitName Value="GTKProc"/>
       </Item17>
       <Item18>
-        <Filename Value="../gtk/gtkwinapih.inc"/>
+        <Filename Value="../gtk/gtkproc.inc"/>
         <Type Value="Include"/>
       </Item18>
       <Item19>
-        <Filename Value="../gtk/gtkwinapiwindow.pp"/>
-        <UnitName Value="GTKWinapiWindow"/>
+        <Filename Value="../gtk/gtkwinapi.inc"/>
+        <Type Value="Include"/>
       </Item19>
       <Item20>
-        <Filename Value="gtk2winapi.inc"/>
+        <Filename Value="../gtk/gtkwinapih.inc"/>
         <Type Value="Include"/>
       </Item20>
       <Item21>
-        <Filename Value="gtk2object.inc"/>
-        <Type Value="Include"/>
+        <Filename Value="../gtk/gtkwinapiwindow.pp"/>
+        <UnitName Value="GTKWinapiWindow"/>
       </Item21>
     </Files>
     <Type Value="RunAndDesignTime"/>

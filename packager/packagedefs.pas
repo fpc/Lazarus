@@ -989,10 +989,29 @@ begin
 end;
 
 function ComparePkgFilesAlphabetically(PkgFile1, PkgFile2: TPkgFile): integer;
+var
+  ShortFilename1: String;
+  ShortFilename2: String;
+  File1IsInMainDir: Boolean;
+  File2IsInMainDir: Boolean;
 begin
-  Result:=CompareFilenames(ExtractFileNameOnly(PkgFile1.FileName),
-                           ExtractFileNameOnly(PkgFile2.FileName));
+  ShortFilename1:=PkgFile1.GetShortFilename(true);
+  ShortFilename2:=PkgFile2.GetShortFilename(true);
+  // files in the main directory are higher
+  File1IsInMainDir:=ExtractFilePath(ShortFilename1)='';
+  File2IsInMainDir:=ExtractFilePath(ShortFilename2)='';
+  if File1IsInMainDir xor File2IsInMainDir then begin
+    if File1IsInMainDir then
+      Result:=-1
+    else
+      Result:=1;
+    exit;
+  end;
+  // compare short filenames without extension
+  Result:=CompareFilenames(ChangeFileExt(ShortFilename1,''),
+                           ChangeFileExt(ShortFilename2,''));
   if Result<>0 then exit;
+  // if one is a unit, then it is higher
   if (PkgFile1.UnitName<>'') and (PkgFile2.UnitName='') then begin
     Result:=-1;
     exit;
@@ -1000,9 +1019,10 @@ begin
     Result:=1;
     exit;
   end;
-  Result:=CompareFilenames(ExtractFileName(PkgFile1.FileName),
-                           ExtractFileName(PkgFile2.FileName));
+  // compare short filenames with extension
+  Result:=CompareFilenames(ShortFilename1,ShortFilename2);
   if Result<>0 then exit;
+  // compare filenames
   Result:=CompareFilenames(PkgFile1.FileName,PkgFile2.FileName);
 end;
 

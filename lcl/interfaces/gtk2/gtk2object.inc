@@ -327,36 +327,6 @@ begin
   FinishComponentCreate(Sender, P, SetupProps);
 end;
 
-{------------------------------------------------------------------------------
-  function Tgtk2Object.GetIndexAtY(Sender: TObject; PointerToY: Pointer): integer;
-------------------------------------------------------------------------------}
-function Tgtk2Object.GetIndexAtY(Sender: TObject; PointerToY: Pointer): integer;
-var
-  aTreeView: PGtkTreeView;
-  aTreeColumn: PGtkTreeViewColumn;
-  aTreePath   : PGtkTreePath;
-  Y : Integer;
-begin
-  Result:=-1;
-  if not (Sender is TWinControl) then exit;
-  Y:=PInteger(PointerToY)^;
-  case TWinControl(Sender).fCompStyle of
-
-  csListBox, csCheckListBox:
-    begin
-      aTreeView := GTK_TREE_VIEW(GetWidgetInfo(Pointer(TWinControl(Sender).Handle), True)^.ImplementationWidget);
-
-      if gtk_tree_view_get_path_at_pos(aTreeView, 0, Y, aTreePath, aTreeColumn, nil, nil) then begin
-        result := gtk_tree_path_get_indices(aTreePath)[0];
-        gtk_tree_path_free(aTreePath);
-        exit;
-      end;
-
-      Result:=-1;
-    end;
-  end;
-end;
-
 function TGtk2Object.GetText(Sender: TComponent; var Text: String): Boolean;
 var
   CS: PChar;
@@ -1405,6 +1375,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.7  2004/01/04 16:44:33  mattias
+  updated gtk2 package
+
   Revision 1.6  2003/10/04 00:36:30  ajgenius
   partly fix csLabel for GTK2, Layout is still wacked.
 

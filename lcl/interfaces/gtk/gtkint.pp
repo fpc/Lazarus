@@ -280,7 +280,7 @@ type
     function  LCLtoGtkMessagePending: boolean;virtual;
     procedure SendCachedGtkMessages;virtual;
     procedure RealizeWidgetSize(Widget: PGtkWidget;
-                                NewWidth, NewHeight: integer);
+                                NewWidth, NewHeight: integer); virtual;
     Procedure FinishComponentCreate(Sender : TObject; Handle : Pointer;
                                     SetupProps : Boolean); Virtual;
   public
@@ -409,6 +409,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.164  2004/01/04 16:44:33  mattias
+  updated gtk2 package
+
   Revision 1.163  2004/01/03 11:57:47  mattias
   applied implementation for LM_LB_GETINDEXAT  from Vincent
 

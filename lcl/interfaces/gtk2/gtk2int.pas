@@ -53,7 +53,6 @@ type
   protected
     procedure AppendText(Sender: TObject; Str: PChar); override;
     procedure CreateComponent(Sender : TObject); override;
-    function GetIndexAtY(Sender: TObject; PointerToY: Pointer): integer; override;
     function GetText(Sender: TComponent; var Text: String): Boolean; override;
     procedure HookSignals(Sender: TObject); override;
     function IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer; override;
@@ -562,6 +561,9 @@ end.
 
 {
   $Log$
+  Revision 1.27  2004/01/04 16:44:33  mattias
+  updated gtk2 package
+
   Revision 1.26  2003/10/17 03:21:21  ajgenius
   fix GTK2 compiling for new Keyboard changes
 

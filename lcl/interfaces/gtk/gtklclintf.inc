@@ -37,8 +37,32 @@
  ------------------------------------------------------------------------------}
 function TGTKObject.GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer;
 {$IFdef GTK2}
+var
+  aTreeView: PGtkTreeView;
+  aTreeColumn: PGtkTreeViewColumn;
+  aTreePath   : PGtkTreePath;
+  AWinControl: TWinControl;
 begin
-  writeln('TODO: TgtkObject.GetListBoxIndexAtY');
+  Result:=-1;
+  if not (ListBox is TWinControl) then exit;
+  AWinControl:=TWinControl(ListBox);
+  case AWinControl.fCompStyle of
+
+  csListBox, csCheckListBox:
+    begin
+      aTreeView :=
+        GTK_TREE_VIEW(GetWidgetInfo(Pointer(AWinControl.Handle), True)
+          ^.ImplementationWidget);
+
+      if gtk_tree_view_get_path_at_pos(aTreeView, 0, Y, aTreePath, aTreeColumn,
+        nil, nil)
+      then begin
+        Result := gtk_tree_path_get_indices(aTreePath)[0];
+        gtk_tree_path_free(aTreePath);
+        exit;
+      end;
+    end;
+  end;
 end;
 {$Else}
 var
@@ -135,6 +159,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2004/01/04 16:44:33  mattias
+  updated gtk2 package
+
   Revision 1.5  2004/01/03 11:57:48  mattias
   applied implementation for LM_LB_GETINDEXAT  from Vincent
 

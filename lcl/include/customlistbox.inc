@@ -44,7 +44,6 @@ begin
   PCustomListBoxItemRecord(AData)^.Selected := Selected[AIndex];
 end;
 
-
 {------------------------------------------------------------------------------
  procedure TCustomListBox.CreateHandle
 ------------------------------------------------------------------------------}
