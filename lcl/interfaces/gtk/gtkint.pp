@@ -33,7 +33,7 @@ interface
 {$ASSERTIONS ON}
 {$endif}
  
-{ $DEFINE ClientRectBugFix}
+{$DEFINE ClientRectBugFix}
 {$IFDEF ClientRectBugFix}
   { $DEFINE VerboseClientRectBugFix}
   { $DEFINE VerboseResizeChild}
@@ -361,6 +361,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.41  2002/05/20 14:19:03  lazarus
+  MG: activated the clientrect bugfixes
+
   Revision 1.40  2002/05/13 14:47:01  lazarus
   MG: fixed client rectangles, TRadioGroup, RecreateWnd
 
