@@ -791,9 +791,7 @@ const
   PUSH_EDGE_FLAG: array[Boolean] of Integer = (EDGE_RAISED, EDGE_SUNKEN);
   PUSH_EDGE_FLAG2: array[Boolean] of Integer = (0, BF_FLAT);
 begin
-Assert(False, 'Trace:************************************************');
-Assert(False, 'Trace:DRAWFRAMECONTROL');
-Assert(False, 'Trace:************************************************');
+writeln('IN DrawFrameControl');
   case uType of
     DFC_CAPTION:
       begin  //all draw CAPTION commands here
@@ -3116,6 +3114,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2001/01/04 16:12:54  lazarus
+  Removed some writelns and changed the property editor for TStrings a bit.
+  Shane
+
   Revision 1.10  2001/01/03 18:44:54  lazarus
   The Speedbutton now has a numglyphs setting.
   I started the TStringPropertyEditor

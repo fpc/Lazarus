@@ -3273,7 +3273,7 @@ initialization
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('shortstring'),
     nil,'',TCaptionPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TStrings'),
-    nil,'Lines',TStringsPropertyEditor);
+    nil,'',TStringsPropertyEditor);
 
 finalization
   PropertyEditorMapperList.Free;  PropertyEditorMapperList:=nil;

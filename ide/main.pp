@@ -238,10 +238,6 @@ constructor TForm1.Create(AOwner: TComponent);
           ms.Position:=0;
           PixMap.LoadFromStream(ms);
           Result:=true;
-          Writeln('PIXMAP LOADED.');
-          Writeln('Width='+inttostr(Pixmap.Width));
-          Writeln('Height='+inttostr(Pixmap.Height));
-
         finally
           ms.Free;
         end;
@@ -1774,6 +1770,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.31  2001/01/04 16:12:54  lazarus
+  Removed some writelns and changed the property editor for TStrings a bit.
+  Shane
+
   Revision 1.30  2001/01/03 18:44:54  lazarus
   The Speedbutton now has a numglyphs setting.
   I started the TStringPropertyEditor

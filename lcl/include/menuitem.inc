@@ -257,7 +257,6 @@ begin
 //    if FMenu <> nil then Item.FCompStyle := csMenu;
 
     Item.FParent := Self;
-    Writeln('INDEX = '+inttostr(index));
     FItems.Insert(Index, Item);
     MenuChanged(FItems.Count = 1);
   end;
@@ -406,6 +405,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2001/01/04 16:12:54  lazarus
+  Removed some writelns and changed the property editor for TStrings a bit.
+  Shane
+
   Revision 1.4  2000/12/22 19:55:38  lazarus
   Added the Popupmenu code to the LCL.
   Now you can right click on the editor and a PopupMenu appears.
@@ -446,6 +449,10 @@ end;
 
 
   $Log$
+  Revision 1.5  2001/01/04 16:12:54  lazarus
+  Removed some writelns and changed the property editor for TStrings a bit.
+  Shane
+
   Revision 1.4  2000/12/22 19:55:38  lazarus
   Added the Popupmenu code to the LCL.
   Now you can right click on the editor and a PopupMenu appears.

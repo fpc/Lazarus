@@ -22,8 +22,6 @@ var
   n, BufIndex: Integer;
   t : String;
 begin
-writeln('Entering');
-
   FreeContext;
 
   // Convert a XPM filedata format to a XPM memory format
@@ -78,12 +76,15 @@ writeln('Entering');
   finally
     S.Free;
   end;
-writeln('leaving');
 end;
 
 { =============================================================================
 
   $Log$
+  Revision 1.5  2001/01/04 16:12:54  lazarus
+  Removed some writelns and changed the property editor for TStrings a bit.
+  Shane
+
   Revision 1.4  2001/01/03 18:44:54  lazarus
   The Speedbutton now has a numglyphs setting.
   I started the TStringPropertyEditor

@@ -254,7 +254,9 @@ begin
     DrawFlags := DFCS_BUTTONPUSH or DFCS_ADJUSTRECT;
     if FState in [bsDown, bsExclusive]
     then DrawFlags := DrawFlags or DFCS_PUSHED;
+    Writeln('calling drawframecontrol');
     DrawFrameControl(Canvas.Handle, PaintRect, DFC_BUTTON, DrawFlags);
+    Writeln('Exiting drawframecontrol');
   end
   else begin   //flat
     if (FState in [bsDown, bsExclusive])
@@ -524,6 +526,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2001/01/04 16:12:54  lazarus
+  Removed some writelns and changed the property editor for TStrings a bit.
+  Shane
+
   Revision 1.2  2001/01/03 18:44:54  lazarus
   The Speedbutton now has a numglyphs setting.
   I started the TStringPropertyEditor
