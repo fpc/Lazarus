@@ -3162,12 +3162,6 @@ begin
       LM_DESTROY :
         DestroyLCLComponent(Sender);
 
-      LM_SETFOCUS:
-      begin
-        //DebugLn('[TGtkWidgetSet.IntSendMessage3] LM_SETFOCUS ',TObject(Sender).ClassName);
-        SetFocus(Handle);
-      end;
-
       LM_SetSize:
       begin
         Assert(False, Format('Trace:  [TGtkWidgetSet.IntSendMessage3] %s --> LM_SetSize(%d, %d, %d, %d)', [Sender.ClassNAme, PRect(Data)^.Left,PRect(Data)^.Top,PRect(Data)^.Right,PRect(Data)^.Bottom]));
@@ -8521,6 +8515,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.557  2004/09/12 13:30:13  micha
+  remove handling of LM_SETFOCUS in interface, as it is never sent from LCL
+
   Revision 1.556  2004/09/12 13:21:37  micha
   remove obsolete message LM_DRAGINFOCHANGED
 

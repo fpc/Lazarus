@@ -336,11 +336,6 @@ Begin
         Else
           Assert(False, Format('Trace:I don''t know how to destroy component %S', [Sender.ClassName]));
       End;
-      LM_SETFOCUS:
-      Begin
-        If Handle <> 0 Then
-          SetFocus(Handle);
-      End;
       LM_SETFONT:
       begin
         if Sender is TControl then begin
@@ -2504,6 +2499,9 @@ End;
 
 {
   $Log$
+  Revision 1.249  2004/09/12 13:30:13  micha
+  remove handling of LM_SETFOCUS in interface, as it is never sent from LCL
+
   Revision 1.248  2004/09/12 13:21:37  micha
   remove obsolete message LM_DRAGINFOCHANGED
 
