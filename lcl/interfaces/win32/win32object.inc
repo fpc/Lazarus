@@ -605,7 +605,7 @@ Begin
         Begin
           If Handle <> 0 Then
           begin
-            DestroyAcceleratorTable(LongWord(GetProp(Handle, 'Accel')));
+            DestroyAcceleratorTable(Windows.GetProp(Handle, 'Accel'));
             DestroyWindow(Handle);
           end;
         End
@@ -1131,7 +1131,7 @@ var
 Begin
   While PeekMessage(AMessage, HWnd(Nil), 0, 0,PM_REMOVE) Do
   Begin
-    AccelTable := HACCEL(GetProp(AMessage.HWnd, 'Accel'));
+    AccelTable := HACCEL(Windows.GetProp(AMessage.HWnd, 'Accel'));
     If (AccelTable = HACCEL(nil)) or (TranslateAccelerator(AMessage.HWnd, AccelTable, @AMessage) = 0) Then
     Begin
       TranslateMessage(@AMessage);
@@ -1927,6 +1927,10 @@ Begin
     Width := TControl(Sender).Width;
     if TControl(Sender).Visible then
       Flags := Flags or WS_VISIBLE;
+    if csAcceptsControls in TControl(Sender).ControlStyle then
+      FlagsEx := FlagsEx or WS_EX_CONTROLPARENT;
+    if TControl(Sender).TabStop then
+      Flags := Flags or WS_TABSTOP;
     Assert(False, 'Trace:Setting dimentions');
     LCLBoundsToWin32Bounds(Sender, Left, Top, Width, Height);
     {$IFDEF VerboseSizeMsg}
@@ -1964,17 +1968,21 @@ Begin
     csBitBtn:
     Begin
       pClassName := 'BUTTON';
-      Flags := Flags or BS_PUSHBUTTON or BS_OWNERDRAW;
+      if TBitBtn(Sender).Default Then
+        Flags := Flags or BS_DEFPUSHBUTTON
+      else
+        Flags := Flags or BS_PUSHBUTTON;
+      Flags := Flags or BS_OWNERDRAW;
       WindowTitle := nil;
       IntSendMessage3(LM_LOADXPM, Sender, StrCaption);
     End;
     csButton:
     Begin
       Assert(False, 'Trace:CreateComponent - Creating Button');
-      If Not TButton(Sender).Default Then
-        Flags := Flags Or BS_PUSHBUTTON
-      Else
-        Flags := Flags Or BS_DEFPUSHBUTTON;
+      if TButton(Sender).Default Then
+        Flags := Flags or BS_DEFPUSHBUTTON
+      else
+        Flags := Flags or BS_PUSHBUTTON;
       pClassName := 'BUTTON';
       WindowTitle := StrCaption;
     End;
@@ -2021,7 +2029,7 @@ Begin
           lbOwnerDrawVariable: Flags := Flags or LBS_OWNERDRAWVARIABLE;
         end;
       end;
-      FlagsEx := WS_EX_CLIENTEDGE;
+      FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
       pClassName := 'LISTBOX';
       Flags := Flags or (WS_VSCROLL or LBS_NOINTEGRALHEIGHT or LBS_HASSTRINGS);
     End;
@@ -2037,13 +2045,13 @@ Begin
           else
             Flags:= Flags or LBS_MULTIPLESEL;
       End;
-      FlagsEx := WS_EX_CLIENTEDGE;
+      FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
       pClassName := 'LISTBOX';
       Flags := Flags or LBS_MULTICOLUMN or WS_HSCROLL;
     End;
     csEdit:
     Begin
-      FlagsEx := WS_EX_CLIENTEDGE;
+      FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
       pClassName := 'EDIT';
       WindowTitle := StrCaption;
       Flags := Flags Or ES_AUTOHSCROLL;
@@ -2059,7 +2067,6 @@ Begin
     Begin
       Assert(False, 'Trace:CreateComponent - Creating a Form Window');
       Flags:= WS_OVERLAPPEDWINDOW or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
-      FlagsEx:= 0;
       Case TCustomForm(Sender).BorderStyle of
       //bsSizeable:; -> Default
       bsSingle:
@@ -2092,7 +2099,7 @@ Begin
       pClassName := @ClsName;
       WindowTitle := StrCaption;
       Flags := WS_POPUP;
-      FlagsEx := WS_EX_TOOLWINDOW;
+      FlagsEx := FlagsEx or WS_EX_TOOLWINDOW;
       Left := LongInt(CW_USEDEFAULT);
       Top := LongInt(CW_USEDEFAULT);
       Width := LongInt(CW_USEDEFAULT);
@@ -2133,7 +2140,7 @@ Begin
         ssBoth:
           Flags := Flags Or WS_HSCROLL Or WS_VSCROLL;
       End;
-      FlagsEx := WS_EX_CLIENTEDGE;
+      FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
       pClassName := 'EDIT';
       WindowTitle := StrCaption;
     End;
@@ -2160,7 +2167,7 @@ Begin
     csScrollBox:
     Begin
       //Todo: Make control respond to user scroll request
-      FlagsEx := WS_EX_CLIENTEDGE;
+      FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
       pClassName := @ClsName;
       Flags := Flags or WS_HSCROLL or WS_VSCROLL;
       DoSubClass := false;
@@ -2170,7 +2177,7 @@ Begin
       Assert(False, 'TRACE: CreateComponent - creating a scrolled window');
       pClassName := @ClsName;
       WindowTitle := StrCaption;
-      Flags := WS_OVERLAPPEDWINDOW Or WS_HSCROLL Or WS_VSCROLL Or WS_VISIBLE;
+      Flags := WS_OVERLAPPEDWINDOW or WS_HSCROLL or WS_VSCROLL or WS_VISIBLE;
       Left := LongInt(CW_USEDEFAULT);
       Top := LongInt(CW_USEDEFAULT);
       Width := LongInt(CW_USEDEFAULT);
@@ -2218,7 +2225,6 @@ Begin
     csPage:
     Begin
       Assert(False, 'Trace:Create a csPage component.');
-      FlagsEx := WS_EX_CONTROLPARENT;
       pClassName := @ClsName;
       Flags := Flags and DWORD(not WS_VISIBLE);
       DoSubClass := false;
@@ -2963,7 +2969,10 @@ End;
 
 {
   $Log$
-  Revision 1.159  2004/01/20 10:26:41  micha
+  Revision 1.160  2004/01/20 22:14:27  micha
+  REVERTED: "try register globally unique properties"; implemented new WindowFromPoint not returning window if from different process (tip from vincent)
+
+  Revision 1.158  2004/01/20 10:26:41  micha
   try register globally unique properties
 
   Revision 1.158  2004/01/12 08:36:34  micha

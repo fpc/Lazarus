@@ -160,7 +160,7 @@ var
     MoveWindowOrgEx(PaintMsg.DC,-ClientBoundRect.Left,-ClientBoundRect.Top);
     try
       // call win32 paint handler
-      PrevWndProc := Pointer(GetProp(Handle, 'DefWndProc'));
+      PrevWndProc := Pointer(Windows.GetProp(Handle, 'DefWndProc'));
       if PrevWndProc = nil then
         Windows.DefWindowProc(Handle, WM_PAINT, PaintMsg.DC, 0)
       else
@@ -1251,7 +1251,7 @@ var
 Begin
   Result := Boolean(Windows.GetClientRect(Handle, @Rect));
   if not Result then exit;
-  OwnerObject := TObject(GetProp(Handle, 'Wincontrol'));
+  OwnerObject := TObject(Windows.GetProp(Handle, 'Wincontrol'));
   if OwnerObject is TWinControl then begin
     TheWinControl:=TWinControl(OwnerObject);
     if TheWinControl is TCustomGroupBox then begin
@@ -1368,7 +1368,7 @@ var
   OverlayWindow: HWND;
   ARect: Windows.RECT;
 begin
-  OverlayWindow := HWND(GetProp(WindowHandle, 'Overlay'));
+  OverlayWindow := HWND(Windows.GetProp(WindowHandle, 'Overlay'));
   if OverlayWindow = HWND(nil) then
   begin
     // create 'overlay' window
@@ -1376,10 +1376,10 @@ begin
     OverlayWindow := Windows.CreateWindowEx(WS_EX_TRANSPARENT,
         'STATIC', '', WS_CHILD or WS_VISIBLE,
         ARect.Left, ARect.Top, ARect.Right, ARect.Bottom,
-        WindowHandle, HMENU(nil), System.HInstance, nil);
-    SetProp(OverlayWindow, 'DefWndProc', Pointer(Windows.SetWindowLong(
-        OverlayWindow, GWL_WNDPROC, LongInt(@OverlayWindowProc))));
-    SetProp(WindowHandle, 'Overlay', Pointer(OverlayWindow));
+        WindowHandle, HMENU(nil), HInstance, nil);
+    Windows.SetProp(OverlayWindow, 'DefWndProc', Windows.SetWindowLong(
+        OverlayWindow, GWL_WNDPROC, LongInt(@OverlayWindowProc)));
+    Windows.SetProp(WindowHandle, 'Overlay', OverlayWindow);
   end;
   Result := Windows.GetDC(OverlayWindow);
 end;
@@ -1735,11 +1735,8 @@ End;
   Retrieves a pointer to data from the property list of the given window.
  ------------------------------------------------------------------------------}
 Function TWin32Object.GetProp(Handle: HWND; Str: PChar): Pointer;
-Var
-  TempStr: string;
 Begin
-  TempStr := Format('%s%.8x', [Str, Windows.GetCurrentThreadId]);
-  Result := Pointer(Windows.GetProp(Handle, PChar(TempStr)));
+  Result := Pointer(Windows.GetProp(Handle, Str));
 End;
 
 
@@ -2593,12 +2590,9 @@ End;
   for a properties-enumeration function that's called when the program is quit.
  ------------------------------------------------------------------------------}
 Function TWin32Object.SetProp(Handle: HWND; Str: PChar; Data: Pointer): Boolean;
-Var
-  TempStr: string;
 Begin
   Assert(False, 'Trace:TWin32Object.SetProp - Start');
-  TempStr := Format('%s%.8x', [Str, Windows.GetCurrentThreadId]);
-  Result := Boolean(Windows.SetProp(Handle, PChar(TempStr), Windows.HANDLE(Data)));
+  Result := Boolean(Windows.SetProp(Handle, Str, Windows.HANDLE(Data)));
   Assert(False, Format('Trace:TWin32Object.SetProp --> Window handle: 0x%X, Propery to set: %S, Data to set: 0x%P, Property was successfully set: %S', [Handle, String(Str), Data, BOOL_RESULT[Result]]));
 End;
 
@@ -2856,8 +2850,14 @@ End;
   Retrieves the handle of the window that contains the specified point.
  ------------------------------------------------------------------------------}
 Function TWin32Object.WindowFromPoint(Point: TPoint): HWND;
+Var
+  ProcessID: DWORD;
 Begin
   Result := Windows.WindowFromPoint(Windows.POINT(Point));
+  // check if window created by this process
+  Windows.GetWindowThreadProcessId(Result, @ProcessID);
+  if ProcessID <> Windows.GetCurrentProcessID then
+    Result := 0;
 End;
 
 
@@ -2910,6 +2910,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.95  2004/01/20 22:14:27  micha
+  REVERTED: "try register globally unique properties"; implemented new WindowFromPoint not returning window if from different process (tip from vincent)
+
   Revision 1.94  2004/01/20 10:26:41  micha
   try register globally unique properties
 

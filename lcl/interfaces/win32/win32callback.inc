@@ -194,7 +194,7 @@ Var
 
   procedure GetChildOwnerObject(ChildId: Integer);
   begin
-    OwnerObject := TObject(GetProp(Windows.GetDlgItem(Window, ChildId), 'WinControl'));
+    OwnerObject := TObject(Windows.GetProp(Windows.GetDlgItem(Window, ChildId), 'WinControl'));
   end;
 
   procedure SendPaintMessage;
@@ -465,7 +465,7 @@ Begin
         if ScrollBar <> 0 then
         begin
           // send message to actual scrollbar window
-          OwnerObject := TObject(GetProp(ScrollBar, 'Wincontrol'));
+          OwnerObject := TObject(Windows.GetProp(ScrollBar, 'Wincontrol'));
         end;
       End;
     End;
@@ -760,7 +760,7 @@ Begin
         if ScrollBar <> 0 then
         begin
           // send message to actual scrollbar window
-          OwnerObject := TObject(GetProp(ScrollBar, 'Wincontrol'));
+          OwnerObject := TObject(Windows.GetProp(ScrollBar, 'Wincontrol'));
         end;
       End;
     End;
@@ -976,6 +976,9 @@ end;
 
 {
   $Log$
+  Revision 1.90  2004/01/20 22:14:27  micha
+  REVERTED: "try register globally unique properties"; implemented new WindowFromPoint not returning window if from different process (tip from vincent)
+
   Revision 1.89  2004/01/20 10:26:41  micha
   try register globally unique properties
 
