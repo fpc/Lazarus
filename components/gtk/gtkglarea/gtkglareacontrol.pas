@@ -37,7 +37,7 @@ type
   protected
     procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
     function GetWidget: PGtkGLArea;
-    procedure CreateComponent(TheOwner: TComponent); override;
+    function CreateWindowHandle(const AParams: TCreateParams): THandle; override;
     procedure UpdateFrameTimeDiff;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -177,15 +177,16 @@ begin
     Result:=nil;
 end;
 
-procedure TCustomGTKGLAreaControl.CreateComponent(TheOwner: TComponent);
+function TCustomGTKGLAreaControl.CreateWindowHandle(const AParams: TCreateParams
+  ): THandle;
 var
   NewWidget: Pointer;
 begin
   if csDesigning in ComponentState then
-    inherited CreateComponent(TheOwner)
+    Result:=inherited CreateWindowHandle(AParams)
   else begin
     NewWidget:=gtk_gl_area_new(Plongint(@InitAttrList));
-    Handle := longint(NewWidget);
+    Result:=longint(NewWidget);
     TGtkObject(InterfaceObject).FinishComponentCreate(Self,NewWidget,true);
   end;
 end;

@@ -28,13 +28,13 @@
 function TInterfaceBase.AlignmentCreateHandle(const AAlignment: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.ArrowCreateHandle(const AArrow: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 procedure TInterfaceBase.AttachMenuToWindow(AMenuObject: TComponent);
@@ -44,19 +44,19 @@ end;
 function TInterfaceBase.BitBtnCreateHandle(const ABitBtn: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.ButtonCreateHandle(const AButton: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.CalendarCreateHandle(const ACalendar: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 procedure TInterfaceBase.CallDefaultWndHandler(Sender: TObject; var Message);
@@ -66,13 +66,13 @@ end;
 function TInterfaceBase.CheckboxCreateHandle(const ACheckBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.CheckListBoxCreateHandle(const ACheckListBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 // the clipboard functions are internally used by TClipboard
@@ -112,19 +112,19 @@ end;
 function TInterfaceBase.CListBoxCreateHandle(const ACListBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.ColorDialogCreateHandle(const AColorDialog: TObject): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.ComboBoxCreateHandle(const AComboBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.ComboBoxDropDown(Handle: HWND;
@@ -176,25 +176,25 @@ end;
 function TInterfaceBase.EditCreateHandle(const AEdit: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.FileDialogCreateHandle(const AFileDialog: TObject): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.FontDialogCreateHandle(const AFontDialog: TObject): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.FormCreateHandle(const AForm: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.Frame(DC: HDC; const ARect: TRect) : integer;
@@ -435,27 +435,26 @@ end;
 function TInterfaceBase.GroupBoxCreateHandle(const AGroupBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.HintWindowCreateHandle(const AHintWindow: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.ImageCreateHandle(const AImage: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.IntfCreateHandle(const AObject: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
-           
 
 Function TInterfaceBase.InvalidateFrame(aHandle : HWND; ARect : pRect;
   bErase : Boolean; BorderWidth: integer) : Boolean;
@@ -496,37 +495,37 @@ end;
 function TInterfaceBase.LabelCreateHandle(const ALabel: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.ListBoxCreateHandle(const AListBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.ListViewCreateHandle(const AListView: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.MainMenuCreateHandle(const AMainMenu: TObject): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.MemoCreateHandle(const AMemo: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.MenuItemCreateHandle(const AMenuItem: TObject): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.MenuItemSetCheck(AMenuItem: TComponent): Boolean;
@@ -592,19 +591,19 @@ end;
 function TInterfaceBase.NotebookCreateHandle(const ANotebook: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.OpenFileDialogCreateHandle(const AOpenFileDialog: TObject): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.PageCreateHandle(const APage: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.PairSplitterAddSide(SplitterHandle, SideHandle: hWnd;
@@ -616,7 +615,7 @@ end;
 function TInterfaceBase.PairSplitterCreateHandle(const APairSplitter: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.PairSplitterGetInterfaceInfo: boolean;
@@ -639,37 +638,37 @@ end;
 function TInterfaceBase.PairSplitterSideCreateHandle(const APairSplitterSide: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.PanelCreateHandle(const APanel: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.PopupMenuCreateHandle(const APopupMenu: TObject): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.PreviewFileControlCreateHandle(const APreviewFileControl: TObject): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.PreviewFileDialogCreateHandle(const APreviewFileDialog: TObject): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.ProgressBarCreateHandle(const AProgressBar: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 Function TInterfaceBase.PromptUser(const DialogCaption, DialogMessage : String;
@@ -745,7 +744,7 @@ end;
 function TInterfaceBase.RadioButtonCreateHandle(const ARadioButton: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.RadioMenuItemGroup(hndMenu: HMENU; bRadio: Boolean): Boolean;
@@ -781,31 +780,31 @@ end;
 function TInterfaceBase.SaveFileDialogCreateHandle(const ASaveFileDialog: TObject): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.ScrollBarCreateHandle(const AScrollBar: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.ScrollBoxCreateHandle(const AScrollBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.ScrolledWindowCreateHandle(const AScrolledWindow: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.SelectDirectoryDialogCreateHandle(const ASelectDirectoryDialog: TObject): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 procedure TInterfaceBase.SendCachedLCLMessages;
@@ -836,19 +835,19 @@ end;
 function TInterfaceBase.SpeedButtonCreateHandle(const ASpeedButton: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.SpineditCreateHandle(const ASpinEdit: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.StatusBarCreateHandle(const AStatusBar: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 procedure TInterfaceBase.StatusBarPanelUpdate(StatusBar: TObject;
@@ -876,37 +875,40 @@ end;
 function TInterfaceBase.ToggleBoxCreateHandle(const AToggleBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.ToolbarCreateHandle(const AToolbar: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.ToolButtonCreateHandle(const AToolButton: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.TrackBarCreateHandle(const ATrackBar: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 function TInterfaceBase.WincontrolCreateHandle(const AFixed: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
-  // Result := 
+  Result:=0;
 end;
 
 //##apiwiz##eps##   // Do not remove
 { =============================================================================
 
   $Log$
+  Revision 1.23  2004/02/28 00:34:35  mattias
+  fixed CreateComponent for buttons, implemented basic Drag And Drop
+
   Revision 1.22  2004/02/27 00:42:41  marc
   * Interface CreateComponent splitup
   * Implemented CreateButtonHandle on GTK interface

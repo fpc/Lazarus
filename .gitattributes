@@ -956,6 +956,7 @@ lcl/include/dbtext.inc svneol=native#text/pascal
 lcl/include/defaultbitbtnimages.inc svneol=native#text/pascal
 lcl/include/docktree.inc svneol=native#text/pascal
 lcl/include/dockzone.inc svneol=native#text/pascal
+lcl/include/dragdock.inc svneol=native#text/pascal
 lcl/include/dragobject.inc svneol=native#text/pascal
 lcl/include/edit.inc svneol=native#text/pascal
 lcl/include/filectrl.inc svneol=native#text/pascal

@@ -43,6 +43,9 @@ end;
 
 procedure TBaseDragControlObject.EndDrag(Target: TObject; X,Y : Integer);
 Begin
+  {$IFDEF VerboseDrag}
+  writeln('TBaseDragControlObject.EndDrag ',ClassName,' XY=',X,',',Y);
+  {$ENDIF}
   FControl.DoEndDrag(Target,X,Y);
 end;
 

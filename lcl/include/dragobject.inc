@@ -32,8 +32,8 @@ end;
 
 function TDragObject.Capture: HWND;
 begin
-  // ToDo
   Result:=0;
+  //SetCapture(Result);
 end;
 
 procedure TDragObject.Finished(Target: TObject; X, Y: Integer; Accepted: Boolean);
@@ -46,80 +46,85 @@ begin
   Result := ClassName;
 end;
 
-procedure TDragObject.ReleaseCapture(Handle: HWND);
-begin
-end;
-
-procedure TDragObject.MouseMsg(var Msg: TLMessage);
-var
-  P: TPoint;
-begin
-Assert(False, 'Trace:******************8');
-Assert(False, 'Trace:DRAGOBJECT.MOUSEMSG');
-Assert(False, 'Trace:******************8');
-  try
-    case Msg.Msg of
-      LM_MOUSEMOVE:
-        begin
-          P := SmallPointToPoint(TLMMouse(Msg).Pos);
-          ClientToScreen(DragCapture, P);
-          DragTo(P);
-        end;
-      LM_LBUTTONUP, LM_RBUTTONUP: begin
-Assert(False, 'Trace:******************');
-Assert(False, 'Trace:******************');
-          DragDone(True);
-Assert(False, 'Trace:******************');
-Assert(False, 'Trace:******************');
-               end;
-      CN_KEYUP: Begin
-        if Msg.WParam = VK_CONTROL then DragTo(DragObject.DragPos);
-                end;
-      CN_KEYDOWN:
-        begin
-          case Msg.WParam of
-            VK_CONTROL: begin
-              DragTo(DragObject.DragPos);
-                        end;
-            VK_ESCAPE:
-              begin
-                Msg.Result := 1;
-                DragDone(False);
-              end;
-          end;
-        end;
-    end;
-  except
-    if DragControl <> nil then DragDone(False);
-    raise;
-  end;
-end;
-
 function TDragObject.GetDragImages: TDragImageList;
 begin
   Result := nil;
 end;
 
+procedure TDragObject.MouseMove(Shift: TShiftState; X, Y: Integer);
+var
+  P: TPoint;
+begin
+  P:=Point(X,Y);
+  DragTo(P);
+end;
+
+procedure TDragObject.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
+  Y: Integer);
+begin
+
+end;
+
+procedure TDragObject.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
+  Y: Integer);
+begin
+  DragDone(True);
+end;
+
+procedure TDragObject.CaptureChanged(OldCaptureControl: TControl);
+begin
+  DragDone(False);
+end;
+
+procedure TDragObject.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  case Key of
+
+  VK_CONTROL:
+    DragTo(DragObject.DragPos);
+
+  VK_ESCAPE:
+    begin
+      Key:=VK_UNKNOWN; // Consume keystroke and cancel drag operation
+      DragDone(False);
+    end;
+
+  end;
+end;
+
+procedure TDragObject.KeyUp(var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_CONTROL then DragTo(DragObject.DragPos);
+end;
+
+destructor TDragObject.Destroy;
+begin
+  {$IFDEF VerboseDrag}
+  writeln('TDragObject.Destroy ',ClassName,' Self=',HexStr(Cardinal(Self),8));
+  {$ENDIF}
+  inherited Destroy;
+end;
+
 function TDragObject.GetDragCursor(Accepted: Boolean; X, Y: Integer): TCursor;
 begin
-  if Accepted then Result := crDrag
-  else Result := crNoDrop;
+  if Accepted then
+    Result := crDrag
+  else
+    Result := crNoDrop;
 end;
 
 procedure TDragObject.HideDragImage;
 begin
-  // do nothing
 end;
 
 function TDragObject.Instance: THandle;
 begin
-  // ToDo
+  // exist only for compatibility
   Result:=0;
 end;
 
 procedure TDragObject.ShowDragImage;
 begin
-  // do nothing
 end;
 
 { TDragControlObject }

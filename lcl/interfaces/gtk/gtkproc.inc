@@ -640,24 +640,53 @@ function GetWindowDebugReport(AWindow: PGDKWindow): string;
 var
   p: Pgpointer;
   Widget: PGtkWidget;
+  WindowType: TGdkWindowType;
+  Width: Integer;
+  Height: Integer;
+  Visual: PGdkVisual;
+  TypeAsStr: String;
 begin
   Result:=HexStr(Cardinal(AWindow),8);
   if AWindow=nil then exit;
-  p:=nil;
-  gdk_window_get_user_data(AWindow,p);
-  if GtkWidgetIsA(PGTKWidget(p),GTK_WIDGET_TYPE) then begin
-    Widget:=PGTKWidget(p);
-    Result:=Result+'<Widget['+GetWidgetDebugReport(Widget)+']>';
-  end else begin
-    Result:=Result+'<Data='+HexStr(Cardinal(p),8)+']>';
-  end;
-end;
-
-function GetDrawableDebugReport(ADrawable: PGDKDrawable): string;
-begin
-  Result:=HexStr(Cardinal(ADrawable),8);
-  if ADrawable=nil then exit;
   
+  // window type
+  WindowType:=gdk_window_get_type(AWindow);
+  case WindowType of
+  GDK_WINDOW_ROOT: TypeAsStr:='Root';
+  GDK_WINDOW_TOPLEVEL: TypeAsStr:='TopLvl';
+  GDK_WINDOW_CHILD: TypeAsStr:='Child';
+  GDK_WINDOW_DIALOG: TypeAsStr:='Dialog';
+  GDK_WINDOW_TEMP: TypeAsStr:='Temp';
+  GDK_WINDOW_PIXMAP: TypeAsStr:='Pixmap';
+  GDK_WINDOW_FOREIGN: TypeAsStr:='Foreign';
+  end;
+  Result:=Result+' Type='+TypeAsStr;
+  
+  // user data
+  if WindowType in [GDK_WINDOW_ROOT,GDK_WINDOW_TOPLEVEL,GDK_WINDOW_CHILD,
+    GDK_WINDOW_DIALOG]
+  then begin
+    p:=nil;
+    gdk_window_get_user_data(AWindow,p);
+    if GtkWidgetIsA(PGTKWidget(p),GTK_WIDGET_TYPE) then begin
+      Widget:=PGTKWidget(p);
+      Result:=Result+'<Widget['+GetWidgetDebugReport(Widget)+']>';
+    end else begin
+      Result:=Result+'<UserData='+HexStr(Cardinal(p),8)+']>';
+    end;
+  end;
+
+  // size
+  gdk_window_get_size(AWindow,@Width,@Height);
+  Result:=Result+' Size='+IntToStr(Width)+'x'+IntToStr(Height);
+
+  // visual
+  Visual:=gdk_window_get_visual(AWindow);
+  if Visual<>nil then begin
+    if WindowType in [GDK_WINDOW_PIXMAP] then begin
+      Result:=Result+' Depth='+IntToStr(Visual^.bits_per_rgb);
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1013,9 +1042,9 @@ var
 begin
   {$IFDEF VerboseStretchCopyArea}
   writeln('ScalePixmap ScaleGC=',HexStr(Cardinal(ScaleGC),8),
-    ' SrcPixmap=',HexStr(Cardinal(SrcPixmap),8),
+    ' SrcPixmap=[',GetWindowDebugReport(SrcPixmap),']',
     ' SrcX=',SrcX,' SrcY=',SrcY,' SrcWidth=',SrcWidth,' SrcHeight=',SrcHeight,
-    ' NewPixmap=',HexStr(Cardinal(NewPixmap),8),
+    ' NewPixmap=[',GetWindowDebugReport(NewPixmap),']',
     ' NewWidth=',NewWidth,' NewHeight=',NewHeight);
   {$ENDIF}
   Result := False;
@@ -6603,6 +6632,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.263  2004/02/28 00:34:36  mattias
+  fixed CreateComponent for buttons, implemented basic Drag And Drop
+
   Revision 1.262  2004/02/27 00:42:41  marc
   * Interface CreateComponent splitup
   * Implemented CreateButtonHandle on GTK interface

@@ -37,7 +37,7 @@ type
     procedure InitFPImageReader(ImgReader: TFPCustomImageReader); override;
     procedure FinalizeFPImageReader(ImgReader: TFPCustomImageReader); override;
     procedure InitFPImageWriter(ImgWriter: TFPCustomImageWriter); override;
-    procedure ReadStream(Stream: TStream; Size: Longint); override;
+    procedure ReadStream(Stream: TStream; UseSize: boolean; Size: Longint); override;
     procedure WriteStream(Stream: TStream; WriteSize: Boolean); override;
   public
     constructor Create; override;
@@ -119,9 +119,10 @@ begin
   Result:=TFPWriterJPEG;
 end;
 
-procedure TJPEGImage.ReadStream(Stream: TStream; Size: Longint);
+procedure TJPEGImage.ReadStream(Stream: TStream; UseSize: boolean;
+  Size: Longint);
 begin
-  ReadStreamWithFPImage(Stream,Size,TFPReaderJPEG);
+  ReadStreamWithFPImage(Stream,UseSize,Size,TFPReaderJPEG);
 end;
 
 procedure TJPEGImage.WriteStream(Stream: TStream; WriteSize: Boolean);

@@ -23,7 +23,6 @@
     TTreeView for LCL
 
   ToDo:
-    - Drag&Drop
     - Editing
     - Columns
 }
@@ -2602,7 +2601,6 @@ begin
   FChangeTimer.Enabled := False;
   FChangeTimer.Interval := 0;
   FChangeTimer.OnTimer := @OnChangeTimer;
-  //FEditInstance := MakeObjectInstance(EditWndProc);
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @ImageListChange;
   FSelectedColor:=clHighlight;
@@ -2620,36 +2618,19 @@ begin
   FreeThenNil(FChangeTimer);
   FreeThenNil(FSaveItems);
   FreeThenNil(FDragImage);
-  //FMemStream.Free;
-  //FreeObjectInstance(FEditInstance);
   FreeThenNil(FImageChangeLink);
   FreeThenNil(FStateChangeLink);
   inherited Destroy;
 end;
 
 procedure TCustomTreeView.CreateParams(var Params: TCreateParams);
-{const
-  BorderStyles: array[TBorderStyle] of DWORD = (0, WS_BORDER);
-  LineStyles: array[Boolean] of DWORD = (0, TVS_HASLINES);
-  RootStyles: array[Boolean] of DWORD = (0, TVS_LINESATROOT);
-  ButtonStyles: array[Boolean] of DWORD = (0, TVS_HASBUTTONS);
-  EditStyles: array[Boolean] of DWORD = (TVS_EDITLABELS, 0);
-  HideSelections: array[Boolean] of DWORD = (TVS_SHOWSELALWAYS, 0);
-  DragStyles: array[TDragMode] of DWORD = (TVS_DISABLEDRAGDROP, 0);
-  RTLStyles: array[Boolean] of DWORD = (0, TVS_RTLREADING);
-  ToolTipStyles: array[Boolean] of DWORD = (TVS_NOTOOLTIPS, 0);
-  AutoExpandStyles: array[Boolean] of DWORD = (0, TVS_SINGLEEXPAND);
-  HotTrackStyles: array[Boolean] of DWORD = (0, TVS_TRACKSELECT);
-  RowSelectStyles: array[Boolean] of DWORD = (0, TVS_FULLROWSELECT);}
 const
   ScrollBar: array[TScrollStyle] of DWORD = (0, WS_HSCROLL, WS_VSCROLL,
     WS_HSCROLL or WS_VSCROLL, WS_HSCROLL, WS_VSCROLL, WS_HSCROLL or WS_VSCROLL);
   BorderStyles: array[TBorderStyle] of DWORD = (0, WS_BORDER);
   ClassStylesOff = CS_VREDRAW or CS_HREDRAW;
 begin
-  //InitCommonControl(ICC_TREEVIEW_CLASSES);
   inherited CreateParams(Params);
-  //CreateSubClass(Params, WC_TREEVIEW);
   with Params do begin
     {$IFOPT R+}{$DEFINE RangeCheckOn}{$R-}{$ENDIF}
     WindowClass.Style := WindowClass.Style and not Cardinal(ClassStylesOff);
@@ -2661,42 +2642,12 @@ begin
       ExStyle := ExStyle or WS_EX_CLIENTEDGE;
     end;
   end;
-  {with Params do begin
-    Style := Style or LineStyles[FShowLines] or BorderStyles[FBorderStyle] or
-      RootStyles[FShowRoot] or ButtonStyles[FShowButtons] or
-      EditStyles[FReadOnly] or HideSelections[FHideSelection] or
-      DragStyles[DragMode] or RTLStyles[UseRightToLeftReading] or
-      ToolTipStyles[FToolTips] or AutoExpandStyles[FAutoExpand] or
-      HotTrackStyles[FHotTrack] or RowSelectStyles[FRowSelect];
-    if Ctl3D and NewStyleControls and (FBorderStyle = bsSingle) then begin
-      Style := Style and not WS_BORDER;
-      ExStyle := Params.ExStyle or WS_EX_CLIENTEDGE;
-    end;
-    WindowClass.style := WindowClass.style and not (CS_HREDRAW or CS_VREDRAW);
-  end;}
 end;
 
 procedure TCustomTreeView.CreateWnd;
 begin
   Exclude(FStates,tvsStateChanging);
   inherited CreateWnd;
-
-  //TreeView_SetBkColor(Handle, ColorToRGB(Color));
-  //TreeView_SetTextColor(Handle, ColorToRGB(Font.Color));
-  {if FMemStream <> nil then begin
-    Items.ReadData(FMemStream);
-    Items.ReadExpandedState(FMemStream);
-    FMemStream.Destroy;
-    FMemStream := nil;
-    SetTopItem(Items.GetNodeFromIndex(FSaveTopIndex));
-    FSaveTopIndex := 0;
-    SetSelection(Items.GetNodeFromIndex(FSaveIndex));
-    FSaveIndex := 0;
-  end;}
-  //if (Images <> nil) and Images.HandleAllocated then
-  //  SetImageList(Images.Handle, TVSIL_NORMAL);
-  //if (StateImages <> nil) and StateImages.HandleAllocated then
-  //  SetImageList(StateImages.Handle, TVSIL_STATE);
 end;
 
 procedure TCustomTreeView.InitializeWnd;
@@ -2939,9 +2890,6 @@ end;
 
 procedure TCustomTreeView.SetDragMode(Value: TDragMode);
 begin
-  // ToDo: implement Drag&Drop
-  //if Value <> DragMode then
-  //  SetComCtlStyle(Self, TVS_DISABLEDRAGDROP, Value = dmManual);
   inherited SetDragMode(Value);
 end;
 
@@ -4028,7 +3976,7 @@ var
   P: TPoint;
 begin
   {$IFDEF VerboseDrag}
-  writeln('TCustomTreeView.DoStartDrag A ');
+  writeln('TCustomTreeView.DoStartDrag A ',Name,':',ClassName);
   {$ENDIF}
   inherited DoStartDrag(DragObject);
   FLastDropTarget := nil;
@@ -4047,27 +3995,25 @@ end;
 procedure TCustomTreeView.DoEndDrag(Target: TObject; X, Y: Integer);
 begin
   {$IFDEF VerboseDrag}
-  writeln('TCustomTreeView.DoEndDrag A ');
+  writeln('TCustomTreeView.DoEndDrag A ',Name,':',ClassName);
   {$ENDIF}
   inherited DoEndDrag(Target, X, Y);
   FLastDropTarget := nil;
 end;
 
 procedure TCustomTreeView.CMDrag(var AMessage: TCMDrag);
-var
-  P: TPoint;
 begin
   inherited CMDrag(AMessage);
   {$IFDEF VerboseDrag}
-  writeln('TCustomTreeView.CMDrag ',ord(AMessage.DragMessage));
+  writeln('TCustomTreeView.CMDrag ',Name,':',ClassName,' ',ord(AMessage.DragMessage));
   {$ENDIF}
   with AMessage, DragRec^ do
     case DragMessage of
-      dmDragMove:
+      {dmDragMove:
         begin
           P:=ScreenToClient(Pos);
           DoDragOver(Source, P.X, P.Y, AMessage.Result <> 0);
-        end;
+        end;}
       dmDragLeave:
         begin
           TDragObject(Source).HideDragImage;
@@ -4079,14 +4025,15 @@ begin
     end;
 end;
 
-procedure TCustomTreeView.DoDragOver(Source: TDragObject; X, Y: Integer;
-  CanDrop: Boolean);
+procedure TCustomTreeView.DragOver(Source: TObject; X,Y: Integer;
+  State: TDragState; var Accept: Boolean);
 var
   Node: TTreeNode;
 begin
+  inherited DragOver(Source,X,Y,State,Accept);
   Node := GetNodeAt(X, Y);
   {$IFDEF VerboseDrag}
-  writeln('TCustomTreeView.DoDragOver ',Node<>nil,' ',Node <> DropTarget,' ',Node = FLastDropTarget);
+  writeln('TCustomTreeView.DragOver ',Name,':',ClassName,' ',Node<>nil,' ',Node <> DropTarget,' ',Node = FLastDropTarget);
   {$ENDIF}
   if (Node <> nil)
   and ((Node <> DropTarget) or (Node = FLastDropTarget)) then

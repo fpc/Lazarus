@@ -67,7 +67,6 @@ Procedure TCanvas.CopyRect(const Dest: TRect; SrcCanvas: TCanvas;
 var
   SH, SW, DH, DW: Integer;
 Begin
-  Assert(False, Format('Trace:==> [TCanvas.CopyRect] ', []));
   if SrcCanvas= nil then exit;
 
   SH := Source.Bottom - Source.Top;
@@ -81,14 +80,12 @@ Begin
   SrcCanvas.RequiredState([csHandleValid, csBrushValid]);
   RequiredState([csHandleValid, csBrushValid]);
 
-  //writeln('TCanvas.CopyRect ',ClassName,' SRcCanvas=',SrcCanvas.ClassName,' ',
+  //writeln('TCanvas.CopyRect ',ClassName,' SrcCanvas=',SrcCanvas.ClassName,' ',
   //  ' Src=',Source.Left,',',Source.Top,',',SW,',',SH,
   //  ' Dest=',Dest.Left,',',Dest.Top,',',DW,',',DH);
   StretchBlt(FHandle, Dest.Left, Dest.Top, DW, DH,
     SrcCanvas.FHandle, Source.Left, Source.Top, SW, SH, CopyMode);
   Changed;
-
-  Assert(False, Format('Trace:<== [TCanvas.CopyRect] ', []));
 end;
 {-----------------------------------------------}
 {--  TCanvas.GetPixel --}
@@ -1261,6 +1258,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.69  2004/02/28 00:34:35  mattias
+  fixed CreateComponent for buttons, implemented basic Drag And Drop
+
   Revision 1.68  2004/02/23 08:19:04  micha
   revert intf split
 

@@ -287,10 +287,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.Clear;
 begin
+  if FCount=0 then exit;
   While Count<>0 do
     Delete(0);
   FCount := 0;
   FImageList.Clear;
+  FMaskList.Clear;
   Change;
 end;
 
@@ -307,6 +309,7 @@ begin
   FHeight := 16;
   FWidth := 16;
   FImageList := TList.Create;  //shane
+  FMaskList := TList.Create;
   Initialize;
 end;
 
@@ -324,6 +327,7 @@ begin
   FHeight := AHeight;
   FWidth := AWidth;
   FImageList := TList.Create;  //shane
+  FMaskList := TList.Create;
   Initialize;
 end;
 
@@ -375,6 +379,11 @@ begin
       Obj.Free;
     fImageList.Items[Index]:=nil;
     fImageList.Pack;
+    Obj:=TObject(fMaskList.Items[Index]);
+    If Assigned(Obj) then
+      Obj.Free;
+    fMaskList.Items[Index]:=nil;
+    fMaskList.Pack;
 //    ShiftImages(FBitmap.Canvas, Index, 1);
 //    ShiftImages(FMaskBitmap.Canvas, Index, 1);
     Change;
@@ -397,8 +406,9 @@ begin
   FMaskBitmap.Free;
   FMaskBitmap:=nil;
   for i:=0 to FImageList.Count-1 do TObject(FImageList[i]).Free;
-  FImageList.Free;  //shane
-  FImageList:=nil;
+  for i:=0 to FMaskList.Count-1 do TObject(FMaskList[i]).Free;
+  FreeThenNil(FImageList);  //shane
+  FreeThenNil(FMaskList);  //shane
   inherited Destroy;
   FChangeLinkList.Free;
   FChangeLinkList:=nil;
@@ -422,7 +432,7 @@ var
 begin
   if (FCount = 0) or (Index >= FCount) then Exit;
   aBitmap := TBitmap(FImageList[Index]);
-
+  // ToDo: Mask
   Canvas.CopyRect(Rect(X, Y, X + FWidth, Y + FHeight), aBitmap.Canvas,
                   Rect(0, 0, FWidth, FHeight));
 end;
@@ -454,23 +464,9 @@ end;
   Creates a copy of the index'th image.
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.GetBitmap(Index: Integer; Image: TBitmap);
-Var Stream : TMemoryStream;
-    aBmp   : TbitMap;
 begin
   if (FCount = 0) or (Image = nil) then Exit; 
-  
-  aBmp:=TBitMap(self.FImageList.Items[Index]);
-  if Assigned(aBmp) then
-  begin
-    Stream:=TMemoryStream.Create;
-    try
-      aBmp.SaveToStream(Stream);
-      Stream.Position:=0;
-      Image.LoadFromStream(Stream);
-    finally
-      Stream.Free;
-    end;
-  end;
+  Image.Assign(TBitMap(FImageList.Items[Index]));
 end;
 
 {------------------------------------------------------------------------------
@@ -484,7 +480,7 @@ procedure TCustomImageList.GetInternalImage(Index: integer; var Image,
   Mask: TBitmap);
 begin
   Image:=TBitmap(FImageList[Index]);
-  Mask:=nil;
+  Mask:=TBitmap(FMaskList[Index]);
 end;
 
 {------------------------------------------------------------------------------
@@ -632,6 +628,7 @@ begin
   if (Image <> nil)
   then begin
     FImageList.Insert(Index,Image);
+    FMaskList.Insert(Index,Mask);
     Change;
  {   nCount := Image.Width div FWidth;
     if nCount > 0
@@ -751,6 +748,7 @@ procedure TCustomImageList.Move(CurIndex, NewIndex: Integer);
 begin
   if CurIndex <> NewIndex then begin
     FImageList.Move(CurIndex,NewIndex);
+    FMaskList.Move(CurIndex,NewIndex);
     Change;
   end;
 end;
@@ -802,7 +800,7 @@ var
   StreamPos: TStreamSeekType;
 
   Image, Img, Mask, Msk: TBitmap;
-  n,m, Size, NewCount: Integer;
+  Row, Col, Size, NewCount: Integer;
   SrcRect: TRect;
   HasMask: Boolean;
 begin
@@ -827,18 +825,26 @@ begin
     then begin
       AStream.ReadWord; //Skip ?
       NewCount := AStream.ReadWord;
+      //writeln('NewCount=',NewCount);
       AStream.ReadWord; //Skip Capacity
       AStream.ReadWord; //Skip Grow
       FWidth := AStream.ReadWord;
+      //writeln('NewWidth=',FWidth);
       FHeight := AStream.ReadWord;
-      FBKColor := AStream.ReadDWord;
+      //writeln('NewHeight=',FHeight);
+      FBKColor := TColor(AStream.ReadDWord);
       HasMask := (AStream.ReadWord and 1) = 1;
       AStream.ReadDWord; //Skip ?
       AStream.ReadDWord; //Skip ?
 
-      Image.LoadFromStream(AStream);
-      if HasMask
-      then Mask.LoadFromStream(AStream);
+      //writeln('TCustomImageList.ReadData After Header ',FWidth,',',FHeight,' ',AStream.Position,'/',AStream.Size);
+      Image.ReadStream(AStream,false,0);
+      //Image.SaveToFile('output_test.bmp');
+      //writeln('TCustomImageList.ReadData After Image ',Image.Width,',',Image.Height,' Masked=',Image.MaskHandleAllocated,' StreamPos=',AStream.Position,'/',AStream.Size,' HasMask=',HasMask);
+      if HasMask then begin
+        Mask.ReadStream(AStream,false,0);
+        //writeln('TCustomImageList.ReadData After Mask ',Mask.Width,',',Mask.Height,' StreamPos=',AStream.Position,'/',AStream.Size,' ');
+      end;
     end
     else begin
       // D2 has no signature, so restore original position
@@ -846,34 +852,45 @@ begin
       AStream.ReadBuffer(Size, SizeOf(Size));
       AStream.ReadBuffer(NewCount, SizeOf(NewCount));
 
-      Image.LoadFromStream(AStream);
+      Image.ReadStream(AStream,false,0);
       AStream.Position := StreamPos + Size;
-      Mask.LoadFromStream(AStream);
-
       HasMask := True;
+      if HasMask then
+        Mask.ReadStream(AStream,false,0);
     end;
 
-    SrcRect := Rect(0, 0, Width, Height);
+
+    // ATM we are creating one image/mask for each icon.
+    // But eventually there should only be one TBitmap.
+    SrcRect := Bounds(0, 0, Width, Height);
     BeginUpdate;
     try
-      for n := 0 to (Image.Height div Height) - 1 do
+      for Row := 0 to (Image.Height div Height) - 1 do
       begin
-        if NewCount = 0 then Break;
-        for m := 0 to (Image.Width div Width) - 1 do
+        if NewCount <= 0 then Break;
+        for Col := 0 to (Image.Width div Width) - 1 do
         begin
-          if NewCount = 0 then Break;
+          if NewCount <= 0 then Break;
           Img := TBitmap.Create;
           Img.Width := Width;
           Img.Height := Height;
           Img.Canvas.CopyRect(SrcRect, Image.Canvas,
-            Bounds(m * Width, n * Height, Width, Height));
+                              Bounds(Col * Width, Row * Height, Width, Height));
+          Img.Canvas.Brush.Color:=clRed;
+          Img.Canvas.Fillrect(Rect(3,3,10,8));
+          //Img.SaveToFile('debug_imglist_i'+IntToStr(Count)+'.bmp');
 
-          Msk := TBitmap.Create;
-          Msk.Monochrome := True;
-          Msk.Width := Width;
-          Msk.Height := Height;
-          Msk.Canvas.CopyRect(SrcRect, Mask.Canvas,
-            Bounds(m * Width, n * Height, Width, Height));
+          if Mask<>nil then begin
+            Msk := TBitmap.Create;
+            Msk.Monochrome := True;
+            Msk.Width := Width;
+            Msk.Height := Height;
+            Msk.Canvas.CopyRect(SrcRect, Mask.Canvas,
+              Bounds(Col * Width, Row * Height, Width, Height));
+            //Msk.SaveToFile('debug_imglist_m'+IntToStr(Count)+'.bmp');
+            // ToDo: combine image and mask
+          end else
+            Msk:=nil;
 
           AddDirect(Img, Msk);
           Img := nil;
@@ -1145,6 +1162,9 @@ end;
 {
 
   $Log$
+  Revision 1.26  2004/02/28 00:34:35  mattias
+  fixed CreateComponent for buttons, implemented basic Drag And Drop
+
   Revision 1.25  2004/02/25 11:12:06  marc
   + Added delphi stream reading support
 

@@ -38,6 +38,7 @@
 function TGTKObject.AlignmentCreateHandle(const AAlignment: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -50,6 +51,7 @@ end;
 function TGTKObject.ArrowCreateHandle(const AArrow: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -62,6 +64,7 @@ end;
 function TGTKObject.BitBtnCreateHandle(const ABitBtn: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -71,7 +74,8 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGTKObject.ButtonCreateHandle(const AButton: TObject; const AParams: TCreateParams): THandle;
+function TGTKObject.ButtonCreateHandle(const AButton: TObject;
+  const AParams: TCreateParams): THandle;
 var
   Caption, Pattern: String;
   AccelKey: Char;
@@ -88,7 +92,7 @@ begin
   Result := THandle(gtk_button_new_with_label(PChar(Caption)));
   if Result = 0 then Exit;
   
-  gtk_label_set_pattern(PGtkLabel(Result), PChar(Pattern));
+  gtk_label_set_pattern(PGtkLabel(PGtkButton(Result)^.Child), PChar(Pattern));
   Accelerate(Button, PGtkWidget(Result), Ord(AccelKey), 0, 'clicked');
   
   WidgetInfo := CreateWidgetInfo(Result, Button, AParams);
@@ -114,6 +118,7 @@ end;
 function TGTKObject.CalendarCreateHandle(const ACalendar: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -126,6 +131,7 @@ end;
 function TGTKObject.CheckboxCreateHandle(const ACheckBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -138,6 +144,7 @@ end;
 function TGTKObject.CheckListBoxCreateHandle(const ACheckListBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -150,6 +157,7 @@ end;
 function TGTKObject.CListBoxCreateHandle(const ACListBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -161,6 +169,7 @@ end;
 function TGTKObject.ColorDialogCreateHandle(const AColorDialog: TObject): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -173,8 +182,8 @@ end;
 function TGTKObject.ComboBoxCreateHandle(const AComboBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
-
 
 {------------------------------------------------------------------------------
   function TGTKObject.DrawSplitter(DC: HDC; const ARect: TRect;
@@ -233,6 +242,7 @@ end;
 function TGTKObject.EditCreateHandle(const AEdit: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -244,6 +254,7 @@ end;
 function TGTKObject.FileDialogCreateHandle(const AFileDialog: TObject): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -255,6 +266,7 @@ end;
 function TGTKObject.FontDialogCreateHandle(const AFontDialog: TObject): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -267,6 +279,7 @@ end;
 function TGTKObject.FormCreateHandle(const AForm: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -497,6 +510,7 @@ end;
 function TGTKObject.GroupBoxCreateHandle(const AGroupBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -509,6 +523,7 @@ end;
 function TGTKObject.HintWindowCreateHandle(const AHintWindow: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -521,6 +536,7 @@ end;
 function TGTKObject.ImageCreateHandle(const AImage: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -546,6 +562,7 @@ end;
 function TGTKObject.LabelCreateHandle(const ALabel: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -558,6 +575,7 @@ end;
 function TGTKObject.ListBoxCreateHandle(const AListBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -570,6 +588,7 @@ end;
 function TGTKObject.ListViewCreateHandle(const AListView: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -581,6 +600,7 @@ end;
 function TGTKObject.MainMenuCreateHandle(const AMainMenu: TObject): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -593,6 +613,7 @@ end;
 function TGTKObject.MemoCreateHandle(const AMemo: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -604,6 +625,7 @@ end;
 function TGTKObject.MenuItemCreateHandle(const AMenuItem: TObject): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 {$EndIf}
 
@@ -670,6 +692,7 @@ end;
 function TGTKObject.NotebookCreateHandle(const ANotebook: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -681,6 +704,7 @@ end;
 function TGTKObject.OpenFileDialogCreateHandle(const AOpenFileDialog: TObject): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -693,6 +717,7 @@ end;
 function TGTKObject.PageCreateHandle(const APage: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -705,6 +730,7 @@ end;
 function TGTKObject.PairSplitterCreateHandle(const APairSplitter: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -717,6 +743,7 @@ end;
 function TGTKObject.PairSplitterSideCreateHandle(const APairSplitterSide: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -729,6 +756,7 @@ end;
 function TGTKObject.PanelCreateHandle(const APanel: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -740,6 +768,7 @@ end;
 function TGTKObject.PopupMenuCreateHandle(const APopupMenu: TObject): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -751,6 +780,7 @@ end;
 function TGTKObject.PreviewFileControlCreateHandle(const APreviewFileControl: TObject): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -762,6 +792,7 @@ end;
 function TGTKObject.PreviewFileDialogCreateHandle(const APreviewFileDialog: TObject): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -774,6 +805,7 @@ end;
 function TGTKObject.ProgressBarCreateHandle(const AProgressBar: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -786,6 +818,7 @@ end;
 function TGTKObject.RadioButtonCreateHandle(const ARadioButton: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -797,6 +830,7 @@ end;
 function TGTKObject.SaveFileDialogCreateHandle(const ASaveFileDialog: TObject): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -809,6 +843,7 @@ end;
 function TGTKObject.ScrollBarCreateHandle(const AScrollBar: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -821,6 +856,7 @@ end;
 function TGTKObject.ScrollBoxCreateHandle(const AScrollBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -833,6 +869,7 @@ end;
 function TGTKObject.ScrolledWindowCreateHandle(const AScrolledWindow: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -844,6 +881,7 @@ end;
 function TGTKObject.SelectDirectoryDialogCreateHandle(const ASelectDirectoryDialog: TObject): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -856,6 +894,7 @@ end;
 function TGTKObject.SpeedButtonCreateHandle(const ASpeedButton: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -868,6 +907,7 @@ end;
 function TGTKObject.SpineditCreateHandle(const ASpinEdit: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -880,6 +920,7 @@ end;
 function TGTKObject.StatusBarCreateHandle(const AStatusBar: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -947,6 +988,7 @@ end;
 function TGTKObject.ToggleBoxCreateHandle(const AToggleBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -959,6 +1001,7 @@ end;
 function TGTKObject.ToolbarCreateHandle(const AToolbar: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -971,6 +1014,7 @@ end;
 function TGTKObject.ToolButtonCreateHandle(const AToolButton: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -983,6 +1027,7 @@ end;
 function TGTKObject.TrackBarCreateHandle(const ATrackBar: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -995,6 +1040,7 @@ end;
 function TGTKObject.WincontrolCreateHandle(const AFixed: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
+  Result:=0;
 end;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
@@ -1002,6 +1048,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.17  2004/02/28 00:34:35  mattias
+  fixed CreateComponent for buttons, implemented basic Drag And Drop
+
   Revision 1.16  2004/02/27 00:42:41  marc
   * Interface CreateComponent splitup
   * Implemented CreateButtonHandle on GTK interface

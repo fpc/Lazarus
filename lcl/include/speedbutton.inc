@@ -504,7 +504,7 @@ begin
   if FFlat and Enabled
   then begin
     GetCursorPos(p);
-    FMouseInControl := (FindDragTarget(P, True) <> Self);
+    FMouseInControl := (FindControlAtPosition(P, True) <> Self);
     if FMouseInControl
     then Perform(CM_MOUSELEAVE,0,0)
     else Perform(CM_MOUSEENTER,0,0);
@@ -773,6 +773,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.50  2004/02/28 00:34:35  mattias
+  fixed CreateComponent for buttons, implemented basic Drag And Drop
+
   Revision 1.49  2004/02/23 18:24:38  mattias
   completed new TToolBar
 

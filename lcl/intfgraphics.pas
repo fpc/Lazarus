@@ -31,8 +31,8 @@ unit IntfGraphics;
 interface
 
 uses
-  Classes, SysUtils, fpImage, FPCAdds, AvgLvlTree, LCLType, LCLProc, GraphType,
-  LCLIntf;
+  Classes, SysUtils, fpImage, FPReadBMP, BMPComn, FPCAdds, AvgLvlTree, LCLType,
+  LCLProc, GraphType, LCLIntf;
 
 type
   { TLazIntfImage }
@@ -300,6 +300,17 @@ type
     property NibblesPerSample: word read FNibblesPerSample
                                     write SetNibblesPerSample;
   end;
+  
+  
+  {$IFNDEF VER1_0_10}
+  { TLazReaderBMP }
+  { This is an imroved FPImage writer for bmp images. }
+  TLazReaderBMP = class(TFPReaderBMP)
+  protected
+    procedure SetupRead(nPalette, nRowBits: Integer; Stream : TStream); override;
+    procedure WriteScanLine(Row: Integer; Img: TFPCustomImage); override;
+  end;
+  {$ENDIF}
 
 
 function ReadCompleteStreamToString(Str: TStream; StartSize: integer): string;
@@ -1318,6 +1329,12 @@ end;
 
 procedure TLazIntfImage.SetInternalColor(x, y: integer; const Value: TFPColor);
 begin
+  {if (x=0) and (y=0) then begin
+    // a common bug in the readers is that Alpha is reversed
+    writeln('TLazIntfImage.SetInternalColor ',x,',',y,' ',Value.Red,',',Value.Green,',',Value.Blue,',',Value.Alpha);
+    if Value.Alpha<>alphaOpaque then
+      RaiseGDBException('');
+  end;}
   OnSetInternalColor(x,y,Value);
 end;
 
@@ -2803,6 +2820,49 @@ begin
   if Root<>nil then
     Root.ConsistencyCheck;
 end;
+
+{$IFNDEF VER1_0_10}
+{ TLazReaderBMP }
+
+procedure TLazReaderBMP.SetupRead(nPalette, nRowBits: Integer; Stream: TStream
+  );
+var
+  i: Integer;
+begin
+  inherited SetupRead(nPalette, nRowBits, Stream);
+  // workaround for palette bug in FPReadBMP
+  for i:=0 to nPalette-1 do begin
+    FPalette[i].Alpha:=$ffff-FPalette[i].Alpha;
+  end;
+end;
+
+procedure TLazReaderBMP.WriteScanLine(Row: Integer; Img: TFPCustomImage);
+// workaround for alpha value bug in FPReadBMP
+
+  function BmpRGBAToFPColor(Const RGBA: TColorRGBA) : TFPcolor;
+  var
+    NewAlpha: Byte;
+  begin
+    with Result, RGBA do
+      begin
+      Red   :=(R shl 8) or R;
+      Green :=(G shl 8) or G;
+      Blue  :=(B shl 8) or B;
+      NewAlpha:=255-A;
+      alpha :=(NewAlpha shl 8) or NewAlpha;
+      end;
+  end;
+
+var
+  Column: Integer;
+begin
+  if BFI.BitCount=32 then begin
+    for Column:=0 to img.Width-1 do
+      img.colors[Column,Row]:=BmpRGBAToFPColor(PColorRGBA(LineBuf)[Column]);
+  end else
+    inherited WriteScanLine(Row, Img);
+end;
+{$ENDIF}
 
 //------------------------------------------------------------------------------
 procedure InternalInit;

@@ -341,7 +341,7 @@ var
   P: TPoint;
 begin
   GetCursorPos(P);
-  Result := FindDragTarget(P, True);
+  Result := FindControlAtPosition(P, True);
   if (Result <> nil) and (csDesigning in Result.ComponentState) then
     Result := nil;
 end;
@@ -1176,6 +1176,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.76  2004/02/28 00:34:35  mattias
+  fixed CreateComponent for buttons, implemented basic Drag And Drop
+
   Revision 1.75  2004/02/23 23:15:13  mattias
   improved FindDragTarget
 

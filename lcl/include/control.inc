@@ -48,13 +48,17 @@ end;
   starts immediately.
  ------------------------------------------------------------------------------}
 procedure TControl.BeginDrag(Immediate: Boolean; Threshold: Integer);
+
+
+
 var
   P : TPoint;
 begin
+  if (Self is TCustomForm) and (FDragKind <> dkDock) then
+    raise EInvalidOperation.Create('Forms can not be dragged, only docked');
+
   // start a drag operation, if not already running
-  if (DragControl = nil) or (Pointer(DragControl) = Pointer($FFFFFFFF)) then
-  Begin
-    DragControl := nil;
+  if (DragControl = nil) then begin
 
     // if the last mouse down was not followed by a mouse up, simulate a
     // mouse up. This way applications need only to react to mouse up to
@@ -67,8 +71,7 @@ begin
 
     if Threshold < 0 then
       Threshold := Mouse.DragThreshold;
-    if Pointer(DragControl) <> Pointer($FFFFFFFF) then
-      DragInitControl(Self,Immediate,Threshold);
+    DragInitControl(Self,Immediate,Threshold);
   end;
 end;
 
@@ -794,6 +797,9 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.DragCanceled;
 begin
+  {$IFDEF VerboseDrag}
+  writeln('TControl.DragCanceled');
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -802,6 +808,9 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.DoStartDrag(var DragObject: TDragObject);
 begin
+  {$IFDEF VerboseDrag}
+  writeln('TControl.DoStartDrag ',Name,':',ClassName);
+  {$ENDIF}
   if Assigned(FOnStartDrag) then FOnStartDrag(Self, DragObject);
 end;
 
@@ -810,6 +819,9 @@ end;
 ------------------------------------------------------------------------------}
 Procedure TControl.DoEndDrag(Target: TObject; X,Y: Integer);
 Begin
+  {$IFDEF VerboseDrag}
+  writeln('TControl.DoEndDrag ',Name,':',ClassName,' XY=',X,',',Y);
+  {$ENDIF}
   if Assigned(FOnEndDrag) then FOnEndDrag(Self,Target,X,Y);
 end;
 
@@ -982,31 +994,43 @@ end;
 {       TControl.DoDragMsg
 }
 {------------------------------------------------------------------------------}
-Procedure TControl.DoDragMsg(var Dragmsg: TCMDrag);
+Procedure TControl.DoDragMsg(var DragMsg: TCMDrag);
 var
   Accepts: Boolean;
-  S: TObject;
+  Src: TObject;
   P: TPoint;
 Begin
   {$IFDEF VerboseDrag}
-  writeln('TControl.DoDragMsg DragMsg.DragMessage=',ord(DragMsg.DragMessage));
+  writeln('TControl.DoDragMsg ',Name,':',ClassName,' DragMsg.DragMessage=',ord(DragMsg.DragMessage));
   {$ENDIF}
-  S := DragMsg.Dragrec^.Source;
-  Accepts := True;
-  P:=ScreenToClient(DragMsg.Dragrec^.pos);
+  Src := DragMsg.Dragrec^.Source;
+  P:=ScreenToClient(DragMsg.Dragrec^.Pos);
+  {$IFDEF VerboseDrag}
+  writeln('TControl.DoDragMsg ',Name,':',ClassName,' DragMsg.Dragrec^.Pos=',DragMsg.Dragrec^.Pos.X,',',DragMsg.Dragrec^.Pos.Y,' -> P=',P.X,P.Y);
+  if P.X<0 then RaiseGDBException('');
+  {$ENDIF}
   case DragMsg.DragMessage of
-   dmDragEnter, dmDragLeave, dmDragMove:
-    begin
-      case DragMsg.DragMessage of
-        dmDragEnter: DragOver(S,P.X,P.Y,dsDragEnter,Accepts);
-        dmDragLeave: DragOver(S,P.X,P.Y,dsDragLeave,Accepts);
-        dmDragMove : DragOver(S,P.X,P.Y,dsDragMove,Accepts);
+
+    dmFindTarget:
+      DragMsg.Result := longint(Self);
+
+    dmDragEnter, dmDragLeave, dmDragMove:
+      begin
+        Accepts := True;
+        case DragMsg.DragMessage of
+          dmDragEnter: DragOver(Src,P.X,P.Y,dsDragEnter,Accepts);
+          dmDragLeave: DragOver(Src,P.X,P.Y,dsDragLeave,Accepts);
+          dmDragMove : DragOver(Src,P.X,P.Y,dsDragMove,Accepts);
+        end;
+        if Accepts then
+          DragMsg.Result := 1
+        else
+          DragMsg.Result := 0;
       end;
-      if Accepts then
-        DragMsg.Result := 1
-      else
-        DragMsg.Result := 0;
-    end;
+
+    dmDragDrop:
+      DragDrop(Src, P.X, P.Y);
+
   end; //case
 end;
 
@@ -1016,6 +1040,9 @@ end;
 Procedure TControl.DragOver(Source: TObject; X,Y : Integer; State: TDragState;
   var Accept:Boolean);
 begin
+  {$IFDEF VerboseDrag}
+  writeln('TControl.DragOver ',Name,':',ClassName,' XY=',X,',',Y);
+  {$ENDIF}
   Accept := False;
   if Assigned(FOnDragOver) then begin
     Accept := True;
@@ -1028,6 +1055,9 @@ end;
 ------------------------------------------------------------------------------}
 Procedure TControl.DragDrop(Source: TObject; X,Y : Integer);
 begin
+  {$IFDEF VerboseDrag}
+  writeln('TControl.DragDrop ',Name,':',ClassName,' XY=',X,',',Y);
+  {$ENDIF}
   If Assigned(FOnDragDrop) then FOnDragDrop(Self, Source,X,Y);
 end;
 
@@ -1312,7 +1342,6 @@ begin
           LM_MOUSEMOVE:
             begin
               Application.HintMouseMessage(Self, TheMessage);
-              if Dragging then DragObject.MouseMsg(TheMessage);
             end;
 
           LM_LBUTTONDOWN,
@@ -1337,7 +1366,6 @@ begin
           LM_LBUTTONUP:
             begin
               Exclude(FControlState, csLButtonDown);
-              if Dragging then DragObject.MouseMsg(TheMessage);
             end;
         end;
       end
@@ -2362,7 +2390,13 @@ End;
 
 Procedure TControl.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
+var
+  P: TPoint;
 begin
+  if (Button in [mbLeft,mbRight]) and Dragging and (DragObject<>nil) then begin
+    P:=ClientToScreen(Point(X,Y));
+    DragObject.MouseDown(Button,Shift,P.X,P.Y);
+  end;
   if Assigned(FOnMouseDown) then FOnMouseDown(Self, Button, Shift, X,Y);
 end;
 
@@ -2370,8 +2404,14 @@ end;
   TControl MouseMove
 
 ------------------------------------------------------------------------------}
-Procedure TControl.MouseMove(Shift:TShiftState; X, Y: Integer);
+Procedure TControl.MouseMove(Shift: TShiftState; X, Y: Integer);
+var
+  P: TPoint;
 begin
+  if Dragging and (DragObject<>nil) then begin
+    P:=ClientToScreen(Point(X,Y));
+    DragObject.MouseMove(Shift,P.X,P.Y);
+  end;
   if Assigned(FOnMouseMove) then FOnMouseMove(Self, Shift, X,Y);
 end;
 
@@ -2380,7 +2420,13 @@ end;
 ------------------------------------------------------------------------------}
 Procedure TControl.MouseUp(Button: TMouseButton; Shift:TShiftState;
   X, Y: Integer);
+var
+  P: TPoint;
 begin
+  if (Button in [mbLeft,mbRight]) and Dragging and (DragObject<>nil) then begin
+    P:=ClientToScreen(Point(X,Y));
+    DragObject.MouseUp(Button,Shift,P.X,P.Y);
+  end;
   if Assigned(FOnMouseUp) then FOnMouseUp(Self, Button, Shift, X,Y);
 end;
 
@@ -2400,7 +2446,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.CaptureChanged;
 begin
-  // anything to do here?
+  if Dragging and (DragObject<>nil) then DragObject.CaptureChanged(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -2836,6 +2882,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.175  2004/02/28 00:34:35  mattias
+  fixed CreateComponent for buttons, implemented basic Drag And Drop
+
   Revision 1.174  2004/02/23 18:24:38  mattias
   completed new TToolBar
 

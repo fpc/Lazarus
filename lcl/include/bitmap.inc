@@ -456,7 +456,7 @@ begin
       StreamType:=bnWinBitmap;
     ReaderClass:=nil;
     case StreamType of
-    bnWinBitmap:  ReaderClass:=TFPReaderBMP;
+    bnWinBitmap:  ReaderClass:=TLazReaderBMP;
     bnXPixmap:    ReaderClass:=TLazReaderXPM;
     else
       RaiseInvalidBitmapHeader;
@@ -1106,6 +1106,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.74  2004/02/28 00:34:35  mattias
+  fixed CreateComponent for buttons, implemented basic Drag And Drop
+
   Revision 1.73  2004/02/27 00:42:41  marc
   * Interface CreateComponent splitup
   * Implemented CreateButtonHandle on GTK interface

@@ -625,29 +625,20 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl CMDrag                                                          }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl CMDrag
+------------------------------------------------------------------------------}
 Procedure TWinControl.CMDrag(var Message: TCMDrag);
 Begin
-  with Message, DragRec^ do
-  Begin
-  case DragMessage of
-    dmDragEnter, dmDragLeave,dmDragMove, dmDragDrop :
-      if target <> nil then TControl(target).DoDragMsg(Message);
-    dmFindTarget:
-      begin
-        Writeln('dmFindTarget');
-        Result := longint(ControlatPos(ScreentoClient(pos),False));
-        if Result = 0 then Result := longint(Self);
-      end;
-    end;//case
-  end;
+  {$IFDEF VerboseDrag}
+  writeln('TWinControl.CMDrag ',Name,':',ClassName,' ',ord(Message.DragMessage));
+  {$ENDIF}
+  DoDragMsg(Message);
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl CreateSubClass                                                      }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl CreateSubClass
+------------------------------------------------------------------------------}
 procedure TWinControl.CreateSubClass(var Params: TCreateParams;
   ControlClassName: PChar);
 (*
@@ -815,6 +806,30 @@ end;
 Function TWinControl.CanTab: Boolean;
 begin
   Result := True;
+end;
+
+procedure TWinControl.DoDragMsg(var DragMsg: TCMDrag);
+var
+  TargetControl: TControl;
+begin
+  case DragMsg.DragMessage of
+
+  dmFindTarget:
+    begin
+      {$IFDEF VerboseDrag}
+      Writeln('TWinControl.DoDragMsg dmFindTarget ',Name,':',ClassName,' Start DragMsg.DragRec^.Pos=',DragMsg.DragRec^.Pos.X,',',DragMsg.DragRec^.Pos.Y);
+      {$ENDIF}
+      TargetControl := ControlatPos(ScreentoClient(DragMsg.DragRec^.Pos),False);
+      if TargetControl = nil then TargetControl := Self;
+      {$IFDEF VerboseDrag}
+      Writeln('TWinControl.DoDragMsg dmFindTarget ',Name,':',ClassName,' End Result=',TargetControl.Name,':',TargetControl.ClassName);
+      {$ENDIF}
+      DragMsg.Result:=longint(TargetControl);
+    end;
+
+  else
+    inherited DoDragMsg(DragMsg);
+  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1802,22 +1817,6 @@ Begin
     then CaptureControl.Perform(LM_CANCELMODE,0,0);
 
   else
-//TODO:Implement TMOUSE
-{  with Mouse do
-   if WheelPresent and (RegWheelMessage <> 0) and (Message.Msg = RegWheelMessage) then
-    Begin
-      GetKeyboardState(KeyState);
-      with WheelMsg do
-      Begin
-        Msg := Message.Msg;
-        ShiftState := KeyboardStateToShiftState(KeyState);
-        WheelData :=Message.WParam;
-        Pos := TSmallPoint(Message.LPaream);
-      end;
-      MouseWheelHandler(TMessage(WheelMsg));
-      Exit;
-    end;
-}
   end;
 
   inherited WndProc(Message);
@@ -1998,6 +1997,10 @@ begin
   begin
     if CharCode = VK_UNKNOWN then Exit;
     ShiftState := KeyDataToShiftState(KeyData);
+
+    if Dragging and (DragObject<>nil) then
+      DragObject.KeyDown(CharCode, ShiftState);
+
     if not (csNoStdEvents in ControlStyle)
     then begin
       KeyDown(CharCode, ShiftState);
@@ -2054,6 +2057,10 @@ begin
   with Message do
   begin
     ShiftState := KeyDataToShiftState(KeyData);
+
+    if Dragging and (DragObject<>nil) then
+      DragObject.KeyUp(CharCode, ShiftState);
+    
     if not (csNoStdEvents in ControlStyle)
     then begin
       KeyUp(CharCode, ShiftState);
@@ -2988,6 +2995,9 @@ begin
   FCreatingHandle := True;
   try
     FHandle := CreateWindowHandle(Params);
+    FFlags:=FFlags-[wcfColorChanged,wcfFontChanged];
+    if not HandleAllocated then
+      RaiseGDBException('Handle creation failed');
   finally
     FCreatingHandle := False;
   end;
@@ -3418,6 +3428,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.210  2004/02/28 00:34:35  mattias
+  fixed CreateComponent for buttons, implemented basic Drag And Drop
+
   Revision 1.209  2004/02/27 00:42:41  marc
   * Interface CreateComponent splitup
   * Implemented CreateButtonHandle on GTK interface

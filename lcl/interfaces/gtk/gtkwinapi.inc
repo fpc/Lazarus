@@ -891,6 +891,7 @@ begin
   try
     {$IFDEF VerboseRawImage}
     writeln('TgtkObject.CreateBitmapFromRawImage A ',
+      ' AlwaysCreateMask=',AlwaysCreateMask,
       ' Depth=',RawImage.Description.Depth,
       ' Width=',RawImage.Description.Width,
       ' Height=',RawImage.Description.Height,
@@ -961,6 +962,9 @@ begin
     // create mask
     if (AlwaysCreateMask or (not RawImageMaskIsEmpty(@RawImage,true)))
     and (RawImage.Mask<>nil) then begin
+      {$IFDEF VerboseRawImage}
+      writeln('TgtkObject.CreateBitmapFromRawImage creating mask .. ');
+      {$ENDIF}
       GdiObject^.GDIBitmapMaskObject :=
           gdk_bitmap_create_from_data(DefGdkWindow,PGChar(RawImage.Mask),
                        RawImage.Description.Width, RawImage.Description.Height);
@@ -8687,6 +8691,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.335  2004/02/28 00:34:36  mattias
+  fixed CreateComponent for buttons, implemented basic Drag And Drop
+
   Revision 1.334  2004/02/23 23:15:14  mattias
   improved FindDragTarget
 

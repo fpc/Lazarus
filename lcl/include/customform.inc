@@ -1299,6 +1299,16 @@ begin
 
   Result:=true;
 
+  if not (csFocusing in Control.ControlState) then begin
+    Control.ControlState := Control.ControlState + [csFocusing];
+    try
+      // change focus
+      
+    finally
+      Control.ControlState := Control.ControlState + [csFocusing];
+    end;
+  end;
+  
   {
   Inc(FocusCount);
 
@@ -1582,6 +1592,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.129  2004/02/28 00:34:35  mattias
+  fixed CreateComponent for buttons, implemented basic Drag And Drop
+
   Revision 1.128  2004/02/23 08:19:04  micha
   revert intf split
 

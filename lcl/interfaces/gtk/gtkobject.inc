@@ -2392,6 +2392,10 @@ var
       MaskPixmap:=PGdiObject(Mask)^.GDIBitmapMaskObject;
     if MaskPixmap=nil then
       MaskPixmap:=SrcGDIBitmap^.GDIBitmapMaskObject;
+    {$IFDEF VerboseStretchCopyArea}
+    writeln('SrcDevBitmapToDrawable SrcPixmap=[',GetWindowDebugReport(SrcPixmap),']',
+      ' MaskPixmap=[',GetWindowDebugReport(MaskPixmap),']');
+    {$ENDIF}
 
     if (MaskPixmap=nil) and (not SizeChange) and (ROP=SRCCOPY)
     then begin
@@ -2399,10 +2403,8 @@ var
       {$IFDEF VerboseStretchCopyArea}
       writeln('SrcDevBitmapToDrawable Simple copy');
       {$ENDIF}
-      BeginGDKErrorTrap;
       gdk_window_copy_area(DestDevContext.Drawable, DestDevContext.GC, X, Y,
         SrcPixmap, XSrc, YSrc, Width, Height);
-      EndGDKErrorTrap;
 
       exit;
     end;
@@ -2709,13 +2711,33 @@ begin
   TempMaskPixmap:=nil;
 
   {$IFDEF VerboseStretchCopyArea}
-  writeln('TgtkObject.StretchCopyArea AFTER CLIPPING X=',X,' Y=',Y,' Width=',Width,' Height=',Height,
+  write('TgtkObject.StretchCopyArea AFTER CLIPPING X=',X,' Y=',Y,' Width=',Width,' Height=',Height,
     ' XSrc=',XSrc,' YSrc=',YSrc,' SrcWidth=',SrcWidth,' SrcHeight=',SrcHeight,
     ' SrcDrawable=',HexStr(Cardinal(TDeviceContext(SrcDC).Drawable),8),
     ' DestDrawable=',HexStr(Cardinal(TDeviceContext(DestDC).Drawable),8),
     ' Mask=',HexStr(Cardinal(Mask),8),' XMask=',XMask,' YMask=',YMask,
     ' SizeChange=',SizeChange,' ROpIsSpecial=',ROpIsSpecial,
     ' CopyingWholeSrc=',CopyingWholeSrc);
+  write(' ROp=');
+  case ROp of
+  SRCCOPY     : writeln('SRCCOPY');
+  SRCPAINT    : writeln('SRCPAINT');
+  SRCAND      : writeln('SRCAND');
+  SRCINVERT   : writeln('SRCINVERT');
+  SRCERASE    : writeln('SRCERASE');
+  NOTSRCCOPY  : writeln('NOTSRCCOPY');
+  NOTSRCERASE : writeln('NOTSRCERASE');
+  MERGECOPY   : writeln('MERGECOPY');
+  MERGEPAINT  : writeln('MERGEPAINT');
+  PATCOPY     : writeln('PATCOPY');
+  PATPAINT    : writeln('PATPAINT');
+  PATINVERT   : writeln('PATINVERT');
+  DSTINVERT   : writeln('DSTINVERT');
+  BLACKNESS   : writeln('BLACKNESS');
+  WHITENESS   : writeln('WHITENESS');
+  else
+    writeln('???');
+  end;
   {$ENDIF}
 
   If TDeviceContext(SrcDC).Drawable = nil then begin
@@ -3192,8 +3214,8 @@ begin
 
          pixmap := pgdkPixmap(
                      PgdiObject(TBitBtn(Sender).Glyph.Handle)^.GDIBitmapObject);
-         if (TBitBtn(Sender).Glyph.Width>1)
-         or (TBitBtn(Sender).Glyph.Height>1) then begin
+         if (TBitBtn(Sender).Glyph.Width>0)
+         or (TBitBtn(Sender).Glyph.Height>0) then begin
            if PgdiObject(TBitBtn(Sender).Glyph.handle)^.GDIBitmapMaskObject <> nil
            then begin
              PixMapWid := gtk_pixmap_new(pixmap,
@@ -3216,8 +3238,7 @@ begin
            StrDispose(pStr);
          end;
 
-         if (TBitBtn(Sender).Layout = blGlyphLeft)
-         or (TBitBtn(Sender).Layout = blGlyphRight) then
+         if (TBitBtn(Sender).Layout in [blGlyphLeft,blGlyphRight]) then
          Begin
            box1 := gtk_hbox_new(False,0);
          end
@@ -3225,8 +3246,7 @@ begin
            box1 := gtk_vbox_new(False,0);
          end;
 
-         if (TBitBtn(Sender).Layout = blGlyphLeft)
-         or (TBitBtn(Sender).Layout = blGlyphTop) then
+         if (TBitBtn(Sender).Layout in [blGlyphLeft,blGlyphTop]) then
          begin
            if PixMapWid<>nil then
              gtk_box_pack_start(pGTKBox(Box1),PixMapWid,false,false,
@@ -9248,6 +9268,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.474  2004/02/28 00:34:35  mattias
+  fixed CreateComponent for buttons, implemented basic Drag And Drop
+
   Revision 1.473  2004/02/27 00:42:41  marc
   * Interface CreateComponent splitup
   * Implemented CreateButtonHandle on GTK interface

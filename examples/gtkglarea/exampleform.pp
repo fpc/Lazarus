@@ -29,7 +29,8 @@ interface
 
 uses
   Classes, SysUtils, GTKGlArea, GTKGLArea_Int, Forms, LResources, Buttons,
-  StdCtrls, Dialogs, gtk, glib, NVGL, Linux;
+  StdCtrls, Dialogs, gtk, glib, NVGL, {$IFDEF VER1_0}Linux{$ELSE}Unix{$ENDIF},
+  GTKGLAreaControl;
 
 type
   TglTexture = class
@@ -608,7 +609,7 @@ begin
   LoadglTexture('data/texture2.bmp',MyglTextures[1]);
   LoadglTexture('data/texture3.bmp',MyglTextures[2]);
   
-  glGenTextures(3, textures[0]);
+  glGenTextures(3, @textures[0]);
   for i:=0 to 2 do begin
     glBindTexture(GL_TEXTURE_2D, Textures[i]);
     glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);
@@ -616,7 +617,7 @@ begin
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
     glTexImage2D(GL_TEXTURE_2D,0,3,MyglTextures[i].Width,MyglTextures[i].Height,0
-        ,GL_RGB,GL_UNSIGNED_BYTE,MyglTextures[i].Data^);
+        ,GL_RGB,GL_UNSIGNED_BYTE,MyglTextures[i].Data);
   end;
   glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
   {instead of GL_MODULATE you can try GL_DECAL or GL_BLEND}

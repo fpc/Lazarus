@@ -1016,6 +1016,8 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnResize;
     property OnChangeBounds;
     property OnStartDrag;
@@ -1845,7 +1847,6 @@ type
     procedure CanvasChanged(Sender: TObject);
     procedure CMDrag(var AMessage: TCMDrag); message CM_DRAG;
     procedure EditWndProc(var Message: TLMessage);
-    procedure DoDragOver(Source: TDragObject; X, Y: Integer; CanDrop: Boolean);
     function GetAutoExpand: boolean;
     function GetBottomItem: TTreeNode;
     function GetChangeDelay: Integer;
@@ -1936,6 +1937,8 @@ type
     procedure Delete(Node: TTreeNode); dynamic;
     procedure DestroyWnd; override;
     procedure DoEndDrag(Target: TObject; X, Y: Integer); override;
+    procedure DragOver(Source: TObject; X,Y: Integer; State: TDragState;
+                       var Accept: Boolean); override;
     procedure DoPaint; virtual;
     procedure DoPaintNode(Node: TTreeNode); virtual;
     procedure DoStartDrag(var DragObject: TDragObject); override;
@@ -2238,6 +2241,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.117  2004/02/28 00:34:35  mattias
+  fixed CreateComponent for buttons, implemented basic Drag And Drop
+
   Revision 1.116  2004/02/27 00:42:41  marc
   * Interface CreateComponent splitup
   * Implemented CreateButtonHandle on GTK interface

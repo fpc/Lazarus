@@ -207,7 +207,7 @@ begin
     exit;
   end;
   Result:=false;
-  
+
   // slow test
   if TestPixels then begin
     Width:=RawImage^.Description.Width;
@@ -529,6 +529,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.27  2004/02/28 00:34:35  mattias
+  fixed CreateComponent for buttons, implemented basic Drag And Drop
+
   Revision 1.26  2004/02/21 01:01:03  mattias
   added uninstall popupmenuitem to package graph explorer
 

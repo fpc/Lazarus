@@ -101,7 +101,8 @@ type
   TCustomImageList = Class(TComponent)
   private
     FDrawingStyle: TDrawingStyle;
-    FImageList : TList;  //shane
+    FImageList: TList;  //shane
+    FMaskList: TList;
     FBitmap: TBitmap;
     FImageType: TImageType;
     FMaskBitmap: TBitmap;
@@ -158,7 +159,7 @@ type
     constructor CreateSize(AWidth, AHeight: Integer);
     procedure Delete(Index: Integer);
     destructor Destroy; override;
-    procedure Draw(Canvas: TCanvas; X, Y, Index: Integer; Enabled: Boolean{=True});
+    procedure Draw(Canvas: TCanvas; X, Y, Index: Integer; Enabled: Boolean{$IFNDEF VER1_0}=True{$ENDIF});
     procedure GetBitmap(Index: Integer; Image: TBitmap);
     procedure GetInternalImage(Index: integer; var Image, Mask: TBitmap);
     function GetHotSpot: TPoint; virtual;
@@ -209,6 +210,9 @@ end.
 
 {
   $Log$
+  Revision 1.17  2004/02/28 00:34:35  mattias
+  fixed CreateComponent for buttons, implemented basic Drag And Drop
+
   Revision 1.16  2004/02/25 11:12:06  marc
   + Added delphi stream reading support
 
