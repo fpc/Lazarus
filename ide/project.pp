@@ -1043,6 +1043,7 @@ begin
   fProjectType:=TheProjectType;
 
   fActiveEditorIndexAtStart := -1;
+  FAutoCreateForms := true;
   fBookmarks := TProjectBookmarkList.Create;
   fCompilerOptions := TCompilerOptions.Create;
   FFlags:=DefaultProjectFlags;
@@ -2252,6 +2253,9 @@ end.
 
 {
   $Log$
+  Revision 1.99  2003/03/25 17:11:16  mattias
+  set Project.AutoCreateForms default to true
+
   Revision 1.98  2003/03/11 09:57:51  mattias
   implemented ProjectOpt: AutoCreateNewForms, added designer Show Options
 
