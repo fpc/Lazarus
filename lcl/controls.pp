@@ -632,6 +632,7 @@ type
     procedure SetBottom(const AValue: TSpacingSize);
     procedure SetLeft(const AValue: TSpacingSize);
     procedure SetRight(const AValue: TSpacingSize);
+    procedure SetSpace(Kind: TAnchorKind; const AValue: integer);
     procedure SetTop(const AValue: TSpacingSize);
   protected
     procedure Change; dynamic;
@@ -644,6 +645,7 @@ type
     function GetSpace(Kind: TAnchorKind): Integer;
   public
     property Control: TControl read FControl;
+    property Space[Kind: TAnchorKind]: integer read GetSpace write SetSpace;
   published
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property Left: TSpacingSize read FLeft write SetLeft;
@@ -2376,6 +2378,17 @@ begin
   Change;
 end;
 
+procedure TControlBorderSpacing.SetSpace(Kind: TAnchorKind;
+  const AValue: integer);
+begin
+  case Kind of
+  akLeft: Left:=AValue;
+  akTop: Top:=AValue;
+  akBottom: Bottom:=AValue;
+  akRight: Right:=AValue;
+  end;
+end;
+
 procedure TControlBorderSpacing.SetTop(const AValue: TSpacingSize);
 begin
   if FTop=AValue then exit;
@@ -2821,6 +2834,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.270  2005/01/20 20:51:06  mattias
+  implementing anchor editor, setting sibling and reference sides
+
   Revision 1.269  2005/01/17 17:49:27  mattias
   fixed constraints for forms under gtk
 
