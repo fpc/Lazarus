@@ -178,6 +178,31 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function GetComboBoxItemIndex(ComboBox: TComboBox): integer;
+
+  Returns the current ItemIndex of a TComboBox
+ ------------------------------------------------------------------------------}
+function GetComboBoxItemIndex(ComboBox: TComboBox): integer;
+begin
+  Result:=ComboBox.Items.IndexOf(ComboBox.Text);
+end;
+
+{------------------------------------------------------------------------------
+  procedure SetComboBoxItemIndex(ComboBox: TComboBox; Index: integer);
+
+  Returns the current ItemIndex of a TComboBox
+ ------------------------------------------------------------------------------}
+procedure SetComboBoxItemIndex(ComboBox: TComboBox; Index: integer);
+var
+  ComboWidget: PGtkCombo;
+begin
+  ComboWidget:=PGtkCombo(ComboBox.Handle);
+  gtk_list_select_item(PGtkList(ComboWidget^.list),Index);
+  if Index>=0 then
+    SetComboBoxText(ComboWidget,PChar(ComboBox.Items[Index]));
+end;
+
+{------------------------------------------------------------------------------
   function GtkPaintMessageToPaintMessage(GtkPaintMsg: TLMGtkPaint): TLMPaint;
 
   Converts a LM_GtkPaint message to a LM_PAINT message
@@ -3497,6 +3522,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.112  2002/10/04 20:46:53  lazarus
+  MG: improved TComboBox.SetItemIndex
+
   Revision 1.111  2002/10/04 16:38:15  lazarus
   MG: no OnChange event when app sets Text of TComboBox
 
