@@ -1875,6 +1875,13 @@ begin
   end;
 end;
 
+procedure TWinControl.AssignTo(Dest: TPersistent);
+begin
+  inherited AssignTo(Dest);
+  if Dest is TCustomAction then
+    TCustomAction(Dest).HelpContext:=HelpContext;
+end;
+
 procedure TWinControl.ActionChange(Sender: TObject; CheckDefaults: Boolean);
 begin
   inherited ActionChange(Sender,CheckDefaults);
@@ -3285,6 +3292,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.198  2004/02/04 23:30:18  mattias
+  completed TControl actions
+
   Revision 1.197  2004/02/04 17:39:30  mattias
   quick fixed TToolBar destruction
 

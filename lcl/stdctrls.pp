@@ -323,6 +323,7 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnSelect;
     property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
@@ -1488,6 +1489,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.126  2004/02/04 23:30:18  mattias
+  completed TControl actions
+
   Revision 1.125  2004/02/04 22:17:09  mattias
   removed workaround VirtualCreate
 

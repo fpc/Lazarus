@@ -223,12 +223,12 @@ type
     property HelpType;
     property Hint;
     property ImageIndex;
-    property ShortCut;
-    property SecondaryShortCuts;
-    property Visible;
     property OnExecute;
     property OnHint;
     property OnUpdate;
+    property SecondaryShortCuts;
+    property ShortCut;
+    property Visible;
   end;
 
 

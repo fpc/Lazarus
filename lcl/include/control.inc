@@ -473,6 +473,21 @@ begin
     Result := not ActionLink.IsHelpContextLinked;
 end;
 
+function TControl.IsOnClickStored: Boolean;
+begin
+  Result := (ActionLink = nil) or not ActionLink.IsOnExecuteLinked;
+end;
+
+function TControl.IsShowHintStored: Boolean;
+begin
+  Result := not ParentShowHint;
+end;
+
+function TControl.IsVisibleStored: Boolean;
+begin
+  Result := (ActionLink = nil) or not ActionLink.IsVisibleLinked;
+end;
+
 {------------------------------------------------------------------------------}
 {       TControl GetTabOrder                                                   }
 {------------------------------------------------------------------------------}
@@ -1585,7 +1600,12 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TControl.Click;
 Begin
-  if Assigned (FOnClick) then FOnClick(Self);
+  if (not (csDesigning in ComponentState)) and (ActionLink<>nil)
+  and ((Action=nil) or (@FOnClick<>@Action.OnExecute) or Assigned(FOnClick))
+  then
+    ActionLink.Execute(Self)
+  else if Assigned(FOnClick) then
+    FOnClick(Self);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1765,7 +1785,8 @@ procedure TControl.Notification( AComponent : TComponent; Operation : TOperation
 begin
   inherited Notification(AComponent, Operation);
   if Operation = opRemove then
-    if AComponent = PopupMenu then PopupMenu := nil;
+    if AComponent = PopupMenu then PopupMenu := nil
+    else if AComponent = Action then Action := nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -1803,7 +1824,27 @@ end;
 ------------------------------------------------------------------------------}
 Function TControl.IsCaptionStored : Boolean;
 Begin
-  Result := true;
+  Result := (ActionLink = nil) or not ActionLink.IsCaptionLinked;
+end;
+
+function TControl.IsColorStored: Boolean;
+begin
+  Result := not ParentColor;
+end;
+
+function TControl.IsEnabledStored: Boolean;
+begin
+  Result := (ActionLink = nil) or not ActionLink.IsEnabledLinked;
+end;
+
+function TControl.IsFontStored: Boolean;
+begin
+  Result := not ParentFont {and not DesktopFont};
+end;
+
+function TControl.IsHintStored: Boolean;
+begin
+  Result := (ActionLink = nil) or not ActionLink.IsHintLinked;
 end;
 
 {------------------------------------------------------------------------------
@@ -1943,6 +1984,20 @@ begin
   // align this control and the brothers
   if cfRequestAlignNeeded in FControlFlags then
     RequestAlign;
+  if Action <> nil then ActionChange(Action, True);
+end;
+
+procedure TControl.AssignTo(Dest: TPersistent);
+begin
+  if Dest is TCustomAction then
+    with TCustomAction(Dest) do begin
+      Enabled := Self.Enabled;
+      Hint := Self.Hint;
+      Caption := Self.Caption;
+      Visible := Self.Visible;
+      OnExecute := Self.OnClick;
+    end
+  else inherited AssignTo(Dest);
 end;
 
 {------------------------------------------------------------------------------}
@@ -2486,6 +2541,7 @@ begin
   //writeln('[TControl.Destroy] A ',Name,':',ClassName);
   Application.ControlDestroyed(Self);
   SetParent(nil);
+  FreeThenNil(FActionLink);
   FreeThenNil(FConstraints);
   FreeThenNil(FFont);
   //writeln('[TControl.Destroy] B ',Name,':',ClassName);
@@ -2679,6 +2735,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.167  2004/02/04 23:30:18  mattias
+  completed TControl actions
+
   Revision 1.166  2004/02/02 16:59:28  mattias
   more Actions  TAction, TBasicAction, ...
 

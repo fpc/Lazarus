@@ -49,12 +49,6 @@ uses
 type
 
   { TToolWindow }
-  {
-    @abstract(Short description of the class.)
-    Introduced by Author Name <author@emailaddress.com>
-    Currently maintained by Maintainer Name <mainter@emailaddress.com>
-  }
-{ TToolWindow }
 
   TEdgeBorder = (ebLeft, ebTop, ebRight, ebBottom);
   TEdgeBorders = set of TEdgeBorder;

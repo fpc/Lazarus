@@ -678,8 +678,15 @@ type
     function GetUndockHeight: Integer;
     function GetUndockWidth: Integer;
     function IsCaptionStored : Boolean;
-    function IsHelpContextStored: boolean;
+    function IsColorStored: Boolean;
+    function IsEnabledStored: Boolean;
+    function IsFontStored: Boolean;
+    function IsHintStored: Boolean;
+    function IsHelpContextStored: Boolean;
     function IsHelpKeyWordStored: boolean;
+    function IsOnClickStored: Boolean;
+    function IsShowHintStored: Boolean;
+    function IsVisibleStored: Boolean;
     procedure CheckMenuPopup(const P : TSmallPoint);
     procedure DoBeforeMouseMessage;
     procedure DoConstrainedResize(var NewWidth, NewHeight : integer);
@@ -757,6 +764,7 @@ type
     procedure DoOnChangeBounds; virtual;
     procedure Resize; virtual;
     procedure Loaded; override;
+    procedure AssignTo(Dest: TPersistent); override;
     procedure RequestAlign; dynamic;
     procedure UpdateBaseBounds(StoreBounds, StoreParentClientSize,
                                UseLoadedValues: boolean); virtual;
@@ -914,12 +922,12 @@ type
     property ControlStyle: TControlStyle read FControlStyle write FControlStyle;
     property Color: TColor read FColor write SetColor stored ColorIsStored default clWindow;
     property Ctl3D: Boolean read FCtl3D write FCtl3D;//Is this needed for anything other than compatability?
-    property Enabled: Boolean read GetEnabled write SetEnabled default True;
-    property Font: TFont read FFont write SetFont;
+    property Enabled: Boolean read GetEnabled write SetEnabled stored IsEnabledStored default True;
+    property Font: TFont read FFont write SetFont stored IsFontStored;
     property Parent: TWinControl read FParent write SetParent;
     property PopupMenu: TPopupmenu read GetPopupmenu write SetPopupMenu;
-    property ShowHint: Boolean read FShowHint write SetShowHint default False;
-    property Visible: Boolean read FVisible write SetVisible default True;
+    property ShowHint: Boolean read FShowHint write SetShowHint stored IsShowHintStored default False;
+    property Visible: Boolean read FVisible write SetVisible stored IsVisibleStored default True;
     property WindowProc: TWndMethod read FWindowProc write FWindowProc;
     property TabStop: Boolean read FTabStop write SetTabStop;
     property TabOrder: TTabOrder read GetTabOrder write SetTaborder default -1;
@@ -936,7 +944,7 @@ type
   public
     property OnResize: TNotifyEvent read FOnResize write FOnResize;
     property OnChangeBounds: TNotifyEvent read FOnChangeBounds write FOnChangeBounds;
-    property OnClick: TNotifyEvent read FOnClick write FOnClick;
+    property OnClick: TNotifyEvent read FOnClick write FOnClick stored IsOnClickStored;
     property OnShowHint: TControlShowHintEvent read FOnShowHint write FOnShowHint;
   published
     property Cursor: TCursor read FCursor write SetCursor default crDefault;
@@ -1046,6 +1054,7 @@ type
     procedure SetUseDockManager(const AValue: Boolean);
     procedure UpdateTabOrder(NewTabValue: TTabOrder);
   protected
+    procedure AssignTo(Dest: TPersistent); override;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     function GetActionLinkClass: TControlActionLinkClass; override;
     procedure AdjustSize; override;
@@ -1893,6 +1902,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.173  2004/02/04 23:30:18  mattias
+  completed TControl actions
+
   Revision 1.172  2004/02/02 16:59:28  mattias
   more Actions  TAction, TBasicAction, ...
 
