@@ -577,7 +577,6 @@ type
     function MinMaxWidth(Width: integer): integer;
     function MinMaxHeight(Height: integer): integer;
   public
-    property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property MaxInterfaceHeight: integer read FMaxInterfaceHeight;
     property MaxInterfaceWidth: integer read FMaxInterfaceWidth;
     property MinInterfaceHeight: integer read FMinInterfaceHeight;
@@ -585,6 +584,7 @@ type
     property Control: TControl read FControl;
     property Options: TSizeConstraintsOptions read FOptions write SetOptions default [];
   published
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property MaxHeight: TConstraintSize read FMaxHeight write SetMaxHeight default 0;
     property MaxWidth: TConstraintSize read FMaxWidth write SetMaxWidth default 0;
     property MinHeight: TConstraintSize read FMinHeight write SetMinHeight default 0;
@@ -644,8 +644,8 @@ type
     function GetSpace(Kind: TAnchorKind): Integer;
   public
     property Control: TControl read FControl;
-    property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property Left: TSpacingSize read FLeft write SetLeft;
     property Top: TSpacingSize read FTop write SetTop;
     property Right: TSpacingSize read FRight write SetRight;
@@ -2444,6 +2444,7 @@ end;
 
 procedure TControlBorderSpacing.Change;
 begin
+  FControl.DoBorderSpacingChange(Self);
   if Assigned(FOnChange) then FOnChange(Self);
 end;
 
@@ -2820,6 +2821,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.269  2005/01/17 17:49:27  mattias
+  fixed constraints for forms under gtk
+
   Revision 1.268  2005/01/17 16:42:35  mattias
   improved TLabel autosizing
 

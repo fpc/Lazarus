@@ -432,7 +432,7 @@ var
   Geometry: TGdkGeometry;
 begin
   Widget := PGtkWidget(AWinControl.Handle);
-  if Widget <> nil then begin
+  if (Widget <> nil) and (GtkWidgetIsA(Widget,gtk_window_get_type)) then begin
     with Geometry, AWinControl do begin
       if Constraints.MinWidth > 0 then
         min_width:= Constraints.MinWidth else min_width:= 1;
@@ -449,6 +449,7 @@ begin
       min_aspect:= 0;
       max_aspect:= 1;
     end;
+    //debugln('TGtkWSWinControl.ConstraintsChange A ',GetWidgetDebugReport(Widget),' max=',dbgs(Geometry.max_width),'x',dbgs(Geometry.max_height));
     gtk_window_set_geometry_hints(PGtkWindow(Widget), nil, @Geometry,
                                 GDK_HINT_MIN_SIZE or GDK_HINT_MAX_SIZE);
   end;

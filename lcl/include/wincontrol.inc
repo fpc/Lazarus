@@ -807,7 +807,9 @@ end;
 procedure TWinControl.DoConstraintsChange(Sender : TObject);
 begin
   inherited DoConstraintsChange(Sender);
-  TWSWinControlClass(WidgetSetClass).ConstraintsChange(Self);
+  //debugln('TWinControl.DoConstraintsChange ',DbgSName(Self),' HandleAllocated=',dbgs(HandleAllocated));
+  if HandleAllocated then
+    TWSWinControlClass(WidgetSetClass).ConstraintsChange(Self);
 end;
 
 {-------------------------------------------------------------------------------
@@ -3592,6 +3594,7 @@ begin
         RaiseGDBException('Handle creation failed creating '+DbgSName(Self));
       Constraints.UpdateInterfaceConstraints;
       InvalidatePreferredSize;
+      TWSWinControlClass(WidgetSetClass).ConstraintsChange(Self);
       FWinControlFlags:=FWinControlFlags-[wcfColorChanged,wcfFontChanged];
     finally
       Exclude(FWinControlFlags,wcfCreatingHandle);
@@ -4303,6 +4306,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.300  2005/01/17 17:49:27  mattias
+  fixed constraints for forms under gtk
+
   Revision 1.299  2005/01/17 16:42:35  mattias
   improved TLabel autosizing
 

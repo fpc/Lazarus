@@ -142,7 +142,6 @@ begin
     FMaxWidth:= Value;
     if (FMinWidth > 0) and (FMaxWidth < FMinWidth) then FMinWidth:= FMaxWidth;
     Change;
-    FControl.RequestAlign;
   end;
 end;
 
@@ -159,7 +158,6 @@ begin
     FMaxHeight:= Value;
     if (FMinHeight > 0) and (FMaxHeight < FMinHeight) then FMinHeight:= FMaxHeight;
     Change;
-    FControl.RequestAlign;
   end;
 end;
 
@@ -176,7 +174,6 @@ begin
     FMinWidth:= Value;
     if (FMaxWidth > 0) and (FMinWidth > FMaxWidth) then FMaxWidth:= FMinWidth;
     Change;
-    FControl.RequestAlign;
   end;
 end;
 
@@ -193,7 +190,6 @@ begin
     FMinHeight:= Value;
     if (FMaxHeight > 0) and (FMinHeight > FMaxHeight) then FMaxHeight:= FMinHeight;
     Change;
-    FControl.RequestAlign;
   end;
 end;
 
@@ -212,6 +208,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TSizeConstraints.Change;
 begin
+  FControl.DoConstraintsChange(Self);
   if Assigned(FOnChange) then FOnChange(Self);
 end;
 
@@ -226,12 +223,17 @@ procedure TSizeConstraints.AssignTo(Dest: TPersistent);
 begin
   if Dest is TSizeConstraints then begin
     with TSizeConstraints(Dest) do begin
-      FMinWidth:= Self.FMinWidth;
-      FMaxWidth:= Self.FMaxWidth;
-      FMinHeight:= Self.FMinHeight;
-      FMaxHeight:= Self.FMaxHeight;
-      Change;
-    end;  
+      if (FMinWidth<>Self.FMinWidth)
+      or (FMaxWidth<>Self.FMaxWidth)
+      or (FMinHeight<>Self.FMinHeight)
+      or (FMaxHeight<>Self.FMaxHeight) then begin
+        FMinWidth:= Self.FMinWidth;
+        FMaxWidth:= Self.FMaxWidth;
+        FMinHeight:= Self.FMinHeight;
+        FMaxHeight:= Self.FMaxHeight;
+        Change;
+      end;
+    end;
   end else begin
     inherited AssignTo(Dest);
   end;    

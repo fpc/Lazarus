@@ -3203,7 +3203,6 @@ begin
   FControlStyle := [csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks,
                     csOpaque];
   FConstraints:= TSizeConstraints.Create(Self);
-  FConstraints.OnChange:= @DoConstraintsChange;
   FBorderSpacing:=TControlBorderSpacing.Create(Self);
   FBorderSpacing.OnChange:= @DoBorderSpacingChange;
   for Side:=Low(FAnchorSides) to High(FAnchorSides) do
@@ -3477,6 +3476,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.237  2005/01/17 17:49:27  mattias
+  fixed constraints for forms under gtk
+
   Revision 1.236  2005/01/17 11:53:39  mattias
   added showing all four sides to AnchorEditor
 
