@@ -50,7 +50,7 @@ uses
   SynEditTypes, SynEdit, SynRegExpr, SynEditHighlighter, SynEditAutoComplete,
   SynEditKeyCmds, SynCompletion,
   // IDE interface
-  HelpIntf, SrcEditorIntf,
+  HelpIntf, SrcEditorIntf, LazIDEIntf,
   // IDE units
   LazarusIDEStrConsts, LazConf, IDECommands, EditorOptions, KeyMapping, Project,
   WordCompletion, FindReplaceDialog, FindInFilesDlg, IDEProcs, IDEOptionDefs,
@@ -377,6 +377,10 @@ type
     procedure NotebookShowTabHint(Sender: TObject; HintInfo: Pointer);
     Procedure OpenAtCursorClicked(Sender: TObject);
     Procedure ReadOnlyClicked(Sender: TObject);
+    procedure OnPopupMenuOpenPasFile(Sender: TObject);
+    procedure OnPopupMenuOpenPPFile(Sender: TObject);
+    procedure OnPopupMenuOpenLFMFile(Sender: TObject);
+    procedure OnPopupMenuOpenLRSFile(Sender: TObject);
     Procedure ShowUnitInfo(Sender: TObject);
     procedure SrcPopUpMenuPopup(Sender: TObject);
     Procedure ToggleLineNumbersClicked(Sender: TObject);
@@ -384,6 +388,7 @@ type
     fAutoFocusLock: integer;
     FCodeTemplateModul: TSynEditAutoComplete;
     fCustomPopupMenuItems: TList;
+    fContextPopupMenuItems: TList;
     FIncrementalSearchPos: TPoint; // last set position
     fIncrementalSearchStartPos: TPoint; // position where to start searching
     fIncrementalSearchCancelPos: TPoint;// position where to jump on cancel
@@ -431,6 +436,10 @@ type
     Procedure BuildPopupMenu;
     procedure RemoveUserDefinedMenuItems;
     function AddUserDefinedPopupMenuItem(const NewCaption: string;
+                                     const NewEnabled: boolean;
+                                     const NewOnClick: TNotifyEvent): TMenuItem;
+    procedure RemoveContextMenuItems;
+    function AddContextPopupMenuItem(const NewCaption: string;
                                      const NewEnabled: boolean;
                                      const NewOnClick: TNotifyEvent): TMenuItem;
 
@@ -2280,6 +2289,7 @@ begin
   FreeThenNil(FHintTimer);
   FreeThenNil(FHintWindow);
   FreeThenNil(fCustomPopupMenuItems);
+  FreeThenNil(fContextPopupMenuItems);
 
   inherited Destroy;
 end;
@@ -2762,10 +2772,12 @@ var
   EditorPopupPoint: TPoint;
   SelAvail: Boolean;
   SelAvailAndWritable: Boolean;
+  CurFilename: String;
 begin
   if not (Sender is TPopupMenu) then exit;
 
   RemoveUserDefinedMenuItems;
+  RemoveContextMenuItems;
 
   ASrcEdit:=
     FindSourceEditorWithEditorComponent(TPopupMenu(Sender).PopupComponent);
@@ -2826,6 +2838,31 @@ begin
       FreeMem(Marks);
     end;
   end;
+  
+  // add context specific menu items
+  CurFilename:=ASrcEdit.FileName;
+  if FilenameIsPascalUnit(CurFilename)
+  and (FilenameIsAbsolute(CurFilename)) then begin
+    if FileExists(ChangeFileExt(CurFilename,'.lfm')) then
+      AddContextPopupMenuItem(
+        'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.lfm'),
+        true,@OnPopupMenuOpenLFMFile);
+    if FileExists(ChangeFileExt(CurFilename,'.lrs')) then
+      AddContextPopupMenuItem(
+        'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.lrs'),
+        true,@OnPopupMenuOpenLRSFile);
+  end;
+  if (CompareFileExt(CurFilename,'.lfm',true)=0)
+  and (FilenameIsAbsolute(CurFilename)) then begin
+    if FileExists(ChangeFileExt(CurFilename,'.pas')) then
+      AddContextPopupMenuItem(
+        'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.pas'),
+        true,@OnPopupMenuOpenPasFile);
+    if FileExists(ChangeFileExt(CurFilename,'.pp')) then
+      AddContextPopupMenuItem(
+        'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.pp'),
+        true,@OnPopupMenuOpenPPFile);
+  end;
 end;
 
 procedure TSourceNotebook.NotebookShowTabHint(Sender: TObject;
@@ -2866,6 +2903,11 @@ Procedure TSourceNotebook.BuildPopupMenu;
     Result := TMenuItem.Create(Self);
     Result.Caption := '-';
   end;
+  
+  procedure AddFileTypeSpecificMenuItems;
+  begin
+
+  end;
 
 var
   SubMenuItem: TMenuItem;
@@ -2900,6 +2942,8 @@ Begin
     OnClick := @CloseClicked;
   end;
   SrcPopupMenu.Items.Add(ClosePageMenuItem);
+  
+  AddFileTypeSpecificMenuItems;
 
   SrcPopupMenu.Items.Add(Seperator);
 
@@ -3121,6 +3165,40 @@ begin
   Result.Caption:=NewCaption;
   Result.Enabled:=NewEnabled;
   Result.OnClick:=NewOnClick;
+  SrcPopUpMenu.Items.Insert(NewIndex,Result);
+end;
+
+procedure TSourceNotebook.RemoveContextMenuItems;
+var
+  AMenuItem: TMenuItem;
+begin
+  if fContextPopupMenuItems=nil then exit;
+  while fContextPopupMenuItems.Count>0 do begin
+    AMenuItem:=TMenuItem(fContextPopupMenuItems[fContextPopupMenuItems.Count-1]);
+    AMenuItem.Free;
+    fContextPopupMenuItems.Delete(fContextPopupMenuItems.Count-1);
+  end;
+end;
+
+function TSourceNotebook.AddContextPopupMenuItem(const NewCaption: string;
+  const NewEnabled: boolean; const NewOnClick: TNotifyEvent): TMenuItem;
+var
+  NewIndex: Integer;
+begin
+  if fContextPopupMenuItems=nil then fContextPopupMenuItems:=TList.Create;
+  if fContextPopupMenuItems.Count=0 then begin
+    Result:=TMenuItem.Create(Self);
+    Result.Caption:='-';
+    fContextPopupMenuItems.Add(Result);
+    NewIndex:=fContextPopupMenuItems.Count+ClosePageMenuItem.MenuIndex;
+    SrcPopUpMenu.Items.Insert(NewIndex,Result);
+  end;
+  Result:=TMenuItem.Create(Self);
+  fContextPopupMenuItems.Add(Result);
+  Result.Caption:=NewCaption;
+  Result.Enabled:=NewEnabled;
+  Result.OnClick:=NewOnClick;
+  NewIndex:=fContextPopupMenuItems.Count+ClosePageMenuItem.MenuIndex;
   SrcPopUpMenu.Items.Insert(NewIndex,Result);
 end;
 
@@ -3813,6 +3891,34 @@ begin
   if Assigned(OnReadOnlyChanged) then
     OnReadOnlyChanged(Self);
   UpdateStatusBar;
+end;
+
+procedure TSourceNotebook.OnPopupMenuOpenPasFile(Sender: TObject);
+begin
+  MainIDEInterface.DoOpenEditorFile(ChangeFileExt(GetActiveSE.Filename,'.pas'),
+    Notebook.PageIndex+1,
+    [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofUseCache,ofDoNotLoadResource]);
+end;
+
+procedure TSourceNotebook.OnPopupMenuOpenPPFile(Sender: TObject);
+begin
+  MainIDEInterface.DoOpenEditorFile(ChangeFileExt(GetActiveSE.Filename,'.pp'),
+    Notebook.PageIndex+1,
+    [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofUseCache,ofDoNotLoadResource]);
+end;
+
+procedure TSourceNotebook.OnPopupMenuOpenLFMFile(Sender: TObject);
+begin
+  MainIDEInterface.DoOpenEditorFile(ChangeFileExt(GetActiveSE.Filename,'.lfm'),
+    Notebook.PageIndex+1,
+    [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofUseCache,ofDoNotLoadResource]);
+end;
+
+procedure TSourceNotebook.OnPopupMenuOpenLRSFile(Sender: TObject);
+begin
+  MainIDEInterface.DoOpenEditorFile(ChangeFileExt(GetActiveSE.Filename,'.lrs'),
+    Notebook.PageIndex+1,
+    [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofUseCache,ofDoNotLoadResource]);
 end;
 
 Procedure TSourceNotebook.ShowUnitInfo(Sender: TObject);
