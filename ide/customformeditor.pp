@@ -311,31 +311,22 @@ end;
 
 function TComponentInterface.GetDesigner: TComponentEditorDesigner;
 var
-  OwnerForm: TCustomForm;
+  DesignerForm: TCustomForm;
 begin
   if FDesigner=nil then begin
-    if (Component is TCustomForm) and (TCustomForm(Component).Parent=nil) then
-      OwnerForm:=TCustomForm(Component)
-    else begin
-      OwnerForm:=TCustomForm(Component.Owner);
-      if OwnerForm=nil then begin
-        raise Exception.Create('TComponentInterface.GetDesigner: '
-          +Component.Name+' Owner=nil');
-      end;
-      if not (OwnerForm is TCustomForm) then begin
-        raise Exception.Create('TComponentInterface.GetDesigner: '
-          +Component.Name+' OwnerForm='+OwnerForm.ClassName);
-      end;
+    DesignerForm:=GetDesignerForm(Component);
+    if DesignerForm=nil then begin
+      raise Exception.Create('TComponentInterface.GetDesigner: '
+        +Component.Name+' DesignerForm=nil');
     end;
-    FDesigner:=TComponentEditorDesigner(OwnerForm.Designer);
+    FDesigner:=TComponentEditorDesigner(DesignerForm.Designer);
     if FDesigner=nil then begin
       raise Exception.Create('TComponentInterface.GetDesigner: '
         +Component.Name+' Designer=nil');
     end;
     if not (FDesigner is TComponentEditorDesigner) then begin
       raise Exception.Create('TComponentInterface.GetDesigner: '
-         +Component.Name+' Designer='+
-         +FDesigner.ClassName);
+         +Component.Name+' Designer='+FDesigner.ClassName);
     end;
   end;
   Result:=FDesigner;
