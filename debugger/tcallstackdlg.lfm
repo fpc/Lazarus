@@ -1,0 +1,29 @@
+object CallStackDlg: TCallStackDlg
+  Left = 359
+  Top = 126
+  Width = 500
+  Height = 200
+  Caption = 'CallStack'
+  object lvCallStack: TListView
+    Left = 0
+    Top = 0
+    Width = 484
+    Height = 200
+    Align = alClient
+    Columns = <
+      item
+        Caption = 'Source'
+        Width = 150
+      end
+      item
+        Caption = 'Line'
+        Width = 50
+      end
+      item
+        Caption = 'Function'
+        Width = 300
+      end>
+    MultiSelect = False
+    ViewStyle = vsReport
+  end
+end 

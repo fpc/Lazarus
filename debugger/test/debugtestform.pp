@@ -25,7 +25,8 @@ interface
 
 uses
   Classes, Graphics, Controls, Forms, Dialogs, LResources,
-  Buttons, StdCtrls, Debugger, DbgOutputForm, BreakpointsDlg, LocalsDlg, WatchesDlg;
+  Buttons, StdCtrls, Debugger, DbgOutputForm, BreakpointsDlg, 
+  LocalsDlg, WatchesDlg, CallStackDlg;
 
 
 type
@@ -80,6 +81,7 @@ type
     FBreakpointDlg: TBreakpointsDlg;
     FLocalsDlg: TLocalsDlg;
     FWatchesDlg: TWatchesDlg;
+    FCallStackDlg: TCallStackDlg;
     FDummy: Boolean;
     procedure DBGState(Sender: TObject);
     procedure DBGCurrent(Sender: TObject; const ALocation: TDBGLocationRec);
@@ -136,6 +138,9 @@ begin
 
   FOutputForm := TDBGOutputForm.Create(Application);
   FOutputForm.Show;
+  
+  FCallStackDlg := TCallStackDlg.Create(Application);
+  FCallStackDlg.Show;
 end;
 
 procedure TDebugTestForm.FormDestroy(Sender: TObject);
@@ -145,7 +150,7 @@ begin
     FLocalsDlg.Debugger := nil;
     FWatchesDlg.Debugger := nil;
     FOutputForm.Debugger := nil;
-    FWatchesDlg.Debugger := nil;
+    FCallStackDlg.Debugger := nil;
   except
     on Exception do;
   end;
@@ -168,7 +173,7 @@ begin
     FLocalsDlg.Debugger := FDebugger;
     FWatchesDlg.Debugger := FDebugger;
     FOutputForm.Debugger := FDebugger;
-    FWatchesDlg.Debugger := FDebugger;
+    FCallStackDlg.Debugger := FDebugger;   
   end;
   FDebugger.Init;
   FDebugger.FileName := txtFileName.Text;
@@ -318,6 +323,12 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.8  2002/04/30 15:57:40  lazarus
+  MWE:
+    + Added callstack object and dialog
+    + Added checks to see if debugger = nil
+    + Added dbgutils
+
   Revision 1.7  2002/04/24 20:42:29  lazarus
   MWE:
     + Added watches

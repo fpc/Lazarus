@@ -60,17 +60,6 @@ type
 
 procedure SendBreak(const AHandle: Integer);
 
-function GetLine(var ABuffer: String): String;
-function StripLN(const ALine: String): String;
-function GetPart(const ASkipTo, AnEnd: String; var ASource: String): String;
-
-const
-{$IFDEF WIN32}
-  LINE_END = #13#10;
-{$ELSE}
-  LINE_END = #10;
-{$ENDIF}
-
 implementation
 
 uses
@@ -81,7 +70,7 @@ uses
    Unix,
  {$ENDIF}     
 {$ENDIF}
-  SysUtils, Forms;
+  SysUtils, Forms, DBGUtils;
   
 //////////////////////////////////////////////////
 //       Needs to go to proper include
@@ -151,75 +140,6 @@ begin
 {$ENDIF}
 end;
   
-//////////////////////////////////////////////////
-
-//////////////////////////////////////////////////
-//           Tools and utilities
-//          
-//////////////////////////////////////////////////
-function GetLine(var ABuffer: String): String;
-var
-  idx: Integer;
-begin
-  idx := Pos(#10, ABuffer);
-  if idx = 0
-  then Result := ''
-  else begin
-    Result := Copy(ABuffer, 1, idx);
-    Delete(ABuffer, 1, idx);
-  end;
-end;
-
-function StripLN(const ALine: String): String;
-var
-  idx: Integer;
-begin
-  idx := Pos(#10, ALine);
-  if idx = 0
-  then begin
-    idx := Pos(#13, ALine);
-    if idx = 0
-    then begin
-      Result := ALine;
-      Exit;
-    end;
-  end
-  else begin
-    if (idx > 1)
-    and (ALine[idx - 1] = #13)
-    then Dec(idx);
-  end;
-  Result := Copy(ALine, 1, idx - 1);
-end;           
-
-function GetPart(const ASkipTo, AnEnd: String; var ASource: String): String;
-var
-  idx: Integer;
-begin                  
-  if ASkipTo <> ''
-  then begin
-    idx := Pos(ASkipTo, ASource);
-    if idx = 0 
-    then begin
-      Result := '';
-      Exit;
-    end;
-    Delete(ASource, 1, idx + Length(ASkipTo) - 1);
-  end;
-  if AnEnd = ''
-  then idx := 0
-  else idx := Pos(AnEnd, ASource);
-  if idx = 0 
-  then begin
-    Result := ASource;
-    ASource := '';
-  end
-  else begin
-    Result := Copy(ASource, 1, idx - 1);
-    Delete(ASource, 1, idx - 1);
-  end;
-end;
-
 //////////////////////////////////////////////////
 
 { TCmdLineDebugger }
@@ -413,7 +333,7 @@ begin
     FDbgProcess.Input.Write(LINE_END, 1);
   end
   else begin
-    WriteLN('[TCmdLineDebugger.SendCmdLn] Process stopped running when sending: <', ACommand, '>');
+    WriteLN('[TCmdLineDebugger.SendCmdLn] Unable to send <', ACommand, '>. No process running.');
     SetState(dsError);
   end;
 end;
@@ -431,6 +351,12 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.10  2002/04/30 15:57:39  lazarus
+  MWE:
+    + Added callstack object and dialog
+    + Added checks to see if debugger = nil
+    + Added dbgutils
+
   Revision 1.9  2002/04/24 20:42:29  lazarus
   MWE:
     + Added watches

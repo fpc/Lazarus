@@ -35,7 +35,7 @@ uses
   ProjectDefs, BaseDebugManager, MainBar, DebuggerDlg;
   
 type
-  TDebugDialogType = (ddtOutput, ddtBreakpoints, ddtWatches, ddtLocals);
+  TDebugDialogType = (ddtOutput, ddtBreakpoints, ddtWatches, ddtLocals, ddtCallStack);
 
   TDebugManager = class(TBaseDebugManager)
     // Menu events
@@ -87,7 +87,8 @@ implementation
 
 uses
   Menus,
-  Watchesdlg, BreakPointsdlg, LocalsDlg, DBGOutputForm, GDBMIDebugger;
+  Watchesdlg, BreakPointsdlg, LocalsDlg, DBGOutputForm, GDBMIDebugger, 
+  CallStackDlg;
 
  
 //-----------------------------------------------------------------------------
@@ -253,7 +254,7 @@ end;
 procedure TDebugManager.ViewDebugDialog(const ADialogType: TDebugDialogType);
 const
   DEBUGDIALOGCLASS: array[TDebugDialogType] of TDebuggerDlgClass = (
-    TDbgOutputForm, TBreakPointsDlg, TWatchesDlg, TLocalsDlg
+    TDbgOutputForm, TBreakPointsDlg, TWatchesDlg, TLocalsDlg, TCallStackDlg
   );
 begin
   if FDialogs[ADialogType] = nil
@@ -331,6 +332,8 @@ begin
     itmViewBreakPoints.Tag := Ord(ddtBreakPoints);
     itmViewLocals.OnClick := @mnuViewDebugDialogClick;
     itmViewLocals.Tag := Ord(ddtLocals);
+    itmViewCallStack.OnClick := @mnuViewDebugDialogClick;
+    itmViewCallStack.Tag := Ord(ddtCallStack);
     itmViewDebugOutput.OnClick := @mnuViewDebugDialogClick;
     itmViewDebugOutput.Tag := Ord(ddtOutput);
   end;
@@ -351,6 +354,7 @@ begin
     itmViewBreakpoints.ShortCut := CommandToShortCut(ecToggleBreakPoints);
     itmViewDebugOutput.ShortCut := CommandToShortCut(ecToggleDebuggerOut);
     itmViewLocals.ShortCut := CommandToShortCut(ecToggleLocals);
+    itmViewCallStack.ShortCut := CommandToShortCut(ecToggleCallStack);
   end;
 end;
 

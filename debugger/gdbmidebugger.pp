@@ -68,6 +68,7 @@ type
     function  ChangeFileName: Boolean; override;
     function  CreateBreakPoints: TDBGBreakPoints; override;
     function  CreateLocals: TDBGLocals; override;
+    function  CreateCallStack: TDBGCallStack; override;
     function  CreateWatches: TDBGWatches; override;
     function  GetSupportedCommands: TDBGCommands; override;
     function  RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; override;
@@ -86,7 +87,7 @@ type
 implementation
 
 uses
-  SysUtils, Dialogs;
+  SysUtils, Dialogs, DBGUtils;
 
 type
   TGDBMIBreakPoint = class(TDBGBreakPoint)
@@ -135,6 +136,18 @@ type
   public
     constructor Create(ACollection: TCollection); override;
   end;
+  
+  TGDBMICallStack = class(TDBGCallStack)
+  private
+    FCount: Integer;  // -1 means uninitialized
+  protected
+    function CreateStackEntry(const AIndex: Integer): TDBGCallStackEntry; override; 
+    procedure DoStateChange; override;
+    function GetCount: Integer; override;
+  public
+    constructor Create(const ADebugger: TDebugger); 
+  end;
+
 
 function CreateValueList(AResultValues: String): TStringList;
 var
@@ -262,6 +275,11 @@ end;
 function TGDBMIDebugger.CreateBreakPoints: TDBGBreakPoints;
 begin
   Result := TDBGBreakPoints.Create(Self, TGDBMIBreakPoint);
+end;
+
+function TGDBMIDebugger.CreateCallStack: TDBGCallStack; 
+begin
+  Result := TGDBMICallStack.Create(Self);
 end;
 
 function TGDBMIDebugger.CreateLocals: TDBGLocals;
@@ -782,7 +800,8 @@ end;
 
 destructor TGDBMIBreakPoint.Destroy;
 begin
-  if FBreakID <> 0
+  if  (FBreakID <> 0)
+  and (Debugger <> nil)
   then begin
     TGDBMIDebugger(Debugger).ExecuteCommand('-break-delete %d', [FBreakID]);
   end;
@@ -798,7 +817,9 @@ procedure TGDBMIBreakPoint.DoEnableChange;
 const
   CMD: array[Boolean] of String = ('disable', 'enable');
 begin
-  if FBreakID = 0 then Exit;
+  if (FBreakID = 0) 
+  or (Debugger = nil)
+  then Exit;
 
   TGDBMIDebugger(Debugger).ExecuteCommand('-break-%s %d', [CMD[Enabled], FBreakID]);
 end;
@@ -830,6 +851,8 @@ var
   ResultList, BkptList: TStringList;
   ResultState: TDBGState;
 begin
+  if Debugger = nil then Exit;
+  
   TGDBMIDebugger(Debugger).ExecuteCommand('-break-insert %s:%d', [Source, Line], True, ResultState, S);
   ResultList := CreateValueList(S);
   BkptList := CreateValueList(ResultList.Values['bkpt']);
@@ -845,6 +868,7 @@ end;
 procedure TGDBMIBreakPoint.SetLocation(const ASource: String; const ALine: Integer);
 begin
   inherited;
+  if Debugger = nil then Exit;
   if TGDBMIDebugger(Debugger).State in [dsStop, dsPause, dsIdle]
   then SetBreakpoint;
 end;
@@ -874,7 +898,8 @@ end;
 
 function TGDBMILocals.Count: Integer;
 begin
-  if Debugger.State = dsPause
+  if  (Debugger <> nil)
+  and (Debugger.State = dsPause)
   then begin
     LocalsNeeded;
     Result := FLocals.Count;
@@ -898,7 +923,8 @@ end;
 
 procedure TGDBMILocals.DoStateChange;
 begin
-  if Debugger.State = dsPause
+  if  (Debugger <> nil)
+  and (Debugger.State = dsPause)
   then begin
     DoChange;
   end
@@ -910,7 +936,8 @@ end;
 
 function TGDBMILocals.GetName(const AnIndex: Integer): String;
 begin
-  if Debugger.State = dsPause
+  if  (Debugger <> nil)
+  and (Debugger.State = dsPause)
   then begin
     LocalsNeeded;
     Result := FLocals.Names[AnIndex];
@@ -920,7 +947,8 @@ end;
 
 function TGDBMILocals.GetValue(const AnIndex: Integer): String;
 begin
-  if Debugger.State = dsPause
+  if  (Debugger <> nil)
+  and (Debugger.State = dsPause)
   then begin
     LocalsNeeded;
     Result := FLocals[AnIndex];
@@ -934,6 +962,7 @@ var
   S: String;
   List: TStrings;
 begin
+  if Debugger = nil then Exit;
   if not FLocalsValid
   then begin
     TGDBMIDebugger(Debugger).ExecuteCommand('-stack-list-locals 1', S);
@@ -967,6 +996,8 @@ end;
 
 procedure TGDBMIWatch.DoStateChange;
 begin
+  if Debugger = nil then Exit;
+
   if Debugger.State in [dsPause, dsStop]
   then FEvaluated := False;
   if Debugger.State = dsPause then Changed(False);
@@ -975,6 +1006,7 @@ end;
 procedure TGDBMIWatch.EvaluationNeeded;
 begin
   if FEvaluated then Exit;
+  if Debugger = nil then Exit;
 
   if (Debugger.State in [dsPause, dsStop])
   and Enabled
@@ -989,7 +1021,8 @@ end;
 
 function TGDBMIWatch.GetValue: String;
 begin
-  if (Debugger.State in [dsStop, dsPause])
+  if  (Debugger <> nil)
+  and (Debugger.State in [dsStop, dsPause])
   and Enabled
   then begin
     EvaluationNeeded;
@@ -1004,9 +1037,102 @@ begin
   Result := inherited GetValid;
 end;
 
+{ =========================================================================== }
+{ TGDBMICallStack }
+{ =========================================================================== }
+
+constructor TGDBMICallStack.Create(const ADebugger: TDebugger); 
+begin
+  FCount := -1;
+  inherited;
+end;
+
+function TGDBMICallStack.CreateStackEntry(const AIndex: Integer): TDBGCallStackEntry;
+var                 
+  n: Integer;
+  S: String;
+  Arguments, ArgList, List: TStrings;
+begin
+  if Debugger = nil then Exit;
+
+  Arguments := TStringList.Create;
+  TGDBMIDebugger(Debugger).ExecuteCommand('-stack-list-arguments 1 %d %d', [AIndex, AIndex], S);
+  List := CreateValueList(S);   
+  S := List.Values['stack-args'];
+  FreeAndNil(List);
+  List := CreateValueList(S);
+  S := List.Values['frame']; // all arguments
+  FreeAndNil(List);
+  List := CreateValueList(S);   
+  S := List.Values['args'];
+  FreeAndNil(List);
+  
+  ArgList := CreateValueList(S);
+  for n := 0 to ArgList.Count - 1 do
+  begin
+    List := CreateValueList(ArgList[n]);
+    Arguments.Add(List.Values['name'] + '=' + List.Values['value']);
+    FreeAndNil(List);
+  end;
+  FreeAndNil(ArgList);
+  
+  TGDBMIDebugger(Debugger).ExecuteCommand('-stack-list-frames %d %d', [AIndex, AIndex], S);
+  List := CreateValueList(S);   
+  S := List.Values['stack'];
+  FreeAndNil(List);
+  List := CreateValueList(S);   
+  S := List.Values['frame'];
+  FreeAndNil(List);
+  List := CreateValueList(S);   
+  Result := TDBGCallStackEntry.Create(
+    AIndex, 
+    Pointer(StrToIntDef(List.Values['addr'], 0)),
+    Arguments,
+    List.Values['func'],
+    List.Values['file'],
+    StrToIntDef(List.Values['line'], 0)
+  );
+  
+  FreeAndNil(List);
+  Arguments.Free;
+end;
+
+procedure TGDBMICallStack.DoStateChange; 
+begin
+  if Debugger.State <> dsPause 
+  then FCount := -1;    
+  inherited;
+end;
+
+function TGDBMICallStack.GetCount: Integer;
+var
+  S: String;
+  List: TStrings;
+begin
+  if FCount = -1 
+  then begin
+    if Debugger = nil 
+    then FCount := 0
+    else begin
+      TGDBMIDebugger(Debugger).ExecuteCommand('-stack-info-depth', S);
+      List := CreateValueList(S);
+      FCount := StrToIntDef(List.Values['depth'], 0);
+      FreeAndNil(List);
+    end;
+  end;
+  
+  Result := FCount;
+end;
+
 end.
 { =============================================================================
   $Log$
+  Revision 1.6  2002/04/30 15:57:40  lazarus
+  MWE:
+    + Added callstack object and dialog
+    + Added checks to see if debugger = nil
+    + Added dbgutils
+
   Revision 1.5  2002/04/24 20:42:29  lazarus
   MWE:
     + Added watches

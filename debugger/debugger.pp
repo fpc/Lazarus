@@ -94,7 +94,6 @@ type
   TDBGBreakPointClass = class of TDBGBreakPoint;
   TDBGBreakPoint = class(TCollectionItem)
   private
-    FDebugger: TDebugger;  // reference to our debugger
     FGroup: TDBGBreakPointGroup;
     FValid: Boolean;
     FEnabled: Boolean;
@@ -105,7 +104,8 @@ type
     FFirstRun: Boolean;
     FActions: TDBGBreakPointActions;
     FDisableGroupList: TList;
-    FEnableGroupList: TList;
+    FEnableGroupList: TList;                                  
+    function  GetDebugger: TDebugger;
     procedure SetActions(const AValue: TDBGBreakPointActions);
     procedure SetEnabled(const AValue: Boolean);
     procedure SetExpression(const AValue: String);
@@ -121,7 +121,7 @@ type
     procedure SetHitCount(const AValue: Integer);
     procedure SetLocation(const ASource: String; const ALine: Integer); virtual;
     procedure SetValid(const AValue: Boolean);
-    property  Debugger: TDebugger read FDebugger;
+    property  Debugger: TDebugger read GetDebugger;
   public
     procedure AddDisableGroup(const AGroup: TDBGBreakPointGroup);
     procedure AddEnableGroup(const AGroup: TDBGBreakPointGroup);
@@ -209,10 +209,10 @@ type
   TDBGWatchClass = class of TDBGWatch;
   TDBGWatch = class(TCollectionItem)
   private
-    FDebugger: TDebugger;  // reference to our debugger
     FEnabled: Boolean;
     FExpression: String;
     FValid: Boolean;
+    function  GetDebugger: TDebugger;
     procedure SetEnabled(const AValue: Boolean);
     procedure SetExpression(const AValue: String);
   protected
@@ -223,7 +223,7 @@ type
     function  GetValue: String; virtual;
     function  GetValid: Boolean; virtual;
     procedure SetValid(const AValue: Boolean);
-    property  Debugger: TDebugger read FDebugger;
+    property  Debugger: TDebugger read GetDebugger;
   public
     constructor Create(ACollection: TCollection); override;
     property Enabled: Boolean read FEnabled write SetEnabled;
@@ -283,6 +283,52 @@ type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
+  TDBGCallStackEntry = class(TObject)
+  private
+    FIndex: Integer;
+    FAdress: Pointer;
+    FFunctionName: String;
+    FLine: Integer;
+    FArguments: TStrings;
+    FSource: String;
+    function GetArgumentCount: Integer; 
+    function GetArgumentName(const AnIndex: Integer): String;
+    function GetArgumentValue(const AnIndex: Integer): String;
+  protected
+  public
+    constructor Create(const AIndex:Integer; const AnAdress: Pointer; const AnArguments: TStrings; const AFunctionName: String; const ASource: String; const ALine: Integer);
+    destructor Destroy; override;
+    property Adress: Pointer read FAdress;
+    property ArgumentCount: Integer read GetArgumentCount; 
+    property ArgumentNames[const AnIndex: Integer]: String read GetArgumentName;
+    property ArgumentValues[const AnIndex: Integer]: String read GetArgumentValue;
+    property FunctionName: String read FFunctionName;
+    property Source: String read FSource;
+    property Line: Integer read FLine;
+  end;
+
+  TDBGCallStack = class(TObject)
+  private
+    FDebugger: TDebugger;  // reference to our debugger
+    FEntries: TList;       // list of created entries
+    FOldState: TDBGState;  // records the previous debugger state 
+    FOnChange: TNotifyEvent;
+    procedure Clear;
+    function GetStackEntry(const AIndex: Integer): TDBGCallStackEntry;
+  protected
+    procedure DoChange;
+    function CreateStackEntry(const AIndex: Integer): TDBGCallStackEntry; virtual; 
+    procedure DoStateChange; virtual;
+    function GetCount: Integer; virtual;
+    property Debugger: TDebugger read FDebugger;
+  public   
+    function Count: Integer;
+    constructor Create(const ADebugger: TDebugger); 
+    destructor Destroy; override;
+    property Entries[const AIndex: Integer]: TDBGCallStackEntry read GetStackEntry;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+  end;
+
   TDBGOutputEvent = procedure(Sender: TObject; const AText: String) of object;
   TDBGCurrentLineEvent = procedure(Sender: TObject; const ALocation: TDBGLocationRec) of object;
   TDBGExceptionEvent = procedure(Sender: TObject; const AExceptionID: Integer; const AExceptionText: String) of object;
@@ -297,6 +343,7 @@ type
     FFileName: String;
     FLocals: TDBGLocals;
     FState: TDBGState;
+    FCallStack: TDBGCallStack;
     FWatches: TDBGWatches;
     FOnCurrent: TDBGCurrentLineEvent;
     FOnException: TDBGExceptionEvent;
@@ -309,6 +356,7 @@ type
   protected
     function  CreateBreakPoints: TDBGBreakPoints; virtual;
     function  CreateLocals: TDBGLocals; virtual;
+    function  CreateCallStack: TDBGCallStack; virtual;
     function  CreateWatches: TDBGWatches; virtual;
     procedure DoCurrent(const ALocation: TDBGLocationRec);
     procedure DoDbgOutput(const AText: String);
@@ -344,6 +392,7 @@ type
     property BreakPoints: TDBGBreakPoints read FBreakPoints;                     // list of all breakpoints
     property BreakPointGroups: TDBGBreakPointGroups read FBreakPointGroups;      // list of all breakpointgroups
     property Commands: TDBGCommands read GetCommands;                            // All current available commands of the debugger
+    property CallStack: TDBGCallStack read FCallStack;
     property ExitCode: Integer read FExitCode;
     property ExternalDebugger: String read FExternalDebugger;
     property FileName: String read FFileName write SetFileName;                  // The name of the exe to be debugged
@@ -360,7 +409,7 @@ type
 implementation
 
 uses
-  SysUtils;
+  SysUtils, DBGUtils;
 
 const
   COMMANDMAP: array[TDBGState] of TDBGCommands = (
@@ -394,6 +443,7 @@ begin
   FExternalDebugger := AExternalDebugger;
   FBreakPoints := CreateBreakPoints;
   FLocals := CreateLocals;
+  FCallStack := CreateCallStack;
   FWatches := CreateWatches;
   FBreakPointGroups := TDBGBreakPointGroups.Create;
   FExitCode := 0;
@@ -402,6 +452,11 @@ end;
 function TDebugger.CreateBreakPoints: TDBGBreakPoints;
 begin
   Result := TDBGBreakPoints.Create(Self, TDBGBreakPoint);
+end;
+
+function TDebugger.CreateCallStack: TDBGCallStack; 
+begin
+  Result := TDBGCallStack.Create(Self);
 end;
 
 function TDebugger.CreateLocals: TDBGLocals;
@@ -425,8 +480,16 @@ begin
   if FState <> dsNone
   then Done;
 
-  FBreakPointGroups.Free;
-  FWatches.Free;
+  FBreakPoints.FDebugger := nil;
+  FLocals.FDebugger := nil;
+  FCallStack.FDebugger := nil;
+  FWatches.FDebugger := nil;
+
+  FreeAndNil(FBreakPoints);
+  FreeAndNil(FBreakPointGroups);
+  FreeAndNil(FLocals);     
+  FreeAndNil(FCallStack);
+  FreeAndNil(FWatches);
   inherited;
 end;
 
@@ -558,6 +621,7 @@ begin
     FState := AValue;
     FBreakpoints.DoStateChange;
     FLocals.DoStateChange;
+    FCallStack.DoStateChange;
     FWatches.DoStateChange;
     DoState;
   end;
@@ -622,7 +686,6 @@ begin
   FGroup := nil;
   FFirstRun := True;
   FActions := [bpaStop];
-  FDebugger := TDBGBreakPoints(ACollection).FDebugger;
   FDisableGroupList := TList.Create;
   FEnableGroupList := TList.Create;
 end;
@@ -692,6 +755,11 @@ var
 begin
   for n := 0 to FDisableGroupList.Count - 1 do
     TDBGBreakPointGroup(FDisableGroupList[n]).Enabled := True;
+end;
+
+function  TDBGBreakPoint.GetDebugger: TDebugger;
+begin
+  Result := TDBGBreakPoints(Collection).FDebugger;
 end;
 
 procedure TDBGBreakPoint.RemoveDisableGroup(const AGroup: TDBGBreakPointGroup);
@@ -814,9 +882,9 @@ end;
 
 constructor TDBGBreakPoints.Create(const ADebugger: TDebugger; const ABreakPointClass: TDBGBreakPointClass);
 begin
-  inherited Create(ABreakPointClass);
   FDebugger := ADebugger;
   FNotificationList := TList.Create;
+  inherited Create(ABreakPointClass);
 end;
 
 destructor TDBGBreakPoints.Destroy;
@@ -1020,7 +1088,6 @@ constructor TDBGWatch.Create(ACollection: TCollection);
 begin
   inherited Create(ACollection);
   FEnabled := False;
-  FDebugger := TDBGWatches(ACollection).FDebugger;
 end;
 
 procedure TDBGWatch.DoEnableChange;
@@ -1035,6 +1102,11 @@ end;
 
 procedure TDBGWatch.DoStateChange;
 begin    
+end;
+
+function TDBGWatch.GetDebugger: TDebugger;
+begin
+  Result := TDBGWatches(Collection).FDebugger;
 end;
 
 function TDBGWatch.GetValid: Boolean;
@@ -1252,10 +1324,139 @@ begin
   if FRefCount = 0 then Free;
 end;
 
+{ =========================================================================== }
+{ TDBGCallStackEntry }
+{ =========================================================================== }
+
+constructor TDBGCallStackEntry.Create(const AIndex: Integer; const AnAdress: Pointer; const AnArguments: TStrings; const AFunctionName: String; const ASource: String; const ALine: Integer);
+begin
+  inherited Create;   
+  FIndex := AIndex;
+  FAdress := AnAdress;
+  FArguments := TStringlist.Create;
+  FArguments.Assign(AnArguments);
+  FFunctionName := AFunctionName;
+  FSource := ASource;
+  FLine := ALine;
+end;
+
+destructor TDBGCallStackEntry.Destroy;
+begin
+  inherited;
+  FreeAndNil(FArguments);
+end;
+
+function TDBGCallStackEntry.GetArgumentCount: Integer; 
+begin
+  Result := FArguments.Count;
+end;
+
+function TDBGCallStackEntry.GetArgumentName(const AnIndex: Integer): String;
+begin
+  Result := FArguments.Names[AnIndex];
+end;
+
+function TDBGCallStackEntry.GetArgumentValue(const AnIndex: Integer): String;
+begin                        
+  Result := FArguments[AnIndex];
+  Result := GetPart('=', '', Result);
+end;
+
+{ =========================================================================== }
+{ TDBGCallStack }
+{ =========================================================================== }
+
+procedure TDBGCallStack.Clear;
+var
+  n:Integer;
+begin
+  for n := 0 to FEntries.Count - 1 do 
+    TObject(FEntries[n]).Free;
+    
+  FEntries.Clear;  
+end;
+
+function TDBGCallStack.Count: Integer;
+begin
+  if  (FDebugger <> nil) 
+  and (FDebugger.State = dsPause)
+  then Result := GetCount
+  else Result := 0;
+end;
+
+constructor TDBGCallStack.Create(const ADebugger: TDebugger);
+begin
+  FDebugger := ADebugger;
+  FEntries := TList.Create;
+  FOldState := FDebugger.State;
+  inherited Create;
+end;
+
+function TDBGCallStack.CreateStackEntry(const AIndex: Integer): TDBGCallStackEntry; 
+begin
+  Result := nil;
+end;
+
+destructor TDBGCallStack.Destroy;
+begin
+  Clear;
+  inherited;
+  FreeAndNil(FEntries);
+end;
+
+procedure TDBGCallStack.DoChange; 
+begin
+  if Assigned(FOnChange) then FOnChange(Self);
+end;
+
+procedure TDBGCallStack.DoStateChange; 
+begin
+  if FDebugger.State = dsPause
+  then DoChange
+  else begin
+    if FOldState = dsPause
+    then begin 
+      Clear;
+      DoChange;
+    end;
+  end;          
+  FOldState := FDebugger.State;
+end;
+
+function TDBGCallStack.GetCount: Integer;
+begin
+  Result := 0;
+end;
+
+function TDBGCallStack.GetStackEntry(const AIndex: Integer): TDBGCallStackEntry;
+var
+  n: Integer;
+begin
+  if (AIndex < 0) 
+  or (AIndex >= Count)
+  then raise EInvalidOperation.CreateFmt('Index out of range (%d)', [AIndex]);
+  
+  for n := 0 to FEntries.Count - 1 do
+  begin
+    Result := TDBGCallStackEntry(FEntries[n]);
+    if Result.FIndex = AIndex 
+    then Exit;
+  end;
+  
+  Result := CreateStackEntry(AIndex);
+  if Result <> nil 
+  then FEntries.Add(Result);
+end;
 
 end.
 { =============================================================================
   $Log$
+  Revision 1.14  2002/04/30 15:57:39  lazarus
+  MWE:
+    + Added callstack object and dialog
+    + Added checks to see if debugger = nil
+    + Added dbgutils
+
   Revision 1.13  2002/04/24 20:42:29  lazarus
   MWE:
     + Added watches
