@@ -24,10 +24,10 @@ unit interfaces;
 {$mode objfpc} 
 
 interface
-{ $DEFINE WIN}
+{$DEFINE WIN}
 { $DEFINE QT}
 
-{$DEFINE GTK}
+{ $DEFINE GTK}
 
 {$ifdef WIN}
 

@@ -96,8 +96,7 @@ end;
 
 Function TInterfaceBase.EmptyClipBoard : Boolean;
 begin
-  // Your default here
-  // Result := 
+Result := False;
 end;
 
 function TInterfaceBase.EnableMenuItem(hMenu: HMENU; uIDEnableItem: Integer; bEnable: Boolean): Boolean;
@@ -112,8 +111,7 @@ end;
 
 function TInterfaceBase.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
 begin
-  // Your default here
-  // Result := 
+Result := False;
 end;
 
 function TInterfaceBase.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
@@ -168,8 +166,7 @@ end;
 
 Function TInterfaceBase.GetParent(Handle : HWND): HWND;
 begin
-  // Your default here
-  // Result := 
+Result := 0;
 end;
 
 Function TInterfaceBase.GetProp(Handle : hwnd; Str : PChar): Pointer;
@@ -405,6 +402,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2000/12/06 14:54:38  lazarus
+  Set some defaults in interfacebase.inc
+  Shane
+
   Revision 1.6  2000/09/10 19:58:47  lazarus
   MWE:
     * Updated makefiles for FPC release 1.0  binary units
