@@ -44,7 +44,7 @@ type
     procedure DeleteFullPath(const APath: string); virtual; abstract;
     procedure DeleteFullPathValue(const APath: string); virtual; abstract;
   public
-    constructor Create(const Filename: string; LoadFromDisk: Boolean); virtual; abstract;
+    constructor Create(const Filename: string; LoadFromDisk: Boolean); virtual;
     destructor Destroy; override;
     function  GetValue(const APath, ADefault: String): String;
     function  GetValue(const APath: String; ADefault: Integer): Integer;
@@ -72,6 +72,12 @@ var
 implementation
 
 { TConfigStorage }
+
+constructor TConfigStorage.Create(const Filename: string; LoadFromDisk: Boolean
+  );
+begin
+
+end;
 
 destructor TConfigStorage.Destroy;
 begin
