@@ -405,7 +405,8 @@ var i, j, FilenameEndPos: integer;
     if not CheckForNumber(s,p) then exit;
     if not CheckForChar(s,p,' ') then exit;
     Result:=true;
-    if CompilerOptions.ShowAll or CompilerOptions.ShowSummary then;
+    if (CompilerOptions<>nil)
+    and (CompilerOptions.ShowAll or CompilerOptions.ShowSummary) then
       DoAddFilteredLine(s);
   end;
 

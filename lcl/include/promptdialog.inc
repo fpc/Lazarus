@@ -533,10 +533,14 @@ begin
 end;
 
 procedure TQuestionDlg.CalcButtonSize(AButton: TBitBtn; var w, h: Integer);
+var
+  TxtSize: TSize;
 begin
   w:=length(AButton.Caption)*10;
   h:=25;
-  Canvas.GetTextSize(AButton.Caption,w,h);
+  TxtSize:=Canvas.TextExtent(AButton.Caption);
+  w:=TxtSize.cx;
+  h:=TxtSize.cy;
   if AButton.Kind<>bkCustom then begin
     inc(w,22); // icon
   end;
@@ -741,6 +745,9 @@ end;
 
 {
    $Log$
+   Revision 1.19  2005/01/28 10:48:28  mattias
+   fixed compilation
+
    Revision 1.18  2005/01/27 19:03:51  mattias
    added QuestionDlg - a MessageDlg with custom buttons
 
