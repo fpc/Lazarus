@@ -1057,6 +1057,7 @@ images/lazarus.xpm -text svneol=native#image/x-xpixmap
 images/lazarus64.ico -text svneol=unset#image/x-icon
 images/lazarus64.xpm -text svneol=native#image/x-xpixmap
 images/lazarus_about_logo.xpm -text svneol=native#image/x-xpixmap
+images/lazaruspackage.ico -text svneol=unset#image/x-icon
 images/leftarrow.ico -text svneol=unset#image/x-icon
 images/leftarrow.xpm -text svneol=native#image/x-xpixmap
 images/logo_big.jpg -text svneol=unset#image/jpeg
