@@ -170,6 +170,7 @@ ResourceString
   lisMenuQuickSyntaxCheck = 'Quick syntax check';
   lisMenuGuessUnclosedBlock = 'Guess unclosed block';
   lisMenuGuessMisplacedIFDEF = 'Guess misplaced IFDEF/ENDIF';
+  lisMenuConvertDFMtoLFM = 'Convert DFM file to LFM';
   lisMenuBuildLazarus = 'Build Lazarus';
   lisMenuConfigureBuildLazarus = 'Configure "Build Lazarus"';
   
@@ -188,6 +189,7 @@ ResourceString
   lisOpenFile = 'Open file';
   lisOpenProjectFile = 'Open Project File';
   lisSaveSpace = 'Save ';
+  lisSelectDFMFiles = 'Select Delphi form files (*.dfm)';
 
   // dialogs
   lisSaveChangesToProject = 'Save changes to project?';

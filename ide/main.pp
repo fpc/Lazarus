@@ -139,6 +139,7 @@ type
     procedure mnuToolSyntaxCheckClicked(Sender : TObject);
     procedure mnuToolGuessUnclosedBlockClicked(Sender : TObject);
     procedure mnuToolGuessMisplacedIFDEFClicked(Sender : TObject);
+    procedure mnuToolConvertDFMtoLFMClicked(Sender : TObject);
     procedure mnuToolBuildLazarusClicked(Sender : TObject);
     procedure mnuToolConfigBuildLazClicked(Sender : TObject);
 
@@ -357,6 +358,9 @@ type
     // edit menu
     procedure DoEditMenuCommand(EditorCommand: integer);
     
+    // tools
+    function DoConvertDFMtoLFM: TModalResult;
+
     // external tools
     function DoRunExternalTool(Index: integer): TModalResult;
     function DoBuildLazarus: TModalResult;
@@ -384,6 +388,7 @@ type
     procedure UpdateDefaultPascalFileExtensions;
     function CreateSrcEditPageName(const AnUnitName, AFilename: string;
       IgnorePageIndex: integer): string;
+    function DoConvertDFMFileToLFMFile(const DFMFilename: string): TModalResult;
     
     // methods for codetools
     procedure InitCodeToolBoss;
@@ -1663,6 +1668,12 @@ begin
   itmToolGuessMisplacedIFDEF.OnClick := @mnuToolGuessMisplacedIFDEFClicked;
   mnuTools.Add(itmToolGuessMisplacedIFDEF);
 
+  itmToolConvertDFMtoLFM := TMenuItem.Create(Self);
+  itmToolConvertDFMtoLFM.Name:='itmToolConvertDFMtoLFM';
+  itmToolConvertDFMtoLFM.Caption := lisMenuConvertDFMtoLFM;
+  itmToolConvertDFMtoLFM.OnClick := @mnuToolConvertDFMtoLFMClicked;
+  mnuTools.Add(itmToolConvertDFMtoLFM);
+
   itmToolBuildLazarus := TMenuItem.Create(Self);
   itmToolBuildLazarus.Name:='itmToolBuildLazarus';
   itmToolBuildLazarus.Caption := lisMenuBuildLazarus;
@@ -1972,6 +1983,9 @@ begin
    ecGuessMisplacedIFDEF:
      DoJumpToGuessedMisplacedIFDEF(true);
 
+   ecConvertDFM2LFM:
+     DoConvertDFMtoLFM;
+
    ecBuildLazarus:
      DoBuildLazarus;
     
@@ -2265,6 +2279,11 @@ begin
   DoJumpToGuessedMisplacedIFDEF(true);
 end;
 
+procedure TMainIDE.mnuToolConvertDFMtoLFMClicked(Sender : TObject);
+begin
+  DoConvertDFMtoLFM;
+end;
+
 procedure TMainIDE.mnuToolBuildLazarusClicked(Sender : TObject);
 begin
   DoBuildLazarus;
@@ -2321,6 +2340,54 @@ begin
   else
     Result:=ExtractFileName(Result);
   Result:=SourceNoteBook.FindUniquePageName(Result,IgnorePageIndex);
+end;
+
+function TMainIDE.DoConvertDFMFileToLFMFile(const DFMFilename: string
+  ): TModalResult;
+var DFMStream, LFMStream: TMemoryStream;
+  LFMFilename: string;
+begin
+  Result:=mrOk;
+  DFMStream:=TMemoryStream.Create;
+  LFMStream:=TMemoryStream.Create;
+  try
+    try
+      DFMStream.LoadFromFile(DFMFilename);
+    except
+      on E: Exception do begin
+        Result:=MessageDlg('Read error','Unable to read file "'+DFMFilename+'"'#13
+          +'Error: '+E.Message,
+          mtError,[mbIgnore,mbAbort],0);
+        exit;
+      end;
+    end;
+    try
+      FormDataToText(DFMStream,LFMStream);
+    except
+      on E: Exception do begin
+        Result:=MessageDlg('Format error',
+          'Unable to convert file "'+DFMFilename+'"'#13
+          +'Error: '+E.Message,
+          mtError,[mbIgnore,mbAbort],0);
+        exit;
+      end;
+    end;
+    LFMFilename:=ChangeFileExt(DFMFilename,'.lfm');
+    try
+      LFMStream.SaveToFile(LFMFilename);
+    except
+      on E: Exception do begin
+        Result:=MessageDlg('Write error',
+          'Unable to write file "'+LFMFilename+'"'#13
+          +'Error: '+E.Message,
+          mtError,[mbIgnore,mbAbort],0);
+        exit;
+      end;
+    end;
+  finally
+    LFMSTream.Free;
+    DFMStream.Free;
+  end;
 end;
 
 procedure TMainIDE.OnLoadEnvironmentSettings(Sender: TObject; 
@@ -4823,6 +4890,35 @@ begin
                        EnvironmentOptions.ExternalTools,MacroList);
 end;
 
+function TMainIDE.DoConvertDFMtoLFM: TModalResult;
+var
+  OpenDialog: TOpenDialog;
+  i: integer;
+  AFilename: string;
+begin
+  Result:=mrOk;
+  OpenDialog:=TOpenDialog.Create(Self);
+  try
+    InputHistories.ApplyFileDialogSettings(OpenDialog);
+    OpenDialog.Title:=lisSelectDFMFiles;
+    OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
+    if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
+      For I := 0 to OpenDialog.Files.Count-1 do begin
+        AFilename:=ExpandFilename(OpenDialog.Files.Strings[i]);
+        if DoConvertDFMFileToLFMFile(AFilename)=mrAbort then begin
+          Result:=mrAbort;
+          break;
+        end else
+          Result:=mrOk;
+      end;
+      SaveEnvironment;
+    end;
+    InputHistories.StoreFileDialogSettings(OpenDialog);
+  finally
+    OpenDialog.Free;
+  end;
+end;
+
 function TMainIDE.DoCheckSyntax: TModalResult;
 var
   ActiveUnitInfo:TUnitInfo;
@@ -6657,6 +6753,7 @@ begin
     itmToolSyntaxCheck.ShortCut:=CommandToShortCut(ecSyntaxCheck);
     itmToolGuessUnclosedBlock.ShortCut:=CommandToShortCut(ecGuessUnclosedBlock);
     itmToolGuessMisplacedIFDEF.ShortCut:=CommandToShortCut(ecGuessMisplacedIFDEF);
+    itmToolConvertDFMtoLFM.ShortCut:=CommandToShortCut(ecConvertDFM2LFM);
     itmToolBuildLazarus.ShortCut:=CommandToShortCut(ecBuildLazarus);
     itmToolConfigureBuildLazarus.ShortCut:=CommandToShortCut(ecConfigBuildLazarus);
 
@@ -6704,6 +6801,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.329  2002/07/31 15:21:50  lazarus
+  MG: added tool: Convert DFM file to LFM
+
   Revision 1.328  2002/07/31 09:00:03  lazarus
   MG: fixed undefined editor topline on codetool error
 

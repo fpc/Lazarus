@@ -188,6 +188,7 @@ type
     itmToolSyntaxCheck: TMenuItem;
     itmToolGuessUnclosedBlock: TMenuItem;
     itmToolGuessMisplacedIFDEF: TMenuItem;
+    itmToolConvertDFMtoLFM: TMenuItem;
     itmToolBuildLazarus: TMenuItem;
     itmToolConfigureBuildLazarus: TMenuItem;
 

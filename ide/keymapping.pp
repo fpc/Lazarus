@@ -80,6 +80,7 @@ const
   ecSyntaxCheck          = ecUserFirst + 103;
   ecGuessUnclosedBlock   = ecUserFirst + 104;
   ecGuessMisplacedIFDEF  = ecUserFirst + 105;
+  ecConvertDFM2LFM       = ecUserFirst + 106;
 
   ecNew                  = ecUserFirst + 201;
   ecNewUnit              = ecUserFirst + 202;
@@ -502,6 +503,7 @@ begin
     ecSyntaxCheck: Result:='syntax check';
     ecGuessUnclosedBlock: Result:='guess unclosed block';
     ecGuessMisplacedIFDEF: Result:='guess misplaced $IFDEF';
+    ecConvertDFM2LFM: Result:='convert DFM file to LFM';
     ecFindDeclaration: Result:='find declaration';
     ecFindBlockOtherEnd: Result:='find block other end';
     ecFindBlockStart: Result:='find block start';
@@ -1181,6 +1183,7 @@ begin
   Add(C,'Syntax check',ecSyntaxCheck,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Guess unclosed block',ecGuessUnclosedBlock,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Guess misplaced $IFDEF',ecGuessMisplacedIFDEF,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Convert DFM file to LFM',ecConvertDFM2LFM,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Find procedure definiton',ecFindProcedureDefinition,
                                  VK_UP,[ssShift,SSCtrl],VK_UNKNOWN,[]);
   Add(C,'Find procedure method',ecFindProcedureMethod,
