@@ -37,7 +37,7 @@ interface
 
 uses
   Classes, LCLType, LCLLinux, Forms, Controls, LMessages, GraphType, Graphics,
-  Dialogs, ExtCtrls, Menus, IDEProcs,
+  Dialogs, ExtCtrls, Menus, ClipBrd, IDEProcs,
   LazarusIDEStrConsts, EnvironmentOpts, KeyMapping, ComponentReg,
   NonControlForms, AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg,
   DesignerProcs, PropEdits, ComponentEditors, CustomFormEditor,
@@ -162,6 +162,7 @@ type
     Procedure NudgeControl(DiffX, DiffY: Integer);
     Procedure NudgeSize(DiffX, DiffY: Integer);
     procedure SelectParentOfSelection;
+    procedure DoCopySelectionToClipboard;
 
     // popup menu
     procedure BuildPopupMenu;
@@ -193,6 +194,11 @@ type
 
     procedure Modified; override;
     Procedure SelectOnlyThisComponent(AComponent:TComponent); override;
+    procedure CopySelection;
+    procedure CutSelection;
+    function CanPaste: Boolean;
+    procedure PasteSelection;
+    procedure DeleteSelection;
     function InvokeComponentEditor(AComponent: TComponent;
       MenuIndex: integer): boolean;
     procedure DoProcessCommand(Sender: TObject; var Command: word;
@@ -268,6 +274,8 @@ type
                                        read FTheFormEditor write FTheFormEditor;
   end;
 
+var
+  ClipBrdSelectionFormat: TClipboardFormat;
 
 implementation
 
@@ -369,9 +377,134 @@ begin
     SelectOnlyThisComponent(TControl(ControlSelection[i].Component).Parent);
 end;
 
+procedure TDesigner.DoCopySelectionToClipboard;
+var
+  i: Integer;
+  AParent, CurParent: TWinControl;
+  AllComponentsStream, BinCompStream, TxtCompStream: TMemoryStream;
+  CurComponent: TComponent;
+  {$IFDEF VerboseDesigner}
+  s: string;
+  {$ENDIF}
+begin
+  if ControlSelection.Count=0 then exit;
+
+  // Because controls will be pasted on a single parent,
+  // unselect all controls, that do not have the same parent
+  AParent:=nil;
+  i:=0;
+  while i<ControlSelection.Count do begin
+    if ControlSelection[i].IsTControl then begin
+      CurParent:=TControl(ControlSelection[i].Component).Parent;
+      if CurParent=nil then begin
+        MessageDlg('Can not copy top level component.',
+          'Copying a whole form is not implemented.',
+          mtError,[mbCancel],0);
+        exit;
+      end;
+      if (AParent=nil) then
+        AParent:=CurParent
+      else if (AParent<>CurParent) then begin
+        ControlSelection.Delete(i);
+        continue;
+      end;
+    end;
+    inc(i);
+  end;
+
+  // copy components to stream
+  AllComponentsStream:=TMemoryStream.Create;
+  try
+    for i:=0 to ControlSelection.Count-1 do begin
+      BinCompStream:=TMemoryStream.Create;
+      TxtCompStream:=TMemoryStream.Create;
+      try
+        // write component binary stream
+        try
+          CurComponent:=ControlSelection[i].Component;
+          BinCompStream.WriteComponent(CurComponent);
+        except
+          on E: Exception do begin
+            MessageDlg('Unable to stream selected components',
+              'There was an error during writing the selected component '
+              +CurComponent.Name+':'+CurComponent.ClassName+':'#13
+              +E.Message,
+              mtError,[mbCancel],0);
+            exit;
+          end;
+        end;
+        BinCompStream.Position:=0;
+        // convert binary to text stream
+        try
+          ObjectBinaryToText(BinCompStream,TxtCompStream);
+        except
+          on E: Exception do begin
+            MessageDlg('Unable convert binary stream to text',
+              'There was an error while converting the binary stream of the '
+              +'selected component '
+              +CurComponent.Name+':'+CurComponent.ClassName+':'#13
+              +E.Message,
+              mtError,[mbCancel],0);
+            exit;
+          end;
+        end;
+        // add text stream to the all stream
+        TxtCompStream.Position:=0;
+        AllComponentsStream.CopyFrom(TxtCompStream,TxtCompStream.Size);
+      finally
+        BinCompStream.Free;
+        TxtCompStream.Free;
+      end;
+    end;
+    AllComponentsStream.Position:=0;
+    {$IFDEF VerboseDesigner}
+    SetLength(s,AllComponentsStream.Size);
+    if s<>'' then
+      AllComponentsStream.Read(s[1],length(s));
+    writeln('TDesigner.DoCopySelectionToClipboard==============================');
+    writeln(s);
+    writeln('TDesigner.DoCopySelectionToClipboard==============================');
+    {$ENDIF}
+    
+    try
+      ClipBrdSelectionFormat:=
+        RegisterClipboardFormat('application/lazarus.componentselection');
+    except
+
+    end;
+  finally
+    AllComponentsStream.Free;
+  end;
+end;
+
 procedure TDesigner.SelectOnlyThisComponent(AComponent:TComponent);
 begin
   ControlSelection.AssignComponent(AComponent);
+end;
+
+procedure TDesigner.CopySelection;
+begin
+  DoCopySelectionToClipboard;
+end;
+
+procedure TDesigner.CutSelection;
+begin
+
+end;
+
+function TDesigner.CanPaste: Boolean;
+begin
+  Result:=false;
+end;
+
+procedure TDesigner.PasteSelection;
+begin
+
+end;
+
+procedure TDesigner.DeleteSelection;
+begin
+  DoDeleteSelectedComponents;
 end;
 
 function TDesigner.InvokeComponentEditor(AComponent: TComponent;
@@ -418,6 +551,18 @@ begin
 
     ecSelectParentComponent:
       SelectParentOfSelection;
+      
+    ecCopyComponents:
+      CopySelection;
+      
+    ecCutComponents:
+      begin
+        CopySelection;
+        DeleteSelection;
+      end;
+      
+    ecPasteComponents:
+      PasteSelection;
 
     else
       Handled:=false;
@@ -1982,6 +2127,8 @@ begin
   Result:=TheFormEditor.PropertyEditorHook;
 end;
 
+initialization
+  ClipBrdSelectionFormat:=0;
 
 end.
 
