@@ -220,6 +220,7 @@ type
     procedure Unbind;
     function FindParentError: TLFMError;
     function FindContextNode: TLFMTreeNode;
+    function IsMissingObjectType: boolean;
   end;
   
   { TLFMTree }
@@ -801,6 +802,14 @@ begin
   while (Result<>nil)
   and (not (Result.TheType in [lfmnProperty,lfmnObject])) do
     Result:=Result.Parent;
+end;
+
+function TLFMError.IsMissingObjectType: boolean;
+begin
+  Result:=(ErrorType in [lfmeIdentifierNotFound,lfmeMissingRoot])
+      and (Node is TLFMObjectNode)
+      and (TLFMObjectNode(Node).TypeName<>'')
+      and (TLFMObjectNode(Node).TypeNamePosition=Position);
 end;
 
 { TLFMNameParts }

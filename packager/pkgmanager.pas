@@ -1513,7 +1513,9 @@ begin
     itmPkgOpenPackageFile.OnClick:=@MainIDEitmPkgOpenPackageFileClick;
     itmPkgAddCurUnitToPkg.OnClick:=@MainIDEitmPkgAddCurUnitToPkgClick;
     itmPkgPkgGraph.OnClick:=@MainIDEitmPkgPkgGraphClick;
+    {$IFDEF CustomIDEComps}
     itmCompsConfigCustomComps.OnClick :=@mnuConfigCustomCompsClicked;
+    {$ENDIF}
   end;
   
   SetRecentPackagesMenu;

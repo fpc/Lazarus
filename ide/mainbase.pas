@@ -649,9 +649,10 @@ begin
 
     CreateMenuItem(ParentMI,itmPkgPkgGraph,'itmPkgPkgGraph',lisMenuPackageGraph,'pkg_packagegraph');
 
+    {$IFDEF CustomIDEComps}
     ParentMI.Add(CreateMenuSeparator);
-
     CreateMenuItem(ParentMI,itmCompsConfigCustomComps,'itmCompsConfigCustomComps',lisMenuConfigCustomComps);
+    {$ENDIF}
   end;
 end;
 
@@ -838,7 +839,9 @@ begin
     itmPkgOpenPackageFile.ShortCut:=CommandToShortCut(ecOpenPackageFile);
     itmPkgAddCurUnitToPkg.ShortCut:=CommandToShortCut(ecAddCurUnitToPkg);
     itmPkgPkgGraph.ShortCut:=CommandToShortCut(ecPackageGraph);
+    {$IFDEF CustomIDEComps}
     itmCompsConfigCustomComps.ShortCut:=CommandToShortCut(ecConfigCustomComps);
+    {$ENDIF}
 
     // tools menu
     itmToolConfigure.ShortCut:=CommandToShortCut(ecExtToolSettings);

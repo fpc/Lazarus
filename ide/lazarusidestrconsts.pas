@@ -2394,11 +2394,14 @@ resourcestring
   lisClDirSimpleSyntaxEGInsteadOf = 'Simple Syntax (e.g. * instead of .*)';
   lisClDirKeepFilesMatchingFilter = 'Keep files matching filter';
   lisClDirCleanDirectory = 'Clean Directory';
+  
+  // LFM repair wizard
   lisTheLFMLazarusFormFileContainsInvalidPropertiesThis = 'The LFM (Lazarus '
     +'form) file contains invalid properties. This means for example it '
     +'contains some properties/classes, which do not exist in the current '
     +'LCL. The normal fix is to remove these properties from the lfm and fix '
     +'the pascal code manually.';
+  lisFixLFMFile = 'Fix LFM file';
 
   // extract proc dialog
   lisNoCodeSelected = 'No code selected';

@@ -3448,6 +3448,7 @@ begin
   // <LazarusSrcDir>/include
   // (does not need special setup)
 
+
   // <LazarusSrcDir>/designer
   DirTempl:=TDefineTemplate.Create('Designer',ctsDesignerDirectory,
     '','designer',da_Directory);
@@ -3498,7 +3499,9 @@ begin
   DirTempl.AddChild(SubDirTempl);
   MainDir.AddChild(DirTempl);
 
+
   // <LazarusSrcDir>/images
+
 
   // <LazarusSrcDir>/debugger
   DirTempl:=TDefineTemplate.Create('Debugger',ctsDebuggerDirectory,
@@ -3515,6 +3518,7 @@ begin
     ,da_DefineRecurse));
   MainDir.AddChild(DirTempl);
 
+
   // <LazarusSrcDir>/doceditor
   DirTempl:=TDefineTemplate.Create('Doc Editor',ctsDocEditorDirectory,
     '','doceditor',da_Directory);
@@ -3529,6 +3533,7 @@ begin
        +';'+SrcPath
     ,da_DefineRecurse));
   MainDir.AddChild(DirTempl);
+
 
   // <LazarusSrcDir>/packager
   DirTempl:=TDefineTemplate.Create('Packager',ctsDesignerDirectory,
@@ -3575,6 +3580,7 @@ begin
   DirTempl.AddChild(SubDirTempl);
   MainDir.AddChild(DirTempl);
 
+
   // <LazarusSrcDir>/ideintf
   IDEIntfDir:=TDefineTemplate.Create('IDEIntf',ctsIDEIntfDirectory,
     '','ideintf',da_Directory);
@@ -3582,6 +3588,7 @@ begin
     Format(ctsAddsDirToSourcePath,['lcl']),
     SrcPathMacroName,
       d('../components/codetools'
+       +';../packager/registration'
        +';../lcl'
        +';../lcl/interfaces/'+WidgetType)
        +';'+SrcPath

@@ -4,7 +4,6 @@
                             componentreg.pas
                             ----------------
 
-
  ***************************************************************************/
 
  ***************************************************************************
@@ -29,7 +28,7 @@
   Author: Mattias Gaertner
 
   Abstract:
-    Classes and functions to register components.
+    Interface to the component palette and the registered component classes.
 }
 unit ComponentReg;
 
@@ -38,11 +37,7 @@ unit ComponentReg;
 interface
 
 uses
-  Classes, SysUtils, Controls,
-  {$IFDEF CustomIDEComps}
-  CustomIDEComps,
-  {$ENDIF}
-  IDEProcs, LazarusPackageIntf;
+  Classes, SysUtils, Controls, LazarusPackageIntf;
 
 type
   TComponentPriorityCategory = (
@@ -77,6 +72,7 @@ type
   protected
     FVisible: boolean;
     procedure SetVisible(const AValue: boolean); virtual;
+    procedure FreeButton;
   public
     constructor Create(TheComponentClass: TComponentClass;
       const ThePageName: string);
@@ -95,6 +91,7 @@ type
     property Button: TComponent read FButton write FButton;
     property Visible: boolean read FVisible write SetVisible;
   end;
+  TRegisteredComponentClass = class of TRegisteredComponent;
 
 
   { TBaseComponentPage }
@@ -133,6 +130,7 @@ type
     property SelectButton: TComponent read FSelectButton write FSelectButton;
     property Visible: boolean read FVisible write SetVisible;
   end;
+  TBaseComponentPageClass = class of TBaseComponentPage;
 
 
   { TBaseComponentPalette }
@@ -140,12 +138,16 @@ type
   TEndUpdatePaletteEvent =
     procedure(Sender: TObject; PaletteChanged: boolean) of object;
   TGetComponentClass = procedure(const AClass: TComponentClass) of object;
+  RegisterUnitComponentProc = procedure(const Page, UnitName: ShortString;
+                                       ComponentClass: TComponentClass);
 
   TBaseComponentPalette = class
   private
+    FBaseComponentPageClass: TBaseComponentPageClass;
     FItems: TList; // list of TBaseComponentPage
     FOnBeginUpdate: TNotifyEvent;
     FOnEndUpdate: TEndUpdatePaletteEvent;
+    FRegisteredComponentClass: TRegisteredComponentClass;
     FUpdateLock: integer;
     fChanged: boolean;
     function GetItems(Index: integer): TBaseComponentPage;
@@ -155,8 +157,13 @@ type
     procedure OnPageAddedComponent(Component: TRegisteredComponent); virtual;
     procedure OnPageRemovedComponent(Page: TBaseComponentPage;
                                 Component: TRegisteredComponent); virtual;
-    procedure OnComponentVisibleChanged(AComponent: TRegisteredComponent); virtual;
+    procedure OnComponentVisibleChanged(
+                                     AComponent: TRegisteredComponent); virtual;
     procedure Update; virtual;
+    procedure SetBaseComponentPageClass(
+                                const AValue: TBaseComponentPageClass); virtual;
+    procedure SetRegisteredComponentClass(
+                              const AValue: TRegisteredComponentClass); virtual;
   public
     constructor Create;
     destructor Destroy; override;
@@ -168,22 +175,31 @@ type
     procedure ConsistencyCheck;
     function Count: integer;
     function GetPage(const APageName: string;
-      CreateIfNotExists: boolean): TBaseComponentPage;
+                     CreateIfNotExists: boolean): TBaseComponentPage;
     function IndexOfPageWithName(const APageName: string): integer;
     procedure AddComponent(NewComponent: TRegisteredComponent);
     function CreateNewPage(const NewPageName: string;
-      const Priority: TComponentPriority): TBaseComponentPage;
-    function FindComponent(const CompClassName: string): TRegisteredComponent; virtual;
+                        const Priority: TComponentPriority): TBaseComponentPage;
+    function FindComponent(const CompClassName: string
+                           ): TRegisteredComponent; virtual;
     function FindButton(Button: TComponent): TRegisteredComponent;
     function CreateNewClassName(const Prefix: string): string;
     function IndexOfPageComponent(AComponent: TComponent): integer;
     procedure ShowHideControls(Show: boolean);
     procedure IterateRegisteredClasses(Proc: TGetComponentClass);
+    procedure RegisterCustomIDEComponents(
+                        const RegisterProc: RegisterUnitComponentProc); virtual;
   public
     property Pages[Index: integer]: TBaseComponentPage read GetItems; default;
     property UpdateLock: integer read FUpdateLock;
-    property OnBeginUpdate: TNotifyEvent read FOnBeginUpdate write FOnBeginUpdate;
-    property OnEndUpdate: TEndUpdatePaletteEvent read FOnEndUpdate write FOnEndUpdate;
+    property OnBeginUpdate: TNotifyEvent read FOnBeginUpdate
+                                         write FOnBeginUpdate;
+    property OnEndUpdate: TEndUpdatePaletteEvent read FOnEndUpdate
+                                                 write FOnEndUpdate;
+    property BaseComponentPageClass: TBaseComponentPageClass
+                                                   read FBaseComponentPageClass;
+    property RegisteredComponentClass: TRegisteredComponentClass
+                                                 read FRegisteredComponentClass;
   end;
   
 
@@ -193,15 +209,13 @@ var
 function ComparePriority(const p1,p2: TComponentPriority): integer;
 function CompareIDEComponentByClassName(Data1, Data2: pointer): integer;
 
-type
-  RegisterUnitComponentProc = procedure(const Page, UnitName: ShortString;
-                                       ComponentClass: TComponentClass);
-
-procedure RegisterCustomIDEComponents(RegisterProc: RegisterUnitComponentProc);
-
 
 implementation
 
+procedure RaiseException(const Msg: string);
+begin
+  raise Exception.Create(Msg);
+end;
 
 function ComparePriority(const p1, p2: TComponentPriority): integer;
 begin
@@ -221,13 +235,6 @@ begin
                           Comp2.ComponentClass.Classname);
 end;
 
-procedure RegisterCustomIDEComponents(RegisterProc: RegisterUnitComponentProc);
-begin
-  {$IFDEF CustomIDEComps}
-  CustomIDEComps.RegisterCustomComponents(RegisterProc);
-  {$ENDIF}
-end;
-
 { TRegisteredComponent }
 
 procedure TRegisteredComponent.SetVisible(const AValue: boolean);
@@ -235,6 +242,12 @@ begin
   if FVisible=AValue then exit;
   FVisible:=AValue;
   if (FPage<>nil) then FPage.OnComponentVisibleChanged(Self);
+end;
+
+procedure TRegisteredComponent.FreeButton;
+begin
+  FButton.Free;
+  FButton:=nil;
 end;
 
 constructor TRegisteredComponent.Create(TheComponentClass: TComponentClass;
@@ -248,7 +261,7 @@ end;
 destructor TRegisteredComponent.Destroy;
 begin
   if FPage<>nil then FPage.Remove(Self);
-  FreeThenNil(FButton);
+  FreeButton;
   inherited Destroy;
 end;
 
@@ -315,9 +328,12 @@ end;
 destructor TBaseComponentPage.Destroy;
 begin
   Clear;
-  FreeThenNil(FPageComponent);
-  FreeThenNil(FSelectButton);
+  FPageComponent.Free;
+  FPageComponent:=nil;
+  FSelectButton.Free;
+  FSelectButton:=nil;
   FItems.Free;
+  FItems:=nil;
   inherited Destroy;
 end;
 
@@ -336,8 +352,9 @@ var
   i: Integer;
 begin
   Cnt:=Count;
-  for i:=0 to Cnt-1 do FreeThenNil(Items[i].FButton);
-  FreeThenNil(FSelectButton);
+  for i:=0 to Cnt-1 do Items[i].FreeButton;
+  FSelectButton.Free;
+  FSelectButton:=nil;
 end;
 
 procedure TBaseComponentPage.ConsistencyCheck;
@@ -446,6 +463,18 @@ end;
 procedure TBaseComponentPalette.Update;
 begin
 
+end;
+
+procedure TBaseComponentPalette.SetBaseComponentPageClass(
+  const AValue: TBaseComponentPageClass);
+begin
+  FBaseComponentPageClass:=AValue;
+end;
+
+procedure TBaseComponentPalette.SetRegisteredComponentClass(
+  const AValue: TRegisteredComponentClass);
+begin
+  FRegisteredComponentClass:=AValue;
 end;
 
 constructor TBaseComponentPalette.Create;
@@ -633,6 +662,12 @@ begin
     for j:=0 to APage.Count-1 do
       Proc(APage[j].ComponentClass);
   end;
+end;
+
+procedure TBaseComponentPalette.RegisterCustomIDEComponents(
+  const RegisterProc: RegisterUnitComponentProc);
+begin
+
 end;
 
 

@@ -39,7 +39,8 @@ uses
   SynHighlighterLFM, SynEdit, BasicCodeTools, CodeCache, CodeToolManager,
   LFMTrees,
   // IDE
-  LazarusIDEStrConsts, OutputFilter, IDEProcs, IDEOptionDefs, EditorOptions;
+  LazarusIDEStrConsts, OutputFilter, IDEProcs, IDEOptionDefs, EditorOptions,
+  ComponentReg;
 
 type
   TCheckLFMDialog = class(TForm)
@@ -118,10 +119,46 @@ var
            +'('+IntToStr(CurError.Caret.Y)+','+IntToStr(CurError.Caret.X)+')'
            +' Error: '
            +CurError.ErrorMessage;
-      writeln('WriteLFMErrors ',Msg);
+      debugln('WriteLFMErrors ',Msg);
       OnOutput(Msg,Dir);
       CurError:=CurError.NextError;
     end;
+  end;
+  
+  function FixMissingComponentClasses: boolean;
+  // returns true, if after adding units to uses section all errors are fixed
+  var
+    CurError: TLFMError;
+    MissingObjectTypes: TStringList;
+    TypeName: String;
+    RegComp: TRegisteredComponent;
+    i: Integer;
+  begin
+    Result:=false;
+    // collect all missing object types
+    MissingObjectTypes:=TStringList.Create;
+    CurError:=LFMTree.FirstError;
+    while CurError<>nil do begin
+      if CurError.IsMissingObjectType then begin
+        TypeName:=(CurError.Node as TLFMObjectNode).TypeName;
+        if MissingObjectTypes.IndexOf(TypeName)<0 then
+          MissingObjectTypes.Add(TypeName);
+      end;
+      CurError:=CurError.NextError;
+    end;
+    // keep all object types with a registered component class
+    for i:=MissingObjectTypes.Count-1 downto 0 do begin
+      RegComp:=IDEComponentPalette.FindComponent(MissingObjectTypes[i]);
+      if (RegComp=nil) or (RegComp.GetUnitName='') then
+        MissingObjectTypes.Delete(i);
+    end;
+    if MissingObjectTypes.Count>0 then begin
+      // there are missing object types with registered component classes
+
+    end;
+    MissingObjectTypes.Free;
+    Result:=CodeToolBoss.CheckLFM(PascalBuffer,LFMBuffer,LFMTree,
+                                  RootMustBeClassInIntf,ObjectsMustExists);
   end;
   
 begin
@@ -129,6 +166,8 @@ begin
   try
     Result:=CodeToolBoss.CheckLFM(PascalBuffer,LFMBuffer,LFMTree,
                                   RootMustBeClassInIntf,ObjectsMustExists);
+    if Result then exit;
+    Result:=FixMissingComponentClasses;
     if Result then exit;
     WriteLFMErrors;
     Result:=ShowRepairLFMWizard(LFMBuffer,LFMTree);
@@ -217,7 +256,7 @@ end;
 
 procedure TCheckLFMDialog.CheckLFMDialogCREATE(Sender: TObject);
 begin
-  Caption:='Fix LFM file';
+  Caption:=lisFixLFMFile;
   Position:=poScreenCenter;
   IDEDialogLayoutList.ApplyLayout(Self,600,400);
   SetupComponents;
@@ -285,7 +324,6 @@ procedure TCheckLFMDialog.AddReplacement(LFMChangeList: TList;
 var
   Entry: TLFMChangeEntry;
   NewEntry: TLFMChangeEntry;
-  NextEntry: TLFMChangeEntry;
   i: Integer;
 begin
   if StartPos>EndPos then

@@ -27,10 +27,6 @@
 
   Abstract:
     Functions and Dialog to change the class of a designer component.
-    
-  ToDo:
-    - add uses and package of new class if needed
-    - test controls with childs
 }
 unit ChangeClassDialog;
 

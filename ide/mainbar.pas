@@ -215,7 +215,9 @@ type
     itmPkgOpenRecent: TMenuItem;
     itmPkgAddCurUnitToPkg: TMenuItem;
     itmPkgPkgGraph: TMenuItem;
+    {$IFDEF CustomIDEComps}
     itmCompsConfigCustomComps: TMenuItem;
+    {$ENDIF}
 
     // tools menu
     itmToolConfigure: TMenuItem;

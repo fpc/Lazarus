@@ -9,7 +9,8 @@ version=0.9b
 
 [compiler]
 unitdir=../lcl/units/$(CPU_TARGET)/$(OS_TARGET) \
-        ../components/units/$(CPU_TARGET)/$(OS_TARGET) .
+        ../components/units/$(CPU_TARGET)/$(OS_TARGET) \
+        ../packager/units/$(CPU_TARGET)/$(OS_TARGET) .
 unittargetdir=units/$(CPU_TARGET)/$(OS_TARGET)
 options=-gl
 
@@ -30,7 +31,8 @@ implicitunits=actionseditor \
   texttools \
   actionseditor \
   formeditingintf \
-  srceditorintf
+  srceditorintf \
+  componentreg
 
 [clean]
 files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT)) \

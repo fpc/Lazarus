@@ -1016,7 +1016,9 @@ begin
     AddFile('actionseditor.pas','ActionsEditor',pftUnit,[],cpBase);
     AddFile('columndlg.pp','ColumnDlg',pftUnit,[],cpBase);
     AddFile('componenteditors.pas','ComponentEditors',pftUnit,[],cpBase);
+    AddFile('componentreg.pas','ComponentReg',pftUnit,[],cpBase);
     AddFile('componenttreeview.pas','ComponentTreeview',pftUnit,[],cpBase);
+    AddFile('formeditingintf.pas','FormEditingIntf',pftUnit,[],cpBase);
     AddFile('graphpropedits.pas','GraphPropEdits',pftUnit,[],cpBase);
     AddFile('idecommands.pas','IDECommands',pftUnit,[],cpBase);
     AddFile('imagelisteditor.pp','ImageListEditor',pftUnit,[],cpBase);
@@ -1024,6 +1026,8 @@ begin
     AddFile('objectinspector.pp','ObjectInspector',pftUnit,[],cpBase);
     AddFile('objinspstrconsts.pas','ObjInspStrConsts',pftUnit,[],cpBase);
     AddFile('propedits.pp','PropEdits',pftUnit,[],cpBase);
+    AddFile('srceditorintf.pas','SrcEditorIntf',pftUnit,[],cpBase);
+    AddFile('texttools.pas','TextTools',pftUnit,[],cpBase);
 
     // add unit paths
     UsageOptions.UnitPath:=SetDirSeparators(
@@ -1841,15 +1845,17 @@ end;
 procedure TLazPackageGraph.RegisterStaticBasePackages;
 begin
   BeginUpdate(true);
-  // IDE built-in packages
+  
+  // register IDE built-in packages
   RegisterStaticPackage(FCLPackage,@RegisterFCL.Register);
   RegisterStaticPackage(LCLPackage,@RegisterLCL.Register);
   RegisterStaticPackage(SynEditPackage,@RegisterSynEdit.Register);
   RegisterStaticPackage(IDEIntfPackage,@RegisterIDEIntf.Register);
 
-  // custom IDE components
+  // register custom IDE components
   RegistrationPackage:=DefaultPackage;
-  ComponentReg.RegisterCustomIDEComponents(@RegisterCustomIDEComponent);
+  if IDEComponentPalette<>nil then
+    IDEComponentPalette.RegisterCustomIDEComponents(@RegisterCustomIDEComponent);
   if DefaultPackage.FileCount=0 then begin
     FreeThenNil(FDefaultPackage);
   end else begin

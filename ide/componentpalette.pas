@@ -39,8 +39,11 @@ interface
 
 uses
   Classes, SysUtils, Controls, Dialogs, Graphics, ExtCtrls, Buttons, Menus,
-  LResources, AVL_Tree, LazarusIDEStrConsts, ComponentReg, DesignerProcs,
-  IDEProcs, PackageDefs;
+  LResources, AVL_Tree,
+  {$IFDEF CustomIDEComps}
+  CustomIDEComps,
+  {$ENDIF}
+  LazarusIDEStrConsts, ComponentReg, DesignerProcs, IDEProcs, PackageDefs;
 
 const
   ComponentPaletteBtnWidth  = 25;
@@ -89,7 +92,11 @@ type
     procedure OnGetNonVisualCompIconCanvas(Sender: TObject;
         AComponent: TComponent; var IconCanvas: TCanvas;
         var IconWidth, IconHeight: integer);
-    function FindComponent(const CompClassName: string): TRegisteredComponent; override;
+    function FindComponent(const CompClassName: string
+                           ): TRegisteredComponent; override;
+    procedure RegisterCustomIDEComponents(
+                       const RegisterProc: RegisterUnitComponentProc); override;
+  public
     property NoteBook: TNotebook read FNoteBook write SetNoteBook;
     property Selected: TRegisteredComponent read FSelected write SetSelected;
     property OnOpenPackage: TNotifyEvent read FOnOpenPackage write FOnOpenPackage;
@@ -510,6 +517,15 @@ begin
     Result:=TRegisteredComponent(ANode.Data)
   else
     Result:=nil;
+end;
+
+procedure TComponentPalette.RegisterCustomIDEComponents(
+  const RegisterProc: RegisterUnitComponentProc);
+begin
+  inherited RegisterCustomIDEComponents(RegisterProc);
+  {$IFDEF CustomIDEComps}
+  CustomIDEComps.RegisterCustomComponents(RegisterProc);
+  {$ENDIF}
 end;
 
 
