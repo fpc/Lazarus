@@ -214,6 +214,7 @@ function SaveIDEMakeOptions(Options: TBuildLazarusOptions;
   Macros: TTransferMacroList;
   const PackageOptions: string; Flags: TBuildLazarusFlags): TModalResult;
 function GetMakeIDEConfigFilename: string;
+function GetTranslatedMakeModes(MakeMode: TMakeMode): string;
 
 
 implementation

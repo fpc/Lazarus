@@ -314,12 +314,12 @@ implementation
 var
   CommandPool: TBits;
 
-function UniqueCommand: Word;
+{function UniqueCommand: Word;
 begin
   Result := CommandPool.OpenBit;
   CommandPool[Result] := True;
 end;
-
+}
 function ShortCutToText(ShortCut: TShortCut): string;
 begin
   Result:=ShortCutToShortCutText(ShortCut);
@@ -374,6 +374,9 @@ end.
 
 {
   $Log$
+  Revision 1.45  2003/06/23 09:42:09  mattias
+  fixes for debugging lazarus
+
   Revision 1.44  2003/06/09 09:20:27  mattias
   removed menubar.inc
 

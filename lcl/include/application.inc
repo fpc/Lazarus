@@ -89,9 +89,7 @@ begin
   ApplicationActionComponent:=Self;
 
   inherited Create(AOwner);
-  // MG: if you prefer message boxes instead of terminal error messages uncomment
-  // the following line
-  //ExceptProc := @ExceptionOccurred;
+  ExceptProc := @ExceptionOccurred;
 end;
 
 {------------------------------------------------------------------------------}
@@ -99,8 +97,11 @@ end;
 {------------------------------------------------------------------------------}
 destructor TApplication.Destroy;
 begin
+  // shutting down
   CancelHint;
   ShowHint := False;
+  
+  // destroying
   ApplicationActionComponent:=nil;
   FreeThenNil(FIcon);
   FreeThenNil(FList);
@@ -646,16 +647,26 @@ end;
  ------------------------------------------------------------------------------}
 procedure TApplication.HandleException(Sender: TObject);
 begin
+  if Self=nil then exit;
   if AppHandlingException in FFlags then begin
     // there was an exception during showing the exception -> break the circle
     writeln('TApplication.HandleException: ',
-      'there was a second exception during showing the first exception');
+      'there was another exception during showing the first exception');
     exit;
   end;
   Include(FFlags,AppHandlingException);
-  if GetCapture <> 0 then SendMessage(GetCapture, LM_CANCELMODE, 0, 0);
+  // before we do anything, write it down
   if ExceptObject is Exception then begin
     writeln('TApplication.HandleException ',Exception(ExceptObject).Message);
+  end;
+  // release capture and hide all forms with stay on top, so that
+  // a message can be shown
+  if GetCapture <> 0 then SendMessage(GetCapture, LM_CANCELMODE, 0, 0);
+  HideAllFormsWithStayOnTop;
+  // handle the exception
+  if ExceptObject is Exception then begin
+    writeln('TApplication.HandleException Handling ',
+            '"',Exception(ExceptObject).Message,'" ...');
     if not (ExceptObject is EAbort) then
       if Assigned(FOnException) then
         FOnException(Sender, Exception(ExceptObject))
@@ -724,6 +735,24 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TApplication.HideAllFormsWithStayOnTop;
+------------------------------------------------------------------------------}
+procedure TApplication.HideAllFormsWithStayOnTop;
+var
+  i: Integer;
+  AForm: TCustomForm;
+begin
+  if (Screen=nil) then exit;
+  for i:=0 to Screen.CustomFormCount-1 do begin
+    AForm:=Screen.CustomForms[i];
+    if AForm.FormStyle=fsStayOnTop then begin
+      writeln('TApplication.HideAllFormsWithStayOnTop ',AForm.Name,':',AForm.ClassName);
+      AForm.Hide;
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   function TApplication.IsWaiting: boolean;
 ------------------------------------------------------------------------------}
 function TApplication.IsWaiting: boolean;
@@ -757,8 +786,8 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-       TApplication Run
-       MainForm is loaded and control is passed to event processor.
+  TApplication Run
+  MainForm is loaded and control is passed to event processor.
 ------------------------------------------------------------------------------}
 procedure TApplication.Run;
 begin
@@ -841,12 +870,20 @@ end;
 procedure TApplication.ShowException(E: Exception);
 var
   Msg: string;
+  MsgResult: Integer;
 begin
+  if AppNoExceptionMessages in FFlags then exit;
   Msg := E.Message;
-  if (Msg <> '') and (Msg[length(Msg)] > '.') then Msg := Msg + '.';
-  if (not FTerminate) and (Self<>nil) then
-    MessageBox(PChar(Msg), PChar(GetTitle), MB_OK + MB_ICONERROR)
-  else
+  if (Msg <> '') and (Msg[length(Msg)] <> '.') then Msg := Msg + '.';
+  if (not FTerminate) and (Self<>nil) then begin
+    MsgResult:=MessageBox(PChar(Msg),PChar(GetTitle),
+                          MB_OKCANCEL + MB_ICONERROR);
+    if MsgResult<>mrOk then begin
+      Include(FFlags,AppNoExceptionMessages);
+      HaltingProgram:=true;
+      Halt;
+    end;
+  end else
     SysUtils.ShowException(ExceptObject, ExceptAddr);
 end;
 
@@ -1027,6 +1064,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.57  2003/06/23 09:42:09  mattias
+  fixes for debugging lazarus
+
   Revision 1.56  2003/06/02 21:37:30  mattias
   fixed debugger stop
 

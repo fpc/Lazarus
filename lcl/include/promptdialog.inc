@@ -24,12 +24,12 @@ const
     bkOk, bkCancel, bkHelp, bkYes, bkNo, bkClose, bkAbort, bkRetry,
     bkIgnore, bkAll, bkCustom, bkCustom);
 
-  DialogButtonText : Array[idButtonOK..idButtonNoToAll] of String = (
+  {DialogButtonText : Array[idButtonOK..idButtonNoToAll] of String = (
     rsmbOk, rsmbCancel, rsmbHelp, rsmbYes, rsmbNo, rsmbClose, rsmbAbort,
-    rsmbRetry, rsmbIgnore, rsmbAll, rsmbYesToAll, rsmbNoToAll);
+    rsmbRetry, rsmbIgnore, rsmbAll, rsmbYesToAll, rsmbNoToAll);}
 
-  DialogCaption : Array[idDialogWarning..idDialogConfirm] of String = (
-    rsMtWarning, rsMtError, rsMtInformation, rsMtConfirmation);
+  {DialogCaption : Array[idDialogWarning..idDialogConfirm] of String = (
+    rsMtWarning, rsMtError, rsMtInformation, rsMtConfirmation);}
 
 type
   TPromptDialog = class(TForm)
@@ -379,6 +379,9 @@ end;
 
 {
    $Log$
+   Revision 1.5  2003/06/23 09:42:09  mattias
+   fixes for debugging lazarus
+
    Revision 1.4  2003/03/25 10:45:41  mattias
    reduced focus handling and improved focus setting
 

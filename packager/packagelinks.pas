@@ -123,9 +123,6 @@ var
 implementation
 
 
-const
-  UserPkgLinkFile = 'packagefiles.xml';
-
 function ComparePackageLinks(Data1, Data2: Pointer): integer;
 var
   Link1: TPackageLink;

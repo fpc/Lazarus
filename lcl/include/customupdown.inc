@@ -128,7 +128,7 @@ begin
   aw := width div 2;
 
   if (FUpDown.Orientation = udHorizontal) then begin
-    tmp := (ah+1)/2;
+    tmp := double(ah+1)/2;
     if (tmp > aw) then begin
       ah := 2*aw - 1;
       aw := (ah+1) div 2;
@@ -141,7 +141,7 @@ begin
     ah := max(ah, 5);
   end
   else begin
-    tmp := (aw+1)/2;
+    tmp := double(aw+1)/2;
 
     if (tmp > ah) then begin
       aw := 2*ah - 1;

@@ -315,8 +315,6 @@ end;
   ShowWindow event handler.
  ------------------------------------------------------------------------------}
 procedure TCustomForm.WMShowWindow(var message: TLMShowWindow);
-const
-  SHOW_TEXT: array[Boolean] of string = ('Hide', 'Show');
 begin
   {$IFDEF VerboseFocus}
   write('TCustomForm.WMShowWindow A ',Name,':',ClassName,' fsShowing=',fsShowing in FFormState,' Msg.Show=',Message.Show);
@@ -1434,6 +1432,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.106  2003/06/23 09:42:09  mattias
+  fixes for debugging lazarus
+
   Revision 1.105  2003/06/16 23:12:59  mattias
   fixed TCustomForm.ShowModal when Self=nil
 

@@ -62,12 +62,14 @@ begin
   TMainIDE.ParseCmdLineOptions;
 
   // Show splashform
-  SplashForm := TSplashForm.Create(nil);
-  with SplashForm do begin
-    Show;
-    Paint;
+  if ShowSplashScreen then begin
+    SplashForm := TSplashForm.Create(nil);
+    with SplashForm do begin
+      Show;
+      Paint;
+    end;
+    Application.ProcessMessages; // process splash paint message
   end;
-  Application.ProcessMessages; // process splash paint message
 
   Application.CreateForm(TMainIDE, MainIDE);
   MainIDE.CreateOftenUsedForms;
@@ -75,14 +77,17 @@ begin
   CheckHeapWrtMemCnt('lazarus.pp: TMainIDE created');
   {$ENDIF}
 
-  SplashForm.StartTimer;
+  if (SplashForm<>nil) then
+    SplashForm.StartTimer;
   try
     Application.Run;
   except
     writeln('lazarus.pp - unhandled exception');
   end;
-  SplashForm.Free;
-  SplashForm:=nil;
+  if (SplashForm<>nil) then begin
+    SplashForm.Free;
+    SplashForm:=nil;
+  end;
 
   writeln('LAZARUS END - cleaning up ...');
 
@@ -94,6 +99,9 @@ end.
 
 {
   $Log$
+  Revision 1.46  2003/06/23 09:42:09  mattias
+  fixes for debugging lazarus
+
   Revision 1.45  2003/05/30 12:41:46  mattias
   added checks and texts for mixing gtk1 and gtk2
 

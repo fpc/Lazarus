@@ -1484,10 +1484,6 @@ function TLinkScanner.GuessMisplacedIfdefEndif(StartCursorPos: integer;
     TDirectiveType = (dtUnknown, dtIf, dtIfDef, dtIfNDef, dtIfOpt,
                       dtElse, dtEndif);
     
-  const
-    DirectiveTypeLen: array[TDirectiveType] of integer = (0,2,5,6,5,4,5);
-    
-    
   function FindNextToken(const ASrc: string; var AToken: TToken): boolean;
   var
     ASrcLen: integer;

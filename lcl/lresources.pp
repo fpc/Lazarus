@@ -296,7 +296,6 @@ end;
 
 procedure TLResourceList.Add(const Name,ValueType: AnsiString;
   Values: array of string);
-const ProcName = 'TLResourceList.Add';
 var
   NewLResource: TLResource;
   i, TotalLen, ValueCount, p: integer;
@@ -513,11 +512,11 @@ begin
   ReadError(rsInvalidPropertyValue);
 end;
 
-procedure PropertyNotFound(const Name: string);
+{procedure PropertyNotFound(const Name: string);
 begin
   ReadError(Format(rsPropertyDoesNotExist,[Name]));
 end;
-
+}
 procedure TDelphiReader.SkipBytes(Count: Integer);
 begin
   FStream.Position:=FStream.Position+Count;

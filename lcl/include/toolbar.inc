@@ -1287,27 +1287,12 @@ begin
 end;
 
 
-function ToolMenuGetMsgHook(Code: Integer; WParam: Longint;
-  var Msg: TMsg): Longint; stdcall;
-Begin
-  // ToDo
-  Result:=0;
-end;
-
 procedure InitToolMenuHooks;
 begin
 end;
 
 procedure ReleaseToolMenuHooks;
 begin
-end;
-
-
-function ToolMenuKeyMsgHook(Code: Integer; WParam: Longint;
-  var Msg: TMsg): Longint; stdcall;
-begin
-  // ToDo
-  Result:=0;
 end;
 
 procedure InitToolMenuKeyHooks;
@@ -1506,6 +1491,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2003/06/23 09:42:09  mattias
+  fixes for debugging lazarus
+
   Revision 1.10  2002/12/29 11:10:45  mattias
   fixed form FActive, cleanups
 

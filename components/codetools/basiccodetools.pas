@@ -2084,8 +2084,6 @@ function TrimCodeSpace(const ACode: string): string;
 // space is combined to one char
 // space which is not needed is removed.
 // space is only needed between two words or between 2-char operators
-const
-  NonSpaceSymbols = [',',';','(',')','[',']'];
 var CodePos, ResultPos, CodeLen, SpaceEndPos: integer;
   c1, c2: char;
 begin

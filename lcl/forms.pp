@@ -643,7 +643,8 @@ type
   TApplicationFlag = (
     AppWaiting,
     AppIdleEndSent,
-    AppHandlingException
+    AppHandlingException,
+    AppNoExceptionMessages
     );
   TApplicationFlags = set of TApplicationFlag;
 
@@ -719,6 +720,7 @@ type
     function HelpContext(Context: THelpContext): Boolean;
     function HelpJump(const JumpID: string): Boolean;
     function HelpKeyword(const Keyword: String): Boolean;
+    procedure HideAllFormsWithStayOnTop;
     function IsWaiting: boolean;
     procedure CancelHint;
     procedure HideHint;
@@ -878,6 +880,7 @@ procedure FreeInterfaceObject;
 
 procedure Register;
 
+
 implementation
 
 
@@ -887,6 +890,8 @@ uses
 var
   FocusMessages: Boolean;
   FocusCount: Integer;
+  HandlingException: boolean;
+  HaltingProgram: boolean;
 
 procedure Register;
 begin
@@ -905,17 +910,20 @@ end;
 
 
 //------------------------------------------------------------------------------
-procedure ExceptionOccurred(Sender : TObject; Addr,Frame : Pointer);
-var
-  Mess : String;
+procedure ExceptionOccurred(Sender: TObject; Addr,Frame: Pointer);
 Begin
-  Writeln('[FORMS.PP] ExceptionOccurred Procedure');
-  Mess := Format(rsErrorOccurredInAtAddressFrame, [Sender.ClassName, #13#10,
-    HexStr(Cardinal(Addr), 8), #13#10, HexStr(Cardinal(Frame), 8)]);
+  Writeln('[FORMS.PP] ExceptionOccurred ');
+  if HaltingProgram or HandlingException then Halt;
+  HandlingException:=true;
+  if Sender<>nil then begin
+    writeln('  Sender=',Sender.ClassName);
+    if Sender is Exception then
+      writeln('  Exception=',Exception(Sender).Message);
+  end else
+    writeln('  Sender=nil');
   if Application<>nil then
-    Application.MessageBox(PChar(Mess), PChar(rsException), mb_IconError+mb_Ok)
-  else
-    writeln(Mess);
+    Application.HandleException(Sender);
+  HandlingException:=false;
 end;
 
 //------------------------------------------------------------------------------
@@ -1340,6 +1348,8 @@ end;
 initialization
   FocusCount := 0;
   Focusmessages := True;
+  HandlingException := false;
+  HaltingProgram := false;
   HintWindowClass := THintWindow;
   LCLProc.OwnerFormDesignerModifiedProc:=@IfOwnerIsFormThenDesignerModified;
   Screen:= TScreen.Create(nil);

@@ -685,7 +685,8 @@ DeleteObject(Pen);
 ReleaseDC(Handle, Dc);
 FMoveLast:=P;
 }
-Function RndStr:String;
+
+{Function RndStr:String;
 Var
   i: Integer;
 Begin
@@ -693,16 +694,15 @@ Begin
   For i:=1 to 10 do begin
     Result:=Result+ Char(Ord('A')+Random(20));
   End;
-End;
+End;}
 Function PointIgual(Const P1,P2: TPoint): Boolean;
 begin
   result:=(P1.X=P2.X)And(P1.Y=P2.Y);
 End;
-Function RectIgual(Const R1,R2: TRect): Boolean;
+{Function RectIgual(Const R1,R2: TRect): Boolean;
 begin
   Result:=CompareMem(@R1,@R2, SizeOf(R1));
-
-End;
+End;}
 Function Min(Const I,J: Integer): Integer;
 begin
   If I<J then Result:=I
@@ -750,7 +750,7 @@ begin
   End;
 end;
 
-procedure DebugAttr(Msg: String; Attr: TCellAttr);
+{procedure DebugAttr(Msg: String; Attr: TCellAttr);
 Begin
   With Attr do begin
     WriteLn(Msg);
@@ -766,7 +766,7 @@ Begin
       WriteLn('TextStyle.SystemFont',systemFont);
     End;
   End;
-End;
+End;}
 
 Function LoadCellAttrFromXMLPath(Cfg: TXMLConfig; Path: String): TCellAttr;
 begin
@@ -1228,7 +1228,7 @@ begin
       End;
       
       If HorzScrollBar.Range>ClientWidth Then
-        HScrDiv:= (ColCount-FixedRows-1)/(HorzScrollBar.range-ClientWidth);
+        HScrDiv:= Double(ColCount-FixedRows-1)/(HorzScrollBar.range-ClientWidth);
 
       {$Ifdef dbgScroll}
       Writeln('TotWidth=',GridWidth,'ClientWidth=',ClientWidth,' Horz Range=',HorzScrolLBar.Range);
@@ -1248,7 +1248,7 @@ begin
       End;
 
       If VertScrolLBar.Range>ClientHeight Then
-        VScrDiv:= (RowCount-FixedRows-1)/(VertScrollBar.Range-ClientHeight);
+        VScrDiv:= Double(RowCount-FixedRows-1)/(VertScrollBar.Range-ClientHeight);
 
       {$Ifdef dbgScroll}
       Writeln('TotHeight=',GridHeight,'ClientHeight=',ClientHeight,' Vert Range=',VertScrolLBar.Range);

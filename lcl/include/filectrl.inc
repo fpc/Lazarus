@@ -808,23 +808,6 @@ end;
  ------------------------------------------------------------------------------}
 function SearchFileInPath(const Filename, BasePath, SearchPath,
   Delimiter: string; Flags: TSearchFileInPathFlags): string;
-
-  function FileDoesExists(const AFilename: string): boolean;
-  var s: string;
-  begin
-    s:=ExpandFilename(TrimFilename(AFilename));
-    Result:=FileExists(s);
-    if Result then begin
-      SearchFileInPath:=s;
-      exit;
-    end;
-    {$IFNDEF Win32}
-    if sffSearchLoUpCase in Flags then begin
-
-    end;
-    {$ENDIF}
-  end;
-
 var
   p, StartPos, l: integer;
   CurPath, Base: string;
@@ -894,6 +877,9 @@ end;
 
 {
   $Log$
+  Revision 1.26  2003/06/23 09:42:09  mattias
+  fixes for debugging lazarus
+
   Revision 1.25  2003/05/28 21:16:47  mattias
   added a help and a more button tot he package editor
 

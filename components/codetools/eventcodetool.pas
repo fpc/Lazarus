@@ -97,15 +97,13 @@ type
         Attr: TProcHeadAttributes): string;
   end;
 
-
-implementation
-
 const
   MethodKindAsString: array[TMethodKind] of shortstring = (
         'procedure', 'function', 'constructor', 'destructor',
         'class procedure', 'class function'
       );
 
+implementation
 
 { TEventsCodeTool }
 

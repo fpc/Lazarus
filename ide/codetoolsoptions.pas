@@ -235,6 +235,7 @@ var CodeToolsOpts: TCodeToolsOptions;
 
 function ShowCodeToolsOptions(Options: TCodeToolsOptions;
   OnGetSynEditSettings: TNotifyEvent): TModalResult;
+function GetTranslatedAtomTypes(a: TAtomType): string;
 
 
 implementation

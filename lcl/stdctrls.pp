@@ -966,10 +966,6 @@ implementation
 
 
 type
-  TSelection = record
-    Startpos, EndPos: Integer;
-  end;
-
   TMemoStrings = class(TStrings)
   private
     FMemo: TCustomMemo;
@@ -1463,6 +1459,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.99  2003/06/23 09:42:09  mattias
+  fixes for debugging lazarus
+
   Revision 1.98  2003/06/16 22:47:19  mattias
   fixed keeping TForm.Visible=false
 
