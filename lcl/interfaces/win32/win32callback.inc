@@ -546,8 +546,8 @@ Begin
     End;
     WM_GETDLGCODE:
     Begin
+      // let windows set default flags, then user can override them
       LMessage.Msg := LM_GETDLGCODE;
-      WinProcess := false;
     End;
     WM_KEYDOWN:
     Begin
@@ -1054,12 +1054,6 @@ Begin
         WinProcess := LMKey.CharCode <> VK_UNKNOWN;
       end;
     end;
-
-    WM_GETDLGCODE:
-    begin
-      // user didn't set wanted special keys, do default processing
-      WinProcess := LMessage.Result = 0;
-    end;
   end;
 
   if WinProcess then
@@ -1275,6 +1269,9 @@ end;
 
 {
   $Log$
+  Revision 1.125  2004/07/02 20:24:51  micha
+  fix wm_getdlgcode to get default code, then let the user override
+
   Revision 1.124  2004/07/01 20:42:11  micha
   implement better ExecuteXXAction design; break dependency on TButton class in TCustomForm
 
