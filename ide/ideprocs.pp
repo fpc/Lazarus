@@ -55,6 +55,8 @@ function SearchFileInPath(const Filename, BasePath, SearchPath,
                           Delimiter: string): string;
 procedure SplitCmdLine(const CmdLine: string;
                        var ProgramFilename, Params: string);
+function ConvertSpecialFileChars(const Filename: string): string;
+function PrepareCmdLineOption(const Option: string): string;
 
 // XMLConfig
 procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStringList; 
@@ -691,6 +693,51 @@ begin
       if not (Result[i] in ['A'..'Z', 'a'..'z', '0'..'9', '_']) then begin
         Result[i]:='_';
       end;
+    end;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  ConvertSpecialFileChars
+
+  Params: const Filename: string
+  Result: string
+
+  Replaces all spaces in a filename.
+-------------------------------------------------------------------------------}
+function ConvertSpecialFileChars(const Filename: string): string;
+const
+  SpecialChar = '\';
+var i: integer;
+begin
+  Result:=Filename;
+  i:=1;
+  while (i<=length(Result)) do begin
+    if Result[i]<>' ' then begin
+      inc(i);
+    end else begin
+      Result:=LeftStr(Result,i-1)+SpecialChar+RightStr(Result,length(Result)-i+1);
+      inc(i,2);
+    end;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  PrepareCmdLineOption
+
+  Params: const Option: string
+  Result: string
+
+  If there is a space in the option add " "
+-------------------------------------------------------------------------------}
+function PrepareCmdLineOption(const Option: string): string;
+var i: integer;
+begin
+  Result:=Option;
+  for i:=1 to length(Result) do begin
+    if Result[i]=' ' then begin
+      Result:='"'+Result+'"';
+      exit;
     end;
   end;
 end;
