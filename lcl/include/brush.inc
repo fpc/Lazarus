@@ -24,7 +24,7 @@
  ------------------------------------------------------------------------------}
 Procedure TBrush.SetColor(Value : TColor);
 begin
-  if FBrushData.Color <> value
+  if FBrushData.Color <> Value
   then begin
     FreeHandle;
     FBrushData.Color := Value;
@@ -194,6 +194,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2004/03/06 17:12:18  mattias
+  fixed CreateBrushIndirect
+
   Revision 1.5  2003/12/23 11:16:41  mattias
   started key combinations, fixed some range check errors
 

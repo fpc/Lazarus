@@ -1416,6 +1416,7 @@ var
   Procedure EnsureAsColor;
   begin
     AllocGDIColor(DC, GDIColor);
+    //writeln('EnsureAsColor ',HexStr(Cardinal(GDIColor^.ColorRef),8),' AsBackground=',AsBackground);
     {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
     If AsBackground then
       gdk_gc_set_background(GC, @(GDIColor^.Color))
@@ -6629,6 +6630,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.267  2004/03/06 17:12:19  mattias
+  fixed CreateBrushIndirect
+
   Revision 1.266  2004/03/06 15:37:43  mattias
   fixed FreeDC
 

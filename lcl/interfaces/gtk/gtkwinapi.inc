@@ -1009,21 +1009,21 @@ begin
   BeginGDKErrorTrap;
   {$ENDIF}
 
-//write('CreateBrushIndirect->');
+  //write('CreateBrushIndirect->');
   GObject := NewGDIObject(gdiBrush);
   try
-  //writeln('[TGtkWidgetSet.CreateBrushIndirect] ',HexStr(Cardinal(GObject),8));
+    //writeln('[TGtkWidgetSet.CreateBrushIndirect] ',HexStr(Cardinal(GObject),8));
     GObject^.IsNullBrush := False;
     with LogBrush do
     begin
       case lbStyle of
    //     BS_HOLLOW,         // Hollow brush.
-         BS_NULL:           // Same as BS_HOLLOW.
+        BS_NULL:           // Same as BS_HOLLOW.
           begin
             //GObject^.GDIBrushFill := GDK_STIPPLED;
             //GObject^.GDIBrushPixmap :=
             //  gdk_bitmap_create_from_data(nil, @HATCH_NULL, 8, 8);
-  	  GObject^.IsNullBrush := True;
+            GObject^.IsNullBrush := True;
           end;
 
         BS_SOLID:          // Solid brush.
@@ -1072,8 +1072,10 @@ begin
         BS_PATTERN8X8:     // Same as BS_PATTERN.
           begin
             GObject^.GDIBrushFill := GDK_TILED;
-            if IsValidGDIObject(lbHatch) and (PGdiObject(lbHatch)^.GDIType = gdiBitmap)
-            then GObject^.GDIBrushPixmap := PGdiObject(lbHatch)^.GDIBitmapObject
+            if IsValidGDIObject(lbHatch)
+            and (PGdiObject(lbHatch)^.GDIType = gdiBitmap)
+            then
+              GObject^.GDIBrushPixmap := PGdiObject(lbHatch)^.GDIBitmapObject
             else
               RaiseGDBException('unsupported bitmap');
           end;
@@ -1086,7 +1088,7 @@ begin
       EndGDKErrorTrap;
       {$ENDIF}
 
-      If GObject^.IsNullBrush then
+      If not GObject^.IsNullBrush then
         SetGDIColorRef(GObject^.GDIBrushColor,lbColor);
     end;
     Result := HBRUSH(GObject);
@@ -1095,6 +1097,7 @@ begin
     if not ok then begin
       Result:=0;
       DisposeGDIObject(GObject);
+      writeln('TGtkWidgetSet.CreateBrushIndirect failed');
     end;
   end;
   Assert(False, Format('Trace:< [TGtkWidgetSet.CreateBrushIndirect] Got --> %x', [Result]));
@@ -3291,52 +3294,55 @@ var
   Width, Height: Integer;
   OldCurrentBrush: PGdiObject;
   DCOrigin: TPoint;
+  BrushChanged: Boolean;
 begin
-  Assert(False, Format('trace:> [TGtkWidgetSet.FillRect] DC:0x%x; Rect: ((%d,%d)(%d,%d)); brush: %x', [Integer(DC), Rect.left, rect.top, rect.right, rect.bottom, brush]));
   Result := IsValidDC(DC) and IsValidGDIObject(Brush);
-  if Result
-  then with TDeviceContext(DC) do
+  if not Result then exit;
+  with TDeviceContext(DC) do
   begin
     if GC = nil
     then begin
       WriteLn('WARNING: [TGtkWidgetSet.FillRect] Uninitialized GC');
       Result := False;
-    end
-    else begin
-      if not PGdiObject(Brush)^.IsNullBrush then begin
-        Width := Rect.Right - Rect.Left;
-        Height := Rect.Bottom - Rect.Top;
-        // Temporary hold the old brush to
-        // replace it with the given brush
-        OldCurrentBrush := CurrentBrush;
-        if not CompareGDIBrushes(PGdiObject(Brush),OldCurrentBrush) then begin
-          CurrentBrush := PGdiObject(Brush);
-          SelectedColors:=dcscCustom;
-        end;
-        SelectGDKBrushProps(DC);
-        If not CurrentBrush^.IsNullBrush then begin
-          DCOrigin:=GetDCOffset(TDeviceContext(DC));
-          if (CurrentBrush^.GDIBrushFill = GDK_SOLID)
-          and (IsBackgroundColor(TColor(CurrentBrush^.GDIBrushColor.ColorRef)))
-          then begin
-            StyleFillRectangle(drawable, GC,
-                               CurrentBrush^.GDIBrushColor.ColorRef,
-                               Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y,
-                               Width, Height)
-          end else
-            gdk_draw_rectangle(Drawable, GC, 1,
-                               Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y,
-                               Width, Height);
-        end;
-        // Restore current brush
-        if not CompareGDIBrushes(PGdiObject(Brush),OldCurrentBrush) then begin
-          SelectedColors:=dcscCustom;
-          CurrentBrush := OldCurrentBrush;
-        end;
-      end;
-
-      Result := True;
+      exit;
     end;
+    if not PGdiObject(Brush)^.IsNullBrush then begin
+      Width := Rect.Right - Rect.Left;
+      Height := Rect.Bottom - Rect.Top;
+      // Temporary hold the old brush to
+      // replace it with the given brush
+      OldCurrentBrush := CurrentBrush;
+      if not CompareGDIBrushes(PGdiObject(Brush),OldCurrentBrush) then begin
+        BrushChanged:=true;
+        CurrentBrush := PGdiObject(Brush);
+        SelectedColors:=dcscCustom;
+      end;
+      //writeln('TGtkWidgetSet.FillRect Color=',HexStr(Cardinal(CurrentBrush^.GDIBrushColor.ColorRef),8));
+
+      SelectGDKBrushProps(DC);
+      
+      DCOrigin:=GetDCOffset(TDeviceContext(DC));
+      if (CurrentBrush^.GDIBrushFill = GDK_SOLID)
+      and (IsBackgroundColor(TColor(CurrentBrush^.GDIBrushColor.ColorRef)))
+      then begin
+        StyleFillRectangle(drawable, GC,
+                           CurrentBrush^.GDIBrushColor.ColorRef,
+                           Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y,
+                           Width, Height)
+      end else begin
+        gdk_draw_rectangle(Drawable, GC, 1,
+                           Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y,
+                           Width, Height);
+      end;
+      
+      // Restore current brush
+      if BrushChanged then begin
+        SelectedColors:=dcscCustom;
+        CurrentBrush := OldCurrentBrush;
+      end;
+    end;
+
+    Result := True;
   end;
   Assert(False, Format('trace:< [TGtkWidgetSet.FillRect] DC:0x%x; Rect: ((%d,%d)(%d,%d)); brush: %x', [Integer(DC), Rect.left, rect.top, rect.right, rect.bottom, brush]));
 end;
@@ -7278,13 +7284,11 @@ begin
           CurrentBrush := PGDIObject(GDIObj);
           if GC <> nil
           then begin
-            BeginGDKErrorTrap;
             gdk_gc_set_fill(GC, GDIBrushFill);
             case GDIBrushFill of
               GDK_STIPPLED: gdk_gc_set_stipple(GC, GDIBrushPixMap);
               GDK_TILED:    gdk_gc_set_tile(GC, GDIBrushPixMap);
             end;
-            EndGDKErrorTrap;
           end;
           SelectedColors := dcscCustom;
         end;
@@ -8720,6 +8724,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.338  2004/03/06 17:12:19  mattias
+  fixed CreateBrushIndirect
+
   Revision 1.337  2004/03/06 15:37:43  mattias
   fixed FreeDC
 

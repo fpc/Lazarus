@@ -8256,15 +8256,15 @@ begin
 
   with TDeviceContext(DC), CurrentBrush^ do
   begin
+    //writeln('TGtkWidgetSet.SelectGDKBrushProps Setting BKColor ...');
     EnsureGCColor(DC, dccCurrentBackColor, True, True);//BKColor
+    //writeln('TGtkWidgetSet.SelectGDKBrushProps Setting Brush Color ...');
     EnsureGCColor(DC, dccGDIBrushColor, GDIBrushFill = GDK_Solid, False);//Brush Color
 
     If GDIBrushFill <> GDK_Solid then
       If GDIBrushPixmap <> nil then begin
-        BeginGDKErrorTrap;
         gdk_gc_set_fill(GC, GDIBrushFill);
         gdk_gc_set_Stipple(GC,GDIBrushPixmap);
-        EndGDKErrorTrap;
       end
   end;
   TDeviceContext(DC).SelectedColors:=dcscBrush;
@@ -9283,6 +9283,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.477  2004/03/06 17:12:19  mattias
+  fixed CreateBrushIndirect
+
   Revision 1.476  2004/03/06 15:37:43  mattias
   fixed FreeDC
 

@@ -1131,7 +1131,7 @@ type
 function ColorToIdent(Color: Longint; var Ident: String): Boolean;
 function IdentToColor(const Ident: string; var Color: Longint): Boolean;
 function SysColorToSysColorIndex(Color: TColor): integer;
-function ColorToRGB(Color: TColor): Longint;
+function ColorToRGB(Color: TColor): TColor;
 function ColorToString(Color: TColor): AnsiString;
 function StringToColor(const S: shortstring): TColor;
 procedure GetColorValues(Proc: TGetColorStringProc);
@@ -1398,7 +1398,7 @@ begin
   end;
 end;
 
-function ColorToRGB(Color: TColor): Longint;
+function ColorToRGB(Color: TColor): TColor;
 begin
   if (Cardinal(Color) and Cardinal(SYS_COLOR_BASE)) <> 0
   then Result := GetSysColor(SysColorToSysColorIndex(Color))
@@ -1601,6 +1601,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.128  2004/03/06 17:12:18  mattias
+  fixed CreateBrushIndirect
+
   Revision 1.127  2004/03/06 15:37:43  mattias
   fixed FreeDC
 

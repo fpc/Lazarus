@@ -146,7 +146,7 @@ end;
 procedure TPromptDialog.Paint;
 begin
   Inherited Paint;
-  Canvas.Brush := Self.Brush;
+  Canvas.Brush := Brush;
   Canvas.TextRect(TextBox, 0, 0, MSG, TextStyle);
   if assigned (FBitmap) then
     Canvas.CopyRect(Bounds(cBitmapX, cBitmapY,FBitmap.Width,FBitmap.Height),
@@ -377,6 +377,9 @@ end;
 
 {
    $Log$
+   Revision 1.13  2004/03/06 17:12:19  mattias
+   fixed CreateBrushIndirect
+
    Revision 1.12  2004/03/06 16:11:27  mattias
    fixed TextStyle in dialogs
 

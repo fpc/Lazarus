@@ -896,10 +896,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.BrushChanged(ABrush: TObject);
 begin
-  if csBrushValid in FState
-  then begin
+  if csBrushValid in FState then begin
     Exclude(FState, csBrushValid);
-    //TODO: Select stock object;
   end;
 end;
 
@@ -912,8 +910,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.FontChanged(AFont: TObject);
 begin
-  if csFontValid in FState
-  then begin
+  if csFontValid in FState then begin
     Exclude(FState, csFontValid);
   end;
 end;
@@ -1261,6 +1258,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.72  2004/03/06 17:12:19  mattias
+  fixed CreateBrushIndirect
+
   Revision 1.71  2004/03/06 15:37:43  mattias
   fixed FreeDC
 
