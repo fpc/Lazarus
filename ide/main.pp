@@ -1012,8 +1012,15 @@ end;
 
 procedure TMainIDE.MainIDEResize(Sender: TObject);
 begin
-  if ComponentNotebook<>nil then
-    ComponentNotebook.Width:=ClientWidth-ComponentNotebook.Left;
+  if ComponentNotebook<>nil then begin
+    with ComponentNotebook do
+      SetBounds(Left,0,
+                Parent.ClientWidth-ComponentNotebook.Left,Parent.CLientHeight);
+  end;
+  if pnlSpeedButtons<>nil then begin
+    with pnlSpeedButtons do
+      SetBounds(0,0,Width,Parent.ClientHeight);
+  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -9748,6 +9755,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.644  2003/08/30 18:53:07  mattias
+  using default colors, when theme does not define them
+
   Revision 1.643  2003/08/22 18:10:39  mattias
   implemented selections in component tree
 

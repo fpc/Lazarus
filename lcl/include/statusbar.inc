@@ -171,9 +171,9 @@ End;
 Procedure TStatusBar.DrawDivider(X : Integer);
 Begin
   Canvas.Pen.Width:=1;
-  Canvas.Pen.Color := clBtnFace;
+  Canvas.Pen.Color := clBtnHighlight;
   Canvas.Line(X,Top,X,Top+Height-1);
-  Canvas.Pen.Color := clBtnFace;
+  Canvas.Pen.Color := clBtnShadow;
   Canvas.Line(X+1,Top,X+1,Top+Height-1);
 End;
 

@@ -484,6 +484,9 @@ procedure Set_RC_Name(Sender : TObject; AWidget: PGtkWidget);
 var RCName: string;
   AComponent: TComponent;
 begin
+  {$IFDEF NoStyle}
+  exit;
+  {$ENDIF}
   if (AWidget=nil) or (not (Sender is TComponent)) then exit;
 
   // check if a unique name can be created

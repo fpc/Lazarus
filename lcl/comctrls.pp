@@ -112,7 +112,7 @@ type
     procedure SetSimplePanel(Value : Boolean);
     Procedure WMPaint(var Msg: TLMPaint); message LM_PAINT;
     Procedure DrawDivider(X : Integer);
-    Procedure DrawBevel(xLeft, PanelNum : Integer );
+    Procedure DrawBevel(xLeft, PanelNum : Integer);
   public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
@@ -2037,6 +2037,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.85  2003/08/30 18:53:07  mattias
+  using default colors, when theme does not define them
+
   Revision 1.84  2003/08/22 18:10:39  mattias
   implemented selections in component tree
 

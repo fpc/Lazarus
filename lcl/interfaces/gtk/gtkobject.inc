@@ -3758,6 +3758,9 @@ var
   RCStyle : PGtkRCStyle;
   Widget, FixWidget : PGTKWidget;
 begin
+  {$IFDEF NoStyle}
+  exit;
+  {$ENDIF}
   if Sender is TWinControl
   then with TWinControl(Sender) do
   begin
@@ -5122,7 +5125,6 @@ Procedure TgtkObject.FinishComponentCreate(Sender : TObject;
   Handle : Pointer; SetupProps : Boolean);
 begin
   // MWE: next will be obsoleted by WinWidgetInfo
-  //Set these for functions like GetWindowLong  Added 01/07/2000
   if Handle <> nil then
   Begin
     SetLCLObject(Handle, Sender);
@@ -5154,8 +5156,10 @@ begin
   if SetupProps then SetProperties(Sender);
 
   if Handle <> nil then begin
+    {$IFNDEF NoStyle}
     if Sender is TCustomForm then
       gtk_widget_set_app_paintable(Handle,true);
+    {$ENDIF}
     HookSignals(Sender);
   end;
 end;
@@ -8064,6 +8068,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.402  2003/08/30 18:53:07  mattias
+  using default colors, when theme does not define them
+
   Revision 1.401  2003/08/29 21:21:07  mattias
   fixes for gtk2
 

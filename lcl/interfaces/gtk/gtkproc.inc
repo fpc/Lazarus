@@ -528,7 +528,15 @@ var
       gdk_gc_set_fill(GC, fill);
       AllocFG := Foreground.Pixel = 0;
       If AllocFG then
-        gdk_colormap_alloc_color(GDK_Colormap_get_system,@Foreground,True,True);
+        if not gdk_colormap_alloc_color(GDK_Colormap_get_system,@Foreground,
+                                        True,True)
+        then begin
+          writeln('NOTE: EnsureGCColor.EnsureAsGCValues gdk_colormap_alloc_color failed ',
+            HexStr(Cardinal(Foreground.red),4),',',
+            HexStr(Cardinal(Foreground.green),4),',',
+            HexStr(Cardinal(Foreground.blue),4)
+            );
+        end;
       gdk_gc_set_foreground(GC, @foreground);
       Case Fill of
         GDK_TILED :
@@ -587,7 +595,7 @@ begin
   end;
   
   Case TColor(GDIColor^.ColorRef) of
-    //clScrollbar,
+    //clScrollbar: see above
     clInfoBk,
     clMenu,
     clHighlight,
@@ -612,10 +620,8 @@ begin
     else
       EnsureAsColor;
   end;
-  {$DEFINE Bla1}
 end;
 
-{$DEFINE Bla2}
 procedure CopyGDIColor(var SourceGDIColor, DestGDIColor: TGDIColor);
 begin
   SetGDIColorRef(DestGDIColor,SourceGDIColor.ColorRef);
@@ -3196,6 +3202,9 @@ var
   MainStyle: PGtkStyle;
 begin
   if Widget=nil then exit;
+  {$IFDEF NoStyle}
+  exit;
+  {$ENDIF}
   gtk_widget_set_rc_style(Widget);
   MainStyle:=gtk_widget_get_style(Widget);
   if MainStyle=nil then exit;
@@ -3629,12 +3638,18 @@ var
   NoName: PGChar;
 begin
   Result := nil;
+  {$IFDEF NoStyle}
+  exit;
+  {$ENDIF}
   If Not Assigned(Styles) then
     exit;
   l:=IndexOfStyle(WName);
+  //writeln('GetStyle A ',WName,' ',l);
   If l < 0 then begin
+    // create a new style object
     StyleObject := NewStyleObject;
     Tp:=nil;
+    // create a style widget
     If AnsiCompareText(WName,'button')=0 then
       StyleObject^.Widget := GTK_BUTTON_NEW
     else
@@ -3646,8 +3661,9 @@ begin
             NoName,[]);
       end
     else
-      If AnsiCompareText(WName,'window')=0 then
-        StyleObject^.Widget := GTK_WINDOW_NEW(0)
+      If AnsiCompareText(WName,'window')=0 then begin
+        StyleObject^.Widget := GTK_WINDOW_NEW(0);
+      end
     else
       If AnsiCompareText(WName,'checkbox')=0 then begin
         StyleObject^.Widget := GTK_CHECK_BUTTON_NEW;
@@ -3681,6 +3697,7 @@ begin
       FreeStyleObject(StyleObject);
       exit;
     end;
+    // ensure style of the widget
     If (StyleObject^.Widget <> nil) then begin
       gtk_widget_ensure_style(StyleObject^.Widget);
       StyleObject^.Style:=GTK_RC_GET_STYLE(StyleObject^.Widget);
@@ -3688,15 +3705,17 @@ begin
     If StyleObject^.Style <> nil then
       If AnsiCompareText(WName,'gtk_default')<>0 then
         StyleObject^.Style:=GTK_Style_Ref(StyleObject^.Style);
+    // if successful add to style objects list
     if StyleObject^.Style <> nil then begin
       Styles.AddObject(WName, TObject(StyleObject));
       Result:=StyleObject^.Style;
       If StyleObject^.Widget <> nil then
         UpdateSysColorMap(StyleObject^.Widget);
     end
-    else
-      If AnsiCompareText(WName,'default')<>0 then
-        Result := GetStyle('default');
+    else begin
+      // no success, clean up
+      FreeStyleObject(StyleObject);
+    end;
     If Tp<>nil then
       GTK_Object_Destroy(Tp);
   end else
@@ -3746,10 +3765,12 @@ begin
     {$ELSE}
     Result := Style^.Font;
     If Result = nil then
+      {$IFNDEF NoStyle}
       If (Style^.RC_Style <> nil) then begin
         if (Style^.RC_Style^.font_name <> nil) then
           Result := gdk_font_load(Style^.RC_Style^.font_name);
       end;
+      {$ENDIF}
     {$ENDIF}
   end;
 
@@ -3764,24 +3785,33 @@ end;
 
 Function GetSysGCValues(Color : TColorRef) : TGDKGCValues;
 var
-  Style : PGTKStyle;
-  GC : PGDKGC;
-  Pixmap : PGDKPixmap;
-  SysColor : TColorRef;
+  Style: PGTKStyle;
+  GC: PGDKGC;
+  Pixmap: PGDKPixmap;
+  SysColor: TColorRef;
+  BaseColor: TColorRef;
 begin
-  Color := Color and $FF;
+  BaseColor := Color and $FF;
 
   {Set defaults in case something goes wrong}
   FillChar(Result, SizeOf(Result), 0);
-  SysColor := GetSysColor(Color);
+  Style:=nil;
+  GC:=nil;
+  Pixmap:=nil;
+
+  SysColor := GetSysColor(BaseColor);
+  Result.Fill := GDK_Solid;
   Result.foreground.Red := RGB(0,GetRValue(SysColor),0);
   Result.foreground.Green := RGB(0,GetGValue(SysColor),0);
   Result.foreground.Blue := RGB(0,GetBValue(SysColor),0);
-  Result.Fill := GDK_Solid;
+
+  {$IFDEF NoStyle}
+  exit;
+  {$ENDIF}
   {$IfDef Disable_GC_SysColors}
-    exit;
+  exit;
   {$EndIf}
-  Case Color of
+  Case BaseColor of
     {These are WM/X defined, but might be possible to get}
 
     {COLOR_BACKGROUND
@@ -3813,7 +3843,8 @@ begin
           GC := Style^.bg_gc[GTK_STATE_NORMAL];
           If GC = nil then begin
             Result.Fill := GDK_Solid;
-            Result.foreground := Style^.bg[GTK_STATE_PRELIGHT];
+            if Style^.bg[GTK_STATE_PRELIGHT].Pixel<>0 then
+              Result.foreground := Style^.bg[GTK_STATE_PRELIGHT];
           end
           else
             GDK_GC_Get_Values(GC, @Result);
@@ -3830,7 +3861,8 @@ begin
         GC := Style^.fg_gc[GTK_STATE_NORMAL];
         If GC = nil then begin
           Result.Fill := GDK_Solid;
-          Result.foreground := Style^.fg[GTK_STATE_NORMAL];
+          if Style^.fg[GTK_STATE_NORMAL].Pixel<>0 then
+            Result.foreground := Style^.fg[GTK_STATE_NORMAL];
         end
         else
           GDK_GC_Get_Values(GC, @Result);
@@ -3840,15 +3872,13 @@ begin
     COLOR_SCROLLBAR,
     COLOR_BTNFACE :
       begin
-        Case Color of
-          COLOR_BTNFACE : Style := GetStyle('window');
-          COLOR_MENU : Style := GetStyle('menu');
-          COLOR_SCROLLBAR : Style := GetStyle('scrollbar');
+        Case BaseColor of
+          COLOR_BTNFACE: Style := GetStyle('window');
+          COLOR_MENU: Style := GetStyle('menu');
+          COLOR_SCROLLBAR: Style := GetStyle('scrollbar');
         end;
-          
         If Style = nil then
           exit;
-          
         Pixmap := Style^.bg_pixmap[GTK_STATE_NORMAL];
         If Pixmap <> nil then begin
           Result.Fill := GDK_Tiled;
@@ -3857,7 +3887,8 @@ begin
           GC := Style^.bg_gc[GTK_STATE_NORMAL];
           If GC = nil then begin
             Result.Fill := GDK_Solid;
-            Result.foreground := Style^.fg[GTK_STATE_NORMAL];
+            if Style^.fg[GTK_STATE_NORMAL].Pixel<>0 then
+              Result.foreground := Style^.fg[GTK_STATE_NORMAL];
           end
           else
             GDK_GC_Get_Values(GC, @Result);
@@ -3873,7 +3904,8 @@ begin
         GC := Style^.dark_gc[GTK_STATE_NORMAL];
         If GC = nil then begin
           Result.Fill := GDK_Solid;
-          Result.foreground := Style^.dark[GTK_STATE_NORMAL];
+          if Style^.dark[GTK_STATE_NORMAL].Pixel<>0 then
+            Result.foreground := Style^.dark[GTK_STATE_NORMAL];
         end
         else
           GDK_GC_Get_Values(GC, @Result);
@@ -3885,14 +3917,19 @@ begin
         If Style = nil then
           exit;
         GC := Style^.text_gc[GTK_STATE_INSENSITIVE];
-        GDK_GC_Get_Values(GC, @Result);
+        if GC=nil then begin
+          Result.Fill := GDK_Solid;
+          if Style^.text[GTK_STATE_NORMAL].Pixel<>0 then
+            Result.foreground := Style^.text[GTK_STATE_NORMAL];
+        end else
+          GDK_GC_Get_Values(GC, @Result);
       end;
 
     COLOR_MENUTEXT,
     COLOR_WINDOWTEXT,
     COLOR_BTNTEXT :
       begin
-        Case Color of
+        Case BaseColor of
           COLOR_BTNTEXT : Style := GetStyle('button');
           COLOR_MENUTEXT : Style := GetStyle('menuitem');
           COLOR_WINDOWTEXT : Style := GetStyle('default');
@@ -3902,7 +3939,8 @@ begin
         GC := Style^.text_gc[GTK_STATE_NORMAL];
         If GC = nil then begin
           Result.Fill := GDK_Solid;
-          Result.foreground := Style^.text[GTK_STATE_NORMAL];
+          if Style^.text[GTK_STATE_NORMAL].Pixel<>0 then
+            Result.foreground := Style^.text[GTK_STATE_NORMAL];
         end
         else
           GDK_GC_Get_Values(GC, @Result);
@@ -3917,7 +3955,8 @@ begin
         GC := Style^.light_gc[GTK_STATE_NORMAL];
         If GC = nil then begin
           Result.Fill := GDK_Solid;
-          Result.foreground := Style^.light[GTK_STATE_NORMAL];
+          if Style^.light[GTK_STATE_NORMAL].Pixel<>0 then
+            Result.foreground := Style^.light[GTK_STATE_NORMAL];
         end
         else
           GDK_GC_Get_Values(GC, @Result);
@@ -3931,7 +3970,8 @@ begin
         GC := Style^.base_gc[GTK_STATE_NORMAL];
         If GC = nil then begin
           Result.Fill := GDK_Solid;
-          Result.foreground := Style^.base[GTK_STATE_NORMAL];
+          if Style^.base[GTK_STATE_NORMAL].Pixel<>0 then
+            Result.foreground := Style^.base[GTK_STATE_NORMAL];
         end
         else
           GDK_GC_Get_Values(GC, @Result);
@@ -3945,7 +3985,8 @@ begin
         GC := Style^.bg_gc[GTK_STATE_SELECTED];
         If GC = nil then begin
           Result.Fill := GDK_Solid;
-          Result.foreground := Style^.bg[GTK_STATE_SELECTED];
+          if Style^.bg[GTK_STATE_SELECTED].Pixel<>0 then
+            Result.foreground := Style^.bg[GTK_STATE_SELECTED];
         end
         else
           GDK_GC_Get_Values(GC, @Result);
@@ -3959,7 +4000,8 @@ begin
         GC := Style^.bg_gc[GTK_STATE_PRELIGHT];
         If GC = nil then begin
           Result.Fill := GDK_Solid;
-          Result.foreground := Style^.bg[GTK_STATE_PRELIGHT];
+          if Style^.bg[GTK_STATE_PRELIGHT].Pixel<>0 then
+            Result.foreground := Style^.bg[GTK_STATE_PRELIGHT];
         end
         else
           GDK_GC_Get_Values(GC, @Result);
@@ -4363,6 +4405,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.192  2003/08/30 18:53:08  mattias
+  using default colors, when theme does not define them
+
   Revision 1.191  2003/08/29 21:21:07  mattias
   fixes for gtk2
 

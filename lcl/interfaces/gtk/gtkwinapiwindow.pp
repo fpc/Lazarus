@@ -382,7 +382,9 @@ begin
     ShowHideOnFocus := true;
   end;
 
+  {$IFNDEF NoStyle}
   gtk_widget_set_app_paintable(PGTKWidget(Client),true);
+  {$ENDIF}
 end;
 
 function GTKAPIWidgetClient_GetType: Guint;
@@ -924,6 +926,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.47  2003/08/30 18:53:08  mattias
+  using default colors, when theme does not define them
+
   Revision 1.46  2003/05/26 21:28:22  mattias
   fixed absolute file
 

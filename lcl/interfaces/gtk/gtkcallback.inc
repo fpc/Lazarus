@@ -162,9 +162,11 @@ end;
   GTKRealizeAfterCB is called by the gtk, whenever a widget is realized
   (ie mapped), and after the widget itself got the realize signal.
   That means that the gdk window on the xserver has been created and the widget
-  has initialized the gdkwindow. This function is used for the second part of
+  initialized the gdkwindow. This function is used for the second part of
   the initialization of a widget.
+
 -------------------------------------------------------------------------------}
+
   {$IFDEF CustomFonts}
   procedure ModifyWidgetStyle(AWinControl: TWinControl; AWidget: PGtkWidget);
   {$IFDEF Win32}
@@ -175,14 +177,16 @@ end;
   var
     RCStyle: PGtkRcStyle;
   begin
+    {$IFDEF NoStyle}
+    exit;
+    {$ENDIF}
     if not (AWinControl is TButton) then exit;
     writeln('ModifyWidgetStyle A ',AWinControl.Name,':',AWinControl.ClassName,' AWidget=',HexStr(Cardinal(AWidget),8));
     RCStyle:=gtk_rc_style_new;
     g_free(RCStyle^.font_name);
     RCStyle^.font_name:=g_strdup('-urw-chancery l-medium-i-normal-*-*-140-*-*-p-*-iso8859-2');
 
-    // MG: somehow I only got access violations
-    gtk_widget_modify_style(AWidget,@RCStyle);
+    gtk_widget_modify_style(AWidget,RCStyle);
     
     g_free(RCStyle^.font_name);
     RCStyle^.font_name:=nil;
@@ -2841,6 +2845,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.185  2003/08/30 18:53:07  mattias
+  using default colors, when theme does not define them
+
   Revision 1.184  2003/08/29 21:21:07  mattias
   fixes for gtk2
 
