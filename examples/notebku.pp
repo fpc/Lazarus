@@ -29,6 +29,7 @@ uses Classes, SysUtils, Controls, Forms, ExtCtrls, Buttons;
 
 type
    TForm1 = class(TForm)
+     procedure fNotebkResize(Sender: TObject);
    private
    public
      fNotebk: TNotebook;
@@ -52,6 +53,12 @@ var
   Form1: TForm1;
 
 implementation
+
+procedure TForm1.fNotebkResize(Sender: TObject);
+begin
+  with fNotebook do
+    SetBounds(20,50,Parent.Width-50,Parent.Height-110);
+end;
 
 constructor TForm1.Create(AOwner: TComponent);	
 begin
@@ -80,18 +87,15 @@ begin
       Pages.Add('Page 3');
       Pages.Add('Page 4');
       Pages.Add('Page 5');
-      Show; 
    end;
+   
+   fNotebk.Page[4].OnResize:=@fNotebkResize;
 
    // Create the Tabbed Notebook
    fNotebook := TNotebook.Create(Self);
    with fNotebook do
    begin
       Parent := fNotebk.Page[4];
-      Left := 20;
-      Top := 50;
-      Width := Parent.Width - 50;
-      Height := Parent.Height - 80;
       if PageCount>0 then
         Pages.Strings[0] := 'Page 1'
       else
@@ -100,7 +104,6 @@ begin
       Pages.Add('Page 3');
       Pages.Add('Page 4');
       Pages.Add('Page 5');
-      Show;
    end;
 
    { Create Goto First Page Button on last page of Notebook
@@ -220,13 +223,11 @@ procedure TForm1.Button4Click(Sender: TObject);
 begin
   //writeln('Show/Hide Tabs Button Clicked');
 
-(*
   fNotebook.ShowTabs := not fNotebook.ShowTabs;
   if (fNotebook.ShowTabs) then
     fButton4.Caption := 'Hide Tabs'
   else
     fButton4.Caption := 'Show Tabs';
-*)
 end;
 
 procedure TForm1.Button5Click(Sender: TObject);
@@ -248,7 +249,6 @@ procedure TForm1.Button6Click(Sender: TObject);
 begin
   //writeln('Set Tab Position Button Clicked');
 
-(*
   if fNotebook.TabPosition = tpTop then
      fNotebook.TabPosition := tpRight
   else if fNotebook.TabPosition = tpRight then
@@ -257,13 +257,15 @@ begin
      fNotebook.TabPosition := tpLeft
   else if fNotebook.TabPosition = tpLeft then
      fNotebook.TabPosition := tpTop;
-*)
 end;
 
 end.
 
 {
   $Log$
+  Revision 1.6  2003/07/25 08:52:43  mattias
+  fixed nested notebook example
+
   Revision 1.5  2002/10/30 13:23:48  lazarus
   MG: fixed example
 
