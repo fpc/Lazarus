@@ -65,6 +65,8 @@ type
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
       FileVersion: integer);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    function Compare(Version2: TPkgVersion): integer;
+    procedure Assign(Source: TPkgVersion);
   end;
   
   
@@ -129,7 +131,8 @@ type
   
   TPkgDependencyFlag = (
     pdfMinVersion, // >= MinVersion
-    pdfMaxVersion  // <= MaxVersion
+    pdfMaxVersion, // <= MaxVersion
+    pdfActive
     );
   TPkgDependencyFlags = set of TPkgDependencyFlag;
   
@@ -150,6 +153,11 @@ type
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
       FileVersion: integer);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    function MakeSense: boolean;
+    function IsCompatible(const Version: TPkgVersion): boolean;
+    function IsCompatible(const PkgName: string;
+      const Version: TPkgVersion): boolean;
+    function Compare(Dependency2: TPkgDependency): integer;
   public
     property PackageName: string read FPackageName write SetPackageName;
     property Flags: TPkgDependencyFlags read FFlags write SetFlags;
@@ -244,6 +252,7 @@ type
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     function IsVirtual: boolean;
+    procedure CheckInnerDependencies;
   public
     property Author: string read FAuthor write SetAuthor;
     property AutoIncrementVersionOnBuild: boolean
@@ -299,7 +308,7 @@ const
   PkgFileFlag: array[TPkgFileFlag] of string = (
     'pffHasRegisterProc');
   PkgDependencyFlagNames: array[TPkgDependencyFlag] of string = (
-    'pdfMinVersion', 'pdfMaxVersion');
+    'pdfMinVersion', 'pdfMaxVersion', 'pdfActive');
   LazPackageTypeNames: array[TLazPackageType] of string = (
     'lptRunTime', 'lptDesignTime', 'lptRunAndDesignTime');
   LazPackageTypeIdents: array[TLazPackageType] of string = (
@@ -311,7 +320,7 @@ const
 
 function PkgFileTypeIdentToType(const s: string): TPkgFileType;
 function LazPackageTypeIdentToType(const s: string): TLazPackageType;
-
+procedure SortDependencyList(Dependencies: TList);
 
 implementation
 
@@ -328,6 +337,40 @@ begin
   for Result:=Low(TLazPackageType) to High(TLazPackageType) do
     if AnsiCompareText(s,LazPackageTypeIdents[Result])=0 then exit;
   Result:=lptRunTime;
+end;
+
+procedure SortDependencyList(Dependencies: TList);
+var
+  Count: Integer;
+  i, j: Integer;
+  Dependency1: TPkgDependency;
+  Dependency2: TPkgDependency;
+  Sorted: Boolean;
+begin
+  if (Dependencies=nil) or (Dependencies.Count<2) then exit;
+  // check if already sorted
+  Count:=Dependencies.Count;
+  Sorted:=true;
+  for i:=0 to Count-2 do begin
+    Dependency1:=TPkgDependency(Dependencies[i]);
+    Dependency2:=TPkgDependency(Dependencies[i+1]);
+    if Dependency1.Compare(Dependency2)>0 then begin
+      Sorted:=false;
+      break;
+    end;
+  end;
+  if Sorted then exit;
+  // bubble sort (slow, but dependency lists are normally sorted)
+  for i:=0 to Count-2 do begin
+    Dependency1:=TPkgDependency(Dependencies[i]);
+    for j:=i+1 to Count-1 do begin
+      Dependency2:=TPkgDependency(Dependencies[j]);
+      if Dependency1.Compare(Dependency2)>0 then begin
+        Dependencies.Exchange(i,j);
+        Dependency1:=TPkgDependency(Dependencies[i]);
+      end;
+    end;
+  end;
 end;
 
 { TPkgFile }
@@ -473,6 +516,39 @@ begin
   XMLConfig.SetDeleteValue(Path+'MinVersion/Value',pdfMinVersion in FFlags,false);
 end;
 
+function TPkgDependency.MakeSense: boolean;
+begin
+  Result:=(pdfActive in FFlags) and IsValidIdent(PackageName);
+  if Result
+  and (pdfMinVersion in FFlags) and (pdfMaxVersion in FFlags)
+  and (MinVersion.Compare(MaxVersion)>0) then
+    Result:=false;
+end;
+
+function TPkgDependency.IsCompatible(const Version: TPkgVersion): boolean;
+begin
+  if ((pdfMinVersion in FFlags) and (MinVersion.Compare(Version)>0))
+  or ((pdfMaxVersion in FFlags) and (MaxVersion.Compare(Version)<0)) then
+    Result:=false
+  else
+    Result:=true;
+end;
+
+function TPkgDependency.IsCompatible(const PkgName: string;
+  const Version: TPkgVersion): boolean;
+begin
+  Result:=(AnsiCompareText(PkgName,PackageName)=0) and IsCompatible(Version);
+end;
+
+function TPkgDependency.Compare(Dependency2: TPkgDependency): integer;
+begin
+  Result:=AnsiCompareText(PackageName,Dependency2.PackageName);
+  if Result<>0 then exit;
+  Result:=MinVersion.Compare(Dependency2.MinVersion);
+  if Result<>0 then exit;
+  Result:=MaxVersion.Compare(Dependency2.MaxVersion);
+end;
+
 { TPkgVersion }
 
 procedure TPkgVersion.Clear;
@@ -501,6 +577,22 @@ begin
   XMLConfig.SetDeleteValue(Path+'Minor',Minor,0);
   XMLConfig.SetDeleteValue(Path+'Build',Build,0);
   XMLConfig.SetDeleteValue(Path+'Release',Release,0);
+end;
+
+function TPkgVersion.Compare(Version2: TPkgVersion): integer;
+begin
+  Result:=Major-Version2.Major;
+  if Result=0 then Result:=Minor-Version2.Minor;
+  if Result=0 then Result:=Build-Version2.Build;
+  if Result=0 then Result:=Release-Version2.Release;
+end;
+
+procedure TPkgVersion.Assign(Source: TPkgVersion);
+begin
+  Major:=Source.Major;
+  Minor:=Source.Minor;
+  Build:=Source.Build;
+  Release:=Source.Release;
 end;
 
 { TLazPackage }
@@ -760,6 +852,7 @@ var
                                       FileVersion);
       List.Add(PkgDependency);
     end;
+    SortDependencyList(List);
   end;
 
   procedure LoadFiles(const ThePath: string; List: TList);
@@ -792,7 +885,7 @@ var
     else
       Exclude(FFlags,lpfOpenInIDE);
   end;
-
+  
 begin
   FileVersion:=XMLConfig.GetValue(Path+'Version',0);
   if FileVersion=1 then ;
@@ -869,6 +962,11 @@ end;
 function TLazPackage.IsVirtual: boolean;
 begin
   Result:=not FilenameIsAbsolute(Filename);
+end;
+
+procedure TLazPackage.CheckInnerDependencies;
+begin
+
 end;
 
 { TPkgComponent }

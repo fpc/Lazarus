@@ -1039,8 +1039,15 @@ begin
   if (not FileExists(ConfFileName)) then begin
     writeln('NOTE: editor options config file not found - using defaults');
   end;
-  XMLConfig:=TXMLConfig.Create(ConfFileName);
-  
+  try
+    XMLConfig:=TXMLConfig.Create(ConfFileName);
+  except
+    on E: Exception do begin
+      writeln('WARNING: unable to read ',ConfFileName);
+      XMLConfig:=nil;
+    end;
+  end;
+
   // set defaults
 
   // General options

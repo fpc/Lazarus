@@ -52,7 +52,7 @@ uses
 
   { The primary config path is the local or user specific path.
     If the primary config path does not exists, it will automatically be
-    created.
+    created by the IDE.
     The secondary config path is for templates. The IDE will never write to it.
     If a config file is not found in the primary config file, Lazarus will
     copy the template file from the secondary config file. If there is no
@@ -124,6 +124,9 @@ end.
 
 {
   $Log$
+  Revision 1.15  2003/04/01 22:49:47  mattias
+  implemented global and user package links
+
   Revision 1.14  2003/03/13 10:11:41  mattias
   fixed TControl.Show in design mode
 
