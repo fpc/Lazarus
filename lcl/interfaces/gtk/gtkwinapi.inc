@@ -5015,7 +5015,7 @@ begin
   if (nIndex < 0) or (nIndex > MAX_SYS_COLORS)
   then begin
     Result := 0;
-    // raise an exception
+    //RaiseException('');
     WriteLn(Format('ERROR: [TgtkObject.GetSysColor] Bad Value: %8x Valid Range between 0 and %d', [nIndex, MAX_SYS_COLORS]));
   end
   else Result := SysColorMap[nIndex];
@@ -8691,6 +8691,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.326  2004/02/04 12:48:17  mattias
+  added CLX colors
+
   Revision 1.325  2004/02/03 08:54:09  mattias
   Frame3D rect now var again
 

@@ -918,11 +918,13 @@ var
   function FindLFMIdentifier(LFMNode: TLFMTreeNode;
     DefaultErrorPosition: integer;
     const IdentName: string; const ClassContext: TFindContext;
-    SearchAlsoInDefineProperties: boolean): TFindContext;
+    SearchAlsoInDefineProperties: boolean;
+    var IdentContext: TFindContext): boolean;
   var
     Params: TFindDeclarationParams;
   begin
-    Result:=CleanFindContext;
+    Result:=false;
+    IdentContext:=CleanFindContext;
     if (ClassContext.Node=nil) or (ClassContext.Node.Desc<>ctnClass) then begin
       writeln('TStandardCodeTool.CheckLFM.FindLFMIdentifier Internal error');
       exit;
@@ -943,7 +945,7 @@ var
           ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']'
           );}
         if ClassContext.Tool.FindIdentifierInContext(Params) then begin
-          Result:=CreateFindContext(Params);
+          IdentContext:=CreateFindContext(Params);
         end;
       except
         // ignore search/parse errors
@@ -952,13 +954,20 @@ var
     finally
       Params.Free;
     end;
-    if Result.Node=nil then begin
+    
+    if IdentContext.Node<>nil then begin
+      Result:=true;
+    end else begin
       // no node found
       if SearchAlsoInDefineProperties then begin
         if FindNonPublishedDefineProperty(LFMNode,DefaultErrorPosition,
           IdentName,ClassContext)
-        then exit;
+        then begin
+          Result:=true;
+        end;
       end;
+    end;
+    if not Result then begin
       LFMTree.AddError(lfmeIdentifierNotFound,LFMNode,
                        'identifier '+IdentName+' not found',
                        DefaultErrorPosition);
@@ -1035,10 +1044,14 @@ var
                        LFMObject.StartPos);
       exit;
     end;
-    ChildContext:=FindLFMIdentifier(LFMObject,LFMObject.NamePosition,
-      LFMObjectName,RootContext,false);
-    if ChildContext.Node=nil then exit;
-    
+    if not FindLFMIdentifier(LFMObject,LFMObject.NamePosition,
+      LFMObjectName,RootContext,false,ChildContext) then exit;
+    if ChildContext.Node=nil then begin
+      // this is an extra entry, created via DefineProperties.
+      // There is no generic way to test such things
+      exit;
+    end;
+
     // check if identifier is variable
     if not ChildContext.Node.Desc=ctnVarDefinition then begin
       LFMTree.AddError(lfmeObjectIncompatible,LFMObject,
@@ -1157,11 +1170,16 @@ var
       end;
 
       CurName:=LFMProperty.NameParts.Names[i];
-      CurPropertyContext:=FindLFMIdentifier(LFMProperty,
-                                         LFMProperty.NameParts.NamePositions[i],
-                                         CurName,SearchContext,true);
-      if CurPropertyContext.Node=nil then
+      if not FindLFMIdentifier(LFMProperty,
+                               LFMProperty.NameParts.NamePositions[i],
+                               CurName,SearchContext,true,CurPropertyContext)
+      then
         break;
+      if CurPropertyContext.Node=nil then begin
+        // this is an extra entry, created via DefineProperties.
+        // There is no generic way to test such things
+        break;
+      end;
       SearchContext:=CurPropertyContext;
     end;
     

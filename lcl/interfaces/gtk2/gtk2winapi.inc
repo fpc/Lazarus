@@ -263,12 +263,7 @@ begin
         SelectedColors := dcscCustom;
         EnsureGCColor(DC, dccCurrentTextColor, True, False);
 
-        Case CurrentTextColor.ColorRef of
-          clScrollbar..clEndColors:
-            RGBColor := GetSysColor(CurrentTextColor.ColorRef and $FF);
-          else
-            RGBColor := CurrentTextColor.ColorRef and $FFFFFF;
-        end;
+        RGBColor := ColorToRGB(CurrentTextColor.ColorRef)
 
         Attr := pango_attr_foreground_new(gushort(GetRValue(RGBColor)) shl 8,
                                         gushort(GetGValue(RGBColor)) shl 8,
@@ -520,14 +515,7 @@ begin
           end;
 
           EnsureGCColor(DC, dccCurrentTextColor, True, False);
-          Case TColor(CurrentTextColor.ColorRef) of
-            clScrollbar..clEndColors:
-              begin
-                RGBColor := GetSysColor(CurrentTextColor.ColorRef and $FF);
-              end;
-            else
-              RGBColor := CurrentTextColor.ColorRef and $FFFFFF;
-          end;
+          RGBColor := ColorToRGB(CurrentTextColor.ColorRef)
 
           Attr := pango_attr_foreground_new(gushort(GetRValue(RGBColor)) shl 8,
                                             gushort(GetGValue(RGBColor)) shl 8,
@@ -678,12 +666,7 @@ begin
         Attr := pango_attr_strikethrough_new(StrikeOut);
         pango_attr_list_change(AttrList,Attr);
 
-        Case TColor(CurrentTextColor.ColorRef) of
-          clScrollbar..clEndColors:
-            RGBColor := GetSysColor(CurrentTextColor.ColorRef and $FF);
-          else
-            RGBColor := CurrentTextColor.ColorRef and $FFFFFF;
-        end;
+        RGBColor := ColorToRGB(CurrentTextColor.ColorRef);
 
         Attr := pango_attr_foreground_new(gushort(GetRValue(RGBColor)) shl 8,
                                         gushort(GetGValue(RGBColor)) shl 8,
@@ -793,12 +776,7 @@ begin
         EnsureGCColor(DC, dccCurrentBackColor, True, False);
         EnsureGCColor(DC, dccCurrentTextColor, True, False);
 
-        Case TColor(CurrentTextColor.ColorRef) of
-          clScrollbar..clEndColors:
-            RGBColor := GetSysColor(CurrentTextColor.ColorRef and $FF);
-          else
-            RGBColor := CurrentTextColor.ColorRef and $FFFFFF;
-        end;
+        RGBColor := ColorToRGB(CurrentTextColor.ColorRef);
 
         Attr := pango_attr_foreground_new(gushort(GetRValue(RGBColor)) shl 8,
                                         gushort(GetGValue(RGBColor)) shl 8,
@@ -848,6 +826,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2004/02/04 12:48:17  mattias
+  added CLX colors
+
   Revision 1.5  2003/12/26 10:16:54  mattias
   changed TColorRef from longword to longint
 

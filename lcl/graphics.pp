@@ -176,7 +176,7 @@ type
     );
 
 const
-  // The follow colors match the predefined Delphi Colors
+  // The following colors match the predefined Delphi Colors
   clBlack   = TColor($000000);
   clMaroon  = TColor($000080);
   clGreen   = TColor($008000);
@@ -195,9 +195,9 @@ const
   clLtGray  = TColor($C0C0C0);
   clDkGray  = TColor($808080);
   clWhite   = TColor($FFFFFF);
+  clCream   = TColor($F0FBFF);
   clNone    = TColor($1FFFFFFF);
   clDefault = TColor($20000000);
-  clCream   = TColor($F0FBFF);
 
   //System colors
   clScrollBar               = TColor(SYS_COLOR_BASE or COLOR_SCROLLBAR);
@@ -235,8 +235,90 @@ const
   clColorDesktop            = TColor(SYS_COLOR_BASE or COLOR_DESKTOP);
   cl3DFace                  = TColor(SYS_COLOR_BASE or COLOR_3DFACE);
   cl3DShadow                = TColor(SYS_COLOR_BASE or COLOR_3DSHADOW);
-  cl3DHILight               = TColor(SYS_COLOR_BASE or COLOR_3DHIGHLIGHT);
-  clBtnHILight              = TColor(SYS_COLOR_BASE or COLOR_BTNHILIGHT);
+  cl3DHiLight               = TColor(SYS_COLOR_BASE or COLOR_3DHIGHLIGHT);
+  clBtnHiLight              = TColor(SYS_COLOR_BASE or COLOR_BTNHILIGHT);
+
+  clFirstSpecialColor = clBtnHiLight;
+
+  clMask = clWhite;
+  clDontMask = clBlack;
+
+  // CLX base, mapped, pseudo, rgb values
+  clForeground = TColor(-1);
+  clButton = TColor(-2);
+  clLight = TColor(-3);
+  clMidlight = TColor(-4);
+  clDark = TColor(-5);
+  clMid = TColor(-6);
+  clText = TColor(-7);
+  clBrightText = TColor(-8);
+  clButtonText = TColor(-9);
+  clBase = TColor(-10);
+  //clBackground = TColor(-11); defined above
+  clShadow = TColor(-12);
+  //clHighlight = TColor(-13); defined above
+  clHighlightedText = TColor(-14);
+
+  // CLX mapped role offsets
+  cloNormal = 32;
+  cloDisabled = 64;
+  cloActive = 96;
+
+  // CLX normal, mapped, pseudo, rgb values
+  clNormalForeground = TColor(clForeground - cloNormal);
+  clNormalButton = TColor(clButton - cloNormal);
+  clNormalLight = TColor(clLight - cloNormal);
+  clNormalMidlight = TColor(clMidlight - cloNormal);
+  clNormalDark = TColor(clDark - cloNormal);
+  clNormalMid = TColor(clMid - cloNormal);
+  clNormalText = TColor(clText - cloNormal);
+  clNormalBrightText = TColor(clBrightText - cloNormal);
+  clNormalButtonText = TColor(clButtonText - cloNormal);
+  clNormalBase = TColor(clBase - cloNormal);
+  clNormalBackground = TColor(clBackground - cloNormal);
+  clNormalShadow = TColor(clShadow - cloNormal);
+  clNormalHighlight = TColor(clHighlight - cloNormal);
+  clNormalHighlightedText = TColor(clHighlightedText - cloNormal);
+
+  // CLX disabled, mapped, pseudo, rgb values
+  clDisabledForeground = TColor(clForeground - cloDisabled);
+  clDisabledButton = TColor(clButton - cloDisabled);
+  clDisabledLight = TColor(clLight - cloDisabled);
+  clDisabledMidlight = TColor(clMidlight - cloDisabled);
+  clDisabledDark = TColor(clDark - cloDisabled);
+  clDisabledMid = TColor(clMid - cloDisabled);
+  clDisabledText = TColor(clText - cloDisabled);
+  clDisabledBrightText = TColor(clBrightText - cloDisabled);
+  clDisabledButtonText = TColor(clButtonText - cloDisabled);
+  clDisabledBase = TColor(clBase - cloDisabled);
+  clDisabledBackground = TColor(clBackground - cloDisabled);
+  clDisabledShadow = TColor(clShadow - cloDisabled);
+  clDisabledHighlight = TColor(clHighlight - cloDisabled);
+  clDisabledHighlightedText = TColor(clHighlightedText - cloDisabled);
+
+  // CLX active, mapped, pseudo, rgb values
+  clActiveForeground = TColor(clForeground - cloActive);
+  clActiveButton = TColor(clButton - cloActive);
+  clActiveLight = TColor(clLight - cloActive);
+  clActiveMidlight = TColor(clMidlight - cloActive);
+  clActiveDark = TColor(clDark - cloActive);
+  clActiveMid = TColor(clMid - cloActive);
+  clActiveText = TColor(clText - cloActive);
+  clActiveBrightText = TColor(clBrightText - cloActive);
+  clActiveButtonText = TColor(clButtonText - cloActive);
+  clActiveBase = TColor(clBase - cloActive);
+  clActiveBackground = TColor(clBackground - cloActive);
+  clActiveShadow = TColor(clShadow - cloActive);
+  clActiveHighlight = TColor(clHighlight - cloActive);
+  clActiveHighlightedText = TColor(clHighlightedText - cloActive);
+
+type
+  TMappedColor = clActiveHighlightedText..clNormalForeground;
+
+  TColorGroup = (cgInactive, cgDisabled, cgActive);
+  TColorRole = (crForeground, crButton, crLight, crMidlight, crDark, crMid,
+    crText, crBrightText, crButtonText, crBase, crBackground, crShadow,
+    crHighlight, crHighlightText, crNoRole);
 
 const
   cmBlackness = BLACKNESS;
@@ -1010,6 +1092,7 @@ type
 
 function ColorToIdent(Color: Longint; var Ident: String): Boolean;
 function IdentToColor(const Ident: string; var Color: Longint): Boolean;
+function SysColorToSysColorIndex(Color: TColor): integer;
 function ColorToRGB(Color: TColor): Longint;
 function ColorToString(Color: TColor): AnsiString;
 function StringToColor(const S: shortstring): TColor;
@@ -1119,7 +1202,8 @@ type
 { Color mapping routines }
 
 const
-  Colors: array[0..42] of TIdentMapEntry = (
+  Colors: array[0..109] of TIdentMapEntry = (
+    // The following colors match the predefined Delphi Colors
     (Value: clBlack; Name: 'clBlack'),
     (Value: clMaroon; Name: 'clMaroon'),
     (Value: clGreen; Name: 'clGreen'),
@@ -1135,7 +1219,14 @@ const
     (Value: clBlue; Name: 'clBlue'),
     (Value: clFuchsia; Name: 'clFuchsia'),
     (Value: clAqua; Name: 'clAqua'),
+    (Value: clLtGray; Name: 'clLtGray'),
+    (Value: clDkGray; Name: 'clDkGray'),
     (Value: clWhite; Name: 'clWhite'),
+    (Value: clCream; Name: 'clCream'),
+    (Value: clNone; Name: 'clNone'),
+    (Value: clDefault; Name: 'clDefault'),
+
+    //System colors
     (Value: clScrollBar; Name: 'clScrollBar'),
     (Value: clBackground; Name: 'clBackground'),
     (Value: clActiveCaption; Name: 'clActiveCaption'),
@@ -1148,21 +1239,96 @@ const
     (Value: clCaptionText; Name: 'clCaptionText'),
     (Value: clActiveBorder; Name: 'clActiveBorder'),
     (Value: clInactiveBorder; Name: 'clInactiveBorder'),
-    (Value: clAppWorkSpace; Name: 'clAppWorkSpace'),
+    (Value: clAppWorkspace; Name: 'clAppWorkspace'),
     (Value: clHighlight; Name: 'clHighlight'),
     (Value: clHighlightText; Name: 'clHighlightText'),
     (Value: clBtnFace; Name: 'clBtnFace'),
     (Value: clBtnShadow; Name: 'clBtnShadow'),
     (Value: clGrayText; Name: 'clGrayText'),
     (Value: clBtnText; Name: 'clBtnText'),
-    (Value: clForm; Name: 'clForm'),
     (Value: clInactiveCaptionText; Name: 'clInactiveCaptionText'),
     (Value: clBtnHighlight; Name: 'clBtnHighlight'),
     (Value: cl3DDkShadow; Name: 'cl3DDkShadow'),
     (Value: cl3DLight; Name: 'cl3DLight'),
     (Value: clInfoText; Name: 'clInfoText'),
     (Value: clInfoBk; Name: 'clInfoBk'),
-    (Value: clNone; Name: 'clNone'));
+
+    (Value: clHotLight; Name: 'clHotLight'),
+    (Value: clGradientActiveCaption; Name: 'clGradientActiveCaption'),
+    (Value: clGradientInactiveCaption; Name: 'clGradientInactiveCaption'),
+    (Value: clForm; Name: 'clForm'),
+
+    (Value: clEndColors; Name: 'clEndColors'),
+    (Value: clColorDesktop; Name: 'clColorDesktop'),
+    (Value: cl3DFace; Name: 'cl3DFace'),
+    (Value: cl3DShadow; Name: 'cl3DShadow'),
+    (Value: cl3DHiLight; Name: 'cl3DHiLight'),
+    (Value: clBtnHiLight; Name: 'clBtnHiLight'),
+
+    // CLX base, mapped, pseudo, rgb values
+    (Value: clForeground; Name: 'clForeground'),
+    (Value: clButton; Name: 'clButton'),
+    (Value: clLight; Name: 'clLight'),
+    (Value: clMidlight; Name: 'clMidlight'),
+    (Value: clDark; Name: 'clDark'),
+    (Value: clMid; Name: 'clMid'),
+    (Value: clText; Name: 'clText'),
+    (Value: clBrightText; Name: 'clBrightText'),
+    (Value: clButtonText; Name: 'clButtonText'),
+    (Value: clBase; Name: 'clBase'),
+    //clBackground
+    (Value: clShadow; Name: 'clShadow'),
+    //clHighlight
+    (Value: clHighlightedText; Name: 'clHighlightedText'),
+
+    // CLX normal, mapped, pseudo, rgb values
+    (Value: clNormalForeground; Name: 'clNormalForeground'),
+    (Value: clNormalButton; Name: 'clNormalButton'),
+    (Value: clNormalLight; Name: 'clNormalLight'),
+    (Value: clNormalMidlight; Name: 'clNormalMidlight'),
+    (Value: clNormalDark; Name: 'clNormalDark'),
+    (Value: clNormalMid; Name: 'clNormalMid'),
+    (Value: clNormalText; Name: 'clNormalText'),
+    (Value: clNormalBrightText; Name: 'clNormalBrightText'),
+    (Value: clNormalButtonText; Name: 'clNormalButtonText'),
+    (Value: clNormalBase; Name: 'clNormalBase'),
+    (Value: clNormalBackground; Name: 'clNormalBackground'),
+    (Value: clNormalShadow; Name: 'clNormalShadow'),
+    (Value: clNormalHighlight; Name: 'clNormalHighlight'),
+    (Value: clNormalHighlightedText; Name: 'clNormalHighlightedText'),
+
+    // CLX disabled, mapped, pseudo, rgb values
+    (Value: clDisabledForeground; Name: 'clDisabledForeground'),
+    (Value: clDisabledButton; Name: 'clDisabledButton'),
+    (Value: clDisabledLight; Name: 'clDisabledLight'),
+    (Value: clDisabledMidlight; Name: 'clDisabledMidlight'),
+    (Value: clDisabledDark; Name: 'clDisabledDark'),
+    (Value: clDisabledMid; Name: 'clDisabledMid'),
+    (Value: clDisabledText; Name: 'clDisabledText'),
+    (Value: clDisabledBrightText; Name: 'clDisabledBrightText'),
+    (Value: clDisabledButtonText; Name: 'clDisabledButtonText'),
+    (Value: clDisabledBase; Name: 'clDisabledBase'),
+    (Value: clDisabledBackground; Name: 'clDisabledBackground'),
+    (Value: clDisabledShadow; Name: 'clDisabledShadow'),
+    (Value: clDisabledHighlight; Name: 'clDisabledHighlight'),
+    (Value: clDisabledHighlightedText; Name: 'clDisabledHighlightedText'),
+
+    // CLX active, mapped, pseudo, rgb values
+    (Value: clActiveForeground; Name: 'clActiveForeground'),
+    (Value: clActiveButton; Name: 'clActiveButton'),
+    (Value: clActiveLight; Name: 'clActiveLight'),
+    (Value: clActiveMidlight; Name: 'clActiveMidlight'),
+    (Value: clActiveDark; Name: 'clActiveDark'),
+    (Value: clActiveMid; Name: 'clActiveMid'),
+    (Value: clActiveText; Name: 'clActiveText'),
+    (Value: clActiveBrightText; Name: 'clActiveBrightText'),
+    (Value: clActiveButtonText; Name: 'clActiveButtonText'),
+    (Value: clActiveBase; Name: 'clActiveBase'),
+    (Value: clActiveBackground; Name: 'clActiveBackground'),
+    (Value: clActiveShadow; Name: 'clActiveShadow'),
+    (Value: clActiveHighlight; Name: 'clActiveHighlight'),
+    (Value: clActiveHighlightedText; Name: 'clActiveHighlightedText')
+    );
 
 function ColorToIdent(Color: Longint; var Ident: String): Boolean;
 begin
@@ -1174,10 +1340,30 @@ begin
   Result := IdentToInt(Ident, Color, Colors);
 end;
 
+function SysColorToSysColorIndex(Color: TColor): integer;
+begin
+  if (Cardinal(Color) and Cardinal(SYS_COLOR_BASE)) <> 0 then begin
+    case Color of
+    clHighlightedText..clForeground:
+      Result:=clForeground+COLOR_clForeground-Color;
+    clNormalHighlightedText..clNormalForeground:
+      Result:=clNormalForeground+COLOR_clNormalForeground-Color;
+    clDisabledHighlightedText..clDisabledForeground:
+      Result:=clDisabledForeground+COLOR_clDisabledForeground-Color;
+    clActiveHighlightedText..clActiveForeground:
+      Result:=clActiveForeground+COLOR_clActiveForeground-Color;
+    else
+      Result:=Color and $FF;
+    end;
+  end else begin
+    Result:=-1;
+  end;
+end;
+
 function ColorToRGB(Color: TColor): Longint;
 begin
   if (Cardinal(Color) and Cardinal(SYS_COLOR_BASE)) <> 0
-  then Result := GetSysColor(Color and $000000FF)
+  then Result := GetSysColor(SysColorToSysColorIndex(Color))
   else Result := Color;
   Result := Result and $FFFFFF;
 end;
@@ -1261,6 +1447,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.109  2004/02/04 12:48:17  mattias
+  added CLX colors
+
   Revision 1.108  2004/02/03 08:54:09  mattias
   Frame3D rect now var again
 

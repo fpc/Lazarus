@@ -1304,12 +1304,7 @@ var
 begin
   if DC=0 then ;
   if not (cfColorAllocated in GDIColor^.ColorFlags) then begin
-    Case TColor(GDIColor^.ColorRef) of
-      clScrollbar..clEndColors:
-        RGBColor := GetSysColor(GDIColor^.ColorRef and $FF);
-      else
-        RGBColor := GDIColor^.ColorRef and $FFFFFF;
-    end;
+    RGBColor := ColorToRGB(GDIColor^.ColorRef);
 
     With GDIColor^.Color do begin
       Red := gushort(GetRValue(RGBColor)) shl 8;
@@ -1317,8 +1312,6 @@ begin
       Blue := gushort(GetBValue(RGBColor)) shl 8;
       Pixel := 0;
     end;
-
-    BeginGDKErrorTrap;
 
     {with TDeviceContext(DC) do
       If CurrentPalette <> nil then
@@ -1328,8 +1321,6 @@ begin
 
     gdk_colormap_alloc_color(GDIColor^.Colormap, @(GDIColor^.Color),True,True);
 
-    EndGDKErrorTrap;
-    
     Include(GDIColor^.ColorFlags,cfColorAllocated);
   end;
 end;
@@ -5423,7 +5414,7 @@ begin
   GC:=nil;
   Pixmap:=nil;
 
-  SysColor := GetSysColor(BaseColor);
+  SysColor := ColorToRGB(BaseColor);
   Result.Fill := GDK_Solid;
   RedGreenBlue(TColor(SysColor),Red,Green,Blue);
   Result.foreground.Red:=gushort(Red) shl 8+Red;
@@ -6314,6 +6305,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.256  2004/02/04 12:48:17  mattias
+  added CLX colors
+
   Revision 1.255  2004/02/03 23:42:43  marc
   * Fixed Shift+Fn menu captions
 
