@@ -3246,6 +3246,7 @@ function TMainIDE.DoJumpToCompilerMessage(Index:integer;
 var MaxMessages: integer;
   Filename, Ext: string;
   CaretXY: TPoint;
+  TopLine: integer;
   MsgType: TErrorType;
   SrcEdit: TSourceEditor;
 begin
@@ -3263,6 +3264,7 @@ begin
       inc(Index);
     end;
     if Index>=MaxMessages then exit;
+    MessagesView.MessageView.ItemIndex:=Index;
   end;
   if Compiler1.GetSourcePosition(MessagesView.MessageView.Items[Index],
         Filename,CaretXY,MsgType) then begin
@@ -3277,7 +3279,10 @@ begin
       if Result then begin
         // set caret position
         SrcEdit:=SourceNoteBook.GetActiveSE;
+        TopLine:=CaretXY.Y-(SrcEdit.EditorComponent.LinesInWindow div 2);
+        if TopLine<1 then TopLine:=1;
         SrcEdit.EditorComponent.CaretXY:=CaretXY;
+        SrcEdit.EditorComponent.TopLine:=TopLine;
         SrcEdit.ErrorLine:=CaretXY.Y;
         if FocusEditor then begin
 //writeln('[TMainIDE.DoJumpToCompilerMessage] A');
@@ -3485,6 +3490,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.105  2001/07/01 15:55:43  lazarus
+  MG: JumpToCompilerMessage now centered in source editor
+
   Revision 1.104  2001/06/27 21:43:23  lazarus
   MG: added project bookmark support
 
