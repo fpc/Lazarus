@@ -38,7 +38,7 @@ Interface
 Uses
   Windows, Classes, LCLStrConsts, ComCtrls, Controls, Dialogs, DynHashArray,
   ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLLinux, LCLType,
-  LMessages, StdCtrls, SysUtils, VCLGlobals, Win32Def;
+  LMessages, StdCtrls, SysUtils, VCLGlobals, Win32Def, Graphics;
 
 Type
   { Virtual alignment-control record }
@@ -140,7 +140,7 @@ Type
 Implementation
 
 Uses
-  Arrow, Buttons, Calendar, CListBox, Graphics, Menus, Process, Spin, WinExt;
+  Arrow, Buttons, Calendar, CListBox, Menus, Process, Spin, WinExt;
 
 Type
   TEventType = (etNotify, etKey, etKeyPress, etMouseWheeel, etMouseUpDown);
@@ -190,6 +190,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.34  2003/08/26 07:04:04  mattias
+  fixed win32int
+
   Revision 1.33  2003/08/21 06:52:47  mattias
   size fixes from Karl
 
