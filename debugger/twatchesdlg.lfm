@@ -1,58 +1,36 @@
-object BreakpointsDlg: TBreakpointsDlg
-  Left = 340
-  Top = 117
+object WatchesDlg: TWatchesDlg
+  Left = 359
+  Top = 126
   Width = 500
   Height = 200
-  Caption = 'Breakpoint list'
-  object lvBreakPoints: TListView
+  Caption = 'Watch list'
+  object lvWatches: TListView
     Left = 0
     Top = 0
     Width = 484
-    Height = 171
+    Height = 200
     Align = alClient
     Columns = <
       item
-        Caption = 'State'
-        Width = 50
-      end
-      item
-        Caption = 'Filename/Address'
+        Caption = 'Expression'
         Width = 150
       end
       item
-        Caption = 'Line/Length'
-        Width = 100
-      end
-      item
-        Caption = 'Condition'
-        Width = 75
-      end
-      item
-        Caption = 'Action'
-        Width = 50
-      end
-      item
-        Caption = 'Pass Count'
-        Width = 100
-      end
-      item
-        Caption = 'Group'
+        Caption = 'Value'
+        Width = 400
       end>
-    MultiSelect = True 
     PopupMenu = mnuPopup
-    ViewStyle = vsReport  
-    OnClick = lvBreakPointsClick
-    OnSelectItem = lvBreakPointsSelectItem
+    MultiSelect = True
+    ViewStyle = vsReport
+    OnClick = lvWatchesClick
+    OnSelectItem = lvWatchesSelectItem
   end
   object mnuPopup: TPopupMenu
     Left = 100
     Top = 96
     object popAdd: TMenuItem
-      Caption = 'Add...'
-      object popAddSourceBP: TMenuItem
-        Caption = '&Source breakpoint'
-        OnClick = popAddSourceBPClick 
-      end
+      Caption = '&Add'
+      OnClick = popAddClick 
     end
     object N1: TMenuItem
       Caption = '-'
@@ -77,12 +55,12 @@ object BreakpointsDlg: TBreakpointsDlg
       OnClick = popDisableAllClick 
     end
     object popEnableAll: TMenuItem
-      Caption = '&Enable All'
+      Caption = 'E&nable All'
       OnClick = popEnableAllClick 
     end
     object popDeleteAll: TMenuItem
-      Caption = '&Delete All'
+      Caption = 'De&lete All'
       OnClick = popDeleteAllClick 
     end
   end
-end
+end 

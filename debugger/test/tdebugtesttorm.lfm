@@ -6,6 +6,19 @@ object DebugTestForm1: TDebugTestForm
   WIDTH = 620
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  object lblFileName: TLabel
+    Left = 8
+    Top = 8
+    WIDTH = 70
+    Caption = 'Filename:'
+  end
+  object txtFileName: TEdit
+    Left = 70
+    Top = 8
+    Width = 293
+    Height = 24
+    Text = 'examples/testcntr'
+  end
   object cmdInit: TBUTTON
     CAPTION = 'Init'
     LEFT = 10
@@ -64,37 +77,43 @@ object DebugTestForm1: TDebugTestForm
   end                    
   object lblState: TLabel
     Left = 8
-    Top = 104
+    Top = 165
     WIDTH = 50
   end
   object lblAdress: TLabel
     Left = 58
-    Top = 104
+    Top = 165
     WIDTH = 100
   end
   object lblSource: TLabel
     Left = 166
-    Top = 104
+    Top = 165
     WIDTH = 100
   end
   object lblLine: TLabel
     Left = 274
-    Top = 104
+    Top = 165
     WIDTH = 100
   end
   object lblFunc: TLabel
     Left = 382
-    Top = 104
+    Top = 165
     WIDTH = 100
   end
   object txtLog: TMemo
     Left = 8
-    Top = 165
+    Top = 190
     Width = 600
     Height = 150
   end
+  object lblTest: TLabel
+    Left = 8
+    Top = 71
+    WIDTH = 70
+    Caption = 'Test:'
+  end
   object cmdCommand: TButton
-    Left = 252
+    Left = 314
     Top = 71
     Width = 50
     Height = 25
@@ -102,7 +121,7 @@ object DebugTestForm1: TDebugTestForm
     OnClick = cmdCommandClick
   end
   object cmdCLear: TButton
-    Left = 313
+    Left = 375
     Top = 71
     Width = 50
     Height = 25
@@ -110,14 +129,20 @@ object DebugTestForm1: TDebugTestForm
     OnClick = cmdClearClick
   end
   object txtCommand: TEdit
-    Left = 8
-    Top = 72
+    Left = 70
+    Top = 71
     Width = 237
     Height = 24
     Text = ''
   end
+  object lblBreak: TLabel
+    Left = 8
+    Top = 132
+    WIDTH = 70
+    Caption = 'Break:'
+  end
   object cmdSetBreak: TButton
-    Left = 252
+    Left = 314
     Top = 132
     Width = 50
     Height = 25
@@ -125,7 +150,7 @@ object DebugTestForm1: TDebugTestForm
     OnClick = cmdSetBreakClick
   end
   object cmdResetBreak: TButton
-    Left = 313
+    Left = 375
     Top = 132
     Width = 50
     Height = 25
@@ -133,38 +158,50 @@ object DebugTestForm1: TDebugTestForm
     OnClick = cmdResetBreakClick
   end
   object chkBreakEnable: TCheckBox
-    Left = 374
+    Left = 436
     Top = 132
     Width = 100
     Height = 25
-    Caption = 'Enable break'
+    Caption = 'Enable'
     OnClick = chkBreakEnableClick
   end
   object txtBreakFile: TEdit
-    Left = 8
+    Left = 70
     Top = 132
     Width = 150
     Height = 24
     Text = 'testcntr.pp'
   end
   object txtBreakLine: TEdit
-    Left = 165
+    Left = 227
     Top = 132
     Width = 80
     Height = 24
     Text = '1'
   end
-  object lblFileName: TLabel
+  object lblEvaluate: TLabel
     Left = 8
-    Top = 8
+    Top = 104
     WIDTH = 70
-    Caption = 'FileName'
+    Caption = 'Evaluate:'
   end
-  object txtFileName: TEdit
+  object txtEvaluate: TEdit
     Left = 70
-    Top = 8
-    Width = 293
-    Height = 24
-    Text = 'examples/testcntr'
+    Top = 104
+    Width = 237
+  end
+  object cmdEvaluate: TButton
+    Left = 314
+    Top = 104
+    WIDTH = 50
+    Height = 25
+    Caption = 'Eval'
+    OnClick = cmdEvaluateClick
+  end
+  object lblEvalResult: TLabel
+    Left = 375
+    Top = 104
+    WIDTH = 200
+    Caption = '---'
   end
 end

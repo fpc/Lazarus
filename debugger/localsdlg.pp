@@ -37,8 +37,13 @@ type
   protected
     procedure SetDebugger(const ADebugger: TDebugger); override;
   public
-  published
-    property Dummy: Boolean; // insert some dummies until fpcbug #1888 is fixed
+  published         
+    // publish some properties until fpcbug #1888 is fixed
+    property Top;
+    property Left;
+    property Width; 
+    property Height; 
+    property Caption;
   end;
 
 
@@ -108,12 +113,20 @@ begin
 end;
 
 initialization
-  {$I localsdlg.lrc}
+  {$I localsdlg.lrs}
 
 end.
 
 { =============================================================================
   $Log$
+  Revision 1.2  2002/04/24 20:42:29  lazarus
+  MWE:
+    + Added watches
+    * Updated watches and watchproperty dialog to load as resource
+    = renamed debugger resource files from *.lrc to *.lrs
+    * Temporary fixed language problems on GDB (bug #508)
+    * Made Debugmanager dialog handling more generic
+
   Revision 1.1  2002/03/23 15:54:30  lazarus
   MWE:
     + Added locals dialog

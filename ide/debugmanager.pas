@@ -31,17 +31,15 @@ uses
 {$ENDIF}
   Classes, SysUtils, Forms, Controls, Dialogs, CompilerOptions, EditorOptions,
   EnvironmentOpts, KeyMapping, UnitEditor, Project, IDEProcs,
-  Debugger, DBGOutputForm, GDBMIDebugger, RunParamsOpts, ExtToolDialog,
-  ProjectDefs, Watchesdlg, BreakPointsdlg, LocalsDlg, DebuggerDlg,
-  BaseDebugManager, MainBar;
+  Debugger, RunParamsOpts, ExtToolDialog,
+  ProjectDefs, BaseDebugManager, MainBar, DebuggerDlg;
   
 type
+  TDebugDialogType = (ddtOutput, ddtBreakpoints, ddtWatches, ddtLocals);
+
   TDebugManager = class(TBaseDebugManager)
     // Menu events
-    procedure mnuViewWatchesClick(Sender: TObject);
-    procedure mnuViewBreakPointsClick(Sender: TObject);
-    procedure mnuViewDebugOutputClick(Sender: TObject);
-    procedure mnuViewLocalsClick(Sender: TObject);
+    procedure mnuViewDebugDialogClick(Sender: TObject);
 
     // SrcNotebook events
     procedure OnSrcNotebookAddWatchesAtCursor(Sender: TObject);
@@ -56,16 +54,15 @@ type
   private
     FBreakPoints: TDBGBreakPoints; // Points to debugger breakpoints if available
                                    // Else to own objet
-    FDebugOutputDlg: TDBGOutputForm;
-    FBreakPointsDlg: TBreakPointsDlg;
-    FLocalsDlg: TLocalsDlg;
+    FWatches: TDBGWatches;         // Points to debugger watchess if available
+                                   // Else to own objet
+    FDialogs: array[TDebugDialogType] of TDebuggerDlg;
 
     FDebugger: TDebugger;
 
-    procedure DebugConstructor;
-
     procedure DebugDialogDestroy(Sender: TObject);
-    procedure ViewDebugDialog(const ADialogClass: TDebuggerDlgClass; var ADialog: TDebuggerDlg);
+    procedure ViewDebugDialog(const ADialogType: TDebugDialogType);
+    procedure DestroyDebugDialog(const ADialogType: TDebugDialogType);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -88,39 +85,18 @@ type
 
 implementation
 
-procedure TDebugManager.DebugConstructor;
-begin
-  // TWatchesDlg
-  Watches_Dlg := TWatchesDlg.Create(Self);
+uses
+  Menus,
+  Watchesdlg, BreakPointsdlg, LocalsDlg, DBGOutputForm, GDBMIDebugger;
 
-  FBreakPointsDlg := nil;
-  FLocalsDlg := nil;
-  FDebugger := nil;
-  FBreakPoints := TDBGBreakPoints.Create(nil, TDBGBreakPoint);
-end;
-
+ 
 //-----------------------------------------------------------------------------
 // Menu events
 //-----------------------------------------------------------------------------
 
-procedure TDebugManager.mnuViewWatchesClick(Sender : TObject);
-begin
-  Watches_dlg.Show;
-end;
-
-procedure TDebugManager.mnuViewBreakPointsClick(Sender : TObject);
-begin
-  ViewDebugDialog(TBreakPointsDlg, FBreakPointsDlg);
-end;
-
-procedure TDebugManager.mnuViewDebugOutputClick(Sender : TObject);
-begin
-  ViewDebugDialog(TDBGOutputForm, FDebugOutputDlg);
-end;
-
-procedure TDebugManager.mnuViewLocalsClick(Sender : TObject);
-begin
-  ViewDebugDialog(TLocalsDlg, FLocalsDlg);
+procedure TDebugManager.mnuViewDebugDialogClick(Sender: TObject);
+begin                       
+  ViewDebugDialog(TDebugDialogType(TMenuItem(Sender).Tag));
 end;
 
 //-----------------------------------------------------------------------------
@@ -141,8 +117,7 @@ begin
   WatchVar := SE.GetWordAtCurrentCaret;
   if WatchVar = ''  then Exit;
 
-  NewWatch := TdbgWatch(FDebugger.Watches.Add);
-  NewWatch.Expression := WatchVar;
+  NewWatch := FWatches.Add(WatchVar);
   NewWatch.Enabled := True;
 end;
 
@@ -176,8 +151,8 @@ end;
 
 procedure TDebugManager.OnDebuggerOutput(Sender: TObject; const AText: String);
 begin
-  if FDebugOutputDlg <> nil
-  then FDebugOutputDlg.AddText(AText);
+  if FDialogs[ddtOutput] <> nil
+  then TDbgOutputForm(FDialogs[ddtOutput]).AddText(AText);
 end;
 
 procedure TDebugManager.OnDebuggerChangeState(Sender: TObject);
@@ -267,53 +242,94 @@ end;
 // The tag of the destroyed form contains the form variable pointing to it
 procedure TDebugManager.DebugDialogDestroy(Sender: TObject);
 begin
-  if TForm(Sender).Tag <> 0
-  then PPointer(TForm(Sender).Tag)^ := nil;
+  if  (TForm(Sender).Tag >= Ord(Low(TDebugDialogType)))
+  and (TForm(Sender).Tag <= Ord(High(TDebugDialogType)))
+  then FDialogs[TDebugDialogType(TForm(Sender).Tag)] := nil;
 end;
 
-procedure TDebugManager.ViewDebugDialog(const ADialogClass: TDebuggerDlgClass; var ADialog: TDebuggerDlg);
+procedure TDebugManager.ViewDebugDialog(const ADialogType: TDebugDialogType);
+const
+  DEBUGDIALOGCLASS: array[TDebugDialogType] of TDebuggerDlgClass = (
+    TDbgOutputForm, TBreakPointsDlg, TWatchesDlg, TLocalsDlg
+  );
 begin
-  if ADialog = nil
+  if FDialogs[ADialogType] = nil
   then begin
     try
-      ADialog := ADialogClass.Create(Self);
+      FDialogs[ADialogType] := DEBUGDIALOGCLASS[ADialogType].Create(Self);
     except
       on E: Exception do begin
-        WriteLN('[ERROR] IDE: Probably FPC bug #1888 caused an exception while creating class ''', ADialogClass.ClassName, '''');
+        WriteLN('[ERROR] IDE: Probably FPC bug #1888 caused an exception while creating class ''', DEBUGDIALOGCLASS[ADialogType].ClassName, '''');
         WriteLN('[ERROR] IDE: Exception message: ', E.Message);
         Exit;
       end;
     end;
-    ADialog.Tag := Integer(@ADialog);
-    ADialog.OnDestroy := @DebugDialogDestroy;
+    FDialogs[ADialogType].Tag := Integer(ADialogType);
+    FDialogs[ADialogType].OnDestroy := @DebugDialogDestroy;
     DoInitDebugger;
-    ADialog.Debugger := FDebugger;
+    FDialogs[ADialogType].Debugger := FDebugger;
   end;
-  ADialog.Show;
-  ADialog.BringToFront;
+  FDialogs[ADialogType].Show;
+  FDialogs[ADialogType].BringToFront;
+end;
+
+procedure TDebugManager.DestroyDebugDialog(const ADialogType: TDebugDialogType);
+begin
+  if FDialogs[ADialogType] = nil then Exit;
+  FDialogs[ADialogType].OnDestroy := nil;
+  FDialogs[ADialogType].Debugger := nil;
+  FDialogs[ADialogType].Free;
+  FDialogs[ADialogType] := nil;
 end;
 
 constructor TDebugManager.Create(TheOwner: TComponent);
-begin
+var
+  DialogType: TDebugDialogType;
+begin                          
+  for DialogType := Low(TDebugDialogType) to High(TDebugDialogType) do 
+    FDialogs[DialogType] := nil; 
+  
+  FDebugger := nil;
+  FBreakPoints := TDBGBreakPoints.Create(nil, TDBGBreakPoint);
+  FWatches := TDBGWatches.Create(nil, TDBGWatch);
   inherited Create(TheOwner);
-  DebugConstructor;
 end;
 
 destructor TDebugManager.Destroy;
-begin
-  FreeThenNil(FDebugger);
-  FreeThenNil(FBreakPoints);
-  FreeThenNil(Watches_Dlg);
+var
+  DialogType: TDebugDialogType;
+begin                          
+  for DialogType := Low(TDebugDialogType) to High(TDebugDialogType) do 
+    DestroyDebugDialog(DialogType);
+  
+  if FDebugger <> nil
+  then begin
+    if FDebugger.BreakPoints = FBreakPoints
+    then FBreakPoints := nil;
+    if FDebugger.Watches = FWatches
+    then FWatches := nil;
+  
+    FreeThenNil(FDebugger);
+  end
+  else begin
+    FreeThenNil(FBreakPoints);
+    FreeThenNil(FWatches);
+  end;
+
   inherited Destroy;
 end;
 
 procedure TDebugManager.ConnectMainBarEvents;
 begin
   with MainIDE do begin
-    itmViewWatches.OnClick := @mnuViewWatchesClick;
-    itmViewBreakPoints.OnClick := @mnuViewBreakPointsClick;
-    itmViewLocals.OnClick := @mnuViewLocalsClick;
-    itmViewDebugOutput.OnClick := @mnuViewDebugOutputClick;
+    itmViewWatches.OnClick := @mnuViewDebugDialogClick;
+    itmViewWatches.Tag := Ord(ddtWatches);
+    itmViewBreakPoints.OnClick := @mnuViewDebugDialogClick;
+    itmViewBreakPoints.Tag := Ord(ddtBreakPoints);
+    itmViewLocals.OnClick := @mnuViewDebugDialogClick;
+    itmViewLocals.Tag := Ord(ddtLocals);
+    itmViewDebugOutput.OnClick := @mnuViewDebugDialogClick;
+    itmViewDebugOutput.Tag := Ord(ddtOutput);
   end;
 end;
 
@@ -341,16 +357,18 @@ end;
 
 function TDebugManager.DoInitDebugger: TModalResult;
   procedure ResetDialogs;
-  begin
-    if FDebugOutputDlg <> nil
-    then FDebugOutputDlg.Debugger := FDebugger;
-    if FBreakPointsDlg <> nil
-    then FBreakPointsDlg.Debugger := FDebugger;
-    if FLocalsDlg <> nil
-    then FLocalsDlg.Debugger := FDebugger;
+  var
+    DialogType: TDebugDialogType;
+  begin                          
+    for DialogType := Low(TDebugDialogType) to High(TDebugDialogType) do 
+    begin
+      if FDialogs[DialogType] <> nil
+      then FDialogs[DialogType].Debugger := FDebugger;
+    end;
   end;
 var
   OldBreakpoints: TDBGBreakpoints;
+  OldWatches: TDBGWatches;
   LaunchingCmdLine, LaunchingApplication, LaunchingParams: String;
 begin
   WriteLN('[TDebugManager.DoInitDebugger] A');
@@ -362,6 +380,7 @@ begin
   SplitCmdLine(LaunchingCmdLine,LaunchingApplication,LaunchingParams);
 
   OldBreakpoints := nil;
+  OldWatches := nil;
 
   case EnvironmentOptions.DebuggerType of
     dtGnuDebugger: begin
@@ -374,6 +393,10 @@ begin
         OldBreakpoints.Assign(FBreakPoints);
         FBreakPoints := nil;
 
+        OldWatches := TDBGWatches.Create(nil, TDBGWatch);
+        OldWatches.Assign(FWatches);
+        FWatches := nil;
+
         FDebugger.Free;
         FDebugger := nil;
         ResetDialogs;
@@ -385,25 +408,37 @@ begin
           OldBreakpoints := TDBGBreakpoints.Create(nil, TDBGBreakpoint);
           OldBreakpoints.Assign(FBreakPoints);
         end;
+        if FWatches <> nil
+        then begin
+          OldWatches := TDBGWatches.Create(nil, TDBGWatch);
+          OldWatches.Assign(FWatches);
+        end;
         FDebugger := TGDBMIDebugger.Create(EnvironmentOptions.DebuggerFilename);
         FBreakPoints := FDebugger.BreakPoints;
+        FWatches := FDebugger.Watches;
         ResetDialogs;
       end;
       if OldBreakpoints <> nil
       then FBreakPoints.Assign(OldBreakpoints);
+      if OldWatches <> nil
+      then FWatches.Assign(OldWatches);
     end;
   else
     OldBreakpoints := FBreakPoints;
     FBreakPoints := TDBGBreakpoints.Create(nil, TDBGBreakpoint);
     FBreakPoints.Assign(OldBreakpoints);
 
+    OldWatches := FWatches;
+    FWatches := TDBGWatches.Create(nil, TDBGWatch);
+    FWatches.Assign(OldWatches);
+
     FDebugger.Free;
     FDebugger := nil;
     ResetDialogs;
     Exit;
   end;
-  FDebugger.OnState:=@OnDebuggerChangeState;
-  FDebugger.OnCurrent:=@OnDebuggerCurrentLine;
+  FDebugger.OnState     := @OnDebuggerChangeState;
+  FDebugger.OnCurrent   := @OnDebuggerCurrentLine;
   FDebugger.OnDbgOutput := @OnDebuggerOutput;
   FDebugger.OnException := @OnDebuggerException;
   if FDebugger.State = dsNone
@@ -412,8 +447,8 @@ begin
   FDebugger.FileName := LaunchingApplication;
   FDebugger.Arguments := LaunchingParams;
 
-  if FDebugOutputDlg <> nil
-  then FDebugOutputDlg.Clear;
+  if FDialogs[ddtOutput] <> nil
+  then TDbgOutputForm(FDialogs[ddtOutput]).Clear;
 
   //TODO: Show/hide debug menuitems based on FDebugger.SupportedCommands
 

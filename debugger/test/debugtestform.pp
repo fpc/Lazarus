@@ -1,21 +1,21 @@
 { $Id$ }
-{                        ----------------------------------------  
+{                        ----------------------------------------
                           debugtestform.pp  -  Debugger test app
-                         ---------------------------------------- 
- 
+                         ----------------------------------------
+
  @created(Wed Feb 25st WET 2001)
  @lastmod($Date$)
- @author(Marc Weustink <marc@@dommelstein.net>)                       
+ @author(Marc Weustink <marc@@dommelstein.net>)
 
-*************************************************************************** 
- *                                                                         * 
- *   This program is free software; you can redistribute it and/or modify  * 
- *   it under the terms of the GNU General Public License as published by  * 
- *   the Free Software Foundation; either version 2 of the License, or     * 
- *   (at your option) any later version.                                   * 
- *                                                                         * 
- ***************************************************************************/ 
-} 
+***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+}
 unit debugtestform;
 
 {$mode objfpc}
@@ -25,7 +25,7 @@ interface
 
 uses
   Classes, Graphics, Controls, Forms, Dialogs, LResources,
-  Buttons, StdCtrls, Debugger, DbgOutputForm, BreakpointsDlg, LocalsDlg;
+  Buttons, StdCtrls, Debugger, DbgOutputForm, BreakpointsDlg, LocalsDlg, WatchesDlg;
 
 
 type
@@ -45,6 +45,9 @@ type
     lblLine: TLabel;
     lblFunc: TLabel;
     lblState: TLabel;
+    lblBreak: TLabel;
+    lblEvaluate: TLabel;
+    lblTest: TLabel;
     txtLog: TMemo;
     cmdCommand: TButton;
     cmdClear: TButton;
@@ -53,6 +56,9 @@ type
     txtBreakFile: TEdit;
     txtBreakLine: TEdit;
     chkBreakEnable: TCheckBox;
+    txtEvaluate: TEdit;
+    lblEvalResult: TLabel;
+    cmdEvaluate: TButton;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure cmdInitClick(Sender: TObject);
@@ -65,13 +71,15 @@ type
     procedure cmdCommandClick(Sender: TObject);
     procedure cmdClearClick(Sender: TObject);
     procedure cmdSetBreakClick(Sender: TObject);
-    procedure cmdResetBreakClick(Sender: TObject); 
+    procedure cmdResetBreakClick(Sender: TObject);
+    procedure cmdEvaluateClick(Sender: TObject);
     procedure chkBreakEnableClick(Sender: TObject);
   private
     FDebugger: TDebugger;
     FOutputForm: TDBGOutputForm;
     FBreakpointDlg: TBreakpointsDlg;
     FLocalsDlg: TLocalsDlg;
+    FWatchesDlg: TWatchesDlg;
     FDummy: Boolean;
     procedure DBGState(Sender: TObject);
     procedure DBGCurrent(Sender: TObject; const ALocation: TDBGLocationRec);
@@ -81,7 +89,7 @@ type
   protected
     procedure Loaded; override;
   public
-    destructor Destroy; override;  
+    destructor Destroy; override;
   published
     property Dummy: Boolean read FDummy write FDummy; // insert some dummies until fpcbug #1888 is fixed
     property Dummy1: Boolean read FDummy write FDummy; // insert some dummies until fpcbug #1888 is fixed
@@ -101,15 +109,15 @@ uses
 procedure TDebugTestForm.Loaded;
 begin
   inherited Loaded;
-  
+
   // Not yet through resources
   txtLog.Scrollbars := ssBoth;
 end;
 
-destructor TDebugTestForm.Destroy; 
+destructor TDebugTestForm.Destroy;
 begin
   // This shouldn't be needed, but the OnDestroy event isn't called
-  inherited;                        
+  inherited;
   FormDestroy(Self);
 end;
 
@@ -119,38 +127,48 @@ begin
   FDebugger := nil;
   FBreakpointDlg := TBreakpointsDlg.Create(Application);
   FBreakpointDlg.Show;
-  
+
   FLocalsDlg := TLocalsDlg.Create(Application);
   FLocalsDlg.Show;
+
+  FWatchesDlg := TWatchesDlg.Create(Application);
+  FWatchesDlg.Show;
+
+  FOutputForm := TDBGOutputForm.Create(Application);
+  FOutputForm.Show;
 end;
 
 procedure TDebugTestForm.FormDestroy(Sender: TObject);
-begin
+begin  
+  try
+    FBreakpointDlg.Debugger := nil;
+    FLocalsDlg.Debugger := nil;
+    FWatchesDlg.Debugger := nil;
+    FOutputForm.Debugger := nil;
+    FWatchesDlg.Debugger := nil;
+  except
+    on Exception do;
+  end;
   FDebugger.Free;
   FDebugger := nil;
 end;
 
 procedure TDebugTestForm.cmdInitClick(Sender: TObject);
 begin
-  if FDebugger = nil 
+  if FDebugger = nil
   then begin
     FDebugger := TGDBMIDebugger.Create('/usr/bin/gdb');
     FDebugger.OnDbgOutput := @DBGOutput;
     FDebugger.OnOutput := @DBGTargetOutput;
     FDebugger.OnCurrent := @DBGCurrent;
-    FDebugger.OnState := @DBGState;   
+    FDebugger.OnState := @DBGState;
     TDBGBreakPointGroup(FDebugger.BreakPointGroups.Add).Name := 'Default';
 
     FBreakpointDlg.Debugger := FDebugger;
     FLocalsDlg.Debugger := FDebugger;
-    
-    // Something strange going on here, 
-    // sometimes the form crashes during load with Application as owner
-    // sometimes the form crashes during load with nil as owner
-//    FOutputForm := TDBGOutputForm.Create(nil);
-//    FOutputForm.OnDestroy := @OutputFormDestroy;
-//    FOutputForm.Show;
-    FOutputForm := nil;
+    FWatchesDlg.Debugger := FDebugger;
+    FOutputForm.Debugger := FDebugger;
+    FWatchesDlg.Debugger := FDebugger;
   end;
   FDebugger.Init;
   FDebugger.FileName := txtFileName.Text;
@@ -158,9 +176,14 @@ end;
 
 procedure TDebugTestForm.cmdDoneClick(Sender: TObject);
 begin
-  if FDebugger <> nil 
+  if FDebugger <> nil
   then begin
     FDebugger.Done;
+    FBreakpointDlg.Debugger := nil;
+    FLocalsDlg.Debugger := nil;
+    FWatchesDlg.Debugger := nil;
+    FOutputForm.Debugger := nil;
+    FWatchesDlg.Debugger := nil;
     FDebugger.Free;
     FDebugger := nil;
   end;
@@ -168,42 +191,42 @@ end;
 
 procedure TDebugTestForm.cmdRunClick(Sender: TObject);
 begin
-  if FDebugger <> nil 
+  if FDebugger <> nil
   then begin
     FDebugger.FileName := txtFileName.Text;
-    FDebugger.Run; 
+    FDebugger.Run;
   end;
 end;
 
 procedure TDebugTestForm.cmdPauseClick(Sender: TObject);
 begin
-  if FDebugger <> nil 
+  if FDebugger <> nil
   then begin
-    FDebugger.Pause; 
+    FDebugger.Pause;
   end;
 end;
 
 procedure TDebugTestForm.cmdStepClick(Sender: TObject);
 begin
-  if FDebugger <> nil 
+  if FDebugger <> nil
   then begin
-    FDebugger.StepOver; 
+    FDebugger.StepOver;
   end;
 end;
 
 procedure TDebugTestForm.cmdStepIntoClick(Sender: TObject);
 begin
-  if FDebugger <> nil 
+  if FDebugger <> nil
   then begin
-    FDebugger.StepInto; 
+    FDebugger.StepInto;
   end;
 end;
 
 procedure TDebugTestForm.cmdStopClick(Sender: TObject);
 begin
-  if FDebugger <> nil 
+  if FDebugger <> nil
   then begin
-    FDebugger.Stop; 
+    FDebugger.Stop;
   end;
 end;
 
@@ -234,6 +257,14 @@ begin
   then FDebugger.Breakpoints[0].Enabled := chkBreakEnable.Checked;
 end;
 
+procedure TDebugTestForm.cmdEvaluateClick(Sender: TObject);
+var
+  S: String;
+begin
+  FDebugger.Evaluate(txtEvaluate.Text, S);
+  lblEvalResult.Caption := S;
+end;
+
 procedure TDebugTestForm.OutputFormDestroy(Sender: TObject);
 begin
   FOutputForm := nil;
@@ -253,7 +284,7 @@ end;
 procedure TDebugTestForm.DBGCurrent(Sender: TObject; const ALocation: TDBGLocationRec);
 begin
   lblAdress.Caption := Format('$%p', [ALocation.Adress]);
-  lblSource.Caption := ALocation.SrcFile; 
+  lblSource.Caption := ALocation.SrcFile;
   lblLine.Caption := IntToStr(ALocation.SrcLine);
   lblFunc.Caption := ALocation.FuncName;
 end;
@@ -267,7 +298,7 @@ begin
     dsIdle :lblState.Caption := 'dsIdle ';
     dsStop :lblState.Caption := 'dsStop ';
     dsPause: begin
-      lblState.Caption := 'dsPause'; 
+      lblState.Caption := 'dsPause';
       txtLog.Lines.Add('[locals]');
       for n := 0 to FDebugger.Locals.Count - 1 do
       begin
@@ -282,11 +313,19 @@ begin
 end;
 
 initialization
-  {$I debugtestform.lrc}
+  {$I debugtestform.lrs}
 
 end.
 { =============================================================================
   $Log$
+  Revision 1.7  2002/04/24 20:42:29  lazarus
+  MWE:
+    + Added watches
+    * Updated watches and watchproperty dialog to load as resource
+    = renamed debugger resource files from *.lrc to *.lrs
+    * Temporary fixed language problems on GDB (bug #508)
+    * Made Debugmanager dialog handling more generic
+
   Revision 1.6  2002/03/23 15:54:30  lazarus
   MWE:
     + Added locals dialog

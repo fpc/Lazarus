@@ -1,0 +1,104 @@
+object TWatchPropertyDlg
+  CAPTION = 'Watch Properties'
+  POSITION = poscreencenter
+  HEIGHT = 200
+  WIDTH = 420
+  object lblExpression: TLABEL
+    CAPTION = 'Expression:'
+    LEFT = 15
+    HEIGHT = 17
+    TOP = 20
+    WIDTH = 65
+  end
+  object txtExpression: TEDIT
+    LEFT = 105
+    TOP = 17
+    WIDTH = 300
+  end
+  object lblRepCount: TLABEL
+    CAPTION = 'Repeat Count:'
+    LEFT = 15
+    HEIGHT = 17
+    TOP = 45
+    WIDTH = 80
+  end
+  object txtRepCount: TEDIT
+    TEXT = '0'
+    LEFT = 105
+    TOP = 42
+    WIDTH = 60
+  end
+  object lblDigits: TLABEL
+    CAPTION = 'Digits:'
+    LEFT = 175
+    HEIGHT = 17
+    TOP = 45
+    WIDTH = 40
+  end
+  object txtDigits: TEDIT
+    TEXT = '0'
+    LEFT = 225
+    TOP = 45
+    WIDTH = 180
+  end
+  object chkEnabled: TCHECKBOX
+    CAPTION = 'Enabled'
+    STATE = cbchecked
+    DRAGCURSOR = 0
+    TABORDER = 0
+    LEFT = 15
+    TOP = 65
+    WIDTH = 60
+  end
+  object chkAllowFunc: TCHECKBOX
+    CAPTION = 'Allow Function Calls'
+    DRAGCURSOR = 0
+    TABORDER = 0
+    LEFT = 105
+    TOP = 65
+  end
+  object rgStyle: TRADIOGROUP
+    CAPTION = 'Style'
+    ITEMINDEX = 7
+    ITEMS.Strings = (
+      'Character'
+      'String'
+      'Decimal'
+      'Hexadecimal'
+      'Floating Point'
+      'Pointer'
+      'Record/Structure'
+      'Default'
+      'Memory Dump'
+    )
+    COLUMNS = 3
+    LEFT = 15
+    HEIGHT = 70
+    TOP = 90
+    WIDTH = 390
+  end
+  object btnOK: TBUTTON
+    MODALRESULT = 1
+    CAPTION = 'OK'
+    LEFT = 170
+    HEIGHT = 25
+    TOP = 170
+    WIDTH = 75  
+    OnClick = btnOKClick
+  end
+  object btnCancel: TBUTTON
+    MODALRESULT = 2
+    CAPTION = 'Cancel'
+    LEFT = 250
+    HEIGHT = 25
+    TOP = 170
+    WIDTH = 75
+  end
+  object btnHelp: TBUTTON
+    CAPTION = 'Help'
+    LEFT = 330
+    HEIGHT = 25
+    TOP = 170
+    WIDTH = 75
+  end
+end

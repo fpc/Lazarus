@@ -40,19 +40,20 @@ type
     popAdd: TMenuItem;
     popAddSourceBP: TMenuItem;
     procedure popAddSourceBPClick(Sender: TObject);
-    popDeleteAll: TMenuItem;
-    procedure popDeleteAllClick(Sender: TObject);
-    popDisableAll: TMenuItem;
-    procedure popDisableAllClick(Sender: TObject);
-    popEnableAll: TMenuItem;
-    procedure popEnableAllClick(Sender: TObject);
-    mnuPopSelected: TPopupMenu;
+    N1: TMenuItem; //--------------
+    popProperties: TMenuItem;
+    procedure popPropertiesClick(Sender: TObject);
     popEnabled: TMenuItem;
     procedure popEnabledClick(Sender: TObject);
     popDelete: TMenuItem;
     procedure popDeleteClick(Sender: TObject);
-    popProperties: TMenuItem;
-    procedure popPropertiesClick(Sender: TObject);
+    N2: TMenuItem; //--------------
+    popDisableAll: TMenuItem;
+    procedure popDisableAllClick(Sender: TObject);
+    popEnableAll: TMenuItem;
+    procedure popEnableAllClick(Sender: TObject);
+    popDeleteAll: TMenuItem;
+    procedure popDeleteAllClick(Sender: TObject);
   private 
     FBreakpointsNotification: TDBGBreakPointsNotification;
     procedure BreakPointAdd(const ASender: TDBGBreakPoints; const ABreakpoint: TDBGBreakPoint);
@@ -67,7 +68,12 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    //property Dummy: Boolean; // insert some dummies until fpcbug #1888 is fixed
+    // publish some properties until fpcbug #1888 is fixed
+    property Top;
+    property Left;
+    property Width; 
+    property Height; 
+    property Caption;
   end;
 
 
@@ -134,13 +140,14 @@ begin
   // Not yet through resources
   mnuPopUp.Items.Add(popAdd);
   popAdd.Add(popAddSourceBP);
-  mnuPopUp.Items.Add(popDeleteAll);
+  mnuPopUp.Items.Add(N1);
+  mnuPopUp.Items.Add(popProperties);
+  mnuPopUp.Items.Add(popEnabled);
+  mnuPopUp.Items.Add(popDelete);
+  mnuPopUp.Items.Add(N2);
   mnuPopUp.Items.Add(popDisableAll);
   mnuPopUp.Items.Add(popEnableAll);
-
-  mnuPopSelected.Items.Add(popEnabled);
-  mnuPopSelected.Items.Add(popDelete);
-  mnuPopSelected.Items.Add(popProperties);
+  mnuPopUp.Items.Add(popDeleteAll);
 end;
 
 procedure TBreakPointsDlg.lvBreakPointsClick(Sender: TObject);
@@ -149,12 +156,12 @@ end;
 
 procedure TBreakPointsDlg.lvBreakPointsSelectItem(Sender: TObject; AItem: TListItem; Selected: Boolean);
 var
-  Item: TListItem;
+  Enable: Boolean;
 begin
-  Item := lvBreakPoints.Selected;
-  if Item = nil 
-  then lvBreakPoints.PopupMenu := mnuPopup
-  else lvBreakPoints.PopupMenu := mnuPopSelected;
+  Enable := lvBreakPoints.Selected <> nil;
+  popProperties.Enabled := Enable;
+  popEnabled.Enabled := Enable;
+  popDelete.Enabled := Enable;
 end;
 
 procedure TBreakPointsDlg.popAddSourceBPClick(Sender: TObject);
@@ -262,12 +269,20 @@ end;
 
 
 initialization
-  {$I breakpointsdlg.lrc}
+  {$I breakpointsdlg.lrs}
 
 end.
 
 { =============================================================================
   $Log$
+  Revision 1.5  2002/04/24 20:42:29  lazarus
+  MWE:
+    + Added watches
+    * Updated watches and watchproperty dialog to load as resource
+    = renamed debugger resource files from *.lrc to *.lrs
+    * Temporary fixed language problems on GDB (bug #508)
+    * Made Debugmanager dialog handling more generic
+
   Revision 1.4  2002/03/27 00:31:02  lazarus
   MWE:
     * activated selection dependent popup

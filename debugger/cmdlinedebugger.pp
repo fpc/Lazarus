@@ -411,6 +411,10 @@ begin
     if ACommand <> ''
     then FDbgProcess.Input.Write(ACommand[1], Length(ACommand));
     FDbgProcess.Input.Write(LINE_END, 1);
+  end
+  else begin
+    WriteLN('[TCmdLineDebugger.SendCmdLn] Process stopped running when sending: <', ACommand, '>');
+    SetState(dsError);
   end;
 end;
 
@@ -427,6 +431,14 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.9  2002/04/24 20:42:29  lazarus
+  MWE:
+    + Added watches
+    * Updated watches and watchproperty dialog to load as resource
+    = renamed debugger resource files from *.lrc to *.lrs
+    * Temporary fixed language problems on GDB (bug #508)
+    * Made Debugmanager dialog handling more generic
+
   Revision 1.8  2002/03/23 15:54:30  lazarus
   MWE:
     + Added locals dialog

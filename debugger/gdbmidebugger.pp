@@ -1,24 +1,24 @@
 { $Id$ }
-{                        ----------------------------------------------  
+{                        ----------------------------------------------
                          GDBDebugger.pp  -  Debugger class forGDB
-                         ---------------------------------------------- 
- 
+                         ----------------------------------------------
+
  @created(Wed Feb 23rd WET 2002)
  @lastmod($Date$)
- @author(Marc Weustink <marc@@lazarus.dommelstein.net>)                       
+ @author(Marc Weustink <marc@@lazarus.dommelstein.net>)
 
  This unit contains debugger class for the GDB/MI debugger.
- 
- 
-/*************************************************************************** 
- *                                                                         * 
- *   This program is free software; you can redistribute it and/or modify  * 
- *   it under the terms of the GNU General Public License as published by  * 
- *   the Free Software Foundation; either version 2 of the License, or     * 
- *   (at your option) any later version.                                   * 
- *                                                                         * 
- ***************************************************************************/ 
-} 
+
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+}
 unit GDBMIDebugger;
 
 {$mode objfpc}
@@ -30,7 +30,7 @@ uses
   Classes, Process, Debugger, CmdLineDebugger;
 
 
-type                       
+type
   TGDBMIProgramInfo = record
     State: TDBGState;
     BreakPoint: Integer; // ID of Breakpoint hit
@@ -41,27 +41,29 @@ type
 
   TGDBMIDebugger = class(TCmdLineDebugger)
   private
-    FCommandQueue: TStringList; 
-    FHasSymbols: Boolean;  
+    FCommandQueue: TStringList;
+    FHasSymbols: Boolean;
     FStoppedParams: String;
     FTargetPID: Integer;
     function  FindBreakpoint(const ABreakpoint: Integer): TDBGBreakPoint;
-    procedure GDBRun; 
-    procedure GDBPause;
-    procedure GDBStart;  
-    procedure GDBStop;  
-    procedure GDBStepOver;         
-    procedure GDBStepInto;          
-    procedure GDBRunTo(const ASource: String; const ALine: Integer); 
-    procedure GDBJumpTo(const ASource: String; const ALine: Integer);
-    function  ProcessResult(const AIgnoreError: Boolean; var AResultValues: String): Boolean;
+    function  GDBEvaluate(const AExpression: String; var AResult: String): Boolean;
+    function  GDBRun: Boolean;
+    function  GDBPause: Boolean;
+    function  GDBStart: Boolean;
+    function  GDBStop: Boolean;
+    function  GDBStepOver: Boolean;
+    function  GDBStepInto: Boolean;
+    function  GDBRunTo(const ASource: String; const ALine: Integer): Boolean;
+    function  GDBJumpTo(const ASource: String; const ALine: Integer): Boolean;
+    function  ProcessResult(var ANewState: TDBGState; var AResultValues: String): Boolean;
     function  ProcessRunning: Boolean;
     function  ProcessStopped(const AParams: String): Boolean;
     function  ExecuteCommand(const ACommand: String): Boolean; overload;
     function  ExecuteCommand(const ACommand: String; var AResultValues: String): Boolean; overload;
     function  ExecuteCommand(const ACommand: String; AValues: array of const): Boolean; overload;
     function  ExecuteCommand(const ACommand: String; AValues: array of const; var AResultValues: String): Boolean; overload;
-    function  ExecuteCommand(const ACommand: String; AValues: array of const; const AIgnoreError: Boolean; var AResultValues: String): Boolean; overload;
+    function  ExecuteCommand(const ACommand: String; AValues: array of const; var AResultState: TDBGState; var AResultValues: String): Boolean; overload;
+    function  ExecuteCommand(const ACommand: String; AValues: array of const; const AIgnoreError: Boolean; var AResultState: TDBGState; var AResultValues: String): Boolean; overload;
   protected
     function  ChangeFileName: Boolean; override;
     function  CreateBreakPoints: TDBGBreakPoints; override;
@@ -72,9 +74,10 @@ type
   public
     constructor Create(const AExternalDebugger: String); {override;}
     destructor Destroy; override;
-  
+
     procedure Init; override;         // Initializes external debugger
     procedure Done; override;         // Kills external debugger
+
     // internal testing
     procedure TestCmd(const ACommand: String); override;
   end;
@@ -84,7 +87,7 @@ implementation
 
 uses
   SysUtils, Dialogs;
-  
+
 type
   TGDBMIBreakPoint = class(TDBGBreakPoint)
   private
@@ -100,33 +103,37 @@ type
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
     procedure Hit;
-  end;    
-  
+  end;
+
   TGDBMILocals = class(TDBGLocals)
-  private  
+  private
     FLocals: TStringList;
     FLocalsValid: Boolean;
     procedure LocalsNeeded;
   protected
-    procedure DoStateChange; override; 
+    procedure DoStateChange; override;
     function GetName(const AnIndex: Integer): String; override;
     function GetValue(const AnIndex: Integer): String; override;
   public
     procedure AddLocals(const AParams:String);
     function Count: Integer; override;
-    constructor Create(const ADebugger: TDebugger); 
+    constructor Create(const ADebugger: TDebugger);
     destructor Destroy; override;
   end;
-  
+
   TGDBMIWatch = class(TDBGWatch)
   private
+    FEvaluated: Boolean;
+    FValue: String;
+    procedure EvaluationNeeded;
   protected
     procedure DoEnableChange; override;
+    procedure DoExpressionChange; override;
+    procedure DoStateChange; override;
     function  GetValue: String; override;
     function  GetValid: Boolean; override;
-    procedure SetExpression(const AValue: String); override;
-    procedure SetValue(const AValue: String); override;
   public
+    constructor Create(ACollection: TCollection); override;
   end;
 
 function CreateValueList(AResultValues: String): TStringList;
@@ -134,12 +141,12 @@ var
   n: Integer;
   InString: Boolean;
   InList: Integer;
+  c: Char;
 begin
   Result := TStringList.Create;
   if AResultValues = '' then Exit;
-  
   // strip surrounding '[]' and '{}' first
-  case AResultValues[1] of 
+  case AResultValues[1] of
     '[': begin
       if AResultValues[Length(AResultValues)] = ']'
       then begin
@@ -155,15 +162,30 @@ begin
       end;
     end;
   end;
-  
+
   n := 1;
   InString := False;
   InList := 0;
+  c := #0;
   while (n <= Length(AResultValues)) do
   begin
-    if InString 
+    if c = '\'
     then begin
-      if AResultValues[n] = '"' 
+      // previous char was escape char
+      c := #0;
+      Inc(n);
+      Continue;
+    end;
+    c := AResultValues[n];
+    if c = '\'
+    then begin
+      Delete(AResultValues, n, 1);
+      Continue;
+    end;
+
+    if InString
+    then begin
+      if  c = '"'
       then begin
         InString := False;
         Delete(AResultValues, n, 1);
@@ -171,27 +193,27 @@ begin
       end;
     end
     else begin
-      if InList > 0 
+      if InList > 0
       then begin
-        if AResultValues[n] in [']', '}'] 
+        if c in [']', '}']
         then Dec(InList);
       end
       else begin
-        if AResultValues[n] = ','
+        if c = ','
         then begin
           Result.Add(Copy(AResultValues, 1, n - 1));
           Delete(AResultValues, 1, n);
           n := 1;
           Continue;
-        end 
-        else if AResultValues[n] = '"'
+        end
+        else if c = '"'
         then begin
           InString := True;
           Delete(AResultValues, n, 1);
           Continue;
         end;
       end;
-      if AResultValues[n] in ['[', '{'] 
+      if c in ['[', '{']
       then Inc(InList);
     end;
     Inc(n);
@@ -201,7 +223,7 @@ begin
 end;
 
 
-  
+
 { =========================================================================== }
 { TGDBMIDebugger }
 { =========================================================================== }
@@ -211,17 +233,22 @@ function TGDBMIDebugger.ChangeFileName: Boolean;
 //  S: String;
 begin
   FHasSymbols := True; // True untilproven otherwise
-  Result := ExecuteCommand('-file-exec-and-symbols %s', [FileName]) and inherited ChangeFileName;   
+  Result := ExecuteCommand('-file-exec-and-symbols %s', [FileName]) and inherited ChangeFileName;
 
   if Result and FHasSymbols
   then begin
-    ExecuteCommand('-gdb-set extention-language .lpr pascal');
+    // Force setting language
+    // Setting extensions dumps GDB (bug #508)
+    ExecuteCommand('-gdb-set language pascal');
+(*
+    ExecuteCommand('-gdb-set extension-language .lpr pascal');
     if not FHasSymbols then Exit; // file-exec-and-symbols not allways result in no symbols
-    ExecuteCommand('-gdb-set extention-language .lrc pascal');
-    ExecuteCommand('-gdb-set extention-language .dpr pascal');
-    ExecuteCommand('-gdb-set extention-language .pas pascal');
-    ExecuteCommand('-gdb-set extention-language .pp pascal');
-    ExecuteCommand('-gdb-set extention-language .inc pascal');
+    ExecuteCommand('-gdb-set extension-language .lrs pascal');
+    ExecuteCommand('-gdb-set extension-language .dpr pascal');
+    ExecuteCommand('-gdb-set extension-language .pas pascal');
+    ExecuteCommand('-gdb-set extension-language .pp pascal');
+    ExecuteCommand('-gdb-set extension-language .inc pascal');
+*)
   end;
 end;
 
@@ -232,17 +259,17 @@ begin
   inherited;
 end;
 
-function TGDBMIDebugger.CreateBreakPoints: TDBGBreakPoints; 
+function TGDBMIDebugger.CreateBreakPoints: TDBGBreakPoints;
 begin
   Result := TDBGBreakPoints.Create(Self, TGDBMIBreakPoint);
 end;
 
-function TGDBMIDebugger.CreateLocals: TDBGLocals; 
-begin                                                            
+function TGDBMIDebugger.CreateLocals: TDBGLocals;
+begin
   Result := TGDBMILocals.Create(Self);
 end;
 
-function TGDBMIDebugger.CreateWatches: TDBGWatches; 
+function TGDBMIDebugger.CreateWatches: TDBGWatches;
 begin
   Result := TDBGWatches.Create(Self, TGDBMIWatch);
 end;
@@ -260,37 +287,56 @@ begin
   inherited Done;
 end;
 
-function TGDBMIDebugger.ExecuteCommand(const ACommand: String): Boolean; 
+function TGDBMIDebugger.ExecuteCommand(const ACommand: String): Boolean;
 var
   S: String;
+  ResultState: TDBGState;
 begin
-  Result := ExecuteCommand(ACommand, [], S);
+  Result := ExecuteCommand(ACommand, [], False, ResultState, S);
 end;
 
-function TGDBMIDebugger.ExecuteCommand(const ACommand: String; var AResultValues: String): Boolean; 
+function TGDBMIDebugger.ExecuteCommand(const ACommand: String; var AResultValues: String): Boolean;
+var
+  ResultState: TDBGState;
 begin
-  Result := ExecuteCommand(ACommand, [], AResultValues);
+  Result := ExecuteCommand(ACommand, [], False, ResultState, AResultValues);
 end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String; AValues: array of const): Boolean;
 var
   S: String;
+  ResultState: TDBGState;
 begin
-  Result := ExecuteCommand(ACommand, AValues, S);
+  Result := ExecuteCommand(ACommand, AValues, False, ResultState, S);
 end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String; AValues: array of const; var AResultValues: String): Boolean;
+var
+  ResultState: TDBGState;
 begin
-  Result := ExecuteCommand(ACommand, AValues, False, AResultValues);
+  Result := ExecuteCommand(ACommand, AValues, False, ResultState, AResultValues);
 end;
 
-function TGDBMIDebugger.ExecuteCommand(const ACommand: String; AValues: array of const; const AIgnoreError: Boolean; var AResultValues: String): Boolean;
+function TGDBMIDebugger.ExecuteCommand(const ACommand: String; AValues: array of const; var AResultState: TDBGState; var AResultValues: String): Boolean;
+begin
+  Result := ExecuteCommand(ACommand, AValues, False, AResultState, AResultValues);
+end;
+
+function TGDBMIDebugger.ExecuteCommand(const ACommand: String; AValues: array of const; const AIgnoreError: Boolean; var AResultState: TDBGState; var AResultValues: String): Boolean;
 begin
   FCommandQueue.Add(ACommand);
   if FCommandQueue.Count > 1 then Exit;
   repeat
     SendCmdLn(FCommandQueue[0], AValues);
-    Result := ProcessResult(AIgnoreError, AResultValues) and ((State <> dsRun) or ProcessRunning);
+    Result := ProcessResult(AResultState, AResultValues);
+    if Result
+    then begin
+      if (AResultState <> dsNone)
+      and ((AResultState <> dsError) or not AIgnoreError)
+      then SetState(AResultState);
+      if State = dsRun
+      then Result := ProcessRunning;
+    end;
     FCommandQueue.Delete(0);
     if FStoppedParams <> ''
     then begin
@@ -303,8 +349,8 @@ end;
 function  TGDBMIDebugger.FindBreakpoint(const ABreakpoint: Integer): TDBGBreakPoint;
 var
   n: Integer;
-begin                     
-  if  ABreakpoint > 0 
+begin
+  if  ABreakpoint > 0
   then
     for n := 0 to Breakpoints.Count - 1 do
     begin
@@ -315,120 +361,162 @@ begin
   Result := nil;
 end;
 
-procedure TGDBMIDebugger.GDBJumpTo(const ASource: String; const ALine: Integer);
+function TGDBMIDebugger.GDBEvaluate(const AExpression: String; var AResult: String): Boolean;
+var
+  ResultState: TDBGState;
+  ResultValues: String;
+  ResultList: TStringList;
 begin
+  Result := ExecuteCommand('-data-evaluate-expression %s', [AExpression], True, ResultState, ResultValues)
+    and (ResultState <> dsError);
+
+  ResultList := CreateValueList(ResultValues);
+  if ResultState = dsError
+  then AResult := ResultList.Values['msg']
+  else AResult := ResultList.Values['value'];
+  ResultList.Free;
 end;
 
-procedure TGDBMIDebugger.GDBPause;
+function TGDBMIDebugger.GDBJumpTo(const ASource: String; const ALine: Integer): Boolean;
+begin
+  Result := False;
+end;
+
+function TGDBMIDebugger.GDBPause: Boolean;
 begin
   SendBreak(FTargetPID);
+  Result := True;
 end;
 
-procedure TGDBMIDebugger.GDBRun;
+function TGDBMIDebugger.GDBRun: Boolean;
 begin
-  case State of 
+  Result := False;
+  case State of
     dsStop: begin
       GDBStart;
       if State = dsPause
       then begin
-        ExecuteCommand('-exec-continue'); 
+        Result := ExecuteCommand('-exec-continue');
       end
       else begin
         //error???
       end;
     end;
     dsPause: begin
-      ExecuteCommand('-exec-continue');
+      Result := ExecuteCommand('-exec-continue');
     end;
     dsIdle: begin
-      WriteLN('[WARNING] Debugger: Unable to run in idle state');      
+      WriteLN('[WARNING] Debugger: Unable to run in idle state');
     end;
   end;
 end;
 
-procedure TGDBMIDebugger.GDBRunTo(const ASource: String; const ALine: Integer); 
+function TGDBMIDebugger.GDBRunTo(const ASource: String; const ALine: Integer): Boolean;
 begin
+  Result := False;
   if State in [dsRun, dsError] then Exit;
-  
-  ExecuteCommand('-exec-until %s:%d', [ASource, ALine]);
+
+  Result := ExecuteCommand('-exec-until %s:%d', [ASource, ALine]);
 end;
 
-procedure TGDBMIDebugger.GDBStart;
+function TGDBMIDebugger.GDBStart: Boolean;
 var
   S: String;
+  ResultState: TDBGState;
 begin
   if State in [dsStop]
   then begin
     if FHasSymbols
-    then begin 
+    then begin
       if Arguments <>''
       then ExecuteCommand('-exec-arguments %s', [Arguments]);
       ExecuteCommand('-break-insert -t main');
       ExecuteCommand('-exec-run');
-      
+
       // try to find PID
       SendCmdLn('info program', []);
       ReadLine; // skip repeated command
       S := ReadLine;
       FTargetPID := StrToIntDef(GetPart('child process ', '.', S), 0);
-      if ProcessResult(False, S) 
-      then SetState(dsPause);
+      if ProcessResult(ResultState, S)
+      then begin
+        if ResultState = dsNone
+        then SetState(dsPause)
+        else SetState(ResultState);
+      end;
     end;
   end;
+  Result := True;
 end;
 
-procedure TGDBMIDebugger.GDBStepInto;          
+function TGDBMIDebugger.GDBStepInto: Boolean;
 begin
-  case State of 
+  case State of
     dsIdle, dsStop: begin
-      GDBStart;
+      Result := GDBStart;
     end;
     dsPause: begin
-      ExecuteCommand('-exec-step');
+      Result := ExecuteCommand('-exec-step');
     end;
+  else
+    Result := False;
   end;
 end;
 
-procedure TGDBMIDebugger.GDBStepOver;         
+function TGDBMIDebugger.GDBStepOver: Boolean;
 begin
-  case State of 
+  case State of
     dsIdle, dsStop: begin
-      GDBStart;
+      Result := GDBStart;
     end;
     dsPause: begin
-      ExecuteCommand('-exec-next');
+      Result := ExecuteCommand('-exec-next');
     end;
+  else
+    Result := False;
   end;
 end;
 
-procedure TGDBMIDebugger.GDBStop;  
+function TGDBMIDebugger.GDBStop: Boolean;
 begin
-  if State = dsRun 
-  then GDBPause;     
+  if State = dsRun
+  then GDBPause;
 
-  if State = dsPause 
+  if State = dsPause
   then begin
     // not supported yet
     // ExecuteCommand('-exec-abort');
     ExecuteCommand('kill');
     SetState(dsStop); //assume stop until abort is supported;
   end;
+  Result := True;
 end;
 
-function TGDBMIDebugger.GetSupportedCommands: TDBGCommands; 
+function TGDBMIDebugger.GetSupportedCommands: TDBGCommands;
 begin
-  Result := [dcRun, dcPause, dcStop, dcStepOver, dcStepInto, dcRunTo, dcJumpto, dcBreak{, dcWatch}]
+  Result := [dcRun, dcPause, dcStop, dcStepOver, dcStepInto, dcRunTo, dcJumpto, dcBreak{, dcWatch}, dcLocal, dcEvaluate, dcModify]
 end;
 
 procedure TGDBMIDebugger.Init;
+var
+  Line, S: String;
 begin
   if CreateDebugProcess('-silent -i mi')
-  then begin  
-    ReadLine;  //flush first line
+  then begin
+    // Get initial debugger lines
+    S := '';
+    Line := StripLN(ReadLine);
+    while DebugProcessRunning and (Line <> '(gdb) ') do
+    begin
+      S := S + Line + LINE_END;
+      Line := StripLN(ReadLine);
+    end;
+    if S <> ''
+    then MessageDlg('Debugger', 'Initialization output: ' + LINE_END + S, mtInformation, [mbOK], 0);
+
     ExecuteCommand('-gdb-set confirm off');
-    ExecuteCommand('-gdb-set language pascal');
     inherited Init;
-  end 
+  end
   else begin
     if DebugProcess = nil
     then MessageDlg('Debugger', 'Failed to create debug process for unknown reason', mtError, [mbOK], 0)
@@ -437,15 +525,16 @@ begin
   end;
 end;
 
-function TGDBMIDebugger.ProcessResult(const AIgnoreError: Boolean; var AResultValues: String): Boolean;
+function TGDBMIDebugger.ProcessResult(var ANewState: TDBGState; var AResultValues: String): Boolean;
 var
   S: String;
 begin
   Result := False;
   S := StripLN(ReadLine);
+  ANewState := dsNone;
   while DebugProcessRunning and (S <> '(gdb) ') do
   begin
-    if S <> '' 
+    if S <> ''
     then begin
       case S[1] of
         '^': begin // result-record
@@ -458,18 +547,17 @@ begin
           else if S = 'running'
           then begin
             Result := True;
-            SetState(dsRun);
+            ANewState := dsRun;
           end
           else if S = 'error'
           then begin
             Result := True;
-            if not AIgnoreError
-            then SetState(dsError);
+            ANewState := dsError;
           end
           else if S = 'exit'
           then begin
             Result := True;
-            SetState(dsIdle);
+            ANewState := dsIdle;
           end
           else WriteLN('[WARNING] Debugger: Unknown result class: ', S);
         end;
@@ -478,7 +566,7 @@ begin
           if Pos('no debugging symbols', S) > 0
           then begin
             FHasSymbols := False;
-            WriteLN('WARNING: File ''',FileName, ''' has no debug symbols');  
+            WriteLN('WARNING: File ''',FileName, ''' has no debug symbols');
           end
           else begin
             WriteLN('[Debugger] Console output: ', S);
@@ -500,18 +588,18 @@ begin
     S := StripLN(ReadLine);
   end;
 end;
-    
+
 function TGDBMIDebugger.ProcessRunning: Boolean;
 var
   S, AsyncClass: String;
   idx: Integer;
 begin
   Result := True;
-  
+
   S := StripLN(ReadLine);
   while DebugProcessRunning and (S <> '(gdb) ') do
   begin
-    if S <> '' 
+    if S <> ''
     then begin
       case S[1] of
         '^': begin
@@ -535,7 +623,7 @@ begin
           // Known, but undocumented classes
           else if AsyncClass = 'started'
           then begin
-          end  
+          end
           else if AsyncClass = 'disappeared'
           then begin
           end
@@ -556,7 +644,7 @@ begin
         // since target output isn't prefixed (yet?)
         // one of our known commands could be part of it.
         idx := Pos('*stopped', S);
-        if idx  > 0 
+        if idx  > 0
         then begin
           WriteLN('[DBGTGT] ', Copy(S, 1, idx - 1));
           Delete(S, 1, idx - 1);
@@ -570,36 +658,36 @@ begin
     end;
     S := StripLN(ReadLine);
   end;
-end;        
+end;
 
 function TGDBMIDebugger.ProcessStopped(const AParams: String): Boolean;
   procedure ProcessFrame(const AFrame: String);
   var
-    Frame: TStringList;  
+    Frame: TStringList;
     Location: TDBGLocationRec;
   begin
-    Frame := CreateValueList(AFrame);   
-        
-    Location.Adress := Pointer(StrToIntDef(Frame.Values['addr'], 0)); 
+    Frame := CreateValueList(AFrame);
+
+    Location.Adress := Pointer(StrToIntDef(Frame.Values['addr'], 0));
     Location.FuncName := Frame.Values['func'];
-    Location.SrcFile := Frame.Values['file']; 
+    Location.SrcFile := Frame.Values['file'];
     Location.SrcLine := StrToIntDef(Frame.Values['line'], -1);
-    
+
     TGDBMILocals(Locals).AddLocals(Frame.Values['args']);
     Frame.Free;
 
     DoCurrent(Location);
   end;
 var
-  List: TStringList;  
-  S, Reason: String;                
+  List: TStringList;
+  S, Reason: String;
   BreakPoint: TGDBMIBreakPoint;
 begin
   Result := True;
-  List := CreateValueList(AParams);    
-  Reason := List.Values['reason']; 
+  List := CreateValueList(AParams);
+  Reason := List.Values['reason'];
   if Reason = 'exited-normally'
-  then begin 
+  then begin
     SetState(dsStop);
   end
   else if Reason = 'exited'
@@ -612,7 +700,7 @@ begin
     SetState(dsStop);
     // TODO: define signal no
     DoException(0, List.Values['signal-name']);
-    ProcessFrame(List.Values['frame']);    
+    ProcessFrame(List.Values['frame']);
   end
   else if Reason = 'signal-received'
   then begin
@@ -622,7 +710,7 @@ begin
     S := List.Values['signal-name'];
     if S <> 'SIGINT'
     then DoException(0, S);
-    ProcessFrame(List.Values['frame']);    
+    ProcessFrame(List.Values['frame']);
   end
   else if Reason = 'breakpoint-hit'
   then begin
@@ -633,7 +721,7 @@ begin
       if (bpaStop in BreakPoint.Actions)
       then begin
         SetState(dsPause);
-        ProcessFrame(List.Values['frame']);    
+        ProcessFrame(List.Values['frame']);
       end
       else begin
         ExecuteCommand('-exec-continue');
@@ -643,38 +731,38 @@ begin
   else if Reason = 'function-finished'
   then begin
     SetState(dsPause);
-    ProcessFrame(List.Values['frame']);    
+    ProcessFrame(List.Values['frame']);
   end
   else if Reason = 'end-stepping-range'
   then begin
     SetState(dsPause);
-    ProcessFrame(List.Values['frame']);    
+    ProcessFrame(List.Values['frame']);
   end
   else if Reason = 'location-reached'
   then begin
     SetState(dsPause);
-    ProcessFrame(List.Values['frame']);    
+    ProcessFrame(List.Values['frame']);
   end
   else begin
     Result := False;
     WriteLN('[WARNING] Debugger: Unknown stopped reason: ', Reason);
   end;
-  
+
   List.Free;
 end;
 
-function TGDBMIDebugger.RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; 
-begin       
+function TGDBMIDebugger.RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean;
+begin
   case ACommand of
-    dcRun:      GDBRun;
-    dcPause:    GDBPause; 
-    dcStop:     GDBStop;
-    dcStepOver: GDBStepOver; 
-    dcStepInto: GDBStepInto;
-    dcRunTo:    GDBRunTo(String(APArams[0].VAnsiString), APArams[1].VInteger);
-    dcJumpto:   GDBJumpTo(String(APArams[0].VAnsiString), APArams[1].VInteger);
+    dcRun:      Result := GDBRun;
+    dcPause:    Result := GDBPause;
+    dcStop:     Result := GDBStop;
+    dcStepOver: Result := GDBStepOver;
+    dcStepInto: Result := GDBStepInto;
+    dcRunTo:    Result := GDBRunTo(String(APArams[0].VAnsiString), APArams[1].VInteger);
+    dcJumpto:   Result := GDBJumpTo(String(APArams[0].VAnsiString), APArams[1].VInteger);
+    dcEvaluate: Result := GDBEvaluate(String(APArams[0].VAnsiString), String(APArams[1].VPointer^));
   end;
-  Result := True;
 end;
 
 procedure TGDBMIDebugger.TestCmd(const ACommand: String);
@@ -686,41 +774,41 @@ end;
 { TGDBMIBreakPoint }
 { =========================================================================== }
 
-constructor TGDBMIBreakPoint.Create(ACollection: TCollection); 
+constructor TGDBMIBreakPoint.Create(ACollection: TCollection);
 begin
   inherited Create(ACollection);
   FBreakID := 0;
 end;
 
-destructor TGDBMIBreakPoint.Destroy; 
+destructor TGDBMIBreakPoint.Destroy;
 begin
   if FBreakID <> 0
   then begin
     TGDBMIDebugger(Debugger).ExecuteCommand('-break-delete %d', [FBreakID]);
   end;
-  
+
   inherited Destroy;
 end;
 
-procedure TGDBMIBreakPoint.DoActionChange;     
+procedure TGDBMIBreakPoint.DoActionChange;
 begin
 end;
 
-procedure TGDBMIBreakPoint.DoEnableChange; 
+procedure TGDBMIBreakPoint.DoEnableChange;
 const
   CMD: array[Boolean] of String = ('disable', 'enable');
 begin
   if FBreakID = 0 then Exit;
-  
+
   TGDBMIDebugger(Debugger).ExecuteCommand('-break-%s %d', [CMD[Enabled], FBreakID]);
 end;
 
-procedure TGDBMIBreakPoint.DoExpressionChange; 
+procedure TGDBMIBreakPoint.DoExpressionChange;
 begin
 end;
 
-procedure TGDBMIBreakPoint.DoStateChange; 
-begin   
+procedure TGDBMIBreakPoint.DoStateChange;
+begin
   inherited;
   if  (Debugger.State = dsStop)
   and (FBreakID = 0)
@@ -735,13 +823,14 @@ begin
   if bpaDisableGroup in Actions
   then DisableGroups;
 end;
-  
+
 procedure TGDBMIBreakPoint.SetBreakpoint;
 var
   S: String;
-  ResultList, BkptList: TStringList;  
+  ResultList, BkptList: TStringList;
+  ResultState: TDBGState;
 begin
-  TGDBMIDebugger(Debugger).ExecuteCommand('-break-insert %s:%d', [Source, Line], True, S);
+  TGDBMIDebugger(Debugger).ExecuteCommand('-break-insert %s:%d', [Source, Line], True, ResultState, S);
   ResultList := CreateValueList(S);
   BkptList := CreateValueList(ResultList.Values['bkpt']);
   FBreakID := StrToIntDef(BkptList.Values['number'], 0);
@@ -752,9 +841,9 @@ begin
   BkptList.Free;
 end;
 
-  
-procedure TGDBMIBreakPoint.SetLocation(const ASource: String; const ALine: Integer); 
-begin  
+
+procedure TGDBMIBreakPoint.SetLocation(const ASource: String; const ALine: Integer);
+begin
   inherited;
   if TGDBMIDebugger(Debugger).State in [dsStop, dsPause, dsIdle]
   then SetBreakpoint;
@@ -767,7 +856,7 @@ end;
 procedure TGDBMILocals.AddLocals(const AParams: String);
 var
   n: Integer;
-  LocList, List: TStrings;     
+  LocList, List: TStrings;
   Name: String;
 begin
   LocList := CreateValueList(AParams);
@@ -784,7 +873,7 @@ begin
 end;
 
 function TGDBMILocals.Count: Integer;
-begin                     
+begin
   if Debugger.State = dsPause
   then begin
     LocalsNeeded;
@@ -799,7 +888,7 @@ begin
   FLocals.Sorted := True;
   FLocalsValid := False;
   inherited;
-end;            
+end;
 
 destructor TGDBMILocals.Destroy;
 begin
@@ -807,10 +896,10 @@ begin
   FreeAndNil(FLocals);
 end;
 
-procedure TGDBMILocals.DoStateChange;  
+procedure TGDBMILocals.DoStateChange;
 begin
-  if Debugger.State = dsPause 
-  then begin         
+  if Debugger.State = dsPause
+  then begin
     DoChange;
   end
   else begin
@@ -820,8 +909,8 @@ begin
 end;
 
 function TGDBMILocals.GetName(const AnIndex: Integer): String;
-begin       
-  if Debugger.State = dsPause 
+begin
+  if Debugger.State = dsPause
   then begin
     LocalsNeeded;
     Result := FLocals.Names[AnIndex];
@@ -831,7 +920,7 @@ end;
 
 function TGDBMILocals.GetValue(const AnIndex: Integer): String;
 begin
-  if Debugger.State = dsPause 
+  if Debugger.State = dsPause
   then begin
     LocalsNeeded;
     Result := FLocals[AnIndex];
@@ -846,7 +935,7 @@ var
   List: TStrings;
 begin
   if not FLocalsValid
-  then begin 
+  then begin
     TGDBMIDebugger(Debugger).ExecuteCommand('-stack-list-locals 1', S);
     List := CreateValueList(S);
     AddLocals(List.Values['locals']);
@@ -859,40 +948,73 @@ end;
 { TGDBMIWatch }
 { =========================================================================== }
 
-procedure TGDBMIWatch.DoEnableChange; 
+constructor TGDBMIWatch.Create(ACollection: TCollection);
 begin
+  FEvaluated := False;
+  inherited;
 end;
 
-function TGDBMIWatch.GetValue: String; 
+procedure TGDBMIWatch.DoEnableChange;
 begin
-  if (Debugger.State in [dsStop, dsPause, dsIdle])
-  and Valid 
+  inherited;
+end;
+
+procedure TGDBMIWatch.DoExpressionChange;
+begin
+  FEvaluated := False;
+  inherited;
+end;
+
+procedure TGDBMIWatch.DoStateChange;
+begin
+  if Debugger.State in [dsPause, dsStop]
+  then FEvaluated := False;
+  if Debugger.State = dsPause then Changed(False);
+end;
+
+procedure TGDBMIWatch.EvaluationNeeded;
+begin
+  if FEvaluated then Exit;
+
+  if (Debugger.State in [dsPause, dsStop])
+  and Enabled
   then begin
+    SetValid(TGDBMIDebugger(Debugger).GDBEvaluate(Expression, FValue));
+  end
+  else begin
+    SetValid(False);
+  end;
+  FEvaluated := True;
+end;
+
+function TGDBMIWatch.GetValue: String;
+begin
+  if (Debugger.State in [dsStop, dsPause])
+  and Enabled
+  then begin
+    EvaluationNeeded;
+    Result := FValue;
   end
   else Result := inherited GetValue;
 end;
 
-function TGDBMIWatch.GetValid: Boolean; 
+function TGDBMIWatch.GetValid: Boolean;
 begin
-  Result:=false;
-end;
-
-procedure TGDBMIWatch.SetExpression(const AValue: String); 
-begin
-  if  (AValue <> Expression)
-  and (Debugger.State in [dsStop, dsPause, dsIdle])
-  then begin
-    //TGDBMIDebugger(Debugger).SendCmdLn('', True);
-  end;
-end;
-
-procedure TGDBMIWatch.SetValue(const AValue: String); 
-begin
+  EvaluationNeeded;
+  Result := inherited GetValid;
 end;
 
 end.
 { =============================================================================
   $Log$
+  Revision 1.5  2002/04/24 20:42:29  lazarus
+  MWE:
+    + Added watches
+    * Updated watches and watchproperty dialog to load as resource
+    = renamed debugger resource files from *.lrc to *.lrs
+    * Temporary fixed language problems on GDB (bug #508)
+    * Made Debugmanager dialog handling more generic
+
   Revision 1.4  2002/03/27 08:57:16  lazarus
   MG: reduced compiler warnings
 
