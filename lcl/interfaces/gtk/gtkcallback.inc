@@ -1541,7 +1541,7 @@ begin
   if FileExists(Filename) then begin
     Details:=GetFileDescription(Filename);
   end else begin
-    Details:='(file not found: "'+Filename+'")';
+    Details:=Format(rsFileInfoFileNotFound, [Filename]);
   end;
   gtk_label_set_text(PGtkLabel(FileDetailLabel),PChar(Details));
 end;
@@ -2542,6 +2542,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.169  2003/03/09 21:13:32  mattias
+  localized gtk interface
+
   Revision 1.168  2003/03/09 17:44:12  mattias
   finshed Make Resourcestring dialog and implemented TToggleBox
 
