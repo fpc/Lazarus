@@ -506,8 +506,10 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.DoMouseDown(var Message: TLMMouse; Button: TMOuseButton; Shift:TShiftState);
 begin
-  if not (csNoStdEvents in ControlStyle)
-  then with Message do MouseDown(Button, KeysToShiftState(Keys) + Shift, XPos, YPos);
+  if not (csNoStdEvents in ControlStyle) then
+  Begin
+    with Message do MouseDown(Button, KeysToShiftState(Keys) + Shift, XPos, YPos);
+  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -717,7 +719,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.SetMouseCapture(Value : Boolean);
 begin
-  if MouseCapture <> Value 
+  if MouseCapture <> Value
   then begin
     if Value 
     then SetCaptureControl(Self) 
@@ -1008,20 +1010,9 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TControl.WMMouseMove(Var Message: TLMMouseMove);
 Begin
-//The next line is commented out because it throws an exception.
-
-{if (CaptureControl <> self) and (dragging) then exit;
-   begin
-   CaptureControl.Perform(CM_MOUSELEAVE,0,0);
-   if not CaptureControl.Dragging then
-   CaptureControl := Self;
-   end;
- }
-
   if not (csNoStdEvents in COntrolStyle)
   then with Message do
-    MouseMove(KeystoShiftState(Keys), XPos, YPos);
-
+       MouseMove(KeystoShiftState(Keys), XPos, YPos);
 End;
 
 {------------------------------------------------------------------------------}
@@ -1325,6 +1316,10 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.28  2001/10/31 16:29:21  lazarus
+  Fixed the gtk mousemove bug where the control gets the coord's based on it's parent instead of itself.
+  Shane
+
   Revision 1.27  2001/10/16 20:01:28  lazarus
   MG: removed splashform fix, because of the unpredictable side effects
 

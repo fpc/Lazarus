@@ -3755,21 +3755,29 @@ procedure TMainIDE.DoBringToFrontFormOrUnit;
 var AForm: TCustomForm;
   ActiveUnitInfo: TUnitInfo;
 begin
-  if FCodeLastActivated then begin
-    if SourceNoteBook.NoteBook<>nil then AForm:=SourceNotebook
-    else AForm:=nil;
-  end else begin
-    if (SourceNoteBook.NoteBook<>nil) then begin
+  if FCodeLastActivated then
+   begin
+    if SourceNoteBook.NoteBook<>nil then
+       AForm:=SourceNotebook
+    else
+       AForm:=nil;
+   end
+   else
+   begin
+    if (SourceNoteBook.NoteBook<>nil) then
+     begin
       ActiveUnitInfo:=Project.UnitWithEditorIndex(
         SourceNoteBook.NoteBook.PageIndex);
       if (ActiveUnitInfo<>nil) then
         AForm:=TCustomForm(ActiveUnitInfo.Form);
-    end;
+     end;
   end;
-  if AForm<>nil then begin
+
+  if AForm<>nil then
+   begin
     AForm.Hide;
     AForm.Show;
-  end;
+   end;
 end;
 
 procedure TMainIDE.OnMacroSubstitution(TheMacro: TTransferMacro; var s:string;
@@ -4361,6 +4369,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.129  2001/10/31 16:29:20  lazarus
+  Fixed the gtk mousemove bug where the control gets the coord's based on it's parent instead of itself.
+  Shane
+
   Revision 1.128  2001/10/26 20:36:48  lazarus
   Added an OnSelectionChanged event in Main.pp fired by MSgView dialog.  This fires when the ListBox gets clicked on.
   This allows the editor to highlight different lines when you click on different error messages.
@@ -8969,6 +8981,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.129  2001/10/31 16:29:20  lazarus
+  Fixed the gtk mousemove bug where the control gets the coord's based on it's parent instead of itself.
+  Shane
+
   Revision 1.128  2001/10/26 20:36:48  lazarus
   Added an OnSelectionChanged event in Main.pp fired by MSgView dialog.  This fires when the ListBox gets clicked on.
   This allows the editor to highlight different lines when you click on different error messages.

@@ -1140,6 +1140,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.23  2001/10/31 16:29:21  lazarus
+  Fixed the gtk mousemove bug where the control gets the coord's based on it's parent instead of itself.
+  Shane
+
   Revision 1.22  2001/10/07 07:28:32  lazarus
   MG: fixed setpixel and TCustomForm.OnResize event
 

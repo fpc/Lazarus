@@ -3016,6 +3016,7 @@ begin
   end;
      
   Assert(False, Format('Trace:< [TgtkObject.SetCapture] 0x%x --> 0x%x', [Value, Result]));
+
 end;
 
 {------------------------------------------------------------------------------
@@ -3604,6 +3605,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.46  2001/10/31 16:29:23  lazarus
+  Fixed the gtk mousemove bug where the control gets the coord's based on it's parent instead of itself.
+  Shane
+
   Revision 1.45  2001/10/24 00:35:55  lazarus
   MG: fixes for fpc 1.1: range check errors
 

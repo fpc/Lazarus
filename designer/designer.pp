@@ -279,6 +279,7 @@ Begin
   MouseDownComponent:=Sender;
   MouseDownSender:=Sender; 
 
+
   SenderOrigin:=GetFormRelativeControlTopLeft(Sender);
   MouseX:=Message.Pos.X+SenderOrigin.X;
   MouseY:=Message.Pos.Y+SenderOrigin.Y;
@@ -292,6 +293,7 @@ Begin
   write(' Msg=',Message.Pos.X,',',Message.Pos.Y);
   write(' Mouse=',MouseX,',',MouseY);
   writeln('');
+
 
   if (Message.Keys and MK_Shift) = MK_Shift then
     Write(' Shift down')
@@ -392,6 +394,7 @@ Begin
     Shift := Shift +[ssCTRL];
 
 
+
   SenderOrigin:=GetFormRelativeControlTopLeft(Sender);
   MouseX:=Message.Pos.X+SenderOrigin.X;
   MouseY:=Message.Pos.Y+SenderOrigin.Y;
@@ -405,6 +408,7 @@ Begin
   write(' Msg=',Message.Pos.X,',',Message.Pos.Y);
   write(' Mouse=',MouseX,',',MouseY);
   writeln('');
+
 
   if Assigned(FOnGetSelectedComponentClass) then
     FOnGetSelectedComponentClass(Self,SelectedCompClass)
@@ -505,18 +509,13 @@ Begin
   if SenderParentForm=nil then exit;
   SenderOrigin:=GetFormRelativeControlTopLeft(Sender);
   
-  // MG: workaround for mouse move coordinate bug in gtk-interfaces
-  s:=lowercase(MouseDownSender.ClassName);
-  if (s='tbutton') then begin
-    MouseX:=Message.Pos.X;
-    MouseY:=Message.Pos.Y;
-  end else begin
-  // MG: workaround end
+
     MouseX:=Message.Pos.X+SenderOrigin.X;
     MouseY:=Message.Pos.Y+SenderOrigin.Y;
-  end;
 
-  if (Message.keys and MK_LButton) = MK_LButton then begin
+
+//debugging commented out
+{  if (Message.keys and MK_LButton) = MK_LButton then begin
     Write('MouseMoveOnControl'
           ,' ',Sender.ClassName
           ,' ',GetCaptureControl<>nil
@@ -531,7 +530,7 @@ Begin
     end;
     writeln();
   end;
-
+}
   Shift := [];
   if (TLMMouse(Message).keys and MK_Shift) = MK_Shift then
     Shift := [ssShift];

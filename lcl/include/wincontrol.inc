@@ -467,38 +467,21 @@ var
   Control : TControl;
   P : TPoint;
 begin
-//  WriteLN(Format('[TWinControl.IsControlMouseMsg] %s', [ClassName]));
-  if GetCapture = Handle 
+  if GetCapture = Handle
   then begin
-//    WriteLN(Format('[TWinControl.IsControlMouseMsg] %s --> We are capture', [ClassName]));
     Control := nil;
-{    if CaptureControl <> nil
-    then WriteLN(Format('[TWinControl.IsControlMouseMsg] %s --> CaptureControl = %s', [ClassName, CaptureControl.ClassName]));
-}
-    if (CaptureControl <> nil) 
+    if (CaptureControl <> nil)
     and (CaptureControl.Parent = Self) 
     then Control := CaptureControl;
   end
   else Control := ControlAtPos(SmallPointtoPoint(Message.Pos),False);
 
-    if CaptureControl <> nil
-    then WriteLN(Format('[TWinControl.IsControlMouseMsg] %s --> CaptureControl = %s', [ClassName, CaptureControl.ClassName]));
-
-{if Control <> nil then
-  Writeln('---------------COntrol is present.  Its '+TCOntrol(Control).name)
-  else
-  Writeln('ISCONTROLMOUSEMSG - Control=nil');
-}
   Result := False;
-  if Control <> nil 
-  then begin
-//    Writeln('Control <> nil');
+  if Control <> nil then
+  begin
     P.X := Message.XPos - Control.Left;
     P.Y := Message.YPos - Control.Top;
-//    writeln('P.x and P.y = '+inttostr(p.x)+'  '+inttostr(p.y));
-//    WriteLN(Format('[TWinControl.IsControlMouseMsg] %s --> perform message', [Control.ClassName]));
     Control.Perform(Message.Msg, Message.Keys, LongInt(PointtoSmallPoint(P)));
-//    Writeln('done');
     Result := True;
   end;
 end;
@@ -1948,6 +1931,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.40  2001/10/31 16:29:22  lazarus
+  Fixed the gtk mousemove bug where the control gets the coord's based on it's parent instead of itself.
+  Shane
+
   Revision 1.39  2001/10/10 17:55:04  lazarus
   MG: fixed caret lost, gtk cleanup, bracket lvls, bookmark saving
 

@@ -4,6 +4,11 @@
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
 
+var
+//testing
+LMouseButtonDown,MMouseButtonDown,RMouseButtonDown : Boolean;  //used to track the mouse buttons
+
+
 
 // temp solution to fill msgqueue
 function DeliverPostMessage(const Target: Pointer; var Message): GBoolean;
@@ -307,6 +312,7 @@ begin
   { Message results : True - do nothing, False - destroy or hide window }
   Result:= DeliverMessage(Data, Mess) = 0;
   if longint(widget)=MCaptureHandle then MCaptureHandle:=0;
+  
 end;
 
 function gtkresizeCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
@@ -325,31 +331,46 @@ function GTKMotionNotify(widget:PGTKWidget; event: PGDKEventMotion; data: gPoint
 var
   Msg: TLMMouseMove;
   ShiftState: TShiftState;
+  parWindow : PgdkWindow;  //the Parent's GDKWindow
+  ShowDebugging : Boolean;
+  
 begin
+  ShowDebugging := False;
+  if ShowDebugging then
+  Begin
+  writeln('_______________');
+  Writeln('Motion Notify');
+  Writeln('Control = ',TControl(data).Name);
+  Writeln('Handle = ',Longint(TWinControl(data).Handle));
+  Writeln('Widget = ',LongInt(widget));
+  Writeln('Window = ',Longint(Event^.Window));
+  Writeln('Coords = ',trunc(Event^.x),',',trunc(Event^.Y));
+  Writeln('Send Event',Event^.send_Event);
+  Writeln('Event Type',Event^.thetype);
+  Writeln('Coords root = ',trunc(Event^.x_root),',',trunc(Event^.Y_root));
+  Writeln('State = ',event^.state);
+  Writeln('TGtkWidget^.Window is ',Longint(Widget^.Window));
+  parWindow := gtk_widget_get_parent_window(widget);
+  Writeln('Parwindow is ',LongInt(parwindow));
+  Writeln('_______________');
+  end;
 
-
+  //work around
+  //if the gdkwindow is the same as the parent's gdkwindow, then adjust the x,y relative to the cotnrol.
+  parWindow := gtk_widget_get_parent_window(widget);
+  if (ParWindow = Event^.Window) then
+     Begin
+         Event^.X := Event^.X - TWinControl(data).left;
+         Event^.Y := Event^.Y - TWinControl(data).Top;
+     end;
+       
   ShiftState := GTKEventState2ShiftState(Event^.State);
   with Msg do
   begin
     Msg := LM_MouseMove;
     XPos := Round(Event^.X);
     YPos := Round(Event^.Y);
-//    XPos := Trunc(Event^.X);
-//    YPos := trunc(Event^.Y);
-{    Writeln('MOUSEMOVE Signal');
-    Writeln('X = ');
-    Writeln('  '+inttostr(XPos));
-    Writeln('Y = ');
-    Writeln('  '+inttostr(YPos));
-    Writeln('X_root = ');
-    Writeln('  '+inttostr(round(Event^.X_Root)));
-    Writeln('Y_root = ');
-    Writeln('  '+inttostr(round(Event^.Y_Root)));
-    writeln('widget is ='+inttostr(longint(widget)));
-    if (TObject(data) is TCOntrol) then
-    writeln('Control is ='+TControl(data).classname);
-    Writeln('------------------');
- }
+
     Keys := 0;
     if ssShift in ShiftState then Keys := Keys or MK_SHIFT;
     if ssCtrl in ShiftState then Keys := Keys or MK_CONTROL;
@@ -376,6 +397,7 @@ var
   ShiftState: TShiftState;
 begin
 //writeln('[gtkMouseBtnPress] ',ToBject(Data).ClassName,' ',Trunc(Event^.X),',',Trunc(Event^.Y));
+
   EventTrace('Mouse button Press', data);
 
   Assert(False, Format('Trace:[gtkMouseBtnPress] ', []));
@@ -396,25 +418,33 @@ begin
     MessI.Keys := 0;
     case event^.Button of
          1 : begin
+               if LMouseButtonDown then Exit;
                MessI.Keys := MessI.Keys or MK_LBUTTON;
-               if event^.thetype = gdk_button_press then begin
-                 MessI.Msg := LM_LBUTTONDOWN;
-               end else
+               if event^.thetype = gdk_button_press then
+                 MessI.Msg := LM_LBUTTONDOWN
+                else
                  MessI.Msg := LM_LBUTTONDBLCLK;
+                 
+             LMouseButtonDown := True;
+
              end;
          2 : begin
+               if MMouseButtonDown then Exit;
                MessI.Keys := MessI.Keys or MK_MBUTTON;
                if event^.thetype = gdk_button_press then
                  MessI.Msg := LM_MBUTTONDOWN
                else
                  MessI.Msg := LM_MBUTTONDBLCLK;
+               MMouseButtonDown := True;
              end;
          3 : begin
+               if RMouseButtonDown then Exit;
                MessI.Keys := MessI.Keys or MK_RBUTTON;
                if event^.thetype = gdk_button_press then
                  MessI.Msg := LM_RBUTTONDOWN
                else
                  MessI.Msg := LM_RBUTTONDBLCLK;
+               RMouseButtonDown := True;
              end;
          else MessI.Msg := LM_NULL;
     end; //case
@@ -428,6 +458,7 @@ begin
 
     if MessI.Msg <> LM_NULL then Result := DeliverPostMessage(Data, MessI); 
   end;
+  
 end;
 
 function gtkMouseBtnRelease( widget: PGtkWidget; event : pgdkEventButton; data: gPointer) : GBoolean; cdecl;
@@ -442,9 +473,27 @@ begin
   ShiftState := gtkeventstate2shiftstate(Event^.State);
 
   case event^.Button of
-    1 : MessI.Msg := LM_LBUTTONUP;
-    2 : MessI.Msg := LM_MBUTTONUP;
-    3 : MessI.Msg := LM_RBUTTONUP;
+    1 : if not(LMouseButtonDown) then
+           Exit
+           else
+             Begin
+                MessI.Msg := LM_LBUTTONUP;
+                LMouseButtonDown := False;
+             end;
+    2 : if not(MMouseButtonDown) then
+           Exit
+           else
+             Begin
+                MessI.Msg := LM_MBUTTONUP;
+                MMouseButtonDown := False;
+             end;
+    3 : if not(RMouseButtonDown) then
+           Exit
+           else
+             Begin
+                MessI.Msg := LM_RBUTTONUP;
+                RMouseButtonDown := False;
+             end
     else MessI.Msg := LM_NULL;
   end;
   MessI.XPos := Trunc(Event^.X);
@@ -459,6 +508,7 @@ begin
   if MessI.Msg <> LM_NULL 
   then Result := DeliverPostMessage(Data, MessI)
   else Result := True;
+
 end;
 
 function gtkclickedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
@@ -1156,6 +1206,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.39  2001/10/31 16:29:22  lazarus
+  Fixed the gtk mousemove bug where the control gets the coord's based on it's parent instead of itself.
+  Shane
+
   Revision 1.38  2001/10/16 14:19:13  lazarus
   MG: added nvidia opengl support and a new opengl example from satan
 

@@ -422,8 +422,16 @@ begin
          end
          else Begin
             AParent := (Sender as TWinControl).Parent;
-            Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Calling Add Child: %s', [AParent.ClassName, Sender.ClassNAme]));
-            AddChild(Pgtkwidget(AParent.Handle), PgtkWidget(Handle), AParent.Left, AParent.Top);
+            if Not Assigned(AParent) then
+               Begin
+                 Assert(true, Format('Trace: [TgtkObject.IntSendMessage3] %s --> Parent is not assigned', [Sender.ClassName]));
+
+               end
+               else
+               Begin
+                Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Calling Add Child: %s', [AParent.ClassName, Sender.ClassNAme]));
+                AddChild(Pgtkwidget(AParent.Handle), PgtkWidget(Handle), AParent.Left, AParent.Top);
+               end;
          end;
       end;
 
@@ -1412,11 +1420,11 @@ procedure TGTKObject.SetCallback(Msg : LongInt; Sender : TObject);
       with Handler^ do
       begin
         //look for realize handler
-        if  (Id > 0) and 
+        if  (Id > 0) and
             (Signal_ID = RealizeID) and
             (Func = TGTKSignalFunc(@GTKRealizeCB))
            then RealizeHandler := Handler;
-        
+
         if  (Id > 0) and
             (Signal_ID = SignalID) and
             (Func = TGTKSignalFunc(ACallBackProc)) and
@@ -1458,6 +1466,7 @@ begin
   if gObject = nil then Exit;
   
   gFixed := PGTKObject(GetFixedWidget(gObject));
+
   if gFixed = nil then gFixed := gObject;
 
   case Msg of
@@ -1567,7 +1576,10 @@ begin
     
     LM_MOUSEMOVE:
     begin
-      ConnectSignal(gFixed, 'motion-notify-event', @GTKMotionNotify, GDK_POINTER_MOTION_MASK)
+//       if ((sender is tCustomForm) )then
+//       ConnectSignal(gFixed, 'motion-notify-event', @GTKMotionNotify)
+//       else
+       ConnectSignal(gFixed, 'motion-notify-event', @GTKMotionNotify, GDK_POINTER_MOTION_MASK)
     end;
     
     LM_PRESSED :
@@ -3101,6 +3113,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.64  2001/10/31 16:29:22  lazarus
+  Fixed the gtk mousemove bug where the control gets the coord's based on it's parent instead of itself.
+  Shane
+
   Revision 1.63  2001/10/16 20:01:28  lazarus
   MG: removed splashform fix, because of the unpredictable side effects
 
