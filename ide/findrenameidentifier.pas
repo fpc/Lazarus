@@ -254,7 +254,7 @@ end;
 procedure TFindRenameIdentifierDialog.FindRenameIdentifierDialogCreate(
   Sender: TObject);
 begin
-  IDEDialogLayoutList.ApplyLayout(Self,450,400);
+  IDEDialogLayoutList.ApplyLayout(Self,450,460);
 
   Caption:=lisFRIFindOrRenameIdentifier;
   CancelButton.Caption:=dlgCancel;
