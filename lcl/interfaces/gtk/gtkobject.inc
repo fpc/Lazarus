@@ -4772,7 +4772,7 @@ begin
     begin
       // Look for our parent's control and use the first radio we find for grouping
       TempWidget:= nil;
-      if AutoGroup and (Parent <> nil) then begin
+      if (Parent <> nil) then begin
         for TempInt:= 0 to Parent.ControlCount - 1 do begin
           if (Parent.Controls[TempInt] is TRadioButton) 
           and TWinControl(Parent.Controls[TempInt]).HandleAllocated then begin
@@ -7041,6 +7041,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.336  2003/03/17 20:53:16  mattias
+  removed SetRadioButtonGroupMode
+
   Revision 1.335  2003/03/17 20:50:30  mattias
   fixed TRadioGroup.ItemIndex=-1
 
