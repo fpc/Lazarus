@@ -215,6 +215,30 @@ begin
   end;
 end;
 
+
+{------------------------------------------------------------------------------}
+{  TWinControl CanFocus                                                        }
+{------------------------------------------------------------------------------}
+Function TWinControl.CanFocus : Boolean;
+var
+  Control: TWinControl;
+  Form: TCustomForm;
+begin
+  Result := False;
+  //Verify that every parent is enabled and visible before returning true.
+  Form := GetParentForm(Self);
+  if Form <> nil then
+  begin
+    Control := Self;
+    while Control <> Form do
+    begin
+      if not (Control.FVisible and Control.Enabled) then Exit;
+      Control := Control.Parent;
+    end;
+    Result := True;
+  end;
+end;
+
 {------------------------------------------------------------------------------}
 {  TWinControl CMDrag                                                      }
 {------------------------------------------------------------------------------}
@@ -1893,6 +1917,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.15  2001/02/04 04:18:12  lazarus
+  Code cleanup and JITFOrms bug fix.
+  Shane
+
   Revision 1.14  2001/02/01 19:34:50  lazarus
   TScrollbar created and a lot of code added.
 

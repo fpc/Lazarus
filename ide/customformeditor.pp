@@ -492,7 +492,7 @@ end;
 Function TComponentInterface.Focus : Boolean;
 Begin
   // XXX Todo:
-  if (FCOntrol is TWinControl) {and (TWinControl(FControl).CanFocus)} then
+  if (FCOntrol is TWinControl) and (TWinControl(FControl).CanFocus) then
   TWinControl(FControl).SetFocus;
 end;
 
@@ -608,22 +608,20 @@ Var
 Begin
   writeln('[TCustomFormEditor.CreateComponent] Class='''+TypeClass.ClassName+'''');
   Temp := TComponentInterface.Create;
-  Writeln('TComponentInterface created......');
-  if Assigned(ParentCI) then begin
+  if Assigned(ParentCI) then
+  begin
     if Assigned(TComponentInterface(ParentCI).FControl.Owner) then
-      Temp.FControl :=
-        TypeClass.Create(TComponentInterface(ParentCI).FControl.Owner)
+      Temp.FControl := TypeClass.Create(TComponentInterface(ParentCI).FControl.Owner)
     else
-      Temp.FControl :=
-        TypeClass.Create(TComponentInterface(ParentCI).FControl)
-  end else
-    Begin
+      Temp.FControl := TypeClass.Create(TComponentInterface(ParentCI).FControl)
+  end
+   else
+  Begin
     //this should be a form
        NewFormIndex := JITFormList.AddNewJITForm;
        if NewFormIndex >= 0 then
        Temp.FControl := JITFormList[NewFormIndex];
-//       Temp.FControl := TypeClass.Create(nil);
-    end;
+  end;
 
   if Assigned(ParentCI) then
     Begin
@@ -682,6 +680,9 @@ Begin
     if CompTop<0 then
       CompTop:=(TControl(Temp.FControl).Parent.Height+ CompHeight) div 2;
     TControl(Temp.FControl).SetBounds(CompLeft,CompTop,CompWidth,CompHeight);
+
+   TControl(temp.FControl).Hint := TControl(Temp.FControl).Name;
+
   end;
 
   FComponentInterfaceList.Add(Temp);

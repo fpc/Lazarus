@@ -97,9 +97,6 @@ var
   GridPoints : TGridPoint;
 
 constructor TDesigner.Create(CustomForm : TCustomForm);
-var
-  nmUnit : String;
-  I : Integer;
 begin
   inherited Create;
   FCustomForm := CustomForm;
@@ -160,8 +157,6 @@ end;
 
 
 procedure TDesigner.MouseDownOnControl(Sender : TControl; Message : TLMessage);
-var
-SHift : TShiftState;
 Begin
 //  if assigned(MouseDownControl) and (MOuseDownControl <> Sender) then Exit;
   Writeln('Left is '+Inttostr(TCOntrol(Sender).left));
@@ -189,7 +184,6 @@ Begin
        LastMouseMovePos:=MouseDownPos;
      end;
 
-    Shift := [];
   if (TLMMouse(Message).keys and MK_Shift) = MK_Shift then
     Writeln('Shift down')
     else
@@ -223,7 +217,6 @@ var
   CaptureGrabber:TGrabber;
   Button : TMouseButton;
   Shift : TShiftState;
-  X,Y : Integer;
 Begin
 
 
@@ -245,26 +238,11 @@ Begin
     shift := shift +[ssCTRL];
 
 
-  X := TLMMOuse(Message).pos.X;
-  Y := TLMMOuse(Message).pos.Y;
   CaptureGrabber:=GetCaptureGrabber;
   if CaptureGrabber<>nil then begin
     CaptureGrabber.CaptureMouseUp(TControl(Sender),Button,Shift,TLMMouse(Message).pos.X,TLMMouse(Message).pos.Y);
     exit;
   end;
-
- { if   ((not (Sender is TCustomForm))
-        or (( X < TControl(sender).left) or ( X > (TControl(sender).left+TControl(sender).Width)))
-        or (( Y < TControl(sender).Top) or ( Y > (TControl(sender).Top+TControl(sender).Height)))) then begin
-    inc(X,TControl(Sender).Left);
-    inc(Y,TControl(Sender).Top);
-    end;
-}
-
-//    ControlSelection.MoveSelection(X-LastMouseMovePos.X, Y-LastMouseMovePos.Y);
-    //do something like ControlSelection.Sizecontent but move x and y from where
-    // the grabber started to where it finished.
-//    ControlSelection.MoveContent(X-MouseDownPos.X,Y-MouseDownPos.Y);
 
   MouseUpPos.X := TLMMouse(Message).pos.X;
   MouseUpPos.Y := TLMMouse(Message).pos.Y;
@@ -275,8 +253,7 @@ Begin
 
   if FMainIDE.SelectedComponent = nil then
   Begin //mouse pointer button pressed.
-{    if Sender is TCustomForm then
-      SelectOnlyThisComponent(TComponent(Sender));}
+
   end
   else
   Begin  //add a new control
@@ -330,7 +307,6 @@ const
   mk_mbutton = $10;
 var
   CaptureGrabber : TGrabber;
-  Button : TMouseButton;
   Shift : TShiftState;
   X,Y : Integer;
 Begin
@@ -351,12 +327,7 @@ Begin
       end;
   if Assigned(MouseDownControl) then Writeln('MouseDownControl is '+TCOntrol(MouseDownControl).Name);
 
-  if (TLMMouse(Message).keys and MK_LButton) = MK_LButton then
-    Button := mbLEft
-   else
-  if (TLMMouse(Message).keys and MK_LButton) = MK_RButton then
-    Button := mbRight;
-     Shift := [];
+  Shift := [];
   if (TLMMouse(Message).keys and MK_Shift) = MK_Shift then
     shift := [ssShift];
 
@@ -475,8 +446,6 @@ end;
 
 {-----------------------------------------K E Y U P --------------------------------}
 Procedure TDesigner.KeyUp(Sender : TControl; Message:TLMKEY);
-var
-  I : Integer;
 Begin
 Writeln('KEYUp');
 with MEssage do
@@ -586,7 +555,7 @@ end;
 
 function TDesigner.GetIsControl: Boolean;
 Begin
-
+Result := True;
 end;
 
 procedure TDesigner.SetIsControl(Value: Boolean);

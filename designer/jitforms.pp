@@ -186,6 +186,7 @@ begin
   repeat
     FormName:='Form'+IntToStr(a);
     FormClassName:='TForm'+IntToStr(a);
+    inc(a);
   until (FindFormByName(FormName)<0) and (FindFormByClassName(FormClassName)<0);
 end;
 
@@ -204,7 +205,10 @@ writeln('[TJITForms.DoCreateJITForm] Initializing new instance ...');
   TComponent(FCurReadForm):=Instance;
   try
     Instance.Create(Application);
+    Writeln('----------------------------------');
     Writeln('New form name is '+NewFormName);
+    Writeln('----------------------------------');
+    Writeln('----------------------------------');
     if NewFormName<>'' then
       Instance.Name:=NewFormName;
     DoRenameClass(FCurReadClass,NewClassName);
@@ -220,7 +224,9 @@ end;
 function TJITForms.AddNewJITForm:integer;
 var NewFormName,NewClassName:shortstring;
 begin
+  Writeln('[TJITForms] AddNewJITForm');
   GetUnusedNames(NewFormName,NewClassName);
+  Writeln('Newformname is '+NewFormname);
   Result:=DoCreateJITForm(NewFormName,NewClassName);
 end;
 

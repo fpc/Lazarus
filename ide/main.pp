@@ -243,16 +243,11 @@ constructor TMainIDE.Create(AOwner: TComponent);
   end;
 
 var
-  Filename : String;
-  S : TStream;
   i,x : Integer;
-  R : TRect;
-  IDEControl : pointer;
   PageCount : Integer;
   RegComp     : TRegisteredComponent;
   RegCompPage : TRegisteredComponentPage;
   IDeComponent : TIdeComponent;
-  MenuItem : TmenuItem;
 begin
   inherited Create(AOwner);
 
@@ -748,9 +743,6 @@ End;
 
 {------------------------------------------------------------------------------}
 procedure TMainIDE.LoadMainMenu;
-var
-  fContext : Integer;
-  R : TRect;
 begin
 
 //--------------
@@ -997,14 +989,11 @@ end;
 procedure TMainIDE.LoadResourceFromFile(Value : String);
 Var
   Texts : String;
-  Temps : String;
   Classnm : String;  //like 'TMainIDE'
   Datatype : String; //like 'FORMDATA'
   TextFile : TStringList;
   ResourceData : String;
-  I,A            : Integer;
-  Instance     : TComponent;
-  CompResource : TLResource;
+  I            : Integer;
 Begin
   textFile := TStringList.Create;
   TextFile.LoadFromFile(Value);
@@ -1083,7 +1072,7 @@ end;
 
 Function TMainIDE.SearchPaths : String;
 Begin
-    Result :=  CompilerOpts.OtherUnitFiles;
+    Result :=  Project.CompilerOptions.OtherUnitFiles;
 End;
 
 {
@@ -1096,7 +1085,6 @@ End;
 
 Procedure TMainIDE.ControlClick(Sender : TObject);
 var
-  Page : Integer;
   I : Integer;
   IDECOmp : TIDEComponent;
   Speedbutton : TSpeedbutton;
@@ -1209,10 +1197,6 @@ end;
 {------------------------------------------------------------------------------}
 procedure TMainIDE.mnuNewFormClicked(Sender : TObject);
 var
-  I,N: Integer;
-  TempName : String;
-  TempFormName : String;
-  Found : Boolean;
   TempForm : TCustomForm;
   CInterface : TComponentInterface;
 begin
@@ -1369,8 +1353,6 @@ Begin
 end;
 
 Procedure TMainIDE.FileSavedEvent(Sender : TObject; Filename : String);
-var
-  MenuItem : TMenuItem;
 Begin
   //sender is the TSourceEditor
   writeln('FILESAVEDEVENT');
@@ -1578,7 +1560,6 @@ end;
 
 Procedure TMainIDE.mnuRunProjectClicked(Sender : TObject);
 var
-  Filename : String;
   TheProcess : TProcess;
   TheProgram : String;
 begin
@@ -1642,6 +1623,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.56  2001/02/04 04:18:11  lazarus
+  Code cleanup and JITFOrms bug fix.
+  Shane
+
   Revision 1.55  2001/02/02 14:23:37  lazarus
   Start of code completion code.
   Shane

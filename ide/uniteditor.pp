@@ -70,20 +70,11 @@ type
     //if this is a Form or Datamodule, this is used
     FControl: TComponent;
 
-    //pulled out of the editor by the Function FEditor.CaretX
-    FCurrentCursorXLine : Integer;
-
-    //pulled out of the editor by the Function FEditor.CaretY
-    FCurrentCursorYLine : Integer;
-
     //Set during OPEN and Save
     FFileName : String;
 
     // Used GetModified like this -> Result := FEditor.Modified
     FModified : Boolean;
-
-    // Used GetReadolny like this -> Result := FEditor.Readonly
-    FReadOnly : Boolean;
 
     //created during the constructor.  This is the popup you see when right-clicking on the editor
     FPopUpMenu : TPopupMenu;
@@ -153,6 +144,7 @@ type
     property Editor : TmwCustomEdit read FEditor;
     property Visible : Boolean read FVisible write FVisible default False;
     FindText : String;
+    ccSelection : String;
   public
     constructor Create(AOwner : TComponent; AParent : TWinControl);
     destructor Destroy; override;
@@ -193,7 +185,6 @@ type
   private
     Notebook1 : TNotebook;
     StatusBar : TStatusBar;
-    FEmpty : Boolean;
     FFormEditor : TFormEditor;
     FSourceEditorList : TList;
     FSaveDialog : TSaveDialog;
@@ -464,12 +455,6 @@ var
   Texts : String;
   EditorLine : String;
   X : Integer;
-  Found : Boolean;
-  SearchDir : String;
-  AppDIr : String;
-  TempDir : String;
-  Num : Integer;
-
 Begin
   //get the text by the cursor.
   EditorLine := FEditor.Lines.Strings[GetCurrentCursorYLine-1];
@@ -637,7 +622,6 @@ End;
 Function TSourceEditor.FindAgain(StartX,StartLine : Integer) : Boolean;
 var
   I,X     : Integer;
-  Texts   : String;
   TempLine : String;
   P        : TPoint;
 Begin
@@ -703,10 +687,7 @@ End;
 
 
 Procedure TSourceEditor.ReadOnlyClicked(Sender : TObject);
-var
-  MenuItem : TMenuItem;
 Begin
-  MenuItem := TMenuItem(sender);
   FEditor.ReadOnly := not(FEditor.ReadOnly);
 //set the statusbar text;
 end;
@@ -731,8 +712,6 @@ Procedure TSourceEditor.ProcessUserCommand(Sender: TObject; var Command: TSynEdi
 var
   Y,I : Integer;
   Texts,Texts2,TheName : String;
-  Continue : Boolean;
-  Found : Boolean;
 Begin
 Writeln('[ProcessUserCommand]  --------------');
 if Command >= ecFirstParent then
@@ -854,7 +833,8 @@ if S1 = 'property' then Value := S2
    else
 if S1 = 'procedure' then Value := S2+'(';
 
-Value := Feditor.SelText + Value;
+Value := ccSelection + Value;
+ccSelection := '';
 scompl.Deactivate;
 End;
 
@@ -871,26 +851,23 @@ var
   S : TStrings;
   CompInt : TComponentInterface;
   CompName : String;
-  I,X : Integer;
+  I : Integer;
   propKind : TTypeKind;
   TypeInfo : PTypeInfo;
   TypeData : PTypeData;
   NewStr : String;
-  aName : String;
   Count : Integer;
-  MethodRec : TMethodRec;
-  Temp      : String;
 Begin
   CompInt := nil;
   Writeln('[ccExecute]');
   sCompl := TSynBaseCompletion(Sender);
   S := TStringList.Create;
   CompName := sCompl.CurrentString;
+  ccSelection := CompName;
   if Pos('.',CompName) <> 0 then
   CompName := Copy(CompName,1,pos('.',Compname)-1);
   CompInt := TComponentInterface(FormEditor1.FindComponentByName(CompName));
   if CompInt = nil then Exit;
-  aName := CompName+'.';
   //get all methods
   NewStr := '';
   for I := 0 to CompInt.GetPropCount-1 do
@@ -1033,7 +1010,6 @@ end;
 
 Procedure TSourceEditor.AddControlCode(_Control : TComponent);
 var
-  PT : PTypeData;
   PI : PTypeInfo;
   nmControlType : String;
   I : Integer;
@@ -1089,8 +1065,6 @@ end;
 {Called when a control is deleted from the form}
 Procedure TSourceEditor.RemoveControlCode(_Control : TComponent);
 var
-  PT : PTypeData;
-  PI : PTypeInfo;
   nmControlType : String;
   I : Integer;
   NewSource : String;
@@ -1101,7 +1075,6 @@ begin
   TempSource.Assign(Source);
 
   //get the control name
-  PI := _Control.ClassInfo;
   nmControlType := _Control.name;
   Ancestor := GetAncestor;
 
@@ -1214,15 +1187,11 @@ end;
 
 Procedure TSourceEditor.CreateFormUnit(AForm  : TCustomForm);
 Var
-  I : Integer;
   nmForm : String;
-  nmAncestor : String;
   TempSource : TStringList;
 Begin
   FControl := AForm;
   TempSource := TStringList.Create;
-
-  nmAncestor := GetAncestor;
 
   nmForm := FControl.Name;
 
@@ -1266,7 +1235,6 @@ end;
 
 Procedure TSourceEditor.CreateNewUnit;
 Var
-  I : Integer;
   TempSource : TStringList;
 Begin
   TempSource := TStringList.Create;
@@ -1506,7 +1474,6 @@ Function TSourceNotebook.CreateUnitFromForm(AForm : TForm): TSourceEditor;
 Var
   TempSourceEditor : TSourceEditor;
   Notebook_Just_Created : Boolean;
-  PageIndex : Integer;
 begin
 
   Notebook_Just_Created := (not assigned(Notebook1)) or
@@ -1866,7 +1833,7 @@ end;
 
 Procedure TSourceNotebook.SaveAllClicked(Sender : TObject);
 Var
-   I,X : Integer;
+   I : Integer;
    TempEditor : TSourceEditor;
 Begin
    For I := 0 to  FSourceEditorList.Count-1 do

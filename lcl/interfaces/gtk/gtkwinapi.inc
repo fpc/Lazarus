@@ -2007,8 +2007,7 @@ function TGTKObject.InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolea
 var
   gdkRect : TGDKRectangle;
 begin
-  // Todo: Erase  ??? 
-  Writeln('[InvalidateRect]');
+  // Todo: Erase  before invalidating if bErase is true
   Writeln(format('Rect = %d,%d,%d,%d',[rect^.left,rect^.top,rect^.Right,rect^.Bottom]));
   Result := True;
   try
@@ -2021,7 +2020,6 @@ begin
     Result := False;
   end;
 
-  Writeln('[InvalidateRect]  Exiting....');
 end;
 
 {------------------------------------------------------------------------------
@@ -3155,6 +3153,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.18  2001/02/04 04:18:12  lazarus
+  Code cleanup and JITFOrms bug fix.
+  Shane
+
   Revision 1.17  2001/02/01 19:34:50  lazarus
   TScrollbar created and a lot of code added.
 

@@ -182,22 +182,21 @@ end;
 
 function  TgtkObject.RecreateWnd(Sender: TObject): Integer;
 var
- aParent : TWinControl;
+  aParent : TWinControl;
 Begin
-//could we just call IntSendMessage??
+  //could we just call IntSendMessage??
 
-//destroy old widget
-gtk_widget_destroy(PgtkWidget(TWinControl(sender).HANDLE));
+  //destroy old widget
+  gtk_widget_destroy(PgtkWidget(TWinControl(sender).HANDLE));
 
-aParent := TWinControl(sender).Parent;
-aParent.RemoveControl(TControl(sender));
+  aParent := TWinControl(sender).Parent;
+  aParent.RemoveControl(TControl(sender));
 
-TWincontrol(sender).parent := nil;
-TWincontrol(sender).parent := aParent;
+  TWincontrol(sender).parent := nil;
+  TWincontrol(sender).parent := aParent;
 
-ResizeChild(Sender,TWinControl(sender).Left,TWinControl(sender).Top,TWinControl(sender).Width,TWinControl(sender).Height);
-ShowHide(sender);
-
+  ResizeChild(Sender,TWinControl(sender).Left,TWinControl(sender).Top,TWinControl(sender).Width,TWinControl(sender).Height);
+  ShowHide(sender);
 End;
 
 
@@ -2410,7 +2409,7 @@ begin
   if Sender is TWinControl then
   with Sender as TWinControl do
   begin
-    if (Length(Hint) > 0) and ShowHint
+    if (Length(Hint) > 0) and (ShowHint or (csDesigning in ComponentState))
     then begin
       strTemp := StrAlloc(Length(Hint) + 1);
       try
@@ -2667,6 +2666,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.27  2001/02/04 04:18:12  lazarus
+  Code cleanup and JITFOrms bug fix.
+  Shane
+
   Revision 1.26  2001/02/02 20:13:39  lazarus
   Codecompletion changes.
   Added code to Uniteditor for code completion.

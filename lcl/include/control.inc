@@ -799,10 +799,14 @@ end;
 {  TControl InvalidateControl                                                            }
 {------------------------------------------------------------------------------}
 procedure TControl.InvalidateControl(IsVisible, IsOpaque : Boolean);
+var
+  Rect : TRect;
 begin
-//TODO: FINISH TCONTROL INVALIDATECONTROL
-  if IsVisible 
-  then CNSendMessage(LM_REDRAW,Self,Nil);
+  if (IsVisible or (csDesigning in ComponentState) and not (csNoDesignVisible in ControlStyle)) and
+     (Parent <> nil) and (Parent.HandleAllocated) then
+    Begin
+     CNSendMessage(LM_REDRAW,Self,Nil);
+    end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1283,6 +1287,10 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.11  2001/02/04 04:18:12  lazarus
+  Code cleanup and JITFOrms bug fix.
+  Shane
+
   Revision 1.10  2001/02/01 16:45:19  lazarus
   Started the code completion.
   Shane

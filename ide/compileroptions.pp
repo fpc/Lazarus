@@ -521,9 +521,11 @@ end;
 procedure TCompilerOptions.SaveTheCompilerOptions;
 begin
   { Save the compiler options to the XML file }
-
+  Writeln('SaveTHECompilerOptions');
   { Parsing }
+  Writeln('First one');
   XMLConfigFile.SetValue('CompilerOptions/Parsing/Style/Value', Style);
+  Writeln('After FIRST one');
   XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/D2Extensions/Value', D2Extensions);
   XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/CStyleOperator/Value', CStyleOperators);
   XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/AllowLabel/Value', AllowLabel);
@@ -535,7 +537,7 @@ begin
   XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/DelphiCompat/Value', DelphiCompat);
   XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/UseAnsiStrings/Value', UseAnsiStrings);
   XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/GPCCompat/Value', GPCCompat);
-
+Writeln('1');
   { CodeGeneration }
   XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/UnitStyle/Value', UnitStyle);
   XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/Checks/IOChecks/Value', IOChecks);
@@ -549,6 +551,7 @@ begin
   XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/Optimizations/UncertainOptimizations/Value', UncertainOptimizations);
   XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/Optimizations/OptimizationLevel/Value', OptimizationLevel);
 
+Writeln('2');
   { Linking }
   XMLConfigFile.SetValue('CompilerOptions/Linking/Debugging/GenerateDebugInfo/Value', GenerateDebugInfo);
   XMLConfigFile.SetValue('CompilerOptions/Linking/Debugging/GenerateDebugDBX/Value', GenerateDebugDBX);
@@ -558,6 +561,7 @@ begin
   XMLConfigFile.SetValue('CompilerOptions/Linking/Options/PassLinkerOptions/Value', PassLinkerOptions);
   XMLConfigFile.SetValue('CompilerOptions/Linking/Options/LinkerOptions/Value', LinkerOptions);
     
+Writeln('3');
   { Other }
   XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowErrors/Value', ShowErrors);
   XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowWarn/Value', ShowWarn);
@@ -578,13 +582,15 @@ begin
   XMLConfigFile.SetValue('CompilerOptions/Other/ConfigFile/AdditionalConfigFile/Value', AdditionalConfigFile);
   XMLConfigFile.SetValue('CompilerOptions/Other/ConfigFile/ConfigFilePath/Value', ConfigFilePath);
 
+Writeln('4');
   { SearchPaths }
   XMLConfigFile.SetValue('CompilerOptions/SearchPaths/IncludeFiles/Value', IncludeFiles);
   XMLConfigFile.SetValue('CompilerOptions/SearchPaths/Libraries/Value', Libraries);
   XMLConfigFile.SetValue('CompilerOptions/SearchPaths/OtherUnitFiles/Value', OtherUnitFiles);
   XMLConfigFile.SetValue('CompilerOptions/SearchPaths/CompilerPath/Value', CompilerPath);
-
+  Writeln('5');
   XMLConfigFile.Flush;
+  Writeln('6');
 end;
 
 {------------------------------------------------------------------------------}
@@ -902,6 +908,8 @@ begin
   //Result := '-viwnh -n -Sgic -Fu' + OtherUnitFiles + ' -Fl' + Libraries;
 
   fOptionsString := switches;
+  Writeln('Still in CompilerOptions');
+  Writeln('fOptionsString = '+fOptionsString);
   Result := fOptionsString;
 end;
 
@@ -1004,8 +1012,8 @@ begin
   Width := 379;
   Caption := 'Compiler Options';
   OnShow := @CreateForm;
-  MainIDE.Project.CompilerOptions.LoadCompilerOptions(true);
-  //CompilerOpts.LoadCompilerOptions(true);
+//  MainIDE.Project.CompilerOptions.LoadCompilerOptions(true);
+  CompilerOpts.LoadCompilerOptions(true);
   
   nbMain := TNotebook.Create(Self);
   nbMain.Parent := Self;
@@ -1079,8 +1087,10 @@ begin
 
   { Save the options and hide the dialog }
   PutCompilerOptions;
-  MainIDE.Project.CompilerOptions.SaveCompilerOptions(true);
-  //CompilerOpts.SaveCompilerOptions(true);
+  Writeln('Calling Mainide.project.compiler...');
+//  MainIDE.Project.CompilerOptions.SaveCompilerOptions(true);
+  CompilerOpts.SaveCompilerOptions(true);
+  Writeln('Called');
   Hide;
 end;
 
@@ -1104,8 +1114,8 @@ begin
   Assert(False, 'Trace:Apply compiler options changes');
 
   PutCompilerOptions;
-  MainIDE.Project.CompilerOptions.SaveCompilerOptions(true);
-  //CompilerOpts.SaveCompilerOptions(true);
+//  MainIDE.Project.CompilerOptions.SaveCompilerOptions(true);
+  CompilerOpts.SaveCompilerOptions(true);
 end;
 
 {------------------------------------------------------------------------------}

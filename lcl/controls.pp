@@ -691,6 +691,7 @@ TCMDialogKey = TLMKEY;
     constructor CreateParented(ParentWindow: HWnd);
     class function CreateParentedControl(ParentWindow: HWnd): TWinControl;
     destructor Destroy; override;
+    Function CanFocus : Boolean;
     Function ControlAtPos(const Pos : TPoint; AllowDisabled : Boolean): TControl;
     Function Focused : Boolean; dynamic;
     Procedure BroadCast(var Message);
@@ -1125,6 +1126,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.12  2001/02/04 04:18:12  lazarus
+  Code cleanup and JITFOrms bug fix.
+  Shane
+
   Revision 1.11  2001/02/01 16:45:19  lazarus
   Started the code completion.
   Shane
