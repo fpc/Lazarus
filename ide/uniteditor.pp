@@ -1218,11 +1218,14 @@ begin
 end;
 
 procedure TSourceEditor.RemoveBreakPoint(const ABreakPointMark: TSynEditMark);
+var
+  OldLine: Integer;
 begin
   if not IsBreakPointMark(ABreakPointMark) then Exit;
+  OldLine:=ABreakPointMark.Line;
   FEditor.Marks.Remove(ABreakPointMark);
   ABreakPointMark.Free;
-  DebugBoss.DoDeleteBreakPoint(FileName, ABreakPointMark.Line);
+  DebugBoss.DoDeleteBreakPoint(FileName, OldLine);
   FModified:=true;
 end;
 
