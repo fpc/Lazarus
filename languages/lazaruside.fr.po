@@ -1339,6 +1339,10 @@ msgstr "Supprimer le dernier caractère"
 msgid "Delete node"
 msgstr "Suprimer un noeud"
 
+#: lazarusidestrconsts:lisdeleteoldfile
+msgid "Delete old file %s%s%s?"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangdeleteoldpackagefile2
 msgid "Delete old package file %s%s%s?"
 msgstr "Suprimer un ancien fichier paquet %s%s% ?"
@@ -1850,6 +1854,10 @@ msgstr "Fichier non exécutable"
 #: lazarusidestrconsts:lisfilenotfound
 msgid "File not found"
 msgstr "Fichier non trouvé"
+
+#: lazarusidestrconsts:lisfilenotlowercase
+msgid "File not lowercase"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangfilenotsaved
 msgid "File not saved"
@@ -4943,6 +4951,10 @@ msgstr "Tabulations converties en espaces"
 msgid "Tabs to spaces in selection"
 msgstr "Remplacer les tabulation par des espaces sur la sélection"
 
+#: lazarusidestrconsts:lislazbuildtargetdirectory
+msgid "Target Directory:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgpotargetfilename
 msgid "Target file name:"
 msgstr "Fichier destination"
@@ -5301,6 +5313,10 @@ msgstr ""
 
 #: lazarusidestrconsts:listheunitalreadyexistsignorewillforcetherenaming
 msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
+msgstr ""
+
+#: lazarusidestrconsts:listheunitisnotlowercasethefreepascalcompiler10xneeds
+msgid "The unit %s%s%s is not lowercase.%sThe FreePascal compiler 1.0.x needs lowercase filenames. If you do not use the fpc 1.0.x to compile this unit, you can ignore this message.%s%sRename file?"
 msgstr ""
 
 #: lazarusidestrconsts:lisprojaddtheunitnamealreadyexistsintheproject

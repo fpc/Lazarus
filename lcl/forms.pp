@@ -26,7 +26,6 @@
 
 unit Forms;
 
-
 {$mode objfpc}{$H+}
 
 interface

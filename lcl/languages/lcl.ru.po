@@ -312,7 +312,7 @@ msgstr "Свойство %s не существует"
 
 #: lclstrconsts:lislclresourcesnotfound
 msgid "Resource %s not found"
-msgstr ""
+msgstr "Ресурс %s не найден"
 
 #: lclstrconsts:rsfdfilesaveas
 msgid "Save file as"

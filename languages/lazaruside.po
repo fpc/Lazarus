@@ -706,6 +706,10 @@ msgstr ""
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
 msgstr ""
 
+#: lazarusidestrconsts:lisdeleteoldfile
+msgid "Delete old file %s%s%s?"
+msgstr ""
+
 #: lazarusidestrconsts:lisdeletingoffilefailed
 msgid "Deleting of file %s%s%s failed."
 msgstr ""
@@ -1024,6 +1028,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lisunabletobackupfileto
 msgid "Unable to backup file %s%s%s to %s%s%s!"
+msgstr ""
+
+#: lazarusidestrconsts:lisfilenotlowercase
+msgid "File not lowercase"
+msgstr ""
+
+#: lazarusidestrconsts:listheunitisnotlowercasethefreepascalcompiler10xneeds
+msgid "The unit %s%s%s is not lowercase.%sThe FreePascal compiler 1.0.x needs lowercase filenames. If you do not use the fpc 1.0.x to compile this unit, you can ignore this message.%s%sRename file?"
 msgstr ""
 
 #: lazarusidestrconsts:lisdeleteambigiousfile
@@ -3900,6 +3912,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lislazbuildtargetos
 msgid "Target OS:"
+msgstr ""
+
+#: lazarusidestrconsts:lislazbuildtargetdirectory
+msgid "Target Directory:"
 msgstr ""
 
 #: lazarusidestrconsts:lislazbuildlclinterface
