@@ -3303,7 +3303,7 @@ var
   TheMatchedFiles: TStringList; //List of files that contain a match
   i:               integer;     //loop counter
   AnUnitInfo:      TUnitInfo;
-  FindText:        String;      //Text to search for
+  LocalFindText:   String;      //Text to search for
   AText:           string;      //Formated message string
 Begin
   if FindInFilesDialog=nil then
@@ -3312,10 +3312,10 @@ Begin
 
   if FindInFilesDialog.ShowModal=mrOk then
   begin
-    FindText:=FindInFilesDialog.FindText;
+    LocalFindText:=FindInFilesDialog.FindText;
     InputHistories.AddToFindHistory(FindInFilesDialog.FindText);
     InputHistories.Save;
-    if FindText<>'' then
+    if LocalFindText<>'' then
     begin
       try
         TheFileList:= TStringList.Create;
@@ -3357,7 +3357,7 @@ Begin
           try
             try
               TheMatchedFiles:= IDEProcs.FindInFiles(TheFileList,
-                        FindText,
+                        LocalFindText,
                         FindInFilesDialog.WholeWordsOnlyCheckBox.Checked,
                         FindInFilesDialog.CaseSensitiveCheckBox.Checked,
                         FindInFilesDialog.RegularExpressionsCheckBox.Checked);
@@ -3380,7 +3380,7 @@ Begin
               //unit editor.
               with FindReplaceDlg do
               begin
-                TextToFindComboBox.Text:=FindText;
+                FindText:=LocalFindText;
                 Options:= Options-[ssoReplace,ssoReplaceAll,ssoBackwards];
                 //Whole Words ?
                 if FindInFilesDialog.WholeWordsOnlyCheckBox.Checked then
@@ -3406,7 +3406,7 @@ Begin
               MessagesView.Clear;
               MessagesView.ShowOnTop;
               MessagesView.AddSeparator;
-              AText:=Format(lisUESearchStringNotFound,[FindText]);
+              AText:=Format(lisUESearchStringNotFound,[LocalFindText]);
               MessagesView.Add(AText,'',false);
             end;//else
           finally
@@ -3429,7 +3429,7 @@ Begin
       MessagesView.Clear;
       MessagesView.ShowOnTop;
       MessagesView.AddSeparator;
-      AText:=Format(lisUESearchStringNotFound,[FindText]);
+      AText:=Format(lisUESearchStringNotFound,[LocalFindText]);
       MessagesView.Add(AText,'',false);
     end;//else
   end;//if
