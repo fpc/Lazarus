@@ -490,8 +490,9 @@ var i: integer;
 begin
   // read back to 'Assembler messages:' message
   i:=fOutput.Count-1;
-  while (i>=0) and (LeftStr(fOutput[i],length(AsmStartMsg))<>AsmStartMsg) do
+  while (i>=0) and (RightStr(fOutput[i],length(AsmStartMsg))<>AsmStartMsg) do
     dec(i);
+  if i<0 then exit;
   while (i<fOutput.Count-1) do begin
     if (fOutput[i]<>'') then
       DoAddFilteredLine(fOutput[i]);
