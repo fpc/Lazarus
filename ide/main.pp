@@ -7210,7 +7210,7 @@ begin
   if CodeToolBoss.ErrorMessage<>'' then begin
     DoJumpToCodeToolBossError;
     raise Exception.Create('Unable to find method.'
-                          +' Plz fix errors in source.');
+                          +' Plz fix the error shown in the message window.');
   end;
 end;
 
@@ -7244,7 +7244,7 @@ begin
     end else begin
       DoJumpToCodeToolBossError;
       raise Exception.Create('Unable to create new method.'
-                            +' Plz fix errors in source.');
+                            +' Plz fix the error shown in the message window.');
     end;
   finally
     FOpenEditorsOnCodeToolChange:=false;
@@ -7273,7 +7273,7 @@ begin
   end else begin
     DoJumpToCodeToolBossError;
     raise Exception.Create('Unable to show method.'
-                          +' Plz fix errors in source.');
+                           +' Plz fix the error shown in the message window.');
   end;
 end;
 
@@ -7304,7 +7304,7 @@ begin
     end else begin
       DoJumpToCodeToolBossError;
       raise Exception.Create('Unable to rename method.'
-                            +' Plz fix errors in source.');
+                            +' Plz fix the error shown in the message window.');
     end;
   finally
     FOpenEditorsOnCodeToolChange:=false;
@@ -7617,6 +7617,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.453  2003/01/14 17:07:22  mattias
+  improved source error message
+
   Revision 1.452  2003/01/14 17:02:49  mattias
   updated translations and raised message window on error
 
