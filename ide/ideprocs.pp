@@ -17,8 +17,17 @@ const
 function FilenameIsAbsolute(TheFilename: string):boolean;
 function DirectoryExists(DirectoryName: string): boolean;
 function ForceDirectory(DirectoryName: string): boolean;
+function ExtractFileNameOnly(const AFilename: string): string;
 
 implementation
+
+function ExtractFileNameOnly(const AFilename: string): string;
+var ExtLen: integer;
+begin
+  Result:=ExtractFilename(AFilename);
+  ExtLen:=length(ExtractFileExt(Result));
+  Result:=copy(Result,1,length(Result)-ExtLen);
+end;
 
 function FilenameIsAbsolute(TheFilename: string):boolean;
 begin

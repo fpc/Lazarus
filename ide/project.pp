@@ -1469,8 +1469,8 @@ end.
 
 {
   $Log$
-  Revision 1.28  2001/10/10 22:13:13  lazarus
-  MG: fixed create project from program file
+  Revision 1.29  2001/10/12 17:34:24  lazarus
+  MG: added code completion
 
   Revision 1.27  2001/10/09 09:46:50  lazarus
   MG: added codetools, fixed synedit unindent, fixed MCatureHandle

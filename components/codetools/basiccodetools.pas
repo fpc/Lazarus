@@ -1606,7 +1606,8 @@ end;
 function GetIndentStr(Indent: integer): string;
 begin
   SetLength(Result,Indent);
-  FillChar(Result[1],length(Result),' ');
+  if Indent>0 then
+    FillChar(Result[1],length(Result),' ');
 end;
 
 //=============================================================================

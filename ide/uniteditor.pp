@@ -148,6 +148,7 @@ type
     destructor Destroy; override;
     Procedure SelectText(LineNum,CharStart,LineNum2,CharEnd : Integer);
     Function Close : Boolean;
+    procedure AdjustMarksByCodeCache;
 
     procedure StartFindAndReplace(Replace:boolean);
     procedure OnReplace(Sender: TObject; const ASearch, AReplace:
@@ -1186,6 +1187,31 @@ Begin
 
   Visible := False;
   If Assigned(FOnAfterClose) then FOnAfterClose(Self);
+end;
+
+procedure TSourceEditor.AdjustMarksByCodeCache;
+var i, NewLine, NewColumn: integer;
+  ASynMark: TSynEditMark;
+  ASrc: TCodeBuffer;
+begin
+  // adjust all markers
+  ASrc:=CodeToolBoss.FindFile(Filename);
+  if (ASrc=nil) or (ASrc.Count=0) then exit;
+  i:=FEditor.Marks.Count-1;
+  while i>0 do begin
+    ASynMark:=FEditor.Marks[i];
+    NewLine:=ASynMark.Line;
+    NewColumn:=ASynMark.Column;
+    ASrc.AdjustCursor(NewLine,NewColumn);
+    if NewLine<1 then
+      FEditor.Marks.Delete(i)
+    else begin
+      ASynMark.Line:=NewLine;
+      ASynMark.Column:=NewColumn;
+    end;
+    dec(i);
+  end;
+  
 end;
 
 Procedure TSourceEditor.ReParent(AParent : TWInControl);

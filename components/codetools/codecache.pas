@@ -125,6 +125,7 @@ type
     property ExpirationTimeInDays: integer
           read FExpirationTimeInDays write FExpirationTimeInDays;
     procedure Clear;
+    procedure ClearAllSourleLogEntries;
     constructor Create;
     destructor Destroy;  override;
     procedure OnBufferSetScanner(Sender: TCodeBuffer);
@@ -170,6 +171,17 @@ end;
 procedure TCodeCache.Clear;
 begin
   FItems.FreeAndClear;
+end;
+
+procedure TCodeCache.ClearAllSourleLogEntries;
+var
+  ANode: TAVLTreeNode;
+begin
+  ANode:=FItems.FindLowest;
+  while ANode<>nil do begin
+    TCodeBuffer(ANode.Data).ClearEntries;
+    ANode:=FItems.FindSuccessor(ANode);
+  end;
 end;
 
 function TCodeCache.Count: integer;

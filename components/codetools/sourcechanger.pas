@@ -334,7 +334,7 @@ function TSourceChangeCache.Apply: boolean;
 var CurNode, PrecNode: TAVLTreeNode;
   CurEntry, PrecEntry, FirstEntry: TSourceChangeCacheEntry;
   InsertText: string;
-  i, NeededLineEnds: integer;
+  i, j, NeededLineEnds, NeededIndent: integer;
   BetweenGap: TGapTyp;
   Abort: boolean;
 begin
@@ -377,6 +377,15 @@ writeln('TSourceChangeCache.Apply Pos=',FirstEntry.FromPos,'-',FirstEntry.ToPos,
           for i:=1 to NeededLineEnds do
             InsertText:=InsertText+BeautifyCodeOptions.LineEnd;
         end;
+    end;
+    if FirstEntry.AfterGap in [gtNewLine,gtEmptyLine] then begin
+      NeededIndent:=GetLineIndent(MainScanner.Src,FirstEntry.ToPos);
+      j:=FirstEntry.ToPos;
+      while (j<=MainScanner.SrcLen) and (IsSpaceChar[MainScanner.Src[j]]) do
+        inc(j);
+      dec(NeededIndent,j-FirstEntry.ToPos);
+      if NeededIndent>0 then
+        InsertText:=InsertText+GetIndentStr(NeededIndent);
     end;
     // add text from nodes inserted at the same position
     PrecNode:=FEntries.FindPrecessor(CurNode);
@@ -708,7 +717,8 @@ begin
   Result:=BeautifyStatement(AProcCode,IndentSize);
   if AddBeginEnd then begin
     SetLength(IndentStr,IndentSize);
-    FillChar(IndentStr[1],length(IndentStr),' ');
+    if IndentSize>0 then
+      FillChar(IndentStr[1],length(IndentStr),' ');
     AddAtom(Result,LineEnd+IndentStr);
     AddAtom(Result,'begin');
     AddAtom(Result,LineEnd+LineEnd+IndentStr);
@@ -726,9 +736,11 @@ begin
   SrcLen:=length(Src);
   if IndentSize>=LineLength-10 then IndentSize:=LineLength-10;
   SetLength(Result,IndentSize);
-  FillChar(Result[1],length(Result),' ');
+  if IndentSize>0 then
+    FillChar(Result[1],length(Result),' ');
   SetLength(IndentStr,IndentSize+Indent);
-  FillChar(IndentStr[1],length(IndentStr),' ');
+  if length(IndentStr)>0 then
+    FillChar(IndentStr[1],length(IndentStr),' ');
   CurPos:=1;
   LastSplitPos:=-1;
   CurLineLen:=length(Result);
@@ -753,7 +765,7 @@ end;
 
 function TBeautifyCodeOptions.AddClassNameToProc(
   const AProcCode, AClassName: string): string;
-var StartPos, ProcLen: integer;
+var StartPos, NamePos, ProcLen: integer;
 begin
   if CompareSubStrings('CLASS ',AProcCode,1,1,6,false)<>0 then
     StartPos:=1
@@ -767,8 +779,14 @@ begin
     inc(StartPos);
   while (StartPos<=ProcLen) and (IsSpaceChar[AProcCode[StartPos]]) do
     inc(StartPos);
-  Result:=copy(AProcCode,1,StartPos-1)+AClassName+'.'
-           +copy(AProcCode,StartPos,length(AProcCode)-StartPos);
+  NamePos:=StartPos;
+  while (StartPos<=ProcLen) and (IsIdentChar[AProcCode[StartPos]]) do
+    inc(StartPos);
+  if (StartPos<=ProcLen) and (AProcCode[StartPos]<>'.') then
+    Result:=copy(AProcCode,1,NamePos-1)+AClassName+'.'
+           +copy(AProcCode,NamePos,length(AProcCode)-NamePos+1)
+  else
+    Result:=AProcCode;
 end;
 
 function TBeautifyCodeOptions.BeautifyWord(const AWord: string;

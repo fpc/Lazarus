@@ -196,6 +196,10 @@ type
        TheEnvironmentOptions: TEnvironmentOptions);
     procedure OnSaveEnvironmentSettings(Sender: TObject; 
        TheEnvironmentOptions: TEnvironmentOptions);
+       
+    // CodeToolBoss events
+    procedure OnBeforeCodeToolBossApplyChanges(Manager: TCodeToolManager;
+                                    var Abort: boolean);
   private
     FCodeLastActivated : Boolean; //used for toggling between code and forms
     FSelectedComponent : TRegisteredComponent;
@@ -270,7 +274,9 @@ type
     procedure DoShowMessagesView;
     function GetTestProjectFilename: string;
     procedure SaveSourceEditorChangesToCodeCache;
+    procedure ApplyCodeToolChanges;
     procedure DoJumpToProcedureSection;
+    procedure DoCompleteCodeAtCursor;
 
     procedure LoadMainMenu;
     procedure LoadSpeedbuttons;
@@ -1350,6 +1356,11 @@ begin
     begin
       Handled:=true;
       DoJumpToProcedureSection;
+    end;
+   ecCodeCompletion:
+    begin
+      Handled:=true;
+      DoCompleteCodeAtCursor;
     end;
   end;
 end;
@@ -2527,8 +2538,10 @@ function TMainIDE.DoSaveProject(SaveAs, SaveToTestDir:boolean):TModalResult;
 var MainUnitSrcEdit, ASrcEdit: TSourceEditor;
   MainUnitInfo, AnUnitInfo: TUnitInfo;
   SaveDialog: TSaveDialog;
-  NewFilename, NewProgramFilename, NewPageName, AText, ACaption, Ext: string;
+  NewFilename, NewProgramFilename, NewPageName, NewProgramName, AText, ACaption,
+  Ext: string;
   i, BookmarkID, BookmarkX, BookmarkY :integer;
+  NewBuf: TCodeBuffer;
 begin
   Result:=mrCancel;
   if ToolStatus<>itNone then begin
@@ -2609,7 +2622,7 @@ writeln('  AAA ',Project.ProjectFile);
             NewFilename,ProjectDefaultExt[Project.ProjectType]);
           if NewFilename=NewProgramFilename then begin
             ACaption:='Choose a different name';
-            AText:='The project info file is "'+NewFilename+'" equal '
+            AText:='The project info file "'+NewFilename+'"'#13'is equal '
                +'to the project source file!';
             Result:=MessageDlg(ACaption, AText, mtconfirmation, [mbabort, mbretry], 0);
             if Result=mrAbort then exit;
@@ -2624,13 +2637,13 @@ writeln('  AAA ',Project.ProjectFile);
 
       if FileExists(NewFilename) then begin
         ACaption:='Overwrite file?';
-        AText:='A file "'+NewFilename+'" already exists. Replace it?';
+        AText:='A file "'+NewFilename+'" already exists.'#13'Replace it?';
         Result:=MessageDlg(ACaption, AText, mtconfirmation, [mbok, mbcancel], 0);
         if Result=mrCancel then exit;
       end else if Project.ProjectType in [ptProgram, ptApplication] then begin
         if FileExists(NewProgramFilename) then begin
           ACaption:='Overwrite file?';
-          AText:='A file "'+NewProgramFilename+'" already exists. Replace it?';
+          AText:='A file "'+NewProgramFilename+'" already exists.'#13'Replace it?';
           Result:=MessageDlg(ACaption, AText, mtconfirmation, [mbok, mbcancel], 0);
           if Result=mrCancel then exit;
         end;
@@ -2638,12 +2651,26 @@ writeln('  AAA ',Project.ProjectFile);
       Project.ProjectFile:=NewFilename;
       EnvironmentOptions.AddToRecentProjectFiles(NewFilename);
       if (MainUnitInfo<>nil) and (MainUnitInfo.Loaded) then begin
+        // sitch MainUnitInfo to new code
+        NewBuf:=CodeToolBoss.CreateFile(NewProgramFilename);
+        if NewBuf=nil then begin
+          Result:=MessageDlg('Error creating file','Unable to create file'#13
+               +'"'+NewProgramFilename+'"',mtError,[mbCancel],0);
+          exit;
+        end;
+        NewBuf.Source:=MainUnitInfo.Source.Source;
+        MainUnitInfo.Source:=NewBuf;
+        // change program name
+        NewProgramName:=ExtractFileNameOnly(NewProgramFilename);
+        CodeToolBoss.RenameSource(MainUnitInfo.Source,NewProgramName);
         // update source editor of main unit
         MainUnitInfo.Source.AssignTo(MainUnitSrcEdit.Source);
+        MainUnitInfo.Modified:=true;
         MainUnitSrcEdit.Filename:=MainUnitInfo.Filename;
         NewPageName:=ExtractFileName(MainUnitInfo.Filename);
         Ext:=ExtractFileExt(NewPagename);
-        NewPageName:=copy(NewpageName,1,length(NewPageName)-length(Ext));
+        if (Ext='.pp') or (Ext='.pas') then
+          NewPageName:=copy(NewpageName,1,length(NewPageName)-length(Ext));
         NewPageName:=SourceNoteBook.FindUniquePageName(
           NewPageName,MainUnitInfo.EditorIndex);
         SourceNoteBook.NoteBook.Pages[MainUnitInfo.EditorIndex]:=
@@ -3604,6 +3631,7 @@ begin
 end;
 
 procedure TMainIDE.SaveSourceEditorChangesToCodeCache;
+// save all open sources to code tools cache
 var i: integer;
   CurUnitInfo: TUnitInfo;
   SrcEdit: TSourceEditor;
@@ -3620,6 +3648,33 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TMainIDE.ApplyCodeToolChanges;
+// reload all loaded project sources from code tools cache
+// moves marks (bookmarks, breakpoint, ToDo: goto history)
+var i: integer;
+  AnUnitInfo: TUnitInfo;
+  SrcEdit: TSourceEditor;
+begin
+  if Project=nil then exit;
+  for i:=0 to Project.UnitCount-1 do begin
+    AnUnitInfo:=Project.Units[i];
+    if AnUnitInfo.Source.Count>0 then begin
+      // source has changed
+      if AnUnitInfo.EditorIndex>=0 then begin
+        // source is loaded in editor
+        SrcEdit:=SourceNotebook.FindSourceEditorWithPageIndex(
+          AnUnitInfo.EditorIndex);
+        SrcEdit.AdjustMarksByCodeCache;
+        // apply source
+        AnUnitInfo.Source.AssignTo(SrcEdit.EditorComponent.Lines);
+        SrcEdit.EditorComponent.Modified:=true;
+      end;
+      AnUnitInfo.Source.ClearEntries;
+    end;
+  end;
+  CodeToolBoss.SourceCache.ClearAllSourleLogEntries;
 end;
 
 procedure TMainIDE.DoJumpToProcedureSection;
@@ -3656,6 +3711,46 @@ writeln('[TMainIDE.DoJumpToProcedureSection] ************');
     NewSrcEdit.EditorComponent.TopLine:=NewTopLine;
   end else begin
     // probably a syntax error or just not in a procedure head/body -> ignore
+  end;
+end;
+
+procedure TMainIDE.DoCompleteCodeAtCursor;
+var ActiveSrcEdit, NewSrcEdit: TSourceEditor;
+  ActiveUnitInfo, NewUnitInfo: TUnitInfo;
+  NewSource: TCodeBuffer;
+  NewX, NewY, NewTopLine: integer;
+begin
+  if SourceNoteBook.NoteBook=nil then exit;
+  GetUnitWithPageIndex(SourceNoteBook.NoteBook.PageIndex,ActiveSrcEdit,
+    ActiveUnitInfo);
+  if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then exit;
+  SaveSourceEditorChangesToCodeCache;
+  CodeToolBoss.VisibleEditorLines:=ActiveSrcEdit.EditorComponent.LinesInWindow;
+{$IFDEF IDEDEBUG}
+writeln('');
+writeln('[TMainIDE.DoJumpToProcedureSection] ************');
+{$ENDIF}
+  if CodeToolBoss.CompleteCode(ActiveUnitInfo.Source,
+    ActiveSrcEdit.EditorComponent.CaretX,
+    ActiveSrcEdit.EditorComponent.CaretY,
+    NewSource,NewX,NewY,NewTopLine) then
+  begin
+    ApplyCodeToolChanges;
+    if NewSource<>ActiveUnitInfo.Source then begin
+      // jump to other file -> open it
+      if DoOpenEditorFile(NewSource.Filename,false)<>mrOk then exit;
+      GetUnitWithPageIndex(SourceNoteBook.NoteBook.PageIndex,NewSrcEdit,
+        NewUnitInfo);
+    end else begin
+      NewSrcEdit:=ActiveSrcEdit;
+    end;
+//writeln('[TMainIDE.DoJumpToProcedureSection] ',NewX,',',NewY,',',NewTopLine);
+    NewSrcEdit.EditorComponent.CaretXY:=Point(NewX,NewY);
+    NewSrcEdit.EditorComponent.TopLine:=NewTopLine;
+  end else begin
+    // probably a syntax error or just not in a procedure head/body / class
+    // -> ignore
+    ApplyCodeToolChanges;
   end;
 end;
 
@@ -3864,9 +3959,29 @@ begin
     Halt;
   end;
   
-  CodeToolBoss.WriteExceptions:=true;
-  CodeToolBoss.CatchExceptions:=true;
+  with CodeToolBoss do begin
+    OnBeforeApplyChanges:=@OnBeforeCodeToolBossApplyChanges;
+    WriteExceptions:=true;
+    CatchExceptions:=true;
+  end;
 end;
+
+procedure TMainIDE.OnBeforeCodeToolBossApplyChanges(Manager: TCodeToolManager;
+  var Abort: boolean);
+// the CodeToolBoss built a list of Sources that will be modified
+// -> open all of them in the source editor
+var i: integer;
+begin
+  for i:=0 to Manager.SourceChangeCache.BuffersToModifyCount-1 do begin
+    if DoOpenEditorFile(Manager.SourceChangeCache.BuffersToModify[i].Filename,
+      false)<>mrOk then
+    begin
+      Abort:=true;
+      exit;
+    end;
+  end;
+end;
+
 
 initialization
   { $I mainide.lrs}
@@ -3881,8 +3996,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.117  2001/10/10 22:13:13  lazarus
-  MG: fixed create project from program file
+  Revision 1.118  2001/10/12 17:34:23  lazarus
+  MG: added code completion
 
   Revision 1.115  2001/10/09 09:46:49  lazarus
   MG: added codetools, fixed synedit unindent, fixed MCatureHandle
