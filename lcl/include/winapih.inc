@@ -108,6 +108,7 @@ Function GetActiveWindow : HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetCapture : HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetCaretPos(var lpPoint: TPoint): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function GetCaretRespondToFocus(handle: HWND; var ShowHideOnFocus: boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function GetClientBounds(handle : HWND; var Rect: TRect) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function GetClientRect(handle : HWND; var Rect: TRect) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function GetClipBox(DC : hDC; lpRect : PRect) : Longint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -362,6 +363,9 @@ Function RGB(R, G, B : Byte) : TColorRef;
 { =============================================================================
 
   $Log$
+  Revision 1.62  2002/12/30 17:24:08  mattias
+  added history to identifier completion
+
   Revision 1.61  2002/12/27 17:12:38  mattias
   added more Delphi win32 compatibility functions
 

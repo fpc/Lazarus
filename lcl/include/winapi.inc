@@ -304,6 +304,12 @@ begin
   Result := InterfaceObject.GetCaretPos(lpPoint);
 end;
 
+function GetCaretRespondToFocus(handle: HWND;
+  var ShowHideOnFocus: boolean): Boolean;
+begin
+  Result := InterfaceObject.GetCaretRespondToFocus(handle,ShowHideOnFocus);
+end;
+
 {------------------------------------------------------------------------------
   Function: GetClientBounds
   Params: handle:
@@ -1515,6 +1521,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.69  2002/12/30 17:24:08  mattias
+  added history to identifier completion
+
   Revision 1.68  2002/12/27 17:12:38  mattias
   added more Delphi win32 compatibility functions
 

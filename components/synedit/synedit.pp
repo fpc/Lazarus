@@ -1532,10 +1532,10 @@ end;
 
 procedure TCustomSynEdit.HideCaret;
 begin
-//writeln('[TCustomSynEdit.HideCaret]');
+  //writeln('[TCustomSynEdit.HideCaret] ',Name,' ',sfCaretVisible in fStateFlags,' ',eoPersistentCaret in Options);
   if sfCaretVisible in fStateFlags then begin
-    {$IFDEF SYN_LAZARUS}LCLLinux{$ELSE}Windows{$ENDIF}.HideCaret(Handle);
-    Exclude(fStateFlags, sfCaretVisible);
+    if {$IFDEF SYN_LAZARUS}LCLLinux{$ELSE}Windows{$ENDIF}.HideCaret(Handle) then
+      Exclude(fStateFlags, sfCaretVisible);
   end;
 end;
 
@@ -3889,7 +3889,7 @@ end;
 
 procedure TCustomSynEdit.ShowCaret;
 begin
-//writeln(' [TCustomSynEdit.ShowCaret] ShowCaret ',Name,' ',sfCaretVisible in fStateFlags);
+  //writeln(' [TCustomSynEdit.ShowCaret] ShowCaret ',Name,' ',sfCaretVisible in fStateFlags,' ',eoPersistentCaret in fOptions);
   if not (eoNoCaret in Options) and not (sfCaretVisible in fStateFlags) then
   begin
     {$IFDEF SYN_LAZARUS}
@@ -3897,7 +3897,7 @@ begin
     {$ENDIF}
     if {$IFDEF SYN_LAZARUS}LCLLinux{$ELSE}Windows{$ENDIF}.ShowCaret(Handle) then
     begin
-//writeln('[TCustomSynEdit.ShowCaret] A ',Name);
+      //writeln('[TCustomSynEdit.ShowCaret] A ',Name);
       Include(fStateFlags, sfCaretVisible);
     end;
   end;
@@ -3910,7 +3910,13 @@ var
   cf: TCompositionForm;
 {$ENDIF}
 begin
-  if (PaintLock <> 0) {or not Focused} then
+  if (PaintLock <> 0)
+  {$IFDEF SYN_LAZARUS}
+  {or ((not Focused) and (not (eoPersistentCaret in fOptions)))}
+  {$ELSE}
+  or not Focused
+  {$ENDIF}
+  then
     Include(fStateFlags, sfCaretChanged)
   else begin
     Exclude(fStateFlags, sfCaretChanged);
@@ -3926,10 +3932,10 @@ begin
       {$ELSE}
       SetCaretPos(CX, CY);
       {$ENDIF}
-//writeln(' [TCustomSynEdit.UpdateCaret] ShowCaret ',Name);
+      //writeln(' [TCustomSynEdit.UpdateCaret] ShowCaret ',Name);
       ShowCaret;
     end else begin
-//writeln(' [TCustomSynEdit.UpdateCaret] HideCaret ',Name);
+      //writeln(' [TCustomSynEdit.UpdateCaret] HideCaret ',Name);
       HideCaret;
       {$IFDEF SYN_LAZARUS}
       SetCaretPosEx(Handle,CX, CY);
@@ -3938,9 +3944,11 @@ begin
       {$ENDIF}
     end;
 {$IFDEF SYN_MBCSSUPPORT}
-    cf.dwStyle := CFS_POINT;
-    cf.ptCurrentPos := Point(CX, CY);
-    ImmSetCompositionWindow(ImmGetContext(Handle), @cf);
+    if HandleAllocated then begin
+      cf.dwStyle := CFS_POINT;
+      cf.ptCurrentPos := Point(CX, CY);
+      ImmSetCompositionWindow(ImmGetContext(Handle), @cf);
+    end;
 {$ENDIF}
   end;
 end;
@@ -4095,9 +4103,10 @@ begin
   {$ENDIF}
   {$IFDEF SYN_LAZARUS}
   LastMouseCaret:=Point(-1,-1);
-  if not (eoPersistentCaret in fOptions) then
+  if not (eoPersistentCaret in fOptions) then begin
     HideCaret;
-  LCLLinux.DestroyCaret(Handle);
+    LCLLinux.DestroyCaret(Handle);
+  end;
   {$ELSE}
   HideCaret;
   Windows.DestroyCaret;
@@ -6748,8 +6757,10 @@ begin
       {$ENDIF}
     {$IFDEF SYN_LAZARUS}
     if ((eoPersistentCaret in fOptions) xor (eoPersistentCaret in OldOptions))
-    and HandleAllocated then
+    and HandleAllocated then begin
       SetCaretRespondToFocus(Handle,not (eoPersistentCaret in fOptions));
+      UpdateCaret;
+    end;
     if ((eoShowCtrlMouseLinks in fOptions)
     xor (eoShowCtrlMouseLinks in OldOptions))
     and HandleAllocated then
