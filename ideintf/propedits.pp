@@ -1710,6 +1710,7 @@ var
   P,C:PPropertyClassRec;
   I:Integer;
 begin
+  Result := nil;
   if PropertyEditorMapperList<>nil then begin
     for I:=0 to PropertyEditorMapperList.Count-1 do begin
       with PPropertyEditorMapperRec(PropertyEditorMapperList[I])^ do begin
