@@ -66,6 +66,7 @@ uses
   {$ENDIF}
   AbstractFormEditor, Designer, FormEditor, CustomFormEditor,
   ObjectInspector, PropEdits, ControlSelection, ColumnDlg,
+  {off $DEFINE UseNewMenuEditor}
   {$IFDEF UseNewMenuEditor}
   MenuEditorForm,
   {$ELSE}
@@ -6795,7 +6796,6 @@ var
 begin
   CurDesigner:=TDesigner(Sender);
   if dfDestroyingForm in CurDesigner.Flags then exit;
-  
   ObjectInspector1.FillComponentComboBox;
 end;
 
@@ -8639,6 +8639,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.566  2003/05/14 07:12:35  mattias
+  fixed hiding destroyed components
+
   Revision 1.565  2003/05/12 19:36:25  mattias
   activated the package system
 
