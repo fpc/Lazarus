@@ -13,22 +13,28 @@ fi
 
 XMLSrcDir=../xml/lcl/
 PasSrcDir=../../lcl/
+InputFileList=inputfile.txt
 
 # create unit list
-cd $XMLSrcDir
-UnitList='buttons.pp menus.pp'
-#UnitList=`echo *.pp *.pas`
+cd $PasSrcDir
+#UnitList='buttons.pp menus.pp'
+UnitList=`echo *.pp *.pas`
 cd -
 
+# create description file list
 DescrFiles=''
-InputFiles=''
 for unit in $UnitList; do
   ShortFile=`echo $unit | sed -e 's/\.pp\b//g' -e 's/\.pas\b//g'`
   DescrFiles="$DescrFiles --descr=$XMLSrcDir$ShortFile.xml"
-  InputFiles="$InputFiles --input=$PasSrcDir$unit -Fiinclude"
 done
 
-fpdoc --content $DescrFiles $InputFiles --package=lcl --format=html
+# create input file list
+rm -f $InputFileList
+for unit in $UnitList; do
+  echo $PasSrcDir$unit -Fi${PasSrcDir}include >> $InputFileList
+done
+
+$FPDoc $DescrFiles --input=@$InputFileList --content --package=lcl --format=html
 
 # end.
 
