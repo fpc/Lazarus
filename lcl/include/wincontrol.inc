@@ -993,6 +993,7 @@ Procedure TWinControl.SetBorderWidth(value : TBorderWidth);
 Begin
   //TODO: SETBORDERWIDTH - Not sure if anything more is needed here
   FBorderWidth := Value;
+  Invalidate;
 end;
 
 Procedure TWinControl.SetZOrder(Topmost: Boolean);
@@ -3522,6 +3523,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.229  2004/05/19 18:41:54  micha
+  trigger repaint on borderwidth change
+
   Revision 1.228  2004/05/16 22:43:23  mattias
   WMSize from interface are now ignored when BoundsRealized the same
 
