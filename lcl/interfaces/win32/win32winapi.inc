@@ -182,12 +182,12 @@ var
     begin
       with TLMMouseEvent(Message) do
       begin
-	WParam := Windows.WParam(ScrollInfo.nPos - (WheelDelta * Integer(ScrollInfo.nPage) * 4) div (120 * 10));
-	if WParam > ScrollInfo.nMax then
-	  WParam := ScrollInfo.nMax;
-	if WParam < ScrollInfo.nMin then
-	  WParam := ScrollInfo.nMin;
-	WParam := SB_THUMBPOSITION or (WParam shl 16);
+        WParam := Windows.WParam(ScrollInfo.nPos - (WheelDelta * Integer(ScrollInfo.nPage) * 4) div (120 * 10));
+        if WParam > ScrollInfo.nMax then
+          WParam := ScrollInfo.nMax;
+        if WParam < ScrollInfo.nMin then
+          WParam := ScrollInfo.nMin;
+        WParam := SB_THUMBPOSITION or (WParam shl 16);
       end;
       Windows.PostMessage(TWinControl(Sender).Handle, WM_VSCROLL, WParam, HWND(nil));
     end;
@@ -349,11 +349,11 @@ begin
       with TLMMeasureItem(Message).MeasureItemStruct^ do
       begin
         if Sender is TCustomListBox then
-	begin
-	  itemHeight := TCustomListBox(Sender).ItemHeight;
-//	  if TCustomListBox(Sender).Style = lbOwnerDrawVariable then
-//	    TCustomListBox(Sender).MeasureItem(itemID, integer(itemHeight));
-	end;
+        begin
+          itemHeight := TCustomListBox(Sender).ItemHeight;
+          if TCustomListBox(Sender).Style = lbOwnerDrawVariable then
+            TCustomListBox(Sender).MeasureItem(itemID, integer(itemHeight));
+        end;
       end;
     end;
 
@@ -2996,6 +2996,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.113  2004/05/21 11:13:18  micha
+  add measureitem to tcustomlistbox just like tcustomcombobox has
+
   Revision 1.112  2004/05/20 21:28:54  marc
   * Fixed win32 listview
 

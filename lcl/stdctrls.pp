@@ -351,6 +351,7 @@ type
     FItemHeight: Integer;
     FItemIndex: integer;
     FOnDrawItem: TDrawItemEvent;
+    FOnMeasureItem: TMeasureItemEvent;
     FSorted: boolean;
     FStyle: TListBoxStyle;
     FTopIndex: integer;
@@ -383,6 +384,9 @@ type
     procedure SetStyle(Val : TListBoxStyle); virtual;
     procedure DrawItem(Index: Integer; ARect: TRect;
       State: TOwnerDrawState); virtual;
+
+    property OnMeasureItem: TMeasureItemEvent
+      read FOnMeasureItem write FOnMeasureItem;
   public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
@@ -391,6 +395,7 @@ type
     function ItemRect(Index: Integer): TRect;
     function ItemVisible(Index: Integer): boolean;
     procedure MakeCurrentVisible;
+    procedure MeasureItem(Index: Integer; var TheHeight: Integer); virtual;
     procedure Clear;
   public
     property Align;
@@ -1544,6 +1549,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.143  2004/05/21 11:13:18  micha
+  add measureitem to tcustomlistbox just like tcustomcombobox has
+
   Revision 1.142  2004/05/21 09:03:54  micha
   implement new borderstyle
   - centralize to twincontrol (protected)

@@ -438,6 +438,16 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TCustomListBox.MeasureItem(Index: Integer; var TheHeight: Integer);
+
+ ------------------------------------------------------------------------------}
+procedure TCustomListBox.MeasureItem(Index: Integer; var TheHeight: Integer);
+begin
+  if Assigned(OnMeasureItem) then
+    OnMeasureItem(Self,Index,TheHeight);
+end;
+
+{------------------------------------------------------------------------------
   function TCustomListBox.GetIndexAtY(Y: integer): integer;
 
   Returns item index at y coordinate (including scrolling)
