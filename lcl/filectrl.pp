@@ -43,7 +43,7 @@ interface
 uses
   Classes, SysUtils,
 {$ifdef VER1_0}
-// fpc 1.0.x needs unit in which redefined unit originally is defined
+// fpc 1.0.x needs unit in which redefined property originally is defined
 // otherwise IE 55665566 occurs.
    Controls,
 {$endif}
@@ -366,6 +366,9 @@ end.
 
 {
   $Log$
+  Revision 1.24  2004/03/12 12:53:51  vincents
+  fixed comment
+
   Revision 1.23  2004/03/12 11:54:57  vincents
   fixed 1.0.x compilation, removed double constants
 
