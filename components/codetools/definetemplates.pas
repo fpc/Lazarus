@@ -281,6 +281,7 @@ type
     function  GetPPUSrcPathForDirectory(const Directory: string): string;
     function  GetPPWSrcPathForDirectory(const Directory: string): string;
     function  GetDCUSrcPathForDirectory(const Directory: string): string;
+    function  GetCompiledSrcPathForDirectory(const Directory: string): string;
     function  ReadValue(const DirDef: TDirectoryDefines;
         const PreValue, CurDefinePath: string): string;
     constructor Create;
@@ -1329,6 +1330,18 @@ begin
   ExprEval:=GetDefinesForDirectory(Directory,true);
   if ExprEval<>nil then begin
     Result:=ExprEval.Variables[ExternalMacroStart+'DCUSrcPath'];
+  end else begin
+    Result:='';
+  end;
+end;
+
+function TDefineTree.GetCompiledSrcPathForDirectory(const Directory: string
+  ): string;
+var ExprEval: TExpressionEvaluator;
+begin
+  ExprEval:=GetDefinesForDirectory(Directory,true);
+  if ExprEval<>nil then begin
+    Result:=ExprEval.Variables[ExternalMacroStart+'CompiledSrcPath'];
   end else begin
     Result:='';
   end;
@@ -2501,12 +2514,17 @@ end;
 
 function TDefinePool.CreateLazarusSrcTemplate(
   const LazarusSrcDir, WidgetType, ExtraOptions: string): TDefineTemplate;
+type
+  TLazWidgetSet = (wsGtk, wsGtk2, wsGnome, wsWin32);
 const
   ds: char = PathDelim;
+  LazWidgetSets: array[TLazWidgetSet] of string = (
+    'gtk','gtk2','gnome','win32');
 var
   MainDir, DirTempl, SubDirTempl, IntfDirTemplate, IfTemplate,
   SubTempl: TDefineTemplate;
-  TargetOS, SrcPath: string;
+  TargetOS, SrcPath, WidgetStr: string;
+  WidgetSet: TLazWidgetSet;
 begin
   Result:=nil;
   if (LazarusSrcDir='') or (WidgetType='') then exit;
@@ -2642,6 +2660,27 @@ begin
      ExternalMacroStart+'IncPath',
      'include',da_Define));
   MainDir.AddChild(DirTempl);
+  
+  // lcl/units
+  SubDirTempl:=TDefineTemplate.Create('Units',Format(ctsNamedDirectory,['Units']),
+    '','units',da_Directory);
+  SubDirTempl.AddChild(TDefineTemplate.Create('CompiledSrcPath',
+     ctsSrcPathForCompiledUnits,
+     ExternalMacroStart+'CompiledSrcPath',
+     '..',da_Define));
+  DirTempl.AddChild(SubDirTempl);
+  
+  // lcl/units/{gtk,gtk2,gnome,win32}
+  for WidgetSet:=Low(TLazWidgetSet) to High(TLazWidgetSet) do begin
+    WidgetStr:=LazWidgetSets[WidgetSet];
+    IntfDirTemplate:=TDefineTemplate.Create(WidgetStr+'IntfUnitsDirectory',
+      ctsGtkIntfDirectory,'',WidgetStr,da_Directory);
+    IntfDirTemplate.AddChild(TDefineTemplate.Create('CompiledSrcPath',
+       ctsSrcPathForCompiledUnits,
+       ExternalMacroStart+'CompiledSrcPath',
+       '..'+ds+'..'+ds+'interfaces'+ds+WidgetStr,da_Define));
+    SubDirTempl.AddChild(IntfDirTemplate);
+  end;
 
   // lcl/interfaces
   SubDirTempl:=TDefineTemplate.Create('WidgetDirectory',

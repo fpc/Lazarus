@@ -39,9 +39,9 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, BasicCodeTools, CodeToolsStrConsts, EventCodeTool,
-  CodeTree, CodeAtom, SourceChanger, DefineTemplates, CodeCache, ExprEval,
-  LinkScanner, KeywordFuncLists, TypInfo, AVL_Tree, CustomCodeTool,
+  Classes, SysUtils, FileProcs, BasicCodeTools, CodeToolsStrConsts,
+  EventCodeTool, CodeTree, CodeAtom, SourceChanger, DefineTemplates, CodeCache,
+  ExprEval, LinkScanner, KeywordFuncLists, TypInfo, AVL_Tree, CustomCodeTool,
   FindDeclarationTool, IdentCompletionTool, ResourceCodeTool, CodeToolsStructs;
 
 type
@@ -94,6 +94,8 @@ type
     procedure OnGlobalValuesChanged;
     function DoOnFindUsedUnit(SrcTool: TFindDeclarationTool; const TheUnitName,
           TheUnitInFilename: string): TCodeBuffer;
+    function DoOnGetSrcPathForCompiledUnit(Sender: TObject;
+          const AFilename: string): string;
     function GetMainCode(Code: TCodeBuffer): TCodeBuffer;
     procedure CreateScanner(Code: TCodeBuffer);
     function InitCurCodeTool(Code: TCodeBuffer): boolean;
@@ -193,6 +195,10 @@ type
     function GetUnitPathForDirectory(const Directory: string): string;
     function GetIncludePathForDirectory(const Directory: string): string;
     function GetSrcPathForDirectory(const Directory: string): string;
+    function GetPPUSrcPathForDirectory(const Directory: string): string;
+    function GetPPWSrcPathForDirectory(const Directory: string): string;
+    function GetDCUSrcPathForDirectory(const Directory: string): string;
+    function GetCompiledSrcPathForDirectory(const Directory: string): string;
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -597,6 +603,30 @@ function TCodeToolManager.GetSrcPathForDirectory(const Directory: string
   ): string;
 begin
   Result:=DefineTree.GetSrcPathForDirectory(Directory);
+end;
+
+function TCodeToolManager.GetPPUSrcPathForDirectory(const Directory: string
+  ): string;
+begin
+  Result:=DefineTree.GetPPUSrcPathForDirectory(Directory);
+end;
+
+function TCodeToolManager.GetPPWSrcPathForDirectory(const Directory: string
+  ): string;
+begin
+  Result:=DefineTree.GetPPWSrcPathForDirectory(Directory);
+end;
+
+function TCodeToolManager.GetDCUSrcPathForDirectory(const Directory: string
+  ): string;
+begin
+  Result:=DefineTree.GetDCUSrcPathForDirectory(Directory);
+end;
+
+function TCodeToolManager.GetCompiledSrcPathForDirectory(const Directory: string
+  ): string;
+begin
+  Result:=DefineTree.GetCompiledSrcPathForDirectory(Directory);
 end;
 
 function TCodeToolManager.InitCurCodeTool(Code: TCodeBuffer): boolean;
@@ -1880,6 +1910,19 @@ begin
     Result:=nil;
 end;
 
+function TCodeToolManager.DoOnGetSrcPathForCompiledUnit(Sender: TObject;
+  const AFilename: string): string;
+begin
+  if CompareFileExt(AFilename,'.ppu',false)=0 then
+    Result:=GetPPUSrcPathForDirectory(ExtractFilePath(AFilename))
+  else if CompareFileExt(AFilename,'.ppw',false)=0 then
+    Result:=GetPPWSrcPathForDirectory(ExtractFilePath(AFilename))
+  else if CompareFileExt(AFilename,'.dcu',false)=0 then
+    Result:=GetDCUSrcPathForDirectory(ExtractFilePath(AFilename));
+  if Result='' then
+    Result:=GetCompiledSrcPathForDirectory(ExtractFilePath(AFilename));
+end;
+
 function TCodeToolManager.OnParserProgress(Tool: TCustomCodeTool): boolean;
 begin
   Result:=true;
@@ -2043,6 +2086,7 @@ begin
   Result.CursorBeyondEOL:=FCursorBeyondEOL;
   TFindDeclarationTool(Result).OnGetCodeToolForBuffer:=@OnGetCodeToolForBuffer;
   TFindDeclarationTool(Result).OnFindUsedUnit:=@DoOnFindUsedUnit;
+  TFindDeclarationTool(Result).OnGetSrcPathForCompiledUnit:=@DoOnGetSrcPathForCompiledUnit;
   Result.OnSetGlobalWriteLock:=@OnToolSetWriteLock;
   Result.OnGetGlobalWriteLockInfo:=@OnToolGetWriteLockInfo;
   TFindDeclarationTool(Result).OnParserProgress:=@OnParserProgress;

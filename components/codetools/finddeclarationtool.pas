@@ -123,7 +123,9 @@ type
   //----------------------------------------------------------------------------
   // searchpath delimiter is semicolon
   TOnGetSearchPath = function(Sender: TObject): string of object;
-  
+  TOnGetSrcPathForCompiledUnit =
+    function(Sender: TObject; const Filename: string): string of object;
+
   TOnGetCodeToolForBuffer = function(Sender: TObject;
     Code: TCodeBuffer): TFindDeclarationTool of object;
 
@@ -457,6 +459,7 @@ type
     FOnGetCodeToolForBuffer: TOnGetCodeToolForBuffer;
     FOnFindUsedUnit: TOnFindUsedUnit;
     FOnGetUnitSourceSearchPath: TOnGetSearchPath;
+    FOnGetSrcPathForCompiledUnit: TOnGetSrcPathForCompiledUnit;
     FFirstNodeCache: TCodeTreeNodeCache;
     FLastNodeCachesGlobalWriteLockStep: integer;
     FRootNodeCache: TCodeTreeNodeCache;
@@ -613,6 +616,8 @@ type
       read FOnGetUnitSourceSearchPath write FOnGetUnitSourceSearchPath;
     property OnFindUsedUnit: TOnFindUsedUnit
       read FOnFindUsedUnit write FOnFindUsedUnit;
+    property OnGetSrcPathForCompiledUnit: TOnGetSrcPathForCompiledUnit
+      read FOnGetSrcPathForCompiledUnit write FOnGetSrcPathForCompiledUnit;
     function ConsistencyCheck: integer; override;
   end;
 
@@ -1073,6 +1078,8 @@ end;
 
 function TFindDeclarationTool.FindUnitSource(const AnUnitName,
   AnUnitInFilename: string): TCodeBuffer;
+var
+  CurDir, CompiledSrcExt: string;
 
   function LoadFile(const AFilename: string;
     var NewCode: TCodeBuffer): boolean;
@@ -1085,22 +1092,28 @@ function TFindDeclarationTool.FindUnitSource(const AnUnitName,
     Result:=NewCode<>nil;
   end;
   
-  function SearchUnitFileInDir(const ADir, AnUnitName: string): TCodeBuffer;
+  function SearchUnitFileInDir(const ADir, AnUnitName: string;
+    SearchSource: boolean): TCodeBuffer;
   var APath: string;
   begin
     APath:=ADir;
     if (APath<>'') and (APath[length(APath)]<>PathDelim) then
       APath:=APath+PathDelim;
-    {$IFNDEF win32}
-    if LoadFile(ADir+lowercase(AnUnitName)+'.pp',Result) then exit;
-    if LoadFile(ADir+lowercase(AnUnitName)+'.pas',Result) then exit;
-    {$ENDIF}
-    if LoadFile(ADir+AnUnitName+'.pp',Result) then exit;
-    if LoadFile(ADir+AnUnitName+'.pas',Result) then exit;
+    if SearchSource then begin
+      {$IFNDEF win32}
+      if LoadFile(ADir+lowercase(AnUnitName)+'.pp',Result) then exit;
+      if LoadFile(ADir+lowercase(AnUnitName)+'.pas',Result) then exit;
+      {$ENDIF}
+      if LoadFile(ADir+AnUnitName+'.pp',Result) then exit;
+      if LoadFile(ADir+AnUnitName+'.pas',Result) then exit;
+    end else begin
+      if LoadFile(ADir+lowercase(AnUnitName)+CompiledSrcExt,Result) then exit;
+    end;
     Result:=nil;
   end;
 
-  function SearchUnitFileInPath(const APath, TheUnitName: string): TCodeBuffer;
+  function SearchUnitFileInPath(const APath, TheUnitName: string;
+    SearchSource: boolean): TCodeBuffer;
   var PathStart, PathEnd: integer;
     ADir: string;
   begin
@@ -1112,9 +1125,8 @@ function TFindDeclarationTool.FindUnitSource(const AnUnitName,
         ADir:=copy(APath,PathStart,PathEnd-PathStart);
         if (ADir<>'') and (ADir[length(ADir)]<>PathDelim) then
           ADir:=ADir+PathDelim;
-        if not FilenameIsAbsolute(ADir) then
-          ADir:=ExtractFilePath(TCodeBuffer(Scanner.MainCode).Filename)+ADir;
-        Result:=SearchUnitFileInDir(ADir,TheUnitName);
+        if not FilenameIsAbsolute(ADir) then ADir:=CurDir+ADir;
+        Result:=SearchUnitFileInDir(ADir,TheUnitName,SearchSource);
         if Result<>nil then exit;
       end;
       PathStart:=PathEnd+1;
@@ -1134,8 +1146,7 @@ function TFindDeclarationTool.FindUnitSource(const AnUnitName,
         ADir:=copy(APath,PathStart,PathEnd-PathStart);
         if (ADir<>'') and (ADir[length(ADir)]<>PathDelim) then
           ADir:=ADir+PathDelim;
-        if not FilenameIsAbsolute(ADir) then
-          ADir:=ExtractFilePath(TCodeBuffer(Scanner.MainCode).Filename)+ADir;
+        if not FilenameIsAbsolute(ADir) then ADir:=CurDir+ADir;
         if LoadFile(ADir+RelativeFilename,Result) then exit;
       end;
       PathStart:=PathEnd+1;
@@ -1201,8 +1212,9 @@ function TFindDeclarationTool.FindUnitSource(const AnUnitName,
   end;
   
 
-var CurDir, UnitSrcSearchPath: string;
+var UnitSrcSearchPath: string;
   MainCodeIsVirtual: boolean;
+  CompiledResult: TCodeBuffer;
 begin
   {$IFDEF ShowTriedFiles}
   writeln('TFindDeclarationTool.FindUnitSource A AnUnitName=',AnUnitName,' AnUnitInFilename=',AnUnitInFilename);
@@ -1228,8 +1240,11 @@ begin
   end else begin
     CurDir:='';
   end;
+  CompiledSrcExt:='.ppu';
+
+  // search as the compiler would search
   if AnUnitInFilename<>'' then begin
-    // unitname in 'filename'
+    // uses IN parameter
     if FilenameIsAbsolute(AnUnitInFilename) then begin
       Result:=TCodeBuffer(Scanner.OnLoadSource(Self,AnUnitInFilename,true));
     end else begin
@@ -1242,22 +1257,52 @@ begin
       end;
     end;
   end else begin
-    // normal unit name -> search as the compiler would search
-    // first search in current directory (= where the maincode is)
+    // normal unit name
+    // first source search in current directory (= where the maincode is)
     {$IFDEF ShowTriedFiles}
     writeln('TFindDeclarationTool.FindUnitSource Search in current dir=',CurDir);
     {$ENDIF}
-    Result:=SearchUnitFileInDir(CurDir,AnUnitName);
+    Result:=SearchUnitFileInDir(CurDir,AnUnitName,true);
     if Result=nil then begin
-      // search in search path
+      // search source in search path
       {$IFDEF ShowTriedFiles}
       writeln('TFindDeclarationTool.FindUnitSource Search in search path=',UnitSrcSearchPath);
       {$ENDIF}
-      Result:=SearchUnitFileInPath(UnitSrcSearchPath,AnUnitName);
-      if Result=nil then begin
-        // search in FPC source directory
-        Result:=SearchUnitInUnitLinks(AnUnitName);
+      Result:=SearchUnitFileInPath(UnitSrcSearchPath,AnUnitName,true);
+    end;
+    if Result=nil then begin
+      {$IFDEF ShowTriedFiles}
+      writeln('TFindDeclarationTool.FindUnitSource Search Compiled unit in current dir=',CurDir);
+      {$ENDIF}
+      // search compiled unit in current directory
+      if Scanner.InitialValues.IsDefined('WIN32') then
+        CompiledSrcExt:='.ppw';
+      CompiledResult:=SearchUnitFileInDir(CurDir,AnUnitName,false);
+      if CompiledResult=nil then begin
+        // search compiled unit in search path
+        {$IFDEF ShowTriedFiles}
+        writeln('TFindDeclarationTool.FindUnitSource Search Compiled unit in search path=',UnitSrcSearchPath);
+        {$ENDIF}
+        CompiledResult:=SearchUnitFileInPath(UnitSrcSearchPath,AnUnitName,false);
       end;
+      if (CompiledResult<>nil) then begin
+        // there is a compiled unit
+        if Assigned(OnGetSrcPathForCompiledUnit)
+        and (not CompiledResult.IsVirtual) then begin
+          UnitSrcSearchPath:=
+            OnGetSrcPathForCompiledUnit(Self,CompiledResult.Filename);
+          CurDir:=ExtractFilePath(CompiledResult.Filename);
+          // search source in search path of compiled unit
+          {$IFDEF ShowTriedFiles}
+          writeln('TFindDeclarationTool.FindUnitSource Search in Compiled unit search path=',UnitSrcSearchPath);
+          {$ENDIF}
+          Result:=SearchUnitFileInPath(UnitSrcSearchPath,AnUnitName,true);
+        end;
+      end;
+    end;
+    if Result=nil then begin
+      // search in FPC source directory
+      Result:=SearchUnitInUnitLinks(AnUnitName);
     end;
   end;
   if (Result=nil) and Assigned(OnFindUsedUnit) then begin
