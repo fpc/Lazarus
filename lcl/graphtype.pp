@@ -268,7 +268,7 @@ begin
         // byte boundary
         UsedBytesPerLine:=UsedBitsPerLine shr 3;
         UnusedBitsAtEnd:=(8-(UsedBitsPerLine and 7)) and 7;
-        UnusedByteMask:=($ff00 shr UnusedBitsAtEnd) and $ff;
+        UnusedByteMask:=(1 shl UnusedBitsAtEnd) - 1;
         p:=RawImage^.Mask;
         for y:=0 to Height-1 do begin
           // check fully used bytes in line
@@ -775,6 +775,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.37  2005/02/07 15:27:11  micha
+  fix calculation of unusedbytemask
+
   Revision 1.36  2005/01/28 20:33:59  peter
     * correctly calculate UnusedBitsAtEnd if there are no unused bits
       to prevent overflow
