@@ -1,8 +1,16 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package>
+  <Package Version="2">
     <Name Value="TurboPowerIPro"/>
     <Author Value="Turbopower, portiert fuer Lazarus von Mattias Gaertner"/>
+    <CompilerOptions>
+      <SearchPaths>
+        <UnitOutputDirectory Value="units/$(TargetCPU)/$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
     <Description Value="Turbopower Internet Pro - Lazarus Package"/>
     <License Value="MPL - Mozilla public license"/>
     <Version Major="1"/>
@@ -63,13 +71,4 @@
       <IgnoreBinaries Value="False"/>
     </PublishOptions>
   </Package>
-  <CompilerOptions>
-    <SearchPaths>
-      <UnitOutputDirectory Value="lib/"/>
-      <LCLWidgetType Value="gtk"/>
-    </SearchPaths>
-    <Other>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
-  </CompilerOptions>
 </CONFIG>

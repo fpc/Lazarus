@@ -126,7 +126,7 @@ type
     { Property variables }
     FModule : TIpHandle;
     { Internal variables }
-    baPropCS : TRTLCriticalSection;
+    baPropCS : TCriticalSection;
   protected
     property Module : TIpHandle read FModule write FModule;
   public
@@ -138,7 +138,7 @@ type
 
   TIpBasePersistent = class(TPersistent)
   private
-    bpPropCS : TRTLCriticalSection;
+    bpPropCS : TCriticalSection;
   public
     constructor Create; virtual;
     destructor Destroy; override;
@@ -534,7 +534,7 @@ begin
   if DataSize = 0 then Exit;
   for I := 0 to (DataSize - 1) do begin
     if Odd(I) then
-      Result := Result + (TIpCRCByteArray(Data)[I] shl 8)
+      Result := Result + (cardinal(TIpCRCByteArray(Data)[I]) shl 8)
     else
       Result := Result + TIpCRCByteArray(Data)[I];
   end;
@@ -2656,7 +2656,7 @@ begin
   Reg := nil;
   try
     Reg := TRegistry.Create;
-    Reg.RootKey := integer(HKEY_CLASSES_ROOT);
+    Reg.RootKey := HKEY_CLASSES_ROOT;
     if Reg.OpenKey(Ext, True) then
       Result := Reg.ReadString('Content Type');
   finally

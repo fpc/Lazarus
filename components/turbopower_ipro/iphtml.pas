@@ -3817,8 +3817,13 @@ function GetPropertyValue(PI: PPropInfo; const AObject: TObject): string;
   const
     Precisions : array[TFloatType] of Integer =
       {$IFDEF IP_LAZARUS}
+      {$IFDEF Ver1_0}
       // ftSingle,ftDouble,ftExtended,ftComp,ftCurr,ftFixed16,ftFixed32
       (7, 15, 18, 18, 19, 4, 8);
+      {$ELSE}
+      // ftSingle,ftDouble,ftExtended,ftComp,ftCurr
+      (7, 15, 18, 18, 19);
+      {$ENDIF}
       {$ELSE}
       (7, 15, 18, 18, 19);
       {$ENDIF}
@@ -17582,6 +17587,9 @@ initialization
   InitScrollProcs;
 {
   $Log$
+  Revision 1.11  2004/01/04 17:29:03  mattias
+  added package and cross compilation output dirs
+
   Revision 1.10  2003/11/25 08:51:57  mattias
   fixed compiling   from Tony
 
