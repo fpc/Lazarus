@@ -1072,10 +1072,10 @@ procedure ConnectInternalWidgetsSignals(AWinControl: TWinControl);
       ConnectSignal(ChildWidget,'button-release-event',@gtkMouseBtnRelease,true);
 
     // connect recursively ...
-    ConnectHiddenChilds(ChildWidget);
+    ConnectInternalChilds(ChildWidget);
   end;
 
-  procedure ConnectHiddenChilds(AWidget: PGtkWidget);
+  procedure ConnectInternalChilds(AWidget: PGtkWidget);
   var
     ContainerWidget: PGtkContainer;
     ScrolledWindow: PGtkScrolledWindow;
@@ -1125,7 +1125,7 @@ begin
   
   if (AWinControl=nil) or (not AWinControl.HandleAllocated) then exit;
   MainWidget:=PGtkWidget(AWinControl.Handle);
-  ConnectHiddenChilds(MainWidget);
+  ConnectInternalChilds(MainWidget);
 end;
 
 {-------------------------------------------------------------------------------
@@ -2210,6 +2210,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.63  2002/08/19 08:53:45  lazarus
+  MG: fixed broken commit
+
   Revision 1.62  2002/08/19 08:50:28  lazarus
   MG: fixed parser for Clx enums and empty param lists
 
