@@ -750,7 +750,7 @@ begin
       {$IFNDEF DoNotCatchOIExceptions}
       except
         on E: Exception do begin
-          MessageDlg('Error',E.Message,mtError,[mbOk],0);
+          MessageDlg(oisError, E.Message, mtError, [mbOk], 0);
         end;
       end;
       {$ENDIF}
@@ -811,7 +811,7 @@ begin
     {$IFNDEF DoNotCatchOIExceptions}
     except
       on E: Exception do begin
-        MessageDlg('Error',E.Message,mtError,[mbOk],0);
+        MessageDlg(oisError, E.Message, mtError, [mbOk], 0);
       end;
     end;
     {$ENDIF}
@@ -1760,26 +1760,26 @@ begin
       if Assigned(PointedRow.Editor) then
         AHint := PointedRow.Editor.GetName;
 
-      AHint := AHint + #10'Value:'+PointedRow.LastPaintedValue;
+      AHint := AHint + #10+oisValue+PointedRow.LastPaintedValue;
       TypeKind := PointedRow.Editor.GetPropType^.Kind;
       case TypeKind of
-       tkInteger : AHint := AHInt + #10'Integer';
-       tkInt64 : AHint := AHInt + #10'Int64';
-       tkBool : AHint := AHInt + #10'Boolean';
-       tkEnumeration : AHint := AHInt + #10'Enumeration';
-       tkChar,tkWChar : AHint := AHInt + #10'Char';
-       tkUnknown : AHint := AHInt + #10'Unknown';
-       tkObject : AHint := AHInt + #10'Object';
-       tkClass : AHint := AHInt + #10'Class';
-       tkQWord : AHint := AHInt + #10'Word';
-       tkString,tkLString,tkAString,tkWString : AHint := AHInt + #10'String';
-       tkFloat : AHint := AHInt + #10'Float';
-       tkSet : AHint := AHInt + #10'Set';
-       tkMethod : AHint := AHInt + #10'Method';
-       tkVariant : AHint := AHInt + #10'Variant';
-       tkArray : AHint := AHInt + #10'Array';
-       tkRecord : AHint := AHInt + #10'Record';
-       tkInterface : AHint := AHInt + #10'Interface';
+       tkInteger : AHint := AHint + #10'Integer';
+       tkInt64 : AHint := AHint + #10'Int64';
+       tkBool : AHint := AHint + #10'Boolean';
+       tkEnumeration : AHint := AHint + #10'Enumeration';
+       tkChar,tkWChar : AHint := AHint + #10'Char';
+       tkUnknown : AHint := AHint + #10'Unknown';
+       tkObject : AHint := AHint + #10'Object';
+       tkClass : AHint := AHint + #10'Class';
+       tkQWord : AHint := AHint + #10'Word';
+       tkString,tkLString,tkAString,tkWString : AHint := AHint + #10'String';
+       tkFloat : AHint := AHint + #10'Float';
+       tkSet : AHint := AHint + #10'Set';
+       tkMethod : AHint := AHint + #10'Method';
+       tkVariant : AHint := AHint + #10'Variant';
+       tkArray : AHint := AHint + #10'Array';
+       tkRecord : AHint := AHint + #10'Record';
+       tkInterface : AHint := AHint + #10'Interface';
       end;
     end;
   end;
@@ -2295,7 +2295,7 @@ begin
   with StatusBar do begin
     Name:='StatusBar';
     Parent:=Self;
-    SimpleText:='All';
+    SimpleText:=oisAll;
     Align:= alBottom;
   end;
 
@@ -2724,7 +2724,6 @@ begin
   FShowComponentTree:=AValue;
   BeginUpdate;
   ShowComponentTreePopupMenuItem.Checked:=FShowComponentTree;
-  writeln('TObjectInspector.SetShowComponentTree A ',FShowComponentTree);
   // hide controls while rebuilding
   if PairSplitter1<>nil then
     PairSplitter1.Visible:=false;
@@ -2887,9 +2886,9 @@ var
 begin
   SetDefaultPopupMenuItem.Enabled:=GetCurRowDefaultValue(DefaultStr);
   if SetDefaultPopupMenuItem.Enabled then
-    SetDefaultPopupMenuItem.Caption:='Set to default: '+DefaultStr
+    SetDefaultPopupMenuItem.Caption:=Format(oisSetToDefault, [DefaultStr])
   else
-    SetDefaultPopupMenuItem.Caption:='Set to default value';
+    SetDefaultPopupMenuItem.Caption:=oisSetToDefaultValue;
     
   CurGrid:=GetActivePropertyGrid;
   CurRow:=GetActivePropertyRow;

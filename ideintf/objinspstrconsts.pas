@@ -19,6 +19,8 @@ interface
 resourcestring
   //
   oisObjectInspector = 'Object Inspector';
+  oisAll = 'All';
+  oisError = 'Error';
   oisItemsSelected = '%u items selected';
   
   oiscAdd = '&Add';
@@ -27,6 +29,12 @@ resourcestring
 
   oisProperties='Properties';
   oisEvents='Events';
+  oisSetToDefault = 'Set to default: %s';
+  oisSetToDefaultValue = 'Set to default value';
+  
+  // typeinfo
+  oisValue = 'Value:';
+  
 
   //ListView items editor
   sccsLvEdtCaption        = 'ListView editor';
