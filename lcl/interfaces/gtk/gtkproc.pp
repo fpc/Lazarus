@@ -375,6 +375,8 @@ function RequestSelectionData(ClipboardWidget: PGtkWidget;
   ClipboardType: TClipboardType;  FormatID: cardinal): TGtkSelectionData;
 procedure FreeClipboardTargetEntries(ClipboardType: TClipboardType);
 
+Function CreateFormContents(var FormWidget : Pointer) : Pointer;
+
 function IndexOfStyle(const WName : String): integer;
 Procedure ReleaseStyle(const WName : String);
 function GetStyle(const WName : String) : PGTKStyle;
