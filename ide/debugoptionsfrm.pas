@@ -31,9 +31,9 @@ unit DebugOptionsFrm;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, Buttons, ComCtrls, Menus, Spin, CheckLst,
-  ObjectInspector, LazarusIDEStrConsts, FileProcs, InputHistory,
+  Classes, SysUtils, TypInfo, LResources, Forms, Controls, Graphics, Dialogs,
+  ExtCtrls, StdCtrls, Buttons, ComCtrls, Menus, Spin, CheckLst,
+  PropEdits, ObjectInspector, LazarusIDEStrConsts, FileProcs, InputHistory,
   EnvironmentOpts, BaseDebugManager, Debugger, DBGUtils;
 
 type
@@ -80,6 +80,7 @@ type
     pgEventLog: TPAGE;
     pgGeneral: TPAGE;
     popSignal: TPOPUPMENU;
+    PropertyGrid: TOIPropertyGrid;
     procedure DebuggerOptionsFormCREATE(Sender: TObject);
     procedure DebuggerOptionsFormDESTROY(Sender: TObject);
     procedure clbExceptionsCLICK (Sender: TObject );
@@ -89,10 +90,12 @@ type
     procedure cmdOKCLICK (Sender: TObject );
     procedure cmdOpenDebuggerPathCLICK(Sender: TObject);
   private
+    ThePropertyEditorHook: TPropertyEditorHook;
     FExceptionDeleteList: TStringList;
     FOldDebuggerPathAndParams: string;
     FDebuggerSpecificComponents: TList;
     FCurDebuggerClass: TDebuggerClass; // currently shown debugger class
+    FCurDebuggerObject: TDebugger; // currently shown debugger object
     procedure AddExceptionLine(const AException: TIDEException; AName: String);
     procedure AddSignalLine(const ASignal: TIDESignal);
     procedure FetchDebuggerClass;
@@ -188,7 +191,16 @@ procedure TDebuggerOptionsForm.FetchDebuggerSpecificOptions;
 var
   i: Integer;
   AMemo: TMemo;
+//var
+//  Selection: TComponentSelectionList;
 begin
+  {ThePropertyEditorHook.LookupRoot:=FCurDebuggerObject;
+  Selection:=TComponentSelectionList.Create;
+  if FCurDebuggerObject<>nil then
+    Selection.Add(AComponent);
+  PropertyGrid.Selections:=Selection;
+  Selection.Free;}
+
   // clear debugger specific options components
   if FDebuggerSpecificComponents=nil then
     FDebuggerSpecificComponents:=TList.Create;
@@ -239,6 +251,14 @@ begin
   if FCurDebuggerClass = AClass then Exit;
   FCurDebuggerClass := AClass;
   FetchDebuggerSpecificOptions;
+  // destroy, replace or destroy Debugger instance
+  if (FCurDebuggerObject<>nil)
+  and ((FCurDebuggerClass=nil)
+    or (not (FCurDebuggerObject is FCurDebuggerClass)))
+  then
+    FreeAndNil(FCurDebuggerObject);
+  if (FCurDebuggerObject=nil) and (FCurDebuggerClass<>nil) then
+    FCurDebuggerObject:=FCurDebuggerClass.Create('');
 end;
 
 procedure TDebuggerOptionsForm.clbExceptionsCLICK (Sender: TObject );
@@ -371,6 +391,22 @@ begin
     AddSignalLine(DebugBoss.Signals[n]);
   end;
 
+  // create the PropertyEditorHook (the interface to the properties)
+  ThePropertyEditorHook:=TPropertyEditorHook.Create;
+  // create the PropertyGrid
+  PropertyGrid:=TOIPropertyGrid.CreateWithParams(Self,ThePropertyEditorHook
+      ,[tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat, tkSet{, tkMethod}
+      , tkSString, tkLString, tkAString, tkWString, tkVariant
+      {, tkArray, tkRecord, tkInterface}, tkClass, tkObject, tkWChar, tkBool
+      , tkInt64, tkQWord],
+      25);
+  with PropertyGrid do begin
+    Name:='PropertyGrid';
+    Parent:=gbDebuggerSpecific;
+    Align:=alClient;
+    SplitterX:=120;
+  end;
+
   FetchDebuggerClass;
 
   // Fix designtime changes
@@ -381,6 +417,7 @@ procedure TDebuggerOptionsForm.DebuggerOptionsFormDESTROY(Sender: TObject);
 begin
   FreeAndNil(FDebuggerSpecificComponents);
   FreeAndNil(FExceptionDeleteList);
+  FreeAndNil(FCurDebuggerObject);
 end;
 
 

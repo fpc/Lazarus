@@ -298,8 +298,8 @@ type
     procedure SetBounds(aLeft,aTop,aWidth,aHeight:integer); override;
     procedure Paint;  override;
     procedure Clear;
-    constructor CreateWithParams(AnOwner:TComponent;
-       APropertyEditorHook:TPropertyEditorHook;  TypeFilter:TTypeKinds;
+    constructor CreateWithParams(AnOwner: TComponent;
+       APropertyEditorHook: TPropertyEditorHook;  TypeFilter: TTypeKinds;
        DefItemHeight: integer);
     destructor Destroy;  override;
     function ConsistencyCheck: integer;

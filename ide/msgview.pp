@@ -319,8 +319,8 @@ begin
     RaiseException('TMessagesView.GetVisibleMessageAt');
   if (FItems.Count<=Index) then
     RaiseException('TMessagesView.GetVisibleMessageAt');
-  Msg:=Items[Index].Msg;
-  MsgDirectory:=Items[Index].Directory;
+  Msg:=VisibleItems[Index].Msg;
+  MsgDirectory:=VisibleItems[Index].Directory;
 end;
 
 procedure TMessagesView.BeginBlock;

@@ -7436,9 +7436,9 @@ begin
     // search relevant message (first error, first fatal)
     Index:=0;
     while (Index<MaxMessages) do begin
+      CurMsg:=MessagesView.VisibleItems[Index].Msg;
       if (TheOutputFilter.GetSourcePosition(
-        MessagesView.VisibleItems[Index].Msg,
-        Filename,CaretXY,MsgType)) then
+        CurMsg,Filename,CaretXY,MsgType)) then
       begin
         if MsgType in [etError,etFatal,etPanic] then break;
       end;
@@ -10235,6 +10235,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.688  2003/12/26 15:55:38  mattias
+  fixed message jumping
+
   Revision 1.687  2003/12/26 12:36:31  mattias
   started  a posteriori message filtering
 
