@@ -1744,6 +1744,7 @@ begin
     MouseCapture := False;
   end;
 
+  DoMouseUp(Message, mbLeft);
   if csClicked in ControlState then
   begin
     Exclude(FControlState, csClicked);
@@ -1754,7 +1755,6 @@ begin
       Click;
     end;
   end;
-  DoMouseUp(Message, mbLeft);
   //DebugLn('TControl.WMLButtonUp END');
 end;
 
@@ -3497,6 +3497,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.248  2005/03/05 14:42:01  mattias
+  Click events are now created after MouseUp  from C Western
+
   Revision 1.247  2005/03/04 17:55:34  micha
   fix bug 605: resizing upward or leftward should not move control
 

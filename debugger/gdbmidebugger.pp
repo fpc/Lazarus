@@ -397,8 +397,10 @@ begin
   // no need to process empty filename
   if Result='' then exit;
   
+  {$WARNINGS off}
   if DirectorySeparator <> '/' then
     Result := StringReplace(Result, DirectorySeparator, '/', [rfReplaceAll]);
+  {$WARNINGS on}
   Result := '"' + Result + '"';
 end;              
   
@@ -2649,6 +2651,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.60  2005/03/05 14:42:01  mattias
+  Click events are now created after MouseUp  from C Western
+
   Revision 1.59  2005/01/18 21:22:44  vincents
   fixed unlocking executable after debugging
 
