@@ -102,6 +102,7 @@ begin
   FreeThenNil(FOnIdleHandler);
   FreeThenNil(FOnIdleEndHandler);
   FreeThenNil(FOnUserInputHandler);
+  FreeThenNil(FOnKeyDownHandler);
   inherited Destroy;
   LCLProc.SendApplicationMessageFunction:=nil;
 end;
@@ -134,7 +135,7 @@ end;
 {------------------------------------------------------------------------------
        TApplication GetExename
 ------------------------------------------------------------------------------}
-Function TApplication.GetEXEName: String;
+Function TApplication.GetExeName: String;
 Begin
   Result := ParamStr(0);
 end;
@@ -858,6 +859,20 @@ begin
   end;
 end;
 
+procedure TApplication.NotifyKeyDownHandler(var Key: Word; Shift: TShiftState);
+var
+  i: Integer;
+begin
+  if FOnKeyDownHandler=nil then exit;
+  i:=FOnKeyDownHandler.Count-1;
+  while (i>=0) and (FOnKeyDownHandler<>nil) and (Key<>VK_UNKNOWN) do begin
+    TKeyEvent(FOnKeyDownHandler[i])(Self,Key,Shift);
+    dec(i);
+    if (FOnKeyDownHandler<>nil) and (i>FOnKeyDownHandler.Count-1) then
+      i:=FOnKeyDownHandler.Count-1;
+  end;
+end;
+
 procedure TApplication.AddOnIdleHandler(AnOnIdleHandler: TNotifyEvent);
 begin
   if FOnIdleHandler=nil then
@@ -897,6 +912,19 @@ procedure TApplication.RemoveOnUserInputHandler(
 begin
   if FOnUserInputHandler<>nil then
     FOnUserInputHandler.Remove(TMethod(AnOnUserInputHandler));
+end;
+
+procedure TApplication.AddOnKeyDownHandler(AnOnKeyDownHandler: TKeyEvent);
+begin
+  if FOnKeyDownHandler=nil then
+    FOnKeyDownHandler:=TMethodList.Create;
+  FOnKeyDownHandler.Add(TMethod(AnOnKeyDownHandler));
+end;
+
+procedure TApplication.RemoveOnKeyDownHandler(AnOnKeyDownHandler: TKeyEvent);
+begin
+  if FOnKeyDownHandler<>nil then
+    FOnKeyDownHandler.Remove(TMethod(AnOnKeyDownHandler));
 end;
 
 {------------------------------------------------------------------------------
@@ -963,6 +991,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.49  2003/04/11 10:23:23  mattias
+  added Application OnKeyDownHandler
+
   Revision 1.48  2003/04/11 09:32:20  mattias
   added some help stuff
 

@@ -625,6 +625,7 @@ type
     FOnIdleHandler: TMethodList;
     FOnIdleEnd: TNotifyEvent;
     FOnIdleEndHandler: TMethodList;
+    FOnKeyDownHandler: TMethodList;
     FOnShowHint: TShowHintEvent;
     FOnUserInput: TOnUserInputEvent;
     FOnUserInputHandler: TMethodList;
@@ -682,12 +683,15 @@ type
     procedure ShowException(E: Exception);
     procedure Terminate;
     procedure NotifyUserInputHandler(Msg: Cardinal);
+    procedure NotifyKeyDownHandler(var Key : Word; Shift : TShiftState);
     procedure AddOnIdleHandler(AnOnIdleHandler: TNotifyEvent);
     procedure RemoveOnIdleHandler(AnOnIdleHandler: TNotifyEvent);
     procedure AddOnIdleEndHandler(AnOnIdleEndHandler: TNotifyEvent);
     procedure RemoveOnIdleEndHandler(AnOnIdleEndHandler: TNotifyEvent);
     procedure AddOnUserInputHandler(AnOnUserInputHandler: TOnUserInputEvent);
     procedure RemoveOnUserInputHandler(AnOnUserInputHandler: TOnUserInputEvent);
+    procedure AddOnKeyDownHandler(AnOnKeyDownHandler: TKeyEvent);
+    procedure RemoveOnKeyDownHandler(AnOnKeyDownHandler: TKeyEvent);
     procedure DoBeforeMouseMessage(CurMouseControl: TControl);
   public
     property Exename: String read GetExeName;
