@@ -4566,9 +4566,22 @@ end;
 
 {$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.SetLineBlock(Value: TPoint);
+var
+  ALine: string;
 begin
   fBlockBegin:=Point(1,MinMax(Value.y, 1, Lines.Count));
   fBlockEnd:=Point(1,MinMax(Value.y+1, 1, Lines.Count));
+  if (fBlockBegin.Y>=1) and (fBlockBegin.Y<=Lines.Count) then begin
+    ALine:=Lines[fBlockBegin.Y-1];
+    while (fBlockBegin.X<length(ALine)) and (ALine[fBlockBegin.X] in [' ',#9])
+    do
+      inc(fBlockBegin.X);
+    fBlockEnd:=fBlockBegin;
+    fBlockEnd.X:=length(ALine)+1;
+    while (fBlockEnd.X>fBlockBegin.X) and (ALine[fBlockEnd.X-1] in [' ',#9])
+    do
+      dec(fBlockEnd.X);
+  end;
   CaretXY:=fBlockEnd;
   //writeln(' FFF2 ',Value.X,',',Value.Y,' BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
   InvalidateLine(Value.Y);
