@@ -220,7 +220,7 @@ begin
   try
     BuildSubTreeForClass(ClassNode);
     {$IFDEF CTDEBUG}
-    writeln('[TEventsCodeTool.GetCompatiblePublishedMethods]');
+    writeln('[TEventsCodeTool.GetCompatiblePublishedMethods] D');
     {$ENDIF}
     // 1. convert the TypeData to an expression type list
     CheckDependsOnNodeCaches;
@@ -241,6 +241,9 @@ begin
         Params.ContextNode:=ClassNode;
         Params.Flags:=[fdfCollect,fdfSearchInAncestors,fdfClassPublished];
         Params.SetIdentifier(Self,nil,@CollectPublishedMethods);
+        {$IFDEF CTDEBUG}
+        writeln('[TEventsCodeTool.GetCompatiblePublishedMethods] E Searching ...');
+        {$ENDIF}
         FindIdentifierInContext(Params);
       finally
         SearchedExprList.Free;
@@ -675,9 +678,15 @@ var
   ParamCompatibility: TTypeCompatibility;
   FirstParameterNode: TCodeTreeNode;
 begin
+  {$IFDEF CTDEBUG}
+  writeln('[TEventsCodeTool.CollectPublishedMethods] A ',
+  ' Node=',FoundContext.Node.DescAsString,
+  ' "',copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50),'"',
+  ' Tool=',FoundContext.Tool.MainFilename);
+  {$ENDIF}
   if (FoundContext.Node.Desc=ctnProcedure) then begin
     {$IFDEF CTDEBUG}
-    writeln('[TEventsCodeTool.CollectPublishedMethods] ',
+    writeln('[TEventsCodeTool.CollectPublishedMethods] B ',
     ' Node=',FoundContext.Node.DescAsString,
     ' "',copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50),'"',
     ' Tool=',FoundContext.Tool.MainFilename);

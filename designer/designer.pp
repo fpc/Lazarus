@@ -134,12 +134,15 @@ type
     Procedure OnFormActivated;
   public
     ControlSelection : TControlSelection;
-    constructor Create(Customform : TCustomform; AControlSelection: TControlSelection);
+    constructor Create(Customform : TCustomform;
+       AControlSelection: TControlSelection);
     destructor Destroy; override;
 
-    function IsDesignMsg(Sender: TControl; var TheMessage: TLMessage): Boolean; override;
+    function IsDesignMsg(Sender: TControl;
+       var TheMessage: TLMessage): Boolean; override;
     procedure Modified; override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent;
+       Operation: TOperation); override;
     procedure PaintGrid; override;
     procedure ValidateRename(AComponent: TComponent;
        const CurName, NewName: string); override;
@@ -147,6 +150,7 @@ type
     function NonVisualComponentLeftTop(AComponent: TComponent): TPoint;
     function NonVisualComponentAtPos(x,y: integer): TComponent;
     procedure DrawNonVisualComponents(DC: HDC);
+    function GetDesignedComponent(AComponent: TComponent): TComponent;
 
     property ShowGrid: boolean read GetShowGrid write SetShowGrid;
     property Form: TCustomForm read FCustomForm write FCustomForm;
@@ -156,7 +160,8 @@ type
     property IsControl: Boolean read GetIsControl write SetIsControl;
     property OnActivated: TNotifyEvent
        read FOnActivated write FOnActivated;
-    property OnAddComponent: TOnAddComponent read FOnAddComponent write FOnAddComponent;
+    property OnAddComponent: TOnAddComponent
+       read FOnAddComponent write FOnAddComponent;
     property OnComponentListChanged: TNotifyEvent
        read FOnComponentListChanged write FOnComponentListChanged;
     property OnGetSelectedComponentClass: TOnGetSelectedComponentClass
@@ -168,7 +173,8 @@ type
        read FOnRemoveComponent write FOnRemoveComponent;
     property OnRenameComponent: TOnRenameComponent
        read FOnRenameComponent write FOnRenameComponent;
-    property OnSetDesigning: TOnSetDesigning read FOnSetDesigning write FOnSetDesigning;
+    property OnSetDesigning: TOnSetDesigning
+       read FOnSetDesigning write FOnSetDesigning;
     property OnUnselectComponentClass: TNotifyEvent
        read FOnUnselectComponentClass write FOnUnselectComponentClass;
     property OnGetNonVisualCompIconCanvas: TOnGetNonVisualCompIconCanvas
@@ -314,11 +320,13 @@ function TDesigner.PaintControl(Sender: TControl; TheMessage: TLMPaint):boolean;
 var OldDuringPaintControl: boolean;
 begin
   Result:=true;
-
+//writeln('TDesigner.PaintControl A ',Sender.Name);
   //writeln('***  LM_PAINT A ',Sender.Name,':',Sender.ClassName,' DC=',HexStr(Message.DC,8));
   OldDuringPaintControl:=FDuringPaintControl;
   FDuringPaintControl:=true;
+//writeln('TDesigner.PaintControl B ',Sender.Name);
   Sender.Dispatch(TheMessage);
+//writeln('TDesigner.PaintControl C ',Sender.Name);
 
   if TheMessage.DC<>0 then begin
     //writeln('***  LM_PAINT B ',Sender.Name,':',Sender.ClassName,' DC=',HexStr(Message.DC,8));
@@ -332,7 +340,8 @@ begin
     if ControlSelection.RubberBandActive then
       ControlSelection.DrawRubberBand(TheMessage.DC);
   end;
-    
+//writeln('TDesigner.PaintControl D ',Sender.Name);
+
   FDuringPaintControl:=OldDuringPaintControl;
 end;
 
@@ -373,10 +382,12 @@ var i,
 Begin
   FHintTimer.Enabled := False;
   FHasSized:=false;
+  SetCaptureControl(nil);
   if (getParentForm(Sender)=nil) then exit;
 
   if MouseDownComponent=nil then begin
-    MouseDownComponent:=Sender;
+    MouseDownComponent:=GetDesignedComponent(Sender);
+    if MouseDownComponent=nil then exit;
     MouseDownSender:=Sender;
   end;
 
@@ -486,8 +497,14 @@ var
 Begin
   FHintTimer.Enabled := False;
 
+  SetCaptureControl(nil);
   SenderParentForm:=GetParentForm(Sender);
-  if (MouseDownComponent=nil) or (SenderParentForm=nil) then exit;
+  if (MouseDownComponent=nil) or (SenderParentForm=nil)
+  or (SenderParentForm<>Form) then begin
+    MouseDownComponent:=nil;
+    MouseDownSender:=nil;
+    exit;
+  end;
 
   ControlSelection.ActiveGrabber:=nil;
   RubberBandWasActive:=ControlSelection.RubberBandActive;
@@ -607,6 +624,7 @@ var
   SenderParentForm:TCustomForm;
   OldMouseMovePos: TPoint;
 begin
+  SetCaptureControl(nil);
   if FShowHints then begin
     FHintTimer.Enabled := False;
 
@@ -619,7 +637,7 @@ begin
 
   if MouseDownComponent=nil then exit;
   SenderParentForm:=GetParentForm(Sender);
-  if SenderParentForm=nil then exit;
+  if (SenderParentForm=nil) or (SenderParentForm<>Form) then exit;
   
   OldMouseMovePos:=LastMouseMovePos;
   LastMouseMovePos:=GetFormRelativeMousePosition(Form);
@@ -677,6 +695,7 @@ procedure TDesigner.MouseRightUpOnControl(Sender : TControl;
   TheMessage: TLMMouse);
 begin
   FHintTimer.Enabled := False;
+  SetCaptureControl(nil);
 
   MouseUpPos:=GetFormRelativeMousePosition(Form);
   BuildPopupMenu;
@@ -965,6 +984,15 @@ begin
   end;
   FCustomForm.Canvas.Handle:=0;
   RestoreDC(DC,SaveIndex);
+end;
+
+function TDesigner.GetDesignedComponent(AComponent: TComponent): TComponent;
+begin
+  Result:=AComponent;
+  while (Result<>nil)
+  and (Result.Owner<>Form)
+  and (Result is TControl) do
+    Result:=TControl(Result).Parent;
 end;
 
 function TDesigner.NonVisualComponentAtPos(x,y: integer): TComponent;

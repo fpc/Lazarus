@@ -58,6 +58,8 @@ interface
 { $DEFINE ShowNodeCache}
 { $DEFINE ShowBaseTypeCache}
 { $DEFINE ShowCacheDependencies}
+{$DEFINE ShowCollect}
+
 
 uses
   {$IFDEF MEM_CHECK}
@@ -1192,6 +1194,17 @@ var
   begin
     Result:=true;
     FindIdentifierInContext:=NewResult;
+    {$IFDEF ShowCollect}
+    if fdfCollect in Params.Flags then begin
+      writeln('[TFindDeclarationTool.FindIdentifierInContext] COLLECT CheckResult Ident=',
+      '"',GetIdentifier(Params.Identifier),'"',
+      ' File="',ExtractFilename(MainFilename)+'"',
+      ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']',
+      ' NewResult=',NewResult,
+      ' CallOnIdentifierFound=',CallOnIdentifierFound
+      );
+    end;
+    {$ENDIF}
     if NewResult then begin
       // identifier found
       if CallOnIdentifierFound then begin
@@ -1480,8 +1493,19 @@ begin
   ' File="',ExtractFilename(MainFilename)+'"',
   ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']'
   );
+  {$ELSE}
+    {$IFDEF ShowCollect}
+    if fdfCollect in Params.Flags then begin
+      writeln('[TFindDeclarationTool.FindIdentifierInContext] COLLECT Start Ident=',
+      '"',GetIdentifier(Params.Identifier),'"',
+      ' Context="',ContextNode.DescAsString,'" "',copy(Src,ContextNode.StartPos,20),'"',
+      ' File="',ExtractFilename(MainFilename)+'"',
+      ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']'
+      );
+    end;
+    {$ENDIF}
   {$ENDIF}
-  
+
   try
     // search in the Tree of this tool
     repeat
@@ -1491,6 +1515,16 @@ begin
       ' Context="',ContextNode.DescAsString,'" "',copy(Src,ContextNode.StartPos,20),'"',
       ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']'
       );
+      {$ELSE}
+        {$IFDEF ShowCollect}
+        if fdfCollect in Params.Flags then begin
+          writeln('[TFindDeclarationTool.FindIdentifierInContext] COLLECT Loop Ident=',
+          '"',GetIdentifier(Params.Identifier),'"',
+          ' Context="',ContextNode.DescAsString,'" "',copy(Src,ContextNode.StartPos,20),'"',
+          ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']'
+          );
+        end;
+        {$ENDIF}
       {$ENDIF}
       // search identifier in current context
       LastContextNode:=ContextNode;
@@ -1525,7 +1559,7 @@ begin
             IdentifierFoundResult:=
               FindIdentifierInProcContext(ContextNode,Params);
             if IdentifierFoundResult in [ifrAbortSearch,ifrSuccess] then begin
-              if CheckResult(IdentifierFoundResult=ifrSuccess,false) then
+              if CheckResult(IdentifierFoundResult=ifrSuccess,true) then
                 exit;
             end;
           end;
@@ -1948,7 +1982,8 @@ begin
     // -> proceed the search normally ...
   end else begin
     // proc is a proc declaration
-    if CompareSrcIdentifiers(NameAtom.StartPos,Params.Identifier) then begin
+    if (fdfCollect in Params.Flags)
+    or CompareSrcIdentifiers(NameAtom.StartPos,Params.Identifier) then begin
       // proc identifier found
       {$IFDEF ShowTriedContexts}
       writeln('[TFindDeclarationTool.FindIdentifierInProcContext]  Proc-Identifier found="',GetIdentifier(Params.Identifier),'"');
@@ -3947,7 +3982,7 @@ function TFindDeclarationTool.CheckSrcIdentifier(
   Params: TFindDeclarationParams;
   FoundContext: TFindContext): TIdentifierFoundResult;
 // this is a TOnIdentifierFound function
-//   if identifier found is a proc it searches for the best overloaded proc
+//   if identifier found is a proc then it searches for the best overloaded proc
 var FirstParameterNode: TCodeTreeNode;
   ParamCompatibility: TTypeCompatibility;
   OldInput: TFindDeclarationInput;
