@@ -2976,7 +2976,6 @@ var
   GTKObject: PGTKObject;
 begin
 //TODO: [TgtkObject.ShowCaret] Finish (in gtkwinapi.inc)
-
   Assert(False, Format('Trace:> [TgtkObject.ShowCaret] HWND: 0x%x', [hWnd]));
 
   GTKObject := PGTKObject(HWND);
@@ -3153,6 +3152,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.19  2001/02/06 18:19:38  lazarus
+  Shane
+
   Revision 1.18  2001/02/04 04:18:12  lazarus
   Code cleanup and JITFOrms bug fix.
   Shane

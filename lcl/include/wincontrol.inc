@@ -1543,6 +1543,17 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMWindowPosChanged(var Message : TLMWindowPosChanged);
 begin
+  if Message.WindowPos <> nil
+  then with Message.WindowPos^ do
+  begin
+    FLeft := X;
+    FWidth := cX;
+    FTop := Y;
+    FHeight := cY;
+    Assert(False, Format('Trace:[TWinControl.WMWindowPosChanged] %s --> Message.WindowPos(%d, %d)(%d, %d)', [ClassName, X, Y, cx, cy]));
+  end
+  else Assert(False, Format('Trace:[TWinControl.WMWindowPosChanged] %s --> Message.WindowPos = nil', [ClassName]));
+
   inherited WMWindowPosChanged(Message);
 end;
 
@@ -1904,6 +1915,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.18  2001/02/06 18:19:37  lazarus
+  Shane
+
   Revision 1.17  2001/02/06 14:52:47  lazarus
   Changed TSpeedbutton in gtkobject so it erases itself when it's set to visible=false;
   Shane

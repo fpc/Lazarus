@@ -805,7 +805,9 @@ begin
   if (IsVisible or (csDesigning in ComponentState) and not (csNoDesignVisible in ControlStyle)) and
      (Parent <> nil) and (Parent.HandleAllocated) then
     Begin
-     CNSendMessage(LM_REDRAW,Self,Nil);
+//     CNSendMessage(LM_REDRAW,Self,Nil);
+    Rect := BoundsRect;
+    InvalidateRect(parent.handle,@Rect, True);
     end;
 end;
 
@@ -1287,6 +1289,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.12  2001/02/06 18:19:37  lazarus
+  Shane
+
   Revision 1.11  2001/02/04 04:18:12  lazarus
   Code cleanup and JITFOrms bug fix.
   Shane

@@ -116,6 +116,7 @@ begin
    gdk_Cursor_Destroy(Cursor_Cross);
    gdk_Cursor_Destroy(Cursor_Hand1);
    gdk_Cursor_Destroy(Cursor_XTerm);
+   gdk_Cursor_Destroy(Cursor_StdArrow);
 
    gtk_object_unref(PGTKObject(FGTKToolTips));
    FGTKToolTips := nil; 
@@ -155,6 +156,7 @@ begin
    Cursor_Cross := gdk_Cursor_New(gdk_Cross);
    Cursor_Hand1 := gdk_Cursor_New(gdk_Hand1);
    Cursor_XTerm := gdk_Cursor_New(gdk_XTerm);
+   Cursor_StdArrow := gdk_Cursor_New(4);
 
    gtk_key_snooper_install(@GTKKeySnooper, @FKeyStateList);
 
@@ -1018,7 +1020,8 @@ begin
      crCross    : gdk_window_set_cursor (pgtkWidget(TWinControl(Sender).Handle)^.window, Cursor_Cross); 
      crHandPoint: gdk_window_set_cursor (pgtkWidget(TWinControl(Sender).Handle)^.window, Cursor_hand1); 
      crIBeam    : gdk_window_set_cursor (pgtkWidget(TWinControl(Sender).Handle)^.window, Cursor_XTerm); 
-//   crDefault  : CursorType := GDK_Arrow;
+     crHourGlass: gdk_window_set_cursor (pgtkWidget(TWinControl(Sender).Handle)^.window, Cursor_Watch);
+     crDefault  : gdk_window_set_cursor (pgtkWidget(TWinControl(Sender).Handle)^.window, Cursor_StdArrow);
   else 
      Exit;
   end; 
@@ -2674,6 +2677,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.29  2001/02/06 18:19:38  lazarus
+  Shane
+
   Revision 1.28  2001/02/06 14:52:47  lazarus
   Changed TSpeedbutton in gtkobject so it erases itself when it's set to visible=false;
   Shane

@@ -398,9 +398,12 @@ end;
 
 {------------------------------G O T O   L I N E  ---------------------------------}
 Function TSOurceEditor.GotoLine(Value : Integer) : Integer;
+Var
+  P : TPoint;
 Begin
-  CurrentCursorYLine := Value;
-  CurrentCursorXLine := 0;
+  P.X := 0;
+  P.Y := Value;
+  FEditor.CaretXY := P;
 end;
 
 {------------------------------G O T O   M E T H O D ---------------------------------}
@@ -805,7 +808,7 @@ if Command >= ecFirstParent then
                           except
                             GotoLine(0);
                           end;
-                          TMainIDE(TSourceNotebook(FAOwner).MainIDE).SpeedButton4.Visible := False;
+TMainIDE(TSourceNotebook(FAOwner).MainIDE).speedbutton4.visible := not TMainIDE(TSourceNotebook(FAOwner).MainIDE).speedbutton4.visible;
                         end;
 
    ecPeriod : Begin
@@ -1130,6 +1133,7 @@ Begin
   end;
 
   sCompl.ItemList := S;
+
 End;
 
 Procedure TSourceEditor.ccOnTimer(sender : TObject);

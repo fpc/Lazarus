@@ -379,6 +379,9 @@ procedure GTKAPIWidgetClient_SetCaretPos(Client: PGTKAPIWidgetClient; AX, AY: In
 var
   IsVisible: Boolean;
 begin
+Writeln('[GTKAPIWIDGETCLIENT] SetCaretPos');
+Writeln('ax,ay = '+inttostr(ax)+','+Inttostr(ay));
+
   if Client = nil 
   then begin
     WriteLn('WARNING: [GTKAPIWidgetClient_SetCaretPos] Got nil client');
@@ -542,6 +545,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.2  2001/02/06 18:19:38  lazarus
+  Shane
+
   Revision 1.1  2000/07/13 10:28:30  michael
   + Initial import
 

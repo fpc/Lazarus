@@ -83,6 +83,7 @@ type
       Cursor_Cross : pGDKCursor;
       Cursor_Hand1 : pGDKCursor;
       Cursor_XTerm : pGDKCursor;
+      Cursor_StdArrow : pGDKCursor;
    public
       constructor Create; 
       destructor Destroy; override;
@@ -239,6 +240,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.6  2001/02/06 18:19:38  lazarus
+  Shane
+
   Revision 1.5  2001/02/01 19:34:50  lazarus
   TScrollbar created and a lot of code added.
 
