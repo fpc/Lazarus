@@ -1582,7 +1582,8 @@ End;
 
   Design: A callback to the TTimer class is implemented.
  ------------------------------------------------------------------------------}
-function TGtkWidgetSet.CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer;
+function TGtkWidgetSet.CreateTimer(Interval: integer;
+  TimerFunc: TFNTimerProc) : integer;
 var
   TimerInfo: PGtkITimerinfo;
 begin
@@ -7014,6 +7015,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.620  2005/01/22 22:26:16  mattias
+  added sprite example
+
   Revision 1.619  2005/01/18 00:59:49  marc
   * oops, fixed line end calculation
 

@@ -1725,6 +1725,7 @@ type
   TCustomControl = class(TWinControl)
   private
     FCanvas: TCanvas;
+    FOnPaint: TNotifyEvent;
   protected
     procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
     procedure PaintWindow(DC: HDC); override;
@@ -1733,9 +1734,10 @@ type
     destructor Destroy; override;
     procedure DestroyComponent; override;
     procedure Paint; virtual;
-
+  public
     property Canvas: TCanvas read FCanvas write FCanvas;
     property BorderStyle;
+    property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
   end;
 
 
@@ -2851,6 +2853,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.273  2005/01/22 22:26:16  mattias
+  added sprite example
+
   Revision 1.272  2005/01/21 11:52:01  micha
   cleanup focus; fix tabbing
 

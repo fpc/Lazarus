@@ -1,0 +1,21 @@
+object PlayGroundForm: TPlayGroundForm
+  Caption = 'PlayGroundForm'
+  ClientHeight = 300
+  ClientWidth = 400
+  OnClose = PlayGroundFormClose
+  OnCreate = PlayGroundFormCreate
+  OnDestroy = PlayGroundFormDestroy
+  PixelsPerInch = 90
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 299
+  Left = 305
+  Height = 300
+  Top = 224
+  Width = 400
+  object Timer1: TTimer
+    Interval = 100
+    OnTimer = Timer1Timer
+    left = 164
+    top = 49
+  end
+end

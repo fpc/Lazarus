@@ -2360,7 +2360,7 @@ begin
       Result:=GdkTrue; // timer will go on
     end
     else begin
-      Result := GdkFalse;       // stop timer
+      Result := GdkFalse; // stop timer
     end;
   end;
 
@@ -2376,7 +2376,7 @@ begin
     {$ENDIF}
     // timer will be stopped
     // -> free timer data, if not already done
-    if (FTimerData.IndexOf(Data)>=0) then begin
+    if (FTimerData<>nil) and (FTimerData.IndexOf(Data)>=0) then begin
       FTimerData.Remove(Data);
       Dispose (TimerInfo);     // free memory with timer data
     end;
@@ -2969,6 +2969,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.259  2005/01/22 22:26:16  mattias
+  added sprite example
+
   Revision 1.258  2005/01/11 19:01:51  mattias
   fixed adding main file in gtk filediaog twice
 

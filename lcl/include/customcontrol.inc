@@ -77,6 +77,7 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TCustomControl.Paint;
 begin
+  if Assigned(FOnPaint) then FOnPaint(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -121,6 +122,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2005/01/22 22:26:16  mattias
+  added sprite example
+
   Revision 1.11  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 
