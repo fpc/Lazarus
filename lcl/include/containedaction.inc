@@ -67,11 +67,8 @@ begin
     Count := ActionList.FActions.Count;
     if Value < 0 then Value := 0;
     if Value >= Count then Value := Count - 1;
-    if Value <> CurIndex then
-    begin
-      ActionList.FActions.Delete(CurIndex);
-      ActionList.FActions.Insert(Value, Self);
-    end;
+    if Value <> CurIndex
+    then ActionList.FActions.Move(CurIndex, Value);
   end;
 end;
 
