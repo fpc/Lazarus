@@ -48,6 +48,7 @@ unit DefineTemplates;
 {$mode objfpc}{$H+}
 
 { $Define VerboseDefineCache}
+{ $Define VerboseFPCSrcScan}
 
 interface
 
@@ -2985,7 +2986,9 @@ var
       i: integer;
       DefaultMacroCount: integer;
     begin
-      //writeln('Browse ',ADirPath);
+      {$IFDEF VerboseFPCSrcScan}
+      writeln('Browse ',ADirPath);
+      {$ENDIF}
       if ADirPath='' then exit;
       if not (ADirPath[length(ADirPath)]=PathDelim) then
         ADirPath:=ADirPath+PathDelim;
@@ -3086,7 +3089,13 @@ var
     // search
     if AnUnitName='' then exit;
     UnitLink:=FindUnitLink(AnUnitName);
-    //writeln('AddFPCSourceLinkForUnit ',AnUnitName,' ',UnitLink<>nil);
+    {$IFDEF VerboseFPCSrcScan}
+    write('AddFPCSourceLinkForUnit ',AnUnitName,' ');
+    if UnitLink<>nil then
+      writeln(' -> ',UnitLink.Filename)
+    else
+      writeln('MISSING');
+    {$ENDIF}
     if UnitLink=nil then exit;
     s:=AnUnitName+' '+UnitLink.Filename+LineEnding;
     UnitLinkList:=UnitLinkList+s;
@@ -3118,13 +3127,17 @@ var
         inc(PathEnd);
       if PathEnd>PathStart then begin
         ADirPath:=copy(UnitSearchPath,PathStart,PathEnd-PathStart);
-        //writeln('FindStandardPPUSources A ',ADirPath);
+        {$IFDEF VerboseFPCSrcScan}
+        writeln('FindStandardPPUSources Searching ',CurMask,' in ',ADirPath);
+        {$ENDIF}
         // search all ppu files in this directory
         if FindFirst(ADirPath+CurMask,faAnyFile,FileInfo)=0 then begin
           repeat
             UnitName:=ExtractFileName(FileInfo.Name);
             UnitName:=copy(UnitName,1,length(UnitName)-4);
-            //writeln('FindStandardPPUSources B ',UnitName);
+            {$IFDEF VerboseFPCSrcScan}
+            writeln('FindStandardPPUSources Found: ',UnitName);
+            {$ENDIF}
             AddFPCSourceLinkForUnit(UnitName);
           until FindNext(FileInfo)<>0;
         end;
@@ -3147,7 +3160,9 @@ var
   FCLDBInterbaseDir: TDefineTemplate;
   SrcPathMacro: String;
 begin
-  //writeln('CreateFPCSrcTemplate ',FPCSrcDir,': ',length(UnitSearchPath),' Valid=',UnitLinkListValid,' PPUExt=',PPUExt);
+  {$IFDEF VerboseFPCSrcScan}
+  writeln('CreateFPCSrcTemplate ',FPCSrcDir,': ',length(UnitSearchPath),' Valid=',UnitLinkListValid,' PPUExt=',PPUExt);
+  {$ENDIF}
   Result:=nil;
   if (FPCSrcDir='') or (not DirPathExists(FPCSrcDir)) then exit;
   DS:=PathDelim;
