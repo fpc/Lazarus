@@ -756,10 +756,10 @@ procedure EndGDKErrorTrap;
 
 implementation
 
+{$IFDEF USE_UTF8BIDI_LCL}
 uses
-  {$IFDEF USE_UTF8BIDI_LCL}
   utf8bidi;
-  {$ENDIF}
+{$ENDIF}
 
 const
   VKEY_FLAG_SHIFT    = $01;

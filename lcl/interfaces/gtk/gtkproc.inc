@@ -2167,7 +2167,7 @@ begin
       if (Event^.length>0) and (Event^.length<7) then begin
         SetLength(Character,Event^.length);
         System.Move(Event^.thestring^,Character[1],length(Character));
-      end
+      end;
 {$ELSE GTK1}
       Character := UnicodeToUTF8(gdk_keyval_to_unicode(Event^.KeyVal));
 {$ENDIF GTK1}
@@ -7235,6 +7235,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.301  2004/09/02 16:01:24  mazen
+  * fix compile probelm using gtk1
+
   Revision 1.300  2004/09/02 14:58:14  mazen
   * fixed theType/_Type related to GTK1/GTK2 difference
   * fix return error which causes GTK2 not to call AfterEvent

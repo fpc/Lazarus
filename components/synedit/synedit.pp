@@ -6359,12 +6359,11 @@ begin
                 Helper := Copy(Temp, CaretX, counter);
                 {$IFDEF SYN_LAZARUS}
 {$IFDEF USE_UTF8BIDI_LCL}
-WriteLn('passed her!');
                 CaretNew.X := CaretX;
-                utf8bidi.insert(Temp,AChar,CaretNew.X);
+                utf8bidi.insert(AChar,Temp,CaretNew.X);
                 CaretX := CaretNew.X;
 {$ELSE USE_UTF8BIDI_LCL}
-                insert(Temp,AChar,CaretX);
+                System.insert(AChar,Temp,CaretX);
 {$ENDIF USE_UTF8BIDI_LCL}
                 {$ELSE}
                 Temp[CaretX] := AChar;
