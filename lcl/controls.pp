@@ -927,6 +927,8 @@ procedure GetCursorValues(Proc: TGetStrProc);
 function CursorToIdent(Cursor: Longint; var Ident: string): Boolean;
 function IdentToCursor(const Ident: string; var Cursor: Longint): Boolean;
 
+function GetKeyShiftState: TShiftState;
+
 
 implementation
 
@@ -1195,6 +1197,17 @@ begin
   end;
 end;
 
+function GetKeyShiftState: TShiftState;
+begin
+  Result:=[];
+  if GetKeyState(VK_CONTROL)<>0 then
+    Include(Result,ssCtrl);
+  if GetKeyState(VK_SHIFT)<>0 then
+    Include(Result,ssShift);
+  if GetKeyState(VK_MENU)<>0 then
+    Include(Result,ssAlt);
+end;
+
 { Cursor translation function }
 
 const
@@ -1294,6 +1307,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.59  2002/08/23 19:00:15  lazarus
+  MG: implemented Ctrl+Mouse links in source editor
+
   Revision 1.58  2002/08/22 16:22:39  lazarus
   MG: started debugging of mouse capturing
 
