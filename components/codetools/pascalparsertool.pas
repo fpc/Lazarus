@@ -255,6 +255,7 @@ type
     function NodeIsPartOfTypeDefinition(ANode: TCodeTreeNode): boolean;
     function PropertyIsDefault(PropertyNode: TCodeTreeNode): boolean;
     function PropertyNodeHasParamList(PropNode: TCodeTreeNode): boolean;
+    function PropNodeIsTypeLess(PropNode: TCodeTreeNode): boolean;
     function ProcNodeHasParamList(ProcNode: TCodeTreeNode): boolean;
 
     procedure MoveCursorToUsesEnd(UsesNode: TCodeTreeNode);
@@ -3966,7 +3967,24 @@ begin
   ReadNextAtom; // read 'property'
   ReadNextAtom; // read name
   ReadNextAtom;
-  Result:=AtomIsChar('[');
+  Result:=(CurPos.Flag=cafEdgedBracketOpen);
+end;
+
+function TPascalParserTool.PropNodeIsTypeLess(PropNode: TCodeTreeNode
+  ): boolean;
+begin
+
+  // ToDo: ppu, ppw, dcu
+
+  Result:=false;
+  MoveCursorToNodeStart(PropNode);
+  ReadNextAtom; // read 'property'
+  ReadNextAtom; // read name
+  ReadNextAtom;
+  if CurPos.Flag=cafEdgedBracketOpen then
+    ReadTilBracketClose(true);
+  ReadNextAtom;
+  Result:=(CurPos.Flag<>cafColon);
 end;
 
 function TPascalParserTool.ProcNodeHasParamList(ProcNode: TCodeTreeNode

@@ -135,6 +135,7 @@ type
   TSynBaseCompletion = class(TComponent)
   private
     Form: TSynBaseCompletionForm;
+    OldPersistentCaret: boolean;
     FOnExecute: TNotifyEvent;
     FWidth: Integer;
     RFAnsi: boolean;
@@ -307,6 +308,7 @@ begin
   Scroll.Visible := True;
   FTextColor:=clBlack;
   FTextSelectedColor:=clWhite;
+  Caption:='Completion';
   {$ENDIF}
   Visible := false;
   FFontHeight := Canvas.TextHeight('Cyrille de Brebisson')+2;
@@ -655,8 +657,13 @@ end;
 {$ENDIF}
 
 procedure TSynBaseCompletion.Execute(s: string; x, y: integer);
+{$IFDEF SYN_LAZARUS}
+var
+  CurSynEdit: TSynEdit;
+{$ENDIF}
 begin
-  SetCaretRespondToFocus(TCustomSynEdit(Form.CurrentEditor).Handle,false);
+  //writeln('');
+  //writeln('TSynBaseCompletion.Execute ',Form.CurrentEditor.Name);
   CurrentString := s;
   if Assigned(OnExecute) then
     OnExecute(Self);
@@ -669,7 +676,12 @@ begin
     OnCancel(Form);
     exit;
   end;
-  
+
+  if (Form.CurrentEditor is TSynEdit) then begin
+    CurSynEdit:=TSynEdit(Form.CurrentEditor);
+    OldPersistentCaret:=eoPersistentCaret in CurSynEdit.Options;
+    CurSynEdit.Options:=CurSynEdit.Options+[eoPersistentCaret];
+  end;
   Form.SetBounds(x,y,Form.Width,Form.Height);
   Form.Color:=clNone;
   {$ELSE}
@@ -790,7 +802,18 @@ begin
 end;
 
 procedure TSynBaseCompletion.Deactivate;
+{$IFDEF SYN_LAZARUS}
+var
+  CurSynEdit: TSynEdit;
+{$ENDIF}
 begin
+  {$IFDEF SYN_LAZARUS}
+  if (not OldPersistentCaret)
+  and (Form<>nil) and (Form.CurrentEditor is TSynEdit) then begin
+    CurSynEdit:=TSynEdit(Form.CurrentEditor);
+    CurSynEdit.Options:=CurSynEdit.Options-[eoPersistentCaret];
+  end;
+  {$ENDIF}
   if Assigned(Form) then Form.Deactivate;
 end;
 

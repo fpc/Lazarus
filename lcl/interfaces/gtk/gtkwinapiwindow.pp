@@ -34,8 +34,6 @@ unit GTKWinapiWindow;
 
 interface
 
-{$DEFINE WinAPIChilds : use GtkFixed as client area, to allow childs }
-
 uses
   {$IFDEF gtk2}
   glib2, gdk2pixbuf, gdk2, gtk2,
@@ -43,6 +41,8 @@ uses
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
   SysUtils;
+
+{ $Define VerboseCaret}
 
 type
   PGTKAPIWidget = ^TGTKAPIWidget;
@@ -68,6 +68,8 @@ procedure GTKAPIWidget_SetCaretPos(APIWidget: PGTKAPIWidget; X, Y: Integer);
 procedure GTKAPIWidget_GetCaretPos(APIWidget: PGTKAPIWidget; var X, Y: Integer); 
 procedure GTKAPIWidget_SetCaretRespondToFocus(APIWidget: PGTKAPIWidget;
   ShowHideOnFocus: boolean); 
+procedure GTKAPIWidget_GetCaretRespondToFocus(APIWidget: PGTKAPIWidget;
+  var ShowHideOnFocus: boolean);
 
 implementation
 
@@ -92,10 +94,7 @@ type
   PGTKAPIWidgetClient = ^TGTKAPIWidgetClient;
   TGTKAPIWidgetClient = record
     // ! the Widget must be the first attribute of the record !
-    Widget: {$IFDEF WinApiChilds}TGtkFixed{$ELSE}TGtkWidget{$ENDIF};
-    {$IFNDEF WinApiChilds}
-    OtherWindow: PGDKWindow;
-    {$ENDIF}
+    Widget: TGtkFixed;
     Caret: TCaretInfo;
   end;
   
@@ -135,7 +134,8 @@ procedure GTKAPIWidgetClient_GetCaretPos(Client: PGTKAPIWidgetClient;
   var X, Y: Integer); forward;
 procedure GTKAPIWidgetClient_SetCaretRespondToFocus(Client: PGTKAPIWidgetClient;
   ShowHideOnFocus: boolean); forward;
-
+procedure GTKAPIWidgetClient_GetCaretRespondToFocus(Client: PGTKAPIWidgetClient;
+  var ShowHideOnFocus: boolean); forward;
 
 
 function GTKAPIWidgetClient_Timer(Client: Pointer): gint; cdecl;
@@ -156,16 +156,9 @@ procedure GTKAPIWidgetClient_Realize(Widget: PGTKWidget); cdecl;
 var
   Attributes: TGdkWindowAttr;
   AttributesMask: gint;
-  {$IFNDEF WinAPIChilds}
-  Client: PGTKAPIWidgetClient;
-  {$ENDIF}
 begin
 //  Assert(False, 'Trace:[GTKAPIWidgetClient_Realize]');
   gtk_widget_set_flags(Widget, GTK_REALIZED);
-
-  {$IFNDEF WinAPIChilds}
-  Client := PGTKAPIWidgetClient(Widget);
-  {$ENDIF}
 
   with Attributes do
   begin
@@ -198,11 +191,6 @@ begin
 //    Cursor := gdk_cursor_new(GDK_XTERM);
   end;
 //  AttributesMask := AttributesMask or GDK_WA_CURSOR;
-
-  {$IFNDEF WinApiChilds}
-  Client^.OtherWindow := gdk_window_new(Widget^.Window, @Attributes, AttributesMask);
-  gdk_window_set_user_data (Client^.OtherWindow, Client);
-  {$ENDIF}
 
   Widget^.theStyle := gtk_style_attach(Widget^.theStyle, Widget^.Window);
 
@@ -357,9 +345,7 @@ const
   );
 begin
   if (TheType = 0) then
-    TheType := gtk_type_unique(
-              {$IFDEF WinApiChilds}gtk_fixed_type{$ELSE}gtk_widget_type{$ENDIF},
-                               @Info);
+    TheType := gtk_type_unique(gtk_fixed_type,@Info);
   Result := TheType;
 end;
 
@@ -376,6 +362,9 @@ begin
     WriteLn('WARNING: [GTKAPIWidgetClient_HideCaret] Got nil client');
     Exit;
   end;
+  {$IFDEF VerboseCaret}
+  writeln('GTKAPIWidgetClient_HideCaret ',HexStr(Cardinal(Client),8),' ShowHideOnFocus=',Client^.Caret.ShowHideOnFocus);
+  {$ENDIF}
   Client^.Caret.Visible := False;
   GTKAPIWidgetClient_DrawCaret(Client);
 end;
@@ -408,6 +397,10 @@ begin
       Timer := 0;
     end;
     if IsDrawn and ((not Visible) or Blinking) then begin
+      {$IFDEF VerboseCaret}
+      writeln('GTKAPIWidgetClient_DrawCaret ',HexStr(Cardinal(Client),8),
+        ' Hiding Caret IsDrawn=',IsDrawn,' Visible=',Visible,' Blinking=',Blinking);
+      {$ENDIF}
       // hide caret
       if (BackPixmap <> nil) and (Widget<>nil) and (Widget^.theStyle<>nil)
       then gdk_draw_pixmap(
@@ -446,12 +439,14 @@ begin
       );
 
       // draw caret
-      {writeln('GTKAPIWidgetClient_DrawCaret B Client=',HexStr(Cardinal(Client),8)
+      {$IFDEF VerboseCaret}
+      writeln('GTKAPIWidgetClient_DrawCaret B Client=',HexStr(Cardinal(Client),8)
       ,' ',cardinal(PGTKWidget(Client)^.theStyle)
       ,' ',cardinal(PGTKWidget(Client)^.Window)
       ,' ',Width
       ,' ',Height
-      );}
+      );
+      {$ENDIF}
       if (PGTKWidget(Client)^.theStyle<>nil) 
       and (PGTKWidget(Client)^.Window<>nil)
       and (Width>0) and (Height>0) then begin
@@ -460,6 +455,9 @@ begin
            PGTKWidget(Client)^.theStyle)^.fg_gc[GC_STATE[Integer(Pixmap) <> 1]];
         //gdk_gc_get_values(ForeGroundGC,@ForeGroundGCValues);
         //OldGdkFunction:=ForeGroundGCValues.thefunction;
+        {$IFDEF VerboseCaret}
+        writeln('GTKAPIWidgetClient_DrawCaret ',HexStr(Cardinal(Client),8),' Real Drawing Caret ');
+        {$ENDIF}
         gdk_gc_set_function(ForeGroundGC,GDK_invert);
         try
           // draw the caret
@@ -497,6 +495,9 @@ begin
     Exit;
   end;
   
+  {$IFDEF VerboseCaret}
+  writeln('GTKAPIWidgetClient_ShowCaret ',HexStr(Cardinal(Client),8));
+  {$ENDIF}
   Client^.Caret.Visible := True;
   GTKAPIWidgetClient_DrawCaret(Client);
 end;
@@ -506,7 +507,9 @@ procedure GTKAPIWidgetClient_CreateCaret(Client: PGTKAPIWidgetClient;
 var
   IsVisible: Boolean;
 begin
-  //writeln('********** [GTKAPIWidgetClient_CreateCaret] A Client=',HexStr(Cardinal(Client),8),' Width=',AWidth,' Height=',AHeight,' Bitmap=',ABitmap<>nil);
+  {$IFDEF VerboseCaret}
+  writeln('********** [GTKAPIWidgetClient_CreateCaret] A Client=',HexStr(Cardinal(Client),8),' Width=',AWidth,' Height=',AHeight,' Bitmap=',ABitmap<>nil);
+  {$ENDIF}
   if Client = nil 
   then begin
     WriteLn('WARNING: [GTKAPIWidgetClient_CreateCaret] Got nil client');
@@ -534,7 +537,9 @@ end;
 
 procedure GTKAPIWidgetClient_DestroyCaret(Client: PGTKAPIWidgetClient); 
 begin
-  //writeln('********** [GTKAPIWidgetClient_DestroyCaret] A Client=',HexStr(Cardinal(Client),8));
+  {$IFDEF VerboseCaret}
+  writeln('********** [GTKAPIWidgetClient_DestroyCaret] A Client=',HexStr(Cardinal(Client),8));
+  {$ENDIF}
   if Client = nil 
   then begin
     WriteLn('WARNING: [GTKAPIWidgetClient_DestroyCaret] Got nil client');
@@ -550,7 +555,9 @@ begin
     end;
     Pixmap := nil;
   end;
-  //writeln('********** B[GTKAPIWidgetClient_DestroyCaret] A Client=',HexStr(Cardinal(Client),8));
+  {$IFDEF VerboseCaret}
+  writeln('********** B[GTKAPIWidgetClient_DestroyCaret] A Client=',HexStr(Cardinal(Client),8));
+  {$ENDIF}
 end;
 
 procedure GTKAPIWidgetClient_SetCaretPos(Client: PGTKAPIWidgetClient;
@@ -558,7 +565,9 @@ procedure GTKAPIWidgetClient_SetCaretPos(Client: PGTKAPIWidgetClient;
 var
   IsVisible: Boolean;
 begin
-  //Writeln('[GTKAPIWIDGETCLIENT] SetCaretPos '+inttostr(ax)+','+Inttostr(ay));
+  {$IFDEF VerboseCaret}
+  Writeln('[GTKAPIWIDGETCLIENT] SetCaretPos '+inttostr(ax)+','+Inttostr(ay));
+  {$ENDIF}
 
   if Client = nil 
   then begin
@@ -592,7 +601,10 @@ end;
 procedure GTKAPIWidgetClient_SetCaretRespondToFocus(Client: PGTKAPIWidgetClient;
   ShowHideOnFocus: boolean);
 begin
-  if Client = nil 
+  {$IFDEF VerboseCaret}
+  writeln('[GTKAPIWidgetClient_SetCaretRespondToFocus] A ',ShowHideOnFocus);
+  {$ENDIF}
+  if Client = nil
   then begin
     WriteLn(
       'WARNING: [GTKAPIWidgetClient_SetCaretRespondToFocus] Got nil client');
@@ -600,6 +612,19 @@ begin
   end;
   
   Client^.Caret.ShowHideOnFocus:=ShowHideOnFocus;
+end;
+
+procedure GTKAPIWidgetClient_GetCaretRespondToFocus(Client: PGTKAPIWidgetClient;
+  var ShowHideOnFocus: boolean);
+begin
+  if Client = nil
+  then begin
+    WriteLn(
+      'WARNING: [GTKAPIWidgetClient_GetCaretRespondToFocus] Got nil client');
+    Exit;
+  end;
+
+  ShowHideOnFocus:=Client^.Caret.ShowHideOnFocus;
 end;
 
 //---------------------------------------------------------------------------
@@ -721,7 +746,9 @@ end;
 
 procedure GTKAPIWidget_HideCaret(APIWidget: PGTKAPIWidget); 
 begin
-//writeln('[GTKAPIWidget_HideCaret] A');
+  {$IFDEF VerboseCaret}
+  writeln('[GTKAPIWidget_HideCaret] A');
+  {$ENDIF}
   if APIWidget = nil 
   then begin
     WriteLn('WARNING: [GTKAPIWidget_HideCaret] Got nil client');
@@ -732,7 +759,10 @@ end;
 
 procedure GTKAPIWidget_ShowCaret(APIWidget: PGTKAPIWidget); 
 begin
-  if APIWidget = nil 
+  {$IFDEF VerboseCaret}
+  writeln('[GTKAPIWidget_ShowCaret] A');
+  {$ENDIF}
+  if APIWidget = nil
   then begin
     WriteLn('WARNING: [GTKAPIWidget_ShowCaret] Got nil client');
     Exit;
@@ -742,7 +772,10 @@ end;
 
 procedure GTKAPIWidget_SetCaretPos(APIWidget: PGTKAPIWidget; X, Y: Integer);
 begin
-  if APIWidget = nil 
+  {$IFDEF VerboseCaret}
+  writeln('[GTKAPIWidget_SetCaretPos] A');
+  {$ENDIF}
+  if APIWidget = nil
   then begin
     WriteLn('WARNING: [GTKAPIWidget_SetCaretPos] Got nil client');
     Exit;
@@ -763,7 +796,10 @@ end;
 procedure GTKAPIWidget_SetCaretRespondToFocus(APIWidget: PGTKAPIWidget;
   ShowHideOnFocus: boolean); 
 begin
-  if APIWidget = nil 
+  {$IFDEF VerboseCaret}
+  writeln('[GTKAPIWidget_SetCaretRespondToFocus] A ',ShowHideOnFocus);
+  {$ENDIF}
+  if APIWidget = nil
   then begin
     WriteLn('WARNING: [GTKAPIWidget_SetCaretRespondToFocus] Got nil client');
     Exit;
@@ -772,11 +808,27 @@ begin
     PGTKAPIWidgetClient(APIWidget^.Client), ShowHideOnFocus);
 end;
 
+procedure GTKAPIWidget_GetCaretRespondToFocus(APIWidget: PGTKAPIWidget;
+  var ShowHideOnFocus: boolean);
+begin
+  if APIWidget = nil
+  then begin
+    WriteLn('WARNING: [GTKAPIWidget_GetCaretRespondToFocus] Got nil client');
+    Exit;
+  end;
+  GTKAPIWidgetClient_GetCaretRespondToFocus(
+    PGTKAPIWidgetClient(APIWidget^.Client), ShowHideOnFocus);
+end;
+
+
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.43  2002/12/30 17:24:08  mattias
+  added history to identifier completion
+
   Revision 1.42  2002/12/23 10:28:02  mattias
   fixed setting background
 

@@ -44,6 +44,7 @@ interface
 {$DEFINE CTDEBUG}
 { $DEFINE ShowFoundIdents}
 { $DEFINE ShowFilteredIdents}
+{$DEFINE ShowHistory}
 
 // new features
 { $DEFINE IgnoreErrorAfterCursor}
@@ -60,6 +61,10 @@ uses
 
 type
   TIdentCompletionTool = class;
+  TIdentifierHistoryList = class;
+
+  //----------------------------------------------------------------------------
+  // gathered identifier list
 
   TIdentifierCompatibility = (
     icompExact,
@@ -88,8 +93,10 @@ type
   private
     FFilteredList: TList;
     FFlags: TIdentifierListFlags;
-    FItems: TAVLTree;
+    FHistory: TIdentifierHistoryList;
+    FItems: TAVLTree; // tree of TIdentifierListItem
     FPrefix: string;
+    procedure SetHistory(const AValue: TIdentifierHistoryList);
     procedure UpdateFilteredList;
     function GetFilteredItems(Index: integer): TIdentifierListItem;
     procedure SetPrefix(const AValue: string);
@@ -104,7 +111,39 @@ type
     property Prefix: string read FPrefix write SetPrefix;
     property FilteredItems[Index: integer]: TIdentifierListItem
       read GetFilteredItems;
+    property History: TIdentifierHistoryList read FHistory write SetHistory;
   end;
+  
+  //----------------------------------------------------------------------------
+  // history list
+
+  TIdentHistListItem = class
+  public
+    Identifier: string;
+    NodeDesc: TCodeTreeNodeDesc;
+    ParamList: string;
+    HistoryIndex: integer;
+  end;
+
+  TIdentifierHistoryList = class
+  private
+    FCapacity: integer;
+    FItems: TAVLTree; // tree of TIdentHistListItem
+    procedure SetCapacity(const AValue: integer);
+    function FindItem(NewItem: TIdentifierListItem): TAVLTreeNode;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    procedure Add(NewItem: TIdentifierListItem);
+    function GetHistoryIndex(AnItem: TIdentifierListItem): integer;
+    function Count: integer;
+  public
+    property Capacity: integer read FCapacity write SetCapacity;
+  end;
+
+  //----------------------------------------------------------------------------
+  // TIdentCompletionTool
 
   TIdentCompletionTool = class(TFindDeclarationTool)
   private
@@ -167,10 +206,47 @@ begin
 
   // then sort alpabetically (lower is better)
   Result:=CompareIdentifiers(Item1.Identifier,Item2.Identifier);
+end;
+
+function CompareIdentHistListItem(Data1, Data2: Pointer): integer;
+var
+  Item1: TIdentHistListItem;
+  Item2: TIdentHistListItem;
+begin
+  Item1:=TIdentHistListItem(Data1);
+  Item2:=TIdentHistListItem(Data2);
+
+  Result:=CompareIdentifiers(PChar(Item1.Identifier),PChar(Item2.Identifier));
   if Result<>0 then exit;
 
-  // no difference found
-  Result:=0;
+  Result:=CompareIdentifiers(PChar(Item1.ParamList),PChar(Item2.ParamList));
+end;
+
+function GetParamList(IdentItem: TIdentifierListItem): string;
+begin
+  Result:='';
+  case IdentItem.Node.Desc of
+  ctnProcedure:
+    Result:=IdentItem.Tool.ExtractProcHead(IdentItem.Node,
+      [phpWithoutClassKeyword,phpWithoutClassName,phpWithoutName,phpInUpperCase]);
+  end;
+end;
+
+function CompareIdentItemWithHistListItem(Data1, Data2: Pointer): integer;
+var
+  IdentItem: TIdentifierListItem;
+  HistItem: TIdentHistListItem;
+  ParamList: String;
+begin
+  IdentItem:=TIdentifierListItem(Data1);
+  HistItem:=TIdentHistListItem(Data2);
+
+  Result:=CompareIdentifiers(IdentItem.Identifier,PChar(HistItem.Identifier));
+  if Result<>0 then exit;
+
+  ParamList:=GetParamList(IdentItem);
+  if (ParamList<>'') then
+    Result:=AnsiCompareText(ParamList,HistItem.ParamList);
 end;
 
 { TIdentifierList }
@@ -208,6 +284,12 @@ begin
   Exclude(FFlags,ilfFilteredListNeedsUpdate);
 end;
 
+procedure TIdentifierList.SetHistory(const AValue: TIdentifierHistoryList);
+begin
+  if FHistory=AValue then exit;
+  FHistory:=AValue;
+end;
+
 function TIdentifierList.GetFilteredItems(Index: integer): TIdentifierListItem;
 begin
   UpdateFilteredList;
@@ -239,6 +321,8 @@ end;
 
 procedure TIdentifierList.Add(NewItem: TIdentifierListItem);
 begin
+  if History<>nil then
+    NewItem.HistoryIndex:=History.GetHistoryIndex(NewItem);
   FItems.Add(NewItem);
   Include(FFlags,ilfFilteredListNeedsUpdate);
 end;
@@ -299,7 +383,10 @@ begin
     Ident:=FoundContext.Tool.GetProcNameIdentifier(FoundContext.Node);
     
   ctnProperty:
-    Ident:=FoundContext.Tool.GetPropertyNameIdentifier(FoundContext.Node);
+    begin
+      if FoundContext.Tool.PropNodeIsTypeLess(FoundContext.Node) then exit;
+      Ident:=FoundContext.Tool.GetPropertyNameIdentifier(FoundContext.Node);
+    end;
     
   end;
   if Ident=nil then exit;
@@ -432,6 +519,107 @@ begin
   Result:=Result+' File='+Tool.MainFilename;
   Result:=Result+' Node='+Node.DescAsString
     +' "'+StringToPascalConst(copy(Tool.Src,Node.StartPos,50))+'"';
+end;
+
+{ TIdentifierHistoryList }
+
+procedure TIdentifierHistoryList.SetCapacity(const AValue: integer);
+begin
+  if FCapacity=AValue then exit;
+  FCapacity:=AValue;
+  if FCapacity<1 then FCapacity:=1;
+  while (FItems.Count>0) and (FItems.Count>=FCapacity) do
+    FItems.FreeAndDelete(FItems.FindHighest);
+end;
+
+function TIdentifierHistoryList.FindItem(NewItem: TIdentifierListItem
+  ): TAVLTreeNode;
+begin
+  if NewItem<>nil then
+    Result:=FItems.FindKey(NewItem,@CompareIdentItemWithHistListItem)
+  else
+    Result:=nil;
+end;
+
+constructor TIdentifierHistoryList.Create;
+begin
+  FItems:=TAVLTree.Create(@CompareIdentHistListItem);
+  FCapacity:=30;
+end;
+
+destructor TIdentifierHistoryList.Destroy;
+begin
+  Clear;
+  FItems.Free;
+  inherited Destroy;
+end;
+
+procedure TIdentifierHistoryList.Clear;
+begin
+  FItems.FreeAndClear;
+end;
+
+procedure TIdentifierHistoryList.Add(NewItem: TIdentifierListItem);
+var
+  OldAVLNode: TAVLTreeNode;
+  NewHistItem: TIdentHistListItem;
+  AnAVLNode: TAVLTreeNode;
+  AdjustIndex: Integer;
+  AnHistItem: TIdentHistListItem;
+begin
+  if NewItem=nil then exit;
+  OldAVLNode:=FindItem(NewItem);
+  {$IFDEF ShowHistory}
+  writeln('TIdentifierHistoryList.Add Count=',Count,' Found=',OldAVLNode<>nil,
+    ' ITEM: ',NewItem.AsString);
+  {$ENDIF}
+  if OldAVLNode<>nil then begin
+    // already in tree
+    NewHistItem:=TIdentHistListItem(OldAVLNode.Data);
+    if NewHistItem.HistoryIndex=0 then exit;
+    // must be moved -> remove it from the tree
+    AdjustIndex:=NewHistItem.HistoryIndex;
+    FItems.Delete(OldAVLNode);
+  end else begin
+    // create a new history item
+    NewHistItem:=TIdentHistListItem.Create;
+    NewHistItem.Identifier:=GetIdentifier(NewItem.Identifier);
+    NewHistItem.NodeDesc:=NewItem.Node.Desc;
+    NewHistItem.ParamList:=GetParamList(NewItem);
+    AdjustIndex:=0;
+  end;
+  NewHistItem.HistoryIndex:=0;
+  // adjust all other HistoryIndex
+  AnAVLNode:=Fitems.FindLowest;
+  while AnAVLNode<>nil do begin
+    AnHistItem:=TIdentHistListItem(AnAVLNode.Data);
+    if AnHistItem.HistoryIndex>=AdjustIndex then
+      inc(AnHistItem.HistoryIndex);
+    AnAVLNode:=FItems.FindSuccessor(AnAVLNode);
+  end;
+  if (FItems.Count>0) and (FItems.Count>=FCapacity) then
+    FItems.FreeAndDelete(FItems.FindHighest);
+  FItems.Add(NewHistItem);
+  {$IFDEF ShowHistory}
+  writeln('TIdentifierHistoryList.Added Count=',Count);
+  {$ENDIF}
+end;
+
+function TIdentifierHistoryList.GetHistoryIndex(AnItem: TIdentifierListItem
+  ): integer;
+var
+  AnAVLNode: TAVLTreeNode;
+begin
+  AnAVLNode:=FindItem(AnItem);
+  if AnAVLNode=nil then
+    Result:=3333333  // a very high value
+  else
+    Result:=TIdentHistListItem(AnAVLNode.Data).HistoryIndex;
+end;
+
+function TIdentifierHistoryList.Count: integer;
+begin
+  Result:=FItems.Count;
 end;
 
 end.

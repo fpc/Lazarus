@@ -128,6 +128,7 @@ type
     SourceChangeCache: TSourceChangeCache; // cache for write accesses
     GlobalValues: TExpressionEvaluator;
     IdentifierList: TIdentifierList;
+    IdentifierHistory: TIdentifierHistoryList;
     
     procedure ActivateWriteLock;
     procedure DeactivateWriteLock;
@@ -384,10 +385,13 @@ begin
   FCursorBeyondEOL:=true;
   FIndentSize:=2;
   FJumpCentered:=true;
-  FSourceExtensions:='.pp;.pas;.lpr;.dpr;.dpk';
+  FSourceExtensions:='.pp;.pas;.lpr;.lpk;.dpr;.dpk';
   FVisibleEditorLines:=20;
   FWriteExceptions:=true;
   FSourceTools:=TAVLTree.Create(@CompareCodeToolMainSources);
+  IdentifierList:=TIdentifierList.Create;
+  IdentifierHistory:=TIdentifierHistoryList.Create;
+  IdentifierList.History:=IdentifierHistory;
 end;
 
 destructor TCodeToolManager.Destroy;
@@ -399,6 +403,7 @@ begin
   {$IFDEF CTDEBUG}
   writeln('[TCodeToolManager.Destroy] B');
   {$ENDIF}
+  IdentifierHistory.Free;
   IdentifierList.Free;
   FSourceTools.FreeAndClear;
   FSourceTools.Free;
@@ -559,6 +564,7 @@ begin
   fErrorMsg:='';
   fErrorCode:=nil;
   fErrorLine:=-1;
+  if IdentifierList<>nil then IdentifierList.Clear;
   MainCode:=GetMainCode(Code);
   if MainCode=nil then begin
     fErrorMsg:='TCodeToolManager.InitCurCodeTool MainCode=nil';
