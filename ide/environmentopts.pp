@@ -640,8 +640,8 @@ var i: integer;
 begin
   i:=RecentList.Count-1;
   while i>=0 do begin
-    if RecentList[i]=AFilename then RecentList.Delete(i)
-    else dec(i);
+    if RecentList[i]=AFilename then RecentList.Delete(i);
+    dec(i);
   end;
   RecentList.Insert(0,AFilename);
   if Max>0 then

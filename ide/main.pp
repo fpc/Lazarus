@@ -76,6 +76,7 @@ type
     itmFileNew : TMenuItem;
     itmFileNewForm : TMenuItem;
     itmFileOpen: TMenuItem;
+    itmFileRecentOpen: TMenuItem;
     itmFileSave: TMenuItem; 
     itmFileSaveAs: TMenuItem; 
     itmFileSaveAll: TMenuItem; 
@@ -84,6 +85,7 @@ type
 
     itmProjectNew: TMenuItem;
     itmProjectOpen: TMenuItem;
+    itmProjectRecentOpen: TMenuItem;
     itmProjectSave: TMenuItem;
     itmProjectSaveAs: TMenuItem;
     itmProjectAddTo: TMenuItem;
@@ -132,11 +134,11 @@ type
 
     procedure mnuNewUnitClicked(Sender : TObject);
     procedure mnuNewFormClicked(Sender : TObject);
+    procedure mnuOpenClicked(Sender : TObject);
+    procedure mnuOpenFileAtCursorClicked(Sender : TObject);
     procedure mnuSaveClicked(Sender : TObject);
     procedure mnuSaveAsClicked(Sender : TObject);
     procedure mnuSaveAllClicked(Sender : TObject);
-    procedure mnuOpenClicked(Sender : TObject);
-    procedure mnuOpenFileAtCursorClicked(Sender : TObject);
     procedure mnuCloseClicked(Sender : TObject);
     procedure mnuQuitClicked(Sender : TObject);
 
@@ -286,7 +288,6 @@ type
 
 
 
-
 const
   CapLetters = ['A'..'Z'];
   SmallLetters = ['a'..'z'];
@@ -318,7 +319,9 @@ begin
     try
       ms.Write(res.Value[1],length(res.Value));
       ms.Position:=0;
+//writeln('LoadPixmapRes "',ResourceName,'" ');      
       Pixmap.LoadFromStream(ms);
+      
       Result:=true;
     finally
       ms.Free;
@@ -329,7 +332,7 @@ end;
 function LoadSpeedBtnPixMap(const ResourceName:string):TPixmap;
 begin
   Result:=TPixmap.Create;
-  Result.TransparentColor:=clBtnFace;
+  Result.TransparentColor:=clNone;
   if not LoadPixmapRes(ResourceName,Result) then
     LoadPixmapRes('default',Result);
 end;
@@ -647,11 +650,12 @@ procedure TMainIDE.LoadSpeedbuttons;
       OnClick := AOnClick;
       Glyph := LoadSpeedBtnPixMap(APixName);
       NumGlyphs := ANumGlyphs;
-      Visible := True;
       Flat := True;
-      
+      //Transparent:=True;
       if mfTop in AMoveFlags then Inc(ATop, Height + 1);
       if mfLeft in AMoveFlags then Inc(ALeft, Width + 1);
+//writeln('---- W=',Width,',',Height,' Transparent=',Transparent);
+      Visible := True;
     end;
   end;
 var
@@ -678,19 +682,18 @@ begin
   // store left
   n := ButtonLeft;
   OpenFileArrowSpeedBtn := CreateButton('OpenFileArrowSpeedBtn', 'btn_downarrow' , 1, ButtonLeft, ButtonTop, [mfLeft], @OpenFileDownArrowClicked);
-  OpenFileArrowSpeedBtn. Width := 12;
-  ButtonLeft := n;
-  Inc(ButtonLeft, 12);
+  OpenFileArrowSpeedBtn.Width := 12;
+  ButtonLeft := n+12;
   
-  SaveSpeedBtn          := CreateButton('SaveSpeedBtn'         , 'btn_save'      , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveClicked);
-  SaveAllSpeedBtn       := CreateButton('SaveAllSpeedBtn'      , 'btn_saveall'   , 2, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuSaveAllClicked);
+  SaveSpeedBtn          := CreateButton('SaveSpeedBtn'         , 'btn_save'      , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveClicked);
+  SaveAllSpeedBtn       := CreateButton('SaveAllSpeedBtn'      , 'btn_saveall'   , 1, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuSaveAllClicked);
   // new row
   ButtonLeft := 0;
   ViewUnitsSpeedBtn     := CreateButton('ViewUnitsSpeedBtn'    , 'btn_viewunits' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewUnitsClicked);
   ViewFormsSpeedBtn     := CreateButton('ViewFormsSpeedBtn'    , 'btn_viewforms' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewFormsClicked);   
   ToggleFormSpeedBtn    := CreateButton('ToggleFormSpeedBtn'   , 'btn_toggleform', 1, ButtonLeft, ButtonTop, [mfLeft], @mnuToggleFormUnitCLicked);
   NewFormSpeedBtn       := CreateButton('NewFormSpeedBtn'      , 'btn_newform'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewFormClicked);
-  RunSpeedButton        := CreateButton('RunSpeedButton'       , 'btn_run'       , 2, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuRunProjectClicked);
+  RunSpeedButton        := CreateButton('RunSpeedButton'       , 'btn_run'       , 1, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuRunProjectClicked);
   
 //  pnlSpeedButtons.Width := ButtonLeft;
 //  pnlSpeedButtons.Height := ButtonTop;
@@ -711,6 +714,21 @@ end;
 
 {------------------------------------------------------------------------------}
 procedure TMainIDE.LoadMainMenu;
+
+  procedure AddRecentSubMenu(ParentMenuItem: TMenuItem; FileList: TStringList;
+    OnClickEvent: TNotifyEvent);
+  var i: integer;
+    NewMenuItem: TMenuItem;
+  begin
+    for i:=0 to FileList.Count-1 do begin
+      NewMenuItem:= TMenuItem.Create(Self);
+      NewMenuItem.Name:=ParentMenuItem.Name+'Recent'+IntToStr(i);
+      NewMenuItem.Caption := FileList[i];
+      NewMenuItem.OnClick := OnClickEvent;
+      ParentMenuItem.Add(NewMenuItem);
+    end;
+  end;
+
 begin
 
 //--------------
@@ -771,11 +789,21 @@ begin
   itmFileNewForm.OnClick := @mnuNewFormClicked;
   mnuFile.Add(itmFileNewForm);
 
+  mnuFile.Add(CreateSeperator);
+
   itmFileOpen := TMenuItem.Create(Self);
   itmFileOpen.Name:='itmFileOpen';
   itmFileOpen.Caption := 'Open';
   itmFileOpen.OnClick := @mnuOpenClicked;
   mnuFile.Add(itmFileOpen);
+
+  itmFileRecentOpen := TMenuItem.Create(Self);
+  itmFileRecentOpen.Name:='itmFileRecentOpen';
+  itmFileRecentOpen.Caption := 'Open Recent';
+  mnuFile.Add(itmFileRecentOpen);
+  
+  AddRecentSubMenu(itmFileRecentOpen,EnvironmentOptions.RecentOpenFiles,
+                    @mnuOpenClicked);
 
   itmFileSave := TMenuItem.Create(Self);
   itmFileSave.Name:='itmFileSave';
@@ -918,9 +946,17 @@ begin
 
   itmProjectOpen := TMenuItem.Create(Self);
   itmProjectOpen.Name:='itmProjectOpen';
-  itmProjectOpen.Caption := 'Open Project...';
+  itmProjectOpen.Caption := 'Open Project';
   itmProjectOpen.OnClick := @mnuOpenProjectClicked;
   mnuProject.Add(itmProjectOpen);
+
+  itmProjectRecentOpen := TMenuItem.Create(Self);
+  itmProjectRecentOpen.Name:='itmProjectRecentOpen';
+  itmProjectRecentOpen.Caption := 'Open Recent Project';
+  mnuProject.Add(itmProjectRecentOpen);
+  
+  AddRecentSubMenu(itmProjectRecentOpen,EnvironmentOptions.RecentProjectFiles,
+                   @mnuOpenProjectClicked);
 
   itmProjectSave := TMenuItem.Create(Self);
   itmProjectSave.Name:='itmProjectSave';
@@ -1151,20 +1187,28 @@ procedure TMainIDE.mnuOpenClicked(Sender : TObject);
 var OpenDialog:TOpenDialog;
   AFilename: string;
 begin
-  OpenDialog:=TOpenDialog.Create(Application);
-  try
-    OpenDialog.Title:='Open file';
-    OpenDialog.InitialDir:=EnvironmentOptions.LastOpenDialogDir;
-    if OpenDialog.Execute then begin
-      AFilename:=ExpandFilename(OpenDialog.Filename);
-      EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(AFilename);
-      if DoOpenEditorFile(AFilename,false)=mrOk then begin
-        EnvironmentOptions.AddToRecentOpenFiles(AFilename);
-        SaveEnvironment;
+  if Sender=itmFileOpen then begin
+    OpenDialog:=TOpenDialog.Create(Application);
+    try
+      OpenDialog.Title:='Open file';
+      OpenDialog.InitialDir:=EnvironmentOptions.LastOpenDialogDir;
+      if OpenDialog.Execute then begin
+        AFilename:=ExpandFilename(OpenDialog.Filename);
+        EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(AFilename);
+        if DoOpenEditorFile(AFilename,false)=mrOk then begin
+          EnvironmentOptions.AddToRecentOpenFiles(AFilename);
+          SaveEnvironment;
+        end;
       end;
+    finally
+      OpenDialog.Free;
     end;
-  finally
-    OpenDialog.Free;
+  end else if Sender is TMenuItem then begin
+    AFileName:=ExpandFilename(TMenuItem(Sender).Caption);
+    if DoOpenEditorFile(AFilename,false)=mrOk then begin
+      EnvironmentOptions.AddToRecentOpenFiles(AFilename);
+      SaveEnvironment;
+    end;
   end;
 end;
 
@@ -1406,20 +1450,28 @@ Procedure TMainIDE.mnuOpenProjectClicked(Sender : TObject);
 var OpenDialog:TOpenDialog;
   AFileName: string;
 begin
-  OpenDialog:=TOpenDialog.Create(Application);
-  try
-    OpenDialog.Title:='Open Project File (*.lpi)';
-    OpenDialog.InitialDir:=EnvironmentOptions.LastOpenDialogDir;
-    if OpenDialog.Execute then begin
-      AFilename:=ExpandFilename(OpenDialog.Filename);
-      EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(AFilename);
-      if DoOpenProjectFile(AFilename)=mrOk then begin
-        EnvironmentOptions.AddToRecentProjectFiles(AFilename);
-        SaveEnvironment;
+  if Sender=itmProjectOpen then begin
+    OpenDialog:=TOpenDialog.Create(Application);
+    try
+      OpenDialog.Title:='Open Project File (*.lpi)';
+      OpenDialog.InitialDir:=EnvironmentOptions.LastOpenDialogDir;
+      if OpenDialog.Execute then begin
+        AFilename:=ExpandFilename(OpenDialog.Filename);
+        EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(AFilename);
+        if DoOpenProjectFile(AFilename)=mrOk then begin
+          EnvironmentOptions.AddToRecentProjectFiles(AFilename);
+          SaveEnvironment;
+        end;
       end;
+    finally
+      OpenDialog.Free;
     end;
-  finally
-    OpenDialog.Free;
+  end else if Sender is TMenuItem then begin
+    AFileName:=ExpandFilename(TMenuItem(Sender).Caption);
+    if DoOpenProjectFile(AFilename)=mrOk then begin
+      EnvironmentOptions.AddToRecentProjectFiles(AFilename);
+      SaveEnvironment;
+    end;
   end;
 end;
 
@@ -1726,6 +1778,7 @@ writeln('TMainIDE.DoSaveEditorUnit 1');
               ,MB_OKCANCEL);
             if Result=mrCancel then exit;
           end;
+          EnvironmentOptions.AddToRecentOpenFiles(NewFilename);
           ActiveUnitInfo.Filename:=NewFilename;
           ActiveSrcEdit.Filename:=ActiveUnitInfo.Filename;
           NewUnitName:=ExtractFileName(ActiveUnitInfo.Filename);
@@ -2413,6 +2466,7 @@ writeln('TMainIDE.DoSaveProject A');
         end;
       end;
       Project.ProjectFile:=NewFilename;
+      EnvironmentOptions.AddToRecentProjectFiles(NewFilename);
       if (MainUnitInfo<>nil) and (MainUnitInfo.Loaded) then begin
         // update source editor of main unit
         MainUnitSrcEdit.Source.Text:=MainUnitInfo.Source.Source;
@@ -2559,6 +2613,8 @@ writeln('TMainIDE.DoOpenProjectFile A "'+AFileName+'"');
     Project.Units[i].Modified:=false;
   end;
   Project.Modified:=false;
+  EnvironmentOptions.LastSavedProjectFile:=Project.ProjectInfoFile;
+  EnvironmentOptions.Save(false);
 
 writeln('TMainIDE.DoOpenProjectFile end ');
 
@@ -3397,6 +3453,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.101  2001/06/05 16:48:18  lazarus
+  MG: added recent file sub menus
+
   Revision 1.100  2001/06/05 10:27:50  lazarus
   MG: saving recent file lists
 
