@@ -933,6 +933,8 @@ end;
 procedure TgtkObject.RealizeWidgetSize(Widget: PGtkWidget; NewWidth,
   NewHeight: integer);
 begin
+  if NewWidth<0 then NewWidth:=0;
+  if NewHeight<0 then NewHeight:=0;
   gtk_widget_set_usize(Widget, NewWidth, NewHeight);
   if GtkWidgetIsA(Widget,GTK_COMBO_TYPE) then begin
     // the combobox has an entry, which height is not resized
@@ -7212,6 +7214,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.351  2003/04/11 12:48:07  mattias
+  fixed gtk warning on setting item height
+
   Revision 1.350  2003/04/10 09:22:42  mattias
   implemented changing dependency version
 
