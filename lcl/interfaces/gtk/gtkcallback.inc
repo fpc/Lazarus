@@ -1864,23 +1864,29 @@ end;
 
 function gtkInsertText( widget: PGtkWidget; char : pChar; NewTextLength : Integer; Position : pgint; data: gPointer) : GBoolean; cdecl;
 var
-   Msg : TLMInsertText;
-   I : Integer;
+  Memo: TCustomMemo;
+  CurrLength, CutLength: integer;
 begin
   Result := True;
-  EventTrace('Insert Text', data);
 
-  Msg.Msg := LM_INSERTTEXT;
-   
-  Msg.NewText := '';
-  For I := 0 to NewTextLength - 1 do
-    Msg.NewText := Msg.Newtext+Char[i];
+  { GTK does not provide its own max. length for memos
+    we have to do our own. }
 
-  //Msg.NewText := String(Char);
-  Msg.Length := NewTextLength;
-  Msg.Position := Position^;
-  Msg.Userdata := data;
-  Result:= DeliverMessage(Data, Msg) = 0;
+  if TControl(Data) is TCustomMemo then begin
+    Memo:= TCustomMemo(Data);
+    if Memo.MaxLength < 0 then Exit;
+    
+    CurrLength:= gtk_text_get_length(PGtkText(widget));
+    if CurrLength + NewTextLength <= Memo.MaxLength then Exit;
+    
+    CutLength:= CurrLength + NewTextLength - Memo.MaxLength;
+    
+    if NewTextLength - CutLength > 0 then begin
+      gtk_editable_insert_text(PGtkEditable(widget), char, NewTextLength - CutLength, Position);
+    end;
+    
+    gtk_signal_emit_stop_by_name(PGtkObject(widget), 'insert_text');
+  end;
 end;
 
 function gtkDeleteText( widget: PGtkWidget; Startpos, EndPos : Integer; data: gPointer) : GBoolean; cdecl;
@@ -2539,6 +2545,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.158  2002/11/16 11:22:57  mbukovjan
+  Fixes to MaxLength. TCustomMemo now has MaxLength, too.
+
   Revision 1.157  2002/11/05 20:03:42  lazarus
   MG: implemented hints
 
