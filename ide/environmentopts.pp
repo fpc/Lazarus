@@ -88,6 +88,8 @@ type
     FBackupInfoOtherFiles: TBackupInfo;
 
     procedure SetFileName(const NewFilename: string);
+    procedure AddToRecentList(const AFilename: string; RecentList: TStringList;
+        Max: integer);
   public
     constructor Create;
     destructor Destroy; override;
@@ -145,10 +147,12 @@ type
        read FRecentOpenFiles write FRecentOpenFiles;
     property MaxRecentOpenFiles: integer
        read FMaxRecentOpenFiles write FMaxRecentOpenFiles;
+    procedure AddToRecentOpenFiles(const AFilename: string);
     property RecentProjectFiles: TStringList
        read FRecentProjectFiles write FRecentProjectFiles;
     property MaxRecentProjectFiles: integer
        read FMaxRecentProjectFiles write FMaxRecentProjectFiles;
+    procedure AddToRecentProjectFiles(const AFilename: string);
     property LastOpenDialogDir: string
        read FLastOpenDialogDir write FLastOpenDialogDir;
     property LastSavedProjectFile: string 
@@ -628,6 +632,31 @@ begin
     // ToDo
     writeln('[TEnvironmentOptions.Load]  error writing "',FFilename,'"');
   end;
+end;
+
+procedure TEnvironmentOptions.AddToRecentList(const AFilename: string;
+  RecentList: TStringList;  Max: integer);
+var i: integer;
+begin
+  i:=RecentList.Count-1;
+  while i>=0 do begin
+    if RecentList[i]=AFilename then RecentList.Delete(i)
+    else dec(i);
+  end;
+  RecentList.Insert(0,AFilename);
+  if Max>0 then
+    while RecentList.Count>Max do
+      RecentList.Delete(RecentList.Count-1);
+end;
+
+procedure TEnvironmentOptions.AddToRecentOpenFiles(const AFilename: string);
+begin
+  AddToRecentList(AFilename,FRecentOpenFiles,FMaxRecentOpenFiles);
+end;
+
+procedure TEnvironmentOptions.AddToRecentProjectFiles(const AFilename: string);
+begin
+  AddToRecentList(AFilename,FRecentProjectFiles,FMaxRecentProjectFiles);
 end;
 
 //==============================================================================

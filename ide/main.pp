@@ -279,6 +279,7 @@ type
     procedure OnDesignerModified(Sender: TObject);
     procedure OnControlSelectionChanged(Sender: TObject);
 
+    procedure SaveEnvironment;
     procedure SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
     procedure LoadDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
   end;
@@ -606,9 +607,7 @@ end;
 
 procedure TMainIDE.FormClose(Sender : TObject; var Action: TCloseAction);
 begin
-writeln('[TMainIDE.FormClose]');
-  SaveDesktopSettings(EnvironmentOptions);
-  EnvironmentOptions.Save(false);
+  SaveEnvironment;
   if TheControlSelection<>nil then TheControlSelection.Clear;
 end;
 
@@ -1003,9 +1002,6 @@ begin
 
 end;
 {------------------------------------------------------------------------------}
-{------------------------------------------------------------------------------}
-{------------------------------------------------------------------------------}
-{PRIVATE METHOD}
 
 function TMainIDE.CreateSeperator : TMenuItem;
 begin
@@ -1014,10 +1010,6 @@ begin
   Result := itmSeperator;
 end;
 
-
-{------------------------------------------------------------------------------}
-{------------------------------------------------------------------------------}
-{------------------------------------------------------------------------------}
 {------------------------------------------------------------------------------}
 
 Procedure TMainIDE.mnuToggleFormUnitClicked(Sender : TObject);
@@ -1042,9 +1034,7 @@ End;
 
 {
 ------------------------------------------------------------------------
-------------------------------------------------------------------------
 -------------------ControlClick-----------------------------------------
-------------------------------------------------------------------------
 ------------------------------------------------------------------------
 }
 
@@ -1168,7 +1158,10 @@ begin
     if OpenDialog.Execute then begin
       AFilename:=ExpandFilename(OpenDialog.Filename);
       EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(AFilename);
-      DoOpenEditorFile(AFilename,false);
+      if DoOpenEditorFile(AFilename,false)=mrOk then begin
+        EnvironmentOptions.AddToRecentOpenFiles(AFilename);
+        SaveEnvironment;
+      end;
     end;
   finally
     OpenDialog.Free;
@@ -1315,7 +1308,8 @@ begin
     try
       // transform binary to text and save LFM file
       TxtMemStream:=TMemoryStream.Create;
-      TxtFileStream:=TFileStream.Create(lowercase(AForm.ClassName)+'.lfm',fmCreate);
+      TxtFileStream:=TFileStream.Create(lowercase(AForm.ClassName)+'.lfm'
+                           ,fmCreate);
       try
         BinStream.Position:=0;
         ObjectBinaryToText(BinStream,TxtMemStream);
@@ -1398,7 +1392,7 @@ Begin
 End;
 
 
-{------------------------------------------------------------}
+{------------------------------------------------------------------------------}
 
 Procedure TMainIDE.mnuNewProjectClicked(Sender : TObject);
 var
@@ -1419,7 +1413,10 @@ begin
     if OpenDialog.Execute then begin
       AFilename:=ExpandFilename(OpenDialog.Filename);
       EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(AFilename);
-      DoOpenProjectFile(AFilename);
+      if DoOpenProjectFile(AFilename)=mrOk then begin
+        EnvironmentOptions.AddToRecentProjectFiles(AFilename);
+        SaveEnvironment;
+      end;
     end;
   finally
     OpenDialog.Free;
@@ -1482,6 +1479,8 @@ begin
     UpdateMainUnitSrcEdit;
   end;
 end;
+
+//------------------------------------------------------------------------------
 
 procedure TMainIDE.SaveDesktopSettings(
   TheEnvironmentOptions: TEnvironmentOptions);
@@ -1556,12 +1555,19 @@ Begin
   end;
 End;
 
+procedure TMainIDE.SaveEnvironment;
+begin
+  SaveDesktopSettings(EnvironmentOptions);
+  EnvironmentOptions.Save(false);
+end;
+//------------------------------------------------------------------------------
+
 Procedure TMainIDE.MessageViewDblClick(Sender : TObject);
 Begin
 
 end;
 
-//=============================================================================
+//==============================================================================
 
 function TMainIDE.DoNewEditorUnit(NewUnitType:TNewUnitType):TModalResult;
 var NewUnitInfo:TUnitInfo;
@@ -3375,6 +3381,7 @@ writeln('[TMainIDE.OnControlSelectionChanged]');
     NewSelectedComponents.Add(TheControlSelection[i].Component);
   end;
   FormEditor1.SelectedComponents:=NewSelectedComponents;
+writeln('[TMainIDE.OnControlSelectionChanged] END');
 end;
 
 
@@ -3390,8 +3397,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.99  2001/05/31 13:57:27  lazarus
-  MG: added environment option OpenLastProjectAtStart
+  Revision 1.100  2001/06/05 10:27:50  lazarus
+  MG: saving recent file lists
 
   Revision 1.98  2001/05/29 08:16:26  lazarus
   MG: bugfixes + starting programs
