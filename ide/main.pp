@@ -5452,7 +5452,7 @@ begin
     until Result<>mrRetry;
   end;
   if BackupInfo.BackupType in
-   [bakSymbolInFront,bakSymbolBehind,bakUserDefinedAddExt,bakSameName] then
+     [bakSymbolInFront,bakSymbolBehind,bakUserDefinedAddExt,bakSameName] then
   begin
     case BackupInfo.BackupType of
       bakSymbolInFront:
@@ -7521,6 +7521,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.440  2002/12/23 13:20:45  mattias
+  fixed backuping symlinks
+
   Revision 1.439  2002/12/20 11:08:47  mattias
   method resolution clause, class ancestor find declaration, 1.1. makros
 
