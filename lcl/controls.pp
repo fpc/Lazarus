@@ -971,6 +971,7 @@ procedure SetCaptureControl(Control : TControl);
 function GetCaptureControl : TControl;
 procedure CancelDrag;
 
+
 var
   NewStyleControls : Boolean;
   Mouse : TMouse;
@@ -1196,7 +1197,6 @@ end;
 function FindLCLWindow(const ScreenPos : TPoint) : TWinControl;
 var
   Handle : HWND;
-  ClientPos: TPoint;
 begin
   Handle := WindowFromPoint(ScreenPos);
   Result := nil;
@@ -1397,6 +1397,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.88  2002/11/05 21:21:35  lazarus
+  MG: fixed moving button with LEFT and RIGHT in messagedlgs
+
   Revision 1.87  2002/11/05 20:03:41  lazarus
   MG: implemented hints
 
