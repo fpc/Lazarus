@@ -4,9 +4,9 @@ object About_frm: TAboutForm
   CLIENTHEIGHT = 245
   CLIENTWIDTH = 577
   POSITION = poscreencenter
-  LEFT = 223
+  LEFT = 351
   HEIGHT = 245
-  TOP = 261
+  TOP = 389
   WIDTH = 577
   object Memo1: TMEMO
     FONT.COLOR = -2147483640
