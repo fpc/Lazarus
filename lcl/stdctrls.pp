@@ -422,6 +422,8 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
@@ -467,6 +469,8 @@ type
     property OnMouseMove;
     property OnMouseDown;
     property OnMouseUp;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
@@ -1556,6 +1560,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.153  2004/07/13 10:34:15  mattias
+  fixed lcl package unit file name checklist.pas
+
   Revision 1.152  2004/07/10 18:17:30  mattias
   added Delphi ToDo support, Application.WndProc, small bugfixes  from Colin
 

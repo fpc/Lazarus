@@ -28,13 +28,14 @@ unit CheckLst;
 interface
 
 uses
-  Classes, SysUtils, StdCtrls, Graphics, GraphType, Controls, VCLGlobals, LMessages;
+  Classes, SysUtils, GraphType, Graphics, VCLGlobals, LMessages, Controls,
+  StdCtrls;
   
 
 type
-  { TCheckListBox }
+  { TCustomCheckListBox }
 
-  TCheckListBox = class(TCustomListBox)
+  TCustomCheckListBox = class(TCustomListBox)
   private
     FItemDataOffset: Integer;
     function GetChecked(const AIndex: Integer): Boolean;
@@ -47,10 +48,17 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     property Checked[const AIndex: Integer]: Boolean read GetChecked write SetChecked;
+  end;
+  
+  
+  { TCheckListBox }
+  
+  TCheckListBox = class(TCustomCheckListBox)
   published
     property Align;
     property Anchors;
     property BorderStyle;
+    property Constraints;
     property ExtendedSelect;
     property Items;
     property ItemHeight;
@@ -91,35 +99,35 @@ type
   PCachedItemData = ^TCachedItemData;
   TCachedItemData = Boolean;
 
-{ TCheckListBox }
+{ TCustomCheckListBox }
 
-procedure TCheckListBox.AssignCacheToItemData(const AIndex: Integer; const AData: Pointer);
+procedure TCustomCheckListBox.AssignCacheToItemData(const AIndex: Integer; const AData: Pointer);
 begin
   inherited AssignCacheToItemData(AIndex, AData);
   if PCachedItemData(AData + FItemDataOffset)^
   then SendItemChecked(AIndex, True);
 end;
 
-procedure TCheckListBox.AssignItemDataToCache(const AIndex: Integer; const AData: Pointer);
+procedure TCustomCheckListBox.AssignItemDataToCache(const AIndex: Integer; const AData: Pointer);
 begin
   inherited AssignItemDataToCache(AIndex, AData);
   PCachedItemData(AData + FItemDataOffset)^ := Checked[AIndex];
 end;
 
-constructor TCheckListBox.Create(AOwner: TComponent);
+constructor TCustomCheckListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FCompStyle := csCheckListBox;
   FItemDataOffset := inherited GetCachedDataSize;
 end;
 
-function TCheckListBox.GetCachedDataSize: Integer;
+function TCustomCheckListBox.GetCachedDataSize: Integer;
 begin
   FItemDataOffset := inherited GetCachedDataSize;
   Result := FItemDataOffset + SizeOf(TCachedItemData);
 end;
 
-function TCheckListBox.GetChecked(const AIndex: Integer): Boolean;
+function TCustomCheckListBox.GetChecked(const AIndex: Integer): Boolean;
 begin
   CheckIndex(AIndex);
 
@@ -128,7 +136,7 @@ begin
   else Result := PCachedItemData(GetCachedData(AIndex) + FItemDataOffset)^;
 end;
 
-procedure TCheckListBox.SendItemChecked(const AIndex: Integer; const AChecked: Boolean);
+procedure TCustomCheckListBox.SendItemChecked(const AIndex: Integer; const AChecked: Boolean);
 var
   Msg : TLMSetChecked;
 begin
@@ -140,7 +148,7 @@ begin
   end;
 end;
 
-procedure TCheckListBox.SetChecked(const AIndex: Integer; const AValue: Boolean);
+procedure TCustomCheckListBox.SetChecked(const AIndex: Integer; const AValue: Boolean);
 begin
   CheckIndex(AIndex);
 
@@ -154,15 +162,18 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.6  2004/07/13 10:34:15  mattias
+  fixed lcl package unit file name checklist.pas
+
   Revision 1.5  2004/02/23 08:19:04  micha
   revert intf split
 
   Revision 1.3  2003/07/09 00:13:18  marc
-  * fixed cached items.object storage if TCheckListBox
-  * Changed DebuggerOptions dialog to use new TCheckListBox
+  * fixed cached items.object storage if TCustomCheckListBox
+  * Changed DebuggerOptions dialog to use new TCustomCheckListBox
 
   Revision 1.2  2003/07/07 23:58:43  marc
-  + Implemented TCheckListBox.Checked[] property
+  + Implemented TCustomCheckListBox.Checked[] property
 
 
 }

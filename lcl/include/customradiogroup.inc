@@ -321,7 +321,6 @@ Procedure TCustomRadioGroup.Clicked(Sender : TObject);
 Begin
   if FCreatingWnd then exit;
   UpdateRadioButtonStates;
-  writeln('TCustomRadioGroup.Clicked A ',Name);
   EditingDone;
   if Assigned (FOnClick) then FOnClick(Self);
 end;
@@ -398,6 +397,9 @@ end;
 
 {
   $Log$
+  Revision 1.31  2004/07/13 10:34:15  mattias
+  fixed lcl package unit file name checklist.pas
+
   Revision 1.30  2004/07/11 23:08:43  mattias
   updated russian translation  from vasily
 

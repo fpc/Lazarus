@@ -291,14 +291,6 @@ type
     FPropCount: Integer;
     FPropList: PInstPropList;
     function GetPrivateDirectory: ansistring;
-  protected
-    procedure SetFloatValue(const NewValue: Extended);
-    procedure SetMethodValue(const NewValue: TMethod);
-    procedure SetInt64Value(const NewValue: Int64);
-    procedure SetOrdValue(const NewValue: Longint);
-    procedure SetStrValue(const NewValue: AnsiString);
-    procedure SetVarValue(const NewValue: Variant);
-    procedure Modified;
   public
     constructor Create(Hook:TPropertyEditorHook;
                        APersistentList: TPersistentSelectionList;
@@ -342,6 +334,13 @@ type
     procedure SetValue(const NewValue: ansistring); virtual;
     procedure SetPropEntry(Index: Integer; AnInstance: TPersistent;
                            APropInfo: PPropInfo);
+    procedure SetFloatValue(const NewValue: Extended);
+    procedure SetMethodValue(const NewValue: TMethod);
+    procedure SetInt64Value(const NewValue: Int64);
+    procedure SetOrdValue(const NewValue: Longint);
+    procedure SetStrValue(const NewValue: AnsiString);
+    procedure SetVarValue(const NewValue: Variant);
+    procedure Modified;
     function ValueAvailable: Boolean;
     procedure ListMeasureWidth(const AValue: ansistring; Index:integer;
                                ACanvas:TCanvas; var AWidth: Integer); dynamic;
@@ -2922,7 +2921,8 @@ var
 begin
   Integer(S) := GetOrdValue;
   if CompareText(NewValue, 'True') = 0 then
-    Include(S, FElement) else
+    Include(S, FElement)
+  else
     Exclude(S, FElement);
   SetOrdValue(Integer(S));
 end;

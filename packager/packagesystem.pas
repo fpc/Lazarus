@@ -896,7 +896,7 @@ begin
     AddFile('extctrls.pp','ExtCtrls',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('comctrls.pp','ComCtrls',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('maskedit.pp','MaskEdit',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('checklst.pp','CheckLst',pftUnit,[pffHasRegisterProc],cpBase);
+    AddFile('checklst.pas','CheckLst',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('forms.pp','Forms',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('grids.pas','Grids',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('controls.pp','Controls',pftUnit,[pffHasRegisterProc],cpBase);

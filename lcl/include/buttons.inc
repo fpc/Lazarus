@@ -18,10 +18,10 @@
 }
 
 {------------------------------------------------------------------------------}
-{       TButton Constructor                                                    }
+{       TCustomButton Constructor                                                    }
 {------------------------------------------------------------------------------}
 
-constructor TButton.Create(TheOwner: TComponent);
+constructor TCustomButton.Create(TheOwner: TComponent);
 begin
   Inherited Create(TheOwner);
   With FShortcut do begin
@@ -41,13 +41,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TButton.CreateWnd
+  Method:  TCustomButton.CreateWnd
   Params:  None
   Returns: Nothing
 
   Creates the interface object.
  ------------------------------------------------------------------------------}
-procedure TButton.CreateWnd;
+procedure TCustomButton.CreateWnd;
 begin
   inherited CreateWnd;
   //this is done in TWinControl
@@ -56,18 +56,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TButton.DoSendBtnDefault;
+  procedure TCustomButton.DoSendBtnDefault;
  ------------------------------------------------------------------------------}
-procedure TButton.DoSendBtnDefault;
+procedure TCustomButton.DoSendBtnDefault;
 begin
   if HandleAllocated then
     CNSendMessage(LM_BTNDEFAULT_CHANGED,Self,nil);
 end;
 
 {------------------------------------------------------------------------------
-  procedure TButton.ControlKeyDown
+  procedure TCustomButton.ControlKeyDown
  ------------------------------------------------------------------------------}
-procedure TButton.ControlKeyDown(var Key: Word; Shift: TShiftState);
+procedure TCustomButton.ControlKeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited ControlKeyDown(Key, Shift);
   if (Key=VK_RETURN) and (Shift=[]) then begin
@@ -77,9 +77,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TButton.SetParent(AParent: TWinControl);
+  procedure TCustomButton.SetParent(AParent: TWinControl);
  ------------------------------------------------------------------------------}
-procedure TButton.SetParent(AParent: TWinControl);
+procedure TCustomButton.SetParent(AParent: TWinControl);
 var
   Form: TCustomForm;
 begin
@@ -96,7 +96,7 @@ begin
   DoSendBtnDefault;
 end;
 
-procedure TButton.UpdateRolesForForm;
+procedure TCustomButton.UpdateRolesForForm;
 var
   AForm: TCustomForm;
   NewRoles: TControlRolesForForm;
@@ -114,11 +114,11 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TButton.SetCancel
+  Method:  TCustomButton.SetCancel
   Params:  NewCancel - new cancel value
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TButton.SetCancel(NewCancel: boolean);
+procedure TCustomButton.SetCancel(NewCancel: boolean);
 var
   Form: TCustomForm;
 begin
@@ -135,11 +135,11 @@ begin
 end;
  
 {------------------------------------------------------------------------------
-  Method:  TButton.SetDefault
+  Method:  TCustomButton.SetDefault
   Params:  Value
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TButton.SetDefault(Value : Boolean);
+procedure TCustomButton.SetDefault(Value : Boolean);
 var
   Form: TCustomForm;
 begin
@@ -156,26 +156,26 @@ begin
   DoSendBtnDefault;
 end;
 
-procedure TButton.ExecuteDefaultAction;
+procedure TCustomButton.ExecuteDefaultAction;
 begin
   if FDefault then
     Click;
 end;
 
-procedure TButton.ExecuteCancelAction;
+procedure TCustomButton.ExecuteCancelAction;
 begin
   if FCancel then
     Click;
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TButton.Click
+  Method:  TCustomButton.Click
   Params:  None
   Returns: Nothing
 
   Handles the event that the button is clicked
  ------------------------------------------------------------------------------}
-procedure TButton.Click;
+procedure TCustomButton.Click;
 var
   Form : TCustomForm;
 Begin
@@ -188,18 +188,18 @@ Begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TButton.CMDefaultClicked
+  Method:  TCustomButton.CMDefaultClicked
   Params:  None
   Returns: Nothing
 
   Handles the event when the button Leaves
  ------------------------------------------------------------------------------}
-procedure TButton.WMDefaultClicked(var Message: TLMessage);
+procedure TCustomButton.WMDefaultClicked(var Message: TLMessage);
 begin
   Click;
 end;
 
-procedure TButton.RealSetText(const Value: TCaption);
+procedure TCustomButton.RealSetText(const Value: TCaption);
 var
   ParseStr : String;
   AccelIndex : Longint;
@@ -218,7 +218,7 @@ begin
   end;
 end;
 
-function TButton.ChildClassAllowed(ChildClass: TClass): boolean;
+function TCustomButton.ChildClassAllowed(ChildClass: TClass): boolean;
 begin
   // no childs
   Result:=false;
@@ -227,6 +227,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.32  2004/07/13 10:34:15  mattias
+  fixed lcl package unit file name checklist.pas
+
   Revision 1.31  2004/07/11 13:03:54  mattias
   extended RolesForForm to manage multiple roles for on control
 
@@ -234,7 +237,7 @@ end;
   form notifies control of new role
 
   Revision 1.29  2004/07/01 20:42:11  micha
-  implement better ExecuteXXAction design; break dependency on TButton class in TCustomForm
+  implement better ExecuteXXAction design; break dependency on TCustomButton class in TCustomForm
 
   Revision 1.28  2004/06/30 11:07:20  micha
   implement return key clicks default button; escape key clicks cancel button

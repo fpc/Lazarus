@@ -58,7 +58,7 @@ type
     be changed }
   TNumGlyphs = 1..4;
 
-  TButton = class(TButtonControl)
+  TCustomButton = class(TButtonControl)
   private
     FCancel: Boolean;
     FDefault: Boolean;
@@ -81,23 +81,28 @@ type
     procedure ExecuteDefaultAction; override;
     procedure ExecuteCancelAction; override;
     procedure UpdateRolesForForm; override;
-  published
-    property Action;
-    property Anchors;
-    property Align;
-    property Constraints;
+  public
     property Default: Boolean read FDefault write SetDefault default false;
-    property Enabled;
     property ModalResult: TModalResult read FModalResult write FModalResult default mrNone;
     property Cancel: Boolean read FCancel write SetCancel default false;
-    property Caption;
-    property Font;
     property TabStop default true;
-    property TabOrder;
-    property PopupMenu;
-    property ShowHint;
-    property ParentShowHint;
-    property Visible;
+  end;
+  
+  
+  { TButton }
+  
+  TButton = class(TCustomButton)
+  published
+    property Action;
+    property Align;
+    property Anchors;
+    property Cancel;
+    property Caption;
+    property Constraints;
+    property Default;
+    property Enabled;
+    property Font;
+    property ModalResult;
     property OnClick;
     property OnEnter;
     property OnExit;
@@ -108,6 +113,12 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
   end;
 
 
@@ -333,6 +344,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.72  2004/07/13 10:34:15  mattias
+  fixed lcl package unit file name checklist.pas
+
   Revision 1.71  2004/07/11 13:03:53  mattias
   extended RolesForForm to manage multiple roles for on control
 

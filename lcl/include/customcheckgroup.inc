@@ -27,13 +27,12 @@ begin
   ControlStyle := ControlStyle + [csCaptureMouse, csClickEvents, csSetCaption,
                                   csDoubleClicks];
   FItems      := TStringList.Create;
-  TStringList(FItems).OnChanging := @ItemsChanged;
+  //TStringList(FItems).OnChanging := @ItemsChanged;
   TStringList(FItems).OnChange := @ItemsChanged;
   FButtonList := TList.Create;
   FColumnLayout := clHorizontalThenVertical;
   FColumns  := 1;
-  Width:= 250;
-  Height := 200;
+  SetInitialBounds(0,0,250,200);
 end;
 
 destructor TCustomCheckGroup.Destroy;
@@ -61,6 +60,7 @@ end;
 
 procedure TCustomCheckGroup.DoClick(Index: integer);
 begin
+  EditingDone;
   if Assigned(OnItemClick) then OnItemClick(Self,Index);
 end;
 
@@ -134,7 +134,7 @@ var
   rbWidth : integer;
   MaxRows: Integer;
 begin
-  if (FItems.Count>0) and (FColumns>0) then begin
+  if (FItems<>nil) and (FItems.Count>0) and (FColumns>0) then begin
     // position in rows and columns
     vertDist := (Height - 20) DIV (((FItems.Count-1) DIV FColumns)+1);
     horzDist := (Width - 20) DIV FColumns;
@@ -171,7 +171,12 @@ procedure TCustomCheckGroup.SetChecked(Index: integer; const AValue: boolean);
 begin
   if (Index < -1) or (Index >= FItems.Count) then
     raise Exception.CreateFmt(rsIndexOutOfBounds,[ClassName,Index,FItems.Count]);
+  // disable OnClick
+  TCheckBox(FButtonList[Index]).OnClick:=nil;
+  // set value
   TCheckBox(FButtonList[Index]).Checked:=AValue;
+  // enable OnClick
+  TCheckBox(FButtonList[Index]).OnClick:=@Clicked;
 end;
 
 procedure TCustomCheckGroup.SetItems(Value: TStrings);
@@ -272,6 +277,9 @@ end;
 
 {
   $Log$
+  Revision 1.7  2004/07/13 10:34:15  mattias
+  fixed lcl package unit file name checklist.pas
+
   Revision 1.6  2004/07/12 21:32:07  mattias
   added TCheckGroup.ColumnLayout
 
