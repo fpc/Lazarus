@@ -35,7 +35,7 @@ Interface
 }
 Uses
   Windows, Classes, ComCtrls, Controls, Dialogs, DynHashArray, ExtCtrls, Forms,
-  GraphicsMath, GraphType, InterfaceBase, LCLLinux, LCLType, LMessages,
+  GraphMath, GraphType, InterfaceBase, LCLLinux, LCLType, LMessages,
   StdCtrls, SysUtils, VCLGlobals, Win32Def;
 
 Type
@@ -192,6 +192,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.17  2002/10/26 15:15:55  lazarus
+  MG: broke LCL<->interface circles
+
   Revision 1.16  2002/08/08 18:05:48  lazarus
   MG: added graphics extensions from Andrew Johnson
 
