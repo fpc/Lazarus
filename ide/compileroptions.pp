@@ -2784,7 +2784,7 @@ begin
     Top:=grpUnitOutputDir.Top+grpUnitOutputDir.Height+7;
     Left:=grpUnitOutputDir.Left;
     Width:=150;
-    Height:=40;
+    Height:=45;
     Caption:='LCL Widget Type';
     with Items do begin
       Add('gtk');

@@ -823,6 +823,8 @@ CheckHeap(IntToStr(GetMem_Cnt));
     Project.Free;
     Project:=nil;
   end;
+  FBreakPoints.Free;
+  FBreakPoints:=nil;
   if TheControlSelection<>nil then begin
     TheControlSelection.OnChange:=nil;
     TheControlSelection.Free;
@@ -5774,6 +5776,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.213  2002/02/07 13:48:47  lazarus
+  MG: fixed mem leak FBreakPts
+
   Revision 1.212  2002/02/06 22:23:13  lazarus
   MG: codetools now know the compiler options
 
