@@ -93,6 +93,10 @@ type
     // object inspector
     FObjectInspectorOptions: TOIOptions;
     
+    // hints
+    FShowHintsForComponentPalette: boolean;
+    FShowHintsForMainSpeedButtons: boolean;
+    
     // compiler + debugger + lazarus files
     FLazarusDirectory: string;
     FCompilerFilename: string;
@@ -164,6 +168,12 @@ type
     property ObjectInspectorOptions: TOIOptions
        read FObjectInspectorOptions write FObjectInspectorOptions;
 
+    // hints
+    property ShowHintsForComponentPalette: boolean
+       read FShowHintsForComponentPalette write FShowHintsForComponentPalette;
+    property ShowHintsForMainSpeedButtons: boolean
+       read FShowHintsForMainSpeedButtons write FShowHintsForMainSpeedButtons;
+    
     // files
     property LazarusDirectory: string
        read FLazarusDirectory write FLazarusDirectory;
@@ -263,6 +273,10 @@ type
     ObjectInspectorGroupBox: TGroupBox;
     BackgroundColorLabel: TLabel;
     BackgroundColorButton: TColorButton;
+    
+    // hints
+    ShowHintsForComponentPaletteCheckBox: TCheckBox;
+    ShowHintsForMainSpeedButtonsCheckBox: TCheckBox;
 
     // Files
     MaxRecentOpenFilesLabel: TLabel;
@@ -387,6 +401,10 @@ begin
 
   // object inspector
   FObjectInspectorOptions:=TOIOptions.Create;
+  
+  // hints
+  FShowHintsForComponentPalette:=true;
+  FShowHintsForMainSpeedButtons:=true;
 
   // files
   FLazarusDirectory:=ExtractFilePath(ParamStr(0));
@@ -572,6 +590,14 @@ begin
         ,'EnvironmentOptions/BackupOtherFiles/');
     end;
 
+    // hints
+    FShowHintsForComponentPalette:=XMLConfig.GetValue(
+      'EnvironmentOptions/ShowHintsForComponentPalette/Value',
+      FShowHintsForComponentPalette);
+    FShowHintsForMainSpeedButtons:=XMLConfig.GetValue(
+      'EnvironmentOptions/ShowHintsForMainSpeedButtons/Value',
+      FShowHintsForMainSpeedButtons);
+
     // recent files and directories
     FMaxRecentOpenFiles:=XMLConfig.GetValue(
       'EnvironmentOptions/Recent/OpenFiles/Max',FMaxRecentOpenFiles);
@@ -701,6 +727,12 @@ begin
       SaveBackupInfo(FBackupInfoOtherFiles
         ,'EnvironmentOptions/BackupOtherFiles/');
     end;
+
+    // hints
+    XMLConfig.SetValue('EnvironmentOptions/ShowHintsForComponentPalette/Value',
+      FShowHintsForComponentPalette);
+    XMLConfig.SetValue('EnvironmentOptions/ShowHintsForMainSpeedButtons/Value',
+      FShowHintsForMainSpeedButtons);
 
     // recent files and directories
     XMLConfig.SetValue(
@@ -1098,6 +1130,7 @@ begin
     Visible:=true;
   end;
 
+
   // object inspector
   ObjectInspectorGroupBox:=TGroupBox.Create(Self);
   with ObjectInspectorGroupBox do begin
@@ -1134,6 +1167,32 @@ begin
     Visible:=true;
   end;
 
+
+  // hints
+  ShowHintsForComponentPaletteCheckBox:=TCheckBox.Create(Self);
+  with ShowHintsForComponentPaletteCheckBox do begin
+    Name:='ShowHintsForComponentPaletteCheckBox';
+    Parent:=NoteBook.Page[0];
+    Left:=DesktopFilesGroupBox.Left;
+    Top:=DesktopFilesGroupBox.Top+DesktopFilesGroupBox.Height+5;
+    Width:=250;
+    Height:=20;
+    Caption:='Hints for component palette';
+    Visible:=true;
+  end;
+  
+  ShowHintsForMainSpeedButtonsCheckBox:=TCheckBox.Create(Self);
+  with ShowHintsForMainSpeedButtonsCheckBox do begin
+    Name:='ShowHintsForMainSpeedButtonsCheckBox';
+    Parent:=NoteBook.Page[0];
+    Left:=ShowHintsForComponentPaletteCheckBox.Left;
+    Top:=ShowHintsForComponentPaletteCheckBox.Top
+         +ShowHintsForComponentPaletteCheckBox.Height+5;
+    Width:=250;
+    Height:=20;
+    Caption:='Hints for main speed buttons (open, save, ...)';
+    Visible:=true;
+  end;
 end;
 
 procedure TEnvironmentOptionsDialog.SetupBackupPage;
@@ -1791,6 +1850,12 @@ begin
     BackgroundColorButton.ButtonColor:=
        ObjectInspectorOptions.GridBackgroundColor;
 
+    // hints
+    ShowHintsForComponentPaletteCheckBox.Checked:=
+      ShowHintsForComponentPalette;
+    ShowHintsForMainSpeedButtonsCheckBox.Checked:=
+      ShowHintsForMainSpeedButtons;
+
     // form editor
     DisplayGridCheckBox.Checked:=DisplayGrid;
     SnapToGridCheckBox.Checked:=SnapToGrid;
@@ -1878,6 +1943,10 @@ begin
     // object inspector
     ObjectInspectorOptions.GridBackgroundColor:=
        BackgroundColorButton.ButtonColor;
+
+    // hints
+    ShowHintsForComponentPalette:=ShowHintsForComponentPaletteCheckBox.Checked;
+    ShowHintsForMainSpeedButtons:=ShowHintsForMainSpeedButtonsCheckBox.Checked;
 
     // form editor
     DisplayGrid:=DisplayGridCheckBox.Checked;

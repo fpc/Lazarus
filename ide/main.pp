@@ -40,7 +40,7 @@ uses
   PropEdits, ControlSelection, UnitEditor, CompilerOptions, EditorOptions,
   EnvironmentOpts, TransferMacros, KeyMapping, ProjectOpts, IDEProcs, Process,
   UnitInfoDlg, Debugger, DBGWatch,RunParamsOpts, ExtToolDialog, MacroPromptDlg,
-  LMessages, ProjectDefs, Watchesdlg,BreakPointsdlg;
+  LMessages, ProjectDefs, Watchesdlg, BreakPointsdlg;
 
 const
   Version_String = '0.8.1 alpha';
@@ -157,11 +157,16 @@ type
 
     HintTimer1 : TTimer;
     HintWindow1 : THintWindow;
+    
     // event handlers
     procedure FormShow(Sender : TObject);
     procedure FormClose(Sender : TObject; var Action: TCloseAction);
     procedure FormCloseQuery(Sender : TObject; var CanClose: boolean);
     procedure FormPaint(Sender : TObject);
+    Procedure MainMouseMoved(Sender: TObject; Shift: TShiftState; X,Y: Integer);
+    Procedure MainMouseDown(Sender: TObject; Button: TMouseButton; 
+        Shift: TShiftState; X,Y: Integer);
+    Procedure MainKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 
     procedure mnuNewUnitClicked(Sender : TObject);
     procedure mnuNewFormClicked(Sender : TObject);
@@ -259,8 +264,10 @@ type
     
     // Debugger Events
     procedure OnDebuggerChangeState(Sender: TObject);
-    procedure OnDebuggerCurrentLine(Sender: TObject; const ALocation: TDBGLocationRec);
+    procedure OnDebuggerCurrentLine(Sender: TObject; 
+       const ALocation: TDBGLocationRec);
     Procedure OnDebuggerWatchChanged(Sender : TObject);
+    
     // MessagesView Events
     procedure MessagesViewSelectionChanged(sender : TObject);
     
@@ -268,15 +275,12 @@ type
     Procedure HintTimer1Timer(Sender : TObject);
     
     //Watch Dialog
-    Procedure OnWatchAdded(Sender : TObject; _Expression : String);
+    Procedure OnWatchAdded(Sender : TObject; AnExpression : String);
     
-    Procedure MainMouseMoved(Sender: TObject; Shift: TShiftState; X,Y: Integer);
-    Procedure MainMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X,Y: Integer);
-    Procedure MainKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     FHintSender : TObject;
     FCodeLastActivated : Boolean; //used for toggling between code and forms
-    FLastFormActivated : TCustomForm;  //used to find the last form so you can display the corret tab
+    FLastFormActivated : TCustomForm;  //used to find the last form so you can display the correct tab
     FSelectedComponent : TRegisteredComponent;
     fProject: TProject;
     MacroList: TTransferMacroList;
@@ -289,7 +293,7 @@ type
 
   protected
     procedure ToolButtonClick(Sender : TObject);
-    Procedure AddWatch(_Expression : String);
+    Procedure AddWatch(AnExpression : String);
   public
     ToolStatus: TIDEToolStatus;
  
@@ -419,6 +423,7 @@ uses
 
 
 function LoadPixmapRes(const ResourceName:string; PixMap:TPixMap):boolean;
+// this function is obsolete -> TPixmap can do it itself
 var
   ms:TMemoryStream;
   res:TLResource;
@@ -532,7 +537,7 @@ begin
     Top := 0;
     Width := Self.ClientWidth - Left;
     Height := 60; //Self.ClientHeight - ComponentNotebook.Top;
-    OnMOuseMOve := @MainMouseMOved;
+    OnMouseMove := @MainMouseMoved;
 
   end;
 
@@ -5146,8 +5151,18 @@ begin
 
   Control := nil;
   
-  if (FHintSender is TSpeedButton) then
+  if (FHintSender is TSpeedButton) then begin
     Control := TControl(FHintSender);
+    if Control.Parent<>nil then begin
+      if Control.Parent=Self then begin
+        // main speed button
+        if not EnvironmentOptions.ShowHintsForMainSpeedButtons then exit;
+      end else if (Control.Parent.Parent=ComponentNotebook) then begin
+        // component palette
+        if not EnvironmentOptions.ShowHintsForComponentPalette then exit;
+      end;
+    end;
+  end;
     
   AHint := '';
 
@@ -5231,7 +5246,7 @@ begin
 end;
 
 //This adds the watch to the TWatches TCollection and to the watches dialog
-Procedure TMainIDE.AddWatch(_Expression : String);
+Procedure TMainIDE.AddWatch(AnExpression : String);
 Var
   NewWatch : TdbgWatch;
 begin
@@ -5240,7 +5255,7 @@ begin
   NewWatch := TdbgWatch(TheDebugger.watches.Add);
   with NewWatch do
     Begin
-      Expression := _Expression;
+      Expression := AnExpression;
       OnChange := @OnDebuggerWatchChanged;
       Enabled := True;
 
@@ -5251,20 +5266,20 @@ begin
 end;
 
 
-Procedure TMainIDE.OnWatchAdded(Sender : TObject; _Expression : String);
+Procedure TMainIDE.OnWatchAdded(Sender : TObject; AnExpression : String);
 Var
   NewWatch : TdbgWatch;
 begin
 
   if not Watches_Dlg.Visible then Watches_Dlg.Show;
 
-  if Pos(':',_Expression) > 0 then
-     _Expression := Copy(_Expression,1,pos(':',_Expression)-1);
+  if Pos(':',AnExpression) > 0 then
+     AnExpression := Copy(AnExpression,1,pos(':',AnExpression)-1);
      
   NewWatch := TdbgWatch(TheDebugger.watches.Add);
   with NewWatch do
     Begin
-      Expression := _Expression;
+      Expression := AnExpression;
       OnChange := @OnDebuggerWatchChanged;
       Enabled := True;
 
@@ -5296,6 +5311,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.181  2001/12/15 10:57:48  lazarus
+  MG: added hint checkboxes to environment options
+
   Revision 1.180  2001/12/14 18:38:55  lazarus
   Changed code for TListView
   Added a generic Breakpoints dialog
