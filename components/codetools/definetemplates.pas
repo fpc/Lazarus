@@ -621,6 +621,7 @@ begin
   or (AnsiCompareText(TargetOS,'freebsd')=0)
   or (AnsiCompareText(TargetOS,'netbsd')=0)
   or (AnsiCompareText(TargetOS,'openbsd')=0)
+  or (AnsiCompareText(TargetOS,'darwin')=0)
   then
     Result:='unix';
 end;
@@ -2797,14 +2798,8 @@ begin
             ctsDefaultppc386TargetOperatingSystem,
             ExternalMacroStart+'TargetOS',TargetOS,da_DefineRecurse);
           AddTemplate(NewDefTempl);
-          if (TargetOS='linux')
-          or (TargetOS='freebsd')
-          or (TargetOS='netbsd')
-          or (TargetOS='openbsd')
-          then
-            SrcOS:='unix'
-          else
-            SrcOS:=TargetOS;
+          SrcOS:=GetDefaultSrcOSForTargetOS(TargetOS);
+          if SrcOS='' then SrcOS:=TargetOS;
           NewDefTempl:=TDefineTemplate.Create('Define SrcOS',
             ctsDefaultppc386SourceOperatingSystem,
             ExternalMacroStart+'SrcOS',SrcOS,da_DefineRecurse);

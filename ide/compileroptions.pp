@@ -3799,6 +3799,7 @@ begin
     Align:=alTop;
     with Items do begin
       Add('(default)');
+      Add('Darwin');
       Add('FreeBSD');
       Add('Linux');
       Add('NetBSD');
