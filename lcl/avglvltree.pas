@@ -96,7 +96,7 @@ type
     procedure WriteReportToStream(s: TStream; var StreamSize: TStreamSeekType);
     function ReportAsString: string;
     constructor Create(OnCompareMethod: TListSortCompare);
-    constructor Create(OnCompareMethod: TObjectSortCompare);
+    constructor CreateObjectCompare(OnCompareMethod: TObjectSortCompare);
     constructor Create;
     destructor Destroy; override;
   end;
@@ -497,7 +497,8 @@ begin
   FOnCompare:=OnCompareMethod;
 end;
 
-constructor TAvgLvlTree.Create(OnCompareMethod: TObjectSortCompare);
+constructor TAvgLvlTree.CreateObjectCompare(
+  OnCompareMethod: TObjectSortCompare);
 begin
   inherited Create;
   FOnObjectCompare:=OnCompareMethod;

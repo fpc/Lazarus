@@ -216,13 +216,14 @@ type
 
     procedure Modified; override;
     Procedure SelectOnlyThisComponent(AComponent:TComponent); override;
-    procedure CopySelection;
-    procedure CutSelection;
-    function CanPaste: Boolean;
-    procedure PasteSelection;
-    procedure DeleteSelection;
+    procedure CopySelection; override;
+    procedure CutSelection; override;
+    function CanPaste: Boolean; override;
+    procedure PasteSelection; override;
+    procedure DeleteSelection; override;
+    function CopySelectionToStream(s: TStream): boolean; override;
     function InvokeComponentEditor(AComponent: TComponent;
-                                   MenuIndex: integer): boolean;
+                                   MenuIndex: integer): boolean; override;
     procedure DoProcessCommand(Sender: TObject; var Command: word;
                                var Handled: boolean);
 
@@ -400,7 +401,7 @@ begin
     SelectOnlyThisComponent(TControl(ControlSelection[i].Persistent).Parent);
 end;
 
-function TDesigner.DoCopySelectionToClipboard: boolean;
+function TDesigner.CopySelectionToStream(s: TStream): boolean;
 
   function UnselectDistinctControls: boolean;
   var
@@ -421,8 +422,8 @@ function TDesigner.DoCopySelectionToClipboard: boolean;
         // check if not the top level component is selected
         CurParent:=TControl(ControlSelection[i].Persistent).Parent;
         if CurParent=nil then begin
-          MessageDlg('Can not copy top level component.',
-            'Copying a whole form is not implemented.',
+          MessageDlg(lisCanNotCopyTopLevelComponent,
+            lisCopyingAWholeFormIsNotImplemented,
             mtError,[mbCancel],0);
           exit;
         end;
@@ -440,79 +441,13 @@ function TDesigner.DoCopySelectionToClipboard: boolean;
     Result:=true;
   end;
 
-  function CopySelectionToStream(AllComponentsStream: TStream): boolean;
-  var
-    i: Integer;
-    BinCompStream: TMemoryStream;
-    TxtCompStream: TMemoryStream;
-    CurComponent: TComponent;
-    Driver: TBinaryObjectWriter;
-    Writer: TWriter;
-  begin
-    Result:=false;
-    for i:=0 to ControlSelection.Count-1 do begin
-      if not ControlSelection[i].IsTComponent then continue;
-
-      BinCompStream:=TMemoryStream.Create;
-      TxtCompStream:=TMemoryStream.Create;
-      try
-        // write component binary stream
-        try
-          CurComponent:=TComponent(ControlSelection[i].Persistent);
-
-          Driver := TBinaryObjectWriter.Create(BinCompStream, 4096);
-          Try
-            Writer := TWriter.Create(Driver);
-            Try
-              Writer.Root:=FLookupRoot;
-              Writer.WriteComponent(CurComponent);
-            Finally
-              Writer.Destroy;
-            end;
-          Finally
-            Driver.Free;
-          end;
-
-          //BinCompStream.WriteComponent(CurComponent);
-        except
-          on E: Exception do begin
-            MessageDlg('Unable to stream selected components',
-              'There was an error during writing the selected component '
-              +CurComponent.Name+':'+CurComponent.ClassName+':'#13
-              +E.Message,
-              mtError,[mbCancel],0);
-            exit;
-          end;
-        end;
-        BinCompStream.Position:=0;
-        // convert binary to text stream
-        try
-          ObjectBinaryToText(BinCompStream,TxtCompStream);
-        except
-          on E: Exception do begin
-            MessageDlg('Unable convert binary stream to text',
-              'There was an error while converting the binary stream of the '
-              +'selected component '
-              +CurComponent.Name+':'+CurComponent.ClassName+':'#13
-              +E.Message,
-              mtError,[mbCancel],0);
-            exit;
-          end;
-        end;
-        // add text stream to the all stream
-        TxtCompStream.Position:=0;
-        AllComponentsStream.CopyFrom(TxtCompStream,TxtCompStream.Size);
-      finally
-        BinCompStream.Free;
-        TxtCompStream.Free;
-      end;
-    end;
-    Result:=true;
-  end;
-
 var
-  AllComponentsStream: TMemoryStream;
-  AllComponentText: string;
+  i: Integer;
+  BinCompStream: TMemoryStream;
+  TxtCompStream: TMemoryStream;
+  CurComponent: TComponent;
+  Driver: TBinaryObjectWriter;
+  Writer: TWriter;
 begin
   Result:=false;
   if (ControlSelection.Count=0) then exit;
@@ -520,6 +455,71 @@ begin
   // Because controls will be pasted on a single parent,
   // unselect all controls, that do not have the same parent
   if not UnselectDistinctControls then exit;
+
+  for i:=0 to ControlSelection.Count-1 do begin
+    if not ControlSelection[i].IsTComponent then continue;
+
+    BinCompStream:=TMemoryStream.Create;
+    TxtCompStream:=TMemoryStream.Create;
+    try
+      // write component binary stream
+      try
+        CurComponent:=TComponent(ControlSelection[i].Persistent);
+
+        Driver := TBinaryObjectWriter.Create(BinCompStream, 4096);
+        Try
+          Writer := TWriter.Create(Driver);
+          Try
+            Writer.Root:=FLookupRoot;
+            Writer.WriteComponent(CurComponent);
+          Finally
+            Writer.Destroy;
+          end;
+        Finally
+          Driver.Free;
+        end;
+
+        //BinCompStream.WriteComponent(CurComponent);
+      except
+        on E: Exception do begin
+          MessageDlg(lisUnableToStreamSelectedComponents,
+            Format(lisThereWasAnErrorDuringWritingTheSelectedComponent, [
+              CurComponent.Name, CurComponent.ClassName, #13, E.Message]),
+            mtError,[mbCancel],0);
+          exit;
+        end;
+      end;
+      BinCompStream.Position:=0;
+      // convert binary to text stream
+      try
+        ObjectBinaryToText(BinCompStream,TxtCompStream);
+      except
+        on E: Exception do begin
+          MessageDlg(lisUnableConvertBinaryStreamToText,
+            Format(lisThereWasAnErrorWhileConvertingTheBinaryStreamOfThe, [
+              CurComponent.Name, CurComponent.ClassName, #13, E.Message]),
+            mtError,[mbCancel],0);
+          exit;
+        end;
+      end;
+      // add text stream to the all stream
+      TxtCompStream.Position:=0;
+      s.CopyFrom(TxtCompStream,TxtCompStream.Size);
+    finally
+      BinCompStream.Free;
+      TxtCompStream.Free;
+    end;
+  end;
+  Result:=true;
+end;
+
+function TDesigner.DoCopySelectionToClipboard: boolean;
+var
+  AllComponentsStream: TMemoryStream;
+  AllComponentText: string;
+begin
+  Result:=false;
+  if (ControlSelection.Count=0) then exit;
 
   AllComponentsStream:=TMemoryStream.Create;
   try
@@ -536,9 +536,9 @@ begin
       ClipBoard.AsText:=AllComponentText;
     except
       on E: Exception do begin
-        MessageDlg('Unable copy components to clipboard',
-          'There was an error while copying the component stream to clipboard:'#13
-          +E.Message,
+        MessageDlg(lisUnableCopyComponentsToClipboard,
+          Format(lisThereWasAnErrorWhileCopyingTheComponentStreamToCli, [#13,
+            E.Message]),
           mtError,[mbCancel],0);
         exit;
       end;
@@ -803,10 +803,9 @@ begin
   except
     on E: Exception do begin
       writeln('TDesigner.InvokeComponentEditor ERROR: ',E.Message);
-      MessageDlg('Error in '+CompEditor.ClassName,
-        'The component editor of class "'+CompEditor.ClassName+'"'
-        +'has created the error:'#13
-        +'"'+E.Message+'"',
+      MessageDlg(Format(lisErrorIn, [CompEditor.ClassName]),
+        Format(lisTheComponentEditorOfClassHasCreatedTheError, ['"',
+          CompEditor.ClassName, '"', #13, '"', E.Message, '"']),
         mtError,[mbOk],0);
     end;
   end;
@@ -1079,8 +1078,8 @@ Begin
               if (ControlSelection.SelectionForm<>nil)
               and (ControlSelection.SelectionForm<>Form)
               then begin
-                MessageDlg('Invalid multiselection',
-                  'Multiselected components must be of a single form.',
+                MessageDlg(lisInvalidMultiselection,
+                  fdInvalidMutliselectionText,
                   mtInformation,[mbOk],0);
               end else begin
                 ControlSelection.Add(MouseDownComponent);
@@ -1248,7 +1247,7 @@ var
     and (ControlSelection.SelectionForm<>Form)
     then begin
       MessageDlg(fdInvalidMutliselectionCap,
-        'Multiselected components must be of a single form.',
+        fdInvalidMutliselectionText,
         mtInformation,[mbOk],0);
       exit;
     end;
@@ -1574,8 +1573,8 @@ begin
     exit;
   if (ControlSelection.LookupRootSelected) then begin
     if ControlSelection.Count>1 then
-      MessageDlg('Invalid delete',
-       'The root component can not be deleted.',mtInformation,
+      MessageDlg(lisInvalidDelete,
+       lisTheRootComponentCanNotBeDeleted, mtInformation,
        [mbOk],0);
     exit;
   end;
@@ -1872,11 +1871,10 @@ begin
   except
     on E: Exception do begin
       writeln('TDesigner.OnComponentEditorVerbMenuItemClick ERROR: ',E.Message);
-      MessageDlg('Error in '+PopupMenuComponentEditor.ClassName,
-        'The component editor of class "'+PopupMenuComponentEditor.ClassName+'"'#13
-        +'invoked with verb #'+IntToStr(Verb)+' "'+VerbCaption+'"'#13
-        +'has created the error:'#13
-        +'"'+E.Message+'"',
+      MessageDlg(Format(lisErrorIn, [PopupMenuComponentEditor.ClassName]),
+        Format(lisTheComponentEditorOfClassInvokedWithVerbHasCreated, ['"',
+          PopupMenuComponentEditor.ClassName, '"', #13, IntToStr(Verb), '"',
+          VerbCaption, '"', #13, #13, '"', E.Message, '"']),
         mtError,[mbOk],0);
     end;
   end;

@@ -98,14 +98,14 @@ each control that's dropped onto the form
     Function GetComponentCount: Integer; override;
     Function GetComponent(Index : Integer): TIComponentInterface; override;
 
-    Function Select : Boolean; override;
-    Function Focus : Boolean; override;
-    Function Delete : Boolean; override;
+    Function Select: Boolean; override;
+    Function Focus: Boolean; override;
+    Function Delete: Boolean; override;
     
     function GetComponentEditor: TBaseComponentEditor;
     property Designer: TComponentEditorDesigner read GetDesigner write FDesigner;
     
-    property Component : TComponent read FComponent;
+    property Component: TComponent read FComponent;
   end;
 
 
@@ -140,15 +140,19 @@ each control that's dropped onto the form
     constructor Create;
     destructor Destroy; override;
 
+    // selection
     Function AddSelected(Value : TComponent) : Integer;
     Procedure DeleteComponent(AComponent: TComponent; FreeComponent: boolean);
     Function FindComponentByName(const Name : ShortString) : TIComponentInterface; override;
     Function FindComponent(AComponent: TComponent): TIComponentInterface; override;
-    
+    function SaveSelectionToStream(s: TStream): Boolean; override;
+    Procedure ClearSelected;
+
+    // JIT forms
     function IsJITComponent(AComponent: TComponent): boolean;
     function GetJITListOfType(AncestorType: TComponentClass): TJITComponentList;
     function FindJITList(AComponent: TComponent): TJITComponentList;
-    function GetDesignerForm(AComponent: TComponent): TCustomForm;
+    function GetDesignerForm(AComponent: TComponent): TCustomForm; override;
     function FindNonControlForm(LookupRoot: TComponent): TNonControlForm;
     function CreateNonControlForm(LookupRoot: TComponent): TNonControlForm;
     procedure RenameJITComponent(AComponent: TComponent;
@@ -160,10 +164,16 @@ each control that's dropped onto the form
                            const OldMethodName, NewMethodName: shortstring);
     procedure SaveHiddenDesignerFormProperties(AComponent: TComponent);
     
+    // designers
     function DesignerCount: integer; override;
     function GetDesigner(Index: integer): TIDesigner; override;
+    function GetCurrentDesigner: TIDesigner; override;
+    function GetDesignerByComponent(AComponent: TComponent): TIDesigner; override;
 
+    // component editors
     function GetComponentEditor(AComponent: TComponent): TBaseComponentEditor;
+    
+    // component creation
     function CreateUniqueComponentName(AComponent: TComponent): string;
     function CreateUniqueComponentName(const AClassName: string;
                                        OwnerComponent: TComponent): string;
@@ -180,8 +190,8 @@ each control that's dropped onto the form
                        ParentControl: TWinControl): TIComponentInterface; override;
     Procedure SetComponentNameAndClass(CI: TIComponentInterface;
       const NewName, NewClassName: shortstring);
-    Procedure ClearSelected;
-    
+
+    // keys
     function TranslateKeyToDesignerCommand(Key: word; Shift: TShiftState): word;
   public
     property Selection: TPersistentSelectionList read FSelection
@@ -777,6 +787,17 @@ Begin
     Result:=nil;
 end;
 
+function TCustomFormEditor.SaveSelectionToStream(s: TStream): boolean;
+var
+  ADesigner: TIDesigner;
+begin
+  ADesigner:=GetCurrentDesigner;
+  if ADesigner is TComponentEditorDesigner then
+    Result:=TComponentEditorDesigner(ADesigner).CopySelectionToStream(s)
+  else
+    Result:=false;
+end;
+
 function TCustomFormEditor.IsJITComponent(AComponent: TComponent): boolean;
 begin
   Result:=JITFormList.IsJITForm(AComponent)
@@ -914,6 +935,26 @@ begin
     AForm:=GetDesignerForm(JITDataModuleList[Index-JITFormList.Count]);
     Result:=TIDesigner(AForm.Designer);
   end;
+end;
+
+function TCustomFormEditor.GetCurrentDesigner: TIDesigner;
+begin
+  Result:=nil;
+  if (Selection<>nil) and (Selection.Count>0) and (Selection[0] is TComponent)
+  then
+    Result:=GetDesignerByComponent(TComponent(Selection[0]));
+end;
+
+function TCustomFormEditor.GetDesignerByComponent(AComponent: TComponent
+  ): TIDesigner;
+var
+  AForm: TCustomForm;
+begin
+  AForm:=GetDesignerForm(AComponent);
+  if AForm=nil then
+    Result:=nil
+  else
+    Result:=AForm.Designer;
 end;
 
 function TCustomFormEditor.GetComponentEditor(AComponent: TComponent

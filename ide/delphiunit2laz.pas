@@ -76,8 +76,8 @@ implementation
 function CheckDelphiFileExt(const Filename: string): TModalResult;
 begin
   if CompareFileExt(Filename,'.pas',false)<>0 then begin
-    Result:=MessageDlg('Not a Delphi unit',
-      'The file "'+Filename+'" is not a Delphi unit.',
+    Result:=MessageDlg(lisNotADelphiUnit,
+      Format(lisTheFileIsNotADelphiUnit, ['"', Filename, '"']),
       mtError,[mbCancel,mbAbort],0);
     exit;
   end;
@@ -104,7 +104,7 @@ begin
   // create base path to LCL compiled units <LazarusSrcDir>/lcl/units/
   LCLPath:=TrimFilename(LazarusSrcDir+SetDirSeparators('/lcl/units/'));
   NextStartPos:=1;
-  writeln('CheckFilenameForLCLPaths UnitPath="',UnitPath,'" LCLPath="',LCLPath,'"');
+  //writeln('CheckFilenameForLCLPaths UnitPath="',UnitPath,'" LCLPath="',LCLPath,'"');
   if GetNextUsedDirectoryInSearchPath(UnitPath,LCLPath,NextStartPos)='' then
   begin
     LCLPath:=LCLPath+'$(TargetCPU)'+PathDelim+'$(TargetOS)';
@@ -158,14 +158,14 @@ var
 begin
   LazarusFilename:=ConvertDelphiToLazarusFilename(DelphiFilename);
   LFMFilename:='';
-  writeln('RenameDelphiUnitToLazarusUnit Unit "',DelphiFilename,'" -> "',LazarusFilename,'"');
+  //writeln('RenameDelphiUnitToLazarusUnit Unit "',DelphiFilename,'" -> "',LazarusFilename,'"');
   Result:=RenameFileWithErrorDialogs(DelphiFilename,LazarusFilename,[mbAbort]);
   if Result<>mrOK then exit;
   if RenameDFMFile then begin
     DFMFilename:=FindDFMFileForDelphiUnit(DelphiFilename);
     if DFMFilename<>'' then begin
       LFMFilename:=ConvertDFMToLFMFilename(DFMFilename,false);
-      writeln('RenameDelphiUnitToLazarusUnit Unit "',DFMFilename,'" -> "',LFMFilename,'"');
+      //writeln('RenameDelphiUnitToLazarusUnit Unit "',DFMFilename,'" -> "',LFMFilename,'"');
       Result:=RenameFileWithErrorDialogs(DFMFilename,LFMFilename,[mbAbort]);
       if Result<>mrOK then exit;
     end;
@@ -205,7 +205,7 @@ begin
     end;
     // converting dfm file, without renaming unit -> keep case
     LFMFilename:=ConvertDFMToLFMFilename(DFMFilename,true);
-    writeln('ConvertDFMFileToLFMFile LFMFilename="',LFMFilename,'"');
+    //writeln('ConvertDFMFileToLFMFile LFMFilename="',LFMFilename,'"');
     try
       LFMStream.SaveToFile(LFMFilename);
     except
@@ -256,9 +256,8 @@ begin
                            [lbfCheckIfText,lbfUpdateFromDisk]);
     if Result<>mrOk then exit;
   end else if LFMMustExist then begin
-    Result:=MessageDlg('LFM file not found',
-                       'Unit: '+UnitFileName+#13
-                       +'LFM file: '+LFMFilename,
+    Result:=MessageDlg(lisLFMFileNotFound,
+                       Format(lisUnitLFMFile, [UnitFileName, #13, LFMFilename]),
                        mtError,[mbCancel,mbAbort],0);
   end;
 end;

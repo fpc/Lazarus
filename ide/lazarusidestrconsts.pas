@@ -263,6 +263,8 @@ resourcestring
   lisUnableToConvertFileError = 'Unable to convert file %s%s%s%sError: %s';
   lisUnableToWriteFileError = 'Unable to write file %s%s%s%sError: %s';
   lisErrorCreatingLrs = 'Error creating lrs';
+  lisLFMFileNotFound = 'LFM file not found';
+  lisUnitLFMFile = 'Unit: %s%sLFM file: %s';
   lisUnableToConvertLfmToLrsAndWriteLrsFile = 'Unable to convert lfm to lrs '
     +'and write lrs file.';
   lisUnableToLoadOldResourceFileTheResourceFileIs = 'Unable to load old '
@@ -1029,7 +1031,28 @@ resourcestring
 
   // Form designer
   fdInvalidMutliselectionCap='Invalid mutliselection';
+  lisInvalidMultiselection = 'Invalid multiselection';
+  lisUnableConvertBinaryStreamToText = 'Unable convert binary stream to text';
+  lisUnableToStreamSelectedComponents = 'Unable to stream selected components';
+  lisCanNotCopyTopLevelComponent = 'Can not copy top level component.';
+  lisCopyingAWholeFormIsNotImplemented = 'Copying a whole form is not '
+    +'implemented.';
+  lisThereWasAnErrorDuringWritingTheSelectedComponent = 'There was an error '
+    +'during writing the selected component %s:%s:%s%s';
+  lisThereWasAnErrorWhileConvertingTheBinaryStreamOfThe = 'There was an error '
+    +'while converting the binary stream of the selected component %s:%s:%s%s';
+  lisUnableCopyComponentsToClipboard = 'Unable copy components to clipboard';
+  lisThereWasAnErrorWhileCopyingTheComponentStreamToCli = 'There was an error '
+    +'while copying the component stream to clipboard:%s%s';
+  lisErrorIn = 'Error in %s';
+  lisTheComponentEditorOfClassInvokedWithVerbHasCreated = 'The component '
+    +'editor of class %s%s%s%sinvoked with verb #%s %s%s%s%shas created the '
+    +'error:%s%s%s%s';
+  lisTheComponentEditorOfClassHasCreatedTheError = 'The component editor of '
+    +'class %s%s%shas created the error:%s%s%s%s';
   fdInvalidMutliselectionText='Multiselected components must be of a single form.';
+  lisInvalidDelete = 'Invalid delete';
+  lisTheRootComponentCanNotBeDeleted = 'The root component can not be deleted.';
   fdmAlignWord='Align';
   fdmMirrorHorizontal='Mirror horizontal';
   fdmMirrorVertical='Mirror vertical';
@@ -1396,6 +1419,8 @@ resourcestring
     +'s is missing.%s%sHint for newbies:%sCreate a lazarus application and '
     +'put the file into the project directory.';
   lisLCLUnitPathMissing = 'LCL unit path missing';
+  lisNotADelphiUnit = 'Not a Delphi unit';
+  lisTheFileIsNotADelphiUnit = 'The file %s%s%s is not a Delphi unit.';
   lisCodeToolsDefsErrorReading = 'Error reading %s%s%s%s%s';
   lisCodeToolsDefsErrorReadingProjectInfoFile = 'Error reading project info '
     +'file %s%s%s%s%s';

@@ -82,6 +82,7 @@ type
   protected
     function GetDesigner(Index: integer): TIDesigner; virtual; abstract;
   public
+    // components
     Function FindComponentByName(const Name : ShortString) : TIComponentInterface; virtual; abstract;
     Function FindComponent(AComponent: TComponent): TIComponentInterface; virtual; abstract;
 
@@ -95,8 +96,16 @@ type
                                      Root: TComponent;
                                      ParentControl: TWinControl
                                      ): TIComponentInterface; virtual; abstract;
+
+    // designers
     function DesignerCount: integer; virtual; abstract;
     property Designer[Index: integer]: TIDesigner read GetDesigner;
+    function GetCurrentDesigner: TIDesigner; virtual; abstract;
+    function GetDesignerForm(AComponent: TComponent): TCustomForm; virtual; abstract;
+    function GetDesignerByComponent(AComponent: TComponent): TIDesigner; virtual; abstract;
+
+    // selection
+    function SaveSelectionToStream(s: TStream): Boolean; virtual; abstract;
   end;
 
 

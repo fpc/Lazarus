@@ -36,7 +36,8 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, AVGLvlTree, PropEdits, LazarusIDEStrConsts, ComponentReg;
+  Buttons, AVGLvlTree, PropEdits, LazarusIDEStrConsts, ComponentReg,
+  FormEditingIntf, LFMTrees;
 
 type
   TChangeClassDlg = class(TForm)
@@ -105,21 +106,29 @@ end;
 
 function ChangePersistentClass(ADesigner: TIDesigner; APersistent: TPersistent;
   NewClass: TClass): TModalResult;
+var
+  ComponentStream: TMemoryStream;
 begin
-  // select only this persistent
-  GlobalDesignHook.SelectOnlyThis(APersistent);
-  // stream selection
-  
-  // parse
-  
-  // change class
-  
-  // check properties
-  
-  // delete selection
-  
-  // insert streamed selection
-  
+  ComponentStream:=nil;
+  try
+    // select only this persistent
+    GlobalDesignHook.SelectOnlyThis(APersistent);
+    // stream selection
+    ComponentStream:=TMemoryStream.Create;
+    FormEditingHook.SaveSelectionToStream(ComponentStream);
+    // parse
+
+    // change class
+
+    // check properties
+
+    // delete selection
+
+    // insert streamed selection
+
+  finally
+    ComponentStream.Free;
+  end;
   Result:=mrCancel;
 end;
 
@@ -289,7 +298,7 @@ var
 begin
   // create/clear tree
   if FClasses=nil then
-    FClasses:=TAvgLvlTree.Create(@CompareClasses)
+    FClasses:=TAvgLvlTree.CreateObjectCompare(@CompareClasses)
   else
     FClasses.Clear;
   // add class of ThePersistent

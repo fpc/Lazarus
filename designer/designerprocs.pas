@@ -107,6 +107,7 @@ function GetComponentHeight(AComponent: TComponent): integer;
 
 procedure InvalidateDesignerRect(aHandle: HWND; ARect: pRect);
 
+
 implementation
 
 

@@ -19,6 +19,7 @@
   
   author:
      Radek Cervinka, radek.cervinka@centrum.cz
+     Mattias Gaertner
   
   contributors:
      Mattias Gaertner
@@ -154,13 +155,13 @@ type
   end;
 
 var
-  RegisteredActions: TRegisteredActionCategories = nil;
+  RegisteredActions: TRegisteredActionCategories;
 
 type
   TNotifyActionListChange = procedure;
 
 var
-  NotifyActionListChange: TNotifyActionListChange = nil;
+  NotifyActionListChange: TNotifyActionListChange;
 
 procedure RegisterActions(const ACategory: string;
                           const AClasses: array of TBasicActionClass;
@@ -257,9 +258,7 @@ begin
   if AActionList=nil then
     Raise Exception.Create('ShowActionListEditor AActionList=nil');
   if ActionListEditorForm=nil then
-  begin
     ActionListEditorForm:=TActionListEditor.Create(Application);
-  end;
   ActionListEditorForm.Designer:=ADesigner;
   ActionListEditorForm.SetActionList(AActionList);
   ActionListEditorForm.ShowOnTop;
@@ -638,10 +637,12 @@ var
   IsDouble: Boolean;
   j: Integer;
   AClass: TBasicActionClass;
+  l: Integer;
 begin
-  if length(AClasses)=0 then exit;
+  l:=High(AClasses)-Low(AClasses)+1;
+  if l=0 then exit;
   CurCount:=FCount;
-  inc(FCount,length(AClasses));
+  inc(FCount,l);
   // add all classes (ignoring doubles)
   ReAllocMem(FItems,SizeOf(TBasicActionClass)*FCount);
   for i:=Low(AClasses) to High(AClasses) do begin
@@ -784,6 +785,8 @@ begin
 end;
 
 initialization
+  NotifyActionListChange:=nil;
+  ActionListEditorForm:=nil;
   RegisteredActions:=TRegisteredActionCategories.Create;
   RegisterActionsProc := @RegisterActions;
   UnRegisterActionsProc := @UnregisterActions;

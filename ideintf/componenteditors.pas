@@ -38,6 +38,15 @@ type
     FForm: TCustomForm;
     function GetPropertyEditorHook: TPropertyEditorHook; virtual; abstract;
   public
+    procedure CopySelection; virtual; abstract;
+    procedure CutSelection; virtual; abstract;
+    function CanPaste: Boolean; virtual; abstract;
+    procedure PasteSelection; virtual; abstract;
+    procedure DeleteSelection; virtual; abstract;
+    function CopySelectionToStream(s: TStream): boolean; virtual; abstract;
+    function InvokeComponentEditor(AComponent: TComponent;
+                                   MenuIndex: integer): boolean; virtual; abstract;
+
     procedure DrawDesignerItems(OnlyIfNeeded: boolean); virtual; abstract;
     function CreateUniqueComponentName(const AClassName: string
                                        ): string; virtual; abstract;

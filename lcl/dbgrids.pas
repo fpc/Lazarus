@@ -798,8 +798,11 @@ begin
     end
     else if (FDataLink.DataSet<>nil)and FDatalink.Active then begin
       F := GetDsFieldFromGridColumn(FromIndex);
-      if F<>nil then
+      if F<>nil then begin
+        {$IFDEF VER1_0_10}
         TProtFields(FDatalink.DataSet.Fields).SetFieldIndex( F, ToIndex - FixedCols );
+        {$ENDIF}
+      end;
     end;
     i := GetGridColumnFromField(CurField);
     if (i>FixedCols) and (i<>Col) then begin
@@ -1767,6 +1770,9 @@ end.
 
 {
   $Log$
+  Revision 1.11  2004/08/06 06:51:15  mattias
+  fixed compilation for fpc 1.0.10
+
   Revision 1.10  2004/08/04 09:35:38  mattias
   implemented setting TTabSheet.TabIndex
 

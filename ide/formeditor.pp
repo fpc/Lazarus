@@ -39,8 +39,6 @@ type
   protected
     procedure SetObj_Inspector(AnObjectInspector: TObjectInspector); override;
   public
-    constructor Create;
-    destructor Destroy; override;
     procedure PaintAllDesignerItems;
   end;
 
@@ -69,19 +67,7 @@ end;
 procedure TFormEditor.SetObj_Inspector(AnObjectInspector: TObjectInspector);
 begin
   if AnObjectInspector=Obj_Inspector then exit;
-  
   inherited SetObj_Inspector(AnObjectInspector);
-  
-end;
-
-constructor TFormEditor.Create;
-Begin
-  inherited Create;
-end;
-
-destructor TFormEditor.destroy;
-Begin
-  inherited Destroy;
 end;
 
 procedure TFormEditor.PaintAllDesignerItems;
