@@ -1174,14 +1174,14 @@ begin
 end;
 
 function  TSourceEditor.GetBreakPointMark(const ALine: Integer): TSynEditMark;
-var 
+var
   n: Integer;
   AllMarks: TSynEditMarks;
 begin
   FEditor.Marks.GetMarksForLine(ALine, AllMarks);
 
-  for n := 1 to maxMarks do 
-  begin         
+  for n := 1 to maxMarks do
+  begin
     Result := AllMarks[n];
     if IsBreakPointMark(Result) then Exit;
   end;
@@ -4007,7 +4007,10 @@ var
   ASynEdit: TSynEdit;
   EditCaret: TPoint;
   LineMarks: TSynEditMarks;
-  LineMark: TSynEditMark;
+  AMark: TSourceMark;
+  i: integer;
+  HintStr: String;
+  CurHint: String;
 begin
   // hide other hints
   Application.HideHint;
@@ -4021,12 +4024,19 @@ begin
   if (EditCaret.Y<1) then exit;
   if EditPos.X<ASynEdit.Gutter.Width then begin
     // hint for a gutter item
-    ASynEdit.Marks.GetMarksForLine(EditCaret.Y,LineMarks);
-    LineMark:=LineMarks[Low(TSynEditMarks)];
-    if LineMark<>nil then begin
-
-      // ToDo: give a hint about the mark (e.g. breakpoint properties)
-
+    if EditorOpts.ShowGutterHints then begin
+      ASynEdit.Marks.GetMarksForLine(EditCaret.Y,LineMarks);
+      HintStr:='';
+      for i:=Low(TSynEditMarks) to High(TSynEditMarks) do begin
+        AMark:=TSourceMark(LineMarks[i]);
+        if not (AMark is TSourceMark) then continue;
+        CurHint:=AMark.GetHint;
+        if CurHint='' then continue;
+        if HintStr<>'' then HintStr:=HintStr+EndOfLine;
+        HintStr:=HintStr+CurHint;
+      end;
+      if HintStr<>'' then
+        ActivateHint(MousePos,HintStr);
     end;
   end else begin
     // hint for source
