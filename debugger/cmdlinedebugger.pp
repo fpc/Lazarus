@@ -79,7 +79,8 @@ implementation
 //////////////////////////////////////////////////
 
 uses
-{$IFDEF Linux}
+{.$IFDEF Linux}
+{$IFDEF UNIX}
  {$IFDEF Ver1_0}
    Linux,
  {$ELSE}
@@ -95,7 +96,8 @@ uses
  ------------------------------------------------------------------------------}
 procedure SendBreak(const AHandle: Integer);
 begin
-{$IFDEF Linux}
+{.$IFDEF Linux}
+{$IFDEF UNIX}
   if AHandle <> 0
   then Kill(AHandle, SIGINT);
 {$ENDIF}
@@ -107,7 +109,8 @@ end;
   Returns: BitArray of handles set, 0 when an error ocoured
  ------------------------------------------------------------------------------}
 function WaitForHandles(const AHandles: array of Integer): Integer;
-{$IFDEF Linux}
+{.$IFDEF Linux}
+{$IFDEF UNIX}
 var
   n, R, Max, Count: Integer;
   TimeOut: Integer;
@@ -366,6 +369,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.16  2003/06/17 23:13:06  marc
+  * Canged Linux derective to unit, so it will work on xxxbsd?
+
   Revision 1.15  2003/05/27 20:58:12  mattias
   implemented enable and deleting breakpoint in breakpoint dlg
 
