@@ -364,7 +364,6 @@ type
     procedure DrawItem(Index: Integer; ARect: TRect;
       State: TOwnerDrawState); virtual;
   protected
-    property BorderStyle : TBorderStyle read FBorderStyle write SetBorderStyle;
     property ExtendedSelect : boolean read FExtendedSelect write SetExtendedSelect;
     property Sorted : boolean read FSorted write SetSorted;
     property Style : TListBoxStyle read FStyle write SetStyle;
@@ -374,6 +373,7 @@ type
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
     procedure Clear;
+    property BorderStyle : TBorderStyle read FBorderStyle write SetBorderStyle;
     property Canvas: TCanvas read FCanvas;
     property ItemIndex : integer read GetItemIndex write SetItemIndex;
     property Items : TStrings read FItems write SetItems;
@@ -1392,6 +1392,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.73  2002/12/28 21:44:51  mattias
+  further cleanup
+
   Revision 1.72  2002/12/27 10:34:55  mattias
   message view scrolls to message
 
