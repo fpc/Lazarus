@@ -2717,9 +2717,7 @@ writeln('[TMainIDE.DoOpenEditorFile] B');
       NewPageName:=copy(NewPageName,1,length(NewPageName)-length(Ext));
     if NewpageName='' then NewPageName:='file';
   end;
-writeln('[TMainIDE.DoOpenEditorFile] B2');
   SourceNotebook.NewFile(NewPageName,NewUnitInfo.Source);
-writeln('[TMainIDE.DoOpenEditorFile] B3');
   NewSrcEdit:=SourceNotebook.GetActiveSE;
   if not ProjectLoading then
     Project.InsertEditorIndex(SourceNotebook.NoteBook.PageIndex)
@@ -2737,13 +2735,9 @@ writeln('[TMainIDE.DoOpenEditorFile] B3');
       end;
     end;
   end;
-writeln('[TMainIDE.DoOpenEditorFile] B4');
   NewUnitInfo.EditorIndex:=SourceNotebook.NoteBook.PageIndex;
-writeln('[TMainIDE.DoOpenEditorFile] B5');
   NewSrcEdit.SyntaxHighlighterType:=NewUnitInfo.SyntaxHighlighter;
-writeln('[TMainIDE.DoOpenEditorFile] B6');
   NewSrcEdit.EditorComponent.CaretXY:=NewUnitInfo.CursorPos;
-writeln('[TMainIDE.DoOpenEditorFile] B7');
   NewSrcEdit.EditorComponent.TopLine:=NewUnitInfo.TopLine;
   NewSrcEdit.EditorComponent.LeftChar:=1;
   
@@ -4957,6 +4951,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.162  2001/12/02 13:05:33  lazarus
+  MG: reduced output
+
   Revision 1.161  2001/12/02 11:03:35  lazarus
   MG: added default pascal file extension option
 
