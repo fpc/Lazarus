@@ -576,8 +576,10 @@ begin
 end;
 
 procedure TOIPropertyGrid.SetRowValue;
-var CurRow:TOIPropertyGridRow;
-  NewValue:string;
+var
+  CurRow: TOIPropertyGridRow;
+  NewValue: string;
+  OldExpanded: boolean;
 begin
   if (FStates*[pgsChangingItemIndex,pgsApplyingValue]=[])
   and (FCurrentEdit<>nil)
@@ -597,6 +599,13 @@ begin
         on E: Exception do begin
           MessageDlg('Error',E.Message,mtError,[mbOk],0);
         end;
+      end;
+      if (paVolatileSubProperties in CurRow.Editor.GetAttributes)
+      and ((CurRow.Expanded) or (CurRow.ChildCount>0)) then begin
+        OldExpanded:=CurRow.Expanded;
+        ShrinkRow(FitemIndex);
+        if OldExpanded then
+          ExpandRow(FItemIndex);
       end;
       if FCurrentEdit=ValueEdit then
         ValueEdit.Text:=CurRow.Editor.GetVisualValue
@@ -758,9 +767,9 @@ begin
   ItemIndex:=-1;
   for a:=0 to FRows.Count-1 do Rows[a].Free;
   FRows.Clear;
-  GetComponentProperties(FPropertyEditorHook,FComponentList,FFilter,
-    @AddPropertyEditor);
-    
+  GetComponentProperties(FComponentList,FFilter,FPropertyEditorHook,
+    @AddPropertyEditor,nil);
+
   FRows.Sort(@SortGridRows);
   SetItemsTops;
   for a:=FExpandedProperties.Count-1 downto 0 do begin
@@ -851,6 +860,8 @@ begin
     end;
     ARow:=ARow.Parent;
   end;
+  if (FItemIndex>=StartIndex) and (FItemIndex<=EndIndex) then
+    ItemIndex:=0;
   for a:=StartIndex downto EndIndex do begin
     Rows[a].Free;
     FRows.Delete(a);

@@ -327,6 +327,8 @@ type
     procedure PaintGrid; virtual; abstract;
     procedure ValidateRename(AComponent: TComponent;
       const CurName, NewName: string); virtual; abstract;
+    function GetShiftState: TShiftState; virtual; abstract;
+    Procedure SelectOnlyThisComponent(AComponent:TComponent); virtual; abstract;
   end;
 
 
@@ -337,7 +339,7 @@ function KeysToShiftState(Keys:Word): TShiftState;
 function KeyDataToShiftState(KeyData: Longint): TShiftState;
 
 function GetParentForm(Control:TControl): TCustomForm;
-function FindDesigner(AComponent: TComponent): TIDesigner;
+function FindRootDesigner(AComponent: TComponent): TIDesigner;
 
 function IsAccel(VK : Word; const Str : ShortString): Boolean;
 
@@ -489,7 +491,7 @@ begin
 end;
 
 
-function FindDesigner(AComponent: TComponent): TIDesigner;
+function FindRootDesigner(AComponent: TComponent): TIDesigner;
 var
   Form: TCustomForm;
 begin
