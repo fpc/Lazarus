@@ -49,6 +49,14 @@ begin
       and (GetKeyState(VK_LBUTTON)=0)
       and (GetKeyState(VK_MBUTTON)=0)
       and (GetKeyState(VK_RBUTTON)=0);
+    if Result.ControlHasHint then begin
+      // if there is a modal form, then don't show hints for other forms
+      if (Screen.FFocusedForm<>nil)
+      and (fsModal in Screen.FFocusedForm.FormState)
+      and (GetParentForm(Result.Control)<>Screen.FFocusedForm)
+      then
+        Result.ControlHasHint:=false;
+    end;
   end else begin
     Result.MousePos:=Point(0,0);
     Result.Control:=nil;
@@ -817,6 +825,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.35  2002/11/09 18:13:33  lazarus
+  MG: fixed gdkwindow checks
+
   Revision 1.34  2002/11/09 15:02:06  lazarus
   MG: fixed LM_LVChangedItem, OnShowHint, small bugs
 
