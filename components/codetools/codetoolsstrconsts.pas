@@ -103,6 +103,8 @@ ResourceString
   ctsBaseTypeOfNotFound = 'base type of "%s" not found';
   ctsClassIdentifierExpected = 'class identifier expected';
   ctsDefaultClassAncestorTObjectNotFound = 'default class ancestor TObject not found';
+  ctsDefaultInterfaceAncestorIInterfaceNotFound =
+    'default interface ancestor IInterface not found';
   ctsExprTypeMustBeClassOrRecord = 'expression type must be class or record type';
   ctsClassWithoutName = 'class without name';
   ctsBinaryOperator = 'binary operator';

@@ -74,11 +74,12 @@ const
   ctnConstDefinition = 22;
 
   ctnClass           = 30;
-  ctnClassPublished  = 31;
-  ctnClassPrivate    = 32;
-  ctnClassProtected  = 33;
-  ctnClassPublic     = 34;
-  ctnClassGUID       = 35;
+  ctnClassInterface  = 31;
+  ctnClassPublished  = 32;
+  ctnClassPrivate    = 33;
+  ctnClassProtected  = 34;
+  ctnClassPublic     = 35;
+  ctnClassGUID       = 36;
 
   ctnProperty        = 40;
   ctnMethodMap       = 41;
@@ -127,7 +128,7 @@ const
   AllIdentifierDefinitions =
      [ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition];
   AllPascalTypes =
-     [ctnClass,
+     [ctnClass,ctnClassInterface,
       ctnIdentifier,ctnArrayType,ctnRecordType,ctnRecordCase,ctnRecordVariant,
       ctnProcedureType,ctnSetType,ctnRangeType,ctnEnumerationType,
       ctnEnumIdentifier,ctnLabelType,ctnTypeType,ctnFileType,ctnPointerType,
@@ -269,6 +270,7 @@ begin
   ctnNone: Result:='None';
 
   ctnClass: Result:='Class';
+  ctnClassInterface: Result:='Class Interface';
   ctnClassPublished: Result:='Published';
   ctnClassPrivate: Result:='Private';
   ctnClassProtected: Result:='Protected';

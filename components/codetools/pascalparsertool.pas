@@ -93,6 +93,7 @@ type
   protected
     TypeKeyWordFuncList: TKeyWordFunctionList;
     InnerClassKeyWordFuncList: TKeyWordFunctionList;
+    ClassInterfaceKeyWordFuncList: TKeyWordFunctionList;
     ClassVarTypeKeyWordFuncList: TKeyWordFunctionList;
     ExtractMemStream: TMemoryStream;
     ExtractSearchPos: integer;
@@ -118,6 +119,7 @@ type
     function KeyWordFuncLabel: boolean;
     // types
     function KeyWordFuncClass: boolean;
+    function KeyWordFuncClassInterface: boolean;
     function KeyWordFuncTypePacked: boolean;
     function KeyWordFuncTypeArray: boolean;
     function KeyWordFuncTypeProc: boolean;
@@ -150,6 +152,7 @@ type
     procedure BuildTypeKeyWordFunctions; virtual;
     procedure BuildInnerClassKeyWordFunctions; virtual;
     procedure BuildClassVarTypeKeyWordFunctions; virtual;
+    procedure BuildClassInterfaceKeyWordFunctions; virtual;
     function UnexpectedKeyWord: boolean;
     // read functions
     function ReadTilProcedureHeadEnd(ParseAttr: TParseProcHeadAttributes;
@@ -172,6 +175,7 @@ type
         CreateNodes: boolean): boolean;
     procedure ReadVariableType;
     function ReadTilTypeOfProperty(PropertyNode: TCodeTreeNode): boolean;
+    procedure ReadGUID;
   public
     CurSection: TCodeTreeNodeDesc;
 
@@ -320,6 +324,10 @@ begin
   ClassVarTypeKeyWordFuncList:=TKeyWordFunctionList.Create;
   BuildClassVarTypeKeyWordFunctions;
   AddKeyWordFuncList(ClassVarTypeKeyWordFuncList);
+  // KeyWord functions for parsing an class interface
+  ClassInterfaceKeyWordFuncList:=TKeyWordFunctionList.Create;
+  BuildClassInterfaceKeyWordFunctions;
+  AddKeyWordFuncList(ClassInterfaceKeyWordFuncList);
 end;
 
 destructor TPascalParserTool.Destroy;
@@ -372,8 +380,8 @@ begin
   with TypeKeyWordFuncList do begin
     Add('CLASS',{$ifdef FPC}@{$endif}KeyWordFuncClass);
     Add('OBJECT',{$ifdef FPC}@{$endif}KeyWordFuncClass);
-    Add('INTERFACE',{$ifdef FPC}@{$endif}KeyWordFuncClass);
-    Add('DISPINTERFACE',{$ifdef FPC}@{$endif}KeyWordFuncClass);
+    Add('INTERFACE',{$ifdef FPC}@{$endif}KeyWordFuncClassInterface);
+    Add('DISPINTERFACE',{$ifdef FPC}@{$endif}KeyWordFuncClassInterface);
     Add('PACKED',{$ifdef FPC}@{$endif}KeyWordFuncTypePacked);
     Add('ARRAY',{$ifdef FPC}@{$endif}KeyWordFuncTypeArray);
     Add('PROCEDURE',{$ifdef FPC}@{$endif}KeyWordFuncTypeProc);
@@ -427,6 +435,19 @@ begin
     Add('FUNCTION',{$ifdef FPC}@{$endif}KeyWordFuncClassVarTypeProc);
 
     DefaultKeyWordFunction:={$ifdef FPC}@{$endif}KeyWordFuncClassVarTypeIdent;
+  end;
+end;
+
+procedure TPascalParserTool.BuildClassInterfaceKeyWordFunctions;
+// KeyWordFunctions for parsing in a class interface, dispinterface
+begin
+  with ClassInterfaceKeyWordFuncList do begin
+    Add('PROCEDURE',{$ifdef FPC}@{$endif}KeyWordFuncClassMethod);
+    Add('FUNCTION',{$ifdef FPC}@{$endif}KeyWordFuncClassMethod);
+    Add('PROPERTY',{$ifdef FPC}@{$endif}KeyWordFuncClassProperty);
+    Add('END',{$ifdef FPC}@{$endif}AllwaysFalse);
+
+    DefaultKeyWordFunction:={$ifdef FPC}@{$endif}AllwaysFalse;
   end;
 end;
 
@@ -551,22 +572,19 @@ procedure TPascalParserTool.BuildSubTreeForClass(ClassNode: TCodeTreeNode);
        +' class/object keyword expected, but '+GetAtom+' found');
   end;
   
-  procedure RaiseStringConstantExpected;
-  begin
-    RaiseStringExpectedButAtomFound(ctsStringConstant);
-  end;
-
 var OldPhase: integer;
 begin
+  if (ClassNode<>nil)
+  and ((ClassNode.FirstChild<>nil)
+    or ((ClassNode.SubDesc and ctnsNeedJITParsing)=0))
+  then
+    // class already parsed
+    exit;
   OldPhase:=CurrentPhase;
   CurrentPhase:=CodeToolPhaseParse;
   try
     if ClassNode=nil then
       RaiseClassNodeNil;
-    if (ClassNode.FirstChild<>nil)
-    or ((ClassNode.SubDesc and ctnsNeedJITParsing)=0) then
-      // class already parsed
-      exit;
     if ClassNode.Desc<>ctnClass then
       RaiseClassDescInvalid;
     // set CursorPos after class head
@@ -595,30 +613,15 @@ begin
     CurNode.Desc:=ctnClassPublished;
     CurNode.StartPos:=CurPos.EndPos; // behind 'class'
     ReadNextAtom;
-    if CurPos.Flag=cafEdgedBracketOpen then begin
-      CreateChildNode;
-      CurNode.Desc:=ctnClassGUID;
-      // read GUID
-      ReadNextAtom;
-      if not AtomIsStringConstant then
-        RaiseStringConstantExpected;
-      ReadNextAtom;
-      if CurPos.Flag<>cafEdgedBracketClose then
-        RaiseCharExpectedButAtomFound(']');
-      ReadNextAtom;
-      if (not (CurPos.Flag in [cafSemicolon,cafEnd])) then
-        RaiseCharExpectedButAtomFound(';');
-      CurNode.EndPos:=CurPos.EndPos;
-      EndChildNode;
-    end else
-      UndoReadNextAtom;
+    if CurPos.Flag=cafEdgedBracketOpen then
+      ReadGUID;
     // parse till "end" of class/object
     CurKeyWordFuncList:=InnerClassKeyWordFuncList;
     try
       repeat
-        ReadNextAtom;
         if CurPos.StartPos>=ClassNode.EndPos then break;
         if not DoAtom then break;
+        ReadNextAtom;
       until false;
       // end last class section (public, private, ...)
       CurNode.EndPos:=CurPos.StartPos;
@@ -1583,13 +1586,14 @@ function TPascalParserTool.KeyWordFuncClassProperty: boolean;
    property Color: TColor read FColor write SetColor;
    property Items[Index1, Index2: integer]: integer read GetItems; default;
    property X: integer index 1 read GetCoords write SetCoords stored IsStored;
-   property Col8: ICol8 read FCol8 write FCol8 implements ICol8;
+   property Col8: ICol8 read FCol8 write FCol8 implements ICol8, IColor;
 
  property specifiers without parameters:
    default, nodefault
 
  property specifiers with parameters:
-   index <id or number>, read <id>, write <id>, implements <id>, stored <id>
+   index <id or number>, read <id>, write <id>, stored <id>, default <constant>,
+   implements <id>[,<id>...]
 }
 
   procedure RaiseSemicolonAfterPropSpecMissing(const s: string);
@@ -1658,10 +1662,6 @@ begin
   case CurSection of
    ctnInterface, ctnProgram, ctnPackage, ctnLibrary, ctnUnit:
     begin
-      if (UpAtomIs('INTERFACE')) and (LastAtomIs(1,'=')) then begin
-        Result:=KeyWordFuncClass();
-        exit;
-      end;
       if not ((CurSection=ctnInterface) and UpAtomIs('IMPLEMENTATION')) then
         RaiseUnexpectedKeyWord;
       // close interface section node
@@ -2555,7 +2555,7 @@ begin
 end;
 
 function TPascalParserTool.KeyWordFuncClass: boolean;
-// class, object, interface (type, not section), dispinterface
+// class, object
 //   this is a quick parser, which will only create one node for each class
 //   the nodes for the methods and properties are created in a second
 //   parsing phase (in KeyWordFuncClassMethod)
@@ -2617,6 +2617,61 @@ begin
   end;
   if ChildCreated then begin
     // close class
+    CurNode.EndPos:=CurPos.EndPos;
+    EndChildNode;
+  end;
+  if CurPos.Flag=cafEND then begin
+    ReadNextAtom;
+    if UpAtomIs('DEPRECATED') or UpAtomIs('PLATFORM') then ReadNextAtom;
+  end;
+  Result:=true;
+end;
+
+function TPascalParserTool.KeyWordFuncClassInterface: boolean;
+// class interface, dispinterface
+var
+  ChildCreated: boolean;
+  IntfAtomPos: TAtomPosition;
+begin
+  if CurNode.Desc<>ctnTypeDefinition then
+    SaveRaiseExceptionFmt(ctsAnoymDefinitionsAreNotAllowed,['interface']);
+  if not LastAtomIs(0,'=') then
+    SaveRaiseExceptionFmt(ctsAnoymDefinitionsAreNotAllowed,['interface']);
+  IntfAtomPos:=CurPos;
+  // class interface start found
+  ChildCreated:=true;
+  if ChildCreated then begin
+    CreateChildNode;
+    CurNode.Desc:=ctnClassInterface;
+    CurNode.StartPos:=IntfAtomPos.StartPos;
+  end;
+  // find end of interface
+  ReadNextAtom;
+  if (CurPos.Flag<>cafSemicolon) then begin
+    if (CurPos.Flag=cafRoundBracketOpen) then begin
+      // read inheritage brackets
+      ReadTilBracketClose(true);
+      ReadNextAtom;
+    end;
+    if CurPos.Flag=cafEdgedBracketOpen then
+      ReadGUID;
+    // parse till "end" of class/object
+    CurKeyWordFuncList:=ClassInterfaceKeyWordFuncList;
+    try
+      repeat
+        if CurPos.Flag in [cafEnd,cafNone] then break;
+        if not DoAtom then break;
+        ReadNextAtom;
+      until false;
+    finally
+      CurKeyWordFuncList:=DefaultKeyWordFuncList;
+    end;
+  end else begin
+    // forward definition
+    CurNode.SubDesc:=CurNode.SubDesc+ctnsForwardDeclaration;
+  end;
+  if ChildCreated then begin
+    // close class interface
     CurNode.EndPos:=CurPos.EndPos;
     EndChildNode;
   end;
@@ -3835,6 +3890,28 @@ begin
   ReadNextAtom; // read type
   AtomIsIdentifier(true);
   Result:=true;
+end;
+
+procedure TPascalParserTool.ReadGUID;
+
+  procedure RaiseStringConstantExpected;
+  begin
+    RaiseStringExpectedButAtomFound(ctsStringConstant);
+  end;
+
+begin
+  CreateChildNode;
+  CurNode.Desc:=ctnClassGUID;
+  // read GUID
+  ReadNextAtom;
+  if not AtomIsStringConstant then
+    RaiseStringConstantExpected;
+  ReadNextAtom;
+  if CurPos.Flag<>cafEdgedBracketClose then
+    RaiseCharExpectedButAtomFound(']');
+  CurNode.EndPos:=CurPos.EndPos;
+  EndChildNode;
+  ReadNextAtom;
 end;
 
 function TPascalParserTool.PropertyIsDefault(PropertyNode: TCodeTreeNode
