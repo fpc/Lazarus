@@ -1093,7 +1093,11 @@ procedure TheTextDrawer.ExtTextOut(X, Y: Integer; fuOptions: UINT;
     TmpLen := ((not (EtoBlockSize - 1)) and Length) + EtoBlockSize;
     NewSize := TmpLen * SizeOf(Integer);
     ReallocMem(FETODist, NewSize);
+    {$IFDEF FPC}
+    p := PInteger(FETODist + (FETOSizeInChar * SizeOf(Integer)));
+    {$ELSE}
     p := PInteger(Integer(FETODist) + FETOSizeInChar * SizeOf(Integer));
+    {$ENDIF}
     for i := 1 to TmpLen - FETOSizeInChar do
     begin
       p^ := InitValue;
@@ -1230,7 +1234,11 @@ var
 begin
   pCrnt := Text;
   pRun := Text;
+  {$IFDEF FPC}
+  pTail := PChar(Pointer(Text) + Length);
+  {$ELSE}
   pTail := PChar(Integer(Text) + Length);
+  {$ENDIF}
   TmpRect := ARect;
   while pCrnt < pTail do
   begin
@@ -1238,7 +1246,11 @@ begin
     if pRun <> pCrnt then
     begin
       SetTextCharacterExtra(StockDC, FCharExtra + FCrntDx);
+      {$IFDEF FPC}
+      Len := PtrInt(pRun) - PtrInt(pCrnt);
+      {$ELSE}
       Len := Integer(pRun) - Integer(pCrnt);
+      {$ENDIF}
       with TmpRect do
       begin
         n := GetCharWidth * Len;
@@ -1255,10 +1267,14 @@ begin
     pCrnt := pRun;
     if pRun = pTail then
       break;
-    
+
     GetDBCharRange;
     SetTextCharacterExtra(StockDC, FCharExtra + FCrntDBDx);
+    {$IFDEF FPC}
+    Len := PtrInt(pRun) - PtrInt(pCrnt);
+    {$ELSE}
     Len := Integer(pRun) - Integer(pCrnt);
+    {$ENDIF}
     with TmpRect do
     begin
       n := GetCharWidth * Len;
