@@ -3123,14 +3123,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TWinControl Hide
-------------------------------------------------------------------------------}
-procedure TWinControl.Hide;
-begin
-  Visible := False;
-end;
-
-{------------------------------------------------------------------------------
   Method: TWinControl.Destroy
   Params:  None
   Returns: Nothing
@@ -4489,6 +4481,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.321  2005/04/01 19:10:42  micha
+  make method Hide a member of TControl (fixes bug 707)
+
   Revision 1.320  2005/03/29 19:36:22  micha
   do not call default handler if user handles mousewheel event (from jesusrmx)
 

@@ -1046,6 +1046,7 @@ type
     function HasParent: Boolean; override;
     function IsParentOf(AControl: TControl): boolean; virtual;
     function IsVisible: Boolean; virtual;
+    procedure Hide;
     procedure Refresh;
     procedure Repaint; virtual;
     Procedure Invalidate; virtual;
@@ -1600,7 +1601,6 @@ type
     Procedure Insert(AControl: TControl);
     Procedure Insert(AControl: TControl; Index: integer);
     Procedure Remove(AControl: TControl);
-    procedure Hide;
     procedure Repaint; override;
     Procedure SetFocus; virtual;
     Function FindChildControl(const ControlName: String): TControl;
@@ -2889,6 +2889,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.293  2005/04/01 19:10:42  micha
+  make method Hide a member of TControl (fixes bug 707)
+
   Revision 1.292  2005/03/31 20:49:39  micha
   remove TMouse.SetCursorPos (tricky and not cross-platform)
 

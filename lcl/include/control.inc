@@ -2840,6 +2840,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TControl Hide
+------------------------------------------------------------------------------}
+procedure TControl.Hide;
+begin
+  Visible := False;
+end;
+
+{------------------------------------------------------------------------------
   function TControl.ParentHandlesAllocated: boolean;
 ------------------------------------------------------------------------------}
 function TControl.ParentHandlesAllocated: boolean;
@@ -3504,6 +3512,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.254  2005/04/01 19:10:42  micha
+  make method Hide a member of TControl (fixes bug 707)
+
   Revision 1.253  2005/03/30 18:34:42  micha
   fix bug 659 and 660: LM_RBUTTONUP message returns true whenever popupmenu was invoked
 
