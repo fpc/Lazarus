@@ -1,4 +1,3 @@
-unit propedits;
 {
   Author: Mattias Gaertner
 
@@ -22,20 +21,21 @@ unit propedits;
 
     -many more... see XXX
 }
+unit PropEdits;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses 
-  Classes, TypInfo, SysUtils, Forms, Controls, GraphType, Graphics, StdCtrls, Buttons,
-  ComCtrls;
+  Classes, TypInfo, SysUtils, Forms, Controls, GraphType, Graphics, StdCtrls,
+  Buttons, ComCtrls;
 
 const
   MaxIdentLength: Byte = 63;
   // XXX ToDo
   // this variable should be fetched from consts(x).inc
-  // like in fcl/inc/classes.inc
+  // as in fcl/inc/classes.inc
   srUnknown = 'unknown';
 
 type
@@ -456,7 +456,7 @@ type
     function GetEditLimit: Integer; override;
     function GetValue: ansistring; override;
     procedure GetValues(Proc: TGetStringProc); override;
-    procedure SetValue(const AValue: ansistring); override;
+    procedure SetValue(const NewValue: ansistring); override;
     function GetFormMethodName: shortstring; virtual;
     function GetTrimmedEventName: shortstring;
   end;
@@ -719,29 +719,29 @@ type
   TPropertyEditorHook = class
   private
     // lookup root
-    FLookupRoot:TComponent;
-    FOnChangeLookupRoot:TPropHookChangeLookupRoot;
+    FLookupRoot: TComponent;
+    FOnChangeLookupRoot: TPropHookChangeLookupRoot;
     // methods
-    FOnCreateMethod:TPropHookCreateMethod;
-    FOnGetMethodName:TPropHookGetMethodName;
-    FOnGetMethods:TPropHookGetMethods;
-    FOnMethodExists:TPropHookMethodExists;
-    FOnRenameMethod:TPropHookRenameMethod;
-    FOnShowMethod:TPropHookShowMethod;
-    FOnMethodFromAncestor:TPropHookMethodFromAncestor;
-    FOnChainCall:TPropHookChainCall;
+    FOnCreateMethod: TPropHookCreateMethod;
+    FOnGetMethodName: TPropHookGetMethodName;
+    FOnGetMethods: TPropHookGetMethods;
+    FOnMethodExists: TPropHookMethodExists;
+    FOnRenameMethod: TPropHookRenameMethod;
+    FOnShowMethod: TPropHookShowMethod;
+    FOnMethodFromAncestor: TPropHookMethodFromAncestor;
+    FOnChainCall: TPropHookChainCall;
     // components
-    FOnGetComponent:TPropHookGetComponent;
-    FOnGetComponentName:TPropHookGetComponentName;
-    FOnGetComponentNames:TPropHookGetComponentNames;
-    FOnGetRootClassName:TPropHookGetRootClassName;
+    FOnGetComponent: TPropHookGetComponent;
+    FOnGetComponentName: TPropHookGetComponentName;
+    FOnGetComponentNames: TPropHookGetComponentNames;
+    FOnGetRootClassName: TPropHookGetRootClassName;
     // persistent objects
-    FOnGetObject:TPropHookGetObject;
-    FOnGetObjectName:TPropHookGetObjectName;
-    FOnGetObjectNames:TPropHookGetObjectNames;
+    FOnGetObject: TPropHookGetObject;
+    FOnGetObjectName: TPropHookGetObjectName;
+    FOnGetObjectNames: TPropHookGetObjectNames;
     // modifing
-    FOnModified:TPropHookModified;
-    FOnRevert:TPropHookRevert;
+    FOnModified: TPropHookModified;
+    FOnRevert: TPropHookRevert;
 
     procedure SetLookupRoot(AComponent:TComponent);
   public
@@ -772,7 +772,8 @@ type
     procedure Revert(Instance:TPersistent; PropInfo:PPropInfo);
 
     // lookup root
-    property OnChangeLookupRoot:TPropHookChangeLookupRoot read FOnChangeLookupRoot write FOnChangeLookupRoot;
+    property OnChangeLookupRoot:TPropHookChangeLookupRoot
+      read FOnChangeLookupRoot write FOnChangeLookupRoot;
     // method events
     property OnCreateMethod:TPropHookCreateMethod read FOnCreateMethod write FOnCreateMethod;
     property OnGetMethodName:TPropHookGetMethodName read FOnGetMethodName write FOnGetMethodName;
@@ -2021,12 +2022,12 @@ begin
   if GetComponent(0) = PropertyHook.LookupRoot then begin
     Result := PropertyHook.GetRootClassName;
     if (Result <> '') and (Result[1] = 'T') then
-      Delete(Result, 1, 1);
+      System.Delete(Result, 1, 1);
   end else begin
     Result := PropertyHook.GetObjectName(GetComponent(0));
     for I := Length(Result) downto 1 do
       if Result[I] in ['.','[',']'] then
-        Delete(Result, I, 1);
+        System.Delete(Result, I, 1);
   end;
   if Result = '' then begin
     {raise EPropertyError.CreateRes(@SCannotCreateName);}
@@ -2038,9 +2039,10 @@ end;
 function TMethodPropertyEditor.GetTrimmedEventName: shortstring;
 begin
   Result := GetName;
-  if (Length(Result) >= 2) and
-    (Result[1] in ['O','o']) and (Result[2] in ['N','n']) then
-    Delete(Result,1,2);
+  if (Length(Result) >= 2)
+  and (Result[1] in ['O','o']) and (Result[2] in ['N','n'])
+  then
+    System.Delete(Result,1,2);
 end;
 
 function TMethodPropertyEditor.GetValue: ansistring;
@@ -2053,7 +2055,7 @@ begin
   PropertyHook.GetMethods(GetTypeData(GetPropType), Proc);
 end;
 
-procedure TMethodPropertyEditor.SetValue(const AValue: ansistring);
+procedure TMethodPropertyEditor.SetValue(const NewValue: ansistring);
 
   procedure CheckChainCall(const MethodName: shortstring; Method: TMethod);
   var
@@ -2086,22 +2088,22 @@ var
   NewMethodExists: boolean;
 begin
   CurValue:= GetValue;
-  NewMethodExists:=PropertyHook.MethodExists(AValue);
-  if (CurValue <> '') and (AValue <> '')
-  and (Uppercase(CurValue)<>UpperCase(AValue))
+  NewMethodExists:=PropertyHook.MethodExists(NewValue);
+  if (CurValue <> '') and (NewValue <> '')
+  and (Uppercase(CurValue)<>UpperCase(NewValue))
   and (not NewMethodExists)
   and (not PropertyHook.MethodFromAncestor(GetMethodValue)) then
-    PropertyHook.RenameMethod(CurValue, AValue)
+    PropertyHook.RenameMethod(CurValue, NewValue)
   else
   begin
-    NewMethod := (AValue <> '') and not NewMethodExists;
+    NewMethod := (NewValue <> '') and not NewMethodExists;
     OldMethod := GetMethodValue;
-    SetMethodValue(PropertyHook.CreateMethod(AValue, GetTypeData(GetPropType)));
+    SetMethodValue(PropertyHook.CreateMethod(NewValue, GetTypeData(GetPropType)));
     if NewMethod then begin
       if (PropCount = 1) and (OldMethod.Data <> nil) and (OldMethod.Code <> nil)
       then
-        CheckChainCall(AValue, OldMethod);
-      PropertyHook.ShowMethod(AValue);
+        CheckChainCall(NewValue, OldMethod);
+      PropertyHook.ShowMethod(NewValue);
     end;
   end;
 end;
@@ -2784,13 +2786,14 @@ begin
   if Assigned(FOnGetMethodName) then
     Result:=FOnGetMethodName(Method)
   else begin
+    // search the method name with the given code pointer
     if Assigned(Method.Code) then begin
       if Assigned(LookupRoot) then begin
         Result:=LookupRoot.MethodName(Method.Code);
         if Result='' then
-          Result:='Unpublished';
+          Result:='<Unpublished>';
       end else
-        Result:='No LookupRoot';
+        Result:='<No LookupRoot>';
     end else
       Result:='';
   end;
@@ -2805,6 +2808,7 @@ end;
 
 function TPropertyEditorHook.MethodExists(const Name:Shortstring):boolean;
 begin
+  // check if a published method with given name exists in LookupRoot
   if Assigned(FOnMethodExists) then
     Result:=FOnMethodExists(Name)
   else
@@ -2813,18 +2817,22 @@ end;
 
 procedure TPropertyEditorHook.RenameMethod(const CurName, NewName:ShortString);
 begin
+  // rename published method in LookupRoot object and source
   if Assigned(FOnRenameMethod) then
     FOnRenameMethod(CurName,NewName);
 end;
 
 procedure TPropertyEditorHook.ShowMethod(const Name:Shortstring);
 begin
+  // jump cursor to published method body
   if Assigned(FOnShowMethod) then
     FOnShowMethod(Name);
 end;
 
 function TPropertyEditorHook.MethodFromAncestor(const Method:TMethod):boolean;
 begin
+  // check if given Method is not in LookupRoot source,
+  // but in one of its ancestors
   if Assigned(FOnMethodFromAncestor) then
     Result:=FOnMethodFromAncestor(Method)
   else

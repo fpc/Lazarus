@@ -205,10 +205,10 @@ type
         var UnitSearchPath: string): TDefineTemplate;
     function CreateFPCSrcTemplate(const FPCSrcDir,
         UnitSearchPath: string): TDefineTemplate;
-    function CreateLCLProjectTemplate(const LazarusSrcDir, WidgetType,
-        ProjectDir: string): TDefineTemplate;
     function CreateLazarusSrcTemplate(
         const LazarusSrcDir, WidgetType: string): TDefineTemplate;
+    function CreateLCLProjectTemplate(const LazarusSrcDir, WidgetType,
+        ProjectDir: string): TDefineTemplate;
     procedure Clear;
     constructor Create;
     destructor Destroy; override;
@@ -1825,7 +1825,7 @@ begin
   DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
     'adds lcl to SrcPath',
     ExternalMacroStart+'SrcPath',
-    '..'+ds+'lcl'
+      '..'+ds+'lcl'
       +';..'+ds+'lcl'+ds+'interfaces'+ds+WidgetType
       +';'+SrcPath
     ,da_Define));
@@ -1834,10 +1834,11 @@ begin
     ExternalMacroStart+'SrcPath',
     '..;'+SrcPath
     ,da_Define));
-  DirTempl.AddChild(TDefineTemplate.Create('synedit path addition',
+  DirTempl.AddChild(TDefineTemplate.Create('components path addition',
     'adds synedit directory to SrcPath',
     ExternalMacroStart+'SrcPath',
-    '../components/synedit;'+SrcPath
+    '..'+ds+'components'+ds+'synedit;'+'..'+ds+'components'+ds+'codetools;'
+      +SrcPath
     ,da_Define));
   DirTempl.AddChild(TDefineTemplate.Create('includepath addition',
     'adds include to IncPath',ExternalMacroStart+'IncPath',
@@ -1848,7 +1849,16 @@ begin
   // images
   
   // debugger
-  
+  DirTempl:=TDefineTemplate.Create('Debugger','Debugger Directory',
+    '','debugger',da_Directory);
+  DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
+    'adds lcl to SrcPath',
+    ExternalMacroStart+'SrcPath',
+      '..'+ds+'lcl'
+      +';..'+ds+'lcl'+ds+'interfaces'+ds+WidgetType
+      +';'+SrcPath
+    ,da_DefineAll));
+
   if MainDir<>nil then begin
     Result:=TDefineTemplate.Create(StdDefTemplLazarusSources,
        'Lazarus Sources, LCL, IDE, Components, Examples, Tools','','',da_Block);

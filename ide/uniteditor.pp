@@ -141,6 +141,7 @@ type
     Function GotoLine(Value : Integer) : Integer;
 
     Procedure CreateEditor(AOwner : TComponent; AParent: TWinControl);
+    procedure SetVisible(Value: boolean);
   protected
     FindText : String;
     ErrorMsgs : TStrings;
@@ -172,7 +173,7 @@ type
     procedure LinesInserted(sender : TObject; FirstLine,Count : Integer);
     procedure LinesDeleted(sender : TObject; FirstLine,Count : Integer);
 
-    property Visible : Boolean read FVisible write FVisible default False;
+    property Visible : Boolean read FVisible write SetVisible default False;
   public
     constructor Create(AOwner : TComponent; AParent : TWinControl);
     destructor Destroy; override;
@@ -515,7 +516,8 @@ begin
   if (FAOwner<>nil) and (FEditor<>nil) then begin
     FEditor.Visible:=false;
     FEditor.Parent:=nil;
-    TSourceNoteBook(FAOwner).FUnUsedEditorComponents.Add(FEditor);
+    TSourceNoteBook(FAOwner).FSourceEditorList.Remove(FEditor);
+    TSourceNoteBook(FAOwner).FUnUsedEditorComponents.Remove(FEditor);
   end;
 //writeln('TSourceEditor.Destroy B ');
   inherited Destroy;
@@ -793,7 +795,7 @@ Procedure TSourceEditor.EditorStatusChanged(Sender: TObject;
   Changes: TSynStatusChanges);
 Begin
   If Assigned(OnEditorChange) then
-     OnEditorChange(sender);
+    OnEditorChange(Sender);
 end;
 
 procedure TSourceEditor.OnGutterClick(Sender: TObject; X, Y, Line: integer;
@@ -1298,6 +1300,7 @@ Begin
     FOnBeforeClose(Self);
 
   Visible := False;
+  FEditor.Parent:=nil;
   CodeBuffer := nil;
   If Assigned(FOnAfterClose) then FOnAfterClose(Self);
 end;
@@ -1483,6 +1486,13 @@ begin
   //notify the notebook that lines were Inserted.
   //bookmarks will use this to update themselves
 
+end;
+
+procedure TSourceEditor.SetVisible(Value: boolean);
+begin
+  if FVisible=Value then exit;
+  if FEditor<>nil then FEditor.Visible:=Value;
+  FVisible:=Value;
 end;
 
 {------------------------------------------------------------------------}
@@ -2076,8 +2086,8 @@ End;
 Procedure TSourceNotebook.ClearUnUsedEditorComponents(Force: boolean);
 var i:integer;
 begin
-  if not Force and FProcessingCommand then exit;
-  for i:=0 to FUnUsedEditorComponents.Count-1 do
+  if (not Force) and FProcessingCommand then exit;
+  for i:=FUnUsedEditorComponents.Count-1 downto 0 do
     TSynEdit(FUnUsedEditorComponents[i]).Free;
   FUnUsedEditorComponents.Clear;
 end;
@@ -2199,12 +2209,14 @@ Begin
 
 end;
 
-Procedure TSourceNotebook.EditorChanged(sender : TObject);
+Procedure TSourceNotebook.EditorChanged(Sender : TObject);
+var SenderDeleted: boolean;
 Begin
+  SenderDeleted:=FUnUsedEditorComponents.IndexOf(Sender)>=0;
   ClearUnUsedEditorComponents(false);
   UpdateStatusBar;
-  if Assigned(OnEditorChanged) then
-      OnEditorChanged(sender);
+  if (not SenderDeleted) and Assigned(OnEditorChanged) then
+    OnEditorChanged(Sender);
 End;
 
 Function TSourceNotebook.NewSE(PageNum : Integer) : TSourceEditor;
@@ -2334,7 +2346,7 @@ Begin
   Result := nil;
   if (FSourceEditorList=nil) or (FSourceEditorList.Count=0)
     or (Notebook=nil) or (Notebook.PageIndex<0) then exit;
-  Result:= FindSourceEditorWithPageIndex(Notebook.PageIndex);
+  Result:=FindSourceEditorWithPageIndex(Notebook.PageIndex);
 end;
 
 procedure TSourceNotebook.LockAllEditorsInSourceChangeCache;
@@ -2659,11 +2671,14 @@ Begin
 {$IFDEF IDE_DEBUG}
 writeln('TSourceNotebook.CloseFile A  PageIndex=',PageIndex);
 {$ENDIF}
-  TempEditor:= FindSourceEditorWithPageIndex(PageIndex);
+  TempEditor:=FindSourceEditorWithPageIndex(PageIndex);
   if TempEditor=nil then exit;
   TempEditor.Close;
   FSourceEditorList.Remove(TempEditor);
-  TempEditor.Free;
+  if FProcessingCommand then
+    FUnUsedEditorComponents.Add(TempEditor)
+  else
+    TempEditor.Free;
   if Notebook.Pages.Count>1 then begin
 //writeln('TSourceNotebook.CloseFile B  PageIndex=',PageIndex);
     Notebook.Pages.Delete(PageIndex);

@@ -34,22 +34,28 @@ interface
 
 {$I codetools.inc}
 
+{$DEFINE CTDEBUG}
+
 uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, CodeTree, CodeAtom, PascalParserTool, MethodJumpTool,
   SourceLog, KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, AVL_Tree,
-  TypInfo, SourceChanger;
+  TypInfo, SourceChanger, FindDeclarationTool;
 
 type
   TGetStringProc = procedure(const s: string) of object;
   
   TEventsCodeTool = class(TMethodJumpingCodeTool)
+  private
+    GetCompatibleMethodsProc: TGetStringProc;
   protected
     function InsertNewMethodToClass(ClassSectionNode: TCodeTreeNode;
         const AMethodName,NewMethod: string;
         SourceChangeCache: TSourceChangeCache): boolean;
+    function CollectPublishedMethods(Params: TFindDeclarationParams;
+      FoundContext: TFindContext): TIdentifierFoundResult;
   public
     procedure GetCompatiblePublishedMethods(const UpperClassName: string;
         TypeData: PTypeData; Proc: TGetStringProc);
@@ -77,6 +83,8 @@ type
 
     function MethodTypeDataToStr(TypeData: PTypeData;
         Attr: TProcHeadAttributes): string;
+    function CreateExprListFromMethodTypeData(TypeData: PTypeData;
+        Params: TFindDeclarationParams): TExprTypeList;
     function FindPublishedMethodNodeInClass(ClassNode: TCodeTreeNode;
         const UpperMethodName: string; TypeData: PTypeData): TCodeTreeNode;
     function FindProcNodeInImplementation(const UpperClassName,
@@ -181,17 +189,38 @@ end;
 
 procedure TEventsCodeTool.GetCompatiblePublishedMethods(
   ClassNode: TCodeTreeNode; TypeData: PTypeData; Proc: TGetStringProc);
-var SearchedProc: string;
-  SectionNode, ANode: TCodeTreeNode;
-  CurProcHead, CurProcName: string;
+var //SearchedProc: string;
+  //SectionNode, ANode: TCodeTreeNode;
+  //CurProcHead, CurProcName: string;
+  Params: TFindDeclarationParams;
+  ExprList: TExprTypeList;
 begin
   if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (TypeData=nil)
   or (Proc=nil) then exit;
   BuildSubTreeForClass(ClassNode);
-  SearchedProc:=MethodTypeDataToStr(TypeData,[phpInUpperCase]);
 {$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.GetCompatibleMethods] SearchedProc="',SearchedProc,'"');
+writeln('[TEventsCodeTool.GetCompatiblePublishedMethods]');
 {$ENDIF}
+  // 1. convert the TypeData to an expression type list
+  Params:=TFindDeclarationParams.Create;
+  try
+    Params.ContextNode:=ClassNode.Parent;
+    ExprList:=CreateExprListFromMethodTypeData(TypeData,Params);
+    try
+      // 2. search all compatible published procs
+      GetCompatibleMethodsProc:=Proc;
+      Params.ContextNode:=ClassNode;
+      Params.Flags:=[fdfCollect,fdfSearchInAncestors,fdfClassPublished];
+      Params.SetIdentifier(Self,nil,@CollectPublishedMethods);
+      FindIdentifierInContext(Params);
+    finally
+      ExprList.Free;
+    end;
+  finally
+    Params.Free;
+  end;
+  {
+  SearchedProc:=MethodTypeDataToStr(TypeData,[phpInUpperCase]);
   SectionNode:=ClassNode.FirstChild;
   while (SectionNode<>nil) do begin
     while (SectionNode.Desc<>ctnClassPublished) or (SectionNode.FirstChild=nil)
@@ -203,9 +232,6 @@ writeln('[TEventsCodeTool.GetCompatibleMethods] SearchedProc="',SearchedProc,'"'
     repeat
       if (ANode.Desc=ctnProcedure) then begin
         CurProcHead:=ExtractProcHead(ANode,[phpInUpperCase,phpWithoutName]);
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.GetCompatibleMethods] CurProcName="',CurProcHead,'"');
-{$ENDIF}
         if (CurProcHead<>'')
         and (CompareTextIgnoringSpace(CurProcHead,SearchedProc,true)=0) then
         begin
@@ -218,6 +244,7 @@ writeln('[TEventsCodeTool.GetCompatibleMethods] CurProcName="',CurProcHead,'"');
     until ANode=nil;
     SectionNode:=SectionNode.NextBrother;
   end;
+  }
 end;
 
 function TEventsCodeTool.FindPublishedMethodNodeInClass(
@@ -659,6 +686,108 @@ writeln('[TEventsCodeTool.InsertNewMethodToClass] L');
            ProcCode) then exit;
 
   Result:=true;
+end;
+
+function TEventsCodeTool.CreateExprListFromMethodTypeData(
+  TypeData: PTypeData; Params: TFindDeclarationParams): TExprTypeList;
+var i, ParamCount, Len, Offset: integer;
+  CurTypeIdentifier: string;
+  OldInput: TFindDeclarationInput;
+  CurExprType: TExpressionType;
+begin
+{$IFDEF CTDEBUG}
+writeln('[TEventsCodeTool.CreateExprListFromMethodTypeData] START');
+{$ENDIF}
+  Result:=TExprTypeList.Create;
+  if TypeData=nil then exit;
+  ParamCount:=TypeData^.ParamCount;
+  if ParamCount>0 then begin
+
+    //Result:=Result+'(';
+    //ParamString:='';
+    Offset:=0;
+    
+    for i:=0 to ParamCount-1 do begin
+    
+      // skip ParamFlags
+      // ToDo: check this: SizeOf(TParamFlags) is 4, but the data is only 1 byte
+      Len:=1; // typinfo.pp comment is wrong: SizeOf(TParamFlags)
+      inc(Offset,Len);
+
+      // skip ParamName
+      Len:=ord(TypeData^.ParamList[Offset]);
+      inc(Offset,Len+1);
+
+      // read ParamType
+      Len:=ord(TypeData^.ParamList[Offset]);
+      inc(Offset);
+      SetLength(CurTypeIdentifier,Len);
+      if CurTypeIdentifier<>'' then
+        Move(TypeData^.ParamList[Offset],CurTypeIdentifier[1],Len);
+      inc(Offset,Len);
+      
+{$IFDEF CTDEBUG}
+writeln('[TEventsCodeTool.CreateExprListFromMethodTypeData] A ',
+' i=',i,'/',ParamCount,
+' Ident=',CurTypeIdentifier
+);
+{$ENDIF}
+
+      // convert ParamType to TExpressionType
+      Params.Save(OldInput);
+      Params.SetIdentifier(Self,@CurTypeIdentifier[1],nil);
+      Params.Flags:=[fdfExceptionOnNotFound,fdfSearchInParentNodes,
+                     fdfIgnoreCurContextNode,fdfClassPublished]
+                     +(fdfGlobals*Params.Flags)
+                     -[fdfSearchInAncestors,
+                       fdfClassPublic,fdfClassProtected,fdfClassPrivate];
+      CurExprType:=GetExpressionTypeOfTypeIdentifier(Params);
+{$IFDEF CTDEBUG}
+writeln('[TEventsCodeTool.CreateExprListFromMethodTypeData] B ',
+' i=',i,'/',ParamCount,
+' Ident=',CurTypeIdentifier,
+' CurExprType=',ExprTypeToString(CurExprType)
+);
+{$ENDIF}
+
+      Result.Add(CurExprType);
+      Params.Load(OldInput);
+
+      {// build string
+      if phpWithVarModifiers in Attr then begin
+        if pfVar in ParamType.Flags then
+          s:='var '
+        else if pfConst in ParamType.Flags then
+          s:='const '
+        else if pfOut in ParamType.Flags then
+          s:='out '
+        else
+          s:='';
+      end else
+        s:='';
+      if phpWithParameterNames in Attr then
+        s:=s+ParamType.ParamName;
+      s:=s+':'+ParamType.TypeName;
+      if i>0 then s:=s+';';
+      ParamString:=s+ParamString;}
+    end;
+    //Result:=Result+ParamString+')';
+  end;
+  {if phpInUpperCase in Attr then Result:=UpperCaseStr(Result);
+  Result:=Result+';';}
+
+end;
+
+function TEventsCodeTool.CollectPublishedMethods(
+  Params: TFindDeclarationParams; FoundContext: TFindContext
+  ): TIdentifierFoundResult;
+begin
+{$IFDEF CTDEBUG}
+writeln('[TEventsCodeTool.CollectPublishedMethods] ',
+' Node=',FoundContext.Node.DescAsString,
+' Tool=',FoundContext.Tool.MainFilename);
+{$ENDIF}
+  Result:=ifrProceedSearch;
 end;
 
 

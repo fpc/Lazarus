@@ -575,6 +575,8 @@ end;
 
 function TCodeBuffer.LoadFromFile(const AFilename: string): boolean;
 begin
+//writeln('[TCodeBuffer.LoadFromFile] WriteLock=',WriteLock,' ReadOnly=',ReadOnly,
+//' IsVirtual=',IsVirtual,' Old="',Filename,'" ',CompareFilenames(AFilename,Filename));
   if (WriteLock>0) or (ReadOnly) then begin
     Result:=false;
     exit;

@@ -41,7 +41,7 @@ uses
   ProjectOpts, IDEProcs, Process, UnitInfoDlg, Debugger, DBGBreakpoint,
   DBGWatch, GDBDebugger, RunParamsOpts, ExtToolDialog, MacroPromptDlg,
   LMessages, ProjectDefs, Watchesdlg, BreakPointsdlg, ColumnDlg, OutputFilter,
-  BuildLazDialog, MiscOptions, EditDefineTree, CodeToolsOptions;
+  BuildLazDialog, MiscOptions, EditDefineTree, CodeToolsOptions, TypInfo;
 
 const
   Version_String = '0.8.2 alpha';
@@ -64,7 +64,7 @@ type
     ViewFormsSpeedBtn   : TSpeedButton;
     NewUnitSpeedBtn     : TSpeedButton;
     OpenFileSpeedBtn    : TSpeedButton;
-    OpenFileArrowSpeedBtn : TSpeedButton;
+    OpenFileArrowSpeedBtn: TSpeedButton;
     SaveSpeedBtn        : TSpeedButton;
     SaveAllSpeedBtn     : TSpeedButton;
     ToggleFormSpeedBtn  : TSpeedButton;
@@ -74,7 +74,7 @@ type
     StepIntoSpeedButton : TSpeedButton;
     StepOverSpeedButton : TSpeedButton;
     OpenFilePopUpMenu   : TPopupMenu;
-    GlobalMouseSpeedButton : TSpeedButton;
+    GlobalMouseSpeedButton: TSpeedButton;
 
     mnuMain: TMainMenu;
 
@@ -227,7 +227,7 @@ type
     procedure mnuToolBuildLazarusClicked(Sender : TObject);
     procedure mnuToolConfigBuildLazClicked(Sender : TObject);
 
-    // enironment menu
+    // environment menu
     procedure mnuEnvGeneralOptionsClicked(Sender : TObject);
     procedure mnuEnvEditorOptionsClicked(Sender : TObject);
     procedure mnuEnvCodeToolsOptionsClicked(Sender : TObject);
@@ -269,10 +269,11 @@ type
     Procedure OnSrcNotebookCreateBreakPoint(Sender : TObject; Line : Integer);
     Procedure OnSrcNotebookDeleteBreakPoint(Sender : TObject; Line : Integer);
     
-    // ObjectInspector events
+    // ObjectInspector + PropertyEditorHook events
     procedure OIOnAddAvailableComponent(AComponent:TComponent;
        var Allowed:boolean);
     procedure OIOnSelectComponent(AComponent:TComponent);
+    procedure OnPropHookGetMethods(TypeData:PTypeData; Proc:TGetStringProc);
 
     // Environment options dialog events
     procedure OnLoadEnvironmentSettings(Sender: TObject; 
@@ -327,7 +328,7 @@ type
 
   protected
     procedure ToolButtonClick(Sender : TObject);
-    Procedure AddWatch(AnExpression : String);
+    Procedure AddWatch(const AnExpression : String);
   public
     ToolStatus: TIDEToolStatus;
  
@@ -378,6 +379,8 @@ type
     // useful methods
     procedure GetCurrentUnit(var ActiveSourceEditor:TSourceEditor; 
       var ActiveUnitInfo:TUnitInfo);
+    procedure DoSwitchToFormSrc(var ActiveSourceEditor:TSourceEditor;
+      var ActiveUnitInfo:TUnitInfo);
     procedure GetUnitWithPageIndex(PageIndex:integer; 
       var ActiveSourceEditor:TSourceEditor; var ActiveUnitInfo:TUnitInfo);
     function DoSaveStreamToFile(AStream:TStream; const Filename:string; 
@@ -397,7 +400,7 @@ type
     // methods for codetools
     procedure InitCodeToolBoss;
     function BeginCodeTool(var ActiveSrcEdit: TSourceEditor;
-      var ActiveUnitInfo: TUnitInfo): boolean;
+      var ActiveUnitInfo: TUnitInfo; SwitchToFormSrc: boolean): boolean;
     function DoJumpToCodePos(ActiveSrcEdit: TSourceEditor;
       ActiveUnitInfo: TUnitInfo;
       NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
@@ -696,6 +699,9 @@ begin
   ObjectInspector1.OnAddAvailComponent:=@OIOnAddAvailableComponent;
   ObjectInspector1.OnSelectComponentInOI:=@OIOnSelectComponent;
   PropertyEditorHook1:=TPropertyEditorHook.Create;
+  {$IFDEF TestEvents}
+  PropertyEditorHook1.OnGetMethods:=@OnPropHookGetMethods;
+  {$ENDIF}
   ObjectInspector1.PropertyEditorHook:=PropertyEditorHook1;
   ObjectInspector1.Show;
 
@@ -888,6 +894,29 @@ begin
     TControl(AComponent.Owner).Invalidate;
 end;
 
+procedure TMainIDE.OnPropHookGetMethods(TypeData:PTypeData;
+  Proc:TGetStringProc);
+var ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  NewSource: TCodeBuffer;
+  NewX, NewY, NewTopLine: integer;
+begin
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,true) then exit;
+{$IFDEF IDE_DEBUG}
+writeln('');
+writeln('[TMainIDE.OnPropHookGetMethods] ************');
+{$ENDIF}
+  if CodeToolBoss.FindDeclaration(ActiveUnitInfo.Source,
+    ActiveSrcEdit.EditorComponent.CaretX,
+    ActiveSrcEdit.EditorComponent.CaretY,
+    NewSource,NewX,NewY,NewTopLine) then
+  begin
+    DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo,
+      NewSource, NewX, NewY, NewTopLine, true);
+  end else
+    DoJumpToCodeToolBossError;
+end;
+
 Procedure TMainIDE.ToolButtonClick(Sender : TObject);
 Begin
   Assert(False, 'Trace:TOOL BUTTON CLICK!');
@@ -999,15 +1028,15 @@ begin
   ButtonLeft := 1;
   ViewUnitsSpeedBtn     := CreateButton('ViewUnitsSpeedBtn'    , 'btn_viewunits' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewUnitsClicked, 'View Units');
   ViewFormsSpeedBtn     := CreateButton('ViewFormsSpeedBtn'    , 'btn_viewforms' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewFormsClicked, 'View Forms');
-  inc(ButtonLeft,12);
+  inc(ButtonLeft,13);
   RunSpeedButton        := CreateButton('RunSpeedButton'       , 'btn_run'       , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuRunProjectClicked, 'Run');
   PauseSpeedButton      := CreateButton('PauseSpeedButton'     , 'btn_pause'       , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuPauseProjectClicked, 'Pause');
   PauseSpeedButton.Enabled:=false;
   StepIntoSpeedButton  := CreateButton('StepIntoSpeedButton'   , 'btn_stepinto'       , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuStepIntoProjectClicked, 'Step Into');
   StepOverSpeedButton  := CreateButton('StepOverpeedButton'   , 'btn_stepover'       , 1, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuStepOverProjectClicked, 'Step Over');
   
-  pnlSpeedButtons.Width := ButtonLeft;
-  pnlSpeedButtons.Height := ButtonTop;
+  pnlSpeedButtons.Width := ButtonLeft+1;
+  pnlSpeedButtons.Height := ButtonTop+1;
   
 
   // create the popupmenu for the OpenFileArrowSpeedBtn
@@ -1944,6 +1973,7 @@ writeln('[TMainIDE.SetDefaultsforForm] B');
     OnGetNonVisualCompIconCanvas:=@IDECompList.OnGetNonVisualCompIconCanvas;
     OnModified:=@OnDesignerModified;
     OnActivated := @OnDesignerActivated;
+    ShowHints:=EnvironmentOptions.ShowEditorHints;
   end;
 end;
 
@@ -2268,7 +2298,7 @@ Begin
       FPCSrcDirChanged:=false;
       FPCCompilerChanged:=
         OldCompilerFilename<>EnvironmentOptions.CompilerFilename;
-      ChangeMacroValue('LazarusSrcDir',EnvironmentOptions.LazarusDirectory);
+      ChangeMacroValue('LazarusDir',EnvironmentOptions.LazarusDirectory);
       ChangeMacroValue('FPCSrcDir',EnvironmentOptions.FPCSourceDirectory);
       
       if MacroValueChanged then CodeToolBoss.DefineTree.ClearCache;
@@ -4361,7 +4391,7 @@ end;
 //-----------------------------------------------------------------------------
 
 procedure TMainIDE.GetCurrentUnit(var ActiveSourceEditor:TSourceEditor;
-      var ActiveUnitInfo:TUnitInfo);
+  var ActiveUnitInfo:TUnitInfo);
 begin
   if SourceNoteBook.NoteBook=nil then begin
     ActiveSourceEditor:=nil;
@@ -5104,7 +5134,7 @@ begin
   
   // set global variables
   with CodeToolBoss.GlobalValues do begin
-    Variables[ExternalMacroStart+'LazarusSrcDir']:=
+    Variables[ExternalMacroStart+'LazarusDir']:=
       EnvironmentOptions.LazarusDirectory;
     Variables[ExternalMacroStart+'FPCSrcDir']:=
       EnvironmentOptions.FPCSourceDirectory;
@@ -5129,17 +5159,12 @@ begin
         
     // create compiler macros for the lazarus sources 
     ADefTempl:=CreateLazarusSrcTemplate(
-      '$('+ExternalMacroStart+'LazarusSrcDir)',
+      '$('+ExternalMacroStart+'LazarusDir)',
       '$('+ExternalMacroStart+'LCLWidgetType)');
     AddTemplate(ADefTempl,true,
         'NOTE: Could not create Define Template for Lazarus Sources');
   end;  
   // build define tree
-  with CodeToolBoss do begin
-    DefineTree.Add(DefinePool.CreateLCLProjectTemplate(
-                     '$(#LazarusSrcDir)','$(#LCLWidgetType)','$(#ProjectDir)'));
-    //DefineTree.WriteDebugReport;
-  end;
   c:=CodeToolBoss.ConsistencyCheck;
   if c<>0 then begin
     writeln('CodeToolBoss.ConsistencyCheck=',c);
@@ -5201,12 +5226,14 @@ begin
 end;
 
 function TMainIDE.BeginCodeTool(var ActiveSrcEdit: TSourceEditor;
-  var ActiveUnitInfo: TUnitInfo): boolean;
+  var ActiveUnitInfo: TUnitInfo; SwitchToFormSrc: boolean): boolean;
 begin
   Result:=false;
   if SourceNoteBook.NoteBook=nil then exit;
-  GetUnitWithPageIndex(SourceNoteBook.NoteBook.PageIndex,ActiveSrcEdit,
-    ActiveUnitInfo);
+  if SwitchToFormSrc then
+    DoSwitchToFormSrc(ActiveSrcEdit,ActiveUnitInfo)
+  else
+    GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
   if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then exit;
   SaveSourceEditorChangesToCodeCache;
   CodeToolBoss.VisibleEditorLines:=ActiveSrcEdit.EditorComponent.LinesInWindow;
@@ -5260,7 +5287,7 @@ var ActiveSrcEdit: TSourceEditor;
   NewSource: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
 begin
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo) then exit;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,false) then exit;
 {$IFDEF IDE_DEBUG}
 writeln('');
 writeln('[TMainIDE.DoJumpToProcedureSection] ************');
@@ -5319,7 +5346,7 @@ var ActiveSrcEdit: TSourceEditor;
   NewSource: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
 begin
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo) then exit;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,false) then exit;
 {$IFDEF IDE_DEBUG}
 writeln('');
 writeln('[TMainIDE.DoFindDeclarationAtCursor] ************');
@@ -5341,7 +5368,7 @@ var ActiveSrcEdit: TSourceEditor;
   NewSource: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
 begin
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo) then exit;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,false) then exit;
 {$IFDEF IDE_DEBUG}
 writeln('');
 writeln('[TMainIDE.DoGoToPascalBlockOtherEnd] ************');
@@ -5363,7 +5390,7 @@ var ActiveSrcEdit: TSourceEditor;
   NewSource: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
 begin
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo) then exit;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,false) then exit;
 {$IFDEF IDE_DEBUG}
 writeln('');
 writeln('[TMainIDE.DoGoToPascalBlockStart] ************');
@@ -5386,7 +5413,7 @@ var ActiveSrcEdit: TSourceEditor;
   NewSource: TCodeBuffer;
   StartX, StartY, NewX, NewY, NewTopLine: integer;
 begin
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo) then exit;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,false) then exit;
 {$IFDEF IDE_DEBUG}
 writeln('');
 writeln('[TMainIDE.DoGoToPascalBlockEnd] ************');
@@ -5415,7 +5442,7 @@ var ActiveSrcEdit: TSourceEditor;
 begin
   FOpenEditorsOnCodeToolChange:=true;
   try
-    if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo) then exit;
+    if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,false) then exit;
 {$IFDEF IDE_DEBUG}
 writeln('');
 writeln('[TMainIDE.DoCompleteCodeAtCursor] ************');
@@ -5695,7 +5722,7 @@ begin
 end;
 
 //This adds the watch to the TWatches TCollection and to the watches dialog
-procedure TMainIDE.AddWatch(AnExpression : String);
+procedure TMainIDE.AddWatch(const AnExpression : String);
 var
   NewWatch : TdbgWatch;
 begin
@@ -5742,7 +5769,7 @@ Procedure TMainIDE.OnSrcNotebookEditorChanged(Sender : TObject);
 begin
   if SourceNotebook.Notebook = nil then Exit;
 
-  SaveSpeedBtn.Enabled := SourceNotebook.GetActiveSe.Modified;
+  SaveSpeedBtn.Enabled := SourceNotebook.GetActiveSE.Modified;
 end;
 
 Procedure TMainIDE.OnSrcNotebookCreateBreakPoint(Sender : TObject;
@@ -5792,6 +5819,23 @@ begin
     DoJumpToCompilerMessage(-1,true);
 end;
 
+procedure TMainIDE.DoSwitchToFormSrc(var ActiveSourceEditor: TSourceEditor;
+  var ActiveUnitInfo: TUnitInfo);
+var i: integer;
+begin
+  i:=Project.IndexOfUnitWithForm(PropertyEditorHook1.LookupRoot,false);
+  if (i>=0) then begin
+    i:=Project.Units[i].EditorIndex;
+    if (i>=0) then begin
+      SourceNoteBook.NoteBook.PageIndex:=i;
+      GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
+      exit;
+    end;
+  end;
+  ActiveSourceEditor:=nil;
+  ActiveUnitInfo:=nil;
+end;
+
 
 //-----------------------------------------------------------------------------
 
@@ -5806,6 +5850,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.218  2002/02/09 20:32:08  lazarus
+  MG: many fixes on my way to events
+
   Revision 1.217  2002/02/08 21:08:00  lazarus
   MG: saving of virtual project files will now save the whole project
 

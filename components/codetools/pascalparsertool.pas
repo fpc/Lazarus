@@ -165,7 +165,7 @@ type
     function ReadWithStatement(ExceptionOnError,
         CreateNodes: boolean): boolean;
     procedure ReadVariableType;
-    procedure ReadTilTypeOfProperty(PropertyNode: TCodeTreeNode);
+    function ReadTilTypeOfProperty(PropertyNode: TCodeTreeNode): boolean;
   public
     CurSection: TCodeTreeNodeDesc;
 
@@ -181,6 +181,8 @@ type
     procedure BuildSubTreeForClass(ClassNode: TCodeTreeNode); virtual;
     procedure BuildSubTreeForBeginBlock(BeginNode: TCodeTreeNode); virtual;
     procedure BuildSubTreeForProcHead(ProcNode: TCodeTreeNode); virtual;
+    procedure BuildSubTreeForProcHead(ProcNode: TCodeTreeNode;
+        var FunctionResult: TCodeTreeNode);
     function DoAtom: boolean; override;
     function ExtractPropName(PropNode: TCodeTreeNode;
         InUpperCase: boolean): string;
@@ -214,7 +216,7 @@ type
     function NodeHasParentOfType(ANode: TCodeTreeNode;
         NodeDesc: TCodeTreeNodeDesc): boolean;
     function PropertyIsDefault(PropertyNode: TCodeTreeNode): boolean;
-    
+
     constructor Create;
     destructor Destroy; override;
   end;
@@ -1878,10 +1880,16 @@ begin
   repeat
     if AtomIsIdentifier(false) then
       ReadNextAtom;
-    if AtomIsChar('(') or AtomIsChar('[') then begin
-      Result:=ReadTilBracketClose(ExceptionOnError);
-      if not Result then exit;
-    end;
+    repeat
+      if AtomIsChar('(') or AtomIsChar('[') then begin
+        Result:=ReadTilBracketClose(ExceptionOnError);
+        if not Result then exit;
+        ReadNextAtom;
+      end else if AtomIsChar('^') then begin
+        ReadNextAtom;
+      end else
+        break;
+    until false;
     if AtomIsChar('.') then
       ReadNextAtom
     else
@@ -1918,7 +1926,7 @@ end;
 function TPascalParserTool.ReadWithStatement(ExceptionOnError,
   CreateNodes: boolean): boolean;
 begin
-  ReadNextAtom;
+  ReadNextAtom; // read 'with'
   if CreateNodes then begin
     CreateChildNode;
     CurNode.Desc:=ctnWithVariable
@@ -3308,7 +3316,8 @@ begin
   end;
 end;
 
-procedure TPascalParserTool.ReadTilTypeOfProperty(PropertyNode: TCodeTreeNode);
+function TPascalParserTool.ReadTilTypeOfProperty(
+  PropertyNode: TCodeTreeNode): boolean;
 begin
   MoveCursorToNodeStart(PropertyNode);
   ReadNextAtom; // read keyword 'property'
@@ -3320,10 +3329,13 @@ begin
     ReadTilBracketClose(true);
     ReadNextAtom;
   end;
-  if not AtomIsChar(':') then
-    RaiseException(': expected, but '+GetAtom+' found');
+  if not AtomIsChar(':') then begin
+    Result:=false;
+    exit;
+  end;
   ReadNextAtom; // read type
   AtomIsIdentifier(true);
+  Result:=true;
 end;
 
 function TPascalParserTool.PropertyIsDefault(PropertyNode: TCodeTreeNode
@@ -3369,6 +3381,17 @@ begin
   ReadTilProcedureHeadEnd(false,IsFunction,false,IsOperator,true,
                           HasForwardModifier);
   ProcNode.FirstChild.SubDesc:=ctnsNone;
+end;
+
+procedure TPascalParserTool.BuildSubTreeForProcHead(ProcNode: TCodeTreeNode;
+  var FunctionResult: TCodeTreeNode);
+begin
+  BuildSubTreeForProcHead(ProcNode);
+  FunctionResult:=ProcNode;
+  if FunctionResult.Desc=ctnProcedure then
+    FunctionResult:=FunctionResult.FirstChild;
+  if (FunctionResult<>nil) and (FunctionResult.Desc=ctnParameterList) then
+    FunctionResult:=FunctionResult.NextBrother;
 end;
 
 

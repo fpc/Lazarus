@@ -423,8 +423,8 @@ begin
   FObjectInspectorOptions:=TOIOptions.Create;
   
   // hints
-  FShowHintsForComponentPalette:=true;
-  FShowHintsForMainSpeedButtons:=true;
+  FShowHintsForComponentPalette:=false;
+  FShowHintsForMainSpeedButtons:=false;
 
   // files
   FLazarusDirectory:=ExtractFilePath(ParamStr(0));
@@ -1125,7 +1125,6 @@ begin
     Width:=FormEditorGroupBox.ClientWidth-2*Left;
     Height:=23;
     Caption:='Show editor hints';
-    Enabled:=false;
     Visible:=true;
   end;
 

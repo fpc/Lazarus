@@ -1,8 +1,6 @@
 { /***************************************************************************
-                   widgetstack.pp  -  Designer Widget Stack
-                             -------------------
-                 Implements a widget list created by TDesigner.
-
+                   designer.pp  -  Lazarus IDE unit
+                   --------------------------------
 
                  Initial Revision  : Sat May 10 23:15:32 CST 1999
 
@@ -18,16 +16,16 @@
  *                                                                         *
  ***************************************************************************/
 }
-unit designer;
+unit Designer;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, LCLType, LCLLinux, Forms, Controls, LMessages, Graphics, ControlSelection,
-  CustomFormEditor, FormEditor, UnitEditor, CompReg, Menus, AlignCompsDlg,
-  SizeCompsDlg, ScaleCompsDlg, ExtCtrls;
+  Classes, LCLType, LCLLinux, Forms, Controls, LMessages, Graphics,
+  ControlSelection, CustomFormEditor, FormEditor, UnitEditor, CompReg, Menus,
+  AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, ExtCtrls;
 
 type
   TOnGetSelectedComponentClass = procedure(Sender: TObject; 
@@ -67,6 +65,7 @@ type
     FSizeMenuItem: TMenuItem;
     FBringToFrontMenuItem: TMenuItem;
     FSendToBackMenuItem: TMenuItem;
+    FShowHints: boolean;
 
     //hint stuff
     FHintTimer : TTimer;
@@ -138,6 +137,7 @@ type
     procedure DrawNonVisualComponents(DC: HDC);
     property OnGetNonVisualCompIconCanvas: TOnGetNonVisualCompIconCanvas
        read FOnGetNonVisualCompIconCanvas write FOnGetNonVisualCompIconCanvas;
+    property ShowHints: boolean read FShowHints write FShowHints;
   end;
 
 
@@ -536,12 +536,13 @@ Begin
 try
   UpdateLastMove := True;
   FHintTimer.Enabled := False;
+  if not FShowHints then exit;
 
   //don't want it enabled when a mouse button is pressed.
   FHintTimer.Enabled := (Message.keys or (MK_LButton and MK_RButton and MK_MButton) = 0);
   
   if FHintWindow.Visible then
-     FHintWindow.Visible := False;
+    FHintWindow.Visible := False;
      
   if MouseDownComponent=nil then exit;
 
@@ -552,8 +553,8 @@ try
   SenderOrigin:=GetFormRelativeControlTopLeft(Sender);
   
 
-    MouseX:=Message.Pos.X+SenderOrigin.X;
-    MouseY:=Message.Pos.Y+SenderOrigin.Y;
+  MouseX:=Message.Pos.X+SenderOrigin.X;
+  MouseY:=Message.Pos.Y+SenderOrigin.Y;
   if (Mouse.CursorPos.X < SenderParentForm.Left) or (Mouse.CursorPos.Y < SenderParentForm.Top) or
      (Mouse.CursorPos.X > (SenderParentForm.Left+SenderParentForm.Width+(TForm(senderparentform).borderwidth))) or (Mouse.CursorPos.Y > (SenderParentForm.Top+SenderParentForm.Height+(22)))  then
   Begin
@@ -1073,6 +1074,7 @@ var
   Window : TWInControl;
 begin
   FHintTimer.Enabled := False;
+  if not FShowHints then exit;
 
   Position := Mouse.CursorPos;
   Window := FindLCLWindow(Position);
