@@ -1050,6 +1050,7 @@ begin
 
   // free IDE parts
   FreeFormEditor;
+  FreeThenNil(AnchorDesigner);
   FreeThenNil(ObjectInspector1);
   FreeThenNil(GlobalDesignHook);
   FreeThenNil(PkgBoss);
@@ -11324,6 +11325,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.821  2005/01/07 17:40:59  mattias
+  fixed TTabSheet.SetPageControl
+
   Revision 1.820  2005/01/07 01:31:44  mattias
   implemented TCheckBox.State=cbGrayed for gtk intf without visual representation
 

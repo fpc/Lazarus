@@ -496,6 +496,7 @@ type
     procedure SetFlags(Index: integer; AValue: boolean); override;
     procedure SetName(AValue: string); override;
     procedure SetSize(AValue: integer); override;
+    procedure SetFPColor(AValue: TFPColor); override;
     {$ELSE}
     procedure SetName(const AValue: string);
     procedure SetSize(AValue: Integer);
@@ -1873,6 +1874,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.166  2005/01/07 17:40:59  mattias
+  fixed TTabSheet.SetPageControl
+
   Revision 1.165  2004/12/26 22:39:56  mattias
   updated finnish translation  from Seppo
 

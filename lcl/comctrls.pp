@@ -146,6 +146,8 @@ type
   // TTabPosition is in extctrls.pas
   TTabStyle = (tsTabs, tsButtons, tsFlatButtons);
 
+  { TTabSheet }
+
   TTabSheet = class(TCustomPage)
   private
     FOnHide: TNotifyEvent;
@@ -2286,6 +2288,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.157  2005/01/07 17:40:59  mattias
+  fixed TTabSheet.SetPageControl
+
   Revision 1.156  2005/01/03 11:54:37  micha
   add TStatusBar.Canvas
 

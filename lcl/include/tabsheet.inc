@@ -29,7 +29,7 @@ end;
 
 function TTabSheet.GetPageControl: TPageControl;
 begin
-  if (Parent<>nil) and (Parent is TPageControl) then
+  if (Parent is TPageControl) then
     Result:=TPageControl(Parent)
   else
     Result:=nil;
@@ -38,7 +38,7 @@ end;
 procedure TTabSheet.SetPageControl(APageControl: TPageControl);
 begin
   if PageControl=APageControl then exit;
-  Parent:=PageControl;
+  Parent:=APageControl;
 end;
 
 procedure TTabSheet.SetTabIndex(const AValue: Integer);

@@ -759,6 +759,9 @@ begin
   if FColor <> Value
   then begin
     FColor := Value;
+    {$IFDEF UseFPCanvas}
+    inherited SetFPColor(TColorToFPColor(FColor));
+    {$ENDIF}
     Changed;
   end;
 end;
@@ -1071,6 +1074,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.24  2005/01/07 17:40:59  mattias
+  fixed TTabSheet.SetPageControl
+
   Revision 1.23  2004/12/22 23:54:21  mattias
   started TControl.AnchorSide
 
