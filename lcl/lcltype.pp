@@ -1302,15 +1302,20 @@ const
   { Text Alignment Options }
 
   TA_NOUPDATECP = 0;
-  TA_UPDATECP = 1;
-  TA_LEFT = 0;
-  TA_RIGHT = 2;
-  TA_CENTER = 6;
-  TA_TOP = 0;
-  TA_BOTTOM = 8;
-  TA_BASELINE = 24;
+  TA_UPDATECP   = 1;
+  TA_LEFT       = 0;
+  TA_RIGHT      = 2;
+  TA_CENTER     = 6;
+  TA_TOP        = 0;
+  TA_BOTTOM     = 8;
+  TA_BASELINE   = 24;
   TA_RTLREADING = $100;
   TA_MASK =  (TA_BASELINE+TA_CENTER+TA_UPDATECP+TA_RTLREADING);
+  
+  { PolyFill() Modes }
+  ALTERNATE     = 1;
+  WINDING       = 2;
+  POLYFILL_LAST = 2;
 
 
 type
@@ -1754,6 +1759,9 @@ end.
 
 {
   $Log$
+  Revision 1.30  2002/12/25 13:30:36  mattias
+  added more windows funcs and fixed jump to compiler error end of file
+
   Revision 1.29  2002/12/25 10:21:05  mattias
   made Form.Close more Delphish, added some windows compatibility functions
 

@@ -635,26 +635,20 @@ End;
 
 {------------------------------------------------------------------------------
   Method:  CreatePolygonRgn
-  Params:  Points, NumPts, Winding
+  Params:  Points, NumPts, FillMode
   Returns: the handle to the region
 
   Creates a Polygon, a closed many-sided shaped region. The Points parameter is
-  an array of points that give the vertices of the polygon. Winding determines
-  what points are going to be included in the region. When Winding is True,
-  points are selected by using the Winding fill algorithm. When Winding is
-  False, points are selected by using using the even-odd (alternative) fill
+  an array of points that give the vertices of the polygon. FillMode=Winding
+  determines what points are going to be included in the region. When Winding
+  is True, points are selected by using the Winding fill algorithm. When Winding
+  is False, points are selected by using using the even-odd (alternative) fill
   algorithm. NumPts indicates the number of points to use.
   The first point is always connected to the last point.
  ------------------------------------------------------------------------------}
 Function TWin32Object.CreatePolygonRgn(Points: PPoint; NumPts: Integer;
-  Winding : Boolean): HRGN;
-var
-  fm : Longint;
+  FillMode: integer): HRGN;
 Begin
-  If Winding then
-    fm := Windows.Winding
-  else
-    fm := Windows.Alternate;
   Result := Windows.CreatePolygonRgn(LPPOINT(Points)^, NumPts, fm);
 End;
 
@@ -2275,6 +2269,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.25  2002/12/25 13:30:37  mattias
+  added more windows funcs and fixed jump to compiler error end of file
+
   Revision 1.24  2002/11/26 20:51:05  mattias
   applied clipbrd patch from Vincent
 

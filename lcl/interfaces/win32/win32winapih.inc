@@ -52,7 +52,7 @@ Function CreateFontIndirect(Const LogFont: TLogFont): HFONT; Override;
 Function CreatePenIndirect(Const LogPen: TLogPen): HPEN; Override;
 { Creates a bitmap from raw pixmap data }
 Function CreatePixmapIndirect(Const Data: Pointer; Const TransColor: LongInt): HBITMAP; Override;
-Function CreatePolygonRgn(Points: PPoint; NumPts: Integer; Winding : Boolean): HRGN; Override;
+Function CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN; Override;
 Function CreateRectRgn(X1, Y1, X2, Y2: Integer): HRGN; Override;
 
 Function DeleteDC(HDC: HDC): Boolean; Override;
@@ -170,6 +170,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.17  2002/12/25 13:30:37  mattias
+  added more windows funcs and fixed jump to compiler error end of file
+
   Revision 1.16  2002/11/23 13:48:49  mattias
   added Timer patch from Vincent Snijders
 

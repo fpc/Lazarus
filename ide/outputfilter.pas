@@ -432,6 +432,7 @@ begin
     MsgType:=ErrorTypeNameToType(copy(Line,StartPos,EndPos-StartPos));
     Result:=true;
   end else if Line[EndPos]=')' then begin
+    // <filename>(123) <ErrorType>: <some text>
     // <filename>(456) <ErrorType>: <some text> in line (123)
     // read error type
     StartPos:=EndPos+2;
@@ -440,7 +441,11 @@ begin
     MsgType:=ErrorTypeNameToType(copy(Line,StartPos,EndPos-StartPos));
     // read second linenumber (more useful)
     while (EndPos<=length(Line)) and (Line[EndPos]<>'(') do inc(EndPos);
-    if EndPos>length(Line) then exit;
+    if EndPos>length(Line) then begin
+      // format: <filename>(123) <ErrorType>: <some text>
+      Result:=true;
+      exit;
+    end;
     StartPos:=EndPos+1;
     EndPos:=StartPos;
     while (EndPos<=length(Line)) and (Line[EndPos] in ['0'..'9']) do inc(EndPos);
