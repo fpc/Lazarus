@@ -7451,18 +7451,21 @@ begin
         Left,Top+Height+30,230,Max(Screen.Height-Top-Height-120,50));
     end else
     if ALayout.FormID=DefaultMainIDEName then begin
-      ALayout.Form.SetBounds(0,0,Screen.Width-10,100);
+      ALayout.Form.SetBounds(0,0,Screen.Width-10,95);
     end else
     if ALayout.FormID=DefaultSourceNoteBookName then begin
-      ALayout.Form.SetBounds(250,Top+Height+30,Screen.Width-300,
-        Screen.Height-200-Top-Height);
+      ALayout.Form.SetBounds(250,Top+Height+30,Max(50,Screen.Width-300),
+        Max(50,Screen.Height-200-Top-Height));
     end else
     if ALayout.FormID=DefaultUnitDependenciesName then begin
       ALayout.Form.SetBounds(200,200,400,300);
     end else
+    if ALayout.FormID=DefaultCodeExplorerName then begin
+      ALayout.Form.SetBounds(Screen.Width-200,130,170,Max(50,Screen.Height-230));
+    end else
     if ALayout.FormID=DefaultMessagesViewName then begin
       ALayout.Form.SetBounds(260,SourceNotebook.Top+SourceNotebook.Height+30,
-        Screen.Width-300,80);
+        Max(50,Screen.Width-300),80);
     end;
   end;
 end;
@@ -7504,6 +7507,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.433  2002/11/18 11:01:58  mattias
+  improved icons, started codeexplorer
+
   Revision 1.432  2002/11/16 14:38:47  mattias
   fixed TControl.Show and Visible of designer forms
 
