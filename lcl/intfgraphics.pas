@@ -343,6 +343,7 @@ type
     function BmpRGBAToFPColor(Const RGBA: TColorRGBA): TFPcolor; virtual;
     // required by TFPCustomImageReader
     procedure InternalRead(Stream: TStream; Img: TFPCustomImage); override;
+    procedure InternalReadHead(Stream: TStream; Img: TFPCustomImage);
     procedure InternalReadBody(Stream: TStream; Img: TFPCustomImage);
     function  InternalCheck(Stream: TStream) : boolean; override;
   public
@@ -3071,8 +3072,8 @@ var
   i: Integer;
   FPcolor: TFPcolor;
 begin
-  if nPalette>0 then
-    begin
+  if nPalette > 0
+  then begin
     GetMem(FPalette, nPalette*SizeOf(TFPColor));
     {$ifdef VER1_0}
     GetMem(ColInfo, nPalette*Sizeof(TColorRGBA));
@@ -3090,21 +3091,25 @@ begin
     {$else}
     SetLength(ColInfo, nPalette);
     if ReadPalette then begin
-      if BFI.biClrUsed>0 then
-        Stream.Read(ColInfo[0],BFI.biClrUsed*SizeOf(TColorRGBA))
-      else // Seems to me that this is dangerous.
-        Stream.Read(ColInfo[0],nPalette*SizeOf(TColorRGBA));
-      for i := 0 to nPalette-1 do begin
+      if  (BFI.biClrUsed > 0)
+      and (BFI.biClrUsed <= Cardinal(nPalette)) // prevent buffer overflow
+      then Stream.Read(ColInfo[0], BFI.biClrUsed * SizeOf(ColInfo[0]))
+      else Stream.Read(ColInfo[0], nPalette * SizeOf(ColInfo[0]));
+      for i := 0 to nPalette-1 do
+      begin
         FPcolor := BmpRGBAToFPColor(ColInfo[i]);
         FPcolor.alpha := alphaOpaque; { No transparency info in palette }
         FPalette[i] := FPcolor;
       end;
     end;
     {$endif}
-    end
-  else if BFI.biClrUsed>0 then { Skip palette }
-    Stream.Position := Stream.Position
-                      + TStreamSeekType(BFI.biClrUsed*SizeOf(TColorRGBA));
+  end
+  else begin
+    { Skip palette }
+    if BFI.biClrUsed > 0
+    then Stream.Position := Stream.Position
+                          + TStreamSeekType(BFI.biClrUsed*SizeOf(TColorRGBA));
+  end;
   ReadSize:=((nRowBits + 31) div 32) shl 2;
   GetMem(LineBuf,ReadSize);
   {$ifdef VER1_0}
@@ -3113,11 +3118,29 @@ begin
 end;
 
 procedure TLazReaderBMP.ReadScanLine(Row: Integer; Stream: TStream);
+{$IFDEF FPC_BIG_ENDIAN}
+var
+  n: Integer;
+{$ENDIF}
 begin
   {
     Add here support for compressed lines. The 'readsize' is the same in the end.
   }
   Stream.Read(LineBuf[0],ReadSize);
+  {$IFDEF FPC_BIG_ENDIAN}
+  // MWE: don't know if linebuf is used externally
+  // if it is only used internally, then the conversion can better
+  // be done in writescanline for Bmp15ToFPColor and Bmp16ToFPColor
+  
+  if (FBitsPerPixel = 15)
+  or (FBitsPerPixel = 16)
+  then begin
+    for n := 0 to (ReadSize div 2) - 1 do
+      PWord(LineBuf)[n]^ := LEtoN(PWord(LineBuf)[n]^);
+  end;
+
+  {$ENDIF}
+  
 end;
 
 procedure TLazReaderBMP.WriteScanLine(Row: Integer; Img: TFPCustomImage);
@@ -3154,8 +3177,26 @@ end;
 
 procedure TLazReaderBMP.InternalRead(Stream: TStream; Img: TFPCustomImage);
 begin
-  Stream.Read(BFI,SizeOf(BFI));
+  InternalReadHead(Stream, Img);
   InternalReadBody(Stream, Img);
+end;
+
+procedure TLazReaderBMP.InternalReadHead(Stream: TStream; Img: TFPCustomImage);
+begin
+  Stream.Read(BFI,SizeOf(BFI));
+  {$IFDEF FPC_BIG_ENDIAN}
+  BFI.biSize          := LEtoN(BFI.biSize         );
+  BFI.biWidth         := LEtoN(BFI.biWidth        );
+  BFI.biHeight        := LEtoN(BFI.biHeight       );
+  BFI.biPlanes        := LEtoN(BFI.biPlanes       );
+  BFI.biBitCount      := LEtoN(BFI.biBitCount     );
+  BFI.biCompression   := LEtoN(BFI.biCompression  );
+  BFI.biSizeImage     := LEtoN(BFI.biSizeImage    );
+  BFI.biXPelsPerMeter := LEtoN(BFI.biXPelsPerMeter);
+  BFI.biYPelsPerMeter := LEtoN(BFI.biYPelsPerMeter);
+  BFI.biClrUsed       := LEtoN(BFI.biClrUsed      );
+  BFI.biClrImportant  := LEtoN(BFI.biClrImportant );
+  {$ENDIF}
 end;
 
 procedure TLazReaderBMP.InternalReadBody(Stream: TStream; Img: TFPCustomImage);
@@ -3206,6 +3247,11 @@ begin
           FBitsPerPixel := 15;
         BI_BITFIELDS: begin                              // 5-5-5 or 5-6-5
           Stream.Read(PixelMasks, SizeOf(PixelMasks));
+          {$IFDEF FPC_BIG_ENDIAN}
+            PixelMasks.R := LEtoN(PixelMasks.R);
+            PixelMasks.G := LEtoN(PixelMasks.G);
+            PixelMasks.B := LEtoN(PixelMasks.B);
+          {$ENDIF}
           if (PixelMasks.R = $7C00) and     // 5 red
              (PixelMasks.G = $03E0) and     // 5 green
              (PixelMasks.B = $001F) then    // 5 blue
@@ -3228,6 +3274,11 @@ begin
         BI_RGB: ;
         BI_BITFIELDS: begin  // actually not a valid value
           Stream.Read(PixelMasks, SizeOf(PixelMasks));
+          {$IFDEF FPC_BIG_ENDIAN}
+            PixelMasks.R := LEtoN(PixelMasks.R);
+            PixelMasks.G := LEtoN(PixelMasks.G);
+            PixelMasks.B := LEtoN(PixelMasks.B);
+          {$ENDIF}
           if (PixelMasks.R <> $FF0000) or     // 8 red
              (PixelMasks.G <> $00FF00) or     // 8 green
              (PixelMasks.B <> $0000FF) then   // 8 blue
@@ -3243,6 +3294,11 @@ begin
         BI_RGB: ;
         BI_BITFIELDS: begin
           Stream.Read(PixelMasks, SizeOf(PixelMasks));
+          {$IFDEF FPC_BIG_ENDIAN}
+            PixelMasks.R := LEtoN(PixelMasks.R);
+            PixelMasks.G := LEtoN(PixelMasks.G);
+            PixelMasks.B := LEtoN(PixelMasks.B);
+          {$ENDIF}
           if (PixelMasks.R <> $00FF0000) or     // 8 red
              (PixelMasks.G <> $0000FF00) or     // 8 green
              (PixelMasks.B <> $000000FF) then   // 8 blue
@@ -3272,7 +3328,7 @@ var
 begin
   stream.Read(BFH,SizeOf(BFH));
   With BFH do
-    Result:=(bfType=BMmagic); // Just check magic number
+    Result:=(LEtoN(bfType)=BMmagic); // Just check magic number
 end;
 
 constructor TLazReaderBMP.Create;
@@ -3331,10 +3387,13 @@ procedure TLazReaderPartIcon.InternalRead(Stream: TStream; Img: TFPCustomImage);
 var
   Row, Column: Integer;
 begin
-  Stream.Read(BFI,SizeOf(BFI));
+  InternalReadHead(Stream, Img);
+
   BFI.biHeight := BFI.biHeight div 2; { Height field is doubled, to (sort of) accomodate mask }
   InternalReadBody(Stream, Img); { Now read standard bitmap }
+
   { Mask immediately follows unless bitmap was 32 bit - monchrome bitmap with no header }
+  // MWE: is the height then stil devided by 2 ?
   if BFI.biBitCount < 32 then begin
     ReadSize:=((Img.Width + 31) div 32) shl 2;
     SetupRead(2,Img.Width,Stream,False);
@@ -3448,8 +3507,8 @@ begin
   FnStartPos := Stream.Position;
   Stream.Read(IconHeader,SizeOf(IconHeader));
   With IconHeader do
-    Result := (idReserved=0) and (idType=1);
-  FnIcons := IconHeader.idCount;
+    Result := (idReserved=0) and (LEtoN(idType)=1);
+  FnIcons := LEtoN(IconHeader.idCount);
 end;
 
 //------------------------------------------------------------------------------
