@@ -39,7 +39,8 @@ uses
   Main,
   MsgView,
   FindReplaceDialog,
-  FindInFilesDlg;
+  FindInFilesDlg,
+  WatchesDlg;
 
 begin
   Application.Initialize;
@@ -57,6 +58,7 @@ begin
 CheckHeap('TMainIDE created');
 {$ENDIF}
   Application.CreateForm(TMessagesView, MessagesView);
+  Application.CreateForm(TWatchesDlg, Watches_Dlg);
   Application.CreateForm(TLazFindReplaceDialog, FindReplaceDlg);
   Application.CreateForm(TLazFindInFilesDialog, FindInFilesDialog);
   SplashForm.StartTimer;
@@ -69,6 +71,10 @@ end.
 
 {
   $Log$
+  Revision 1.25  2001/12/07 20:12:13  lazarus
+  Added a watch dialog.
+  Shane
+
   Revision 1.24  2001/11/06 16:42:23  lazarus
   MG: added facade for find in files
 

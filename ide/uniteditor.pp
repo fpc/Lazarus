@@ -102,7 +102,7 @@ type
           Shift: TShiftState; X,Y: Integer);
     Procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     Function FindFile(const Value: String) : String;
-
+    Function GetWordFromCaret(CaretPos : TPoint) : String;
     procedure SetCodeBuffer(NewCodeBuffer: TCodeBuffer);
     Function GetSource : TStrings;
     Procedure SetSource(Value : TStrings);
@@ -175,7 +175,9 @@ type
 
     //used to get the word at the mouse cursor
     Function GetWordAtPosition(Position : TPoint) : String;
-    
+
+    Function GetWordAtCurrentCaret: String;
+
     //used to get the x,y of the caret if the caret was where the mouse is
     //used in
     //GetWordAtPosition
@@ -254,6 +256,7 @@ type
     FOnToggleFormUnitClicked : TNotifyEvent;
     FOnUserCommandProcessed: TOnProcessUserCommand;
     FOnViewJumpHistory: TNotifyEvent;
+    FOnAddWatchAtCursor: TNotifyEvent;
 
     // PopupMenu
     Procedure BuildPopupMenu;
@@ -263,6 +266,7 @@ type
     Procedure ReadOnlyClicked(Sender : TObject);
     Procedure ShowUnitInfo(Sender : TObject);
     Procedure ToggleBreakpointClicked(Sender : TObject);
+    Procedure AddWatchAtCursor(Sender : TObject);
     Procedure ToggleLineNumbersClicked(Sender : TObject);
     Procedure OpenAtCursorClicked(Sender : TObject);
     Procedure BookmarkGoTo(Value: Integer);
@@ -292,7 +296,7 @@ type
 
     Procedure NextEditor;
     Procedure PrevEditor;
-    Procedure ProcessParentCommand(Sender: TObject; 
+    Procedure ProcessParentCommand(Sender: TObject;
        var Command: TSynEditorCommand; var AChar: char; Data: pointer);
     Procedure ParentCommandProcessed(Sender: TObject; 
        var Command: TSynEditorCommand; var AChar: char; Data: pointer);
@@ -398,6 +402,8 @@ type
        read FOnUserCommandProcessed write FOnUserCommandProcessed;
     property OnViewJumpHistory: TNotifyEvent
        read FOnViewJumpHistory write FOnViewJumpHistory;
+    property OnAddWatchAtCursor: TNotifyEvent
+       read FOnAddWatchAtCursor write FOnAddWatchAtCursor;
  end;
 
 {Goto dialog}
@@ -1429,57 +1435,11 @@ end;
 
 Function TSourceEditor.GetWordAtPosition(Position : TPoint) : String;
 var
-  //TopLine : Integer;
-  //LineHeight : Integer;
-  LineNum : Integer;
-  XLine : Integer;
-  EditorLine: string;
-  Texts : String;
   CaretPos : TPoint;
 begin
   Result := '';
   Caretpos := GetCaretPosfromCursorPos(Position);
-  LineNum := CaretPos.Y-1;
-  XLine := CaretPos.X;
-  EditorLine := FEditor.Lines[LineNum];
-//  Writeln('XLine and LineNum = ',XLine,',',LineNum);
-  if Length(trim(EditorLine)) = 0 then Exit;
-  if XLine > Length(EditorLine) then Exit;
-  
-  //walk backwards to a space or non-standard character.
-  while (
-        (upcase(EditorLine[XLine]) in (['A'..'Z'])) or
-        (upcase(EditorLine[XLine]) in (['0'..'9']))
-        ) and
-        (XLine>1) do
-    dec(xLine);
-
-  if ( (XLine > 1) and (XLine < Length(EditorLine))) then Inc(xLine);
-  
-  Texts := Copy(EditorLine,XLine,length(EditorLine));  //chop off the beginning
-
-  XLine := 1;
-
-  while (
-        (upcase(Texts[XLine]) in (['A'..'Z'])) or
-        (upcase(Texts[XLine]) in (['0'..'9']))
-        ) and
-        (XLine< Length(Texts)) do
-
-    inc(xLine);
-
-  if (XLine < Length(Texts) ) and (XLine >1)  then dec(xLine);
-
-  if not(
-        (upcase(Texts[XLine]) in (['A'..'Z'])) or
-        (upcase(Texts[XLine]) in (['0'..'9']))
-        ) then
-    dec(xLine);
-
-  Texts := Copy(Texts,1,XLine);
-
-  Result := Texts;
-
+  Result := GetWordFromCaret(CaretPos);
 end;
 
 Procedure TSourceEditor.EditorMouseDown(Sender : TObject; Button : TMouseButton;
@@ -1518,6 +1478,63 @@ begin
   
   Result.X := XLine;
   Result.Y := LineNum;
+end;
+
+Function TSourceEditor.GetWordAtCurrentCaret: String;
+var
+  CaretPos : TPoint;
+begin
+  Result := '';
+  CaretPos.Y := CurrentCursorYLine;
+  CaretPos.X := CurrentCursorXLine;
+  Result := GetWordFromCaret(CaretPos);
+end;
+
+Function TSourceEditor.GetWordFromCaret(CaretPos : TPoint) : String;
+var
+  XLine,YLine : Integer;
+  EditorLine,Texts : String;
+begin
+  YLine := CaretPos.Y;
+  XLine := CaretPos.X;
+  EditorLine := FEditor.Lines[YLine-1];
+
+  if Length(trim(EditorLine)) = 0 then Exit;
+  if XLine > Length(EditorLine) then Exit;
+
+  //walk backwards to a space or non-standard character.
+  while (
+        (upcase(EditorLine[XLine]) in (['A'..'Z'])) or
+        (upcase(EditorLine[XLine]) in (['0'..'9']))
+        ) and
+        (XLine>1) do
+    dec(xLine);
+
+  if ( (XLine > 1) and (XLine < Length(EditorLine))) then Inc(xLine);
+
+  Texts := Copy(EditorLine,XLine,length(EditorLine));  //chop off the beginning
+
+  XLine := 1;
+
+  while (
+        (upcase(Texts[XLine]) in (['A'..'Z'])) or
+        (upcase(Texts[XLine]) in (['0'..'9']))
+        ) and
+        (XLine< Length(Texts)) do
+
+    inc(xLine);
+
+  if (XLine < Length(Texts) ) and (XLine >1)  then dec(xLine);
+
+  if not(
+        (upcase(Texts[XLine]) in (['A'..'Z'])) or
+        (upcase(Texts[XLine]) in (['0'..'9']))
+        ) then
+    dec(xLine);
+
+  Texts := Copy(Texts,1,XLine);
+
+  Result := Texts;
 end;
 
 {------------------------------------------------------------------------}
@@ -2202,6 +2219,13 @@ Begin
       SubMenuItem.Name := 'ToggleBreakpointMenuItem';
       SubMenuItem.Caption := '&Toggle Breakpoint';
       SubMenuItem.OnClick := @ToggleBreakpointClicked;
+      MenuItem.Add(SubMenuItem);
+
+
+      SubMenuItem := TMenuItem.Create(Self);
+      SubMenuItem.Name := 'AddWatchAtCursorMenuItem';
+      SubMenuItem.Caption := '&Add Watch At Cursor';
+      SubMenuItem.OnClick := @AddWatchAtCursor;
       MenuItem.Add(SubMenuItem);
 
       SubMenuItem := TMenuItem.Create(Self);
@@ -3107,6 +3131,12 @@ begin
      FHintWindow.Visible := False;
      
   FHintTimer.Enabled := False;
+end;
+
+Procedure TSourceNotebook.AddWatchAtCursor(Sender : TObject);
+begin
+  if Assigned(OnAddWatchAtCursor) then
+     OnAddWatchAtCursor(Self);
 end;
 
 

@@ -234,6 +234,15 @@ type
     property MultiSelect;
     property OnClick;
     property OnDblClick;
+    property OnEnter;
+    property OnExit;
+    property OnKeyPress;
+    property OnKeyDown;
+    property OnKeyUp;
+    property OnMouseMove;
+    property OnMouseDown;
+    property OnMouseUp;
+    property OnResize;
     property Sorted;
     property Style;
     property Visible;
@@ -572,6 +581,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.17  2001/12/07 20:12:15  lazarus
+  Added a watch dialog.
+  Shane
+
   Revision 1.16  2001/10/19 14:27:43  lazarus
   MG: fixed customradiogroup OnClick + ItemIndex
 

@@ -804,6 +804,7 @@ var
   F: TCustomForm;
   ShiftState: TShiftState;
 begin
+  Writeln('name is ',self.name);
   Result := True;
   F := GetParentForm(Self);
   if  (F <> nil) 
@@ -838,8 +839,7 @@ begin
   and (F <> Self) 
   and (F.KeyPreview) 
   and (TWinControl(F).DoKeyPress(Message)) then Exit;
-  
-  if not (csNoStdEvents in ControlStyle) 
+  if not (csNoStdEvents in ControlStyle)
   then with Message do
   begin
     C := Char(CharCode);
@@ -1933,6 +1933,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.43  2001/12/07 20:12:15  lazarus
+  Added a watch dialog.
+  Shane
+
   Revision 1.42  2001/11/10 10:48:00  lazarus
   MG: fixed set formicon on invisible forms
 

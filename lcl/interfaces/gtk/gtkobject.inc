@@ -1632,7 +1632,15 @@ begin
       if (sender is TCustomForm) then Begin
         ConnectSignal(PgtkObject(TCustomForm(sender).handle), 'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
         ConnectSignal(PgtkObject(TCustomForm(sender).handle), 'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
-      end;
+      end
+      else
+      if (sender is TCustomListBox) then
+        Begin
+        Writeln('------------------------------------------------------------------');
+        ConnectSignal(PgtkObject(GetCoreChildWidget(PgtkWidget(TCustomListBox(sender).handle))), 'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
+        ConnectSignal(PgtkObject(GetCoreChildWidget(PgtkWidget(TCustomListBox(sender).handle))), 'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
+        Writeln('------------------------------------------------------------------');
+        end;
       ConnectSignal(gFixed, 'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
       ConnectSignal(gFixed, 'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
     end;
@@ -2015,7 +2023,7 @@ begin
                gtk_container_set_focus_vadjustment(PGtkContainer(TempWidget), 
          gtk_scrolled_window_get_vadjustment(PGtkScrolledWindow(p)));
          gtk_container_set_focus_hadjustment(PGtkContainer(TempWidget),
-         gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(p)));  
+         gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(p)));
          gtk_widget_show(TempWidget);
          
          //--------------------------
@@ -3463,6 +3471,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.82  2001/12/07 20:12:15  lazarus
+  Added a watch dialog.
+  Shane
+
   Revision 1.81  2001/12/06 13:39:36  lazarus
   Added TArrow component
   Shane

@@ -40,7 +40,7 @@ uses
   PropEdits, ControlSelection, UnitEditor, CompilerOptions, EditorOptions,
   EnvironmentOpts, TransferMacros, KeyMapping, ProjectOpts, IDEProcs, Process,
   UnitInfoDlg, Debugger, RunParamsOpts, ExtToolDialog, MacroPromptDlg,
-  LMessages, ProjectDefs;
+  LMessages, ProjectDefs,Watchesdlg;
 
 const
   Version_String = '0.8.1 alpha';
@@ -121,6 +121,7 @@ type
     itmViewForms : TMenuItem;
     itmViewFile : TMenuItem;
     itmViewMessage : TMenuItem;
+    itmViewwatches : TMenuItem;
 
     itmProjectNew: TMenuItem;
     itmProjectOpen: TMenuItem;
@@ -176,6 +177,7 @@ type
     Procedure mnuViewFormsClicked(Sender : TObject);
     procedure mnuViewCodeExplorerClick(Sender : TObject);
     procedure mnuViewMessagesClick(Sender : TObject);
+    procedure mnuViewWatchesClick(Sender : TObject);
     procedure MessageViewDblClick(Sender : TObject);
 
     procedure mnuToggleFormUnitClicked(Sender : TObject);
@@ -231,6 +233,7 @@ type
     procedure OnSrcNoteBookShowUnitInfo(Sender: TObject);
     Procedure OnSrcNotebookToggleFormUnit(Sender : TObject);
     Procedure OnSrcNotebookViewJumpHistory(Sender : TObject);
+    Procedure OnSrcNotebookAddWatchesAtCursor(Sender : TObject);
     
     // ObjectInspector events
     procedure OIOnAddAvailableComponent(AComponent:TComponent;
@@ -635,7 +638,7 @@ begin
   SourceNotebook.OnShowUnitInfo := @OnSrcNoteBookShowUnitInfo;
   SourceNotebook.OnToggleFormUnitClicked := @OnSrcNotebookToggleFormUnit;
   SourceNotebook.OnViewJumpHistory := @OnSrcNotebookViewJumpHistory;
-
+  SourceNotebook.OnAddWatchAtCursor := @OnSrcNotebookAddWatchesAtCursor;
   // search menus
   itmSearchFind.OnClick := @SourceNotebook.FindClicked;
   itmSearchFindNext.OnClick := @SourceNotebook.FindNextClicked;
@@ -1182,6 +1185,11 @@ begin
   itmViewMessage.OnClick := @mnuViewMessagesClick;
   mnuView.Add(itmViewMessage);
 
+  itmViewWatches := TMenuItem.Create(Self);
+  itmViewWatches.Name:='itmViewWatches';
+  itmViewWatches.Caption := 'Watches';
+  itmViewWatches.OnClick := @mnuViewWatchesClick;
+  mnuView.Add(itmViewWatches);
 //--------------
 // Project
 //--------------
@@ -5050,6 +5058,22 @@ begin
   FHintSender := Sender;
 end;
 
+Procedure TMainIDE.OnSrcNotebookAddWatchesAtCursor(Sender : TObject);
+var
+  SE : TSourceEditor;
+begin
+  Writeln('in MAIN.pp ADD WATCHES');
+  //get the sourceEditor.
+  Se := TSourceNotebook(sender).GetActiveSE;
+  if not Assigned(se) then Exit;
+  
+end;
+
+procedure TMainIDE.mnuViewWatchesClick(Sender : TObject);
+begin
+  Watches_dlg.Show;
+end;
+
 //-----------------------------------------------------------------------------
 
 initialization
@@ -5064,6 +5088,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.165  2001/12/07 20:12:13  lazarus
+  Added a watch dialog.
+  Shane
+
   Revision 1.164  2001/12/05 18:19:10  lazarus
   MG: added calendar to allunits and removed unused vars
 

@@ -1499,6 +1499,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.51  2001/12/07 20:12:15  lazarus
+  Added a watch dialog.
+  Shane
+
   Revision 1.50  2001/12/05 18:23:47  lazarus
   Added events to Calendar
   Shane

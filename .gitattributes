@@ -143,6 +143,7 @@ ide/viewforms1.lrs svneol=native#text/pascal
 ide/viewunit_dlg.lfm svneol=native#text/plain
 ide/viewunit_dlg.pp svneol=native#text/pascal
 ide/viewunits1.lrs svneol=native#text/pascal
+ide/watchesdlg.pp svneol=native#text/pascal
 ide/wordcompletion.pp svneol=native#text/pascal
 images/bookmark.lrs svneol=native#text/pascal
 images/btn_downarrow.ico -text svneol=unset#image/x-icon
