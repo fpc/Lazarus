@@ -129,9 +129,9 @@ begin
           SizeType:= 6; // force realign
           Width:= FWidth;
           Height:= FHeight;
-{$IFDEF CHECK_POSITION}
-writeln(' [TControl.ChangeBounds] ',Name,':',ClassName,' SizeMsg Width=',Width,' Height=',Height);
-{$ENDIF}
+          {$IFDEF CHECK_POSITION}
+          writeln(' [TControl.ChangeBounds] ',Name,':',ClassName,' SizeMsg Width=',Width,' Height=',Height);
+          {$ENDIF}
         end;
         WindowProc(TLMessage(SizeMsg));
       end;
@@ -142,9 +142,9 @@ writeln(' [TControl.ChangeBounds] ',Name,':',ClassName,' SizeMsg Width=',Width,'
           MoveType:= 1;
           XPos:= FLeft;
           YPos:= FTop;
-{$IFDEF CHECK_POSITION}
-writeln(' [TControl.ChangeBounds] ',Name,':',ClassName,' MoveMsg XPos=',XPos,' YPos=',YPos);
-{$ENDIF}
+          {$IFDEF CHECK_POSITION}
+          writeln(' [TControl.ChangeBounds] ',Name,':',ClassName,' MoveMsg XPos=',XPos,' YPos=',YPos);
+          {$ENDIF}
         end;
         WindowProc(TLMessage(MoveMsg));
       end;
@@ -502,10 +502,10 @@ end;
 {------------------------------------------------------------------------------}
 Function TControl.GetBoundsRect: TRect;
 Begin
-Result.left := FLEft;
-Result.Top := FTop;
-Result.Right := FLeft+FWidth;
-Result.Bottom := FTop+FHeight;
+  Result.Left := FLeft;
+  Result.Top := FTop;
+  Result.Right := FLeft+FWidth;
+  Result.Bottom := FTop+FHeight;
 end;
 
 {------------------------------------------------------------------------------}
@@ -521,7 +521,7 @@ end;
 {------------------------------------------------------------------------------}
 Function TControl.GetMouseCapture : Boolean;
 Begin
-Result := GetCaptureControl = Self;
+  Result := GetCaptureControl = Self;
 end;
 
 {------------------------------------------------------------------------------}
@@ -919,9 +919,9 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TControl.SetBoundsRect(const Rect : TRect);
 Begin
-{$IFDEF CHECK_POSITION}
-writeln('[TControl.SetBoundsRect] ',Name,':',ClassName);
-{$ENDIF}
+  {$IFDEF CHECK_POSITION}
+  writeln('[TControl.SetBoundsRect] ',Name,':',ClassName);
+  {$ENDIF}
   with Rect do
     SetBounds(Left,Top,Right - Left, Bottom - Top);
 end;
@@ -1159,9 +1159,9 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.SetLeft(Value: Integer);
 begin
-{$IFDEF CHECK_POSITION}
-writeln('[TControl.SetLeft] ',Name,':',ClassName,' ',Value);
-{$ENDIF}
+  {$IFDEF CHECK_POSITION}
+  writeln('[TControl.SetLeft] ',Name,':',ClassName,' ',Value);
+  {$ENDIF}
   SetBounds(Value, FTop, FWidth, FHeight);
 end;
 
@@ -1170,9 +1170,9 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.SetTop(Value: Integer);
 begin
-{$IFDEF CHECK_POSITION}
-writeln('[TControl.SetTop] ',Name,':',ClassName,' ',Value);
-{$ENDIF}
+  {$IFDEF CHECK_POSITION}
+  writeln('[TControl.SetTop] ',Name,':',ClassName,' ',Value);
+  {$ENDIF}
   SetBounds(FLeft, Value, FWidth, FHeight);
 end;
 
@@ -1181,9 +1181,9 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.SetWidth(Value: Integer);
 begin
-{$IFDEF CHECK_POSITION}
-writeln('[TControl.SetWidth] ',Name,':',ClassName,' ',Value);
-{$ENDIF}
+  {$IFDEF CHECK_POSITION}
+  writeln('[TControl.SetWidth] ',Name,':',ClassName,' ',Value);
+  {$ENDIF}
   SetBounds(FLeft, FTop, Value, FHeight);
 end;
 
@@ -1192,9 +1192,9 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.SetHeight(Value: Integer);
 begin
-{$IFDEF CHECK_POSITION}
-writeln('[TControl.SetHeight] ',Name,':',ClassName,' ',Value);
-{$ENDIF}
+  {$IFDEF CHECK_POSITION}
+  writeln('[TControl.SetHeight] ',Name,':',ClassName,' ',Value);
+  {$ENDIF}
   SetBounds(FLeft, FTop, FWidth, Value);
 end;
 
@@ -1595,9 +1595,9 @@ begin
   if (Message.SizeType = Size_Restored) 
     and (FWidth = Message.Width) and (FHeight = Message.Height) then exit;
 
-{$IFDEF CHECK_POSITION}
-writeln('[TControl.WMSize] Name=',Name,':',ClassName,' Message.Width=',Message.Width,' Message.Height=',Message.Height,' Width=',Width,' Height=',Height);
-{$ENDIF}
+  {$IFDEF CHECK_POSITION}
+  writeln('[TControl.WMSize] Name=',Name,':',ClassName,' Message.Width=',Message.Width,' Message.Height=',Message.Height,' Width=',Width,' Height=',Height);
+  {$ENDIF}
   Assert(False, Format('Trace:[TWinControl.WMSize] %s', [ClassName]));
 
   SetBounds(Left, Top, Message.Width, Message.Height);
@@ -1618,9 +1618,9 @@ begin
   if (Message.MoveType = 0)
   and (FLeft = Message.XPos) and (FTop = Message.YPos) then
     Exit;
-{$IFDEF CHECK_POSITION}
-writeln('[TControl.WMMove] Name=',Name,':',ClassName,' Message.XPos=',Message.XPos,' Message.YPos=',Message.YPos,' OldLeft=',Left,' OldTop=',Top);
-{$ENDIF}
+  {$IFDEF CHECK_POSITION}
+  writeln('[TControl.WMMove] Name=',Name,':',ClassName,' Message.XPos=',Message.XPos,' Message.YPos=',Message.YPos,' OldLeft=',Left,' OldTop=',Top);
+  {$ENDIF}
   { Just sync the coordinates }
   SetBounds(Message.XPos, Message.YPos, Width, Height);
 end;
@@ -1633,6 +1633,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.44  2002/04/22 13:07:45  lazarus
+  MG: fixed AdjustClientRect of TGroupBox
+
   Revision 1.43  2002/04/21 06:53:55  lazarus
   MG: fixed save lrs to test dir
 
