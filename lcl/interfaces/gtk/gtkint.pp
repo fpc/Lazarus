@@ -97,6 +97,7 @@ type
     function IsValidDC(const DC: HDC): Boolean;virtual;
     function NewDC: TDeviceContext;virtual;
     procedure DisposeDC(aDC: TDeviceContext);virtual;
+    function CreateDCForWidget(TheWidget: PGtkWidget; TheWindow: PGdkWindow): HDC;
     
     // GDIObjects
     function IsValidGDIObject(const GDIObject: HGDIOBJ): Boolean;virtual;
@@ -154,6 +155,7 @@ type
       AWinControl: TWinControl);virtual;
     function  LCLtoGtkMessagePending: boolean;virtual;
     procedure SendCachedGtkMessages;virtual;
+    procedure SendPaintMessagesForInternalWidgets(AWinControl: TWinControl);
     procedure SetCallback(Msg : LongInt; Sender : TObject); override;
     procedure RemoveCallbacks(Sender : TObject); override;
   public
@@ -254,6 +256,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.85  2002/10/10 08:51:13  lazarus
+  MG: added paint messages for some gtk internal widgets
+
   Revision 1.84  2002/10/08 23:44:00  lazarus
   AJ: started GNOME interface & modified gtk interface so everything is public/protected
 
