@@ -3922,6 +3922,9 @@ begin
     ,'',TComponentPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TListColumns'),
     nil,'',TListColumnsPropertyEditor);
+    
+  {$IFDEF NewListPropEdit}
+  {$ENDIF}
 end;
 
 procedure FinalPropEdits;
