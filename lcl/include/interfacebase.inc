@@ -780,6 +780,11 @@ begin
   Result := 0;
 end;
 
+function TInterfaceBase.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
+begin
+  Result := 0;
+end;
+
 function TInterfaceBase.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;
 begin
   Result := 0;
@@ -875,6 +880,12 @@ Function TInterfaceBase.GetWindowSize(Handle : hwnd;
   var Width, Height: integer): boolean;
 begin
   Result:=false;
+end;
+
+function TInterfaceBase.GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
+  Meshes: Pointer; NumMeshes : Longint; Mode : Longint): Boolean;
+begin
+  Result := False;
 end;
 
 function TInterfaceBase.HideCaret(hWnd: HWND): Boolean;
@@ -1253,6 +1264,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.47  2002/09/12 05:56:15  lazarus
+  MG: gradient fill, minor issues from Andrew
+
   Revision 1.46  2002/09/10 06:49:19  lazarus
   MG: scrollingwincontrol from Andrew
 
