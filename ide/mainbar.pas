@@ -47,9 +47,6 @@ uses
   MsgView, EnvironmentOpts, EditorOptions, IDEComp, FormEditor,
   KeyMapping, IDEProcs, UnitEditor, Debugger, IDEOptionDefs, CodeToolsDefines;
 
-const
-  Version_String = '0.8.5 alpha';
-
 type
   // The IDE is at anytime in a specific state:
   TIDEToolStatus = (

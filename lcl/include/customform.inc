@@ -925,10 +925,7 @@ Begin
 
   ControlStyle := ControlStyle + [csAcceptsControls, csCaptureMouse,
                                   csClickEvents, csSetCaption, csDoubleClicks];
-  Left := 0;
-  Top := 0;
-  Width := 320;
-  Height := 240;
+  SetBounds(0,0,320,240);
   Visible := False;
   ParentColor := False;
   ParentFont := False;
@@ -1234,6 +1231,14 @@ end;
 {  TCustomForm ShowModal                                                       }
 {------------------------------------------------------------------------------}
 Function TCustomForm.ShowModal : Integer;
+
+  procedure RaiseShowModalImpossible;
+  begin
+    writeln('TCustomForm.ShowModal Visible=',Visible,' Enabled=',Enabled,
+      ' fsModal=',fsModal in FFormState,' MDIChild=',FormStyle = fsMDIChild);
+    raise EInvalidOperation.Create('TCustomForm.ShowModal impossible ');
+  end;
+
 var
   //WindowList: Pointer;
   SaveFocusCount: Integer;
@@ -1245,7 +1250,7 @@ begin
   //writeln('[TCustomForm.ShowModal] START ',Classname);
   if Visible or not Enabled or (fsModal in FFormState)
   or (FormStyle = fsMDIChild) then
-    raise EInvalidOperation.Create('TCustomForm.ShowModal impossible');
+    RaiseShowModalImpossible;
   // Kill capture when opening another dialog
   if GetCapture <> 0 then SendMessage(GetCapture,LM_CANCELMODE,0,0);
   ReleaseCapture;
@@ -1307,6 +1312,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.89  2003/03/13 10:11:41  mattias
+  fixed TControl.Show in design mode
+
   Revision 1.88  2003/03/11 22:56:41  mattias
   added visiblechanging
 

@@ -47,7 +47,7 @@ interface
 
 uses
   SysUtils, Classes, FileCtrl, IDEProcs;
-
+  
   { Config Path Functions }
 
   { The primary config path is the local or user specific path.
@@ -124,6 +124,9 @@ end.
 
 {
   $Log$
+  Revision 1.14  2003/03/13 10:11:41  mattias
+  fixed TControl.Show in design mode
+
   Revision 1.13  2003/02/19 23:17:45  mattias
   added warnings when fpc source dir invalid
 

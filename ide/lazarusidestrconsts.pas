@@ -41,6 +41,9 @@ uses
   Classes, SysUtils; 
   
 resourcestring
+  // version
+  lisLazarusVersionString = '0.8.5 alpha';
+
   // command line help
   lisCmdLineHlpHeader = 'lazarus [options] <project-filename>' + LineEnding
               + LineEnding
@@ -235,20 +238,22 @@ resourcestring
   lisCompilerError = 'Compiler error';
   lisPlzCheckTheCompilerName = 'Please check the compiler name';
   lisAboutLazarus = 'About Lazarus';
+  lisVersion = 'Version';
+  lisClose = 'Close';
   lisAboutLazarusMsg =
        'License: GPL/LGPL'
-      +LineEnding+LineEnding
+      +'%s'
       +'Lazarus are the class libraries for Free Pascal that '
       +'emulate Delphi. Free Pascal is a (L)GPL''ed compiler that '
       +'runs on Linux, Win32, OS/2, 68K and more. Free Pascal '
       +'is designed to be able to understand and compile Delphi '
       +'syntax, which is of course OOP.'
-      +LineEnding+LineEnding
+      +'%s'
       +'Lazarus is the missing part of the puzzle that will allow '
       +'you to develop Delphi like programs in all of the above '
       +'platforms. The IDE will eventually become a RAD tool like '
       +'Delphi.'
-      +LineEnding+LineEnding
+      +'%s'
       +'As Lazarus is growing we need more developers.';
   lisUnitNameAlreadyExistsCap = 'Unitname already in project';
   lisUnitNameAlreadyExistsText = 'The unit "%s" already exists.' + LineEnding
@@ -962,6 +967,7 @@ resourcestring
    dlgUnitDepBrowse      = 'Browse...';
    dlgUnitDepRefresh     = 'Refresh';
    
+
 implementation
 end.
 
