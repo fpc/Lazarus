@@ -287,7 +287,7 @@ type
       read FUsageOptions;
     property Version: TPkgVersion read FVersion;
     property Open: boolean read GetOpen write SetOpen; // a packageeditor is open in the IDE
-    property PackageEditor: TBasePackageEditor read FPackageEditor write SetPackageEditor;
+    property Editor: TBasePackageEditor read FPackageEditor write SetPackageEditor;
   end;
   
   
@@ -322,7 +322,7 @@ function PkgFileTypeIdentToType(const s: string): TPkgFileType;
 function LazPackageTypeIdentToType(const s: string): TLazPackageType;
 procedure SortDependencyList(Dependencies: TList);
 function CompareLazPackage(Data1, Data2: Pointer): integer;
-
+function CompareNameWithPackage(Key, Data: Pointer): integer;
 
 implementation
 
@@ -383,6 +383,19 @@ begin
   Pkg1:=TLazPackage(Data1);
   Pkg2:=TLazPackage(Data2);
   Result:=Pkg1.Compare(Pkg2);
+end;
+
+function CompareNameWithPackage(Key, Data: Pointer): integer;
+var
+  Name: String;
+  Pkg: TLazPackage;
+begin
+  if Key<>nil then begin
+    Name:=AnsiString(Key);
+    Pkg:=TLazPackage(Data);
+    Result:=AnsiCompareText(Name,Pkg.Name);
+  end else
+    Result:=-1;
 end;
 
 { TPkgFile }
@@ -795,6 +808,8 @@ begin
   FComponents:=TList.Create;
   FRequiredPkgs:=TList.Create;
   FFiles:=TList.Create;
+  FCompilerOptions:=TPkgCompilerOptions.Create;
+  FUsageOptions:=TAdditionalCompilerOptions.Create;
 end;
 
 destructor TLazPackage.Destroy;
@@ -802,9 +817,11 @@ begin
   Clear;
   FreeAndNil(FFiles);
   FreeAndNil(FComponents);
+  FreeAndNil(FCompilerOptions);
   FreeAndNil(FConflictPkgs);
   FreeAndNil(FRequiredPkgs);
   FreeAndNil(FVersion);
+  FreeAndNil(FUsageOptions);
   inherited Destroy;
 end;
 

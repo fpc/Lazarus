@@ -44,15 +44,13 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Forms, COntrols, KeyMapping, EnvironmentOpts,
+  Classes, SysUtils, LCLProc, Forms, COntrols, KeyMapping, EnvironmentOpts,
   UComponentManMain, PackageEditor, PackageDefs, PackageLinks, PackageSystem,
   BasePkgManager, MainBar;
 
 type
   TPkgManager = class(TBasePkgManager)
     procedure mnuConfigCustomCompsClicked(Sender: TObject);
-  private
-    function GetUniquePackageName(const Prefix: string): string;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -74,19 +72,17 @@ begin
   ShowConfigureCustomComponents;
 end;
 
-function TPkgManager.GetUniquePackageName(const Prefix: string): string;
-begin
-  // ToDo
-  Result:=Prefix;
-end;
-
 constructor TPkgManager.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  PackageGraph:=TLazPackageGraph.Create;
+  PackageEditors:=TPackageEditors.Create;
 end;
 
 destructor TPkgManager.Destroy;
 begin
+  FreeThenNil(PackageEditors);
+  FreeThenNil(PackageGraph);
   inherited Destroy;
 end;
 
@@ -113,10 +109,16 @@ begin
 end;
 
 function TPkgManager.DoNewPackage: TModalResult;
+var
+  NewPackage: TLazPackage;
+  CurEditor: TPackageEditorForm;
 begin
   Result:=mrCancel;
-  //NewPackage:=TLazPackage.Create;
-  //NewPackage.Name:=GetUniquePackageName;
+  // create a new package
+  NewPackage:=PackageGraph.NewPackage('NewPackage');
+  // open a package editor
+  CurEditor:=PackageEditors.OpenEditor(NewPackage);
+  CurEditor.Show;
   Result:=mrOk;
 end;
 

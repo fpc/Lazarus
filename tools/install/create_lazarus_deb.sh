@@ -6,7 +6,7 @@ CurDir=`pwd`
 TempDir=/tmp/lazarus_temp
 LazBuildDir=$TempDir/lazarus_build
 LazTGZ=$CurDir/lazarus-0.8.5.tgz
-LazDeb=lazarus-0.8.5-1.deb
+LazDeb=lazarus-0.8.5-2.deb
 DebianSrcDir=$CurDir/debian_lazarus
 LazDestDir=$LazBuildDir/usr/share/lazarus
 
