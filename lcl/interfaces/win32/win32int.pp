@@ -79,7 +79,7 @@ Type
     Procedure ResizeChild(Sender: TWinControl; Left, Top, Width, Height: Integer);
     Procedure AssignSelf(Window: HWnd; Data: Pointer);
     Procedure ReDraw(Child: TObject);
-    Procedure SetCursor(Sender: TObject);
+    Procedure LmSetCursor(Sender: TObject);
     Procedure SetLimitText(Window: HWND; Limit: Word);
 
     Procedure ShowHide(Sender: TObject);
@@ -191,6 +191,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.66  2004/02/21 13:35:15  micha
+  fixed: name clash SetCursor (message LM_SETCURSOR), and inherited SetCursor (winapi)
+
   Revision 1.65  2004/01/12 08:36:34  micha
   statusbar interface dependent reimplementation (from vincent)
 

@@ -423,7 +423,7 @@ Begin
       ShowHide(Sender);
     End;
     LM_SETCURSOR:
-      SetCursor(Sender);
+      LmSetCursor(Sender);
     LM_SETLABEL:
       SetLabel(Sender, Data);
     LM_GETVALUE:
@@ -1774,7 +1774,7 @@ const
      IDC_IBEAM, IDC_CROSS, IDC_ARROW, IDC_ARROW, IDC_ARROW);
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.SetCursor
+  Method: TWin32Object.LmSetCursor
   Params:  Sender - the control which invoked this method
   Returns: Nothing
 
@@ -1782,20 +1782,19 @@ const
 
   WARNING: Sender will be casted to TControl, CLEANUP!
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.SetCursor(Sender: TObject);
+Procedure TWin32Object.LmSetCursor(Sender: TObject);
 Var
   Cursor: PChar;
   Res: HCURSOR;
 Begin
-  Assert(False, 'Trace:TWin32Object.SetCursor - Start');
-  Assert(False, Format('Trace:TWin32Object.SetCursor - Sender --> %S', [Sender.ClassName]));
-  Assert(False, 'Trace:TWin32Object.SetCursor - Getting the window');
-  Assert(False, 'Trace:TWin32Object.SetCursor - Getting the cursor');
+  Assert(False, 'Trace:TWin32Object.LmSetCursor - Start');
+  Assert(False, Format('Trace:TWin32Object.LmSetCursor - Sender --> %S', [Sender.ClassName]));
+  Assert(False, 'Trace:TWin32Object.LmSetCursor - Getting the cursor');
   Cursor := LclCursorToWin32CursorMap[TControl(Sender).Cursor];
-  Assert(False, 'Trace:TWin32Object.SetCursor - Loading the cursor');
+  Assert(False, 'Trace:TWin32Object.LmSetCursor - Loading the cursor');
   Res := LoadCursor(0, Cursor);
   Assert(False, Format('Trace:Cursor handle --> 0x%X', [Res]));
-  Assert(False, 'Trace:TWin32Object.SetCursor - Exit');
+  Assert(False, 'Trace:TWin32Object.LmSetCursor - Exit');
 End;
 
 {------------------------------------------------------------------------------
@@ -3006,6 +3005,9 @@ End;
 
 {
   $Log$
+  Revision 1.172  2004/02/21 13:35:15  micha
+  fixed: name clash SetCursor (message LM_SETCURSOR), and inherited SetCursor (winapi)
+
   Revision 1.171  2004/02/21 10:11:36  micha
     1. pressing the Return key in ObjectInspector when editing a value throws an exception
     2. placing TPairSplitter component on the form produces "Division by zero"
