@@ -154,6 +154,10 @@ msgstr "Создание кешируемой ошибки gdb:"
 msgid "Custom"
 msgstr "Пользовательский"
 
+#: lclstrconsts:rsfddirectorymustexist
+msgid "Directory must exist"
+msgstr ""
+
 #: lclstrconsts:sduplicatemenus
 msgid "Duplicate menus"
 msgstr "Повторяющиеся меню"
@@ -349,6 +353,10 @@ msgstr "Выберите каталог"
 #: lclstrconsts:smenunotfound
 msgid "Sub-menu is not in menu"
 msgstr "Подменю не в меню"
+
+#: lclstrconsts:rsfddirectorynotexist
+msgid "The directory \"%s\" does not exist."
+msgstr ""
 
 #: lclstrconsts:rsfdfilealreadyexists
 msgid "The file \"%s\" already exists.\015Overwrite ?"

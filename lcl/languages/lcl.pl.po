@@ -164,6 +164,10 @@ msgstr "B³±d przy tworzeniu gdb catchable:"
 msgid "Custom"
 msgstr "Inny"
 
+#: lclstrconsts:rsfddirectorymustexist
+msgid "Directory must exist"
+msgstr ""
+
 #: lclstrconsts:sduplicatemenus
 msgid "Duplicate menus"
 msgstr "Zdublowane menu"
@@ -359,6 +363,10 @@ msgstr ""
 #: lclstrconsts:smenunotfound
 msgid "Sub-menu is not in menu"
 msgstr "Podmenu nie jest w menu"
+
+#: lclstrconsts:rsfddirectorynotexist
+msgid "The directory \"%s\" does not exist."
+msgstr ""
 
 #: lclstrconsts:rsfdfilealreadyexists
 msgid "The file \"%s\" already exists.\015Overwrite ?"

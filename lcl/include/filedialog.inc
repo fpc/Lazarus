@@ -261,10 +261,26 @@ begin
   FTitle:= rsfdSelectDirectory;
 end;
 
+function TSelectDirectoryDialog.CheckFile(var AFilename: string): boolean;
+begin
+  if (ofFileMustExist in Options)
+  and (not DirPathExists(AFilename)) then begin
+    Result:=false;
+    MessageDlg(rsfdDirectoryMustExist,
+               Format(rsfdDirectoryNotExist,[AFileName]),mtError,
+               [mbCancel],0);
+    exit;
+  end;
+  Result:=inherited CheckFile(AFilename);
+end;
+
 
 { =============================================================================
 
   $Log$
+  Revision 1.15  2004/01/24 16:25:35  mattias
+  TSelectDirectoryDialog ofFileMustExist now checks for directory from Vincent
+
   Revision 1.14  2004/01/22 18:22:37  mattias
   applied patch for dir dlgs from Vincent
 

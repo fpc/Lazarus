@@ -586,6 +586,10 @@ msgstr ""
 msgid "source is not unit"
 msgstr ""
 
+#: codetoolsstrconsts:ctssourcenotfoundunit
+msgid "source not found: unit %s"
+msgstr ""
+
 #: codetoolsstrconsts:ctssrcpathforcompiledunits
 msgid "src path for compiled units"
 msgstr ""

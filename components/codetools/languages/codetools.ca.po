@@ -586,6 +586,10 @@ msgstr "Noms de fitxers font de les unitats estàndard del fpc"
 msgid "source is not unit"
 msgstr "el codi font no és una unitat"
 
+#: codetoolsstrconsts:ctssourcenotfoundunit
+msgid "source not found: unit %s"
+msgstr ""
+
 #: codetoolsstrconsts:ctssrcpathforcompiledunits
 msgid "src path for compiled units"
 msgstr "trajectòria de codi font per les unitats compilades"

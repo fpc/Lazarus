@@ -596,6 +596,10 @@ msgstr "Nazwa pliku ¼ród³a dla standardowych modu³ów fpc"
 msgid "source is not unit"
 msgstr "¼ród³ó nie jest modu³em"
 
+#: codetoolsstrconsts:ctssourcenotfoundunit
+msgid "source not found: unit %s"
+msgstr ""
+
 #: codetoolsstrconsts:ctssrcpathforcompiledunits
 msgid "src path for compiled units"
 msgstr "¶cie¿ka ¼ród³owa dla kompilowanych modu³ów"

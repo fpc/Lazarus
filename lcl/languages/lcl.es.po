@@ -164,6 +164,10 @@ msgstr "Creando un error capturable por gdb"
 msgid "Custom"
 msgstr "Personalizado"
 
+#: lclstrconsts:rsfddirectorymustexist
+msgid "Directory must exist"
+msgstr ""
+
 #: lclstrconsts:sduplicatemenus
 msgid "Duplicate menus"
 msgstr "Duplicar menús"
@@ -359,6 +363,10 @@ msgstr "Escoja Directorio"
 #: lclstrconsts:smenunotfound
 msgid "Sub-menu is not in menu"
 msgstr "Sub-menu no está en el menú"
+
+#: lclstrconsts:rsfddirectorynotexist
+msgid "The directory \"%s\" does not exist."
+msgstr ""
 
 #: lclstrconsts:rsfdfilealreadyexists
 msgid "The file \"%s\" already exists.\015Overwrite ?"

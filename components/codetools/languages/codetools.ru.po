@@ -586,6 +586,10 @@ msgstr "Имена файлов исходников для стандартных модулей fpc"
 msgid "source is not unit"
 msgstr "исходник - не модуль"
 
+#: codetoolsstrconsts:ctssourcenotfoundunit
+msgid "source not found: unit %s"
+msgstr ""
+
 #: codetoolsstrconsts:ctssrcpathforcompiledunits
 msgid "src path for compiled units"
 msgstr "путь исходников для собранных модулей"

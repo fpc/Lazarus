@@ -55,17 +55,19 @@ ResourceString
   rsMtCustom       = 'Custom';
 
   // file dialog
-  rsfdOpenFile          = 'Open existing file';
-  rsfdOverwriteFile     = 'Overwrite file ?';
-  rsfdFileAlreadyExists = 'The file "%s" already exists.'#13'Overwrite ?';
-  rsfdPathMustExist     = 'Path must exist';
-  rsfdPathNoExist       = 'The path "%s" does not exist.';
-  rsfdFileMustExist     = 'File must exist';
-  rsfdFileNotExist      = 'The file "%s" does not exist.';
-  rsfdFileReadOnlyTitle = 'File is not writable';
-  rsfdFileReadOnly      = 'The file "%s" is not writable.';
-  rsfdFileSaveAs        = 'Save file as';
-  rsfdSelectDirectory   = 'Select Directory';
+  rsfdOpenFile           = 'Open existing file';
+  rsfdOverwriteFile      = 'Overwrite file ?';
+  rsfdFileAlreadyExists  = 'The file "%s" already exists.'#13'Overwrite ?';
+  rsfdPathMustExist      = 'Path must exist';
+  rsfdPathNoExist        = 'The path "%s" does not exist.';
+  rsfdFileMustExist      = 'File must exist';
+  rsfdDirectoryMustExist = 'Directory must exist';
+  rsfdFileNotExist       = 'The file "%s" does not exist.';
+  rsfdDirectoryNotExist  = 'The directory "%s" does not exist.';
+  rsfdFileReadOnlyTitle  = 'File is not writable';
+  rsfdFileReadOnly       = 'The file "%s" is not writable.';
+  rsfdFileSaveAs         = 'Save file as';
+  rsfdSelectDirectory    = 'Select Directory';
 
   // Select color dialog
   rsSelectcolorTitle    = 'Select color';

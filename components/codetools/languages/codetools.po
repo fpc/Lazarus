@@ -222,6 +222,10 @@ msgstr ""
 msgid "unit not found: %s"
 msgstr ""
 
+#: codetoolsstrconsts:ctssourcenotfoundunit
+msgid "source not found: unit %s"
+msgstr ""
+
 #: codetoolsstrconsts:ctsidentifiernotfound
 msgid "identifier not found: %s"
 msgstr ""

@@ -160,6 +160,10 @@ msgstr ""
 msgid "Custom"
 msgstr "Spezial"
 
+#: lclstrconsts:rsfddirectorymustexist
+msgid "Directory must exist"
+msgstr ""
+
 #: lclstrconsts:sduplicatemenus
 msgid "Duplicate menus"
 msgstr ""
@@ -354,6 +358,10 @@ msgstr ""
 
 #: lclstrconsts:smenunotfound
 msgid "Sub-menu is not in menu"
+msgstr ""
+
+#: lclstrconsts:rsfddirectorynotexist
+msgid "The directory \"%s\" does not exist."
 msgstr ""
 
 #: lclstrconsts:rsfdfilealreadyexists

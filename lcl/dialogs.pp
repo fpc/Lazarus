@@ -204,6 +204,8 @@ type
   { TSelectDirectoryDialog }
   
   TSelectDirectoryDialog = class(TOpenDialog)
+  protected
+    function CheckFile(var AFilename: string): boolean; override;
   public
     constructor Create(AOwner : TComponent); override;
   end;
@@ -403,6 +405,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.42  2004/01/24 16:25:35  mattias
+  TSelectDirectoryDialog ofFileMustExist now checks for directory from Vincent
+
   Revision 1.41  2004/01/24 11:42:53  micha
   findinfiles uses tselectdirectorydialog; remove global SelectDirectory function (from vincent)
 

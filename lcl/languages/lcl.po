@@ -90,8 +90,16 @@ msgstr ""
 msgid "File must exist"
 msgstr ""
 
+#: lclstrconsts:rsfddirectorymustexist
+msgid "Directory must exist"
+msgstr ""
+
 #: lclstrconsts:rsfdfilenotexist
 msgid "The file \"%s\" does not exist."
+msgstr ""
+
+#: lclstrconsts:rsfddirectorynotexist
+msgid "The directory \"%s\" does not exist."
 msgstr ""
 
 #: lclstrconsts:rsfdfilereadonlytitle
