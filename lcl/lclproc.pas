@@ -99,6 +99,7 @@ function StrToDouble(const s: string): double;
 // debugging
 procedure RaiseGDBException(const Msg: string);
 
+procedure DebugLn(const S: String; Args: array of const);
 procedure DebugLn;
 procedure DebugLn(const s: string);
 procedure DebugLn(const s1,s2: string);
@@ -616,6 +617,11 @@ begin
   DebugLn('StrToDouble "',s,'"');
   {$ENDIF}
   Result:=Double(StrToFloat(s));
+end;
+
+procedure DebugLn(const S: String; Args: array of const);
+begin
+  DebugLn(Format(S, Args));
 end;
 
 procedure DebugLn;

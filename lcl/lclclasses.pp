@@ -38,11 +38,18 @@ type
     FWidgetSetClass: TWSLCLComponentClass;
   protected
     property WidgetSetClass: TWSLCLComponentClass read FWidgetSetClass;
-  public
+  public             
+    procedure BeforeDestruction; override; // fixes missing call to Destroying in FPC
     class function NewInstance: TObject; override;
   end;
 
-implementation
+implementation                    
+
+procedure TLCLComponent.BeforeDestruction;
+begin
+  inherited;
+  Destroying;
+end;
 
 function TLCLComponent.NewInstance: TObject;
 begin

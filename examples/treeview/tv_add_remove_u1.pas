@@ -9,7 +9,9 @@ component can be found here:
   http://users.iafrica.com/d/da/dart/Delphi/TTreeView/TreeView.html
 }
 
-interface
+interface 
+
+{$mode objfpc} {$H+}
 
 uses
   SysUtils, LResources, Classes, Graphics, Controls, Forms, Dialogs,

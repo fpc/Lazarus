@@ -155,7 +155,7 @@ end;
 procedure TMyForm.Edit2Change(Sender: TObject);
 begin
   if ListView.Selected = nil then Exit;
-  ListView.Selected.SubItems[1] := Edit2.Text;
+  ListView.Selected.SubItems[0] := Edit2.Text;
 end;
 
 begin
@@ -166,6 +166,9 @@ end.
 
 {
   $Log$
+  Revision 1.7  2004/07/11 17:20:47  marc
+  * Implemented most of TListColoum/Item in the Ws for gtk and win32
+
   Revision 1.6  2004/05/20 21:28:54  marc
   * Fixed win32 listview
 

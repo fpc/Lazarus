@@ -127,8 +127,8 @@ const
   LM_LV_ADDITEM     = LM_LV_FIRST+0;
   LM_LV_CHANGEITEM  = LM_LV_FIRST+1;
   LM_LV_DELETEITEM  = LM_LV_FIRST+2;
-  LM_LV_SELECTITEM  = LM_LV_FIRST+3;
-  LM_LV_SHOWITEM    = LM_LV_FIRST+4;
+//  LM_LV_SELECTITEM  = LM_LV_FIRST+3;
+//  LM_LV_SHOWITEM    = LM_LV_FIRST+4;
   LM_LV_LAST        = LM_LV_FIRST+9; // LM_COMUSER+89
 
   // TComboBox
@@ -959,8 +959,8 @@ begin
   LM_LV_ADDITEM     :Result:='LM_LV_ADDITEM';
   LM_LV_CHANGEITEM  :Result:='LM_LV_CHANGEITEM';
   LM_LV_DELETEITEM  :Result:='LM_LV_DELETEITEM';
-  LM_LV_SELECTITEM  :Result:='LM_LV_SELECTITEM';
-  LM_LV_SHOWITEM    :Result:='LM_LV_SHOWITEM';
+//  LM_LV_SELECTITEM  :Result:='LM_LV_SELECTITEM';
+//  LM_LV_SHOWITEM    :Result:='LM_LV_SHOWITEM';
   //LM_LV_LAST        :Result:='LM_LV_LAST';
 
   // TComboBox
@@ -1078,6 +1078,9 @@ end.
 
 {
   $Log$
+  Revision 1.66  2004/07/11 17:20:47  marc
+  * Implemented most of TListColoum/Item in the Ws for gtk and win32
+
   Revision 1.65  2004/06/18 20:15:06  micha
   remove obsolete LM_LOADXPM message
 

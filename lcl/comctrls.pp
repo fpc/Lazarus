@@ -281,66 +281,80 @@ type
   TCustomListView = class;  //forward declaration!
   TSortType = (stNone, stData, stText, stBoth);
   
+  TListItemState = (lisCut, lisDropTarget, lisFocused, lisSelected);
+  TListItemStates = set of TListItemState;
+  
   TListItem = class(TPersistent)
   private
     FOwner: TListItems;
     FSubItems: TStrings;
-    //FIndex   : Integer;
     FCaption: String;
     FData: Pointer;
     FImageIndex: Integer;
     FDestroying: Boolean;
-    FState:byte;//by VVI - for state (currently Selected) accumulating
-    function GetState(const AnIndex: Integer): Boolean;
-    procedure SetState(const AnIndex: Integer; const AState: Boolean);
+    FStates: TListItemStates;
+    function GetState(const ALisOrd: Integer): Boolean;
+    function GetIndex : Integer;
+    function GetSubItemImages(const AIndex: Integer): Integer;
+    function GetSubItems: TStrings;
+
+    function IntfUpdateAllowed: Boolean;
+    procedure IntfUpdateText;
+    procedure IntfUpdateImages;
+
+    procedure SetState(const ALisOrd: Integer; const AIsSet: Boolean);
+    procedure SetSubItemImages(const AIndex, AValue: Integer);
     procedure SetData(const AValue: Pointer);
     procedure SetImageIndex(const AValue: Integer);
     procedure SetCaption(const AValue : String);
-//    Procedure SetSubItems(Value : TStrings);
-    function GetIndex : Integer;
-    function GetSubItemImages(AnIndex: Integer): Integer;
-    procedure SetSubItemImages(AnIndex: Integer; const AValue: Integer);
+    procedure SetSubItems(const AValue: TStrings);
   protected
-    Procedure ItemChanged(sender : TObject);  //called by the onchange of the tstringlist in TListItem
-    function IsEqual(Item : TListItem) : Boolean;
+    function IsEqual(const AItem: TListItem): Boolean;
   public
+    procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner : TListItems);
     destructor Destroy; override;
     procedure Delete;
-  public
     procedure MakeVisible(PartialOK: Boolean);
+
     property Caption : String read FCaption write SetCaption;
-    property Cut: Boolean index 0 read GetState write SetState;
+    property Cut: Boolean index Ord(lisCut) read GetState write SetState;
     property Data: Pointer read FData write SetData;
-    property DropTarget: Boolean index 1 read GetState write SetState;
-    property Focused: Boolean index 2 read GetState write SetState;
+    property DropTarget: Boolean index Ord(lisDropTarget) read GetState write SetState;
+    property Focused: Boolean index Ord(lisFocused) read GetState write SetState;
     property Index: Integer read GetIndex;
-    property ImageIndex : Integer read FImageIndex write SetImageIndex default -1;
-    property Owner : TListItems read FOwner;
-    property Selected: Boolean index 3 read GetState write SetState;
-    property SubItems : TStrings read FSubItems write FSubItems;//SetSubItems;
-    property SubItemImages[AnIndex: Integer]: Integer
+    property ImageIndex: Integer read FImageIndex write SetImageIndex default -1;
+    property Owner: TListItems read FOwner;
+    property Selected: Boolean index Ord(lisSelected) read GetState write SetState;
+    property SubItems: TStrings read GetSubItems write SetSubItems;
+    property SubItemImages[const AIndex: Integer]: Integer
       read GetSubItemImages write SetSubItemImages;
   end;
 
 
   { TListItems }
+  {
+    Listitems have a build in cache of the last accessed item.
+    This will speed up interface updates since Item.Index is 
+    often used for the same item updating more properties.
+    If FCacheIndex = -1 then the cache is not valid.
+  }
 
   TListItems = class(TPersistent)
   private
     FOwner: TCustomListView;
-    FItems: TList;
-    function GetCount : Integer;
+    FItems: TList;        
+    FCacheIndex: Integer;  // Caches the last used item 
+    FCacheItem: TListItem; //
     procedure ItemDeleted(const AItem: TListItem); //called by TListItem when freed
-  protected
-    function GetItem(const AIndex: Integer): TListItem;
-    procedure SetITem(const AIndex: Integer; const AValue: TListItem);
-    procedure ItemChanged(sender : TObject);  //called by TListItem in response to SubItems changing
-
-    procedure DefineProperties(Filer: TFiler); override;
     procedure ReadData(Stream: TStream);
     procedure WriteData(Stream: TStream);
-
+  protected
+    procedure DefineProperties(Filer: TFiler); override;
+    function GetCount : Integer;
+    function GetItem(const AIndex: Integer): TListItem;
+    function IndexOf(const AItem: TListItem): Integer;
+    procedure SetITem(const AIndex: Integer; const AValue: TListItem);
   public
     function Add: TListItem;
     procedure AddItem(AItem: TListItem);
@@ -370,8 +384,10 @@ type
     FMaxWidth: TWidth;
     FVisible: Boolean;
     FWidth: TWidth;
+    FImageIndex: Integer;
     FTag: Integer;
     function GetWidth: TWidth;
+    function IntfUpdateAllowed: Boolean;
     procedure SetVisible(const AValue: Boolean);
     procedure SetAutoSize(const AValue: Boolean);
     procedure SetMinWidth(const AValue: TWidth);
@@ -379,9 +395,9 @@ type
     procedure SetWidth(const AValue: TWidth);
     procedure SetCaption(const AValue: String);
     procedure SetAlignment(const AValue: TAlignment);
-//    procedure SetImageIndex(const AValue: TImageIndex);
+    procedure SetImageIndex(const AValue: TImageIndex);
   protected
-//    procedure SetIndex(const AValue: Integer); override;
+    procedure SetIndex(AValue: Integer); override;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
@@ -390,7 +406,7 @@ type
     property Alignment: TAlignment read FAlignment write SetAlignment;
     property AutoSize: Boolean read FAutoSize write SetAutoSize;
     property Caption: string read FCaption write SetCaption;
-//    property ImageIndex: TImageIndex read FImageIndex write SetImageIndex;
+    property ImageIndex: TImageIndex read FImageIndex write SetImageIndex;
     property MaxWidth: TWidth read FMaxWidth write SetMaxWidth;
     property MinWidth: TWidth read FMinWidth write SetMinWidth;
     property Tag: Integer read FTag write FTag;
@@ -489,10 +505,11 @@ type
     procedure UpdateProperties;
   protected
     //called by TListItems
-    procedure ItemChanged(const AItem: TListItem; const AIndex : Integer);  
     procedure ItemDeleted(const AIndex: Integer);  
     procedure ItemInserted(const AItem: TListItem; const AIndex: Integer);  
 
+    //called by TListColumns
+    procedure ColumnsChanged; 
   protected
     procedure InitializeWnd; override;
     procedure Loaded; override;
@@ -505,7 +522,6 @@ type
     procedure InsertItem(Item : TListItem);
     function GetMaxScrolledLeft : Integer;
     function GetMaxScrolledTop : Integer;
-    procedure ColumnsChanged; //called by TListColumns
     procedure ImageChanged(Sender : TObject);
     procedure WMHScroll(var Msg: TLMScroll); message LM_HSCROLL;
     procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
@@ -2282,6 +2298,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.136  2004/07/11 17:20:47  marc
+  * Implemented most of TListColoum/Item in the Ws for gtk and win32
+
   Revision 1.135  2004/07/11 13:03:53  mattias
   extended RolesForForm to manage multiple roles for on control
 

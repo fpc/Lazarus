@@ -222,7 +222,7 @@ Uses
 // Win32WSCalendar,
 // Win32WSCheckLst,
 // Win32WSCListBox,
-// Win32WSComCtrls,
+ Win32WSComCtrls,
  Win32WSControls,
 // Win32WSDbCtrls,
 // Win32WSDBGrids,
@@ -285,6 +285,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.90  2004/07/11 17:20:47  marc
+  * Implemented most of TListColoum/Item in the Ws for gtk and win32
+
   Revision 1.89  2004/06/30 20:59:11  micha
   initialize common controls: date picker
 

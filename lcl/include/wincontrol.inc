@@ -991,11 +991,23 @@ end;
 {------------------------------------------------------------------------------}
 {  TWinControl ReCreateWnd                                                     }
 {------------------------------------------------------------------------------}
-Procedure TWinControl.ReCreateWnd;
-Begin
-//send a message to inform the interface that we need to destroy and recreate this control
-  if HandleAllocated then
-    CNSendMessage(LM_RECREATEWND,Self,Nil);
+procedure TWinControl.ReCreateWnd;
+var
+  IsFocused: Boolean;
+begin
+  if csDestroying in ComponentState then Exit;
+
+  if not HandleAllocated
+  then begin
+    // since the interface should only call us, the handle is always created
+    DebugLN('WARNING: obsolete call to RecreateWnd for %s', [ClassName]);
+  end;
+
+  IsFocused := Focused;
+  DestroyHandle;
+  UpdateControlState;
+  if IsFocused and HandleAllocated
+  then LCLIntf.SetFocus(FHandle);
 end;
 
 {------------------------------------------------------------------------------}
@@ -3756,6 +3768,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.255  2004/07/11 17:20:47  marc
+  * Implemented most of TListColoum/Item in the Ws for gtk and win32
+
   Revision 1.254  2004/07/10 18:17:30  mattias
   added Delphi ToDo support, Application.WndProc, small bugfixes  from Colin
 

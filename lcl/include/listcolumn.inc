@@ -39,8 +39,10 @@ begin
 end;
 
 constructor TListColumn.Create(ACollection: TCollection);
+var
+  LV: TCustomListView;
+  WSC: TWSCustomListViewClass;
 begin
-  inherited Create(ACollection);
   FAlignment := taLeftJustify;
   FCaption := '';
   FWidth := 50;
@@ -49,85 +51,222 @@ begin
   FMaxWidth := 0;
   FAutoSize := False;
   FTag := 0;         
-  Changed(False);  
+  FImageIndex := -1;
+  inherited Create(ACollection);
+  
+  // MWE: I don't think a changed is needed here
+  //Changed(False);  
+  
+  if not IntfUpdateAllowed then Exit;
+  
+  LV := TListColumns(Collection).FOwner;
+  WSC := TWSCustomListViewClass(LV.WidgetSetClass);
+  WSC.ColumnInsert(LV, Index, Self);
+  WSC.ColumnSetAlignment(LV, Index, Self, FAlignment);
+  WSC.ColumnSetAutosize(LV, Index, Self, FAutosize);
+  WSC.ColumnSetCaption(LV, Index, Self, FCaption);
+  WSC.ColumnSetMaxWidth(LV, Index, Self, FMaxWidth);
+  WSC.ColumnSetMinWidth(LV, Index, Self, FMinWidth);
+  WSC.ColumnSetWidth(LV, Index, Self, FWidth);
+  WSC.ColumnSetImage(LV, Index, Self, FImageIndex);
+  WSC.ColumnSetVisible(LV, Index, Self, FVisible);
 end;
 
 destructor TListColumn.Destroy;
 var
   Columns: TListColumns;
+  idx: Integer;
+  UpdAllowed: Boolean;
+  LV: TCustomListView;
+  WSC: TWSCustomListViewClass;
 begin
-  if (Collection<>nil) and (Collection is TListColumns) then begin
+  idx := Index;
+  UpdAllowed := IntfUpdateAllowed;
+  
+  if Collection is TListColumns
+  then begin
     Columns:=TListColumns(Collection);
     if Columns.FItemNeedsUpdate=Self then Columns.FItemNeedsUpdate:=nil;
-  end;
+  end;      
   inherited Destroy;
-  Changed(False);
+
+  // MWE: I don't think a changed is needed here
+  //Changed(False);  
+  
+  if not UpdAllowed then Exit;
+  
+  LV := Columns.FOwner;
+  WSC := TWSCustomListViewClass(LV.WidgetSetClass);
+  WSC.ColumnDelete(LV, Idx);
+end;
+
+function TListColumn.IntfUpdateAllowed: Boolean;
+begin
+  Result := (Collection <> nil)
+    and (TListColumns(Collection).FOwner <> nil)
+    and TListColumns(Collection).FOwner.HandleAllocated
+    and not (csDestroying in TListColumns(Collection).FOwner.ComponentState);
 end;
 
 function TListColumn.GetWidth: TWidth;
+var
+  LV: TCustomListView;
+  WSC: TWSCustomListViewClass;
 begin
-// TODO: read actual width  
-  Result := FWidth;
+  if IntfUpdateAllowed
+  then begin
+    LV := TListColumns(Collection).FOwner;
+    WSC := TWSCustomListViewClass(LV.WidgetSetClass);
+    Result := WSC.ColumnGetWidth(LV, Index, Self);
+    if Result < 0 
+    then Result := FWidth;
+  end
+  else Result := FWidth;
 end;
 
 procedure TListColumn.SetAlignment(const AValue: TAlignment);
+var
+  LV: TCustomListView;
+  WSC: TWSCustomListViewClass;
 begin
   if FAlignment = AValue then Exit;
- 
   FAlignment := AValue;
   Changed(False);  
+  if not IntfUpdateAllowed then Exit;
+  
+  LV := TListColumns(Collection).FOwner;
+  WSC := TWSCustomListViewClass(LV.WidgetSetClass);
+  WSC.ColumnSetAlignment(LV, Index, Self, FAlignment);
 end;
 
 procedure TListColumn.SetCaption(const AValue: String);
+var
+  LV: TCustomListView;
+  WSC: TWSCustomListViewClass;
 begin
   if AValue = FCaption then Exit;
   FCaption := AValue;
   Changed(False);  
+  if not IntfUpdateAllowed then Exit;
+  
+  LV := TListColumns(Collection).FOwner;
+  WSC := TWSCustomListViewClass(LV.WidgetSetClass);
+  WSC.ColumnSetCaption(LV, Index, Self, FCaption);
 end;
 
 procedure TListColumn.SetWidth(const AValue: TWidth);
+var
+  LV: TCustomListView;
+  WSC: TWSCustomListViewClass;
 begin
   if FWidth = AValue then Exit;
-
   FWidth := AValue;
   Changed(False);  
+  if not IntfUpdateAllowed then Exit;
+  
+  LV := TListColumns(Collection).FOwner;
+  WSC := TWSCustomListViewClass(LV.WidgetSetClass);
+  WSC.ColumnSetWidth(LV, Index, Self, FWidth);
 end;
 
 procedure TListColumn.SetMaxWidth(const AValue: TWidth);
+var
+  LV: TCustomListView;
+  WSC: TWSCustomListViewClass;
 begin
   if FMaxWidth = AValue then Exit;
-
   FMaxWidth := AValue;
   Changed(False);  
+  if not IntfUpdateAllowed then Exit;
+  
+  LV := TListColumns(Collection).FOwner;
+  WSC := TWSCustomListViewClass(LV.WidgetSetClass);
+  WSC.ColumnSetMaxWidth(LV, Index, Self, FMaxWidth);
 end;
 
 procedure TListColumn.SetMinWidth(const AValue: TWidth);
+var
+  LV: TCustomListView;
+  WSC: TWSCustomListViewClass;
 begin
   if FMinWidth = AValue then Exit;
-
   FMinWidth := AValue;
   Changed(False);  
+  if not IntfUpdateAllowed then Exit;
+  
+  LV := TListColumns(Collection).FOwner;
+  WSC := TWSCustomListViewClass(LV.WidgetSetClass);
+  WSC.ColumnSetMinWidth(LV, Index, Self, FMinWidth);
 end;
 
 procedure TListColumn.SetAutoSize(const AValue: Boolean);
+var
+  LV: TCustomListView;
+  WSC: TWSCustomListViewClass;
 begin
   if FAutoSize = AValue then Exit;
-
   FAutoSize := AValue;
   Changed(False);  
+  if not IntfUpdateAllowed then Exit;
+  
+  LV := TListColumns(Collection).FOwner;
+  WSC := TWSCustomListViewClass(LV.WidgetSetClass);
+  WSC.ColumnSetAutosize(LV, Index, Self, FAutosize);
+end;
+
+procedure TListColumn.SetImageIndex(const AValue: TImageIndex);
+var
+  LV: TCustomListView;
+  WSC: TWSCustomListViewClass;
+begin
+  if FImageIndex = AValue then Exit;
+  FImageIndex := AValue;
+  Changed(False);
+  if not IntfUpdateAllowed then Exit;
+  
+  LV := TListColumns(Collection).FOwner;
+  WSC := TWSCustomListViewClass(LV.WidgetSetClass);
+  WSC.ColumnSetImage(LV, Index, Self, FImageIndex);
+end;
+
+procedure TListColumn.SetIndex(AValue: Integer);
+var
+  OldIndex: Integer;
+  LV: TCustomListView;
+  WSC: TWSCustomListViewClass;
+begin               
+  OldIndex := Index;
+  inherited;
+                     
+  if OldIndex = Index then Exit;
+  if not IntfUpdateAllowed then Exit;
+  
+  LV := TListColumns(Collection).FOwner;
+  WSC := TWSCustomListViewClass(LV.WidgetSetClass);
+  WSC.ColumnMove(LV, OldIndex, Index, Self);
 end;
 
 procedure TListColumn.SetVisible(const AValue: Boolean);
+var
+  LV: TCustomListView;
+  WSC: TWSCustomListViewClass;
 begin
   if FVisible = AValue then Exit;
-
   FVisible := AValue;
   Changed(False);  
+  if not IntfUpdateAllowed then Exit;
+  
+  LV := TListColumns(Collection).FOwner;
+  WSC := TWSCustomListViewClass(LV.WidgetSetClass);
+  WSC.ColumnSetVisible(LV, Index, Self, FVisible);
 end;
 
 { =============================================================================
 
   $Log$
+  Revision 1.8  2004/07/11 17:20:47  marc
+  * Implemented most of TListColoum/Item in the Ws for gtk and win32
+
   Revision 1.7  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

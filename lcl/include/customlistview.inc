@@ -170,7 +170,7 @@ begin
   inherited InitializeWnd;
   CNSendMessage(LM_SETPROPERTIES,Self,nil);
   if FSelected <> nil 
-  then TWSCustomListViewClass(WidgetSetClass).SelectItem(Self, FSelected);
+  then TWSCustomListViewClass(WidgetSetClass).ItemSetState(Self, FSelected.Index, FSelected, lisSelected, True);
 end;
 
 procedure TCustomListView.Loaded;
@@ -197,21 +197,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{   TCustomListView ItemChanged                                                }
-{------------------------------------------------------------------------------}
-procedure TCustomListView.ItemChanged(const AItem: TListItem; const AIndex: Integer);  //called by TListItems
-Begin
-  if csDestroying in Componentstate Then Exit;
-  if FUpdateCount>0 then
-    Include(FStates,lvUpdateNeeded)
-  else begin
-    //notify the interface....
-    if (not HandleAllocated) or (csLoading in ComponentState) then exit;
-    TWSCustomListViewClass(WidgetSetClass).ChangeItem(Self, AIndex, AItem);
-  end;
-End;
-
-{------------------------------------------------------------------------------}
 {   TCustomListView ItemDeleted                                                }
 {------------------------------------------------------------------------------}
 procedure TCustomListView.ItemDeleted(const AIndex : Integer);  //called by TListItems
@@ -224,7 +209,7 @@ begin
   else begin
     //notify the interface....
     if (not HandleAllocated) or (csLoading in ComponentState) then Exit;
-    TWSCustomListViewClass(WidgetSetClass).DeleteItem(Self, AIndex);
+    TWSCustomListViewClass(WidgetSetClass).ItemDelete(Self, AIndex);
   end;
 End;
 
@@ -240,7 +225,7 @@ begin
   else begin
     //notify the interface....
     if (not HandleAllocated) or (csLoading in ComponentState) then Exit;
-    TWSCustomListViewClass(WidgetSetClass).InsertItem(Self, AIndex, AItem);
+    TWSCustomListViewClass(WidgetSetClass).ItemInsert(Self, AIndex, AItem);
   end;
 End;
 
@@ -257,7 +242,7 @@ end;
 procedure TCustomListView.SetItemVisible(const AValue : TListItem);
 begin
   if (not HandleAllocated) or (csLoading in ComponentState) then exit;
-  TWSCustomListViewClass(WidgetSetClass).ShowItem(Self, AValue);
+  TWSCustomListViewClass(WidgetSetClass).ItemShow(Self, AValue.Index, AValue);
 end;
 {------------------------------------------------------------------------------}
 {   TCustomListView Delete                                                     }
@@ -363,9 +348,15 @@ end;
 {------------------------------------------------------------------------------}
 destructor TCustomListView.Destroy;
 begin
-  FreeThenNil(FColumns);
-  FreeThenNil(FImageChangeLink);
-  FreeThenNil(FListItems);
+  {$IFDEF VER1_0}
+  // we need the csDestroying flag. 
+  // FPC 1.0.x doesnt call BeforeDestruction
+  BeforeDestruction;
+  {$ENDIF}
+  
+  FreeAndNil(FColumns);
+  FreeAndNil(FImageChangeLink);
+  FreeAndNil(FListItems);
   inherited Destroy;
 end;
 
@@ -416,9 +407,7 @@ begin
   FSelected := AValue;
   if (not HandleAllocated) or (csLoading in ComponentState) then exit;
   
-  TWSCustomListViewClass(WidgetSetClass).SelectItem(Self, FSelected);
-
-  //DoSelectItem(FSelected, True);
+  TWSCustomListViewClass(WidgetSetClass).ItemSetState(Self, FSelected.Index, FSelected, lisSelected, True);
 end;
 
 procedure TCustomListView.SetMultiSelect(const AValue: Boolean);
@@ -620,6 +609,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.38  2004/07/11 17:20:47  marc
+  * Implemented most of TListColoum/Item in the Ws for gtk and win32
+
   Revision 1.37  2004/05/21 18:12:17  mattias
   quick fixed crashing property overloading BorderStyle
 

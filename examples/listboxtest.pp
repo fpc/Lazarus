@@ -23,19 +23,21 @@ program ListBoxTest;
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces, Buttons, Classes, Forms, StdCtrls, SysUtils, Vclglobals,
-  CListBox;
+  Interfaces, Buttons, Classes, Forms, StdCtrls, SysUtils, Vclglobals, Controls{,
+  CListBox};
 
 type
   TListBoxTestForm = class(TForm)
   public
     Button1, Button2, Button3, Button4:   TButton;
-    ListBox:  TCListBox;
+    ListBox:  TListBox;
+//    ListBox:  TCListBox;
     constructor Create(AOwner: TComponent); override;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
+    procedure FormResize(Sender: TObject);
   end;
 
 var
@@ -93,15 +95,19 @@ begin
   Button4.caption := 'Unused';
   Button4.Show;
 
-  ListBox := TCListBox.Create(Self);
+//  ListBox := TCListBox.Create(Self);
+  ListBox := TListBox.Create(Self);
   ListBox.Parent := Self;
   ListBox.Left := 10;
   ListBox.Top := 10;
   ListBox.Width := 280;
-  ListBox.Height := 155;
+  ListBox.Height := 150;
+  ListBox.Anchors := [akLeft, akRight, akTop];
 {  ListBox.ExtendedSelect := true;
   ListBox.MultiSelect := true;
  } ListBox.Show;
+ 
+  OnResize := @FormResize;
 end;
 
 procedure TListBoxTestForm.Button1Click(Sender: TObject);
@@ -137,6 +143,11 @@ var
 begin
   X := integer(ListBox.Items.Objects[ListBox.ItemIndex]);
   writeln('TListBoxTestForm.Button4Click ',X);
+end;
+
+procedure TListBoxTestForm.FormResize(Sender: TObject);
+begin                      
+  Caption := Format('%dx%d', [ListBox.Width, ListBox.Height]);
 end;
 
 begin

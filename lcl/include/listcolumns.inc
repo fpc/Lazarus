@@ -93,6 +93,7 @@ end;
 
 procedure TListColumns.Update(AnItem: TCollectionItem);
 begin
+(*
   if FUpdateCount>0 then begin
     FNeedsUpdate:=true;
     if FItemNeedsUpdate=nil then
@@ -108,6 +109,7 @@ begin
   //      always recreating window
   if FOwner <>nil then
     FOwner.ColumnsChanged;
+*)
 end;
 
 // included by comctrls.pp
@@ -115,6 +117,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2004/07/11 17:20:47  marc
+  * Implemented most of TListColoum/Item in the Ws for gtk and win32
+
   Revision 1.8  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

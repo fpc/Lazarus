@@ -23,6 +23,7 @@ begin
   Inherited Create;
   FItems := TList.Create;
   FOwner := AOwner;
+  FCacheIndex := -1;
 end;
 
 {------------------------------------------------------------------------------}
@@ -38,25 +39,48 @@ end;
 {------------------------------------------------------------------------------}
 function TListItems.GetItem(const AIndex: Integer): TListItem;
 begin
+  if (FCacheIndex <> -1) and (FCacheIndex = AIndex)
+  then begin
+    Result := FCacheItem;
+    Exit;
+  end;
+  
   if FItems.Count - 1 < AIndex
   then Result := nil
-  else Result := TListItem(FItems.Items[AIndex]);
+  else begin
+    Result := TListItem(FItems.Items[AIndex]);
+    FCacheItem := Result;
+    FCacheIndex := AIndex;
+  end;
 end;
 
 {------------------------------------------------------------------------------}
 {   TListItems SetItem                                                         }
 {------------------------------------------------------------------------------}
 procedure TListItems.SetItem(const AIndex: Integer; const AValue: TListItem);
+var
+  OldItem: TListItem;
 begin
   if FItems.Count - 1 < AIndex then Exit;
+  
+  OldItem := GetItem(AIndex);
+  if OldItem = AValue then Exit;
+  
   FItems.Items[AIndex] := AValue;
-  FOwner.ItemChanged(AValue, AIndex);
+  FCacheIndex := AIndex;
+  FCacheItem := AValue;
+  
+  if AValue.IntfUpdateAllowed
+  then begin
+    AValue.IntfUpdateText;
+    AValue.IntfUpdateImages;
+  end;
 end;
 
 {------------------------------------------------------------------------------}
 {   TListItems Add                                                             }
 {------------------------------------------------------------------------------}
-function TListItems.Add:TListItem;
+function TListItems.Add: TListItem;
 begin
   Result := TListItem.Create(self);
   AddItem(Result);
@@ -67,18 +91,20 @@ end;
 {------------------------------------------------------------------------------}
 procedure TListItems.AddItem(AItem: TListItem);
 begin
-  FItems.Add(AItem);
+  FCacheIndex := FItems.Add(AItem);
+  FCacheItem := AItem;
+
   //Notify parent TListView that something was added.
   if FOwner <> nil
-  then FOwner.ItemInserted(AItem, -1);
+  then FOwner.ItemInserted(AItem, FCacheIndex);
 end;
 
 {------------------------------------------------------------------------------
-   TListItems Delete
+   TListItems Clear
 ------------------------------------------------------------------------------}
 procedure TListItems.Clear;
 begin
-  while Count>0 do Delete(Count-1);
+  while Count > 0 do Delete(Count-1);
 end;
 
 {------------------------------------------------------------------------------}
@@ -99,7 +125,28 @@ begin
   idx := FItems.IndexOf(AItem);
   if FOwner <> nil
   then FOwner.ItemDeleted(idx);
+  if FCacheIndex = idx 
+  then FCacheIndex := -1;
   FItems.Remove(AItem);
+end;
+
+{------------------------------------------------------------------------------}
+{   TListItems IndexOf                                                         }
+{------------------------------------------------------------------------------}
+function TListItems.IndexOf(const AItem: TListItem): Integer;
+begin
+  if  (FCacheIndex <> -1) 
+  and (FCacheItem = AItem)
+  then begin
+    Result := FCacheIndex;
+    Exit;
+  end;
+  
+  Result := FItems.IndexOf(AItem);
+  if Result = -1 then Exit;
+  
+  FCacheIndex := Result;
+  FCacheItem := AItem;
 end;
 
 {------------------------------------------------------------------------------}
@@ -117,8 +164,12 @@ end;
 procedure TListItems.InsertItem(AItem: TListItem; const AIndex: Integer);
 begin
   FItems.Insert(AIndex, AItem);
+  FCacheIndex := AIndex;
+  FCacheItem := AItem;
+
   //Notify parent TListView that something was added.
-  FOwner.ItemInserted(AItem, AIndex);
+  if FOwner <> nil
+  then FOwner.ItemInserted(AItem, AIndex);
 end;
 
 {------------------------------------------------------------------------------}
@@ -126,41 +177,49 @@ end;
 {------------------------------------------------------------------------------}
 destructor TListItems.Destroy;
 begin
-  while FItems.Count>0 do
-    TListItem(FItems[0]).Free;
-  FreeThenNil(FItems);
+  FCacheIndex := 0;
+  while FItems.Count > 0 do
+  begin
+    FCacheItem := TListItem(FItems[0]);
+    FCacheItem.Free;
+  end;
+  FCacheIndex := -1;
+  FreeAndNil(FItems);
   inherited Destroy;
 end;
 
 {------------------------------------------------------------------------------}
-{   TListItems FindData                                                     }
+{   TListItems FindData                                                        }
 {------------------------------------------------------------------------------}
 function TListItems.FindData(const AData: Pointer): TListItem;
 var
   n: Integer;
 begin
+  if  (FCacheIndex <> -1) 
+  and (FCacheItem <> nil) 
+  and (FCacheItem.Data = AData)
+  then begin
+    Result := FCacheItem;
+    Exit;
+  end;
+  
   for n := 0 to FItems.Count - 1 do
   begin
     Result := TListItem(FItems[n]);
-    if Result.Data = AData then Exit;
+    if Result.Data = AData 
+    then begin
+      FCacheIndex := n;
+      FCacheItem := Result;
+      Exit;
+    end;
   end;          
   
   Result := nil;
 end;
 
 {------------------------------------------------------------------------------}
-{   TListItems ItemChanged                                                     }
+{   TListItems DefineProperties                                                }
 {------------------------------------------------------------------------------}
-Procedure TListItems.ItemChanged(Sender : TObject);  //called by the onchange of the tstringlist in TListItem
-var
-  idx : Integer;
-begin
-  idx := FItems.IndexOf(sender);
-  if idx >= 0 
-  then FOwner.ItemChanged(TListItem(Sender), idx)
-  else DebugLN('TListItems.ItemChanged for unknown item');
-end;
-
 procedure TListItems.DefineProperties(Filer: TFiler);
 
   function WriteItems: Boolean;
@@ -186,7 +245,7 @@ procedure TListItems.DefineProperties(Filer: TFiler);
 
 begin
   inherited DefineProperties(Filer);
-  Filer.DefineBinaryProperty('Data', @ReadData, @WriteData,WriteItems);
+  Filer.DefineBinaryProperty('Data', @ReadData, @WriteData, WriteItems);
 end;
 
 type
@@ -254,10 +313,13 @@ begin
       PInt := Pointer(PStr);
       for I := 0 to Count - 1 do
       begin
-        for J := 0 to Item[I].SubItems.Count - 1 do
-        begin
-          Item[I].SubItemImages[J] := PInt^;
-          Inc(PInt);
+        if Item[I].FSubItems <> nil
+        then begin
+          for J := 0 to Item[I].SubItems.Count - 1 do
+          begin
+            Item[I].SubItemImages[J] := PInt^;
+            Inc(PInt);
+          end;
         end;
       end;
     end;
@@ -349,6 +411,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.23  2004/07/11 17:20:47  marc
+  * Implemented most of TListColoum/Item in the Ws for gtk and win32
+
   Revision 1.22  2004/06/28 23:16:24  mattias
   added TListView.AddItems  from Andrew Haines
 
