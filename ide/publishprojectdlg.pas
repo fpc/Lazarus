@@ -190,7 +190,7 @@ begin
   List:=InputHistories.HistoryLists.GetList(hlPublishProjectDestDirs,true);
   List.AppendEntry(SetDirSeparators('$(TestDir)/publishedproject/'));
   List.AppendEntry(SetDirSeparators('$(TestDir)/publishedpackage/'));
-  List.AppendEntry(SetDirSeparators('$(ProjectDir)/published/'));
+  List.AppendEntry(SetDirSeparators('$(ProjPath)/published/'));
   DestDirComboBox.Items.Assign(List);
   
   // command after
