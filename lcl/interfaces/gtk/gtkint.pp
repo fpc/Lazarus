@@ -189,6 +189,30 @@ var
 
   MCaptureHandle: HWND;
 
+const
+  DblClickTime = 250;// 250 miliseconds or less between clicks is a double click
+  DblClickThreshold = 3;// max Movement between two clicks of a DblClick
+
+type
+  TLastMouseClick = record
+    Down: boolean;
+    TheTime: TDateTime; // last Down time
+    ClickCount: integer;
+    Component: TComponent;
+    Window: PGdkWindow;
+    WindowPoint: TPoint;
+  end;
+
+const
+  EmptyLastMouseClick: TLastMouseClick =
+    (Down: false; TheTime: -1; ClickCount: 0; Component: nil;
+     Window: nil; WindowPoint: (X: 0; Y: 0));
+
+var
+  LastLeft, LastMiddle, LastRight: TLastMouseClick;
+  LastFileSelectRow : gint;
+
+
   // mouse cursors
   Cursor_Watch    : pGDKCursor;
   Cursor_Arrow    : pGDKCursor;
@@ -454,6 +478,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.67  2002/09/01 16:11:22  lazarus
+  MG: double, triple and quad clicks now works
+
   Revision 1.66  2002/08/28 09:40:49  lazarus
   MG: reduced paint messages and DC getting/releasing
 
