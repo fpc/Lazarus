@@ -102,6 +102,8 @@ type
     procedure mnuEditSelectLineClick(Sender: TObject);
     procedure mnuEditSelectParagraphClick(Sender: TObject);
     procedure mnuEditInsertGPLNoticeClick(Sender: TObject);
+    procedure mnuEditInsertUsernameClick(Sender: TObject);
+    procedure mnuEditInsertDateTimeClick(Sender: TObject);
     procedure mnuEditCompleteCodeClicked(Sender: TObject);
 
     // search menu
@@ -1292,6 +1294,8 @@ begin
   itmEditSelectLine.OnClick:=@mnuEditSelectLineClick;
   itmEditSelectParagraph.OnClick:=@mnuEditSelectParagraphClick;
   itmEditInsertGPLNotice.OnClick:=@mnuEditInsertGPLNoticeClick;
+  itmEditInsertUsername.OnClick:=@mnuEditInsertUsernameClick;
+  itmEditInsertDateTime.OnClick:=@mnuEditInsertDateTimeClick;
   itmEditCompleteCode.OnClick:=@mnuEditCompleteCodeClicked;
 end;
 
@@ -6879,6 +6883,16 @@ begin
   DoEditMenuCommand(ecInsertGPLNotice);
 end;
 
+procedure TMainIDE.mnuEditInsertUsernameClick(Sender: TObject);
+begin
+  DoEditMenuCommand(ecInsertUserName);
+end;
+
+procedure TMainIDE.mnuEditInsertDateTimeClick(Sender: TObject);
+begin
+  DoEditMenuCommand(ecInsertDateTime);
+end;
+
 procedure TMainIDE.mnuEditCompleteCodeClicked(Sender: TObject);
 begin
   DoCompleteCodeAtCursor;
@@ -6971,6 +6985,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.374  2002/09/11 12:05:45  lazarus
+  MG: added  insert Username and Datetime
+
   Revision 1.373  2002/09/11 11:31:22  lazarus
   MG: added  insert GPL notice
 
