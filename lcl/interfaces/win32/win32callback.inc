@@ -1341,53 +1341,45 @@ Begin
   if WinProcess then
   begin    
     PLMsg^.Result := CallDefaultWindowProc(Window, Msg, WParam, LParam); 
-
-    case Msg of
-      WM_CHAR, WM_KEYDOWN, WM_KEYUP,
-      WM_SYSCHAR, WM_SYSKEYDOWN, WM_SYSKEYUP:
-      begin
-        case Msg of
-          WM_CHAR: 
-          begin
-            LMChar.CharCode := Word(WParam);
-            LMChar.Msg := LM_CHAR;
-          end;
-          WM_SYSCHAR: 
-          begin
-            LMChar.CharCode := Word(WParam);
-            LMChar.Msg := LM_SYSCHAR;
-          end;
-          WM_KEYDOWN:
-          begin
-            LMKey.CharCode := Word(WParam);
-            LMKey.Msg := LM_KEYDOWN;
-          end;
-          WM_KEYUP: 
-          begin
-            LMKey.CharCode := Word(WParam);
-            LMKey.Msg := LM_KEYUP;
-          end;
-          WM_SYSKEYDOWN:
-          begin
-            LMKey.CharCode := Word(WParam);
-            LMKey.Msg := LM_SYSKEYDOWN;
-          end;
-          WM_SYSKEYUP: 
-          begin
-            LMKey.CharCode := Word(WParam);
-            LMKey.Msg := LM_SYSKEYUP;
-          end;
-        end;
-        case WParam of
-          VK_RETURN:
-            DlgCode := DLGC_WANTALLKEYS;
-          VK_TAB:
-            DlgCode := DLGC_WANTTAB or DLGC_WANTALLKEYS;
-        else
-          DlgCode := 0;
-        end;
-        if (DlgCode = 0) or ((DlgCode and CallDefaultWindowProc(Window, WM_GETDLGCODE, 0, 0)) = 0) then
+    if PLMsg^.Result = 0 then
+    begin
+      case Msg of
+        WM_CHAR, WM_KEYDOWN, WM_KEYUP,
+        WM_SYSCHAR, WM_SYSKEYDOWN, WM_SYSKEYUP:
         begin
+          case Msg of
+            WM_CHAR: 
+            begin
+              LMChar.CharCode := Word(WParam);
+              LMChar.Msg := LM_CHAR;
+            end;
+            WM_SYSCHAR: 
+            begin
+              LMChar.CharCode := Word(WParam);
+              LMChar.Msg := LM_SYSCHAR;
+            end;
+            WM_KEYDOWN:
+            begin
+              LMKey.CharCode := Word(WParam);
+              LMKey.Msg := LM_KEYDOWN;
+            end;
+            WM_KEYUP: 
+            begin
+              LMKey.CharCode := Word(WParam);
+              LMKey.Msg := LM_KEYUP;
+            end;
+            WM_SYSKEYDOWN:
+            begin
+              LMKey.CharCode := Word(WParam);
+              LMKey.Msg := LM_SYSKEYDOWN;
+            end;
+            WM_SYSKEYUP: 
+            begin
+              LMKey.CharCode := Word(WParam);
+              LMKey.Msg := LM_SYSKEYUP;
+            end;
+          end;
+
           // windows didn't want the key
           DeliverMessage(lWinControl, PLMsg^);
         end;
@@ -1603,6 +1595,9 @@ end;
 
 {
   $Log$
+  Revision 1.190  2005/02/07 09:07:38  micha
+  improve windows-has-handled-key check
+
   Revision 1.189  2005/02/05 20:42:04  vincents
   added TLMInsertText (temporarily?)
 
