@@ -796,8 +796,11 @@ begin
       Result:=MessageDlg('Ambigious units found',
         'There are two units with the same name:'#13
         +#13
-        +'1. "'+PkgFile1.Filename+'"'#13
-        +'2. "'+PkgFile2.Filename+'"'#13,
+        +'1. "'+PkgFile1.Filename+'" from '+PkgFile1.LazPackage.IDAsString+#13
+        +'2. "'+PkgFile2.Filename+'" from '+PkgFile2.LazPackage.IDAsString+#13
+        +#13
+        +'Both packages are connected. This means, either one package uses '
+        +'the other, or they are both used by a third package.',
         mtError,[mbCancel,mbAbort],0);
       exit;
     end;

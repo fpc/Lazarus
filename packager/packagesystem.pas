@@ -155,7 +155,7 @@ type
     procedure GetAllRequiredPackages(FirstDependency: TPkgDependency;
                                      var List: TList);
     procedure GetConnectionsTree(FirstDependency: TPkgDependency;
-                                 var Tree: TPkgPairTree);
+                                 var PkgList: TList; var Tree: TPkgPairTree);
     function GetAutoCompilationOrder(APackage: TLazPackage;
                                      FirstDependency: TPkgDependency;
                                      Policies: TPackageUpdatePolicies): TList;
@@ -1337,50 +1337,79 @@ function TLazPackageGraph.FindAmbigiousUnits(APackage: TLazPackage;
 // check if two connected packages have units with the same name
 // Connected means here: a Package1 is directly required by a Package2
 // or: a Package1 and a Package2 are directly required by a Package3
-// return strue, if ambigious units found
-
+// returns true, if ambigious units found
+var
+  PackageTreeOfUnitTrees: TAVLTree; // tree of TPkgUnitsTree
+  
+  function GetUnitsTreeOfPackage(Pkg: TLazPackage): TPkgUnitsTree;
+  var
+    ANode: TAVLTreeNode;
+    PkgFile: TPkgFile;
+    i: Integer;
+  begin
+    // for first time: create PackageTreeOfUnitTrees
+    if PackageTreeOfUnitTrees=nil then
+      PackageTreeOfUnitTrees:=TAVLTree.Create(@CompareUnitsTree);
+    // search UnitsTree for package
+    ANode:=PackageTreeOfUnitTrees.FindKey(Pkg,@ComparePackageWithUnitsTree);
+    if ANode<>nil then begin
+      Result:=TPkgUnitsTree(ANode.Data);
+      exit;
+    end;
+    // first time: create tree of units for Pkg
+    Result:=TPkgUnitsTree.Create(Pkg);
+    PackageTreeOfUnitTrees.Add(Result);
+    for i:=0 to Pkg.FileCount-1 do begin
+      PkgFile:=Pkg.Files[i];
+      if (PkgFile.FileType in PkgFileUnitTypes) and (PkgFile.UnitName<>'') then
+        Result.Add(PkgFile);
+    end;
+  end;
+  
   function FindAmbigiousUnitsBetween2Packages(Pkg1,Pkg2: TLazPackage): boolean;
   var
     i: Integer;
     PkgFile1: TPkgFile;
-    j: Integer;
     PkgFile2: TPkgFile;
+    UnitsTreeOfPkg2: TPkgUnitsTree;
   begin
     Result:=false;
+    if Pkg1=Pkg2 then exit;
+    if (Pkg1.FileCount=0) or (Pkg2.FileCount=0) then exit;
+    UnitsTreeOfPkg2:=GetUnitsTreeOfPackage(Pkg2);
     for i:=0 to Pkg1.FileCount-1 do begin
       PkgFile1:=Pkg1.Files[i];
-      for j:=0 to Pkg2.FileCount-1 do begin
-        PkgFile2:=Pkg2.Files[j];
-        if (PkgFile1.FileType in PkgFileUnitTypes)
-        and (PkgFile2.FileType in PkgFileUnitTypes)
-        and (PkgFile1.UnitName<>'')
-        and (AnsiCompareText(PkgFile1.UnitName,PkgFile1.UnitName)=0) then
-        begin
+      if (PkgFile1.FileType in PkgFileUnitTypes)
+      and (PkgFile1.UnitName<>'') then begin
+        PkgFile2:=UnitsTreeOfPkg2.FindPkgFileWithUnitName(PkgFile1.UnitName);
+        if PkgFile2<>nil then begin
           File1:=PkgFile1;
           File2:=PkgFile2;
           Result:=true;
+          exit;
         end;
       end;
     end;
   end;
 
 var
+  PkgList: TList;
   ConnectionsTree: TPkgPairTree;
   ANode: TAVLTreeNode;
   Pair: TPkgPair;
 begin
   Result:=false;
-  exit;
-  
   if APackage<>nil then begin
     FirstDependency:=APackage.FirstRequiredDependency;
   end;
   File1:=nil;
   File2:=nil;
   ConnectionsTree:=nil;
-  GetConnectionsTree(FirstDependency,ConnectionsTree);
-  if ConnectionsTree=nil then exit;
+  PkgList:=nil;
+  PackageTreeOfUnitTrees:=nil;
+  GetConnectionsTree(FirstDependency,PkgList,ConnectionsTree);
   try
+    if ConnectionsTree=nil then exit;
     ANode:=ConnectionsTree.FindLowest;
     while ANode<>nil do begin
       Pair:=TPkgPair(ANode.Data);
@@ -1389,7 +1418,12 @@ begin
       ANode:=ConnectionsTree.FindSuccessor(ANode);
     end;
   finally
+    if PackageTreeOfUnitTrees<>nil then begin
+      PackageTreeOfUnitTrees.FreeAndClear;
+      PackageTreeOfUnitTrees.Free;
+    end;
     ConnectionsTree.Free;
+    PkgList.Free;
   end;
   Result:=false;
 end;
@@ -1902,10 +1936,11 @@ begin
 end;
 
 procedure TLazPackageGraph.GetConnectionsTree(FirstDependency: TPkgDependency;
-  var Tree: TPkgPairTree);
+  var PkgList: TList; var Tree: TPkgPairTree);
   
   procedure AddConnection(Pkg1, Pkg2: TLazPackage);
   begin
+    if Pkg1=Pkg2 then exit;
     if Tree=nil then
       Tree:=TPkgPairTree.Create;
     Tree.AddPairIfNotExists(Pkg1,Pkg2);
@@ -1947,17 +1982,15 @@ procedure TLazPackageGraph.GetConnectionsTree(FirstDependency: TPkgDependency;
   end;
   
 var
-  List: TList;
   i: Integer;
   Pkg: TLazPackage;
 begin
-  List:=nil;
   if Tree<>nil then Tree.FreeAndClear;
-  GetAllRequiredPackages(FirstDependency,List);
-  if List=nil then exit;
+  GetAllRequiredPackages(FirstDependency,PkgList);
+  if PkgList=nil then exit;
   AddConnections(FirstDependency);
-  for i:=0 to List.Count-1 do begin
-    Pkg:=TLazPackage(List[i]);
+  for i:=0 to PkgList.Count-1 do begin
+    Pkg:=TLazPackage(PkgList[i]);
     AddConnections(Pkg.FirstRequiredDependency);
   end;
 end;

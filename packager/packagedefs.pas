@@ -195,11 +195,16 @@ type
   end;
   
   
-  { TPkgFileTree }
+  { TPkgUnitsTree - Tree of TPkgFile sorted for unitnames }
   
-  TPkgFileTree = class(TAVLTree)
+  TPkgUnitsTree = class(TAVLTree)
+  private
+    FLazPackage: TLazPackage;
   public
-    constructor Create;
+    function FindNodeWithUnitName(const UnitName: string): TAVLTreeNode;
+    function FindPkgFileWithUnitName(const UnitName: string): TPkgFile;
+    constructor Create(ThePackage: TLazPackage);
+    property LazPackage: TLazPackage read FLazPackage write FLazPackage;
   end;
   
   
@@ -295,10 +300,11 @@ type
     constructor Create(Pkg1, Pkg2: TLazPackage);
     function ComparePair(Pkg1, Pkg2: TLazPackage): integer;
     function Compare(PkgPair: TPkgPair): integer;
+    function AsString: string;
   end;
   
   
-  { TPkgPairTree }
+  { TPkgPairTree - Tree of TPkgPair }
   
   TPkgPairTree = class(TAVLTree)
   public
@@ -758,6 +764,9 @@ function CompareNameWithPackageID(Key, Data: Pointer): integer;
 function CompareLazPackageIDNames(Data1, Data2: Pointer): integer;
 function CompareNameWithPkgDependency(Key, Data: Pointer): integer;
 function ComparePkgDependencyNames(Data1, Data2: Pointer): integer;
+function CompareUnitsTree(UnitTree1, UnitTree2: TPkgUnitsTree): integer;
+function ComparePackageWithUnitsTree(Package: TLazPackage;
+                                     UnitTree: TPkgUnitsTree): integer;
 
 function GetUsageOptionsList(PackageList: TList): TList;
 
@@ -962,6 +971,17 @@ begin
   Dependency1:=TPkgDependency(Data1);
   Dependency2:=TPkgDependency(Data2);
   Result:=AnsiCompareText(Dependency1.PackageName,Dependency2.PackageName);
+end;
+
+function CompareUnitsTree(UnitTree1, UnitTree2: TPkgUnitsTree): integer;
+begin
+  Result:=UnitTree1.LazPackage.Compare(UnitTree2.LazPackage);
+end;
+
+function ComparePackageWithUnitsTree(Package: TLazPackage;
+                                     UnitTree: TPkgUnitsTree): integer;
+begin
+  Result:=Package.Compare(UnitTree.LazPackage);
 end;
 
 function GetUsageOptionsList(PackageList: TList): TList;
@@ -3214,8 +3234,8 @@ begin
 
   // create custom options
   // The custom options are enclosed by an IFDEF #PkgSrcMark<PckId> template.
-  // Each source directory defines this variable, so that the settings will be
-  // activated for every source directory.
+  // Each source directory defines this variable, so that the settings can be
+  // activated for each source directory by a simple DEFINE.
   if (FMain=nil) then UpdateMain;
   if FCustomDefines=nil then begin
     FCustomDefines:=TDefineTemplate.Create('Source Directory Additions',
@@ -3283,7 +3303,7 @@ begin
   ANode:=Root;
   while (ANode<>nil) do begin
     Result:=TPkgPair(ANode.Data);
-    Comp:=Result.ComparePair(Pkg1,Pkg2);
+    Comp:=-Result.ComparePair(Pkg1,Pkg2);
     if Comp=0 then exit;
     if Comp<0 then begin
       ANode:=ANode.Left
@@ -3291,7 +3311,7 @@ begin
       ANode:=ANode.Right
     end;
   end;
-  if IgnoreOrder then
+  if IgnoreOrder and (Pkg1<>Pkg2) then
     Result:=FindPair(Pkg2,Pkg1,false)
   else
     Result:=nil;
@@ -3330,11 +3350,53 @@ begin
   Result:=ComparePair(PkgPair.Package1,PkgPair.Package2);
 end;
 
-{ TPkgFileTree }
-
-constructor TPkgFileTree.Create;
+function TPkgPair.AsString: string;
 begin
-  inherited
+  Result:=Package1.IDAsString+' - '+Package2.IDAsString;
+end;
+
+{ TPkgUnitsTree }
+
+function ComparePkgFilesUnitname(PkgFile1, PkgFile2: TPkgFile): integer;
+begin
+  Result:=AnsiCompareText(PkgFile1.UnitName,PkgFile2.UnitName);
+end;
+
+function TPkgUnitsTree.FindNodeWithUnitName(const UnitName: string
+  ): TAVLTreeNode;
+var
+  Comp: integer;
+  PkgFile: TPkgFile;
+begin
+  Result:=Root;
+  while (Result<>nil) do begin
+    PkgFile:=TPkgFile(Result.Data);
+    Comp:=AnsiCompareText(UnitName,PkgFile.UnitName);
+    if Comp=0 then exit;
+    if Comp<0 then begin
+      Result:=Result.Left
+    end else begin
+      Result:=Result.Right
+    end;
+  end;
+end;
+
+function TPkgUnitsTree.FindPkgFileWithUnitName(const UnitName: string
+  ): TPkgFile;
+var
+  ANode: TAVLTreeNode;
+begin
+  ANode:=FindNodeWithUnitName(UnitName);
+  if ANode=nil then
+    Result:=nil
+  else
+    Result:=TPkgFile(ANode.Data);
+end;
+
+constructor TPkgUnitsTree.Create(ThePackage: TLazPackage);
+begin
+  fLazPackage:=ThePackage;
+  inherited Create(@ComparePkgFilesUnitname);
 end;
 
 initialization
