@@ -738,6 +738,17 @@ type
     function GetDialogTitle: string; virtual;
     function GetInitialDirectory: string; virtual;
     procedure SetFilename(const Filename: string); virtual;
+    function CreateFileDialog: TOpenDialog; virtual;
+  end;
+
+
+{ TDirectoryPropertyEditor
+  PropertyEditor editor for directory properties.
+  Show an TSelectDirectoryDialog on Edit. }
+
+  TDirectoryPropertyEditor = class(TFileNamePropertyEditor)
+  public
+    function CreateFileDialog: TOpenDialog; override;
   end;
 
 
@@ -748,6 +759,16 @@ type
   TURLPropertyEditor = class(TFileNamePropertyEditor)
   public
     procedure SetFilename(const Filename: string); override;
+  end;
+
+
+{ TURLDirectoryPropertyEditor
+  PropertyEditor editor for URL properties.
+  Show an TOpenDialog on Edit. }
+
+  TURLDirectoryPropertyEditor = class(TURLPropertyEditor)
+  public
+    function CreateFileDialog: TOpenDialog; override;
   end;
 
 
@@ -4805,7 +4826,7 @@ end;
 
 procedure TFileNamePropertyEditor.Edit;
 begin
-  With TOpenDialog.Create(nil) do
+  With CreateFileDialog do
     Try
       Filter:=GetFilter;
       Options:=GetDialogOptions;
@@ -4844,6 +4865,19 @@ begin
   SetStrValue(Filename);
 end;
 
+function TFileNamePropertyEditor.CreateFileDialog: TOpenDialog;
+begin
+  Result:=TOpenDialog.Create(nil);
+end;
+
+{ TDirectoryPropertyEditor }
+
+function TDirectoryPropertyEditor.CreateFileDialog: TOpenDialog;
+begin
+  Result:=TSelectDirectoryDialog.Create(nil);
+  Result.Options:=Result.Options+[ofFileMustExist];
+end;
+
 { TURLPropertyEditor }
 
 procedure TURLPropertyEditor.SetFilename(const Filename: string);
@@ -4863,6 +4897,14 @@ procedure TURLPropertyEditor.SetFilename(const Filename: string);
 
 begin
   inherited SetFilename(FilenameToURL(Filename));
+end;
+
+{ TURLDirectoryPropertyEditor }
+
+function TURLDirectoryPropertyEditor.CreateFileDialog: TOpenDialog;
+begin
+  Result:=TSelectDirectoryDialog.Create(nil);
+  Result.Options:=Result.Options+[ofFileMustExist];
 end;
 
 { TSessionPropertiesPropertyEditor }

@@ -258,7 +258,7 @@ constructor TSelectDirectoryDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   fCompStyle:=csSelectDirectoryDialog;
-  FTitle:= rsfdSelectDirectory;
+  FTitle:=rsfdSelectDirectory;
 end;
 
 function TSelectDirectoryDialog.CheckFile(var AFilename: string): boolean;
@@ -278,6 +278,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.21  2004/12/27 17:52:42  mattias
+  implemented URL directory property editor
+
   Revision 1.20  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

@@ -453,7 +453,7 @@ begin
 
   // register property editors for URL handling
   RegisterPropertyEditor(TypeInfo(AnsiString),
-                         THTMLHelpDatabase,'BaseURL',TURLPropertyEditor);
+                       THTMLHelpDatabase,'BaseURL',TURLDirectoryPropertyEditor);
 end;
 
 destructor THelpManager.Destroy;
