@@ -94,7 +94,7 @@ const
       'i386', 'powerpc', 'm68k'
     );
 
-  Lazarus_CPU_OS_Widget_Combinations: array[1..18] of string = (
+  Lazarus_CPU_OS_Widget_Combinations: array[1..20] of string = (
     'i386-linux-gtk',
     'i386-linux-gnome',
     'i386-linux-gtk2',
@@ -112,7 +112,9 @@ const
     'i386-netbsd-gtk2',
     'i386-netbsd-qt',
     'i386-win32-win32',
-    'i386-win32-gtk'
+    'i386-win32-gtk',
+    'powerpc-darwin-gtk',
+    'powerpc-darwin-gtk2'
     );
 
 type
@@ -2298,7 +2300,11 @@ var
       da_IfDef:
         // test if variable is defined
         begin
-          //DebugLn('CalculateTemplate A ',DefTempl.Name,' ',DefTempl.Variable,' ',DirDef.Values.IsDefined(DefTempl.Variable),' CurPath="',CurPath,'"');
+          //DebugLn('da_IfDef A Name=',DefTempl.Name,
+          //  ' Variable=',DefTempl.Variable,
+          //  ' Is=',dbgs(DirDef.Values.IsDefined(DefTempl.Variable)),
+          //  ' CurPath="',CurPath,'"',
+          //  ' Values.Count=',dbgs(DirDef.Values.Count));
           if DirDef.Values.IsDefined(DefTempl.Variable) then
             CalculateIfChilds;
         end;
@@ -3159,6 +3165,26 @@ var
     end;
     UnitLinkListValid:=true;
   end;
+  
+  procedure AddProcessorTypeDefine(ParentDefTempl: TDefineTemplate);
+  var
+    i: Integer;
+    CPUName: String;
+    IfTemplate: TDefineTemplate;
+  begin
+    // FPC defines CPUxxx defines (e.g. CPUI386, CPUPOWERPC).
+    // These defines are created by the compiler depending
+    // on xxx defines (i386, powerpc).
+    for i:=Low(FPCProcessorNames) to high(FPCProcessorNames) do begin
+      CPUName:=FPCProcessorNames[i];
+      IfTemplate:=TDefineTemplate.Create('IFDEF CPU'+CPUName,
+        'IFDEF CPU'+CPUName,'CPU'+CPUName,'',da_IfDef);
+      IfTemplate.AddChild(TDefineTemplate.Create('DEFINE '+CPUName,
+        'DEFINE '+CPUName,CPUName,'',da_DefineRecurse));
+      ParentDefTempl.AddChild(IfTemplate);
+    end;
+  end;
+
 
 //  function CreateFPCSrcTemplate(const FPCSrcDir,
 //      UnitSearchPath: string;
@@ -3202,7 +3228,7 @@ begin
   Result.AddChild(DefTempl);
 
   // The free pascal sources build a world of their own,
-  // reset source search path
+  // reset search paths
   MainDir:=TDefineTemplate.Create('Free Pascal Source Directory',
     ctsFreePascalSourceDir,'',FPCSrcDir,da_Directory);
   Result.AddChild(MainDir);
@@ -3221,10 +3247,7 @@ begin
   CompilerDir:=TDefineTemplate.Create('Compiler',ctsCompiler,'','compiler',
      da_Directory);
   MainDir.AddChild(CompilerDir);
-  // define 'i386'   ToDo: other types like m68k
-  DefTempl:=TDefineTemplate.Create('Define i386',
-    ctsDefineProzessorType,'i386','',da_DefineRecurse);
-  CompilerDir.AddChild(DefTempl);
+  AddProcessorTypeDefine(CompilerDir);
 
   // rtl
   RTLDir:=TDefineTemplate.Create('RTL',ctsRuntimeLibrary,'','rtl',da_Directory);
@@ -3270,10 +3293,7 @@ begin
       ExternalMacroStart+'IncPath',
       IncPathMacro+';wininc',da_Define));
 
-  // define 'i386'   ToDo: other types like m68k
-  DefTempl:=TDefineTemplate.Create('Define i386',
-    ctsDefineProzessorType,'i386','',da_DefineRecurse);
-  RTLDir.AddChild(DefTempl);
+  AddProcessorTypeDefine(RTLDir);
 
   // fcl
   FCLDir:=TDefineTemplate.Create('FCL',ctsFreePascalComponentLibrary,'','fcl',

@@ -48,6 +48,7 @@ function ShowCodeToolsDefinesValuesDialog(ADefineTree: TDefineTree;
 var
   CodeToolsDefinesDialog: TCodeToolsDefinesDialog;
 begin
+  //writeln('ShowCodeToolsDefinesValuesDialog ',InitialDirectory);
   CodeToolsDefinesDialog:=TCodeToolsDefinesDialog.Create(Application);
   if InitialDirectory<>'' then
     CodeToolsDefinesDialog.SetComboBox(CodeToolsDefinesDialog.DirectoryCombobox,
@@ -92,11 +93,12 @@ var
   Value: String;
 begin
   Dir:=TrimFilename(DirectoryCombobox.Text);
-  if FilenameIsAbsolute(Dir) then
-  if (DefineTree=nil) or (not FilenameIsAbsolute(Dir)) then begin
+  if (DefineTree=nil) or (not FilenameIsAbsolute(Dir))
+  or (not DirectoryExists(Dir)) then begin
     ClearValues;
     exit;
   end;
+  //writeln('TCodeToolsDefinesDialog.UpdateValues ',Dir);
   Defines:=DefineTree.GetDefinesForDirectory(Dir,false);
   ValuesListview.BeginUpdate;
   for i:=0 to Defines.Count-1 do begin
@@ -105,7 +107,9 @@ begin
     else
       ListItem:=ValuesListview.Items[i];
     ListItem.Caption:=Defines.Names(i);
-    Value:=copy(Defines.Values(i),1,100);
+    Value:=Defines.Values(i);
+    if length(Value)>100 then
+      Value:=copy(Value,1,100)+' ...';
     if ListItem.SubItems.Count<1 then
       ListItem.SubItems.Add(Value)
     else
@@ -154,6 +158,7 @@ begin
   else
     AComboBox.ItemIndex:=i;
   AComboBox.Text:=NewText;
+  //writeln('TCodeToolsDefinesDialog.SetComboBox Text=',AComboBox.Text,' NewText=',NewText);
 end;
 
 procedure TCodeToolsDefinesDialog.CodeToolsDefinesDialogCREATE(Sender: TObject);

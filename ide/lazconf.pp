@@ -99,7 +99,15 @@ implementation
 
 function GetDefaultTargetCPU: string;
 begin
+  {$IFDEF CPUPowerPC}
+  Result:='ppc';
+  {$ENDIF}
+  {$IFDEF CPUM68k}
+  Result:='m68k';
+  {$ENDIF}
+  {$IFDEF CPUi386}
   Result:='i386';
+  {$ENDIF}
 end;
 
 function CheckFPCSourceDir(const ADirectory: string): boolean;
@@ -148,6 +156,9 @@ end.
 
 {
   $Log$
+  Revision 1.25  2004/07/25 12:59:49  mattias
+  added codetools defines and lazconf support for powerpc
+
   Revision 1.24  2004/01/17 13:29:04  mattias
   using now fpc constant LineEnding   from Vincent
 

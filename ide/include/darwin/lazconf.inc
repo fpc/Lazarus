@@ -3,7 +3,7 @@
 {***************************************************************************
                                lazconf.inc
 
-  freebsd specific include file for the IDE
+  darwin (MAC OS X) specific include file for the IDE
 
  ***************************************************************************
 
@@ -44,6 +44,9 @@ end;
 
 {
   $Log$
+  Revision 1.2  2004/07/25 12:59:49  mattias
+  added codetools defines and lazconf support for powerpc
+
   Revision 1.1  2004/03/29 20:09:06  florian
     * initial revision
 
