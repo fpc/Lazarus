@@ -14,7 +14,6 @@ object VIEWUNITS: TVIEWUNITS
     Caption = 'OK'
     TabOrder = 0
     OnClick = BTNOKCLICK
-    Cursor = 25
     Left = 312
     Height = 25
     Top = 10
@@ -25,7 +24,6 @@ object VIEWUNITS: TVIEWUNITS
     Caption = 'Cancel'
     TabOrder = 1
     OnClick = BTNCANCELCLICK
-    Cursor = 25
     Left = 312
     Height = 25
     Top = 45
@@ -53,6 +51,7 @@ object VIEWUNITS: TVIEWUNITS
   object MultiSelectCheckBox: TCheckBox
     AllowGrayed = True
     Anchors = [akTop, akRight]
+    AutoSize = True
     Caption = 'Multi Select'
     DragCursor = 65524
     OnClick = MultiselectCheckBoxClick
