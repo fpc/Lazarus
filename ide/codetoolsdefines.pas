@@ -1927,16 +1927,8 @@ writeln('=============================================');}
   end;
 
 begin
-  Result:=DefineTreeView.ConsistencyCheck;
-  if Result<0 then begin
-    dec(Result,100000);
-    exit;
-  end;
-  Result:=DefineTree.ConsistencyCheck;
-  if Result<0 then begin
-    dec(Result,200000);
-    exit;
-  end;
+  DefineTreeView.ConsistencyCheck;
+  DefineTree.ConsistencyCheck;
   Result:=CheckNode(DefineTreeView.Items.GetFirstNode);
   if Result<0 then begin
     dec(Result,300000);
