@@ -2917,9 +2917,10 @@ var
   // test if caret over bracket and search anti bracket
   const
     Brackets: array[0..5] of char = ('(', ')', '[', ']', '{', '}');
-  var sLine: string;
+  var
+    sLine: string;
     i, PosX, PosY, Len: integer;
-    Test, BracketInc, BracketDec: char;
+    CurChar, BracketInc, BracketDec: char;
     NumBrackets: integer;
   begin
     // check for bracket under the cursor
@@ -2947,10 +2948,10 @@ var
               // search until start of line
               while PosX > 1 do begin
                 Dec(PosX);
-                Test := sLine[PosX];
-                if Test = BracketInc then
+                CurChar := sLine[PosX];
+                if CurChar=BracketInc then
                   Inc(NumBrackets)
-                else if Test = BracketDec then begin
+                else if CurChar=BracketDec then begin
                   Dec(NumBrackets);
                   if NumBrackets = 0 then begin
                     // matching bracket found, set caret and bail out
@@ -2973,10 +2974,10 @@ var
               Len := Length(sLine);
               while PosX < Len do begin
                 Inc(PosX);
-                Test := sLine[PosX];
-                if Test = BracketInc then
+                CurChar := sLine[PosX];
+                if CurChar=BracketInc then
                   Inc(NumBrackets)
-                else if Test = BracketDec then begin
+                else if CurChar=BracketDec then begin
                   Dec(NumBrackets);
                   if NumBrackets = 0 then begin
                     // matching bracket found, set caret and bail out
