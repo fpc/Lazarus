@@ -32,6 +32,12 @@ Interface
 Uses
   Windows, VCLGlobals, Classes, LCLType;
 
+Const
+  // Used by TCalendar
+  MCM_FIRST = $1000;
+  MCM_GETCURSEL = MCM_FIRST + 1;
+  MCM_SETCURSEL =  MCM_FIRST + 2;
+
 Type 
   TGDIType = (gdiBitmap, gdiBrush, gdiFont, gdiPen, gdiRegion);
   TGDIBitmapType = (gbBitmap, gbPixmap, gbImage);
@@ -134,6 +140,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.9  2003/10/02 11:18:09  mattias
+  clean ups from Karl
+
   Revision 1.8  2003/09/27 09:52:44  mattias
   TScrollBox for win32 intf from Karl
 

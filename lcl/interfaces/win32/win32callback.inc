@@ -257,7 +257,7 @@ Begin
         Msg := LM_CHAR;
         KeyData := LParam;
         CharCode := WParam;
-        writeln('WM_CHAR KeyData=',KeyData,' CharCode=',CharCode);
+        Assert(False,Format('WM_CHAR KeyData= %d CharCode= %d ',[KeyData,CharCode])); 
       End;
     End;
     WM_CLOSE:
@@ -389,8 +389,8 @@ Begin
         Msg := LM_KEYDOWN;
         KeyData := LParam;
         CharCode := WParam;
-        writeln('WM_KEYDOWN KeyData=',KeyData,' CharCode=',CharCode);
-        writeln('  OwnerObject=',TComponent(OwnerObject).Name,':',OwnerObject.ClassName);
+        Assert(False,Format('WM_KEYDOWN KeyData= %d CharCode= %d ',[KeyData,CharCode])); 
+        Assert(False,'  OwnerObject= '+TComponent(OwnerObject).Name+':'+OwnerObject.ClassName);
       End;
     End;
     WM_KEYUP:
@@ -401,7 +401,7 @@ Begin
         Msg := LM_KEYUP;
         KeyData := LParam;
         CharCode := WParam;
-        writeln('WM_KEYUP KeyData=',KeyData,' CharCode=',CharCode);
+        Assert(False,Format('WM_KEYUP KeyData= %d CharCode= %d ',[KeyData,CharCode])); 
       End;
     End;
     WM_KILLFOCUS:
@@ -521,10 +521,10 @@ Begin
         IDCtrl := WParam;
         NMHdr := PNMHDR(LParam);
         With NMHdr^ do
-        Begin
-          If code = TCN_SELCHANGING
-            Then ShowHideTabPage(HWndFrom, False);
-          If code = TCN_SELCHANGE Then
+        case code of
+          TCN_SELCHANGING:
+            ShowHideTabPage(HWndFrom, False);
+          TCN_SELCHANGE:
           begin
             ShowHideTabPage(HWndFrom, True);
             idFrom := SendMessage(HWndFrom, TCM_GETCURSEL, 0, 0);
@@ -836,6 +836,9 @@ end;
 
 {
   $Log$
+  Revision 1.62  2003/10/02 11:18:09  mattias
+  clean ups from Karl
+
   Revision 1.61  2003/09/27 09:52:44  mattias
   TScrollBox for win32 intf from Karl
 

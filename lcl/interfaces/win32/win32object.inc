@@ -875,12 +875,12 @@ activate_time :	the time at which the activation event occurred.
         Begin
           If (Sender as TControl).fCompStyle = csCListBox Then
           Begin
-            Data := TWin32CListStringList.Create(Handle,TControl(Sender));
+            Data := TWin32CListStringList.Create(Handle,TWinControl(Sender));
             Result := Integer(Data);
           End
           Else
           Begin
-            Data := TWin32ListStringList.Create(Handle,TControl(Sender));
+            Data := TWin32ListStringList.Create(Handle,TWinControl(Sender));
             Result := Integer(Data);
           End;
         End;
@@ -1192,7 +1192,7 @@ Begin
     Parent := Nil;
     // Recreate the window
     Parent := AParent;
-
+    Result:= Integer(Sender.Handle <> 0);
     ResizeChild(Sender,Left,Top,Width,Height);
     ShowHide(Sender);    
   End;
@@ -1759,7 +1759,7 @@ Begin
     '');
   {$ENDIF}
   MoveWindow(Sender.Handle, Left, Top, Width, Height, True);
-  LCLControlSizeNeedsUpdate(Sender,true);
+  LCLControlSizeNeedsUpdate(Sender,False);
 End;
 
 {------------------------------------------------------------------------------
@@ -1824,7 +1824,6 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32Object.CreateComponent(Sender: TObject);
 Var
-  AProcess: TProcess;
   Buddy,Parent, Handle, Window: HWnd;
   Caption : String;
   CompStyle, Left, Top, Height, Width: Integer;
@@ -1937,16 +1936,8 @@ Begin
     End;
     csCalendar:
     Begin
-      Assert(False, 'Trace:TODO: TWin32Object.CreateComponent - Code style csCalendar');
-      Assert(False, 'Trace:TODO: TWin32Object.CreateComponent (style csCalendar) - Opening the date/time control applet.  This will have to be good enough for now.');
-      AProcess := TProcess.Create(TComponent(Sender).Owner);
-      AProcess.CommandLine := 'control timedate.cpl';
-      AProcess.Options := [poNoConsole];
-      AProcess.Execute;
-      Window := HWND(AProcess);
-      //Window := CreateWindow('CalendarWndClass', StrTemp, Flags, Left, Top, Width, Height, Parent, HMenu(Nil), HInstance, Nil);
-      AProcess.Free;
-      AProcess := Nil;
+      Window := CreateWindow('SysMonthCal32', StrTemp, WS_Child Or WS_Visible, Left, Top, Width, Height, Parent, HMenu(Nil), HInstance, Nil);    
+      DoSubClass := False;  
     End;
     csCheckbox:
     Begin
@@ -1961,6 +1952,7 @@ Begin
     End;
     csImage:
     Begin
+     writeln('WARNING: Creation of csImage inside LM_CREATE - It shouldn''t be here');   
      // The bitmap creation is done inside TBitMap.HandleNeeded
      // For now, just commented the code. Todo: remove it later if really not needed 
      // DC := Windows.GetDC(Handle);
@@ -2433,7 +2425,7 @@ End;
 Function TWin32Object.GetValue(Sender: TObject; Data: Pointer): Integer;
 Var
   Handle: HWnd;
-  ST: TSystemTime;
+  ST: SystemTime;
 Begin
   Result := 0;     // default if nobody sets it
 
@@ -2461,11 +2453,9 @@ Begin
       end;
     csCalendar:
     Begin
-      GetLocalTime(ST);
-      With PSystemTime(@ST)^ Do
-      Begin
-        TLMCalendar(Data^).Date := StrToDate(IntToStr(WMonth) + '/' + IntToStr(WDay) + '/' + IntToStr(WYear));
-      End;
+      SendMessage(Handle,MCM_GETCURSEL, 0, Integer(@ST));
+      With ST Do
+        TLMCalendar(Data^).Date := EncodeDate(WYear,WMonth,WDay);
     End;
     csSpinEdit:
     Begin
@@ -2492,15 +2482,9 @@ End;
 Function TWin32Object.SetValue(Sender: TObject; Data: Pointer): Integer;
 Var
   Cur: PChar;
-  Date: TDateTime;
   Handle: HWnd;
-  HTkn: Integer;
-  IsNT: Boolean;
-  OTP: LUID;
-  OTPS: DWord;
-  OVI: OSVersionInfo;
   ST: SystemTime;
-  TkP: Token_Privileges;
+  
 Begin
   Result := 0;     // default if nobody sets it
 
@@ -2528,28 +2512,9 @@ Begin
     End;
     csCalendar:
     Begin
-      OVI.DWOSVersionInfoSize := SizeOf(OVI);
-      GetVersionEx(@OVI);
-      IsNT := OVI.DWPlatformID = VER_PLATFORM_WIN32_NT;
-      If IsNT Then
-      Begin
-        MessageBox(Handle, 'Can not set the time on Windows NT without certain priviledges', Nil, MB_OK Or MB_IconInformation);
-        TkP.PrivilegeCount := 1;
-        PInteger(@TkP.Privileges[0].LUID)^ := StrToInt(SE_SystemTime_Name);
-        TkP.Privileges[0].Attributes := SE_Privilege_Enabled;
-        OpenProcessToken(GetCurrentProcess, Token_Adjust_Privileges, @HTkn);
-        AdjustTokenPrivileges(HTkn, False, @TkP, SizeOf(TkP), @OTP, @OTPS);
-      End;
-      Date := TLMCalendar(Data^).Date;
-      With St Do
-      Begin
-        WYear := StrToInt(FormatDateTime('yyyy', Date));
-        WMonth := StrToInt(FormatDateTime('mm', Date));
-        WDay := StrToInt(FormatDateTime('dd', Date));
-      End;
-      SetLocalTime(ST);
-      If IsNT Then
-        AdjustTokenPrivileges(HTkn, False, @OTP, OTPS, Nil, Nil);
+      With ST Do
+        DecodeDate(TLMCalendar(Data^).Date,WYear,WMonth,WDay);
+      SendMessage(Handle,MCM_SETCURSEL, 0, Integer(@ST));      
     End;
     csProgressBar:
       SendMessage(Handle, PBM_SETPOS, WPARAM(Data^), 0);
@@ -2831,6 +2796,9 @@ End;
 
 {
   $Log$
+  Revision 1.116  2003/10/02 11:18:09  mattias
+  clean ups from Karl
+
   Revision 1.115  2003/09/30 13:05:59  mattias
   removed FMainForm by Micha
 

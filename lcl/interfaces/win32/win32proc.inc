@@ -512,32 +512,28 @@ End;
 ************************************************************************)
 
 {-------------------------------------------------------------------------------
-  function LCLBoundsNeedsUpdate(Sender: TObject;
+  function LCLBoundsNeedsUpdate(Sender: TWinControl;
     SendSizeMsgOnDiff: boolean): boolean;
     
   Returns true if LCL bounds and win32 bounds differ for the control.
 -------------------------------------------------------------------------------}
-function LCLControlSizeNeedsUpdate(Sender: TObject;
+function LCLControlSizeNeedsUpdate(Sender: TWinControl;
   SendSizeMsgOnDiff: boolean): boolean;
 var
-  TheWinControl: TWinControl;
-  Window: HWnd;
+  Window:HWND;
   IntfWidth, IntfHeight: integer;
 begin
   Result:=false;
-  if not (Sender is TWinControl) then exit;
-  TheWinControl:=TWinControl(Sender);
-  if not TheWinControl.HandleAllocated then exit;
-  Window:=TheWinControl.Handle;
+  Window:= Sender.Handle;
   GetWindowSize(Window,IntfWidth,IntfHeight);
-  if (TheWinControl.Width=IntfWidth)
-  and (TheWinControl.Height=IntfHeight)
-  and (not TheWinControl.ClientRectNeedsInterfaceUpdate) then
+  if (Sender.Width=IntfWidth)
+  and (Sender.Height=IntfHeight)
+  and (not Sender.ClientRectNeedsInterfaceUpdate) then
     exit;
   Result:=true;
   if SendSizeMsgOnDiff then begin
     //writeln('LCLBoundsNeedsUpdate B ',TheWinControl.Name,':',TheWinControl.ClassName,' Sending WM_SIZE');
-    TheWinControl.InvalidateClientRectCache;
+    Sender.InvalidateClientRectCache;
     SendMessage(Window, WM_SIZE, 0, MakeLParam(IntfWidth,IntfHeight));
   end;
 end;
@@ -698,6 +694,9 @@ End;
  { =============================================================================
 
   $Log$
+  Revision 1.27  2003/10/02 11:18:09  mattias
+  clean ups from Karl
+
   Revision 1.26  2003/09/20 13:27:49  mattias
   varois improvements for ParentColor from Micha
 

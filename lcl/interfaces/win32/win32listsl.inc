@@ -40,14 +40,11 @@ Begin
   Result := StrComp(AStr, BStr);
 end;
 
-Procedure SetComboHeight(Sender: TObject;
+Procedure SetComboHeight(Sender: TWinControl;
   ALeft, ATop, AWidth, AHeight:Integer);
-var
-  ComboHandle: HWnd;
 begin
   LCLBoundsToWin32Bounds(Sender,ALeft, ATop, AWidth, AHeight);
-  ComboHandle:=TWinControl(Sender).Handle;
-  MoveWindow(ComboHandle,ALeft,ATop,AWidth,AHeight,true);
+  MoveWindow(Sender.Handle,ALeft,ATop,AWidth,AHeight,true);
   LCLControlSizeNeedsUpdate(Sender,true);
 end;
 
@@ -61,7 +58,7 @@ end;
   Returns: 
 
  ------------------------------------------------------------------------------}
-Constructor TWin32ListStringList.Create(List : HWND; TheOwner: TControl);
+Constructor TWin32ListStringList.Create(List : HWND; TheOwner: TWinControl);
 Var
   R:TRect;
 Begin
@@ -260,7 +257,7 @@ End;
   Returns: 
 
  ------------------------------------------------------------------------------}
-Constructor TWin32CListStringList.Create(List : HWND; TheOwner: TControl);
+Constructor TWin32CListStringList.Create(List : HWND; TheOwner: TWinControl);
 Begin
   Inherited Create;
   If List = HWND(Nil) Then
@@ -418,6 +415,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.20  2003/10/02 11:18:09  mattias
+  clean ups from Karl
+
   Revision 1.19  2003/09/20 13:27:49  mattias
   varois improvements for ParentColor from Micha
 

@@ -29,7 +29,7 @@ Type
   Private
     FWin32List: HWND;
     FSorted: Boolean;
-    FSender: TControl;
+    FSender: TWinControl;
     FEditHeight: Integer;
     FItemHeight: Integer;
     FDDownCount: Integer;
@@ -47,7 +47,7 @@ Type
     Function GetCount: Integer; Override;
     Procedure SetSorted(Val: Boolean); Virtual;
   Public
-    Constructor Create(List : HWND; TheOwner: TControl);
+    Constructor Create(List : HWND; TheOwner: TWinControl);
     Procedure Assign(Source: TPersistent); Override;
     Procedure Clear; Override;
     Procedure Delete(Index: Integer); Override;
@@ -59,7 +59,7 @@ Type
   TWin32CListStringList = Class(TStrings)
   Private
     FWin32CList: HWND;
-    FSender: TControl; // Needed to recreate the window 
+    FSender: TWinControl; // Needed to recreate the window 
     FSorted: Boolean;
   Protected
     Function Get(Index: Integer): String; Override;
@@ -68,7 +68,7 @@ Type
     Procedure PutObject(Index: Integer; AObject: TObject); Override;
     Procedure SetSorted(Val: Boolean); Virtual;
   Public
-    Constructor Create(List : HWND; TheOwner: TControl);
+    Constructor Create(List : HWND; TheOwner: TWinControl);
     Procedure Assign(Source: TPersistent); Override;
     Procedure Clear; Override;
     Procedure Delete(Index: Integer); Override;
@@ -86,6 +86,9 @@ Type
 { =============================================================================
 
   $Log$
+  Revision 1.10  2003/10/02 11:18:09  mattias
+  clean ups from Karl
+
   Revision 1.9  2003/08/26 08:12:33  mattias
   applied listbox/combobox patch from Karl
 
