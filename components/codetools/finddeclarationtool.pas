@@ -3590,10 +3590,10 @@ begin
   while FFirstNodeCache<>nil do begin
     NodeCache:=FFirstNodeCache;
     FFirstNodeCache:=NodeCache.Next;
-    NodeCacheMemManager.DisposeNode(NodeCache);
+    NodeCacheMemManager.DisposeNodeCache(NodeCache);
   end;
   if FRootNodeCache<>nil then begin
-    NodeCacheMemManager.DisposeNode(FRootNodeCache);
+    NodeCacheMemManager.DisposeNodeCache(FRootNodeCache);
     FRootNodeCache:=nil;
   end;
 end;
@@ -3714,7 +3714,7 @@ end;
 function TFindDeclarationTool.CreateNewNodeCache(
   Node: TCodeTreeNode): TCodeTreeNodeCache;
 begin
-  Result:=TCodeTreeNodeCache.Create(Node);
+  Result:=NodeCacheMemManager.NewNodeCache(Node);
   Result.Next:=FFirstNodeCache;
   FFirstNodeCache:=Result;
 end;

@@ -142,6 +142,13 @@ type
     ToDo:
   
   }
+  TBaseTypeCache = class
+  private
+  public
+    NewNode: TCodeTreeNode;
+    NewTool: TPascalParserTool;
+    Next: TBaseTypeCache; // used for mem manager
+  end;
 
 
   //----------------------------------------------------------------------------
@@ -183,10 +190,18 @@ type
   protected
     procedure FreeFirstItem; override;
   public
-    procedure DisposeNode(Node: TCodeTreeNodeCache);
-    function NewNode(AnOwner: TCodeTreeNode): TCodeTreeNodeCache;
+    procedure DisposeNodeCache(NodeCache: TCodeTreeNodeCache);
+    function NewNodeCache(AnOwner: TCodeTreeNode): TCodeTreeNodeCache;
   end;
 
+  // memory system for TBaseTypeCache(s)
+  TBaseTypeCacheMemManager = class(TCodeToolMemManager)
+  protected
+    procedure FreeFirstItem; override;
+  public
+    procedure DisposeBaseTypeCache(BaseTypeCache: TBaseTypeCache);
+    function NewBaseTypeCache: TBaseTypeCache;
+  end;
 
   //----------------------------------------------------------------------------
   // stacks for circle checking
@@ -213,7 +228,7 @@ var
   InterfaceIdentCacheEntryMemManager: TInterfaceIdentCacheEntryMemManager;
   NodeCacheEntryMemManager: TNodeCacheEntryMemManager;
   NodeCacheMemManager: TNodeCacheMemManager;
-
+  BaseTypeCacheMemManager: TBaseTypeCacheMemManager;
 
 implementation
 
@@ -808,32 +823,32 @@ end;
 
 { TNodeCacheMemManager }
 
-procedure TNodeCacheMemManager.DisposeNode(Node: TCodeTreeNodeCache);
+procedure TNodeCacheMemManager.DisposeNodeCache(NodeCache: TCodeTreeNodeCache);
 begin
   if (FFreeCount<FMinFree) or (FFreeCount<((FCount shr 3)*FMaxFreeRatio)) then
   begin
     // add Entry to Free list
-    Node.Next:=TCodeTreeNodeCache(FFirstFree);
-    TCodeTreeNodeCache(FFirstFree):=Node;
-    Node.UnbindFromOwner;
+    NodeCache.Next:=TCodeTreeNodeCache(FFirstFree);
+    TCodeTreeNodeCache(FFirstFree):=NodeCache;
+    NodeCache.UnbindFromOwner;
     inc(FFreeCount);
   end else begin
-    // free list full -> free the Node
-    Node.Free;
+    // free list full -> free the NodeCache
+    NodeCache.Free;
     inc(FFreedCount);
   end;
   dec(FCount);
 end;
 
 procedure TNodeCacheMemManager.FreeFirstItem;
-var Node: TCodeTreeNodeCache;
+var NodeCache: TCodeTreeNodeCache;
 begin
-  Node:=TCodeTreeNodeCache(FFirstFree);
-  TCodeTreeNodeCache(FFirstFree):=Node.Next;
-  Node.Free;
+  NodeCache:=TCodeTreeNodeCache(FFirstFree);
+  TCodeTreeNodeCache(FFirstFree):=NodeCache.Next;
+  NodeCache.Free;
 end;
 
-function TNodeCacheMemManager.NewNode(
+function TNodeCacheMemManager.NewNodeCache(
   AnOwner: TCodeTreeNode): TCodeTreeNodeCache;
 begin
   if FFirstFree<>nil then begin
@@ -844,7 +859,7 @@ begin
     Result.Owner:=AnOwner;
     dec(FFreeCount);
   end else begin
-    // free list empty -> create new Entry
+    // free list empty -> create new NodeCache
     Result:=TCodeTreeNodeCache.Create(AnOwner);
     inc(FAllocatedCount);
   end;
@@ -896,6 +911,49 @@ begin
   NodeStack^.DynItems.Free;
 end;
 
+
+{ TBaseTypeCacheMemManager }
+
+procedure TBaseTypeCacheMemManager.DisposeBaseTypeCache(
+  BaseTypeCache: TBaseTypeCache);
+begin
+  if (FFreeCount<FMinFree) or (FFreeCount<((FCount shr 3)*FMaxFreeRatio)) then
+  begin
+    // add Entry to Free list
+    BaseTypeCache.Next:=TBaseTypeCache(FFirstFree);
+    TBaseTypeCache(FFirstFree):=BaseTypeCache;
+    inc(FFreeCount);
+  end else begin
+    // free list full -> free the BaseType
+    BaseTypeCache.Free;
+    inc(FFreedCount);
+  end;
+  dec(FCount);
+end;
+
+procedure TBaseTypeCacheMemManager.FreeFirstItem;
+var BaseTypeCache: TBaseTypeCache;
+begin
+  BaseTypeCache:=TBaseTypeCache(FFirstFree);
+  TBaseTypeCache(FFirstFree):=BaseTypeCache.Next;
+  BaseTypeCache.Free;
+end;
+
+function TBaseTypeCacheMemManager.NewBaseTypeCache: TBaseTypeCache;
+begin
+  if FFirstFree<>nil then begin
+    // take from free list
+    Result:=TBaseTypeCache(FFirstFree);
+    TBaseTypeCache(FFirstFree):=Result.Next;
+    dec(FFreeCount);
+  end else begin
+    // free list empty -> create new BaseType
+    Result:=TBaseTypeCache.Create;
+    inc(FAllocatedCount);
+  end;
+  inc(FCount);
+end;
+
 //------------------------------------------------------------------------------
 
 procedure InternalInit;
@@ -904,6 +962,7 @@ begin
   InterfaceIdentCacheEntryMemManager:=TInterfaceIdentCacheEntryMemManager.Create;
   NodeCacheEntryMemManager:=TNodeCacheEntryMemManager.Create;
   NodeCacheMemManager:=TNodeCacheMemManager.Create;
+  BaseTypeCacheMemManager:=TBaseTypeCacheMemManager.Create;
 end;
 
 procedure InternalFinal;
@@ -916,6 +975,8 @@ begin
   NodeCacheEntryMemManager:=nil;
   NodeCacheMemManager.Free;
   NodeCacheMemManager:=nil;
+  BaseTypeCacheMemManager.Free;
+  BaseTypeCacheMemManager:=nil;
 end;
 
 initialization
