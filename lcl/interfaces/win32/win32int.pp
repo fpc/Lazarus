@@ -66,6 +66,7 @@ Type
     FMenu: HMENU; // Main menu/menu bar
     FParentWindow: HWND; // The parent window
     FSubMenu: HMENU; // current sub menu
+    FWin32MenuHeight: Integer;
 
     FStockNullBrush: HBRUSH;
     FStockBlackBrush: HBRUSH;
@@ -189,6 +190,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.33  2003/08/21 06:52:47  mattias
+  size fixes from Karl
+
   Revision 1.32  2003/08/17 12:51:35  mattias
   added directory selection dialog from Vincent
 

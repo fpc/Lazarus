@@ -1449,28 +1449,23 @@ begin
   LeftTop.Y:=R.Top;
   ParentHandle:=Windows.GetParent(Handle);
   if ParentHandle<>0 then 
-    if not Windows.ScreenToClient(ParentHandle,@LeftTop) then
-      Result:=False;  
+  begin
+    Windows.ScreenToClient(ParentHandle,@LeftTop);
+    OwnerObject := TObject(GetProp(ParentHandle, 'Lazarus'));
+    if OwnerObject is TWinControl then begin
+      TheWinControl:=TWinControl(OwnerObject);
+      if TheWinControl is TGroupBox then
+      begin
+        DC := GetDC(ParentHandle);
+        GetTextMetrics(DC, TM);
+        dec(LeftTop.Y,TM.TMHeight); 
+        dec(LeftTop.X,2); 
+        ReleaseDC(ParentHandle, DC);
+      end;
+      end;
+  end;
   Left:=LeftTop.X;
   Top:=LeftTop.Y;  
-  OwnerObject := TObject(GetProp(Handle, 'Lazarus'));
-  if OwnerObject is TWinControl then begin
-    TheWinControl:=TWinControl(OwnerObject);
-    if TheWinControl is TGroupBox then begin
-      // The client area of a groupbox under win32 is the whole size, including
-      // the frame. The LCL defines the client area without the frame.
-      // -> Adjust the position
-      DC := GetDC(Handle);
-      GetTextMetrics(DC, TM);
-      dec(Left,TM.TMHeight+2); // subtract the top frame with the caption
-                                     // and subtract the bottom frame
-      dec(Top,2+2); // subtract the left and right frame border
-      ReleaseDC(Handle, DC);
-      {writeln('TWin32Object.GetClientRect ',TheWinControl.Name,':',TheWinControl.ClassName,
-        ' ClientRect=',Rect.Right,',',Rect.Bottom,
-        ' CurLCLBounds=',TheWinControl.Left,',',TheWinControl.Top,',',TheWinControl.Width,',',TheWinControl.Height);}
-    end;
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1494,7 +1489,8 @@ begin
       // That means for the win32: The client area + menu
       Result:=GetClientRect(Handle,R);
       // add menu
-      // ToDo
+      If TCustomForm(OwnerObject).Menu <> nil then
+        Inc(R.Bottom,FWin32MenuHeight);
     end;
   end;
   with R Do
@@ -2423,6 +2419,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.54  2003/08/21 06:52:47  mattias
+  size fixes from Karl
+
   Revision 1.53  2003/08/18 19:24:18  mattias
   fixed TCanvas.Pie
 

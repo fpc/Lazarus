@@ -27,6 +27,8 @@
   Constructor for the class.
  ------------------------------------------------------------------------------}
 Constructor TWin32Object.Create;
+Var
+  R1,R2:TRect;
 Begin
   Inherited Create;
   FKeyStateList := TList.Create;
@@ -36,6 +38,18 @@ Begin
   FAccelGroup := 0;
   FTimerData  := TList.Create;
   FTimerWindow := 0;
+  // Retrieves the height of a win32 menu
+  With R1 do
+  begin
+    left:=0;
+    right:=0;
+    right:=100;
+    bottom:=100;
+  end;
+  R2:=R1;
+  Windows.AdjustwindowRect(@R1,WS_OVERLAPPEDWINDOW,true);
+  Windows.AdjustwindowRect(@R2,WS_OVERLAPPEDWINDOW,false);
+  FWin32MenuHeight:= R2.Top - R1.Top;
 End;
 
 {------------------------------------------------------------------------------
@@ -2797,6 +2811,9 @@ End;
 
 {
   $Log$
+  Revision 1.91  2003/08/21 06:52:47  mattias
+  size fixes from Karl
+
   Revision 1.90  2003/08/19 13:15:18  mattias
   fixed notebook size from Micha
 
