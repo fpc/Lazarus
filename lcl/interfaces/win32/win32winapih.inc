@@ -154,6 +154,7 @@ Function SetWindowOrgEx(DC: HDC; NewX, NewY: Integer; OldPoint: PPoint): Boolean
 Function SetWindowPos(HWnd: HWND; HWndInsertAfter: HWND; X, Y, CX, CY: Integer; UFlags: UINT): Boolean; Override;
 Function ShowCaret(HWnd: HWND): Boolean; Override;
 Function ShowScrollBar(Handle: HWND; WBar: Integer; BShow: Boolean): Boolean; Override;
+Function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean; Override;
 Function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: Cardinal): Boolean; Override;
 { Copies a bitmap from a source rectangle into a destination rectangle using the specified mask and raster operations }
 Function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; Override;
@@ -171,6 +172,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.21  2003/03/01 17:54:53  mattias
+  added ShowWindow function
+
   Revision 1.20  2003/01/12 19:09:19  mattias
   patch from Martin Smat for dis/enabling menuitems
 

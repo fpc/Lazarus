@@ -2117,6 +2117,17 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
+  Method: ShowWindow
+  Params: hWnd     - Window handle
+          nCmdShow - (SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED)
+  Returns: If the function succeeds
+------------------------------------------------------------------------------}
+Function TWin32Object.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
+begin
+  Result:=Windows.ShowWindow(hWnd, nCmdShow);
+end;
+
+{------------------------------------------------------------------------------
   Method:  StretchBlt
   Params:  DestDC              - The destination device context
            X, Y                - The left/top corner of the destination rectangle
@@ -2290,6 +2301,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.30  2003/03/01 17:54:53  mattias
+  added ShowWindow function
+
   Revision 1.29  2003/01/12 19:09:19  mattias
   patch from Martin Smat for dis/enabling menuitems
 
