@@ -2107,6 +2107,20 @@ begin
   Result:=1;
 end;
 
+{-------------------------------------------------------------------------------
+  Procedure GTKStyleChanged(Widget: PGtkWidget; previous_style : PGTKStyle;
+    Data: Pointer); cdecl;
+
+  Handler for style changes. For example the user changes the the theme.
+-------------------------------------------------------------------------------}
+Procedure GTKStyleChanged(Widget: PGtkWidget; previous_style : PGTKStyle;
+  Data: Pointer); cdecl;
+begin
+  EventTrace('style-set', nil);
+  if Data<>nil then
+    if TObject(Data) is TButton then
+      ReleaseStyle('button');
+end;
 
 {$I gtkDragCallback.inc}
 {$I gtkListViewCallback.inc}
@@ -2121,6 +2135,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.106  2002/08/22 16:43:35  lazarus
+  MG: improved theme support from Andrew
+
   Revision 1.105  2002/08/22 13:45:58  lazarus
   MG: fixed non AutoCheck menuitems and editor bookmark popupmenu
 
