@@ -5644,6 +5644,16 @@ begin
   {$ENDIF GTK2}
 end;
 
+function GetTextHeight(DCTextMetric: TDevContextTextMetric): integer;
+// IMPORTANT: Before this call:  UpdateDCTextMetric(TDeviceContext(DC));
+begin
+  {$IfDef Win32}
+  Result := DCTextMetric.TextMetric.tmHeight div 2;
+  {$Else}
+  Result := DCTextMetric.TextMetric.tmAscent;
+  {$EndIf}
+end;
+
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
   {$C-}
@@ -5654,6 +5664,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.239  2004/01/05 01:18:15  mattias
+  implemented Double Buffering for synedit and deactivated multi buffering in TGTKObject.ExtTextOut
+
   Revision 1.238  2004/01/04 16:44:33  mattias
   updated gtk2 package
 

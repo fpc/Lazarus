@@ -451,14 +451,6 @@ Function DeleteAmpersands(var Str : String) : Longint;
 function Ampersands2Underscore(Src: PChar) : PChar;
 function RemoveAmpersands(Src: PChar; LineLength : Longint) : PChar;
 
-{$Ifdef GTK2}
-Procedure GetTextExtentIgnoringAmpersands(FontDesc : PPangoFontDescription; Str : PChar;
-  LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
-{$Else}
-Procedure GetTextExtentIgnoringAmpersands(Font : PGDKFont; Str : PChar;
-  LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
-{$EndIf}
-
 function GetAccelGroup(const Widget: PGtkWidget;
   CreateIfNotExists: boolean): PGTKAccelGroup;
 procedure SetAccelGroup(const Widget: PGtkWidget;
@@ -510,28 +502,32 @@ Function GetStyleWidget(const WName : String) : PGTKWidget;
 Procedure StyleFillRectangle(drawable : PGDKDrawable; GC : PGDKGC; Color : TColorRef; x, y, width, height : gint);
 Function StyleForegroundColor(Color : TColorRef; DefaultColor : PGDKColor): PGDKColor;
 
+// fonts
 {$Ifdef GTK2}
 function LoadDefaultFontDesc: PPangoFontDescription;
-{$Else}
+Procedure GetTextExtentIgnoringAmpersands(FontDesc : PPangoFontDescription; Str : PChar;
+  LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
+{$ENDIF}
+{$IFDEF GTK1}
+function FontIsDoubleByteCharsFont(TheFont: PGdkFont): boolean;
 function LoadDefaultFont: PGDKFont;
+Procedure GetTextExtentIgnoringAmpersands(Font : PGDKFont; Str : PChar;
+  LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
 {$EndIf}
 function GetDefaultFontName: string;
+Procedure FillScreenFonts(ScreenFonts : TStrings);
+function GetTextHeight(DCTextMetric: TDevContextTextMetric): integer;
 
 procedure RealizeGDKColor(ColorMap: PGdkColormap; Color: PGDKColor);
 procedure RealizeGtkStyleColor(Style: PGTKStyle; Color: PGDKColor);
 Function GetSysGCValues(Color: TColorRef; ThemeWidget: PGtkWidget): TGDKGCValues;
 
-{$Ifdef GTK1}
-function FontIsDoubleByteCharsFont(TheFont: PGdkFont): boolean;
-{$EndIf}
 
 Function GDKPixel2GDIRGB(Pixel : Longint; Visual : PGDKVisual;
   Colormap : PGDKColormap) : TGDIRGB;
 
 Function GetWindowDecorations(AForm : TCustomForm) : Longint;
 Function GetWindowFunction(AForm : TCustomForm) : Longint;
-
-Procedure FillScreenFonts(ScreenFonts : TStrings);
 
 function GetGDKMouseCursor(Cursor: TCursor): PGdkCursor;
 Procedure FreeGDKCursors;

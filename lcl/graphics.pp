@@ -708,11 +708,11 @@ type
 
     procedure Arc(x,y,width,height,angle1,angle2 : Integer);
     procedure Arc(x,y,width,height,SX,SY,EX,EY : Integer);
-    Procedure BrushCopy(Dest : TRect; InternalImages: TBitmap; Src : TRect;
-                        TransparentColor :TColor);
+    Procedure BrushCopy(Dest: TRect; InternalImages: TBitmap; Src: TRect;
+                        TransparentColor: TColor);
     procedure Chord(x,y,width,height,angle1,angle2 : Integer);
     procedure Chord(x,y,width,height,SX,SY,EX,EY : Integer);
-    Procedure CopyRect(const Dest : TRect; Canvas : TCanvas; const Source : TRect);
+    Procedure CopyRect(const Dest: TRect; SrcCanvas: TCanvas; const Source: TRect);
     Procedure Draw(X,Y: Integer; Graphic : TGraphic);
     procedure StretchDraw(const ARect: TRect; Graphic: TGraphic);
     procedure Ellipse(const ARect: TRect);
@@ -1261,6 +1261,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.104  2004/01/05 01:18:15  mattias
+  implemented Double Buffering for synedit and deactivated multi buffering in TGTKObject.ExtTextOut
+
   Revision 1.103  2004/01/03 23:14:59  mattias
   default font can now change height and fixed gtk crash
 

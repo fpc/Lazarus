@@ -72,12 +72,12 @@ begin
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
         inc(X,DCOrigin.X);
         inc(Y,DCOrigin.Y);
-        {$IFNDEF DisableDoubleBuf}
+        {$IFDEF DebugGDKTraps}
         BeginGDKErrorTrap;
         {$ENDIF}
         gdk_draw_arc(Drawable, GC, 0, X, Y, Width, Height,
                      Angle1 shl 2, Angle2 shl 2);
-        {$IFNDEF DisableDoubleBuf}
+        {$IFDEF DebugGDKTraps}
         EndGDKErrorTrap;
         {$ENDIF}
       end else
@@ -755,7 +755,7 @@ begin
 //write('TgtkObject.CreateBitmap->');
   GdiObject := NewGDIObject(gdiBitmap);
 
-  {$IFNDEF DisableDoubleBuf}
+  {$IFDEF DebugGDKTraps}
   BeginGDKErrorTrap;
   {$ENDIF}
 
@@ -792,7 +792,7 @@ begin
     end;
 
     GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, GdkTrue);
-    {$IFNDEF DisableDoubleBuf}
+    {$IFDEF DebugGDKTraps}
     EndGDKErrorTrap;
     {$ENDIF}
 
@@ -972,7 +972,7 @@ begin
 
   sError := '';
 
-  {$IFNDEF DisableDoubleBuf}
+  {$IFDEF DebugGDKTraps}
   BeginGDKErrorTrap;
   {$ENDIF}
 
@@ -1048,7 +1048,7 @@ begin
                         , [lbStyle]);
     end;
 
-    {$IFNDEF DisableDoubleBuf}
+    {$IFDEF DebugGDKTraps}
     EndGDKErrorTrap;
     {$ENDIF}
 
@@ -1120,7 +1120,7 @@ begin
 
   Depth := -1;
 
-  {$IFNDEF DisableDoubleBuf}
+  {$IFDEF DebugGDKTraps}
   BeginGDKErrorTrap;
   {$ENDIF}
   if (IsValidDC(DC) and (TDeviceContext(DC).Drawable <> nil)) then begin
@@ -1136,7 +1136,7 @@ begin
     then begin
       Result := 0;
       WriteLn(Format('ERROR: [TgtkObject.CreateCompatibleBitmap] Illegal depth %d', [Depth]));
-      {$IFNDEF DisableDoubleBuf}
+      {$IFDEF DebugGDKTraps}
       EndGDKErrorTrap;
       {$ENDIF}
       Exit;
@@ -1164,7 +1164,7 @@ begin
 
     GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, GdkTrue);
 
-    {$IFNDEF DisableDoubleBuf}
+    {$IFDEF DebugGDKTraps}
     EndGDKErrorTrap;
     {$ENDIF}
 
@@ -1592,7 +1592,7 @@ begin
 
     PaletteVisual := nil;
 
-    {$IFNDEF DisableDoubleBuf}
+    {$IFDEF DebugGDKTraps}
     BeginGDKErrorTrap;
     {$ENDIF}
 
@@ -1603,7 +1603,7 @@ begin
     end;
     PaletteColormap := GDK_Colormap_new(PaletteVisual, GdkTrue);
 
-    {$IFNDEF DisableDoubleBuf}
+    {$IFDEF DebugGDKTraps}
     EndGDKErrorTrap;
     {$ENDIF}
 
@@ -1671,7 +1671,7 @@ begin
     p:=nil; // automatically create transparency mask
   Window:=nil; // use the X root window for colormap
 
-  {$IFNDEF DisableDoubleBuf}
+  {$IFDEF DebugGDKTraps}
   BeginGDKErrorTrap;
   {$ENDIF}
 
@@ -1708,7 +1708,7 @@ begin
       DisposeGDIObject(GdiObject);
       GdiObject:=nil;
     end;
-    {$IFNDEF DisableDoubleBuf}
+    {$IFDEF DebugGDKTraps}
     EndGDKErrorTrap;
     {$ENDIF}
   end;
@@ -3003,7 +3003,7 @@ var
     CharsWritten, CurX, i: integer;
     LinePos: PChar;
   begin
-    {$IFNDEF DisableDoubleBuf}
+    {$IFDEF DebugGDKTraps}
     BeginGDKErrorTrap;
     {$ENDIF}
     with TDeviceContext(DC) do begin
@@ -3035,7 +3035,7 @@ var
         gdk_draw_line(Buffer, GC, TxtPt.X, Y, TxtPt.X+UnderLineLen, Y);
       end;
     end;
-    {$IFNDEF DisableDoubleBuf}
+    {$IFDEF DebugGDKTraps}
     EndGDKErrorTrap;
     {$ENDIF}
   end;
@@ -3104,10 +3104,9 @@ begin
         Height := Rect^.Bottom - Rect^.Top;
         SelectedColors := dcscCustom;
         EnsureGCColor(DC, dccCurrentBackColor, True, False);
-        {$IFNDEF DisableDoubleBuf}
+        {$IFDEF EnableDoubleBuf}
         buffered := True;
         buffer := gdk_pixmap_new(Drawable, Width, Height, -1);
-        BeginGDKErrorTrap;
         {$ENDIF}
         if buffered then begin
           Left:=0;
@@ -3116,7 +3115,7 @@ begin
           Left:=Rect^.Left+DCOrigin.X;
           Top:=Rect^.Top+DCOrigin.Y;
         end;
-        {$IFNDEF DisableDoubleBuf}
+        {$IFDEF DebugGDKTraps}
         BeginGDKErrorTrap;
         {$ENDIF}
         if IsBackgroundColor(TColor(CurrentBackColor.ColorRef)) then
@@ -3124,7 +3123,7 @@ begin
                              Left, Top, Width, Height)
         else
           gdk_draw_rectangle(buffer, GC, 1, Left, Top, Width, Height);
-        {$IFNDEF DisableDoubleBuf}
+        {$IFDEF DebugGDKTraps}
         EndGDKErrorTrap;
         {$ENDIF}
       end;
@@ -3132,11 +3131,7 @@ begin
       if UseFont<>nil then begin
         LineLen := FindChar(#10,Str,Count);
         UpdateDCTextMetric(TDeviceContext(DC));
-        {$IfDef Win32}
-        LineHeight := DCTextMetric.TextMetric.tmHeight div 2;
-        {$Else}
-        LineHeight := DCTextMetric.TextMetric.tmAscent;
-        {$EndIf}
+        LineHeight:=GetTextHeight(DCTextMetric);
         if Buffered then begin
           TxtPt.X := 0;
           TxtPt.Y := LineHeight;
@@ -3168,11 +3163,11 @@ begin
           end;
         end;
         If UnRef then begin
-          {$IFNDEF DisableDoubleBuf}
+          {$IFDEF DebugGDKTraps}
           BeginGDKErrorTrap;
           {$ENDIF}
           GDK_Font_UnRef(UseFont);
-          {$IFNDEF DisableDoubleBuf}
+          {$IFDEF DebugGDKTraps}
           EndGDKErrorTrap;
           {$ENDIF}
         end;
@@ -8250,69 +8245,66 @@ var
     temp_color : TGDKColor;
     Region: PGdiObject;
     RGNType : Longint;
-    //DCOrigin: TPoint;
     OffsetXY: TPoint;
   begin
     // activate clipping region of destination
     SelectGDIRegion(DestDC);
     temp_mask := nil;
-    if ((ClipMergeMask <> NIL) {and (ClipMergeMask^.UseMask)}
-    and (ClipMergeMask^.GDIBitmapMaskObject <> nil)) then
+    if ((ClipMergeMask = NIL)
+    or (ClipMergeMask^.GDIBitmapMaskObject = nil)) then exit;
+
+    BeginGDKErrorTrap;
+    // create temporary mask with the size of the destination rectangle
+    temp_mask := PGdkBitmap(gdk_pixmap_new(NIL, width, height, 1));
+    // create temporary GC for mask with no clipping
+    temp_gc := gdk_gc_new(temp_mask);
+    gdk_gc_set_clip_region(temp_gc, nil);
+    gdk_gc_set_clip_rectangle(temp_gc, nil);
+
+    // clear mask
+    temp_color.pixel := 0;
+    gdk_gc_set_foreground(temp_gc, @temp_color);
+
+    gdk_draw_rectangle(temp_mask, temp_gc, 1, 0, 0, width, height);
+    gdk_draw_rectangle(temp_mask, temp_gc, 0, 0, 0, width, height);
+
+    // copy the destination clipping mask into the temporary mask
+    with TDeviceContext(DestDC) do
     begin
-      BeginGDKErrorTrap;
-      // create temporary mask with the size of the destination rectangle
-      temp_mask := PGdkBitmap(gdk_pixmap_new(NIL, width, height, 1));
-      // create temporary GC for mask with no clipping
-      temp_gc := gdk_gc_new(temp_mask);
-      gdk_gc_set_clip_region(temp_gc, nil);
-      gdk_gc_set_clip_rectangle(temp_gc, nil);
-
-      // clear mask
-      temp_color.pixel := 0;
-      gdk_gc_set_foreground(temp_gc, @temp_color);
-
-      gdk_draw_rectangle(temp_mask, temp_gc, 1, 0, 0, width, height);
-      gdk_draw_rectangle(temp_mask, temp_gc, 0, 0, 0, width, height);
-
-      // copy the destination clipping mask into the temporary mask
-      with TDeviceContext(DestDC) do
-      begin
-        If (ClipRegion <> 0) then begin
-          Region:=PGDIObject(ClipRegion);
-          RGNType := RegionType(Region^.GDIRegionObject);
-          If (RGNType <> ERROR) and (RGNType <> NULLREGION) then begin
-            // destination has a clipping mask
-            // -> copy the destination clipping mask to the temporary mask
-            //    The X,Y coordinate in the destination relates to
-            //    0,0 in the temporary mask.
-            //    The clip region of dest is always at 0,0 in dest
-            //DCOrigin:=GetDCOffset(TDeviceContext(DestDC));
-            OffsetXY:=Point(-X,-Y);
-            // 1. Move the region
-            gdk_region_offset(Region^.GDIRegionObject,OffsetXY.X,OffsetXY.Y);
-            // 2. Apply region to temporary mask
-            gdk_gc_set_clip_region(temp_gc, Region^.GDIRegionObject);
-            // 3. Undo moving the region
-            gdk_region_offset(Region^.GDIRegionObject,-OffsetXY.X,-OffsetXY.Y);
-          end;
+      If (ClipRegion <> 0) then begin
+        Region:=PGDIObject(ClipRegion);
+        RGNType := RegionType(Region^.GDIRegionObject);
+        If (RGNType <> ERROR) and (RGNType <> NULLREGION) then begin
+          // destination has a clipping mask
+          // -> copy the destination clipping mask to the temporary mask
+          //    The X,Y coordinate in the destination relates to
+          //    0,0 in the temporary mask.
+          //    The clip region of dest is always at 0,0 in dest
+          OffsetXY:=Point(-X,-Y);
+          // 1. Move the region
+          gdk_region_offset(Region^.GDIRegionObject,OffsetXY.X,OffsetXY.Y);
+          // 2. Apply region to temporary mask
+          gdk_gc_set_clip_region(temp_gc, Region^.GDIRegionObject);
+          // 3. Undo moving the region
+          gdk_region_offset(Region^.GDIRegionObject,-OffsetXY.X,-OffsetXY.Y);
         end;
       end;
-
-      // merge the source clipping mask into the temporary mask
-      gdk_draw_pixmap(temp_mask, temp_gc, ClipMergeMask^.GDIBitmapMaskObject,
-                      0, 0, 0, 0, width, height);
-
-      // free the temporary GC
-      gdk_gc_destroy(temp_gc);
-
-      // apply the new mask to the destination GC
-      // The new mask has only the size of the destination rectangle, not of
-      // the whole destination. Apply it to destination and move it to the right
-      // position
-      gdk_gc_set_clip_mask(DestGC, temp_mask);
-      gdk_gc_set_clip_origin(DestGC, x, y);
-      EndGDKErrorTrap;
     end;
+
+    // merge the source clipping mask into the temporary mask
+    gdk_draw_pixmap(temp_mask, temp_gc, ClipMergeMask^.GDIBitmapMaskObject,
+                    0, 0, 0, 0, width, height);
+
+    // free the temporary GC
+    gdk_gc_destroy(temp_gc);
+
+    // apply the new mask to the destination GC
+    // The new mask has only the size of the destination rectangle, not of
+    // the whole destination. Apply it to destination and move it to the right
+    // position
+    gdk_gc_set_clip_mask(DestGC, temp_mask);
+    gdk_gc_set_clip_origin(DestGC, x, y);
+    EndGDKErrorTrap;
   end;
 
   Procedure ResetClipping(DestGC : PGDKGC);
@@ -8408,9 +8400,9 @@ var
   end;
 
   Function ScaleAndROP(DestGC: PGDKGC;
-    SRC: PGDKDrawable; SRCBitmap: PGDIObject): Boolean;
+    Src: PGDKDrawable; SrcBitmap: PGDIObject): Boolean;
   var
-    SRCClip : PGDKPixmap;
+    SrcClip : PGDKPixmap;
   begin
     Result := False;
 
@@ -8421,11 +8413,11 @@ var
     end;
 
     // get source mask for clipping
-    If (SRCBitmap <> nil)
-    and (SRCBitmap^.GDIBitmapMaskObject <> nil) then
-      SRCClip := SRCBitmap^.GDIBitmapMaskObject
+    If (SrcBitmap <> nil)
+    and (SrcBitmap^.GDIBitmapMaskObject <> nil) then
+      SrcClip := SrcBitmap^.GDIBitmapMaskObject
     else
-      SRCClip := nil;
+      SrcClip := nil;
 
     // create a temporary buffer for raster operations and scaling
     Case ROP of
@@ -8435,18 +8427,18 @@ var
         begin
           ScaleBMP := CreateCompatibleBitmap(0, Width, Height);
           Scale := PGdiObject(ScaleBMP);
-          Scale^.GDIBitmapMaskObject := SRCClip;
+          Scale^.GDIBitmapMaskObject := SrcClip;
           SetRasterOperation(DestGC);
           Result := True;
           exit; //skip scaling
         end;
-        else begin
-          // create a temporary compatible bitmap with the size
-          // of the source and the source mask
-          ScaleBMP := CreateCompatibleBitmap(0, SRCWidth, SRCHeight);
-          Scale := PGdiObject(ScaleBMP);
-          Scale^.GDIBitmapMaskObject := SRCClip;
-        end;
+      else begin
+        // create a temporary compatible bitmap with the size
+        // of the source and the source mask
+        ScaleBMP := CreateCompatibleBitmap(0, SrcWidth, SrcHeight);
+        Scale := PGdiObject(ScaleBMP);
+        Scale^.GDIBitmapMaskObject := SrcClip;
+      end;
     end;
 
     // set raster operation for SrcCopy or NotSrcCopy
@@ -8459,13 +8451,13 @@ var
     GDK_GC_COPY(fGC, DestGC);
 
     // clear any previous clipping in the temporary GC (fGC)
-    gdk_gc_set_clip_region(fGC,  nil);
-    gdk_gc_set_clip_rectangle (fGC,  nil);
+    gdk_gc_set_clip_region(fGC,nil);
+    gdk_gc_set_clip_rectangle(fGC,nil);
 
     // copy source into scale buffer
     BeginGDKErrorTrap;
     gdk_window_copy_area(Scale^.GDIPixmapObject, fGC, 0, 0,
-       SRC, XSRC, YSRC, SRCWidth, SRCHeight);
+       Src, XSrc, YSrc, SrcWidth, SrcHeight);
     EndGDKErrorTrap;
 
     // restore the raster operation back to SRCCOPY in the destination GC
@@ -8516,6 +8508,22 @@ var
     SrcDevContext:=TDeviceContext(SrcDC);
     DestDevContext:=TDeviceContext(DestDC);
     SrcGDIBitmap:=SrcDevContext.CurrentBitmap;
+    
+    if (SrcGDIBitmap=nil) then exit;
+    if (SrcGDIBitmap^.GDIBitmapMaskObject=nil)
+    and (Width=SrcWidth) and (Height=SrcHeight)
+    and (ROP=SRCCOPY)
+    then begin
+      // simply copy the area
+      //writeln('DrawableToDrawable  Simple copy');
+      BeginGDKErrorTrap;
+      gdk_window_copy_area(DestDevContext.Drawable, DestDevContext.GC, X, Y,
+        SrcGDIBitmap^.GDIPixmapObject, XSrc, YSrc, Width, Height);
+      EndGDKErrorTrap;
+      
+      exit;
+    end;
+    
 
     // create a temporary graphic context for the scale and raster operations
     fGC := GDK_GC_New(DestDevContext.Drawable);
@@ -8722,38 +8730,37 @@ var DCOrigin: TPoint;
 begin
   Assert(True, Format('trace:> [TgtkObject.StretchBlt] DestDC:0x%x; X:%d, Y:%d, Width:%d, Height:%d; SrcDC:0x%x; XSrc:%d, YSrc:%d, SrcWidth:%d, SrcHeight:%d; Rop:0x%x', [DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop]));
   Result := IsValidDC(DestDC) and IsValidDC(SrcDC);
+  if not Result then exit;
   if (Width=0) and (Height=0) then exit;
   if (SrcWidth=0) and (SrcHeight=0) then exit;
-  if Result
-  then begin
-    with TDeviceContext(DestDC) do begin
-      DCOrigin:=GetDCOffset(TDeviceContext(DestDC));
-      Inc(X,DCOrigin.X);
-      Inc(Y,DCOrigin.Y);
-    end;
-    with TDeviceContext(SrcDC) do begin
-      DCOrigin:=GetDCOffset(TDeviceContext(SrcDC));
-      Inc(XSrc,DCOrigin.X);
-      Inc(YSrc,DCOrigin.Y);
-    end;
 
-    //writeln('TgtkObject.StretchBlt X=',X,' Y=',Y,' Width=',Width,' Height=',Height,
-    //  ' XSrc=',XSrc,' YSrc=',YSrc,' SrcWidth=',SrcWidth,' SrcHeight=',SrcHeight,
-    //  ' SrcDrawable=',HexStr(Cardinal(TDeviceContext(SrcDC).Drawable),8),
-    //  ' DestDrawable=',HexStr(Cardinal(TDeviceContext(DestDC).Drawable),8));
+  with TDeviceContext(DestDC) do begin
+    DCOrigin:=GetDCOffset(TDeviceContext(DestDC));
+    Inc(X,DCOrigin.X);
+    Inc(Y,DCOrigin.Y);
+  end;
+  with TDeviceContext(SrcDC) do begin
+    DCOrigin:=GetDCOffset(TDeviceContext(SrcDC));
+    Inc(XSrc,DCOrigin.X);
+    Inc(YSrc,DCOrigin.Y);
+  end;
 
-    If TDeviceContext(SrcDC).Drawable = nil then begin
-      If TDeviceContext(DestDC).Drawable = nil then
-        Result := NoDrawableToNoDrawable
-      else
-        Result := NoDrawableToDrawable;
-    end
-    else begin
-      If TDeviceContext(DestDC).Drawable = nil then
-        Result := DrawableToNoDrawable
-      else
-        Result := DrawableToDrawable;
-    end;
+  {writeln('TgtkObject.StretchBlt X=',X,' Y=',Y,' Width=',Width,' Height=',Height,
+    ' XSrc=',XSrc,' YSrc=',YSrc,' SrcWidth=',SrcWidth,' SrcHeight=',SrcHeight,
+    ' SrcDrawable=',HexStr(Cardinal(TDeviceContext(SrcDC).Drawable),8),
+    ' DestDrawable=',HexStr(Cardinal(TDeviceContext(DestDC).Drawable),8));}
+
+  If TDeviceContext(SrcDC).Drawable = nil then begin
+    If TDeviceContext(DestDC).Drawable = nil then
+      Result := NoDrawableToNoDrawable
+    else
+      Result := NoDrawableToDrawable;
+  end
+  else begin
+    If TDeviceContext(DestDC).Drawable = nil then
+      Result := DrawableToNoDrawable
+    else
+      Result := DrawableToDrawable;
   end;
   Assert(True, Format('trace:< [TgtkObject.StretchBlt] DestDC:0x%x --> %s', [DestDC, BOOL_TEXT[Result]]));
 end;
@@ -9092,6 +9099,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.310  2004/01/05 01:18:16  mattias
+  implemented Double Buffering for synedit and deactivated multi buffering in TGTKObject.ExtTextOut
+
   Revision 1.309  2004/01/03 23:15:00  mattias
   default font can now change height and fixed gtk crash
 

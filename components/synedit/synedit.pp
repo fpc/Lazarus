@@ -62,7 +62,7 @@ interface
 
 uses
 {$IFDEF SYN_LAZARUS}
-  FPCAdds, LCLIntf, LCLType, LMessages,
+  FPCAdds, LCLIntf, LCLType, LMessages, LCLProc,
 {$ELSE}
   Windows,
 {$ENDIF}
@@ -531,6 +531,10 @@ type
     procedure PaintGutter(AClip: TRect; FirstLine, LastLine: integer); virtual;
     procedure PaintTextLines(AClip: TRect; FirstLine, LastLine,
       FirstCol, LastCol: integer); virtual;
+    {$IFDEF SYN_LAZARUS}
+    procedure StartPaintBuffer(const ClipRect: TRect);
+    procedure EndPaintBuffer(const ClipRect: TRect);
+    {$ENDIF}
     procedure RecalcCharExtent;
     procedure RedoItem;                                                         //sbs 2000-11-19
     procedure SetCaretXY(Value: TPoint); virtual;
@@ -547,6 +551,10 @@ type
   protected
     fGutterWidth: Integer;
     fInternalImage: TSynInternalImage;
+    {$IFNDEF DisableDoubleBuf}
+    BufferBitmap: TBitmap; // the double buffer
+    SavedCanvas: TCanvas; // the normal TCustomControl canvas during paint
+    {$ENDIF}
     procedure DoOnClearBookmark(var Mark: TSynEditMark); virtual;               // djlp - 2000-08-29
     procedure DoOnCommandProcessed(Command: TSynEditorCommand; AChar: char;
       Data: pointer); virtual;
@@ -618,7 +626,7 @@ type
     function PrevWordPos: TPoint; virtual;
     function PixelsToRowColumn(Pixels: TPoint): TPoint;
     {$IFDEF SYN_LAZARUS}
-    function PixelsToLogicalPos(Pixels: TPoint): TPoint;
+    function PixelsToLogicalPos(const Pixels: TPoint): TPoint;
     {$ENDIF}
     procedure Redo;
     procedure RegisterCommandHandler(AHandlerProc: THookedCommandEvent;
@@ -750,12 +758,12 @@ type
   published
     // inherited properties
     property Align;
+{$IFDEF SYN_LAZARUS}
+    property BlockIndent;
+{$ENDIF}
 {$IFDEF SYN_COMPILER_4_UP}
     property Anchors;
-{$IFNDEF SYN_LAZARUS}
-// ToDo Constraints
     property Constraints;
-{$ENDIF}
 {$ENDIF}
     property Color;
     property Ctl3D;
@@ -784,10 +792,8 @@ type
     property OnDragDrop;
     property OnDragOver;
 {$IFDEF SYN_COMPILER_4_UP}
-{$IFNDEF SYN_LAZARUS}
 // ToDo Docking
     property OnEndDock;
-{$ENDIF}
 {$ENDIF}
     property OnEndDrag;
     property OnEnter;
@@ -799,16 +805,11 @@ type
     property OnMouseMove;
     property OnMouseUp;
 {$IFDEF SYN_COMPILER_4_UP}
-{$IFNDEF SYN_LAZARUS}
 // ToDo Docking
     property OnStartDock;
 {$ENDIF}
-{$ENDIF}
     property OnStartDrag;
     // TCustomSynEdit properties
-    {$IFDEF SYN_LAZARUS}
-    property BlockIndent;
-    {$ENDIF}
     property BookMarkOptions;
     property BorderStyle;
     property ExtraLineSpacing;
@@ -961,7 +962,7 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
-function TCustomSynEdit.PixelsToLogicalPos(Pixels: TPoint): TPoint;
+function TCustomSynEdit.PixelsToLogicalPos(const Pixels: TPoint): TPoint;
 begin
   Result:=PhysicalToLogicalPos(PixelsToRowColumn(Pixels));
 end;
@@ -2175,6 +2176,7 @@ begin
   // Get the invalidated rect. Compute the invalid area in lines / columns.
   {$IFDEF SYN_LAZARUS}
   rcClip:=Rect(0,0,Width,Height);
+  StartPaintBuffer(rcClip);
   Include(fStateFlags,sfPainting);
   {$ELSE}
   rcClip := Canvas.ClipRect;
@@ -2208,6 +2210,9 @@ begin
     // If there is a custom paint handler call it.
     DoOnPaint;
   finally
+    {$IFDEF SYN_LAZARUS}
+    EndPaintBuffer(rcClip);
+    {$ENDIF}
     UpdateCaret;
     {$IFDEF SYN_LAZARUS}
     Exclude(fStateFlags,sfPainting);
@@ -3146,6 +3151,7 @@ begin
   end;
   // Do everything else with API calls. This (maybe) realizes the new pen color.
   dc := Canvas.Handle;
+
   // If anything of the two pixel space before the text area is visible, then
   // fill it with the component background color.
   if (AClip.Left < fGutterWidth + 2) then begin
@@ -3199,6 +3205,38 @@ begin
   PaintCtrlMouseLinkLine;
   {$ENDIF}
 end;
+
+{$IFDEF SYN_LAZARUS}
+procedure TCustomSynEdit.StartPaintBuffer(const ClipRect: TRect);
+begin
+  if (SavedCanvas<>nil) then RaiseGDBException('');
+  {$IFNDEF DisableDoubleBuf}
+  if BufferBitmap=nil then
+    BufferBitmap:=TBitmap.Create;
+  if BufferBitmap.Width<ClipRect.Right then
+    BufferBitmap.Width:=ClipRect.Right;
+  if BufferBitmap.Height<ClipRect.Bottom then
+    BufferBitmap.Height:=ClipRect.Bottom;
+  SavedCanvas:=Canvas;
+  Canvas:=BufferBitmap.Canvas;
+  {$ENDIF}
+end;
+{$ENDIF}
+
+{$IFDEF SYN_LAZARUS}
+procedure TCustomSynEdit.EndPaintBuffer(const ClipRect: TRect);
+begin
+  {$IFNDEF DisableDoubleBuf}
+  if (SavedCanvas=nil) then RaiseGDBException('');
+  if not (SavedCanvas is TControlCanvas) then RaiseGDBException('');
+  Canvas:=SavedCanvas;
+  SavedCanvas:=nil;
+  //writeln('TCustomSynEdit.EndPaintBuffer A');
+  Canvas.CopyRect(ClipRect,BufferBitmap.Canvas,ClipRect);
+  //writeln('TCustomSynEdit.EndPaintBuffer END');
+  {$ENDIF}
+end;
+{$ENDIF}
 
 procedure TCustomSynEdit.Update;
 begin
@@ -7347,13 +7385,17 @@ end;
 
 procedure TCustomSynEdit.DestroyWnd;
 begin
-  if (eoDropFiles in fOptions) and not (csDesigning in ComponentState) then
+  if (eoDropFiles in fOptions) and not (csDesigning in ComponentState) then begin
     {$IFDEF SYN_LAZARUS}
     // ToDo DragAcceptFiles
     ;
     {$ELSE}
     DragAcceptFiles(Handle, FALSE);
     {$ENDIF}
+  end;
+  {$IFNDEF DisableDoubleBuf}
+  FreeAndNil(BufferBitmap);
+  {$ENDIF}
   inherited DestroyWnd;
 end;
 

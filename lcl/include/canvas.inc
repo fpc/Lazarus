@@ -22,10 +22,10 @@ const
 {-----------------------------------------------}
 {--  TCanvas.BrushCopy --}
 {-----------------------------------------------}
-Procedure TCanvas.BrushCopy(Dest : TRect; InternalImages: TBitmap; Src : TRect;
+Procedure TCanvas.BrushCopy(Dest: TRect; InternalImages: TBitmap; Src: TRect;
   TransparentColor :TColor);
 Begin
-//TODO:TCANVAS.BRUSHCOPY
+  //TODO:TCANVAS.BRUSHCOPY
 end;
 
 {-----------------------------------------------}
@@ -62,16 +62,15 @@ end;
 {-----------------------------------------------}
 {--  TCanvas.CopyRect --}
 {-----------------------------------------------}
-Procedure TCanvas.CopyRect(const Dest : TRect; Canvas : TCanvas;
-  const Source : TRect);
+Procedure TCanvas.CopyRect(const Dest: TRect; SrcCanvas: TCanvas;
+  const Source: TRect);
 var
   SH, SW, DH, DW: Integer;
 Begin
 //this SHOULD stretch the image to the new canvas, but it doesn't yet.....
   Assert(False, Format('Trace:==> [TCanvas.CopyRect] ', []));
-  if Canvas <> nil
-  then begin
-    Canvas.RequiredState([csHandleValid, csBrushValid]);
+  if SrcCanvas<> nil then begin
+    SrcCanvas.RequiredState([csHandleValid, csBrushValid]);
     RequiredState([csHandleValid, csBrushValid]);
 
     SH := Source.Bottom - Source.Top;
@@ -80,11 +79,11 @@ Begin
     DH := Dest.Bottom - Dest.Top;
     DW := Dest.Right - Dest.Left;
     if (Dh=0) and (DW=0) then exit;
-    //writeln('TCanvas.CopyRect ',ClassName,' Canvas=',Canvas.ClassName,' ',
+    //writeln('TCanvas.CopyRect ',ClassName,' SRcCanvas=',SrcCanvas.ClassName,' ',
     //  ' Src=',Source.Left,',',Source.Top,',',SW,',',SH,
     //  ' Dest=',Dest.Left,',',Dest.Top,',',DW,',',DH);
     StretchBlt(FHandle, Dest.Left, Dest.Top, DW, DH,
-      Canvas.FHandle, Source.Left, Source.Top, SW, SH, CopyMode);
+      SrcCanvas.FHandle, Source.Left, Source.Top, SW, SH, CopyMode);
   end;
 
   Assert(False, Format('Trace:<== [TCanvas.CopyRect] ', []));
@@ -94,7 +93,7 @@ end;
 {-----------------------------------------------}
 Function TCanvas.GetPixel(X,Y : Integer) : TColor;
 var
-Msg : TLMSetGetPixel;
+  Msg : TLMSetGetPixel;
 {TLMSetGetPixel = record
   X,Y : Integer;
   PixColor : TColor;
@@ -1254,6 +1253,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.61  2004/01/05 01:18:15  mattias
+  implemented Double Buffering for synedit and deactivated multi buffering in TGTKObject.ExtTextOut
+
   Revision 1.60  2004/01/03 23:14:59  mattias
   default font can now change height and fixed gtk crash
 
