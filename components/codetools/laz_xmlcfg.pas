@@ -53,9 +53,11 @@ type
     doc: TXMLDocument;
     FModified: Boolean;
     procedure Loaded; override;
+    function FindNode(const APath: String): TDomNode;
   public
     constructor Create(const AFilename: String);
     destructor Destroy; override;
+    procedure Clear;
     procedure Flush;    // Writes the XML file
     function  GetValue(const APath, ADefault: String): String;
     function  GetValue(const APath: String; ADefault: Integer): Integer;
@@ -63,6 +65,7 @@ type
     procedure SetValue(const APath, AValue: String);
     procedure SetValue(const APath: String; AValue: Integer);
     procedure SetValue(const APath: String; AValue: Boolean);
+    procedure DeletePath(const APath: string);
     property Modified: Boolean read FModified;
   published
     property Filename: String read FFilename write SetFilename;
@@ -91,6 +94,21 @@ begin
     doc.Free;
   end;
   inherited Destroy;
+end;
+
+procedure TXMLConfig.Clear;
+var
+  cfg: TDOMElement;
+begin
+  // free old document
+  doc.Free;
+  // create new document
+  doc := TXMLDocument.Create;
+  cfg :=TDOMElement(doc.FindNode('CONFIG'));
+  if not Assigned(cfg) then begin
+    cfg := doc.CreateElement('CONFIG');
+    doc.AppendChild(cfg);
+  end;
 end;
 
 procedure TXMLConfig.Flush;
@@ -200,11 +218,44 @@ begin
     SetValue(APath, 'False');
 end;
 
+procedure TXMLConfig.DeletePath(const APath: string);
+var
+  Node: TDomNode;
+begin
+  Node:=FindNode(APath);
+  if (Node=nil) or (Node.ParentNode=nil) then exit;
+  Node.ParentNode.RemoveChild(Node);
+end;
+
 procedure TXMLConfig.Loaded;
 begin
   inherited Loaded;
   if Length(Filename) > 0 then
     SetFilename(Filename);              // Load the XML config file
+end;
+
+function TXMLConfig.FindNode(const APath: String): TDomNode;
+var
+  Child: TDOMNode;
+  i: Integer;
+  NodePath: String;
+begin
+  if APath='' then begin
+    Result:=nil;
+    exit;
+  end;
+  Result := doc.DocumentElement;
+  NodePath := APath;
+  while Result<>nil do
+  begin
+    i := Pos('/', NodePath);
+    if i = 0 then
+      i:=length(NodePath)+1;
+    Child := Result.FindNode(Copy(NodePath, 1, i - 1));
+    NodePath := Copy(NodePath, i + 1, Length(NodePath));
+    Result := Child;
+    if NodePath='' then exit;
+  end;
 end;
 
 procedure TXMLConfig.SetFilename(const AFilename: String);
@@ -256,6 +307,9 @@ end;
 end.
 {
   $Log$
+  Revision 1.5  2002/10/01 09:09:07  lazarus
+  MG: added clear and deletepath
+
   Revision 1.4  2002/09/20 09:27:47  lazarus
   MG: accelerated xml
 
