@@ -106,7 +106,6 @@ function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Po
 function GetFocus: HWND; override;
 function GetFontLanguageInfo(DC: HDC): DWord; override;
 function GetKeyState(nVirtKey: Integer): Smallint; override;
-function GetNotebookTabIndexAtPos(Handle: HWND; const ClientPos: TPoint): integer; override;
 function GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; override;
 Function GetParent(Handle : HWND): HWND; override;
 Function GetProp(Handle : hwnd; Str : PChar): Pointer; override;
@@ -213,6 +212,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.90  2004/09/10 16:28:51  mattias
+  implemented very rudimentary TTabControl
+
   Revision 1.89  2004/02/23 18:24:38  mattias
   completed new TToolBar
 

@@ -217,7 +217,7 @@ type
     // notebook
     {$IFDef GTK1}
     procedure GetNoteBookCloseBtnImage(Window: PGdkWindow;
-                                        var Img, Mask: PGdkPixmap);virtual;
+                                       var Img, Mask: PGdkPixmap);virtual;
     {$Else}
     procedure GetNoteBookCloseBtnImage(var Img: PGdkPixbuf);virtual;
     {$EndIF}
@@ -348,7 +348,7 @@ uses
 // GtkWSDialogs,
 // GtkWSDirSel,
 // GtkWSEditBtn,
-// GtkWSExtCtrls,
+ GtkWSExtCtrls,
 // GtkWSExtDlgs,
 // GtkWSFileCtrl,
 // GtkWSForms,
@@ -460,6 +460,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.195  2004/09/10 16:28:51  mattias
+  implemented very rudimentary TTabControl
+
   Revision 1.194  2004/09/10 14:38:29  micha
   convert lm_gettext to new interface methods
   remove lm_settext replacement settext methods in twidgetsets

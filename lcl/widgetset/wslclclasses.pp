@@ -336,6 +336,7 @@ var
   Node: PClassNode;
 begin          
   Node := GetNode(AComponent);
+  //writeln('RegisterWSComponent ',AComponent.ClassName,' ',Node<>nil);
   if Node = nil then Exit;
   
   if Node^.WSClass = nil

@@ -881,6 +881,7 @@ images/components/tstatictext.xpm -text svneol=native#image/x-xpixmap
 images/components/tstatusbar.ico -text svneol=unset#image/x-icon
 images/components/tstatusbar.xpm -text svneol=native#image/x-xpixmap
 images/components/tstringgrid.xpm -text svneol=native#image/x-xpixmap
+images/components/ttabcontrol.xpm -text svneol=native#image/x-xpixmap
 images/components/ttimer.ico -text svneol=unset#image/x-icon
 images/components/ttimer.xpm -text svneol=native#image/x-xpixmap
 images/components/ttogglebox.ico -text svneol=unset#image/x-icon

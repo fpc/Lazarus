@@ -4062,7 +4062,7 @@ begin
        end
        else
        if ALCLObject is TCustomNotebook then
-         ConnectSenderSignal(gObject, 'switch-page', @gtkswitchpage)
+         ConnectSenderSignal(gObject, 'switch_page', @gtkswitchpage)
        else
        if ALCLObject is TCustomCombobox then
          ConnectSenderSignal (PGtkObject(
@@ -6691,13 +6691,13 @@ var
   PageWidget: PGtkWidget;      // the page (content widget)
   TabWidget: PGtkWidget;       // the tab (hbox containing a pixmap, a label
                                //          and a close button)
-  TabImageWidget: PGtkWidget; // the icon widget in the tab (a fixed widget)
+  TabImageWidget: PGtkWidget;  // the icon widget in the tab (a fixed widget)
   TabLabelWidget: PGtkWidget;  // the label in the tab
   TabCloseBtnWidget: PGtkWidget;// the close button in the tab
   TabCloseBtnImageWidget: PGtkWidget; // the pixmap in the close button
   MenuWidget: PGtkWidget;      // the popup menu (hbox containing a pixmap and
                                // a label)
-  MenuImageWidget: PGtkWidget;// the icon widget in the popup menu item (a fixed widget)
+  MenuImageWidget: PGtkWidget; // the icon widget in the popup menu item (a fixed widget)
   MenuLabelWidget: PGtkWidget; // the label in the popup menu item
 
   procedure UpdateTabImage;
@@ -8853,6 +8853,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.546  2004/09/10 16:28:51  mattias
+  implemented very rudimentary TTabControl
+
   Revision 1.545  2004/09/10 14:38:29  micha
   convert lm_gettext to new interface methods
   remove lm_settext replacement settext methods in twidgetsets

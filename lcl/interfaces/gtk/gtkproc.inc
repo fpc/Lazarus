@@ -5833,6 +5833,32 @@ end;
   of Styles.
  ------------------------------------------------------------------------------}
 function GetStyleWithName(const WName: String) : PGTKStyle;
+
+  function CreateStyleNotebook: PGTKWidget;
+  var
+    NoteBookWidget: PGtkNotebook;
+    NoteBookPageWidget: PGtkWidget;
+    NoteBookPageClientAreaWidget: PGtkWidget;
+    NoteBookTabLabel: PGtkWidget;
+    NoteBookTabMenuLabel: PGtkWidget;
+  begin
+    Result:=gtk_notebook_new;
+    NoteBookWidget := PGtkNoteBook(Result);
+    //NoteBookPageWidget := gtk_hbox_new(false, 0);
+    NoteBookPageClientAreaWidget := gtk_fixed_new;
+    gtk_widget_show(NoteBookPageClientAreaWidget);
+    //gtk_container_add(GTK_CONTAINER(NoteBookPageWidget),
+    //                  NoteBookPageClientAreaWidget);
+    //gtk_widget_show(NoteBookPageWidget);
+    NoteBookTabLabel:=gtk_label_new('Lazarus');
+    gtk_widget_show(NoteBookTabLabel);
+    NoteBookTabMenuLabel:=gtk_label_new('Lazarus');
+    gtk_widget_show(NoteBookTabMenuLabel);
+    gtk_notebook_append_page_menu(NoteBookWidget,NoteBookPageClientAreaWidget,
+                                  NoteBookTabLabel,NoteBookTabMenuLabel);
+    gtk_widget_set_usize(Result,200,200);
+  end;
+
 var
   Tp : Pointer;
   l : Longint;
@@ -5840,10 +5866,11 @@ var
   NoName: PGChar;
   lgs: TLazGtkStyle;
   WidgetName: String;
-  VBox: PGtkWidget;
+  //VBox: PGtkWidget;
   AddToStyleWindow: Boolean;
   StyleWindowWidget: PGtkWidget;
   Requisition: TGtkRequisition;
+  WindowFixedWidget: PGtkWidget;
 begin
   Result := nil;
   if Styles=nil then exit;
@@ -5894,12 +5921,17 @@ begin
         StyleObject^.Widget := GTK_WINDOW_NEW(GTK_WINDOW_TOPLEVEL);
         AddToStyleWindow:=false;
         gtk_widget_hide(StyleObject^.Widget);
-        // create the box
+        // create the fixed widget
         // (where to put all style widgets, that need a parent for realize)
-        VBox:=gtk_vbox_new(false,0);
-        gtk_widget_show(VBox);
-        gtk_container_add(PGtkContainer(StyleObject^.Widget), VBox);
-        gtk_object_set_data(PGtkObject(StyleObject^.Widget),'vbox',VBox);
+        //VBox:=gtk_vbox_new(false,0);
+        //gtk_widget_show(VBox);
+        //gtk_container_add(PGtkContainer(StyleObject^.Widget), VBox);
+        //gtk_object_set_data(PGtkObject(StyleObject^.Widget),'vbox',VBox);
+        WindowFixedWidget:=gtk_fixed_new;
+        gtk_widget_show(WindowFixedWidget);
+        gtk_container_add(PGtkContainer(StyleObject^.Widget), WindowFixedWidget);
+        gtk_object_set_data(PGtkObject(StyleObject^.Widget),'fixedwidget',WindowFixedWidget);
+        gtk_widget_realize(StyleObject^.Widget);
       end
     else
       If AnsiCompareText(WName,LazGtkStyleNames[lgsCheckbox])=0 then begin
@@ -5949,6 +5981,11 @@ begin
         StyleObject^.Widget := gtk_hpaned_new;
       end
     else
+      If AnsiCompareText(WName,LazGtkStyleNames[lgsNotebook])=0 then begin
+        lgs:=lgsNotebook;
+        StyleObject^.Widget := CreateStyleNotebook;
+      end
+    else
       If AnsiCompareText(WName,LazGtkStyleNames[lgsTooltip])=0 then begin
         lgs:=lgsTooltip;
         AddToStyleWindow:=false;
@@ -5983,12 +6020,14 @@ begin
 
       // put style widget on style window, so that it can be realized
       if AddToStyleWindow then begin
-        gtk_widget_show(StyleObject^.Widget);
+        gtk_widget_show_all(StyleObject^.Widget);
         StyleWindowWidget:=GetStyleWidget(lgsWindow);
-        VBox:=PGTKWidget(
-                     gtk_object_get_data(PGtkObject(StyleWindowWidget),'vbox'));
+        WindowFixedWidget:=PGTKWidget(
+               gtk_object_get_data(PGtkObject(StyleWindowWidget),'fixedwidget'));
         //writeln('AddToStyleWindow A ',GetWidgetDebugReport(StyleObject^.Widget));
-        gtk_box_pack_end(PGTKBox(VBox), StyleObject^.Widget, True, True, 0);
+        //gtk_box_pack_end(PGTKBox(VBox), WindowFixedWidget, True, True, 0);
+        gtk_fixed_put(PGtkFixed(WindowFixedWidget),StyleObject^.Widget,0,0);
+        gtk_widget_set_usize(StyleObject^.Widget,200,200);
       end;
 
       WidgetName:='LazStyle'+WName;
@@ -6667,7 +6706,7 @@ begin
 
       CreateRCStyle;
       for i:=0 to 4 do begin
-        debugln('AAA1 i=',dbgs(i),' ',RCStyle^.bg_pixmap_name[i],' ',RCStyle^.Name);
+        debugln('UpdateWidgetStyleOfControl i=',dbgs(i),' ',RCStyle^.bg_pixmap_name[i],' ',RCStyle^.Name);
         RCStyle^.bg[i]:=NewColor;
 
         // Indicate which colors the GtkRcStyle will affect;
@@ -7242,6 +7281,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.305  2004/09/10 16:28:51  mattias
+  implemented very rudimentary TTabControl
+
   Revision 1.304  2004/09/05 10:39:01  mattias
   fixed gtk1 intf key handler result
 

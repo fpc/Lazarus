@@ -100,7 +100,7 @@ type
       
       The current TCustomImageList is simply a list of bitmaps. The masks are
       not saved at all yet.
-      
+
       So a lot ToDo.
   }
   TDrawingStyle = (dsFocus, dsSelected, dsNormal, dsTransparent);
@@ -219,6 +219,9 @@ end.
 
 {
   $Log$
+  Revision 1.25  2004/09/10 16:28:50  mattias
+  implemented very rudimentary TTabControl
+
   Revision 1.24  2004/08/18 09:31:21  mattias
   removed obsolete unit vclglobals
 

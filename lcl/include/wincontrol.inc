@@ -3347,13 +3347,6 @@ begin
   
   if (csDestroying in ComponentState) then exit;
 
-  CreateParams(Params);
-  with Params do begin
-    if (WndParent = 0) and (Style and WS_CHILD <> 0) then
-      RaiseGDBException('TWinControl.CreateWnd: no parent '+Name+':'+ClassName);
-    Assert((parent <> nil) or (WndParent = 0), 'TODO: find parent if parent=nil and WndParent <> 0');
-  end;
-
   if FCreatingHandle
   then begin
     DebugLn('[WARNING] Recursive call to CreateWnd for ', ClassName, ' (', Name, ')');
@@ -3362,6 +3355,14 @@ begin
 
   FCreatingHandle := True;
   try
+
+    CreateParams(Params);
+    with Params do begin
+      if (WndParent = 0) and (Style and WS_CHILD <> 0) then
+        RaiseGDBException('TWinControl.CreateWnd: no parent '+Name+':'+ClassName);
+      Assert((parent <> nil) or (WndParent = 0), 'TODO: find parent if parent=nil and WndParent <> 0');
+    end;
+
     FHandle := WidgetSetClass.CreateHandle(Self, Params);
     Constraints.UpdateInterfaceConstraints;
     FFlags:=FFlags-[wcfColorChanged,wcfFontChanged];
@@ -3911,6 +3912,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.275  2004/09/10 16:28:50  mattias
+  implemented very rudimentary TTabControl
+
   Revision 1.274  2004/09/08 20:47:16  micha
   convert LM_SHOWHIDE message to new intf method TWSWinControl.ShowHide
 

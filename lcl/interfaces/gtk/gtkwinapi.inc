@@ -4466,50 +4466,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TGtkWidgetSet.GetNotebookTabIndexAtPos(Handle: HWND;
-    const ClientPos: TPoint): integer;
-
-
- ------------------------------------------------------------------------------}
-function TGtkWidgetSet.GetNotebookTabIndexAtPos(Handle: HWND;
-  const ClientPos: TPoint): integer;
-var
-  NoteBookWidget: PGtkNotebook;
-  i: integer;
-  TabWidget: PGtkWidget;
-  PageWidget: PGtkWidget;
-  NotebookPos: TPoint;
-  PageListItem: PGList;
-begin
-  Result:=-1;
-  if (Handle=0) then exit;
-  NoteBookWidget:=PGtkNotebook(Handle);
-  NotebookPos:=ClientPos;
-  // go through all tabs
-  i:=0;
-  PageListItem:=NoteBookWidget^.Children;
-  while PageListItem<>nil do begin
-    PageWidget:=PGtkWidget(PageListItem^.Data);
-    if PageWidget<>nil then begin
-      TabWidget:=gtk_notebook_get_tab_label(NoteBookWidget, PageWidget);
-      if TabWidget<>nil then begin
-        // test if position is in tabwidget
-        if (TabWidget^.Allocation.X<=NoteBookPos.X)
-        and (TabWidget^.Allocation.Y<=NoteBookPos.Y)
-        and (TabWidget^.Allocation.X+TabWidget^.Allocation.Width>NoteBookPos.X)
-        and (TabWidget^.Allocation.Y+TabWidget^.Allocation.Height>NoteBookPos.Y)
-        then begin
-          Result:=i;
-          exit;
-        end;
-      end;
-    end;
-    PageListItem:=PageListItem^.Next;
-    inc(i);
-  end;
-end;
-
-{------------------------------------------------------------------------------
   Function: GetObject
   Params:  none
   Returns: Nothing
@@ -8731,6 +8687,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.366  2004/09/10 16:28:51  mattias
+  implemented very rudimentary TTabControl
+
   Revision 1.365  2004/09/06 22:24:52  mattias
   started the carbon LCL interface
 

@@ -21,14 +21,74 @@
 
 }
 
-{$IFDEF EnableTabControl}
-
 { TTabControlStrings }
+
+procedure TTabControlStrings.SetHotTrack(const AValue: Boolean);
+begin
+  if FHotTrack=AValue then exit;
+  FHotTrack:=AValue;
+end;
+
+procedure TTabControlStrings.SetImages(const AValue: TCustomImageList);
+begin
+  if FImages=AValue then exit;
+  FImages:=AValue;
+end;
+
+procedure TTabControlStrings.SetMultiLine(const AValue: Boolean);
+begin
+  if FMultiLine=AValue then exit;
+  FMultiLine:=AValue;
+end;
+
+procedure TTabControlStrings.SetMultiSelect(const AValue: Boolean);
+begin
+  if FMultiSelect=AValue then exit;
+  FMultiSelect:=AValue;
+end;
+
+procedure TTabControlStrings.SetOwnerDraw(const AValue: Boolean);
+begin
+  if FOwnerDraw=AValue then exit;
+  FOwnerDraw:=AValue;
+end;
+
+procedure TTabControlStrings.SetRaggedRight(const AValue: Boolean);
+begin
+  if FRaggedRight=AValue then exit;
+  FRaggedRight:=AValue;
+end;
+
+procedure TTabControlStrings.SetScrollOpposite(const AValue: Boolean);
+begin
+  if FScrollOpposite=AValue then exit;
+  FScrollOpposite:=AValue;
+end;
+
+procedure TTabControlStrings.SetTabHeight(const AValue: Smallint);
+begin
+  if FTabHeight=AValue then exit;
+  FTabHeight:=AValue;
+end;
+
+procedure TTabControlStrings.SetTabWidth(const AValue: Smallint);
+begin
+  if FTabWidth=AValue then exit;
+  FTabWidth:=AValue;
+end;
 
 constructor TTabControlStrings.Create(TheTabControl: TCustomTabControl);
 begin
   inherited Create;
   FTabControl:=TheTabControl;
+  FHotTrack:=false;
+  FMultiLine:=false;
+  FMultiSelect:=false;
+  FOwnerDraw:=false;
+  FRaggedRight:=false;
+  FScrollOpposite:=false;
+  FTabHeight:=0;
+  FTabWidth:=0;
 end;
 
 procedure TTabControlStrings.TabControlBoundsChange;
@@ -36,7 +96,74 @@ begin
 
 end;
 
+function TTabControlStrings.IndexOfTabAt(X, Y: Integer): Integer;
+begin
+  Result:=0;
+end;
+
+function TTabControlStrings.GetHitTestInfoAt(X, Y: Integer): THitTests;
+begin
+  Result:=[];
+end;
+
+function TTabControlStrings.TabRect(Index: Integer): TRect;
+begin
+  FillChar(Result,SizeOf(Result),0);
+end;
+
+function TTabControlStrings.RowCount: Integer;
+begin
+  Result:=1;
+end;
+
+procedure TTabControlStrings.ScrollTabs(Delta: Integer);
+begin
+end;
+
+procedure TTabControlStrings.UpdateTabImages;
+begin
+end;
+
+procedure TTabControlStrings.BeginUpdate;
+begin
+  inc(FUpdateCount);
+end;
+
+procedure TTabControlStrings.EndUpdate;
+begin
+  if FUpdateCount=0 then
+    RaiseGDBException('TTabControlStrings.EndUpdate');
+  dec(FUpdateCount);
+end;
+
+function TTabControlStrings.IsUpdating: boolean;
+begin
+  Result:=FUpdateCount>0;
+end;
+
+procedure TTabControlStrings.ImageListChange(Sender: TObject);
+begin
+end;
+
 { TTabControlNoteBookStrings }
+
+procedure TTabControlNoteBookStrings.NBGetImageIndex(Sender: TObject;
+  TheTabIndex: Integer; var ImageIndex: Integer);
+begin
+  if Sender=nil then ;
+  ImageIndex:=TabControl.GetImageIndex(TheTabIndex);
+end;
+
+procedure TTabControlNoteBookStrings.NBChanging(Sender: TObject;
+  var AllowChange: Boolean);
+begin
+  AllowChange:=TabControl.CanChange;
+end;
+
+procedure TTabControlNoteBookStrings.NBPageChanged(Sender: TObject);
+begin
+  TabControl.Change;
+end;
 
 function TTabControlNoteBookStrings.Get(Index: Integer): string;
 begin
@@ -64,9 +191,31 @@ begin
   FNoteBook.Pages.PutObject(Index, AObject);
 end;
 
+procedure TTabControlNoteBookStrings.SetImages(const AValue: TCustomImageList);
+begin
+  if AValue is TImageList then
+    FNoteBook.Images:=TImageList(AValue)
+  else
+    FNoteBook.Images:=nil;
+end;
+
 procedure TTabControlNoteBookStrings.SetUpdateState(Updating: Boolean);
 begin
   FNoteBook.Pages.SetUpdateState(Updating);
+end;
+
+procedure TTabControlNoteBookStrings.SetTabHeight(const AValue: Smallint);
+begin
+  if TabHeight=AValue then exit;
+  inherited SetTabHeight(AValue);
+  TabControlBoundsChange;
+end;
+
+procedure TTabControlNoteBookStrings.SetTabWidth(const AValue: Smallint);
+begin
+  if TabWidth=AValue then exit;
+  inherited SetTabWidth(AValue);
+  TabControlBoundsChange;
 end;
 
 function TTabControlNoteBookStrings.GetTabIndex: integer;
@@ -84,6 +233,9 @@ begin
   inherited Create(TheTabControl);
   FNoteBook:=TNoteBook.Create(nil);
   FNoteBook.Parent:=TabControl;
+  FNoteBook.OnGetImageIndex:=@NBGetImageIndex;
+  FNoteBook.OnChanging:=@NBChanging;
+  FNoteBook.OnPageChanged:=@NBPageChanged;
   TabControlBoundsChange;
 end;
 
@@ -110,26 +262,103 @@ end;
 
 function TTabControlNoteBookStrings.GetSize: integer;
 begin
-  // ToDo
-  Result:=FNoteBook.Height;
+  case TabControl.TabPosition of
+  tpTop, tpBottom: Result:=FNoteBook.Height;
+  tpLeft, tpRight: Result:=FNoteBook.Width;
+  end;
 end;
 
 procedure TTabControlNoteBookStrings.TabControlBoundsChange;
+var
+  NewHeight: LongInt;
+  NewWidth: LongInt;
 begin
   inherited TabControlBoundsChange;
-  FNoteBook.SetBounds(0,0,TabControl.Width,30);
+
+  FNoteBook.TabPosition:=TabControl.TabPosition;
+
+  case TabControl.TabPosition of
+  tpTop,tpBottom:
+    begin
+      NewHeight:=TabHeight;
+      if NewHeight<=0 then
+        NewHeight:=FNoteBook.GetMinimumTabHeight;
+      NewHeight:=Min(TabControl.Height,NewHeight);
+      if TabControl.TabPosition=tpTop then
+        FNoteBook.SetBounds(0,0,TabControl.Width,NewHeight)
+      else
+        FNoteBook.SetBounds(0,TabControl.Height-NewHeight,
+                            TabControl.Width,NewHeight);
+    end;
+
+  tpLeft,tpRight:
+    begin
+      NewWidth:=TabWidth;
+      if NewWidth<=0 then
+        NewWidth:=FNoteBook.GetMinimumTabWidth;
+      NewWidth:=Min(TabControl.Width,NewWidth);
+      if TabControl.TabPosition=tpLeft then
+        FNoteBook.SetBounds(0,0,NewWidth,TabControl.Height)
+      else
+        FNoteBook.SetBounds(TabControl.Width-NewWidth,0,
+                            NewWidth,TabControl.Height);
+    end;
+  end;
+end;
+
+function TTabControlNoteBookStrings.IndexOfTabAt(X, Y: Integer): Integer;
+begin
+  Result:=FNoteBook.TabIndexAtClientPos(Point(X, Y));
 end;
 
 { TCustomTabControl }
 
 function TCustomTabControl.GetDisplayRect: TRect;
-var
-  TabAreaSize: LongInt;
 begin
-  // ToDo
-  Result:=ClientRect;
-  TabAreaSize:=TTabControlStrings(FTabs).GetSize;
-  Result.Top:=Min(TabAreaSize,Result.Bottom);
+  Result:=GetDisplayRectWithBorder;
+  if TabPosition<>tpTop then
+    Result.Top:=Min(Max(Result.Top,Result.Top+BorderWidth),Result.Bottom);
+  if TabPosition<>tpBottom then
+    Result.Bottom:=Max(Min(Result.Bottom,Result.Bottom-BorderWidth),Result.Top);
+  if TabPosition<>tpLeft then
+    Result.Left:=Min(Max(Result.Left,Result.Left+BorderWidth),Result.Right);
+  if TabPosition<>tpRight then
+    Result.Right:=Max(Min(Result.Right,Result.Right-BorderWidth),Result.Left);
+end;
+
+function TCustomTabControl.GetHotTrack: Boolean;
+begin
+  Result:=TTabControlStrings(FTabs).HotTrack;
+end;
+
+function TCustomTabControl.GetMultiLine: Boolean;
+begin
+  Result:=TTabControlStrings(FTabs).MultiLine;
+end;
+
+function TCustomTabControl.GetMultiSelect: Boolean;
+begin
+  Result:=TTabControlStrings(FTabs).MultiSelect;
+end;
+
+function TCustomTabControl.GetOwnerDraw: Boolean;
+begin
+  Result:=TTabControlStrings(FTabs).OwnerDraw;
+end;
+
+function TCustomTabControl.GetRaggedRight: Boolean;
+begin
+  Result:=TTabControlStrings(FTabs).RaggedRight;
+end;
+
+function TCustomTabControl.GetScrollOpposite: Boolean;
+begin
+  Result:=TTabControlStrings(FTabs).ScrollOpposite;
+end;
+
+function TCustomTabControl.GetTabHeight: Smallint;
+begin
+  Result:=TTabControlStrings(FTabs).TabHeight;
 end;
 
 function TCustomTabControl.GetTabIndex: Integer;
@@ -137,53 +366,46 @@ begin
   Result:=TTabControlStrings(FTabs).TabIndex;
 end;
 
+function TCustomTabControl.GetTabWidth: Smallint;
+begin
+  Result:=TTabControlStrings(FTabs).TabWidth;
+end;
+
 procedure TCustomTabControl.SetHotTrack(const AValue: Boolean);
 begin
-  if FHotTrack=AValue then exit;
-  FHotTrack:=AValue;
-  // ToDo
+  TTabControlStrings(FTabs).HotTrack:=AValue;
 end;
 
 procedure TCustomTabControl.SetImages(const AValue: TCustomImageList);
 begin
   if FImages=AValue then exit;
   FImages:=AValue;
-  // ToDo
+  TTabControlStrings(FTabs).Images:=FImages;
 end;
 
 procedure TCustomTabControl.SetMultiLine(const AValue: Boolean);
 begin
-  if FMultiLine=AValue then exit;
-  FMultiLine:=AValue;
-  // ToDo
+  TTabControlStrings(FTabs).MultiLine:=AValue;
 end;
 
 procedure TCustomTabControl.SetMultiSelect(const AValue: Boolean);
 begin
-  if FMultiSelect=AValue then exit;
-  FMultiSelect:=AValue;
-  // ToDo
+  TTabControlStrings(FTabs).MultiSelect:=AValue;
 end;
 
 procedure TCustomTabControl.SetOwnerDraw(const AValue: Boolean);
 begin
-  if FOwnerDraw=AValue then exit;
-  FOwnerDraw:=AValue;
-  // ToDo
+  TTabControlStrings(FTabs).OwnerDraw:=AValue;
 end;
 
 procedure TCustomTabControl.SetRaggedRight(const AValue: Boolean);
 begin
-  if FRaggedRight=AValue then exit;
-  FRaggedRight:=AValue;
-  // ToDo
+  TTabControlStrings(FTabs).RaggedRight:=AValue;
 end;
 
 procedure TCustomTabControl.SetScrollOpposite(const AValue: Boolean);
 begin
-  if FScrollOpposite=AValue then exit;
-  FScrollOpposite:=AValue;
-  // ToDo
+  TTabControlStrings(FTabs).ScrollOpposite:=AValue;
 end;
 
 procedure TCustomTabControl.SetStyle(const AValue: TTabStyle);
@@ -195,16 +417,15 @@ end;
 
 procedure TCustomTabControl.SetTabHeight(const AValue: Smallint);
 begin
-  if FTabHeight=AValue then exit;
-  FTabHeight:=AValue;
-  // ToDo
+  TTabControlStrings(FTabs).TabHeight:=AValue;
 end;
 
 procedure TCustomTabControl.SetTabPosition(const AValue: TTabPosition);
 begin
   if FTabPosition=AValue then exit;
   FTabPosition:=AValue;
-  // ToDo
+  TTabControlStrings(FTabs).TabControlBoundsChange;
+  ReAlign;
 end;
 
 procedure TCustomTabControl.SetTabs(const AValue: TStrings);
@@ -214,15 +435,15 @@ end;
 
 procedure TCustomTabControl.SetTabWidth(const AValue: Smallint);
 begin
-  if FTabWidth=AValue then exit;
-  FTabWidth:=AValue;
-  // ToDo
+  TTabControlStrings(FTabs).TabWidth:=AValue;
 end;
 
 function TCustomTabControl.CanChange: Boolean;
 begin
   Result:=true;
-  if Assigned(FOnChanging) then FOnChanging(Self,Result);
+  if FTabControlCreating then exit;
+  if not IsUpdating and Assigned(FOnChanging) then
+    FOnChanging(Self,Result);
 end;
 
 function TCustomTabControl.CanShowTab(TabIndex: Integer): Boolean;
@@ -232,13 +453,23 @@ end;
 
 procedure TCustomTabControl.Change;
 begin
-  if Assigned(FOnChange) then FOnChange(Self);
+  if FTabControlCreating then exit;
+  if IsUpdating then begin
+    FOnChangeNeeded:=true;
+    exit;
+  end else
+    FOnChangeNeeded:=false;
+  if Assigned(FOnChange) then
+    FOnChange(Self);
 end;
 
 procedure TCustomTabControl.DrawTab(TabIndex: Integer; const Rect: TRect;
   Active: Boolean);
 begin
-  // ToDo
+  if Assigned(FOnDrawTab) then
+    FOnDrawTab(Self,TabIndex,Rect,Active)
+  else
+    Canvas.FillRect(Rect);
 end;
 
 function TCustomTabControl.GetImageIndex(TabIndex: Integer): Integer;
@@ -251,6 +482,20 @@ end;
 procedure TCustomTabControl.Loaded;
 begin
   inherited Loaded;
+end;
+
+procedure TCustomTabControl.CreateWnd;
+begin
+  BeginUpdate;
+  inherited CreateWnd;
+  EndUpdate;
+end;
+
+procedure TCustomTabControl.DestroyHandle;
+begin
+  BeginUpdate;
+  inherited DestroyHandle;
+  EndUpdate;
 end;
 
 procedure TCustomTabControl.Notification(AComponent: TComponent;
@@ -268,12 +513,12 @@ end;
 
 procedure TCustomTabControl.UpdateTabImages;
 begin
-  // ToDo
+  TTabControlStrings(FTabs).UpdateTabImages;
 end;
 
 procedure TCustomTabControl.ImageListChange(Sender: TObject);
 begin
-  // ToDo
+  TTabControlStrings(FTabs).ImageListChange(Sender);
 end;
 
 procedure TCustomTabControl.DoSetBounds(ALeft, ATop, AWidth, AHeight: integer);
@@ -282,28 +527,65 @@ begin
   TTabControlStrings(FTabs).TabControlBoundsChange;
 end;
 
+procedure TCustomTabControl.Paint;
+var
+  ARect: TRect;
+  TS : TTextStyle;
+begin
+  ARect := GetClientRect;
+  Canvas.Color:=clWindow;
+  Canvas.FillRect(ARect);
+  ARect:=GetDisplayRect;
+  InflateRect(ARect,BorderWidth,BorderWidth);
+  Canvas.Frame3d(ARect, BorderWidth, bvRaised);
+
+  if (csDesigning in ComponentState) and (Caption <> '') then begin
+    ARect:=GetDisplayRect;
+    TS := Canvas.TextStyle;
+    TS.Alignment:=taCenter;
+    TS.Layout:= tlCenter;
+    TS.Opaque:= false;
+    TS.Clipping:= false;
+    Canvas.TextRect(ARect, 0, 0, Caption, TS);
+  end;
+end;
+
+function TCustomTabControl.GetDisplayRectWithBorder: TRect;
+var
+  TabAreaSize: LongInt;
+begin
+  Result:=ClientRect;
+  TabAreaSize:=TTabControlStrings(FTabs).GetSize;
+  case TabPosition of
+  tpTop:    Result.Top:=Min(TabAreaSize,Result.Bottom);
+  tpBottom: Result.Bottom:=Max(Result.Bottom-TabAreaSize,Result.Top);
+  tpLeft:   Result.Left:=Min(TabAreaSize,Result.Right);
+  tpRight:  Result.Right:=Max(Result.Right-TabAreaSize,Result.Left);
+  end;
+end;
+
+procedure TCustomTabControl.AdjustClientRect(var ARect: TRect);
+begin
+  ARect:=GetDisplayRect;
+end;
+
 constructor TCustomTabControl.Create(TheOwner: TComponent);
 begin
+  FTabControlCreating:=true;
   inherited Create(TheOwner);
-  FHotTrack:=false;
-  FMultiLine:=false;
-  FMultiSelect:=false;
-  FOwnerDraw:=false;
-  FRaggedRight:=false;
-  FScrollOpposite:=false;
   FStyle:=tsTabs;
-  FTabHeight:=0;
-  FTabIndex:=-1;
   FTabPosition:=tpTop;
-  FTabWidth:=0;
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @ImageListChange;
   FTabs:=TTabControlNoteBookStrings.Create(Self);
   SetInitialBounds(0,0,200,150);
+  BorderWidth:=2;
+  FTabControlCreating:=false;
 end;
 
 destructor TCustomTabControl.Destroy;
 begin
+  BeginUpdate;
   FreeThenNil(FTabs);
   FreeThenNil(FImageChangeLink);
   inherited Destroy;
@@ -311,41 +593,59 @@ end;
 
 function TCustomTabControl.IndexOfTabAt(X, Y: Integer): Integer;
 begin
-  Result:=0;
-  // ToDo
+  Result:=TTabControlStrings(FTabs).IndexOfTabAt(X,Y);
 end;
 
 function TCustomTabControl.GetHitTestInfoAt(X, Y: Integer): THitTests;
 begin
-  Result:=[];
-  // ToDo
+  Result:=TTabControlStrings(FTabs).GetHitTestInfoAt(X,Y);
 end;
 
 function TCustomTabControl.TabRect(Index: Integer): TRect;
 begin
-  FillChar(Result,SizeOf(Result),0);
-  // ToDo
+  Result:=TTabControlStrings(FTabs).TabRect(Index);
 end;
 
 function TCustomTabControl.RowCount: Integer;
 begin
-  Result:=1;
-  // ToDo
+  Result:=TTabControlStrings(FTabs).RowCount;
 end;
 
 procedure TCustomTabControl.ScrollTabs(Delta: Integer);
 begin
-  // ToDo
+  TTabControlStrings(FTabs).ScrollTabs(Delta);
 end;
 
-{$ENDIF}
+procedure TCustomTabControl.BeginUpdate;
+begin
+  if FTabs=nil then exit;
+  TTabControlStrings(FTabs).BeginUpdate;
+  //debugln('TCustomTabControl.BeginUpdate ',dbgs(IsUpdating));
+end;
 
+procedure TCustomTabControl.EndUpdate;
+begin
+  if FTabs=nil then exit;
+  TTabControlStrings(FTabs).EndUpdate;
+  //debugln('TCustomTabControl.EndUpdate ',dbgs(IsUpdating));
+  if not TTabControlStrings(FTabs).IsUpdating then begin
+    if FOnChangeNeeded then Change;
+  end;
+end;
+
+function TCustomTabControl.IsUpdating: boolean;
+begin
+  Result:=(FTabs<>nil) and TTabControlStrings(fTabs).IsUpdating;
+end;
 
 // included by comctrls.pp
 
 { =============================================================================
 
   $Log$
+  Revision 1.4  2004/09/10 16:28:50  mattias
+  implemented very rudimentary TTabControl
+
   Revision 1.3  2004/09/09 22:00:37  mattias
   started TTabControlNotebookStrings
 

@@ -139,7 +139,9 @@ type
     fAddingPages: boolean;
     FImages: TImageList;
     FLoadedPageIndex: integer;
+    FOnChanging: TTabChangingEvent;
     FOnCloseTabClicked: TNotifyEvent;
+    FOnGetImageIndex: TTabGetImageEvent;
     fOnPageChanged: TNotifyEvent;
     FOptions: TNoteBookOptions;
     fPageIndex: Integer;
@@ -190,22 +192,27 @@ type
     function GetImageIndex(ThePageIndex: Integer): Integer; virtual;
     function IndexOf(APage: TCustomPage): integer;
     function CustomPage(Index: integer): TCustomPage;
+    function CanChangePageIndex: boolean; virtual;
+    function GetMinimumTabWidth: integer; virtual;
+    function GetMinimumTabHeight: integer; virtual;
   public
     //property MultiLine: boolean read fMultiLine write SetMultiLine default false;
-    property Page[Index: Integer]: TCustomPage read GetPage;
-    property PageCount: integer read GetPageCount;
-    property Pages: TStrings read fAccess write SetPages;
-    property PageIndex: Integer read GetPageIndex write SetPageIndex default -1;
-    property PageList: TList read fPageList;
-    property OnPageChanged: TNotifyEvent read fOnPageChanged write fOnPageChanged;
-    property ShowTabs: Boolean read fShowTabs write SetShowTabs default True;
-    property TabPosition: TTabPosition read fTabPosition write SetTabPosition;
     procedure DoCloseTabClicked(APage: TCustomPage); virtual;
     property Images: TImageList read FImages write SetImages;
-    property Name;
-    property OnCloseTabClicked: TNotifyEvent
-      read FOnCloseTabClicked write FOnCloseTabClicked;
+    property OnChanging: TTabChangingEvent read FOnChanging write FOnChanging;
+    property OnCloseTabClicked: TNotifyEvent read FOnCloseTabClicked
+                                             write FOnCloseTabClicked;
+    property OnGetImageIndex: TTabGetImageEvent read FOnGetImageIndex
+                                                write FOnGetImageIndex;
+    property OnPageChanged: TNotifyEvent read fOnPageChanged write fOnPageChanged;
     property Options: TNoteBookOptions read FOptions write SetOptions;
+    property Page[Index: Integer]: TCustomPage read GetPage;
+    property PageCount: integer read GetPageCount;
+    property PageIndex: Integer read GetPageIndex write SetPageIndex default -1;
+    property PageList: TList read fPageList;
+    property Pages: TStrings read fAccess write SetPages;
+    property ShowTabs: Boolean read fShowTabs write SetShowTabs default True;
+    property TabPosition: TTabPosition read fTabPosition write SetTabPosition;
   published
     property TabStop default true;
   end;
@@ -263,6 +270,7 @@ type
     property OnContextPopup;
     property OnEnter;
     property OnExit;
+    property OnGetImageIndex;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
@@ -932,12 +940,15 @@ type
 const
   TCN_First = 0-550;
   TCN_SELCHANGE = TCN_FIRST - 1;
+  TCN_SELCHANGING = TCN_FIRST - 2;
 
 procedure Register;
 
 implementation
 
-uses Math;
+// !!! Avoid unit circles. Only add units if really needed.
+uses
+  Math, WSExtCtrls;
 
 procedure Register;
 begin
@@ -969,6 +980,9 @@ end.
 
  {
   $Log$
+  Revision 1.119  2004/09/10 16:28:50  mattias
+  implemented very rudimentary TTabControl
+
   Revision 1.118  2004/09/09 09:35:44  mattias
   renamed customradiogroup.inc to radiogroup.inc
 

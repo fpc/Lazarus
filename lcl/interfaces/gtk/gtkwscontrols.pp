@@ -28,15 +28,7 @@ interface
 
 uses
   {$IFDEF GTK2} Gtk2, Glib2, {$ELSE} Gtk, Glib, {$ENDIF}
-////////////////////////////////////////////////////
-// I M P O R T A N T                                
-////////////////////////////////////////////////////
-// To get as little as posible circles,
-// uncomment only when needed for registration
-////////////////////////////////////////////////////
-  Controls,
-////////////////////////////////////////////////////
-  Classes, LMessages, InterfaceBase, SysUtils,
+  SysUtils, Classes, Controls, LMessages, InterfaceBase,
   WSControls, WSLCLClasses;
 
 type
@@ -273,8 +265,6 @@ var
   aLabel, pLabel: pchar;
   AccelKey : integer;
 begin
-  Assert(False, Format('Trace:  [TGtkWidgetSet.SetLabel] %s --> label %s', [AWinControl.ClassName, AWinControl.Caption]));
-
   P := Pointer(AWinControl.Handle);
   Assert(p = nil, 'Trace:WARNING: [TGtkWidgetSet.SetLabel] --> got nil pointer');
   Assert(False, 'Trace:Setting Str1 in SetLabel');

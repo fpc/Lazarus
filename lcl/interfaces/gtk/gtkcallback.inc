@@ -2071,19 +2071,42 @@ end;
 function gtkswitchpage(widget: PGtkWidget; page: Pgtkwidget; pagenum: integer;
   data: gPointer): GBoolean; cdecl;
 var
-  Mess : TLMNotify;
-  T : tagNMHDR;
+  Mess: TLMNotify;
+  NMHdr: tagNMHDR;
+  SwitchAllowed: Boolean;
 begin
   Result := CallBackDefaultReturn;
 
   if (Widget=nil) or (Page=nil) then ;
+
   EventTrace('switch-page', data);
   UpdateNoteBookClientWidget(TObject(Data));
+
+  // gtkswitchpage is called before the switch
+  
+  // send first the TCN_SELCHANGING to ask if switch is allowed
+  FillChar(Mess,SizeOf(Mess),0);
   Mess.Msg := LM_NOTIFY;
-  T.code := TCN_SELCHANGE;
-  T.hwndfrom := longint(widget);
-  T.idfrom := pagenum;  //use this to set pageindex to the correct page.
-  Mess.NMHdr := @T;
+  FillChar(NMHdr,SizeOf(NMHdr),0);
+  NMHdr.code := TCN_SELCHANGING;
+  NMHdr.hwndfrom := longint(widget);
+  NMHdr.idfrom := pagenum;  //use this to set pageindex to the correct page.
+  Mess.NMHdr := @NMHdr;
+  Mess.Result := 0;
+  DeliverMessage(Data, Mess);
+  SwitchAllowed:=Mess.Result=0;
+  if not SwitchAllowed then begin
+    debugln('gtkswitchpage A SwitchAllowed=false not yet implemented');
+  end;
+
+  // then send the new page
+  FillChar(Mess,SizeOf(Mess),0);
+  Mess.Msg := LM_NOTIFY;
+  FillChar(NMHdr,SizeOf(NMHdr),0);
+  NMHdr.code := TCN_SELCHANGE;
+  NMHdr.hwndfrom := longint(widget);
+  NMHdr.idfrom := pagenum;  //use this to set pageindex to the correct page.
+  Mess.NMHdr := @NMHdr;
   DeliverMessage(Data, Mess);
 end;
 
@@ -2881,6 +2904,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.247  2004/09/10 16:28:50  mattias
+  implemented very rudimentary TTabControl
+
   Revision 1.246  2004/08/28 10:22:13  mattias
   added hints for long props in OI  from Andrew Haines
 

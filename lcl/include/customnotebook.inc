@@ -411,6 +411,8 @@ begin
     Result:=APage.ImageIndex
   else
     Result:=-1;
+  if Assigned(OnGetImageIndex) then
+    OnGetImageIndex(Self,ThePageIndex,Result);
 end;
 
 function TCustomNotebook.IndexOf(APage: TCustomPage): integer;
@@ -421,6 +423,24 @@ end;
 function TCustomNotebook.CustomPage(Index: integer): TCustomPage;
 begin
   Result:=GetPage(Index);
+end;
+
+function TCustomNotebook.CanChangePageIndex: boolean;
+begin
+  Result:=true;
+  if Assigned(OnChanging) then OnChanging(Self,Result);
+end;
+
+function TCustomNotebook.GetMinimumTabWidth: integer;
+begin
+  Result:=TWSCustomNotebookClass(WidgetSetClass).GetNotebookMinTabWidth(Self);
+  //debugln('TCustomNotebook.GetMinimumTabWidth A ',dbgs(Result));
+end;
+
+function TCustomNotebook.GetMinimumTabHeight: integer;
+begin
+  Result:=TWSCustomNotebookClass(WidgetSetClass).GetNotebookMinTabHeight(Self);
+  //debugln('TCustomNotebook.GetMinimumTabHeight A ',dbgs(Result));
 end;
 
 {------------------------------------------------------------------------------
@@ -508,6 +528,7 @@ begin
   //debugln('TCustomNotebook.SetPageIndex A AValue=',dbgs(AValue),' fPageIndex=',dbgs(fPageIndex),' PageCount=',dbgs(PageCount),' HandleAllocated=',dbgs(HandleAllocated));
   if (AValue < 0) or (AValue >= PageCount) then exit;
   if fPageIndex = AValue then exit;
+  if not CanChangePageIndex then exit;
   fPageIndex := AValue;
   UpdateAllDesignerFlags;
   DoSendPageIndex;
@@ -681,7 +702,7 @@ end;
 {------------------------------------------------------------------------------
   TCustomNotebook CNNotify
  ------------------------------------------------------------------------------}
-procedure TCustomNotebook.CNNotify(var Message : TLMNotify);
+procedure TCustomNotebook.CNNotify(var Message: TLMNotify);
 Begin
   with Message do
     Case NMHdr^.code of
@@ -701,6 +722,14 @@ Begin
                 OwnerFormDesignerModified(Self);
             end;
           end;
+        end;
+      TCN_SELCHANGING:
+        begin
+          if CanChangePageIndex then
+            Result := 0
+          else
+            Result := 1;
+          //debugln('TCustomNotebook.CNNotify TCN_SELCHANGING Result=',dbgs(Result));
         end;
     else
       begin
@@ -794,6 +823,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.55  2004/09/10 16:28:50  mattias
+  implemented very rudimentary TTabControl
+
   Revision 1.54  2004/09/10 09:43:12  micha
   convert LM_SETLABEL message to interface methods
 

@@ -27,14 +27,7 @@ unit GtkWSExtCtrls;
 interface
 
 uses
-////////////////////////////////////////////////////
-// I M P O R T A N T                                
-////////////////////////////////////////////////////
-// To get as little as posible circles,
-// uncomment only when needed for registration
-////////////////////////////////////////////////////
-//  ExtCtrls,
-////////////////////////////////////////////////////
+  LCLProc, Controls, gtk, GtkGlobals, GtkProc, ExtCtrls,
   WSExtCtrls, WSLCLClasses;
 
 type
@@ -53,6 +46,8 @@ type
   private
   protected
   public
+    class function GetNotebookMinTabHeight(const AWinControl: TWinControl): integer; override;
+    class function GetNotebookMinTabWidth(const AWinControl: TWinControl): integer; override;
   end;
 
   { TGtkWSPage }
@@ -202,6 +197,61 @@ type
 
 implementation
 
+{ TGtkWSCustomNotebook }
+
+function TGtkWSCustomNotebook.GetNotebookMinTabHeight(
+  const AWinControl: TWinControl): integer;
+var
+  NBWidget: PGTKWidget;
+  BorderWidth: Integer;
+  Requisition: TGtkRequisition;
+  Page: PGtkNotebookPage;
+begin
+  Result:=inherited GetNotebookMinTabHeight(AWinControl);
+  //debugln('TGtkWSCustomNotebook.GetNotebookMinTabHeight A ',dbgs(Result));
+  exit;
+
+  debugln('TGtkWSCustomNotebook.GetNotebookMinTabHeight A ',dbgs(AWinControl.HandleAllocated));
+  if AWinControl.HandleAllocated then
+    NBWidget:=PGTKWidget(AWinControl.Handle)
+  else
+    NBWidget:=GetStyleWidget(lgsNotebook);
+
+  // ToDo: find out how to create a fully working hidden Notebook style widget
+
+  if (NBWidget=nil) then begin
+    Result:=inherited GetNotebookMinTabHeight(AWinControl);
+    exit;
+  end;
+  debugln('TGtkWSCustomNotebook.GetNotebookMinTabHeight NBWidget: ',GetWidgetDebugReport(NBWidget),
+   ' ',dbgs(NBWidget^.allocation.width),'x',dbgs(NBWidget^.allocation.height));
+  
+  BorderWidth:=(PGtkContainer(NBWidget)^.flag0 and bm_TGtkContainer_border_width)
+               shr bp_TGtkContainer_border_width;
+  if PGtkNoteBook(NBWidget)^.first_tab<>nil then
+    Page:=PGtkNoteBook(NBWidget)^.cur_page;
+
+  Result:=BorderWidth;
+  if (NBWidget^.thestyle<>nil) and (PGtkStyle(NBWidget^.thestyle)^.klass<>nil) then
+    inc(Result,PGtkStyle(NBWidget^.thestyle)^.klass^.ythickness);
+
+  if (Page<>nil) and (Page^.child<>nil) then begin
+    gtk_widget_size_request(Page^.Child, @Requisition);
+    gtk_widget_map(Page^.child);
+    debugln('TGtkWSCustomNotebook.GetNotebookMinTabHeight B ',dbgs(Page^.child^.allocation.height),
+      ' ',GetWidgetDebugReport(Page^.child),' Requisition=',dbgs(Requisition.height));
+    inc(Result,Page^.child^.allocation.height);
+  end;
+  debugln('TGtkWSCustomNotebook.GetNotebookMinTabHeight END ',dbgs(Result),' ',
+    GetWidgetDebugReport(NBWidget));
+end;
+
+function TGtkWSCustomNotebook.GetNotebookMinTabWidth(
+  const AWinControl: TWinControl): integer;
+begin
+  Result:=inherited GetNotebookMinTabWidth(AWinControl);
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -211,7 +261,7 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TCustomPage, TGtkWSCustomPage);
-//  RegisterWSComponent(TCustomNotebook, TGtkWSCustomNotebook);
+  RegisterWSComponent(TCustomNotebook, TGtkWSCustomNotebook);
 //  RegisterWSComponent(TPage, TGtkWSPage);
 //  RegisterWSComponent(TNotebook, TGtkWSNotebook);
 //  RegisterWSComponent(TShape, TGtkWSShape);

@@ -44,7 +44,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  ExtCtrls,
+  Controls, ExtCtrls,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSControls, WSStdCtrls;
 
@@ -58,6 +58,8 @@ type
 
   TWSCustomNotebook = class(TWSWinControl)
   public
+    class function GetNotebookMinTabHeight(const AWinControl: TWinControl): integer; virtual;
+    class function GetNotebookMinTabWidth(const AWinControl: TWinControl): integer; virtual;
     class procedure SetTabCaption(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AText: string); virtual;
   end;
   TWSCustomNotebookClass = class of TWSCustomNotebook;
@@ -155,7 +157,36 @@ type
 
 implementation
 
-procedure TWSCustomNotebook.SetTabCaption(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AText: string); 
+{ TWSCustomNotebook }
+
+{-------------------------------------------------------------------------------
+  function TWSCustomNotebook.GetNotebookMinTabHeight(
+    const AWinControl: TWinControl): integer;
+
+  Returns the minimum height of the horizontal tabs of a notebook. That is the
+  Notebook with TabPosition in [tpTop,tpBottom] without the client panel.
+-------------------------------------------------------------------------------}
+function TWSCustomNotebook.GetNotebookMinTabHeight(
+  const AWinControl: TWinControl): integer;
+begin
+  Result:=30;
+end;
+
+{-------------------------------------------------------------------------------
+  function TWSCustomNotebook.GetNotebookMinTabWidth(
+    const AWinControl: TWinControl): integer;
+
+  Returns the minimum width of the vertical tabs of a notebook. That is the
+  Notebook with TabPosition in [tpLeft,tpRight] without the client panel.
+-------------------------------------------------------------------------------}
+function TWSCustomNotebook.GetNotebookMinTabWidth(const AWinControl: TWinControl
+  ): integer;
+begin
+  Result:=60;
+end;
+
+procedure TWSCustomNotebook.SetTabCaption(const ANotebook: TCustomNotebook;
+  const AChild: TCustomPage; const AText: string);
 begin
 end;
 

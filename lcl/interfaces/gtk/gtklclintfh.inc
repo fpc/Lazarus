@@ -42,6 +42,7 @@ function GetControlConstraints(Constraints: TObject): boolean; override;
 function GetLCLOwnerObject(Handle: HWnd): TObject; override;
 function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer; override;
 function GetListBoxItemRect(ListBox: TComponent; Index: integer; var ARect: TRect): boolean; override;
+function GetNotebookTabIndexAtPos(Handle: HWND; const ClientPos: TPoint): integer; override;
 
 function IntfSendsUTF8KeyPress: boolean; override;
 
@@ -59,6 +60,9 @@ procedure StatusBarUpdate(StatusBar: TObject); override;
 { =============================================================================
 
   $Log$
+  Revision 1.20  2004/09/10 16:28:51  mattias
+  implemented very rudimentary TTabControl
+
   Revision 1.19  2004/09/04 22:24:16  mattias
   added default values for compiler skip options and improved many parts of synedit for UTF8
 
