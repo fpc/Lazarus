@@ -51,7 +51,7 @@ uses
 {$else}
   mwCustomEdit, mwPasSyn, mwHighlighter,
 {$endif}
-  Laz_XMLCfg, CodeTemplateDialog, KeyMapping, InputHistory;
+  Laz_XMLCfg, CodeTemplateDialog, KeyMapping, InputHistory, IDEOptionDefs;
 
 type
 {$ifdef NEW_EDITOR_SYNEDIT}
@@ -1845,9 +1845,8 @@ begin
   FormCreating:=true;
 
   if LazarusResources.Find(ClassName)=nil then begin  
-    Width:=480;
-    Height:=459;
     Position:=poScreenCenter;
+    IDEDialogLayoutList.ApplyLayout(Self,480,459);
     Caption:='Editor Options';
     OnResize:=@EditorOptionsFormResize;
     
@@ -5082,6 +5081,7 @@ var res: TModalResult;
   SynOptions: TSynEditorOptions;
   i: integer;
 begin
+  IDEDialogLayoutList.SaveLayout(Self);
   SaveCurCodeTemplate;
   
   // save all values
@@ -5151,6 +5151,7 @@ end;
 
 procedure TEditorOptionsForm.CancelButtonClick(Sender:TObject);
 begin
+  IDEDialogLayoutList.SaveLayout(Self);
   EditorOpts.Load;
   ModalResult:=mrCancel;
 end;
