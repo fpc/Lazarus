@@ -117,7 +117,7 @@ else
   SrcPatch=fpcsrc-patch
 
   # patch sources
-  patch -p2 -d $TmpDir/ < $SrcPatch
+  patch -l -p2 -d $TmpDir/ -i $SrcPatch
 
   # change spec file
   cat $SpecFile | \
@@ -147,6 +147,8 @@ else
     mv New.Makefile Makefile
   fi
   cd -
+
+  exit
 
   #----------------------------------------------------------------------------
   # compile

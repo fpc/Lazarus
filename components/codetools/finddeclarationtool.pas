@@ -2924,16 +2924,23 @@ begin
   ReadNextAtom; // read keyword 'class', 'object', 'interface', 'dispinterface'
   if UpAtomIs('PACKED') then ReadNextAtom;
   ReadNextAtom;
+  ClassIdentNode:=ClassNode.Parent;
   if AtomIsChar('(') then begin
     ReadNextAtom;
     if not AtomIsIdentifier(false) then exit;
     // ancestor name found
     AncestorAtom:=CurPos;
     SearchBaseClass:=false;
+    if (ClassIdentNode<>nil)
+    and (CompareIdentifiers(@Src[CurPos.StartPos],
+      @Src[ClassIdentNode.StartPos])=0)
+    then begin
+      MoveCursorToCleanPos(CurPos.StartPos);
+      RaiseException('ancestor has same name as class');
+    end;
   end else begin
     // no ancestor class specified
     // check class name
-    ClassIdentNode:=ClassNode.Parent;
     if (ClassIdentNode=nil) or (ClassIdentNode.Desc<>ctnTypeDefinition) then
     begin
       MoveCursorToNodeStart(ClassNode);
@@ -2954,6 +2961,7 @@ begin
   writeln('[TFindDeclarationTool.FindAncestorOfClass] ',
   ' search ancestor class = ',GetAtom);
   {$ENDIF}
+
   // search ancestor class context
   CurPos.StartPos:=CurPos.EndPos;
   Params.Save(OldInput);
@@ -3062,6 +3070,7 @@ var
   OldInput: TFindDeclarationInput;
 begin
   Result:=false;
+
   if not (fdfSearchInAncestors in Params.Flags) then exit;
   Result:=FindAncestorOfClass(ClassNode,Params,true);
   if not Result then exit;

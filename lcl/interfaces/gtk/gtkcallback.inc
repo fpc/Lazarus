@@ -2554,7 +2554,7 @@ var
   MessI : TLMEnter;
 begin
   Result := CallBackDefaultReturn;
-//writeln('[gtkFocusInNotifyCB] ',TObject(data).ClassName);
+  //writeln('[gtkFocusInNotifyCB] ',TControl(data).Name,':',TObject(data).ClassName);
   EventTrace ('FocusInNotify (alias Enter)', data);
   
   if (Event=nil) then ;
@@ -2573,7 +2573,7 @@ var
   MessI : TLMExit;
 begin
   Result := CallBackDefaultReturn;
-//writeln('[gtkFocusOutNotifyCB] ',TObject(data).ClassName);
+  //writeln('[gtkFocusOutNotifyCB] ',TControl(data).Name,':',TObject(data).ClassName);
   EventTrace ('FocusOutNotify (alias Exit)', data);
 
   if (Event=nil) then ;
@@ -3070,6 +3070,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.227  2004/04/19 10:06:56  mattias
+  fixed illegal ancestor search
+
   Revision 1.226  2004/04/11 18:58:25  micha
   fix (lm_)setcursor changes for gtk target
 

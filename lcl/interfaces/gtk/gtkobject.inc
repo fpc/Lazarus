@@ -4734,26 +4734,26 @@ begin
                           GDK_KEY_RELEASE_MASK);
     end;
 
-    LM_MONTHCHANGED :  //calendar
+    LM_MONTHCHANGED:  //calendar
     Begin
       ConnectSenderSignal(gObject, 'month-changed', @gtkmonthchanged);
       ConnectSenderSignal(gObject, 'prev-month', @gtkmonthchanged);
       ConnectSenderSignal(gObject, 'next-month', @gtkmonthchanged);
     end;
 
-    LM_PRESSED :
+    LM_PRESSED:
     begin
       Assert(False, 'Trace:OBSOLETE: [TGtkWidgetSet.SetCallback] LM_PRESSED');
       ConnectSenderSignal(gObject, 'pressed', @gtkpressedCB);
     end;
 
-    LM_RELEASED :
+    LM_RELEASED:
     begin
       Assert(False, 'Trace:OBSOLETE: [TGtkWidgetSet.SetCallback] LM_RELEASED');
       ConnectSenderSignal(gObject, 'released', @gtkreleasedCB);
     end;
 
-    LM_MOVECURSOR :
+    LM_MOVECURSOR:
     begin
       ConnectSenderSignal(gFixed, 'move-cursor', @gtkmovecursorCB);
     end;
@@ -9404,6 +9404,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.497  2004/04/19 10:06:56  mattias
+  fixed illegal ancestor search
+
   Revision 1.496  2004/04/19 09:30:04  marc
   * Fixed compilation for gtk2
 
