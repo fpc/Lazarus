@@ -59,6 +59,7 @@ type
     procedure SetCallback(Msg : LongInt; Sender : TObject); virtual; abstract;
     procedure RemoveCallbacks(Sender : TObject); virtual; abstract;
     function UpdateHint(Sender: TObject): Integer; virtual; abstract;
+    function RecreateWnd(Sender: TObject): Integer; virtual; abstract;
 
     
     {$DEFINE IF_BASE_MEMBER}
@@ -80,6 +81,12 @@ end.
 
 {
   $Log$
+  Revision 1.2  2001/02/01 19:34:50  lazarus
+  TScrollbar created and a lot of code added.
+
+  It's cose to working.
+  Shane
+
   Revision 1.1  2000/07/13 10:28:24  michael
   + Initial import
 

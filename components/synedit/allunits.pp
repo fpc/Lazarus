@@ -13,7 +13,7 @@ interface
 uses
   synedit, syneditautocomplete, synedithighlighter, syneditkeycmds,
   syneditmiscclasses, syneditmiscprocs, syneditsearch, syneditstrconst,
-  synedittextbuffer, synedittypes, synhighlighterpas, syntextdrawer;
+  synedittextbuffer, synedittypes, synhighlighterpas, syntextdrawer,syncompletion;
 	
 implementation
 end.
@@ -21,6 +21,12 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.3  2001/02/01 19:34:50  lazarus
+  TScrollbar created and a lot of code added.
+
+  It's cose to working.
+  Shane
+
   Revision 1.2  2001/01/30 22:55:00  lazarus
   MWE:
     + Added $mode objfpc directive

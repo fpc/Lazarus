@@ -11,6 +11,7 @@ begin
   fCompStyle := csScrollBar;
   Width := 121;
   Height := GetSystemMetrics(SM_CYHSCROLL);
+  SetBounds(0,0,width,height);
   TabStop := True;
   ControlStyle := [csFramed, csDoubleClicks, csOpaque];
   FKind := sbHorizontal;
@@ -56,6 +57,7 @@ end;
 
 procedure TScrollBar.SetKind(Value: TScrollBarKind);
 begin
+  Writeln('setkind');
   if FKind <> Value then
   begin
     FKind := Value;
@@ -87,6 +89,8 @@ begin
         SetScrollPos(Handle, SB_CTL, FMax - FPosition, True);
     Change;
   end;
+
+  CNSendMEssage(LM_SetProperties,self,nil);
 end;
 
 procedure TScrollBar.SetPosition(Value: Integer);

@@ -96,7 +96,8 @@ type
       procedure AppTerminate; override;
       procedure Init; override;
       function  UpdateHint(Sender: TObject): Integer; override;
-      
+      function  RecreateWnd(Sender: TObject): Integer; override;
+
       {$I gtkwinapih.inc}
 
    end;
@@ -238,6 +239,12 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.5  2001/02/01 19:34:50  lazarus
+  TScrollbar created and a lot of code added.
+
+  It's cose to working.
+  Shane
+
   Revision 1.4  2001/01/24 23:26:40  lazarus
   MWE:
     = moved some types to gtkdef

@@ -317,9 +317,13 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TWinControl.ReCreateWnd;
 Begin
-//TODO: 
-//  if HandleAllocated
-//  then sendmessage
+//send a message to inform the interface that we need to destroy and recreate this control
+Writeln(Format('[TWinControl.RecreateWnd] %s ', [Classname]));
+if FHandle <> 0 then
+  Begin
+   CNSendMessage(LM_RECREATEWND,Self,Nil);
+   AttachSignals;
+  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1889,6 +1893,12 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.14  2001/02/01 19:34:50  lazarus
+  TScrollbar created and a lot of code added.
+
+  It's cose to working.
+  Shane
+
   Revision 1.13  2001/01/30 18:15:02  lazarus
   Added code for TStatusBar
   I'm now capturing WMPainT and doing the drawing myself.

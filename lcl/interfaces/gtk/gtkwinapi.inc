@@ -2784,11 +2784,17 @@ begin
   then begin
     case SBStyle of
       SB_HORZ:
-        if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), gtk_scrolled_window_get_type)
-        then Adjustment := gtk_scrolled_window_get_hadjustment(PGTKScrolledWindow(Handle));
+        if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), gtk_scrolled_window_get_type) then
+           Adjustment := gtk_scrolled_window_get_hadjustment(PGTKScrolledWindow(Handle))
+        else
+        if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), gtk_hscrollbar_get_type) then
+           Adjustment :=  PgtkhScrollBar(handle)^.Scrollbar.Range.Adjustment;
       SB_VERT:
-        if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), gtk_scrolled_window_get_type)
-        then Adjustment := gtk_scrolled_window_get_vadjustment(PGTKScrolledWindow(Handle));
+        if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), gtk_scrolled_window_get_type) then
+           Adjustment := gtk_scrolled_window_get_vadjustment(PGTKScrolledWindow(Handle))
+        else
+        if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), gtk_vscrollbar_get_type) then
+           Adjustment :=  PgtkvScrollBar(handle)^.Scrollbar.Range.Adjustment;
       SB_CTL:
         if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), gtk_range_get_type)
         then Adjustment := gtk_range_get_adjustment(PGTKRange(Handle));
@@ -3149,6 +3155,12 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.17  2001/02/01 19:34:50  lazarus
+  TScrollbar created and a lot of code added.
+
+  It's cose to working.
+  Shane
+
   Revision 1.16  2001/01/23 23:33:55  lazarus
   MWE:
     - Removed old LM_InvalidateRect

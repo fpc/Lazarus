@@ -180,6 +180,27 @@ begin
    
 end;
 
+function  TgtkObject.RecreateWnd(Sender: TObject): Integer;
+var
+ aParent : TWinControl;
+Begin
+//could we just call IntSendMessage??
+
+//destroy old widget
+gtk_widget_destroy(PgtkWidget(TWinControl(sender).HANDLE));
+
+aParent := TWinControl(sender).Parent;
+aParent.RemoveControl(TControl(sender));
+
+TWincontrol(sender).parent := nil;
+TWincontrol(sender).parent := aParent;
+
+ResizeChild(Sender,TWinControl(sender).Left,TWinControl(sender).Top,TWinControl(sender).Width,TWinControl(sender).Height);
+ShowHide(sender);
+
+End;
+
+
 {------------------------------------------------------------------------------
   Method: TGtkObject.IntSendMessage3
   Params:  LM_Message - message to be processed by GTK
@@ -244,6 +265,8 @@ begin
       LM_SETVALUE  : Result := SetValue (Sender, data);
      
       LM_SETPROPERTIES: Result := SetProperties(Sender);
+
+      LM_RECREATEWND : Result := RecreateWnd(sender);
       
       LM_ATTACHMENU: AttachMenu(Sender);
    else begin
@@ -1824,6 +1847,25 @@ begin
          end;
       end;
 
+      csScrollBar :
+      begin
+            if (TScrollBar(sender).kind = sbHorizontal) then
+               begin
+                Writeln('[Creating TScrollbar]  Horiz');
+                 P := gtk_hscrollbar_new(PgtkAdjustment(gtk_adjustment_new(1,TScrollBar(sender).min, TScrollBar(sender).max,
+                                                                     TScrollBar(sender).SmallChange, TScrollBar(sender).LargeChange,
+                                                                     TScrollBar(sender).Pagesize)));
+               end
+              else
+               Begin
+                Writeln('[Creating TScrollbar]  Vertical');
+                 P := gtk_vscrollbar_new(PgtkAdjustment(gtk_adjustment_new(1,TScrollBar(sender).min, TScrollBar(sender).max,
+                                                                     TScrollBar(sender).SmallChange, TScrollBar(sender).LargeChange,
+                                                                     TScrollBar(sender).Pagesize)));
+               end;
+
+      end;
+
       csScrolledWindow :
       begin
          P := gtk_scrolled_window_new(nil,nil);
@@ -2279,6 +2321,19 @@ begin
             else
                gtk_progress_set_show_text (GTK_PROGRESS (handle), 0);
          end;
+
+
+      csScrollBar:
+         with (TScrollBar (Sender)) do
+             begin
+               //set properties for the range
+               Widget := PGtkWidget (gtk_range_get_adjustment (GTK_RANGE (handle)));
+               PGtkAdjustment(Widget)^.lower := Min;
+               PGtkAdjustment(Widget)^.Upper := Max;
+               PGtkAdjustment(Widget)^.Value := Position;
+               PGtkAdjustment(Widget)^.step_increment := SmallChange;
+               PGtkAdjustment(Widget)^.page_increment := LargeChange;
+             end;
    
       csTrackbar   : 
          with (TTrackBar (Sender)) do
@@ -2606,6 +2661,12 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.25  2001/02/01 19:34:50  lazarus
+  TScrollbar created and a lot of code added.
+
+  It's cose to working.
+  Shane
+
   Revision 1.24  2001/01/31 21:16:45  lazarus
   Changed to TCOmboBox focusing.
   Shane

@@ -139,7 +139,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomRadioGroup.ItemsChanged (Sender : TObject);
 begin
-   RecreateWnd;
+//   RecreateWnd;
 end;
 
 {------------------------------------------------------------------------------
@@ -243,6 +243,12 @@ end;
 
 {
   $Log$
+  Revision 1.3  2001/02/01 19:34:50  lazarus
+  TScrollbar created and a lot of code added.
+
+  It's cose to working.
+  Shane
+
   Revision 1.2  2000/12/29 15:04:07  lazarus
   Added more images to the resource.
   Shane

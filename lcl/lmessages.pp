@@ -83,6 +83,9 @@ LM_DRAGINFOCHANGED = LM_COMUSER+53;
 LM_BRINGTOFRONT = LM_COMUSER+55;
 LM_POPUPSHOW = LM_COMUSER+56;
 
+
+LM_RECREATEWND = LM_COMUSER+57;
+
 //end of messages that are sent to the interface
 
 
@@ -765,6 +768,12 @@ end.
 
 {
   $Log$
+  Revision 1.9  2001/02/01 19:34:50  lazarus
+  TScrollbar created and a lot of code added.
+
+  It's cose to working.
+  Shane
+
   Revision 1.8  2001/01/23 23:33:54  lazarus
   MWE:
     - Removed old LM_InvalidateRect
