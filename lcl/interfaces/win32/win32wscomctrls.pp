@@ -51,6 +51,8 @@ type
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
+    class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, 
+      AWidth, AHeight: integer); override;
   end;
 
   { TWin32WSTabSheet }
@@ -299,11 +301,18 @@ begin
   end;
 end;
 
-procedure TWin32WSStatusBar.SetText(const AWinControl: TWinControl; const AText: string);
+procedure TWin32WSStatusBar.SetText(const AWinControl: TWinControl; 
+  const AText: string);
 begin
   // inhibit. StatusBars do not have a caption, simpletext is set by SetPanelText
 end;
 
+procedure TWin32WSStatusBar.SetBounds(const AWinControl: TWinControl;
+  const ALeft, ATop, AWidth, AHeight: integer);
+begin
+  // statusbars do their own resizing, post a size message to it's queue
+  Windows.PostMessage(AWinControl.Handle, WM_SIZE, 0, 0);
+end;
 
 { TWin32WSCustomListView } 
      
