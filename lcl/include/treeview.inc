@@ -4083,7 +4083,11 @@ end;
 
 function TCustomTreeView.CreateNode: TTreeNode;
 begin
-  Result := TTreeNode.Create(Items);
+  Result := nil;
+  if Assigned(FOnCustomCreateItem) then
+    FOnCustomCreateItem(Self, Result);
+  if Result = nil then
+    Result := TTreeNode.Create(Items);
 end;
 
 procedure TCustomTreeView.ImageListChange(Sender: TObject);

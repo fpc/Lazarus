@@ -1502,6 +1502,7 @@ type
   TTVAdvancedCustomDrawItemEvent = procedure(Sender: TCustomTreeView;
     Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
     var PaintImages, DefaultDraw: Boolean) of object;
+  TTVCustomCreateNodeEvent = procedure(Sender: TCustomTreeView; var ATreeNode: TTreenode) of object;
 
   TTreeNodeCompare = function(Node1, Node2: TTreeNode): integer of object;
 
@@ -1860,6 +1861,7 @@ type
     FOnCollapsed: TTVExpandedEvent;
     FOnCollapsing: TTVCollapsingEvent;
     FOnCompare: TTVCompareEvent;
+    FOnCustomCreateItem: TTVCustomCreateNodeEvent;
     FOnCustomDraw: TTVCustomDrawEvent;
     FOnCustomDrawItem: TTVCustomDrawItemEvent;
     FOnDeletion: TTVExpandedEvent;
@@ -2035,6 +2037,7 @@ type
     property OnCollapsed: TTVExpandedEvent read FOnCollapsed write FOnCollapsed;
     property OnCollapsing: TTVCollapsingEvent read FOnCollapsing write FOnCollapsing;
     property OnCompare: TTVCompareEvent read FOnCompare write FOnCompare;
+    property OnCustomCreateItem: TTVCustomCreateNodeEvent read FOnCustomCreateItem write FOnCustomCreateItem;
     property OnCustomDraw: TTVCustomDrawEvent read FOnCustomDraw write FOnCustomDraw;
     property OnCustomDrawItem: TTVCustomDrawItemEvent
       read FOnCustomDrawItem write FOnCustomDrawItem;
@@ -2176,6 +2179,7 @@ type
     property OnCollapsing;
     property OnCompare;
     property OnContextPopup;
+    property OnCustomCreateItem;
     property OnCustomDraw;
     property OnCustomDrawItem;
     property OnDblClick;
@@ -2293,6 +2297,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.161  2005/01/28 16:45:43  mattias
+  added TTreeView.OnCustomCreateItem  from Andre Haines
+
   Revision 1.160  2005/01/27 19:03:51  mattias
   added QuestionDlg - a MessageDlg with custom buttons
 
