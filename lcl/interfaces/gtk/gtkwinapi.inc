@@ -1042,12 +1042,25 @@ end;
 
 {------------------------------------------------------------------------------
   Function: CreateFontIndirect
-  Params:  none
-  Returns: Nothing
+  Params:  const LogFont: TLogFont
+  Returns: HFONT
 
-
+  Creates a font GDIObject.
  ------------------------------------------------------------------------------}
 function TgtkObject.CreateFontIndirect(const LogFont: TLogFont): HFONT;
+begin
+  Result:=CreateFontIndirectEx(LogFont,'');
+end;
+
+{------------------------------------------------------------------------------
+  Function: CreateFontIndirectEx
+  Params:  const LogFont: TLogFont; const LongFontName: string
+  Returns: HFONT
+
+  Creates a font GDIObject.
+ ------------------------------------------------------------------------------}
+function TgtkObject.CreateFontIndirectEx(const LogFont: TLogFont;
+  const LongFontName: string): HFONT;
 var
   GdiObject: PGdiObject;
   S: String;
@@ -1058,8 +1071,6 @@ var
   n: Integer;
 
   procedure LoadFont;
-  var
-    pStr: PChar;
   begin
     S := Format('%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s',
       [FontNameRegistry, Foundry, FamilyName, WeightName,
@@ -1068,172 +1079,224 @@ var
        CharSetRegistry, CharSetCoding
       ]);
 
-    pStr := StrAlloc(Length(S) + 1);
-    try
-      StrPCopy(pStr, S);
-      GdiObject^.GDIFontObject := gdk_font_load(pStr);
-    finally
-      StrDispose(pStr);
-    end;
+    //writeln('  Trying "',S,'"');
+    GdiObject^.GDIFontObject := gdk_font_load(PChar(s));
+  end;
+  
+  procedure LoadDefaultFont;
+  begin
+    FGDIObjects.Remove(GdiObject);
+    Dispose(GdiObject);
+    GdiObject:=CreateDefaultFont;
   end;
 
 begin
-  // For info about xlfd see: http://wwwinfo.cern.ch/umtf/working-groups/X11/fonts/hp_xlfd.html
+  // For info about xlfd see:
+  //    http://wwwinfo.cern.ch/umtf/working-groups/X11/fonts/hp_xlfd.html
   // Lets fill in all the xlfd parts. Assume we have scalable fonts
 
   Result := 0;
+  GDIObject := NewGDIObject(gdiFont);
 
-  with LogFont do
-  begin
+  try
+    GdiObject^.LogFont := LogFont;
+    //writeln('TgtkObject.CreateFontIndirectEx Name="',LogFont.lfFaceName,'"',
+    //' Long="',LongFontName,'" ',IsFontNameXLogicalFontDesc(LongFontName)
+    //,' ',ord(LogFont.lfFaceName[0]));
+    S:=LongFontName;
+    if IsFontNameXLogicalFontDesc(LongFontName) then begin
+      GdiObject^.GDIFontObject := gdk_font_load(PChar(LongFontName));
+      if GdiObject^.GDIFontObject<>nil then begin
+        GdiObject^.LogFont := XLFDNameToLogFont(LongFontName);
+        exit;
+      end;
+    end;
+    
+    with LogFont do
+    begin
 
-    FontNameRegistry := '';
-    Foundry := '*';
+      FontNameRegistry := '';
+      Foundry := '*';
 
-    if lfFaceName[0] = #0
-    then begin
-      Assert(false,'ERROR: [TgtkObject.CreateFontIndirect] No fontname');
-      Exit;
+      if lfFaceName[0] = #0
+      then begin
+        Assert(false,'ERROR: [TgtkObject.CreateFontIndirectEx] No fontname');
+        Exit;
+      end;
+
+      FamilyName := StrPas(lfFaceName); //StringReplace(FaceName, ' ', '*');
+      if AnsiCompareText(FamilyName,'default')=0 then begin
+        LoadDefaultFont;
+        exit;
+      end;
+
+      Assert(False, Format('trace:  [TgtkObject.CreateFontIndirectEx] Name: %s, Height: %d', [FamilyName, lfHeight]));
+
+      // calculate weight offset.
+      //        API                 XLFD
+      // --------------------- --------------
+      // Weight=400 --> normal normal
+      // Weight=700 --> bold   normal+4000 (or bold in non scalable fonts)
+      //
+      // So in API the offset for normal = 400 and an increase of 300 equals to
+      // an offset of 4000
+      case lfWeight of
+        FW_DONTCARE   : WeightName := '*';
+        FW_LIGHT      : WeightName := 'light';
+        FW_NORMAL     : WeightName := 'normal';
+        FW_MEDIUM     : WeightName := 'medium';
+        FW_SEMIBOLD   : WeightName := 'demi bold';
+        FW_BOLD       : WeightName := 'bold';
+
+        else begin
+          n := ((lfWeight - FW_NORMAL) * 4000) div (FW_BOLD - FW_NORMAL);
+          if n = 0
+          then WeightName := 'normal'
+          else if n > 0
+          then WeightName := Format('normal+%d', [n])
+          else WeightName := Format('normal%d', [n]);
+        end;
+      end;
+
+      // TODO: find out if escapement has something to do with slant
+      if lfItalic = 0 then Slant := 'r' else Slant := 'i';
+
+      SetwidthName := '*';
+
+      // calculate Style name extentions (=rotation)
+      //        API                 XLFD
+      // --------------------- --------------
+      // Orientation 1/10 deg  1/64 deg
+      if lfOrientation = 0
+      then AddStyleName := '*'
+      else begin
+        n := (lfOrientation * 64) div 10;
+        if n >= 0
+        then AddStyleName := Format('+%d', [n])
+        else AddStyleName := Format('+%d', [n]);
+      end;
+
+      // TODO: make more accurate (implement the meaning of
+      //       positive and negative heigtht values.
+      PixelSize := IntToStr(Abs(lfHeight));
+
+      // Since we use pixelsize, it isn't allowed to give a value here
+      PointSize := '*';
+
+      // Use the default
+      ResolutionX := '*';
+      ResolutionY := '*';
+
+      Spacing := '*';
+
+      // calculate AverageWidth
+      //        API                 XLFD
+      // --------------------- --------------
+      // Width pixel             1/10 pixel
+      if lfWidth = 0
+      then AverageWidth := '*'
+      else AverageWidth := InttoStr(lfWidth * 10);
+
+
+      CharSetRegistry := '*';
+
+      // TODO: Match charset.
+      CharSetCoding := '*';
     end;
 
-    FamilyName := StrPas(lfFaceName); //StringReplace(FaceName, ' ', '*');
-
-    Assert(False, Format('trace:  [TgtkObject.CreateFontIndirect] Name: %s, Height: %d', [FamilyName, lfHeight]));
-
-    // calculate weight offset.
-    //        API                 XLFD
-    // --------------------- --------------
-    // Weight=400 --> normal normal
-    // Weight=700 --> bold   normal+4000 (or bold in non scalable fonts)
-    //
-    // So in API the offset for normal = 400 and an increase of 300 equals to
-    // an offset of 4000
-    case lfWeight of
-      0: WeightName := '*';
-      FW_NORMAL: WeightName := 'normal';
-      FW_MEDIUM: WeightName := 'medium';
-      FW_BOLD:   WeightName := 'bold';
-      FW_BLACK:  WeightName := 'black';
-
-      else begin
-        n := ((lfWeight - FW_NORMAL) * 4000) div (FW_BOLD - FW_NORMAL);
-        if n = 0
-        then WeightName := 'normal'
-        else if n > 0
-        then WeightName := Format('normal+%d', [n])
-        else WeightName := Format('normal%d', [n]);
+  //write('CreateFontIndirect->');
+    LoadFont;
+    if GdiObject^.GDIFontObject = nil
+    then begin
+      if (WeightName='normal') then begin
+        WeightName:='medium';
+        LoadFont;
+      end else if (WeightName='bold') then begin
+        WeightName:='black';
+        LoadFont;
       end;
     end;
 
-    // TODO: find out if escapement has something to do with slant
-    if lfItalic = 0 then Slant := 'r' else Slant := 'i';
-
-    SetwidthName := '*';
-
-    // calculate Style name extentions (=rotation)
-    //        API                 XLFD
-    // --------------------- --------------
-    // Orientation 1/10 deg  1/64 deg
-    if lfOrientation = 0
-    then AddStyleName := '*'
-    else begin
-      n := (lfOrientation * 64) div 10;
-      if n >= 0
-      then AddStyleName := Format('+%d', [n])
-      else AddStyleName := Format('+%d', [n]);
+    if GdiObject^.GDIFontObject = nil
+    then begin
+      if (WeightName='medium') then begin
+        WeightName:='regular';
+        LoadFont;
+      end else if (WeightName='black') then begin
+        WeightName:='demi bold';
+        LoadFont;
+      end;
     end;
-
-    // TODO: make more accurate (implement the meaning of
-    //       positive and negative heigtht values.
-    PixelSize := IntToStr(Abs(lfHeight));
-
-    // Since we use pixelsize, it isn't allowed to give a value here
-    PointSize := '*';
-
-    // Use the default
-    ResolutionX := '*';
-    ResolutionY := '*';
-
-    Spacing := '*';
-
-    // calculate AverageWidth
-    //        API                 XLFD
-    // --------------------- --------------
-    // Widht pixel           1/10 pixel
-    if lfWidth = 0
-    then AverageWidth := '*'
-    else AverageWidth := InttoStr(lfWidth * 10);
-
-
-    CharSetRegistry := '*';
-
-    // TODO: Match charset.
-    CharSetCoding := '*';
-  end;
-
-//write('CreateFontIndirect->');
-  GDIObject := NewGDIObject(gdiFont);
-  LoadFont;
-  if GdiObject^.GDIFontObject = nil
-  then begin
-    if (WeightName='normal') then begin
-      WeightName:='medium';
-      LoadFont;
-    end else if (WeightName='bold') then begin
-      WeightName:='black';
+    
+    if GdiObject^.GDIFontObject = nil
+    then begin
+      // try all weights
+      WeightName := '*';
       LoadFont;
     end;
-  end;
 
-  if GdiObject^.GDIFontObject = nil
-  then begin
-    // try all weights
-    WeightName := '*';
-    LoadFont;
-  end;
-
-  if GdiObject^.GDIFontObject = nil
-  then begin
-    // try all weights
-    WeightName := '*';
-    LoadFont;
-  end;
-
-  if GdiObject^.GDIFontObject = nil
-  then begin
+    // try instead of italic  oblique
+    if GdiObject^.GDIFontObject = nil
+    then begin
+      if (Slant='i') then begin
+        Slant := 'o';
+        LoadFont;
+      end;
+    end;
+    
     // try all slant
-    Slant := '*';
-    LoadFont;
-  end;
+    if GdiObject^.GDIFontObject = nil
+    then begin
+      Slant := '*';
+      LoadFont;
+    end;
 
-  if GdiObject^.GDIFontObject = nil
-  then begin
+    // try one height lower
+    if GdiObject^.GDIFontObject = nil
+    then begin
+      PixelSize := IntToStr(Abs(LogFont.lfHeight)-1);
+      LoadFont;
+    end;
+
+    // try one height higher
+    if GdiObject^.GDIFontObject = nil
+    then begin
+      PixelSize := IntToStr(Abs(LogFont.lfHeight)+1);
+      LoadFont;
+    end;
+
     // try all Familys
-    FamilyName := '*';
-    LoadFont;
-  end;
+    if GdiObject^.GDIFontObject = nil
+    then begin
+      PixelSize := IntToStr(Abs(LogFont.lfHeight));
+      FamilyName := '*';
+      LoadFont;
+    end;
 
-  if GdiObject^.GDIFontObject = nil
-  then begin
     // try all Foundrys
-    Foundry := '*';
-    LoadFont;
-  end;
+    if GdiObject^.GDIFontObject = nil
+    then begin
+      Foundry := '*';
+      LoadFont;
+    end;
 
-  if GdiObject^.GDIFontObject = nil
-  then begin
-//writeln('[TgtkObject.CreateFontIndirect] ',HexStr(Cardinal(GdiObject),8),'  ',FGDIObjects.Count);
-    FGDIObjects.Remove(GdiObject);
-    Dispose(GdiObject);
-    Result := 0;
-  end
-  else begin
-    GdiObject^.LogFont := LogFont;
-    Result := HFONT(GdiObject);
-  end;
+  finally
+    if GdiObject^.GDIFontObject = nil
+    then begin
+  //writeln('[TgtkObject.CreateFontIndirect] ',HexStr(Cardinal(GdiObject),8),'  ',FGDIObjects.Count);
+      FGDIObjects.Remove(GdiObject);
+      Dispose(GdiObject);
+      Result := 0;
+    end
+    else begin
+      GdiObject^.LogFont := LogFont;
+      Result := HFONT(GdiObject);
+    end;
 
-  if Result = 0
-  then WriteLn(Format('WARNING: [TgtkObject.CreateFontIndirect] NOT found XLFD: <%s>', [S]))
-  else Assert(False, Format('Trace:  [TgtkObject.CreateFontIndirect] found XLFD: <%s>', [S]));
+    if Result = 0
+    then WriteLn(Format('WARNING: [TgtkObject.CreateFontIndirectEx] NOT found XLFD: <%s>', [S]))
+    else Assert(False, Format('Trace:  [TgtkObject.CreateFontIndirectEx] found XLFD: <%s>', [S]));
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1512,6 +1575,7 @@ begin
       end;
     DFC_MENU:
       begin
+      
       end;
     DFC_SCROLL:
       begin
@@ -1567,11 +1631,11 @@ end;
 
 {------------------------------------------------------------------------------
   Function: DrawEdge
-  Params:
-  Returns:
+  Params:   DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal
+  Returns:  Boolean
 
-  Draws one or more edges of a rectangle, not including the 
-  right and bottom edge.
+  Draws one or more edges of a rectangle. The rectangle is the area
+  Left to Right-1 and Top to Bottom-1.
  ------------------------------------------------------------------------------}
 function TgtkObject.DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal;
   grfFlags: Cardinal): Boolean;
@@ -1597,6 +1661,7 @@ begin
       Dec(R.Right);
       Dec(R.Bottom);
       
+      // try to use the gdk functions, so that the current theme is used
       BInner := False;
       BOuter := False;
 
@@ -1912,8 +1977,12 @@ end;
 
   Draws a 3d border in GTK native style.
  ------------------------------------------------------------------------------}
-function TGtkObject.Frame3d(DC : HDC; var Rect : TRect; const FrameWidth : integer; const Style : TBevelCut) : boolean;
-const GTKShadowType: array[TBevelCut] of integer = (GTK_SHADOW_NONE, GTK_SHADOW_IN, GTK_SHADOW_OUT);
+function TGtkObject.Frame3d(DC : HDC; var Rect : TRect;
+  const FrameWidth : integer; const Style : TBevelCut) : boolean;
+  
+const GTKShadowType: array[TBevelCut] of integer =
+  (GTK_SHADOW_NONE, GTK_SHADOW_IN, GTK_SHADOW_OUT);
+  
 var Widget : TGtkWidget;
     i : integer;
 begin
@@ -1928,13 +1997,14 @@ begin
         Widget:=PGtkFixed(GetFixedWidget(PGtkWidget(
                                   PDeviceContext(DC)^.hWnd)))^.Container.Widget;
         for i:= 1 to FrameWidth do begin
-          gtk_paint_shadow(Widget.thestyle, Widget.window, GTK_STATE_NORMAL,
-                           GtkShadowType[Style], nil, @Widget, nil,
-           Rect.left, Rect.top, Rect.Right - Rect.Left, Rect.Bottom - Rect.Top);
-        InflateRect(Rect, -1, -1);
+          gtk_draw_shadow(Widget.thestyle, Widget.window, GTK_STATE_NORMAL,
+                          GtkShadowType[Style],
+                          Rect.left, Rect.top,
+                          Rect.Right - Rect.Left-1, Rect.Bottom - Rect.Top-1);
+          InflateRect(Rect, -1, -1);
+        end;
       end;
     end;
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -2333,12 +2403,16 @@ begin
         end;
       gdiFont:
         begin
-          if Buf = nil then Result := SizeOf(PGDIObject(GDIObj)^.LogFont)
+          if Buf = nil then
+            Result := SizeOf(PGDIObject(GDIObj)^.LogFont)
           else begin
             if BufSize >= SizeOf(PGDIObject(GDIObj)^.LogFont)
             then begin
               PLogfont(Buf)^ := PGDIObject(GDIObj)^.LogFont;
               Result:= SizeOf(TLogFont);
+            end else if BufSize>0 then begin
+              Move(PGDIObject(GDIObj)^.LogFont,Buf^,BufSize);
+              Result:=BufSize;
             end;
           end;
         end;
@@ -2815,27 +2889,41 @@ end;
 
  ------------------------------------------------------------------------------}
 function TgtkObject.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
+const
+  TestString = '{m|g_}';
+  AvrWidthStr = 'abcxyz012789 ';
 var
   lbearing, rbearing, dummy: LongInt;
+  AvrWidthStrLen: integer;
 begin
   Assert(False, Format('Trace:> TODO FINISH[TgtkObject.GetTextMetrics] DC: 0x%x', [DC]));
 
   Result := IsValidDC(DC);
-  if Result then with PDeviceContext(DC)^ do begin
-    if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
-    then begin
-      WriteLn('WARNING: [TgtkObject.GetTGextMetrics] Missing font');
-      Result := False;
-    end
-    else with TM do begin
-      FillChar(TM, SizeOf(TM), 0);
+  if Result then
+    with PDeviceContext(DC)^ do begin
+      if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
+      then begin
+        WriteLn('WARNING: [TgtkObject.GetTGextMetrics] Missing font');
+        Result := False;
+      end
+      else with TM do begin
+        FillChar(TM, SizeOf(TM), 0);
 
-      gdk_text_extents(CurrentFont^.GDIFontObject, '{g|h_}', 1, @lbearing, @rBearing, @dummy, @tmAscent, @tmDescent);
-      tmHeight := tmAscent + tmDescent + 2; //todo EXACT MEASUREMENT
-      tmAveCharWidth := gdk_char_width(CurrentFont^.GDIFontObject, 'x'); // avarage is mostly measured by the x
-      tmMaxCharWidth := gdk_char_width(CurrentFont^.GDIFontObject, 'W'); // temp hack
+        gdk_text_extents(CurrentFont^.GDIFontObject, TestString,
+          length(TestString), @lbearing, @rBearing, @dummy,
+          @tmAscent, @tmDescent);
+        tmHeight := tmAscent + tmDescent + 2; //todo EXACT MEASUREMENT
+        AvrWidthStrLen := length(AvrWidthStr);
+        tmAveCharWidth := gdk_text_width(CurrentFont^.GDIFontObject,
+          AvrWidthStr,AvrWidthStrLen) div AvrWidthStrLen;
+        if tmAveCharWidth<2 then tmAveCharWidth:=2;
+        tmMaxCharWidth := gdk_char_width(CurrentFont^.GDIFontObject, 'W'); // temp hack
+        if tmMaxCharWidth<2 then tmMaxCharWidth:=2;
+        //writeln('TgtkObject.GetTextMetrics lbearing=',lbearing,' rBearing=',rBearing,
+        //' tmAscent=',tmAscent,' tmDescent=',tmDescent,' tmAveCharWidth=',tmAveCharWidth,
+        //' tmMaxCharWidth=',tmMaxCharWidth);
+      end;
     end;
-  end;
   Assert(False, Format('Trace:< TODO FINISH[TgtkObject.GetTextMetrics] DC: 0x%x', [DC]));
 end;
 
@@ -4632,6 +4720,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.74  2002/06/04 15:17:24  lazarus
+  MG: improved TFont for XLFD font names
+
   Revision 1.73  2002/06/01 08:41:28  lazarus
   MG: DrawFramControl now uses gtk style, transparent STrechBlt
 

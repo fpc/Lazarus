@@ -78,6 +78,7 @@ Begin
     End;
   End;
   Canvas.Pen.Width:=1;
+  
   Case Shape Of
   bsBox:
     With Canvas Do
@@ -244,6 +245,9 @@ End;
 
 {
   $Log$
+  Revision 1.6  2002/06/04 15:17:22  lazarus
+  MG: improved TFont for XLFD font names
+
   Revision 1.5  2002/05/10 06:05:51  lazarus
   MG: changed license to LGPL
 

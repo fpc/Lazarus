@@ -16,6 +16,18 @@
  *****************************************************************************
 }
 {------------------------------------------------------------------------------
+  Method: TFontDialog.Apply
+  Params:  Wnd: HWND
+  Returns: Nothing
+
+  Called whenever the Apply button is clicked.
+ ------------------------------------------------------------------------------}
+procedure TFontDialog.ApplyClicked;
+begin
+  if Assigned(FOnApplyClicked) then FOnApplyClicked(Self);
+end;
+
+{------------------------------------------------------------------------------
   Method: TFontDialog.Create
   Params:  AOwner: the owner of the class
   Returns: Nothing
@@ -24,14 +36,25 @@
  ------------------------------------------------------------------------------}
 constructor TFontDialog.Create (AOwner : TComponent);
 begin
-   inherited Create(AOwner);
-   fCompStyle := csFontDialog;
-   FTitle:= 'Select a font:';
+  inherited Create(AOwner);
+  fCompStyle := csFontDialog;
+  FTitle:= 'Select a font:';
+  FFont := TFont.Create;
+  FOptions := [fdEffects];
+end;
+
+destructor TFontDialog.Destroy;
+begin
+  FFont.Free;
+  inherited Destroy;
 end;
 
 { =============================================================================
 
   $Log$
+  Revision 1.3  2002/06/04 15:17:22  lazarus
+  MG: improved TFont for XLFD font names
+
   Revision 1.2  2002/05/10 06:05:52  lazarus
   MG: changed license to LGPL
 

@@ -493,19 +493,11 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TCanvas.TextOut(X,Y: Integer; const Text: String);
-var
-  pStr: PChar;
 begin
   RequiredState([csHandleValid, csFontValid, csBrushValid]);
-
-  pStr := StrAlloc(Length(Text)+1);
-  try
-    StrPcopy(pStr, Text);
-    ExtTextOut(FHandle, X, Y, 0 { <-- TODO: FTextFlags}, nil, pStr, Length(Text), nil);
-    MoveTo(X + TextWidth(Text), Y);
-  finally
-    StrDispose(PStr);
-  end;
+  ExtTextOut(FHandle, X, Y, 0 { <-- TODO: FTextFlags}, nil,
+             PChar(Text), Length(Text), nil);
+  MoveTo(X + TextWidth(Text), Y);
 end;
 
 
@@ -842,6 +834,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.19  2002/06/04 15:17:22  lazarus
+  MG: improved TFont for XLFD font names
+
   Revision 1.18  2002/05/10 06:05:51  lazarus
   MG: changed license to LGPL
 

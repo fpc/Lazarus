@@ -1,3 +1,4 @@
+// included by graphics.pp
 {******************************************************************************
                                      TFONT
  ******************************************************************************
@@ -16,6 +17,303 @@
  *****************************************************************************
 }
 
+const
+  FontCharsets: array[0..17] of TIdentMapEntry = (
+    (Value: ANSI_CHARSET;        Name: 'ANSI_CHARSET'),
+    (Value: DEFAULT_CHARSET;     Name: 'DEFAULT_CHARSET'),
+    (Value: SYMBOL_CHARSET;      Name: 'SYMBOL_CHARSET'),
+    (Value: MAC_CHARSET;         Name: 'MAC_CHARSET'),
+    (Value: SHIFTJIS_CHARSET;    Name: 'SHIFTJIS_CHARSET'),
+    (Value: HANGEUL_CHARSET;     Name: 'HANGEUL_CHARSET'),
+    (Value: JOHAB_CHARSET;       Name: 'JOHAB_CHARSET'),
+    (Value: GB2312_CHARSET;      Name: 'GB2312_CHARSET'),
+    (Value: CHINESEBIG5_CHARSET; Name: 'CHINESEBIG5_CHARSET'),
+    (Value: GREEK_CHARSET;       Name: 'GREEK_CHARSET'),
+    (Value: TURKISH_CHARSET;     Name: 'TURKISH_CHARSET'),
+    (Value: HEBREW_CHARSET;      Name: 'HEBREW_CHARSET'),
+    (Value: ARABIC_CHARSET;      Name: 'ARABIC_CHARSET'),
+    (Value: BALTIC_CHARSET;      Name: 'BALTIC_CHARSET'),
+    (Value: RUSSIAN_CHARSET;     Name: 'RUSSIAN_CHARSET'),
+    (Value: THAI_CHARSET;        Name: 'THAI_CHARSET'),
+    (Value: EASTEUROPE_CHARSET;  Name: 'EASTEUROPE_CHARSET'),
+    (Value: OEM_CHARSET;         Name: 'OEM_CHARSET'));
+
+procedure GetCharsetValues(Proc: TGetStrProc);
+var
+  I: Integer;
+begin
+  for I:=Low(FontCharsets) to High(FontCharsets) do
+    Proc(FontCharsets[I].Name);
+end;
+
+function CharsetToIdent(Charset: Longint; var Ident: string): Boolean;
+begin
+  Result:=IntToIdent(Charset, Ident, FontCharsets);
+end;
+
+function IdentToCharset(const Ident: string; var Charset: Longint): Boolean;
+begin
+  Result:=IdentToInt(Ident, CharSet, FontCharsets);
+end;
+
+function GetFontData(Font: HFont): TFontData;
+var
+  ALogFont: TLogFont;
+begin
+  Result := DefFontData;
+  if Font <> 0 then
+  begin
+    if GetObject(Font, SizeOf(ALogFont), @ALogFont) <> 0 then
+      with Result, ALogFont do
+      begin
+        Height := lfHeight;
+        if lfWeight >= FW_BOLD then
+          Include(Style, fsBold);
+        if lfItalic = 1 then
+          Include(Style, fsItalic);
+        if lfUnderline = 1 then
+          Include(Style, fsUnderline);
+        if lfStrikeOut = 1 then
+          Include(Style, fsStrikeOut);
+        Charset := TFontCharset(lfCharSet);
+        Name := lfFaceName;
+        case lfPitchAndFamily and $F of
+          VARIABLE_PITCH: Pitch := fpVariable;
+          FIXED_PITCH: Pitch := fpFixed;
+        else
+          Pitch := fpDefault;
+        end;
+        Handle := Font;
+      end;
+  end;
+end;
+
+function GetDefFontCharSet: TFontCharSet;
+//var
+//  DisplayDC: HDC;
+//  TxtMetric: TTEXTMETRIC;
+begin
+  Result := DEFAULT_CHARSET;
+  {DisplayDC := GetDC(0);
+  if (DisplayDC <> 0) then begin
+    if (SelectObject(DisplayDC, StockFont) <> 0) then
+      if (GetTextMetrics(DisplayDC, TxtMetric)) then
+        Result := TxtMetric.tmCharSet;
+    ReleaseDC(0, DisplayDC);
+  end;}
+end;
+
+{------------------------------------------------------------------------------
+  Method:  ExtractFamilyFromXLFDName
+  Params:  const XLFDName: string
+  Returns: string
+
+  Parses a font name in XLFD format and extracts the FamilyName.
+  (see http://wwwinfo.cern.ch/umtf/working-groups/X11/fonts/hp_xlfd.html)
+
+  An XLFD name is
+  FontNameRegistry-Foundry-FamilyName-WeightName-Slant-SetwidthName
+  -AddStyleName-PixelSize-PointSize-ResolutionX-ResolutionY-Spacing
+  -AverageWidth-CharSetRegistry-CharSetCoding
+
+ ------------------------------------------------------------------------------}
+function ExtractFamilyFromXLFDName(const XLFDName: string): string;
+var StartPos, EndPos, i: integer;
+begin
+  Result:='';
+  StartPos:=1;
+  i:=0;
+  while (StartPos<=length(XLFDName)) do begin
+    if XLFDName[StartPos]='-' then begin
+      inc(i);
+      if i=2 then begin
+        inc(StartPos);
+        EndPos:=StartPos;
+        while (EndPos<=length(XLFDName)) and (XLFDName[EndPos]<>'-') do
+          inc(EndPos);
+        Result:=copy(XLFDName,StartPos,EndPos-StartPos);
+      end;
+    end;
+    inc(StartPos);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  XLFDNameToLogFont
+  Params:  const XLFDName: string
+  Returns: TLogFont
+
+  Parses a font name in XLFD format and creates a TLogFont record from it.
+  (see http://wwwinfo.cern.ch/umtf/working-groups/X11/fonts/hp_xlfd.html)
+
+  An XLFD name is
+  FontNameRegistry-Foundry-FamilyName-WeightName-Slant-SetwidthName
+  -AddStyleName-PixelSize-PointSize-ResolutionX-ResolutionY-Spacing
+  -AverageWidth-CharSetRegistry-CharSetCoding
+
+ ------------------------------------------------------------------------------}
+function XLFDNameToLogFont(const XLFDName: string): TLogFont;
+type
+  TWeightMapEntry = record
+    Name: string;
+    Weight: integer;
+  end;
+const
+  WeightMap: array[1..15] of TWeightMapEntry = (
+    (Name: 'DONTCARE'; Weight: FW_DONTCARE),
+    (Name: 'THIN'; Weight: FW_THIN),
+    (Name: 'EXTRALIGHT'; Weight: FW_EXTRALIGHT),
+    (Name: 'LIGHT'; Weight: FW_LIGHT),
+    (Name: 'NORMAL'; Weight: FW_NORMAL),
+    (Name: 'MEDIUM'; Weight: FW_MEDIUM),
+    (Name: 'SEMIBOLD'; Weight: FW_SEMIBOLD),
+    (Name: 'BOLD'; Weight: FW_BOLD),
+    (Name: 'EXTRABOLD'; Weight: FW_EXTRABOLD),
+    (Name: 'HEAVY'; Weight: FW_HEAVY),
+    (Name: 'ULTRALIGHT'; Weight: FW_ULTRALIGHT),
+    (Name: 'REGULAR'; Weight: FW_REGULAR),
+    (Name: 'DEMIBOLD'; Weight: FW_DEMIBOLD),
+    (Name: 'ULTRABOLD'; Weight: FW_ULTRABOLD),
+    (Name: 'BLACK'; Weight: FW_BLACK)
+    );
+var
+  ItemStart, ItemEnd: integer;
+  Item: string;
+
+  procedure GetNextItem;
+  begin
+    ItemStart:=ItemEnd+1;
+    ItemEnd:=ItemStart;
+    while (ItemEnd<=length(XLFDName)) and (XLFDName[ItemEnd]<>'-') do
+      inc(ItemEnd);
+    Item:=copy(XLFDName,ItemStart,ItemEnd-ItemStart);
+  end;
+  
+  function WeightNameToWeightID(const WeightName: string): integer;
+  var i: integer;
+  begin
+    for i:=Low(WeightMap) to High(WeightMap) do begin
+      if AnsiCompareText(WeightMap[i].Name,WeightName)=0 then begin
+        Result:=WeightMap[i].Weight;
+        exit;
+      end;
+    end;
+    Result:=FW_DONTCARE;
+  end;
+
+var l, FaceNameMax, PixelSize, PointSize, Resolution: integer;
+begin
+  FillChar(Result,SizeOf(TLogFont),0);
+  ItemEnd:=0;
+  GetNextItem; // read FontNameRegistry
+  // ToDo
+  
+  GetNextItem; // read Foundry
+  // ToDo
+
+  GetNextItem; // read FamilyName
+  l:=length(Item);
+  FaceNameMax:=High(Result.lfFaceName)-Low(Result.lfFaceName); // max without #0
+  if l>FaceNameMax then l:=FaceNameMax;
+  if l>0 then Move(Item[1],Result.lfFaceName[Low(Result.lfFaceName)],l);
+  Result.lfFaceName[Low(Result.lfFaceName)+l]:=#0;
+
+  GetNextItem; // read WeightName
+  Result.lfWeight:=WeightNameToWeightID(Item);
+
+  GetNextItem; // read Slant
+  if (AnsiCompareText(Item,'I')=0) or (AnsiCompareText(Item,'RI')=0)
+  or (AnsiCompareText(Item,'O')=0) then
+    // I = italic, RI = reverse italic, O = oblique
+    Result.lfItalic:=1
+  else
+    Result.lfItalic:=0;
+
+  GetNextItem; // read SetwidthName
+  // ToDO: NORMAL, CONDENSED, NARROW, WIDE, EXPANDED
+
+  GetNextItem; // read AddStyleName
+  // calculate Style name extentions (=rotation)
+  //        API                 XLFD
+  // --------------------- --------------
+  // Orientation 1/10 deg  1/64 deg
+  Result.lfOrientation:=(StrToIntDef(Item,0)*10) div 64;
+      
+  GetNextItem; // read PixelSize
+  PixelSize:=StrToIntDef(Item,0);
+  GetNextItem; // read PointSize
+  PointSize:=StrToIntDef(Item,0) div 10;
+  GetNextItem; // read ResolutionX
+  Resolution:=StrToIntDef(Item,0);
+  if Resolution<=0 then Resolution:=72;
+
+  if PixelSize=0 then begin
+    if PointSize<=0 then
+      Result.lfHeight:=(12*Resolution) div 72
+    else
+      Result.lfHeight:=(PointSize*Resolution) div 72;
+  end else begin
+    Result.lfHeight:=PixelSize;
+  end;
+
+  GetNextItem; // read ResolutionY
+  Resolution:=StrToIntDef(Item,0);
+  if Resolution<=0 then Resolution:=72;
+
+  if PixelSize=0 then begin
+    if PointSize<=0 then
+      Result.lfWidth:=(12*Resolution) div 72
+    else
+      Result.lfWidth:=(PointSize*Resolution) div 72;
+  end else begin
+    Result.lfWidth:=PixelSize;
+  end;
+
+  GetNextItem; // read Spacing
+  // ToDo
+  {M       Monospaced (fixed pitch)
+   P       Proportional spaced (variable pitch)
+   C       Character cell.  The glyphs of the font can be thought of as
+           "boxes" of the same width and height that are stacked side by
+           side or top to bottom.}
+
+  GetNextItem; // read AverageWidth
+  // ToDo
+
+  GetNextItem; // read CharSetRegistry
+  // ToDo
+
+  GetNextItem; // read CharSetCoding
+  // ToDo
+
+end;
+
+{------------------------------------------------------------------------------
+  Method:  IsFontNameXLogicalFontDesc
+  Params:  const LongFontName: string
+  Returns: boolean
+
+  Checks if font name is in X Logical Font Description format.
+  (see http://wwwinfo.cern.ch/umtf/working-groups/X11/fonts/hp_xlfd.html)
+
+  An XLFD name is
+  FontNameRegistry-Foundry-FamilyName-WeightName-Slant-SetwidthName
+  -AddStyleName-PixelSize-PointSize-ResolutionX-ResolutionY-Spacing
+  -AverageWidth-CharSetRegistry-CharSetCoding
+ ------------------------------------------------------------------------------}
+function IsFontNameXLogicalFontDesc(const LongFontName: string): boolean;
+// Quick test: check if LongFontName contains 14 times the char '-'
+var MinusCnt, p: integer;
+begin
+  MinusCnt:=0;
+  for p:=1 to length(LongFontName) do
+    if LongFontName[p]='-' then inc(MinusCnt);
+  Result:=(MinusCnt=14);
+end;
+
+
+{ TFont }
+
 
 {------------------------------------------------------------------------------
   Method:  TFont.Create
@@ -27,12 +325,7 @@
 constructor TFont.Create;
 begin
   inherited Create;
-  with FFontData do
-  begin
-    Handle := 0;
-    Charset := ANSI_CHARSET; 
-    Pitch := fpDefault;
-  end;
+  FFontData:=DefFontData;
 
   FColor := clWindowText;
   FPixelsPerInch := ScreenInfo.PixelsPerInchX;
@@ -52,9 +345,17 @@ begin
     try
       //TODO: TFont(Source).Lock;
       try
-        Height := TFont(Source).Height;
-        Color := TFont(Source).Color;
-        Name := TFont(Source).Name;
+        BeginUpdate;
+        try
+          CharSet:= TFont(Source).CharSet;
+          Color := TFont(Source).Color;
+          Height := TFont(Source).Height;
+          Name := TFont(Source).Name;
+          Pitch := TFont(Source).Pitch;
+          Style := TFont(Source).Style;
+        finally
+          EndUpdate;
+        end;
       finally
         //TODO: TFont(Source).UnLock;
       end;
@@ -63,7 +364,53 @@ begin
     end;
     Exit;
   end;
-  inherited Assign(Source); 
+
+  inherited Assign(Source);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TFont.Assign
+  Params: ALogFont: TLogFont
+  Returns:  nothing
+
+  Copies the logfont settings to itself
+ ------------------------------------------------------------------------------}
+procedure TFont.Assign(const ALogFont: TLogFont);
+var
+  AStyle: TFontStyles;
+begin
+  BeginUpdate;
+  try
+    with ALogFont do
+    begin
+      Height := ALogFont.lfHeight;
+      Charset := TFontCharset(ALogFont.lfCharSet);
+      AStyle := [];
+      with ALogFont do
+      begin
+        if lfWeight >= FW_SEMIBOLD then Include(AStyle, fsBold);
+        if lfItalic <> 0 then Include(AStyle, fsItalic);
+        if lfUnderline <> 0 then Include(AStyle, fsUnderline);
+        if lfStrikeOut <> 0 then Include(AStyle, fsStrikeOut);
+      end;
+      Style := AStyle;
+      Name := ALogFont.lfFaceName;
+    end;
+  finally
+    EndUpdate;
+  end;
+end;
+
+procedure TFont.BeginUpdate;
+begin
+  inc(FUpdateCount);
+end;
+
+procedure TFont.EndUpdate;
+begin
+  if FUpdateCount=0 then exit;
+  dec(FUpdateCount);
+  if (FUpdateCount=0) and FChanged then Changed;
 end;
 
 {------------------------------------------------------------------------------
@@ -97,7 +444,7 @@ end;
 
   Sets the pitch of a font
  ------------------------------------------------------------------------------}
-Procedure TFont.SetPitch(Value : TFOntPitch);
+Procedure TFont.SetPitch(Value : TFontPitch);
 Begin
   if FFontData.Pitch <> Value
   then begin
@@ -166,7 +513,10 @@ end;
  ------------------------------------------------------------------------------}
 function TFont.GetName: TFontName;
 begin
-  Result := FFontdata.Name;
+  if FFontName<>'' then
+    Result:=FFontName
+  else
+    Result := FFontdata.Name;
 end;
 
 {------------------------------------------------------------------------------
@@ -176,12 +526,13 @@ end;
 
   Sets the name of a font
  ------------------------------------------------------------------------------}
-procedure TFont.SetName(const Value : TFontName);
+procedure TFont.SetName(const AValue : TFontName);
 begin
-  if FFontData.Name <> Value 
+  if FFontData.Name <> AValue
   then begin
     FreeHandle;
-    FFontData.Name := Value;
+    FFontData.Name := AValue;
+    FFontName:=AValue;
     Changed;
   end;
 end;
@@ -208,13 +559,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TFont.SetHandle(const Value: HFONT);
 begin
-  if FFontData.Handle <> Value 
-  then begin
-    FreeHandle;
-    FFontData.Handle := Value;
-    //TODO: query new parameters
-    Changed;
-  end;
+  SetData(GetFontData(Value));
 end;
 
 {------------------------------------------------------------------------------
@@ -229,10 +574,25 @@ const
   LF_BOOL: array[Boolean] of Byte = (0, 255);
   LF_WEIGHT: array[Boolean] of Integer = (FW_NORMAL, FW_BOLD);
 var
-  LogFont: TLogFont;
+  ALogFont: TLogFont;
+
+  procedure SetLogFontName(const NewName: string);
+  var l: integer;
+    aName: string;
+  begin
+    if IsFontNameXLogicalFontDesc(NewName) then
+      aName:=ExtractFamilyFromXLFDName(NewName)
+    else
+      aName:=NewName;
+    l:=High(ALogFont.lfFaceName)-Low(ALogFont.lfFaceName);
+    if l>length(aName) then l:=length(aName);
+    if l>0 then
+      Move(aName[1],ALogFont.lfFaceName[Low(ALogFont.lfFaceName)],l);
+    ALogFont.lfFaceName[Low(ALogFont.lfFaceName)+l]:=#0;
+  end;
+
 begin
-  if FFontData.Handle = 0 
-  then with LogFont do 
+  if FFontData.Handle = 0 then with ALogFont do
   begin
     lfHeight := Height;
     lfWidth := 0; 
@@ -243,14 +603,7 @@ begin
     lfUnderline := LF_BOOL[fsUnderline in Style];
     lfStrikeOut := LF_BOOL[fsStrikeOut in Style];
     lfCharSet := Byte(FFontData.Charset);
-    if AnsiCompareText(Name, 'Default') = 0 
-    then StrPCopy(lfFaceName, 'helvetica') //TODO: change this to a more flexible default
-    else begin
-      if length(Name)+1<=SizeOf(lfFaceName) then
-        StrPCopy(lfFaceName, Name)
-      else
-        StrPCopy(lfFaceName, LeftStr(Name,SizeOf(lfFaceName)-1));
-    end;
+    SetLogFontName(Name);
 
     lfQuality := DEFAULT_QUALITY;
     lfOutPrecision := OUT_DEFAULT_PRECIS;
@@ -262,7 +615,8 @@ begin
       lfPitchAndFamily := DEFAULT_PITCH;
     end;
 
-    FFontData.Handle := CreateFontIndirect(LogFont);
+    // ask the interface for the nearest font
+    FFontData.Handle := CreateFontIndirectEx(ALogFont,Name);
   end;
   
   Result := FFontData.Handle;
@@ -285,10 +639,80 @@ begin
   end;
 end;
 
+function TFont.GetCharSet: TFontCharSet;
+begin
+  Result:=FFontData.CharSet;
+end;
+
+procedure TFont.SetCharSet(const AValue: TFontCharSet);
+begin
+  if FFontData.CharSet <> AValue
+  then begin
+    FreeHandle;
+    FFontData.CharSet := AValue;
+    Changed;
+  end;
+end;
+
+procedure TFont.GetData(var FontData: TFontData);
+begin
+  FontData := FFontData;
+  FontData.Handle := 0;
+end;
+
+procedure TFont.SetData(const FontData: TFontData);
+begin
+  if FFontData.Handle <> FontData.Handle then begin
+    FreeHandle;
+    FFontData.Handle := FontData.Handle;
+    FFontName:=FontData.Name;
+    //TODO: query new parameters
+    Changed;
+  end;
+
+  {Lock;
+  try
+    FontManager.ChangeResource(Self, FontData);
+  finally
+    Unlock;
+  end;}
+end;
+
+function TFont.GetHeight: Integer;
+begin
+  Result:=FFontData.Height;
+end;
+
+function TFont.GetPitch: TFontPitch;
+begin
+  Result:=FFontData.Pitch;
+end;
+
+function TFont.GetStyle: TFontStyles;
+begin
+  Result:=FFontData.Style;
+end;
+
+procedure TFont.Changed;
+begin
+  if FUpdateCount>0 then begin
+    FChanged:=true;
+    exit;
+  end;
+  FChanged:=false;
+  inherited Changed;
+  // ToDo: we need interfaces:
+  // if FNotify <> nil then FNotify.Changed;
+end;
+
+// included by graphics.pp
 
 { =============================================================================
 
   $Log$
+  Revision 1.6  2002/06/04 15:17:22  lazarus
+  MG: improved TFont for XLFD font names
+
   Revision 1.5  2002/05/10 06:05:52  lazarus
   MG: changed license to LGPL
 

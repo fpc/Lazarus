@@ -711,12 +711,16 @@ function gtkDialogOKclickedCB( widget: PGtkWidget;
 var
    theDialog : TCommonDialog;
    Fpointer : Pointer;
+   // colordialog
    colorArray : array[0..2] of double;
    colorsel : GTK_COLOR_SELECTION;
    newColor : TGdkColor;
+   // fontdialog
    FontName : String;
+   ALogFont  : TLogFont;
+   // filedialog
    cListRow : PGList;
-   rowNum : gint;
+   rowNum   : gint;
    fileInfo : PGChar;
    fileList : PGTKCList;
    DirName  : string;
@@ -784,10 +788,18 @@ begin
   end
   else if theDialog is TFontDialog then
   begin
-    Assert(False, 'Trace:Prssed OK in FontDialog');
-    FontName := gtk_font_selection_dialog_get_font_name(pgtkfontselectiondialog(FPointer));
-    TFontDialog(theDialog).FontName := FontName;
-    Assert(False, 'Trace:-----'+TFontDialog(theDialog).FontName+'----');
+    Assert(False, 'Trace:Pressed OK in FontDialog');
+    FontName := gtk_font_selection_dialog_get_font_name(
+                                             pgtkfontselectiondialog(FPointer));
+    // extract basic font attributes from the font name in XLFD format
+    ALogFont:=XLFDNameToLogFont(FontName);
+    TFontDialog(theDialog).Font.Assign(ALogFont);
+    // set the font name in XLFD format
+    // a font name in XLFD format overrides in the gtk interface all other font
+    // settings.
+    TFontDialog(theDialog).Font.Name := FontName;
+
+    Assert(False, 'Trace:-----'+TFontDialog(theDialog).Font.Name+'----');
   end;
 
   StoreCommonDialogSetup(theDialog);
@@ -836,6 +848,40 @@ begin
   if theDialog is TOpenDialog then begin
     if TOpenDialog(theDialog).OnHelpClicked<>nil then
       TOpenDialog(theDialog).OnHelpClicked(theDialog);
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  function gtkDialogApplyclickedCB
+  Params: widget: PGtkWidget; data: gPointer
+  Result: GBoolean
+
+  This function is called, whenever the user clicks the Apply button in a
+  commondialog
+-------------------------------------------------------------------------------}
+function gtkDialogApplyclickedCB(widget: PGtkWidget; data: gPointer): GBoolean;
+  cdecl;
+var
+  theDialog : TCommonDialog;
+  FontName: string;
+  ALogFont: TLogFont;
+begin
+  Result := True;
+  theDialog := TCommonDialog(data);
+//   gtk_grab_remove(PgtkWidget(TCommonDialog(data).Handle));
+  if (theDialog is TFontDialog)
+  and (fdApplyButton in TFontDialog(theDialog).Options)
+  and (Assigned(TFontDialog(theDialog).OnApplyClicked)) then begin
+    // extract basic font attributes from the font name in XLFD format
+    FontName := gtk_font_selection_dialog_get_font_name(
+                                    pgtkfontselectiondialog(theDialog.Handle));
+    ALogFont:=XLFDNameToLogFont(FontName);
+    TFontDialog(theDialog).Font.Assign(ALogFont);
+    // set the font name in XLFD format
+    // a font name in XLFD format overrides in the gtk interface all other font
+    // settings.
+    TFontDialog(theDialog).Font.Name := FontName;
+    TFontDialog(theDialog).OnApplyClicked(theDialog);
   end;
 end;
 
@@ -1981,6 +2027,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.78  2002/06/04 15:17:22  lazarus
+  MG: improved TFont for XLFD font names
+
   Revision 1.77  2002/05/30 14:11:12  lazarus
   MG: added filters and history to TOpenDialog
 

@@ -119,6 +119,8 @@ type
   TBitmap = class;
   TPixmap = class;
   TIcon = class;
+  
+  { TGraphicsObject }
 
   TGraphicsObject = class(TPersistent)
   private
@@ -133,6 +135,8 @@ type
   end;
 
 
+  { TFont }
+  
   TFont = class(TGraphicsObject)
   private
     FColor : TColor;
@@ -144,25 +148,39 @@ type
     //---------
     FFontData: TFontData;
     FPixelsPerInch: Integer;
+    FFontName: string;
+    FUpdateCount: integer;
+    FChanged: boolean;
     procedure FreeHandle;
-  Protected
-    function GetHandle: HFONT;
-    procedure SetHandle(const Value: HFONT);
-    Procedure SetName(const value : TFontName);
-    Function  GetName : TFontName;
-    Procedure SetSize(value : Integer);
-    Procedure SetHeight(value : Integer);
-    Function  GetSize : Integer;
-    procedure SetStyle(Value: TFontStyles);
-    Procedure SetPitch(Value : TFontPitch);
-  public
-    procedure Assign(Source : TPersistent); override;
+    procedure GetData(var FontData: TFontData);
+    procedure SetData(const FontData: TFontData);
+  protected
+    procedure Changed; override;
+    function  GetCharSet: TFontCharSet;
+    function  GetHandle: HFONT;
+    function  GetHeight: Integer;
+    function  GetName : TFontName;
+    function  GetPitch: TFontPitch;
+    function  GetSize : Integer;
+    function  GetStyle: TFontStyles;
+    procedure SetCharSet(const AValue: TFontCharSet);
     procedure SetColor(Value : TColor);
+    procedure SetHandle(const Value: HFONT);
+    procedure SetHeight(value : Integer);
+    procedure SetName(const AValue : TFontName);
+    procedure SetPitch(Value : TFontPitch);
+    procedure SetSize(value : Integer);
+    procedure SetStyle(Value: TFontStyles);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Assign(Source : TPersistent); override;
+    procedure Assign(const ALogFont: TLogFont);
+    procedure BeginUpdate;
+    procedure EndUpdate;
     // Extra properties
     // TODO: implement them though GetTextMetrics, not here
     //Function GetWidth(Value : String) : Integer;
-    constructor Create;
-    destructor Destroy; override;
     // Extra properties
     // TODO: implement them though GetTextMetrics, not here
     //property Width : Integer read FWidth write FWidth;
@@ -172,14 +190,17 @@ type
     property Handle : HFONT read GetHandle write SetHandle;
     property PixelsPerInch : Integer read FPixelsPerInch;
   published
+    property CharSet: TFontCharSet read GetCharSet write SetCharSet;
     property Color : TColor read FColor write SetColor;
-    property Height : Integer read FFontData.Height write SetHeight;
+    property Height : Integer read GetHeight write SetHeight;
     property Name : TFontName read GetName write SetName;
-    property Pitch: TFontPitch read FFontData.Pitch write SetPitch;
+    property Pitch: TFontPitch read GetPitch write SetPitch;
     property Size: Integer read GetSize write SetSize;
-    property Style : TFontStyles read FFontData.Style write SetStyle;
+    property Style : TFontStyles read GetStyle write SetStyle;
   end;
 
+
+  { TPen }
 
   TPen = class(TGraphicsObject)
   private
@@ -205,6 +226,8 @@ type
     property Width: Integer read FPenData.Width write SetWidth;
   end;
 
+
+  { TBrush }
 
   TBrushData = record
     Handle : HBrush;
@@ -405,6 +428,8 @@ type
   EInvalidGraphic = class(Exception);
 
 
+  { TCanvas }
+
   TCanvas = class(TPersistent)
   private
     FAutoReDraw : Boolean;
@@ -474,9 +499,9 @@ type
     Procedure MoveTo(X1,Y1 : Integer);
     Procedure LineTo(X1,Y1 : Integer);
     procedure TextOut(X,Y: Integer; const Text: String);
-    procedure TextRect(Rect: TRect; X, Y: integer; const Text : string);// overload;
+    procedure TextRect(Rect: TRect; X, Y: integer; const Text : string);
     procedure TextRect(Rect: TRect; X, Y: integer; const Text : string;
-                       const Style : TTextStyle); //overload;
+                       const Style : TTextStyle);
     function TextExtent(const Text: string): TSize;
     function TextHeight(const Text: string): Integer;
     function TextWidth(const Text: string): Integer;
@@ -498,7 +523,8 @@ type
     property Color: TColor read GetColor write SetColor;
   end;
 
-  {TBITMAP}
+
+  { TBITMAP }
 
  TSharedImage = class
   private
@@ -579,6 +605,7 @@ type
     property TransparentColor: TColor read FTransparentColor write FTransparentColor;
   end;
 
+
   { TPixmap }
   {
     @abstract()
@@ -620,10 +647,28 @@ function ColorToString(Color: TColor): AnsiString;
 function StringToColor(const S: shortstring): TColor;
 procedure GetColorValues(Proc: TGetColorStringProc);
 
-  
+procedure GetCharsetValues(Proc: TGetStrProc);
+function CharsetToIdent(Charset: Longint; var Ident: string): Boolean;
+function IdentToCharset(const Ident: string; var Charset: Longint): Boolean;
+
+function GetDefFontCharSet: TFontCharSet;
+function IsFontNameXLogicalFontDesc(const LongFontName: string): boolean;
+function XLFDNameToLogFont(const XLFDName: string): TLogFont;
+function ExtractFamilyFromXLFDName(const XLFDName: string): string;
+
 var 
   { Stores information about the current screen }
   ScreenInfo : TLMScreenInit;
+
+const  // New TFont instances are initialized with the values in this structure:
+  DefFontData: TFontData = (
+    Handle: 0;
+    Height: 0;
+    Pitch: fpDefault;
+    Style: [];
+    Charset : DEFAULT_CHARSET;
+    Name: 'default');
+
 
 (***************************************************************************
  ***************************************************************************)
@@ -765,6 +810,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.32  2002/06/04 15:17:21  lazarus
+  MG: improved TFont for XLFD font names
+
   Revision 1.31  2002/06/01 08:41:28  lazarus
   MG: DrawFramControl now uses gtk style, transparent STrechBlt
 

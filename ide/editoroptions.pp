@@ -397,7 +397,7 @@ type
 
     // form
     procedure EditorOptionsFormResize(Sender: TObject);
-    
+
     // general
     procedure GeneralCheckBoxOnClick(Sender: TObject);
     procedure ComboBoxOnChange(Sender:TObject);
@@ -406,6 +406,7 @@ type
     procedure ColorButtonColorChanged(Sender:TObject);
 
     // display
+    procedure FontDialogApplyClicked(Sender: TObject);
     procedure EditorFontButtonClick(Sender:TObject);
 
     // key mapping
@@ -2264,20 +2265,29 @@ begin
   end;
 end;
 
+procedure TEditorOptionsForm.FontDialogApplyClicked(Sender: TObject);
+var a: integer;
+begin
+  for a:=Low(PreviewEdits) to High(PreviewEdits) do begin
+    if PreviewEdits[a]<>nil then
+      PreviewEdits[a].Font.Assign(TFontDialog(Sender).Font);
+  end;
+  EditorFontComboBox.Text:=DisplayPreview.Font.Name;
+  SetComboBoxText(EditorFontHeightComboBox,
+                  IntToStr(DisplayPreview.Font.Height));
+end;
+
 procedure TEditorOptionsForm.EditorFontButtonClick(Sender:TObject);
-var FontDialog:TFontDialog;
-  a:integer;
+var
+  FontDialog:TFontDialog;
 begin
   FontDialog:=TFontDialog.Create(Application);
   try
     with FontDialog do begin
+      Options:=Options+[fdApplyButton];
+      OnApplyClicked:=@FontDialogApplyClicked;
       if Execute then begin
-        EditorFontComboBox.Text:=FontName;
-        for a:=Low(PreviewEdits) to High(PreviewEdits) do begin
-          if PreviewEdits[a]<>nil then
-            FontDialogNameToFont(FontName,PreviewEdits[a].Font);
-        end;
-        EditorFontComboBox.Text:=PreviewEdits[a].Font.Name;
+        FontDialogApplyClicked(FontDialog);
       end;
     end;
   finally

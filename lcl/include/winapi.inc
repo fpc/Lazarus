@@ -123,6 +123,12 @@ begin
   Result := InterfaceObject.CreateFontIndirect(LogFont);
 end;
 
+function CreateFontIndirectEx(const LogFont: TLogFont;
+  const LongFontName: string): HFONT;
+begin
+  Result := InterfaceObject.CreateFontIndirectEx(LogFont,LongFontName);
+end;
+
 function CreatePenIndirect(const LogPen: TLogPen): HPEN;
 begin
   Result := InterfaceObject.CreatePenIndirect(LogPen);
@@ -667,6 +673,7 @@ function CreateFont(Height, Width, Escapement, Orientation, Weight: Integer;
 var
   LogFont: TLogFont;
 begin
+writeln('CreateFont Name="',FaceName,'"');
   with LogFont do
   begin
     lfHeight := Height;
@@ -1129,6 +1136,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.32  2002/06/04 15:17:22  lazarus
+  MG: improved TFont for XLFD font names
+
   Revision 1.31  2002/05/27 17:58:42  lazarus
   MG: added command line help
 

@@ -47,6 +47,7 @@ function CreateCaret(Handle : HWND; Bitmap : hBitmap; width, Height : Integer) :
 function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; override;
 function CreateCompatibleDC(DC: HDC): HDC; override;
 function CreateFontIndirect(const LogFont: TLogFont): HFONT; override;
+function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT; override;
 function CreatePenIndirect(const LogPen: TLogPen): HPEN; override;
 function CreatePixmapIndirect(const Data: Pointer; const TransColor: Longint): HBITMAP; override;
 function CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN; override;
@@ -153,6 +154,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.31  2002/06/04 15:17:26  lazarus
+  MG: improved TFont for XLFD font names
+
   Revision 1.30  2002/05/27 17:58:42  lazarus
   MG: added command line help
 

@@ -36,7 +36,7 @@ unit Dialogs;
 
 interface
 
-uses Classes, Forms, Controls, VCLGlobals, LMessages;
+uses Classes, Forms, Controls, VCLGlobals, LMessages, Graphics;
 
 //type
 //   TDialogButtons = (mbYes, mbNo, mbOK, mbCancel, mbAbort, mbRetry,
@@ -195,13 +195,34 @@ type
 
   { TFontDialog }
 
+  TFontDialogOption = (fdAnsiOnly, fdTrueTypeOnly, fdEffects,
+    fdFixedPitchOnly, fdForceFontExist, fdNoFaceSel, fdNoOEMFonts,
+    fdNoSimulations, fdNoSizeSel, fdNoStyleSel,  fdNoVectorFonts,
+    fdShowHelp, fdWysiwyg, fdLimitSize, fdScalableOnly, fdApplyButton);
+  TFontDialogOptions = set of TFontDialogOption;
+  
   TFontDialog = class(TCommonDialog)
   private
-    FFontName : String;
+    FFont: TFont;
+    FMaxFontSize: Integer;
+    FMinFontSize: Integer;
+    FOnApplyClicked: TNotifyEvent;
+    FOptions: TFontDialogOptions;
+    FPreviewText: string;
+    procedure SetFont(const AValue: TFont);
   public
+    procedure ApplyClicked; virtual;
     constructor Create (AOwner : TComponent); override;
+    destructor Destroy; override;
   published
-    property FontName : String read FFontName write FFontName;
+    property Font: TFont read FFont write SetFont;
+    property MinFontSize: Integer read FMinFontSize write FMinFontSize;
+    property MaxFontSize: Integer read FMaxFontSize write FMaxFontSize;
+    property Options: TFontDialogOptions
+      read FOptions write FOptions default [fdEffects];
+    property OnApplyClicked: TNotifyEvent
+      read FOnApplyClicked write FOnApplyClicked;
+    property PreviewText: string read FPreviewText write FPreviewText;
   end;
 
 
@@ -227,7 +248,7 @@ implementation
 
 
 uses
-  Buttons, StdCtrls, LCLlinux, Graphics, SysUtils, FileCtrl;
+  Buttons, StdCtrls, LCLlinux, SysUtils, FileCtrl;
 
 resourcestring
    rsMbYes    = 'Yes';
@@ -269,6 +290,11 @@ var
 {$I commondialog.inc}
 {$I filedialog.inc}
 {$I colordialog.inc}
+procedure TFontDialog.SetFont(const AValue: TFont);
+begin
+  FFont.Assign(AValue);
+end;
+
 {$I fontdialog.inc}
 {$I messagedialogpixmaps.inc}
 {$I messagedialogs.inc}
@@ -305,6 +331,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.14  2002/06/04 15:17:21  lazarus
+  MG: improved TFont for XLFD font names
+
   Revision 1.13  2002/05/30 14:11:11  lazarus
   MG: added filters and history to TOpenDialog
 

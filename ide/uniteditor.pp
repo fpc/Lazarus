@@ -282,15 +282,17 @@ type
     FProcessingCommand: boolean;
 
     FOnAddJumpPoint: TOnAddJumpPoint;
+    FOnAddWatchAtCursor: TNotifyEvent;
     FOnCloseClicked: TNotifyEvent;
     FOnDeleteLastJumpPoint: TNotifyEvent;
     FOnEditorVisibleChanged: TNotifyEvent;
     FOnEditorChanged: TNotifyEvent;
+    FOnEditorPropertiesClicked: TNotifyEvent;
+    FOnFindDeclarationClicked: TNotifyEvent;
     FOnJumpToHistoryPoint: TOnJumpToHistoryPoint;
     FOnNewClicked: TNotifyEvent;
     FOnOpenClicked: TNotifyEvent;
     FOnOpenFileAtCursorClicked: TNotifyEvent;
-    FOnFindDeclarationClicked: TNotifyEvent;
     FOnProcessUserCommand: TOnProcessUserCommand;
     FOnSaveAsClicked: TNotifyEvent;
     FOnSaveAllClicked: TNotifyEvent;
@@ -299,8 +301,7 @@ type
     FOnToggleFormUnitClicked : TNotifyEvent;
     FOnUserCommandProcessed: TOnProcessUserCommand;
     FOnViewJumpHistory: TNotifyEvent;
-    FOnAddWatchAtCursor: TNotifyEvent;
-    
+
     FOnCreateBreakPoint: TOnCreateDeleteBreakPoint;
     FOnDeleteBreakPoint: TOnCreateDeleteBreakPoint;
 
@@ -320,6 +321,7 @@ type
     Procedure BookmarkGoTo(Value: Integer);
     Procedure BookMarkSet(Value : Integer);
     Procedure BookMarkToggle(Value : Integer);
+    procedure EditorPropertiesClicked(Sender: TObject);
 
     Procedure BreakPointCreated(Sender : TObject; Line : Integer);
     Procedure BreakPointDeleted(Sender : TObject; Line : Integer);
@@ -445,15 +447,17 @@ type
        read FOnEditorVisibleChanged write FOnEditorVisibleChanged;
     property OnEditorChanged: TNotifyEvent
        read FOnEditorChanged write FOnEditorChanged;
+    property OnEditorPropertiesClicked: TNotifyEvent
+       read FOnEditorPropertiesClicked write FOnEditorPropertiesClicked;
+    property OnFindDeclarationClicked : TNotifyEvent
+       read FOnFindDeclarationClicked write FOnFindDeclarationClicked;
     property OnJumpToHistoryPoint: TOnJumpToHistoryPoint
        read FOnJumpToHistoryPoint write FOnJumpToHistoryPoint;
     property OnNewClicked : TNotifyEvent read FOnNewClicked write FOnNewClicked;
     property OnOpenClicked : TNotifyEvent read FOnOPenClicked write FOnOpenClicked;
     property OnOpenFileAtCursorClicked : TNotifyEvent 
        read FOnOpenFileAtCursorClicked write FOnOpenFileAtCursorClicked;
-    property OnFindDeclarationClicked : TNotifyEvent 
-       read FOnFindDeclarationClicked write FOnFindDeclarationClicked;
-    property OnSaveAsClicked : TNotifyEvent 
+    property OnSaveAsClicked : TNotifyEvent
        read FOnSaveAsClicked write FOnSaveAsClicked;
     property OnSaveAllClicked : TNotifyEvent 
        read FOnSaveAllClicked write FOnSaveAllClicked;
@@ -2214,6 +2218,12 @@ begin
   FUnUsedEditorComponents.Clear;
 end;
 
+procedure TSourceNotebook.EditorPropertiesClicked(Sender: TObject);
+begin
+  if Assigned(FOnEditorPropertiesClicked) then
+    FOnEditorPropertiesClicked(Sender);
+end;
+
 Procedure TSourceNotebook.BuildPopupMenu;
 
   Function Seperator : TMenuItem;
@@ -2288,6 +2298,12 @@ Begin
   MenuItem.OnClick := @ReadOnlyClicked;
   SrcPopupMenu.Items.Add(MenuItem);
 
+  MenuItem := TMenuItem.Create(Self);
+  MenuItem.Name := 'ShowLineNumbersMenuItem';
+  MenuItem.Caption := 'Show Line Numbers';
+  menuItem.OnClick := @ToggleLineNumbersClicked;
+  SrcPopupMenu.Items.Add(MenuItem);
+
   SrcPopupMenu.Items.Add(Seperator);
 
   MenuItem := TMenuItem.Create(Self);
@@ -2324,9 +2340,9 @@ Begin
 
   SrcPopupMenu.Items.Add(Seperator);
   MenuItem := TMenuItem.Create(Self);
-  MenuItem.Name := 'ShowLineNumbersMenuItem';
-  MenuItem.Caption := 'Show Line Numbers';
-  menuItem.OnClick := @ToggleLineNumbersClicked;
+  MenuItem.Name := 'EditorPropertiesMenuItem';
+  MenuItem.Caption := 'Editor properties';
+  MenuItem.OnClick :=@EditorPropertiesClicked;
   SrcPopupMenu.Items.Add(MenuItem);
 
 end;

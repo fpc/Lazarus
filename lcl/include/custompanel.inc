@@ -87,22 +87,21 @@ end;
 
 procedure TCustomPanel.Paint;
 var
-  Rect: TRect;
+  ARect: TRect;
   TS : TTextStyle;
 begin
-  Rect := GetClientRect;
+  ARect := GetClientRect;
   if BorderStyle = bsSingle then begin
-    Canvas.Rectangle(Rect);
-    InflateRect(Rect, -1, -1);
+    Canvas.Rectangle(ARect);
+    InflateRect(ARect, -1, -1);
   end;
 
   if BevelOuter <> bvNone then
-    Canvas.Frame3d(Rect, BevelWidth, BevelOuter);
-
+    Canvas.Frame3d(ARect, BevelWidth, BevelOuter);
 
   if BevelInner <> bvNone then begin
-    if BorderWidth > 0 then InflateRect(Rect, -BorderWidth, -BorderWidth);
-    Canvas.Frame3d(Rect, BevelWidth, BevelInner);
+    if BorderWidth > 0 then InflateRect(ARect, -BorderWidth, -BorderWidth);
+    Canvas.Frame3d(ARect, BorderWidth, BevelInner);
   end;
 
   if Caption <> '' then begin
@@ -110,7 +109,7 @@ begin
     TS.Layout:= tlCenter;
     TS.Opaque:= false;
     TS.Clipping:= false;
-    Canvas.TextRect(Rect, 0, 0, Caption, TS);
+    Canvas.TextRect(ARect, 0, 0, Caption, TS);
   end;
 end;
 

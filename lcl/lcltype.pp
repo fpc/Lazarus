@@ -375,7 +375,7 @@ PM_Remove = 1;
 
 const
 
- { 3D border styles }
+  { 3D border styles }
   BDR_RAISEDOUTER = 1;
   BDR_SUNKENOUTER = 2;
   BDR_RAISEDINNER = 4;
@@ -768,37 +768,37 @@ BKMODE_LAST = 2;
   CLIP_TT_ALWAYS = (2 shl 4);
   CLIP_EMBEDDED  = (8 shl 4);
 
-  DEFAULT_QUALITY = 0;
-  DRAFT_QUALITY = 1;
-  PROOF_QUALITY = 2;
+  DEFAULT_QUALITY     = 0;
+  DRAFT_QUALITY       = 1;
+  PROOF_QUALITY       = 2;
   NONANTIALIASED_QUALITY = 3;
   ANTIALIASED_QUALITY = 4;
 
-  DEFAULT_PITCH = 0;
-  FIXED_PITCH = 1;
+  DEFAULT_PITCH  = 0;
+  FIXED_PITCH    = 1;
   VARIABLE_PITCH = 2;
-  MONO_FONT = 8;
+  MONO_FONT      = 8;
 
-  ANSI_CHARSET = 0;
-  DEFAULT_CHARSET = 1;
-  SYMBOL_CHARSET = 2;
-  SHIFTJIS_CHARSET = $80;
-  HANGEUL_CHARSET = 129;
-  GB2312_CHARSET = 134;
+  ANSI_CHARSET        = 0;
+  DEFAULT_CHARSET     = 1;
+  SYMBOL_CHARSET      = 2;
+  MAC_CHARSET         = 77;
+  SHIFTJIS_CHARSET    = 128;
+  HANGEUL_CHARSET     = 129;
+  JOHAB_CHARSET       = 130;
+  GB2312_CHARSET      = 134;
   CHINESEBIG5_CHARSET = 136;
-  OEM_CHARSET = 255;
-  JOHAB_CHARSET = 130;
-  HEBREW_CHARSET = 177;
-  ARABIC_CHARSET = 178;
-  GREEK_CHARSET = 161;
-  TURKISH_CHARSET = 162;
-  VIETNAMESE_CHARSET = 163;
-  THAI_CHARSET = 222;
-  EASTEUROPE_CHARSET = 238;
-  RUSSIAN_CHARSET = 204;
+  GREEK_CHARSET       = 161;
+  TURKISH_CHARSET     = 162;
+  VIETNAMESE_CHARSET  = 163;
+  HEBREW_CHARSET      = 177;
+  ARABIC_CHARSET      = 178;
+  BALTIC_CHARSET      = 186;
+  RUSSIAN_CHARSET     = 204;
+  THAI_CHARSET        = 222;
+  EASTEUROPE_CHARSET  = 238;
+  OEM_CHARSET         = 255;
 
-  MAC_CHARSET = 77;
-  BALTIC_CHARSET = 186;
 
 //-----------
 // Font Sets
@@ -833,21 +833,21 @@ BKMODE_LAST = 2;
 //--------------
 // Font Weights
 //--------------
-  FW_DONTCARE = 0;
-  FW_THIN = 100;
+  FW_DONTCARE   = 0;
+  FW_THIN       = 100;
   FW_EXTRALIGHT = 200;
-  FW_LIGHT = 300;
-  FW_NORMAL = 400;
-  FW_MEDIUM = 500;
-  FW_SEMIBOLD = 600;
-  FW_BOLD = 700;
-  FW_EXTRABOLD = 800;
-  FW_HEAVY = 900;
+  FW_LIGHT      = 300;
+  FW_NORMAL     = 400;
+  FW_MEDIUM     = 500;
+  FW_SEMIBOLD   = 600;
+  FW_BOLD       = 700;
+  FW_EXTRABOLD  = 800;
+  FW_HEAVY      = 900;
   FW_ULTRALIGHT = FW_EXTRALIGHT;
-  FW_REGULAR = FW_NORMAL;
-  FW_DEMIBOLD = FW_SEMIBOLD;
-  FW_ULTRABOLD = FW_EXTRABOLD;
-  FW_BLACK = FW_HEAVY;
+  FW_REGULAR    = FW_NORMAL;
+  FW_DEMIBOLD   = FW_SEMIBOLD;
+  FW_ULTRABOLD  = FW_EXTRABOLD;
+  FW_BLACK      = FW_HEAVY;
 
 //==============================================
 // Brush constants
@@ -1406,6 +1406,9 @@ end.
 
 {
   $Log$
+  Revision 1.7  2002/06/04 15:17:22  lazarus
+  MG: improved TFont for XLFD font names
+
   Revision 1.6  2002/05/28 19:39:45  lazarus
   MG: added gtk rc file support and started stule dependent syscolors
 

@@ -1,3 +1,4 @@
+// included by comctrls.pp
 {
  *****************************************************************************
  *                                                                           *
@@ -23,7 +24,7 @@ begin
   ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks, csOpaque];
   Color := clBtnFace;
   Height := 19;
-  Setbounds(0,TWinControl(AOwner).Height-21,TWInControl(AOwner).Width,20);
+  Setbounds(0,TWinControl(AOwner).Height-21,TWinControl(AOwner).Width,20);
   Align := alBottom;
   FPanels := TStatusPanels.Create(Self);
   FCanvas := TControlCanvas.Create;
@@ -135,16 +136,19 @@ Begin
     For I := 0 to Panels.Count-1 do
       Begin
         if I = Panels.Count-1 then
-          Panels[I].Width := ClientWidth-X;  //this sets the last panel to the width of the statusbar
+          // this sets the last panel to the width of the statusbar
+          Panels[I].Width := ClientWidth-X;
         DrawBevel(X,I);
         Canvas.TextOut(X+2,Y+X2,Panels[i].Text);
         //draw divider
         if I < Panels.Count-1 then
           DrawDivider(X+Panels[i].Width);
-	inc(X);
+        inc(X);
         X := X + Panels[i].Width+1;
       end;
   end
-  else Canvas.TextOut(Left+2,Top+X2,SimpleText);
-
+  else
+    Canvas.TextOut(Left+2,Top+X2,SimpleText);
 End;
+// included by comctrls.pp
+

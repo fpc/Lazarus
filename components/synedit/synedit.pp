@@ -3132,8 +3132,11 @@ var
   Metrics: TTextMetric;
   AveCW, MaxCW: Integer;
 begin
+  writeln('TCustomSynEdit.SetFont--------------------------------------------');
+  writeln('  TCustomSynEdit.SetFont A1',Value.Name);
   DC := GetDC(0);
   Save := SelectObject(DC, Value.Handle);
+  writeln('  TCustomSynEdit.SetFont A2',Value.Name);
   GetTextMetrics(DC, Metrics);
   SelectObject(DC, Save);
   ReleaseDC(0, DC);
@@ -3141,6 +3144,7 @@ begin
     AveCW := tmAveCharWidth;
     MaxCW := tmMaxCharWidth;
   end;
+  writeln('  TCustomSynEdit.SetFont B ',AveCW,',',MaxCW,' ',Value.Name);
   case AveCW = MaxCW of
     True: inherited Font := Value;
     False:
@@ -3151,9 +3155,13 @@ begin
           Size := Value.Size;
           Style := Value.Style;
         end;
+  writeln('  TCustomSynEdit.SetFont C ',AveCW,',',MaxCW,' ',Value.Name,
+  ' Value.Size=',Value.Size,' Value.Height=',Value.Height,' DummyHeight=',fFontDummy.Height);
         inherited Font := fFontDummy;
       end;
   end;
+  writeln('  TCustomSynEdit.SetFont D ',Font.Name);
+  writeln('SSS1 "',Font.Name,'" Height=',Font.Height,' AveCW=',AveCW,' MaxCW=',MaxCW);
   if fGutter.ShowLineNumbers then GutterChanged(Self);
 end;
 

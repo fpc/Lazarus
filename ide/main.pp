@@ -44,16 +44,17 @@ uses
 {$ENDIF}
   Classes, LazarusIDEStrConsts, LCLType, LclLinux, Compiler, StdCtrls, Forms,
   Buttons, Menus, ComCtrls, Spin, Project, SysUtils, FileCtrl, Controls,
-  Graphics, ExtCtrls, Dialogs, LazConf, CompReg, CodeToolManager, CodeCache,
-  DefineTemplates, MsgView, NewProjectDlg, IDEComp, AbstractFormEditor,
-  Designer, FormEditor, CustomFormEditor, ObjectInspector, PropEdits,
-  ControlSelection, UnitEditor, CompilerOptions, EditorOptions, EnvironmentOpts,
-  TransferMacros, SynEditKeyCmds, KeyMapping, ProjectOpts, IDEProcs, Process,
-  UnitInfoDlg, Debugger, DBGOutputForm, GDBMIDebugger, RunParamsOpts,
-  ExtToolDialog, MacroPromptDlg, LMessages, ProjectDefs, Watchesdlg,
-  BreakPointsdlg, ColumnDlg, OutputFilter, BuildLazDialog, MiscOptions,
-  EditDefineTree, CodeToolsOptions, TypInfo, IDEOptionDefs, CodeToolsDefines,
-  LocalsDlg, DebuggerDlg, InputHistory,
+  Graphics, GraphType, ExtCtrls, Dialogs, LazConf, CompReg, CodeToolManager,
+  CodeCache, DefineTemplates, MsgView, NewProjectDlg, IDEComp,
+  AbstractFormEditor, Designer, FormEditor, CustomFormEditor, ObjectInspector,
+  PropEdits, ControlSelection, UnitEditor, CompilerOptions, EditorOptions,
+  EnvironmentOpts, TransferMacros, SynEditKeyCmds, KeyMapping, ProjectOpts,
+  IDEProcs, Process, UnitInfoDlg, Debugger, DBGOutputForm, GDBMIDebugger,
+  RunParamsOpts, ExtToolDialog, MacroPromptDlg, LMessages, ProjectDefs,
+  Watchesdlg, BreakPointsdlg, ColumnDlg, OutputFilter, BuildLazDialog,
+  MiscOptions, EditDefineTree, CodeToolsOptions, TypInfo, IDEOptionDefs,
+  CodeToolsDefines, LocalsDlg, DebuggerDlg, InputHistory,
+  // main ide
   BaseDebugManager, DebugManager, MainBar;
 
 type
@@ -784,13 +785,15 @@ var
 begin
 
   pnlSpeedButtons := TPanel.Create(Self);
-  pnlSpeedButtons.Parent:= Self;
   with pnlSpeedButtons do begin
-    Visible := True;
     Name := 'pnlSpeedButtons';
+    Parent:= Self;
     Top := 0;
     Left:= 0;
     Caption:= '';
+    BevelWidth:=1;
+    BevelOuter:=bvRaised;
+    Visible := True;
   end;
 
 
@@ -822,8 +825,8 @@ begin
   StepIntoSpeedButton  := CreateButton('StepIntoSpeedButton'   , 'btn_stepinto'       , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuStepIntoProjectClicked, lsiHintStepInto);
   StepOverSpeedButton  := CreateButton('StepOverpeedButton'   , 'btn_stepover'       , 1, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuStepOverProjectClicked, lsiHintStepOver);
   
-  pnlSpeedButtons.Width := ButtonLeft+1;
-  pnlSpeedButtons.Height := ButtonTop+1;
+  pnlSpeedButtons.Width := ButtonLeft+3;
+  pnlSpeedButtons.Height := ButtonTop+3;
   
 
   // create the popupmenu for the OpenFileArrowSpeedBtn
@@ -845,7 +848,7 @@ begin
   with ComponentNotebook do begin
     Parent := Self;
     Name := 'ComponentNotebook';
-    Left := ToggleFormSpeedBtn.Left + ToggleFormSpeedBtn.Width + 4;
+    Left := ToggleFormSpeedBtn.Left + ToggleFormSpeedBtn.Width + 2;
     Top := 0;
     Width := Self.ClientWidth - Left;
     Height := 60; //Self.ClientHeight - ComponentNotebook.Top;
@@ -978,11 +981,12 @@ begin
   SourceNotebook.OnDeleteLastJumpPoint := @OnSrcNotebookDeleteLastJumPoint;
   SourceNotebook.OnEditorVisibleChanged := @OnSrcNotebookEditorVisibleChanged;
   SourceNotebook.OnEditorChanged := @OnSrcNotebookEditorChanged;
+  SourceNotebook.OnEditorPropertiesClicked := @mnuEnvEditorOptionsClicked;
+  SourceNotebook.OnFindDeclarationClicked := @OnSrcNotebookFindDeclaration;
   SourceNotebook.OnJumpToHistoryPoint := @OnSrcNotebookJumpToHistoryPoint;
   SourceNotebook.OnNewClicked := @OnSrcNotebookFileNew;
   SourceNotebook.OnOpenClicked := @OnSrcNotebookFileOpen;
   SourceNotebook.OnOpenFileAtCursorClicked := @OnSrcNotebookFileOpenAtCursor;
-  SourceNotebook.OnFindDeclarationClicked := @OnSrcNotebookFindDeclaration;
   SourceNotebook.OnProcessUserCommand := @OnSrcNotebookProcessCommand;
   SourceNotebook.OnSaveClicked := @OnSrcNotebookFileSave;
   SourceNotebook.OnSaveAsClicked := @OnSrcNotebookFileSaveAs;
@@ -6404,6 +6408,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.306  2002/06/04 15:17:17  lazarus
+  MG: improved TFont for XLFD font names
+
   Revision 1.305  2002/06/01 08:41:27  lazarus
   MG: DrawFramControl now uses gtk style, transparent STrechBlt
 

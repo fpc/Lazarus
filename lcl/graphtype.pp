@@ -38,10 +38,10 @@ type
   TColor = longint;  //Also defined in LMessages.pp
   
   TFontPitch = (fpDefault, fpVariable, fpFixed);
-  TFontName = shortstring;
-  TFontStyle = (fsBold, fsItalic, fsStrikeOut, fsUnderline);
+  TFontName = string;
   TFontCharSet = 0..255;
   TFontDataName = string[LF_FACESIZE -1];
+  TFontStyle = (fsBold, fsItalic, fsStrikeOut, fsUnderline);
   TFontStyles = set of TFontStyle;
   TFontStylesbase = set of TFontStyle;
 
@@ -145,6 +145,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.4  2002/06/04 15:17:21  lazarus
+  MG: improved TFont for XLFD font names
+
   Revision 1.3  2002/05/10 06:05:50  lazarus
   MG: changed license to LGPL
 

@@ -72,7 +72,7 @@ type
       );
       gdiFont: (
         GDIFontObject: PGdkFont;
-        LogFont: TLogFont;  // for now font info is stored as well, later query font params
+        LogFont: TLogFont;// for now font info is stored as well, later query font params
       ); 
       gdiPen: (
         GDIPenColor: TGdkColor;
@@ -141,6 +141,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.8  2002/06/04 15:17:23  lazarus
+  MG: improved TFont for XLFD font names
+
   Revision 1.7  2002/06/01 08:41:28  lazarus
   MG: DrawFramControl now uses gtk style, transparent STrechBlt
 

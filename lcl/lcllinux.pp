@@ -53,6 +53,7 @@ uses Classes, LCLType, VCLGlobals, GraphType;
 
 function MakeLong(A,B : Word) : LongInt;
 function MakeWord(A,B : Byte) : Word;
+
 implementation
 
 uses
@@ -75,6 +76,9 @@ end.
 
 {
   $Log$
+  Revision 1.19  2002/06/04 15:17:21  lazarus
+  MG: improved TFont for XLFD font names
+
   Revision 1.18  2002/05/20 14:19:03  lazarus
   MG: activated the clientrect bugfixes
 
