@@ -1914,6 +1914,7 @@ var OldInput: TFindDeclarationInput;
   ClassIdentNode, DummyNode: TCodeTreeNode;
   IsPredefinedIdentifier: boolean;
   NodeStack: TCodeTreeNodeStack;
+  OldPos: integer;
 begin
   Result.Node:=Node;
   Result.Tool:=Self;
@@ -1992,6 +1993,7 @@ writeln('[TFindDeclarationTool.FindBaseTypeOfNode] Class is forward');
           break;
         Params.Save(OldInput);
         try
+          DummyNode:=Result.Node;
           Params.SetIdentifier(Self,@Src[Result.Node.StartPos],
                                @CheckSrcIdentifier);
           Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound]
@@ -2013,13 +2015,21 @@ writeln('[TFindDeclarationTool.FindBaseTypeOfNode] Class is forward');
             // skip search in proc parameters
             Params.ContextNode:=Params.ContextNode.Parent;
           if FindIdentifierInContext(Params) then begin
-            if NodeExistsInStack(@NodeStack,Params.NewNode) then begin
-              // circle detected
-              Params.NewCodeTool.MoveCursorToNodeStart(Params.NewNode);
-              Params.NewCodeTool.RaiseException('circle in definitions'
-                +' (identifier='+GetIdentifier(Params.Identifier)+')');
+            if Params.NewNode.Desc in [ctnTypeDefinition] then begin
+              if NodeExistsInStack(@NodeStack,Params.NewNode) then begin
+                // circle detected
+                Params.NewCodeTool.MoveCursorToNodeStart(Params.NewNode);
+                Params.NewCodeTool.RaiseException('circle in definitions'
+                  +' (identifier='+GetIdentifier(Params.Identifier)+')');
+              end;
+              Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,
+                                                            Params.NewNode)
+            end else begin
+              // not a type
+              MoveCursorToNodeStart(DummyNode);
+              ReadNextAtom;
+              RaiseException('type identifier expected, but '+GetAtom+' found');
             end;
-            Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,Params.NewNode)
           end else
             // predefined identifier
             Result:=CreateFindContext(Self,Result.Node);
@@ -2031,6 +2041,7 @@ writeln('[TFindDeclarationTool.FindBaseTypeOfNode] Class is forward');
       if (Result.Node.Desc=ctnProperty) then begin
         // this is a property -> search the type definition of the property
         if ReadTilTypeOfProperty(Result.Node) then begin
+          OldPos:=CurPos.StartPos;
           // property has type
           Params.Save(OldInput);
           try
@@ -2039,10 +2050,30 @@ writeln('[TFindDeclarationTool.FindBaseTypeOfNode] Class is forward');
                           +(fdfGlobals*Params.Flags)
                           -[fdfIgnoreUsedUnits];
             Params.ContextNode:=Result.Node.Parent;
-            FindIdentifierInContext(Params);
-            if Result.Node.HasAsParent(Params.NewNode) then
-              break;
-            Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,Params.NewNode);
+            IsPredefinedIdentifier:=WordIsPredefinedIdentifier.DoIt(
+                                       Params.Identifier);
+            if IsPredefinedIdentifier then
+              Exclude(Params.Flags,fdfExceptionOnNotFound);
+            if FindIdentifierInContext(Params) then begin
+              if Params.NewNode.Desc in [ctnTypeDefinition] then begin
+                if NodeExistsInStack(@NodeStack,Params.NewNode) then begin
+                  // circle detected
+                  Params.NewCodeTool.MoveCursorToNodeStart(Params.NewNode);
+                  Params.NewCodeTool.RaiseException('circle in definitions'
+                    +' (identifier='+GetIdentifier(Params.Identifier)+')');
+                end;
+                Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,
+                                                              Params.NewNode)
+              end else begin
+                // not a type
+                MoveCursorToCleanPos(OldPos);
+                ReadNextAtom;
+                RaiseException('type identifier expected,'
+                              +' but '+GetAtom+' found');
+              end;
+            end else
+              // predefined identifier
+              Result:=CreateFindContext(Self,Result.Node);
             exit;
           finally
             Params.Load(OldInput);
@@ -2055,12 +2086,20 @@ writeln('[TFindDeclarationTool.FindBaseTypeOfNode] Class is forward');
             MoveCursorToNodeStart(Result.Node);
             ReadNextAtom; // read 'property'
             ReadNextAtom; // read name
+            OldPos:=CurPos.StartPos;
             Params.SetIdentifier(Self,@Src[CurPos.StartPos],nil);
             Params.Flags:=[fdfExceptionOnNotFound,fdfSearchInAncestors]
                          +(fdfGlobalsSameIdent*Params.Flags);
             FindIdentifierInAncestors(Result.Node.Parent.Parent,Params);
-            Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,Params.NewNode);
-            exit;
+            if Result.Node.Desc=ctnProperty then begin
+              Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,
+                                                            Params.NewNode);
+              exit;
+            end else begin
+              // ancestor is not a property
+              MoveCursorToCleanPos(OldPos);
+              RaiseException('ancestor of untyped property is not a property');
+            end;
           finally
             Params.Load(OldInput);
           end;

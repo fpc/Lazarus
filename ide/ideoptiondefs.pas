@@ -135,6 +135,7 @@ type
     procedure Clear; override;
     procedure Delete(Index: Integer);
     procedure ApplyAll;
+    procedure Apply(AForm: TForm; const ID: string);
     procedure StoreWindowPositions;
     procedure Assign(SrcList: TIDEWindowLayoutList);
     function IndexOf(const FormID: string): integer;
@@ -548,6 +549,14 @@ var i: integer;
 begin
   for i:=0 to Count-1 do
     Items[i].Apply;
+end;
+
+procedure TIDEWindowLayoutList.Apply(AForm: TForm; const ID: string);
+var ALayout: TIDEWindowLayout;
+begin
+  ALayout:=ItemByFormID(ID);
+  ALayout.Form:=AForm;
+  ALayout.Apply;
 end;
 
 procedure TIDEWindowLayoutList.StoreWindowPositions;

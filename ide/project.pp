@@ -105,7 +105,7 @@ type
     property Form: TComponent read fForm write fForm;
     property FormName: string read fFormName write fFormName;
     property HasResources: boolean read GetHasResources write fHasResources;
-    property IsPartOfProject:boolean 
+    property IsPartOfProject: boolean
         read fIsPartOfProject write fIsPartOfProject;
     property Loaded: Boolean read fLoaded write fLoaded;
     property Modified: boolean read fModified write fModified;
@@ -202,6 +202,8 @@ type
     function GetMainResourceFilename(AnUnitInfo: TUnitInfo): string;
     function IsVirtual: boolean;
     function RemoveProjectPathFromFilename(const AFilename: string): string;
+    function ProjectDirectory: string;
+    function FileIsInProjectDir(const AFilename: string): boolean;
 
     property ActiveEditorIndexAtStart: integer 
        read fActiveEditorIndexAtStart write fActiveEditorIndexAtStart;
@@ -1254,6 +1256,25 @@ begin
          length(Result)-length(ProjectPath));
 end;
 
+function TProject.ProjectDirectory: string;
+begin
+  Result:=ExtractFilePath(ProjectFile);
+end;
+
+function TProject.FileIsInProjectDir(const AFilename: string): boolean;
+var ProjectDir, FilePath: string;
+begin
+  if FilenameIsAbsolute(AFilename) then begin
+    if (not IsVirtual) then begin
+      ProjectDir:=ProjectDirectory;
+      FilePath:=LeftStr(AFilename,length(ProjectDir));
+      Result:=(CompareFileNames(ProjectDir,FilePath)=0);
+    end else
+      Result:=false;
+  end else
+    Result:=IsVirtual;
+end;
+
 procedure TProject.OnUnitNameChange(AnUnitInfo: TUnitInfo; 
   const OldUnitName, NewUnitName: string;  CheckIfAllowed: boolean;
   var Allowed: boolean);
@@ -1329,6 +1350,9 @@ end.
 
 {
   $Log$
+  Revision 1.55  2002/03/25 07:29:23  lazarus
+  MG: added TOpen/SaveFlags and splittet some methods
+
   Revision 1.54  2002/03/22 12:36:45  lazarus
   MG: many fixes, to make it short: events
 

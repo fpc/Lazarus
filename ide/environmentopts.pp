@@ -364,12 +364,20 @@ var
 
 function DebuggerNameToType(const s: string): TDebuggerType;
 function PascalExtToType(const Ext: string): TPascalExtType;
+function FilenameIsPascalUnit(const Filename: string): boolean;
 
 
 implementation
 
 
 const MaxComboBoxCount: integer = 20;
+
+function FilenameIsPascalUnit(const Filename: string): boolean;
+var Ext: string;
+begin
+  Ext:=lowercase(ExtractFileExt(Filename));
+  Result:=(Ext='.pp') or (Ext='.pas');
+end;
 
 function DebuggerNameToType(const s: string): TDebuggerType;
 begin

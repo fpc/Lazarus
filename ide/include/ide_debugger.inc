@@ -253,7 +253,7 @@ begin
   UnitFile := FindUnitFile(ALocation.SrcFile);
   if UnitFile = '' 
   then UnitFile := ALocation.SrcFile;
-  if DoOpenEditorFile(UnitFile, False, True) <> mrOk then exit;
+  if DoOpenEditorFile(UnitFile, [ofOnlyIfExists]) <> mrOk then exit;
   
   ActiveSrcEdit := SourceNoteBook.GetActiveSE;
   if ActiveSrcEdit=nil then exit;

@@ -13,7 +13,5 @@
 
 { $DEFINE IDE_DEBUG}
 
-{$DEFINE TestEvents}
-
 // end.
 

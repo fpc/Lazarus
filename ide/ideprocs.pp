@@ -45,6 +45,9 @@ procedure AddToRecentList(const s: string; RecentList: TStringList;
 procedure LoadRect(XMLConfig: TXMLConfig; const Path:string; var ARect:TRect);
 procedure SaveRect(XMLConfig: TXMLConfig; const Path:string; var ARect:TRect);
 
+// miscellaneous
+procedure FreeThenNil(var Obj: TObject);
+
 
 implementation
 
@@ -321,6 +324,12 @@ begin
   ProgramFilename:=LeftStr(CmdLine,p-1);
   while (p<=length(CmdLine)) and (CmdLine[p]<=' ') do inc(p);
   Params:=RightStr(CmdLine,length(CmdLine)-p+1);
+end;
+
+procedure FreeThenNil(var Obj: TObject);
+begin
+  Obj.Free;
+  Obj:=nil;
 end;
 
 end.
