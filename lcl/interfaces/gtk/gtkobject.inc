@@ -3048,7 +3048,7 @@ end;
 
 {------------------------------------------------------------------------------
   Function: InitializeFileDialog
-  Params: OpenDialog: TOpenDialog; var SelWidget: PGtkWidget
+  Params: FileDialog: TFileDialog; var SelWidget: PGtkWidget
   Returns: -
 
   Creates a new TFile/Open/SaveDialog
@@ -3077,6 +3077,44 @@ begin
     InitializeOpenDialog(TOpenDialog(FileDialog),SelWidget);
 
   InitializeCommonDialog(TCommonDialog(FileDialog),SelWidget);
+end;
+
+{------------------------------------------------------------------------------
+  Function: InitializeFontDialog
+  Params: FontDialog: TFontialog; var SelWidget: PGtkWidget
+  Returns: -
+
+  Creates a new TFontDialog
+ ------------------------------------------------------------------------------}
+procedure InitializeFontDialog(FontDialog: TFontDialog;
+  var SelWidget: PGtkWidget; Title: PChar);
+begin
+  SelWidget := gtk_font_selection_dialog_new(Title);
+
+  // connect Ok, Cancel and Apply Button
+  gtk_signal_connect(
+    gtk_object(PGtkFontSelectionDialog(SelWidget)^.ok_button),
+    'clicked', gtk_signal_func(@gtkDialogOKclickedCB), FontDialog);
+  gtk_signal_connect(
+    gtk_object(PGtkFontSelectionDialog(SelWidget)^.cancel_button),
+    'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), FontDialog);
+  gtk_signal_connect(
+    gtk_object(PGtkFontSelectionDialog(SelWidget)^.apply_button),
+    'clicked', gtk_signal_func(@gtkDialogApplyclickedCB), FontDialog);
+  if fdApplyButton in FontDialog.Options then
+    gtk_widget_show(PGtkFontSelectionDialog(SelWidget)^.apply_button);
+
+  // set preview text
+  if FontDialog.PreviewText<>'' then
+    gtk_font_selection_dialog_set_preview_text(
+      PGtkFontSelectionDialog(SelWidget),PChar(FontDialog.PreviewText));
+
+  // set font name in XLFD format
+  if IsFontNameXLogicalFontDesc(FontDialog.Name) then
+    gtk_font_selection_dialog_set_font_name(PGtkFontSelectionDialog(SelWidget),
+      PChar(FontDialog.Name));
+
+  InitializeCommonDialog(TCommonDialog(FontDialog),SelWidget);
 end;
 
 {------------------------------------------------------------------------------
@@ -3291,14 +3329,7 @@ begin
       InitializeFileDialog(TFileDialog(Sender),p,StrTemp);
 
     csFontDialog :
-    begin
-      P := gtk_Font_selection_dialog_new(StrTemp);
-      gtk_signal_connect( gtk_object((GTK_FONT_SELECTION_DIALOG(P))^.ok_button),
-        'clicked', gtk_signal_func(@gtkDialogOKclickedCB), Sender);
-      gtk_signal_connect( gtk_object((GTK_FONT_SELECTION_DIALOG(P))^.cancel_button),
-        'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), Sender);
-      InitializeCommonDialog(TCommonDialog(Sender),p);
-    end;
+      InitializeFontDialog(TFontDialog(Sender),p,StrTemp);
 
     csFixed: //used for TWinControl, maybe change this to csWinControl
     begin
@@ -4667,10 +4698,12 @@ function TgtkObject.CreateDefaultFont: PGdiObject;
 begin
   Result := NewGDIObject(gdiFont);
   if FDefaultFont = nil then begin
-    FDefaultFont:= gdk_font_load('-adobe-helvetica-medium-r-normal--*-120-*-*-*-*-iso8859-1');
+    FDefaultFont:=
+      gdk_font_load('-adobe-helvetica-medium-r-normal--*-120-*-*-*-*-iso8859-1');
     if FDefaultFont = nil then begin
       FDefaultFont:= gdk_font_load ('fixed');
-      if FDefaultFont = nil then raise EOutOfResources.Create('Unable to load default font');
+      if FDefaultFont = nil then
+        raise EOutOfResources.Create('Unable to load default font');
     end;
   end;    
   Result^.GDIFontObject:= FDefaultFont;
@@ -4951,6 +4984,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.132  2002/06/04 15:17:23  lazarus
+  MG: improved TFont for XLFD font names
+
   Revision 1.131  2002/05/31 06:45:22  lazarus
   MG: deactivated new system colors, till we got a consistent solution
 
