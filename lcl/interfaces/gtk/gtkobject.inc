@@ -2075,6 +2075,7 @@ function TGtkWidgetSet.GetWindowRawImageDescription(GDKWindow: PGdkWindow;
   Desc: PRawImageDescription): boolean;
 var
   Visual: PGdkVisual;
+  Image: PGdkImage;
   Width, Height: integer;
 //  WindowType: TGdkWindowType;
   IsGdkBitmap: Boolean;
@@ -2164,12 +2165,29 @@ begin
   17..32: Desc^.BitsPerPixel:=32;
   else    Desc^.BitsPerPixel:=64;
   end;
+  
   // LineEnd
-  case Desc^.Depth of
-  0..8:   Desc^.LineEnd:=rileByteBoundary;
-  9..32:  Desc^.LineEnd:=rileDWordBoundary; // On X11 i386 lines are never aligned to words, only to dwords
-  else    Desc^.LineEnd:=rileQWordBoundary;
+  Image := gdk_image_new(GDK_IMAGE_NORMAL, Visual, 1, 1);
+  if Image = nil
+  then begin
+    DebugLn('TGtkWidgetSet.GetWindowRawImageDescription testimage creation failed ');
+    Exit;
   end;
+  try
+    case Image^.bpl div Image^.bpp of
+      1: Desc^.LineEnd:=rileByteBoundary;
+      2: Desc^.LineEnd:=rileWordBoundary;
+      4: Desc^.LineEnd:=rileDWordBoundary;
+      8: Desc^.LineEnd:=rileQWordBoundary;
+    else
+      DebugLn('TGtkWidgetSet.GetWindowRawImageDescription Unknown line end: %d/%d=%d', [Image^.bpl, Image^.bpp, Image^.bpl div Image^.bpp]);
+      Exit;
+    end;
+  finally
+    gdk_image_destroy(Image);
+    Image := nil;
+  end;
+  
   // Precisions and Shifts
   if IsGdkBitmap then begin
     Desc^.RedPrec:=1;
@@ -2187,7 +2205,7 @@ begin
   end;
   // AlphaBitsPerPixel and AlphaLineEnd
   Desc^.AlphaBitsPerPixel:=Desc^.AlphaPrec;
-  Desc^.AlphaLineEnd:=rileByteBoundary;
+  Desc^.AlphaLineEnd:=rileByteBoundary; //TODO: MWE: check if alpha ending is the same as normal ending
   Desc^.AlphaBitOrder:=riboBitsInOrder;
   Desc^.AlphaByteOrder:=riboLSBFirst;
 
@@ -6994,6 +7012,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.618  2005/01/18 00:09:31  marc
+  * Improved line end detection for rawimages
+
   Revision 1.617  2005/01/17 15:36:31  mattias
   improved gtk intf to calculate TextHeight
 
