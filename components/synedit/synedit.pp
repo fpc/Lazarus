@@ -385,7 +385,7 @@ type
     procedure DoLinesInserted(FirstLine, Count: integer);
     procedure DoTabKey;
     function FindHookedCmdEvent(AHandlerProc: THookedCommandEvent): integer;
-    procedure FontChanged(Sender: TObject);
+    procedure FontChanged(Sender: TObject); {$IFDEF SYN_LAZARUS}override;{$ENDIF}
     function GetBlockBegin: TPoint;
     function GetBlockEnd: TPoint;
     function GetCanPaste: Boolean;
@@ -7525,8 +7525,10 @@ begin
       e := BE.y;
 
     // build string to delete
-    StrToDeleteLen := ({$IFDEF SYN_LAZARUS}fBlockIndent{$ELSE}fTabWidth{$ENDIF}+2)
-                       * (e - BB.y) + FTabWidth + 1;
+    StrToDeleteLen :=
+       ({$IFDEF SYN_LAZARUS}fBlockIndent{$ELSE}fTabWidth{$ENDIF}+2) * (e - BB.y)
+      + {$IFDEF SYN_LAZARUS}fBlockIndent{$ELSE}fTabWidth{$ENDIF}
+      + 1;
     //                 chars per line * lines-1    + last line + null char
     FullStrToDelete := StrAlloc(StrToDeleteLen);
     try
