@@ -21,9 +21,6 @@
  *                                                                         *
  ***************************************************************************
 }
-uses
-  DOS; // .. invincible DOS ..
-
 const
   DefaultFPCSrcDirs: array[1..1] of string = (
     'C:\pp'
@@ -109,7 +106,8 @@ end;
 
 function FindDefaultCompilerPath: string;
 begin
-  Result:=SearchFileInPath(GetDefaultCompilerFilename,'',GetEnv('PATH'),';',
+  Result:=SearchFileInPath(GetDefaultCompilerFilename,'',
+                           GetEnvironmentVariable('PATH'),';',
                            [sffDontSearchInBasePath]);
   if Result<>'' then exit;
   Result:='c:\pp\bin\win32\ppc386.exe';
@@ -118,7 +116,8 @@ end;
 
 function FindDefaultMakePath: string;
 begin
-  Result:=SearchFileInPath('make.exe','',GetEnv('PATH'),';',
+  Result:=SearchFileInPath('make.exe','',
+                           GetEnvironmentVariable('PATH'),';',
                            [sffDontSearchInBasePath]);
 end;
 
@@ -151,7 +150,7 @@ end;
 
 function GetDefaultTestBuildDirectory: string;
 begin
-  Result:=GetEnv('TEMP');
+  Result:=GetEnvironmentVariable('TEMP');
   if Result<>'' then exit;
   Result:='c:\temp\';
   if DirPathExists(Result) then exit;
@@ -185,13 +184,16 @@ end;
 procedure InternalInit;
 begin
   PrimaryConfigPath:=ChompPathDelim(ExtractFilePath(Paramstr(0)));
-  SecondaryConfigPath:=GetEnv('WINDIR');
+  SecondaryConfigPath:=GetEnvironmentVariable('WINDIR');
   If SecondaryConfigPath = '' Then
     SecondaryConfigPath:='c:\windows';
 end;
 
 {
   $Log$
+  Revision 1.23  2004/08/16 18:05:29  vincents
+  replaced GetEnv from dos unit by GetEnvironmentVariable from SysUtils unit
+
   Revision 1.22  2004/08/13 12:28:01  mattias
   replaced ppc386 with platform independent name
 
