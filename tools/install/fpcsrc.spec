@@ -31,8 +31,8 @@ bindings and many more.
 if [ %{buildroot} != "/" ]; then
   rm -rf %{buildroot}
 fi
-mkdir -p %{buildroot}%{fpcsrc}
-cp -a fpc/* %{buildroot}%{fpcsrc}/
+mkdir -p %{buildroot}%{fpcsrcdir}
+cp -a fpc/* %{buildroot}%{fpcsrcdir}/
 
 %clean
 if [ %{buildroot} != "/" ]; then
@@ -41,7 +41,7 @@ fi
 
 %files
 %defattr(-,root,root)
-%{fpcsrc}
+%{fpcsrcdir}
 
 %changelog
 

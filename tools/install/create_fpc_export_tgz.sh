@@ -38,21 +38,23 @@ export CVSROOT=:pserver:cvs@cvs.freepascal.org:/FPC/CVS
 echo 'The password is: cvs'
 cvs login
 cvs -z3 export -D $FPCDate fpc
-if [ "x$FPCVersion' = "xstable" ]; then
+if [ "x$FPCVersion" = "xstable" ]; then
   Dirs='compiler rtl logs install'
-  rm -rf $Dirs
   for dir in $Dirs; do
-    cvs -z3 export -D $FPCDate fpc/$dir
+    rm -rf fpc/$dir
+    cvs -z3 export -r FIXES_1_0_0 -D $FPCDate fpc/$dir
+    echo
   done
 fi
 cd -
 
 # pack
+cd $TempDir
 echo 'creating tgz ...'
 tar czf fpc_src.tgz fpc
 cd -
-mv /tmp/fpc_src.tgz $OutputFile
-rm -rf /tmp/fpc
+mv $TempDir/fpc_src.tgz $OutputFile
+rm -rf $TempDir
 
 # end.
 
