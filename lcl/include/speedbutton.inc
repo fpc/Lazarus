@@ -291,8 +291,6 @@ begin
     end;
   end;
 
-  Canvas.Font.Assign(Self.Font);
-  Canvas.Font := Self.Font;
   PaintRect := Bounds(Left, Top, Width, Height);
 //  PaintRect := Rect(0, 0, Width, Height);
 
@@ -403,10 +401,11 @@ begin
   if Caption <> '' then begin
     TXTStyle := Canvas.TextStyle;
     TXTStyle.Opaque := False;
-    TXTStyle.Clipping := False;
+    TXTStyle.Clipping := True;
     TXTStyle.ShowPrefix := True;
     TXTStyle.Alignment := taLeftJustify;
     TXTStyle.Layout := tlTop;
+    TXTStyle.SystemFont := True;//Match System Default Style
     Canvas.TextRect(PaintRect, OffsetCap.X, OffsetCap.Y, Caption, TXTStyle);
   end;
 end;
@@ -673,6 +672,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.23  2002/09/03 08:07:20  lazarus
+  MG: image support, TScrollBox, and many other things from Andrew
+
   Revision 1.22  2002/09/01 16:11:21  lazarus
   MG: double, triple and quad clicks now works
 
