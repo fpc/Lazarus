@@ -59,14 +59,13 @@ Type
     edtLabel : TEdit;
     edtIndex : TEdit;
     TV       : TTreeView;
-    btnSub   : TButton;
     fBuild   : Boolean;
     Panel1: TPanel;
     OkButton: TBitBtn;
     CancelButton: TBitBtn;
     LeftGroupBox: TGroupBox;
     NewButton: TButton;
-    AddButton: TButton;
+    SubButton: TButton;
     DeleteButton: TButton;
     RightGroupBox: TGroupBox;
     CaptionLabel: TLabel;
@@ -314,9 +313,9 @@ begin
     OnClick:=@btnAddOnClick;
   end;
 
-  AddButton:=TButton.Create(self);
-  With AddButton do begin
-    Name:='AddButton';
+  SubButton:=TButton.Create(self);
+  With SubButton do begin
+    Name:='SubButton';
     Parent :=LeftGroupBox;
     Enabled:=False;
     Left   :=NewButton.Left;
@@ -333,7 +332,7 @@ begin
     Parent :=LeftGroupBox;
     Left   :=NewButton.Left;
     Width  :=NewButton.Width;
-    Top    :=AddButton.Top+AddButton.Height+30;
+    Top    :=SubButton.Top+SubButton.Height+30;
     Caption:=sccsLvEdtBtnDel;
     OnClick:=@btnDelOnClick;
   end;
@@ -434,13 +433,13 @@ begin
       edtIndex.Text:=IntToStr(TN.ImageIndex);
       edtLabel.Enabled:=True;
       edtIndex.Enabled:=True;
-      btnSub.Enabled  :=True;
+      SubButton.Enabled  :=True;
     end
     else
     begin
       EdtLabel.Text:='';
       EdtIndex.Text:='';
-      btnSub.Enabled:=False;
+      SubButton.Enabled:=False;
       edtLabel.Enabled:=False;
       edtIndex.Enabled:=False;
     end;
@@ -458,7 +457,7 @@ begin
     Top    :=22;
   end;
 
-  With AddButton do begin
+  With SubButton do begin
     Left   :=NewButton.Left;
     Width  :=NewButton.Width;
     Top    :=NewButton.Top+NewButton.Height+30;
@@ -467,7 +466,7 @@ begin
   With DeleteButton do begin
     Left   :=NewButton.Left;
     Width  :=NewButton.Width;
-    Top    :=AddButton.Top+AddButton.Height+30;
+    Top    :=SubButton.Top+SubButton.Height+30;
   end;
 
   With TV do
