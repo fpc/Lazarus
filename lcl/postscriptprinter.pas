@@ -262,7 +262,7 @@ var
    MyString: String;
 begin
   if FFontFace=AValue then exit;
-  if pos(' ',AValue) > -1 then
+  if pos(' ',AValue) > 0 then
   FFontFace := '('+AValue+')'
   else FFontFace:=AValue;
 

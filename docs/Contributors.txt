@@ -8,6 +8,7 @@ Cliff Baeseman
 Colin Western
 Curtis White
 Darek Mazur
+Eric Chapman
 GongYu
 Hans-Joachim Ott
 Jason King
