@@ -100,7 +100,7 @@ begin
   if AProject.IsVirtual then
     ProjectFilename:=DefaultFilename
   else
-    ProjectFilename:=AProject.Units[AProject.MainUnit].Filename;
+    ProjectFilename:=AProject.MainUnitInfo.Filename;
   if ProjectFilename='' then exit;
   ProjectDir:=ExtractFilePath(ProjectFilename);
   if not SetCurrentDir(ProjectDir) then exit;
@@ -132,8 +132,8 @@ begin
     if BuildAll then
       CmdLine := CmdLine+' -B';
     CmdLine := CmdLine
-                 + ' '+ AProject.CompilerOptions.MakeOptionsString(ProjectFilename)
-                 + ' '+ PrepareCmdLineOption(ProjectFilename);
+               + ' '+ AProject.CompilerOptions.MakeOptionsString(ProjectFilename)
+               + ' '+ PrepareCmdLineOption(ProjectFilename);
     if Assigned(FOnCmdLineCreate) then begin
       Abort:=false;
       FOnCmdLineCreate(CmdLine,Abort);
@@ -189,6 +189,9 @@ end.
 
 {
   $Log$
+  Revision 1.33  2002/09/05 19:03:34  lazarus
+  MG: improved handling of ambigious source files
+
   Revision 1.32  2002/07/05 12:34:08  lazarus
   MG: assembler errors are now shown in output
 

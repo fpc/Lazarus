@@ -253,9 +253,7 @@ type
     FOpenEditorsOnCodeToolChange: boolean;
 
     FRunProcess: TProcess; // temp solution, will be replaced by dummydebugger
-    TheCompiler: TCompiler;
-    TheOutputFilter: TOutputFilter;
-    
+
     CustomExtToolMenuSeparator: TMenuItem;
 
     procedure SetDefaultsForForm(aForm : TCustomForm);
@@ -311,8 +309,7 @@ type
         var ResourceCode: TCodeBuffer): TModalResult;
     function DoSaveFileResources(AnUnitInfo: TUnitInfo;
         ResourceCode, LFMCode: TCodeBuffer; Flags: TSaveFlags): TModalResult;
-    function DoDeleteAmbigiousSources(const AFilename: string): TModalResult;
-        
+
     // methods for 'open unit' and 'open main unit'
     function DoOpenNotExistingFile(const AFileName:string;
         Flags: TOpenFlags): TModalResult;
@@ -363,6 +360,7 @@ type
     function DoOpenProjectFile(AFileName:string):TModalResult;
     function DoAddActiveUnitToProject: TModalResult;
     function DoRemoveFromProjectDialog: TModalResult;
+    procedure DoWarnAmbigiousFiles;
     function DoBuildProject(BuildAll: boolean): TModalResult;
     function DoInitProjectRun: TModalResult; override;
     function DoRunProject: TModalResult;
@@ -444,6 +442,7 @@ type
     function GetProjectTargetFilename: string;
     function GetTestProjectFilename: string;
     function GetTestUnitFilename(AnUnitInfo: TUnitInfo): string; override;
+    function GetTargetUnitFilename(AnUnitInfo: TUnitInfo): string;
     function IsTestUnitFilename(const AFilename: string): boolean; override;
     function GetRunCommandLine: string; override;
     procedure OnMacroSubstitution(TheMacro: TTransferMacro; var s:string;
@@ -1492,13 +1491,14 @@ end;
 procedure TMainIDE.mnuSaveClicked(Sender : TObject);
 begin
   if SourceNoteBook.NoteBook=nil then exit;
-  DoSaveEditorFile(SourceNoteBook.NoteBook.PageIndex,[]);
+  DoSaveEditorFile(SourceNoteBook.NoteBook.PageIndex,[sfCheckAmbigiousFiles]);
 end;
 
 procedure TMainIDE.mnuSaveAsClicked(Sender : TObject);
 begin
   if SourceNoteBook.NoteBook=nil then exit;
-  DoSaveEditorFile(SourceNoteBook.NoteBook.PageIndex,[sfSaveAs]);
+  DoSaveEditorFile(SourceNoteBook.NoteBook.PageIndex,
+                   [sfSaveAs,sfCheckAmbigiousFiles]);
 end;
 
 procedure TMainIDE.mnuSaveAllClicked(Sender : TObject);
@@ -2801,40 +2801,6 @@ begin
   {$ENDIF}
 end;
 
-{-------------------------------------------------------------------------------
-  function TMainIDE.DoDeleteAmbigiousSources(const AFilename: string
-    ): TModalResult;
-    
-  Checks if file exists with same name and similar extension. The compiler
-  prefers for example .pp to .pas files. So, if we save a .pas file delete .pp
-  file, so that compiling does what is expected.
--------------------------------------------------------------------------------}
-function TMainIDE.DoDeleteAmbigiousSources(const AFilename: string
-  ): TModalResult;
-  
-  function DeleteFileIfExists(const DelFilename: string): boolean;
-  begin
-    if FileExists(DelFilename) then
-      Result:=DeleteFile(DelFilename)
-    else
-      Result:=true;
-  end;
-  
-var
-  Ext, LowExt: string;
-begin
-  Result:=mrOk;
-  if not EnvironmentOptions.AutoDeleteAmbigiousSources then exit;
-  if FilenameIsPascalUnit(AFilename) then begin
-    Ext:=ExtractFileExt(AFilename);
-    LowExt:=lowercase(Ext);
-    if LowExt='.pp' then
-      DeleteFileIfExists(ChangeFileExt(AFilename,'.pas'))
-    else if LowExt='.pas' then
-      DeleteFileIfExists(ChangeFileExt(AFilename,'.pp'));
-  end;
-end;
-
 function TMainIDE.DoOpenNotExistingFile(const AFileName: string;
   Flags: TOpenFlags): TModalResult;
 begin
@@ -3541,7 +3507,8 @@ begin
       exit;
   end;
 
-  DoDeleteAmbigiousSources(DestFilename);
+  if sfCheckAmbigiousFiles in Flags then
+    DoCheckAmbigiousSources(DestFilename,false);
 
   {$IFDEF IDE_DEBUG}
   writeln('*** HasResources=',ActiveUnitInfo.HasResources);
@@ -3602,7 +3569,7 @@ begin
     ACaption:='Source modified';
     if Messagedlg(ACaption, AText, mtConfirmation, [mbYes, mbNo], 0)=mrYes then
     begin
-      Result:=DoSaveEditorFile(PageIndex,[]);
+      Result:=DoSaveEditorFile(PageIndex,[sfCheckAmbigiousFiles]);
       if Result=mrAbort then exit;
     end;
     Result:=mrOk;
@@ -4555,6 +4522,21 @@ Begin
   Result:=mrOk;
 end;
 
+procedure TMainIDE.DoWarnAmbigiousFiles;
+var
+  AnUnitInfo: TUnitInfo;
+  i: integer;
+  DestFilename: string;
+begin
+  for i:=0 to Project1.UnitCount-1 do begin
+    AnUnitInfo:=Project1.Units[i];
+    if (AnUnitInfo.IsPartOfProject) and (not AnUnitInfo.IsVirtual) then begin
+      DestFilename:=GetTargetUnitFilename(AnUnitInfo);
+      DoCheckAmbigiousSources(DestFilename,true);
+    end;
+  end;
+end;
+
 function TMainIDE.DoSaveProjectToTestDirectory: TModalResult;
 begin
   Result:=mrCancel;
@@ -4576,7 +4558,7 @@ begin
     Result:=DoSaveAll([sfCheckAmbigiousFiles]);
     exit;
   end;
-  Result:=DoSaveProject([sfSaveToTestDir]);
+  Result:=DoSaveProject([sfSaveToTestDir,sfCheckAmbigiousFiles]);
 end;
 
 function TMainIDE.DoBuildProject(BuildAll: boolean): TModalResult;
@@ -4618,9 +4600,12 @@ begin
     // show messages
     MessagesView.Clear;
     DoArrangeSourceEditorAndMessageView;
-   
-    // compile
     TheOutputFilter.OnOutputString:=@MessagesView.Add;
+
+    // warn ambigious files
+    DoWarnAmbigiousFiles;
+
+    // compile
     Result:=TheCompiler.Compile(Project1,BuildAll,DefaultFilename);
     if Result=mrOk then begin
       MessagesView.MessageView.Items.Add(
@@ -5255,7 +5240,8 @@ begin
   if MacroName='save' then begin
     Handled:=true;
     if SourceNoteBook.NoteBook<>nil then
-      Abort:=(DoSaveEditorFile(SourceNoteBook.NoteBook.PageIndex,[])<>mrOk);
+      Abort:=(DoSaveEditorFile(SourceNoteBook.NoteBook.PageIndex,
+              [sfCheckAmbigiousFiles])<>mrOk);
     s:='';
   end else if MacroName='saveall' then begin
     Handled:=true;
@@ -5485,6 +5471,14 @@ begin
   Result:=TestDir+Result;
 end;
 
+function TMainIDE.GetTargetUnitFilename(AnUnitInfo: TUnitInfo): string;
+begin
+  if Project1.IsVirtual then
+    Result:=GetTestUnitFilename(AnUnitInfo)
+  else
+    Result:=AnUnitInfo.Filename;
+end;
+
 function TMainIDE.IsTestUnitFilename(const AFilename: string): boolean;
 var
   TestDir: string;
@@ -5498,9 +5492,10 @@ end;
 
 function TMainIDE.GetRunCommandLine: string;
 begin     
-  if Project1.RunParameterOptions.UseLaunchingApplication
-  then Result := Project1.RunParameterOptions.LaunchingApplicationPathPlusParams
-  else Result := '';
+  if Project1.RunParameterOptions.UseLaunchingApplication then
+    Result := Project1.RunParameterOptions.LaunchingApplicationPathPlusParams
+  else
+    Result := '';
   
   if Result='' 
   then begin
@@ -6467,7 +6462,6 @@ end;
 
 procedure TMainIDE.OnExtToolNeedsOutputFilter(var OutputFilter: TOutputFilter;
   var Abort: boolean);
-var ActiveSrcEdit: TSourceEditor;
 begin
   OutputFilter:=TheOutputFilter;
   OutputFilter.Project:=Project1;
@@ -6475,8 +6469,7 @@ begin
     Abort:=true;
     exit;
   end;
-  ActiveSrcEdit:=SourceNotebook.GetActiveSE;
-  if ActiveSrcEdit<>nil then ActiveSrcEdit.ErrorLine:=-1;
+  SourceNotebook.ClearErrorLines;
 
   ToolStatus:=itBuilder;
   MessagesView.Clear;
@@ -6818,6 +6811,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.363  2002/09/05 19:03:34  lazarus
+  MG: improved handling of ambigious source files
+
   Revision 1.362  2002/09/05 15:24:26  lazarus
   MG: added auto deleting of ambigious source files
 
