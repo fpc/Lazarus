@@ -95,6 +95,7 @@ type
     //procedure FormShow(Sender : TObject);
     procedure FormClose(Sender : TObject; var Action: TCloseAction);
     procedure FormCloseQuery(Sender : TObject; var CanClose: boolean);
+    procedure MainIDEResize(Sender: TObject);
     //procedure FormPaint(Sender : TObject);
     procedure OnApplicationUserInput(Sender: TObject; Msg: Cardinal);
     procedure OnApplicationIdle(Sender: TObject);
@@ -819,6 +820,7 @@ begin
   // build and position the MainIDE form
   Name := NonModalIDEWindowNames[nmiwMainIDEName];
   EnvironmentOptions.IDEWindowLayoutList.Apply(TForm(Self),Name);
+  OnResize:=@MainIDEResize;
 
   {$IFNDEF EnablePkgs}
   InitIDEComponents;
@@ -986,6 +988,12 @@ begin
   end;
   
   CanClose:=(DoCloseProject <> mrAbort);
+end;
+
+procedure TMainIDE.MainIDEResize(Sender: TObject);
+begin
+  if ComponentNotebook<>nil then
+    ComponentNotebook.Width:=ClientWidth-ComponentNotebook.Left;
 end;
 
 {------------------------------------------------------------------------------}
@@ -8653,6 +8661,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.557  2003/05/06 21:54:57  mattias
+  implemented compiler function Low(array)
+
   Revision 1.556  2003/05/06 08:40:57  mattias
   added export procedure specifier
 
