@@ -400,7 +400,8 @@ function RemoveAmpersands(Src: PChar; LineLength : Longint) : PChar;
 
 Procedure GetTextExtentIgnoringAmpersands(Font : PGDKFont; Str : PChar;
   LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
-  
+function FontIsDoubleByteCharsFont(TheFont: PGdkFont): boolean;
+
 Function GDKPixel2GDIRGB(Pixel : Longint; Visual : PGDKVisual;
   Colormap : PGDKColormap) : TGDIRGB;
 
