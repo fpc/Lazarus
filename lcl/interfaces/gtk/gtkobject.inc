@@ -4032,8 +4032,13 @@ begin
   csPanel:
     with (TPanel(Sender)) do
     begin
-      p := gtk_fixed_new();
-      gtk_widget_show (p);
+      p := gtk_hbox_new(false,0);
+      TempWidget := gtk_fixed_new();
+      gtk_container_add(GTK_CONTAINER(P), TempWidget);
+      gtk_widget_show(TempWidget);
+      SetFixedWidget(p, TempWidget);
+      SetMainWidget(p, TempWidget);
+      gtk_widget_show(P);
     end;
 
   csPopupMenu :
@@ -5847,6 +5852,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.220  2002/09/20 13:11:12  lazarus
+  MG: fixed TPanel and Frame3D
+
   Revision 1.219  2002/09/19 19:56:14  lazarus
   MG: accelerated designer drawings
 
