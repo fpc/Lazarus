@@ -2922,7 +2922,8 @@ begin
   if CustomOptions=AValue then exit;
   InvalidateOptions;
   inherited SetCustomOptions(AValue);
-  LazPackage.DefineTemplates.CustomDefinesChanged;
+  if LazPackage<>nil then
+    LazPackage.DefineTemplates.CustomDefinesChanged;
 end;
 
 procedure TPkgCompilerOptions.SetIncludeFiles(const AValue: string);
@@ -2972,40 +2973,50 @@ begin
   if UnitOutputDirectory=AValue then exit;
   InvalidateOptions;
   inherited SetUnitOutputDir(AValue);
-  LazPackage.DefineTemplates.OutputDirectoryChanged;
+  if LazPackage<>nil then
+    LazPackage.DefineTemplates.OutputDirectoryChanged;
 end;
 
 constructor TPkgCompilerOptions.Create(const AOwner: TObject);
 begin
   inherited Create(AOwner);
-  if AOwner <> nil
-  then FLazPackage := AOwner as TLazPackage;
+  if AOwner<>nil then
+    FLazPackage := AOwner as TLazPackage;
 end;
 
 procedure TPkgCompilerOptions.Clear;
 begin
   inherited Clear;
+  FSkipCompiler:=false;
 end;
 
 procedure TPkgCompilerOptions.GetInheritedCompilerOptions(var OptionsList: TList
   );
 begin
-  LazPackage.GetInheritedCompilerOptions(OptionsList);
+  if LazPackage<>nil then
+    LazPackage.GetInheritedCompilerOptions(OptionsList);
 end;
 
 function TPkgCompilerOptions.GetOwnerName: string;
 begin
-  Result:=LazPackage.IDAsString;
+  if LazPackage<>nil then
+    Result:=LazPackage.IDAsString;
 end;
 
 procedure TPkgCompilerOptions.InvalidateOptions;
 begin
+  if (LazPackage=nil) then exit;
+  if LazPackage.UsageOptions=nil then RaiseException('');
+  if LazPackage.UsageOptions.ParsedOpts=nil then RaiseException('');
   LazPackage.UsageOptions.ParsedOpts.InvalidateAll;
 end;
 
 function TPkgCompilerOptions.GetDefaultMainSourceFileName: string;
 begin
-  Result:=LazPackage.GetCompileSourceFilename;
+  if LazPackage<>nil then
+    Result:=LazPackage.GetCompileSourceFilename
+  else
+    Result:='';
   if Result='' then
     Result:=inherited GetDefaultMainSourceFileName;
 end;

@@ -799,6 +799,7 @@ begin
     chkCompilerCompile.Visible := True;
     chkCompilerCompile.Caption := lisCOSkipCallingCompiler;
     chkCompilerCompile.Width := 2 * WCOLABEL;
+    chkCompilerCompile.Checked := TPkgCompilerOptions(Options).SkipCompiler;
     chkCompilerBuild.Visible := False;
     chkCompilerRun.Visible := False;
   end
