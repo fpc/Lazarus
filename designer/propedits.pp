@@ -27,7 +27,6 @@
          workaround
     -StrToInt64 has a bug. It prints infinitly "something happened"
        -> taking my own
-    -TFont property editors
     -Message Dialogs on errors
 
     -many more... see XXX
@@ -40,7 +39,7 @@ interface
 
 uses 
   Classes, TypInfo, SysUtils, Forms, Controls, GraphType, Graphics, StdCtrls,
-  Buttons, ComCtrls;
+  Buttons, ComCtrls, Menus, LCLType;
 
 const
   MaxIdentLength: Byte = 63;
@@ -223,8 +222,18 @@ type
       property value then this function will return the actual property value.
       Otherwise this function will return an empty string.}
 
-  TPropertyAttribute=(paValueList,paSubProperties,paDialog,paMultiSelect,
-    paAutoUpdate,paSortList,paReadOnly,paRevertable,paFullWidthName);
+  TPropertyAttribute=(
+    paValueList,
+    paSubProperties,
+    paDialog,
+    paMultiSelect,
+    paAutoUpdate,
+    paSortList,
+    paReadOnly,
+    paRevertable,
+    paFullWidthName,
+    paNotNestable
+    );
   TPropertyAttributes=set of TPropertyAttribute;
 
   TPropertyEditor=class;
@@ -252,8 +261,6 @@ type
     FPropList:PInstPropList;
     FPropCount:Integer;
     function GetPrivateDirectory:ansistring;
-    procedure SetPropEntry(Index:Integer; AInstance:TPersistent;
-      APropInfo:PPropInfo);
   protected
     function GetPropInfo:PPropInfo;
     function GetFloatValue:Extended;
@@ -277,7 +284,7 @@ type
     procedure Modified;
   public
     constructor Create(Hook:TPropertyEditorHook;
-      ComponentList:TComponentSelectionList;  APropCount:Integer); virtual;
+      ComponentList: TComponentSelectionList;  APropCount:Integer); virtual;
     destructor Destroy; override;
     procedure Activate; virtual;
     procedure Deactivate; virtual;
@@ -296,6 +303,8 @@ type
     procedure Initialize; virtual;
     procedure Revert;
     procedure SetValue(const NewValue:ansistring); virtual;
+    procedure SetPropEntry(Index:Integer; AInstance:TPersistent;
+      APropInfo:PPropInfo);
     function ValueAvailable:Boolean;
     procedure ListMeasureWidth(const NewValue:ansistring; Index:integer;
       ACanvas:TCanvas;  var AWidth:Integer); dynamic;
@@ -479,13 +488,39 @@ type
   with the property being edited (e.g. the ActiveControl property). }
 
   TComponentPropertyEditor = class(TPropertyEditor)
+  protected
+    function FilterFunc(const ATestEditor: Pointer{IProperty}): Boolean;
+    function GetComponentReference: TComponent; virtual;
+    function GetSelections: Pointer{IDesignerSelections}; virtual;
   public
+    function AllEqual: Boolean; override;
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
+    procedure GetProperties(Proc:TGetPropEditProc); override;
     function GetEditLimit: Integer; override;
-    function GetValue: ansistring; override;
+    function GetValue: AnsiString; override;
     procedure GetValues(Proc: TGetStringProc); override;
     procedure SetValue(const NewValue: ansistring); override;
+  end;
+
+{ TInterfaceProperty
+  The default editor for interface references.  It allows the user to set
+  the value of this property to refer to an interface implemented by
+  a component on the form (or via form linking) that is type compatible
+  with the property being edited. }
+
+  TInterfaceProperty = class(TComponentPropertyEditor)
+  private
+    //FGetValuesStrProc: TGetStrProc;
+  protected
+    procedure ReceiveComponentNames(const S: string);
+    function GetComponent(const AInterface: Pointer {IInterface}): TComponent;
+    function GetComponentReference: TComponent; override;
+    function GetSelections: Pointer{IDesignerSelections}; override;
+  public
+    function AllEqual: Boolean; override;
+    procedure GetValues(Proc: TGetStrProc); override;
+    procedure SetValue(const Value: string); override;
   end;
 
 { TComponentNamePropertyEditor
@@ -498,6 +533,42 @@ type
     function GetEditLimit: Integer; override;
     function GetValue: ansistring; override;
     procedure SetValue(const NewValue: ansistring); override;
+  end;
+
+{ TDateProperty
+  Property editor for date portion of TDateTime type. }
+
+  TDateProperty = class(TPropertyEditor)
+    function GetAttributes: TPropertyAttributes; override;
+    function GetValue: string; override;
+    procedure SetValue(const Value: string); override;
+  end;
+
+{ TTimePropertyEditor
+  Property editor for time portion of TDateTime type. }
+
+  TTimePropertyEditor = class(TPropertyEditor)
+    function GetAttributes: TPropertyAttributes; override;
+    function GetValue: string; override;
+    procedure SetValue(const Value: string); override;
+  end;
+
+{ TDateTimePropertyEditor
+  Edits both date and time data simultaneously  }
+
+  TDateTimePropertyEditor = class(TPropertyEditor)
+    function GetAttributes: TPropertyAttributes; override;
+    function GetValue: string; override;
+    procedure SetValue(const Value: string); override;
+  end;
+
+{ TVariantPropertyEditor }
+
+  TVariantPropertyEditor = class(TPropertyEditor)
+    function GetAttributes: TPropertyAttributes; override;
+    function GetValue: string; override;
+    procedure SetValue(const Value: string); override;
+    procedure GetProperties(Proc:TGetPropEditProc); override;
   end;
 
 { TModalResultPropertyEditor }
@@ -564,6 +635,18 @@ type
   public
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
+  end;
+
+{ TShortCutPropertyEditor
+  Property editor the ShortCut property.  Allows both typing in a short
+  cut value or picking a short-cut value from a list. }
+
+  TShortCutPropertyEditor = class(TOrdinalPropertyEditor)
+  public
+    function GetAttributes: TPropertyAttributes; override;
+    function GetValue: string; override;
+    procedure GetValues(Proc: TGetStrProc); override;
+    procedure SetValue(const Value: string); override;
   end;
 
 { TTabOrderPropertyEditor
@@ -657,13 +740,10 @@ type
 procedure RegisterPropertyEditorMapper(Mapper:TPropertyEditorMapperFunc);
 
 procedure GetComponentProperties(PropertyEditorHook:TPropertyEditorHook;
-Components:TComponentSelectionList;  Filter:TTypeKinds;  Proc:TGetPropEditProc);
+  Components:TComponentSelectionList; Filter:TTypeKinds; Proc:TGetPropEditProc);
 
-//procedure RegisterComponentEditor(ComponentClass:TComponentClass;
-//  ComponentEditor:TComponentEditorClass);
-
-//function GetComponentEditor(Component:TComponent;
-//  Designer:IFormDesigner):TComponentEditor;
+function GetEditorClass(PropInfo:PPropInfo;
+  Obj:TPersistent): TPropertyEditorClass;
 
 
 //==============================================================================
@@ -816,24 +896,57 @@ type
   end;
 
 //==============================================================================
+
+{ TPropInfoList }
+
+type
+  TPropInfoList = class
+  private
+    FList: PPropList;
+    FCount: Integer;
+    FSize: Integer;
+    function Get(Index: Integer): PPropInfo;
+  public
+    constructor Create(Instance: TPersistent; Filter: TTypeKinds);
+    destructor Destroy; override;
+    function Contains(P: PPropInfo): Boolean;
+    procedure Delete(Index: Integer);
+    procedure Intersect(List: TPropInfoList);
+    property Count: Integer read FCount;
+    property Items[Index: Integer]: PPropInfo read Get; default;
+  end;
+
+//==============================================================================
+
+// Global flags:
+const
+  GReferenceExpandable: Boolean = True;
+  GShowReadOnlyProps: Boolean = True;
+
+//==============================================================================
 // XXX
 // This class is a workaround for the missing typeinfo function
 type
   TDummyClassForPropTypes = class (TPersistent)
   private
+    FDate: TDateProperty;
+    FDateTime: TDateTimePropertyEditor;
+    FFont: TFont;
     FList:PPropList;
     FCount:integer;
-  public
     FColor:TColor;
     FComponent:TComponent;
     FComponentName:TComponentName;
     FBrushStyle:TBrushStyle;
     FPenStyle:TPenStyle;
+    FShortCut: TShortCut;
     FTabOrder:integer;
     FCaption:TCaption;
     FLines:TStrings;
     FColumns: TListColumns;
     FModalResult:TModalResult;
+    FTime: TTimePropertyEditor;
+  public
     function PTypeInfos(const PropName:shortstring):PTypeInfo;
     constructor Create;
     destructor Destroy;  override;
@@ -847,8 +960,13 @@ type
     property TabOrder:integer read FTabOrder;
     property Caption:TCaption read FCaption;
     property Lines:TStrings read FLines;
-    property Columns:TListColumns;
+    property Columns:TListColumns read FColumns write FColumns;
     property ModalResult:TModalResult read FModalResult write FModalResult;
+    property Font: TFont read FFont write FFont;
+    property ShortCut: TShortCut read FShortCut write FShortCut;
+    property Date: TDateProperty read FDate write FDate;
+    property Time: TTimePropertyEditor read FTime write FTime;
+    property DateTime: TDateTimePropertyEditor read FDateTime write FDateTime;
   end;
 
 //==============================================================================
@@ -942,23 +1060,6 @@ type
   end;
 
 { TPropInfoList }
-
-type
-  TPropInfoList=class
-  private
-    FList:PPropList;
-    FCount:Integer;
-    FSize:Integer;
-    function Get(Index:Integer):PPropInfo;
-  public
-    constructor Create(Instance:TPersistent; Filter:TTypeKinds);
-    destructor Destroy; override;
-    function Contains(P:PPropInfo):Boolean;
-    procedure Delete(Index:Integer);
-    procedure Intersect(List:TPropInfoList);
-    property Count:Integer read FCount;
-    property Items[Index:Integer]:PPropInfo read Get; default;
-  end;
 
 constructor TPropInfoList.Create(Instance:TPersistent; Filter:TTypeKinds);
 var 
@@ -1056,8 +1157,8 @@ end;
 { GetComponentProperties }
 
 procedure RegisterPropertyEditor(PropertyType:PTypeInfo;
-ComponentClass:TClass;  const PropertyName:shortstring;
-EditorClass:TPropertyEditorClass);
+  ComponentClass: TClass;  const PropertyName:shortstring;
+  EditorClass:TPropertyEditorClass);
 var
   P:PPropertyClassRec;
 begin
@@ -1089,7 +1190,7 @@ begin
 end;
 
 function GetEditorClass(PropInfo:PPropInfo;
-  Obj:TPersistent):TPropertyEditorClass;
+  Obj:TPersistent): TPropertyEditorClass;
 var
   PropType:PTypeInfo;
   P,C:PPropertyClassRec;
@@ -1127,7 +1228,7 @@ begin
         if (C=nil) or   // see if P is better match than C
            ((C^.ComponentClass=nil) and (P^.ComponentClass<>nil)) or
            ((C^.PropertyName='') and (P^.PropertyName<>''))
-           or  // P's proptype match is exact,but C's isn't
+           or  // P's proptype match is exact,but C's does not
            ((C^.PropertyType<>PropType) and (P^.PropertyType=PropType))
            or  // P's proptype is more specific than C's proptype
            ((P^.PropertyType<>C^.PropertyType) and
@@ -2209,19 +2310,85 @@ end;
 
 { TComponentPropertyEditor }
 
-procedure TComponentPropertyEditor.Edit;
+function TComponentPropertyEditor.FilterFunc(
+  const ATestEditor: Pointer{IProperty}): Boolean;
 begin
-  {if (GetKeyState(VK_CONTROL) < 0) and
-     (GetKeyState(VK_LBUTTON) < 0) and
-     (GetOrdValue <> 0) then begin
-    PropertyHook.SelectComponent(TPersistent(GetOrdValue))
-  end else        }
+  Result := false; //not (paNotNestable in ATestEditor.GetAttributes);
+end;
+
+function TComponentPropertyEditor.GetComponentReference: TComponent;
+begin
+  Result := TComponent(GetOrdValue);
+end;
+
+function TComponentPropertyEditor.GetSelections: Pointer{IDesignerSelections};
+{var
+  I: Integer;}
+begin
+  Result := nil;
+  {if (GetComponentReference <> nil) and AllEqual then
+  begin
+    Result := TDesignerSelections.Create;
+    for I := 0 to PropCount - 1 do
+      Result.Add(TComponent(GetOrdValueAt(I)));
+  end;}
+end;
+
+function TComponentPropertyEditor.AllEqual: Boolean;
+var
+  I: Integer;
+  LInstance: TComponent;
+begin
+  Result := False;
+  LInstance := TComponent(GetOrdValue);
+  if PropCount > 1 then
+    for I := 1 to PropCount - 1 do
+      if TComponent(GetOrdValueAt(I)) <> LInstance then
+        Exit;
+  Result := True; //Supports(FindRootDesigner(LInstance), IDesigner);
+end;
+
+procedure TComponentPropertyEditor.Edit;
+{var
+  Temp: TComponent;}
+begin
+  {if (Designer.GetShiftState * [ssCtrl, ssLeft] = [ssCtrl, ssLeft]) then
+  begin
+    Temp := GetComponentReference;
+    if Temp <> nil then
+      Designer.SelectComponent(Temp)
+    else
+      inherited Edit;
+  end
+  else}
     inherited Edit;
 end;
 
 function TComponentPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paMultiSelect, paValueList, paSortList, paRevertable];
+  Result := [paMultiSelect];
+  if Assigned(GetPropInfo^.SetProc) then
+    Result := Result + [paValueList, paSortList, paRevertable]
+  else
+    Result := Result + [paReadOnly];
+  //if GReferenceExpandable and (GetComponentReference <> nil) and AllEqual then
+  //  Result := Result + [paSubProperties, paVolatileSubProperties];
+end;
+
+procedure TComponentPropertyEditor.GetProperties(Proc:TGetPropEditProc);
+begin
+  inherited GetProperties(Proc);
+{var
+  LComponents: IDesignerSelections;
+  LDesigner: IDesigner;
+begin
+  LComponents := GetSelections;
+  if LComponents <> nil then
+  begin
+    if not Supports(FindRootDesigner(LComponents[0]), IDesigner, LDesigner) then
+      LDesigner := Designer;
+    GetComponentProperties(LComponents, tkAny, LDesigner, Proc, FilterFunc);
+  end;}
 end;
 
 function TComponentPropertyEditor.GetEditLimit: Integer;
@@ -2229,7 +2396,7 @@ begin
   Result := MaxIdentLength;
 end;
 
-function TComponentPropertyEditor.GetValue: ansistring;
+function TComponentPropertyEditor.GetValue: AnsiString;
 var Component: TComponent;
 begin
   Component:=TComponent(GetOrdValue);
@@ -2257,14 +2424,99 @@ begin
     if Assigned(PropertyHook) then begin
       Component := PropertyHook.GetComponent(NewValue);
       if not (Component is GetTypeData(GetPropType)^.ClassType) then begin
-        // XXX
-        //raise EPropertyError.CreateRes(@SInvalidPropertyValue);
-        exit;
+        raise EPropertyError.Create('Invalid property value'{@SInvalidPropertyValue});
       end;
     end;
   end;
   SetOrdValue(Longint(Component));
 end;
+
+
+{ TInterfaceProperty }
+
+function TInterfaceProperty.AllEqual: Boolean;
+{var
+  I: Integer;
+  LInterface: IInterface;}
+begin
+  Result := False;
+{  LInterface := GetIntfValue;
+  if PropCount > 1 then
+    for I := 1 to PropCount - 1 do
+      if GetIntfValueAt(I) <> LInterface then
+        Exit;
+  Result := Supports(FindRootDesigner(GetComponent(LInterface)), IDesigner);}
+end;
+
+function TInterfaceProperty.GetComponent(
+  const AInterface: Pointer {IInterface}): TComponent;
+{var
+  ICR: IInterfaceComponentReference;}
+begin
+{  if (AInterface <> nil) and
+     Supports(AInterface, IInterfaceComponentReference, ICR) then
+    Result := ICR.GetComponent
+  else}
+    Result := nil;
+end;
+
+function TInterfaceProperty.GetComponentReference: TComponent;
+begin
+  Result := nil; //GetComponent(GetIntfValue);
+end;
+
+function TInterfaceProperty.GetSelections: Pointer{IDesignerSelections};
+{var
+  I: Integer;}
+begin
+  Result := nil;
+{  if (GetIntfValue <> nil) and AllEqual then
+  begin
+    Result := TDesignerSelections.Create;
+    for I := 0 to PropCount - 1 do
+      Result.Add(GetComponent(GetIntfValueAt(I)));
+  end;}
+end;
+
+procedure TInterfaceProperty.ReceiveComponentNames(const S: string);
+{var
+  Temp: TComponent;
+  Intf: IInterface;}
+begin
+{  Temp := Designer.GetComponent(S);
+  if Assigned(FGetValuesStrProc) and
+     Assigned(Temp) and
+     Supports(TObject(Temp), GetTypeData(GetPropType)^.Guid, Intf) then
+    FGetValuesStrProc(S);}
+end;
+
+procedure TInterfaceProperty.GetValues(Proc: TGetStrProc);
+begin
+{  FGetValuesStrProc := Proc;
+  try
+    Designer.GetComponentNames(GetTypeData(TypeInfo(TComponent)), ReceiveComponentNames);
+  finally
+    FGetValuesStrProc := nil;
+  end;}
+end;
+
+procedure TInterfaceProperty.SetValue(const Value: string);
+{var
+  Intf: IInterface;
+  Component: TComponent;}
+begin
+{  if Value = '' then
+    Intf := nil
+  else
+  begin
+    Component := Designer.GetComponent(Value);
+    if (Component = nil) or
+      not Supports(TObject(Component), GetTypeData(GetPropType)^.Guid, Intf) then
+      raise EPropertyError.CreateRes(@SInvalidPropertyValue);
+  end;
+  SetIntfValue(Intf);}
+end;
+
 
 { TComponentNamePropertyEditor }
 
@@ -2289,10 +2541,157 @@ begin
   PropertyHook.ComponentRenamed(TComponent(GetComponent(0)));
 end;
 
+{ TDateProperty }
+
+function TDateProperty.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paMultiSelect, paRevertable];
+end;
+
+function TDateProperty.GetValue: string;
+var
+  DT: TDateTime;
+begin
+  DT := GetFloatValue;
+  if DT = 0.0 then Result := '' else
+  Result := DateToStr(DT);
+end;
+
+procedure TDateProperty.SetValue(const Value: string);
+var
+  DT: TDateTime;
+begin
+  if Value = '' then DT := 0.0
+  else DT := StrToDate(Value);
+  SetFloatValue(DT);
+end;
+
+{ TTimePropertyEditor }
+
+function TTimePropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paMultiSelect, paRevertable];
+end;
+
+function TTimePropertyEditor.GetValue: string;
+var
+  DT: TDateTime;
+begin
+  DT := GetFloatValue;
+  if DT = 0.0 then Result := '' else
+  Result := TimeToStr(DT);
+end;
+
+procedure TTimePropertyEditor.SetValue(const Value: string);
+var
+  DT: TDateTime;
+begin
+  if Value = '' then DT := 0.0
+  else DT := StrToTime(Value);
+  SetFloatValue(DT);
+end;
+
+{ TDateTimePropertyEditor }
+
+function TDateTimePropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paMultiSelect, paRevertable];
+end;
+
+function TDateTimePropertyEditor.GetValue: string;
+var
+  DT: TDateTime;
+begin
+  DT := GetFloatValue;
+  if DT = 0.0 then Result := '' else
+  Result := DateTimeToStr(DT);
+end;
+
+procedure TDateTimePropertyEditor.SetValue(const Value: string);
+var
+  DT: TDateTime;
+begin
+  if Value = '' then DT := 0.0
+  else DT := StrToDateTime(Value);
+  SetFloatValue(DT);
+end;
+
+{ TVariantPropertyEditor }
+
+function TVariantPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paMultiSelect, paSubProperties];
+end;
+
+procedure TVariantPropertyEditor.GetProperties(Proc:TGetPropEditProc);
+begin
+  //Proc(TVariantTypeProperty.Create(Self));
+end;
+
+function TVariantPropertyEditor.GetValue: string;
+{
+  function GetVariantStr(const Value: Variant): string;
+  begin
+    case VarType(Value) of
+      varBoolean:
+        Result := BooleanIdents[Value = True];
+      varCurrency:
+        Result := CurrToStr(Value);
+    else
+      Result := VarToStrDef(Value, SNull);
+    end;
+  end;
+
+var
+  Value: Variant;}
+begin
+  Result:='';
+{  Value := GetVarValue;
+  if VarType(Value) <> varDispatch then
+    Result := GetVariantStr(Value)
+  else
+    Result := 'ERROR';}
+end;
+
+procedure TVariantPropertyEditor.SetValue(const Value: string);
+{
+  function Cast(var Value: Variant; NewType: Integer): Boolean;
+  var
+    V2: Variant;
+  begin
+    Result := True;
+    if NewType = varCurrency then
+      Result := AnsiPos(CurrencyString, Value) > 0;
+    if Result then
+    try
+      VarCast(V2, Value, NewType);
+      Result := (NewType = varDate) or (VarToStr(V2) = VarToStr(Value));
+      if Result then Value := V2;
+    except
+      Result := False;
+    end;
+  end;
+
+var
+  V: Variant;
+  OldType: Integer;}
+begin
+{  OldType := VarType(GetVarValue);
+  V := Value;
+  if Value = '' then
+    VarClear(V) else
+  if (CompareText(Value, SNull) = 0) then
+    V := NULL else
+  if not Cast(V, OldType) then
+    V := Value;
+  SetVarValue(V);}
+end;
+
+
 { TModalResultPropertyEditor }
 
 const
-  ModalResults: array[mrNone..mrYesToAll] of shortstring = (
+  ModalResults: array[mrNone..mrLast] of shortstring = (
     'mrNone',
     'mrOk',
     'mrCancel',
@@ -2620,26 +3019,178 @@ end;
 { TFontPropertyEditor }
 
 procedure TFontPropertyEditor.Edit;
-//var FontDialog: TFontDialog;
+var FontDialog: TFontDialog;
 begin
-  {
-  !!! TFontDialog in the gtk-interface is currently not fully compatible to TFont
-    
   FontDialog := TFontDialog.Create(Application);
   try
     FontDialog.Font := TFont(GetOrdValue);
-    FontDialog.HelpContext := hcDFontEditor;
+    //FontDialog.HelpContext := hcDFontEditor;
     FontDialog.Options := FontDialog.Options + [fdShowHelp, fdForceFontExist];
     if FontDialog.Execute then
       SetOrdValue(Longint(FontDialog.Font));
   finally
     FontDialog.Free;
-  end;}
+  end;
 end;
 
 function TFontPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paSubProperties, paDialog, paReadOnly];
+end;
+
+{ TShortCutPropertyEditor }
+
+// MG: this is the Delphi way. Not very useful. This needs a Edit override
+// and a nice dialog with grab, checkboxes...
+// XXX
+const
+  ShortCuts: array[0..108] of TShortCut = (
+    scNone,
+    Byte('A') or scCtrl,
+    Byte('B') or scCtrl,
+    Byte('C') or scCtrl,
+    Byte('D') or scCtrl,
+    Byte('E') or scCtrl,
+    Byte('F') or scCtrl,
+    Byte('G') or scCtrl,
+    Byte('H') or scCtrl,
+    Byte('I') or scCtrl,
+    Byte('J') or scCtrl,
+    Byte('K') or scCtrl,
+    Byte('L') or scCtrl,
+    Byte('M') or scCtrl,
+    Byte('N') or scCtrl,
+    Byte('O') or scCtrl,
+    Byte('P') or scCtrl,
+    Byte('Q') or scCtrl,
+    Byte('R') or scCtrl,
+    Byte('S') or scCtrl,
+    Byte('T') or scCtrl,
+    Byte('U') or scCtrl,
+    Byte('V') or scCtrl,
+    Byte('W') or scCtrl,
+    Byte('X') or scCtrl,
+    Byte('Y') or scCtrl,
+    Byte('Z') or scCtrl,
+    Byte('A') or scCtrl or scAlt,
+    Byte('B') or scCtrl or scAlt,
+    Byte('C') or scCtrl or scAlt,
+    Byte('D') or scCtrl or scAlt,
+    Byte('E') or scCtrl or scAlt,
+    Byte('F') or scCtrl or scAlt,
+    Byte('G') or scCtrl or scAlt,
+    Byte('H') or scCtrl or scAlt,
+    Byte('I') or scCtrl or scAlt,
+    Byte('J') or scCtrl or scAlt,
+    Byte('K') or scCtrl or scAlt,
+    Byte('L') or scCtrl or scAlt,
+    Byte('M') or scCtrl or scAlt,
+    Byte('N') or scCtrl or scAlt,
+    Byte('O') or scCtrl or scAlt,
+    Byte('P') or scCtrl or scAlt,
+    Byte('Q') or scCtrl or scAlt,
+    Byte('R') or scCtrl or scAlt,
+    Byte('S') or scCtrl or scAlt,
+    Byte('T') or scCtrl or scAlt,
+    Byte('U') or scCtrl or scAlt,
+    Byte('V') or scCtrl or scAlt,
+    Byte('W') or scCtrl or scAlt,
+    Byte('X') or scCtrl or scAlt,
+    Byte('Y') or scCtrl or scAlt,
+    Byte('Z') or scCtrl or scAlt,
+    VK_F1,
+    VK_F2,
+    VK_F3,
+    VK_F4,
+    VK_F5,
+    VK_F6,
+    VK_F7,
+    VK_F8,
+    VK_F9,
+    VK_F10,
+    VK_F11,
+    VK_F12,
+    VK_F1 or scCtrl,
+    VK_F2 or scCtrl,
+    VK_F3 or scCtrl,
+    VK_F4 or scCtrl,
+    VK_F5 or scCtrl,
+    VK_F6 or scCtrl,
+    VK_F7 or scCtrl,
+    VK_F8 or scCtrl,
+    VK_F9 or scCtrl,
+    VK_F10 or scCtrl,
+    VK_F11 or scCtrl,
+    VK_F12 or scCtrl,
+    VK_F1 or scShift,
+    VK_F2 or scShift,
+    VK_F3 or scShift,
+    VK_F4 or scShift,
+    VK_F5 or scShift,
+    VK_F6 or scShift,
+    VK_F7 or scShift,
+    VK_F8 or scShift,
+    VK_F9 or scShift,
+    VK_F10 or scShift,
+    VK_F11 or scShift,
+    VK_F12 or scShift,
+    VK_F1 or scShift or scCtrl,
+    VK_F2 or scShift or scCtrl,
+    VK_F3 or scShift or scCtrl,
+    VK_F4 or scShift or scCtrl,
+    VK_F5 or scShift or scCtrl,
+    VK_F6 or scShift or scCtrl,
+    VK_F7 or scShift or scCtrl,
+    VK_F8 or scShift or scCtrl,
+    VK_F9 or scShift or scCtrl,
+    VK_F10 or scShift or scCtrl,
+    VK_F11 or scShift or scCtrl,
+    VK_F12 or scShift or scCtrl,
+    VK_INSERT,
+    VK_INSERT or scShift,
+    VK_INSERT or scCtrl,
+    VK_DELETE,
+    VK_DELETE or scShift,
+    VK_DELETE or scCtrl,
+    VK_BACK or scAlt,
+    VK_BACK or scShift or scAlt);
+    
+function TShortCutPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paMultiSelect, paValueList, paRevertable];
+end;
+
+function TShortCutPropertyEditor.GetValue: string;
+var
+  CurValue: TShortCut;
+begin
+  CurValue := GetOrdValue;
+  if CurValue = scNone then
+    Result := '(None)'//srNone
+  else
+    Result := ShortCutToText(CurValue);
+end;
+
+procedure TShortCutPropertyEditor.GetValues(Proc: TGetStrProc);
+var
+  I: Integer;
+begin
+  Proc('(none)'{srNone});
+  for I := 1 to High(ShortCuts) do Proc(ShortCutToText(ShortCuts[I]));
+end;
+
+procedure TShortCutPropertyEditor.SetValue(const Value: string);
+var
+  NewValue: TShortCut;
+begin
+  NewValue := 0;
+  if (Value <> '') and (AnsiCompareText(Value, '(none)'{srNone}) <> 0) then
+  begin
+    NewValue := TextToShortCut(Value);
+    if NewValue = 0 then
+      raise EPropertyError.Create('Invalid Property Value'{@SInvalidPropertyValue});
+  end;
+  SetOrdValue(NewValue);
 end;
 
 { TTabOrderPropertyEditor }
@@ -3044,7 +3595,6 @@ begin
     FOnChangeLookupRoot();
 end;
 
-
 //******************************************************************************
 // XXX
 // workaround for missing typeinfo function
@@ -3064,19 +3614,21 @@ begin
   inherited Destroy;
 end;
 
-function TDummyClassForPropTypes.PTypeInfos(const PropName:shortstring):PTypeInfo;
+function TDummyClassForPropTypes.PTypeInfos(
+  const PropName:shortstring):PTypeInfo;
 var Index:integer;
 begin
   Index:=FCount-1;
   while (Index>=0) do begin
     Result:=FList^[Index]^.PropType;
-    if (uppercase(Result^.Name)=uppercase(PropName)) then exit;
+    if (AnsiCompareText(Result^.Name,PropName)=0) then exit;
     dec(Index);
   end;
   Result:=nil;
 end;
 
-var DummyClassForPropTypes:TDummyClassForPropTypes;
+var
+  DummyClassForPropTypes: TDummyClassForPropTypes;
 
 //******************************************************************************
 
@@ -3085,9 +3637,10 @@ begin
   PropertyClassList:=TList.Create;
   PropertyEditorMapperList:=TList.Create;
   // register the standard property editors
-  //RegisterPropertyEditor(TypeInfo(TColor),nil,'',TColorPropertyEditor);
 
   // XXX workaround for missing typeinfo function
+  // Normaly it should use be something like this;
+  // RegisterPropertyEditor(TypeInfo(TColor),nil,'',TColorPropertyEditor);
   DummyClassForPropTypes:=TDummyClassForPropTypes.Create;
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TColor'),nil
     ,'Color',TColorPropertyEditor);
@@ -3109,6 +3662,16 @@ begin
     nil,'',TListColumnsPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TModalResult'),
     nil,'ModalResult',TModalResultPropertyEditor);
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TFont'),
+    nil,'',TFontPropertyEditor);
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TShortCut'),
+    nil,'',TShortCutPropertyEditor);
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TDate'),
+    nil,'',TShortCutPropertyEditor);
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TTime'),
+    nil,'',TShortCutPropertyEditor);
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TDateTime'),
+    nil,'',TShortCutPropertyEditor);
 end;
 
 procedure FinalPropEdits;
