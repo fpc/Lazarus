@@ -77,8 +77,8 @@ type
     procedure SetMin(Value: Integer);
     procedure SetPosition(Value: Integer);
     procedure SetPageSize(Value: Integer);
-    procedure CNHScroll(var Message: TLMHScroll); message CN_HSCROLL;
-    procedure CNVScroll(var Message: TLMVScroll); message CN_VSCROLL;
+    procedure CNHScroll(var Message: TLMHScroll); message LM_HSCROLL;
+    procedure CNVScroll(var Message: TLMVScroll); message LM_VSCROLL;
     procedure CNCtlColorScrollBar(var Message: TLMessage); message CN_CTLCOLORSCROLLBAR;
     procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
   protected
@@ -1460,6 +1460,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.110  2003/11/08 14:12:48  mattias
+  fixed scrollbar events under gtk from Colin
+
   Revision 1.109  2003/11/01 18:58:15  mattias
   added clipboard support for TCustomEdit from Colin
 

@@ -4338,7 +4338,11 @@ begin
       //  ConnectSenderSignal(gObject, 'scroll-horizontal', @gtkLVHScroll);
       //end
       //else begin
-      If Sender is TScrollBox then begin
+      If Sender is TScrollBar then
+        ConnectSenderSignal(
+                PGTKObject(PgtkhScrollBar(gObject)^.Scrollbar.Range.Adjustment),
+                           'value-changed', @GTKHScrollCB)
+      else If Sender is TScrollBox then begin
         Scroll := gtk_object_get_data(gObject, odnScrollArea);
         ConnectSenderSignal(PGTKObject(gtk_scrolled_window_get_hadjustment(
           PGTKScrolledWindow(Scroll))), 'value-changed', @GTKHScrollCB);
@@ -4356,7 +4360,11 @@ begin
       //  ConnectSenderSignal(gObject, 'scroll-vertical', @gtkLVVScroll);
       //end
       //else begin
-      If Sender is TScrollBox then begin
+      If Sender is TScrollBar then
+        ConnectSenderSignal(
+                PGTKObject(PgtkhScrollBar(gObject)^.Scrollbar.Range.Adjustment),
+                           'value-changed', @GTKVScrollCB)
+      else If Sender is TScrollBox then begin
         Scroll := gtk_object_get_data(gObject, odnScrollArea);
         ConnectSenderSignal(PGTKObject(gtk_scrolled_window_get_vadjustment(
           PGTKScrolledWindow(Scroll))), 'value-changed', @GTKVScrollCB);
@@ -4743,6 +4751,12 @@ begin
           SetCallback(LM_HSCROLL,Sender);
           SetCallback(LM_VSCROLL,Sender);
         end;
+        
+        csScrollBar:
+        if TScrollBar(Sender).Kind = sbHorizontal then
+          SetCallback(LM_HSCROLL,Sender)
+        else
+          SetCallback(LM_VSCROLL,Sender);
 
       end; //case
     end
@@ -8476,6 +8490,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.436  2003/11/08 14:12:48  mattias
+  fixed scrollbar events under gtk from Colin
+
   Revision 1.435  2003/11/03 22:37:41  mattias
   fixed vert scrollbar, implemented GetDesignerDC
 
