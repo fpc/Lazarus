@@ -115,12 +115,13 @@ var
    i : integer;
 begin
   i := 0;
-  if assigned (FItems) then
-     while i < FItems.Count do
-     begin
-        TMenuItem(FItems [i]).Free;
-        inc (i);
-     end;
+  if assigned (FItems) then begin
+    while i < FItems.Count do
+    begin
+      TMenuItem(FItems [i]).Free;
+      inc (i);
+    end;
+  end;
   FItems.Free;
   inherited Destroy;
 end;
@@ -243,7 +244,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMenuItem.Insert(Index: Integer; Item: TMenuItem);
 begin
-  if FItems = nil then FItems := TList.Create;
   if (Item <> nil)
   then begin
     if Item.Parent <> nil 
@@ -405,6 +405,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2001/02/21 22:55:26  lazarus
+  small bugfixes + added TOIOptions
+
   Revision 1.5  2001/01/04 16:12:54  lazarus
   Removed some writelns and changed the property editor for TStrings a bit.
   Shane
@@ -449,6 +452,9 @@ end;
 
 
   $Log$
+  Revision 1.6  2001/02/21 22:55:26  lazarus
+  small bugfixes + added TOIOptions
+
   Revision 1.5  2001/01/04 16:12:54  lazarus
   Removed some writelns and changed the property editor for TStrings a bit.
   Shane

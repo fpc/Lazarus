@@ -121,7 +121,8 @@ type
     procedure LockFontsInfo(pFontsInfo: PheSharedFontsInfo);
     procedure UnLockFontsInfo(pFontsInfo: PheSharedFontsInfo);
     function GetFontsInfo(ABaseFont: TFont): PheSharedFontsInfo;
-    procedure ReleaseFontsInfo(pFontsInfo: PheSharedFontsInfo);
+    procedure ReleaseFontsInfo(
+       {$IFDEF SYN_LAZARUS}var {$ENDIF}pFontsInfo: PheSharedFontsInfo);
   end;
 
   { TheFontStock }
@@ -409,11 +410,11 @@ begin
       {$ENDIF}
       SelectObject(DC, hOldFont);
       ReleaseDC(0, DC);
-  except
-    Result^.BaseFont.Free;
-    Dispose(Result);
-    raise;
-  end;
+    except
+      Result^.BaseFont.Free;
+      Dispose(Result);
+      raise;
+    end;
 end;
 
 procedure TheFontsInfoManager.UnlockFontsInfo(
@@ -428,6 +429,7 @@ begin
 end;
 
 destructor TheFontsInfoManager.Destroy;
+var APheSharedFontsInfo:PheSharedFontsInfo;
 begin
   gFontsInfoManager := nil;
   
@@ -436,7 +438,8 @@ begin
     while FFontsInfo.Count > 0 do
     begin
       ASSERT(1 = PheSharedFontsInfo(FFontsInfo[FFontsInfo.Count - 1])^.RefCount);
-      ReleaseFontsInfo(PheSharedFontsInfo(FFontsInfo[FFontsInfo.Count - 1]));
+      APheSharedFontsInfo:=PheSharedFontsInfo(FFontsInfo[FFontsInfo.Count - 1]);
+      ReleaseFontsInfo(APheSharedFontsInfo);
     end;
     FFontsInfo.Free;
   end;
@@ -496,7 +499,8 @@ begin
     Inc(Result^.RefCount);
 end;
 
-procedure TheFontsInfoManager.ReleaseFontsInfo(pFontsInfo: PheSharedFontsInfo);
+procedure TheFontsInfoManager.ReleaseFontsInfo(
+  {$IFDEF SYN_LAZARUS}var {$ENDIF}pFontsInfo: PheSharedFontsInfo);
 begin
   ASSERT(Assigned(pFontsInfo));
 
@@ -516,6 +520,9 @@ begin
       // free all objects
       BaseFont.Free;
       Dispose(pFontsInfo);
+      {$IFDEF SYN_LAZARUS}
+      pFontsInfo:=nil;
+      {$ENDIF}
     end;
   end;
 end;
@@ -733,7 +740,9 @@ begin
         FUsingFontHandles := False;
       end;
       ReleaseFontsInfo(FpInfo);
+      {$IFNDEF SYN_LAZARUS}
       FpInfo := nil;
+      {$ENDIF}
     end;
 end;
 
@@ -745,8 +754,7 @@ begin
   begin
     pInfo := GetFontsInfoManager.GetFontsInfo(Value);
     if pInfo = FpInfo then begin
-
-      GetFontsInfoManager.ReleaseFontsInfo(pInfo)
+      GetFontsInfoManager.ReleaseFontsInfo(FpInfo);
     end else begin
       ReleaseFontsInfo;
       FpInfo := pInfo;
@@ -1106,14 +1114,12 @@ end;
 procedure TheTextDrawerEx.ExtTextOut(X, Y: Integer; fuOptions: UINT;
   const ARect: TRect; Text: PChar; Length: Integer);
 begin
-writeln('[TheTextDrawerEx.ExtTextOut]');
   FExtTextOutProc(X, Y, fuOptions, ARect, Text, Length);
 end;
 
 procedure TheTextDrawerEx.ExtTextOutFixed(X, Y: Integer; fuOptions: UINT;
   const ARect: TRect; Text: PChar; Length: Integer);
 begin
-writeln('[TheTextDrawerEx.ExtTextOutFixed]');
   {$IFDEF SYN_LAZARUS}
   LCLLinux.ExtTextOut(StockDC, X, Y, fuOptions, @ARect, Text, Length, nil);
   {$ELSE}
@@ -1145,7 +1151,6 @@ var
   Len: Integer;
   n: Integer;
 begin
-writeln('[TheTextDrawerEx.ExtTextOutForDBCS]');
   pCrnt := Text;
   pRun := Text;
   pTail := PChar(Integer(Text) + Length);
@@ -1207,14 +1212,12 @@ end;
 procedure TheTextDrawerEx.ExtTextOutWithETO(X, Y: Integer; fuOptions: UINT;
   const ARect: TRect; Text: PChar; Length: Integer);
 begin
-writeln('[TheTextDrawerEx.ExtTextOutWithETO]');
   inherited ExtTextOut(X, Y, fuOptions, ARect, Text, Length);
 end;
 
 procedure TheTextDrawerEx.TextOutOrExtTextOut(X, Y: Integer;
   fuOptions: UINT; const ARect: TRect; Text: PChar; Length: Integer);
 begin
-writeln('[TheTextDrawerEx.TextOutOrExtTextOut]');
   // this function may be used when:
   //  a. the text does not containing any multi-byte characters
   // AND
@@ -1264,3 +1267,4 @@ finalization
   gFontsInfoManager.Free;
 
 end.
+

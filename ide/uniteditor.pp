@@ -1425,7 +1425,6 @@ destructor TSourceNotebook.Destroy;
 begin
   FCodeTemplateModul.Free;
   FSourceEditorList.Free;
-  aHighlighter.Free;
   Gotodialog.free;
   inherited Destroy;
 end;
@@ -1798,11 +1797,13 @@ Begin
   SrcPopupMenu.AutoPopup := True;
 
   MenuItem := TMenuItem.Create(Self);
+  MenuItem.Name:='ClosePageMenuItem';
   MenuItem.Caption := '&Close Page';
   MenuItem.OnClick := @CloseClicked;
   SrcPopupMenu.Items.Add(MenuItem);
 
   MenuItem := TMenuItem.Create(Self);
+  MenuItem.Name:='OpenFileAtCursorMenuItem';
   MenuItem.Caption := '&Open file at cursor';
   MenuItem.OnClick := @OpenAtCursorClicked;
   SrcPopupMenu.Items.Add(MenuItem);
@@ -1810,12 +1811,14 @@ Begin
   SrcPopupMenu.Items.Add(Seperator);
 
   ToggleMenuItem := TMenuItem.Create(Self);
+  ToggleMenuItem.Name:='ToggleMenuItem';
   ToggleMenuItem.Caption := '&Toggle Bookmark';
   SrcPopupMenu.Items.Add(ToggleMenuItem);
 
   for I := 0 to 9 do
     Begin
       SubMenuItem := TMenuItem.Create(Self);
+      SubMenuItem.Name:='SubToggleMenuItem'+IntToStr(I);
       SubMenuItem.Caption := 'Bookmark '+inttostr(i);
       SubMenuItem.OnClick := @BookmarkClicked;
       SubMenuItem.Tag := I;
@@ -1823,12 +1826,14 @@ Begin
     end;
 
   MenuItem := TMenuItem.Create(Self);
+  MenuItem.Name:='GotoBookmarkMenuItem';
   MenuItem.Caption := '&Goto Bookmark';
   SrcPopupMenu.Items.Add(MenuItem);
 
   for I := 0 to 9 do
     Begin
       SubMenuItem := TMenuItem.Create(Self);
+      SubmenuItem.Name:='GotoBookmark'+IntToStr(I)+'MenuItem';
       SubMenuItem.Caption := 'Bookmark '+inttostr(i);
       SubMenuItem.OnClick := @BookmarkGotoClicked;
       SubMenuItem.Tag := I;
@@ -1838,28 +1843,34 @@ Begin
   SrcPopupMenu.Items.Add(Seperator);
 
   MenuItem := TMenuItem.Create(Self);
+  MenuItem.Name:='ReadOnlyMenuItem';
   MenuItem.Caption := 'Read Only';
   MenuItem.OnClick := @ReadOnlyClicked;
   SrcPopupMenu.Items.Add(MenuItem);
 
   SrcPopupMenu.Items.Add(Seperator);
+
   MenuItem := TMenuItem.Create(Self);
+  MenuItem.Name:='DebugMenuItem';
   MenuItem.Caption := 'Debug';
   SrcPopupMenu.Items.Add(MenuItem);
 
       SubMenuItem := TMenuItem.Create(Self);
+      SubMenuItem.Name := 'ToggleBreakpointMenuItem';
       SubMenuItem.Caption := '&Toggle Breakpoint';
       SubMenuItem.OnClick := @ToggleBreakpointClicked;
       MenuItem.Add(SubMenuItem);
 
       SubMenuItem := TMenuItem.Create(Self);
+      SubMenuItem.Name := 'RunToCursorMenuItem';
       SubMenuItem.Caption := '&Run to Cursor';
       //SubMenuItem.OnClick := @ToggleBreakpoint;
       MenuItem.Add(SubMenuItem);
 
   SrcPopupMenu.Items.Add(Seperator);
   MenuItem := TMenuItem.Create(Self);
-  MenuItem.Caption := 'Line Numbers';
+  MenuItem.Name := 'ShowLineNumbersMenuItem';
+  MenuItem.Caption := 'Show Line Numbers';
   menuItem.OnClick := @ToggleLineNumbersClicked;
   SrcPopupMenu.Items.Add(MenuItem);
 

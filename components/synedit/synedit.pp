@@ -1639,11 +1639,10 @@ var
   Z: integer;
 begin
   inherited MouseMove(Shift, x, y);
-exit;
   {$IFDEF SYN_LAZARUS}
   if (X>=ClientWidth-ScrollBarWidth) or (Y>=ClientHeight-ScrollBarWidth) then
   begin
-
+    exit;
   end;
   {$ENDIF}
   if MouseCapture and (sfWaitForDragging in fStateFlags) then begin

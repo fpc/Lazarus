@@ -115,34 +115,34 @@ var
   I : Integer;
   X,Y : Integer;
 Begin
-Writeln('[TSTATUSBAR].WMPAINT');
-inherited;
-if SimplePanel = False then
-   Begin
-   if Panels.Count = 0 then exit;
-   Y := Top; //this shouldn't be needed but it is...
-   X := Left;
+//Writeln('[TSTATUSBAR].WMPAINT');
+  inherited;
+  if SimplePanel = False then
+  Begin
+    if Panels.Count = 0 then exit;
+    Y := Top; //this shouldn't be needed but it is...
+    X := Left;
 
-   For I := 0 to Panels.Count-1 do
-     Begin
-       if I = Panels.Count-1 then
+    For I := 0 to Panels.Count-1 do
+      Begin
+        if I = Panels.Count-1 then
           Panels[I].Width := Width-X;  //this sets the last panel to the width of the statusbar
-       DrawBevel(X,I);
-       Canvas.TextOut(X+2,Y+2,Panels[i].Text);
-       //draw divider
-       if I < Panels.Count-1 then
+        DrawBevel(X,I);
+        Canvas.TextOut(X+2,Y+2,Panels[i].Text);
+        //draw divider
+        if I < Panels.Count-1 then
           DrawDivider(X+Panels[i].Width);
-       X := X + Panels[i].Width +1;
-   Writeln('SimplePanel = False');
-   Writeln('Panels[0].Text = '+Panels[0].Text);
+        X := X + Panels[i].Width +1;
+ //  Writeln('SimplePanel = False');
+ //  Writeln('Panels[0].Text = '+Panels[0].Text);
       end;
 
 //   ExtTextOut(Handle,1,1,0,nil,pchar(Panels[0].Text),Length(Panels[0].Text),nil);
-   end
-   else
-   if SimplePanel = True then
-      Begin
-       Canvas.TextOut(Left+2,Top+2,SimpleText);
-      end;
+  end
+  else
+  if SimplePanel = True then
+    Begin
+      Canvas.TextOut(Left+2,Top+2,SimpleText);
+    end;
 
 End;

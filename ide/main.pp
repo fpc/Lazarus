@@ -449,8 +449,9 @@ begin
    end;
 
 //create the popupmenu for this speedbutton
- OpenFilePopUpMenu := TPopupMenu.Create(self);
- OpenFilePopupMenu.AutoPopup := False;
+  OpenFilePopUpMenu := TPopupMenu.Create(self);
+  OpenFilePopupMenu.Name:='OpenFilePopupMenu';
+  OpenFilePopupMenu.AutoPopup := False;
 {  MenuItem := TMenuItem.Create(Self);
   MenuItem.Caption := 'No files have been opened';
   MenuItem.OnClick := nil;
@@ -743,6 +744,7 @@ begin
 //--------------
 
   mnuMain := TMainMenu.Create(Self);
+  mnuMain.Name:='mnuMainMenu';
   Menu := mnuMain;
 
 //--------------
@@ -750,26 +752,32 @@ begin
 //--------------
 
   mnuFile := TMenuItem.Create(Self);
+  mnuFile.Name:='mnuFile';
   mnuFile.Caption := '&File';
   mnuMain.Items.Add(mnuFile);
 
   mnuEdit := TMenuItem.Create(Self);
+  mnuEdit.Name:='mnuEdit';
   mnuEdit.Caption := '&Edit';
   mnuMain.Items.Add(mnuEdit);
 
   mnuSearch := TMenuItem.Create(Self);
+  mnuSearch.Name:='mnuSearch';
   mnuSearch.Caption := '&Search';
   mnuMain.Items.Add(mnuSearch);
 
   mnuView := TMenuItem.Create(Self);
+  mnuView.Name:='mnuView';
   mnuView.Caption := '&View';
   mnuMain.Items.Add(mnuView);
 
   mnuProject := TMenuItem.Create(Self);
+  mnuProject.Name:='mnuProject';
   mnuProject.Caption := '&Project';
   mnuMain.Items.Add(mnuProject);
 
   mnuEnvironment := TMenuItem.Create(Self);
+  mnuEnvironment.Name:='mnuEnvironment';
   mnuEnvironment.Caption := 'E&nvironment';
   mnuMain.Items.Add(mnuEnvironment);
 
@@ -778,37 +786,39 @@ begin
 //--------------
   
   itmFileNew := TMenuItem.Create(Self);
+  itmFileNew.Name:='itmFileNew';
   itmFileNew.Caption := 'New Unit';
-  itmFileNew.Name := 'FileNew';
 //  itmFileNew.OnClick := @mnuNewClicked;
   mnuFile.Add(itmFileNew);
 
   itmFileNewForm := TMenuItem.Create(Self);
+  itmFileNewForm.Name:='itmFileNewForm';
   itmFileNewForm.Caption := 'New Form';
   itmFileNewForm.OnClick := @mnuNewFormClicked;
-  itmFileNewForm.Name := 'FileNewForm';
   mnuFile.Add(itmFileNewForm);
 
   itmFileOpen := TMenuItem.Create(Self);
+  itmFileOpen.Name:='itmFileOpen';
   itmFileOpen.Caption := 'Open';
-  itmFileOpen.Name := 'FileOpen';
   mnuFile.Add(itmFileOpen);
 
   itmFileSave := TMenuItem.Create(Self);
+  itmFileSave.Name:='itmFileSave';
   itmFileSave.Caption := 'Save';
-  itmFileSave.Name := 'FileSave';
   mnuFile.Add(itmFileSave);
 
   itmFileSaveAs := TMenuItem.Create(Self);
+  itmFileSaveAs.Name:='itmFileSaveAs';
   itmFileSaveAs.Caption := 'Save As';
-  itmFileSaveAs.Name := 'FileSaveAs';
   mnuFile.Add(itmFileSaveAs);
 
   itmFileSaveAll := TMenuItem.Create(Self);
+  itmFileSaveAll.Name:='itmFileSaveAll';
   itmFileSaveAll.Caption := 'Save All';
   mnuFile.Add(itmFileSaveAll);
 
   itmFileClose := TMenuItem.Create(Self);
+  itmFileClose.Name:='itmFileClose';
   itmFileClose.Caption := 'Close';
   itmFileClose.Enabled := False;
   mnuFile.Add(itmFileClose);
@@ -816,6 +826,7 @@ begin
   mnuFile.Add(CreateSeperator);
 
   itmFileQuit := TMenuItem.Create(Self);
+  itmFileQuit.Name:='itmFileQuit';
   itmFileQuit.Caption := 'Quit';
   itmFileQuit.OnClick := @mnuQuitClicked;
   mnuFile.Add(itmFileQuit);
@@ -825,24 +836,29 @@ begin
 //--------------
 
   itmEditUndo := TMenuItem.Create(nil);
+  itmEditUndo.Name:='itmEditUndo';
   itmEditUndo.Caption := 'Undo';
   mnuEdit.Add(itmEditUndo);
 
   itmEditRedo := TMenuItem.Create(nil);
+  itmEditRedo.Name:='itmEditRedo';
   itmEditRedo.Caption := 'Redo';
   mnuEdit.Add(itmEditRedo);
 
   mnuEdit.Add(CreateSeperator);
 
   itmEditCut  := TMenuItem.Create(nil);
+  itmEditCut.Name:='itmEditCut';
   itmEditCut.Caption := 'Cut';
   mnuEdit.Add(itmEditCut);
 
   itmEditCopy := TMenuItem.Create(nil);
+  itmEditCopy.Name:='itmEditCopy';
   itmEditCopy.Caption := 'Copy';
   mnuEdit.Add(itmEditCopy);
 
   itmEditPaste := TMenuItem.Create(nil);
+  itmEditPaste.Name:='itmEditPaste';
   itmEditPaste.Caption := 'Paste';
   mnuEdit.Add(itmEditPaste);
 
@@ -851,10 +867,12 @@ begin
 //--------------
 
   itmSearchFind := TMenuItem.Create(nil);
+  itmSearchFind.Name:='itmSearchFind';
   itmSearchFind.caption := 'Find';
   mnuSearch.add(itmSearchFind);
 
   itmSearchFindAgain := TMenuItem.Create(nil);
+  itmSearchFindAgain.Name:='itmSearchFindAgain';
   itmSearchFindAgain.caption := 'Find &Again';
   itmSearchFindAgain.Enabled := False;
   mnuSearch.add(itmSearchFindAgain);
@@ -864,17 +882,20 @@ begin
 //--------------
 
   itmViewInspector := TMenuItem.Create(Self);
+  itmViewInspector.Name:='itmViewInspector';
   itmViewInspector.Caption := 'Object Inspector';
   itmViewInspector.OnClick := @mnuViewInspectorClicked;
   mnuView.Add(itmViewInspector);
 
   itmViewProject  := TMenuItem.Create(Self);
+  itmViewProject.Name:='itmViewProject';
   itmViewProject.Caption := 'Project Explorer';
   mnuView.Add(itmViewProject);
 
   mnuView.Add(CreateSeperator);
 
   itmViewCodeExplorer := TMenuItem.Create(Self);
+  itmViewCodeExplorer.Name:='itmViewCodeExplorer';
   itmViewCodeExplorer.Caption := 'Code Explorer';
   itmViewCodeExplorer.OnClick := @mnuViewCodeExplorerClick;
   mnuView.Add(itmViewCodeExplorer);
@@ -882,17 +903,19 @@ begin
   mnuView.Add(CreateSeperator);
 
   itmViewUnits := TMenuItem.Create(Self);
+  itmViewUnits.Name:='itmViewUnits';
   itmViewUnits.Caption := 'Units...';
   itmViewUnits.OnClick := @mnuViewUnitsClicked;
   mnuView.Add(itmViewUnits);
 
   itmViewForms := TMenuItem.Create(Self);
+  itmViewForms.Name:='itmViewForms';
   itmViewForms.Caption := 'Forms...';
   itmViewForms.OnClick := @mnuViewFormsClicked;
   mnuView.Add(itmViewForms);
 
   itmViewColors := TMenuItem.Create(Self);
-  itmViewCOlors.Caption := 'Color Dialog';
+  itmViewColors.Caption := 'Color Dialog';
   itmViewColors.OnClick := @mnuViewColorClicked;
   mnuView.Add(itmViewColors);
 
@@ -903,7 +926,8 @@ begin
 
   mnuView.Add(CreateSeperator);
 
-  itmViewMEssage := TMenuItem.Create(Self);
+  itmViewMessage := TMenuItem.Create(Self);
+  itmViewMessage.Name:='itmViewMessage';
   itmViewMessage.Caption := 'Messages';
   itmViewMessage.OnClick := @mnuViewMessagesClick;
   mnuView.Add(itmViewMessage);
@@ -913,21 +937,25 @@ begin
 //--------------
 
   itmProjectNew := TMenuItem.Create(Self);
+  itmProjectNew.Name:='itmProjectNew';
   itmProjectNew.Caption := 'New Project';
   itmProjectNew.OnClick := @mnuNewProjectClicked;
   mnuProject.Add(itmProjectNew);
 
   itmProjectOpen := TMenuItem.Create(Self);
+  itmProjectOpen.Name:='itmProjectOpen';
   itmProjectOpen.Caption := 'Open Project...';
   itmProjectOpen.OnClick := @mnuOpenProjectClicked;
   mnuProject.Add(itmProjectOpen);
 
   itmProjectSave := TMenuItem.Create(Self);
+  itmProjectSave.Name:='itmProjectSave';
   itmProjectSave.Caption := 'Save Project';
   itmProjectSave.OnClick := @mnuSaveProjectClicked;
   mnuProject.Add(itmProjectSave);
 
   itmProjectSaveAs := TMenuItem.Create(Self);
+  itmProjectSaveAs.Name:='itmProjectSaveAs';
   itmProjectSaveAs.Caption := 'Save Project As...';
   itmProjectSaveAs.OnClick := @mnuSaveProjectAsClicked;
   mnuProject.Add(itmProjectSaveAs);
@@ -935,12 +963,14 @@ begin
   mnuProject.Add(CreateSeperator);
 
   itmProjectBuild := TMenuItem.Create(Self);
+  itmProjectBuild.Name:='itmProjectBuild';
   itmProjectBuild.Caption := 'Build';
   itmProjectBuild.OnClick := @mnuBuildProjectClicked;
   itmProjectBuild.Enabled := False;
   mnuProject.Add(itmProjectBuild);
 
   itmProjectRun := TMenuItem.Create(Self);
+  itmProjectRun.Name:='itmProjectRun';
   itmProjectRun.Caption := 'Run';
   itmProjectRun.OnClick := @mnuRunProjectClicked;
   mnuProject.Add(itmProjectRun);
@@ -948,11 +978,13 @@ begin
   mnuProject.Add(CreateSeperator);
 
   itmProjectCompilerSettings := TMenuItem.Create(Self);
+  itmProjectCompilerSettings.Name:='itmProjectCompilerSettings';
   itmProjectCompilerSettings.Caption := 'Compiler Options...';
   itmProjectCompilerSettings.OnClick := @mnuProjectCompilerSettingsClicked;
   mnuProject.Add(itmProjectCompilerSettings);
   
   itmProjectOptions := TMenuItem.Create(Self);
+  itmProjectOptions.Name:='itmProjectOptions';
   itmProjectOptions.Caption := 'Project Options...';
   itmProjectOptions.OnClick := @mnuProjectOptionsClicked;
   mnuProject.Add(itmProjectOptions);
@@ -962,10 +994,11 @@ begin
 //--------------
 
   itmEnvironmentOptions := TMenuItem.Create(nil);
+  itmEnvironmentOptions.Name:='itmEnvironmentOptions';
   itmEnvironmentOptions.Caption := 'Options';
   itmEnvironmentOptions.OnCLick := @mnuEnvironmentOptionsClicked;
-
   mnuEnvironment.Add(itmEnvironmentOptions);
+
 end;
 {------------------------------------------------------------------------------}
 {------------------------------------------------------------------------------}
@@ -1650,6 +1683,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.61  2001/02/21 22:55:24  lazarus
+  small bugfixes + added TOIOptions
+
   Revision 1.60  2001/02/20 16:53:24  lazarus
   Changes for wordcompletion and many other things from Mattias.
   Shane

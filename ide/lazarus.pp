@@ -62,11 +62,18 @@ begin
    Application.CreateForm(TLazFindReplaceDialog, FindReplaceDlg);
    SplashForm.StartTimer;
    Application.Run;
+
+   // workaround till lcl closes clean
+   Application.Free;
+   Application:=nil;
 end.
 
 
 {
   $Log$
+  Revision 1.14  2001/02/21 22:55:24  lazarus
+  small bugfixes + added TOIOptions
+
   Revision 1.13  2001/02/20 16:53:24  lazarus
   Changes for wordcompletion and many other things from Mattias.
   Shane

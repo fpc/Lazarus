@@ -12,7 +12,7 @@ unit objectinspector;
 
   ToDo:
    - TCustomComboBox has a bug: it can not store objects
-   - MouseDown is always fired two times -> workaround
+   - MouseDown is always fired twice -> workaround
    - clipping (almost everywhere)
    - TCustomComboBox don't know custom draw yet
    - improve TextHeight function
@@ -29,9 +29,48 @@ interface
 
 uses
   Forms, SysUtils, Buttons, Classes, Graphics, StdCtrls, LCLLinux, Controls,
-  ComCtrls, ExtCtrls, PropEdits, TypInfo, Messages, LResources;
+  ComCtrls, ExtCtrls, PropEdits, TypInfo, Messages, LResources, XMLCfg, Menus,
+  Dialogs;
 
 type
+  TObjectInspector = class;
+
+  TOIOptions = class
+  private
+    FFilename:string;
+    
+    FSaveBounds: boolean;
+    FLeft: integer;
+    FTop: integer;
+    FWidth: integer;
+    FHeight: integer;
+    FPropertyGridSplitterX: integer;
+    FEventGridSplitterX: integer;
+
+    FGridBackgroundColor: TColor;
+  public
+    constructor Create;
+    destructor Destroy;  override;
+    function Load:boolean;
+    function Save:boolean;
+    procedure Assign(AnObjInspector: TObjectInspector);
+    procedure AssignTo(AnObjInspector: TObjectInspector);
+    property Filename:string read FFilename write FFilename;
+
+    property SaveBounds:boolean read FSaveBounds write FSaveBounds;
+    property Left:integer read FLeft write FLeft;
+    property Top:integer read FTop write FTop;
+    property Width:integer read FWidth write FWidth;
+    property Height:integer read FHeight write FHeight;
+    property PropertyGridSplitterX:integer
+      read FPropertyGridSplitterX write FPropertyGridSplitterX;
+    property EventGridSplitterX:integer
+      read FEventGridSplitterX write FEventGridSplitterX;
+
+    property GridBackgroundColor: TColor 
+      read FGridBackgroundColor write FGridBackgroundColor;
+  end;
+
   TOIPropertyGrid = class;
 
   TOIPropertyGridRow = class
@@ -163,7 +202,8 @@ type
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle
        default bsSingle;
     property ItemIndex:integer read FItemIndex write SetItemIndex;
-    property ExpandedProperties:TStringList read FExpandedProperties write FExpandedProperties;
+    property ExpandedProperties:TStringList 
+       read FExpandedProperties write FExpandedProperties;
     function PropertyPath(Index:integer):string;
     function GetRowByPath(PropPath:string):TOIPropertyGridRow;
 
@@ -192,7 +232,11 @@ type
     PropertyGrid:TOIPropertyGrid;
     EventGrid:TOIPropertyGrid;
     StatusBar:TStatusBar;
+    MainPopupMenu:TPopupMenu;
+    ColorsPopupMenuItem:TMenuItem;
+    BackgroundColPopupMenuItem:TMenuItem;
     procedure AvailComboBoxChange(Sender:TObject);
+    procedure OnBackgroundColPopupMenuItemClick(Sender :TObject);
   private
     FComponentList: TComponentSelectionList;
     FPropertyEditorHook:TPropertyEditorHook;
@@ -206,7 +250,8 @@ type
     procedure PropEditLookupRootChange;
   public
     procedure SetBounds(aLeft,aTop,aWidth,aHeight:integer); override;
-    property Selections:TComponentSelectionList read FComponentList write SetSelections;
+    property Selections:TComponentSelectionList 
+      read FComponentList write SetSelections;
     procedure RefreshSelections;
     procedure RefreshPropertyValues;
     procedure FillComponentComboBox;
@@ -214,7 +259,8 @@ type
       read FOnAddAvailableComponent write FOnAddAvailableComponent;
     property OnSelectComponentInOI:TOnSelectComponentInOI
       read FOnSelectComponentInOI write FOnSelectComponentInOI;
-    property PropertyEditorHook:TPropertyEditorHook read FPropertyEditorHook write SetPropertyEditorHook;
+    property PropertyEditorHook:TPropertyEditorHook 
+      read FPropertyEditorHook write SetPropertyEditorHook;
     procedure DoInnerResize;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -812,8 +858,8 @@ end;
 procedure TOIPropertyGrid.MouseUp(Button:TMouseButton;  Shift:TShiftState;
 X,Y:integer);
 begin
-  //inherited MouseUp(Button,Shift,X,Y);
   if FDragging then EndDragSplitter;
+  inherited MouseUp(Button,Shift,X,Y);
 end;
 
 procedure TOIPropertyGrid.EndDragSplitter;
@@ -826,9 +872,13 @@ begin
 end;
 
 procedure TOIPropertyGrid.SetSplitterX(const NewValue:integer);
+var AdjustedValue:integer;
 begin
-  if FSplitterX<>NewValue then begin
-    FSplitterX:=NewValue;
+  AdjustedValue:=NewValue;
+  if AdjustedValue>ClientWidth then AdjustedValue:=ClientWidth;
+  if AdjustedValue<1 then AdjustedValue:=1;
+  if FSplitterX<>AdjustedValue then begin
+    FSplitterX:=AdjustedValue;
     AlignEditComponents;
     Invalidate;
   end;
@@ -849,6 +899,7 @@ procedure TOIPropertyGrid.SetBounds(aLeft,aTop,aWidth,aHeight:integer);
 begin
   inherited SetBounds(aLeft,aTop,aWidth,aHeight);
   if Visible then begin
+    SplitterX:=SplitterX;
     AlignEditComponents;
   end;
 end;
@@ -1167,9 +1218,148 @@ end;
 
 //==============================================================================
 
+
+{ TOIOptions }
+
+constructor TOIOptions.Create;
+begin
+  inherited Create;
+  FFilename:='';
+
+  FSaveBounds:=false;
+  FLeft:=0;
+  FTop:=0;
+  FWidth:=250;
+  FHeight:=400;
+  FPropertyGridSplitterX:=110;
+  FEventGridSplitterX:=110;
+
+  FGridBackgroundColor:=clBtnFace;
+end;
+
+destructor TOIOptions.Destroy;
+begin
+
+  inherited Destroy;
+end;
+
+function TOIOptions.Load:boolean;
+var XMLConfig: TXMLConfig;
+begin
+  Result:=false;
+  if not FileExists(FFilename) then exit;
+  try
+    XMLConfig:=TXMLConfig.Create(FFileName);
+    try
+      FSaveBounds:=XMLConfig.GetValue('ObjectInspectorOptions/Bounds/Valid'
+                       ,false);
+      if FSaveBounds then begin
+        FLeft:=XMLConfig.GetValue('ObjectInspectorOptions/Bounds/Left',0);
+        FTop:=XMLConfig.GetValue('ObjectInspectorOptions/Bounds/Top',0);
+        FWidth:=XMLConfig.GetValue('ObjectInspectorOptions/Bounds/Width',250);
+        FHeight:=XMLConfig.GetValue('ObjectInspectorOptions/Bounds/Height',400);
+        FPropertyGridSplitterX:=XMLConfig.GetValue(
+           'ObjectInspectorOptions/Bounds/PropertyGridSplitterX',110);
+        FEventGridSplitterX:=XMLConfig.GetValue(
+           'ObjectInspectorOptions/Bounds/EventGridSplitterX',110);
+      end;
+
+      FGridBackgroundColor:=XMLConfig.GetValue(
+           'ObjectInspectorOptions/GridBackgroundColor',clBtnFace);
+    finally
+      XMLConfig.Free;
+    end;
+  except
+    exit;
+  end;
+  Result:=true;
+end;
+
+function TOIOptions.Save:boolean;
+var XMLConfig: TXMLConfig;
+begin
+  Result:=false;
+  try
+    XMLConfig:=TXMLConfig.Create(FFileName);
+    try
+      XMLConfig.SetValue('ObjectInspectorOptions/Bounds/Valid',FSaveBounds);
+      if FSaveBounds then begin
+        XMLConfig.SetValue('ObjectInspectorOptions/Bounds/Left',FLeft);
+        XMLConfig.SetValue('ObjectInspectorOptions/Bounds/Top',FTop);
+        XMLConfig.SetValue('ObjectInspectorOptions/Bounds/Width',FWidth);
+        XMLConfig.SetValue('ObjectInspectorOptions/Bounds/Height',FHeight);
+        XMLConfig.SetValue(
+           'ObjectInspectorOptions/Bounds/PropertyGridSplitterX'
+           ,FPropertyGridSplitterX);
+        XMLConfig.SetValue(
+           'ObjectInspectorOptions/Bounds/EventGridSplitterX'
+           ,FEventGridSplitterX);
+      end;
+
+      XMLConfig.SetValue('ObjectInspectorOptions/GridBackgroundColor'
+         ,FGridBackgroundColor);
+    finally
+      XMLConfig.Flush;
+      XMLConfig.Free;
+    end;
+  except
+    exit;
+  end;
+  Result:=true;
+end;
+
+procedure TOIOptions.Assign(AnObjInspector: TObjectInspector);
+begin
+  if FSaveBounds then begin
+    FLeft:=AnObjInspector.Left;
+    FTop:=AnObjInspector.Top;
+    FWidth:=AnObjInspector.Width;
+    FHeight:=AnObjInspector.Height;
+    FPropertyGridSplitterX:=AnObjInspector.PropertyGrid.SplitterX;
+    FEventGridSplitterX:=AnObjInspector.EventGrid.SplitterX;
+  end;
+  FGridBackgroundColor:=AnObjInspector.PropertyGrid.BackgroundColor;
+end;
+
+procedure TOIOptions.AssignTo(AnObjInspector: TObjectInspector);
+begin
+  if FSaveBounds then begin
+    AnObjInspector.SetBounds(FLeft,FTop,FWidth,FHeight);
+    AnObjInspector.PropertyGrid.SplitterX:=FPropertyGridSplitterX;
+    AnObjInspector.EventGrid.SplitterX:=FEventGridSplitterX;
+  end;
+  AnObjInspector.PropertyGrid.BackgroundColor:=FGridBackgroundColor;
+  AnObjInspector.EventGrid.BackgroundColor:=FGridBackgroundColor;
+end;
+
+
+//==============================================================================
+
+
 { TObjectInspector }
 
 constructor TObjectInspector.Create(AOwner: TComponent);
+
+  procedure AddPopupMenuItem(var NewMenuItem:TmenuItem;
+     ParentMenuItem:TMenuItem; AName,ACaption,AHint:string;
+     AOnClick: TNotifyEvent; CheckedFlag,EnabledFlag,VisibleFlag:boolean);
+  begin
+    NewMenuItem:=TMenuItem.Create(Self);
+    with NewMenuItem do begin
+      Name:=AName;
+      Caption:=ACaption;
+      Hint:=AHint;
+      OnClick:=AOnClick;
+      Checked:=CheckedFlag;
+      Enabled:=EnabledFlag;
+      Visible:=VisibleFlag;
+    end;
+    if ParentMenuItem<>nil then
+      ParentMenuItem.Add(NewmenuItem)
+    else
+      MainPopupMenu.Items.Add(NewMenuItem);
+  end;
+
 begin
   inherited Create(AOwner);
   Caption := 'Object Inspector';
@@ -1185,6 +1375,20 @@ begin
     SimpleText:='All';
     Show;
   end;
+
+  // PopupMenu
+  MainPopupMenu:=TPopupMenu.Create(Self);
+  with MainPopupMenu do begin
+    Name:='MainPopupMenu';
+    AutoPopup:=true;
+  end;
+  AddPopupMenuItem(ColorsPopupmenuItem,nil,'ColorsPopupMenuItem','Colors',''
+     ,nil,false,true,true);
+  AddPopupMenuItem(BackgroundColPopupMenuItem,ColorsPopupMenuItem
+     ,'BackgroundColPopupMenuItem','Background','Grid background color'
+     ,@OnBackgroundColPopupMenuItemClick,false,true,true);
+
+  PopupMenu:=MainPopupMenu;
 
   // combobox at top (filled with available components)
   AvailCompsComboBox := TComboBox.Create (Self);
@@ -1205,6 +1409,7 @@ begin
     Parent:=Self;
     Pages.Strings[0]:='Properties';
     Pages.Add('Events');
+    PopupMenu:=MainPopupMenu;
     Show;
   end;
 
@@ -1222,6 +1427,7 @@ begin
     ValueButton.Parent:=Parent;
     Selections:=Self.FComponentList;
     Align:=alClient;
+    PopupMenu:=MainPopupMenu;
     Show;
   end;
 
@@ -1235,6 +1441,7 @@ begin
     ValueButton.Parent:=Parent;
     Selections:=Self.FComponentList;
     Align:=alClient;
+    PopupMenu:=MainPopupMenu;
     Show;
   end;
 
@@ -1261,7 +1468,7 @@ begin
   NoteBook.SetBounds(0,NewTop,MaxX-4,MaxY-NewTop);
 end;
 
-procedure TObjectinspector.SetPropertyEditorHook(NewValue:TPropertyEditorHook);
+procedure TObjectInspector.SetPropertyEditorHook(NewValue:TPropertyEditorHook);
 begin
 //XXX writeln('OI: SetPropertyEditorHook');
   if FPropertyEditorHook<>NewValue then begin
@@ -1278,12 +1485,12 @@ begin
   end;
 end;
 
-function TObjectinspector.ComponentToString(c:TComponent):string;
+function TObjectInspector.ComponentToString(c:TComponent):string;
 begin
   Result:=c.GetNamePath+': '+c.ClassName;
 end;
 
-procedure TObjectinspector.AddComponentToAvailComboBox(AComponent:TComponent);
+procedure TObjectInspector.AddComponentToAvailComboBox(AComponent:TComponent);
 var Allowed:boolean;
 begin
   Allowed:=true;
@@ -1294,12 +1501,12 @@ begin
       ComponentToString(AComponent),AComponent);
 end;
 
-procedure TObjectinspector.PropEditLookupRootChange;
+procedure TObjectInspector.PropEditLookupRootChange;
 begin
   FillComponentComboBox;
 end;
 
-procedure TObjectinspector.FillComponentComboBox;
+procedure TObjectInspector.FillComponentComboBox;
 var a:integer;
   Root:TComponent;
   OldText:AnsiString;
@@ -1328,10 +1535,10 @@ begin
     AvailCompsComboBox.ItemIndex:=a;
 end;
 
-procedure TObjectinspector.SetSelections(
+procedure TObjectInspector.SetSelections(
   const NewSelections:TComponentSelectionList);
 begin
-//writeln('[TObjectinspector.SetSelections]');
+//writeln('[TObjectInspector.SetSelections]');
   if FComponentList.IsEqual(NewSelections) then exit;
   FComponentList.Assign(NewSelections);
   if FComponentList.Count=1 then begin
@@ -1342,25 +1549,25 @@ begin
   RefreshSelections;
 end;
 
-procedure TObjectinspector.RefreshSelections;
+procedure TObjectInspector.RefreshSelections;
 begin
   PropertyGrid.Selections:=FComponentList;
   EventGrid.Selections:=FComponentList;
 end;
 
-procedure TObjectinspector.RefreshPropertyValues;
+procedure TObjectInspector.RefreshPropertyValues;
 begin
   PropertyGrid.RefreshPropertyValues;
   EventGrid.RefreshPropertyValues;
 end;
 
-procedure TObjectinspector.SetBounds(aLeft,aTop,aWidth,aHeight:integer);
+procedure TObjectInspector.SetBounds(aLeft,aTop,aWidth,aHeight:integer);
 begin
   inherited SetBounds(aLeft,aTop,aWidth,aHeight);
   DoInnerResize;
 end;
 
-procedure TObjectinspector.AvailComboBoxChange(Sender:TObject);
+procedure TObjectInspector.AvailComboBoxChange(Sender:TObject);
 var NewComponent,Root:TComponent;
   a:integer;
 
@@ -1391,6 +1598,25 @@ begin
         break;
       end;
     end;
+  end;
+end;
+
+procedure TObjectInspector.OnBackgroundColPopupMenuItemClick(Sender :TObject);
+var ColorDialog:TColorDialog;
+begin
+  ColorDialog:=TColorDialog.Create(Application);
+  try
+    with ColorDialog do begin
+      Color:=PropertyGrid.BackgroundColor;
+      if Execute then begin
+        PropertyGrid.BackgroundColor:=Color;
+        EventGrid.BackgroundColor:=Color;
+        PropertyGrid.Invalidate;
+        EventGrid.Invalidate;
+      end;
+    end;
+  finally
+    ColorDialog.Free;
   end;
 end;
 

@@ -8,19 +8,27 @@
  /***************************************************************************
 }
 unit allunits;
+
 {$mode objfpc}
+
 interface
+
 uses
-  synedit, syneditautocomplete, synedithighlighter, syneditkeycmds,
-  syneditmiscclasses, syneditmiscprocs, syneditsearch, syneditstrconst,
-  synedittextbuffer, synedittypes, synhighlighterpas, syntextdrawer,syncompletion;
+  syntextdrawer, syneditkeycmds, synedittypes, syneditstrconst,
+  syneditmiscclasses, syneditmiscprocs, syneditsearch, synedittextbuffer,
+  synedit, synhighlighterpas, {synedithighlighter,} syncompletion,
+  syneditautocomplete;
 	
 implementation
+
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.4  2001/02/21 22:55:25  lazarus
+  small bugfixes + added TOIOptions
+
   Revision 1.3  2001/02/01 19:34:50  lazarus
   TScrollbar created and a lot of code added.
 
