@@ -318,6 +318,7 @@ type
     Procedure OpenAtCursorClicked(Sender : TObject);
     Procedure FindDeclarationClicked(Sender : TObject);
     Procedure BookmarkGoTo(Value: Integer);
+    Procedure BookMarkSet(Value : Integer);
     Procedure BookMarkToggle(Value : Integer);
 
     Procedure BreakPointCreated(Sender : TObject; Line : Integer);
@@ -412,6 +413,7 @@ type
     Procedure CloseFile(PageIndex:integer);
 
     Procedure ToggleBookmark(Value : Integer);
+    Procedure SetBookmark(Value : Integer);
     Procedure GotoBookmark(Value: Integer);
 
     Procedure ReloadEditorOptions;
@@ -433,7 +435,7 @@ type
     Notebook : TNotebook;
     SrcPopUpMenu : TPopupMenu;
     StatusBar : TStatusBar;
-    ToggleMenuItem : TMenuItem;
+    SetBookmarkMenuItem : TMenuItem;
     property OnAddJumpPoint: TOnAddJumpPoint 
        read FOnAddJumpPoint write FOnAddJumpPoint;
     property OnCloseClicked : TNotifyEvent read FOnCloseClicked write FOnCloseClicked;
@@ -2248,19 +2250,19 @@ Begin
 
   SrcPopupMenu.Items.Add(Seperator);
 
-  ToggleMenuItem := TMenuItem.Create(Self);
-  ToggleMenuItem.Name:='ToggleMenuItem';
-  ToggleMenuItem.Caption := '&Toggle Bookmark';
-  SrcPopupMenu.Items.Add(ToggleMenuItem);
+  SetBookmarkMenuItem := TMenuItem.Create(Self);
+  SetBookmarkMenuItem.Name:='SetBookmarkMenuItem';
+  SetBookmarkMenuItem.Caption := '&Set Bookmark';
+  SrcPopupMenu.Items.Add(SetBookmarkMenuItem);
 
   for I := 0 to 9 do
     Begin
       SubMenuItem := TMenuItem.Create(Self);
-      SubMenuItem.Name:='SubToggleMenuItem'+IntToStr(I);
+      SubMenuItem.Name:='SubSetBookmarkMenuItem'+IntToStr(I);
       SubMenuItem.Caption := 'Bookmark '+inttostr(i);
       SubMenuItem.OnClick := @BookmarkClicked;
       SubMenuItem.Tag := I;
-      ToggleMenuItem.Add(SubMenuItem);
+      SetBookmarkMenuItem.Add(SubMenuItem);
     end;
 
   MenuItem := TMenuItem.Create(Self);
@@ -2686,12 +2688,12 @@ begin
 end;
 
 Procedure TSourceNotebook.BookMarkClicked(Sender : TObject);
-// popup menu toggle bookmark clicked
+// popup menu:  set bookmark clicked
 var
   MenuItem : TMenuItem;
 Begin
   MenuItem := TMenuItem(sender);
-  BookMarkToggle(MenuItem.Tag);
+  BookMarkSet(MenuItem.Tag);
 end;
 
 Procedure TSourceNotebook.BookMarkGotoClicked(Sender : TObject);
@@ -2763,8 +2765,8 @@ var
   MenuItem : TMenuItem;
   ActEdit,AnEdit:TSourceEditor;
 Begin
-  MenuItem := TMenuItem(ToggleMenuItem.Items[Value]);
-  MenuItem.Checked := not(MenuItem.Checked);
+  MenuItem := TMenuItem(SetBookmarkMenuItem.Items[Value]);
+  MenuItem.Checked := not MenuItem.Checked;
   ActEdit:=GetActiveSE;
 
   AnEdit:=FindBookmark(Value);
@@ -2785,6 +2787,30 @@ end;
 Procedure TSourceNotebook.ToggleBookmark(Value : Integer);
 Begin
   BookMarkToggle(Value);
+End;
+
+Procedure TSourceNotebook.BookMarkSet(Value : Integer);
+var
+  MenuItem : TMenuItem;
+  ActEdit,AnEdit:TSourceEditor;
+Begin
+  MenuItem := TMenuItem(SetBookmarkMenuItem.Items[Value]);
+  if not MenuItem.Checked then begin
+    MenuItem.Checked := true;
+    MenuItem.Caption := MenuItem.Caption + '*';
+  end;
+  ActEdit:=GetActiveSE;
+
+  AnEdit:=FindBookmark(Value);
+  if AnEdit<>nil then AnEdit.EditorComponent.ClearBookMark(Value);
+  ActEdit.EditorComponent.SetBookMark(Value,
+     ActEdit.EditorComponent.CaretX,ActEdit.EditorComponent.CaretY);
+end;
+
+{This is called from outside to set a bookmark}
+Procedure TSourceNotebook.SetBookmark(Value : Integer);
+Begin
+  BookMarkSet(Value);
 End;
 
 Procedure TSourceNotebook.BookMarkGoto(Value : Integer);
