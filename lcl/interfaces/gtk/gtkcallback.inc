@@ -258,9 +258,10 @@ function gtkchangedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
 begin
-  if ComponentIsDestroyingHandle(TWinControl(Data)) then exit;
+  if ComponentIsDestroyingHandle(TWinControl(Data))
+  or (LockOnChange(PgtkObject(Widget),0)>0) then exit;
   EventTrace('changed', data);
-  
+
   Mess.Msg := LM_CHANGED;
   Result := DeliverMessage(Data, Mess) = 0;
 end;
@@ -270,7 +271,7 @@ var
   Mess : TLMessage;
 begin
   Result := True;
-  EventTrace('changed', data);
+  EventTrace('changed_editbox', data);
 
   Mess.Msg := CM_TEXTCHANGED;
   Result := DeliverMessage(Data, Mess) = 0;
@@ -2430,6 +2431,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.139  2002/10/04 16:38:15  lazarus
+  MG: no OnChange event when app sets Text of TComboBox
+
   Revision 1.138  2002/10/03 14:47:31  lazarus
   MG: added TComboBox.OnPopup+OnCloseUp+ItemWidth
 
