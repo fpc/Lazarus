@@ -71,7 +71,6 @@ begin
   PrimaryConfigPath:=FExpand(NewValue);
 end;
 
-
 {---------------------------------------------------------------------------
   SetSecondaryConfigPath procedure
  ---------------------------------------------------------------------------}
@@ -90,7 +89,8 @@ var
 begin
   PrimaryFilename:=GetPrimaryConfigPath+PathDelim+AFilename;
   SecondaryFilename:=GetSecondaryConfigPath+PathDelim+AFilename;
-  if not FileExists(PrimaryFilename) then begin
+  if (not FileExists(PrimaryFilename))
+  and (FileExists(SecondaryFilename)) then begin
     try
       SrcFS:=TFileStream.Create(SecondaryFilename,fmOpenRead);
       try

@@ -83,7 +83,8 @@ var
 begin
   PrimaryFilename:=GetPrimaryConfigPath+PathDelim+AFilename;
   SecondaryFilename:=GetSecondaryConfigPath+PathDelim+AFilename;
-  if not FileExists(PrimaryFilename) then begin
+  if (not FileExists(PrimaryFilename))
+  and (FileExists(SecondaryFilename)) then begin
     try
       SrcFS:=TFileStream.Create(SecondaryFilename,fmOpenRead);
       try
@@ -168,6 +169,9 @@ end;
 
 {
   $Log$
+  Revision 1.15  2003/09/09 11:22:17  mattias
+  added fileexists for secondary config files
+
   Revision 1.14  2003/09/09 11:11:02  mattias
   fixed win32 intf showmoadl and lazconf
 
