@@ -951,7 +951,6 @@ begin
   if Button=mbLeft then begin
     if not WasDragging then begin
       Index:=MouseToIndex(Y,false);
-      ItemIndex:=Index;
       if (Index>=0) and (Index<FRows.Count) then begin
         IconX:=GetTreeIconX(Index);
         if (X>=IconX) and (X<=IconX+FIndent) then begin
@@ -962,6 +961,8 @@ begin
             else
               ExpandRow(Index);
           end;
+        end else begin
+          ItemIndex:=Index;
         end;
       end;
     end;
