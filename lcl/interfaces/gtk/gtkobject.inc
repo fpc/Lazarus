@@ -1747,8 +1747,8 @@ begin
       LM_SETSELLEN :
       begin
         if (Sender is TControl) then begin
-	        case TControl(Sender).fCompStyle of
-  	      csComboBox:
+          case TControl(Sender).fCompStyle of
+  	    csComboBox:
             begin
               gtk_editable_select_region(PGtkEditable(PGtkCombo(Handle)^.entry),
                 gtk_editable_get_position(PGtkEditable(PGtkCombo(Handle)^.entry)),
@@ -5897,6 +5897,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.234  2002/10/06 20:24:27  lazarus
+  MG: fixed stopping keypress event if handled by LCL
+
   Revision 1.233  2002/10/06 17:55:45  lazarus
   MG: JITForms now sets csDesigning before creation
 
