@@ -496,7 +496,7 @@ function THelpManager.ShowHelpForSourcePosition(const Filename: string;
       ctnProperty:
         AddContext(pihcProperty,Tool.ExtractPropName(Node,false));
       ctnProcedure:
-        AddContext(pihcProcedure,Tool.ExtractProcHead(Node,
+        AddContext(pihcProcedure,Tool.ExtractProcName(Node,
                                                       [phpWithoutClassName]));
       ctnProcedureHead:
         AddContext(pihcParameterList,'');
