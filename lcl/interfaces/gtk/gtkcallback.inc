@@ -565,7 +565,8 @@ begin
   // send the message directly to the LCL
   // (Posting the message via queue
   //  has the risk of getting out of sync with the gtk)
-  DeliverMessage(Data, Msg);
+  //DeliverMessage(Data, Msg);
+  DeliverPostMessage(Data,Msg);
 
   if (MCaptureHandle <> 0) and (Pointer(MCaptureHandle) <> widget) then
   begin
@@ -702,7 +703,7 @@ begin
     // send the message directly to the LCL
     // (Posting the message via queue
     //  has the risk of getting out of sync with the gtk)
-    DeliverMessage(Data, MessE);
+    DeliverPostMessage(Data, MessE);
   end
   else begin
     // a normal mouse button is pressed
@@ -740,7 +741,7 @@ begin
     // send the message directly to the LCL
     // (Posting the message via queue
     //  has the risk of getting out of sync with the gtk)
-    DeliverMessage(Data, MessI);
+    DeliverPostMessage(Data, MessI);
   end;
   Result:=true;
 end;
@@ -860,7 +861,7 @@ begin
     // send the message directly to the LCL
     // (Posting the message via queue
     //  has the risk of getting out of sync with the gtk)
-    DeliverMessage(Data, MessI);
+    DeliverPostMessage(Data, MessI);
   Result:=true;
 end;
 
@@ -2119,6 +2120,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.103  2002/08/22 12:25:00  lazarus
+  MG: fixed mouse events
+
   Revision 1.102  2002/08/22 12:13:01  lazarus
   MG: changed user input events from queue to direct
 
