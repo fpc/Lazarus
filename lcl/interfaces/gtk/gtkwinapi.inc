@@ -6374,7 +6374,7 @@ begin
      PTimerInfo^.Handle    := hWND;
      PTimerInfo^.IDEvent   := nIDEvent;
      PTimerInfo^.TimerFunc := lpTimerFunc;
-     gtk_timeout_add(uElapse, @gtkTimerCB, PTimerInfo);
+     Result:= gtk_timeout_add(uElapse, @gtkTimerCB, PTimerInfo);
      FTimerData.Add (PTimerInfo);
   end;
 end;
@@ -7243,6 +7243,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.152  2002/10/09 20:08:41  lazarus
+  Cleanups
+
   Revision 1.151  2002/10/09 10:22:55  lazarus
   MG: fixed client origin coordinates
 
