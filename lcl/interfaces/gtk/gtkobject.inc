@@ -3483,7 +3483,7 @@ begin
             gObject := gtk_object_get_data(gObject, odnScrollArea);
           Scroll := PgtkObject(PGtkScrolledWindow(gObject)^.HScrollBar);
         end;
-        ConnectSenderSignal(Scroll,'changed-value', @GTK26HScrollCB);
+        ConnectSenderSignal(Scroll,'change-value', @GTK26HScrollCB);
       end else begin
         if ALCLObject is TScrollBar then
           Adjustment := PgtkObject(PgtkhScrollBar(gObject)^.Scrollbar.Range.Adjustment)
@@ -3509,7 +3509,7 @@ begin
             gObject := gtk_object_get_data(gObject, odnScrollArea);
           Scroll := PGtkObject(PGtkScrolledWindow(gObject)^.VScrollBar);
         end;
-        connectSenderSignal(Scroll,'changed-value', @GTK26VScrollCB);
+        connectSenderSignal(Scroll,'change-value', @GTK26VScrollCB);
       end else begin
         if ALCLObject is TScrollBar then
           Adjustment := PGtkObject(PgtkhScrollBar(gObject)^.Scrollbar.Range.Adjustment)
@@ -6998,6 +6998,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.636  2005/03/04 12:28:11  mattias
+  fixed gtk2 intf scrollbar handling  from Danny Milosavljevic
+
   Revision 1.635  2005/03/04 12:21:55  mattias
   fixed TShape FPCanvas issue
 

@@ -2516,7 +2516,8 @@ begin
   end;
 end;
 
-function GTK26HScrollCB(Range:PGTKRAnge; Scroll: PGtkScrollType; Value: gdouble;
+function GTK26HScrollCB(Range:PGTKRAnge; Scroll: TGtkScrollType; 
+Value: gdouble;
   data: gpointer): gboolean; cdecl;
 var
   Msg: TLMHScroll;
@@ -2526,13 +2527,13 @@ begin
   with Msg do begin
     pos := Round(Range^.Adjustment^.Value);
     ScrollBar := HWND(Range);
-    ScrollCode := ScrollTypeToSbCode(False, Scroll^,
+    ScrollCode := ScrollTypeToSbCode(False, Scroll,
       gtk_range_get_update_policy(Range));
   end;
   DeliverMessage(Data, Msg);
 end;
 
-function GTK26VScrollCB(Range:PGTKRAnge; Scroll: PGtkScrollType; Value: gdouble;
+function GTK26VScrollCB(Range:PGTKRAnge; Scroll: TGtkScrollType; Value: gdouble;
   data: gpointer): gboolean; cdecl;
 var
   Msg: TLMVScroll;
@@ -2542,7 +2543,7 @@ begin
   with Msg do begin
     pos := Round(Range^.Adjustment^.Value);
     ScrollBar := HWND(Range);
-    ScrollCode := ScrollTypeToSbCode(True, Scroll^,
+    ScrollCode := ScrollTypeToSbCode(True, Scroll,
       gtk_range_get_update_policy(Range));
   end;
   DeliverMessage(Data, Msg);
@@ -2975,6 +2976,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.273  2005/03/04 12:28:11  mattias
+  fixed gtk2 intf scrollbar handling  from Danny Milosavljevic
+
   Revision 1.272  2005/03/04 12:21:55  mattias
   fixed TShape FPCanvas issue
 
