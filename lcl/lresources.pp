@@ -1345,14 +1345,14 @@ function InitLazResourceComponent(Instance: TComponent;
       MemStream.Write(CompResource.Value[1],length(CompResource.Value));
       MemStream.Position:=0;
       //writeln('Form Stream "',ClassType.ClassName,'" Signature=',copy(CompResource.Value,1,4));
-      try
+      //try
         Instance:=MemStream.ReadComponent(Instance);
-      except
-        on E: Exception do begin
-          writeln(Format(rsFormStreamingError,[ClassType.ClassName,E.Message]));
-          exit;
-        end;
-      end;
+      //except
+      //  on E: Exception do begin
+      //    writeln(Format(rsFormStreamingError,[ClassType.ClassName,E.Message]));
+      //    exit;
+      //  end;
+      //end;
     finally
       MemStream.Free;
     end;
