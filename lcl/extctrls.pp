@@ -218,6 +218,48 @@ type
   TTimer = class (TCustomTimer)
   end;
 
+  { TShape }
+  TShapeType = (stRectangle, stSquare, stRoundRect, stRoundSquare,
+    stEllipse, stCircle);
+
+  TShape = class(TGraphicControl)
+  private
+    FPen: TPen;
+    FBrush: TBrush;
+    FShape: TShapeType;
+    procedure SetBrush(Value: TBrush);
+    procedure SetPen(Value: TPen);
+    procedure SetShape(Value: TShapeType);
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    procedure Paint; override;
+  published
+    procedure StyleChanged(Sender: TObject);
+    property Align;
+    property Anchors;
+    property Brush: TBrush read FBrush write SetBrush;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property Enabled;
+    property Constraints;
+    property ParentShowHint;
+    property Pen: TPen read FPen write SetPen;
+    property Shape: TShapeType read FShape write SetShape;
+    property ShowHint;
+    property Visible;
+//    property OnDragDrop;
+//    property OnDragOver;
+//    property OnEndDock;
+//    property OnEndDrag;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+//    property OnStartDock;
+//    property OnStartDrag;
+  end;
 
   { TPaintBox }
 
@@ -231,9 +273,9 @@ type
     property Canvas;
   published
     property Align;
-//    property Anchors;
+    property Anchors;
     property Color;
-//    property Constraints;
+    property Constraints;
 //    property DragCursor;
 //    property DragKind;
 //    property DragMode;
@@ -241,9 +283,9 @@ type
     property Font;
     property ParentColor;
     property ParentFont;
-//    property ParentShowHint;
-//    property PopupMenu;
-//    property ShowHint;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
     property Visible;
     property OnClick;
 //    property OnDblClick;
@@ -478,6 +520,7 @@ uses Math;
 {$I customnotebook.inc}
 {$I notebook.inc}
 {$I timer.inc}
+{$I shape.inc}
 {$I paintbox.inc}
 {$I customradiogroup.inc}
 {$I custompanel.inc}
@@ -490,6 +533,9 @@ end.
 
  {
   $Log$
+  Revision 1.42  2002/10/31 04:27:58  lazarus
+  AJ: added TShape
+
   Revision 1.41  2002/10/26 15:56:45  lazarus
   MG: fixed changing notebook pageindex at designtime
 
