@@ -25,7 +25,8 @@ interface
 
 {$IFNDEF VER1_0}
 uses
-  Classes, SysUtils, RTLConst
+  Classes, SysUtils,
+  {$IFDEF VER1_9_8}RTLConst{$ELSE}RTLConsts{$ENDIF}
   {$IFDEF EnableSessionProps}, RTTIUtils{$ENDIF};
 
 Type

@@ -145,7 +145,11 @@ Procedure Register;
 implementation
 
 uses
+{$IFDEF VER1_9_8}
   RTLConst;
+{$ELSE}
+  RTLConsts;
+{$ENDIF}
 
 Procedure Register;
 begin
