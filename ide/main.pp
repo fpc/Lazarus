@@ -4595,16 +4595,16 @@ var
   end;
   
 begin
-  // save project
-  Result:=DoSaveProject(Flags);
-  if Result<>mrOk then exit;
-
   // show the publish project dialog
   if ShowDialog then begin
     Result:=ShowPublishProjectDialog(Project1.PublishOptions);
     if Result<>mrOk then exit;
   end;
   
+  // save project
+  Result:=DoSaveProject(Flags);
+  if Result<>mrOk then exit;
+
   // check command after
   CommandAfter:=Project1.PublishOptions.CommandAfter;
   if not MacroList.SubstituteStr(CommandAfter) then begin
@@ -7389,6 +7389,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.410  2002/10/13 10:19:18  lazarus
+  MG: publish project: save project after dialog
+
   Revision 1.409  2002/10/13 09:35:34  lazarus
   MG: added publish project
 
