@@ -560,6 +560,7 @@ begin
       if Assigned(FOnRestoreProperties) then
         FOnRestoreProperties(Self);
     finally
+      FreeStorage;
     end;
   end;
 end;
