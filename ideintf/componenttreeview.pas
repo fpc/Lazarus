@@ -312,6 +312,7 @@ begin
   // restore old expanded state
   OldExpanded.Apply(Self);
   OldExpanded.Free;
+  MakeSelectionVisible;
   EndUpdate;
 end;
 

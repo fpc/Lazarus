@@ -1549,6 +1549,7 @@ type
     procedure InternalMove(ANode: TTreeNode; AddMode: TAddMode);
     function IsEqual(Node: TTreeNode): Boolean;
     function IsNodeVisible: Boolean;
+    function IsNodeHeightFullVisible: Boolean;
     procedure ReadData(Stream: TStream; StreamVersion: integer;
       Info: PTreeNodeInfo);
     procedure ReadDelphiData(Stream: TStream; Info: PDelphiNodeInfo);
@@ -1635,6 +1636,7 @@ type
     property ImageIndex: integer read FImageIndex write SetImageIndex;
     property Index: Integer read GetIndex;
     property IsVisible: Boolean read IsNodeVisible;
+    property IsFullHeightVisible: Boolean read IsNodeHeightFullVisible;
     property Items[ItemIndex: Integer]: TTreeNode read GetItems write SetItems; default;
     property Level: Integer read GetLevel;
     property MultiSelected: Boolean read GetMultiSelected write SetMultiSelected;
@@ -1940,6 +1942,7 @@ type
     function IsCustomDrawn(Target: TCustomDrawTarget;
       Stage: TCustomDrawStage): Boolean;
     function IsNodeVisible(ANode: TTreeNode): Boolean;
+    function IsNodeHeightFullVisible(ANode: TTreeNode): Boolean;
     function IsInsertMarkVisible: boolean; virtual;
     procedure Change(Node: TTreeNode); dynamic;
     procedure Collapse(Node: TTreeNode); dynamic;
@@ -2255,6 +2258,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.125  2004/05/20 14:45:47  mattias
+  implemented showing treenode completely on single selection
+
   Revision 1.124  2004/05/19 18:41:19  micha
   disable custom drawn border by default for treeview (already has borderstyle=bsSingle
 

@@ -1339,13 +1339,19 @@ begin
 end;
 
 function TTreeNode.IsNodeVisible: Boolean;
-//var Rect: TRect;
 begin
   if TreeView<>nil then
     Result:=TreeView.IsNodeVisible(Self)
   else
     Result:=AreParentsExpanded;
-  //Result := TreeView_GetItemRect(Handle, ItemId, Rect, True);
+end;
+
+function TTreeNode.IsNodeHeightFullVisible: Boolean;
+begin
+  if TreeView<>nil then
+    Result:=TreeView.IsNodeHeightFullVisible(Self)
+  else
+    Result:=AreParentsExpanded;
 end;
 
 procedure TTreeNode.Update;
@@ -3384,6 +3390,24 @@ begin
   //' Node.Text=',ANode.Text,' Visible=',Result);
 end;
 
+function TCustomTreeView.IsNodeHeightFullVisible(ANode: TTreeNode): Boolean;
+begin
+  Result:=(ANode<>nil) and (ANode.AreParentsExpanded);
+  //DebugLn('[TCustomTreeView.IsNodeVisible] A Node=',HexStr(Cardinal(ANode),8),
+  //' ANode.AreParentsExpanded=',ANode.AreParentsExpanded);
+  if Result then begin
+    //DebugLn('[TCustomTreeView.IsNodeVisible] B Node=',HexStr(Cardinal(ANode),8),
+    //' ',FScrolledTop,'>=',ANode.Top,'+',ANode.Height,' or ',FScrolledTop,'+',ClientHeight,'<',ANode.Top);
+    if (FScrolledTop>ANode.Top)
+    or (FScrolledTop+(ClientHeight-ScrollBarWidth)-2*BorderWidth
+      <ANode.Top+ANode.Height)
+    then
+      Result:=false;
+  end;
+  //DebugLn('[TCustomTreeView.IsNodeVisible] END Node=',HexStr(Cardinal(ANode),8),
+  //' Node.Text=',ANode.Text,' Visible=',Result);
+end;
+
 procedure TCustomTreeView.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
@@ -4490,6 +4514,9 @@ begin
     ScrolledTop:=ANode.Top
   else begin
     b:=ANode.Top+ANode.Height-GetNodeDrawAreaHeight;
+    //writeln('TCustomTreeView.EnsureNodeIsVisible b=',b,
+    //' ANode.Top=',ANode.Top,' ANode.Height=',ANode.Height,
+    //' GetNodeDrawAreaHeight=',GetNodeDrawAreaHeight,' ClientHeight=',ClientHeight);
     if ScrolledTop<b then ScrolledTop:=b;
   end;
 end;
@@ -5033,15 +5060,22 @@ var
   ANode: TTreeNode;
 begin
   ANode:=GetFirstMultiSelected;
-  while (ANode<>nil) do begin
-    if ANode.IsVisible then begin
-      Result:=true;
-      exit;
+  if (ANode<>nil) and (ANode.GetNextMultiSelected<>nil) then begin
+    // 2 or more elements => a real multi selection =>
+    // is visible if even one of its nodes is partly visible
+    while (ANode<>nil) do begin
+      if ANode.IsVisible then begin
+        Result:=true;
+        exit;
+      end;
+      ANode:=ANode.GetNextMultiSelected;
     end;
-    ANode:=ANode.GetNextMultiSelected;
+    Result:=false;
+  end else begin
+    if ANode=nil then
+      ANode:=Selected;
+    Result:=(ANode<>nil) and (ANode.IsFullHeightVisible);
   end;
-  ANode:=Selected;
-  Result:=(ANode<>nil) and (ANode.IsVisible);
 end;
 
 procedure TCustomTreeView.MakeSelectionVisible;
