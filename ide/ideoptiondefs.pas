@@ -53,7 +53,9 @@ type
     nmiwBreakPoints,
     nmiwWatches,
     nmiwLocals,
-    nmiwCallStack
+    nmiwCallStack,
+    nmiwSearchResultsViewName
+
     );
 
   // form names for non modal IDE windows:
@@ -74,7 +76,8 @@ const
     'BreakPoints',
     'Watches',
     'Locals',
-    'CallStack'
+    'CallStack',
+    'SearchResults'
    );
 
 type

@@ -447,6 +447,7 @@ ide/publishprojectdlg.lfm svneol=native#text/plain
 ide/publishprojectdlg.lrs svneol=native#text/pascal
 ide/publishprojectdlg.pas svneol=native#text/pascal
 ide/runparamsopts.pas svneol=native#text/pascal
+ide/searchresultview.pp svneol=native#text/pascal
 ide/showcompileropts.lfm svneol=native#text/plain
 ide/showcompileropts.lrs svneol=native#text/pascal
 ide/showcompileropts.pas svneol=native#text/pascal

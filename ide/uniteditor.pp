@@ -52,7 +52,7 @@ uses
   // IDE units
   EditorOptions, CustomFormEditor, KeyMapping, FormEditor, Project,
   FindReplaceDialog, WordCompletion, FindInFilesDlg, IDEProcs, IDEOptionDefs,
-  MsgView, InputHistory, LazarusIDEStrConsts, BaseDebugManager, Debugger,
+  MsgView, SearchResultView, InputHistory, LazarusIDEStrConsts, BaseDebugManager, Debugger,
   TypInfo, LResources, LazConf, EnvironmentOpts, Compiler,
   SortSelectionDlg, EncloseSelectionDlg, ClipBoardHistory, DiffDialog,
   SourceEditProcs, SourceMarks, CharacterMapDlg;
@@ -3410,8 +3410,10 @@ Begin
         //text in each file.
         if TheFileList.Count > 0 then
         begin
-          MessagesView.Clear;
-          MessagesView.ShowOnTop;
+{          MessagesView.Clear;
+          MessagesView.ShowOnTop; }
+          SearchResultsView.Clear;
+          SearchResultsView.ShowOnTop;
           try
             try
               TheMatchedFiles:= IDEProcs.FindInFiles(TheFileList,
@@ -3429,10 +3431,10 @@ Begin
             //if we matched any files add them to the message window
             if (TheMatchedFiles<>nil) and (TheMatchedFiles.Count>0) then
             begin
-              MessagesView.AddSeparator;
+              SearchResultsView.AddSeparator;
               for i:= 0 to TheMatchedFiles.Count -1 do
               begin
-                MessagesView.Add(TheMatchedFiles.Strings[i],'',false);
+                SearchResultsView.Add(TheMatchedFiles.Strings[i],'',false);
               end;//for
               //Hand off the search to the FindAndReplace Function in the
               //unit editor.
@@ -3446,11 +3448,11 @@ Begin
             end//if
             else
             begin
-              MessagesView.Clear;
-              MessagesView.ShowOnTop;
-              MessagesView.AddSeparator;
+              SearchResultsView.Clear;
+              SearchResultsView.ShowOnTop;
+              SearchResultsView.AddSeparator;
               AText:=Format(lisUESearchStringNotFound,[LocalFindText]);
-              MessagesView.Add(AText,'',false);
+              SearchResultsView.Add(AText,'',false);
             end;//else
           finally
             TheMatchedFiles.Free;
@@ -3458,10 +3460,10 @@ Begin
         end//if
         else
         begin
-          MessagesView.Clear;
-          MessagesView.ShowOnTop;
-          MessagesView.AddSeparator;
-          MessagesView.Add(lisFileNotFound,'',false);
+          SearchResultsView.Clear;
+          SearchResultsView.ShowOnTop;
+          SearchResultsView.AddSeparator;
+          SearchResultsView.Add(lisFileNotFound,'',false);
         end;//else
       finally
         TheFileList.Free;
@@ -3469,11 +3471,11 @@ Begin
     end//if
     else
     begin
-      MessagesView.Clear;
-      MessagesView.ShowOnTop;
-      MessagesView.AddSeparator;
+      SearchResultsView.Clear;
+      SearchResultsView.ShowOnTop;
+      SearchResultsView.AddSeparator;
       AText:=Format(lisUESearchStringNotFound,[LocalFindText]);
-      MessagesView.Add(AText,'',false);
+      SearchResultsView.Add(AText,'',false);
     end;//else
   end;//if
 End;//FindInFilesClicked

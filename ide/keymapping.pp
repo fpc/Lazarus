@@ -148,6 +148,7 @@ const
   ecViewUnitDependencies = ecUserFirst + 311;
   ecToggleLocals         = ecUserFirst + 312;
   ecToggleCallStack      = ecUserFirst + 313;
+  ecToggleSearchResults  = ecUserFirst + 314;
 
   // sourcenotebook commands
   ecGotoEditor1          = ecUserFirst + 350;
@@ -618,6 +619,7 @@ begin
   ecToggleSourceEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleCodeExpl: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleMessages: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleSearchResults: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleWatches: SetResult(VK_W,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleBreakPoints: SetResult(VK_B,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleLocals: SetResult(VK_L,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
@@ -1139,6 +1141,7 @@ begin
     ecToggleSourceEditor    : Result:= srkmecToggleSourceEditor;
     ecToggleCodeExpl        : Result:= srkmecToggleCodeExpl;
     ecToggleMessages        : Result:= srkmecToggleMessages;
+    ecToggleSearchResults   : Result:= srkmecToggleSearchResults;
     ecToggleWatches         : Result:= srkmecToggleWatches;
     ecToggleBreakPoints     : Result:= srkmecToggleBreakPoints;
     ecToggleDebuggerOut     : Result:= srkmecToggleDebuggerOut;
@@ -2022,6 +2025,7 @@ begin
   AddDefault(C,'Toggle view Source Editor',ecToggleSourceEditor);
   AddDefault(C,'Toggle view Code Explorer',ecToggleCodeExpl);
   AddDefault(C,'Toggle view Messages',ecToggleMessages);
+  AddDefault(C,'Toggle view Search Results',ecToggleSearchResults);
   AddDefault(C,'Toggle view Watches',ecToggleWatches);
   AddDefault(C,'Toggle view Breakpoints',ecToggleBreakPoints);
   AddDefault(C,'Toggle view Local Variables',ecToggleLocals);

@@ -266,6 +266,7 @@ type
     itmViewForms : TMenuItem;
     itmViewUnitDependencies : TMenuItem;
     itmViewMessage : TMenuItem;
+    itmViewSearchResults : TMenuItem;
     itmViewDebugWindows: TMenuItem;
     itmViewWatches: TMenuItem;
     itmViewBreakpoints: TMenuItem;
@@ -1000,6 +1001,11 @@ begin
   itmViewMessage.Caption := lisMenuViewMessages;
   mnuView.Add(itmViewMessage);
 
+  itmViewSearchResults := TMenuItem.Create(Self);
+  itmViewSearchResults.Name:='itmViewSearchResults';
+  itmViewSearchResults.Caption := lisMenuViewSearchResults;
+  mnuView.Add(itmViewSearchResults);
+
   itmViewDebugWindows := TMenuItem.Create(Self);
   itmViewDebugWindows.Name := 'itmViewDebugWindows';
   itmViewDebugWindows.Caption := lisMenuDebugWindows;
@@ -1463,6 +1469,7 @@ begin
     itmViewForms.ShortCut:=CommandToShortCut(ecViewForms);
     itmViewToggleFormUnit.ShortCut:=CommandToShortCut(ecToggleFormUnit);
     itmViewMessage.ShortCut:=CommandToShortCut(ecToggleMessages);
+    itmViewSearchResults.ShortCut:=CommandToShortCut(ecToggleSearchResults);
 
     // project menu
     itmProjectNew.ShortCut:=CommandToShortCut(ecNewProject);

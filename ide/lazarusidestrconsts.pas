@@ -177,6 +177,7 @@ resourcestring
   lisMenuViewUnitDependencies = 'View Unit Dependencies';
   lisMenuViewToggleFormUnit = 'Toggle form/unit view';
   lisMenuViewMessages = 'Messages';
+  lisMenuViewSearchResults = 'Search Results';
   lisMenuDebugWindows = 'Debug windows';
   lisMenuViewWatches = 'Watches';
   lisMenuViewBreakPoints = 'BreakPoints';
@@ -1130,6 +1131,7 @@ resourcestring
   srkmecToggleSourceEditor        = 'View Source Editor';
   srkmecToggleCodeExpl            = 'View Code Explorer';
   srkmecToggleMessages            = 'View messages';
+  srkmecToggleSearchResults       = 'View Search Results';
   srkmecToggleWatches             = 'View watches';
   srkmecToggleBreakPoints         = 'View breakpoints';
   srkmecToggleDebuggerOut         = 'View debugger output';

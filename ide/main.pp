@@ -75,10 +75,10 @@ uses
   CodeToolsDefines, DiffDialog, DiskDiffsDialog, UnitInfoDlg, EditorOptions,
   ViewUnit_dlg,
   // rest of the ide
-  Splash, IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, PublishModule,
-  EnvironmentOpts, TransferMacros, KeyMapping, IDEProcs, ExtToolDialog,
-  ExtToolEditDlg, MacroPromptDlg, OutputFilter, BuildLazDialog, MiscOptions,
-  InputHistory, UnitDependencies, ClipBoardHistory, ProcessList,
+  Splash, IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, SearchResultView,
+  PublishModule, EnvironmentOpts, TransferMacros, KeyMapping, IDEProcs,
+  ExtToolDialog, ExtToolEditDlg, MacroPromptDlg, OutputFilter, BuildLazDialog,
+  MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory, ProcessList,
   InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList, AboutFrm, DialogProcs,
   FindReplaceDialog, FindInFilesDlg, CodeExplorer, BuildFileDlg, ExtractProcDlg,
   DelphiUnit2Laz,
@@ -171,6 +171,7 @@ type
     procedure mnuViewUnitDependenciesClicked(Sender : TObject);
     procedure mnuViewCodeExplorerClick(Sender : TObject);
     procedure mnuViewMessagesClick(Sender : TObject);
+    procedure mnuViewSearchResultsClick(Sender : TObject);
     procedure mnuToggleFormUnitClicked(Sender : TObject);
 
     // project menu
@@ -365,6 +366,11 @@ type
     // MessagesView events
     procedure MessagesViewSelectionChanged(sender : TObject);
     procedure MessageViewDblClick(Sender : TObject);
+
+    //SearchResultsView events
+    procedure SearchResultsViewSelectionChanged(sender : TObject);
+    procedure SearchResultsViewDblClick(Sender : TObject);
+
 
     // External Tools events
     procedure OnExtToolNeedsOutputFilter(var OutputFilter: TOutputFilter;
@@ -638,7 +644,14 @@ type
     // methods for debugging, compiling and external tools
     function DoJumpToCompilerMessage(Index:integer;
       FocusEditor: boolean): boolean;
+      
+    function DoJumpToSearchResult(Index:integer;
+      FocusEditor: boolean): boolean;
+
+      
     procedure DoShowMessagesView;
+    procedure DoShowSearchResultsView;
+
     procedure DoArrangeSourceEditorAndMessageView(PutOnTop: boolean);
     function GetTestBuildDir: string; override;
     function GetProjectTargetFilename: string;
@@ -905,6 +918,7 @@ end;
 procedure TMainIDE.CreateOftenUsedForms;
 begin
   Application.CreateForm(TMessagesView, MessagesView);
+  Application.CreateForm(TSearchResultsView, SearchResultsView);
   Application.CreateForm(TLazFindReplaceDialog, FindReplaceDlg);
 end;
 
@@ -1490,6 +1504,7 @@ begin
   itmViewUnitDependencies.OnClick := @mnuViewUnitDependenciesClicked;
   itmViewToggleFormUnit.OnClick := @mnuToggleFormUnitClicked;
   itmViewMessage.OnClick := @mnuViewMessagesClick;
+  itmViewSearchResults.OnClick := @mnuViewSearchResultsClick;
 end;
 
 procedure TMainIDE.SetupProjectMenu;
@@ -2180,6 +2195,12 @@ Begin
   MessagesView.ShowOnTop;
 End;
 
+Procedure TMainIDE.mnuViewSearchResultsClick(Sender : TObject);
+Begin
+  SearchResultsView.ShowOnTop;
+End;
+
+
 
 {------------------------------------------------------------------------------}
 
@@ -2731,6 +2752,12 @@ Procedure TMainIDE.MessageViewDblClick(Sender : TObject);
 Begin
 
 end;
+
+Procedure TMainIDE.SearchResultsViewDblClick(Sender : TObject);
+Begin
+
+end;
+
 
 //==============================================================================
 
@@ -4580,7 +4607,7 @@ begin
   end;
 
   Result:=mrOk;
-  writeln('TMainIDE.DoOpenEditorFile END "',AFilename,'"');
+  //writeln('TMainIDE.DoOpenEditorFile END "',AFilename,'"');
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenEditorFile END');{$ENDIF}
 end;
 
@@ -7316,6 +7343,94 @@ begin
   end;
 end;
 
+function TMainIDE.DoJumpToSearchResult(Index:integer;
+  FocusEditor: boolean): boolean;
+var MaxSearchResults: integer;
+  Filename, SearchedFilename: string;
+  CaretXY: TPoint;
+  TopLine: integer;
+  MsgType: TErrorType;
+  SrcEdit: TSourceEditor;
+  OpenFlags: TOpenFlags;
+  CurMsg, CurDir: string;
+  NewFilename: String;
+begin
+  Result:=false;
+  MaxSearchResults:=SearchResultsView.SearchResultView.Items.Count;
+  if Index>=MaxSearchResults then exit;
+  if (Index<0) then begin
+    // search relevant searchresult (first error, first fatal) <- this bit needs changing
+    Index:=0;
+    while (Index<MaxSearchResults) do begin
+      if (TheOutputFilter.GetSourcePosition(
+        SearchResultsView.SearchResultView.Items[Index],
+        Filename,CaretXY,MsgType)) then
+      begin
+        if MsgType in [etError,etFatal,etPanic] then break;
+      end;
+      inc(Index);
+    end;
+    if Index>=MaxSearchResults then exit;
+    SearchResultsView.SelectedSearchResultIndex:=Index;
+  end;
+  SearchResultsView.GetSearchResultAt(Index,CurMsg,CurDir);
+  if TheOutputFilter.GetSourcePosition(CurMsg,Filename,CaretXY,MsgType)
+  then begin
+    if not FilenameIsAbsolute(Filename) then begin
+      NewFilename:=AppendPathDelim(CurDir)+Filename;
+      if FileExists(NewFilename) then
+        Filename:=NewFilename;
+    end;
+
+    OpenFlags:=[ofOnlyIfExists,ofRegularFile];
+    if IsTestUnitFilename(Filename) then begin
+      SearchedFilename := ExtractFileName(Filename);
+      Include(OpenFlags,ofVirtualFile);
+    end else begin
+      SearchedFilename := FindUnitFile(Filename);
+    end;
+
+    if SearchedFilename<>'' then begin
+      // open the file in the source editor
+      Result:=(DoOpenEditorFile(SearchedFilename,-1,OpenFlags)=mrOk);
+      if Result then begin
+        // set caret position
+        SourceNotebook.AddJumpPointClicked(Self);
+        SrcEdit:=SourceNoteBook.GetActiveSE;
+        if CaretXY.Y>SrcEdit.EditorComponent.Lines.Count then
+          CaretXY.Y:=SrcEdit.EditorComponent.Lines.Count;
+        TopLine:=CaretXY.Y-(SrcEdit.EditorComponent.LinesInWindow div 2);
+        if TopLine<1 then TopLine:=1;
+        if FocusEditor then begin
+          //SourceNotebook.BringToFront;
+          SearchResultsView.ShowOnTop;
+          SourceNoteBook.ShowOnTop;
+          SourceNotebook.FocusEditor;
+        end;
+        SrcEdit.EditorComponent.CaretXY:=CaretXY;
+        SrcEdit.EditorComponent.TopLine:=TopLine;
+        with SrcEdit.EditorComponent do begin
+          BlockBegin:=CaretXY;
+          BlockEnd:=CaretXY;
+          LeftChar:=Max(CaretXY.X-CharsInWindow,1);
+        end;
+        SrcEdit.ErrorLine:=CaretXY.Y;
+      end;
+    end else begin
+      if FilenameIsAbsolute(Filename) then begin
+        MessageDlg(Format(lisUnableToFindFile, ['"', Filename, '"']),
+           mtInformation,[mbOk],0)
+      end else begin
+        MessageDlg(Format(
+          lisUnableToFindFileCheckSearchPathInRunCompilerOption, ['"',
+          Filename, '"', #13, #13]),
+           mtInformation,[mbOk],0);
+      end;
+    end;
+  end;
+end;
+
+
 procedure TMainIDE.DoShowMessagesView;
 var
   WasVisible: boolean;
@@ -7333,6 +7448,25 @@ begin
   //set the event here for the selectionchanged event
   if not assigned(MessagesView.OnSelectionChanged) then
     MessagesView.OnSelectionChanged := @MessagesViewSelectionChanged;
+end;
+
+procedure TMainIDE.DoShowSearchResultsView;
+var
+  WasVisible: boolean;
+  ALayout: TIDEWindowLayout;
+begin
+  WasVisible := SearchResultsView.Visible;
+  SearchResultsView.Visible:=true;
+  ALayout:=EnvironmentOptions.IDEWindowLayoutList.
+    ItemByEnum(nmiwSearchResultsViewName);
+  ALayout.Apply;
+  if not WasVisible then
+    // the sourcenotebook is more interesting than the messages
+    SourceNotebook.ShowOnTop;
+
+  //set the event here for the selectionchanged event
+  if not assigned(SearchresultsView.OnSelectionChanged) then
+    SearchresultsView.OnSelectionChanged := @SearchresultsViewSelectionChanged;
 end;
 
 procedure TMainIDE.DoArrangeSourceEditorAndMessageView(PutOnTop: boolean);
@@ -8909,6 +9043,12 @@ begin
   DoJumpToCompilerMessage(TMessagesView(Sender).SelectedMessageIndex,True);
 end;
 
+procedure TMainIDE.SearchResultsViewSelectionChanged(sender : TObject);
+begin
+  DoJumpToSearchREsult(TSearchREsultsView(Sender).SelectedSearchResultIndex,True);
+end;
+
+
 Procedure TMainIDE.OnSrcNotebookEditorVisibleChanged(Sender : TObject);
 var
   ActiveUnitInfo : TUnitInfo;
@@ -9942,6 +10082,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.665  2003/11/08 11:16:45  mattias
+  added search result window from Jason
+
   Revision 1.664  2003/11/07 16:29:59  mattias
   implemented Break Lines in Selection
 

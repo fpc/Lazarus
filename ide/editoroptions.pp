@@ -1480,7 +1480,55 @@ begin
       DefBGCol:=$50a0ff;
       DefFGCol:=clBlack;
     end;
-  end else begin
+  end
+  else if lowercase(SynColorScheme)='ocean'  then begin
+    // default for ocean color scheme
+    DefBGCol:=clNavy;
+    DefFGCol:=clYellow;
+    if AttriName='Assembler' then begin
+      DefFGCol:=clLime;
+    end else if AttriName='Comment' then begin
+      DefFGCol:=clGray;
+    end else if AttriName='Directive' then begin
+      DefFGCol:=clRed;
+    end else if AttriName='Reserved word' then begin
+      DefFGCol:=clAqua;
+      DefFontStyles:=[fsBold];
+    end else if AttriName='Number' then begin
+      DefFGCol:=clFuchsia;
+    end else if AttriName='String' then begin
+      DefFGCol:=clYellow;
+    end else if AttriName='Symbol' then begin
+      DefFGCol:=clAqua;
+    end else if AttriName=AdditionalHighlightAttributes[ahaTextBlock] then begin
+      DefBGCol:=clWhite;
+      DefFGCol:=clBlack
+    end else if AttriName=AdditionalHighlightAttributes[ahaExecutionPoint]
+    then begin
+      DefBGCol:=clBlue;
+      DefFGCol:=clWhite;
+    end else if AttriName=AdditionalHighlightAttributes[ahaEnabledBreakpoint]
+    then begin
+      DefBGCol:=clRed;
+      DefFGCol:=clWhite;
+    end else if AttriName=AdditionalHighlightAttributes[ahaDisabledBreakpoint]
+    then begin
+      DefBGCol:=clLime;
+      DefFGCol:=clRed;
+    end else if AttriName=AdditionalHighlightAttributes[ahaInvalidBreakpoint]
+    then begin
+      DefBGCol:=clOlive;
+      DefFGCol:=clGreen;
+    end else if AttriName=AdditionalHighlightAttributes[ahaUnknownBreakpoint]
+    then begin
+      DefBGCol:=clRed;
+      DefFGCol:=clBlack;
+    end else if AttriName=AdditionalHighlightAttributes[ahaErrorLine] then begin
+      DefBGCol:=$50a0ff;
+      DefFGCol:=clBlack;
+    end;
+  end
+  else begin
     // default for all other color schemes
     if AttriName='Assembler' then begin
       DefFGCol:=clGreen;
@@ -4353,6 +4401,7 @@ begin
       // ToDo: fill also with custom color schemes
       Add(DefaultColorScheme);
       Add('Twilight');
+      Add('Ocean');
       EndUpdate;
     end;
     Text:=DefaultColorScheme;

@@ -2223,7 +2223,7 @@ begin
       ACanvas.Font.Color := clHighlightText;
     end
     else begin
-      ACanvas.Color := clWindow;
+      ACanvas.Color := clwhite{clWindow};
       ACanvas.Font.Color := clWindowText;
     end;
     ACanvas.FillRect(ARect);
