@@ -208,6 +208,7 @@ begin
         //GC := gdk_gc_new(Drawable);
         GC := gdk_gc_new_with_values(Drawable, @GCValues, 3 { $3FF});
       end;
+      Origin := SourceDC^.Origin;
       PenPos := SourceDC^.PenPos;
       CurrentBitmap := SourceDC^.CurrentBitmap;
       CurrentFont := SourceDC^.CurrentFont;
@@ -216,24 +217,34 @@ begin
       CurrentTextColor := SourceDC^.CurrentTextColor;
       CurrentBackColor := SourceDC^.CurrentBackColor;
       ClipRegion := SourceDC^.ClipRegion;
-      {DeleteObject(ClipRegion);
-      ClipRegion := 0;
-      If SourceDC^.ClipRegion <> 0 then
-        SelectClipRGN(hDC(DestinationDC), SourceDC^.ClipRegion);}
       SavedContext := nil;
     end;
   end;
   Assert(False, Format('Trace:< [CopyDCData] DestDC:0x%x, SourceDC:0x%x --> %d', [Integer(DestinationDC), Integer(SourceDC), Integer(Result)]));
 end;
 
+{------------------------------------------------------------------------------
+  Procedure SelectGDIRegion(const DC: HDC);
+
+  Applies the current clipping region of the DC (DeviceContext) to the
+  gc (GDK Graphic context - pgdkGC)
+ ------------------------------------------------------------------------------}
 Procedure SelectGDIRegion(const DC: HDC);
+var
+  Region: PGdiObject;
 begin
   with PDeviceContext(DC)^ do
   begin
     gdk_gc_set_clip_region(gc,  nil);
     gdk_gc_set_clip_rectangle (gc,  nil);
-    If ClipRegion <> 0 then
+    If ClipRegion <> 0 then begin
+      Region:=PGDIObject(ClipRegion);
+      if (Origin.X<>0) or (Origin.X<>0) then
+        gdk_region_offset(Region^.GDIRegionObject,Origin.X,Origin.Y);
       gdk_gc_set_clip_region(gc,  PGDIObject(ClipRegion)^.GDIRegionObject);
+      if (Origin.X<>0) or (Origin.X<>0) then
+        gdk_region_offset(Region^.GDIRegionObject,-Origin.X,-Origin.Y);
+    end;
   end;
 end;
 
@@ -2622,6 +2633,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.80  2002/08/30 12:32:23  lazarus
+  MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
+
   Revision 1.79  2002/08/29 00:07:02  lazarus
   MG: fixed TComboBox and InvalidateControl
 
