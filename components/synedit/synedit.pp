@@ -2655,7 +2655,9 @@ var
   var
     LinkBGCol: TColor;
     LinkStyle: TFontStyles;
-    r, g, b: integer;
+    fRed, fGreen, fBlue: integer;
+    {bRed, bGreen,} bBlue: integer;
+    NewRed, NewGreen, NewBlue: integer;
   begin
     if Assigned(attr) then begin
       LinkFGCol:=attr.Foreground;
@@ -2666,14 +2668,22 @@ var
       LinkBGCol:=colBG;
       LinkStyle:=Font.Style;
     end;
-    
+    if LinkBGCol = clNone then LinkBGCol := colEditorBG;
+    if LinkFGCol = clNone then LinkFGCol := Font.Color;
+
     // change FG color
-    r:=LinkFGCol and $ff;
-    g:=(LinkFGCol shr 8) and $ff;
-    b:=(LinkFGCol shr 8) and $ff;
-    r:=255-r;
-    g:=255-g;
-    LinkFGCol:=r+(g shl 8)+(b shl 16);
+    fRed  :=(LinkFGCol and $ff);
+    fGreen:=(LinkFGCol shr 8) and $ff;
+    fBlue :=(LinkFGCol shr 16) and $ff;
+    //bRed  :=(LinkBGCol and $ff);
+    //bGreen:=(LinkBGCol shr 8) and $ff;
+    bBlue :=(LinkBGCol shr 16) and $ff;
+    NewRed  :=fRed;
+    NewGreen:=fGreen;
+    NewBlue :=bBlue;
+    if Abs(NewBlue-fBlue)<128 then
+      NewBlue:=(255-fBlue) and $ff;
+    LinkFGCol:=NewRed+(NewGreen shl 8)+(NewBlue shl 16);
     
     AddHighlightToken(sToken, nTokenPos, nTokenLen,
       LinkFGCol, LinkBGCol, LinkStyle);
@@ -3925,7 +3935,9 @@ var
   FilesList: TStringList;
 {$ENDIF}
 begin
-{$IFNDEF SYN_LAZARUS}
+  {$IFDEF SYN_LAZARUS}
+  LastMouseCaret:=Point(-1,-1);
+  {$ELSE}
   try
     if Assigned(fOnDropFiles) then begin
       FilesList := TStringList.Create;
@@ -3948,7 +3960,7 @@ begin
     Msg.Result := 0;
     DragFinish(THandle(Msg.wParam));
   end;
-{$ENDIF}
+  {$ENDIF}
 end;
 
 {$IFDEF SYN_LAZARUS}
@@ -3999,6 +4011,7 @@ begin
   inherited;
 writeln('[TCustomSynEdit.WMKillFocus] A ',Name);
   {$IFDEF SYN_LAZARUS}
+  LastMouseCaret:=Point(-1,-1);
   if not (eoPersistentCaret in fOptions) then
     HideCaret;
   LCLLinux.DestroyCaret(Handle);
@@ -5005,6 +5018,9 @@ procedure TCustomSynEdit.DragOver(Source: TObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 begin
   inherited;
+  {$IFDEF SYN_LAZARUS}
+  LastMouseCaret:=Point(-1,-1);
+  {$ENDIF}
   if (Source is TCustomSynEdit) and not TCustomSynEdit(Source).ReadOnly then
   begin
     Accept := True;
@@ -6659,6 +6675,7 @@ procedure TCustomSynEdit.SizeOrFontChanged(bFont: boolean);
 begin
   if HandleAllocated then begin
     {$IFDEF SYN_LAZARUS}
+    LastMouseCaret:=Point(-1,-1);
     fCharsInWindow := Max(1,(ClientWidth - fGutterWidth - 2 - ScrollBarWidth)
                             div fCharWidth);
     fLinesInWindow := Max(0,ClientHeight - ScrollBarWidth) div Max(1,fTextHeight);
