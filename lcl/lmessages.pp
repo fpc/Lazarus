@@ -52,7 +52,6 @@ const
   LM_SetHeight      = LM_ComUser+6;
   LM_AddChild       = LM_ComUser+7;
   LM_Setsize        = LM_ComUser+8;
-  LM_GetLabel       = LM_ComUser+9;
   LM_AssignEvent    = LM_ComUser+10;
   LM_AssignSelf     = LM_ComUser+11;
   LM_SetName        = LM_ComUser+12;
@@ -861,7 +860,6 @@ begin
   LM_SetHeight      :Result:='LM_SetHeight';
   LM_AddChild       :Result:='LM_AddChild';
   LM_Setsize        :Result:='LM_Setsize';
-  LM_GetLabel       :Result:='LM_GetLabel';
   LM_AssignEvent    :Result:='LM_AssignEvent';
   LM_AssignSelf     :Result:='LM_AssignSelf';
   LM_SetName        :Result:='LM_SetName';
@@ -1033,6 +1031,9 @@ end.
 
 {
   $Log$
+  Revision 1.81  2004/09/10 18:06:12  micha
+  remove LM_GETLABEL since it is not used (anymore)
+
   Revision 1.80  2004/09/10 17:59:57  micha
   convert LM_APPENDTEXT to interface method
 
