@@ -5745,7 +5745,7 @@ begin
     SourceNotebook.ClearErrorLines;
     Result:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
                          EnvironmentOptions.ExternalTools,MacroList,
-                         '',Flags+[blfWithoutIDE]);
+                         '',Flags+[blfWithoutLinkingIDE]);
     if Result<>mrOk then exit;
     
     // then compile the IDE
@@ -9261,6 +9261,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.611  2003/06/19 23:10:57  mattias
+  implemented two step compiling of IDE, needed for designtime packages
+
   Revision 1.610  2003/06/19 16:36:34  mattias
   started codeexplorer
 
