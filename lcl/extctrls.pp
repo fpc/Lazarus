@@ -633,8 +633,6 @@ type
   { TRadioGroup }
 
   TRadioGroup = class(TCustomRadioGroup)
-  public
-    constructor Create(AOwner: TComponent); override;
   published
     property Align;
     property Anchors;
@@ -960,7 +958,6 @@ end;
 {$I customsplitter.inc}
 {$I paintbox.inc}
 {$I customcheckgroup.inc}
-{$I customradiogroup.inc}
 {$I boundlabel.inc}
 {$I customlabelededit.inc}
 {$I custompanel.inc}
@@ -972,6 +969,9 @@ end.
 
  {
   $Log$
+  Revision 1.118  2004/09/09 09:35:44  mattias
+  renamed customradiogroup.inc to radiogroup.inc
+
   Revision 1.117  2004/09/08 22:59:54  mattias
   started TTabControl
 

@@ -1152,7 +1152,6 @@ lcl/include/custommemo.inc svneol=native#text/pascal
 lcl/include/customnotebook.inc svneol=native#text/pascal
 lcl/include/custompage.inc svneol=native#text/pascal
 lcl/include/custompanel.inc svneol=native#text/pascal
-lcl/include/customradiogroup.inc svneol=native#text/pascal
 lcl/include/customsplitter.inc svneol=native#text/pascal
 lcl/include/customstatictext.inc svneol=native#text/pascal
 lcl/include/customupdown.inc svneol=native#text/pascal

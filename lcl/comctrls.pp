@@ -714,7 +714,6 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     property Selected: TListItem read GetSelection write SetSelection;
-  published
     property TabStop default true;
   end;
 
@@ -743,6 +742,7 @@ type
     property SmallImages;
     property SortColumn;
     property SortType;
+    property TabStop;
     property Visible;
     property ViewStyle;
     property OnMouseMove;
@@ -2456,6 +2456,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.147  2004/09/09 09:35:44  mattias
+  renamed customradiogroup.inc to radiogroup.inc
+
   Revision 1.146  2004/09/08 23:05:35  mattias
   improved TListView.SetItemVisible  from Andrew Haines
 

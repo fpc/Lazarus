@@ -22,6 +22,24 @@
 }
 
 {$IFDEF EnableTabControl}
+
+type
+  TTabControlStrings = class(TStrings)
+  protected
+    function Get(Index: Integer): string; override;
+    function GetCount: Integer; override;
+    function GetObject(Index: Integer): TObject; override;
+    procedure Put(Index: Integer; const S: string); override;
+    procedure PutObject(Index: Integer; AObject: TObject); override;
+    procedure SetUpdateState(Updating: Boolean); override;
+  public
+    TabControl: TCustomTabControl;
+    procedure Clear; override;
+    procedure Delete(Index: Integer); override;
+    procedure Insert(Index: Integer; const S: string); override;
+  end;
+
+
 { TCustomTabControl }
 
 function TCustomTabControl.GetDisplayRect: TRect;
@@ -239,6 +257,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2004/09/09 09:35:44  mattias
+  renamed customradiogroup.inc to radiogroup.inc
+
   Revision 1.1  2004/09/08 22:59:54  mattias
   started TTabControl
 
