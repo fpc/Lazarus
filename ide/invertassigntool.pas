@@ -46,26 +46,54 @@ begin
   Result :=Length(Aline) - Length(TrimLeft(ALine));
 end;
 
-procedure DivideLines(Lines: TStrings; var AList: TStrings; var BList: TStrings);
+procedure DivideLines(Lines: TStrings; var PreList, AList, BList, PostList: TStrings);
 var
 X: Integer;
 ALine: String;
-fPos: Integer;
+EqPos: Integer;
+SemiPos: Integer;
+WordBeforeEqPos: Integer;
 TrueFalse: String;
+        function FindWordBeforeEquals(ALine: String): Integer;
+        var
+        X: Integer;
+        fPos: Integer;
+        begin
+          Result := 0;
+          fPos := Pos(':=', ALine);
+          if fPos > 0 then begin
+            ALine := Trim(Copy(ALine,1,fPos-1));
+            for X := Length(ALine) downto 1 do begin
+              if ALine[X] = ' ' then begin
+                Result := X+1;
+                Exit;
+              end;
+            end;
+          end;
+        end;
 begin
   AList.Clear;
   BList.Clear;
   for X := 0 to Lines.Count-1 do begin
     ALine := Trim(Lines.Strings[X]);
 
-    fPos := Pos(':=', ALine);
-    if (fPos > 0) and (Pos(';',ALine) > 0)  then begin
-      AList.Add(Trim(Copy(ALine, 1, fPos-1)));
-      BList.Add(Trim(Copy(ALine, fPos+2, (Pos(';', ALine)-3)-(fPos-1))));
+    EqPos := Pos(':=', ALine);
+    SemiPos := Pos(';', ALine);
+    WordBeforeEqPos := FindWordBeforeEquals(ALine);
+    
+    if (EqPos > 0) and (SemiPos > 0) then begin
+      Alist.Add(Trim(Copy(ALine, WordBeforeEqPos+Ord(WordBeforeEqPos=0), EqPos - (WordBeforeEqPos+Ord(WordBeforeEqPos=0)))));
+      BList.Add(Trim(Copy(ALine, EqPos + 2, (SemiPos-1) -(EqPos+1))));
+      PreList.Add(Trim(Copy(ALine,1, WordBeforeEqPos-1)));
+      PostList.Add(Trim(Copy(ALine, SemiPos, Length(ALine)-(SemiPos-1))));
+      if Length(PreList.Strings[X]) > 0 then
+        PreList.Strings[X] := PreList.Strings[X] + ' ';
     end
     else begin  // not a valid line
+      PreList.Add('');
       AList.Add(ALine);
       Blist.Add('');
+      PostList.Add('');
     end;
     // Check if is being assigned true or false
     if CompareText(BList.Strings[X], 'True') = 0 then begin
@@ -82,7 +110,7 @@ begin
 
 end;
 
-function InvertLine(VarA, VarB: String; LineStart, EqualPosition: Integer): String;
+function InvertLine(PreVar, VarA, VarB, PostVar: String; LineStart, EqualPosition: Integer): String;
 var
 fLength: Integer;
 X: Integer;
@@ -99,7 +127,7 @@ begin
     Exit;
   end;
 
-  Result := Result + VarB;
+  Result := Result + PreVar + VarB;
 
   fLength := Length(Trim(Result));
   if fLength < EqualPosition then begin
@@ -107,7 +135,7 @@ begin
       Result := Result + ' ';
     end;
   end;
-  Result := Result + ' := ' + VarA + ';';
+  Result := Result + ' := ' + VarA + PostVar;
 end;
 
 function IsAWholeLine(ALine: String): Boolean;
@@ -136,6 +164,7 @@ begin
   or (Pos('else', ALine) > 0)
   or (Pos('and', ALine) > 0)
   or (Pos('or', ALine) > 0)
+  or (Pos('//', ALine) > 0)
   then Result := True;
 end;
 
@@ -146,40 +175,48 @@ end;
 function InvertAssignment(ALines:TStrings):TStrings;
 var
 Lines: TStringList;
+PreList,
 AList,
-BList: TStringList;
-Indents: ^Integer;
+BList,
+PostList: TStringList;
+Indents: PInteger;
 X, Y: Integer;
 EqPos: Integer;
 ALine: String;
 begin
-  Lines := TStringList.Create;
-  if ALines.Count>0 then begin
-    GetMem(Indents,SizeOf(Integer)*ALines.Count);
-
-    // Put a line on multiple lines, on one line
-    ALine := '';
-    for X := 0 to ALines.Count-1 do begin
-      ALine := ALine + ALines.Strings[X];
-      if IsAWholeLine(ALine) then begin
-        Indents[Lines.Add(ALine)] := GetIndent(ALine);
-        ALine := '';
-      end;
-    end;
-
-    // exited the loop without finding the end of a line
-    if Length(ALine) > 0 then begin
-      X := Lines.Add(ALine);
-      Indents[X] := GetIndent(ALine);
-    end;
-
-    ALines.Clear;
+  if ALines.Count = 0 then begin
+    Result := ALines;
+    Exit;
   end;
   
+  Lines := TStringList.Create;
+
+  GetMem(Indents,SizeOf(Integer)*ALines.Count);
+
+  // Put a line on multiple lines, on one line
+  ALine := '';
+  for X := 0 to ALines.Count-1 do begin
+    ALine := ALine + ALines.Strings[X];
+    if IsAWholeLine(ALine) then begin
+      Indents[Lines.Add(ALine)] := GetIndent(ALine);
+      ALine := '';
+    end;
+  end;
+  
+  // exited the loop without finding the end of a line
+  if Length(ALine) > 0 then begin
+    X := Lines.Add(ALine);
+    Indents[X] := GetIndent(ALine);
+  end;
+  
+  ALines.Clear;
+  
+  PreList := TStringList.Create;
   AList := TStringList.Create;
   BList := TStringList.Create;
+  PostList := TStringList.Create;
   
-  DivideLines(Lines, AList, BList);
+  DivideLines(Lines, PreList, AList, BList, PostList);
   Lines.Free;
   
   //Find where the ':=' should be
@@ -190,13 +227,20 @@ begin
   end;
 
   for X := 0 to AList.Count-1 do begin
-    ALines.Add(InvertLine(Alist.Strings[X], BList.Strings[X], Indents[X], EqPos));
+    ALines.Add(InvertLine(PreList.Strings[X],
+                            Alist.Strings[X],
+                            BList.Strings[X],
+                         PostList.Strings[X],
+                                 Indents[X],
+                                     EqPos));
   end;
+  PreList.Free;
   AList.Free;
   BList.Free;
+  PostList.Free;
+  ReAllocMem(Indents,0);
 
   Result := ALines;
-  ReAllocMem(Indents,0);
   // TODO: How do you stop this from adding a new line at the end of the last item
 end;
 //////////////////////////////////////////////////////////////////////
