@@ -824,7 +824,7 @@ end;
 
 function TCustomGrid.GetRowHeights(Arow: Integer): Integer;
 begin
-  if (aRow<RowCount) and (aRow>0) then
+  if (aRow<RowCount) and (aRow>=0) then
     Result:=Integer(FRows[aRow])
   else
     Result:=-1;
@@ -869,7 +869,7 @@ end;
 
 function TCustomGrid.GetColWidths(Acol: Integer): Integer;
 begin
-  if (aCol<ColCount) and (aCol>0) then
+  if (aCol<ColCount) and (aCol>=0) then
     Result:=Integer(FCols[aCol])
   else
     Result:=-1;
