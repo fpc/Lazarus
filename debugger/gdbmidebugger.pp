@@ -365,11 +365,27 @@ begin
 end;
 
 function TGDBMIDebugger.ChangeFileName: Boolean;
+  function GetFileNameForGDB: string;
+  // GDB wants forward slashes in its filenames, even on win32.
+  var
+    SeperatorPos: integer;
+  begin
+    Result := FileName;
+    if DirectorySeparator<>'/' then
+      repeat
+        SeperatorPos := Pos(DirectorySeparator, Result);
+        if SeperatorPos>0 then begin
+          Delete(Result, SeperatorPos, 1);
+          Insert('/', Result, SeperatorPos);
+        end;
+      until SeperatorPos=0;
+  end;
 begin
   Result:=false;
   
 
-  if not ExecuteCommand('-file-exec-and-symbols %s', [FileName], []) then exit;
+  if not ExecuteCommand('-file-exec-and-symbols %s',
+    [GetFileNameForGDB], []) then exit;
   if State=dsError then exit;
   if not (inherited ChangeFileName) then exit;
   if State=dsError then exit;
@@ -2247,6 +2263,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.43  2004/03/12 21:39:29  vincents
+  Lazarus can communicate with debugger on win32
+
   Revision 1.42  2004/01/17 13:29:04  mattias
   using now fpc constant LineEnding   from Vincent
 

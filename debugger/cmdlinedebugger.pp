@@ -172,11 +172,8 @@ begin
   end;
 {$ELSE linux}
 {$IFDEF WIN32}
-{$IFDEF DebuggerUsePeekNamedPipe}
 var
-  Count: Integer;
   PipeHandle: Integer;
-  BytesRead: integer;
   TotalBytesAvailable: integer;
   R: LongBool;
   n: integer;
@@ -188,16 +185,14 @@ begin
     for n:= 0 to High(AHandles) do
     begin
       PipeHandle := AHandles[n];
-      R := Windows.PeekNamedPipe(PipeHandle, null, 0, 0, @TotalBytesAvailable, null);
-      writeln('PeekNamedPipe returned with ',R);
+      R := Windows.PeekNamedPipe(PipeHandle, nil, 0, nil, @TotalBytesAvailable, nil);
       if not R then begin
         // PeekNamedPipe failed
-        Writeln('GetLastError is ', GetLastError);
-        Continue;
+        Writeln('PeekNamedPipe failed, GetLastError is ', GetLastError);
+        Exit;
       end;
       if R then begin
         // PeekNamedPipe successfull
-        writeln('TotalBytesAvailable: ', TotalBytesAvailable);
         if (TotalBytesAvailable>0) then begin
           Result := 1 shl n;
           Break;
@@ -210,48 +205,6 @@ begin
     // sleep a bit
     Sleep(10);
   end;
-  writeln('[WaitForHandles returns ', Result);
-{$ELSE DebuggerUsePeekNamedPipe}
-var
-  Count: Integer;
-  TimeOut: Integer;
-  R: Integer;
-  P: Pointer;
-begin
-  Result := 0;
-  Count := High(AHandles)+1;
-  if Count < 0 then Exit;
-  if Count > 31 then Count :=  31;
-  // I know MAXIMUM_WAIT_OBJECTS is 64, but that wont fit in an int :)
-
-  while True do
-  begin
-    // Wait infinite, since if there are messages, we wake up
-    TimeOut := INFINITE;
-    P := @AHandles[0];
-    R := Windows.MsgWaitForMultipleObjects(Count, P, False, TimeOut, QS_ALLINPUT);
-    if (R >= WAIT_OBJECT_0) and (R < WAIT_OBJECT_0 + Count)
-    then begin
-      // A handle is signalled
-      Result := 1 shl (R - WAIT_OBJECT_0);
-      Break;
-    end;
-    if (R = WAIT_OBJECT_0 + Count)
-    then begin
-      // we got a message
-      Application.ProcessMessages;
-      if Application.Terminated then Break;
-    end;
-    if (R >= WAIT_ABANDONED_0) and (R < WAIT_ABANDONED_0 + Count)
-    then begin
-      // A handle is abandoned
-      // don't know exacly what to do
-      // Fo now return unset
-      Result := 0;
-      Break;
-    end;
-  end;
-{$ENDIF DebuggerUsePeekNamedPipe}
 {$ELSE win32}
 begin
   writeln('ToDo: implement WaitForHandles for this OS');
@@ -456,7 +409,7 @@ begin
     DoDbgOutput('<' + ACommand + '>');
     if ACommand <> ''
     then FDbgProcess.Input.Write(ACommand[1], Length(ACommand));
-    FDbgProcess.Input.Write(LineEnding, Length(LineEnding));
+    FDbgProcess.Input.Write(LineEnding[1], Length(LineEnding));
   end
   else begin
     WriteLN('[TCmdLineDebugger.SendCmdLn] Unable to send <', ACommand, '>. No process running.');
@@ -478,6 +431,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.31  2004/03/12 21:39:29  vincents
+  Lazarus can communicate with debugger on win32
+
   Revision 1.30  2004/03/08 09:55:41  marc
   * Fixed length on writing LineEnding
 
