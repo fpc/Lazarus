@@ -211,7 +211,6 @@ type
     FLastFormActivated : TCustomForm;// used to find the last form so you can
                                      // display the correct tab
     FSelectedComponent : TRegisteredComponent;
-    fProject: TProject;
     MacroList: TTransferMacroList;
     FOpenEditorsOnCodeToolChange: boolean;
 
@@ -314,7 +313,6 @@ type
     function DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
     
     // project(s)
-    property Project: TProject read fProject write fProject;
     function DoNewProject(NewProjectType:TProjectType):TModalResult;
     function DoSaveProject(Flags: TSaveFlags):TModalResult;
     function DoCloseProject:TModalResult;
@@ -622,8 +620,7 @@ writeln('[TMainIDE.Destroy] A');
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
   if FDebugger <> nil then FDebugger.Done;
 
-  if Project<>nil then
-    FreeThenNil(fProject);
+  FreeThenNil(Project1);
   FreeThenNil(FBreakPoints);
   if TheControlSelection<>nil then begin
     TheControlSelection.OnChange:=nil;
@@ -2014,7 +2011,7 @@ end;
 
 procedure TMainIDE.mnuProjectOptionsClicked(Sender : TObject);
 begin
-  if ShowProjectOptionsDialog(Project)=mrOk then begin
+  if ShowProjectOptionsDialog(Project1)=mrOk then begin
     
   end;
 end;
@@ -2064,12 +2061,12 @@ var frmCompilerOptions:TfrmCompilerOptions;
 begin
   frmCompilerOptions:=TfrmCompilerOptions.Create(Application);
   try
-    frmCompilerOptions.CompilerOpts:=Project.CompilerOptions;
+    frmCompilerOptions.CompilerOpts:=Project1.CompilerOptions;
     frmCompilerOptions.GetCompilerOptions;
-    frmCompilerOptions.OtherSourcePath:=Project.SrcPath;
+    frmCompilerOptions.OtherSourcePath:=Project1.SrcPath;
     if frmCompilerOptions.ShowModal=mrOk then begin
-      Project.SrcPath:=frmCompilerOptions.OtherSourcePath;
-      CreateProjectDefineTemplate(Project.CompilerOptions,Project.SrcPath);
+      Project1.SrcPath:=frmCompilerOptions.OtherSourcePath;
+      CreateProjectDefineTemplate(Project1.CompilerOptions,Project1.SrcPath);
     end;
   finally
     frmCompilerOptions.Free;
@@ -2078,7 +2075,7 @@ end;
 
 procedure TMainIDE.mnuRunParametersClicked(Sender : TObject);
 begin
-  ShowRunParamsOptsDlg(Project.RunParameterOptions);
+  ShowRunParamsOptsDlg(Project1.RunParameterOptions);
 end;
 
 //------------------------------------------------------------------------------
@@ -2306,7 +2303,7 @@ function TMainIDE.CreateNewCodeBuffer(NewUnitType:TNewUnitType;
   var NewCodeBuffer: TCodeBuffer; var NewUnitName: string): TModalResult;
 begin
   if NewFilename='' then begin
-    NewUnitName:=Project.NewUniqueUnitName(NewUnitType);
+    NewUnitName:=Project1.NewUniqueUnitName(NewUnitType);
     NewCodeBuffer:=CodeToolBoss.CreateFile(
                                    NewUnitName+UnitTypeDefaultExt[NewUnitType]);
   end else begin
@@ -2354,7 +2351,7 @@ begin
 
   NewUnitInfo.FormName:=NewForm.Name;
   if NewUnitInfo.IsPartOfProject then
-    Project.AddCreateFormToProjectFile(NewForm.ClassName,NewForm.Name);
+    Project1.AddCreateFormToProjectFile(NewForm.ClassName,NewForm.Name);
     
   Result:=mrOk;
 end;
@@ -2452,7 +2449,7 @@ begin
   // check unitname
   NewUnitName:=ExtractFileNameOnly(NewFilename);
   if NewUnitName='' then exit;
-  if Project.IndexOfUnitWithName(NewUnitName,true,AnUnitInfo)>=0 then
+  if Project1.IndexOfUnitWithName(NewUnitName,true,AnUnitInfo)>=0 then
   begin
     Result:=MessageDlg('Unitname already in project',
        'The unit "'+NewUnitName+'" already exists.'#13
@@ -2811,7 +2808,7 @@ begin
       LPIFilename:=ChangeFileExt(AFilename,'.lpi');
       if FileExists(LPIFilename) then begin
         AText:='The file "'+AFilename+'"'#13
-            +'seems to be the program file of an existing lazarus project.'#13
+            +'seems to be the program file of an existing lazarus Project1.'#13
             +'Open project?'#13
             +'Cancel will load the file as normal source.';
         ACaption:='Project info file detected';
@@ -2839,7 +2836,7 @@ begin
   NewUnitInfo:=TUnitInfo.Create(PreReadBuf);
   if FilenameIsPascalUnit(NewUnitInfo.Filename) then
     NewUnitInfo.ReadUnitNameFromSource;
-  Project.AddUnit(NewUnitInfo,false);
+  Project1.AddUnit(NewUnitInfo,false);
   Result:=mrOk;
 end;
 
@@ -2848,14 +2845,14 @@ procedure TMainIDE.DoRestoreBookMarks(AnUnitInfo: TUnitInfo;
 var BookmarkID, i: integer;
 begin
   for BookmarkID:=0 to 9 do begin
-    i:=Project.Bookmarks.IndexOfID(BookmarkID);
-    if (i>=0) and (Project.Bookmarks[i].EditorIndex=AnUnitInfo.EditorIndex)
+    i:=Project1.Bookmarks.IndexOfID(BookmarkID);
+    if (i>=0) and (Project1.Bookmarks[i].EditorIndex=AnUnitInfo.EditorIndex)
     then begin
       ASrcEdit.EditorComponent.SetBookmark(BookmarkID,
-         Project.Bookmarks[i].CursorPos.X,Project.Bookmarks[i].CursorPos.Y);
+         Project1.Bookmarks[i].CursorPos.X,Project1.Bookmarks[i].CursorPos.Y);
       while i>=0 do begin
-        Project.Bookmarks.Delete(i);
-        i:=Project.Bookmarks.IndexOfID(BookmarkID);
+        Project1.Bookmarks.Delete(i);
+        i:=Project1.Bookmarks.IndexOfID(BookmarkID);
       end;
     end;
   end;
@@ -2961,8 +2958,8 @@ procedure TMainIDE.GetMainUnit(var MainUnitInfo: TUnitInfo;
   var MainUnitSrcEdit: TSourceEditor; UpdateModified: boolean);
 begin
   MainUnitSrcEdit:=nil;
-  if Project.MainUnit>=0 then begin
-    MainUnitInfo:=Project.MainUnitInfo;
+  if Project1.MainUnit>=0 then begin
+    MainUnitInfo:=Project1.MainUnitInfo;
     if MainUnitInfo.Loaded then begin
       MainUnitSrcEdit:=SourceNoteBook.FindSourceEditorWithPageIndex(
         MainUnitInfo.EditorIndex);
@@ -2980,9 +2977,9 @@ var i, BookmarkID, BookmarkX, BookmarkY: integer;
   AnUnitInfo: TUnitInfo;
   ASrcEdit: TSourceEditor;
 begin
-  Project.Bookmarks.Clear;
-  for i:=0 to Project.UnitCount-1 do begin
-    AnUnitInfo:=Project.Units[i];
+  Project1.Bookmarks.Clear;
+  for i:=0 to Project1.UnitCount-1 do begin
+    AnUnitInfo:=Project1.Units[i];
     if AnUnitInfo.Loaded then begin
 {$IFDEF IDE_DEBUG}
 writeln('TMainIDE.SaveSourceEditorProjectSpecificSettings AnUnitInfo.Filename=',AnUnitInfo.Filename);
@@ -2994,8 +2991,8 @@ writeln('TMainIDE.SaveSourceEditorProjectSpecificSettings AnUnitInfo.Filename=',
       for BookmarkID:=0 to 9 do begin
         if (ASrcEdit.EditorComponent.GetBookMark(
              BookmarkID,BookmarkX,BookmarkY))
-        and (Project.Bookmarks.IndexOfID(BookmarkID)<0) then begin
-          Project.Bookmarks.Add(TProjectBookmark.Create(BookmarkX,BookmarkY,
+        and (Project1.Bookmarks.IndexOfID(BookmarkID)<0) then begin
+          Project1.Bookmarks.Add(TProjectBookmark.Create(BookmarkX,BookmarkY,
               AnUnitInfo.EditorIndex,BookmarkID));
         end;
       end;
@@ -3013,18 +3010,18 @@ var
   NewBuf: TCodeBuffer;
   OldProjectPath: string;
 begin
-  OldProjectPath:=Project.ProjectDirectory;
+  OldProjectPath:=Project1.ProjectDirectory;
   
   SaveDialog:=TSaveDialog.Create(Application);
   try
-    SaveDialog.Title:='Save Project '+Project.Title+' (*.lpi)';
+    SaveDialog.Title:='Save Project '+Project1.Title+' (*.lpi)';
     
     // build a nice project info filename suggestion
-    NewFilename:=ExtractFileName(Project.ProjectInfoFile);
+    NewFilename:=ExtractFileName(Project1.ProjectInfoFile);
     if NewFilename='' then
-      NewFilename:=ExtractFileName(Project.MainFilename);
+      NewFilename:=ExtractFileName(Project1.MainFilename);
     if NewFilename='' then
-      NewFilename:=Trim(Project.Title);
+      NewFilename:=Trim(Project1.Title);
     if NewFilename='' then
       NewFilename:='project1';
     if ExtractFileExt(NewFilename)='' then
@@ -3079,10 +3076,10 @@ begin
         NewFileName:=ExtractFilePath(NewFilename)
                     +lowercase(ExtractFileName(NewFilename));
 
-      if Project.ProjectType in [ptApplication,ptProgram] then begin
+      if Project1.ProjectType in [ptApplication,ptProgram] then begin
         // check mainunit filename
         NewProgramFilename:=ChangeFileExt(
-          NewFilename,ProjectDefaultExt[Project.ProjectType]);
+          NewFilename,ProjectDefaultExt[Project1.ProjectType]);
         if CompareFilenames(NewFilename,NewProgramFilename)=0 then begin
           ACaption:='Choose a different name';
           AText:='The project info file "'+NewFilename+'"'#13
@@ -3094,12 +3091,12 @@ begin
         // check programname
         NewProgramName:=ExtractFileNameOnly(NewProgramFilename);
         if FilenameIsPascalUnit(NewProgramFilename)
-        and (Project.IndexOfUnitWithName(NewProgramName,true,
-                                       Project.MainUnitInfo)>=0) then
+        and (Project1.IndexOfUnitWithName(NewProgramName,true,
+                                       Project1.MainUnitInfo)>=0) then
         begin
           ACaption:='Unit identifier already exists';
           AText:='A unit with the name "'+NewProgramName+'" already exists'
-              +' in the project.'#13
+              +' in the Project1.'#13
               +'Plz choose different name';
           Result:=MessageDlg(ACaption,AText,mtError,[mbRetry,mbAbort],0);
           if Result=mrAbort then exit;
@@ -3121,7 +3118,7 @@ begin
     AText:='A file "'+NewFilename+'" already exists.'#13'Replace it?';
     Result:=MessageDlg(ACaption, AText, mtConfirmation, [mbOk, mbCancel], 0);
     if Result=mrCancel then exit;
-  end else if Project.ProjectType in [ptProgram, ptApplication] then begin
+  end else if Project1.ProjectType in [ptProgram, ptApplication] then begin
     if FileExists(NewProgramFilename) then begin
       ACaption:='Overwrite file?';
       AText:='A file "'+NewProgramFilename+'" already exists.'#13
@@ -3132,18 +3129,18 @@ begin
   end;
   
   // set new project filename
-  Project.ProjectInfoFile:=NewFilename;
+  Project1.ProjectInfoFile:=NewFilename;
   EnvironmentOptions.AddToRecentProjectFiles(NewFilename);
 
   // set new project directory
-  if OldProjectPath<>Project.ProjectDirectory then begin
+  if OldProjectPath<>Project1.ProjectDirectory then begin
     CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjectDir']:=
-      Project.ProjectDirectory;
+      Project1.ProjectDirectory;
     CodeToolBoss.DefineTree.ClearCache;
   end;
   
   // change main source
-  if (Project.MainUnit>=0) then begin
+  if (Project1.MainUnit>=0) then begin
     GetMainUnit(MainUnitInfo,MainUnitSrcEdit,true);
     
     // switch MainUnitInfo.Source to new code
@@ -3184,10 +3181,10 @@ end;
 function TMainIDE.DoCompleteLoadingProjectInfo: TModalResult;
 begin
   UpdateCaption;
-  EnvironmentOptions.LastSavedProjectFile:=Project.ProjectInfoFile;
+  EnvironmentOptions.LastSavedProjectFile:=Project1.ProjectInfoFile;
   EnvironmentOptions.Save(false);
   Result:=LoadCodeToolsDefines(CodeToolBoss,CodeToolsOpts,
-                               Project.ProjectInfoFile);
+                               Project1.ProjectInfoFile);
 end;
 
 function TMainIDE.DoOpenFileInSourceNoteBook(AnUnitInfo: TUnitInfo;
@@ -3218,7 +3215,7 @@ begin
 
   // update editor indices in project
   if not (ofProjectLoading in Flags) then
-    Project.InsertEditorIndex(SourceNotebook.NoteBook.PageIndex);
+    Project1.InsertEditorIndex(SourceNotebook.NoteBook.PageIndex);
   AnUnitInfo.EditorIndex:=SourceNotebook.NoteBook.PageIndex;
 
   // restore source editor settings
@@ -3254,15 +3251,15 @@ writeln('TMainIDE.DoNewEditorUnit A NewFilename=',NewFilename);
 
   // create source code
   if NewUnitType in [nuForm] then
-    NewUnitInfo.FormName:=Project.NewUniqueFormName(NewUnitType);
+    NewUnitInfo.FormName:=Project1.NewUniqueFormName(NewUnitType);
   NewUnitInfo.CreateStartCode(NewUnitType,NewUnitName);
   
   // add to project
   with NewUnitInfo do begin
     Loaded:=true;
-    IsPartOfProject:=Project.FileIsInProjectDir(NewFilename);
+    IsPartOfProject:=Project1.FileIsInProjectDir(NewFilename);
   end;
-  Project.AddUnit(NewUnitInfo,(NewUnitType in [nuForm, nuUnit])
+  Project1.AddUnit(NewUnitInfo,(NewUnitType in [nuForm, nuUnit])
                               and NewUnitInfo.IsPartOfProject);
   if NewUnitType in [nuForm, nuUnit] then begin
     NewUnitInfo.SyntaxHighlighter:=lshFreePascal;
@@ -3278,7 +3275,7 @@ writeln('TMainIDE.DoNewEditorUnit A NewFilename=',NewFilename);
   SourceNotebook.NewFile(NewUnitInfo.UnitName,NewUnitInfo.Source);
   NewSrcEdit:=SourceNotebook.GetActiveSE;
   NewSrcEdit.SyntaxHighlighterType:=NewUnitInfo.SyntaxHighlighter;
-  Project.InsertEditorIndex(SourceNotebook.NoteBook.PageIndex);
+  Project1.InsertEditorIndex(SourceNotebook.NoteBook.PageIndex);
   NewUnitInfo.EditorIndex:=SourceNotebook.NoteBook.PageIndex;
 
   // show form and select form
@@ -3313,7 +3310,7 @@ writeln('TMainIDE.DoSaveEditorUnit A PageIndex=',PageIndex,' SaveAs=',sfSaveAs i
   
   // if this file is part of the project and the project is virtual then save
   // project first
-  if (not (sfProjectSaving in Flags)) and Project.IsVirtual
+  if (not (sfProjectSaving in Flags)) and Project1.IsVirtual
   and ActiveUnitInfo.IsPartOfProject then
   begin
     Result:=DoSaveProject(Flags*[sfSaveToTestDir]);
@@ -3458,11 +3455,11 @@ writeln('TMainIDE.DoCloseEditorUnit A PageIndex=',PageIndex);
   SourceNoteBook.CloseFile(PageIndex);
   
   // close file in project
-  Project.CloseEditorIndex(ActiveUnitInfo.EditorIndex);
+  Project1.CloseEditorIndex(ActiveUnitInfo.EditorIndex);
   ActiveUnitInfo.Loaded:=false;
-  i:=Project.IndexOf(ActiveUnitInfo);
-  if (i<>Project.MainUnit) and (ActiveUnitInfo.IsVirtual) then begin
-    Project.RemoveUnit(i);
+  i:=Project1.IndexOf(ActiveUnitInfo);
+  if (i<>Project1.MainUnit) and (ActiveUnitInfo.IsVirtual) then begin
+    Project1.RemoveUnit(i);
   end;
   
 writeln('TMainIDE.DoCloseEditorUnit end');
@@ -3485,18 +3482,18 @@ writeln('*** TMainIDE.DoOpenEditorFile START "',AFilename,'"');
   
   // if this is a virtual (new, unsaved) project, the main unit is already
   // loaded and needs only to be shown in the sourceeditor/formeditor
-  if (Project.IsVirtual)
-  and (CompareFilenames(Project.MainFilename,AFilename)=0)
+  if (Project1.IsVirtual)
+  and (CompareFilenames(Project1.MainFilename,AFilename)=0)
   then begin
     Result:=DoOpenMainUnit(ofProjectLoading in Flags);
     exit;
   end;
   
   // check if the project knows this file
-  i:=Project.IndexOfFilename(AFilename);
+  i:=Project1.IndexOfFilename(AFilename);
   ReOpen:=(i>=0);
   if ReOpen then begin
-    NewUnitInfo:=Project.Units[i];
+    NewUnitInfo:=Project1.Units[i];
     if (not (ofProjectLoading in Flags)) and NewUnitInfo.Loaded then begin
       // file already open -> change source notebook page
       SourceNoteBook.NoteBook.PageIndex:=NewUnitInfo.EditorIndex;
@@ -3516,7 +3513,7 @@ writeln('*** TMainIDE.DoOpenEditorFile START "',AFilename,'"');
   if ReOpen then begin
     // project knows this file => all the meta data is known
     // -> just load the source
-    NewUnitInfo:=Project.Units[i];
+    NewUnitInfo:=Project1.Units[i];
     Result:=DoLoadCodeBuffer(NewBuf,AFileName,
                              [lbfCheckIfText,lbfUpdateFromDisk,lbfRevert]);
     if Result<>mrOk then exit;
@@ -3562,8 +3559,8 @@ var MainUnitInfo: TUnitInfo;
 begin
 writeln('[TMainIDE.DoOpenMainUnit] A');
   Result:=mrCancel;
-  if Project.MainUnit<0 then exit;
-  MainUnitInfo:=Project.MainUnitInfo;
+  if Project1.MainUnit<0 then exit;
+  MainUnitInfo:=Project1.MainUnitInfo;
   
   // check if main unit is already loaded in source editor
   if MainUnitInfo.Loaded then begin
@@ -3599,23 +3596,23 @@ Begin
   try
     MainUnitIndex:=-1; // if main unit is also shown, then this is the index of
                        // the main unit
-    for i:=0 to Project.UnitCount-1 do begin
-      if Project.Units[i].IsPartOfProject then begin
+    for i:=0 to Project1.UnitCount-1 do begin
+      if Project1.Units[i].IsPartOfProject then begin
         if OnlyForms then begin
           // add all form names of project
-          if Project.MainUnit=i then MainUnitIndex:=i;
-          if Project.Units[i].FormName<>'' then
+          if Project1.MainUnit=i then MainUnitIndex:=i;
+          if Project1.Units[i].FormName<>'' then
             UnitList.Add(TViewUnitsEntry.Create(
-              Project.Units[i].FormName,i,Project.Units[i]=ActiveUnitInfo));
+              Project1.Units[i].FormName,i,Project1.Units[i]=ActiveUnitInfo));
         end else begin
           // add all unit names of project
-          if (Project.Units[i].UnitName<>'') then begin
-            if Project.MainUnit=i then MainUnitIndex:=i;
+          if (Project1.Units[i].UnitName<>'') then begin
+            if Project1.MainUnit=i then MainUnitIndex:=i;
             UnitList.Add(TViewUnitsEntry.Create(
-              Project.Units[i].UnitName,i,Project.Units[i]=ActiveUnitInfo));
-          end else if Project.MainUnit=i then begin
-            MainUnitInfo:=Project.MainUnitInfo;
-            if Project.ProjectType in [ptProgram,ptApplication,ptCustomProgram]
+              Project1.Units[i].UnitName,i,Project1.Units[i]=ActiveUnitInfo));
+          end else if Project1.MainUnit=i then begin
+            MainUnitInfo:=Project1.MainUnitInfo;
+            if Project1.ProjectType in [ptProgram,ptApplication,ptCustomProgram]
             then begin
               if (MainUnitInfo.Loaded) then
                 MainUnitName:=SourceNoteBook.NoteBook.Pages[
@@ -3646,7 +3643,7 @@ Begin
       AnUnitInfo:=nil;
       for i:=0 to UnitList.Count-1 do begin
         if TViewUnitsEntry(UnitList[i]).Selected then begin
-          AnUnitInfo:=Project.Units[TViewUnitsEntry(UnitList[i]).ID];
+          AnUnitInfo:=Project1.Units[TViewUnitsEntry(UnitList[i]).ID];
           if AnUnitInfo.Loaded then begin
             SourceNoteBook.NoteBook.PageIndex:=AnUnitInfo.EditorIndex;
           end else begin
@@ -3781,7 +3778,7 @@ writeln('TMainIDE.DoNewProject A');
   Result:=mrCancel;
 
   // close current project first
-  If Project<>nil then begin
+  If Project1<>nil then begin
     if SomethingOfProjectIsModified then begin
         if MessageDlg('Project changed', 'Save changes to project?', 
           mtconfirmation, [mbyes, mbno], 0)=mryes then begin
@@ -3804,10 +3801,10 @@ writeln('TMainIDE.DoNewProject A');
     VirtualDirectory;
 
   // create new project (TProject will automatically create the mainunit)
-  Project:=TProject.Create(NewProjectType);
-  Project.OnFileBackup:=@DoBackupFile;
-  Project.Title := 'project1';
-  Project.CompilerOptions.CompilerPath:='$(CompPath)';
+  Project1:=TProject.Create(NewProjectType);
+  Project1.OnFileBackup:=@DoBackupFile;
+  Project1.Title := 'project1';
+  Project1.CompilerOptions.CompilerPath:='$(CompPath)';
   UpdateCaption;
 
   // set the project type specific things
@@ -3817,12 +3814,12 @@ writeln('TMainIDE.DoNewProject A');
   ptApplication:
     begin
       // add lcl ppu dirs to unit search path
-      Project.CompilerOptions.OtherUnitFiles:=
+      Project1.CompilerOptions.OtherUnitFiles:=
         '$(LazarusDir)'+ds+'lcl'+ds+'units'
        +';'+
         '$(LazarusDir)'+ds+'lcl'+ds+'units'+ds+'$(LCLWidgetType)';
       // add lcl pp/pas dirs to source search path
-      Project.SrcPath:=
+      Project1.SrcPath:=
         '$(LazarusDir)'+ds+'lcl'
        +';'+
         '$(LazarusDir)'+ds+'lcl'+ds+'interfaces'+ds+'$(LCLWidgetType)';
@@ -3841,12 +3838,12 @@ writeln('TMainIDE.DoNewProject A');
   // rebuild codetools defines
   // (i.e. remove old project specific things and create new)
   Result:=LoadCodeToolsDefines(CodeToolBoss,CodeToolsOpts,'');
-  CreateProjectDefineTemplate(Project.CompilerOptions,Project.SrcPath);
+  CreateProjectDefineTemplate(Project1.CompilerOptions,Project1.SrcPath);
  
   // set all modified to false
-  for i:=0 to Project.UnitCount-1 do
-    Project.Units[i].Modified:=false;
-  Project.Modified:=false;
+  for i:=0 to Project1.UnitCount-1 do
+    Project1.Units[i].Modified:=false;
+  Project1.Modified:=false;
 
 writeln('TMainIDE.DoNewProject end ',CodeToolBoss.ConsistencyCheck);
   Result:=mrOk;
@@ -3866,19 +3863,19 @@ writeln('TMainIDE.DoSaveProject A SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',s
 
   // check that all new units are saved first to get valid filenames
   // (this can alter the mainunit: e.g. used unit names)
-  for i:=0 to Project.UnitCount-1 do begin
-    if (Project.Units[i].Loaded) and (Project.Units[i].IsVirtual)
-    and (Project.MainUnit<>i) then begin
-      Result:=DoSaveEditorUnit(Project.Units[i].EditorIndex,
+  for i:=0 to Project1.UnitCount-1 do begin
+    if (Project1.Units[i].Loaded) and (Project1.Units[i].IsVirtual)
+    and (Project1.MainUnit<>i) then begin
+      Result:=DoSaveEditorUnit(Project1.Units[i].EditorIndex,
            [sfSaveAs,sfProjectSaving]+[sfSaveToTestDir]*Flags);
       if (Result=mrAbort) or (Result=mrCancel) then exit;
     end;
   end;
 
   if SourceNotebook.Notebook=nil then
-    Project.ActiveEditorIndexAtStart:=-1
+    Project1.ActiveEditorIndexAtStart:=-1
   else
-    Project.ActiveEditorIndexAtStart:=SourceNotebook.Notebook.PageIndex;
+    Project1.ActiveEditorIndexAtStart:=SourceNotebook.Notebook.PageIndex;
 
   // find mainunit
   GetMainUnit(MainUnitInfo,MainUnitSrcEdit,true);
@@ -3886,7 +3883,7 @@ writeln('TMainIDE.DoSaveProject A SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',s
   // save project specific settings of the source editor
   SaveSourceEditorProjectSpecificSettings;
 
-  if Project.IsVirtual then Include(Flags,sfSaveAs);
+  if Project1.IsVirtual then Include(Flags,sfSaveAs);
   if ([sfSaveAs,sfSaveToTestDir]*Flags=[sfSaveAs]) then begin
     // let user choose a filename
     Result:=DoShowSaveProjectAsDialog;
@@ -3895,14 +3892,14 @@ writeln('TMainIDE.DoSaveProject A SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',s
   
   // save project info file
   if not (sfSaveToTestDir in Flags) then begin
-    Result:=Project.WriteProject;
+    Result:=Project1.WriteProject;
     if Result=mrAbort then exit;
-    EnvironmentOptions.LastSavedProjectFile:=Project.ProjectInfoFile;
+    EnvironmentOptions.LastSavedProjectFile:=Project1.ProjectInfoFile;
     EnvironmentOptions.Save(false);
     SaveIncludeLinks;
     UpdateCaption;
     Result:=SaveProjectSpecificCodeToolsDefines(CodeToolBoss,
-                                                Project.ProjectInfoFile);
+                                                Project1.ProjectInfoFile);
     if Result=mrAbort then exit;
   end;
   
@@ -3937,8 +3934,8 @@ writeln('TMainIDE.DoSaveProject A SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',s
   if (SourceNoteBook.Notebook<>nil) and (not (sfSaveToTestDir in Flags)) then
   begin
     for i:=0 to SourceNoteBook.Notebook.Pages.Count-1 do begin
-      if (Project.MainUnit<0)
-      or (Project.MainUnitInfo.EditorIndex<>i) then begin
+      if (Project1.MainUnit<0)
+      or (Project1.MainUnitInfo.EditorIndex<>i) then begin
         Result:=DoSaveEditorUnit(i,[sfProjectSaving]+[sfSaveToTestDir]*Flags);
         if Result=mrAbort then exit;
       end;
@@ -3958,8 +3955,7 @@ writeln('TMainIDE.DoCloseProject A');
   end;
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
   // close Project
-  Project.Free;
-  Project:=nil;
+  FreeThenNil(Project1);
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
   Result:=mrOk;
 writeln('TMainIDE.DoCloseProject end ',CodeToolBoss.ConsistencyCheck);
@@ -4019,22 +4015,22 @@ writeln('TMainIDE.DoOpenProjectFile A "'+AFileName+'"');
   // create a new project
 writeln('TMainIDE.DoOpenProjectFile B');
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
-  Project:=TProject.Create(ptProgram);
-  Project.OnFileBackup:=@DoBackupFile;
+  Project1:=TProject.Create(ptProgram);
+  Project1.OnFileBackup:=@DoBackupFile;
 
   // read project info file
-  Project.ReadProject(AFilename);
+  Project1.ReadProject(AFilename);
   Result:=DoCompleteLoadingProjectInfo;
   if Result<>mrOk then exit;
 
   
-  if Project.MainUnit>=0 then begin
+  if Project1.MainUnit>=0 then begin
     // read MainUnit Source
-    Result:=DoLoadCodeBuffer(NewBuf,Project.MainFilename,
+    Result:=DoLoadCodeBuffer(NewBuf,Project1.MainFilename,
                              [lbfUpdateFromDisk,lbfRevert,lbfCheckIfText]);
     if Result=mrIgnore then Result:=mrAbort;
     if Result=mrAbort then exit;
-    Project.MainUnitInfo.Source:=NewBuf;
+    Project1.MainUnitInfo.Source:=NewBuf;
   end;
 {$IFDEF IDE_DEBUG}
 writeln('TMainIDE.DoOpenProjectFile C');
@@ -4048,44 +4044,44 @@ writeln('TMainIDE.DoOpenProjectFile C');
     // of all not opened units
     LowestUnitIndex:=-1;
     LowestEditorIndex:=-1;
-    for i:=0 to Project.UnitCount-1 do begin
-      if (Project.Units[i].Loaded) then begin
-        if (Project.Units[i].EditorIndex>LastEditorIndex)
-        and ((Project.Units[i].EditorIndex<LowestEditorIndex)
+    for i:=0 to Project1.UnitCount-1 do begin
+      if (Project1.Units[i].Loaded) then begin
+        if (Project1.Units[i].EditorIndex>LastEditorIndex)
+        and ((Project1.Units[i].EditorIndex<LowestEditorIndex)
              or (LowestEditorIndex<0)) then
         begin
-          LowestEditorIndex:=Project.Units[i].EditorIndex;
+          LowestEditorIndex:=Project1.Units[i].EditorIndex;
           LowestUnitIndex:=i;
         end;
       end;
     end;
     if LowestEditorIndex>=0 then begin
       // reopen file
-      Result:=DoOpenEditorFile(Project.Units[LowestUnitIndex].Filename,
+      Result:=DoOpenEditorFile(Project1.Units[LowestUnitIndex].Filename,
                     [ofProjectLoading,ofOnlyIfExists]);
       if Result=mrAbort then begin
         // mark all files, that are left to load as unloaded:
-        for i:=0 to Project.UnitCount-1 do begin
-          if Project.Units[i].Loaded 
-          and (Project.Units[i].EditorIndex>LastEditorIndex) then begin
-            Project.Units[i].Loaded:=false;
-            Project.Units[i].EditorIndex:=-1;
-            Project.ActiveEditorIndexAtStart:=-1;
+        for i:=0 to Project1.UnitCount-1 do begin
+          if Project1.Units[i].Loaded
+          and (Project1.Units[i].EditorIndex>LastEditorIndex) then begin
+            Project1.Units[i].Loaded:=false;
+            Project1.Units[i].EditorIndex:=-1;
+            Project1.ActiveEditorIndexAtStart:=-1;
           end;
         end;
         exit;
       end;
       if Result=mrOk then begin
         // open successful
-        if Project.ActiveEditorIndexAtStart=LowestEditorIndex then
-          Project.ActiveEditorIndexAtStart:=SourceNoteBook.NoteBook.PageIndex;
+        if Project1.ActiveEditorIndexAtStart=LowestEditorIndex then
+          Project1.ActiveEditorIndexAtStart:=SourceNoteBook.NoteBook.PageIndex;
         LastEditorIndex:=LowestEditorIndex;
       end else begin
         // open failed -> ignore this unit
-        Project.Units[LowestUnitIndex].EditorIndex:=-1;
-        Project.Units[LowestUnitIndex].Loaded:=false;
-        if Project.ActiveEditorIndexAtStart=LowestEditorIndex then
-          Project.ActiveEditorIndexAtStart:=-1;
+        Project1.Units[LowestUnitIndex].EditorIndex:=-1;
+        Project1.Units[LowestUnitIndex].Loaded:=false;
+        if Project1.ActiveEditorIndexAtStart=LowestEditorIndex then
+          Project1.ActiveEditorIndexAtStart:=-1;
       end;
     end;
   until LowestEditorIndex<0;
@@ -4095,10 +4091,10 @@ writeln('TMainIDE.DoOpenProjectFile D');
 {$ENDIF}
 
   // set active editor source editor
-  if (SourceNoteBook.NoteBook<>nil) and (Project.ActiveEditorIndexAtStart>=0)
-  and (Project.ActiveEditorIndexAtStart<SourceNoteBook.NoteBook.Pages.Count)
+  if (SourceNoteBook.NoteBook<>nil) and (Project1.ActiveEditorIndexAtStart>=0)
+  and (Project1.ActiveEditorIndexAtStart<SourceNoteBook.NoteBook.Pages.Count)
   then
-    SourceNoteBook.Notebook.PageIndex:=Project.ActiveEditorIndexAtStart;
+    SourceNoteBook.Notebook.PageIndex:=Project1.ActiveEditorIndexAtStart;
     
   // select a form (object inspector, formeditor, control selection)
   if FLastFormActivated<>nil then begin
@@ -4108,10 +4104,10 @@ writeln('TMainIDE.DoOpenProjectFile D');
   end;
 
   // set all modified to false
-  for i:=0 to Project.UnitCount-1 do begin
-    Project.Units[i].Modified:=false;
+  for i:=0 to Project1.UnitCount-1 do begin
+    Project1.Units[i].Modified:=false;
   end;
-  Project.Modified:=false;
+  Project1.Modified:=false;
   
   Result:=mrOk;
 writeln('TMainIDE.DoOpenProjectFile end  CodeToolBoss.ConsistencyCheck=',CodeToolBoss.ConsistencyCheck);
@@ -4141,7 +4137,7 @@ writeln('[TMainIDE.DoCreateProjectForProgram] A ',ProgramBuf.Filename);
   if ChooseNewProject(NewProjectType)=mrCancel then exit;
 
   // close old project
-  If Project<>nil then begin
+  If Project1<>nil then begin
     if DoCloseProject=mrAbort then begin
       Result:=mrAbort;
       exit;
@@ -4149,17 +4145,17 @@ writeln('[TMainIDE.DoCreateProjectForProgram] A ',ProgramBuf.Filename);
   end;
 
   // create a new project
-  Project:=TProject.Create(NewProjectType);
-  Project.OnFileBackup:=@DoBackupFile;
-  MainUnitInfo:=Project.MainUnitInfo;
+  Project1:=TProject.Create(NewProjectType);
+  Project1.OnFileBackup:=@DoBackupFile;
+  MainUnitInfo:=Project1.MainUnitInfo;
   MainUnitInfo.Source:=ProgramBuf;
-  Project.ProjectInfoFile:=ChangeFileExt(ProgramBuf.Filename,'.lpi');
-  Project.CompilerOptions.CompilerPath:='$(CompPath)';
+  Project1.ProjectInfoFile:=ChangeFileExt(ProgramBuf.Filename,'.lpi');
+  Project1.CompilerOptions.CompilerPath:='$(CompPath)';
   UpdateCaption;
 
   // set project type specific things
   if NewProjectType=ptApplication then begin
-    Project.CompilerOptions.OtherUnitFiles:=
+    Project1.CompilerOptions.OtherUnitFiles:=
        '$(LazarusDir)'+PathDelim+'lcl'+PathDelim+'units'
       +';'+
        '$(LazarusDir)'+PathDelim+'lcl'+PathDelim+'units'
@@ -4169,7 +4165,7 @@ writeln('[TMainIDE.DoCreateProjectForProgram] A ',ProgramBuf.Filename);
   
   // rebuild project specific codetools defines
   Result:=LoadCodeToolsDefines(CodeToolBoss,CodeToolsOpts,
-                               Project.ProjectInfoFile);
+                               Project1.ProjectInfoFile);
   if Result<>mrOk then exit;
 
   // show program unit
@@ -4195,27 +4191,27 @@ begin
       else
         s:='"'+SourceNotebook.Notebook.Pages[SourceNotebook.Notebook.PageIndex]
           +'"';
-      if (Project.ProjectType in [ptProgram, ptApplication])
+      if (Project1.ProjectType in [ptProgram, ptApplication])
       and (ActiveUnitInfo.UnitName<>'')
-      and (Project.IndexOfUnitWithName(ActiveUnitInfo.UnitName,
+      and (Project1.IndexOfUnitWithName(ActiveUnitInfo.UnitName,
           true,ActiveUnitInfo)>=0) then
       begin
         MessageDlg('Unable to add '+s+' to project, because there is already a '
-           +'unit with the same name in the project.',mtInformation,[mbOk],0);
+           +'unit with the same name in the Project1.',mtInformation,[mbOk],0);
       end else begin
         if MessageDlg('Add '+s+' to project?',mtConfirmation,[mbOk,mbCancel],0)
           =mrOk then
         begin
           ActiveUnitInfo.IsPartOfProject:=true;
           if (ActiveUnitInfo.UnitName<>'')
-          and (Project.ProjectType in [ptProgram, ptApplication]) then begin
+          and (Project1.ProjectType in [ptProgram, ptApplication]) then begin
             ShortUnitName:=CodeToolBoss.GetSourceName(ActiveUnitInfo.Source);
             if ShortUnitName='' then ShortUnitName:=ActiveUnitInfo.UnitName;
             if (ShortUnitName<>'') then
               CodeToolBoss.AddUnitToMainUsesSection(
-                 Project.MainUnitInfo.Source,ShortUnitName,'');
+                 Project1.MainUnitInfo.Source,ShortUnitName,'');
           end;
-          Project.Modified:=true;
+          Project1.Modified:=true;
         end;
       end;
     end else begin
@@ -4225,7 +4221,7 @@ begin
         s:='The file "'
           +SourceNotebook.Notebook.Pages[SourceNotebook.Notebook.PageIndex]
           +'"';
-      s:=s+' is already part of the project.';
+      s:=s+' is already part of the Project1.';
       MessageDlg(s,mtInformation,[mbOk],0);
     end;
   end else begin
@@ -4241,9 +4237,9 @@ var UnitList: TList;
 Begin
   UnitList:=TList.Create;
   try
-    for i:=0 to Project.UnitCount-1 do begin
-      AnUnitInfo:=Project.Units[i];
-      if (AnUnitInfo.IsPartOfProject) and (i<>Project.MainUnit) then begin
+    for i:=0 to Project1.UnitCount-1 do begin
+      AnUnitInfo:=Project1.Units[i];
+      if (AnUnitInfo.IsPartOfProject) and (i<>Project1.MainUnit) then begin
         AName:=AnUnitInfo.FileName;
         if (AnUnitInfo.IsVirtual) and (AnUnitInfo.Loaded) then begin
           AName:=SourceNotebook.NoteBook.Pages[AnUnitInfo.EditorIndex];
@@ -4255,15 +4251,15 @@ Begin
     if ShowViewUnitsDlg(UnitList,true,'Remove from project')=mrOk then begin
       for i:=0 to UnitList.Count-1 do begin
         if TViewUnitsEntry(UnitList[i]).Selected then begin
-          AnUnitInfo:=Project.Units[TViewUnitsEntry(UnitList[i]).ID];
+          AnUnitInfo:=Project1.Units[TViewUnitsEntry(UnitList[i]).ID];
           AnUnitInfo.IsPartOfProject:=false;
-          if (Project.MainUnit>=0)
-          and (Project.ProjectType in [ptProgram, ptApplication]) then begin
+          if (Project1.MainUnit>=0)
+          and (Project1.ProjectType in [ptProgram, ptApplication]) then begin
             if (AnUnitInfo.UnitName<>'') then
               CodeToolBoss.RemoveUnitFromAllUsesSections(
-                Project.MainUnitInfo.Source,AnUnitInfo.UnitName);
+                Project1.MainUnitInfo.Source,AnUnitInfo.UnitName);
             if (AnUnitInfo.FormName<>'') then
-              Project.RemoveCreateFormFromProjectFile(
+              Project1.RemoveCreateFormFromProjectFile(
                   'T'+AnUnitInfo.FormName,AnUnitInfo.FormName);
           end;
         end;
@@ -4308,26 +4304,26 @@ begin
     Result:=mrAbort;
     exit;
   end;
-  if Project=nil then Begin
+  if Project1=nil then Begin
     MessageDlg('Create a project first!',mterror,[mbok],0);
     Exit;
   end;
   try
     // check for a main file to compile
-    if Project.MainFilename='' then exit;
+    if Project1.MainFilename='' then exit;
     
     // save all files
-    if not Project.IsVirtual then
+    if not Project1.IsVirtual then
       Result:=DoSaveAll
     else
       Result:=DoSaveProjectToTestDirectory;
     if Result<>mrOk then exit;
     
     // get main source filename
-    if not Project.IsVirtual then
+    if not Project1.IsVirtual then
       DefaultFilename:=''
     else
-      DefaultFilename:=GetTestUnitFilename(Project.MainUnitInfo);
+      DefaultFilename:=GetTestUnitFilename(Project1.MainUnitInfo);
 
     // clear old error lines
     SourceNotebook.ClearErrorLines;
@@ -4341,10 +4337,10 @@ begin
    
     // compile
     TheOutputFilter.OnOutputString:=@MessagesView.Add;
-    Result:=TheCompiler.Compile(Project,BuildAll,DefaultFilename);
+    Result:=TheCompiler.Compile(Project1,BuildAll,DefaultFilename);
     if Result=mrOk then begin
       MessagesView.MessageView.Items.Add(
-        'Project "'+Project.Title+'" successfully built. :)');
+        'Project "'+Project1.Title+'" successfully built. :)');
     end else begin
       DoJumpToCompilerMessage(-1,true);
     end;
@@ -4368,8 +4364,8 @@ begin
   Result := mrCancel;
 
   // Check if we can run this project
-  if not (Project.ProjectType in [ptProgram, ptApplication, ptCustomProgram])
-  or (Project.MainUnit < 0) 
+  if not (Project1.ProjectType in [ptProgram, ptApplication, ptCustomProgram])
+  or (Project1.MainUnit < 0)
   or (ToolStatus <> itNone)
   then Exit;
 
@@ -4406,7 +4402,7 @@ begin
       FRunProcess := TProcess.Create(nil);
       FRunProcess.CommandLine := LaunchingCmdLine;
       FRunProcess.CurrentDirectory:=
-                                   Project.RunParameterOptions.WorkingDirectory;
+                                   Project1.RunParameterOptions.WorkingDirectory;
       FRunProcess.Options:= [poNoConsole];
       FRunProcess.ShowWindow := swoNone;
     except
@@ -4462,8 +4458,8 @@ end;
 
 function TMainIDE.SomethingOfProjectIsModified: boolean;
 begin
-  Result:=(Project<>nil) 
-      and (Project.SomethingModified or SourceNotebook.SomethingModified);
+  Result:=(Project1<>nil)
+      and (Project1.SomethingModified or SourceNotebook.SomethingModified);
 end;
 
 function TMainIDE.DoSaveAll: TModalResult;
@@ -4534,7 +4530,7 @@ begin
     if ActiveSourceEditor=nil then
       ActiveUnitInfo:=nil
     else 
-      ActiveUnitInfo:=Project.UnitWithEditorIndex(PageIndex);
+      ActiveUnitInfo:=Project1.UnitWithEditorIndex(PageIndex);
   end;
 end;
 
@@ -4775,11 +4771,11 @@ procedure TMainIDE.UpdateCaption;
 var NewCaption:string;
 begin
   NewCaption := 'Lazarus Editor v'+Version_String;
-  if Project<>nil then begin
-    if Project.Title<>'' then
-      NewCaption:=NewCaption +' - '+Project.Title
-    else if Project.ProjectInfoFile<>'' then
-      NewCaption:=NewCaption+' - '+ExtractFileName(Project.ProjectInfoFile)
+  if Project1<>nil then begin
+    if Project1.Title<>'' then
+      NewCaption:=NewCaption +' - '+Project1.Title
+    else if Project1.ProjectInfoFile<>'' then
+      NewCaption:=NewCaption+' - '+ExtractFileName(Project1.ProjectInfoFile)
     else
       NewCaption:=NewCaption+' - (new project)'
   end;
@@ -4795,7 +4791,7 @@ begin
     if SourceNoteBook.NoteBook<>nil then begin
       AForm:=SourceNotebook;
       if FLastFormActivated<>nil then begin
-        ActiveUnitInfo := Project.UnitWithForm(FLastFormActivated);
+        ActiveUnitInfo := Project1.UnitWithForm(FLastFormActivated);
         if (ActiveUnitInfo <> nil) and (ActiveUnitInfo.EditorIndex>=0) then
         begin
           SourceNotebook.Notebook.PageIndex := ActiveUnitInfo.EditorIndex;
@@ -4806,7 +4802,7 @@ begin
   else
   begin
     if (SourceNoteBook.NoteBook<>nil) then begin
-      ActiveUnitInfo:=Project.UnitWithEditorIndex(
+      ActiveUnitInfo:=Project1.UnitWithEditorIndex(
         SourceNoteBook.NoteBook.PageIndex);
       if (ActiveUnitInfo<>nil) then
         AForm:=TCustomForm(ActiveUnitInfo.Form);
@@ -4841,7 +4837,7 @@ begin
   end else if MacroName='edfile' then begin
     Handled:=true;
     if SourceNoteBook.NoteBook<>nil then
-      s:=Project.UnitWithEditorIndex(SourceNoteBook.NoteBook.PageIndex).Filename
+      s:=Project1.UnitWithEditorIndex(SourceNoteBook.NoteBook.PageIndex).Filename
     else
       s:='';
   end else if MacroName='col' then begin
@@ -4854,10 +4850,10 @@ begin
       s:=IntToStr(SourceNoteBook.GetActiveSE.EditorComponent.CaretY);
   end else if MacroName='projfile' then begin
     Handled:=true;
-    s:=Project.MainFilename;
+    s:=Project1.MainFilename;
   end else if MacroName='projpath' then begin
     Handled:=true;
-    s:=Project.ProjectDirectory;
+    s:=Project1.ProjectDirectory;
   end else if MacroName='curtoken' then begin
     Handled:=true;
     if SourceNoteBook.NoteBook<>nil then
@@ -4869,7 +4865,7 @@ begin
     if s='' then s:=ExtractFilePath(ParamStr(0));
   end else if MacroName='lclwidgettype' then begin
     Handled:=true;
-    s:=Project.CompilerOptions.LCLWidgetType;
+    s:=Project1.CompilerOptions.LCLWidgetType;
     if s='' then s:='gtk';
   end else if MacroName='fpcsrcdir' then begin
     Handled:=true;
@@ -4879,13 +4875,13 @@ begin
     s:=EnvironmentOptions.CompilerFilename;
   end else if MacroName='params' then begin
     Handled:=true;
-    s:=Project.RunParameterOptions.CmdLineParams;
+    s:=Project1.RunParameterOptions.CmdLineParams;
   end else if MacroName='targetfile' then begin
     Handled:=true;
     s:=GetProjectTargetFilename;
   end else if MacroName='targetcmdline' then begin
     Handled:=true;
-    s:=Project.RunParameterOptions.CmdLineParams;
+    s:=Project1.RunParameterOptions.CmdLineParams;
     if s='' then
       s:=GetProjectTargetFilename
     else
@@ -5011,15 +5007,15 @@ end;
 function TMainIDE.GetProjectTargetFilename: string;
 begin
   Result:='';
-  if Project=nil then exit;
-  Result:=Project.RunParameterOptions.HostApplicationFilename;
+  if Project1=nil then exit;
+  Result:=Project1.RunParameterOptions.HostApplicationFilename;
   if Result='' then begin
-    if Project.IsVirtual then
+    if Project1.IsVirtual then
       Result:=GetTestProjectFilename
     else begin
-      if Project.MainUnit>=0 then begin
+      if Project1.MainUnit>=0 then begin
         Result:=
-          Project.CompilerOptions.CreateTargetFilename(Project.MainFilename)
+          Project1.CompilerOptions.CreateTargetFilename(Project1.MainFilename)
       end;
     end;
   end;
@@ -5028,10 +5024,10 @@ end;
 function TMainIDE.GetTestProjectFilename: string;
 begin
   Result:='';
-  if (Project.MainUnit<0) then exit;
-  Result:=GetTestUnitFilename(Project.MainUnitInfo);
+  if (Project1.MainUnit<0) then exit;
+  Result:=GetTestUnitFilename(Project1.MainUnitInfo);
   if Result='' then exit;
-  Result:=Project.CompilerOptions.CreateTargetFilename(Result);
+  Result:=Project1.CompilerOptions.CreateTargetFilename(Result);
 end;
 
 function TMainIDE.GetTestUnitFilename(AnUnitInfo: TUnitInfo): string;
@@ -5050,13 +5046,13 @@ end;
 
 function TMainIDE.GetRunCommandLine: string;
 begin     
-  if Project.RunParameterOptions.UseLaunchingApplication
-  then Result := Project.RunParameterOptions.LaunchingApplicationPathPlusParams
+  if Project1.RunParameterOptions.UseLaunchingApplication
+  then Result := Project1.RunParameterOptions.LaunchingApplicationPathPlusParams
   else Result := '';
   
   if Result='' 
   then begin
-    Result:=Project.RunParameterOptions.CmdLineParams;
+    Result:=Project1.RunParameterOptions.CmdLineParams;
     if MacroList.SubstituteStr(Result) then begin
       if Result='' then
         Result:=GetProjectTargetFilename
@@ -5073,7 +5069,7 @@ function TMainIDE.FindUnitFile(const AFilename: string): string;
 var 
   SearchPath, ProjectDir: string;
 begin
-  ProjectDir:=Project.ProjectDirectory;
+  ProjectDir:=Project1.ProjectDirectory;
   SearchPath:=CodeToolBoss.DefineTree.GetSrcPathForDirectory(ProjectDir);
   Result:=SearchFileInPath(AFilename,ProjectDir,SearchPath,';');
 end;
@@ -5120,17 +5116,17 @@ begin
     halt;
   end;
   // find source for form
-  i:=Project.UnitCount-1;
+  i:=Project1.UnitCount-1;
   while (i>=0) do begin
-    if (Project.Units[i].Loaded) 
-    and (Project.Units[i].Form=ActiveForm) then break;
+    if (Project1.Units[i].Loaded)
+    and (Project1.Units[i].Form=ActiveForm) then break;
     dec(i);
   end;
   if i<0 then begin
     writeln('[TMainIDE.OnDesignerAddComponent] Error: form without source');
     halt;
   end;
-  ActiveUnitInfo:=Project.Units[i];
+  ActiveUnitInfo:=Project1.Units[i];
   // add needed unit to source
   CodeToolBoss.AddUnitToMainUsesSection(ActiveUnitInfo.Source,
             ComponentClass.UnitName,'');
@@ -5158,17 +5154,17 @@ begin
     halt;
   end;
   // find source for form
-  i:=Project.UnitCount-1;
+  i:=Project1.UnitCount-1;
   while (i>=0) do begin
-    if (Project.Units[i].Loaded) 
-    and (Project.Units[i].Form=ActiveForm) then break;
+    if (Project1.Units[i].Loaded)
+    and (Project1.Units[i].Form=ActiveForm) then break;
     dec(i);
   end;
   if i<0 then begin
     writeln('[TMainIDE.OnDesignerAddComponent] Error: form without source');
     halt;
   end;
-  ActiveUnitInfo:=Project.Units[i];
+  ActiveUnitInfo:=Project1.Units[i];
   // remove component definition to form source
   FormClassName:=ActiveForm.ClassName;
   CodeToolBoss.RemovePublishedVariable(ActiveUnitInfo.Source,FormClassName,
@@ -5178,12 +5174,12 @@ end;
 procedure TMainIDE.OnDesignerModified(Sender: TObject);
 var i: integer;
 begin
-  i:=Project.IndexOfUnitWithForm(TDesigner(Sender).Form,false);
+  i:=Project1.IndexOfUnitWithForm(TDesigner(Sender).Form,false);
   if i>=0 then begin
-    Project.Units[i].Modified:=true;
-    if Project.Units[i].Loaded then
+    Project1.Units[i].Modified:=true;
+    if Project1.Units[i].Loaded then
       SourceNotebook.FindSourceEditorWithPageIndex(
-        Project.Units[i].EditorIndex).EditorComponent.Modified:=true;
+        Project1.Units[i].EditorIndex).EditorComponent.Modified:=true;
   end;
 end;
 
@@ -5336,8 +5332,8 @@ var i: integer;
   CurUnitInfo: TUnitInfo;
   SrcEdit: TSourceEditor;
 begin
-  for i:=0 to Project.UnitCount-1 do begin
-    CurUnitInfo:=Project.Units[i];
+  for i:=0 to Project1.UnitCount-1 do begin
+    CurUnitInfo:=Project1.Units[i];
     if CurUnitInfo.EditorIndex>=0 then begin
       SrcEdit:=SourceNotebook.FindSourceEditorWithPageIndex(
         CurUnitInfo.EditorIndex);
@@ -5439,7 +5435,7 @@ begin
   DoArrangeSourceEditorAndMessageView;
   MessagesView.AddSeparator;
   if CodeToolBoss.ErrorCode<>nil then begin
-    MessagesView.Add(Project.RemoveProjectPathFromFilename(
+    MessagesView.Add(Project1.RemoveProjectPathFromFilename(
        CodeToolBoss.ErrorCode.Filename)
       +'('+IntToStr(CodeToolBoss.ErrorLine)
       +','+IntToStr(CodeToolBoss.ErrorColumn)
@@ -5618,7 +5614,7 @@ begin
   if SourceNotebook.Notebook = nil then Exit;
   
   ActiveUnitInfo :=
-    Project.UnitWithEditorIndex(SourceNotebook.Notebook.Pageindex);
+    Project1.UnitWithEditorIndex(SourceNotebook.Notebook.Pageindex);
   if ActiveUnitInfo = nil then Exit;
 
   SaveSpeedBtn.Enabled := SourceNotebook.GetActiveSe.MOdified;
@@ -5642,23 +5638,23 @@ var
   ActiveUnitInfo: TUnitInfo;
   NewJumpPoint: TProjectJumpHistoryPosition;
 begin
-//writeln('[TMainIDE.OnSrcNoteBookAddJumpPoint] A Line=',ACaretXY.Y,',DeleteForwardHistory=',DeleteForwardHistory,' Count=',Project.JumpHistory.Count,',HistoryIndex=',Project.JumpHistory.HistoryIndex);
-  ActiveUnitInfo:=Project.UnitWithEditorIndex(APageIndex);
+//writeln('[TMainIDE.OnSrcNoteBookAddJumpPoint] A Line=',ACaretXY.Y,',DeleteForwardHistory=',DeleteForwardHistory,' Count=',Project1.JumpHistory.Count,',HistoryIndex=',Project1.JumpHistory.HistoryIndex);
+  ActiveUnitInfo:=Project1.UnitWithEditorIndex(APageIndex);
   if (ActiveUnitInfo=nil) then exit;
   NewJumpPoint:=TProjectJumpHistoryPosition.Create(ActiveUnitInfo.Filename,
     ACaretXY,ATopLine);
-  if DeleteForwardHistory then Project.JumpHistory.DeleteForwardHistory;
-  Project.JumpHistory.InsertSmart(Project.JumpHistory.HistoryIndex+1,
+  if DeleteForwardHistory then Project1.JumpHistory.DeleteForwardHistory;
+  Project1.JumpHistory.InsertSmart(Project1.JumpHistory.HistoryIndex+1,
     NewJumpPoint);
-  if Project.JumpHistory.HistoryIndex=Project.JumpHistory.Count-2 then
-    Project.JumpHistory.HistoryIndex:=Project.JumpHistory.Count-1;
-//writeln('[TMainIDE.OnSrcNoteBookAddJumpPoint] END Line=',ACaretXY.Y,',DeleteForwardHistory=',DeleteForwardHistory,' Count=',Project.JumpHistory.Count,',HistoryIndex=',Project.JumpHistory.HistoryIndex);
-//Project.JumpHistory.WriteDebugReport;
+  if Project1.JumpHistory.HistoryIndex=Project1.JumpHistory.Count-2 then
+    Project1.JumpHistory.HistoryIndex:=Project1.JumpHistory.Count-1;
+//writeln('[TMainIDE.OnSrcNoteBookAddJumpPoint] END Line=',ACaretXY.Y,',DeleteForwardHistory=',DeleteForwardHistory,' Count=',Project1.JumpHistory.Count,',HistoryIndex=',Project1.JumpHistory.HistoryIndex);
+//Project1.JumpHistory.WriteDebugReport;
 end;
 
 Procedure TMainIDE.OnSrcNotebookDeleteLastJumPoint(Sender: TObject);
 begin
-  Project.JumpHistory.DeleteLast;
+  Project1.JumpHistory.DeleteLast;
 end;
 
 Procedure TMainIDE.OnSrcNotebookJumpToHistoryPoint(var NewCaretXY: TPoint;
@@ -5673,22 +5669,22 @@ begin
     The InsertSmart method prevents putting positions twice in the history. }
     
   // update jump history (e.g. delete jumps to closed editors)
-  Project.JumpHistory.DeleteInvalidPositions;
+  Project1.JumpHistory.DeleteInvalidPositions;
   
-//writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] B Count=',Project.JumpHistory.Count,',HistoryIndex=',Project.JumpHistory.HistoryIndex);
-  DestIndex:=Project.JumpHistory.HistoryIndex;
+//writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] B Count=',Project1.JumpHistory.Count,',HistoryIndex=',Project1.JumpHistory.HistoryIndex);
+  DestIndex:=Project1.JumpHistory.HistoryIndex;
   if Action=jhaForward then begin
     inc(DestIndex,2);
-    if DestIndex=Project.JumpHistory.Count then
+    if DestIndex=Project1.JumpHistory.Count then
       Dec(DestIndex);
   end;
-  if (DestIndex<0) or (DestIndex>=Project.JumpHistory.Count) then exit;
-  DestJumpPoint:=Project.JumpHistory[DestIndex];
+  if (DestIndex<0) or (DestIndex>=Project1.JumpHistory.Count) then exit;
+  DestJumpPoint:=Project1.JumpHistory[DestIndex];
 //writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] C Line=',DestJumpPoint.CaretXY.Y);
-  NewHistoryIndex:=Project.JumpHistory.HistoryIndex;
+  NewHistoryIndex:=Project1.JumpHistory.HistoryIndex;
   if Action=jhaBack then begin
     dec(NewHistoryIndex);
-    if Project.JumpHistory.HistoryIndex=Project.JumpHistory.Count-1 then begin
+    if Project1.JumpHistory.HistoryIndex=Project1.JumpHistory.Count-1 then begin
       // insert current source position into history
       if SourceNoteBook.NoteBook=nil then exit;
       ActiveSrcEdit:=SourceNotebook.GetActiveSE;
@@ -5699,18 +5695,18 @@ begin
     end;
   end else
     inc(NewHistoryIndex);
-  Project.JumpHistory.HistoryIndex:=NewHistoryIndex;
+  Project1.JumpHistory.HistoryIndex:=NewHistoryIndex;
   
-  UnitIndex:=Project.IndexOfFilename(DestJumpPoint.Filename);
-  if (UnitIndex>=0) and (Project.Units[UnitIndex].EditorIndex>=0) then begin
-    with Project.JumpHistory do begin
+  UnitIndex:=Project1.IndexOfFilename(DestJumpPoint.Filename);
+  if (UnitIndex>=0) and (Project1.Units[UnitIndex].EditorIndex>=0) then begin
+    with Project1.JumpHistory do begin
       NewCaretXY:=DestJumpPoint.CaretXY;
       NewTopLine:=DestJumpPoint.TopLine;
     end;
-    NewPageIndex:=Project.Units[UnitIndex].EditorIndex;
+    NewPageIndex:=Project1.Units[UnitIndex].EditorIndex;
   end;
-//writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] END Count=',Project.JumpHistory.Count,',HistoryIndex=',Project.JumpHistory.HistoryIndex);
-//Project.JumpHistory.WriteDebugReport;
+//writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] END Count=',Project1.JumpHistory.Count,',HistoryIndex=',Project1.JumpHistory.HistoryIndex);
+//Project1.JumpHistory.WriteDebugReport;
 end;
 
 Procedure TMainIDE.OnSrcNotebookViewJumpHistory(Sender : TObject);
@@ -5835,7 +5831,7 @@ procedure TMainIDE.OnExtToolNeedsOutputFilter(var OutputFilter: TOutputFilter;
 var ActiveSrcEdit: TSourceEditor;
 begin
   OutputFilter:=TheOutputFilter;
-  OutputFilter.Project:=Project;
+  OutputFilter.Project:=Project1;
   if ToolStatus<>itNone then begin
     Abort:=true;
     exit;
@@ -5864,9 +5860,9 @@ procedure TMainIDE.DoSwitchToFormSrc(var ActiveSourceEditor: TSourceEditor;
 var i: integer;
 begin
   if PropertyEditorHook1.LookupRoot<>nil then begin
-    i:=Project.IndexOfUnitWithForm(PropertyEditorHook1.LookupRoot,false);
+    i:=Project1.IndexOfUnitWithForm(PropertyEditorHook1.LookupRoot,false);
     if (i>=0) then begin
-      i:=Project.Units[i].EditorIndex;
+      i:=Project1.Units[i].EditorIndex;
       if (i>=0) then begin
         SourceNoteBook.NoteBook.PageIndex:=i;
         GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
@@ -6189,6 +6185,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.258  2002/03/27 09:25:31  lazarus
+  MG: renamed main Project to Project1
+
   Revision 1.257  2002/03/27 09:18:11  lazarus
   MG: splitted main.pp: TMainIDE has now an ancestor TMainIDEBar
 

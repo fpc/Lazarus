@@ -182,7 +182,7 @@ end;
 procedure TMainIDE.OnDebuggerException(Sender: TObject; const AExceptionID: Integer; const AExceptionText: String);
 begin
   MessageDlg('Error', 
-    Format('Project %s raised exception class %d with message ''%s''.', [Project.Title, AExceptionID, AExceptionText]), 
+    Format('Project %s raised exception class %d with message ''%s''.', [Project1.Title, AExceptionID, AExceptionText]),
     mtError,[mbOk],0);
 end;
 
@@ -323,7 +323,7 @@ begin
   WriteLN('[TMainIDE.DoInitDebugger] A');  
   
   Result:=mrCancel;
-  if Project.MainUnit < 0 then Exit;
+  if Project1.MainUnit < 0 then Exit;
   
   OldBreakpoints := nil;  
 
