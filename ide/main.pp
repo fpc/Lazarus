@@ -795,8 +795,8 @@ begin
   InitCodeToolBoss;
 
   // build and position the MainIDE form
-  Name := DefaultMainIDEName;
-  EnvironmentOptions.IDEWindowLayoutList.Apply(TForm(Self),DefaultMainIDEName);
+  Name := NonModalIDEWindowNames[nmiwMainIDEName];
+  EnvironmentOptions.IDEWindowLayoutList.Apply(TForm(Self),Name);
 
   InitIDEComponents;
   if LazarusResources.Find(ClassName)=nil then begin
@@ -4479,7 +4479,7 @@ begin
 
   UnitDependenciesView.Show;
   ALayout:=EnvironmentOptions.IDEWindowLayoutList.
-    ItemByFormID(DefaultUnitDependenciesName);
+    ItemByEnum(nmiwUnitDependenciesName);
   ALayout.Apply;
   if not WasVisible then
     BringWindowToTop(UnitDependenciesView.Handle);
@@ -6329,7 +6329,7 @@ begin
   WasVisible:=MessagesView.Visible;
   MessagesView.Show;
   ALayout:=EnvironmentOptions.IDEWindowLayoutList.
-    ItemByFormID(DefaultMessagesViewName);
+    ItemByEnum(nmiwMessagesViewName);
   ALayout.Apply;
   if not WasVisible then
     BringWindowToTop(SourceNotebook.Handle);
@@ -6343,8 +6343,8 @@ procedure TMainIDE.DoArrangeSourceEditorAndMessageView;
 begin
   DoShowMessagesView;
 
-  if (iwpDefault=EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(
-    DefaultSourceNoteBookName).WindowPlacement)
+  if (iwpDefault=EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(
+                                        nmiwSourceNoteBookName).WindowPlacement)
   and ((SourceNotebook.Top+SourceNotebook.Height) > MessagesView.Top) then
     SourceNotebook.Height := Max(50,Min(SourceNotebook.Height,
        MessagesView.Top-SourceNotebook.Top));
@@ -8178,6 +8178,8 @@ begin
 end;
 
 procedure TMainIDE.OnApplyWindowLayout(ALayout: TIDEWindowLayout);
+var
+  l: TNonModalIDEWindow;
 begin
   if (ALayout=nil) or (ALayout.Form=nil) then exit;
 //writeln('AAA TMainIDE.OnApplyWindowLayout ',ALayout.Form.Name,' ',ALayout.Form.Classname,' ',IDEWindowPlacementNames[ALayout.WindowPlacement],' ',ALayout.CustomCoordinatesAreValid,' ',ALayout.Left,' ',ALayout.Top,' ',ALayout.Width,' ',ALayout.Height);
@@ -8190,29 +8192,29 @@ begin
   if (not (ALayout.WindowPlacement in [iwpDocked,iwpUseWindowManagerSetting]))
   then begin
     // default position
-    if ALayout.FormID=DefaultObjectInspectorName then begin
-      ALayout.Form.SetBounds(
-        Left,Top+Height+30,230,Max(Screen.Height-Top-Height-120,50));
-    end else
-    if ALayout.FormID=DefaultMainIDEName then begin
+    l:=NonModalIDEFormIDToEnum(ALayout.FormID);
+    case l of
+    nmiwMainIDEName:
       ALayout.Form.SetBounds(0,0,Screen.Width-10,95);
-    end else
-    if ALayout.FormID=DefaultSourceNoteBookName then begin
+    nmiwSourceNoteBookName:
       ALayout.Form.SetBounds(250,Top+Height+30,Max(50,Screen.Width-300),
         Max(50,Screen.Height-200-Top-Height));
-    end else
-    if ALayout.FormID=DefaultUnitDependenciesName then begin
+    nmiwUnitDependenciesName:
       ALayout.Form.SetBounds(200,200,400,300);
-    end else
-    if ALayout.FormID=DefaultCodeExplorerName then begin
+    nmiwCodeExplorerName:
       ALayout.Form.SetBounds(Screen.Width-200,130,170,Max(50,Screen.Height-230));
-    end else
-    if ALayout.FormID=DefaultClipbrdHistoryName then begin
+    nmiwClipbrdHistoryName:
       ALayout.Form.SetBounds(250,Screen.Height-400,400,300);
-    end else
-    if ALayout.FormID=DefaultMessagesViewName then begin
+    nmiwPkgGraphExplorer:
+      ALayout.Form.SetBounds(250,150,500,350);
+    nmiwMessagesViewName:
       ALayout.Form.SetBounds(260,SourceNotebook.Top+SourceNotebook.Height+30,
         Max(50,Screen.Width-300),80);
+    else
+      if ALayout.FormID=DefaultObjectInspectorName then begin
+        ALayout.Form.SetBounds(
+          Left,Top+Height+30,230,Max(Screen.Height-Top-Height-120,50));
+      end;
     end;
   end;
 end;
@@ -8253,6 +8255,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.518  2003/04/10 19:42:16  mattias
+  implemented package graph showing open packages
+
   Revision 1.517  2003/04/10 16:38:37  mattias
   fixed crash in new menueditor
 
