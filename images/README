@@ -9,6 +9,7 @@ editoroptions.lrs - Icons for editor options
 mainicon.lrs - This is the IDE program icon.
 laz_images.lrs - The icons for the speedbuttons and the menu (Open, Save,...)
 splash.lrs - the lazarus logo at IDE start
+unitdependencies.lrs - Icons for the unit dependencies.
 
 
 How to update the image resources:
@@ -60,5 +61,12 @@ cd <lazarusdir>/images/
 
 cd <lazarusdir>/
 ./tools/lazres splash.lrs images/splash_logo.xpm
+
+
+8. unitdependencies.lrs
+
+cd <lazarusdir>/images/unitdependencies
+../../tools/lazres ../../unitdependencies.lrs *.xpm
+
 
 
