@@ -62,7 +62,13 @@ procedure SendBreak(const AHandle: Integer);
 implementation
 
 uses
-  Linux, 
+{$IFDEF Linux}
+ {$IFDEF Ver1_0}
+   Linux,
+ {$ELSE}
+   Unix,
+ {$ENDIF}     
+{$ENDIF}
   SysUtils, Forms;
   
 //////////////////////////////////////////////////
@@ -77,8 +83,10 @@ uses
  ------------------------------------------------------------------------------}
 procedure SendBreak(const AHandle: Integer);
 begin
+{$IFDEF Linux}
   if AHandle <> 0
   then Kill(AHandle, SIGINT);
+{$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -87,6 +95,7 @@ end;
   Returns: BitArray of handles set, 0 when an error ocoured
  ------------------------------------------------------------------------------}
 function WaitForHandles(const AHandles: array of Integer): Integer;
+{$IFDEF Linux}
 var
   n, R, Max, Count: Integer;
   TimeOut: Integer;
@@ -124,6 +133,10 @@ begin
         if R=0 then Break;
       end;
   end;
+{$ELSE}
+begin
+  Result := 0;
+{$ENDIF}
 end;
   
 //////////////////////////////////////////////////
@@ -322,6 +335,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.3  2001/11/07 00:17:33  lazarus
+  MWE: Added IFDEFs so non linux targetswill compile
+
   Revision 1.2  2001/11/06 23:59:12  lazarus
   MWE: + Initial breakpoint support
        + Added exeption handling on process.free
