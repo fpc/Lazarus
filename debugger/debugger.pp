@@ -260,6 +260,7 @@ type
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
+    function GetSourceLine: integer; override;
     property Slave: TBaseBreakPoint read FSlave write FSlave;
   end;
   TDBGBreakPointClass = class of TDBGBreakPoint;
@@ -1081,7 +1082,7 @@ begin
   if FUpdateLock < 0 then RaiseException('TIDEBreakPoint.EndUpdate');
   if (FUpdateLock = 0) and FChangedWhileLocked
   then begin
-    inherited Changed(False);
+    DoChanged;
     FChangedWhileLocked := False
   end;
 end;
@@ -1156,7 +1157,7 @@ begin
   Changed;
 end;
 
-procedure TBaseBreakPoint.SetValid (const AValue: TValidState );
+procedure TBaseBreakPoint.SetValid(const AValue: TValidState );
 begin
   if FValid <> AValue
   then begin
@@ -1472,6 +1473,14 @@ begin
   inherited Destroy;
 end;
 
+function TDBGBreakPoint.GetSourceLine: integer;
+begin
+  if Slave<>nil then
+    Result:=Slave.GetSourceLine
+  else
+    Result:=inherited GetSourceLine;
+end;
+
 procedure TDBGBreakPoint.DoChanged;
 begin
   inherited DoChanged;
@@ -1492,10 +1501,11 @@ procedure TDBGBreakPoint.InitTargetStart;
 begin
   BeginUpdate;
   try
+    SetLocation(FSource,GetSourceLine);
     Enabled := InitialEnabled;
     SetHitCount(0);
   finally
-    EndUpdate
+    EndUpdate;
   end;
 end;
 
@@ -2444,6 +2454,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.38  2003/06/03 10:29:22  mattias
+  implemented updates between source marks and breakpoints
+
   Revision 1.37  2003/06/03 08:02:33  mattias
   implemented showing source lines in breakpoints dialog
 

@@ -178,6 +178,7 @@ type
     function GetValid: TValidState; override;
     procedure SetEnabled(const AValue: Boolean); override;
     procedure SetExpression(const AValue: String); override;
+    procedure SetLocation(const ASource: String; const ALine: Integer); override;
     procedure UpdateSourceMarkImage;
     procedure UpdateSourceMarkLineColor;
     procedure UpdateSourceMark;
@@ -186,6 +187,7 @@ type
     destructor Destroy; override;
     procedure ResetMaster;
     function GetSourceLine: integer; override;
+    procedure CopySourcePositionToBreakPoint;
     property SourceMark: TSourceMark read FSourceMark write SetSourceMark;
   end;
   
@@ -326,14 +328,17 @@ begin
     Result:=inherited GetSourceLine;
 end;
 
+procedure TManagedBreakPoint.CopySourcePositionToBreakPoint;
+begin
+  if FSourceMark=nil then exit;
+  SetLocation(Source,FSourceMark.Line);
+end;
+
 procedure TManagedBreakPoint.SetEnabled(const AValue: Boolean);
 begin
-writeln('TManagedBreakPoint.SetEnabled ',Line);
   if Enabled = AValue then exit;
   inherited SetEnabled(AValue);
   if FMaster <> nil then FMaster.Enabled := AValue;
-  // Handled by changed
-  // UpdateSourceMarkImage;
 end;
 
 procedure TManagedBreakPoint.SetExpression(const AValue: String);
@@ -341,6 +346,15 @@ begin
   if AValue=Expression then exit;
   inherited SetExpression(AValue);
   if FMaster <> nil then FMaster.Expression := AValue;
+end;
+
+procedure TManagedBreakPoint.SetLocation(const ASource: String;
+  const ALine: Integer);
+begin
+  if (Source = ASource) and (Line = ALine) then exit;
+  inherited SetLocation(ASource, ALine);
+  writeln('TManagedBreakPoint.SetLocation ',Line);
+  if FMaster<>nil then FMaster.SetLocation(ASource,ALine);
 end;
 
 procedure TManagedBreakPoint.UpdateSourceMarkImage;
@@ -1356,6 +1370,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.43  2003/06/03 10:29:22  mattias
+  implemented updates between source marks and breakpoints
+
   Revision 1.42  2003/06/03 08:02:32  mattias
   implemented showing source lines in breakpoints dialog
 
