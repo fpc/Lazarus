@@ -48,6 +48,7 @@ uses
 
 type
   TUnitInfo = class;
+  TProject = class;
 
   TOnFileBackup = function(const FileToBackup:string; 
                            IsPartOfProject:boolean):TModalResult of object;
@@ -83,6 +84,7 @@ type
     fOnFileBackup: TOnFileBackup;
     fOnLoadSaveFilename: TOnLoadSaveFilename;
     fOnUnitNameChange: TOnUnitNameChange;
+    FProject: TProject;
     fReadOnly:  Boolean;
     FResourceFilename: string;
     fSource: TCodeBuffer;
@@ -92,10 +94,20 @@ type
 
     function GetFileName: string;
     function GetHasResources:boolean;
+    procedure SetEditorIndex(const AValue: integer);
+    procedure SetForm(const AValue: TComponent);
     procedure SetLoaded(const AValue: Boolean);
+    procedure SetProject(const AValue: TProject);
     procedure SetReadOnly(const NewValue: boolean);
     procedure SetSource(ABuffer: TCodeBuffer);
     procedure SetUnitName(const NewUnitName:string);
+  protected
+    NextUnitWithEditorIndex: TUnitInfo;
+    PrevUnitWithEditorIndex: TUnitInfo;
+    NextUnitWithForm: TUnitInfo;
+    PrevUnitWithForm: TUnitInfo;
+    procedure UpdateEditorIndexList;
+    procedure UpdateFormList;
   public
     constructor Create(ACodeBuffer: TCodeBuffer);
     destructor Destroy; override;
@@ -116,27 +128,28 @@ type
         read fBreakpoints write fBreakpoints;
     property CursorPos: TPoint read fCursorPos write fCursorPos;
     property CustomHighlighter: boolean
-        read fCustomHighlighter write fCustomHighlighter;
-    property EditorIndex:integer read fEditorIndex write fEditorIndex;
+          read fCustomHighlighter write fCustomHighlighter;
+    property EditorIndex:integer read fEditorIndex write SetEditorIndex;
     property Filename: String read GetFilename;
-    property Form: TComponent read fForm write fForm;
+    property Form: TComponent read fForm write SetForm;
     property FormName: string read fFormName write fFormName;
     property HasResources: boolean read GetHasResources write fHasResources;
     property IsPartOfProject: boolean
-        read fIsPartOfProject write fIsPartOfProject;
+          read fIsPartOfProject write fIsPartOfProject;
     property Loaded: Boolean read fLoaded write SetLoaded;
     property Modified: boolean read fModified write fModified;
     property OnFileBackup: TOnFileBackup read fOnFileBackup write fOnFileBackup;
     property OnLoadSaveFilename: TOnLoadSaveFilename
-        read fOnLoadSaveFilename write fOnLoadSaveFilename;
+          read fOnLoadSaveFilename write fOnLoadSaveFilename;
     property OnUnitNameChange: TOnUnitNameChange
-        read fOnUnitNameChange write fOnUnitNameChange;
+          read fOnUnitNameChange write fOnUnitNameChange;
+    property Project: TProject read FProject write SetProject;
     property ReadOnly: Boolean read fReadOnly write SetReadOnly;
     property ResourceFileName: string
-        read FResourceFilename write FResourceFilename;
+          read FResourceFilename write FResourceFilename;
     property Source: TCodeBuffer read fSource write SetSource;
     property SyntaxHighlighter: TLazSyntaxHighlighter
-        read fSyntaxHighlighter write fSyntaxHighlighter;
+          read fSyntaxHighlighter write fSyntaxHighlighter;
     property TopLine: integer read fTopLine write fTopLine;
     property UnitName: String read fUnitName write SetUnitName;
   end;
@@ -157,6 +170,8 @@ type
     fActiveEditorIndexAtStart: integer;
     fBookmarks: TProjectBookmarkList;
     fCompilerOptions: TCompilerOptions;
+    fFirstUnitWithEditorIndex: TUnitInfo;// units with EditorIndex>=0
+    fFirstUnitWithForm: TUnitInfo; // units with Form<>nil
     fIconPath: String;
     fJumpHistory: TProjectJumpHistory;
     fMainUnit: Integer;  // only for ptApplication
@@ -190,6 +205,11 @@ type
     function JumpHistoryCheckPosition(
        APosition:TProjectJumpHistoryPosition): boolean;
     procedure SetSrcPath(const NewSrcPath: string);
+  protected
+    procedure AddToEditorWithIndexList(AnUnitInfo: TUnitInfo);
+    procedure RemoveFromEditorWithIndexList(AnUnitInfo: TUnitInfo);
+    procedure AddToFormList(AnUnitInfo: TUnitInfo);
+    procedure RemoveFromFormList(AnUnitInfo: TUnitInfo);
   public
     constructor Create(TheProjectType: TProjectType);
     destructor Destroy; override;
@@ -209,11 +229,14 @@ type
     function IndexOfUnitWithForm(AForm: TComponent;
        OnlyProjectUnits:boolean):integer;
     function IndexOfFilename(const AFilename: string): integer;
-    function UnitWithEditorIndex(Index:integer):TUnitInfo;
-    Function UnitWithForm(AForm : TComponent) : TUnitInfo;
+    function UnitWithEditorIndex(Index:integer): TUnitInfo;
+    Function UnitWithForm(AForm: TComponent): TUnitInfo;
     
     procedure CloseEditorIndex(EditorIndex:integer);
     procedure InsertEditorIndex(EditorIndex:integer);
+    procedure AddToOrRemoveFromEditorWithIndexList(AnUnitInfo: TUnitInfo);
+    procedure AddToOrRemoveFromFormList(AnUnitInfo: TUnitInfo);
+
     procedure Clear;
     function SomethingModified: boolean;
     function AddCreateFormToProjectFile(const AClassName,AName:string):boolean;
@@ -346,6 +369,7 @@ end;
 destructor TUnitInfo.Destroy;
 begin
   fBreakPoints.Free;
+  Project:=nil;
   inherited Destroy;
 end;
 
@@ -541,6 +565,26 @@ begin
   end;
 end;
 
+procedure TUnitInfo.UpdateEditorIndexList;
+begin
+  if Project<>nil then begin
+    Project.AddToOrRemoveFromEditorWithIndexList(Self);
+  end else begin
+    NextUnitWithEditorIndex:=nil;
+    PrevUnitWithEditorIndex:=nil;
+  end;
+end;
+
+procedure TUnitInfo.UpdateFormList;
+begin
+  if Project<>nil then begin
+    Project.AddToOrRemoveFromFormList(Self);
+  end else begin
+    NextUnitWithForm:=nil;
+    PrevUnitWithForm:=nil;
+  end;
+end;
+
 function TUnitInfo.GetFileName: string;
 begin
   if fSource<>nil then Result:=fSource.Filename
@@ -662,6 +706,20 @@ begin
   Result:=fHasResources or (FormName<>'');
 end;
 
+procedure TUnitInfo.SetEditorIndex(const AValue: integer);
+begin
+  if fEditorIndex=AValue then exit;
+  fEditorIndex:=AValue;
+  UpdateEditorIndexList;
+end;
+
+procedure TUnitInfo.SetForm(const AValue: TComponent);
+begin
+  if fForm=AValue then exit;
+  fForm:=AValue;
+  UpdateFormList;
+end;
+
 procedure TUnitInfo.SetLoaded(const AValue: Boolean);
 begin
   if fLoaded=AValue then exit;
@@ -672,6 +730,18 @@ begin
     else
       fSource.UnlockAutoDiskRevert;
   end;
+end;
+
+procedure TUnitInfo.SetProject(const AValue: TProject);
+begin
+  if FProject=AValue then exit;
+  if AValue=nil then begin
+    Project.RemoveFromEditorWithIndexList(Self);
+    Project.RemoveFromFormList(Self);
+  end;
+  FProject:=AValue;
+  UpdateEditorIndexList;
+  UpdateFormList;
 end;
 
 
@@ -964,6 +1034,7 @@ var ShortUnitName:string;
 begin
   if (AUnit = nil) then exit;
   fUnitList.Add(AUnit);
+  AUnit.Project:=Self;
   AUnit.OnFileBackup:=@OnUnitFileBackup;
   AUnit.OnLoadSaveFilename:=@OnLoadSaveFilename;
   AUnit.OnUnitNameChange:=@OnUnitNameChange;
@@ -996,15 +1067,17 @@ begin
 
   if MainUnit>=0 then begin
     // remove unit from uses section and from createforms in program file
-    if OldUnitInfo.UnitName<>'' then
-      CodeToolBoss.RemoveUnitFromAllUsesSections(Units[MainUnit].Source,
-        OldUnitInfo.UnitName);
-    if (OldUnitInfo.FormName<>'') then
-      CodeToolBoss.RemoveCreateFormStatement(Units[MainUnit].Source,
-        OldUnitInfo.FormName);
+    if (OldUnitInfo.IsPartOfProject) then begin
+      if (OldUnitInfo.UnitName<>'') then
+        CodeToolBoss.RemoveUnitFromAllUsesSections(Units[MainUnit].Source,
+          OldUnitInfo.UnitName);
+      if (OldUnitInfo.FormName<>'') then
+        CodeToolBoss.RemoveCreateFormStatement(Units[MainUnit].Source,
+          OldUnitInfo.FormName);
+    end;
   end;
 
-  // delete bookmarks on this unit
+  // delete bookmarks of this unit
   if OldUnitInfo.EditorIndex>=0 then
     Bookmarks.DeleteAllWithEditorIndex(OldUnitInfo.EditorIndex);
 
@@ -1057,8 +1130,11 @@ end;
 
 procedure TProject.SetUnits(Index:integer; AUnitInfo: TUnitInfo);
 begin
-  fUnitList[Index]:=AUnitInfo;
-  Modified:=true;
+  if AUnitInfo<>TUnitInfo(fUnitList[Index]) then begin
+    fUnitList[Index]:=AUnitInfo;
+    Modified:=true;
+    if AUnitInfo<>nil then AUnitInfo.Project:=Self;
+  end;
 end;
 
 function TProject.UnitCount:integer;
@@ -1186,14 +1262,11 @@ begin
 end;
 
 function TProject.UnitWithEditorIndex(Index:integer):TUnitInfo;
-var i:integer;
 begin
-  i:=UnitCount-1;
-  while (i>=0) and (Units[i].EditorIndex<>Index) do dec(i);
-  if i>=0 then 
-    Result:=Units[i]
-  else
-    Result:=nil;
+  Result:=fFirstUnitWithEditorIndex;
+  while (Result<>nil) and (Result.EditorIndex<>Index) do begin
+    Result:=Result.NextUnitWithEditorIndex;
+  end;
 end;
 
 function TProject.UnitIsUsed(const ShortUnitName:string):boolean;
@@ -1270,12 +1343,15 @@ end;
 
 procedure TProject.CloseEditorIndex(EditorIndex:integer);
 var i:integer;
+  AnUnitInfo: TUnitInfo;
 begin
-  for i:=0 to UnitCount-1 do begin
-    if Units[i].EditorIndex=EditorIndex then 
-      Units[i].EditorIndex:=-1
-    else if Units[i].EditorIndex>EditorIndex then 
-      Units[i].EditorIndex:=Units[i].EditorIndex-1;
+  AnUnitInfo:=fFirstUnitWithEditorIndex;
+  while AnUnitInfo<>nil do begin
+    if AnUnitInfo.EditorIndex=EditorIndex then
+      AnUnitInfo.EditorIndex:=-1
+    else if AnUnitInfo.EditorIndex>EditorIndex then
+      AnUnitInfo.EditorIndex:=AnUnitInfo.EditorIndex-1;
+    AnUnitInfo:=AnUnitInfo.NextUnitWithEditorIndex;
   end;
   i:=Bookmarks.Count-1;
   while (i>=0) do begin
@@ -1290,10 +1366,13 @@ end;
 
 procedure TProject.InsertEditorIndex(EditorIndex:integer);
 var i:integer;
+  AnUnitInfo: TUnitInfo;
 begin
-  for i:=0 to UnitCount-1 do begin
-    if Units[i].EditorIndex>=EditorIndex then 
-      Units[i].EditorIndex:=Units[i].EditorIndex+1;
+  AnUnitInfo:=fFirstUnitWithEditorIndex;
+  while AnUnitInfo<>nil do begin
+    if AnUnitInfo.EditorIndex>=EditorIndex then
+      AnUnitInfo.EditorIndex:=AnUnitInfo.EditorIndex+1;
+    AnUnitInfo:=AnUnitInfo.NextUnitWithEditorIndex;
   end;
   i:=Bookmarks.Count-1;
   while (i>=0) do begin
@@ -1302,6 +1381,24 @@ begin
     dec(i);
   end;
   Modified:=true;
+end;
+
+procedure TProject.AddToOrRemoveFromEditorWithIndexList(AnUnitInfo: TUnitInfo);
+begin
+  if AnUnitInfo.EditorIndex<0 then begin
+    RemoveFromEditorWithIndexList(AnUnitInfo);
+  end else begin
+    AddToEditorWithIndexList(AnUnitInfo);
+  end;
+end;
+
+procedure TProject.AddToOrRemoveFromFormList(AnUnitInfo: TUnitInfo);
+begin
+  if AnUnitInfo.Form=nil then begin
+    RemoveFromFormList(AnUnitInfo);
+  end else begin
+    AddToFormList(AnUnitInfo);
+  end;
 end;
 
 function TProject.GetTargetFilename: string;
@@ -1448,15 +1545,10 @@ begin
 end;
 
 Function TProject.UnitWithForm(AForm : TComponent) : TUnitInfo;
-var i:integer;
 begin
-  i:=UnitCount-1;
-  while (i>=0) and (Units[i].Form<>AForm) do dec(i);
-  if i>=0 then
-    Result:=Units[i]
-  else
-    Result:=nil;
-
+  Result:=fFirstUnitWithForm;
+  while (Result<>nil) and (Result.Form<>AForm) do
+    Result:=Result.NextUnitWithForm;
 end;
 
 function TProject.IndexOfFilename(const AFilename: string): integer;
@@ -1474,6 +1566,62 @@ begin
   fSrcPath:=NewSrcPath;
 end;
 
+procedure TProject.AddToEditorWithIndexList(AnUnitInfo: TUnitInfo);
+begin
+  // add to list if AnUnitInfo is not in list
+  if (fFirstUnitWithEditorIndex<>AnUnitInfo)
+  and (AnUnitInfo.NextUnitWithEditorIndex=nil)
+  and (AnUnitInfo.PrevUnitWithEditorIndex=nil) then begin
+    AnUnitInfo.NextUnitWithEditorIndex:=fFirstUnitWithEditorIndex;
+    fFirstUnitWithEditorIndex:=AnUnitInfo;
+    if AnUnitInfo.NextUnitWithEditorIndex<>nil then
+      AnUnitInfo.NextUnitWithEditorIndex.PrevUnitWithEditorIndex:=AnUnitInfo;
+  end;
+end;
+
+procedure TProject.RemoveFromEditorWithIndexList(AnUnitInfo: TUnitInfo);
+begin
+  // remove from list if AnUnitInfo is in list
+  if fFirstUnitWithEditorIndex=AnUnitInfo then
+    fFirstUnitWithEditorIndex:=AnUnitInfo.NextUnitWithEditorIndex;
+  if AnUnitInfo.NextUnitWithEditorIndex<>nil then
+    AnUnitInfo.NextUnitWithEditorIndex.PrevUnitWithEditorIndex:=
+      AnUnitInfo.PrevUnitWithEditorIndex;
+  if AnUnitInfo.PrevUnitWithEditorIndex<>nil then
+    AnUnitInfo.PrevUnitWithEditorIndex.NextUnitWithEditorIndex:=
+      AnUnitInfo.NextUnitWithEditorIndex;
+  AnUnitInfo.NextUnitWithEditorIndex:=nil;
+  AnUnitInfo.PrevUnitWithEditorIndex:=nil;
+end;
+
+procedure TProject.AddToFormList(AnUnitInfo: TUnitInfo);
+begin
+  // add to list if AnUnitInfo is not in list
+  if (fFirstUnitWithForm<>AnUnitInfo)
+  and (AnUnitInfo.NextUnitWithForm=nil)
+  and (AnUnitInfo.PrevUnitWithForm=nil) then begin
+    AnUnitInfo.NextUnitWithForm:=fFirstUnitWithForm;
+    fFirstUnitWithForm:=AnUnitInfo;
+    if AnUnitInfo.NextUnitWithForm<>nil then
+      AnUnitInfo.NextUnitWithForm.PrevUnitWithForm:=AnUnitInfo;
+  end;
+end;
+
+procedure TProject.RemoveFromFormList(AnUnitInfo: TUnitInfo);
+begin
+  // remove from list if AnUnitInfo is in list
+  if fFirstUnitWithForm=AnUnitInfo then
+    fFirstUnitWithForm:=AnUnitInfo.NextUnitWithForm;
+  if AnUnitInfo.NextUnitWithForm<>nil then
+    AnUnitInfo.NextUnitWithForm.PrevUnitWithForm:=
+      AnUnitInfo.PrevUnitWithForm;
+  if AnUnitInfo.PrevUnitWithForm<>nil then
+    AnUnitInfo.PrevUnitWithForm.NextUnitWithForm:=
+      AnUnitInfo.NextUnitWithForm;
+  AnUnitInfo.NextUnitWithForm:=nil;
+  AnUnitInfo.PrevUnitWithForm:=nil;
+end;
+
 
 end.
 
@@ -1481,6 +1629,9 @@ end.
 
 {
   $Log$
+  Revision 1.69  2002/08/01 08:03:03  lazarus
+  MG: accelerated searches in project
+
   Revision 1.68  2002/07/31 06:52:17  lazarus
   MG: started File Access Monitoring for hidden files
 

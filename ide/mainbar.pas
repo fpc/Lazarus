@@ -72,6 +72,8 @@ type
   TOpenFlags = set of TOpenFlag;
   TRevertFlag = (rfQuiet);
   TRevertFlags = set of TRevertFlag;
+  TCloseFlag = (cfSaveFirst, cfProjectClosing);
+  TCloseFlags = set of TCloseFlag;
   TLoadBufferFlag = (lbfUpdateFromDisk, lbfRevert, lbfCheckIfText);
   TLoadBufferFlags = set of TLoadBufferFlag;
 

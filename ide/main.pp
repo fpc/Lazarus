@@ -333,7 +333,7 @@ type
     function DoSaveEditorFile(PageIndex:integer;
         Flags: TSaveFlags): TModalResult;
     function DoCloseEditorFile(PageIndex:integer;
-        SaveFirst: boolean):TModalResult;
+        Flags: TCloseFlags):TModalResult;
     function DoOpenEditorFile(AFileName:string; PageIndex: integer;
         Flags: TOpenFlags): TModalResult; override;
     function DoOpenFileAtCursor(Sender: TObject): TModalResult;
@@ -1881,13 +1881,14 @@ begin
   end else begin
     PageIndex:=SourceNoteBook.NoteBook.PageIndex;
   end;
-  DoCloseEditorFile(PageIndex,true);
+  DoCloseEditorFile(PageIndex,[cfSaveFirst]);
 end;
 
 procedure TMainIDE.mnuCloseAllClicked(Sender : TObject);
 begin
   while (SourceNoteBook.NoteBook<>nil)
-  and (DoCloseEditorFile(SourceNoteBook.NoteBook.PageIndex,true)=mrOk) do ;
+  and (DoCloseEditorFile(SourceNoteBook.NoteBook.PageIndex,
+       [cfSaveFirst])=mrOk) do ;
 end;
 
 Procedure TMainIDE.OnSrcNotebookFileNew(Sender : TObject);
@@ -3752,7 +3753,7 @@ begin
 end;
 
 function TMainIDE.DoCloseEditorFile(PageIndex:integer;
-  SaveFirst: boolean):TModalResult;
+  Flags: TCloseFlags):TModalResult;
 var ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   ACaption,AText: string;
@@ -3771,7 +3772,7 @@ begin
   ActiveUnitInfo.CursorPos:=ActiveSrcEdit.EditorComponent.CaretXY;
   
   // if SaveFirst then save the source
-  if SaveFirst and (not ActiveUnitInfo.ReadOnly) 
+  if (cfSaveFirst in Flags) and (not ActiveUnitInfo.ReadOnly)
   and ((ActiveSrcEdit.Modified) or (ActiveUnitInfo.Modified)) then begin
     if ActiveUnitInfo.Filename<>'' then
       AText:='File "'+ActiveUnitInfo.Filename+'" has changed. Save?'
@@ -4350,7 +4351,8 @@ begin
   // close all loaded files
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
   while SourceNotebook.NoteBook<>nil do begin
-    Result:=DoCloseEditorFile(SourceNotebook.Notebook.Pages.Count-1,false);
+    Result:=DoCloseEditorFile(SourceNotebook.Notebook.Pages.Count-1,
+                              [cfProjectClosing]);
     if Result=mrAbort then exit;
   end;
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
@@ -6801,6 +6803,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.330  2002/08/01 08:03:01  lazarus
+  MG: accelerated searches in project
+
   Revision 1.329  2002/07/31 15:21:50  lazarus
   MG: added tool: Convert DFM file to LFM
 
