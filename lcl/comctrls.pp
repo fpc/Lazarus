@@ -95,30 +95,29 @@ type
     property Items[Index: Integer]: TStatusPanel read GetItem write SetItem; default;
   end;
 
-  TStatusBar = class(TCustomPanel)
+ TStatusBar = Class(TWinControl)
   private
     FCanvas : TCanvas;
     FPanels : TStatusPanels;
     FSimpleText : String;
     FSimplePanel : Boolean;
+    //FContext : Integer;
+    //FMessage : Integer;
+    //FAlignmentWidget : TAlignment;
     procedure SetPanels(Value: TStatusPanels);
     procedure SetSimpleText(Value : String);
     procedure SetSimplePanel(Value : Boolean);
+    Procedure WMPaint(var Msg: TLMPaint); message LM_PAINT;
+    Procedure DrawDivider(X : Integer);
+    Procedure DrawBevel(xLeft, PanelNum : Integer );
   public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
     property Canvas : TCanvas read FCanvas;
   published
-    property Align;
-    property Anchors;
-    property BorderWidth;
-    property Color;
-    property Constraints;
-    property Enabled;
-    property Font;
     property Panels: TStatusPanels read FPanels write SetPanels;
-    property SimpleText: string read GetText write SetText;
-    property SimplePanel: boolean read FSimplePanel write SetSimplePanel default True;
+    property SimpleText: String read FSimpleText write SetSimpleText;
+    property SimplePanel: Boolean read FSimplePanel write SetSimplePanel default True;
     property Visible;
   end;
 
@@ -1599,8 +1598,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.44  2002/09/13 11:49:47  lazarus
-  Cleanups, extended TStatusBar, graphic control cleanups.
+  Revision 1.45  2002/09/13 16:07:20  lazarus
+  Reverting statusbar changes.
 
   Revision 1.43  2002/09/10 10:00:27  lazarus
   MG: TListView now works handleless and SetSelection implemented
