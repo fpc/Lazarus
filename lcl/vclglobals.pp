@@ -91,6 +91,7 @@ const
 
   csArrow = 50;
   csPanel = 51;
+  csScrollBox = 52;
 
 type
 
