@@ -71,16 +71,19 @@ function SearchFileInPath(const Filename, BasePath, SearchPath,
                           Delimiter: string; SearchLoUpCase: boolean): string;
 function FilenameIsMatching(const Mask, Filename: string;
   MatchExactly: boolean): boolean;
-
+function CompareFileExt(const Filename, Ext: string;
+  CaseSensitive: boolean): integer;
 
 implementation
-
 
 // to get more detailed error messages consider the os
 {$IFNDEF win32}
 uses
   {$IFDEF Ver1_0} Linux {$ELSE} Unix {$ENDIF};
 {$ENDIF}
+
+var
+  UpChars: array[char] of char;
 
 function CompareFilenames(const Filename1, Filename2: string): integer;
 begin
@@ -625,6 +628,77 @@ begin
   end;
   //writeln('  [FilenameIsMatching] Result=',Result,' ',DirStartMask,',',length(Mask),'  ',DirStartFile,',',length(Filename));
 end;
+
+function CompareFileExt(const Filename, Ext: string;
+  CaseSensitive: boolean): integer;
+var
+  FileLen, FilePos, ExtLen, ExtPos: integer;
+  FileChar, ExtChar: char;
+begin
+  FileLen:=length(Filename);
+  ExtLen:=length(Ext);
+  FilePos:=FileLen;
+  while (FilePos>=1) and (Filename[FilePos]<>'.') do dec(FilePos);
+  if FilePos<1 then begin
+    // no extension in filename
+    Result:=1;
+    exit;
+  end;
+  // skip point
+  inc(FilePos);
+  ExtPos:=1;
+  if (ExtPos<=ExtLen) and (Ext[1]='.') then inc(ExtPos);
+  // compare extensions
+  while true do begin
+    if FilePos<=FileLen then begin
+      if ExtPos<=ExtLen then begin
+        FileChar:=Filename[FilePos];
+        ExtChar:=Ext[ExtPos];
+        if not CaseSensitive then begin
+          FileChar:=UpChars[FileChar];
+          ExtChar:=UpChars[ExtChar];
+        end;
+        if FileChar=ExtChar then begin
+          inc(FilePos);
+          inc(ExtPos);
+        end else if FileChar>ExtChar then begin
+          Result:=1;
+          exit;
+        end else begin
+          Result:=-1;
+          exit;
+        end;
+      end else begin
+        // fileext longer than ext
+        Result:=1;
+        exit;
+      end;
+    end else begin
+      if ExtPos<=ExtLen then begin
+        // fileext shorter than ext
+        Result:=-1;
+        exit;
+      end else begin
+        // equal
+        Result:=0;
+        exit;
+      end;
+    end;
+  end;
+end;
+
+
+procedure InternalInit;
+var
+  c: char;
+begin
+  for c:=Low(char) to High(char) do begin
+    UpChars[c]:=upcase(c);
+  end;
+end;
+
+initialization
+  InternalInit;
 
 
 end.

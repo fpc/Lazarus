@@ -1029,8 +1029,8 @@ function TFindDeclarationTool.FindUnitSource(const AnUnitName,
         {$IFDEF ShowTriedFiles}
         //writeln('  unit "',copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart),'"');
         {$ENDIF}
-        if AnsiCompareText(TheUnitName,
-                     copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart))=0
+        if CompareSubStrings(TheUnitName,UnitLinks,1,
+          UnitLinkStart,UnitLinkEnd-UnitLinkStart,false)=0
         then begin
           // unit found -> parse filename
           UnitLinkStart:=UnitLinkEnd+1;
@@ -1041,6 +1041,13 @@ function TFindDeclarationTool.FindUnitSource(const AnUnitName,
           if UnitLinkEnd>UnitLinkStart then begin
             CurFilename:=copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart);
             LoadFile(CurFilename,Result);
+            if Result=nil then begin
+              // try also different extensions
+              if CompareFileExt(CurFilename,'.pp',false)=0 then
+                LoadFile(ChangeFileExt(CurFilename,'.pas'),Result)
+              else
+                LoadFile(ChangeFileExt(CurFilename,'.pp'),Result);
+            end;
             exit;
           end;
         end else begin
@@ -2998,6 +3005,7 @@ begin
     ReadNextAtom;
     ReadNextAtom;
     if (Scanner.PascalCompiler<>pcDelphi)
+    and Scanner.InitialValues.IsDefined('VER1_0')
     and Scanner.InitialValues.IsDefined('LINUX')
     then
       // ToDo: other OS than linux

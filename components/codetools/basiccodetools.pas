@@ -1749,7 +1749,7 @@ var FindLen, TxtLen: integer;
 begin
   FindLen:=length(Find);
   TxtLen:=length(Txt);
-  if not CaseSensitive then begin
+  if CaseSensitive then begin
     while (FindStartPos<=FindLen) and (TxtStartPos<=TxtLen) and (Len>0) do begin
       if Find[FindStartPos]=Txt[TxtStartPos] then begin
         inc(FindStartPos);
