@@ -457,7 +457,10 @@ activate_time :	the time at which the activation event occurred.
          StrDispose(pStr); 
       end; 
 
-      LM_SETFOCUS:gtk_widget_grab_focus(PgtkWidget(handle));
+      LM_SETFOCUS: if GTK_WIDGET_CAN_FOCUS(PgtkWidget(Handle)) then
+                   gtk_widget_grab_focus(PgtkWidget(handle))
+                   else
+                   Writeln('This control '+TControl(Sender).name+' can not get focus');
 
       LM_SetSize :
       begin
@@ -1253,6 +1256,12 @@ begin
     begin
       if (sender is TMemo) then
       Writeln('KEY-PRESS-EVENT for TMEmo');
+      if (sender is TComboBox) then
+         Begin
+          ConnectSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.entry), 'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
+          ConnectSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.entry), 'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
+
+         end;
       ConnectSignal(gFixed, 'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
       ConnectSignal(gFixed, 'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
     end;
@@ -2587,6 +2596,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.23  2001/01/28 21:06:07  lazarus
+  Changes for TComboBox events KeyPress Focus.
+  Shane
+
   Revision 1.22  2001/01/28 03:51:42  lazarus
   Fixed the problem with Changed for ComboBoxs
   Shane

@@ -747,6 +747,7 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TWinControl.KeyPress(var Key: Char);
 begin
+  Writeln('[KeyPress]  KeyPress');
   if Assigned(FOnKeyPress) then FOnKeyPress(Self, Key);
 end;
 
@@ -759,6 +760,7 @@ var
   ShiftState: TShiftState;
 begin
   Result := True;
+  Writeln('Getting focus...');
   F := GetParentForm(Self);
   if  (F <> nil) 
   and (F <> Self) 
@@ -1266,6 +1268,8 @@ end;
 Procedure TWinControl.WMSetFocus(var Message : TLMSetFocus);
 Begin
   Assert(False, Format('Trace:TODO: [TWinControl.LMSetFocus] %s', [ClassName]));
+  Writeln('Getting focus...');
+  DoEnter;
 end;
 
 {------------------------------------------------------------------------------
@@ -1388,6 +1392,9 @@ end;
 procedure TWinControl.WMKillFocus(var Message: TLMKillFocus);
 begin            
   Assert(False, Format('Trace: TODO: [TWinControl.LMKillFocus] %s', [ClassName]));
+  Writeln('Losing focus...');
+  DoExit;
+
 end;                          
 
 {------------------------------------------------------------------------------
@@ -1412,7 +1419,7 @@ end;
 procedure TWinControl.WMEnter(var Message: TLMEnter);
 begin            
   Assert(False, Format('Trace: TODO: [TWinControl.LMEnter] %s', [ClassName]));
-end;                          
+end;
 
 {------------------------------------------------------------------------------
   Method: TWinControl.WMEraseBkgnd
@@ -1884,6 +1891,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2001/01/28 21:06:07  lazarus
+  Changes for TComboBox events KeyPress Focus.
+  Shane
+
   Revision 1.11  2001/01/23 23:33:54  lazarus
   MWE:
     - Removed old LM_InvalidateRect

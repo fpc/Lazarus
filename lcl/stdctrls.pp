@@ -110,6 +110,9 @@ type
       property Visible;
       property OnChange;
       property OnClick;
+      property OnEnter;
+      property OnExit;
+      property OnKeyPress;
     end;
     
   TListBoxStyle = (lbStandard, lbOwnerDrawFixed, lbOwnerDrawVariable);
@@ -492,6 +495,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.11  2001/01/28 21:06:07  lazarus
+  Changes for TComboBox events KeyPress Focus.
+  Shane
+
   Revision 1.10  2001/01/11 20:16:47  lazarus
   Added some TImageList code.
   Added a bookmark resource with 10 resource images.
