@@ -4119,18 +4119,15 @@ var
    num : LongInt;                                          // example assume value := $00FF2510
 
 begin
+   if Value<0 then begin
+     FillChar(Result,SizeOf(Result),0);
+     exit;
+   end;
+
    NewColor.pixel := 0;
-                                                           // value - $00FF2510
-   num := (value shr 8) shl 8;                             //   num - $00FF2500
-   newColor.red := (value - num) * 257;                    //   red - $00000010  * 257
-
-                                                           // value - $00FF2510
-   num := (value shr 16) shl 8;                            //   num - $0000FF00
-                                                           //value2 - $0000FF25
-   newColor.green :=  ((value shr 8) - num) * 257;         // green = $00000025  * 257
-
-                                                           // value - $00FF2510
-   newColor.blue := (value shr 16) * 257;                  //  blue - $000000FF  * 257
+   newColor.red   := (value and $ff) * 257;                    //   red - $00000010  * 257
+   newColor.green := ((value shr 8) and $ff) * 257;         // green = $00000025  * 257
+   newColor.blue  := ((value shr 16) and $ff) * 257;        //  blue - $000000FF  * 257
 
    result := newColor;
 end;
@@ -5627,6 +5624,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.235  2003/12/26 10:59:25  mattias
+  fixed color coversion range check
+
   Revision 1.234  2003/12/25 14:17:07  mattias
   fixed many range check warnings
 

@@ -134,7 +134,7 @@ type
 
   TPageControl = class;
 
-  TTabPosition = (tpTop, tpBottom, tpLeft, tpRight);
+  // TTabPosition is in extctrls.pas
   TTabStyle = (tsTabs, tsButtons, tsFlatButtons);
 
   TTabChangingEvent = procedure(Sender: TObject;
@@ -1936,6 +1936,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.95  2003/12/26 10:59:24  mattias
+  fixed color coversion range check
+
   Revision 1.94  2003/12/25 14:17:07  mattias
   fixed many range check warnings
 

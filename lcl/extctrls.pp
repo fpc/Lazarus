@@ -715,7 +715,6 @@ type
 
   TPanelBevel = TBevelCut;
   TBevelWidth = 1..Maxint;
-  TBorderWidth = 0..Maxint;
 
   TCustomPanel = class(TCustomControl)
   private
@@ -835,6 +834,9 @@ end.
 
  {
   $Log$
+  Revision 1.84  2003/12/26 10:59:25  mattias
+  fixed color coversion range check
+
   Revision 1.83  2003/12/23 18:15:37  mattias
   fixed TNoteBook.OnPageChanged for user PageIndex
 

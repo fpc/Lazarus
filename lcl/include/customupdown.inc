@@ -314,7 +314,7 @@ var
   I: Integer;
   OtherControl: TControl;
 
-  function IsClass(ClassType: TClass; const Name: string): Boolean;
+  {function IsClass(ClassType: TClass; const Name: string): Boolean;
   begin
     Result := True;
     while ClassType <> nil do
@@ -323,7 +323,7 @@ var
       ClassType := ClassType.ClassParent;
     end;
     Result := False;
-  end;
+  end;}
 
 begin
   // check that no other updown component is associated to the new Associate

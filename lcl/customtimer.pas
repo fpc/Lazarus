@@ -26,8 +26,7 @@ unit CustomTimer;
 interface
 
 uses
-  Classes, SysUtils, LCLStrConsts, LCLType, LMessages, VCLGlobals,
-  InterfaceBase;
+  Classes, SysUtils, LCLStrConsts, LCLType, VCLGlobals, InterfaceBase;
 
 type
 
