@@ -77,6 +77,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
+    property Anchors;
     property Default : Boolean read FDefault write SetDefault default false;
     property Enabled;
     property ModalResult : TModalResult read FModalResult write FModalResult default mrNone;
@@ -128,7 +129,7 @@ type
   TBitBtnKind = (bkCustom, bkOK, bkCancel, bkHelp,bkYes, bkNo,
                  bkClose, bkAbort, bkRetry, bkIgnore, bkAll);
 
-  TBitBtn = Class(TButton)
+  TBitBtn = class(TButton)
   private
     FCanvas : TCanvas;
     FGlyph  : TButtonGlyph;
@@ -260,6 +261,13 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.20  2002/08/30 06:46:03  lazarus
+  Use comboboxes. Use history. Prettify the dialog. Preselect text on show.
+  Make the findreplace a dialog. Thus removing resiying code (handled by Anchors now anyway).
+  Make Anchors work again and publish them for various controls.
+  SelStart and Co. for TEdit, SelectAll procedure for TComboBox and TEdit.
+  Clean up and fix some bugs for TComboBox, plus selection stuff.
+
   Revision 1.19  2002/08/28 11:41:53  lazarus
   MG: activated environment opts in debugger
 
