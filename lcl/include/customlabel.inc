@@ -1,4 +1,4 @@
-// included by stdctrls.pp
+{%MainUnit ../stdctrls.pp}
 
 {******************************************************************************
                                 TCustomLabel
@@ -185,6 +185,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.14  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.13  2004/03/08 22:36:01  mattias
   added TWinControl.ParentFormInitializeWnd
 

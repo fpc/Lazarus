@@ -1,4 +1,4 @@
-// included by stdctrls.pp
+{%MainUnit ../stdctrls.pp}
 
 {******************************************************************************
                                      TMemoStrings
@@ -148,6 +148,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.9  2004/02/23 08:19:04  micha
   revert intf split
 

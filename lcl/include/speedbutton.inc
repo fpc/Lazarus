@@ -1,4 +1,4 @@
-// included by buttons.pp
+{%MainUnit ../buttons.pp}
 
 {******************************************************************************
                                    TSpeedButton
@@ -773,6 +773,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.51  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.50  2004/02/28 00:34:35  mattias
   fixed CreateComponent for buttons, implemented basic Drag And Drop
 

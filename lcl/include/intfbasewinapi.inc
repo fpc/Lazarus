@@ -1,4 +1,4 @@
-// included by interfacebase.pp
+{%MainUnit ../interfacebase.pp}
 
 { $Id$ }
 {******************************************************************************
@@ -1404,6 +1404,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.10  2004/03/06 21:57:14  mattias
   fixed compilation under fpc 1.9.3
 

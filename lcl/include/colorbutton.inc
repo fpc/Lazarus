@@ -1,4 +1,4 @@
-// included by buttons.pp
+{%MainUnit ../buttons.pp}
 
 {******************************************************************************
                                    TColorButton

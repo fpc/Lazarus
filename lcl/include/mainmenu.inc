@@ -1,4 +1,4 @@
-// included by menus.pp
+{%MainUnit ../menus.pp}
 {******************************************************************************
                                   TMainMenu
  ******************************************************************************
@@ -49,6 +49,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.5  2002/11/12 10:16:17  lazarus
   MG: fixed TMainMenu creation
 

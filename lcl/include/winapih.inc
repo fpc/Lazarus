@@ -1,3 +1,4 @@
+{%MainUnit ../lclintf.pp}
 // included by interfacebase.pp and lclintf.pp
 
 (******************************************************************************
@@ -294,6 +295,9 @@ function RGB(R, G, B : Byte) : TColorRef;
 { =============================================================================
 
   $Log$
+  Revision 1.100  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.99  2004/03/22 19:10:04  mattias
   implemented icons for TPage in gtk, mask for TCustomImageList
 

@@ -1,4 +1,4 @@
-// included by stdctrls.pp
+{%MainUnit ../stdctrls.pp}
 {
  *****************************************************************************
  *                                                                           *
@@ -71,6 +71,9 @@ end;
 
 {
   $Log$
+  Revision 1.11  2004/04/10 17:58:56  mattias
+  implemented mainunit hints for include files
+
   Revision 1.10  2004/03/07 09:37:20  mattias
   added workaround for AutoSize in TCustomLabel
 

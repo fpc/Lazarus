@@ -1,4 +1,4 @@
-// included by dialogs.pp
+{%MainUnit ../dialogs.pp}
 
 {******************************************************************************
                                   MessageDialogs
@@ -257,6 +257,9 @@ end;
 
 {
    $Log$
+   Revision 1.25  2004/04/10 17:58:57  mattias
+   implemented mainunit hints for include files
+
    Revision 1.24  2004/02/04 00:21:40  mattias
    added SelectDirectory and TListBox.ItemVisible
 

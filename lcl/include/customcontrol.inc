@@ -1,4 +1,4 @@
-// included by controls.pp
+{%MainUnit ../controls.pp}
 
 {******************************************************************************
                                      TCustomControl
@@ -121,6 +121,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.10  2004/03/17 09:44:31  micha
   disable double buffering to improve speed
 

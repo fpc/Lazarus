@@ -1,4 +1,4 @@
-// included by stdctrls.pp
+{%MainUnit ../stdctrls.pp}
 
 {******************************************************************************
                                TRadioButton
@@ -106,6 +106,9 @@ end;
 
 {
   $Log$
+  Revision 1.17  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.16  2004/03/07 09:37:20  mattias
   added workaround for AutoSize in TCustomLabel
 

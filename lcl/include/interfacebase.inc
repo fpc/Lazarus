@@ -1,5 +1,6 @@
-{ $Id$ }
-{******************************************************************************
+{%MainUnit ../interfacebase.pp}
+{ $Id$
+******************************************************************************
                                   TWidgetSet
 
                                    WinApi stuff
@@ -41,6 +42,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.116  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.115  2004/03/05 00:14:02  marc
   * Renamed TInterfaceBase to TWidgetSet
 

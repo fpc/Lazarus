@@ -1,4 +1,4 @@
-// included by dialogs.pp
+{%MainUnit ../dialogs.pp}
 
 {******************************************************************************
                                   TCommonDialog
@@ -98,6 +98,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.14  2004/04/10 17:58:56  mattias
+  implemented mainunit hints for include files
+
   Revision 1.13  2004/04/03 13:10:20  mattias
   fixed TCalendarDialog.DialogTitle
 

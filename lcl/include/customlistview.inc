@@ -1,4 +1,4 @@
-// included by comctrls.pp
+{%MainUnit ../comctrls.pp}
 {
  *****************************************************************************
  *                                                                           *
@@ -614,6 +614,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.33  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.32  2004/04/04 17:10:05  marc
   Patch from Andrew Haines
 

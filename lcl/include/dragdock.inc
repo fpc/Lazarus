@@ -1,4 +1,4 @@
-// included by controls.pp
+{%MainUnit ../controls.pp}
 
 {*****************************************************************************
  *                                                                           *
@@ -336,6 +336,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.3  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.2  2004/03/19 16:37:55  mattias
   renamed internal FindDragTarget to GetDragTargetAt
 

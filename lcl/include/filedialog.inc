@@ -1,4 +1,4 @@
-// included by dialogs.pp
+{%MainUnit ../dialogs.pp}
 
 {******************************************************************************
                                   TFileDialog
@@ -278,6 +278,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.20  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.19  2004/03/20 17:36:56  mattias
   added IDEIntf package and component editors for MemDS
 

@@ -1,4 +1,4 @@
-// included by comctrls.pp
+{%MainUnit ../comctrls.pp}
 
 { TToolButton
 
@@ -1192,6 +1192,9 @@ end;
 
 {
   $Log$
+  Revision 1.17  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.16  2004/02/28 10:16:02  mattias
   fixed 1.0.x compilation
 

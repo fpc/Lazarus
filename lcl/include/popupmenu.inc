@@ -1,3 +1,4 @@
+{%MainUnit ../menu.pp}
 {******************************************************************************
                                   TPopupMenu
  ******************************************************************************
@@ -75,6 +76,9 @@ end;
 
 {
   $Log$
+  Revision 1.10  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.9  2004/02/23 18:24:38  mattias
   completed new TToolBar
 

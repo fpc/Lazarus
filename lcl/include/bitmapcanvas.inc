@@ -1,4 +1,4 @@
-// included by graphics.pp
+{%MainUnit ../graphics.pp}
 
 {******************************************************************************
                                   TBitmapCanvas
@@ -117,6 +117,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2004/04/10 17:58:56  mattias
+  implemented mainunit hints for include files
+
   Revision 1.10  2004/03/06 15:37:43  mattias
   fixed FreeDC
 

@@ -1,4 +1,4 @@
-// included by extctrls.pp
+{%MainUnit ../extctrls.pp}
 
 {******************************************************************************
                                    TNBPages
@@ -792,6 +792,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.45  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.44  2004/02/23 08:19:04  micha
   revert intf split
 

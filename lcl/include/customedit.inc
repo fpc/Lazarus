@@ -1,4 +1,4 @@
-// included by stdctrls.pp
+{%MainUnit ../stdctrls.pp}
 
 {******************************************************************************
                                      TEdit
@@ -371,6 +371,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.27  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.26  2004/03/07 09:37:20  mattias
   added workaround for AutoSize in TCustomLabel
 

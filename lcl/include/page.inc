@@ -1,4 +1,4 @@
-// included by extctrls.pp
+{%MainUnit ../extctrls.pp}
 {******************************************************************************
                                      TPage
  ******************************************************************************
@@ -24,6 +24,9 @@
 // included by extctrls.pp
 {
   $Log$
+  Revision 1.22  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.21  2003/09/20 13:27:49  mattias
   varois improvements for ParentColor from Micha
 

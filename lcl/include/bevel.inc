@@ -1,4 +1,4 @@
-// included by extctrls.pp
+{%MainUnit ../extctrls.pp}
 {
  *****************************************************************************
  *                                                                           *
@@ -251,6 +251,9 @@ End;
 
 {
   $Log$
+  Revision 1.9  2004/04/10 17:58:56  mattias
+  implemented mainunit hints for include files
+
   Revision 1.8  2004/02/03 19:02:35  mattias
   fixed calling TImage.OnPaint
 

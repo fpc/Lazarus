@@ -1,3 +1,4 @@
+{%MainUnit ../comctrls.pp}
 { $Id$
 
  *****************************************************************************
@@ -331,6 +332,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.19  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.18  2004/03/18 22:35:52  mattias
   improved TCustomListView.ItemAdded with an Index param  from Andrew
 

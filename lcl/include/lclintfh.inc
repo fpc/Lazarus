@@ -1,3 +1,4 @@
+{%MainUnit ../interfacebase.pp}
 (******************************************************************************
   All interface communication related stuff goes here.
   This file is used by both LCLLinux and InterfaceBase
@@ -149,6 +150,9 @@ procedure RaiseLastOSError;
 { =============================================================================
 
   $Log$
+  Revision 1.24  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.23  2004/03/22 19:10:04  mattias
   implemented icons for TPage in gtk, mask for TCustomImageList
 

@@ -1,4 +1,4 @@
-// included by graphics.pp
+{%MainUnit ../graphics.pp}
 {******************************************************************************
                                      TFONT
  ******************************************************************************
@@ -833,6 +833,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.12  2004/01/27 21:32:11  mattias
   improved changing style of controls
 

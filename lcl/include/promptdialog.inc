@@ -1,4 +1,4 @@
-// included by dialogs.pp
+{%MainUnit ../dialogs.pp}
 
 {
  *****************************************************************************
@@ -377,6 +377,9 @@ end;
 
 {
    $Log$
+   Revision 1.14  2004/04/10 17:58:57  mattias
+   implemented mainunit hints for include files
+
    Revision 1.13  2004/03/06 17:12:19  mattias
    fixed CreateBrushIndirect
 

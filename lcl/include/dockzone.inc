@@ -1,4 +1,4 @@
-// included by control.pp
+{%MainUnit ../control.pp}
 
 {******************************************************************************
                                      TDockZone

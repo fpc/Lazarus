@@ -1,3 +1,4 @@
+{%MainUnit ../graphics.pp}
 {******************************************************************************
                                      TCANVAS
  ******************************************************************************
@@ -1258,6 +1259,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.74  2004/04/10 17:58:56  mattias
+  implemented mainunit hints for include files
+
   Revision 1.73  2004/03/28 12:49:22  mattias
   implemented mask merge and extraction for raw images
 

@@ -1,4 +1,4 @@
-                // included by controls.pp
+{%MainUnit ../controls.pp}
 
 {******************************************************************************
                                   TWinControl
@@ -3448,6 +3448,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.218  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.217  2004/04/10 17:54:52  micha
   - added: [win32] mousewheel default handler sends scrollbar messages
   - fixed: lmsetcursor; partial todo

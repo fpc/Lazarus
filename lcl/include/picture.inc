@@ -1,4 +1,4 @@
-// included by graphics.pp
+{%MainUnit ../graphics.pp}
 
 { TPicture and help classes TPictureFileFormatList
 

@@ -1,3 +1,4 @@
+{%MainUnit ../buttons.pp}
 {******************************************************************************
                                    TButton
  ******************************************************************************
@@ -143,6 +144,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.24  2004/04/10 17:58:56  mattias
+  implemented mainunit hints for include files
+
   Revision 1.23  2004/03/19 00:03:15  marc
   * Moved the implementation of (GTK)ButtonCreateHandle to the new
     (GTK)WSButton class

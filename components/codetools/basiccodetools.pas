@@ -52,6 +52,7 @@ function FindNextIDEDirective(const ASource: string; StartPos: integer;
     NestedComments: boolean): integer;
 function CleanCodeFromComments(const DirtyCode: string;
     NestedComments: boolean): string;
+function FindMainUnitHint(const ASource: string; var Filename: string): boolean;
 
 // indent
 procedure GetLineStartEndAtPosition(const Source:string; Position:integer;
@@ -117,6 +118,8 @@ function CompareSubStrings(const Find, Txt: string;
     FindStartPos, TxtStartPos, Len: integer; CaseSensitive: boolean): integer;
 function CompareIdentifiers(Identifier1, Identifier2: PChar): integer;
 function ComparePrefixIdent(PrefixIdent, Identifier: PChar): boolean;
+function TextBeginsWith(Txt: PChar; TxtLen: integer; StartTxt: PChar;
+    StartTxtLen: integer; CaseSensitive: boolean): boolean;
 
 // space and special chars
 function TrimCodeSpace(const ACode: string): string;
@@ -2223,6 +2226,29 @@ begin
   SetLength(Result,CleanPos-1);
 end;
 
+function FindMainUnitHint(const ASource: string; var Filename: string
+  ): boolean;
+const
+  IncludeByHintStart = '{%MainUnit ';
+var
+  MaxPos: Integer;
+  StartPos: Integer;
+  EndPos: LongInt;
+begin
+  Result:=false;
+  MaxPos:=length(ASource);
+  StartPos:=length(IncludeByHintStart);
+  if not TextBeginsWith(PChar(ASource),MaxPos,IncludeByHintStart,StartPos,false)
+  then
+    exit;
+  while (StartPos<=MaxPos) and (ASource[StartPos]=' ') do inc(StartPos);
+  EndPos:=StartPos;
+  while (EndPos<=MaxPos) and (ASource[EndPos]<>'}') do inc(EndPos);
+  if (EndPos=StartPos) or (EndPos>MaxPos) then exit;
+  Filename:=copy(ASource,StartPos,EndPos-StartPos);
+  Result:=true;
+end;
+
 function CompareIdentifiers(Identifier1, Identifier2: PChar): integer;
 begin
   if (Identifier1<>nil) then begin
@@ -2278,6 +2304,13 @@ begin
   end else begin
     Result:=true;
   end;
+end;
+
+function TextBeginsWith(Txt: PChar; TxtLen: integer; StartTxt: PChar;
+    StartTxtLen: integer; CaseSensitive: boolean): boolean;
+begin
+  if TxtLen<StartTxtLen then exit;
+  Result:=CompareText(Txt,StartTxtLen,StartTxt,StartTxtLen,CaseSensitive)=0;
 end;
 
 function GetIdentifier(Identifier: PChar): string;

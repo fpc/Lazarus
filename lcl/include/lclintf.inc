@@ -1,5 +1,6 @@
-{ $Id$ }
-(******************************************************************************
+{%MainUnit ../lclintf.pp}
+{ $Id$
+******************************************************************************
   All interface communication related stuff goes here.
   This file is used by LCLIntf.pas
   If a procedure is platform dependent then it should call:
@@ -22,9 +23,9 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
  *                                                                           *
  *****************************************************************************
- ******************************************************************************)
+ ******************************************************************************
 
-{******************************************************************************
+******************************************************************************
   These functions redirect to the platform specific interface object.
 
   Note:
@@ -526,6 +527,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.24  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.23  2004/03/22 19:10:04  mattias
   implemented icons for TPage in gtk, mask for TCustomImageList
 

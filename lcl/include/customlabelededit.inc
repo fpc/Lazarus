@@ -1,4 +1,4 @@
-// included by extctrls.pp
+{%MainUnit ../extctrls.pp}
 
 {******************************************************************************
                                  TBoundLabel

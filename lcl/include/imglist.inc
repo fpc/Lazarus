@@ -1,4 +1,4 @@
-// included by imglist.pp
+{%MainUnit ../imglist.pp}
 
 {******************************************************************************
                                   TCustomImageList
@@ -1261,6 +1261,9 @@ end;
 {
 
   $Log$
+  Revision 1.38  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.37  2004/04/05 11:41:06  mattias
   fixed retrieving gdkbitmaps  LineEnding=rileDWordBoundary
 

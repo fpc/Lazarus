@@ -1,4 +1,4 @@
-// included by graphics.pp
+{%MainUnit ../graphics.pp}
 
 {******************************************************************************
                                      TBitMap
@@ -1196,6 +1196,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.85  2004/04/10 17:58:56  mattias
+  implemented mainunit hints for include files
+
   Revision 1.84  2004/04/10 00:11:16  mattias
   added basic TIcon reading  from Colin
 

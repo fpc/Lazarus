@@ -1,5 +1,6 @@
-{ $Id$ }
-{******************************************************************************
+{%MainUnit ../interfacebase.pp}
+{ $Id$
+ ******************************************************************************
                                   TWidgetSet
 
                            interface communication  stuff
@@ -629,6 +630,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.28  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.27  2004/03/22 19:10:04  mattias
   implemented icons for TPage in gtk, mask for TCustomImageList
 

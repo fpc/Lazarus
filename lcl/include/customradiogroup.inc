@@ -1,3 +1,4 @@
+{%MainUnit ../extctrls.pas}
 {******************************************************************************
                                 TCustomRadioBox
  ******************************************************************************
@@ -395,6 +396,9 @@ end;
 
 {
   $Log$
+  Revision 1.27  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.26  2004/02/08 11:31:32  mattias
   TMenuItem.Bitmap is now auto created on read. Added TMenuItem.HasBitmap
 

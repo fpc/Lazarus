@@ -1,4 +1,4 @@
-// included by comctrls.pp
+{%MainUnit ../comctrls.pp}
 
 {******************************************************************************
                                   TTrackBar
@@ -383,6 +383,9 @@ end;
 
 {
   $Log$
+  Revision 1.11  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.10  2004/02/27 00:42:41  marc
   * Interface CreateComponent splitup
   * Implemented CreateButtonHandle on GTK interface

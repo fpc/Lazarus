@@ -1,4 +1,4 @@
-// included by forms.pp
+{%MainUnit ../forms.pp}
 
 {******************************************************************************
                                      TCustomForm
@@ -1601,6 +1601,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.133  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.132  2004/03/30 19:08:29  mattias
   test for destroying controls, so they do not get focus
 

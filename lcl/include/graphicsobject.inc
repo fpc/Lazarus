@@ -1,3 +1,4 @@
+{%MainUnit ../controls.pp}
 {******************************************************************************
                                TGraphicsObject
  ******************************************************************************
@@ -46,6 +47,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.5  2003/12/05 08:39:53  mattias
   fixed memleak in debugger  from Vincent
 

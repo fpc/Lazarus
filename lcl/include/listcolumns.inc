@@ -1,4 +1,4 @@
-// included by comctrls.pp
+{%MainUnit ../comctrls.pp}
 
 { $Id$
 
@@ -115,6 +115,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.7  2004/03/06 18:44:06  mattias
   workaround for fpc bug 2859
 

@@ -1,3 +1,4 @@
+{%MainUnit ../extctrls.pp}
 {
  *****************************************************************************
  *                                                                           *
@@ -105,6 +106,9 @@ end;
 { =============================================================================
 
  $Log$
+ Revision 1.4  2004/04/10 17:58:57  mattias
+ implemented mainunit hints for include files
+
  Revision 1.3  2004/02/10 10:13:09  mattias
  added diamonds to TShape
 

@@ -1,3 +1,4 @@
+{%MainUnit ../comctrls.pp}
 { $Id$
 
  *****************************************************************************
@@ -157,6 +158,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.17  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.16  2004/04/04 17:10:05  marc
   Patch from Andrew Haines
 

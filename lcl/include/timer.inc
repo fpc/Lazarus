@@ -1,4 +1,4 @@
-// included by extctrls.pp
+{%MainUnit ../extctrls.pp}
 
 {******************************************************************************
                                   TTimer
@@ -23,6 +23,9 @@
 
 {
   $Log$
+  Revision 1.10  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.9  2002/11/04 11:48:48  lazarus
   MG: implemented TIdleTimer and fixed small bugs
 

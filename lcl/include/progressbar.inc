@@ -1,4 +1,4 @@
-// included by comctrls.pp
+{%MainUnit ../comctrls.pp}
 {******************************************************************************
                                   TProgressBar
  ******************************************************************************
@@ -296,6 +296,9 @@ end;
 
 {
   $Log$
+  Revision 1.7  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.6  2004/02/23 08:19:04  micha
   revert intf split
 

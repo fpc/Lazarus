@@ -1,4 +1,4 @@
-// included by graphics.pp
+{%MainUnit ../graphics.pp}
 {******************************************************************************
                                      TPixmap
  ******************************************************************************
@@ -298,6 +298,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.29  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.28  2004/04/03 16:47:46  mattias
   implemented converting gdkbitmap to RawImage mask
 

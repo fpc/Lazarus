@@ -1,4 +1,4 @@
-// included by dbctrls.pp
+{%MainUnit ../dbctrls.pp}
 
 {******************************************************************************
                                      TDBText
@@ -98,6 +98,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.2  2003/09/22 15:03:19  ajgenius
   partly fixed streaming of DBCalendar, and opRemove notification of DBText DBEdit DBCalendar
 

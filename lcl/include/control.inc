@@ -1,4 +1,4 @@
-// included by controls.pp
+{%MainUnit ../controls.pp}
 
 {******************************************************************************
                                      TControl
@@ -2880,6 +2880,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.181  2004/04/10 17:58:56  mattias
+  implemented mainunit hints for include files
+
   Revision 1.180  2004/04/02 19:39:46  mattias
   fixed checking empty mask raw image
 

@@ -100,6 +100,7 @@ type
     function DoOnGetSrcPathForCompiledUnit(Sender: TObject;
           const AFilename: string): string;
     function GetMainCode(Code: TCodeBuffer): TCodeBuffer;
+    function FindCodeOfMainUnitHint(Code: TCodeBuffer): TCodeBuffer;
     procedure CreateScanner(Code: TCodeBuffer);
     function InitCurCodeTool(Code: TCodeBuffer): boolean;
     function InitResourceTool: boolean;
@@ -631,7 +632,29 @@ begin
     Result:=SourceCache.LoadFile(Result.LastIncludedByFile);
     if Result=nil then exit;
   end;
+  if (not FilenameHasSourceExt(Result.Filename)) then begin
+    Result:=FindCodeOfMainUnitHint(Result);
+  end;
+  if Result=nil then exit;
   CreateScanner(Result);
+end;
+
+function TCodeToolManager.FindCodeOfMainUnitHint(Code: TCodeBuffer
+  ): TCodeBuffer;
+var
+  MainUnitFilename: string;
+begin
+  Result:=nil;
+  if Code=nil then exit;
+  //writeln('TCodeToolManager.FindCodeOfMainUnitHint ',Code.Filename);
+  if not FindMainUnitHint(Code.Source,MainUnitFilename) then exit;
+  MainUnitFilename:=TrimFilename(MainUnitFilename);
+  if (not FilenameIsAbsolute(MainUnitFilename))
+  and (not Code.IsVirtual) then
+    MainUnitFilename:=TrimFilename(ExtractFilePath(Code.Filename)+PathDelim
+                                   +MainUnitFilename);
+  //writeln('TCodeToolManager.FindCodeOfMainUnitHint B ');
+  Result:=SourceCache.LoadFile(MainUnitFilename);
 end;
 
 procedure TCodeToolManager.CreateScanner(Code: TCodeBuffer);

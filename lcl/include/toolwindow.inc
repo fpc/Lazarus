@@ -1,4 +1,4 @@
-// included by toolwin.pp
+{%MainUnit ../toolwin.pp}
 
 {******************************************************************************
                                   TToolWindow

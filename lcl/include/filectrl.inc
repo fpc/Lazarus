@@ -1,3 +1,4 @@
+{%MainUnit ../filectrl.pp}
 {******************************************************************************
                                   Filectrl
  ******************************************************************************
@@ -927,6 +928,9 @@ end;
 
 {
   $Log$
+  Revision 1.44  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.43  2004/03/12 11:54:57  vincents
   fixed 1.0.x compilation, removed double constants
 

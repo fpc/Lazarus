@@ -1,4 +1,4 @@
-// included by clipbrd.pp
+{%MainUnit ../clipbrd.pp}
 
 {******************************************************************************
                                   TClipBoard
@@ -675,6 +675,9 @@ end;
 
 {
   $Log$
+  Revision 1.16  2004/04/10 17:58:56  mattias
+  implemented mainunit hints for include files
+
   Revision 1.15  2003/12/25 14:17:07  mattias
   fixed many range check warnings
 

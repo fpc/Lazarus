@@ -1,4 +1,4 @@
-// included by stdctrls.pp
+{%MainUnit ../stdctrls.pp}
 {
  *****************************************************************************
  *                                                                           *
@@ -35,6 +35,9 @@ end;
 
 {
   $Log$
+  Revision 1.11  2004/04/10 17:58:57  mattias
+  implemented mainunit hints for include files
+
   Revision 1.10  2003/12/27 19:34:13  mattias
   implemented default values for property editors and OI
 
