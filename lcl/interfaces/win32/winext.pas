@@ -90,11 +90,6 @@ Function Replace(Const Str, OrigStr, ReplStr: String; Const Global: Boolean): St
   Str into substrings around SplitStr }
 Function Split(Const Str: String; SplitStr: String; Count: Integer; Const CaseSensitive: Boolean): TStringList;
 
-{ Creates a string list limited to Count (-1 for no limit) entries by splitting
-  Str into substrings around any character or string that matches the pattern
-  of SplitStr }
-Function Split(Const Str: PChar; SplitStr: TRegExprEngine; Count: Integer; Const CaseSensitive: Boolean): TStringList;
-
 Implementation
 
 Uses SysUtils;
@@ -157,40 +152,6 @@ Begin
   Begin
     Result.Capacity := Result.Count;
     Result.Add(Copy(Str, (Length(Str) - Length(S)) + 1, Pos(SplitStr, Str) - 1));
-  End;
-End;
-
-Function Split(Const Str: PChar; SplitStr: TRegExprEngine; Count: Integer; Const CaseSensitive: Boolean): TStringList;
-Var
-  Index, Index2, Len, Len2: Integer;
-  LastIndex: Byte;
-  OrigCt: Integer;
-  S, S2: String;
-Begin
-  Result := TStringList.Create;
-  OrigCt := Count;
-  S := String(Str);
-  RegExprPos(SplitStr, Str, Index, Len);
-  Repeat
-    If OrigCt = 0 Then
-      Break;
-    S := Copy(S, Index + 1, Length(S));
-    Result.Capacity := Result.Count;
-    S2 := Copy(S, Index + 1, Length(S));
-    RegExprPos(SplitStr, PChar(S2), Index2, Len2);
-    Result.Add(Copy(S, Index + Len, (Index2 - Index) + 1));
-    RegExprPos(SplitStr, PChar(S), Index, Len);
-    If Index > 0 Then
-      LastIndex := Index;
-    If Count > -1 Then
-      Dec(Count)
-  Until (Index < 1) Or (Count = 0);
-  Result.Capacity := Result.Count;
-  Result.Insert(0, Copy(Str, Length(String(Str)) - Length(S), Index + 1));
-  If Count <> 0 Then
-  Begin
-    Result.Capacity := Result.Count;
-    Result.Add(Copy(S, LastIndex + Len + (Index2 - Index), Length(S)));
   End;
 End;
 

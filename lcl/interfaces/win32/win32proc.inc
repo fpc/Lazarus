@@ -132,21 +132,6 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Function: LM_To_String
-  Params: LM_Message - Input lazarus message
-  Returns: Lazarus message name
-
-  Converts a lazarus message identIfier to the appropriate name
-
-  NOTE: This Function has been superseded by and simply calls
-        LMessages.GetMessageName
- ------------------------------------------------------------------------------}
-Function LM_To_String(LM_Message: Integer): String;
-Begin
-  Result := GetMessageName(LM_Message);
-End;
-
-{------------------------------------------------------------------------------
   Function: WM_To_String
   Params: WM_Message - a WinDows message
   Returns: A WinDows-message name
@@ -444,124 +429,6 @@ Begin
   AssertEx(Message, False, 0);
 End;
 
-
-{------------------------------------------------------------------------------
-  Function: NewGDIRawImage
-  Params:  Width, Height - Size of the image
-           Depth         - Depth of the image
-  Returns: a GDIRawImage
-
-  Creates a RawImage
- ------------------------------------------------------------------------------}
-Function NewGDIRawImage(Const AWidth, AHeight: Integer; Const ADepth: Byte): PGDIRawImage;
-Begin
-  Result := AllocMem(SizeOf(TGDIRawImage) + ((AWidth * AHeight) - 1) * SizeOf(TGDIRGB));
-  With Result^ Do
-  Begin
-    Height := AHeight;
-    Width := AWidth;
-    Depth := ADepth;
-  End;
-End;
-
-
-{------------------------------------------------------------------------------
-  Function: CopyDCData
-  Params:  DestinationDC - a dc to copy data to
-           SourceDC      - a dc to copy data from
-  Returns: True If succesfu
-
-  Creates a copy DC from the given DC
- ------------------------------------------------------------------------------}
-Function CopyDCData(Const DestinationDC, SourceDC: PDeviceContext): Boolean;
-Begin
-  Assert(False, Format('Trace:> [CopyDCData] DestDC:0x%x, SourceDC:0x%x', [Integer(DestinationDC), Integer(SourceDC)]));
-  Result := (DestinationDC <> nil) and (SourceDC <> nil);
-  If Result
-  Then Begin
-    With DestinationDC^ Do
-    Begin
-      hWnd := SourceDC^.hWnd;
-      Drawable := SourceDC^.Drawable;
-      If (SourceDC^.GC = HDC(Nil)) or (Drawable = Nil) Then
-        GC := HDC(Nil)
-      Else
-      Begin
-        
-      End;
-      PenPos := SourceDC^.PenPos;
-      CurrentBitmap := SourceDC^.CurrentBitmap;
-      CurrentFont := SourceDC^.CurrentFont;
-      CurrentPen := SourceDC^.CurrentPen;
-      CurrentBrush := SourceDC^.CurrentBrush;
-      CurrentTextColor := SourceDC^.CurrentTextColor;
-      CurrentBackColor := SourceDC^.CurrentBackColor;
-      SavedContext := nil;
-    End;
-  End;
-  Assert(False, Format('Trace:< [CopyDCData] DestDC:0x%x, SourceDC:0x%x --> %d', [Integer(DestinationDC), Integer(SourceDC), Integer(Result)]));
-End;
-
-{------------------------------------------------------------------------------
-  Procedure: SelectGDKBrushProps
-  Params:  DC - a (LCL) device context
-  Returns: Nothing
-
-  Sets the forecolor and fill according to the brush
- ------------------------------------------------------------------------------}
-Procedure SelectWin32BrushProps(Const DC: HDC);
-var
-  LB: LogBrush;
-Begin
-  With LB, PDeviceContext(DC)^, CurrentBrush^ Do
-  Begin
-    Assert(False, 'TODO: Code SelectWin32BrushProps');
-    //Assert(False, Format('Trace:[SelectGDKBrushProps] Fill: %d | Color --> pixel: %d, red: 0x%x, green: 0x%x, blue: 0x%x', [Integer(GDIBrushFill), GDIBrushColor.Pixel, GDIBrushColor.Red, GDIBrushColor.Green, GDIBrushColor.Blue]));
-    LBStyle := GDIBrushFill;
-    LBColor := GDIBrushColor;
-    SelectObject(GC, CreateBrushIndirect(TagLogBrush(LB)));
-    SetBkColor(GC, CurrentBackCOlor);
-    //TODO: Brush pixmap
-  End;
-End;
-
-{------------------------------------------------------------------------------
-  Procedure: SelectWin32PenProps
-  Params:  DC - a (LCL) device context
-  Returns: Nothing
-
-  Sets the forecolor and fill according to the pen
- ------------------------------------------------------------------------------}
-Procedure SelectWin32PenProps(Const DC: HDC);
-Var
-  Pen: HPEN;
-Begin
-  Assert(False, 'Trace:TODO: Code SelectWin32PenProps');
-  With PDeviceContext(DC)^, CurrentPen^ Do
-  Begin
-    Pen := CreatePen(GDIPenStyle, GDIPenWidth, GDIPenColor);
-    SetBkColor(GC, CurrentBackColor);
-    SelectObject(GC, Pen);
-  End;
-End;
-
-{------------------------------------------------------------------------------
-  Procedure: SelectWin32TextProps
-  Params:  DC - a (LCL)devicecontext
-  Returns: Nothing
-
-  Sets the forecolor and fill according to the Textcolor
- ------------------------------------------------------------------------------}
-Procedure SelectWin32TextProps(Const DC: HDC);
-Begin
-  Assert(False, 'TODO: Code SelectWin32TextProps');
-  With PDeviceContext(DC)^ Do
-  Begin
-    SetBkColor(GC, CurrentBackColor);
-    SetTextColor(GC, CurrentTextColor);
-  End;
-End;
-
 {------------------------------------------------------------------------------
   Function: GetShiftState
   Params: None
@@ -601,19 +468,6 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Function: Win32KeyState2ShiftState
-  Params:    KeyState - The Windows key state
-  Returns:   the TShiftState for the given KeyState
-
-  Win32KeyState2ShiftState converts a Windows key state to a LCL/Delphi TShiftState
- ------------------------------------------------------------------------------}
-Function Win32KeyState2ShiftState(KeyState: Word): TShiftState;
-Begin
-  Assert(False, 'TRACE:Using Function Win32KeyState2ShiftState which isn''t implemented yet');
-  Result := GetShiftState;
-End;
-
-{------------------------------------------------------------------------------
   Procedure: GetWin32KeyInfo
   Params:  Event      - Requested info  
            KeyCode    - the ASCII key code of the eventkey
@@ -626,18 +480,13 @@ End;
   GetWin32KeyInfo returns information about the given key event
  ------------------------------------------------------------------------------}
 Procedure GetWin32KeyInfo(Const Event: Integer; Var KeyCode, VirtualKey: Word; Var SysKey, Extended, Toggle: Boolean);
-Var
-  TempKeyCode: Word;
-  CtrlDown: Boolean;
 Const
   MVK_UNIFY_SIDES = 1;
 Begin
   Assert(False, 'TRACE:Using function GetWin32KeyInfo which isn''t implemented yet');
   KeyCode := Word(Event);
   VirtualKey := MapVirtualKey(KeyCode, MVK_UNIFY_SIDES);
-  TempKeyCode := KeyCode;
   SysKey := (VirtualKey = VK_SHIFT) Or (VirtualKey = VK_CONTROL) Or (VirtualKey = VK_MENU);
-  CtrlDown := GetAsyncKeyState(VK_CONTROL) <> 0;
   ExtEnded := (SysKey) Or (VirtualKey = VK_INSERT) Or (VirtualKey = VK_HOME) Or (VirtualKey = VK_LEFT) Or (VirtualKey = VK_UP) Or (VirtualKey = VK_RIGHT) Or (VirtualKey = VK_DOWN) Or (VirtualKey = VK_PRIOR) Or (VirtualKey = VK_NEXT) Or (VirtualKey = VK_END) Or (VirtualKey = VK_DIVIDE);
   Toggle := Lo(GetKeyState(VirtualKey)) = 1;
 End;
@@ -761,113 +610,6 @@ End;
 ************************************************************************)
 
 // ----------------------------------------------------------------------
-// Creates a WinControlInfo record for the given window
-// Info needed by the API of a HWND 
-//
-// This structure obsoletes:
-//   "core-child", "fixed", "class"
-// ----------------------------------------------------------------------
-Function CreateControlInfo(Const Control: HWND): PWinControlInfo;
-Var
-  R: TRect;
-Begin
-  Assert(False, 'TRACE:Using function CreateControlInfo which isn''t implemented yet');
-  If Control = HWND(Nil) Then
-  Begin
-    Result := Nil;
-  End
-  Else
-  Begin
-    New(Result);
-    FillChar(Result^, SizeOf(Result^), 0);
-    With Result^ Do
-    Begin
-      GetUpdateRect(Control, @R, False);
-      ImplementationControl := Control;
-      UpdateRect := R;
-      WndProc := GetWindowLong(Control, GWL_WNDPROC);
-      Style := GetWindowLong(Control, GWL_STYLE);
-      ExStyle := GetWindowLong(Control, GWL_EXSTYLE);
-      UserData := GetWindowLong(Control, GWL_USERDATA);
-    End;
-    SetProp(Control, 'Control_Info', Result);
-  End;
-End;
-
-Function GetControlInfo(Const Control: HWND; Const Create: Boolean): PWinControlInfo;
-Begin
-  Assert(False, 'TRACE: Using Function GetControlInfo which isn''t implemented yet');
-  If Control = HWND(Nil) Then
-  Begin
-    Result := Nil;
-  End
-  Else
-  Begin
-    Result := PWinControlInfo(GetProp(Control, 'Control_Info'));
-    If (Result = Nil) and (Create) Then
-      Result := CreateControlInfo(Control);
-  End;
-End;
-
-// ----------------------------------------------------------------------
-// the core_child widget points to the actual widget which implements the 
-// Functionality we needed. It is mainly used in composed controls like
-// a listbox. In that case the core_child is the listbox, where a scrolling
-// widget is main.
-// ----------------------------------------------------------------------
-Function GetCoreChildControl(Const Control: HWND): HWND;
-Begin
-  Assert(False, 'TRACE:Using function GetCoreChildControl which isn''t implemented yet');
-  Result := HWND(GetProp(Control, 'Core_Child'));
-  If Result = HWND(Nil) Then
-    Result := Control;
-End;
-
-Procedure SetCoreChildControl(Const ParentControl, ChildControl: HWND);
-Begin
-  Assert(False, 'TRACE:Using Function SetCoreChildControl which isn''t implemented yet');
-  If (ParentControl <> HWND(Nil)) And (ChildControl <> HWND(Nil)) Then
-    SetProp(ParentControl, 'Core_Child', Pointer(ChildControl));
-End;
-
-// ----------------------------------------------------------------------
-// the main widget is the widget passed as handle to the winAPI
-// main data is stored in the fixed form to get a reference to its parent
-// ----------------------------------------------------------------------
-Function GetMainControl(Const Control: HWND): HWND;
-Begin
-  Assert(False, 'TRACE:Using function GetMainControl which isn''t implemented yet');
-  Result := HWND(GetProp(Control, 'Main'));
-  If Result = HWND(Nil) Then
-    Result := Control;
-End;
-
-Procedure SetMainControl(Const ParentControl, ChildControl: HWND);
-Begin
-  Assert(False, 'TRACE: Using Function SetMainControl which isn''t implemented yet');
-  If (ParentControl <> HWND(Nil)) and (ChildControl <> HWND(Nil)) Then
-    SetProp(ChildControl, 'Main', Pointer(ParentControl));
-End;
-
-// ----------------------------------------------------------------------
-// the fixed control is the container for controls. By default a control
-// scales/places a control. with the use of a fixed we can place them.
-// NOTE: This should only be true for GTK.
-// ----------------------------------------------------------------------
-Function GetFixedControl(Const Control: HWND): HWND;
-Begin
-  Assert(False, 'TRACE: Using Function GetFixedControl which isn''t implemented yet');
-  Result := HWND(GetProp(Control, 'Fixed'));
-End;
-
-Procedure SetFixedControl(Const ParentControl, FixedControl: HWND);
-Begin
-  Assert(False, 'TRACE: Using Function SetFixedControl which isn''t implemented yet');
-  If (ParentControl <> HWND(Nil)) and (FixedControl <> HWND(Nil)) Then
-    SetProp(ParentControl, 'Fixed', Pointer(FixedControl));
-End;
-
-// ----------------------------------------------------------------------
 // Some need the LCLobject which created this control.
 // 
 // MWE: IMO this shouldn't be needed
@@ -877,12 +619,6 @@ Begin
   Assert(False, 'TRACE:Using function SetLCLObject which isn''t implemented yet');
   If (Control <> HWND(Nil)) Then
     SetProp(Control, 'Class', Pointer(AnObject));
-End;
-
-Function GetLCLObject(Const Control: HWND): TObject;
-Begin
-  Assert(False, 'TRACE:Using function GetLCLObject which isn''t implemented yet');
-  Result := TObject(GetProp(Control, 'Class'));
 End;
 
 // ----------------------------------------------------------------------
@@ -921,6 +657,9 @@ End;
  { =============================================================================
 
   $Log$
+  Revision 1.7  2002/04/03 01:52:43  lazarus
+  Keith: Removed obsolete code, in preperation of a pending TWin32Object cleanup
+
   Revision 1.6  2002/02/07 08:35:12  lazarus
   Keith: Fixed persistent label captions and a few less noticable things
 

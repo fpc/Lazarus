@@ -101,8 +101,6 @@ End;
 Function TWin32ListStringList.Get(Index: Integer): String;
 Var
   Item: PChar;
-  ALabel: HWND;
-  ListItem: HWND;
 Begin
   If (Index < 0) Or (Index >= Count) Then
     Raise Exception.Create('Out of bounds.')
@@ -156,8 +154,6 @@ End;
 
  ------------------------------------------------------------------------------}
 Procedure TWin32ListStringList.Insert(Index: Integer; Const S: String);
-Var
-  Li: HWND;
 Begin
   If GetCount <> 0 Then
     FSender.Height := (FSender.Height + (FSender.Height Div GetCount));
@@ -304,15 +300,6 @@ End;
 
  ------------------------------------------------------------------------------}
 Procedure TWin32CListStringList.Insert(Index: Integer; Const S: String);
-Type
-  TCSArr = Record  
-    Arr: Array[0..15] Of PChar;
-    Str: Array[0..0] Of Char;
-  End;
-Var
-  CS: ^TCSArr;
-  CSize: Integer;
-  K: Integer;
 Begin
   SendMessage(FWin32CList, LB_INSERTSTRING, Index, LPARAM(PChar(S)));
 End;
@@ -337,6 +324,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2002/04/03 01:52:42  lazarus
+  Keith: Removed obsolete code, in preperation of a pending TWin32Object cleanup
+
   Revision 1.4  2002/02/04 10:54:33  lazarus
   Keith:
     * Fixes for Win32

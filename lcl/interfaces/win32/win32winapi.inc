@@ -16,15 +16,6 @@
 //  {$C+}
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
-
-Const
-  SYes = 'Yes';
-  SNo = 'No';
-  SOK = 'OK';
-  SCancel = 'Cancel';
-  SAbort = 'Abort';
-  SRetry = 'Retry';
-  SIgnore = 'Ignore';
   
 Const
   BOOL_TEXT: Array[Boolean] Of String = ('False', 'True');  
@@ -372,17 +363,13 @@ Type
   PPixmapArray = ^TPixmapArray;
   TPixmapArray = Array[0..1000] Of PChar;
 Var
-  AliasLen, BitCount, C, Planes: Cardinal;
+  AliasLen: Cardinal;
   AList: TList;
-  Bits: PBitData;
   ColorArray: PColorArray;
   ColorCount: Integer;
   DC: HDC;
-  GDIObject: PGDIObject;
   Height, Width: Integer;
   OldObject: HGDIOBJ;
-  P: Pointer;
-  PixIndex: Byte;
   PixmapArray: PPixmapArray;
   PixmapInfo: TStringList;
 Const
@@ -493,7 +480,7 @@ Const
 Begin
   Assert(False, 'Trace:TWin32Object.CreatePixmapIndirect - Start');
 
-  Height := 0;
+  {Height := 0;
   Width := 0;
   ColorCount := 0;
   AliasLen := 0;
@@ -540,7 +527,7 @@ Begin
   PixmapInfo := Nil;
   PixmapArray := Nil;
   SelectObject(DC, OldObject);
-  DeleteDC(DC);
+  DeleteDC(DC);}
   Assert(False, 'Trace:TWin32Object.CreatePixmapIndirect - Exit');
 End;
 
@@ -725,9 +712,6 @@ End;
   Draws a character string by using the currently selected font.
  ------------------------------------------------------------------------------}
 Function TWin32Object.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
-Var
-  PStr: PChar;
-  Width, Height: Integer;
 Begin
   Assert(False, Format('trace:> [TWin32Object.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
   Result := Windows.ExtTextOut(DC, X, Y, Options, LPRECT(Rect), Str, Count, Dx);
@@ -990,8 +974,6 @@ End;
   Computes the width and height of the specified string of text.
  ------------------------------------------------------------------------------}
 Function TWin32Object.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; Var Size: TSize): Boolean;
-Var
-  NMax, NWd: Integer;
 Begin
   Assert(False, 'Trace:[TWin32Object.GetTextExtentPoint] - Start');
   Result := Windows.GetTextExtentPoint32(DC, Str, Count, @Size);
@@ -1022,9 +1004,6 @@ End;
   Retrieves information about the specified window.
  ------------------------------------------------------------------------------}
 Function TWin32Object.GetWindowLong(Handle: HWND; Int: Integer): LongInt;
-Var
-  Data: TObject;
-  P: Pointer;
 Begin
   //TODO:Started but not finished
   Assert(False, Format('Trace:> [TWin32Object.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d)', [Handle, int, int]));
@@ -1191,10 +1170,7 @@ End;
   Checks a thread message queue for a message.
  ------------------------------------------------------------------------------}
 Function TWin32Object.PeekMessage(Var LPMsg: TMsg; Handle: HWND; WMsgFilterMin, WMsgFilterMax, WRemoveMsg: UINT): Boolean;
-Var
-  Message: PMsg;
 Begin 
-  //TODO Filtering
   Result := Windows.PeekMessage(@LPMsg, Handle, WMsgFilterMin, WMsgFilterMax, WRemoveMsg);
 End;
 
@@ -1304,8 +1280,6 @@ End;
   the current pen and filled by using the current brush.
  ------------------------------------------------------------------------------}
 Function TWin32Object.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
-Var
-  Width, Height: Integer;
 Begin
   Assert(False, Format('Trace:> [TWin32Object.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
   Result := Windows.Rectangle(DC, X1, Y1, X2, Y2);
@@ -1824,7 +1798,6 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.TextOut(DC: HDC; X, Y: Integer; Str: PChar; Count: Integer): Boolean;
 Begin
-  // Your code here
   Result := Windows.TextOut(DC, X, Y, Str, Count);
 End;
 
@@ -1850,6 +1823,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2002/04/03 01:52:43  lazarus
+  Keith: Removed obsolete code, in preperation of a pending TWin32Object cleanup
+
   Revision 1.7  2002/02/07 08:35:12  lazarus
   Keith: Fixed persistent label captions and a few less noticable things
 
