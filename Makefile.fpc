@@ -71,8 +71,9 @@ win32:
         $(MAKE) all LCLPLATFORM=win32 OPT=-dSUPPORTS_RESOURCES
 
 win32clean:
-        $(MAKE) clean LCLPLATFORM=win32
-        $(DEL) $(wildcard *$(EXEEXT)) $(wildcard *.ow*) $(wildcard *.res) $(wildcard ./*$(PPUEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./designer/*$(PPUEXT))
+        $(MAKE) cleanall LCLPLATFORM=win32
+        $(DEL) $(wildcard *.res)
+        $(DEL) lazarus.owr
 
 # MWE: moved to a more generic rule
 #lazarus.res: lazarus.rc
