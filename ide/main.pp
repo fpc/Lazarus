@@ -4151,6 +4151,7 @@ begin
 writeln('[TMainIDE.DoLoadCodeBuffer] A ',AFilename);
     ACodeBuffer:=CodeToolBoss.LoadFile(AFilename);
     if ACodeBuffer<>nil then begin
+      ACodeBuffer.Reload;
       Result:=mrOk;
 writeln('[TMainIDE.DoLoadCodeBuffer] ',ACodeBuffer.SourceLength,' ',ACodeBuffer.Filename);
     end else begin
@@ -5186,8 +5187,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.173  2001/12/11 14:36:40  lazarus
-  MG: started multiselection for TOpenDialog
+  Revision 1.174  2001/12/11 15:43:35  lazarus
+  MG: TCodeBuffer.LoadFromFile now checks file date
 
   Revision 1.172  2001/12/11 11:14:10  lazarus
   MG: fixed save project, saving units twice

@@ -224,6 +224,8 @@ if c=0 then writeln(' File found !!! ',Result.Filename);
 end;
 
 function TCodeCache.LoadFile(const AFilename: string): TCodeBuffer;
+// search file in cache
+// WARING: this will not check, if file on disk is newer
 begin
   Result:=FindFile(AFilename);
   if Result=nil then begin
@@ -266,7 +268,7 @@ end;
 function TCodeCache.SaveBufferAs(OldBuffer: TCodeBuffer; 
   const AFilename: string; var NewBuffer: TCodeBuffer): boolean;
 begin
-writeln('[TCodeCache.SaveBufferAs] ',OldBuffer.Filename,' ',AFilename);
+//writeln('[TCodeCache.SaveBufferAs] ',OldBuffer.Filename,' ',AFilename);
   if (OldBuffer=nil) then begin
     NewBuffer:=nil;
     Result:=false;
@@ -278,14 +280,14 @@ writeln('[TCodeCache.SaveBufferAs] ',OldBuffer.Filename,' ',AFilename);
     exit;
   end;
   NewBuffer:=FindFile(AFilename);
-writeln('[TCodeCache.SaveBufferAs] B ',NewBuffer=nil);
-WriteAllFileNames;
+//writeln('[TCodeCache.SaveBufferAs] B ',NewBuffer=nil);
+//WriteAllFileNames;
   if NewBuffer=nil then begin
     NewBuffer:=TCodeBuffer.Create;
     NewBuffer.FileName:=AFilename;
     NewBuffer.Source:=OldBuffer.Source;
     Result:=NewBuffer.Save;
-writeln('[TCodeCache.SaveBufferAs] C ',Result,' ',NewBuffer.IsVirtual);
+//writeln('[TCodeCache.SaveBufferAs] C ',Result,' ',NewBuffer.IsVirtual);
     if not Result then begin
       NewBuffer.Free;
       NewBuffer:=nil;
@@ -586,12 +588,21 @@ begin
     exit;
   end;
   if not IsVirtual then begin
-    Result:=inherited LoadFromFile(AFilename);
     if CompareFilenames(AFilename,Filename)=0 then begin
+//writeln('****** [TCodeBuffer.LoadFromFile] ',Filename,' ',FFileDateValid,' ',FFileDate,',',FileAge(Filename),',',FFileChangeStep,',',ChangeStep);
+      if (not FFileDateValid) or (FFileChangeStep<>ChangeStep)
+      or (FFileDate<>FileAge(Filename)) then begin
+        Result:=inherited LoadFromFile(AFilename)
+      end else
+        Result:=true;
       if FIsDeleted then FIsDeleted:=not Result;
-      FFileChangeStep:=ChangeStep;
-      FFileDateValid:=true;
-      FFileDate:=FileAge(Filename);
+      if Result then begin
+        FFileChangeStep:=ChangeStep;
+        FFileDateValid:=true;
+        FFileDate:=FileAge(Filename);
+      end;
+    end else begin
+      Result:=inherited LoadFromFile(AFilename)
     end;
   end else
     Result:=false;
@@ -600,12 +611,14 @@ end;
 function TCodeBuffer.SaveToFile(const AFilename: string): boolean;
 begin
   Result:=inherited SaveToFile(AFilename);
-writeln('TCodeBuffer.SaveToFile ',Filename,' -> ',AFilename,' ',Result);
+//writeln('TCodeBuffer.SaveToFile ',Filename,' -> ',AFilename,' ',Result);
   if CompareFilenames(AFilename,Filename)=0 then begin
     if FIsDeleted then FIsDeleted:=not Result;
-    FFileChangeStep:=ChangeStep;
-    FFileDateValid:=true;
-    FFileDate:=FileAge(Filename);
+    if Result then begin
+      FFileChangeStep:=ChangeStep;
+      FFileDateValid:=true;
+      FFileDate:=FileAge(Filename);
+    end;
   end;
 end;
 
@@ -665,16 +678,16 @@ end;
 
 function TCodeBuffer.FileNeedsUpdate: boolean;
 begin
-  if FFileDateValid then
-    Result:=FFileChangeStep<>ChangeStep
+  if FileDateValid then
+    Result:=(FileDateOnDisk>FileDate)
   else
     Result:=true;
 end;
 
 function TCodeBuffer.FileOnDiskNeedsUpdate: boolean;
 begin
-  if FFileDateValid then
-    Result:=FFileDate<>FileDateOnDisk
+  if FileDateValid then
+    Result:=(FFileChangeStep<>ChangeStep) or (FFileDate<>FileDateOnDisk)
   else
     Result:=false;
 end;
