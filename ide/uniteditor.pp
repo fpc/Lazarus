@@ -3690,13 +3690,16 @@ procedure TSourceNotebook.FindInFiles(AProject: TProject;
   const FindText: string);
 begin
   if FindInFilesDialog = nil then
-    FindInFilesDialog := CreateFindInFilesDialog;
+    FindInFilesDialog := CreateFindInFilesDialog
+  else
+    LoadFindInFilesHistory(FindInFilesDialog);
 
   FindInFilesDialog.FindText:= FindText;
   IDEDialogLayoutList.ApplyLayout(FindInFilesDialog,320,430);
   if FindInFilesDialog.ShowModal=mrOk then
   begin
     SaveFindInFilesHistory(FindInFilesDialog);
+
     if FindInFilesDialog.FindText <>'' then
     begin
       case FindInFilesDialog.WhereRadioGroup.ItemIndex of

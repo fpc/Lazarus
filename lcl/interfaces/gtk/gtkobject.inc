@@ -1108,9 +1108,7 @@ var
   {$IFDEF VerboseSizeMsg}
   LCLObject: TObject;
   {$ENDIF}
-{$ifndef OldToolbar}
   FixedWidget: PGtkWidget;
-{$endif}
 begin
   if NewWidth<=0 then NewWidth:=1;
   if NewHeight<=0 then NewHeight:=1;
@@ -1150,7 +1148,6 @@ begin
       PGtkCombo(Widget)^.entry^.allocation.width, NewHeight);
   end;
 
-  {$IFNDEF OldToolBar}
   if GtkWidgetIsA(Widget,gtk_toolbar_get_type) then begin
     FixedWidget:=GetFixedWidget(Widget);
     if (FixedWidget<>nil) and (FixedWidget<>Widget) then begin
@@ -1158,7 +1155,6 @@ begin
       gtk_widget_set_usize(FixedWidget,NewWidth,NewHeight);
     end;
   end;
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -4956,13 +4952,10 @@ end;
   child and get all LCL TControl abilities.
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.CreateToolBar(ToolBarObject: TObject): PGtkWidget;
-{$ifndef OldToolbar}
 var
   ClientWidget: PGtkWidget;
-{$endif}  
 begin
   Result := gtk_toolbar_new();
-  {$IFNDEF OldToolBar}
   ClientWidget := gtk_fixed_new();
   gtk_toolbar_insert_widget(PGTKToolbar(Result),ClientWidget,nil,nil,0);
   gtk_widget_show(ClientWidget);
@@ -4972,7 +4965,6 @@ begin
   gtk_toolbar_set_space_size(PGTKToolbar(Result),0);
   gtk_toolbar_set_space_style(PGTKToolbar(Result),GTK_TOOLBAR_SPACE_EMPTY);
   {$ENDIF GTK1}
-  {$ENDIF}
   gtk_widget_show(Result);
 end;
 
@@ -4999,9 +4991,6 @@ var
   AccelKey  : guint;
   SetupProps : boolean;
   AWindow: PGdkWindow;
-  {$IFDEF OldToolBar}
-  WidgetInfo: PWinWidgetInfo;
-  {$ENDIF}
 begin
   p := nil;
   SetupProps:= false;
@@ -5394,23 +5383,7 @@ begin
 
   csToolButton:
     begin
-      {$IFNDEF OldToolBar}
       p := gtk_fixed_new();
-      {$ELSE OldToolBar}
-      AccelText := Ampersands2Underscore(StrTemp);
-      //p := gtk_button_new_with_label(StrTemp);
-      p := gtk_button_new_with_label(AccelText);
-      if TToolButton(Sender).Style = tbsButton then
-      Begin
-        AccelKey:=gtk_label_parse_uline(PGtkLabel(gtk_bin_get_child(P)),
-                                        AccelText);
-        Accelerate(TComponent(Sender),PGtkWidget(P),AccelKey,0,'clicked');
-      end;
-      StrDispose(AccelText);
-      WidgetInfo:=GetWidgetInfo(P,true);
-      Include(WidgetInfo^.Flags,wwiNotOnParentsClientArea);
-      gtk_widget_show (P);
-      {$ENDIF OldToolBar}
     end;
 
   csTrackBar:
@@ -6968,6 +6941,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.610  2004/11/28 00:55:44  mattias
+  deactivated sending SYSKey messages in gtk intf - they are not used anyway
+
   Revision 1.609  2004/11/20 11:20:06  mattias
   implemented creating classes at run time from any TComponent descendant
 

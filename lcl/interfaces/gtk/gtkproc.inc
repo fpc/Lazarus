@@ -907,7 +907,7 @@ begin
   LockOnChange(PGtkObject(ComboWidget^.entry),+1);
   // set text
   if NewText = nil then NewText:=#0; // gtk expects at least a #0
-  //writeln('SetComboBoxText A ',HexStr(Cardinal(NewText),8));
+  //DebugLn('SetComboBoxText A ',HexStr(Cardinal(NewText),8));
   gtk_entry_set_text(PGtkEntry(ComboWidget^.entry), NewText);
   // unlock combobox
   LockOnChange(PGtkObject(ComboWidget^.entry),-1);
@@ -2098,13 +2098,15 @@ begin
 
       Msg.CharCode := VKey.VKey;
       if BeforeEvent then begin
-        if SysKey
-        then Msg.msg := CN_SYSKEYUP
-        else Msg.msg := CN_KEYUP;
+        //if SysKey then
+        //  Msg.msg := CN_SYSKEYUP
+        //else
+          Msg.msg := CN_KEYUP;
       end else begin
-        if SysKey
-        then Msg.msg := LM_SYSKEYUP
-        else Msg.msg := LM_KEYUP;
+        //if SysKey then
+        //  Msg.msg := LM_SYSKEYUP
+        //else
+          Msg.msg := LM_KEYUP;
       end;
 
       Flags := Flags or KF_UP or KF_REPEAT;
@@ -2132,13 +2134,15 @@ begin
       Msg.CharCode := VKey.VKey;
 
       if BeforeEvent then begin
-        if SysKey
-        then Msg.msg := CN_SYSKEYDOWN
-        else Msg.msg := CN_KEYDOWN;
+        //if SysKey then
+        //  Msg.msg := CN_SYSKEYDOWN
+        //else
+          Msg.msg := CN_KEYDOWN;
       end else begin
-        if SysKey
-        then Msg.msg := LM_SYSKEYDOWN
-        else Msg.msg := LM_KEYDOWN;
+        //if SysKey then
+        //  Msg.msg := LM_SYSKEYDOWN
+        //else
+          Msg.msg := LM_KEYDOWN;
       end;
 
       // todo  repeat
@@ -2181,13 +2185,15 @@ begin
           Msg.KeyData := CommonKeyData;
 
           if BeforeEvent then begin
-            if SysKey
-            then Msg.msg := CN_SYSCHAR
-            else Msg.msg := CN_CHAR
+            //if SysKey then
+            //  Msg.msg := CN_SYSCHAR
+            //else
+              Msg.msg := CN_CHAR
           end else begin
-            if SysKey
-            then Msg.msg := LM_SYSCHAR
-            else Msg.msg := LM_CHAR;
+            //if SysKey then
+            //  Msg.msg := LM_SYSCHAR
+            //else
+              Msg.msg := LM_CHAR;
           end;
 
           Msg.Result:=0;
@@ -2199,7 +2205,7 @@ begin
           if (ord(KeyPressesChar)<>Msg.CharCode)
           then begin
             // key was changed by lcl
-            //writeln('HandleGTKKeyUpDown A ',Msg.CharCode,' BeforeEvent=',BeforeEvent);
+            //DebugLn('HandleGTKKeyUpDown A ',Msg.CharCode,' BeforeEvent=',BeforeEvent);
             if (Msg.CharCode=0) or (Msg.CharCode>=128) then
               // key set to invalid => just stop
               StopKeyEvent('key_press_event')
@@ -5276,7 +5282,7 @@ begin
     end;
     ListItem:=ListItem^.Next;
   end;
-  //writeln('MenuSizeRequest A MaxToggleSize=',MaxToggleSize);
+  //DebugLn('MenuSizeRequest A MaxToggleSize=',MaxToggleSize);
   {$IFDEF Gtk2}
   // Gtk2ToDo
   if CheckMenuItem<>nil then begin
@@ -5288,9 +5294,9 @@ begin
   if CheckMenuItem<>nil then
     MENU_ITEM_CLASS(PGtkWidget(CheckMenuItem))^.toggle_size:=MaxToggleSize;
   {$ENDIF}
-  //writeln('MenuSizeRequest B ',GetWidgetDebugReport(widget),' ',requisition^.width,',',requisition^.height);
+  //DebugLn('MenuSizeRequest B ',GetWidgetDebugReport(widget),' ',requisition^.width,',',requisition^.height);
   OldMenuSizeRequestProc(Widget,requisition);
-  //writeln('MenuSizeRequest C ',GetWidgetDebugReport(widget),' ',requisition^.width,',',requisition^.height);
+  //DebugLn('MenuSizeRequest C ',GetWidgetDebugReport(widget),' ',requisition^.width,',',requisition^.height);
 end;
 
 {------------------------------------------------------------------------------
@@ -6564,7 +6570,7 @@ begin
         StyleWindowWidget:=GetStyleWidget(lgsWindow);
         WindowFixedWidget:=PGTKWidget(
                gtk_object_get_data(PGtkObject(StyleWindowWidget),'fixedwidget'));
-        //writeln('AddToStyleWindow A ',GetWidgetDebugReport(StyleObject^.Widget));
+        //DebugLn('AddToStyleWindow A ',GetWidgetDebugReport(StyleObject^.Widget));
         //gtk_box_pack_end(PGTKBox(VBox), WindowFixedWidget, True, True, 0);
         gtk_fixed_put(PGtkFixed(WindowFixedWidget),StyleObject^.Widget,0,0);
         gtk_widget_set_usize(StyleObject^.Widget,200,200);
@@ -7878,6 +7884,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.322  2004/11/28 00:55:44  mattias
+  deactivated sending SYSKey messages in gtk intf - they are not used anyway
+
   Revision 1.321  2004/11/20 11:20:06  mattias
   implemented creating classes at run time from any TComponent descendant
 
