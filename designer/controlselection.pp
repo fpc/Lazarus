@@ -1445,7 +1445,7 @@ var OldBrushColor:TColor;
   SaveIndex: integer;
 //  OldFormHandle: HDC;
 begin
-  if (Count=0) or (FCustomForm=nil) or Items[0].IsTopLvl then exit;
+  if (Count=0) or (FCustomForm=nil) or Items[0].IsTopLvl or (DC=0) then exit;
   GetWindowOrgEx(DC, DCOrigin);
   FormOrigin:=FCustomForm.ClientOrigin;
   Diff.X:=FormOrigin.X-DCOrigin.X;
@@ -1517,6 +1517,7 @@ begin
   ATop:=AControlOrigin.Y-DCOrigin.Y;
   
   SaveIndex := SaveDC(DC);
+
   FCanvas.Handle:=DC;
 {
 writeln('DrawMarker A ',FCustomForm.Name

@@ -55,7 +55,7 @@ end;
 procedure TGraphicControl.WMPaint(var Message: TLMPaint);
 begin
   // tspeedbutton is buggy: this is a workaround
-  if lowercase(Classname)='tspeedbutton' then begin
+  if AnsiCompareText(Classname,'tspeedbutton')=0 then begin
     Paint;
     exit;
   end;
@@ -92,6 +92,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2002/08/26 17:28:21  lazarus
+  MG: fixed speedbutton in designmode
+
   Revision 1.3  2002/05/10 06:05:52  lazarus
   MG: changed license to LGPL
 
