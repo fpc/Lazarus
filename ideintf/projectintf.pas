@@ -459,10 +459,10 @@ type
 
   TLazProject = class(TPersistent)
   private
-    FFlags: TProjectFlags;
     FLazCompilerOptions: TLazCompilerOptions;
     fTitle: String;
   protected
+    FFlags: TProjectFlags;
     procedure SetLazCompilerOptions(const AValue: TLazCompilerOptions);
     function GetMainFile: TLazProjectFile; virtual; abstract;
     function GetMainFileID: Integer; virtual; abstract;

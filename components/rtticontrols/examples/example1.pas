@@ -14,7 +14,7 @@
 
   Abstract:
     Example for RTTI controls.
-    Demonstrates a few RTTI controls.
+    Demonstrates a few RTTI controls without any code.
 }
 unit Example1;
 

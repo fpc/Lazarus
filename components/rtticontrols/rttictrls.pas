@@ -1294,7 +1294,6 @@ begin
   ChangedOptions:=(FOptions-NewOptions)+(NewOptions-FOptions);
   //debugln('TCustomPropertyLink.SetOptions Old=',dbgs(ploReadOnIdle in FOptions),
   //  ' New=',dbgs(ploReadOnIdle in NewOptions),' Changed=',dbgs(ploReadOnIdle in ChangedOptions));
-  RaiseGDBException('');
   FOptions:=NewOptions;
   if (ploReadOnIdle in ChangedOptions) then UpdateIdleHandler;
 end;
@@ -1408,7 +1407,7 @@ var
   OldEditorExisted: Boolean;
 begin
   if (FEditor<>nil) or (FTIObject=nil) or (FTIPropertyName='') then exit;
-  //writeln('TCustomPropertyLink.CreateEditor A ',FTIObject.ClassName+':'+FTIPropertyName);
+  //debugln('TCustomPropertyLink.CreateEditor A ',FTIObject.ClassName+':'+FTIPropertyName);
   OldEditorExisted:=FEditor<>nil;
   CreateHook;
   Selection := TPersistentSelectionList.Create;
@@ -1419,6 +1418,7 @@ begin
   finally
     Selection.Free;
   end;
+  //debugln('TCustomPropertyLink.CreateEditor B ',dbgsName(FEditor));
   {if FEditor=nil then begin
     raise Exception.Create('Unable to create property editor for '
                            +FTIObject.ClassName+':'+FTIPropertyName);

@@ -360,7 +360,6 @@ type
     fFirst: array[TUnitInfoList] of TUnitInfo;
 
     fDestroying: boolean;
-    FFlags: TProjectFlags;
     fIconPath: String;
     fJumpHistory: TProjectJumpHistory;
     fLastReadLPIFileDate: TDateTime;
@@ -3130,6 +3129,9 @@ end.
 
 {
   $Log$
+  Revision 1.171  2004/12/13 16:43:37  mattias
+  fixed loading project flags and added RTTI example for readonly properties
+
   Revision 1.170  2004/11/20 11:20:05  mattias
   implemented creating classes at run time from any TComponent descendant
 

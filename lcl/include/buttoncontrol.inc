@@ -45,6 +45,12 @@ begin
   if UseOnChange and Assigned(OnChange) then OnChange(Self);
 end;
 
+procedure TButtonControl.Loaded;
+begin
+  inherited Loaded;
+  fLastCheckedOnChange:=Checked;
+end;
+
 procedure TButtonControl.Click;
 begin
   DoOnChange;

@@ -788,6 +788,7 @@ type
     procedure DoOnChange; virtual;
     procedure Click; override;
     function ColorIsStored: boolean; override;
+    procedure Loaded; override;
   protected
     property Checked: Boolean read GetChecked write SetChecked stored IsCheckedStored default False;
     property ClicksDisabled: Boolean read FClicksDisabled write FClicksDisabled;
@@ -1181,6 +1182,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.172  2004/12/13 16:43:37  mattias
+  fixed loading project flags and added RTTI example for readonly properties
+
   Revision 1.171  2004/11/03 14:18:35  mattias
   implemented preferred size for controls for theme depending AutoSizing
 
