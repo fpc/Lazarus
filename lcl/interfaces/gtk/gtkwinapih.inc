@@ -51,6 +51,7 @@ function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; overr
 function CreateCompatibleDC(DC: HDC): HDC; override;
 function CreateFontIndirect(const LogFont: TLogFont): HFONT; override;
 function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT; override;
+function CreatePalette(const LogPalette: TLogPalette): HPALETTE;
 function CreatePenIndirect(const LogPen: TLogPen): HPEN; override;
 function CreatePixmapIndirect(const Data: Pointer; const TransColor: Longint): HBITMAP; override;
 Function CreatePolygonRgn(Points: PPoint; NumPts: Integer; Winding : Boolean): HRGN; Override;
@@ -93,6 +94,7 @@ function GetKeyState(nVirtKey: Integer): Smallint; override;
 function GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; override;
 Function GetParent(Handle : HWND): HWND; override;
 Function GetProp(Handle : hwnd; Str : PChar): Pointer; override;
+Function GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint; override;
 function GetScrollInfo(Handle: HWND; BarFlag: Integer; var ScrollInfo: TScrollInfo): Boolean; override;
 function GetStockObject(Value: Integer): LongInt; override;
 function GetSysColor(nIndex: Integer): DWORD; override;
@@ -188,6 +190,69 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.50  2002/09/27 20:52:26  lazarus
+  MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
+
+  Here is the run down of what it includes -
+
+   -Vasily Volchenko's Updated Russian Localizations
+
+   -improvements to GTK Styles/SysColors
+   -initial GTK Palette code - (untested, and for now useless)
+
+   -Hint Windows and Modal dialogs now try to stay transient to
+    the main program form, aka they stay on top of the main form
+    and usually minimize/maximize with it.
+
+   -fixes to Form BorderStyle code(tool windows needed a border)
+
+   -fixes DrawFrameControl DFCS_BUTTONPUSH to match Win32 better
+    when flat
+
+   -fixes DrawFrameControl DFCS_BUTTONCHECK to match Win32 better
+    and to match GTK theme better. It works most of the time now,
+    but some themes, noteably Default, don't work.
+
+   -fixes bug in Bitmap code which broke compiling in NoGDKPixbuf
+    mode.
+
+   -misc other cleanups/ fixes in gtk interface
+
+   -speedbutton's should now draw correctly when flat in Win32
+
+   -I have included an experimental new CheckBox(disabled by
+    default) which has initial support for cbGrayed(Tri-State),
+    and WordWrap, and misc other improvements. It is not done, it
+    is mostly a quick hack to test DrawFrameControl
+    DFCS_BUTTONCHECK, however it offers many improvements which
+    can be seen in cbsCheck/cbsCrissCross (aka non-themed) state.
+
+   -fixes Message Dialogs to more accurately determine
+    button Spacing/Size, and Label Spacing/Size based on current
+    System font.
+   -fixes MessageDlgPos, & ShowMessagePos in Dialogs
+   -adds InputQuery & InputBox to Dialogs
+
+   -re-arranges & somewhat re-designs Control Tabbing, it now
+    partially works - wrapping around doesn't work, and
+    subcontrols(Panels & Children, etc) don't work. TabOrder now
+    works to an extent. I am not sure what is wrong with my code,
+    based on my other tests at least wrapping and TabOrder SHOULD
+    work properly, but.. Anyone want to try and fix?
+
+   -SynEdit(Code Editor) now changes mouse cursor to match
+    position(aka over scrollbar/gutter vs over text edit)
+
+   -adds a TRegion property to Graphics.pp, and Canvas. Once I
+    figure out how to handle complex regions(aka polygons) data
+    properly I will add Region functions to the canvas itself
+    (SetClipRect, intersectClipRect etc.)
+
+   -BitBtn now has a Stored flag on Glyph so it doesn't store to
+    lfm/lrs if Glyph is Empty, or if Glyph is not bkCustom(aka
+    bkOk, bkCancel, etc.) This should fix most crashes with older
+    GDKPixbuf libs.
+
   Revision 1.49  2002/09/20 13:11:14  lazarus
   MG: fixed TPanel and Frame3D
 
