@@ -48,12 +48,6 @@ interface
 Procedure DumpHeap;
 Procedure MarkHeap;
 
-{ define EXTRA to add more
-  tests :
-   - keep all memory after release and
-   check by CRC value if not changed after release
-   WARNING this needs extremely much memory (PM) }
-
 type
    tFillExtraInfoProc = procedure(p : pointer);
    tDisplayExtraInfoProc = procedure (var ptext : text;p : pointer);
@@ -69,16 +63,16 @@ const
   { tracing level
     splitted in two if memory is released !! }
 {$ifdef EXTRA}
-  tracesize = 64; // normal: 16
+  tracesize = 64; // fpc: 16  (but the LCL needs more than 20)
 {$else EXTRA}
-  tracesize = 32; // normal: 8
+  tracesize = 32; // fpc: 8   (but the LCL needs more than 20)
 {$endif EXTRA}
   { install heaptrc memorymanager }
   useheaptrace : boolean = true;
   { less checking }
   quicktrace : boolean = true;
   { calls halt() on error }
-  HaltOnError : boolean = false;
+  HaltOnError : boolean = true;
   { ExceptOnError: raise gdb catchable exception on error }
   ExceptOnError: boolean = true;
   { keepreleased: set this to true if you suspect that memory
@@ -581,7 +575,17 @@ end;
 
 function TraceMemSize(p:pointer):ptrint;
 var
-  l : ptrint;
+  pp : pheap_mem_info;
+begin
+  pp:=pheap_mem_info(p-sizeof(theap_mem_info));
+  TraceMemSize:=pp^.size;
+end;
+
+
+
+function TraceFreeMem(p:pointer):ptrint;
+var
+  l  : ptrint;
   pp : pheap_mem_info;
 begin
   pp:=pheap_mem_info(p-sizeof(theap_mem_info));
@@ -589,23 +593,12 @@ begin
   dec(l,sizeof(theap_mem_info)+pp^.extra_info_size);
   if add_tail then
    dec(l,sizeof(ptrint));
-  TraceMemSize:=l;
-end;
-
-
-function TraceFreeMem(p:pointer):ptrint;
-var
-  size : ptrint;
-  pp : pheap_mem_info;
-begin
-  pp:=pheap_mem_info(p-sizeof(theap_mem_info));
-  size:=TraceMemSize(p);
   { this can never happend normaly }
-  if pp^.size>size then
+  if pp^.size>l then
    begin
-     dump_wrong_size(pp,size,ptext^);
+     dump_wrong_size(pp,l,ptext^);
 {$ifdef EXTRA}
-     dump_wrong_size(pp,size,error_file);
+     dump_wrong_size(pp,l,error_file);
 {$endif EXTRA}
    end;
   TraceFreeMem:=TraceFreeMemSize(p,pp^.size);
@@ -619,8 +612,8 @@ end;
 function TraceReAllocMem(var p:pointer;size:ptrint):Pointer;
 var
   newP: pointer;
-  oldsize,
   allocsize,
+  movesize,
   i  : ptrint;
   bp : pointer;
   pl : pdword;
@@ -658,7 +651,7 @@ begin
      dump_error(pp,error_file);
 {$endif EXTRA}
      { don't release anything in this case !! }
-     if haltonerror then Halt(1);
+     if haltonerror then halt(1);
      exit;
    end;
   { save info }
@@ -678,11 +671,17 @@ begin
   if not SysTryResizeMem(pp,allocsize) then
    begin
      { get a new block }
-     oldsize:=TraceMemSize(p);
      newP := TraceGetMem(size);
      { move the data }
      if newP <> nil then
-       move(p^,newP^,oldsize);
+      begin
+        movesize:=TraceMemSize(p);
+        {if the old size is larger than the new size,
+         move only the new size}
+        if movesize>size then
+          movesize:=size;
+        move(p^,newP^,movesize);
+      end;
      { release p }
      traceFreeMem(p);
      { return the new pointer }
@@ -699,8 +698,8 @@ begin
 { Recreate the info block }
   pp^.sig:=$DEADBEEF;
   pp^.size:=size;
-  pp^.extra_info_size:=word(oldextrasize);
-  pp^.exact_info_size:=word(oldexactsize);
+  pp^.extra_info_size:=oldextrasize;
+  pp^.exact_info_size:=oldexactsize;
   { add the new extra_info and tail }
   if pp^.extra_info_size>0 then
    begin
@@ -751,23 +750,19 @@ var
    edata : longword; external name 'edata';
 {$endif go32v2}
 
-{$ifdef win32}
+{$ifdef linux}
 var
-   { I found no symbol for start of text section :(
-     so we usee the _mainCRTStartup which should be
-     in wprt0.ow or wdllprt0.ow PM }
-   text_begin : longword;external name '_mainCRTStartup';
-   data_end : longword;external name '__data_end__';
+   etext: ptruint; external name '_etext';
+   edata : ptruint; external name '_edata';
 {$endif}
 
-procedure CheckPointer(p : pointer);[{$IFNDEF NOSAVEREGISTERS}saveregisters,{$ENDIF}public, alias : 'FPC_CHECKPOINTER'];
+
+procedure CheckPointer(p : pointer);{$ifndef NOSAVEREGISTERS}saveregisters;{$endif}[public, alias : 'FPC_CHECKPOINTER'];
 var
   i  : ptrint;
   pp : pheap_mem_info;
-{$if defined(go32v2) or defined(win32)}
-  get_ebp,stack_top : longword;
-  data_end : longword;
-{$endif}
+  //get_ebp,stack_top : longword;
+  //data_end : longword;
 label
   _exit;
 begin
@@ -797,13 +792,20 @@ begin
   { I don't know where the stack is in other OS !! }
 {$ifdef win32}
   { inside stack ? }
-  asm
-     movl %ebp,get_ebp
-  end;
-  if (ptruint(p)>get_ebp) and
+  if (ptruint(p)>ptruint(get_frame)) and
      (ptruint(p)<Win32StackTop) then
     goto _exit;
 {$endif win32}
+
+{$ifdef linux}
+  { inside stack ? }
+  if (ptruint(p)>ptruint(get_frame)) and
+     (ptruint(p)<$c0000000) then      //todo: 64bit!
+    goto _exit;
+  { inside data ? }
+  if (ptruint(p)>=ptruint(@etext)) and (ptruint(p)<ptruint(@edata)) then
+    goto _exit;
+{$endif linux}
 
   { first try valid list faster }
 
@@ -827,7 +829,7 @@ begin
             begin
               writeln(ptext^,'corrupted heap_mem_info');
               dump_error(pp,ptext^);
-              Halt(1);
+              halt(1);
             end;
        end
      else
@@ -836,7 +838,7 @@ begin
      if i>getmem_cnt-freemem_cnt then
       begin
          writeln(ptext^,'error in linked list of heap_mem_info');
-         Halt(1);
+         halt(1);
       end;
    end;
   i:=0;
@@ -862,7 +864,7 @@ begin
      if i>getmem_cnt then
       begin
          writeln(ptext^,'error in linked list of heap_mem_info');
-         Halt(1);
+         halt(1);
       end;
    end;
   writeln(ptext^,'pointer $',hexstr(ptrint(p),8),' does not point to valid memory block');
@@ -1015,6 +1017,7 @@ end;
 {*****************************************************************************
                            Install MemoryManager
 *****************************************************************************}
+
 const
   TraceManager:TMemoryManager=(
     NeedLock : true;
@@ -2318,6 +2321,9 @@ end.
 
 {
   $Log$
+  Revision 1.36  2004/11/10 15:25:32  mattias
+  updated memcheck.pas from heaptrc.pp
+
   Revision 1.35  2004/11/08 19:11:55  mattias
   disabled hardly used gtk FillScreenFont, this should be only done on demand, improved getting default font family for gtk
 

@@ -923,6 +923,8 @@ var AVLNode: TAVLTreeNode;
 begin
   Result:=nil;
   if FChildNodeTree<>nil then begin
+    //if FChildNodeTree.ConsistencyCheck<>0 then
+    //  raise exception.Create('TDOMNode_WithChildren.FindNode');
     AVLNode:=FChildNodeTree.FindKey(DOMPChar(ANodeName),
                                     @CompareDOMStringWithDOMNode);
     if AVLNode<>nil then
@@ -949,12 +951,16 @@ begin
     FChildNodeTree:=TAVLTree.Create(@CompareDOMNodeWithDOMNode);
   if FChildNodeTree.Find(NewNode)=nil then
     FChildNodeTree.Add(NewNode);
+  //if FChildNodeTree.ConsistencyCheck<>0 then
+  //  raise exception.Create('TDOMNode_WithChildren.FindNode');
 end;
 
 procedure TDOMNode_WithChildren.RemoveFromChildNodeTree(OldNode: TDOMNode);
 begin
   if FChildNodeTree<>nil then
     FChildNodeTree.Remove(OldNode);
+  //if (FChildNodeTree<>nil) and (FChildNodeTree.ConsistencyCheck<>0) then
+  //  raise exception.Create('TDOMNode_WithChildren.FindNode');
 end;
 
 
@@ -1633,6 +1639,9 @@ end.
 
 {
   $Log$
+  Revision 1.9  2004/11/10 15:25:32  mattias
+  updated memcheck.pas from heaptrc.pp
+
   Revision 1.8  2004/11/06 19:49:12  mattias
   renamed avl_tree.pas to oldavltree.pas for new fpc 1.9.5
 

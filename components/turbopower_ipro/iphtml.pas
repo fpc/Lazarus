@@ -7695,7 +7695,7 @@ end;
 procedure TIpHtml.SetDefaultProps;
 begin
   {$IFDEF IP_LAZARUS}
-  Defaultprops.FontName := 'Default';
+  Defaultprops.FontName := Graphics.DefFontData.Name;
   {$ELSE}
   Defaultprops.FontName := 'Times New Roman';
   {$ENDIF}
@@ -9566,21 +9566,21 @@ var
   procedure SetWordInfoLength(NewLength : Integer);
   var
     NewWordInfoSize: Integer;
+    {$IFNDEF IP_LAZARUS}
     NewWordInfo: PWordList;
+    {$ENDIF}
   begin
     if (WordInfo = nil) or (NewLength > WordInfoSize) then begin
       NewWordInfoSize := ((NewLength div 256) + 1) * 256;
+      {$IFDEF IP_LAZARUS code below does not check if WordInfo<>nil}
+      ReallocMem(WordInfo,NewWordInfoSize * sizeof(TWordInfo));
+      {$ELSE}
       NewWordInfo := AllocMem(NewWordInfoSize * sizeof(TWordInfo));
-      {$IFDEF IP_LAZARUS Buggy}
-      if WordInfo<>nil then
-      {$ENDIF}
-        move(WordInfo^, NewWordInfo^, WordInfoSize);
-      WordInfoSize := NewWordInfoSize;
-      {$IFDEF IP_LAZARUS Buggy}
-      if WordInfo<>nil then
-      {$ENDIF}
-        Freemem(WordInfo);
+      move(WordInfo^, NewWordInfo^, WordInfoSize);
+      Freemem(WordInfo);
       WordInfo := NewWordInfo;
+      {$ENDIF}
+      WordInfoSize := NewWordInfoSize;
     end;
   end;
 
@@ -9618,7 +9618,7 @@ var
     writeln('/////////////////');
   end;
   *)
-
+  
 begin
   if ElementQueue.Count = 0 then exit;
   {DumpQueue;} {debug}
@@ -17187,7 +17187,7 @@ end;
 
 procedure TIpHtmlCustomPanel.WMGetDlgCode(var Msg: TMessage);
 begin
-  { we want 'em all!  For Lazarus: Then use OnKeyDown }
+  { we want 'em all!  For Lazarus: Then use OnKeyDown! }
   Msg.Result := DLGC_WANTALLKEYS +
                 DLGC_WANTARROWS +
                 DLGC_WANTCHARS +
@@ -17427,7 +17427,9 @@ end;
 
 procedure TIntArr.SetValue(Index, Value: Integer);
 var
+  {$IFNDEF IP_LAZARUS}
   Tmp: PInternalIntArr;
+  {$ENDIF}
   NewSize: Integer;
 begin
   if Index >= 0 then begin
@@ -17436,18 +17438,17 @@ begin
       repeat
         inc(NewSize, TINTARRGROWFACTOR);
       until Index < NewSize;
+      {$IFDEF IP_LAZARUS code below does not check if InternalIntArr<>nil}
+      ReallocMem(InternalIntArr,NewSize * sizeof(Integer));
+      IntArrSize := NewSize;
+      {$ELSE}
       Tmp := AllocMem(NewSize * sizeof(Integer));
-      {$IFDEF IP_LAZARUS Buggy}
-      if (InternalIntArr<>nil) then
-      {$ENDIF}
-        move(InternalIntArr^, Tmp^, IntArrSize * sizeof(Integer));
+      move(InternalIntArr^, Tmp^, IntArrSize * sizeof(Integer));
       IntArrSize := NewSize;                                           {!!.12}
       {inc(IntArrSize, NewSize);}                                      {Deleted !!.12}
-      {$IFDEF IP_LAZARUS Buggy}
-      if (InternalIntArr<>nil) then
-      {$ENDIF}
-        Freemem(InternalIntArr);
+      Freemem(InternalIntArr);
       InternalIntArr := Tmp;
+      {$ENDIF}
     end;
     InternalIntArr^[Index] := Value;
   end;
@@ -17486,7 +17487,9 @@ end;
 
 procedure TRectArr.SetValue(Index: Integer; Value: PRect);
 var
+  {$IFNDEF IP_LAZARUS}
   Tmp: PInternalRectArr;
+  {$ENDIF}
   NewSize: Integer;
 begin
   Assert(Self <> nil);
@@ -17496,17 +17499,16 @@ begin
       repeat
         inc(NewSize, TINTARRGROWFACTOR);
       until Index < NewSize;
+      {$IFDEF IP_LAZARUS code below does not check if InternalIntArr<>nil and set buggy IntArrSize}
+      ReallocMem(InternalRectArr,NewSize * sizeof(Integer));
+      IntArrSize:=NewSize;
+      {$ELSE}
       Tmp := AllocMem(NewSize * sizeof(Integer));
-      {$IFDEF IP_LAZARUS buggy}
-      if InternalRectArr<>nil then
-      {$ENDIF}
-        move(InternalRectArr^, Tmp^, IntArrSize * sizeof(Integer));
+      move(InternalRectArr^, Tmp^, IntArrSize * sizeof(Integer));
       inc(IntArrSize, NewSize);
-      {$IFDEF IP_LAZARUS buggy}
-      if InternalRectArr<>nil then
-      {$ENDIF}
-        Freemem(InternalRectArr);
+      Freemem(InternalRectArr);
       InternalRectArr := Tmp;
+      {$ENDIF}
     end;
     InternalRectArr^[Index] := Value;
   end;
@@ -17539,7 +17541,9 @@ end;
 
 function TRectRectArr.GetValue(Index: Integer): TRectArr;
 var
+  {$IFNDEF IP_LAZARUS}
   Tmp: PInternalRectRectArr;
+  {$ENDIF}
   NewSize: Integer;
 begin
   if Index >= 0 then begin
@@ -17548,17 +17552,16 @@ begin
       repeat
         inc(NewSize, TINTARRGROWFACTOR);
       until Index < NewSize;
+      {$IFDEF IP_LAZARUS code below does not check if InternalIntArr<>nil and set buggy IntArrSize}
+      ReallocMem(InternalRectRectArr,NewSize * sizeof(Integer));
+      IntArrSize:=NewSize;
+      {$ELSE}
       Tmp := AllocMem(NewSize * sizeof(Integer));
-      {$IFDEF IP_LAZARUS buggy}
-      if InternalRectRectArr<>nil then
-      {$ENDIF}
-        move(InternalRectRectArr^, Tmp^, IntArrSize * sizeof(Integer));
+      move(InternalRectRectArr^, Tmp^, IntArrSize * sizeof(Integer));
       inc(IntArrSize, NewSize);
-      {$IFDEF IP_LAZARUS buggy}
-      if InternalRectRectArr<>nil then
-      {$ENDIF}
-        Freemem(InternalRectRectArr);
+      Freemem(InternalRectRectArr);
       InternalRectRectArr := Tmp;
+      {$ENDIF}
     end;
     Result := InternalRectRectArr^[Index];
     if Result = nil then begin
@@ -17592,6 +17595,9 @@ initialization
   InitScrollProcs;
 {
   $Log$
+  Revision 1.17  2004/11/10 15:25:32  mattias
+  updated memcheck.pas from heaptrc.pp
+
   Revision 1.16  2004/10/04 09:36:22  mattias
   fixed compilation of ipro
 

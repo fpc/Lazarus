@@ -25,7 +25,7 @@ unit ExtGraphics;
 
 interface
 
-uses Classes, Graphics, math;
+uses Classes, LCLProc, Graphics, math;
 
 type
   TShapeDirection = (atUp, atDown, atLeft, atRight);
@@ -49,7 +49,7 @@ procedure PaintFivePointLineStar(Canvas: TCanvas; const PaintRect: TRect);
 procedure PaintStarN(Canvas: TCanvas;cx,cy,r,n,a:Integer);
 
 
-procedure CalculatePentagonPoints(PentagonRect:TRect;var P1,P2,P3,P4,P5:TPoint);
+procedure CalculatePentagonPoints(const PentagonRect:TRect;var P1,P2,P3,P4,P5:TPoint);
 function LinesPointOfIntersection(const Line1a,Line1b,Line2a,line2b:TPoint):TPoint;
 
 implementation
@@ -338,7 +338,7 @@ begin
     do begin
        if (i mod 2)=0 then r0:=r else r0:=r1;
        alpha:=a+(0.5+i/n)*Pi;
-       cs:=Round(r0*cos(alpha));
+       cs:=RoundToInt(r0*cos(alpha));
        P[i].x:=cx+cs;
        P[i].y:=cy-Round(r0*sin(alpha));
     end;
@@ -350,7 +350,8 @@ begin
   Canvas.Polygon(P);
 end;
 
-procedure CalculatePentagonPoints(PentagonRect:TRect;var P1,P2,P3,P4,P5:TPoint);
+procedure CalculatePentagonPoints(const PentagonRect:TRect;
+  var P1,P2,P3,P4,P5:TPoint);
 var cx,cy,dy,dx:Integer; r:real;
 begin
   P1.y:=PentagonRect.Top;
@@ -359,13 +360,13 @@ begin
   P4.y:=PentagonRect.Bottom;
   P5.x:=PentagonRect.Right;
   P1.x:=(PentagonRect.Right+PentagonRect.Left) div 2;
-  dy:=round((P1.x-P2.x)*tan(Pi/10));
+  dy:=RoundToInt((P1.x-P2.x)*tan(Pi/10));
   r := sqrt(dy*dy+(P1.x-P2.x)*(P1.x-P2.x));
   cx:=P1.x;
   cy:=P1.y+round(r);
   P2.y:=cy-dy;
   P5.y:=P2.y;
-  dx:=round(r*sin(Pi/5));
+  dx:=RoundToInt(r*sin(Pi/5));
   P3.x:=cx-dx;
   P4.x:=cx+dx;
 end;
@@ -384,8 +385,8 @@ begin
   b2:=-k2*x3+y3;
   x:=(b1-b2)/(k2-k1);
   y:=(k2*b1-k1*b2)/(k2-k1);
-  p.x:=round(x);
-  p.y:=round(y);
+  p.x:=RoundToInt(x);
+  p.y:=RoundToInt(y);
   LinesPointOfIntersection:=p;
 end;
 
@@ -395,6 +396,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.4  2004/11/10 15:25:32  mattias
+  updated memcheck.pas from heaptrc.pp
+
   Revision 1.3  2004/10/01 13:31:23  mattias
   updated finnish translation from Seppo
 

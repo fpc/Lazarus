@@ -139,6 +139,7 @@ var
   PathLen: integer;
   StartPos, EndPos: integer;
 begin
+  //CheckHeapWrtMemCnt('TXMLConfig.GetValue A '+APath);
   Result:=ADefault;
   PathLen:=length(APath);
   Node := doc.DocumentElement;
@@ -147,19 +148,35 @@ begin
     EndPos:=StartPos;
     while (EndPos<=PathLen) and (APath[EndPos]<>'/') do inc(EndPos);
     if EndPos>PathLen then break;
-    SetLength(NodeName,EndPos-StartPos);
-    Move(APath[StartPos],NodeName[1],EndPos-StartPos);
+    if EndPos>StartPos then begin
+      NodeName:='';
+      SetLength(NodeName,EndPos-StartPos);
+      //UniqueString(NodeName);
+      Move(APath[StartPos],NodeName[1],EndPos-StartPos);
+      Child := Node.FindNode(NodeName);
+      //writeln('TXMLConfig.GetValue C NodeName="',NodeName,'" ',
+      //  PCardinal(Cardinal(NodeName)-8)^,' ',PCardinal(Cardinal(NodeName)-4)^);
+      //CheckHeapWrtMemCnt('TXMLConfig.GetValue B2');
+      if not Assigned(Child) then exit;
+      Node := Child;
+    end;
     StartPos:=EndPos+1;
-    Child := Node.FindNode(NodeName);
-    if not Assigned(Child) then exit;
-    Node := Child;
+    //CheckHeapWrtMemCnt('TXMLConfig.GetValue D');
   end;
   if StartPos>PathLen then exit;
+  //CheckHeapWrtMemCnt('TXMLConfig.GetValue E');
+  NodeName:='';
   SetLength(NodeName,PathLen-StartPos+1);
+  //CheckHeapWrtMemCnt('TXMLConfig.GetValue F '+IntToStr(length(NodeName))+' '+IntToStr(StartPos)+' '+IntToStr(length(APath))+' '+APath[StartPos]);
+  //UniqueString(NodeName);
   Move(APath[StartPos],NodeName[1],length(NodeName));
+  //CheckHeapWrtMemCnt('TXMLConfig.GetValue G');
+  //writeln('TXMLConfig.GetValue G2 NodeName="',NodeName,'"');
   Attr := Node.Attributes.GetNamedItem(NodeName);
   if Assigned(Attr) then
     Result := Attr.NodeValue;
+  //CheckHeapWrtMemCnt('TXMLConfig.GetValue H');
+  //writeln('TXMLConfig.GetValue END Result="',Result,'"');
 end;
 
 function TXMLConfig.GetValue(const APath: String; ADefault: Integer): Integer;
@@ -355,6 +372,9 @@ end;
 end.
 {
   $Log$
+  Revision 1.12  2004/11/10 15:25:32  mattias
+  updated memcheck.pas from heaptrc.pp
+
   Revision 1.11  2004/10/28 09:38:16  mattias
   fixed COPYING.modifiedLGPL links
 

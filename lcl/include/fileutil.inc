@@ -857,7 +857,7 @@ var
 begin
   Result:=false;
   if (Filename='') or (Masks='') then exit;
-  TrimmedFile:=TrimFilename(Filename); // do not expand
+  TrimmedFile:=TrimFilename(Filename); // only cleanup, do not expand
   // try each Mask
   MasksLen:=length(Masks);
   FileLen:=length(TrimmedFile);
@@ -1069,6 +1069,9 @@ end;
 
 {
   $Log$
+  Revision 1.3  2004/11/10 15:25:32  mattias
+  updated memcheck.pas from heaptrc.pp
+
   Revision 1.2  2004/10/01 11:44:32  vincents
   Fixed ForceDirectory, if DirectoryName did not end with PathDelim
 

@@ -21,6 +21,7 @@ procedure Halt(ErrNum: byte); forward;
 {$ENDIF MC_ImplementationStart}
 
 {$IFDEF MC_ImplementationEnd}
+// override RunError, so we can handle them according to the flags
 procedure RunError(RunErrorNumber: word);
 begin
   if ExceptOnError then begin
@@ -31,6 +32,7 @@ begin
   System.RunError(RunErrorNumber);
 end;
 
+// override RunError, so we can handle them according to the flags
 procedure Halt(ErrNum: byte);
 begin
   if ExceptOnError then begin

@@ -91,7 +91,7 @@ var
 {$IFNDEF Win32}
 function GetTickCount: DWord;
 begin
-  Result := Trunc(Now * 24 * 60 * 60 * 1000);
+  Result := DWord(Trunc(Now * 24 * 60 * 60 * 1000));
 end;
 {$ENDIF}
 
@@ -179,6 +179,9 @@ end.
 
 {
   $Log$
+  Revision 1.18  2004/11/10 15:25:32  mattias
+  updated memcheck.pas from heaptrc.pp
+
   Revision 1.17  2004/11/03 22:59:58  marc
   * fixed GetTickCount
 

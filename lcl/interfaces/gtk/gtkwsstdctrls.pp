@@ -661,7 +661,7 @@ procedure TGtkWSCustomComboBox.SetMaxLength(
   const ACustomComboBox: TCustomComboBox; NewLength: integer);
 begin
   gtk_entry_set_max_length(PGtkEntry(PGtkCombo(ACustomComboBox.Handle)^.entry),
-                           NewLength);
+                           guint16(NewLength));
 end;
 
 procedure TGtkWSCustomComboBox.SetStyle(

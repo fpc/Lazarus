@@ -1403,7 +1403,7 @@ begin
   with chkChecksStack do
   begin
     Parent := grpChecks;
-    Caption := dlgCOStack+' (-Cs)';
+    Caption := dlgCOStack+' (-Ct)';
     Top := 27;
     Left := 102;
     Width := 100;

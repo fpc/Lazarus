@@ -40,7 +40,7 @@ program Lazarus;
   {$R *.res}
 {$ENDIF}
 
-{ $DEFINE IDE_MEM_CHECK}
+{off $DEFINE IDE_MEM_CHECK}
 
 uses
   //cmem,
@@ -99,6 +99,9 @@ end.
 
 {
   $Log$
+  Revision 1.63  2004/11/10 15:25:32  mattias
+  updated memcheck.pas from heaptrc.pp
+
   Revision 1.62  2004/09/17 20:04:34  vincents
   replaced writeln by DebugLn
 

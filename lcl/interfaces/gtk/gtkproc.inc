@@ -4930,7 +4930,7 @@ begin
 
   // Send the unmodified keysym ?
   if (ssShift in NewModifier)
-  and ((NewKey < VK_F1) or  (NewKey > VK_F24) )
+  and ((NewKey < VK_F1) or (NewKey > VK_F24))
   then GDKKey := GetVKeyInfo(NewKey).KeySym[1]
   else GDKKey := GetVKeyInfo(NewKey).KeySym[0];
 
@@ -7792,6 +7792,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.318  2004/11/10 15:25:32  mattias
+  updated memcheck.pas from heaptrc.pp
+
   Revision 1.317  2004/11/08 19:11:55  mattias
   disabled hardly used gtk FillScreenFont, this should be only done on demand, improved getting default font family for gtk
 
