@@ -172,7 +172,7 @@ msgstr "Korvaava"
 
 #: lazarusidestrconsts:lismenurun
 msgid "&Run"
-msgstr "&Aja"
+msgstr "&Suorita"
 
 #: lazarusidestrconsts:uemruntocursor
 msgid "&Run to Cursor"
@@ -520,7 +520,7 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguageautomatic
 msgid "Automatic (or english)"
-msgstr ""
+msgstr "Oletuskieli (tai englanti)"
 
 #: lazarusidestrconsts:lispckoptsautomaticallyincrementversiononbuild
 msgid "Automatically increment version on build"
@@ -544,7 +544,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgbackcolor
 msgid "Background color"
-msgstr ""
+msgstr "Taustaväri"
 
 #: lazarusidestrconsts:srvk_back
 msgid "Backspace"
@@ -740,7 +740,7 @@ msgstr "Sama kirjainkoko"
 
 #: lazarusidestrconsts:rslanguagecatalan
 msgid "Catalan"
-msgstr ""
+msgstr "katalaani"
 
 #: lazarusidestrconsts:dlgcentercursorline
 msgid "Center Cursor Line"
@@ -936,7 +936,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgedcolor
 msgid "Color"
-msgstr ""
+msgstr "Väri"
 
 #: lazarusidestrconsts:dlglefttopclr
 msgid "color for left, top"
@@ -952,7 +952,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgenvcolors
 msgid "Colors"
-msgstr ""
+msgstr "Värit"
 
 #: lazarusidestrconsts:srkmeccolumnselect
 msgid "Column selection mode"
@@ -1564,7 +1564,7 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguagedeutsch
 msgid "Deutsch"
-msgstr ""
+msgstr "saksa"
 
 #: lazarusidestrconsts:idedialogs
 msgid "Dialogs"
@@ -1736,7 +1736,7 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguageenglish
 msgid "English"
-msgstr ""
+msgstr "englanti"
 
 #: lazarusidestrconsts:lismacropromptenterdata
 msgid "Enter data"
@@ -2102,6 +2102,10 @@ msgstr ""
 msgid "Find text at cursor"
 msgstr ""
 
+#: lazarusidestrconsts:rslanguagefinnish
+msgid "Finnish"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
 msgstr ""
@@ -2152,7 +2156,7 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguagefrench
 msgid "French"
-msgstr ""
+msgstr "ranska"
 
 #: lazarusidestrconsts:dlgfromcursor
 msgid "From Cursor"
@@ -2380,11 +2384,11 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgpalhints
 msgid "Hints for component palette"
-msgstr ""
+msgstr "Vihjetekstit komponenttipaletille"
 
 #: lazarusidestrconsts:dlgspbhints
 msgid "Hints for main speed buttons (open, save, ...)"
-msgstr ""
+msgstr "Vihjetekstit työkalupainikkeille"
 
 #: lazarusidestrconsts:srvk_home
 msgid "Home"
@@ -2920,7 +2924,7 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguageitalian
 msgid "Italian"
-msgstr ""
+msgstr "italia"
 
 #: lazarusidestrconsts:dlgedital
 msgid "Italic"
@@ -4020,7 +4024,7 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguagepolish
 msgid "polski"
-msgstr ""
+msgstr "puola"
 
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"
@@ -4476,11 +4480,11 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguagerussian
 msgid "Russian"
-msgstr ""
+msgstr "venäjä"
 
 #: lazarusidestrconsts:rslanguagerussianwin
 msgid "Russian(CP1251)"
-msgstr ""
+msgstr "venäjä(CP1251)"
 
 #: lazarusidestrconsts:dlgbckupsubdir
 msgid "Same name (in subdirectory)"
@@ -5072,7 +5076,7 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguagespanish
 msgid "Spanish"
-msgstr ""
+msgstr "espanja"
 
 #: lazarusidestrconsts:lisuidsrc
 msgid "Src"
@@ -6324,7 +6328,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuviewjumphistory
 msgid "View Jump-History"
-msgstr "Näytä hyppu historia"
+msgstr "Näytä hyppy historia"
 
 #: lazarusidestrconsts:srkmectogglelocals
 msgid "View local variables"

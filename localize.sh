@@ -32,7 +32,7 @@ done
 ObjInsp_RST=`find . -name objinspstrconsts.rst | xargs ls -1t | head -1`;
 rstconv -i $ObjInsp_RST -o languages/objinspstrconsts.po
 tools/updatepofiles languages/objinspstrconsts.po
-for lang in de es fr ru ruwin pl it ca; do
+for lang in de es fr ru ruwin pl it ca fi; do
   msgfmt languages/objinspstrconsts.$lang.po \
     -o languages/objinspstrconsts.$lang.mo
 done
@@ -42,7 +42,7 @@ CodeTools_RST=`find components/units -name codetoolsstrconsts.rst | xargs ls -1t
 rstconv -i $CodeTools_RST \
   -o components/codetools/languages/codetools.po
 ./tools/updatepofiles components/codetools/languages/codetools.po
-for lang in de fr pl it ca ru ruwin; do
+for lang in de fr pl it ca ru ruwin fi; do
   msgfmt components/codetools/languages/codetools.$lang.po \
     -o components/codetools/languages/codetools.$lang.mo
 done
@@ -71,7 +71,7 @@ done
 LCL_RST=`find lcl/units -name lclstrconsts.rst | xargs ls -1t | head -1`;
 rstconv -i $LCL_RST -o lcl/languages/lcl.po
 ./tools/updatepofiles lcl/languages/lcl.po
-for lang in de es fr ru ruwin pl it ca; do
+for lang in de es fr ru ruwin pl it ca fi; do
   msgfmt lcl/languages/lcl.$lang.po -o lcl/languages/lcl.$lang.mo || true
 done
 

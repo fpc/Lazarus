@@ -4054,6 +4054,10 @@ msgstr ""
 msgid "Catalan"
 msgstr ""
 
+#: lazarusidestrconsts:rslanguagefinnish
+msgid "Finnish"
+msgstr ""
+
 #: lazarusidestrconsts:dlgunitdepcaption
 msgid "Unit dependencies"
 msgstr ""

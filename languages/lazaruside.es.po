@@ -2113,6 +2113,10 @@ msgstr "Buscar texto"
 msgid "Find text at cursor"
 msgstr "Buscar texto desde cursor"
 
+#: lazarusidestrconsts:rslanguagefinnish
+msgid "Finnish"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
 msgstr "Establecer foco en editor de código"

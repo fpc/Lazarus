@@ -2102,6 +2102,10 @@ msgstr "Найти текст"
 msgid "Find text at cursor"
 msgstr "Найти текст под курсором"
 
+#: lazarusidestrconsts:rslanguagefinnish
+msgid "Finnish"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
 msgstr "Фокус в редактор исходников"

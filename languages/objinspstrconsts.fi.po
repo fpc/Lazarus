@@ -1,0 +1,92 @@
+#: objinspstrconsts:sccsilcmbimglist
+msgid " Images "
+msgstr ""
+
+#: objinspstrconsts:sccslvedtgrprcaption
+msgid " Item property "
+msgstr ""
+
+#: objinspstrconsts:sccslvedtgrplcaption
+msgid " Items "
+msgstr ""
+
+#: objinspstrconsts:sccsilcmbimgsel
+msgid " Selected image "
+msgstr ""
+
+#: objinspstrconsts:oisitemsselected
+msgid "%u items selected"
+msgstr ""
+
+#: objinspstrconsts:oiscadd
+msgid "&Add"
+msgstr ""
+
+#: objinspstrconsts:oiscdelete
+msgid "&Delete"
+msgstr ""
+
+#: objinspstrconsts:sccsilbtnadd
+msgid "Add ..."
+msgstr ""
+
+#: objinspstrconsts:sccsilbtnclear
+msgid "Clear"
+msgstr ""
+
+#: objinspstrconsts:sccsilconfirme
+msgid "Confirme clear all images ?"
+msgstr ""
+
+#: objinspstrconsts:sccslvedtbtndel
+msgid "Delete"
+msgstr ""
+
+#: objinspstrconsts:oisevents
+msgid "Events"
+msgstr ""
+
+#: objinspstrconsts:sccslvedtimgindexcaption
+msgid "Image index"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtcaption
+msgid "Image list editor"
+msgstr ""
+
+#: objinspstrconsts:sccslvedtlabcaption
+msgid "Label"
+msgstr ""
+
+#: objinspstrconsts:sccslvedtcaption
+msgid "ListView editor"
+msgstr ""
+
+#: objinspstrconsts:sccslvedtbtnadd
+msgid "New"
+msgstr ""
+
+#: objinspstrconsts:oisobjectinspector
+msgid "Object Inspector"
+msgstr ""
+
+#: objinspstrconsts:oisproperties
+msgid "Properties"
+msgstr ""
+
+#: objinspstrconsts:cesstringgrideditor2
+msgid "StringGrid Editor"
+msgstr ""
+
+#: objinspstrconsts:cesstringgrideditor
+msgid "StringGrid Editor ..."
+msgstr ""
+
+#: objinspstrconsts:sccslvedtbtnaddsub
+msgid "Sub item"
+msgstr ""
+
+#: objinspstrconsts:oisunknown
+msgid "Unknown"
+msgstr ""
+
