@@ -115,6 +115,17 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+function gtkListItemExposeEvent(Widget: PGtkWidget;
+  Event : PGdkEventExpose; data: gPointer): GBoolean; cdecl;
+
+  GTK2 helper for drawing every item in a TGtkListStringList.
+------------------------------------------------------------------------------}
+function gtkListItemExposeEvent(Widget: PGtkWidget;
+  Event : PGdkEventExpose; data: gPointer): GBoolean; cdecl;
+begin
+  Result := gtkListItemDrawAfterCB(Widget, @Event^.Area, data);
+end;
 
 {*************************************************************}
 {                      TGtkListStringList methods             }
@@ -196,8 +207,13 @@ begin
   //' Owner=',HexStr(Cardinal(Owner),8),'=',Owner.ClassName,
   //' LI=',HexStr(Cardinal(LI),8),
   //' ');
+  {$ifdef GTK2}
+  g_signal_connect_after(G_OBJECT(li), 'expose_event',
+                         G_CALLBACK(@gtkListItemExposeEvent), li);
+  {$else}
   gtk_signal_connect_after(PGtkObject(li), 'draw',
                            TGTKSignalFunc(@gtkListItemDrawAfterCB),li);
+  {$endif}		    
 end;
 
 {------------------------------------------------------------------------------
@@ -226,8 +242,13 @@ begin
   ListItem:=FCachedItems[Index];
   gtk_object_set_data(PGtkObject(ListItem),GtkListItemLCLListTag,nil);
   gtk_object_set_data(PGtkObject(ListItem),GtkListItemGtkListTag,nil);
+  {$ifdef GTK2}
+  g_signal_handlers_disconnect_by_func(
+    G_OBJECT(ListItem),G_CALLBACK(@gtkListItemExposeEvent),ListItem);
+  {$else}
   gtk_signal_disconnect_by_func(
-    PGtkObject(ListItem), TGTKSignalFunc(@gtkListItemDrawAfterCB),ListItem);
+    PGtkObject(ListItem),TGTKSignalFunc(@gtkListItemDrawAfterCB),ListItem);
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -760,6 +781,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.22  2004/04/24 20:57:18  mattias
+  fixed gtk2 for drawing list item  from Ladislav
+
   Revision 1.21  2003/09/18 12:15:01  mattias
   fixed is checks for TCustomXXX controls
 
