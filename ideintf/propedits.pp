@@ -41,7 +41,7 @@ interface
 
 {$DEFINE NewListPropEdit}
 
-uses 
+uses
   Classes, TypInfo, SysUtils, LCLProc, Forms, Controls, GraphType, Graphics,
   StdCtrls, Buttons, ComCtrls, Menus, LCLType, ExtCtrls, LCLIntf, Dialogs,
   ColumnDlg, ObjInspStrConsts;
@@ -493,7 +493,7 @@ type
     procedure GetProperties(Proc: TGetPropEditProc); override;
     function OrdValueToVisualValue(OrdValue: longint): string; override;
   end;
-  
+
 { TClassPropertyEditor
   Default property editor for all objects.  Does not allow modifying the
   property but does display the class name of the object and will allow the
@@ -576,10 +576,10 @@ type
     procedure SetValue(const NewValue: ansistring); override;
   end;
 
-{ TDateProperty
+{ TDatePropertyEditor
   Property editor for date portion of TDateTime type. }
 
-  TDateProperty = class(TPropertyEditor)
+  TDatePropertyEditor = class(TPropertyEditor)
     function GetAttributes: TPropertyAttributes; override;
     function GetValue: string; override;
     procedure SetValue(const Value: string); override;
@@ -719,7 +719,7 @@ type
 { TListPropertyEditor
   A property editor with dynamic sub properties representing a list of objects.
   UNDER CONSTRUCTION by Mattias}
-  
+
 // MWE: changed TObject to TPersistent, TObject decendants can't have properties
 
   TListPropertyEditor = class(TPropertyEditor)
@@ -797,6 +797,43 @@ type
     function GetAttributes: TPropertyAttributes; override;
     procedure Edit; override;
   end;
+
+//==============================================================================
+// Delphi Compatible Property Editor Classnames
+
+type
+  TOrdinalProperty =        TOrdinalPropertyEditor;
+  TIntegerProperty =        TIntegerPropertyEditor;
+  TCharProperty =           TCharPropertyEditor;
+  TEnumProperty =           TEnumPropertyEditor;
+  TBoolProperty =           TBoolPropertyEditor;
+  TInt64Property =          TInt64PropertyEditor;
+  TFloatProperty =          TFloatPropertyEditor;
+  TStringProperty =         TStringPropertyEditor;
+  TNestedProperty =         TNestedPropertyEditor;
+  TSetElementProperty =     TSetElementPropertyEditor;
+  TSetProperty =            TSetPropertyEditor;
+  TClassProperty =          TClassPropertyEditor;
+  TMethodProperty =         TMethodPropertyEditor;
+  TComponentProperty =      TComponentPropertyEditor;
+  TComponentNameProperty =  TComponentNamePropertyEditor;
+//  TFontNameProperty =       TFontNamePropertyEditor;
+//  TFontCharsetProperty =    TFontCharsetPropertyEditor;
+//  TImeNameProperty =        TImeNamePropertyEditor;
+//  TColorProperty =          TColorPropertyEditor;
+//  TBrushStyleProperty =     TBrushStylePropertyEditor;
+//  TPenStyleProperty =       TPenStylePropertyEditor;
+  TCursorProperty =         TCursorPropertyEditor;
+//  TFontProperty =           TFontPropertyEditor;
+  TModalResultProperty =    TModalResultPropertyEditor;
+  TShortCutProperty =       TShortCutPropertyEditor;
+//  TMPFilenameProperty =     TMPFilenamePropertyEditor;
+  TTabOrderProperty =       TTabOrderPropertyEditor;
+  TCaptionProperty =        TCaptionPropertyEditor;
+  TDateProperty =           TDatePropertyEditor;
+  TTimeProperty =           TTimePropertyEditor;
+  TDateTimeProperty =       TDateTimePropertyEditor;
+
 
 //==============================================================================
 
@@ -902,7 +939,7 @@ type
     procedure Assign(SourceSelectionList: TPersistentSelectionList);
     property Items[AIndex: integer]: TPersistent read GetItems write SetItems; default;
   end;
-  
+
   TBackupComponentList = class
   private
     FComponentList: TList;
@@ -974,7 +1011,7 @@ type
   TPropHookModified = procedure(Sender: TObject) of object;
   TPropHookRevert = procedure(Instance:TPersistent; PropInfo:PPropInfo) of object;
   TPropHookRefreshPropertyValues = procedure of object;
-  
+
   TPropHookType = (
     // lookup root
     htChangeLookupRoot,
@@ -1227,7 +1264,7 @@ type
 //==============================================================================
 
   Function ClassTypeInfo(Value: TClass): PTypeInfo;
-  
+
 var
   GlobalDesignHook: TPropertyEditorHook;
 
@@ -1353,7 +1390,7 @@ type
 { TPropInfoList }
 
 constructor TPropInfoList.Create(Instance:TPersistent; Filter:TTypeKinds);
-var 
+var
   BigList: PPropList;
   TypeInfo: PTypeInfo;
   TypeData: PTypeData;
@@ -1376,7 +1413,7 @@ begin
     // read property count
     CurCount:=PWord(PropInfo)^;
     inc(Longint(PropInfo),SizeOf(Word));
-    
+
     {writeln('TPropInfoList.Create D ',CurCount,' TypeData^.ClassType=',HexStr(Cardinal(TypeData^.ClassType),8));
     writeln('TPropInfoList.Create E ClassName="',TypeData^.ClassType.ClassName,'"',
     ' TypeInfo=',HexStr(Cardinal(TypeInfo),8),
@@ -1390,13 +1427,13 @@ begin
         ' CurParent.ClassInfo=',HexStr(Cardinal(CurParent.ClassInfo),8),
         '');
     end;}
-    
+
     // read properties
     while CurCount>0 do begin
       if PropInfo^.PropType^.Kind in Filter then begin
         // check if name already exists in list
         i:=FCount-1;
-        while (i>=0) and (BigList^[i]^.Name<>PropInfo^.Name) do 
+        while (i>=0) and (BigList^[i]^.Name<>PropInfo^.Name) do
           dec(i);
         if (i<0) then begin
           // add property info to BigList
@@ -1412,7 +1449,7 @@ begin
     TypeInfo:=TypeData^.ParentInfo;
     if TypeInfo=nil then break;
   until false;
-    
+
   // create FList
   FSize:=FCount * SizeOf(Pointer);
   GetMem(FList,FSize);
@@ -1601,7 +1638,7 @@ begin
         Candidates.Delete(I);
         Continue;
       end;
-      
+
       EdClass := GetEditorClass(PropInfo, Instance);
       if EdClass = nil
       then begin
@@ -1632,15 +1669,15 @@ begin
       // Create a property info list for each component in the selection
       for I := 0 to SelCount - 1 do
         PropLists[i] := TPropInfoList.Create(ASelection[I], AFilter);
-        
+
       // Eliminate each property in Candidates that is not in all property lists
       for I := 0 to SelCount - 1 do
         Candidates.Intersect(TPropInfoList(PropLists[I]));
-        
+
       // Eliminate each property in the property list that are not in Candidates
       for I := 0 to SelCount - 1 do
         TPropInfoList(PropLists[I]).Intersect(Candidates);
-        
+
       // PropList now has a matrix of PropInfo's.
       // -> create a property editor for each property
       for I := 0 to Candidates.Count - 1 do
@@ -1864,7 +1901,7 @@ Function GetFloatProp(Instance : TObject;PropInfo : PPropInfo) : Extended;
 var
   Index,Ivalue : longint;
   Value : Extended;
-  
+
 begin
   SetIndexValues(PropInfo,Index,Ivalue);
   case (PropInfo^.PropProcs) and 3 of
@@ -1881,7 +1918,7 @@ begin
          Value:=PComp(Pointer(Instance)+Longint(PropInfo^.GetProc))^;
 {$endif m68k}
        end;
-       
+
     ptStatic:
       Case GetTypeData(PropInfo^.PropType)^.FloatType of
        ftSingle:
@@ -3730,14 +3767,14 @@ begin
   PropertyHook.ComponentRenamed(TComponent(GetComponent(0)));
 end;
 
-{ TDateProperty }
+{ TDatePropertyEditor }
 
-function TDateProperty.GetAttributes: TPropertyAttributes;
+function TDatePropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paRevertable];
 end;
 
-function TDateProperty.GetValue: string;
+function TDatePropertyEditor.GetValue: string;
 var
   DT: TDateTime;
 begin
@@ -3748,7 +3785,7 @@ begin
     Result := DateToStr(DT);
 end;
 
-procedure TDateProperty.SetValue(const Value: string);
+procedure TDatePropertyEditor.SetValue(const Value: string);
 var
   DT: TDateTime;
 begin
@@ -4056,7 +4093,7 @@ const
     VK_DELETE or scCtrl,
     VK_BACK or scAlt,
     VK_BACK or scShift or scAlt);
-    
+
 function TShortCutPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paValueList, paRevertable, paHasDefaultValue];
@@ -4243,7 +4280,7 @@ begin
   try
     ListColumns := TListColumns(GetOrdValue);
     ColumnDlg.Columns.Assign(ListColumns);
-       
+
     if ColumnDlg.ShowModal = mrOK then begin
       ListColumns.Assign(ColumnDlg.Columns);
     end;
@@ -5273,7 +5310,7 @@ begin
   end;
   PropertyClassList.Free;
   PropertyClassList:=nil;
-  
+
   FreeAndNil(ListPropertyEditors);
 
   // XXX workaround for missing typeinfo function
