@@ -8045,6 +8045,7 @@ begin
       CodeToolBoss.DefineTree.RemoveRootDefineTemplateByName(
                                                          FPCSrcTemplate.Name);
       FPCSrcTemplate.InsertBehind(CompilerTemplate);
+      CodeToolBoss.DefineTree.ClearCache;
       // save unitlinks
       InputHistories.SetLastFPCUnitLinks(EnvironmentOptions.CompilerFilename,
                                          CurOptions,CompilerUnitSearchPath,
@@ -9792,6 +9793,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.650  2003/09/26 06:23:36  mattias
+  fixed switching fpc src dir after failure
+
   Revision 1.649  2003/09/18 09:21:02  mattias
   renamed LCLLinux to LCLIntf
 

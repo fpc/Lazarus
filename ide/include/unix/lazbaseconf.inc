@@ -27,15 +27,18 @@ const
     '/usr/fpcsrc',
     '/usr/share/fpc/src',
     '/usr/fpc/src',
-    '/usr/src/fpc',
     '/usr/local/fpc/src',
     '/usr/local/share/fpc/src',
     '/usr/local/src/fpc',
     '/usr/lib/fpc/src',
     '/usr/local/lib/fpc/src',
     '/vol/fpc/src',
-    '/vol/src/fpc',
-    '/vol/lib/fpc/src'
+    '/vol/lib/fpc/src',
+    // here some extra paths. These paths are also created by the fpc rpm
+    // creation script and do not contain all sources. So, they are searched
+    // last.
+    '/usr/src/fpc',
+    '/vol/src/fpc'
     );
 
 var
