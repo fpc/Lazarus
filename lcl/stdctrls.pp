@@ -426,6 +426,7 @@ type
       property ShowHint;
       property TabOrder;
       property TabStop;
+      property OnClick;
       property OnDragDrop;
       property OnDragOver;
       property OnEndDrag;
@@ -449,8 +450,6 @@ type
       property State;
       property Visible;
       property Enabled;
-      property OnEnter;
-      property OnExit;
       property DragCursor;
       property DragKind;
       property DragMode;
@@ -460,9 +459,12 @@ type
       property ShowHint;
       property TabOrder;
       property TabStop;
+      property OnClick;
       property OnDragDrop;
       property OnDragOver;
       property OnEndDrag;
+      property OnEnter;
+      property OnExit;
       property OnMouseDown;
       property OnMouseMove;
       property OnMouseUp;
@@ -490,8 +492,6 @@ type
      property State;
      property Visible;
      property Enabled;
-     property OnEnter;
-     property OnExit;
      property DragCursor;
      property DragKind;
      property DragMode;
@@ -501,9 +501,12 @@ type
      property ShowHint;
      property TabOrder;
      property TabStop;
+     property OnClick;
      property OnDragDrop;
      property OnDragOver;
      property OnEndDrag;
+     property OnEnter;
+     property OnExit;
      property OnMouseDown;
      property OnMouseMove;
      property OnMouseUp;
@@ -581,6 +584,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.18  2002/01/09 22:47:29  lazarus
+  MWE: published OnClick for checkbox family
+
   Revision 1.17  2001/12/07 20:12:15  lazarus
   Added a watch dialog.
   Shane
