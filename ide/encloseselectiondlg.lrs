@@ -1,17 +1,17 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TEncloseSelectionDialog','FORMDATA',[
-  'TPF0'#23'TEncloseSelectionDialog'#22'EncloseSelectionDialog'#7'CAPTION'#6#17
-  +'Enclose Selection'#12'CLIENTHEIGHT'#3#244#0#11'CLIENTWIDTH'#3'U'#1#8'ONCREA'
-  +'TE'#7#28'EncloseSelectionDialogCREATE'#8'POSITION'#7#14'poscreencenter'#18
-  +'HORZSCROLLBAR.PAGE'#3'V'#1#18'VERTSCROLLBAR.PAGE'#3#245#0#4'LEFT'#3#150#1#6
-  +'HEIGHT'#3#244#0#3'TOP'#3'4'#1#5'WIDTH'#3'U'#1#0#7'TBUTTON'#8'OkButton'#7'AN'
-  +'CHORS'#11#6'akleft'#8'akbottom'#0#11'MODALRESULT'#2#1#7'CAPTION'#6#2'Ok'#7
-  +'TABSTOP'#9#8'TABORDER'#2#0#4'LEFT'#2'P'#6'HEIGHT'#2#25#3'TOP'#3#208#0#5'WID'
-  +'TH'#2'K'#0#0#7'TBUTTON'#12'CancelButton'#7'ANCHORS'#11#6'akleft'#8'akbottom'
-  +#0#11'MODALRESULT'#2#2#7'CAPTION'#6#6'Cancel'#7'TABSTOP'#9#8'TABORDER'#2#1#4
-  +'LEFT'#3#184#0#6'HEIGHT'#2#25#3'TOP'#3#208#0#5'WIDTH'#2'K'#0#0#11'TRADIOGROU'
-  +'P'#14'TypeRadiogroup'#7'ANCHORS'#11#5'aktop'#6'akleft'#7'akright'#8'akbotto'
-  +'m'#0#7'CAPTION'#6#4'Type'#4'LEFT'#2#8#6'HEIGHT'#3#189#0#3'TOP'#2#8#5'WIDTH'
-  +#3'C'#1#0#0#0
+  'TPF0'#23'TEncloseSelectionDialog'#22'EncloseSelectionDialog'#7'Caption'#6#17
+  +'Enclose Selection'#12'ClientHeight'#3#244#0#11'ClientWidth'#3#171#1#8'OnCre'
+  +'ate'#7#28'EncloseSelectionDialogCREATE'#13'PixelsPerInch'#2'Z'#8'Position'#7
+  +#14'poScreenCenter'#18'HorzScrollBar.Page'#3#172#1#18'VertScrollBar.Page'#3
+  +#245#0#4'Left'#3#150#1#6'Height'#3#244#0#3'Top'#3'4'#1#5'Width'#3#171#1#0#7
+  +'TButton'#8'OkButton'#7'Anchors'#11#6'akLeft'#8'akBottom'#0#7'Caption'#6#2'O'
+  +'k'#11'ModalResult'#2#1#8'TabOrder'#2#0#4'Left'#2'X'#6'Height'#2#25#3'Top'#3
+  +#208#0#5'Width'#2'k'#0#0#7'TButton'#12'CancelButton'#7'Anchors'#11#6'akLeft'
+  +#8'akBottom'#0#7'Caption'#6#6'Cancel'#11'ModalResult'#2#2#8'TabOrder'#2#1#4
+  +'Left'#3#224#0#6'Height'#2#25#3'Top'#3#208#0#5'Width'#2'h'#0#0#11'TRadioGrou'
+  +'p'#14'TypeRadiogroup'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBotto'
+  +'m'#0#7'Caption'#6#4'Type'#11'ParentColor'#9#4'Left'#2#8#6'Height'#3#189#0#3
+  +'Top'#2#8#5'Width'#3#153#1#0#0#0
 ]);

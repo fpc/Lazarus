@@ -893,6 +893,10 @@ msgstr ""
 msgid "Choose Scheme"
 msgstr ""
 
+#: lazarusidestrconsts:lischoosestructuretoencloseselection
+msgid "Choose structure to enclose selection"
+msgstr ""
+
 #: lazarusidestrconsts:lischoosetestbuilddir
 msgid "Choose the directory for tests"
 msgstr ""
@@ -1843,6 +1847,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefselseif
 msgid "ElseIf"
+msgstr ""
+
+#: lazarusidestrconsts:lisenclose
+msgid "Enclose"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuencloseselection
@@ -4713,6 +4721,10 @@ msgstr ""
 msgid "Resourcestring Section:"
 msgstr ""
 
+#: lazarusidestrconsts:lismenurestart
+msgid "Restart"
+msgstr ""
+
 #: lazarusidestrconsts:rsiwprestorewindowgeometry
 msgid "Restore window geometry"
 msgstr "Restaurar geometria de la finestra"
@@ -5363,10 +5375,6 @@ msgstr ""
 
 #: lazarusidestrconsts:lissorrythistypeisnotyetimplemented
 msgid "Sorry, this type is not yet implemented"
-msgstr ""
-
-#: lazarusidestrconsts:lissortselsort
-msgid "Sort"
 msgstr ""
 
 #: lazarusidestrconsts:lismenusortselection
@@ -6839,6 +6847,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuviewunitdependencies
 msgid "View Unit Dependencies"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuviewunitinfo
+msgid "View Unit Information"
 msgstr ""
 
 #: lazarusidestrconsts:lishintviewunits

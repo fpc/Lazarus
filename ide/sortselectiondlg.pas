@@ -53,15 +53,12 @@ type
     PreviewSynEdit: TSynEdit;
     DirectionRadioGroup: TRadioGroup;
     DomainRadioGroup: TRadioGroup;
-    OptionsGroupBox: TGroupBox;
-    CaseSensitiveCheckBox: TCheckBox;
-    IgnoreSpaceCheckBox: TCheckBox;
+    OptionsCheckGroup: TCheckGroup;
     OkButton: TButton;
     CancelButton: TButton;
-    procedure CaseSensitiveCheckBoxClick(Sender: TObject);
     procedure DirectionRadioGroupClick(Sender: TObject);
     procedure DomainRadioGroupClick(Sender: TObject);
-    procedure IgnoreSpaceCheckBoxClick(Sender: TObject);
+    procedure OptionsCheckGroupItemClick(Sender: TObject; Index: integer);
     procedure SortSelectionDialogClose(Sender: TObject;
                                        var CloseAction: TCloseAction);
     procedure SortSelectionDialogResize(Sender: TObject);
@@ -362,11 +359,6 @@ begin
     Direction:=sdDescending;
 end;
 
-procedure TSortSelectionDialog.CaseSensitiveCheckBoxClick(Sender: TObject);
-begin
-  CaseSensitive:=CaseSensitiveCheckBox.Checked;
-end;
-
 procedure TSortSelectionDialog.DomainRadioGroupClick(Sender: TObject);
 begin
   case DomainRadioGroup.ItemIndex of
@@ -378,9 +370,13 @@ begin
   end;
 end;
 
-procedure TSortSelectionDialog.IgnoreSpaceCheckBoxClick(Sender: TObject);
+procedure TSortSelectionDialog.OptionsCheckGroupItemClick(Sender: TObject;
+  Index: integer);
 begin
-  IgnoreSpace:=IgnoreSpaceCheckBox.Checked;
+  case Index of
+  0: CaseSensitive:=OptionsCheckGroup.Checked[0];
+  1: IgnoreSpace:=OptionsCheckGroup.Checked[1];
+  end;
 end;
 
 procedure TSortSelectionDialog.SortSelectionDialogClose(Sender: TObject;
@@ -413,6 +409,8 @@ begin
   if FCaseSensitive=AValue then exit;
   FCaseSensitive:=AValue;
   FStates:=FStates+[ssdPreviewNeedsUpdate,ssdSortedTextNeedsUpdate];
+  if (OptionsCheckGroup<>nil) then
+    OptionsCheckGroup.Checked[0]:=FCaseSensitive;
   UpdatePreview;
 end;
 
@@ -429,6 +427,8 @@ begin
   if FIgnoreSpace=AValue then exit;
   FIgnoreSpace:=AValue;
   FStates:=FStates+[ssdPreviewNeedsUpdate,ssdSortedTextNeedsUpdate];
+  if (OptionsCheckGroup<>nil) then
+    OptionsCheckGroup.Checked[1]:=FIgnoreSpace;
   UpdatePreview;
 end;
 
@@ -519,40 +519,25 @@ begin
     OnClick:=@DomainRadioGroupClick;
   end;
   
-  OptionsGroupBox:=TGroupBox.Create(Self);
-  with OptionsGroupBox do begin
-    Name:='OptionsGroupBox';
+  OptionsCheckGroup:=TCheckGroup.Create(Self);
+  with OptionsCheckGroup do begin
+    Name:='OptionsCheckGroup';
     Parent:=Self;
     Left:=DirectionRadioGroup.Left;
     Top:=DirectionRadioGroup.Top+DirectionRadioGroup.Height+5;
     Width:=DirectionRadioGroup.Width;
     Height:=DirectionRadioGroup.Height;
+    Columns:=2;
     Caption:=lisSortSelOptions;
+    with Items do begin
+      BeginUpdate;
+      Add(lisSortSelCaseSensitive);
+      Add(lisSortSelIgnoreSpace);
+      EndUpdate;
+    end;
+    OnItemClick:=@OptionsCheckGroupItemClick;
   end;
   
-  CaseSensitiveCheckBox:=TCheckBox.Create(Self);
-  with CaseSensitiveCheckBox do begin
-    Name:='CaseSensitiveCheckBox';
-    Parent:=OptionsGroupBox;
-    Left:=2;
-    Top:=2;
-    Width:=120;
-    Caption:=lisSortSelCaseSensitive;
-    OnClick:=@CaseSensitiveCheckBoxClick;
-  end;
-
-  IgnoreSpaceCheckBox:=TCheckBox.Create(Self);
-  with IgnoreSpaceCheckBox do begin
-    Name:='IgnoreSpaceCheckBox';
-    Parent:=OptionsGroupBox;
-    Left:=125;
-    Top:=2;
-    Width:=120;
-    Caption:=lisSortSelIgnoreSpace;
-    Checked:=true;
-    OnClick:=@IgnoreSpaceCheckBoxClick;
-  end;
-
   OkButton:=TButton.Create(Self);
   with OkButton do begin
     Name:='OkButton';

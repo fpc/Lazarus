@@ -882,6 +882,10 @@ msgstr "Выберите исходник программы (*.pp,*.pas,*.lpr)"
 msgid "Choose Scheme"
 msgstr "Выбрать схему"
 
+#: lazarusidestrconsts:lischoosestructuretoencloseselection
+msgid "Choose structure to enclose selection"
+msgstr ""
+
 #: lazarusidestrconsts:lischoosetestbuilddir
 msgid "Choose the directory for tests"
 msgstr "Выберите каталог для проб"
@@ -1833,6 +1837,10 @@ msgstr "Else"
 #: lazarusidestrconsts:liscodetoolsdefselseif
 msgid "ElseIf"
 msgstr "ElseIf"
+
+#: lazarusidestrconsts:lisenclose
+msgid "Enclose"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuencloseselection
 msgid "Enclose selection"
@@ -4702,6 +4710,10 @@ msgstr "Строка ресурсов уже существует"
 msgid "Resourcestring Section:"
 msgstr "Секция Resourcestring:"
 
+#: lazarusidestrconsts:lismenurestart
+msgid "Restart"
+msgstr ""
+
 #: lazarusidestrconsts:rsiwprestorewindowgeometry
 msgid "Restore window geometry"
 msgstr "Восстановить геометрию окна"
@@ -5353,10 +5365,6 @@ msgstr "Извините, пока не реализовано"
 #: lazarusidestrconsts:lissorrythistypeisnotyetimplemented
 msgid "Sorry, this type is not yet implemented"
 msgstr "Извините, этот тип ещё не реализован"
-
-#: lazarusidestrconsts:lissortselsort
-msgid "Sort"
-msgstr "Сортировка"
 
 #: lazarusidestrconsts:lismenusortselection
 msgid "Sort selection"
@@ -6829,6 +6837,10 @@ msgstr "Показать список ToDo"
 #: lazarusidestrconsts:lismenuviewunitdependencies
 msgid "View Unit Dependencies"
 msgstr "Показать зависимости модулей"
+
+#: lazarusidestrconsts:lismenuviewunitinfo
+msgid "View Unit Information"
+msgstr ""
 
 #: lazarusidestrconsts:lishintviewunits
 msgid "View Units"

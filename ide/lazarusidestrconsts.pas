@@ -603,11 +603,6 @@ resourcestring
   dlgEnvBckup = 'Backup';
   dlgNaming = 'Naming';
   dlgCancel = 'Cancel';
-  lisErrors = 'Errors';
-  lisLFMFile = 'LFM file';
-  lisRemoveAllInvalidProperties = 'Remove all invalid properties';
-  lisCompTest = 'Test';
-  lisA2PFilename2 = 'Filename';
   dlgEnvLanguage = 'Language';
   dlgAutoSave = 'Auto save';
   dlgEdFiles = 'Editor files';
@@ -780,9 +775,6 @@ resourcestring
   dlgEdAdd = 'Add...';
   dlgEdEdit = 'Edit...';
   dlgEdDelete = 'Delete';
-  lisA2PSwitchPaths = 'Switch Paths';
-  lisA2PAddFilesToPackage = 'Add files to package';
-  lisA2PAddToPackage = 'Add to package';
   dlgIndentCodeTo = 'Indent code to';
   dlgCodeToolsTab = 'Code Tools';
   
@@ -1708,7 +1700,7 @@ resourcestring
   lisSortSelOptions = 'Options';
   lisSortSelCaseSensitive = 'Case Sensitive';
   lisSortSelIgnoreSpace = 'Ignore Space';
-  lisSortSelSort = 'Sort';
+  lisSortSelSort = 'Accept';
   lisSortSelCancel = 'Cancel';
 
   // publish project dialog
@@ -2507,6 +2499,22 @@ resourcestring
   lisHlpOptsHelpOptions = 'Help Options';
   lisHlpOptsViewers = 'Viewers';
   lisHlpOptsProperties = 'Properties:';
+  
+  // enclose selection dialog
+  lisEncloseSelection = 'Enclose Selection';
+  lisEnclose = 'Enclose';
+  lisChooseStructureToEncloseSelection =
+    'Choose structure to enclose selection';
+    
+  lisErrors = 'Errors';
+  lisLFMFile = 'LFM file';
+  lisRemoveAllInvalidProperties = 'Remove all invalid properties';
+  lisCompTest = 'Test';
+
+  lisA2PSwitchPaths = 'Switch Paths';
+  lisA2PAddFilesToPackage = 'Add files to package';
+  lisA2PAddToPackage = 'Add to package';
+  lisA2PFilename2 = 'Filename';
 
 implementation
 end.

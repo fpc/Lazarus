@@ -118,6 +118,10 @@ msgstr ""
 msgid "Save file as"
 msgstr ""
 
+#: lclstrconsts:rsallfiles
+msgid "All files (%s)|%s|%s"
+msgstr ""
+
 #: lclstrconsts:rsfdselectdirectory
 msgid "Select Directory"
 msgstr ""

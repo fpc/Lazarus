@@ -132,6 +132,10 @@ msgstr "Blocca"
 msgid "Accept"
 msgstr ""
 
+#: lclstrconsts:rsallfiles
+msgid "All files (%s)|%s|%s"
+msgstr ""
+
 #: lclstrconsts:ifsvk_apps
 msgid "application key"
 msgstr ""

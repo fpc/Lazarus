@@ -882,6 +882,10 @@ msgstr ""
 msgid "Choose Scheme"
 msgstr ""
 
+#: lazarusidestrconsts:lischoosestructuretoencloseselection
+msgid "Choose structure to enclose selection"
+msgstr ""
+
 #: lazarusidestrconsts:lischoosetestbuilddir
 msgid "Choose the directory for tests"
 msgstr "Escollir el directori per les proves"
@@ -1833,6 +1837,10 @@ msgstr "Else"
 #: lazarusidestrconsts:liscodetoolsdefselseif
 msgid "ElseIf"
 msgstr "ElseIf"
+
+#: lazarusidestrconsts:lisenclose
+msgid "Enclose"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuencloseselection
 msgid "Enclose selection"
@@ -4702,6 +4710,10 @@ msgstr "Ja existeix la cadena de recursos"
 msgid "Resourcestring Section:"
 msgstr "Secció de cadena de recursos"
 
+#: lazarusidestrconsts:lismenurestart
+msgid "Restart"
+msgstr ""
+
 #: lazarusidestrconsts:rsiwprestorewindowgeometry
 msgid "Restore window geometry"
 msgstr "Restaurar geometria de la finestra"
@@ -5353,10 +5365,6 @@ msgstr ""
 #: lazarusidestrconsts:lissorrythistypeisnotyetimplemented
 msgid "Sorry, this type is not yet implemented"
 msgstr ""
-
-#: lazarusidestrconsts:lissortselsort
-msgid "Sort"
-msgstr "Ordenar"
 
 #: lazarusidestrconsts:lismenusortselection
 msgid "Sort selection"
@@ -6829,6 +6837,10 @@ msgstr "Visualitzar llista de coses a fer"
 #: lazarusidestrconsts:lismenuviewunitdependencies
 msgid "View Unit Dependencies"
 msgstr "Visualitza dependències de les unitats"
+
+#: lazarusidestrconsts:lismenuviewunitinfo
+msgid "View Unit Information"
+msgstr ""
 
 #: lazarusidestrconsts:lishintviewunits
 msgid "View Units"

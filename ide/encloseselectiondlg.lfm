@@ -1,43 +1,43 @@
 object EncloseSelectionDialog: TEncloseSelectionDialog
-  CAPTION = 'Enclose Selection'
-  CLIENTHEIGHT = 244
-  CLIENTWIDTH = 341
-  ONCREATE = EncloseSelectionDialogCREATE
-  POSITION = poscreencenter
-  HORZSCROLLBAR.PAGE = 342
-  VERTSCROLLBAR.PAGE = 245
-  LEFT = 406
-  HEIGHT = 244
-  TOP = 308
-  WIDTH = 341
-  object OkButton: TBUTTON
-    ANCHORS = [akleft, akbottom]
-    MODALRESULT = 1
-    CAPTION = 'Ok'
-    TABSTOP = True
-    TABORDER = 0
-    LEFT = 80
-    HEIGHT = 25
-    TOP = 208
-    WIDTH = 75
+  Caption = 'Enclose Selection'
+  ClientHeight = 244
+  ClientWidth = 427
+  OnCreate = EncloseSelectionDialogCREATE
+  PixelsPerInch = 90
+  Position = poScreenCenter
+  HorzScrollBar.Page = 428
+  VertScrollBar.Page = 245
+  Left = 406
+  Height = 244
+  Top = 308
+  Width = 427
+  object OkButton: TButton
+    Anchors = [akLeft, akBottom]
+    Caption = 'Ok'
+    ModalResult = 1
+    TabOrder = 0
+    Left = 88
+    Height = 25
+    Top = 208
+    Width = 107
   end
-  object CancelButton: TBUTTON
-    ANCHORS = [akleft, akbottom]
-    MODALRESULT = 2
-    CAPTION = 'Cancel'
-    TABSTOP = True
-    TABORDER = 1
-    LEFT = 184
-    HEIGHT = 25
-    TOP = 208
-    WIDTH = 75
+  object CancelButton: TButton
+    Anchors = [akLeft, akBottom]
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 1
+    Left = 224
+    Height = 25
+    Top = 208
+    Width = 104
   end
-  object TypeRadiogroup: TRADIOGROUP
-    ANCHORS = [aktop, akleft, akright, akbottom]
-    CAPTION = 'Type'
-    LEFT = 8
-    HEIGHT = 189
-    TOP = 8
-    WIDTH = 323
+  object TypeRadiogroup: TRadioGroup
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Caption = 'Type'
+    ParentColor = True
+    Left = 8
+    Height = 189
+    Top = 8
+    Width = 409
   end
 end

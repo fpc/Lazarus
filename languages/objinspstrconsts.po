@@ -250,3 +250,71 @@ msgstr ""
 msgid "Error while executing %s%s%s:%s%s"
 msgstr ""
 
+#: objinspstrconsts:oishelphelpnodehasnohelpdatabase
+msgid "Help node %s%s%s has no Help Database"
+msgstr ""
+
+#: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
+msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
+msgstr ""
+
+#: objinspstrconsts:oishelpalreadyregistered
+msgid "%s: Already registered"
+msgstr ""
+
+#: objinspstrconsts:oishelpnotregistered
+msgid "%s: Not registered"
+msgstr ""
+
+#: objinspstrconsts:oishelphelpdatabasenotfound
+msgid "Help Database %s%s%s not found"
+msgstr ""
+
+#: objinspstrconsts:oishelphelpkeywordnotfoundindatabase
+msgid "Help keyword %s%s%s not found in Database %s%s%s."
+msgstr ""
+
+#: objinspstrconsts:oishelphelpkeywordnotfound
+msgid "Help keyword %s%s%s not found."
+msgstr ""
+
+#: objinspstrconsts:oishelphelpcontextnotfoundindatabase
+msgid "Help context %s not found in Database %s%s%s."
+msgstr ""
+
+#: objinspstrconsts:oishelphelpcontextnotfound
+msgid "Help context %s not found."
+msgstr ""
+
+#: objinspstrconsts:oisloadimagedialog
+msgid "Load Image Dialog"
+msgstr ""
+
+#: objinspstrconsts:oisok
+msgid "&OK"
+msgstr ""
+
+#: objinspstrconsts:oiscancel
+msgid "&Cancel"
+msgstr ""
+
+#: objinspstrconsts:oisload
+msgid "&Load"
+msgstr ""
+
+#: objinspstrconsts:oissave
+msgid "&Save"
+msgstr ""
+
+#: objinspstrconsts:oisclear
+msgid "C&lear"
+msgstr ""
+
+#: objinspstrconsts:oiserrorloadingimage
+msgid "Error loading image"
+msgstr ""
+
+#: objinspstrconsts:oiserrorloadingimage2
+msgid "Error loading image %s%s%s:%s%s"
+msgstr ""
+

@@ -488,7 +488,7 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguagearabic
 msgid "Arabic"
-msgstr ""
+msgstr "arabia"
 
 #: lazarusidestrconsts:dlgcoasis
 msgid "As-Is"
@@ -880,6 +880,10 @@ msgstr "Valitse ohjelman lähdekoodi (*.pp,*.pas,*.lpr)"
 
 #: lazarusidestrconsts:lisedoptschoosescheme
 msgid "Choose Scheme"
+msgstr ""
+
+#: lazarusidestrconsts:lischoosestructuretoencloseselection
+msgid "Choose structure to enclose selection"
 msgstr ""
 
 #: lazarusidestrconsts:lischoosetestbuilddir
@@ -1834,6 +1838,10 @@ msgstr ""
 msgid "ElseIf"
 msgstr ""
 
+#: lazarusidestrconsts:lisenclose
+msgid "Enclose"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuencloseselection
 msgid "Enclose selection"
 msgstr ""
@@ -2492,7 +2500,7 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguagehebrew
 msgid "Hebrew"
-msgstr ""
+msgstr "hebrea"
 
 #: lazarusidestrconsts:dlgheightpos
 msgid "Height:"
@@ -2620,7 +2628,7 @@ msgstr "Jätä huomiotta tyhjät rivit"
 
 #: lazarusidestrconsts:lissortselignorespace
 msgid "Ignore Space"
-msgstr ""
+msgstr "Jätä välilyönnit huomiotta"
 
 #: lazarusidestrconsts:lisdiffdlgignorespaces
 msgid "Ignore spaces (newline chars not included)"
@@ -4702,6 +4710,10 @@ msgstr ""
 msgid "Resourcestring Section:"
 msgstr ""
 
+#: lazarusidestrconsts:lismenurestart
+msgid "Restart"
+msgstr ""
+
 #: lazarusidestrconsts:rsiwprestorewindowgeometry
 msgid "Restore window geometry"
 msgstr ""
@@ -5353,10 +5365,6 @@ msgstr ""
 #: lazarusidestrconsts:lissorrythistypeisnotyetimplemented
 msgid "Sorry, this type is not yet implemented"
 msgstr ""
-
-#: lazarusidestrconsts:lissortselsort
-msgid "Sort"
-msgstr "Lajittele"
 
 #: lazarusidestrconsts:lismenusortselection
 msgid "Sort selection"
@@ -6828,6 +6836,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuviewunitdependencies
 msgid "View Unit Dependencies"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuviewunitinfo
+msgid "View Unit Information"
 msgstr ""
 
 #: lazarusidestrconsts:lishintviewunits

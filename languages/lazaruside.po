@@ -234,12 +234,16 @@ msgstr ""
 msgid "Close all editor files"
 msgstr ""
 
+#: lazarusidestrconsts:lismenucleandirectory
+msgid "Clean directory"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuquit
 msgid "Quit"
 msgstr ""
 
-#: lazarusidestrconsts:lismenucleandirectory
-msgid "Clean directory"
+#: lazarusidestrconsts:lismenurestart
+msgid "Restart"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuundo
@@ -468,6 +472,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuviewunitdependencies
 msgid "View Unit Dependencies"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuviewunitinfo
+msgid "View Unit Information"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuviewtoggleformunit
@@ -1570,26 +1578,6 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: lazarusidestrconsts:liserrors
-msgid "Errors"
-msgstr ""
-
-#: lazarusidestrconsts:lislfmfile
-msgid "LFM file"
-msgstr ""
-
-#: lazarusidestrconsts:lisremoveallinvalidproperties
-msgid "Remove all invalid properties"
-msgstr ""
-
-#: lazarusidestrconsts:liscomptest
-msgid "Test"
-msgstr ""
-
-#: lazarusidestrconsts:lisa2pfilename2
-msgid "Filename"
-msgstr ""
-
 #: lazarusidestrconsts:dlgenvlanguage
 msgid "Language"
 msgstr ""
@@ -2240,18 +2228,6 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgeddelete
 msgid "Delete"
-msgstr ""
-
-#: lazarusidestrconsts:lisa2pswitchpaths
-msgid "Switch Paths"
-msgstr ""
-
-#: lazarusidestrconsts:lisa2paddfilestopackage
-msgid "Add files to package"
-msgstr ""
-
-#: lazarusidestrconsts:lisa2paddtopackage
-msgid "Add to package"
 msgstr ""
 
 #: lazarusidestrconsts:dlgindentcodeto
@@ -3894,6 +3870,10 @@ msgstr ""
 msgid "View unit dependencies"
 msgstr ""
 
+#: lazarusidestrconsts:srkmecviewunitinfo
+msgid "View unit information"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecwordcompletion
 msgid "Word completion"
 msgstr ""
@@ -5315,7 +5295,7 @@ msgid "Ignore Space"
 msgstr ""
 
 #: lazarusidestrconsts:lissortselsort
-msgid "Sort"
+msgid "Accept"
 msgstr ""
 
 #: lazarusidestrconsts:lissortselcancel
@@ -7420,5 +7400,49 @@ msgstr ""
 
 #: lazarusidestrconsts:lishlpoptsproperties
 msgid "Properties:"
+msgstr ""
+
+#: lazarusidestrconsts:lisencloseselection
+msgid "Enclose Selection"
+msgstr ""
+
+#: lazarusidestrconsts:lisenclose
+msgid "Enclose"
+msgstr ""
+
+#: lazarusidestrconsts:lischoosestructuretoencloseselection
+msgid "Choose structure to enclose selection"
+msgstr ""
+
+#: lazarusidestrconsts:liserrors
+msgid "Errors"
+msgstr ""
+
+#: lazarusidestrconsts:lislfmfile
+msgid "LFM file"
+msgstr ""
+
+#: lazarusidestrconsts:lisremoveallinvalidproperties
+msgid "Remove all invalid properties"
+msgstr ""
+
+#: lazarusidestrconsts:liscomptest
+msgid "Test"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pswitchpaths
+msgid "Switch Paths"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2paddfilestopackage
+msgid "Add files to package"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2paddtopackage
+msgid "Add to package"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pfilename2
+msgid "Filename"
 msgstr ""
 

@@ -892,6 +892,10 @@ msgstr "Choisir le source du programme (*.pp,*.pas,*.lpr)"
 msgid "Choose Scheme"
 msgstr "Choisissez L'Arrangement"
 
+#: lazarusidestrconsts:lischoosestructuretoencloseselection
+msgid "Choose structure to enclose selection"
+msgstr ""
+
 #: lazarusidestrconsts:lischoosetestbuilddir
 msgid "Choose the directory for tests"
 msgstr "Choisir le répertoire pour les tests"
@@ -1842,6 +1846,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefselseif
 msgid "ElseIf"
+msgstr ""
+
+#: lazarusidestrconsts:lisenclose
+msgid "Enclose"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuencloseselection
@@ -4712,6 +4720,10 @@ msgstr "Resourcestring existe déjà"
 msgid "Resourcestring Section:"
 msgstr "Section Resourcestring :"
 
+#: lazarusidestrconsts:lismenurestart
+msgid "Restart"
+msgstr ""
+
 #: lazarusidestrconsts:rsiwprestorewindowgeometry
 msgid "Restore window geometry"
 msgstr "Restaurer les dimensions"
@@ -5363,10 +5375,6 @@ msgstr "Désolé, non implémenté à ce jour"
 #: lazarusidestrconsts:lissorrythistypeisnotyetimplemented
 msgid "Sorry, this type is not yet implemented"
 msgstr "Désolé, ce type n'est pas implémenté"
-
-#: lazarusidestrconsts:lissortselsort
-msgid "Sort"
-msgstr "Trier"
 
 #: lazarusidestrconsts:lismenusortselection
 msgid "Sort selection"
@@ -6839,6 +6847,10 @@ msgstr "Voir la liste des ToDo"
 #: lazarusidestrconsts:lismenuviewunitdependencies
 msgid "View Unit Dependencies"
 msgstr "Voir les dépendances d'unités"
+
+#: lazarusidestrconsts:lismenuviewunitinfo
+msgid "View Unit Information"
+msgstr ""
 
 #: lazarusidestrconsts:lishintviewunits
 msgid "View Units"

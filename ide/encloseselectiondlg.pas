@@ -395,6 +395,10 @@ procedure TEncloseSelectionDialog.EncloseSelectionDialogCREATE(Sender: TObject);
 var
   t: TEncloseSelectionType;
 begin
+  Caption:=lisEncloseSelection;
+  OkButton.Caption:=lisEnclose;
+  CancelButton.Caption:=dlgCancel;
+  TypeRadiogroup.Caption:=lisChooseStructureToEncloseSelection;
   with TypeRadiogroup.Items do begin
     BeginUpdate;
     for t:=Low(TEncloseSelectionType) to High(TEncloseSelectionType) do

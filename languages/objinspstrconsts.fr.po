@@ -14,6 +14,14 @@ msgstr "Eléments"
 msgid " Selected image "
 msgstr "Image sélectionnée"
 
+#: objinspstrconsts:oishelpalreadyregistered
+msgid "%s: Already registered"
+msgstr ""
+
+#: objinspstrconsts:oishelpnotregistered
+msgid "%s: Not registered"
+msgstr ""
+
 #: objinspstrconsts:oisitemsselected
 msgid "%u items selected"
 msgstr ""
@@ -22,9 +30,25 @@ msgstr ""
 msgid "&Add"
 msgstr "&Ajouter"
 
+#: objinspstrconsts:oiscancel
+msgid "&Cancel"
+msgstr ""
+
 #: objinspstrconsts:oiscdelete
 msgid "&Delete"
 msgstr "&Supprimer"
+
+#: objinspstrconsts:oisload
+msgid "&Load"
+msgstr ""
+
+#: objinspstrconsts:oisok
+msgid "&OK"
+msgstr ""
+
+#: objinspstrconsts:oissave
+msgid "&Save"
+msgstr ""
 
 #: objinspstrconsts:cactionlisteditorallcategory
 msgid "(All)"
@@ -74,6 +98,10 @@ msgstr ""
 msgid "Browser %s%s%s not found."
 msgstr ""
 
+#: objinspstrconsts:oisclear
+msgid "C&lear"
+msgstr ""
+
 #: objinspstrconsts:oiscategory
 msgid "Category"
 msgstr ""
@@ -118,6 +146,14 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
+#: objinspstrconsts:oiserrorloadingimage
+msgid "Error loading image"
+msgstr ""
+
+#: objinspstrconsts:oiserrorloadingimage2
+msgid "Error loading image %s%s%s:%s%s"
+msgstr ""
+
 #: objinspstrconsts:oishelperrorwhileexecuting
 msgid "Error while executing %s%s%s:%s%s"
 msgstr ""
@@ -128,6 +164,34 @@ msgstr "Evénements"
 
 #: objinspstrconsts:oisfloat
 msgid "Float"
+msgstr ""
+
+#: objinspstrconsts:oishelphelpcontextnotfoundindatabase
+msgid "Help context %s not found in Database %s%s%s."
+msgstr ""
+
+#: objinspstrconsts:oishelphelpcontextnotfound
+msgid "Help context %s not found."
+msgstr ""
+
+#: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
+msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
+msgstr ""
+
+#: objinspstrconsts:oishelphelpdatabasenotfound
+msgid "Help Database %s%s%s not found"
+msgstr ""
+
+#: objinspstrconsts:oishelphelpkeywordnotfoundindatabase
+msgid "Help keyword %s%s%s not found in Database %s%s%s."
+msgstr ""
+
+#: objinspstrconsts:oishelphelpkeywordnotfound
+msgid "Help keyword %s%s%s not found."
+msgstr ""
+
+#: objinspstrconsts:oishelphelpnodehasnohelpdatabase
+msgid "Help node %s%s%s has no Help Database"
 msgstr ""
 
 #: objinspstrconsts:sccslvedtimgindexcaption
@@ -157,6 +221,10 @@ msgstr "Libellé"
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView editor"
 msgstr "Editeur d'élements"
+
+#: objinspstrconsts:oisloadimagedialog
+msgid "Load Image Dialog"
+msgstr ""
 
 #: objinspstrconsts:oismethod
 msgid "Method"
