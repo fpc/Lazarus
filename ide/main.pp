@@ -4443,13 +4443,13 @@ function TMainIDE.DoOpenMainUnit(ProjectLoading: boolean): TModalResult;
 var MainUnitInfo: TUnitInfo;
   OpenFlags: TOpenFlags;
 begin
-  writeln('[TMainIDE.DoOpenMainUnit] A');
+  writeln('[TMainIDE.DoOpenMainUnit] A ProjectLoading=',ProjectLoading,' MainUnitID=',Project1.MainUnitID);
   Result:=mrCancel;
   if Project1.MainUnitID<0 then exit;
   MainUnitInfo:=Project1.MainUnitInfo;
   
   // check if main unit is already open in source editor
-  if MainUnitInfo.Loaded and (not ProjectLoading) then begin
+  if (MainUnitInfo.EditorIndex>=0) and (not ProjectLoading) then begin
     // already loaded -> switch to source editor
     SourceNotebook.NoteBook.PageIndex:=MainUnitInfo.EditorIndex;
     Result:=mrOk;
@@ -5309,16 +5309,12 @@ begin
 
     // add and load default required packages
     PkgBoss.AddDefaultDependencies(Project1);
-
-    // rebuild project specific codetools defines
-    // ToDo
   finally
     Project1.EndUpdate;
   end;
-  if Result<>mrOk then exit;
 
   // show program unit
-  Result:=DoOpenMainUnit(false);
+  Result:=DoOpenEditorFile(ProgramBuf.Filename,-1,[ofAddToRecent,ofRegularFile]);
   if Result=mrAbort then exit;
 
   {$IFDEF IDE_VERBOSE}
@@ -8661,6 +8657,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.558  2003/05/07 17:41:27  mattias
+  fixed create project for program
+
   Revision 1.557  2003/05/06 21:54:57  mattias
   implemented compiler function Low(array)
 
