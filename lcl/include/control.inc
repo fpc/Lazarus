@@ -72,7 +72,7 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TControl.BringToFront;
 begin
-SetZOrder(True);
+  SetZOrder(true);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1092,12 +1092,34 @@ end;
 }
 {------------------------------------------------------------------------------}
 Procedure TControl.SetZOrder(Topmost : Boolean);
+var AParent : TWinControl;
+    AControl : TControl;
 begin
-if FParent <> nil then
-     if Topmost then SetZOrderPosition(FParent.FControls.Count-1)
-   else
-   SetZOrderPosition(0);
-
+//if FParent <> nil then
+//     if Topmost then SetZOrderPosition(FParent.FControls.Count-1)
+//   else
+//   SetZOrderPosition(0);
+  if Parent <> nil then begin
+    AParent:= Parent;
+    { Just reinsert the control on top. Don't if it already is }
+    if Topmost then begin
+      if (AParent.Controls[AParent.ControlCount - 1] <> Self) then begin
+        AParent.RemoveControl(Self);
+        AParent.InsertControl(Self);
+      end;
+    end else begin
+      { Move all other controls over this one }
+      if (AParent.Controls[0] <> Self) then begin
+        AParent.RemoveControl(Self);
+        AParent.InsertControl(Self);
+        while AParent.Controls[0] <> Self do begin
+          AControl:= AParent.Controls[0];
+  	  AParent.RemoveControl(AControl);
+	  AParent.InsertControl(AControl);
+	end;  
+      end;
+    end;
+  end;    
 end;
 
 {------------------------------------------------------------------------------}
@@ -1304,6 +1326,18 @@ begin
   Result := Parent.GetDeviceContext(WindowHandle);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TControl.SendToBack
+  Params:  None
+  Returns: Nothing
+
+  Puts a control back in Z-order behind all other controls
+ ------------------------------------------------------------------------------}
+procedure TControl.SendToBack;
+begin
+  SetZOrder(false);
+end;
+
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
   {$C-}
@@ -1311,6 +1345,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.20  2001/05/13 22:07:08  lazarus
+  Implemented BringToFront / SendToBack.
+
   Revision 1.19  2001/04/02 14:45:26  lazarus
   MG: bugfixes for TBevel
 

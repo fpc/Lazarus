@@ -394,7 +394,12 @@ begin
       begin
          Assert(False, 'Trace:TODO:bringtofront');
          //For now just hide and show again.
-
+	 if (Sender is TControl) then begin
+	   TControl(Sender).Parent.RemoveControl(TControl(Sender));
+	   writeln('Removed control ', TControl(Sender).Name);
+	   TControl(Sender).Parent.InsertControl(TControl(Sender));
+	   writeln('Inserted control ', TControl(Sender).Name);
+	 end;
       end;
 
       LM_BTNDEFAULT_CHANGED :
@@ -2841,6 +2846,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.45  2001/05/13 22:07:09  lazarus
+  Implemented BringToFront / SendToBack.
+
   Revision 1.44  2001/04/13 17:56:17  lazarus
   MWE:
   * Moved menubar outside clientarea

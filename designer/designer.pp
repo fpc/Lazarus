@@ -64,6 +64,8 @@ type
     FMirrorVerticalMenuItem: TMenuItem;
     FScaleMenuItem: TMenuItem;
     FSizeMenuItem: TMenuItem;
+    FBringToFrontMenuItem: TMenuItem;
+    FSendToBackMenuItem: TMenuItem;
 
     function GetIsControl: Boolean;
     procedure SetIsControl(Value: Boolean);
@@ -92,6 +94,8 @@ type
     procedure OnMirrorVerticalPopupMenuClick(Sender: TObject);
     procedure OnScalePopupMenuClick(Sender: TObject);
     procedure OnSizePopupMenuClick(Sender: TObject);
+    procedure OnBringToFrontMenuClick(Sender: TObject);
+    procedure OnSendToBackMenuClick(Sender: TObject);
   public
     ControlSelection : TControlSelection;
     constructor Create(Customform : TCustomform; AControlSelection: TControlSelection);
@@ -870,6 +874,23 @@ begin
     Enabled := CompsAreSelected and OnlyNonVisualCompsAreSelected;
   end;
   FPopupMenu.Items.Add(FSizeMenuItem);
+  
+  FBringToFrontMenuItem := TMenuItem.Create(nil);
+  with FBringToFrontMenuItem do begin
+    Caption:= 'Bring to front';
+    OnClick:= @OnBringToFrontMenuClick;
+    Enabled:= CompsAreSelected;
+  end;
+  FPopupMenu.Items.Add(FBringToFrontMenuItem);
+  
+  FSendToBackMenuItem:= TMenuItem.Create(nil);
+  with FSendToBackMenuItem do begin
+    Caption:= 'Send to back';
+    OnClick:= @OnSendToBackMenuClick;
+    Enabled:= CompsAreSelected;
+  end;
+  FPopupMenu.Items.Add(FSendToBackMenuItem);
+  
 end;
 
 procedure TDesigner.OnAlignPopupMenuClick(Sender: TObject);
@@ -950,6 +971,24 @@ begin
     ControlSelection.SizeComponents(HorizSizing,AWidth,VertSizing,AHeight);
   end;
   ControlSelection.SaveBounds;
+end;
+
+procedure TDesigner.OnBringToFrontMenuClick(Sender: TObject);
+var AComponent : TComponent;
+begin
+  if ControlSelection.Count = 1 then begin
+    AComponent:= ControlSelection.Items[0].Component;
+    if AComponent is TControl then TControl(AComponent).BringToFront;
+  end;    
+end;
+
+procedure TDesigner.OnSendToBackMenuClick(Sender: TObject);
+var AComponent : TComponent;
+begin
+  if ControlSelection.Count = 1 then begin
+    AComponent:= ControlSelection.Items[0].Component;
+    if AComponent is TControl then TControl(AComponent).SendToBack;
+  end;    
 end;
 
 

@@ -507,13 +507,14 @@ TCMDialogKey = TLMKEY;
     // use overload to simulate default
     procedure BeginDrag(Immediate: Boolean; Threshold: Integer); //overload;
     procedure BeginDrag(Immediate: Boolean); //overload;
-    Procedure BringToFront;
+    procedure BringToFront;
     constructor Create(AOwner: TComponent);override;
     destructor Destroy; override;
     procedure Repaint; virtual;
     Procedure Invalidate; virtual;
     procedure AddControl; virtual;
     Procedure DragDrop(Source: TObject; X,Y : Integer); Dynamic;
+    procedure SendToBack;
     procedure SetBounds(aLeft, aTop, aWidth, aHeight : integer); virtual;
     function GetTextBuf(Buffer: PChar; BufSize: Integer): Integer;
     Procedure SetTextBuf(Buffer : PChar);
@@ -1131,6 +1132,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.19  2001/05/13 22:07:08  lazarus
+  Implemented BringToFront / SendToBack.
+
   Revision 1.18  2001/03/27 21:12:53  lazarus
   MWE:
     + Turned on longstrings

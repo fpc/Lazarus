@@ -368,10 +368,11 @@ var i: integer;
 begin
   if FParent <> nil then
   begin
-    if TopMost then i := FParent.FWinControls.Count - 1
-    else i := 0;
-    if FParent.FControls <> nil then inc(i, FParent.FControls.Count);
-    SetZOrderPosition(i);
+//    if TopMost then i := FParent.FWinControls.Count - 1
+//    else i := 0;
+//    if FParent.FControls <> nil then inc(i, FParent.FControls.Count);
+//    SetZOrderPosition(i);
+    inherited SetZOrder(TopMost);
   end
   else if FHandle <> 0 then begin
     InterfaceObject.SetWindowPos(FHandle, WindowPos[TopMost], 0, 0, 0, 0,
@@ -1965,6 +1966,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.29  2001/05/13 22:07:08  lazarus
+  Implemented BringToFront / SendToBack.
+
   Revision 1.28  2001/04/02 14:45:26  lazarus
   MG: bugfixes for TBevel
 
