@@ -248,7 +248,7 @@ begin
         // build SynEdit
         Tool.Title:='Build SynEdit';
         Tool.WorkingDirectory:='$(LazarusDir)/components/synedit';
-        SetMakeParams(Options.BuildComponents,Options.ExtraOptions,
+        SetMakeParams(Options.BuildSynEdit,Options.ExtraOptions,
                       Options.TargetOS);
         Result:=ExternalTools.Run(Tool,Macros);
         if Result<>mrOk then exit;
@@ -257,7 +257,7 @@ begin
         // build CodeTools
         Tool.Title:='Build CodeTools';
         Tool.WorkingDirectory:='$(LazarusDir)/components/codetools';
-        SetMakeParams(Options.BuildComponents,Options.ExtraOptions,
+        SetMakeParams(Options.BuildCodeTools,Options.ExtraOptions,
                       Options.TargetOS);
         Result:=ExternalTools.Run(Tool,Macros);
         if Result<>mrOk then exit;
