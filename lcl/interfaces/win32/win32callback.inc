@@ -502,6 +502,8 @@ Begin
     End;
     WM_SIZE:
     Begin
+      if not (OwnerObject is TCustomComboBox) then
+      begin
       With TLMSize(LMessage) Do
       Begin
         Msg := LM_SIZE;
@@ -516,6 +518,7 @@ Begin
         if (Windows.GetWindowLong(Window, GWL_STYLE) and WS_HSCROLL) <> 0 then
           Height := Height - GetSystemMetrics(SM_CYHSCROLL);
       End;
+      end;
     End;
     WM_SYSKEYDOWN:
     Begin
@@ -638,6 +641,9 @@ end;
 
 {
   $Log$
+  Revision 1.47  2003/08/11 18:10:41  mattias
+  fixed combobox height from Micha
+
   Revision 1.46  2003/08/09 16:30:33  mattias
   fixed LM_ShowModal for win32 intf from Karl
 
