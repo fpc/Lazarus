@@ -375,7 +375,11 @@ Function GetSysGCValues(Color : TColorRef) : TGDKGCValues;
 Function DeleteAmpersands(var Str : String) : Longint;
 
 function Ampersands2Underscore(Src: PChar) : PChar;
+function RemoveAmpersands(Src: PChar; LineLength : Longint) : PChar;
 
+Procedure GetTextExtentIgnoringAmpersands(Font : PGDKFont; Str : PChar;
+  LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
+  
 Function GDKPixel2GDIRGB(Pixel : Longint; Visual : PGDKVisual;
   Colormap : PGDKColormap) : TGDIRGB;
 
