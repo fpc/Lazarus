@@ -4544,6 +4544,7 @@ procedure TCustomTreeView.MouseDown(Button: TMouseButton; Shift: TShiftState;
 var
   CursorNode: TTreeNode;
   bStartDrag: boolean;
+  LogicalX: Integer;
 begin
   {$IFDEF VerboseDrag}
   DebugLn('TCustomTreeView.MouseDown A ',Name,':',ClassName,' ');
@@ -4565,16 +4566,17 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
 
   CursorNode:=GetNodeAt(X,Y);
+  LogicalX:=X+FScrolledLeft-BorderWidth;
   bStartDrag := false;
   if ([ssDouble,ssTriple,ssQuad]*Shift)=[] then begin
     if (Button = mbLeft) and (CursorNode<>nil) then begin
       Exclude(fStates,tvsWaitForDragging);
       if CursorNode.HasChildren
-      and (x>=CursorNode.DisplayExpandSignLeft)
-      and (x<CursorNode.DisplayExpandSignRight) then begin
+      and (LogicalX>=CursorNode.DisplayExpandSignLeft)
+      and (LogicalX<CursorNode.DisplayExpandSignRight) then begin
         // mousedown occured on expand sign -> expand/collapse
         CursorNode.Expanded:=not CursorNode.Expanded;
-      end else if x>=CursorNode.DisplayTextLeft then begin
+      end else if LogicalX>=CursorNode.DisplayTextLeft then begin
         // mousedown occured in text -> select node and begin drag operation
         {$IFDEF VerboseDrag}
         DebugLn('TCustomTreeView.MouseDown In Text ',Name,':',ClassName,' MouseCapture=',MouseCapture);
