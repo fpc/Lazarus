@@ -76,8 +76,8 @@ begin
     HashItem:=FGDIObjects.FirstHashItem;
     for GDIType := Low(GDIType) to High(GDIType) do 
       GDITypeCount[GDIType] := 0;
-    while (n<7) and (HashItem<>nil) do begin
-      write(' ',HexStr(Cardinal(HashItem^.Item),8));
+    while (HashItem<>nil) do begin
+      if n<7 then write(' ',HexStr(Cardinal(HashItem^.Item),8));
       Inc(GDITypeCount[PGdiObject(HashItem^.Item)^.GDIType]);
       HashItem:=HashItem^.Next;
       inc(n);
@@ -2757,8 +2757,8 @@ end;
  { =============================================================================
 
   $Log$
-  Revision 1.37  2001/03/21 00:20:29  lazarus
-  MG: fixed memory leaks
+  Revision 1.38  2001/03/21 14:26:00  lazarus
+  MG: Bugfixes + changed ide closing
 
   Revision 1.36  2001/03/19 18:51:57  lazarus
   MG: added dynhasharray and renamed tsynautocompletion

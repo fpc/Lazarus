@@ -306,7 +306,7 @@ begin
   end;
   
   Result := HBITMAP(GdiObject);
-writeln('[TgtkObject.CreateBitmap] ',HexStr(Result,8));
+//writeln('[TgtkObject.CreateBitmap] ',HexStr(Result,8));
   Assert(False, Format('Trace:< [TgtkObject.CreateBitmap] --> 0x%x', [Integer(Result)]));
 end;
 
@@ -2818,16 +2818,20 @@ end;
   The function calls the window procedure for the specified window and does 
   not return until the window procedure has processed the message.
  ------------------------------------------------------------------------------}
-function TGTKObject.SendMessage(hWnd: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt): Integer;
+function TGTKObject.SendMessage(hWnd: HWND; Msg: Cardinal; wParam: LongInt;
+  lParam: LongInt): Integer;
 var
   Message: TLMessage;
+  Target: TObject;
 begin
   Message.Msg := Msg;
   Message.WParam := WParam;
   Message.LParam := LParam;
   Message.Result := 0;
   
-  Result := DeliverMessage(GetLCLObject(Pointer(hWnd)), Message);
+  Target := GetLCLObject(Pointer(hWnd));
+  if Target<>nil then
+    Result := DeliverMessage(Target, Message);
 end;
 
 {------------------------------------------------------------------------------
@@ -3419,8 +3423,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.28  2001/03/21 00:20:29  lazarus
-  MG: fixed memory leaks
+  Revision 1.29  2001/03/21 14:26:00  lazarus
+  MG: Bugfixes + changed ide closing
 
   Revision 1.26  2001/03/19 18:51:57  lazarus
   MG: added dynhasharray and renamed tsynautocompletion

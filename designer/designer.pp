@@ -133,7 +133,7 @@ end;
 
 destructor TDesigner.Destroy;
 Begin
-  Inherited;
+  Inherited Destroy;
 end;
 
 Procedure TDesigner.RemoveControl(Control : TComponent);
@@ -188,7 +188,8 @@ begin
   Result:=true;
   Sender.Dispatch(Message);
   if (ControlSelection.IsSelected(Sender)) then begin
-    //writeln('***  LM_Size ',Sender.Name,':',Sender.ClassName);
+//    writeln('***  LM_Size ',Sender.Name,':',Sender.ClassName,' Type=',Message.SizeType
+// ,' ',Message.Width,',',Message.Height);
     ControlSelection.AdjustSize;
     if Assigned(FOnPropertiesChanged) then
       FOnPropertiesChanged(Self);

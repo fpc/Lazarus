@@ -536,17 +536,13 @@ Begin
   Temp := TComponentInterface(FindComponent(Value));
   if Temp <> nil then
      begin
-       Writeln('1');
        RemoveFromComponentInterfaceList(Temp);
-       Writeln('2');
-       if (Value is TCustomForm) then
-           begin
-            JITFormList.DestroyJITFOrm(TForm(Value));
-            Temp.Destroy;
-           end
-           else
-           Temp.Delete;
-       Writeln('3');
+       if (Value is TCustomForm) then begin
+         JITFormList.DestroyJITFOrm(TForm(Value));
+         Temp.Destroy;
+       end
+       else
+         Temp.Delete;
      end;
 end;
 

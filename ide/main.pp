@@ -118,6 +118,11 @@ type
     Label2 : TLabel;
 
     // event handlers
+    procedure FormShow(Sender : TObject);
+    procedure FormClose(Sender : TObject; var Action: TCloseAction);
+    procedure FormCloseQuery(Sender : TObject; var CanClose: boolean);
+    procedure FormPaint(Sender : TObject);
+
     procedure mnuNewUnitClicked(Sender : TObject);
     procedure mnuNewFormClicked(Sender : TObject);
     procedure mnuSaveClicked(Sender : TObject);
@@ -182,7 +187,6 @@ type
     Procedure SetDefaultsForForm(aForm : TCustomForm);
 
   protected
-    procedure FormShow(Sender : TObject);
     procedure ToolButtonClick(Sender : TObject);
 //    Procedure Paint; override;
 
@@ -233,9 +237,7 @@ type
     function DoJumpToCompilerMessage(Index:integer): boolean;
 
     procedure LoadMainMenu;
-    Procedure FormKill(Sender : TObject);
     Procedure SetDesigning(Control : TComponent; Value : Boolean);
-    procedure FormPaint(Sender : TObject);
     procedure LoadFormFromFile(Value : String);
 
     // form editor and designer
@@ -564,7 +566,9 @@ begin
     Name := 'RunSpeedBtn';
    end;
 
-  Self.OnShow := @FormShow;
+  OnShow := @FormShow;
+  OnClose := @FormClose;
+  OnCloseQuery := @FormCloseQuery;
 
   // create compiler interface
   Compiler1 := TCompiler.Create;
@@ -635,8 +639,11 @@ begin
     Project.Free;
     Project:=nil;
   end;
+  TheControlSelection.OnChange:=nil;
   TheControlSelection.Free;
+  TheControlSelection:=nil;
   FormEditor1.Free;
+  FormEditor1:=nil;
   PropertyEditorHook1.Free;
   Compiler1.Free;
   MacroList.Free;
@@ -688,9 +695,22 @@ Begin
 
 end;
 
-procedure TMainIDE.FormKill(Sender : TObject);
+procedure TMainIDE.FormClose(Sender : TObject; var Action: TCloseAction);
+begin
+  if TheControlSelection<>nil then TheControlSelection.Clear;
+end;
+
+procedure TMainIDE.FormCloseQuery(Sender : TObject; var CanClose: boolean);
 Begin
-  Assert(False, 'Trace:DESTROYING FORM');
+  CanClose:=true;
+  if SomethingOfProjectIsModified then begin
+    if Application.MessageBox('Save changes to project?','Project changed',
+        MB_OKCANCEL)=mrOk then begin
+      CanClose:=DoSaveProject(false)<>mrAbort;
+      if CanClose=false then exit;
+    end;
+  end;
+  CanClose:=(DoCloseProject<>mrAbort);
 End;
 
 {------------------------------------------------------------------------------}
@@ -1336,17 +1356,11 @@ end;
 {------------------------------------------------------------------------------}
 
 procedure TMainIDE.mnuQuitClicked(Sender : TObject);
+var CanClose: boolean;
 begin
-  if SomethingOfProjectIsModified then begin
-    if Application.MessageBox('Save changes to project?','Project changed',
-        MB_OKCANCEL)=mrOk then begin
-      if DoSaveProject(false)=mrAbort then exit;
-      if DoCloseProject=mrAbort then exit;
-    end;
-  end;
-  Project.Free;
-  Project:=nil;
-  Close;
+  CanClose:=true;
+  OnCloseQuery(Sender, CanClose);
+  if CanClose then Close;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1860,6 +1874,7 @@ writeln('TMainIDE.DoCloseEditorUnit 1');
   end;
   // close form
   if ActiveUnitInfo.Form<>nil then begin
+    TheControlSelection.Remove(TControl(ActiveUnitInfo.Form));
     OldDesigner:=TDesigner(TCustomForm(ActiveUnitInfo.Form).Designer);
     FormEditor1.DeleteControl(ActiveUnitInfo.Form);
     OldDesigner.Free;
@@ -2934,8 +2949,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.77  2001/03/21 00:20:28  lazarus
-  MG: fixed memory leaks
+  Revision 1.78  2001/03/21 14:25:59  lazarus
+  MG: Bugfixes + changed ide closing
 
   Revision 1.75  2001/03/19 14:00:46  lazarus
   MG: fixed many unreleased DC and GDIObj bugs

@@ -465,9 +465,11 @@ begin
   // Logging
   if Target = nil 
   then Assert(False, 'Trace:[DeliverMessage] nil')
-  else Assert(False, Format('Trace:[DeliverMessage] %s --> %d', [TObject(Target).ClassName, TLMessage(Message).msg]));
+  else Assert(False, Format('Trace:[DeliverMessage] %s --> %d'
+     , [TObject(Target).ClassName, TLMessage(Message).msg]));
 *)  
 //  Assert(False, 'Trace:Delivering message');
+if Target=nil then writeln('[DeliverMessage] nil');
   if TObject(Target) is TControl 
   then begin
 //    Assert(False, 'Trace:Calling TControl');
@@ -723,6 +725,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.13  2001/03/21 14:26:00  lazarus
+  MG: Bugfixes + changed ide closing
+
   Revision 1.12  2001/03/19 14:44:22  lazarus
   MG: fixed many unreleased DC and GDIObj bugs
 
