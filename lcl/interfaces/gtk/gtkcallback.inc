@@ -8,10 +8,10 @@ const
   DblClickTime = 250;//250 miliseconds or less between clicks is a double click
 
 var
-//testing
-LMouseButtonDown,MMouseButtonDown,RMouseButtonDown : Boolean;  //used to track the mouse buttons
-LLastClick, RLastClick, MLastClick : TDateTime;
-LastFileSelectRow : gint;
+  //testing
+  LMouseButtonDown,MMouseButtonDown,RMouseButtonDown : Boolean;  //used to track the mouse buttons
+  LLastClick, RLastClick, MLastClick : TDateTime;
+  LastFileSelectRow : gint;
 
 
 
@@ -54,12 +54,12 @@ function gtkshowCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
    Mess : TLMShowWindow;
 begin
-   Result := True;
-   EventTrace('show', data);
-   Mess.Msg := LM_SHOWWINDOW;
-   Mess.Show := True;
+  Result := True;
+  EventTrace('show', data);
+  Mess.Msg := LM_SHOWWINDOW;
+  Mess.Show := True;
 
-   Result := DeliverMessage(Data, Mess) = 0;
+  Result := DeliverMessage(Data, Mess) = 0;
 end;
 
 function gtkHideCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
@@ -76,33 +76,33 @@ end;
 
 function gtkactivateCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
-   Mess : TLMessage;
+  Mess : TLMessage;
 begin
-   EventTrace('activate', data);
-   Mess.Msg := LM_ACTIVATE;
-   Result := DeliverMessage(Data, Mess) = 0;
+  EventTrace('activate', data);
+  Mess.Msg := LM_ACTIVATE;
+  Result := DeliverMessage(Data, Mess) = 0;
 end;
 
 function gtkchangedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
-   Mess : TLMessage;
+  Mess : TLMessage;
 begin
-   Result := True;
-   EventTrace('changed', data);
+  Result := True;
+  EventTrace('changed', data);
 
-   Mess.Msg := LM_CHANGED;
-   Result := DeliverMessage(Data, Mess) = 0;
+  Mess.Msg := LM_CHANGED;
+  Result := DeliverMessage(Data, Mess) = 0;
 end;
 
 function gtkchanged_editbox( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
-   Mess : TLMessage;
+  Mess : TLMessage;
 begin
-   Result := True;
-   EventTrace('changed', data);
+  Result := True;
+  EventTrace('changed', data);
 
-   Mess.Msg := CM_TEXTCHANGED;
-   Result := DeliverMessage(Data, Mess) = 0;
+  Mess.Msg := CM_TEXTCHANGED;
+  Result := DeliverMessage(Data, Mess) = 0;
 end;
 
 function gtkdaychanged(Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
@@ -134,27 +134,27 @@ end;
 function gtkfrmactivate( widget: PGtkWidget; Event : TgdkEventFocus;
   data: gPointer) : GBoolean; cdecl;
 var
-   Mess : TLMActivate;
+  Mess : TLMActivate;
 begin
-   EventTrace('activate', data);
-   Mess.Msg := LM_ACTIVATE;
-   Result := DeliverPostMessage(Data, Mess);
+  EventTrace('activate', data);
+  Mess.Msg := LM_ACTIVATE;
+  Result := DeliverPostMessage(Data, Mess);
 end;
 
 function gtkfrmdeactivate( widget: PGtkWidget; Event : TgdkEventFocus;
   data: gPointer) : GBoolean; cdecl;
 var
-   Mess : TLMActivate;
+  Mess : TLMActivate;
 begin
-   EventTrace('deactivate', data);
-   Mess.Msg := LM_DEACTIVATE;
-   Result := DeliverPostMessage(Data, Mess);
+  EventTrace('deactivate', data);
+  Mess.Msg := LM_DEACTIVATE;
+  Result := DeliverPostMessage(Data, Mess);
 end;
 
 function GTKMap(Widget: PGTKWidget; Data: gPointer): GBoolean; cdecl;
 begin
-   Result := True;
-   EventTrace('map', data);
+  Result := True;
+  EventTrace('map', data);
 end;
 
 function GTKExposeEvent(Widget: PGtkWidget; Event : PGDKEventExpose;
@@ -824,7 +824,7 @@ var
   Dummy: TPoint;
   OldLeft, OldTop, OldWidth, OldHeight: integer;
   TopLeftChanged, WidthHeightChanged: boolean;
-  
+//  DummyWidget: PGtkWidget;
 //  DummyW, DummyH, DummyD: integer;
 begin
   EventTrace('size-allocate', data);
@@ -895,6 +895,18 @@ end;}
     end;
     TopLeftChanged:=(OldLeft<>Size^.X) or (OldTop<>Size^.Y);
     WidthHeightChanged:=(OldWidth<>Size^.Width) or (OldHeight<>Size^.Height);
+    
+{if PosMsg.WindowPos^.hWnd<>0 then begin
+  DummyWidget:=pgtkwidget(PosMsg.WindowPos^.hWnd);
+  DummyWidget := GetFixedWidget(DummyWidget);
+  if (DummyWidget = nil) then DummyWidget := pgtkwidget(PosMsg.WindowPos^.hWnd);
+  if (DummyWidget <> nil) and (DummyWidget^.Window<>nil) then begin
+    gdk_window_get_size(DummyWidget^.Window, @Dummy.X, @Dummy.Y);
+writeln(' GGG1 ',TControl(Data).Name,':',TControl(Data).ClassName,' ',Size^.Width,' ',Size^.Height);
+    writeln('   GGG2 ',Dummy.X,',',Dummy.Y);
+  end;
+end;}
+
     if TopLeftChanged or WidthHeightChanged then begin
       Assert(False, 'Trace:[gtksize_allocateCB] DeliverMessage LM_WINDOWPOSCHANGED');
 //writeln('[gtksize_allocateCB] Sending LM_WINDOWPOSCHANGED message: Target=',TObject(Data).ClassName,' Left=',Size^.X,' Top=',Size^.Y,' Width=',Size^.Width,' Height=',Size^.Height);
@@ -932,6 +944,11 @@ end;}
       Assert(False, 'Trace:[gtksize_allocateCB] DeliverMessage LM_MOVE');
       Result := (DeliverMessage(Data,  MoveMsg) = 0) or Result;
     end;
+  end;
+  
+  if (TObject(Data) is TWinControl)
+  and (not WidthHeightChanged) and (not TopLeftChanged) then begin
+    TWinControl(Data).DoAdjustClientRectChange;
   end;
   
 end;
@@ -1611,6 +1628,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.69  2002/04/22 13:07:45  lazarus
+  MG: fixed AdjustClientRect of TGroupBox
+
   Revision 1.68  2002/04/04 12:25:02  lazarus
   MG: changed except statements to more verbosity
 

@@ -1919,19 +1919,28 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-Function TGTKObject.GetClientRect(handle : HWND; var Rect : TRect) : Boolean;
+Function TGTKObject.GetClientRect(handle : HWND; var ARect : TRect) : Boolean;
 var
-  requisition : TgtkRequisition;
+//  requisition : TgtkRequisition;
+  Widget: PGtkWidget;
 begin
   result := False;
   if Handle = 0 then Exit;
   Result := False;
   Try
-    Rect.Left := 0;
-    Rect.Top := 0;
-    gtk_Widget_size_request(PgtkWidget(handle),@requisition);
-    Rect.Right := requisition.width;
-    Rect.Bottom := requisition.Height;
+    ARect.Left := 0;
+    ARect.Top := 0;
+    Widget := GetFixedWidget(pgtkwidget(Handle));
+    if (Widget = nil) then Widget := pgtkwidget(Handle);
+    if (Widget <> nil) and (Widget^.Window<>nil) then begin
+      gdk_window_get_size(Widget^.Window, @ARect.Right, @ARect.Bottom);
+      //gtk_Widget_size_request(PgtkWidget(handle),@requisition);
+      //ARect.Right := requisition.width;
+      //ARect.Bottom := requisition.Height;
+    end else begin
+      ARect.Bottom:=0;
+      ARect.Right:=0;
+    end;
 //   Writeln('Width / Height = '+Inttostr(REct.Right)+'/'+Inttostr(Rect.Bottom));
   except
     on E: Exception do begin
@@ -4394,6 +4403,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.65  2002/04/22 13:07:45  lazarus
+  MG: fixed AdjustClientRect of TGroupBox
+
   Revision 1.64  2002/04/04 12:25:02  lazarus
   MG: changed except statements to more verbosity
 

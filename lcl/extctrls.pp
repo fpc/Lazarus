@@ -41,7 +41,8 @@ interface
 {$endif}
 
 uses
-  SysUtils, Classes, Controls, stdCtrls, vclGlobals, lMessages, GraphType, Graphics, LCLLinux;
+  SysUtils, Classes, Controls, stdCtrls, vclGlobals, lMessages, GraphType,
+  Graphics, LCLLinux;
 
 type
   { workaround problem with fcl }
@@ -176,31 +177,31 @@ type
   end;
 
 
- {
-   @abstract(A free running timer.)
-   Introduced and (currently) maintained by Stefan Hille (stoppok@osibisa.ms.sub.org)
- }
- TTimer = class (TComponent)
- private
-   FInterval     : Cardinal;
-   FTimerID      : integer;
-   FOnTimer      : TNotifyEvent;
-   FEnabled      : Boolean;
-   procedure UpdateTimer;
-   procedure SetEnabled(Value: Boolean);
-   procedure SetInterval(Value: Cardinal);
-   procedure SetOnTimer(Value: TNotifyEvent);
-   procedure KillTimer;
- protected
-   procedure Timer (var msg); message LM_Timer;
- public
-   constructor Create(AOwner: TComponent); override;
-   destructor Destroy; override;
- published
-   property Enabled: Boolean read FEnabled write SetEnabled default True;
-   property Interval: Cardinal read FInterval write SetInterval default 1000;
-   property OnTimer: TNotifyEvent read FOnTimer write SetOnTimer;
- end;
+  {
+    @abstract(A free running timer.)
+    Introduced and (currently) maintained by Stefan Hille (stoppok@osibisa.ms.sub.org)
+  }
+  TTimer = class (TComponent)
+  private
+    FInterval     : Cardinal;
+    FTimerID      : integer;
+    FOnTimer      : TNotifyEvent;
+    FEnabled      : Boolean;
+    procedure UpdateTimer;
+    procedure SetEnabled(Value: Boolean);
+    procedure SetInterval(Value: Cardinal);
+    procedure SetOnTimer(Value: TNotifyEvent);
+    procedure KillTimer;
+  protected
+    procedure Timer (var msg); message LM_Timer;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  published
+    property Enabled: Boolean read FEnabled write SetEnabled default True;
+    property Interval: Cardinal read FInterval write SetInterval default 1000;
+    property OnTimer: TNotifyEvent read FOnTimer write SetOnTimer;
+  end;
 
   TPaintBox = class(TGraphicControl)
   private
@@ -324,16 +325,16 @@ type
   }
   TRadioGroup = class(TCustomRadioGroup)
   public
-     constructor Create (AOwner : TComponent); override;
+    constructor Create (AOwner : TComponent); override;
   published
-     property Align;
-     property Caption;
-     property Enabled;
-     property ItemIndex;
-     property Items;
-     property Columns;
-     property Visible;
-     property OnClick;
+    property Align;
+    property Caption;
+    property Enabled;
+    property ItemIndex;
+    property Items;
+    property Columns;
+    property Visible;
+    property OnClick;
   end;
 
   TPanelBevel = TBevelCut;
@@ -436,6 +437,9 @@ end.
 
  {
   $Log$
+  Revision 1.22  2002/04/22 13:07:45  lazarus
+  MG: fixed AdjustClientRect of TGroupBox
+
   Revision 1.21  2002/03/25 17:59:19  lazarus
   GTK Cleanup
   Shane

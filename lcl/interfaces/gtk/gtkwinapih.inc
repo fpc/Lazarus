@@ -55,7 +55,7 @@ Function GetActiveWindow : HWND; override;
 function GetCapture: HWND; override;
 function GetCaretPos(var lpPoint: TPoint): Boolean; override;
 function GetCharABCWidths(DC: HDC; p2, p3: UINT; const ABCStructs): Boolean; override;
-Function GetClientRect(handle : HWND; var Rect : TRect) : Boolean; override;
+Function GetClientRect(handle : HWND; var ARect : TRect) : Boolean; override;
 function GetDC(hWnd: HWND): HDC;  override;
 function GetFocus: HWND; override;
 function GetKeyState(nVirtKey: Integer): Smallint; override;
@@ -133,6 +133,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.26  2002/04/22 13:07:46  lazarus
+  MG: fixed AdjustClientRect of TGroupBox
+
   Revision 1.25  2002/03/27 08:57:17  lazarus
   MG: reduced compiler warnings
 

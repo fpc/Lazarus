@@ -32,18 +32,20 @@ unit StdCtrls;
 
 interface
 
-uses VclGlobals, Classes, SysUtils, Graphics, GraphType, LMessages, Controls, Forms;
+uses
+  VclGlobals, Classes, SysUtils, Graphics, GraphType, LMessages, Controls,
+  Forms;
 
 
 type
-   TEditCharCase = (ecNormal, ecUppercase, ecLowerCase);
-   TScrollStyle = (ssNone, ssHorizontal, ssVertical, ssBoth);
+  TEditCharCase = (ecNormal, ecUppercase, ecLowerCase);
+  TScrollStyle = (ssNone, ssHorizontal, ssVertical, ssBoth);
 
   TScrollCode = (scLineUp, scLineDown, scPageUp, scPageDown, scPosition,
-    scTrack, scTop, scBottom, scEndScroll);
+                 scTrack, scTop, scBottom, scEndScroll);
 
   TScrollEvent = procedure(Sender: TObject; ScrollCode: TScrollCode;
-    var ScrollPos: Integer) of object;
+                           var ScrollPos: Integer) of object;
 
   TScrollBar = class(TWinControl)
   private
@@ -125,6 +127,7 @@ type
     property Caption;
     property Visible;
   end;
+  
 
   TComboBoxStyle = (csDropDown, csSimple, csDropDownList, csOwnerDrawFixed,
                     csOwnerDrawVariable);
@@ -583,6 +586,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.26  2002/04/22 13:07:45  lazarus
+  MG: fixed AdjustClientRect of TGroupBox
+
   Revision 1.25  2002/04/21 06:53:54  lazarus
   MG: fixed save lrs to test dir
 

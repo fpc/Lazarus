@@ -1948,9 +1948,7 @@ begin
     Exclude(fStateFlags, sfWaitForDragging);
   end;
   if (Button=mbLeft) 
-  and (fStateFlags * [sfDblClicked,
-    {$IFDEF SYN_LAZARUS}sfTripleClicked,sfQuadClicked,{$ENDIF}
-    sfWaitForDragging] = []) then
+  and (fStateFlags * [sfWaitForDragging] = []) then
   begin
     {$IFDEF SYN_LAZARUS}
     AquirePrimarySelection;

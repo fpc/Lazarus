@@ -5,11 +5,10 @@
 {------------------------------------------------------------------------------}
 procedure TCustomGroupBox.AdjustClientRect(var Rect: TRect);
 begin
-  inherited;
-  
-  // ToDo: ask the interface for the logical clientrect
-  
-  
+  if HandleAllocated then
+    LCLLinux.GetClientRect(Handle,Rect)
+  else
+    inherited;
 end;
 
 {------------------------------------------------------------------------------}
@@ -26,6 +25,9 @@ end;
 
 {
   $Log$
+  Revision 1.4  2002/04/22 13:07:45  lazarus
+  MG: fixed AdjustClientRect of TGroupBox
+
   Revision 1.3  2002/04/21 06:53:55  lazarus
   MG: fixed save lrs to test dir
 
