@@ -1473,6 +1473,26 @@ begin
   Result := Windows.GetDC(OverlayWindow);
 end;
 
+function TWin32WidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC; 
+  WindowHandle: HWND; var OriginDiff: TPoint): boolean;
+var
+  DCOrg, winOrg: Windows.POINT;
+  ORect: TRect;
+begin
+  OriginDiff.X := 0;
+  OriginDiff.Y := 0;
+  Result := Windows.GetDCOrgEx(PaintDC, DCOrg);
+  if not Result then exit;
+  winOrg.X := 0;
+  winOrg.Y := 0;
+  Result := Windows.ClientToScreen(WindowHandle, winOrg);
+  if not Result then exit;
+  Result := GetLCLClientBoundsOffset(WindowHandle, ORect);
+  if not Result then exit;
+  OriginDiff.X := DCOrg.X - winOrg.X - ORect.Left;
+  OriginDiff.Y := DCOrg.Y - winOrg.Y - ORect.Top;
+end;
+
 function TWin32WidgetSet.GetDeviceSize(DC: HDC; var P: TPoint): Boolean;
 var
   hBitmap: HGDIOBJ;
@@ -3096,6 +3116,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.140  2005/03/25 16:41:35  micha
+  implement TWin32WidgetSet.GetDCOriginRelativeToWindow
+
   Revision 1.139  2005/03/14 21:49:41  micha
   check nil pointer to avoid AV (by jesusrmx)
 

@@ -99,6 +99,7 @@ Function GetDC(HWnd: HWND): HDC; Override;
 function GetDeviceCaps(DC: HDC; Index: Integer): Integer; Override;
 function GetDeviceSize(DC: HDC; var P: TPoint): Boolean; Override;
 function GetDesignerDC(WindowHandle: HWND): HDC; Override;
+function GetDCOriginRelativeToWindow(PaintDC: HDC; WindowHandle: HWND; var OriginDiff: TPoint): boolean; override;
 function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; Override;
 function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint; Override;
 Function GetFocus: HWND; Override;
@@ -196,6 +197,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.56  2005/03/25 16:41:35  micha
+  implement TWin32WidgetSet.GetDCOriginRelativeToWindow
+
   Revision 1.55  2005/03/04 13:50:09  mattias
   fixed Arc and changed x,y to Left,Top to make meaning more clear
 
