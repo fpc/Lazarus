@@ -7273,6 +7273,15 @@ begin
       RCStyle^.color_flags[GTK_STATE_NORMAL]:=
         RCStyle^.color_flags[GTK_STATE_NORMAL] or GTK_RC_BG;
 
+      {for i:=0 to 4 do begin
+        RCStyle^.bg[i]:=NewColor;
+
+        // Indicate which colors the GtkRcStyle will affect;
+        // unflagged colors will follow the theme
+        RCStyle^.color_flags[i]:=
+          RCStyle^.color_flags[i] or GTK_RC_BG;
+      end;}
+      
       //DebugLn('UpdateWidgetStyleOfControl ',DbgSName(AWinControl),' Color=',HexStr(Cardinal(AWinControl.Color),8));
     end;
     
@@ -7320,7 +7329,8 @@ begin
     end;
 
     // set font (currently only TCustomLabel)
-    if (AWinControl is TCustomLabel)
+    if GtkWidgetIsA(Widget,gtk_label_get_type)
+    or GtkWidgetIsA(Widget,gtk_editable_get_type)
     and ((AWinControl.Font.Name<>DefFontData.Name)
       or (AWinControl.Font.Size<>0)
       or (AWinControl.Font.Style<>[]))
@@ -7890,6 +7900,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.326  2005/01/01 16:31:14  mattias
+  implemented changing font size and name of TEdit for gtk1
+
   Revision 1.325  2004/12/31 11:59:47  mattias
   published TEdit.Color - only useful under windows, gtk1 ignores it
 
