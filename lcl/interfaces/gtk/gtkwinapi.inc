@@ -1728,7 +1728,8 @@ end;
 
 {------------------------------------------------------------------------------
   Function: CreatePixmapIndirect
-  Params:  Data: Raw pixmap data (PPGChar fo xpm file)
+  Params:  Data: Raw pixmap data (PPGChar of xpm file,
+                               You can use graphics.XPMToPPChar to create this)
   Returns: Handle to LCL bitmap
 
   Creates a bitmap from raw pixmap data.
@@ -8483,6 +8484,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.252  2003/06/30 10:09:46  mattias
+  fixed Get/SetPixel for DC without widget
+
   Revision 1.251  2003/06/23 09:42:09  mattias
   fixes for debugging lazarus
 

@@ -131,6 +131,7 @@ type
   TIcon = class;
   TCanvas = class;
 
+
   { TGraphicsObject }
 
   TGraphicsObject = class(TPersistent)
@@ -151,12 +152,6 @@ type
   TFont = class(TGraphicsObject)
   private
     FColor : TColor;
-    // Extra properties
-    // TODO: implement them though GetTextMetrics, not here
-    //FWidth : Integer;
-    //FXBias : Integer;
-    //FYBias : Integer;
-    //---------
     FFontData: TFontData;
     FPixelsPerInch: Integer;
     FFontName: string;
@@ -644,23 +639,27 @@ type
     );
   TBitmapNativeTypes = set of TBitmapNativeType;
 
+  TBitmapHandleType = (bmDIB, bmDDB);
+
   TBitmapImage = class(TSharedImage)
   private
-    FHandle: HBITMAP;
+    FHandle: HBITMAP;   // output device dependent handle
     FMaskHandle: HBITMAP;
     FPalette: HPALETTE;
-    FDIBHandle: HBITMAP;
+    FDIBHandle: HBITMAP;// output device independent handle
     FSaveStream: TMemoryStream;
     FSaveStreamType: TBitmapNativeType;
-{    FOS2Format: Boolean;
-    FHalftone: Boolean;
-}
+    //FOS2Format: Boolean;
+    //FHalftone: Boolean;
   protected
     procedure FreeHandle; override;
+    function ReleaseHandle: HBITMAP;
+    function IsEmpty: boolean;
   public
     FDIB: TDIBSection;
     destructor Destroy; override;
     function HandleAllocated: boolean; override;
+    function GetHandleType: TBitmapHandleType;
     property SaveStream: TMemoryStream read FSaveStream write FSaveStream;
     property SaveStreamType: TBitmapNativeType read FSaveStreamType write FSaveStreamType;
   end;
@@ -671,14 +670,18 @@ type
   { Not completed!
     TBitmap is the data of an image. The image can be loaded from a file,
     stream or resource in .bmp (windows bitmap format) or .xpm (XPixMap format)
-    The loading routine automatically recognizes the format, so it can load
+    The loading routine automatically recognizes the format, so it also load
     the streams of Delphi form streams (e.g. .dfm files).
     When the handle is created, it is up to the interface (gtk, win32, ...)
     to convert it automatically to the best internal format. That is why the
     Handle is interface dependent. }
 
-  TBitmapHandleType = (bmDIB, bmDDB);
   TTransparentMode = (tmAuto, tmFixed);
+  
+  TBitmapInternalStateFlag = (
+    bmisCreateingCanvas
+    );
+  TBitmapInternalState = set of TBitmapInternalStateFlag;
   
   TBitmap = class(TGraphic)
   private
@@ -691,17 +694,18 @@ type
     FHeight: integer;
     FTransparentMode: TTransparentMode;
     FWidth: integer;
-    Procedure FreeContext;
+    FInternalState: TBitmapInternalState;
+    Procedure FreeCanvasContext;
     function GetCanvas: TCanvas;
+    procedure CreateCanvas;
     Procedure NewImage(NHandle: HBITMAP; NPallette: HPALETTE;
        const NDIB : TDIBSection; OS2Format : Boolean);
     procedure SetHandle(Value: HBITMAP);
     procedure SetMaskHandle(Value: HBITMAP);
-    function GetHandle: HBITMAP; virtual;
     function GetHandleType: TBitmapHandleType;
-    function GetMaskHandle: HBITMAP; virtual;
     function GetScanline(Row: Integer): Pointer;
     procedure SetHandleType(Value: TBitmapHandleType); virtual;
+    procedure SetPixelFormat(const AValue: TPixelFormat);
   protected
     procedure Changed(Sender: TObject); override;
     procedure Changing(Sender: TObject); virtual;
@@ -710,15 +714,19 @@ type
     function GetHeight: Integer; override;
     function GetPalette: HPALETTE; override;
     function GetWidth: Integer; override;
+    function GetHandle: HBITMAP; virtual;
+    function GetMaskHandle: HBITMAP; virtual;
     procedure HandleNeeded;
     procedure MaskHandleNeeded;
     procedure PaletteNeeded;
+    procedure UnshareImage;
     procedure ReadData(Stream: TStream); override;
     procedure ReadStream(Stream: TStream; Size: Longint); virtual;
-    procedure SetHeight(Value: Integer); override;
+    procedure SetWidthHeight(NewWidth, NewHeight: integer); virtual;
+    procedure SetHeight(NewHeight: Integer); override;
     procedure SetPalette(Value: HPALETTE); override;
     procedure SetTransparentMode(Value: TTransparentMode);
-    procedure SetWidth(Value: Integer); override;
+    procedure SetWidth(NewWidth: Integer); override;
     procedure WriteData(Stream: TStream); override;
     procedure WriteStream(Stream: TStream; WriteSize: Boolean); virtual;
   public
@@ -727,8 +735,6 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure FreeImage;
     function HandleAllocated: boolean;
-    property Handle: HBITMAP read GetHandle write SetHandle;
-    property HandleType: TBitmapHandleType read GetHandleType write SetHandleType;
     procedure LoadFromStream(Stream: TStream); override;
     procedure LoadFromLazarusResource(const ResName: String); override;
     procedure LoadFromResourceName(Instance: THandle; const ResName: String); virtual;
@@ -741,14 +747,17 @@ type
     Function ReleaseHandle : HBITMAP;
     function ReleasePalette: HPALETTE;
     property Canvas: TCanvas read GetCanvas write FCanvas;
+    property Handle: HBITMAP read GetHandle write SetHandle;
+    property HandleType: TBitmapHandleType read GetHandleType write SetHandleType;
     property MaskHandle: HBITMAP read GetMaskHandle write SetMaskHandle;
     property Monochrome: Boolean read FMonochrome write FMonochrome;
     // TODO: reflect real pixelformat of DC
-    property PixelFormat: TPixelFormat read FPixelFormat write FPixelFormat;
+    property PixelFormat: TPixelFormat read FPixelFormat write SetPixelFormat;
     property ScanLine[Row: Integer]: Pointer read GetScanLine;
-    property TransparentColor: TColor read FTransparentColor write FTransparentColor;
+    property TransparentColor: TColor read FTransparentColor
+                                      write FTransparentColor;
     property TransparentMode: TTransparentMode read FTransparentMode
-      write SetTransparentMode default tmAuto;
+                                        write SetTransparentMode default tmAuto;
   end;
 
 
@@ -816,7 +825,7 @@ function XPMToPPChar(const XPM: string): PPChar;
 function LazResourceXPMToPPChar(const ResourceName: string): PPChar;
 function ReadXPMFromStream(Stream: TStream; Size: integer): PPChar;
 function ReadXPMSize(XPM: PPChar; var Width, Height, ColorCount: integer
-  ): boolean;
+                     ): boolean;
 
 var
   { Stores information about the current screen }
@@ -1016,6 +1025,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.71  2003/06/30 10:09:46  mattias
+  fixed Get/SetPixel for DC without widget
+
   Revision 1.70  2003/06/25 10:38:28  mattias
   implemented saving original stream of TBitmap
 

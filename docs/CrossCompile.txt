@@ -1,7 +1,9 @@
 Hints to cross compile win32 binaries under linux
+=================================================
 
 
 Thanks to Vincent Snijders for the hints.
+
 
 1. Download the GNU binutils - Binary Utility Development Utilities.
 Many packages (RPM, DEB, TGZ) are outdated or not compatible. So, here is a link
@@ -16,7 +18,8 @@ and the mingw32 files and will compile them. Then it installs them under
 /usr/local/xmingw32/. You can change the target directory and compile as
 normal user by changing the script.
 
-2. The cross tools needed for FPC
+
+2. The cross tools needed by FPC
 FPC needs four files: asw, ldw, windres and dltool. You can
 - link the following files:
 
@@ -33,21 +36,22 @@ compile with fpc.
 2. Download or compile the win32 units (ppw,ow files for rtl, fcl). These files
 must be compatible (depending on the compiler probably 1.0.8/10 as of now).
 Install them next to the linux units in /usr/lib/fpc/1.0.x/units.
+See (a) or (b).
 
 
-2.1 Download the win32 units: Currently you can download the win32 snapshots at
+(a) Download the win32 units: Currently you can download the win32 snapshots at
 ftp://ftp.freepascal.org/pub/fpc/snapshot/v10/win32-i386/
 and unzip them into $UsrLib/fpc/$FPCVersion/units/win32. $UsrLib is the place
 where fpc is installed. Probably /usr/lib/ or /usr/local/lib.
 
 
-2.2 Compile the win32 units:
+(b) Compile the win32 units:
 Download the fpc sources, compile them and install them. This makes sure your
 compiler is compatible to the source. The same source directory can be used for
 win32, because the output files have different names (.ppu <> .ppw, .o <> .ow).
 Then compile the win32 units (.ppw, .pw):
 
-[]$ cd compiler; make cycle OS_TARGET=win32; cd ..
+[]$ make -C compiler cycle OS_TARGET=win32
 []$ make fcl packages OS_TARGET=win32
 
 Install the units:

@@ -113,7 +113,7 @@ var
 Begin
   Msg.X := X;
   msg.Y := Y;
-  MSg.PixColor := ColorToRGB(Value);
+  MSg.PixColor := Value;
   SendIntfMessage(LM_SetPixel, Self, @msg);
 end;
 
@@ -1216,6 +1216,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.49  2003/06/30 10:09:46  mattias
+  fixed Get/SetPixel for DC without widget
+
   Revision 1.48  2003/06/25 10:38:28  mattias
   implemented saving original stream of TBitmap
 

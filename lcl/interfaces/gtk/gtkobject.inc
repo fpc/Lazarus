@@ -5793,54 +5793,24 @@ end;
 procedure TgtkObject.SetPixel(Sender : TObject; Data : Pointer);
 var
   aDC     : TDeviceContext;
-  Image   : pGDKImage;
-  Widget  : PgtkWidget;
-  GDKColor: TGDKColor;
-  pFixed  : PGTKFixed;
-  fWindow : pGdkWindow;
   X: Integer;
   Y: Integer;
   DCOrigin: TPoint;
-  MaxX, MaxY: integer;
+  GDKColor: TGDKColor;
 begin
   aDC := TDeviceContext(TCanvas(Sender).Handle);
-  if aDC = nil then exit;
+  if (aDC = nil) or (aDC.Drawable = nil) then exit;
 
   X:=TLMSetGetPixel(data^).X;
   Y:=TLMSetGetPixel(data^).Y;
-  DCOrigin:=GetDCOffset(TDeviceContext(aDC));
+  DCOrigin:=GetDCOffset(aDC);
   inc(X,DCOrigin.X);
   inc(Y,DCOrigin.Y);
 
-  gdk_window_get_size(aDC.Drawable, @MaxX, @MaxY);
-  if (X<0) or (Y<0) or (X>=MaxX) or (Y>=MaxY) then exit;
-
-  Widget := PgtkWidget(aDC.Wnd);
-  pFixed := GetFixedWidget(Widget);
-  if pFixed <> nil then Widget:=PgtkWidget(pFixed);
-  fWindow:=GetControlWindow(pFixed);
-  if fWindow=nil then exit;
-
-  Image := gtk_Object_get_data(pgtkobject(pFixed),'Image');
-  if Image = nil then begin
-    Image := gdk_image_get(fWindow,0,0,
-                            widget^.allocation.width,widget^.allocation.height);
-    if Image = nil then exit;
-    gtk_Object_set_data(pgtkobject(Widget),'Image',Image);
-  end;
-
-  // ToDo: free allocated gdk color
-
+  aDC.SelectedColors := dcscCustom;
   GDKColor:=AllocGDKColor(TLMSetGetPixel(data^).PixColor);
-
-//writeln('SetPixel: Color=',HexStr(TLMSetGetPixel(data^).PixColor,8),' GDKColor=',HexStr(GDKColor.Pixel,8));
-  gdk_image_put_pixel(Image,X,Y,GDKColor.Pixel);
-
-  gdk_draw_image(fwindow,
-    PGtkStyle(widget^.TheStyle)^.fg_gc[GTK_WIDGET_STATE (Widget)],
-    Image,
-    X,Y,X,Y,
-    1,1);
+  gdk_gc_set_foreground(aDC.GC, @GDKColor);
+  gdk_draw_point(aDC.Drawable, aDC.GC, X,Y);
 end;
 
 {------------------------------------------------------------------------------
@@ -5855,11 +5825,8 @@ procedure TgtkObject.GetPixel(Sender : TObject; Data : Pointer);
 var
   aDC    : TDeviceContext;
   Image  : pGDKImage;
-  Widget : PgtkWidget;
-  pFixed: PgtkWidget;
   GDKColor: TGDKColor;
   GdkColorContext: PGdkColorContext;
-  fWindow: PGdkWindow;
   X: Integer;
   Y: Integer;
   DCOrigin: TPoint;
@@ -5868,7 +5835,7 @@ begin
   TLMSetGetPixel(data^).PixColor := clNone;
   
   aDC := TDeviceContext(TCanvas(Sender).Handle);
-  if aDC = nil then exit;
+  if (aDC = nil) or (aDC.Drawable = nil) then exit;
 
   X:=TLMSetGetPixel(data^).X;
   Y:=TLMSetGetPixel(data^).Y;
@@ -5879,21 +5846,12 @@ begin
   gdk_window_get_size(aDC.Drawable, @MaxX, @MaxY);
   if (X<0) or (Y<0) or (X>=MaxX) or (Y>=MaxY) then exit;
 
-  Widget := PgtkWidget(aDC.Wnd);
-  pFixed := GetFixedWidget(Widget);
-  if pFixed <> nil then Widget:=PgtkWidget(pFixed);
-  fWindow:=GetControlWindow(pFixed);
-  if fWindow=nil then exit;
+  Image := gdk_image_get(PGdkWindow(aDC.Drawable),X,Y,1,1);
+  if Image = nil then exit;
 
-  Image := gtk_Object_get_data(pgtkobject(Widget),'Image');
-  if Image = nil then begin
-    Image := gdk_image_get(fWindow,0,0,
-      widget^.allocation.width,widget^.allocation.height);
-    if Image = nil then exit;
-    gtk_Object_set_data(pgtkobject(Widget),'Image',Image);
-  end;
-
-  GDKColor.Pixel := gdk_image_get_pixel(Image,X,Y);
+  GDKColor.Pixel := gdk_image_get_pixel(Image,0,0);
+  gdk_window_unref(PGdkWindow(Image));
+  
   GdkColorContext:=
            gdk_color_context_new(gdk_visual_get_system,gdk_colormap_get_system);
   gdk_color_context_query_color(GdkColorContext,@GDKColor);
@@ -7489,6 +7447,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.386  2003/06/30 10:09:46  mattias
+  fixed Get/SetPixel for DC without widget
+
   Revision 1.385  2003/06/28 12:10:02  mattias
   fixed LM_SETSIZE in InitializeWnd
 

@@ -89,7 +89,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TBitmapCanvas.FreeDC;
 var
-  hBmp: HBITMAP;
+  OldHandle: HBITMAP;
 begin
   if FHandle <> 0 then
   begin
@@ -101,9 +101,9 @@ begin
       SelectPalette(FHandle, FOldPalette, True);
       FOldPalette:=0;
     end;
-    hBmp := FHandle;
+    OldHandle := FHandle;
     Handle := 0;
-    DeleteDC(hBmp);
+    DeleteDC(OldHandle);
   end;
 end;
 
@@ -112,6 +112,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2003/06/30 10:09:46  mattias
+  fixed Get/SetPixel for DC without widget
+
   Revision 1.6  2002/09/13 16:58:27  lazarus
   MG: removed the 1x1 bitmap from TBitBtn
 

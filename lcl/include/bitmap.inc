@@ -48,11 +48,10 @@ begin
   //TODO: Finish TBITMAP ASSIGN
   if Source=Self then exit;
   if Source is TBitmap then begin
-    FreeContext;
+    UnshareImage;
     SrcBitmap:=TBitmap(Source);
-    Width:=SrcBitmap.Width;
-    Height:=SrcBitmap.Height;
-    Canvas.Brush.Color:=clWindow;
+    SetWidthHeight(SrcBitmap.Width,SrcBitmap.Height);
+    Canvas.Brush.Color:=clWhite;
     Canvas.FillRect(Rect(0,0,Width,Height));
     SrcBitmap.Draw(Canvas,Rect(0,0,Width,Height));
   end else
@@ -70,7 +69,6 @@ constructor TBitmap.VirtualCreate;
 begin
   inherited VirtualCreate;
   FPixelFormat := pfDevice;
-  FCanvas := TBitmapCanvas.Create(Self);
   FImage := TBitmapImage.Create;
   FImage.Reference;
   FTransparentColor := clNone;
@@ -78,12 +76,14 @@ end;
 
 destructor TBitMap.Destroy;
 begin
+  FreeCanvasContext;
   FImage.Release;
-  FCanvas.Free;
+  FImage:=nil;
+  FreeThenNil(FCanvas);
   inherited Destroy;
 end;
 
-procedure TBitMap.FreeContext;
+procedure TBitMap.FreeCanvasContext;
 begin
   if (FCanvas <> nil) then TBitmapCanvas(FCanvas).FreeDC;
 end;
@@ -93,14 +93,22 @@ begin
   if FCanvas = nil then
   begin
     HandleNeeded;
-    if FCanvas = nil then    // possible recursion
-    begin
-      FCanvas := TBitmapCanvas.Create(Self);
-      FCanvas.OnChange := @Changed;
-      FCanvas.OnChanging := @Changing;
-    end;
+    CreateCanvas;
   end;
   Result := FCanvas;
+end;
+
+procedure TBitmap.CreateCanvas;
+begin
+  if (FCanvas <> nil) or (bmisCreateingCanvas in FInternalState) then exit;
+  Include(FInternalState,bmisCreateingCanvas);
+  try
+    FCanvas := TBitmapCanvas.Create(Self);
+    FCanvas.OnChange := @Changed;
+    FCanvas.OnChanging := @Changing;
+  finally
+    Exclude(FInternalState,bmisCreateingCanvas);
+  end;
 end;
 
 procedure TBitMap.FreeImage;
@@ -120,14 +128,16 @@ end;
 
 function TBitmap.GetHandle: HBITMAP;
 begin
-  HandleNeeded;
+  UnshareImage;
+  if FImage.FHandle=0 then
+    HandleNeeded;
+  Changing(Self);
   Result := FImage.FHandle;
 end;
 
 function TBitmap.GetHandleType: TBitmapHandleType;
 begin
-  // ToDo:
-  Result:=bmDIB;
+  Result:=FImage.GetHandleType;
 end;
 
 function TBitmap.GetMaskHandle: HBITMAP;
@@ -147,6 +157,12 @@ begin
 
 end;
 
+procedure TBitmap.SetPixelFormat(const AValue: TPixelFormat);
+begin
+  if AValue=PixelFormat then exit;
+  writeln('WARNING: TBitmap.SetPixelFormat not implemented');
+end;
+
 procedure TBitmap.Changed(Sender: TObject);
 begin
   //FMaskBitsValid := False;
@@ -154,10 +170,11 @@ begin
 end;
 
 procedure TBitmap.Changing(Sender: TObject);
+// called before the bitmap is modified
+// -> make sure the handle is unshared (otherwise the modifications will also
+//    modify all copies)
 begin
-  // ToDo: create another TBitmapImage if shared
-  //FreeImage;
-  writeln('TBitmap.Changing A');
+  UnshareImage;
   FImage.FDIB.dsbmih.biClrUsed := 0;
   FImage.FDIB.dsbmih.biClrImportant := 0;
   FreeAndNil(FImage.FSaveStream);
@@ -169,9 +186,23 @@ var
   n : integer;
   UseWidth,
   UseHeight : Longint;
+  OldChangeEvent: TNotifyEvent;
 begin
-//  if FHandle = 0 then CNSendMessage(LM_CREATE, Self, nil);
-  if FImage.FHandle = 0 then begin
+  if (FImage.FHandle <> 0) then exit;
+
+  // if the bitmap was loaded, create a handle from stream
+  if (FImage.FDIBHandle = 0) and (FImage.FSaveStream <> nil) then begin
+    FImage.FSaveStream.Position := 0;
+    OldChangeEvent := OnChange;
+    try
+      OnChange := nil;
+      LoadFromStream(FImage.FSaveStream); // Current FImage may be destroyed here
+    finally
+      OnChange := OldChangeEvent;
+    end;
+  end;
+
+  if (FImage.FHandle = 0) then begin
     case PixelFormat of
       pfDevice : n:= ScreenInfo.ColorDepth;
       pf1bit : n:= 1;
@@ -259,6 +290,18 @@ end;
 procedure TBitMap.PaletteNeeded;
 begin
 
+end;
+
+procedure TBitmap.UnshareImage;
+begin
+  if (FImage.RefCount>1) then begin
+    writeln('TBitmap.UnshareImage');
+    // release old FImage and create a new one
+    FreeCanvasContext;
+    FImage.Release;
+    FImage := TBitmapImage.Create;
+    FImage.Reference;
+  end;
 end;
 
 procedure TBitmap.ReadStream(Stream: TStream; Size: Longint);
@@ -358,7 +401,7 @@ var
 
       // free old pixmap
       // Create the pixmap
-      if FTransparentColor = clNone then
+      if (FTransparentColor = clNone) or (FTransparentColor = clDefault) then
         // create a transparent pixmap (with mask)
         Handle := CreatePixmapIndirect(XPM, -1)
       else
@@ -380,7 +423,7 @@ var
   end;
   
 begin
-  FreeContext;
+  UnshareImage;
 
   if Size = 0 then
   begin
@@ -389,10 +432,13 @@ begin
   end;
   
   // store original stream
-  MemStream:=TMemoryStream.Create;
-  MemStream.CopyFrom(Stream,Stream.Size);
-  FreeAndNil(FImage.FSaveStream);
-  FImage.SaveStream:=MemStream;
+  if Stream<>FImage.SaveStream then begin
+    MemStream:=TMemoryStream.Create;
+    MemStream.CopyFrom(Stream,Stream.Size);
+    FreeAndNil(FImage.FSaveStream);
+    FImage.SaveStream:=MemStream;
+  end else
+    MemStream:=FImage.SaveStream;
   FImage.SaveStreamType:=bnNone;
   MemStream.Position:=0;
 
@@ -405,6 +451,21 @@ begin
   else
     RaiseInvalidBitmapHeader;
   end;
+end;
+
+procedure TBitmap.SetWidthHeight(NewWidth, NewHeight: integer);
+begin
+  with FImage do
+    if (FDIB.dsbm.bmHeight <> NewHeight) or (FDIB.dsbm.bmWidth <> NewWidth) then
+    begin
+      FDIB.dsbm.bmWidth := NewWidth;
+      FDIB.dsbm.bmHeight := NewHeight;
+      If (NewWidth > 0) and (NewHeight > 0) then
+        HandleNeeded
+      else
+        FreeImage;
+      Changed(Self);
+    end;
 end;
 
 procedure TBitmap.WriteStream(Stream: TStream; WriteSize: Boolean);
@@ -545,16 +606,13 @@ procedure TBitmap.SetHandle(Value: HBITMAP);
 begin
   if FImage.FHandle = Value then exit;
   if FImage.FHandle<>0 then begin
-    // release old FImage and create a new one
-    with FImage do begin
-      FreeContext;
-      Release;
-    end;
-    FImage := TBitmapImage.Create;
-    FImage.Reference;
+    UnshareImage;
+    FreeCanvasContext;
   end;
   // TODO: get the properties from new bitmap
   with FImage do begin
+    if FHandle<>0 then
+      writeln('WARNING: TBitmap.SetHandle OldHandle not freed');
     FHandle:=Value;
     FillChar(FDIB, sizeof(FDIB), 0);
     if FHandle <> 0 then
@@ -576,11 +634,12 @@ begin
   end;
 end;
 
-Function TBitmap.ReleaseHandle : HBITMAP;
+// creates handle and remove all references to give up ownership
+Function TBitmap.ReleaseHandle: HBITMAP;
 Begin
-  If HandleAllocated then
-    Result := GetHandle;
-  FImage.FHandle := 0;
+  HandleNeeded;
+  FreeCanvasContext;
+  Result := FImage.ReleaseHandle;
 end;
 
 function TBitmap.ReleasePalette: HPALETTE;
@@ -591,8 +650,7 @@ end;
 
 function TBitmap.GetEmpty: boolean;
 begin
-  with FImage do
-    Result := (FHandle = 0) and (FDIBHandle = 0);
+  Result:=FImage.IsEmpty;
 end;
 
 function TBitmap.GetHeight: Integer;
@@ -625,32 +683,14 @@ begin
   WriteStream(Stream, True);
 end;
 
-procedure TBitmap.SetWidth(Value: Integer);
+procedure TBitmap.SetWidth(NewWidth: Integer);
 begin
-  with FImage do
-    if FDIB.dsbm.bmWidth <> Value then
-    begin
-      FDIB.dsbm.bmWidth := Value;
-      If (Value > 0) and (Height > 0) then
-        HandleNeeded
-      else
-        FreeImage;
-      Changed(Self);
-    end;
+  SetWidthHeight(NewWidth,Height);
 end;
 
-procedure TBitmap.SetHeight(Value: Integer);
+procedure TBitmap.SetHeight(NewHeight: Integer);
 begin
-  with FImage do
-    if FDIB.dsbm.bmHeight <> Value then
-    begin
-      FDIB.dsbm.bmHeight := Value;
-      If (Value > 0) and (Width > 0) then
-        HandleNeeded
-      else
-        FreeImage;
-      Changed(Self);
-    end;
+  SetWidthHeight(Width,NewHeight);
 end;
 
 procedure TBitmap.SetPalette(Value: HPALETTE);
@@ -660,7 +700,8 @@ end;
 
 procedure TBitmap.SetTransparentMode(Value: TTransparentMode);
 begin
-
+  if Value=TransparentMode then exit;
+  writeln('TBitmap.SetTransparentMode not implemented');
 end;
 
 // included by graphics.pp
@@ -669,6 +710,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.32  2003/06/30 10:09:46  mattias
+  fixed Get/SetPixel for DC without widget
+
   Revision 1.31  2003/06/25 10:38:28  mattias
   implemented saving original stream of TBitmap
 
