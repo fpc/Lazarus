@@ -10046,7 +10046,7 @@ var
   end;
 
 begin
-  writeln('TMainIDE.OnDesignerRenameComponent Old=',AComponent.Name,':',AComponent.ClassName,' New=',NewName);
+  DebugLn('TMainIDE.OnDesignerRenameComponent Old=',AComponent.Name,':',AComponent.ClassName,' New=',NewName);
   if (not IsValidIdent(NewName)) or (NewName='') then
     raise Exception.Create(Format(lisComponentNameIsNotAValidIdentifier, ['"',
       Newname, '"']));
@@ -10974,6 +10974,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.792  2004/11/18 16:01:14  vincents
+  replaced writeln by DebugLn
+
   Revision 1.791  2004/11/17 15:41:12  vincents
   disabled restarting lazarus, if not started by startlazarus, when compiling with fpc 1.0.x. Its system unit doesn't give a process id.
 
