@@ -122,6 +122,8 @@ var
   NewNode: TTreeNode;
   i: integer;
   FCurrentDir: string;
+  //used to sort the directories.
+  SortList: TStringList;
 begin
   if Dir <> '' then
   begin
@@ -133,22 +135,31 @@ begin
     Try
       if SysUtils.FindFirst(FCurrentDir, faAnyFile,FileInfo)=0 then
       begin
-        repeat
-          // check if special file
-          if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;
-          // if this is a directory then add it to the tree.
-          if ((faDirectory and FileInfo.Attr)>0) then
+        Try
+          SortList:= TStringList.Create;
+          SortList.Sorted:= True;
+          repeat
+            // check if special file
+            if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;
+            // if this is a directory then add it to the tree.
+            if ((faDirectory and FileInfo.Attr)>0) then
+            begin
+              //if this is a hidden file and we have not been requested to show
+              //hidder files then do not add it to the list.
+              if ((faHidden and FileInfo.Attr)>0)
+                                         and not (FShowHidden) then continue;
+              SortList.Add(FileInfo.Name);
+            end;//if
+          until SysUtils.FindNext(FileInfo)<>0;
+          for i:= 0 to SortList.Count - 1 do
           begin
-            //if this is a hidden file and we have not been requested to show
-            //hidder files then do not add it to the list.
-            if ((faHidden and FileInfo.Attr)>0)
-                                       and not (FShowHidden) then continue;
-            NewNode:= TV.Items.AddChild(Node,FileInfo.Name);
+            NewNode:= TV.Items.AddChild(Node,SortList[i]);
             //if subdirectories then indicate so.
-            NewNode.HasChildren:= HasSubDirs(Dir + PathDelim + NewNode.Text,
-                                             not FShowHidden);
-          end;//if
-        until SysUtils.FindNext(FileInfo)<>0;
+            NewNode.HasChildren:= HasSubDirs(Dir + PathDelim + NewNode.Text, FShowHidden);
+          end;//for
+        finally
+          SortList.free;
+        end;//Try-Finally
       end;//if
     finally
       SysUtils.FindClose(FileInfo);
@@ -244,7 +255,6 @@ begin
     else
     begin
       Node.Expand(False);
-      Node.Selected:= True;
     end;//else
     SubDir:= SubDir + StrLen(SubDir) + 1
   end;//While
