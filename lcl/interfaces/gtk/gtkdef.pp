@@ -249,7 +249,7 @@ type
   TGtkClipboardFormat = (
     gfCLASS, gfCOMPOUND_TEXT, gfDELETE, gfFILE_NAME, gfHOST_NAME, gfLENGTH,
     gfMULTIPLE, gfNAME, gfOWNER_OS, gfPROCESS, gfSTRING, gfTARGETS, gfTEXT,
-    gfTIMESTAMP, gfUSER);
+    gfTIMESTAMP, gfUSER, gfUTF8_STRING);
     
   TGtkClipboardFormats = set of TGtkClipboardFormat;
 
@@ -257,7 +257,7 @@ const
   GtkClipboardFormatName: array[TGtkClipboardFormat] of string = (
       'CLASS', 'COMPOUND_TEXT', 'DELETE', 'FILE_NAME', 'HOST_NAME', 'LENGTH',
       'MULTIPLE', 'NAME', 'OWNER_OS', 'PROCESS', 'STRING', 'TARGETS', 'TEXT',
-      'TIMESTAMP', 'USER'
+      'TIMESTAMP', 'USER', 'UTF8_STRING'
     );
   
 const
@@ -582,6 +582,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.65  2005/03/04 12:21:55  mattias
+  fixed TShape FPCanvas issue
+
   Revision 1.64  2005/02/18 09:44:30  vincents
   added constants for gtk1 version, fixes fpc 1.0.x compilation
 

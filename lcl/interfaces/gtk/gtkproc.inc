@@ -6256,7 +6256,7 @@ begin
   repeat
     repeat
       inc(TimeID);
-      if TimeID>1100 then exit;
+      if TimeID>1010 then exit;
       i:=ClipboardSelectionData.Count-1;
       while (i>=0) 
       and (PClipboardEventData(ClipboardSelectionData[i])^.TimeID<>TimeID) do
@@ -6267,7 +6267,7 @@ begin
     FillChar(c^.Data,SizeOf(TGtkSelectionData),0);
     ClipboardSelectionData.Add(c);
     {$IFDEF DEBUG_CLIPBOARD}
-    DebugLn('[RequestSelectionData] TimeID=',dbgs(TimeID));
+    DebugLn('[RequestSelectionData] TimeID=',dbgs(TimeID),' ',GdkAtomToStr(ClipboardTypeAtoms[ClipboardType]),' FormatID=',GdkAtomToStr(FormatID));
     {$ENDIF}
     if gtk_selection_convert(ClipboardWidget, ClipboardTypeAtoms[ClipboardType],
                              FormatID, TimeID)<>GdkFalse
@@ -6300,6 +6300,20 @@ begin
       StrDispose(ClipboardTargetEntries[ClipboardType][i].Target);
     FreeMem(ClipboardTargetEntries[ClipboardType]);
   end;
+end;
+
+{------------------------------------------------------------------------------
+  function GdkAtomToStr(const Atom: TGdkAtom): string;
+  
+  Returns the associated string
+ ------------------------------------------------------------------------------}
+function GdkAtomToStr(const Atom: TGdkAtom): string;
+var
+  p: Pgchar;
+begin
+  p:=gdk_atom_name(Atom);
+  Result:=p;
+  g_free(p);
 end;
 
 {-------------------------------------------------------------------------------
@@ -8083,6 +8097,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.347  2005/03/04 12:21:56  mattias
+  fixed TShape FPCanvas issue
+
   Revision 1.346  2005/03/02 16:47:20  mattias
   fixed loading forms under fpc 1.9.9
 

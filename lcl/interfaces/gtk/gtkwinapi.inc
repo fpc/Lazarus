@@ -350,10 +350,10 @@ var FormatAtom, FormatTry: Cardinal;
       SelData:=RequestSelectionData(ClipboardWidget,ClipboardType,AllID);
       {DebugLn('IsFormatSupported A ',HexStr(Cardinal(SelData.Selection),8),
       ' ',HexStr(Cardinal(ClipboardTypeAtoms[ClipboardType]),8),
-      ' SelData.Target=',SelData.Target,' AllID=',AllID,
-      ' SelData.TheType=',SelData.TheType,' ',gdk_atom_intern('ATOM',0),
-      ' SelData.Length=',SelData.Length,
-      ' SelData.Format=',SelData.Format
+      ' SelData.Target='+dbgs(SelData.Target),' AllID='+dbgs(AllID),
+      ' SelData.TheType='+dbgs(SelData.TheType),' '+dbgs(gdk_atom_intern('ATOM',0)),
+      ' SelData.Length='+dbgs(SelData.Length),
+      ' SelData.Format='+dbgs(SelData.Format)
       );}
       if (SelData.Selection<>ClipboardTypeAtoms[ClipboardType])
       or (SelData.Target<>AllID)
@@ -363,6 +363,12 @@ var FormatAtom, FormatTry: Cardinal;
       end;
       SupportedCnt:=SelData.Length div (SelData.Format shr 3);
       SupportedFormats:=PGdkAtom(SelData.Data);
+      
+      {a:=SupportedCnt-1;
+      while (a>=0) do begin
+        debugln(' ',dbgs(a),' ',GdkAtomToStr(SupportedFormats[a]),' "',p,'"');
+        dec(a);
+      end;}
     end;
     a:=SupportedCnt-1;
     while (a>=0) and (SupportedFormats[a]<>Format) do dec(a);
@@ -371,7 +377,7 @@ var FormatAtom, FormatTry: Cardinal;
 
 begin
   {$IfDef DEBUG_CLIPBOARD}
-  DebugLn('[TGtkWidgetSet.ClipboardGetData] A ClipboardWidget=',HexStr(Cardinal(ClipboardWidget),8),' Format=',ClipboardFormatToMimeType(FormatID),' Now=',dbgs(Now));
+  DebugLn('[TGtkWidgetSet.ClipboardGetData] A ClipboardWidget=',HexStr(Cardinal(ClipboardWidget),8),' FormatID=',ClipboardFormatToMimeType(FormatID),' Now=',dbgs(Now));
   {$EndIf}
   Result:=false;
   if (FormatID=0) or (Stream=nil) then exit;
@@ -380,25 +386,30 @@ begin
   // request the data from the selection owner
   SupportedCnt:=-1;
   SupportedFormats:=nil;
+  FillChar(SelData,SizeOf(TGtkSelectionData),0);
   try
 
     FormatAtom:=FormatID;
     if (FormatAtom=gdk_atom_intern('text/plain',GdkTrue)) then begin
-      // text/plain is supported in various formats in gtk
-      // The COMPOUND_TEXT format supports internationalization and is therefore
-      // preferred even before 'text/plain'
       FormatAtom:=0;
-      FormatTry:=gdk_atom_intern('COMPOUND_TEXT',GdkTrue);
+      // text/plain is supported in various formats in gtk
+      FormatTry:=gdk_atom_intern('COMPOUND_TEXT',GdkFalse);
       if IsFormatSupported(FormatTry) then
         FormatAtom:=FormatTry;
+      // The COMPOUND_TEXT format can be converted and is therefore
+      // used as default for 'text/plain'
       if (SupportedCnt=0) then
-        FormatAtom:=gdk_atom_intern('COMPOUND_TEXT',GdkTrue);
+        FormatAtom:=gdk_atom_intern('COMPOUND_TEXT',GdkFalse);
+      // then check for UTF8 text format 'UTF8_STRING'
+      FormatTry:=gdk_atom_intern('UTF8_STRING',GdkFalse);
+      if IsFormatSupported(FormatTry) then
+        FormatAtom:=FormatTry;
       // then check for simple text format 'text/plain'
-      FormatTry:=gdk_atom_intern('text/plain',GdkTrue);
+      FormatTry:=gdk_atom_intern('text/plain',GdkFalse);
       if (FormatAtom=0) and IsFormatSupported(FormatTry) then
         FormatAtom:=FormatTry;
       // then check for simple text format STRING
-      FormatTry:=gdk_atom_intern('STRING',GdkTrue);
+      FormatTry:=gdk_atom_intern('STRING',GdkFalse);
       if (FormatAtom=0) and IsFormatSupported(FormatTry) then
         FormatAtom:=FormatTry;
       // check for some other formats that can be interpreted as text
@@ -412,57 +423,59 @@ begin
       if (FormatAtom=0) and IsFormatSupported(FormatTry) then
         FormatAtom:=FormatTry;
       // the TEXT format is not reliable, but it should be supported
-      FormatTry:=gdk_atom_intern('TEXT',GdkTrue);
+      FormatTry:=gdk_atom_intern('TEXT',GdkFalse);
       if (FormatAtom=0) and IsFormatSupported(FormatTry) then
         FormatAtom:=FormatTry;
     end;
 
     {$IfDef DEBUG_CLIPBOARD}
-    DebugLn('[TGtkWidgetSet.ClipboardGetData] B  Format=',ClipboardFormatToMimeType(FormatAtom),' Now=',dbgs(Now));
+    DebugLn('[TGtkWidgetSet.ClipboardGetData] B  Format=',ClipboardFormatToMimeType(FormatAtom),' FormatAtom=',dbgs(FormatAtom),' Now=',dbgs(Now));
     {$EndIf}
     if FormatAtom=0 then exit;
 
     // request data from owner
     SelData:=RequestSelectionData(ClipboardWidget,ClipboardType,FormatAtom);
-    try
+    {$IfDef DEBUG_CLIPBOARD}
+    DebugLn('[TGtkWidgetSet.ClipboardGetData] C  Length=',dbgs(SelData.Length),' Now=',dbgs(Now),' ',
+      ' SelData.Selection=',dbgs(SelData.Selection),' SelData.Length=',dbgs(SelData.Length));
+    {$EndIf}
+    if (SelData.Selection<>ClipboardTypeAtoms[ClipboardType])
+    or (SelData.Target<>FormatAtom) then begin
       {$IfDef DEBUG_CLIPBOARD}
-      DebugLn('[TGtkWidgetSet.ClipboardGetData] C  Length=',dbgs(SelData.Length),' Now=',dbgs(Now));
-      {$EndIf}
-      if (SelData.Selection<>ClipboardTypeAtoms[ClipboardType])
-      or (SelData.Target<>FormatAtom) then
-        exit;
-
-      // write data to stream
-      if (SelData.Data<>nil) and (SelData.Length>0) then begin
-        if (FormatID=gdk_atom_intern('text/plain',GdkTrue)) then begin
-          // the lcl expects the return format as simple text
-          // transform if necessary
-          if FormatAtom=gdk_atom_intern('COMPOUND_TEXT',GdkTrue) then begin
-            CompoundTextCount:=gdk_text_property_to_text_list(SelData.{$IfDef GTK2}_Type{$Else}theType{$EndIf},
-              SelData.Format,SelData.Data,SelData.Length,{$IfDef GTK1}@{$EndIf}CompoundTextList);
-            {$IfDef DEBUG_CLIPBOARD}
-            DebugLn('[TGtkWidgetSet.ClipboardGetData] D  CompoundTextCount=',dbgs(CompoundTextCount),' Now=',dbgs(Now));
-            {$EndIf}
-            for i:=0 to CompoundTextCount-1 do
-              if (CompoundTextList[i]<>nil) then
-                Stream.Write(CompoundTextList[i]^,StrLen(CompoundTextList[i]));
-            gdk_free_text_list(CompoundTextList);
-          end else
-            Stream.Write(SelData.Data^,SelData.Length);
-        end else begin
-          Stream.Write(SelData.Data^,SelData.Length);
-        end;
-      end;
-
-      {$IfDef DEBUG_CLIPBOARD}
-      DebugLn('[TGtkWidgetSet.ClipboardGetData] END ',' Now=',dbgs(Now));
-      {$EndIf}
-    finally
-      if SelData.Data<>nil then FreeMem(SelData.Data);
+      DebugLn('[TGtkWidgetSet.ClipboardGetData] REQUESTED FORMAT NOT SUPPORTED  Length=',dbgs(SelData.Length));
+      {$ENDIF}
+      exit;
     end;
+
+    // write data to stream
+    if (SelData.Data<>nil) and (SelData.Length>0) then begin
+      if (FormatID=gdk_atom_intern('text/plain',GdkTrue)) then begin
+        // the lcl expects the return format as simple text
+        // transform if necessary
+        if FormatAtom=gdk_atom_intern('COMPOUND_TEXT',GdkTrue) then begin
+          CompoundTextCount:=gdk_text_property_to_text_list(SelData.{$IfDef GTK2}_Type{$Else}theType{$EndIf},
+            SelData.Format,SelData.Data,SelData.Length,{$IfDef GTK1}@{$EndIf}CompoundTextList);
+          {$IfDef DEBUG_CLIPBOARD}
+          DebugLn('[TGtkWidgetSet.ClipboardGetData] D  CompoundTextCount=',dbgs(CompoundTextCount),' Now=',dbgs(Now));
+          {$EndIf}
+          for i:=0 to CompoundTextCount-1 do
+            if (CompoundTextList[i]<>nil) then
+              Stream.Write(CompoundTextList[i]^,StrLen(CompoundTextList[i]));
+          gdk_free_text_list(CompoundTextList);
+        end else
+          Stream.Write(SelData.Data^,SelData.Length);
+      end else begin
+        Stream.Write(SelData.Data^,SelData.Length);
+      end;
+    end;
+
+    {$IfDef DEBUG_CLIPBOARD}
+    DebugLn('[TGtkWidgetSet.ClipboardGetData] END ',' Now=',dbgs(Now));
+    {$EndIf}
     Result:=true;
   finally
     if SupportedFormats<>nil then FreeMem(SupportedFormats);
+    if SelData.Data<>nil then FreeMem(SelData.Data);
   end;
 end;
 
@@ -8924,6 +8937,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.403  2005/03/04 12:21:56  mattias
+  fixed TShape FPCanvas issue
+
   Revision 1.402  2005/03/02 16:47:20  mattias
   fixed loading forms under fpc 1.9.9
 

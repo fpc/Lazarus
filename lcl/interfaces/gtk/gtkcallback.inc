@@ -2747,9 +2747,9 @@ begin
   end;
   {$IFDEF DEBUG_CLIPBOARD}
   DebugLn('[ClipboardSelectionReceivedHandler] A TimeID=',dbgs(TimeID),' RequestIndex=',dbgs(i),
-    ' selection=',dbgs(SelectionData^.selection),
-    ' target=',dbgs(SelectionData^.Target),
-    ' theType=',dbgs(SelectionData^.theType),
+    ' selection=',dbgs(SelectionData^.selection)+'='+gdk_atom_name(SelectionData^.selection),
+    ' target=',dbgs(SelectionData^.Target)+'='+gdk_atom_name(SelectionData^.Target),
+    ' theType=',dbgs(SelectionData^.theType)+'='+gdk_atom_name(SelectionData^.theType),
     ' format=',dbgs(SelectionData^.format),
     ' len=',dbgs(SelectionData^.length)
     );
@@ -2772,8 +2772,23 @@ begin
     {$IFDEF DEBUG_CLIPBOARD}
     DebugLn('[ClipboardSelectionReceivedHandler] C FirstCharacter=',dbgs(ord(PChar(c^.Data.Data)[0])));
     {$ENDIF}
-  end else
+  end else begin
+    {if (SelectionData^.Target <> GDK_TARGET_STRING)
+    and (SelectionData^.length<0) then begin
+      if gtk_selection_convert (TargetWidget, SelectionData^.selection,
+        GDK_TARGET_STRING, TimeID)<>GdkFalse
+      then begin
+        DebugLn('[ClipboardSelectionReceivedHandler] D TimeID=',dbgs(TimeID),' RequestIndex=',dbgs(i),
+          ' selection=',dbgs(SelectionData^.selection)+'='+gdk_atom_name(SelectionData^.selection),
+          ' target=',dbgs(SelectionData^.Target)+'='+gdk_atom_name(SelectionData^.Target),
+          ' theType=',dbgs(SelectionData^.theType)+'='+gdk_atom_name(SelectionData^.theType),
+          ' format=',dbgs(SelectionData^.format),
+          ' len=',dbgs(SelectionData^.length)
+          );
+      end;
+    end;}
     c^.Data.Data:=nil;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -2791,8 +2806,8 @@ var ClipboardType: TClipboardType;
   FormatID: cardinal;
   Buffer: Pointer;
   BufLength: integer;
-  P: PChar;
   BitCount: integer;
+  P: PChar;
 begin
   {$IFDEF DEBUG_CLIPBOARD}
   DebugLn('*** [ClipboardSelectionRequestHandler] START');
@@ -2805,9 +2820,7 @@ begin
         // handler found for this of clipboard
         // now create a stream and find a supported format
         {$IFDEF DEBUG_CLIPBOARD}
-        p:=gdk_atom_name(SelectionData^.Target);
-        DebugLn('[ClipboardSelectionRequestHandler] ',ClipboardTypeName[ClipboardType],' Format=',dbgs(p),' ID=',dbgs(SelectionData^.Target));
-        g_free(p);
+        DebugLn('[ClipboardSelectionRequestHandler] "',ClipboardTypeName[ClipboardType],'" Format=',GdkAtomToStr(SelectionData^.Target),' ID=',dbgs(SelectionData^.Target));
         {$ENDIF}
         MemStream:=TMemoryStream.Create;
         try
@@ -2824,7 +2837,7 @@ begin
             FormatID:=gdk_atom_intern('text/plain',GdkFalse);
 
           {$IFDEF DEBUG_CLIPBOARD}
-          DebugLn('[ClipboardSelectionRequestHandler] FormatID=',dbgs(FormatID),' CompoundText=',dbgs(gdk_atom_intern('COMPOUND_TEXT',1)),' ',dbgs(ClipboardExtraGtkFormats[ClipboardType][gfCOMPOUND_TEXT]));
+          DebugLn('[ClipboardSelectionRequestHandler] FormatID=',dbgs(FormatID),'=',GdkAtomToStr(FormatID),' ',dbgs(ClipboardExtraGtkFormats[ClipboardType][gfCOMPOUND_TEXT]));
           {$ENDIF}
           // get the requested data by calling the handler for this clipboard type
           ClipboardHandler[ClipboardType](FormatID,MemStream);
@@ -2962,6 +2975,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.272  2005/03/04 12:21:55  mattias
+  fixed TShape FPCanvas issue
+
   Revision 1.271  2005/03/02 16:47:20  mattias
   fixed loading forms under fpc 1.9.9
 

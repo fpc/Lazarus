@@ -6630,7 +6630,7 @@ const
         TmpList:=TargetList^.List;
         while TmpList<>nil do begin
           Pair:=PGtkTargetPair(TmpList^.Data);
-          DebugLn('    WriteTargetLists BBB ',dbgs(Pair^.Target));
+          DebugLn('    WriteTargetLists BBB ',dbgs(Pair^.Target),' ',GdkAtomToStr(Pair^.Target));
           TmpList:=TmpList^.Next;
         end;
       end;
@@ -6697,6 +6697,9 @@ begin
                   ClipboardTargetEntries[c],ClipboardTargetEntryCnt[c]);
       end;
     end;
+    {$IFDEF DEBUG_CLIPBOARD}
+    WriteTargetLists(ClipboardWidget);
+    {$ENDIF}
   end;
 end;
 
@@ -6995,6 +6998,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.635  2005/03/04 12:21:55  mattias
+  fixed TShape FPCanvas issue
+
   Revision 1.634  2005/03/02 16:47:20  mattias
   fixed loading forms under fpc 1.9.9
 

@@ -43,7 +43,7 @@ begin
     Pen := FPen;
     Brush := FBrush;
 
-    PaintRect := Rect(0,0,Width - 1, Height - 1);
+    PaintRect := Rect(0,0,Self.Width - 1, Self.Height - 1);
     InflateRect(PaintRect, -(Pen.Width div 2), -(Pen.Width div 2));
     With PaintRect do begin
       MinSize := Min(Right - Left, Bottom - Top);
@@ -106,6 +106,9 @@ end;
 { =============================================================================
 
  $Log$
+ Revision 1.5  2005/03/04 12:21:55  mattias
+ fixed TShape FPCanvas issue
+
  Revision 1.4  2004/04/10 17:58:57  mattias
  implemented mainunit hints for include files
 

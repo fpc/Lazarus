@@ -685,6 +685,7 @@ function WaitForClipboardAnswer(c: PClipboardEventData): boolean;
 function RequestSelectionData(ClipboardWidget: PGtkWidget;
   ClipboardType: TClipboardType;  FormatID: cardinal): TGtkSelectionData;
 procedure FreeClipboardTargetEntries(ClipboardType: TClipboardType);
+function GdkAtomToStr(const Atom: TGdkAtom): string;
 
 // forms
 Function CreateFormContents(AForm: TCustomForm; var FormWidget: Pointer): Pointer;
