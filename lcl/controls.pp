@@ -426,6 +426,8 @@ type
     FLastHeight : Integer;
     FLastResizeHeight: integer;
     FLastResizeWidth: integer;
+    FLastResizeClientHeight: integer;
+    FLastResizeClientWidth: integer;
     FLastWidth : Integer;
     FLeft: Integer;
     FOnActivate : TNotifyEvent;
@@ -519,6 +521,9 @@ type
     procedure RequestAlign; dynamic;
     procedure BeginAutoDrag; dynamic;
     procedure ChangeBounds(ALeft, ATop, AWidth, AHeight : integer); virtual;
+    {$IFDEF ClientRectBugFix}
+    procedure DoSetBounds(ALeft, ATop, AWidth, AHeight : integer); virtual;
+    {$ENDIF}
     procedure ChangeScale(M,D : Integer); dynamic;
     procedure Click; dynamic;
     procedure DblClick; dynamic;
@@ -529,7 +534,10 @@ type
     procedure DragCanceled; dynamic;
     procedure CreateComponent(AOwner : TComponent);
     procedure DestroyComponent;
-    procedure DoEvents;
+    {$IFDEF ClientRectBugFix}
+    {$ELSE}
+    procedure DoEvents; // use HandleEvents instead
+    {$ENDIF}
     procedure DoEndDrag(Target: TObject; X,Y : Integer); dynamic;
     procedure InvalidateControl(IsVisible, IsOpaque : Boolean);
     procedure SendDockNotification(Msg: Cardinal; WParam, LParam : Integer);
@@ -652,6 +660,9 @@ type
   TGetChildProc = procedure(Child: TComponent) of Object;
   TTabOrder = -1..32767;
 
+  TWinControlFlag = (wcfClientRectNeedsUpdate);
+  TWinControlFlags = set of TWinControlFlag;
+
   TWinControl = class(TControl)
   private
     FAlignLevel : Word;
@@ -663,8 +674,11 @@ type
     FControls : TList;
     FDefWndProc : Pointer;
     //FDockSite : Boolean;
-    //FLastClientWidth : Integer;
-    //FLastClientHeight : Integer;
+    {$IFDEF ClientRectBugFix}
+    FClientWidth : Integer;
+    FClientHeight : Integer;
+    FFlags: TWinControlFlags;
+    {$ENDIF}
     FLastResize : TPoint;
     //FUseDockManager : Boolean;
     FOnKeyDown : TKeyEvent;
@@ -705,6 +719,9 @@ type
     procedure CMVisibleChanged(var Message: TLMessage); message CM_VISIBLECHANGED;
     procedure CreateSubClass(var Params: TCreateParams;ControlClassName: PChar);
     procedure DoConstraintsChange(Sender : TObject); override;
+    {$IFDEF ClientRectBugFix}
+    procedure DoSetBounds(ALeft, ATop, AWidth, AHeight : integer); override;
+    {$ENDIF}
     procedure GetChildren(Proc : TGetChildProc; Root : TComponent); override;
     procedure PaintControls(DC: HDC; First: TControl);
     procedure PaintHandler(var Message: TLMPaint);
@@ -783,6 +800,9 @@ type
     Function CanFocus : Boolean;
     Function ControlAtPos(const Pos : TPoint; AllowDisabled : Boolean): TControl;
     procedure DoAdjustClientRectChange;
+    {$IFDEF ClientRectBugFix}
+    procedure InvalidateClientRectCache;
+    {$ENDIF}
     Function Focused : Boolean; dynamic;
     Procedure BroadCast(var Message);
     Procedure DisableAlign;
@@ -1206,6 +1226,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.46  2002/05/09 12:41:28  lazarus
+  MG: further clientrect bugfixes
+
   Revision 1.45  2002/05/06 08:50:36  lazarus
   MG: replaced logo, increased version to 0.8.3a and some clientrectbugfix
 
