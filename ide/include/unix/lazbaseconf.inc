@@ -156,6 +156,18 @@ begin
   end;
 end;
 
+procedure GetDefaultCompilerFilenames(List: TStrings);
+begin
+  List.Add('/usr/bin/ppc386');
+  List.Add('/opt/fpc/ppc386');
+end;
+
+procedure GetDefaultTestBuildDirs(List: TStrings);
+begin
+  List.Add('/tmp/');
+  List.Add('/var/tmp/');
+end;
+
 {---------------------------------------------------------------------------
   procedure InternalInit;
  ---------------------------------------------------------------------------}

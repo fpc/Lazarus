@@ -46,7 +46,7 @@ interface
 {$endif}
 
 uses
-  SysUtils, Classes, FileCtrl, IDEProcs;
+  SysUtils, Classes, FileCtrl;
   
   { Config Path Functions }
 
@@ -79,6 +79,14 @@ uses
   // returns the standard file extension (e.g '.exe')
   function GetDefaultExecutableExt: string;
   
+  procedure GetDefaultCompilerFilenames(List: TStrings);
+  procedure GetDefaultTestBuildDirs(List: TStrings);
+
+const
+  // ToDo: find the constant in the fpc units.
+  LineBreak = {$IFDEF win32}#13+{$ENDIF}#10;
+  EmptyLine = LineBreak+LineBreak;
+  EndOfLine: shortstring = LineBreak;
 
 implementation
 
@@ -130,6 +138,9 @@ end.
 
 {
   $Log$
+  Revision 1.17  2003/08/15 14:28:48  mattias
+  clean up win32 ifdefs
+
   Revision 1.16  2003/08/15 14:01:20  mattias
   combined lazconf things for unix
 

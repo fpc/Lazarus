@@ -40,7 +40,7 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, Forms, Controls, Dialogs, Menus, FileCtrl, Laz_XMLCfg,
-  SynEdit, CodeCache, CodeToolManager, DebugOptionsFrm,
+  SynEdit, CodeCache, CodeToolManager, LazConf, DebugOptionsFrm,
   CompilerOptions, EditorOptions, EnvironmentOpts, KeyMapping, UnitEditor,
   Project, IDEProcs, InputHistory, Debugger, RunParamsOpts, ExtToolDialog,
   IDEOptionDefs, LazarusIDEStrConsts, ProjectDefs, BaseDebugManager, MainBar,
@@ -436,9 +436,9 @@ end;
 procedure TManagedBreakPoint.OnSourceMarkGetHint(SenderMark: TSourceMark;
   var Hint: string);
 begin
-  Hint:=GetBreakPointStateDescription(Self)+EndOfLine
-      +'Hitcount: '+IntToStr(Hitcount)+EndOfLine
-      +'Action: '+GetBreakPointActionsDescription(Self)+EndOfLine
+  Hint:=GetBreakPointStateDescription(Self)+LineBreak
+      +'Hitcount: '+IntToStr(Hitcount)+LineBreak
+      +'Action: '+GetBreakPointActionsDescription(Self)+LineBreak
       +'Condition: '+Expression;
 end;
 
@@ -1574,6 +1574,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.61  2003/08/15 14:28:47  mattias
+  clean up win32 ifdefs
+
   Revision 1.60  2003/08/08 10:24:47  mattias
   fixed initialenabled, debuggertype, linkscaner open string constant
 

@@ -511,8 +511,6 @@ const
       '.pas', '.pas', '.pas', '.pas', '.txt', '.pas'
     );
 
-  DefaultTargetFileExt : string = {$IFDEF win32}'.exe'{$ELSE}''{$ENDIF};
-  
   DefaultProjectFlags = [pfSaveClosedUnits];
   ProjectFlagNames : array[TProjectFlag] of string = (
       'SaveClosedFiles', 'SaveOnlyProjectUnits'
@@ -1194,7 +1192,7 @@ begin
   UpdateProjectDirectory;
   fPublishOptions:=TPublishProjectOptions.Create(Self);
   fRunParameterOptions:=TRunParamsOptions.Create;
-  fTargetFileExt := DefaultTargetFileExt;
+  fTargetFileExt := GetDefaultExecutableExt;
   fTitle := '';
   fUnitList := TList.Create;  // list of TUnitInfo
 
@@ -1480,7 +1478,7 @@ begin
          'ProjectOptions/General/AutoCreateForms/Value', true);
       IconPath := xmlconfig.GetValue('ProjectOptions/General/IconPath/Value', './');
       TargetFileExt := xmlconfig.GetValue(
-         'ProjectOptions/General/TargetFileExt/Value', DefaultTargetFileExt);
+         'ProjectOptions/General/TargetFileExt/Value', GetDefaultExecutableExt);
       Title := xmlconfig.GetValue('ProjectOptions/General/Title/Value', '');
       fJumpHistory.LoadFromXMLConfig(xmlconfig,'ProjectOptions/');
       if FileVersion<2 then
@@ -1642,7 +1640,7 @@ begin
   fProjectInfoFile := '';
   UpdateProjectDirectory;
   fPublishOptions.Clear;
-  fTargetFileExt := DefaultTargetFileExt;
+  fTargetFileExt := GetDefaultExecutableExt;
   fTitle := '';
   EndUpdate;
 end;
@@ -2668,6 +2666,9 @@ end.
 
 {
   $Log$
+  Revision 1.133  2003/08/15 14:28:48  mattias
+  clean up win32 ifdefs
+
   Revision 1.132  2003/07/14 09:03:39  mattias
   deactivated FCL TDataModule
 

@@ -1023,14 +1023,8 @@ begin
          'EnvironmentOptions/CompilerFilename/Value',FCompilerFilename));
       LoadRecentList(XMLConfig,FCompilerFileHistory,
          'EnvironmentOptions/CompilerFilename/History/');
-      if FCompilerFileHistory.Count=0 then begin
-        {$IFDEF win32}
-        FCompilerFileHistory.Add('c:\pp\bin\win32\ppc386.exe');
-        {$ELSE}
-        FCompilerFileHistory.Add('/usr/bin/ppc386');
-        FCompilerFileHistory.Add('/opt/fpc/ppc386');
-        {$ENDIF}
-      end;
+      if FCompilerFileHistory.Count=0 then
+        GetDefaultCompilerFilenames(FCompilerFileHistory);
       FPCSourceDirectory:=XMLConfig.GetValue(
          'EnvironmentOptions/FPCSourceDirectory/Value',FFPCSourceDirectory);
       LoadRecentList(XMLConfig,FFPCSourceDirHistory,
@@ -1043,15 +1037,8 @@ begin
          'EnvironmentOptions/TestBuildDirectory/Value',FTestBuildDirectory);
       LoadRecentList(XMLConfig,FTestBuildDirHistory,
          'EnvironmentOptions/TestBuildDirectory/History/');
-      if FTestBuildDirHistory.Count=0 then begin
-        {$IFDEF win32}
-        FTestBuildDirHistory.Add('c:\tmp\');
-        FTestBuildDirHistory.Add('c:\windows\temp\');
-        {$ELSE}
-        FTestBuildDirHistory.Add('/tmp/');
-        FTestBuildDirHistory.Add('/var/tmp/');
-        {$ENDIF}
-      end;
+      if FTestBuildDirHistory.Count=0 then
+        GetDefaultTestBuildDirs(FTestBuildDirHistory);
 
       // backup
       LoadBackupInfo(FBackupInfoProjectFiles

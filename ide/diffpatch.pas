@@ -77,7 +77,7 @@ implementation
 
 
 const
-  LineBreak = {$IFDEF win32}#13+{$ENDIF}#10;
+  LineBreak = #10;
   ContextLineCount = 3;
 
 type

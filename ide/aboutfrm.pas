@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources, StdCtrls,
-  Buttons, ExtCtrls, IDEProcs, LazarusIDEStrConsts;
+  Buttons, ExtCtrls, LazConf, IDEProcs, LazarusIDEStrConsts;
 
 type
   TAboutForm = class(TForm)
@@ -70,7 +70,7 @@ begin
   FPixmap.LoadFromLazarusResource('lazarus_about_logo');
   Label1.Caption := lisVersion+' #: '+lisLazarusVersionString;
   
-  Memo1.Lines.Text:=Format(lisAboutLazarusMsg,[EmptyLine,EmptyLine,EmptyLine]);
+  Memo1.Lines.Text:=Format(lisAboutLazarusMsg,[LineBreak,LineBreak,LineBreak]);
   Button1.Caption:=lisClose;
 
   OnResize:=@AboutFormResize;

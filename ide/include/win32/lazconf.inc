@@ -100,7 +100,7 @@ end;
 
 function FindDefaultCompilerPath: string;
 begin
-  Result:=SearchFileInPath('ppc386','',GetEnv('PATH'),':',
+  Result:=SearchFileInPath('ppc386.exe','',GetEnv('PATH'),':',
                            [sffDontSearchInBasePath]);
   if Result<>'' then exit;
   Result:='c:\pp\bin\win32\ppc386.exe';
@@ -109,7 +109,7 @@ end;
 
 function FindDefaultMakePath: string;
 begin
-  Result:=SearchFileInPath('make','',GetEnv('PATH'),':',
+  Result:=SearchFileInPath('make.exe','',GetEnv('PATH'),':',
                            [sffDontSearchInBasePath]);
 end;
 
@@ -142,6 +142,17 @@ begin
   if DirectoryExists(Result) then exit;
 end;
 
+procedure GetDefaultCompilerFilenames(List: TStrings);
+begin
+  List.Add('c:\pp\bin\win32\ppc386.exe');
+end;
+
+procedure GetDefaultTestBuildDirs(List: TStrings);
+begin
+  List.Add('c:\tmp\');
+  List.Add('c:\windows\temp\');
+end;
+
 {---------------------------------------------------------------------------
   procedure InternalInit;
  ---------------------------------------------------------------------------}
@@ -155,6 +166,9 @@ end;
 
 {
   $Log$
+  Revision 1.10  2003/08/15 14:28:48  mattias
+  clean up win32 ifdefs
+
   Revision 1.9  2003/08/15 14:01:20  mattias
   combined lazconf things for unix
 

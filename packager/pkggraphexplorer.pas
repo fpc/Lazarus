@@ -40,7 +40,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Buttons, ComCtrls,
   StdCtrls, ExtCtrls, Menus, Dialogs, Graphics, FileCtrl, AVL_Tree,
-  LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, EnvironmentOpts,
+  LazConf, LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, EnvironmentOpts,
   Project, BrokenDependenciesDlg, PackageDefs, PackageSystem, PackageEditor;
   
 type
@@ -531,7 +531,7 @@ begin
     // filename and title
     InfoStr:=Format(lisOIPFilename, [Pkg.Filename]);
     // state
-    InfoStr:=Format(lisPckExplState, [InfoStr+EndOfLine]);
+    InfoStr:=Format(lisPckExplState, [InfoStr+LineBreak]);
     if Pkg.AutoCreated then
       AddState(lisPckExplAutoCreated);
     if Pkg.Installed<>pitNope then
@@ -540,7 +540,7 @@ begin
       AddState(lisPckExplInstallOnNextStart);
     if (Pkg.AutoInstall=pitNope) and (Pkg.Installed<>pitNope) then
       AddState(lisPckExplUninstallOnNextStart);
-    InfoStr:=Format(lisOIPDescriptionDescription, [InfoStr+EndOfLine,
+    InfoStr:=Format(lisOIPDescriptionDescription, [InfoStr+LineBreak,
       BreakString(Pkg.Description, 60, length(lisOIPDescription))]);
   end;
   InfoMemo.Text:=InfoStr;

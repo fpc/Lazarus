@@ -39,7 +39,7 @@ unit CmdLineDebugger;
 interface
 
 uses
-  Classes, Process, Debugger, Forms, DBGUtils;
+  Classes, Process, Debugger, Forms, LazConf, DBGUtils;
 
 type
   TCmdLineDebugger = class(TDebugger)
@@ -173,7 +173,7 @@ constructor TCmdLineDebugger.Create(const AExternalDebugger: String);
 begin
   FDbgProcess := nil;
   FLineEnds := TStringList.Create;
-  FLineEnds.Add(LINE_END);
+  FLineEnds.Add(LineBreak);
   FReading := False;
   FFlushAfterRead := False;
   FPeekOffset := 0;
@@ -360,7 +360,7 @@ begin
     DoDbgOutput('<' + ACommand + '>');
     if ACommand <> ''
     then FDbgProcess.Input.Write(ACommand[1], Length(ACommand));
-    FDbgProcess.Input.Write(LINE_END, 1);
+    FDbgProcess.Input.Write(LineBreak, 1);
   end
   else begin
     WriteLN('[TCmdLineDebugger.SendCmdLn] Unable to send <', ACommand, '>. No process running.');
@@ -382,6 +382,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.21  2003/08/15 14:28:48  mattias
+  clean up win32 ifdefs
+
   Revision 1.20  2003/08/08 07:49:56  mattias
   fixed mem leaks in debugger
 

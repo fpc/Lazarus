@@ -30,7 +30,8 @@ unit IDEProcs;
 interface
 
 uses
-  Classes, SysUtils, Laz_XMLCfg, GetText, FileCtrl, FileProcs, SynRegExpr;
+  Classes, SysUtils, Laz_XMLCfg, GetText, FileCtrl, FileProcs, SynRegExpr,
+  LazConf;
 
 type
   // comments
@@ -67,12 +68,6 @@ type
     procedure(const ErrorData: TCopyErrorData; var Handled: boolean;
       Data: TObject) of object;
       
-//
-const
-  // ToDo: find the constant in the fpc units.
-  EndOfLine: shortstring={$IFDEF win32}#13+{$ENDIF}#10;
-  EmptyLine: shortstring={$IFDEF win32}#13#10#13#10{$ELSE}#10#10{$ENDIF};
-
 // file operations
 function BackupFile(const Filename, BackupFilename: string): boolean;
 function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;

@@ -41,7 +41,8 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Buttons, ComCtrls, StdCtrls, ExtCtrls,
   FileCtrl, LResources, Dialogs, LCLProc,
-  IDEProcs, PackageDefs, LazarusIDEStrConsts, IDEOptionDefs, PackageSystem;
+  LazConf, IDEProcs, PackageDefs, LazarusIDEStrConsts, IDEOptionDefs,
+  PackageSystem;
 
 type
   TOpenInstalledPackagesDlg = class(TCustomForm)
@@ -125,7 +126,7 @@ begin
        Format(lisOIPFilename, [CurPkg.Filename]);
     if CurPkg.AutoCreated then
       HintStr:=Format(lisOIPThisPackageWasAutomaticallyCreated, [HintStr+
-        EndOfLine]);
+        LineBreak]);
     if CurPkg.Missing then
       HintStr:=Format(lisOIPThisPackageIsInstalledButTheLpkFileWasNotFound, [
         HintStr+EndOfLine]);

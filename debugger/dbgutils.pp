@@ -62,13 +62,6 @@ function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String; con
 function ConvertToCString(const AText: String): String;
 function DeleteEscapeChars(const AText: String; const AEscapeChar: Char): String;
 
-const
-{$IFDEF WIN32}
-  LINE_END = #13#10;
-{$ELSE}
-  LINE_END = #10;
-{$ENDIF}
-
 implementation
 
 uses
@@ -288,6 +281,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.9  2003/08/15 14:28:48  mattias
+  clean up win32 ifdefs
+
   Revision 1.8  2003/07/09 00:13:18  marc
   * fixed cached items.object storage if TCheckListBox
   * Changed DebuggerOptions dialog to use new TCheckListBox

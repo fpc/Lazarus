@@ -37,7 +37,8 @@ unit SSHGDBMIDebugger;
 interface
 
 uses
-  Classes, SysUtils, Dialogs, Controls, GDBMIDebugger, DBGUtils, BaseDebugManager;
+  Classes, SysUtils, Dialogs, Controls, LazConf, GDBMIDebugger, DBGUtils,
+  BaseDebugManager;
   
 type
   TSSHGDBMIDebugger = class(TGDBMIDebugger)
@@ -81,7 +82,7 @@ begin
   if Pos('authenticity', Line) > 0
   then begin
     //
-    S := Line + LINE_END + ReadLine + ReadLine;
+    S := Line + LineBreak + ReadLine + ReadLine;
     if MessageDlg('Debugger', S, mtConfirmation, [mbYes, mbNo], 0) <> mrYes
     then begin
       SendCmdLn('no');
@@ -107,7 +108,7 @@ begin
     // something else, read the line
     Line := ReadLine;
     if MessageDlg('Debugger',
-      'Response: ' + LINE_END + Line + LINE_END + 'Continue ?',
+      'Response: ' + LineBreak + Line + LineBreak + 'Continue ?',
       mtConfirmation, [mbYes, mbNo], 0) <> mrYes
     then begin
       DebugProcess.Terminate(0);
@@ -126,7 +127,7 @@ begin
   else begin
     // We got an unexpected result
     MessageDlg('Debugger',
-      'Unexpected result:' + LINE_END + Line + LINE_END + 'The debugger wil be terminated.',
+      'Unexpected result:' + LineBreak + Line + LineBreak + 'The debugger wil be terminated.',
       mtInformation, [mbOK], 0);
     DebugProcess.Terminate(0);
   end;
@@ -139,6 +140,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.3  2003/08/15 14:28:48  mattias
+  clean up win32 ifdefs
+
   Revision 1.2  2003/07/30 23:15:39  marc
   * Added RegisterDebugger
 

@@ -37,8 +37,8 @@ unit GDBMIDebugger;
 interface
 
 uses
-  Classes, Process, SysUtils, Dialogs, DBGUtils, Debugger, CmdLineDebugger,
-  GDBTypeInfo, BaseDebugManager;
+  Classes, Process, SysUtils, Dialogs, LazConf, DBGUtils, Debugger,
+  CmdLineDebugger, GDBTypeInfo, BaseDebugManager;
 
 type
   TGDBMIProgramInfo = record
@@ -879,11 +879,12 @@ begin
   Line := StripLN(ReadLine);
   while DebugProcessRunning and (Line <> '(gdb) ') do
   begin
-    S := S + Line + LINE_END;
+    S := S + Line + LineBreak;
     Line := StripLN(ReadLine);
   end;
   if S <> ''
-  then MessageDlg('Debugger', 'Initialization output: ' + LINE_END + S, mtInformation, [mbOK], 0);
+  then MessageDlg('Debugger', 'Initialization output: ' + LineBreak + S,
+    mtInformation, [mbOK], 0);
 end;
 
 function TGDBMIDebugger.ProcessResult(var ANewState: TDBGState;
@@ -948,7 +949,7 @@ begin
             if (RightStr(S, 2) = '\n') and (RightStr(S, 3) <> '\\n')
             then begin
               // Delete lineend symbol & add lineend
-              S := Copy(S, 1, Length(S) - 2) + LINE_END;
+              S := Copy(S, 1, Length(S) - 2) + LineBreak;
             end;
             AResultValues := AResultValues + S;
           end
@@ -2065,6 +2066,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.38  2003/08/15 14:28:48  mattias
+  clean up win32 ifdefs
+
   Revision 1.37  2003/08/08 10:24:48  mattias
   fixed initialenabled, debuggertype, linkscaner open string constant
 
