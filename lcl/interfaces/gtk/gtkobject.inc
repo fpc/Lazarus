@@ -8403,7 +8403,7 @@ begin
     then begin
       GdiObject:=NewGDIObject(gdiFont);
       GdiObject^.GDIFontObject := GCValues.Font;
-      FontCache.Ref(GdiObject^.GDIFontObject);
+      FontCache.Reference(GdiObject^.GDIFontObject);
     end
     else GdiObject := CreateDefaultFont;
     {$EndIf}
@@ -8684,7 +8684,7 @@ begin
           end;
         end;
         If UnRef then
-          FontCache.UnRef(UseFont);
+          FontCache.Unreference(UseFont);
       end;
       Include(DCFlags,dcfTextMetricsValid);
     end;
@@ -9102,7 +9102,7 @@ var
       {$IfDef GTK2}
       pango_font_description_free(UseFontDesc);
       {$Else}
-      FontCache.UnRef(UseFont);
+      FontCache.Unreference(UseFont);
       {$EndIf}
   end;
 
@@ -9230,6 +9230,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.522  2004/08/11 12:57:03  mattias
+  improved gtk1 FontCache to handle several descriptors per gdkfont
+
   Revision 1.521  2004/08/10 17:34:13  mattias
   implemented font cache for gtk, which accelerates switching fonts
 

@@ -38,6 +38,8 @@ type
   PCardinal = ^Cardinal;
   {$ENDIF}
   
+  PHandle = ^THandle;
+  
 function StrToWord(const s: string): word;
 
 implementation

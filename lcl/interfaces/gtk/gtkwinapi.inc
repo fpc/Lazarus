@@ -1308,7 +1308,7 @@ var
   PointSize, ResolutionX, ResolutionY, Spacing, AverageWidth,
   CharSetRegistry, CharSetCoding: string;
   n: Integer;
-  CachedFont: TGdkFontCacheItem;
+  CachedFont: TGdkFontCacheDescriptor;
 
   function LoadFont: boolean;
   begin
@@ -1371,10 +1371,10 @@ begin
   try
     GdiObject^.LogFont := LogFont;
     
-    CachedFont:=FontCache.FindGDKFont(LogFont,LongFontName);
+    CachedFont:=FontCache.FindGDKFontDesc(LogFont,LongFontName);
     if CachedFont<>nil then begin
-      CachedFont.IncreaseRefCount;
-      GdiObject^.GDIFontObject := CachedFont.GdkFont;
+      CachedFont.Item.IncreaseRefCount;
+      GdiObject^.GDIFontObject := TGdkFontCacheItem(CachedFont.Item).GdkFont;
       exit;
     end;
 
@@ -2120,7 +2120,7 @@ begin
             {$Ifdef GTK2}
             pango_font_description_free(GDIFontObject);
             {$Else}
-            FontCache.UnRef(GDIFontObject);
+            FontCache.Unreference(GDIFontObject);
             {$EndIf}
           end;
         end;
@@ -3275,7 +3275,7 @@ begin
         {$IFDEF DebugGDKTraps}
         BeginGDKErrorTrap;
         {$ENDIF}
-        FontCache.UnRef(UseFont);
+        FontCache.Unreference(UseFont);
         {$IFDEF DebugGDKTraps}
         EndGDKErrorTrap;
         {$ENDIF}
@@ -5380,7 +5380,7 @@ begin
       Size.cY := GDK_String_Height(UseFont, Str)
         {$IfNDef Win32} + descent div 2{$EndIf};
       If UnRef then
-        FontCache.UnRef(UseFont);
+        FontCache.Unreference(UseFont);
     end;
   end;
   Assert(False, 'trace:< [TGtkWidgetSet.GetTextExtentPoint]');
@@ -8502,7 +8502,7 @@ begin
         end;
         Result := True;
         If UnRef then
-          FontCache.UnRef(UseFont);
+          FontCache.Unreference(UseFont);
       end;
     end;
   end;
@@ -8705,6 +8705,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.359  2004/08/11 12:57:03  mattias
+  improved gtk1 FontCache to handle several descriptors per gdkfont
+
   Revision 1.358  2004/08/10 17:34:13  mattias
   implemented font cache for gtk, which accelerates switching fonts
 

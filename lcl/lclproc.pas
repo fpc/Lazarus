@@ -89,6 +89,7 @@ function DeleteAmpersands(var Str : String) : Longint;
 function BreakString(const s: string; MaxLineLength, Indent: integer): string;
 
 function ComparePointers(p1, p2: Pointer): integer;
+function CompareHandles(h1, h2: THandle): integer;
 
 
 function RoundToInt(const e: Extended): integer;
@@ -577,6 +578,16 @@ begin
   if p1>p2 then
     Result:=1
   else if p1<p2 then
+    Result:=-1
+  else
+    Result:=0;
+end;
+
+function CompareHandles(h1, h2: THandle): integer;
+begin
+  if h1>h2 then
+    Result:=1
+  else if h1<h2 then
     Result:=-1
   else
     Result:=0;

@@ -159,7 +159,7 @@ type
   TSynEditorOption = (eoAltSetsColumnMode, eoAutoIndent,
     {$IFDEF SYN_LAZARUS}
     eoBracketHighlight, eoDoubleClickSelectsLine, eoHideRightMargin,
-    eoPersistentCaret, eoShowCtrlMouseLinks,
+    eoPersistentCaret, eoShowCtrlMouseLinks, eoAutoIndentOnPaste,
     {$ENDIF}
     eoDragDropEditing,     //mh 2000-11-20
     eoDropFiles, eoHalfPageScroll, eoKeepCaretX, eoNoCaret, eoNoSelection,
@@ -3829,7 +3829,14 @@ var
         p := GetEOL(p);
       end;
     end;
-{end}                                                                           // djlp 2000-09-07
+{end}
+
+    {$IFDEF SYN_LAZARUS}
+    procedure AutoIndentPasteText;
+    begin
+      // TODO
+    end;
+    {$ENDIF}                                                                        // djlp 2000-09-07
 
     function InsertNormal: Integer;
     var
@@ -3841,11 +3848,15 @@ var
     begin
       Result := 0;
       sLeftSide := Copy(LineText, 1, CaretX - 1);
+      {$IFDEF SYN_LAZARUS}
+      AutoIndentPasteText;
+      {$ENDIF}
       if CaretX - 1 > Length(sLeftSide) then begin
         {$IFDEF SYN_LAZARUS}
-        sLeftSide := sLeftSide + CreateTabsAndSpaces(CaretX,
-                             CaretX-1-Length(sLeftSide),TabWidth,
-                             eoTabsToSpaces in Options);
+        sLeftSide := sLeftSide
+                     + CreateTabsAndSpaces(CaretX,
+                                           CaretX-1-Length(sLeftSide),TabWidth,
+                                           eoTabsToSpaces in Options);
         {$ELSE}
         sLeftSide := sLeftSide + StringOfChar(' ', CaretX-1-Length(sLeftSide));
         {$ENDIF}
