@@ -368,9 +368,10 @@ Begin
       With TLMPaint(LMessage) Do
       Begin
         Msg := LM_PAINT;
-        DC := GetDC(Window);
-        Unused := 0;
-        ReleaseDC(Window, DC);
+//        DC := GetDC(Window);
+//        Unused := 0;
+//        ReleaseDC(Window, DC);
+        DC := WParam;
       End;
     End;
     WM_PASTE:
@@ -545,6 +546,9 @@ end;
 
 {
   $Log$
+  Revision 1.31  2003/06/29 20:07:07  mattias
+  fixed using DC from Micha
+
   Revision 1.30  2003/06/28 16:20:19  mattias
   fixed some win32 intf warnings
 
