@@ -34,7 +34,7 @@ interface
 
 uses
   Classes, SysUtils, IDEProcs, Forms, Controls, Buttons, ExtCtrls, StdCtrls,
-  LResources, Project, SynEdit;
+  LResources, Project, SynEdit, LCLType;
 
 type
   TDiskDiffsDlg = class(TForm)
@@ -43,6 +43,8 @@ type
     DiffSynEdit: TSynEdit;
     RevertAllButton: TButton;
     IgnoreDiskChangesButton: TButton;
+    procedure DiskDiffsDlgKeyDown(Sender: TObject; var Key: Word;
+          Shift: TShiftState);
     procedure DiskDiffsDlgResize(Sender: TObject);
   private
     FUnitList: TList;
@@ -76,6 +78,13 @@ end;
 
 
 { TDiskDiffsDlg }
+
+procedure TDiskDiffsDlg.DiskDiffsDlgKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key=VK_Escape then
+    ModalResult:=mrCancel;
+end;
 
 procedure TDiskDiffsDlg.DiskDiffsDlgResize(Sender: TObject);
 begin
@@ -184,6 +193,7 @@ begin
     end;
 
     OnResize:=@DiskDiffsDlgResize;
+    OnKeyDown:=@DiskDiffsDlgKeyDown;
   end;
 end;
 
