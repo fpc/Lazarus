@@ -162,6 +162,11 @@ function CompareStringPointerI(Data1, Data2: Pointer): integer;
 procedure CheckList(List: TList; TestListNil, TestDoubles, TestNils: boolean);
 procedure CheckEmptyListCut(List1, List2: TList);
 function AnsiSearchInStringList(List: TStrings; const s: string): integer;
+procedure FindMatchingTextFiles(FileList: TStringList; TheDirectory: string;
+                                mask: string; recursive: boolean);
+function FindInFiles(TheFileList: TStringList; Searchfor: String;
+                     WholeWord: Boolean; CaseSensitive: Boolean;
+                     RegExp: Boolean): TStringList;
 
 const
   {$IFDEF Win32}
@@ -2001,6 +2006,193 @@ begin
   inc(DestPos);
   Result[DestPos]:='$';
 end;
+
+{FindMatchingTextFiles Adds filenames that match a mask to a user supplied
+string list. Procedure will optionally search subdirectories.
+
+FileList: TStringList  //List to put the matching file names.
+TheDirectory: String   //Directory to start search
+Mask: String           //Search mask,
+                       //multiple mask seperater by ; ie '*.pas;*.pp;...'
+Recursive: boolean     //search subdirectories?
+}
+procedure FindMatchingTextFiles(FileList: TStringList; TheDirectory: string;
+                                mask: string; recursive: boolean);
+var
+  //List of File masks to use in the search.
+  MaskList: TStringList;
+  //Loop counter
+  i:        integer;
+  //Result of FindFirst, FindNext
+  FileInfo: TSearchRec;
+  //Temp Storage for The search Directoru
+  TempDir: string;
+
+  {Function GetMasks: TStringList
+  returns a list of mask from a string seperater by ;}
+  function GetMasks: TStringList;
+  var
+    //Position Tracking wihtin the string.
+    curpos,startpos: integer;
+    //Used as mask seperator
+  const
+    MaskSeperator = ';';
+
+  begin
+    Result:= TStringList.Create;
+    if mask<>'' then
+    begin
+      //do we have multiple masks
+      if (pos(MaskSeperator,Mask)>0) then
+      begin
+        startpos:=1;
+        curpos:=1;
+        repeat //loop through the string and get the masks.
+          while (curpos<=length(mask)) and (mask[curpos] <> MaskSeperator) do
+            inc(curpos);
+          //add the mask to the list
+          Result.Add(copy(mask,startpos,curpos-startpos));
+          inc(curpos);//skip the seperator
+          startpos:= curpos;//start on next mask
+        until curpos > length(mask);
+      end//if
+      else
+      begin
+        result.Add(mask);
+      end;//else
+    end//if
+    else
+    begin
+      Result.Add(FindMask) //OS Independent Mask
+    end;//else
+  end;//GetMasks
+
+begin
+  //if we have a list and a valid directory
+  if ((FileList<>(nil)) and (DirectoryExists(TheDirectory))) then
+  begin //make sure path ends with delimiter
+    TempDir:= AppendPathDelim(TheDirectory);
+    try
+      MaskList:= GetMasks;//Returns a list of file masks.
+      for i:= 0 to MaskList.Count -1 do
+      begin
+        try
+          if SysUtils.FindFirst(TempDir + MaskList[i],
+                                faAnyFile,FileInfo)=0 then
+          begin
+            repeat
+              // check if special file, skip directories this time
+              if (FileInfo.Name='.') or (FileInfo.Name='..')
+              or ((faDirectory and FileInfo.Attr)>0) then continue;
+              //Make sure this is a text file as we will be search
+              if (FileIsText(TempDir + FileInfo.Name))and
+             (FileIsReadable(TempDir + FileInfo.Name)) then
+              begin
+                FileList.Add(TempDir + FileInfo.Name);
+              end;//if
+            until SysUtils.FindNext(FileInfo)<>0;
+          end;//if
+        finally
+          SysUtils.FindClose(FileInfo);
+        end;//try-finally
+      end;//for
+    finally
+      MaskList.Free;
+    end;//try-finally
+    //If selected then Look for and search subdirectories
+    if (recursive) and (SysUtils.FindFirst(TempDir
+                        +FindMask,faAnyFile,FileInfo)=0) then
+    begin
+      if ((faDirectory and FileInfo.Attr)>0) then
+      begin
+        repeat
+          // check if special file
+          if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;
+          FindMatchingTextFiles
+            (FileList,TempDir + FileInfo.Name,mask,recursive);
+        until SysUtils.FindNext(FileInfo)<>0;
+      end;//if
+    end;//if
+  end;//if
+end;//FindMatchingFiles
+
+{FindInFiles Search for the first occurence of a string in a text file, returns
+a list of files with a match.
+TheFileList: TStringList   List of files to be searched.
+SearchFor: String          The string to search for.
+WholeWord: Boolean         Search for whole word matches.
+CaseSensitive: Boolean     Case sensitive search.
+RegExp: Boolean            SearchFor is to be treated as a regular expression
+}
+function FindInFiles(TheFileList: TStringList; Searchfor: String;
+                     WholeWord: Boolean; CaseSensitive: Boolean;
+                     RegExp: Boolean): TStringList;
+var
+  ThisFile: TStringList; //The File being searched
+  i:        integer;     //Loop Counter
+  Lines:    integer;     //Loop Counter
+  Match:    integer;     //Position of match in line.
+  StartWord:boolean;     //Does the word start with a sperator charater?
+  EndWord:  boolean;     //Does the word end with a seperator charater?
+  TheLine:  string;      //Temp Storage for the current line in the file.
+  TempSearch: string;    //Temp Storage for the search string.
+
+  const
+  WordBreakChars = ['.', ',', ';', ':', '"', '''', '!', '?', '[', ']', '(',
+                ')', '{', '}', '^', '-', '=', '+', '*', '/', '\', '|', ' '];
+begin
+  Result:= TStringList.Create;
+  try
+    ThisFile:= TStringList.Create;
+    if (Not CaseSensitive) and (not RegExp) then
+      TempSearch:= UpperCase(SearchFor)
+    else
+      TempSearch:= SearchFor;
+    for i:= 0 to TheFileList.Count -1 do
+    begin
+      ThisFile.LoadFromFile(TheFileList.Strings[i]);
+      for Lines:= 0 to ThisFile.Count -1 do
+      begin
+        TheLine:= ThisFile.Strings[Lines];
+        if not CaseSensitive then
+          TheLine:= UpperCase(TheLine);
+        Match:= pos(TempSearch,TheLine);
+        //look at the char before and after the match to see if they are in
+        //our list of word seperator charaters.
+        if WholeWord and (Match > 0) then
+        begin //is this the first word on the line or does the word start with
+              //one of the word seperator charaters.
+          if (Match = 1) or (TheLine[Match-1] in WordBreakChars) then
+            StartWord := True
+          else
+            StartWord := False;
+          if StartWord then // evaluate end only if start is true.
+          begin
+            if (Match + length(TempSearch) >= length(TheLine)) or
+                (TheLine[Match + Length(TempSearch)] in WordBreakChars) then
+              EndWord:= True
+            else
+              EndWord:= False;
+          end;//if
+          if StartWord And EndWord then
+          begin
+            Result.Add(TheFileList.Strings[i]+'('+IntToStr(lines+1)+
+                       ','+ IntToStr(match) + ')'+' '+'None:'+' '+SearchFor);
+            break;//junp out we found our match
+          end;//if
+        end;//if
+        if not WholeWord and (Match > 0) then
+        begin
+          Result.Add(TheFileList.Strings[i]+'('+IntToStr(lines+1)+
+                     ','+IntToStr(match)+')'+' '+'None:'+' '+SearchFor);
+          break;//junp out we found our match
+        end;//if
+      end;//for
+    end;//for
+  finally
+    ThisFile.Free;
+  end;//Try-finally
+end;//FindInFiles
 
 end.
 
