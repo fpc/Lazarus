@@ -642,6 +642,7 @@ begin
       Pages.Add(dlgWordsPolicies);
       Pages.Add(dlgLineSplitting);
       Pages.Add(dlgSpaceNotCosmos);
+      PageIndex:=0;
     end;
 
     SetupGeneralPage(0);
