@@ -248,6 +248,8 @@ type
   Function InputQuery(const ACaption, APrompt : String; var Value : String) : Boolean;
   Function InputBox(const ACaption, APrompt, ADefault : String) : String;
   Function PasswordBox(const ACaption, APrompt : String) : String;
+  
+
 
 implementation
 
@@ -275,6 +277,51 @@ const
      idButtonHelp);
 
 
+function ShowMessageBox(Text, Caption : PChar; Flags : Longint) : Integer;
+var
+  DlgType : TMsgDlgType;
+  Buttons : TMsgDlgButtons;
+begin
+  //This uses TMessageBox class in MessageDialogs.inc
+  if (Flags and MB_RETRYCANCEL) = MB_RETRYCANCEL then
+    Buttons := [mbREtry, mbCancel]
+  else
+  if (Flags and MB_YESNO) = MB_YESNO then
+    Buttons := [mbYes, mbNo]
+  else
+  if (Flags and MB_YESNOCANCEL) = MB_YESNOCANCEL then
+    Buttons := [mbYes, mbNo, mbCancel]
+  else
+  if (Flags and MB_ABORTRETRYIGNORE) = MB_ABORTRETRYIGNORE then
+    Buttons := [mbAbort, mbRetry, mbIgnore]
+  else
+  if (Flags and MB_OKCANCEL) = MB_OKCANCEL then
+    Buttons := [mbOK,mbCancel]
+  else
+  if (Flags and MB_OK) = MB_OK then
+    Buttons := [mbOK]
+  else
+    Buttons := [mbOK];
+
+
+  if (Flags and MB_ICONQUESTION) = MB_ICONQUESTION then
+    DlgTYpe := mtConfirmation
+  else
+  if (Flags and MB_ICONINFORMATION) = MB_ICONINFORMATION then
+    DlgTYpe := mtInformation
+  else
+  if (Flags and MB_ICONERROR) = MB_ICONERROR then
+    DlgTYpe := mtError
+  else
+  if (Flags and MB_ICONWARNING) = MB_ICONWARNING then
+    DlgTYpe := mtWarning
+  else
+    DlgTYpe := mtCustom;
+
+  Result := MessageDlg(Caption,Text,DlgType,Buttons,0);
+end;
+
+
 {$I commondialog.inc}
 {$I filedialog.inc}
 {$I colordialog.inc}
@@ -287,6 +334,7 @@ end;
 {$I messagedialogs.inc}
 
 initialization
+  Forms.MessageBoxFunction:=@ShowMessageBox;
 
 finalization
 
@@ -295,6 +343,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.22  2002/10/24 10:37:04  lazarus
+  MG: broke dialogs.pp <-> forms.pp circle
+
   Revision 1.21  2002/10/24 10:05:51  lazarus
   MG: broke graphics.pp <-> clipbrd.pp circle
 

@@ -509,12 +509,17 @@ var
   Screen : TScreen;
   ExceptionObject : TExceptObject;
 
+type
+  TMessageBoxFunction =
+    function(Text, Caption : PChar; Flags : Longint) : Integer;
+var
+  MessageBoxFunction: TMessageBoxFunction;
 
 implementation
 
 
 uses 
-  StdCtrls, Interfaces, LResources, Dialogs, {ExtCtrls, }Math;
+  StdCtrls, Interfaces, LResources, Math;
 
 const
   FocusMessages : Boolean = true;
