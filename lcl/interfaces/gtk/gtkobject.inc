@@ -2560,6 +2560,7 @@ var
   RCStyle : PGtkRCStyle;
   Widget, FixWidget : PGTKWidget;
 begin
+  exit;
   {$IfNdef Win32}
   if Sender is TWinControl
   then with TWinControl(Sender) do
@@ -2567,6 +2568,10 @@ begin
     // Temphack to set backcolor, till better solution
     if HandleAllocated and ((Color and SYS_COLOR_BASE)=0) then begin
       Widget:=PGtkWidget(Handle);
+      
+      // don't set background for custom controls (to prevent flickering)
+      if GtkWidgetIsA(Widget,GTKAPIWidget_GetType) then exit;
+      
       FixWidget:=GetFixedWidget(Widget);
 
       If FixWidget <> Widget then Widget := FixWidget;
@@ -5993,6 +5998,13 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.CreateDCForWidget(TheWidget: PGtkWidget;
   TheWindow: PGdkWindow): HDC;
+  
+  procedure RaiseWidgetWithoutClientArea;
+  begin
+    RaiseException('TgtkObject.CreateWindowDC widget '
+      +HexStr(Cardinal(TheWidget),8)+' has no client area');
+  end;
+  
 var
   aDC: TDeviceContext;
   ClientWidget: PGtkWidget;
@@ -6013,11 +6025,7 @@ begin
     // create a new devicecontext for this window
     if TheWindow=nil then begin
       ClientWidget := GetFixedWidget(TheWidget);
-      if ClientWidget = nil
-      then begin
-        RaiseException('TgtkObject.CreateWindowDC widget '
-          +HexStr(Cardinal(TheWidget),8)+' has no client area');
-      end;
+      if ClientWidget = nil then RaiseWidgetWithoutClientArea;
       TheWindow:=GetControlWindow(ClientWidget);
       if TheWindow=nil then begin
         //force creation
@@ -6726,6 +6734,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.302  2002/12/22 22:42:55  mattias
+  custom controls now support child wincontrols
+
   Revision 1.301  2002/12/17 16:32:12  mattias
   freeing GDIObjects without AppTerminate
 
