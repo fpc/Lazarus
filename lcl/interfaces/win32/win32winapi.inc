@@ -143,7 +143,9 @@ begin
   case TLMessage(Message).Msg of
   
   LM_PAINT:
-    CNSendMessage(LM_PAINT, Sender, Pointer(TLMessage(Message).WParam));
+      begin
+        Result := CallWindowProc(GetProp(Handle, 'DefWndProc'), Handle, WM_PAINT, Message.WParam, Message.LParam);
+      end;
 
   end;
 end;
@@ -2334,6 +2336,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.42  2003/07/04 11:12:27  mattias
+  improved default handler from Micha
+
   Revision 1.41  2003/07/04 10:12:16  mattias
   added default message handler to win32 interface
 

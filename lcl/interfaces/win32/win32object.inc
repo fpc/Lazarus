@@ -956,10 +956,6 @@ activate_time :	the time at which the activation event occurred.
             SetAccelKey(TLMShortCut(Data^).Handle, TLMShortCut(Data^).NewKey, TLMShortCut(Data^).NewModifier, FAccelGroup);
           End;
         End;
-        LM_PAINT:
-          begin
-            Result := CallWindowProc(GetProp(Handle, 'DefWndProc'), Handle, WM_PAINT, WParam(Data), 0);
-          end;
         Else
           Assert(True, Format ('WARNING: Unhandled message %d in IntSendMessage3 send by %s --> message:Redraw', [LM_Message, Sender.ClassName]));
           // unhandled message
@@ -2031,6 +2027,7 @@ Begin
       Window := CreateWindow(ClsName, strTemp, WS_OVERLAPPEDWINDOW Or WS_HSCROLL Or WS_VSCROLL Or WS_Visible, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, HWND(Nil), HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
       SetName(Window, strTemp);
+      DoSubClass := false;
     End;
     csSpinEdit:
     Begin
@@ -2748,6 +2745,9 @@ End;
 
 {
   $Log$
+  Revision 1.73  2003/07/04 11:12:27  mattias
+  improved default handler from Micha
+
   Revision 1.72  2003/07/04 10:12:16  mattias
   added default message handler to win32 interface
 
