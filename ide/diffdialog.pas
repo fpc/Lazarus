@@ -204,12 +204,12 @@ begin
 
   // buttons
   with CloseButton do begin
-    SetBounds(Parent.ClientWidth-300,Parent.ClientHeight-32,75,Height);
+    SetBounds(Parent.ClientWidth-300,Parent.ClientHeight-32,80,Height);
   end;
   
   with OpenInEditorButton do begin
     SetBounds(CloseButton.Left+CloseButton.Width+10,CloseButton.Top,
-              150,CloseButton.Height);
+              200,CloseButton.Height);
   end;
 end;
 

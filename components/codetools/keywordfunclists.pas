@@ -1164,6 +1164,7 @@ begin
     Add('WORD'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LONGINT'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('COPY'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SMALLINT'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
   WordIsPredefinedDelphiIdentifier:=TKeyWordFunctionList.Create;

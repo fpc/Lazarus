@@ -47,44 +47,44 @@ type
                            FindDlgComponent: TFindDlgComponent) of Object;
 
   TLazFindReplaceDialog = class(TForm)
-    TextToFindLabel:TLabel;
-    ReplaceWithLabel:TLabel;
-    TextToFindComboBox:TComboBox;
-    ReplaceTextComboBox:TComboBox;
-    OptionsGroupBox:TGroupBox;
-    CaseSensitiveCheckBox:TCheckBox;
-    WholeWordsOnlyCheckBox:TCheckBox;
-    RegularExpressionsCheckBox:TCheckBox;
-    MultiLineCheckBox:TCheckBox;
-    PromptOnReplaceCheckBox:TCheckBox;
-    DirectionRadioGroup:TRadioGroup;
-    ScopeRadioGroup:TRadioGroup;
-    OriginRadioGroup:TRadioGroup;
-    OkButton:TButton;
-    ReplaceAllButton:TButton;
-    CancelButton:TButton;
-    procedure TextToFindComboboxKeyDown(Sender: TObject; var Key:Word;
-       Shift:TShiftState);
-    procedure OkButtonClick(Sender:TObject);
-    procedure ReplaceAllButtonClick(Sender:TObject);
-    procedure CancelButtonClick(Sender:TObject);
+    TextToFindLabel: TLabel;
+    ReplaceWithLabel: TLabel;
+    TextToFindComboBox: TComboBox;
+    ReplaceTextComboBox: TComboBox;
+    OptionsGroupBox: TGroupBox;
+    CaseSensitiveCheckBox: TCheckBox;
+    WholeWordsOnlyCheckBox: TCheckBox;
+    RegularExpressionsCheckBox: TCheckBox;
+    MultiLineCheckBox: TCheckBox;
+    PromptOnReplaceCheckBox: TCheckBox;
+    DirectionRadioGroup: TRadioGroup;
+    ScopeRadioGroup: TRadioGroup;
+    OriginRadioGroup: TRadioGroup;
+    OkButton: TButton;
+    ReplaceAllButton: TButton;
+    CancelButton: TButton;
+    procedure TextToFindComboboxKeyDown(Sender: TObject; var Key: Word;
+       Shift: TShiftState);
+    procedure OkButtonClick(Sender: TObject);
+    procedure ReplaceAllButtonClick(Sender: TObject);
+    procedure CancelButtonClick(Sender: TObject);
   private
     FOnKey: TOnFindDlgKey;
-    fReplaceAllClickedLast:boolean;
+    fReplaceAllClickedLast: boolean;
     RegExpr: TRegExpr;
     function CheckInput: boolean;
     function GetComponentText(c: TFindDlgComponent): string;
     procedure SetComponentText(c: TFindDlgComponent; const AValue: string);
     procedure SetOnKey(const AValue: TOnFindDlgKey);
-    procedure SetOptions(NewOptions:TSynSearchOptions);
-    function GetOptions:TSynSearchOptions;
-    function GetFindText:AnsiString;
-    procedure SetFindText(NewFindText:AnsiString);
-    function GetReplaceText:AnsiString;
-    procedure SetReplaceText(NewReplaceText:AnsiString);
-    procedure SetComboBoxText(AComboBox:TComboBox;const AText:AnsiString);
+    procedure SetOptions(NewOptions: TSynSearchOptions);
+    function GetOptions: TSynSearchOptions;
+    function GetFindText: AnsiString;
+    procedure SetFindText(const NewFindText: AnsiString);
+    function GetReplaceText: AnsiString;
+    procedure SetReplaceText(const NewReplaceText: AnsiString);
+    procedure SetComboBoxText(AComboBox: TComboBox; const AText: AnsiString);
   public
-    constructor Create(TheOwner:TComponent); override;
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
   public
     property Options:TSynSearchOptions read GetOptions write SetOptions;
@@ -178,8 +178,10 @@ begin
       AutoSize := True;
       Left:=8;
       Top:=6;
-      Width:=155;
+      Width:=OptionsGroupBox.Width-10;
       Caption:=dlgCaseSensitive;
+      Hint:=lisDistinguishBigAndSmallLettersEGAAndA;
+      ShowHint:=true;
     end;
 
     WholeWordsOnlyCheckBox:=TCheckBox.Create(Self);
@@ -189,8 +191,10 @@ begin
       AutoSize := False;
       Left:=8;
       Top:=31;
-      Width:=155;
+      Width:=CaseSensitiveCheckBox.Width;
       Caption:=dlgWholeWordsOnly;
+      Hint:=lisOnlySearchForWholeWords;
+      ShowHint:=true;
     end;
 
     RegularExpressionsCheckBox:=TCheckBox.Create(Self);
@@ -200,8 +204,10 @@ begin
       AutoSize := False;
       Left:=8;
       Top:=56;
-      Width:=155;
+      Width:=CaseSensitiveCheckBox.Width;
       Caption:=dlgRegularExpressions;
+      Hint:=lisActivateRegularExpressionSyntaxForTextAndReplaceme;
+      ShowHint:=true;
     end;
 
     MultiLineCheckBox:=TCheckBox.Create(Self);
@@ -211,9 +217,11 @@ begin
       AutoSize := False;
       Left:=8;
       Top:=81;
-      Width:=155;
+      Width:=CaseSensitiveCheckBox.Width;
       Caption:=dlgMultiLine;
       Enabled:=false;
+      Hint:=lisAllowSearchingForMultipleLines;
+      ShowHint:=true;
     end;
 
     PromptOnReplaceCheckBox:=TCheckBox.Create(Self);
@@ -223,9 +231,11 @@ begin
       AutoSize := False;
       Left:=8;
       Top:=106;
-      Width:=135;
+      Width:=CaseSensitiveCheckBox.Width;
       Caption:=dlgPromptOnReplace;
       Checked:=true;
+      Hint:=lisAskBeforeReplacingEachFoundText;
+      ShowHint:=true;
     end;
 
     OriginRadioGroup:=TRadioGroup.Create(Self);
@@ -289,8 +299,9 @@ begin
     with OkButton do begin
       Name:='OkButton';
       Parent:= Self;
-      Left:= 130;
+      Left:= 90;
       Top:= 268;
+      Width:=80;
       Caption:='Ok';
       OnClick:=@OkButtonClick;
     end;
@@ -299,9 +310,9 @@ begin
     with ReplaceAllButton do begin
       Name:='ReplaceAllButton';
       Parent:= Self;
-      Left:= 210;
-      Top:= 268;
-      Width:=99;
+      Left:= OkButton.Left+OkButton.Width+10;
+      Top:= OkButton.Top;
+      Width:=120;
       Caption:=dlgReplaceAll;
       OnClick:=@ReplaceAllButtonClick;
     end;
@@ -310,8 +321,9 @@ begin
     with CancelButton do begin
       Name:='CancelButton';
       Parent:= Self;
-      Left:= 320;
-      Top:= 268;
+      Left:= ReplaceAllButton.Left+ReplaceAllButton.Width+10;
+      Top:= OkButton.Top;
+      Width:=80;
       Caption:=dlgCancel;
       OnClick:=@CancelButtonClick;
     end;
@@ -478,7 +490,7 @@ begin
   Result:=TextToFindComboBox.Text;
 end;
 
-procedure TLazFindReplaceDialog.SetFindText(NewFindText:AnsiString);
+procedure TLazFindReplaceDialog.SetFindText(const NewFindText:AnsiString);
 begin
 //  SetComboBoxText(TextToFindComboBox,NewFindText);
   TextToFindComboBox.Text:= NewFindText;
@@ -490,7 +502,7 @@ begin
   Result:=ReplaceTextComboBox.Text;
 end;
 
-procedure TLazFindReplaceDialog.SetReplaceText(NewReplaceText:AnsiString);
+procedure TLazFindReplaceDialog.SetReplaceText(const NewReplaceText:AnsiString);
 begin
   SetComboBoxText(ReplaceTextComboBox,NewReplaceText);
 end;

@@ -952,10 +952,17 @@ resourcestring
   dlgReplaceWith = '&Replace With';
   dlgFROpts = 'Options';
   dlgCaseSensitive = 'Case Sensitive';
+  lisDistinguishBigAndSmallLettersEGAAndA = 'Distinguish big and small '
+    +'letters e.g. A and a';
   dlgWholeWordsOnly = 'Whole Words Only';
+  lisOnlySearchForWholeWords = 'Only search for whole words';
   dlgRegularExpressions = 'Regular Expressions';
+  lisActivateRegularExpressionSyntaxForTextAndReplaceme = 'Activate regular '
+    +'expression syntax for text and replacement (pretty much like perl)';
   dlgMultiLine = 'Multi Line';
+  lisAllowSearchingForMultipleLines = 'Allow searching for multiple lines';
   dlgPromptOnReplace = 'Prompt On Replace';
+  lisAskBeforeReplacingEachFoundText = 'Ask before replacing each found text';
   dlgSROrigin = 'Origin';
   dlgFromCursor = 'From Cursor';
   dlgEntireScope = 'Entire Scope';
