@@ -33,7 +33,7 @@ interface
 {$ASSERTIONS ON}
 {$endif}
 
-uses stdctrls, vclglobals, classes, LCLLinux,graphics,sysutils, controls, lMessages,Forms;
+uses stdctrls, vclglobals, classes, LCLLinux,graphics,sysutils, controls, lMessages,Forms, messages;
 
 type
   TButtonLayout = (blGlyphLeft, blGlyphRight, blGlyphTop, blGlyphBottom);
@@ -50,10 +50,14 @@ type
     FOnEnter: TNotifyEvent;
     FOnResize: TNotifyEvent;
     Procedure SetDefault(Value : Boolean);
+    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER; 
+    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
   protected
     procedure Click; override;      
     //TODO: make this compatible
     procedure CreateWnd; override;
+    property OnMouseEnter : TNotifyEvent read FOnEnter write FOnEnter;
+    property OnMouseLeave : TNotifyEvent read FOnLeave write FOnLeave;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -168,7 +172,7 @@ implementation
 const
   BitBtnModalResults : Array[TBitBtnKind] of TModalResult = (0,mrOK,mrCAncel,0,mryes,mrNo,
                                                             0,mrAbort,mrRetry, mrIgnore, mrAll);
-  BitbtnCaption : Array[TBitBtnKind] of String = ('','OK','Cancel','Help','','','Close','','','','');
+  BitbtnCaption : Array[TBitBtnKind] of String = ('','OK','Cancel','Help','','','Close','','','','All');
 
 
 var
@@ -185,6 +189,7 @@ BitbtnImages[bkOK] := IMGOK_Check;
 BitbtnImages[bkCancel] := IMGCancel_X;
 BitbtnImages[bkClose] := IMGClose;
 BitbtnImages[bkHelp] := IMGHELP;
+BitbtnImages[bkAll] := IMGAll_Check;
 
 finalization
 
@@ -195,6 +200,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.2  2000/07/16 12:44:31  lazarus
+  added OnMouseEnter, OnMouseLeave property (changes by chris, committed by stoppok)
+
   Revision 1.1  2000/07/13 10:28:23  michael
   + Initial import
 
