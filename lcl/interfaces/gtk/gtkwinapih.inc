@@ -1,3 +1,5 @@
+// included by gtkint.pp
+
 (******************************************************************************
   All GTK Winapi related stuff goes here.
 
@@ -181,6 +183,7 @@ function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; X
 
 Function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean; override;
 
+//##apiwiz##eps##   // Do not remove
 
 
 Function WindowFromPoint(Point : TPoint) : HWND; override;
@@ -190,10 +193,15 @@ Procedure EnterCriticalSection(var CritSection: TCriticalSection); Override;
 Procedure LeaveCriticalSection(var CritSection: TCriticalSection); Override;
 Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 
-//##apiwiz##eps##   // Do not remove
+
+// included by gtkint.pp
+
 { =============================================================================
 
   $Log$
+  Revision 1.62  2003/03/09 21:13:32  mattias
+  localized gtk interface
+
   Revision 1.61  2003/02/28 19:54:05  mattias
   added ShowWindow
 
