@@ -28,7 +28,7 @@
 // Uncomment for local trace
 //  {$C+}
 //  {$DEFINE ASSERT_IS_ON}
-{$ENDIF}
+{$EndIf}
 
 const
   SYes = 'Yes';
@@ -317,9 +317,9 @@ var FormatAtom, FormatTry: Cardinal;
   end;
 
 begin
-  {$IFDEF DEBUG_CLIPBOARD}
+  {$IfDef DEBUG_CLIPBOARD}
   writeln('[TgtkObject.ClipboardGetData] A ClipboardWidget=',HexStr(Cardinal(ClipboardWidget),8),' Format=',ClipboardFormatToMimeType(FormatID));
-  {$ENDIF}
+  {$EndIf}
   Result:=false;
   if (FormatID=0) or (Stream=nil) then exit;
   if not (ClipboardType in [ctPrimarySelection,ctSecondarySelection,ctClipboard])
@@ -364,17 +364,17 @@ begin
         FormatAtom:=FormatTry;
     end;
 
-    {$IFDEF DEBUG_CLIPBOARD}
+    {$IfDef DEBUG_CLIPBOARD}
     writeln('[TgtkObject.ClipboardGetData] B  Format=',ClipboardFormatToMimeType(FormatAtom));
-    {$ENDIF}
+    {$EndIf}
     if FormatAtom=0 then exit;
    
     // request data from owner
     SelData:=RequestSelectionData(ClipboardWidget,ClipboardType,FormatAtom);
     try
-      {$IFDEF DEBUG_CLIPBOARD}
+      {$IfDef DEBUG_CLIPBOARD}
       writeln('[TgtkObject.ClipboardGetData] C  Length=',SelData.Length);
-      {$ENDIF}
+      {$EndIf}
       if (SelData.Selection<>ClipboardTypeAtoms[ClipboardType])
       or (SelData.Target<>FormatAtom) then
         exit;
@@ -387,9 +387,9 @@ begin
           if FormatAtom=gdk_atom_intern('COMPOUND_TEXT',1) then begin
             CompoundTextCount:=gdk_text_property_to_text_list(SelData.theType,
               SelData.Format,SelData.Data,SelData.Length,@CompoundTextList);
-            {$IFDEF DEBUG_CLIPBOARD}
+            {$IfDef DEBUG_CLIPBOARD}
             writeln('[TgtkObject.ClipboardGetData] D  CompoundTextCount=',CompoundTextCount);
-            {$ENDIF}
+            {$EndIf}
             for i:=0 to CompoundTextCount-1 do
               if (CompoundTextList[i]<>nil) then
                 Stream.Write(CompoundTextList[i]^,StrLen(CompoundTextList[i]));
@@ -401,9 +401,9 @@ begin
         end;
       end;
       
-      {$IFDEF DEBUG_CLIPBOARD}
+      {$IfDef DEBUG_CLIPBOARD}
       writeln('[TgtkObject.ClipboardGetData] END');
-      {$ENDIF}
+      {$EndIf}
     finally
       if SelData.Data<>nil then FreeMem(SelData.Data);
     end;
@@ -437,9 +437,9 @@ var AllID: cardinal;
   begin
     if Format<>0 then begin
       for a:=0 to Cnt-1 do begin
-{$IFDEF DEBUG_CLIPBOARD}
+{$IfDef DEBUG_CLIPBOARD}
 writeln('  IsFormatSupported ',Format,'  ',FormatAtoms[a]);
-{$ENDIF}
+{$EndIf}
         if FormatAtoms[a]=Format then begin
           Result:=true;
           exit;
@@ -465,9 +465,9 @@ writeln('  IsFormatSupported ',Format,'  ',FormatAtoms[a]);
   
   
 begin
-{$IFDEF DEBUG_CLIPBOARD}
+{$IfDef DEBUG_CLIPBOARD}
 writeln('[TgtkObject.ClipboardGetFormats] A ClipboardWidget=',HexStr(Cardinal(ClipboardWidget),8));
-{$ENDIF}
+{$EndIf}
   Result:=false;
   Count:=0;
   List:=nil;
@@ -478,9 +478,9 @@ writeln('[TgtkObject.ClipboardGetFormats] A ClipboardWidget=',HexStr(Cardinal(Cl
   SelData:=RequestSelectionData(ClipboardWidget,ClipboardType,AllID);
   
   try
-{$IFDEF DEBUG_CLIPBOARD}
+{$IfDef DEBUG_CLIPBOARD}
 writeln('[TgtkObject.ClipboardGetFormats] A2 ',AllID);
-{$ENDIF}
+{$EndIf}
     if (SelData.Selection<>ClipboardTypeAtoms[ClipboardType])
     or (SelData.Target<>AllID)
     or (SelData.TheType<>gdk_atom_intern('ATOM',0)) then
@@ -509,10 +509,10 @@ writeln('[TgtkObject.ClipboardGetFormats] A2 ',AllID);
       GetMem(List,SizeOf(TClipboardFormat)*Count);
       i:=0;
       while (i<Cnt) do begin
-{$IFDEF DEBUG_CLIPBOARD}
+{$IfDef DEBUG_CLIPBOARD}
 writeln('  ',i,':  ',FormatAtoms[i]);
 writeln('         "',ClipboardFormatToMimeType(FormatAtoms[i]),'"');
-{$ENDIF}
+{$EndIf}
         List[i]:=FormatAtoms[i];
         inc(i);
       end;
@@ -565,9 +565,9 @@ var TargetEntries: PGtkTargetEntry;
 
   procedure AddTargetEntry(var Index: integer; const FormatName: string);
   begin
-{$IFDEF DEBUG_CLIPBOARD}
+{$IfDef DEBUG_CLIPBOARD}
 writeln('  AddTargetEntry ',FormatName);
-{$ENDIF}
+{$EndIf}
     TargetEntries[Index].Target := StrAlloc(Length(FormatName) + 1);
     StrPCopy(TargetEntries[Index].Target, FormatName);
     TargetEntries[Index].Info:=Index;
@@ -588,9 +588,9 @@ var
 begin
   if ClipboardType in [ctPrimarySelection, ctSecondarySelection, ctClipboard] then
   begin
-{$IFDEF DEBUG_CLIPBOARD}
+{$IfDef DEBUG_CLIPBOARD}
 writeln('[TgtkObject.ClipboardGetOwnerShip] A');
-{$ENDIF}
+{$EndIf}
     ClipboardHandler[ClipboardType]:=nil;
     Result:=false;
     if (ClipboardWidget=nil) or (FormatCount=0) or (Formats=nil) then
@@ -614,9 +614,9 @@ writeln('[TgtkObject.ClipboardGetOwnerShip] A');
     ExpFormatCnt:=FormatCount;
     for gtkFormat:=Low(TGtkClipboardFormat) to High(TGtkClipboardFormat) do
       ClipboardExtraGtkFormats[ClipboardType][gtkFormat]:=false;
-{$IFDEF DEBUG_CLIPBOARD}
+{$IfDef DEBUG_CLIPBOARD}
 writeln('[TgtkObject.ClipboardGetOwnerShip] B');
-{$ENDIF}
+{$EndIf}
     if IsFormatSupported(gdk_atom_intern('text/plain',1)) then
     begin
       // lcl provides 'text/plain' and the gtk-interface will automatically
@@ -654,20 +654,20 @@ writeln('[TgtkObject.ClipboardGetOwnerShip] B');
     SetClipboardWidget(OldClipboardWidget);
     
     // taking the ownership
-{$IFDEF DEBUG_CLIPBOARD}
+{$IfDef DEBUG_CLIPBOARD}
 writeln('[TgtkObject.ClipboardGetOwnerShip] C');
-{$ENDIF}
+{$EndIf}
     if gtk_selection_owner_set(ClipboardWidget, ClipboardTypeAtoms[ClipboardType],0)=0 then
       begin
-{$IFDEF DEBUG_CLIPBOARD}
+{$IfDef DEBUG_CLIPBOARD}
 writeln('[TgtkObject.ClipboardGetOwnerShip] D FAILED');
-{$ENDIF}
+{$EndIf}
       exit;
     end;
     
-{$IFDEF DEBUG_CLIPBOARD}
+{$IfDef DEBUG_CLIPBOARD}
 writeln('[TgtkObject.ClipboardGetOwnerShip] YEAH, got it!');
-{$ENDIF}
+{$EndIf}
     ClipboardHandler[ClipboardType]:=OnRequestProc;
       
     Result:=true;
@@ -2500,7 +2500,7 @@ begin
     ARect.Right:=0;
     ARect.Bottom:=0;
   end;
-  {$IFDEF VerboseGetClientRect}
+  {$IfDef VerboseGetClientRect}
   if ClientWidget<>nil then begin
     writeln('GetClientRect  Widget=',HexStr(Cardinal(handle),8),
        ' Client=',HexStr(Cardinal(ClientWidget),8),
@@ -2514,7 +2514,7 @@ begin
        ' Allocation=',Widget^.Allocation.Width,',',Widget^.Allocation.Height
        );
   end;
-  {$ENDIF}
+  {$EndIf}
   Result:=true;
 end;
 
@@ -2626,7 +2626,7 @@ end;
  ------------------------------------------------------------------------------}
 Function TGTKObject.GetCmdLineParamDescForInterface: string;
 const
-  e = {$IFDEF win32}#13+{$ENDIF}#10;
+  e = {$IfDef win32}#13+{$EndIf}#10;
 begin
   Result:=
     '--gtk-module module   Load the specified module at startup.'+e+
@@ -4801,14 +4801,14 @@ end;
 
  ------------------------------------------------------------------------------}
 function TgtkObject.SetCapture(Value: Longint): Longint;
-{$IFDEF VerboseMouseCapture}
+{$IfDef VerboseMouseCapture}
 var
   Sender : TObject;
   CurMouseCaptureHandle: PGtkWidget;
-{$ENDIF}
+{$EndIf}
 begin
   Assert(False, Format('Trace:> [TgtkObject.SetCapture] 0x%x', [Value]));
-  {$IFDEF VerboseMouseCapture}
+  {$IfDef VerboseMouseCapture}
   if Value<>0 then
     Sender:=GetLCLObject(Pointer(Value))
   else
@@ -4822,14 +4822,13 @@ begin
   CurMouseCaptureHandle:=gtk_grab_get_current;
   writeln('  gtk=',HexStr(Cardinal(CurMouseCaptureHandle),8),
     ' MCaptureHandle=',HexStr(Cardinal(MCaptureHandle),8));
-  {$ENDIF}
+  {$EndIf}
 
   //CaptureHandle is defined in gtkint.pp pivate var definition.
   
   //MWE: there are some problems with grabbing the pointer and tabs
   //     so back to gtk_grab
-
-
+  
   if MCaptureHandle <> 0 then
     //gdk_pointer_ungrab(0);
     gtk_grab_remove(pgtkwidget(MCaptureHandle));
@@ -4841,6 +4840,13 @@ begin
   if MCaptureHandle <> 0 then begin
     //WriteLN(Format('[TgtkObject.SetCapture] Current widget 0x%p', [gtk_grab_get_current]));
     gtk_grab_add(Pointer(MCaptureHandle));
+    {$IfDef VerboseMouseCapture}
+    CurMouseCaptureHandle:=gtk_grab_get_current;
+    if CurMouseCaptureHandle<>PgtkWidget(MCaptureHandle) then
+      writeln('  WARNING: SetCapture failed: Tried to set to: ',
+        HexStr(Cardinal(MCaptureHandle),8),
+        ', but it is: ',HexStr(Cardinal(CurMouseCaptureHandle),8));
+    {$EndIf}
     //WriteLN(Format('[TgtkObject.SetCapture] handle: 0x%p gtk: 0x%p', [Pointer(MCaptureHandle), gtk_grab_get_current]));
 
 
@@ -4940,43 +4946,77 @@ end;
 function TgtkObject.SetFocus(hWnd: HWND): HWND;
 var
   TopLevel: PGTKWidget;
+  Widget: PGtkWidget;
+  {$IfDef VerboseFocus}
+  LCLObject: TWinControl;
+  {$EndIf}
 begin
-//writeln('[TgtkObject.SetFocus] A hWnd=',HexStr(Cardinal(hWnd),8));
+  if hWnd=0 then exit;
+  Widget:=PGtkWidget(hWnd);
+  {$IfDef VerboseFocus}
+  writeln('[TgtkObject.SetFocus] A hWnd=',HexStr(Cardinal(hWnd),8));
+  LCLObject:=TWinControl(GetLCLObject(Widget));
+  if LCLObject<>nil then
+    writeln('[TgtkObject.SetFocus] A2 LCLObject=',LCLObject.Name,':',LCLObject.ClassName);
+  {$EndIf}
   if hwnd = 0 then
     Result := 0
   else begin
     // return the old focus handle
     Result := GetFocus;
-    TopLevel := gtk_widget_get_toplevel(PGTKWidget(hWND));
-//writeln('[TgtkObject.SetFocus] B hWnd=',HexStr(Cardinal(hWnd),8),' Result=',HexStr(Cardinal(Result),8),' TopLevel=',HexStr(Cardinal(TopLevel),8));
+    TopLevel := gtk_widget_get_toplevel(Widget);
+    {$IfDef VerboseFocus}
+    writeln('[TgtkObject.SetFocus] B hWnd=',HexStr(Cardinal(hWnd),8),' Result=',HexStr(Cardinal(Result),8),' TopLevel=',HexStr(Cardinal(TopLevel),8));
+    {$EndIf}
     if gtk_type_is_a(gtk_object_type(PGTKObject(TopLevel)), gtk_window_get_type)
     then begin
-//writeln('[TgtkObject.SetFocus] C  TopLevel is a gtkwindow');
+      {$IfDef VerboseFocus}
+      writeln('[TgtkObject.SetFocus] C  TopLevel is a gtkwindow');
+      {$EndIf}
       // TopLevel is a gtkwindow
       if GTK_WIDGET_CAN_FOCUS(TOPLEVEL) then begin
         // TopLevel window can focus
-//writeln('[TgtkObject.SetFocus] D  TopLevel window can focus');
-        gtk_window_set_focus(PGTKWindow(TopLevel), PGTKWidget(hWND))
+        {$IfDef VerboseFocus}
+        writeln('[TgtkObject.SetFocus] D  TopLevel window can focus');
+        {$EndIf}
+        gtk_window_set_focus(PGTKWindow(TopLevel), Widget)
       end
       else begin
         // TopLevel window can not focus
-//writeln('[TgtkObject.SetFocus] E  TopLevel window can not focus');
+        {$IfDef VerboseFocus}
+        writeln('[TgtkObject.SetFocus] E  TopLevel window can NOT focus');
+        writeln('[TgtkObject.SetFocus] F ',
+        ' Widget can focus=',GTK_WIDGET_CAN_FOCUS(Widget),
+        ', is realized=',GTK_WIDGET_REALIZED(Widget),
+        ', is mapped=',GTK_WIDGET_MAPPED(Widget)
+        );
+        {$EndIf}
         if gtk_type_is_a(gtk_object_type(PGTKObject(hwnd)), gtk_combo_get_type)
         then begin
           // handle is a gtk combo
           gtk_widget_grab_focus(PgtkWidget(PGtkCombo(hwnd)^.entry));
+          {$IfDef VerboseFocus}
+          writeln('[TgtkObject.SetFocus] H Entry=',HexStr(Cardinal(PGtkCombo(hwnd)^.entry),8),
+          ' has focus=',gtk_widget_has_focus(PgtkWidget(PGtkCombo(hwnd)^.entry)));
+          {$EndIf}
         end
-        else if (GetCoreChildWidget(PGtkWidget(Hwnd)) <> nil) then begin
-          gtk_widget_grab_focus(GetCoreChildWidget(PGtkWidget(Hwnd)))
+        else if (GetCoreChildWidget(Widget) <> nil) then begin
+          {$IfDef VerboseFocus}
+          writeln('[TgtkObject.SetFocus] I CoreChild=',HexStr(Cardinal(GetCoreChildWidget(Widget)),8));
+          {$EndIf}
+          gtk_widget_grab_focus(GetCoreChildWidget(Widget))
         end
         else begin
-          gtk_widget_grab_focus(PgtkWidget(hwnd));
+          gtk_widget_grab_focus(Widget);
+          {$IfDef VerboseFocus}
+          writeln('[TgtkObject.SetFocus] J has focus=',gtk_widget_has_focus(Widget));
+          {$EndIf}
         end;
       end;
     end
     else begin
-      if GTK_WIDGET_CAN_FOCUS(PgtkWidget(hwnd)) then begin
-        gtk_widget_grab_focus(PgtkWidget(hwnd));
+      if GTK_WIDGET_CAN_FOCUS(Widget) then begin
+        gtk_widget_grab_focus(Widget);
       end;
     end;
   end;
@@ -5847,7 +5887,8 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-Function TGTKObject.TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean;
+Function TGTKObject.TextOut(DC: HDC; X,Y : Integer; Str : Pchar;
+  Count: Integer) : Boolean;
 var
   aRect : TRect;
   txtpt : TPoint;
@@ -5906,25 +5947,23 @@ end;
  ------------------------------------------------------------------------------}
 Function TGTKObject.WindowFromPoint(Point : TPoint) : HWND;
 var
-ev : TgdkEvent;
-Window : PgdkWindow;
-Widget : PgtkWidget;
+  ev : TgdkEvent;
+  Window : PgdkWindow;
+  Widget : PgtkWidget;
 begin
   // Check the state of the widget.  IF it's hidden or disabled, don't return it's handle!
   Result := 0;
 
   Window := gdk_window_at_pointer(@Point.x,@Point.Y);
   if window <> nil then
-     Begin
-     ev.any.window := Window;
-     Widget := gtk_get_event_widget(@ev);
-     if widget <> nil then Result := Longint(widget);
-     Assert(False, format('Trace:Result = [%d]',[Result]));
-     end
-     else
-     Assert(False, 'Trace:Result = nil');
-
-
+  Begin
+    ev.any.window := Window;
+    Widget := gtk_get_event_widget(@ev);
+    if widget <> nil then Result := Longint(widget);
+    Assert(False, format('Trace:Result = [%d]',[Result]));
+  end
+  else
+    Assert(False, 'Trace:Result = nil');
 end;
 
 {$IfDef Critical_Sections_Support}
@@ -6073,14 +6112,17 @@ end;
 
 //##apiwiz##eps##   // Do not remove
 
-{$IFDEF ASSERT_IS_ON}
+{$IfDef ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
   {$C-}
-{$ENDIF}
+{$EndIf}
 
 { =============================================================================
 
   $Log$
+  Revision 1.111  2002/08/24 12:55:00  lazarus
+  MG: fixed mouse capturing, OI edit focus
+
   Revision 1.110  2002/08/24 06:51:24  lazarus
   MG: from Andrew: style list fixes, autosize for radio/checkbtns
 
