@@ -295,6 +295,25 @@ const
     $000000      {COLOR_GRADIENTINACTIVECAPTION}
   ); {end _SysColors}
 
+const
+  FormStyleMap : array[TFormBorderStyle] of integer = (
+    GTK_WINDOW_DIALOG,  // bsNone
+    GTK_WINDOW_TOPLEVEL,// bsSingle
+    GTK_WINDOW_TOPLEVEL,// bsSizeable
+    GTK_WINDOW_DIALOG,  // bsDialog
+    GTK_WINDOW_DIALOG,  // bsToolWindow
+    GTK_WINDOW_DIALOG   // bsSizeToolWin
+  );
+  FormResizableMap : array[TFormBorderStyle] of gint = (
+    0, // bsNone
+    1, // bsSingle
+    1, // bsSizeable
+    0, // bsDialog
+    0, // bsToolWindow
+    1  // bsSizeToolWin
+  );
+//unused:  FormBorderWidth : array[TFormBorderStyle] of gint = (0, 1, 2, 1, 1, 2);
+
 type
 
   //Defined in gtksignal.c
@@ -498,6 +517,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.81  2002/10/06 17:55:45  lazarus
+  MG: JITForms now sets csDesigning before creation
+
   Revision 1.80  2002/10/03 18:04:46  lazarus
   MG: started customdrawitem
 
