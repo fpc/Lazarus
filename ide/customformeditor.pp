@@ -831,7 +831,7 @@ begin
   aMsg:=aMsg+#13+JITFormList.CurReadErrorMsg;
   
   case ErrorType of
-    jfeUnknownProperty:
+    jfeUnknownProperty, jfeReaderError:
       begin
         Buttons:=[mbIgnore,mbCancel];
       end;
