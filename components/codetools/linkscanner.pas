@@ -37,6 +37,8 @@ unit LinkScanner;
 
 {$I codetools.inc}
 
+{ $DEFINE ShowIgnoreErrorAfter}
+
 interface
 
 uses
@@ -129,6 +131,8 @@ type
     FOnCheckFileOnDisk: TOnCheckFileOnDisk;
     FOnGetInitValues: TOnGetInitValues;
     FOnIncludeCode: TOnIncludeCode;
+    FIgnoreErrorAfterCode: Pointer;
+    FIgnoreErrorAfterCursorPos: integer;
     FInitValues: TExpressionEvaluator;
     FInitValuesChangeStep: integer;
     FSourceChangeSteps: TList; // list of PSourceChangeStep sorted with Code
@@ -226,6 +230,9 @@ type
     LastErrorSrcPos: integer;
     LastErrorCode: pointer;
     LastErrorIsValid: boolean;
+    LastErrorBehindIgnorePosition: boolean;
+    LastErrorCheckedForIgnored: boolean;
+    CleanedIgnoreErrorAfterPosition: integer;
     procedure RaiseExceptionFmt(const AMessage: string; args: array of const);
     procedure RaiseException(const AMessage: string);
     procedure ClearLastError;
@@ -244,6 +251,7 @@ type
     EndOfInterfaceFound: boolean;
     EndOfSourceFound: boolean;
 
+    // links
     property Links[Index: integer]: TSourceLink read GetLinks write SetLinks;
     function LinkCount: integer;
     function LinkIndexAtCleanPos(ACleanPos: integer): integer;
@@ -253,6 +261,7 @@ type
     function FindFirstSiblingLink(LinkIndex: integer): integer;
     function FindParentLink(LinkIndex: integer): integer;
 
+    // source mapping (Cleaned <-> Original)
     function CleanedSrc: string;
     function CursorToCleanPos(ACursorPos: integer; ACode: pointer;
         var ACleanPos: integer): integer; // 0=valid CleanPos
@@ -260,12 +269,40 @@ type
               // 1=CursorPos beyond scanned code
     function CleanedPosToCursor(ACleanedPos: integer; var ACursorPos: integer;
         var ACode: Pointer): boolean;
+    function LastErrorsInFrontOfCleanedPos(ACleanedPos: integer): boolean;
+    procedure RaiseLastErrorIfInFrontOfCleanedPos(ACleanedPos: integer);
 
+    // ranges
     function WholeRangeIsWritable(CleanStartPos, CleanEndPos: integer): boolean;
     procedure FindCodeInRange(CleanStartPos, CleanEndPos: integer;
         UniqueSortedCodeList: TList);
     procedure DeleteRange(CleanStartPos,CleanEndPos: integer);
-    
+
+    // scanning
+    procedure Scan(TillInterfaceEnd, CheckFilesOnDisk: boolean);
+    function UpdateNeeded(OnlyInterfaceNeeded,
+        CheckFilesOnDisk: boolean): boolean;
+    procedure SetIgnoreErrorAfter(ACursorPos: integer; ACode: Pointer);
+    procedure ClearIgnoreErrorAfter;
+    function IgnoreErrAfterPositionIsInFrontOfLastErrMessage: boolean;
+    function IgnoreErrorAfterCleanedPos: integer;
+    function IgnoreErrorAfterValid: boolean;
+
+    function GuessMisplacedIfdefEndif(StartCursorPos: integer;
+        StartCode: pointer;
+        var EndCursorPos: integer; var EndCode: Pointer): boolean;
+
+    property ChangeStep: integer read FChangeStep;
+
+    // global write lock
+    procedure ActivateGlobalWriteLock;
+    procedure DeactivateGlobalWriteLock;
+    property OnGetGlobalWriteLockInfo: TOnGetWriteLockInfo
+      read FOnGetGlobalWriteLockInfo write FOnGetGlobalWriteLockInfo;
+    property OnSetGlobalWriteLock: TOnSetWriteLock
+      read FOnSetGlobalWriteLock write FOnSetGlobalWriteLock;
+
+    // properties
     property OnGetSource: TOnGetSource read FOnGetSource write FOnGetSource;
     property OnLoadSource: TOnLoadSource read FOnLoadSource write FOnLoadSource;
     property OnDeleteSource: TOnDeleteSource
@@ -294,22 +331,6 @@ type
     property ScanTillInterfaceEnd: boolean
         read FScanTillInterfaceEnd write SetScanTillInterfaceEnd;
         
-    procedure Scan(TillInterfaceEnd, CheckFilesOnDisk: boolean);
-    function UpdateNeeded(OnlyInterfaceNeeded,
-        CheckFilesOnDisk: boolean): boolean;
-    function GuessMisplacedIfdefEndif(StartCursorPos: integer;
-        StartCode: pointer;
-        var EndCursorPos: integer; var EndCode: Pointer): boolean;
-
-    property ChangeStep: integer read FChangeStep;
-
-    procedure ActivateGlobalWriteLock;
-    procedure DeactivateGlobalWriteLock;
-    property OnGetGlobalWriteLockInfo: TOnGetWriteLockInfo
-      read FOnGetGlobalWriteLockInfo write FOnGetGlobalWriteLockInfo;
-    property OnSetGlobalWriteLock: TOnSetWriteLock
-      read FOnSetGlobalWriteLock write FOnSetGlobalWriteLock;
-
     procedure Clear;
     function ConsistencyCheck: integer;
     procedure WriteDebugReport;
@@ -890,8 +911,13 @@ var LastTokenType: TLSTokenType;
   s: string;
 begin
   if not UpdateNeeded(TillInterfaceEnd,CheckFilesOnDisk) then begin
-    // no input has changed -> the output is the same
-    if LastErrorIsValid then RaiseLastError;
+    // input is the same as last time -> output is the same
+    // -> if there was an error, raise it again
+    if LastErrorIsValid
+    and ((not IgnoreErrorAfterValid)
+      or (not IgnoreErrAfterPositionIsInFrontOfLastErrMessage))
+    then
+      RaiseLastError;
     exit;
   end;
   {$IFDEF CTDEBUG}
@@ -941,26 +967,35 @@ begin
   {$IFDEF CTDEBUG}
   writeln('TLinkScanner.Scan F ',SrcLen);
   {$ENDIF}
-  repeat
-    ReadNextToken;
-    //writeln('TLinkScanner.Scan G "',copy(Src,TokenStart,SrcPos-TokenStart),'"');
-    UpdateCleanedSource(SrcPos-1);
-    if (SrcPos<=SrcLen+1) then begin
-      if (LastTokenType<>lsttEqual)
-      and (TokenType=lsttEndOfInterface) then begin
-        EndOfInterfaceFound:=true
-      end else if (LastTokenType=lsttEnd) and (TokenType=lsttPoint) then begin
-        EndOfInterfaceFound:=true;
-        EndOfSourceFound:=true;
+  try
+    repeat
+      ReadNextToken;
+      //writeln('TLinkScanner.Scan G "',copy(Src,TokenStart,SrcPos-TokenStart),'"');
+      UpdateCleanedSource(SrcPos-1);
+      if (SrcPos<=SrcLen+1) then begin
+        if (LastTokenType<>lsttEqual)
+        and (TokenType=lsttEndOfInterface) then begin
+          EndOfInterfaceFound:=true
+        end else if (LastTokenType=lsttEnd) and (TokenType=lsttPoint) then begin
+          EndOfInterfaceFound:=true;
+          EndOfSourceFound:=true;
+          break;
+        end;
+        LastTokenType:=TokenType;
+      end else
         break;
-      end;
-      LastTokenType:=TokenType;
-    end else
-      break;
-  until (SrcPos>SrcLen) or EndOfSourceFound
-  or (ScanTillInterfaceEnd and EndOfInterfaceFound);
-  IncreaseChangeStep;
-  FForceUpdateNeeded:=false;
+    until (SrcPos>SrcLen) or EndOfSourceFound
+    or (ScanTillInterfaceEnd and EndOfInterfaceFound);
+    IncreaseChangeStep;
+    FForceUpdateNeeded:=false;
+  except
+    if (not IgnoreErrorAfterValid)
+    or (not IgnoreErrAfterPositionIsInFrontOfLastErrMessage) then
+      raise;
+    {$IFDEF ShowIgnoreErrorAfter}
+    writeln('TLinkScanner.Scan IGNORING ERROR: ',LastErrorMessage);
+    {$ENDIF}
+  end;
   {$IFDEF CTDEBUG}
   writeln('TLinkScanner.Scan END ',CleanedLen);
   {$ENDIF}
@@ -1264,6 +1299,100 @@ begin
   FForceUpdateNeeded:=false;
   //writeln('TLinkScanner.UpdateNeeded END');
   Result:=false;
+end;
+
+procedure TLinkScanner.SetIgnoreErrorAfter(ACursorPos: integer; ACode: Pointer
+  );
+begin
+  if (FIgnoreErrorAfterCode=ACode)
+  and (FIgnoreErrorAfterCursorPos=ACursorPos) then exit;
+  FIgnoreErrorAfterCode:=ACode;
+  FIgnoreErrorAfterCursorPos:=ACursorPos;
+  LastErrorCheckedForIgnored:=false;
+  {$IFDEF ShowIgnoreErrorAfter}
+  write('TLinkScanner.SetIgnoreErrorAfter ');
+  if FIgnoreErrorAfterCode<>nil then
+    write(OnGetFileName(Self,FIgnoreErrorAfterCode))
+  else
+    write('nil');
+  write(' ',FIgnoreErrorAfterCursorPos);
+  writeln('');
+  {$ENDIF}
+end;
+
+procedure TLinkScanner.ClearIgnoreErrorAfter;
+begin
+  SetIgnoreErrorAfter(0,nil);
+end;
+
+function TLinkScanner.IgnoreErrAfterPositionIsInFrontOfLastErrMessage: boolean;
+var
+  CleanResult: integer;
+begin
+  //writeln('TLinkScanner.IgnoreErrAfterPositionIsInFrontOfLastErrMessage');
+  //writeln('  LastErrorCheckedForIgnored=',LastErrorCheckedForIgnored,
+  //  ' LastErrorBehindIgnorePosition=',LastErrorBehindIgnorePosition);
+  if LastErrorCheckedForIgnored then
+    Result:=LastErrorBehindIgnorePosition
+  else begin
+    CleanedIgnoreErrorAfterPosition:=-1;
+    if (FIgnoreErrorAfterCode<>nil) and (FIgnoreErrorAfterCursorPos>0) then
+    begin
+      CleanResult:=CursorToCleanPos(FIgnoreErrorAfterCursorPos,
+                         FIgnoreErrorAfterCode,CleanedIgnoreErrorAfterPosition);
+      //writeln('  CleanResult=',CleanResult,
+      //  ' CleanedIgnoreErrorAfterPosition=',CleanedIgnoreErrorAfterPosition,
+      //  ' FIgnoreErrorAfterCursorPos=',FIgnoreErrorAfterCursorPos);
+      if (CleanResult=0) or (CleanResult=-1)
+      or (not LastErrorIsValid) then begin
+        Result:=true;
+      end else begin
+        Result:=false;
+      end;
+    end else begin
+      Result:=false;
+    end;
+    LastErrorBehindIgnorePosition:=Result;
+    LastErrorCheckedForIgnored:=true;
+  end;
+  {$IFDEF ShowIgnoreErrorAfter}
+  writeln('TLinkScanner.IgnoreErrAfterPositionIsInFrontOfLastErrMessage Result=',Result);
+  {$ENDIF}
+end;
+
+function TLinkScanner.IgnoreErrorAfterCleanedPos: integer;
+begin
+  if IgnoreErrAfterPositionIsInFrontOfLastErrMessage then
+    Result:=CleanedIgnoreErrorAfterPosition
+  else
+    Result:=-1;
+  {$IFDEF ShowIgnoreErrorAfter}
+  writeln('TLinkScanner.IgnoreErrorAfterCleanedPos Result=',Result);
+  {$ENDIF}
+end;
+
+function TLinkScanner.IgnoreErrorAfterValid: boolean;
+begin
+  Result:=(FIgnoreErrorAfterCode<>nil);
+  {$IFDEF ShowIgnoreErrorAfter}
+  writeln('TLinkScanner.IgnoreErrorAfterValid Result=',Result);
+  {$ENDIF}
+end;
+
+function TLinkScanner.LastErrorsInFrontOfCleanedPos(ACleanedPos: integer
+  ): boolean;
+begin
+  Result:=LastErrorIsValid and (CleanedLen>ACleanedPos);
+  {$IFDEF ShowIgnoreErrorAfter}
+  writeln('TLinkScanner.LastErrorsInFrontOfCleanedPos Result=',Result);
+  {$ENDIF}
+end;
+
+procedure TLinkScanner.RaiseLastErrorIfInFrontOfCleanedPos(ACleanedPos: integer
+  );
+begin
+  if LastErrorsInFrontOfCleanedPos(ACleanedPos) then
+    RaiseLastError;
 end;
 
 {-------------------------------------------------------------------------------
@@ -2525,12 +2654,14 @@ begin
   LastErrorMessage:=AMessage;
   LastErrorSrcPos:=SrcPos;
   LastErrorCode:=Code;
+  LastErrorCheckedForIgnored:=false;
   raise ELinkScannerError.Create(Self,AMessage);
 end;
 
 procedure TLinkScanner.ClearLastError;
 begin
   LastErrorIsValid:=false;
+  LastErrorCheckedForIgnored:=false;
 end;
 
 procedure TLinkScanner.RaiseLastError;

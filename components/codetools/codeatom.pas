@@ -137,6 +137,7 @@ type
 // useful functions
 function AtomPosition(StartPos, EndPos: integer): TAtomPosition;
 function CodePosition(P: integer; Code: TCodeBuffer): TCodePosition;
+function CodeXYPosition(X, Y: integer; Code: TCodeBuffer): TCodeXYPosition;
 
 var
   WordToAtomFlag: TWordToAtomFlag;
@@ -159,6 +160,12 @@ begin
   Result.Code:=Code;
 end;
 
+function CodeXYPosition(X, Y: integer; Code: TCodeBuffer): TCodeXYPosition;
+begin
+  Result.X:=X;
+  Result.Y:=Y;
+  Result.Code:=Code;
+end;
 
 { TAtomRing }
 

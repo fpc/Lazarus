@@ -35,6 +35,8 @@ interface
 
 {$I codetools.inc}
 
+{ $DEFINE ShowIgnoreErrorAfter}
+
 uses
   {$IFDEF MEM_CHECK}
   MemCheck,
@@ -82,6 +84,9 @@ type
     phepResultType);
     
   TTreeRange = (trInterface, trAll, trTillCursor);
+  
+  TBuildTreeFlag = (btSetIgnoreErrorPos,btKeepIgnoreErrorPos);
+  TBuildTreeFlags = set of TBuildTreeFlag;
   
   TPascalParserTool = class(TMultiKeyWordListCodeTool)
   private
@@ -179,13 +184,14 @@ type
         
     procedure BuildTree(OnlyInterfaceNeeded: boolean); virtual;
     procedure BuildTreeAndGetCleanPos(TreeRange: TTreeRange;
-        CursorPos: TCodeXYPosition; var CleanCursorPos: integer);
+        CursorPos: TCodeXYPosition; var CleanCursorPos: integer;
+        BuildTreeFlags: TBuildTreeFlags);
     procedure BuildSubTreeForClass(ClassNode: TCodeTreeNode); virtual;
     procedure BuildSubTreeForBeginBlock(BeginNode: TCodeTreeNode); virtual;
     procedure BuildSubTreeForProcHead(ProcNode: TCodeTreeNode); virtual;
     procedure BuildSubTreeForProcHead(ProcNode: TCodeTreeNode;
         var FunctionResult: TCodeTreeNode);
-        
+
     function DoAtom: boolean; override;
     
     function ExtractPropName(PropNode: TCodeTreeNode;
@@ -435,9 +441,12 @@ begin
   writeln('TPascalParserTool.BuildTree A');
   {$ENDIF}
   if not UpdateNeeded(OnlyInterfaceNeeded) then begin
-    // input has not changed
+    // input is the same as last time -> output is the same
     // -> if there was an error, raise it again
-    if LastErrorPhase in [CodeToolPhaseScan,CodeToolPhaseParse] then
+    if (LastErrorPhase in [CodeToolPhaseScan,CodeToolPhaseParse])
+    and ((not IgnoreErrorAfterValid)
+      or (not IgnoreErrAfterPositionIsInFrontOfLastErrMessage))
+    then
       RaiseLastError;
     exit;
   end;
@@ -455,48 +464,60 @@ begin
   ImplementationSectionFound:=false;
   EndOfSourceFound:=false;
   
-  ReadNextAtom;
-  if UpAtomIs('UNIT') then
-    CurSection:=ctnUnit
-  else if UpAtomIs('PROGRAM') then
-    CurSection:=ctnProgram
-  else if UpAtomIs('PACKAGE') then
-    CurSection:=ctnPackage
-  else if UpAtomIs('LIBRARY') then
-    CurSection:=ctnLibrary
-  else
-    SaveRaiseExceptionFmt(ctsNoPascalCodeFound,[GetAtom]);
-  CreateChildNode;
-  CurNode.Desc:=CurSection;
-  ReadNextAtom; // read source name
-  AtomIsIdentifier(true);
-  ReadNextAtom; // read ';'
-  if (CurPos.Flag<>cafSemicolon) then
-    RaiseCharExpectedButAtomFound(';');
-  if CurSection=ctnUnit then begin
+  try
     ReadNextAtom;
-    CurNode.EndPos:=CurPos.StartPos;
-    EndChildNode;
-    if not UpAtomIs('INTERFACE') then
-      RaiseStringExpectedButAtomFound('"interface"');
+    if UpAtomIs('UNIT') then
+      CurSection:=ctnUnit
+    else if UpAtomIs('PROGRAM') then
+      CurSection:=ctnProgram
+    else if UpAtomIs('PACKAGE') then
+      CurSection:=ctnPackage
+    else if UpAtomIs('LIBRARY') then
+      CurSection:=ctnLibrary
+    else
+      SaveRaiseExceptionFmt(ctsNoPascalCodeFound,[GetAtom]);
     CreateChildNode;
-    CurSection:=ctnInterface;
     CurNode.Desc:=CurSection;
-  end;
-  InterfaceSectionFound:=true;
-  ReadNextAtom;
-  if UpAtomIs('USES') then
-    ReadUsesSection(true);
-  repeat
-    //writeln('[TPascalParserTool.BuildTree] ALL '+GetAtom);
-    if not DoAtom then break;
-    if CurSection=ctnNone then begin
-      EndOfSourceFound:=true;
-      break;
+    ReadNextAtom; // read source name
+    AtomIsIdentifier(true);
+    ReadNextAtom; // read ';'
+    if (CurPos.Flag<>cafSemicolon) then
+      RaiseCharExpectedButAtomFound(';');
+    if CurSection=ctnUnit then begin
+      ReadNextAtom;
+      CurNode.EndPos:=CurPos.StartPos;
+      EndChildNode;
+      if not UpAtomIs('INTERFACE') then
+        RaiseStringExpectedButAtomFound('"interface"');
+      CreateChildNode;
+      CurSection:=ctnInterface;
+      CurNode.Desc:=CurSection;
     end;
+    InterfaceSectionFound:=true;
     ReadNextAtom;
-  until (CurPos.StartPos>SrcLen);
-  FForceUpdateNeeded:=false;
+    if UpAtomIs('USES') then
+      ReadUsesSection(true);
+    repeat
+      //writeln('[TPascalParserTool.BuildTree] ALL '+GetAtom);
+      if not DoAtom then break;
+      if CurSection=ctnNone then begin
+        EndOfSourceFound:=true;
+        break;
+      end;
+      ReadNextAtom;
+    until (CurPos.StartPos>SrcLen);
+    FForceUpdateNeeded:=false;
+  except
+    {$IFDEF ShowIgnoreErrorAfter}
+    writeln('TPascalParserTool.BuildTree ',MainFilename,' ERROR: ',LastErrorMessage);
+    {$ENDIF}
+    if (not IgnoreErrorAfterValid)
+    or (not IgnoreErrAfterPositionIsInFrontOfLastErrMessage) then
+      raise;
+    {$IFDEF ShowIgnoreErrorAfter}
+    writeln('TPascalParserTool.BuildTree ',MainFilename,' IGNORING ERROR: ',LastErrorMessage);
+    {$ENDIF}
+  end;
   {$IFDEF CTDEBUG}
   writeln('[TPascalParserTool.BuildTree] END');
   {$ENDIF}
@@ -3671,13 +3692,30 @@ end;
 
 procedure TPascalParserTool.BuildTreeAndGetCleanPos(
   TreeRange: TTreeRange; CursorPos: TCodeXYPosition;
-  var CleanCursorPos: integer);
-var Dummy: integer;
+  var CleanCursorPos: integer; BuildTreeFlags: TBuildTreeFlags);
+var
+  Dummy: integer;
+  IgnorePos: TCodePosition;
 begin
+  if (btSetIgnoreErrorPos in BuildTreeFlags) then begin
+    if (CursorPos.Code<>nil) then begin
+      IgnorePos.Code:=CursorPos.Code;
+      IgnorePos.Code.LineColToPosition(CursorPos.Y,CursorPos.X,IgnorePos.P);
+      if IgnorePos.P<1 then IgnorePos.Code:=nil;
+      IgnoreErrorAfter:=IgnorePos;
+    end else
+      ClearIgnoreErrorAfter;
+  end
+  else if (btKeepIgnoreErrorPos in BuildTreeFlags) then
+    ClearIgnoreErrorAfter;
+    
   if (TreeRange=trTillCursor) and (not UpdateNeeded(true)) then begin
     // interface tree is valid
     // -> if there was an error, raise it again
-    if LastErrorPhase in [CodeToolPhaseScan,CodeToolPhaseParse] then
+    if (LastErrorPhase in [CodeToolPhaseScan,CodeToolPhaseParse])
+    and ((not IgnoreErrorAfterValid)
+      or (not IgnoreErrAfterPositionIsInFrontOfLastErrMessage))
+    then
       RaiseLastError;
     // check if cursor is in interface
     Dummy:=CaretToCleanPos(CursorPos, CleanCursorPos);
@@ -3685,12 +3723,12 @@ begin
       exit;
   end;
   BuildTree(TreeRange=trInterface);
-  if not EndOfSourceFound then
+  if (not IgnoreErrorAfterValid) and (not EndOfSourceFound) then
     SaveRaiseException(ctsEndOfSourceNotFound);
   // find the CursorPos in cleaned source
   Dummy:=CaretToCleanPos(CursorPos, CleanCursorPos);
   if (Dummy<>0) and (Dummy<>-1) then
-    SaveRaiseException(ctsCursorPosOutsideOfCode);
+    RaiseException(ctsCursorPosOutsideOfCode);
 end;
 
 function TPascalParserTool.FindTypeNodeOfDefinition(

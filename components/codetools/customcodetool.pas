@@ -35,6 +35,8 @@ interface
 
 {$I codetools.inc}
 
+{ $DEFINE ShowIgnoreError}
+
 uses
   {$IFDEF MEM_CHECK}
   MemCheck,
@@ -57,7 +59,7 @@ type
     FOnGetGlobalWriteLockInfo: TOnGetWriteLockInfo;
     FOnSetGlobalWriteLock: TOnSetWriteLock;
   protected
-    FIgnoreAfterCodeXY: TCodeXYPosition;
+    FIgnoreErrorAfter: TCodePosition;
     KeyWordFuncList: TKeyWordFunctionList;
     FForceUpdateNeeded: boolean;
     function DefaultKeyWordFunc: boolean;
@@ -67,11 +69,14 @@ type
     procedure RaiseIdentExpectedButAtomFound;
     procedure RaiseBracketOpenExpectedButAtomFound;
     procedure RaiseBracketCloseExpectedButAtomFound;
-    procedure SetIgnoreAfterCodeXY(const AValue: TCodeXYPosition); virtual;
+    procedure SetIgnoreErrorAfter(const AValue: TCodePosition); virtual;
   protected
     LastErrorMessage: string;
     LastErrorCurPos: TAtomPosition;
     LastErrorPhase: integer;
+    LastErrorValid: boolean;
+    LastErrorBehindIgnorePosition: boolean;
+    LastErrorCheckedForIgnored: boolean;
     CurrentPhase: integer;
     procedure RaiseException(const AMessage: string); virtual;
     procedure RaiseExceptionFmt(const AMessage: string;
@@ -124,14 +129,13 @@ type
     function FindLineEndOrCodeInFrontOfPosition(StartPos: integer;
         StopAtDirectives: boolean): integer;
     function FindFirstLineEndAfterInCode(StartPos: integer): integer;
-    procedure ClearIgnoreAfterPosition;
 
     function UpdateNeeded(OnlyInterfaceNeeded: boolean): boolean;
     procedure BeginParsing(DeleteNodes, OnlyInterfaceNeeded: boolean); virtual;
     procedure BeginParsingAndGetCleanPos(DeleteNodes,
         OnlyInterfaceNeeded: boolean; CursorPos: TCodeXYPosition;
         var CleanCursorPos: integer);
-        
+
     function StringIsKeyWord(const Word: string): boolean;
     
     procedure MoveCursorToNodeStart(ANode: TCodeTreeNode);
@@ -185,7 +189,14 @@ type
     property OnSetGlobalWriteLock: TOnSetWriteLock
       read FOnSetGlobalWriteLock write FOnSetGlobalWriteLock;
       
-    property IgnoreAfterCodeXY: TCodeXYPosition read FIgnoreAfterCodeXY write SetIgnoreAfterCodeXY;
+    property IgnoreErrorAfter: TCodePosition
+      read FIgnoreErrorAfter write SetIgnoreErrorAfter;
+    procedure ClearIgnoreErrorAfter;
+    function IgnoreErrAfterPositionIsInFrontOfLastErrMessage: boolean;
+    function IgnoreErrorAfterValid: boolean;
+    function IgnoreErrorAfterCleanedPos: integer;
+    function LastErrorsInFrontOfCleanedPos(ACleanedPos: integer): boolean;
+    procedure RaiseLastErrorIfInFrontOfCleanedPos(ACleanedPos: integer);
 
     procedure Clear; virtual;
     function NodeDescToStr(Desc: integer): string;
@@ -279,6 +290,7 @@ begin
   LastErrorMessage:=AMessage;
   LastErrorCurPos:=CurPos;
   LastErrorPhase:=CurrentPhase;
+  LastErrorValid:=true;
   RaiseException(AMessage);
 end;
 
@@ -290,7 +302,9 @@ end;
 
 procedure TCustomCodeTool.ClearLastError;
 begin
-  LastErrorPhase:=0;
+  LastErrorPhase:=CodeToolPhaseNone;
+  LastErrorValid:=false;
+  LastErrorCheckedForIgnored:=false;
 end;
 
 procedure TCustomCodeTool.RaiseLastError;
@@ -298,16 +312,20 @@ begin
   CurPos:=LastErrorCurPos;
   CurNode:=nil;
   CurrentPhase:=LastErrorPhase;
+writeln('TCustomCodeTool.RaiseLastError "',LastErrorMessage,'"');
   SaveRaiseException(LastErrorMessage);
 end;
 
 procedure TCustomCodeTool.SetScanner(NewScanner: TLinkScanner);
 begin
   if NewScanner=FScanner then exit;
+  LastErrorCheckedForIgnored:=false;
   Clear;
-  FScanner:=NewScanner;
-  if FScanner<>nil then
+  FScanner:=NewScanner; begin
+  if Scanner<>nil then
     FLastScannerChangeStep:=Scanner.ChangeStep;
+    Scanner.SetIgnoreErrorAfter(IgnoreErrorAfter.P,IgnoreErrorAfter.Code);
+  end;
   FForceUpdateNeeded:=true;
 end;
 
@@ -1400,6 +1418,92 @@ begin
     RaiseException(ctsCursorPosOutsideOfCode);
 end;
 
+function TCustomCodeTool.IgnoreErrAfterPositionIsInFrontOfLastErrMessage: boolean;
+var
+  IgnoreErrorAfterCleanPos: integer;
+begin
+  //writeln('TCustomCodeTool.IgnoreErrAfterPositionIsInFrontOfLastErrMessage ',
+  //  ' LastErrorCheckedForIgnored=',LastErrorCheckedForIgnored,
+  //  ' LastErrorBehindIgnorePosition=',LastErrorBehindIgnorePosition);
+  if LastErrorCheckedForIgnored then begin
+    Result:=LastErrorBehindIgnorePosition;
+  end else begin
+    if (Scanner<>nil) then begin
+      IgnoreErrorAfterCleanPos:=Scanner.IgnoreErrorAfterCleanedPos;
+      //writeln('  IgnoreErrorAfterCleanPos=',IgnoreErrorAfterCleanPos,
+      //  ' LastErrorCurPos.EndPos=',LastErrorCurPos.EndPos,
+      //  ' LastErrorPhase>CodeToolPhaseParse=',LastErrorPhase>CodeToolPhaseParse);
+      if IgnoreErrorAfterCleanPos>0 then begin
+        // ignore position in scanned code
+        // -> check if last error behind ignore position
+        if (not LastErrorValid)
+        or (IgnoreErrorAfterCleanPos<=LastErrorCurPos.EndPos) then
+          Result:=true
+        else
+          Result:=false;
+      end else
+        Result:=false;
+    end else
+      Result:=false;
+    LastErrorBehindIgnorePosition:=Result;
+    LastErrorCheckedForIgnored:=true;
+  end;
+  {$IFDEF ShowIgnoreErrorAfter}
+  writeln('TCustomCodeTool.IgnoreErrAfterPositionIsInFrontOfLastErrMessage ',Result);
+  {$ENDIF}
+end;
+
+function TCustomCodeTool.IgnoreErrorAfterValid: boolean;
+begin
+  Result:=(Scanner<>nil) and (Scanner.IgnoreErrorAfterValid);
+  {$IFDEF ShowIgnoreErrorAfter}
+  writeln('TCustomCodeTool.IgnoreErrorAfterValid ',Result);
+  {$ENDIF}
+end;
+
+function TCustomCodeTool.IgnoreErrorAfterCleanedPos: integer;
+begin
+  if Scanner<>nil then
+    Result:=Scanner.IgnoreErrorAfterCleanedPos
+  else
+    Result:=-1;
+  {$IFDEF ShowIgnoreErrorAfter}
+  writeln('TCustomCodeTool.IgnoreErrorAfterCleanedPos ',Result);
+  {$ENDIF}
+end;
+
+function TCustomCodeTool.LastErrorsInFrontOfCleanedPos(ACleanedPos: integer
+  ): boolean;
+begin
+  if (Scanner<>nil) and Scanner.LastErrorsInFrontOfCleanedPos(ACleanedPos)
+  then
+    Result:=true
+  else if (LastErrorValid)
+  and (LastErrorCurPos.EndPos<=ACleanedPos) then
+    Result:=true
+  else
+    Result:=false;
+  {$IFDEF ShowIgnoreErrorAfter}
+  writeln('TCustomCodeTool.LastErrorsInFrontOfCleanedPos ACleanedPos=',ACleanedPos,
+    Result);
+  {$ENDIF}
+end;
+
+procedure TCustomCodeTool.RaiseLastErrorIfInFrontOfCleanedPos(
+  ACleanedPos: integer);
+begin
+  {$IFDEF ShowIgnoreErrorAfter}
+  writeln('TCustomCodeTool.RaiseLastErrorIfInFrontOfCleanedPos A ACleanedPos=',ACleanedPos,
+    ' ');
+  {$ENDIF}
+  if Scanner<>nil then Scanner.RaiseLastErrorIfInFrontOfCleanedPos(ACleanedPos);
+  //writeln('TCustomCodeTool.RaiseLastErrorIfInFrontOfCleanedPos B ',LastErrorPhase<CodeToolPhaseTool,' ',LastErrorCurPos.EndPos);
+  if LastErrorValid
+  and (LastErrorCurPos.EndPos<=ACleanedPos) then
+    RaiseLastError;
+  //writeln('TCustomCodeTool.RaiseLastErrorIfInFrontOfCleanedPos END ');
+end;
+
 function TCustomCodeTool.StringIsKeyWord(const Word: string): boolean;
 begin
   Result:=(Word<>'') and IsIdentStartChar[Word[1]]
@@ -1487,12 +1591,23 @@ begin
     Result:=true;
 end;
 
-procedure TCustomCodeTool.SetIgnoreAfterCodeXY(const AValue: TCodeXYPosition);
+procedure TCustomCodeTool.SetIgnoreErrorAfter(const AValue: TCodePosition);
 begin
-  if (FIgnoreAfterCodeXY.Code=AValue.Code)
-  and (FIgnoreAfterCodeXY.X=AValue.X)
-  and (FIgnoreAfterCodeXY.Y=AValue.Y) then exit;
-  FIgnoreAfterCodeXY:=AValue;
+  if (IgnoreErrorAfter.Code=AValue.Code)
+  and (IgnoreErrorAfter.P=AValue.P) then exit;
+  FIgnoreErrorAfter:=AValue;
+  LastErrorCheckedForIgnored:=false;
+  {$IFDEF ShowIgnoreErrorAfter}
+  write('TCustomCodeTool.SetIgnoreErrorAfter ');
+  if FIgnoreErrorAfter.Code<>nil then
+    write(FIgnoreErrorAfter.Code.Filename)
+  else
+    write('nil');
+  write(' ',FIgnoreErrorAfter.P);
+  writeln('');
+  {$ENDIF}
+  if Scanner<>nil then
+    Scanner.SetIgnoreErrorAfter(IgnoreErrorAfter.P,IgnoreErrorAfter.Code);
 end;
 
 function TCustomCodeTool.DefaultKeyWordFunc: boolean;
@@ -1729,9 +1844,9 @@ begin
     Result:=StartPos;
 end;
 
-procedure TCustomCodeTool.ClearIgnoreAfterPosition;
+procedure TCustomCodeTool.ClearIgnoreErrorAfter;
 begin
-  FIgnoreAfterCodeXY.Code:=nil;
+  IgnoreErrorAfter:=CodePosition(0,nil);
 end;
 
 function TCustomCodeTool.UpdateNeeded(OnlyInterfaceNeeded: boolean): boolean;

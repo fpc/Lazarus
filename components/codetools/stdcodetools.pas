@@ -38,6 +38,8 @@ interface
 
 {$I codetools.inc}
 
+{ $DEFINE IgnoreErrorAfterCursor}
+
 uses
   {$IFDEF MEM_CHECK}
   MemCheck,
@@ -1471,16 +1473,21 @@ var
   CleanCursorPos, LinkIndex, NewCleanPos: integer;
 begin
   Result:=false;
-  BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos);
-  LinkIndex:=Scanner.LinkIndexAtCleanPos(CleanCursorPos);
-  LinkIndex:=Scanner.FindParentLink(LinkIndex);
-  if LinkIndex<0 then
-    // this is no include file
-    exit;
-  NewPos.Code:=TCodeBuffer(Scanner.Links[LinkIndex].Code);
-  // calculate the directive end bracket
-  NewCleanPos:=Scanner.Links[LinkIndex].CleanedPos+Scanner.LinkSize(LinkIndex)-1;
-  Result:=CleanPosToCaretAndTopLine(NewCleanPos,NewPos,NewTopLine);
+  try
+    BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
+                  [{$IFDEF IgnoreErrorAfterCursor}btSetIgnoreErrorPos{$ENDIF}]);
+    LinkIndex:=Scanner.LinkIndexAtCleanPos(CleanCursorPos);
+    LinkIndex:=Scanner.FindParentLink(LinkIndex);
+    if LinkIndex<0 then
+      // this is no include file
+      exit;
+    NewPos.Code:=TCodeBuffer(Scanner.Links[LinkIndex].Code);
+    // calculate the directive end bracket
+    NewCleanPos:=Scanner.Links[LinkIndex].CleanedPos+Scanner.LinkSize(LinkIndex)-1;
+    Result:=CleanPosToCaretAndTopLine(NewCleanPos,NewPos,NewTopLine);
+  finally
+    ClearIgnoreErrorAfter;
+  end;
 end;
 
 function TStandardCodeTool.ReadTilGuessedUnclosedBlock(

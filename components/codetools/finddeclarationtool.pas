@@ -49,7 +49,7 @@ interface
 
 { $DEFINE CTDEBUG}
 { $DEFINE ShowSearchPaths}
-{$DEFINE ShowTriedFiles}
+{ $DEFINE ShowTriedFiles}
 { $DEFINE ShowTriedContexts}
 { $DEFINE ShowTriedIdentifiers}
 { $DEFINE ShowExprEval}
@@ -59,6 +59,7 @@ interface
 { $DEFINE ShowBaseTypeCache}
 { $DEFINE ShowCacheDependencies}
 { $DEFINE ShowCollect}
+{ $DEFINE IgnoreErrorAfterCursor}
 
 
 uses
@@ -765,13 +766,13 @@ begin
   Result:=false;
   SkipChecks:=false;
   ActivateGlobalWriteLock;
-  IgnoreAfterCodeXY:=CursorPos;
   try
     // build code tree
     {$IFDEF CTDEBUG}
     writeln(DebugPrefix,'TFindDeclarationTool.FindDeclaration A CursorPos=',CursorPos.X,',',CursorPos.Y);
     {$ENDIF}
-    BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos);
+    BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
+                  [{$IFDEF IgnoreErrorAfterCursor}btSetIgnoreErrorPos{$ENDIF}]);
     {$IFDEF CTDEBUG}
     writeln(DebugPrefix,'TFindDeclarationTool.FindDeclaration C CleanCursorPos=',CleanCursorPos);
     {$ENDIF}
@@ -847,7 +848,7 @@ begin
       end;
     end;
   finally
-    ClearIgnoreAfterPosition;
+    ClearIgnoreErrorAfter;
     DeactivateGlobalWriteLock;
   end;
 end;
@@ -1328,9 +1329,10 @@ var
       BuildSubTreeForClass(ContextNode);
     end;
     if (ContextNode.LastChild<>nil) then begin
-      if not (fdfSearchForward in Params.Flags) then
+      if not (fdfSearchForward in Params.Flags) then begin
+        RaiseLastErrorIfInFrontOfCleanedPos(ContextNode.EndPos);
         ContextNode:=ContextNode.LastChild
-      else
+      end else
         ContextNode:=ContextNode.FirstChild;
     end;
   end;
@@ -1464,8 +1466,10 @@ var
         // search next in prior/next brother
         if not (fdfSearchForward in Params.Flags) then
           ContextNode:=ContextNode.PriorBrother
-        else
+        else begin
+          RaiseLastErrorIfInFrontOfCleanedPos(ContextNode.NextBrother.EndPos);
           ContextNode:=ContextNode.NextBrother;
+        end;
         {$IFDEF ShowTriedIdentifiers}
         writeln('[TFindDeclarationTool.FindIdentifierInContext] Searching in Brother  ContextNode=',ContextNode.DescAsString);
         {$ENDIF}
