@@ -315,7 +315,10 @@ type
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig;
                               const Path: string); virtual;
     function GetGroupByName(const GroupName: string): TDBGBreakPointGroup;
-    function IndexOfGroupWithName(const GroupName: string): integer;
+    function FindGroupByName(const GroupName: string;
+                             Ignore: TDBGBreakPointGroup): TDBGBreakPointGroup;
+    function IndexOfGroupWithName(const GroupName: string;
+                                  Ignore : TDBGBreakPointGroup): integer;
     procedure InitTargetStart; virtual;
     procedure Regroup(SrcGroups: TDBGBreakPointGroups;
                       SrcBreakPoints, DestBreakPoints: TDBGBreakPoints);
@@ -1599,6 +1602,7 @@ var
   NewCount: integer;
   NewGroup: TDBGBreakPointGroup;
   i: Integer;
+  OldGroup: TDBGBreakPointGroup;
 begin
   Clear;
   NewCount:=XMLConfig.GetValue(Path+'Count',0);
@@ -1607,7 +1611,10 @@ begin
     NewGroup:=TDBGBreakPointGroup(inherited Add);
     NewGroup.LoadFromXMLConfig(XMLConfig,
                                Path+'Item'+IntToStr(i+1)+'/');
-    writeln('TDBGBreakPointGroups.LoadFromXMLConfig i=',i,' ',NewGroup.Name);
+    OldGroup:=FindGroupByName(NewGroup.Name,NewGroup);
+    writeln('TDBGBreakPointGroups.LoadFromXMLConfig i=',i,' ',NewGroup.Name,' OldGroup=',OldGroup<>nil);
+    if OldGroup<>nil then
+      NewGroup.Free;
   end;
 end;
 
@@ -1629,21 +1636,34 @@ end;
 
 function TDBGBreakPointGroups.GetGroupByName(const GroupName: string
   ): TDBGBreakPointGroup;
+begin
+  Result:=FindGroupByName(GroupName,nil);
+end;
+
+function TDBGBreakPointGroups.FindGroupByName(const GroupName: string;
+  Ignore: TDBGBreakPointGroup): TDBGBreakPointGroup;
 var
   i: Integer;
 begin
-  i:=IndexOfGroupWithName(GroupName);
-  if i>=0 then
-    Result:=Items[i]
-  else
-    Result:=nil;
+  i:=Count-1;
+  while i>=0 do begin
+    Result:=Items[i];
+    if (AnsiCompareText(Result.Name,GroupName)=0)
+    and (Ignore<>Result) then
+      exit;
+    dec(i);
+  end;
+  Result:=nil;
 end;
 
-function TDBGBreakPointGroups.IndexOfGroupWithName(const GroupName: string
-  ): integer;
+function TDBGBreakPointGroups.IndexOfGroupWithName(const GroupName: string;
+  Ignore : TDBGBreakPointGroup): integer;
 begin
   Result:=Count-1;
-  while (Result>=0) and (AnsiCompareText(Items[Result].Name,GroupName)<>0) do
+  while (Result>=0)
+  and ((AnsiCompareText(Items[Result].Name,GroupName)<>0)
+    or (Items[Result]=Ignore))
+  do
     dec(Result);
 end;
 
@@ -2146,6 +2166,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.27  2003/05/26 20:05:21  mattias
+  made compiling gtk2 interface easier
+
   Revision 1.26  2003/05/26 11:08:20  mattias
   fixed double breakpoints
 

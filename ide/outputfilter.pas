@@ -231,6 +231,8 @@ var i, j, FilenameEndPos: integer;
   CurCompHistLen: Integer;
   
   function CheckForCompilingState: boolean;
+  var
+    AFilename: string;
   begin
     Result:=false;
     if ('Compiling '=copy(s,1,length('Compiling '))) then begin
@@ -243,8 +245,8 @@ var i, j, FilenameEndPos: integer;
       i:=length('Compiling ');
       if (length(s)>=i+2) and (s[i+1]='.') and (s[i+2]=PathDelim) then
         inc(i,2);
-      Filename:=TrimFilename(copy(s,i+1,length(s)-i));
-      fCompilingHistory.Add(Filename);
+      AFilename:=TrimFilename(copy(s,i+1,length(s)-i));
+      fCompilingHistory.Add(AFilename);
     end;
   end;
   
@@ -330,23 +332,23 @@ begin
   // check for '<line> <kb>/<kb> Kb Free'
   Result:=CheckForLineProgress;
   if Result then exit;
+  
   // search for round bracket open
   i:=1;
   while (i<=length(s)) and (s[i]<>'(') do inc(i);
   FilenameEndPos:=i-1;
   inc(i);
   // search for number
-  if (i>=length(s)) or (not (s[i] in ['0'..'9'])) then exit;
-  while (i<=length(s)) and (s[i] in ['0'..'9']) do inc(i);
+  if not CheckForNumber(s,i) then exit;
   if (i<length(s)) and (s[i]=',') and (s[i+1] in ['0'..'9']) then begin
     // skip second number
     inc(i);
     while (i<=length(s)) and (s[i] in ['0'..'9']) do inc(i);
   end;
   // search for ') <ErrorType>: '
-  inc(i,2);
-  if (i>=length(s)) or (s[i-2]<>')') or (S[i-1]<>' ')
-  or (not (s[i] in ['A'..'Z'])) then exit;
+  if not CheckForChar(s,i,')') then exit;
+  if not CheckForChar(s,i,' ') then exit;
+  if (i>=length(s)) or (not (s[i] in ['A'..'Z'])) then exit;
   j:=i+1;
   while (j<=length(s)) and (s[j] in ['a'..'z']) do inc(j);
   if (j+1>length(s)) or (s[j]<>':') or (s[j+1]<>' ') then exit;
@@ -609,10 +611,14 @@ begin
     // try every compiled pascal source
     for p:=fCompilingHistory.Count-1 downto 0 do begin
       RelativeDir:=AppendPathDelim(ExtractFilePath(fCompilingHistory[p]));
-      FullDir:=TrimFilename(fCurrentDirectory+RelativeDir+PathDelim);
+      FullDir:=RelativeDir;
+      if not FilenameIsAbsolute(FullDir) then
+        FullDir:=fCurrentDirectory+FullDir;
+      FullDir:=TrimFilename(FullDir);
       if SearchedDirectories.IndexOf(FullDir)>=0 then continue;
       // new directory start a search
-      if FileExists(FullDir+ShortIncFilename) then begin
+      Result:=FullDir+ShortIncFilename;
+      if FileExists(Result) then begin
         // file found in search dir
         Result:=CleanAndExpandFilename(FullDir+ShortIncFilename);
         exit;

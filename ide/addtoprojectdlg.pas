@@ -481,7 +481,7 @@ constructor TAddToProjectDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   Name:='AddToProjectDialog';
-  fPackages:=TAVLTree.Create(@CompareLazPackageID);
+  fPackages:=TAVLTree.Create(@CompareLazPackageIDNames);
   Position:=poScreenCenter;
   IDEDialogLayoutList.ApplyLayout(Self,500,300);
   SetupComponents;

@@ -345,7 +345,6 @@ type
     procedure mnuWindowsItemClick(Sender: TObject);
   private
     FToolStatus: TIDEToolStatus;
-    procedure SetToolStatus(const AValue: TIDEToolStatus);
   protected
     CurrentParsedCompilerOption: TParsedCompilerOptions;
     TheCompiler: TCompiler;
@@ -365,6 +364,7 @@ type
     procedure SetupHelpMenu; virtual;
     
     procedure LoadMenuShortCuts; virtual;
+    procedure SetToolStatus(const AValue: TIDEToolStatus); virtual;
   public
     MacroList: TTransferMacroList;
     HiddenWindowsOnRun: TList; // list of forms, that were automatically hidden
