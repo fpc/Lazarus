@@ -639,9 +639,9 @@ end;
 -------------------------------------------------------------------------------}
 procedure TWinControl.InvalidateClientRectCache;
 begin
-  { $IFDEF VerboseClientRectBugFix}
+  {$IFDEF VerboseClientRectBugFix}
   writeln('[TWinControl.InvalidateClientRectCache] ',Name,':',ClassName);
-  { $ENDIF}
+  {$ENDIF}
   Include(FFlags,wcfClientRectNeedsUpdate);
 end;
 
@@ -2880,8 +2880,8 @@ var
   NewBounds: TRect;
 begin
   NewBounds:=Bounds(Left, Top, Width, Height);
-  writeln('TWinControl.DoSendBoundsToInterface A ',Name,':',ClassName,' Old=',FBoundsRealized.Left,',',FBoundsRealized.Top,',',FBoundsRealized.Right,',',FBoundsRealized.Bottom,
-  ' New=',NewBounds.Left,',',NewBounds.Top,',',NewBounds.Right,',',NewBounds.Bottom);
+  //writeln('TWinControl.DoSendBoundsToInterface A ',Name,':',ClassName,' Old=',FBoundsRealized.Left,',',FBoundsRealized.Top,',',FBoundsRealized.Right,',',FBoundsRealized.Bottom,
+  //' New=',NewBounds.Left,',',NewBounds.Top,',',NewBounds.Right,',',NewBounds.Bottom);
   FBoundsRealized:=NewBounds;
   CNSendMessage(LM_SetSize, Self, @NewBounds);
 end;
@@ -2948,6 +2948,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.159  2003/08/12 16:12:42  mattias
+  reduced output
+
   Revision 1.158  2003/08/12 16:04:22  mattias
   added groupboxnested example
 
