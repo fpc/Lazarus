@@ -561,10 +561,10 @@ type
       var ActiveUnitInfo: TUnitInfo; Flags: TCodeToolsFlags): boolean;
     function BeginCodeTool(ADesigner: TDesigner; var ActiveSrcEdit: TSourceEditor;
       var ActiveUnitInfo: TUnitInfo; Flags: TCodeToolsFlags): boolean;
-    function DoJumpToCodePos(ActiveSrcEdit: TSourceEditor;
-      ActiveUnitInfo: TUnitInfo;
+    function DoJumpToCodePos(
+      ActiveSrcEdit: TSourceEditor; ActiveUnitInfo: TUnitInfo;
       NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
-      AddJumpPoint: boolean): TModalResult;
+      AddJumpPoint: boolean): TModalResult; override;
     procedure DoJumpToCodeToolBossError; override;
     procedure UpdateSourceNames;
     procedure SaveSourceEditorChangesToCodeCache(PageIndex: integer); override;
@@ -6772,19 +6772,54 @@ end;
 function TMainIDE.FindSourceFile(const AFilename: string): string;
 var
   SearchFile: String;
-  ProjectDir: String;
   SearchPath: String;
+  CompiledSrcExt: String;
+  CompiledFilename: String;
+  BaseDir: String;
 begin
   if FilenameIsAbsolute(AFilename) then begin
     Result:=AFilename;
     exit;
   end;
+
+  // first search file in unit path
+  BaseDir:=Project1.ProjectDirectory;
   SearchFile:=ExtractFilename(AFilename);
-  // ToDo: use the CodeTools way to find the pascal source
-  ProjectDir:=Project1.ProjectDirectory;
-  SearchPath:=CodeToolBoss.DefineTree.GetUnitPathForDirectory(ProjectDir)
-            +';'+CodeToolBoss.DefineTree.GetSrcPathForDirectory(ProjectDir);
-  Result:=SearchFileInPath(SearchFile,ProjectDir,SearchPath,';',[]);
+  SearchPath:=Project1.CompilerOptions.OtherUnitFiles;
+  Result:=SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
+  if Result<>'' then exit;
+  
+  // if file is a pascal unit, then search for the compiled version in
+  // unit path and all inherited unit paths
+  if FilenameIsPascalUnit(SearchFile) then begin
+    CompiledSrcExt:=CodeToolBoss.GetCompiledSrcExtForDirectory(BaseDir);
+    SearchFile:=ChangeFileExt(LowerCase(ExtractFilename(AFilename)),
+                              CompiledSrcExt);
+    SearchPath:=Project1.CompilerOptions.GetUnitPath(false);
+    CompiledFilename:=SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
+    if CompiledFilename<>'' then begin
+      // compiled version found -> search for source in CompiledSrcPath
+      BaseDir:=ExtractFilePath(CompiledFilename);
+      SearchPath:=CodeToolBoss.GetCompiledSrcPathForDirectory(BaseDir);
+      SearchFile:=ExtractFilename(AFilename);
+      Result:=SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
+      if Result<>'' then exit;
+    end;
+  end;
+  
+  // search in fpc source directory
+  // ToDo
+
+  // search in include path
+  BaseDir:=Project1.ProjectDirectory;
+  SearchFile:=ExtractFilename(AFilename);
+  SearchPath:=Project1.CompilerOptions.IncludeFiles;
+  Result:=SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
+  if Result<>'' then exit;
+  
+  // search in source directories of all required packages
+  // ToDo
+  
 end;
 
 //------------------------------------------------------------------------------
@@ -7268,14 +7303,17 @@ begin
   Result:=true;
 end;
 
-function TMainIDE.DoJumpToCodePos(ActiveSrcEdit: TSourceEditor;
-  ActiveUnitInfo: TUnitInfo;
+function TMainIDE.DoJumpToCodePos(
+  ActiveSrcEdit: TSourceEditor; ActiveUnitInfo: TUnitInfo;
   NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
   AddJumpPoint: boolean): TModalResult;
-var NewSrcEdit: TSourceEditor;
+var
+  NewSrcEdit: TSourceEditor;
   NewUnitInfo: TUnitInfo;
 begin
   Result:=mrCancel;
+  if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then
+    GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
   if AddJumpPoint then begin
     if (NewSource<>ActiveUnitInfo.Source)
     or (ActiveSrcEdit.EditorComponent.CaretX<>NewX)
@@ -7284,7 +7322,7 @@ begin
   end;
   if NewSource<>ActiveUnitInfo.Source then begin
     // jump to other file -> open it
-    Result:=DoOpenEditorFile(NewSource.Filename,-1,[ofOnlyIfExists]);
+    Result:=DoOpenEditorFile(NewSource.Filename,-1,[ofOnlyIfExists,ofRegularFile]);
     if Result<>mrOk then begin
       UpdateSourceNames;
       exit;
@@ -7294,6 +7332,10 @@ begin
   end else begin
     NewSrcEdit:=ActiveSrcEdit;
   end;
+  if NewX<1 then NewX:=1;
+  if NewY<1 then NewY:=1;
+  if NewTopLine<1 then
+    NewTopLine:=Max(1,NewY-(NewSrcEdit.EditorComponent.LinesInWindow div 2));
   //writeln('[TMainIDE.DoJumpToCodePos] ',NewX,',',NewY,',',NewTopLine);
   with NewSrcEdit.EditorComponent do begin
     CaretXY:=Point(NewX,NewY);
@@ -8710,6 +8752,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.576  2003/05/23 18:50:07  mattias
+  implemented searching debugging files in inherited unit paths
+
   Revision 1.575  2003/05/23 16:58:18  mattias
   implemented changing caption during compilation/debugging
 
