@@ -78,6 +78,7 @@ type
     procedure AddExtended(const AKeyWord: shortstring;
                           const AFunction: TKeyWordFunction;
                           const ADataFunction: TKeyWordDataFunction);
+    procedure Add(List: TKeyWordFunctionList);
     procedure Sort;
     property Sorted: boolean read FSorted;
     procedure WriteDebugListing;
@@ -85,6 +86,7 @@ type
     function AllwaysFalse: boolean;
     function Count: integer;
     function GetItem(Index: integer): TKeyWordFunctionListItem;
+    function IndexOf(const AKeyWord: shortstring): integer;
     constructor Create;
     destructor Destroy;  override;
   end;
@@ -414,6 +416,18 @@ begin
   inc(FCount);
 end;
 
+procedure TKeyWordFunctionList.Add(List: TKeyWordFunctionList);
+var
+  i: Integer;
+begin
+  for i:=0 to List.FCount-1 do begin
+    if IndexOf(List.FItems[i].KeyWord)<0 then begin
+      AddExtended(List.FItems[i].KeyWord,List.FItems[i].DoIt,
+                  List.FItems[i].DoDataFunction);
+    end;
+  end;
+end;
+
 procedure TKeyWordFunctionList.Sort;
 // bucketsort
 var i, h, NewMaxHashIndex: integer;
@@ -522,6 +536,13 @@ function TKeyWordFunctionList.GetItem(Index: integer
   ): TKeyWordFunctionListItem;
 begin
   Result:=FItems[Index];
+end;
+
+function TKeyWordFunctionList.IndexOf(const AKeyWord: shortstring): integer;
+begin
+  Result:=FCount-1;
+  while (Result>=0) and (CompareText(FItems[Result].KeyWord,AKeyWord)<>0) do
+    dec(Result);
 end;
 
 function TKeyWordFunctionList.DoItCaseInsensitive(const AKeyWord: shortstring
@@ -862,6 +883,17 @@ begin
     Add('PREC',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SUCC',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LENGTH',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SETLENGTH',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('INC',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DEC',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('INITIALIZE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('FINALIZE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('COPY',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SIZEOF',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('WRITE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('WRITELN',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('READ',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('READLN',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
   WordIsTermOperator:=TKeyWordFunctionList.Create;
@@ -1154,23 +1186,15 @@ begin
     Add('EXTENDED'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('FALSE'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('FILE'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('HIGH'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('INT64'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('LENGTH'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LONGBOOL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('LOW'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('NIL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('ORD'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('ORD'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('POINTER'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('PREC'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('QWORD'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('REAL'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SHORTSTRING',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SINGLE'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('SIZEOF'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('STRING'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('SUCC'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('TEXT'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('TRUE'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('WIDECHAR'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1182,10 +1206,10 @@ begin
     Add('LONGWORD'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('WORD'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LONGINT'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('COPY'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SMALLINT'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('BYTE'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
+  WordIsPredefinedFPCIdentifier.Add(IsKeyWordBuiltInFunc);
   
   WordIsPredefinedDelphiIdentifier:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(WordIsPredefinedDelphiIdentifier);

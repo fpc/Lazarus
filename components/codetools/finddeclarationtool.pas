@@ -762,17 +762,7 @@ begin
     Result:=xtConstOrdInteger
   else if CompareIdentifiers(Identifier,'ORD')=0 then
     Result:=xtConstOrdInteger
-  else if CompareIdentifiers(Identifier,'SUCC')=0 then
-    Result:=xtCompilerFunc
-  else if CompareIdentifiers(Identifier,'PREC')=0 then
-    Result:=xtCompilerFunc
-  else if CompareIdentifiers(Identifier,'LOW')=0 then
-    Result:=xtCompilerFunc
-  else if CompareIdentifiers(Identifier,'HIGH')=0 then
-    Result:=xtCompilerFunc
-  else if CompareIdentifiers(Identifier,'LENGTH')=0 then
-    Result:=xtCompilerFunc
-  else if CompareIdentifiers(Identifier,'COPY')=0 then
+  else if IsKeyWordBuiltInFunc.DoIt(Identifier) then
     Result:=xtCompilerFunc
 
   // the delphi compiler special types
