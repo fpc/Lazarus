@@ -9,7 +9,9 @@ name=lazarus
 version=0.8a
 
 [target]
-units=avl_tree basiccodetools codecache codetoolmanager codetools sourcelog \
+units=avl_tree basiccodetools codecache codetoolmanager sourcelog \
+   customcodetool pascalparsertool stdcodetools methodjumptool \
+   eventcodetool codecompletiontool codeatom codetree \
    definetemplates expreval keywordfunclists linkscanner sourcechanger \
    memcheck
    

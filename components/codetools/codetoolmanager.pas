@@ -39,8 +39,8 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, CodeTools,  SourceChanger, DefineTemplates, CodeCache,
-  ExprEval, LinkScanner, KeywordFuncLists, TypInfo;
+  Classes, SysUtils, CodeCompletionTool, CodeTree, CodeAtom, SourceChanger,
+  DefineTemplates, CodeCache, ExprEval, LinkScanner, KeywordFuncLists, TypInfo;
 
 type
   TCodeToolManager = class;
@@ -396,9 +396,24 @@ writeln('[TCodeToolManager.InitCodeTool] ',Code.Filename,' ',Code.SourceLength);
 end;
 
 function TCodeToolManager.HandleException(AnException: Exception): boolean;
+var
+  ACode: TCodeBuffer;
+  Line, Column: integer;
 begin
   FLastException:=AnException;
   if FWriteExceptions then begin
+    if (AnException is ELinkScannerError)
+    and (FCodeTool<>nil) and (FCodeTool.Scanner<>nil)
+    and (FCodeTool.Scanner.Code<>nil)
+    and (FCodeTool.Scanner.LinkCount>0) then begin
+      ACode:=TCodeBuffer(FCodeTool.Scanner.Code);
+      ACode.AbsoluteToLineCol(FCodeTool.Scanner.SrcPos,Line,Column);
+      if Line>=0 then begin
+        AnException.Message:='"'+ACode.Filename+'"'
+          +' at Y:'+IntToStr(Line)+',X:'+IntToStr(Column)
+          +' '+AnException.Message;
+      end;
+    end;
     writeln('### TCodeToolManager.HandleException: '+AnException.Message);
   end;
   if not FCatchExceptions then raise AnException;

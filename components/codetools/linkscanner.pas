@@ -223,7 +223,7 @@ type
     destructor Destroy; override;
   end;
 
-  ELinkScannerError = Exception;
+  ELinkScannerError = class(Exception);
 
 //----------------------------------------------------------------------------
 // compiler switches
@@ -967,8 +967,11 @@ begin
     Values.Variables[FDirectiveName]:='1'
   else if ValueStr='OFF' then
     Values.Variables[FDirectiveName]:='0'
+  else if (ValueStr='PRELOAD') and (FDirectiveName='ASSERTIONS') then
+    Values.Variables[FDirectiveName]:=ValueStr
   else
-    raise ELinkScannerError.Create('invalid flag value "'+ValueStr+'"');
+    raise ELinkScannerError.Create(
+      'invalid flag value "'+ValueStr+'" for directive '+FDirectiveName);
   Result:=ReadNextSwitchDirective;
 end;
 
