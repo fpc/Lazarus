@@ -70,18 +70,6 @@ type
     procedure EndUpdate;
   end;
 
-const
-  //
-  //TODO: all the constants below should be replaced in the future
-  //      their only purpose is to overcome some current design flaws &
-  //      missing features in the GTK libraries
-  //
-  cBitmapX  = 10;      // x-position for bitmap in messagedialog
-  cBitmapY  = 10;      // y-position for bitmap in messagedialog
-  cBitmapWidth = 32;   // width of the dialogs icon
-  cBitmapHeight= 32;   // height of the dialogs icon
-  cLabelSpacing= 10;   // distance between icon & label
-
 {------------------------------------------------------------------------------
   Method: TMessageBox.Create
   Params:  AOwner: the owner of the class
@@ -536,6 +524,9 @@ end;
 
 {
    $Log$
+   Revision 1.20  2002/10/25 10:06:34  lazarus
+   MG: broke interfacebase uses circles
+
    Revision 1.19  2002/10/25 09:47:38  lazarus
    MG: added inputdialog.inc
 

@@ -233,6 +233,7 @@ type
   
   function CreateMessageDialog(const aMsg: string; DlgType: TMsgDlgType;
               Buttons: TMsgDlgButtons): TForm;
+              
   function MessageDlg(const aMsg: string; DlgType: TMsgDlgType;
               Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
   function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
@@ -242,6 +243,7 @@ type
   function MessageDlgPosHelp(const aMsg: string; DlgType: TMsgDlgType;
               Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer;
               const HelpFileName: string): Integer;
+              
   procedure ShowMessage(const aMsg: string);
   procedure ShowMessageFmt(const aMsg: string; Params: array of const);
   procedure ShowMessagePos(const aMsg: string; X, Y: Integer);
@@ -276,6 +278,18 @@ const
      idButtonYes, idButtonNo, idButtonOK, idButtonCancel, idButtonAbort,
      idButtonRetry, idButtonIgnore, idButtonAll,idButtonAll, idButtonAll,
      idButtonHelp);
+
+const
+  //
+  //TODO: all the constants below should be replaced in the future
+  //      their only purpose is to overcome some current design flaws &
+  //      missing features in the GTK libraries
+  //
+  cBitmapX  = 10;      // x-position for bitmap in messagedialog
+  cBitmapY  = 10;      // y-position for bitmap in messagedialog
+  cBitmapWidth = 32;   // width of the dialogs icon
+  cBitmapHeight= 32;   // height of the dialogs icon
+  cLabelSpacing= 10;   // distance between icon & label
 
 
 function ShowMessageBox(Text, Caption : PChar; Flags : Longint) : Integer;
@@ -323,21 +337,18 @@ begin
 end;
 
 
+{$I colordialog.inc}
 {$I commondialog.inc}
 {$I filedialog.inc}
-{$I colordialog.inc}
-procedure TFontDialog.SetFont(const AValue: TFont);
-begin
-  FFont.Assign(AValue);
-end;
-
 {$I fontdialog.inc}
-{$I messagedialogs.inc}
 {$I inputdialog.inc}
+{$I messagedialogs.inc}
+{$I promptdialog.inc}
 
 initialization
   Forms.MessageBoxFunction:=@ShowMessageBox;
   InterfaceBase.InputDialogFunction:=@ShowInputDialog;
+  InterfaceBase.PromptDialogFunction:=@ShowPromptDialog;
 
 finalization
 
@@ -346,6 +357,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.24  2002/10/25 10:06:34  lazarus
+  MG: broke interfacebase uses circles
+
   Revision 1.23  2002/10/25 09:47:37  lazarus
   MG: added inputdialog.inc
 

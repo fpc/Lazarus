@@ -15,6 +15,7 @@
  *                                                                           *
  *****************************************************************************
 }
+
 {------------------------------------------------------------------------------
   Method: TFontDialog.Apply
   Params:  Wnd: HWND
@@ -49,9 +50,18 @@ begin
   inherited Destroy;
 end;
 
+procedure TFontDialog.SetFont(const AValue: TFont);
+begin
+  FFont.Assign(AValue);
+end;
+
+
 { =============================================================================
 
   $Log$
+  Revision 1.4  2002/10/25 10:06:34  lazarus
+  MG: broke interfacebase uses circles
+
   Revision 1.3  2002/06/04 15:17:22  lazarus
   MG: improved TFont for XLFD font names
 
