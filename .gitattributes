@@ -1164,6 +1164,7 @@ lcl/filectrl.pp svneol=native#text/pascal
 lcl/fileutil.pas svneol=native#text/pascal
 lcl/forms.pp svneol=native#text/pascal
 lcl/fpcadds.pas svneol=native#text/pascal
+lcl/fpdoc.css svneol=native#text/css
 lcl/graphics.pp svneol=native#text/pascal
 lcl/graphmath.pp svneol=native#text/pascal
 lcl/graphtype.pp svneol=native#text/pascal

@@ -1,0 +1,129 @@
+/*
+  $Id$
+
+  Default style sheet for FPDoc reference documentation
+  by Sebastian Guenther, sg@freepascal.org
+
+  Feel free to use this file as a template for your own style sheets.
+*/
+
+body {
+  background: white
+}
+
+body, p, th, td, caption, h1, h2, h3, ul, ol, dl {
+  color: black;
+  font-family: sans-serif
+}
+
+tt, span.kw, pre {
+  font-family: Courier, monospace
+}
+
+body, p, th, td, caption, ul, ol, dl, tt, span.kw, pre {
+  font-size: 14px
+}
+
+A:link {
+  color: blue
+}
+
+A:visited {
+  color: darkblue
+}
+
+A:active {
+  color: red
+}
+
+A {
+  text-decoration: none
+}
+
+A:hover {
+  text-decoration: underline
+}
+
+h1, h2, td.h2 {
+  color: #005A9C
+}
+
+/* Especially for Netscape on Linux: */
+h3, td.h3 {
+  font-size: 12pt
+}
+
+/* symbols in source fragments */
+span.sym {
+  color: darkred
+}
+
+/* keywords in source fragments */
+span.kw {
+  font-weight: bold
+}
+
+/* comments in source fragments */
+span.cmt {
+  color: darkcyan;
+  font-style: italic
+}
+
+/* directives in source fragments */
+span.dir {
+  color: darkyellow;
+  font-style: italic
+}
+
+/* numbers in source fragments */
+span.num {
+  color: darkmagenta
+}
+
+/* characters (#...) in source fragments */
+span.chr {
+  color: darkcyan
+}
+
+/* strings in source fragments */
+span.str {
+  color: blue
+}
+
+/* assembler passages in source fragments */
+span.asm {
+  color: green
+}
+
+
+td.pre {
+  white-space: pre
+}
+
+p.cmt {
+  color: gray
+}
+
+span.warning {
+  color: red;
+  font-weight: bold
+}
+
+/* !!!: How should we define this...? */
+span.file {
+  color: darkgreen
+}
+
+table.remark {
+  background-color: #ffffc0;
+}
+
+table.bar {
+  background-color: #a0c0ff;
+}
+
+span.bartitle {
+  font-weight: bold;
+  font-style: italic;
+  color: darkblue
+}
