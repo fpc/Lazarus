@@ -3060,7 +3060,6 @@ end;
 function TGtkWidgetSet.IntSendMessage3(LM_Message : Integer; Sender : TObject;
   data : pointer) : integer;
 var
-  handle      : hwnd;                  // handle of sender
   Widget      : PGtkWidget;            // pointer to gtk-widget (local use when neccessary)
   Geometry    : TGdkGeometry;
 begin
@@ -3102,7 +3101,6 @@ begin
 
   else
     begin
-      handle := hwnd(ObjectToGtkObject(Sender));
       Case LM_Message of
 
       LM_DESTROY :
@@ -7898,6 +7896,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.580  2004/09/18 01:18:00  mattias
+  removed unneeded handle
+
   Revision 1.579  2004/09/17 20:30:13  vincents
   replaced write by DbgOut
 
