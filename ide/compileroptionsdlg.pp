@@ -276,8 +276,9 @@ type
 
     procedure GetCompilerOptions;
     procedure GetCompilerOptions(SrcCompilerOptions: TBaseCompilerOptions);
-    procedure PutCompilerOptions;
-    procedure PutCompilerOptions(DestCompilerOptions: TBaseCompilerOptions);
+    function PutCompilerOptions(CheckAndWarn: boolean): boolean;
+    function PutCompilerOptions(CheckAndWarn: boolean;
+                            DestCompilerOptions: TBaseCompilerOptions): boolean;
   public
     property ReadOnly: boolean read FReadOnly write SetReadOnly;
     property OnTest: TNotifyEvent read FOnTest write FOnTest;
@@ -426,9 +427,9 @@ procedure TfrmCompilerOptions.ButtonOKClicked(Sender: TObject);
 begin
   // Accept any changes
   Assert(False, 'Trace:Accept compiler options changes');
-
+  
   { Save the options and hide the dialog }
-  PutCompilerOptions;
+  if not PutCompilerOptions(true) then exit;
   ModalResult:=mrOk;
 end;
 
@@ -449,7 +450,7 @@ end;
 procedure TfrmCompilerOptions.ButtonCheckClicked(Sender: TObject);
 begin
   // Apply any changes and test
-  PutCompilerOptions;
+  PutCompilerOptions(true);
   if Assigned(OnTest) then begin
     btnCheck.Enabled:=false;
     try
@@ -470,7 +471,7 @@ var
   CurOptions: String;
 begin
   // Test MakeOptionsString function
-  PutCompilerOptions;
+  PutCompilerOptions(true);
   CurOptions := CompilerOpts.MakeOptionsString(nil,
                                           CompilerOpts.DefaultMakeOptionsFlags);
   DebugLn('CompilerOpts.MakeOptionsString: ' + CurOptions);
@@ -835,8 +836,8 @@ end;
 {------------------------------------------------------------------------------}
 {  TfrmCompilerOptions PutCompilerOptions                                      }
 {------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.PutCompilerOptions(
-  DestCompilerOptions: TBaseCompilerOptions);
+function TfrmCompilerOptions.PutCompilerOptions(CheckAndWarn: boolean;
+  DestCompilerOptions: TBaseCompilerOptions): boolean;
 
   function MakeCompileReasons(const ACompile, ABuild, ARun: TCheckBox): TCompileReasons;
   begin
@@ -853,13 +854,48 @@ var
   OldCompOpts: TBaseCompilerOptions;
   NewTargetOS: String;
   Options: TBaseCompilerOptions;
+  NewDontUseConfigFile: Boolean;
+  NewCustomConfigFile: Boolean;
+  NewConfigFilePath: String;
+  AdditionalConfig: String;
 begin
+  Result:=true;
+  
   { Put the compiler options into the TCompilerOptions class to be saved }
   if DestCompilerOptions<>nil then
     Options:=DestCompilerOptions
   else
     Options:=CompilerOpts;
   if ReadOnly and (Options=CompilerOpts) then exit;
+
+  NewDontUseConfigFile:=not chkConfigFile.Checked;
+  NewCustomConfigFile:=chkCustomConfigFile.Checked;
+  NewConfigFilePath:=edtConfigPath.Text;
+
+  if CheckAndWarn then begin
+    if ((NewDontUseConfigFile<>Options.DontUseConfigFile)
+        or (NewCustomConfigFile<>Options.CustomConfigFile)
+        or (NewConfigFilePath<>Options.ConfigFilePath))
+    and (not NewDontUseConfigFile) and NewCustomConfigFile
+    then begin
+      // config file options changed
+      // and both additional and standard config files are used
+      AdditionalConfig:=ExtractFilename(edtConfigPath.Text);
+      if (CompareFileNames(AdditionalConfig,'fpc.cfg')=0)
+      or (CompareFileNames(AdditionalConfig,'ppc386.cfg')=0)
+      then begin
+        if MessageDlg(lisCOAmbigiousAdditionalCompilerConfigFile,
+          Format(lisCOClickOKIfAreSureToDoThat, [BreakString(
+            lisCOWarningTheAdditionalCompilerConfigFileHasTheSameNa,
+            60, 0), #13#13]),
+          mtWarning,[mbOk,mbCancel],0)<>mrOk
+        then begin
+          Result:=false;
+          exit;
+        end;
+      end;
+    end;
+  end;
 
   OldCompOpts := TBaseCompilerOptionsClass(Options.ClassType).Create(nil);
   OldCompOpts.Assign(Options);
@@ -1029,9 +1065,9 @@ begin
   OldCompOpts.Free;
 end;
 
-procedure TfrmCompilerOptions.PutCompilerOptions;
+function TfrmCompilerOptions.PutCompilerOptions(CheckAndWarn: boolean): boolean;
 begin
-  PutCompilerOptions(nil);
+  Result:=PutCompilerOptions(CheckAndWarn,nil);
 end;
 
 procedure TfrmCompilerOptions.UpdateInheritedTab;

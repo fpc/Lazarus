@@ -966,6 +966,14 @@ resourcestring
   lisCompiler = 'Compiler';
   lisToFPCPath = 'Path:';
   lisCOSkipCallingCompiler = 'Skip calling Compiler';
+  lisCOAmbigiousAdditionalCompilerConfigFile = 'Ambigious additional compiler '
+    +'config file';
+  lisCOWarningTheAdditionalCompilerConfigFileHasTheSameNa = 'Warning: The '
+    +'additional compiler config file has the same name, as one of the '
+    +'standard config filenames the FreePascal compiler is looking for. This '
+    +'can result in ONLY parsing the additional config and skipping the '
+    +'standard config.';
+  lisCOClickOKIfAreSureToDoThat = '%s%sClick OK if are sure to do that.';
   lisCOCallOn = 'Call on:';
   lisCOCallOnCompile = 'Compile';
   lisCOCallOnBuild = 'Build';

@@ -149,7 +149,7 @@ begin
   if (CompOptsDialog<>nil) then begin
     CompilerOpts:=TBaseCompilerOptions.Create(nil);
     FreeCompilerOpts:=true;
-    CompOptsDialog.PutCompilerOptions(CompilerOpts);
+    CompOptsDialog.PutCompilerOptions(true,CompilerOpts);
   end;
   try
     Result:=mrCancel;

@@ -944,7 +944,7 @@ begin
     CustomConfigFile := XMLConfigFile.GetValue(p+'ConfigFile/AdditionalConfigFile/Value', false)
   else
     CustomConfigFile := XMLConfigFile.GetValue(p+'ConfigFile/CustomConfigFile/Value', false);
-  ConfigFilePath := f(XMLConfigFile.GetValue(p+'ConfigFile/ConfigFilePath/Value', './fpc.cfg'));
+  ConfigFilePath := f(XMLConfigFile.GetValue(p+'ConfigFile/ConfigFilePath/Value', 'extrafpc.cfg'));
   CustomOptions := XMLConfigFile.GetValue(p+'CustomOptions/Value', '');
 
   { Compilation }
@@ -1081,7 +1081,7 @@ begin
   p:=Path+'Other/';
   XMLConfigFile.SetDeleteValue(p+'ConfigFile/DontUseConfigFile/Value', DontUseConfigFile,false);
   XMLConfigFile.SetDeleteValue(p+'ConfigFile/CustomConfigFile/Value', CustomConfigFile,false);
-  XMLConfigFile.SetDeleteValue(p+'ConfigFile/ConfigFilePath/Value', ConfigFilePath,'./fpc.cfg');
+  XMLConfigFile.SetDeleteValue(p+'ConfigFile/ConfigFilePath/Value', ConfigFilePath,'extrafpc.cfg');
   XMLConfigFile.SetDeleteValue(p+'CustomOptions/Value', CustomOptions,'');
 
   { Compilation }
@@ -1957,7 +1957,7 @@ begin
   // other
   fDontUseConfigFile := false;
   fCustomConfigFile := false;
-  fConfigFilePath := './fpc.cfg';
+  fConfigFilePath := 'extrafpc.cfg';
   CustomOptions := '';
   
   // inherited
