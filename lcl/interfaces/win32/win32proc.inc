@@ -567,13 +567,13 @@ Begin
   Result := HACCEL(GetProp(Control, 'AccelGroup'));
 End;
 
-Procedure SetAccelKey(Const Control: HWND; Const AKey: word; Const AModifier: TShiftState; var AnAccelTable: HACCEL);
+Procedure SetAccelKey(Window: HWND; Const CommandId: Word; Const AKey: word; Const AModifier: TShiftState);
 var AccelCount: integer; {number of accelerators in table}
     NewCount: integer; {total sum of accelerators in the table}
     ControlIndex: integer; {index of new (modified) accelerator in table}
     OldAccel: HACCEL; {old accelerator table}
     NewAccel: LPACCEL; {new accelerator table}
-    NullAccel: LPACCEL; {an accelerator table with nil value}
+    NullAccel: LPACCEL; {nil pointer}
 
   function ControlInTable: integer;
   var i: integer;
@@ -582,7 +582,7 @@ var AccelCount: integer; {number of accelerators in table}
     i:=0;
     while i < AccelCount do
     begin
-      if NewAccel[i].cmd = word(Control) then
+      if NewAccel[i].cmd = CommandId then
       begin
         Result:=i;
         exit;
@@ -600,7 +600,7 @@ var AccelCount: integer; {number of accelerators in table}
   end;
 
 Begin
-  OldAccel := AnAccelTable;
+  OldAccel := Windows.GetProp(Window, 'Accel');
   NullAccel := nil;
   AccelCount := CopyAcceleratorTable(OldAccel, NullAccel, 0);
   Assert(False,Format('Trace: AccelCount=%d',[AccelCount]));
@@ -615,11 +615,11 @@ Begin
     NewCount := AccelCount+1;
   end
   else NewCount := AccelCount;
-  NewAccel[ControlIndex].cmd := word(Control);
+  NewAccel[ControlIndex].cmd := CommandId;
   NewAccel[ControlIndex].fVirt := GetVirtFromState(AModifier);
   NewAccel[ControlIndex].key := AKey;
   DestroyAcceleratorTable(OldAccel);
-  AnAccelTable := CreateAcceleratorTable(NewAccel, NewCount);
+  Windows.SetProp(Window, 'Accel', CreateAcceleratorTable(NewAccel, NewCount));
 End;
 
 Function GetAccelKey(Const Control: HWND): LPACCEL;
@@ -716,6 +716,9 @@ End;
  { =============================================================================
 
   $Log$
+  Revision 1.31  2003/12/18 08:51:01  micha
+  fix accelerators: now registered per window
+
   Revision 1.30  2003/11/22 23:56:33  mattias
   fixed win32 intf menu height from Wojciech
 

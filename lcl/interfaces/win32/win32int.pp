@@ -54,7 +54,6 @@ Type
   { Win32 interface-object class }
   TWin32Object = Class(TInterfaceBase)
   Private
-    FAccelGroup: HACCEL;
     FAppHandle: HWND;    // The parent of all windows, represents the button of the taskbar
                          // Assoc. windowproc also acts as handler for popup menus
     FMetrics: TNonClientMetrics;
@@ -192,6 +191,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.61  2003/12/18 08:51:01  micha
+  fix accelerators: now registered per window
+
   Revision 1.60  2003/12/15 21:57:16  micha
   checklistbox, implement object+checked; from vincent
 

@@ -31,7 +31,6 @@
 Constructor TWin32Object.Create;
 Begin
   Inherited Create;
-  FAccelGroup := 0;
   FTimerData  := TList.Create;
   FMetrics.cbSize := SizeOf(FMetrics);
   FMetricsFailed := not Windows.SystemParametersInfo(SPI_GETNONCLIENTMETRICS,
@@ -88,8 +87,6 @@ Begin
 
   FTimerData.Free;
 
-  if FAccelGroup <> 0 then
-    DestroyAcceleratorTable(FAccelGroup);
   if FAppHandle <> 0 then
     DestroyWindow(FAppHandle);
 
@@ -585,6 +582,7 @@ Begin
           If Handle <> 0 Then
           begin
             RemoveProp(Handle, 'Lazarus');
+            DestroyAcceleratorTable(Windows.GetProp(Handle, 'Accel'));
             DestroyWindow(Handle);
           end;
         End
@@ -995,7 +993,12 @@ activate_time :	the time at which the activation event occurred.
         If Sender is TMenuItem Then
         Begin
           SetLabel(Sender, LPSTR(TMenuItem(Sender).Caption+#9+ShortCutToText(ShortCut(TLMShortCut(Data^).NewKey, TLMShortCut(Data^).NewModifier))));
-          SetAccelKey(TLMShortCut(Data^).Handle, TLMShortCut(Data^).NewKey, TLMShortCut(Data^).NewModifier, FAccelGroup);
+          if (TMenuItem(Sender).Owner is TWinControl) and TMenuItem(Sender).HandleAllocated then
+          begin
+            SetAccelKey(TWinControl(TMenuItem(Sender).Owner).Handle, TMenuItem(Sender).Command, TLMShortCut(Data^).NewKey, TLMShortCut(Data^).NewModifier);
+          end else begin
+            WriteLn('LM_SETSHORTCUT: unable to set shortcut, menu has no window handle');
+          end;
         End;
       End;
       Else
@@ -1091,10 +1094,12 @@ end;
 Procedure TWin32Object.HandleEvents;
 var
   AMessage: TMsg;
+  AccelTable: HACCEL;
 Begin
   While PeekMessage(AMessage, HWnd(Nil), 0, 0,PM_REMOVE) Do
   Begin
-    If TranslateAccelerator(AMessage.HWnd, FAccelGroup, @AMessage) = 0 Then
+    AccelTable := HACCEL(Windows.GetProp(AMessage.HWnd, 'Accel'));
+    If (AccelTable = HACCEL(nil)) or (TranslateAccelerator(AMessage.HWnd, AccelTable, @AMessage) = 0) Then
     Begin
       TranslateMessage(@AMessage);
       DispatchMessage(@AMessage);
@@ -2888,6 +2893,9 @@ End;
 
 {
   $Log$
+  Revision 1.143  2003/12/18 08:51:01  micha
+  fix accelerators: now registered per window
+
   Revision 1.142  2003/12/16 21:04:02  micha
   fix menuitem icon patch, hdcScreen released too soon
 
