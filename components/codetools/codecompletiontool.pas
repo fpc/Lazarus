@@ -93,9 +93,9 @@ type
     function NodeExtIsVariable(ANodeExt: TCodeTreeNodeExtension): boolean;
     function NodeExtIsPrivate(ANodeExt: TCodeTreeNodeExtension): boolean;
     procedure FindInsertPositionForForwardProc(
-      SourceChangeCache: TSourceChangeCache;
-      ProcNode: TCodeTreeNode;
-      var Indent, InsertPos: integer);
+                                          SourceChangeCache: TSourceChangeCache;
+                                          ProcNode: TCodeTreeNode;
+                                          var Indent, InsertPos: integer);
     function CheckLocalVarAssignmentSyntax(CleanCursorPos: integer;
       var VarNameAtom,AssignmentOperator,TermAtom: TAtomPosition): boolean;
     function AddLocalVariable(CleanCursorPos: integer; OldTopLine: integer;
@@ -398,10 +398,11 @@ begin
       // sort forward proc definitions with source position
       ForwardProcNodes.OnCompare:=@CompareCodeTreeNodeExtWithNodeStartPos;
       
-      {ProcAVLNode:=ForwardProcNodes.FindLowest;
+      { For debugging:
+      ProcAVLNode:=ForwardProcNodes.FindLowest;
       while ProcAVLNode<>nil do begin
         NearestProcNode:=TCodeTreeNodeExtension(ProcAVLNode.Data).Node;
-        writeln('AAA1 ',NearestProcNode.StartPos,' "',copy(Src,NearestProcNode.StartPos,20),'"');
+        writeln('FindInsertPositionForForwardProc B ',NearestProcNode.StartPos,' "',copy(Src,NearestProcNode.StartPos,20),'"');
         ProcAVLNode:=ForwardProcNodes.FindSuccessor(ProcAVLNode);
       end;}
 
@@ -410,7 +411,7 @@ begin
       if NearestAVLNode<>nil then begin
         NearestNodeExt:=TCodeTreeNodeExtension(NearestAVLNode.Data);
         NearestProcNode:=NearestNodeExt.Node;
-        //writeln('AAA1 ',NearestProcNode.StartPos,' "',copy(Src,NearestProcNode.StartPos,20),'"');
+        //writeln('FindInsertPositionForForwardProc C ',NearestProcNode.StartPos,' "',copy(Src,NearestProcNode.StartPos,20),'"');
         InsertBehind:=NearestProcNode.StartPos<ProcNode.StartPos;
 
         // the corresponding body was linked by IntersectProcNodes in Data
