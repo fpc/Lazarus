@@ -33,7 +33,7 @@ uses
    InterfaceBase;
 
 var
-   InterfaceObject : TInterfaceBase;
+   InterfaceObject : TWidgetSet;
 
 implementation
 

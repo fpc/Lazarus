@@ -52,7 +52,7 @@ Type
   End;
 
   { Win32 interface-object class }
-  TWin32Object = Class(TInterfaceBase)
+  TWin32Object = Class(TWidgetSet)
   Private
     FAppHandle: HWND;    // The parent of all windows, represents the button of the taskbar
                          // Assoc. windowproc also acts as handler for popup menus
@@ -191,6 +191,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.70  2004/03/05 00:14:02  marc
+  * Renamed TInterfaceBase to TWidgetSet
+
   Revision 1.69  2004/02/27 00:42:41  marc
   * Interface CreateComponent splitup
   * Implemented CreateButtonHandle on GTK interface

@@ -38,9 +38,9 @@ uses
 
 type
 
-  { TInterfaceBase }
+  { TWidgetSet }
 
-  TInterfaceBase = class(TObject)
+  TWidgetSet = class(TObject)
   protected
     procedure PassCmdLineOptions; virtual;
   public
@@ -88,7 +88,7 @@ var
   PromptDialogFunction: TPromptDialogFunction;
 
 var
-  InterfaceObject: TInterfaceBase;
+  InterfaceObject: TWidgetSet;
 
 implementation
 
@@ -111,6 +111,9 @@ end.
 
 {
   $Log$
+  Revision 1.45  2004/03/05 00:14:02  marc
+  * Renamed TInterfaceBase to TWidgetSet
+
   Revision 1.44  2004/02/23 08:19:04  micha
   revert intf split
 

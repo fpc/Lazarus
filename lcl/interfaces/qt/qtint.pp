@@ -41,7 +41,7 @@ uses
 
 type
 
-   TQTObject = Class(TInterfaceBase)
+   TQTObject = Class(TWidgetSet)
     private
       procedure CreateComponent(Sender : TObject);
       procedure ShowHide(Sender : TObject);

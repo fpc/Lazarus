@@ -1,6 +1,6 @@
 { $Id$ }
 {******************************************************************************
-                                  TInterfaceBase
+                                  TWidgetSet
 
                            interface communication  stuff
 
@@ -25,70 +25,70 @@
 }
 //##apiwiz##sps##   // Do not remove
 
-function TInterfaceBase.AlignmentCreateHandle(const AAlignment: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.AlignmentCreateHandle(const AAlignment: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.ArrowCreateHandle(const AArrow: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.ArrowCreateHandle(const AArrow: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-procedure TInterfaceBase.AttachMenuToWindow(AMenuObject: TComponent);
+procedure TWidgetSet.AttachMenuToWindow(AMenuObject: TComponent);
 begin
 end;
 
-function TInterfaceBase.BitBtnCreateHandle(const ABitBtn: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TInterfaceBase.ButtonCreateHandle(const AButton: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.BitBtnCreateHandle(const ABitBtn: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.CalendarCreateHandle(const ACalendar: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.ButtonCreateHandle(const AButton: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-procedure TInterfaceBase.CallDefaultWndHandler(Sender: TObject; var Message);
-begin
-end;
-
-function TInterfaceBase.CheckboxCreateHandle(const ACheckBox: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.CalendarCreateHandle(const ACalendar: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.CheckListBoxCreateHandle(const ACheckListBox: TObject; const AParams: TCreateParams): THandle;
+procedure TWidgetSet.CallDefaultWndHandler(Sender: TObject; var Message);
+begin
+end;
+
+function TWidgetSet.CheckboxCreateHandle(const ACheckBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  Result:=0;
+end;
+
+function TWidgetSet.CheckListBoxCreateHandle(const ACheckListBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
 // the clipboard functions are internally used by TClipboard
-function TInterfaceBase.ClipboardFormatToMimeType(FormatID: TClipboardFormat): string;
+function TWidgetSet.ClipboardFormatToMimeType(FormatID: TClipboardFormat): string;
 begin
   Result := '';
 end;
 
-function TInterfaceBase.ClipboardGetData(ClipboardType: TClipboardType;
+function TWidgetSet.ClipboardGetData(ClipboardType: TClipboardType;
   FormatID: TClipboardFormat;  Stream: TStream): boolean;
 begin
   Result := false;
 end;
 
 // ! List will be created. You must free it yourself with FreeMem(List) !
-function TInterfaceBase.ClipboardGetFormats(ClipboardType: TClipboardType;
+function TWidgetSet.ClipboardGetFormats(ClipboardType: TClipboardType;
   var Count: integer; var List: PClipboardFormat): boolean;
 begin
   Result := true;
@@ -96,44 +96,44 @@ begin
   List := nil;
 end;
 
-function TInterfaceBase.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
+function TWidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   OnRequestProc: TClipboardRequestEvent;  FormatCount: integer;
   Formats: PClipboardFormat): boolean;
 begin
   Result := false;
 end;
 
-function TInterfaceBase.ClipboardRegisterFormat(
+function TWidgetSet.ClipboardRegisterFormat(
   const AMimeType: string): TClipboardFormat;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.CListBoxCreateHandle(const ACListBox: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.CListBoxCreateHandle(const ACListBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.ColorDialogCreateHandle(const AColorDialog: TObject): THandle;
+function TWidgetSet.ColorDialogCreateHandle(const AColorDialog: TObject): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.ComboBoxCreateHandle(const AComboBox: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.ComboBoxCreateHandle(const AComboBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.ComboBoxDropDown(Handle: HWND;
+function TWidgetSet.ComboBoxDropDown(Handle: HWND;
   DropDown: boolean): boolean;
 begin
   Result := false;
 end;
 
-function TInterfaceBase.CreateBitmapFromRawImage(const RawImage: TRawImage;
+function TWidgetSet.CreateBitmapFromRawImage(const RawImage: TRawImage;
   var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean;
 begin
   Bitmap:=0;
@@ -142,24 +142,24 @@ begin
 end;
 
 //todo: remove ?
-function TInterfaceBase.CreateEmptyRegion: hRGN;
+function TWidgetSet.CreateEmptyRegion: hRGN;
 begin
   Result:=CreateRectRGN(0,0,0,0);
 end;
 
-function TInterfaceBase.CreatePixmapIndirect(const Data: Pointer; const TransColor: Longint): HBITMAP;
+function TWidgetSet.CreatePixmapIndirect(const Data: Pointer; const TransColor: Longint): HBITMAP;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.CreateRegionCopy(SrcRGN: hRGN): hRGN;
+function TWidgetSet.CreateRegionCopy(SrcRGN: hRGN): hRGN;
 begin
   // If the interface has a better way to create a copy it can override this
   Result:=CreateEmptyRegion;
   CombineRGN(Result,SrcRGN,SrcRGN,RGN_COPY);
 end;
 
-function TInterfaceBase.DCClipRegionValid(DC: HDC): boolean;
+function TWidgetSet.DCClipRegionValid(DC: HDC): boolean;
 var
   Clip: hRGN;
 begin
@@ -169,47 +169,47 @@ begin
   DeleteObject(Clip);
 end;
 
-procedure TInterfaceBase.DrawArrow(Arrow: TComponent; Canvas: TPersistent);
+procedure TWidgetSet.DrawArrow(Arrow: TComponent; Canvas: TPersistent);
 begin
 end;
 
-function TInterfaceBase.EditCreateHandle(const AEdit: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
-function TInterfaceBase.FileDialogCreateHandle(const AFileDialog: TObject): THandle;
+function TWidgetSet.EditCreateHandle(const AEdit: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.FontDialogCreateHandle(const AFontDialog: TObject): THandle;
+function TWidgetSet.FileDialogCreateHandle(const AFileDialog: TObject): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.FormCreateHandle(const AForm: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.FontDialogCreateHandle(const AFontDialog: TObject): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.Frame(DC: HDC; const ARect: TRect) : integer;
+function TWidgetSet.FormCreateHandle(const AForm: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  Result:=0;
+end;
+
+function TWidgetSet.Frame(DC: HDC; const ARect: TRect) : integer;
 begin
   Result:= 0;
 end;
 
-function TInterfaceBase.Frame3d(DC: HDC; var ARect: TRect;
+function TWidgetSet.Frame3d(DC: HDC; var ARect: TRect;
   const FrameWidth: integer; const Style: TGraphicsBevelCut) : boolean;
 begin
   Result:= false;
 end;
 
 // MWE: Work in progress
-function TInterfaceBase.GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String;
+function TWidgetSet.GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String;
   // If the interface has a better way to create a string it can override this
 
   procedure AddPart(const APart: string);
@@ -296,48 +296,48 @@ begin
   AddKey;
 end;
 
-function TInterfaceBase.GetBitmapRawImageDescription(Bitmap: HBITMAP;
+function TWidgetSet.GetBitmapRawImageDescription(Bitmap: HBITMAP;
   Desc: PRawImageDescription): boolean;
 begin
   Result:=false;
 end;
 
-function TInterfaceBase.GetCaretRespondToFocus(handle: HWND;
+function TWidgetSet.GetCaretRespondToFocus(handle: HWND;
   var ShowHideOnFocus: boolean): Boolean;
 begin
   ShowHideOnFocus := true;
   Result := False;
 end;
 
-function TInterfaceBase.GetClientBounds(Handle : HWND; var ARect: TRect) : Boolean;
+function TWidgetSet.GetClientBounds(Handle : HWND; var ARect: TRect) : Boolean;
 begin
   Result := false;
 end;
 
-function TInterfaceBase.GetCmdLineParamDescForInterface: string;
+function TWidgetSet.GetCmdLineParamDescForInterface: string;
 begin
   Result := '';
 end;
 
-function TInterfaceBase.GetControlConstraints(Constraints: TObject): boolean;
+function TWidgetSet.GetControlConstraints(Constraints: TObject): boolean;
 begin
   Result:=true;
 end;
 
-function TInterfaceBase.GetDeviceRawImageDescription(DC: HDC;
+function TWidgetSet.GetDeviceRawImageDescription(DC: HDC;
   Desc: PRawImageDescription): boolean;
 begin
   Result := false;
 end;
 
-function TInterfaceBase.GetDeviceSize(DC: HDC; var p: TPoint): boolean;
+function TWidgetSet.GetDeviceSize(DC: HDC; var p: TPoint): boolean;
 begin
   p.X := 0;
   p.Y := 0;
   Result := false;
 end;
 
-function TInterfaceBase.GetDCOriginRelativeToWindow(PaintDC: HDC;
+function TWidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
   WindowHandle: HWND; var OriginDiff: TPoint): boolean;
 begin
   OriginDiff.X:=0;
@@ -345,62 +345,62 @@ begin
   Result:=true;
 end;
 
-function TInterfaceBase.GetDesignerDC(WindowHandle: HWND): HDC;
+function TWidgetSet.GetDesignerDC(WindowHandle: HWND): HDC;
 begin
   Result:=GetDC(WindowHandle);
 end;
 
-function TInterfaceBase.GetLCLOwnerObject(Handle: HWnd): TObject;
+function TWidgetSet.GetLCLOwnerObject(Handle: HWnd): TObject;
 begin
   if Handle <> 0
   then Result := TObject(GetProp(Handle,'WinControl'))
   else Result := nil;
 end;
 
-function TInterfaceBase.GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer;
+function TWidgetSet.GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer;
 begin
   Result := -1;
 end;
 
-function TInterfaceBase.GetListBoxItemRect(ListBox: TComponent; Index: integer;
+function TWidgetSet.GetListBoxItemRect(ListBox: TComponent; Index: integer;
   var ARect: TRect): boolean;
 begin
   FillChar(ARect,SizeOf(ARect),0);
   Result:=false;
 end;
 
-function TInterfaceBase.GetNotebookTabIndexAtPos(Handle: HWND;
+function TWidgetSet.GetNotebookTabIndexAtPos(Handle: HWND;
   const ClientPos: TPoint): integer;
 begin
   Result:=-1;
 end;
 
-function TInterfaceBase.GetRawImageFromDevice(SrcDC: HDC;
+function TWidgetSet.GetRawImageFromDevice(SrcDC: HDC;
   const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
 begin
   Result:=false;
 end;
 
-function TInterfaceBase.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP;
+function TWidgetSet.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP;
   const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
 begin
   Result:=false;
 end;
 
 // TODO: remove
-function TInterfaceBase.GetScrollBarSize(Handle: HWND;
+function TWidgetSet.GetScrollBarSize(Handle: HWND;
   SBStyle: Integer): integer;
 begin
   Result := GetSystemMetrics(SBStyle);
 end;
 
-function TInterfaceBase.GetScrollbarVisible(Handle: HWND;
+function TWidgetSet.GetScrollbarVisible(Handle: HWND;
   SBStyle: Integer): boolean;
 begin
   Result := false;
 end;
 
-function TInterfaceBase.GetWindowRelativePosition(Handle : hwnd;
+function TWidgetSet.GetWindowRelativePosition(Handle : hwnd;
   var Left, Top: integer): boolean;
 { returns the position of the left, top coordinate relative to the clientorigin
   of its parent. This is normally the Left, Top of a TWinControl. But not
@@ -425,38 +425,38 @@ begin
   Result := true;
 end;
 
-function TInterfaceBase.GetWindowSize(Handle : hwnd;
+function TWidgetSet.GetWindowSize(Handle : hwnd;
   var Width, Height: integer): boolean;
 // Returns the current Width and Height
 begin
   Result:=false;
 end;
 
-function TInterfaceBase.GroupBoxCreateHandle(const AGroupBox: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.GroupBoxCreateHandle(const AGroupBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.HintWindowCreateHandle(const AHintWindow: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.HintWindowCreateHandle(const AHintWindow: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.ImageCreateHandle(const AImage: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.ImageCreateHandle(const AImage: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.IntfCreateHandle(const AObject: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.IntfCreateHandle(const AObject: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-Function TInterfaceBase.InvalidateFrame(aHandle : HWND; ARect : pRect;
+Function TWidgetSet.InvalidateFrame(aHandle : HWND; ARect : pRect;
   bErase : Boolean; BorderWidth: integer) : Boolean;
 
   function Min(i1, i2: integer): integer;
@@ -492,53 +492,53 @@ begin
   Result:=true;
 end;
 
-function TInterfaceBase.LabelCreateHandle(const ALabel: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.LabelCreateHandle(const ALabel: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.ListBoxCreateHandle(const AListBox: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.ListBoxCreateHandle(const AListBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.ListViewCreateHandle(const AListView: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.ListViewCreateHandle(const AListView: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.MainMenuCreateHandle(const AMainMenu: TObject): THandle;
+function TWidgetSet.MainMenuCreateHandle(const AMainMenu: TObject): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.MemoCreateHandle(const AMemo: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.MemoCreateHandle(const AMemo: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.MenuItemCreateHandle(const AMenuItem: TObject): THandle;
+function TWidgetSet.MenuItemCreateHandle(const AMenuItem: TObject): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.MenuItemSetCheck(AMenuItem: TComponent): Boolean;
+function TWidgetSet.MenuItemSetCheck(AMenuItem: TComponent): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.MenuItemSetEnable(AMenuItem: TComponent): Boolean;
+function TWidgetSet.MenuItemSetEnable(AMenuItem: TComponent): Boolean;
 begin
   Result := False;
 end;
 
-Function TInterfaceBase.LoadStockPixmap(StockID: longint) : HBitmap;
+Function TWidgetSet.LoadStockPixmap(StockID: longint) : HBitmap;
 begin
   Case StockID of
     idButtonOk :
@@ -580,7 +580,7 @@ begin
   end;
 end;
 
-function TInterfaceBase.MoveWindowOrgEx(dc : hdc; dX,dY : Integer): boolean;
+function TWidgetSet.MoveWindowOrgEx(dc : hdc; dX,dY : Integer): boolean;
 var
   P : TPoint;
 Begin
@@ -588,90 +588,90 @@ Begin
   Result:=SetWindowOrgEx(dc, P.x-dX, P.y-dY, @P);
 end;
 
-function TInterfaceBase.NotebookCreateHandle(const ANotebook: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.NotebookCreateHandle(const ANotebook: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.OpenFileDialogCreateHandle(const AOpenFileDialog: TObject): THandle;
+function TWidgetSet.OpenFileDialogCreateHandle(const AOpenFileDialog: TObject): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.PageCreateHandle(const APage: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.PageCreateHandle(const APage: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.PairSplitterAddSide(SplitterHandle, SideHandle: hWnd;
+function TWidgetSet.PairSplitterAddSide(SplitterHandle, SideHandle: hWnd;
   Side: integer): Boolean;
 begin
   Result:=false;
 end;
 
-function TInterfaceBase.PairSplitterCreateHandle(const APairSplitter: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.PairSplitterCreateHandle(const APairSplitter: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.PairSplitterGetInterfaceInfo: boolean;
+function TWidgetSet.PairSplitterGetInterfaceInfo: boolean;
 begin
   Result:=false;
 end;
 
-function TInterfaceBase.PairSplitterRemoveSide(SplitterHandle, SideHandle: hWnd;
+function TWidgetSet.PairSplitterRemoveSide(SplitterHandle, SideHandle: hWnd;
   Side: integer): Boolean;
 begin
   Result:=false;
 end;
 
-function TInterfaceBase.PairSplitterSetPosition(SplitterHandle: hWnd;
+function TWidgetSet.PairSplitterSetPosition(SplitterHandle: hWnd;
   var NewPosition: integer): Boolean;
 begin
   Result:=false;
 end;
 
-function TInterfaceBase.PairSplitterSideCreateHandle(const APairSplitterSide: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.PairSplitterSideCreateHandle(const APairSplitterSide: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.PanelCreateHandle(const APanel: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.PanelCreateHandle(const APanel: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.PopupMenuCreateHandle(const APopupMenu: TObject): THandle;
+function TWidgetSet.PopupMenuCreateHandle(const APopupMenu: TObject): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.PreviewFileControlCreateHandle(const APreviewFileControl: TObject): THandle;
+function TWidgetSet.PreviewFileControlCreateHandle(const APreviewFileControl: TObject): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.PreviewFileDialogCreateHandle(const APreviewFileDialog: TObject): THandle;
+function TWidgetSet.PreviewFileDialogCreateHandle(const APreviewFileDialog: TObject): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.ProgressBarCreateHandle(const AProgressBar: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.ProgressBarCreateHandle(const AProgressBar: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-Function TInterfaceBase.PromptUser(const DialogCaption, DialogMessage : String;
+Function TWidgetSet.PromptUser(const DialogCaption, DialogMessage : String;
   DialogType : longint; Buttons : PLongint;
   ButtonCount, DefaultIndex, EscapeResult : Longint) : Longint;
 begin
@@ -682,7 +682,7 @@ begin
     Result:=0;
 end;
 
-function TInterfaceBase.PromptUserAtXY(const DialogCaption,
+function TWidgetSet.PromptUserAtXY(const DialogCaption,
   DialogMessage : String;
   DialogType : longint; Buttons : PLongint;
   ButtonCount, DefaultIndex, EscapeResult : Longint;
@@ -695,7 +695,7 @@ begin
     Result:=0;
 end;
 
-function TInterfaceBase.RadialArc(DC: HDC;
+function TWidgetSet.RadialArc(DC: HDC;
   x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
 var
   A1, A2 : Extended;
@@ -704,7 +704,7 @@ begin
   Result := Arc(DC, X, Y, Width, Height, RoundToInt(A1), RoundToInt(A2));
 end;
 
-function TInterfaceBase.RadialChord(DC: HDC;
+function TWidgetSet.RadialChord(DC: HDC;
   x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
 var
   A1, A2 : Extended;
@@ -713,7 +713,7 @@ Begin
   Result := AngleChord(DC, X, Y, Width, Height, RoundToInt(A1), RoundToInt(A2));
 End;
 
-function TInterfaceBase.RadialPie(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
+function TWidgetSet.RadialPie(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
 var
   A1, A2 : Extended;
 begin
@@ -722,7 +722,7 @@ begin
                                 RoundToInt(A1), RoundToInt(A2));
 end;
 
-function TInterfaceBase.RadialPieWithAngles(DC: HDC; X,Y,Width,Height,
+function TWidgetSet.RadialPieWithAngles(DC: HDC; X,Y,Width,Height,
   Angle1, Angle2: Integer): Boolean;
 var
   Points : PPoint;
@@ -741,28 +741,28 @@ begin
   Result := True;
 end;
 
-function TInterfaceBase.RadioButtonCreateHandle(const ARadioButton: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.RadioButtonCreateHandle(const ARadioButton: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.RadioMenuItemGroup(hndMenu: HMENU; bRadio: Boolean): Boolean;
+function TWidgetSet.RadioMenuItemGroup(hndMenu: HMENU; bRadio: Boolean): Boolean;
 begin
   Result := false;
 end;
 
-function TInterfaceBase.RegroupMenuItem(hndMenu: HMENU; GroupIndex: Integer) : Boolean;
+function TWidgetSet.RegroupMenuItem(hndMenu: HMENU; GroupIndex: Integer) : Boolean;
 begin
   Result := false;
 end;
 
-function TInterfaceBase.ReleaseDesignerDC(hWnd: HWND; DC: HDC): Integer;
+function TWidgetSet.ReleaseDesignerDC(hWnd: HWND; DC: HDC): Integer;
 begin
   Result := ReleaseDC(hWnd, DC);
 end;
 
-function TInterfaceBase.RequestInput(const InputCaption, InputPrompt : String;
+function TWidgetSet.RequestInput(const InputCaption, InputPrompt : String;
   MaskInput : Boolean; var Value : String) : Boolean;
 begin
   if InputDialogFunction<>nil then
@@ -771,47 +771,47 @@ begin
     Result := false;
 end;
 
-function TInterfaceBase.RightJustifyMenuItem(HndMenu: HMenu;
+function TWidgetSet.RightJustifyMenuItem(HndMenu: HMenu;
   bRightJustify: boolean): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.SaveFileDialogCreateHandle(const ASaveFileDialog: TObject): THandle;
+function TWidgetSet.SaveFileDialogCreateHandle(const ASaveFileDialog: TObject): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.ScrollBarCreateHandle(const AScrollBar: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.ScrollBarCreateHandle(const AScrollBar: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.ScrollBoxCreateHandle(const AScrollBox: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.ScrollBoxCreateHandle(const AScrollBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.ScrolledWindowCreateHandle(const AScrolledWindow: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.ScrolledWindowCreateHandle(const AScrolledWindow: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.SelectDirectoryDialogCreateHandle(const ASelectDirectoryDialog: TObject): THandle;
+function TWidgetSet.SelectDirectoryDialogCreateHandle(const ASelectDirectoryDialog: TObject): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-procedure TInterfaceBase.SendCachedLCLMessages;
+procedure TWidgetSet.SendCachedLCLMessages;
 begin
 end;
 
-function TInterfaceBase.DrawSplitter(DC: HDC; const ARect: TRect;
+function TWidgetSet.DrawSplitter(DC: HDC; const ARect: TRect;
   Horizontal: boolean): boolean;
 var
   DrawingRect: TRect;
@@ -820,51 +820,51 @@ begin
   Result := Frame3D(DC,DrawingRect,1,bvRaised);
 end;
 
-function TInterfaceBase.SetCaretRespondToFocus(Handle: HWnd;
+function TWidgetSet.SetCaretRespondToFocus(Handle: HWnd;
   ShowHideOnFocus: Boolean): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.SetComboMinDropDownSize(Handle: HWND;
+function TWidgetSet.SetComboMinDropDownSize(Handle: HWND;
   MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean;
 begin
   Result := false;
 end;
 
-function TInterfaceBase.SpeedButtonCreateHandle(const ASpeedButton: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.SpeedButtonCreateHandle(const ASpeedButton: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.SpineditCreateHandle(const ASpinEdit: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.SpineditCreateHandle(const ASpinEdit: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.StatusBarCreateHandle(const AStatusBar: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.StatusBarCreateHandle(const AStatusBar: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-procedure TInterfaceBase.StatusBarPanelUpdate(StatusBar: TObject;
+procedure TWidgetSet.StatusBarPanelUpdate(StatusBar: TObject;
   PanelIndex: integer);
 begin
 end;
 
-procedure TInterfaceBase.StatusBarSetText(StatusBar: TObject;
+procedure TWidgetSet.StatusBarSetText(StatusBar: TObject;
   PanelIndex: integer);
 begin
 end;
 
-procedure TInterfaceBase.StatusBarUpdate(StatusBar: TObject);
+procedure TWidgetSet.StatusBarUpdate(StatusBar: TObject);
 begin
 end;
 
-function TInterfaceBase.StretchMaskBlt(DestDC: HDC;
+function TWidgetSet.StretchMaskBlt(DestDC: HDC;
   X, Y, Width, Height: Integer; SrcDC: HDC;
   XSrc, YSrc, SrcWidth, SrcHeight: Integer;
   Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean;
@@ -872,31 +872,31 @@ begin
   Result := False;
 end;
 
-function TInterfaceBase.ToggleBoxCreateHandle(const AToggleBox: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.ToggleBoxCreateHandle(const AToggleBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.ToolbarCreateHandle(const AToolbar: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.ToolbarCreateHandle(const AToolbar: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.ToolButtonCreateHandle(const AToolButton: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.ToolButtonCreateHandle(const AToolButton: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.TrackBarCreateHandle(const ATrackBar: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.TrackBarCreateHandle(const ATrackBar: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
 end;
 
-function TInterfaceBase.WincontrolCreateHandle(const AFixed: TObject; const AParams: TCreateParams): THandle;
+function TWidgetSet.WincontrolCreateHandle(const AFixed: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
   Result:=0;
@@ -906,6 +906,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.24  2004/03/05 00:14:02  marc
+  * Renamed TInterfaceBase to TWidgetSet
+
   Revision 1.23  2004/02/28 00:34:35  mattias
   fixed CreateComponent for buttons, implemented basic Drag And Drop
 

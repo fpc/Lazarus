@@ -81,7 +81,7 @@ uses
 
 
 type
-  TgtkObject = class(TInterfaceBase)
+  TgtkObject = class(TWidgetSet)
   protected
     FKeyStateList_: TList; // Keeps track of which keys are pressed
     FDeviceContexts: TDynHashArray;// hasharray of HDC
@@ -425,6 +425,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.171  2004/03/05 00:14:02  marc
+  * Renamed TInterfaceBase to TWidgetSet
+
   Revision 1.170  2004/02/27 00:42:41  marc
   * Interface CreateComponent splitup
   * Implemented CreateButtonHandle on GTK interface

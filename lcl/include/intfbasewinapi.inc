@@ -1,6 +1,6 @@
 { $Id$ }
 {******************************************************************************
-                                  TInterfaceBase
+                                  TWidgetSet
 
                                    WinApi stuff
 
@@ -25,7 +25,7 @@
 }
 //##apiwiz##sps##   // Do not remove
 
-function TInterfaceBase.Arc(DC: HDC;
+function TWidgetSet.Arc(DC: HDC;
   x,y,width,height,angle1,angle2 : Integer): Boolean;
 var
   Points : PPoint;
@@ -40,7 +40,7 @@ begin
   Result := True;
 end;
 
-function TInterfaceBase.AngleChord(DC: HDC;
+function TWidgetSet.AngleChord(DC: HDC;
   x,y,width,height,angle1,angle2 : Integer): Boolean;
 var
   Points : PPoint;
@@ -58,52 +58,52 @@ begin
   Result := True;
 end;
 
-function TInterfaceBase.BeginPaint(Handle: hWnd; Var PS: TPaintStruct): hdc;
+function TWidgetSet.BeginPaint(Handle: hWnd; Var PS: TPaintStruct): hdc;
 begin
   Result:=GetDC(Handle);
 end;
 
-function TInterfaceBase.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer;
+function TWidgetSet.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean;
 begin
   Result := False;
 end;
 
-Function TInterfaceBase.BringWindowToTop(hWnd : HWND): Boolean;
+Function TWidgetSet.BringWindowToTop(hWnd : HWND): Boolean;
 begin
   Result := false;
 end;
 
-function TInterfaceBase.CallNextHookEx(hhk : HHOOK; ncode : Integer;
+function TWidgetSet.CallNextHookEx(hhk : HHOOK; ncode : Integer;
   WParam: WParam; LParam: LParam) : Integer;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.CallWindowProc(lpPrevWndFunc: TFarProc; Handle: HWND;
+function TWidgetSet.CallWindowProc(lpPrevWndFunc: TFarProc; Handle: HWND;
   Msg: UINT; WParam: WParam; LParam: LParam): Integer;
 begin
   Result:=0;
 end;
 
-Function TInterfaceBase.ClienttoScreen(Handle : HWND; var P : TPoint) : Boolean;
+Function TWidgetSet.ClienttoScreen(Handle : HWND; var P : TPoint) : Boolean;
 Begin
   Result := False;
 end;
 
-Function TInterfaceBase.CombineRgn(Dest, Src1, Src2 : HRGN;
+Function TWidgetSet.CombineRgn(Dest, Src1, Src2 : HRGN;
   fnCombineMode : Longint) : Longint;
 begin
   Result := ERROR;
 end;
 
-function TInterfaceBase.CreateBitmap(Width, Height: Integer;
+function TWidgetSet.CreateBitmap(Width, Height: Integer;
   Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.CreateDIBitmap(DC: HDC;
+function TWidgetSet.CreateDIBitmap(DC: HDC;
   var InfoHeader: TBitmapInfoHeader;
   dwUsage: DWORD; InitBits: PChar; var InitInfo: TBitmapInfo;
   wUsage: UINT): HBITMAP;
@@ -111,45 +111,45 @@ begin
   Result := 0;
 end;
 
-function TInterfaceBase.CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
+function TWidgetSet.CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.CreateCaret(Handle : HWND; Bitmap : hBitmap; width, Height : Integer) : Boolean;
+function TWidgetSet.CreateCaret(Handle : HWND; Bitmap : hBitmap; width, Height : Integer) : Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP;
+function TWidgetSet.CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.CreateCompatibleDC(DC: HDC): HDC;
+function TWidgetSet.CreateCompatibleDC(DC: HDC): HDC;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.CreateDIBSection(DC: HDC;
+function TWidgetSet.CreateDIBSection(DC: HDC;
   const BitmapInfo: tagBitmapInfo; Usage: UINT;
   var Bits: Pointer; SectionHandle: THandle; Offset: DWORD): HBITMAP;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN;
+function TWidgetSet.CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN;
 begin
   Result:=ERROR;
   writeln('WARNING: CreateEllipticRgn not yet implemented.');
 end;
 
-function TInterfaceBase.CreateFontIndirect(const LogFont: TLogFont): HFONT;
+function TWidgetSet.CreateFontIndirect(const LogFont: TLogFont): HFONT;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.CreateFontIndirectEx(const LogFont: TLogFont;
+function TWidgetSet.CreateFontIndirectEx(const LogFont: TLogFont;
   const LongFontName: string): HFONT;
 begin
   // this functions is needed, because the fontname in TLogFont is limited to
@@ -158,58 +158,58 @@ begin
   Result := CreateFontIndirect(LogFont);
 end;
 
-function TInterfaceBase.CreatePalette(const LogPalette: TLogPalette): HPalette;
+function TWidgetSet.CreatePalette(const LogPalette: TLogPalette): HPalette;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.CreatePenIndirect(const LogPen: TLogPen): HPEN;
+function TWidgetSet.CreatePenIndirect(const LogPen: TLogPen): HPEN;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.CreatePolygonRgn(Points: PPoint; NumPts: Integer;
+function TWidgetSet.CreatePolygonRgn(Points: PPoint; NumPts: Integer;
   FillMode: integer): HRGN;
 Begin
   Result := 0;
 end;
 
-function TInterfaceBase.CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN;
+function TWidgetSet.CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN;
 begin
   Result := 0;
 end;
 
-procedure TInterfaceBase.DeleteCriticalSection(var CritSection: TCriticalSection);
+procedure TWidgetSet.DeleteCriticalSection(var CritSection: TCriticalSection);
 begin
-  writeln('TInterfaceBase.DeleteCriticalSection Not implemented yet');
+  writeln('TWidgetSet.DeleteCriticalSection Not implemented yet');
 end;
 
-function TInterfaceBase.DeleteDC(hDC: HDC): Boolean;
-begin
-  Result := False;
-end;
-
-function TInterfaceBase.DeleteObject(GDIObject: HGDIOBJ): Boolean;
+function TWidgetSet.DeleteDC(hDC: HDC): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.DestroyCaret(Handle : HWND): Boolean;
+function TWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfacebase.DrawFrameControl(DC: HDC; var Rect : TRect; uType, uState : Cardinal) : Boolean;
+function TWidgetSet.DestroyCaret(Handle : HWND): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal): Boolean;
+function TWidgetSet.DrawFrameControl(DC: HDC; var Rect : TRect; uType, uState : Cardinal) : Boolean;
+begin
+  Result := False;
+end;
+
+function TWidgetSet.DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal): Boolean;
 Begin
   Result := False;
 end;
 
-function TInterfaceBase.DrawText(DC: HDC; Str: PChar; Count: Integer;
+function TWidgetSet.DrawText(DC: HDC; Str: PChar; Count: Integer;
   var Rect: TRect; Flags: Cardinal): Integer;
 var
   AP : TSize;
@@ -619,33 +619,33 @@ begin
   Result := 1;
 end;
 
-function TInterfaceBase.DPtoLP(DC: HDC; var Points; Count: Integer): BOOL;
+function TWidgetSet.DPtoLP(DC: HDC; var Points; Count: Integer): BOOL;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.EnableScrollBar(Wnd: HWND;
+function TWidgetSet.EnableScrollBar(Wnd: HWND;
   wSBflags, wArrows: Cardinal): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
+function TWidgetSet.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
 begin
   Result := False;
 end;
 
-Function TInterfaceBase.EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer;
+Function TWidgetSet.EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer;
 Begin
   Result:=1;
 end;
 
-procedure TInterfaceBase.EnterCriticalSection(var CritSection: TCriticalSection);
+procedure TWidgetSet.EnterCriticalSection(var CritSection: TCriticalSection);
 begin
-  writeln('TInterfaceBase.EnterCriticalSection Not implemented yet');
+  writeln('TWidgetSet.EnterCriticalSection Not implemented yet');
 end;
 
-function TInterfaceBase.Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean;
+function TWidgetSet.Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean;
 var
   Points : PPoint;
   Count : Longint;
@@ -672,28 +672,28 @@ begin
   Result := True;
 end;
 
-function TInterfaceBase.ExcludeClipRect(dc: hdc;
+function TWidgetSet.ExcludeClipRect(dc: hdc;
   Left, Top, Right, Bottom : Integer) : Integer;
 var
   RRGN : hRGN;
 begin
   If DCClipRegionValid(DC) then begin
-    //writeln('TInterfaceBase.ExcludeClipRect A DC=',HexStr(Cardinal(DC),8),' Rect=',Left,',',Top,',',Right,',',Bottom);
+    //writeln('TWidgetSet.ExcludeClipRect A DC=',HexStr(Cardinal(DC),8),' Rect=',Left,',',Top,',',Right,',',Bottom);
     // create the rectangle region, that should be excluded
     RRGN := CreateRectRgn(Left,Top,Right,Bottom);
     Result := ExtSelectClipRGN(DC, RRGN, RGN_DIFF);
-    //writeln('TInterfaceBase.ExcludeClipRect B Result=',Result);
+    //writeln('TWidgetSet.ExcludeClipRect B Result=',Result);
     DeleteObject(RRGN);
   end else
     Result:=ERROR;
 end;
 
-function TInterfaceBase.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
+function TWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.ExtSelectClipRGN(dc: hdc; rgn: hrgn; Mode: Longint
+function TWidgetSet.ExtSelectClipRGN(dc: hdc; rgn: hrgn; Mode: Longint
   ): Integer;
 var
   OldC, Clip : hRGN;
@@ -701,23 +701,23 @@ begin
   OldC := CreateEmptyRegion;
   GetClipRGN(DC, OldC);
   Clip := CreateEmptyRegion;
-  //writeln('TInterfaceBase.ExtSelectClipRGN A OldC=',HexStr(Cardinal(OldC),8),
+  //writeln('TWidgetSet.ExtSelectClipRGN A OldC=',HexStr(Cardinal(OldC),8),
   //  ' Clip=',HexStr(Cardinal(Clip),8),' RGn=',HexStr(Cardinal(RGN),8),' Mode=',Mode);
   Result := CombineRGN(Clip, OldC, RGN, Mode);
-  //writeln('TInterfaceBase.ExtSelectClipRGN B Result=',Result);
+  //writeln('TWidgetSet.ExtSelectClipRGN B Result=',Result);
   If Result <> ERROR then
     Result := SelectClipRGN(DC, Clip);
   DeleteObject(Clip);
   DeleteObject(OldC);
 end;
 
-function TInterfaceBase.FillRect(DC: HDC; const Rect: TRect;
+function TWidgetSet.FillRect(DC: HDC; const Rect: TRect;
   Brush: HBRUSH): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.FloodFill(DC: HDC; X, Y: Integer;
+function TWidgetSet.FloodFill(DC: HDC; X, Y: Integer;
   Color: TGraphicsColor;
   FillStyle: TGraphicsFillStyle;
   Brush: HBRUSH): Boolean;
@@ -725,196 +725,196 @@ begin
   Result := false;
 end;
 
-function TInterfaceBase.FillRgn(DC: HDC; RegionHnd: HRGN; hbr: HBRUSH): BOOL;
+function TWidgetSet.FillRgn(DC: HDC; RegionHnd: HRGN; hbr: HBRUSH): BOOL;
 begin
   Result := false;
 end;
 
-function TInterfaceBase.FrameRect(DC: HDC; const ARect: TRect;
+function TWidgetSet.FrameRect(DC: HDC; const ARect: TRect;
   hBr: HBRUSH) : integer;
 begin
   Result:= 0;
 end;
 
-Function TInterfaceBase.GetActiveWindow : HWND;
+Function TWidgetSet.GetActiveWindow : HWND;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.GetBitmapBits(Bitmap: HBITMAP; Count: Longint;
+function TWidgetSet.GetBitmapBits(Bitmap: HBITMAP; Count: Longint;
   Bits: Pointer): Longint;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.GetCapture : HWND;
+function TWidgetSet.GetCapture : HWND;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.GetCaretPos(var lpPoint: TPoint): Boolean;
+function TWidgetSet.GetCaretPos(var lpPoint: TPoint): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.GetCharABCWidths(DC: HDC; p2, p3: UINT; const ABCStructs): Boolean;
+function TWidgetSet.GetCharABCWidths(DC: HDC; p2, p3: UINT; const ABCStructs): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.GetClientRect(handle : HWND; var Rect : TRect) : Boolean;
+function TWidgetSet.GetClientRect(handle : HWND; var Rect : TRect) : Boolean;
 begin
   Result := False;
 end;
 
-Function TInterfaceBase.GetClipBox(DC : hDC; lpRect : PRect) : Longint;
+Function TWidgetSet.GetClipBox(DC : hDC; lpRect : PRect) : Longint;
 begin
   lpRect^ := Rect(0,0,0,0);
   Result := SIMPLEREGION;
 end;
 
-Function TInterfaceBase.GetClipRGN(DC : hDC; RGN : hRGN) : Longint;
+Function TWidgetSet.GetClipRGN(DC : hDC; RGN : hRGN) : Longint;
 begin
   Result := -1;
 end;
 
-function TInterfaceBase.GetCursorPos(var lpPoint: TPoint): Boolean;
+function TWidgetSet.GetCursorPos(var lpPoint: TPoint): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.GetDC(hWnd: HWND): HDC;
+function TWidgetSet.GetDC(hWnd: HWND): HDC;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
+function TWidgetSet.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.GetDIBits(DC: HDC; Bitmap: HBitmap;
+function TWidgetSet.GetDIBits(DC: HDC; Bitmap: HBitmap;
   StartScan, NumScans: UINT; Bits: Pointer;
   var BitInfo: BitmapInfo; Usage: UINT): Integer;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.GetFocus: HWND;
+function TWidgetSet.GetFocus: HWND;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.GetFontLanguageInfo(DC: HDC): DWord;
+function TWidgetSet.GetFontLanguageInfo(DC: HDC): DWord;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.GetKeyState(nVirtKey: Integer): Smallint;
+function TWidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.GetMapMode(DC: HDC): Integer;
+function TWidgetSet.GetMapMode(DC: HDC): Integer;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.GetObject(GDIObject: HGDIOBJ; BufSize: Integer;
+function TWidgetSet.GetObject(GDIObject: HGDIOBJ; BufSize: Integer;
   Buf: Pointer): Integer;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.GetPaletteEntries(Palette: HPALETTE;
+function TWidgetSet.GetPaletteEntries(Palette: HPALETTE;
   StartIndex, NumEntries: UINT; var PaletteEntries): UINT;
 begin
   Result := 0;
 end;
 
-Function TInterfaceBase.GetParent(Handle : HWND): HWND;
+Function TWidgetSet.GetParent(Handle : HWND): HWND;
 begin
   Result := 0;
 end;
 
-Function TInterfaceBase.GetProp(Handle : hwnd; Str : PChar): Pointer;
+Function TWidgetSet.GetProp(Handle : hwnd; Str : PChar): Pointer;
 begin
   Result := nil;
 end;
 
-Function TInterfaceBase.GetRGNBox(RGN : HRGN; lpRect : PRect) : Longint;
+Function TWidgetSet.GetRGNBox(RGN : HRGN; lpRect : PRect) : Longint;
 begin
   Result := SIMPLEREGION;
 end;
 
-function TInterfaceBase.GetScrollInfo(Handle: HWND; SBStyle: Integer;
+function TWidgetSet.GetScrollInfo(Handle: HWND; SBStyle: Integer;
   var ScrollInfo: TScrollInfo): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.GetStockObject(Value: Integer): LongInt;
+function TWidgetSet.GetStockObject(Value: Integer): LongInt;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.GetSysColor(nIndex: Integer): DWORD;
+function TWidgetSet.GetSysColor(nIndex: Integer): DWORD;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.GetSystemMetrics(nIndex: Integer): Integer;
+function TWidgetSet.GetSystemMetrics(nIndex: Integer): Integer;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.GetSystemPaletteEntries(DC: HDC;
+function TWidgetSet.GetSystemPaletteEntries(DC: HDC;
   StartIndex, NumEntries: UINT; var PaletteEntries): UINT;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.GetTextColor(DC: HDC) : TColorRef;
+function TWidgetSet.GetTextColor(DC: HDC) : TColorRef;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.GetTextExtentExPoint(DC: HDC; Str: PChar;
+function TWidgetSet.GetTextExtentExPoint(DC: HDC; Str: PChar;
   Count, p4: Integer; p5, p6: PInteger; var Size: TSize): BOOL;
 begin
   Result := GetTextExtentPoint(DC,Str,Count,Size);
 end;
 
-function TInterfaceBase.GetTextExtentPoint(DC: HDC; Str: PChar;
+function TWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar;
   Count: Integer; var Size: TSize): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.GetTextExtentPoint32(DC: HDC; Str: PChar;
+function TWidgetSet.GetTextExtentPoint32(DC: HDC; Str: PChar;
   Count: Integer; var Size: TSize): Boolean;
 begin
   Result := GetTextExtentPoint(DC,Str,Count,Size);
 end;
 
-function TInterfaceBase.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
+function TWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.GetWindowLong(Handle : hwnd; int : Integer): Longint;
+function TWidgetSet.GetWindowLong(Handle : hwnd; int : Integer): Longint;
 begin
   Result := 0;
 end;
 
-Function TInterfaceBase.GetWindowOrgEx(dc : hdc; P : PPoint): Integer;
+Function TWidgetSet.GetWindowOrgEx(dc : hdc; P : PPoint): Integer;
 Begin
   Result := 0;
   if P<>nil then
     P^:=Point(0,0);
 end;
 
-function TInterfaceBase.GetWindowRect(Handle : hwnd; var Rect : TRect): Integer;
+function TWidgetSet.GetWindowRect(Handle : hwnd; var Rect : TRect): Integer;
 { After the call, ARect will be the control area in screen coordinates.
   That means, Left and Top will be the screen coordinate of the TopLeft pixel
   of the Handle object and Right and Bottom will be the screen coordinate of
@@ -923,35 +923,35 @@ begin
   Result := 0;
 end;
 
-function TInterfaceBase.GradientFill(DC: HDC; Vertices: PTriVertex;
+function TWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
   NumVertices : Longint; Meshes: Pointer; NumMeshes : Longint;
   Mode : Longint): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.HideCaret(hWnd: HWND): Boolean;
+function TWidgetSet.HideCaret(hWnd: HWND): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.InitHintFont(HintFont: TObject): Boolean;
+function TWidgetSet.InitHintFont(HintFont: TObject): Boolean;
 begin
   Result := false;
 end;
 
-procedure TInterfaceBase.InitializeCriticalSection(var CritSection: TCriticalSection);
+procedure TWidgetSet.InitializeCriticalSection(var CritSection: TCriticalSection);
 begin
-  writeln('TInterfaceBase.InitializeCriticalSection Not implemented yet');
+  writeln('TWidgetSet.InitializeCriticalSection Not implemented yet');
 end;
 
-function TInterfaceBase.IntersectClipRect(dc: hdc;
+function TWidgetSet.IntersectClipRect(dc: hdc;
   Left, Top, Right, Bottom: Integer): Integer;
 var
   RRGN : hRGN;
 begin
   RRGN := CreateRectRgn(Left, Top, Right, Bottom);
-  //writeln('TInterfaceBase.IntersectClipRect A RGN=',HexStr(Cardinal(RRGN),8),' ',Left,',',Top,',',Right,',',Bottom);
+  //writeln('TWidgetSet.IntersectClipRect A RGN=',HexStr(Cardinal(RRGN),8),' ',Left,',',Top,',',Right,',',Bottom);
   If not DCClipRegionValid(DC) then
     Result := ExtSelectClipRGN(DC, RRGN, RGN_COPY)
   else
@@ -959,39 +959,39 @@ begin
   DeleteObject(RRGN);
 end;
 
-Function TInterfaceBase.InvalidateRect(aHandle : HWND; ARect : pRect;
+Function TWidgetSet.InvalidateRect(aHandle : HWND; ARect : pRect;
   bErase : Boolean) : Boolean;
 begin
   Result := false;
 end;
 
-function TInterfaceBase.IsDBCSLeadByte(TestChar: Byte): boolean;
+function TWidgetSet.IsDBCSLeadByte(TestChar: Byte): boolean;
 begin
   Result := false;
 end;
 
-function TInterfaceBase.IsWindowVisible(handle: HWND): boolean;
+function TWidgetSet.IsWindowVisible(handle: HWND): boolean;
 begin
   Result := false;
 end;
 
-procedure TInterfaceBase.LeaveCriticalSection(var CritSection: TCriticalSection);
+procedure TWidgetSet.LeaveCriticalSection(var CritSection: TCriticalSection);
 begin
-  writeln('TInterfaceBase.LeaveCriticalSection Not implemented yet');
+  writeln('TWidgetSet.LeaveCriticalSection Not implemented yet');
 end;
 
-function TInterfaceBase.LineTo(DC: HDC; X, Y: Integer): Boolean;
+function TWidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.MessageBox(hWnd: HWND; lpText, lpCaption: PChar;
+function TWidgetSet.MessageBox(hWnd: HWND; lpText, lpCaption: PChar;
   uType : Cardinal): integer;
 begin
   Result:= 0;
 end;
 
-function TInterfaceBase.MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
+function TWidgetSet.MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer;
   ROp: DWORD): Boolean;
 begin
@@ -999,26 +999,26 @@ begin
                            Mask,XMask,YMask,ROp);
 end;
 
-function TInterfaceBase.MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
+function TWidgetSet.MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer): Boolean;
 begin
   Result := MaskBlt(DestDC,X,Y,Width,Height,SrcDC,XSrc,YSrc,
                     Mask,XMask,YMask,SRCCOPY);
 end;
 
-function TInterfaceBase.MoveToEx(DC: HDC; X, Y: Integer;
+function TWidgetSet.MoveToEx(DC: HDC; X, Y: Integer;
   OldPoint: PPoint): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.PeekMessage(var lpMsg : TMsg; Handle : HWND;
+function TWidgetSet.PeekMessage(var lpMsg : TMsg; Handle : HWND;
   wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean;
 Begin
   Result := False;
 End;
 
-function TInterfaceBase.Pie(DC: HDC;
+function TWidgetSet.Pie(DC: HDC;
   EllipseX1,EllipseY1,EllipseX2,EllipseY2,
   StartX,StartY,EndX,EndY: Integer): Boolean;
 begin
@@ -1028,7 +1028,7 @@ begin
                       StartX,StartY, EndX,EndY);
 end;
 
-function TInterfaceBase.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
+function TWidgetSet.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
   Filled,Continuous: boolean): boolean;
 var
   APoints : PPoint;
@@ -1044,35 +1044,35 @@ Begin
   ReallocMem(APoints,0);
 End;
 
-function TInterfaceBase.Polygon(DC: HDC; Points: PPoint; NumPts: Integer;
+function TWidgetSet.Polygon(DC: HDC; Points: PPoint; NumPts: Integer;
   Winding: boolean): boolean;
 begin
   Result := false;
 end;
 
-function TInterfaceBase.Polyline(DC: HDC; Points: PPoint;
+function TWidgetSet.Polyline(DC: HDC; Points: PPoint;
   NumPts: Integer): boolean;
 begin
   Result := false;
 end;
 
-function TInterfaceBase.PostMessage(Handle: HWND; Msg: Cardinal;
+function TWidgetSet.PostMessage(Handle: HWND; Msg: Cardinal;
   WParam: WParam; LParam: LParam): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.PtInRegion(RGN: HRGN; X, Y: Integer): Boolean;
+function TWidgetSet.PtInRegion(RGN: HRGN; X, Y: Integer): Boolean;
 begin
   Result := false;
 end;
 
-function TInterfaceBase.RealizePalette(DC: HDC): Cardinal;
+function TWidgetSet.RealizePalette(DC: HDC): Cardinal;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
+function TWidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 begin
   Result := False;
 end;
@@ -1082,7 +1082,7 @@ end;
   Params:  dc : hdc; ARect: TRect
   Returns: True if ARect is not completely clipped away.
  ------------------------------------------------------------------------------}
-function TInterfaceBase.RectVisible(dc : hdc; const ARect: TRect) : Boolean;
+function TWidgetSet.RectVisible(dc : hdc; const ARect: TRect) : Boolean;
 var
   ClipRGN, RectRgn: hRGN;
   Intersection: Cardinal;
@@ -1105,22 +1105,22 @@ begin
   DeleteObject(ClipRGN);
 end;
 
-Function TInterfaceBase.ReleaseCapture : Boolean;
+Function TWidgetSet.ReleaseCapture : Boolean;
 Begin
   Result := True;
 end;
 
-function TInterfaceBase.ReleaseDC(hWnd: HWND; DC: HDC): Integer;
+function TWidgetSet.ReleaseDC(hWnd: HWND; DC: HDC): Integer;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
+function TWidgetSet.RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer) : Boolean;
+function TWidgetSet.RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer) : Boolean;
 
   Procedure Switch(Var F,T : Integer);
   var
@@ -1201,171 +1201,171 @@ begin
   Result := True;
 end;
 
-function TInterfaceBase.SaveDC(DC: HDC) : Integer;
+function TWidgetSet.SaveDC(DC: HDC) : Integer;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.ScreenToClient(Handle : HWND; var P : TPoint) : Integer;
+function TWidgetSet.ScreenToClient(Handle : HWND; var P : TPoint) : Integer;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.ScrollWindowEx(hWnd: HWND; dx, dy: Integer; prcScroll, prcClip: PRect; hrgnUpdate: HRGN; prcUpdate: PRect; flags: UINT): Boolean;
+function TWidgetSet.ScrollWindowEx(hWnd: HWND; dx, dy: Integer; prcScroll, prcClip: PRect; hrgnUpdate: HRGN; prcUpdate: PRect; flags: UINT): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.SelectClipRGN(DC : hDC; RGN : HRGN) : Longint;
+function TWidgetSet.SelectClipRGN(DC : hDC; RGN : HRGN) : Longint;
 begin
   Result := ERROR;
 end;
 
-function TInterfaceBase.SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
+function TWidgetSet.SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.SelectPalette(DC: HDC; Palette: HPALETTE; ForceBackground: Boolean): HPALETTE;
+function TWidgetSet.SelectPalette(DC: HDC; Palette: HPALETTE; ForceBackground: Boolean): HPALETTE;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.SendMessage(HandleWnd: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): LResult;
+function TWidgetSet.SendMessage(HandleWnd: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): LResult;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.SetActiveWindow(Handle: HWND): HWND;
+function TWidgetSet.SetActiveWindow(Handle: HWND): HWND;
 begin
   Result:=GetActiveWindow;
 end;
 
-function TInterfaceBase.SetBkColor(DC: HDC; Color: TColorRef): TColorRef; //pbd
+function TWidgetSet.SetBkColor(DC: HDC; Color: TColorRef): TColorRef; //pbd
 begin
   Result := 0;
 end;
 
-Function TInterfaceBase.SetBkMode(DC: HDC; bkMode : Integer) : Integer;
+Function TWidgetSet.SetBkMode(DC: HDC; bkMode : Integer) : Integer;
 begin
   Result := 0;
 end;
 
-Function TInterfaceBase.SetCapture(value : Longint) : Longint;
+Function TWidgetSet.SetCapture(value : Longint) : Longint;
 Begin
   Result := 0;
 End;
 
-function TInterfaceBase.SetCaretPos(X, Y: Integer): Boolean;
+function TWidgetSet.SetCaretPos(X, Y: Integer): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean;
+function TWidgetSet.SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.SetCursor(hCursor: HICON): HCURSOR;
+function TWidgetSet.SetCursor(hCursor: HICON): HCURSOR;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.SetFocus(hWnd: HWND): HWND;
+function TWidgetSet.SetFocus(hWnd: HWND): HWND;
 begin
   Result := 0;
 end;
 
-function TInterfacebase.SetMapMode(DC: HDC; MapMode: Integer): Integer;
+function TWidgetSet.SetMapMode(DC: HDC; MapMode: Integer): Integer;
 begin
   Result := 0;
 end;
 
-Function TInterfacebase.SetProp(Handle: hwnd; Str : PChar;
+Function TWidgetSet.SetProp(Handle: hwnd; Str : PChar;
   Data : Pointer) : Boolean;
 Begin
   Result := True;
 end;
 
-function TInterfaceBase.SetScrollInfo(Handle : HWND; SBStyle : Integer;
+function TWidgetSet.SetScrollInfo(Handle : HWND; SBStyle : Integer;
   ScrollInfo: TScrollInfo; Redraw : Boolean): Integer;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.SetStretchBltMode(DC: HDC;
+function TWidgetSet.SetStretchBltMode(DC: HDC;
   StretchMode: Integer): Integer;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.SetSysColors(cElements: Integer; const lpaElements;
+function TWidgetSet.SetSysColors(cElements: Integer; const lpaElements;
   const lpaRgbValues): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.SetTextAlign(DC: HDC; Flags: UINT): UINT;
+function TWidgetSet.SetTextAlign(DC: HDC; Flags: UINT): UINT;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.SetTextCharacterExtra(_hdc : hdc;
+function TWidgetSet.SetTextCharacterExtra(_hdc : hdc;
   nCharExtra : Integer):Integer;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
+function TWidgetSet.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
 begin
   Result := CLR_INVALID;
 end;
 
-function TInterfacebase.SetWindowLong(Handle: HWND;
+function TWidgetSet.SetWindowLong(Handle: HWND;
   Idx: Integer; NewLong : Longint): LongInt;
 begin
   Result := -1;
 end;
 
-Function TInterfaceBase.SetWindowOrgEx(dc : hdc; NewX, NewY : Integer;
+Function TWidgetSet.SetWindowOrgEx(dc : hdc; NewX, NewY : Integer;
   OldPoint: PPoint) : Boolean;
 Begin
   Result := False;
 end;
 
-function TInterfaceBase.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
+function TWidgetSet.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
        X, Y, cx, cy: Integer; uFlags: UINT): Boolean;
 begin
   Result:=false;
 end;
 
-function TInterfaceBase.ShowCaret(hWnd: HWND): Boolean;
+function TWidgetSet.ShowCaret(hWnd: HWND): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.ShowScrollBar(Handle: HWND; wBar: Integer;
+function TWidgetSet.ShowScrollBar(Handle: HWND; wBar: Integer;
   bShow: Boolean): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
+function TWidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 begin
   Result:=false;
 end;
 
-procedure TInterfaceBase.Sleep(dwMilliseconds: DWORD);
+procedure TWidgetSet.Sleep(dwMilliseconds: DWORD);
 begin
 end;
 
-function TInterfaceBase.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
+function TWidgetSet.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: Cardinal): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.StretchDIBits(DC: HDC;
+function TWidgetSet.StretchDIBits(DC: HDC;
   DestX, DestY, DestWidth, DestHeight,
   SrcX, SrcY, SrcWidth, SrcHeight: Integer;
   Bits: Pointer; var BitsInfo: TBitmapInfo;
@@ -1374,22 +1374,22 @@ begin
   Result := 0;
 end;
 
-Function TInterfaceBase.TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean;
+Function TWidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean;
 begin
   Result := false;
 end;
 
-function TInterfaceBase.UpdateWindow(Handle: HWND): Boolean;
+function TWidgetSet.UpdateWindow(Handle: HWND): Boolean;
 begin
   Result := false;
 end;
 
-function TInterfaceBase.VkKeyScan(AChar: Char): Short;
+function TWidgetSet.VkKeyScan(AChar: Char): Short;
 begin
   Result := -1; // $FFFF
 end;
 
-Function TInterfaceBase.WindowFromPoint(Point : TPoint) : HWND;
+Function TWidgetSet.WindowFromPoint(Point : TPoint) : HWND;
 begin
   Result := 0;
 end;
@@ -1398,6 +1398,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2004/03/05 00:14:02  marc
+  * Renamed TInterfaceBase to TWidgetSet
+
   Revision 1.8  2004/02/23 08:19:04  micha
   revert intf split
 

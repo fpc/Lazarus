@@ -1,6 +1,6 @@
 { $Id$ }
 {******************************************************************************
-                                  TInterfaceBase
+                                  TWidgetSet
 
                                    WinApi stuff
 
@@ -22,25 +22,28 @@
  *****************************************************************************
 }
 
-constructor TInterfaceBase.Create;
+constructor TWidgetSet.Create;
 begin
   inherited Create;
   SendMsgToInterface:=@IntSendMessage3;
 end;
 
-destructor TInterfaceBase.Destroy;
+destructor TWidgetSet.Destroy;
 begin
   inherited Destroy;
   SendMsgToInterface:=nil;
 end;
 
-procedure TInterfaceBase.PassCmdLineOptions;
+procedure TWidgetSet.PassCmdLineOptions;
 begin
 end;
 
 { =============================================================================
 
   $Log$
+  Revision 1.115  2004/03/05 00:14:02  marc
+  * Renamed TInterfaceBase to TWidgetSet
+
   Revision 1.114  2004/02/23 08:19:04  micha
   revert intf split
 

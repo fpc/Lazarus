@@ -212,7 +212,9 @@ begin
   inherited Initialize;
   // interface object and screen
   if (InterfaceObject=nil)
-  or (AnsiCompareText(InterfaceObject.Classname,'TINTERFACEBASE')=0) then begin
+//  or (AnsiCompareText(InterfaceObject.Classname,'TWIDGETSET')=0) 
+  or (InterfaceObject.ClassType = TWidgetSet) 
+  then begin
     writeln('ERROR: ',rsNoInterfaceObject);
     raise Exception.Create(rsNoInterfaceObject);
   end;
@@ -1176,6 +1178,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.77  2004/03/05 00:14:02  marc
+  * Renamed TInterfaceBase to TWidgetSet
+
   Revision 1.76  2004/02/28 00:34:35  mattias
   fixed CreateComponent for buttons, implemented basic Drag And Drop
 
