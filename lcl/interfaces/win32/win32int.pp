@@ -66,7 +66,6 @@ Type
     FMenu: HMENU; // Main menu/menu bar
     FParentWindow: HWND; // The parent window
     FSubMenu: HMENU; // current sub menu
-    FWndProc: WNDPROC;
 
     FStockNullBrush: HBRUSH;
     FStockBlackBrush: HBRUSH;
@@ -169,11 +168,10 @@ Type
 
 Const
   BOOL_RESULT: Array[Boolean] Of String = ('False', 'True');
-  ClsName : array[0..20] of char = 'LazarusForm';
-  TimerClsName : array[0..20] of char = 'LCLTimerWindow';
+  ClsName : array[0..20] of char = 'LazarusForm'#0;
+  TimerClsName : array[0..20] of char = 'LCLTimerWindow'#0;
 
 Var
-  OldClipboardViewer: HWND;
   WndList: TList;
 
 {$I win32proc.inc}
@@ -197,6 +195,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.21  2002/11/26 20:51:05  mattias
+  applied clipbrd patch from Vincent
+
   Revision 1.20  2002/11/23 13:48:48  mattias
   added Timer patch from Vincent Snijders
 

@@ -37,7 +37,6 @@ Begin
   FAccelGroup := CreateAcceleratorTable(LPACCEL(@AcTbl), High(AcTbl));
   FTimerData  := TList.Create;
   FTimerWindow := 0;
-  FWndProc := WNDPROC(@WindowProc);
 End;
 
 {------------------------------------------------------------------------------
@@ -66,7 +65,7 @@ Begin
       FTimerData.Delete(n);
     end;
   end;
-  Assert(False,'FTimerWindow: ' +  IntToStr(FTimerWindow));
+  Assert(False,'Trace:FTimerWindow: ' +  IntToStr(FTimerWindow));
   if FTimerWindow<>0 then
   begin
     DestroyWindow(FTimerWindow);
@@ -122,7 +121,7 @@ Begin
       writeln('Exception: ',E.Message);
     end;
   end;
-  Assert(False,'FTimerWindow: ' + IntToStr(FTimerWindow));
+  Assert(False,'Trace:FTimerWindow: ' + IntToStr(FTimerWindow));
   //Init stock objects;
   LogBrush.lbStyle := BS_NULL; 
   FStockNullBrush := CreateBrushIndirect(LogBrush);
@@ -1759,11 +1758,11 @@ Begin
 //      If Height = 0 Then
 //        Width := CW_USEDEFAULT;
 //      Window := CreateWindow(ClsName, StrTemp, WS_OVERLAPPEDWINDOW, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
-
-      Window := CreateWindow(ClsName, StrTemp, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, Parent, HMENU(Nil), HInstance, Nil);
-
-      If Sender Is TForm Then
-        OldClipboardViewer := SetClipboardViewer(Window);
+      try
+        Window := CreateWindow(ClsName, StrTemp, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, Parent, HMENU(Nil), HInstance, Nil);
+      except
+        writeln('Exception occured creating window');
+      end;
       If (FMainForm = Nil) And (Application.MainForm = Nil) Then
         FMainForm := TForm(Sender);
       FParentWindow := Window;
@@ -2624,6 +2623,9 @@ End;
 
 {
   $Log$
+  Revision 1.28  2002/11/26 20:51:05  mattias
+  applied clipbrd patch from Vincent
+
   Revision 1.27  2002/11/23 13:48:48  mattias
   added Timer patch from Vincent Snijders
 
