@@ -34,7 +34,7 @@ uses
   gtk,
 {$ENDIF GTK2}
   GtkGlobals, GtkProc, ExtCtrls,
-  WSExtCtrls, WSLCLClasses;
+  WSExtCtrls, WSLCLClasses, gtkint, interfacebase;
 
 type
 
@@ -52,6 +52,9 @@ type
   private
   protected
   public
+    class procedure AddPage(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AIndex: integer); override;
+    class procedure RemovePage(const ANotebook: TCustomNotebook; const AIndex: integer); override;
+    
     class function GetNotebookMinTabHeight(const AWinControl: TWinControl): integer; override;
     class function GetNotebookMinTabWidth(const AWinControl: TWinControl): integer; override;
   end;
@@ -203,7 +206,92 @@ type
 
 implementation
 
+{-------------------------------------------------------------------------------
+  procedure RemoveDummyNoteBookPage(NoteBookWidget: PGtkNotebook);
+
+  Removes the dummy page.
+  See also AddDummyNoteBookPage
+-------------------------------------------------------------------------------}
+procedure RemoveDummyNoteBookPage(NoteBookWidget: PGtkNotebook);
+var
+  DummyWidget: PGtkWidget;
+begin
+  DummyWidget:=GetGtkNoteBookDummyPage(NoteBookWidget);
+  if DummyWidget=nil then exit;
+  gtk_notebook_remove_page(NoteBookWidget,
+                           gtk_notebook_page_num(NoteBookWidget,DummyWidget));
+  DummyWidget:=nil;
+  SetGtkNoteBookDummyPage(NoteBookWidget,DummyWidget);
+end;
+
 { TGtkWSCustomNotebook }
+
+procedure TGtkWSCustomNotebook.AddPage(const ANotebook: TCustomNotebook; 
+  const AChild: TCustomPage; const AIndex: integer);
+{
+  Inserts a new page to a notebook at position Index. The ANotebook is a
+  TCustomNoteBook, the AChild one of its TCustomPage. Both handles must already
+  be created. ANoteBook Handle is a PGtkNoteBook and APage handle is a
+  PGtkFixed.
+  This procedure creates a new tab with an optional image, the page caption and
+  an optional close button. The image and the caption will also be added to the
+  tab popup menu.
+}
+var
+  NoteBookWidget: PGtkWidget;  // the notebook
+  PageWidget: PGtkWidget;      // the page (content widget)
+  TabWidget: PGtkWidget;       // the tab (hbox containing a pixmap, a label
+                               //          and a close button)
+  TabLabelWidget: PGtkWidget;  // the label in the tab
+  MenuWidget: PGtkWidget;      // the popup menu (hbox containing a pixmap and
+                               // a label)
+  MenuLabelWidget: PGtkWidget; // the label in the popup menu item
+begin
+  NoteBookWidget:=PGtkWidget(ANoteBook.Handle);
+  PageWidget:=PGtkWidget(AChild.Handle);
+
+  // create the tab (hbox container)
+  TabWidget:=gtk_hbox_new(false,1);
+  begin
+    gtk_object_set_data(PGtkObject(TabWidget), 'TabImage', nil);
+    gtk_object_set_data(PGtkObject(TabWidget), 'TabCloseBtn', nil);
+    // put a label into the tab
+    TabLabelWidget:=gtk_label_new('');
+    gtk_object_set_data(PGtkObject(TabWidget), 'TabLabel', TabLabelWidget);
+    gtk_widget_show(TabLabelWidget);
+    gtk_box_pack_start_defaults(PGtkBox(TabWidget),TabLabelWidget);
+  end;
+  gtk_widget_show(TabWidget);
+
+  // create popup menu
+  MenuWidget:=gtk_hbox_new(false,2);
+  begin
+    // set icon widget to nil
+    gtk_object_set_data(PGtkObject(MenuWidget), 'TabImage', nil);
+    // put a label into the menu
+    MenuLabelWidget:=gtk_label_new('');
+    gtk_object_set_data(PGtkObject(MenuWidget), 'TabLabel', MenuLabelWidget);
+    gtk_widget_show(MenuLabelWidget);
+    gtk_box_pack_start_defaults(PGtkBox(MenuWidget),MenuLabelWidget);
+  end;
+
+  gtk_widget_show(MenuWidget);
+
+  RemoveDummyNoteBookPage(PGtkNotebook(NoteBookWidget));
+  gtk_notebook_insert_page_menu(GTK_NOTEBOOK(NotebookWidget), PageWidget,
+    TabWidget, MenuWidget, AIndex);
+
+  TGtkWidgetSet(InterfaceObject).UpdateNotebookPageTab(ANoteBook, AChild);
+  UpdateNoteBookClientWidget(ANoteBook);
+end;
+
+procedure TGtkWSCustomNotebook.RemovePage(const ANotebook: TCustomNotebook; 
+  const AIndex: integer);
+begin
+  // The gtk does not provide a function to remove a page without destroying it.
+  // Luckily the LCL destroys the Handle, when a page is removed, so this
+  // function is not needed.
+end;
 
 function TGtkWSCustomNotebook.GetNotebookMinTabHeight(
   const AWinControl: TWinControl): integer;

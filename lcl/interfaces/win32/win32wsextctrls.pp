@@ -33,9 +33,9 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  ExtCtrls,
+  ExtCtrls,
 ////////////////////////////////////////////////////
-  WSExtCtrls, WSLCLClasses;
+  WSExtCtrls, WSLCLClasses, Windows, Win32Int, InterfaceBase, Win32WSControls;
 
 type
 
@@ -53,6 +53,8 @@ type
   private
   protected
   public
+    class procedure AddPage(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AIndex: integer); override;
+    class procedure RemovePage(const ANotebook: TCustomNotebook; const AIndex: integer); override;
   end;
 
   { TWin32WSPage }
@@ -202,6 +204,39 @@ type
 
 implementation
 
+procedure TWin32WSCustomNotebook.AddPage(const ANotebook: TCustomNotebook; 
+  const AChild: TCustomPage; const AIndex: integer);
+var
+  TCI: TC_ITEM;
+  OldPageIndex: integer;
+  R: TRect;
+begin
+  With ANotebook do
+  Begin
+    TCI.Mask := TCIF_TEXT or TCIF_PARAM;
+    TCI.pszText := PChar(AChild.Caption);
+    // store handle as extra data, so we can verify we got the right page later
+    TCI.lParam := AChild.Handle;
+    Windows.SendMessage(Handle, TCM_INSERTITEM, AIndex, LPARAM(@TCI));
+    // Adjust page size to fit in tabcontrol, need bounds of notebook in client of parent
+    TWin32WidgetSet(InterfaceObject).GetClientRect(Handle, R);
+    TWin32WSWinControl.SetBounds(AChild, R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top);
+    // Do the page switch. The are no tabcontrol notifications so we have to
+    // do the hiding and showing ourselves.
+    OldPageIndex := SendMessage(Handle,TCM_GETCURSEL,0,0);
+    SendMessage(Handle,TCM_SETCURSEL, AChild.PageIndex,0);
+    ShowWindow(AChild.Handle, SW_SHOW);
+    if (OldPageIndex >= 0) and (OldPageIndex <> AChild.PageIndex) then 
+      ShowWindow(Page[OldPageIndex].Handle, SW_HIDE);
+  End;
+end;
+
+procedure TWin32WSCustomNotebook.RemovePage(const ANotebook: TCustomNotebook; 
+  const AIndex: integer);
+begin
+  Windows.SendMessage(ANotebook.Handle, TCM_DELETEITEM, Windows.WPARAM(AIndex), 0);
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -211,7 +246,7 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TCustomPage, TWin32WSCustomPage);
-//  RegisterWSComponent(TCustomNotebook, TWin32WSCustomNotebook);
+  RegisterWSComponent(TCustomNotebook, TWin32WSCustomNotebook);
 //  RegisterWSComponent(TPage, TWin32WSPage);
 //  RegisterWSComponent(TNotebook, TWin32WSNotebook);
 //  RegisterWSComponent(TShape, TWin32WSShape);

@@ -58,6 +58,9 @@ type
 
   TWSCustomNotebook = class(TWSWinControl)
   public
+    class procedure AddPage(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AIndex: integer); virtual;
+    class procedure RemovePage(const ANotebook: TCustomNotebook; const AIndex: integer); virtual;
+
     class function GetNotebookMinTabHeight(const AWinControl: TWinControl): integer; virtual;
     class function GetNotebookMinTabWidth(const AWinControl: TWinControl): integer; virtual;
     class procedure SetTabCaption(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AText: string); virtual;
@@ -159,6 +162,31 @@ implementation
 
 { TWSCustomNotebook }
 
+{ -----------------------------------------------------------------------------
+  Method: TWSCustomNotebook.AddPage
+  Params: ANotebook - A notebook control
+          AChild - Page to insert
+          AIndex  - The position in the notebook to insert the page
+  Returns: Nothing
+
+  Adds a new page to a notebook
+ ------------------------------------------------------------------------------}
+procedure TWSCustomNotebook.AddPage(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AIndex: integer);
+begin
+end;
+
+{------------------------------------------------------------------------------
+  Method: TWSCustomNotebook.RemovePage
+  Params: ANotebook - The notebook control
+          AIndex    - The index of the page to delete
+  Returns: Nothing
+
+  Removes a page from a notebook control
+ ------------------------------------------------------------------------------}
+procedure TWSCustomNotebook.RemovePage(const ANotebook: TCustomNotebook; const AIndex: integer);
+begin
+end;
+
 {-------------------------------------------------------------------------------
   function TWSCustomNotebook.GetNotebookMinTabHeight(
     const AWinControl: TWinControl): integer;
@@ -166,7 +194,7 @@ implementation
   Returns the minimum height of the horizontal tabs of a notebook. That is the
   Notebook with TabPosition in [tpTop,tpBottom] without the client panel.
 -------------------------------------------------------------------------------}
-function TWSCustomNotebook.GetNotebookMinTabHeight(
+function  TWSCustomNotebook.GetNotebookMinTabHeight(
   const AWinControl: TWinControl): integer;
 begin
   Result:=30;

@@ -3134,17 +3134,6 @@ begin
         end;
       end;
 
-      LM_AddPage :
-        if Sender is TCustomNoteBook then begin
-          AddNBPage(TControl(Sender), TLMNotebookEvent(Data^).Child,
-            TLMNotebookEvent(Data^).Page);
-        end;
-
-      LM_RemovePage :
-        if Sender is TCustomNoteBook then begin
-          RemoveNBPage(TControl(Sender), TLMNotebookEvent(Data^).Page);
-        end;
-
       LM_MovePage :
         if Sender is TCustomNoteBook then begin
           MoveNBPage(TControl(Sender), TLMNotebookEvent(Data^).Child,
@@ -6331,24 +6320,6 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  procedure RemoveDummyNoteBookPage(NoteBookWidget: PGtkNotebook);
-
-  Removes the dummy page.
-  See also AddDummyNoteBookPage
--------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.RemoveDummyNoteBookPage(NoteBookWidget: PGtkNotebook);
-var
-  DummyWidget: PGtkWidget;
-begin
-  DummyWidget:=GetGtkNoteBookDummyPage(NoteBookWidget);
-  if DummyWidget=nil then exit;
-  gtk_notebook_remove_page(NoteBookWidget,
-                           gtk_notebook_page_num(NoteBookWidget,DummyWidget));
-  DummyWidget:=nil;
-  SetGtkNoteBookDummyPage(NoteBookWidget,DummyWidget);
-end;
-
-{-------------------------------------------------------------------------------
   method TGtkWidgetSet UpdateNotebookPageTab
   Params: ANoteBook: TCustomNotebook; APage: TCustomPage
   Result: none
@@ -6552,79 +6523,6 @@ begin
   UpdateTabImage;
   UpdateTabLabel;
   UpdateTabCloseBtn;
-end;
-
-{-------------------------------------------------------------------------------
-  method TGtkWidgetSet AddNBPage
-  Params: ANoteBook, APage: TObject; Index: Integer
-  Result: none
-
-  Inserts a new page to a notebook at position Index. The ANotebook is a
-  TCustomNoteBook, the APage one of its TCustomPage. Both handles must already
-  be created. ANoteBook Handle is a PGtkNoteBook and APage handle is a
-  PGtkFixed.
-  This procedure creates a new tab with an optional image, the page caption and
-  an optional close button. The image and the caption will also be added to the
-  tab popup menu.
--------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.AddNBPage(ANoteBook, APage: TObject; Index: Integer);
-var
-  NoteBookWidget: PGtkWidget;  // the notebook
-  PageWidget: PGtkWidget;      // the page (content widget)
-  TabWidget: PGtkWidget;       // the tab (hbox containing a pixmap, a label
-                               //          and a close button)
-  TabLabelWidget: PGtkWidget;  // the label in the tab
-  MenuWidget: PGtkWidget;      // the popup menu (hbox containing a pixmap and
-                               // a label)
-  MenuLabelWidget: PGtkWidget; // the label in the popup menu item
-begin
-  NoteBookWidget:=PGtkWidget(TWinControl(ANoteBook).Handle);
-  PageWidget:=PGtkWidget(TWinControl(APage).Handle);
-
-  // create the tab (hbox container)
-  TabWidget:=gtk_hbox_new(false,1);
-  begin
-    gtk_object_set_data(PGtkObject(TabWidget), 'TabImage', nil);
-    gtk_object_set_data(PGtkObject(TabWidget), 'TabCloseBtn', nil);
-    // put a label into the tab
-    TabLabelWidget:=gtk_label_new('');
-    gtk_object_set_data(PGtkObject(TabWidget), 'TabLabel', TabLabelWidget);
-    gtk_widget_show(TabLabelWidget);
-    gtk_box_pack_start_defaults(PGtkBox(TabWidget),TabLabelWidget);
-  end;
-  gtk_widget_show(TabWidget);
-
-  // create popup menu
-  MenuWidget:=gtk_hbox_new(false,2);
-  begin
-    // set icon widget to nil
-    gtk_object_set_data(PGtkObject(MenuWidget), 'TabImage', nil);
-    // put a label into the menu
-    MenuLabelWidget:=gtk_label_new('');
-    gtk_object_set_data(PGtkObject(MenuWidget), 'TabLabel', MenuLabelWidget);
-    gtk_widget_show(MenuLabelWidget);
-    gtk_box_pack_start_defaults(PGtkBox(MenuWidget),MenuLabelWidget);
-  end;
-
-  gtk_widget_show(MenuWidget);
-
-  RemoveDummyNoteBookPage(PGtkNotebook(NoteBookWidget));
-  gtk_notebook_insert_page_menu(GTK_NOTEBOOK(NotebookWidget),PageWidget,
-    TabWidget,MenuWidget,Index);
-
-  UpdateNotebookPageTab(TCustomNoteBook(ANoteBook),TCustomPage(APage));
-  UpdateNoteBookClientWidget(ANoteBook);
-end;
-
-{------------------------------------------------------------------------------
-       TGtkWidgetSet RemoveNBPage
-       *Note: Remove Notebook Page
-------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.RemoveNBPage(ANoteBook: TObject; Index: Integer);
-begin
-  // The gtk does not provide a function to remove a page without destroying it.
-  // Luckily the LCL destroys the Handle, when a page is removed, so this
-  // function is not needed.
 end;
 
 {------------------------------------------------------------------------------
@@ -8417,6 +8315,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.562  2004/09/13 19:06:04  micha
+  convert LM_ADDPAGE and LM_REMOVEPAGE messages to new interface methods
+
   Revision 1.561  2004/09/13 14:34:53  micha
   convert LM_TB_BUTTONCOUNT to interface method
 

@@ -54,11 +54,9 @@ const
   LM_AssignSelf     = LM_ComUser+11;
   LM_SetName        = LM_ComUser+12;
   LM_RESIZECHILDREN = LM_ComUser+13;
-  LM_AddPage        = LM_ComUser+15;
   LM_GetLineCount   = LM_ComUser+16;
   LM_CANVASCREATE   = LM_ComUser+19;
   LM_ReDraw         = LM_ComUser+26;
-  LM_RemovePage     = LM_ComUser+28;
   LM_ShowTabs       = LM_ComUser+29;
   LM_SetTabPosition = LM_ComUser+30;
   LM_Invalidate     = LM_ComUser+32;
@@ -833,11 +831,9 @@ begin
   LM_AssignSelf     :Result:='LM_AssignSelf';
   LM_SetName        :Result:='LM_SetName';
   LM_RESIZECHILDREN :Result:='LM_RESIZECHILDREN';
-  LM_AddPage        :Result:='LM_AddPage';
   LM_GetLineCount   :Result:='LM_GetLineCount';
   LM_CANVASCREATE   :Result:='LM_CANVASCREATE';
   LM_ReDraw         :Result:='LM_ReDraw';
-  LM_RemovePage     :Result:='LM_RemovePage';
   LM_ShowTabs       :Result:='LM_ShowTabs';
   LM_SetTabPosition :Result:='LM_SetTabPosition';
   LM_Invalidate     :Result:='LM_Invalidate';
@@ -980,6 +976,9 @@ end.
 
 {
   $Log$
+  Revision 1.94  2004/09/13 19:06:04  micha
+  convert LM_ADDPAGE and LM_REMOVEPAGE messages to new interface methods
+
   Revision 1.93  2004/09/13 14:34:53  micha
   convert LM_TB_BUTTONCOUNT to interface method
 

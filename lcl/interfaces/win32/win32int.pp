@@ -137,8 +137,6 @@ Type
     procedure ChangeActivePage(const Data: TLMNotebookEvent);
     procedure AddAllNBPages(Notebook: TCustomNotebook);
     procedure RemoveAllNBPages(Notebook: TCustomNotebook);
-    Procedure AddNBPage(Notebook: TCustomNotebook; NewPage: TCustomPage; Index: Integer);
-    procedure RemoveNBPage(Notebook: TCustomNotebook; Index: Integer);
     Procedure SetText(Window: HWND; Data: Pointer);
     Function GetValue (Sender: TObject; Data: Pointer): Integer;
     Function SetValue (Sender: TObject; Data: Pointer): Integer;
@@ -230,7 +228,7 @@ Uses
  Win32WSDialogs,
 // Win32WSDirSel,
 // Win32WSEditBtn,
-// Win32WSExtCtrls,
+ Win32WSExtCtrls,
 // Win32WSExtDlgs,
 // Win32WSFileCtrl,
  Win32WSForms,
@@ -282,6 +280,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.109  2004/09/13 19:06:04  micha
+  convert LM_ADDPAGE and LM_REMOVEPAGE messages to new interface methods
+
   Revision 1.108  2004/09/13 13:13:46  micha
   convert LM_SHOWMODAL to interface methods
 

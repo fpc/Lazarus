@@ -221,10 +221,6 @@ type
     procedure GetNoteBookCloseBtnImage(var Img: PGdkPixbuf);virtual;
     {$EndIF}
     procedure AddDummyNoteBookPage(NoteBookWidget: PGtkNoteBook);virtual;
-    procedure RemoveDummyNoteBookPage(NoteBookWidget: PGtkNotebook);virtual;
-    procedure UpdateNotebookPageTab(ANoteBook, APage: TObject);virtual;
-    procedure AddNBPage(ANoteBook, APage: TObject; Index: Integer);virtual;
-    procedure RemoveNBPage(ANoteBook: TObject; Index: Integer);virtual;
     procedure MoveNBPage(ANoteBook, APage: TObject; NewIndex: Integer);virtual;
 
     // listbox
@@ -302,6 +298,8 @@ type
     procedure SetResizeRequest(Widget: PGtkWidget);virtual;
     // |-forms
     procedure UpdateTransientWindows; virtual;
+    // |-notebook
+    procedure UpdateNotebookPageTab(ANoteBook, APage: TObject);virtual;
     function ForceLineBreaks(DC : hDC; Src: PChar; MaxWidthInPixels : Longint;
       ProcessAmpersands : Boolean) : PChar;
   
@@ -456,6 +454,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.204  2004/09/13 19:06:04  micha
+  convert LM_ADDPAGE and LM_REMOVEPAGE messages to new interface methods
+
   Revision 1.203  2004/09/13 13:13:46  micha
   convert LM_SHOWMODAL to interface methods
 

@@ -352,15 +352,6 @@ Begin
             InvalidateRect(TCustomSpeedButton(Sender).Parent.Handle, @SizeRect, True);
           End;
       End;
-      LM_ADDPAGE:
-      Begin
-        Assert(False, Format('Trace:[TWin32WidgetSet.IntSendMessage3] %S --> Add NB page: %S', [Sender.ClassName, TLMNotebookEvent(Data^).Child.ClassName]));
-        AddNBPage(Sender as TCustomNotebook, TLMNotebookEvent(Data^).Child as TCustomPage, TLMNotebookEvent(Data^).Page);
-      End;
-      LM_REMOVEPAGE:
-      Begin
-        RemoveNBPage(Sender as TCustomNotebook, TLMNotebookEvent(Data^).Page);
-      End;
       LM_SHOWTABS:
       Begin
         Result := Ord(True);
@@ -1988,7 +1979,7 @@ var
   R: TRect;
 begin
   for I := Notebook.PageCount - 1 downto 0 do
-    RemoveNBPage(Notebook, I);
+    Windows.SendMessage(Notebook.Handle, TCM_DELETEITEM, Windows.WPARAM(I), 0);
   // Adjust page size to fit in tabcontrol, need bounds of notebook in client of parent
   Self.GetClientRect(Notebook.Handle, R);
   R.Right := R.Right - R.Left;
@@ -2030,56 +2021,6 @@ begin
     end;
   end;
 end;
-
-{ -----------------------------------------------------------------------------
-  Method: TWin32WidgetSet.AddNBPage
-  Params: Notebook - A notebook control
-          NewPage - Page to insert
-          Index  - The position in the notebook to insert the page
-  Returns: Nothing
-
-  Adds a new page to a notebook
- ------------------------------------------------------------------------------}
-Procedure TWin32WidgetSet.AddNBPage(Notebook: TCustomNotebook; NewPage: TCustomPage; Index: Integer);
-Var
-  TCI: TC_ITEM;
-  OldPageIndex: integer;
-  R: TRect;
-Begin
-  Assert(False, 'Trace:TWin32WidgetSet.AddNBPage - Start');
-  With Notebook do
-  Begin
-    TCI.Mask := TCIF_TEXT or TCIF_PARAM;
-    TCI.pszText := PChar(NewPage.Caption);
-    // store handle as extra data, so we can verify we got the right page later
-    TCI.lParam := NewPage.Handle;
-    Windows.SendMessage(Handle, TCM_INSERTITEM, Index, LPARAM(@TCI));
-    // Adjust page size to fit in tabcontrol, need bounds of notebook in client of parent
-    Self.GetClientRect(Handle, R);
-    TWin32WSWinControl.SetBounds(NewPage, R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top);
-    // Do the page switch. The are no tabcontrol notifications so we have to
-    // do the hiding and showing ourselves.
-    OldPageIndex := SendMessage(Handle,TCM_GETCURSEL,0,0);
-    SendMessage(Handle,TCM_SETCURSEL,NewPage.PageIndex,0);
-    ShowWindow(NewPage.Handle, SW_SHOW);
-    if (OldPageIndex>=0) and (OldPageIndex<>NewPage.PageIndex)
-      then ShowWindow(Page[OldPageIndex].Handle, SW_HIDE);
-  End;
-End;
-
-{------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.RemoveNBPage
-  Params: Parent - The notebook control
-          Index  - The page to delete
-  Returns: Nothing
-
-  Removes a page from a notebook control
- ------------------------------------------------------------------------------}
-procedure TWin32WidgetSet.RemoveNBPage(Notebook: TCustomNotebook; Index: Integer);
-Begin
-  Assert(false, 'Trace:Removing a notebook page');
-  Windows.SendMessage(Notebook.Handle, TCM_DELETEITEM, Windows.WPARAM(Index), 0);
-End;
 
 {------------------------------------------------------------------------------
   Method: TWin32WidgetSet.ReDraw
@@ -2456,6 +2397,9 @@ End;
 
 {
   $Log$
+  Revision 1.254  2004/09/13 19:06:04  micha
+  convert LM_ADDPAGE and LM_REMOVEPAGE messages to new interface methods
+
   Revision 1.253  2004/09/13 14:34:53  micha
   convert LM_TB_BUTTONCOUNT to interface method
 

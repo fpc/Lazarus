@@ -73,7 +73,6 @@ end;
 
 procedure TNBPages.RemovePage(Index: integer);
 var
-  Msg: TLMNotebookEvent;
   NewPageIndex: integer;
   APage: TCustomPage;
 begin
@@ -107,10 +106,7 @@ begin
     if (FNoteBook.HandleAllocated)
     and (TCustomPage(fPageList[Index]).HandleAllocated)
     then begin
-      Msg.Parent := fNotebook;
-      Msg.fCompStyle := fNotebook.fCompStyle;
-      Msg.Page := Index;
-      CNSendMessage(LM_REMOVEPAGE, fNotebook, @Msg);
+      TWSCustomNotebookClass(FNotebook.WidgetSetClass).RemovePage(FNotebook, Index);
     end;
     fPageList.Delete(Index);
     APage.Parent:=nil;
@@ -196,7 +192,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TNBPages.InsertPage(Index:integer; APage: TCustomPage);
 var
-  Msg: TLMNotebookEvent;
   NewZPosition: integer;
 begin
   {$IFDEF NOTEBOOK_DEBUG}
@@ -216,13 +211,8 @@ begin
   if FNoteBook.HandleAllocated
   and (not (csLoading in FNoteBook.ComponentState))
   then begin
-    Msg.Parent := TControl(fNotebook);
-    Msg.Child := APage;
-    Msg.fCompStyle := fNotebook.fCompStyle;
-    Msg.Page := Index;
-
-    CNSendMessage(LM_ADDPAGE, fNotebook, @Msg);
-    Include(APage.FFlags,pfAdded);
+    TWSCustomNotebookClass(FNotebook.WidgetSetClass).AddPage(FNotebook, APage, Index);
+    Include(APage.FFlags, pfAdded);
     if fNoteBook.PageIndex = Index then
       fNoteBook.DoSendPageIndex
     else
@@ -338,7 +328,6 @@ end;
 procedure TCustomNotebook.DoCreateWnd;
 var
   i: Integer;
-  Msg: TLMNotebookEvent;
 begin
   {$IFDEF NOTEBOOK_DEBUG}
   DebugLn('TCustomNotebook.DoCreateWnd ',Name,':',ClassName,' HandleAllocated=',HandleAllocated);
@@ -349,11 +338,7 @@ begin
     DebugLn('TCustomNotebook.DoCreateWnd ',Name,':',ClassName,' ',Page[i].Caption,' ',not (pfAdded in Page[i].Flags));
     {$ENDIF}
     if not (pfAdded in Page[i].Flags) then begin
-      Msg.Parent := Self;
-      Msg.Child := TControl(FPageList[i]);
-      Msg.fCompStyle := FCompStyle;
-      Msg.Page := i;
-      CNSendMessage(LM_ADDPAGE, Self, @Msg);
+      TWSCustomNotebookClass(WidgetSetClass).AddPage(Self, TCustomPage(FPageList[i]), i);
       Include(Page[i].FFlags,pfAdded);
     end;
   end;
@@ -823,6 +808,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.56  2004/09/13 19:06:04  micha
+  convert LM_ADDPAGE and LM_REMOVEPAGE messages to new interface methods
+
   Revision 1.55  2004/09/10 16:28:50  mattias
   implemented very rudimentary TTabControl
 
