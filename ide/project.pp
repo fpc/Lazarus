@@ -1896,7 +1896,10 @@ function TProject.AddCreateFormToProjectFile(
 begin
   Result:=CodeToolBoss.AddCreateFormStatement(MainUnitInfo.Source,
     AClassName,AName);
-  if Result then Modified:=true;
+  if Result then begin
+    Modified:=true;
+    MainUnitInfo.Modified:=true;
+  end;
 end;
 
 function TProject.RemoveCreateFormFromProjectFile(
@@ -1904,7 +1907,10 @@ function TProject.RemoveCreateFormFromProjectFile(
 begin
   Result:=CodeToolBoss.RemoveCreateFormStatement(MainUnitInfo.Source,
               AName);
-  if Result then Modified:=true;
+  if Result then begin
+    Modified:=true;
+    MainUnitInfo.Modified:=true;
+  end;
 end;
 
 function TProject.FormIsCreatedInProjectFile(
@@ -2846,6 +2852,9 @@ end.
 
 {
   $Log$
+  Revision 1.155  2004/08/04 16:58:15  mattias
+  fixed setting Modified for hidden lpr file when adding CreateFormStatement
+
   Revision 1.154  2004/05/11 11:42:26  mattias
   replaced writeln by debugln
 

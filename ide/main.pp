@@ -2958,9 +2958,10 @@ begin
 
   NewUnitInfo.ComponentName:=NewComponent.Name;
   NewUnitInfo.ComponentResourceName:=NewUnitInfo.ComponentName;
-  if NewUnitInfo.IsPartOfProject and Project1.AutoCreateForms then
+  if NewUnitInfo.IsPartOfProject and Project1.AutoCreateForms then begin
     Project1.AddCreateFormToProjectFile(NewComponent.ClassName,
                                         NewComponent.Name);
+  end;
 
   Result:=mrOk;
 end;
@@ -4234,7 +4235,7 @@ var NewUnitInfo:TUnitInfo;
   AncestorType: TComponentClass;
   NewResBuffer: TCodeBuffer;
 begin
-  writeln('TMainIDE.DoNewEditorFile A NewFilename=',NewFilename);
+  debugln('TMainIDE.DoNewEditorFile A NewFilename=',NewFilename);
   SaveSourceEditorChangesToCodeCache(-1);
 
   // convert macros in filename
@@ -4350,7 +4351,7 @@ begin
   end;
 
   Result:=mrOk;
-  writeln('TMainIDE.DoNewEditorFile end ',NewUnitInfo.Filename);
+  debugln('TMainIDE.DoNewEditorFile end ',NewUnitInfo.Filename);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoNewUnit end');{$ENDIF}
 end;
 
@@ -10488,6 +10489,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.741  2004/08/04 16:58:15  mattias
+  fixed setting Modified for hidden lpr file when adding CreateFormStatement
+
   Revision 1.740  2004/07/30 15:38:16  vincents
   make executable location is a environment option now.
 
