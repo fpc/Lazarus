@@ -196,7 +196,8 @@ type
     procedure OpenFileDownArrowClicked(Sender : TObject);
     procedure mnuOpenFilePopupClick(Sender : TObject);
     procedure ControlClick(Sender : TObject);
-    
+
+  published
     // Global IDE events
     procedure OnProcessIDECommand(Sender: TObject; Command: word;
       var Handled: boolean);
@@ -2307,9 +2308,28 @@ begin
 end;
 
 procedure TMainIDE.mnuToolConfigBuildLazClicked(Sender : TObject);
+var
+  CmdLineDefines: TDefineTemplate;
+  LazSrcTemplate: TDefineTemplate;
+  LazSrcDirTemplate: TDefineTemplate;
 begin
   if ShowConfigureBuildLazarusDlg(MiscellaneousOptions.BuildLazOpts)=mrOk then
+  begin
     MiscellaneousOptions.Save;
+    LazSrcTemplate:=CodeToolBoss.DefineTree.FindDefineTemplateByName(
+                                                StdDefTemplLazarusSources,true);
+    if LazSrcTemplate<>nil then begin
+      LazSrcDirTemplate:=LazSrcTemplate.FindChildByName(
+                                                      StdDefTemplLazarusSrcDir);
+      if LazSrcDirTemplate<>nil then begin
+        CmdLineDefines:=CodeToolBoss.DefinePool.CreateFPCCommandLineDefines(
+                                StdDefTemplLazarusBuildOpts,
+                                MiscellaneousOptions.BuildLazOpts.ExtraOptions);
+        CodeToolBoss.DefineTree.ReplaceChild(LazSrcDirTemplate,CmdLineDefines,
+                                             StdDefTemplLazarusBuildOpts);
+      end;
+    end;
+  end;
 end;
 
 {-------------------------------------------------------------------------------
@@ -6484,7 +6504,8 @@ begin
     // create compiler macros for the lazarus sources
     ADefTempl:=CreateLazarusSrcTemplate(
       '$('+ExternalMacroStart+'LazarusDir)',
-      '$('+ExternalMacroStart+'LCLWidgetType)');
+      '$('+ExternalMacroStart+'LCLWidgetType)',
+      MiscellaneousOptions.BuildLazOpts.ExtraOptions);
     AddTemplate(ADefTempl,true,
       'NOTE: Could not create Define Template for Lazarus Sources');
   end;
@@ -8005,6 +8026,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.497  2003/03/26 00:21:24  mattias
+  implemented build lazarus extra options -d
+
   Revision 1.496  2003/03/25 17:13:23  mattias
   reduced output
 
