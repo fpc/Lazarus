@@ -2020,11 +2020,14 @@ begin
   if Boolean(Result)
   then with PDeviceContext(DC)^ do
   begin
-    if GC = nil
-    then begin
-      WriteLn('WARNING: [TgtkObject.DrawText] Uninitialized GC');
-      Result := 0;
-    end
+    If (FLAGS and DT_CalcRect) = DT_CalcRect then
+      Result := Inherited DrawText(DC, Str, Count, Rect, Flags)
+    else
+      if GC = nil
+      then begin
+        WriteLn('WARNING: [TgtkObject.DrawText] Uninitialized GC');
+        Result := 0;
+      end
     else
       If not IsValidGDIObject(hFont(CurrentFont)) then begin
         WriteLn('WARNING: [TgtkObject.DrawText] Invalid Font');
@@ -2174,99 +2177,98 @@ function TgtkObject.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
 var
   LineStart, LineEnd, StrEnd: PChar;
   Width, Height: Integer;
-  //NewText,oldText : String;
   AY, Num : Integer;
-  //Line : Integer;
   TXTPt : TPoint;
   TM  : TTextMetric;
   //ADC : hDC;
+  UseFont : PGDKFont;
+  UnRef : Boolean;
 begin
   Assert(False, Format('trace:> [TgtkObject.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
   Result := IsValidDC(DC);
   if Result
   then with PDeviceContext(DC)^ do
   begin
+    if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
+      then begin
+        UseFont := GetDefaultFont;
+        UnRef := True;
+      end
+      else begin
+        UseFont := CurrentFont^.GDIFontObject;
+        UnRef := False;
+      end;
     if GC = nil
     then begin
       WriteLn('WARNING: [TgtkObject.ExtTextOut] Uninitialized GC');
       Result := False;
     end
-    else if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
-    then begin
-      WriteLn('WARNING: [TgtkObject.ExtTextOut] Missing font');
-      Result := False;
-    end
     else begin
-      // TODO: implement other parameters.
-      //ADC := SaveDC(DC);
-      //pStr := StrAlloc(Count + 1);
-      //StrLCopy(pStr, Str, Count);
-      //pStr[Count] := #0;
-      if (Options and ETO_OPAQUE) <> 0 then
-      begin
-        Width := Rect^.Right - Rect^.Left;
-        Height := Rect^.Bottom - Rect^.Top;
-        gdk_gc_set_fill(GC, GDK_SOLID);
-        gdk_gc_set_foreground(GC, @CurrentBackColor);
-        gdk_draw_rectangle(Drawable, GC, 1,
+      If UseFont = nil then begin
+        WriteLn('WARNING: [TgtkObject.ExtTextOut] Missing Font');
+        Result := False;
+      end
+      else begin
+        // TODO: implement other parameters.
+        //ADC := SaveDC(DC);
+        if (Options and ETO_OPAQUE) <> 0 then
+        begin
+          Width := Rect^.Right - Rect^.Left;
+          Height := Rect^.Bottom - Rect^.Top;
+          gdk_gc_set_fill(GC, GDK_SOLID);
+          gdk_gc_set_foreground(GC, @CurrentBackColor);
+          gdk_draw_rectangle(Drawable, GC, 1,
                            Rect^.Left, Rect^.Top, Width, Height);
-      end;
-      SelectGDKTextProps(DC);
-      if (Options and ETO_CLIPPED) <> 0 then
-      begin
-        X := Rect^.Left;
-        Y := Rect^.Top;
-        IntersectClipRect(DC, Rect^.Left, Rect^.Top, Rect^.Right,
-          Rect^.Bottom);
-      end;
-      //Line := 1;
-      //OldText := StrPas(pStr);
-      Num := FindChar(#10,Str,Count);
-      AY := Y;
-      GetTextMetrics(DC, TM);
-      TxtPt.X := X;
-      TxtPt.Y := AY + TM.tmAscent;
-      if Num < 0 then begin
-        if Count> 0 then
-          gdk_draw_text(Drawable, CurrentFont^.GDIFontObject, GC,
-                        TxtPt.X, TxtPt.Y, Str, Count);
-      end else
-      Begin  //write multiple lines
-        LineStart:=Str;
-        StrEnd:=Str+Count;
-        while LineStart < StrEnd do begin
-          //NewText := Copy(OldText,1,Num);
-          //Case OldText[Num] of
-          //  #13,#10 : Delete(NewText,Num,1);
-          //end;
-          //If Num -1 > 0 then
-          //  Case OldText[Num-1] of
-          //    #13,#10 : Delete(NewText,Num-1,1);
-          //  end;
-          LineEnd:=LineStart+Num;
-          if Num>0 then
-            gdk_draw_text(Drawable, CurrentFont^.GDIFontObject, GC,
-                           TxtPt.X, TxtPt.Y, LineStart, Num);
-          AY := TxtPt.Y;
-          TxtPt.Y := AY + TM.tmAscent;
-          //Delete(OldText,1,Num);
-          //Num := pos(#10,OldText);
-          LineStart:=LineEnd+1; // skip #10
-          if (LineStart<StrEnd) and (LineStart^=#13) then
-            inc(LineStart); // skip #10
-          Count:=StrEnd-LineStart;
-          Num:=FindChar(#10,LineStart,Count);
-          if Num<0 then
-            Num:=Count;
-          //inc(line);
         end;
-        //if OldText <> '' then begin
-        //  gdk_draw_text(Drawable, CurrentFont^.GDIFontObject, GC,
-        //                TxtPt.X, TxtPt.Y, pchar(OldText), length(OldText));
-        //end;
+        if (Options and ETO_CLIPPED) <> 0 then
+        begin
+          X := Rect^.Left;
+          Y := Rect^.Top;
+          IntersectClipRect(DC, Rect^.Left, Rect^.Top, Rect^.Right,
+            Rect^.Bottom);
+        end;
+        Num := FindChar(#10,Str,Count);
+        AY := Y;
+        GetTextMetrics(DC, TM);
+        TxtPt.X := X;
+        {$IfDef Win32}
+        TxtPt.Y := AY + TM.tmHeight div 2;
+        {$Else}
+        TxtPt.Y := AY + TM.tmAscent;
+        {$EndIf}
+        SelectGDKTextProps(DC);
+        if Num < 0 then begin
+          if Count> 0 then
+            gdk_draw_text(Drawable, UseFont, GC,
+                          TxtPt.X, TxtPt.Y, Str, Count);
+        end else
+        Begin  //write multiple lines
+          LineStart:=Str;
+          StrEnd:=Str+Count;
+          while LineStart < StrEnd do begin
+            LineEnd:=LineStart+Num;
+            if Num>0 then
+              gdk_draw_text(Drawable, UseFont, GC,
+                             TxtPt.X, TxtPt.Y, LineStart, Num);
+            AY := TxtPt.Y;
+            {$IfDef Win32}
+              TxtPt.Y := AY + TM.tmHeight div 2;
+            {$Else}
+              TxtPt.Y := AY + TM.tmAscent;
+            {$EndIf}
+            LineStart:=LineEnd+1; // skip #10
+            if (LineStart<StrEnd) and (LineStart^=#13) then
+              inc(LineStart); // skip #10
+            Count:=StrEnd-LineStart;
+            Num:=FindChar(#10,LineStart,Count);
+            if Num<0 then
+              Num:=Count;
+          end;
+        end;
+        //RestoreDC(DC, ADC);
+        If UnRef then
+          GDK_Font_UnRef(UseFont);
       end;
-      //RestoreDC(DC, ADC);
-      //StrDispose(pStr);
     end;
   end;
   Assert(False, Format('trace:< [TgtkObject.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
@@ -3306,6 +3308,8 @@ end;
 function TgtkObject.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
 var
   lbearing, rbearing, width, ascent,descent: LongInt;
+  UseFont : PGDKFont;
+  UnRef : Boolean;
 begin
   Assert(False, 'trace:> [TgtkObject.GetTextExtentPoint]');
   Result := IsValidDC(DC);
@@ -3314,14 +3318,23 @@ begin
   begin
     if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
     then begin
-      WriteLn('WARNING: [TgtkObject.GetTextExtentPoint] Missing font');
-      Result := False;
+      UseFont := GetDefaultFont;
+      UnRef := True;
     end
     else begin
-      gdk_text_extents(CurrentFont^.GDIFontObject, Str, Count, @lbearing, @rBearing, @width, @ascent, @descent);
+      UseFont := CurrentFont^.GDIFontObject;
+      UnRef := False;
+    end;
+    If UseFont = nil then
+      WriteLn('WARNING: [TgtkObject.GetTextExtentPoint] Missing font')
+    else begin
+      gdk_text_extents(UseFont, Str, Count, @lbearing, @rBearing, @width, @ascent, @descent);
       Size.cX := Width;
       //I THINK this is accurate...
-      Size.cY := GDK_String_Height(CurrentFont^.GDIFontObject, Str) + descent div 2;
+      Size.cY := GDK_String_Height(UseFont, Str)
+        {$IfNDef Win32} + descent div 2{$EndIf};
+      If UnRef then
+       GDK_Font_UnRef(UseFont);
     end;
   end;
   Assert(False, 'trace:< [TgtkObject.GetTextExtentPoint]');
@@ -3342,6 +3355,8 @@ const
 var
   XT : TSize;
   lbearing, rbearing, dummy: LongInt;
+  UseFont : PGDKFont;
+  UnRef : Boolean;
 begin
   Assert(False, Format('Trace:> TODO FINISH[TgtkObject.GetTextMetrics] DC: 0x%x', [DC]));
 
@@ -3350,25 +3365,32 @@ begin
     with PDeviceContext(DC)^ do begin
       if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
       then begin
-        WriteLn('WARNING: [TgtkObject.GetTGextMetrics] Missing font');
-        Result := False;
+        UseFont := GetDefaultFont;
+        UnRef := True;
       end
-      else with TM do begin
-        FillChar(TM, SizeOf(TM), 0);
-        gdk_text_extents(CurrentFont^.GDIFontObject, TestString,
-          length(TestString), @lbearing, @rBearing, @dummy,
-          @tmAscent, @tmDescent);
-        GetTextExtentPoint(DC, AVGBuffer, StrLen(AVGBuffer), XT);
-        XT.cX := XT.cX div StrLen(AVGBuffer);
-        tmHeight := XT.cY;
-        tmAscent := tmHeight - tmDescent;
-        tmAveCharWidth :=  XT.cX;
-        if tmAveCharWidth<2 then tmAveCharWidth:=2;
-        tmMaxCharWidth := gdk_char_width(CurrentFont^.GDIFontObject, 'W'); // temp hack
-        if tmMaxCharWidth<2 then tmMaxCharWidth:=2;
-        //writeln('TgtkObject.GetTextMetrics lbearing=',lbearing,' rBearing=',rBearing,
-        //' tmAscent=',tmAscent,' tmDescent=',tmDescent,' tmAveCharWidth=',tmAveCharWidth,
-        //' tmMaxCharWidth=',tmMaxCharWidth);
+      else begin
+        UseFont := CurrentFont^.GDIFontObject;
+        UnRef := False;
+      end;
+      If UseFont = nil then
+        WriteLn('WARNING: [TgtkObject.GetTGextMetrics] Missing font')
+      else begin
+        with TM do begin
+          FillChar(TM, SizeOf(TM), 0);
+          gdk_text_extents(UseFont, TestString,
+            length(TestString), @lbearing, @rBearing, @dummy,
+            @tmAscent, @tmDescent);
+          GetTextExtentPoint(DC, AVGBuffer, StrLen(AVGBuffer), XT);
+          XT.cX := XT.cX div StrLen(AVGBuffer);
+          tmHeight := XT.cY;
+          tmAscent := tmHeight - tmDescent;
+          tmAveCharWidth :=  XT.cX;
+          if tmAveCharWidth<2 then tmAveCharWidth:=2;
+          tmMaxCharWidth := gdk_char_width(UseFont, 'W'); // temp hack
+          if tmMaxCharWidth<2 then tmMaxCharWidth:=2;
+          If UnRef then
+            GDK_Font_UnRef(UseFont);
+        end;
       end;
     end;
   Assert(False, Format('Trace:< TODO FINISH[TgtkObject.GetTextMetrics] DC: 0x%x', [DC]));
@@ -5005,7 +5027,7 @@ begin
         if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)),
           gtk_clist_get_type)
         then
-          Adjustment :=  gtk_clist_get_hadjustment(PgtkCList(handle));
+          Adjustment :=  {$IfDef Win32}nil{$Else}gtk_clist_get_hadjustment(PgtkCList(handle)){$EndIf};
 
       SB_VERT:
         if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), 
@@ -5022,7 +5044,7 @@ begin
         if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)),
           gtk_clist_get_type)
         then
-          Adjustment :=  gtk_clist_get_vadjustment(PgtkCList(handle));
+          Adjustment := {$IfDef Win32}nil{$Else}gtk_clist_get_vadjustment(PgtkCList(handle)){$EndIf};
 
       SB_CTL:
         if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), gtk_range_get_type)
@@ -5377,6 +5399,14 @@ var
   SrcGDIBitmap: PGdiObject;
   ScaleBMP : hBITMAP;
   Scale : PGdiObject;
+
+  {$IfDef Win32}
+  Procedure gdk_window_copy_area(Dest : PGDKWindow; GC : PGDKGC; X,
+    Y : Longint; SRC : PGDKWindow; XSRC, YSRC, Width, Height : Longint);
+  begin
+    gdk_draw_pixmap(Dest, GC, Src, XSrc, YSrc, X, Y, Width, Height);
+  End;
+  {$EndIf}
 
   Procedure SetClipping(DestGC : PGDKGC; GDIBitmap : PGdiObject);
   begin
@@ -5823,6 +5853,8 @@ var
   txtpt : TPoint;
   sz : TSize;
   TM : TTextMetric;
+  UseFont : PGDKFont;
+  UnRef : Boolean;
 begin
   Result := IsValidDC(DC);
   if Result
@@ -5831,25 +5863,37 @@ begin
     if GC = nil
     then begin
       WriteLn('WARNING: [TgtkObject.TextOut] Uninitialized GC');
-      Result := False;
-    end
-    else
-    if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
-    then begin
-      WriteLn('WARNING: [TgtkObject.TextOut] Missing font');
-      Result := False;
     end
     else begin
-      GetTextExtentPoint(DC, Str, Count, Sz);
-      aRect := Rect(X,Y,X + Sz.CX, Sz.CY);
-      FillRect(DC,aRect,hBrush(CurrentBrush));
-      SelectGDKTextProps(DC);
-      GetTextMetrics(DC, TM);
-      TxtPt.X := X;
-      TxtPt.Y := Y + TM.tmAscent;
-      gdk_draw_text(Drawable,CurrentFont^.GDIFontObject,
-        GC, TxtPt.X, TxtPt.Y, Str, Count);
-      Result := True;
+      if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
+      then begin
+        UseFont := GetDefaultFont;
+        UnRef := True;
+      end
+      else begin
+        UseFont := CurrentFont^.GDIFontObject;
+        UnRef := False;
+      end;
+      If UseFont = nil then
+        WriteLn('WARNING: [TgtkObject.TextOut] Missing Font')
+      else begin
+        GetTextExtentPoint(DC, Str, Count, Sz);
+        aRect := Rect(X,Y,X + Sz.CX, Sz.CY);
+        FillRect(DC,aRect,hBrush(CurrentBrush));
+        GetTextMetrics(DC, TM);
+        TxtPt.X := X;
+        {$IfDef Win32}
+          TxtPt.Y := Y + TM.tmHeight div 2;
+        {$Else}
+          TxtPt.Y := Y + TM.tmAscent;
+        {$EndIf}
+        SelectGDKTextProps(DC);
+        gdk_draw_text(Drawable, UseFont,
+          GC, TxtPt.X, TxtPt.Y, Str, Count);
+        Result := True;
+        If UnRef then
+          GDK_Font_UnRef(UseFont);
+      end;
     end;
   end;
 end;
@@ -6037,6 +6081,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.110  2002/08/24 06:51:24  lazarus
+  MG: from Andrew: style list fixes, autosize for radio/checkbtns
+
   Revision 1.109  2002/08/22 16:43:36  lazarus
   MG: improved theme support from Andrew
 
