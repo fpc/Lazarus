@@ -325,8 +325,6 @@ begin
 end;
 
 procedure TCustomGTKGLAreaControl.UpdateFrameTimeDiff;
-var
-  hour, minutes, secs, msecs, usecs: word;
 begin
   FCurrentFrameTime:=GetTickCount;
   if FLastFrameTime=0 then

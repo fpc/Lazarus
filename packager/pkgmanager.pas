@@ -162,6 +162,7 @@ type
     procedure LoadStaticCustomPackages;
     function LoadInstalledPackage(const PackageName: string): TLazPackage;
     procedure LoadAutoInstallPackages;
+    procedure SortAutoInstallDependencies;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -1434,8 +1435,6 @@ begin
     MiscellaneousOptions.BuildLazOpts.WithStaticPackages:=true;
   end;
 
-  // TODO: sort FirstAutoInstallDependency topological
-
   sl:=TStringList.Create;
   Dependency:=FirstAutoInstallDependency;
   while Dependency<>nil do begin
@@ -1469,7 +1468,7 @@ begin
     PackageGraph.OpenDependency(Dependency);
     Dependency.AddToList(FirstAutoInstallDependency,pdlRequires);
   end;
-  // TODO: sort FirstAutoInstallDependency topological
+  SortAutoInstallDependencies;
 
   // register them
   PackageGraph.RegisterStaticBasePackages;
@@ -1551,6 +1550,14 @@ begin
     end;
     Dependency.RequiredPackage.AutoInstall:=pitStatic;
   end;
+  SortAutoInstallDependencies;
+end;
+
+procedure TPkgManager.SortAutoInstallDependencies;
+begin
+  // sort install dependencies, so that lower packages come first
+  PackageGraph.SortDependencyListTopologically(FirstAutoInstallDependency,
+                                               false);
 end;
 
 constructor TPkgManager.Create(TheOwner: TComponent);
@@ -3087,9 +3094,10 @@ begin
         NeedSaving:=true;
       end;
     end;
-    // TODO: sort FirstAutoInstallDependency topological
-    if NeedSaving then
+    if NeedSaving then begin
+      SortAutoInstallDependencies;
       SaveAutoInstallDependencies(true);
+    end;
 
     // save IDE build configs, so user can build IDE on command line
     BuildIDEFlags:=[blfWithStaticPackages,blfQuick,blfOnlyIDE];
@@ -3160,6 +3168,7 @@ begin
       if Dependency<>nil then begin
         Dependency.RemoveFromList(FirstAutoInstallDependency,pdlRequires);
         Dependency.Free;
+        SortAutoInstallDependencies;
       end;
       SaveAutoInstallDependencies(true);
     end;
@@ -3215,6 +3224,7 @@ begin
         if Result<>mrYes then exit;
         OldDependency.RemoveFromList(FirstAutoInstallDependency,pdlRequires);
         OldDependency.Free;
+        SaveAutoInstallDependencies(true);
       end;
     end;
     

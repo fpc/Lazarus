@@ -179,6 +179,9 @@ type
                                      Policies: TPackageUpdatePolicies): TList;
     function GetBrokenDependenciesWhenChangingPkgID(APackage: TLazPackage;
                          const NewName: string; NewVersion: TPkgVersion): TList;
+    procedure CalculateTopologicalLevels;
+    procedure SortDependencyListTopologically(
+                   var FirstDependency: TPkgDependency; TopLevelFirst: boolean);
     procedure IterateAllComponentClasses(Event: TIterateComponentClassesEvent);
     procedure IterateComponentClasses(APackage: TLazPackage;
                                Event: TIterateComponentClassesEvent;
@@ -188,6 +191,8 @@ type
     procedure IteratePackagesSorted(Flags: TFindPackageFlags;
                                     Event: TIteratePackagesEvent);
     procedure MarkAllPackagesAsNotVisited;
+    procedure MarkAllDependencies(MarkPackages: boolean;
+                            AddMarkerFlags, RemoveMarkerFlags: TPkgMarkerFlags);
     procedure MarkAllRequiredPackages(FirstDependency: TPkgDependency);
     procedure MarkNeededPackages;
     procedure ConsistencyCheck;
@@ -1020,7 +1025,7 @@ begin
     Filename:=SetDirSeparators('$(LazarusDir)/ideintf/');
     Version.SetValues(1,0,0,0);
     Author:='Lazarus';
-    License:='GPL-2';
+    License:='LGPL-2';
     AutoInstall:=pitStatic;
     AutoUpdate:=pupManually;
     Description:='IDEIntf - the interface units for the IDE';
@@ -1042,6 +1047,7 @@ begin
     AddFile('idecommands.pas','IDECommands',pftUnit,[],cpBase);
     AddFile('imagelisteditor.pp','ImageListEditor',pftUnit,[],cpBase);
     AddFile('listviewpropedit.pp','ListViewPropEdit',pftUnit,[],cpBase);
+    AddFile('newitemintf.pas','NewItemIntf',pftUnit,[],cpBase);
     AddFile('objectinspector.pp','ObjectInspector',pftUnit,[],cpBase);
     AddFile('objinspstrconsts.pas','ObjInspStrConsts',pftUnit,[],cpBase);
     AddFile('packageintf.pas','PackageIntf',pftUnit,[],cpBase);
@@ -1753,6 +1759,27 @@ begin
   end;
 end;
 
+procedure TLazPackageGraph.MarkAllDependencies(
+  MarkPackages: boolean; AddMarkerFlags, RemoveMarkerFlags: TPkgMarkerFlags);
+var
+  i: Integer;
+  Pkg: TLazPackage;
+  Dependency: TPkgDependency;
+begin
+  // mark all dependencies of all packages as not visited
+  for i:=FItems.Count-1 downto 0 do begin
+    Pkg:=TLazPackage(FItems[i]);
+    if MarkPackages then
+      Pkg.Flags:=Pkg.Flags-[lpfVisited];
+    Dependency:=Pkg.FirstRequiredDependency;
+    while Dependency<>nil do begin
+      Dependency.MarkerFlags:=
+                        Dependency.MarkerFlags+AddMarkerFlags-RemoveMarkerFlags;
+      Dependency:=Dependency.NextRequiresDependency;
+    end;
+  end;
+end;
+
 procedure TLazPackageGraph.MarkAllRequiredPackages(
   FirstDependency: TPkgDependency);
 var
@@ -1850,11 +1877,153 @@ begin
   end;
 end;
 
+procedure TLazPackageGraph.CalculateTopologicalLevels;
+
+  procedure GetTopologicalOrder(CurDependency: TPkgDependency;
+    var MaxChildLevel: integer);
+  var
+    RequiredPackage: TLazPackage;
+    CurMaxChildLevel: integer;
+  begin
+    MaxChildLevel:=0;
+    while CurDependency<>nil do begin
+      if CurDependency.LoadPackageResult=lprSuccess then begin
+        RequiredPackage:=CurDependency.RequiredPackage;
+        if (not (lpfVisited in RequiredPackage.Flags)) then begin
+          RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
+          GetTopologicalOrder(RequiredPackage.FirstRequiredDependency,
+                              CurMaxChildLevel);
+          RequiredPackage.TopologicalLevel:=CurMaxChildLevel+1;
+        end;
+        if RequiredPackage.TopologicalLevel>MaxChildLevel then
+          MaxChildLevel:=RequiredPackage.TopologicalLevel;
+      end;
+      CurDependency:=CurDependency.NextRequiresDependency;
+    end;
+  end;
+
+var
+  i: Integer;
+  Pkg: TLazPackage;
+  CurMaxChildLevel: integer;
+begin
+  for i:=FItems.Count-1 downto 0 do begin
+    Pkg:=TLazPackage(FItems[i]);
+    Pkg.Flags:=Pkg.Flags-[lpfVisited];
+    Pkg.TopologicalLevel:=0;
+  end;
+  for i:=FItems.Count-1 downto 0 do begin
+    Pkg:=TLazPackage(FItems[i]);
+    GetTopologicalOrder(Pkg.FirstRequiredDependency,CurMaxChildLevel);
+    Pkg.TopologicalLevel:=CurMaxChildLevel+1;
+  end;
+end;
+
+procedure TLazPackageGraph.SortDependencyListTopologically(
+  var FirstDependency: TPkgDependency; TopLevelFirst: boolean);
+// Sort dependency list topologically.
+// If TopLevelFirst is true then packages that needs others come first
+var
+  Dependency: TPkgDependency;
+  BucketStarts: PInteger;
+  MaxLvl: Integer;
+  BucketCount: Integer;
+  DependencyCount: Integer;
+  Dependencies: PPkgDependency;
+  i: Integer;
+  j: Integer;
+  CurLvl: LongInt;
+begin
+  CalculateTopologicalLevels;
+  
+  // Bucket sort dependencies
+  MaxLvl:=0;
+  Dependency:=FirstDependency;
+  DependencyCount:=0;
+  while Dependency<>nil do begin
+    if Dependency.RequiredPackage<>nil then begin
+      if MaxLvl<Dependency.RequiredPackage.TopologicalLevel then
+        MaxLvl:=Dependency.RequiredPackage.TopologicalLevel;
+    end;
+    Dependency:=Dependency.NextRequiresDependency;
+    inc(DependencyCount);
+  end;
+  if (MaxLvl=0) or (DependencyCount<=1) then exit;
+  
+  //debugln('TLazPackageGraph.SortDependencyListTopologically A MaxLvl=',dbgs(MaxLvl),' ',dbgs(DependencyCount));
+  // compute BucketStarts
+  BucketCount:=MaxLvl+1;
+  GetMem(BucketStarts,SizeOf(Integer)*BucketCount);
+  FillChar(BucketStarts^,SizeOf(Integer)*BucketCount,0);
+  Dependency:=FirstDependency;
+  while Dependency<>nil do begin
+    if Dependency.RequiredPackage<>nil then
+      CurLvl:=Dependency.RequiredPackage.TopologicalLevel
+    else
+      CurLvl:=0;
+    if CurLvl+1<BucketCount then
+      inc(BucketStarts[CurLvl+1]);
+    Dependency:=Dependency.NextRequiresDependency;
+  end;
+  for i:=2 to MaxLvl do
+    BucketStarts[i]:=BucketStarts[i]+BucketStarts[i-1];
+  BucketStarts[0]:=0;
+
+  // put Dependencies into buckets
+  GetMem(Dependencies,SizeOf(Pointer)*DependencyCount);
+  FillChar(Dependencies^,SizeOf(Pointer)*DependencyCount,0);
+  Dependency:=FirstDependency;
+  while Dependency<>nil do begin
+    if Dependency.RequiredPackage<>nil then
+      CurLvl:=Dependency.RequiredPackage.TopologicalLevel
+    else
+      CurLvl:=0;
+    //debugln('BBB1 BucketStarts[',dbgs(CurLvl),']=',dbgs(BucketStarts[CurLvl]),' ',Dependency.AsString);
+    if Dependencies[BucketStarts[CurLvl]]<>nil then
+      RaiseException('');
+    Dependencies[BucketStarts[CurLvl]]:=Dependency;
+    inc(BucketStarts[CurLvl]);
+    Dependency:=Dependency.NextRequiresDependency;
+  end;
+
+  // optional: reverse order
+  if TopLevelFirst then begin
+    i:=0;
+    j:=DependencyCount-1;
+    while (i<j) do begin
+      Dependency:=Dependencies[i];
+      Dependencies[i]:=Dependencies[j];
+      Dependencies[j]:=Dependency;
+      inc(i);
+      dec(j);
+    end;
+  end;
+
+  // commit order
+  FirstDependency:=Dependencies[0];
+  for i:=0 to DependencyCount-1 do begin
+    Dependency:=Dependencies[i];
+    //debugln('TLazPackageGraph.SortDependencyListTopologically A ',Dependency.AsString);
+    if i=0 then
+      Dependency.PrevDependency[pdlRequires]:=nil
+    else
+      Dependency.PrevDependency[pdlRequires]:=Dependencies[i-1];
+    if i=DependencyCount-1 then
+      Dependency.NextDependency[pdlRequires]:=nil
+    else
+      Dependency.NextDependency[pdlRequires]:=Dependencies[i+1];
+  end;
+
+  // clean up
+  FreeMem(BucketStarts);
+  FreeMem(Dependencies);
+end;
+
 function TLazPackageGraph.CheckIfPackageCanBeClosed(APackage: TLazPackage
   ): boolean;
 begin
   MarkNeededPackages;
-  Result:=lpfNeeded in APackage.FLags;
+  Result:=lpfNeeded in APackage.Flags;
 end;
 
 function TLazPackageGraph.PackageIsNeeded(APackage: TLazPackage): boolean;

@@ -216,6 +216,12 @@ type
     );
   TPkgDependencyFlags = set of TPkgDependencyFlag;
   
+  TPkgMarkerFlag = (
+    pmfVisited,
+    pmfMarked
+    );
+  TPkgMarkerFlags = set of TPkgMarkerFlag;
+  
   TLoadPackageResult = (
     lprUndefined,
     lprSuccess,
@@ -233,6 +239,7 @@ type
     FFlags: TPkgDependencyFlags;
     FHoldPackage: boolean;
     FLoadPackageResult: TLoadPackageResult;
+    FMarkerFlags: TPKgMarkerFlags;
     FOwner: TObject;
     FMaxVersion: TPkgVersion;
     FMinVersion: TPkgVersion;
@@ -287,6 +294,7 @@ type
     property RequiredPackage: TLazPackage read FRequiredPackage write SetRequiredPackage;
     property LoadPackageResult: TLoadPackageResult read FLoadPackageResult write SetLoadPackageResult;
     property HoldPackage: boolean read FHoldPackage write SetHoldPackage;
+    property MarkerFlags: TPKgMarkerFlags read FMarkerFlags write FMarkerFlags;
   end;
   PPkgDependency = ^TPkgDependency;
   
@@ -550,6 +558,7 @@ type
     FRegistered: boolean;
     FSourceDirectories: TFileReferenceList;
     FStateFileDate: longint;
+    FTopologicalLevel: integer;
     FUpdateLock: integer;
     FUsageOptions: TPkgAdditionalCompilerOptions;
     FUserReadOnly: boolean;
@@ -721,6 +730,7 @@ type
     property RemovedFiles[Index: integer]: TPkgFile read GetRemovedFiles;
     property SourceDirectories: TFileReferenceList read FSourceDirectories;
     property StateFileDate: longint read FStateFileDate write FStateFileDate;
+    property TopologicalLevel: integer read FTopologicalLevel write FTopologicalLevel;
     property UsageOptions: TPkgAdditionalCompilerOptions read FUsageOptions;
     property UserReadOnly: boolean read FUserReadOnly write SetUserReadOnly;
   end;

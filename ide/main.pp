@@ -2012,7 +2012,7 @@ var
   ASrcEdit: TSourceEditor;
   AnUnitInfo: TUnitInfo;
 begin
-  debugln('TDebugManager.OnProcessIDECommand ',dbgs(Command));
+  //debugln('TMainIDE.OnProcessIDECommand ',dbgs(Command));
 
   Handled:=true;
 
@@ -10965,6 +10965,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.799  2004/11/25 22:05:00  mattias
+  implemented sorting installed packages topologically
+
   Revision 1.798  2004/11/24 08:18:13  mattias
   TTextStrings improvements (Exchange, Put), clean ups
 

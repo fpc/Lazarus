@@ -34,7 +34,7 @@ unit CGILazIDEIntf;
 interface
 
 uses
-  Classes, SysUtils, cgiApp, cgiModules, LazIDEIntf, ProjectIntf, NewItemIntf;
+  Classes, SysUtils, cgiApp, cgiModules, LazIDEIntf, ProjectIntf;
 
 type
   { TCGIApplicationDescriptor }
