@@ -124,6 +124,7 @@ type
     lbearing: LongInt;
     rBearing: LongInt;
     TextMetric: TTextMetric;
+    IsDoubleByteChar: boolean;
   end;
 
   TDeviceContextsFlag = (
@@ -428,6 +429,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.30  2002/12/05 22:16:30  mattias
+  double byte char font started
+
   Revision 1.29  2002/10/30 17:43:35  lazarus
   AJ: added IsNullBrush checks to reduce pointless color allocations & GDK function calls
 
