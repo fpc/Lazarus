@@ -309,6 +309,9 @@ type
     CaretPos: TPoint) of object;
   TOnInitIdentCompletion = procedure(Sender: TObject;
     var Handled, Abort: boolean) of object;
+    
+  TSourceNotebookState = (snIncrementalFind);
+  TSourceNotebookStates = set of TSourceNotebookState;
 
   TSourceNotebook = class(TForm)
     ReadOnlyMenuItem: TMenuItem;
@@ -333,14 +336,14 @@ type
     procedure MoveEditorRightClicked(Sender: TObject);
     procedure EditorPropertiesClicked(Sender: TObject);
   private
-    FMainIDE : TComponent;
-    FFormEditor : TFormEditor;
-    FSourceEditorList : TList; // list of TSourceEditor
     FCodeTemplateModul: TSynEditAutoComplete;
+    FFormEditor : TFormEditor;
+    fIncrementalSearchStartPos: TPoint;
+    FIncrementalSearchStr: string;
     FKeyStrokes: TSynEditKeyStrokes;
-    FUnUsedEditorComponents: TList; // list of TSynEdit
+    FMainIDE : TComponent;
     FProcessingCommand: boolean;
-  private
+    FSourceEditorList : TList; // list of TSourceEditor
     FOnAddJumpPoint: TOnAddJumpPoint;
     FOnAddWatchAtCursor: TNotifyEvent;
     FOnCloseClicked: TNotifyEvent;
@@ -368,7 +371,8 @@ type
     FOnToggleObjectInspClicked: TNotifyEvent;
     FOnUserCommandProcessed: TOnProcessUserCommand;
     FOnViewJumpHistory: TNotifyEvent;
-
+    FUnUsedEditorComponents: TList; // list of TSynEdit
+  private
     // colors for the completion form (popup form, e.g. word completion)
     FActiveEditDefaultFGColor: TColor;
     FActiveEditDefaultBGColor: TColor;
@@ -384,11 +388,13 @@ type
 
     Procedure BreakPointCreated(Sender : TObject; Line : Integer);
     Procedure BreakPointDeleted(Sender : TObject; Line : Integer);
-    
+
     procedure UpdateActiveEditColors;
+    procedure SetIncrementalSearchStr(const AValue: string);
   protected
     ccSelection : String;
     MarksImgList : TImageList;
+    States: TSourceNotebookStates;
      
     Function CreateNotebook : Boolean;
     Function NewSE(Pagenum : Integer) : TSourceEditor;
@@ -476,6 +482,7 @@ type
     procedure FindPreviousClicked(Sender : TObject);
     procedure FindInFilesClicked(Sender : TObject);
     procedure ReplaceClicked(Sender : TObject);
+    procedure IncrementalFindClicked(Sender : TObject);
     procedure GotoLineClicked(Sender: TObject);
     procedure HistoryJump(Sender: TObject; Action: TJumpHistoryAction);
     procedure JumpBackClicked(Sender: TObject);
@@ -509,6 +516,10 @@ type
     
     procedure FindReplaceDlgKey(Sender: TObject; var Key: Word;
                   Shift:TShiftState; FindDlgComponent: TFindDlgComponent);
+
+    procedure EndIncrementalFind;
+    property IncrementalSearchStr: string
+      read FIncrementalSearchStr write SetIncrementalSearchStr;
   published
     Notebook : TNotebook;
     SrcPopUpMenu : TPopupMenu;
@@ -854,6 +865,36 @@ end;
 Procedure TSourceEditor.ProcessCommand(Sender: TObject;
    var Command: TSynEditorCommand; var AChar: char; Data: pointer);
 begin
+  if (FSourceNoteBook<>nil)
+  and (snIncrementalFind in FSourceNoteBook.States) then begin
+    case Command of
+    ecChar:
+      begin
+        FSourceNoteBook.IncrementalSearchStr:=
+          FSourceNoteBook.IncrementalSearchStr+AChar;
+        Command:=ecNone;
+      end;
+      
+    ecDeleteLastChar:
+      begin
+        FSourceNoteBook.IncrementalSearchStr:=
+          LeftStr(FSourceNoteBook.IncrementalSearchStr,
+            length(FSourceNoteBook.IncrementalSearchStr)-1);
+        Command:=ecNone;
+      end;
+
+    ecLineBreak:
+      begin
+        FSourceNoteBook.EndIncrementalFind;
+        Command:=ecNone;
+      end;
+
+    else
+      FSourceNoteBook.EndIncrementalFind;
+    end;
+  end;
+
+
   case Command of
   
   ecSelEditorTop, ecSelEditorBottom, ecEditorTop, ecEditorBottom:
@@ -930,6 +971,9 @@ Begin
 
   ecFindPrevious:
     FindPrevious;
+    
+  ecIncrementalFind:
+    if FSourceNoteBook<>nil then FSourceNoteBook.IncrementalFindClicked(Self);
 
   ecFindInFiles:
     // ToDo
@@ -2924,6 +2968,13 @@ begin
   end;
 end;
 
+procedure TSourceNotebook.EndIncrementalFind;
+begin
+  if not (snIncrementalFind in States) then exit;
+  Exclude(States,snIncrementalFind);
+  UpdateStatusBar;
+end;
+
 function TSourceNotebook.SomethingModified: boolean;
 var i: integer;
 begin
@@ -2995,16 +3046,28 @@ end;
 Procedure TSourceNotebook.FindClicked(Sender : TObject);
 var TempEditor:TSourceEditor;
 Begin
-  TempEditor:=GetActiveSe;
+  TempEditor:=GetActiveSE;
   if TempEditor <> nil then TempEditor.StartFindAndReplace(false);
 End;
 
 Procedure TSourceNotebook.ReplaceClicked(Sender : TObject);
 var TempEditor:TSourceEditor;
 Begin
-  TempEditor:=GetActiveSe;
+  TempEditor:=GetActiveSE;
   if TempEditor <> nil then TempEditor.StartFindAndReplace(true);
 End;
+
+procedure TSourceNotebook.IncrementalFindClicked(Sender: TObject);
+var
+  TempEditor: TSourceEditor;
+begin
+  TempEditor:=GetActiveSE;
+  if TempEditor = nil then exit;
+  Include(States,snIncrementalFind);
+  fIncrementalSearchStartPos:=TempEditor.EditorComponent.CaretXY;
+  IncrementalSearchStr:='';
+  UpdateStatusBar;
+end;
 
 Procedure TSourceNotebook.FindNextClicked(Sender : TObject);
 var TempEditor:TSourceEditor;
@@ -3444,27 +3507,35 @@ begin
   if (TempEditor.EditorComponent.CaretY<>TempEditor.ErrorLine)
   or (TempEditor.EditorComponent.CaretX<>TempEditor.fErrorColumn) then
     TempEditor.ErrorLine:=-1;
-  Statusbar.Panels[3].Text := TempEditor.Filename;
+    
+  if snIncrementalFind in States then begin
+    Statusbar.SimplePanel:=true;
+    Statusbar.SimpleText:='Searching: '+IncrementalSearchStr;
+    
+  end else begin
+    Statusbar.SimplePanel:=false;
+    Statusbar.Panels[3].Text := TempEditor.Filename;
 
-  If TempEditor.Modified then
-    StatusBar.Panels[1].Text := ueModified
-  else
-    StatusBar.Panels[1].Text := '';
-
-  If TempEditor.ReadOnly then
-    if StatusBar.Panels[1].Text <> '' then
-      StatusBar.Panels[1].Text := StatusBar.Panels[1].Text + '/ReadOnly'
+    If TempEditor.Modified then
+      StatusBar.Panels[1].Text := ueModified
     else
-      StatusBar.Panels[1].Text := uepReadonly;
+      StatusBar.Panels[1].Text := '';
+
+    If TempEditor.ReadOnly then
+      if StatusBar.Panels[1].Text <> '' then
+        StatusBar.Panels[1].Text := StatusBar.Panels[1].Text + '/ReadOnly'
+      else
+        StatusBar.Panels[1].Text := uepReadonly;
 
 
-  Statusbar.Panels[0].Text :=
-    Format(' %6d:%4d',[TempEditor.CurrentCursorYLine,TempEditor.CurrentCursorXLine]);
+    Statusbar.Panels[0].Text :=
+      Format(' %6d:%4d',[TempEditor.CurrentCursorYLine,TempEditor.CurrentCursorXLine]);
 
-  if GetActiveSE.InsertMode then
-    Statusbar.Panels[2].Text := uepIns
-  else
-    Statusbar.Panels[2].Text := uepOvr;
+    if GetActiveSE.InsertMode then
+      Statusbar.Panels[2].Text := uepIns
+    else
+      Statusbar.Panels[2].Text := uepOvr;
+  end;
 End;
 
 function TSourceNotebook.FindBookmark(BookmarkID: integer): TSourceEditor;
@@ -3774,6 +3845,30 @@ Procedure TSourceNotebook.BreakPointDeleted(Sender : TObject; Line : Integer);
 begin
   if Assigned(OnDeleteBreakPoint) then
       OnDeleteBreakPoint(self,Line);
+end;
+
+procedure TSourceNotebook.SetIncrementalSearchStr(const AValue: string);
+var
+  CurEdit: TSynEdit;
+begin
+  if FIncrementalSearchStr=AValue then exit;
+  FIncrementalSearchStr:=AValue;
+  if snIncrementalFind in States then begin
+    // search string
+    CurEdit:=GetActiveSE.EditorComponent;
+    CurEdit.BeginUpdate;
+    CurEdit.CaretXY:=fIncrementalSearchStartPos;
+    if fIncrementalSearchStr<>'' then begin
+      CurEdit.SearchReplace(fIncrementalSearchStr,'',[]);
+      CurEdit.CaretXY:=CurEdit.BlockEnd;
+      FIncrementalSearchStr:=CurEdit.SelText;
+    end else begin
+      CurEdit.BlockBegin:=CurEdit.CaretXY;
+      CurEdit.BlockEnd:=CurEdit.CaretXY;
+    end;
+    CurEdit.EndUpdate;
+  end;
+  UpdateStatusBar;
 end;
 
 procedure TSourceNotebook.UpdateActiveEditColors;
