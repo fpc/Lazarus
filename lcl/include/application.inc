@@ -231,7 +231,7 @@ end;
 
 {------------------------------------------------------------------------------
        TApplication Initialize
-       Makes a call to the coponent engine to provide any initialization that
+       Makes a call to the component engine to provide any initialization that
        needs to occur.
 ------------------------------------------------------------------------------}
 procedure TApplication.Initialize;
@@ -246,6 +246,7 @@ begin
     raise Exception.Create(rsNoInterfaceObject);
   end;
   InterfaceObject.AppInit(ScreenInfo);
+  ScreenInfo.Initialized:=true;
   Screen.UpdateScreen;
   // application icon
   if LazarusResources.Find('MAINICON')<>nil then begin
@@ -1339,6 +1340,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.93  2004/12/22 19:56:44  mattias
+  started TFont mirgration to fpCanvas font
+
   Revision 1.92  2004/09/18 10:52:48  micha
   convert LM_SCREENINIT message to interface method (integrated with TWidgetSet.AppInit(var ScreenInfo)
 

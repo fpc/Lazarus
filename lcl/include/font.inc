@@ -485,6 +485,14 @@ begin
   Result:=ClearXLFDItem(ClearXLFDItem(ClearXLFDItem(LongFontName,3),4),5);
 end;
 
+function XLFDHeightIsSet(const LongFontName: string): boolean;
+begin
+  Result:=(ExtractXLFDItem(LongFontName,7)<>'')
+       or (ExtractXLFDItem(LongFontName,8)<>'')
+       or (ExtractXLFDItem(LongFontName,9)<>'')
+       or (ExtractXLFDItem(LongFontName,10)<>'');
+end;
+
 {------------------------------------------------------------------------------
   function: IsFontNameXLogicalFontDesc
   Params:   const LongFontName: string
@@ -511,7 +519,6 @@ end;
 
 { TFont }
 
-
 {------------------------------------------------------------------------------
   Method:  TFont.Create
   Params:  none
@@ -522,10 +529,15 @@ end;
 constructor TFont.Create;
 begin
   inherited Create;
-  FFontData:=DefFontData;
-
-  FColor := clWindowText;
-  FPixelsPerInch := ScreenInfo.PixelsPerInchX;
+  FColor:=clWindowText;
+  FPixelsPerInch:=ScreenInfo.PixelsPerInchX;
+  FPitch:=DefFontData.Pitch;
+  FCharSet:=DefFontData.CharSet;
+  {$IFDEF UseFPCanvas}
+  inherited SetName(DefFontData.Name);
+  {$ELSE}
+  FFontName:=DefFontData.Name;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -533,9 +545,9 @@ end;
   Params: Source: Another font
   Returns:  nothing
 
-  Copies the source font to itself
+  Copies the Source font to itself
  ------------------------------------------------------------------------------}
-Procedure TFont.Assign(Source : TPersistent);
+Procedure TFont.Assign(Source: TPersistent);
 begin
   if Source is TFont then begin
     //TODO:lock;
@@ -619,7 +631,7 @@ end;
  ------------------------------------------------------------------------------}
 function TFont.HandleAllocated: boolean;
 begin
-  Result:=FFontData.Handle<>0;
+  Result:=FHandle<>0;
 end;
 
 {------------------------------------------------------------------------------
@@ -638,14 +650,29 @@ end;
 
 {------------------------------------------------------------------------------
   Method: TFont.SetSize
-  Params: Value: the new value
+  Params: AValue: the new value
   Returns:  nothing
 
-  Converts the size in points to pixels and sets the height
  ------------------------------------------------------------------------------}
-procedure TFont.SetSize(value : Integer);
+procedure TFont.SetSize(AValue: Integer);
 begin
-  Height := -(Value * FPixelsPerInch) div 72;
+  if Size <> AValue then begin
+    BeginUpdate;
+    try
+      FreeHandle;
+      {$IFDEF UseFPCanvas}
+      inherited SetSize(AValue);
+      {$ELSE}
+      FSize:=AValue;
+      {$ENDIF}
+      FHeight := - (AValue * FPixelsPerInch) div 72;
+      if IsFontNameXLogicalFontDesc(Name) then
+        Name:=ClearXLFDHeight(Name);
+      Changed;
+    finally
+      EndUpdate;
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -655,9 +682,13 @@ end;
 
   Calculates the size based on height
  ------------------------------------------------------------------------------}
-function TFont.GetSize : Integer;
+function TFont.GetSize: Integer;
 begin
-  Result := -(Height * 72) div FPixelsPerInch;
+  {$IFDEF UseFPCanvas}
+  Result := inherited Size;
+  {$ELSE}
+  Result := FSize;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -669,12 +700,11 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TFont.SetPitch(Value : TFontPitch);
 Begin
-  if FFontData.Pitch <> Value
-  then begin
+  if FPitch <> Value then begin
     BeginUpdate;
     FreeHandle;
-    FFontData.Pitch := Value;
-    if IsFontNameXLogicalFontDesc(FFontName) then
+    FPitch := Value;
+    if IsFontNameXLogicalFontDesc(Name) then
       Name:=ClearXLFDPitch(Name);
     Changed;
     EndUpdate;
@@ -690,16 +720,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TFont.SetHeight(Value: Integer);
 begin
-  if FFontData.Height <> Value
-  then begin
-    BeginUpdate;
-    FreeHandle;
-    FFontData.Height := Value;
-    if IsFontNameXLogicalFontDesc(FFontName) then
-      Name:=ClearXLFDHeight(Name);
-    Changed;
-    EndUpdate;
-  end;
+  if FHeight=Value then exit;
+  // set Size first. This will set FHeight to a rounded equivalent
+  Size := -(Value * 72) div FPixelsPerInch;
+  // store the real FHeight
+  FHeight:=Value;
 end;
 
 {------------------------------------------------------------------------------
@@ -711,11 +736,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TFont.SetStyle(value : TFontStyles);
 begin
-  if FFontData.Style <> Value 
-  then begin
+  if FStyle <> Value then begin
     BeginUpdate;
     FreeHandle;
-    FFontData.Style := Value;
+    FStyle := Value;
     if IsFontNameXLogicalFontDesc(Name) then
       Name:=ClearXLFDStyle(Name);
     Changed;
@@ -746,12 +770,13 @@ end;
 
   Returns the name of the font
  ------------------------------------------------------------------------------}
-function TFont.GetName: TFontName;
+function TFont.GetName: string;
 begin
-  if FFontName<>'' then
-    Result:=FFontName
-  else
-    Result := FFontdata.Name;
+  {$IFDEF UseFPCanvas}
+  Result:=inherited Name;
+  {$ELSE}
+  Result:=FFontName;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -761,16 +786,74 @@ end;
 
   Sets the name of a font
  ------------------------------------------------------------------------------}
-procedure TFont.SetName(const AValue : TFontName);
+procedure TFont.SetName({$IFNDEF UseFPCanvas}const{$ENDIF}AValue: string);
 begin
-  if FFontName <> AValue
-  then begin
+  if Name <> AValue then begin
     FreeHandle;
-    FFontData.Name := LeftStr(AValue,SizeOf(FFontData.Name));
+    {$IFDEF UseFPCanvas}
+    inherited SetName(AValue);
+    {$ELSE}
     FFontName:=AValue;
+    {$ENDIF}
     Changed;
   end;
 end;
+
+{$IFDEF UseFPCanvas}
+procedure TFont.DoAllocateResources;
+begin
+  inherited DoAllocateResources;
+  GetHandle;
+end;
+
+procedure TFont.DoDeAllocateResources;
+begin
+  FreeHandle;
+  inherited DoDeAllocateResources;
+end;
+
+procedure TFont.DoCopyProps(From: TFPCanvasHelper);
+var
+  SrcFont: TFont;
+begin
+  BeginUpdate;
+  try
+    inherited DoCopyProps(From);
+    if From is TFont then begin
+      SrcFont:=TFont(From);
+      Pitch:=SrcFont.Pitch;
+      CharSet:=SrcFont.CharSet;
+      Style:=SrcFont.Style;
+    end;
+  finally
+    EndUpdate;
+  end;
+end;
+
+procedure TFont.SetFlags(Index: integer; AValue: boolean);
+
+  procedure SetStyleFlag(Flag: TFontStyle; NewValue: boolean);
+  begin
+    BeginUpdate;
+    FreeHandle;
+    if NewValue then Include(FStyle,Flag) else Exclude(FStyle,Flag);
+    if IsFontNameXLogicalFontDesc(Name) then
+      Name:=ClearXLFDStyle(Name);
+    Changed;
+    EndUpdate;
+  end;
+
+begin
+  if GetFlags(Index)=AValue then exit;
+  inherited SetFlags(Index, AValue);
+  case Index of
+  5: SetStyleFlag(fsBold,AValue);
+  6: SetStyleFlag(fsItalic,AValue);
+  7: SetStyleFlag(fsUnderline,AValue);
+  8: SetStyleFlag(fsStrikeOut,AValue);
+  end;
+end;
+{$ENDIF}
 
 {------------------------------------------------------------------------------
   Method: TFont.Destroy
@@ -828,7 +911,7 @@ var
   end;
 
 begin
-  if FFontData.Handle = 0 then with ALogFont do
+  if FHandle = 0 then with ALogFont do
   begin
     FillChar(ALogFont,SizeOf(ALogFont),0);
     lfHeight := Height;
@@ -839,7 +922,7 @@ begin
     lfItalic := LF_BOOL[fsItalic in Style];
     lfUnderline := LF_BOOL[fsUnderline in Style];
     lfStrikeOut := LF_BOOL[fsStrikeOut in Style];
-    lfCharSet := Byte(FFontData.Charset);
+    lfCharSet := Byte(FCharset);
     SetLogFontName(Name);
 
     lfQuality := DEFAULT_QUALITY;
@@ -856,16 +939,16 @@ begin
     CachedFont:=FontResourceCache.FindFontDesc(ALogFont,Name);
     if CachedFont<>nil then begin
       CachedFont.Item.IncreaseRefCount;
-      FFontData.Handle := CachedFont.Item.Handle;
+      FHandle := CachedFont.Item.Handle;
     end else begin
-      FFontData.Handle := CreateFontIndirectEx(ALogFont,Name);
-      FontResourceCache.Add(FFontData.Handle,ALogFont,Name);
+      FHandle := CreateFontIndirectEx(ALogFont,Name);
+      FontResourceCache.Add(FHandle,ALogFont,Name);
     end;
     FFontHandleCached:=true;
-    FCanUTF8:=FontCanUTF8(FFontData.Handle);
+    FCanUTF8:=FontCanUTF8(FHandle);
   end;
   
-  Result := FFontData.Handle;
+  Result := FHandle;
 end;
 
 {------------------------------------------------------------------------------
@@ -877,36 +960,40 @@ end;
  ------------------------------------------------------------------------------}
 procedure TFont.FreeHandle;
 begin
-  if FFontData.Handle <> 0 
+  if FHandle <> 0
   then begin
     if FFontHandleCached then begin
-      FontResourceCache.FindFont(FFontData.Handle).DecreaseRefCount;
+      FontResourceCache.FindFont(FHandle).DecreaseRefCount;
       FFontHandleCached:=false;
     end else
-      DeleteObject(FFontData.Handle);
-    FFontData.Handle := 0;
+      DeleteObject(FHandle);
+    FHandle := 0;
   end;
 end;
 
 function TFont.GetCharSet: TFontCharSet;
 begin
-  Result:=FFontData.CharSet;
+  Result:=FCharSet;
 end;
 
 procedure TFont.SetCharSet(const AValue: TFontCharSet);
 begin
-  if FFontData.CharSet <> AValue
-  then begin
+  if FCharSet <> AValue then begin
     FreeHandle;
-    FFontData.CharSet := AValue;
+    FCharSet := AValue;
     Changed;
   end;
 end;
 
 procedure TFont.GetData(var FontData: TFontData);
 begin
-  FontData := FFontData;
-  FontData.Handle := 0;
+  FontData := DefFontData;
+  FontData.Handle:=0;
+  FontData.Height:=Height;
+  FontData.Pitch:=Pitch;
+  FontData.Style:=Style;
+  FontData.CharSet:=CharSet;
+  FontData.Name:=LeftStr(Name,SizeOf(FontData.Name)-1);
 end;
 
 function TFont.IsNameStored: boolean;
@@ -915,36 +1002,52 @@ begin
 end;
 
 procedure TFont.SetData(const FontData: TFontData);
+{$IFDEF UseFPCanvas}
+var
+  OldStyle: TFontStylesbase;
+{$ENDIF}
 begin
-  if FFontData.Handle <> FontData.Handle then begin
+  if (FHandle <> FontData.Handle) or (FHandle=0) then begin
+    {$IFDEF UseFPCanvas}
+    OldStyle:=FStyle;
+    {$ENDIF}
     FreeHandle;
-    FFontData.Handle := FontData.Handle;
+    FHandle := FontData.Handle;
+    FSize := -(FontData.Height * 72) div FPixelsPerInch;
+    FHeight := FontData.Height;
+    FPitch:=FontData.Pitch;
+    FStyle:=FontData.Style;
+    FCharSet:=FontData.CharSet;
+    {$IFDEF UseFPCanvas}
+    inherited SetName(FontData.Name);
+    if (fsBold in OldStyle)<>(fsBold in FStyle) then
+      inherited Bold:=fsBold in FStyle;
+    if (fsItalic in OldStyle)<>(fsItalic in FStyle) then
+      inherited Italic:=fsItalic in FStyle;
+    if (fsUnderline in OldStyle)<>(fsUnderline in FStyle) then
+      inherited Underline:=fsUnderline in FStyle;
+    if (fsStrikeOut in OldStyle)<>(fsStrikeOut in FStyle) then
+      inherited StrikeTrough:=fsStrikeOut in FStyle;
+    {$ELSE}
     FFontName:=FontData.Name;
-    //TODO: query new parameters
+    {$ENDIF}
     Changed;
   end;
-
-  {Lock;
-  try
-    FontManager.ChangeResource(Self, FontData);
-  finally
-    Unlock;
-  end;}
 end;
 
 function TFont.GetHeight: Integer;
 begin
-  Result:=FFontData.Height;
+  Result := FHeight;
 end;
 
 function TFont.GetPitch: TFontPitch;
 begin
-  Result:=FFontData.Pitch;
+  Result:=FPitch;
 end;
 
 function TFont.GetStyle: TFontStyles;
 begin
-  Result:=FFontData.Style;
+  Result:=FStyle;
 end;
 
 procedure TFont.Changed;
@@ -964,6 +1067,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.22  2004/12/22 19:56:44  mattias
+  started TFont mirgration to fpCanvas font
+
   Revision 1.21  2004/12/19 21:38:21  marc
   * x86_64 fix: Debugln of TFontHandleCache.Add
 

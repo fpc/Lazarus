@@ -2039,8 +2039,8 @@ begin
   ASynEdit.Gutter.Width:=fGutterWidth;
   ASynEdit.RightEdge:=fRightMargin;
   ASynEdit.RightEdgeColor:=fRightMarginColor;
+  ASynEdit.Font.Height:=fEditorFontHeight;// set height before name for XLFD !
   ASynEdit.Font.Name:=fEditorFont;
-  ASynEdit.Font.Height:=fEditorFontHeight;
   ASynEdit.ExtraLineSpacing:=fExtraLineSpacing;
   ASynEdit.MaxUndo:=fUndoLimit;
   GetSynEditSelectedColor(ASynEdit);
@@ -2066,9 +2066,6 @@ begin
   fEditorFontHeight:=ASynEdit.Font.Height;
   fExtraLineSpacing:=ASynEdit.ExtraLineSpacing;
   fUndoLimit:=ASynEdit.MaxUndo;
-
-  // XXX: KeyMap
-
   // XXX:  update all checkboxes, comboboxes...
 end;
 
@@ -2118,8 +2115,8 @@ begin
   ASynEdit.Gutter.Visible:=false;
   ASynEdit.RightEdge:=fRightMargin;
   ASynEdit.RightEdgeColor:=fRightMarginColor;
+  ASynEdit.Font.Height:=fEditorFontHeight; // set height before Name for XLFD !
   ASynEdit.Font.Name:=fEditorFont;
-  ASynEdit.Font.Height:=fEditorFontHeight;
   ASynEdit.ExtraLineSpacing:=fExtraLineSpacing;
   ASynEdit.ReadOnly:=true;
 
@@ -4144,6 +4141,9 @@ begin
     Items.Add('13');
     Items.Add('14');
     Items.Add('15');
+    Items.Add('16');
+    Items.Add('17');
+    Items.Add('18');
     Items.EndUpdate;
     SetComboBoxText(EditorFontHeightComboBox
        ,IntToStr(EditorOpts.EditorFontHeight));

@@ -41,6 +41,9 @@ uses
   SysUtils, Classes, Contnrs, FPCAdds,
   {$IFNDEF DisableFPImage}
   FPImage, FPReadPNG, FPWritePNG, FPReadBMP, FPWriteBMP, IntfGraphics,
+  {$IFDEF UseFPCanvas}
+  FPCanvas,
+  {$ENDIF}
   {$ENDIF}
   AvgLvlTree,
   LCLStrConsts, LCLType, LCLProc, LMessages, LCLIntf, LResources, LCLResCache,
@@ -369,7 +372,6 @@ type
   //     but then with the advanced features of the existing package
   {$ENDIF}
 
-
   { TGraphicsObject }
 
   TGraphicsObject = class(TPersistent)
@@ -386,7 +388,7 @@ type
     property OnChanging: TNotifyEvent read FOnChanging write FOnChanging;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
-  
+
 
   { TFontHandleCacheDescriptor }
 
@@ -415,26 +417,51 @@ type
 
   { TFont }
 
+  {$IFDEF UseFPCanvas}
+  TFont = class(TFPCustomFont)
+  {$ELSE}
   TFont = class(TGraphicsObject)
+  {$ENDIF}
   private
     FCanUTF8: boolean;
-    FColor: TColor;
-    FFontData: TFontData;
+    FHandle: HFont;
+    FPitch: TFontPitch;
+    FStyle: TFontStylesBase;
+    FCharSet: TFontCharSet;
     FPixelsPerInch: Integer;
-    FFontName: string;
     FUpdateCount: integer;
     FChanged: boolean;
     FFontHandleCached: boolean;
+    FColor: TColor;
+    {$IFDEF UseFPCanvas}
+    {$ELSE}
+    FFontName: string;
+    FHeight: integer; // FHeight = -(FSize * FPixelsPerInch) div 72
+    FSize: Integer;   // Important: because of rounding errors both are stored
+                      //    This way setting Height and reading it will result
+                      //    in the same value
+    {$ENDIF}
     procedure FreeHandle;
     procedure GetData(var FontData: TFontData);
     function IsNameStored: boolean;
     procedure SetData(const FontData: TFontData);
   protected
+    {$IFDEF UseFPCanvas}
+    procedure DoAllocateResources; override;
+    procedure DoDeAllocateResources; override;
+    procedure DoCopyProps(From: TFPCanvasHelper); override;
+    procedure SetFlags(Index: integer; AValue: boolean); override;
+    procedure SetName(AValue: string); override;
+    procedure SetSize(AValue: integer); override;
+    {$ELSE}
+    procedure SetName(const AValue: string);
+    procedure SetSize(AValue: Integer);
+    {$ENDIF}
     procedure Changed; override;
     function  GetCharSet: TFontCharSet;
     function  GetHandle: HFONT;
     function  GetHeight: Integer;
-    function  GetName: TFontName;
+    function  GetName: string;
     function  GetPitch: TFontPitch;
     function  GetSize: Integer;
     function  GetStyle: TFontStyles;
@@ -442,12 +469,10 @@ type
     procedure SetColor(Value: TColor);
     procedure SetHandle(const Value: HFONT);
     procedure SetHeight(value: Integer);
-    procedure SetName(const AValue: TFontName);
     procedure SetPitch(Value: TFontPitch);
-    procedure SetSize(value: Integer);
     procedure SetStyle(Value: TFontStyles);
   public
-    constructor Create;
+    constructor Create; {$IFDEF UseFPCanvas}override;{$ENDIF}
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure Assign(const ALogFont: TLogFont);
@@ -456,14 +481,11 @@ type
     function HandleAllocated: boolean;
     function IsDefault: boolean;
     // Extra properties
-    // TODO: implement them though GetTextMetrics, not here
+    // TODO: implement them through GetTextMetrics, not here
     //Function GetWidth(Value: String): Integer;
-    // Extra properties
-    // TODO: implement them though GetTextMetrics, not here
     //property Width: Integer read FWidth write FWidth;
     //property XBias: Integer read FXBias write FXBias;
     //property YBias: Integer read FYBias write FYBias;
-    //-----------------
     property Handle: HFONT read GetHandle write SetHandle;
     property PixelsPerInch: Integer read FPixelsPerInch;
     property CanUTF8: boolean read FCanUTF8;
@@ -471,7 +493,7 @@ type
     property CharSet: TFontCharSet read GetCharSet write SetCharSet default DEFAULT_CHARSET;
     property Color: TColor read FColor write SetColor default clWindowText;
     property Height: Integer read GetHeight write SetHeight;
-    property Name: TFontName read GetName write SetName stored IsNameStored;
+    property Name: string read GetName write SetName stored IsNameStored;
     property Pitch: TFontPitch read GetPitch write SetPitch default fpDefault;
     property Size: Integer read GetSize write SetSize stored false;
     property Style: TFontStyles read GetStyle write SetStyle;
@@ -496,7 +518,10 @@ type
 
   TPen = class(TGraphicsObject)
   private
-    FPenData: TPenData;
+    FHandle: HPen;
+    FColor: TColor;
+    FWidth: Integer;
+    FStyle: TPenStyle;
     FMode: TPenMode;
     FPenHandleCached: boolean;
     procedure FreeHandle;
@@ -513,10 +538,10 @@ type
     procedure Assign(Source: TPersistent); override;
     property Handle: HPEN read GetHandle write SetHandle;
   published
-    property Color: TColor read FPenData.Color write SetColor default clBlack;
+    property Color: TColor read FColor write SetColor default clBlack;
     property Mode: TPenMode read FMode write SetMode default pmCopy;
-    property Style: TPenStyle read FPenData.Style write SetStyle default psSolid;
-    property Width: Integer read FPenData.Width write SetWidth default 1;
+    property Style: TPenStyle read FStyle write SetStyle default psSolid;
+    property Width: Integer read FWidth write SetWidth default 1;
   end;
 
 
@@ -1240,6 +1265,7 @@ function ClearXLFDItem(const LongFontName: string; Index: integer): string;
 function ClearXLFDHeight(const LongFontName: string): string;
 function ClearXLFDPitch(const LongFontName: string): string;
 function ClearXLFDStyle(const LongFontName: string): string;
+function XLFDHeightIsSet(const LongFontName: string): boolean;
 
 // graphics
 type
@@ -1266,7 +1292,8 @@ function ReadXPMSize(XPM: PPChar; var Width, Height, ColorCount: integer
                      ): boolean;
 
 var
-  { Stores information about the current screen }
+  { Stores information about the current screen
+    - initialized on Interface startup }
   ScreenInfo: TScreenInfo;
   
   FontResourceCache: TFontHandleCache;
@@ -1760,6 +1787,10 @@ begin
 end;
 
 initialization
+  ScreenInfo.Initialized:=false;
+  ScreenInfo.ColorDepth:=24;
+  ScreenInfo.PixelsPerInchX:=72;
+  ScreenInfo.PixelsPerInchY:=72;
   PicClipboardFormats:=nil;
   PicFileFormats:=nil;
   OnLoadGraphicFromClipboardFormat:=nil;
@@ -1784,6 +1815,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.162  2004/12/22 19:56:44  mattias
+  started TFont mirgration to fpCanvas font
+
   Revision 1.161  2004/11/20 11:20:06  mattias
   implemented creating classes at run time from any TComponent descendant
 

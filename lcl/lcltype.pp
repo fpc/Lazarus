@@ -851,9 +851,10 @@ type
 
   PScreenInfo = ^TScreenInfo;
   TScreenInfo = record
-    PixelsPerInchX : Integer;
-    PixelsPerInchY : Integer;
-    ColorDepth : Integer;
+    PixelsPerInchX: Integer;
+    PixelsPerInchY: Integer;
+    ColorDepth: Integer;
+    Initialized: boolean;
   end;
 
 {painting stuff}
@@ -2271,6 +2272,9 @@ end.
 
 {
   $Log$
+  Revision 1.72  2004/12/22 19:56:44  mattias
+  started TFont mirgration to fpCanvas font
+
   Revision 1.71  2004/12/16 19:03:57  mattias
   applied patch for smooth scrolling parameters  from Jesus
 

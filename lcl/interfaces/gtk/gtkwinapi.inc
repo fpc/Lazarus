@@ -1447,7 +1447,7 @@ begin
       FamilyName       := ExtractXLFDItem(LongFontName,2);
       WeightName       := ExtractXLFDItem(LongFontName,3);
       Slant            := ExtractXLFDItem(LongFontName,4);
-      SetwidthName     := ExtractXLFDItem(LongFontName,5);
+      SetWidthName     := ExtractXLFDItem(LongFontName,5);
       AddStyleName     := ExtractXLFDItem(LongFontName,6);
       PixelSize        := ExtractXLFDItem(LongFontName,7);
       PointSize        := ExtractXLFDItem(LongFontName,8);
@@ -1524,7 +1524,7 @@ begin
         if lfItalic = 0 then Slant := 'r' else Slant := 'i';
       end;
 
-      // SetwidthName := '*';
+      // SetWidthName := '*';
 
       if AddStyleName='*' then begin
         // calculate Style name extentions (=rotation)
@@ -1543,7 +1543,7 @@ begin
 
       if (PixelSize='*') and (PointSize='*') then begin
         // TODO: make more accurate (implement the meaning of
-        //       positive and negative heigtht values.
+        //       positive and negative height values.
         PixelSize := IntToStr(Abs(lfHeight));
 
         // Since we use pixelsize, it isn't allowed to give a value here
@@ -1716,7 +1716,7 @@ begin
     end;
 
     if Result = 0
-    then DebugLn(Format('WARNING: [TGtkWidgetSet.CreateFontIndirectEx] NOT found XLFD: <%s>', [LongFontName]))
+    then DebugLn('WARNING: [TGtkWidgetSet.CreateFontIndirectEx] NOT found XLFD: <'+LongFontName+'> Fontname="'+LogFont.lfFaceName+'"')
     else Assert(False, Format('Trace:  [TGtkWidgetSet.CreateFontIndirectEx] found XLFD: <%s>', [LongFontName]));
   end;
 end;
@@ -8810,6 +8810,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.380  2004/12/22 19:56:44  mattias
+  started TFont mirgration to fpCanvas font
+
   Revision 1.379  2004/12/21 22:49:29  mattias
   implemented scrollbar codes for gtk intf  from Jesus
 

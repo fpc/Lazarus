@@ -43,10 +43,10 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TPen.SetColor(Value : TColor);
 begin
-  if FPenData.Color <> value
+  if FColor <> value
   then begin
     FreeHandle;
-    FPenData.Color := value;
+    FColor := value;
     Changed;
   end;
 end;
@@ -60,10 +60,10 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TPen.SetStyle(Value : TPenStyle);
 begin
-  if FPenData.Style <> Value
+  if FStyle <> Value
   then begin
     FreeHandle;
-    FPenData.Style := Value;
+    FStyle := Value;
     Changed;
   end;
 end;
@@ -93,10 +93,10 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TPen.SetWidth(Value : Integer);
 begin
-  if FPenData.Width <> Value
+  if Width <> Value
   then begin
     FreeHandle;
-    FPenData.Width := Value;
+    FWidth := Value;
     Changed;
   end;
 end;
@@ -111,13 +111,10 @@ end;
 constructor TPen.Create;
 begin
   inherited Create;
-  with FPenData do
-  begin
-    Width := 1;
-    Handle := 0;
-    Style := psSolid;
-    Color := clBlack;
-  end;
+  FWidth := 1;
+  FHandle := 0;
+  FStyle := psSolid;
+  FColor := clBlack;
   FMode := pmCopy;
 end;
 
@@ -162,10 +159,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TPen.SetHandle(const Value: HPEN);
 begin
-  if FPenData.Handle <> Value
+  if FHandle <> Value
   then begin
     FreeHandle;
-    FPenData.Handle := Value;
+    FHandle := Value;
     //TODO: query new parameters
     Changed;
   end;
@@ -186,27 +183,27 @@ var
   LogPen: TLogPen;
   CachedPen: TBlockResourceCacheDescriptor;
 begin
-  if FPenData.Handle = 0
+  if FHandle = 0
   then begin
     FillChar(LogPen,SizeOf(LogPen),0);
     with LogPen do
     begin
-      lopnStyle := PEN_STYLES[FPenData.Style];
-      lopnWidth.X := FPenData.Width;
-      lopnColor := FPenData.Color;
+      lopnStyle := PEN_STYLES[FStyle];
+      lopnWidth.X := FWidth;
+      lopnColor := FColor;
     end;
     CachedPen:=PenResourceCache.FindDescriptor(@LogPen);
     if CachedPen<>nil then begin
       CachedPen.Item.IncreaseRefCount;
-      FPenData.Handle := CachedPen.Item.Handle;
+      FHandle := CachedPen.Item.Handle;
     end else begin
-      FPenData.Handle := CreatePenIndirect(LogPen);
-      PenResourceCache.AddResource(FPenData.Handle,@LogPen);
+      FHandle := CreatePenIndirect(LogPen);
+      PenResourceCache.AddResource(FHandle,@LogPen);
     end;
     FPenHandleCached:=true;
   end;
 
-  Result := FPenData.Handle;
+  Result := FHandle;
 end;
 
 {------------------------------------------------------------------------------
@@ -218,22 +215,25 @@ end;
  ------------------------------------------------------------------------------}
 procedure TPen.FreeHandle;
 begin
-  if FPenData.Handle <> 0
+  if FHandle <> 0
   then begin
     // Changing triggers deselecting the current handle
     Changing;
     if FPenHandleCached then begin
-      PenResourceCache.FindItem(FPenData.Handle).DecreaseRefCount;
+      PenResourceCache.FindItem(FHandle).DecreaseRefCount;
       FPenHandleCached:=false;
     end else
-      DeleteObject(FPenData.Handle);
-    FPenData.Handle := 0;
+      DeleteObject(FHandle);
+    FHandle := 0;
   end;
 end;
 
 { =============================================================================
 
   $Log$
+  Revision 1.14  2004/12/22 19:56:44  mattias
+  started TFont mirgration to fpCanvas font
+
   Revision 1.13  2004/11/07 01:36:18  mattias
   fixed cleaning up unused resource cache item lists
 

@@ -2242,8 +2242,8 @@ begin
     if (aCompletion<>nil) and (aCompletion.Editor<>nil) then
       Font:=aCompletion.Editor.Font
     else begin
+      Font.Height:=EditorOpts.EditorFontHeight; // set Height before name for XLFD !
       Font.Name:=EditorOpts.EditorFont;
-      Font.Size:=EditorOpts.EditorFontHeight;
     end;
     Font.Style:=[];
     if not ItemSelected then
