@@ -334,6 +334,7 @@ function TCodeCompletionCodeTool.CompleteProperty(
    property Color: TColor read FColor write SetColor;
    property Items[Index1, Index2: integer]: integer read GetItems; default;
    property X: integer index 1 read GetCoords write SetCoords stored IsStored;
+   property C: char read GetC stored False default 'A';
    property Col8: ICol8 read FCol8 write FCol8 implements ICol8;
 
    property specifiers without parameters:
@@ -766,10 +767,13 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
       {$IFDEF CTDEBUG}
       writeln('[TCodeCompletionCodeTool.CompleteProperty] stored specifier needed');
       {$ENDIF}
-      if Parts[ppStored].StartPos>0 then
+      if Parts[ppStored].StartPos>0 then begin
+        if (CompareIdentifiers(@Src[Parts[ppStored].StartPos],'False')=0)
+        or (CompareIdentifiers(@Src[Parts[ppStored].StartPos],'True')=0) then
+          exit;
         AccessParam:=copy(Src,Parts[ppStored].StartPos,
-              Parts[ppStored].EndPos-Parts[ppStored].StartPos)
-      else
+              Parts[ppStored].EndPos-Parts[ppStored].StartPos);
+      end else
         AccessParam:=copy(Src,Parts[ppName].StartPos,
           Parts[ppName].EndPos-Parts[ppName].StartPos)
           +BeautifyCodeOpts.PropertyStoredIdentPostfix;
