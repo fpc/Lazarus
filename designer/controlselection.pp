@@ -309,8 +309,6 @@ type
     procedure FindNearestOldRight(var NearestInt: TNearestInt);
     procedure FindNearestOldTop(var NearestInt: TNearestInt);
     procedure FindNearestOldBottom(var NearestInt: TNearestInt);
-    function FindNearestSnapLeft(ALeft, AWidth: integer): integer;
-    function FindNearestSnapTop(ATop, AHeight: integer): integer;
     function GetLeftGuideLine(var ALine: TRect): boolean;
     function GetRightGuideLine(var ALine: TRect): boolean;
     function GetTopGuideLine(var ALine: TRect): boolean;
@@ -353,6 +351,13 @@ type
     procedure SizeComponents(HorizSizing: TComponentSizing; AWidth: integer;
           VertSizing: TComponentSizing; AHeight: integer);
     procedure ScaleComponents(Percent: integer);
+    function FindNearestSnapLeft(ALeft, AWidth: integer): integer;
+    function FindNearestSnapLeft(ALeft: integer): integer;
+    function FindNearestSnapRight(ARight: integer): integer;
+    function FindNearestSnapTop(ATop, AHeight: integer): integer;
+    function FindNearestSnapTop(ATop: integer): integer;
+    function FindNearestSnapBottom(ABottom: integer): integer;
+    function SnapGrabberMousePos(const CurMousePos: TPoint): TPoint;
     property Snapping: boolean read GetSnapping write SetSnapping;
     procedure DrawGuideLines(DC: TDesignerDeviceContext);
     property CacheGuideLines: boolean
@@ -1038,13 +1043,22 @@ begin
   Result:=false;
   if AComponent=nil then exit;
   if AComponent is TControl then begin
-    if not ControlIsDesignerVisible(TControl(AComponent)) then exit;
+    if not ControlIsDesignerVisible(TControl(AComponent)) then begin
+      //writeln('not alignable: A not ControlIsDesignerVisible ',AComponent.Name);
+      exit;
+    end;
     if Count>0 then begin
-      if OnlyNonVisualComponentsSelected then exit;
+      if OnlyNonVisualComponentsSelected then begin
+        //writeln('not alignable: B OnlyNonVisualComponentsSelected ',AComponent.Name);
+        exit;
+      end;
     end;
     if ParentLevel>0 then begin
       CurParentLevel:=GetParentLevel(TControl(AComponent));
-      if CurParentLevel<>ParentLevel then exit;
+      if CurParentLevel<>ParentLevel then begin
+        //writeln('not alignable: C CurParentLevel<>ParentLevel ',AComponent.Name,' ',CurParentLevel,'<>',ParentLevel);
+        exit;
+      end;
     end;
   end else begin
     if AComponent is TMenuItem then exit;
@@ -1151,7 +1165,7 @@ begin
   MaxDist:=(CleanGridSizeX+1) div 2;
   for i:=0 to FCustomForm.ComponentCount-1 do begin
     AComponent:=FCustomForm.Components[i];
-    if not ComponentAlignable(AComponent) then exit;
+    if not ComponentAlignable(AComponent) then continue;
     if IsSelected(AComponent) then continue;
     CurLeft:=GetParentFormRelativeTopLeft(AComponent).X;
     CurDist:=Abs(CurLeft-NearestInt.Level);
@@ -1170,7 +1184,7 @@ begin
   MaxDist:=(CleanGridSizeX+1) div 2;
   for i:=0 to FCustomForm.ComponentCount-1 do begin
     AComponent:=FCustomForm.Components[i];
-    if not ComponentAlignable(AComponent) then exit;
+    if not ComponentAlignable(AComponent) then continue;
     if IsSelected(AComponent) then continue;
     CurRight:=GetParentFormRelativeTopLeft(AComponent).X
               +GetComponentWidth(AComponent);
@@ -1190,7 +1204,7 @@ begin
   MaxDist:=(CleanGridSizeY+1) div 2;
   for i:=0 to FCustomForm.ComponentCount-1 do begin
     AComponent:=FCustomForm.Components[i];
-    if not ComponentAlignable(AComponent) then exit;
+    if not ComponentAlignable(AComponent) then continue;
     if IsSelected(AComponent) then continue;
     CurTop:=GetParentFormRelativeTopLeft(AComponent).Y;
     CurDist:=Abs(CurTop-NearestInt.Level);
@@ -1209,7 +1223,7 @@ begin
   MaxDist:=(CleanGridSizeY+1) div 2;
   for i:=0 to FCustomForm.ComponentCount-1 do begin
     AComponent:=FCustomForm.Components[i];
-    if not ComponentAlignable(AComponent) then exit;
+    if not ComponentAlignable(AComponent) then continue;
     if IsSelected(AComponent) then continue;
     CurBottom:=GetParentFormRelativeTopLeft(AComponent).Y
               +GetComponentHeight(AComponent);
@@ -1246,6 +1260,42 @@ begin
     Result:=ALeft;
 end;
 
+function TControlSelection.FindNearestSnapLeft(ALeft: integer): integer;
+var
+  NearestLeft: TNearestInt;
+begin
+  // snap left
+  NearestLeft.Level:=ALeft;
+  NearestLeft.Valid:=false;
+  FindNearestGridX(NearestLeft);
+  FindNearestLeftGuideLine(NearestLeft);
+  FindNearestClientLeftRight(NearestLeft);
+  FindNearestOldLeft(NearestLeft);
+  // return best snap
+  if NearestLeft.Valid then
+    Result:=NearestLeft.Nearest
+  else
+    Result:=ALeft;
+end;
+
+function TControlSelection.FindNearestSnapRight(ARight: integer): integer;
+var
+  NearestRight: TNearestInt;
+begin
+  // snap right
+  NearestRight.Level:=ARight;
+  NearestRight.Valid:=false;
+  FindNearestGridX(NearestRight);
+  FindNearestRightGuideLine(NearestRight);
+  FindNearestClientLeftRight(NearestRight);
+  FindNearestOldRight(NearestRight);
+  // return best snap
+  if NearestRight.Valid then
+    Result:=NearestRight.Nearest
+  else
+    Result:=ARight;
+end;
+
 function TControlSelection.FindNearestSnapTop(ATop, AHeight: integer): integer;
 var
   NearestTop, NearestBottom: TNearestInt;
@@ -1271,6 +1321,57 @@ begin
     Result:=NearestTop.Nearest
   else
     Result:=ATop;
+end;
+
+function TControlSelection.FindNearestSnapTop(ATop: integer): integer;
+var
+  NearestTop: TNearestInt;
+begin
+  // snap top
+  NearestTop.Level:=ATop;
+  NearestTop.Valid:=false;
+  FindNearestGridY(NearestTop);
+  FindNearestTopGuideLine(NearestTop);
+  FindNearestClientTopBottom(NearestTop);
+  FindNearestOldTop(NearestTop);
+  // return best snap
+  if NearestTop.Valid then
+    Result:=NearestTop.Nearest
+  else
+    Result:=ATop;
+end;
+
+function TControlSelection.FindNearestSnapBottom(ABottom: integer): integer;
+var
+  NearestBottom: TNearestInt;
+begin
+  // snap bottom
+  NearestBottom.Level:=ABottom;
+  NearestBottom.Valid:=false;
+  FindNearestGridY(NearestBottom);
+  FindNearestBottomGuideLine(NearestBottom);
+  FindNearestClientTopBottom(NearestBottom);
+  FindNearestOldBottom(NearestBottom);
+  // return best snap
+  if NearestBottom.Valid then
+    Result:=NearestBottom.Nearest
+  else
+    Result:=ABottom;
+end;
+
+function TControlSelection.SnapGrabberMousePos(const CurMousePos: TPoint
+  ): TPoint;
+begin
+  Result:=CurMousePos;
+  if (not EnvironmentOptions.SnapToGrid) or (ActiveGrabber=nil) then exit;
+  if gpLeft in ActiveGrabber.Positions then
+    Result.X:=FindNearestSnapLeft(Result.X)
+  else if gpRight in ActiveGrabber.Positions then
+    Result.X:=FindNearestSnapRight(Result.X);
+  if gpTop in ActiveGrabber.Positions then
+    Result.Y:=FindNearestSnapTop(Result.Y)
+  else if gpBottom in ActiveGrabber.Positions then
+    Result.Y:=FindNearestSnapBottom(Result.Y);
 end;
 
 function TControlSelection.GetLeftGuideLine(var ALine: TRect): boolean;
