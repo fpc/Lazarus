@@ -238,7 +238,6 @@ begin
   if not fParsed then
     ParseCompletionList;
   Len := Length(AToken);
-writeln('OnTokenNotFound... ',Assigned(fOnTokenNotFound),' "',AToken,'"');
   if (Len > 0) and (AEditor <> nil) and not AEditor.ReadOnly
     and (fCompletions.Count > 0)
   then begin
@@ -271,7 +270,6 @@ writeln('OnTokenNotFound... ',Assigned(fOnTokenNotFound),' "',AToken,'"');
     end;
     if (i = -1) and (NumMaybe = 1) then
       i := IdxMaybe;
-writeln('OnTokenNotFound... ',Assigned(fOnTokenNotFound),' ',i);
     {$IFDEF SYN_LAZARUS}
     if (i < 0) and Assigned(fOnTokenNotFound) then
       fOnTokenNotFound(Self,AToken,AEditor,i);
