@@ -505,6 +505,11 @@ Begin
           case Hi(WParam) of
             EN_CHANGE:    LMessage.Msg := CM_TEXTCHANGED;
           end
+        else if (lWinControl is TCustomMemo) then
+          case Hi(WParam) of
+            // multiline edit doesn't send EN_CHANGE, so use EN_UPDATE
+            EN_UPDATE:    LMessage.Msg := CM_TEXTCHANGED;
+          end
         else if lWinControl is TCustomCombobox then
           case Hi(WParam) of
             CBN_EDITCHANGE: LMessage.Msg := LM_CHANGED;
@@ -1447,6 +1452,9 @@ end;
 
 {
   $Log$
+  Revision 1.159  2004/11/12 15:30:30  vincents
+  send CM_TEXTCHANGED for TCustomMemo
+
   Revision 1.158  2004/11/08 13:20:11  vincents
   destroy SpinEdit's buddy when destroying SpinEdit.
 
