@@ -136,6 +136,8 @@ type
     Procedure BookMarkToggle(Value : Integer);
     Procedure BookMarkGoto(Value : Integer);
 
+    Procedure ccExecute(Sender : TObject);
+
 
     Procedure ProcessUserCommand(Sender: TObject; var Command: TSynEditorCommand; var AChar: char; Data: pointer);
 
@@ -277,7 +279,7 @@ const
 var
 Editor_Num : Integer;
 aHighlighter: TSynPasSyn;
- aCompletion : TSynCompletion;
+aCompletion : TSynCompletion;
 
 { TSourceEditor }
 
@@ -836,6 +838,19 @@ Begin
    EditorOpts.GetSynEditSettings(FEditor);
 end;
 
+Procedure TSourceEditor.ccExecute(Sender : TObject);
+var
+  scompl : TSynBaseCompletion;
+  S : TStrings;
+Begin
+  Writeln('[ccExecute]');
+  sCompl := TSynBaseCOmpletion(Sender);
+  S := TStringList.Create;
+  S.Add('constructor Create(aOwner : TComponent);');
+  S.Add('OnActivate');
+  sCompl.ItemList := S;
+End;
+
 
 Procedure TSourceEditor.CreateEditor(AOwner : TComponent; AParent: TWinControl);
 Begin
@@ -876,7 +891,7 @@ Begin
     FSynAutoComplete.AddEditor(FEditor);
     RefreshEditorSettings;
     aCompletion.Editor := FEditor;
-
+    aCompletion.OnExecute := @ccExecute;
     FEditor.Lines.Assign(FSource);
     FEditor.Setfocus
 end;

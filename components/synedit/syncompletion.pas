@@ -360,7 +360,10 @@ var
   end;
 
 begin
-  // update scrool bar
+Writeln('[TSynBaseCompletionForm.Paint]');
+  Writeln('ItemList.Count = '+inttostr(ItemList.Count));
+
+  // update scroll bar
   if ItemList.Count - NbLinesInWindow < 0 then
     Scroll.Max := 0
   else
@@ -375,27 +378,30 @@ begin
   Canvas.LineTo(Width - 1, Height - 1);
   Canvas.LineTo(0, Height - 1);
   Canvas.LineTo(0, 0);
-
-  with bitmap do begin
+//comments below are because canvas.draw is unfinished.
+//  with bitmap do begin
     canvas.pen.color := color;
     canvas.brush.color := color;
     canvas.Rectangle(0, 0, Width, Height);
     for i := 0 to min(NbLinesInWindow - 1, ItemList.Count - 1) do begin
       if i + Scroll.Position = Position then begin
         Canvas.Brush.Color := ClSelect;
-        Canvas.Pen.Color := ClSelect;
+        Canvas.Pen.Color := clSelect;
         Canvas.Rectangle(0, FFontHeight * i, width, FFontHeight * (i + 1));
-        Canvas.Pen.Color := ClBlack;
+        Canvas.Pen.Color := clBlack;
       end else
         Canvas.Brush.Color := Color;
 
       if not Assigned(OnPaintItem)
         or not OnPaintItem(ItemList[Scroll.Position + i], Canvas, 0, FFontHeight * i)
       then
-        Canvas.TextOut(2, FFontHeight * i, ItemList[Scroll.Position + i]);
+        Begin
+           Writeln('Drawing to canvas');
+           Canvas.TextOut(2, FFontHeight * i, ItemList[Scroll.Position + i]);
+        end;
     end;
-  end;
-  canvas.Draw(1, 1, bitmap);
+  //end;
+  //canvas.Draw(1, 1, bitmap);
 end;
 
 procedure TSynBaseCompletionForm.ScrollChange(Sender: TObject);
@@ -506,6 +512,10 @@ end;
 
 procedure TSynBaseCompletion.Execute(s: string; x, y: integer);
 begin
+Writeln('[TSynBaseComplete.Execute] ');
+Writeln('s is '+s);
+Writeln('X,Y is '+inttostr(x)+','+Inttostr(y));
+
   form.top := y;
   form.left := x;
   CurrentString := s;
@@ -824,15 +834,23 @@ var
   s: string;
   i: integer;
 begin
+Writeln('[TSynCompletion.GetPreviousToken]');
+
   if FEditor <> nil then begin
     s := FEditor.LineText;
+    Writeln('S = '+S);
     i := FEditor.CaretX - 1;
+    Writeln('I is '+inttostr(i));
+    Writeln('Length(s) is= '+inttostr(length(s)));
     if i > length(s) then
       result := ''
     else begin
-      while (i > 0) and (s[i] > ' ') and (pos(s[i], FEndOfTokenChr) = 0) do
-        dec(i);
+      while (i > 0) and (s[i] > ' ') {commented out by shane and (pos(s[i], FEndOfTokenChr) = 0)} do
+        Begin
+          dec(i);
+        end;
       result := copy(s, i + 1, FEditor.CaretX - i - 1);
+
     end;
   end
   else
@@ -1025,6 +1043,8 @@ var
   i, j, prevspace: integer;
   StartOfBlock: tpoint;
 begin
+Writeln('[TSynAutoComplete.Execute] ');
+Writeln('Token is '+Token);
   i := AutoCompleteList.IndexOf(token);
   if i <> -1 then begin
     TRecordUsedToStoreEachEditorVars(fEditstuffs[fEditors.IndexOf(aEditor)]^).NoNextKey := true;
