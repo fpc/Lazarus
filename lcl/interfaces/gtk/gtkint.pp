@@ -46,7 +46,7 @@ interface
 uses 
   InterfaceBase, gtk, gdk, glib, SysUtils, LMessages, Classes, Controls,
   Forms, VclGlobals, LCLLinux, LCLType, gtkDef, DynHashArray, LazQueue,
-  GraphType;
+  GraphType, GraphicsMath;
 
 type
   TgtkObject = class(TInterfaceBase)
@@ -397,6 +397,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.55  2002/08/08 18:05:46  lazarus
+  MG: added graphics extensions from Andrew Johnson
+
   Revision 1.54  2002/08/05 10:45:04  lazarus
   MG: TMenuItem.Caption can now be set after creation
 
