@@ -1980,7 +1980,7 @@ begin
   or LookupRootSelected
   or OnlyInvisibleComponentsSelected then exit;
 
-  Diff:=DC.DCOrigin;
+  Diff:=DC.FormOrigin;
 
   {writeln('[DrawGrabbers] '
    ,' DC=',Diff.X,',',Diff.Y
@@ -2043,7 +2043,7 @@ begin
 
   GetComponentBounds(AComponent,CompLeft,CompTop,CompWidth,CompHeight);
   CompOrigin:=GetParentFormRelativeParentClientOrigin(AComponent);
-  DCOrigin:=DC.DCOrigin;
+  DCOrigin:=DC.FormOrigin;
   CompLeft:=CompLeft+CompOrigin.X-DCOrigin.X;
   CompTop:=CompTop+CompOrigin.Y-DCOrigin.Y;
 
@@ -2118,7 +2118,7 @@ var
 
 // DrawRubberband
 begin
-  Diff:=DC.DCOrigin;
+  Diff:=DC.FormOrigin;
   with FRubberBandBounds do
     DrawInvertFrameRect(Left-Diff.X,Top-Diff.Y,Right-Diff.X,Bottom-Diff.Y);
 end;
@@ -2645,7 +2645,7 @@ begin
   RestorePen:=false;
 
   DC.Save;
-  DCOrigin:=DC.DCOrigin;
+  DCOrigin:=DC.FormOrigin;
   OldPenColor:=DC.Canvas.Pen.Color;
   // draw bottom guideline
   if LineExists[glBottom] then

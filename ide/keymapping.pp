@@ -1734,7 +1734,8 @@ procedure TKeyMappingEditForm.FormKeyUp(Sender: TObject; var Key: Word;
 begin
   {writeln('TKeyMappingEditForm.FormKeyUp Sender=',Classname
      ,' Key=',Key,' Ctrl=',ssCtrl in Shift,' Shift=',ssShift in Shift
-     ,' Alt=',ssAlt in Shift,' AsString=',KeyAndShiftStateToEditorKeyString(Key,Shift)
+     ,' Alt=',ssAlt in Shift,' AsString=',KeyAndShiftStateToEditorKeyString(Key,Shift),
+     ' LCL-Name=',ShortCutToText(ShortCut(Key,Shift))
      );}
   if Key in [VK_CONTROL, VK_SHIFT, VK_LCONTROL, VK_RCONTROl,
              VK_LSHIFT, VK_RSHIFT] then exit;

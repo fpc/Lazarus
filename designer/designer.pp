@@ -1994,7 +1994,7 @@ begin
     AComponent:=FLookupRoot.Components[i];
     if (not (AComponent is TControl))
     and (not ComponentIsInvisible(AComponent)) then begin
-      Diff:=aDDC.DCOrigin;
+      Diff:=aDDC.FormOrigin;
       // non-visual component
       ItemLeftTop:=NonVisualComponentLeftTop(AComponent);
       ItemLeft:=ItemLeftTop.X-Diff.X;
