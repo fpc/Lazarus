@@ -43,7 +43,8 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, LCLType, Controls, Forms, Buttons, StdCtrls, ComCtrls,
-  Dialogs, ExtCtrls, LResources, Laz_XMLCfg, KeyMapping, TransferMacros;
+  Dialogs, ExtCtrls, LResources, Laz_XMLCfg, KeyMapping, TransferMacros,
+  IDEProcs;
 
 { The xml format version:
     When the format changes (new values, changed formats) we can distinguish old
@@ -58,6 +59,7 @@ type
   TExternalToolOptions = class
   private
     fCmdLineParams: string;
+    FEnvironmentOverrides: TStringList;
     fFilename: string;
     fKey: word;
     fScanOutputForFPCMessages: boolean;
@@ -74,7 +76,8 @@ type
     function Load(XMLConfig: TXMLConfig; const Path: string): TModalResult;
     function Save(XMLConfig: TXMLConfig; const Path: string): TModalResult;
     function ShortDescription: string;
-    
+    procedure AssignEnvironmentTo(Strings: TStrings);
+
     property CmdLineParams: string read fCmdLineParams write fCmdLineParams;
     property Filename: string read fFilename write fFilename;
     property Key: word read fKey write fKey;
@@ -86,6 +89,7 @@ type
     property Shift: TShiftState read fShift write fShift;
     property WorkingDirectory: string
       read fWorkingDirectory write fWorkingDirectory;
+    property EnvironmentOverrides: TStringList read FEnvironmentOverrides;
   end;
 
   {
@@ -189,11 +193,13 @@ end;
 constructor TExternalToolOptions.Create;
 begin
   inherited Create;
+  FEnvironmentOverrides:=TStringList.Create;
   Clear;
 end;
 
 destructor TExternalToolOptions.Destroy;
 begin
+  FEnvironmentOverrides.Free;
   inherited Destroy;
 end;
 
@@ -222,6 +228,7 @@ begin
                Path+'ScanOutputForFPCMessages/Value',fScanOutputForFPCMessages);
   fScanOutputForMakeMessages:=XMLConfig.GetValue(
              Path+'ScanOutputForMakeMessages/Value',fScanOutputForMakeMessages);
+  LoadStringList(XMLConfig,FEnvironmentOverrides,Path+'EnvironmentOverrides/');
   // key and shift are saved with the keymapping in the editoroptions
   Result:=mrOk;
 end;
@@ -238,6 +245,7 @@ begin
                Path+'ScanOutputForFPCMessages/Value',fScanOutputForFPCMessages);
   XMLConfig.SetValue(
              Path+'ScanOutputForMakeMessages/Value',fScanOutputForMakeMessages);
+  SaveStringList(XMLConfig,FEnvironmentOverrides,Path+'EnvironmentOverrides/');
   // key and shift are saved with the keymapping in the editoroptions
   Result:=mrOk;
 end;
@@ -245,6 +253,11 @@ end;
 function TExternalToolOptions.ShortDescription: string;
 begin
   Result:=Title;
+end;
+
+procedure TExternalToolOptions.AssignEnvironmentTo(Strings: TStrings);
+begin
+  IDEProcs.AssignEnvironmentTo(Strings,EnvironmentOverrides);
 end;
 
 function TExternalToolOptions.NeedsOutputFilter: boolean;

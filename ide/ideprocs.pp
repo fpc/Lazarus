@@ -30,7 +30,7 @@ unit IDEProcs;
 interface
 
 uses
-  Classes, SysUtils, Laz_XMLCfg, GetText;
+  Classes, SysUtils, DOS, Laz_XMLCfg, GetText;
 
 type
   TCommentType = (
@@ -85,15 +85,19 @@ function CopyDirectoryWithMethods(const SrcDir, DestDir: string;
              OnCopyError: TOnCopyErrorMethod): boolean;
 
 // XMLConfig
-procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStringList; 
+procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStringList;
   const Path: string);
-procedure SaveRecentList(XMLConfig: TXMLConfig; List: TStringList; 
+procedure SaveRecentList(XMLConfig: TXMLConfig; List: TStringList;
   const Path: string);
 function AddToRecentList(const s: string; RecentList: TStringList;
   Max: integer): boolean;
 procedure RemoveFromRecentList(const s: string; RecentList: TStringList);
 procedure LoadRect(XMLConfig: TXMLConfig; const Path:string; var ARect:TRect);
 procedure SaveRect(XMLConfig: TXMLConfig; const Path:string; var ARect:TRect);
+procedure LoadStringList(XMLConfig: TXMLConfig; List: TStringList;
+  const Path: string);
+procedure SaveStringList(XMLConfig: TXMLConfig; List: TStringList;
+  const Path: string);
 
 // miscellaneous
 procedure FreeThenNil(var Obj: TObject);
@@ -108,6 +112,8 @@ procedure TranslateResourceStrings(const BaseDirectory, CustomLang: string);
 function NameToValidIdentifier(const s: string): string;
 function BinaryStrToText(const s: string): string;
 
+function EnvironmentAsStringList: TStringList;
+procedure AssignEnvironmentTo(DestStrings, Overrides: TStrings);
 function GetCurrentUserName: string;
 function GetCurrentMailAddress: string;
 
@@ -157,16 +163,19 @@ begin
   end;
 end;
 
-procedure SaveRecentList(XMLConfig: TXMLConfig; List: TStringList; 
+procedure SaveRecentList(XMLConfig: TXMLConfig; List: TStringList;
   const Path: string);
-var i: integer;
 begin
-  XMLConfig.SetValue(Path+'Count',List.Count);
-  for i:=0 to List.Count-1 do
-    XMLConfig.SetValue(Path+'Item'+IntToStr(i+1)+'/Value',List[i]);
+  SaveStringList(XMLConfig,List,Path);
 end;
 
-procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStringList; 
+procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStringList;
+  const Path: string);
+begin
+  LoadStringList(XMLConfig,List,Path);
+end;
+
+procedure LoadStringList(XMLConfig: TXMLConfig; List: TStringList;
   const Path: string);
 var i,Count: integer;
   s: string;
@@ -177,6 +186,15 @@ begin
     s:=XMLConfig.GetValue(Path+'Item'+IntToStr(i)+'/Value','');
     if s<>'' then List.Add(s);
   end;
+end;
+
+procedure SaveStringList(XMLConfig: TXMLConfig; List: TStringList;
+  const Path: string);
+var i: integer;
+begin
+  XMLConfig.SetValue(Path+'Count',List.Count);
+  for i:=0 to List.Count-1 do
+    XMLConfig.SetValue(Path+'Item'+IntToStr(i+1)+'/Value',List[i]);
 end;
 
 procedure LoadRect(XMLConfig: TXMLConfig; const Path:string; var ARect:TRect);
@@ -1104,6 +1122,47 @@ function CopyDirectoryWithMethods(const SrcDir, DestDir: string;
 
 begin
   Result:=false; //CopyDirectory(SrcDir,DestDir,@OnCopyFileProc,@OnCopyErrorProc);
+end;
+
+
+function EnvironmentAsStringList: TStringList;
+var
+  i, SysVarCount, e: integer;
+  Variable, Value: string;
+Begin
+  Result:=TStringList.Create;
+  SysVarCount:=EnvCount;
+  for i:=0 to SysVarCount-1 do begin
+    Variable:=EnvStr(i+1);
+    e:=1;
+    while (e<=length(Variable)) and (Variable[e]<>'=') do inc(e);
+    Value:=copy(Variable,e+1,length(Variable)-e);
+    Variable:=LeftStr(Variable,e-1);
+    Result.Values[Variable]:=Value;
+  end;
+end;
+
+procedure AssignEnvironmentTo(DestStrings, Overrides: TStrings);
+var
+  EnvList: TStringList;
+  i: integer;
+  Variable, Value: string;
+begin
+  // get system environment
+  EnvList:=EnvironmentAsStringList;
+  try
+    if Overrides<>nil then begin
+      // merge overrides
+      for i:=0 to Overrides.Count-1 do begin
+        Variable:=Overrides.Names[i];
+        Value:=Overrides.Values[Variable];
+        EnvList.Values[Variable]:=Value;
+      end;
+    end;
+    DestStrings.Assign(EnvList);
+  finally
+    EnvList.Free;
+  end;
 end;
 
 end.

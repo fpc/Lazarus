@@ -281,9 +281,11 @@ writeln('[TExternalToolList.Run] ',CmdLine);
       CheckIfFileIsExecutable(Filename);
       TheProcess := TProcess.Create(nil);
       TheProcess.CommandLine := Filename+' '+Params;
-      TheProcess.Options:= [poUsePipes, poNoConsole];
+      TheProcess.Options:= [poUsePipes, poNoConsole,poStderrToOutPut];
       TheProcess.ShowWindow := swoNone;
       TheProcess.CurrentDirectory := WorkingDir;
+      if ExtTool.EnvironmentOverrides.Count>0 then
+        ExtTool.AssignEnvironmentTo(TheProcess.Environment);
       if (ExtTool.NeedsOutputFilter)
       and Assigned(OnNeedsOutputFilter) then begin
         Abort:=false;

@@ -48,8 +48,8 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, Controls, Forms, Buttons, StdCtrls, ComCtrls, Dialogs,
-  ExtCtrls, LResources, Laz_XMLCfg, DOS, IDEProcs, SysVarUserOverrideDlg,
-  InputHistory,LazarusIDEStrConsts;
+  ExtCtrls, LResources, Laz_XMLCfg, IDEProcs, SysVarUserOverrideDlg,
+  InputHistory, LazarusIDEStrConsts;
 
 { The xml format version:
     When the format changes (new values, changed formats) we can distinguish old
@@ -187,23 +187,6 @@ begin
   end;
 end;
 
-function EnvironmentAsStringList: TStringList;
-var
-  i, SysVarCount, e: integer;
-  Variable, Value: string;
-Begin
-  Result:=TStringList.Create;
-  SysVarCount:=EnvCount;
-  for i:=0 to SysVarCount-1 do begin
-    Variable:=EnvStr(i+1);
-    e:=1;
-    while (e<=length(Variable)) and (Variable[e]<>'=') do inc(e);
-    Value:=copy(Variable,e+1,length(Variable)-e);
-    Variable:=LeftStr(Variable,e-1);
-    Result.Values[Variable]:=Value;
-  end;
-end;
-
 { TRunParamsOptions }
 
 constructor TRunParamsOptions.Create;
@@ -330,26 +313,10 @@ begin
 end;
 
 procedure TRunParamsOptions.AssignEnvironmentTo(Strings: TStrings);
-var
-  EnvList: TStringList;
-  i: integer;
-  Variable, Value: string;
 begin
-  // get system environment
-  EnvList:=EnvironmentAsStringList;
-  try
-    // merge user overrides
-    for i:=0 to UserOverrides.Count-1 do begin
-      Variable:=UserOverrides.Names[i];
-      Value:=UserOverrides.Values[Variable];
-      EnvList.Values[Variable]:=Value;
-    end;
-    if UseDisplay then
-      EnvList.Values['DISPLAY']:=Display;
-    Strings.Assign(EnvList);
-  finally
-    EnvList.Free;
-  end;
+  IDEProcs.AssignEnvironmentTo(Strings,UserOverrides);
+  if UseDisplay then
+    Strings.Values['DISPLAY']:=Display;
 end;
 
 

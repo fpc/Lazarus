@@ -2961,15 +2961,16 @@ begin
     Parent:=nbMain.Page[Page];
     Left := grpOtherUnits.Left;
     Top:=grpUnitOutputDir.Top+grpUnitOutputDir.Height+5;
-    Width:=200;
+    Width:=300;
     Height:=45;
     Caption:=dlgLCLWidgetType ;
     with Items do begin
+      Add('gnome');
       Add('gtk');
       Add('win32');
     end;
-    Columns:=2;
-    ItemIndex:=0;
+    Columns:=3;
+    ItemIndex:=1;
     Visible:=true;
   end;
   
