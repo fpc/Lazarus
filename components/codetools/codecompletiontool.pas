@@ -336,7 +336,7 @@ type
 
 var Parts: array[TPropPart] of TAtomPosition;
 
-  function ReadSimpleSpec(SpecWord, SpecParam: TPropPart): boolean;
+  procedure ReadSimpleSpec(SpecWord, SpecParam: TPropPart);
   begin
     if Parts[SpecWord].StartPos>=1 then
       RaiseExceptionFmt(ctsPropertySpecifierAlreadyDefined,[GetAtom]);
