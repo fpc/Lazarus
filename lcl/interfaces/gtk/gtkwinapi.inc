@@ -4037,7 +4037,6 @@ end;
   Params:  Handle, BarFlag, ScrollInfo
   Returns: Nothing
 
-
  ------------------------------------------------------------------------------}
 function TgtkObject.GetScrollInfo(Handle: HWND; SBStyle: Integer;
   var ScrollInfo: TScrollInfo): Boolean;
@@ -4053,7 +4052,6 @@ begin
   If not GtkWidgetIsA(PGtkWidget(Scroll),gtk_scrolled_window_get_type) then
     Scroll := PGTKWidget(Handle);
 
-  Adjustment:=nil;
   case SBStyle of
     SB_HORZ:
       If GtkWidgetIsA(PGtkWidget(Scroll),gtk_scrolled_window_get_type) then
@@ -4083,25 +4081,45 @@ begin
 
   end;
   
-  with ScrollInfo, Adjustment^ do begin
-    // POS
-    if (fMask and SIF_POS) <> 0 then
-      nPos := round(Value);
-    // RANGE
-    if (fMask and SIF_RANGE) <> 0
-    then begin
-      nMin:= round(Lower);
-      nMax:= round(Upper);
+  if Adjustment<>nil then begin
+    with ScrollInfo, Adjustment^ do begin
+      // POS
+      if (fMask and SIF_POS) <> 0 then
+        nPos := round(Value);
+      // RANGE
+      if (fMask and SIF_RANGE) <> 0
+      then begin
+        nMin:= round(Lower);
+        nMax:= round(Upper);
+      end;
+      // PAGE
+      if (fMask and SIF_PAGE) <> 0 then
+        nPage := round(Page_Size);
+      // TRACKPOS
+      if (fMask and SIF_TRACKPOS)<>0 then
+        nTrackPos := round(Value); // don't know if this is correct
     end;
-    // PAGE
-    if (fMask and SIF_PAGE) <> 0 then
-      nPage := round(Page_Size);
-    // TRACKPOS
-    if (fMask and SIF_TRACKPOS)<>0 then
-      nTrackPos := round(Value); // don't know if this is correct
+    Result := true;
+  end else begin
+    with ScrollInfo, Adjustment^ do begin
+      // POS
+      if (fMask and SIF_POS) <> 0 then
+        nPos := 0;
+      // RANGE
+      if (fMask and SIF_RANGE) <> 0
+      then begin
+        nMin:= 0;
+        nMax:= 0;
+      end;
+      // PAGE
+      if (fMask and SIF_PAGE) <> 0 then
+        nPage := 0;
+      // TRACKPOS
+      if (fMask and SIF_TRACKPOS)<>0 then
+        nTrackPos := 0;
+    end;
+    Result := false;
   end;
-
-  Result := true;
 end;
 
 {------------------------------------------------------------------------------
@@ -8013,6 +8031,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.227  2003/03/29 23:52:25  mattias
+  IpHtmlPanel can show simple HTML pages, but there are mem bugs
+
   Revision 1.226  2003/03/29 17:20:05  mattias
   added TMemoScrollBar
 
