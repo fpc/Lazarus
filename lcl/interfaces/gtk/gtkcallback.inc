@@ -569,8 +569,6 @@ end;
 
 function GTKFocusCB( widget: PGtkWidget; event:PGdkEventFocus;
   data: gPointer) : GBoolean; cdecl;
-var
-  Mess : TLMessage;
 {$IFDEF VerboseFocus}
   LCLObject: TObject;
   CurFocusWidget: PGtkWidget;
@@ -607,10 +605,96 @@ begin
   writeln('');
   {$ENDIF}
 
+  Result:=true;
+end;
+
+function GTKFocusCBAfter(widget: PGtkWidget; event:PGdkEventFocus;
+  data: gPointer) : GBoolean; cdecl;
+var
+  Mess : TLMessage;
+{$IFDEF VerboseFocus}
+  LCLObject: TObject;
+  CurFocusWidget: PGtkWidget;
+{$ENDIF}
+begin
+  EventTrace('focus', data);
+  {$IFDEF VerboseFocus}
+  write('GTKFocusCBAfter Widget=',HexStr(Cardinal(Widget),8),' Event^.theIn=',Event^.theIn);
+  LCLObject:=TObject(data);
+  if LCLObject<>nil then begin
+    if LCLObject is TComponent then begin
+      write(' LCLObject=',TComponent(LCLObject).Name,':',LCLObject.ClassName)
+    end else begin
+      write(' LCLObject=',LCLObject.ClassName)
+    end;
+  end else
+    write(' LCLObject=nil');
+  writeln(''); write('    ');
+  CurFocusWidget:=PGtkWidget(GetFocus);
+  if CurFocusWidget<>nil then begin
+    write(' GetFocus=',HexStr(Cardinal(CurFocusWidget),8));
+    LCLObject:=GetParentLCLObject(CurFocusWidget);
+    if LCLObject<>nil then begin
+      if LCLObject is TComponent then begin
+        write(' ParentLCLFocus=',TComponent(LCLObject).Name,':',LCLObject.ClassName)
+      end else begin
+        write(' ParentLCLFocus=',LCLObject.ClassName)
+      end;
+    end else
+      write(' LCLObject=nil');
+  end else begin
+    write(' GetFocus=nil');
+  end;
+  writeln('');
+  {$ENDIF}
+
   //TODO: fill in old focus
+  FillChar(Mess,SizeOf(Mess),0);
   Mess.msg := LM_SETFOCUS;
   Assert(False, Format('Trace:TODO: [gtkfocusCB] %s  finish', [TObject(Data).ClassName]));
-  Result := DeliverMessage(Data,  Mess) = 0;
+  DeliverMessage(Data,  Mess);
+  Result:=true;
+end;
+
+function GTKKillFocusCB(widget: PGtkWidget; event:PGdkEventFocus;
+  data: gPointer) : GBoolean; cdecl;
+{$IFDEF VerboseFocus}
+  LCLObject: TObject;
+  CurFocusWidget: PGtkWidget;
+{$ENDIF}
+begin
+  EventTrace('killfocus', data);
+  {$IFDEF VerboseFocus}
+  write('GTKillFocusCB Widget=',HexStr(Cardinal(Widget),8),' Event^.theIn=',Event^.theIn);
+  LCLObject:=TObject(data);
+  if LCLObject<>nil then begin
+    if LCLObject is TComponent then begin
+      write(' LCLObject=',TComponent(LCLObject).Name,':',LCLObject.ClassName)
+    end else begin
+      write(' LCLObject=',LCLObject.ClassName)
+    end;
+  end else
+    write(' LCLObject=nil');
+  writeln(''); write('    ');
+  CurFocusWidget:=PGtkWidget(GetFocus);
+  if CurFocusWidget<>nil then begin
+    write(' GetFocus=',HexStr(Cardinal(CurFocusWidget),8));
+    LCLObject:=GetParentLCLObject(CurFocusWidget);
+    if LCLObject<>nil then begin
+      if LCLObject is TComponent then begin
+        write(' ParentLCLFocus=',TComponent(LCLObject).Name,':',LCLObject.ClassName)
+      end else begin
+        write(' ParentLCLFocus=',LCLObject.ClassName)
+      end;
+    end else
+      write(' LCLObject=nil');
+  end else begin
+    write(' GetFocus=nil');
+  end;
+  writeln('');
+  {$ENDIF}
+
+  Result:=true;
 end;
 
 function GTKKillFocusCBAfter(widget: PGtkWidget; event:PGdkEventFocus;
@@ -652,12 +736,13 @@ begin
   end;
   writeln('');
   {$ENDIF}
+  FillChar(Mess,SizeOf(Mess),0);
   Mess.msg := LM_KILLFOCUS;
 
   //TODO: fill in new focus
   Assert(False, Format('Trace:TODO: [gtkkillfocusCB] %s  finish', [TObject(Data).ClassName]));
-  if GetFocus<>0 then
-    Result := DeliverMessage(Data,  Mess) = 0;
+  DeliverMessage(Data,  Mess);
+  Result:=true;
 end;
 
 function gtkdestroyCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
@@ -667,6 +752,7 @@ var
 begin
   Result := True;
   EventTrace('destroy', data);
+  FillChar(Mess,SizeOf(Mess),0);
   Mess.msg := LM_DESTROY;
   Result := DeliverMessage(Data, Mess) = 0;
 
@@ -679,6 +765,7 @@ end;
 function gtkdeleteCB( widget : PGtkWidget; event : PGdkEvent; data : gPointer) : GBoolean; cdecl;
 var Mess : TLMessage;
 begin
+  FillChar(Mess,SizeOf(Mess),0);
   Mess.Msg:= LM_CLOSEQUERY;
   { Message results : True - do nothing, False - destroy or hide window }
   Result:= DeliverMessage(Data, Mess) = 0;
@@ -688,8 +775,8 @@ function gtkresizeCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 //var
 //   Mess : TLMessage;
 begin
-   Result := True;
-   EventTrace('resize', data);
+  Result := True;
+  EventTrace('resize', data);
 //   Mess.msg := LM_RESIZE;
 //   TControl(data).WindowProc(TLMessage(Mess));
   Assert(False, 'Trace:TODO: [gtkresizeCB] fix (or remove) to new LM_SIZE');
@@ -698,13 +785,13 @@ end;
 
 function gtkMonthChanged(Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
-  MSG: TLMessage;
+  Mess: TLMessage;
 begin
   Result := True;
   EventTrace('month changed', data);
-  MSG.Msg := LM_MONTHCHANGED;
-  Result := DeliverPostMessage(Data, MSG);
-//   Result := DeliverMessage(Data, MSG) = 0;
+  FillChar(Mess,SizeOf(Mess),0);
+  Mess.Msg := LM_MONTHCHANGED;
+  Result := DeliverPostMessage(Data, Mess);
 end;
 
 {-------------------------------------------------------------------------------
@@ -2583,6 +2670,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.172  2003/03/25 10:45:41  mattias
+  reduced focus handling and improved focus setting
+
   Revision 1.171  2003/03/18 13:04:25  mattias
   improved focus debugging output
 
