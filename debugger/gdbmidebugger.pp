@@ -1037,13 +1037,11 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String): Boolean;
     Location.FuncName := '';
     Location.Address := GDBGetData('$fp+12', []);
     
-  writeln('AAA1 ');
     if ExecuteCommand('info line * pointer(%d)', [Integer(Location.Address)],
                       S, [cfIgnoreError, cfNoMiCommand])
     then begin
       Location.SrcLine := StrToIntDef(GetPart('Line ', ' of', S), -1);
       Location.SrcFile := GetPart('\"', '\"', S);
-  writeln('AAA2 ',Location.SrcLine,' ',Location.SrcLine);
     end;
 
     DoException(ExceptionName, ExceptionMessage);
@@ -1887,6 +1885,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.28  2003/06/09 17:20:43  mattias
+  implemented stop debugging on rebuild
+
   Revision 1.27  2003/06/09 15:58:05  mattias
   implemented view call stack key and jumping to last stack frame with debug info
 
