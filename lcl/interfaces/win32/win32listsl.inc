@@ -42,12 +42,16 @@ Begin
   Result := StrComp(AStr, BStr);
 end;
 
-Procedure SetComboHeight(Sender: TWinControl;
-  ALeft, ATop, AWidth, AHeight:Integer);
+Procedure SetComboHeight(Sender: TWinControl; AHeight:Integer);
+var
+  Left, Top, Width: integer;
 begin
-  LCLBoundsToWin32Bounds(Sender,ALeft, ATop, AWidth, AHeight);
-  MoveWindow(Sender.Handle,ALeft,ATop,AWidth,AHeight,true);
-  LCLControlSizeNeedsUpdate(Sender,true);
+  Left := Sender.Left;
+  Top := Sender.Top;
+  Width := Sender.Width;
+  LCLBoundsToWin32Bounds(Sender, Left, Top, Width, AHeight);
+  MoveWindow(Sender.Handle, Left, Top, Width, AHeight, true);
+  LCLControlSizeNeedsUpdate(Sender, true);
 end;
 
 {*************************************************************}
@@ -61,8 +65,6 @@ end;
 
  ------------------------------------------------------------------------------}
 Constructor TWin32ListStringList.Create(List : HWND; TheOwner: TWinControl);
-Var
-  R:TRect;
 Begin
   Inherited Create;
   If List = HWND(Nil) Then
@@ -72,46 +74,24 @@ Begin
   FSender := TheOwner;
 
   //Set proper win32 flags for ComboBox/ListBox and get/set Combo Height
-  case FSender.FCompStyle of
-    csComboBox:
-    begin
-      FFlagSort         := UINT(CBS_SORT);
-      FFlagGetText      := UINT(CB_GETLBTEXT);
-      FFlagGetTextLen   := UINT(CB_GETLBTEXTLEN);
-      FFlagGetCount     := UINT(CB_GETCOUNT);
-      FFlagResetContent := UINT(CB_RESETCONTENT);
-      FFlagDeleteString := UINT(CB_DELETESTRING);
-      FFlagInsertString := UINT(CB_INSERTSTRING);
-      FFlagAddString    := UINT(CB_ADDSTRING);
-      FFlagGetItemData  := UINT(CB_GETITEMDATA);
-      FFlagSetItemData  := UINT(CB_SETITEMDATA);
-      //Get edit and item sizes
-      Windows.GetClientRect(FWin32List,@R);
-      FEditHeight := R.Bottom;
-      FItemHeight := Windows.SendMessage(FWin32List, CB_GETITEMHEIGHT, 0, 0);
-      FDDownCount := TComboBox(FSender).DropDownCount;
-      If FDDownCount = 0 then
-        FDDownCount := 8;
-    end;
-    csListBox,csCheckListBox:
-    begin
-      FFlagSort         := UINT(LBS_SORT);
-      FFlagGetText      := UINT(LB_GETTEXT);
-      FFlagGetTextLen   := UINT(LB_GETTEXTLEN);
-      FFlagGetCount     := UINT(LB_GETCOUNT);
-      FFlagResetContent := UINT(LB_RESETCONTENT);
-      FFlagDeleteString := UINT(LB_DELETESTRING);
-      FFlagInsertString := UINT(LB_INSERTSTRING);
-      FFlagAddString    := UINT(LB_ADDSTRING);
-      FFlagGetItemData  := UINT(LB_GETITEMDATA);
-      FFlagSetItemData  := UINT(LB_SETITEMDATA);
-    end;
-  else
-    raise Exception.Create('Win32ListStringList: Component type not detected');
-  end;
+  InitFlags;
   // Determine if the list is sorted
   FSorted := (UINT(GetWindowLong(FWin32List, GWL_STYLE)) and FFlagSort <> 0);
 End;
+
+procedure TWin32ListStringList.InitFlags;
+begin
+  FFlagSort         := UINT(LBS_SORT);
+  FFlagGetText      := UINT(LB_GETTEXT);
+  FFlagGetTextLen   := UINT(LB_GETTEXTLEN);
+  FFlagGetCount     := UINT(LB_GETCOUNT);
+  FFlagResetContent := UINT(LB_RESETCONTENT);
+  FFlagDeleteString := UINT(LB_DELETESTRING);
+  FFlagInsertString := UINT(LB_INSERTSTRING);
+  FFlagAddString    := UINT(LB_ADDSTRING);
+  FFlagGetItemData  := UINT(LB_GETITEMDATA);
+  FFlagSetItemData  := UINT(LB_SETITEMDATA);
+end;
 
 {------------------------------------------------------------------------------
   Method: TWin32ListStringList.SetSorted
@@ -150,42 +130,20 @@ End;
 Procedure TWin32ListStringList.Assign(Source: TPersistent);
 Var
   Counter: Integer;
-  EditText: String;
 Begin
   { Do not call inherited Assign as it does things we do not want to happen }
   If Source Is TStrings Then
   Begin
-    // save any text in edit box
-    if FSender.FCompStyle=csComboBox then
-      TWin32WSCustomComboBox.GetText(FSender, EditText);
-
     Windows.SendMessage(FWin32List, FFlagResetContent, 0, 0);
     For Counter := 0 To (TStrings(Source).Count - 1) Do
     Begin
       Windows.SendMessage(FWin32List, FFlagAddString, 0, LPARAM(PChar(TStrings(Source)[Counter]))); //Insert
       PutObject(Counter, TStrings(Source).Objects[Counter]);
     end;
-
-    if FSender.FCompStyle=csComboBox Then
-    begin
-      SetComboHeight(FSender, FSender.Left, FSender.Top, FSender.Width, ComboHeight);
-      // restore text in edit box
-      TWin32WSCustomComboBox.SetText(FSender, EditText);
-    end;
   End
   Else
     inherited Assign(Source);
 End;
-
-function TWin32ListStringList.GetComboHeight: integer;
-begin
-  if Count = 0 then
-  begin
-    Result := FEditHeight + FItemHeight + 2;
-  end else begin
-    Result := FEditHeight + FDDownCount*FItemHeight + 2;
-  end;
-end;
 
 {------------------------------------------------------------------------------
   Method: TWin32ListStringList.Get
@@ -201,7 +159,7 @@ Begin
     Raise Exception.Create('Out of bounds.')
   Else
   Begin
-    Getmem(Item,Windows.SendMessage(FWin32List,FFlagGetTextLen,Index,0)+1);
+    Getmem(Item, Windows.SendMessage(FWin32List, FFlagGetTextLen, Index, 0)+1);
     Windows.SendMessage(FWin32List, FFlagGetText, Index, LPARAM(Item));
   End;
   Result := StrPas(Item);
@@ -227,10 +185,7 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32ListStringList.Clear;
 Begin
-  if FSender.FCompStyle=csComboBox Then
-    SetComboHeight(FSender,FSender.Left,FSender.Top,FSender.Width,
-                   FEditHeight + FItemHeight + 2);
-  Windows.SendMessage(FWin32List,FFlagResetContent, 0, 0);
+  Windows.SendMessage(FWin32List, FFlagResetContent, 0, 0);
 End;
 
 {------------------------------------------------------------------------------
@@ -241,11 +196,7 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32ListStringList.Delete(Index: Integer);
 Begin
-  If (FSender.FCompStyle = csComboBox)
-  and (GetCount <= 1) Then
-    SetComboHeight(FSender,FSender.Left,FSender.Top,FSender.Width,
-                   FEditHeight + FItemHeight + 2);
-  Windows.SendMessage(FWin32List,FFlagDeleteString, Index, 0);
+  Windows.SendMessage(FWin32List, FFlagDeleteString, Index, 0);
 End;
 
 {------------------------------------------------------------------------------
@@ -267,14 +218,10 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32ListStringList.Insert(Index: Integer; Const S: String);
 Begin
-  If (FSender.FCompStyle = csComboBox)
-  and (GetCount = 0) Then
-    SetComboHeight(FSender,FSender.Left,FSender.Top,FSender.Width,
-                   FEditHeight + FDDownCount*FItemHeight + 2);
   If FSorted Then
-    Windows.SendMessage(FWin32List,FFlagAddString, 0, LPARAM(PChar(S)))
+    Windows.SendMessage(FWin32List, FFlagAddString, 0, LPARAM(PChar(S)))
   Else
-    Windows.SendMessage(FWin32List,FFlagInsertString, Index, LPARAM(PChar(S)));
+    Windows.SendMessage(FWin32List, FFlagInsertString, Index, LPARAM(PChar(S)));
 End;
 
 {------------------------------------------------------------------------------
@@ -288,6 +235,78 @@ Begin
   Windows.SendMessage(FWin32List, FFlagSetItemData, Index, LPARAM(AObject));
 End;
 
+{ TWin32ComboBoxStringList }
+
+procedure TWin32ComboBoxStringList.InitFlags;
+var
+  R: TRect;
+begin
+  FFlagSort         := UINT(CBS_SORT);
+  FFlagGetText      := UINT(CB_GETLBTEXT);
+  FFlagGetTextLen   := UINT(CB_GETLBTEXTLEN);
+  FFlagGetCount     := UINT(CB_GETCOUNT);
+  FFlagResetContent := UINT(CB_RESETCONTENT);
+  FFlagDeleteString := UINT(CB_DELETESTRING);
+  FFlagInsertString := UINT(CB_INSERTSTRING);
+  FFlagAddString    := UINT(CB_ADDSTRING);
+  FFlagGetItemData  := UINT(CB_GETITEMDATA);
+  FFlagSetItemData  := UINT(CB_SETITEMDATA);
+  //Get edit and item sizes
+  Windows.GetClientRect(FWin32List,@R);
+  FEditHeight := R.Bottom;
+  FItemHeight := Windows.SendMessage(FWin32List, CB_GETITEMHEIGHT, 0, 0);
+  FDropDownCount := TComboBox(FSender).DropDownCount;
+  If FDropDownCount = 0 then
+    FDropDownCount := 8;
+end;
+
+procedure TWin32ComboBoxStringList.Assign(Source: TPersistent); 
+var
+  EditText: string;
+begin
+  if Source is TStrings then
+  begin
+    // save text in edit box, assigning strings clears the text
+    TWin32WSCustomComboBox.GetText(FSender, EditText);
+
+    inherited Assign(Source);
+    
+    // restore text in edit box
+    SetComboHeight(FSender, ComboHeight);
+    TWin32WSCustomComboBox.SetText(FSender, EditText);
+  end else
+    inherited Assign(Source);
+end;
+
+function TWin32ComboBoxStringList.GetComboHeight: integer;
+begin
+  if Count = 0 then
+  begin
+    Result := FEditHeight + FItemHeight + 2;
+  end else begin
+    Result := FEditHeight + FDropDownCount*FItemHeight + 2;
+  end;
+end;
+
+procedure TWin32ComboBoxStringList.Clear; 
+begin
+  SetComboHeight(FSender, FEditHeight + FItemHeight + 2);
+  inherited;
+end;
+
+procedure TWin32ComboBoxStringList.Delete(Index: integer); 
+begin
+  if GetCount <= 1 then
+    SetComboHeight(FSender, FEditHeight + FItemHeight + 2);
+end;
+
+procedure TWin32ComboBoxStringList.Insert(Index: integer; const S: string); 
+begin
+  if GetCount = 0 then
+    SetComboHeight(FSender, FEditHeight + FDropDownCount*FItemHeight + 2);
+end;
+
+    
 { TWin32CheckListBoxStrings }
 
 constructor TWin32CheckListBoxStrings.Create(List : HWND; TheOwner: TWinControl);
@@ -549,6 +568,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.36  2004/11/04 15:12:35  micha
+  remove usage of fcompstyle in twin32liststringlist by using descendent class for combobox specific things
+
   Revision 1.35  2004/11/04 12:05:14  micha
   fix remember edit string in combobox after assigning strings to list (fixes find in files dialog search in lazarus)
 

@@ -542,7 +542,7 @@ Var
   OldTop: Integer;
 {$ENDIF}
   WinHandle, BuddyHandle: HWND;
-  StringList: TWin32ListStringList;
+  StringList: TWin32ComboBoxStringList;
   suppressMove: boolean;
 Begin
   // if not Sender.HandleAllocated then exit; --> Already checked (LM_SETSIZE and LM_RECREATEWND)
@@ -585,7 +585,7 @@ Begin
   else
     if Sender is TCustomComboBox then
     begin
-      StringList := TWin32ListStringList(GetWindowInfo(WinHandle)^.List);
+      StringList := TWin32ComboBoxStringList(GetWindowInfo(WinHandle)^.List);
       if StringList <> nil then
         Height := StringList.ComboHeight;
     end;
@@ -736,6 +736,9 @@ end;
 
 {
   $Log$
+  Revision 1.298  2004/11/04 15:12:35  micha
+  remove usage of fcompstyle in twin32liststringlist by using descendent class for combobox specific things
+
   Revision 1.297  2004/11/02 17:48:19  micha
   remove usage of fcompstyle
 

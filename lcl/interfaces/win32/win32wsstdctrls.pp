@@ -689,7 +689,7 @@ var
   winhandle: HWND;
 begin
   winhandle := ACustomComboBox.Handle;
-  Result := TWin32ListStringList.Create(winhandle, ACustomComboBox);
+  Result := TWin32ComboBoxStringList.Create(winhandle, ACustomComboBox);
   GetWindowInfo(winhandle)^.List := Result;
 end;
 

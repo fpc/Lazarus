@@ -32,9 +32,7 @@ Type
     FWin32List: HWND;
     FSorted: Boolean;
     FSender: TWinControl;
-    FEditHeight: Integer;
-    FItemHeight: Integer;
-    FDDownCount: Integer;
+  protected
     //Win32 Flags
     FFlagSort: Cardinal;
     FFlagGetText: Cardinal;
@@ -51,8 +49,9 @@ Type
     Function GetCount: Integer; Override;
     Function GetObject(Index: Integer): TObject; Override;
     Procedure PutObject(Index: Integer; AObject: TObject); Override;
+
+    procedure InitFlags; virtual;
     Procedure SetSorted(Val: Boolean); Virtual;
-    function GetComboHeight: integer;
   Public
     Constructor Create(List : HWND; TheOwner: TWinControl);
     Procedure Assign(Source: TPersistent); Override;
@@ -61,9 +60,25 @@ Type
     Procedure Insert(Index: Integer; Const S: String); Override;
     Procedure Sort; Virtual;
     Property Sorted: Boolean Read FSorted Write SetSorted;
-    property ComboHeight: integer read GetComboHeight;
   End;
 
+  TWin32ComboBoxStringList = class(TWin32ListStringList)
+  private
+    FEditHeight: Integer;
+    FItemHeight: Integer;
+    FDropDownCount: Integer;
+  protected
+    function  GetComboHeight: integer;
+    procedure InitFlags; override;
+  public
+    procedure Assign(Source: TPersistent); override;
+    procedure Clear; override;
+    procedure Delete(Index: integer); override;
+    procedure Insert(Index: integer; const S: string); override;
+
+    property ComboHeight: integer read GetComboHeight;
+  end;
+    
   PWin32CheckListBoxItemRecord = ^TWin32CheckListBoxItemRecord;
   TWin32CheckListBoxItemRecord = record
     TheObject: TObject;
@@ -119,6 +134,9 @@ Type
 { =============================================================================
 
   $Log$
+  Revision 1.17  2004/11/04 15:12:35  micha
+  remove usage of fcompstyle in twin32liststringlist by using descendent class for combobox specific things
+
   Revision 1.16  2004/05/08 12:32:32  micha
   fix combobox height; whatever the lcl passes as height for combobox, always calculate our own
 
