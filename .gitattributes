@@ -46,6 +46,7 @@ examples/hello.pp svneol=native#text/pascal
 examples/helloform.pp svneol=native#text/pascal
 examples/listboxtest.pp svneol=native#text/pascal
 examples/memotest.pp svneol=native#text/pascal
+examples/messagedialogs.pp svneol=native#text/pascal
 examples/notebk.pp svneol=native#text/pascal
 examples/notebku.pp svneol=native#text/pascal
 examples/notebooktest.pp svneol=native#text/pascal
