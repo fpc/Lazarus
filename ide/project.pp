@@ -73,7 +73,6 @@ type
     xmlcfg: TXMLConfig;
 
     { Variables }
-    fAliases: String;
     fCompilerOptions: TCompilerOptions;
     fIconPath: String;
     fLoaded:  Boolean;
@@ -108,7 +107,6 @@ type
     procedure Clear;
 
     { Properties }
-    property Aliases: String read fAliases write fAliases;
     property CompilerOptions: TCompilerOptions read fCompilerOptions write fCompilerOptions;
     property IconPath: String read fIconPath write fIconPath;
     property Loaded: Boolean read fLoaded write fLoaded;
@@ -229,7 +227,6 @@ begin
 
   xmlcfg := nil;
 
-  fAliases := '';
   fCompilerOptions := TCompilerOptions.Create;
   fIconPath := '';
   fMainUnit := '';
@@ -275,7 +272,6 @@ begin
   try
     xmlcfg.SetValue('ProjectOptions/General/ProjectFile/Value', ProjectFile);
     xmlcfg.SetValue('ProjectOptions/General/MainUnit/Value', MainUnit);
-    xmlcfg.SetValue('ProjectOptions/General/Aliases/Value', Aliases);
     xmlcfg.SetValue('ProjectOptions/General/IconPath/Value', IconPath);
     xmlcfg.SetValue('ProjectOptions/General/TargetFileExt/Value', TargetFileExt);
     xmlcfg.SetValue('ProjectOptions/General/Title/Value', Title);
@@ -350,7 +346,6 @@ begin
     ProjectFile := xmlcfg.GetValue('ProjectOptions/General/ProjectFile/Value', '');
     MainUnit := xmlcfg.GetValue('ProjectOptions/General/MainUnit/Value', '');
     UnitNameList := xmlcfg.GetValue('ProjectOptions/General/UnitNameList/Value', '');
-    Aliases := xmlcfg.GetValue('ProjectOptions/General/Aliases/Value', '');
     IconPath := xmlcfg.GetValue('ProjectOptions/General/IconPath/Value', './');
     TargetFileExt := xmlcfg.GetValue('ProjectOptions/General/TargetFileExt/Value', '');
     Title := xmlcfg.GetValue('ProjectOptions/General/Title/Value', '');
@@ -456,7 +451,6 @@ procedure TProject.Clear;
 begin
   xmlcfg := nil;
 
-  fAliases := '';
   fCompilerOptions.Clear;
   fIconPath := '';
   fMainUnit := '';
@@ -527,6 +521,9 @@ end;
 end.
 {
   $Log$
+  Revision 1.9  2001/03/01 03:51:32  lazarus
+  Removed Aliases property from TProject.                        CAW
+
   Revision 1.8  2001/02/22 17:04:57  lazarus
   added environment options + killed ide unit circles
 
