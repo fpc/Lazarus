@@ -24,55 +24,21 @@ unit interfaces;
 {$mode objfpc} 
 
 interface
-{ $DEFINE WIN}
-{$DEFINE QT}
 
-{ $DEFINE GTK}
-
-{$ifdef WIN}
-
-uses InterfaceBase, Win32Int;
-
-type
-
-   TInterfaceObject = class(TWin32Object);
-
-{$endif}
-
-{$ifdef GTK}
-
-uses InterfaceBase, gtkint;
-
-type
-
-   TInterfaceObject = class(TgtkObject);
-
-{$endif}
-
-{$ifdef QT}
-
-uses InterfaceBase, messages,qtint;
-
-type
-   TInterfaceObject = class(TQTObject);
-   
-{$endif}
+uses 
+   InterfaceBase;
 
 var
    InterfaceObject : TInterfaceBase;
 
-
 implementation
 
-
-procedure Interface_Init;
-begin
-   InterfaceObject.Init;
-end;
+uses 
+   QTInt;
 
 initialization
 
-   InterfaceObject := TInterfaceObject.Create;
+   InterfaceObject := TqtObject.Create;
 
 finalization
 
