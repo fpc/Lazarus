@@ -30,7 +30,7 @@ unit StringHashList;
 interface
 
 uses
-  Classes, SysUtils; 
+  Classes, SysUtils, LCLStrConsts;
 
 type
   PStringHashItem = ^TStringHashItem;
@@ -311,7 +311,7 @@ begin
   begin
     if Count > 0 then
     begin
-      raise Exception.Create('Must be empty');
+      raise EListError.Create(rsListMustBeEmpty);
       exit;
     end;
     fCaseSensitive := Value;
