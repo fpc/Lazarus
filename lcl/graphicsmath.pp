@@ -125,7 +125,10 @@ Operator = (Compare1, Compare2  : TPoint) : Boolean;
 Operator = (Compare1, Compare2  : TFloatPoint) : Boolean;
 
 Operator := (Value : TFloatPoint) : TPoint;
+
+{$IfNdef ver1_0}
 Operator := (Value : TPoint) : TFloatPoint;
+{$EndIf}
 
 Operator = (Compare1, Compare2  : TRect) : Boolean;
 
@@ -281,6 +284,7 @@ begin
   end;
 end;
 
+{$IfNdef ver1_0}
 Operator := (Value : TPoint) : TFloatPoint;
 begin
   With Result do begin
@@ -288,6 +292,7 @@ begin
     Y := Value.Y;
   end;
 end;
+{$EndIf}
 
 Operator = (Compare1, Compare2  : TRect) : Boolean;
 begin
@@ -1080,6 +1085,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.9  2002/10/25 17:49:43  lazarus
+  AJ: disable TFloatPoint := TPoint if FPC 1.0
+
   Revision 1.8  2002/10/18 16:08:09  lazarus
   AJ: Partial HintWindow Fix; Added Screen.Font & Font.Name PropEditor; Started to fix ComboBox DropDown size/pos
 
