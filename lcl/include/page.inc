@@ -26,7 +26,6 @@ begin
   { The alignment is performed by the notebook component }
 
   Caption := '';
-
 end;
 
 {------------------------------------------------------------------------------
@@ -63,7 +62,22 @@ end;
  ------------------------------------------------------------------------------}
 procedure TPage.Paint;
 begin
-   { Nothing to do here yet }
+  { Nothing to do here yet }
+end;
+
+{------------------------------------------------------------------------------
+  TPage WMPaint
+  Params: a TLMPaint message
+ ------------------------------------------------------------------------------}
+procedure TPage.WMPaint(var Msg: TLMPaint);
+var Notebook: TNoteBook;
+begin
+  if (Parent is TNoteBook) then begin
+    NoteBook:=TNoteBook(Parent);
+    if NoteBook.Page[NoteBook.PageIndex]=Self then
+      inherited WMPaint(Msg);
+  end else
+    inherited WMPaint(Msg);
 end;
 
 {------------------------------------------------------------------------------
@@ -76,6 +90,9 @@ end;
 
 {
   $Log$
+  Revision 1.3  2001/06/26 21:44:32  lazarus
+  MG: reduced paint messages
+
   Revision 1.2  2001/01/12 18:27:32  lazarus
   Streaming additions by MAttias
   Shane

@@ -1297,9 +1297,9 @@ begin
  }
 
 Assert(False, 'Trace:GetCaretPos');
-gdk_window_get_pointer(nil,@lpPoint.X,@lpPoint.y,@modmask);
+  gdk_window_get_pointer(nil,@lpPoint.X,@lpPoint.y,@modmask);
 Assert(False, 'Trace:GetCaretPos');
-Result := True;
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -2450,7 +2450,7 @@ end;
 function TgtkObject.PeekMessage(var lpMsg: TMsg; Handle : HWND;
   wMsgFilterMin, wMsgFilterMax, wRemoveMsg: UINT): Boolean;
 var
-  Message: PMSG;
+  Message: PMsg;
 begin 
   //TODO Filtering
   
@@ -2461,10 +2461,11 @@ begin
     lpMsg := Message^;
     if (wRemoveMsg and PM_REMOVE) = PM_REMOVE 
     then begin
+      if Message^.Message=LM_PAINT then
+        FPaintMessages.Remove(FMessageQueue.First);
       FMessageQueue.Delete(FMessageQueue.First);
     end;
   end;
-
 end;
 
 {------------------------------------------------------------------------------
@@ -2478,9 +2479,12 @@ end;
   The PostMessage function places (posts) a message in the message queue and 
   then returns without waiting.
  ------------------------------------------------------------------------------}
-function TGTKObject.PostMessage(hWnd: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt): Boolean;
+function TGTKObject.PostMessage(hWnd: HWND; Msg: Cardinal; wParam: LongInt;
+  lParam: LongInt): Boolean;
 var
-  Message: PMsg;
+  Message, OldMessage: PMsg;
+  Target: TObject;
+  OldPaintMessage: PLazQueueItem;
 begin
   New(Message);
   Message^.HWnd := hWnd;
@@ -2488,7 +2492,23 @@ begin
   Message^.WParam := WParam;
   Message^.LParam := LParam;
 //  Message^.Time := 
-  FMessageQueue.AddLast(Message);
+  if Message^.Message=LM_PAINT then begin
+
+    OldPaintMessage:=FindPaintMessage(hWnd);
+    if OldPaintMessage<>nil then begin
+      // delete old message from queue, so that the widget repaints only once
+      OldMessage:=PMsg(OldPaintMessage^.Data);
+      FPaintMessages.Remove(OldPaintMessage);
+      FMessageQueue.Delete(OldPaintMessage);
+      ReleaseDC(0,OldMessage^.WParam);
+      Dispose(OldMessage);
+    end;
+    
+    FMessageQueue.AddLast(Message);
+    FPaintMessages.Add(FMessageQueue.Last);
+  end else begin
+    FMessageQueue.AddLast(Message);
+  end;
   Result := True;  
 end;
 
@@ -2855,20 +2875,40 @@ end;
   The function calls the window procedure for the specified window and does 
   not return until the window procedure has processed the message.
  ------------------------------------------------------------------------------}
-function TGTKObject.SendMessage(hWnd: HWND; Msg: Cardinal; wParam: LongInt;
+function TGTKObject.SendMessage(HandleWnd: HWND; Msg: Cardinal; wParam: LongInt;
   lParam: LongInt): Integer;
 var
   Message: TLMessage;
   Target: TObject;
+  ParentControl: TWinControl;
+  ParentHandle: HWnd;
 begin
   Message.Msg := Msg;
   Message.WParam := WParam;
   Message.LParam := LParam;
   Message.Result := 0;
   
-  Target := GetLCLObject(Pointer(hWnd));
-  if Target<>nil then
+  Target := GetLCLObject(Pointer(HandleWnd));
+
+  if Target<>nil then begin
+    if Msg=LM_PAINT then begin
+      // The LCL repaints controls in a top-down hierachy. But the gtk sends
+      // gtkdraw events bottom-up. So, controls at the bottom are repainted
+      // many times. To avoid this the queue is checked for LM_PAINT messages
+      // for the parent control. If there is a parent LM_PAINT, this message
+      // is ignored.
+      if (Target is TControl) then begin
+        ParentControl:=TControl(Target).Parent;
+        while ParentControl<>nil do begin
+          ParentHandle:=TWinControl(ParentControl).Handle;
+          if FindPaintMessage(ParentHandle)<>nil then
+            exit;
+          ParentControl:=ParentControl.Parent;
+        end;
+      end;
+    end;
     Result := DeliverMessage(Target, Message);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -3520,8 +3560,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.38  2001/06/16 09:14:39  lazarus
-  MG: added lazqueue and used it for the messagequeue
+  Revision 1.39  2001/06/26 21:44:32  lazarus
+  MG: reduced paint messages
 
   Revision 1.37  2001/06/14 23:13:30  lazarus
   MWE:

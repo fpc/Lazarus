@@ -27,8 +27,8 @@ begin
   FDeviceContexts := TDynHashArray.Create(-1);
   FGDIObjects := TDynHashArray.Create(-1);
   FMessageQueue := TLazQueue.Create;
-  {FPaintMessages := TDynHashArray.Create(-1);
-  FPaintMessages.OwnerHashFunction := @HashPaintMessage;}
+  FPaintMessages := TDynHashArray.Create(-1);
+  FPaintMessages.OwnerHashFunction := @HashPaintMessage;
   FAccelGroup := gtk_accel_group_new();
   FTimerData  := TList.Create;
 end;
@@ -59,7 +59,7 @@ begin
     p := PMsg(QueueItem^.Data);
     if p^.Message=LM_PAINT then begin
       //writeln('[TgtkObject.Destroy]  freeing unused paint message ',HexStr(p^.WParam,8));
-      //FPaintMessages.Remove(P);
+      FPaintMessages.Remove(QueueItem);
       ReleaseDC(0,P^.WParam);
       Dispose(P);
       OldQueueItem:=QueueItem;
@@ -69,10 +69,10 @@ begin
       QueueItem:=QueueItem^.Next;
   end;
   
-  {if FPaintMessages.Count>0 then begin
+  if FPaintMessages.Count>0 then begin
     WriteLn('[TgtkObject.Destroy] WARNING: There are ',FPaintMessages.Count
        ,' unremoved LM_PAINT message links left.');
-  end;}
+  end;
 
   if (FDeviceContexts.Count > 0)
   then begin
@@ -142,7 +142,7 @@ begin
   end;
 
   FMessageQueue.Free;
-  //FPaintMessages.Free;
+  FPaintMessages.Free;
   FDeviceContexts.Free;
   FGDIObjects.Free;
   FKeyStateList.Free;
@@ -172,10 +172,10 @@ begin
     while First<>nil do
     begin
       p := PMsg(First^.Data);
-      Delete(First);
       Msg := p^;
-      {if Msg.Message=LM_PAINT then
-        FPaintMessages.Remove(p);}
+      if Msg.Message=LM_PAINT then
+        FPaintMessages.Remove(First);
+      Delete(First);
       with Msg do
         SendMessage(hWND, Message, WParam, LParam);
       case Msg.Message of
@@ -769,7 +769,8 @@ activate_time :	the time at which the activation event occurred.
         if Sender is TCustomForm then begin
           if (Handle<>0) and (Data<>nil) then begin
             FormIconGdiObject:=Data;
-            if FormIconGdiObject<>nil then begin
+            if (FormIconGdiObject<>nil) and (pgtkWidget(Handle)^.Window<>nil)
+            then begin
               gdk_window_set_icon(pgtkWidget(Handle)^.Window, nil, 
                 FormIconGdiObject^.GDIBitmapObject,
                 FormIconGdiObject^.GDIBitmapMaskObject);
@@ -2722,10 +2723,10 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.IsValidGDIObject(const GDIObject: HGDIOBJ): Boolean;
 begin
-  Result := FGDIObjects.Contains(Pointer(GDIObject));
+  Result := (GDIObject<>0) and (FGDIObjects.Contains(Pointer(GDIObject)));
 //  Result := (GDIObject <> 0);
   if Result then
-  try
+//  try
     with PGdiObject(GDIObject)^ do
       case GDIType of
         gdiBitmap : begin
@@ -2744,9 +2745,9 @@ begin
       else
         Result := False; 
       end;
-  except
-    on Exception do Result := False;
-  end;
+//  except
+//    on Exception do Result := False;
+//  end;
   Assert(False, Format('Trace:  [TgtkObject.IsValidGDIObject] GDIObject: 0x%x --> %s', [Integer(GDIObject), BOOL_RESULT[Result]]));
 end;
 
@@ -2894,51 +2895,49 @@ end;
 
 {------------------------------------------------------------------------------
   Function: HashPaintMessage
-  Params: a PaintMessage
+  Params: a PaintMessage in the Message queue (= PLazQueueItem)
   Returns: a hash index
 
   Calculates a hash of the handle in the PaintMessage which is used by the
   FPaintMessages (which is a TDynHashArray).
  ------------------------------------------------------------------------------}
-{function TgtkObject.HashPaintMessage(p: pointer): integer;
+function TgtkObject.HashPaintMessage(p: pointer): integer;
 var h: integer;
 begin
-  h:=PMsg(p)^.WParam;
+  h:=PMsg(PLazQueueItem(p)^.Data)^.HWnd;
   if h<0 then h:=-h;
   Result:=((h mod 5364329)+(h mod 17)) mod FPaintMessages.Capacity;
-end;}
+end;
 
 {------------------------------------------------------------------------------
   Function: FindPaintMessage
-  Params: a Device Context
-  Returns: nil or a Paint Message to the device context
+  Params: a window handle
+  Returns: nil or a Paint Message to the widget
 
-  Searches in FPaintMessages for a LM_PAINT message with DC as device context.
+  Searches in FPaintMessages for a LM_PAINT message with HandleWnd.
  ------------------------------------------------------------------------------}
-{function TgtkObject.FindPaintMessage(DC: HDC): pMsg;
+function TgtkObject.FindPaintMessage(HandleWnd: HWnd): PLazQueueItem;
 var h: integer;
   HashItem: PDynHashArrayItem;
 begin
-  h:=DC;
+  h:=HandleWnd;
   if h<0 then h:=-h;
   h:=((h mod 5364329)+(h mod 17)) mod FPaintMessages.Capacity;
   HashItem:=FPaintMessages.GetHashItem(h);
   if HashItem<>nil then begin
-    if pMsg(HashItem^.Item)^.wParam=DC then begin
-      Result:=pMsg(HashItem^.Item);
+    Result:=PLazQueueItem(HashItem^.Item);
+    if PMsg(Result^.Data)^.HWnd=HandleWnd then
       exit;
-    end;
     HashItem:=HashItem^.Next;
     while (HashItem<>nil) and (HashItem^.IsOverflow) do begin
-      if pMsg(HashItem^.Item)^.wParam=DC then begin
-        Result:=pMsg(HashItem^.Item);
+      Result:=PLazQueueItem(HashItem^.Item);
+      if PMsg(Result^.Data)^.HWnd=HandleWnd then
         exit;
-      end;
       HashItem:=HashItem^.Next;
     end;
   end;
   Result:=nil;
-end;}
+end;
 
 
 {$IFDEF ASSERT_IS_ON}
@@ -2949,9 +2948,15 @@ end;}
  { =============================================================================
 
   $Log$
+  Revision 1.52  2001/06/26 21:44:32  lazarus
+  MG: reduced paint messages
+
+<<<<<<< gtkobject.inc
+=======
   Revision 1.51  2001/06/26 00:08:36  lazarus
   MG: added code for form icons from Rene E. Beszon
 
+>>>>>>> 1.51
   Revision 1.49  2001/06/14 14:57:59  lazarus
   MG: small bugfixes and less notes
 

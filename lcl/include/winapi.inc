@@ -326,9 +326,9 @@ begin
   Result := InterfaceObject.ScrollWindowEx(hWnd, dx, dy, prcScroll, prcClip, hrgnUpdate, prcUpdate, flags);
 end;
 
-function SendMessage(hWnd: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt): Integer;
+function SendMessage(HandleWnd: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt): Integer;
 begin
-  Result := InterfaceObject.SendMessage(hWnd, Msg, wParam, lParam);
+  Result := InterfaceObject.SendMessage(HandleWnd, Msg, wParam, lParam);
 end;
 
 function SetBkColor(DC: HDC; Color: TColorRef): TColorRef;  //pbd
@@ -980,6 +980,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.15  2001/06/26 21:44:32  lazarus
+  MG: reduced paint messages
+
   Revision 1.14  2001/06/14 23:13:30  lazarus
   MWE:
     * Fixed some syntax errors for the latest 1.0.5 compiler

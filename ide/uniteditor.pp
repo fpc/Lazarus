@@ -21,12 +21,12 @@
  a class that controls the editors (TSourceEditor)
 }
 
-//{$DEFINE NEW_EDITOR}
-{$DEFINE NEW_EDITOR_SYNEDIT}
 unit UnitEditor;
 
 {$mode objfpc}
 {$H+}
+//{$DEFINE NEW_EDITOR}
+{$DEFINE NEW_EDITOR_SYNEDIT}
 
 interface
 
@@ -804,7 +804,6 @@ Begin
     TSourceNotebook(FaOwner).ProcessParentCommand(self,Command,aChar,Data);
   end;  //case
 end;
-
 
 Procedure TSourceEditor.CommandProcessed(Sender: TObject;
   var Command: TSynEditorCommand; var AChar: char; Data: pointer);

@@ -38,9 +38,10 @@ type
    TgtkObject = class(TInterfaceBase)
    private
       FKeyStateList: TList; // Keeps track of which keys are pressed
-      FDeviceContexts: TDynHashArray;
-      FGDIObjects: TDynHashArray;
-      FMessageQueue: TLazQueue;
+      FDeviceContexts: TDynHashArray;// hasharray of HDC
+      FGDIObjects: TDynHashArray;    // hasharray of PGdiObject
+      FMessageQueue: TLazQueue;      // queue of PMsg
+      FPaintMessages: TDynHashArray; // hasharray of PLazQueueItem 
       FGTKToolTips: PGtkToolTips;
       FAccelGroup: PgtkAccelGroup;
       FTimerData : TList;       // keeps track of timer evenet structures
@@ -80,6 +81,9 @@ type
       function SetValue (Sender : TObject; Data : pointer) : integer;
       function SetProperties (Sender: TObject) : integer;
       procedure AttachMenu(Sender: TObject);
+      
+      function HashPaintMessage(p: pointer): integer;
+      function FindPaintMessage(HandleWnd: HWnd): PLazQueueItem;
    protected
       Cursor_Watch    : pGDKCursor;
       Cursor_Arrow    : pGDKCursor;
@@ -252,8 +256,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.16  2001/06/16 09:14:38  lazarus
-  MG: added lazqueue and used it for the messagequeue
+  Revision 1.17  2001/06/26 21:44:32  lazarus
+  MG: reduced paint messages
 
   Revision 1.15  2001/06/14 14:57:59  lazarus
   MG: small bugfixes and less notes

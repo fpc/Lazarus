@@ -63,6 +63,7 @@ type
     procedure AttachSignals; override;
     procedure ReadState(Reader: TAbstractReader); override;
     procedure Paint; override;
+    procedure WMPaint(var Msg: TLMPaint); message LM_PAINT;
   public
     procedure AddControl; override;
     constructor Create(AOwner: TComponent); override;
@@ -332,6 +333,9 @@ end.
 
  {
   $Log$
+  Revision 1.12  2001/06/26 21:44:32  lazarus
+  MG: reduced paint messages
+
   Revision 1.11  2001/06/12 18:31:01  lazarus
   MG: small bugfixes
 

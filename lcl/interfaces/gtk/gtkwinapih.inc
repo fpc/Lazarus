@@ -81,7 +81,7 @@ Function ScreenToClient(Handle : HWND; var P : TPoint) : Integer; override;
 function ScrollWindowEx(hWnd: HWND; dx, dy: Integer; prcScroll, prcClip: PRect; hrgnUpdate: HRGN; prcUpdate: PRect; flags: UINT): Boolean; override;
 function SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;  override;
 function SelectPalette(DC: HDC; Palette: HPALETTE; ForceBackground: Boolean): HPALETTE; override;
-function SendMessage(hWnd: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt): Integer; override;
+function SendMessage(HandleWnd: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt): Integer; override;
 function SetBkColor(DC: HDC; Color: TColorRef): TColorRef; override;
 Function SetBkMode(DC: HDC; bkMode : Integer) : Integer; override;
 Function SetCapture(Value : Longint): Longint; override;
@@ -111,6 +111,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.16  2001/06/26 21:44:33  lazarus
+  MG: reduced paint messages
+
   Revision 1.15  2001/06/14 23:13:30  lazarus
   MWE:
     * Fixed some syntax errors for the latest 1.0.5 compiler

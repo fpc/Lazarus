@@ -334,7 +334,7 @@ begin
   Result := 0;
 end;
 
-function TInterfaceBase.SendMessage(hWnd: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt): Integer;
+function TInterfaceBase.SendMessage(HandleWnd: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt): Integer;
 begin
   Result := 0;
 end;
@@ -448,6 +448,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.16  2001/06/26 21:44:32  lazarus
+  MG: reduced paint messages
+
   Revision 1.15  2001/06/14 23:13:30  lazarus
   MWE:
     * Fixed some syntax errors for the latest 1.0.5 compiler
