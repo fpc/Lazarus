@@ -281,13 +281,16 @@ type
 
   TGraphicsObject = class(TPersistent)
   private
+    FOnChanging: TNotifyEvent;
     FOnChange: TNotifyEvent;
     Procedure DoChange(var msg); message LM_CHANGED;
   protected
+    procedure Changing; dynamic;
     procedure Changed; dynamic;
     Procedure Lock;
     Procedure UnLock;
   public
+    property OnChanging: TNotifyEvent read FOnChanging write FOnChanging;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
@@ -665,6 +668,8 @@ type
     FLockCount: Integer;
     procedure BrushChanged(ABrush: TObject);
     procedure FontChanged(AFont: TObject);
+    procedure PenChanging(APen: TObject);
+    procedure PenChanged(APen: TObject);
     procedure RegionChanged(ARegion: TObject);
     procedure DeselectHandles;
     function GetCanvasClipRect: TRect;
@@ -672,7 +677,6 @@ type
     function GetHandle : HDC;
     Function GetPenPos: TPoint;
     Function GetPixel(X,Y : Integer) : TColor;
-    procedure PenChanged(APen: TObject);
     Procedure SetAutoReDraw(Value : Boolean);
     Procedure SetColor(c: TColor);
     Procedure SetBrush(value : TBrush);
@@ -1253,6 +1257,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.100  2003/12/02 12:25:17  micha
+  try: gdi memory leak fix for pen
+
   Revision 1.99  2003/11/26 21:30:19  mattias
   reduced unit circles, fixed fpImage streaming
 

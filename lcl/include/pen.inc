@@ -24,7 +24,7 @@
  ------------------------------------------------------------------------------}
 Procedure TPen.SetColor(Value : TColor);
 begin
-  if FPenData.Color <> value 
+  if FPenData.Color <> value
   then begin
     FreeHandle;
     FPenData.Color := value;
@@ -74,7 +74,7 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TPen.SetWidth(Value : Integer);
 begin
-  if FPenData.Width <> Value 
+  if FPenData.Width <> Value
   then begin
     FreeHandle;
     FPenData.Width := Value;
@@ -99,7 +99,7 @@ begin
     Style := psSolid;
     Color := clBlack;
   end;
-  FMode := pmCopy;  
+  FMode := pmCopy;
 end;
 
 {------------------------------------------------------------------------------
@@ -139,11 +139,11 @@ end;
   Params:   a pen handle
   Returns:  nothing
 
-  sets the pen to an external created pen 
+  sets the pen to an external created pen
  ------------------------------------------------------------------------------}
 procedure TPen.SetHandle(const Value: HPEN);
 begin
-  if FPenData.Handle <> Value 
+  if FPenData.Handle <> Value
   then begin
     FreeHandle;
     FPenData.Handle := Value;
@@ -176,7 +176,7 @@ begin
     end;
     FPenData.Handle := CreatePenIndirect(LogPen);
   end;
-  
+
   Result := FPenData.Handle;
 end;
 
@@ -189,9 +189,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TPen.FreeHandle;
 begin
-  if FPenData.Handle <> 0 
+  if FPenData.Handle <> 0
   then begin
-    //TODO: what if a pen is currently selected
+    // Changing triggers deselecting the current handle
+    Changing;
     DeleteObject(FPenData.Handle);
     FPenData.Handle := 0;
   end;
@@ -200,6 +201,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2003/12/02 12:25:17  micha
+  try: gdi memory leak fix for pen
+
   Revision 1.5  2002/08/18 04:57:01  mattias
   fixed csDashDot
 

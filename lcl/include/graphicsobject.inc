@@ -21,6 +21,12 @@ begin
   Changed;
 end;
 
+procedure TGraphicsObject.Changing;
+begin
+  Assert(False, Format('Trace:[TgraphicsObject.Changed] %s', [ClassName]));
+  if Assigned(FOnChanging) then FOnChanging(Self);
+end;
+
 procedure TGraphicsObject.Changed;
 begin
   Assert(False, Format('Trace:[TgraphicsObject.Changed] %s', [ClassName]));
@@ -40,6 +46,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2003/12/02 12:25:17  micha
+  try: gdi memory leak fix for pen
+
   Revision 1.3  2002/09/30 14:01:06  lazarus
   MG: undid the TBinaryObjectWriter Buffersize
 

@@ -273,7 +273,7 @@ end;
   The angles angle1 and angle2 are 1/16th of a degree. For example, a full
   circle equals 5760 (16*360). Positive values of Angle and AngleLength mean
   counter-clockwise while negative values mean clockwise direction.
-  Zero degrees is at the 3'o clock position. 
+  Zero degrees is at the 3'o clock position.
 
  ------------------------------------------------------------------------------}
 procedure TCanvas.Arc(x,y,width,height,angle1,angle2 : Integer);
@@ -286,11 +286,11 @@ end;
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.Arc
-  Params:   DC,x,y,width,height,sx,sy,ex,ey 
+  Params:   DC,x,y,width,height,sx,sy,ex,ey
   Returns:  Nothing
 
-  Use Arc to draw an elliptically curved line with the current Pen. The 
-  values sx,sy, and ex,ey represent the starting and ending radial-points 
+  Use Arc to draw an elliptically curved line with the current Pen. The
+  values sx,sy, and ex,ey represent the starting and ending radial-points
   between which the Arc is drawn.
 
 ------------------------------------------------------------------------------}
@@ -311,7 +311,7 @@ end;
   The angles angle1 and angle2 are 1/16th of a degree. For example, a full
   circle equals 5760 (16*360). Positive values of Angle and AngleLength mean
   counter-clockwise while negative values mean clockwise direction.
-  Zero degrees is at the 3'o clock position. 
+  Zero degrees is at the 3'o clock position.
 
  ------------------------------------------------------------------------------}
 procedure TCanvas.RadialPie(x,y,width,height,angle1,angle2 : Integer);
@@ -423,22 +423,22 @@ end;
   Params:   Points: array of TPoint; Winding: Boolean = False;
             StartIndex: Integer = 0; NumPts: Integer = -1
   Returns:  Nothing
-  
-  Use Polygon to draw a closed, many-sided shape on the canvas, using the value 
-  of Pen. After drawing the complete shape, Polygon fills the shape using the 
+
+  Use Polygon to draw a closed, many-sided shape on the canvas, using the value
+  of Pen. After drawing the complete shape, Polygon fills the shape using the
   value of Brush.
   The Points parameter is an array of points that give the vertices of the
   polygon.
-  Winding determines how the polygon is filled. When Winding is True, Polygon 
-  fills the shape using the Winding fill algorithm. When Winding is False, 
+  Winding determines how the polygon is filled. When Winding is True, Polygon
+  fills the shape using the Winding fill algorithm. When Winding is False,
   Polygon uses the even-odd (alternative) fill algorithm.
-  StartIndex gives the index of the first point in the array to use. All points 
+  StartIndex gives the index of the first point in the array to use. All points
   before this are ignored.
   NumPts indicates the number of points to use, starting at StartIndex.
-  If NumPts is -1 (the default), Polygon uses all points from StartIndex to the 
+  If NumPts is -1 (the default), Polygon uses all points from StartIndex to the
   end of the array.
-  The first point is always connected to the last point. 
-  To draw a polygon on the canvas, without filling it, use the Polyline method, 
+  The first point is always connected to the last point.
+  To draw a polygon on the canvas, without filling it, use the Polyline method,
   specifying the first point a second time at the end.
 }
 procedure TCanvas.Polygon(const Points: array of TPoint; Winding: Boolean;
@@ -477,19 +477,19 @@ end;
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.Polyline
-  Params:   Points: array of TPoint; 
+  Params:   Points: array of TPoint;
             StartIndex: Integer = 0; NumPts: Integer = -1
   Returns:  Nothing
 
-  Use Polyline to connect a set of points on the canvas. If you specify only two 
+  Use Polyline to connect a set of points on the canvas. If you specify only two
   points, Polyline draws a single line.
   The Points parameter is an array of points to be connected.
   StartIndex identifies the first point in the array to use.
-  NumPts indicates the number of points to use. If NumPts is -1 (the default), 
+  NumPts indicates the number of points to use. If NumPts is -1 (the default),
   PolyLine uses all the points from StartIndex to the end of the array.
-  Calling the MoveTo function with the value of the first point, and then 
-  repeatedly calling LineTo with all subsequent points will draw the same image 
-  on the canvas. However, unlike LineTo, Polyline does not change the value of 
+  Calling the MoveTo function with the value of the first point, and then
+  repeatedly calling LineTo with all subsequent points will draw the same image
+  on the canvas. However, unlike LineTo, Polyline does not change the value of
   PenPos.
 }
 procedure TCanvas.Polyline(const Points: array of TPoint; StartIndex: Integer;
@@ -630,7 +630,7 @@ end;
 
 {------------------------------------------------------------------------------
   procedure TCanvas.FrameRect(const ARect: TRect);
-  
+
   Drawing the border of a rectangle with the current brush
  ------------------------------------------------------------------------------}
 procedure TCanvas.FrameRect(const ARect: TRect);
@@ -911,6 +911,23 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:   TCanvas.PenChanging
+  Params:   APen: The changing pen
+  Returns:  Nothing
+
+  Notify proc for a pen change
+ ------------------------------------------------------------------------------}
+procedure TCanvas.PenChanging(APen: TObject);
+begin
+  if [csPenValid, csHandleValid] * FState = [csPenValid, csHandleValid] then
+  begin
+    Exclude(FState, csPenValid);
+    SelectObject(FHandle, FSavedPenHandle);
+    FSavedPenHandle := 0;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Method:   TCanvas.PenChanged
   Params:   APen: The changed pen
   Returns:  Nothing
@@ -955,6 +972,7 @@ begin
   FFont.OnChange := @FontChanged;
   FSavedFontHandle := 0;
   FPen := TPen.Create;
+  FPen.OnChanging := @PenChanging;
   FPen.OnChange := @PenChanged;
   FSavedPenHandle := 0;
   FBrush := TBrush.Create;
@@ -1086,7 +1104,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.DeselectHandles;
 begin
-  if (FHandle<>0) 
+  if (FHandle<>0)
   and (FState * [csPenValid, csBrushValid, csFontValid] <> []) then begin
     // select default sub handles in the device context without deleting owns
     if FSavedBrushHandle<>0 then begin
@@ -1236,6 +1254,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.56  2003/12/02 12:25:17  micha
+  try: gdi memory leak fix for pen
+
   Revision 1.55  2003/11/22 17:22:15  mattias
   moved TBevelCut to controls.pp
 
