@@ -1321,7 +1321,7 @@ begin
     FTIObject:=nil;
     FTIPropertyName:='';
   end else begin
-    FTIObject:=FEditor.GetPersistent(0);
+    FTIObject:=FEditor.GetComponent(0);
     FTIPropertyName:=FEditor.GetName;
   end;
 end;
@@ -1781,7 +1781,7 @@ var
 begin
   Result:=false;
   for i:=0 to PropCount-1 do begin
-    CurPersistent:=GetPersistent(i);
+    CurPersistent:=GetComponent(i);
     if (CurPersistent is TCustomPropertyLink) then begin
       ALink:=TCustomPropertyLink(CurPersistent);
       if Assigned(ALink.OnTestEditor) and (not ALink.OnTestEditor(Prop)) then
@@ -1815,7 +1815,7 @@ begin
     // get every TIObject of every TCustomPropertyLink in the selection
     Filter:=AllTypeKinds;
     for i:=0 to PropCount-1 do begin
-      CurPersistent:=GetPersistent(i);
+      CurPersistent:=GetComponent(i);
       if (CurPersistent is TCustomPropertyLink) then begin
         ALink:=TCustomPropertyLink(CurPersistent);
         CurTIObject:=ALink.TIObject;
@@ -1858,7 +1858,7 @@ begin
     FCollectedValues:=TAliasStrings.Create;
     FCollectedValues.Text:=Memo.Text;
     for i:=0 to Editor.PropCount-1 do begin
-      CurPersistent:=Editor.GetPersistent(i);
+      CurPersistent:=Editor.GetComponent(i);
       if (CurPersistent is TCustomPropertyLink) then begin
         ALink:=TCustomPropertyLink(CurPersistent);
         ALink.CreateEditor;

@@ -303,8 +303,7 @@ type
     procedure Edit; virtual;
     function GetAttributes: TPropertyAttributes; virtual;
     function IsReadOnly: boolean; virtual;
-    function GetPersistent(Index: Integer): TPersistent;
-    function GetComponent(Index: Integer): TComponent;// for Delphi compatibility
+    function GetComponent(Index: Integer): TPersistent;// for Delphi compatibility
     function GetEditLimit: Integer; virtual;
     function GetName: shortstring; virtual;
     procedure GetProperties(Proc: TGetPropEditProc); virtual;
@@ -1408,7 +1407,7 @@ begin
   if ListPropertyEditors=nil then exit;
   for i:=0 to ListPropertyEditors.Count-1 do begin
     Editor:=TListPropertyEditor(ListPropertyEditors[i]);
-    if (Editor.GetPersistent(0)=AnObject)
+    if (Editor.GetComponent(0)=AnObject)
     and (Editor.OnSubPropertiesChanged<>nil) then
       Editor.UpdateSubProperties;
   end;
@@ -1988,14 +1987,9 @@ begin
   Result:=paReadOnly in GetAttributes;
 end;
 
-function TPropertyEditor.GetPersistent(Index: Integer): TPersistent;
+function TPropertyEditor.GetComponent(Index: Integer): TPersistent;
 begin
   Result:=FPropList^[Index].Instance;
-end;
-
-function TPropertyEditor.GetComponent(Index: Integer): TComponent;
-begin
-  Result:=TComponent(FPropList^[Index].Instance);
 end;
 
 function TPropertyEditor.GetFloatValue:Extended;
@@ -3205,7 +3199,7 @@ begin
   Result:=true;
   if FSubPropertiesChanged then exit;
   FSubPropertiesChanged:=true;
-  if SavedList<>GetPersistent(0) then exit;
+  if SavedList<>GetComponent(0) then exit;
   if ReadElementCount<>SavedElements.Count then exit;
   for i:=0 to SavedElements.Count-1 do
     if TPersistent(SavedElements[i])<>ReadElement(i) then exit;
@@ -3258,7 +3252,7 @@ procedure TListPropertyEditor.DoSaveElements;
 var
   i, ElementCount: integer;
 begin
-  SavedList:=GetPersistent(0);
+  SavedList:=GetComponent(0);
   ElementCount:=GetElementCount;
   SavedElements.Count:=ElementCount;
   for i:=0 to ElementCount-1 do
@@ -3789,12 +3783,12 @@ var I: Integer;
 begin
   Result:='';
   if PropertyHook.LookupRoot=nil then exit;
-  if GetPersistent(0) = PropertyHook.LookupRoot then begin
+  if GetComponent(0) = PropertyHook.LookupRoot then begin
     Result := PropertyHook.GetRootClassName;
     if (Result <> '') and (Result[1] = 'T') then
       System.Delete(Result, 1, 1);
   end else begin
-    Result := PropertyHook.GetObjectName(GetPersistent(0));
+    Result := PropertyHook.GetObjectName(GetComponent(0));
     for I := Length(Result) downto 1 do
       if Result[I] in ['.','[',']'] then
         System.Delete(Result, I, 1);
@@ -4182,7 +4176,7 @@ begin
   if (not IsValidIdent(NewValue)) or (NewValue='') then
     raise Exception.Create('Component name "'+NewValue+'" is not a valid identifier');
   inherited SetValue(NewValue);
-  PropertyHook.ComponentRenamed(TComponent(GetPersistent(0)));
+  PropertyHook.ComponentRenamed(TComponent(GetComponent(0)));
 end;
 
 { TDatePropertyEditor }

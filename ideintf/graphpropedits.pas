@@ -800,7 +800,7 @@ var
   APersistent: TPersistent;
 begin
   Result := [paMultiSelect, paSubProperties, paDialog, paReadOnly];
-  APersistent:=GetPersistent(0);
+  APersistent:=GetComponent(0);
   if (APersistent<>nil) and (APersistent is TControl)
   and (not (APersistent is TStaticText)) then
     Result:=Result+[paDisableSubProperties]-[paDialog];
