@@ -491,35 +491,39 @@ end;
  ------------------------------------------------------------------------------}
 function ObjectToGTKObject(const AObject: TObject): gtk_object;
 var
-   handle : HWND;
+  handle : HWND;
 begin
-   if not assigned (AObject) then
-   begin
-      assert (false, 'TRACE:  [ObjectToGtkObject] Object not assigned');
-      handle := 0
-   end
-   else if (AObject is TWinControl) then
-   begin
-      if TWinControl (AObject).HandleAllocated then handle := TWinControl(AObject).Handle
-   end
-   else if (AObject is TMenuItem) then
-   begin 
-      if TMenuItem(AObject).HandleAllocated then handle := TMenuItem(AObject).Handle 
-   end
-   else if (AObject is TMenu) then
-   begin 
-      if TMenu(AObject).HandleAllocated then handle := TMenu(AObject).Items.Handle 
-   end
-   else if (AObject is TCommonDialog) then
-   begin
-      {if TCommonDialog(AObject).HandleAllocated then } handle := TCommonDialog(AObject).Handle
-   end
-   else begin
-      Assert(False, Format('Trace:  [ObjectToGtkObject] Message received with unhandled class-type <%s>', [AObject.ClassName])); 
-      handle := 0;
-   end;
-   result := gtk_object (handle);
-   if handle = 0 then Assert (false, 'Trace:  [ObjectToGtkObject]****** Warning: handle = 0 *******');
+  Handle := 0;
+  if not assigned(AObject) then
+  begin
+    assert (false, 'TRACE:  [ObjectToGtkObject] Object not assigned');
+  end
+  else if (AObject is TWinControl) then
+  begin
+    if TWinControl(AObject).HandleAllocated then
+      handle := TWinControl(AObject).Handle;
+  end
+  else if (AObject is TMenuItem) then
+  begin 
+    if TMenuItem(AObject).HandleAllocated then
+      handle := TMenuItem(AObject).Handle;
+  end
+  else if (AObject is TMenu) then
+  begin 
+    if TMenu(AObject).HandleAllocated then
+      handle := TMenu(AObject).Items.Handle;
+  end
+  else if (AObject is TCommonDialog) then
+  begin
+    {if TCommonDialog(AObject).HandleAllocated then }
+    handle := TCommonDialog(AObject).Handle;
+  end
+  else begin
+    Assert(False, Format('Trace:  [ObjectToGtkObject] Message received with unhandled class-type <%s>', [AObject.ClassName])); 
+  end;
+  Result := gtk_object (handle);
+  if handle = 0 then
+    Assert (false, 'Trace:  [ObjectToGtkObject]****** Warning: handle = 0 *******');
 end;
 
 
@@ -725,6 +729,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.15  2001/06/05 10:32:06  lazarus
+  MG: small bugfixes for bitbtn, handles
+
   Revision 1.14  2001/03/21 23:48:29  lazarus
   MG: fixed window positions
 

@@ -216,7 +216,8 @@ begin
    DeleteObject(FStockDkGrayBrush);
    DeleteObject(FStockWhiteBrush);
    
-   gtk_main_quit;
+   // MG: using gtk_main_quit is not a clean way to close
+   //gtk_main_quit;
 end;
 
 {------------------------------------------------------------------------------
@@ -282,18 +283,18 @@ Begin
   //could we just call IntSendMessage??
 
   //destroy old widget
-  if TWinControl(sender).HANDLE<>0 then
-    gtk_widget_destroy(PgtkWidget(TWinControl(sender).HANDLE));
+  if TWinControl(Sender).HandleAllocated then
+    gtk_widget_destroy(PgtkWidget(TWinControl(Sender).Handle));
 
-  aParent := TWinControl(sender).Parent;
-  aParent.RemoveControl(TControl(sender));
+  aParent := TWinControl(Sender).Parent;
+  aParent.RemoveControl(TControl(Sender));
 
-  TWincontrol(sender).parent := nil;
-  TWincontrol(sender).parent := aParent;
+  TWincontrol(Sender).Parent := nil;
+  TWincontrol(Sender).Parent := aParent;
 
-  ResizeChild(Sender,TWinControl(sender).Left,TWinControl(sender).Top,
-     TWinControl(sender).Width,TWinControl(sender).Height);
-  ShowHide(sender);
+  ResizeChild(Sender,TWinControl(Sender).Left,TWinControl(Sender).Top,
+     TWinControl(Sender).Width,TWinControl(Sender).Height);
+  ShowHide(Sender);
   Result:=0;
 End;
 
@@ -340,7 +341,7 @@ begin
    //   2nd part has to contain all parts which need the handle
    // Reason for this split are performance issues since we need RTTI to
    // retrieve the handle
-   case LM_Message of
+  case LM_Message of
       LM_Create   : CreateComponent(Sender);
 
       LM_SETCOLOR : SetColor(Sender);
@@ -368,8 +369,8 @@ begin
       LM_RECREATEWND : Result := RecreateWnd(sender);
       
       LM_ATTACHMENU: AttachMenu(Sender);
-   else begin
-      handle := hwnd(ObjectToGtkObject (sender));
+  else begin
+      handle := hwnd(ObjectToGtkObject(Sender));
 //???   if handle = nil then assert (false, Format ('Trace:  [TgtkObject.IntSendMessage3] %s --> got handle=nil',[Sender.ClassName])); 
       Case LM_Message of
 
@@ -411,13 +412,12 @@ begin
 
       LM_DESTROY :
       begin
-         if (Sender is TWinControl) or (Sender is TCommonDialog) then 
-         begin
-           if Handle<>0 then
-             gtk_widget_destroy(PGtkWidget(Handle));
-         end
-         else
-           Assert (False, Format ('Trace:Dont know how to destroy component %s', [sender.classname]));
+        if (Sender is TWinControl) or (Sender is TCommonDialog) then begin
+          if Handle<>0 then
+            gtk_widget_destroy(PGtkWidget(Handle));
+        end
+        else
+          Assert (False, Format ('Trace:Dont know how to destroy component %s', [sender.classname]));
       end;
 
       LM_DRAGINFOCHANGED :
@@ -644,16 +644,15 @@ activate_time :	the time at which the activation event occurred.
 //SH: think of TCanvas.handle!!!!
       LM_ReDraw : 
       begin 
-         Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Redraw', [Sender.ClassName]));
-         if (Sender is TCanvas) then 
-            ReDraw(PgtkWidget((Sender as TCanvas).Handle))
-         else
+        Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Redraw', [Sender.ClassName]));
+        if (Sender is TCanvas) then 
+          ReDraw(PgtkWidget((Sender as TCanvas).Handle))
+        else
           if not (sender is TSpeedbutton) then
             ReDraw(PgtkWidget(Handle))
-         else
-          if (sender is TSpeedButton) then
+          else
             If TSpeedbutton(sender).Visible then
-              (Sender as TSpeedButton).perform(LM_PAINT,0,0)
+              (Sender as TSpeedButton).Perform(LM_PAINT,0,0)
             else
             Begin
               Rect := TSpeedButton(sender).BoundsRect;
@@ -956,21 +955,21 @@ activate_time :	the time at which the activation event occurred.
                   else SelectionMode:= GTK_SELECTION_MULTIPLE;
             end 
             else 
-               SelectionMode:= GTK_SELECTION_BROWSE;
+              SelectionMode:= GTK_SELECTION_BROWSE;
             case TControl(Sender).fCompStyle of
               csListBox  : gtk_list_set_selection_mode(PGtkList(GetCoreChildWidget(PGtkWidget(Handle))), SelectionMode);
               csCListBox : gtk_clist_set_selection_mode(PGtkCList(GetCoreChildWidget(PGtkWidget(Handle))),SelectionMode);
             else
-               Assert (true, 'WARNING:[TgtkObject.IntSendMessage3] usage of LM_SETSELMODE unimplemented for actual component');
+              Assert (true, 'WARNING:[TgtkObject.IntSendMessage3] usage of LM_SETSELMODE unimplemented for actual component');
             end;
          end;
       end;
  
       LM_SETBORDER :
       begin
-         if (Sender is TControl) then
-         begin
-            if (TControl(Sender).fCompStyle = csListBox) then
+        if (Sender is TControl) then
+        begin
+          if (TControl(Sender).fCompStyle = csListBox) then
             begin
                { In TempWidget, a viewport is stored }
                Widget:= PGtkWidget(PGtkBin(Handle)^.child);
@@ -992,11 +991,13 @@ activate_time :	the time at which the activation event occurred.
       end;
 
       else
-         Assert(True, Format ('WARNING: Unhandled message %d in IntSendMessage3 send by %s --> message:Redraw', [LM_Message, Sender.ClassName]));
+        if Sender<>nil then
+          Assert(True, Format('WARNING: Unhandled message %d in IntSendMessage3'
+             +'send by %s --> message:Redraw', [LM_Message, Sender.ClassName]));
          // unhandled message
       end; // end of 2nd case
-   end;   // end of else-part of 1st case
-   end;   // end of 1st case
+    end;   // end of else-part of 1st case
+  end;   // end of 1st case
 end;
 
 
@@ -1674,12 +1675,10 @@ begin
    else
       ;
 
-   // the following is for debug only
+   // ToDo: the following is for debug only
    if caption = '' then caption := Sender.ClassName;
-
    Assert(False, 'Trace:----------------------Creating component in TgtkObject-   STR = '+caption+'-');
-
-   // until here remove when debug not needed
+   // ToDo: until here remove when debug not needed
 
    if caption = '' then caption := 'Blank';
 
@@ -1852,7 +1851,7 @@ begin
 
       csFixed: //used for TWinControl, maybe change this to csWinControl 
       begin
-      writeln('[TgtkObject.CreateComponent] csFixed A');
+      writeln('[TgtkObject.CreateComponent] csFixed A  ',Sender.Classname);
         p := GTKAPIWidget_New;
       writeln('[TgtkObject.CreateComponent] csFixed B');
         gtk_scrolled_window_set_policy(PGTKScrolledWindow(p), GTK_POLICY_NEVER, GTK_POLICY_NEVER);
@@ -2152,6 +2151,7 @@ begin
           P := gtk_menu_new();
 
           end;
+          
       csProgressBar:
       with (TProgressBar (Sender)) do
       begin
@@ -2177,8 +2177,8 @@ begin
    if (Sender is TWinControl) then 
    begin
      TWinControl(Sender).Handle := THandle(p);
-     if p <> nil 
-        then gtk_object_set_data(pgtkobject(p),'Sender',Sender);
+     if p <> nil then
+       gtk_object_set_data(pgtkobject(p),'Sender',Sender);
    end
    else if (Sender is TMenuItem)
      then TMenuItem(Sender).Handle := HMenu(p)
@@ -2243,12 +2243,12 @@ end;
 {------------------------------------------------------------------------------}
 procedure TgtkObject.ShowHide(Sender : TObject);
 begin
-   if TControl(Sender).Visible then begin
-      gtk_widget_show(PgtkWidget(TWinControl(Sender).Handle))
-      end
-   else Begin
-        gtk_widget_hide(PgtkWidget(TWinControl(Sender).Handle));
-        end;
+  if TControl(Sender).Visible then begin
+    gtk_widget_show(PgtkWidget(TWinControl(Sender).Handle))
+  end
+  else Begin
+    gtk_widget_hide(PgtkWidget(TWinControl(Sender).Handle));
+  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -2868,8 +2868,8 @@ end;
  { =============================================================================
 
   $Log$
-  Revision 1.46  2001/06/04 09:32:17  lazarus
-  MG: fixed bugs and cleaned up messages
+  Revision 1.47  2001/06/05 10:32:05  lazarus
+  MG: small bugfixes for bitbtn, handles
 
   Revision 1.45  2001/05/13 22:07:09  lazarus
   Implemented BringToFront / SendToBack.

@@ -753,8 +753,8 @@ var
 begin
 // Writeln('[TWINCONTROL.SETFOCUS] ',Name,':',ClassName);
    Form := GetParentForm(self);
-   if Assigned(form) then
-     Writeln('Form is assigned') else Writeln('Form is NOT assigned');
+//   if Assigned(form) then
+//     Writeln('Form is assigned') else Writeln('Form is NOT assigned');
   if Form <> nil then
      Form.FocusControl(self)
   else
@@ -1267,7 +1267,6 @@ var
 begin
 //writeln('[TWinControl.Destroy] A  ',Name,':',ClassName);
   DestroyHandle; 
-
   n := ControlCount;
 
   while n > 0 do
@@ -1593,17 +1592,17 @@ begin
 //Writeln('[TWINCONTROL].WMWINDOWPOSCHANGED');
   if Message.WindowPos <> nil then
   with Message.WindowPos^ do
-   begin
-     //Writeln(Format('Sizes are %d,%d,%d,%d',[X,Y,cx,cy]));
-     FLeft := X;
-     FWidth := cX;
-     FTop := Y;
-     FHeight := cY;
-     Assert(False, Format('Trace:[TWinControl.WMWindowPosChanged] %s --> Message.WindowPos(%d, %d)(%d, %d)', [ClassName, X, Y, cx, cy]));
-   end
-   else Assert(False, Format('Trace:[TWinControl.WMWindowPosChanged] %s --> Message.WindowPos = nil', [ClassName]));
+  begin
+    //Writeln(Format('Sizes are %d,%d,%d,%d',[X,Y,cx,cy]));
+    FLeft := X;
+    FWidth := cX;
+    FTop := Y;
+    FHeight := cY;
+    Assert(False, Format('Trace:[TWinControl.WMWindowPosChanged] %s --> Message.WindowPos(%d, %d)(%d, %d)', [ClassName, X, Y, cx, cy]));
+  end
+  else Assert(False, Format('Trace:[TWinControl.WMWindowPosChanged] %s --> Message.WindowPos = nil', [ClassName]));
 
-   inherited WMWindowPosChanged(Message);
+  inherited WMWindowPosChanged(Message);
 end;
 
 
@@ -1616,7 +1615,7 @@ end;
  ------------------------------------------------------------------------------}
 function TWinControl.HandleAllocated : Boolean;
 begin
-   HandleAllocated := (FHandle <> 0);
+  HandleAllocated := (FHandle <> 0);
 end;
 
 {------------------------------------------------------------------------------
@@ -1666,10 +1665,9 @@ begin
 
   if FWInControls <> nil then begin
     for n := 0 to FWInControls.Count - 1 do
-    with TWinControl(FWInControls.Items[n]) do
-    if Visible then begin
-      HandleNeeded;
-    end;
+      with TWinControl(FWInControls.Items[n]) do
+        if Visible then
+          HandleNeeded;
   end;
 end;
 
@@ -1966,6 +1964,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.31  2001/06/05 10:32:05  lazarus
+  MG: small bugfixes for bitbtn, handles
+
   Revision 1.30  2001/05/16 10:00:00  lazarus
   MG: fixed wrong page index in editor closing
 

@@ -57,7 +57,6 @@ end;
 
 procedure TScrollBar.SetKind(Value: TScrollBarKind);
 begin
-  Writeln('setkind');
   if FKind <> Value then
   begin
     FKind := Value;
