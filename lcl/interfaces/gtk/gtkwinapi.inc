@@ -127,6 +127,7 @@ var
   Widget: PGtkWidget;
   TargetObject: TObject;
   IsDoubleBuffered: Boolean;
+  PaintWidget: Pointer;
 {$ENDIF}
 begin
   {$IFDEF Gtk1}
@@ -134,6 +135,17 @@ begin
   TargetObject:=GetParentLCLObject(Widget);
   IsDoubleBuffered:=(TargetObject is TWinControl)
                     and TWinControl(TargetObject).DoubleBuffered;
+  // check if Handle is the paint widget of the LCL component
+  if IsDoubleBuffered then begin
+    PaintWidget:=GetFixedWidget(PGtkWidget(TWinControl(TargetObject).Handle));
+    IsDoubleBuffered:=(PaintWidget=Widget);
+    //if not IsDoubleBuffered then begin
+    //  writeln('TgtkObject.BeginPaint Not the paint widget: ',
+    //    TWinControl(TargetObject).Name,':',TWinControl(TargetObject).ClassName,
+    //    ' PaintWidget=',GetWidgetClassName(PaintWidget),
+    //    ' Widget=',GetWidgetClassName(Widget));
+    //end;
+  end;
   {$IFNDEF UseGTKDoubleBuf}
   IsDoubleBuffered:=false;
   {$ENDIF}
@@ -9202,6 +9214,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.316  2004/01/13 10:41:40  mattias
+  fixed statusbar updating all panels
+
   Revision 1.315  2004/01/12 23:56:10  mattias
   improved double buffering, only one issue left: parent gdkwindow paint messages
 

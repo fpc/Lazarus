@@ -127,7 +127,7 @@ begin
   end;
 
   //writeln('TStatusBar.UpdateHandleObject A FHandlePanelCount=',FHandlePanelCount,' PanelIndex=',PanelIndex,' Panels.Count=',Panels.Count,' ',SimplePanel);
-  if FHandlePanelCount>PanelIndex then begin
+  if (FHandlePanelCount>PanelIndex) and (PanelIndex>=0) then begin
     // update one panel
     StatusBarPanelUpdate(Self,PanelIndex);
   end else begin
@@ -175,7 +175,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TStatusBar.InvalidatePanel(PanelIndex: integer;
   PanelParts: TPanelParts);
-{$IFDEF OldtatusBar}
+{$IFDEF OldStatusBar}
 var
   PanelRect, TextRect: TRect;
 {$ENDIF}

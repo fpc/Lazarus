@@ -38,9 +38,8 @@ begin
   FBevelInner := bvNone;
   FBevelWidth := 1;
   FAlignment := taCenter;
-  Color:=clBtnface;
+  Color:=clBtnface;// clBackground;
   SetInitialBounds(0,0,170,50);
-//  Color := clBackground;
   ParentColor := True;
 end;
 

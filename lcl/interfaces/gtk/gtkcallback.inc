@@ -29,7 +29,7 @@ begin
   else
     PaintMsg:=TLMPaint(TheMessage);
   Result := DeliverMessage(Target,PaintMsg) = 0;
-  ReleaseDC(0,PaintMsg.DC);
+  FinalizePaintMessage(@PaintMsg);
 end;
 
 {-------------------------------------------------------------------------------
@@ -77,7 +77,7 @@ begin
   {$IFDEF DirectPaintMsg}
   PaintMsg:= GtkPaintMessageToPaintMessage(Msg,true);
   Result := DeliverMessage(Target,PaintMsg) = 0;
-  ReleaseDC(0,PaintMsg.DC);
+  FinalizePaintMessage(@PaintMsg);
   {$ELSE}
   Result:=DeliverPostMessage(Target,Msg);
   {$ENDIF}
@@ -429,7 +429,7 @@ begin
   end else begin
     {$IFDEF VerboseDesignerDraw}
     writeln('gtkDrawAfter',
-      ' Widget=',HexStr(Cardinal(Widget),8),
+      ' Widget=',HexStr(Cardinal(Widget),8),'=',GetWidgetClassName(Widget),
       ' ',TComponent(Data).Name,
       ' ',area^.x,',',area^.y,',',area^.width,',',area^.height,
       '');
@@ -459,7 +459,7 @@ begin
   end else begin
     {$IFDEF VerboseDesignerDraw}
     writeln('gtkExposeAfter',
-      ' Widget=',HexStr(Cardinal(Widget),8),
+      ' Widget=',HexStr(Cardinal(Widget),8),'=',GetWidgetClassName(Widget),
       ' ',TComponent(Data).Name,
       ' ',Event^.area.x,',',Event^.area.y,',',Event^.area.width,',',Event^.area.height,
       '');
@@ -3227,6 +3227,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.212  2004/01/13 10:41:40  mattias
+  fixed statusbar updating all panels
+
   Revision 1.211  2004/01/09 20:03:13  mattias
   implemented new statusbar methods in gtk intf
 
