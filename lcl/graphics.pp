@@ -33,10 +33,11 @@ interface
 
 uses
   SysUtils, Classes,
+  {$IFDEF UseFPImage}
+  FPImage, FPReadPNG, FPWritePNG, FPWriteBMP, IntfGraphics,
+  {$ENDIF}
   LCLStrConsts, vclGlobals, LMessages, LCLType, LCLProc, LCLLinux, LResources,
-  GraphType, GraphMath
-  {$IFDEF UseFPImage}, FPImage, FPReadPNG, FPWritePNG, IntfGraphics{$ENDIF}
-  ;
+  GraphType, GraphMath;
 
 type
   PColor = ^TColor;
@@ -1198,6 +1199,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.89  2003/09/08 13:07:17  mattias
+  TBitmap now uses fpImage for writing bitmaps
+
   Revision 1.88  2003/09/08 12:21:48  mattias
   added fpImage reader/writer hooks to TBitmap
 

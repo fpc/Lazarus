@@ -496,6 +496,13 @@ begin
 end;
 
 procedure TBitmap.WriteStream(Stream: TStream; WriteSize: Boolean);
+{$IFDEF UseFPImage}
+begin
+  WriteStreamWithFPImage(Stream,WriteSize,TFPWriterBMP);
+  if (FImage.SaveStream<>nil) and (FImage.SaveStreamType=bnNone) then
+    FImage.SaveStreamType:=bnWinBitmap;
+end;
+{$ELSE}
 Type
   TBITMAPHEADER = packed record
     FileHeader : tagBitmapFileHeader;
@@ -641,6 +648,7 @@ begin
     MemStream.Free;
   end;
 end;
+{$ENDIF}
 
 procedure TBitmap.StoreOriginalStream(Stream: TStream);
 var
@@ -735,6 +743,7 @@ begin
     MemStream.Position:=0;
     FreeAndNil(FImage.FSaveStream);
     FImage.SaveStream:=MemStream;
+    FImage.SaveStreamType:=bnNone;
     MemStream:=nil;
     // copy savestream to destination stream
     Stream.CopyFrom(FImage.SaveStream,FImage.SaveStream.Size);
@@ -879,6 +888,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.45  2003/09/08 13:07:17  mattias
+  TBitmap now uses fpImage for writing bitmaps
+
   Revision 1.44  2003/09/08 12:21:48  mattias
   added fpImage reader/writer hooks to TBitmap
 
