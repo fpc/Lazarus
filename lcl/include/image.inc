@@ -40,6 +40,7 @@ end;
 
 procedure TImage.SetPicture(const AValue: TPicture);
 begin
+  if FPicture=AValue then exit;
   FPicture.Assign(AValue);  //the onchange of the picture gets called and notifies that something changed.
 end;
 
@@ -63,18 +64,21 @@ end;
 
 procedure TImage.SetStretch(Value : Boolean);
 begin
+  if FStretch=Value then exit;
   FStretch := Value;
   PictureChanged(Self);
 end;
 
 procedure TImage.SetTransparent(Value : Boolean);
 begin
+  if FTransparent=Value then exit;
   FTransparent := Value;
   PictureChanged(Self);
 end;
 
 procedure TImage.SetCenter(Value : Boolean);
 begin
+  if FCenter=Value then exit;
   FCenter := Value;
   PictureChanged(Self);
 end;
@@ -118,12 +122,13 @@ begin
       exit;
     If Stretch then
       iRect := Rect(0, 0, Width + 1, Height + 1)
-    else
+    else begin
       iRect := Rect(0,0, Picture.Width, Picture.Height);
-    If Center then
-      OffsetRect(iRect,
-        (Width + 1) div 2 - (iRect.Right - iRect.Left) div 2,
-        (Height + 1) div 2 - (iRect.Bottom -iRect.Top) div 2);
+      If Center then
+        OffsetRect(iRect,
+          (Width + 1) div 2 - (iRect.Right - iRect.Left) div 2,
+          (Height + 1) div 2 - (iRect.Bottom -iRect.Top) div 2);
+    end;
     If Picture.Graphic.Transparent and not Transparent then
     begin
       If Picture.Graphic is TBitmap then

@@ -36,10 +36,10 @@ begin
     inherited;
 end;
 
-procedure TBitmap.Draw(ACanvas: TCanvas; const Rect: TRect);
+procedure TBitmap.Draw(ACanvas: TCanvas; const ARect: TRect);
 begin
   HandleNeeded;
-  ACanvas.CopyRect(Rect, Self.Canvas, Classes.Rect(0, 0, Width, Height));
+  ACanvas.CopyRect(ARect, Self.Canvas, Rect(0, 0, Width, Height));
 end;
 
 constructor TBitmap.VirtualCreate;
@@ -528,6 +528,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.28  2003/03/12 14:39:29  mattias
+  fixed clipping origin in stretchblt
+
   Revision 1.27  2003/03/11 07:46:43  mattias
   more localization for gtk- and win32-interface and lcl
 
