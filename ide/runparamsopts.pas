@@ -171,7 +171,7 @@ implementation
 const
   DefaultLauncherApplication =
     '/usr/X11R6/bin/xterm -T ''Lazarus Run Output'''
-    +' -e bash -i -c ''$(TargetCmdLine)''';
+    +' -e $(LazarusDir)/tools/RunAndWait.sh $(TargetCmdLine)';
 
 function ShowRunParamsOptsDlg(RunParamsOptions: TRunParamsOptions):TModalResult;
 var
@@ -457,7 +457,7 @@ begin
       Items.Add(DefaultLauncherApplication);
       {$IFNDEF win32}
       Items.Add('/usr/bin/gnome-terminal -t ''Lazarus Run Output'''
-               +' -x bash -i -c ''$(TargetCmdLine)''');
+               +' -e ''$(LazarusDir)/tools/RunAndWait.sh $(TargetCmdLine)''');
       {$ENDIF}
       EndUpdate;
     end;
