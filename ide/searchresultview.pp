@@ -68,6 +68,7 @@ type
     function GetSourcePositon: TPoint;
     function GetSourceFileName: string;
     function GetSelectedText: string;
+    procedure BringResultsToFront(APageName: string);
     procedure BeginUpdate;
     procedure EndUpdate;
     property OnSelectionChanged: TNotifyEvent read fOnSelectionChanged
@@ -148,6 +149,16 @@ begin
   fUpdating:= false;
 end;//EndUpdate
 
+{Brings The results tab named APageName to front if APageName does not exist
+ does nothing}
+procedure TSearchResultsView.BringResultsToFront(APageName: string);
+begin
+  if PageExists(APageName) then
+  begin
+    ResultsNoteBook.PageIndex:= GetPageIndex(APageName);
+  end;//if
+end;//BringResultsToFront
+
 procedure TSearchResultsView.ResultsNoteBookClosetabclicked(Sender: TObject);
 var
   TheObject: TObject;
@@ -212,6 +223,7 @@ begin
       if i > -1 then
       begin
         NewListBox:= GetListBox(i);
+        ResultsNoteBook.PageIndex:= i;
       end//if
       else
       begin

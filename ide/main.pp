@@ -925,7 +925,7 @@ procedure TMainIDE.CreateSearchResultWindow;
 begin
   if SearchResultsView<>nil then exit;
   Application.CreateForm(TSearchResultsView, SearchResultsView);
-  SearchResultsView.OnSelectionChanged:= @SearchresultsViewSelectionChanged;
+  SearchResultsView.OnSelectionChanged:= @SearchResultsViewSelectionChanged;
 end;
 
 procedure TMainIDE.OIOnSelectComponents(Sender: TObject);
@@ -10091,6 +10091,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.669  2003/11/16 01:56:15  mattias
+  changed TMenuItem.Graphic to TMenuItem.Bitmap
+
   Revision 1.668  2003/11/15 14:04:16  mattias
   added searchresultsview.lfm
 

@@ -163,8 +163,8 @@ destructor TMenuItem.Destroy;
 var
   i : integer;
 begin
-  if FGraphic<>nil then
-    FreeAndNil(FGraphic);
+  if FBitmap<>nil then
+    FreeAndNil(FBitmap);
   DestroyHandle;
   if assigned (FItems) then begin
     i := FItems.Count-1;
@@ -426,7 +426,7 @@ end;
  ------------------------------------------------------------------------------}
 function TMenuItem.HasIcon: boolean;
 begin
-  Result:=(FGraphic<>nil) or ((ImageIndex>=0) and (GetImageList<>nil));
+  Result:=(FBitmap<>nil) or ((ImageIndex>=0) and (GetImageList<>nil));
 end;
 
 {------------------------------------------------------------------------------
@@ -666,14 +666,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TMenuItem.SetGraphic(const AValue: TGraphic);
+  procedure TMenuItem.SetBitmap(const AValue: TBitmap);
 
   Reposition the MenuItem
  ------------------------------------------------------------------------------}
-procedure TMenuItem.SetGraphic(const AValue: TGraphic);
+procedure TMenuItem.SetBitmap(const AValue: TBitmap);
 begin
-  if FGraphic=AValue then exit;
-  FGraphic:=AValue;
+  if FBitmap=AValue then exit;
+  FBitmap:=AValue;
   if HandleAllocated then RecreateHandle;
   MenuChanged(False);
 end;
@@ -983,6 +983,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.40  2003/11/16 01:56:15  mattias
+  changed TMenuItem.Graphic to TMenuItem.Bitmap
+
   Revision 1.39  2003/10/22 17:50:16  mattias
   updated rpm scripts
 
@@ -1128,6 +1131,9 @@ end;
 
 
   $Log$
+  Revision 1.40  2003/11/16 01:56:15  mattias
+  changed TMenuItem.Graphic to TMenuItem.Bitmap
+
   Revision 1.39  2003/10/22 17:50:16  mattias
   updated rpm scripts
 

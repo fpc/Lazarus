@@ -216,6 +216,7 @@ procedure TSearchForm.SearchFile(TheFileName: string);
       ThisFile.LoadFromFile(TheFileName);
       for Lines:= 0 to ThisFile.Count -1 do
       begin
+        Application.ProcessMessages;
         TheLine:= ThisFile.Strings[Lines];
         if not fCaseSensitive then
           TheLine:= UpperCase(TheLine);
@@ -289,6 +290,7 @@ procedure TSearchForm.SearchFile(TheFileName: string);
       ThisFile.LoadFromFile(TheFileName);
       for Lines:= 0 to ThisFile.Count - 1 do
       begin
+        Application.ProcessMessages;
         TheLine:= ThisFile[Lines];
         if RE.Exec(TheLine) then
         begin
@@ -317,10 +319,15 @@ procedure TSearchForm.SearchFile(TheFileName: string);
 
 {Start SearchFile ============================================================}
 begin
-  if not fRegExp then
-    DoNormalSearch
-  else
-    DoRegExpSearch;
+  try
+    fResultsList.BeginUpdate;
+    if not fRegExp then
+      DoNormalSearch
+    else
+      DoRegExpSearch;
+  finally
+    fResultsList.EndUpdate;
+  end;//finally
 end;//SearchFile
 
 
@@ -450,7 +457,6 @@ begin
   Application.ProcessMessages;
   inc(fMatches);
   lblMatches.Caption:= IntToStr(fMatches);
-  Application.ProcessMessages;
 end;//UpdateMatches
 
 
@@ -458,14 +464,12 @@ procedure TSearchForm.UpdateProgress(FileName: string);
 var
   DisplayFileName: string;
 begin
-  Application.ProcessMessages;
   DisplayFileName:= FileName;
   While ((Length(DisplayFileName) * fCharWidth) >= lblProgress.Width) do
   begin
     DisplayFileName:= PadAndShorten(DisplayFileName);
   end;//while
   lblProgress.Caption:= DisplayFileName;
-  Application.ProcessMessages;
 end;//UpdateProgress
 
 function TSearchForm.PadAndShorten(FileName: string): string;

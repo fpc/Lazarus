@@ -3475,8 +3475,8 @@ begin
   Width:=0;
   Height:=0;
   if LCLMenuItem=nil then exit;
-  if LCLMenuItem.Graphic<>nil then
-    GetGdkPixmapFromGraphic(LCLMenuItem.Graphic,IconImg,IconMask,Width,Height);
+  if LCLMenuItem.Bitmap<>nil then
+    GetGdkPixmapFromGraphic(LCLMenuItem.Bitmap,IconImg,IconMask,Width,Height);
 end;
 
 {------------------------------------------------------------------------------
@@ -5539,6 +5539,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.227  2003/11/16 01:56:15  mattias
+  changed TMenuItem.Graphic to TMenuItem.Bitmap
+
   Revision 1.226  2003/11/15 15:30:34  marc
   * Fixed range chek errors in KeySymtoVKeyArray
 

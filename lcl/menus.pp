@@ -101,7 +101,7 @@ type
     FCommand: integer;
     FDefault: Boolean;
     FEnabled: Boolean;
-    FGraphic: TGraphic;
+    FBitmap: TBitmap;
     FGroupIndex: Byte;
     FHandle: HMenu;
     FHint: String;
@@ -131,7 +131,7 @@ type
     procedure SetChecked(AValue: Boolean);
     procedure SetDefault(AValue: Boolean);
     procedure SetEnabled(AValue: Boolean);
-    procedure SetGraphic(const AValue: TGraphic);
+    procedure SetBitmap(const AValue: TBitmap);
     procedure SetMenuIndex(AValue: Integer);
     procedure SetRadioItem(const AValue: Boolean);
     procedure SetRightJustify(const AValue: boolean);
@@ -198,7 +198,7 @@ type
     property Default: Boolean read FDefault write SetDefault default False;
     property Enabled: Boolean read FEnabled write SetEnabled
                               stored IsEnabledStored default True;
-    property Graphic: TGraphic read FGraphic write SetGraphic;
+    property Bitmap: TBitmap read FBitmap write SetBitmap;
     property GroupIndex: Byte read FGroupIndex write SetGroupIndex default 0;
     property Hint: String read FHint write FHint;
     property ImageIndex: Integer read FImageIndex write SetImageIndex;
@@ -388,6 +388,9 @@ end.
 
 {
   $Log$
+  Revision 1.55  2003/11/16 01:56:15  mattias
+  changed TMenuItem.Graphic to TMenuItem.Bitmap
+
   Revision 1.54  2003/11/10 16:15:31  micha
   cleanups; win32 fpimage support
 

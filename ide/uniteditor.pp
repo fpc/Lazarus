@@ -3440,6 +3440,7 @@ Begin
         finally
           FreeAndNil(SearchForm);
           SearchResultsView.EndUpdate;
+          SearchResultsView.ShowOnTop;
         end;//finally
       finally
         FreeAndNil(TheFileList);
