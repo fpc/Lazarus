@@ -202,6 +202,10 @@ end.
 
 {
   $Log$
+  Revision 1.4  2000/12/29 17:50:53  lazarus
+  Added a dropdown image to the resource and a downarrow button by the OPEN button.
+  Shane
+
   Revision 1.3  2000/12/22 19:55:37  lazarus
   Added the Popupmenu code to the LCL.
   Now you can right click on the editor and a PopupMenu appears.

@@ -42,6 +42,7 @@ type
   TmwPasSyn = TSynPasSyn;
 {$endif}
 
+  TNotifyFileEvent = procedure(Sender: Tobject; Filename : String) of Object;
 
 
   TSourceEditor = class
@@ -131,6 +132,7 @@ type
     FSourceEditorList : TList;
     FSaveDialog : TSaveDialog;
     FOpenDialog : TOpenDialog;
+    FOnOpenFile : TNotifyFileEvent;
     Function GetEmpty : Boolean;  //look at the # of pages
   protected
     Function CreateNotebook : Boolean;
@@ -155,6 +157,7 @@ type
     Procedure OpenFile(FileName: String);
 
 
+    property OnOpenFile : TNotifyFileEvent read FOnOPenFile write FOnOPenFile;
     property Empty : Boolean read GetEmpty;
   end;
 
@@ -623,7 +626,8 @@ Begin
     Result := False;
   end;
 
-  If Assigned(FOnAfterOpen) then FOnAfterOpen(Self);
+  if Result then
+     If Assigned(FOnAfterOpen) then FOnAfterOpen(Self);
 end;
 
 
@@ -718,7 +722,7 @@ begin
   Show;
 end;
 
-Function TSOurceNotebook.NewSe(PageNum : Integer) : TSourceEditor;
+Function TSourceNotebook.NewSe(PageNum : Integer) : TSourceEditor;
 
 Begin
  if CreateNotebook then Pagenum := 0;
@@ -841,15 +845,22 @@ Procedure TSourceNotebook.OpenClicked(Sender: TObject);
 Var
     TempEditor : TSourceEditor;
 Begin
-   FOpenDialog.Title := 'Open';
-   if FOpenDialog.Execute then  Begin
-      //create a new page
-      TempEditor := NewSE(-1);
-      TempEditor.Filename := FOpenDialog.Filename;
-      TempEditor.OPen;
-      Notebook1.Pages.Strings[Notebook1.Pageindex] := TempEditor.UnitName;
+   if (sender is TMenuItem) then  //the down arrow next to open was selected
+       OpenFile(TMenuItem(sender).Caption)
+   else
+   Begin
+     FOpenDialog.Title := 'Open';
+     if FOpenDialog.Execute then  Begin
+        //create a new page
+        TempEditor := NewSE(-1);
+        TempEditor.Filename := FOpenDialog.Filename;
+        if (TempEditor.Open) then
+        Begin
+           if assigned(FOnOPenFile) then FOnOpenFile(self,FOpenDialog.Filename);
+           Notebook1.Pages.Strings[Notebook1.Pageindex] := TempEditor.UnitName;
+        end;
       end;
-
+   end;
 end;
 
 Procedure TSourceNotebook.OpenFile(FileName: String);

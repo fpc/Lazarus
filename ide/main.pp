@@ -39,6 +39,7 @@ const
 
 type
 
+
   TForm1 = class(TFORM)
     FontDialog1  : TFontDialog;
     ColorDialog1 : TColorDialog;
@@ -55,10 +56,13 @@ type
     SpeedButton2 : TSpeedButton;
     SpeedButton3 : TSpeedButton;
     SpeedButton4 : TSpeedButton;
+    SpeedButton4_2 : TSpeedButton;
     SpeedButton5 : TSpeedButton;
     SpeedButton6 : TSpeedButton;
     SpeedButton7 : TSpeedButton;
     SpeedButton8 : TSpeedButton;
+    OpenFilePopUpMenu : TPopupMenu;
+
     ComboBox1 : TComboBox;
     Edit1: TEdit;
     SpinEdit1 : TSpinEdit;
@@ -142,6 +146,9 @@ type
     procedure mnuSearchFindClicked(Sender : TObject);
     procedure mnuSearchFindAgainClicked(Sender : TObject);
 
+    Procedure OpenFileDownArrowClicked(Sender : TObject);
+    Procedure FileOpenedEvent(Sender : TObject; Filename : String);
+
     procedure MouseDownOnControl(Sender : TObject; Button: TMouseButton; Shift : TShiftState; X, Y: Integer);
     procedure MouseMoveOnControl(Sender : TObject; Shift : TShiftState; X, Y: Integer);
     procedure MouseUpOnControl(Sender : TObject; Button: TMouseButton; Shift : TShiftState; X, Y: Integer);
@@ -155,6 +162,7 @@ type
   private
     FCodeLastActivated : Boolean; //used for toggling between code and forms
     FControlLastActivated : TObject;
+
     Function CreateSeperator : TMenuItem;
     Function ReturnActiveUnitList : TUnitInfo;
     Procedure UpdateViewDialogs;
@@ -247,6 +255,7 @@ var
   RegComp     : TRegisteredComponent;
   RegCompPage : TRegisteredComponentPage;
   IDeComponent : TIdeComponent;
+  MenuItem : TmenuItem;
 begin
   inherited Create(AOwner);
 
@@ -355,11 +364,11 @@ begin
    Begin
     Parent := self;
     Enabled := True;
-    Top := 25;
+    Top := 28;
     OnClick := @mnuViewUnitsCLicked;
     Glyph := Pixmap1;
     Visible := True;
-    Flat := False;
+    Flat := true;
     Name := 'Speedbutton1';
    end;
 
@@ -376,11 +385,12 @@ begin
    Begin
     Parent := self;
     Enabled := True;
-    Top := 25;
+    Top := 28;
     Left := Speedbutton1.Left + 26;
     OnClick := @mnuViewFormsCLicked;
     Glyph := Pixmap1;
     Visible := True;
+    Flat := true;
     Name := 'Speedbutton2';
    end;
 
@@ -396,11 +406,12 @@ begin
    Begin
     Parent := self;
     Enabled := True;
-    Top := 25;
+    Top := 28;
     Left := Speedbutton2.Left + 26;
 //    OnClick := @mnuNewCLicked;
     Glyph := Pixmap1;
     Visible := True;
+    Flat := true;
     Name := 'Speedbutton3';
    end;
 
@@ -417,13 +428,46 @@ begin
    Begin
     Parent := self;
     Enabled := True;
-    Top := 25;
+    Top := 28;
     Left := Speedbutton3.Left + 26;
     OnClick := @mnuOpenCLicked;
     Glyph := Pixmap1;
     Visible := True;
+    Flat := true;
     Name := 'Speedbutton4';
    end;
+//display the down arrow
+
+  Pixmap1:=TPixMap.Create;
+  Pixmap1.TransparentColor:=clBtnFace;
+  if not LoadResource('btn_downarrow',Pixmap1) then
+  begin
+    LoadResource('default',Pixmap1);
+  end;
+
+  SpeedButton4_2 := TSpeedButton.Create(Self);
+  with Speedbutton4_2 do
+   Begin
+    Parent := self;
+    Enabled := True;
+    Top := 28;
+    Left := Speedbutton3.Left + 26+26;
+    OnClick := @OPenFileDownArrowClicked;
+    Glyph := Pixmap1;
+    Visible := True;
+    Flat := true;
+    Name := 'Speedbutton4_2';
+    width := 12;
+   end;
+
+//create the popupmenu for this speedbutton
+ OpenFilePopUpMenu := TPopupMenu.Create(self);
+ OpenFilePopupMenu.AutoPopup := False;
+{  MenuItem := TMenuItem.Create(Self);
+  MenuItem.Caption := 'No files have been opened';
+  MenuItem.OnClick := nil;
+ OpenFilePopupMenu.Items.Add(MenuItem);
+}
 
   Pixmap1:=TPixMap.Create;
   Pixmap1.TransparentColor:=clBtnFace;
@@ -437,11 +481,12 @@ begin
    Begin
     Parent := self;
     Enabled := True;
-    Top := 25;
-    Left := Speedbutton4.Left + 26;
+    Top := 28;
+    Left := Speedbutton4_2.Left + 13;
     OnClick := @mnuSaveCLicked;
     Glyph := Pixmap1;
     Visible := True;
+    Flat := true;
     Name := 'Speedbutton5';
    end;
 
@@ -457,11 +502,12 @@ begin
    Begin
     Parent := self;
     Enabled := True;
-    Top := 25;
+    Top := 28;
     Left := Speedbutton5.left + 26;
     OnClick := @mnuSaveAllCLicked;
     Glyph := Pixmap1;
     Visible := True;
+    Flat := true;
     Name := 'Speedbutton6';
    end;
 
@@ -477,11 +523,12 @@ begin
    Begin
     Parent := self;
     Enabled := True;
-    Top := 25;
+    Top := 28;
     Left := Speedbutton6.Left + 26;
     OnClick := @mnuToggleFormCLicked;
     Glyph := Pixmap1;
     Visible := True;
+    Flat := true;
     Name := 'Speedbutton7';
    end;
 
@@ -497,11 +544,12 @@ begin
    Begin
     Parent := self;
     Enabled := True;
-    Top := 25;
+    Top := 28;
     Left := Speedbutton7.Left + 26;
     OnClick := @mnuNewFormCLicked;
     Glyph := Pixmap1;
     Visible := True;
+    Flat := true;
     Name := 'Speedbutton8';
    end;
 
@@ -613,6 +661,8 @@ begin
 
   SourceNotebook := TSourceNotebook.Create(self);
   SourceNotebook.OnActivate := @CodeorFormActivated;
+  SourceNotebook.OnOpenFile := @FileOpenedEvent;
+
   itmFileSave.OnClick := @SourceNotebook.SaveClicked;
   itmFileSaveAs.OnClick := @SourceNotebook.SaveAsClicked;
   itmFileSaveAll.OnClick := @SourceNotebook.SaveAllClicked;
@@ -1423,6 +1473,34 @@ begin
 end;
 {------------------------------------------------------------------------------}
 
+{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------}
+{----------------OpenFileDownArrowClicked--------------------------------------}
+{------------------------------------------------------------------------------}
+
+Procedure TForm1.OpenFileDownArrowClicked(Sender : TObject);
+Begin
+//display the PopupMenu
+if OpenFilePopupMenu.Items.Count > 0 then
+OpenFilePopupMenu.Popup(0,0);
+end;
+
+Procedure TForm1.FileOpenedEvent(Sender : TObject; Filename : String);
+var
+MenuItem : TMenuItem;
+Begin
+//Writeln('OPENFILE... = '+OPenFilePopupmenu.Items[0].Caption);
+//if OPenFilePopupmenu.Items[0].Caption = 'No files have been opened' then
+// OPenFilePopupmenu.Items.Delete(0);
+Writeln('Filename is '+filename);
+  MenuItem := TMenuItem.Create(Self);
+  MenuItem.Caption := Filename;
+  MenuItem.OnClick := @SourceNotebook.OpenClicked;
+  OpenFilePopupMenu.Items.Add(MenuItem);
+
+end;
+
+
 Procedure TForm1.mnuCloseClicked(Sender : TObject);
 Begin
 
@@ -1731,6 +1809,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.26  2000/12/29 17:50:52  lazarus
+  Added a dropdown image to the resource and a downarrow button by the OPEN button.
+  Shane
+
   Revision 1.25  2000/12/29 13:35:50  lazarus
   Mattias submitted new lresources.pp and lazres.pp files.
   Shane
