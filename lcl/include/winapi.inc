@@ -485,6 +485,11 @@ begin
   Result := InterfaceObject.MoveToEx(DC, X, Y, OldPoint);
 end;
 
+function MoveWindowOrgEx(dc : hdc; dX,dY : Integer): boolean;
+begin
+  Result := InterfaceObject.MoveWindowOrgEx(DC, dX, dY);
+end;
+
 function PeekMessage(var lpMsg : TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean;
 begin
   Result := InterfaceObject.PeekMessage(lpMsg,Handle,wMsgFilterMin,wMsgFilterMax,wRemoveMsg);
@@ -686,9 +691,10 @@ begin
   Result := InterfaceObject.SetWindowLong(handle, Idx, NewLong);
 end;
 
-function SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; var Point: TPoint) : Boolean;
+function SetWindowOrgEx(dc : hdc; NewX, NewY : Integer;
+  var OldPoint: TPoint) : Boolean;
 begin
-  Result := InterfaceObject.SetWindowOrgEx(dc, NewX, NewY, Point);
+  Result := InterfaceObject.SetWindowOrgEx(dc, NewX, NewY, OldPoint);
 end;
 
 function SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND; X, Y, cx, cy: Integer; uFlags: UINT): Boolean;
@@ -1219,6 +1225,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.45  2002/08/30 12:32:21  lazarus
+  MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
+
   Revision 1.44  2002/08/28 09:40:49  lazarus
   MG: reduced paint messages and DC getting/releasing
 

@@ -139,6 +139,7 @@ function LineTo(DC: HDC; X, Y: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual
 function MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function MoveWindowOrgEx(dc : hdc; dX,dY : Integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 //function OffsetRect --> independent
 
@@ -189,7 +190,7 @@ Function SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer; {$IFDE
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetTimer(hWnd: HWND; nIDEvent, uElapse: integer; lpTimerFunc: TFNTimerProc) : integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetWindowLong(Handle: HWND; Idx: Integer; NewLong : Longint): Longint;{$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; var Point: TPoint): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; var OldPoint: TPoint): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
        X, Y, cx, cy: Integer; uFlags: UINT): Boolean;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ShowCaret(hWnd: HWND): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -291,6 +292,9 @@ function UnionRect(var DestRect: TRect; const SrcRect1, SrcRect2: TRect): Boolea
 { =============================================================================
 
   $Log$
+  Revision 1.39  2002/08/30 12:32:21  lazarus
+  MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
+
   Revision 1.38  2002/08/28 09:40:49  lazarus
   MG: reduced paint messages and DC getting/releasing
 
