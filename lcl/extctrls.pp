@@ -280,24 +280,23 @@ type
   TImage = class(TGraphicControl)
   private
     FPicture: TPicture;
-    FAutoSize,
     FCenter,
     FTransparent,
     FStretch : Boolean;
     procedure SetPicture(const AValue: TPicture);
-    procedure SetAutoSize(const Value : Boolean); override;
     procedure SetCenter(Value : Boolean);
     procedure SetStretch(Value : Boolean);
     procedure SetTransparent(Value : Boolean);
     procedure PictureChanged(SEnder : TObject);
   protected
+    procedure DoAutoSize; Override;
     Procedure Paint; Override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
     Property Align;
-    property AutoSize : Boolean read FAutoSize write SetAutoSize default False;
+    property AutoSize;
     property Center : Boolean read FCenter write SetCenter;
     property Constraints;
     property Picture : TPicture read FPicture write SetPicture;
@@ -506,6 +505,9 @@ end.
 
  {
   $Log$
+  Revision 1.37  2002/10/20 22:31:08  lazarus
+  AJ:switched TImage.Autosize to use DoAutoSize
+
   Revision 1.36  2002/10/20 21:54:03  lazarus
   MG: fixes for 1.1
 
