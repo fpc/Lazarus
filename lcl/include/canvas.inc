@@ -899,10 +899,10 @@ destructor TCanvas.Destroy;
 begin
 //writeln('[TCanvas.Destroy] ',ClassName,'  Self=',HexStr(Cardinal(Pointer(Self)),8));
   Handle := 0;
-  FFont.Free;
-  FPen.Free;
-  FBrush.Free;
-  FRegion.Free;
+  FreeThenNil(FFont);
+  FreeThenNil(FPen);
+  FreeThenNil(FBrush);
+  FreeThenNil(FRegion);
   if FLockCount <> 0 then
      DeleteCriticalSection(FLock);
   inherited Destroy;
@@ -1096,6 +1096,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.33  2002/10/27 11:51:35  lazarus
+  MG: fixed memleaks
+
   Revision 1.32  2002/10/25 10:42:08  lazarus
   MG: broke minor circles
 
