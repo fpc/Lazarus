@@ -928,10 +928,8 @@ type
   protected
     // sizing/aligning
     AutoSizing: Boolean;
-    procedure AdjustSize; virtual;
     procedure DoAutoSize; virtual;
     function AutoSizeCanStart: boolean; virtual;
-    function AutoSizeDelayed: boolean; virtual;
     procedure AnchorSideChanged(TheAnchorSide: TAnchorSide); virtual;
     procedure SetAlign(Value: TAlign); virtual;
     procedure SetAnchors(const AValue: TAnchors); virtual;
@@ -1115,6 +1113,22 @@ type
     function ManualFloat(TheScreenRect: TRect): Boolean;
     function ReplaceDockedControl(Control: TControl; NewDockSite: TWinControl;
       DropControl: TControl; ControlSide: TAlign): Boolean;
+    Function  Dragging: Boolean;
+  public
+    // size
+    procedure AdjustSize; virtual;
+    function AutoSizeDelayed: boolean; virtual;
+    procedure AnchorToNeighbour(Side: TAnchorKind; Space: integer;
+                                Sibling: TControl);
+    procedure AnchorHorizontalCenterTo(Sibling: TControl);
+    procedure AnchorVerticalCenterTo(Sibling: TControl);
+    procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
+    procedure SetInitialBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
+    procedure SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight: integer;
+                                Lock: boolean); virtual;
+    procedure GetPreferredSize(var PreferredWidth, PreferredHeight: integer;
+                               Raw: boolean); virtual;
+    procedure InvalidatePreferredSize; virtual;
   public
     constructor Create(TheOwner: TComponent);override;
     destructor Destroy; override;
@@ -1136,19 +1150,8 @@ type
                                     ExceptionOnInvalid: boolean): boolean;
     procedure CheckNewParent(AParent: TWinControl); virtual;
     procedure SendToBack;
-    procedure AnchorToNeighbour(Side: TAnchorKind; Space: integer;
-                                Sibling: TControl);
-    procedure AnchorHorizontalCenterTo(Sibling: TControl);
-    procedure AnchorVerticalCenterTo(Sibling: TControl);
     procedure SetTempCursor(Value: TCursor);
     procedure UpdateRolesForForm; virtual;
-    procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
-    procedure SetInitialBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
-    procedure SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight: integer;
-                                Lock: boolean); virtual;
-    procedure GetPreferredSize(var PreferredWidth, PreferredHeight: integer;
-                               Raw: boolean); virtual;
-    procedure InvalidatePreferredSize; virtual;
     function  GetTextBuf(Buffer: PChar; BufSize: Integer): Integer; virtual;
     function  GetTextLen: Integer; virtual;
     Procedure SetTextBuf(Buffer: PChar); virtual;
@@ -1157,7 +1160,6 @@ type
     Function  ClientToScreen(const APoint: TPoint): TPoint;
     Function  ScreenToControl(const APoint: TPoint): TPoint;
     Function  ControlToScreen(const APoint: TPoint): TPoint;
-    Function  Dragging: Boolean;
     procedure Show;
     procedure Update; virtual;
     procedure SetZOrderPosition(NewPosition: Integer); virtual;
@@ -1468,8 +1470,6 @@ type
     procedure AssignTo(Dest: TPersistent); override;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     function GetActionLinkClass: TControlActionLinkClass; override;
-    procedure AdjustSize; override;
-    function AutoSizeDelayed: boolean; override;
     procedure AdjustClientRect(var ARect: TRect); virtual;
     procedure AlignControls(AControl: TControl;
                             var RemainingClientRect: TRect); virtual;
@@ -1647,6 +1647,8 @@ type
     property VisibleDockClientCount: Integer read GetVisibleDockClientCount;
   public
     // size, position, bounds
+    procedure AdjustSize; override;
+    function AutoSizeDelayed: boolean; override;
     procedure BeginUpdateBounds;
     procedure EndUpdateBounds;
     procedure LockRealizeBounds;
@@ -2853,6 +2855,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.276  2005/01/25 09:58:16  mattias
+  fixed fpc 1.0.10 compilation
+
   Revision 1.275  2005/01/24 14:57:36  mattias
   fixed TCollectionPropertyEditorForm to recognize renames and deletes
 

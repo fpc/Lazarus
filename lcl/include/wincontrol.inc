@@ -3626,7 +3626,6 @@ end;
 procedure TWinControl.CreateWnd;
 var
   Params: TCreateParams;
-  n: Integer;
   i: Integer;
 
 {  procedure WriteClientRect(const Prefix: string);
@@ -3678,8 +3677,8 @@ begin
     //WriteClientRect('C');
 
     if FWinControls <> nil then begin
-      for n := 0 to FWinControls.Count - 1 do
-        with TWinControl(FWinControls.Items[n]) do
+      for i := 0 to FWinControls.Count - 1 do
+        with TWinControl(FWinControls.Items[i]) do
           if Visible then HandleNeeded;
     end;
 
@@ -4387,6 +4386,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.307  2005/01/25 09:58:16  mattias
+  fixed fpc 1.0.10 compilation
+
   Revision 1.306  2005/01/24 11:49:42  mattias
   added checks for filenames with spaces
 
