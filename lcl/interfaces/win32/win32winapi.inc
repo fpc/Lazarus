@@ -2043,11 +2043,14 @@ End;
 Function TWin32WidgetSet.InvalidateRect(aHandle: HWND; Rect: PRect; BErase: Boolean): Boolean;
 Var
   Flags: UINT;
+  LeftOffset, TopOffset: Integer;
 Begin
 //  Result := Windows.InvalidateRect(aHandle, Windows.RECT(Rect^), bErase);
   Flags := RDW_INVALIDATE or RDW_ALLCHILDREN;
   if BErase then
     Flags := Flags or RDW_ERASE;
+  GetLCLClientOriginOffset(aHandle, LeftOffset, TopOffset);
+  OffsetRect(Rect^, LeftOffset, TopOffset);
   Result := Boolean(Windows.RedrawWindow(aHandle, Windows.RECT(Rect^), 0, Flags));
 End;
 
@@ -2982,6 +2985,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.109  2004/05/13 08:05:57  micha
+  fix translation from lcl to win32 coordinates
+
   Revision 1.108  2004/05/12 15:11:46  micha
   fix sizing/non-sizing border sizes
 
