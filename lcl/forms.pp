@@ -234,6 +234,7 @@ type
       property Color;
       property AutoHide : Boolean read FAutoHide write SetAutoHide;
       property HideInterval : Integer read FHideInterval write SetHideInterval;
+
   end;
 
 

@@ -47,7 +47,7 @@ end;
 Procedure THintWindow.AutoHideHint(Sender : TObject);
 Begin
   TTimer(FAutoHideTimer).Enabled := False;
-  if Visible then Hide;
+  if Visible then Visible := False;//Hide;
 End;
 
 
@@ -132,4 +132,5 @@ begin
   Dec(Result.Top, 2);
   Inc(Result.Right, 8);
 end;
+
 

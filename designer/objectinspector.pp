@@ -1273,7 +1273,7 @@ begin
      end;
   if AHint = '' then Exit;
   Rect := FHintWindow.CalcHintRect(0,AHint,nil);  //no maxwidth
-  Position := ClientToScreen(FLastMouseMovePos);
+  Position := Mouse.CursorPos;
   Rect.Left := Position.X+10;
   Rect.Top := Position.Y+10;
   Rect.Right := Rect.Left + Rect.Right+3;

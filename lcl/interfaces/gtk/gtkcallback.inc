@@ -4,9 +4,14 @@
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
 
+const
+  DblClickTime = 250;//250 miliseconds or less between clicks is a double click
+
 var
 //testing
 LMouseButtonDown,MMouseButtonDown,RMouseButtonDown : Boolean;  //used to track the mouse buttons
+LLastClick, RLastClick, MLastClick : TDateTime;
+
 
 
 
@@ -421,11 +426,34 @@ var
   MessI : TLMMouse;
   MessE : TLMMouseEvent;
   ShiftState: TShiftState;
+  ShowDebugging : Boolean;
+  parWindow : PgdkWindow;  //the Parent's GDKWindow
 begin
 //writeln('[gtkMouseBtnPress] ',ToBject(Data).ClassName,' ',Trunc(Event^.X),',',Trunc(Event^.Y));
   EventTrace('Mouse button Press', data);
   Assert(False, Format('Trace:[gtkMouseBtnPress] ', []));
   ShiftState := GTKEventState2ShiftState(Event^.State);
+  
+  ShowDebugging := False;
+  if ShowDebugging then
+  Begin
+  writeln('_______________');
+  Writeln('Button Down');
+  Writeln('Control = ',TControl(data).Name);
+  Writeln('Handle = ',Longint(TWinControl(data).Handle));
+  Writeln('Widget = ',LongInt(widget));
+  Writeln('Window = ',Longint(Event^.Window));
+  Writeln('Coords = ',trunc(Event^.x),',',trunc(Event^.Y));
+  Writeln('Event Type',Event^.thetype);
+  Writeln('Coords root = ',trunc(Event^.x_root),',',trunc(Event^.Y_root));
+  Writeln('State = ',event^.state);
+  Writeln('TGtkWidget^.Window is ',Longint(Widget^.Window));
+  parWindow := gtk_widget_get_parent_window(widget);
+  Writeln('Parwindow is ',LongInt(parwindow));
+  Writeln('_______________');
+  end;
+
+  
   if event^.Button in [4,5]
   then begin
     MessE.Msg := LM_MOUSEWHEEL;
@@ -437,16 +465,23 @@ begin
     Result := DeliverPostMessage(Data, MessE);
   end
   else begin
+  Writeln('LLastClick = ',FormatDateTime('hh:mm:ss:zz',LLastClick));
     MessI.Keys := 0;
     case event^.Button of
          1 : begin
                if (LMouseButtonDown) and (not (Event^.theType = gdk_2button_press)) then Exit;
                MessI.Keys := MessI.Keys or MK_LBUTTON;
+               if (now - LLastClick) <= ((1/86400)*(DblClickTime/1000)) then
+                  Event^.theType := gdk_2Button_press;
+               LLastClick := Now;
 
                if event^.thetype = gdk_button_press then
                  MessI.Msg := LM_LBUTTONDOWN
                 else
-                   MessI.Msg := LM_LBUTTONDBLCLK;
+                   begin
+                     MessI.Msg := LM_LBUTTONDBLCLK;
+                     LLastClick := -1;
+                   end;
 
              LMouseButtonDown := True;
 
@@ -455,19 +490,35 @@ begin
                if (MMouseButtonDown) and (not (Event^.theType = gdk_2button_press)) then Exit;
 
                MessI.Keys := MessI.Keys or MK_MBUTTON;
+               
+               if (now - MLastClick) <= ((1/86400)*(DblClickTime/1000)) then
+                  Event^.theType := gdk_2Button_press;
+               MLastClick := Now;
+
                if event^.thetype = gdk_button_press then
                  MessI.Msg := LM_MBUTTONDOWN
                else
-                 MessI.Msg := LM_MBUTTONDBLCLK;
+                 Begin
+                   MessI.Msg := LM_MBUTTONDBLCLK;
+                   MLastClick := -1;
+                 end;
                MMouseButtonDown := True;
              end;
          3 : begin
                if (RMouseButtonDown) and (not (Event^.theType = gdk_2button_press)) then Exit;
                MessI.Keys := MessI.Keys or MK_RBUTTON;
+
+               if (now - RLastClick) <= ((1/86400)*(DblClickTime/1000)) then
+                  Event^.theType := gdk_2Button_press;
+               RLastClick := Now;
+
                if event^.thetype = gdk_button_press then
                  MessI.Msg := LM_RBUTTONDOWN
                else
-                 MessI.Msg := LM_RBUTTONDBLCLK;
+                 Begin
+                   MessI.Msg := LM_RBUTTONDBLCLK;
+                   RLastClick := -1;
+                 end;
                RMouseButtonDown := True;
              end;
          else MessI.Msg := LM_NULL;
@@ -1415,6 +1466,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.48  2001/11/29 18:41:27  lazarus
+  Improved the double click.
+  Shane
+
   Revision 1.47  2001/11/21 19:32:32  lazarus
   TComboBox can now be moved in FormEditor
   Shane
