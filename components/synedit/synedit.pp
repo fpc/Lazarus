@@ -8697,7 +8697,7 @@ begin
   end;
 {begin}                                                                         //mh 2000-10-01
   StartOfBlock := CaretXY;
-  NewCaretX := StartOfBlock.X + {$IFDEF SYN_LAZARUS}length(Spaces){$ELSE}i{$ENDIF};
+  NewCaretX := StartOfBlock.X + i;
   SetSelText(Spaces);
   ChangeScroll := not (eoScrollPastEol in fOptions);
   try
