@@ -402,7 +402,8 @@ end;
 
 function TGraphicPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paDialog, paRevertable, paReadOnly];
+  // graphic streaming is not yet implemented, so the paDialog is deactivated
+  Result := [{paDialog, }paRevertable, paReadOnly];
 end;
 
 { TPicturePropertyEditor }
