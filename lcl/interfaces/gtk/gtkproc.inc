@@ -1078,6 +1078,16 @@ begin
   Result := TLMessage(AMessage).Result;
 end;
 
+{------------------------------------------------------------------------------
+  procedure NotifyApplicationUserInput;
+
+ ------------------------------------------------------------------------------}
+procedure NotifyApplicationUserInput;
+begin
+  if Application<>nil then
+    Application.NotifyUserInputHandler;
+end;
+
 
 {------------------------------------------------------------------------------
   Function: ObjectToGTKObject
@@ -3947,6 +3957,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.147  2002/11/02 22:25:38  lazarus
+  MG: implemented TMethodList and Application Idle handlers
+
   Revision 1.146  2002/10/30 12:37:26  lazarus
   MG: mouse cursors are now allocated on demand
 
