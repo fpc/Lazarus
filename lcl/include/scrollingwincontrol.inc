@@ -144,7 +144,7 @@ end;
 procedure TControlScrollBar.UpdateScrollBar;
 var
   ScrollInfo: TScrollInfo;
-
+  SBSize : Longint;
   procedure UpdateVScroll;
   begin
     With FControl do begin
@@ -152,7 +152,11 @@ var
       ScrollInfo.nPage := Page;
 
       if Visible then begin
-        FAutoRange := (Range - ClientHeight)*Shortint(Range >= ClientHeight);
+        If (FControl <> nil) and (FControl.HorzScrollBar.Visible) then
+          SBSize := GetSystemMetrics(SM_CXHSCROLL)
+        else
+          SBSize := 0;
+        FAutoRange := (Range - ClientHeight)*Shortint(Range >= ClientHeight + SBSize);
         ScrollInfo.nMax := Range;
       end
       else
@@ -176,7 +180,11 @@ var
       ScrollInfo.nPage := Page;
 
       if Visible then begin
-        FAutoRange := (Range - ClientWidth)*Shortint(Range >= ClientWidth);
+        If (FControl <> nil) and (FControl.VertScrollBar.Visible) then
+          SBSize := GetSystemMetrics(SM_CYVSCROLL)
+        else
+          SBSize := 0;
+        FAutoRange := (Range - ClientWidth)*Shortint(Range >= ClientWidth + SBSize);
         ScrollInfo.nMax := Range;
       end
       else
