@@ -101,13 +101,15 @@ var
 begin
   if FCreatingWnd then exit;
   FCreatingWnd := true;
-  //writeln('[TCustomRadioGroup.CreateWnd] A ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated);
+  //writeln('[TCustomRadioGroup.CreateWnd] A ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated,' ItemIndex=',ItemIndex);
+
   // destroy radiobuttons, if there are too many
   while FButtonList.Count>FItems.Count do begin
     TRadioButton(FButtonList[FButtonList.Count-1]).Free;
     FButtonList.Delete(FButtonList.Count-1);
   end;
   //writeln('[TCustomRadioGroup.CreateWnd] B ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated);
+
   // create as many TRadioButton as needed
   while (FButtonList.Count<FItems.Count) do begin
     Temp := TRadioButton.Create (self);
@@ -118,10 +120,7 @@ begin
   end;
     
   //writeln('[TCustomRadioGroup.CreateWnd] C ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated);
-  if FItems.Count>=0 then begin
-    if (FItemIndex>=FItems.Count) then FItemIndex:=0;
-  end else
-    FItemIndex:=-1;
+  if (FItemIndex>=FItems.Count) then FItemIndex:=FItems.Count-1;
 
   //writeln('[TCustomRadioGroup.CreateWnd] D ',Name,':',ClassName,' ',FItems.Count);
   inherited CreateWnd;
@@ -141,7 +140,7 @@ begin
       Temp.Visible := true;
     end;
   end;
-  //writeln('[TCustomRadioGroup.CreateWnd] F ',Name,':',ClassName,' ',FItems.Count);
+  //writeln('[TCustomRadioGroup.CreateWnd] F ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated,' ItemIndex=',ItemIndex);
 
   FCreatingWnd := false;
 end;
@@ -174,10 +173,10 @@ procedure TCustomRadioGroup.SetColumns (value : integer);
 begin
   if Value <> FColumns then 
   begin
-     if (Value < 1) 
-        then raise Exception.Create('TCustomRadioGroup: Columns must be >= 1');
-     FColumns := Value;
-     if HandleAllocated then RecreateWnd;
+    if (Value < 1)
+       then raise Exception.Create('TCustomRadioGroup: Columns must be >= 1');
+    FColumns := Value;
+    if HandleAllocated then RecreateWnd;
   end;
 end;
 
@@ -192,8 +191,8 @@ procedure TCustomRadioGroup.SetItem (value : TStrings);
 begin
   if (Value <> FItems) then
   begin
-     FItems.Assign(Value);
-     if HandleAllocated then RecreateWnd;
+    FItems.Assign(Value);
+    if HandleAllocated then RecreateWnd;
   end;
 end;
 
@@ -206,22 +205,25 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomRadioGroup.SetItemIndex (Value : integer);
 begin
-  if FReading then FItemIndex:=Value
+  if Value = FItemIndex then exit;
+  if FReading then
+    FItemIndex:=Value
   else begin
     if (Value < -1) or (Value >= FItems.Count) then
       raise Exception.CreateFmt(rsIndexOutOfRange,[ClassName,Value,FItems.Count]);
 
-    if (HandleAllocated) and (Value <> FItemIndex) then
+    if (HandleAllocated) then
     begin
       if (FItemIndex <> -1) then
-         TRadioButton (FButtonList [FItemIndex]).Checked := false;
+        TRadioButton (FButtonList [FItemIndex]).Checked := false;
       FItemIndex := Value;
       if (Value <> -1) then
-         TRadioButton (FButtonList [Value]).Checked := true;
+        TRadioButton (FButtonList [Value]).Checked := true;
          
-      ItemsChanged(self);
+      ItemsChanged(Self);
     end
-    else FItemIndex := Value;
+    else
+      FItemIndex := Value;
   end;
 end;
 
@@ -234,24 +236,22 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomRadioGroup.GetItemIndex : integer;
 var
-   i       : integer;
+  i: integer;
 begin
-   result := -1;
-   if (HandleAllocated) then
-   begin
-      i := 0;
-      // This nasty little loop is neccessary because the group is not informed
-      // when a button is pressed	
-      while (i < FButtonList.Count) and (Result = -1) do
-      begin	// find the actice button
-        if TRadioButton (FButtonList [i]).Checked
-          then result := i;
-        inc (i);
-      end;
-      FItemIndex := Result;
-   end
-   else
-      Result := FItemIndex;
+  if (HandleAllocated) then
+  begin
+    i := FButtonList.Count-1;
+    // This nasty little loop is neccessary because the group is not informed
+    // when a button is pressed
+    while (i>=0) do
+    begin	// find the actice button
+      if TRadioButton (FButtonList [i]).Checked
+      then break;
+      dec (i);
+    end;
+    FItemIndex := i;
+  end;
+  Result := FItemIndex;
 end;
 
 {------------------------------------------------------------------------------
@@ -290,6 +290,7 @@ begin
   FReading := True;
   inherited ReadState(Reader);
   FReading := False;
+  if (fItemIndex<-1) or (fItemIndex>=FItems.Count) then fItemIndex:=-1;
   if HandleAllocated then RecreateWnd;
 end;
 
@@ -348,6 +349,9 @@ end;
 
 {
   $Log$
+  Revision 1.17  2003/03/17 09:33:51  mattias
+  fixed TCustomRadioGroup.GetItemIndex
+
   Revision 1.16  2003/03/11 07:46:43  mattias
   more localization for gtk- and win32-interface and lcl
 
