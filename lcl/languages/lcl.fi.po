@@ -60,7 +60,7 @@ msgstr "&Kyllä"
 
 #: lclstrconsts:rsfileinfofilenotfound
 msgid "(file not found: \"%s\")"
-msgstr ""
+msgstr "(tiedostoa ei löytynyt: \"%s\")"
 
 #: lclstrconsts:rsgtkoptionclass
 msgid "--class classname     Following Xt conventions, the class of a program is the program name with the initial character capitalized. For example, the classname for gimp is \"Gimp\". If --class is specified, the class of the program will be set to \"classname\"."
@@ -120,7 +120,7 @@ msgstr "Keskeytä"
 
 #: lclstrconsts:ifsvk_accept
 msgid "Accept"
-msgstr ""
+msgstr "Hyväksy"
 
 #: lclstrconsts:rsallfiles
 msgid "All files (%s)|%s|%s"
@@ -244,7 +244,7 @@ msgstr ""
 
 #: lclstrconsts:rsfileinformation
 msgid "File information"
-msgstr ""
+msgstr "Tiedoston tietoja"
 
 #: lclstrconsts:rsfdfilereadonlytitle
 msgid "File is not writable"
