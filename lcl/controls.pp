@@ -189,7 +189,7 @@ type
   TCMDialogChar = TLMKEY;
   TCMDialogKey = TLMKEY;
 
-  TAlign = (alNone, alTop, alBottom, alLeft, alRight, alClient);
+  TAlign = (alNone, alTop, alBottom, alLeft, alRight, alClient, alCustom);
   TAlignSet = set of TAlign;
   TAnchorKind = (akTop, akLeft, akRight, akBottom);
   TAnchors = set of TAnchorKind;
@@ -473,6 +473,9 @@ type
     FAnchors : TAnchors;
     FAlign : TAlign;
     FAutoSize : Boolean;
+    FBaseBounds: TRect;
+    FBaseBoundsLock: integer;
+    FBaseParentClientSize: TPoint;
     FCaption : TCaption;
     FColor : TColor;
     FConstraints : TSizeConstraints;
@@ -491,14 +494,12 @@ type
     FHostDockSite : TWinControl;
     FHint : String;
     FIsControl : Boolean;
-    FLastHeight : Integer;
-    FLastResize : TPoint;
+    fLastAlignedBounds: TRect;
     FLastResizeHeight: integer;
     FLastResizeWidth: integer;
     FLastResizeClientHeight: integer;
     FLastResizeClientWidth: integer;
     FLastChangeboundRect: TRect;
-    FLastWidth : Integer;
     FLeft: Integer;
     FMouseEntered: boolean;
     FOnResize: TNotifyEvent;
@@ -534,10 +535,11 @@ type
     procedure CheckMenuPopup(const P : TSmallPoint);
     function GetClientHeight: Integer;
     function GetClientWidth: Integer;
+    function IsAnchorsStored: boolean;
     function IsHelpContextStored: boolean;
     function IsHelpKeyWordStored: boolean;
     procedure SetAlign(Value : TAlign);
-    procedure SetBoundsRect(const Rect : TRect);
+    procedure SetBoundsRect(const ARect : TRect);
     procedure SetClientHeight(Value: Integer);
     procedure SetClientSize(Value: TPoint);
     procedure SetClientWidth(Value: Integer);
@@ -607,6 +609,10 @@ type
     procedure DoOnResize; virtual;
     procedure Resize; virtual;
     procedure RequestAlign; dynamic;
+    procedure UpdateBaseBounds; virtual;
+    procedure LockBaseBounds;
+    procedure UnlockBaseBounds;
+    procedure UpdateAnchorRules;
     procedure BeginAutoDrag; dynamic;
     procedure ChangeBounds(ALeft, ATop, AWidth, AHeight : integer); virtual;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight : integer); virtual;
@@ -649,6 +655,7 @@ type
     Function GetEnabled: Boolean; virtual;
     Function GetPopupMenu: TPopupMenu; dynamic;
     procedure DoOnShowHint(HintInfo: Pointer);
+    procedure SetAlignedBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
     procedure VisibleChanging; dynamic;
   protected
     property ActionLink: TControlActionLink read FActionLink write FActionLink;
@@ -685,7 +692,7 @@ type
     function ColorIsStored: boolean; virtual;
     constructor Create(AOwner: TComponent);override;
     destructor Destroy; override;
-    function HasParent : Boolean; override;
+    function HasParent: Boolean; override;
     function IsParentOf(AControl: TControl): boolean; virtual;
     procedure Refresh;
     procedure Repaint; virtual;
@@ -693,8 +700,10 @@ type
     procedure AddControl; virtual;
     Procedure DragDrop(Source: TObject; X,Y : Integer); Dynamic;
     procedure SendToBack;
-    procedure SetInitialBounds(aLeft, aTop, aWidth, aHeight : integer); virtual;
     procedure SetBounds(aLeft, aTop, aWidth, aHeight : integer); virtual;
+    procedure SetInitialBounds(aLeft, aTop, aWidth, aHeight : integer); virtual;
+    procedure SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight : integer;
+                                Lock: boolean); virtual;
     function  GetTextBuf(Buffer: PChar; BufSize: Integer): Integer;
     Procedure SetTextBuf(Buffer : PChar);
     Function  Perform(Msg:Cardinal; WParam , LParam : LongInt): LongInt;
@@ -707,9 +716,9 @@ type
     Procedure SetZOrder(Topmost: Boolean); virtual;
     function HandleObjectShouldBeVisible: boolean; virtual;
   public
-    property Anchors : TAnchors read FAnchors write FAnchors default [akLeft,akTop];
-    property Align : TAlign read FAlign write SetAlign;
-    property BoundsRect : TRect read GetBoundsRect write SetBoundsRect;
+    property Anchors: TAnchors read FAnchors write FAnchors stored IsAnchorsStored;
+    property Align: TAlign read FAlign write SetAlign;
+    property BoundsRect: TRect read GetBoundsRect write SetBoundsRect;
     property Caption: TCaption read GetText write SetText stored IsCaptionStored;
     property ClientOrigin: TPoint read GetClientOrigin;
     property ClientRect: TRect read GetClientRect;
@@ -718,8 +727,8 @@ type
     property Constraints: TSizeConstraints read FConstraints write SetConstraints;
     property ControlState: TControlState read FControlState write FControlState;
     property ControlStyle: TControlStyle read FControlStyle write FControlStyle;
-    property Color : TColor read FColor write SetColor stored ColorIsStored;
-    property Ctl3D : Boolean read FCtl3D write FCtl3D;  //Is this needed for anything other than compatability?
+    property Color: TColor read FColor write SetColor stored ColorIsStored;
+    property Ctl3D: Boolean read FCtl3D write FCtl3D;//Is this needed for anything other than compatability?
     property Enabled: Boolean read GetEnabled write SetEnabled default True;
     property Font : TFont read FFont write SetFont;
     property HostDockSite : TWincontrol read FHostDockSite write FHostDockSite;
@@ -778,7 +787,8 @@ type
     wcfClientRectNeedsUpdate,
     wcfColorChanged,
     wcfReAlignNeeded,
-    wcfRequestAlignNeeded
+    wcfRequestAlignNeeded,
+    wcfAligningControls
     );
   TWinControlFlags = set of TWinControlFlag;
 
@@ -823,12 +833,13 @@ type
   protected
     procedure AdjustSize; override;
     procedure AdjustClientRect(var Rect: TRect); virtual;
-    procedure AlignControls(AControl : TControl; var Rect: TRect); virtual;
+    procedure AlignControls(AControl : TControl; var ARect: TRect); virtual;
     procedure BoundsChanged; override;
     Function CanTab: Boolean; override;
     Procedure CMDrag(var Message : TCMDrag); message CM_DRAG;
     procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
     procedure CMVisibleChanged(var TheMessage: TLMessage); message CM_VISIBLECHANGED;
+    procedure ControlsAligned; virtual;
     procedure CreateSubClass(var Params: TCreateParams;ControlClassName: PChar);
     procedure CreateComponent(TheOwner: TComponent); virtual;
     procedure DestroyComponent;
@@ -1040,9 +1051,12 @@ const
     { alRight }
     [akRight, akTop, akBottom],
     { alClient }
-    [akLeft, akTop, akRight, akBottom]);
+    [akLeft, akTop, akRight, akBottom],
+    { alCustom }
+    [akLeft, akTop]
+    );
   AlignNames: array[TAlign] of string = (
-    'alNone', 'alTop', 'alBottom', 'alLeft', 'alRight', 'alClient');
+    'alNone', 'alTop', 'alBottom', 'alLeft', 'alRight', 'alClient', 'alCustom');
 
 
 function CNSendMessage(LM_Message : integer; Sender : TObject; data : pointer) : integer;
@@ -1482,6 +1496,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.123  2003/06/10 12:28:23  mattias
+  fixed anchoring controls
+
   Revision 1.122  2003/06/10 00:46:16  mattias
   fixed aligning controls
 
