@@ -417,6 +417,10 @@ type
     procedure SaveEnvironment; virtual; abstract;
     procedure SetRecentSubMenu(ParentMenuItem: TMenuItem; FileList: TStringList;
        OnClickEvent: TNotifyEvent); virtual;
+    function DoJumpToCodePos(
+      ActiveSrcEdit: TSourceEditor; ActiveUnitInfo: TUnitInfo;
+      NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
+      AddJumpPoint: boolean): TModalResult; virtual; abstract;
     procedure DoJumpToCodeToolBossError; virtual; abstract;
     procedure SaveSourceEditorChangesToCodeCache(PageIndex: integer); virtual; abstract;
   end;

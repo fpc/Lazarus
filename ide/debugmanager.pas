@@ -40,12 +40,12 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, Forms, Controls, Dialogs, Menus, FileCtrl, Laz_XMLCfg,
-  SynEdit,
+  SynEdit, CodeCache, CodeToolManager,
   CompilerOptions, EditorOptions, EnvironmentOpts, KeyMapping, UnitEditor,
-  Project, IDEProcs, Debugger, RunParamsOpts, ExtToolDialog, IDEOptionDefs,
-  LazarusIDEStrConsts, ProjectDefs, BaseDebugManager, MainBar, DebuggerDlg,
-  Watchesdlg, BreakPointsdlg, LocalsDlg, DBGOutputForm, GDBMIDebugger,
-  CallStackDlg;
+  Project, IDEProcs, InputHistory, Debugger, RunParamsOpts, ExtToolDialog,
+  IDEOptionDefs, LazarusIDEStrConsts, ProjectDefs, BaseDebugManager, MainBar,
+  DebuggerDlg, Watchesdlg, BreakPointsdlg, LocalsDlg, DBGOutputForm,
+  GDBMIDebugger, CallStackDlg;
 
 
 type
@@ -288,11 +288,9 @@ procedure TDebugManager.OnDebuggerCurrentLine(Sender: TObject;
 // -> show the current execution line in editor
 // if SrcLine = -1 then no source is available
 var
-  ActiveSrcEdit: TSourceEditor;
-  SearchFile, UnitFile: String;
+  SrcFile: String;
   OpenDialog: TOpenDialog;
-  UnitInfo: TUnitInfo;
-  n: Integer;
+  NewSource: TCodeBuffer;
 begin
   if (Sender<>FDebugger) or (Sender=nil) then exit;
 
@@ -307,64 +305,48 @@ begin
     Exit;
   end;
 
-  UnitFile := MainIDE.FindUnitFile(ALocation.SrcFile);
-  if UnitFile = ''
-  then UnitFile := ALocation.SrcFile;
-  
-  if MainIDE.DoOpenEditorFile(UnitFile,-1,[ofOnlyIfExists, ofQuiet]) <> mrOk 
-  then begin
-    // Try to find it ourself in the project files
-    SearchFile := ExtractFilenameOnly(ALocation.SrcFile); 
-    UnitFile := '';
-    for n := Project1.UnitCount - 1 downto 0 do
-    begin
-      UnitInfo := Project1.Units[n];
-      if CompareFileNames(SearchFile, ExtractFilenameOnly(UnitInfo.FileName)) = 0
-      then begin
-        UnitFile := UnitInfo.FileName;
-        Break;
+  SrcFile := MainIDE.FindSourceFile(ALocation.SrcFile);
+  if SrcFile = '' then SrcFile := ALocation.SrcFile;
+
+  if (not FilenameIsAbsolute(SrcFile)) or (not FileExists(SrcFile)) then begin
+    if MessageDlg(lisFileNotFound,
+      Format(lisTheFileWasNotFoundDoYouWantToLocateItYourself, ['"',
+        SrcFile, '"', #13, #13, #13])
+      ,mtConfirmation, [mbYes, mbNo], 0) <> mrYes
+    then Exit;
+
+    repeat
+      OpenDialog:=TOpenDialog.Create(Application);
+      try
+        InputHistories.ApplyFileDialogSettings(OpenDialog);
+        OpenDialog.Title:=lisOpenFile+' '+SrcFile;
+        OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist];
+        if not OpenDialog.Execute then
+          exit;
+        SrcFile:=CleanAndExpandFilename(OpenDialog.FileName);
+        InputHistories.StoreFileDialogSettings(OpenDialog);
+      finally
+        OpenDialog.Free;
       end;
-    end;
-    
-    if (UnitFile = '')
-    or (MainIDE.DoOpenEditorFile(UnitFile,-1,[ofOnlyIfExists, ofQuiet]) <> mrOk)
-    then begin
-      UnitFile := ALocation.SrcFile;
-      repeat
-        if MessageDlg(lisFileNotFound,
-          Format(lisTheFileWasNotFoundDoYouWantToLocateItYourself, ['"',
-            UnitFile, '"', #13, #13, #13])
-          ,mtConfirmation, [mbYes, mbNo], 0) <> mrYes   
-        then Exit;
-        
-        OpenDialog := TOpenDialog.Create(Application);
-        try
-          OpenDialog.Title := lisOpenFile;
-          OpenDialog.FileName := ALocation.SrcFile;
-          if not OpenDialog.Execute 
-          then Exit;
-          UnitFile := OpenDialog.FileName;
-        finally
-          OpenDialog.Free;
-        end;
-      until MainIDE.DoOpenEditorFile(UnitFile,-1,[ofOnlyIfExists, ofQuiet]) = mrOk;
-    end;
-  end;  
+    until FilenameIsAbsolute(SrcFile) and FileExists(SrcFile);
 
-  ActiveSrcEdit := SourceNoteBook.GetActiveSE;
-  if ActiveSrcEdit=nil then exit;
-
-  with ActiveSrcEdit.EditorComponent do
-  begin
-    CaretXY:=Point(1, ALocation.SrcLine);
-    BlockBegin:=CaretXY;
-    BlockEnd:=CaretXY;
-    TopLine:=ALocation.SrcLine-(LinesInWindow div 2);
   end;
-  SourceNotebook.ClearExecutionLines;
-  SourceNotebook.ClearErrorLines;
-  ActiveSrcEdit.ExecutionLine:=ALocation.SrcLine;
-  // ActiveSrcEdit.ErrorLine:=ALocation.SrcLine;
+  
+  NewSource:=CodeToolBoss.LoadFile(SrcFile,true,false);
+  if NewSource=nil then begin
+    exit;
+  end;
+
+  // clear old error and execution lines
+  if SourceNotebook<>nil then begin
+    SourceNotebook.ClearExecutionLines;
+    SourceNotebook.ClearErrorLines;
+  end;
+  // jump editor to execution line
+  if MainIDE.DoJumpToCodePos(nil,nil,NewSource,1,ALocation.SrcLine,-1,true)
+    <>mrOk then exit;
+  // mark execution line
+  SourceNotebook.GetActiveSE.ExecutionLine:=ALocation.SrcLine;
 end;
 
 //-----------------------------------------------------------------------------
@@ -912,6 +894,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.21  2003/05/23 18:50:07  mattias
+  implemented searching debugging files in inherited unit paths
+
   Revision 1.20  2003/05/23 16:46:13  mattias
   added message, that debugger is readonly while running
 

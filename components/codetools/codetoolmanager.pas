@@ -206,6 +206,7 @@ type
     function GetNestedCommentsFlagForFile(const Filename: string): boolean;
     function GetPascalCompilerForDirectory(const Directory: string): TPascalCompiler;
     function GetCompilerModeForDirectory(const Directory: string): TCompilerMode;
+    function GetCompiledSrcExtForDirectory(const Directory: string): string;
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -685,6 +686,18 @@ begin
   for cm:=Low(TCompilerMode) to High(TCompilerMode) do
     if Evaluator.IsDefined(CompilerModeVars[cm]) then
       Result:=cm;
+end;
+
+function TCodeToolManager.GetCompiledSrcExtForDirectory(const Directory: string
+  ): string;
+var
+  Evaluator: TExpressionEvaluator;
+begin
+  Result:='.ppu';
+  Evaluator:=DefineTree.GetDefinesForDirectory(Directory,true);
+  if Evaluator=nil then exit;
+  if Evaluator.IsDefined('WIN32') then
+    Result:='.ppw';
 end;
 
 function TCodeToolManager.InitCurCodeTool(Code: TCodeBuffer): boolean;
