@@ -1599,6 +1599,7 @@ if (X >= 0) and (X <= TControl(sender).Width) and
       Begin //mouse button pressed.
          FormEditor1.ClearSelected;
          Writeln('Clicked on the form!!!!!  Froms name is '+TFOrm(sender).name);
+         ObjectInspector1.RootComponent := TCOmponent(Sender);
          FormEditor1.AddSelected(TComponent(Sender));
       end
       else
@@ -2460,9 +2461,9 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.10  2000/11/27 20:33:18  lazarus
-  Changed the code so when you add a control to the form, it's selected by the object inspector.
-
+  Revision 1.11  2000/11/27 20:36:48  lazarus
+  Minor change.  I'm setting the rootcomponent for the ObjectInspector now when you click on a form.
+  No noticable difference.
   Shane
 
   Revision 1.5  2000/08/10 13:22:51  lazarus
