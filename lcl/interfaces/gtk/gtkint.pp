@@ -33,19 +33,16 @@ interface
 {$ASSERTIONS ON}
 {$endif}
  
-{$DEFINE ClientRectBugFix}
-{$IFDEF ClientRectBugFix}
-  { $DEFINE VerboseFormPositioning}
-  { $DEFINE VerboseClientRectBugFix}
-  { $DEFINE VerboseResizeChild}
-  { $DEFINE VerboseSizeMsg}
-  { $DEFINE VerboseGetClientRect}
-{$ENDIF}
 { $DEFINE VerboseMouseBugfix}
-{$DEFINE enable_gdkpixbuf}
+
+{$IFDEF win32}
+{$DEFINE NoGdkPixbufLib}
+{$ELSE}
+{off $DEFINE NoGdkPixbufLib}
+{$ENDIF}
 
 uses 
-  InterfaceBase, {$Ifdef enable_gdkpixbuf}gdkpixbuf,{$EndIf} gtk, gdk, 
+  InterfaceBase, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} gtk, gdk,
   glib, SysUtils, LMessages, Classes, Controls, Forms, VclGlobals, 
   LCLLinux, LCLType, gtkDef, DynHashArray, LazQueue, GraphType, 
   GraphicsMath;
@@ -368,6 +365,9 @@ begin
   gtk_handler_quark := g_quark_from_static_string('gtk-signal-handlers');
   
   MCaptureHandle := 0;
+  LastLeft:=EmptyLastMouseClick;
+  LastMiddle:=EmptyLastMouseClick;
+  LastRight:=EmptyLastMouseClick;
   FOldTimerData:=TList.Create;
   
   // clipboard
@@ -421,6 +421,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.59  2002/08/17 15:45:33  lazarus
+  MG: removed ClientRectBugfix defines
+
   Revision 1.58  2002/08/15 15:46:49  lazarus
   MG: added changes from Andrew (Clipping)
 
