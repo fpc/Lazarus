@@ -1544,7 +1544,7 @@ end;
 procedure TWinControl.WMWindowPosChanged(var Message : TLMWindowPosChanged);
 begin
 
-  if Message.WindowPos <> nil 
+ { if Message.WindowPos <> nil
   then with Message.WindowPos^ do 
   begin
     FLeft := X;
@@ -1554,7 +1554,7 @@ begin
     Assert(False, Format('Trace:[TWinControl.WMWindowPosChanged] %s --> Message.WindowPos(%d, %d)(%d, %d)', [ClassName, X, Y, cx, cy]));
   end
   else Assert(False, Format('Trace:[TWinControl.WMWindowPosChanged] %s --> Message.WindowPos = nil', [ClassName]));
-
+  }
 
   inherited WMWindowPosChanged(Message);
 end;
@@ -1917,6 +1917,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.16  2001/02/06 13:55:23  lazarus
+  Changed the files from mode delphi to mode objfpc
+  Shane
+
   Revision 1.15  2001/02/04 04:18:12  lazarus
   Code cleanup and JITFOrms bug fix.
   Shane

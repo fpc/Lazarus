@@ -27,8 +27,7 @@ from within Lazarus.
 }
 unit LazConf;
 
-{$mode delphi}
-//{$mode objfpc}
+{$mode objfpc}
 
 interface
 
@@ -61,6 +60,10 @@ end.
 
 {
   $Log$
+  Revision 1.2  2001/02/06 13:55:23  lazarus
+  Changed the files from mode delphi to mode objfpc
+  Shane
+
   Revision 1.1  2000/07/13 10:27:47  michael
   + Initial import
 

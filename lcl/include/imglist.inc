@@ -264,18 +264,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.Draw(Canvas: TCanvas; X, Y, Index: Integer; Enabled: Boolean);
 var
-
-Bitmap : TBitmap;
+aBitmap : TBitmap;
 begin
   if (FCount = 0) or (Index >= FCount) then Exit;
-  Bitmap := TBitmap(FImageList[Index]);
+  aBitmap := TBitmap(FImageList[Index]);
 
-  Canvas.CopyRect(
-    Rect(X, Y, X + FWidth, Y + FHeight),
-    Bitmap.Canvas,
-    Rect(0, 0, FWidth, FHeight)
-//    Rect(0, 0, 16,16)
-  );
+  Canvas.CopyRect(Rect(X, Y, X + FWidth, Y + FHeight), aBitmap.Canvas, Rect(0, 0, FWidth, FHeight));
 end;
 
 {------------------------------------------------------------------------------
@@ -306,7 +300,7 @@ end;
 
   Fetches the index'th image into an icon.
  ------------------------------------------------------------------------------}
-Function TCustomImageList.GetCount;
+Function TCustomImageList.GetCount : Integer;
 begin
 Result := FImageList.Count;
 FCount := Result;
@@ -814,6 +808,10 @@ end;
 {
 
   $Log$
+  Revision 1.3  2001/02/06 13:55:23  lazarus
+  Changed the files from mode delphi to mode objfpc
+  Shane
+
   Revision 1.2  2001/01/11 20:16:47  lazarus
   Added some TImageList code.
   Added a bookmark resource with 10 resource images.

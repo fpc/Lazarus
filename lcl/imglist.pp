@@ -28,8 +28,7 @@ Detailed description of the Unit.
 }
 unit ImgList;
 
-{$mode delphi}
-//{$mode objfpc}
+{$mode objfpc}
 
 interface
 
@@ -149,6 +148,10 @@ end.
 
 {
   $Log$
+  Revision 1.3  2001/02/06 13:55:23  lazarus
+  Changed the files from mode delphi to mode objfpc
+  Shane
+
   Revision 1.2  2001/01/11 20:16:47  lazarus
   Added some TImageList code.
   Added a bookmark resource with 10 resource images.
