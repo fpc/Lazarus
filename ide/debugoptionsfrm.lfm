@@ -8,13 +8,13 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
   POSITION = podefaultposonly
   HORZSCROLLBAR.PAGE = 481
   VERTSCROLLBAR.PAGE = 443
-  LEFT = 523
+  LEFT = 515
   HEIGHT = 442
-  TOP = 319
+  TOP = 247
   WIDTH = 480
   object nbDebugOptions: TNOTEBOOK
     ALIGN = altop
-    PAGEINDEX = 2
+    PAGEINDEX = 3
     HEIGHT = 398
     WIDTH = 480
     object pgGeneral: TPAGE
@@ -149,10 +149,10 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         end
         object seLimitLinecount: TSPINEDIT
           ENABLED = False
-          CLIMB_RATE = 7.62096543442854E-34
-          MINVALUE = 7.62096543442854E-34
-          MAXVALUE = 7.62096543442854E-34
-          VALUE = 7.62096543442854E-34
+          CLIMB_RATE = 7.22976091447488E-34
+          MINVALUE = 7.22976091447488E-34
+          MAXVALUE = 7.22976091447488E-34
+          VALUE = 7.22976091447488E-34
           LEFT = 28
           HEIGHT = 20
           TOP = 53
@@ -359,16 +359,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         object lvSignals: TLISTVIEW
           COLUMNS = <          
             item
-              CAPTION = 'Handled by'
-              VISIBLE = True
-              WIDTH = 75
-            end          
-            item
-              CAPTION = 'Resume'
-              VISIBLE = True
-              WIDTH = 75
-            end          
-            item
               CAPTION = 'Name'
               VISIBLE = True
               WIDTH = 200
@@ -377,6 +367,16 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
               CAPTION = 'ID'
               VISIBLE = True
               WIDTH = 50
+            end          
+            item
+              CAPTION = 'Handled by'
+              VISIBLE = True
+              WIDTH = 75
+            end          
+            item
+              CAPTION = 'Resume'
+              VISIBLE = True
+              WIDTH = 75
             end>
           POPUPMENU = popSignal
           VIEWSTYLE = vsreport
@@ -415,22 +415,30 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
     left = 408
     top = 20
     object mnuHandledByProgram: TMENUITEM
+      AUTOCHECK = True
       CAPTION = 'Handled by Program'
+      GROUPINDEX = 1
       RADIOITEM = True
     end
     object mnuiHandledByDebugger: TMENUITEM
+      AUTOCHECK = True
       CAPTION = 'Handled by Debugger'
+      GROUPINDEX = 1
       RADIOITEM = True
     end
     object N1: TMENUITEM
       CAPTION = '-'
     end
     object mnuResumeHandled: TMENUITEM
+      AUTOCHECK = True
       CAPTION = 'Resume Handled'
+      GROUPINDEX = 2
       RADIOITEM = True
     end
     object mnuResumeUnhandled: TMENUITEM
+      AUTOCHECK = True
       CAPTION = 'Resume Unhandled'
+      GROUPINDEX = 2
       RADIOITEM = True
     end
   end

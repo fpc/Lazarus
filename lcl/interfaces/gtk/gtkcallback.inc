@@ -280,34 +280,40 @@ end;
 function gtkactivateCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
-  LCLMenuItem: TMenuItem;
 begin
   Result:= True;
   EventTrace('activate', data);
   
-  if LockOnChange(PgtkObject(Widget),0)>0 then exit;
-
-  if GtkWidgetIsA(widget,GTK_TYPE_MENU_ITEM) then begin
-    LCLMenuItem:=TMenuItem(GetLCLObject(Widget));
-    if (LCLMenuItem<>nil) and LCLMenuItem.IsCheckItem
-    and (GtkWidgetIsA(widget,GTK_TYPE_CHECK_MENU_ITEM)) then begin
-      if ((PGtkCheckMenuItem(Widget)^.flag0 and bm_checkmenuitem_active)<>0)
-        <>LCLMenuItem.Checked
-      then begin
-        if (not LCLMenuItem.AutoCheck) then begin
-          // the gtk always toggles the check flag
-          // -> restore 'checked' flag
-          PGtkCheckMenuItem(Widget)^.flag0:=
-            PGtkCheckMenuItem(Widget)^.flag0 xor bm_checkmenuitem_active;
-        end;
-      end;
-    end;
-  end;
+  if LockOnChange(PgtkObject(Widget),0) > 0 then Exit;
 
   Mess.Msg := LM_ACTIVATE;
   Mess.Result := 0;
   Result := DeliverMessage(Data, Mess) = 0;
 //writeln('gtkactivateCB ',Result);
+end;
+
+function GTKCheckMenuToggeledCB(AMenuItem: PGTKCheckMenuItem; AData: gPointer): GBoolean; cdecl;
+// AData --> LCLMenuItem
+var
+  LCLMenuItem: TMenuItem;
+begin
+  Result := True;
+  EventTrace('toggled', AData);
+  
+  LCLMenuItem := TMenuItem(AData);
+  // some sanity checks
+  if LCLMenuItem = nil then Exit;
+  if not LCLMenuItem.IsCheckItem then Exit; // ???
+  
+  // the gtk always toggles the check flag
+  // -> restore 'checked' flag if needed
+  if (AMenuItem^.flag0 and bm_checkmenuitem_active <> 0) = LCLMenuItem.Checked then Exit;
+  if LCLMenuItem.AutoCheck then Exit;
+
+  // restore it
+  LockOnChange(PgtkObject(AMenuItem), +1);
+  gtk_check_menu_item_set_active(AMenuItem, LCLMenuItem.Checked);
+  LockOnChange(PgtkObject(AMenuItem), -1);
 end;
 
 function gtkchangedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
@@ -2781,6 +2787,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.183  2003/07/21 23:43:32  marc
+  * Fixed radiogroup menuitems
+
   Revision 1.182  2002/08/17 23:41:34  mattias
   many clipping fixes
 

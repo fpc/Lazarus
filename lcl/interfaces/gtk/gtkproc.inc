@@ -2588,6 +2588,21 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure LockRadioGroupOnChange(RadioGroup: PGSList; const ADelta: Integer);
+
+  Calls LockOnChange for all groupmembers
+ ------------------------------------------------------------------------------}
+procedure LockRadioGroupOnChange(RadioGroup: PGSList; const ADelta: Integer);
+begin
+  while RadioGroup <> nil do
+  begin
+    if RadioGroup^.Data <> nil
+    then LockOnChange(PgtkObject(RadioGroup^.Data), ADelta);
+    RadioGroup := RadioGroup^.Next;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   procedure UpdateRadioGroupChecks(RadioGroup: PGSList);
 
   Set 'checked' for all menuitems in the group
@@ -2595,35 +2610,33 @@ end;
 procedure UpdateRadioGroupChecks(RadioGroup: PGSList);
 var
   CurListItem: PGSList;
-  MenuItem: PGtkMenuItem;
+  MenuItem: PGtkCheckMenuItem;
   LCLMenuItem: TMenuItem;
 begin
-  if RadioGroup=nil then exit;
-  CurListItem:=RadioGroup;
-  // set active radiomenuitem
-  while CurListItem<>nil do begin
-    MenuItem:=PGtkMenuItem(CurListItem^.Data);
-    if MenuItem<>nil then begin
-      LCLMenuItem:=TMenuItem(GetLCLObject(MenuItem));
-      if (LCLMenuItem<>nil) and LCLMenuItem.Checked then begin
-        gtk_check_menu_item_set_active(PGtkCheckMenuItem(MenuItem),
-                                       LCLMenuItem.Checked);
+  // Check if it is a single entry
+  if (RadioGroup = nil) or (RadioGroup^.Next = nil)
+  then Exit;
+  
+  // Lock whole group for update
+  LockRadioGroupOnChange(RadioGroup, +1);
+  CurListItem := RadioGroup;
+  try
+    // set active radiomenuitem
+    while CurListItem <> nil do
+    begin
+      MenuItem := PGtkCheckMenuItem(CurListItem^.Data);
+      if MenuItem<>nil
+      then begin
+        LCLMenuItem := TMenuItem(GetLCLObject(MenuItem));
+        if  (LCLMenuItem <> nil)
+        and (((MenuItem^.flag0 and bm_checkmenuitem_active) = 0) = LCLMenuItem.Checked)
+        then gtk_check_menu_item_set_active(MenuItem, LCLMenuItem.Checked);
       end;
+      CurListItem := CurListItem^.Next;
     end;
-    CurListItem:=CurListItem^.Next;
-  end;
-  CurListItem:=RadioGroup;
-  // deactivate the other radiomenuitems
-  while CurListItem<>nil do begin
-    MenuItem:=PGtkMenuItem(CurListItem^.Data);
-    if MenuItem<>nil then begin
-      LCLMenuItem:=TMenuItem(GetLCLObject(MenuItem));
-      if (LCLMenuItem<>nil) then begin
-        gtk_check_menu_item_set_active(PGtkCheckMenuItem(MenuItem),
-                                       LCLMenuItem.Checked);
-      end;
-    end;
-    CurListItem:=CurListItem^.Next;
+  finally
+    // Unlock whole group for update
+    LockRadioGroupOnChange(RadioGroup, -1);
   end;
 end;
 
@@ -2867,6 +2880,7 @@ begin
     MenuItemWidget:=gtk_check_menu_item_new;
   end else
     MenuItemWidget:=gtk_menu_item_new;
+    
   if GtkWidgetIsA(MenuItemWidget,GTK_TYPE_CHECK_MENU_ITEM) then begin
     // set 'ShowAlwaysCheckable'
     gtk_check_menu_item_set_show_toggle(PGtkCheckMenuItem(MenuItemWidget),
@@ -2879,7 +2893,10 @@ begin
     if (OldCheckMenuItemToggleSize=0) then
       OldCheckMenuItemToggleSize:=MENU_ITEM_CLASS(MenuItemWidget)^.toggle_size;
     {$endif}
+    gtk_signal_connect_after(PGTKObject(MenuItemWidget), 'toggled',
+      TGTKSignalFunc(@GTKCheckMenuToggeledCB), Pointer(LCLMenuItem));
   end;
+
 
   // set attributes (enabled and rightjustify)
   gtk_widget_set_sensitive(MenuItemWidget, LCLMenuItem.Enabled);
@@ -4259,6 +4276,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.188  2003/07/21 23:43:32  marc
+  * Fixed radiogroup menuitems
+
   Revision 1.187  2003/07/02 10:02:51  mattias
   fixed TPaintStruct
 

@@ -52,7 +52,11 @@ begin
     if (not Assigned(ActionLink) and AutoCheck) or (Assigned(ActionLink) and
         not (ActionLink.IsAutoCheckLinked) and AutoCheck)
     then
-      Checked := not Checked;
+      // Break a little Delphi compatibility
+      // It makes no sense to uncheck a checked RadioItem (besides, GTK cant handle it)
+      if not RadioItem or not Checked
+      then Checked := not Checked;
+
     { Call OnClick if assigned and not equal to associated action's OnExecute.
       If associated action's OnExecute assigned then call it, otherwise, call
       OnClick. }
@@ -487,18 +491,24 @@ begin
   if FItems = nil then FItems := TList.Create;
 
   // adjust GroupIndex
+  (*
+   *  MWE: Disabled this feature, it makes not much sense
+   *  suppose a menu with items grouped like : G=2, G=2, ---, G=1, G=1
+   *  where --- is separator with G=0
+   *  Inserting G=1 after --- is OK according to the next check
+      
   if (Index>0) and (Index < FItems.Count) then
     if Item.GroupIndex < TMenuItem(FItems[Index - 1]).GroupIndex then
       Item.GroupIndex := TMenuItem(FItems[Index - 1]).GroupIndex;
   VerifyGroupIndex(Index, Item.GroupIndex);
-
+  *)
+  
   Item.FParent := Self;
   Item.FOnChange := @SubItemChanged;
   FItems.Insert(Index, Item);
   
   if HandleAllocated then begin
     Item.HandleNeeded;
-    //InterfaceObject.IntSendMessage3(LM_ATTACHMENU, Item, nil);
   end;
   MenuChanged(FItems.Count = 1);
 end;
@@ -822,8 +832,12 @@ procedure TMenuItem.SetGroupIndex(AValue: Byte);
 begin
   if FGroupIndex <> AValue then
   begin
+    (*
+     *  MWE: Disabled this feature, it makes not much sense
+     *  See other comments
     if Parent <> nil then
       Parent.VerifyGroupIndex(Parent.IndexOf(Self), AValue);
+    *)
     FGroupIndex := AValue;
     if FChecked and FRadioItem then
       TurnSiblingsOff;
@@ -914,6 +928,9 @@ end;
   Unchecks all siblings.
   In contrary to Delphi this will not use SetChecked, because this is up to the
   interface. This procedure just sets the private variables.
+  
+  //todo
+  MWE: ??? shouln'd we get checked from the interface in that case ???
  ------------------------------------------------------------------------------}
 procedure TMenuItem.TurnSiblingsOff;
 var
@@ -925,10 +942,11 @@ begin
     begin
       Item := FParent[I];
       if (Item <> Self)
-      and Item.FRadioItem and (Item.GroupIndex = GroupIndex) then
-        Item.FChecked:=false;
+      and Item.FRadioItem and (Item.GroupIndex = GroupIndex)
+      then Item.FChecked := false;
     end;
 end;
+
 
 {------------------------------------------------------------------------------
   Method:  TMenuItem.VerifyGroupIndex
@@ -937,6 +955,12 @@ end;
 
   Make sure, that all GroupIndex are in ascending order.
  ------------------------------------------------------------------------------}
+(*
+ *  MWE: Disabled this feature, it makes not much sense
+ *  suppose a menu with items grouped like : G=1, G=1, ---, G=2, G=2
+ *  where --- is separator with G=0
+ *  It will fail to insert ---
+
 procedure TMenuItem.VerifyGroupIndex(Position: Integer; Value: Byte);
 var
   i: Integer;
@@ -951,6 +975,7 @@ begin
       if (Items[i].GroupIndex<>0) and (Items[i].GroupIndex<Value) then
         Items[i].FGroupIndex:=Value;
 end;
+*)
 
 // included by menus.pp
 
@@ -958,6 +983,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.38  2003/07/21 23:43:32  marc
+  * Fixed radiogroup menuitems
+
   Revision 1.37  2003/07/01 09:29:51  mattias
   attaching menuitems topdown
 
@@ -1097,6 +1125,9 @@ end;
 
 
   $Log$
+  Revision 1.38  2003/07/21 23:43:32  marc
+  * Fixed radiogroup menuitems
+
   Revision 1.37  2003/07/01 09:29:51  mattias
   attaching menuitems topdown
 

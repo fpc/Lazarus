@@ -227,11 +227,24 @@ function TgtkObject.CheckMenuItem(hndMenu: HMENU; uIDEnableItem: Integer;
   bChecked: Boolean): Boolean;
 var
   LCLMenuItem: TMenuItem;
+  IsRadio: Boolean;
+  Group: PGSList;
 begin
-  if GTK_IS_CHECK_MENU_ITEM(Pointer(hndMenu)) then begin
-    LockOnChange(PgtkObject(hndMenu),1);
+  IsRadio := gtk_is_radio_menu_item(Pointer(hndMenu));
+  if IsRadio or gtk_is_check_menu_item(Pointer(hndMenu))
+  then begin
+    if IsRadio
+    then begin
+      Group :=  gtk_radio_menu_item_group(Pointer(hndMenu));
+      LockRadioGroupOnChange(Group, +1);
+    end
+    else  LockOnChange(PgtkObject(hndMenu),1);
     gtk_check_menu_item_set_active(PGtkCheckMenuItem(hndMenu),bChecked);
-    LockOnChange(PgtkObject(hndMenu),-1);
+    if IsRadio
+    then begin
+      LockRadioGroupOnChange(Group, -1);
+    end
+    else LockOnChange(PgtkObject(hndMenu),-1);
     Result:=true;
   end else begin
     LCLMenuItem:=TMenuItem(GetLCLObject(Pointer(hndMenu)));
@@ -6261,7 +6274,92 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.RegroupMenuItem(hndMenu: HMENU;
   GroupIndex: Integer): Boolean;
+
+const
+  GROUPIDX_DATANAME = 'GroupIndex';
+
+  function GetGroup: PGSList;
+  var
+    Item: PGList;
+    Arg: TGTKArg;
+  begin
+    Result := nil;
+    Arg.theType := GTK_TYPE_OBJECT;
+    Arg.Name := 'parent';
+    gtk_widget_get(Pointer(hndMenu), @Arg);
+    if Arg.d.object_data = nil then Exit;
+
+    Item := gtk_container_children(PGTKContainer(Arg.d.object_data));
+    while Item <> nil do
+    begin
+      if (Item^.Data <> Pointer(hndMenu)) // exclude ourself
+      and gtk_is_radio_menu_item(Item^.Data)
+      and (GroupIndex = Integer(gtk_object_get_data(Item^.Data, GROUPIDX_DATANAME)))
+      then begin
+        Result := gtk_radio_menu_item_group(PGtkRadioMenuItem(Item^.Data));
+        Exit;
+      end;
+      Item := Item^.Next;
+    end;
+  end;
+
+var
+  RadioGroup: PGSList;
+  CurrentGroupIndex: Integer;
+begin
+  Result := False;
   
+  if not gtk_is_radio_menu_item(Pointer(hndMenu))
+  then begin
+    writeln('WARNING: TgtkObject.RegroupMenuItem: handle is not a GTK_RADIO_MENU_ITEM');
+    Exit;
+  end;
+
+  CurrentGroupIndex := Integer(gtk_object_get_data(Pointer(hndMenu), GROUPIDX_DATANAME));
+
+  // Update needed ?
+  if GroupIndex = CurrentGroupIndex
+  then begin
+    Result := True;
+    Exit;
+  end;
+
+  // Remove current group
+  gtk_radio_menu_item_set_group(PGtkRadioMenuItem(hndMenu), nil);
+  gtk_object_set_data(Pointer(hndMenu), GROUPIDX_DATANAME, nil);
+
+  // Check remove only
+  if GroupIndex = 0
+  then begin
+    Result := True;
+    Exit;
+  end;
+
+  // Try to find new group
+  RadioGroup := GetGroup;
+
+  // Set new group
+  gtk_object_set_data(Pointer(hndMenu), GROUPIDX_DATANAME, Pointer(GroupIndex));
+  if RadioGroup = nil
+  then begin
+    // We're the only member, get a group
+    RadioGroup := gtk_radio_menu_item_group(PGtkRadioMenuItem(hndMenu))
+  end
+  else begin
+    gtk_radio_menu_item_set_group(PGtkRadioMenuItem(hndMenu), RadioGroup);
+  end;
+                                                                    //radiogroup^.data
+                                                                    //radiogroup^.next
+  // Refetch newgroup list
+  RadioGroup := gtk_radio_menu_item_group(PGtkRadioMenuItem(hndMenu));
+  // Update checks
+  UpdateRadioGroupChecks(RadioGroup);
+  Result := True;
+end;
+
+// MWE: Reimplemented to get rid of unneeded group order constraint
+//      (which doesn't work if the menu isn't created in order)
+(*
   function GetGroup(ParentMenuItem: TMenuItem;
     GrpIndex, LastRadioItem: integer): PGSList;
   var
@@ -6340,6 +6438,7 @@ begin
     Result:=false;
   end;
 end;
+*)
 
 {------------------------------------------------------------------------------
   Function: ReleaseCapture
@@ -8608,6 +8707,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.264  2003/07/21 23:43:32  marc
+  * Fixed radiogroup menuitems
+
   Revision 1.263  2003/07/20 06:39:03  mattias
   added comments
 

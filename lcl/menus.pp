@@ -141,7 +141,11 @@ type
     procedure SubItemChanged(Sender: TObject; Source: TMenuItem;
                              Rebuild: Boolean);
     procedure TurnSiblingsOff;
+    (*
+     *  MWE: Disabled this feature, it makes not much sense
+     *  See comments below
     procedure VerifyGroupIndex(Position: Integer; Value: Byte);
+     *)
   protected
     property ActionLink: TMenuActionLink read FActionLink write FActionLink;
     procedure CreateHandle; virtual;
@@ -382,6 +386,9 @@ end.
 
 {
   $Log$
+  Revision 1.50  2003/07/21 23:43:32  marc
+  * Fixed radiogroup menuitems
+
   Revision 1.49  2003/06/26 17:00:00  mattias
   fixed result on searching proc in interface
 

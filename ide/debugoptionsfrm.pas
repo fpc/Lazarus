@@ -62,6 +62,7 @@ type
   private
     FExceptionDeleteList: TStringList;
     procedure AddExceptionLine(const AException: TIDEException; AName: String);
+    procedure AddSignalLine(const ASignal: TIDESignal);
   public
   end;
 
@@ -69,6 +70,10 @@ var
   DebuggerOptionsForm: TDebuggerOptionsForm;
 
 implementation
+
+const
+  HANDLEDBY_CAPTION: array [Boolean] of String = ('Program', 'Debugger');
+  RESUME_CAPTION: array[Boolean] of String = ('Unhandled', 'Handled');
 
 { TDebuggerOptionsForm }
 
@@ -82,6 +87,18 @@ begin
 
   idx := clbExceptions.Items.AddObject(AName, AException);
   clbExceptions.Checked[idx] := (AException = nil) or AException.Enabled;
+end;
+
+procedure TDebuggerOptionsForm.AddSignalLine(const ASignal: TIDESignal);
+var
+  Item: TListItem;
+begin
+  Item := lvSignals.Items.Add;
+  Item.Caption := ASignal.Name;
+  Item.SubItems.Add(IntToStr(ASignal.ID));
+  Item.SubItems.Add(HANDLEDBY_CAPTION[ASignal.HandledByDebugger]);
+  Item.SubItems.Add(RESUME_CAPTION[ASignal.ResumeHandled]);
+  Item.Data := ASignal;
 end;
 
 procedure TDebuggerOptionsForm.clbExceptionsCLICK (Sender: TObject );
@@ -169,6 +186,12 @@ begin
   begin
     AddExceptionLine(DebugBoss.Exceptions[n], '');
   end;
+  
+  for n := 0 to DebugBoss.Signals.Count - 1 do
+  begin
+    AddSignalLine(DebugBoss.Signals[n]);
+  end;
+
 end;
 
 procedure TDebuggerOptionsForm.DebuggerOptionsFormDESTROY(Sender: TObject);
