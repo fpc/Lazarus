@@ -180,6 +180,9 @@ uses
   KeyMap, Calendar, Arrow, Spin, CommCtrl, ExtCtrls, Dialogs, FileCtrl,
   LResources, Math;
 
+
+procedure RaiseException(const Msg: string); forward;
+
 {$I gtklistsl.inc}
 
 
@@ -493,6 +496,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.79  2002/10/03 14:47:31  lazarus
+  MG: added TComboBox.OnPopup+OnCloseUp+ItemWidth
+
   Revision 1.78  2002/10/01 10:12:34  lazarus
   MG: added SendCachedLCLMessages to interfacebase for wysiwyg
 
