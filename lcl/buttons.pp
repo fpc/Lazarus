@@ -234,7 +234,7 @@ type
 
 implementation
 
-uses lclstrconsts;
+uses LCLStrConsts;
 
 const
   BitBtnModalResults : array[TBitBtnKind] of TModalResult = (
@@ -271,6 +271,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.25  2002/09/05 14:57:55  lazarus
+  MG: added show pages menu to TNotebookcomponenteditor
+
   Revision 1.24  2002/09/04 09:32:17  lazarus
   MG: improved streaming error handling
 
