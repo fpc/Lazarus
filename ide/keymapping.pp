@@ -394,7 +394,7 @@ end;
 
 function EditorKeyStringToVKCode(const s: string): word;
 var
-  i: word;
+  i: integer;
   Data: Pointer;
 begin
   Result:=VK_UNKNOWN;
@@ -406,7 +406,7 @@ begin
     if VirtualKeyStrings=nil then begin
       VirtualKeyStrings:=TStringHashList.Create(true);
       for i:=1 to 300 do
-        VirtualKeyStrings.Add(KeyAndShiftStateToEditorKeyString(i,[]),
+        VirtualKeyStrings.Add(KeyAndShiftStateToEditorKeyString(word(i),[]),
                               Pointer(i));
     end;
   end else
