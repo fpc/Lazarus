@@ -25,6 +25,10 @@ unit Interfaces;
  
 {$mode objfpc}{$H+} 
 
+{$IFDEF GTK2}
+{$ERROR wrong gtk2 interfaces source}
+{$ENDIF}
+
 interface
 
 uses 

@@ -2,7 +2,7 @@
 <CONFIG>
   <Package>
     <Name Value="GTK2Interface"/>
-    <Files Count="3">
+    <Files Count="2">
       <Item1>
         <Filename Value="interfaces.pas"/>
         <UnitName Value="Interfaces"/>
@@ -11,10 +11,6 @@
         <Filename Value="gtk2int.pas"/>
         <UnitName Value="Gtk2Int"/>
       </Item2>
-      <Item3>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/lcl/interfaces/gtk/gtkint.pp"/>
-        <UnitName Value="GtkInt"/>
-      </Item3>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
@@ -36,11 +32,14 @@
   </Package>
   <CompilerOptions>
     <SearchPaths>
-      <OtherUnitFiles Value="../gtk/;../../units"/>
+      <OtherUnitFiles Value=".;../gtk/;../../units"/>
       <UnitOutputDirectory Value="../../units/gtk2"/>
       <LCLWidgetType Value="gtk"/>
     </SearchPaths>
     <Other>
+      <Verbosity>
+        <ShoLineNum Value="True"/>
+      </Verbosity>
       <CustomOptions Value="-dGTK2"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>

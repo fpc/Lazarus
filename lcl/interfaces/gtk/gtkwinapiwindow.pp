@@ -248,6 +248,7 @@ end;
 function GTKAPIWidgetClient_KeyPress(Widget: PGTKWidget;
   Event: PGDKEventKey): GTKEventResult; cdecl;
 begin
+  if (Widget=nil) or (Event=nil) then ;
   // supress further processing
   Result := gtk_True;
 end;
@@ -258,6 +259,7 @@ begin
   {$IFDEF VerboseFocus}
   writeln('GTKAPIWidgetClient_ButtonPress ',HexStr(Cardinal(Widget),8));
   {$ENDIF}
+  if Event=nil then ;
   if not gtk_widget_has_focus(Widget) then
     gtk_widget_grab_focus(Widget);
   
@@ -270,6 +272,7 @@ begin
   {$IFDEF VerboseFocus}
   writeln('GTKAPIWidgetClient_FocusIn ',HexStr(Cardinal(Widget),8),' ',event^.thein);
   {$ENDIF}
+  if Event=nil then ;
   gtk_widget_set_flags(Widget, GTK_HAS_FOCUS);
   GTKAPIWidgetClient_DrawCaret(PGTKAPIWidgetClient(Widget));
   Result := gtk_False;
@@ -281,6 +284,7 @@ begin
   {$IFDEF VerboseFocus}
   writeln('GTKAPIWidgetClient_FocusOut ',HexStr(Cardinal(Widget),8),' ',event^.thein);
   {$ENDIF}
+  if Event=nil then ;
   gtk_widget_unset_flags(Widget, GTK_HAS_FOCUS);
   GTKAPIWidgetClient_DrawCaret(PGTKAPIWidgetClient(Widget));
   Result := gtk_False;
@@ -359,6 +363,7 @@ procedure GTKAPIWidgetClient_Init(Client, theClass: Pointer); cdecl;
 // Client: PGTKAPIWidgetClient
 // theClass: PGTKAPIWidgetClientClass
 begin
+  if theClass=nil then ;
   gtk_widget_set_flags(PGTKWidget(Client), GTK_CAN_FOCUS);
   gtk_widget_set_flags(PGTKWidget(Client), GTK_CAN_DEFAULT);
 
@@ -705,12 +710,14 @@ end;
 // GTKAPIWidget
 //---------------------------------------------------------------------------
 
-function GTKAPIWidget_FocusIn(Widget: PGTKWidget; Event: PGdkEventFocus): GTKEventResult; cdecl;
+function GTKAPIWidget_FocusIn(Widget: PGTKWidget;
+  Event: PGdkEventFocus): GTKEventResult; cdecl;
 var
   TopLevel: PGTKWidget;
 begin
   Assert(False, 'Trace:[GTKAPIWidget_FocusIn]');
 
+  if Event=nil then ;
   TopLevel := gtk_widget_get_toplevel(Widget);
   if gtk_type_is_a(gtk_object_type(PGTKObject(TopLevel)), gtk_window_get_type) 
   then gtk_window_set_focus(PGTKWindow(TopLevel), PGTKAPIWidget(Widget)^.Client);
@@ -718,8 +725,10 @@ begin
   Result := gtk_True;
 end;
 
-function GTKAPIWidget_FocusOut(Widget: PGTKWidget; Event: PGdkEventFocus): GTKEventResult; cdecl;
+function GTKAPIWidget_FocusOut(Widget: PGTKWidget;
+  Event: PGdkEventFocus): GTKEventResult; cdecl;
 begin
+  if (Event=nil) or (Widget=nil) then ;
   Assert(False, 'Trace:[GTKAPIWidget_FocusOut]');
   Result := gtk_True;
 end;
@@ -742,6 +751,7 @@ procedure GTKAPIWidget_Init(waw, theClass: Pointer); cdecl;
 var
   Widget: PGTKWidget;
 begin
+  if theClass=nil then ;
   Widget := PGTKWidget(waw);
   gtk_widget_set_flags(Widget, GTK_CAN_FOCUS);
 end;
@@ -914,6 +924,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.46  2003/05/26 21:28:22  mattias
+  fixed absolute file
+
   Revision 1.45  2003/04/04 00:46:23  marc
   MWE:
     Initial port to gtk2
