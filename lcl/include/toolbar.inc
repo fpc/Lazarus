@@ -34,6 +34,7 @@ begin
     csDoubleClicks, csMenuEvents, csSetCaption];
   FButtonWidth := 23;
   FButtonHeight := 22;
+  FButtonStyle := tbbsIcon;
   FDropDownWidth := 10;
   FNewStyle := True;
   FWrapable := True;
@@ -142,7 +143,7 @@ begin
     UpdateVisibleBar;
     exit;
   end;
-  writeln('TToolBar.ControlsAligned START');
+  //writeln('TToolBar.ControlsAligned START');
   // ToDo
   // hack: stupid put in a row
   for i:=0 to ControlCount-1 do begin
@@ -151,9 +152,9 @@ begin
     NewTop:=0;
     NewWidth:=ButtonWidth;
     NewHeight:=ButtonHeight;
-    writeln('TToolBar.ControlsAligned ',CurControl.Name,
-      ' Old=',CurControl.Left,',',CurControl.Top,',',CurControl.Width,',',CurControl.Height,
-      ' New=',NewLeft,',',NewTop,',',NewWidth,',',NewHeight);
+    //writeln('TToolBar.ControlsAligned ',CurControl.Name,
+    //  ' Old=',CurControl.Left,',',CurControl.Top,',',CurControl.Width,',',CurControl.Height,
+    //  ' New=',NewLeft,',',NewTop,',',NewWidth,',',NewHeight);
     CurControl.SetBoundsKeepBase(NewLeft,NewTop,NewWidth,NewHeight,true);
   end;
 end;
@@ -184,6 +185,13 @@ begin
   finally
     EndUpdate;
   end;
+end;
+
+procedure TToolBar.SetButtonStyle(const AValue: TToolBarButtonStyle);
+begin
+  if FButtonStyle=AValue then exit;
+  FButtonStyle:=AValue;
+  UpdateVisibleBar;
 end;
 
 procedure TToolBar.SetButtonWidth(const AValue: Integer);
@@ -322,7 +330,6 @@ begin
     Include(FToolBarFlags,tbfUpdateVisibleBarNeeded);
     exit;
   end;
-  writeln('TToolBar.UpdateVisibleBar');
   ReAlign;
   Invalidate;
   Exclude(FToolBarFlags,tbfUpdateVisibleBarNeeded);
@@ -1931,6 +1938,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.20  2004/02/22 10:43:20  mattias
+  added child-parent checks
+
   Revision 1.19  2004/02/21 15:37:33  mattias
   moved compiler options to project menu, added -CX for smartlinking
 

@@ -89,6 +89,7 @@ var
   i: integer;
 begin
   if AParent=Parent then exit;
+  CheckNewParent(AParent);
 
   OldParent:=Parent;
   if (OldParent<>AParent) and (OldParent<>nil)

@@ -104,6 +104,7 @@ type
     procedure CreateSides;
     procedure Loaded; override;
     class function IsSupportedByInterface: boolean;
+    function ChildClassAllowed(ChildClass: TClass): boolean; override;
   public
     property Sides[Index: integer]: TPairSplitterSide read GetSides;
     property SplitterType: TPairSplitterType read FSplitterType
@@ -156,9 +157,7 @@ procedure TPairSplitterSide.SetParent(AParent: TWinControl);
 var
   ASplitter: TCustomPairSplitter;
 begin
-  if (AParent<>nil) and (not (AParent is TCustomPairSplitter)) then
-    RaiseGDBException(
-     'TPairSplitterSide.SetParent Parent not TCustomPairSplitter');
+  CheckNewParent(AParent);
   // remove from side list of old parent
   ASplitter:=Splitter;
   if ASplitter<>nil then begin
@@ -358,6 +357,11 @@ end;
 function TCustomPairSplitter.IsSupportedByInterface: boolean;
 begin
   Result:=PairSplitterGetInterfaceInfo;
+end;
+
+function TCustomPairSplitter.ChildClassAllowed(ChildClass: TClass): boolean;
+begin
+  Result:=ChildClass.InheritsFrom(TPairSplitterSide);
 end;
 
 end.

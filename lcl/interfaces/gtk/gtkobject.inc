@@ -6720,7 +6720,7 @@ begin
   csToolButton:
     begin
       {$IFDEF NewToolBar}
-      p := gtk_button_new_with_label(StrTemp);
+      p := gtk_fixed_new();
       {$ELSE}
       AccelText := Ampersands2Underscore(StrTemp);
       //p := gtk_button_new_with_label(StrTemp);
@@ -9225,6 +9225,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.471  2004/02/22 10:43:20  mattias
+  added child-parent checks
+
   Revision 1.470  2004/02/21 15:37:33  mattias
   moved compiler options to project menu, added -CX for smartlinking
 

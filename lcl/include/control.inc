@@ -685,6 +685,11 @@ begin
   Result:=0;
 end;
 
+function TControl.ChildClassAllowed(ChildClass: TClass): boolean;
+begin
+  Result:=false;
+end;
+
 {------------------------------------------------------------------------------
   procedure TControl.DoOnResize;
 
@@ -1644,6 +1649,40 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TControl.CheckChildClassAllowed(ChildClass: TClass;
+    ExceptionOnInvalid: boolean): boolean;
+    
+  Checks if this control can be the parent of a control of class ChildClass.
+------------------------------------------------------------------------------}
+function TControl.CheckChildClassAllowed(ChildClass: TClass;
+  ExceptionOnInvalid: boolean): boolean;
+  
+  procedure RaiseInvalidChild;
+  begin
+    raise Exception.Create(ClassName+' can not have '+ChildClass.ClassName+' as child');
+  end;
+  
+begin
+  Result:=ChildClassAllowed(ChildClass);
+  if (not Result) and ExceptionOnInvalid then
+    RaiseInvalidChild;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TControl.CheckNewParent(AParent: TWinControl);
+  
+  Checks if this control can be the child of AParent.
+  This check is executed in SetParent.
+------------------------------------------------------------------------------}
+procedure TControl.CheckNewParent(AParent: TWinControl);
+begin
+  if (AParent<>nil) then AParent.CheckChildClassAllowed(ClassType,true);
+  if AParent = Self then begin
+    raise EInvalidOperation.Create('A control can not have itself as parent');
+  end;
+end;
+
+{------------------------------------------------------------------------------
        TControl SetAutoSize
 ------------------------------------------------------------------------------}
 Procedure TControl.SetAutoSize(const value : Boolean);
@@ -2218,20 +2257,10 @@ end;
 ------------------------------------------------------------------------------}
 Procedure TControl.SetParent(AParent : TWinControl);
 begin
-{  if AParent = nil
-  then Assert(False, Format('Trace:[TControl.SetParent] %s --> Parent: nil', [ClassName]))
-  else Assert(False, Format('Trace:[TControl.SetParent] %s --> Parent: %s', [ClassName, AParent.ClassName]));
-}
-  if FParent <> AParent
-  then begin
-    if AParent = Self
-    then begin
-      Assert(False, 'Trace:[TControl.SetParent] EInvalidOperation --> FParent = Self');
-      raise EInvalidOperation.Create('A control can''t have itself as parent');
-    end;
-    if FParent <> nil then FParent.RemoveControl(Self);
-    if AParent <> nil then AParent.InsertControl(Self);
-  end;
+  if FParent = AParent then exit;
+  CheckNewParent(AParent);
+  if FParent <> nil then FParent.RemoveControl(Self);
+  if AParent <> nil then AParent.InsertControl(Self);
 end;
 
 procedure TControl.SetParentColor(Value : Boolean);
@@ -2769,6 +2798,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.171  2004/02/22 10:43:20  mattias
+  added child-parent checks
+
   Revision 1.170  2004/02/21 15:37:33  mattias
   moved compiler options to project menu, added -CX for smartlinking
 

@@ -492,6 +492,7 @@ type
     procedure SetSelStart(Val : integer); virtual;
     procedure SetSelText(const Val : string); virtual;
     procedure SetText(const Value: TCaption); override;
+    function ChildClassAllowed(ChildClass: TClass): boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure SelectAll;
@@ -1495,6 +1496,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.132  2004/02/22 10:43:20  mattias
+  added child-parent checks
+
   Revision 1.131  2004/02/13 18:21:31  mattias
   fixed combo chane
 

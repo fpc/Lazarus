@@ -843,6 +843,7 @@ type
     procedure CMVisibleChanged(var Message : TLMessage); message CM_VISIBLECHANGED;
     procedure Changed;
     function  GetPalette: HPalette; virtual;
+    function ChildClassAllowed(ChildClass: TClass): boolean; virtual;
     procedure Loaded; override;
     procedure AssignTo(Dest: TPersistent); override;
     procedure BeginAutoDrag; dynamic;
@@ -952,6 +953,9 @@ type
     procedure Repaint; virtual;
     Procedure Invalidate; virtual;
     procedure AddControl; virtual;
+    function CheckChildClassAllowed(ChildClass: TClass;
+                                 ExceptionOnInvalid: boolean): boolean;
+    procedure CheckNewParent(AParent: TWinControl); virtual;
     Procedure DragDrop(Source: TObject; X,Y: Integer); Dynamic;
     procedure SendToBack;
     procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
@@ -1286,6 +1290,7 @@ type
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight : integer); override;
     procedure DoAutoSize; Override;
     procedure GetChildren(Proc : TGetChildProc; Root : TComponent); override;
+    function ChildClassAllowed(ChildClass: TClass): boolean; override;
     procedure PaintControls(DC: HDC; First: TControl);
     procedure PaintHandler(var TheMessage: TLMPaint);
     procedure PaintWindow(DC: HDC); virtual;
@@ -2361,6 +2366,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.178  2004/02/22 10:43:20  mattias
+  added child-parent checks
+
   Revision 1.177  2004/02/21 15:37:33  mattias
   moved compiler options to project menu, added -CX for smartlinking
 

@@ -135,7 +135,6 @@ type
     fPageIndex: Integer;
     fPageIndexOnLastChange: integer;
     fPageList: TList;  // List of TCustomPage
-    //fMultiLine: boolean;
     fOnPageChanged: TNotifyEvent;
     fShowTabs: Boolean;
     fTabPosition: TTabPosition;
@@ -150,12 +149,10 @@ type
     function GetPageCount : integer;
     function GetPageIndex: Integer;
     function IsStoredActivePage: boolean;
-    //function InternalSetMultiLine(Value: boolean): boolean;
     procedure SetActivePage(const Value: String);
     procedure SetActivePageComponent(const AValue: TCustomPage);
     procedure SetImages(const AValue: TImageList);
     procedure SetOptions(const AValue: TNoteBookOptions);
-    //procedure SetMultiLine(Value: boolean);
     procedure SetPageIndex(AValue: Integer);
     procedure SetPages(AValue: TStrings);
     procedure SetShowTabs(AValue: Boolean);
@@ -171,6 +168,7 @@ type
     procedure ReadState(Reader: TAbstractReader); override;
     procedure ShowControl(APage: TControl); override;
     procedure UpdateTabProperties; virtual;
+    function ChildClassAllowed(ChildClass: TClass): boolean; override;
     property ActivePageComponent: TCustomPage read GetActivePageComponent
                                               write SetActivePageComponent;
     property ActivePage: String read GetActivePage write SetActivePage
@@ -925,6 +923,9 @@ end.
 
  {
   $Log$
+  Revision 1.98  2004/02/22 10:43:20  mattias
+  added child-parent checks
+
   Revision 1.97  2004/02/21 01:01:03  mattias
   added uninstall popupmenuitem to package graph explorer
 

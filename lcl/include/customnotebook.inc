@@ -315,7 +315,7 @@ begin
   if PageClass=nil then
     RaiseGDBException('');
   inherited Create(TheOwner);
-  {create the control}
+
   fCompStyle := csNoteBook;
 
   fPageList := TList.Create;
@@ -655,6 +655,11 @@ begin
     CNSendMessage(LM_NB_UpdateTab, Page[i], nil);
 end;
 
+function TCustomNotebook.ChildClassAllowed(ChildClass: TClass): boolean;
+begin
+  Result:=(ChildClass<>nil) and (ChildClass=PageClass);
+end;
+
 {------------------------------------------------------------------------------
   TCustomNotebook Change
  ------------------------------------------------------------------------------}
@@ -787,6 +792,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.42  2004/02/22 10:43:20  mattias
+  added child-parent checks
+
   Revision 1.41  2004/01/21 10:19:16  micha
   enable tabstops for controls; implement tabstops in win32 intf
 

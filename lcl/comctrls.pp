@@ -799,7 +799,9 @@ type
     FLastButtonDrawFlags: Integer;
     FMarked: Boolean;
     FMenuItem: TMenuItem;
+    FMouseInControl: boolean;
     FStyle: TToolButtonStyle;
+    FState: TToolButtonState;
     FUpdateCount: Integer;
     FWrap: Boolean;
     function GetIndex: Integer;
@@ -816,7 +818,10 @@ type
     procedure SetMenuItem(Value: TMenuItem);
     procedure SetStyle(Value: TToolButtonStyle);
     procedure SetWrap(Value: Boolean);
+    procedure SetMouseInControl(NewMouseInControl: Boolean);
     procedure CMHitTest(var Message: TCMHitTest); message CM_HITTEST;
+    procedure CMMouseEnter(var Message: TLMessage); message CM_MouseEnter;
+    procedure CMMouseLeave(var Message: TLMessage); message CM_MouseLeave;
   protected
     FToolBar: TToolBar;
     function GetActionLinkClass: TControlActionLinkClass; override;
@@ -838,6 +843,8 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     function CheckMenuDropdown: Boolean; dynamic;
+    procedure GetCurrentIcon(var ImageList: TCustomImageList;
+                             var Index: integer); virtual;
     property Index: Integer read GetIndex;
   published
     property Action;
@@ -884,11 +891,19 @@ type
     );
   
   TToolBarFlags = set of TToolBarFlag;
+  
+  TToolBarButtonStyle = (
+    tbbsText,
+    tbbsIcon,
+    tbbsIconLeftOfText,
+    tbbsIconAboveText
+    );
 
   TToolBar = class(TToolWindow)
   private
     FButtonHeight: Integer;
     FButtons: TList;
+    FButtonStyle: TToolBarButtonStyle;
     FButtonWidth: Integer;
     FDisabledImageChangeLink: TChangeLink;
     FDisabledImages: TCustomImageList;
@@ -911,6 +926,7 @@ type
     function GetButton(Index: Integer): TToolButton;
     function GetButtonCount: Integer;
     procedure SetButtonHeight(const AValue: Integer);
+    procedure SetButtonStyle(const AValue: TToolBarButtonStyle);
     procedure SetButtonWidth(const AValue: Integer);
     procedure SetDisabledImages(const AValue: TCustomImageList);
     procedure SetFlat(const AValue: Boolean);
@@ -960,6 +976,7 @@ type
     property BorderWidth;
     property ButtonHeight: Integer read FButtonHeight write SetButtonHeight default 22;
     property ButtonWidth: Integer read FButtonWidth write SetButtonWidth default 23;
+    property ButtonStyle: TToolBarButtonStyle read FButtonStyle write SetButtonStyle default tbbsIcon;
     property Caption;
     property Color;
     property Ctl3D;
@@ -2232,6 +2249,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.111  2004/02/22 10:43:20  mattias
+  added child-parent checks
+
   Revision 1.110  2004/02/21 15:37:33  mattias
   moved compiler options to project menu, added -CX for smartlinking
 

@@ -166,6 +166,22 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TCustomImageList.AddFromLazarusResource(const ResourceName: string
+    ): integer;
+    
+  Load TBitmap from lazarus resources and add it.
+ ------------------------------------------------------------------------------}
+function TCustomImageList.AddFromLazarusResource(const ResourceName: string
+  ): integer;
+var
+  ABitmap: TBitmap;
+begin
+  ABitmap:=TBitmap.Create;
+  ABitmap.LoadFromLazarusResource(ResourceName);
+  Result:=AddDirect(ABitmap,nil);
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCustomImageList.AllocBitmap
   Params:  Amount: the amount of free image position which should be availabe 
   Returns: Nothing
@@ -1066,6 +1082,9 @@ end;
 {
 
   $Log$
+  Revision 1.23  2004/02/22 10:43:20  mattias
+  added child-parent checks
+
   Revision 1.22  2004/02/02 21:31:08  mattias
   reduced output
 

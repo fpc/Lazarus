@@ -309,6 +309,15 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TCustomEdit.ChildClassAllowed(ChildClass: TClass): boolean;
+------------------------------------------------------------------------------}
+function TCustomEdit.ChildClassAllowed(ChildClass: TClass): boolean;
+begin
+  // no childs
+  Result:=false;
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCustomEdit.SetModified
   Params:  Value to set FModified to
   Returns: Nothing
@@ -357,6 +366,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.23  2004/02/22 10:43:20  mattias
+  added child-parent checks
+
   Revision 1.22  2004/02/04 00:04:37  mattias
   added some TEdit ideas to TSpinEdit
 

@@ -163,9 +163,19 @@ begin
     CNSendMessage(LM_SETSHORTCUT, Self, @FShortcut);
   end;
 end;
+
+function TButton.ChildClassAllowed(ChildClass: TClass): boolean;
+begin
+  // no childs
+  Result:=false;
+end;
+
 { =============================================================================
 
   $Log$
+  Revision 1.17  2004/02/22 10:43:20  mattias
+  added child-parent checks
+
   Revision 1.16  2004/01/21 10:19:16  micha
   enable tabstops for controls; implement tabstops in win32 intf
 

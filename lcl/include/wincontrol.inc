@@ -835,6 +835,16 @@ Begin
 End;
 
 {-------------------------------------------------------------------------------
+  function TWinControl.ChildClassAllowed(ChildClass: TClass): boolean;
+
+  Allow TControl as child.
+-------------------------------------------------------------------------------}
+function TWinControl.ChildClassAllowed(ChildClass: TClass): boolean;
+begin
+  Result:=(ChildClass<>nil) and ChildClass.InheritsFrom(TControl);
+end;
+
+{-------------------------------------------------------------------------------
   TWinControl GetClientOrigin
   Result:  TPoint
 
@@ -3378,6 +3388,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.203  2004/02/22 10:43:20  mattias
+  added child-parent checks
+
   Revision 1.202  2004/02/21 15:37:33  mattias
   moved compiler options to project menu, added -CX for smartlinking
 

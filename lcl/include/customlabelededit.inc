@@ -116,6 +116,5 @@ begin
   FEditLabel.FocusControl := Self;
 end;
 
-
 // included by extctrls.pp
 

@@ -50,8 +50,8 @@ interface
 {$endif}
 
 uses
-  SysUtils, Classes, FPCAdds, LCLStrConsts, vclGlobals, LCLProc, Graphics,
-  GraphType;
+  SysUtils, Classes, FPCAdds, LCLStrConsts, LResources, vclGlobals, LCLProc,
+  Graphics, GraphType;
 
 type
   TImageIndex = type integer;
@@ -154,6 +154,7 @@ type
     function AddIcon(Image: TIcon): Integer;
     procedure AddImages(Value: TCustomImageList);
     function AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
+    function AddFromLazarusResource(const ResourceName: string): integer;
     procedure Change;
     procedure Clear;
     constructor CreateSize(AWidth, AHeight: Integer);
@@ -210,6 +211,9 @@ end.
 
 {
   $Log$
+  Revision 1.15  2004/02/22 10:43:20  mattias
+  added child-parent checks
+
   Revision 1.14  2004/02/02 19:13:31  mattias
   started reading TImageList in Delphi format
 

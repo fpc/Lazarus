@@ -79,6 +79,7 @@ type
     property OnMouseLeave : TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     procedure SetParent(AParent: TWinControl); override;
     procedure SetText(const Value: TCaption); override;
+    function ChildClassAllowed(ChildClass: TClass): boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -331,6 +332,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.59  2004/02/22 10:43:20  mattias
+  added child-parent checks
+
   Revision 1.58  2004/02/10 00:05:03  mattias
   TSpeedButton now uses MaskBlt
 

@@ -55,6 +55,7 @@ begin
   fCompStyle := csToolButton;
   FImageIndex := -1;
   FStyle := tbsButton;
+  FState:=tbsEnabled;
   ControlStyle := [csCaptureMouse, csSetCaption];
   SetInitialBounds(0,0,23,22);
 end;
@@ -62,28 +63,33 @@ end;
 procedure TToolButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
+  SetMouseInControl(true);
   if (Style=tbsDropDown) and (Button=mbLeft) and Enabled then
     // switch
     Down := not Down;
+  if (Style=tbsCheck) and (Button=mbLeft) and Enabled then begin
+    ;
+  end;
   inherited MouseDown(Button,Shift,X,Y);
 end;
 
 procedure TToolButton.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
+  SetMouseInControl((X>=0) and (X<ClientWidth) and (Y>=0) and (Y<ClientHeight));
   inherited MouseMove(Shift, X, Y);
   if (Style=tbsDropDown) and MouseCapture then
     // while dragging: down when mouse in, and up, when mouse out of control
-    Down := (X>=0) and (X<ClientWidth) and (Y>=0) and (Y<ClientHeight);
+    Down := FMouseInControl;
 end;
 
 procedure TToolButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
+  SetMouseInControl(true);
   inherited MouseUp(Button, Shift, X, Y);
-  if (Button=mbLeft) and (X>=0) and (X<ClientWidth) and (Y>=0) and
-    (Y<ClientHeight)
-  then begin
+  if (Button=mbLeft) and FMouseInControl then begin
     if Style=tbsDropDown then Down:=False;
+    if Style=tbsCheck then Down:=false;
     Click;
   end;
 end;
@@ -101,18 +107,40 @@ begin
 end;
 
 procedure TToolButton.Paint;
+
+  procedure DrawDropDownArrow(const DropDownButtonRect: TRect);
+  var
+    ArrowRect: TRect;
+    Points: array[1..3] of TPoint;
+  begin
+    ArrowRect:=DropDownButtonRect;
+    ArrowRect.Left:=DropDownButtonRect.Left+2;
+    ArrowRect.Right:=Max(DropDownButtonRect.Right-2,ArrowRect.Left);
+    ArrowRect.Top:=(DropDownButtonRect.Top+DropDownButtonRect.Bottom
+                    +ArrowRect.Left-ArrowRect.Right) div 2;
+    ArrowRect.Bottom:=ArrowRect.Top-ArrowRect.Left+ArrowRect.Right;
+    Points[1]:=Point(ArrowRect.Left,ArrowRect.Top);
+    Points[2]:=Point((ArrowRect.Left+ArrowRect.Right) div 2,ArrowRect.Bottom);
+    Points[3]:=Point(ArrowRect.Right,ArrowRect.Top);
+    Canvas.Brush.Color:=clBlack;
+    Canvas.Pen.Color:=clBlack;
+    Canvas.Polygon(@Points[1],3);
+  end;
+
 var
   PaintRect: TRect;
   ButtonRect: TRect;
   DropDownButtonRect: TRect;
   DividerRect: TRect;
-  IconWidth: Integer;
-  IconHeight: Integer;
-  IconLeft: Integer;
-  IconTop: Integer;
+  TextSize: TSize;
+  TextPos: TPoint;
+  IconSize: TPoint;
+  IconPos: TPoint;
+  ImgList: TCustomImageList;
+  ImgIndex: integer;
 begin
-  writeln('TToolButton.Paint A FToolBar=',HexStr(Cardinal(FToolBar),8),' ',ClientWidth,',',ClientHeight);
-  if FToolBar<>nil then begin
+  writeln('TToolButton.Paint A ',Name,' FToolBar=',HexStr(Cardinal(FToolBar),8),' ',ClientWidth,',',ClientHeight,' ',ord(Style));
+  if (FToolBar<>nil) and (ClientWidth>0) and (ClientHeight>0) then begin
     PaintRect:=ClientRect; // the whole paint area
 
     // calculate button area(s)
@@ -123,29 +151,81 @@ begin
       ButtonRect.Right:=DropDownButtonRect.Left;
     end;
 
+    // calculate text size
+    TextSize.cx:=0;
+    TextSize.cy:=0;
+    if Style in [tbsButton,tbsDropDown,tbsCheck] then begin
+      if (Caption<>'')
+      and (FToolBar.ButtonStyle
+        in [tbbsText,tbbsIconAboveText,tbbsIconLeftOfText])
+      then begin
+        TextSize:=Canvas.TextExtent(Caption);
+      end;
+    end;
+
+    // calculate icon size
+    IconSize:=Point(0,0);
+    GetCurrentIcon(ImgList,ImgIndex);
+    if (ImgList<>nil) then
+      IconSize:=Point(ImgList.Width,ImgList.Height);
+
+    // calculate text and icon position
+    TextPos:=Point(0,0);
+    IconPos:=Point(0,0);
+    case FToolBar.ButtonStyle of
+    
+    tbbsText:
+      begin
+        TextPos.X:=(ButtonRect.Left+ButtonRect.Right-TextSize.cx) div 2;
+        TextPos.Y:=(ButtonRect.Top+ButtonRect.Bottom-TextSize.cy) div 2;
+      end;
+
+    tbbsIcon:
+      begin
+        IconPos.X:=(ButtonRect.Left+ButtonRect.Right-IconSize.x) div 2;
+        IconPos.Y:=(ButtonRect.Top+ButtonRect.Bottom-IconSize.y) div 2;
+      end;
+
+    tbbsIconLeftOfText:
+      begin
+        IconPos.X:=(ButtonRect.Left+ButtonRect.Right-IconSize.x-TextSize.cy-2) div 2;
+        IconPos.Y:=(ButtonRect.Top+ButtonRect.Bottom-IconSize.y) div 2;
+        TextPos.X:=IconPos.X+2;
+        TextPos.Y:=(ButtonRect.Top+ButtonRect.Bottom-TextSize.cy) div 2;
+      end;
+      
+    tbbsIconAboveText:
+      begin
+        IconPos.X:=(ButtonRect.Left+ButtonRect.Right-IconSize.x) div 2;
+        IconPos.Y:=(ButtonRect.Top+ButtonRect.Bottom-IconSize.y-TextSize.cy-2) div 2;
+        TextPos.X:=(ButtonRect.Left+ButtonRect.Right-TextSize.cx) div 2;
+        TextPos.Y:=IconPos.Y+IconSize.Y+2;
+      end;
+
+    end;
+
     // draw button
     FLastButtonDrawFlags:=GetButtonDrawFlags;
     if Style in [tbsButton,tbsDropDown,tbsCheck] then begin
       DrawFrameControl(Canvas.GetUpdatedHandle([csBrushValid,csPenValid]),
-        ButtonRect, DFC_BUTTON, FLastButtonDrawFlags);
+        PaintRect{ButtonRect}, DFC_BUTTON, FLastButtonDrawFlags);
     end;
 
     // draw dropdown button
     if Style in [tbsDropDown] then begin
-      DrawFrameControl(Canvas.GetUpdatedHandle([csBrushValid,csPenValid]),
-        DropDownButtonRect, DFC_BUTTON, FLastButtonDrawFlags);
+      //DrawFrameControl(Canvas.GetUpdatedHandle([csBrushValid,csPenValid]),
+      //  DropDownButtonRect, DFC_BUTTON, FLastButtonDrawFlags);
+      DrawDropDownArrow(DropDownButtonRect);
     end;
-    
+
     // draw icon
-    if (Style in [tbsButton,tbsDropDown,tbsCheck])
-    and (ImageIndex>=0) and (FToolBar.Images<>nil)
-    and (FToolBar.Images.Count>ImageIndex) then begin
-      IconWidth:=FToolBar.Images.Width;
-      IconHeight:=FToolBar.Images.Height;
-      IconLeft:=(ButtonRect.Left+ButtonRect.Right-IconWidth) div 2;
-      IconTop:=(ButtonRect.Top+ButtonRect.Bottom-IconHeight) div 2;
-      FToolBar.Images.Draw(Canvas,IconLeft,IconTop,ImageIndex,
-                           Enabled and not Indeterminate);
+    if (ImgList<>nil) then begin
+      ImgList.Draw(Canvas,IconPos.X,IconPos.Y,ImgIndex,true);
+    end;
+
+    // draw text
+    if (TextSize.cx>0) then begin
+      Canvas.TextOut(TextPos.X,TextPos.Y,Caption);
     end;
 
     // draw separator (at runtime: just space, at designtime: a rectangle)
@@ -157,9 +237,9 @@ begin
     end;
     
     // draw divider
-    if (Style in [tbsSeparator,tbsDivider]) then begin
-      DividerRect.Left:=(ButtonRect.Left+ButtonRect.Right) div 2;
-      DividerRect.Right:=DividerRect.Left+2;
+    if (Style in [tbsDivider]) then begin
+      DividerRect.Left:=((ButtonRect.Left+ButtonRect.Right) div 2)-2;
+      DividerRect.Right:=DividerRect.Left+4;
       DividerRect.Top:=2;
       DividerRect.Bottom:=Max(DividerRect.Top,PaintRect.Bottom-2);
       DrawEdge(Canvas.Handle,DividerRect,EDGE_ETCHED,BF_LEFT);
@@ -209,13 +289,23 @@ begin
     Message.Result := 0;
 end;
 
+procedure TToolButton.CMMouseEnter(var Message: TLMessage);
+begin
+  SetMouseInControl(true);
+end;
+
+procedure TToolButton.CMMouseLeave(var Message: TLMessage);
+begin
+  SetMouseInControl(false);
+end;
+
 procedure TToolButton.SetDown(Value: Boolean);
 begin
   if Value = FDown then exit;
   FDown := Value;
-  if FToolBar <> nil then begin
+  Invalidate;
+  if FToolBar <> nil then
     FToolBar.ToolButtonDown(Self,FDown);
-  end;
 end;
 
 procedure TToolButton.SetDropdownMenu(Value: TPopupMenu);
@@ -293,6 +383,13 @@ begin
     RefreshControl;
 end;
 
+procedure TToolButton.SetMouseInControl(NewMouseInControl: Boolean);
+begin
+  if FMouseInControl=NewMouseInControl then exit;
+  FMouseInControl:=NewMouseInControl;
+  Invalidate;
+end;
+
 procedure TToolButton.BeginUpdate;
 begin
   Inc(FUpdateCount);
@@ -334,6 +431,36 @@ begin
             and (FToolBar <> nil) and FToolBar.CheckMenuDropdown(Self);
 end;
 
+procedure TToolButton.GetCurrentIcon(var ImageList: TCustomImageList;
+  var Index: integer);
+begin
+  ImageList:=nil;
+  Index:=-1;
+  if (ImageIndex<0) or (FToolBar=nil) then exit;
+  
+  if Style in [tbsButton,tbsDropDown,tbsCheck] then begin
+    if (FToolBar.ButtonStyle in [tbbsText,tbbsIconAboveText,tbbsIconLeftOfText])
+    then begin
+      Index:=ImageIndex;
+      if Enabled and FMouseInControl then
+        // if mouse over button then use HotImages
+        ImageList:=FToolBar.HotImages
+      else if not Enabled then
+        // if button disabled then use HotImages
+        ImageList:=FToolBar.DisabledImages;
+      if (ImageList=nil) or (ImageList.Count<=ImageIndex) then begin
+        // if no special icon available, then try the default Images
+        ImageList:=FToolBar.Images;
+        if (ImageList=nil) or (ImageList.Count<=ImageIndex) then begin
+          // no icon available
+          ImageList:=nil;
+          Index:=-1;
+        end;
+      end;
+    end;
+  end;
+end;
+
 function TToolButton.IsCheckedStored: Boolean;
 begin
   Result := (ActionLink = nil)
@@ -360,7 +487,8 @@ begin
   Result:=DFCS_BUTTONPUSH;
   if FDown then inc(Result,DFCS_PUSHED);
   if not Enabled then inc(Result,DFCS_INACTIVE);
-  if Down and (not (csDesigning in ComponentState)) then
+  if (not (csDesigning in ComponentState)) and (not FMouseInControl)
+  and (not FDown) then
     inc(Result,DFCS_FLAT);
 end;
 
@@ -368,6 +496,7 @@ procedure TToolButton.SetParent(AParent: TWinControl);
 var
   i: Integer;
 begin
+  CheckNewParent(AParent);
   if AParent=Parent then exit;
   
   // remove from old button list
@@ -864,6 +993,9 @@ end;
 
 {
   $Log$
+  Revision 1.10  2004/02/22 10:43:20  mattias
+  added child-parent checks
+
   Revision 1.9  2004/02/21 15:37:33  mattias
   moved compiler options to project menu, added -CX for smartlinking
 
