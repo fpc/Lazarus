@@ -7,20 +7,18 @@ name=lazarus
 version=0.8a
 
 [require]
-#rtl=1
-#options=-gl
-packages=fcl gtk regexpr
+packages=lcl synedit codetools
 
 [target]
 programs=lazarus
 dirs=lcl components
-#dirs=lcl components tools
 exampledirs=examples
 
 [compiler]
 options=-gl
-unitdir=. ./lcl/units ./lcl/units/$(LCLPLATFORM) ./components/units ./designer ./debugger
-includedir=. ./include ./include/$(OS_TARGET)
+unitdir=designer debugger
+includedir=include include/$(OS_TARGET)
+targetdir=.
 
 [clean]
 #units=$(basename $(wildcard *$(PPUEXT))) $(basename $(wildcard ./designer/*$(PPUEXT))) $(basename $(wildcard ./debugger/*$(PPUEXT)))
@@ -46,12 +44,7 @@ export LCLPLATFORM
 endif
 
 [rules]
-.SUFFIXES: .rc .res
-%.res: %.rc
-        windres -i $< -o $@
-
-
-.PHONY: examples lcl components ide tools all cleanall makefile makefiles
+.PHONY: examples lcl components ide tools all clean
 
 lcl: lcl_all
 
@@ -69,25 +62,8 @@ tools: lcl components tools_all
 
 all: lcl components ide
 
-cleanall:
-        $(MAKE) clean
-        $(DEL) $(wildcard ./*$(PPUEXT)) $(wildcard ./*$(OEXT))
-        $(DEL) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT))
-        $(DEL) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./designer/*$(OEXT))
+clean: cleanall
 ifeq ($(LCLPLATFORM), win32)
         $(DEL) $(wildcard *.res)
         $(DEL) lazarus.owr
 endif
-
-# MWE: moved to a more generic rule
-#lazarus.res: lazarus.rc
-#       windres -i lazarus.rc -o lazarus.res
-
-makefile: Makefile.fpc
-        -$(FPCMAKE) -w
-
-makefiles: makefile
-        $(MAKE) -C components makefiles
-        $(MAKE) -C lcl makefiles
-        $(MAKE) -C tools makefiles
-

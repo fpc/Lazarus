@@ -3,35 +3,5 @@
 #   Makefile.fpc for Lazarus for Free Pascal
 #
 
-[package]
-name=lazarus-components
-version=0.8a
-
 [target]
-#dirs=synedit mwedit
 dirs=synedit codetools
-
-[install]
-
-[prerules]
-DIST_DESTDIR=$(BASEDIR)/../dist
-ifndef LCLPLATFORM
-ifeq ($(OS_TARGET), win32)
-LCLPLATFORM=win32
-else
-LCLPLATFORM=gtk
-endif
-export LCLPLATFORM
-endif
-
-[rules]
-.PHONY: all makefile makefiles
-
-makefile: Makefile.fpc
-        -$(FPCMAKE) -w
-        
-makefiles: makefile
-        $(MAKE) -C mwedit makefiles
-        $(MAKE) -C synedit makefiles
-        $(MAKE) -C codetools makefiles
-

@@ -4,50 +4,22 @@
 #
 
 [package]
-#name=lazarus-codetools
-name=lazarus
+name=codetools
 version=0.8a
 
 [target]
-units=avl_tree basiccodetools codecache codetoolmanager sourcelog \
+units=codetoolmanager memcheck
+implicitunits=avl_tree basiccodetools codecache sourcelog \
    customcodetool pascalparsertool finddeclarationtool stdcodetools \
    methodjumptool eventcodetool codecompletiontool codeatom codetree \
    definetemplates expreval keywordfunclists linkscanner sourcechanger \
-   memcheck fileprocs
-   
-
-[default]
-            
-[compiler]
-options=-gl  
-unittargetdir=../units
-#targetdir=../units
-#unitdir=. $(COMPILER_UNITTARGETDIR)     
-unitdir=$(COMPILER_UNITTARGETDIR)     
-
+   fileprocs
 
 [require]
-packages=rtl fcl
+packages=fcl
 
-[clean]
+[default]
+lcldir=../../lcl
 
-[install]
-
-[dist]
-zipname=lazarus.codetools.$(ZIPSUFFIX)
-
-[rules]
-.PHONY: cleartarget all makefile makefiles
-
-cleartarget:
-        -$(DEL) $(COMPILER_UNITTARGETDIR)/allcodetoolunits$(PPUEXT)
-
-all: cleartarget allcodetoolunits$(PPUEXT)
-        -$(DEL) $(COMPILER_UNITTARGETDIR)/allcodetoolunits$(PPUEXT)
-
-makefile: Makefile.fpc
-        -$(FPCMAKE) -w
-       
-makefiles: makefile
-
-# end.
+[compiler]
+options=-gl

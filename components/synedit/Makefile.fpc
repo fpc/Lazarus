@@ -4,45 +4,22 @@
 #
 
 [package]
-#name=lazarus-synedit
-name=lazarus
-version=0.8a
+name=synedit
+version=0.8
 
 [target]
-units=syntextdrawer syneditkeycmds synedittypes syneditstrconst \
-  syneditsearch syneditmiscprocs syneditmiscclasses synedittextbuffer \
-  synedit synedithighlighter synhighlighterpas syncompletion \
-  syneditautocomplete synhighlighterhtml synhighlightercpp \
+units=synedit syncompletion syneditautocomplete \
+  synhighlighterpas synhighlighterhtml synhighlightercpp \
   synhighlighterxml synhighlighterlfm synhighlighterperl
-
-[default]
-            
-[compiler]
-options=-gl  
-unittargetdir=../units
-unitdir=$(COMPILER_UNITTARGETDIR) ../../lcl/units ../../lcl/units/$(LCLPLATFORM)
+implicitunits=syntextdrawer syneditkeycmds synedittypes syneditstrconst \
+  syneditsearch syneditmiscprocs syneditmiscclasses synedittextbuffer \
+  synedit synedithighlighter
 
 [require]
-packages=rtl fcl regexpr
+packages=lcl regexpr
 
-[clean]
+[default]
+lcldir=../../lcl
 
-[install]
-
-[dist]
-zipname=lazarus.synedit.$(ZIPSUFFIX)
-
-[rules]
-.PHONY: cleartarget all makefile makefiles
-
-cleartarget:
-        -$(DEL) $(COMPILER_UNITTARGETDIR)/allunits$(PPUEXT)
-
-all: cleartarget allunits$(PPUEXT)
-        -$(DEL) $(COMPILER_UNITTARGETDIR)/allunits$(PPUEXT)
-
-makefile: Makefile.fpc
-        -$(FPCMAKE) -w
-       
-makefiles: makefile
-
+[compiler]
+options=-gl

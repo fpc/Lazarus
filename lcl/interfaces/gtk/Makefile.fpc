@@ -2,38 +2,18 @@
 #
 #   Makefile.fpc for Lazarus for Free Pascal
 #
-     
+
 [package]
-name=lazarus
-#name=lazarus-gtk
-version=0.8a
+main=lcl
 
 [require]
 packages=rtl fcl gtk
 
 [target]
 units=interfaces
+implicitunits=gtkdef gtkint gtkwinapiwindow
 
 [compiler]
 options=-gl
+unitdir=../../units
 unittargetdir=../../units/gtk
-unitdir=$(COMPILER_UNITTARGETDIR) ../../units 
-includedir=.
-            
-[prerules]
-DIST_DESTDIR=$(BASEDIR)/../../../dist
-            
-[rules]
-.PHONY: all makefile makefiles
-
-clean:
-        $(DEL) $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)
-        $(DEL) $(COMPILER_UNITTARGETDIR)/*$(OEXT)
-
-all: 
-        $(MAKE) --assume-new=interfaces.pp interfaces$(PPUEXT)
-
-makefile: Makefile.fpc
-        -$(FPCMAKE) -w
-       
-makefiles: makefile

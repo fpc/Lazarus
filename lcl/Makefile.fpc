@@ -4,56 +4,29 @@
 #
 
 [package]
-name=lazarus
-#name=lazarus-lcl
+name=lcl
 version=0.8a
 
-[target]                                 
+[target]
 dirs=interfaces
-units=buttons clipbrd clistbox comctrls controls dialogs dynhasharray \
-      extctrls filectrl forms graphics imglist interfacebase lazqueue \
-      lcllinux lmessages lresources menus messages registry spin \
-      stdctrls toolwin utrace vclglobals
-            
-[default]
-            
-[compiler]
-options=-gl  
-unittargetdir=./units
-unitdir=$(COMPILER_UNITTARGETDIR) ./interfaces/abstract 
-includedir=./include 
+units=allunits
+implicitunits=buttons clipbrd clistbox comctrls controls dialogs dynhasharray \
+        extctrls filectrl forms graphics imglist interfacebase lazqueue \
+        lcllinux lmessages lresources menus messages registry spin \
+        stdctrls toolwin utrace vclglobals arrow calendar interfaces
+rsts=dialogs
 
 [require]
+packages=fcl
 
-[clean]
+[compiler]
+options=-gl
+unittargetdir=units
+unitdir=interfaces/abstract
+includedir=include
 
 [install]
-#prefixdir=/usr
-#basedir=$(PACKDIR)/lib/lazarus
+buildunit=allunits
 
-[dist]
-zipname=lazarus.lcl.$(ZIPSUFFIX)
-
-[libs]
-
-[prerules]
-DIST_DESTDIR=$(BASEDIR)/../dist
-                     
-[rules]         
-.PHONY: cleartarget all makefile makefiles
-
-cleartarget:
-        -$(DEL) $(COMPILER_UNITTARGETDIR)/allunits$(PPUEXT)
-
-all: cleartarget allunits$(PPUEXT)
-        -$(DEL) $(COMPILER_UNITTARGETDIR)/allunits$(PPUEXT)
-        -$(DEL) $(COMPILER_UNITTARGETDIR)/interfaces$(PPUEXT)
-        -$(DEL) $(COMPILER_UNITTARGETDIR)/interfaces$(OEXT)
-        $(MAKE) -C interfaces
-
-makefile: Makefile.fpc
-        -$(FPCMAKE) -w
-        
-makefiles: makefile
-        $(MAKE) -C interfaces makefiles
-        
+[default]
+lcldir=.
