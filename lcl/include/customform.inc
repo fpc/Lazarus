@@ -985,10 +985,10 @@ begin
       CNSendMessage(LM_ShowModal, Self, nil);
       Repeat
         Application.HandleMessage;
-        {if ModalResult <> 0 then Close;
-        if Application.FTerminate then ModalResult := mrCancel;}
-        if Application.FTerminate then ModalResult := mrCancel else
-          if ModalResult <> 0 then CloseModal;
+        if Application.FTerminate then
+          ModalResult := mrCancel
+        else if ModalResult <> 0 then
+          CloseModal;
       until ModalResult <> 0;
       Result := ModalResult;
       //if GetActiveWindow <> Handle then ActiveWindow := 0;
@@ -1014,6 +1014,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.41  2002/04/27 15:35:50  lazarus
+  MG: fixed window shrinking
+
   Revision 1.40  2002/04/26 15:31:06  lazarus
   MG: made ShowModal more dlephi compatible
 

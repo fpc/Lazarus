@@ -990,6 +990,7 @@ begin
       Key2AltCheckBox.Checked:=(ssAlt in Shift);
       SetComboBox(Key2KeyComboBox,KeyAndShiftStateToStr(Key,[]));
     end;
+    Key:=0;
     DeactivateGrabbing;
   end;
 end;

@@ -817,6 +817,7 @@ end;
 
 function gtksize_allocateCB( widget: PGtkWidget; size :pGtkAllocation;
   data: gPointer) : GBoolean; cdecl;
+{ $DEFINE VerboseSizeMsg}
 var
   PosMsg : TLMWindowPosChanged;
   SizeMsg: TLMSize;
@@ -824,7 +825,9 @@ var
   Dummy: TPoint;
   OldLeft, OldTop, OldWidth, OldHeight: integer;
   TopLeftChanged, WidthHeightChanged: boolean;
-//  DummyWidget: PGtkWidget;
+  {$IFDEF VerboseSizeMsg}
+  DummyWidget: PGtkWidget;
+  {$ENDIF}
 //  DummyW, DummyH, DummyD: integer;
 begin
   EventTrace('size-allocate', data);
@@ -842,6 +845,10 @@ begin
     OldTop:=TControl(Data).Top;
     OldWidth:=TControl(Data).Width;
     OldHeight:=TControl(Data).Height;
+    {$IFDEF VerboseSizeMsg}
+    writeln('gtksize_allocateCB: ',TControl(Data).Name,':',TControl(Data).ClassName,
+      ' OldPos=',OldLeft,',',OldTop,',',OldWidth,',',OldHeight);
+    {$ENDIF}
   end else begin
     OldLeft:=0;
     OldTop:=0;
@@ -895,18 +902,19 @@ end;}
     end;
     TopLeftChanged:=(OldLeft<>Size^.X) or (OldTop<>Size^.Y);
     WidthHeightChanged:=(OldWidth<>Size^.Width) or (OldHeight<>Size^.Height);
-    
-{if PosMsg.WindowPos^.hWnd<>0 then begin
-  DummyWidget:=pgtkwidget(PosMsg.WindowPos^.hWnd);
-  DummyWidget := GetFixedWidget(DummyWidget);
-  if (DummyWidget = nil) then DummyWidget := pgtkwidget(PosMsg.WindowPos^.hWnd);
-  if (DummyWidget <> nil) and (DummyWidget^.Window<>nil) then begin
-    gdk_window_get_size(DummyWidget^.Window, @Dummy.X, @Dummy.Y);
-writeln(' GGG1 ',TControl(Data).Name,':',TControl(Data).ClassName,' ',Size^.Width,' ',Size^.Height);
-    writeln('   GGG2 ',Dummy.X,',',Dummy.Y);
-  end;
-end;}
-
+    {$IFDEF VerboseSizeMsg}
+    if PosMsg.WindowPos^.hWnd<>0 then begin
+      DummyWidget:=pgtkwidget(PosMsg.WindowPos^.hWnd);
+      DummyWidget := GetFixedWidget(DummyWidget);
+      if (DummyWidget = nil) then DummyWidget := pgtkwidget(PosMsg.WindowPos^.hWnd);
+      if (DummyWidget <> nil) and (DummyWidget^.Window<>nil) then begin
+        gdk_window_get_size(DummyWidget^.Window, @Dummy.X, @Dummy.Y);
+        writeln('   GGG1 ',TControl(Data).Name,':',TControl(Data).ClassName,
+          ' SizeMsg=',Size^.Width,',',Size^.Height,
+          ' FixWidSize=',Dummy.X,',',Dummy.Y);
+      end;
+    end;
+    {$ENDIF}
     if TopLeftChanged or WidthHeightChanged then begin
       Assert(False, 'Trace:[gtksize_allocateCB] DeliverMessage LM_WINDOWPOSCHANGED');
 //writeln('[gtksize_allocateCB] Sending LM_WINDOWPOSCHANGED message: Target=',TObject(Data).ClassName,' Left=',Size^.X,' Top=',Size^.Y,' Width=',Size^.Width,' Height=',Size^.Height);
@@ -950,7 +958,6 @@ end;}
   and (not WidthHeightChanged) and (not TopLeftChanged) then begin
     TWinControl(Data).DoAdjustClientRectChange;
   end;
-  
 end;
 
 function gtkswitchpage(widget: PGtkWidget; page: Pgtkwidget; pagenum : integer;
@@ -1628,6 +1635,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.70  2002/04/27 15:35:51  lazarus
+  MG: fixed window shrinking
+
   Revision 1.69  2002/04/22 13:07:45  lazarus
   MG: fixed AdjustClientRect of TGroupBox
 
