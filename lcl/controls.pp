@@ -637,7 +637,6 @@ type
     property ControlStyle : TControlStyle read FControlStyle write FControlStyle;
     property Color : TColor read FColor write SetColor;
     property Ctl3D : Boolean read FCtl3D write FCtl3D;  //Is this needed for anything other than compatability?
-    property Cursor: TCursor read FCursor write SetCursor default crDefault;
     property Enabled: Boolean read GetEnabled write SetEnabled default True;
     property Font : TFont read FFont write SetFont;
     property HostDockSite : TWincontrol read FHostDockSite write FHostDockSite;
@@ -649,6 +648,7 @@ type
     property OnResize: TNotifyEvent read FOnResize write FOnResize;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
   published
+    property Cursor: TCursor read FCursor write SetCursor default crDefault;
     property Left: Integer read FLeft write SetLeft;
     property Height: Integer read FHeight write SetHeight;
     property Hint: String read FHint write SetHint;
@@ -1342,6 +1342,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.68  2002/09/06 22:32:20  lazarus
+  Enabled cursor property + property editor.
+
   Revision 1.67  2002/09/05 12:11:42  lazarus
   MG: TNotebook is now streamable
 
