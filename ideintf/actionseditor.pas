@@ -784,6 +784,9 @@ end;
 initialization
   RegisteredActions:=TRegisteredActionCategories.Create;
   RegisterActionsProc := @RegisterActions;
+  UnRegisterActionsProc := @UnregisterActions;
+  EnumRegisteredActionsProc := @EnumActions;
+  CreateActionProc := @CreateAction;
   RegisterComponentEditor(TActionList,TActionListComponentEditor);
 finalization
   RegisteredActions.Free;
