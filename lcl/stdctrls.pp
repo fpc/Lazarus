@@ -575,6 +575,7 @@ type
 
   TEdit = class(TCustomEdit)
   published
+    property Action;
     property Align;
     property Anchors;
     property AutoSize;
@@ -1494,6 +1495,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.128  2004/02/05 13:53:38  mattias
+  fixed GetConstraints for win32 intf
+
   Revision 1.127  2004/02/05 09:45:33  mattias
   implemented Actions for TSpeedButton, TMenuItem, TCheckBox
 

@@ -28,7 +28,7 @@
 
 //##apiwiz##sps##   // Do not remove
 function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String; override;
-function GetControlConstraints(Constraints: TObject): boolean;
+function GetControlConstraints(Constraints: TObject): boolean; override;
 function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer; override;
 
 function MenuItemSetCheck(BaseMenuItem: TComponent): Boolean; override;
@@ -42,6 +42,9 @@ procedure StatusBarUpdate(StatusBar: TObject); override;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2004/02/05 13:53:38  mattias
+  fixed GetConstraints for win32 intf
+
   Revision 1.8  2004/02/02 16:56:44  micha
   implement GetControlConstraints for combobox
 

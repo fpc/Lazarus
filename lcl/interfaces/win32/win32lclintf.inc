@@ -60,8 +60,8 @@ begin
 
     if (SizeConstraints.Control=nil) then exit;
 
-    if SizeConstraints.Control is TComboBox then
-    begin
+    if (SizeConstraints.Control is TComboBox)
+      and TWinControl(SizeConstraints.Control).HandleAllocated then begin
       // the height of a combobox is fixed
       Windows.GetWindowRect(TWinControl(SizeConstraints.Control).Handle, @SizeRect);
       Height := SizeRect.Bottom - SizeRect.Top;
@@ -189,6 +189,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2004/02/05 13:53:38  mattias
+  fixed GetConstraints for win32 intf
+
   Revision 1.9  2004/02/02 16:56:43  micha
   implement GetControlConstraints for combobox
 
