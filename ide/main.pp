@@ -101,6 +101,7 @@ type
     procedure mnuEditSelectToBraceClick(Sender: TObject);
     procedure mnuEditSelectLineClick(Sender: TObject);
     procedure mnuEditSelectParagraphClick(Sender: TObject);
+    procedure mnuEditInsertGPLNoticeClick(Sender: TObject);
     procedure mnuEditCompleteCodeClicked(Sender: TObject);
 
     // search menu
@@ -861,9 +862,9 @@ begin
 
   ButtonTop := 1;
   ButtonLeft := 1;
-  NewUnitSpeedBtn       := CreateButton('NewUnitSpeedBtn'      , 'btn_newunit'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewUnitClicked, lsiHintNewUnit);
+  NewUnitSpeedBtn       := CreateButton('NewUnitSpeedBtn'      , 'btn_newunit'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewUnitClicked, lisHintNewUnit);
 
-  OpenFileSpeedBtn      := CreateButton('OpenFileSpeedBtn'     , 'btn_openfile'  , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuOpenClicked, lsiHintOpen);
+  OpenFileSpeedBtn      := CreateButton('OpenFileSpeedBtn'     , 'btn_openfile'  , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuOpenClicked, lisHintOpen);
 
   // store left
   n := ButtonLeft;
@@ -871,21 +872,21 @@ begin
   OpenFileArrowSpeedBtn.Width := 12;
   ButtonLeft := n+12+1;
   
-  SaveSpeedBtn          := CreateButton('SaveSpeedBtn'         , 'btn_save'      , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveClicked, lsiHintSave);
-  SaveAllSpeedBtn       := CreateButton('SaveAllSpeedBtn'      , 'btn_saveall'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveAllClicked, lsiHintSaveAll);
-  NewFormSpeedBtn       := CreateButton('NewFormSpeedBtn'      , 'btn_newform'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewFormClicked, lsiHintNewForm);
-  ToggleFormSpeedBtn    := CreateButton('ToggleFormSpeedBtn'   , 'btn_toggleform', 2, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuToggleFormUnitCLicked, lsiHintToggleFormUnit);
+  SaveSpeedBtn          := CreateButton('SaveSpeedBtn'         , 'btn_save'      , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveClicked, lisHintSave);
+  SaveAllSpeedBtn       := CreateButton('SaveAllSpeedBtn'      , 'btn_saveall'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveAllClicked, lisHintSaveAll);
+  NewFormSpeedBtn       := CreateButton('NewFormSpeedBtn'      , 'btn_newform'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewFormClicked, lisHintNewForm);
+  ToggleFormSpeedBtn    := CreateButton('ToggleFormSpeedBtn'   , 'btn_toggleform', 2, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuToggleFormUnitCLicked, lisHintToggleFormUnit);
 
   // new row
   ButtonLeft := 1;
-  ViewUnitsSpeedBtn     := CreateButton('ViewUnitsSpeedBtn'    , 'btn_viewunits' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewUnitsClicked, lsiHintViewUnits);
-  ViewFormsSpeedBtn     := CreateButton('ViewFormsSpeedBtn'    , 'btn_viewforms' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewFormsClicked, lsiHintViewForms);
+  ViewUnitsSpeedBtn     := CreateButton('ViewUnitsSpeedBtn'    , 'btn_viewunits' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewUnitsClicked, lisHintViewUnits);
+  ViewFormsSpeedBtn     := CreateButton('ViewFormsSpeedBtn'    , 'btn_viewforms' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewFormsClicked, lisHintViewForms);
   inc(ButtonLeft,13);
-  RunSpeedButton        := CreateButton('RunSpeedButton'       , 'btn_run'       , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuRunProjectClicked, lsiHintRun);
-  PauseSpeedButton      := CreateButton('PauseSpeedButton'     , 'btn_pause'       , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuPauseProjectClicked, lsiHintPause);
+  RunSpeedButton        := CreateButton('RunSpeedButton'       , 'btn_run'       , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuRunProjectClicked, lisHintRun);
+  PauseSpeedButton      := CreateButton('PauseSpeedButton'     , 'btn_pause'       , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuPauseProjectClicked, lisHintPause);
   PauseSpeedButton.Enabled:=false;
-  StepIntoSpeedButton  := CreateButton('StepIntoSpeedButton'   , 'btn_stepinto'       , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuStepIntoProjectClicked, lsiHintStepInto);
-  StepOverSpeedButton  := CreateButton('StepOverpeedButton'   , 'btn_stepover'       , 1, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuStepOverProjectClicked, lsiHintStepOver);
+  StepIntoSpeedButton  := CreateButton('StepIntoSpeedButton'   , 'btn_stepinto'       , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuStepIntoProjectClicked, lisHintStepInto);
+  StepOverSpeedButton  := CreateButton('StepOverpeedButton'   , 'btn_stepover'       , 1, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuStepOverProjectClicked, lisHintStepOver);
   
   pnlSpeedButtons.Width := ButtonLeft+3;
   pnlSpeedButtons.Height := ButtonTop+3;
@@ -1290,6 +1291,7 @@ begin
   itmEditSelectCodeBlock.OnClick:=@mnuEditSelectCodeBlockClick;
   itmEditSelectLine.OnClick:=@mnuEditSelectLineClick;
   itmEditSelectParagraph.OnClick:=@mnuEditSelectParagraphClick;
+  itmEditInsertGPLNotice.OnClick:=@mnuEditInsertGPLNoticeClick;
   itmEditCompleteCode.OnClick:=@mnuEditCompleteCodeClicked;
 end;
 
@@ -2540,8 +2542,8 @@ begin
     end;
     if not IsValidIdent(NewUnitName) then begin
       AlternativeUnitName:=NameToValidIdentifier(NewUnitName);
-      Result:=MessageDlg(lsiInvalidPascalIdentifierCap,
-        Format(lsiInvalidPascalIdentifierText,[NewUnitName,AlternativeUnitName]),
+      Result:=MessageDlg(lisInvalidPascalIdentifierCap,
+        Format(lisInvalidPascalIdentifierText,[NewUnitName,AlternativeUnitName]),
         mtWarning,[mbIgnore,mbCancel],0);
       if Result=mrCancel then exit;
       NewUnitName:=AlternativeUnitName;
@@ -2549,8 +2551,8 @@ begin
     end;
     if Project1.IndexOfUnitWithName(NewUnitName,true,AnUnitInfo)>=0 then
     begin
-      Result:=MessageDlg(lsiUnitNameAlreadyExistsCap,
-         Format(lsiUnitNameAlreadyExistsText,[NewUnitName]),
+      Result:=MessageDlg(lisUnitNameAlreadyExistsCap,
+         Format(lisUnitNameAlreadyExistsText,[NewUnitName]),
           mtConfirmation,[mbIgnore,mbCancel,mbAbort],0);
       if Result=mrIgnore then
         Result:=mrCancel
@@ -6872,6 +6874,11 @@ begin
   DoEditMenuCommand(ecSelectParagraph);
 end;
 
+procedure TMainIDE.mnuEditInsertGPLNoticeClick(Sender: TObject);
+begin
+  DoEditMenuCommand(ecInsertGPLNotice);
+end;
+
 procedure TMainIDE.mnuEditCompleteCodeClicked(Sender: TObject);
 begin
   DoCompleteCodeAtCursor;
@@ -6964,6 +6971,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.373  2002/09/11 11:31:22  lazarus
+  MG: added  insert GPL notice
+
   Revision 1.372  2002/09/11 08:32:54  lazarus
   MG: added selection menu items
 
