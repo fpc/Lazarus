@@ -44,12 +44,13 @@ type
   TIdentComplValue = (
     icvIdentifier, icvProcWithParams, icvIndexedProp);
 
+// completion form and functions
 procedure PaintCompletionItem(const AKey: string; ACanvas: TCanvas;
   X, Y, MaxX: integer; ItemSelected: boolean; Index: integer;
   aCompletion : TSynCompletion; CurrentCompletionType: TCompletionType);
-  
 function GetIdentCompletionValue(aCompletion : TSynCompletion;
   var ValueType: TIdentComplValue; var CursorToLeft: integer): string;
+  
 
 implementation
 

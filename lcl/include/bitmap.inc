@@ -131,7 +131,6 @@ begin
   UnshareImage;
   if FImage.FHandle=0 then
     HandleNeeded;
-  Changing(Self);
   Result := FImage.FHandle;
 end;
 
@@ -439,7 +438,7 @@ begin
   // store original stream
   if Stream<>FImage.SaveStream then begin
     MemStream:=TMemoryStream.Create;
-    MemStream.CopyFrom(Stream,Stream.Size);
+    MemStream.CopyFrom(Stream,Stream.Size-Stream.Position);
     FreeAndNil(FImage.FSaveStream);
     FImage.SaveStream:=MemStream;
   end else
@@ -522,15 +521,15 @@ var
     end;
   end;
 
-  Procedure DoWriteStreamSize(Size: longint);
+  Procedure DoWriteStreamSize(DestStream: TStream; Size: longint);
   begin
     if WriteSize then
-      MemStream.WriteBuffer(Size, SizeOf(Size));
+      DestStream.WriteBuffer(Size, SizeOf(Size));
   end;
 
-  Procedure DoWriteSize(Header : TBitmapHeader);
+  Procedure DoWriteSize(Header: TBitmapHeader);
   begin
-    DoWriteStreamSize(Header.FileHeader.bfSize);
+    DoWriteStreamSize(MemStream,Header.FileHeader.bfSize);
   end;
 
   Procedure WriteBitmapHeader(Header : TBitmapHeader);
@@ -581,7 +580,7 @@ var
   
   procedure DoWriteOriginal;
   begin
-    DoWriteStreamSize(FImage.SaveStream.Size);
+    DoWriteStreamSize(Stream,FImage.SaveStream.Size);
     FImage.SaveStream.Position:=0;
     Stream.CopyFrom(FImage.SaveStream,FImage.SaveStream.Size);
   end;
@@ -595,6 +594,7 @@ begin
     DoWriteOriginal;
     exit;
   end;
+  writeln('TBitmap.WriteStream A Warning: creating BMP does not always work ',FImage.SaveStream<>nil,' ',ord(FImage.SaveStreamType));
 
   // write image in BMP format to temporary stream
   MemStream:=TMemoryStream.Create;
@@ -731,6 +731,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.39  2003/08/16 15:29:56  mattias
+  fixed TBitmap.GetHandle
+
   Revision 1.38  2003/08/10 09:33:43  mattias
   saved bitmap stream is now stored
 

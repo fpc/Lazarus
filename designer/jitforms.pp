@@ -47,8 +47,8 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, Forms, Controls, LCLLinux, Dialogs, JITForm, ComponentReg,
-  IDEProcs;
+  Classes, SysUtils, TypInfo, Forms, Controls, LCLLinux, Dialogs, JITForm,
+  ComponentReg, IDEProcs;
 
 type
   //----------------------------------------------------------------------------
@@ -100,6 +100,12 @@ type
     // TReader events
     procedure ReaderFindMethod(Reader: TReader; const FindMethodName: Ansistring;
       var Address: Pointer; var Error: Boolean);
+    {$IFDEF Reader2}
+    procedure ReaderSetMethodProperty(Reader: TReader; Instance: TPersistent;
+      PropInfo: PPropInfo; const TheMethodName: string; var Handled: boolean);
+    procedure ReaderPropertyNotFound(Reader: TReader; Instance: TPersistent;
+      var PropName: string; IsPath: Boolean; var Handled, Skip: Boolean);
+    {$ENDIF}
     procedure ReaderSetName(Reader: TReader; Component: TComponent;
       var NewName: Ansistring);
     procedure ReaderReferenceName(Reader: TReader; var RefName: Ansistring);
@@ -393,6 +399,10 @@ begin
   // connect TReader events
   Reader.OnError:=@ReaderError;
   Reader.OnFindMethod:=@ReaderFindMethod;
+  {$IFDEF Reader2}
+  Reader.OnPropertyNotFound:=@ReaderPropertyNotFound;
+  Reader.OnSetMethodProperty:=@ReaderSetMethodProperty;
+  {$ENDIF}
   Reader.OnSetName:=@ReaderSetName;
   Reader.OnReferenceName:=@ReaderReferenceName;
   Reader.OnAncestorNotFound:=@ReaderAncestorNotFound;
@@ -828,6 +838,22 @@ begin
     Error:=false;
   end;
 end;
+
+{$IFDEF Reader2}
+procedure TJITComponentList.ReaderPropertyNotFound(Reader: TReader;
+  Instance: TPersistent; var PropName: string; IsPath: Boolean;
+  var Handled, Skip: Boolean);
+begin
+  writeln('TJITComponentList.ReaderPropertyNotFound ',Instance.ClassName,'.',PropName);
+end;
+
+procedure TJITComponentList.ReaderSetMethodProperty(Reader: TReader;
+  Instance: TPersistent; PropInfo: PPropInfo; const TheMethodName: string;
+  var Handled: boolean);
+begin
+  writeln('TJITComponentList.ReaderSetMethodProperty ',PropInfo^.Name,':=',TheMethodName);
+end;
+{$ENDIF}
 
 procedure TJITComponentList.ReaderSetName(Reader: TReader;
   Component: TComponent; var NewName: Ansistring);

@@ -1677,6 +1677,7 @@ var
   ColorMap: PGdkColormap;
   P: Pointer;
   Depth : Longint;
+  ok: Boolean;
 begin
   GdiObject := NewGDIObject(gdiBitmap);
   if TransColor >= 0 then begin
@@ -1689,6 +1690,7 @@ begin
     ColorMap:=gdk_window_get_colormap(Window)
   else
     ColorMap:=gdk_colormap_get_system;
+  ok:=false;
   try
     GdiObject^.GDIPixmapObject :=
       gdk_pixmap_colormap_create_from_xpm_d(Window,Colormap,
@@ -1712,8 +1714,9 @@ begin
     GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, 1);
 
     GdiObject^.GDIBitmapType:=gbPixmap;
-  except
-    on E: Exception do begin
+    ok:=true;
+  finally
+    if not ok then begin
       DisposeGDIObject(GdiObject);
       GdiObject:=nil;
     end;
@@ -8750,6 +8753,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.267  2003/08/16 15:29:56  mattias
+  fixed TBitmap.GetHandle
+
   Revision 1.266  2003/08/15 14:01:20  mattias
   combined lazconf things for unix
 
