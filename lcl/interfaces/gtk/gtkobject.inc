@@ -1240,10 +1240,7 @@ var
     end;
     if GtkWidgetIsA(PaintWidget, GTK_TYPE_RANGE)
     then begin
-      {$IFDEF Gtk2}
-      // Gtk2ToDo
-      writeln('ToDo: SendPaintMessagesForInternalWidgets GTK_TYPE_RANGE');
-      {$ELSE}
+      {$IFDEF Gtk1}
       SendPaintMessageForGDkWindow(PGtkRange(PaintWidget)^.slider);
       SendPaintMessageForGDkWindow(PGtkRange(PaintWidget)^.trough);
       SendPaintMessageForGDkWindow(PGtkRange(PaintWidget)^.step_forw);
@@ -8446,6 +8443,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.429  2003/09/25 20:44:42  ajgenius
+  minor changes for gtk2
+
   Revision 1.428  2003/09/25 16:02:16  ajgenius
   try to catch GDK/X drawable errors and raise an AV to stop killing App
 

@@ -2659,7 +2659,6 @@ procedure ShareWindowAccelGroups(AWindow: PGtkWidget);
   procedure AttachUnique(TheWindow: PGtkWidget; TheAccelGroup: PGTKAccelGroup);
   begin
     {$IfDef GTK2}
-    // Gtk2ToDo
     if (TheWindow=nil) or (TheAccelGroup=nil) then exit;
     gtk_window_add_accel_group(GTK_WINDOW(TheWindow), TheAccelGroup);
     {$else}
@@ -2725,7 +2724,6 @@ procedure UnshareWindowAccelGroups(AWindow: PGtkWidget);
   procedure Detach(TheWindow: PGtkWidget; TheAccelGroup: PGTKAccelGroup);
   begin
     {$IfDef GTK2}
-    // Gtk2ToDo
     if (TheWindow=nil) or (TheAccelGroup=nil) then exit;
     gtk_window_remove_accel_group(GTK_WINDOW(TheWindow), TheAccelGroup);
     {$else}
@@ -3224,6 +3222,7 @@ begin
   {$IFDEF Gtk2}
   // Gtk2ToDo
   if CheckMenuItem<>nil then begin
+    GTK_MENU_ITEM(CheckMenuItem)^.toggle_size := 0;
     gtk_menu_item_toggle_size_allocate(GTK_MENU_ITEM(CheckMenuItem),MaxToggleSize);
     GTK_MENU_ITEM(CheckMenuItem)^.toggle_size := MaxToggleSize;
   end;
@@ -4898,6 +4897,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.213  2003/09/25 20:44:42  ajgenius
+  minor changes for gtk2
+
   Revision 1.212  2003/09/25 16:02:16  ajgenius
   try to catch GDK/X drawable errors and raise an AV to stop killing App
 
