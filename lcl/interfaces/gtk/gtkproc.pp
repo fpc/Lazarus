@@ -48,7 +48,7 @@ uses
   LMessages, LCLProc, LCLStrConsts, LCLIntf, LCLType, DynHashArray,
   GraphType, GraphMath, Graphics, GTKWinApiWindow, LResources, Controls, Forms,
   Buttons, Menus, StdCtrls, ComCtrls, CommCtrl, ExtCtrls, Dialogs, ExtDlgs,
-  FileCtrl, ImgList, GTKGlobals, gtkDef;
+  FileUtil, ImgList, GTKGlobals, gtkDef;
 
 
 {$IFDEF gtk2}
