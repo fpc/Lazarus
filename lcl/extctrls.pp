@@ -476,6 +476,7 @@ type
     function GetText: TCaption; override;
     procedure SetText(const Value: TCaption); override;
     procedure Paint; override;
+  public
     property Alignment: TAlignment read FAlignment write SetAlignment default taCenter;
     property BevelInner: TPanelBevel read FBevelInner write SetBevelInner default bvNone;
     property BevelOuter: TPanelBevel read FBevelOuter write SetBevelOuter default bvRaised;
@@ -485,7 +486,6 @@ type
     property Color default clBtnFace;
     property Caption read GetText write SetText;
     property ParentColor default True;
-  public
     constructor Create(AOwner: TComponent); override;
     procedure Invalidate; override;
   end;
@@ -559,6 +559,9 @@ end.
 
  {
   $Log$
+  Revision 1.47  2002/12/27 18:18:05  mattias
+  fixes for htmllite
+
   Revision 1.46  2002/11/18 17:06:29  mattias
   improved designer rubberband
 
