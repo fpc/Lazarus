@@ -2165,12 +2165,8 @@ procedure TMainIDE.SaveDesktopSettings(
   TheEnvironmentOptions: TEnvironmentOptions);
 begin
   with TheEnvironmentOptions do begin
-    MainWindowBounds:=BoundsRect;
-    SourceEditorBounds:=SourceNoteBook.BoundsRect;
-    MessagesViewBoundsValid:=FMessagesViewBoundsRectValid;
-    MessagesViewBounds:=MessagesView.BoundsRect;
+    IDEWindowLayoutList.StoreWindowPositions;
     ObjectInspectorOptions.Assign(ObjectInspector1);
-    WindowPositionsValid:=true;
   end;
 end;
 
@@ -6031,6 +6027,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.233  2002/02/25 19:17:27  lazarus
+  MG: fixed restore window positions
+
   Revision 1.232  2002/02/25 16:48:10  lazarus
   MG: new IDE window layout system
 

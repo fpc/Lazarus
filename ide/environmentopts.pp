@@ -75,15 +75,7 @@ type
     
     // window layout
     FIDEWindowLayoutList: TIDEWindowLayoutList;
-      // ToDo
-    FSaveWindowPositions: boolean;
-    FWindowPositionsValid: boolean; // = the following values are valid
-    FMainWindowBounds: TRect;
-    FSourceEditorBounds: TRect;
-    FMessagesViewBoundsValid: boolean;
-    FMessagesViewBounds: TRect;
 
-    
     // form editor
     FDisplayGrid: boolean;
     FSnapToGrid: boolean;
@@ -156,20 +148,6 @@ type
     // windows
     property IDEWindowLayoutList: TIDEWindowLayoutList
         read FIDEWindowLayoutList write FIDEWindowLayoutList;
- // ToDo
-    property SaveWindowPositions: boolean
-       read FSaveWindowPositions write FSaveWindowPositions;
-    property WindowPositionsValid: boolean
-       read FWindowPositionsValid write FWindowPositionsValid;
-    property MainWindowBounds: TRect
-       read FMainWindowBounds write FMainWindowBounds;
-    property SourceEditorBounds: TRect
-       read FSourceEditorBounds write FSourceEditorBounds;
-    property MessagesViewBoundsValid: boolean
-       read FMessagesViewBoundsValid write FMessagesViewBoundsValid;
-    property MessagesViewBounds: TRect
-       read FMessagesViewBounds write FMessagesViewBounds;
-
 
     // form editor
     property DisplayGrid: boolean read FDisplayGrid write FDisplayGrid;
@@ -422,13 +400,6 @@ begin
 
   // windows
   InitLayoutList;
-  // ToDo
-  FSaveWindowPositions:=true;
-  FWindowPositionsValid:=false;
-  FMainWindowBounds:=Bounds(0,0,600,100);
-  FSourceEditorBounds:=Bounds(230,150,400,200);
-  FMessagesViewBoundsValid:=false;
-  FMessagesViewBounds:=Bounds(230,350,400,100);
 
   // form editor
   FDisplayGrid:=true;
@@ -588,24 +559,6 @@ begin
     // windows
     FIDEWindowLayoutList.LoadFromXMLConfig(XMLConfig,
       'EnvironmentOptions/Desktop/');
-    // ToDo:
-    FSaveWindowPositions:=XMLConfig.GetValue(
-       'EnvironmentOptions/Desktop/SaveWindowPositions',FSaveWindowPositions);
-    FWindowPositionsValid:=XMLConfig.GetValue(
-       'EnvironmentOptions/Desktop/WindowPositionsValid',false);
-    if FWindowPositionsValid then begin
-      LoadRect(XMLConfig,'EnvironmentOptions/Desktop/MainWindowBounds/',
-        FMainWindowBounds);
-      LoadRect(XMLConfig,'EnvironmentOptions/Desktop/SourceEditorBounds/'
-        ,FSourceEditorBounds);
-    end;
-    if FileVersion>=100 then begin
-      FMessagesViewBoundsValid:=XMLConfig.GetValue(
-        'EnvironmentOptions/Desktop/MessagesViewBoundsValid',false);
-      if FMessagesViewBoundsValid then
-        LoadRect(XMLConfig,'EnvironmentOptions/Desktop/MessagesViewBounds/'
-           ,FMessagesViewBounds);
-    end;
 
     // form editor
     FDisplayGrid:=XMLConfig.GetValue(
@@ -774,22 +727,6 @@ begin
     // windows
     FIDEWindowLayoutList.SaveToXMLConfig(XMLConfig,
       'EnvironmentOptions/Desktop/');
-    // ToDo
-    XMLConfig.SetValue('EnvironmentOptions/Desktop/SaveWindowPositions'
-       ,FSaveWindowPositions);
-    XMLConfig.SetValue('EnvironmentOptions/Desktop/WindowPositionsValid'
-       ,FWindowPositionsValid);
-    if FWindowPositionsValid then begin
-      SaveRect(XMLConfig,'EnvironmentOptions/Desktop/MainWindowBounds/',
-        FMainWindowBounds);
-      SaveRect(XMLConfig,'EnvironmentOptions/Desktop/SourceEditorBounds/'
-        ,FSourceEditorBounds);
-    end;
-    XMLConfig.SetValue('EnvironmentOptions/Desktop/MessagesViewBoundsValid'
-       ,FMessagesViewBoundsValid);
-    if FMessagesViewBoundsValid then
-      SaveRect(XMLConfig,'EnvironmentOptions/Desktop/MessagesViewBounds/'
-        ,FMessagesViewBounds);
 
     // form editor
     XMLConfig.SetValue('EnvironmentOptions/FormEditor/DisplayGrid',FDisplayGrid);
@@ -864,8 +801,7 @@ begin
 
     // object inspector
     FObjectInspectorOptions.Filename:=FFilename;
-    FObjectInspectorOptions.SaveBounds:=
-      FSaveWindowPositions and FWindowPositionsValid;
+    FObjectInspectorOptions.SaveBounds:=false;
     FObjectInspectorOptions.Save;
     
   except
