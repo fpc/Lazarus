@@ -1,0 +1,37 @@
+{ TBitmapImage }
+
+destructor TBitmapImage.Destroy;
+begin
+  if FDIBHandle <> 0 then
+  begin
+    //TODO:write this function
+    //DeselectBitmap(FDIBHandle);
+    DeleteObject(FDIBHandle);
+    FDIBHandle := 0;
+  end;
+  FreeHandle;
+  //TODO Write CLoseHandle
+  //if FDIB.dshSection <> 0 then CloseHandle(FDIB.dshSection);
+  inherited Destroy;
+end;
+
+procedure TBitmapImage.FreeHandle;
+begin
+  if (FHandle <> 0) and (FHandle <> FDIBHandle) then
+  begin
+    //TODO: Once written, remove comment below
+    //DeselectBitmap(FHandle);
+    DeleteObject(FHandle);
+  end;
+  if FMaskHandle <> 0 then
+  begin
+    //TODO: Once written, remove comment below
+    //DeselectBitmap(FMaskHandle);
+    DeleteObject(FMaskHandle);
+    FMaskHandle := 0;
+  end;
+  //TODO: Once written, remove comment below
+  //InternalDeletePalette(FPalette);
+  FHandle := 0;
+  FPalette := 0;
+end;

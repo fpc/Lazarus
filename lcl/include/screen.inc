@@ -1,0 +1,130 @@
+{******************************************************************************
+                                  TScreen
+ ******************************************************************************}
+{------------------------------------------------------------------------------
+  Method: TScreen.Create
+  Params:  AOwner: the owner of the class
+  Returns: Nothing
+
+  Constructor for the class.
+ ------------------------------------------------------------------------------}
+constructor TScreen.Create(AOwner : TComponent);
+begin
+  inherited Create(AOwner);
+  FFormList := TList.Create;
+  FPixelsPerInch:= ScreenInfo.PixelsPerInchX;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TScreen.Destroy
+  Params:  None
+  Returns: Nothing
+
+  Destructor for the class.
+ ------------------------------------------------------------------------------}
+Destructor TScreen.Destroy;
+begin
+  FFormList.Free;
+  inherited Destroy;
+end;
+{
+
+     FUNCTIONS
+
+
+
+}
+
+
+{------------------------------------------------------------------------------
+  Function: TScreen.FAddForm
+  Params:   FForm: The form to be added
+  Returns:  Nothing
+
+  Do not use this procedure. This procedure is used by TScreen internally.
+ ------------------------------------------------------------------------------}
+procedure TScreen.FAddForm(FForm: TForm);
+begin
+  FFormList.Add(FForm);
+end;
+
+
+{------------------------------------------------------------------------------
+  Function: TScreen.GetFormCount
+  Params:   none
+  Returns:  The count of forms. (TODO: discribe this better; my English is not perfect)
+
+  Returns the count of forms. (TODO: discribe this better; my English is not perfect)
+ ------------------------------------------------------------------------------}
+Function TScreen.GetFormCount: Integer;
+begin
+  Result := FFormList.Count;
+end;
+
+
+{------------------------------------------------------------------------------
+  Function: TScreen.GetForms
+  Params:   IIndex: The index of the form
+  Returns:  A form stored in FFormList
+
+  This function is used by the Forms property.
+ ------------------------------------------------------------------------------}
+Function TScreen.GetForms(IIndex: Integer): TForm;
+var
+  FForm: TForm;
+begin
+  FForm := TForm(FFormList.Items[IIndex]);
+  Result := FForm;
+end;
+
+
+{------------------------------------------------------------------------------
+  Method:  TScreen.GetWidth
+  Params:  none
+  Returns: Screen Width
+
+  returns the screen width
+ ------------------------------------------------------------------------------}
+Function TScreen.GetWidth : Integer;
+begin
+result := GetSystemMetrics(SM_CXSCREEN);
+end;
+
+
+{------------------------------------------------------------------------------
+  Method:  TScreen.GetHeight
+  Params:  none
+  Returns: Screen Height
+
+  Returns the Screen Height
+ ------------------------------------------------------------------------------}
+Function TScreen.GetHeight : Integer;
+begin
+result := GetSystemMetrics(SM_CYSCREEN);
+end;
+
+{------------------------------------------------------------------------------
+
+  Function: TScreen.FRemoveForm
+  Params:   FForm: The form to be removed
+  Returns:  Nothing
+
+  Do not use this procedure. This procedure is used by TScreen internally.
+ ------------------------------------------------------------------------------}
+procedure TScreen.FRemoveForm(FForm: TForm);
+begin
+  FFormList.Remove(FForm);
+end;
+
+
+{------------------------------------------------------------------------------
+  Function: TScreen.MyFunction
+  Params:   AOwner: the owner of the class
+  Returns:  String containing output from the function.
+
+  Description of the function for the class.
+ ------------------------------------------------------------------------------}
+{function TScreen.MyFunction(AOwner: TComponent): String;
+begin
+
+end;}

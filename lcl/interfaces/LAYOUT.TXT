@@ -1,0 +1,31 @@
+Interfaces
+
+It is organized according to the following structure:
+
+interfaces
+  |
+  +--- gtk
+  |
+  +--- qt
+  |
+  +--- win32
+  |
+  +--- ...
+  |
+  +--- units
+
+interfaces:
+  The platform independent code to interface between the 
+  LCL and the graphic platform should go here.
+
+interfaces/gtk:
+  All gtk specific code goes here.
+
+interfaces/qt:
+  All QT specific code goes here.
+
+interfaces/win32:
+  All win32 specific code goes here.
+
+interfaces/units:
+  Containst the compiled units.

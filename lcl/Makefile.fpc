@@ -1,0 +1,33 @@
+#
+#   Makefile.fpc for Lazarus for Free Pascal
+#
+
+[targets]
+programs=allunits
+dirs=interfaces
+
+[require]
+packages=fcl gtk
+
+[clean]
+units=$(basename $(wildcard $(UNITTARGETDIR)/*$(PPUEXT)))
+
+[dirs]
+fpcdir=../..
+unittargetdir=./units
+unitdir= ./units ./interfaces/units ./interfaces/gtk
+incdir=./include
+
+[install]
+
+[libs]
+
+[presettings]
+
+[rules]
+
+cleartarget:
+        -$(DEL) allunits$(EXEEXT)
+
+all: cleartarget interfaces_all allunits$(EXEEXT)
+        -$(DEL) allunits$(EXEEXT)

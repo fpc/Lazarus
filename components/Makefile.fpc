@@ -1,0 +1,20 @@
+#
+#   Makefile.fpc for Lazarus for Free Pascal
+#
+
+[targets]
+dirs=$(THE_EDIT)
+
+[dirs]
+fpcdir=../..
+
+[presettings]
+ifneq (,$(findstring NEW_EDITOR,$(OPT)))
+  THE_EDIT=mwedit92
+else
+  THE_EDIT=mwedit
+endif
+
+[postsettings]
+
+[rules]

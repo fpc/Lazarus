@@ -1,0 +1,34 @@
+#
+#   Makefile.fpc for APIWizard for Free Pascal
+#
+
+[targets]
+programs=apiwizz
+
+[clean]
+
+[require]
+packages=fcl gtk
+
+[presettings]
+LAZDIR=../..
+
+[dirs]
+fpcdir=$(LAZDIR)/..
+targetdir=.
+##############################
+# replace following lines by the next line as soon
+# as the compiler dependency bug is fixed 
+##############################
+#unitdir=. $(LAZDIR)/lcl/units $(LAZDIR)/components/units 
+##############################
+unitdir=. $(LAZDIR)/lcl/units $(LAZDIR)/lcl $(LAZDIR)/lcl/interfaces/units $(LAZDIR)/lcl/interfaces/gtk 
+incdir=. $(LAZDIR)/lcl/include
+##############################
+
+[libs]
+
+
+[rules]
+all: 
+        $(MAKE) --assume-new=apiwizz.pp apiwizz$(EXEEXT)

@@ -1,0 +1,521 @@
+{******************************************************************************
+                                   TNBPages
+ ******************************************************************************}
+{------------------------------------------------------------------------------
+  TNBPages Constructor
+ ------------------------------------------------------------------------------}
+constructor TNBPages.Create(thePageList: TList; theNotebook: TCustomNotebook);
+begin
+  inherited Create;
+  { Create the page list and a notebook }
+  fPageList := thePageList;
+  fNotebook := theNotebook;
+end;
+
+{------------------------------------------------------------------------------
+  TNBPages Get
+ ------------------------------------------------------------------------------}
+function TNBPages.Get(Index: Integer): String;
+begin
+  Result := TPage(fPageList[Index]).Caption;
+end;
+
+{------------------------------------------------------------------------------
+  TNBPages GetCount
+ ------------------------------------------------------------------------------}
+function TNBPages.GetCount: Integer;
+begin
+  Result := fPageList.Count;
+end;
+
+{------------------------------------------------------------------------------
+  TNBPages GetObject
+ ------------------------------------------------------------------------------}
+function TNBPages.GetObject(Index: Integer): TObject;
+begin
+  Result := TPage(fPageList[Index]);
+end;
+
+{------------------------------------------------------------------------------
+  TNBPages Put
+ ------------------------------------------------------------------------------}
+procedure TNBPages.Put(Index: Integer; const S: String);
+var
+  //Msg: TLMTabSetText;
+  Msg: TLMNotebookEvent;
+begin
+  TPage(fPageList[Index]).Caption := S;
+
+  if FNoteBook.HandleAllocated 
+  then begin
+    Msg.Parent := fNotebook;
+    Msg.Child := TPage(fPageList[Index]);
+    Msg.fCompStyle := fNotebook.fCompStyle;
+    Msg.Str := S;
+    CNSendMessage(LM_SETTEXT, fNotebook, @Msg);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  TNBPages Clear
+ ------------------------------------------------------------------------------}
+procedure TNBPages.Clear;
+var
+  i: Integer;
+begin
+  for i := 0 to fPageList.Count - 1 do
+  begin
+    TPage(fPageList[I]).Free;
+  end;
+
+  fPageList.Clear;
+end;
+
+{------------------------------------------------------------------------------
+  TNBPages Delete
+ ------------------------------------------------------------------------------}
+procedure TNBPages.Delete(Index: Integer);
+var
+  Msg: TLMNotebookEvent;
+begin
+  { Make sure Index is in the range of valid pages to delete }
+  if (Index > -1) and
+     (Index < fPageList.Count) then
+  begin
+    { Make sure there are pages to delete }
+    if (fPageList.Count > 0) then
+      { If that page is showing, then show the previous page before deleting it }
+      if (Index = fNoteBook.PageIndex) then
+        fNoteBook.PageIndex := fNoteBook.PageIndex - 1;
+
+
+    if FNoteBook.HandleAllocated
+    then begin
+      Msg.Parent := fNotebook;
+      Msg.fCompStyle := fNotebook.fCompStyle;
+      Msg.Page := Index;
+      CNSendMessage(LM_REMOVEPAGE, fNotebook, @Msg);
+    end;
+    TPage(fPageList[Index]).Free;
+    fPageList.Delete(Index);
+
+  end;
+end;
+
+
+{------------------------------------------------------------------------------
+  TNBPages Insert
+ ------------------------------------------------------------------------------}
+procedure TNBPages.Insert(Index: Integer; const S: String);
+var
+  tmpPage: TPage;
+  Msg: TLMNotebookEvent;
+begin
+  tmpPage := TPage.Create(fNotebook);
+  with tmpPage do
+  begin
+    Parent := fNotebook;
+    Caption := S;
+    Visible := true;
+  end;
+  fPageList.Insert(Index, tmpPage);
+
+  if FNoteBook.HandleAllocated
+  then begin
+    Msg.Parent := TControl(fNotebook);
+    Msg.Child := tmpPage;
+    Msg.fCompStyle := fNotebook.fCompStyle;
+    Msg.Page := Index;
+
+    CNSendMessage(LM_ADDPAGE, fNotebook, @Msg);
+
+    fNoteBook.PageIndex := Index;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  TNBPages Move
+ ------------------------------------------------------------------------------}
+procedure TNBPages.Move(CurIndex, NewIndex: Integer);
+//var
+// theObject: TObject;
+begin
+  fPageList.Move(CurIndex, NewIndex);
+  //theObject := fPageList[CurIndex];
+  //fPageList[CurIndex] := fPageList[NewIndex];
+  //fPageList[NewIndex] := theObject;
+  //MoveThePage(CurIndex, NewIndex);
+  { Still need to implement }
+end;
+
+
+{******************************************************************************
+                                TCustomNotebook
+ ******************************************************************************}
+{------------------------------------------------------------------------------
+  TCustomNotebook Constructor
+ ------------------------------------------------------------------------------}
+constructor TCustomNotebook.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  {create the control}
+  fCompStyle := csNoteBook;
+
+  Canvas := TControlCanvas.Create;
+  TControlCanvas(Canvas).Control := Self;
+
+
+  fPageList := TList.Create;
+
+  fAccess := TNBPages.Create(fPageList, Self);
+  fPageIndex := -1;
+  { Create the first notebook page }
+  fAccess.Add('Default');
+
+  fPageIndex := 0;
+  //Exclude(fComponentStyle, csInheritable);
+
+  TabPosition := tpTop;
+
+  ShowTabs := False;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCustomNotebook.CreateWnd
+  Params:  None
+  Returns: Nothing
+
+  Creates the interface object.
+ ------------------------------------------------------------------------------}
+procedure TCustomNotebook.CreateWnd;
+var
+  n: Integer;
+  Msg: TLMNotebookEvent;
+begin
+  inherited CreateWnd;
+
+  Assert(False, 'Trace:[TCustomNotebook.CreateWnd] add pages');
+  for n := 0 to FPageList.Count -1 do
+  begin
+    Msg.Parent := Self;
+    Msg.Child := TControl(FPageList[n]);
+    Msg.fCompStyle := FCompStyle;
+    Msg.Page := n;
+    CNSendMessage(LM_ADDPAGE, Self, @Msg);
+  end;
+
+  SetShowTabs(FShowTabs);
+  SetTabPosition(fTabPosition);
+  SetPageIndex(FPageIndex);
+
+  SetCallback(LM_CHANGED);
+
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomNotebook.Destroy
+  Params:  None
+  Returns: Nothing
+
+  Destructor for the class.
+ ------------------------------------------------------------------------------}
+destructor TCustomNotebook.Destroy;
+begin
+  fPageList.Free;
+  fAccess.Free;
+  inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------
+  TCustomNotebook GetActivePage
+ ------------------------------------------------------------------------------}
+function TCustomNotebook.GetActivePage: String;
+begin
+  Result := TPage(fPageList[PageIndex]).Caption;
+end;
+
+{------------------------------------------------------------------------------
+  TCustomNotebook SetActivePage
+ ------------------------------------------------------------------------------}
+procedure TCustomNotebook.SetActivePage(const Value: String);
+var
+  i: Integer;
+begin
+  for i := 0 to fPageList.Count - 1 do
+  begin
+    if TPage(fPageList[i]).Caption = Value then
+    begin
+      SetPageIndex(i);
+      Break;
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  TCustomNotebook SetPageIndex
+ ------------------------------------------------------------------------------}
+procedure TCustomNotebook.SetPageIndex(Value: Integer);
+var
+  Msg: TLMNotebookEvent;
+begin
+  fPageIndex := Value;
+  if HandleAllocated
+  then begin
+    Msg.Parent := Self;
+    Msg.fCompStyle := fCompStyle;
+    Msg.Page := Value;
+    CNSendMessage(LM_SETITEMINDEX, Self, @Msg);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  TCustomNotebook GetPageIndex
+ ------------------------------------------------------------------------------}
+function TCustomNotebook.GetPageIndex: Integer;
+var
+  Msg: TLMNotebookEvent;
+begin
+//we don't have to query the contol.  FPageindex should track this along with the pagechanged handler.
+{  if HandleAllocated
+  then begin
+    Msg.Parent := Self;
+    Msg.fCompStyle := fCompStyle;
+    CNSendMessage(LM_GETITEMINDEX, Self, @Msg);
+    fPageIndex := Msg.Page;
+  end;}
+
+  Result := fPageIndex;
+end;
+
+{------------------------------------------------------------------------------
+  TCustomNotebook SetPages
+ ------------------------------------------------------------------------------}
+procedure TCustomNotebook.SetPages(Value: TStrings);
+begin
+  FAccess.Assign(Value);
+end;
+
+{------------------------------------------------------------------------------
+  TCustomNotebook GetPage
+ ------------------------------------------------------------------------------}
+function TCustomNotebook.GetPage(aIndex: Integer): TPage;
+begin
+  Result := TPage(fPageList.Items[aIndex]);
+end;
+
+{------------------------------------------------------------------------------
+  TCustomNotebook SetShowTabs
+ ------------------------------------------------------------------------------}
+procedure TCustomNotebook.SetShowTabs(Value: Boolean);
+var
+  Msg: TLMNotebookEvent;
+begin
+  fShowTabs := Value;
+  if HandleAllocated
+  then begin
+    Msg.Parent := Self;
+    Msg.fCompStyle := fCompStyle;
+    Msg.ShowTabs := fShowTabs;
+    CNSendMessage(LM_SHOWTABS, Self, @Msg);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  TCustomNotebook SetTabPosition
+ ------------------------------------------------------------------------------}
+procedure TCustomNotebook.SetTabPosition(tabPos: TTabPosition);
+var
+  Msg: TLMNotebookEvent;
+begin
+  fTabPosition := tabPos;
+  if HandleAllocated
+  then begin
+    Msg.Parent := Self;
+    Msg.fCompStyle := fCompStyle;
+    Msg.TabPosition := @fTabPosition;
+    //InterfaceObject.IntCNSendMessage2(LM_SETTABPOSITION, Self, nil, @fTabPosition);
+    CNSendMessage(LM_SETTABPOSITION, Self, @Msg);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  TCustomNotebook CreateParams
+ ------------------------------------------------------------------------------}
+procedure TCustomNotebook.CreateParams(var Params: TCreateParams);
+begin
+  { This function exists for Delphi compatibility only. May be necessary
+    when the Windows API is implemented }
+  inherited CreateParams(Params);
+end;
+
+{------------------------------------------------------------------------------
+  TCustomNotebook GetChildOwner
+ ------------------------------------------------------------------------------}
+function TCustomNotebook.GetChildOwner: TComponent;
+begin
+  Result := Self;
+end;
+
+{------------------------------------------------------------------------------
+  TCustomNotebook GetChildren
+ ------------------------------------------------------------------------------}
+procedure TCustomNotebook.GetChildren(Proc: TGetChildProc; Root: TComponent);
+var
+  i: LongInt;
+begin
+  { Need to find out what the purpose of the Root param is in Delphi and add
+    that to the functionality. May either be the parent component to start with
+    or it may be the type of component to return (all TButtons). }
+  for i := 0 to fPageList.Count - 1 do
+  begin
+    Proc(TControl(fPageList[i]));
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  TCustomNotebook ReadState
+ ------------------------------------------------------------------------------}
+procedure TCustomNotebook.ReadState(Reader: TAbstractReader);
+begin
+  inherited ReadState(Reader);
+end;
+
+{------------------------------------------------------------------------------
+  TCustomNotebook ShowControl
+ ------------------------------------------------------------------------------}
+procedure TCustomNotebook.ShowControl(AControl: TControl);
+var
+  i: LongInt;
+begin
+  //inherited ShowControl(AControl);
+  { Find a child control that matches the one passed in and display
+    the page that contains that control. This method is necessary
+    for compatibility with Delphi }
+  for i := 0 to fPageList.Count - 1 do
+  begin
+    if TControl(fPageList[i]) = AControl then
+    begin
+      PageIndex := i;
+      Exit;
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  TCustomNotebook Change
+ ------------------------------------------------------------------------------}
+procedure TCustomNotebook.Change;
+Begin
+if Assigned(fOnPageChanged) then fOnPageChanged(self);
+end;
+
+
+{------------------------------------------------------------------------------
+  TCustomNotebook CNNotify
+ ------------------------------------------------------------------------------}
+procedure TCustomNotebook.CNNotify(var Message : TLMNotify);
+Begin
+with Message do
+    Case NMHdr^.code of
+       TCN_SELCHANGE:  Begin
+                       //set the page from the NMHDR^.idfrom
+                       FPageIndex := NMHDR^.idfrom;
+                       change;
+                       end;
+       end;
+
+end;
+
+
+{ =============================================================================
+
+  $Log$
+  Revision 1.1  2000/07/13 10:28:25  michael
+  + Initial import
+
+  Revision 1.4  2000/06/29 18:08:56  lazarus
+  Shane
+    Looking for the editor problem I made a few changes.  I changed everything back to the original though.
+
+  Revision 1.2  2000/05/09 02:07:40  lazarus
+  Replaced writelns with Asserts.                          CAW
+
+  Revision 1.1  2000/04/02 20:49:56  lazarus
+  MWE:
+    Moved lazarus/lcl/*.inc files to lazarus/lcl/include
+
+  Revision 1.16  2000/03/30 18:07:53  lazarus
+  Added some drag and drop code
+  Added code to change the unit name when it's saved as a different name.  Not perfect yet because if you are in a comment it fails.
+
+  Shane
+
+  Revision 1.15  2000/02/26 23:31:50  lazarus
+  MWE:
+    Fixed notebook crash on insert
+    Fixed loadfont problem for win32 (tleast now a fontname is required)
+
+  Revision 1.14  2000/02/26 00:09:06  lazarus
+  MWE:
+    Temorary removed focus on insert of a new page
+
+  Revision 1.13  2000/02/25 19:28:34  lazarus
+  Played with TNotebook to see why it crashes when I add a tab and the tnotebook is showing.  Havn't figured it out
+  Shane
+
+  Revision 1.12  2000/01/06 01:10:36  lazarus
+  Stoppok:
+     - changed ReadState to match current definition in fcl
+       (affects TPage & TCustomNotebook)
+     - added callback FItems.OnChanging to TCustomRadiogroup
+
+  Revision 1.11  2000/01/04 21:00:34  lazarus
+  *** empty log message ***
+
+  Revision 1.10  1999/12/07 01:19:25  lazarus
+  MWE:
+    Removed some double events
+    Changed location of SetCallBack
+    Added call to remove signals
+    Restructured somethings
+    Started to add default handlers in TWinControl
+    Made some parts of TControl and TWinControl more delphi compatible
+    ... and lots more ...
+
+  Revision 1.9  1999/11/01 01:28:29  lazarus
+  MWE: Implemented HandleNeeded/CreateHandle/CreateWND
+       Now controls are created on demand. A call to CreateComponent shouldn't
+       be needed. It is now part of CreateWnd
+
+  Revision 1.8  1999/10/22 21:01:50  lazarus
+
+        Removed calls to InterfaceObjects except for controls.pp. Commented
+        out any gtk depend lines of code.     MAH
+
+  Revision 1.7  1999/10/04 23:40:33  lazarus
+  Implemented the GetChildren and ShowControl methods. GetChildren needs
+  some more work. See the comments for a description.            CAW
+
+  Revision 1.6  1999/09/30 21:59:01  lazarus
+  MWE: Fixed TNoteBook problems
+       Modifications: A few
+       - Removed some debug messages
+       + Added some others
+       * changed fixed widged of TPage. Code is still broken.
+       + TWinControls are also added to the Controls collection
+       + Added TControl.Controls[] property
+
+  Revision 1.5  1999/09/22 20:07:14  lazarus
+  *** empty log message ***
+
+  Revision 1.3  1999/09/21 23:46:53  lazarus
+  *** empty log message ***
+
+  Revision 1.2  1999/09/13 03:25:00  lazarus
+  Modified to utilize the new gtkint IntCNSendMessage3 function.       caw
+
+  Revision 1.1  1999/08/04 05:24:21  lazarus
+  Added new TCustomNotebook component.        CAW
+
+}
+

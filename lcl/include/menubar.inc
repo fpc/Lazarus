@@ -1,0 +1,34 @@
+{---------------------------------------------------------------------------------------------}
+constructor TMenuBar.Create(AOwner: TComponent);
+begin
+   Assert(False, 'Trace:TMenuBar.Create');
+   Inherited Create(AOwner);
+   Assert(False, 'Trace:Back from TMenuBar inherited Create');
+//   fCompStyle := csMenuBar;
+//   CreateComponent(AOwner);
+//   fOwner := TControl(AOwner);
+end;
+
+{-----------------------------------------------------------------------------}
+procedure TMenuBar.Show;
+begin
+//   AddControl;
+   Assert(False, 'Trace:In Menubar.show');
+//   Inherited Show;
+   Assert(False, 'Trace:In Menubar.show');
+end;
+
+{---------------------------------------------------------------------------------------------}
+procedure TMenuBar.AddMenu(Title: TCaption; Menu: TMenu);
+begin
+//   fMenu := TMenuItem.Create(nil);
+//   fMenu.Caption := Title;
+//   fMenu.show;
+
+// ******************************
+// the following line has been commented out so that gtk dependency can be
+// removed from all files. The following function needs to be moved.   MAH
+//
+//   gtk_menu_item_set_submenu(GTK_MENU_ITEM(TControl(fMenu).fComponent), TControl(Menu).fComponent);
+//   gtk_menu_bar_append(GTK_MENU_BAR(fComponent), TControl(fMenu).fComponent);
+end;

@@ -1,0 +1,50 @@
+#
+#   Makefile.fpc for LCL Examples for Free Pascal
+#
+
+[targets]
+programs=hello notebk comdialogs progressbar trackbar listboxtest
+
+[clean]
+units=$(basename $(wildcard *$(PPUEXT))) 
+
+[require]
+packages=fcl gtk
+
+[dirs]
+fpcdir=../..
+targetdir=.
+##############################
+# replace following lines by the next line as soon
+# as the compiler dependency bug is fixed 
+##############################
+#unitdir=. ../lcl/units components/units 
+##############################
+unitdir=. ../lcl/units ../lcl ../lcl/interfaces/units ../lcl/interfaces/gtk ../components/$(THE_EDIT)
+incdir=. ../lcl/include
+##############################
+
+[presettings]
+##############################
+# remove following lines by the next line as soon
+# as the compiler dependency bug is fixed 
+##############################
+ifneq (,$(findstring NEW_EDITOR,$(OPT)))
+  THE_EDIT=mwedit92
+else
+  THE_EDIT=mwedit
+endif
+##############################
+
+
+
+[libs]
+#libgcc=1
+#libother=1
+
+
+[rules]
+cleartarget:
+        -$(DEL) $(addsuffix $(EXEEXT), $(EXEOBJECTS))
+
+all: cleartarget $(addsuffix $(EXEEXT), $(EXEOBJECTS))

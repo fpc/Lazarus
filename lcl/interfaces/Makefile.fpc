@@ -1,0 +1,14 @@
+#
+#   Makefile.fpc for Lazarus for Free Pascal
+#
+
+[targets]
+dirs=gtk win32 qt
+
+[defaults]
+# TODO:  make this configurable
+defaultdir=gtk
+
+[dirs]
+fpcdir=../../..
+
