@@ -244,9 +244,10 @@ begin
 
   RegisterComponentsProc:=@RegisterComponents;
   RegisterComponents('Standard','Menus',[TMenu,TPopupMenu]);
+  RegisterComponents('Standard','Buttons',[TButton]);
   RegisterComponents('Standard','StdCtrls',[TEdit,TLabel,TMemo,TCheckBox
           ,TListBox,TRadioButton,TComboBox,TScrollBar,TGroupBox,TToggleBox]);
-  RegisterComponents('Standard','Buttons',[TButton,TBitBtn,TSpeedButton]);
+  RegisterComponents('Additional','Buttons',[TBitBtn,TSpeedButton]);
   RegisterComponents('Additional','ExtCtrls',[TNoteBook,TPaintBox
           ,TBevel,TRadioGroup]);
   RegisterComponents('Additional','ComCtrls',[TStatusBar,TListView,TProgressBar
