@@ -5972,7 +5972,7 @@ var
   ComboWidget: PGtkCombo;
   DropDownWidget, ListWidget, FirstChildWidget: PGtkWidget;
   FirstChild: PGList;
-  CurWidth, CurHeight, CurItemHeight, BorderX, BorderY,
+  CurX, CurY, CurWidth, CurHeight, CurItemHeight, BorderX, BorderY,
   NewWidth, NewHeight: integer;
   ComboPopup: PGtkScrolledWindow;
 begin
@@ -5999,6 +5999,8 @@ begin
   // calculate new width and height
   DropDownWidget:=ComboWidget^.popwin;
   if DropDownWidget=nil then exit;
+  CurX:=DropDownWidget^.Allocation.x;
+  CurY:=DropDownWidget^.Allocation.y;
   ComboPopup:=PGtkScrolledWindow(ComboWidget^.popup);
   if ComboPopup=nil then exit;
   // ToDo: add scrollbars only if needed
@@ -6012,13 +6014,17 @@ begin
   inc(BorderX,
     ComboPopup^.vscrollbar^.requisition.width
     {+GTK_SCROLLED_WINDOW_GET_CLASS(ComboWidget^.popup)^.scrollbar_spacing});
-  NewWidth:=MinItemsWidth+BorderX;
-  NewHeight:=MinItemsHeight+BorderY;
+  NewWidth := MinItemsWidth+BorderX;
+  NewHeight := MinItemsHeight+BorderY;
+
   if NewWidth<CurWidth then NewWidth:=CurWidth;
   if NewHeight<CurHeight then NewHeight:=CurHeight;
   //writeln('NewWidth=',NewWidth,' NewHeight=',NewHeight,' CurWidth=',CurWidth,' CurHeight=',CurHeight);
   if (NewWidth=CurWidth) and (NewHeight=CurHeight) then exit;
 
+  //gtk_widget_set_uposition(DropDownWidget,NewX,NewY);
+  NewWidth:=Min(NewWidth, Screen.Width - CurX);
+  NewHeight:=Min(NewHeight, Screen.Height - CurY);
   gtk_widget_set_usize(DropDownWidget,NewWidth,NewHeight);
 end;
 
@@ -7132,8 +7138,14 @@ var
   txtpt : TPoint;
   sz : TSize;
   UseFont : PGDKFont;
-  UnRef : Boolean;
+  UnRef,
+  Underline,
+  StrikeOut : Boolean;
   DCOrigin: TPoint;
+
+  TempPen : hPen;
+  LogP : TLogPen;
+  Points : array[0..1] of TSize;
 begin
   Result := IsValidDC(DC);
   if Result
@@ -7147,10 +7159,14 @@ begin
       if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
       then begin
         UseFont := GetDefaultFont;
+        Underline := False;
+        StrikeOut := False;
         UnRef := True;
       end
       else begin
         UseFont := CurrentFont^.GDIFontObject;
+        Underline := LongBool(CurrentFont^.LogFont.lfUnderline);
+        StrikeOut := LongBool(CurrentFont^.LogFont.lfStrikeOut);
         UnRef := False;
       end;
       If UseFont = nil then
@@ -7170,6 +7186,33 @@ begin
         SelectGDKTextProps(DC);
         gdk_draw_text(Drawable, UseFont,
           GC, TxtPt.X+DCOrigin.X, TxtPt.Y+DCOrigin.Y, Str, Count);
+        If Underline or StrikeOut then begin
+          {Create & select pen of font color}
+          LogP.lopnStyle := PS_SOLID;
+          LogP.lopnWidth.X := 1;
+          LogP.lopnColor := GetTextColor(DC);
+          TempPen := SelectObject(DC, CreatePenIndirect(LogP));
+
+          {Get line(s) horizontal position(s)}
+          Points[0].cX := X;
+          Points[1].cX := X + sz.cX;
+
+          {Draw line(s)}
+          If Underline then begin
+            Points[0].cY := Y + 2 + DCTextMetric.TextMetric.tmHeight -
+                            DCTextMetric.TextMetric.tmDescent;
+            Points[1].cY := Points[0].cY;
+            Polyline(DC, @Points[0], 2);
+          end;
+
+          If StrikeOut then begin
+            Points[0].cY := Y + 2 + (TxtPt.Y - Y) div 2;
+            Points[1].cY := Points[0].cY;
+            Polyline(DC, @Points[0], 2);
+          end;
+
+          DeleteObject(SelectObject(DC, TempPen));
+        end;
         Result := True;
         If UnRef then
           GDK_Font_UnRef(UseFont);
@@ -7359,6 +7402,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.162  2002/10/18 16:08:10  lazarus
+  AJ: Partial HintWindow Fix; Added Screen.Font & Font.Name PropEditor; Started to fix ComboBox DropDown size/pos
+
   Revision 1.161  2002/10/17 21:00:18  lazarus
   MG: fixed uncapturing of mouse
 
