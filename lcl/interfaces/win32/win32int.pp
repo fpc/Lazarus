@@ -36,7 +36,7 @@ Interface
   successful compilation.
 }
 Uses
-  Windows, Classes, ComCtrls, Controls, Dialogs, DynHashArray,
+  Windows, Classes, ComCtrls, Controls, Buttons, Dialogs, DynHashArray,
   ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLIntf, LCLType,
   LMessages, StdCtrls, SysUtils, VCLGlobals, Win32Def, Graphics, Menus;
 
@@ -115,6 +115,11 @@ Type
     FStatusFont: HFONT;
     FMessageFont: HFONT;
 
+    FThemesActive: boolean;
+    FThemeLibrary: HMODULE;
+    IsThemeActive: function: BOOL; stdcall;
+    IsAppThemed: function: BOOL; stdcall;
+
     Function  GetOwnerHandle(ADialog : TCommonDialog): HWND;
     Function  GetText(Sender: TComponent; Handle: HWND; var Data: String): Boolean; virtual;
     Procedure SetLabel(Sender: TObject; Data: Pointer);
@@ -122,6 +127,7 @@ Type
     Procedure ResizeChild(Sender: TWinControl; Left, Top, Width, Height: Integer);
     Procedure AssignSelf(Window: HWnd; Data: Pointer);
     Procedure ReDraw(Child: TObject);
+    procedure DrawBitBtnImage(BitBtn: TBitBtn; ButtonCaption: PChar);
     Procedure SetLimitText(Window: HWND; Limit: Word);
 
     Procedure ShowHide(Sender: TObject);
@@ -172,6 +178,7 @@ Type
     Function  InitHintFont(HintFont: TObject): Boolean; Override;
     Function  RecreateWnd(Sender: TWinControl): Integer; virtual;
     Procedure AttachMenuToWindow(AMenuObject: TComponent); Override;
+    procedure UpdateThemesActive;
 
     // create and destroy
     function CreateComponent(Sender : TObject): THandle; override;
@@ -182,6 +189,7 @@ Type
     {$I win32lclintfh.inc}
 
     property AppHandle: HWND read FAppHandle;
+    property ThemesActive: boolean read FThemesActive;
   End;
 
   {$I win32listslh.inc}
@@ -222,7 +230,7 @@ Uses
  Win32WSStdCtrls,
 // Win32WSToolwin,
 ////////////////////////////////////////////////////
-  Buttons, Calendar, CListBox, Spin, CheckLst, WinExt, LclProc;
+  Calendar, CListBox, Spin, CheckLst, WinExt, LclProc;
 
 type
   { Linked list of objects for events }
@@ -243,7 +251,7 @@ const
   BOOL_RESULT: Array[Boolean] Of String = ('False', 'True');
   ClsName : array[0..20] of char = 'LazarusForm'#0;
   ToolBtnClsName : array[0..20] of char = 'ToolbarButton'#0;
-  
+
 //{$I win32proc.inc}
 {$I win32listsl.inc}
 {$I win32callback.inc}
@@ -264,6 +272,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.85  2004/06/18 19:55:43  micha
+  fix xp themes drawing image on bitbtn
+
   Revision 1.84  2004/06/13 14:32:15  micha
   fix cursors to use what's available
 

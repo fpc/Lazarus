@@ -60,6 +60,7 @@ Procedure Win32PosToLCLPos(Sender: TObject; var Left, Top: SmallInt);
 procedure UpdateWindowStyle(Handle: HWnd; Style: integer; StyleMask: integer);
 function BorderStyleToWin32Flags(Style: TFormBorderStyle): DWORD;
 function BorderStyleToWin32FlagsEx(Style: TFormBorderStyle): DWORD;
+function GetFileVersion(FileName: string): dword;
 
 implementation
 
@@ -821,6 +822,26 @@ begin
   case Style of
   bsToolWindow, bsSizeToolWin:
     Result := WS_EX_TOOLWINDOW;
+  end;
+end;
+
+function GetFileVersion(FileName: string): dword;
+var
+  buf: pointer;
+  lenBuf: dword;
+  fixedInfo: ^VS_FIXEDFILEINFO;
+begin
+  Result := $FFFFFFFF;
+  lenBuf := GetFileVersionInfoSize(PChar(FileName), lenBuf);
+  if lenBuf > 0 then
+  begin
+    GetMem(buf, lenBuf);
+    if GetFileVersionInfo(PChar(FileName), 0, lenBuf, buf) then
+    begin
+      VerQueryValue(buf, '\', pointer(fixedInfo), lenBuf);
+      Result := fixedInfo^.dwFileVersionMS;
+    end;
+    FreeMem(buf);
   end;
 end;
 

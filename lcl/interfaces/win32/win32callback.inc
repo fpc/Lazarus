@@ -24,6 +24,11 @@
 {            callback routines                                }
 {*************************************************************}
 
+{ addition XP messages }
+
+const
+  WM_THEMECHANGED = $31A;
+
 { forward declarations }
 
 function ComboBoxEditWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
@@ -894,6 +899,11 @@ Begin
       LMessage.LParam := LParam;
       LMessage.WParam := WParam;
     End;
+    WM_THEMECHANGED:
+    begin
+      // winxp theme changed, recheck whether themes are enabled
+      TWin32WidgetSet(InterfaceObject).UpdateThemesActive;
+    end;
   End;
 
   If WinProcess Then
@@ -1242,6 +1252,9 @@ end;
 
 {
   $Log$
+  Revision 1.116  2004/06/18 19:55:43  micha
+  fix xp themes drawing image on bitbtn
+
   Revision 1.115  2004/06/17 21:33:01  micha
   fix scroll message handling for comboboxes
 
