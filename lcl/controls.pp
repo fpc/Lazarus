@@ -811,8 +811,8 @@ type
     procedure SetInitialBounds(aLeft, aTop, aWidth, aHeight : integer); virtual;
     procedure SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight : integer;
                                 Lock: boolean); virtual;
-    function  GetTextBuf(Buffer: PChar; BufSize: Integer): Integer;
-    Procedure SetTextBuf(Buffer : PChar);
+    function  GetTextBuf(Buffer: PChar; BufSize: Integer): Integer; virtual;
+    Procedure SetTextBuf(Buffer : PChar); virtual;
     Function  Perform(Msg:Cardinal; WParam , LParam : LongInt): LongInt;
     Function  ScreenToClient(const Point : TPoint) : TPoint;
     Function  ClientToScreen(const Point : TPoint) : TPoint;
@@ -1092,6 +1092,8 @@ type
     Procedure GetTabOrderList(List : TList);
     function HandleAllocated : Boolean;
     procedure HandleNeeded;
+    function  GetTextBuf(Buffer: PChar; BufSize: Integer): Integer; override;
+    Procedure SetTextBuf(Buffer : PChar); override;
   public
     property BoundsLockCount: integer read FBoundsLockCount;
     property Brush: TBrush read FBrush;
@@ -1630,6 +1632,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.138  2003/07/30 13:03:44  mattias
+  replaced label with memo
+
   Revision 1.137  2003/07/24 06:54:32  mattias
   fixed anti circle mechnism for aligned controls
 

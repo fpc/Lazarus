@@ -2701,6 +2701,18 @@ begin
   end;
 end;
 
+function TWinControl.GetTextBuf(Buffer: PChar; BufSize: Integer): Integer;
+begin
+  Result:=inherited GetTextBuf(Buffer, BufSize);
+end;
+
+procedure TWinControl.SetTextBuf(Buffer: PChar);
+begin
+  if not HandleAllocated then exit;
+  CNSendMessage(LM_SetLabel, Self, Buffer);
+  inherited SetTextBuf(Buffer);
+end;
+
 {------------------------------------------------------------------------------
   Method: TControl.BeginUpdateBounds
   Params:  None
@@ -2934,6 +2946,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.156  2003/07/30 13:03:44  mattias
+  replaced label with memo
+
   Revision 1.155  2003/07/25 08:00:36  mattias
   fixed sending follow up move/size messages from gtk
 

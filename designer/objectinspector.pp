@@ -2168,7 +2168,6 @@ begin
     PageIndex:=0;
     PopupMenu:=MainPopupMenu;
     Align:= alClient;
-    Visible:=true;
   end;
 
   // property grid
@@ -2188,7 +2187,6 @@ begin
     Align:=alClient;
     PopupMenu:=MainPopupMenu;
     OnModified:=@OnGridModified;
-    Visible:=true;
   end;
 
   // event grid
@@ -2204,7 +2202,6 @@ begin
     Align:=alClient;
     PopupMenu:=MainPopupMenu;
     OnModified:=@OnGridModified;
-    Visible:=true;
   end;
 
 end;

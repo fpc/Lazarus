@@ -248,8 +248,7 @@ type
     procedure SetStyle(Val : TComboBoxStyle); virtual;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
 
-    property DropDownCount: Integer read
-      FDropDownCount write SetDropDownCount default 8;
+    property DropDownCount: Integer read FDropDownCount write SetDropDownCount default 8;
     property Items: TStrings read FItems write SetItems;
     property ItemHeight: Integer read GetItemHeight write SetItemHeight;
     property ItemIndex: integer read GetItemIndex write SetItemIndex;
@@ -1465,6 +1464,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.101  2003/07/30 13:03:44  mattias
+  replaced label with memo
+
   Revision 1.100  2003/07/07 23:58:43  marc
   + Implemented TCheckListBox.Checked[] property
 

@@ -141,11 +141,11 @@ procedure TDebuggerOptionsForm.FetchDebuggerSpecificOptions;
 var
   NewDebuggerType: TDebuggerType;
   i: Integer;
-  ALabel: TLabel;
+  AMemo: TMemo;
 begin
   NewDebuggerType:=DebuggerNameToType(cmbDebuggerType.Text);
   if NewDebuggerType=FCurDebuggerType then exit;
-
+  
   // clear debugger specific options components
   if FDebuggerSpecificComponents=nil then
     FDebuggerSpecificComponents:=TList.Create;
@@ -165,13 +165,14 @@ begin
   
   dtSSHGNUDebugger:
     begin
-      ALabel:=TLabel.Create(Self);
-      FDebuggerSpecificComponents.Add(ALabel);
-      with ALabel do begin
-        Name:='DebOptsSpecLabel1';
+      AMemo:=TMemo.Create(Self);
+      FDebuggerSpecificComponents.Add(AMemo);
+      with AMemo do begin
+        Name:='DebOptsSpecMemo1';
         Parent:=gbDebuggerSpecific;
-        SetBounds(10,10,Parent.Width-25,Parent.Height-30);
+        SetBounds(5,5,Parent.Width-15,Parent.Height-35);
         WordWrap:=true;
+        ReadOnly:=true;
         Caption:='The GNU debugger through ssh allows to remote debug via a ssh'
           +' connection. See docs/RemoteDebugging.txt for details. The path'
           +' must contain the ssh client filename, the hostname with an optional'
