@@ -1029,10 +1029,10 @@ type
     property HandleType: TBitmapHandleType read GetHandleType write SetHandleType;
     property MaskHandle: HBITMAP read GetMaskHandle write SetMaskHandle;
     property Monochrome: Boolean read FMonochrome write FMonochrome;
-    property PixelFormat: TPixelFormat read FPixelFormat write SetPixelFormat;
-    property ScanLine[Row: Integer]: Pointer read GetScanLine;
+    property PixelFormat: TPixelFormat read FPixelFormat write SetPixelFormat default pfDevice;
+    property ScanLine[Row: Integer]: Pointer read GetScanLine; // only for Delphi compatibility
     property TransparentColor: TColor read FTransparentColor
-                                      write FTransparentColor;
+                                      write FTransparentColor default clNone;
     property TransparentMode: TTransparentMode read FTransparentMode
                                         write SetTransparentMode default tmAuto;
   end;
@@ -1442,6 +1442,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.113  2004/02/10 00:21:04  mattias
+  fixed TImage background for transparent images
+
   Revision 1.112  2004/02/07 20:25:37  mattias
   fixed saving custom TBitBtn kind
 

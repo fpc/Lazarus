@@ -49,16 +49,21 @@ procedure TCustomImage.DoAutoSize;
 var
   ModifyWidth,
   ModifyHeight : Boolean;
+  NewWidth: Integer;
+  NewHeight: Integer;
 begin
   If AutoSize and not AutoSizing then begin
     AutoSizing := True;
-    ModifyWidth := (Align = alleft) or (Align = alRight) or (Align = alNone);
-    ModifyHeight := (Align = alTop) or (Align = alBottom) or (Align = alNone);
+    ModifyWidth := Align in [alLeft,alRight,alNone];
+    ModifyHeight := Align in [alTop,alBottom,alNone];
     If ModifyWidth and (Picture.Width > 0) then
-      Width := Max(Picture.Width, CONSTRAINTS.MinWidth);
+      NewWidth := Max(Picture.Width, Constraints.MinWidth);
     If ModifyHeight and (Picture.Height > 0) then
-      Height := Max(Picture.Height, CONSTRAINTS.MinHeight);
-    PictureChanged(Self);
+      NewHeight := Max(Picture.Height, Constraints.MinHeight);
+    if (NewWidth<>Width) or (NewHeight<>Height) then begin
+      SetBounds(Left,Top,NewWidth,NewHeight);
+      PictureChanged(Self);
+    end;
     AutoSizing := False;
   end;
 end;
@@ -157,6 +162,7 @@ Procedure TCustomImage.Paint;
 var
   RGN : longint;
   iRect : TRect;
+  BackgroundColor: Integer;
 begin
   With Canvas do begin
     RGN := CreateRectRGN(0, 0, Width + 1, Height + 1);
@@ -166,15 +172,18 @@ begin
     If Picture.Graphic = nil then
       exit;
     iRect:=DestRect;
-    If Picture.Graphic.Transparent and not Transparent then begin
+    If Picture.Graphic.Transparent and (not Transparent) then begin
       If Picture.Graphic is TBitmap then
-        Brush.Color := TBitmap(Picture.Graphic).TransparentColor
+        BackgroundColor := TBitmap(Picture.Graphic).TransparentColor
       else
-        Brush.Color := clWhite;
+        BackgroundColor := clWhite;
+    end else begin
+      BackgroundColor:=clNone;
+    end;
+    if (BackgroundColor<>clNone) then begin
+      Brush.Color:=BackgroundColor;
       FillRect(iRect);
     end;
-    Brush.Color:=clBlue;
-    FillRect(iRect);
     StretchDraw(iRect, Picture.Graphic);
   end;
 
