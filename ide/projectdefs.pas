@@ -183,6 +183,7 @@ type
     procedure Assign(APosition: TProjectJumpHistoryPosition);
     constructor Create(const AFilename: string; ACaretXY: TPoint; 
       ATopLine: integer);
+    constructor Create(APosition: TProjectJumpHistoryPosition);
     function IsEqual(APosition: TProjectJumpHistoryPosition): boolean;
     function IsSimilar(APosition: TProjectJumpHistoryPosition): boolean;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
@@ -581,6 +582,13 @@ begin
   FTopLine:=ATopLine;
 end;
 
+constructor TProjectJumpHistoryPosition.Create(
+  APosition: TProjectJumpHistoryPosition);
+begin
+  inherited Create;
+  Assign(APosition);
+end;
+
 procedure TProjectJumpHistoryPosition.Assign(
   APosition: TProjectJumpHistoryPosition);
 begin
@@ -813,14 +821,28 @@ begin
   if Index<0 then Index:=Count;
   if (Index<=Count) then begin
     if (Index>0) and Items[Index-1].IsSimilar(APosition) then begin
+      //writeln('TProjectJumpHistory.InsertSmart Replacing prev: Index=',Index,
+      //  ' Old=',Items[Index-1].CaretXY.X,',',Items[Index-1].CaretXY.Y,' ',Items[Index-1].Filename,
+      //  ' New=',APosition.CaretXY.X,',',APosition.CaretXY.Y,' ',APosition.Filename,
+      //  ' ');
       Items[Index-1]:=APosition;
       APosition.Free;
     end else if (Index<Count) and Items[Index].IsSimilar(APosition) then begin
+      //writeln('TProjectJumpHistory.InsertSmart Replacing next: Index=',Index,
+      //  ' Old=',Items[Index].CaretXY.X,',',Items[Index].CaretXY.Y,' ',Items[Index].Filename,
+      //  ' New=',APosition.CaretXY.X,',',APosition.CaretXY.Y,' ',APosition.Filename,
+      //  ' ');
       Items[Index]:=APosition;
       APosition.Free;
     end else begin
+      //writeln('TProjectJumpHistory.InsertSmart Adding: Index=',Index,
+      //  ' New=',APosition.CaretXY.X,',',APosition.CaretXY.Y,' ',APosition.Filename,
+      //  ' ');
       Insert(Index,APosition);
+      if (Index=Count-1) and (HistoryIndex=Count-2) then
+        inc(FHistoryIndex);
     end;
+    //writeln('  HistoryIndex=',HistoryIndex);
   end else begin
     APosition.Free;
   end;

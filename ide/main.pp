@@ -6510,8 +6510,6 @@ begin
   if DeleteForwardHistory then Project1.JumpHistory.DeleteForwardHistory;
   Project1.JumpHistory.InsertSmart(Project1.JumpHistory.HistoryIndex+1,
                                    NewJumpPoint);
-  if Project1.JumpHistory.HistoryIndex=Project1.JumpHistory.Count-2 then
-    Project1.JumpHistory.HistoryIndex:=Project1.JumpHistory.Count-1;
 //writeln('[TMainIDE.OnSrcNoteBookAddJumpPoint] END Line=',ACaretXY.Y,',DeleteForwardHistory=',DeleteForwardHistory,' Count=',Project1.JumpHistory.Count,',HistoryIndex=',Project1.JumpHistory.HistoryIndex);
 //Project1.JumpHistory.WriteDebugReport;
 end;
@@ -6523,54 +6521,94 @@ end;
 
 Procedure TMainIDE.OnSrcNotebookJumpToHistoryPoint(var NewCaretXY: TPoint;
   var NewTopLine, NewPageIndex: integer;  Action: TJumpHistoryAction);
-var DestIndex, UnitIndex, NewHistoryIndex: integer;
-  ActiveSrcEdit: TSourceEditor;
+{ How the HistoryIndex works:
+
+  When the user jumps around each time an item is added to the history list
+  and the HistoryIndex points to the last added item (i.e. Count-1).
+  
+  Jumping back:
+    The sourceditor will be repositioned to the item with the HistoryIndex.
+    Then the historyindex is moved to the previous item.
+    If HistoryIndex is the last item in the history, then this is the first
+    back jump and the current sourceeditor position is smart added to the
+    history list. Smart means that if the added Item is similar to the last
+    item then the last item will be replaced else a new item is added.
+
+  Jumping forward:
+
+}
+var DestIndex, UnitIndex: integer;
+  ASrcEdit: TSourceEditor;
+  AnUnitInfo: TUnitInfo;
   DestJumpPoint: TProjectJumpHistoryPosition;
+  CursorPoint, NewJumpPoint: TProjectJumpHistoryPosition;
 begin
-//writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] A Back=',Action=jhaBack);
-  { jumping back/forward is also a jump, that's why the current source position
-    should be saved to the jump history before the jump.
-    The InsertSmart method prevents putting positions twice in the history. }
-    
+  //writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] A Back=',Action=jhaBack);
+
   // update jump history (e.g. delete jumps to closed editors)
   Project1.JumpHistory.DeleteInvalidPositions;
-  
-//writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] B Count=',Project1.JumpHistory.Count,',HistoryIndex=',Project1.JumpHistory.HistoryIndex);
+
+  // get destination jump point
   DestIndex:=Project1.JumpHistory.HistoryIndex;
-  if Action=jhaForward then begin
-    inc(DestIndex,2);
-    if DestIndex=Project1.JumpHistory.Count then
-      Dec(DestIndex);
-  end;
+  if Action=jhaForward then
+    inc(DestIndex);
   if (DestIndex<0) or (DestIndex>=Project1.JumpHistory.Count) then exit;
-  DestJumpPoint:=Project1.JumpHistory[DestIndex];
-//writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] C Line=',DestJumpPoint.CaretXY.Y);
-  NewHistoryIndex:=Project1.JumpHistory.HistoryIndex;
-  if Action=jhaBack then begin
-    dec(NewHistoryIndex);
-    if Project1.JumpHistory.HistoryIndex=Project1.JumpHistory.Count-1 then begin
-      // insert current source position into history
-      if SourceNoteBook.NoteBook=nil then exit;
-      ActiveSrcEdit:=SourceNotebook.GetActiveSE;
-      if (ActiveSrcEdit=nil) then exit;
-      OnSrcNoteBookAddJumpPoint(ActiveSrcEdit.EditorComponent.CaretXY,
-        ActiveSrcEdit.EditorComponent.TopLine,SourceNotebook.Notebook.PageIndex,
-        false);
+
+  CursorPoint:=nil;
+  if (SourceNoteBook<>nil) then begin
+    // this is the first back jump
+    // -> insert current source position into history
+    GetCurrentUnit(ASrcEdit,AnUnitInfo);
+    if (ASrcEdit<>nil) and (AnUnitInfo<>nil) then begin
+      CursorPoint:=TProjectJumpHistoryPosition.Create(AnUnitInfo.Filename,
+        ASrcEdit.EditorComponent.CaretXY,ASrcEdit.EditorComponent.TopLine);
+      //writeln('  Current Position: ',CursorPoint.Filename,
+      //        ' ',CursorPoint.CaretXY.X,',',CursorPoint.CaretXY.Y);
     end;
-  end else
-    inc(NewHistoryIndex);
-  Project1.JumpHistory.HistoryIndex:=NewHistoryIndex;
-  
-  UnitIndex:=Project1.IndexOfFilename(DestJumpPoint.Filename);
-  if (UnitIndex>=0) and (Project1.Units[UnitIndex].EditorIndex>=0) then begin
-    with Project1.JumpHistory do begin
-      NewCaretXY:=DestJumpPoint.CaretXY;
-      NewTopLine:=DestJumpPoint.TopLine;
-    end;
-    NewPageIndex:=Project1.Units[UnitIndex].EditorIndex;
   end;
-//writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] END Count=',Project1.JumpHistory.Count,',HistoryIndex=',Project1.JumpHistory.HistoryIndex);
-//Project1.JumpHistory.WriteDebugReport;
+
+  if (Action=jhaBack) and (Project1.JumpHistory.Count=DestIndex+1)
+  and (CursorPoint<>nil) then begin
+    // this is the first back jump
+    // -> insert current source position into history
+    //writeln('  First back jump -> add current cursor position');
+    NewJumpPoint:=TProjectJumpHistoryPosition.Create(CursorPoint);
+    Project1.JumpHistory.InsertSmart(Project1.JumpHistory.HistoryIndex+1,
+                                     NewJumpPoint);
+  end;
+  
+  // find the next jump point that is not where the cursor is
+  DestIndex:=Project1.JumpHistory.HistoryIndex;
+  if Action=jhaForward then
+    inc(DestIndex);
+  while (DestIndex>=0) or (DestIndex<Project1.JumpHistory.Count) do begin
+    DestJumpPoint:=Project1.JumpHistory[DestIndex];
+    //writeln(' DestIndex=',DestIndex);
+    if (CursorPoint=nil)
+    or not DestJumpPoint.IsSimilar(CursorPoint) then begin
+      if Action=jhaBack then
+        dec(DestIndex);
+      Project1.JumpHistory.HistoryIndex:=DestIndex;
+      UnitIndex:=Project1.IndexOfFilename(DestJumpPoint.Filename);
+      if (UnitIndex>=0) and (Project1.Units[UnitIndex].EditorIndex>=0) then
+      begin
+        NewCaretXY:=DestJumpPoint.CaretXY;
+        NewTopLine:=DestJumpPoint.TopLine;
+        NewPageIndex:=Project1.Units[UnitIndex].EditorIndex;
+        //writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] Result Line=',NewCaretXY.Y,' Col=',NewCaretXY.X);
+        break;
+      end;
+    end;
+    if Action=jhaBack then
+      dec(DestIndex)
+    else
+      inc(DestIndex);
+  end;
+  
+  CursorPoint.Free;
+
+  //writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] END Count=',Project1.JumpHistory.Count,',HistoryIndex=',Project1.JumpHistory.HistoryIndex);
+  //Project1.JumpHistory.WriteDebugReport;
 end;
 
 Procedure TMainIDE.OnSrcNotebookViewJumpHistory(Sender : TObject);
@@ -7145,6 +7183,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.389  2002/09/19 14:54:53  lazarus
+  MG: history jumps now works without double jumps
+
   Revision 1.388  2002/09/17 22:19:32  lazarus
   MG: fixed creating project from file
 
