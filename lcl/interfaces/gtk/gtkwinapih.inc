@@ -73,7 +73,9 @@ function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: 
 function ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;  override;
 
 function FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean; override;
-function Frame3d(DC : HDC; var ARect: TRect; const FrameWidth: integer; const Style : TBevelCut): boolean; override;
+function Frame(DC: HDC; const ARect: TRect): Integer; override;
+function Frame3d(DC: HDC; var ARect: TRect; const FrameWidth : integer; const Style : TBevelCut): Boolean; override;
+function FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH): Integer; override;
 
 Function GetActiveWindow : HWND; override;
 function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint; Override;
@@ -191,6 +193,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.60  2003/01/27 13:49:16  mattias
+  reduced speedbutton invalidates, added TCanvas.Frame
+
   Revision 1.59  2002/12/30 17:24:08  mattias
   added history to identifier completion
 

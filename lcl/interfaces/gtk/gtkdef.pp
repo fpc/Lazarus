@@ -85,8 +85,8 @@ type
       );
       gdiBrush: ( 
         // ToDo: add bitmap mask
-        IsNullBrush : Boolean;
-        GDIBrushColor : TGDIColor;
+        IsNullBrush: Boolean;
+        GDIBrushColor: TGDIColor;
         GDIBrushFill: TGdkFill;
         GDIBrushPixMap: PGdkPixmap;
       );
@@ -436,6 +436,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.33  2003/01/27 13:49:16  mattias
+  reduced speedbutton invalidates, added TCanvas.Frame
+
   Revision 1.32  2003/01/24 11:58:00  mattias
   fixed clipboard waiting and kwrite targets
 
