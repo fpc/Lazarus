@@ -1393,7 +1393,6 @@ begin
   Result := '';
   //Figure out the line number
   TopLine := FEditor.TopLine;
-  Writeln('TOPLINE = ',TopLine);
   LineHeight := FEditor.LineHeight;
 //  Writeln('GetWord...,',position.X,',',Position.Y);
   if Position.Y > 1 then

@@ -1321,8 +1321,71 @@ begin
 end;
 
 PRocedure TOIPropertyGrid.CurrentEditDblClick(Sender : TObject);
+var
+  Rect : TRect;
+  Position : TPoint;
+  Index: integer;
+  PointedRow:TOIpropertyGridRow;
+  TypeKind : TTypeKind;
+  Temp : String;
 begin
-  writeln('CURRENTEDITDBLCLICK!!!!');
+  FHintTimer.Enabled := False;
+  //if event, then either create it or go to it.
+  //if Edit box, then nothing
+  //if combobox, then select the next value
+
+  if (sender is TComboBox) then
+     Begin  //either an Event of a enumeration or Boolean
+
+      Position := Mouse.CursorPos;
+      if ( (FLastMouseMovePos.X <= 0) or (FLastMouseMOvePos.Y <= 0)
+         or (FLastMouseMovePos.X >= Width) or (FLastMouseMovePos.Y >= Height)) then
+      Exit;
+
+      Position := ScreenToClient(Position);
+      if ((Position.X <=0) or (Position.X >= Width) or (Position.Y <= 0)
+         or (Position.Y >= Height)) then
+      Exit;
+
+      Index:=MouseToIndex(Position.Y,false);
+      if (Index>=0) and (Index<FRows.Count) then
+       begin
+        PointedRow:=Rows[Index];
+        if Assigned(PointedRow) then
+        Begin
+
+          TypeKind := PointedRow.Editor.GetPropType^.Kind;
+          case TypeKind of
+               tkMethod : begin
+                          //event
+                          //if blank then create event!
+                          if TComboBox(sender).Text = '' then
+                             Begin
+                                //see if it's in the list first.
+                                Temp := TMethodPropertyEditor(PointedRow.Editor).GetFormMethodName;
+                                if (TComboBox(sender).Items.Indexof(Temp) = -1) then
+                                    TComboBox(sender).Items.Add(Temp);
+                                //set the text
+                                TComboBox(sender).Text := Temp;
+                             end
+                             else  //jump to event!
+                             Begin
+                             
+                             end;
+                             
+                          end;
+                else
+                   Begin
+                     if TComboBox(Sender).Items.Count = 0 then Exit;
+                     if TComboBox(sender).ItemIndex < (TComboBox(sender).Items.Count-1) then
+                          TComboBox(sender).ItemIndex := TComboBox(sender).ItemIndex +1
+                          else
+                          TComboBox(sender).ItemIndex := 0;
+                   end;
+           end;
+         end;
+     end;
+     end;
 end;
 
 //------------------------------------------------------------------------------
