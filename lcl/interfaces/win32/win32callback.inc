@@ -62,6 +62,8 @@ End;
  -----------------------------------------------------------------------------}
 Function PropEnumProc(Window: Hwnd; Str: PChar; Data: Handle): LongBool; StdCall;
 Begin
+  Result:=false;
+  if (DWORD(Str) and $FFFF0000) = 0 then Exit; // global atom handle
   Assert(False, 'Trace:PropEnumProc - Start');
   Assert(False, Format('Trace:PropEnumProc - Property %S (with value 0x%X) from window 0x%X removed', [String(Str), Data, Window]));
   RemoveProp(Window, Str);
@@ -884,6 +886,9 @@ end;
 
 {
   $Log$
+  Revision 1.68  2003/11/10 19:05:44  mattias
+  fixed some bugs by Andreas
+
   Revision 1.67  2003/11/08 17:41:03  micha
   compiler warning cleanups
 

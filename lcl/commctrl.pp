@@ -188,7 +188,7 @@ const
   TB_GETHOTITEM           = WM_USER + 71;
   TB_SETHOTITEM           = WM_USER + 72;
 
-  TB_ADDSTRINGW           = WM_USER = 77;
+  TB_ADDSTRINGW           = WM_USER + 77;
 
 
   TB_INSERTBUTTON = TB_INSERTBUTTONA;

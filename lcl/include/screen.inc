@@ -422,7 +422,7 @@ procedure TScreen.UpdateLastActive;
     if Assigned(FOnActiveControlChange) then FOnActiveControlChange(Self);
     i:=GetHandlerCount(snActiveControlChanged);
     while GetNextHandlerIndex(snActiveControlChanged,i) do begin
-      Handler:=TScreenFormEvent(FHandlers[snActiveControlChanged][i]);
+      Handler:=TScreenControlEvent(FHandlers[snActiveControlChanged][i]);
       Handler(Self,FLastActiveControl);
     end;
   end;

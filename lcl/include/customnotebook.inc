@@ -192,7 +192,7 @@ begin
   NewOwner:=fNotebook.Owner;
   if NewOwner=nil then
     NewOwner:=fNotebook;
-  tmpPage := fNotebook.PageClass.Create(fNotebook.Owner);
+  tmpPage := fNotebook.PageClass.Create(NewOwner);
   with tmpPage do
   begin
     Caption := S;
@@ -260,6 +260,7 @@ var
   NewControlIndex, NewPageIndex: integer;
 begin
   if CurIndex=NewIndex then exit;
+  NewPageIndex:=NewIndex;
   
   APage:=TCustomPage(fPageList[CurIndex]);
   
@@ -778,6 +779,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.37  2003/11/10 19:05:44  mattias
+  fixed some bugs by Andreas
+
   Revision 1.36  2003/09/20 15:24:54  mattias
   implemented TPageControl and TTabSheet
 

@@ -618,7 +618,7 @@ begin
     If Bottom < Top then begin
       Tmp    := Bottom;
       Bottom := Top;
-      Top    := Bottom;
+      Top    := Tmp;
     end;
 
     Result.X := Left + (Right - Left) div 2;
@@ -1085,6 +1085,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.4  2003/11/10 19:05:44  mattias
+  fixed some bugs by Andreas
+
   Revision 1.3  2003/08/18 19:24:18  mattias
   fixed TCanvas.Pie
 
