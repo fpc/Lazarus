@@ -857,8 +857,10 @@ type
     function  DoKeyDown(var Message: TLMKey): Boolean;
     function  DoKeyPress(var Message: TLMKey): Boolean;
     function  DoKeyUp(var Message: TLMKey): Boolean;
-    Function  FindNextControl(CurrentControl : TControl; GoForward,
-      CheckTabStop, CheckParent : Boolean) : TControl;
+    Function  FindNextControl(CurrentControl: TControl; GoForward,
+      CheckTabStop, CheckParent, OnlyWinControls: Boolean) : TControl;
+    Function  FindNextControl(CurrentControl: TWinControl; GoForward,
+      CheckTabStop, CheckParent: Boolean) : TWinControl;
     function  GetClientOrigin: TPoint; override;
     function  GetClientRect: TRect; override;
     function  GetChildsRect(Scrolled: boolean): TRect; override;
@@ -1436,6 +1438,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.100  2002/12/28 12:42:38  mattias
+  focus fixes, reduced lpi size
+
   Revision 1.99  2002/12/27 18:18:05  mattias
   fixes for htmllite
 
