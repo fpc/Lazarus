@@ -1070,12 +1070,24 @@ var
   Control : TControl;
   Position : TPoint;
   BW       : Integer;
+  Window : TWInControl;
 begin
+  FHintTimer.Enabled := False;
+
+  Position := Mouse.CursorPos;
+  Window := FindLCLWindow(Position);
+  if not(Assigned(window)) then Exit;
+
+  //get the parent until parent is nil
+  While Window.Parent <> nil do
+  Window := Window.Parent;
+
+  if (window <> FCustomForm) then Exit;
+
   BW := 0;
   if (FCustomForm is TForm) then
      BW := TForm(FCustomForm).BorderWidth;
-  FHintTimer.Enabled := False;
-  Position := Mouse.CursorPos;
+
   if ((Position.X < (FCustomForm.LEft +BW)) or (Position.X > (FCustomForm.Left+FCustomForm.Width - BW)) or (Position.Y < FCustomForm.Top+22) or (Position.Y > (FCustomForm.Top+FCustomForm.Height - BW))) then Exit;
 
   Position := FCustomForm.ScreenToClient(Position);

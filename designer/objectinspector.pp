@@ -1226,10 +1226,21 @@ var
   Index: integer;
   PointedRow:TOIpropertyGridRow;
   TypeKind : TTypeKind;
+  Window :TWinControl;
 begin
   FHintTimer.Enabled := False;
+
   Position := Mouse.CursorPos;
-  if ( (FLastMouseMovePos.X <= 0) or (FLastMouseMOvePos.Y <= 0) 
+  Window := FindLCLWindow(Position);
+  if not(Assigned(window)) then Exit;
+
+  //get the parent until parent is nil
+  While Window.Parent <> nil do
+  Window := Window.Parent;
+
+  if (window <> Self) then Exit;
+
+  if ( (FLastMouseMovePos.X <= 0) or (FLastMouseMOvePos.Y <= 0)
   or (FLastMouseMovePos.X >= Width) or (FLastMouseMovePos.Y >= Height)) then
     Exit;
 

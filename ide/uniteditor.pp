@@ -2906,11 +2906,20 @@ var
   cPosition : TPoint;
   TextPosition : TPoint;
   SE : TSourceEditor;
+  WIndow : TWInControl;
 begin
   FHintTimer.Enabled := False;
 
   cPosition := Mouse.CursorPos;
-
+  Window := FindLCLWindow(cPosition);
+  if not(Assigned(window)) then Exit;
+  
+  //get the parent until parent is nil
+  While Window.Parent <> nil do
+  Window := Window.Parent;
+  
+  if (window <> Self) then Exit;
+  
   cPosition := ScreenToClient(cPosition);
   //Check to see if we are in the windows bounds
   if ((cPosition.X <=EditorOpts.GutterWidth) or (cPosition.X >= Width) or (cPosition.Y <= 25)

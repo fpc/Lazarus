@@ -465,7 +465,6 @@ begin
     Result := DeliverPostMessage(Data, MessE);
   end
   else begin
-  Writeln('LLastClick = ',FormatDateTime('hh:mm:ss:zz',LLastClick));
     MessI.Keys := 0;
     case event^.Button of
          1 : begin
@@ -1466,6 +1465,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.49  2001/11/30 16:41:59  lazarus
+  Improved hints with overlapping windows.
+  Shane
+
   Revision 1.48  2001/11/29 18:41:27  lazarus
   Improved the double click.
   Shane
