@@ -171,14 +171,6 @@ type
   public
   end;
 
-  { TGtkWSBoundLabel }
-
-  TGtkWSBoundLabel = class(TWSBoundLabel)
-  private
-  protected
-  public
-  end;
-
   { TGtkWSCustomLabeledEdit }
 
   TGtkWSCustomLabeledEdit = class(TWSCustomLabeledEdit)
@@ -411,7 +403,6 @@ initialization
 //  RegisterWSComponent(TRadioGroup, TGtkWSRadioGroup);
 //  RegisterWSComponent(TCustomCheckGroup, TGtkWSCustomCheckGroup);
 //  RegisterWSComponent(TCheckGroup, TGtkWSCheckGroup);
-//  RegisterWSComponent(TBoundLabel, TGtkWSBoundLabel);
 //  RegisterWSComponent(TCustomLabeledEdit, TGtkWSCustomLabeledEdit);
 //  RegisterWSComponent(TLabeledEdit, TGtkWSLabeledEdit);
 //  RegisterWSComponent(TCustomPanel, TGtkWSCustomPanel);

@@ -779,8 +779,8 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    property OnEnter;
-    property OnExit;
+    //property OnEnter;
+    //property OnExit;
   end;
 
 
@@ -984,6 +984,9 @@ end.
 
  {
   $Log$
+  Revision 1.126  2005/01/07 20:51:10  micha
+  swap TCustomStaticText and TCustomLabel
+
   Revision 1.125  2004/12/27 19:40:59  mattias
   published BorderSpacing for many controls
 

@@ -735,18 +735,21 @@ type
   end;
 
 
-  { TCustomLabel }
+  { TCustomStaticText }
 
-  TCustomLabel = class(TWinControl)
+  TStaticBorderStyle = (sbsNone, sbsSingle, sbsSunken);
+
+  TCustomStaticText = class(TWinControl)
   private
     FAlignment: TAlignment;
-    FWordWrap: Boolean;
     FLayout: TTextLayout;
     FFocusControl: TWinControl;
     FShowAccelChar: boolean;
+    FStaticBorderStyle: TStaticBorderStyle;
     procedure SetAlignment(Value: TAlignment);
     procedure SetLayout(Value: TTextLayout);
-    procedure SetWordWrap(Value: Boolean);
+    procedure SetStaticBorderStyle(Value: TStaticBorderStyle);
+    function  GetStaticBorderStyle: TStaticBorderStyle;
     procedure WMActivate(var Message: TLMActivate); message LM_ACTIVATE;
   protected
     function GetLabelText: String ; virtual;
@@ -759,23 +762,25 @@ type
     {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
+
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
+    property BorderStyle: TStaticBorderStyle read GetStaticBorderStyle write SetStaticBorderStyle;
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
     property Layout: TTextLayout read FLayout write SetLayout default tlTop;
     property ShowAccelChar: boolean read FShowAccelChar write SetShowAccelChar default true;
-    property WordWrap: Boolean read FWordWrap write SetWordWrap default false;
   end;
 
 
-  { TLabel }
+  { TStaticText }
 
-  TLabel = class(TCustomLabel)
+  TStaticText = class(TCustomStaticText)
   published
     property Align;
     property Alignment;
     property Anchors;
     property AutoSize;
     property BorderSpacing;
+    property BorderStyle;
     property Caption;
     property Color;
     property Constraints;
@@ -794,7 +799,6 @@ type
     property ParentFont;
     property ShowAccelChar;
     property Visible;
-    property WordWrap;
   end;
 
 
@@ -1074,53 +1078,52 @@ type
   end;
 
 
-  { TStaticText }
+  { TLabel }
 
-  TStaticBorderStyle = (sbsNone, sbsSingle, sbsSunken);
-
-  TCustomStaticText = class(TCustomControl)
+  TCustomLabel = class(TGraphicControl)
   Private
     FAlignment: TAlignment;
-    FStaticBorderStyle: TStaticBorderStyle;
     FFocusControl: TWinControl;
     FShowAccelChar: Boolean;
+    FWordWrap: Boolean;
+    FLayout: TTextLayout;
     Procedure FontChange(Sender: TObject);
   protected
-    Procedure DoAutoSize; Override;
-    Procedure CMTextChanged(var Message: TLMSetText); message CM_TEXTCHANGED;
+    function  CanTab: boolean; override;
+    procedure DoAutoSize; override;
+    procedure CMTextChanged(var Message: TLMSetText); message CM_TEXTCHANGED;
 
     procedure WMActivate(var Message: TLMActivate); message LM_ACTIVATE;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
-    Procedure SetAlignment(Value: TAlignment);
-    Function GetAlignment: TAlignment;
-    Procedure SetStaticBorderStyle(Value: TStaticBorderStyle);
-    Function GetStaticBorderStyle: TStaticBorderStyle;
-    Procedure SetFocusControl(Value: TWinControl);
-    Procedure SetShowAccelChar(Value: Boolean);
-    Function GetShowAccelChar: Boolean;
-    function CanTab: boolean; override;
+    function  GetShowAccelChar: Boolean;
+    function  GetAlignment: TAlignment;
+    procedure SetAlignment(Value: TAlignment);
+    procedure SetFocusControl(Value: TWinControl);
+    procedure SetLayout(Value: TTextLayout);
+    procedure SetShowAccelChar(Value: Boolean);
+    procedure SetWordWrap(Value: Boolean);
 
     property Alignment: TAlignment read GetAlignment write SetAlignment;
-    property BorderStyle: TStaticBorderStyle read GetStaticBorderStyle write SetStaticBorderStyle;
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
+    property Layout: TTextLayout read FLayout write SetLayout default tlTop;
     property ShowAccelChar: Boolean read GetShowAccelChar write SetShowAccelChar;
+    property WordWrap: Boolean read FWordWrap write SetWordWrap default false;
   public
     constructor Create(AOwner: TComponent); override;
-    Procedure Paint; override;
+    procedure Paint; override;
   end;
   
   
-  { TStaticText }
+  { TLabel }
 
-  TStaticText = class(TCustomStaticText)
+  TLabel = class(TCustomLabel)
   published
     property Align;
     property Alignment;
     property Anchors;
     property AutoSize;
     property BorderSpacing;
-    property BorderStyle;
     property Caption;
     property Color;
     property Constraints;
@@ -1136,6 +1139,7 @@ type
     property TabOrder;
     property TabStop;
     property Visible;
+    property WordWrap;
     property OnClick;
     property OnDblClick;
     property OnMouseDown;
@@ -1213,6 +1217,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.178  2005/01/07 20:51:11  micha
+  swap TCustomStaticText and TCustomLabel
+
   Revision 1.177  2005/01/01 19:36:40  mattias
   fixed loading TRadioButton.Checked
 

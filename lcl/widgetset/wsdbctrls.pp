@@ -55,11 +55,6 @@ type
   TWSDBEdit = class(TWSCustomMaskEdit)
   end;
 
-  { TWSDBText }
-
-  TWSDBText = class(TWSLabel)
-  end;
-
   { TWSDBListBox }
 
   TWSDBListBox = class(TWSCustomListBox)
@@ -125,7 +120,6 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TDBEdit, TWSDBEdit);
-//  RegisterWSComponent(TDBText, TWSDBText);
 //  RegisterWSComponent(TDBListBox, TWSDBListBox);
 //  RegisterWSComponent(TDBRadioGroup, TWSDBRadioGroup);
 //  RegisterWSComponent(TDBCheckBox, TWSDBCheckBox);

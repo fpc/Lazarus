@@ -151,18 +151,17 @@ type
   TWSMemo = class(TWSCustomMemo)
   end;
 
-  { TWSCustomLabel }
+  { TWSCustomStaticText }
 
-  TWSCustomLabel = class(TWSWinControl)
-    class procedure SetAlignment(const ACustomLabel: TCustomLabel; const NewAlignment: TAlignment); virtual;
-    class procedure SetLayout(const ACustomLabel: TCustomLabel; const NewLayout: TTextLayout); virtual;
-    class procedure SetWordWrap(const ACustomLabel: TCustomLabel; const NewWordWrap: boolean); virtual;
+  TWSCustomStaticTextClass = class of TWSCustomStaticText;
+  TWSCustomStaticText = class(TWSWinControl)
+    class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); virtual;
+    class procedure SetLayout(const ACustomStaticText: TCustomStaticText; const NewLayout: TTextLayout); virtual;
   end;
-  TWSCustomLabelClass = class of TWSCustomLabel;
 
-  { TWSLabel }
+  { TWSStaticText }
 
-  TWSLabel = class(TWSCustomLabel)
+  TWSStaticText = class(TWSCustomStaticText)
   end;
 
   { TWSButtonControl }
@@ -193,16 +192,6 @@ type
   { TWSRadioButton }
 
   TWSRadioButton = class(TWSCustomCheckBox)
-  end;
-
-  { TWSCustomStaticText }
-
-  TWSCustomStaticText = class(TWSCustomControl)
-  end;
-
-  { TWSStaticText }
-
-  TWSStaticText = class(TWSCustomStaticText)
   end;
 
 
@@ -380,17 +369,13 @@ procedure TWSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo; const NewWor
 begin
 end;
 
-{ TWSCustomLabel }
+{ TWSCustomStaticText }
 
-procedure TWSCustomLabel.SetAlignment(const ACustomLabel: TCustomLabel; const NewAlignment: TAlignment);
+procedure TWSCustomStaticText.SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment);
 begin
 end;
 
-procedure TWSCustomLabel.SetLayout(const ACustomLabel: TCustomLabel; const NewLayout: TTextLayout);
-begin
-end;
-
-procedure TWSCustomLabel.SetWordWrap(const ACustomLabel: TCustomLabel; const NewWordWrap: boolean);
+procedure TWSCustomStaticText.SetLayout(const ACustomStaticText: TCustomStaticText; const NewLayout: TTextLayout);
 begin
 end;
 
@@ -426,15 +411,14 @@ initialization
 //  RegisterWSComponent(TCustomMemo, TWSCustomMemo);
 //  RegisterWSComponent(TEdit, TWSEdit);
 //  RegisterWSComponent(TMemo, TWSMemo);
-//  RegisterWSComponent(TCustomLabel, TWSCustomLabel);
-//  RegisterWSComponent(TLabel, TWSLabel);
+//  RegisterWSComponent(TCustomStaticText, TWSCustomStaticText);
+//  RegisterWSComponent(TStaticText, TWSStaticText);
 //  RegisterWSComponent(TButtonControl, TWSButtonControl);
 //  RegisterWSComponent(TCustomCheckBox, TWSCustomCheckBox);
 //  RegisterWSComponent(TCheckBox, TWSCheckBox);
 //  RegisterWSComponent(TCheckBox, TWSCheckBox);
 //  RegisterWSComponent(TToggleBox, TWSToggleBox);
 //  RegisterWSComponent(TRadioButton, TWSRadioButton);
-//  RegisterWSComponent(TCustomStaticText, TWSCustomStaticText);
-//  RegisterWSComponent(TStaticText, TWSStaticText);
+//  RegisterWSComponent(TLabel, TWSLabel);
 ////////////////////////////////////////////////////
 end.

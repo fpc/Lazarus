@@ -343,12 +343,12 @@ begin
     if GtkWidgetIsA(p,gtk_window_get_type) then
       gtk_window_set_title(pGtkWindow(p),PLabel);
 
-  csLabel:
+  csStaticText:
     begin
-      if TLabel(AWinControl).ShowAccelChar then begin
-        If TLabel(AWinControl).WordWrap and (TLabel(AWinControl).Caption<>'') then begin
+      if TStaticText(AWinControl).ShowAccelChar then begin
+        If {TStaticText(AWinControl).WordWrap and }(TStaticText(AWinControl).Caption<>'') then begin
           DC := GetDC(HDC(GetStyleWidget(lgsLabel)));
-          aLabel := TGtkWidgetSet(InterfaceObject).ForceLineBreaks(DC, pLabel, TLabel(AWinControl).Width, True);
+          aLabel := TGtkWidgetSet(InterfaceObject).ForceLineBreaks(DC, pLabel, TStaticText(AWinControl).Width, True);
           DeleteDC(DC);
         end
         else
@@ -360,14 +360,16 @@ begin
           StrDispose(aLabel);
         end;
       end else begin
-        If TLabel(AWinControl).WordWrap then begin
+{
+        If TStaticText(AWinControl).WordWrap then begin
           DC := GetDC(HDC(GetStyleWidget(lgsLabel)));
-          aLabel := TGtkWidgetSet(InterfaceObject).ForceLineBreaks(DC, pLabel, TLabel(AWinControl).Width, False);
+          aLabel := TGtkWidgetSet(InterfaceObject).ForceLineBreaks(DC, pLabel, TStaticText(AWinControl).Width, False);
           gtk_label_set_text(PGtkLabel(p), aLabel);
           StrDispose(aLabel);
           DeleteDC(DC);
         end
         else
+}      
           gtk_label_set_text(PGtkLabel(p), pLabel);
         gtk_label_set_pattern(PGtkLabel(p), nil);
       end;

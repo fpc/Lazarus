@@ -3846,7 +3846,7 @@ begin
         end;
       end;
 
-      csLabel:
+      csStaticText:
       Begin
         SetCallback(LM_GRABFOCUS, AGTKObject, ALCLObject);
       end;
@@ -5151,11 +5151,11 @@ begin
     end;
 
 
-  csLabel :
+  csStaticText:
     begin
       P := gtk_label_new(StrTemp);
-      SetLabelAlignment(PGtkLabel(p),TCustomLabel(Sender).Alignment,
-                        TCustomLabel(Sender).Layout);
+      SetLabelAlignment(PGtkLabel(p),TCustomStaticText(Sender).Alignment,
+                        TCustomStaticText(Sender).Layout);
       SetupProps:= true;
     end;
 
@@ -6944,6 +6944,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.613  2005/01/07 20:51:11  micha
+  swap TCustomStaticText and TCustomLabel
+
   Revision 1.612  2005/01/01 18:56:47  mattias
   implemented TTIProgressBar
 

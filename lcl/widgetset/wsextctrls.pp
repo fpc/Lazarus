@@ -137,11 +137,6 @@ type
   TWSCheckGroup = class(TWSCustomCheckGroup)
   end;
 
-  { TWSBoundLabel }
-
-  TWSBoundLabel = class(TWSCustomLabel)
-  end;
-
   { TWSCustomLabeledEdit }
 
   TWSCustomLabeledEdit = class(TWSCustomEdit)
@@ -276,7 +271,6 @@ initialization
 //  RegisterWSComponent(TRadioGroup, TWSRadioGroup);
 //  RegisterWSComponent(TCustomCheckGroup, TWSCustomCheckGroup);
 //  RegisterWSComponent(TCheckGroup, TWSCheckGroup);
-//  RegisterWSComponent(TBoundLabel, TWSBoundLabel);
 //  RegisterWSComponent(TCustomLabeledEdit, TWSCustomLabeledEdit);
 //  RegisterWSComponent(TLabeledEdit, TWSLabeledEdit);
 //  RegisterWSComponent(TCustomPanel, TWSCustomPanel);

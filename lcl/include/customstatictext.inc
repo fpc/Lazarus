@@ -1,7 +1,7 @@
 {%MainUnit ../stdctrls.pp}
 
 {******************************************************************************
-                               TCustomStaticText
+                                TCustomStaticText
  ******************************************************************************
 
  *****************************************************************************
@@ -16,21 +16,124 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
  *                                                                           *
  *****************************************************************************
-
-  TODO:
-
-    - Enable Tabbing/Focusing to focus FocusControl
-    - Enable Escaped '&' Shortcut to focus FocusControl
-    - Compare/Match AutoSize to Delphi/Kylix's
-    - ?? Check For Full Delphi/Kylix Compatibility
-
 }
-Procedure TCustomStaticText.DoAutoSize;
-var
-  R : TRect;
-  DC : hDC;
+
+{------------------------------------------------------------------------------
+  Method: TCustomStaticText.Create
+  Params:  AOwner: the owner of the class
+  Returns: Nothing
+
+  Constructor for the class.
+ ------------------------------------------------------------------------------}
+constructor TCustomStaticText.Create(AOwner: TComponent);
 begin
-  If AutoSizing or not AutoSize then
+  inherited Create(AOwner);
+  fCompStyle := csStaticText;
+  FLayout := tlTop;
+  fAlignment := taLeftJustify;
+  FShowAccelChar:= true;
+  ControlStyle := ControlStyle + [csOpaque, csReplicatable];
+  SetInitialBounds(0, 0, 65, 17);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomStaticText.GetLabelText
+  Params: None
+  Returns: Nothing
+
+ ------------------------------------------------------------------------------}
+function TCustomStaticText.GetLabelText: String;
+begin
+  Result := Caption;  
+end;
+
+procedure TCustomStaticText.RealSetText(const AValue: TCaption);
+begin
+  if Text=AValue then exit;
+  inherited RealSetText(AValue);
+  InvalidatePreferredSize;
+  {$IFDEF EnablePreferredSize}
+  DoAutoSize;
+  {$ENDIF}
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomStaticText.Notification(AComponent: TComponent;
+    Operation: TOperation);
+ ------------------------------------------------------------------------------}
+procedure TCustomStaticText.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (AComponent = FFocusControl) and (Operation = opRemove) then
+    FFocusControl:= nil;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomStaticText.SetAlignment
+  Params: Value - new proterty value
+  Returns: Nothing
+
+ ------------------------------------------------------------------------------}
+procedure TCustomStaticText.SetAlignment(Value: TAlignment);
+begin
+  if fAlignment <> value then begin
+    fAlignment:= value;
+    if HandleAllocated then
+      TWSCustomStaticTextClass(WidgetSetClass).SetAlignment(Self, Value);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomStaticText.SetFocusControl
+  Params: Val - new property value
+  Returns: Nothing
+
+ ------------------------------------------------------------------------------}
+procedure TCustomStaticText.SetFocusControl(Val: TWinControl);
+begin
+  if Val <> FFocusControl then begin
+    FFocusControl:= Val;
+    if Val <> nil then Val.FreeNotification(Self);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomStaticText.SetLayout
+  Params: None
+  Returns: Nothing
+
+ ------------------------------------------------------------------------------}
+procedure TCustomStaticText.SetLayout(Value: TTextLayout);
+begin
+  if FLayout <> Value then begin
+    FLayout:= Value;
+    if HandleAllocated then
+      TWSCustomStaticTextClass(WidgetSetClass).SetLayout(Self, Value);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomStaticText.SetShowAccelChar
+  Params: Val - new property value
+  Returns: Nothing
+
+ ------------------------------------------------------------------------------}
+procedure TCustomStaticText.SetShowAccelChar(Val: boolean);
+begin
+  if Val <> FShowAccelChar then begin
+    FShowAccelChar:= Val;
+    if HandleAllocated then
+      TWSWinControlClass(WidgetSetClass).SetText(Self,Caption);
+  end;
+end;
+
+{$IFNDEF EnablePreferredSize}
+procedure TCustomStaticText.DoAutoSize;
+var
+  R: TRect;
+  DC: hDC;
+begin
+  If AutoSizing or (not AutoSize) or (Caption='') then
     Exit;
   if (not HandleAllocated) or ([csLoading,csDestroying]*ComponentState<>[]) then
     exit;
@@ -40,53 +143,18 @@ begin
     R := Rect(0,0, Width, Height);
     If BorderStyle <> sbsNone then
       InflateRect(R, -2, -2);
-    SelectObject(DC, Font.Handle);
-    DrawText(DC, PChar(Caption), Length(Caption), R,
-      DT_CalcRect or DT_NoPrefix or DT_WordBreak);
+    DrawText(DC, PChar(Caption + 'W'), Length(Caption) + 1, R,
+      DT_CalcRect or DT_NoPrefix or DT_Internal);
     If BorderStyle <> sbsNone then
       InflateRect(R, 2, 2);
-
-    Width := R.Right - R.Left;
-    Height := R.Bottom - R.Top;
+    Width := R.Right;
+    Height := R.Bottom;
   Finally
     ReleaseDC(Handle, DC);
     AutoSizing := False;
   end;
 end;
-
-Procedure TCustomStaticText.SetAlignment(Value : TAlignment);
-begin
-  If FAlignment <> Value then begin
-    FAlignment := Value;
-    Invalidate;
-  end;
-end;
-
-procedure TCustomStaticText.Notification(AComponent : TComponent; Operation : TOperation);
-begin
-  inherited Notification(AComponent, Operation);
-  if (AComponent = FFocusControl) and (Operation = opRemove) then
-    FFocusControl:= nil;
-end;
-
-procedure TCustomStaticText.SetFocusControl(Value : TWinControl);
-begin
-  if Value <> FFocusControl then begin
-    FFocusControl:= Value;
-    if Value <> nil then Value.FreeNotification(Self);
-  end;
-end;
-
-procedure TCustomStaticText.WMActivate(var Message: TLMActivate);
-begin
-  if (FFocusControl <> nil) and (FFocusControl.CanFocus) then
-    FFocusControl.SetFocus;
-end;
-
-Function TCustomStaticText.GetAlignment : TAlignment;
-begin
-  Result := FAlignment;
-end;
+{$ENDIF}
 
 Procedure TCustomStaticText.SetStaticBorderStyle(Value : TStaticBorderStyle);
 begin
@@ -101,124 +169,94 @@ begin
   Result := FStaticBorderStyle;
 end;
 
-Procedure TCustomStaticText.SetShowAccelChar(Value : Boolean);
+{------------------------------------------------------------------------------
+  Method: TCustomStaticText.WMActivate
+  Params: Message: Activation message
+  Returns: Nothing
+
+  Received when the label has a registered activation shortcut for focuscontrol.
+ ------------------------------------------------------------------------------}
+procedure TCustomStaticText.WMActivate(var Message: TLMActivate);
 begin
-  If FShowAccelChar <> Value then begin
-    FShowAccelChar := Value;
-    Invalidate;
-  end;
+  if (FFocusControl <> nil) and (FFocusControl.CanFocus) then
+    FFocusControl.SetFocus;
 end;
 
-procedure TCustomStaticText.CMTextChanged(var Message: TLMSetText);
-begin
-  Invalidate;
-end;
+// included by stdctrls.pp
 
-Function TCustomStaticText.GetShowAccelChar : Boolean;
-begin
-  Result := FShowAccelChar;
-end;
+{ =============================================================================
 
-function TCustomStaticText.CanTab: boolean;
-begin
-  Result:=false;
-end;
-
-constructor TCustomStaticText.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  Font.OnChange := @FontChange;
-  ControlStyle := [csSetCaption, csOpaque, csClickEvents, csDoubleClicks,
-                   csReplicatable];
-  Width := 65;
-  Height := 17;
-end;
-
-Procedure TCustomStaticText.Paint;
-var
-  TR : TTextStyle;
-  R : TRect;
-begin
-  R := Rect(0,0,Width,Height);
-  With Canvas do begin
-    Color := Self.Color;
-    Font := Self.Font;
-    if Color<>clNone then
-      FillRect(R);
-    If BorderStyle <> sbsNone then begin
-      InflateRect(R,-2,-2);
-      Pen.Style := psSolid;
-      If BorderStyle = sbsSunken then
-        Pen.Color := clBtnShadow
-      else
-        Pen.Color := clBtnHighlight;
-      MoveTo(0, 0);
-      LineTo(Width - 1,0);
-      MoveTo(0, 0);
-      LineTo(0,Height - 1);
-      If BorderStyle = sbsSunken then
-        Pen.Color := clBtnHighlight
-      else
-        Pen.Color := clBtnShadow;
-      MoveTo(0,Height - 1);
-      LineTo(Width - 1,Height - 1);
-      MoveTo(Width - 1, 0);
-      LineTo(Width - 1,Height);
-    end;
-    FillChar(TR,SizeOf(TR),0);
-    With TR do begin
-      Alignment := Self.Alignment;
-      WordBreak := True;
-      Clipping := True;
-      ShowPrefix := ShowAccelChar;
-      SystemFont:=false;
-    end;
-    TextRect(R, R.Left, R.Top, Caption, TR);
-  end;
-end;
-
-Procedure TCustomStaticText.FontChange(Sender : TObject);
-begin
-  If Caption <> '' then
-    Invalidate;
-end;
-
- // included by stdctrls.pp
-
-
-{
   $Log$
-  Revision 1.9  2004/12/31 11:27:35  mattias
-  skip FillRect in TStaticText.Paint when Color=clNone
+  Revision 1.10  2005/01/07 20:51:11  micha
+  swap TCustomStaticText and TCustomLabel
 
-  Revision 1.8  2004/09/24 13:45:32  mattias
-  fixed TCanvas.TextRect Delphi compatible Rect and added TBarChart from Michael VC
+  Revision 1.19  2004/11/03 14:18:35  mattias
+  implemented preferred size for controls for theme depending AutoSizing
 
-  Revision 1.7  2004/08/04 09:57:17  mattias
-  TStaticText.CanTab=false
+  Revision 1.18  2004/09/25 15:05:38  mattias
+  implemented Rename Identifier
 
-  Revision 1.6  2004/05/21 09:03:55  micha
-  implement new borderstyle
-  - centralize to twincontrol (protected)
-  - public expose at tcustomcontrol to let interface access it
+  Revision 1.17  2004/09/22 14:50:18  micha
+  convert LM_SETPROPERTIES message for tcustomlabel to interface methods
 
-  Revision 1.5  2004/04/10 17:58:57  mattias
+  Revision 1.16  2004/09/10 09:43:12  micha
+  convert LM_SETLABEL message to interface methods
+
+  Revision 1.15  2004/04/20 23:39:01  marc
+  * Fixed setting of TWincontrol.Text during load
+
+  Revision 1.14  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 
-  Revision 1.4  2004/03/07 09:37:20  mattias
+  Revision 1.13  2004/03/08 22:36:01  mattias
+  added TWinControl.ParentFormInitializeWnd
+
+  Revision 1.12  2004/03/07 09:37:20  mattias
   added workaround for AutoSize in TCustomLabel
 
-  Revision 1.3  2004/01/03 23:14:59  mattias
-  default font can now change height and fixed gtk crash
+  Revision 1.11  2004/02/23 08:19:04  micha
+  revert intf split
 
-  Revision 1.2  2002/10/23 20:47:26  lazarus
-  AJ: Started Form Scrolling
-      Started StaticText FocusControl
-      Fixed Misc Dialog Problems
-      Added TApplication.Title
+  Revision 1.9  2003/02/28 19:10:25  mattias
+  added new ... dialog
 
-  Revision 1.1  2002/10/21 15:51:27  lazarus
-  AJ: moved TCustomStaticText code to include/customstatictext.inc
+  Revision 1.8  2002/10/16 17:06:33  lazarus
+  MG: fixed handle allocating in TLabel
+
+  Revision 1.7  2002/10/03 00:08:50  lazarus
+  AJ: TCustomLabel Autosize, TCustomCheckbox '&' shortcuts started
+
+  Revision 1.6  2002/09/03 20:02:01  lazarus
+  Intermediate UI patch to show a bug.
+
+  Revision 1.5  2002/09/03 11:32:49  lazarus
+
+  Added shortcut keys to labels
+  Support for alphabetically sorting the properties
+  Standardize message and add shortcuts ala Kylix
+  Published BorderStyle, unpublished BorderWidth
+  ShowAccelChar and FocusControl
+  ShowAccelChar and FocusControl for TLabel, escaped ampersands now work.
+
+  Revision 1.4  2002/08/30 10:06:07  lazarus
+  Fixed alignment of multiline TLabel.
+  Simplified and prettified MessageBoxen.
+
+  Revision 1.3  2002/05/10 06:05:52  lazarus
+  MG: changed license to LGPL
+
+  Revision 1.2  2002/04/18 08:09:03  lazarus
+  MG: added include comments
+
+  Revision 1.1  2000/07/13 10:28:25  michael
+  + Initial import
+
+  Revision 1.3  2000/05/30 22:28:41  lazarus
+  MWE:
+    Applied patches from Vincent Snijders:
+    + Added GetWindowRect
+    * Fixed horz label alignment
+    + Added vert label alignment
 
 
 }

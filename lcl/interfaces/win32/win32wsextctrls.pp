@@ -175,14 +175,6 @@ type
   public
   end;
 
-  { TWin32WSBoundLabel }
-
-  TWin32WSBoundLabel = class(TWSBoundLabel)
-  private
-  protected
-  public
-  end;
-
   { TWin32WSCustomLabeledEdit }
 
   TWin32WSCustomLabeledEdit = class(TWSCustomLabeledEdit)
@@ -517,7 +509,6 @@ initialization
 //  RegisterWSComponent(TRadioGroup, TWin32WSRadioGroup);
 //  RegisterWSComponent(TCustomCheckGroup, TWin32WSCustomCheckGroup);
 //  RegisterWSComponent(TCheckGroup, TWin32WSCheckGroup);
-//  RegisterWSComponent(TBoundLabel, TWin32WSBoundLabel);
 //  RegisterWSComponent(TCustomLabeledEdit, TWin32WSCustomLabeledEdit);
 //  RegisterWSComponent(TLabeledEdit, TWin32WSLabeledEdit);
   RegisterWSComponent(TCustomPanel, TWin32WSCustomPanel);

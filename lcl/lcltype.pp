@@ -2014,7 +2014,7 @@ const
   csCheckbox = 5;
   csEdit = 6;
   csForm= 7;
-  csLabel = 8;
+  csStaticText = 8;
 //  csgtkTable = 9;
   csScrollBar = 10;
   csListView = 11;
@@ -2154,8 +2154,8 @@ Begin
       Result := 'csEdit';
     csForm:
       Result := 'csForm';
-    csLabel:
-      Result := 'csLabel';
+    csStaticText:
+      Result := 'csStaticText';
 //    csGTKTable:
 //      Result := 'csGTKTable';
     csScrollBar:
@@ -2272,6 +2272,9 @@ end.
 
 {
   $Log$
+  Revision 1.73  2005/01/07 20:51:10  micha
+  swap TCustomStaticText and TCustomLabel
+
   Revision 1.72  2004/12/22 19:56:44  mattias
   started TFont mirgration to fpCanvas font
 

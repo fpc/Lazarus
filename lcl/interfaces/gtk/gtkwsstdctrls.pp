@@ -186,25 +186,23 @@ type
   public
   end;
 
-  { TGtkWSCustomLabel }
+  { TGtkWSCustomStaticText }
 
-  TGtkWSCustomLabel = class(TWSCustomLabel)
+  TGtkWSCustomStaticText = class(TWSCustomStaticText)
   private
   protected
   public
-    class procedure SetAlignment(const ACustomLabel: TCustomLabel;
+    class procedure SetAlignment(const ACustomStaticText: TCustomStaticText;
                                  const NewAlignment: TAlignment); override;
-    class procedure SetLayout(const ACustomLabel: TCustomLabel;
+    class procedure SetLayout(const ACustomStaticText: TCustomStaticText;
                               const NewLayout: TTextLayout); override;
-    class procedure SetWordWrap(const ACustomLabel: TCustomLabel;
-                                const NewWordWrap: boolean); override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer); override;
   end;
 
-  { TGtkWSLabel }
+  { TGtkWSStaticText }
 
-  TGtkWSLabel = class(TWSLabel)
+  TGtkWSStaticText = class(TWSStaticText)
   private
   protected
   public
@@ -253,22 +251,6 @@ type
   { TGtkWSRadioButton }
 
   TGtkWSRadioButton = class(TWSRadioButton)
-  private
-  protected
-  public
-  end;
-
-  { TGtkWSCustomStaticText }
-
-  TGtkWSCustomStaticText = class(TWSCustomStaticText)
-  private
-  protected
-  public
-  end;
-
-  { TGtkWSStaticText }
-
-  TGtkWSStaticText = class(TWSStaticText)
   private
   protected
   public
@@ -790,35 +772,28 @@ begin
   //debugln('TGtkWSCustomEdit.GetPreferredSize ',DbgSName(AWinControl),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
 end;
 
-{ TGtkWSCustomLabel }
+{ TGtkWSCustomStaticText }
 
-procedure TGtkWSCustomLabel.SetAlignment(const ACustomLabel: TCustomLabel;
+procedure TGtkWSCustomStaticText.SetAlignment(const ACustomStaticText: TCustomStaticText;
   const NewAlignment: TAlignment);
 begin
-  SetLabelAlignment(PGtkLabel(ACustomLabel.Handle),NewAlignment,
-                    ACustomLabel.Layout);
+  SetLabelAlignment(PGtkLabel(ACustomStaticText.Handle),NewAlignment,
+                    ACustomStaticText.Layout);
 end;
 
-procedure TGtkWSCustomLabel.SetLayout(const ACustomLabel: TCustomLabel;
+procedure TGtkWSCustomStaticText.SetLayout(const ACustomStaticText: TCustomStaticText;
   const NewLayout: TTextLayout);
 begin
-  ACustomLabel.InvalidatePreferredSize;
-  SetLabelAlignment(PGtkLabel(ACustomLabel.Handle),ACustomLabel.Alignment,
+  ACustomStaticText.InvalidatePreferredSize;
+  SetLabelAlignment(PGtkLabel(ACustomStaticText.Handle),ACustomStaticText.Alignment,
                     NewLayout);
 end;
 
-procedure TGtkWSCustomLabel.SetWordWrap(const ACustomLabel: TCustomLabel;
-  const NewWordWrap: boolean);
-begin
-  ACustomLabel.InvalidatePreferredSize;
-  gtk_label_set_line_wrap(GTK_LABEL(Pointer(ACustomLabel.Handle)), NewWordWrap);
-end;
-
-procedure TGtkWSCustomLabel.GetPreferredSize(const AWinControl: TWinControl;
+procedure TGtkWSCustomStaticText.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer);
 begin
   GetGTKDefaultWidgetSize(AWinControl,PreferredWidth,PreferredHeight);
-  //debugln('TGtkWSCustomLabel.GetPreferredSize ',DbgSName(AWinControl),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
+  //debugln('TGtkWSCustomStaticText.GetPreferredSize ',DbgSName(AWinControl),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
 end;
 
 { TGtkWSCustomCheckBox }
@@ -1014,14 +989,12 @@ initialization
 //  RegisterWSComponent(TListBox, TGtkWSListBox);
   RegisterWSComponent(TCustomEdit, TGtkWSCustomEdit);
   RegisterWSComponent(TCustomMemo, TGtkWSCustomMemo);
-//  RegisterWSComponent(TCustomLabel, TGtkWSCustomLabel);
-  RegisterWSComponent(TCustomLabel, TGtkWSCustomLabel);
 //  RegisterWSComponent(TButtonControl, TGtkWSButtonControl);
   RegisterWSComponent(TCustomCheckBox, TGtkWSCustomCheckBox);
 //  RegisterWSComponent(TCheckBox, TGtkWSCheckBox);
 //  RegisterWSComponent(TToggleBox, TGtkWSToggleBox);
 //  RegisterWSComponent(TRadioButton, TGtkWSRadioButton);
-//  RegisterWSComponent(TCustomStaticText, TGtkWSCustomStaticText);
+  RegisterWSComponent(TCustomStaticText, TGtkWSCustomStaticText);
 //  RegisterWSComponent(TStaticText, TGtkWSStaticText);
 ////////////////////////////////////////////////////
 end.

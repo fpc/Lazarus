@@ -187,22 +187,21 @@ type
   public
   end;
 
-  { TWin32WSCustomLabel }
+  { TWin32WSCustomStaticText }
 
-  TWin32WSCustomLabel = class(TWSCustomLabel)
+  TWin32WSCustomStaticText = class(TWSCustomStaticText)
   private
   protected
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-    class procedure SetAlignment(const ACustomLabel: TCustomLabel; const NewAlignment: TAlignment); override;
-    class procedure SetLayout(const ACustomLabel: TCustomLabel; const NewLayout: TTextLayout); override;
-    class procedure SetWordWrap(const ACustomLabel: TCustomLabel; const NewWordWrap: boolean); override;
+    class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); override;
+    class procedure SetLayout(const ACustomStaticText: TCustomStaticText; const NewLayout: TTextLayout); override;
   end;
 
-  { TWin32WSLabel }
+  { TWin32WSStaticText }
 
-  TWin32WSLabel = class(TWSLabel)
+  TWin32WSStaticText = class(TWSStaticText)
   private
   protected
   public
@@ -256,22 +255,6 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-  end;
-
-  { TWin32WSCustomStaticText }
-
-  TWin32WSCustomStaticText = class(TWSCustomStaticText)
-  private
-  protected
-  public
-  end;
-
-  { TWin32WSStaticText }
-
-  TWin32WSStaticText = class(TWSStaticText)
-  private
-  protected
-  public
   end;
 
 { useful helper functions }
@@ -906,9 +889,9 @@ begin
   TWin32WidgetSet(InterfaceObject).RecreateWnd(ACustomMemo);
 end;
 
-{ TWin32WSCustomLabel }
+{ TWin32WSCustomStaticText }
 
-function TWin32WSCustomLabel.CreateHandle(const AWinControl: TWinControl;
+function TWin32WSCustomStaticText.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
@@ -927,29 +910,24 @@ begin
   Result := Params.Window;
 end;
 
-procedure TWin32WSCustomLabel.SetAlignment(const ACustomLabel: TCustomLabel; const NewAlignment: TAlignment);
+procedure TWin32WSCustomStaticText.SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment);
 var
   Style: dword;
 begin
-  if ACustomLabel.WordWrap then
-  begin
-    case NewAlignment of
-      taLeftJustify:
-        Style := SS_LEFT;
-      taCenter:
-        Style := SS_CENTER;
-      taRightJustify:
-        Style := SS_RIGHT;
-    else
-      Style := SS_LEFT; // default, shouldn't happen
-    end;
-  end else begin
-    Style := SS_LEFTNOWORDWRAP;
+  case NewAlignment of
+    taLeftJustify:
+      Style := SS_LEFT;
+    taCenter:
+      Style := SS_CENTER;
+    taRightJustify:
+      Style := SS_RIGHT;
+  else
+    Style := SS_LEFT; // default, shouldn't happen
   end;
-  UpdateWindowStyle(ACustomLabel.Handle, Style, SS_LEFT or SS_CENTER or SS_RIGHT or SS_LEFTNOWORDWRAP);
+  UpdateWindowStyle(ACustomStaticText.Handle, Style, SS_LEFT or SS_CENTER or SS_RIGHT or SS_LEFTNOWORDWRAP);
 end;
 
-procedure TWin32WSCustomLabel.SetLayout(const ACustomLabel: TCustomLabel; const NewLayout: TTextLayout);
+procedure TWin32WSCustomStaticText.SetLayout(const ACustomStaticText: TCustomStaticText; const NewLayout: TTextLayout);
 var
   Style: dword;
 begin
@@ -962,12 +940,7 @@ begin
     {tlBottom:}
     Style := BS_BOTTOM;
   end;
-  UpdateWindowStyle(ACustomLabel.Handle, Style, BS_TOP or BS_VCENTER or BS_BOTTOM);
-end;
-
-procedure TWin32WSCustomLabel.SetWordWrap(const ACustomLabel: TCustomLabel; const NewWordWrap: boolean);
-begin
-  SetAlignment(ACustomLabel, ACustomLabel.Alignment);
+  UpdateWindowStyle(ACustomStaticText.Handle, Style, BS_TOP or BS_VCENTER or BS_BOTTOM);
 end;
 
 { TWin32WSCustomCheckBox }
@@ -1089,15 +1062,13 @@ initialization
   RegisterWSComponent(TCustomMemo, TWin32WSCustomMemo);
 //  RegisterWSComponent(TEdit, TWin32WSEdit);
 //  RegisterWSComponent(TMemo, TWin32WSMemo);
-  RegisterWSComponent(TCustomLabel, TWin32WSCustomLabel);
-//  RegisterWSComponent(TLabel, TWin32WSLabel);
 //  RegisterWSComponent(TButtonControl, TWin32WSButtonControl);
   RegisterWSComponent(TCustomCheckBox, TWin32WSCustomCheckBox);
 //  RegisterWSComponent(TCheckBox, TWin32WSCheckBox);
 //  RegisterWSComponent(TCheckBox, TWin32WSCheckBox);
   RegisterWSComponent(TToggleBox, TWin32WSToggleBox);
   RegisterWSComponent(TRadioButton, TWin32WSRadioButton);
-//  RegisterWSComponent(TCustomStaticText, TWin32WSCustomStaticText);
+  RegisterWSComponent(TCustomStaticText, TWin32WSCustomStaticText);
 //  RegisterWSComponent(TStaticText, TWin32WSStaticText);
 ////////////////////////////////////////////////////
 end.
