@@ -72,20 +72,8 @@ const
   EndOfLine: shortstring={$IFDEF win32}#13+{$ENDIF}#10;
 
 // files
-function FilenameIsAbsolute(Filename: string):boolean;
-function DirectoryExists(DirectoryName: string): boolean;
-function ForceDirectory(DirectoryName: string): boolean;
 function BackupFile(const Filename, BackupFilename: string): boolean;
-function ExtractFileNameOnly(const AFilename: string): string;
-procedure CheckIfFileIsExecutable(const AFilename: string);
-function FileIsExecutable(const AFilename: string): boolean;
-function FileIsReadable(const AFilename: string): boolean;
-function FileIsWritable(const AFilename: string): boolean;
-function FileIsText(const AFilename: string): boolean;
 function CompareFilenames(const Filename1, Filename2: string): integer;
-function AppendPathDelim(const Path: string): string;
-function ChompPathDelim(const Path: string): string;
-function TrimFilename(const AFilename: string): string;
 function SearchFileInPath(const Filename, BasePath, SearchPath,
                           Delimiter: string): string;
 function FilenameIsMatching(const Mask, Filename: string;
