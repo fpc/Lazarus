@@ -3756,7 +3756,7 @@ begin
     {$IfDef dbgFocus}DebugLn('DoEnter - EditorHiding');{$Endif}
   end else begin
     {$IfDef dbgFocus}DebugLn('DoEnter - Ext');{$Endif}
-    exit;
+    //exit;
     if EditorAlwaysShown then begin
       SelectEditor;
       if Feditor=nil then Invalidate
@@ -5630,6 +5630,14 @@ begin
 end;
 
 procedure TCustomStringGrid.Setcells(aCol, aRow: Integer; const Avalue: string);
+  procedure UpdateCell;
+  begin
+    if EditorMode and (aCol=FCol)and(aRow=FRow) then
+    begin
+      EditorDoSetValue;
+    end;
+    InvalidateCell(aCol, aRow);
+  end;
 var
   C: PCellProps;
 begin
@@ -5637,7 +5645,7 @@ begin
   if C<>nil then begin
     if C^.Text<>nil then StrDispose(C^.Text);
     C^.Text:=StrNew(pchar(aValue));
-    InvalidateCell(aCol, aRow);
+    UpdateCell;
   end else begin
     if AValue<>'' then begin
       New(C);
@@ -5645,7 +5653,7 @@ begin
       C^.Attr:=nil;
       C^.Data:=nil;
       FGrid.Celda[aCol,aRow]:=C;
-      InvalidateCell(aCol, aRow);
+      UpdateCell;
     end;
   end;
 end;
