@@ -342,6 +342,8 @@ const
 var
   DesignSignalMasks: array[TDesignSignalType] of TDesignSignalMask;
   
+var
+  X11Display : Pointer;
 
 procedure InitDesignSignalMasks;
 function DesignSignalNameToType(Name: PChar; After: boolean): TDesignSignalType;
@@ -366,6 +368,13 @@ procedure ConnectSignalAfter(const AnObject:PGTKObject; const ASignal: PChar;
 
 procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
   AWinControl: TWinControl);
+  
+// accelerators
+Function DeleteAmpersands(var Str : String) : Longint;
+function Ampersands2Underscore(Src: PChar) : PChar;
+function RemoveAmpersands(Src: PChar; LineLength : Longint) : PChar;
+Procedure GetTextExtentIgnoringAmpersands(Font : PGDKFont; Str : PChar;
+  LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
 function GetAccelGroup(const Widget: PGtkWidget;
   CreateIfNotExists: boolean): PGTKAccelGroup;
 procedure SetAccelGroup(const Widget: PGtkWidget;
@@ -379,10 +388,11 @@ procedure Accelerate(Component: TComponent; const Widget : PGtkWidget;
   const Msg : TLMShortCut; const Signal : string);
 procedure ShareWindowAccelGroups(AWindow: PGtkWidget);
 procedure UnshareWindowAccelGroups(AWindow: PGtkWidget);
+
 procedure GetGdkPixmapFromGraphic(LCLGraphic: TGraphic;
   var IconImg, IconMask: PGdkPixmap; var Width, Height: integer);
-procedure GetGdkPixmapFromMenuItem(LCLMenuItem: TMenuItem;
-  var IconImg, IconMask: PGdkPixmap; var Width, Height: integer);
+
+// menus
 function MENU_ITEM_CLASS(widget: PGtkWidget): PGtkMenuItemClass;
 function CHECK_MENU_ITEM_CLASS(widget: PGtkWidget): PGtkCheckMenuItemClass;
 function GetRadioMenuItemGroup(LCLMenuItem: TMenuItem): PGSList;
@@ -391,11 +401,12 @@ procedure UpdateRadioGroupChecks(RadioGroup: PGSList);
 procedure DrawMenuItemIcon(MenuItem: PGtkCheckMenuItem;
   Area: PGdkRectangle); cdecl;
 procedure MenuSizeRequest(widget:PGtkWidget; requisition:PGtkRequisition); cdecl;
-procedure SetMenuItemLabelText(LCLMenuItem: TMenuItem;
-  MenuItemWidget: PGtkWidget);
-procedure CreateInnerMenuItem(LCLMenuItem: TMenuItem;
+procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem;
   MenuItemWidget: PGtkWidget);
 function CreateMenuItem(LCLMenuItem: TMenuItem): Pointer;
+procedure GetGdkPixmapFromMenuItem(LCLMenuItem: TMenuItem;
+  var IconImg, IconMask: PGdkPixmap; var Width, Height: integer);
+
 procedure SaveSizeNotification(Widget: PGtkWidget);
 procedure SaveClientSizeNotification(FixWidget: PGtkWidget);
 function CreateTopologicalSortedWidgets(HashArray: TDynHashArray): TList;
@@ -418,13 +429,6 @@ Function GetStyleWidget(WName : String) : PGTKWidget;
 function LoadDefaultFont: PGDKFont;
 Function GetSysGCValues(Color : TColorRef) : TGDKGCValues;
 
-Function DeleteAmpersands(var Str : String) : Longint;
-
-function Ampersands2Underscore(Src: PChar) : PChar;
-function RemoveAmpersands(Src: PChar; LineLength : Longint) : PChar;
-
-Procedure GetTextExtentIgnoringAmpersands(Font : PGDKFont; Str : PChar;
-  LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
 function FontIsDoubleByteCharsFont(TheFont: PGdkFont): boolean;
 
 Function GDKPixel2GDIRGB(Pixel : Longint; Visual : PGDKVisual;
@@ -441,9 +445,7 @@ Procedure FreeGDKCursors;
 function gtk_widget_get_xthickness(Style : PGTKStyle) : gint;
 function gtk_widget_get_ythickness(Style : PGTKStyle) : gint;
 
-var
-  X11Display : Pointer;
-  
+
 implementation
 
 
