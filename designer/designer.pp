@@ -292,10 +292,9 @@ Begin
         // the component list of the form has changed
         // -> restart the search
         i:=AWinControl.ControlCount-1;
-        continue;
-      end;
+      end else
+        dec(i);
     end;
-    dec(i);
   end;
   // remove component
   if Assigned(FOnRemoveComponent) then
