@@ -5678,33 +5678,38 @@ var
 begin
   // first compile all lazarus components (LCL, SynEdit, CodeTools, ...)
   SourceNotebook.ClearErrorLines;
-  Result:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
-                       EnvironmentOptions.ExternalTools,MacroList,
-                       '',Flags+[blfWithoutIDE]);
+  try
+    Result:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
+                         EnvironmentOptions.ExternalTools,MacroList,
+                         '',Flags+[blfWithoutIDE]);
+    if Result<>mrOk then exit;
 
-  // prepare static auto install packages
-  PkgOptions:='';
-  {$IFDEF EnablePkgs}
-  if (blfWithStaticPackages in Flags)
-  or MiscellaneousOptions.BuildLazOpts.WithStaticPackages then begin
-    // compile auto install static packages
-    Result:=PkgBoss.DoCompileAutoInstallPackages([]);
+    // prepare static auto install packages
+    PkgOptions:='';
+    {$IFDEF EnablePkgs}
+    if (blfWithStaticPackages in Flags)
+    or MiscellaneousOptions.BuildLazOpts.WithStaticPackages then begin
+      // compile auto install static packages
+      Result:=PkgBoss.DoCompileAutoInstallPackages([]);
+      if Result<>mrOk then exit;
+
+      // create uses addition for IDE
+      Result:=PkgBoss.DoSaveAutoInstallConfig;
+      if Result<>mrOk then exit;
+
+      // create inherited compiler options
+      PkgOptions:=PkgBoss.DoGetIDEInstallPackageOptions;
+    end;
+    {$ENDIF}
+
+    SourceNotebook.ClearErrorLines;
+    Result:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
+                         EnvironmentOptions.ExternalTools,MacroList,
+                         PkgOptions,Flags+[blfOnlyIDE]);
     if Result<>mrOk then exit;
-    
-    // create uses addition for IDE
-    Result:=PkgBoss.DoSaveAutoInstallConfig;
-    if Result<>mrOk then exit;
-    
-    // create inherited compiler options
-    PkgOptions:=PkgBoss.DoGetIDEInstallPackageOptions;
+  finally
+    DoCheckFilesOnDisk;
   end;
-  {$ENDIF}
-
-  SourceNotebook.ClearErrorLines;
-  Result:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
-                       EnvironmentOptions.ExternalTools,MacroList,
-                       PkgOptions,Flags+[blfOnlyIDE]);
-  DoCheckFilesOnDisk;
 end;
 
 function TMainIDE.DoConvertDFMtoLFM: TModalResult;
@@ -8632,6 +8637,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.548  2003/05/01 11:44:03  mattias
+  fixed changing menuitem separator and normal
+
   Revision 1.547  2003/05/01 10:40:06  mattias
   open special files for lpi files
 
