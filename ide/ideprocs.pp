@@ -67,9 +67,6 @@ type
     procedure(const ErrorData: TCopyErrorData; var Handled: boolean;
       Data: TObject) of object;
       
-  TSearchFileFlag = (sffSearchNotInBasePath);
-  TSearchFileFlags = set of TSearchFileFlag;
-
 //
 const
   // ToDo: find the constant in the fpc units.
@@ -79,8 +76,6 @@ const
 // files
 function BackupFile(const Filename, BackupFilename: string): boolean;
 function CompareFilenames(const Filename1, Filename2: string): integer;
-function SearchFileInPath(const Filename, BasePath, SearchPath,
-                          Delimiter: string; Flags: TSearchFileFlags): string;
 function FilenameIsMatching(const Mask, Filename: string;
   MatchExactly: boolean): boolean;
 procedure SplitCmdLine(const CmdLine: string;
@@ -364,57 +359,6 @@ end;
 function ChompPathDelim(const Path: string): string;
 begin
   Result:=FileProcs.ChompPathDelim(Path);
-end;
-
-function SearchFileInPath(const Filename, BasePath, SearchPath,
-  Delimiter: string; Flags: TSearchFileFlags): string;
-
-  function FileDoesExists(const AFilename: string): boolean;
-  var s: string;
-  begin
-    s:=ExpandFilename(TrimFilename(AFilename));
-    Result:=FileExists(s);
-    if Result then begin
-      SearchFileInPath:=s;
-      exit;
-    end;
-  end;
-
-var
-  p, StartPos, l: integer;
-  CurPath, Base: string;
-begin
-//writeln('[SearchFileInPath] Filename="',Filename,'" BasePath="',BasePath,'" SearchPath="',SearchPath,'" Delimiter="',Delimiter,'"');
-  if (Filename='') then begin
-    Result:='';
-    exit;
-  end;
-  // check if filename absolute
-  if FilenameIsAbsolute(Filename) then begin
-    if FileDoesExists(Filename) then exit;
-    Result:='';
-    exit;
-  end;
-  Base:=AppendPathDelim(BasePath);
-  if not (sffSearchNotInBasePath in Flags) then begin
-    // search in current directory
-    if FileDoesExists(Base+Filename) then exit;
-  end;
-  // search in search path
-  StartPos:=1;
-  l:=length(SearchPath);
-  while StartPos<=l do begin
-    p:=StartPos;
-    while (p<=l) and (pos(SearchPath[p],Delimiter)<1) do inc(p);
-    CurPath:=Trim(copy(SearchPath,StartPos,p-StartPos));
-    if CurPath<>'' then begin
-      if not FilenameIsAbsolute(CurPath) then
-        CurPath:=Base+CurPath;
-      if FileDoesExists(AppendPathDelim(CurPath)+Filename) then exit;
-    end;
-    StartPos:=p+1;
-  end;
-  Result:='';
 end;
 
 function FilenameIsMatching(const Mask, Filename: string;
@@ -1254,16 +1198,7 @@ end;
 
 function ProgramDirectory: string;
 begin
-  Result:=ParamStr(0);
-  if ExtractFilePath(Result)='' then begin
-    // program was started via PATH
-    Result:=SearchFileInPath(Result,'',GetEnv('PATH'),':',
-                             [sffSearchNotInBasePath]);
-  end;
-  // resolve links
-  Result:=ReadAllLinks(Result,false);
-  // extract file path and expand to full name
-  Result:=ExpandFilename(ExtractFilePath(Result));
+  Result:=FileCtrl.ProgramDirectory;
 end;
 
 function CopyFileWithMethods(const SrcFilename, DestFilename: string;
