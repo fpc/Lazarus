@@ -429,22 +429,14 @@ var
 begin
   UnshareImage;
 
-  if Size = 0 then
-  begin
+  if Size = 0 then begin
     CreateEmptyBitmap;
     exit;
   end;
   
   // store original stream
-  if Stream<>FImage.SaveStream then begin
-    MemStream:=TMemoryStream.Create;
-    MemStream.CopyFrom(Stream,Stream.Size-Stream.Position);
-    FreeAndNil(FImage.FSaveStream);
-    FImage.SaveStream:=MemStream;
-  end else
-    MemStream:=FImage.SaveStream;
-  FImage.SaveStreamType:=bnNone;
-  MemStream.Position:=0;
+  StoreOriginalStream(Stream);
+  MemStream:=FImage.SaveStream;
 
   // determine stream type
   FImage.SaveStreamType:=TestStreamBitmapNativeType(MemStream);
@@ -619,6 +611,21 @@ begin
   end;
 end;
 
+procedure TBitmap.StoreOriginalStream(Stream: TStream);
+var
+  MemStream: TMemoryStream;
+begin
+  if Stream<>FImage.SaveStream then begin
+    MemStream:=TMemoryStream.Create;
+    MemStream.CopyFrom(Stream,Stream.Size-Stream.Position);
+    FreeAndNil(FImage.FSaveStream);
+    FImage.SaveStream:=MemStream;
+  end else
+    MemStream:=FImage.SaveStream;
+  FImage.SaveStreamType:=bnNone;
+  MemStream.Position:=0;
+end;
+
 procedure TBitMap.SaveToStream(Stream: TStream);
 begin
   WriteStream(Stream, False);
@@ -731,6 +738,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.40  2003/08/20 17:03:48  mattias
+  implemented TPixmap and TPortableNetworkGraphic with fpImage
+
   Revision 1.39  2003/08/16 15:29:56  mattias
   fixed TBitmap.GetHandle
 

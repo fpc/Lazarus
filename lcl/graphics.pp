@@ -34,7 +34,9 @@ interface
 uses
   SysUtils, Classes,
   LCLStrConsts, vclGlobals, LMessages, LCLType, LCLProc, LCLLinux, LResources,
-  GraphType, GraphMath;
+  GraphType, GraphMath
+  {$IFDEF UseFPImage}, FPReadPNG, IntfGraphics{$ENDIF}
+  ;
 
   {$IFDEF NewGraphType}
 type
@@ -825,7 +827,7 @@ type
   {$IFNDEF NewGraphType}
   TTransparentMode = (tmAuto, tmFixed);
   {$ENDIF}
-  
+
   TBitmapInternalStateFlag = (
     bmisCreateingCanvas
     );
@@ -878,6 +880,7 @@ type
     procedure SetWidth(NewWidth: Integer); override;
     procedure WriteData(Stream: TStream); override;
     procedure WriteStream(Stream: TStream; WriteSize: Boolean); virtual;
+    procedure StoreOriginalStream(Stream: TStream); virtual;
   public
     constructor VirtualCreate; override;
     destructor Destroy; override;
@@ -911,17 +914,21 @@ type
 
   { TPixmap }
   
-  {
-    @abstract()
-    Introduced by Marc Weustink <weus@quicknet.nl>
-    Currently maintained by ?
-  }
   TPixmap = class(TBitmap)
   public
     procedure LoadFromLazarusResource(const ResName: String); override;
+    procedure WriteStream(Stream: TStream; WriteSize: Boolean); override;
   end;
   
-
+  { TPortableNetworkGraphic }
+  
+  TPortableNetworkGraphic = class(TBitmap)
+  public
+    procedure LoadFromLazarusResource(const ResName: String); override;
+    procedure ReadStream(Stream: TStream; Size: Longint); override;
+    procedure WriteStream(Stream: TStream; WriteSize: Boolean); override;
+  end;
+  
   { TIcon }
   {
     @abstract()
@@ -1156,6 +1163,7 @@ end;
 {$I font.inc}
 {$I canvas.inc}
 {$I pixmap.inc}
+{$I png.inc}
 
 
 initialization
@@ -1173,6 +1181,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.82  2003/08/20 17:03:47  mattias
+  implemented TPixmap and TPortableNetworkGraphic with fpImage
+
   Revision 1.81  2003/08/19 12:23:23  mattias
   moved types from graphtype.pp back to graphics.pp
 

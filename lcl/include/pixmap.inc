@@ -281,11 +281,72 @@ begin
   end;
 end;
 
+procedure TPixmap.WriteStream(Stream: TStream; WriteSize: Boolean);
+{$IFDEF UseFPImage}
+
+  Procedure DoWriteStreamSize(DestStream: TStream; Size: longint);
+  begin
+    if WriteSize then
+      DestStream.WriteBuffer(Size, SizeOf(Size));
+  end;
+
+  procedure DoWriteOriginal;
+  begin
+    DoWriteStreamSize(Stream,FImage.SaveStream.Size);
+    FImage.SaveStream.Position:=0;
+    Stream.CopyFrom(FImage.SaveStream,FImage.SaveStream.Size);
+  end;
+
+var
+  MemStream: TMemoryStream;
+  IntfImg: TLazIntfImage;
+  XPMWriter: TLazWriterXPM;
+begin
+  if (FImage.SaveStream<>nil) and (FImage.SaveStream.Size>0)
+  and (FImage.SaveStreamType=bnXPixmap) then begin
+    DoWriteOriginal;
+    exit;
+  end;
+  
+  // write image in XPM format to temporary stream
+  MemStream:=TMemoryStream.Create;
+  IntfImg:=nil;
+  XPMWriter:=nil;
+  try
+    IntfImg:=TLazIntfImage.Create(0,0);
+    IntfImg.LoadFromBitmap(Handle,0);
+    XPMWriter:=TLazWriterXPM.Create;
+    IntfImg.SaveToStream(MemStream,XPMWriter);
+    FreeAndNil(XPMWriter);
+    FreeAndNil(IntfImg);
+    // save stream, so that further saves will be fast
+    MemStream.Position:=0;
+    FreeAndNil(FImage.FSaveStream);
+    FImage.SaveStream:=MemStream;
+    MemStream:=nil;
+    FImage.SaveStreamType:=bnXPixmap;
+    // copy savestream to destination stream
+    Stream.CopyFrom(FImage.SaveStream,FImage.SaveStream.Size);
+  finally
+    MemStream.Free;
+    IntfImg.Free;
+    XPMWriter.Free;
+  end;
+end;
+{$ELSE}
+begin
+  inherited WriteStream(Stream,WriteSize);
+end;
+{$ENDIF}
+
 // included by graphics.pp
 
 { =============================================================================
 
   $Log$
+  Revision 1.20  2003/08/20 17:03:48  mattias
+  implemented TPixmap and TPortableNetworkGraphic with fpImage
+
   Revision 1.19  2003/06/25 10:38:28  mattias
   implemented saving original stream of TBitmap
 
