@@ -1342,7 +1342,7 @@ begin
   if ACleanPos>=1 then begin
     if ACleanPos<=SrcLen then begin
       // search line start
-      ALineStart:=ACleanPos;
+      ALineStart:=ACleanPos-1;
       while (ALineStart>=1) and (not (Src[ALineStart] in [#10,#13])) do
         dec(ALineStart);
       inc(ALineStart);

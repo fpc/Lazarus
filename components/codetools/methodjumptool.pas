@@ -173,6 +173,12 @@ writeln('TMethodJumpingCodeTool.FindJumpPoint B');
   GetLineInfo(CleanCursorPos,LineStart,LineEnd,FirstAtomStart,LastAtomEnd);
   if CleanCursorPos<FirstAtomStart then CleanCursorPos:=FirstAtomStart;
   if CleanCursorPos>=LastAtomEnd then CleanCursorPos:=LastAtomEnd-1;
+  if (CleanCursorPos<=SrcLen) and (Src[CleanCursorPos]=';') then begin
+    MoveCursorToCleanPos(CleanCursorPos);
+    ReadPriorAtom;
+    if CurPos.StartPos>=FirstAtomStart then
+      CleanCursorPos:=CurPos.StartPos;
+  end;
   // find CodeTreeNode at cursor
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
 {$IFDEF CTDEBUG}
