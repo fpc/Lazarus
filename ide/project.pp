@@ -794,7 +794,7 @@ begin
   and FIgnoreFileDateOnDiskValid
   and (FIgnoreFileDateOnDisk=Source.FileDateOnDisk) then
     Result:=false;
-  if not IsVirtual then
+  if (not IsVirtual) and FileExists(Filename) then
     FileReadOnly:=FileIsWritable(Filename);
 end;
 
@@ -2243,6 +2243,9 @@ end.
 
 {
   $Log$
+  Revision 1.96  2003/03/07 13:32:40  mattias
+  fixed checking readonly for non existing files
+
   Revision 1.95  2003/03/07 11:41:21  mattias
   fixed readonly check and added script to quick create lazarus snapshot
 
