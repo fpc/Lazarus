@@ -623,6 +623,28 @@ var
 
   function CheckMouseButtonDown(var LastMouse: TLastMouseClick;
     BtnKey, MsgNormal, MsgDouble, MsgTriple: longint): boolean;
+    
+    function ComponentUnderstandsDblClicks: boolean;
+    begin
+      Result:=csDoubleClicks in TControl(Data).ControlStyle;
+    end;
+
+    function LastClickInSameGdkWindow: boolean;
+    begin
+      Result:=(LastMouse.Window<>nil) and (LastMouse.Window=Event^.Window);
+    end;
+    
+    function LastClickAtSamePosition: boolean;
+    begin
+      Result:= (Abs(EventXY.X-LastMouse.WindowPoint.X)<=DblClickThreshold)
+           and (Abs(EventXY.Y-LastMouse.WindowPoint.Y)<=DblClickThreshold);
+    end;
+    
+    function LastClickInTime: boolean;
+    begin
+      Result:=((now - LastMouse.TheTime) <= ((1/86400)*(DblClickTime/1000)));
+    end;
+    
   begin
     if (LastMouse.Down) and
       (not (Event^.theType in [gdk_2button_press,gdk_3button_press]))
@@ -636,21 +658,17 @@ var
     end;
 
     MessI.Keys := MessI.Keys or BtnKey;
-    if (LastMouse.Window<>nil)
-    and (LastMouse.Window=Event^.Window) then begin
-      // clicked into the same gdkwindow
-      // check threshold and time
-      if (Abs(EventXY.X-LastMouse.WindowPoint.X)<=DblClickThreshold)
-      and (Abs(EventXY.Y-LastMouse.WindowPoint.Y)<=DblClickThreshold)
-      and ((now - LastMouse.TheTime) <= ((1/86400)*(DblClickTime/1000)))
-      and (not (Event^.theType = gdk_3button_press))
-      then begin
-        {$IFDEF VerboseMouseBugfix}
-        writeln('  TIME DOUBLE CLICK: ',now,'-',LastMouse.TheTime,'<= ',
-          ((1/86400)*(DblClickTime/1000)));
-        {$ENDIF}
-        Event^.theType := gdk_2Button_press;
-      end;
+    if ComponentUnderstandsDblClicks
+    and LastClickInSameGdkWindow
+    and LastClickAtSamePosition
+    and LastClickInTime
+    and (not (Event^.theType = gdk_3button_press))
+    then begin
+      {$IFDEF VerboseMouseBugfix}
+      writeln('  TIME DOUBLE CLICK: ',now,'-',LastMouse.TheTime,'<= ',
+        ((1/86400)*(DblClickTime/1000)));
+      {$ENDIF}
+      Event^.theType := gdk_2Button_press;
     end;
     LastMouse.TheTime := Now;
     LastMouse.Window := Event^.Window;
@@ -2187,6 +2205,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.112  2002/08/25 13:45:58  lazarus
+  MG: ignoring double clicks for components that dont want them
+
   Revision 1.111  2002/08/24 12:54:59  lazarus
   MG: fixed mouse capturing, OI edit focus
 
