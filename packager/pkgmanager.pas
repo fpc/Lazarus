@@ -335,8 +335,8 @@ begin
         continue; // try again
       end;
       
-      // check file name conflict with other packages
-      PkgFile:=PackageGraph.FindFileInAllPackages(NewFilename,true);
+      // check file name conflicts with other packages
+      PkgFile:=PackageGraph.FindFileInAllPackages(NewFilename,true,true);
       if PkgFile<>nil then begin
         Result:=MessageDlg('Filename is used by other package',
           'The file name "'+NewFilename+'" is used by'#13

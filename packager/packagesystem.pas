@@ -99,11 +99,12 @@ type
       Flags: TFindPackageFlags): TAVLTreeNode;
     function FindAPackageWithName(const PkgName: string;
       IgnorePackage: TLazPackage): TLazPackage;
-    function FindUnit(StartPackage: TLazPackage;
-      const TheUnitName: string; WithRequiredPackages: boolean): TPkgFile;
-    function FindUnitInAllPackages(const TheUnitName: string): TPkgFile;
+    function FindUnit(StartPackage: TLazPackage; const TheUnitName: string;
+      WithRequiredPackages, IgnoreDeleted: boolean): TPkgFile;
+    function FindUnitInAllPackages(const TheUnitName: string;
+      IgnoreDeleted: boolean): TPkgFile;
     function FindFileInAllPackages(const TheFilename: string;
-      ResolveLinks: boolean): TPkgFile;
+      ResolveLinks, IgnoreDeleted: boolean): TPkgFile;
     function FindPackageWithFilename(const TheFilename: string;
       ResolveLinks: boolean): TLazPackage;
     function CreateUniqueUnitName(const Prefix: string): string;
@@ -298,14 +299,15 @@ begin
 end;
 
 function TLazPackageGraph.FindUnit(StartPackage: TLazPackage;
-  const TheUnitName: string; WithRequiredPackages: boolean): TPkgFile;
+  const TheUnitName: string;
+  WithRequiredPackages, IgnoreDeleted: boolean): TPkgFile;
 var
   Cnt: Integer;
   i: Integer;
   ADependency: TPkgDependency;
   ARequiredPackage: TLazPackage;
 begin
-  Result:=StartPackage.FindUnit(TheUnitName);
+  Result:=StartPackage.FindUnit(TheUnitName,IgnoreDeleted);
   if Result<>nil then exit;
   // search also in all required packages
   if WithRequiredPackages then begin
@@ -315,7 +317,7 @@ begin
       if OpenDependency(ADependency,[fpfSearchInInstalledPckgs],ARequiredPackage)
          =lprSuccess
       then begin
-        Result:=ARequiredPackage.FindUnit(TheUnitName);
+        Result:=ARequiredPackage.FindUnit(TheUnitName,IgnoreDeleted);
         if Result<>nil then exit;
       end;
     end;
@@ -323,28 +325,28 @@ begin
 end;
 
 function TLazPackageGraph.FindUnitInAllPackages(
-  const TheUnitName: string): TPkgFile;
+  const TheUnitName: string; IgnoreDeleted: boolean): TPkgFile;
 var
   Cnt: Integer;
   i: Integer;
 begin
   Cnt:=Count;
   for i:=0 to Cnt-1 do begin
-    Result:=FindUnit(Packages[i],TheUnitName,false);
+    Result:=FindUnit(Packages[i],TheUnitName,false,IgnoreDeleted);
     if Result<>nil then exit;
   end;
   Result:=nil;
 end;
 
 function TLazPackageGraph.FindFileInAllPackages(const TheFilename: string;
-  ResolveLinks: boolean): TPkgFile;
+  ResolveLinks, IgnoreDeleted: boolean): TPkgFile;
 var
   Cnt: Integer;
   i: Integer;
 begin
   Cnt:=Count;
   for i:=0 to Cnt-1 do begin
-    Result:=Packages[i].FindPkgFile(TheFilename,ResolveLinks);
+    Result:=Packages[i].FindPkgFile(TheFilename,ResolveLinks,IgnoreDeleted);
     if Result<>nil then exit;
   end;
   Result:=nil;
@@ -381,13 +383,13 @@ function TLazPackageGraph.CreateUniqueUnitName(const Prefix: string): string;
 var
   i: Integer;
 begin
-  if FindUnitInAllPackages(Prefix)=nil then
+  if FindUnitInAllPackages(Prefix,false)=nil then
     Result:=Prefix
   else begin
     i:=1;
     repeat
       Result:=Prefix+IntToStr(i);
-    until FindUnitInAllPackages(Result)=nil;
+    until FindUnitInAllPackages(Result,false)=nil;
   end;
 end;
 
@@ -456,9 +458,16 @@ begin
       exit;
     end;
     // check unit file
-    FRegistrationFile:=FRegistrationPackage.FindUnit(FRegistrationUnitName);
+    FRegistrationFile:=FRegistrationPackage.FindUnit(FRegistrationUnitName,true);
     if FRegistrationFile=nil then begin
-      RegistrationError('Unit not found: '+FRegistrationUnitName);
+      FRegistrationFile:=
+        FRegistrationPackage.FindUnit(FRegistrationUnitName,false);
+      if FRegistrationFile=nil then begin
+        RegistrationError('Unit not found: "'+FRegistrationUnitName+'"');
+      end else begin
+        RegistrationError(
+          'Unit "'+FRegistrationUnitName+'" was deleted from package');
+      end;
       exit;
     end;
     // check registration procedure

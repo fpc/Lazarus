@@ -311,16 +311,17 @@ begin
   if ANode.Parent=FilesNode then begin
     // get current package file
     CurFile:=LazPackage.Files[NodeIndex];
-    if CurFile=nil then exit;
-    if MessageDlg('Remove file?',
-      'Remove file "'+CurFile.Filename+'"'#13
-      +'from package "'+LazPackage.IDAsString+'"?',
-      mtConfirmation,[mbYes,mbNo],0)=mrNo
-    then
-      exit;
-      
-    // ToDo
-    
+    if CurFile<>nil then begin
+      // confirm deletion
+      if MessageDlg('Remove file?',
+        'Remove file "'+CurFile.Filename+'"'#13
+        +'from package "'+LazPackage.IDAsString+'"?',
+        mtConfirmation,[mbYes,mbNo],0)=mrNo
+      then
+        exit;
+      LazPackage.DeleteFile(CurFile);
+    end;
+    UpdateFiles;
   end else if ANode.Parent=RequiredPackagesNode then begin
 
   end;

@@ -393,7 +393,7 @@ begin
   end;
 
   // check ancestor type is not unitname
-  PkgFile:=PackageGraph.FindUnit(LazPackage,Params.AncestorType,true);
+  PkgFile:=PackageGraph.FindUnit(LazPackage,Params.AncestorType,true,true);
   if PkgFile<>nil then begin
     if MessageDlg('Ambigious Ancestor Type',
       'The ancestor type "'+Params.AncestorType+'" has the same name as'#13
@@ -402,9 +402,9 @@ begin
     then
       exit;
   end;
-  
+
   // check classname does not interfere with an existing unitname
-  PkgFile:=PackageGraph.FindUnit(LazPackage,Params.ClassName,true);
+  PkgFile:=PackageGraph.FindUnit(LazPackage,Params.ClassName,true,true);
   if PkgFile<>nil then begin
     if MessageDlg('Ambigious Class Name',
       'The class name "'+Params.AncestorType+'" has the same name as'#13
@@ -1001,7 +1001,7 @@ begin
   end;
   
   // check if unitname already exists in package
-  PkgFile:=PackageGraph.FindUnit(LazPackage,AnUnitName,true);
+  PkgFile:=PackageGraph.FindUnit(LazPackage,AnUnitName,true,true);
   if PkgFile<>nil then begin
     if PkgFile.LazPackage=LazPackage then begin
       MessageDlg('Unitname already exists',
@@ -1027,7 +1027,7 @@ begin
   end;
   
   // check if file already exists in package
-  PkgFile:=LazPackage.FindPkgFile(AFilename,true);
+  PkgFile:=LazPackage.FindPkgFile(AFilename,true,true);
   if PkgFile<>nil then begin
     Msg:='File "'+AFilename+'" already exists in the project.';
     if PkgFile.Filename<>AFilename then
