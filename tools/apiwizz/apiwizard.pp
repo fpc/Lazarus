@@ -513,6 +513,7 @@ begin
             Add(' ------------------------------------------------------------------------------}');
             Add(DeclarationText + ';');
             Add('begin');
+            Add('//TODO:'+ProcName);
             Add('  // your code here');
             Add('end;');
           end;
@@ -647,6 +648,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.2  2000/08/14 12:31:12  lazarus
+  Minor modifications for SynEdit .
+  Shane
+
   Revision 1.1  2000/07/13 10:28:31  michael
   + Initial import
 

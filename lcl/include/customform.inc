@@ -506,7 +506,6 @@ end;
 
 constructor TCustomForm.CreateNew(AOwner: TComponent; Num : Integer);
 Begin
-Writeln('CREATING TCUSTOMFORM!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
   FBorderStyle:= bsSizeable;
   inherited Create(AOwner);
 fCompStyle:= csForm;
@@ -771,6 +770,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2000/08/14 12:31:12  lazarus
+  Minor modifications for SynEdit .
+  Shane
+
   Revision 1.3  2000/08/09 14:15:04  lazarus
   Changed the TCUstomForm create function.  I am getting it ready to read the resources to auto-create the controls...
 

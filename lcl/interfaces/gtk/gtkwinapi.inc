@@ -931,6 +931,17 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: EmptyClipBoard
+  Params: none
+  Returns:
+
+ ------------------------------------------------------------------------------}
+Function TGTKObject.EmptyClipBoard : Boolean;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
   Function: EnableMenuItem
   Params: hMenu:
           uIDEnableItem:
@@ -3021,6 +3032,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2000/08/14 12:31:12  lazarus
+  Minor modifications for SynEdit .
+  Shane
+
   Revision 1.6  2000/08/11 14:59:09  lazarus
   Adding all the Synedit files.
   Changed the GDK_KEY_PRESS and GDK_KEY_RELEASE stuff to fix the problem in the editor with the shift key being ignored.

@@ -96,6 +96,11 @@ Begin
   Result := InterfaceObject.DrawEdge(DC, Rect, edge, grfFlags);
 end;
 
+Function EmptyClipBoard : Boolean;
+begin
+  Result := InterfaceObject.EmptyClipBoard;
+end;
+
 function EnableMenuItem(hMenu: HMENU; uIDEnableItem: Integer; bEnable: Boolean): Boolean;
 begin
   Result := InterfaceObject.EnableMenuItem(hMenu, uIDEnableItem, bEnable);
@@ -921,6 +926,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2000/08/14 12:31:12  lazarus
+  Minor modifications for SynEdit .
+  Shane
+
   Revision 1.4  2000/08/11 14:59:09  lazarus
   Adding all the Synedit files.
   Changed the GDK_KEY_PRESS and GDK_KEY_RELEASE stuff to fix the problem in the editor with the shift key being ignored.
