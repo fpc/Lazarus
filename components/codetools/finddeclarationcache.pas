@@ -139,8 +139,16 @@ type
   {
     3. Base type node cache
     
-    ToDo:
-  
+    All nodes, that are aliases, has this type of cache.
+    For example a variable 'i: integer' creates several basetype nodes:
+      1. i variable node points to its type node 'integer'.
+      2. 'integer' node points to type definition node 'integer'.
+      3. 'integer' identifier node points to its base type 'longint'.
+      4. 'longint' identifier node points points to its range.
+      
+      FindBaseTypeOfNode will search this chain, and on success will create
+      TBaseTypeCache(s). All four nodes will point directly to the range.
+
   }
   TBaseTypeCache = class
   private
@@ -212,16 +220,17 @@ type
   // stacks for circle checking
 type
   TCodeTreeNodeStackEntry = TCodeTreeNode;
-  PCodeTreeNodeStackEntry = ^TCodeTreeNodeStackEntry;
-  
+
   TCodeTreeNodeStack = record
     Fixedtems: array[0..9] of TCodeTreeNodeStackEntry;
-    DynItems: TList; // list of PCodeTreeNodeStackEntry
+    DynItems: TList; // list of TCodeTreeNodeStackEntry
     StackPtr: integer;
   end;
   PCodeTreeNodeStack = ^TCodeTreeNodeStack;
 
   procedure InitializeNodeStack(NodeStack: PCodeTreeNodeStack);
+  function GetNodeStackEntry(NodeStack: PCodeTreeNodeStack;
+    Index: integer): TCodeTreeNodeStackEntry;
   procedure AddNodeToStack(NodeStack: PCodeTreeNodeStack;
     NewNode: TCodeTreeNode);
   function NodeExistsInStack(NodeStack: PCodeTreeNodeStack;
@@ -507,6 +516,7 @@ destructor TCodeTreeNodeCache.Destroy;
 begin
   Clear;
   UnbindFromOwner;
+  FItems.Free;
   inherited Destroy;
 end;
 
@@ -861,7 +871,7 @@ begin
     Result:=TCodeTreeNodeCache(FFirstFree);
     TCodeTreeNodeCache(FFirstFree):=Result.Next;
     Result.Clear;
-    Result.Owner:=AnOwner;
+    Result.BindToOwner(AnOwner);
     dec(FFreeCount);
   end else begin
     // free list empty -> create new NodeCache
@@ -877,6 +887,17 @@ procedure InitializeNodeStack(NodeStack: PCodeTreeNodeStack);
 begin
   NodeStack^.StackPtr:=0;
   NodeStack^.DynItems:=nil;
+end;
+
+function GetNodeStackEntry(NodeStack: PCodeTreeNodeStack;
+  Index: integer): TCodeTreeNodeStackEntry;
+begin
+  if Index<=High(NodeStack^.Fixedtems) then begin
+    Result:=NodeStack^.Fixedtems[Index];
+  end else begin
+    Result:=TCodeTreeNodeStackEntry(
+                       NodeStack^.DynItems[Index-High(NodeStack^.Fixedtems)-1]);
+  end;
 end;
 
 procedure AddNodeToStack(NodeStack: PCodeTreeNodeStack;
@@ -952,7 +973,7 @@ begin
     // take from free list
     Result:=TBaseTypeCache(FFirstFree);
     TBaseTypeCache(FFirstFree):=Result.Next;
-    Result.Owner:=AnOwner;
+    Result.BindToOwner(AnOwner);
     dec(FFreeCount);
   end else begin
     // free list empty -> create new BaseType
@@ -960,31 +981,6 @@ begin
     inc(FAllocatedCount);
   end;
   inc(FCount);
-end;
-
-//------------------------------------------------------------------------------
-
-procedure InternalInit;
-begin
-  GlobalIdentifierTree:=TGlobalIdentifierTree.Create;
-  InterfaceIdentCacheEntryMemManager:=TInterfaceIdentCacheEntryMemManager.Create;
-  NodeCacheEntryMemManager:=TNodeCacheEntryMemManager.Create;
-  NodeCacheMemManager:=TNodeCacheMemManager.Create;
-  BaseTypeCacheMemManager:=TBaseTypeCacheMemManager.Create;
-end;
-
-procedure InternalFinal;
-begin
-  GlobalIdentifierTree.Free;
-  GlobalIdentifierTree:=nil;
-  InterfaceIdentCacheEntryMemManager.Free;
-  InterfaceIdentCacheEntryMemManager:=nil;
-  NodeCacheEntryMemManager.Free;
-  NodeCacheEntryMemManager:=nil;
-  NodeCacheMemManager.Free;
-  NodeCacheMemManager:=nil;
-  BaseTypeCacheMemManager.Free;
-  BaseTypeCacheMemManager:=nil;
 end;
 
 { TBaseTypeCache }
@@ -1021,6 +1017,31 @@ begin
     Owner.Cache:=nil;
     Owner:=nil;
   end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure InternalInit;
+begin
+  GlobalIdentifierTree:=TGlobalIdentifierTree.Create;
+  InterfaceIdentCacheEntryMemManager:=TInterfaceIdentCacheEntryMemManager.Create;
+  NodeCacheEntryMemManager:=TNodeCacheEntryMemManager.Create;
+  NodeCacheMemManager:=TNodeCacheMemManager.Create;
+  BaseTypeCacheMemManager:=TBaseTypeCacheMemManager.Create;
+end;
+
+procedure InternalFinal;
+begin
+  BaseTypeCacheMemManager.Free;
+  BaseTypeCacheMemManager:=nil;
+  NodeCacheMemManager.Free;
+  NodeCacheMemManager:=nil;
+  NodeCacheEntryMemManager.Free;
+  NodeCacheEntryMemManager:=nil;
+  InterfaceIdentCacheEntryMemManager.Free;
+  InterfaceIdentCacheEntryMemManager:=nil;
+  GlobalIdentifierTree.Free;
+  GlobalIdentifierTree:=nil;
 end;
 
 initialization

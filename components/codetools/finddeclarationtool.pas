@@ -46,6 +46,7 @@ interface
 { $DEFINE ShowFoundIdentifier}
 { $DEFINE ShowCachedIdentifiers}
 { $DEFINE ShowNodeCache}
+{ $DEFINE ShowBaseTypeCache}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -282,6 +283,8 @@ type
     procedure ClearNodeCaches(Force: boolean);
     function CreateNewNodeCache(Node: TCodeTreeNode): TCodeTreeNodeCache;
     function CreateNewBaseTypeCache(Node: TCodeTreeNode): TBaseTypeCache;
+    procedure CreateBaseTypeCaches(NodeStack: PCodeTreeNodeStack;
+      Result: TFindContext);
     function GetNodeCache(Node: TCodeTreeNode;
       CreateIfNotExists: boolean): TCodeTreeNodeCache;
     procedure AddResultToNodeCaches(Identifier: PChar;
@@ -367,6 +370,12 @@ function CreateFindContext(Params: TFindDeclarationParams): TFindContext;
 begin
   Result.Node:=Params.NewNode;
   Result.Tool:=TFindDeclarationTool(Params.NewCodeTool);
+end;
+
+function CreateFindContext(BaseTypeCache: TBaseTypeCache): TFindContext;
+begin
+  Result.Node:=BaseTypeCache.NewNode;
+  Result.Tool:=TFindDeclarationTool(BaseTypeCache.NewTool);
 end;
 
 function FindContextAreEqual(Context1, Context2: TFindContext): boolean;
@@ -1616,17 +1625,22 @@ begin
   InitializeNodeStack(@NodeStack);
   try
     while (Result.Node<>nil) do begin
+      if (Result.Node.Cache<>nil) and (Result.Node.Cache is TBaseTypeCache) then
+      begin
+        // base type already cached
+        Result:=CreateFindContext(TBaseTypeCache(Result.Node.Cache));
+        exit;
+      end;
       if NodeExistsInStack(@NodeStack,Result.Node) then begin
+        // circle detected
         Result.Tool.MoveCursorToNodeStart(Result.Node);
         Result.Tool.RaiseException('circle in definitions');
       end;
       AddNodeToStack(@NodeStack,Result.Node);
+
 {$IFDEF ShowTriedContexts}
 writeln('[TFindDeclarationTool.FindBaseTypeOfNode] LOOP Result=',Result.Node.DescAsString,' ',HexStr(Cardinal(Result.Node),8));
 {$ENDIF}
-
-      // ToDo: BaseTypeCache
-
       if (Result.Node.Desc in AllIdentifierDefinitions) then begin
         // instead of variable/const/type definition, return the type
         Result.Node:=FindTypeNodeOfDefinition(Result.Node);
@@ -1769,6 +1783,9 @@ writeln('[TFindDeclarationTool.FindBaseTypeOfNode] Class is forward');
         +'" not found');
     end;
   finally
+    // cache the result in all nodes
+    CreateBaseTypeCaches(@NodeStack,Result);
+    // free node stack
     FinalizeNodeStack(@NodeStack);
   end;
 {$IFDEF CTDEBUG}
@@ -3737,6 +3754,37 @@ begin
   Result:=BaseTypeCacheMemManager.NewBaseTypeCache(Node);
   Result.Next:=FFirstBaseTypeCache;
   FFirstBaseTypeCache:=Result;
+end;
+
+procedure TFindDeclarationTool.CreateBaseTypeCaches(
+  NodeStack: PCodeTreeNodeStack; Result: TFindContext);
+var i: integer;
+  Node: TCodeTreeNodeStackEntry;
+  BaseTypeCache: TBaseTypeCache;
+begin
+{$IFDEF ShowBaseTypeCache}
+write('[TFindDeclarationTool.CreateBaseTypeCaches] ',
+' StackPtr=',NodeStack^.StackPtr);
+writeln(' Self=',MainFilename);
+if Result.Node<>nil then
+  write(' Result=',Result.Node.DescAsString,
+     ' "',copy(Src,Result.Node.StartPos,10),'" ',Result.Tool.MainFilename)
+else
+  write(' Result=nil');
+writeln('');
+{$ENDIF}
+  for i:=0 to (NodeStack^.StackPtr-1) do begin
+    Node:=GetNodeStackEntry(NodeStack,i);
+    if (Node.Cache=nil)
+    and ((Result.Tool<>Self) or (Result.Node<>Node)) then begin
+{$IFDEF ShowBaseTypeCache}
+writeln('  i=',i,' Node=',Node.DescAsString,' "',copy(Src,Node.StartPos,10),'"');
+{$ENDIF}
+      BaseTypeCache:=CreateNewBaseTypeCache(Node);
+      BaseTypeCache.NewNode:=Result.Node;
+      BaseTypeCache.NewTool:=Result.Tool;
+    end;
+  end;
 end;
 
 

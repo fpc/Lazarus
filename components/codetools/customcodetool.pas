@@ -195,7 +195,7 @@ end;
 
 procedure TCustomCodeTool.Clear;
 begin
-  Tree.Clear;
+  if Tree<>nil then DoDeleteNodes;
   CurPos.StartPos:=1;
   CurPos.EndPos:=-1;
   LastAtoms.Clear;
