@@ -14,13 +14,7 @@ BuildRoot: %{_tmppath}/fpcsrc-build%{version}
 
 # The normal redhat rpm scripts tests every installed file for requirements.
 # We install only sources, so we don't need the requirements.
-# But it seems, RPM ignores these macros:
-
-# %define _use_internal_dependency_generator 0
-%define __find_provides /tmp/do_nothing.sh
-%define __find_requires /tmp/do_nothing.sh
-# %define __find_requires %{nil}
-# AutoReq: 0
+AutoReq: 0
 
 # The normal redhat rpm scripts do not recognize properly, what files to strip
 # Hook our own strip command
@@ -41,12 +35,6 @@ bindings and many more.
 %setup -c
 
 %build
-
-# The normal redhat rpm scripts tests every installed file for requirements.
-# We install only sources, so we don't need the requirements.
-# I don't know, how to tell RPM, to not test for requirements, so simply rename
-find . -name '*.pm' -exec mv {} {}.renamed_for_rpm \;
-find . -name '*.pl' -exec mv {} {}.renamed_for_rpm \;
 
 %install
 if [ %{buildroot} != "/" ]; then

@@ -47,7 +47,7 @@ FPCTGZ=fpcsrc-$LazVersion-$LazRelease.tgz
 CurDir=`pwd`
 
 # pack the directory
-sh create_fpc_tgz_from_local_dir.sh renamesmart $FPCSourceDir $FPCTGZ
+sh create_fpc_tgz_from_local_dir.sh $FPCSourceDir $FPCTGZ
 
 if [ "$PkgType" = "deb" ]; then
   # build fpcsrc deb
