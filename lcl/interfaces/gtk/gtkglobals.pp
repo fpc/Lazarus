@@ -163,17 +163,13 @@ type
   { lazarus GtkInterface definition for additional timer data, not in gtk }
   PGtkITimerInfo = ^TGtkITimerinfo;
   TGtkITimerInfo = record
-    Handle     : hWND;     // owner handle
-    IDEvent    : Cardinal; // owner ID for this timer
+    TimerHandle: guint;        // the gtk handle for this timer
     TimerFunc  : TFNTimerProc; // owner function to handle timer
-    TimerHandle: guint;    // the gtk handle for this timer
   end;
 
 var
   // FTimerData contains the currently running timers
-  // and FOldTimerData contains the old and to be disposed timers
   FTimerData : TList;   // list of PGtkITimerinfo
-  FOldTimerData: TList; // list of PGtkITimerinfo
 
 var
   gtk_handler_quark: TGQuark;
