@@ -402,7 +402,7 @@ Begin
           BN_CLICKED:   LMessage.Msg := LM_CLICKED;
           BN_KILLFOCUS: LMessage.Msg := LM_EXIT;
         end
-      else if (OwnerObject is TEdit) or (OwnerObject is TCustomSpinEdit) then
+      else if (OwnerObject is TCustomEdit) or (OwnerObject is TCustomSpinEdit) then
         case Hi(WParam) of
           EN_CHANGE:    LMessage.Msg := CM_TEXTCHANGED;
         end
@@ -1301,6 +1301,9 @@ end;
 
 {
   $Log$
+  Revision 1.141  2004/10/05 20:14:19  micha
+  fix update edit text for generic edit controls
+
   Revision 1.140  2004/09/24 21:34:14  micha
   convert LM_CREATE message to interface methods
   remove SendMsgToInterface, CNSendMessage and related methods
