@@ -788,7 +788,7 @@ begin
     Result:=xtConstOrdInteger
   else if CompareIdentifiers(Identifier,'ORD')=0 then
     Result:=xtConstOrdInteger
-  else if IsKeyWordBuiltInFunc.DoIt(Identifier) then
+  else if IsWordBuiltInFunc.DoIt(Identifier) then
     Result:=xtCompilerFunc
 
   // the delphi compiler special types

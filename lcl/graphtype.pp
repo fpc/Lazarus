@@ -242,7 +242,8 @@ var
   UsedBytesPerLine: cardinal;
 begin
   Result:=true;
-  
+  //DebugLn('RawImageMaskIsEmpty Quicktest: empty ',dbgs(RawImage^.Description.Width),'x',dbgs(RawImage^.Description.Height));
+
   // quick test
   if (RawImage^.Mask=nil) or (RawImage^.MaskSize=0)
   or (RawImage^.Description.Width=0) or (RawImage^.Description.Height=0)
@@ -287,7 +288,7 @@ begin
             if (p^ or UnusedByteMask)<>$ff then begin
               // not all bits set -> transparent pixels found -> Mask needed
               {$IFDEF VerboseRawImage}
-              DebugLn('RawImageMaskIsEmpty EdgeByte y=',dbgs(y),' x=',dbgs(x),' Byte=',HexStr(Cardinal(p^),2),' UnusedByteMask=',HexStr(Cardinal(UnusedByteMask),2),' UnusedBitsAtEnd=',dbgs(UnusedBitsAtEnd));
+              DebugLn('RawImageMaskIsEmpty EdgeByte y=',dbgs(y),' x=',dbgs(x),' Byte=',HexStr(Cardinal(p^),2),' UnusedByteMask=',HexStr(Cardinal(UnusedByteMask),2),' UnusedBitsAtEnd=',dbgs(UnusedBitsAtEnd),' UsedBitsPerLine=',dbgs(UsedBitsPerLine),' Width=',dbgs(Width),' RawImage^.Description.AlphaBitsPerPixel=',dbgs(RawImage^.Description.AlphaBitsPerPixel));
               {$ENDIF}
               exit;
             end;
@@ -297,7 +298,7 @@ begin
       end else begin
         // ToDo: AlphaSeparate and rileTight
         {$IFDEF VerboseRawImage}
-        DebugLn('RawImageMaskIsEmpty TODO');
+        DebugLn('RawImageMaskIsEmpty TODO AlphaSeparate and rileTight');
         {$ENDIF}
         exit;
       end;
@@ -775,6 +776,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.38  2005/03/05 12:08:49  mattias
+  OI now locks during doubleclick and synedit now uses only MouseCapture instead of heuristic
+
   Revision 1.37  2005/02/07 15:27:11  micha
   fix calculation of unusedbytemask
 

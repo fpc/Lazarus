@@ -100,7 +100,7 @@ var
   IsKeyWordInConstAllowed,
   WordIsKeyWord,
   WordIsDelphiKeyWord,
-  IsKeyWordBuiltInFunc,
+  IsWordBuiltInFunc,
   WordIsTermOperator,
   WordIsPropertySpecifier,
   WordIsBlockKeyWord,
@@ -880,9 +880,9 @@ begin
     Add('XOR',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
-  IsKeyWordBuiltInFunc:=TKeyWordFunctionList.Create;
-  KeyWordLists.Add(IsKeyWordBuiltInFunc);
-  with IsKeyWordBuiltInFunc do begin
+  IsWordBuiltInFunc:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(IsWordBuiltInFunc);
+  with IsWordBuiltInFunc do begin
     Add('LOW',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('HIGH',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LO',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -904,6 +904,8 @@ begin
     Add('READLN',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('TYPEOF',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('ASSIGNED',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('INCLUDE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('EXCLUDE',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
   WordIsTermOperator:=TKeyWordFunctionList.Create;
@@ -1255,7 +1257,7 @@ begin
     Add('SHORTINT'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('BYTE'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
-  WordIsPredefinedFPCIdentifier.Add(IsKeyWordBuiltInFunc);
+  WordIsPredefinedFPCIdentifier.Add(IsWordBuiltInFunc);
   
   WordIsPredefinedDelphiIdentifier:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(WordIsPredefinedDelphiIdentifier);

@@ -195,7 +195,7 @@ type
     function GetRowCount:integer;
     procedure ClearRows;
     function GetCurrentEditValue: string;
-    procedure SetCurrentEditValue(const AValue: string);
+    procedure SetCurrentEditValue(const NewValue: string);
     procedure SetItemIndex(NewIndex:integer);
 
     procedure SetItemsTops;
@@ -217,7 +217,6 @@ type
     procedure ExpandRow(Index: integer);
     procedure ShrinkRow(Index: integer);
     procedure AddSubEditor(PropEditor: TPropertyEditor);
-    procedure FillComboboxItems;
 
     procedure SetRowValue;
     procedure DoCallEdit;
@@ -242,6 +241,7 @@ type
     procedure WMVScroll(var Msg: TWMScroll); message WM_VSCROLL;
     procedure SetBackgroundColor(const AValue: TColor);
     procedure UpdateScrollBar;
+    procedure FillComboboxItems;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
@@ -620,6 +620,37 @@ begin
   end;
 end;
 
+procedure TOICustomPropertyGrid.FillComboboxItems;
+var
+  ExcludeUpdateFlag: boolean;
+  CurRow: TOIPropertyGridRow;
+begin
+  ExcludeUpdateFlag:=not (pgsUpdatingEditControl in FStates);
+  Include(FStates,pgsUpdatingEditControl);
+  ValueComboBox.Items.BeginUpdate;
+  try
+    CurRow:=Rows[FItemIndex];
+    if FNewComboBoxItems<>nil then FNewComboBoxItems.Clear;
+    CurRow.Editor.GetValues(@AddStringToComboBox);
+    if FNewComboBoxItems<>nil then begin
+      FNewComboBoxItems.Sorted:=paSortList in CurRow.Editor.GetAttributes;
+      if not ValueComboBox.Items.Equals(FNewComboBoxItems) then begin
+        ValueComboBox.Items.Assign(FNewComboBoxItems);
+      end;
+      //debugln('TOICustomPropertyGrid.FillComboboxItems "',FNewComboBoxItems.Text,'" Cur="',ValueComboBox.Items.Text,'" ValueComboBox.Items.Count=',dbgs(ValueComboBox.Items.Count));
+      FreeAndNil(FNewComboBoxItems);
+    end else begin
+      ValueComboBox.Items.Text:='';
+      ValueComboBox.Items.Clear;
+      //debugln('TOICustomPropertyGrid.FillComboboxItems FNewComboBoxItems=nil Cur="',ValueComboBox.Items.Text,'" ValueComboBox.Items.Count=',dbgs(ValueComboBox.Items.Count));
+    end;
+  finally
+    ValueComboBox.Items.EndUpdate;
+    if ExcludeUpdateFlag then
+      Exclude(FStates,pgsUpdatingEditControl);
+  end;
+end;
+
 procedure TOICustomPropertyGrid.CreateParams(var Params: TCreateParams);
 const
   ClassStylesOff = CS_VREDRAW or CS_HREDRAW;
@@ -783,60 +814,59 @@ var
 begin
   //debugln('TOICustomPropertyGrid.SetRowValue A ',dbgs(FStates*[pgsChangingItemIndex,pgsApplyingValue]<>[]),' ',dbgs(FItemIndex));
   if not CanEditRowValue then exit;
-  OldChangeStep:=fChangeStep;
-  CurRow:=Rows[FItemIndex];
+
   if FCurrentEdit=ValueEdit then
     NewValue:=ValueEdit.Text
   else
     NewValue:=ValueComboBox.Text;
+  CurRow:=Rows[FItemIndex];
   if length(NewValue)>CurRow.Editor.GetEditLimit then
     NewValue:=LeftStr(NewValue,CurRow.Editor.GetEditLimit);
-  if NewValue<>CurRow.Editor.GetVisualValue then begin
-    Include(FStates,pgsApplyingValue);
+
+  if CurRow.Editor.GetVisualValue=NewValue then exit;
+
+  OldChangeStep:=fChangeStep;
+  Include(FStates,pgsApplyingValue);
+  try
+    {$IFNDEF DoNotCatchOIExceptions}
     try
-      {$IFNDEF DoNotCatchOIExceptions}
-      try
-      {$ENDIF}
-        //debugln('TOICustomPropertyGrid.SetRowValue B ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual);
-        CurRow.Editor.SetValue(NewValue);
-        //debugln('TOICustomPropertyGrid.SetRowValue C ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual);
-      {$IFNDEF DoNotCatchOIExceptions}
-      except
-        on E: Exception do begin
-          MessageDlg(oisError, E.Message, mtError, [mbOk], 0);
-        end;
+    {$ENDIF}
+      //debugln('TOICustomPropertyGrid.SetRowValue B ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual);
+      CurRow.Editor.SetValue(NewValue);
+      //debugln('TOICustomPropertyGrid.SetRowValue C ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual);
+    {$IFNDEF DoNotCatchOIExceptions}
+    except
+      on E: Exception do begin
+        MessageDlg(oisError, E.Message, mtError, [mbOk], 0);
       end;
-      {$ENDIF}
-      if (OldChangeStep<>FChangeStep) then begin
-        // the selection has changed
-        // => CurRow does not exist any more
-        exit;
-      end;
-      
-      // set value in edit control
-      if FCurrentEdit=ValueEdit then
-        ValueEdit.Text:=CurRow.Editor.GetVisualValue
-      else
-        ValueComboBox.Text:=CurRow.Editor.GetVisualValue;
-        
-      // update volatile sub properties
-      if (paVolatileSubProperties in CurRow.Editor.GetAttributes)
-      and ((CurRow.Expanded) or (CurRow.ChildCount>0)) then begin
-        OldExpanded:=CurRow.Expanded;
-        ShrinkRow(FItemIndex);
-        if OldExpanded then
-          ExpandRow(FItemIndex);
-      end;
-      //debugln('TOICustomPropertyGrid.SetRowValue D ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual);
-    finally
-      Exclude(FStates,pgsApplyingValue);
     end;
-    if FPropertyEditorHook=nil then
-      DoPaint(true)
-    else
-      FPropertyEditorHook.RefreshPropertyValues;
-    if Assigned(FOnModified) then FOnModified(Self);
+    {$ENDIF}
+    if (OldChangeStep<>FChangeStep) then begin
+      // the selection has changed
+      // => CurRow does not exist any more
+      exit;
+    end;
+    
+    // set value in edit control
+    SetCurrentEditValue(CurRow.Editor.GetVisualValue);
+
+    // update volatile sub properties
+    if (paVolatileSubProperties in CurRow.Editor.GetAttributes)
+    and ((CurRow.Expanded) or (CurRow.ChildCount>0)) then begin
+      OldExpanded:=CurRow.Expanded;
+      ShrinkRow(FItemIndex);
+      if OldExpanded then
+        ExpandRow(FItemIndex);
+    end;
+    //debugln('TOICustomPropertyGrid.SetRowValue D ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual);
+  finally
+    Exclude(FStates,pgsApplyingValue);
   end;
+  if FPropertyEditorHook=nil then
+    DoPaint(true)
+  else
+    FPropertyEditorHook.RefreshPropertyValues;
+  if Assigned(FOnModified) then FOnModified(Self);
 end;
 
 procedure TOICustomPropertyGrid.DoCallEdit;
@@ -863,7 +893,12 @@ begin
     try
     {$ENDIF}
       DebugLn('#################### TOICustomPropertyGrid.DoCallEdit for ',CurRow.Editor.ClassName);
-      CurRow.Editor.Edit;
+      Include(FStates,pgsApplyingValue);
+      try
+        CurRow.Editor.Edit;
+      finally
+        Exclude(FStates,pgsApplyingValue);
+      end;
     {$IFNDEF DoNotCatchOIExceptions}
     except
       on E: Exception do begin
@@ -878,35 +913,21 @@ begin
     end;
     
     // update value
-    if FCurrentEdit=ValueEdit then
-      ValueEdit.Text:=CurRow.Editor.GetVisualValue
-    else begin
-      FillComboboxItems;
-    end;
+    RefreshValueEdit;
   end;
 end;
 
 procedure TOICustomPropertyGrid.RefreshValueEdit;
 var
   CurRow: TOIPropertyGridRow;
-  NewValue, OldValue: string;
+  NewValue: string;
 begin
   if (FStates*[pgsChangingItemIndex,pgsApplyingValue]=[])
   and (FCurrentEdit<>nil)
   and (FItemIndex>=0) and (FItemIndex<FRows.Count) then begin
     CurRow:=Rows[FItemIndex];
-    if FCurrentEdit=ValueEdit then
-      OldValue:=ValueEdit.Text
-    else
-      OldValue:=ValueComboBox.Text;
     NewValue:=CurRow.Editor.GetVisualValue;
-    if OldValue<>NewValue then begin
-      if FCurrentEdit=ValueEdit then
-        ValueEdit.Text:=NewValue
-      else begin
-        FillComboboxItems;
-      end;
-    end;
+    SetCurrentEditValue(NewValue);
   end;
 end;
 
@@ -1012,7 +1033,14 @@ begin
     NewValue:=NewRow.Editor.GetVisualValue;
     if paValueList in NewRow.Editor.GetAttributes then begin
       FCurrentEdit:=ValueComboBox;
-      FillComboboxItems;
+      ValueComboBox.MaxLength:=NewRow.Editor.GetEditLimit;
+      ValueComboBox.Sorted:=paSortList in NewRow.Editor.GetAttributes;
+      ValueComboBox.Enabled:=not NewRow.IsReadOnly;
+      // Do not fill the items here, it can be very slow.
+      // Just fill in some values and update the values, before the combobox
+      // popups
+      ValueComboBox.Items.Text:=NewValue;
+      ValueComboBox.Text:=NewValue;
     end else begin
       FCurrentEdit:=ValueEdit;
       ValueEdit.ReadOnly:=NewRow.IsReadOnly;
@@ -1200,43 +1228,6 @@ begin
   inc(FExpandingRow.FChildCount);
 end;
 
-procedure TOICustomPropertyGrid.FillComboboxItems;
-var
-  NewRow: TOIPropertyGridRow;
-  NewValue: String;
-  NewItemIndex: LongInt;
-begin
-  if pgsUpdatingEditControl in FStates then exit;
-  Include(FStates,pgsUpdatingEditControl);
-  ValueComboBox.Items.BeginUpdate;
-  try
-    NewRow:=Rows[FItemIndex];
-    NewValue:=NewRow.Editor.GetVisualValue;
-    debugln('TOICustomPropertyGrid.FillComboboxItems A ',NewRow.Editor.ClassName,' ',NewRow.Editor.GetName,' NewValue="',NewValue,'"');
-    ValueComboBox.MaxLength:=NewRow.Editor.GetEditLimit;
-    ValueComboBox.Sorted:=paSortList in NewRow.Editor.GetAttributes;
-    ValueComboBox.Enabled:=not NewRow.IsReadOnly;
-    NewRow.Editor.GetValues(@AddStringToComboBox);
-    if FNewComboBoxItems<>nil then begin
-      FNewComboBoxItems.Sorted:=paSortList in NewRow.Editor.GetAttributes;
-      if not ValueComboBox.Items.Equals(FNewComboBoxItems) then begin
-        ValueComboBox.Items.Assign(FNewComboBoxItems);
-      end;
-      FreeAndNil(FNewComboBoxItems);
-    end else begin
-      ValueComboBox.Items.Text:='';
-      ValueComboBox.Items.Clear;
-    end;
-    ValueComboBox.Text:=NewValue;
-    NewItemIndex:=ValueComboBox.Items.IndexOf(NewValue);
-    if NewItemIndex>=0 then
-      ValueComboBox.ItemIndex:=NewItemIndex;
-  finally
-    ValueComboBox.Items.EndUpdate;
-    Exclude(FStates,pgsUpdatingEditControl);
-  end;
-end;
-
 function TOICustomPropertyGrid.MouseToIndex(y:integer;MustExist:boolean):integer;
 var l,r,m:integer;
 begin
@@ -1269,16 +1260,19 @@ end;
 procedure TOICustomPropertyGrid.SetCurrentRowValue(const NewValue: string);
 begin
   if not CanEditRowValue then exit;
-  if FCurrentEdit is TComboBox then
-    TComboBox(FCurrentEdit).Text:=NewValue
-  else if FCurrentEdit is TEdit then
-    TEdit(FCurrentEdit).Text:=NewValue;
+  // SetRowValue reads the value from the current edit control and writes it
+  // to the property editor
+  // -> set the text in the current edit control without changing FLastEditValue
+  if FCurrentEdit=ValueEdit then
+    ValueEdit.Text:=NewValue
+  else if FCurrentEdit=ValueComboBox then
+    ValueComboBox.Text:=NewValue;
   SetRowValue;
 end;
 
 function TOICustomPropertyGrid.CanEditRowValue: boolean;
 begin
-  if (FStates*[pgsChangingItemIndex,pgsApplyingValue]<>[])
+  if (FStates*[pgsChangingItemIndex,pgsApplyingValue,pgsUpdatingEditControl]<>[])
   or (FCurrentEdit=nil)
   or (FItemIndex<0)
   or (FItemIndex>=FRows.Count)
@@ -1815,12 +1809,12 @@ begin
     Result:='';
 end;
 
-procedure TOICustomPropertyGrid.SetCurrentEditValue(const AValue: string);
+procedure TOICustomPropertyGrid.SetCurrentEditValue(const NewValue: string);
 begin
   if FCurrentEdit=ValueEdit then
-    ValueEdit.Text:=AValue
+    ValueEdit.Text:=NewValue
   else if FCurrentEdit=ValueComboBox then
-    ValueComboBox.Text:=AValue;
+    ValueComboBox.Text:=NewValue;
 end;
 
 procedure TOICustomPropertyGrid.Clear;
@@ -1842,21 +1836,45 @@ procedure TOICustomPropertyGrid.ValueComboBoxDropDown(Sender: TObject);
 var
   CurRow: TOIPropertyGridRow;
   MaxItemWidth, CurItemWidth, i, Cnt: integer;
-  ItemValue: string;
+  ItemValue, CurValue: string;
+  NewItemIndex: LongInt;
+  ExcludeUpdateFlag: boolean;
 begin
   if (FItemIndex>=0) and (FItemIndex<FRows.Count) then begin
-    CurRow:=Rows[FItemIndex];
-    MaxItemWidth:=ValueComboBox.Width;
-    Cnt:=ValueComboBox.Items.Count;
-    for i:=0 to Cnt-1 do begin
-      ItemValue:=ValueComboBox.Items[i];
-      CurItemWidth:=ValueComboBox.Canvas.TextWidth(ItemValue);
-      CurRow.Editor.ListMeasureWidth(ItemValue,i,ValueComboBox.Canvas,
-                                     CurItemWidth);
-      if MaxItemWidth<CurItemWidth then
-        MaxItemWidth:=CurItemWidth;
+    //debugln('TOICustomPropertyGrid.ValueComboBoxDropDown A');
+    ExcludeUpdateFlag:=not (pgsUpdatingEditControl in FStates);
+    Include(FStates,pgsUpdatingEditControl);
+    ValueComboBox.Items.BeginUpdate;
+    try
+      CurRow:=Rows[FItemIndex];
+
+      // Items
+      FillComboboxItems;
+
+      // Text and ItemIndex
+      CurValue:=CurRow.Editor.GetVisualValue;
+      ValueComboBox.Text:=CurValue;
+      NewItemIndex:=ValueComboBox.Items.IndexOf(CurValue);
+      if NewItemIndex>=0 then
+        ValueComboBox.ItemIndex:=NewItemIndex;
+        
+      // ItemWidth
+      MaxItemWidth:=ValueComboBox.Width;
+      Cnt:=ValueComboBox.Items.Count;
+      for i:=0 to Cnt-1 do begin
+        ItemValue:=ValueComboBox.Items[i];
+        CurItemWidth:=ValueComboBox.Canvas.TextWidth(ItemValue);
+        CurRow.Editor.ListMeasureWidth(ItemValue,i,ValueComboBox.Canvas,
+                                       CurItemWidth);
+        if MaxItemWidth<CurItemWidth then
+          MaxItemWidth:=CurItemWidth;
+      end;
+      ValueComboBox.ItemWidth:=MaxItemWidth;
+    finally
+      ValueComboBox.Items.EndUpdate;
+      if ExcludeUpdateFlag then
+        Exclude(FStates,pgsUpdatingEditControl);
     end;
-    ValueComboBox.ItemWidth:=MaxItemWidth;
   end;
 end;
 
@@ -1973,7 +1991,6 @@ PRocedure TOICustomPropertyGrid.ValueEditDblClick(Sender : TObject);
 var
   CurRow: TOIPropertyGridRow;
   TypeKind : TTypeKind;
-  CurValue: string;
 begin
   if (FStates*[pgsChangingItemIndex,pgsApplyingValue]<>[])
   or (FCurrentEdit=nil)
@@ -1988,30 +2005,22 @@ begin
 
   FHintTimer.Enabled := False;
 
-  if FCurrentEdit=ValueEdit then
-    CurValue:=ValueEdit.Text
-  else
-    CurValue:=ValueComboBox.Text;
-  if CurValue='' then begin
-    DoCallEdit;
-    exit;
-  end;
-
   if (FCurrentEdit=ValueComboBox) then Begin
     //either an Event or an enumeration or Boolean
     CurRow:=Rows[FItemIndex];
     TypeKind := CurRow.Editor.GetPropType^.Kind;
     if TypeKind in [tkEnumeration,tkBool] then begin
       // set value to next value in list
+      FillComboboxItems;
       if ValueComboBox.Items.Count = 0 then Exit;
       if ValueComboBox.ItemIndex < (ValueComboBox.Items.Count-1) then
         ValueComboBox.ItemIndex := ValueComboBox.ItemIndex +1
       else
         ValueComboBox.ItemIndex := 0;
-    end else if TypeKind=tkMethod then begin
-      DoCallEdit;
+      exit;
     end;
   end;
+  DoCallEdit;
 end;
 
 procedure TOICustomPropertyGrid.SetBackgroundColor(const AValue: TColor);
