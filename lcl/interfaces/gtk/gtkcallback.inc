@@ -590,12 +590,6 @@ begin
   Mess.msg := LM_DESTROY;
   Result := DeliverMessage(Data, Mess) = 0;
 
-  // This is a safety check, when the normal destruction fails because of bugs,
-  // ! A wrong mouse capture can freeze X !
-  if (MCaptureHandle<>0)
-  and (GetLCLObject(widget)=GetLCLObject(Pointer(MCaptureHandle))) then
-    Uncapturehandle;
-   
   // NOTE: if the destroy message is posted
   // we should post an info destroy message as well
   Info := GetWidgetInfo(widget, False);
@@ -608,13 +602,6 @@ begin
   Mess.Msg:= LM_CLOSEQUERY;
   { Message results : True - do nothing, False - destroy or hide window }
   Result:= DeliverMessage(Data, Mess) = 0;
-
-  // This is a safety check, when the normal destruction fails because of bugs,
-  // ! A wrong mouse capture can freeze X !
-  if (MCaptureHandle<>0)
-  and (GetLCLObject(widget)=GetLCLObject(Pointer(MCaptureHandle))) then
-    Uncapturehandle;
-
 end;
 
 function gtkresizeCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
@@ -736,7 +723,7 @@ begin
     );
   {$ENDIF}
 
-  CheckMouseCaptureHandle(Widget);
+  UpdateMouseCaptureControl;
 
   if not (csDesigning in TComponent(Data).ComponentState) then begin
     DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseMotion);
@@ -769,7 +756,7 @@ begin
   // stop the signal, so that it is not sent to the parent widgets
   gtk_signal_emit_stop_by_name(PGTKObject(Widget),'motion-notify-event');
 
-  CheckMouseCaptureHandle(Widget);
+  UpdateMouseCaptureControl;
   
   if (csDesigning in TComponent(Data).ComponentState) then exit;
   if ControlGetsMouseMoveBefore(TControl(Data)) then exit;
@@ -1020,7 +1007,7 @@ begin
   EventTrace('Mouse button Press', data);
   Assert(False, Format('Trace:[gtkMouseBtnPress] ', []));
 
-  CheckMouseCaptureHandle(Widget);
+  UpdateMouseCaptureControl;
 
   if not (csDesigning in TComponent(Data).ComponentState) then begin
     DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMousePress);
@@ -1055,7 +1042,7 @@ begin
     ' ',Trunc(Event^.X),',',Trunc(Event^.Y));}
   {$ENDIF}
 
-  CheckMouseCaptureHandle(Widget);
+  UpdateMouseCaptureControl;
 
   // stop the signal, so that it is not sent to the parent widgets
   gtk_signal_emit_stop_by_name(PGTKObject(Widget),'button-press-event');
@@ -1173,7 +1160,7 @@ begin
   //' EventMask=',HexStr(Cardinal(gdk_window_get_events(Widget^.Window)),8),
   //' GDK_BUTTON_RELEASE_MASK=',HexStr(Cardinal(GDK_BUTTON_RELEASE_MASK),8));
 
-  CheckMouseCaptureHandle(Widget);
+  UpdateMouseCaptureControl;
 
   if not (csDesigning in TComponent(Data).ComponentState) then begin
     DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseRelease);
@@ -1209,7 +1196,7 @@ begin
   // stop the signal, so that it is not sent to the parent widgets
   gtk_signal_emit_stop_by_name(PGTKObject(Widget),'button-release-event');
 
-  CheckMouseCaptureHandle(Widget);
+  UpdateMouseCaptureControl;
 
   if (csDesigning in TComponent(Data).ComponentState) then exit;
   if ControlGetsMouseUpBefore(TControl(Data)) then exit;
@@ -2513,6 +2500,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.150  2002/10/17 21:00:17  lazarus
+  MG: fixed uncapturing of mouse
+
   Revision 1.149  2002/10/17 15:09:31  lazarus
   MG: made mouse capturing more strict
 
