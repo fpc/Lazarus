@@ -4947,12 +4947,26 @@ end;
 function TgtkObject.NewGDIObject(const GDIType: TGDIType): PGdiObject;
 begin
   Assert(False, Format('Trace:> [TgtkObject.NewGDIObject]', []));
-  New(Result);
-  FillChar(Result^, SizeOf(TGDIObject), 0);
+  Result:=GtkDef.NewPGDIObject;
   Result^.GDIType := GDIType;
   FGDIObjects.Add(Result);
 //writeln('[TgtkObject.NewGDIObject] ',HexStr(Cardinal(Result),8),'  ',FGDIObjects.Count);
   Assert(False, Format('Trace:< [TgtkObject.NewGDIObject] FGDIObjects --> 0x%p', [Result]));
+end;
+
+{------------------------------------------------------------------------------
+  Function: NewGDIObject
+  Params:  GdiObject: PGdiObject
+  Returns: none
+
+  Dispose a GdiObject
+ ------------------------------------------------------------------------------}
+procedure TgtkObject.DisposeGDIObject(GDIObject: PGdiObject);
+begin
+  if FGDIObjects.Contains(GDIObject) then begin
+    FGDIObjects.Remove(GDIObject);
+    GtkDef.DisposePGDIObject(GDIObject);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -5279,6 +5293,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.167  2002/08/21 08:13:37  lazarus
+  MG: accelerated new/dispose of gdiobjects
+
   Revision 1.166  2002/08/19 18:00:02  lazarus
   MG: design signals for gtk internal widgets
 
