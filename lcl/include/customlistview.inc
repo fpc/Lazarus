@@ -147,16 +147,16 @@ begin
            FImages := AValue;
 
         if FImages <> nil then
-           FImages.RegisterChanges(FImageChangeLink);
-           FImages.FreeNotification(self);
-
+           Begin
+             FImages.RegisterChanges(FImageChangeLink);
+             FImages.FreeNotification(self);
+           end;
         CNSendMessage(LM_SETPROPERTIES,self,nil);
      end;
 end;
 
 Procedure TCustomListView.ImageChanged(Sender : TObject);
 begin
-Writeln('IMAGE CHANGED!!!!');
   //image changed so redraw it all....
         CNSendMessage(LM_SETPROPERTIES,self,nil);
 end;

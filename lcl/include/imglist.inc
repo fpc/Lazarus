@@ -42,6 +42,7 @@ begin
   try
     Result := Count;
     Insert(Result, Image, Mask);
+    Change;
   except
     on Exception do Result := -1; // Ignore exceptions, just return -1
   end;
@@ -98,6 +99,7 @@ begin
           GetImages(n, Image, Mask);
           Add(Image, Mask);
         end;
+        Change;
       finally
         Mask.Free;
       end;
@@ -121,6 +123,7 @@ begin
   try
     Result := Count;
     InsertMasked(Result, Image, MaskColor);
+    Change;
   except
     on Exception do Result := -1; // Ignore exceptions, just return -1
   end;
@@ -178,7 +181,7 @@ procedure TCustomImageList.Clear;
 begin
   FCount := 0;
   FImageList.Clear;
-  NotifyChangeLink;
+  Change;
 end;
 
 {------------------------------------------------------------------------------
@@ -233,6 +236,7 @@ begin
 //    ShiftImages(FBitmap.Canvas, Index, 1);
 //    ShiftImages(FMaskBitmap.Canvas, Index, 1);
   FImageList.Delete(Index);  //shane
+  Change;
   end;
 end;
 
@@ -430,7 +434,7 @@ begin
   if (Image <> nil)
   then begin
     FImageList.Insert(Index,Image);
-
+    Change;
  {   nCount := Image.Width div FWidth;
     if nCount > 0
     then begin
@@ -531,6 +535,7 @@ begin
       Mask(MaskColor);
     end;
     Insert(Index, Image, Mask);
+    Change;
   finally
     Mask.Free;
   end;
@@ -567,6 +572,7 @@ begin
         GetImages(CurIndex, Image, Mask);
         Delete(CurIndex);
         Insert(NewIndex, Image, Mask);
+        Change;
       finally
         Mask.Free;
       end;
@@ -811,6 +817,11 @@ end;
 {
 
   $Log$
+  Revision 1.8  2002/01/07 13:58:15  lazarus
+  Changes to TListView to display images and fixes to TCustomImageList to notify it's owners of changes.
+
+  Shane
+
   Revision 1.7  2002/01/03 15:07:08  lazarus
   MG: fixed TCustomImageList.CreateSize
 
