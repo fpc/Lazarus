@@ -1598,7 +1598,7 @@ begin
                            +FTIObject.ClassName+':'+FTIPropertyName);
   end;}
 
-  //debugln('TCustomPropertyLink.CreateEditor C ',FTIObject.ClassName+':'+FTIPropertyName,' ',dbgs(FCollectValues));
+  //debugln('TCustomPropertyLink.CreateEditor C ',FTIObject.ClassName+':'+FTIPropertyName,' ',dbgs(FCollectValues),' ',dbgsName(FEditor));
   if CollectValues then FetchValues;
   if ((FEditor<>nil) or OldEditorExisted) and Assigned(OnEditorChanged) then
     OnEditorChanged(Self);

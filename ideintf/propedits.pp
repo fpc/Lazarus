@@ -2763,15 +2763,27 @@ end;
 function TIntegerPropertyEditor.OrdValueToVisualValue(OrdValue: longint
   ): string;
 begin
-  with GetTypeData(GetPropType)^ do
+  with GetTypeData(GetPropType)^ do begin
+    {debugln('TIntegerPropertyEditor.OrdValueToVisualValue ',GetName,' ',dbgs(ord(OrdType)),' ',dbgs(OrdValue));
+    case OrdType of
+      otSByte : debugln('TIntegerPropertyEditor.OrdValueToVisualValue otSByte ',dbgs(ShortInt(OrdValue)));
+      otUByte : debugln('TIntegerPropertyEditor.OrdValueToVisualValue otUByte ',dbgs(Byte(OrdValue)));
+      otSWord : debugln('TIntegerPropertyEditor.OrdValueToVisualValue otSWord ',dbgs(SmallInt(OrdValue)));
+      otUWord : debugln('TIntegerPropertyEditor.OrdValueToVisualValue otUWord ',dbgs(Word(OrdValue)));
+      otULong : debugln('TIntegerPropertyEditor.OrdValueToVisualValue otULong ',dbgs(Cardinal(OrdValue)));
+      else debugln('TIntegerPropertyEditor.OrdValueToVisualValue ??? ',dbgs(OrdValue));
+    end;}
+
     case OrdType of
       otSByte : Result:= IntToStr(ShortInt(OrdValue));
       otUByte : Result:= IntToStr(Byte(OrdValue));
-      otSWord : Result:= IntToStr(SmallInt(OrdValue));
+      otSWord : Result:= IntToStr(Integer(SmallInt(OrdValue)));// double conversion needed due to compiler bug 3534
       otUWord : Result:= IntToStr(Word(OrdValue));
       otULong : Result:= IntToStr(Cardinal(OrdValue));
       else Result := IntToStr(OrdValue);
     end;
+    //debugln('TIntegerPropertyEditor.OrdValueToVisualValue ',Result);
+  end;
 end;
 
 procedure TIntegerPropertyEditor.SetValue(const NewValue: AnsiString);
