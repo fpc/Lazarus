@@ -85,33 +85,40 @@ type
     //hint stuff
     FHintTimer : TTimer;
     FHintWIndow : THintWindow;
+    
     function GetDisplayGrid: boolean;
     function GetGridSizeX: integer;
     function GetGridSizeY: integer;
     function GetIsControl: Boolean;
+    function GetSnapToGrid: boolean;
+    Procedure HintTimer(sender : TObject);
+    procedure InvalidateWithParent(AComponent: TComponent);
     procedure SetDisplayGrid(const AValue: boolean);
     procedure SetGridSizeX(const AValue: integer);
     procedure SetGridSizeY(const AValue: integer);
     procedure SetIsControl(Value: Boolean);
-    procedure InvalidateWithParent(AComponent: TComponent);
-    Procedure HintTimer(sender : TObject);
+    procedure SetSnapToGrid(const AValue: boolean);
   protected
-    MouseDownComponent, MouseDownSender : TComponent;
-    MouseDownPos, MouseUpPos, LastMouseMovePos : TPoint;
+    MouseDownComponent: TComponent;
+    MouseDownSender: TComponent;
+    MouseDownPos: TPoint;
+    MouseUpPos: TPoint;
+    LastMouseMovePos: TPoint;
 
     function PaintControl(Sender: TControl; Message: TLMPaint):boolean;
     function SizeControl(Sender: TControl; Message: TLMSize):boolean;
     function MoveControl(Sender: TControl; Message: TLMMove):boolean;
-    Procedure MouseDownOnControl(Sender : TControl; Message : TLMMouse);
-    Procedure MouseMoveOnControl(Sender : TControl; var Message : TLMMouse);
-    Procedure MouseLeftUpOnControl(Sender : TControl; Message:TLMMouse);
-    Procedure MouseRightUpOnControl(Sender : TControl; Message:TLMMouse);
-    Procedure KeyDown(Sender : TControl; Message:TLMKEY);
-    Procedure KeyUP(Sender : TControl; Message:TLMKEY);
+    Procedure MouseDownOnControl(Sender: TControl; Message : TLMMouse);
+    Procedure MouseMoveOnControl(Sender: TControl; var Message : TLMMouse);
+    Procedure MouseLeftUpOnControl(Sender: TControl; Message:TLMMouse);
+    Procedure MouseRightUpOnControl(Sender: TControl; Message:TLMMouse);
+    Procedure KeyDown(Sender: TControl; Message:TLMKEY);
+    Procedure KeyUp(Sender: TControl; Message:TLMKEY);
 
-    Procedure RemoveControl(Control : TComponent);
+    Procedure RemoveControl(Control: TComponent);
     Procedure NudgeControl(DiffX, DiffY: Integer);
     Procedure NudgeSize(DiffX, DiffY: Integer);
+    procedure MoveSelection(DiffX, DiffY: integer);
 
     procedure BuildPopupMenu;
     procedure OnAlignPopupMenuClick(Sender: TObject);
@@ -163,10 +170,9 @@ type
     property OnGetNonVisualCompIconCanvas: TOnGetNonVisualCompIconCanvas
        read FOnGetNonVisualCompIconCanvas write FOnGetNonVisualCompIconCanvas;
     property ShowHints: boolean read FShowHints write FShowHints;
+    property SnapToGrid: boolean read GetSnapToGrid write SetSnapToGrid;
     property SourceEditor : TSourceEditor read FSourceEditor write FSourceEditor;
   end;
-
-
 
 
 implementation
@@ -174,7 +180,6 @@ implementation
 
 uses
   Sysutils, Math;
-
 
 const
   mk_lbutton =   1;
@@ -202,7 +207,7 @@ begin
   FHintWindow := THintWindow.Create(nil);
 
   FHIntWindow.Visible := False;
-  FHintWindow.Caption := 'This is a hint window'#13#10'NEat huh?';
+  FHintWindow.Caption := 'This is a hint window'#13#10'Neat huh?';
   FHintWindow.HideInterval := 4000;
   FHintWindow.AutoHide := True;
 end;
@@ -229,7 +234,9 @@ end;
 
 Procedure TDesigner.NudgeControl(DiffX, DiffY : Integer);
 Begin
+  {$IFDEF VerboseDesigner}
   Writeln('[TDesigner.NudgeControl]');
+  {$ENDIF}
   ControlSelection.MoveSelection(DiffX, DiffY);
   if ControlSelection.OnlyNonVisualComponentsSelected then
     FCustomForm.Invalidate;
@@ -237,8 +244,23 @@ end;
 
 Procedure TDesigner.NudgeSize(DiffX, DiffY: Integer);
 Begin
+  {$IFDEF VerboseDesigner}
   Writeln('[TDesigner.NudgeSize]');
+  {$ENDIF}
   ControlSelection.SizeSelection(DiffX, DiffY);
+end;
+
+procedure TDesigner.MoveSelection(DiffX, DiffY: integer);
+var
+  StepX, StepY: integer;
+begin
+  if SnapToGrid then begin
+    StepX:=GridSizeX;
+    StepY:=GridSizeY;
+    DiffX:=DiffX+(StepX div 2)-(DiffX mod StepX);
+    DiffY:=DiffY+(StepY div 2)-(DiffY mod StepY);
+  end;
+  ControlSelection.MoveSelection(DiffX,DiffY);
 end;
 
 procedure TDesigner.SelectOnlyThisComponent(AComponent:TComponent);
@@ -251,7 +273,9 @@ end;
 
 procedure TDesigner.InvalidateWithParent(AComponent: TComponent);
 begin
-writeln('INVALIDATEWITHPARENT');
+  {$IFDEF VerboseDesigner}
+  writeln('TDesigner.INVALIDATEWITHPARENT ',AComponent.Name,':',AComponent.ClassName);
+  {$ENDIF}
   if AComponent is TControl then begin
     if TControl(AComponent).Parent<>nil then
       TControl(AComponent).Parent.Invalidate
@@ -267,13 +291,13 @@ var OldDuringPaintControl: boolean;
 begin
   Result:=true;
 
-//writeln('***  LM_PAINT A ',Sender.Name,':',Sender.ClassName,' DC=',HexStr(Message.DC,8));
+  //writeln('***  LM_PAINT A ',Sender.Name,':',Sender.ClassName,' DC=',HexStr(Message.DC,8));
   OldDuringPaintControl:=FDuringPaintControl;
   FDuringPaintControl:=true;
   Sender.Dispatch(Message);
   
 
-//writeln('***  LM_PAINT B ',Sender.Name,':',Sender.ClassName,' DC=',HexStr(Message.DC,8));
+  //writeln('***  LM_PAINT B ',Sender.Name,':',Sender.ClassName,' DC=',HexStr(Message.DC,8));
   if (ControlSelection.IsSelected(Sender)) then begin
     // writeln('***  LM_PAINT ',Sender.Name,':',Sender.ClassName,' DC=',HexStr(Message.DC,8));
     ControlSelection.DrawMarker(Sender,Message.DC);
@@ -283,7 +307,7 @@ begin
     ControlSelection.DrawGrabbers(Message.DC);
     if ControlSelection.RubberBandActive then
       ControlSelection.DrawRubberBand(Message.DC);
-//  end;
+  //  end;
   FDuringPaintControl:=OldDuringPaintControl;
 end;
 
@@ -292,8 +316,8 @@ begin
   Result:=true;
   Sender.Dispatch(Message);
   if (ControlSelection.IsSelected(Sender)) then begin
-//    writeln('***  LM_Size ',Sender.Name,':',Sender.ClassName,' Type=',Message.SizeType
-// ,' ',Message.Width,',',Message.Height,' Pos=',Sender.Left,',',Sender.Top);
+    //    writeln('***  LM_Size ',Sender.Name,':',Sender.ClassName,' Type=',Message.SizeType
+    // ,' ',Message.Width,',',Message.Height,' Pos=',Sender.Left,',',Sender.Top);
     if not ControlSelection.IsResizing then begin
       ControlSelection.AdjustSize;
       if Assigned(FOnPropertiesChanged) then
@@ -307,12 +331,11 @@ begin
   Result:=true;
   Sender.Dispatch(Message);
   if (ControlSelection.IsSelected(Sender)) then begin
-//    writeln('***  LM_Move ',Sender.Name,':',Sender.ClassName);
+    //    writeln('***  LM_Move ',Sender.Name,':',Sender.ClassName);
     ControlSelection.AdjustSize;
     if Assigned(FOnPropertiesChanged) then
       FOnPropertiesChanged(Self);
   end;
-
 end;
 
 procedure TDesigner.MouseDownOnControl(Sender : TControl; Message : TLMMouse);
@@ -338,13 +361,13 @@ Begin
   MouseDownPos := Point(MouseX,MouseY);
   LastMouseMovePos:=MouseDownPos;
 
+  {$IFDEF VerboseDesigner}
   writeln('************************************************************');
   write('MouseDownOnControl');
   write(' ',Sender.Name,':',Sender.ClassName,' Origin=',SenderOrigin.X,',',SenderOrigin.Y);
   write(' Msg=',Message.Pos.X,',',Message.Pos.Y);
   write(' Mouse=',MouseX,',',MouseY);
   writeln('');
-
 
   if (Message.Keys and MK_Shift) = MK_Shift then
     Write(' Shift down')
@@ -355,6 +378,7 @@ Begin
     Writeln(', CTRL down')
   else
     Writeln(', No CTRL down');
+  {$ENDIF}
 
   if (Message.Keys and MK_LButton) > 0 then begin
     ControlSelection.ActiveGrabber:=
@@ -373,8 +397,6 @@ Begin
       if ControlSelection.ActiveGrabber=nil then begin
         NonVisualComp:=NonVisualComponentAtPos(
            MouseDownPos.X,MouseDownPos.Y);
-        Writeln('ActiveGrabber = nil');
-        if NonVisualComp<>nil then Writeln('1') else Writeln('2');
         if NonVisualComp<>nil then MouseDownComponent:=NonVisualComp;
         CompIndex:=ControlSelection.IndexOf(MouseDownComponent);
         if (Message.Keys and MK_SHIFT)>0 then begin
@@ -413,14 +435,15 @@ Begin
         // mouse down on grabber -> begin sizing
         // grabber is already activated
         // the sizing is handled in mousemove
-writeln('[TDesigner.MouseDownOnControl] Grabber activated');
       end;
     end else begin
       // add component mode  -> handled in mousemove and mouseup
     end;
   end;
 
-writeln('[TDesigner.MouseDownOnControl] END');
+  {$IFDEF VerboseDesigner}
+  writeln('[TDesigner.MouseDownOnControl] END');
+  {$ENDIF}
 End;
 
 procedure TDesigner.MouseLeftUpOnControl(Sender : TControl; Message:TLMMouse);
@@ -448,8 +471,6 @@ Begin
   if (Message.keys and MK_Control) = MK_Control then
     Shift := Shift +[ssCTRL];
 
-
-
   SenderOrigin:=GetFormRelativeControlTopLeft(Sender);
   MouseX:=Message.Pos.X+SenderOrigin.X;
   MouseY:=Message.Pos.Y+SenderOrigin.Y;
@@ -457,13 +478,14 @@ Begin
   dec(MouseX,MouseDownPos.X);
   dec(MouseY,MouseDownPos.Y);
 
+  {$IFDEF VerboseDesigner}
   writeln('************************************************************');
   write('MouseLeftUpOnControl');
   write(' ',Sender.Name,':',Sender.ClassName,' Origin=',SenderOrigin.X,',',SenderOrigin.Y);
   write(' Msg=',Message.Pos.X,',',Message.Pos.Y);
   write(' Mouse=',MouseX,',',MouseY);
   writeln('');
-
+  {$ENDIF}
 
   if Assigned(FOnGetSelectedComponentClass) then
     FOnGetSelectedComponentClass(Self,SelectedCompClass)
@@ -537,7 +559,9 @@ Begin
         if Assigned(FOnSetDesigning) then
           FOnSetDesigning(Self,FCustomForm,True);
         Form.Invalidate;
-writeln('NEW COMPONENT ADDED: ',Form.ComponentCount,'  ',NewCI.Control.Owner.Name);
+        {$IFDEF VerboseDesigner}
+        writeln('NEW COMPONENT ADDED: ',Form.ComponentCount,'  ',NewCI.Control.Owner.Name);
+        {$ENDIF}
       end;
       ControlSelection.EndUpdate;
     end;
@@ -547,7 +571,9 @@ writeln('NEW COMPONENT ADDED: ',Form.ComponentCount,'  ',NewCI.Control.Owner.Nam
 
   MouseDownComponent:=nil;
   MouseDownSender:=nil;
-writeln('[TDesigner.MouseLeftUpOnControl] END');
+  {$IFDEF VerboseDesigner}
+  writeln('[TDesigner.MouseLeftUpOnControl] END');
+  {$ENDIF}
 end;
 
 Procedure TDesigner.MouseMoveOnControl(Sender : TControl; var Message : TLMMouse);
@@ -558,98 +584,104 @@ var
   MouseX, MouseY :integer;
   UpdateLastMove : Boolean;
 begin
-try
-  UpdateLastMove := True;
-  if FShowHints then begin
-    FHintTimer.Enabled := False;
+  try
+    UpdateLastMove := True;
+    if FShowHints then begin
+      FHintTimer.Enabled := False;
 
-    { don't want it enabled when a mouse button is pressed.
- }
-    FHintTimer.Enabled := (Message.keys or (MK_LButton and MK_RButton and MK_MButton) = 0);
-    if FHintWindow.Visible then
- FHintWindow.Visible := False;
-  end;
-
-  if MouseDownComponent=nil then exit;
-
-  SenderParentForm:=GetParentForm(Sender);
-  if SenderParentForm=nil then exit;
-
-
-  SenderOrigin:=GetFormRelativeControlTopLeft(Sender);
-
-  MouseX:=Message.Pos.X+SenderOrigin.X;
-  MouseY:=Message.Pos.Y+SenderOrigin.Y;
-  if (Mouse.CursorPos.X < SenderParentForm.Left) or (Mouse.CursorPos.Y < SenderParentForm.Top) or
-     (Mouse.CursorPos.X > (SenderParentForm.Left+SenderParentForm.Width+(TForm(senderparentform).borderwidth))) or (Mouse.CursorPos.Y > (SenderParentForm.Top+SenderParentForm.Height+(22)))  then
-  begin
-    UpdateLastMove := False;
-    Exit;
-  end;
-
-//debugging commented out
-{  if (Message.keys and MK_LButton) = MK_LButton then begin
-    Write('MouseMoveOnControl'
-          ,' ',Sender.ClassName
-          ,' ',GetCaptureControl<>nil
-          ,' ',Sender.Left,',',Sender.Top
-          ,' Origin=',SenderOrigin.X,',',SenderOrigin.Y
-          ,' Msg=',Message.Pos.x,',',Message.Pos.Y
-          ,' Mouse=',MouseX,',',MouseY
-    );
-    write(' ',MouseDownComponent is TWinControl);
-    if (MouseDownComponent is TControl) then begin
-      write(' ',csCaptureMouse in TWinControl(MouseDownComponent).ControlStyle);
+      { don't want it enabled when a mouse button is pressed. }
+      FHintTimer.Enabled :=
+                 (Message.keys or (MK_LButton and MK_RButton and MK_MButton) = 0);
+      if FHintWindow.Visible then
+        FHintWindow.Visible := False;
     end;
-    writeln();
-  end;
-}
-  Shift := [];
-  if (TLMMouse(Message).keys and MK_Shift) = MK_Shift then
-    Shift := [ssShift];
-  if (TLMMouse(Message).keys and MK_Control) = MK_Control then
-    Shift := Shift + [ssCTRL];
 
-  if (Message.keys and MK_LButton) = MK_LButton then begin
-    if ControlSelection.ActiveGrabber<>nil then
-      begin
-        FHasSized:=true;
-        ControlSelection.SizeSelection(MouseX-LastMouseMovePos.X, MouseY-LastMouseMovePos.Y);
-       //commented out by sxm 2001-11-21
-       // if Assigned(FOnPropertiesChanged) then
-       //    FOnPropertiesChanged(Self);
-      end
-      else
-      begin
-      if (not (MouseDownComponent is TCustomForm)) and (ControlSelection.Count>=1)
-          and not (ControlSelection[0].Component is TCustomForm) then
+    if MouseDownComponent=nil then exit;
+
+    SenderParentForm:=GetParentForm(Sender);
+    if SenderParentForm=nil then exit;
+
+
+    SenderOrigin:=GetFormRelativeControlTopLeft(Sender);
+
+    MouseX:=Message.Pos.X+SenderOrigin.X;
+    MouseY:=Message.Pos.Y+SenderOrigin.Y;
+    if (Mouse.CursorPos.X < SenderParentForm.Left)
+    or (Mouse.CursorPos.Y < SenderParentForm.Top)
+    or (Mouse.CursorPos.X > (SenderParentForm.Left+SenderParentForm.Width
+                              +(TForm(Senderparentform).borderwidth)))
+    or (Mouse.CursorPos.Y > (SenderParentForm.Top+SenderParentForm.Height+(22)))
+    then begin
+      UpdateLastMove := False;
+      Exit;
+    end;
+
+  //debugging commented out
+  {  if (Message.keys and MK_LButton) = MK_LButton then begin
+      Write('MouseMoveOnControl'
+            ,' ',Sender.ClassName
+            ,' ',GetCaptureControl<>nil
+            ,' ',Sender.Left,',',Sender.Top
+            ,' Origin=',SenderOrigin.X,',',SenderOrigin.Y
+            ,' Msg=',Message.Pos.x,',',Message.Pos.Y
+            ,' Mouse=',MouseX,',',MouseY
+      );
+      write(' ',MouseDownComponent is TWinControl);
+      if (MouseDownComponent is TControl) then begin
+        write(' ',csCaptureMouse in TWinControl(MouseDownComponent).ControlStyle);
+      end;
+      writeln();
+    end;
+  }
+    Shift := [];
+    if (TLMMouse(Message).keys and MK_Shift) = MK_Shift then
+      Shift := [ssShift];
+    if (TLMMouse(Message).keys and MK_Control) = MK_Control then
+      Shift := Shift + [ssCTRL];
+
+    if (Message.keys and MK_LButton) = MK_LButton then begin
+      if ControlSelection.ActiveGrabber<>nil then
         begin
-          // move selection
           FHasSized:=true;
-          //TODO:create a rubberband looking control to move instead of the components
-          //that will speed up to updates.
-          
-          ControlSelection.MoveSelection(MouseX-LastMouseMovePos.X, MouseY-LastMouseMovePos.Y);
-       //commented out by sxm 2001-11-21
-        //  if Assigned(FOnPropertiesChanged) then
-        //     FOnPropertiesChanged(Self);
+          ControlSelection.SizeSelection(MouseX-LastMouseMovePos.X,
+                                         MouseY-LastMouseMovePos.Y);
+         //commented out by sxm 2001-11-21
+         // if Assigned(FOnPropertiesChanged) then
+         //    FOnPropertiesChanged(Self);
         end
         else
         begin
-          // rubberband selection/creation
-          ControlSelection.RubberBandBounds:=Rect(MouseDownPos.X,MouseDownPos.Y,MouseX,MouseY);
-          ControlSelection.RubberBandActive:=true;
-          SenderParentForm.Invalidate;
-        end;
+          if (not (MouseDownComponent is TCustomForm))
+          and (ControlSelection.Count>=1)
+          and not (ControlSelection[0].Component is TCustomForm) then
+          begin
+            // move selection
+            FHasSized:=true;
+            //TODO:create a rubberband looking control to move instead of the components
+            //that will speed up to updates.
+            MoveSelection(MouseX-LastMouseMovePos.X,MouseY-LastMouseMovePos.Y);
+         //commented out by sxm 2001-11-21
+          //  if Assigned(FOnPropertiesChanged) then
+          //     FOnPropertiesChanged(Self);
+          end
+          else
+          begin
+            // rubberband selection/creation
+            ControlSelection.RubberBandBounds:=Rect(MouseDownPos.X,MouseDownPos.Y,
+                                                    MouseX,MouseY);
+            ControlSelection.RubberBandActive:=true;
+            SenderParentForm.Invalidate;
+          end;
+      end;
+    end else begin
+      ControlSelection.ActiveGrabber:=nil;
     end;
-  end else begin
-    ControlSelection.ActiveGrabber:=nil;
-  end;
- finally
+    
+  finally
     SenderOrigin:=GetFormRelativeControlTopLeft(Sender);
     if UpdateLastMove then
        LastMouseMovePos:=Point(MouseX,MouseY);
- end;
+  end;
 end;
 
 procedure TDesigner.MouseRightUpOnControl(Sender : TControl; Message:TLMMouse);
@@ -678,13 +710,14 @@ var
   I : Integer;
   Shift : TShiftState;
 Begin
-Writeln('KEYDOWN');
+  {$IFDEF VerboseDesigner}
+  Writeln('TDesigner.KEYDOWN');
   with MEssage do
   Begin
     Writeln('CHARCODE = '+inttostr(charcode));
     Writeln('KEYDATA = '+inttostr(KeyData));
   end;
-
+  {$ENDIF}
 
   Shift := KeyDataToShiftState(Message.KeyData);
 
@@ -737,44 +770,36 @@ end;
 {-----------------------------------------K E Y U P --------------------------------}
 Procedure TDesigner.KeyUp(Sender : TControl; Message:TLMKEY);
 Begin
-Writeln('KEYUp');
+  {$IFDEF VerboseDesigner}
+  Writeln('KEYUp');
   with MEssage do
   Begin
     Writeln('CHARCODE = '+inttostr(charcode));
     Writeln('KEYDATA = '+inttostr(KeyData));
   end;
-
+  {$ENDIF}
 end;
 
 function TDesigner.IsDesignMsg(Sender: TControl; var Message: TLMessage): Boolean;
 Begin
   Result := false;
   if csDesigning in Sender.ComponentState then begin
-
-    if ((Message.Msg >= LM_MOUSEFIRST) and (Message.Msg <= LM_MOUSELAST)) then
-      Result := true
-    else
-    if ((Message.Msg >= LM_KeyFIRST) and (Message.Msg <= LM_KeyLAST)) then
-      Result:=true
-    else
-    if (Message.Msg = LM_ACTIVATE) then
-      Result := True;
-//    else
-//    if ((Message.Msg >= CM_MOUSEENTER) and (Message.Msg <= CM_MOUSELEAVE)) then
-//      Result:=true;
-
+    Result:=true;
     case Message.Msg of
       LM_PAINT:   Result:=PaintControl(Sender,TLMPaint(Message));
       LM_KEYDOWN: KeyDown(Sender,TLMKey(Message));
       LM_KEYUP:   KeyUP(Sender,TLMKey(Message));
-      LM_LBUTTONDOWN,LM_RBUTTONDOWN: MouseDownOnControl(Sender,TLMMouse(Message));
-      LM_LBUTTONUP:    MouseLeftUpOnControl(Sender,TLMMouse(Message));
-      LM_RBUTTONUP:    MouseRightUpOnControl(sender,TLMMouse(Message));
-      LM_MOUSEMOVE:    MouseMoveOnControl(Sender, TLMMouse(Message));
+      LM_LBUTTONDOWN,
+      LM_RBUTTONDOWN: MouseDownOnControl(Sender,TLMMouse(Message));
+      LM_LBUTTONUP:   MouseLeftUpOnControl(Sender,TLMMouse(Message));
+      LM_RBUTTONUP:   MouseRightUpOnControl(sender,TLMMouse(Message));
+      LM_MOUSEMOVE:   MouseMoveOnControl(Sender, TLMMouse(Message));
       LM_SIZE:    Result:=SizeControl(Sender,TLMSize(Message));
       LM_MOVE:    Result:=MoveControl(Sender,TLMMove(Message));
       LM_ACTIVATE : OnFormActivated;
 //      CM_MOUSELEAVE:  Writeln('MOUSELEAVE!!!!!!!!!!!!');//Result:=MoveControl(Sender,TLMMove(Message));
+    else
+      Result:=false;
     end;
   end;
 end;
@@ -789,7 +814,7 @@ procedure TDesigner.Notification(AComponent: TComponent; Operation: TOperation);
 Begin
   if Operation = opInsert then
     begin
-    Writeln('opInsert');
+      Writeln('opInsert');
     end
   else
   if Operation = opRemove then
@@ -861,6 +886,11 @@ end;
 function TDesigner.GetIsControl: Boolean;
 Begin
   Result := True;
+end;
+
+function TDesigner.GetSnapToGrid: boolean;
+begin
+  Result:=EnvironmentOptions.SnapToGrid;
 end;
 
 procedure TDesigner.SetDisplayGrid(const AValue: boolean);
@@ -1122,7 +1152,8 @@ var AComponent : TComponent;
 begin
   if ControlSelection.Count = 1 then begin
     AComponent:= ControlSelection.Items[0].Component;
-    if AComponent is TControl then TControl(AComponent).BringToFront;
+    if AComponent is TControl then
+      TControl(AComponent).BringToFront;
   end;    
 end;
 
@@ -1131,7 +1162,8 @@ var AComponent : TComponent;
 begin
   if ControlSelection.Count = 1 then begin
     AComponent:= ControlSelection.Items[0].Component;
-    if AComponent is TControl then TControl(AComponent).SendToBack;
+    if AComponent is TControl then
+      TControl(AComponent).SendToBack;
   end;
 end;
 
@@ -1181,13 +1213,18 @@ begin
   FHintWindow.ActivateHint(Rect,AHint);
 end;
 
+procedure TDesigner.SetSnapToGrid(const AValue: boolean);
+begin
+  if SnapToGrid=AValue then exit;
+  EnvironmentOptions.SnapToGrid:=AValue;
+end;
+
 Procedure TDesigner.OnFormActivated;
 begin
   //the form was activated.
   if Assigned(FOnActivated) then
      FOnActivated(Form);
 end;
-
 
 
 end.

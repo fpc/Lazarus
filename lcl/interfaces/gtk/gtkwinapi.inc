@@ -4354,9 +4354,10 @@ begin
 {}
          if  (Handle <> 0) then
             begin
-            if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), gtk_scrolled_window_get_type) then
+            if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)),
+               gtk_scrolled_window_get_type) then
              begin
-               if SBStyle in [SB_BOTH, SB_HORZ]
+              if SBStyle in [SB_BOTH, SB_HORZ]
                  then gtk_object_set(PGTKObject(Handle), 'hscrollbar_policy', [POLICY[bRedraw], nil]);
                if SBStyle in [SB_BOTH, SB_VERT]
                  then gtk_object_set(PGTKObject(Handle), 'vscrollbar_policy', [POLICY[bRedraw], nil]);
@@ -4780,6 +4781,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.78  2002/06/12 12:35:44  lazarus
+  MG: fixed apiwidget warnings/criticals
+
   Revision 1.77  2002/06/11 13:41:11  lazarus
   MG: fixed mouse coords and fixed mouse clicked thru bug
 

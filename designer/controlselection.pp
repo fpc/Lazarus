@@ -672,8 +672,8 @@ begin
 end;
 
 procedure TControlSelection.MoveSelection(dx, dy: integer);
-var i:integer;
-  g:TGrabIndex;
+var i: integer;
+  g: TGrabIndex;
 begin
   if (dx=0) and (dy=0) then exit;
   BeginUpdate;
