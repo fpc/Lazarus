@@ -601,7 +601,6 @@ begin
       LoadRecentList(XMLConfig,FLazarusDirsHistory,
          'EnvironmentOptions/LazarusDirectory/History/');
       if FLazarusDirsHistory.Count=0 then begin
-writeln('******************************** ',ExtractFilePath(ParamStr(0)));
         FLazarusDirsHistory.Add(ExtractFilePath(ExpandFilename(ParamStr(0))));
       end;
       FCompilerFilename:=XMLConfig.GetValue(
