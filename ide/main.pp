@@ -1292,7 +1292,7 @@ End;
   To create the LFC file use the program lazres or the
   LFMtoLFCfile function.
 }
-function CreateLFM(AForm:TCustomForm):integer;
+function CreateLFM(AForm:TCustomForm; Path : String):integer;
 // 0 = ok
 // -1 = error while streaming AForm to binary stream
 // -2 = error while streaming binary stream to text file
@@ -1322,7 +1322,7 @@ begin
     try
       // transform binary to text and save LFM file
       TxtMemStream:=TMemoryStream.Create;
-      TxtFileStream:=TFileStream.Create(lowercase(AForm.ClassName)+'.lfm',fmCreate);
+      TxtFileStream:=TFileStream.Create(Path+lowercase(AForm.ClassName)+'.lfm',fmCreate);
       try
         BinStream.Position:=0;
         ObjectBinaryToText(BinStream,TxtMemStream);
@@ -1403,18 +1403,9 @@ end;
 
 Procedure TMainIDE.FileSavedEvent(Sender : TObject; Filename : String);
 Begin
-  //sender is the TSourceEditor
-  writeln('FILESAVEDEVENT');
   If TSourceEditor(Sender).IsControlUnit then
   begin
-   Writeln('*****************CREATING LFM********************');
-//   Writeln('Result = '+Inttostr(CreateLFM(TCustomForm(TSourceEditor(Sender).Control))));
-//  writeln('RESULT IS '+inttostr(CreateLFM(Self)));
-   Writeln('Result = '+Inttostr(CreateLFM(ViewUnits1)));
-   Writeln('Result = '+Inttostr(CreateLFM(ViewForms1)));
-//   Writeln('Result = '+Inttostr(CreateLFM(MessageDlg)));
-//   Writeln('Result = '+Inttostr(CreateLFM(FindDialog1)));
-//   Writeln('Result = '+Inttostr(CreateLFM(MainIDE)));
+   Writeln('result'+Inttostr(CreateLFM(TCustomForm(TSourceEditor(Sender).Control), ExtractFilePath(Filename))));
    end;
 end;
 
@@ -1791,8 +1782,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.63  2001/02/23 18:37:17  lazarus
-  Added code so the unit source changes when you do a SAVE AS
+  Revision 1.64  2001/02/23 19:22:20  lazarus
+  Added code to create the LFM when saving the file.
   Shane
 
   Revision 1.62  2001/02/22 17:04:57  lazarus
