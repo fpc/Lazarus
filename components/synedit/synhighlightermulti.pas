@@ -374,8 +374,18 @@ end;
 procedure TSynMultiSyn.GetTokenEx(var TokenStart: PChar;
   var TokenLength: integer);
 begin
-  TokenLength:=fRun-fTokenPos-1;
-  TokenStart:=PChar(FLine) + fTokenPos;
+  if DefaultHighlighter = nil then begin
+    if fLine<>'' then begin
+      TokenStart:=PChar(fLine);
+      TokenLength:=length(fLine);
+    end else begin
+      TokenStart:=#0;
+      TokenLength:=0;
+    end;
+  end else begin
+    TokenLength:=fRun-fTokenPos-1;
+    TokenStart:=PChar(FLine) + fTokenPos;
+  end;
 end;
 {$ENDIF}
 
