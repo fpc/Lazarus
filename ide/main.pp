@@ -3950,9 +3950,8 @@ end;
 function TMainIDE.DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
 var UnitList: TList;
   i: integer;
-  MainUnitName, Ext, DlgCaption: string;
+  MainUnitName, DlgCaption: string;
   MainUnitInfo, AnUnitInfo: TUnitInfo;
-  MainUnitIndex: integer;
   ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   AForm: TForm;
@@ -3960,40 +3959,26 @@ Begin
   GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
   UnitList:=TList.Create;
   try
-    MainUnitIndex:=-1; // if main unit is also shown, then this is the index of
-                       // the main unit
     for i:=0 to Project1.UnitCount-1 do begin
       if not Project1.Units[i].IsPartOfProject then continue;
       if OnlyForms then begin
         // add all form names of project
-        if Project1.MainUnit=i then MainUnitIndex:=i;
-        if Project1.Units[i].FormName<>'' then
+        if Project1.Units[i].FormName<>'' then begin
           UnitList.Add(TViewUnitsEntry.Create(
             Project1.Units[i].FormName,i,Project1.Units[i]=ActiveUnitInfo));
+        end;
       end else begin
         // add all unit names of project
         if (Project1.Units[i].UnitName<>'') then begin
-          if Project1.MainUnit=i then MainUnitIndex:=i;
           UnitList.Add(TViewUnitsEntry.Create(
             Project1.Units[i].UnitName,i,Project1.Units[i]=ActiveUnitInfo));
         end else if Project1.MainUnit=i then begin
           MainUnitInfo:=Project1.MainUnitInfo;
           if Project1.ProjectType in [ptProgram,ptApplication,ptCustomProgram]
           then begin
-            if (MainUnitInfo.Loaded) then
-              MainUnitName:=SourceNoteBook.NoteBook.Pages[
-                MainUnitInfo.EditorIndex];
-            if MainUnitName='' then begin
-              MainUnitInfo.ReadUnitNameFromSource;
-              MainUnitName:=MainUnitInfo.UnitName;
-            end;
-            if MainUnitName='' then begin
-              MainUnitName:=ExtractFileName(MainUnitInfo.Filename);
-              Ext:=ExtractFileExt(MainUnitName);
-              MainUnitName:=copy(MainUnitName,1,length(MainUnitName)-length(Ext));
-            end;
+            MainUnitName:=CreateSrcEditPageName(MainUnitInfo.UnitName,
+              MainUnitInfo.Filename,MainUnitInfo.EditorIndex);
             if MainUnitName<>'' then begin
-              MainUnitIndex:=UnitList.Count;
               UnitList.Add(TViewUnitsEntry.Create(
                 MainUnitName,i,MainUnitInfo=ActiveUnitInfo));
             end;
@@ -4010,10 +3995,10 @@ Begin
       for i:=0 to UnitList.Count-1 do begin
         if TViewUnitsEntry(UnitList[i]).Selected then begin
           AnUnitInfo:=Project1.Units[TViewUnitsEntry(UnitList[i]).ID];
-          if AnUnitInfo.Loaded then begin
+          if AnUnitInfo.EditorIndex>=0 then begin
             SourceNoteBook.NoteBook.PageIndex:=AnUnitInfo.EditorIndex;
           end else begin
-            if MainUnitIndex=i then
+            if Project1.MainUnitInfo=AnUnitInfo then
               Result:=DoOpenMainUnit(false)
             else
               Result:=DoOpenEditorFile(AnUnitInfo.Filename,-1,[ofOnlyIfExists]);
@@ -7390,6 +7375,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.412  2002/10/14 07:16:34  lazarus
+  MG: fixed showing form
+
   Revision 1.411  2002/10/13 21:23:42  lazarus
   MG: code completion: added local variable completion
 
