@@ -789,6 +789,7 @@ ideintf/componenteditors.pas svneol=native#text/pascal
 ideintf/componentreg.pas svneol=native#text/pascal
 ideintf/componenttreeview.pas svneol=native#text/pascal
 ideintf/configstorage.pas svneol=native#text/pascal
+ideintf/dbpropedits.pas svneol=native#text/pascal
 ideintf/formeditingintf.pas svneol=native#text/pascal
 ideintf/graphpropedits.pas svneol=native#text/pascal
 ideintf/helpfpdoc.pas svneol=native#text/pascal

@@ -1365,7 +1365,7 @@ var
   GReferenceExpandable: Boolean;
   GShowReadOnlyProps: Boolean;
 
-// default Hook
+// default Hook - set by IDE
 var
   GlobalDesignHook: TPropertyEditorHook;
 

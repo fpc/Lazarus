@@ -21,10 +21,10 @@ interface
 
 uses
   IDECommands, PropEdits, ObjInspStrConsts, ObjectInspector, ColumnDlg,
-  ComponentEditors, GraphPropEdits, ListViewPropEdit, ImageListEditor,
-  ComponentTreeView, ActionsEditor, HelpIntf, TextTools, FormEditingIntf,
-  SrcEditorIntf, ComponentReg, PackageIntf, HelpHTML, ConfigStorage,
-  HelpFPDoc, ProjectIntf, LazIDEIntf, NewItemIntf, MacroIntf;
+  ComponentEditors, GraphPropEdits, DBPropEdits, ListViewPropEdit,
+  ImageListEditor, ComponentTreeView, ActionsEditor, HelpIntf, TextTools,
+  FormEditingIntf, SrcEditorIntf, ComponentReg, PackageIntf, HelpHTML,
+  ConfigStorage, HelpFPDoc, ProjectIntf, LazIDEIntf, NewItemIntf, MacroIntf;
 
 implementation
 
