@@ -5,8 +5,7 @@
 # test
      
 [package]
-name=lazarus-qt
-version=0.8a
+main=lcl
 
 [require]
 packages=rtl fcl 
@@ -15,21 +14,24 @@ packages=rtl fcl
 units=interfaces
 
 [compiler]
-options=-gl
+options=-gl -dqt
+unitdir=../../units .
 unittargetdir=../../units/qt
-unitdir=$(COMPILER_UNITTARGETDIR) ../../units 
-includedir=.
+
+[clean]
+files=$(wildcard ../../units/qt/*$(OEXT)) \
+      $(wildcard ../../units/qt/*$(PPUEXT)) \
+      $(wildcard ../../units/qt/*$(RSTEXT)) \
+      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 
 [prerules]
 DIST_DESTDIR=$(BASEDIR)/../../../dist
 
 [rules]
-.PHONY: all makefile makefiles
+.PHONY: cleartarget all
 
-all: 
-        $(MAKE) --assume-new=interfaces.pp interfaces$(PPUEXT)
+cleartarget:
+        -$(DEL) ../../units/qt/interfaces$(PPUEXT) ../../units/interfaces$(PPUEXT)
 
-makefile: Makefile.fpc
-        -$(FPCMAKE) -w
-       
-makefiles: makefile
+all: cleartarget interfaces$(PPUEXT)
+
