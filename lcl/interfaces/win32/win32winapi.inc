@@ -163,8 +163,7 @@ Begin
   else CheckFlag := MF_UNCHECKED;
   CheckFlag := CheckFlag or MF_BYCOMMAND;
   PrevState := Windows.CheckMenuItem(FMenu, HndMenu, CheckFlag);
-  if PrevState = MF_ENABLED then Result := True
-  else Result := False;
+  Result := PrevState = MF_ENABLED;
 End;
 
 {------------------------------------------------------------------------------
@@ -2313,6 +2312,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.32  2003/03/18 18:23:07  mattias
+  popupmenus for win32 intf from Martin Smat
+
   Revision 1.31  2003/03/06 17:15:49  mattias
   applied patch from Martin Smat fixing LM_SETSIZE, LM_SETDESIGNING, LM_SCREENINIT
 

@@ -558,7 +558,8 @@ activate_time :	the time at which the activation event occurred.
 }
         LM_POPUPSHOW:
         Begin 
-          TrackPopupMenuEx(HMENU(TWinControl(Sender).Handle), TPM_LEFTALIGN, TControl(Sender).Left, TControl(Sender).Top, TWinControl(Sender).Parent.Handle, Nil);	
+          SetProp(((Sender as TPopupMenu).Owner as TWinControl).Handle, 'PopupMenu', Pointer((Sender as TPopupMenu).Handle));
+          TrackPopupMenuEx((Sender as TPopupMenu).Handle, TPM_LEFTALIGN or TPM_LEFTBUTTON or TPM_RIGHTBUTTON, TPoint(Data^).x, TPoint(Data^).y, ((Sender as TPopupMenu).Owner as TWinControl).Handle, Nil);
         End;
         LM_SETFILTER:
         Begin 
@@ -2632,6 +2633,9 @@ End;
 
 {
   $Log$
+  Revision 1.50  2003/03/18 18:23:07  mattias
+  popupmenus for win32 intf from Martin Smat
+
   Revision 1.49  2003/03/11 23:14:20  mattias
   added TControl.HandleObjectShouldBeVisible
 

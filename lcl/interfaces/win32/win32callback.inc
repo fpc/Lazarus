@@ -77,11 +77,25 @@ Var
   var MenuInfo: MENUITEMINFO;
       MainMenuHandle: HMENU;
   begin
-    MainMenuHandle := GetMenu(Window);
+    Result:=nil;
     MenuInfo.cbSize:=sizeof(MENUITEMINFO);
     MenuInfo.fMask:=MIIM_DATA;
-    GetMenuItemInfo(MainMenuHandle, Lo(WParam), false, @MenuInfo);
-    Result := TObject(MenuInfo.dwItemData);
+    {first we have to decide if the command is from a popup menu or from the window main menu}
+    MainMenuHandle := HMENU(GetProp(Window, 'PopupMenu')); //if the 'PopupMenu' property exists, there is a big probability that the command is from a popup menu
+    if MainMenuHandle<>0 then //processing popup menu
+    begin
+      RemoveProp(Window, 'PopupMenu');
+      {GetMenuItemInfo can be FALSE when the 'PopupMenu' property was not
+      removed in the last popup menu processing (no menuitem was selected)}
+      if GetMenuItemInfo(MainMenuHandle, Lo(WParam), false, @MenuInfo)
+        then Result := TObject(MenuInfo.dwItemData);
+    end;
+    if Result=nil then //if Result is still nil, process main menu
+    begin
+      MainMenuHandle := GetMenu(Window);
+      GetMenuItemInfo(MainMenuHandle, Lo(WParam), false, @MenuInfo);
+      Result := TObject(MenuInfo.dwItemData);
+    end;
   end;
   
 Begin
@@ -392,6 +406,7 @@ Begin
         XPos := Lo(LParam);
         YPos := Hi(LParam);
         Keys := WParam;
+        Result := 0;
       End;
     End;
     WM_SETFOCUS:
@@ -530,6 +545,9 @@ end;
 
 {
   $Log$
+  Revision 1.25  2003/03/18 18:23:07  mattias
+  popupmenus for win32 intf from Martin Smat
+
   Revision 1.24  2003/01/27 11:25:40  mattias
   menu accelerator patch from Martin Smat
 
