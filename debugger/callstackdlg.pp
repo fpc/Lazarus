@@ -130,6 +130,8 @@ end;
 
 destructor TCallStackDlg.Destroy;
 begin
+  FCallStackNotification.OnChange := nil;
+  FCallStackNotification.ReleaseReference;
   inherited Destroy;
 end;
 
@@ -198,6 +200,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.6  2005/02/05 14:06:13  marc
+  * Applied (modified) patch from Colin Western
+
   Revision 1.5  2004/08/26 23:50:05  marc
   * Restructured debugger view classes
   * Fixed help

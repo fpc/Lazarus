@@ -3158,7 +3158,7 @@ begin
     if Assigned(FOnChange) then FOnChange(Self);
   end
   else begin
-    if AOldState = dsPause
+    if (AOldState = dsPause) or (AOldState = dsNone) { Force clear on initialisation } 
     then begin 
       Clear;
       if Assigned(FOnClear) then FOnClear(Self);
@@ -3576,6 +3576,9 @@ finalization
 end.
 { =============================================================================
   $Log$
+  Revision 1.69  2005/02/05 14:06:13  marc
+  * Applied (modified) patch from Colin Western
+
   Revision 1.68  2005/01/29 14:36:04  mattias
   reactivated fast xml units without widestrings
 

@@ -253,18 +253,14 @@ end;
 function DeleteEscapeChars(const AText: String; const AEscapeChar: Char): String;
 var
   i: Integer;
-  l: Integer;
-  Escape: Boolean;
 begin
   Result:=AText;
   Escape := False;
   i:=1;
-  l:=length(Result);
-  while i<l do begin
-    Escape := not Escape and (Result[i]=AEscapeChar);
-    if Escape then
+  while i<length(Result) do begin
+    if Result[i]=AEscapeChar then
       System.Delete(Result,i,1);
-    inc(i);
+    Inc(i);
   end;
 end;
 
@@ -321,6 +317,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.12  2005/02/05 14:06:13  marc
+  * Applied (modified) patch from Colin Western
+
   Revision 1.11  2004/09/14 21:30:36  vincents
   replaced writeln by DebugLn
 
