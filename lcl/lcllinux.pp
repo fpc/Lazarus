@@ -1338,16 +1338,17 @@ function MakeWord(A,B : Byte) : Word;
 implementation
 
 uses
-  Interfaces, Strings, Math;
+
+  SysUtils, Interfaces, Strings, Math;
 
 function MakeLong(A,B : Word) : LongInt;
 begin
-Result := A or B shl 16;
+  Result := A or B shl 16;
 end;
 
 function MakeWord(A,B : Byte) : Word;
 Begin
-Result := A or B shl 8;
+  Result := A or B shl 8;
 end;
 
 {$I winapi.inc}
@@ -1360,6 +1361,14 @@ end.
 
 {
   $Log$
+  Revision 1.4  2000/09/10 23:08:30  lazarus
+  MWE:
+    + Added CreateCompatibeleBitamp function
+    + Updated TWinControl.WMPaint
+    + Added some checks to avoid gtk/gdk errors
+    - Removed no fixed warning from GetDC
+    - Removed some output
+
   Revision 1.3  2000/08/11 14:59:09  lazarus
   Adding all the Synedit files.
   Changed the GDK_KEY_PRESS and GDK_KEY_RELEASE stuff to fix the problem in the editor with the shift key being ignored.

@@ -120,7 +120,7 @@ const //                 FROM     TO
     (@DrawableToNoDrawable, @DrawableToDrawable)
   );
 begin
-  Assert(False, Format('trace:[TgtkObject.BitBlt] DestDC:0x%x; X:%d, Y:%d, Width:%d, Height:%d; SrcDC:0x%x; XSrc:%d, YSrc:%d, Rop:0x%x', [DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Rop]));
+  Assert(False, Format('trace:  [TgtkObject.BitBlt] DestDC:0x%x; X:%d, Y:%d, Width:%d, Height:%d; SrcDC:0x%x; XSrc:%d, YSrc:%d, Rop:0x%x', [DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Rop]));
   Result := IsValidDC(DestDC) and IsValidDC(SrcDC);
   if Result
   then begin
@@ -128,11 +128,31 @@ begin
     // TODO: Add ROP
     
     
+    // ----------------------------------
+    // MWE: Temporary commented out due to compiler problems
+    // The called functions can't access local vars outside 
+    // themselves when they are called through a const or a var. 
+    // Since only DrawableToDrawable is implemented, 
+    // it is for the time beeing handled by an if statement
+    // ----------------------------------
+    (*
+    
     Result := DRAWABLE_MATRIX[
       PDeviceContext(SrcDC)^.Drawable <> nil,
       PDeviceContext(DestDC)^.Drawable <> nil
     ](); 
     
+    *)
+    // ----------------------------------
+    // MWE: Begin of temporary part
+    // ----------------------------------
+    if  (PDeviceContext(SrcDC)^.Drawable <> nil)
+    and (PDeviceContext(DestDC)^.Drawable <> nil) 
+    then Result := DrawableToDrawable
+    else Result := False;
+    // ----------------------------------
+    // MWE: End of temporary part
+    // ----------------------------------
   end;
 end;
 
@@ -180,7 +200,7 @@ Begin
   Inc(P.X, X);  
   Inc(P.Y, Y); 
   
-  Assert(False, Format('Trace:[GTKObject.ClientToScreen] Handle: 0x%x --> (%d, %d)', [Integer(Handle), P.X, P.y]));
+  Assert(False, Format('Trace:  [GTKObject.ClientToScreen] Handle: 0x%x --> (%d, %d)', [Integer(Handle), P.X, P.y]));
   Result := True;
   
 end;
@@ -198,7 +218,7 @@ var
   GdiObject: PGdiObject;
   RawImage: PGDIRawImage;
 begin
-  Assert(False, Format('Trace:==> [TgtkObject.CreateBitmap] Width: %d, Height: %d, Planes: %d, BitCount: %d, BitmapBits: 0x%x', [Width, Height, Planes, BitCount, Longint(BitmapBits)]));
+  Assert(False, Format('Trace:> [TgtkObject.CreateBitmap] Width: %d, Height: %d, Planes: %d, BitCount: %d, BitmapBits: 0x%x', [Width, Height, Planes, BitCount, Longint(BitmapBits)]));
 
   if (BitCount < 1) or (Bitcount > 32) 
   then begin
@@ -215,24 +235,24 @@ begin
   
   if BitCount = gdk_visual_get_system^.Depth
   then begin
-    Assert(False, Format('Trace:[TgtkObject.CreateBitmap] gbPixmap', []));
+    Assert(False, Format('Trace:  [TgtkObject.CreateBitmap] gbPixmap', []));
     GdiObject^.GDIBitmapType := gbPixmap;
     GdiObject^.GDIPixmapObject := gdk_pixmap_new(nil, Width, Height, BitCount);
   end 
   else if Bitcount = 1 
   then begin
-    Assert(False, Format('Trace:[TgtkObject.CreateBitmap] gbBitmap', []));
+    Assert(False, Format('Trace:  [TgtkObject.CreateBitmap] gbBitmap', []));
     GdiObject^.GDIBitmapType := gbBitmap;
     GdiObject^.GDIBitmapObject := gdk_pixmap_new(nil, Width, Height, BitCount);
   end
   else begin
-    Assert(False, Format('Trace:[TgtkObject.CreateBitmap] gbImage', []));
+    Assert(False, Format('Trace:  [TgtkObject.CreateBitmap] gbImage', []));
     GdiObject^.GDIBitmapType := gbImage;
     GdiObject^.GDIRawImageObject := NewGDIRawImage(Width, Height, BitCount);
   end;
   
   Result := HBITMAP(GdiObject);
-  Assert(False, Format('Trace:<== [TgtkObject.CreateBitmap] --> 0x%x', [Integer(Result)]));
+  Assert(False, Format('Trace:< [TgtkObject.CreateBitmap] --> 0x%x', [Integer(Result)]));
 end;
 
 
@@ -256,7 +276,7 @@ var
   GObject: PGdiObject;
   sError: String;
 begin
-  Assert(False, Format('Trace:[TgtkObject.CreateBrushIndirect]  Style: %d, Color: %8x', [LogBrush.lbStyle, LogBrush.lbColor]));
+  Assert(False, Format('Trace:> [TgtkObject.CreateBrushIndirect]  Style: %d, Color: %8x', [LogBrush.lbStyle, LogBrush.lbColor]));
 
   sError := '';
   GObject := NewGDIObject(gdiBrush);
@@ -312,7 +332,7 @@ begin
     end;
     gdk_colormap_alloc_color(gdk_colormap_get_system, @GObject^.GDIBrushColor, False, True);
     with GObject^.GDIBrushColor do
-      Assert(False, Format('Trace:[TgtkObject.CreateBrushIndirect]  Allocated R: %2x, G: %2x, B: %2x', [Red, Green, Blue]));
+      Assert(False, Format('Trace:  [TgtkObject.CreateBrushIndirect]  Allocated R: %2x, G: %2x, B: %2x', [Red, Green, Blue]));
   end;
   if sError = ''
   then Result := HBRUSH(GObject)
@@ -321,7 +341,7 @@ begin
     Result := 0;
     Dispose(GObject);
   end;
-  Assert(False, Format('Trace:[TgtkObject.CreateBrushIndirect] Got --> %x', [Result]));
+  Assert(False, Format('Trace:< [TgtkObject.CreateBrushIndirect] Got --> %x', [Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -360,6 +380,32 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: CreateCompatibleBitmap
+  Params: DC:
+          Width:
+          Height:
+  Returns:
+
+  Creates a bitmap compatible with the specified device context.
+ ------------------------------------------------------------------------------}
+function TGTKObject.CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP;
+var
+  visual: PGDKVisual;
+begin
+  Assert(False, Format('Trace:> [TgtkObject.CreateCompatibleBitmap] DC: 0x%x, W: %d, H: %d', [DC, Width, Height]));
+  
+  if (IsValidDC(DC) and (PDeviceContext(DC)^.Drawable <> nil))
+  then visual := gdk_window_get_visual(Pointer(PDeviceContext(DC)^.Drawable))
+  else visual := gdk_visual_get_system;
+  
+  if Visual <> nil 
+  then Result := CreateBitmap(Width, Height, 1, Visual^.Depth, nil)
+  else Result := 0;
+  
+  Assert(False, Format('Trace:< [TgtkObject.CreateCompatibleBitmap] DC: 0x%x --> 0x%x', [DC, Result]));
+end;
+
+{------------------------------------------------------------------------------
   Function: CreateCompatibleDC
   Params:  none
   Returns: Nothing
@@ -395,7 +441,7 @@ begin
   pNewDC^.CurrentPen := CreateDefaultPen;
 
   Result := HDC(pNewDC);
-  Assert(False,Format('trace:[TgtkObject.CreateCompatibleDC] DC: 0x%x --> 0x%x', [Integer(DC), Integer(Result)]));
+  Assert(False,Format('trace:  [TgtkObject.CreateCompatibleDC] DC: 0x%x --> 0x%x', [Integer(DC), Integer(Result)]));
 end;
 
 {------------------------------------------------------------------------------
@@ -456,7 +502,7 @@ begin
 
     FamilyName := StrPas(lfFaceName); //StringReplace(FaceName, ' ', '*');
 
-    Assert(False, Format('trace:[TgtkObject.CreateFontIndirect] Name: %s, Height: %d', [FamilyName, lfHeight]));
+    Assert(False, Format('trace:  [TgtkObject.CreateFontIndirect] Name: %s, Height: %d', [FamilyName, lfHeight]));
 
     // calculate weight offset.
     //        API                 XLFD
@@ -571,7 +617,7 @@ begin
 
   if Result = 0
   then WriteLn(Format('WARNING: [TgtkObject.CreateFontIndirect] NOT found XLFD: <%s>', [S]))
-  else Assert(False, Format('Trace:[TgtkObject.CreateFontIndirect] found XLFD: <%s>', [S]));
+  else Assert(False, Format('Trace:  [TgtkObject.CreateFontIndirect] found XLFD: <%s>', [S]));
 end;
 
 {------------------------------------------------------------------------------
@@ -677,33 +723,39 @@ function TgtkObject.DeleteObject(GDIObject: HGDIOBJ): Boolean;
 begin
   { Find out if we want to release internal GDI object }
   Result:= IsValidGDIObject(GDIObject);
-  if Result or (PGdiObject(GDIObject) <> nil) then with PGdiObject(GDIObject)^ do
-  begin
-    case GDIType of
-      gdiFont:
-        begin
-          if Result then gdk_font_unref(GDIFontObject);
+  if Result or (PGdiObject(GDIObject) <> nil) 
+  then 
+    with PGdiObject(GDIObject)^ do
+    begin
+      case GDIType of
+        gdiFont:
+          begin
+            if Result then gdk_font_unref(GDIFontObject);
+          end;
+        gdiBrush:
+          begin
+            if Result and (GDIBrushPixmap <> nil) 
+            then gdk_bitmap_unref(GDIBrushPixmap);
+            
+            gdk_colormap_free_colors(gdk_colormap_get_system, @GDIBrushColor, 1);
+          end;
+        gdiBitmap:
+          begin
+            if Result and (GDIBitmapObject <> nil)
+            then gdk_bitmap_unref(GDIBitmapObject);
+          end;
+        gdiPen:
+          begin
+            gdk_colormap_free_colors(gdk_colormap_get_system, @GDIPenColor, 1);
+          end;
+        else begin
+          Result:= false;
+          Assert(False, 'Trace:TODO : Unimplemented GDI object in delete object');
+          Exit;
         end;
-      gdiBrush:
-        begin
-          if Result then gdk_bitmap_unref(GDIBrushPixmap);
-          gdk_colormap_free_colors(gdk_colormap_get_system, @GDIBrushColor, 1);
-        end;
-      gdiBitmap:
-        begin
-          if Result then gdk_bitmap_unref(GDIBitmapObject);
-        end;
-      gdiPen:
-        begin
-          gdk_colormap_free_colors(gdk_colormap_get_system, @GDIPenColor, 1);
-        end;
-      else begin
-        Result:= false;
-        Assert(False, 'Trace:TODO : Unimplemented GDI object in delete object');
-        Exit;
       end;
     end;
-  end;
+    
   { Dispose of the GDI object }
   if PGDIObject(GDIObject) <> nil
   then begin
@@ -755,7 +807,7 @@ Assert(False, 'Trace:************************************************');
       end;
     DFC_BUTTON:
       begin
-        Assert(False, Format('Trace:[TgtkObject.DrawFrameControl] DFC_BUTTON --> draw rect = %d,%d,%d,%d',[Rect.Left,Rect.Top,REct.Right,REct.Bottom]));
+        Assert(False, Format('Trace:  [TgtkObject.DrawFrameControl] DFC_BUTTON --> draw rect = %d,%d,%d,%d',[Rect.Left,Rect.Top,REct.Right,REct.Bottom]));
         //figure out the style first
         case uState and $1F of
           DFCS_BUTTONRADIOIMAGE:
@@ -814,7 +866,7 @@ Var
   Width, Height: Integer;
   R: TRect;
 begin
-  Assert(False, Format('trace:[TgtkObject.DrawEdge] DC:0x%x, Rect = %d,%d,%d,%d', [DC, Rect.Left, Rect.Top,Rect.Right, Rect.Bottom]));
+  Assert(False, Format('trace:> [TgtkObject.DrawEdge] DC:0x%x, Rect = %d,%d,%d,%d', [DC, Rect.Left, Rect.Top,Rect.Right, Rect.Bottom]));
   Result := IsValidDC(DC);
   if Result
   then with PDeviceContext(DC)^ do
@@ -928,6 +980,7 @@ begin
       Result := True;
     end;
   end;
+  Assert(False, Format('trace:< [TgtkObject.DrawEdge] DC:0x%x, Rect = %d,%d,%d,%d', [DC, Rect.Left, Rect.Top,Rect.Right, Rect.Bottom]));
 end;
 
 {------------------------------------------------------------------------------
@@ -976,7 +1029,7 @@ end;
  ------------------------------------------------------------------------------}
 function TGTKObject.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
 begin
-  Assert(False, Format('Trace:[TGTKObject.EnableWindow] hWnd: 0x%x, Enable: %s', [hwnd, BOOL_TEXT[bEnable]]));
+  Assert(False, Format('Trace:  [TGTKObject.EnableWindow] hWnd: 0x%x, Enable: %s', [hwnd, BOOL_TEXT[bEnable]]));
   if hWnd <> 0 
   then gtk_widget_set_sensitive(pgtkwidget(hWnd), bEnable)
 end;
@@ -993,7 +1046,7 @@ var
   pStr: PChar;
   Width, Height: Integer;
 begin
-  Assert(False, Format('trace:[TgtkObject.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
+  Assert(False, Format('trace:> [TgtkObject.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
   Result := IsValidDC(DC);
   if Result
   then with PDeviceContext(DC)^ do
@@ -1035,6 +1088,7 @@ begin
       end;
     end;
   end;
+  Assert(False, Format('trace:< [TgtkObject.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
 end;
 
 {------------------------------------------------------------------------------
@@ -1051,7 +1105,7 @@ var
   Width, Height: Integer;
   OldCurrentBrush: PGdiObject;
 begin
-  Assert(False, Format('trace:[TgtkObject.FillRect] DC:0x%x; Rect: ((%d,%d)(%d,%d)); brush: %x', [Integer(DC), Rect.left, rect.top, rect.right, rect.bottom, brush]));
+  Assert(False, Format('trace:> [TgtkObject.FillRect] DC:0x%x; Rect: ((%d,%d)(%d,%d)); brush: %x', [Integer(DC), Rect.left, rect.top, rect.right, rect.bottom, brush]));
   Result := IsValidDC(DC) and IsValidGDIObject(Brush);
   if Result
   then with PDeviceContext(DC)^ do
@@ -1076,6 +1130,7 @@ begin
       Result := True;
     end;
   end;
+  Assert(False, Format('trace:< [TgtkObject.FillRect] DC:0x%x; Rect: ((%d,%d)(%d,%d)); brush: %x', [Integer(DC), Rect.left, rect.top, rect.right, rect.bottom, brush]));
 end;
 
 {------------------------------------------------------------------------------
@@ -1158,7 +1213,7 @@ var
   Color: TGdkColor;
   nIndex: Integer;
 begin
-  Assert(False, Format('trace:[TgtkObject.GetDC] hWND: 0x%x', [hWnd]));
+  Assert(False, Format('trace:> [TgtkObject.GetDC] hWND: 0x%x', [hWnd]));
   p := nil;
 
   if hWnd = 0
@@ -1171,27 +1226,27 @@ begin
     pFixed := GetFixedWidget(Pointer(hWnd));
     if pFixed = nil
     then begin
-      WriteLn('WARNING: [TgtkObject.GetDC] Window has no fixed');
-    end
-    else begin
-      // create a new devicecontext for this window
-      P := NewDC;
-      p^.hWnd := hWnd;
-//(*      
-      if PGTKFixed(pFixed)^.Container.Widget.Window = nil
-      then begin
-        Assert(False, 'Trace:[TgtkObject.GetDC] Force widget creation');
-        //force creation
-        gtk_widget_realize(PGTKWidget(pFixed));
-      end;
-//*)
-      p^.Drawable := PGTKFixed(pFixed)^.Container.Widget.Window;
-      p^.GC := gdk_gc_new(p^.Drawable);
-
-      gdk_gc_set_function(p^.GC, GDK_COPY);
-
-      gdk_gc_get_values(p^.GC, @Values);
+      Assert(False, 'trace:WARNING: [TgtkObject.GetDC] Window has no fixed, using window itself');
+      pFixed := Pointer(hWnd);
     end;
+
+    // create a new devicecontext for this window
+    P := NewDC;
+    p^.hWnd := hWnd;
+//(*      
+    if PGTKFixed(pFixed)^.Container.Widget.Window = nil
+    then begin
+      Assert(False, 'Trace:[TgtkObject.GetDC] Force widget creation');
+      //force creation
+      gtk_widget_realize(PGTKWidget(pFixed));
+    end;
+//*)
+    p^.Drawable := PGTKFixed(pFixed)^.Container.Widget.Window;
+    p^.GC := gdk_gc_new(p^.Drawable);
+
+    gdk_gc_set_function(p^.GC, GDK_COPY);
+
+    gdk_gc_get_values(p^.GC, @Values);
   end;
 
   if p <> nil
@@ -1210,7 +1265,7 @@ begin
     p^.CurrentPen := CreateDefaultPen;
   end;
   Result := HDC(p);
-  Assert(False, Format('trace:[TgtkObject.GetDC] Got 0x%x', [Result]));
+  Assert(False, Format('trace:< [TgtkObject.GetDC] Got 0x%x', [Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -1262,7 +1317,7 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.GetKeyState(nVirtKey: Integer): Smallint;
 const
-  KEYSTATE: array[Boolean] of Smallint = (0, -32768{$8000});
+  KEYSTATE: array[Boolean] of Smallint = (0, -32768 { $8000});
   TOGGLESTATE: array[Boolean] of Smallint = (0, 1);
 begin
   case nVirtKey of
@@ -1382,7 +1437,7 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.GetStockObject(Value: Integer): LongInt;
 begin
-  Assert(False, Format('Trace:[TgtkObject.GetStockObject] %d', [Value]));
+  Assert(False, Format('Trace:> [TgtkObject.GetStockObject] %d', [Value]));
   Result := 0;
   case Value of
     BLACK_BRUSH:         // Black brush.
@@ -1435,6 +1490,7 @@ begin
   else
     Assert(False, Format('Trace:TODO: [TgtkObject.GetStockObject] Implement value: %d', [Value]));
   end;
+  Assert(False, Format('Trace:< [TgtkObject.GetStockObject] %d --> 0x%x', [Value, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -1465,7 +1521,7 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.GetSystemMetrics(nIndex: Integer): Integer;
 begin
-  Assert(False, 'Trace:[TgtkObject.GetSystemMetrics]');
+  Assert(False, Format('Trace:> [TgtkObject.GetSystemMetrics] %d', [nIndex]));
   case nIndex of
     SM_ARRANGE:
       begin
@@ -1745,7 +1801,7 @@ begin
       end;
     else Result := 0;
   end;
-
+  Assert(False, Format('Trace:< [TgtkObject.GetSystemMetrics] %d --> 0x%x (%d)', [nIndex, Result, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -1759,7 +1815,7 @@ function TgtkObject.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var 
 var
   lbearing, rbearing, width, ascent,descent: LongInt;
 begin
-  Assert(False, 'trace:[TgtkObject.GetTextExtentPoint]');
+  Assert(False, 'trace:> [TgtkObject.GetTextExtentPoint]');
   Result := IsValidDC(DC);
   if Result
   then with PDeviceContext(DC)^ do
@@ -1780,6 +1836,7 @@ begin
       Size.cY := ascent + descent;
     end;
   end;
+  Assert(False, 'trace:< [TgtkObject.GetTextExtentPoint]');
 end;
 
 {------------------------------------------------------------------------------
@@ -1793,7 +1850,7 @@ function TgtkObject.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
 var
   lbearing, rbearing, dummy: LongInt;
 begin
-  Assert(False, 'Trace:TODO FINISH: [TgtkObject.GetTextMetrics]');
+  Assert(False, Format('Trace:> TODO FINISH[TgtkObject.GetTextMetrics] DC: 0x%x', [DC]));
 
   Result := IsValidDC(DC);
   if Result then with PDeviceContext(DC)^ do begin
@@ -1811,7 +1868,7 @@ begin
       tmMaxCharWidth := gdk_char_width(CurrentFont^.GDIFontObject, 'W'); // temp hack
     end;
   end;
-  Assert(False, 'Trace:Exiting GetTextMetrics');
+  Assert(False, Format('Trace:< TODO FINISH[TgtkObject.GetTextMetrics] DC: 0x%x', [DC]));
 end;
 
 {------------------------------------------------------------------------------
@@ -1823,7 +1880,8 @@ Function TgtkObject.GetWindowLong(Handle : hwnd; int : Integer): Longint;
 var
   Data : Tobject;
 begin
-  Assert(False, 'Trace:TODO: [TgtkObject.GETWINDOWLONG] Started but not finished');
+  //TODO:Started but not finished
+  Assert(False, Format('Trace:> [TgtkObject.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d)', [Handle, int, int]));
 
   case int of
     GWL_WNDPROC :
@@ -1864,6 +1922,7 @@ begin
     else Result := 0;
   end; //case
 
+  Assert(False, Format('Trace:< [TgtkObject.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d) --> 0x%x (%d)', [Handle, int, int, Result, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -1919,7 +1978,7 @@ function TgtkObject.HideCaret(hWnd: HWND): Boolean;
 var
   GTKObject: PGTKObject;
 begin
-  Assert(False, Format('Trace:[TgtkObject.HideCaret] HWND: 0x%x', [hWnd]));
+  Assert(False, Format('Trace:  [TgtkObject.HideCaret] HWND: 0x%x', [hWnd]));
 //TODO: [TgtkObject.HideCaret] Finish (in gtkwinapi.inc)
 
   GTKObject := PGTKObject(HWND);
@@ -1949,7 +2008,7 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.LineTo(DC: HDC; X, Y: Integer): Boolean;
 begin
-  Assert(False, Format('trace:[TgtkObject.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
+  Assert(False, Format('trace:> [TgtkObject.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
   Result := IsValidDC(DC);
   if Result
   then with PDeviceContext(DC)^ do
@@ -1966,6 +2025,7 @@ begin
       Result := True;
     end;
   end;
+  Assert(False, Format('trace:< [TgtkObject.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
 end;
 
 {------------------------------------------------------------------------------
@@ -2109,7 +2169,7 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
 begin
-  Assert(False, Format('trace:[TgtkObject.MoveToEx] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
+  Assert(False, Format('trace:> [TgtkObject.MoveToEx] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
   Result := IsValidDC(DC);
   if Result
   then with PDeviceContext(DC)^ do
@@ -2117,6 +2177,7 @@ begin
     if OldPoint <> nil then OldPoint^ := PenPos;
     PenPos := Point(X, Y);
   end;
+  Assert(False, Format('trace:< [TgtkObject.MoveToEx] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
 end;
 
 
@@ -2198,7 +2259,7 @@ function TgtkObject.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 var
   Width, Height: Integer;
 begin
-  Assert(False, Format('trace:[TgtkObject.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
+  Assert(False, Format('trace:> [TgtkObject.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
   Result := IsValidDC(DC);
   if Result
   then with PDeviceContext(DC)^ do
@@ -2221,6 +2282,7 @@ begin
       Result := True;
     end;
   end;
+  Assert(False, Format('trace:< [TgtkObject.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
 end;
 
 {------------------------------------------------------------------------------
@@ -2249,7 +2311,7 @@ var
   nIndex: Integer;
   pDC: PDeviceContext;
 begin
-  Assert(False, Format('trace:[TgtkObject.ReleaseDC] DC:0x%x', [hDC]));
+  Assert(False, Format('trace:> [TgtkObject.ReleaseDC] DC:0x%x', [hDC]));
   Result := 0;
 
   if {(hWnd <> 0) and} (hDC <> 0)
@@ -2275,6 +2337,7 @@ begin
       Result := 1;
     end;
   end;
+  Assert(False, Format('trace:< [TgtkObject.ReleaseDC] DC:0x%x', [hDC]));
 end;
 
 {------------------------------------------------------------------------------
@@ -2299,18 +2362,16 @@ var
   pDC, OldDC: PDeviceContext;
   count: Integer;
 begin
-  Assert(False, Format('Trace:[TgtkObject.RestoreDC]  0x%x, Saved: %d', [Integer(DC), SavedDC]));
-
+  Assert(False, Format('Trace:> [TgtkObject.RestoreDC]  0x%x, Saved: %d', [DC, SavedDC]));
   Result := IsValidDC(DC) and (SavedDC <> 0);
   if Result 
   then begin
     pDC := PDeviceContext(DC);
     Count := CountSaved(pDC);
-    
-    Result := (Abs(SavedDC) < Count);
+    Result := (Abs(SavedDC) <= Count);
     if Result 
     then begin
-      if SavedDC > 0 then Dec(SavedDc, Count); // make relative
+      if SavedDC > 0 then Dec(SavedDc, Count + 1); // make relative
       while (SavedDC < 0) and (pDC <> nil) do
       begin
         OldDC := pDC;
@@ -2328,6 +2389,7 @@ begin
       Result := CopyDCData(PDeviceContext(DC), pDC);
     end;
   end;
+  Assert(False, Format('Trace:< [TgtkObject.RestoreDC]  0x%x, Saved: %d --> %s', [Integer(DC), SavedDC, BOOL_TEXT[Result]]));
 end;
 
 
@@ -2344,7 +2406,7 @@ function TgtkObject.SaveDC(DC: HDC): Integer;
 var
   pDC, pSavedDC: PDeviceContext;
 begin
-  Assert(False, Format('Trace:[TgtkObject.SaveDC]  0x%x', [Integer(DC)]));
+  Assert(False, Format('Trace:> [TgtkObject.SaveDC]  0x%x', [Integer(DC)]));
   
   Result := 0;
   if IsValidDC(DC)
@@ -2359,6 +2421,8 @@ begin
       pDC := pDC^.SavedContext;
     until pDC^.SavedContext = nil;
   end;
+  
+  Assert(False, Format('Trace:< [TgtkObject.SaveDC]  0x%x --> %d', [Integer(DC), Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -2394,7 +2458,7 @@ var
   Color: TGdkColor;
 begin
   //TODO: Finish this;
-  Assert(False, Format('trace:==> [TgtkObject.SelectObject] DC: 0x%x', [DC]));
+  Assert(False, Format('trace:> [TgtkObject.SelectObject] DC: 0x%x', [DC]));
 
   Result := 0;
   if IsValidDC(DC) and IsValidGDIObject(GDIObj)
@@ -2403,7 +2467,7 @@ begin
       gdiBitmap:
         with PDeviceContext(DC)^ do
         begin
-          Assert(False, Format('trace:[TgtkObject.SelectObject] DC: 0x%x, Type: Bitmap', [DC]));
+          Assert(False, Format('trace:  [TgtkObject.SelectObject] DC: 0x%x, Type: Bitmap', [DC]));
           Result := HBITMAP(CurrentBitmap);
           CurrentBitmap := PGDIObject(GDIObj);
           if GC <> nil then gdk_gc_unref(GC);
@@ -2423,7 +2487,7 @@ begin
       gdiBrush:
         with PDeviceContext(DC)^, PGdiObject(GDIObj)^ do
         begin
-          Assert(False, Format('trace:[TgtkObject.SelectObject] DC: 0x%x, Type: Brush', [DC]));
+          Assert(False, Format('trace:  [TgtkObject.SelectObject] DC: 0x%x, Type: Brush', [DC]));
           Result := HBRUSH(CurrentBrush);
           CurrentBrush := PGDIObject(GDIObj);
           if GC <> nil
@@ -2438,7 +2502,7 @@ begin
       gdiFont:
         with PDeviceContext(DC)^ do
         begin
-          Assert(False, Format('trace:[TgtkObject.SelectObject] DC: 0x%x, Type: Font', [DC]));
+          Assert(False, Format('trace:  [TgtkObject.SelectObject] DC: 0x%x, Type: Font', [DC]));
           Result := HFONT(CurrentFont);
           CurrentFont := PGDIObject(GDIObj);
           if GC <> nil
@@ -2459,7 +2523,7 @@ begin
       end;
     end;
   end;
-  Assert(False, Format('trace:<== [TgtkObject.SelectObject] DC: 0x%x', [DC]));
+  Assert(False, Format('trace:< [TgtkObject.SelectObject] DC: 0x%x  --> 0x%x', [DC, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -2513,8 +2577,7 @@ const
   HI_MASK = LongWord($FF00);
   LO_MASK = LongWord($FF);
 begin
-  //WriteLn(Format('[TgtkObject.SetBKColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
-  Assert(False, 'Trace:[TgtkObject.SetBKColor]');
+  Assert(False, Format('trace:> [TgtkObject.SetBKColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
   Result := CLR_INVALID;
   if IsValidDC(DC)
   then begin
@@ -2536,7 +2599,7 @@ begin
     end;
 
   end;
-
+  Assert(False, Format('trace:< [TgtkObject.SetBKColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -2560,7 +2623,7 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.SetCapture(Value: Longint): Longint;
 begin
-  Assert(False, Format('Trace:[TgtkObject.SetCapture] 0x%x', [Value]));
+  Assert(False, Format('Trace:> [TgtkObject.SetCapture] 0x%x', [Value]));
   
   //CaptureHandle is defined in gtkint.pp class definition.
   
@@ -2594,6 +2657,7 @@ begin
   end;
      
    // TODO send a WM_CaptureChanged
+  Assert(False, Format('Trace:< [TgtkObject.SetCapture] 0x%x --> 0x%x', [Value, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -2664,8 +2728,9 @@ function TgtkObject.SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: 
 var
   Adjustment: PGtkAdjustment;
 begin
-  Assert(False, 'Trace:[TgtkObject.SetScrollInfo]');
-//  with ScrollInfo do Assert(False, Format('Trace:[TgtkObject.SetScrollInfo] Mask:0x%x, Min:%d, Max:%d, Page:%d, Pos:%d', [fMask, nMin, nMax, nPage, nPos]));
+//  Assert(False, 'Trace:[TgtkObject.SetScrollInfo]');
+  with ScrollInfo do Assert(False, Format('Trace:> [TgtkObject.SetScrollInfo] Mask:0x%x, Min:%d, Max:%d, Page:%d, Pos:%d', [fMask, nMin, nMax, nPage, nPos]));
+
   Result := 0;
   if (Handle <> 0)
   then begin
@@ -2702,6 +2767,7 @@ begin
       if bRedraw then gtk_adjustment_changed(Adjustment);
     end;
   end;
+  with ScrollInfo do Assert(False, Format('Trace:> [TgtkObject.SetScrollInfo] --> %d', [Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -2764,7 +2830,7 @@ const
   HI_MASK = LongWord($FF00);
   LO_MASK = LongWord($FF);
 begin
-  Assert(False, 'trace:[TgtkObject.SetTextColor]');
+  Assert(False, Format('trace:> [TgtkObject.SetTextColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
   Result := CLR_INVALID;
   if IsValidDC(DC)
   then begin
@@ -2786,7 +2852,7 @@ begin
     end;
 
   end;
-
+  Assert(False, Format('trace:< [TgtkObject.SetTextColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -2799,7 +2865,7 @@ end;
 function TgtkObject.SetWindowLong(Handle: HWND; Idx: Integer; NewLong: Longint): LongInt;
 begin
   //TODO: Finish this;
-  Assert(False, 'Trace:TODO: [TgtkObject.SETWINDOWLONG] Finish');
+  Assert(False, Format('Trace:> [TgtkObject.SETWINDOWLONG] HWND: 0x%x, idx: 0x%x(%d), Value: 0x%x(%d)', [Handle, idx, idx, newlong, newlong]));
 
   case idx of
     GWL_WNDPROC :
@@ -2828,6 +2894,7 @@ begin
         gtk_object_set_data(pgtkobject(Handle),'ID',pointer(NewLong));
       end;
   end; //case
+  Assert(False, Format('Trace:< [TgtkObject.SETWINDOWLONG] HWND: 0x%x, idx: 0x%x(%d), Value: 0x%x(%d) --> 0x%x(%d)', [Handle, idx, idx, newlong, newlong, Result, Result]));
 end;
 
 Function TgtkObject.SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; Var lpPoint : TPoint) : Boolean;
@@ -2858,7 +2925,7 @@ var
 begin
 //TODO: [TgtkObject.ShowCaret] Finish (in gtkwinapi.inc)
 
-  Assert(False, Format('Trace:[TgtkObject.ShowCaret] HWND: 0x%x', [hWnd]));
+  Assert(False, Format('Trace:> [TgtkObject.ShowCaret] HWND: 0x%x', [hWnd]));
 
   GTKObject := PGTKObject(HWND);
   Result := GTKObject <> nil;
@@ -2876,6 +2943,7 @@ begin
   end
   else WriteLn('WARNING: [TgtkObject.ShowCaret] Got null HWND');
 
+  Assert(False, Format('Trace:< [TgtkObject.ShowCaret] HWND: 0x%x --> %s', [hWnd, BOOL_TEXT[Result]]));
 end;
 
 {------------------------------------------------------------------------------
@@ -2933,7 +3001,7 @@ var
   pixmap : PgdkPixmap;
   pixmapwid : pgtkWidget;
 begin
-  Assert(True, Format('trace:[TgtkObject.StretchBlt] DestDC:0x%x; X:%d, Y:%d, Width:%d, Height:%d; SrcDC:0x%x; XSrc:%d, YSrc:%d, SrcWidth:%d, SrcHeight:%d; Rop:0x%x', [DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop]));
+  Assert(True, Format('trace:> [TgtkObject.StretchBlt] DestDC:0x%x; X:%d, Y:%d, Width:%d, Height:%d; SrcDC:0x%x; XSrc:%d, YSrc:%d, SrcWidth:%d, SrcHeight:%d; Rop:0x%x', [DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop]));
   Result := IsValidDC(DestDC) and IsValidDC(SrcDC);
   if Result
   then begin
@@ -2953,6 +3021,7 @@ begin
       XSrc, YSrc, X, Y, Width, Height);
 
   end;
+  Assert(True, Format('trace:< [TgtkObject.StretchBlt] DestDC:0x%x --> %s', [DestDC, BOOL_TEXT[Result]]));
 end;
 
 {------------------------------------------------------------------------------
@@ -3032,6 +3101,14 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2000/09/10 23:08:31  lazarus
+  MWE:
+    + Added CreateCompatibeleBitamp function
+    + Updated TWinControl.WMPaint
+    + Added some checks to avoid gtk/gdk errors
+    - Removed no fixed warning from GetDC
+    - Removed some output
+
   Revision 1.7  2000/08/14 12:31:12  lazarus
   Minor modifications for SynEdit .
   Shane

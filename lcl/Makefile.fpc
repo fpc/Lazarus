@@ -14,8 +14,8 @@ files=$(wildcard $(UNITTARGETDIR)/*$(OEXT))
 
 [dirs]
 unittargetdir=./units
-unitdir=$(UNITTARGETDIR) ./interfaces/$(LCLPLATFORM) 
-incdir=./include
+unitdir=$(UNITTARGETDIR) . ./interfaces/$(LCLPLATFORM) 
+incdir=./include ./interfaces/$(LCLPLATFORM)
 
 [install]
 

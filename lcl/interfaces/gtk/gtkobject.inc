@@ -2,6 +2,12 @@
                                    TGTKObject
  ******************************************************************************)
 
+{$IFOPT C-}
+// Uncomment for local trace
+//  {$C+}
+//  {$DEFINE ASSERT_IS_ON}
+{$ENDIF}
+
 const
   BOOL_RESULT: array[Boolean] of String = ('False', 'True');
 
@@ -208,7 +214,7 @@ begin
 
    Assert(False, 'Trace:Message received'); 
    if Sender <> nil then
-     Assert(False, Format('Trace:[TgtkObject.IntSendMessage3] %s --> Sent LM_Message: $%x (%s); Data: %d', [Sender.ClassName, LM_Message, GetMessageName(LM_Message), Integer(data)]));
+     Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Sent LM_Message: $%x (%s); Data: %d', [Sender.ClassName, LM_Message, GetMessageName(LM_Message), Integer(data)]));
 
    // The following case is now split into 2 separate parts:
    //   1st part should contain all messages which don't need the "handle" variable
@@ -226,7 +232,7 @@ begin
 
       LM_ShowHide :
       begin
-         Assert(False, Format('Trace:[TgtkObject.IntSendMessage3] %s --> Show/Hide', [Sender.ClassNAme]));
+         Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Show/Hide', [Sender.ClassNAme]));
          ShowHide(Sender);
       end;
 
@@ -243,7 +249,7 @@ begin
       LM_ATTACHMENU: AttachMenu(Sender);
    else begin
       handle := hwnd(ObjectToGtkObject (sender));
-//???   if handle = nil then assert (false, Format ('Trace:[TgtkObject.IntSendMessage3] %s --> got handle=nil',[Sender.ClassName])); 
+//???   if handle = nil then assert (false, Format ('Trace:  [TgtkObject.IntSendMessage3] %s --> got handle=nil',[Sender.ClassName])); 
       Case LM_Message of
 
       LM_SetText  : SetText(PgtkWidget(Handle), Data); 
@@ -253,12 +259,12 @@ begin
          Assert(False, 'Trace:Adding a child to Parent');
          If (TWinControl(Sender).Parent is TToolbar) then
          Begin
-//          Assert(False, Format('Trace:[TgtkObject.IntSendMessage3] %s --> %s   ---calling INSERTBUTTON from Add Child', [AParent.ClassName, Sender.ClassNAme]));
+//          Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> %s   ---calling INSERTBUTTON from Add Child', [AParent.ClassName, Sender.ClassNAme]));
             exit;
          end
          else Begin
             AParent := (Sender as TWinControl).Parent;
-            Assert(False, Format('Trace:[TgtkObject.IntSendMessage3] %s --> Calling Add Child: %s', [AParent.ClassName, Sender.ClassNAme]));
+            Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Calling Add Child: %s', [AParent.ClassName, Sender.ClassNAme]));
             AddChild(Pgtkwidget(AParent.Handle), PgtkWidget(Handle), AParent.Left, AParent.Top);
          end;
       end;
@@ -439,7 +445,7 @@ begin
 
       LM_SetSize :
       begin
-         Assert(False, Format('Trace:[TgtkObject.IntSendMessage3] %s --> LM_SetSize(%d, %d, %d, %d)', [Sender.ClassNAme, pTRect(Data)^.Left,pTRect(Data)^.Top,pTRect(Data)^.Right,pTRect(Data)^.Bottom]));
+         Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> LM_SetSize(%d, %d, %d, %d)', [Sender.ClassNAme, pTRect(Data)^.Left,pTRect(Data)^.Top,pTRect(Data)^.Right,pTRect(Data)^.Bottom]));
          ResizeChild(Sender,pTRect(Data)^.Left,pTRect(Data)^.Top,pTRect(Data)^.Right,pTRect(Data)^.Bottom);
       end;
 
@@ -464,7 +470,7 @@ begin
 //SH: think of TCanvas.handle!!!!
       LM_ReDraw : 
       begin 
-         Assert(False, Format('Trace:[TgtkObject.IntSendMessage3] %s --> Redraw', [Sender.ClassName]));
+         Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Redraw', [Sender.ClassName]));
          if (Sender is TCanvas) then 
             ReDraw(PgtkWidget((Sender as TCanvas).Handle))
          else
@@ -476,7 +482,7 @@ begin
 
       LM_AddPage :
       begin
-         Assert(False, Format('Trace:[TgtkObject.IntSendMessage3] %s --> Add NB page: %s', [Sender.ClassName, TLMNotebookEvent(Data^).Child.ClassName]));
+         Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Add NB page: %s', [Sender.ClassName, TLMNotebookEvent(Data^).Child.ClassName]));
          AddNBPage(TControl(Sender), TLMNotebookEvent(Data^).Child, TLMNotebookEvent(Data^).Page);
       end;
 
@@ -592,8 +598,11 @@ begin
 
       LM_SCREENINIT :
       begin
+        WriteLN('LM_SCREENINIT called --> should go to GTKObject.Init');
+        WriteLN('TODO: check this');
         { Initialize gdk }
         //??? shouldn't this go to init ????
+        // MWE: Move this to init !!!!!
         gdk_init(@argc, @argv);
         //???--????
         { Compute pixels per inch variable }
@@ -886,7 +895,7 @@ var
   pWidget: PGTKWidget;
   Parent: TWinControl;
 begin
-  Assert(false, (Format('trace:[TgtkObject.ResizeChild] %s --> Resize', [Sender.ClassNAme])));
+  Assert(false, (Format('trace:  [TgtkObject.ResizeChild] %s --> Resize', [Sender.ClassNAme])));
 
   Parent := TControl(Sender).Parent;
 
@@ -899,7 +908,9 @@ begin
      begin
         pFixed := GetFixedWidget(PGtkWidget(Parent.Handle));
         if pFixed <> nil 
-           then gtk_fixed_move(pFixed, pWidget, Left, Top)
+           then begin
+             gtk_fixed_move(pFixed, pWidget, Left, Top);
+           end
            else Assert(False, 'Trace:ERROR!!!!  - no Fixed Widget found to use when resizing....');
      end 
      else begin
@@ -1010,7 +1021,7 @@ var
    pLabel: pchar;
 begin
    if Sender is TWinControl
-      then Assert(False, Format('Trace:[TgtkObject.SetLabel] %s --> label %s', [Sender.ClassName, TControl(Sender).Caption]))
+      then Assert(False, Format('Trace:  [TgtkObject.SetLabel] %s --> label %s', [Sender.ClassName, TControl(Sender).Caption]))
       else Assert(False, Format('Trace:WARNING: [TgtkObject.SetLabel] %s --> No Decendant of TWinControl', [Sender.ClassName]));
 
    P := Pointer(TWinControl(Sender).Handle);
@@ -1026,11 +1037,11 @@ begin
                       begin
                          if Child = nil then 
                          begin
-                            Assert(False, Format('trace:[TgtkObject.SetLabel] %s has no child label', [Sender.ClassName]));
+                            Assert(False, Format('trace:  [TgtkObject.SetLabel] %s has no child label', [Sender.ClassName]));
                             child := gtk_label_new(pLabel)
                          end
                          else begin
-                            Assert(False, Format('trace:[TgtkObject.SetLabel] %s has child label', [Sender.ClassName]));
+                            Assert(False, Format('trace:  [TgtkObject.SetLabel] %s has child label', [Sender.ClassName]));
                             gtk_label_set_text(pgtkLabel(Child), PLabel);
                          end;
                       end;
@@ -1069,7 +1080,7 @@ begin
       Assert(True, Format ('WARNING: [TgtkObject.SetLabel] --> not handled for class %s ', [Sender.ClassName]));
    end;
 
-   Assert(False, Format('trace:[TgtkObject.SetLabel] %s --> END', [Sender.ClassName]));
+   Assert(False, Format('trace:  [TgtkObject.SetLabel] %s --> END', [Sender.ClassName]));
 end;
 
 {------------------------------------------------------------------------------}
@@ -1148,7 +1159,7 @@ procedure TGTKObject.SetCallback(Msg : LongInt; Sender : TObject);
         Handler := Next;
       end;
       // if we are here no handler was defined yet
-      Assert(False, Format('trace:[TGTKObject.SetCallback] %s signal <%s>', [Sender.ClassName, ASignal]));
+      Assert(False, Format('trace:  [TGTKObject.SetCallback] %s signal <%s>', [Sender.ClassName, ASignal]));
       gtk_signal_connect(AObject, ASignal, TGTKSignalFunc(ACallBackProc), Sender);
       
       if ReqSignalMask <> 0 then
@@ -1770,8 +1781,8 @@ begin
          Without, the notebook dumps
          This should be fixed someday 
          }
-         Assert(False, 'Trace:FIXME !!! [TgtkObject.CreateComponent] csNotebook --> gtk_Object_Set_Data');
-         SetFixedWidget(p, p);
+//         Assert(False, 'Trace:FIXME !!! [TgtkObject.CreateComponent] csNotebook --> gtk_Object_Set_Data');
+//         SetFixedWidget(p, p);
 
       end;
 
@@ -2054,7 +2065,7 @@ begin
    NewHandle := THandle(gdk_font_load(strTemp));
    if NewHandle = 0 then  //Load a DEFAULT font 
    begin
-   Assert(False, 'Trace:[TgtkObject.FontSetName] WARNING: Loading Default Font');
+   Assert(False, 'Trace:  [TgtkObject.FontSetName] WARNING: Loading Default Font');
    StrDispose(StrTemp);
    strTemp := StrAlloc(Length('-*-courier-bold-r-normal--*-120-*-*-*-*-iso8859-1') + 1);
    StrPCopy(strTemp, '-*-courier-bold-r-normal--*-120-*-*-*-*-iso8859-1');
@@ -2073,7 +2084,7 @@ begin
      Msg := LM_Changed;
      TObject(sender).Dispatch(Msg);
    end
-   else Assert(False, Format('Trace:[TgtkObject.FontSetName] WARNING: Could not load font: %s', [strTemp]));;
+   else Assert(False, Format('Trace:  [TgtkObject.FontSetName] WARNING: Could not load font: %s', [strTemp]));;
 
    Assert(False, 'Trace:7');
    StrDispose(StrTemp);
@@ -2218,7 +2229,7 @@ begin
    result := 0;     // default if nobody sets it
 
    if Sender is TWinControl 
-     then Assert(False, Format('Trace:[TgtkObject.GetValue] %s', [Sender.ClassName]))
+     then Assert(False, Format('Trace:  [TgtkObject.GetValue] %s', [Sender.ClassName]))
      else Assert(False, Format('Trace:WARNING: [TgtkObject.GetValue] %s --> No Decendant of TWinControl', [Sender.ClassName]));
 
    Handle    := Pointer(TWinControl(Sender).Handle);
@@ -2256,7 +2267,7 @@ begin
    result := 0;     // default if nobody sets it
 
    if Sender is TWinControl 
-     then Assert(False, Format('Trace:[TgtkObject.SetValue] %s', [Sender.ClassName]))
+     then Assert(False, Format('Trace:  [TgtkObject.SetValue] %s', [Sender.ClassName]))
      else Assert(False, Format('Trace:WARNING: [TgtkObject.SetValue] %s --> No Decendant of TWinControl', [Sender.ClassName]));
 
    Handle    := Pointer(TWinControl(Sender).Handle);
@@ -2297,7 +2308,7 @@ begin
    result := 0;     // default if nobody sets it
 
    if Sender is TWinControl 
-     then Assert(False, Format('Trace:[TgtkObject.SetProperties] %s', [Sender.ClassName]))
+     then Assert(False, Format('Trace:  [TgtkObject.SetProperties] %s', [Sender.ClassName]))
      else Assert(False, Format('Trace:WARNING: [TgtkObject.SetProperties] %s --> No Decendant of TWinControl', [Sender.ClassName]));
 
    Handle    := Pointer(TWinControl(Sender).Handle);
@@ -2470,7 +2481,7 @@ end;
 function TgtkObject.IsValidDC(const DC: HDC): Boolean;
 begin
   Result := FDeviceContexts.IndexOf(Pointer(DC)) <> -1;
-  Assert(False, Format('Trace:[TgtkObject.IsValidDC] DC: 0x%x --> %s', [Integer(DC), BOOL_RESULT[Result]]));
+  Assert(False, Format('Trace:  [TgtkObject.IsValidDC] DC: 0x%x --> %s', [Integer(DC), BOOL_RESULT[Result]]));
 end;
 
 {------------------------------------------------------------------------------
@@ -2507,7 +2518,7 @@ begin
   except
     on Exception do Result := False;
   end;
-  Assert(False, Format('Trace:[TgtkObject.IsValidGDIObject] GDIObject: 0x%x --> %s', [Integer(GDIObject), BOOL_RESULT[Result]]));
+  Assert(False, Format('Trace:  [TgtkObject.IsValidGDIObject] GDIObject: 0x%x --> %s', [Integer(GDIObject), BOOL_RESULT[Result]]));
 end;
 
 {------------------------------------------------------------------------------
@@ -2534,7 +2545,7 @@ function TgtkObject.NewDC: PDeviceContext;
 var
   n: Integer;
 begin
-  Assert(False, Format('Trace:==> [TgtkObject.NewDC]', []));
+  Assert(False, Format('Trace:> [TgtkObject.NewDC]', []));
   New(Result);
   with Result^ do
   begin
@@ -2552,7 +2563,7 @@ begin
     gdk_color_white(gdk_colormap_get_system, @CurrentBackColor);
   end;
   n := FDeviceContexts.Add(Result);
-  Assert(False, Format('Trace:<== [TgtkObject.NewDC] FDeviceContexts[%d] --> 0x%p', [n, Result]));
+  Assert(False, Format('Trace:< [TgtkObject.NewDC] FDeviceContexts[%d] --> 0x%p', [n, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -2566,12 +2577,12 @@ function TgtkObject.NewGDIObject(const GDIType: TGDIType): PGdiObject;
 var
   n: Integer;
 begin
-  Assert(False, Format('Trace:==> [TgtkObject.NewGDIObject]', []));
+  Assert(False, Format('Trace:> [TgtkObject.NewGDIObject]', []));
   New(Result);
   FillChar(Result^, SizeOf(TGDIObject), 0);
   Result^.GDIType := GDIType;
   n := FGDIObjects.Add(Result);
-  Assert(False, Format('Trace:<== [TgtkObject.NewGDIObject] FGDIObjects[%d] --> 0x%p', [n, Result]));
+  Assert(False, Format('Trace:< [TgtkObject.NewGDIObject] FGDIObjects[%d] --> 0x%p', [n, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -2616,9 +2627,22 @@ begin
 end;
 
 
+{$IFDEF ASSERT_IS_ON}
+  {$UNDEF ASSERT_IS_ON}
+  {$C-}
+{$ENDIF}
+
  { =============================================================================
 
   $Log$
+  Revision 1.8  2000/09/10 23:08:31  lazarus
+  MWE:
+    + Added CreateCompatibeleBitamp function
+    + Updated TWinControl.WMPaint
+    + Added some checks to avoid gtk/gdk errors
+    - Removed no fixed warning from GetDC
+    - Removed some output
+
   Revision 1.7  2000/08/10 10:55:45  lazarus
   Changed TCustomDialog to TCommonDialog
   Shane

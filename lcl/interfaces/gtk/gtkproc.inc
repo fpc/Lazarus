@@ -55,7 +55,7 @@ end;
  ------------------------------------------------------------------------------}
 function CopyDCData(const DestinationDC, SourceDC: PDeviceContext): Boolean;
 var
-  GCValues: PGDKGCValues;
+  GCValues: TGDKGCValues;
 begin
   Assert(False, 'Trace:[CopyDCData]');
   Result := (DestinationDC <> nil) and (SourceDC <> nil);
@@ -68,8 +68,9 @@ begin
       if (SourceDC^.GC = nil) or (Drawable = nil)
       then GC := nil
       else begin
-        gdk_gc_get_values(SourceDC^.GC, GCValues);
-        GC := gdk_gc_new_with_values(Drawable, GCValues, $FFFF);
+        gdk_gc_get_values(SourceDC^.GC, @GCValues);
+        //GC := gdk_gc_new(Drawable);
+        GC := gdk_gc_new_with_values(Drawable, @GCValues, 3 { $3FF});
       end;
       PenPos := SourceDC^.PenPos;
       CurrentBitmap := SourceDC^.CurrentBitmap;
@@ -94,7 +95,7 @@ procedure SelectGDKBrushProps(const DC: HDC);
 begin
   with PDeviceContext(DC)^, CurrentBrush^ do
   begin
-    Assert(False, Format('Trace:[SelectGDKBrushProps] Fill: %d | Color --> pixel: %d, red: 0x%x, green: 0x%x, blue: 0x%x', [Integer(GDIBrushFill), GDIBrushColor.Pixel, GDIBrushColor.Red, GDIBrushColor.Green, GDIBrushColor.Blue]));
+    Assert(False, Format('Trace:  [SelectGDKBrushProps] Fill: %d | Color --> pixel: %d, red: 0x%x, green: 0x%x, blue: 0x%x', [Integer(GDIBrushFill), GDIBrushColor.Pixel, GDIBrushColor.Red, GDIBrushColor.Green, GDIBrushColor.Blue]));
     gdk_gc_set_fill(GC, GDIBrushFill);
     gdk_gc_set_foreground(GC, @GDIBrushColor);
     gdk_gc_set_background(GC, @CurrentBackColor);
@@ -146,7 +147,7 @@ begin
   begin
     gdk_gc_set_foreground(GC, @CurrentTextColor);
     gdk_gc_set_background(GC, @CurrentBackColor);
-    Assert(False, Format('trace:[SelectGDKTextProps] Color --> pixel: %d, red: 0x%x, green: 0x%x, blue: 0x%x', [CurrentTextColor.Pixel, CurrentTextColor.Red, CurrentTextColor.Green, CurrentTextColor.Blue]));
+    Assert(False, Format('trace:  [SelectGDKTextProps] Color --> pixel: %d, red: 0x%x, green: 0x%x, blue: 0x%x', [CurrentTextColor.Pixel, CurrentTextColor.Red, CurrentTextColor.Green, CurrentTextColor.Blue]));
   end;
 end;
 
@@ -485,7 +486,7 @@ var
 begin
    if not assigned (AObject) then
    begin
-      assert (false, 'TRACE: ObjectToGtkObject: object not assigned');
+      assert (false, 'TRACE:  [ObjectToGtkObject] Object not assigned');
       handle := 0
    end
    else if (AObject is TWinControl) then
@@ -505,11 +506,11 @@ begin
       {if TCommonDialog(AObject).HandleAllocated then } handle := TCommonDialog(AObject).Handle
    end
    else begin
-      Assert(False, 'Trace:Message received with unhandled class-type'); 
+      Assert(False, Format('Trace:  [ObjectToGtkObject] Message received with unhandled class-type <%s>', [AObject.ClassName])); 
       handle := 0;
    end;
    result := gtk_object (handle);
-   if handle = 0 then assert (false, 'Trace: [ObjectToGtkObject]****** Warning: handle = 0 *******');
+   if handle = 0 then Assert (false, 'Trace:  [ObjectToGtkObject]****** Warning: handle = 0 *******');
 end;
 
 
@@ -654,6 +655,14 @@ end;
 
  {
   $Log$
+  Revision 1.4  2000/09/10 23:08:31  lazarus
+  MWE:
+    + Added CreateCompatibeleBitamp function
+    + Updated TWinControl.WMPaint
+    + Added some checks to avoid gtk/gdk errors
+    - Removed no fixed warning from GetDC
+    - Removed some output
+
   Revision 1.3  2000/08/10 10:55:45  lazarus
   Changed TCustomDialog to TCommonDialog
   Shane

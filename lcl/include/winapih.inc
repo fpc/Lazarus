@@ -27,6 +27,7 @@ Function ClienttoScreen(Handle : HWND; var P : TPoint) : Boolean; {$IFDEF IF_BAS
 function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateCaret(Handle: HWND; Bitmap: hBitmap; width, Height: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateCompatibleDC(DC: HDC): HDC; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function CreateFont --> independent
 function CreateFontIndirect(const LogFont: TLogFont): HFONT; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -215,6 +216,14 @@ function UnionRect(var lprcDst: TRect; const lprcSrc1, lprcSrc2: TRect): Boolean
 { =============================================================================
 
   $Log$
+  Revision 1.6  2000/09/10 23:08:30  lazarus
+  MWE:
+    + Added CreateCompatibeleBitamp function
+    + Updated TWinControl.WMPaint
+    + Added some checks to avoid gtk/gdk errors
+    - Removed no fixed warning from GetDC
+    - Removed some output
+
   Revision 1.5  2000/08/14 12:31:12  lazarus
   Minor modifications for SynEdit .
   Shane

@@ -58,7 +58,6 @@ begin
    Application.CreateForm(TIDEEditor, IdeEditor1);
    Application.CreateForm(TViewUnits1, ViewUnits1);
    Application.CreateForm(TViewForms1, ViewForms1);
-
    SplashForm.StartTimer;
    Application.Run;
 end.
@@ -66,6 +65,14 @@ end.
 
 {
   $Log$
+  Revision 1.4  2000/09/10 23:08:29  lazarus
+  MWE:
+    + Added CreateCompatibeleBitamp function
+    + Updated TWinControl.WMPaint
+    + Added some checks to avoid gtk/gdk errors
+    - Removed no fixed warning from GetDC
+    - Removed some output
+
   Revision 1.3  2000/08/09 18:32:10  lazarus
   Added more code for the find function.
   Shane

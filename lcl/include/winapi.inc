@@ -46,6 +46,11 @@ Begin
   Result := InterfaceObject.CreateCaret(Handle, Bitmap, width, Height);
 end;
 
+function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP;
+begin
+  Result := InterfaceObject.CreateCompatibleBitmap(DC, Width, Height);
+end;
+
 function CreateCompatibleDC(DC: HDC): HDC;
 begin
   Result := InterfaceObject.CreateCompatibleDC(DC);
@@ -386,12 +391,12 @@ begin
   Result := InterfaceObject.StretchMaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Mask, XMask, YMask, Rop);
 end;
 
-Function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean;
+function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean;
 begin
   Result := InterfaceObject.TextOut(DC, X, Y, Str, Count);
 end;
 
-Function WindowFromPoint(Point : TPoint) : HWND;
+function WindowFromPoint(Point : TPoint) : HWND;
 begin
   Result := InterfaceObject.WindowFromPoint(Point);
 end;
@@ -426,10 +431,15 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-Function BeginPaint(Handle : hwnd; Var PS : TPaintStruct) : hdc;
-Begin
-//TODO: Finish this.  BEGINPAINT
-Result := Getdc(Handle);
+function BeginPaint(Handle : hwnd; Var PS : TPaintStruct) : hdc;
+begin
+  Assert(False, Format('Trace:> [BeginPaint] HWND: 0x%x', [Handle]));
+  
+  //TODO: Finish this.  BEGINPAINT
+  // Move to platform dependent ??
+  Result := Getdc(Handle);
+
+  Assert(False, Format('Trace:< [BeginPaint] HWND: 0x%x --> 0x%x', [Handle, Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -439,11 +449,11 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-Function CharLowerBuff(pStr : PChar; Len : Integer): Integer;
+function CharLowerBuff(pStr : PChar; Len : Integer): Integer;
 begin
   // your code here
-//TODO:WINAPI call CHARLOWERBUFF
-Writeln('TODO: WINAPI call CHARLOWERBUFF');
+  //TODO:WINAPI call CHARLOWERBUFF
+  Writeln('TODO: WINAPI call CHARLOWERBUFF');
 end;
 
 
@@ -529,8 +539,11 @@ end;
 -------------------------------------------------------------------------------}
 Function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer;
 Begin
-//TODO: Finish EndPaint in winapi.inc
-Result := 1;
+  Assert(False, Format('Trace:> [EndPaint] HWND: 0x%x', [Handle]));
+
+  //TODO: Finish EndPaint in winapi.inc
+  Result := 1;
+  Assert(False, Format('Trace:< [EndPaint] HWND: 0x%x --> 0x%x', [Handle, Result]));
 end;
 
 
@@ -926,6 +939,14 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2000/09/10 23:08:30  lazarus
+  MWE:
+    + Added CreateCompatibeleBitamp function
+    + Updated TWinControl.WMPaint
+    + Added some checks to avoid gtk/gdk errors
+    - Removed no fixed warning from GetDC
+    - Removed some output
+
   Revision 1.5  2000/08/14 12:31:12  lazarus
   Minor modifications for SynEdit .
   Shane

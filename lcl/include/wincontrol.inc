@@ -439,6 +439,7 @@ var
   DC: HDC;
   PS: TPaintStruct; //defined in LCLLinux.pp
 begin
+  Assert(False, Format('Trace:> [TWinControl.PaintHandler] %s --> Msg.DC: 0x%x', [ClassName, Message.DC]));
   DC := Message.DC;
   if DC = 0 then DC := BeginPaint(Handle, PS);
   try
@@ -462,6 +463,7 @@ begin
   finally
     if Message.DC = 0 then EndPaint(Handle, PS);
   end;
+  Assert(False, Format('Trace:< [TWinControl.PaintHandler] %s', [ClassName]));
 end;
 
 
@@ -1257,7 +1259,7 @@ var
   PS : TPaintStruct;
   I : Integer;
 begin
-  Assert(False, Format('Trace:[TWinControl.WMPaint] %s', [ClassName]));
+  Assert(False, Format('Trace:> [TWinControl.WMPaint] %s Msg.DC: 0x%x', [ClassName, Msg.DC]));
   if (Msg.DC <> 0) then
   begin
     if not (csCustomPaint in ControlState) and (ControlCount = 0) then
@@ -1269,26 +1271,27 @@ begin
   end
   else begin
     DC := GetDC(0);
-//    MemBitmap := CreateCompatibleBitmap(DC, ClientRect.Right, ClientRect.Bottom);
+    MemBitmap := CreateCompatibleBitmap(DC, ClientRect.Right, ClientRect.Bottom);
     ReleaseDC(0, DC);
     MemDC := CreateCompatibleDC(0);
-//    OldBitmap := SelectObject(MemDC, MemBitmap);
+    OldBitmap := SelectObject(MemDC, MemBitmap);
     try
       DC := BeginPaint(Handle, PS);
-     //ToDO:define wm_erasebkgnd
+      //ToDO:define wm_erasebkgnd
 //      Perform(WM_ERASEBKGND, MemDC, MemDC);
       Msg.DC := MemDC;
       WMPaint(Msg);
       Msg.DC := 0;
       //TODO:bitblt
-//      BitBlt(DC, 0, 0, ClientRect.Right, ClientRect.Bottom, MemDC, 0, 0, SRCCOPY);
+      BitBlt(DC, 0, 0, ClientRect.Right, ClientRect.Bottom, MemDC, 0, 0, SRCCOPY);
       EndPaint(Handle, PS);
     finally
-//      SelectObject(MemDC, OldBitmap);
+      SelectObject(MemDC, OldBitmap);
       DeleteDC(MemDC);
-//      DeleteObject(MemBitmap);
+      DeleteObject(MemBitmap);
     end;
   end;
+  Assert(False, Format('Trace:< [TWinControl.WMPaint] %s', [ClassName]));
 end;
 
 {------------------------------------------------------------------------------
@@ -1857,6 +1860,14 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2000/09/10 23:08:30  lazarus
+  MWE:
+    + Added CreateCompatibeleBitamp function
+    + Updated TWinControl.WMPaint
+    + Added some checks to avoid gtk/gdk errors
+    - Removed no fixed warning from GetDC
+    - Removed some output
+
   Revision 1.2  2000/07/30 21:48:32  lazarus
   MWE:
     = Moved ObjectToGTKObject to GTKProc unit

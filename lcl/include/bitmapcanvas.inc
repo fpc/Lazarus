@@ -32,7 +32,7 @@ begin
     FBitmap.PaletteNeeded;
     hDC := CreateCompatibleDC(0);
 
-    WriteLN(Format('[TBitmapCanvas.CreateHandle] Got Handle 0x%x', [FBitmap.Handle]));
+    Assert(False, Format('trace:[TBitmapCanvas.CreateHandle] Got Handle 0x%x', [FBitmap.Handle]));
 
     if FBitmap.Handle = 0
     then FOldBitmap := 0
@@ -87,6 +87,14 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2000/09/10 23:08:30  lazarus
+  MWE:
+    + Added CreateCompatibeleBitamp function
+    + Updated TWinControl.WMPaint
+    + Added some checks to avoid gtk/gdk errors
+    - Removed no fixed warning from GetDC
+    - Removed some output
+
   Revision 1.1  2000/07/13 10:28:24  michael
   + Initial import
 

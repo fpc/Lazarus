@@ -5,6 +5,7 @@
 {$ENDIF}
 
 
+
 // temp solution to fill msgqueue
 function DeliverPostMessage(const Target: Pointer; var Message): GBoolean;
 begin
@@ -79,28 +80,32 @@ end;
 //    Unused: Longint;
 //    Result: Longint;
 //  end;
-function gtkdraw( widget: PGtkWidget; area : PgdkRectangle; data: gPointer) : GBoolean; cdecl;
+function gtkdraw(Widget: PGtkWidget; area : PgdkRectangle; data: gPointer) : GBoolean; cdecl;
 var
    MSG: TLMPaint;
 begin
    Result := True;
    EventTrace('draw', data);
    MSG.Msg := LM_PAINT;
-   // TODO: get DC
-   MSG.DC := 0;
+   MSG.DC := GetDC(THandle(Widget));
    MSG.Unused := 0;
    
-   Result := DeliverMessage(Data, MSG) = 0;
+   
+   Result := DeliverPostMessage(Data, MSG);
+//   Result := DeliverMessage(Data, MSG) = 0;
 end;
 
 function GTKDrawDefault(Widget: PGTKWidget; Data: gPointer): GBoolean; cdecl;
 var
-   Mess : TLMessage;
+   MSG : TLMPaint;
 begin
    Result := True;
    EventTrace('draw', data);
-   Mess.Msg := LM_PAINT;
-   Result := DeliverMessage(Data, Mess) = 0;
+   MSG.Msg := LM_PAINT;
+   MSG.DC := GetDC(THandle(Widget));
+   MSG.Unused := 0;
+
+   Result := DeliverPostMessage(Data, MSG);
 end;
 
 function GTKMap(Widget: PGTKWidget; Data: gPointer): GBoolean; cdecl;
@@ -113,10 +118,10 @@ end;
 
 function GTKExposeEvent(Widget: PGtkWidget; Event : PGDKEventExpose; Data: gPointer): GBoolean; cdecl;
 var
-  Mess : TLMessage;
-  fWindow : pgdkWindow;
-  widget2: pgtkWidget;
-  PixMap : pgdkPixMap;
+//  Mess : TLMessage;
+//  fWindow : pgdkWindow;
+//  widget2: pgtkWidget;
+//  PixMap : pgdkPixMap;
   
   msg: TLMPaint;
 begin
@@ -124,12 +129,14 @@ begin
   EventTrace('expose-event', data);
   
   msg.msg := LM_PAINT; 
-  msg.DC := 0;
+  MSG.DC := GetDC(THandle(Widget));
   msg.Unused := 0; 
    
-  Result := DeliverMessage(Data, msg) = 0;
+  Result := DeliverPostMessage(Data, MSG);
+
+//  Result := DeliverMessage(Data, msg) = 0;
    
-(*   
+(*    
    
 //----------------- Is this still used ??? ---------------   
    Mess.msg := LM_EXPOSEEVENT;
@@ -1068,6 +1075,14 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2000/09/10 23:08:31  lazarus
+  MWE:
+    + Added CreateCompatibeleBitamp function
+    + Updated TWinControl.WMPaint
+    + Added some checks to avoid gtk/gdk errors
+    - Removed no fixed warning from GetDC
+    - Removed some output
+
   Revision 1.5  2000/08/28 14:23:49  lazarus
   Added a few files for the start of creating classes for the editor.  [SHANE]
 

@@ -174,6 +174,7 @@ end;
 
 procedure TGrabber.PaintWindow(DC: HDC);
 begin
+  WriteLn(Format('[TGrabber.PaintWindow] 0x%x', [DC]));
   FillRect(DC, Rect(0, 0, Width, Height), GetStockObject(BLACK_BRUSH));
 end;
 
@@ -336,22 +337,20 @@ end;
 
 procedure TControlSelection.GrabberMove(Sender: TObject; dx, dy: Integer);
 begin
-  with TGrabber(Sender) do
-  begin
-    if gpLeft in Positions
-    then begin
-      Inc(FLeft, dx);
-      Dec(FWidth, dx);
-    end;
-    if gpRight in Positions then Inc(FWidth, dx);
-
-    if gpTop in Positions
-    then begin
-       Inc(FTop, dy);
-       Dec(FHeight, dy)
-    end;
-    if gpBottom in Positions then Inc(FHeight, dy);
+  if gpLeft in TGrabber(Sender).Positions
+  then begin
+    Inc(FLeft, dx);
+    Dec(FWidth, dx);
   end;
+  if gpRight in TGrabber(Sender).Positions then Inc(FWidth, dx);
+
+  if gpTop in TGrabber(Sender).Positions
+  then begin
+     Inc(FTop, dy);
+     Dec(FHeight, dy)
+  end;
+  if gpBottom in TGrabber(Sender).Positions then Inc(FHeight, dy);
+
   SetGrabbers;
 end;
 
@@ -403,26 +402,27 @@ end;
 procedure TControlSelection.SetGrabbers;
 var
   GrabPos: TGrabIndex;
+  Grabber: TGrabber;
 begin
   for GrabPos := Low(TGrabIndex) to High(TGrabIndex) do
-  with FGrabbers[GrabPos] do
   begin
+    Grabber := FGrabbers[GrabPos]; 
     if FVisible
     then begin
-      if gpLeft in Positions
-      then Left := FLeft - GRAB_SIZE
-      else if gpRight in Positions
-        then Left := FLeft + FWidth
-        else Left := FLeft + (FWidth - GRAB_SIZE) div 2;
+      if gpLeft in Grabber.Positions
+      then Grabber.Left := FLeft - GRAB_SIZE
+      else if gpRight in Grabber.Positions
+        then Grabber.Left := FLeft + FWidth
+        else Grabber.Left := FLeft + (FWidth - GRAB_SIZE) div 2;
 
-      if gpTop in Positions
-      then Top := FTop - GRAB_SIZE
-      else if gpBottom in Positions
-        then Top := FTop + FHeight
-        else Top := FTop + (FHeight - GRAB_SIZE) div 2;
+      if gpTop in Grabber.Positions
+      then Grabber.Top := FTop - GRAB_SIZE
+      else if gpBottom in Grabber.Positions
+        then Grabber.Top := FTop + FHeight
+        else Grabber.Top := FTop + (FHeight - GRAB_SIZE) div 2;
     end;
 
-    Visible := FVisible;
+    Grabber.Visible := FVisible;
   end;
 end;
 

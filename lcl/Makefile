@@ -197,8 +197,8 @@ ZIPTARGET=install
 
 # Directories
 
-override NEEDUNITDIR=$(UNITTARGETDIR) ./interfaces/$(LCLPLATFORM)
-override NEEDINCDIR=./include
+override NEEDUNITDIR=$(UNITTARGETDIR) . ./interfaces/$(LCLPLATFORM)
+override NEEDINCDIR=./include ./interfaces/$(LCLPLATFORM)
 ifndef UNITTARGETDIR
 UNITTARGETDIR=./units
 endif
@@ -1233,7 +1233,6 @@ endif
 #####################################################################
 # Users rules
 #####################################################################
-
 
 cleartarget:
 	-$(DEL) allunits$(EXEEXT)
