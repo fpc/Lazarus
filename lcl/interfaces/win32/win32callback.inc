@@ -65,7 +65,7 @@ Begin
 End;                                              
 
 {------------------------------------------------------------------------------
- Function: CallDefaultWndProc
+ Function: CallDefaultWindowProc
  Params: Window - The window that receives a message
          Msg    - The message received
          WParam - Word parameter
@@ -87,6 +87,22 @@ begin
     Result := Windows.CallWindowProc(Windows.WNDPROC(PrevWndProc), Window, Msg, WParam, LParam);
 end;
 
+type
+  TEraseBkgndCommand = (ecDefault, ecPaint, ecNoMsg);
+const
+  EraseBkgndStackMask = $3;
+  EraseBkgndStackShift = 2;
+var
+  EraseBkgndStack: dword;
+{$ifdef MSG_DEBUG}
+  MessageStackDepth: string;
+{$endif}
+
+procedure PushEraseBkgndCommand(Command: TEraseBkgndCommand);
+begin
+  EraseBkgndStack := (EraseBkgndStack shl EraseBkgndStackShift) or dword(Ord(Command));
+end;
+
 {------------------------------------------------------------------------------
  Function: WindowProc
  Params: Window - The window that receives a message
@@ -98,7 +114,13 @@ end;
   Handles the messages sent to the specified window, in parameter Window, by 
   Windows or other applications
  ------------------------------------------------------------------------------}
-Function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+Function 
+{$ifdef MSG_DEBUG}
+  RealWindowProc
+{$else}
+  WindowProc
+{$endif}
+  (Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
 Var
   LMessage: TLMessage;
@@ -114,6 +136,8 @@ Var
   OverlayWindow: HWND;
   TargetWindow: HWND;
   DlgCode, CharCode: dword;
+  eraseBkgndCommand: TEraseBkgndCommand;
+  winClassName: array[0..19] of char;
 
   LMInsertText: TLMInsertText; // used by CB_INSERTSTRING, LB_INSERTSTRING
   LMScroll: TLMScroll; // used by WM_HSCROLL
@@ -178,16 +202,64 @@ Var
     AWinControl: TWinControl;
     PaintMsg: TLMPaint;
     ORect: TRect;
+    parLeft, parTop: integer;
+    useDoubleBuffer: boolean;
+    parentPaint: boolean;
+    hasTabParent: boolean;
+    isTabPage: boolean;
+    isNotebook: boolean;
   begin
     // note: ignores the received DC
     // do not use default deliver message
-    if (OwnerObject=nil) or (not (OwnerObject is TWinControl)) then
-      exit;              
+    if not (OwnerObject is TWinControl) then
+    begin
+      OwnerObject := TObject(Windows.GetProp(Window, 'PWinControl'));
+      if not (OwnerObject is TWinControl) then
+        exit;              
+    end;
     
     // create a paint message
-    WinProcess := false;
     AWinControl := TWinControl(OwnerObject);
-    if AWinControl.DoubleBuffered then
+    GetClassName(Window, winClassName, 20);
+    hasTabParent := Windows.GetProp(Window, 'TabPageParent') <> 0;
+    isTabPage := (Windows.GetProp(Window, 'TabPage') <> 0);
+    isNotebook := TWin32WidgetSet(InterfaceObject).ThemesActive and 
+      CompareMem(@winClassName, @TabControlClsName, High(TabControlClsName)+1);
+    parentPaint := isTabPage or (hasTabParent and (WParam <> 0));
+
+    // if painting background of some control for tabpage, don't handle erase background
+    // in parent of tabpage
+    if isTabPage then
+    begin
+{$ifdef MSG_DEBUG}
+      writeln(MessageStackDepth, ' *forcing next WM_ERASEBKGND to disable message');
+{$endif}
+      PushEraseBkgndCommand(ecNoMsg);
+    end;
+
+    // if this is a groupbox in a tab, then the next erasebackground is for
+    // drawing the background of the caption, send paint message then
+    if hasTabParent and ((GetWindowLong(Window, GWL_STYLE) and BS_GROUPBOX) = BS_GROUPBOX)
+        and (WParam = 0) and CompareMem(@winClassName, @ButtonClsName, High(ButtonClsName)+1) then
+    begin
+{$ifdef MSG_DEBUG}
+      writeln(MessageStackDepth, ' *forcing next WM_ERASEBKGND to send paint message');
+{$endif}
+      PushEraseBkgndCommand(ecPaint);
+    end;
+      
+    // if need to start paint, paint by calling parent, and we have no 
+    // controls, is a native control, use default win32 painting to avoid flicker
+    if hasTabParent and (WParam = 0) and (AWinControl.ControlCount = 0) and
+        not CompareMem(@winClassName, @ClsName, High(ClsName)+1) then
+    begin
+      // optimization: no child controls -> default painting
+      exit;
+    end;
+
+    // check if double buffering is requested
+    useDoubleBuffer := (WParam = 0) and AWinControl.DoubleBuffered;
+    if useDoubleBuffer then
     begin
       DC := Windows.GetDC(0);
       GetWindowSize(Window, MemWidth, MemHeight);
@@ -198,27 +270,47 @@ Var
       PaintMsg.DC := MemDC;
     end;
     
-    if not GetLCLClientBoundsOffset(AWinControl.Handle, ORect) then
-    begin
-      ORect.Left := 0;
-      ORect.Top := 0;
-      { we don't use ORect.Right and ORect.Bottom, initialize here if needed }
-    end;
+    WinProcess := false;
     try
-      DC := Windows.BeginPaint(Window, @PS);
+      if WParam = 0 then
+      begin
+        DC := Windows.BeginPaint(Window, @PS);
+      end else begin
+        DC := WParam;
+      end;
+      if parentPaint then
+        GetWin32ControlPos(Window, GetParent(Window), parLeft, parTop);
+      if not GetLCLClientBoundsOffset(AWinControl, ORect) then
+      begin
+        ORect.Left := 0;
+        ORect.Top := 0;
+        { we don't use ORect.Right and ORect.Bottom, initialize here if needed }
+      end;
       PaintMsg.Msg := LM_PAINT;
       PaintMsg.PaintStruct := @PS;
-      if not AWinControl.DoubleBuffered then
+      if not useDoubleBuffer then
         PaintMsg.DC := DC;
-      AWinControl.EraseBackground(PaintMsg.DC);
-      MoveWindowOrgEx(PaintMsg.DC, ORect.Left, ORect.Top);
-      DeliverMessage(OwnerObject, PaintMsg);
-      MoveWindowOrgEx(PaintMsg.DC, -ORect.Left, -ORect.Top);
-      if AWinControl.DoubleBuffered then
+      if not hasTabParent and not isNotebook then
+        AWinControl.EraseBackground(PaintMsg.DC);
+      if parentPaint then
+      begin
+        // tabpage parent and got a dc to draw in, divert paint to parent
+        MoveWindowOrgEx(PaintMsg.DC, -parLeft, -parTop);
+        SendMessage(GetParent(Window), WM_PAINT, PaintMsg.DC, 0);
+        MoveWindowOrgEx(PaintMsg.DC, parLeft, parTop);
+      end;
+      if (WParam = 0) or not hasTabParent then
+      begin
+        MoveWindowOrgEx(PaintMsg.DC, ORect.Left, ORect.Top);
+        DeliverMessage(OwnerObject, PaintMsg);
+        MoveWindowOrgEx(PaintMsg.DC, -ORect.Left, -ORect.Top);
+      end;
+      if useDoubleBuffer then
         Windows.BitBlt(DC, 0, 0, MemWidth, MemHeight, MemDC, 0, 0, SRCCOPY);
-      Windows.EndPaint(Window, @PS);
+      if WParam = 0 then 
+        Windows.EndPaint(Window, @PS);
     finally
-      if AWinControl.DoubleBuffered then
+      if useDoubleBuffer then
       begin
         SelectObject(MemDC, OldBitmap);
 //        for debugging purposes: copy rendered bitmap to clipboard
@@ -439,19 +531,41 @@ Begin
     End;
 }
     WM_CTLCOLORMSGBOX..WM_CTLCOLORSTATIC:
-    Begin
-      MsgObject := TObject(GetProp(LParam, 'Wincontrol'));
-      if MsgObject = nil then
-        MsgObject := TObject(GetProp(LParam, 'AWincontrol'));
-      if MsgObject is TWinControl then
+    begin
+      // only static and button controls have transparent parts
+      // others need to erased with their window color
+      if ((Msg <> WM_CTLCOLORSTATIC) and (Msg <> WM_CTLCOLORBTN))
+          or (Windows.GetProp(LParam, 'TabPageParent') = 0) then
       begin
-        Windows.SetTextColor(HDC(WParam), Windows.COLORREF(ColorToRGB(TWinControl(MsgObject).Font.Color)));
-        Windows.SetBkColor(HDC(WParam), Windows.COLORREF(ColorToRGB(TWinControl(MsgObject).Brush.Color)));
-        LMessage.Result := LResult(TWinControl(MsgObject).Brush.Handle);
-        // Override default handling
+        MsgObject := TObject(GetProp(LParam, 'Wincontrol'));
+        if MsgObject = nil then
+          MsgObject := TObject(GetProp(LParam, 'AWincontrol'));
+        if MsgObject is TWinControl then
+        begin
+          Windows.SetTextColor(HDC(WParam), Windows.COLORREF(ColorToRGB(TWinControl(MsgObject).Font.Color)));
+          Windows.SetBkColor(HDC(WParam), Windows.COLORREF(ColorToRGB(TWinControl(MsgObject).Brush.Color)));
+          LMessage.Result := LResult(TWinControl(MsgObject).Brush.Handle);
+          // Override default handling
+          WinProcess := false;
+        end;
+      end else begin
+        // comboboxes send WM_CTLCOLORSTATIC to their parent, but:
+        // 1) they are opaque, so don't need transparent background
+        // 2) we will overwrite combobox control, erasing the image!
+        GetClassName(LParam, winClassName, 10);
+        if not CompareMem(@winClassName, @ComboboxClsName, High(ComboBoxClsName)+1) then
+        begin
+          // need to draw transparently, draw background
+          GetWin32ControlPos(LParam, Window, P.X, P.Y);
+          MoveWindowOrgEx(WParam, -P.X, -P.Y);
+          SendMessage(Window, WM_PAINT, WParam, 0);
+          MoveWindowOrgEx(WParam, P.X, P.Y);
+        end;
+        LMessage.Result := GetStockObject(HOLLOW_BRUSH);
+        SetBkMode(WParam, TRANSPARENT);
         WinProcess := false;
       end;
-    End;
+    end;
     WM_COPY:
     Begin
       LMessage.Msg := LM_COPYTOCLIP;
@@ -534,14 +648,24 @@ Begin
     End;
     WM_ERASEBKGND:
     Begin 
-      LMessage.Msg := LM_ERASEBKGND;
-      LMessage.WParam := WParam;
-      LMessage.LParam := LParam;
+      eraseBkgndCommand := TEraseBkgndCommand(EraseBkgndStack and EraseBkgndStackMask);
+      EraseBkgndStack := EraseBkgndStack shr EraseBkgndStackShift;
+      if (eraseBkgndCommand <> ecNoMsg) and 
+          (Windows.GetProp(Window, 'TabPageParent') = 0) then
+      begin
+        LMessage.Msg := LM_ERASEBKGND;
+        LMessage.WParam := WParam;
+        LMessage.LParam := LParam;
+      end else begin
+        if eraseBkgndCommand = ecPaint then
+          SendPaintMessage;
+        LMessage.Result := 1;
+      end;
       WinProcess := false;
     End;
     WM_GETDLGCODE:
     Begin
-      Result := DLGC_WANTALLKEYS;
+      LMessage.Result := DLGC_WANTALLKEYS;
       WinProcess := false;
     End;
     WM_KEYDOWN:
@@ -800,7 +924,7 @@ Begin
         XPos := SmallInt(Lo(LParam));
         YPos := SmallInt(Hi(LParam));
         Keys := WParam;
-        LMMouse.Result := 0;
+        Result := 0;
       End;
     End;
     WM_SETCURSOR:
@@ -1020,21 +1144,6 @@ Begin
     DeliverMessage(OwnerObject, PLMsg^);
 
   case Msg of
-    WM_ERASEBKGND:
-    begin
-      // Groupbox (which is a button) doesn't erase it's background properly
-      // it's needed for winxp themes where controls send the WM_ERASEBKGND
-      // message to their parent to clear their background and then draw
-      // transparently
-      if (LMessage.Result = 0) and (TheWinControl <> nil) and 
-        (TheWinControl.FCompStyle = csGroupBox) then
-      begin
-        TheWinControl.EraseBackground(WParam)
-      end else begin
-        WinProcess := true;
-      end;
-    end;
-    
     WM_SETCURSOR:
     begin
       if LMessage.Result = 0 then
@@ -1109,6 +1218,21 @@ Begin
   
   Assert(False, 'Trace:WindowProc - Exit');
 End;
+
+{$ifdef MSG_DEBUG}
+
+function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+begin
+  writeln(MessageStackDepth, 'WindowProc called for window=', window,' msg=', msg,' wparam=', wparam, ' lparam=',lparam);
+  MessageStackDepth := MessageStackDepth + ' ';
+
+  Result := RealWindowProc(Window, Msg, WParam, LParam);
+    
+  setlength(MessageStackDepth, length(MessageStackDepth)-1);
+end;
+
+{$endif}
 
 {------------------------------------------------------------------------------
  Function: OverlayWindowProc
@@ -1278,6 +1402,9 @@ end;
 
 {
   $Log$
+  Revision 1.145  2004/10/27 20:58:58  micha
+  fix winxp theming for tabcontrols (shaded background)
+
   Revision 1.144  2004/10/17 14:53:48  micha
   use font/brush of "parent", if this is a buddy window
 

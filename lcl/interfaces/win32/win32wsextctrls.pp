@@ -299,7 +299,7 @@ begin
   with Params do
   begin
     pClassName := @ClsName;
-    Flags := Flags and DWORD(not WS_VISIBLE);
+    Flags := Flags and not WS_VISIBLE;
     SubClassWndProc := nil;
     CustomPageCalcBounds(AWinControl, Left, Top, Width, Height);
   end;
@@ -307,6 +307,11 @@ begin
   FinishCreateWindow(AWinControl, Params, false);
   // return window handle
   Result := Params.Window;
+  if TWin32WidgetSet(InterfaceObject).ThemesActive then
+  begin
+    SetProp(Result, 'TabPageParent', 1);
+    SetProp(Result, 'TabPage', 1);
+  end;
 end;
 
 procedure TWin32WSCustomPage.SetBounds(const AWinControl: TWinControl; 
@@ -392,6 +397,9 @@ begin
   // create window
   FinishCreateWindow(AWinControl, Params, false);
   Result := Params.Window;
+  // although we may be child of tabpage, cut the paint chain
+  // to improve speed and possible paint anomalities
+  Windows.RemoveProp(Result, 'TabPageParent');
 end;
 
 procedure TWin32WSCustomNotebook.AddPage(const ANotebook: TCustomNotebook; 

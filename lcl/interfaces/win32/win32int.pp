@@ -31,6 +31,10 @@ Interface
 {$ASSERTIONS ON}
 {$ENDIF}
 
+// defining the following will print all messages as they are being handled
+// valuable for investigation of message trees / interrelations
+{ $define MSG_DEBUG}
+
 {
   When editing this unit list, be sure to keep Windows listed first to ensure
   successful compilation.
@@ -181,7 +185,10 @@ Type
 
 const
   BOOL_RESULT: Array[Boolean] Of String = ('False', 'True');
-  ClsName : array[0..6] of char = 'Window'#0;
+  ClsName: array[0..6] of char = 'Window'#0;
+  ButtonClsName: array[0..6] of char = 'Button'#0;
+  ComboboxClsName: array[0..8] of char = 'ComboBox'#0;
+  TabControlClsName: array[0..15] of char = 'SysTabControl32'#0;
 
 { export for widgetset implementation }
 
@@ -191,6 +198,8 @@ function ComboBoxWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
 function ChildEditWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
+function CallDefaultWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+  LParam: Windows.LParam): LResult;
     
 Implementation
 
@@ -257,6 +266,10 @@ var
 Initialization
 
 Assert(False, 'Trace:win32int.pp - Initialization');
+{$ifdef MSG_DEBUG}
+MessageStackDepth := '';
+{$endif}
+EraseBkgndStack := 0;
 
 Finalization
 
@@ -267,6 +280,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.123  2004/10/27 20:58:58  micha
+  fix winxp theming for tabcontrols (shaded background)
+
   Revision 1.122  2004/10/16 10:17:21  micha
   remove statusbar helper methods from general widgetset object
 

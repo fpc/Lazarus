@@ -57,6 +57,7 @@ function GetLCLClientBoundsOffset(Handle: HWnd; var Rect: TRect): boolean;
 Procedure LCLBoundsToWin32Bounds(Sender: TObject;
   var Left, Top, Width, Height: Integer);
 Procedure Win32PosToLCLPos(Sender: TObject; var Left, Top: SmallInt);
+procedure GetWin32ControlPos(Window, Parent: HWND; var Left, Top: integer);
 procedure UpdateWindowStyle(Handle: HWnd; Style: integer; StyleMask: integer);
 function BorderStyleToWin32Flags(Style: TFormBorderStyle): DWORD;
 function BorderStyleToWin32FlagsEx(Style: TFormBorderStyle): DWORD;
@@ -791,6 +792,16 @@ Begin
   dec(Left, ORect.Left);
   dec(Top, ORect.Top);
 End;
+
+procedure GetWin32ControlPos(Window, Parent: HWND; var Left, Top: integer);
+var
+  parRect, winRect: TRect;
+begin
+  Windows.GetWindowRect(Window, winRect);
+  Windows.GetWindowRect(Parent, parRect);
+  Left := winRect.Left - parRect.Left;
+  Top := winRect.Top - parRect.Top;
+end;
 
 {
   Updates the window style of the window indicated by Handle.

@@ -322,6 +322,20 @@ end;
 
 { TWin32WSCustomGroupBox }
 
+function GroupBoxPanelWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+begin
+  // handle paint messages for theming
+  case Msg of
+    WM_ERASEBKGND, WM_NCPAINT, WM_PAINT, WM_CTLCOLORMSGBOX..WM_CTLCOLORSTATIC:
+    begin
+      Result := WindowProc(Window, Msg, WParam, LParam);
+    end;
+  else
+    Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
+  end;
+end;
+
 function TWin32WSCustomGroupBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
@@ -341,12 +355,18 @@ begin
       // the bug is hidden. Use 'ParentPanel' property of groupbox window
       // to determine reference to this parent panel
       // do not use 'ParentPanel' property for other controls!
-      Parent := CreateWindowEx(0, @ClsName, nil, WS_CHILD or WS_CLIPSIBLINGS or (Flags and WS_VISIBLE), 
+      Buddy := CreateWindowEx(0, @ClsName, nil, WS_CHILD or WS_CLIPCHILDREN or 
+        WS_CLIPSIBLINGS or (Flags and WS_VISIBLE), 
         Left, Top, Width, Height, Parent, 0, HInstance, nil);
-      Buddy := Parent;
       Left := 0;
       Top := 0;
       Flags := Flags or WS_VISIBLE;
+      // set P(aint)WinControl, for paint message to retrieve information
+      // about wincontrol (hack)
+      Windows.SetProp(Buddy, 'PWinControl', dword(AWinControl));
+      if Windows.GetProp(Parent, 'TabPageParent') <> 0 then
+        Windows.SetProp(Buddy, 'TabPageParent', 1);
+      Parent := Buddy;
     end;
     pClassName := 'BUTTON';
     WindowTitle := StrCaption;

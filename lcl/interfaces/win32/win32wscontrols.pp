@@ -216,6 +216,8 @@ begin
     begin
       // some controls (combobox) immediately send a message upon setting font
       AWinControl.Handle := Window;
+      if Windows.GetProp(GetParent(Window), 'TabPageParent') <> 0 then
+        Windows.SetProp(Window, 'TabPageParent', 1);
       Windows.SetProp(Window, 'Wincontrol', dword(AWinControl));
       if SubClassWndProc <> nil then
         Windows.SetProp(Window, 'DefWndProc', Windows.SetWindowLong(Window, GWL_WNDPROC, LongInt(SubClassWndProc)));
