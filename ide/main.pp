@@ -3886,7 +3886,8 @@ begin
     AText:=Format(lisAFileAlreadyExistsReplaceIt, ['"', NewFilename, '"', #13]);
     Result:=MessageDlg(ACaption, AText, mtConfirmation, [mbOk, mbCancel], 0);
     if Result=mrCancel then exit;
-  end else if Project1.ProjectType in [ptProgram, ptApplication] then begin
+  end else if Project1.ProjectType in [ptProgram,ptApplication,ptCGIApplication]
+  then begin
     if FileExists(NewProgramFilename) then begin
       ACaption:=lisOverwriteFile;
       AText:=Format(lisAFileAlreadyExistsReplaceIt, ['"', NewProgramFilename,
@@ -4096,7 +4097,7 @@ begin
 
   // create source code
   if nfCreateDefaultSrc in NewFlags then begin
-    if NewUnitType in [nuForm,nuDataModule] then begin
+    if NewUnitType in [nuForm,nuDataModule,nuCGIDataModule] then begin
       NewUnitInfo.ComponentName:=Project1.NewUniqueComponentName(NewUnitType);
       NewUnitInfo.ComponentResourceName:='';
       CodeToolBoss.CreateFile(ChangeFileExt(NewFilename,ResourceFileExt));
@@ -4118,12 +4119,13 @@ begin
                          and (not (nfIsNotPartOfProject in NewFlags)));
   end;
   if OldUnitIndex<0 then begin
-    Project1.AddUnit(NewUnitInfo,(NewUnitType in [nuForm, nuUnit, nuDataModule])
-                                 and NewUnitInfo.IsPartOfProject);
+    Project1.AddUnit(NewUnitInfo,
+                     (NewUnitType in [nuForm,nuUnit,nuDataModule,nuCGIDataModule])
+                     and NewUnitInfo.IsPartOfProject);
   end;
                               
   // syntax highlighter type
-  if NewUnitType in [nuForm,nuUnit,nuDataModule] then begin
+  if NewUnitType in [nuForm,nuUnit,nuDataModule,nuCGIDataModule] then begin
     NewUnitInfo.SyntaxHighlighter:=lshFreePascal;
   end else begin
     NewUnitInfo.SyntaxHighlighter:=
@@ -4146,6 +4148,9 @@ begin
     case NewUnitType of
     nuForm:       AncestorType:=TForm;
     nuDataModule: AncestorType:=TDataModule;
+    {$IFDEF HasCGIModules}
+    nuCGIDataModule: AncestorType:=TCGIDataModule;
+    {$ENDIF}
     else          AncestorType:=nil;
     end;
     if AncestorType<>nil then begin
@@ -4200,6 +4205,7 @@ begin
     niiApplication: DoNewProject(ptApplication);
     niiFPCProject: DoNewProject(ptProgram);
     niiCustomProject: DoNewProject(ptCustomProgram);
+    niiCGIApplication: DoNewProject(ptCGIApplication);
     // packages
     niiPackage: PkgBoss.DoNewPackage;
     else
@@ -4656,7 +4662,8 @@ Begin
             Project1.Units[i].UnitName,i,Project1.Units[i]=ActiveUnitInfo));
         end else if Project1.MainUnitID=i then begin
           MainUnitInfo:=Project1.MainUnitInfo;
-          if Project1.ProjectType in [ptProgram,ptApplication,ptCustomProgram]
+          if Project1.ProjectType in [ptProgram,ptApplication,ptCustomProgram,
+            ptCGIApplication]
           then begin
             MainUnitName:=CreateSrcEditPageName(MainUnitInfo.UnitName,
               MainUnitInfo.Filename,MainUnitInfo.EditorIndex);
@@ -4986,6 +4993,11 @@ writeln('TMainIDE.DoNewProject A');
     ptProgram,ptCustomProgram:
       // show program unit
       DoOpenMainUnit(false);
+      
+    ptCGIApplication:
+      // create a first datamodule
+      DoNewEditorFile(nuCGIDataModule,'','',
+                      [nfIsPartOfProject,nfOpenInEditor,nfCreateDefaultSrc]);
 
     end;
 
@@ -5445,7 +5457,7 @@ begin
         s:='"'+ActiveUnitInfo.Filename+'"'
       else
         s:='"'+ActiveSourceEditor.PageName+'"';
-      if (Project1.ProjectType in [ptProgram, ptApplication])
+      if (Project1.ProjectType in [ptProgram, ptApplication, ptCGIApplication])
       and (ActiveUnitInfo.UnitName<>'')
       and (Project1.IndexOfUnitWithName(ActiveUnitInfo.UnitName,
           true,ActiveUnitInfo)>=0) then
@@ -5463,7 +5475,8 @@ begin
           if Result<>mrOk then exit;
           ActiveUnitInfo.IsPartOfProject:=true;
           if (FilenameIsPascalUnit(ActiveUnitInfo.Filename))
-          and (Project1.ProjectType in [ptProgram, ptApplication]) then begin
+          and (Project1.ProjectType in [ptProgram,ptApplication,ptCGIApplication])
+          then begin
             ActiveUnitInfo.ReadUnitNameFromSource(false);
             ShortUnitName:=ActiveUnitInfo.CreateUnitName;
             if (ShortUnitName<>'') then begin
@@ -5510,7 +5523,8 @@ Begin
           AnUnitInfo:=Project1.Units[TViewUnitsEntry(UnitList[i]).ID];
           AnUnitInfo.IsPartOfProject:=false;
           if (Project1.MainUnitID>=0)
-          and (Project1.ProjectType in [ptProgram, ptApplication]) then begin
+          and (Project1.ProjectType in [ptProgram,ptApplication,ptCGIApplication])
+          then begin
             if (AnUnitInfo.UnitName<>'') then begin
               if CodeToolBoss.RemoveUnitFromAllUsesSections(
                 Project1.MainUnitInfo.Source,AnUnitInfo.UnitName)
@@ -5720,7 +5734,8 @@ begin
   Result := mrCancel;
 
   // Check if we can run this project
-  if not (Project1.ProjectType in [ptProgram, ptApplication, ptCustomProgram])
+  if not (Project1.ProjectType in [ptProgram, ptApplication, ptCustomProgram,
+    ptCGIApplication])
   or (Project1.MainUnitID < 0)
   or (ToolStatus <> itNone)
   then Exit;
@@ -9180,7 +9195,8 @@ begin
   BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]);
   AnUnitInfo.IsPartOfProject:=true;
   if FilenameIsPascalUnit(AnUnitInfo.Filename)
-  and (Project1.ProjectType in [ptProgram, ptApplication]) then begin
+  and (Project1.ProjectType in [ptProgram, ptApplication, ptCGIApplication])
+  then begin
     AnUnitInfo.ReadUnitNameFromSource(false);
     ShortUnitName:=AnUnitInfo.UnitName;
     if (ShortUnitName<>'') then begin
@@ -9209,7 +9225,8 @@ begin
   Result:=mrOk;
   AnUnitInfo.IsPartOfProject:=false;
   if (Project1.MainUnitID>=0)
-  and (Project1.ProjectType in [ptProgram, ptApplication]) then begin
+  and (Project1.ProjectType in [ptProgram, ptApplication, ptCGIApplication])
+  then begin
     BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]);
     ShortUnitName:=AnUnitInfo.UnitName;
     if (ShortUnitName<>'') then begin
@@ -9800,6 +9817,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.655  2003/10/11 08:33:22  mattias
+  added catalan
+
   Revision 1.654  2003/10/08 08:22:32  mattias
   improved FPC Src template for new chaotic FPC sources
 

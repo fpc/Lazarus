@@ -1241,10 +1241,12 @@ resourcestring
   rsLanguageAutomatic   = 'Automatic (or english)';
   rsLanguageEnglish     = 'English';
   rsLanguageDeutsch     = 'Deutsch';
-  rsLanguageSpanish     = 'EspaÒol';
+  rsLanguageSpanish     = 'Spanish';
   rsLanguageFrench      = 'French';
-  rsLanguageRussian     = 'Ú’””À… ';
+  rsLanguageRussian     = 'Russian';
   rsLanguagePolish      = 'polski';
+  rsLanguageItalian     = 'Italian';
+  rsLanguageCatalan     = 'Catalan';
 
   //Units dependencies
   dlgUnitDepCaption     = 'Unit dependencies';
@@ -1606,6 +1608,8 @@ resourcestring
   lisNewDlgCreateANewProgram = 'Create a new '
     +'program.%sThe program file is maintained by Lazarus.';
   lisNewDlgCreateANewCustomProgram = 'Create a new program.';
+  lisNewCreateANewCgiApplicationTheProgramFileIsMaintained = 'Create a new '
+    +'cgi application.%sThe program file is maintained by Lazarus.';
   lisNewDlgCreateANewStandardPackageAPackageIsACollectionOfUn = 'Create a new '
     +'standard package.%sA package is a collection of units and components.';
 

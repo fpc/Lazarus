@@ -53,6 +53,7 @@ type
     nuUnit,       // unit
     nuForm,       // unit with form
     nuDataModule, // unit with data module
+    nuCGIDataModule, // unit with cgi data module
     nuText,
     nuCustomProgram  // program
    );

@@ -264,7 +264,7 @@ type
   { TProject }
   
   TProjectType =   // for a description see ProjectTypeDescriptions below
-    (ptApplication, ptProgram, ptCustomProgram);
+    (ptApplication, ptProgram, ptCustomProgram, ptCGIApplication);
      
   TProjectFlag = (
     pfSaveClosedUnits,     // save info about closed files (not part of project)
@@ -299,7 +299,7 @@ type
     fJumpHistory: TProjectJumpHistory;
     fLastReadLPIFileDate: TDateTime;
     fLastReadLPIFilename: string;
-    fMainUnitID: Integer;  // only for ptApplication, ptProgram
+    fMainUnitID: Integer;  // only for ptApplication, ptProgram, ptCGIApplication
     fModified: boolean;
     FOnBeginUpdate: TNotifyEvent;
     FOnEndUpdate: TEndUpdateProjectEvent;
@@ -490,7 +490,7 @@ const
   ResourceFileExt = '.lrs';
 
   ProjectTypeNames : array[TProjectType] of string = (
-      'Application', 'Program', 'Custom program'
+      'Application', 'Program', 'Custom program', 'CGI Application'
     );
 
   ProjectTypeDescriptions : array[TProjectType] of string = (
@@ -507,14 +507,19 @@ const
       // ptCustomProgram
       ,'Custom program:'#13
       +'A freepascal program.'
+
+      // ptCGIApplication
+      ,'CGI Application'#13
+      +'A cgi freepascal program. The program file is '
+      +'automatically maintained by lazarus.'#13
     );
 
   ProjectDefaultExt : array[TProjectType] of string = (
-      '.lpr','.pas','.pas'
+      '.lpr','.pas','.pas', 'pas'
     );
     
   UnitTypeDefaultExt: array[TNewUnitType] of string = (
-      '.pas', '.pas', '.pas', '.pas', '.txt', '.pas'
+      '.pas', '.pas', '.pas', '.pas', '.pas', '.txt', '.pas'
     );
 
   DefaultProjectFlags = [pfSaveClosedUnits];
@@ -970,7 +975,7 @@ begin
   if fSource=nil then exit;
   NewSource:='';
   LE:=EndOfLine;
-  if NewUnitType in [nuForm,nuUnit,nuDataModule] then begin
+  if NewUnitType in [nuForm,nuUnit,nuDataModule,nuCGIDataModule] then begin
     fUnitName:=NewUnitName;
     AResourceFilename:=fUnitName+ResourceFileExt;
     NewSource:=Beautified(
@@ -991,18 +996,32 @@ begin
           +'implementation'+LE);
       end;
 
-     nuForm, nuDataModule:
+     nuForm, nuDataModule, nuCGIDataModule:
       begin
-        NewSource:=NewSource+Beautified(
-          '  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs;'+LE
-          +LE
-          +'type'+LE);
+        if NewUnitType=nuForm then
+          NewSource:=NewSource+Beautified(
+            '  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs;'+LE
+            +LE
+            +'type'+LE)
+        else if NewUnitType=nuDataModule then
+          NewSource:=NewSource+Beautified(
+            '  Classes, SysUtils, LResources, Forms, Controls, Dialogs;'+LE
+            +LE
+            +'type'+LE)
+        else if NewUnitType=nuCGIDataModule then
+          NewSource:=NewSource+Beautified(
+            '  Classes, SysUtils, LResources, cgiModules;'+LE
+            +LE
+            +'type'+LE);
         if NewUnitType=nuForm then
           NewSource:=NewSource+Beautified(
             +'  T'+fComponentName+' = class(TForm)'+LE)
-        else
+        else if NewUnitType=nuDataModule then
           NewSource:=NewSource+Beautified(
-            +'  T'+fComponentName+' = class(TDataModule)'+LE);
+            +'  T'+fComponentName+' = class(TDataModule)'+LE)
+        else if NewUnitType=nuCGIDataModule then
+          NewSource:=NewSource+Beautified(
+            +'  T'+fComponentName+' = class(TCGIDataModule)'+LE);
         NewSource:=NewSource+Beautified(
           '  private'+LE);
         NewSource:=NewSource
@@ -1029,6 +1048,7 @@ begin
       +LE
       +'end.'+LE
       +LE);
+
   end else if NewUnitType in [nuCustomProgram] then begin
     NewSource:=NewSource+Beautified(
       +'program CustomProgram;'+LE
@@ -1228,7 +1248,7 @@ begin
   // create program source
   NewSource:=TStringList.Create;
   case fProjectType of
-   ptProgram, ptApplication, ptCustomProgram:
+   ptProgram, ptApplication, ptCustomProgram, ptCGIApplication:
     begin
       NewPrgBuf:=CodeToolBoss.CreateFile(
         'project1'+ProjectDefaultExt[fProjectType]);
@@ -1252,6 +1272,8 @@ begin
               Add('  Interfaces,');
               Add('  Forms;');
             end;
+          ptCGIApplication:
+            Add('  cgiModules;');
         else
           Add('  { add your units here };');
         end;
@@ -1784,7 +1806,7 @@ var u:integer;
 begin
   u:=1;
   case NewUnitType of
-    nuForm,nuUnit,nuDataModule: Prefix:='unit';
+    nuForm,nuUnit,nuDataModule,nuCGIDataModule: Prefix:='unit';
   else Prefix:='text'
   end;
   while (UnitNameExists(Prefix+IntToStr(u))) do inc(u);
@@ -1818,6 +1840,7 @@ begin
   case NewUnitType of
     nuForm, nuUnit: Prefix:='Form';
     nuDataModule:   Prefix:='DataModule';
+    nuCGIDataModule:   Prefix:='CGIDataModule';
   else
     Prefix:='form';
   end;
@@ -2435,7 +2458,8 @@ begin
         end;
       end;
     end;
-    if (OldUnitName<>'') and (ProjectType in [ptProgram, ptApplication]) then
+    if (OldUnitName<>'')
+    and (ProjectType in [ptProgram, ptApplication, ptCGIApplication]) then
     begin
       // rename unit in program uses section
       CodeToolBoss.RenameUsedUnit(MainUnitInfo.Source
@@ -2712,6 +2736,9 @@ end.
 
 {
   $Log$
+  Revision 1.138  2003/10/11 08:33:22  mattias
+  added catalan
+
   Revision 1.137  2003/09/18 09:21:02  mattias
   renamed LCLLinux to LCLIntf
 

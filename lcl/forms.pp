@@ -1154,8 +1154,8 @@ end;
 function InitResourceComponent(Instance: TComponent;
   RootAncestor: TClass):Boolean;
 
-  function InitComponent(ClassType: TClass): Boolean;
-  
+    { Old hack. Do we still need this?
+
     procedure ApplyVisible;
     var
       i: integer;
@@ -1174,43 +1174,8 @@ function InitResourceComponent(Instance: TComponent;
                 AControl.ControlState-[csVisibleSetInLoading];
           end;
         end;
-    end;
+    end;}
   
-  var
-    CompResource:TLResource;
-    MemStream: TMemoryStream;
-  begin
-    //writeln('[InitComponent] ',ClassType.Classname,' ',Instance<>nil);
-    Result:=false;
-    if (ClassType=TComponent) or (ClassType=RootAncestor) then exit;
-    if Assigned(ClassType.ClassParent) then
-      Result:=InitComponent(ClassType.ClassParent);
-    CompResource:=LazarusResources.Find(ClassType.ClassName);
-    if (CompResource = nil) or (CompResource.Value='') then exit;
-    //writeln('[InitComponent] CompResource found for ',ClassType.Classname);
-    if (ClassType.InheritsFrom(TForm))
-    and (CompResource.ValueType<>'FORMDATA') then exit;
-    MemStream:=TMemoryStream.Create;
-    try
-      MemStream.Write(CompResource.Value[1],length(CompResource.Value));
-      MemStream.Position:=0;
-      //writeln('Form Stream "',ClassType.ClassName,'" Signature=',copy(CompResource.Value,1,4));
-      try
-        Instance:=MemStream.ReadComponent(Instance);
-      except
-        on E: Exception do begin
-          writeln(Format(rsFormStreamingError, [ClassType.ClassName, E.Message])
-            );
-          exit;
-        end;
-      end;
-    finally
-      //ApplyVisible;
-      MemStream.Free;
-    end;
-    Result:=true;
-  end;
-
 // InitResourceComponent
 //var LocalizedLoading: Boolean;
 begin
