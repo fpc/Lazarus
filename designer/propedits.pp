@@ -9,13 +9,10 @@ unit propedits;
     For more information see the big comment part below.
 
   ToDo:
-    -filter double properties
     -digits for floattypes -> I hope, I have guessed right
     -TIntegerSet missing -> taking my own
     -Save ColorDialog settings
-    -ColorToString missing -> taking my own
-    -StringToColor missing -> taking my own
-    -System.TypeInfo(Type) missing -> exists already in the developer version
+    -System.TypeInfo(Type) missing -> exists already in the fpc 1.1 version
          but because I want it now with the stable version I will use my
          workaround
     -StrToInt64 has a bug. It prints infinitly "something happened"
@@ -30,7 +27,9 @@ unit propedits;
 
 interface
 
-uses Classes, TypInfo, SysUtils, Forms, Controls, Graphics, StdCtrls, Buttons;
+uses 
+  Classes, TypInfo, SysUtils, Forms, Controls, Graphics, StdCtrls, Buttons,
+  ComCtrls;
 
 const
   MaxIdentLength: Byte = 63;
@@ -185,7 +184,7 @@ type
       and their values don't match this procedure will be passed an empty
       value.
 
-  Properties and methods useful in creating a new TPropertyEditor classes:
+  Properties and methods useful in creating new TPropertyEditor classes:
 
     Name property
       Returns the name of the property returned by GetName
@@ -245,7 +244,6 @@ type
     procedure SetPropEntry(Index:Integer; AInstance:TPersistent;
       APropInfo:PPropInfo);
   protected
-    // XXX these functions could be transfered to the TComponentInterface
     function GetPropInfo:PPropInfo;
     function GetFloatValue:Extended;
     function GetFloatValueAt(Index:Integer):Extended;
@@ -577,10 +575,20 @@ type
   end;
 
 { TStringsPropertyEditor
-  PropertyEditor editor for the TStrings property.
+  PropertyEditor editor for the TStrings properties.
   Brings up the dialog for entering test. }
 
   TStringsPropertyEditor = class(TClassPropertyEditor)
+  public
+    procedure Edit; override;
+    function GetAttributes: TPropertyAttributes; override;
+  end;
+
+{ TViewColumnsPropertyEditor
+  PropertyEditor editor for the TViewColumns properties.
+  Brings up the dialog for entering test. }
+
+  TViewColumnsPropertyEditor = class(TClassPropertyEditor)
   public
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
@@ -805,6 +813,7 @@ type
     FTabOrder:integer;
     FCaption:TCaption;
     FLines:TStrings;
+    FColumns: TViewColumns;
     FModalResult:TModalResult;
     function PTypeInfos(const PropName:shortstring):PTypeInfo;
     constructor Create;
@@ -819,6 +828,7 @@ type
     property TabOrder:integer read FTabOrder;
     property Caption:TCaption read FCaption;
     property Lines:TStrings read FLines;
+    property Columns:TViewColumns;
     property ModalResult:TModalResult read FModalResult write FModalResult;
   end;
 
@@ -826,7 +836,7 @@ type
 
 implementation
 
-uses Dialogs, Math;
+uses Dialogs, Math, ColumnDlg;
 
 
 const
@@ -2504,19 +2514,21 @@ end;
 { TFontPropertyEditor }
 
 procedure TFontPropertyEditor.Edit;
-var
-  FontDialog: TFontDialog;
+//var FontDialog: TFontDialog;
 begin
+  {
+  !!! TFontDialog in the gtk-interface is currently not fully compatible to TFont
+    
   FontDialog := TFontDialog.Create(Application);
   try
-    //FontDialog.Font := TFont(GetOrdValue);
-    //FontDialog.HelpContext := hcDFontEditor;
-    //FontDialog.Options := FontDialog.Options + [fdShowHelp, fdForceFontExist];
-    //if FontDialog.Execute then
-      //SetOrdValue(Longint(FontDialog.Font));
+    FontDialog.Font := TFont(GetOrdValue);
+    FontDialog.HelpContext := hcDFontEditor;
+    FontDialog.Options := FontDialog.Options + [fdShowHelp, fdForceFontExist];
+    if FontDialog.Execute then
+      SetOrdValue(Longint(FontDialog.Font));
   finally
     FontDialog.Free;
-  end;
+  end;}
 end;
 
 function TFontPropertyEditor.GetAttributes: TPropertyAttributes;
@@ -2621,6 +2633,36 @@ function TStringsPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paDialog, paRevertable, paReadOnly];
 end;
+
+{ TViewColumnsPropertyEditor }
+
+procedure TViewColumnsPropertyEditor.Edit;
+var ColumnDlg: TColumnDlg1;
+begin
+  ColumnDlg:=TColumnDlg1.Create(Application);
+  try
+    {
+      For Shane:
+        Every property of type TViewColumns can be edited by this proc.
+        The current TViewColumns instance can be found in 
+        
+          TViewColumns(GetOrdValue)
+          
+        You must somehow assign its values to the ColumnDlg and assign it back
+        on mrOk. Or u can simply work with it, so that changes are shown at once.
+    }
+    
+    ColumnDlg.ShowModal;
+  finally
+    ColumnDlg.Free;
+  end;
+end;
+
+function TViewColumnsPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paMultiSelect, paDialog, paRevertable, paReadOnly];
+end;
+
 
 //==============================================================================
 
@@ -2936,6 +2978,8 @@ begin
     nil,'',TCaptionPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TStrings'),
     nil,'',TStringsPropertyEditor);
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TViewColumns'),
+    nil,'',TViewColumnsPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TModalResult'),
     nil,'ModalResult',TModalResultPropertyEditor);
 end;

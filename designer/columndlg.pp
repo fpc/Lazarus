@@ -1,4 +1,4 @@
-unit columndlg;
+unit ColumnDlg;
 
 {$mode objfpc}{$H+}
 
@@ -41,7 +41,6 @@ type
     { public declarations }
     constructor Create(AOwner : TComponent); override;
     property Items : TList read FItems write FItems;
-    
   end;
 
 var
