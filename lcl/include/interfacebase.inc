@@ -936,6 +936,45 @@ begin
   Result := False;
 end;
 
+{$I defaultbitbtnimages.inc}
+{$I messagedialogpixmaps.inc}
+
+Function TInterfaceBase.LoadStockPixmap(StockID: longint) : HBitmap;
+begin
+  Case StockID of
+    idButtonOk :
+      Result := CreatePixmapIndirect(@IMGOK_Check[0], GetSysColor(COLOR_BTNFACE));
+    idButtonYes :
+      Result := CreatePixmapIndirect(@IMGOK_Check[0], GetSysColor(COLOR_BTNFACE));
+    idButtonNo :
+      Result := CreatePixmapIndirect(@IMGCancel_X[0], GetSysColor(COLOR_BTNFACE));
+    idButtonCancel : 
+      Result := CreatePixmapIndirect(@IMGCancel_X[0], GetSysColor(COLOR_BTNFACE));
+    idButtonHelp :
+      Result := CreatePixmapIndirect(@IMGHELP[0], GetSysColor(COLOR_BTNFACE));
+    idButtonAll : 
+      Result := CreatePixmapIndirect(@IMGAll_Check[0], GetSysColor(COLOR_BTNFACE));
+    idButtonAbort :
+      Result := CreatePixmapIndirect(@IMGCancel_X[0], GetSysColor(COLOR_BTNFACE));
+    idButtonRetry : 
+      Result := CreatePixmapIndirect(@IMGClose[0], GetSysColor(COLOR_BTNFACE));
+    idButtonIgnore : 
+      Result := CreatePixmapIndirect(@IMGClose[0], GetSysColor(COLOR_BTNFACE));
+    
+    idDialogWarning :
+      Result := CreatePixmapIndirect(@IMGWarning[0], GetSysColor(COLOR_BTNFACE));
+    idDialogError :
+      Result := CreatePixmapIndirect(@IMGError[0], GetSysColor(COLOR_BTNFACE));
+    idDialogInfo :
+      Result := CreatePixmapIndirect(@IMGInfo[0], GetSysColor(COLOR_BTNFACE));
+    idDialogConfirm :
+      Result := CreatePixmapIndirect(@IMGConfirmation[0], GetSysColor(COLOR_BTNFACE));
+
+    else
+      Result := CreatePixmapIndirect(@IMGOK_Check[0], GetSysColor(COLOR_BTNFACE));
+  end;
+end;
+
 function TInterfaceBase.MessageBox(hWnd: HWND; lpText, lpCaption: PChar;
   uType : Cardinal): integer;
 begin
@@ -1362,6 +1401,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.53  2002/10/10 13:29:08  lazarus
+  AJ: added LoadStockPixmap routine & minor fixes to/for GNOMEInt
+
   Revision 1.52  2002/10/08 02:52:58  lazarus
   AJ: fixed bug in drawtext, switched hintwindow's to use Canvas.TextRect
 
