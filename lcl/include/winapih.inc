@@ -271,6 +271,7 @@ Procedure EnterCriticalSection(var CritSection: TCriticalSection); {$IFDEF IF_BA
 Procedure LeaveCriticalSection(var CritSection: TCriticalSection); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Procedure DeleteCriticalSection(var CritSection: TCriticalSection); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
+
 //function UnionRect --> independent
 
 Function WindowFromPoint(Point : TPoint) : HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -358,12 +359,22 @@ Function RGB(R, G, B : Byte) : TColorRef;
 
 //##apiwiz##epi##    // Do not remove
 
+Procedure InitializeCriticalSection(var CritSection: TRTLCriticalSection);
+Procedure EnterCriticalSection(var CritSection: TRTLCriticalSection);
+Procedure LeaveCriticalSection(var CritSection: TRTLCriticalSection);
+Procedure DeleteCriticalSection(var CritSection: TRTLCriticalSection);
+
+// should go to sysutils.pp
+procedure RaiseLastOSError;
 
 {$ENDIF}
 
 { =============================================================================
 
   $Log$
+  Revision 1.65  2003/02/26 12:44:52  mattias
+  readonly flag is now only saved if user set
+
   Revision 1.64  2003/01/27 13:49:16  mattias
   reduced speedbutton invalidates, added TCanvas.Frame
 
