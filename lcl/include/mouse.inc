@@ -1,3 +1,5 @@
+// included by controls.pp
+
 {******************************************************************************
                                      TMouse
  ******************************************************************************
@@ -18,27 +20,28 @@
 
 constructor TMouse.Create;
 begin
-inherited Create;
-
+  inherited Create;
 end;
 
 destructor TMouse.destroy;
 begin
-inherited destroy;
-
+  inherited destroy;
 end;
 
 
 Function TMouse.GetCapture : HWND;
 Begin
-Result := FCapture;
+  Result := FCapture;
 End;
 
 
 Procedure TMouse.SetCapture(const Value : HWND);
 Begin
-FCapture := Value;
-if Value = 0 then ReleaseCapture else LCLLinux.SetCapture(Value);
+  {$IFDEF VerboseMouseCapture}
+  writeln('TMouse.SetCapture ');
+  {$ENDIF}
+  FCapture := Value;
+  if Value = 0 then ReleaseCapture else LCLLinux.SetCapture(Value);
 end;
 
 Procedure TMouse.SetCursorPos(Value : Tpoint);
@@ -48,13 +51,11 @@ end;
 
 Function TMouse.GetCursorPos : TPoint;
 var
-p : TPoint;
+  p : TPoint;
 Begin
-GetCaretPos(p);
-Result := P;
+  GetCaretPos(p);
+  Result := P;
 end;
 
-
-
-
+// included by controls.pp
 
