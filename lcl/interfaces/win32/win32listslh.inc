@@ -1,0 +1,65 @@
+(******************************************************************************
+                                 win32listslh.inc
+                 TWin32ListStringList and TWin32CListStringList
+                 
+ ******************************************************************************)
+
+{$IFOPT H+} 
+  {$DEFINE H_PLUS} 
+{$ELSE}
+  {$H+}
+{$ENDIF} 
+
+Type
+  TWin32ListStringList = Class(TStrings)
+  Private
+    FWin32List: HWND;
+    FSorted: Boolean;
+  Protected
+    Function Get(Index: Integer): String; Override;
+    Function GetCount: Integer; Override;
+	Procedure SetSorted(Val: Boolean); Virtual;
+  Public
+    Constructor Create(List: HWND);
+    Procedure Assign(Source: TPersistent); Override;
+    Procedure Clear; Override;
+    Procedure Delete(Index: Integer); Override;
+    Procedure Insert(Index: Integer; Const S: String); Override;
+  	Procedure Sort; Virtual;
+  	Property Sorted: Boolean Read FSorted Write SetSorted;
+  End;
+
+  TWin32CListStringList = Class(TStrings)
+  Private
+    FWin32CList: HWND;
+    FSorted: Boolean;
+  Protected
+    Function Get(Index: Integer): String; Override;
+    Function GetCount: Integer; Override;
+    Function GetObject(Index: Integer): TObject; Override;
+    Procedure PutObject(Index: Integer; AObject: TObject); Override;
+    Procedure SetSorted(Val: Boolean); Virtual;
+  Public
+    Constructor Create(List: HWND);
+    Procedure Assign(Source: TPersistent); Override;
+    Procedure Clear; Override;
+    Procedure Delete(Index: Integer); Override;
+    Procedure Insert(Index: Integer; Const S: String); Override;
+  	Procedure Sort; Virtual;
+  	Property Sorted: Boolean Read FSorted Write SetSorted;
+  End;
+
+{$IFDEF H_PLUS}
+  {$UNDEF H_PLUS}
+{$ELSE}
+  {$H-}
+{$ENDIF}
+
+{ =============================================================================
+
+  $Log$
+  Revision 1.1  2002/01/06 23:09:53  lazarus
+  MG: added missing files
+
+
+}
