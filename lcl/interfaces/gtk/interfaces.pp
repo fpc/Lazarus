@@ -48,9 +48,10 @@ initialization
   InterfaceObject := TgtkObject.Create;
 
 finalization
-
-  FreeandNil(Application);
+  Application.Free;
+  Application:=nil;
   FreeAllClipBoards;
-  FreeAndNil(InterfaceObject);
+  InterfaceObject.Free;
+  InterfaceObject:=nil;
 
 end.

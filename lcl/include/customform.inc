@@ -167,10 +167,10 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TCustomForm.SetFocus;
 Begin
-writeln('[TCustomForm.SetFocus] A ',Classname);
+//writeln('[TCustomForm.SetFocus] A ',Classname);
 //if not(Visible and Enabled) then Exit;
   CNSendMessage(LM_SETFOCUS,Self,nil);
-writeln('[TCustomForm.SetFocus] END ',Classname);
+//writeln('[TCustomForm.SetFocus] END ',Classname);
 end;
 
 {------------------------------------------------------------------------------}
@@ -300,7 +300,9 @@ End;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.DoCreate;
 begin
+  BeginUpdateBounds;
   if Assigned(FOnCreate) then FOnCreate(Self);
+  EndUpdateBounds;
 end;
 
 {------------------------------------------------------------------------------
@@ -971,6 +973,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.36  2002/03/16 21:40:55  lazarus
+  MG: reduced size+move messages between lcl and interface
+
   Revision 1.35  2002/03/13 22:48:16  lazarus
   Constraints implementation (first cut) and sizig - moving system rework to
   better match Delphi/Kylix way of doing things (the existing implementation

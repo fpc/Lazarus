@@ -436,7 +436,8 @@ TLMMouseMove = TLMMOuse;
 
 TLMMove = record
   Msg: Cardinal;
-  MoveType: Integer; // 0 = update, 1 = force RequestAlign
+  MoveType: Integer; // 0 = update, 1 = force RequestAlign,
+                     // 128 = Source is Interface (Widget has moved)
   case Integer of
     0: (
       XPos: Smallint;
@@ -655,7 +656,7 @@ end;
 
 TLMSize = packed record
   Msg: Cardinal;
-  SizeType: LongInt; // 0 = update, 1 = force realign
+  SizeType: LongInt; // see LCLType.pp (e.g. Size_Restored)
   Width : Word;
   Height : Word;
   Result : LongInt;
@@ -799,6 +800,9 @@ end.
 
 {
   $Log$
+  Revision 1.22  2002/03/16 21:40:54  lazarus
+  MG: reduced size+move messages between lcl and interface
+
   Revision 1.21  2002/03/13 22:48:16  lazarus
   Constraints implementation (first cut) and sizig - moving system rework to
   better match Delphi/Kylix way of doing things (the existing implementation

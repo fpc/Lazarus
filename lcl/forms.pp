@@ -38,7 +38,8 @@ uses classes, controls, vclglobals, sysutils, GraphType, Graphics, Menus,
   LCLLinux, LCLType, LMessages;
 
 type
-  TPosition = (poDesigned, poDefault, poDefaultPosOnly, poDefaultSizeOnly, poScreenCenter, poDesktopCenter, poMainFormCenter, poOwnerFormCenter);
+  TPosition = (poDesigned, poDefault, poDefaultPosOnly, poDefaultSizeOnly,
+          poScreenCenter, poDesktopCenter, poMainFormCenter, poOwnerFormCenter);
 
   TWindowState = (wsNormal, wsMinimized, wsMaximized);
   TCloseAction = (caNone, caHide, caFree, caMinimize);

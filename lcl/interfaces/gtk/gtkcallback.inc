@@ -826,6 +826,8 @@ var
   Dummy: TPoint;
   OldLeft, OldTop, OldWidth, OldHeight: integer;
   TopLeftChanged, WidthHeightChanged: boolean;
+  
+  DummyW, DummyH, DummyD: integer;
 begin
   EventTrace('size-allocate', data);
 
@@ -856,14 +858,33 @@ begin
       if TObject(data) is TWinControl then begin
         hWnd := TWinControl(data).Handle;
         if TObject(data) is TCustomForm then begin
-          //writeln('[gtksize_allocateCB]  CUSTOMFORM  ************'
-          //       ,TControl(Data).Left,',',TControl(Data).Top,'  ',Size^.X,',',Size^.Y);
+{          writeln('[gtksize_allocateCB]  CUSTOMFORM  AAA1 ************ ',
+                 TCustomForm(Data).Name,' Widget=',HexStr(Cardinal(Widget),8),
+                 ' ',TControl(Data).Left,',',TControl(Data).Top,'  ',Size^.X,',',Size^.Y);}
           Dummy.X:=TControl(Data).Left;
           Dummy.Y:=TControl(Data).Top;
           if widget^.window<>nil then
-            gdk_window_get_root_origin(widget^.window, @Dummy.X, @Dummy.Y);
+            try
+              gdk_window_get_root_origin(widget^.window, @Dummy.X, @Dummy.Y);
+            except
+              on E: Exception do writeln('This was gdk_window_get_root_origin: ',E.Message);
+            end;
           Size^.X:=Dummy.X;
           Size^.Y:=Dummy.Y;
+{          writeln('[gtksize_allocateCB]  CUSTOMFORM  AAA2 ************ ',
+                 TCustomForm(Data).Name,' Widget=',HexStr(Cardinal(Widget),8),
+                 ' ',TControl(Data).Left,',',TControl(Data).Top,'  ',Size^.X,',',Size^.Y);}
+{if widget^.window<>nil then begin
+  gdk_window_get_Position(widget^.window, @Dummy.X, @Dummy.Y);
+  writeln('  Position=',Dummy.X,',',Dummy.Y);
+  gdk_window_get_geometry(widget^.window, @Dummy.X, @Dummy.Y, @DummyW, @DummyH, @DummyD);
+  writeln('  Geometry=',Dummy.X,',',Dummy.Y,',',DummyW,',',DummyH,',',DummyD);
+  gdk_window_get_origin(widget^.window, @Dummy.X, @Dummy.Y);
+  writeln('  Origin=',Dummy.X,',',Dummy.Y);
+  gdk_window_get_deskrelative_origin(widget^.window, @Dummy.X, @Dummy.Y);
+  writeln('  deskrelative_Origin=',Dummy.X,',',Dummy.Y);
+end;}
+                 
         end;
       end else
         hWnd := 0;
@@ -888,14 +909,13 @@ begin
   { If the message is not handled. A LM_SIZE and LM_MOVE should be sent
  }
   
-
   if (PosMsg.Result = 0) then 
   begin
     if WidthHeightChanged then begin
       with SizeMsg do
       begin
         Msg := LM_SIZE;
-        SizeType := 6; // force ReAlign
+        SizeType := Size_SourceIsInterface;
         Width := Size^.Width;
         Height := Size^.Height;
       end;
@@ -907,7 +927,7 @@ begin
       with MoveMsg do
       begin
         Msg := LM_MOVE;
-        MoveType := 1; // force RequestAlign
+        MoveType := Move_SourceIsInterface;
         XPos := Size^.X;
         YPos := Size^.Y;
       end;
@@ -1571,6 +1591,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.62  2002/03/16 21:40:55  lazarus
+  MG: reduced size+move messages between lcl and interface
+
   Revision 1.61  2002/03/14 18:12:46  lazarus
   Mouse events fixes.
 
