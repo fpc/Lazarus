@@ -1284,7 +1284,6 @@ destructor TCustomSynEdit.Destroy;
 var
   i: integer;
 begin
-//writeln('[TCustomSynEdit.Destroy]');
   {$IFDEF SYN_LAZARUS}
   if HandleAllocated then LCLIntf.DestroyCaret(Handle);
   {$ENDIF}
@@ -1593,7 +1592,7 @@ end;
 
 procedure TCustomSynEdit.HideCaret;
 begin
-  //writeln('[TCustomSynEdit.HideCaret] ',Name,' ',sfCaretVisible in fStateFlags,' ',eoPersistentCaret in Options);
+  //DebugLn('[TCustomSynEdit.HideCaret] ',Name,' ',sfCaretVisible in fStateFlags,' ',eoPersistentCaret in Options);
   if sfCaretVisible in fStateFlags then begin
     if {$IFDEF SYN_LAZARUS}LCLIntf{$ELSE}Windows{$ENDIF}.HideCaret(Handle) then
       Exclude(fStateFlags, sfCaretVisible);
@@ -1733,7 +1732,7 @@ begin
   fBracketHighlightCaret:=CaretXY;
   // invalidate old bracket highlighting
   if fBracketHighlightPos.Y>0 then begin
-    //writeln('TCustomSynEdit.InvalidateBracketHighlight A Y=',fBracketHighlightPos.Y,' X=',fBracketHighlightPos.X);
+    //DebugLn('TCustomSynEdit.InvalidateBracketHighlight A Y=',fBracketHighlightPos.Y,' X=',fBracketHighlightPos.X);
     InvalidateLines(fBracketHighlightPos.Y,fBracketHighlightPos.Y);
   end;
   if (fBracketHighlightAntiPos.Y>0)
@@ -1747,7 +1746,7 @@ begin
 
     // invalidate new bracket highlighting
     if fBracketHighlightPos.Y>0 then begin
-      //writeln('TCustomSynEdit.InvalidateBracketHighlight C ',
+      //DebugLn('TCustomSynEdit.InvalidateBracketHighlight C ',
       //  ' Y=',fBracketHighlightPos.Y,' X=',fBracketHighlightPos.X,
       //  ' Y=',fBracketHighlightAntiPos.Y,' X=',fBracketHighlightAntiPos.X,
       //  '');
@@ -1781,7 +1780,7 @@ var
   Cmd: TSynEditorCommand;
 begin
   {$IFDEF VerboseKeys}
-  writeln('[TCustomSynEdit.KeyDown] ',Key
+  DebugLn('[TCustomSynEdit.KeyDown] ',Key
     ,' Shift=',ssShift in Shift,' Ctrl=',ssCtrl in Shift,' Alt=',ssAlt in Shift);
   {$ENDIF}
   inherited;
@@ -1797,7 +1796,7 @@ begin
       {$IFDEF SYN_LAZARUS}
       LastMouseCaret:=Point(-1,-1);
       {$ENDIF}
-      //writeln('[TCustomSynEdit.KeyDown] key translated ',cmd);
+      //DebugLn('[TCustomSynEdit.KeyDown] key translated ',cmd);
       Key := 0; // eat it.
       Include(fStateFlags, sfIgnoreNextChar);
       CommandProcessor(Cmd, C, Data);
@@ -1813,7 +1812,7 @@ end;
 procedure TCustomSynEdit.KeyUp(var Key: Word; Shift: TShiftState);
 begin
   {$IFDEF VerboseKeys}
-  writeln('[TCustomSynEdit.KeyUp] ',Key
+  DebugLn('[TCustomSynEdit.KeyUp] ',Key
     ,' Shift=',ssShift in Shift,' Ctrl=',ssCtrl in Shift,' Alt=',ssAlt in Shift);
   {$ENDIF}
   inherited KeyUp(Key, Shift);
@@ -1892,7 +1891,7 @@ var
   EndOfBlock: TPoint;
   {$ENDIF}
 begin
-//writeln('TCustomSynEdit.MouseDown START Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
+//DebugLn('TCustomSynEdit.MouseDown START Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
   {$IFDEF SYN_LAZARUS}
   if (X>=ClientWidth-ScrollBarWidth) or (Y>=ClientHeight-ScrollBarWidth) then
   begin
@@ -1925,7 +1924,7 @@ begin
   ComputeCaret(X, Y);
   fLastCaretX := fCaretX;                                                       //mh 2000-10-19
   if Button = mbLeft then begin
-//writeln('====================== START CAPTURE ===========================');
+//DebugLn('====================== START CAPTURE ===========================');
     MouseCapture := True;
     //if mousedown occured in selected block then begin drag operation
     Exclude(fStateFlags, sfWaitForDragging);
@@ -1984,7 +1983,7 @@ begin
     Include(fStateFlags, sfPossibleGutterClick);
   Windows.SetFocus(Handle);
   {$ENDIF}
-//writeln('TCustomSynEdit.MouseDown END Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
+//DebugLn('TCustomSynEdit.MouseDown END Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
 end;
 
 procedure TCustomSynEdit.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -2017,7 +2016,7 @@ begin
     end;
   end else if (ssLeft in Shift) {$IFNDEF SYN_LAZARUS}and MouseCapture{$ENDIF}
   then begin
-//writeln(' TCustomSynEdit.MouseMove CAPTURE Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y,' Client=',ClientWidth-ScrollBarWidth,',',ClientHeight-ScrollBarWidth);
+//DebugLn(' TCustomSynEdit.MouseMove CAPTURE Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y,' Client=',ClientWidth-ScrollBarWidth,',',ClientHeight-ScrollBarWidth);
     if (X >= fGutterWidth)
       and (X < ClientWidth{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF})
       and (Y >= 0)
@@ -2136,7 +2135,7 @@ end;
 procedure TCustomSynEdit.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
-//writeln('TCustomSynEdit.MouseUp Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
+//DebugLn('TCustomSynEdit.MouseUp Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
   inherited MouseUp(Button, Shift, X, Y);
   fScrollTimer.Enabled := False;
   {$IFDEF SYN_LAZARUS}
@@ -2182,7 +2181,7 @@ begin
   Exclude(fStateFlags, sfDblClicked);
   Exclude(fStateFlags, sfPossibleGutterClick);
   {$ENDIF}
-  //writeln('TCustomSynEdit.MouseUp END Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
+  //DebugLn('TCustomSynEdit.MouseUp END Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
 end;
 
 procedure TCustomSynEdit.DoOnGutterClick(X, Y: integer);
@@ -3305,7 +3304,7 @@ end;
 
 procedure TCustomSynEdit.Invalidate;
 begin
-  //writeln('TCustomSynEdit.Invalidate A');
+  //DebugLn('TCustomSynEdit.Invalidate A');
   inherited Invalidate;
 end;
 
@@ -3603,11 +3602,11 @@ var
   Metrics: TTextMetric;
   AveCW, MaxCW: Integer;
 begin
-  writeln('TCustomSynEdit.SetFont--------------------------------------------');
-  writeln('  TCustomSynEdit.SetFont A1',Value.Name);
+  DebugLn('TCustomSynEdit.SetFont--------------------------------------------');
+  DebugLn('  TCustomSynEdit.SetFont A1',Value.Name);
   DC := GetDC(0);
   Save := SelectObject(DC, Value.Handle);
-  writeln('  TCustomSynEdit.SetFont A2',Value.Name);
+  DebugLn('  TCustomSynEdit.SetFont A2',Value.Name);
   GetTextMetrics(DC, Metrics);
   SelectObject(DC, Save);
   ReleaseDC(0, DC);
@@ -3615,7 +3614,7 @@ begin
     AveCW := tmAveCharWidth;
     MaxCW := tmMaxCharWidth;
   end;
-  writeln('  TCustomSynEdit.SetFont B ',AveCW,',',MaxCW,' ',Value.Name);
+  DebugLn(Format('  TCustomSynEdit.SetFont B %d,%d,%s', [AveCW,MaxCW, Value.Name]));
   case AveCW = MaxCW of
     True: inherited Font := Value;
     False:
@@ -3624,7 +3623,7 @@ begin
           {$IFDEF SYN_LAZARUS}
           BeginUpdate;
           {$ENDIF}
-          writeln('  TCustomSynEdit.SetFont C fFontDummy="',fFontDummy.Name,'"');
+          DebugLn('  TCustomSynEdit.SetFont C fFontDummy="',fFontDummy.Name,'"');
           Color := Value.Color;
           Pitch := fpFixed;
           Size := Value.Size;
@@ -3633,13 +3632,11 @@ begin
           EndUpdate;
           {$ENDIF}
         end;
-        writeln('  TCustomSynEdit.SetFont D AveCW=',AveCW,' MaxCW=',MaxCW,
-        ' Value="',Value.Name,'" Value.Size=',Value.Size,' Value.Height=',Value.Height,
-        ' DummyHeight=',fFontDummy.Height,' fFontDummy="',fFontDummy.Name,'"');
+        DebugLn(Format('  TCustomSynEdit.SetFont D AveCW=%d MaxCW=%d Value="%s" Value.Size=%d Value.Height=%d DummyHeight=%d fFontDummy="%s"', [AveCW, MaxCW, Value.Name, Value.Size, Value.Height, fFontDummy.Height, fFontDummy.Name]));
         inherited Font := fFontDummy;
       end;
   end;
-  writeln('  TCustomSynEdit.SetFont E "',Font.Name,'" Height=',Font.Height,' AveCW=',AveCW,' MaxCW=',MaxCW,' CharWidth=',CharWidth);
+  DebugLn(Format('  TCustomSynEdit.SetFont E "%s" Height=%d AveCW=%d MaxCW=%d CharWidth=%d', [Font.Name, Font.Height, AveCW, MaxCW, CharWidth]));
   if fGutter.ShowLineNumbers then GutterChanged(Self);
 end;
 
@@ -4089,7 +4086,7 @@ end;
 
 procedure TCustomSynEdit.ShowCaret;
 begin
-  //writeln(' [TCustomSynEdit.ShowCaret] ShowCaret ',Name,' ',sfCaretVisible in fStateFlags,' ',eoPersistentCaret in fOptions);
+  //DebugLn(' [TCustomSynEdit.ShowCaret] ShowCaret ',Name,' ',sfCaretVisible in fStateFlags,' ',eoPersistentCaret in fOptions);
   if not (eoNoCaret in Options) and not (sfCaretVisible in fStateFlags) then
   begin
     {$IFDEF SYN_LAZARUS}
@@ -4097,7 +4094,7 @@ begin
     {$ENDIF}
     if {$IFDEF SYN_LAZARUS}LCLIntf{$ELSE}Windows{$ENDIF}.ShowCaret(Handle) then
     begin
-      //writeln('[TCustomSynEdit.ShowCaret] A ',Name);
+      //DebugLn('[TCustomSynEdit.ShowCaret] A ',Name);
       Include(fStateFlags, sfCaretVisible);
     end;
   end;
@@ -4132,10 +4129,10 @@ begin
       {$ELSE}
       SetCaretPos(CX, CY);
       {$ENDIF}
-      //writeln(' [TCustomSynEdit.UpdateCaret] ShowCaret ',Name);
+      //DebugLn(' [TCustomSynEdit.UpdateCaret] ShowCaret ',Name);
       ShowCaret;
     end else begin
-      //writeln(' [TCustomSynEdit.UpdateCaret] HideCaret ',Name);
+      //DebugLn(' [TCustomSynEdit.UpdateCaret] HideCaret ',Name);
       HideCaret;
       {$IFDEF SYN_LAZARUS}
       SetCaretPosEx(Handle,CX, CY);
@@ -4185,7 +4182,7 @@ begin
         ShowScrollBar(Handle, SB_HORZ, True); 
         {$ENDIF}
         SetScrollInfo(Handle, SB_HORZ, ScrollInfo, True);
-        //writeln('>>>>>>>>>> [TCustomSynEdit.UpdateScrollbars] nMin=',ScrollInfo.nMin,
+        //DebugLn('>>>>>>>>>> [TCustomSynEdit.UpdateScrollbars] nMin=',ScrollInfo.nMin,
         //' nMax=',ScrollInfo.nMax,' nPage=',ScrollInfo.nPage,
         //' nPos=',ScrollInfo.nPos,
         //' ClientW=',ClientWidth
@@ -4304,7 +4301,7 @@ procedure TCustomSynEdit.WMKillFocus(var Msg: TWMKillFocus);
 begin
   inherited;
   {$IFDEF VerboseFocus}
-  writeln('[TCustomSynEdit.WMKillFocus] A ',Name);
+  DebugLn('[TCustomSynEdit.WMKillFocus] A ',Name);
   {$ENDIF}
   {$IFDEF SYN_LAZARUS}
   LastMouseCaret:=Point(-1,-1);
@@ -4324,12 +4321,12 @@ procedure TCustomSynEdit.WMSetFocus(var Msg: TWMSetFocus);
 begin
   LastMouseCaret:=Point(-1,-1);
   {$IFDEF VerboseFocus}
-  writeln('[TCustomSynEdit.WMSetFocus] A ',Name,':',ClassName);
+  DebugLn('[TCustomSynEdit.WMSetFocus] A ',Name,':',ClassName);
   {$ENDIF}
   InitializeCaret;
   //if FHideSelection and SelAvail then
   //  Invalidate;
-  //writeln('[TCustomSynEdit.WMSetFocus] END');
+  //DebugLn('[TCustomSynEdit.WMSetFocus] END');
 end;
 
 procedure TCustomSynEdit.WMSize(var Msg: TWMSize);
@@ -4800,7 +4797,7 @@ begin
       dec(fBlockEnd.X);
   end;
   CaretXY:=fBlockEnd;
-  //writeln(' FFF2 ',Value.X,',',Value.Y,' BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
+  //DebugLn(' FFF2 ',Value.X,',',Value.Y,' BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
   InvalidateLine(Value.Y);
   StatusChanged([scSelection]);
 end;
@@ -4819,7 +4816,7 @@ begin
   fBlockBegin:=Point(1,ParagraphStartLine);
   fBlockEnd:=Point(1,ParagraphEndLine);
   CaretXY:=fBlockEnd;
-  //writeln(' FFF3 ',Value.X,',',Value.Y,' BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
+  //DebugLn(' FFF3 ',Value.X,',',Value.Y,' BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
   InvalidateLine(Value.Y);
   StatusChanged([scSelection]);
 end;
@@ -5663,7 +5660,7 @@ begin
   IncPaintLock;
   try
     // Make sure X is visible
-    //writeln('[TCustomSynEdit.EnsureCursorPosVisible] A CaretX=',CaretX,' LeftChar=',LeftChar,' CharsInWindow=',CharsInWindow,' ClientWidth=',ClientWidth);
+    //DebugLn('[TCustomSynEdit.EnsureCursorPosVisible] A CaretX=',CaretX,' LeftChar=',LeftChar,' CharsInWindow=',CharsInWindow,' ClientWidth=',ClientWidth);
     PhysCaretXY:=LogicalToPhysicalPos(CaretXY);
     {$IFDEF SYN_LAZARUS}
     // try also to make the current selection visible
@@ -5684,7 +5681,7 @@ begin
       if MaxX<PhysBlockEndXY.X then
         MaxX:=Min(PhysBlockEndXY.X,MinX+CharsInWindow-1);
     end;
-    {writeln('TCustomSynEdit.EnsureCursorPosVisible A CaretX=',PhysCaretXY.X,
+    {DebugLn('TCustomSynEdit.EnsureCursorPosVisible A CaretX=',PhysCaretXY.X,
     ' BlockX=',PhysBlockBeginXY.X,'-',PhysBlockEndXY.X,
     ' ChrInWnd=',CharsInWindow,
     ' MinX=',MinX,
@@ -5697,7 +5694,7 @@ begin
       LeftChar := MaxX - (CharsInWindow - 1)
     else
       LeftChar := LeftChar;                                                     //mh 2000-10-19
-    //writeln('TCustomSynEdit.EnsureCursorPosVisible B LeftChar=',LeftChar);
+    //DebugLn('TCustomSynEdit.EnsureCursorPosVisible B LeftChar=',LeftChar);
     {$ELSE}
     if PhysCaretXY.X < LeftChar then
       LeftChar := PhysCaretXY.X
@@ -5754,12 +5751,12 @@ const
 begin
   i := KeyStrokes.FindKeycode2(fLastKey, fLastShiftState, Code, Shift);
   if i >= 0 then begin
-//writeln('FindKeyCode2 success');
+//DebugLn('FindKeyCode2 success');
     Result := KeyStrokes[i].Command
   end else begin
     i := Keystrokes.FindKeycode(Code, Shift);
     if i >= 0 then begin
-//writeln('FindKeyCode success');
+//DebugLn('FindKeyCode success');
       Result := Keystrokes[i].Command
     end else
       Result := ecNone;
@@ -5778,7 +5775,7 @@ procedure TCustomSynEdit.CommandProcessor(Command: TSynEditorCommand;
   AChar: char; Data: pointer);
 begin
   {$IFDEF VerboseKeys}
-  writeln('[TCustomSynEdit.CommandProcessor] ',Command
+  DebugLn('[TCustomSynEdit.CommandProcessor] ',Command
     ,' AChar=',AChar,' Data=',HexStr(Cardinal(Data),8));
   {$ENDIF}
   // first the program event handler gets a chance to process the command
@@ -6811,13 +6808,17 @@ begin
   end;
 
   Inc(fMouseWheelAccumulator, Msg.WheelDelta);
-  writeln('TCustomSynEdit.WMMouseWheel A fMouseWheelAccumulator=',fMouseWheelAccumulator,
+{$ifdef DEBUG_SYNEDIT_MOUSEWHEEL}  
+  DebugLn('TCustomSynEdit.WMMouseWheel A fMouseWheelAccumulator=',fMouseWheelAccumulator,
     ' Msg.WheelDelta=',Msg.WheelDelta,' LinesInWindow=',LinesInWindow,' nDelta=',nDelta);
+{$endif}
   nWheelClicks := fMouseWheelAccumulator div WHEEL_DELTA;
   fMouseWheelAccumulator := fMouseWheelAccumulator mod WHEEL_DELTA;
   if (nDelta = integer(WHEEL_PAGESCROLL)) or (nDelta > LinesInWindow) then
     nDelta := LinesInWindow;
-  writeln('TCustomSynEdit.WMMouseWheel B TopLine=',TopLine,' nDelta=',nDelta,' nWheelClicks=',nWheelClicks);
+{$ifdef DEBUG_SYNEDIT_MOUSEWHEEL}  
+  DebugLn('TCustomSynEdit.WMMouseWheel B TopLine=',TopLine,' nDelta=',nDelta,' nWheelClicks=',nWheelClicks);
+{$endif}  
   TopLine := TopLine - (nDelta * nWheelClicks);
   Update;
 end;
