@@ -5880,7 +5880,7 @@ var
     end;
     // delete unneeded menuitems
     while ExistingCount>ToolCount do begin
-      mnuTools[LastIndex].Free;
+      mnuTools[LastIndex-1].Free;
       dec(LastIndex);
       dec(ExistingCount);
     end;
@@ -9354,6 +9354,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.621  2003/07/09 00:35:38  mattias
+  fixed da_IF and find record case variable
+
   Revision 1.620  2003/07/08 11:30:22  mattias
   added Abort Build
 

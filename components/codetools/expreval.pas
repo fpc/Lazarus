@@ -126,19 +126,37 @@ function TExpressionEvaluator.CompareValues(const v1, v2: string): integer;
 //  0 : v1=v2
 //  1 : v1>v2
 var len1,len2,a:integer;
+  c1: Char;
+  c2: Char;
+  ValPos1: Integer;
+  ValPos2: Integer;
 begin
   len1:=length(v1);
   len2:=length(v2);
+  ValPos1:=1;
+  ValPos2:=1;
+  if (len1>1) and (v1[ValPos1]='''') then begin
+    inc(ValPos1);
+    dec(Len1,2);
+  end;
+  if (len2>1) and (v2[ValPos2]='''') then begin
+    inc(ValPos2);
+    dec(Len2,2);
+  end;
   if len1<len2 then Result:=-1
   else if len1>len2 then Result:=1
   else begin
     for a:=1 to len1 do begin
-      if v1[a]<v2[a] then begin
+      c1:=v1[ValPos1];
+      c2:=v2[ValPos2];
+      if c1<c2 then begin
         Result:=-1;  exit;
       end;
-      if v1[a]>v2[a] then begin
+      if c1>c2 then begin
         Result:=1;  exit;
       end;
+      inc(ValPos1);
+      inc(ValPos2);
     end;
     Result:=0;
   end;
@@ -296,6 +314,8 @@ begin
       if (Result<>'') then begin
         ErrorPos:=CurPos;  exit;
       end else Result:=copy(Expr,AtomStart,AtomEnd-AtomStart);
+    end else if c='''' then begin
+      Result:=copy(Expr,AtomStart+1,AtomEnd-AtomStart-2);
     end else begin
       // operator
       case c of
@@ -437,6 +457,23 @@ begin
       AtomEnd:=CurPos;
       Result:=true;
       exit;
+    end else if c='''' then begin
+      // string
+      AtomStart:=CurPos;
+      repeat
+        inc(CurPos);
+        if Expr[CurPos]='''' then begin
+          inc(CurPos);
+          AtomEnd:=CurPos;
+          Result:=true;
+          exit;
+        end;
+        if CurPos>Max then begin
+          AtomEnd:=CurPos;
+          Result:=false;
+          exit;
+        end;
+      until (CurPos>Max);
     end else begin
       // Symbol
       AtomStart:=CurPos;
@@ -444,7 +481,7 @@ begin
       if (CurPos<=Max) then begin
         o1:=c;
         o2:=Expr[CurPos];
-        if ((o2='=') and ( (o1='<') or (o1='>') ))
+        if ((o2='=') and ((o1='<') or (o1='>')))
         or ((o1='<') and (o2='>'))
         then inc(CurPos);
       end;

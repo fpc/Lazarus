@@ -521,6 +521,8 @@ type
       Params: TFindDeclarationParams): boolean;
     function FindIdentifierInUsedUnit(const AnUnitName: string;
       Params: TFindDeclarationParams): boolean;
+    function FindIdentifierInRecordCase(RecordCaseNode: TCodeTreeNode;
+      Params: TFindDeclarationParams): boolean;
   protected
     WordIsPredefinedIdentifier: TKeyWordFunctionList;
     procedure BeginParsing(DeleteNodes, OnlyInterfaceNeeded: boolean); override;
@@ -2016,7 +2018,7 @@ var
         ctnLabelSection,
         ctnInterface, ctnImplementation,
         ctnClassPublished,ctnClassPublic,ctnClassProtected,ctnClassPrivate,
-        ctnRecordCase, ctnRecordVariant,
+        ctnRecordVariant,
         ctnProcedureHead, ctnParameterList:
           // these codetreenodes build a parent-child-relationship, but
           // for pascal it is only a range, hence after searching in the
@@ -2027,6 +2029,9 @@ var
         ctnClass, ctnClassInterface, ctnRecordType:
           // do not search again in this node, go on ...
           ;
+          
+        ctnRecordCase:
+          break;
 
         ctnVarDefinition, ctnConstDefinition:
           if (ContextNode.Parent<>nil)
@@ -2121,13 +2126,13 @@ begin
         ctnInterface, ctnImplementation,
         ctnClassPublic, ctnClassPrivate, ctnClassProtected, ctnClassPublished,
         ctnClass, ctnClassInterface,
-        ctnRecordType, ctnRecordCase, ctnRecordVariant,
+        ctnRecordType, ctnRecordVariant,
         ctnParameterList:
           // these nodes build a parent-child relationship. But in pascal
           // they just define a range and not a context.
           // -> search in all childs
           MoveContextNodeToChilds;
-
+          
         ctnTypeDefinition, ctnVarDefinition, ctnConstDefinition:
           if SearchInTypeVarConstDefinition then exit;
 
@@ -2177,6 +2182,13 @@ begin
               exit;
           end;
 
+        ctnRecordCase:
+          begin
+            if FindIdentifierInRecordCase(ContextNode,Params)
+            and CheckResult(true,false) then
+              exit;
+          end;
+          
         end;
       end else begin
         Exclude(Params.Flags,fdfIgnoreCurContextNode);
@@ -3396,6 +3408,26 @@ begin
                  -[fdfExceptionOnNotFound];
     Result:=NewCodeTool.FindIdentifierInInterface(Self,Params);
     Params.Load(OldInput);
+  end;
+end;
+
+function TFindDeclarationTool.FindIdentifierInRecordCase(
+  RecordCaseNode: TCodeTreeNode; Params: TFindDeclarationParams): boolean;
+begin
+  Result:=false;
+  MoveCursorToNodeStart(RecordCaseNode);
+  ReadNextAtom;
+  ReadNextAtom;
+  if (fdfCollect in Params.Flags)
+  or CompareSrcIdentifiers(CurPos.StartPos,Params.Identifier) then begin
+    // identifier found
+    {$IFDEF ShowTriedContexts}
+    writeln('[TFindDeclarationTool.FindIdentifierInRecordCase]  found="',GetIdentifier(Params.Identifier),'"');
+    {$ENDIF}
+    Params.SetResult(Self,RecordCaseNode,CurPos.StartPos);
+    Result:=true;
+  end else begin
+    // proceed the search normally ...
   end;
 end;
 

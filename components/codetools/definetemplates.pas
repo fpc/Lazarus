@@ -1753,9 +1753,11 @@ begin
       DirDef.Path:=ExpPath;
       //writeln('[TDefineTree.GetDefinesForDirectory] B ',ExpPath,' ');
       if Calculate(DirDef) then begin
+        //writeln('[TDefineTree.GetDefinesForDirectory] C success');
         FCache.Add(DirDef);
         Result:=DirDef.Values;
       end else begin
+        //writeln('[TDefineTree.GetDefinesForDirectory] D failed');
         DirDef.Free;
         Result:=nil;
       end;
@@ -3279,8 +3281,8 @@ begin
   IntfDirTemplate:=TDefineTemplate.Create('gtkIntfDirectory',
     ctsGtkIntfDirectory,'','gtk',da_Directory);
     // if LCLWidgetType=gtk2
-    IfTemplate:=TDefineTemplate.Create('IF '+WidgetType+'=gtk2',
-      ctsIfLCLWidgetTypeEqualsGtk2,'',WidgetType+'=gtk2',da_If);
+    IfTemplate:=TDefineTemplate.Create('IF '+WidgetType+'=''gtk2''',
+      ctsIfLCLWidgetTypeEqualsGtk2,'',WidgetType+'=''gtk2''',da_If);
       // then define gtk2
       IfTemplate.AddChild(TDefineTemplate.Create('Define gtk2',
         ctsDefineMacroGTK2,'gtk2','',da_Define));
@@ -3304,8 +3306,8 @@ begin
     Format(ctsAddsDirToSourcePath,['gtk']),ExternalMacroStart+'SrcPath',
     '..'+ds+'gtk;'+SrcPath,da_Define));
     // if LCLWidgetType=gnome2
-    IfTemplate:=TDefineTemplate.Create('IF '+WidgetType+'=gnome2',
-      ctsIfLCLWidgetTypeEqualsGnome2,'',WidgetType+'=gnome2',da_If);
+    IfTemplate:=TDefineTemplate.Create('IF '+WidgetType+'=''gnome2''',
+      ctsIfLCLWidgetTypeEqualsGnome2,'',WidgetType+'=''gnome2''',da_If);
       // then define gnome2
       IfTemplate.AddChild(TDefineTemplate.Create('Define gnome2',
         ctsDefineMacroGTK2,'gnome2','',da_Define));
