@@ -3308,12 +3308,21 @@ var
 Begin
   if FindInFilesDialog=nil then
     FindInFilesDialog:=TLazFindInFilesDialog.Create(Application);
-  FindInFilesDialog.TextToFindComboBox.Items.Assign(InputHistories.FindHistory);
-
+  with FindInFilesDialog do
+  begin
+    TextToFindComboBox.Items.Assign(InputHistories.FindHistory);
+    DirectoryComboBox.Items.Assign(InputHistories.FindInFilesPathHistory);
+    FileMaskComboBox.Items.Assign(InputHistories.FindInFilesMaskHistory);
+  end;//With
   if FindInFilesDialog.ShowModal=mrOk then
   begin
     LocalFindText:=FindInFilesDialog.FindText;
-    InputHistories.AddToFindHistory(FindInFilesDialog.FindText);
+    with FindInFilesDialog do
+    begin
+      InputHistories.AddToFindHistory(FindText);
+      InputHistories.AddToFindInFilesPathHistory(DirectoryComboBox.Text);
+      InputHistories.AddToFindInFilesMaskHistory(FileMaskComboBox.Text);
+    end;//with
     InputHistories.Save;
     if LocalFindText<>'' then
     begin
