@@ -254,7 +254,9 @@ type
       AComponent: TComponent; const NewName: string);
 
     procedure OnControlSelectionChanged(Sender: TObject);
-    
+    procedure OnControlSelectionFormChanged(Sender: TObject; OldForm,
+          NewForm: TCustomForm);
+
     // unit dependencies events
     procedure UnitDependenciesViewAccessingSources(Sender: TObject);
     function UnitDependenciesViewGetProjectMainFilename(
@@ -749,6 +751,7 @@ begin
   FreeThenNil(Project1);
   if TheControlSelection<>nil then begin
     TheControlSelection.OnChange:=nil;
+    TheControlSelection.OnSelectionFormChanged:=nil;
     FreeThenNil(TheControlSelection);
   end;
   FreeThenNil(FormEditor1);
@@ -1148,6 +1151,7 @@ procedure TMainIDE.SetupControlSelection;
 begin
   TheControlSelection:=TControlSelection.Create;
   TheControlSelection.OnChange:=@OnControlSelectionChanged;
+  TheControlSelection.OnSelectionFormChanged:=@OnControlSelectionFormChanged;
 end;
 
 procedure TMainIDE.SetupStartProject;
@@ -5911,6 +5915,14 @@ begin
   {$ENDIF}
 end;
 
+procedure TMainIDE.OnControlSelectionFormChanged(Sender: TObject; OldForm,
+  NewForm: TCustomForm);
+begin
+  if (TheControlSelection=nil) or (FormEditor1=nil) then exit;
+
+end;
+
+
 // -----------------------------------------------------------------------------
 
 procedure TMainIDE.UnitDependenciesViewAccessingSources(Sender: TObject);
@@ -6882,6 +6894,8 @@ begin
                             MethodIsCompatible,MethodIsPublished,IdentIsMethod);
   if CodeToolBoss.ErrorMessage<>'' then begin
     DoJumpToCodeToolBossError;
+    raise Exception.Create('Unable to find method.'
+                          +' Plz fix errors in source.');
   end;
 end;
 
@@ -6913,6 +6927,8 @@ begin
                                                       ,AMethodName);
     end else begin
       DoJumpToCodeToolBossError;
+      raise Exception.Create('Unable to create new method.'
+                            +' Plz fix errors in source.');
     end;
   finally
     FOpenEditorsOnCodeToolChange:=false;
@@ -6936,8 +6952,11 @@ begin
   begin
     DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo,
       NewSource, NewX, NewY, NewTopLine, true);
-  end else
+  end else begin
     DoJumpToCodeToolBossError;
+    raise Exception.Create('Unable to show method.'
+                          +' Plz fix errors in source.');
+  end;
 end;
 
 procedure TMainIDE.OnPropHookRenameMethod(const CurName, NewName: ShortString);
@@ -6965,6 +6984,8 @@ begin
                                            CurName,NewName);
     end else begin
       DoJumpToCodeToolBossError;
+      raise Exception.Create('Unable to rename method.'
+                            +' Plz fix errors in source.');
     end;
   finally
     FOpenEditorsOnCodeToolChange:=false;
@@ -6998,17 +7019,17 @@ writeln('TMainIDE.OnPropHookComponentAdded A ',AComponent.Name,':',AComponent.Cl
   end;
   // create unique name
   AComponent.Name:=FormEditor1.CreateUniqueComponentName(AComponent);
-writeln('TMainIDE.OnPropHookComponentAdded B ',AComponent.Name,':',AComponent.ClassName);
+  //writeln('TMainIDE.OnPropHookComponentAdded B ',AComponent.Name,':',AComponent.ClassName);
   // create component interface
   if FormEditor1.FindComponent(AComponent)=nil then
     FormEditor1.CreateComponentInterface(AComponent);
   // set component into design mode
   SetDesigning(AComponent,true);
-writeln('TMainIDE.OnPropHookComponentAdded C ',AComponent.Name,':',AComponent.ClassName);
+  //writeln('TMainIDE.OnPropHookComponentAdded C ',AComponent.Name,':',AComponent.ClassName);
   // add to source
   ADesigner:=FindRootDesigner(AComponent);
   OnDesignerComponentAdded(ADesigner,AComponent,ComponentClass);
-writeln('TMainIDE.OnPropHookComponentAdded D ',AComponent.Name,':',AComponent.ClassName,' ',Select);
+  //writeln('TMainIDE.OnPropHookComponentAdded D ',AComponent.Name,':',AComponent.ClassName,' ',Select);
   // select component
   if Select then begin
     TheControlSelection.AssignComponent(AComponent);
@@ -7266,6 +7287,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.403  2002/10/05 09:31:09  lazarus
+  MG: added consistency checks and fixed selection drawing on wrong forms
+
   Revision 1.402  2002/10/04 21:31:54  lazarus
   MG: added some component rename checks
 
