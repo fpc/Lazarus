@@ -45,7 +45,7 @@ uses
   // fpc packages
   Classes, SysUtils, Process, TypInfo,
   // codetools
-  CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
+  Laz_XMLCfg, CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
   // lcl
   LCLType, LclLinux, LCLproc, LMessages, LResources, StdCtrls, Forms, Buttons,
   Menus, FileCtrl, Controls, Graphics, GraphType, ExtCtrls, Dialogs,
@@ -427,6 +427,13 @@ type
     // methods for 'close unit'
     function CloseDesignerForm(AnUnitInfo: TUnitInfo): TModalResult;
 
+    // methods for creating a project
+    function CreateProjectObject(NewProjectType: TProjectType): TProject;
+    procedure OnLoadProjectInfoFromXMLConfig(TheProject: TProject;
+                                             XMLConfig: TXMLConfig);
+    procedure OnSaveProjectInfoToXMLConfig(TheProject: TProject;
+                                                 XMLConfig: TXMLConfig);
+
     // methods for 'save project'
     procedure GetMainUnit(var MainUnitInfo: TUnitInfo;
         var MainUnitSrcEdit: TSourceEditor; UpdateModified: boolean);
@@ -488,7 +495,7 @@ type
     function DoCreateProjectForProgram(ProgramBuf: TCodeBuffer): TModalResult;
     function DoSaveProjectToTestDirectory: TModalResult;
     function DoShowToDoList: TModalResult;
-    
+
     // edit menu
     procedure DoEditMenuCommand(EditorCommand: integer);
     
@@ -3597,6 +3604,27 @@ begin
   Result:=mrOk;
 end;
 
+function TMainIDE.CreateProjectObject(NewProjectType: TProjectType): TProject;
+begin
+  Result:=TProject.Create(NewProjectType);
+  Result.OnFileBackup:=@DoBackupFile;
+  Result.OnLoadProjectInfo:=@OnLoadProjectInfoFromXMLConfig;
+  Result.OnSaveProjectInfo:=@OnSaveProjectInfoToXMLConfig;
+end;
+
+procedure TMainIDE.OnLoadProjectInfoFromXMLConfig(TheProject: TProject;
+  XMLConfig: TXMLConfig);
+begin
+
+end;
+
+procedure TMainIDE.OnSaveProjectInfoToXMLConfig(TheProject: TProject;
+  XMLConfig: TXMLConfig);
+begin
+  if TheProject=Project1 then
+    DebugBoss.SaveProjectSpecificInfo(XMLConfig);
+end;
+
 procedure TMainIDE.GetMainUnit(var MainUnitInfo: TUnitInfo;
   var MainUnitSrcEdit: TSourceEditor; UpdateModified: boolean);
 begin
@@ -4820,10 +4848,10 @@ writeln('TMainIDE.DoNewProject A');
     VirtualDirectory;
 
   // create new project (TProject will automatically create the mainunit)
-  Project1:=TProject.Create(NewProjectType);
+  
+  Project1:=CreateProjectObject(NewProjectType);
   Project1.BeginUpdate(true);
   try
-    Project1.OnFileBackup:=@DoBackupFile;
     Project1.Title := 'project1';
     Project1.CompilerOptions.CompilerPath:='$(CompPath)';
     UpdateCaption;
@@ -5057,11 +5085,10 @@ begin
   writeln('TMainIDE.DoOpenProjectFile B');
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile B');{$ENDIF}
-  Project1:=TProject.Create(ptProgram);
+  Project1:=CreateProjectObject(ptProgram);
   Project1.BeginUpdate(true);
   try
     if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
-    Project1.OnFileBackup:=@DoBackupFile;
 
     // read project info file
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile B3');{$ENDIF}
@@ -5241,11 +5268,10 @@ begin
     ExpandFilename(ExtractFilePath(ProgramBuf.Filename));
 
   // create a new project
-  Project1:=TProject.Create(NewProjectType);
+  Project1:=CreateProjectObject(NewProjectType);
   Project1.BeginUpdate(true);
   try
     if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
-    Project1.OnFileBackup:=@DoBackupFile;
     MainUnitInfo:=Project1.MainUnitInfo;
     MainUnitInfo.Source:=ProgramBuf;
     Project1.ProjectInfoFile:=ChangeFileExt(ProgramBuf.Filename,'.lpi');
@@ -8638,6 +8664,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.571  2003/05/21 16:19:12  mattias
+  implemented saving breakpoints and watches
+
   Revision 1.570  2003/05/20 07:46:01  mattias
   added GlobalDesignHook GetSelectedComponents
 
