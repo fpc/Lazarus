@@ -337,6 +337,8 @@ const
   LM_GRABFOCUS      = LM_USER+74;
 
   LM_DRAWLISTITEM   = LM_User+80;
+  
+  LM_INTERNALPAINT  = LM_User + 90;
 
   // these IDs are reserved for internal messages in the interfaces
   LM_INTERFACEFIRST = LM_User+99;
@@ -882,6 +884,9 @@ end.
 
 {
   $Log$
+  Revision 1.36  2002/10/10 08:51:13  lazarus
+  MG: added paint messages for some gtk internal widgets
+
   Revision 1.35  2002/10/04 14:24:14  lazarus
   MG: added DrawItem to TComboBox/TListBox
 
