@@ -1086,7 +1086,7 @@ end;
 
   Returns the GTKObject of the given object, nil if no object available
  ------------------------------------------------------------------------------}
-function ObjectToGTKObject(const AObject: TObject): gtk_object;
+function ObjectToGTKObject(const AObject: TObject): PGtkObject;
 var
   handle : HWND;
 begin
@@ -1275,11 +1275,11 @@ begin
   end;
 end;
 
-function GetWidgetInfo(const Widget: Pointer; const Create: Boolean): PWinWidgetInfo;
+function GetWidgetInfo(const Widget: Pointer;
+  const Create: Boolean): PWinWidgetInfo;
 var MainWidget: PGtkObject;
 begin
-  if Widget = nil then Result:= nil
-  else begin
+  if Widget <> nil then begin
     MainWidget:= GetMainWidget(Widget);
     if MainWidget = nil then MainWidget:= Widget;
     Result:= gtk_object_get_data(MainWidget, 'widgetinfo');
@@ -1287,7 +1287,8 @@ begin
       Result := CreateWidgetInfo(MainWidget);
       Result^.ImplementationWidget:= PGtkWidget(MainWidget);
     end;  
-  end;
+  end else
+    Result:=nil;
 end;
 
 procedure FreeWinWidgetInfo(Widget: Pointer);
@@ -3803,9 +3804,10 @@ begin
     while (not (Str[i] in [#0,'&'])) do inc(i);
     if Str[i]='&' then begin
       NewStr := RemoveAmpersands(Str, LineLength);
+      LineLength:=StrLen(NewStr);
     end;
   end;
-  gdk_text_extents(Font, NewStr, StrLen(NewStr),
+  gdk_text_extents(Font, NewStr, LineLength,
                    lbearing, rBearing, width, ascent, descent);
   if NewStr<>Str then
     StrDispose(NewStr);
@@ -3990,6 +3992,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.144  2002/10/28 18:17:04  lazarus
+  MG: impoved focussing, unfocussing on destroy and fixed unit search
+
   Revision 1.143  2002/10/27 22:37:12  lazarus
   MG: added verbosity to delivermessage
 
