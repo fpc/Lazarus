@@ -144,63 +144,30 @@ type
   TTabGetImageEvent = procedure(Sender: TObject; TabIndex: Integer;
     var ImageIndex: Integer) of object;
 
-  TTabSheet = class(TWinControl)
+  TTabSheet = class(TCustomPage)
   private
-    FImageIndex: TImageIndex;
-    FPageControl: TPageControl;
-    FTabVisible: Boolean;
     FOnHide: TNotifyEvent;
     FOnShow: TNotifyEvent;
-    FPageIndex: integer;
-    function GetPageIndex: Integer;
+    function GetPageControl: TPageControl;
     function GetTabIndex: Integer;
-    //procedure SetHighlighted(Value: Boolean);
-    procedure SetImageIndex(AValue: TImageIndex);
     procedure SetPageControl(APageControl: TPageControl);
-    procedure SetPageIndex(Value: Integer);
-    //procedure SetTabShowing(Value: Boolean);
-    procedure SetTabVisible(Value: Boolean);
-    //procedure UpdateTabShowing;
-    //procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
-    //procedure CMShowingChanged(var Message: TMessage); message CM_SHOWINGCHANGED;
   protected
-    procedure CreateParams(var Params: TCreateParams); override;
     procedure DoHide; dynamic;
     procedure DoShow; dynamic;
-    procedure ReadState(Reader: TReader); override;
-    procedure WMPaint(var Msg: TLMPaint); message LM_PAINT;
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    property PageControl: TPageControl read FPageControl write SetPageControl;
+    property PageControl: TPageControl read GetPageControl write SetPageControl;
     property TabIndex: Integer read GetTabIndex;
   published
-    property BorderWidth;
     property Caption;
-    property ClientWidth;
     property ClientHeight;
-    //property DragMode;
+    property ClientWidth;
     property Enabled;
-    //property Font;
     property Height stored False;
-    //property Highlighted: Boolean read FHighlighted write SetHighlighted default False;
-    property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default 0;
+    property ImageIndex default 0;
     property Left stored False;
-    //property Constraints;
-    property PageIndex: Integer read GetPageIndex write SetPageIndex stored False;
-    //property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ShowHint;
-    property TabVisible: Boolean read FTabVisible write SetTabVisible default True;
-    property Top stored False;
-    property Visible stored False;
-    property Width stored False;
-    property OnChangeBounds;
     property OnContextPopup;
-    //property OnDragDrop;
-    //property OnDragOver;
-    //property OnEndDrag;
     property OnEnter;
     property OnExit;
     property OnHide: TNotifyEvent read FOnHide write FOnHide;
@@ -209,72 +176,42 @@ type
     property OnMouseUp;
     property OnResize;
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
-    //property OnStartDrag;
+    property PageIndex stored False;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabVisible default True;
+    property Top stored False;
+    property Visible stored False;
+    property Width stored False;
   end;
   
   
   { TPageControl }
 
-  TPageControl = class(TWinControl)
+  TPageControl = class(TCustomNotebook)
   private
-    FImages: TImageList;
     FOnChange: TNotifyEvent;
     FOnChanging: TTabChangingEvent;
-    FPages: TList;
-    FActivePage: TTabSheet;
-    procedure ChangeActivePage(Page: TTabSheet);
-    procedure DeleteTab(Page: TTabSheet; Index: Integer);
     function GetActivePageIndex: Integer;
-    //function GetDockClientFromMousePos(MousePos: TPoint): TControl;
-    function GetPage(Index: Integer): TTabSheet;
-    function GetPageCount: Integer;
+    function GetActiveTabSheet: TTabSheet;
     function GetTabIndex: Integer;
-    procedure InsertPage(Page: TTabSheet);
-    procedure InsertTab(Page: TTabSheet);
-    procedure MoveTab(CurIndex, NewIndex: Integer);
-    procedure RemovePage(Page: TTabSheet);
-    procedure SetActivePage(Page: TTabSheet);
-    procedure SetActivePageIndex(const Value: Integer);
-    procedure SetImages(const AValue: TImageList);
+    function GetTabSheet(Index: Integer): TTabSheet;
+    procedure SetActivePageIndex(const AValue: Integer);
+    procedure SetActiveTabSheet(const AValue: TTabSheet);
     procedure SetTabIndex(const AValue: Integer);
-    //procedure UpdateTab(Page: TTabSheet);
-    //procedure UpdateTabHighlights;
-    //procedure CMDesignHitTest(var Message: TCMDesignHitTest); message CM_DESIGNHITTEST;
-    //procedure CMDialogKey(var Message: TCMDialogKey); message CM_DIALOGKEY;
-    //procedure CMDockClient(var Message: TCMDockClient); message CM_DOCKCLIENT;
-    //procedure CMDockNotification(var Message: TCMDockNotification); message CM_DOCKNOTIFICATION;
-    //procedure CMUnDockClient(var Message: TCMUnDockClient); message CM_UNDOCKCLIENT;
-    //procedure WMLButtonDown(var Message: TWMLButtonDown); message WM_LBUTTONDOWN;
-    //procedure WMLButtonDblClk(var Message: TWMLButtonDblClk); message WM_LBUTTONDBLCLK;
-  protected
-    function CanShowTab(TheTabIndex: Integer): Boolean; virtual;
-    procedure Change; virtual;
-    //procedure DoAddDockClient(Client: TControl; const ARect: TRect); override;
-    //procedure DockOver(Source: TDragDockObject; X, Y: Integer;
-    //  State: TDragState; var Accept: Boolean); override;
-    //procedure DoRemoveDockClient(Client: TControl); override;
-    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
-    function GetImageIndex(TheTabIndex: Integer): Integer; virtual;
-    //function GetPageFromDockClient(Client: TControl): TTabSheet;
-    //procedure GetSiteInfo(Client: TControl; var InfluenceRect: TRect;
-    //  MousePos: TPoint; var CanDock: Boolean); override;
-    procedure Loaded; override;
-    procedure SetChildOrder(Child: TComponent; Order: Integer); override;
-    procedure ShowControl(AControl: TControl); override;
-    procedure UpdateActivePage; virtual;
   public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
+    constructor Create(TheOwner: TComponent); override;
     function FindNextPage(CurPage: TTabSheet;
-      GoForward, CheckTabVisible: Boolean): TTabSheet;
+                                GoForward, CheckTabVisible: Boolean): TTabSheet;
     procedure SelectNextPage(GoForward: Boolean);
     procedure SelectNextPage(GoForward: Boolean; CheckTabVisible: Boolean);
     property ActivePageIndex: Integer read GetActivePageIndex
-      write SetActivePageIndex;
-    property PageCount: Integer read GetPageCount;
-    property Pages[Index: Integer]: TTabSheet read GetPage;
+                                      write SetActivePageIndex;
+    property Pages[Index: Integer]: TTabSheet read GetTabSheet;
   published
-    property ActivePage: TTabSheet read FActivePage write SetActivePage;
+    property ActivePage: TTabSheet read GetActiveTabSheet write SetActiveTabSheet;
     property Align;
     property Anchors;
     //property BiDiMode;
@@ -286,11 +223,11 @@ type
     property Enabled;
     property Font;
     //property HotTrack;
-    property Images: TImageList read FImages write SetImages;
+    property Images;
     //property MultiLine;
     //property OwnerDraw;
     //property ParentBiDiMode;
-    //property ParentFont;
+    property ParentFont;
     property ParentShowHint;
     property PopupMenu;
     //property RaggedRight;
@@ -299,9 +236,9 @@ type
     //property Style;
     //property TabHeight;
     property TabIndex: Integer read GetTabIndex write SetTabIndex default -1;
-    //property TabOrder;
-    //property TabPosition;
-    //property TabStop;
+    property TabOrder;
+    property TabPosition;
+    property TabStop;
     //property TabWidth;
     property Visible;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -2039,6 +1976,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.88  2003/09/20 13:27:49  mattias
+  varois improvements for ParentColor from Micha
+
   Revision 1.87  2003/09/18 09:21:03  mattias
   renamed LCLLinux to LCLIntf
 

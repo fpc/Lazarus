@@ -4810,6 +4810,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.210  2003/09/20 13:27:49  mattias
+  varois improvements for ParentColor from Micha
+
   Revision 1.209  2003/09/19 00:41:52  ajgenius
   remove USE_PANGO define since pango now apears to work properly.
 
@@ -4820,7 +4823,7 @@ end;
   Initial DoubleBuffering Support for GTK2
 
   Revision 1.206  2003/09/17 15:26:41  mattias
-  fixed removing TPage
+  fixed removing TCustomPage
 
   Revision 1.205  2003/09/12 17:40:46  ajgenius
   fixes for GTK2(accel groups, menu accel, 'draw'),
@@ -5276,7 +5279,7 @@ end;
   MG: image support, TScrollBox, and many other things from Andrew
 
   Revision 1.84  2002/09/02 19:10:32  lazarus
-  MG: TNoteBook now starts with no Page and TPage has no auto names
+  MG: TNoteBook now starts with no Page and TCustomPage has no auto names
 
   Revision 1.83  2002/08/31 11:37:11  lazarus
   MG: fixed destroying combobox
@@ -5432,7 +5435,7 @@ end;
   MG: improved clean up
 
   Revision 1.32  2002/03/31 23:20:38  lazarus
-  MG: fixed initial size of TPage
+  MG: fixed initial size of TCustomPage
 
   Revision 1.31  2002/03/31 22:01:38  lazarus
   MG: fixed unreleased/unpressed Ctrl/Alt/Shift

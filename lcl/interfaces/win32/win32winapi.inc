@@ -2475,6 +2475,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.61  2003/09/20 13:27:49  mattias
+  varois improvements for ParentColor from Micha
+
   Revision 1.60  2003/09/18 14:00:09  mattias
   implemented TDBGroupBox
 
@@ -2650,7 +2653,7 @@ end;
   Keith: Fixed some run-time exceptions for FPC 1.1
 
   Revision 1.2  2002/01/17 03:17:44  lazarus
-  Keith: Fixed TPage creation
+  Keith: Fixed TCustomPage creation
 
 
 }

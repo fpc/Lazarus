@@ -16,151 +16,17 @@
  *                                                                           *
  *****************************************************************************
 }
-{------------------------------------------------------------------------------
-  TPage Constructor
- ------------------------------------------------------------------------------}
-constructor TPage.Create(TheOwner: TComponent);
-begin
-  inherited Create(TheOwner);
-  
-  fImageIndex:=-1;
-  fCompStyle := csPage;
-  ControlStyle := ControlStyle + [csAcceptsControls];
 
-  // set the default height and width
-  if (Owner<>nil) and (Owner is TControl) then begin
-    Align:=alClient;
-  end else begin
-    SetInitialBounds(0,0,120,100);
-  end;
-  Visible := False;
-  Caption := '';
-end;
+{ TPage }
 
-{------------------------------------------------------------------------------
-  method TPage SetImageIndex
-  Params: const AValue: integer
-  Result: none
-  
-  Set the image index of the image shown in the tabs.
- ------------------------------------------------------------------------------}
-procedure TPage.SetImageIndex(const AValue: integer);
-begin
-  if FImageIndex=AValue then exit;
-  FImageIndex:=AValue;
-  if not HandleAllocated or (csLoading in ComponentState) then exit;
-  CNSendMessage(LM_NB_UpdateTab, Self, nil);
-end;
 
-{------------------------------------------------------------------------------
-  TPage WMPaint
-  Params: a TLMPaint message
- ------------------------------------------------------------------------------}
-procedure TPage.WMPaint(var Msg: TLMPaint);
-var Notebook: TNoteBook;
-begin
-  if (Parent is TNoteBook) then begin
-    NoteBook:=TNoteBook(Parent);
-    if (NoteBook.PageIndex>=0) and (NoteBook.Page[NoteBook.PageIndex]=Self) then
-      inherited WMPaint(Msg);
-  end else
-    inherited WMPaint(Msg);
-end;
-
-{------------------------------------------------------------------------------
-  procedure TPage.SetParent(AParent: TWinControl);
-  
-  Set parent wincontrol.
- ------------------------------------------------------------------------------}
-procedure TPage.SetParent(AParent: TWinControl);
-var
-  OldParent: TWinControl;
-  ParentNotebook: TCustomNotebook;
-  i: integer;
-begin
-  if AParent=Parent then exit;
-  
-  OldParent:=Parent;
-  if (OldParent<>AParent) and (OldParent<>nil)
-  and (OldParent is TCustomNotebook)
-  and (not (pfRemoving in FFlags)) then begin
-    // remove from old pagelist
-    ParentNotebook:=TCustomNotebook(OldParent);
-    i:=PageIndex;
-    if i>=0 then begin
-      Include(FFlags,pfRemoving);
-      try
-        TNBPages(ParentNotebook.fAccess).RemovePage(i);
-      finally
-        Exclude(FFlags,pfRemoving);
-      end;
-    end;
-  end;
-
-  inherited SetParent(AParent);
-  
-  if (OldParent<>AParent) and (Parent<>nil)
-  and (Parent is TCustomNotebook) then begin
-    // add to new pagelist
-    ParentNotebook:=TCustomNotebook(Parent);
-    if ParentNotebook.PageList.IndexOf(Self)<0 then
-      TNBPages(ParentNotebook.fAccess).InsertPage(ParentNotebook.PageCount,Self);
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  procedure TPage.CMHitTest(var Message: TLMNCHITTEST);
- ------------------------------------------------------------------------------}
-procedure TPage.CMHitTest(var Message: TLMNCHITTEST);
-begin
-  if (Parent<>nil) and (Parent is TCustomNotebook)
-  and (TCustomNotebook(Parent).ActivePageComponent<>Self) then
-    Message.Result:=0 // no hit
-  else
-    inherited;
-  {writeln('TPage.CMHitTest A ',Name,' ',(Parent<>nil),' ',
-    (Parent is TCustomNotebook),' ',
-    (TCustomNotebook(Parent).ActivePageComponent<>Self),
-    ' Message.Result=',Message.Result);}
-end;
-
-procedure TPage.DestroyHandle;
-begin
-  inherited DestroyHandle;
-  Exclude(FFlags,pfAdded);
-end;
-
-{------------------------------------------------------------------------------
-  TPage AdjustClientRect
-  Params: Rect
- ------------------------------------------------------------------------------}
-procedure TPage.AdjustClientRect(var ARect: TRect);
-begin
-  ARect:=GetClientRect;
-end;
-
-{------------------------------------------------------------------------------
-  function TPage.PageIndex: integer;
-  
-  Returns the index of the page in the notebook.
- ------------------------------------------------------------------------------}
-function TPage.PageIndex: integer;
-begin
-  if (Parent<>nil) and (Parent is TCustomNotebook) then
-    Result:=TCustomNotebook(Parent).PageList.IndexOf(Self);
-end;
-
-{------------------------------------------------------------------------------
-  function TPage.CanTab: boolean;
- ------------------------------------------------------------------------------}
-function TPage.CanTab: boolean;
-begin
-  Result:=false;
-end;
 
 // included by extctrls.pp
 {
   $Log$
+  Revision 1.21  2003/09/20 13:27:49  mattias
+  varois improvements for ParentColor from Micha
+
   Revision 1.20  2003/09/20 09:16:07  mattias
   added TDBGrid from Jesus
 

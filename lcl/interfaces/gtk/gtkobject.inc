@@ -2510,7 +2510,7 @@ begin
   
   LM_ATTACHMENU: AttachMenu(Sender);
   
-  LM_NB_UpdateTab: UpdateNotebookPageTab(nil,TPage(Sender));
+  LM_NB_UpdateTab: UpdateNotebookPageTab(nil,TCustomPage(Sender));
   
   LM_LB_GETTOPINDEX: Result:=GetTopIndex(Sender);
   LM_LB_SETTOPINDEX: Result:=SetTopIndex(Sender,integer(Data));
@@ -3882,7 +3882,7 @@ begin
                       'value_changed', @gtkvaluechanged);
        end
        else
-       if Sender is TNotebook then
+       if Sender is TCustomNotebook then
          ConnectSenderSignal(gObject, 'switch-page', @gtkswitchpage)
        else
        if Sender is TCustomCombobox then
@@ -4352,7 +4352,7 @@ var
   Widget: PGtkWidget;
   FixWidget: PGtkWidget;
   GtkWindow: PGtkWidget;
-  APage: TPage;
+  APage: TCustomPage;
   NoteBookWidget: PGtkNotebook;
   {$IFNDef GTK2}
   Accelerators: PGSlist;
@@ -4419,7 +4419,7 @@ begin
       begin
         // a notebook always need at least one page
         // -> if this is the last page, then add a dummy page
-        APage:=TPage(Sender);
+        APage:=TCustomPage(Sender);
         if (APage.Parent<>nil) and APage.Parent.HandleAllocated
         and (APage.Parent is TCustomNoteBook) then begin
           NoteBookWidget:=PGtkNotebook(TCustomNoteBook(APage.Parent).Handle);
@@ -5783,7 +5783,7 @@ begin
         AddDummyNoteBookPage(PGtkNotebook(p));
     end;
 
-  csPage:    // TPage - Notebook page
+  csPage:    // TCustomPage - Notebook page
     P:=CreateSimpleClientAreaWidget(Sender);
 
   csPairSplitter:
@@ -6061,7 +6061,7 @@ begin
         or GtkWidgetIsA(ParentFixed,GTK_LAYOUT_GET_TYPE) then begin
           FixedMoveControl(ParentFixed, SenderWidget,
                          LCLControl.Left, LCLControl.Top);
-        end else if not (LCLControl.Parent is TNoteBook) then begin
+        end else if not (LCLControl.Parent is TCustomNoteBook) then begin
           writeln('WARNING: TgtkObject.ShowHide - no Fixed Widget found');
           writeln('  Control=',LCLControl.Name,':',LCLControl.ClassName);
         end;
@@ -6148,10 +6148,10 @@ begin
 end;
 {-------------------------------------------------------------------------------
   method TGtkObject GetNoteBookCloseBtnPixmap
-  Params: ANoteBook: TCustomNotebook; APage: TPage
+  Params: ANoteBook: TCustomNotebook; APage: TCustomPage
   Result: none
 
-  Loads the pixmap for the close button in the tabs of the TNoteBook(s).
+  Loads the pixmap for the close button in the tabs of the TCustomNoteBook(s).
 -------------------------------------------------------------------------------}
 procedure TgtkObject.GetNoteBookCloseBtnPixmap(Window: PGdkWindow;
   var Img, Mask: PGdkPixmap);
@@ -6169,9 +6169,9 @@ end;
   procedure AddDummyNoteBookPage(NoteBookWidget: PGtkNoteBook);
 
   Adds the dummy page.
-  A gtk notebook must have at least one page, but TNoteBook also allows no pages
-  at all. Therefore at least a dummy page is added. This dummy page is removed
-  as soon as other pages are added.
+  A gtk notebook must have at least one page, but TCustomNoteBook also allows
+  no pages at all. Therefore at least a dummy page is added. This dummy page is
+  removed as soon as other pages are added.
 -------------------------------------------------------------------------------}
 procedure TgtkObject.AddDummyNoteBookPage(NoteBookWidget: PGtkNoteBook);
 var
@@ -6217,7 +6217,7 @@ end;
 
 {-------------------------------------------------------------------------------
   method TGtkObject UpdateNotebookPageTab
-  Params: ANoteBook: TCustomNotebook; APage: TPage
+  Params: ANoteBook: TCustomNotebook; APage: TCustomPage
   Result: none
 
   Updates the tab of a page of a notebook. This contains the image to the left
@@ -6226,7 +6226,7 @@ end;
 procedure TgtkObject.UpdateNotebookPageTab(ANoteBook, APage: TObject);
 var
   TheNoteBook: TCustomNotebook;
-  ThePage: TPage;
+  ThePage: TCustomPage;
 
   NoteBookWidget: PGtkWidget;  // the notebook
   PageWidget: PGtkWidget;      // the page (content widget)
@@ -6356,7 +6356,7 @@ var
   end;
   
 begin
-  ThePage:=TPage(APage);
+  ThePage:=TCustomPage(APage);
   TheNoteBook:=TCustomNotebook(ANoteBook);
   if (APage=nil) or (not ThePage.HandleAllocated) then exit;
   if TheNoteBook=nil then begin
@@ -6401,8 +6401,9 @@ end;
   Result: none
   
   Inserts a new page to a notebook at position Index. The ANotebook is a
-  TNoteBook, the APage one of its TPage. Both handles must already be created.
-  ANoteBook Handle is a PGtkNoteBook and APage handle is a PGtkFixed.
+  TCustomNoteBook, the APage one of its TCustomPage. Both handles must already
+  be created. ANoteBook Handle is a PGtkNoteBook and APage handle is a
+  PGtkFixed.
   This procedure creates a new tab with an optional image, the page caption and
   an optional close button. The image and the caption will also be added to the
   tab popup menu.
@@ -6452,7 +6453,7 @@ begin
   gtk_notebook_insert_page_menu(GTK_NOTEBOOK(NotebookWidget),PageWidget,
     TabWidget,MenuWidget,Index);
 
-  UpdateNotebookPageTab(TNoteBook(ANoteBook),TPage(APage));
+  UpdateNotebookPageTab(TCustomNoteBook(ANoteBook),TCustomPage(APage));
   UpdateNoteBookClientWidget(ANoteBook);
 end;
 
@@ -8192,6 +8193,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.421  2003/09/20 13:27:49  mattias
+  varois improvements for ParentColor from Micha
+
   Revision 1.420  2003/09/19 00:41:51  ajgenius
   remove USE_PANGO define since pango now apears to work properly.
 
@@ -8205,7 +8209,7 @@ end;
   Initial DoubleBuffering Support for GTK2
 
   Revision 1.416  2003/09/17 15:26:41  mattias
-  fixed removing TPage
+  fixed removing TCustomPage
 
   Revision 1.415  2003/09/12 17:40:45  ajgenius
   fixes for GTK2(accel groups, menu accel, 'draw'),
@@ -8969,7 +8973,7 @@ end;
   MG: image support, TScrollBox, and many other things from Andrew
 
   Revision 1.193  2002/09/02 19:10:28  lazarus
-  MG: TNoteBook now starts with no Page and TPage has no auto names
+  MG: TNoteBook now starts with no Page and TCustomPage has no auto names
 
   Revision 1.192  2002/09/01 16:11:22  lazarus
   MG: double, triple and quad clicks now work

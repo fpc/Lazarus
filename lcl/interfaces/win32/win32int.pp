@@ -86,7 +86,7 @@ Type
     Procedure SetLimitText(Window: HWND; Limit: Word);
 
     Procedure ShowHide(Sender: TObject);
-    Procedure AddNBPage(Notebook: TCustomNotebook; NewPage: TPage; Index: Integer);
+    Procedure AddNBPage(Notebook: TCustomNotebook; NewPage: TCustomPage; Index: Integer);
     Procedure RemoveNBPage(Parent: TObject; Index: Integer);
     Procedure SetText(Window: HWND; Data: Pointer);
     Procedure SetColor(Sender : TObject);
@@ -186,6 +186,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.42  2003/09/20 13:27:49  mattias
+  varois improvements for ParentColor from Micha
+
   Revision 1.41  2003/09/18 09:21:03  mattias
   renamed LCLLinux to LCLIntf
 
@@ -297,7 +300,7 @@ End.
   Keith: Improved events and common dialogs on Win32
 
   Revision 1.6  2002/01/17 03:17:44  lazarus
-  Keith: Fixed TPage creation
+  Keith: Fixed TCustomPage creation
 
   Revision 1.5  2002/01/05 13:16:09  lazarus
   MG: win32 interface update from Keith Bowes

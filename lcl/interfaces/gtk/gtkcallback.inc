@@ -106,12 +106,12 @@ end;
 -------------------------------------------------------------------------------}
 function gtkNoteBookCloseBtnClicked(Widget: PGtkWidget;
   Data: Pointer): GBoolean; cdecl;
-var APage: TPage;
+var APage: TCustomPage;
 begin
   Result:=true; // handled = true
   if Widget=nil then ;
   if ComponentIsDestroyingHandle(TWinControl(Data)) then exit;
-  APage:=TPage(Data);
+  APage:=TCustomPage(Data);
   TCustomNoteBook(APage.Parent).DoCloseTabClicked(APage);
 end;
 
@@ -2854,11 +2854,14 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.193  2003/09/20 13:27:49  mattias
+  varois improvements for ParentColor from Micha
+
   Revision 1.192  2003/09/19 00:41:51  ajgenius
   remove USE_PANGO define since pango now apears to work properly.
 
   Revision 1.191  2003/09/17 15:26:41  mattias
-  fixed removing TPage
+  fixed removing TCustomPage
 
   Revision 1.190  2003/09/13 16:43:01  mattias
   fixed PerformTab call

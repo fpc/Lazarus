@@ -368,6 +368,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.150  2003/09/20 13:27:49  mattias
+  varois improvements for ParentColor from Micha
+
   Revision 1.149  2003/09/19 00:41:51  ajgenius
   remove USE_PANGO define since pango now apears to work properly.
 
@@ -613,7 +616,7 @@ end.
   MG: image support, TScrollBox, and many other things from Andrew
 
   Revision 1.68  2002/09/02 19:10:28  lazarus
-  MG: TNoteBook now starts with no Page and TPage has no auto names
+  MG: TNoteBook now starts with no Page and TCustomPage has no auto names
 
   Revision 1.67  2002/09/01 16:11:22  lazarus
   MG: double, triple and quad clicks now works

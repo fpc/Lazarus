@@ -1151,6 +1151,7 @@ type
     function ClientRectNeedsInterfaceUpdate: boolean;
     Function Focused : Boolean; override;
     Procedure BroadCast(var Message);
+    procedure NotifyControls(Msg: Word);
     procedure DefaultHandler(var Message); override;
     Procedure DisableAlign;
     Procedure EnableAlign;
@@ -1844,6 +1845,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.151  2003/09/20 13:27:49  mattias
+  varois improvements for ParentColor from Micha
+
   Revision 1.150  2003/09/18 09:21:03  mattias
   renamed LCLLinux to LCLIntf
 

@@ -56,7 +56,7 @@ type
   TTabPosition = (tpTop, tpBottom, tpLeft, tpRight);
 
 
-  { TPage }
+  { TCustomPage }
 
   TPageFlag = (
     pfAdded,  // page handle added to notebook handle
@@ -64,40 +64,41 @@ type
     );
   TPageFlags = set of TPageFlag;
 
-  TPage = class(TWinControl)
+  TCustomPage = class(TWinControl)
   private
     FFlags: TPageFlags;
     FImageIndex: integer;
+    function GetTabVisible: Boolean;
     procedure SetImageIndex(const AValue: integer);
+    procedure SetTabVisible(const AValue: Boolean);
   protected
     procedure WMPaint(var Msg: TLMPaint); message LM_PAINT;
-    procedure SetParent(AParent : TWinControl); override;
+    procedure SetParent(AParent: TWinControl); override;
     property Flags: TPageFlags read FFlags write FFlags;
     procedure CMHitTest(var Message: TLMNCHITTEST); message CM_HITTEST;
     procedure DestroyHandle; override;
+    function GetPageIndex: integer;
+    procedure SetPageIndex(AValue: Integer);
+    property PageIndex: Integer read GetPageIndex write SetPageIndex;
+    property TabVisible: Boolean read GetTabVisible write SetTabVisible default True;
   public
     constructor Create(TheOwner: TComponent); override;
     procedure AdjustClientRect(var ARect: TRect); override;
-    function PageIndex: integer;
     function CanTab: boolean; override;
-  published
-    property Caption;
-    property ClientWidth;
-    property ClientHeight;
     property ImageIndex: integer read FImageIndex write SetImageIndex default -1;
     property Left stored False;
     property Top stored False;
     property Width stored False;
     property Height stored False;
-    property OnResize;
     property TabOrder stored False;
-    property Visible;
   end;
-
-  TCustomNotebook = class;
+  
+  TCustomPageClass = class of TCustomPage;
 
 
   { TNBPages }
+
+  TCustomNotebook = class;
 
   TNBPages = class(TStrings)
   private
@@ -114,7 +115,7 @@ type
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
     procedure Insert(Index: Integer; const S: String); override;
-    procedure InsertPage(Index:integer; APage: TPage);
+    procedure InsertPage(Index:integer; APage: TCustomPage);
 
     procedure Move(CurIndex, NewIndex: Integer); override;
   end;
@@ -132,37 +133,36 @@ type
     FOnCloseTabClicked: TNotifyEvent;
     FOptions: TNoteBookOptions;
     fPageIndex: Integer;
-    fPageList: TList;  // List of TPage
+    fPageList: TList;  // List of TCustomPage
     //fMultiLine: boolean;
     fOnPageChanged: TNotifyEvent;
     fShowTabs: Boolean;
     fTabPosition: TTabPosition;
     fAddingPages: boolean;
-
-    Procedure CNNotify(var Message : TLMNotify); message CN_NOTIFY;
+    Procedure CNNotify(var Message: TLMNotify); message CN_NOTIFY;
     procedure DoSendPageIndex;
     procedure DoSendShowTabs;
     procedure DoSendTabPosition;
     function GetActivePage: String;
-    function GetActivePageComponent: TPage;
-    function GetPage(aIndex: Integer): TPage;
+    function GetActivePageComponent: TCustomPage;
+    function GetPage(aIndex: Integer): TCustomPage;
     function GetPageCount : integer;
     function GetPageIndex: Integer;
     function IsStoredActivePage: boolean;
     //function InternalSetMultiLine(Value: boolean): boolean;
     procedure SetActivePage(const Value: String);
-    procedure SetActivePageComponent(const AValue: TPage);
+    procedure SetActivePageComponent(const AValue: TCustomPage);
     procedure SetImages(const AValue: TImageList);
     procedure SetOptions(const AValue: TNoteBookOptions);
     //procedure SetMultiLine(Value: boolean);
-    procedure SetPageIndex(Value: Integer);
-    procedure SetPages(Value: TStrings);
+    procedure SetPageIndex(AValue: Integer);
+    procedure SetPages(AValue: TStrings);
     procedure SetShowTabs(AValue: Boolean);
     procedure SetTabPosition(tabPos: TTabPosition);
     procedure UpdateAllDesignerFlags;
     procedure UpdateDesignerFlags(APageIndex: integer);
   protected
-    procedure CreateParams(var Params: TCreateParams);override;
+    PageClass: TCustomPageClass;
     procedure CreateWnd; override;
     procedure DoCreateWnd; virtual;
     procedure Change; virtual;
@@ -170,26 +170,28 @@ type
     procedure ReadState(Reader: TAbstractReader); override;
     procedure ShowControl(APage: TControl); override;
     procedure UpdateTabProperties; virtual;
+    property Page[Index: Integer]: TCustomPage read GetPage;
+    property Pages: TStrings read fAccess write SetPages;
+    property ActivePageComponent: TCustomPage read GetActivePageComponent
+                                              write SetActivePageComponent;
+    property ActivePage: String read GetActivePage write SetActivePage
+                                                      stored IsStoredActivePage;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function TabIndexAtClientPos(ClientPos: TPoint): integer;
     function CanTab: boolean; override;
+    function GetImageIndex(ThePageIndex: Integer): Integer; virtual;
+    function IndexOf(APage: TCustomPage): integer;
   public
-    property ActivePage: String read GetActivePage write SetActivePage
-                                stored IsStoredActivePage;
-    property ActivePageComponent: TPage read GetActivePageComponent
-                                        write SetActivePageComponent;
     //property MultiLine: boolean read fMultiLine write SetMultiLine default false;
-    property Page[Index: Integer]: TPage read GetPage;
-    property PageCount : integer read GetPageCount;
+    property PageCount: integer read GetPageCount;
     property PageIndex: Integer read GetPageIndex write SetPageIndex default -1;
     property PageList: TList read fPageList;
-    property Pages: TStrings read fAccess write SetPages;
     property OnPageChanged: TNotifyEvent read fOnPageChanged write fOnPageChanged;
     property ShowTabs: Boolean read fShowTabs write SetShowTabs default True;
     property TabPosition: TTabPosition read fTabPosition write SetTabPosition;
-    procedure DoCloseTabClicked(APage: TPage); virtual;
+    procedure DoCloseTabClicked(APage: TCustomPage); virtual;
     property Images: TImageList read FImages write SetImages;
     property Name;
     property OnCloseTabClicked: TNotifyEvent
@@ -198,19 +200,61 @@ type
   end;
 
 
+  { TPage }
+
+  TPage = class(TCustomPage)
+  published
+    property Caption;
+    property ClientWidth;
+    property ClientHeight;
+    property ImageIndex;
+    property Left stored False;
+    property Top stored False;
+    property Width stored False;
+    property Height stored False;
+    property OnContextPopup;
+    property OnEnter;
+    property OnExit;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
+    property PageIndex stored False;
+    property ParentShowHint;
+    property PopupMenu;
+    property TabOrder stored False;
+    property Visible;
+  end;
+
+
   { TNotebook }
 
   TNotebook = class(TCustomNotebook)
+  private
+    function GetActiveNotebookPageComponent: TPage;
+    function GetNoteBookPage(Index: Integer): TPage;
+    procedure SetActiveNotebookPageComponent(const AValue: TPage);
   public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
+    constructor Create(TheOwner: TComponent); override;
+    property Page[Index: Integer]: TPage read GetNoteBookPage;
+    property ActivePageComponent: TPage read GetActiveNotebookPageComponent
+                                        write SetActiveNotebookPageComponent;
+    property Pages;
   published
     property ActivePage;
     property Align;
     property Anchors;
+    property Constraints;
+    property Enabled;
     property Images;
+    property OnChangeBounds;
     property OnCloseTabClicked;
-    //property MultiLine;
+    property OnContextPopup;
+    property OnEnter;
+    property OnExit;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
     property OnPageChanged;
     property OnResize;
     property Options;
@@ -626,7 +670,7 @@ type
     property CharCase;
     property Color;
     property Constraints;
-    //property EditLabel; sub components no implemented in FCL
+    //property EditLabel; sub components not implemented in FCL
     property Enabled;
     property LabelPosition;
     property LabelSpacing;
@@ -759,6 +803,7 @@ begin
   RegisterNoIcon([TPage]);
 end;
 
+{$I custompage.inc}
 {$I page.inc}
 {$I customnotebook.inc}
 {$I notebook.inc}
@@ -779,6 +824,9 @@ end.
 
  {
   $Log$
+  Revision 1.78  2003/09/20 13:27:49  mattias
+  varois improvements for ParentColor from Micha
+
   Revision 1.77  2003/09/20 09:16:07  mattias
   added TDBGrid from Jesus
 

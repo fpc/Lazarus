@@ -58,6 +58,7 @@ begin
   //TCustomMemo also inherits from here but it's create changes fcompstyle to csMemo
   FCompStyle := csEdit;
   FMaxLength:= -1;
+  ParentColor := false;
   SetInitialBounds(0,0,80,23);
 end;
 
@@ -309,6 +310,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.18  2003/09/20 13:27:49  mattias
+  varois improvements for ParentColor from Micha
+
   Revision 1.17  2003/06/13 11:58:46  mattias
   fixed readonly of properties
 

@@ -757,6 +757,9 @@ end;
 
 {
   $Log$
+  Revision 1.58  2003/09/20 13:27:49  mattias
+  varois improvements for ParentColor from Micha
+
   Revision 1.57  2003/09/09 11:11:02  mattias
   fixed win32 intf showmoadl and lazconf
 
@@ -922,7 +925,7 @@ end;
   Keith: Added initial support for events
 
   Revision 1.4  2002/01/17 03:17:44  lazarus
-  Keith: Fixed TPage creation
+  Keith: Fixed TCustomPage creation
 
   Revision 1.3  2002/01/05 13:16:08  lazarus
   MG: win32 interface update from Keith Bowes

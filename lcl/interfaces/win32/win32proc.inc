@@ -698,6 +698,9 @@ End;
  { =============================================================================
 
   $Log$
+  Revision 1.26  2003/09/20 13:27:49  mattias
+  varois improvements for ParentColor from Micha
+
   Revision 1.25  2003/08/31 17:30:49  mattias
   fixed TControl painting for win32
 
@@ -762,7 +765,7 @@ End;
   Keith: Fixed menu creation
 
   Revision 1.4  2002/01/17 03:17:44  lazarus
-  Keith: Fixed TPage creation
+  Keith: Fixed TCustomPage creation
 
 
   Revision 1.3  2002/01/05 13:16:10  lazarus

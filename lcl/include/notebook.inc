@@ -15,25 +15,36 @@
  *                                                                           *
  *****************************************************************************
 }
-{------------------------------------------------------------------------------
-  TNotebook Constructor
- ------------------------------------------------------------------------------}
-constructor TNotebook.Create(AOwner: TComponent);
+
+function TNotebook.GetActiveNotebookPageComponent: TPage;
 begin
-  inherited Create(AOwner);
-  SetInitialBounds(0,0,200,200);
+  Result:=TPage(GetActiveNotebookPageComponent);
+end;
+
+function TNotebook.GetNoteBookPage(Index: Integer): TPage;
+begin
+  Result:=TPage(GetPage(Index));
+end;
+
+procedure TNotebook.SetActiveNotebookPageComponent(const AValue: TPage);
+begin
+  SetActivePageComponent(AValue);
 end;
 
 {------------------------------------------------------------------------------
-  TNotebook Destructor
+  TNotebook Constructor
  ------------------------------------------------------------------------------}
-destructor TNotebook.Destroy;
+constructor TNotebook.Create(TheOwner: TComponent);
 begin
-  inherited Destroy;
+  PageClass:=TPage;
+  inherited Create(TheOwner);
 end;
 
 {
   $Log$
+  Revision 1.5  2003/09/20 13:27:49  mattias
+  varois improvements for ParentColor from Micha
+
   Revision 1.4  2003/08/26 14:33:40  mattias
   implemented component tree for OI
 

@@ -19,140 +19,78 @@
  *                                                                           *
  *****************************************************************************
 
-  Abstract:
-    TPageControl for LCL
-
-  ToDo:
-    - all
 }
 
 { TPageControl }
 
-procedure TPageControl.ChangeActivePage(Page: TTabSheet);
-begin
-
-end;
-
-procedure TPageControl.DeleteTab(Page: TTabSheet; Index: Integer);
-begin
-
-end;
-
 function TPageControl.GetActivePageIndex: Integer;
 begin
-  Result:=-1;
+  Result:=inherited PageIndex;
 end;
 
-function TPageControl.GetPage(Index: Integer): TTabSheet;
+function TPageControl.GetActiveTabSheet: TTabSheet;
 begin
-  Result:=nil;
-end;
-
-function TPageControl.GetPageCount: Integer;
-begin
-  Result:=0;
+  Result:=TTabSheet(inherited ActivePageComponent);
 end;
 
 function TPageControl.GetTabIndex: Integer;
 begin
-  Result:=-1;
+  Result:=inherited PageIndex;
 end;
 
-procedure TPageControl.InsertPage(Page: TTabSheet);
+function TPageControl.GetTabSheet(Index: Integer): TTabSheet;
 begin
-
+  Result:=TTabSheet(inherited Page[Index]);
 end;
 
-procedure TPageControl.InsertTab(Page: TTabSheet);
+procedure TPageControl.SetActivePageIndex(const AValue: Integer);
 begin
-
+  inherited PageIndex:=AValue;
 end;
 
-procedure TPageControl.MoveTab(CurIndex, NewIndex: Integer);
+procedure TPageControl.SetActiveTabSheet(const AValue: TTabSheet);
 begin
-
-end;
-
-procedure TPageControl.RemovePage(Page: TTabSheet);
-begin
-
-end;
-
-procedure TPageControl.SetActivePage(Page: TTabSheet);
-begin
-
-end;
-
-procedure TPageControl.SetActivePageIndex(const Value: Integer);
-begin
-
-end;
-
-procedure TPageControl.SetImages(const AValue: TImageList);
-begin
-  if FImages=AValue then exit;
-  FImages:=AValue;
+  ActivePageComponent:=AValue;
 end;
 
 procedure TPageControl.SetTabIndex(const AValue: Integer);
 begin
-
+  inherited PageIndex:=Avalue;
 end;
 
-function TPageControl.CanShowTab(TheTabIndex: Integer): Boolean;
+constructor TPageControl.Create(TheOwner: TComponent);
 begin
-  Result:=false;
-end;
-
-procedure TPageControl.Change;
-begin
-
-end;
-
-procedure TPageControl.GetChildren(Proc: TGetChildProc; Root: TComponent);
-begin
-  inherited GetChildren(Proc, Root);
-end;
-
-function TPageControl.GetImageIndex(TheTabIndex: Integer): Integer;
-begin
-  Result:=-1;
-end;
-
-procedure TPageControl.Loaded;
-begin
-  inherited Loaded;
-end;
-
-procedure TPageControl.SetChildOrder(Child: TComponent; Order: Integer);
-begin
-  inherited SetChildOrder(Child, Order);
-end;
-
-procedure TPageControl.ShowControl(AControl: TControl);
-begin
-  inherited ShowControl(AControl);
-end;
-
-procedure TPageControl.UpdateActivePage;
-begin
-
-end;
-
-constructor TPageControl.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-end;
-
-destructor TPageControl.Destroy;
-begin
-  inherited Destroy;
+  PageClass:=TTabSheet;
+  inherited Create(TheOwner);
 end;
 
 function TPageControl.FindNextPage(CurPage: TTabSheet; GoForward,
   CheckTabVisible: Boolean): TTabSheet;
+var
+  I, StartIndex: Integer;
 begin
   Result:=nil;
+  if PageCount=0 then exit;
+  StartIndex:=IndexOf(CurPage);
+  if StartIndex<0 then
+    if GoForward then
+      StartIndex:=PageCount-1
+    else
+      StartIndex:=0;
+  i:=StartIndex;
+  repeat
+    if GoForward then begin
+      Inc(i);
+      if i=PageCount then i:=0;
+    end else begin
+      if i=0 then i:=PageCount;
+      Dec(I);
+    end;
+    if not CheckTabVisible or Result.TabVisible then begin
+      Result:=Pages[i];
+      exit;
+    end;
+  until i=StartIndex;
 end;
 
 procedure TPageControl.SelectNextPage(GoForward: Boolean);
@@ -162,9 +100,13 @@ end;
 
 procedure TPageControl.SelectNextPage(GoForward: Boolean;
   CheckTabVisible: Boolean);
+var
+  NextPage: TTabSheet;
 begin
-
+  NextPage:=FindNextPage(ActivePage,GoForward,CheckTabVisible);
+  if NextPage<>nil then ActivePage:=NextPage;
 end;
+
 
 // included by comctrls.pp
 

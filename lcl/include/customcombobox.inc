@@ -41,6 +41,7 @@ begin
   end;
   // and use the interface based list
   FItems:= NewStrings;
+  ParentColor := false;
 
   if FItemIndex <> -1 then
     CNSendMessage(LM_SETITEMINDEX, Self, Pointer(FItemIndex));
@@ -788,6 +789,9 @@ end;
 
 {
   $Log$
+  Revision 1.32  2003/09/20 13:27:49  mattias
+  varois improvements for ParentColor from Micha
+
   Revision 1.31  2003/08/28 09:10:00  mattias
   listbox and comboboxes now set sort and selection at handle creation
 

@@ -963,6 +963,7 @@ begin
   begin
     FColor := Value;
     FParentColor := False;
+    Invalidate;
   end;
 end;
 
@@ -2586,6 +2587,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.156  2003/09/20 13:27:49  mattias
+  varois improvements for ParentColor from Micha
+
   Revision 1.155  2003/09/13 15:51:21  mattias
   implemented parent color from Micha
 

@@ -504,6 +504,17 @@ begin
   end;
 end;
 
+procedure TWinControl.NotifyControls(Msg: Word);
+var
+  Message: TLMessage;
+begin
+  Message.Msg := Msg;
+  Message.WParam := 0;
+  Message.LParam := 0;
+  Message.Result := 0;
+  Broadcast(Message);
+end;
+
 procedure TWinControl.DefaultHandler(var Message);
 begin
   CallDefaultWndHandler(Self,Message);
@@ -1194,9 +1205,13 @@ procedure TWinControl.SetColor(Value: TColor);
 begin
   if Value=Color then exit;
   inherited SetColor(Value);
+  if FBrush <> nil then
+    FBrush.Color := Color;
   if HandleAllocated and (not (csLoading in ComponentState)) then
-    CNSendMessage(LM_SETCOLOR, Self, nil)
-  else
+  begin
+    CNSendMessage(LM_SETCOLOR, Self, nil);
+    NotifyControls(CM_PARENTCOLORCHANGED);
+  end else
     Include(FFlags,wcfColorChanged);
 end;
 
@@ -3081,6 +3096,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.171  2003/09/20 13:27:49  mattias
+  varois improvements for ParentColor from Micha
+
   Revision 1.170  2003/09/18 09:21:03  mattias
   renamed LCLLinux to LCLIntf
 

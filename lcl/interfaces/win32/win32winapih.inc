@@ -179,6 +179,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.34  2003/09/20 13:27:49  mattias
+  varois improvements for ParentColor from Micha
+
   Revision 1.33  2003/08/31 17:30:49  mattias
   fixed TControl painting for win32
 
@@ -273,7 +276,7 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
   Keith: Fixed menu creation
 
   Revision 1.2  2002/01/17 03:17:44  lazarus
-  Keith: Fixed TPage creation
+  Keith: Fixed TCustomPage creation
 
   Revision 1.1  2002/01/06 23:09:53  lazarus
   MG: added missing files

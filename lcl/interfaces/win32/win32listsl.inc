@@ -418,6 +418,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.19  2003/09/20 13:27:49  mattias
+  varois improvements for ParentColor from Micha
+
   Revision 1.18  2003/08/28 09:10:01  mattias
   listbox and comboboxes now set sort and selection at handle creation
 
@@ -466,7 +469,7 @@ End;
   Keith: Fixes for Win32
 
   Revision 1.2  2002/01/17 03:17:44  lazarus
-  Keith: Fixed TPage creation
+  Keith: Fixed TCustomPage creation
 
   Revision 1.1  2002/01/06 23:09:52  lazarus
   MG: added missing files

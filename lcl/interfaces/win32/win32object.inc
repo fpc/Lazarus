@@ -169,7 +169,7 @@ Function TWin32Object.GetText(Sender: TComponent; Handle: HWND; var Data: String
 Var
   CapLen: Cardinal;
   Caption: PChar;
-  Ctrl: TNotebook;
+  Ctrl: TCustomNotebook;
   TCI: TC_ITEM;
 Begin
   Assert(False, Format('Trace:TWin32Object.GetText - Start --> %S', [Sender.ClassName]));
@@ -196,14 +196,14 @@ Begin
     csPage:
     Begin
       Assert(False, 'Trace:TWin32Object.GetText - csPage: Start');
-      Ctrl := (TPage(Sender).Parent As TNotebook);
+      Ctrl := (TCustomPage(Sender).Parent As TCustomNotebook);
       Caption := StrAlloc(MAX_PATH);
       try
         TCI.mask := TCIF_TEXT;
         TCI.cchTextMax := MAX_PATH;
         TCI.pszText := Caption;
         Assert(False, 'Trace:TWin32Object.GetText - Getting the text');
-        Result := (Windows.Sendmessage(Ctrl.Handle, TCM_GETITEM, TPage(Sender).PageIndex, LPARAM(@TCI))<>0);
+        Result := (Windows.Sendmessage(Ctrl.Handle, TCM_GETITEM, TCustomPage(Sender).PageIndex, LPARAM(@TCI))<>0);
         if Result
           then Data := StrPas(Caption);
         Assert(False, Format('Trace:TWin32Object.GetText - Returning the text --> %S', [Data]));
@@ -322,12 +322,12 @@ Begin
     begin
       Assert(False, 'Trace: TWin32Object.SetLabel - Got csPage');
       // We can't set label of a page not yet added
-      if TPage(Sender).PageIndex < Windows.SendMessage(TPage(Sender).Parent.Handle, TCM_GETITEMCOUNT,0,0) then
+      if TCustomPage(Sender).PageIndex < Windows.SendMessage(TCustomPage(Sender).Parent.Handle, TCM_GETITEMCOUNT,0,0) then
       begin
         Assert(False, Format('Trace:TWin32Object.SetLabel - label --> %S', [String(PChar(Data))]));
         TCI.mask := TCIF_TEXT;
         TCI.pszText := Data;
-        Windows.SendMessage(TPage(Sender).Parent.Handle, TCM_SETITEM, TPage(Sender).PageIndex, LPARAM(@TCI));
+        Windows.SendMessage(TCustomPage(Sender).Parent.Handle, TCM_SETITEM, TCustomPage(Sender).PageIndex, LPARAM(@TCI));
       end;
     End;
     csToolButton:
@@ -723,7 +723,7 @@ activate_time :	the time at which the activation event occurred.
         LM_ADDPAGE:
         Begin
           Assert(False, Format('Trace:[TWin32Object.IntSendMessage3] %S --> Add NB page: %S', [Sender.ClassName, TLMNotebookEvent(Data^).Child.ClassName]));
-          AddNBPage(Sender as TCustomNotebook, TLMNotebookEvent(Data^).Child as TPage, TLMNotebookEvent(Data^).Page);
+          AddNBPage(Sender as TCustomNotebook, TLMNotebookEvent(Data^).Child as TCustomPage, TLMNotebookEvent(Data^).Page);
         End;
         LM_REMOVEPAGE:
         Begin
@@ -1772,12 +1772,15 @@ Begin
       With TWincontrol(Sender) Do
       Begin
         // Temphack to set backcolor, till better solution
+        // For what control does this work?
+{
         If HandleAllocated Then
         Begin
           DC := Windows.GetDC(Handle);
           SetBKColor(Handle, Color);
           ReleaseDC(Handle, DC);
         End;
+}
       End;
     End;
   End;
@@ -2043,7 +2046,7 @@ Begin
     End;
     csLabel:
     Begin
-      Window := CreateWindow('STATIC', StrTemp, Flags Or SS_LEFT, Left, Top, Width, Height, FParentWindow, HMENU(Nil), HInstance, Nil);
+      Window := CreateWindow('STATIC', StrTemp, Flags Or SS_LEFT, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
     End;
     csListView:
     Begin
@@ -2139,7 +2142,7 @@ Begin
       Window := CreateWindow(@ToolBtnClsName, LPSTR(nil), 0, Left, Top, Width, Height, Parent, HMENU(nil), HInstance, nil);
       DoSubClass := false;
     End;
-    // TPage - Notebook page
+    // TCustomPage - Notebook page
     csPage:
     Begin
       Assert(False, 'Trace:Create a csPage component.');
@@ -2276,7 +2279,7 @@ End;
 
   Adds a new page to a notebook
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.AddNBPage(Notebook: TCustomNotebook; NewPage: TPage; Index: Integer);
+Procedure TWin32Object.AddNBPage(Notebook: TCustomNotebook; NewPage: TCustomPage; Index: Integer);
 Var
   TabControlItem: TC_ITEM;
   PageCaption: string;
@@ -2318,7 +2321,7 @@ End;
 Procedure TWin32Object.RemoveNBPage(Parent: TObject; Index: Integer);
 Begin
   Assert(false, 'Trace:Removing a notebook page');
-  SendMessage((Parent As TNotebook).Handle, TCM_DELETEITEM, WPARAM(Index), 0);
+  SendMessage((Parent As TCustomNotebook).Handle, TCM_DELETEITEM, WPARAM(Index), 0);
 End;
 
 {------------------------------------------------------------------------------
@@ -2792,6 +2795,9 @@ End;
 
 {
   $Log$
+  Revision 1.111  2003/09/20 13:27:49  mattias
+  varois improvements for ParentColor from Micha
+
   Revision 1.110  2003/09/18 12:17:25  mattias
   fixed is checks for TCustomXXX controls
 
@@ -3109,10 +3115,10 @@ End;
   Keith: Fixed menu creation
 
   Revision 1.7  2002/01/18 00:02:45  lazarus
-  Keith: TPage can now be a parent
+  Keith: TCustomPage can now be a parent
 
   Revision 1.6  2002/01/17 03:17:44  lazarus
-  Keith: Fixed TPage creation
+  Keith: Fixed TCustomPage creation
 
   Revision 1.4  2002/01/05 13:16:09  lazarus
   MG: win32 interface update from Keith Bowes

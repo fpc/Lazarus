@@ -39,7 +39,7 @@ begin
 //writeln('TNBPages.Get Index=',Index);
   if (Index<0) or (Index>=fPageList.Count) then
     RaiseGDBException('TNBPages.Get Index out of bounds');
-  Result := TPage(fPageList[Index]).Caption;
+  Result := TCustomPage(fPageList[Index]).Caption;
 end;
 
 {------------------------------------------------------------------------------
@@ -57,7 +57,7 @@ function TNBPages.GetObject(Index: Integer): TObject;
 begin
   if (Index<0) or (Index>=fPageList.Count) then
     RaiseGDBException('TNBPages.GetObject Index out of bounds');
-  Result := TPage(fPageList[Index]);
+  Result := TCustomPage(fPageList[Index]);
 end;
 
 {------------------------------------------------------------------------------
@@ -69,13 +69,13 @@ var
 begin
   if (Index<0) or (Index>=fPageList.Count) then
     RaiseGDBException('TNBPages.Put Index out of bounds');
-  TPage(fPageList[Index]).Caption := S;
+  TCustomPage(fPageList[Index]).Caption := S;
 
   if (FNoteBook.HandleAllocated)
   and (not (csLoading in FNoteBook.ComponentState))
   then begin
     Msg.Parent := fNotebook;
-    Msg.Child := TPage(fPageList[Index]);
+    Msg.Child := TCustomPage(fPageList[Index]);
     Msg.fCompStyle := fNotebook.fCompStyle;
     Msg.Str := S;
     {$IFDEF NOTEBOOK_DEBUG}
@@ -92,7 +92,7 @@ procedure TNBPages.RemovePage(Index: integer);
 var
   Msg: TLMNotebookEvent;
   NewPageIndex: integer;
-  APage: TPage;
+  APage: TCustomPage;
 begin
   // Make sure Index is in the range of valid pages to delete
   {$IFDEF NOTEBOOK_DEBUG}
@@ -102,7 +102,7 @@ begin
   if (Index >= 0) and
      (Index < fPageList.Count) then
   begin
-    APage:=TPage(fPageList[Index]);
+    APage:=TCustomPage(fPageList[Index]);
     NewPageIndex:=fNoteBook.PageIndex;
     if not (csLoading in fNoteBook.ComponentState) then begin
       // If that page is showing, then show the next page before deleting it
@@ -121,7 +121,8 @@ begin
           fNoteBook.PageIndex:=NewPageIndex;
       end;
     end;
-    if (FNoteBook.HandleAllocated) and (TPage(fPageList[Index]).HandleAllocated)
+    if (FNoteBook.HandleAllocated)
+    and (TCustomPage(fPageList[Index]).HandleAllocated)
     then begin
       Msg.Parent := fNotebook;
       Msg.fCompStyle := fNotebook.fCompStyle;
@@ -156,7 +157,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TNBPages.Delete(Index: Integer);
 var
-  APage: TPage;
+  APage: TCustomPage;
 begin
   // Make sure Index is in the range of valid pages to delete 
   {$IFDEF NOTEBOOK_DEBUG}
@@ -166,7 +167,7 @@ begin
   if (Index >= 0) and
      (Index < fPageList.Count) then
   begin
-    APage:=TPage(fPageList[Index]);
+    APage:=TCustomPage(fPageList[Index]);
     // delete handle
     APage.Parent:=nil;
     // free the page
@@ -182,7 +183,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TNBPages.Insert(Index: Integer; const S: String);
 var
-  tmpPage: TPage;
+  tmpPage: TCustomPage;
   NewOwner: TComponent;
 begin
   {$IFDEF NOTEBOOK_DEBUG}
@@ -191,7 +192,7 @@ begin
   NewOwner:=fNotebook.Owner;
   if NewOwner=nil then
     NewOwner:=fNotebook;
-  tmpPage := TPage.Create(fNotebook.Owner);
+  tmpPage := fNotebook.PageClass.Create(fNotebook.Owner);
   with tmpPage do
   begin
     Caption := S;
@@ -210,7 +211,7 @@ end;
 {------------------------------------------------------------------------------
   TNBPages InsertPage
  ------------------------------------------------------------------------------}
-procedure TNBPages.InsertPage(Index:integer; APage: TPage);
+procedure TNBPages.InsertPage(Index:integer; APage: TCustomPage);
 var
   Msg: TLMNotebookEvent;
   NewZPosition: integer;
@@ -219,7 +220,7 @@ begin
   writeln('TNBPages.InsertPage A ',fNoteBook.Name,' Index=',Index,' Name=',APage.Name,' Caption=',APage.Caption);
   {$ENDIF}
   if Index<fPageList.Count then
-    NewZPosition:=fNoteBook.GetControlIndex(TPage(fPageList[Index]))
+    NewZPosition:=fNoteBook.GetControlIndex(TCustomPage(fPageList[Index]))
   else
     NewZPosition:=-1;
   fPageList.Insert(Index,APage);
@@ -254,19 +255,19 @@ end;
  ------------------------------------------------------------------------------}
 procedure TNBPages.Move(CurIndex, NewIndex: Integer);
 var
-  APage: TPage;
+  APage: TCustomPage;
   Msg: TLMNotebookEvent;
   NewControlIndex, NewPageIndex: integer;
 begin
   if CurIndex=NewIndex then exit;
   
-  APage:=TPage(fPageList[CurIndex]);
+  APage:=TCustomPage(fPageList[CurIndex]);
   
   // calculate new control index (i.e. ZOrderPosition)
   if NewIndex>=fPageList.Count-1 then
     NewControlIndex:=fNoteBook.ControlCount-1
   else
-    NewControlIndex:=fNoteBook.GetControlIndex(TPage(fPageList[NewIndex]));
+    NewControlIndex:=fNoteBook.GetControlIndex(TCustomPage(fPageList[NewIndex]));
     
   // calculate new PageIndex
   if fNoteBook.PageIndex=CurIndex then
@@ -310,6 +311,8 @@ end;
  ------------------------------------------------------------------------------}
 constructor TCustomNotebook.Create(TheOwner: TComponent);
 begin
+  if PageClass=nil then
+    RaiseGDBException('');
   inherited Create(TheOwner);
   {create the control}
   fCompStyle := csNoteBook;
@@ -321,6 +324,7 @@ begin
 
   TabPosition := tpTop;
   ShowTabs := True;
+  SetInitialBounds(0,0,200,200);
 end;
 
 {------------------------------------------------------------------------------
@@ -411,14 +415,30 @@ begin
   Result:=false;
 end;
 
+function TCustomNotebook.GetImageIndex(ThePageIndex: Integer): Integer;
+var
+  APage: TCustomPage;
+begin
+  APage:=Page[ThePageIndex];
+  if APage<>nil then
+    Result:=APage.ImageIndex
+  else
+    Result:=-1;
+end;
+
+function TCustomNotebook.IndexOf(APage: TCustomPage): integer;
+begin
+  Result:=FPageList.IndexOf(APage);
+end;
+
 {------------------------------------------------------------------------------
   method TCustomNotebook DoCloseTabClicked
-  Params: APage: TPage
+  Params: APage: TCustomPage
   Result: none
   
   Called whenever the user closes the tab.
  ------------------------------------------------------------------------------}
-procedure TCustomNotebook.DoCloseTabClicked(APage: TPage);
+procedure TCustomNotebook.DoCloseTabClicked(APage: TCustomPage);
 begin
   if Assigned(OnCloseTabClicked) then OnCloseTabClicked(APage);
 end;
@@ -429,15 +449,15 @@ end;
 function TCustomNotebook.GetActivePage: String;
 begin
   if (PageIndex>=0) and (PageIndex<PageCount) then
-    Result := TPage(fPageList[PageIndex]).Caption
+    Result := TCustomPage(fPageList[PageIndex]).Caption
   else
     Result:='';
 end;
 
 {------------------------------------------------------------------------------
-  function TCustomNotebook.GetActivePageComponent: TPage;
+  function TCustomNotebook.GetActivePageComponent: TCustomPage;
  ------------------------------------------------------------------------------}
-function TCustomNotebook.GetActivePageComponent: TPage;
+function TCustomNotebook.GetActivePageComponent: TCustomPage;
 var
   i: Integer;
 begin
@@ -457,7 +477,7 @@ var
 begin
   for i := 0 to fPageList.Count - 1 do
   begin
-    if TPage(fPageList[i]).Caption = Value then
+    if TCustomPage(fPageList[i]).Caption = Value then
     begin
       SetPageIndex(i);
       Break;
@@ -465,7 +485,7 @@ begin
   end;
 end;
 
-procedure TCustomNotebook.SetActivePageComponent(const AValue: TPage);
+procedure TCustomNotebook.SetActivePageComponent(const AValue: TCustomPage);
 begin
   PageIndex:=fPageList.IndexOf(AValue);
 end;
@@ -490,10 +510,10 @@ end;
 {------------------------------------------------------------------------------
   TCustomNotebook SetPageIndex
  ------------------------------------------------------------------------------}
-procedure TCustomNotebook.SetPageIndex(Value: Integer);
+procedure TCustomNotebook.SetPageIndex(AValue: Integer);
 begin
-  if fPageIndex = Value then exit;
-  fPageIndex := Value;
+  if fPageIndex = AValue then exit;
+  fPageIndex := AValue;
   UpdateAllDesignerFlags;
   DoSendPageIndex;
 end;
@@ -525,19 +545,19 @@ end;
 {------------------------------------------------------------------------------
   TCustomNotebook SetPages
  ------------------------------------------------------------------------------}
-procedure TCustomNotebook.SetPages(Value: TStrings);
+procedure TCustomNotebook.SetPages(AValue: TStrings);
 begin
-  FAccess.Assign(Value);
+  FAccess.Assign(AValue);
 end;
 
 {------------------------------------------------------------------------------
   TCustomNotebook GetPage
  ------------------------------------------------------------------------------}
-function TCustomNotebook.GetPage(aIndex: Integer): TPage;
+function TCustomNotebook.GetPage(aIndex: Integer): TCustomPage;
 begin
   if (aIndex<0) or (aIndex>=fPageList.Count) then
-    RaiseGDBException('TCustomNotebook.GetPage Index out of bounds');
-  Result := TPage(fPageList.Items[aIndex]);
+    RaiseGDBException('TCustomNotebook.GeTCustomPage Index out of bounds');
+  Result := TCustomPage(fPageList.Items[aIndex]);
 end;
 
 {------------------------------------------------------------------------------
@@ -582,16 +602,6 @@ begin
   else
     Page[APageIndex].ControlStyle:=
       Page[APageIndex].ControlStyle-[csNoDesignVisible];
-end;
-
-{------------------------------------------------------------------------------
-  TCustomNotebook CreateParams
- ------------------------------------------------------------------------------}
-procedure TCustomNotebook.CreateParams(var Params: TCreateParams);
-begin
-  { This function exists for Delphi compatibility only. May be necessary
-    when the Windows API is implemented }
-  inherited CreateParams(Params);
 end;
 
 {------------------------------------------------------------------------------
@@ -763,11 +773,14 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.35  2003/09/20 13:27:49  mattias
+  varois improvements for ParentColor from Micha
+
   Revision 1.34  2003/09/18 09:21:03  mattias
   renamed LCLLinux to LCLIntf
 
   Revision 1.33  2003/09/17 15:26:41  mattias
-  fixed removing TPage
+  fixed removing TCustomPage
 
   Revision 1.32  2003/08/12 14:02:54  mattias
   fixed keypress/keyup, createcaret on synedit focus
@@ -809,7 +822,7 @@ end;}
   MG: fixed GetActivePage
 
   Revision 1.19  2002/09/02 19:10:28  lazarus
-  MG: TNoteBook now starts with no Page and TPage has no auto names
+  MG: TNoteBook now starts with no Page and TCustomPage has no auto names
 
   Revision 1.18  2002/06/08 17:16:02  lazarus
   MG: added close buttons and images to TNoteBook and close buttons to source editor
@@ -821,7 +834,7 @@ end;}
   MG: changed license to LGPL
 
   Revision 1.15  2002/03/31 23:20:38  lazarus
-  MG: fixed initial size of TPage
+  MG: fixed initial size of TCustomPage
 
   Revision 1.14  2002/03/25 17:59:20  lazarus
   GTK Cleanup
@@ -902,7 +915,7 @@ end;}
   Revision 1.12  2000/01/06 01:10:36  lazarus
   Stoppok:
      - changed ReadState to match current definition in fcl
-       (affects TPage & TCustomNotebook)
+       (affects TCustomPage & TCustomNotebook)
      - added callback FItems.OnChanging to TCustomRadiogroup
 
   Revision 1.11  2000/01/04 21:00:34  lazarus
@@ -937,7 +950,7 @@ end;}
        Modifications: A few
        - Removed some debug messages
        + Added some others
-       * changed fixed widged of TPage. Code is still broken.
+       * changed fixed widged of TCustomPage. Code is still broken.
        + TWinControls are also added to the Controls collection
        + Added TControl.Controls[] property
 

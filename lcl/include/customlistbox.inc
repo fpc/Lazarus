@@ -387,6 +387,7 @@ begin
   FItemIndex:=-1;
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
+  ParentColor := false;
   SetInitialBounds(0, 0, 100, 80);
 end;
 
