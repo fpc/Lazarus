@@ -746,6 +746,7 @@ begin
           Params.ContextNode:=CursorNode;
           Params.SetIdentifier(Self,@Src[CurPos.StartPos],@CheckSrcIdentifier);
           Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound,
+                         fdfExceptionOnPredefinedIdent,
                          fdfTopLvlResolving,fdfSearchInAncestors]
                         +fdfAllClassVisibilities;
           if not DirectSearch then begin
@@ -760,6 +761,12 @@ begin
             Params.ConvertResultCleanPosToCaretPos;
             NewPos:=Params.NewPos;
             NewTopLine:=Params.NewTopLine;
+            if NewPos.Code=nil then begin
+              if Params.IdentifierTool.IsPCharInSrc(Params.Identifier) then
+                Params.IdentifierTool.MoveCursorToCleanPos(Params.Identifier);
+              Params.IdentifierTool.RaiseExceptionFmt(ctsIdentifierNotFound,
+                                            [GetIdentifier(Params.Identifier)]);
+            end;
           end;
         finally
           Params.Free;
@@ -1216,7 +1223,10 @@ var
     if not (fdfExceptionOnNotFound in Params.Flags) then exit;
     if (Params.Identifier<>nil)
     and WordIsPredefinedIdentifier.DoIt(Params.Identifier)
-    and not (fdfExceptionOnPredefinedIdent in Params.Flags) then exit;
+    and not (fdfExceptionOnPredefinedIdent in Params.Flags) then begin
+      Params.SetResult(nil,nil);
+      exit;
+    end;
     // identifier was not found and exception is wanted
     // -> raise exception
     if Params.IdentifierTool.IsPCharInSrc(Params.Identifier) then
@@ -1585,7 +1595,6 @@ begin
     AddResultToNodeCaches(FirstSearchedNode,LastSearchedNode,
       fdfSearchForward in Params.Flags,Params,SearchRangeFlags);
   end;
-
   CheckResult(false,false);
 end;
 
