@@ -67,17 +67,12 @@ Type
     FToolTipWindow: HWND;
     FAccelGroup: HACCEL;
     FTimerData: TList;       // Keeps track of timer event structures
-
-    FAlignment: TAlignment; // Tracks alignment
     FControlIndex: Cardinal; // Win32-API control index
-    FHkProc: HHOOK; // Hooking procedure
     FMainForm: TForm;
     FMenu: HMENU; // Main menu/menu bar
     FMessage: TMSG; // The Windows message
     FParentWindow: HWND; // The parent window
-    FSender: TObject; // The sender
     FSubMenu: HMENU; // current sub menu
-    //FWndList: TList; // Collection of windows with properties
     FWndProc: WNDPROC;
 
     FStockNullBrush: HBRUSH;
@@ -88,22 +83,12 @@ Type
     FStockWhiteBrush: HBRUSH;
 
     Procedure CreateComponent(Sender: TObject);
-    Procedure AddChild(Parent, Child: HWND; Left, Top: Integer);
+    Procedure AddChild(Parent, Child: HWND);
     Procedure ResizeChild(Sender: TObject; Left, Top, Width, Height: Integer);
-    Function GetLabel(CompStyle: Integer; Window: HWnd): String;
     Procedure AssignSelf(Window: HWnd; Data: Pointer);
     Procedure ReDraw(Child: TObject);
     Procedure SetCursor(Sender: TObject);
     Procedure SetLimitText(Window: HWND; Limit: Word);
- 
-    Function IsValidDC(const DC: HDC): Boolean;
-    Function IsValidGDIObject(const GDIObject: HGDIOBJ): Boolean;
-    Function IsValidGDIObjectType(const GDIObject: HGDIOBJ; const GDIType: TGDIType): Boolean;
-    Function NewGDIObject(const GDIType: TGDIType): PGdiObject;
-    Function NewDC: PDeviceContext;
-    Function CreateDefaultBrush: PGdiObject;
-    Function CreateDefaultFont: PGdiObject;
-    Function CreateDefaultPen: PGdiObject;
 
     Procedure ShowHide(Sender: TObject);
     Procedure AddNBPage(Parent, Child: TObject; Index: Integer);
@@ -120,14 +105,6 @@ Type
     Function WinRegister: Boolean;
     Procedure SetName(Window: HWND; Value: PChar);
     Procedure SetOwner(Window: HWND; Owner: TObject);
-    Procedure ShowHide(CompStyle: Integer; P: Pointer; Visible: Boolean);
-    Procedure AddNBPage(Parent, Child: Pointer; Index: Integer);
-    Procedure RemoveNBPage(Parent, Child: Pointer; Index: Integer);
-    Procedure GetFontInfo(Sender: TObject; Data: Pointer);
-    Procedure DrawFillRect(Child: TObject; Data: Pointer);
-    Procedure DrawRect(Child: TObject; Data: PRect);
-    Procedure DrawLine(Child: TObject; Data: Pointer);
-    Procedure DrawText(Child: TObject; Data: Pointer);
     Procedure PaintPixmap(Surface: TObject; PixmapData: Pointer);
     Procedure NormalizeIconName(Var IconName: String);
     Procedure NormalizeIconName(Var IconName: PChar);
@@ -143,10 +120,6 @@ Type
     Function GetText(Sender: TControl; Var Data: String): Boolean; Override;
     { Set Label of control Sender to Data }
     Procedure SetLabel(Sender: TObject; Data: Pointer);
-    { Process Lazarus message LM_Message }
-    Procedure IntSendMessage(LM_Message: Integer; CompStyle: Integer; Var P: Pointer; Val1: Integer; Var Str1: String);
-    { Process Lazarus message LM_Message, version 2 }
-    Function IntSendMessage2(LM_Message: Integer; Parent, Child, Data: Pointer): Integer;
     { Process Lazarus message LM_Message and return an integer result }
     Function IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer) : Integer; Override;
     { Creates a callback of Lazarus message Msg for Sender }
@@ -233,22 +206,6 @@ Uses
 {$I win32listsl.inc}
 
 Type
-  PList = ^TList;
-  PLMNotebookEvent = ^TLMNotebookEvent;
-
-  { Lazarus Message structure for call backs }
-  TLazMsg = Record
-    Window: HWND;
-    WinMsg: UINT;
-    LParam: LPARAM;
-    WParam: WPARAM;
-    Win32Control: PWin32Control;
-    Event: Pointer;
-    Draw: TPoint;
-    ExtData: Pointer;
-    Reserved: Pointer;
-  End;
-
   TEventType = (etNotify, etKey, etKeyPress, etMouseWheeel, etMouseUpDown);
 
   { Linked list of objects for events }
@@ -259,65 +216,23 @@ Type
     Next: PLazObject;
   End;
 
-  PLazProp = ^TLazProp;
-  TLazProp = Record
-    Window: HWND;
-    Key: PChar;
-    Val: Pointer;
-  End;
-
   {$IFDEF VER1_1}
     TMsgArray = Array Of Integer;
   {$ELSE}
     TMsgArray = Array[0..1] Of Integer;
   {$ENDIF}
 
-  TPrivateControl = Class(TControl)
-  Public
-    Procedure WndProc(Var LMsg: TLMessage); Override;
-  End;
-
-  Procedure TPrivateControl.WndProc(Var LMsg: TLMessage);
-  Begin
-    Inherited WndProc(LMsg);
-  End;
-
 Const
-  IcoExt: String = '.ico';
   BOOL_RESULT: Array[Boolean] Of String = ('False', 'True');
 
 Var
-  FromCBProc: Boolean;
-  LazMsg: TLazMsg;
-  LazObject: PLazObject;
-  LMessage: Integer;
   OldClipboardViewer: HWND;
-  OrigWndProc: WNDPROC;
-  SignalFunc: Pointer;
   WndList: TList;
-
-Const
-
-  KEYMAP_VKUNKNOWN = $10000;
-  KEYMAP_TOGGLE    = $20000;
-  KEYMAP_EXTENDED  = $40000;
-
-Type
-  { record of data for timers }
-  PWin32ITimerInfo = ^TWin32ITimerinfo;
-  TWin32ITimerInfo = Record
-    Handle   : HWND;
-    IDEvent  : Integer;
-    TimerFunc: TFNTimerProc;
-  End;
 
 {$I win32proc.inc}
 {$I win32callback.inc}
 {$I win32object.inc}
 {$I win32winapi.inc}
-
-Var
-  N: Integer;
 
 Initialization
 
@@ -335,6 +250,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.12  2002/04/03 01:52:42  lazarus
+  Keith: Removed obsolete code, in preperation of a pending TWin32Object cleanup
+
   Revision 1.11  2002/02/07 08:35:12  lazarus
   Keith: Fixed persistent label captions and a few less noticable things
 
