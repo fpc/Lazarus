@@ -3004,7 +3004,7 @@ var
         ADirPath:=ADirPath+PathDelim;
       // set directory priority
       Priority:=0;
-      if System.Pos(FPCSrcDir+PathDelim+'rtl'+PathDelim,ADirPath)>0 then
+      if System.Pos(AppendPathDelim(FPCSrcDir)+'rtl'+PathDelim,ADirPath)>0 then
         Priority:=1;
       // search sources .pp,.pas
       if FindFirst(ADirPath+FileMask,faAnyFile,FileInfo)=0 then begin
@@ -3105,17 +3105,18 @@ var
                         $(#FPCSrcDir)/fcl/classes/$(#TargetOS)/classes.pp
                         
                        Rulez:
+                        - A unit in the rtl is preferred above one in the fcl
                         - a filename with macros is preferred above one without
                           This skips the templates.
-                        - A unit in the rtl is preferred before the fcl
                         - A macro fitting better with the current settings
                           is preferred. For example:
                           If the current OS is linux then on fpc 1.0.x:
                             $(#FPCSrcDir)/fcl/classes/$(#TargetOS)/classes.pp
                   }
-                  if (Priority>=OldUnitLink.Priority)
-                  and ((FileNameMacroCount(OldUnitLink.Filename)=0)
-                       or (OldUnitLink.DefaultMacroCount<DefaultMacroCount))
+                  if (Priority>OldUnitLink.Priority)
+                  or ((Priority=OldUnitLink.Priority)
+                      and ((FileNameMacroCount(OldUnitLink.Filename)=0)
+                           or (OldUnitLink.DefaultMacroCount<DefaultMacroCount)))
                   then begin
                     // take the new macro filename
                     OldUnitLink.Filename:=MacroFileName;
