@@ -524,6 +524,7 @@ type
     procedure UpdateCustomToolsInMenu;
 
     // external tools
+    function PrepareForCompile: TModalResult; override;
     function DoRunExternalTool(Index: integer): TModalResult;
     function DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult; override;
     function DoExecuteCompilationTool(Tool: TCompilationTool;
@@ -5602,17 +5603,9 @@ function TMainIDE.DoBuildProject(BuildAll: boolean): TModalResult;
 var
   DefaultFilename: string;
 begin
-  if ToolStatus=itDebugger then begin
-    Result:=MessageDlg('Stop debugging?',
-      'Stop current debugging and rebuild project?',
-      mtConfirmation,[mbYes,mbNo,mbAbort],0);
-    if Result=mrNo then Result:=mrCancel;
-    if Result<>mrYes then exit;
-    
-    Result:=DebugBoss.DoStopProject;
-    if Result<>mrOk then exit;
-  end;
-  
+  Result:=PrepareForCompile;
+  if Result<>mrOk then exit;
+
   Result:=DoSaveForBuild;
   if Result<>mrOk then exit;
 
@@ -6263,6 +6256,21 @@ begin
   ToolCount:=EnvironmentOptions.ExternalTools.Count;
   CreateToolMenuItems;
   SetToolMenuItems;
+end;
+
+function TMainIDE.PrepareForCompile: TModalResult;
+begin
+  Result:=mrOk;
+  if ToolStatus=itDebugger then begin
+    Result:=MessageDlg('Stop debugging?',
+      'Stop current debugging and rebuild project?',
+      mtConfirmation,[mbYes,mbNo,mbAbort],0);
+    if Result=mrNo then Result:=mrCancel;
+    if Result<>mrYes then exit;
+
+    Result:=DebugBoss.DoStopProject;
+    if Result<>mrOk then exit;
+  end;
 end;
 
 function TMainIDE.DoCheckSyntax: TModalResult;
@@ -9755,6 +9763,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.645  2003/09/06 22:00:24  mattias
+  added ToolStatus check for package compilation
+
   Revision 1.644  2003/08/30 18:53:07  mattias
   using default colors, when theme does not define them
 

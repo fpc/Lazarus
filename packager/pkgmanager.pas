@@ -1917,6 +1917,9 @@ begin
   
   if APackage.AutoCreated then exit;
 
+  Result:=MainIDE.PrepareForCompile;
+  if Result<>mrOk then exit;
+
   // check graph for circles and broken dependencies
   if not (pcfDoNotCompileDependencies in Flags) then begin
     Result:=CheckPackageGraphForCompilation(APackage,nil);
@@ -1928,7 +1931,7 @@ begin
     Result:=MainIDE.DoSaveForBuild;
     if Result<>mrOk then exit;
   end;
-
+  
   PackageGraph.BeginUpdate(false);
   try
     // automatically compile required packages

@@ -410,6 +410,7 @@ type
 
     function DoShowProjectInspector: TModalResult; virtual; abstract;
 
+    function PrepareForCompile: TModalResult; virtual; abstract;
     function DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult; virtual; abstract;
     function DoExecuteCompilationTool(Tool: TCompilationTool;
                                       const WorkingDir, ToolTitle: string
