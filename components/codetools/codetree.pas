@@ -131,7 +131,8 @@ const
       ctnProcedureType,ctnSetType,ctnRangeType,ctnEnumerationType,
       ctnEnumIdentifier,ctnLabelType,ctnTypeType,ctnFileType,ctnPointerType,
       ctnClassOfType,ctnVariantType];
-  AllPascalStatements = [ctnBeginBlock,ctnWithStatement,ctnCaseStatement];
+  AllPascalStatements = [ctnBeginBlock,ctnWithStatement,ctnWithVariable,
+                         ctnCaseStatement,ctnCaseVariable];
   AllSourceTypes =
      [ctnProgram,ctnPackage,ctnLibrary,ctnUnit];
   AllUsableSourceTypes =

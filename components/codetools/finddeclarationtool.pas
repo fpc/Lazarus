@@ -47,12 +47,12 @@ interface
 
 // activate for debug:
 
-{ $DEFINE CTDEBUG}
+{$DEFINE CTDEBUG}
 { $DEFINE ShowSearchPaths}
 { $DEFINE ShowTriedFiles}
 { $DEFINE ShowTriedContexts}
 { $DEFINE ShowTriedIdentifiers}
-{ $DEFINE ShowExprEval}
+{$DEFINE ShowExprEval}
 { $DEFINE ShowFoundIdentifier}
 { $DEFINE ShowInterfaceCache}
 { $DEFINE ShowNodeCache}
@@ -2976,10 +2976,12 @@ var
 
   procedure InitAtomQueue;
   begin
+//writeln('AAA1');
     if StartPos<1 then
       StartPos:=FindStartOfVariable(EndPos)
     else if EndPos<1 then
       EndPos:=FindEndOfVariable(StartPos,true);
+//writeln('AAA2');
     if (StartPos<1) then
       RaiseException('internal codetool error: FindExpressionTypeOfVariable '
         +' StartPos='+IntToStr(StartPos)+' EndPos='+IntToStr(EndPos));
@@ -3053,10 +3055,10 @@ var
   begin
     if (CurContext.Node<>nil) then begin
       // check if at the end of the variable
-      if (NextAtom.EndPos>EndPos) and (fdfFindVariable in StartFlags) then
+      if IsIdentifierEndOfVariable and (fdfFindVariable in StartFlags) then
         // the variable is wanted, not its type
         exit;
-        
+
       // find base type
       Exclude(Params.Flags,fdfFunctionResult);
       ExprType:=CurContext.Tool.ConvertNodeToExpressionType(CurContext.Node,
