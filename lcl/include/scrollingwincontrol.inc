@@ -46,20 +46,6 @@ end;
 Procedure TScrollingWinControl.WMEraseBkgnd(var Message: TLMEraseBkgnd);
 begin
   inherited WMEraseBkgnd(Message);
-  {with Message do begin
-    FCanvas.Lock;
-    try
-      FCanvas.Handle := DC;
-      try
-        FCanvas.Brush.Color := Self.Color;
-        FCanvas.FillRect(ClientRect);
-      finally
-        FCanvas.Handle := 0;
-      end;
-    finally
-      FCanvas.Unlock;
-    end;
-  end;}
 end;
 
 procedure TScrollingWinControl.WMPaint(var Message: TLMPaint);
@@ -80,6 +66,7 @@ end;
 
 Procedure TScrollingWinControl.PaintWindow(DC : Hdc);
 begin
+  FCanvas.Lock;
   try
     FCanvas.Handle := DC;
     try
