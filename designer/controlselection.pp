@@ -200,6 +200,7 @@ type
     cssSnapping,
     cssChangedDuringLock,
     cssRubberbandActive,
+    cssRubberbandPainted,
     cssCacheGuideLines,
     cssVisible,
     cssParentChildFlagsNeedUpdate,
@@ -1929,8 +1930,10 @@ var
     DrawRubberLine(x1,y2,x2,y2);
     DrawRubberLine(x1,y1,x1,y2);
     DrawRubberLine(x2,y1,x2,y2);
-    if RestorePen then
+    if RestorePen then begin
       DC.Canvas.Pen.Color:=OldPenColor;
+      Include(FStates,cssRubberbandPainted);
+    end;
   end;
 
 // DrawRubberband
@@ -2013,7 +2016,9 @@ begin
 end;
 
 procedure TControlSelection.SetRubberBandBounds(ARect:TRect);
-var i :integer;
+var
+  i :integer;
+  InvFrame: TRect;
 begin
   with ARect do begin
     if Right<Left then begin
@@ -2032,11 +2037,20 @@ begin
   or (FRubberBandBounds.Right<>ARect.Right)
   or (FRubberBandBounds.Bottom<>ARect.Bottom)
   then begin
-    if (FCustomForm<>nil) and RubberbandActive then
-      InvalidateFrame(FCustomForm.Handle,FRubberBandBounds);
+    if (FCustomForm<>nil) and (cssRubberbandPainted in FStates) then begin
+      InvFrame:=FRubberBandBounds;
+      inc(InvFrame.Right);
+      inc(InvFrame.Bottom);
+      InvalidateFrame(FCustomForm.Handle,@InvFrame,false,1);
+      Exclude(FStates,cssRubberbandPainted);
+    end;
     FRubberBandBounds:=ARect;
-    if (FCustomForm<>nil) and RubberbandActive then
-      InvalidateFrame(FCustomForm.Handle,FRubberBandBounds);
+    if (FCustomForm<>nil) and RubberbandActive then begin
+      InvFrame:=FRubberBandBounds;
+      inc(InvFrame.Right);
+      inc(InvFrame.Bottom);
+      InvalidateFrame(FCustomForm.Handle,@InvFrame,false,1);
+    end;
   end;
 end;
 

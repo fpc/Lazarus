@@ -98,8 +98,6 @@ function GetParentLevel(AControl: TControl): integer;
 
 function ControlIsDesignerVisible(AControl: TControl): boolean;
 
-procedure InvalidateFrame(Handle: HWnd; const Frame: TRect);
-
 implementation
 
 
@@ -269,37 +267,6 @@ begin
     AControl:=AControl.Parent;
   end;
 end;
-
-procedure InvalidateFrame(Handle: HWnd; const Frame: TRect);
-var
-  Line: TRect;
-begin
-  // invalidate left line
-  Line.Left:=Frame.Left;
-  Line.Top:=Frame.Top;
-  Line.Right:=Frame.Left+1;
-  Line.Bottom:=Frame.Bottom;
-  InvalidateRect(Handle,@Line,false);
-  // invalidate top line
-  Line.Left:=Frame.Left;
-  Line.Top:=Frame.Top;
-  Line.Right:=Frame.Right;
-  Line.Bottom:=Frame.Top+1;
-  InvalidateRect(Handle,@Line,false);
-  // invalidate right line
-  Line.Left:=Frame.Right-1;
-  Line.Top:=Frame.Top;
-  Line.Right:=Frame.Right;
-  Line.Bottom:=Frame.Bottom;
-  InvalidateRect(Handle,@Line,false);
-  // invalidate bottom line
-  Line.Left:=Frame.Left;
-  Line.Top:=Frame.Bottom-1;
-  Line.Right:=Frame.Right;
-  Line.Bottom:=Frame.Bottom;
-  InvalidateRect(Handle,@Line,false);
-end;
-
 
 { TDesignerDeviceContext }
 
