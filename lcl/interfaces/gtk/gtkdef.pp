@@ -55,8 +55,12 @@ type
     Data: array[0..0] of TGDIRGB;
   end;
   
+  TGDIColorFlag = (cfColorAllocated);
+  TGDIColorFlags = set of TGDIColorFlag;
+  
   TGDIColor = record
     ColorRef : TColorRef;    //Color passed - can be a SYSCOLOR or RGB
+    ColorFlags: TGDIColorFlags;
     Color : TGDKColor;       //Actual GDK Color(If any) for use with GC's
     Colormap : PGDKColormap; //Colormap GDKColor was allocated with
   end;
@@ -388,6 +392,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.22  2002/10/08 10:08:46  lazarus
+  MG: accelerated GDIColor allocating
+
   Revision 1.21  2002/10/07 20:50:58  lazarus
   MG: accelerated SelectGDKPenProps
 
