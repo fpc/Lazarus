@@ -522,6 +522,8 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnChangeBounds;
+    property OnResize;
     property Stretch;
     property Transparent;
     property Proportional;
@@ -559,6 +561,11 @@ type
     property Style:TBevelStyle Read GetStyle Write SetStyle Default bsLowered;
     property Visible;
     property Width;
+    property OnChangeBounds;
+    property OnResize;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
   end;
 
 
@@ -910,6 +917,9 @@ end.
 
  {
   $Log$
+  Revision 1.92  2004/02/03 18:54:38  mattias
+  published TBevel.OnMouseXXX
+
   Revision 1.91  2004/02/02 15:46:19  mattias
   implemented basic TSplitter, still many ToDos
 
