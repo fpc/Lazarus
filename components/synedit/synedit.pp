@@ -2576,14 +2576,16 @@ var
           SetDrawingColors(FALSE);
           rcToken.Left := Max(rcLine.Left, ColumnToXValue(FirstCol));
           rcToken.Right := Min(rcLine.Right, ColumnToXValue(nSelStart));
-          PaintToken(sLine, nTokenLen, 0, FirstCol, nSelStart);
+          PaintToken(sLine, nTokenLen, 0, FirstCol,
+                     nSelStart{$IFDEF SYN_LAZARUS}-1{$ENDIF});
           rcToken.Left := Max(rcLine.Left, ColumnToXValue(nSelEnd));
           rcToken.Right := Min(rcLine.Right, ColumnToXValue(LastCol));
           PaintToken(sLine, nTokenLen, 0, nSelEnd, LastCol);
           SetDrawingColors(TRUE);
           rcToken.Left := Max(rcLine.Left, ColumnToXValue(nSelStart));
           rcToken.Right := Min(rcLine.Right, ColumnToXValue(nSelEnd));
-          PaintToken(sLine, nTokenLen, 0, nSelStart, nSelEnd);
+          PaintToken(sLine, nTokenLen, 0, nSelStart,
+                     nSelEnd{$IFDEF SYN_LAZARUS}-1{$ENDIF});
         end else begin
           SetDrawingColors(bLineSelected);
           PaintToken(sLine, nTokenLen, 0, FirstCol, LastCol);

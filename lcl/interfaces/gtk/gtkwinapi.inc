@@ -1703,7 +1703,8 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
+function TgtkObject.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
+  Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 var
   pStr: PChar;
   Width, Height: Integer;
@@ -4455,6 +4456,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.69  2002/05/16 18:26:08  lazarus
+  MG: fixed selection painting of non highlighter
+
   Revision 1.68  2002/05/10 06:05:57  lazarus
   MG: changed license to LGPL
 
