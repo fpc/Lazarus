@@ -438,7 +438,6 @@ type
  end;
  TViewColumns = class(TPersistent)
    private
-     FAlignment : TColumnAlignment;
      FItems : TList;
      FOnChange : TNotifyEvent;
      Listview : TCustomListView;
@@ -470,6 +469,8 @@ type
     FViewStyle : TViewStyle;
     FSorted    : Boolean;
     FSortColumn : Integer;
+    FMultiSelect: Boolean;
+    procedure SetMultiSElect(const AValue: Boolean);
     procedure SetItems(Value : TListItems);
   protected
     ParentWindow : TScrolledWindow;
@@ -490,6 +491,7 @@ type
     property Items : TListItems read FListItems write SetItems;
     property Sorted : Boolean read FSorted write SetSorted;
     property SortColumn : Integer read FSortColumn write SetSortColumn;
+    property MultiSelect : Boolean read FMultiSelect write SetMultiSelect default False;
   end;
 
  TListView = class(TCustomListView)
@@ -1011,6 +1013,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.10  2001/12/19 21:36:05  lazarus
+  Added MultiSelect to TListView
+  Shane
+
   Revision 1.9  2001/12/19 20:28:51  lazarus
   Enabled Alignment of columns in a TListView.
   Shane

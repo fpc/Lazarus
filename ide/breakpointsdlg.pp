@@ -79,6 +79,7 @@ Begin
       ViewStyle := vsReport;
       Sorted := True;
       OnKeyDown := @ListView1KeyDown;
+      MultiSelect := True;
     end;
 //ListView does not accpet keys unless the mouse is held down over it
 //so temporarily I do this:

@@ -123,3 +123,13 @@ begin
   Columns.Free;
  inherited Destroy;
 end;
+
+procedure TCustomListView.SetMultiSelect(const AValue: Boolean);
+begin
+  if FMultiSelect <> AValue then
+     Begin
+       FMultiSelect := AValue;
+       CNSendMessage(LM_SETPROPERTIES,self,nil);
+     end;
+     
+end;

@@ -381,7 +381,6 @@ var
   MsgPtr    : PMsg;                  // currently only used by LM_DESTROY
   Count     : Integer;               //Used in TListView LM_LV_CHANGEITEM
   Titles    : Array [0..255] of PChar;
-  TempColor : TgdkColor;
 begin
   Result := 0;   //default value just in case nothing sets it
 
@@ -2997,6 +2996,7 @@ end;
 function TgtkObject.SetProperties (Sender : TObject) : integer;
 const
   aGTKJustification: array[TColumnAlignment] of TGTKJustification = (GTK_JUSTIFY_LEFT,GTK_JUSTIFY_RIGHT,GTK_JUSTIFY_CENTER);
+  aGTkSelectionMode: Array[Boolean] of TGtkSelectionMode = (GTK_SELECTION_SINGLE,GTk_SELECTION_EXTENDED);
 var
    Handle    : Pointer;
    Widget    : PGtkWidget;
@@ -3132,12 +3132,17 @@ begin
                    gtk_clist_set_column_justification(PgtkCList(Handle),I,aGTKJUSTIFICATION[Columns.Item[i].Alignment]);
                  end;
 
+//sorting
                  if (TCustomListView(sender).ViewStyle = vsReport) then
                  gtk_clist_column_titles_show(PgtkCList(Handle))
                  else
                  gtk_clist_column_titles_Hide(PgtkCList(Handle));
 
                  gtk_clist_set_sort_column(PgtkCList(Handle),TCustomListView(sender).SortColumn);
+                 
+//multiselect
+                 gtk_clist_set_selection_mode(PgtkCList(Handle),aGTkSelectionMode[TCustomListView(sender).MultiSelect]);
+
 //TODO:This doesn't work right now
 //                 gtk_clist_set_auto_sort(PgtkCList(handle),TCustomListView(sender).Sorted);
                //
@@ -3625,6 +3630,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.93  2001/12/19 21:36:05  lazarus
+  Added MultiSelect to TListView
+  Shane
+
   Revision 1.92  2001/12/19 20:28:51  lazarus
   Enabled Alignment of columns in a TListView.
   Shane
