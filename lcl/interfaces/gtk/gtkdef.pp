@@ -24,7 +24,7 @@
 }
 
 
-unit GtkDef;
+unit GTKDef;
  
 {$mode objfpc} 
 {$LONGSTRINGS ON}
@@ -427,6 +427,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.26  2002/10/17 15:09:32  lazarus
+  MG: made mouse capturing more strict
+
   Revision 1.25  2002/10/10 19:43:16  lazarus
   MG: accelerated GetTextMetrics
 

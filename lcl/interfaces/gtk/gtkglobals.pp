@@ -12,7 +12,7 @@
  *                                                                           *
  *****************************************************************************
 }
-unit gtkglobals;
+unit GTKGlobals;
 
 {$mode objfpc}{$H+}
 
@@ -20,7 +20,7 @@ interface
 
 uses
   InterfaceBase, gtk, gdk, glib, SysUtils, LMessages, Classes, Controls, Forms,
-  VclGlobals, LCLLinux, LCLType, gtkDef, DynHashArray, LazQueue;
+  VclGlobals, LCLLinux, LCLType, GTKDef, DynHashArray, LazQueue;
 
 {$I dragicons.inc}
 
