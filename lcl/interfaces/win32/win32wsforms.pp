@@ -327,8 +327,7 @@ begin
   if (Application <> nil) and (AForm = Application.MainForm) then
     exit;
 
-  AForm.DestroyHandle;
-  AForm.HandleNeeded;
+  RecreateWnd(AForm);
 end;
 
 procedure TWin32WSCustomForm.ShowModal(const ACustomForm: TCustomForm);

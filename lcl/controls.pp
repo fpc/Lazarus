@@ -1487,6 +1487,7 @@ type
     procedure CreateHandle; virtual;
     procedure CreateParams(var Params: TCreateParams); virtual;
     procedure CreateWnd; virtual; //creates the window
+    procedure DestroyHandle; virtual;
     procedure DestroyWnd; virtual;
     procedure DoFlipChildren; dynamic;
     procedure FixupTabList;
@@ -1577,8 +1578,6 @@ type
     constructor CreateParented(ParentWindow: HWnd);
     class function CreateParentedControl(ParentWindow: HWnd): TWinControl;
     destructor Destroy; override;
-    { TODO: DestroyHandle needed by win32 intf }
-    procedure DestroyHandle; virtual;
     procedure DockDrop(DockObject: TDragDockObject; X, Y: Integer); dynamic;
     Function CanFocus: Boolean;
     function GetControlIndex(AControl: TControl): integer;
@@ -2891,6 +2890,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.290  2005/03/25 16:41:00  micha
+  make DestroyHandle method protected again, use global RecreateWnd procedure
+
   Revision 1.289  2005/03/25 08:58:11  micha
   implement ShowInTaskBar for win32 intf
 
