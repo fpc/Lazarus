@@ -795,7 +795,7 @@ type
     procedure DoAutoSize; override;
     procedure SetText(const Value: TCaption); override;
   public
-    constructor Create (AOwner: TComponent); override;
+    constructor Create (AnOwner: TComponent); override;
   published
     property Anchors;
     property AutoSize;
@@ -1382,6 +1382,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.68  2002/11/27 14:37:37  mattias
+  added form editor options for rubberband and colors
+
   Revision 1.67  2002/11/16 11:22:56  mbukovjan
   Fixes to MaxLength. TCustomMemo now has MaxLength, too.
 

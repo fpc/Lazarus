@@ -41,7 +41,9 @@ uses
   EnvironmentOpts, DesignerProcs, Menus;
 
 type
-  EGenException = class(Exception);
+  TControlSelection = class;
+
+  { TGrabber }
   
   TGrabberMoveEvent = procedure(Sender: TObject; dx, dy: Integer) of object;
 
@@ -81,31 +83,43 @@ type
   end;
 
 
+  { TSelectedControl }
+  
+  TSelectedControlFlag = (
+    scfParentInSelection,
+    scfChildInSelection
+    );
+  TSelectedControlFlags = set of TSelectedControlFlag;
+
   TSelectedControl = class
   private
-    FComponent:TComponent;
-    FOldLeft: integer;
-    FOldTop: integer;
-    FOldWidth: integer;
-    FOldHeight: integer;
-    FOldFormRelativeLeftTop: TPoint;
     FCachedLeft: integer;
     FCachedTop: integer;
     FCachedWidth: integer;
     FCachedHeight: integer;
     FCachedFormRelativeLeftTop: TPoint;
+    FComponent:TComponent;
+    FFlags: TSelectedControlFlags;
+    FOldLeft: integer;
+    FOldTop: integer;
+    FOldWidth: integer;
+    FOldHeight: integer;
+    FOldFormRelativeLeftTop: TPoint;
+    FOwner: TControlSelection;
     FUseCache: boolean;
     function GetLeft: integer;
     procedure SetLeft(ALeft: integer);
     function GetTop: integer;
+    procedure SetOwner(const AValue: TControlSelection);
     procedure SetTop(ATop: integer);
     function GetWidth: integer;
     procedure SetUseCache(const AValue: boolean);
     procedure SetWidth(AWidth: integer);
     function GetHeight: integer;
     procedure SetHeight(AHeight: integer);
+    procedure SetFlags(const AValue: TSelectedControlFlags);
   public
-    constructor Create(AComponent:TComponent);
+    constructor Create(AnOwner: TControlSelection; AComponent: TComponent);
     destructor Destroy; override;
     function ParentForm: TCustomForm;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer);
@@ -113,8 +127,11 @@ type
     procedure SaveBounds;
     procedure UpdateCache;
     function IsTopLvl: boolean;
+    function ChildInSelection: boolean;
+    function ParentInSelection: boolean;
 
-    property Component:TComponent read FComponent write FComponent;
+    property Component: TComponent read FComponent write FComponent;
+    property Owner: TControlSelection read FOwner write SetOwner;
     property Left: integer read GetLeft write SetLeft;
     property Top: integer read GetTop write SetTop;
     property Width: integer read GetWidth write SetWidth;
@@ -125,8 +142,10 @@ type
     property OldHeight:integer read FOldHeight write FOldHeight;
     property OldFormRelativeLeftTop: TPoint
       read FOldFormRelativeLeftTop write FOldFormRelativeLeftTop;
+    property Flags: TSelectedControlFlags read FFlags write SetFlags;
     property UseCache: boolean read FUseCache write SetUseCache;
   end;
+  
 
   TComponentAlignment = (csaNone, csaSides1, csaCenters, csaSides2,
       csaCenterInWindow, csaSpaceEqually, csaSide1SpaceEqually,
@@ -154,6 +173,9 @@ type
     rbtSelection,
     rbtCreating
     );
+    
+
+  { TControlSelection }
   
   TControlSelState = (
     cssOnlyNonVisualNeedsUpdate,
@@ -168,7 +190,8 @@ type
     cssChangedDuringLock,
     cssRubberbandActive,
     cssCacheGuideLines,
-    cssVisible
+    cssVisible,
+    cssParentChildFlagsNeedUpdate
     );
   TControlSelStates = set of TControlSelState;
 
@@ -207,9 +230,7 @@ type
     FCustomForm: TCustomForm;
     FGrabbers: array[TGrabIndex] of TGrabber;
     FGrabberSize: integer;
-    FGrabberColor: TColor;
     FMarkerSize: integer;
-    FMarkerColor: integer;
     FActiveGrabber: TGrabber;
     FRubberBandBounds: TRect;
     FRubberbandType: TRubberbandType;
@@ -220,7 +241,11 @@ type
     FOnChange: TNotifyEvent;
 
     function GetCacheGuideLines: boolean;
+    function GetGrabberColor: TColor;
+    function GetMarkerColor: TColor;
     function GetRubberbandActive: boolean;
+    function GetRubberbandCreationColor: TColor;
+    function GetRubberbandSelectionColor: TColor;
     function GetSnapping: boolean;
     function GetVisible: boolean;
     procedure SetCacheGuideLines(const AValue: boolean);
@@ -230,8 +255,6 @@ type
     procedure SetGrabberSize(const NewSize: integer);
     procedure DoChange;
     procedure SetRubberbandActive(const AValue: boolean);
-    procedure SetRubberbandCreationColor(const AValue: TColor);
-    procedure SetRubberbandSelectionColor(const AValue: TColor);
     procedure SetRubberbandType(const AValue: TRubberbandType);
     procedure SetSnapping(const AValue: boolean);
     procedure SetVisible(const AValue: Boolean);
@@ -250,6 +273,7 @@ type
     procedure AdjustGrabbers;
     procedure DoApplyUserBounds;
     procedure UpdateRealBounds;
+    procedure UpdateParentChildFlags;
 
     // snapping
     function CleanGridSizeX: integer;
@@ -320,13 +344,13 @@ type
     function ParentLevel: integer;
 
     property GrabberSize:integer read FGrabberSize write SetGrabberSize;
-    property GrabberColor: TColor read FGrabberColor write FGrabberColor;
+    property GrabberColor: TColor read GetGrabberColor;
     procedure DrawGrabbers(DC: TDesignerDeviceContext);
     function GrabberAtPos(X,Y: integer):TGrabber;
     property Grabbers[AGrabIndex: TGrabIndex]:TGrabber
       read GetGrabbers write SetGrabbers;
     property MarkerSize:integer read FMarkerSize write FMarkerSize;
-    property MarkerColor: TColor read FMarkerColor write FMarkerColor;
+    property MarkerColor: TColor read GetMarkerColor;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     procedure DrawMarker(AComponent: TComponent; DC: TDesignerDeviceContext);
     procedure DrawMarkerAt(DC: TDesignerDeviceContext;
@@ -355,9 +379,9 @@ type
     property RubberbandType: TRubberbandType
       read FRubberbandType write SetRubberbandType;
     property RubberbandSelectionColor: TColor
-      read FRubberbandSelectionColor write SetRubberbandSelectionColor;
+      read GetRubberbandSelectionColor;
     property RubberbandCreationColor: TColor
-      read FRubberbandCreationColor write SetRubberbandCreationColor;
+      read GetRubberbandCreationColor;
     procedure DrawRubberband(DC: TDesignerDeviceContext);
     procedure SelectWithRubberBand(ACustomForm:TCustomForm;
       ClearBefore, ExclusiveOr: boolean; var SelectionChanged: boolean;
@@ -410,9 +434,11 @@ end;
 
 { TSelectedControl }
 
-constructor TSelectedControl.Create(AComponent:TComponent);
+constructor TSelectedControl.Create(AnOwner: TControlSelection;
+  AComponent:TComponent);
 begin
   inherited Create;
+  FOwner:=AnOwner;
   FComponent:=AComponent;
 end;
 
@@ -477,12 +503,38 @@ begin
   Result:=(FComponent is TControl) and (TControl(FComponent).Parent=nil);
 end;
 
+function TSelectedControl.ChildInSelection: boolean;
+begin
+  if Owner<>nil then begin
+    Owner.UpdateParentChildFlags;
+    Result:=scfChildInSelection in FFlags;
+  end else begin
+    Result:=false;
+  end;
+end;
+
+function TSelectedControl.ParentInSelection: boolean;
+begin
+  if Owner<>nil then begin
+    Owner.UpdateParentChildFlags;
+    Result:=scfParentInSelection in FFlags;
+  end else begin
+    Result:=false;
+  end;
+end;
+
 function TSelectedControl.GetLeft: integer;
 begin
   if FUseCache then
     Result:=FCachedLeft
   else
     Result:=GetComponentLeft(FComponent);
+end;
+
+procedure TSelectedControl.SetFlags(const AValue: TSelectedControlFlags);
+begin
+  if FFlags=AValue then exit;
+  FFlags:=AValue;
 end;
 
 procedure TSelectedControl.SetLeft(ALeft: integer);
@@ -500,6 +552,12 @@ begin
     Result:=FCachedTop
   else
     Result:=GetComponentTop(FComponent);
+end;
+
+procedure TSelectedControl.SetOwner(const AValue: TControlSelection);
+begin
+  if FOwner=AValue then exit;
+  FOwner:=AValue;
 end;
 
 procedure TSelectedControl.SetTop(ATop: integer);
@@ -558,9 +616,7 @@ begin
   inherited;
   FControls:=TList.Create;
   FGrabberSize:=5;
-  FGrabberColor:=clBlack;
   FMarkerSize:=5;
-  FMarkerColor:=clDkGray;
   for g:=Low(TGrabIndex) to High(TGrabIndex) do begin
     FGrabbers[g]:=TGrabber.Create;
     FGrabbers[g].Positions:=GRAB_POSITIONS[g];
@@ -643,9 +699,29 @@ begin
   Result:=cssRubberbandActive in FStates;
 end;
 
+function TControlSelection.GetRubberbandCreationColor: TColor;
+begin
+  Result:=EnvironmentOptions.RubberbandCreationColor;
+end;
+
+function TControlSelection.GetRubberbandSelectionColor: TColor;
+begin
+  Result:=EnvironmentOptions.RubberbandSelectionColor;
+end;
+
 function TControlSelection.GetCacheGuideLines: boolean;
 begin
   Result:=cssCacheGuideLines in FStates;
+end;
+
+function TControlSelection.GetGrabberColor: TColor;
+begin
+  Result:=EnvironmentOptions.GrabberColor;
+end;
+
+function TControlSelection.GetMarkerColor: TColor;
+begin
+  Result:=EnvironmentOptions.MarkerColor;
 end;
 
 procedure TControlSelection.SetCustomForm;
@@ -750,11 +826,11 @@ begin
     writeln('[TControlSelection.DoApplyUserBounds] M Old=',FOldLeft,',',FOldTop,',',FOldWidth,',',FOldHeight,
     ' User=',FLeft,',',FTop,',',FWidth,',',FHeight);
     {$ENDIF}
+    
+    // ToDo: sort selection with parent level and size/move parents first
+    
     if (FOldWidth<>0) and (FOldHeight<>0) then begin
       for i:=0 to Count-1 do begin
-      
-        // ToDo: if a parent and a child is selected, only move the parent
-      
         OldLeftTop:=Items[i].OldFormRelativeLeftTop;
         NewLeft:=FLeft + (((OldLeftTop.X-FOldLeft) * FWidth) div FOldWidth);
         NewTop:=FTop + (((OldLeftTop.Y-FOldTop) * FHeight) div FOldHeight);
@@ -808,6 +884,33 @@ begin
     end;
     AdjustGrabbers;
   end;
+end;
+
+procedure TControlSelection.UpdateParentChildFlags;
+var
+  i, j, Cnt: integer;
+  Control1, Control2: TControl;
+begin
+  if not (cssParentChildFlagsNeedUpdate in FStates) then exit;
+  Cnt:=Count;
+  for i:=0 to Cnt-1 do begin
+    Control1:=TControl(Items[i].Component);
+    Items[i].FFlags:=Items[i].FFlags-[scfParentInSelection,scfChildInSelection];
+  end;
+  for i:=0 to Cnt-1 do begin
+    Control1:=TControl(Items[i].Component);
+    if not (Control1 is TControl) then continue;
+    for j:=0 to Cnt-1 do begin
+      Control2:=TControl(Items[j].Component);
+      if not (Control2 is TControl) then continue;
+      if i=j then continue;
+      if Control1.IsParentOf(Control2) then begin
+        Include(Items[i].FFlags,scfChildInSelection);
+        Include(Items[j].FFlags,scfParentInSelection);
+      end;
+    end;
+  end;
+  Exclude(FStates,cssParentChildFlagsNeedUpdate);
 end;
 
 function TControlSelection.CleanGridSizeX: integer;
@@ -1288,18 +1391,6 @@ begin
     Exclude(FStates,cssRubberbandActive);
 end;
 
-procedure TControlSelection.SetRubberbandCreationColor(const AValue: TColor);
-begin
-  if FRubberbandCreationColor=AValue then exit;
-  FRubberbandCreationColor:=AValue;
-end;
-
-procedure TControlSelection.SetRubberbandSelectionColor(const AValue: TColor);
-begin
-  if FRubberbandSelectionColor=AValue then exit;
-  FRubberbandSelectionColor:=AValue;
-end;
-
 procedure TControlSelection.SetRubberbandType(const AValue: TRubberbandType);
 begin
   if FRubberbandType=AValue then exit;
@@ -1379,11 +1470,11 @@ function TControlSelection.Add(AComponent: TComponent):integer;
 var NewSelectedControl:TSelectedControl;
 begin
   BeginUpdate;
-  NewSelectedControl:=TSelectedControl.Create(AComponent);
+  NewSelectedControl:=TSelectedControl.Create(Self,AComponent);
   if NewSelectedControl.ParentForm<>FCustomForm then Clear;
   Result:=FControls.Add(NewSelectedControl);
   FStates:=FStates+[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate,
-                    cssParentLevelNeedsUpdate];
+                    cssParentLevelNeedsUpdate,cssParentChildFlagsNeedUpdate];
   if Count=1 then SetCustomForm;
   DoChange;
   UpdateBounds;
@@ -1416,7 +1507,7 @@ begin
   Items[Index].Free;
   FControls.Delete(Index);
   FStates:=FStates+[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate,
-                    cssParentLevelNeedsUpdate];
+                    cssParentLevelNeedsUpdate,cssParentChildFlagsNeedUpdate];
   if Count=0 then SetCustomForm;
   UpdateBounds;
   SaveBounds;
@@ -1431,7 +1522,7 @@ begin
   for i:=0 to FControls.Count-1 do Items[i].Free;
   FControls.Clear;
   FStates:=FStates+[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate,
-                    cssParentLevelNeedsUpdate];
+                    cssParentLevelNeedsUpdate,cssParentChildFlagsNeedUpdate];
   FCustomForm:=nil;
   UpdateBounds;
   SaveBounds;
@@ -1586,7 +1677,7 @@ var
       DC.Save;
       with DC.Canvas do begin
         OldBrushColor:=Brush.Color;
-        Brush.Color:=FGrabberColor;
+        Brush.Color:=GrabberColor;
       end;
       RestoreBrush:=true;
     end;
@@ -1628,7 +1719,7 @@ var
     if not RestoreBrush then begin
       DC.Save;
       OldBrushColor:=DC.Canvas.Brush.Color;
-      DC.Canvas.Brush.Color:=FMarkerColor;
+      DC.Canvas.Brush.Color:=MarkerColor;
       RestoreBrush:=true;
     end;
     DC.Canvas.FillRect(Rect(RLeft,RTop,RRight,RBottom));
@@ -1742,15 +1833,25 @@ procedure TControlSelection.SelectWithRubberBand(ACustomForm:TCustomForm;
 var i:integer;
 
   function ControlInRubberBand(AComponent:TComponent):boolean;
-  var ALeft,ATop,ARight,ABottom:integer;
-    Origin:TPoint;
+  var
+    ALeft, ATop, ARight, ABottom: integer;
+    Origin: TPoint;
+    AControl: TControl;
   begin
     Result:=false;
     if (AComponent is TMenuItem) then exit;
     if (AComponent is TControl) then begin
-      if not ControlIsDesignerVisible(TControl(AComponent)) then exit;
-      if (MaxParentControl<>nil)
-      and (not MaxParentControl.IsParentOf(TControl(AComponent))) then exit;
+      AControl:=TControl(AComponent);
+      // check if control is visible on form
+      if not ControlIsDesignerVisible(AControl) then exit;
+      // check if control
+      if (MaxParentControl<>nil) then begin
+        // select only controls, that are childs of MaxParentControl
+        if (not MaxParentControl.IsParentOf(AControl)) then exit;
+        // check if control is a grand child
+        if (not EnvironmentOptions.RubberbandSelectsGrandChilds)
+        and (AControl.Parent<>MaxParentControl) then exit;
+      end;
     end;
     Origin:=GetParentFormRelativeTopLeft(AComponent);
     ALeft:=Origin.X;

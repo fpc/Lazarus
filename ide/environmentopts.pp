@@ -159,6 +159,11 @@ type
     FShowComponentCaptions: boolean;
     FShowEditorHints: boolean;
     FAutoCreateForms: boolean;
+    FGrabberColor: TColor;
+    FMarkerColor: TColor;
+    FRubberbandSelectionColor: TColor;
+    FRubberbandCreationColor: TColor;
+    FRubberbandSelectsGrandChilds: boolean;
 
     // object inspector
     FObjectInspectorOptions: TOIOptions;
@@ -250,6 +255,14 @@ type
        read FShowComponentCaptions write FShowComponentCaptions;
     property ShowEditorHints: boolean read FShowEditorHints write FShowEditorHints;
     property AutoCreateForms: boolean read FAutoCreateForms write FAutoCreateForms;
+    property GrabberColor: TColor read FGrabberColor write FGrabberColor;
+    property MarkerColor: TColor read FMarkerColor write FMarkerColor;
+    property RubberbandSelectionColor: TColor
+      read FRubberbandSelectionColor write FRubberbandSelectionColor;
+    property RubberbandCreationColor: TColor
+      read FRubberbandCreationColor write FRubberbandCreationColor;
+    property RubberbandSelectsGrandChilds: boolean
+      read FRubberbandSelectsGrandChilds write FRubberbandSelectsGrandChilds;
 
     // object inspector
     property ObjectInspectorOptions: TOIOptions
@@ -382,6 +395,16 @@ type
     ShowComponentCaptionsCheckBox: TCheckBox;
     ShowEditorHintsCheckBox: TCheckBox;
     AutoCreateFormsCheckBox: TCheckBox;
+    GrabberColorLabel: TLabel;
+    GrabberColorButton: TColorButton;
+    MarkerColorLabel: TLabel;
+    MarkerColorButton: TColorButton;
+    RubberbandGroupBox: TGroupBox;
+    RubberbandSelectColorLabel: TLabel;
+    RubberbandSelectColorButton: TColorButton;
+    RubberbandCreateColorLabel: TLabel;
+    RubberbandCreateColorButton: TColorButton;
+    RubberbandSelectsGrandChildsCheckBox: TCheckBox;
 
     // object inspector
     ObjectInspectorGroupBox: TGroupBox;
@@ -592,6 +615,11 @@ begin
   FShowComponentCaptions:=false;
   FShowEditorHints:=false;
   FAutoCreateForms:=true;
+  FGrabberColor:=clBlack;
+  FMarkerColor:=clDkGray;
+  FRubberbandSelectionColor:=clNavy;
+  FRubberbandCreationColor:=clMaroon;
+  FRubberbandSelectsGrandChilds:=true;
 
   // object inspector
   FObjectInspectorOptions:=TOIOptions.Create;
@@ -791,6 +819,19 @@ begin
        'EnvironmentOptions/FormEditor/ShowEditorHints',FShowEditorHints);
     FAutoCreateForms:=XMLConfig.GetValue(
        'EnvironmentOptions/FormEditor/AutoCreateForms',FAutoCreateForms);
+    FGrabberColor:=XMLConfig.GetValue(
+       'EnvironmentOptions/FormEditor/GrabberColor/Value',FGrabberColor);
+    FMarkerColor:=XMLConfig.GetValue(
+       'EnvironmentOptions/FormEditor/MarkerColor/Value',FMarkerColor);
+    FRubberbandSelectionColor:=XMLConfig.GetValue(
+       'EnvironmentOptions/FormEditor/Rubberband/SelectionColor/Value',
+       FRubberbandSelectionColor);
+    FRubberbandCreationColor:=XMLConfig.GetValue(
+       'EnvironmentOptions/FormEditor/Rubberband/CreationColor/Value',
+       FRubberbandCreationColor);
+    FRubberbandSelectsGrandChilds:=XMLConfig.GetValue(
+       'EnvironmentOptions/FormEditor/Rubberband/SelectsGrandChilds/Value',
+       FRubberbandSelectsGrandChilds);
 
     if not OnlyDesktop then begin
       // files
@@ -980,6 +1021,19 @@ begin
        'EnvironmentOptions/FormEditor/ShowEditorHints',FShowEditorHints);
     XMLConfig.SetValue(
        'EnvironmentOptions/FormEditor/AutoCreateForms',FAutoCreateForms);
+    XMLConfig.SetValue(
+       'EnvironmentOptions/FormEditor/GrabberColor/Value',FGrabberColor);
+    XMLConfig.SetValue(
+       'EnvironmentOptions/FormEditor/MarkerColor/Value',FMarkerColor);
+    XMLConfig.SetValue(
+       'EnvironmentOptions/FormEditor/Rubberband/SelectionColor/Value',
+       FRubberbandSelectionColor);
+    XMLConfig.SetValue(
+       'EnvironmentOptions/FormEditor/Rubberband/CreationColor/Value',
+       FRubberbandCreationColor);
+    XMLConfig.SetValue(
+       'EnvironmentOptions/FormEditor/Rubberband/SelectsGrandChilds/Value',
+       FRubberbandSelectsGrandChilds);
 
     if not OnlyDesktop then begin
       // files
@@ -2132,7 +2186,6 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
       Top:=GuideLineColorRightBottomButton.Top+2;
       Width:=GuideLineColorLeftTopLabel.Width;
       Caption:=dlgRightBottomClr;
-      Visible:=true;
     end;
   end;
   
@@ -2146,7 +2199,6 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
       Left:=5;
       Width:=Parent.ClientWidth-2*Left;
       Caption:=dlgShowCaps;
-      Visible:=true;
     end;
 
     ShowEditorHintsCheckBox:=TCheckBox.Create(Self);
@@ -2158,7 +2210,6 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
       Left:=ShowComponentCaptionsCheckBox.Left;
       Width:=ShowComponentCaptionsCheckBox.Width;
       Caption:=dlgShowEdrHints;
-      Visible:=true;
     end;
 
     AutoCreateFormsCheckBox:=TCheckBox.Create(Self);
@@ -2169,7 +2220,99 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
       Left:=ShowEditorHintsCheckBox.Left;
       Width:=ShowEditorHintsCheckBox.Width;
       Caption:=dlgAutoForm;
-      Visible:=true;
+    end;
+
+    GrabberColorButton:=TColorButton.Create(Self);
+    with GrabberColorButton do begin
+      Name:='GrabberColorButton';
+      Parent:=FormEditMiscGroupBox;
+      Left:=200;
+      Top:=0;
+      Width:=50;
+      Height:=25;
+    end;
+
+    GrabberColorLabel:=TLabel.Create(Self);
+    with GrabberColorLabel do begin
+      Name:='GrabberColorLabel';
+      Parent:=FormEditMiscGroupBox;
+      Left:=GrabberColorButton.Left+GrabberColorButton.Width+5;
+      Top:=GrabberColorButton.Top+2;
+      Width:=110;
+      Caption:=dlgGrabberColor;
+    end;
+
+    MarkerColorButton:=TColorButton.Create(Self);
+    with MarkerColorButton do begin
+      Name:='MarkerColorButton';
+      Parent:=FormEditMiscGroupBox;
+      Left:=GrabberColorButton.Left;
+      Top:=GrabberColorButton.Top+GrabberColorButton.Height+5;
+      Width:=50;
+      Height:=25;
+    end;
+
+    MarkerColorLabel:=TLabel.Create(Self);
+    with MarkerColorLabel do begin
+      Name:='MarkerColorLabel';
+      Parent:=FormEditMiscGroupBox;
+      Left:=MarkerColorButton.Left+MarkerColorButton.Width+5;
+      Top:=MarkerColorButton.Top+2;
+      Width:=110;
+      Caption:=dlgMarkerColor;
+    end;
+  end;
+  
+  procedure SetupRubberbandBox;
+  begin
+    RubberbandSelectColorButton:=TColorButton.Create(Self);
+    with RubberbandSelectColorButton do begin
+      Name:='RubberbandSelectColorButton';
+      Parent:=RubberbandGroupBox;
+      Left:=2;
+      Top:=2;
+      Width:=50;
+      Height:=25;
+    end;
+    
+    RubberbandSelectColorLabel:=TLabel.Create(Self);
+    with RubberbandSelectColorLabel do begin
+      Name:='RubberbandSelectColorLabel';
+      Parent:=RubberbandGroupBox;
+      Left:=RubberbandSelectColorButton.Left+RubberbandSelectColorButton.Width+2;
+      Top:=RubberbandSelectColorButton.Top+2;
+      Width:=100;
+      Caption:=dlgRuberbandSelectionColor;
+    end;
+
+    RubberbandCreateColorButton:=TColorButton.Create(Self);
+    with RubberbandCreateColorButton do begin
+      Name:='RubberbandCreateColorButton';
+      Parent:=RubberbandGroupBox;
+      Left:=2;
+      Top:=RubberbandSelectColorButton.Top+RubberbandSelectColorButton.Height+5;
+      Width:=50;
+      Height:=25;
+    end;
+
+    RubberbandCreateColorLabel:=TLabel.Create(Self);
+    with RubberbandCreateColorLabel do begin
+      Name:='RubberbandCreateColorLabel';
+      Parent:=RubberbandGroupBox;
+      Left:=RubberbandCreateColorButton.Left+RubberbandCreateColorButton.Width+2;
+      Top:=RubberbandCreateColorButton.Top+2;
+      Width:=100;
+      Caption:=dlgRuberbandCreationColor;
+    end;
+
+    RubberbandSelectsGrandChildsCheckBox:=TCheckBox.Create(Self);
+    with RubberbandSelectsGrandChildsCheckBox do begin
+      Name:='RubberbandSelectsGrandChildsCheckBox';
+      Parent:=RubberbandGroupBox;
+      Left:=5;
+      Top:=RubberbandCreateColorButton.Top+RubberbandCreateColorButton.Height+5;
+      Width:=150;
+      Caption:=dlgRubberbandSelectsGrandChilds;
     end;
   end;
 
@@ -2184,7 +2327,6 @@ begin
     Width:=((Parent.ClientWidth-3*Left) div 2);
     Height:=170;
     Caption:=dlgEnvGrid ;
-    Visible:=true;
   end;
   
   SetupGridGroupBox;
@@ -2198,7 +2340,6 @@ begin
     Width:=GridGroupBox.Width;
     Height:=GridGroupBox.Height;
     Caption:=dlgEnvLGuideLines;
-    Visible:=true;
   end;
   
   SetupGuideLinesGroupBox;
@@ -2212,10 +2353,22 @@ begin
     Width:=Parent.ClientWidth-2*Left;
     Height:=100;
     Caption:=dlgEnvMisc;
-    Visible:=true;
   end;
   
   SetupMiscGroupBox;
+  
+  RubberbandGroupBox:=TGroupBox.Create(Self);
+  with RubberbandGroupBox do begin
+    Name:='RubberbandGroupBox';
+    Parent:=Notebook.Page[Page];
+    Left:=5;
+    Top:=FormEditMiscGroupBox.Top+FormEditMiscGroupBox.Height+5;
+    Width:=GridGroupBox.Width;
+    Height:=120;
+    Caption:='Rubberband';
+  end;
+
+  SetupRubberbandBox;
 end;
 
 procedure TEnvironmentOptionsDialog.SetupNamingPage(Page: integer);
@@ -2966,6 +3119,11 @@ begin
     ShowComponentCaptionsCheckBox.Checked:=ShowComponentCaptions;
     ShowEditorHintsCheckBox.Checked:=ShowEditorHints;
     AutoCreateFormsCheckBox.Checked:=AutoCreateForms;
+    GrabberColorButton.ButtonColor:=GrabberColor;
+    MarkerColorButton.ButtonColor:=MarkerColor;
+    RubberbandSelectColorButton.ButtonColor:=RubberbandSelectionColor;
+    RubberbandCreateColorButton.ButtonColor:=RubberbandCreationColor;
+    RubberbandSelectsGrandChildsCheckBox.Checked:=RubberbandSelectsGrandChilds;
 
     // files
     LazarusDirComboBox.Items.Assign(LazarusDirHistory);
@@ -3082,6 +3240,11 @@ begin
     ShowComponentCaptions:=ShowComponentCaptionsCheckBox.Checked;
     ShowEditorHints:=ShowEditorHintsCheckBox.Checked;
     AutoCreateForms:=AutoCreateFormsCheckBox.Checked;
+    GrabberColor:=GrabberColorButton.ButtonColor;
+    MarkerColor:=MarkerColorButton.ButtonColor;
+    RubberbandSelectionColor:=RubberbandSelectColorButton.ButtonColor;
+    RubberbandCreationColor:=RubberbandCreateColorButton.ButtonColor;
+    RubberbandSelectsGrandChilds:=RubberbandSelectsGrandChildsCheckBox.Checked;
 
     // files
     LazarusDirectory:=LazarusDirComboBox.Text;

@@ -347,9 +347,14 @@ resourcestring
   dlgShowCaps = 'Show component captions';
   dlgShowEdrHints = 'Show editor hints';
   dlgAutoForm = 'Auto create forms';
+  dlgGrabberColor = 'Grabber color';
+  dlgMarkerColor = 'Marker color';
   dlgEnvGrid = 'Grid';
   dlgEnvLGuideLines = 'Guide lines';
   dlgEnvMisc = 'Miscellaneous';
+  dlgRuberbandSelectionColor = 'Selection';
+  dlgRuberbandCreationColor = 'Creation';
+  dlgRubberbandSelectsGrandChilds = 'Select grand childs';
   dlgPasExt = 'Default pascal extension';
   dlgPasLower = 'Save pascal files lowercase';
   dlgAmbigFileAct = 'Ambigious file action:';

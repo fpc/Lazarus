@@ -49,9 +49,9 @@
 
   Create a new TRadioButton
  ------------------------------------------------------------------------------}
-constructor TRadioButton.Create(AOwner : TComponent);
+constructor TRadioButton.Create(AnOwner : TComponent);
 begin
-  inherited Create(AOwner);
+  inherited Create(AnOwner);
   fCompStyle := csRadioButton;
   AutoSize := True;
 end;
@@ -82,7 +82,7 @@ var
   R : TRect;
   DC : hDC;
 begin
-  If Autosizing or not AutoSize then
+  If Autosizing or (not AutoSize) then
     Exit;
   if (not HandleAllocated) or (csLoading in ComponentState) then exit;
   AutoSizing := True;
@@ -105,6 +105,9 @@ end;
 
 {
   $Log$
+  Revision 1.10  2002/11/27 14:37:37  mattias
+  added form editor options for rubberband and colors
+
   Revision 1.9  2002/11/14 14:11:51  lazarus
   MG: fixed TRadioButton.DoAutoSize during loading
 
