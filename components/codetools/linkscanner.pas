@@ -76,11 +76,12 @@ type
     Next: PSourceLink;
   end;
 
+  PSourceChangeStep = ^TSourceChangeStep;
   TSourceChangeStep = record
     Code: Pointer;
     ChangeStep: integer;
+    Next: PSourceChangeStep;
   end;
-  PSourceChangeStep = ^TSourceChangeStep;
 
   TCommentStyle = (CommentNone, CommentTP, CommentOldTP, CommentDelphi);
 
@@ -267,6 +268,15 @@ type
     function NewPSourceLink: PSourceLink;
   end;
 
+  // memory system for PSourceLink(s)
+  TPSourceChangeStepMemManager = class(TCodeToolMemManager)
+  protected
+    procedure FreeFirstItem; override;
+  public
+    procedure DisposePSourceChangeStep(Step: PSourceChangeStep);
+    function NewPSourceChangeStep: PSourceChangeStep;
+  end;
+
 //----------------------------------------------------------------------------
 // compiler switches
 const
@@ -316,6 +326,7 @@ var
     array[char] of boolean;
     
   PSourceLinkMemManager: TPSourceLinkMemManager;
+  PSourceChangeStepMemManager: TPSourceChangeStepMemManager;
 
 
 implementation
@@ -397,7 +408,7 @@ begin
   FCleanedSrc:='';
   for i:=0 to FSourceChangeSteps.Count-1 do begin
     PStamp:=PSourceChangeStep(FSourceChangeSteps[i]);
-    Dispose(PStamp);
+    PSourceChangeStepMemManager.DisposePSourceChangeStep(PStamp);
   end;
   FSourceChangeSteps.Clear;
   IncreaseChangeStep;
@@ -839,7 +850,7 @@ begin
     else if c>ACode then r:=m-1
     else exit;
   end;
-  New(NewSrcChangeStep);
+  NewSrcChangeStep:=PSourceChangeStepMemManager.NewPSourceChangeStep;
   NewSrcChangeStep^.Code:=ACode;
   NewSrcChangeStep^.ChangeStep:=AChangeStep;
   if (FSourceChangeSteps.Count>0) and (c<ACode) then inc(m);
@@ -1806,6 +1817,51 @@ begin
   inc(FCount);
 end;
 
+{ TPSourceChangeStep }
+
+procedure TPSourceChangeStepMemManager.FreeFirstItem;
+var Step: PSourceChangeStep;
+begin
+  Step:=PSourceChangeStep(FFirstFree);
+  PSourceChangeStep(FFirstFree):=Step^.Next;
+  Dispose(Step);
+end;
+
+procedure TPSourceChangeStepMemManager.DisposePSourceChangeStep(
+  Step: PSourceChangeStep);
+begin
+  if (FFreeCount<FMinFree) or (FFreeCount<((FCount shr 3)*FMaxFreeRatio)) then
+  begin
+    // add Link to Free list
+    FillChar(Step^,SizeOf(TSourceChangeStep),0);
+    Step^.Next:=PSourceChangeStep(FFirstFree);
+    PSourceChangeStep(FFirstFree):=Step;
+    inc(FFreeCount);
+  end else begin
+    // free list full -> free Step
+    Dispose(Step);
+    inc(FFreedCount);
+  end;
+  dec(FCount);
+end;
+
+function TPSourceChangeStepMemManager.NewPSourceChangeStep: PSourceChangeStep;
+begin
+  if FFirstFree<>nil then begin
+    // take from free list
+    Result:=PSourceChangeStep(FFirstFree);
+    PSourceChangeStep(FFirstFree):=Result^.Next;
+    Result^.Next:=nil;
+    dec(FFreeCount);
+  end else begin
+    // free list empty -> create new PSourceChangeStep
+    New(Result);
+    FillChar(Result^,SizeOf(TSourceChangeStep),0);
+    inc(FAllocatedCount);
+  end;
+  inc(FCount);
+end;
+
 
 //------------------------------------------------------------------------------
 procedure InternalInit;
@@ -1827,10 +1883,12 @@ begin
   for CompMode:=Low(TCompilerMode) to High(TCompilerMode) do
     CompilerModeVars[CompMode]:='FPC_'+CompilerModeNames[CompMode];
   PSourceLinkMemManager:=TPSourceLinkMemManager.Create;
+  PSourceChangeStepMemManager:=TPSourceChangeStepMemManager.Create;
 end;
 
 procedure InternalFinal;
 begin
+  PSourceChangeStepMemManager.Free;
   PSourceLinkMemManager.Free;
 end;
 
