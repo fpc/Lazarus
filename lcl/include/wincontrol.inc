@@ -2378,12 +2378,13 @@ end;
 
 procedure TWinControl.KeyUpBeforeInterface(var Key: Word; Shift: TShiftState);
 begin
+  //debugln('TWinControl.KeyUpBeforeInterface ',DbgSName(Self));
   KeyUp(Key,Shift);
 end;
 
 procedure TWinControl.KeyUpAfterInterface(var Key: Word; Shift: TShiftState);
 begin
-
+  //debugln('TWinControl.KeyUpAfterInterface ',DbgSName(Self));
 end;
 
 {------------------------------------------------------------------------------
@@ -2621,6 +2622,7 @@ function TWinControl.DoRemainingKeyUp(var Message: TLMKeyDown): Boolean;
 var
   ShiftState: TShiftState;
 begin
+  //debugln('TWinControl.DoRemainingKeyUp ',DbgSName(Self));
   Result:=true;
 
   ShiftState := KeyDataToShiftState(Message.KeyData);
@@ -2722,6 +2724,7 @@ end;
 
 procedure TWinControl.ControlKeyUp(var Key: Word; Shift: TShiftState);
 begin
+  //debugln('TWinControl.ControlKeyUp ',DbgSName(Self));
   Application.ControlKeyUp(Self,Key,Shift);
 end;
 
@@ -3679,6 +3682,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMSysKeyUp(var Message: TLMKeyUp);
 begin
+  debugln('TWinControl.WMSysKeyUp ',DbgSName(Self));
   DoRemainingKeyUp(Message);
 end;
 
@@ -3690,7 +3694,8 @@ end;
   event handler.
  ------------------------------------------------------------------------------}
 Procedure TWinControl.WMKeyUp(Var Message: TLMKeyUp);
-Begin
+begin
+  //debugln('TWinControl.WMKeyUp ',DbgSName(Self));
   DoRemainingKeyUp(Message);
 end;
 
@@ -4488,6 +4493,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.314  2005/02/19 22:48:23  mattias
+  fixed navigation key handling for TButton
+
   Revision 1.313  2005/02/19 21:54:08  mattias
   moved LCL navigation key handling to key up, so that interface has the chance to handle keys
 

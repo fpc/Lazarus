@@ -1145,7 +1145,14 @@ end;
 
 procedure TApplication.ControlKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
+var
+  AControl: TWinControl;
 begin
+  if Sender is TWinControl then begin
+    AControl:=TWinControl(Sender);
+    if AControl=nil then ;
+    //debugln('TApplication.ControlKeyDown A ',DbgSName(AControl));
+  end;
 end;
 
 procedure TApplication.ControlKeyUp(Sender: TObject; var Key: Word;
@@ -1156,7 +1163,7 @@ var
 begin
   if Sender is TWinControl then begin
     AControl:=TWinControl(Sender);
-    //debugln('TApplication.ControlKeyUp A ',Acontrol.Name);
+    //debugln('TApplication.ControlKeyUp A ',DbgSName(AControl));
 
     // handle tab keys
     if (Key=VK_Tab) and ((Shift-[ssShift])=[])
@@ -1383,6 +1390,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.101  2005/02/19 22:48:23  mattias
+  fixed navigation key handling for TButton
+
   Revision 1.100  2005/02/19 21:54:08  mattias
   moved LCL navigation key handling to key up, so that interface has the chance to handle keys
 

@@ -73,11 +73,11 @@ procedure TCustomButton.ControlKeyUp(var Key: Word; Shift: TShiftState
 begin
   if (Key=VK_RETURN) and (Shift=[]) then begin
     // the interface didn't handle it.
-    debugln('TCustomButton.ControlKeyUp User pressed Return on ',DbgSName(Self),' and interface did not handle it');
+    //debugln('TCustomButton.ControlKeyUp User pressed Return on ',DbgSName(Self),' and interface did not handle it');
     Key:=VK_UNKNOWN;
     Click;
   end else
-    inherited KeyDownAfterInterface(Key, Shift);
+    inherited ControlKeyUp(Key, Shift);
 end;
 
 {------------------------------------------------------------------------------
@@ -236,6 +236,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.40  2005/02/19 22:48:23  mattias
+  fixed navigation key handling for TButton
+
   Revision 1.39  2005/02/19 21:54:08  mattias
   moved LCL navigation key handling to key up, so that interface has the chance to handle keys
 

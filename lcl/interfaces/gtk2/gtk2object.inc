@@ -63,28 +63,28 @@ end;
 function GTK2KeyDown(Widget: PGtkWidget; Event : pgdkeventkey;
   Data: gPointer) : GBoolean; cdecl;
 begin
-  debugln('GTK2KeyDown ',DbgSName(TObject(Data)));
+  //debugln('GTK2KeyDown ',DbgSName(TObject(Data)));
   Result := HandleGtkKeyUpDown(Widget, Event, Data, True);
 end;
 
 function GTK2KeyDownAfter(Widget: PGtkWidget; Event : pgdkeventkey;
   Data: gPointer) : GBoolean; cdecl;
 begin
-  debugln('GTK2KeyDownAfter ',DbgSName(TObject(Data)));
+  //debugln('GTK2KeyDownAfter ',DbgSName(TObject(Data)));
   Result := HandleGtkKeyUpDown(Widget, Event, Data, False);
 end;
 
 function GTK2KeyUp(Widget: PGtkWidget; Event : pgdkeventkey;
   Data: gPointer) : GBoolean; cdecl;
 begin
-  debugln('GTK2KeyUp ',DbgSName(TObject(Data)));
+  //debugln('GTK2KeyUp ',DbgSName(TObject(Data)));
   Result := HandleGtkKeyUpDown(Widget, Event, Data, True);
 end;
 
 function GTK2KeyUpAfter(Widget: PGtkWidget; Event : pgdkeventkey;
   Data: gPointer) : GBoolean; cdecl;
 begin
-  debugln('GTK2KeyUpAfter ',DbgSName(TObject(Data)));
+  //debugln('GTK2KeyUpAfter ',DbgSName(TObject(Data)));
   Result := HandleGtkKeyUpDown(Widget, Event, Data, False);
 end;
 
@@ -1521,6 +1521,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.27  2005/02/19 22:48:23  mattias
+  fixed navigation key handling for TButton
+
   Revision 1.26  2005/02/19 21:54:08  mattias
   moved LCL navigation key handling to key up, so that interface has the chance to handle keys
 
