@@ -129,7 +129,7 @@ type
   Protected
     procedure AlignControls(AControl: TControl; var ARect: TRect); override;
     procedure CreateWnd; override;
-    function  GetChildsRect(Scrolled: boolean): TRect; override;
+    function  GetClientScrollOffset: TPoint; override;
     Procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
     procedure WMPaint(var message: TLMPaint); message LM_PAINT;
     procedure WMSize(var Message: TLMSize); message LM_Size;
