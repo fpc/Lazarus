@@ -901,6 +901,39 @@ function TPascalParserTool.ReadParamList(ExceptionOnError, Extract: boolean;
 var CloseBracket: char;
   Desc: TCodeTreeNodeDesc;
   Node: TCodeTreeNode;
+  
+  procedure ReadPrefixModifier;
+  begin
+    // read parameter prefix modifier
+    if (UpAtomIs('VAR')) or (UpAtomIs('CONST')) or (UpAtomIs('OUT')) then begin
+      Desc:=ctnVarDefinition;
+      if not Extract then
+        ReadNextAtom
+      else
+        ExtractNextAtom(phpWithVarModifiers in Attr,Attr);
+    end else
+      Desc:=ctnVarDefinition;
+  end;
+  
+  procedure ReadDefaultValue;
+  begin
+    if not Extract then
+      ReadNextAtom
+    else
+      ExtractNextAtom(phpWithDefaultValues in Attr,Attr);
+    ReadConstant(ExceptionOnError,
+      Extract and (phpWithDefaultValues in Attr),Attr);
+    if (phpCreateNodes in Attr) then begin
+      Node:=CurNode;
+      Node.SubDesc:=Node.SubDesc+ctnsHasDefaultValue;
+      Node:=Node.PriorBrother;
+      while (Node<>nil) and (Node.FirstChild=nil) do begin
+        Node.SubDesc:=Node.SubDesc+ctnsHasDefaultValue;
+        Node:=Node.PriorBrother;
+      end;
+    end;
+  end;
+
 begin
   Result:=false;
   if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then begin
@@ -918,98 +951,84 @@ begin
       ExtractNextAtom(not (phpWithoutBrackets in Attr),Attr);
   end else
     CloseBracket:=#0;
-  repeat
-    // read parameter prefix modifier
-    if (UpAtomIs('VAR')) or (UpAtomIs('CONST')) or (UpAtomIs('OUT')) then begin
-      Desc:=ctnVarDefinition;
-      if not Extract then
-        ReadNextAtom
-      else
-        ExtractNextAtom(phpWithVarModifiers in Attr,Attr);
-    end else
-      Desc:=ctnVarDefinition;
-    // read parameter name(s)
+  if not (CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose]) then begin
     repeat
-      if not AtomIsIdentifier(ExceptionOnError) then exit;
-      if (phpCreateNodes in Attr) then begin
-        CreateChildNode;
-        CurNode.Desc:=Desc;
-      end;
-      if not Extract then
-        ReadNextAtom
-      else
-        ExtractNextAtom(phpWithParameterNames in Attr,Attr);
-      if CurPos.Flag<>cafComma then
-        break
-      else begin
+      ReadPrefixModifier;
+      // read parameter name(s)
+      repeat
+        if not AtomIsIdentifier(ExceptionOnError) then exit;
         if (phpCreateNodes in Attr) then begin
-          CurNode.EndPos:=LastAtoms.GetValueAt(0).EndPos;
+          CreateChildNode;
+          CurNode.Desc:=Desc;
+        end;
+        if not Extract then
+          ReadNextAtom
+        else
+          ExtractNextAtom(phpWithParameterNames in Attr,Attr);
+        if CurPos.Flag<>cafComma then
+          break
+        else begin
+          if (phpCreateNodes in Attr) then begin
+            CurNode.EndPos:=LastAtoms.GetValueAt(0).EndPos;
+            EndChildNode;
+          end;
+          if not Extract then
+            ReadNextAtom
+          else
+            ExtractNextAtom(not (phpWithoutParamList in Attr),Attr);
+        end;
+      until false;
+      // read type
+      if CurPos.Flag=cafColon then begin
+        if not Extract then
+          ReadNextAtom
+        else
+          ExtractNextAtom([phpWithoutParamList,phpWithoutParamTypes]*Attr=[],
+                          Attr);
+        if not ReadParamType(ExceptionOnError,Extract,Attr) then exit;
+        if CurPos.Flag=cafEqual then begin
+          // read default value
+          ReadDefaultValue;
+        end;
+      end else begin
+        // no type -> variant
+        if (phpCreateNodes in Attr) then begin
+          CreateChildNode;
+          CurNode.Desc:=ctnVariantType;
+          CurNode.EndPos:=CurNode.StartPos;
           EndChildNode;
         end;
-        if not Extract then
-          ReadNextAtom
-        else
-          ExtractNextAtom(not (phpWithoutParamList in Attr),Attr);
       end;
-    until false;
-    // read type
-    if CurPos.Flag=cafColon then begin
+      if (phpCreateNodes in Attr) then begin
+        CurNode.EndPos:=CurPos.EndPos;
+        EndChildNode;
+      end;
+      // read next parameter
+      if (CurPos.StartPos>SrcLen) then
+        if ExceptionOnError then
+          SaveRaiseExceptionFmt(ctsStrExpectedButAtomFound,
+                                [CloseBracket,GetAtom])
+        else exit;
+      if (CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose]) then
+        break;
+      if (CurPos.Flag<>cafSemicolon) then
+        if ExceptionOnError then
+          SaveRaiseExceptionFmt(ctsStrExpectedButAtomFound,
+                                [CloseBracket,GetAtom])
+        else exit;
       if not Extract then
         ReadNextAtom
       else
-        ExtractNextAtom([phpWithoutParamList,phpWithoutParamTypes]*Attr=[],Attr);
-      if not ReadParamType(ExceptionOnError,Extract,Attr) then exit;
-      if CurPos.Flag=cafEqual then begin
-        // read default value
-        if not Extract then
-          ReadNextAtom
-        else
-          ExtractNextAtom(phpWithDefaultValues in Attr,Attr);
-        ReadConstant(ExceptionOnError,
-          Extract and (phpWithDefaultValues in Attr),Attr);
-        if (phpCreateNodes in Attr) then begin
-          Node:=CurNode;
-          Node.SubDesc:=Node.SubDesc+ctnsHasDefaultValue;
-          Node:=Node.PriorBrother;
-          while (Node<>nil) and (Node.FirstChild=nil) do begin
-            Node.SubDesc:=Node.SubDesc+ctnsHasDefaultValue;
-            Node:=Node.PriorBrother;
-          end;
-        end;
-      end;
-    end else begin
-      // no type -> variant
-      if (phpCreateNodes in Attr) then begin
-        CreateChildNode;
-        CurNode.Desc:=ctnVariantType;
-        CurNode.EndPos:=CurNode.StartPos;
-        EndChildNode;
-      end;
-    end;
-    if (phpCreateNodes in Attr) then begin
-      CurNode.EndPos:=CurPos.EndPos;
-      EndChildNode;
-    end;
-    // read next parameter
-    if (CurPos.StartPos>SrcLen) then
-      if ExceptionOnError then
-        SaveRaiseExceptionFmt(ctsStrExpectedButAtomFound,[CloseBracket,GetAtom])
-      else exit;
-    if (CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose]) then break;
-    if (CurPos.Flag<>cafSemicolon) then
-      if ExceptionOnError then
-        SaveRaiseExceptionFmt(ctsStrExpectedButAtomFound,[CloseBracket,GetAtom])
-      else exit;
-    if not Extract then
-      ReadNextAtom
-    else
-      ExtractNextAtom(not (phpWithoutParamList in Attr),Attr);
-  until false;
+        ExtractNextAtom(not (phpWithoutParamList in Attr),Attr);
+    until false;
+  end;
   if (CloseBracket<>#0) then begin
-    if Src[CurPos.StartPos]<>CloseBracket then
+    if Src[CurPos.StartPos]<>CloseBracket then begin
       if ExceptionOnError then
         SaveRaiseExceptionFmt(ctsStrExpectedButAtomFound,[CloseBracket,GetAtom])
-      else exit;
+      else
+        exit;
+    end;
     if (phpCreateNodes in Attr) then begin
       CurNode.EndPos:=CurPos.EndPos;
       EndChildNode;
@@ -1090,6 +1109,7 @@ function TPascalParserTool.ReadTilProcedureHeadEnd(
    constructor Create;
    destructor Destroy;  override;
    class function X: integer;
+   function QWidget_mouseGrabber(): QWidgetH; cdecl;
 
  proc specifiers without parameters:
    stdcall, virtual, abstract, dynamic, overload, override, cdecl, inline
@@ -1106,8 +1126,8 @@ function TPascalParserTool.ReadTilProcedureHeadEnd(
 var IsSpecifier: boolean;
   Attr: TProcHeadAttributes;
 begin
-//writeln('[TPascalParserTool.ReadTilProcedureHeadEnd] ',
-//'Method=',IsMethod,', Function=',IsFunction,', Type=',IsType);
+  //writeln('[TPascalParserTool.ReadTilProcedureHeadEnd] ',
+  //'Method=',IsMethod,', Function=',IsFunction,', Type=',IsType);
   Result:=true;
   HasForwardModifier:=false;
   if CurPos.Flag=cafRoundBracketOpen then begin
@@ -2658,7 +2678,7 @@ function TPascalParserTool.KeyWordFuncTypeDefault: boolean;
   examples:
     integer
     1..3
-    (a,b:=3,c)
+    (a,b:=3,c=4)
     (a)..4
     Low(integer)..High(integer)
     'a'..'z'
@@ -2737,7 +2757,7 @@ begin
           CurNode.EndPos:=CurPos.EndPos;
           EndChildNode; // close enum node
           ReadNextAtom;
-          if AtomIs(':=') then begin
+          if AtomIs(':=') or (CurPos.Flag=cafEqual) then begin
             // read ordinal value
             ReadNextAtom;
             ReadConstant(true,false,[]);

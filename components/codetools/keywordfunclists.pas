@@ -645,7 +645,7 @@ begin
     Add('NOT',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('OBJECT',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('OF',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('ON',{$ifdef FPC}@{$endif}AllwaysTrue);
+    //Add('ON',{$ifdef FPC}@{$endif}AllwaysTrue); // not for Delphi
     Add('OR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PACKED',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PROCEDURE',{$ifdef FPC}@{$endif}AllwaysTrue);
