@@ -302,7 +302,7 @@ type
     property Constraints;
     property Picture : TPicture read FPicture write SetPicture;
     property Visible;
-    property OnCLick;
+    property OnClick;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
@@ -506,6 +506,9 @@ end.
 
  {
   $Log$
+  Revision 1.33  2002/10/01 10:05:48  lazarus
+  MG: changed PDeviceContext into class TDeviceContext
+
   Revision 1.32  2002/09/09 07:26:42  lazarus
   MG: started TCollectionPropertyEditor
 
