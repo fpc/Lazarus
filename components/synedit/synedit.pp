@@ -2496,7 +2496,6 @@ var
     {$IFDEF SYN_LAZARUS}
     BracketFGCol, BracketBGCol: TColor;
     BracketStyle: TFontStyles;
-    nTokenStart, nTokenEnd: integer;
     {$ENDIF}
   begin
     // Initialize rcLine for drawing. Note that Top and Bottom are updated
@@ -2668,7 +2667,7 @@ var
                   AddHighlightToken(sToken, nTokenPos, nTokenLen,
                     BracketFGCol, BracketBGCol, BracketStyle);
                   inc(nTokenPos,nTokenLen);
-                  AddHighlightToken(@sToken[nTokenLen-1], nTokenPos, 1,
+                  AddHighlightToken(@sToken[nTokenLen], nTokenPos, 1,
                     BracketFGCol, BracketBGCol, BracketStyle+[fsBold]);
                 end else begin
                   // draw rest
