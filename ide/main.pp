@@ -8130,6 +8130,7 @@ begin
       CodeToolBoss.GetCompiledSrcExtForDirectory(''),
       TargetOS,TargetProcessor,
       UnitLinksValid, CompilerUnitLinks, CodeToolsOpts);
+    //writeln('TMainIDE.RescanCompilerDefines C UnitLinks=',copy(CompilerUnitLinks,1,100));
     if FPCSrcTemplate<>nil then begin
       CodeToolBoss.DefineTree.RemoveRootDefineTemplateByName(
                                                          FPCSrcTemplate.Name);
@@ -9925,6 +9926,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.660  2003/10/28 14:25:37  mattias
+  fixed unit circle
+
   Revision 1.659  2003/10/23 16:15:29  micha
   compatibility with new 1.1
 

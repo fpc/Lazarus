@@ -2827,7 +2827,7 @@ var
       i: integer;
       DefaultMacroCount: integer;
     begin
-      //writeln('Browse ',ADirPath);
+      writeln('Browse ',ADirPath);
       if ADirPath='' then exit;
       if not (ADirPath[length(ADirPath)]=PathDelim) then
         ADirPath:=ADirPath+PathDelim;
@@ -2966,7 +2966,7 @@ var
           repeat
             UnitName:=ExtractFileName(FileInfo.Name);
             UnitName:=copy(UnitName,1,length(UnitName)-4);
-            //writeln('FindStandardPPUSources B ',UnitName);
+            writeln('FindStandardPPUSources B ',UnitName);
             AddFPCSourceLinkForUnit(UnitName);
           until FindNext(FileInfo)<>0;
         end;

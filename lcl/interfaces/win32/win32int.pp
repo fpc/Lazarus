@@ -116,7 +116,7 @@ Type
     Procedure HandleEvents; Override;
     Procedure WaitMessage; Override;
     Procedure AppTerminate; Override;
-    Procedure AttachMenuToWindow(AMenu: TMenu); Override;
+    Procedure AttachMenuToWindow(AMenuObject: TComponent); Override;
 
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer; override;
     function DestroyTimer(TimerHandle: integer) : boolean; override;
@@ -181,6 +181,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.48  2003/10/28 14:25:37  mattias
+  fixed unit circle
+
   Revision 1.47  2003/10/26 17:34:41  micha
   new interface method to attach a menu to window
 

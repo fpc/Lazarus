@@ -56,7 +56,7 @@ begin
   Result := True;
 end;
 
-procedure TInterfaceBase.AttachMenuToWindow(AMenu: TMenu);
+procedure TInterfaceBase.AttachMenuToWindow(AMenuObject: TComponent);
 begin
 end;
 
@@ -1837,6 +1837,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.106  2003/10/28 14:25:37  mattias
+  fixed unit circle
+
   Revision 1.105  2003/10/26 17:34:41  micha
   new interface method to attach a menu to window
 

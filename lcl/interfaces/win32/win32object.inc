@@ -1237,9 +1237,10 @@ begin
   Assert(False,'Trace:Destroy timer Result: '+ BOOL_RESULT[result]);
 end;
 
-procedure TWin32Object.AttachMenuToWindow(AMenu: TMenu);
+procedure TWin32Object.AttachMenuToWindow(AMenuObject: TComponent);
 begin
-  Windows.SetMenu(TWinControl(AMenu.Owner).Handle, AMenu.Handle);
+  Windows.SetMenu(TWinControl((AMenu as TMenu).Owner).Handle,
+                  TMenu(AMenu).Handle);
 end;
 
 { Private methods (in no significant order) }
@@ -2803,6 +2804,9 @@ End;
 
 {
   $Log$
+  Revision 1.122  2003/10/28 14:25:37  mattias
+  fixed unit circle
+
   Revision 1.121  2003/10/26 17:34:41  micha
   new interface method to attach a menu to window
 

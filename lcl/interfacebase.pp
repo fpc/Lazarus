@@ -21,14 +21,6 @@
  *****************************************************************************
 }
 
-{
-@author(TInterfaceBase - Marc Weustink <weus@quicknet.nl>)
-@created(13-Nov-1999)
-@lastmod(13-Nov-1999)
-
-Detailed description of the Unit.
-}
-
 unit InterfaceBase;
 
 {$mode objfpc}
@@ -42,16 +34,12 @@ interface
 
 uses
   Classes, SysUtils, LCLStrConsts, LCLType, LCLProc, VCLGlobals, LMessages,
-  Menus, GraphType, GraphMath;
+  GraphType, GraphMath;
 
 type
 
   { TInterfaceBase }
-  {
-    @abstract(Short description of the class.)
-    Introduced by Marc Weustink <marc@dommelstein.net>
-    Currently maintained by Marc Weustink <marc@dommelstein.net>
-  }
+
   TInterfaceBase = Class(TObject)
   protected
     procedure PassCmdLineOptions; virtual;
@@ -65,11 +53,11 @@ type
     procedure WaitMessage; virtual; abstract;
     procedure AppInit; virtual; abstract;
     procedure AppTerminate; virtual; abstract;
-    procedure AttachMenuToWindow(AMenu: TMenu); virtual;
-    function IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer; virtual; abstract;
+    procedure AttachMenuToWindow(AMenuObject: TComponent); virtual;
+    function IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: pointer): integer; virtual; abstract;
 
-    function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer; virtual; abstract;
-    function DestroyTimer(TimerHandle: integer) : boolean; virtual; abstract;
+    function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): integer; virtual; abstract;
+    function DestroyTimer(TimerHandle: integer): boolean; virtual; abstract;
 
     {$DEFINE IF_BASE_MEMBER}
     {$I winapih.inc}
@@ -106,7 +94,7 @@ var
 
 implementation
 
-uses Math, LCLIntf;
+uses Math;
 
 {$I interfacebase.inc}
 
@@ -121,6 +109,9 @@ end.
 
 {
   $Log$
+  Revision 1.34  2003/10/28 14:25:37  mattias
+  fixed unit circle
+
   Revision 1.33  2003/10/26 17:34:41  micha
   new interface method to attach a menu to window
 
