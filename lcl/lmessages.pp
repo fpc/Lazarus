@@ -868,9 +868,10 @@ begin
 //    LM_SETENABLED       : Result :='LM_SETENABLED       ';
     LM_BRINGTOFRONT     : Result :='LM_BRINGTOFRONT    ';
     LM_CB_GETCOUNT      : Result :='LM_CB_GETCOUNT     ';
+    LM_SETFORMICON      : Result :='LM_SETFORMICON     ';
     LM_SETSHORTCUT      : Result :='LM_SETSHORTCUT     ';
     LM_SETGEOMETRY      : Result :='LM_SETGEOMETRY     ';
-
+    LM_SCREENINIT       : Result :='LM_SCREENINIT      ';
     // additional for TNoteBook
     LM_NB_UpdateTab     : Result := 'LM_NB_UpdateTab';
   else
@@ -885,6 +886,9 @@ end.
 
 {
   $Log$
+  Revision 1.41  2002/12/01 22:00:34  mattias
+  fixed DeleteCriticalSection
+
   Revision 1.40  2002/11/23 13:48:43  mattias
   added Timer patch from Vincent Snijders
 
