@@ -1,4 +1,5 @@
 {%MainUnit gtkint.pp}
+
 {******************************************************************************
                                    TGtkWidgetSet
  ******************************************************************************
@@ -145,6 +146,7 @@ begin
   FDeviceContexts.Options:=FDeviceContexts.Options+[dhaoCacheContains];
   FGDIObjects := TDynHashArray.Create(-1);
   FGDIObjects.Options:=FGDIObjects.Options+[dhaoCacheContains];
+
   {$Ifdef GTK2}
   FDefaultFontDesc:= nil;
   {$Else}
@@ -4639,6 +4641,19 @@ begin
     if PCaption=nil then PCaption:=#0;
     gtk_window_set_title(pGtkWindow(Result), PCaption);
 
+    // Shows in taskbar only Main Form.
+    {$IFDEF HasGTK2_2}
+      if Assigned(ACustomForm) then
+      if (ACustomForm=Application.MainForm) OR (Application.MainForm = Nil) then
+      begin
+        gtk_window_set_skip_taskbar_hint(pGtkWindow(Result),False); //SHOW
+      end
+      else
+      begin
+        gtk_window_set_skip_taskbar_hint(pGtkWindow(Result),True); //HIDE
+      end;
+    {$ENDIF}
+
     // the clipboard needs a widget
     if ClipboardWidget=nil then
       SetClipboardWidget(Result);
@@ -6871,6 +6886,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.639  2005/03/07 16:01:06  mattias
+  hiding secondary form from taskbar in gtk2.2  from Sergio
+
   Revision 1.638  2005/03/05 23:00:16  mattias
   adding panels to statusbar during designing now sets SimplePanel:=false
 
