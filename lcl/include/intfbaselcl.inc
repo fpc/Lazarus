@@ -566,11 +566,13 @@ begin
   Result := false;
 end;
 
-procedure TInterfaceBase.StatusBarPanelUpdate(StatusBar: TObject; PanelIndex: integer);
+procedure TInterfaceBase.StatusBarPanelUpdate(StatusBar: TObject;
+  PanelIndex: integer);
 begin
 end;
 
-procedure TInterfaceBase.StatusBarSetText(StatusBar: TObject; PanelIndex: integer);
+procedure TInterfaceBase.StatusBarSetText(StatusBar: TObject;
+  PanelIndex: integer);
 begin
 end;
 
@@ -590,6 +592,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2004/01/12 13:43:12  mattias
+  improved and activated new statusbar
+
   Revision 1.12  2004/01/12 08:36:34  micha
   statusbar interface dependent reimplementation (from vincent)
 

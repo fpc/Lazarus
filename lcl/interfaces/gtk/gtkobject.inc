@@ -3561,7 +3561,7 @@ end;
            may be nice to use it with different panels.
  ------------------------------------------------------------------------------}
 procedure TgtkObject.SetText(Child, Data: Pointer);
-{$IFNDEF NewStatusBar}
+{$IFDEF OldStatusBar}
 var
   num : Integer;
 {$ENDIF}
@@ -3569,8 +3569,7 @@ begin
   case PLMSetControlText(Data)^.fCompStyle of
   csStatusBar :
     begin
-      {$IFDEF NewStatusBar}
-      {$ELSE}
+      {$IFDEF OldStatusBar}
       num := gtk_statusbar_get_context_id(PGTKStatusBar(Child),
                                PChar(inttostr(PLMSetControlText(Data)^.panel)));
       gtk_statusbar_push(PGTKStatusBar(Child),num,
@@ -5555,17 +5554,12 @@ end;
   Create a TStatusBar widget set
  ------------------------------------------------------------------------------}
 function TgtkObject.CreateStatusBar(StatusBar: TObject): PGtkWidget;
-{$IFDEF NewStatusBar}
-var
-  HBox: PGtkWidget;
-{$ENDIF}
 begin
-  {$IFDEF NewStatusBar}
-  HBox:=gtk_hbox_new(false,0);
-  UpdateStatusBarPanels(StatusBar,HBox);
-  Result:=HBox;
-  {$ELSE}
+  {$IFDEF OldStatusBar}
   Result:=gtk_statusbar_new;
+  {$ELSE}
+  Result:=gtk_hbox_new(false,0);
+  UpdateStatusBarPanels(StatusBar,Result);
   {$ENDIF}
 end;
 
@@ -5601,10 +5595,12 @@ var
   i: Integer;
   ExpandItem: boolean;
 begin
-  //writeln('TgtkObject.UpdateStatusBarPanels');
+  //writeln('TgtkObject.UpdateStatusBarPanels ',HexStr(Cardinal(StatusBar),8));
 
   AStatusBar:=StatusBar as TStatusBar;
   HBox:=PGtkWidget(StatusBarWidget);
+  if (not GtkWidgetIsA(StatusBarWidget,GTK_HBOX_TYPE)) then
+    RaiseGDBException('');
   
   // create needed panels
   CurPanelCount:=integer(g_list_length(PGtkBox(HBox)^.children));
@@ -5620,6 +5616,9 @@ begin
     inc(CurPanelCount);
   end;
   CurPanelCount:=integer(g_list_length(PGtkBox(HBox)^.children));
+  //writeln('TgtkObject.UpdateStatusBarPanels B ',HexStr(Cardinal(StatusBar),8),' NewPanelCount=',NewPanelCount,' CurPanelCount=',CurPanelCount);
+  if CurPanelCount<>NewPanelCount then
+    RaiseGDBException('');
 
   // remove unneeded panels
   while CurPanelCount>NewPanelCount do begin
@@ -5660,6 +5659,7 @@ var
   NewShadowType: TGtkShadowType;
   NewJustification: TGtkJustification;
 begin
+  //writeln('TgtkObject.UpdateStatusBarPanel ',HexStr(Cardinal(StatusBar),8),' Index=',Index);
   AStatusBar:=StatusBar as TStatusBar;
 
   CurPanel:=nil;
@@ -8678,6 +8678,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.450  2004/01/12 13:43:12  mattias
+  improved and activated new statusbar
+
   Revision 1.449  2004/01/10 22:34:20  mattias
   started double buffering for gtk intf
 

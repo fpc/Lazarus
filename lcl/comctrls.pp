@@ -34,7 +34,6 @@ unit ComCtrls;
 {$mode objfpc}
 {$H+}
 
-
 interface
 
 uses
@@ -103,8 +102,13 @@ type
 
   TStatusBar = Class(TWinControl)
   private
-    {$IFNDEF NewStatusBar}
+    {$IFDEF OldStatusBar}
     FCanvas : TCanvas;
+    {$ELSE}
+    FHandlePanelCount: integer; // realized panels in the Handle object
+    FHandleObjectNeedsUpdate: boolean;
+    FHandleUpdatePanelIndex: integer; // which panel in the handle object needs update
+    FUpdateLock: integer; // set by BeginUpdate/EndUpdate
     {$ENDIF}
     FPanels : TStatusPanels;
     FSimpleText : String;
@@ -112,20 +116,26 @@ type
     procedure SetPanels(Value: TStatusPanels);
     procedure SetSimpleText(const Value : String);
     procedure SetSimplePanel(Value : Boolean);
-    {$IFNDEF NewStatusBar}
+    {$IFDEF OldStatusBar}
     Procedure WMPaint(var Msg: TLMPaint); message LM_PAINT;
     Procedure DrawDivider(X : Integer);
     Procedure DrawBevel(xLeft, PanelNum : Integer);
-    {$ENDIF}
-    {$IFDEF NewStatusBar}
+    {$ELSE}
   protected
     procedure CreateWnd; override;
+    procedure DestroyWnd; override;
+    procedure Loaded; override;
+    procedure UpdateHandleObject(PanelIndex: integer); virtual;
     {$ENDIF}
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure InvalidatePanel(PanelIndex: integer; PanelParts: TPanelParts); virtual;
-    {$IFNDEF NewStatusBar}
+    {$IFNDEF OldStatusBar}
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    function UpdatingStatusBar: boolean;
+    {$ELSE}
     procedure GetPanelRect(PanelIndex: integer; var ARect: TRect);
   public
     property Canvas: TCanvas read FCanvas;
@@ -134,7 +144,8 @@ type
     property Panels: TStatusPanels read FPanels write SetPanels;
     property SimpleText: String read FSimpleText write SetSimpleText;
     property SimplePanel: Boolean read FSimplePanel write SetSimplePanel default True;
-    property Visible;
+    property Visible default true;
+    property Color default clBtnFace;
   end;
 
 
@@ -1955,6 +1966,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.102  2004/01/12 13:43:12  mattias
+  improved and activated new statusbar
+
   Revision 1.101  2004/01/12 08:36:33  micha
   statusbar interface dependent reimplementation (from vincent)
 

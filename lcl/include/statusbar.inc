@@ -24,7 +24,7 @@ begin
   ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks, csOpaque];
   FSimplePanel := True;
   FPanels := TStatusPanels.Create(Self);
-  {$IFNDEF NewStatusBar}
+  {$IFDEF OldStatusBar}
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
   {$ENDIF}
@@ -43,10 +43,10 @@ begin
   if FSimpleText <> value then
   begin
     FSimpleText := Value;
-    {$IFDEF NewStatusBar}
-    if HandleAllocated and FSimplePanel then StatusBarSetText(Self,0);
-    {$ELSE}
+    {$IFDEF OldStatusBar}
     Invalidate;
+    {$ELSE}
+    if HandleAllocated and FSimplePanel then StatusBarSetText(Self,0);
     {$ENDIF}
   end;
 end;
@@ -56,10 +56,10 @@ Begin
   if FSimplePanel <> Value then
   Begin
     FSimplePanel := Value;
-    {$IFDEF NewStatusBar}
-    if HandleAllocated then StatusBarUpdate(Self);
-    {$ELSE}
+    {$IFDEF OldStatusBar}
     Invalidate;
+    {$ELSE}
+    UpdateHandleObject(-1);
     {$ENDIF}
   end;
 End;
@@ -69,26 +69,105 @@ begin
   FPanels.Assign(Value);
 end;
 
-
 {------------------------------------------------------------------------------}
 {   TStatusBar Destructor                                                      }
 {------------------------------------------------------------------------------}
 destructor TStatusBar.Destroy;
 begin
   FreeThenNil(FPanels);
-  {$IFNDEF NewStatusBar}
+  {$IFDEF OldStatusBar}
   FreeThenNil(FCanvas);
   {$ENDIF}
   inherited Destroy;
 end;
 
-{$IFDEF NewStatusBar}
+{$IFNDEF OldStatusBar}
 procedure TStatusBar.CreateWnd;
 begin
   inherited CreateWnd;
-  StatusBarUpdate(Self);
+  if FHandleObjectNeedsUpdate then
+    UpdateHandleObject(FHandleUpdatePanelIndex);
 end;
-{$ENDIF}
+
+procedure TStatusBar.DestroyWnd;
+begin
+  inherited DestroyWnd;
+  FHandlePanelCount:=0;
+  FHandleObjectNeedsUpdate:=false;
+end;
+
+procedure TStatusBar.Loaded;
+begin
+  inherited Loaded;
+  if FHandleObjectNeedsUpdate then
+    UpdateHandleObject(FHandleUpdatePanelIndex);
+end;
+
+procedure TStatusBar.UpdateHandleObject(PanelIndex: integer);
+begin
+  if (not HandleAllocated) or (csDestroying in ComponentState)
+  or ((PanelIndex>0) and SimplePanel) then exit;
+
+  if (csLoading in ComponentState) or (FUpdateLock>0) then begin
+    //writeln('TStatusBar.UpdateHandleObject Caching FHandleObjectNeedsUpdate=',FHandleObjectNeedsUpdate,' FHandleUpdatePanelIndex=',FHandleUpdatePanelIndex,' ',PanelIndex);
+    if FHandleObjectNeedsUpdate then begin
+      // combine multiple updates
+      if (FHandleUpdatePanelIndex>=0)
+      and (FHandleUpdatePanelIndex<>PanelIndex) then
+        // at least 2 different panels need update => update all
+        FHandleUpdatePanelIndex:=-1 // update all
+      else
+        FHandleUpdatePanelIndex:=PanelIndex;
+    end else begin
+      // start an update sequence
+      FHandleObjectNeedsUpdate:=true;
+      FHandleUpdatePanelIndex:=PanelIndex;
+    end;
+    exit;
+  end;
+
+  //writeln('TStatusBar.UpdateHandleObject A FHandlePanelCount=',FHandlePanelCount,' PanelIndex=',PanelIndex,' Panels.Count=',Panels.Count,' ',SimplePanel);
+  if FHandlePanelCount>PanelIndex then begin
+    // update one panel
+    StatusBarPanelUpdate(Self,PanelIndex);
+  end else begin
+    // update all panels
+    StatusBarUpdate(Self);
+    if SimplePanel then
+      FHandlePanelCount:=1
+    else
+      FHandlePanelCount:=Panels.Count;
+  end;
+  FHandleObjectNeedsUpdate:=false;
+end;
+
+procedure TStatusBar.BeginUpdate;
+begin
+  inc(FUpdateLock);
+  if FUpdateLock=1 then
+    Panels.BeginUpdate;
+end;
+
+procedure TStatusBar.EndUpdate;
+begin
+  if FUpdateLock<=0 then RaiseGDBException('TStatusBar.EndUpdate');
+  if FUpdateLock=1 then begin
+    // end update in Panels before decreasing FUpdateLock, so that
+    // multiple changes of Panels will be combined
+    Panels.EndUpdate;
+  end;
+  dec(FUpdateLock);
+  if (FUpdateLock=0) then begin
+    if FHandleObjectNeedsUpdate then
+      UpdateHandleObject(FHandleUpdatePanelIndex);
+  end;
+end;
+
+function TStatusBar.UpdatingStatusBar: boolean;
+begin
+  Result:=FUpdateLock>0;
+end;
+{$ENDIF not OldStatusBar}
 
 {------------------------------------------------------------------------------
   procedure TStatusBar.InvalidatePanel(PanelIndex: integer;
@@ -96,16 +175,16 @@ end;
 ------------------------------------------------------------------------------}
 procedure TStatusBar.InvalidatePanel(PanelIndex: integer;
   PanelParts: TPanelParts);
-{$IFNDEF NewStatusBar}
+{$IFDEF OldtatusBar}
 var
   PanelRect, TextRect: TRect;
 {$ENDIF}
 begin
-  if (PanelParts=[]) or (not HandleAllocated) or (csLoading in ComponentState)
-  then exit;
-  {$IFDEF NewStatusBar}
-  StatusBarPanelUpdate(Self,PanelIndex);
+  if (PanelParts=[]) then exit;
+  {$IFNDEF OldStatusBar}
+  UpdateHandleObject(PanelIndex);
   {$ELSE}
+  if (not HandleAllocated) or (csLoading in ComponentState) then exit;
   if ppWidth in PanelParts then begin
     Invalidate;
   end else begin
@@ -125,7 +204,7 @@ begin
   {$ENDIF}
 end;
 
-{$IFNDEF NewStatusBar}
+{$IFDEF OldStatusBar}
 {------------------------------------------------------------------------------
   procedure TStatusBar.GetPanelRect(PanelIndex: integer; var ARect: TRect);
 ------------------------------------------------------------------------------}
@@ -254,6 +333,6 @@ Begin
     Canvas.TextRect(R, 2, 0, SimpleText, Style);
   end;
 End;
-{$ENDIF}
+{$ENDIF  OldStatusBar}
 // included by comctrls.pp
 

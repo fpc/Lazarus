@@ -35,9 +35,10 @@
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGTKObject.GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String;
+function TGTKObject.GetAcceleratorString(const AVKey: Byte;
+  const AShiftState: TShiftState): String;
 begin
-  // Your code here
+  Result:='';
 end;
 
 {------------------------------------------------------------------------------
@@ -244,13 +245,17 @@ var
   AStatusBar: TStatusBar;
   HBox: PGtkWidget;
   StatusPanelWidget: PGtkWidget;
+  BoxChild: PGtkBoxChild;
 begin
+  //writeln('TGTKObject.StatusBarPanelUpdate ',HexStr(Cardinal(StatusBar),8),' Index=',Index);
   AStatusBar:=StatusBar as TStatusBar;
   if Index>=0 then begin
     // update one
     HBox:=PGtkWidget(AStatusBar.Handle);
-    StatusPanelWidget:=PGtkBoxChild(
-                        g_list_nth_data(PGtkBox(HBox)^.children,Index))^.Widget;
+    BoxChild:=PGtkBoxChild(g_list_nth_data(PGtkBox(HBox)^.children,Index));
+    if BoxChild=nil then
+      RaiseGDBException('TGTKObject.StatusBarPanelUpdate Index out of bounds');
+    StatusPanelWidget:=BoxChild^.Widget;
     UpdateStatusBarPanel(StatusBar,Index,StatusPanelWidget);
   end else begin
     // update all
@@ -267,20 +272,8 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TGTKObject.StatusBarSetText(StatusBar: TObject; PanelIndex: integer);
-var
-  AStatusBar: TStatusBar;
-  HBox: PGtkWidget;
-  StatusPanelWidget: PGtkWidget;
 begin
-  AStatusBar := StatusBar as TStatusBar;
-  if AStatusBar.SimplePanel then
-    UpdateStatusBarPanels(StatusBar,PGtkWidget(AStatusBar.Handle))
-  else begin
-    HBox:=PGtkWidget(AStatusBar.Handle);
-    StatusPanelWidget:=PGtkBoxChild(
-                        g_list_nth_data(PGtkBox(HBox)^.children,PanelIndex))^.Widget;
-    UpdateStatusBarPanel(StatusBar,PanelIndex,StatusPanelWidget);
-  end;
+  StatusBarPanelUpdate(StatusBar,PanelIndex);
 end;
 
 {------------------------------------------------------------------------------
@@ -291,6 +284,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGTKObject.StatusBarUpdate(StatusBar: TObject);
 begin
+  //writeln('TGTKObject.StatusBarUpdate ',HexStr(Cardinal(StatusBar),8));
   UpdateStatusBarPanels(StatusBar,PGtkWidget((StatusBar as TStatusBar).Handle));
 end;
 
@@ -299,6 +293,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2004/01/12 13:43:12  mattias
+  improved and activated new statusbar
+
   Revision 1.10  2004/01/12 08:36:34  micha
   statusbar interface dependent reimplementation (from vincent)
 

@@ -4027,6 +4027,10 @@ end;
 Procedure TSourceNotebook.UpdateStatusBar;
 var
   tempEditor : TSourceEditor;
+  PanelFilename: String;
+  PanelCharMode: string;
+  PanelXY: string;
+  PanelFileMode: string;
 begin
   if not Visible then exit;
   TempEditor := GetActiveSE;
@@ -4034,36 +4038,46 @@ begin
   if (TempEditor.EditorComponent.CaretY<>TempEditor.ErrorLine)
   or (TempEditor.EditorComponent.CaretX<>TempEditor.fErrorColumn) then
     TempEditor.ErrorLine:=-1;
-    
+
+  {$IFNDEF OldStatusBar}
+  Statusbar.BeginUpdate;
+  {$ENDIF}
   if snIncrementalFind in States then begin
     Statusbar.SimplePanel:=true;
     Statusbar.SimpleText:=Format(lisUESearching, [IncrementalSearchStr]);
     
   end else begin
     Statusbar.SimplePanel:=false;
-    Statusbar.Panels[3].Text := TempEditor.Filename;
+    PanelFilename:=TempEditor.Filename;
 
     If TempEditor.Modified then
-      StatusBar.Panels[1].Text := ueModified
+      PanelFileMode := ueModified
     else
-      StatusBar.Panels[1].Text := '';
+      PanelFileMode := '';
 
     If TempEditor.ReadOnly then
-      if StatusBar.Panels[1].Text <> '' then
-        StatusBar.Panels[1].Text := Format(lisUEReadOnly, [StatusBar.Panels[1
+      if PanelFileMode <> '' then
+        PanelFileMode := Format(lisUEReadOnly, [StatusBar.Panels[1
           ].Text])
       else
-        StatusBar.Panels[1].Text := uepReadonly;
+        PanelFileMode := uepReadonly;
 
-
-    Statusbar.Panels[0].Text :=
-      Format(' %6d:%4d',[TempEditor.CurrentCursorYLine,TempEditor.CurrentCursorXLine]);
+    PanelXY := Format(' %6d:%4d',
+                 [TempEditor.CurrentCursorYLine,TempEditor.CurrentCursorXLine]);
 
     if GetActiveSE.InsertMode then
-      Statusbar.Panels[2].Text := uepIns
+      PanelCharMode := uepIns
     else
-      Statusbar.Panels[2].Text := uepOvr;
+      PanelCharMode := uepOvr;
+
+    Statusbar.Panels[0].Text := PanelXY;
+    StatusBar.Panels[1].Text := PanelFileMode;
+    Statusbar.Panels[2].Text := PanelCharMode;
+    Statusbar.Panels[3].Text := PanelFilename;
   end;
+  {$IFNDEF OldStatusBar}
+  Statusbar.EndUpdate;
+  {$ENDIF}
 End;
 
 function TSourceNotebook.FindBookmark(BookmarkID: integer): TSourceEditor;
