@@ -35,7 +35,10 @@ for unit in $UnitList; do
 done
 
 $FPDoc $DescrFiles --input=@$InputFileList --content=gtkinterface.cnt \
-  --import=lcl.cnt,../lcl/ --package=gtkinterface --format=html
+  --import=lcl.cnt,../lcl/ --package=gtkinterface \
+  --format=html
+  
+# --output=lcl/interfaces/gtk
 
 # end.
 
