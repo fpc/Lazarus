@@ -1087,7 +1087,7 @@ var
   end;
   
 begin
-  Result:=mrCancel;
+  Result:=mrOk;
   // search in every source directory for compiled versions of the units
   // A source directory is a directory with a used unit and it is not the output
   // directory
@@ -1978,15 +1978,24 @@ begin
     MessagesView.BeginBlock;
     try
       Result:=DoPreparePackageOutputDirectory(APackage);
-      if Result<>mrOk then exit;
+      if Result<>mrOk then begin
+        writeln('TPkgManager.DoCompilePackage DoPreparePackageOutputDirectory failed');
+        exit;
+      end;
 
       // create package main source file
       Result:=DoSavePackageMainSource(APackage,Flags);
-      if Result<>mrOk then exit;
+      if Result<>mrOk then begin
+        writeln('TPkgManager.DoCompilePackage DoSavePackageMainSource failed');
+        exit;
+      end;
 
       // check ambigious units
       Result:=CheckAmbigiousPackageUnits(APackage);
-      if Result<>mrOk then exit;
+      if Result<>mrOk then begin
+        writeln('TPkgManager.DoCompilePackage CheckAmbigiousPackageUnits failed');
+        exit;
+      end;
 
       // run compilation tool 'Before'
       Result:=MainIDE.DoExecuteCompilationTool(
