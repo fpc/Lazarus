@@ -2753,7 +2753,7 @@ begin
     SetBkColor(dc, ColorToRGB(colEditorBG));
     InternalFillRect(dc, rcToken);
     // Draw the right edge if necessary.
-    if bDoRightEdge then begin
+    if bDoRightEdge and (not (eoHideRightMargin in Options)) then begin
       {$IFDEF SYN_LAZARUS}
       LCLLinux.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
       LCLLinux.LineTo(dc, nRightEdge, rcToken.Bottom + 1);

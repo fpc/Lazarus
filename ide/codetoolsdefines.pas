@@ -71,7 +71,7 @@ type
     SelectedItemGroupBox: TGroupBox;
     TypeLabel: TLabel;
     ProjectSpecificCheckBox: TCheckBox;
-    NameLabel: Tlabel;
+    NameLabel: TLabel;
     NameEdit: TEdit;
     DescriptionLabel: TLabel;
     DescriptionEdit: TEdit;
@@ -88,14 +88,22 @@ type
     procedure SaveAndExitMenuItemClick(Sender: TObject);
     procedure DontSaveAndExitMenuItemClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
+    procedure DefineTreeViewMouseUp(Sender:TObject; Button:TMouseButton;
+                                    Shift:TShiftState;  X,Y:integer);
+    procedure ValueNoteBookPageChanged(Sender:TObject);
   private
     FDefineTree: TDefineTree;
+    FLastSelectedNode: TTreeNode;
     procedure CreateComponents;
     function CreateSeperator : TMenuItem;
     procedure RebuildDefineTreeView;
     procedure AddDefineNodes(ANode: TDefineTemplate; AParent: TTreeNode;
       WithChilds,WithNextSiblings: boolean);
     procedure SetNodeImages(ANode: TTreeNode);
+    procedure ValueAsPathToValueAsText;
+    procedure SaveSelectedValues;
+    procedure ShowSelectedValues;
+    function ValueToFilePathText(const AValue: string): string;
   public
     procedure Assign(ACodeToolBoss: TCodeToolManager;
       Options: TCodeToolsOptions);
@@ -110,9 +118,15 @@ function ShowCodeToolsDefinesEditor(ACodeToolBoss: TCodeToolManager;
 
 implementation
 
+const
+  DefineActionNames: array[TDefineAction] of string = (
+      'None', 'Block', 'Define', 'Undefine', 'DefineAll',
+      'If', 'IfDef', 'IfNDef', 'ElseIf', 'Else', 'Directory'
+    );
 
 type
   TWinControlClass = class of TWinControl;
+
 
 function ShowCodeToolsDefinesEditor(ACodeToolBoss: TCodeToolManager;
   Options: TCodeToolsOptions): TModalResult;
@@ -223,7 +237,7 @@ begin
   end;
   with MoveFilePathUpBitBtn do begin
     Left:=ValNoteBookMaxX-75;
-    Top:=5;
+    Top:=1;
     Width:=ValNoteBookMaxX-Left-5;
   end;
   with MoveFilePathDownBitBtn do begin
@@ -241,6 +255,17 @@ begin
     Top:=DeleteFilePathBitBtn.Top+DeleteFilePathBitBtn.Height+5;
     Width:=MoveFilePathUpBitBtn.Width;
   end;
+end;
+
+procedure TCodeToolsDefinesEditor.DefineTreeViewMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: integer);
+begin
+  ShowSelectedValues;
+end;
+
+procedure TCodeToolsDefinesEditor.ValueNoteBookPageChanged(Sender: TObject);
+begin
+  if ValueNoteBook.PageIndex=0 then ValueAsPathToValueAsText;
 end;
 
 procedure TCodeToolsDefinesEditor.CreateComponents;
@@ -336,7 +361,7 @@ begin
               EditMenuItem);
   AddMenuItem(InsertIfDefMenuItem,'InsertIfDefMenuItem','Insert IfDef',
               EditMenuItem);
-  AddMenuItem(InsertIfNotDefMenuItem,'InsertIfNotDefMenuItem','Insert IfNotDef',
+  AddMenuItem(InsertIfNotDefMenuItem,'InsertIfNotDefMenuItem','Insert IfNDef',
               EditMenuItem);
   AddMenuItem(InsertElseMenuItem,'InsertElseMenuItem','Insert Else',
               EditMenuItem);
@@ -367,6 +392,7 @@ begin
     DefaultItemHeight:=22;
     Images:=TheImageList;
     StateImages:=TheImageList;
+    OnMouseUp:=@DefineTreeViewMouseUp;
   end;
 
   // selected item
@@ -402,14 +428,23 @@ begin
   with ValueNoteBook do begin
     Pages[0]:='Value as Text';
     Pages.Add('Value as File Paths');
+    OnPageChanged:=@ValueNoteBookPageChanged;
   end;
                    
   CreateWinControl(ValueAsTextSynEdit,TSynEdit,'ValueAsTextSynEdit',
                    ValueNoteBook.Page[0]);
-                   
+  ValueAsTextSynEdit.Options:=[eoBracketHighlight, eoHideRightMargin,
+    eoDragDropEditing, eoHalfPageScroll, eoScrollByOneLess, eoScrollPastEol,
+    eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces];
+  ValueAsTextSynEdit.Gutter.Visible:=false;
+
   CreateWinControl(ValueAsFilePathsSynEdit,TSynEdit,'ValueAsFilePathsSynEdit',
                    ValueNoteBook.Page[1]);
-                   
+  ValueAsFilePathsSynEdit.Options:=[eoBracketHighlight, eoHideRightMargin,
+    eoDragDropEditing, eoHalfPageScroll, eoScrollByOneLess, eoScrollPastEol,
+    eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces];
+  ValueAsFilePathsSynEdit.Gutter.Visible:=false;
+
   CreateWinControl(MoveFilePathUpBitBtn,TBitBtn,'MoveFilePathUpBitBtn',
                    ValueNoteBook.Page[1]);
   MoveFilePathUpBitBtn.Caption:='Move path up';
@@ -492,11 +527,132 @@ begin
   end;
 end;
 
+procedure TCodeToolsDefinesEditor.ValueAsPathToValueAsText;
+var s: string;
+  i, j, l: integer;
+begin
+  s:=ValueAsFilePathsSynEdit.Text;
+  l:=length(s);
+  if (l>0) and (s[l] in [#13,#10]) then begin
+    // remove line end at end of Text, that was added automatically
+    dec(l);
+    if (l>0) and (s[l] in [#13,#10]) and (s[l]<>s[l+1]) then
+      dec(l);
+    SetLength(s,l);
+  end;
+  // replace line ends with semicolon
+  i:=1;
+  j:=1;
+  while i<=l do begin
+    if s[i] in [#10,#13] then begin
+      inc(i);
+      if (i<l) and (s[i] in [#10,#13]) and (s[i]<>s[i+1]) then
+        inc(i);
+      s[j]:=';';
+      inc(j);
+    end else begin
+      s[j]:=s[i];
+      inc(i);
+      inc(j);
+    end;
+  end;
+  SetLength(s,j-1);
+  ValueAsTextSynEdit.Text:=s;
+end;
+
+procedure TCodeToolsDefinesEditor.SaveSelectedValues;
+var
+  SelTreeNode: TTreeNode;
+  SelDefNode: TDefineTemplate;
+  s: string;
+  l: integer;
+begin
+  SelTreeNode:=DefineTreeView.Selected;
+  if (SelTreeNode<>nil) then begin
+    SelDefNode:=TDefineTemplate(SelTreeNode.Data);
+    if (not SelDefNode.IsAutoGenerated) then begin
+      if ProjectSpecificCheckBox.Checked then
+        Include(SelDefNode.Flags,dtfProjectSpecific);
+      SelDefNode.Name:=NameEdit.Text;
+      SelDefNode.Variable:=VariableEdit.Text;
+      SelDefNode.Description:=DescriptionEdit.Text;
+      s:=ValueAsTextSynEdit.Text;
+      l:=length(s);
+      if (l>0) and (s[l] in [#13,#10]) then begin
+        // remove line end at end of Text, that was added automatically
+        dec(l);
+        if (l>0) and (s[l] in [#13,#10]) and (s[l]<>s[l+1]) then
+          dec(l);
+        SetLength(s,l);
+      end;
+      SelDefNode.Value:=s;
+    end;
+  end;
+end;
+
+procedure TCodeToolsDefinesEditor.ShowSelectedValues;
+var
+  SelTreeNode: TTreeNode;
+  SelDefNode: TDefineTemplate;
+  s: string;
+begin
+  SelTreeNode:=DefineTreeView.Selected;
+  if SelTreeNode<>FLastSelectedNode then begin
+    SaveSelectedValues;
+  end;
+  if SelTreeNode<>nil then begin
+    SelDefNode:=TDefineTemplate(SelTreeNode.Data);
+    SelectedItemGroupBox.Enabled:=true;
+    s:='Action: '+DefineActionNames[SelDefNode.Action];
+    if SelDefNode.IsAutoGenerated then
+      s:=s+', auto generated';
+    if SelDefNode.IsProjectSpecific then
+      s:=s+', project specific';
+    TypeLabel.Caption:=s;
+    ProjectSpecificCheckBox.Checked:=dtfProjectSpecific in SelDefNode.Flags;
+    NameEdit.Text:=SelDefNode.Name;
+    DescriptionEdit.Text:=SelDefNode.Description;
+    VariableEdit.Text:=SelDefNode.Variable;
+    ValueAsTextSynEdit.Text:=SelDefNode.Value;
+    ValueAsFilePathsSynEdit.Text:=ValueToFilePathText(SelDefNode.Value);
+    if SelDefNode.IsAutoGenerated then begin
+      ValueAsTextSynEdit.Options:=ValueAsTextSynEdit.Options+[eoNoCaret];
+      ValueAsTextSynEdit.ReadOnly:=true;
+    end else begin
+      ValueAsTextSynEdit.Options:=ValueAsTextSynEdit.Options-[eoNoCaret];
+      ValueAsTextSynEdit.ReadOnly:=false;
+    end;
+    ValueAsFilePathsSynEdit.Options:=ValueAsTextSynEdit.Options;
+    ValueAsFilePathsSynEdit.ReadOnly:=ValueAsTextSynEdit.ReadOnly;
+  end else begin
+    SelectedItemGroupBox.Enabled:=false;
+    TypeLabel.Caption:='none selected';
+    ProjectSpecificCheckBox.Enabled:=false;
+    NameEdit.Text:='';
+    DescriptionEdit.Text:='';
+    VariableEdit.Text:='';
+    ValueAsTextSynEdit.Text:='';
+    ValueAsFilePathsSynEdit.Text:='';
+  end;
+  FLastSelectedNode:=SelTreeNode;
+end;
+
+function TCodeToolsDefinesEditor.ValueToFilePathText(const AValue: string
+  ): string;
+var i: integer;
+begin
+  Result:=AValue;
+  for i:=1 to length(Result) do
+    if Result[i]=';' then Result[i]:=#13;
+end;
+
 procedure TCodeToolsDefinesEditor.Assign(ACodeToolBoss: TCodeToolManager;
   Options: TCodeToolsOptions);
 begin
+  FLastSelectedNode:=nil;
   FDefineTree.Assign(ACodeToolBoss.DefineTree);
   RebuildDefineTreeView;
+  ShowSelectedValues;
 end;
 
 constructor TCodeToolsDefinesEditor.Create(TheOwner: TComponent);
