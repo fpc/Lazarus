@@ -307,7 +307,7 @@ type
                              SetAsText, CaseSensitive: boolean);
     procedure AddHistoryItem(const Item: string; AnObject: TObject;
                    MaxHistoryCount: integer; SetAsText, CaseSensitive: boolean);
-    procedure Clear; //override;
+    procedure Clear; virtual;
     procedure ClearSelection; //override;
     property DroppedDown: Boolean read GetDroppedDown write SetDroppedDown;
     procedure MeasureItem(Index: Integer; var TheHeight: Integer); virtual;
@@ -1233,6 +1233,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.199  2005/03/20 21:12:15  vincents
+  made TCustomCombobox.Clear virtual
+
   Revision 1.198  2005/03/10 09:02:11  mattias
   handle tab key in ControlKeyDown in TCustomEdit and TCustomComboBox
 
