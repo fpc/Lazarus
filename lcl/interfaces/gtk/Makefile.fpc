@@ -15,5 +15,13 @@ implicitunits=gtkdef gtkint gtkwinapiwindow
 
 [compiler]
 options=-gl
-unitdir=../../units
+unitdir=../../units .
 unittargetdir=../../units/gtk
+
+[rules]
+.PHONY: cleartarget all
+
+cleartarget:
+        -$(DEL) ../../units/gtk/interfaces$(PPUEXT)
+
+all: cleartarget interfaces$(PPUEXT)
