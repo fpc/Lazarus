@@ -1351,7 +1351,9 @@ begin
     with aCompletion do
       Begin
         EndOfTokenChr:='()[]';
+writeln('AAAA 1');
         Width:=400;
+writeln('AAAA 2');
         OnExecute := @ccExecute;
         OnCancel := @ccCancel;
         OnCodeCompletion := @ccComplete;
@@ -1465,10 +1467,13 @@ begin
     i:=0;
     while (i<FSourceEditorList.Count) do begin
       if Editors[i]<>TempEditor then dec(SourceIndex);
-      if SourceIndex=0 then
+      if SourceIndex=0 then begin
         Source:=Editors[i].EditorComponent.Lines;
+        exit;
+      end;
       inc(i);
     end;
+    Source:=nil;
   end;
 end;
 
@@ -1575,7 +1580,6 @@ End;
 Procedure TSourceNotebook.ccCancel(Sender : TObject);
 var ActSE: TSourceEditor;
 begin
-writeln('TSourceNotebook.ccCancel ',sCompl<>nil,' ',GetActiveSE<>nil);
   if sCompl=nil then exit;
   sCompl.Deactivate;
   sCompl:=nil;
@@ -1719,7 +1723,6 @@ Begin
    ctWordCompletion:
      begin
        ccSelection:='';
-       aWordCompletion.GetWordList(S, Prefix, false, 30);
      end;
 
    ctTemplateCompletion:

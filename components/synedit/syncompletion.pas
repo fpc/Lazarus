@@ -201,6 +201,7 @@ type
     function GetFEditor: TCustomSynEdit;
     function GetEditor(i: integer): TCustomSynEdit;
   protected
+    procedure OnFormPaint(Sender: TObject);
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
     procedure SetShortCut(Value: TShortCut);
@@ -314,7 +315,6 @@ procedure TSynBaseCompletionForm.KeyDown(var Key: Word;
 var
   i: integer;
 begin
-//  Writeln('[TSynBaseCompletionForm] KeyDown ',Key);
   case Key of
 // added the VK_XXX codes to make it more readable / maintainable
     VK_RETURN:
@@ -344,8 +344,8 @@ begin
         SelectNext;
     VK_BACK:
       if (Shift = []) and (Length(CurrentString) > 0) then begin
-        CurrentString := Copy(CurrentString, 1, Length(CurrentString) - 1);
         if Assigned(OnKeyDelete) then OnKeyDelete(Self);
+        CurrentString := Copy(CurrentString, 1, Length(CurrentString) - 1);
       end;
   end;
   Paint;
@@ -422,11 +422,10 @@ begin
       end
       else
         Begin
-        Canvas.Brush.Color := Color;
-        Canvas.Font.Color := clBlack;
+          Canvas.Brush.Color := Color;
+          Canvas.Font.Color := clBlack;
         end;
-
-
+        
       if not Assigned(OnPaintItem)
         or not OnPaintItem(ItemList[Scroll.Position + i], Canvas, 0, FFontHeight * i)
       then
@@ -721,9 +720,11 @@ end;
 
 procedure TSynBaseCompletion.SetWidth(Value: Integer);
 begin
+writeln('TSynBaseCompletion.SetWidth START ',Value);
   FWidth := Value;
   Form.Width := FWidth;
   Form.SetNbLinesInWindow(Form.FNbLinesInWindow);
+writeln('TSynBaseCompletion.SetWidth END ',Value);
 end;
 
 procedure TSynBaseCompletion.Deactivate;
@@ -804,7 +805,7 @@ type
   end;
   PRecordUsedToStoreEachEditorVars = ^TRecordUsedToStoreEachEditorVars;
 
-procedure TSynCompletion.backspace(Senter: TObject);
+procedure TSynCompletion.Backspace(Senter: TObject);
 var
   F: TSynBaseCompletionForm;
 begin
@@ -813,6 +814,13 @@ begin
     (F.CurrentEditor as TCustomSynEdit).CommandProcessor(ecDeleteLastChar, #0,
       nil);
   end;
+end;
+
+procedure TSynCompletion.OnFormPaint(Sender: TObject);
+begin
+//writeln('TSynCompletion.OnFormShow A');
+  //LCLLinux.ShowCaret(Editor.Handle);
+//writeln('TSynCompletion.OnFormShow END');
 end;
 
 procedure TSynCompletion.Cancel(Senter: TObject);
@@ -888,6 +896,7 @@ begin
   Form.OnKeyDelete := {$IFDEF FPC}@{$ENDIF}backspace;
   Form.OnValidate := {$IFDEF FPC}@{$ENDIF}validate;
   Form.OnCancel := {$IFDEF FPC}@{$ENDIF}Cancel;
+  Form.OnPaint:=@OnFormPaint;
   FEndOfTokenChr := '()[].';
   fEditors := TList.Create;
   fEditstuffs := TList.Create;
@@ -942,7 +951,6 @@ begin
           dec(i);
         end;
       result := copy(s, i + 1, FEditor.CaretX - i - 1);
-
     end;
   end
   else
@@ -964,7 +972,7 @@ begin
   end;
 end;
 
-destructor TSynCompletion.destroy;
+destructor TSynCompletion.Destroy;
 begin
   // necessary to get Notification called before fEditors is freed
   Form.Free;

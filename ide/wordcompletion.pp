@@ -65,10 +65,10 @@ end;
 
 procedure TWordCompletion.GetWordList(AWordList:TStrings; const Prefix:String;
   CaseSensitive:boolean; MaxResults:integer);
-var i,line,x,PrefixLen,MaxHash:integer;
-  PrefixLow,s:string;
-  SourceText:TStringList;
-  HashList:^integer;// index list. Every entry points to a word in the AWordList
+var i, j, Line, x, PrefixLen, MaxHash, LineLen: integer;
+  UpPrefix, LineText, UpLineText, NewWord: string;
+  SourceText: TStringList;
+  HashList: ^integer;// index list. Every entry points to a word in the AWordList
   SourceTextIndex:integer;
   LastCharType:TCharType;
   
@@ -77,10 +77,6 @@ var i,line,x,PrefixLen,MaxHash:integer;
   var a,Hash,HashTry:integer;
     ALowWord:string;
   begin
-    if CaseSensitive then begin
-      if copy(AWord,1,PrefixLen)<>Prefix then exit;
-    end else if lowercase(copy(AWord,1,PrefixLen))<>PrefixLow then exit
-    else if (AWord=Prefix) then exit;
     ALowWord:=lowercase(AWord);
     Hash:=0;
     a:=0;
@@ -115,45 +111,71 @@ begin
     for i:=0 to MaxHash-1 do HashList[i]:=-1;
     PrefixLen:=length(Prefix);
     AWordList.Capacity:=MaxResults;
-    PrefixLow:=lowercase(Prefix);
+    UpPrefix:=uppercase(Prefix);
     // first add all recently used words
     i:=FWordBuffer.Count-1;
     while (i>=0) and (AWordList.Count<MaxResults) do begin
-      Add(FWordBuffer[i]);
+      NewWord:=FWordBuffer[i];
+      if CaseSensitive then begin
+        if copy(NewWord,1,PrefixLen)<>Prefix then
+          exit;
+      end else if uppercase(copy(NewWord,1,PrefixLen))<>UpPrefix then
+        exit
+      else if (NewWord=Prefix) then exit;
+      Add(NewWord);
       dec(i);
     end;
     if AWordList.Count>=MaxResults then exit;
     // then search in all sources for more words that could fit
     SourceTextIndex:=0;
     if Assigned(FOnGetSource) then begin
+      SourceText:=nil;
+      FOnGetSource(SourceText,SourceTextIndex);
       repeat
-        SourceText:=nil;
-        FOnGetSource(SourceText,SourceTextIndex);
         if SourceText<>nil then begin
-          line:=0;
-          while (line<SourceText.Count) do begin
-            s:=SourceText[line];
+          Line:=0;
+          UpLineText:='';
+          while (Line<SourceText.Count) do begin
+            LineText:=SourceText[line];
+            LineLen:=length(LineText);
+            if not CaseSensitive then
+              UpLineText:=uppercase(LineText);
             x:=1;
             LastCharType:=ctNone;
-            while (x<=length(s)) do begin
-              if (LastCharType=ctNone) and (CharTable[s[x]]=ctWordBegin) then
-              begin
+            while (x<=LineLen) do begin
+              if (LastCharType=ctNone) and (CharTable[LineText[x]]=ctWordBegin)
+              then begin
                 // word found
                 i:=x;
                 repeat
                   inc(i);
-                until (i>length(s)) or (CharTable[s[i]]=ctNone);
-                Add(copy(s,x,i-x));
+                until (i>LineLen) or (CharTable[LineText[i]]=ctNone);
+                if i-x>=PrefixLen then begin
+                  if CaseSensitive then begin
+                    j:=1;
+                    while (j<=PrefixLen) and (Prefix[j]=LineText[x+j-1]) do
+                      inc(j);
+                    if (j>PrefixLen) and (copy(LineText,x,i-x)<>Prefix) then
+                      Add(copy(LineText,x,i-x));
+                  end else begin
+                    j:=1;
+                    while (j<=PrefixLen) and (UpPrefix[j]=UpLineText[x+j-1]) do
+                      inc(j);
+                    if (j>PrefixLen) and (copy(LineText,x,i-x)<>Prefix) then
+                      Add(copy(LineText,x,i-x))
+                  end;
+                end;
                 if AWordList.Count>=MaxResults then exit;
                 x:=i;
               end else
                 inc(x);
-              LastCharType:=CharTable[s[x-1]];
+              LastCharType:=CharTable[LineText[x-1]];
             end;
             inc(line);
           end;
         end;
         inc(SourceTextIndex);
+        SourceText:=nil;
         FOnGetSource(SourceText,SourceTextIndex);
       until SourceText=nil;
     end;
