@@ -1757,8 +1757,16 @@ function TLinkScanner.GuessMisplacedIfdefEndif(StartCursorPos: integer;
   
   function ReadDirectiveType(const ASrc: string;
     AToken: TToken): TDirectiveType;
+  const
+    DIR_RST: array[0..5] of TDirectiveType = (
+      dtIfDef, dtIfNDef, dtIfOpt, dtIf, dtElse, dtEndif
+    );
+    DIR_TXT: array[0..5] of PChar = (
+      'IFDEF', 'IFNDEF', 'IFOPT', 'IF', 'ELSE', 'ENDIF'
+    );
   var
     ASrcLen, p: integer;
+    n: Integer;
   begin
     Result:=dtUnknown;
     ASrcLen:=length(ASrc);
@@ -1767,18 +1775,14 @@ function TLinkScanner.GuessMisplacedIfdefEndif(StartCursorPos: integer;
     begin
       // compiler directive
       inc(p);
-      if CompareIdentifiers(@ASrc[p],'IFDEF')=0 then
-        Result:=dtIfDef
-      else if CompareIdentifiers(@ASrc[p],'IFNDEF')=0 then
-        Result:=dtIfNDef
-      else if CompareIdentifiers(@ASrc[p],'IF')=0 then
-        Result:=dtIf
-      else if CompareIdentifiers(@ASrc[p],'IFOPT')=0 then
-        Result:=dtIfOpt
-      else if CompareIdentifiers(@ASrc[p],'ELSE')=0 then
-        Result:=dtElse
-      else if CompareIdentifiers(@ASrc[p],'ENDIF')=0 then
-        Result:=dtEndif;
+      for n := Low(DIR_TXT) to High(DIR_TXT) do
+      begin
+        if CompareIdentifiers(@ASrc[p], DIR_TXT[n]) = 0
+        then begin
+          Result := DIR_RST[n];
+          Exit;
+        end;
+      end;
     end;
   end;
   

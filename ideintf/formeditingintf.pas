@@ -109,7 +109,7 @@ type
 
     // selection
     function SaveSelectionToStream(s: TStream): Boolean; virtual; abstract;
-    function InsertFromStream(s: TStream; Parent: TComponent;
+    function InsertFromStream(s: TStream; Parent: TWinControl;
                               Flags: TComponentPasteSelectionFlags
                               ): Boolean; virtual; abstract;
     function ClearSelection: Boolean; virtual; abstract;

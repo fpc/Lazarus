@@ -2153,7 +2153,7 @@ begin
     ReadNextAtom;
     if AtomIsIdentifier(false) then begin
       CurIdentNode:=
-        IdentTree.FindKey(@Src[CurPos.StartPos],@CompareIdentifiers);
+        IdentTree.FindKey(@Src[CurPos.StartPos], TListSortCompare(@CompareIdentifiers));
       if CurIdentNode<>nil then begin
         CurDiff:=CurPos.StartPos-CleanCursorPos;
         if CurDiff<0 then CurDiff:=-CurDiff;
@@ -2992,7 +2992,7 @@ begin
   while ANode<>nil do begin
     if (ANode.Desc=ctnConstDefinition) then begin
       if IdentTree=nil then
-        IdentTree:=TAVLTree.Create(@BasicCodeTools.CompareIdentifiers);
+        IdentTree:=TAVLTree.Create(TListSortCompare(@BasicCodeTools.CompareIdentifiers));
       IdentTree.Add(@Src[ANode.StartPos]);
     end;
     ANode:=ANode.NextBrother;

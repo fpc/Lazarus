@@ -427,7 +427,7 @@ var
 begin
   // create/clear tree
   if FClasses=nil then
-    FClasses:=TAvgLvlTree.CreateObjectCompare(@CompareClasses)
+    FClasses:=TAvgLvlTree.CreateObjectCompare(TObjectSortCompare(@CompareClasses))
   else
     FClasses.Clear;
   // add class of ThePersistent

@@ -52,7 +52,7 @@ type
     function PasteSelection(Flags: TComponentPasteSelectionFlags): boolean; virtual; abstract;
     function DeleteSelection: boolean; virtual; abstract;
     function CopySelectionToStream(s: TStream): boolean; virtual; abstract;
-    function InsertFromStream(s: TStream; Parent: TComponent;
+    function InsertFromStream(s: TStream; Parent: TWinControl;
                               Flags: TComponentPasteSelectionFlags
                               ): Boolean; virtual; abstract;
     function InvokeComponentEditor(AComponent: TComponent;

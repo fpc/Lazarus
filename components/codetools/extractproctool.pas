@@ -115,6 +115,7 @@ var
   cmp: Integer;
 begin
   cmp:=V2.Node.StartPos-V1.Node.StartPos;
+  
   if cmp<0 then
     Result:=-1
   else if cmp>0 then
@@ -250,8 +251,8 @@ var
       ' ParameterType=',ParameterTypeNames[ParameterType]);
     {$ENDIF}
     if VarTree=nil then
-      VarTree:=TAVLTree.Create(@CompareExtractedProcVariables);
-    AVLNode:=VarTree.FindKey(VarNode,@CompareNodeWithExtractedProcVariable);
+      VarTree:=TAVLTree.Create(TListSortCompare(@CompareExtractedProcVariables));
+    AVLNode:=VarTree.FindKey(VarNode,TListSortCompare(@CompareNodeWithExtractedProcVariable));
     if AVLNode<>nil then begin
       ProcVar:=TExtractedProcVariable(AVLNode.Data);
     end else begin
@@ -483,7 +484,7 @@ var
       AVLNode: TAVLTreeNode;
     begin
       CurProcVar:=nil;
-      AVLNode:=VarTree.FindKey(VarNode,@CompareNodeWithExtractedProcVariable);
+      AVLNode:=VarTree.FindKey(VarNode, TListSortCompare(@CompareNodeWithExtractedProcVariable));
       if AVLNode=nil then begin
         Result:=false;
       end else begin

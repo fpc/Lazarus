@@ -1036,8 +1036,8 @@ begin
 
   //writeln('TMainIDEBase.DoCheckUnitPathForAmbigiousPascalFiles A UnitPath="',UnitPath,'" Ext=',CompiledExt,' Context=',ContextDescription);
 
-  SourceUnitTree:=TAVLTree.Create(@CompareUnitFiles);
-  CompiledUnitTree:=TAVLTree.Create(@CompareUnitFiles);
+  SourceUnitTree:=TAVLTree.Create(TListSortCompare(@CompareUnitFiles));
+  CompiledUnitTree:=TAVLTree.Create(TListSortCompare(@CompareUnitFiles));
   FileInfoNeedClose:=false;
   try
     // collect all units (.pas, .pp, compiled units)
@@ -1067,7 +1067,7 @@ begin
             CurFilename:=CurDir+FileInfo.Name;
             // check if unit already found
             ANode:=CurUnitTree.FindKey(PChar(CurUnitName),
-                                       @CompareUnitNameAndUnitFile);
+                                 TListSortCompare(@CompareUnitNameAndUnitFile));
             if ANode<>nil then begin
               // pascal unit exists twice
               Result:=MessageDlg('Ambigious unit found',

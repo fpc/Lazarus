@@ -2301,6 +2301,11 @@ begin
   end;
 end;
 
+function CompareIdentifierPtrs(Identifier1, Identifier2: Pointer): integer;
+begin
+  Result := CompareIdentifiers(PChar(Identifier1), PChar(Identifier2));
+end;
+
 function CompareIdentifiersCaseSensitive(Identifier1, Identifier2: PChar
   ): integer;
 begin

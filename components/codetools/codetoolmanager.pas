@@ -1043,9 +1043,10 @@ begin
   Tree.Free;
 end;
 
+
 function TCodeToolManager.CreateTreeOfPCodeXYPosition: TAVLTree;
 begin
-  Result:=TAVLTree.Create(@CompareCodeXYPositions);
+  Result:=TAVLTree.Create(TListSortCompare(@CompareCodeXYPositions));
 end;
 
 procedure TCodeToolManager.AddListToTreeOfPCodeXYPosition(SrcList: TList;

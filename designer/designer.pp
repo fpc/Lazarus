@@ -53,7 +53,7 @@ type
   TOnPersistentAdded = procedure(Sender: TObject; APersistent: TPersistent;
     ComponentClass: TRegisteredComponent) of object;
   TOnPasteComponent = procedure(Sender: TObject; LookupRoot: TComponent;
-    TxtCompStream: TStream; Parent: TComponent;
+    TxtCompStream: TStream; Parent: TWinControl;
     var NewComponent: TComponent) of object;
   TOnRemovePersistent = procedure(Sender: TObject; APersistent: TPersistent)
     of object;
@@ -175,10 +175,10 @@ type
     Procedure NudgeSize(DiffX, DiffY: Integer);
     procedure SelectParentOfSelection;
     function DoCopySelectionToClipboard: boolean;
-    function GetPasteParent: TComponent;
+    function GetPasteParent: TWinControl;
     function DoPasteSelectionFromClipboard(PasteFlags: TComponentPasteSelectionFlags
                                            ): boolean;
-    function DoInsertFromStream(s: TStream; PasteParent: TComponent;
+    function DoInsertFromStream(s: TStream; PasteParent: TWinControl;
                                 PasteFlags: TComponentPasteSelectionFlags): Boolean;
     procedure DoShowTabOrderEditor;
     procedure DoShowChangeClassDialog;
@@ -226,7 +226,7 @@ type
     function PasteSelection(PasteFlags: TComponentPasteSelectionFlags): boolean; override;
     function DeleteSelection: boolean; override;
     function CopySelectionToStream(AllComponentsStream: TStream): boolean; override;
-    function InsertFromStream(s: TStream; Parent: TComponent;
+    function InsertFromStream(s: TStream; Parent: TWinControl;
                               PasteFlags: TComponentPasteSelectionFlags): Boolean; override;
     function InvokeComponentEditor(AComponent: TComponent;
                                    MenuIndex: integer): boolean; override;
@@ -517,7 +517,7 @@ begin
   Result:=true;
 end;
 
-function TDesigner.InsertFromStream(s: TStream; Parent: TComponent;
+function TDesigner.InsertFromStream(s: TStream; Parent: TWinControl;
   PasteFlags: TComponentPasteSelectionFlags): Boolean;
 begin
   Result:=DoInsertFromStream(s,Parent,PasteFlags);
@@ -559,7 +559,7 @@ begin
   Result:=true;
 end;
 
-function TDesigner.GetPasteParent: TComponent;
+function TDesigner.GetPasteParent: TWinControl;
 var
   i: Integer;
 begin
@@ -602,7 +602,7 @@ begin
 end;
 
 function TDesigner.DoInsertFromStream(s: TStream;
-  PasteParent: TComponent; PasteFlags: TComponentPasteSelectionFlags): Boolean;
+  PasteParent: TWinControl; PasteFlags: TComponentPasteSelectionFlags): Boolean;
 var
   AllComponentText: string;
   StartPos: Integer;

@@ -1540,9 +1540,9 @@ var
   begin
     // for first time: create PackageTreeOfUnitTrees
     if PackageTreeOfUnitTrees=nil then
-      PackageTreeOfUnitTrees:=TAVLTree.Create(@CompareUnitsTree);
+      PackageTreeOfUnitTrees:=TAVLTree.Create(TListSortCompare(@CompareUnitsTree));
     // search UnitsTree for package
-    ANode:=PackageTreeOfUnitTrees.FindKey(Pkg,@ComparePackageWithUnitsTree);
+    ANode:=PackageTreeOfUnitTrees.FindKey(Pkg, TListSortCompare(@ComparePackageWithUnitsTree));
     if ANode<>nil then begin
       Result:=TPkgUnitsTree(ANode.Data);
       exit;

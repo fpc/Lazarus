@@ -136,7 +136,7 @@ type
     procedure InsertFromTemplateClick(Sender: TObject);
     procedure SaveAsTemplateClick(Sender: TObject);
     procedure DeleteFromTemplateClick(Sender: TObject);
-    procedure OnComponentModified(Sender: TComponent);
+    procedure OnComponentModified(Sender: TObject);
 
     // Functions for editing menus
     function AddNewItemBefore(MenuItem: PDesignerMenuItem; Ident: string): PDesignerMenuItem;
@@ -1268,7 +1268,7 @@ end;
 // --------------------------------------------------------------------------------------------------------------//
 // Some property og some object has changed -> we need to know if caption of some menuitem has changed ----------//
 // --------------------------------------------------------------------------------------------------------------//
-procedure TDesignerMainMenu.OnComponentModified(Sender: TComponent);
+procedure TDesignerMainMenu.OnComponentModified(Sender: TObject);
 var
   Selection: TPersistentSelectionList;
   i: Integer;

@@ -2575,7 +2575,7 @@ begin
   try
     Cnt:=FileCount;
     for i:=0 to Cnt-1 do NewList.Add(FFiles[i]);
-    NewList.Sort(@ComparePkgFilesAlphabetically);
+    NewList.Sort(TListSortCompare(@ComparePkgFilesAlphabetically));
     i:=Cnt-1;
     while (i>=0) and (NewList[i]=FFiles[i]) do dec(i);
     if i<0 then exit;
@@ -3525,9 +3525,9 @@ end;
 
 { TPkgPairTree }
 
-function ComparePkgPairs(Pair1, Pair2: TPkgPair): integer;
+function ComparePkgPairs(Pair1, Pair2: Pointer): integer;
 begin
-  Result:=Pair1.Compare(Pair2);
+  Result:=TPkgPair(Pair1).Compare(TPkgPair(Pair2));
 end;
 
 constructor TPkgPairTree.Create;
@@ -3604,11 +3604,6 @@ end;
 
 { TPkgUnitsTree }
 
-function ComparePkgFilesUnitname(PkgFile1, PkgFile2: TPkgFile): integer;
-begin
-  Result:=AnsiCompareText(PkgFile1.UnitName,PkgFile2.UnitName);
-end;
-
 function TPkgUnitsTree.FindNodeWithUnitName(const UnitName: string
   ): TAVLTreeNode;
 var
@@ -3638,6 +3633,13 @@ begin
     Result:=nil
   else
     Result:=TPkgFile(ANode.Data);
+end;
+
+function ComparePkgFilesUnitname(PkgFile1, PkgFile2: Pointer): integer;
+begin
+  Result := AnsiCompareText(
+              TPkgFile(PkgFile1).UnitName,
+              TPkgFile(PkgFile2).UnitName);
 end;
 
 constructor TPkgUnitsTree.Create(ThePackage: TLazPackage);

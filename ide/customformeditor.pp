@@ -149,7 +149,7 @@ each control that's dropped onto the form
                                  ): TIComponentInterface; override;
     Function FindComponent(AComponent: TComponent): TIComponentInterface; override;
     function SaveSelectionToStream(s: TStream): Boolean; override;
-    function InsertFromStream(s: TStream; Parent: TComponent;
+    function InsertFromStream(s: TStream; Parent: TWinControl;
                               Flags: TComponentPasteSelectionFlags): Boolean; override;
     function ClearSelection: Boolean; override;
     function DeleteSelection: Boolean; override;
@@ -881,7 +881,7 @@ begin
     Result:=false;
 end;
 
-function TCustomFormEditor.InsertFromStream(s: TStream; Parent: TComponent;
+function TCustomFormEditor.InsertFromStream(s: TStream; Parent: TWinControl;
   Flags: TComponentPasteSelectionFlags): Boolean;
 var
   ADesigner: TIDesigner;
@@ -1521,9 +1521,9 @@ var
 begin
   IsDefined:=false;
   if FDefineProperties=nil then
-    FDefineProperties:=TAVLTree.Create(@CompareDefPropCacheItems);
+    FDefineProperties:=TAVLTree.Create(TListSortCompare(@CompareDefPropCacheItems));
   ANode:=FDefineProperties.FindKey(PChar(APersistentClassName),
-                                      @ComparePersClassNameAndDefPropCacheItem);
+                        TListSortCompare(@ComparePersClassNameAndDefPropCacheItem));
   if ANode=nil then begin
     // cache component class, try to retrieve the define properties
     CacheItem:=TDefinePropertiesCacheItem.Create;

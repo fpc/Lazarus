@@ -74,13 +74,13 @@ type
 function CompareComponentCandidates(
   Candidate1, Candidate2: TComponentCandidate): integer;
 begin
-  Result:=ComparePointers(Candidate1.APersistent,Candidate2.APersistent);
+  Result := ComparePointers(Candidate1.APersistent, Candidate2.APersistent);
 end;
 
 function ComparePersistentWithComponentCandidate(
   APersistent: TPersistent; Candidate: TComponentCandidate): integer;
 begin
-  Result:=ComparePointers(APersistent,Candidate.APersistent);
+  Result := ComparePointers(APersistent, Candidate.APersistent);
 end;
 
 { TComponentTreeView }
@@ -180,7 +180,7 @@ var
       CurControl:=AControl.Controls[i];
       if CurControl.Owner<>AControl.Owner then continue;
       AVLNode:=Candidates.FindKey(CurControl,
-                                  @ComparePersistentWithComponentCandidate);
+                    TListSortCompare(@ComparePersistentWithComponentCandidate));
       Candidate:=TComponentCandidate(AVLNode.Data);
       if Candidate.Added then continue;
       Candidate.Added:=true;
@@ -207,7 +207,7 @@ var
       CurMenuItem:=AMenuItem.Items[i];
       if CurMenuItem.Owner<>RootComponent then continue;
       AVLNode:=Candidates.FindKey(CurMenuItem,
-                                  @ComparePersistentWithComponentCandidate);
+                    TListSortCompare(@ComparePersistentWithComponentCandidate));
       Candidate:=TComponentCandidate(AVLNode.Data);
       if Candidate.Added then continue;
       Candidate.Added:=true;
@@ -239,7 +239,7 @@ begin
 
   RootObject:=PropertyEditorHook.LookupRoot;
   if RootObject<>nil then begin
-    Candidates:=TAvgLvlTree.Create(@CompareComponentCandidates);
+    Candidates:=TAvgLvlTree.Create(TListSortCompare(@CompareComponentCandidates));
     try
       // first add the lookup root
       RootNode:=Items.Add(nil,CreateNodeCaption(RootObject));
@@ -273,7 +273,7 @@ begin
         for i:=0 to RootComponent.ComponentCount-1 do begin
           AComponent:=RootComponent.Components[i];
           AVLNode:=Candidates.FindKey(AComponent,
-                                      @ComparePersistentWithComponentCandidate);
+                     TListSortCompare(@ComparePersistentWithComponentCandidate));
           Candidate:=TComponentCandidate(AVLNode.Data);
           if Candidate.Added then
             continue;
