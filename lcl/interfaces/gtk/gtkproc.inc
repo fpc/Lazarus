@@ -560,6 +560,20 @@ end;
 
 
 {------------------------------------------------------------------------------
+  procedure Uncapturehandle;
+
+  Frees the CaptureHandle
+ ------------------------------------------------------------------------------}
+procedure Uncapturehandle;
+begin
+  if MCaptureHandle <> 0 then begin
+    //gdk_pointer_ungrab(0);
+    gtk_grab_remove(pgtkwidget(MCaptureHandle));
+    MCaptureHandle:=0;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Procedure: StoreCommonDialogSetup
   Params:    ADialog: TCommonDialog
   Returns:   none
@@ -978,6 +992,7 @@ begin
   CurMouseCaptureHandle:=gtk_grab_get_current;
   if OldMouseCaptureHandle<>CurMouseCaptureHandle then begin
     // mouse capture widget has changed
+    Uncapturehandle;
     MCaptureHandle:=integer(CurMouseCaptureHandle); // ToDo: 64bit faulty
     NotifyCurCaptureControl;
   end;
@@ -2615,6 +2630,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.77  2002/08/27 18:45:14  lazarus
+  MG: propedits text improvements from Andrew, uncapturing, improved comobobox
+
   Revision 1.76  2002/08/27 06:40:51  lazarus
   MG: ShortCut support for buttons from Andrew
 
