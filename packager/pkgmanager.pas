@@ -2170,7 +2170,7 @@ begin
   {$ENDIF}
   // check if package is ready for saving
   OutputDir:=APackage.GetOutputDirectory;
-  if not DirectoryExists(OutputDir) then begin
+  if not DirPathExists(OutputDir) then begin
     Result:=MessageDlg(lisEnvOptDlgDirectoryNotFound,
       Format(lisPkgMangPackageHasNoValidOutputDirectory, ['"',
         APackage.IDAsString, '"', #13, '"', OutputDir, '"']),

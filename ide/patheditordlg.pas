@@ -125,7 +125,7 @@ begin
     Title:=lisPathEditSelectDirectory;
     if (not Execute) then exit;
     NewPath:=ExtractFilePath(Trim(Filename));
-    if (not DirectoryExists(NewPath)) then exit;
+    if (not DirPathExists(NewPath)) then exit;
     y:=PathEdit.CaretY;
     if y>PathEdit.Lines.Count then y:=PathEdit.Lines.Count;
     PathEdit.Lines.Insert(y,NewPath);

@@ -60,7 +60,7 @@ function ReadAllLinks(const Filename: string;
                       ExceptionOnError: boolean): string;
 
 // directories
-function DirectoryExists(const FileName: String): Boolean;
+function DirPathExists(const FileName: String): Boolean;
 function ForceDirectory(DirectoryName: string): boolean;
 function DeleteDirectory(const DirectoryName: string;
   OnlyChilds: boolean): boolean;
@@ -127,6 +127,9 @@ end.
 
 {
   $Log$
+  Revision 1.20  2003/12/21 13:58:06  mattias
+  renamed DirectoryExists to DirPathExists to reduce ambigiousity
+
   Revision 1.19  2003/10/31 14:25:59  mazen
   * Fixing VER1_1 compile problem to allow using 1.1 compiler
   * Most of oldlinux unit calls are now in BaseUnix unit with prefix Fp

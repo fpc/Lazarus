@@ -2111,7 +2111,7 @@ begin
       gtk_file_selection_complete(PGtkFileSelection(theDialog.Handle),
         AHistoryEntry^.Filename);
       // restore filter
-      if DirectoryExists(AHistoryEntry^.Filename) then begin
+      if DirPathExists(AHistoryEntry^.Filename) then begin
         FilterMenu:=gtk_object_get_data(PGtkObject(theDialog.Handle),
                                         'LCLFilterMenu');
         if FilterMenu<>nil then begin
@@ -3192,6 +3192,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.207  2003/12/21 13:58:06  mattias
+  renamed DirectoryExists to DirPathExists to reduce ambigiousity
+
   Revision 1.206  2003/11/26 21:30:19  mattias
   reduced unit circles, fixed fpImage streaming
 

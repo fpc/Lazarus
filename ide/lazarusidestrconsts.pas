@@ -1785,7 +1785,8 @@ resourcestring
   lisFindFileDirectoryOptions = 'Directory options';
   lisFindFileFileMaskBak = 'File mask (*, *.*, *.bak?)';
   lisFindFileIncludeSubDirectories = 'Include sub directories';
-  
+  lisFindFileOnlyTextFiles = 'Only text files';
+
   // package manager
   lisPkgMangPackage = 'Package: %s';
   lisPkgMangProject = 'Project: %s';

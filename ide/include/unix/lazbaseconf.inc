@@ -162,8 +162,8 @@ end;
 function GetDefaultTestBuildDirectory: string;
 begin
   Result:='/tmp/';
-  if not DirectoryExists(Result) then begin
-    if DirectoryExists('/var/tmp/') then
+  if not DirPathExists(Result) then begin
+    if DirPathExists('/var/tmp/') then
       Result:='/var/tmp/';
   end;
 end;

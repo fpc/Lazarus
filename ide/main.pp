@@ -3059,7 +3059,7 @@ begin
 
   // check file path
   NewFilePath:=ExtractFilePath(NewFilename);
-  if not DirectoryExists(NewFilePath) then begin
+  if not DirPathExists(NewFilePath) then begin
     ACaption:=lisEnvOptDlgDirectoryNotFound;
     AText:=Format(lisTheDestinationDirectoryDoesNotExist, [#13, '"',
       NewFilePath, '"']);
@@ -3428,7 +3428,7 @@ begin
       NewResFilePath:=NewFilePath
                        +copy(ResourceCode.Filename,length(OldFilePath)+1,
                          length(ResourceCode.Filename));
-      if not DirectoryExists(NewResFilePath) then
+      if not DirPathExists(NewResFilePath) then
         NewResFilePath:=NewFilePath;
     end else begin
       // resource code was not in the same or in a sub dircetoy of source
@@ -5743,7 +5743,7 @@ function TMainIDE.DoSaveProjectToTestDirectory: TModalResult;
 begin
   Result:=mrCancel;
   if (EnvironmentOptions.TestBuildDirectory='')
-  or (not DirectoryExists(EnvironmentOptions.TestBuildDirectory)) then begin
+  or (not DirPathExists(EnvironmentOptions.TestBuildDirectory)) then begin
     if (EnvironmentOptions.TestBuildDirectory<>'') then begin
       MessageDlg(Format(lisTheTestDirectoryCouldNotBeFoundSeeEnvironmentOpt, [
         #13, '"', EnvironmentOptions.TestBuildDirectory, '"', #13]), mtError, [
@@ -6811,7 +6811,7 @@ begin
   if BackupInfo.SubDirectory<>'' then begin
     SubDir:=FilePath+BackupInfo.SubDirectory;
     repeat
-      if not DirectoryExists(SubDir) then begin
+      if not DirPathExists(SubDir) then begin
         if not CreateDir(SubDir) then begin
           Result:=MessageDlg(Format(lisUnableToCreateBackupDirectory, ['"',
             SubDir, '"'])
@@ -7027,7 +7027,7 @@ begin
     Result:=mrCancel;
     exit;
   end;
-  if DirectoryExists(DestDir) and (not DeleteDirectory(DestDir,true)) then
+  if DirPathExists(DestDir) and (not DeleteDirectory(DestDir,true)) then
   begin
     MessageDlg(lisUnableToCleanUpDestinationDirectory,
       Format(lisUnableToCleanUpPleaseCheckPermissions, ['"', DestDir, '"', #13]
@@ -8273,13 +8273,13 @@ begin
   end;
 
   if (EnvironmentOptions.LazarusDirectory='')
-  or not DirectoryExists(EnvironmentOptions.LazarusDirectory) then begin
+  or not DirPathExists(EnvironmentOptions.LazarusDirectory) then begin
     writeln('');
     writeln(
       'NOTE: Lazarus Source Directory not set!  (see Environment Options)');
   end;
   if (EnvironmentOptions.FPCSourceDirectory='')
-  or not DirectoryExists(EnvironmentOptions.FPCSourceDirectory) then begin
+  or not DirPathExists(EnvironmentOptions.FPCSourceDirectory) then begin
     writeln('');
     writeln('NOTE: FPC Source Directory not set! (see Environment Options)');
   end;
@@ -10247,6 +10247,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.682  2003/12/21 13:58:05  mattias
+  renamed DirectoryExists to DirPathExists to reduce ambigiousity
+
   Revision 1.681  2003/12/20 11:10:35  mattias
   fixed a few directory exists checks
 
@@ -11932,7 +11935,7 @@ end.
   Shane
 
   Revision 1.130  2001/10/31 18:09:51  lazarus
-  MG: fixed DirectoryExists
+  MG: fixed DirPathExists
 
   Revision 1.129  2001/10/31 16:29:20  lazarus
   Fixed the gtk mousemove bug where the control gets the coord's based on it's parent instead of itself.

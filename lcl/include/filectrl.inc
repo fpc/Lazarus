@@ -17,9 +17,9 @@
 }
  
 {------------------------------------------------------------------------------
-  DirectoryExists
+  DirPathExists
  ------------------------------------------------------------------------------}
-function DirectoryExists(const FileName: String): Boolean;
+function DirPathExists(const FileName: String): Boolean;
 var
   F: Longint;
   dirExist: Boolean;
@@ -632,7 +632,7 @@ begin
   if not FileExists(AFilename) then begin
     raise Exception.Create('file "'+AFilename+'" does not exist');
   end;
-  if DirectoryExists(AFilename) then begin
+  if DirPathExists(AFilename) then begin
     raise Exception.Create('file "'+AFilename+'" is a directory and not an executable');
   end;
   {$IFNDEF win32}
@@ -671,7 +671,7 @@ begin
   while i<=length(DirectoryName) do begin
     if DirectoryName[i]=PathDelim then begin
       Dir:=copy(DirectoryName,1,i-1);
-      if not DirectoryExists(Dir) then begin
+      if not DirPathExists(Dir) then begin
         Result:=CreateDir(Dir);
         if not Result then exit;
       end;
@@ -896,6 +896,9 @@ end;
 
 {
   $Log$
+  Revision 1.38  2003/12/21 13:58:06  mattias
+  renamed DirectoryExists to DirPathExists to reduce ambigiousity
+
   Revision 1.37  2003/12/20 11:10:36  mattias
   fixed a few directory exists checks
 

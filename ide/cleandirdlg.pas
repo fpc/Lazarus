@@ -271,7 +271,7 @@ var
     FullFilename: String;
   begin
     Result:=false;
-    if (not DirectoryExists(MainDirectory)) or (Lvl>20) then exit;
+    if (not DirPathExists(MainDirectory)) or (Lvl>20) then exit;
     if SysUtils.FindFirst(MainDirectory+FindMask,
                           faAnyFile,FileInfo)=0
     then begin

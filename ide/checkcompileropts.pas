@@ -118,7 +118,7 @@ begin
     TestGroupbox.Caption:='Test: Compiling an empty file ...';
     // get Test directory
     TestDir:=AppendPathDelim(EnvironmentOptions.TestBuildDirectory);
-    if not DirectoryExists(TestDir) then begin
+    if not DirPathExists(TestDir) then begin
       MessageDlg('Invalid Test Directory',
         'Please check the Test directory under'#13
         +'Environment -> Environment Options -> Files -> Directory for building test projects',

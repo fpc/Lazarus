@@ -277,11 +277,11 @@ begin
     if FTransferMacros<>nil then
       Macros.SubstituteStr(Filename);
     Filename:=ExpandFileName(Filename);
-    if (not (iftDirectory in CurFileFlags)) and DirectoryExists(Filename)
+    if (not (iftDirectory in CurFileFlags)) and DirPathExists(Filename)
     then
       exit;
     if (not (iftFilename in CurFileFlags)) and FileExists(Filename)
-    and (not DirectoryExists(Filename))
+    and (not DirPathExists(Filename))
     then
       exit;
   end;

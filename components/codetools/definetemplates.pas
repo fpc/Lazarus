@@ -3148,7 +3148,7 @@ var
 begin
   //writeln('CreateFPCSrcTemplate ',FPCSrcDir,': ',length(UnitSearchPath),' Valid=',UnitLinkListValid,' PPUExt=',PPUExt);
   Result:=nil;
-  if (FPCSrcDir='') or (not DirectoryExists(FPCSrcDir)) then exit;
+  if (FPCSrcDir='') or (not DirPathExists(FPCSrcDir)) then exit;
   DS:=PathDelim;
   Dir:=FPCSrcDir;
   if Dir[length(Dir)]<>DS then Dir:=Dir+DS;

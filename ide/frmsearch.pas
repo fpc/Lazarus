@@ -361,7 +361,7 @@ var
   TempDir: string;
 begin
   //if we have a list and a valid directory
-  if (DirectoryExists(TheFileName)) then
+  if (DirPathExists(TheFileName)) then
   begin //make sure path ends with delimiter
     TempDir:= AppendPathDelim(TheFileName);
     for i:= 0 to fParsedMasks.Count -1 do
@@ -374,7 +374,8 @@ begin
           if (FileInfo.Name='.') or (FileInfo.Name='..')
           or ((faDirectory and FileInfo.Attr)>0) then continue;
           //Make sure this is a text file as it will be searched
-          if FileIsReadable(TempDir + FileInfo.Name)and FileIsText(TempDir + FileInfo.Name) then
+          if FileIsReadable(TempDir + FileInfo.Name)
+          and FileIsText(TempDir + FileInfo.Name) then
           begin
             UpdateProgress(TempDir + FileInfo.Name);
             SearchFile(TempDir + FileInfo.Name);

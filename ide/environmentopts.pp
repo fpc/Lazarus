@@ -612,7 +612,7 @@ function GetLazarusLanguageNames(aLangId : TLazarusLanguage) : String;
 function CheckFileChanged(const OldFilename, NewFilename: string): boolean;
 function CheckExecutable(const OldFilename, NewFilename: string;
   const ErrorCaption, ErrorMsg: string): boolean;
-function CheckDirectoryExists(const Dir,
+function CheckDirPathExists(const Dir,
   ErrorCaption, ErrorMsg: string): TModalResult;
 function SimpleDirectoryCheck(const OldDir, NewDir,
   NotFoundErrMsg: string; var StopChecking: boolean): boolean;
@@ -697,10 +697,10 @@ begin
   end;
 end;
 
-function CheckDirectoryExists(const Dir,
+function CheckDirPathExists(const Dir,
   ErrorCaption, ErrorMsg: string): TModalResult;
 begin
-  if not DirectoryExists(Dir) then begin
+  if not DirPathExists(Dir) then begin
     Result:=MessageDlg(ErrorCaption,Format(ErrorMsg,[Dir]),mtWarning,
                        [mbIgnore,mbCancel],0);
   end else
@@ -717,7 +717,7 @@ begin
     Result:=true;
     exit;
   end;
-  SubResult:=CheckDirectoryExists(NewDir,lisEnvOptDlgDirectoryNotFound,
+  SubResult:=CheckDirPathExists(NewDir,lisEnvOptDlgDirectoryNotFound,
                                   NotFoundErrMsg);
   if SubResult=mrIgnore then begin
     Result:=true;

@@ -49,7 +49,7 @@ function CompareFilenames(const Filename1, Filename2: string): integer;
 function CompareFileExt(const Filename, Ext: string;
   CaseSensitive: boolean): integer;
 function GetFilenameOnDisk(const AFilename: string): string;
-function DirectoryExists(DirectoryName: string): boolean;
+function DirPathExists(DirectoryName: string): boolean;
 function ExtractFileNameOnly(const AFilename: string): string;
 function FilenameIsAbsolute(TheFilename: string):boolean;
 function ForceDirectory(DirectoryName: string): boolean;
@@ -187,7 +187,7 @@ begin
   Result:=AFilename;
 end;
 
-function DirectoryExists(DirectoryName: string): boolean;
+function DirPathExists(DirectoryName: string): boolean;
 var sr: TSearchRec;
 begin
   if (DirectoryName<>'')
@@ -209,7 +209,7 @@ begin
   while i<=length(DirectoryName) do begin
     if DirectoryName[i]=PathDelim then begin
       Dir:=copy(DirectoryName,1,i-1);
-      if not DirectoryExists(Dir) then begin
+      if not DirPathExists(Dir) then begin
         Result:=CreateDir(Dir);
         if not Result then exit;
       end;

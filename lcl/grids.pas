@@ -4089,7 +4089,7 @@ procedure TStringGrid.DrawCell(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
 var
   S: string;
-  ts: TTextStyle;
+  //ts: TTextStyle;
 begin
   inherited DrawCell(aCol, aRow, aRect, aState);
   S:=Cells[aCol,aRow];

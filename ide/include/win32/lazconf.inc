@@ -154,7 +154,7 @@ begin
   Result:=GetEnv('TEMP');
   if Result<>'' then exit;
   Result:='c:\temp\';
-  if DirectoryExists(Result) then exit;
+  if DirPathExists(Result) then exit;
   Result:='c:\windows\temp\';
 end;
 
@@ -187,6 +187,9 @@ end;
 
 {
   $Log$
+  Revision 1.20  2003/12/21 13:58:06  mattias
+  renamed DirectoryExists to DirPathExists to reduce ambigiousity
+
   Revision 1.19  2003/12/20 01:20:52  mattias
   splitted output directories for cross compilation
 

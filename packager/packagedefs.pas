@@ -2489,7 +2489,7 @@ function TLazPackage.GetFileDialogInitialDir(const DefaultDirectory: string
 begin
   Result:=AppendPathDelim(TrimFilename(DefaultDirectory));
   if (SourceDirectories.GetFileReference(Result)=nil)
-  and DirectoryExists(Directory) then
+  and DirPathExists(Directory) then
     Result:=Directory;
 end;
 

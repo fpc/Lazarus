@@ -387,7 +387,7 @@ begin
   if WholeWordsOnlyCheckBox.Checked then Include(Result,fifWholeWord);
   if RegularExpressionsCheckBox.Checked then Include(Result,fifRegExpr);
   if IncludeSubDirsCheckBox.Checked then Include(Result,fifIncludeSubDirs);
-  
+
   case WhereRadioGroup.ItemIndex of
     0: Include(Result,fifSearchProject);
     1: Include(Result,fifSearchOpen);

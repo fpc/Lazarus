@@ -215,7 +215,7 @@ begin
 
   FPreviewFilename := CurFilename;
   FileIsValid := FileExists(FPreviewFilename)
-                 and (not DirectoryExists(FPreviewFilename))
+                 and (not DirPathExists(FPreviewFilename))
                  and FileIsReadable(FPreviewFilename);
   if FileIsValid then
     try

@@ -109,11 +109,11 @@ var
   Dir: String;
 begin
   Result:=false;
-  if DirectoryExists(ADirectory) then begin
+  if DirPathExists(ADirectory) then begin
     Dir:=AppendPathDelim(ADirectory);
-    Result:=DirectoryExists(Dir+'fcl')
-        and DirectoryExists(Dir+'rtl')
-        and DirectoryExists(Dir+'packages');
+    Result:=DirPathExists(Dir+'fcl')
+        and DirPathExists(Dir+'rtl')
+        and DirPathExists(Dir+'packages');
   end;
 end;
 
@@ -133,13 +133,13 @@ var
   Dir: String;
 begin
   Result:=false;
-  if DirectoryExists(ADirectory) then begin
+  if DirPathExists(ADirectory) then begin
     Dir:=AppendPathDelim(ADirectory);
-    Result:=DirectoryExists(Dir+'lcl')
-        and DirectoryExists(Dir+'lcl'+PathDelim+'units')
-        and DirectoryExists(Dir+'components')
-        and DirectoryExists(Dir+'designer')
-        and DirectoryExists(Dir+'debugger');
+    Result:=DirPathExists(Dir+'lcl')
+        and DirPathExists(Dir+'lcl'+PathDelim+'units')
+        and DirPathExists(Dir+'components')
+        and DirPathExists(Dir+'designer')
+        and DirPathExists(Dir+'debugger');
   end;
 end;
 
@@ -150,6 +150,9 @@ end.
 
 {
   $Log$
+  Revision 1.23  2003/12/21 13:58:05  mattias
+  renamed DirectoryExists to DirPathExists to reduce ambigiousity
+
   Revision 1.22  2003/12/20 01:20:52  mattias
   splitted output directories for cross compilation
 

@@ -830,7 +830,7 @@ begin
       OpenDialog.InitialDir:=ExtractFilePath(WorkingDirectoryEdit.Text);
     OpenDialog.Filename:=HostApplicationEdit.Text;
     if OpenDialog.Execute then begin
-      if (DirectoryExists(OpenDialog.Filename))
+      if (DirPathExists(OpenDialog.Filename))
       or (MessageDlg(dlgDirectoryDoesNotExist ,
           dlgTheDirectory +OpenDialog.Filename+dlgDoesNotExist ,
           mtWarning,[mbIgnore,mbCancel],0)=mrIgnore) then

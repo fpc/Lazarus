@@ -352,7 +352,7 @@ begin
     exit;
 
   // check binaries
-  if IgnoreBinaries and (not DirectoryExists(AFilename))
+  if IgnoreBinaries and (not DirPathExists(AFilename))
   and (not FileIsText(AFilename)) then exit;
 
   Result:=true;

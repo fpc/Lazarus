@@ -350,7 +350,7 @@ end;
 
 procedure TImExportCompOptsDlg.DoOpenFile(const AFilename: string);
 begin
-  if DirectoryExists(AFilename) then exit;
+  if DirPathExists(AFilename) then exit;
   Filename:=AFilename;
   ImExportResult:=iecorImport;
   ModalResult:=mrOk;
@@ -360,7 +360,7 @@ procedure TImExportCompOptsDlg.DoSaveFile(const AFilename: string);
 var
   MsgResult: TModalResult;
 begin
-  if DirectoryExists(AFilename) then exit;
+  if DirPathExists(AFilename) then exit;
   Filename:=AFilename;
   if FileExists(AFilename) then begin
     MsgResult:=MessageDlg('Export file exists',

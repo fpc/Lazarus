@@ -776,9 +776,9 @@ begin
   Result:=FileProcs.FilenameIsAbsolute(Filename);
 end;
 
-function DirectoryExists(DirectoryName: string): boolean;
+function DirPathExists(DirectoryName: string): boolean;
 begin
-  Result:=FileProcs.DirectoryExists(DirectoryName);
+  Result:=FileProcs.DirPathExists(DirectoryName);
 end;
 
 function ForceDirectory(DirectoryName: string): boolean;
@@ -1858,7 +1858,7 @@ begin
   DestDir:=AppendPathDelim(TrimFilename(DestDirectory));
   if CompareFilenames(SrcDir,DestDir)=0 then exit;
 
-  if (not DirectoryExists(SrcDir))
+  if (not DirPathExists(SrcDir))
   and not HandleError(ceSrcDirDoesNotExists,SrcDir,'') then exit;
   
   CopyDir(SrcDir,DestDirectory);
