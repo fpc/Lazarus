@@ -45,14 +45,14 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, LCLProc, Forms, Controls, FileCtrl,
-  Dialogs, Menus, CodeToolManager, CodeCache, Laz_XMLCfg, AVL_Tree,
-  LazarusIDEStrConsts, KeyMapping, EnvironmentOpts, MiscOptions, IDEProcs,
-  ProjectDefs, InputHistory, IDEDefs, Project, ComponentReg, UComponentManMain,
-  PackageEditor, AddToPackageDlg, PackageDefs, PackageLinks, PackageSystem,
-  OpenInstalledPkgDlg, PkgGraphExplorer, BrokenDependenciesDlg, CompilerOptions,
-  ExtToolDialog, ExtToolEditDlg, EditDefineTree, DefineTemplates, LazConf,
-  ProjectInspector, ComponentPalette, UnitEditor, AddFileToAPackageDlg,
-  LazarusPackageIntf,
+  Dialogs, Menus, CodeToolManager, CodeCache, BasicCodeTools, Laz_XMLCfg,
+  AVL_Tree, LazarusIDEStrConsts, KeyMapping, EnvironmentOpts, MiscOptions,
+  IDEProcs, ProjectDefs, InputHistory, IDEDefs, Project, ComponentReg,
+  UComponentManMain, PackageEditor, AddToPackageDlg, PackageDefs, PackageLinks,
+  PackageSystem, OpenInstalledPkgDlg, PkgGraphExplorer, BrokenDependenciesDlg,
+  CompilerOptions, ExtToolDialog, ExtToolEditDlg, EditDefineTree,
+  DefineTemplates, LazConf, ProjectInspector, ComponentPalette, UnitEditor,
+  AddFileToAPackageDlg, LazarusPackageIntf,
   BasePkgManager, MainBar;
 
 type
@@ -65,6 +65,8 @@ type
                                    const Params: TAddToPkgResult): TModalResult;
     function OnPackageEditorInstallPackage(Sender: TObject;
                                            APackage: TLazPackage): TModalResult;
+    function OnPackageEditorRevertPackage(Sender: TObject; APackage: TLazPackage
+      ): TModalResult;
     function OnPackageEditorUninstallPackage(Sender: TObject;
                                            APackage: TLazPackage): TModalResult;
     function OnPackageEditorOpenPackage(Sender: TObject; APackage: TLazPackage
@@ -141,7 +143,7 @@ type
     procedure UnloadInstalledPackages;
     procedure UpdateVisibleComponentPalette; override;
     
-    function AddPackageToGraph(APackage: TLazPackage): TModalResult;
+    function AddPackageToGraph(APackage: TLazPackage; Replace: boolean): TModalResult;
     function OpenProjectDependencies(AProject: TProject): TModalResult; override;
     procedure AddDefaultDependencies(AProject: TProject); override;
     procedure AddProjectDependency(AProject: TProject; APackage: TLazPackage); override;
@@ -322,6 +324,14 @@ function TPkgManager.OnPackageEditorInstallPackage(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
   Result:=DoInstallPackage(APackage);
+end;
+
+function TPkgManager.OnPackageEditorRevertPackage(Sender: TObject;
+  APackage: TLazPackage): TModalResult;
+begin
+  if APackage.AutoCreated or (not FilenameIsAbsolute(APackage.Filename)) then
+    exit;
+  Result:=DoOpenPackageFile(APackage.Filename,[pofRevert]);
 end;
 
 function TPkgManager.OnPackageEditorUninstallPackage(Sender: TObject;
@@ -1065,13 +1075,15 @@ begin
   sl:=TStringList.Create;
   Dependency:=FirstAutoInstallDependency;
   while Dependency<>nil do begin
-    if (Dependency.LoadPackageResult<>lprSuccess)
-    or (Dependency.RequiredPackage.AutoCreated) then continue;
-    sl.Add(Dependency.PackageName);
-writeln('TPkgManager.SaveAutoInstallDependencies A ',Dependency.PackageName);
+    if (Dependency.LoadPackageResult=lprSuccess)
+    and (not Dependency.RequiredPackage.AutoCreated) then begin
+      sl.Add(Dependency.PackageName);
+      writeln('TPkgManager.SaveAutoInstallDependencies A ',Dependency.PackageName);
+    end;
     Dependency:=Dependency.NextRequiresDependency;
   end;
   MiscellaneousOptions.BuildLazOpts.StaticAutoInstallPackages.Assign(sl);
+  MiscellaneousOptions.Save;
   sl.Free;
 end;
 
@@ -1087,8 +1099,7 @@ begin
   // add them to auto install list
   for i:=0 to PackageGraph.LazarusBasePackages.Count-1 do begin
     BasePackage:=TLazPackage(PackageGraph.LazarusBasePackages[i]);
-    Dependency:=BasePackage.CreateDependencyForThisPkg;
-    Dependency.Owner:=Self;
+    Dependency:=BasePackage.CreateDependencyForThisPkg(Self);
     PackageGraph.OpenDependency(Dependency);
     Dependency.AddToList(FirstAutoInstallDependency,pdlRequires);
   end;
@@ -1208,6 +1219,7 @@ begin
   PackageEditors.OnGetUnitRegisterInfo:=@OnPackageEditorGetUnitRegisterInfo;
   PackageEditors.OnFreeEditor:=@OnPackageEditorFreeEditor;
   PackageEditors.OnSavePackage:=@OnPackageEditorSavePackage;
+  PackageEditors.OnRevertPackage:=@OnPackageEditorRevertPackage;
   PackageEditors.OnCompilePackage:=@OnPackageEditorCompilePackage;
   PackageEditors.OnInstallPackage:=@OnPackageEditorInstallPackage;
   PackageEditors.OnUninstallPackage:=@OnPackageEditorUninstallPackage;
@@ -1322,8 +1334,8 @@ begin
   {$ENDIF}
 end;
 
-function TPkgManager.AddPackageToGraph(APackage: TLazPackage
-  ): TModalResult;
+function TPkgManager.AddPackageToGraph(APackage: TLazPackage;
+  Replace: boolean): TModalResult;
 var
   ConflictPkg: TLazPackage;
 begin
@@ -1410,7 +1422,7 @@ begin
   then
     exit;
   // add a dependency for the package to the project
-  NewDependency:=APackage.CreateDependencyForThisPkg;
+  NewDependency:=APackage.CreateDependencyForThisPkg(AProject);
   AProject.AddRequiredDependency(NewDependency);
   PackageGraph.OpenDependency(NewDependency);
 end;
@@ -1447,7 +1459,7 @@ begin
   // create a new package with standard dependencies
   NewPackage:=PackageGraph.CreateNewPackage('NewPackage');
   PackageGraph.AddDependencyToPackage(NewPackage,
-                            PackageGraph.FCLPackage.CreateDependencyForThisPkg);
+                PackageGraph.FCLPackage.CreateDependencyForThisPkg(NewPackage));
   NewPackage.Modified:=false;
 
   // open a package editor
@@ -1516,7 +1528,7 @@ begin
 
   // check if package is already loaded
   APackage:=PackageGraph.FindPackageWithFilename(AFilename,true);
-  if APackage=nil then begin
+  if (APackage=nil) or (pofRevert in Flags) then begin
     // package not yet loaded
     
     if not FileExists(AFilename) then begin
@@ -1567,7 +1579,7 @@ begin
       end;
       
       // integrate it into the graph
-      Result:=AddPackageToGraph(APackage);
+      Result:=AddPackageToGraph(APackage,pofRevert in Flags);
     finally
       if Result<>mrOk then APackage.Free;
     end;
@@ -1859,6 +1871,7 @@ var
   RegistrationCode: String;
   HeaderSrc: String;
   OutputDir: String;
+  OldSrc: String;
 begin
   writeln('TPkgManager.DoSavePackageMainSource A');
   // check if package is ready for saving
@@ -1949,6 +1962,15 @@ begin
   Src:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.
                   BeautifyStatement(Src,0);
   Src:=HeaderSrc+Src;
+
+  // check if old code is already uptodate
+  MainIDE.DoLoadCodeBuffer(CodeBuffer,SrcFilename,[lbfQuiet,lbfCheckIfText,
+                                      lbfUpdateFromDisk,lbfCreateClearOnError]);
+  OldSrc:=CodeToolBoss.ExtractCodeWithoutComments(CodeBuffer);
+  if CompareTextIgnoringSpace(OldSrc,Src,true)=0 then begin
+    Result:=mrOk;
+    exit;
+  end;
 
   // save source
   Result:=MainIDE.DoSaveStringToFile(SrcFilename,Src,'package main source file');
@@ -2052,7 +2074,7 @@ var
   NeedSaving: Boolean;
   RequiredPackage: TLazPackage;
 begin
-  PackageGraph.BeginUpdate(false);
+  PackageGraph.BeginUpdate(true);
   PkgList:=nil;
   try
     // check if package is designtime package
@@ -2104,7 +2126,7 @@ begin
       RequiredPackage:=TLazPackage(PkgList[i]);
       if RequiredPackage.AutoInstall=pitNope then begin
         RequiredPackage.AutoInstall:=pitStatic;
-        Dependency:=RequiredPackage.CreateDependencyForThisPkg;
+        Dependency:=RequiredPackage.CreateDependencyForThisPkg(Self);
         Dependency.AddToList(FirstAutoInstallDependency,pdlRequires);
         PackageGraph.OpenDependency(Dependency);
         NeedSaving:=true;
@@ -2158,7 +2180,7 @@ begin
     exit;
   end;
   
-  PackageGraph.BeginUpdate(false);
+  PackageGraph.BeginUpdate(true);
   try
     // save package
     if APackage.IsVirtual or APackage.Modified then begin

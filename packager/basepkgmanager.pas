@@ -54,7 +54,8 @@ type
   TPkgSaveFlags = set of TPkgSaveFlag;
   
   TPkgOpenFlag = (
-    pofAddToRecent
+    pofAddToRecent,
+    pofRevert
     );
   TPkgOpenFlags = set of TPkgOpenFlag;
 
@@ -125,7 +126,8 @@ const
     );
 
   PkgOpenFlagNames: array[TPkgOpenFlag] of string = (
-    'pofAddToRecent'
+    'pofAddToRecent',
+    'pofRevert'
     );
 
   PkgCompileFlagNames: array[TPkgCompileFlag] of string = (

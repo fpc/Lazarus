@@ -1588,11 +1588,11 @@ begin
 end;
 
 function TDefineTree.GetUnitPathForDirectory(const Directory: string): string;
-var ExprEval: TExpressionEvaluator;
+var Evaluator: TExpressionEvaluator;
 begin
-  ExprEval:=GetDefinesForDirectory(Directory,true);
-  if ExprEval<>nil then begin
-    Result:=ExprEval.Variables[UnitPathMacroName];
+  Evaluator:=GetDefinesForDirectory(Directory,true);
+  if Evaluator<>nil then begin
+    Result:=Evaluator.Variables[UnitPathMacroName];
   end else begin
     Result:='';
   end;
@@ -1600,22 +1600,22 @@ end;
 
 function TDefineTree.GetIncludePathForDirectory(const Directory: string
   ): string;
-var ExprEval: TExpressionEvaluator;
+var Evaluator: TExpressionEvaluator;
 begin
-  ExprEval:=GetDefinesForDirectory(Directory,true);
-  if ExprEval<>nil then begin
-    Result:=ExprEval.Variables[IncludePathMacroName];
+  Evaluator:=GetDefinesForDirectory(Directory,true);
+  if Evaluator<>nil then begin
+    Result:=Evaluator.Variables[IncludePathMacroName];
   end else begin
     Result:='';
   end;
 end;
 
 function TDefineTree.GetSrcPathForDirectory(const Directory: string): string;
-var ExprEval: TExpressionEvaluator;
+var Evaluator: TExpressionEvaluator;
 begin
-  ExprEval:=GetDefinesForDirectory(Directory,true);
-  if ExprEval<>nil then begin
-    Result:=ExprEval.Variables[SrcPathMacroName];
+  Evaluator:=GetDefinesForDirectory(Directory,true);
+  if Evaluator<>nil then begin
+    Result:=Evaluator.Variables[SrcPathMacroName];
   end else begin
     Result:='';
   end;
@@ -1623,11 +1623,11 @@ end;
 
 function TDefineTree.GetPPUSrcPathForDirectory(const Directory: string
   ): string;
-var ExprEval: TExpressionEvaluator;
+var Evaluator: TExpressionEvaluator;
 begin
-  ExprEval:=GetDefinesForDirectory(Directory,true);
-  if ExprEval<>nil then begin
-    Result:=ExprEval.Variables[PPUSrcPathMacroName];
+  Evaluator:=GetDefinesForDirectory(Directory,true);
+  if Evaluator<>nil then begin
+    Result:=Evaluator.Variables[PPUSrcPathMacroName];
   end else begin
     Result:='';
   end;
@@ -1635,11 +1635,11 @@ end;
 
 function TDefineTree.GetPPWSrcPathForDirectory(const Directory: string
   ): string;
-var ExprEval: TExpressionEvaluator;
+var Evaluator: TExpressionEvaluator;
 begin
-  ExprEval:=GetDefinesForDirectory(Directory,true);
-  if ExprEval<>nil then begin
-    Result:=ExprEval.Variables[PPWSrcPathMacroName];
+  Evaluator:=GetDefinesForDirectory(Directory,true);
+  if Evaluator<>nil then begin
+    Result:=Evaluator.Variables[PPWSrcPathMacroName];
   end else begin
     Result:='';
   end;
@@ -1647,11 +1647,11 @@ end;
 
 function TDefineTree.GetDCUSrcPathForDirectory(const Directory: string
   ): string;
-var ExprEval: TExpressionEvaluator;
+var Evaluator: TExpressionEvaluator;
 begin
-  ExprEval:=GetDefinesForDirectory(Directory,true);
-  if ExprEval<>nil then begin
-    Result:=ExprEval.Variables[DCUSrcPathMacroName];
+  Evaluator:=GetDefinesForDirectory(Directory,true);
+  if Evaluator<>nil then begin
+    Result:=Evaluator.Variables[DCUSrcPathMacroName];
   end else begin
     Result:='';
   end;
@@ -1659,11 +1659,12 @@ end;
 
 function TDefineTree.GetCompiledSrcPathForDirectory(const Directory: string
   ): string;
-var ExprEval: TExpressionEvaluator;
+var
+  Evaluator: TExpressionEvaluator;
 begin
-  ExprEval:=GetDefinesForDirectory(Directory,true);
-  if ExprEval<>nil then begin
-    Result:=ExprEval.Variables[CompiledSrcPathMacroName];
+  Evaluator:=GetDefinesForDirectory(Directory,true);
+  if Evaluator<>nil then begin
+    Result:=Evaluator.Variables[CompiledSrcPathMacroName];
   end else begin
     Result:='';
   end;

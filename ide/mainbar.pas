@@ -42,8 +42,8 @@ uses
 {$ENDIF}
   Classes, LCLType, LCLLinux, Compiler, StdCtrls, Forms,
   Buttons, Menus, ComCtrls, Spin, SysUtils, FileCtrl,
-  Controls, Graphics, ExtCtrls, Dialogs, CodeToolManager, SynEditKeyCmds,
-  LazConf, LazarusIDEStrConsts, ProjectDefs, Project,
+  Controls, Graphics, ExtCtrls, Dialogs, CodeToolManager, CodeCache,
+  SynEditKeyCmds, LazConf, LazarusIDEStrConsts, ProjectDefs, Project,
   {$IFDEF EnablePkgs}
   ComponentReg,
   {$ELSE}
@@ -131,7 +131,9 @@ type
   TLoadBufferFlag = (
     lbfUpdateFromDisk,
     lbfRevert,
-    lbfCheckIfText
+    lbfCheckIfText,
+    lbfQuiet,
+    lbfCreateClearOnError
     );
   TLoadBufferFlags = set of TLoadBufferFlag;
 
@@ -384,10 +386,6 @@ type
     function DoInitProjectRun: TModalResult; virtual; abstract;
     function DoOpenMacroFile(Sender: TObject;
         const AFilename: string): TModalResult; virtual;
-    function DoCheckCreatingFile(const AFilename: string;
-        CheckReadable: boolean): TModalResult; virtual;
-    function DoSaveStringToFile(const Filename, Src,
-                      FileDescription: string): TModalResult; virtual; abstract;
 
     function DoShowProjectInspector: TModalResult; virtual; abstract;
 
@@ -395,7 +393,17 @@ type
     function DoSaveForBuild: TModalResult; virtual; abstract;
     function DoCheckFilesOnDisk: TModalResult; virtual; abstract;
     function DoCheckAmbigiousSources(const AFilename: string;
-      Compiling: boolean): TModalResult;
+                                     Compiling: boolean): TModalResult; virtual;
+    function DoCheckCreatingFile(const AFilename: string;
+                                 CheckReadable: boolean): TModalResult; virtual;
+    function DoSaveStringToFile(const Filename, Src,
+                                FileDescription: string): TModalResult; virtual; abstract;
+    function DoLoadCodeBuffer(var ACodeBuffer: TCodeBuffer;
+                              const AFilename: string;
+                              Flags: TLoadBufferFlags): TModalResult; virtual; abstract;
+    function DoSaveCodeBufferToFile(ABuffer: TCodeBuffer;
+                                    const AFilename: string;
+                                    IsPartOfProject:boolean): TModalResult; virtual; abstract;
     function DoBackupFile(const Filename:string;
       IsPartOfProject:boolean): TModalResult; virtual; abstract;
     function DoDeleteAmbigiousFiles(const Filename:string

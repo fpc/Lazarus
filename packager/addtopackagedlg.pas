@@ -742,7 +742,7 @@ begin
     if (LazPackage<>ARequiredPackage)
     and (not LazPackage.Requires(PkgComponent.PkgFile.LazPackage))
     then
-      Params.Dependency:=ARequiredPackage.CreateDependencyForThisPkg;
+      Params.Dependency:=ARequiredPackage.CreateDependencyForThisPkg(nil);
   end;
 
   ModalResult:=mrOk;

@@ -373,6 +373,7 @@ begin
   BeginUpdate(true);
   CurPkg:=Packages[Index];
   CurPkg.Flags:=CurPkg.Flags+[lpfDestroying];
+  CurPkg.DefineTemplates.Active:=false;
   if Assigned(OnDeletePackage) then OnDeletePackage(CurPkg);
   FItems.Delete(Index);
   FTree.Remove(CurPkg);
@@ -848,7 +849,7 @@ begin
     CompilerOptions.UnitOutputDirectory:='';
 
     // add requirements
-    AddRequiredDependency(FCLPackage.CreateDependencyForThisPkg);
+    AddRequiredDependency(FCLPackage.CreateDependencyForThisPkg(Result));
 
     // add registering units
     AddFile('menus.pp','Menus',pftUnit,[pffHasRegisterProc],cpBase);
@@ -900,7 +901,7 @@ begin
     CompilerOptions.UnitOutputDirectory:='';
 
     // add requirements
-    AddRequiredDependency(LCLPackage.CreateDependencyForThisPkg);
+    AddRequiredDependency(LCLPackage.CreateDependencyForThisPkg(Result));
 
     // add units
     AddFile('synedit.pp','SynEdit',pftUnit,[],cpBase);
@@ -951,8 +952,8 @@ begin
     UsageOptions.UnitPath:='$(LazarusDir)/components/custom';
 
     // add requirements
-    AddRequiredDependency(LCLPackage.CreateDependencyForThisPkg);
-    AddRequiredDependency(SynEditPackage.CreateDependencyForThisPkg);
+    AddRequiredDependency(LCLPackage.CreateDependencyForThisPkg(Result));
+    AddRequiredDependency(SynEditPackage.CreateDependencyForThisPkg(Result));
 
     Modified:=false;
   end;
@@ -975,20 +976,68 @@ begin
   
   // update all missing dependencies
   UpdateBrokenDependenciesToPackage(APackage);
+  
+  // activate define templates
+  APackage.DefineTemplates.Active:=true;
 
   if Assigned(OnAddPackage) then OnAddPackage(APackage);
   EndUpdate;
 end;
 
 procedure TLazPackageGraph.ReplacePackage(OldPackage, NewPackage: TLazPackage);
+
+  procedure MoveInstalledComponents(OldPkgFile: TPkgFile);
+  var
+    NewPkgFile: TPkgFile;
+    OldUnitName: String;
+    PkgComponent: TPkgComponent;
+  begin
+    if (OldPkgFile.ComponentCount>0) then begin
+      OldUnitName:=OldPkgFile.UnitName;
+      if OldUnitName='' then RaiseException('MoveInstalledComponents');
+      NewPkgFile:=NewPackage.FindUnit(OldUnitName,false);
+      if NewPkgFile=nil then begin
+        NewPkgFile:=NewPackage.AddRemovedFile(OldPkgFile.Filename,OldUnitName,
+                                        OldPkgFile.FileType,OldPkgFile.Flags,
+                                        OldPkgFile.ComponentPriority.Category);
+      end;
+      while OldPkgFile.ComponentCount>0 do begin
+        PkgComponent:=OldPkgFile.Components[0];
+        OldPkgFile.RemovePkgComponent(PkgComponent);
+        NewPkgFile.AddPkgComponent(PkgComponent);
+      end;
+    end;
+  end;
+
 var
   OldInstalled: TPackageInstallType;
+  OldAutoInstall: TPackageInstallType;
+  OldEditor: TBasePackageEditor;
+  i: Integer;
 begin
   BeginUpdate(true);
+  // save flags
   OldInstalled:=OldPackage.Installed;
+  OldAutoInstall:=OldPackage.AutoInstall;
+  OldEditor:=OldPackage.Editor;
+  if OldEditor<>nil then begin
+    OldEditor.LazPackage:=nil;
+  end;
+  // migrate components
+  for i:=0 to OldPackage.FileCount-1 do
+    MoveInstalledComponents(OldPackage.Files[i]);
+  for i:=0 to OldPackage.RemovedFilesCount-1 do
+    MoveInstalledComponents(OldPackage.RemovedFiles[i]);
+  // delete old package
   Delete(fItems.IndexOf(OldPackage));
+  // restore flags
   NewPackage.Installed:=OldInstalled;
+  NewPackage.AutoInstall:=OldAutoInstall;
+  // add package to graph
   AddPackage(NewPackage);
+  if OldEditor<>nil then begin
+    OldEditor.LazPackage:=NewPackage;
+  end;
   EndUpdate;
 end;
 
@@ -1262,7 +1311,7 @@ function TLazPackageGraph.GetAutoCompilationOrder(APackage: TLazPackage;
 // The packages will be in topological order, with the package that should be
 // compiled first at the end.
 
-  procedure GetLevelOrder(Dependency: TPkgDependency);
+  procedure GetTopologicalOrder(Dependency: TPkgDependency);
   var
     RequiredPackage: TLazPackage;
   begin
@@ -1273,7 +1322,7 @@ function TLazPackageGraph.GetAutoCompilationOrder(APackage: TLazPackage;
           RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
           if RequiredPackage.AutoUpdate in Policies then begin
             // add first all needed packages
-            GetLevelOrder(RequiredPackage.FirstRequiredDependency);
+            GetTopologicalOrder(RequiredPackage.FirstRequiredDependency);
             // then add this package
             if Result=nil then Result:=TList.Create;
             Result.Add(RequiredPackage);
@@ -1291,7 +1340,7 @@ begin
     APackage.Flags:=APackage.Flags+[lpfVisited];
     FirstDependency:=APackage.FirstRequiredDependency;
   end;
-  GetLevelOrder(FirstDependency);
+  GetTopologicalOrder(FirstDependency);
 end;
 
 procedure TLazPackageGraph.MarkAllPackagesAsNotVisited;
@@ -1409,43 +1458,10 @@ end;
 
 function TLazPackageGraph.PackageCanBeReplaced(
   OldPackage, NewPackage: TLazPackage): boolean;
-var
-  Dependency: TPkgDependency;
 begin
-  Result:=false;
-  if OldPackage.Missing and (AnsiCompareText(OldPackage.Name,NewPackage.Name)=0)
-  then begin
-    Result:=true;
-    exit;
-  end;
+  if AnsiCompareText(OldPackage.Name,NewPackage.Name)<>0 then
+    RaiseException('TLazPackageGraph.PackageCanBeReplaced');
 
-  if PackageIsNeeded(OldPackage) then exit;
-
-  // check all used-by dependencies
-  Dependency:=OldPackage.FirstUsedByDependency;
-  if Dependency<>nil then begin
-    MarkNeededPackages;
-    while Dependency<>nil do begin
-      if (not Dependency.IsCompatible(NewPackage)) then begin
-        // replacing will break this dependency
-        // -> check if Owner is needed
-        if (Dependency.Owner=nil) then begin
-          // dependency has no owner -> can be broken
-        end else if (Dependency.Owner is TLazPackage) then begin
-          if lpfNeeded in TLazPackage(Dependency.Owner).Flags then begin
-            // a needed package needs old package -> can no be broken
-            exit;
-          end else begin
-            // an unneeded package needs old package -> can be broken
-          end;
-        end else begin
-          // an other thing (e.g. a project) needs old package -> can not be broken
-          exit;
-        end;
-      end;
-      Dependency:=Dependency.NextUsedByDependency;
-    end;
-  end;
   Result:=true;
 end;
 

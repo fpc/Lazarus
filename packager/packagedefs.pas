@@ -347,6 +347,7 @@ type
   
   TLazPackageDefineTemplates = class
   private
+    FActive: boolean;
     FFlags: TLazPkgDefineTemplatesFlags;
     fLastOutputDirSrcPathIDAsString: string;
     fLastSourceDirectories: TStringList;
@@ -357,6 +358,7 @@ type
     FOutputDir: TDefineTemplate;
     FOutPutSrcPath: TDefineTemplate;
     FUpdateLock: integer;
+    procedure SetActive(const AValue: boolean);
     procedure UpdateMain;
     procedure UpdateDefinesForOutputDirectory;
     procedure UpdateDefinesForSourceDirectories;
@@ -375,6 +377,7 @@ type
     property Main: TDefineTemplate read FMain;
     property OutputDir: TDefineTemplate read FOutputDir;
     property OutPutSrcPath: TDefineTemplate read FOutPutSrcPath;
+    property Active: boolean read FActive write SetActive;
   end;
   
 
@@ -529,6 +532,9 @@ type
     function AddFile(const NewFilename, NewUnitName: string;
                      NewFileType: TPkgFileType; NewFlags: TPkgFileFlags;
                      CompPriorityCat: TComponentPriorityCategory): TPkgFile;
+    function AddRemovedFile(const NewFilename, NewUnitName: string;
+                     NewFileType: TPkgFileType; NewFlags: TPkgFileFlags;
+                     CompPriorityCat: TComponentPriorityCategory): TPkgFile;
     procedure RemoveFile(PkgFile: TPkgFile);
     procedure UnremovePkgFile(PkgFile: TPkgFile);
     // required dependencies (plus removed required dependencies)
@@ -542,7 +548,7 @@ type
     procedure RemoveRemovedDependency(Dependency: TPkgDependency);
     procedure MoveRequiredDependencyUp(Dependency: TPkgDependency);
     procedure MoveRequiredDependencyDown(Dependency: TPkgDependency);
-    function CreateDependencyForThisPkg: TPkgDependency;
+    function CreateDependencyForThisPkg(NewOwner: TObject): TPkgDependency;
     function Requires(APackage: TLazPackage): boolean;
     procedure GetAllRequiredPackages(var List: TList);
     // components
@@ -618,8 +624,12 @@ type
   { TBasePackageEditor }
   
   TBasePackageEditor = class(TForm)
+  protected
+    function GetLazPackage: TLazPackage; virtual; abstract;
+    procedure SetLazPackage(const AValue: TLazPackage); virtual; abstract;
   public
     procedure UpdateAll; virtual; abstract;
+    property LazPackage: TLazPackage read GetLazPackage write SetLazPackage;
   end;
   
 
@@ -2197,6 +2207,26 @@ begin
   FFiles.Add(Result);
 end;
 
+function TLazPackage.AddRemovedFile(const NewFilename, NewUnitName: string;
+  NewFileType: TPkgFileType; NewFlags: TPkgFileFlags;
+  CompPriorityCat: TComponentPriorityCategory): TPkgFile;
+begin
+  Result:=FindRemovedPkgFile(NewFilename);
+  if Result=nil then begin
+    Result:=TPkgFile.Create(Self);
+    Result.Removed:=false;
+  end;
+  with Result do begin
+    Filename:=NewFilename;
+    UnitName:=NewUnitName;
+    FileType:=NewFileType;
+    Flags:=NewFlags;
+    ComponentPriority:=ComponentPriorityNormal;
+    ComponentPriority.Category:=CompPriorityCat;
+  end;
+  FRemovedFiles.Add(Result);
+end;
+
 procedure TLazPackage.RemoveFile(PkgFile: TPkgFile);
 begin
   FFiles.Remove(PkgFile);
@@ -2258,10 +2288,12 @@ begin
   Dependency.MoveDownInList(FFirstRequiredDependency,pdlRequires);
 end;
 
-function TLazPackage.CreateDependencyForThisPkg: TPkgDependency;
+function TLazPackage.CreateDependencyForThisPkg(
+  NewOwner: TObject): TPkgDependency;
 begin
   Result:=TPkgDependency.Create;
   with Result do begin
+    Owner:=NewOwner;
     PackageName:=Self.Name;
     MinVersion.Assign(Version);
     Flags:=[pdfMinVersion];
@@ -2784,7 +2816,7 @@ end;
 
 procedure TLazPackageDefineTemplates.UpdateMain;
 begin
-  if not LazPackage.NeedsDefineTemplates then exit;
+  if (not LazPackage.NeedsDefineTemplates) or (not Active) then exit;
   // update the package block define template (the container for all other
   // define templates of the package)
   if FMain=nil then begin
@@ -2796,9 +2828,16 @@ begin
   // ClearCache is here unnessary, because it is only a block
 end;
 
+procedure TLazPackageDefineTemplates.SetActive(const AValue: boolean);
+begin
+  if FActive=AValue then exit;
+  FActive:=AValue;
+  if not FActive then Clear else AllChanged;
+end;
+
 procedure TLazPackageDefineTemplates.UpdateDefinesForOutputDirectory;
 begin
-  if not LazPackage.NeedsDefineTemplates then exit;
+  if (not LazPackage.NeedsDefineTemplates) or (not Active) then exit;
   if FMain=nil then UpdateMain;
 
   if FOutputDir=nil then begin
@@ -2833,7 +2872,7 @@ var
   IncPathDefTempl: TDefineTemplate;
   IDHasChanged: Boolean;
 begin
-  if not LazPackage.NeedsDefineTemplates then exit;
+  if (not LazPackage.NeedsDefineTemplates) or (not Active) then exit;
 
   // quick check if something has changed
   IDHasChanged:=fLastSourceDirsIDAsString<>LazPackage.IDAsString;

@@ -51,6 +51,8 @@ type
   TOnSavePackage =
     function(Sender: TObject; APackage: TLazPackage;
              SaveAs: boolean): TModalResult of object;
+  TOnRevertPackage =
+    function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
   TOnCompilePackage =
     function(Sender: TObject; APackage: TLazPackage;
              CompileClean, CompileRequired: boolean): TModalResult of object;
@@ -133,6 +135,7 @@ type
     procedure RegisteredListBoxDrawItem(Control: TWinControl; Index: Integer;
                                         ARect: TRect; State: TOwnerDrawState);
     procedure RemoveBitBtnClick(Sender: TObject);
+    procedure RevertClick(Sender: TObject);
     procedure SaveBitBtnClick(Sender: TObject);
     procedure SaveAsClick(Sender: TObject);
     procedure UninstallClick(Sender: TObject);
@@ -145,7 +148,7 @@ type
     RemovedFilesNode: TTreeNode;
     RemovedRequiredNode: TTreeNode;
     FPlugins: TStringList;
-    procedure SetLazPackage(const AValue: TLazPackage);
+    procedure SetLazPackage(const AValue: TLazPackage); override;
     procedure SetupComponents;
     procedure UpdateAll; override;
     procedure UpdateTitle;
@@ -164,6 +167,7 @@ type
     destructor Destroy; override;
     procedure DoSave(SaveAs: boolean);
     procedure DoCompile(CompileClean, CompileRequired: boolean);
+    procedure DoRevert;
   public
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
   end;
@@ -183,6 +187,7 @@ type
     FOnInstallPackage: TOnInstallPackage;
     FOnOpenFile: TOnOpenFile;
     FOnOpenPackage: TOnOpenPackage;
+    FOnRevertPackage: TOnRevertPackage;
     FOnSavePackage: TOnSavePackage;
     FOnUninstallPackage: TOnUninstallPackage;
     function GetEditors(Index: integer): TPackageEditorForm;
@@ -207,6 +212,7 @@ type
     function CreateNewFile(Sender: TObject;
                            const Params: TAddToPkgResult): TModalResult;
     function SavePackage(APackage: TLazPackage; SaveAs: boolean): TModalResult;
+    function RevertPackage(APackage: TLazPackage): TModalResult;
     function CompilePackage(APackage: TLazPackage;
                             CompileClean,CompileRequired: boolean): TModalResult;
     procedure UpdateAllEditors;
@@ -217,13 +223,18 @@ type
     property OnCreateNewFile: TOnCreateNewPkgFile read FOnCreateNewFile
                                                   write FOnCreateNewFile;
     property OnOpenFile: TOnOpenFile read FOnOpenFile write FOnOpenFile;
-    property OnOpenPackage: TOnOpenPackage read FOnOpenPackage write FOnOpenPackage;
+    property OnOpenPackage: TOnOpenPackage read FOnOpenPackage
+                                           write FOnOpenPackage;
     property OnGetIDEFileInfo: TGetIDEFileStateEvent read FOnGetIDEFileInfo
                                                      write FOnGetIDEFileInfo;
     property OnGetUnitRegisterInfo: TOnGetUnitRegisterInfo
                        read FOnGetUnitRegisterInfo write FOnGetUnitRegisterInfo;
-    property OnFreeEditor: TOnFreePkgEditor read FOnFreeEditor write FOnFreeEditor;
-    property OnSavePackage: TOnSavePackage read FOnSavePackage write FOnSavePackage;
+    property OnFreeEditor: TOnFreePkgEditor read FOnFreeEditor
+                                            write FOnFreeEditor;
+    property OnSavePackage: TOnSavePackage read FOnSavePackage
+                                           write FOnSavePackage;
+    property OnRevertPackage: TOnRevertPackage read FOnRevertPackage
+                                               write FOnRevertPackage;
     property OnCompilePackage: TOnCompilePackage read FOnCompilePackage
                                                  write FOnCompilePackage;
     property OnInstallPackage: TOnInstallPackage read FOnInstallPackage
@@ -436,6 +447,7 @@ begin
 
   AddPopupMenuItem('Save',@SaveBitBtnClick,SaveBitBtn.Enabled);
   AddPopupMenuItem('Save As',@SaveAsClick,not LazPackage.AutoCreated);
+  AddPopupMenuItem('Revert',@RevertClick,not LazPackage.AutoCreated);
   AddPopupMenuItem('-',nil,true);
   AddPopupMenuItem('Compile',@CompileBitBtnClick,CompileBitBtn.Enabled);
   AddPopupMenuItem('Recompile clean',@CompileCleanClick,CompileBitBtn.Enabled);
@@ -656,6 +668,11 @@ begin
       PackageGraph.RemoveDependencyFromPackage(LazPackage,CurDependency,true);
     end;
   end;
+end;
+
+procedure TPackageEditorForm.RevertClick(Sender: TObject);
+begin
+  DoRevert;
 end;
 
 procedure TPackageEditorForm.SaveBitBtnClick(Sender: TObject);
@@ -898,6 +915,9 @@ end;
 
 procedure TPackageEditorForm.CompileAllCleanClick(Sender: TObject);
 begin
+  if MessageDlg('Compile everything?',
+    'Re-Compile this and all required packages?',
+    mtConfirmation,[mbYes,mbNo],0)<>mrYes then exit;
   DoCompile(true,true);
 end;
 
@@ -1568,6 +1588,12 @@ begin
   UpdateStatusBar;
 end;
 
+procedure TPackageEditorForm.DoRevert;
+begin
+  PackageEditors.RevertPackage(LazPackage);
+  UpdateAll;
+end;
+
 constructor TPackageEditorForm.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -1847,6 +1873,12 @@ function TPackageEditors.UninstallPackage(APackage: TLazPackage): TModalResult;
 begin
   if Assigned(OnUninstallPackage) then
     Result:=OnUninstallPackage(Self,APackage);
+end;
+
+function TPackageEditors.RevertPackage(APackage: TLazPackage): TModalResult;
+begin
+  if Assigned(OnRevertPackage) then
+    Result:=OnRevertPackage(Self,APackage);
 end;
 
 { TPackageEditorLayout }

@@ -135,6 +135,9 @@ type
     IdentifierHistory: TIdentifierHistoryList;
     Positions: TCodeXYPositions;
     
+    constructor Create;
+    destructor Destroy; override;
+
     procedure ActivateWriteLock;
     procedure DeactivateWriteLock;
 
@@ -200,6 +203,9 @@ type
     function GetPPWSrcPathForDirectory(const Directory: string): string;
     function GetDCUSrcPathForDirectory(const Directory: string): string;
     function GetCompiledSrcPathForDirectory(const Directory: string): string;
+    function GetNestedCommentsFlagForFile(const Filename: string): boolean;
+    function GetPascalCompilerForDirectory(const Directory: string): TPascalCompiler;
+    function GetCompilerModeForDirectory(const Directory: string): TCompilerMode;
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -216,8 +222,9 @@ type
           var NewCode: TCodeBuffer;
           var NewX, NewY, NewTopLine: integer): boolean;
           
-    // keywords
+    // keywords and comments
     function IsKeyword(Code: TCodeBuffer; const KeyWord: string): boolean;
+    function ExtractCodeWithoutComments(Code: TCodeBuffer): string;
 
     // blocks (e.g. begin..end, case..end, try..finally..end, repeat..until)
     function FindBlockCounterPart(Code: TCodeBuffer; X,Y: integer;
@@ -375,9 +382,6 @@ type
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    constructor Create;
-    destructor Destroy; override;
-    
     function ConsistencyCheck: integer; // 0 = ok
     procedure WriteDebugReport(WriteTool,
           WriteDefPool, WriteDefTree, WriteCache, WriteGlobalValues: boolean);
@@ -631,6 +635,56 @@ function TCodeToolManager.GetCompiledSrcPathForDirectory(const Directory: string
   ): string;
 begin
   Result:=DefineTree.GetCompiledSrcPathForDirectory(Directory);
+end;
+
+function TCodeToolManager.GetNestedCommentsFlagForFile(
+  const Filename: string): boolean;
+var
+  Evaluator: TExpressionEvaluator;
+  Directory: String;
+begin
+  Result:=false;
+  Directory:=ExtractFilePath(Filename);
+  // check pascal compiler is FPC and mode is FPC or OBJFPC
+  if GetPascalCompilerForDirectory(Directory)<>pcFPC then exit;
+  if not (GetCompilerModeForDirectory(Directory) in [cmFPC,cmOBJFPC]) then exit;
+  // check Nested Compiler define is on
+  Evaluator:=DefineTree.GetDefinesForDirectory(Directory,true);
+  if Evaluator=nil then exit;
+  if ((Evaluator.IsDefined(NestedCompilerDefine))
+    or (CompareFileExt(Filename,'pp',false)=0))
+  then
+    Result:=true;
+end;
+
+function TCodeToolManager.GetPascalCompilerForDirectory(const Directory: string
+  ): TPascalCompiler;
+var
+  Evaluator: TExpressionEvaluator;
+  PascalCompiler: string;
+  pc: TPascalCompiler;
+begin
+  Result:=pcFPC;
+  Evaluator:=DefineTree.GetDefinesForDirectory(Directory,true);
+  if Evaluator=nil then exit;
+  PascalCompiler:=Evaluator.Variables[PascalCompilerDefine];
+  for pc:=Low(TPascalCompiler) to High(TPascalCompiler) do
+    if (PascalCompiler=PascalCompilerNames[pc]) then
+      Result:=pc;
+end;
+
+function TCodeToolManager.GetCompilerModeForDirectory(const Directory: string
+  ): TCompilerMode;
+var
+  Evaluator: TExpressionEvaluator;
+  cm: TCompilerMode;
+begin
+  Result:=cmFPC;
+  Evaluator:=DefineTree.GetDefinesForDirectory(Directory,true);
+  if Evaluator=nil then exit;
+  for cm:=Low(TCompilerMode) to High(TCompilerMode) do
+    if Evaluator.IsDefined(CompilerModeVars[cm]) then
+      Result:=cm;
 end;
 
 function TCodeToolManager.InitCurCodeTool(Code: TCodeBuffer): boolean;
@@ -1168,6 +1222,12 @@ begin
   except
     on e: Exception do Result:=HandleException(e);
   end;
+end;
+
+function TCodeToolManager.ExtractCodeWithoutComments(Code: TCodeBuffer): string;
+begin
+  Result:=CleanCodeFromComments(Code.Source,
+                                GetNestedCommentsFlagForFile(Code.Filename));
 end;
 
 function TCodeToolManager.FindBlockCounterPart(Code: TCodeBuffer;

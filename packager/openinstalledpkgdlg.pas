@@ -207,6 +207,8 @@ function TOpenInstalledPackagesDlg.PkgStateToString(APackage: TLazPackage
   
 begin
   Result:='';
+  if APackage.Modified then AddState('modified');
+  if APackage.Missing then AddState('missing');
   case APackage.Installed of
   pitStatic: AddState('installed static');
   pitDynamic: AddState('installed dynamic');
@@ -215,6 +217,7 @@ begin
   pitStatic: AddState('auto install static');
   pitDynamic: AddState('auto install dynamic');
   end;
+  if APackage.ReadOnly then AddState('readonly');
 end;
 
 constructor TOpenInstalledPackagesDlg.Create(TheOwner: TComponent);
