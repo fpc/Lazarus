@@ -1,0 +1,181 @@
+object OptionsForm: TOptionsForm
+  BorderStyle = bsDialog
+  Caption = 'Options'
+  ClientHeight = 260
+  ClientWidth = 387
+  OnShow = OptionsFormShow
+  PixelsPerInch = 90
+  HorzScrollBar.Page = 386
+  VertScrollBar.Page = 259
+  Left = 432
+  Height = 260
+  Top = 260
+  Width = 387
+  object LEBackupExtension: TLabel
+    Alignment = taRightJustify
+    BorderSpacing.OnChange = nil
+    Caption = 'Backup extension'
+    FocusControl = EBackupExtension
+    Layout = tlCenter
+    ParentColor = True
+    Left = 6
+    Height = 19
+    Top = 136
+    Width = 105
+  end
+  object LEMaxMRU: TLabel
+    Alignment = taRightJustify
+    BorderSpacing.OnChange = nil
+    Caption = 'Max. recent used'
+    Layout = tlCenter
+    ParentColor = True
+    Left = 6
+    Height = 23
+    Top = 159
+    Width = 105
+  end
+  object LEDefaultExtension: TLabel
+    Alignment = taRightJustify
+    BorderSpacing.OnChange = nil
+    Caption = 'Default extension'
+    Layout = tlCenter
+    ParentColor = True
+    Left = 6
+    Height = 17
+    Top = 110
+    Width = 104
+  end
+  object LFEMakeskel: TLabel
+    Alignment = taRightJustify
+    BorderSpacing.OnChange = nil
+    Caption = 'makeskel program'
+    Color = clNone
+    FocusControl = FEMakeSkel
+    Layout = tlCenter
+    Left = 8
+    Height = 23
+    Top = 192
+    Width = 103
+  end
+  object LFEfpdoc: TLabel
+    Alignment = taRightJustify
+    BorderSpacing.OnChange = nil
+    Caption = 'fpdoc program'
+    Color = clNone
+    Layout = tlCenter
+    Left = 9
+    Height = 23
+    Top = 226
+    Width = 102
+  end
+  object CBConfirmDelete: TCheckBox
+    AllowGrayed = True
+    BorderSpacing.OnChange = nil
+    Caption = 'C&onfirm deletes'
+    TabOrder = 0
+    Left = 14
+    Height = 23
+    Top = 12
+    Width = 136
+  end
+  object CBCreateBackup: TCheckBox
+    AllowGrayed = True
+    BorderSpacing.OnChange = nil
+    Caption = 'Create &backups'
+    TabOrder = 1
+    Left = 14
+    Height = 23
+    Top = 40
+    Width = 134
+  end
+  object CBSkipEmptyNodes: TCheckBox
+    AllowGrayed = True
+    BorderSpacing.OnChange = nil
+    Caption = '&Skip empty nodes when saving'
+    TabOrder = 2
+    Left = 14
+    Height = 23
+    Top = 72
+    Width = 227
+  end
+  object EBackupExtension: TEdit
+    BorderSpacing.OnChange = nil
+    TabOrder = 3
+    Left = 120
+    Height = 23
+    Top = 136
+    Width = 80
+  end
+  object BOK: TButton
+    BorderSpacing.OnChange = nil
+    Caption = '&OK'
+    Default = True
+    ModalResult = 1
+    OnClick = BOKClick
+    TabOrder = 5
+    Left = 296
+    Height = 25
+    Top = 10
+    Width = 88
+  end
+  object BCancel: TButton
+    BorderSpacing.OnChange = nil
+    Cancel = True
+    Caption = '&Cancel'
+    ModalResult = 2
+    TabOrder = 6
+    Cursor = crAppStart
+    Left = 296
+    Height = 25
+    Top = 40
+    Width = 88
+  end
+  object SEMaxRecentUsed: TSpinEdit
+    BorderSpacing.OnChange = nil
+    MaxValue = 100
+    TabStop = True
+    TabOrder = 4
+    Left = 120
+    Height = 20
+    Top = 160
+    Width = 81
+  end
+  object EDefaultExtension: TEdit
+    BorderSpacing.OnChange = nil
+    TabOrder = 7
+    Left = 121
+    Height = 23
+    Top = 110
+    Width = 80
+  end
+  object FEMakeSkel: TFileNameEdit
+    DialogTitle = 'Select skeleton generator'
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.OnChange = nil
+    TabOrder = 8
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.OnChange = nil
+    TabOrder = 8
+    Left = 120
+    Height = 23
+    Top = 192
+    Width = 232
+  end
+  object FEfpdoc: TFileNameEdit
+    DialogTitle = 'Select documentation generator'
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.OnChange = nil
+    TabOrder = 9
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.OnChange = nil
+    TabOrder = 9
+    Left = 119
+    Height = 23
+    Top = 226
+    Width = 233
+  end
+end

@@ -1,0 +1,22 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TLinkForm','FORMDATA',[
+  'TPF0'#9'TLinkForm'#8'LinkForm'#7'Caption'#6#8'LinkForm'#12'ClientHeight'#2'J'
+  +#11'ClientWidth'#3#140#1#13'PixelsPerInch'#2'`'#8'Position'#7#14'poScreenCen'
+  +'ter'#18'HorzScrollBar.Page'#3#141#1#18'VertScrollBar.Page'#2'K'#4'Left'#3'M'
+  +#1#6'Height'#2'J'#3'Top'#3#149#0#5'Width'#3#140#1#0#9'TComboBox'#8'CBTarget'
+  +#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#9'MaxLength'#2#0#8'TabOrder'#2
+  +#0#4'Left'#2'`'#6'Height'#2#23#3'Top'#2#8#5'Width'#3#184#0#0#0#6'TLabel'#11
+  +'LLinkTarget'#9'Alignment'#7#14'taRightJustify'#7'Caption'#6#12'&Link target'
+  +#12'FocusControl'#7#8'CBTarget'#6'Layout'#7#8'tlCenter'#4'Left'#2#8#6'Height'
+  +#2#23#3'Top'#2#8#5'Width'#2'P'#0#0#7'TButton'#3'BOK'#7'Anchors'#11#5'akTop'#7
+  +'akRight'#0#7'Caption'#6#3'&OK'#7'Default'#9#11'ModalResult'#2#1#8'TabOrder'
+  +#2#2#4'Left'#3'$'#1#6'Height'#2#25#3'Top'#2#8#5'Width'#2'`'#0#0#7'TButton'#7
+  +'BCancel'#7'Anchors'#11#5'akTop'#7'akRight'#0#6'Cancel'#9#7'Caption'#6#7'&Ca'
+  +'ncel'#11'ModalResult'#2#2#8'TabOrder'#2#3#4'Left'#3'$'#1#6'Height'#2#25#3'T'
+  +'op'#2'('#5'Width'#2'`'#0#0#6'TLabel'#10'LELinkText'#9'Alignment'#7#14'taRig'
+  +'htJustify'#7'Caption'#6#10'LELinkText'#6'Layout'#7#8'tlCenter'#4'Left'#2#8#6
+  +'Height'#2#23#3'Top'#2'('#5'Width'#2'P'#0#0#5'TEdit'#9'ELinkText'#7'Anchors'
+  +#11#5'akTop'#6'akLeft'#7'akRight'#0#8'TabOrder'#2#5#4'Left'#2'`'#6'Height'#2
+  +#23#3'Top'#2'('#5'Width'#3#180#0#0#0#0
+]);

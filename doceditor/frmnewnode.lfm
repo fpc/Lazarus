@@ -1,0 +1,55 @@
+object NewNodeForm: TNewNodeForm
+  ActiveControl = ENodeName
+  Caption = 'Create new node'
+  ClientHeight = 69
+  ClientWidth = 394
+  PixelsPerInch = 90
+  Position = poScreenCenter
+  HorzScrollBar.Page = 395
+  VertScrollBar.Page = 70
+  Left = 390
+  Height = 69
+  Top = 205
+  Width = 394
+  object ENodeName: TEdit
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 0
+    Text = 'ENodeName'
+    Left = 88
+    Height = 23
+    Top = 8
+    Width = 216
+  end
+  object BOK: TButton
+    Anchors = [akTop, akRight]
+    Caption = '&OK'
+    Default = True
+    ModalResult = 1
+    TabOrder = 1
+    Left = 312
+    Height = 25
+    Top = 6
+    Width = 75
+  end
+  object BCancel: TButton
+    Anchors = [akTop, akRight]
+    Cancel = True
+    Caption = '&Cancel'
+    ModalResult = 2
+    TabOrder = 2
+    Left = 312
+    Height = 25
+    Top = 40
+    Width = 75
+  end
+  object LENodeName: TLabel
+    Alignment = taRightJustify
+    Caption = '&Node name'
+    FocusControl = ENodeName
+    Layout = tlCenter
+    Left = 8
+    Height = 23
+    Top = 8
+    Width = 73
+  end
+end

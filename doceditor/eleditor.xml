@@ -1,0 +1,398 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="lazde">
+    <!--
+  ====================================================================
+    eleditor
+  ====================================================================
+-->
+    <module name="eleditor">
+      <short/>
+      <descr/>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="SysUtils">
+        <short/>
+        <descr/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short/>
+        <descr/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="dom">
+        <short/>
+        <descr/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="xmlread">
+        <short/>
+        <descr/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="xmlwrite">
+        <short/>
+        <descr/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Forms">
+        <short/>
+        <descr/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Controls">
+        <short/>
+        <descr/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="extctrls">
+        <short/>
+        <descr/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="comctrls">
+        <short/>
+        <descr/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="stdctrls">
+        <short/>
+        <descr/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Dialogs">
+        <short/>
+        <descr/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="menus">
+        <short/>
+        <descr/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="fpdeutil">
+        <short/>
+        <descr/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="lazdemsg">
+        <short/>
+        <descr/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="lazdeopts">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="graphtype">
+        <short/>
+        <descr/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TCustomElementEditor">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomElementEditor.Felement">
+        <short/>
+        <descr/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomElementEditor.FSavedNode">
+        <short/>
+        <descr/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomElementEditor.FModified">
+        <short/>
+        <descr/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomElementEditor.GetCurrentSelection">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomElementEditor.SetElement">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomElementEditor.Refresh">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TCustomElementEditor.TestSave">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TCustomElementEditor.CurrentXML">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TCustomElementEditor.Save">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TCustomElementEditor.CanInsertTag">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomElementEditor.DeleteElement">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomElementEditor.InsertTag">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomElementEditor.InsertTag">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomElementEditor.InsertLink">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomElementEditor.InsertTable">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomElementEditor.Element">
+        <short/>
+        <descr/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomElementEditor.CurrentSelection">
+        <short/>
+        <descr/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomElementEditor.Modified">
+        <short/>
+        <descr/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomElementEditor.SavedNode">
+        <short/>
+        <descr/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TElementEditor">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TElementEditor.FExampleNodes">
+        <short/>
+        <descr/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TElementEditor.FShortNode">
+        <short/>
+        <descr/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TElementEditor.FDescrNode">
+        <short/>
+        <descr/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TElementEditor.FErrorsNode">
+        <short/>
+        <descr/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TElementEditor.FSeeAlsoNode">
+        <short/>
+        <descr/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TElementEditor.FLabel">
+        <short/>
+        <descr/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TElementEditor.FShortEntry">
+        <short/>
+        <descr/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TElementEditor.FDescrMemo">
+        <short/>
+        <descr/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TElementEditor.FErrorsMemo">
+        <short/>
+        <descr/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TElementEditor.FSeeAlsoMemo">
+        <short/>
+        <descr/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TElementEditor.FSplit1">
+        <short/>
+        <descr/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TElementEditor.FSplit2">
+        <short/>
+        <descr/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TElementEditor.FSplit3">
+        <short/>
+        <descr/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TElementEditor.FExamples">
+        <short/>
+        <descr/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TElementEditor.FCurrentEditable">
+        <short/>
+        <descr/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TElementEditor.GetNodes">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TElementEditor.CurrentEditable">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TElementEditor.OnEnterControl">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TElementEditor.OnTextModified">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TElementEditor.Create">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TElementEditor.destroy">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TElementEditor.Refresh">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TElementEditor.GetCurrentSelection">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TElementEditor.SetElement">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TElementEditor.TestSave">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TElementEditor.CurrentXML">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TElementEditor.Save">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TElementEditor.CanInsertTag">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TElementEditor.DeleteElement">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TElementEditor.InsertTag">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TElementEditor.InsertTag">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TElementEditor.InsertLink">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TElementEditor.InsertTable">
+        <short/>
+        <descr/>
+        <errors/>
+      </element>
+    </module>
+    <!-- eleditor -->
+  </package>
+</fpdoc-descriptions>

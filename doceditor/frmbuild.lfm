@@ -1,0 +1,451 @@
+object BuildForm: TBuildForm
+  Caption = 'Build documentation'
+  ClientHeight = 339
+  ClientWidth = 407
+  OnCloseQuery = BuildFormCloseQuery
+  OnCreate = BuildFormCreate
+  PixelsPerInch = 90
+  HorzScrollBar.Page = 406
+  VertScrollBar.Page = 338
+  Left = 370
+  Height = 339
+  Top = 145
+  Width = 407
+  object LCBPackage: TLabel
+    Alignment = taRightJustify
+    Caption = '&Package'
+    FocusControl = CBPackage
+    Layout = tlCenter
+    ParentColor = True
+    Left = 7
+    Height = 17
+    Top = 12
+    Width = 97
+  end
+  object LCBFormat: TLabel
+    Alignment = taRightJustify
+    Caption = '&Format'
+    FocusControl = CBFormat
+    Layout = tlCenter
+    ParentColor = True
+    Left = 7
+    Height = 20
+    Top = 40
+    Width = 97
+  end
+  object Label1: TLabel
+    Alignment = taRightJustify
+    Caption = '&Output'
+    Layout = tlCenter
+    ParentColor = True
+    Left = 8
+    Height = 17
+    Top = 75
+    Width = 97
+  end
+  object CBPackage: TComboBox
+    MaxLength = 0
+    TabOrder = 0
+    Left = 112
+    Height = 25
+    Top = 8
+    Width = 100
+  end
+  object BClose: TButton
+    Anchors = [akTop, akRight]
+    Caption = '&Close'
+    OnClick = BCloseClick
+    TabOrder = 1
+    Left = 327
+    Height = 25
+    Top = 104
+    Width = 75
+  end
+  object BBuild: TButton
+    Action = ABuild
+    Anchors = [akTop, akRight]
+    TabOrder = 2
+    Left = 327
+    Height = 25
+    Top = 8
+    Width = 75
+  end
+  object BLoad: TButton
+    Action = ALoad
+    Anchors = [akTop, akRight]
+    TabOrder = 3
+    Left = 327
+    Height = 25
+    Top = 40
+    Width = 75
+  end
+  object BSave: TButton
+    Action = ASave
+    Anchors = [akTop, akRight]
+    TabOrder = 4
+    Left = 327
+    Height = 25
+    Top = 72
+    Width = 75
+  end
+  object CBFormat: TComboBox
+    Items.Strings = (
+      'html'
+      'latex'
+      'man'
+      'txt'
+    )
+    ItemIndex = 0
+    MaxLength = 0
+    Style = csDropDownList
+    TabOrder = 5
+    Text = 'html'
+    Left = 112
+    Height = 25
+    Top = 39
+    Width = 100
+  end
+  object PCOptions: TPageControl
+    ActivePage = TSOther
+    Align = alBottom
+    TabIndex = 2
+    TabOrder = 6
+    Height = 200
+    Top = 139
+    Width = 407
+    object TSDescription: TTabSheet
+      Caption = 'Description'
+      ClientHeight = 172
+      ClientWidth = 403
+      Left = 2
+      Height = 172
+      Top = 26
+      Width = 403
+      object PBDescr: TPanel
+        Align = alRight
+        BevelOuter = bvNone
+        ClientHeight = 172
+        ClientWidth = 92
+        FullRepaint = False
+        TabOrder = 0
+        Left = 311
+        Height = 172
+        Width = 92
+        object BAddDescription: TButton
+          Action = ADescrAdd
+          TabOrder = 0
+          Left = 10
+          Height = 25
+          Top = 6
+          Width = 75
+        end
+        object BDeleteDescription: TButton
+          Action = ADescrDelete
+          TabOrder = 1
+          Left = 10
+          Height = 25
+          Top = 38
+          Width = 75
+        end
+        object BEditDescription: TButton
+          Action = ADescrEdit
+          TabOrder = 2
+          Left = 10
+          Height = 25
+          Top = 70
+          Width = 75
+        end
+        object BAddAll: TButton
+          Action = ADescrAddAll
+          BorderSpacing.OnChange = nil
+          TabOrder = 3
+          Left = 10
+          Height = 25
+          Top = 100
+          Width = 75
+        end
+      end
+      object LBDescrFiles: TListBox
+        Align = alClient
+        ClickOnSelChange = False
+        TabOrder = 1
+        TopIndex = -1
+        Height = 172
+        Width = 311
+      end
+    end
+    object TSSources: TTabSheet
+      Caption = 'Sources'
+      ClientHeight = 172
+      ClientWidth = 403
+      Left = 2
+      Height = 172
+      Top = 26
+      Width = 403
+      object PSources: TPanel
+        Align = alRight
+        BevelOuter = bvNone
+        ClientHeight = 172
+        ClientWidth = 92
+        FullRepaint = False
+        TabOrder = 0
+        Left = 311
+        Height = 172
+        Width = 92
+        object BSourceAdd: TButton
+          Action = ASourceAdd
+          TabOrder = 0
+          Left = 12
+          Height = 25
+          Top = 6
+          Width = 75
+        end
+        object BSourceDelete: TButton
+          Action = ASourceDelete
+          TabOrder = 1
+          Left = 12
+          Height = 25
+          Top = 38
+          Width = 75
+        end
+        object BSourceEdit: TButton
+          Action = ASourceEdit
+          TabOrder = 2
+          Left = 12
+          Height = 25
+          Top = 70
+          Width = 75
+        end
+      end
+      object SGSources: TStringGrid
+        Align = alClient
+        Color = clWhite
+        ColCount = 2
+        Columns = <>
+        DefaultColWidth = 150
+        DefaultRowHeight = 24
+        FixedColor = clBtnFace
+        FixedCols = 0
+        GridLineWidth = 0
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goSmoothScroll]
+        RowCount = 2
+        ScrollBars = ssAutoBoth
+        VisibleColCount = 2
+        VisibleRowCount = 1
+        Height = 172
+        Width = 311
+        Cells = (
+          2
+          0
+          0
+          'Filename'
+          1
+          0
+          'Other options'
+        )
+      end
+    end
+    object TSOther: TTabSheet
+      Caption = 'Other options'
+      ClientHeight = 172
+      ClientWidth = 403
+      Left = 2
+      Height = 172
+      Top = 26
+      Width = 403
+      object Label2: TLabel
+        Alignment = taRightJustify
+        Caption = 'Import content file'
+        Color = clNone
+        Layout = tlCenter
+        Left = -2
+        Height = 23
+        Top = 106
+        Width = 113
+      end
+      object Label3: TLabel
+        Alignment = taRightJustify
+        Caption = 'Target OS'
+        Color = clNone
+        Layout = tlCenter
+        Left = 46
+        Height = 23
+        Top = 137
+        Width = 65
+      end
+      object LTargetCPU: TLabel
+        Alignment = taRightJustify
+        Caption = 'CPU'
+        Color = clNone
+        Layout = tlCenter
+        Left = 198
+        Height = 23
+        Top = 137
+        Width = 40
+      end
+      object CBShowPrivate: TCheckBox
+        BorderSpacing.OnChange = nil
+        Caption = 'Show p&rivate methods'
+        TabOrder = 0
+        Left = 14
+        Height = 23
+        Top = 35
+        Width = 141
+      end
+      object CBHideProtected: TCheckBox
+        BorderSpacing.OnChange = nil
+        Caption = '&Hide protected methods'
+        TabOrder = 1
+        Left = 14
+        Height = 23
+        Top = 11
+        Width = 172
+      end
+      object CBWarnNoNode: TCheckBox
+        Caption = 'Warn if no documentation node found'
+        TabOrder = 2
+        Left = 14
+        Height = 23
+        Top = 59
+        Width = 210
+      end
+      object FEImportFIle: TFileNameEdit
+        ButtonWidth = 23
+        NumGlyphs = 1
+        TabOrder = 3
+        TabOrder = 3
+        Left = 118
+        Height = 23
+        Top = 106
+        Width = 248
+      end
+      object ETargetOS: TEdit
+        TabOrder = 4
+        Left = 118
+        Height = 23
+        Top = 137
+        Width = 80
+      end
+      object ETargetCPU: TEdit
+        TabOrder = 5
+        Left = 246
+        Height = 23
+        Top = 137
+        Width = 80
+      end
+    end
+    object TSBuild: TTabSheet
+      Caption = 'Build output'
+      ClientHeight = 172
+      ClientWidth = 403
+      Left = 2
+      Height = 172
+      Top = 26
+      Width = 403
+      object MLog: TMemo
+        Align = alClient
+        BorderSpacing.OnChange = nil
+        TabOrder = 0
+        Height = 172
+        Width = 403
+      end
+    end
+  end
+  object EOutput: TEditButton
+    Anchors = [akTop, akLeft, akRight]
+    ButtonWidth = 23
+    OnButtonClick = EOutputButtonClick
+    TabOrder = 7
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 7
+    Left = 112
+    Height = 23
+    Top = 72
+    Width = 169
+  end
+  object CBContent: TCheckBox
+    Caption = 'Create cont&ent file'
+    TabOrder = 8
+    Left = 112
+    Height = 23
+    Top = 101
+    Width = 170
+  end
+  object ODSettings: TOpenDialog
+    Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
+    Title = 'Open existing file'
+    DefaultExt = '.ldp'
+    Filter = 'Documentation project files|*.ldp|All files|*.*'
+    FilterIndex = 0
+    left = 8
+    top = 286
+  end
+  object SDSettings: TSaveDialog
+    Options = [ofPathMustExist, ofEnableSizing, ofViewDetail]
+    Title = 'Save file as'
+    DefaultExt = '.ldp'
+    Filter = 'Documentation project files|*.ldp|All files|*.*'
+    FilterIndex = 0
+    left = 8
+    top = 248
+  end
+  object ODDescription: TOpenDialog
+    Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
+    Title = 'Open existing file'
+    DefaultExt = '.xml'
+    Filter = 'XML files|*.xml|All files|*.*'
+    FilterIndex = 0
+    left = 296
+    top = 360
+  end
+  object ActionList1: TActionList
+    left = 105
+    top = 51
+    object ADescrAdd: TAction
+      Caption = '&Add'
+      OnExecute = ADescrAddExecute
+    end
+    object ADescrEdit: TAction
+      Caption = '&Edit'
+      OnExecute = ADescrEditExecute
+      OnUpdate = ADescrEditUpdate
+    end
+    object ADescrDelete: TAction
+      Caption = '&Delete'
+      OnExecute = ADescrDeleteExecute
+      OnUpdate = ADescrDeleteUpdate
+    end
+    object ABuild: TAction
+      Caption = '&Build'
+      OnExecute = ABuildExecute
+      OnUpdate = ABuildUpdate
+    end
+    object ASourceAdd: TAction
+      Caption = '&Add'
+      OnExecute = ASourceAddExecute
+    end
+    object ASourceEdit: TAction
+      Caption = '&Edit'
+      OnExecute = ASourceEditExecute
+      OnUpdate = ASourceEditUpdate
+    end
+    object ASourceDelete: TAction
+      Caption = '&Delete'
+      OnExecute = ASourceDeleteExecute
+      OnUpdate = ASourceDeleteUpdate
+    end
+    object ADescrAddAll: TAction
+      Caption = 'Add All'
+      OnExecute = ADescrAddAllExecute
+      OnUpdate = ADescrAddAllUpdate
+    end
+    object ALoad: TAction
+      Caption = '&Load'
+      OnExecute = ALoadExecute
+    end
+    object ASave: TAction
+      Caption = '&Save'
+      OnExecute = ASaveExecute
+    end
+  end
+end

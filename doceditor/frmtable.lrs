@@ -1,0 +1,26 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TTableForm','FORMDATA',[
+  'TPF0'#10'TTableForm'#9'TableForm'#11'BorderStyle'#7#8'bsDialog'#7'Caption'#6
+  +#16'Insert new table'#12'ClientHeight'#2'a'#11'ClientWidth'#3#26#1#13'Pixels'
+  +'PerInch'#2'Z'#8'Position'#7#14'poScreenCenter'#18'HorzScrollBar.Page'#3#27#1
+  +#18'VertScrollBar.Page'#2'b'#4'Left'#3'M'#1#6'Height'#2'a'#3'Top'#3#149#0#5
+  +'Width'#3#26#1#0#7'TButton'#3'BOK'#7'Caption'#6#3'&OK'#7'Default'#9#11'Modal'
+  +'Result'#2#1#8'TabOrder'#2#0#4'Left'#3#200#0#6'Height'#2#25#3'Top'#2#8#5'Wid'
+  +'th'#2'K'#0#0#7'TButton'#7'BCancel'#6'Cancel'#9#7'Caption'#6#7'&Cancel'#11'M'
+  +'odalResult'#2#2#8'TabOrder'#2#1#4'Left'#3#200#0#6'Height'#2#25#3'Top'#2'('#5
+  +'Width'#2'K'#0#0#9'TCheckBox'#14'CBUseHeaderRow'#11'AllowGrayed'#9#8'AutoSiz'
+  +'e'#9#7'Caption'#6#15'Use &header row'#8'TabOrder'#2#2#4'Left'#2'H'#6'Height'
+  +#2#23#3'Top'#2#8#5'Width'#2'x'#0#0#9'TSpinEdit'#6'SERows'#14'Decimal_Places'
+  +#2#0#8'MaxValue'#5#0#0#0#0#0#0#0#200#5'@'#7'TabStop'#9#8'TabOrder'#2#3#14'De'
+  +'cimal_Places'#2#0#8'MaxValue'#5#0#0#0#0#0#0#0#200#5'@'#4'Left'#2'H'#6'Heigh'
+  +'t'#2#20#3'Top'#2' '#5'Width'#2'A'#0#0#6'TLabel'#7'LSERows'#9'Alignment'#7#14
+  +'taRightJustify'#7'Caption'#6#5'&Rows'#12'FocusControl'#7#6'SERows'#6'Layout'
+  +#7#8'tlCenter'#4'Left'#2#3#6'Height'#2#17#3'Top'#2' '#5'Width'#2'='#0#0#6'TL'
+  +'abel'#10'LSEColumns'#9'Alignment'#7#14'taRightJustify'#7'Caption'#6#8'Co&lu'
+  +'mns'#12'FocusControl'#7#9'SEColumns'#6'Layout'#7#8'tlCenter'#4'Left'#2#3#6
+  +'Height'#2#17#3'Top'#2'8'#5'Width'#2'='#0#0#9'TSpinEdit'#9'SEColumns'#14'Dec'
+  +'imal_Places'#2#0#8'MaxValue'#5#0#0#0#0#0#0#0#200#5'@'#7'TabStop'#9#8'TabOrd'
+  +'er'#2#6#14'Decimal_Places'#2#0#8'MaxValue'#5#0#0#0#0#0#0#0#200#5'@'#4'Left'
+  +#2'H'#6'Height'#2#20#3'Top'#2'8'#5'Width'#2'A'#0#0#0
+]);

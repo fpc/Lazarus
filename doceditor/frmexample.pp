@@ -1,10 +1,4 @@
 {
-/***************************************************************************
-                             doceditor.pas
-                             -------------
-
- ***************************************************************************/
-
  ***************************************************************************
  *                                                                         *
  *   This source is free software; you can redistribute it and/or modify   *
@@ -24,59 +18,58 @@
  *                                                                         *
  ***************************************************************************
 
-
-  Author: Mattias Gaertner
-
-  Abstract:
-    The form for the documentation editor window.
-
+  Author: Michael Van Canneyt
 }
-unit DocEditor;
+unit frmExample;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  ComCtrls,
-  LazarusIDEStrConsts, IDEProcs, EnvironmentOpts, IDEOptionDefs;
+  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
+  EditBtn, StdCtrls;
 
 type
-  TDocEditorWnd = class(TForm)
-    ButtonsPanel: TPANEL;
-    ContextTreeview: TTREEVIEW;
-    FilesNotebook: TNOTEBOOK;
-    ButtonImagelist: TIMAGELIST;
-    procedure DocEditorWndCREATE(Sender: TObject);
+
+  { TExampleForm }
+
+  TExampleForm = class(TForm)
+    BOK: TButton;
+    BCancel: TButton;
+    EFileName: TFileNameEdit;
+    LEFileName: TLabel;
   private
+    function GetExampleName: String;
+    procedure SetExampleName(const AValue: String);
+    { private declarations }
   public
-  end;
+    { public declarations }
+    Property ExampleName : String Read GetExampleName Write SetExampleName;
+  end; 
 
 var
-  DocEditorWnd: TDocEditorWnd;
+  ExampleForm: TExampleForm;
 
 implementation
 
-{ TDocEditorWnd }
+{ TExampleForm }
 
-procedure TDocEditorWnd.DocEditorWndCREATE(Sender: TObject);
+
+{ TExampleForm }
+
+function TExampleForm.GetExampleName: String;
 begin
-  Name:=NonModalIDEWindowNames[nmiwDocEditor];
-  Caption := lisDocumentationEditor;
-  EnvironmentOptions.IDEWindowLayoutList.Apply(Self,Name);
+  Result:=EFileName.FileName
+end;
 
-  ButtonImageList:=TImageList.Create(Self);
-  with ButtonImageList do
-  begin
-    Name:='ButtonImageList';
-    Width:=24
-    Height:=24;
-  end;
+procedure TExampleForm.SetExampleName(const AValue: String);
+begin
+  EFileName.FileName:=AValue;
 end;
 
 initialization
-  {$I doceditor.lrs}
+  {$I frmexample.lrs}
 
 end.
 

@@ -1,0 +1,52 @@
+object ExampleForm: TExampleForm
+  ActiveControl = EFileName
+  Caption = 'Example file'
+  ClientHeight = 84
+  ClientWidth = 400
+  PixelsPerInch = 90
+  HorzScrollBar.Page = 401
+  VertScrollBar.Page = 85
+  Left = 437
+  Height = 84
+  Top = 311
+  Width = 400
+  object LEFileName: TLabel
+    Alignment = taRightJustify
+    Caption = '&Filename'
+    FocusControl = EFileName
+    Layout = tlCenter
+    ParentColor = True
+    Left = 12
+    Height = 24
+    Top = 16
+    Width = 60
+  end
+  object BOK: TButton
+    Caption = '&OK'
+    Default = True
+    ModalResult = 1
+    Left = 312
+    Height = 25
+    Top = 14
+    Width = 75
+  end
+  object BCancel: TButton
+    Cancel = True
+    Caption = '&Cancel'
+    ModalResult = 2
+    Left = 312
+    Height = 25
+    Top = 48
+    Width = 75
+  end
+  object EFileName: TFileNameEdit
+    DialogTitle = 'Select an example file'
+    Filter = 'Pascal files |*.pp|Pascal files|*.pas'
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Left = 80
+    Height = 23
+    Top = 16
+    Width = 192
+  end
+end

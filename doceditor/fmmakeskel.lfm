@@ -1,0 +1,155 @@
+object MakeSkelForm: TMakeSkelForm
+  Caption = 'Create new file from pascal source'
+  ClientHeight = 274
+  ClientWidth = 400
+  PixelsPerInch = 96
+  HorzScrollBar.Page = 401
+  VertScrollBar.Page = 275
+  Left = 392
+  Height = 274
+  Top = 175
+  Width = 400
+  object BOK: TButton
+    Caption = '&OK'
+    Default = True
+    Enabled = False
+    ModalResult = 1
+    TabOrder = 0
+    Cursor = crAppStart
+    Left = 320
+    Height = 25
+    Top = 8
+    Width = 75
+  end
+  object BCancel: TButton
+    Cancel = True
+    Caption = '&Cancel'
+    ModalResult = 2
+    TabOrder = 1
+    Left = 320
+    Height = 25
+    Top = 40
+    Width = 75
+  end
+  object CBDisableResults: TCheckBox
+    Caption = 'No &results sections'
+    TabOrder = 2
+    Left = 95
+    Height = 23
+    Top = 120
+    Width = 151
+  end
+  object CBDisableArguments: TCheckBox
+    Caption = 'No &arguments sections'
+    TabOrder = 3
+    Left = 95
+    Height = 23
+    Top = 96
+    Width = 175
+  end
+  object CBDisableSeeAlso: TCheckBox
+    Caption = 'No &seealso sections'
+    TabOrder = 4
+    Left = 95
+    Height = 23
+    Top = 144
+    Width = 158
+  end
+  object CBDisableProtected: TCheckBox
+    Caption = 'No &protected methods'
+    TabOrder = 5
+    Left = 95
+    Height = 23
+    Top = 168
+    Width = 167
+  end
+  object CBDisablePrivate: TCheckBox
+    Caption = 'No pr&ivate methods'
+    TabOrder = 6
+    Left = 94
+    Height = 23
+    Top = 192
+    Width = 152
+  end
+  object CBDisableErrors: TCheckBox
+    Caption = 'No &errors sections'
+    TabOrder = 7
+    Left = 95
+    Height = 23
+    Top = 216
+    Width = 145
+  end
+  object FEinputFile: TFileNameEdit
+    ButtonWidth = 23
+    NumGlyphs = 1
+    TabOrder = 8
+    TabOrder = 8
+    Left = 95
+    Height = 23
+    Top = 40
+    Width = 185
+  end
+  object FEoutputFIle: TFileNameEdit
+    DialogKind = dkSave
+    ButtonWidth = 23
+    NumGlyphs = 1
+    TabOrder = 9
+    TabOrder = 9
+    Left = 95
+    Height = 23
+    Top = 72
+    Width = 185
+  end
+  object Label1: TLabel
+    Alignment = taRightJustify
+    Caption = 'I&nput file'
+    FocusControl = FEinputFile
+    Layout = tlCenter
+    Left = 7
+    Height = 23
+    Top = 40
+    Width = 80
+  end
+  object Label2: TLabel
+    Alignment = taRightJustify
+    Caption = 'O&utput file'
+    FocusControl = FEoutputFIle
+    Layout = tlCenter
+    Left = 7
+    Height = 23
+    Top = 72
+    Width = 81
+  end
+  object LEPackage: TLabel
+    Caption = 'Pac&kage name'
+    FocusControl = EPackage
+    Left = 7
+    Height = 23
+    Top = 8
+    Width = 81
+  end
+  object EPackage: TEdit
+    TabOrder = 13
+    Text = '<package name>'
+    Left = 95
+    Height = 23
+    Top = 8
+    Width = 201
+  end
+  object EAdditionalOptions: TEdit
+    TabOrder = 14
+    Left = 94
+    Height = 23
+    Top = 244
+    Width = 210
+  end
+  object Label3: TLabel
+    Alignment = taRightJustify
+    Caption = 'E&xtra options'
+    FocusControl = EAdditionalOptions
+    Left = 8
+    Height = 17
+    Top = 244
+    Width = 65
+  end
+end
