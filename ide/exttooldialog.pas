@@ -39,8 +39,8 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, LCLType, Controls, Forms, Buttons, StdCtrls, ComCtrls, 
-  Dialogs, LResources, Laz_XMLCfg, ExtToolEditDlg, Process,
+  Classes, SysUtils, LCLType, LCLProc, Controls, Forms, Buttons, StdCtrls,
+  ComCtrls, Dialogs, LResources, Laz_XMLCfg, ExtToolEditDlg, Process,
   IDECommands, KeyMapping, TransferMacros, IDEProcs, CompilerOptions,
   OutputFilter, FileCtrl, LazarusIDEStrConsts;
 
@@ -289,13 +289,13 @@ begin
   CmdLine:=Filename;
   if Params<>'' then
     CmdLine:=CmdLine+' '+Params;
-  writeln('[TExternalToolList.Run] ',CmdLine);
+  DebugLn('[TExternalToolList.Run] ',CmdLine);
   try
     CheckIfFileIsExecutable(Filename);
     TheProcess := TProcess.Create(nil);
     TheProcess.CommandLine := Filename+' '+Params;
-    TheProcess.Options:= [poUsePipes, poNoConsole,poStdErrToOutPut];
-    TheProcess.ShowWindow := swoNone;
+    TheProcess.Options:= [poUsePipes,poStdErrToOutPut];
+    TheProcess.ShowWindow := swoHide;
     TheProcess.CurrentDirectory := WorkingDir;
     if ExtTool.EnvironmentOverrides.Count>0 then
       ExtTool.AssignEnvironmentTo(TheProcess.Environment);
@@ -343,7 +343,7 @@ begin
             Result:=mrOk;
         except
           on e: EOutputFilterError do begin
-            writeln('TExternalToolList.Run Exception: ',E.Message);
+            DebugLn('TExternalToolList.Run Exception: ',E.Message);
             ErrorOccurred:=true;
           end
           else
