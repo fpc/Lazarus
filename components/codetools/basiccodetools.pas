@@ -39,10 +39,8 @@ uses
 }
 
 // comments
-function FindNextNonSpace(const ASource: string; StartPos: integer
-    ): integer;
-function FindPrevNonSpace(const ASource: string; StartPos: integer
-    ): integer;
+function FindNextNonSpace(const ASource: string; StartPos: integer): integer;
+function FindPrevNonSpace(const ASource: string; StartPos: integer): integer;
 function FindCommentEnd(const ASource: string; StartPos: integer;
     NestedComments: boolean): integer;
 function IsCommentEnd(const ASource: string; EndPos: integer): boolean;
@@ -1149,10 +1147,7 @@ end;
 
 function FindPrevNonSpace(const ASource: string; StartPos: integer
     ): integer;
-var
-  SrcLen: integer;
 begin
-  SrcLen:=length(ASource);
   Result:=StartPos;
   while (Result>=1) and (ASource[Result] in [' ',#9,#10,#13]) do
     dec(Result);
