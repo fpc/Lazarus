@@ -128,9 +128,12 @@ type
   //---------------------------------------------------------------------------
   TProjectType =   // for a description see ProjectTypeDescriptions below
      (ptApplication, ptProgram, ptCustomProgram); 
+  TProjectFlag = (pfSaveClosedUnits, pfSaveOnlyProjectUnits);
+  TProjectFlags = set of TProjectFlag;
 
   TProject = class(TObject)
   private
+    FFlags: TProjectFlags;
     xmlconfig: TXMLConfig;
 
     { Variables }
@@ -157,6 +160,7 @@ type
     function GetProjectInfoFile: string;
     function GetTargetFilename: string;
     function GetUnits(Index:integer):TUnitInfo;
+    procedure SetFlags(const AValue: TProjectFlags);
     procedure SetUnits(Index:integer; AUnitInfo: TUnitInfo);
     procedure SetProjectInfoFile(const NewFilename:string);
     procedure SetTargetFilename(const NewTargetFilename: string);
@@ -212,6 +216,7 @@ type
     property Bookmarks: TProjectBookmarkList read fBookmarks write fBookmarks;
     property CompilerOptions: TCompilerOptions 
        read fCompilerOptions write fCompilerOptions;
+    property Flags: TProjectFlags read FFlags write SetFlags;
     property IconPath: String read fIconPath write fIconPath;
     property JumpHistory: TProjectJumpHistory
        read fJumpHistory write fJumpHistory;
@@ -270,11 +275,28 @@ const
     );
 
   DefaultTargetFileExt : string = {$IFDEF win32}'.exe'{$ELSE}''{$ENDIF};
+  
+  DefaultProjectFlags = [pfSaveClosedUnits];
+  ProjectFlagNames : array[TProjectFlag] of string = (
+      'SaveClosedFiles', 'SaveOnlyProjectUnits'
+    );
 
 function ProjectTypeNameToType(const s:string): TProjectType;
+function ProjectFlagsToStr(Flags: TProjectFlags): string;
 
 implementation
 
+function ProjectFlagsToStr(Flags: TProjectFlags): string;
+var f: TProjectFlag;
+begin
+  Result:='';
+  for f:=Low(TProjectFlag) to High(TProjectFlag) do begin
+    if f in Flags then begin
+      if Result='' then Result:=Result+',';
+      Result:=Result+ProjectFlagNames[f];
+    end;
+  end;
+end;
 
 function ProjectTypeNameToType(const s:string): TProjectType;
 begin
@@ -624,6 +646,7 @@ begin
   fActiveEditorIndexAtStart := -1;
   fBookmarks := TProjectBookmarkList.Create;
   fCompilerOptions := TCompilerOptions.Create;
+  FFlags:=DefaultProjectFlags;
   fIconPath := '';
   fJumpHistory:=TProjectJumpHistory.Create;
   fJumpHistory.OnCheckPosition:=@JumpHistoryCheckPosition;
@@ -702,9 +725,43 @@ end;
   TProject WriteProject
  ------------------------------------------------------------------------------}
 function TProject.WriteProject: TModalResult;
+
+  procedure SaveFlags;
+  var f: TProjectFlag;
+  begin
+    for f:=Low(TProjectFlag) to High(TProjectFlag) do begin
+      xmlconfig.SetValue('ProjectOptions/General/Flags/'
+            +ProjectFlagNames[f]+'/Value', f in Flags);
+    end;
+  end;
+  
+  function UnitMustBeSaved(i: integer): boolean;
+  begin
+    Result:=false;
+    if (pfSaveOnlyProjectUnits in Flags) and (not Units[i].IsPartOfProject) then
+      exit;
+    if (not (pfSaveClosedUnits in Flags)) and (not Units[i].IsPartOfProject)
+    and (not Units[i].Loaded) then exit;
+    Result:=true;
+  end;
+  
+  procedure SaveUnits;
+  var i, SaveUnitCount: integer;
+  begin
+    SaveUnitCount:=0;
+    for i:=0 to UnitCount-1 do begin
+      if UnitMustBeSaved(i) then begin
+        Units[i].SaveToXMLConfig(
+          xmlconfig,'ProjectOptions/Units/Unit'+IntToStr(SaveUnitCount)+'/');
+        inc(SaveUnitCount);
+      end;
+    end;
+    xmlconfig.SetValue('ProjectOptions/Units/Count',SaveUnitCount);
+  end;
+
+
 var
   confPath: String;
-  i: Integer;
   AText, ACaption: string;
 begin
   Result := mrCancel;
@@ -721,6 +778,7 @@ begin
       try
         xmlconfig.SetValue('ProjectOptions/General/ProjectType/Value',
             ProjectTypeNames[ProjectType]);
+        SaveFlags;
         xmlconfig.SetValue('ProjectOptions/General/MainUnit/Value', MainUnit);
         xmlconfig.SetValue('ProjectOptions/General/ActiveEditorIndexAtStart/Value'
             ,ActiveEditorIndexAtStart);
@@ -737,12 +795,7 @@ begin
         fJumpHistory.SaveToXMLConfig(xmlconfig,'ProjectOptions/');
         xmlconfig.SetValue('ProjectOptions/General/SrcPath/Value',fSrcPath);
 
-        // Set options for each Unit
-        xmlconfig.SetValue('ProjectOptions/Units/Count',UnitCount);
-        for i := 0 to UnitCount - 1 do begin
-          Units[i].SaveToXMLConfig(
-            xmlconfig,'ProjectOptions/Units/Unit'+IntToStr(i)+'/');
-        end;
+        SaveUnits;
 
         // Save the compiler options
         CompilerOptions.XMLConfigFile := xmlconfig;
@@ -773,6 +826,21 @@ end;
   TProject ReadProject
  ------------------------------------------------------------------------------}
 function TProject.ReadProject(LPIFilename: string): TModalResult;
+
+  procedure LoadFlags;
+  var f: TProjectFlag;
+  begin
+    FFlags:=[];
+    for f:=Low(TProjectFlag) to High(TProjectFlag) do begin
+      if xmlconfig.GetValue('ProjectOptions/General/Flags/'
+            +ProjectFlagNames[f]+'/Value', f in DefaultProjectFlags)
+      then
+        Include(FFlags,f)
+      else
+        Exclude(FFlags,f);
+    end;
+  end;
+  
 var
   NewUnitInfo: TUnitInfo;
   NewUnitCount,i: integer;
@@ -793,6 +861,7 @@ begin
   try
     ProjectType := ProjectTypeNameToType(xmlconfig.GetValue(
        'ProjectOptions/General/ProjectType/Value', ''));
+    LoadFlags;
     MainUnit := xmlconfig.GetValue('ProjectOptions/General/MainUnit/Value', -1);
     ActiveEditorIndexAtStart := xmlconfig.GetValue(
        'ProjectOptions/General/ActiveEditorIndexAtStart/Value', -1);
@@ -866,12 +935,10 @@ var
   OldUnitInfo: TUnitInfo;
 begin
   if (Index<0) or (Index>=UnitCount) then begin
-    writeln('ERROR: TProject.RemoveUnit index out of bounds');
-    Halt;
+    raise Exception.Create('ERROR: TProject.RemoveUnit index out of bounds');
   end;
   if (Index=MainUnit) then begin
-    writeln('ERROR: TProject.RemoveUnit index = MainUnit');
-    Halt;
+    raise Exception.Create('ERROR: TProject.RemoveUnit index = MainUnit');
   end;
   OldUnitInfo:=Units[Index];
   Modified:=true;
@@ -889,6 +956,9 @@ begin
   // delete bookmarks on this unit
   if OldUnitInfo.EditorIndex>=0 then
     Bookmarks.DeleteAllWithEditorIndex(OldUnitInfo.EditorIndex);
+
+  // adjust MainUnit
+  if MainUnit>=Index then dec(fMainUnit);
 
   // delete unitinfo instance
   OldUnitInfo.Free;
@@ -927,6 +997,11 @@ end;
 function TProject.GetUnits(Index:integer):TUnitInfo;
 begin
   Result:=TUnitInfo(fUnitList[Index]);
+end;
+
+procedure TProject.SetFlags(const AValue: TProjectFlags);
+begin
+  FFlags:=AValue;
 end;
 
 procedure TProject.SetUnits(Index:integer; AUnitInfo: TUnitInfo);
@@ -1354,6 +1429,9 @@ end.
 
 {
   $Log$
+  Revision 1.61  2002/04/15 12:45:57  lazarus
+  MG: added save projectunit flags
+
   Revision 1.60  2002/04/05 16:34:16  lazarus
   MG: fixed autocreate form editing in project opts
 

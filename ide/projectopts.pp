@@ -51,6 +51,11 @@ type
     FormsMoveAutoCreatedFormUpBtn: TSpeedButton;
     FormsMoveAutoCreatedFormDownBtn: TSpeedButton;
     FormsAutoCreateNewFormsCheckBox: TCheckBox;
+    
+    // Info
+    SaveClosedUnitInfoCheckBox: TCheckBox;
+    SaveOnlyProjectUnitInfoCheckBox: TCheckBox;
+
 
     // buttons at bottom
     OkButton: TButton;
@@ -67,6 +72,7 @@ type
     procedure SetProject(AProject: TProject);
     procedure SetupApplicationPage;
     procedure SetupFormsPage;
+    procedure SetupInfoPage;
     procedure FillAutoCreateFormsListbox;
     procedure FillAvailFormsListBox;
     function IndexOfAutoCreateForm(FormName: string): integer;
@@ -117,11 +123,13 @@ begin
       SetBounds(0,0,Self.ClientWidth,Self.ClientHeight-50);
       Pages[0]:='Application';
       Pages.Add('Forms');
+      Pages.Add('Info');
       Visible:=true;
     end;
 
     SetupFormsPage;
     SetupApplicationPage;
+    SetupInfoPage;
 
     CancelButton:=TButton.Create(Self);
     with CancelButton do begin
@@ -347,24 +355,68 @@ begin
   end;
 end;
 
+procedure TProjectOptionsDialog.SetupInfoPage;
+begin
+  SaveClosedUnitInfoCheckBox:=TCheckBox.Create(Self);
+  with SaveClosedUnitInfoCheckBox do begin
+    Name:='SaveClosedUnitInfoCheckBox';
+    Parent:=NoteBook.Page[2];
+    Left:=10;
+    Top:=10;
+    Width:=250;
+    Caption:='Save editor info for closed files';
+    Visible:=true;
+  end;
+  
+  SaveOnlyProjectUnitInfoCheckBox:=TCheckBox.Create(Self);
+  with SaveOnlyProjectUnitInfoCheckBox do begin
+    Name:='SaveOnlyProjectUnitInfoCheckBox';
+    Parent:=NoteBook.Page[2];
+    Left:=SaveClosedUnitInfoCheckBox.Left;
+    Top:=SaveClosedUnitInfoCheckBox.Top+SaveClosedUnitInfoCheckBox.Height+10;
+    Width:=SaveClosedUnitInfoCheckBox.Width;
+    Caption:='Save editor info only for project files';
+    Visible:=true;
+  end;
+end;
+
 procedure TProjectOptionsDialog.SetProject(AProject: TProject);
 begin
   FProject:=AProject;
   if AProject=nil then exit;
+  
   with AProject do begin
     TitleEdit.Text:=Title;
     TargetFileEdit.Text:=TargetFilename;
   end;
   FillAutoCreateFormsListbox;
   FillAvailFormsListBox;
+  
+  SaveClosedUnitInfoCheckBox.Checked:=(pfSaveClosedUnits in AProject.Flags);
+  SaveOnlyProjectUnitInfoCheckBox.Checked:=
+    (pfSaveOnlyProjectUnits in AProject.Flags);
 end;
 
 procedure TProjectOptionsDialog.OkButtonClick(Sender: TObject);
+var NewFlags: TProjectFlags;
 begin
-  with FProject do begin
+  with Project do begin
     Title:=TitleEdit.Text;
     TargetFilename:=TargetFileEdit.Text;
   end;
+  
+  // flags
+  NewFlags:=Project.Flags;
+  if SaveClosedUnitInfoCheckBox.Checked then
+    Include(NewFlags,pfSaveClosedUnits)
+  else
+    Exclude(NewFlags,pfSaveClosedUnits);
+  if SaveOnlyProjectUnitInfoCheckBox.Checked then
+    Include(NewFlags,pfSaveOnlyProjectUnits)
+  else
+    Exclude(NewFlags,pfSaveOnlyProjectUnits);
+  Project.Flags:=NewFlags;
+    
   SetAutoCreateForms;
   ModalResult:=mrOk;
 end;
