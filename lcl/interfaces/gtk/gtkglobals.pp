@@ -81,7 +81,39 @@ var
 var
   LastFileSelectRow : gint;
 
-  // styles -------------------------------------------------------------------
+// styles -------------------------------------------------------------------
+type
+  TLazGtkStyle = (
+    lgsGTK_Default,
+    lgsDefault,
+    lgsButton,
+    lgsWindow,
+    lgsCheckbox,
+    lgsRadiobutton,
+    lgsMenu,
+    lgsMenuitem,
+    lgsList,
+    lgsScrollbar,
+    lgsTooltip,
+    lgsUserDefined
+    );
+
+const
+  LazGtkStyleNames: array[TLazGtkStyle] of string = (
+    'gtk_default',
+    'default',
+    'button',
+    'window',
+    'checkbox',
+    'radiobutton',
+    'menu',
+    'menuitem',
+    'list',
+    'scrollbar',
+    'tooltip',
+    ''
+    );
+
 var
   Styles : TStrings;
 

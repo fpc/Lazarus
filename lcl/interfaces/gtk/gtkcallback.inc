@@ -3199,22 +3199,16 @@ end;
   Procedure GTKStyleChanged(Widget: PGtkWidget; previous_style : PGTKStyle;
     Data: Pointer); cdecl;
 
-  Handler for style changes. For example the user changes the the theme.
+  Handler for style changes. For example the user changes the theme.
+  But also called on every widget realize, so it should not release all styles
+  everytime.
 -------------------------------------------------------------------------------}
 Procedure GTKStyleChanged(Widget: PGtkWidget; previous_style : PGTKStyle;
   Data: Pointer); cdecl;
 begin
   if (Widget=nil) or (Data=nil) or (previous_style=nil) then ;
   EventTrace('style-set', nil);
-      ReleaseStyle('button');
-      ReleaseStyle('radiobutton');
-      ReleaseStyle('checkbox');
-      ReleaseStyle('menu');
-      ReleaseStyle('menuitem');
-      ReleaseStyle('scrollbar');
-      ReleaseStyle('tooltip');
-      ReleaseStyle('default');
-      ReleaseStyle('window');
+  //ReleaseAllStyles;
 end;
 
 {$I gtkDragCallback.inc}
@@ -3230,6 +3224,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.215  2004/01/23 13:55:30  mattias
+  style widgets are now realized, so all values are initialized
+
   Revision 1.214  2004/01/22 11:23:36  mattias
   started MaskBlt for gtkIF and applied patch for dir dlg in env opts from Vincent
 

@@ -4883,7 +4883,7 @@ begin
   gtk_box_pack_end(Result, ScrolledWidget, True, True, 0);
   gtk_widget_show(ScrolledWidget);
   ClientAreaWidget := gtk_layout_new(nil, nil);
-  WindowStyle:=GetStyle('window');
+  WindowStyle:=GetStyle(lgsWindow);
   gtk_widget_set_style(ClientAreaWidget,WindowStyle);
   gtk_container_add(PGtkContainer(ScrolledWidget), ClientAreaWidget);
 
@@ -4903,14 +4903,19 @@ begin
   end;
 end;
 
+function IndexOfStyle(aStyle: TLazGtkStyle): integer;
+begin
+  Result:=IndexOfStyleWithName(LazGtkStyleNames[aStyle]);
+end;
+
 {------------------------------------------------------------------------------
-  Function: IndexOfStyle
+  Function: IndexOfWithNameStyle
   Params: WName
   Returns: Index of Style
 
   Returns the Index within the Styles property of WNAME
  ------------------------------------------------------------------------------}
-function IndexOfStyle(const WName : String): integer;
+function IndexOfStyleWithName(const WName : String): integer;
 begin
   if Styles<>nil then begin
     for Result:=0 to Styles.Count-1 do
@@ -4934,6 +4939,9 @@ Type
     Style : PGTKStyle;
     Widget : PGTKWidget;
   end;
+  
+var
+  StandardStyles: array[TLazGtkStyle] of PStyleObject;
 
 Function NewStyleObject : PStyleObject;
 begin
@@ -4943,10 +4951,16 @@ begin
 end;
 
 Procedure FreeStyleObject(var StyleObject : PStyleObject);
+// internal function to dispose a styleobject
+// it does *not* remove it from the style lists
 begin
   If StyleObject <> nil then begin
-    If StyleObject^.Widget <> nil then
+    If StyleObject^.Widget <> nil then begin
+      // first unref
+      gtk_widget_unref(StyleObject^.Widget);
+      // then destroy
       GTK_Widget_Destroy(StyleObject^.Widget);
+    end;
     If StyleObject^.Style <> nil then
       If StyleObject^.Style^.{$IFDEF Gtk2}attach_count{$ELSE}Ref_Count{$ENDIF}>0
       then
@@ -4956,14 +4970,46 @@ begin
   end;
 end;
 
-Procedure ReleaseStyle(const WName : String);
+procedure ReleaseAllStyles;
+var
+  StyleObject: PStyleObject;
+  lgs: TLazGtkStyle;
+  i: Integer;
+begin
+  if Styles=nil then exit;
+  for i:=Styles.Count-1 downto 0 do begin
+    StyleObject:=PStyleObject(Styles.Objects[i]);
+    FreeStyleObject(StyleObject);
+  end;
+  Styles.Clear;
+  for lgs:=Low(TLazGtkStyle) to High(TLazGtkStyle) do
+    StandardStyles[lgs]:=nil;
+end;
+
+procedure ReleaseStyle(aStyle: TLazGtkStyle);
+var
+  StyleObject: PStyleObject;
+  l: Integer;
+begin
+  if Styles=nil then exit;
+  if aStyle in [lgsUserDefined] then
+    RaiseException('');// user styles are defined by name
+  StyleObject:=StandardStyles[aStyle];
+  if StyleObject<>nil then begin
+    l:=IndexOfStyle(aStyle);
+    Styles.Delete(l);
+    StandardStyles[aStyle]:=nil;
+    FreeStyleObject(StyleObject);
+  end;
+end;
+
+Procedure ReleaseStyleWithName(const WName : String);
 var
   l : Longint;
   s : PStyleObject;
 begin
-  If Not Assigned(Styles) then
-    exit;
-  l := IndexOfStyle(WName);
+  if Styles=nil then exit;
+  l := IndexOfStyleWithName(WName);
   If l >= 0 then begin
     If Styles.Objects[l] <> nil then
       Try
@@ -4976,8 +5022,21 @@ begin
   end;
 end;
 
+function GetStyle(aStyle: TLazGtkStyle): PGTKStyle;
+begin
+  if Styles=nil then exit(nil);
+  if aStyle in [lgsUserDefined] then
+    RaiseException('');// user styles are defined by name
+  if StandardStyles[aStyle]<>nil then
+    // already created
+    Result:=StandardStyles[aStyle]^.Style
+  else
+    // create it
+    Result:=GetStyleWithName(LazGtkStyleNames[aStyle]);
+end;
+
 {------------------------------------------------------------------------------
-  Function: GetStyle
+  Function: GetStyleWithName
   Params: none
   Returns: Returns a Corresponding Style
 
@@ -4987,30 +5046,46 @@ end;
   list which is only updated on theme change, to ensure fast efficient retrieval
   of Styles.
  ------------------------------------------------------------------------------}
-function GetStyle(const WName : String) : PGTKStyle;
+function GetStyleWithName(const WName: String) : PGTKStyle;
 var
   Tp : Pointer;
   l : Longint;
   StyleObject : PStyleObject;
   NoName: PGChar;
+  lgs: TLazGtkStyle;
+  WidgetName: String;
+  VBox: PGtkWidget;
+  AddToStyleWindow: Boolean;
+  StyleWindowWidget: PGtkWidget;
 begin
   Result := nil;
+  if Styles=nil then exit;
   {$IFDEF NoStyle}
   exit;
   {$ENDIF}
-  If Not Assigned(Styles) then
-    exit;
-  l:=IndexOfStyle(WName);
-//  writeln('GetStyle A ',WName,' ',l);
-  If l < 0 then begin
+  
+  If (WName='') then exit;
+  l:=IndexOfStyleWithName(WName);
+  //writeln('GetStyleWithName START ',WName,' ',l);
+
+  If l >= 0 then begin
+    StyleObject:=PStyleObject(Styles.Objects[l]);
+    Result := StyleObject^.Style;
+
+  end else begin
     // create a new style object
     StyleObject := NewStyleObject;
+    lgs:=lgsUserDefined;
     Tp:=nil;
+    AddToStyleWindow:=true;
     // create a style widget
-    If AnsiCompareText(WName,'button')=0 then
-      StyleObject^.Widget := GTK_BUTTON_NEW
-    else
-      If AnsiCompareText(WName,'default')=0 then begin
+    If AnsiCompareText(WName,LazGtkStyleNames[lgsButton])=0 then begin
+      StyleObject^.Widget := GTK_BUTTON_NEW;
+      lgs:=lgsButton;
+    end else
+      If AnsiCompareText(WName,LazGtkStyleNames[lgsDefault])=0 then begin
+        lgs:=lgsDefault;
+        AddToStyleWindow:=false;
         NoName:=nil;
         StyleObject^.Widget :=
           // GTK2 does not allow to instantiate the abstract base Widget
@@ -5021,30 +5096,52 @@ begin
             NoName,[]);
       end
     else
-      If AnsiCompareText(WName,'window')=0 then begin
+      If AnsiCompareText(WName,LazGtkStyleNames[lgsWindow])=0 then begin
+        lgs:=lgsWindow;
         StyleObject^.Widget := GTK_WINDOW_NEW(GTK_WINDOW_TOPLEVEL);
+        AddToStyleWindow:=false;
+        gtk_widget_hide(StyleObject^.Widget);
+        // create the box
+        // (where to put all style widgets, that need a parent for realize)
+        VBox:=gtk_vbox_new(false,0);
+        gtk_widget_show(VBox);
+        gtk_container_add(PGtkContainer(StyleObject^.Widget), VBox);
+        gtk_object_set_data(PGtkObject(StyleObject^.Widget),'vbox',VBox);
       end
     else
-      If AnsiCompareText(WName,'checkbox')=0 then begin
+      If AnsiCompareText(WName,LazGtkStyleNames[lgsCheckbox])=0 then begin
+        lgs:=lgsCheckbox;
         StyleObject^.Widget := GTK_CHECK_BUTTON_NEW;
       end
     else
-      If AnsiCompareText(WName,'radiobutton')=0 then
-        StyleObject^.Widget := GTK_RADIO_BUTTON_NEW(nil)
+      If AnsiCompareText(WName,LazGtkStyleNames[lgsRadiobutton])=0 then begin
+        lgs:=lgsRadiobutton;
+        StyleObject^.Widget := GTK_RADIO_BUTTON_NEW(nil);
+      end
     else
-      If AnsiCompareText(WName,'menu')=0 then
-        StyleObject^.Widget := GTK_MENU_NEW
+      If AnsiCompareText(WName,LazGtkStyleNames[lgsMenu])=0 then begin
+        lgs:=lgsMenu;
+        StyleObject^.Widget := GTK_MENU_NEW;
+      end
     else
-      If AnsiCompareText(WName,'menuitem')=0 then
-        StyleObject^.Widget := GTK_MENU_ITEM_NEW
+      If AnsiCompareText(WName,LazGtkStyleNames[lgsMenuitem])=0 then begin
+        lgs:=lgsMenuitem;
+        StyleObject^.Widget := GTK_MENU_ITEM_NEW;
+      end
     else
-      If AnsiCompareText(WName,'list')=0 then
-        StyleObject^.Widget := GTK_LIST_NEW
+      If AnsiCompareText(WName,LazGtkStyleNames[lgsList])=0 then begin
+        lgs:=lgsList;
+        StyleObject^.Widget := GTK_LIST_NEW;
+      end
     else
-      If AnsiCompareText(WName,'scrollbar')=0 then
-        StyleObject^.Widget := gtk_hscrollbar_new(nil)//can't dif. between Horiz/Vert. Styles
+      If AnsiCompareText(WName,LazGtkStyleNames[lgsScrollbar])=0 then begin
+        lgs:=lgsScrollbar;
+        StyleObject^.Widget := gtk_hscrollbar_new(nil);//can't dif. between Horiz/Vert. Styles
+      end
     else
-      If AnsiCompareText(WName,'tooltip')=0 then begin
+      If AnsiCompareText(WName,LazGtkStyleNames[lgsTooltip])=0 then begin
+        lgs:=lgsTooltip;
+        AddToStyleWindow:=false;
         TP := gtk_tooltips_new;
         StyleObject^.Widget := nil;
         GTK_Tooltips_Force_Window(TP);
@@ -5052,63 +5149,106 @@ begin
         StyleObject^.Style:=gtk_widget_get_style(PGTKTooltips(TP)^.Tip_Window);
       end
     else
-      If AnsiCompareText(WName,'gtk_default')=0 then begin
+      If AnsiCompareText(WName,LazGtkStyleNames[lgsGTK_Default])=0 then begin
+        lgs:=lgsGTK_Default;
+        AddToStyleWindow:=false;
         StyleObject^.Widget := nil;
         StyleObject^.Style := gtk_style_new;
       end
     else begin
+      // unknown style name -> bug
       FreeStyleObject(StyleObject);
-      exit;
+      RaiseException('');
     end;
+    
+    if (lgs<>lgsUserDefined) and (StandardStyles[lgs]<>nil) then begin
+      // consistency error
+      RaiseException('');
+    end;
+    
     // ensure style of the widget
     If (StyleObject^.Widget <> nil) then begin
+      gtk_widget_ref(StyleObject^.Widget);
+
+      // put style widget on style window, so that it can be realized
+      if AddToStyleWindow then begin
+        gtk_widget_show(StyleObject^.Widget);
+        StyleWindowWidget:=GetStyleWidget(lgsWindow);
+        VBox:=PGTKWidget(
+                     gtk_object_get_data(PGtkObject(StyleWindowWidget),'vbox'));
+        gtk_box_pack_end(PGTKBox(VBox), StyleObject^.Widget, True, True, 0);
+      end;
+
+      WidgetName:='LazStyle'+WName;
+      gtk_widget_set_name(StyleObject^.Widget,PChar(WidgetName));
       gtk_widget_ensure_style(StyleObject^.Widget);
       StyleObject^.Style:=gtk_widget_get_style(StyleObject^.Widget);
       // ToDo: find out, why sometimes the style is not initialized.
       // for example: why the following occurs:
-       If AnsiCompareText(WName,'button')=0 then begin
+      If AnsiCompareText(WName,'button')=0 then begin
         if StyleObject^.Style^.light_gc[GTK_STATE_NORMAL]=nil then begin
-          //if not GtkWidgetIsA(StyleObject^.Widget,GTK_WINDOW_TYPE) then begin
-          //end;
+          //writeln('GetStyleWithName ',WName);
+          if not GtkWidgetIsA(StyleObject^.Widget,GTK_WINDOW_TYPE) then begin
+            gtk_widget_realize(StyleObject^.Widget);
+          end;
         end;
       end;
     end;
+    
+    // increase refcount of style
     If StyleObject^.Style <> nil then
-      If AnsiCompareText(WName,'gtk_default')<>0 then
+      If AnsiCompareText(WName,LazGtkStyleNames[lgsGTK_Default])<>0 then
         StyleObject^.Style:=GTK_Style_Ref(StyleObject^.Style);
+        
     // if successful add to style objects list
     if StyleObject^.Style <> nil then begin
       Styles.AddObject(WName, TObject(StyleObject));
+      if lgs<>lgsUserDefined then
+        StandardStyles[lgs]:=StyleObject;
       Result:=StyleObject^.Style;
       If (StyleObject^.Widget <> nil)
-      and (AnsiCompareText(WName,'window')=0) then
+      and (AnsiCompareText(WName,LazGtkStyleNames[lgsWindow])=0) then
         UpdateSysColorMap(StyleObject^.Widget);
         
       // ToDo: create all gc of the style
-      
+      //gtk_widget_set_rc_style(StyleObject^.Widget);
     end
     else begin
       // no success, clean up
       FreeStyleObject(StyleObject);
+      writeln('WARNING: GetStyleWithName ',WName,' failed');
     end;
+    
+    // clean up
     If Tp<>nil then
       GTK_Object_Destroy(Tp);
-  end else begin
-    StyleObject:=PStyleObject(Styles.Objects[l]);
-    Result := StyleObject^.Style;
+      
   end;
 end;
 
-Function GetStyleWidget(const WName : String) : PGTKWidget;
+function GetStyleWidget(aStyle: TLazGtkStyle) : PGTKWidget;
+begin
+  if aStyle in [lgsUserDefined] then
+    RaiseException('');// user styles are defined by name
+  if StandardStyles[aStyle]<>nil then
+    // already created
+    Result:=StandardStyles[aStyle]^.Widget
+  else
+    // create it
+    Result:=GetStyleWidgetWithName(LazGtkStyleNames[aStyle]);
+end;
+
+Function GetStyleWidgetWithName(const WName : String) : PGTKWidget;
 var
   l : Longint;
 begin
   Result := nil;
-  l:=IndexOfStyle(WName);
-  If (l > -1) or (GetStyle(WName) <> nil) then begin
-    l:=IndexOfStyle(WName);
+  // init style
+  GetStyleWithName(WName);
+  // return widget
+  l:=IndexOfStyleWithName(WName);
+  If l>=0 then
     Result := PStyleObject(Styles.Objects[l])^.Widget;
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -5131,9 +5271,9 @@ var
   Style : PGTKStyle;
 begin
   Result := nil;
-  Style := GetStyle('default');
+  Style := GetStyle(lgsDefault);
   if Style = nil then
-    Style := GetStyle('gtk_default');
+    Style := GetStyle(lgsGTK_Default);
 
   If (Style <> nil) then begin
      Result := pango_font_description_copy(Style^.font_desc);
@@ -5151,9 +5291,9 @@ var
   Style : PGTKStyle;
 begin
   Result := nil;
-  Style := GetStyle('default');
+  Style := GetStyle(lgsDefault);
   if Style = nil then
-    Style := GetStyle('gtk_default');
+    Style := GetStyle(lgsGTK_Default);
 
   If Style <> nil then begin
     Result := Style^.Font;
@@ -5184,9 +5324,9 @@ var
   {$ENDIF}
 begin
   Result:='';
-  Style := GetStyle('default');
+  Style := GetStyle(lgsDefault);
   if Style = nil then
-    Style := GetStyle('gtk_default');
+    Style := GetStyle(lgsGTK_Default);
 
   If Style <> nil then begin
     {$IFDEF GTK1}
@@ -5290,10 +5430,10 @@ begin
 
     COLOR_INFOBK :
       begin
-        Style := GetStyle('tooltip');
+        Style := GetStyle(lgsTooltip);
 
         If Style = nil then
-          Style := GetStyle('window');
+          Style := GetStyle(lgsWindow);
 
         If Style = nil then
           exit;
@@ -5315,10 +5455,10 @@ begin
 
     COLOR_INFOTEXT :
       begin
-        Style := GetStyle('tooltip');
+        Style := GetStyle(lgsTooltip);
 
         If Style = nil then
-          Style := GetStyle('window');
+          Style := GetStyle(lgsWindow);
 
         If Style = nil then
           exit;
@@ -5338,10 +5478,10 @@ begin
     COLOR_BTNFACE :
       begin
         Case BaseColor of
-          COLOR_FORM: Style := GetStyle('window');
-          COLOR_BTNFACE: Style := GetStyle('button');
-          COLOR_MENU: Style := GetStyle('menu');
-          COLOR_SCROLLBAR: Style := GetStyle('scrollbar');
+          COLOR_FORM: Style := GetStyle(lgsWindow);
+          COLOR_BTNFACE: Style := GetStyle(lgsButton);
+          COLOR_MENU: Style := GetStyle(lgsMenu);
+          COLOR_SCROLLBAR: Style := GetStyle(lgsScrollbar);
         end;
         If Style = nil then
           exit;
@@ -5363,7 +5503,7 @@ begin
     COLOR_3DDKSHADOW,
     COLOR_BTNSHADOW :
       begin
-        Style := GetStyle('button');
+        Style := GetStyle(lgsButton);
         If Style = nil then
           exit;
         GC := Style^.dark_gc[GTK_STATE_NORMAL];
@@ -5377,7 +5517,7 @@ begin
 
     COLOR_GRAYTEXT :
       begin
-        Style := GetStyle('default');
+        Style := GetStyle(lgsDefault);
         If Style = nil then
           exit;
         GC := Style^.text_gc[GTK_STATE_INSENSITIVE];
@@ -5392,8 +5532,8 @@ begin
     COLOR_BTNTEXT :
       begin
         Case BaseColor of
-          COLOR_BTNTEXT : Style := GetStyle('button');
-          COLOR_MENUTEXT : Style := GetStyle('menuitem');
+          COLOR_BTNTEXT : Style := GetStyle(lgsButton);
+          COLOR_MENUTEXT : Style := GetStyle(lgsMenuitem);
         end;
         If Style = nil then
           exit;
@@ -5408,7 +5548,7 @@ begin
 
     COLOR_WINDOWTEXT:
       begin
-        Style := GetStyle('default');
+        Style := GetStyle(lgsDefault);
         If Style = nil then
           exit;
         GC := Style^.text_gc[GTK_STATE_NORMAL];
@@ -5423,7 +5563,7 @@ begin
     COLOR_3DLIGHT,
     COLOR_BTNHIGHLIGHT :
       begin
-        Style := GetStyle('button');
+        Style := GetStyle(lgsButton);
         If Style = nil then
           exit;
         GC := Style^.light_gc[GTK_STATE_NORMAL];
@@ -5440,12 +5580,12 @@ begin
         ThemeWidget:=GetWidgetWithBackgroundWindow(ThemeWidget);
         if ThemeWidget<>nil then begin
           if GtkWidgetIsA(ThemeWidget,GTK_TYPE_LIST_ITEM) then
-            Style:=GetStyle('list');
+            Style:=GetStyle(lgsList);
           if Style=nil then
             Style:=PGtkStyle(gtk_widget_get_style(ThemeWidget));
         end;
         if Style=nil then
-          Style := GetStyle('default');
+          Style := GetStyle(lgsDefault);
         If Style = nil then
           exit;
         GC := Style^.base_gc[GTK_STATE_NORMAL];
@@ -5462,7 +5602,7 @@ begin
 
     COLOR_HIGHLIGHT :
       begin
-        Style := GetStyle('default');
+        Style := GetStyle(lgsDefault);
         If Style = nil then
           exit;
         GC := Style^.bg_gc[GTK_STATE_SELECTED];
@@ -5476,7 +5616,7 @@ begin
 
     COLOR_HIGHLIGHTTEXT :
       begin
-        Style := GetStyle('default');
+        Style := GetStyle(lgsDefault);
         If Style = nil then
           exit;
         GC := Style^.bg_gc[GTK_STATE_PRELIGHT];
@@ -5515,7 +5655,7 @@ begin
   Case TColor(Color) of
     clINFOTEXT :
       begin
-        Style := GetStyle('tooltip');
+        Style := GetStyle(lgsTooltip);
 
         If Style = nil then
           exit;
@@ -5526,7 +5666,7 @@ begin
     cl3DDKSHADOW,
     clBTNSHADOW :
       begin
-        Style := GetStyle('button');
+        Style := GetStyle(lgsButton);
         If Style = nil then
           exit;
         Result := @Style^.dark[GTK_STATE_NORMAL];
@@ -5534,7 +5674,7 @@ begin
 
     clGRAYTEXT :
       begin
-        Style := GetStyle('default');
+        Style := GetStyle(lgsDefault);
         If Style = nil then
           exit;
         Result := @Style^.text[GTK_STATE_INSENSITIVE];
@@ -5544,8 +5684,8 @@ begin
     clBTNTEXT :
       begin
         Case TColor(Color) of
-          clBTNTEXT : Style := GetStyle('button');
-          clMENUTEXT : Style := GetStyle('menuitem');
+          clBTNTEXT : Style := GetStyle(lgsButton);
+          clMENUTEXT : Style := GetStyle(lgsMenuitem);
         end;
         If Style = nil then
           exit;
@@ -5554,7 +5694,7 @@ begin
 
     clWINDOWTEXT:
       begin
-        Style := GetStyle('default');
+        Style := GetStyle(lgsDefault);
         If Style = nil then
           exit;
         Result := @Style^.text[GTK_STATE_NORMAL];
@@ -5563,7 +5703,7 @@ begin
     cl3DLIGHT,
     clBTNHIGHLIGHT :
       begin
-        Style := GetStyle('button');
+        Style := GetStyle(lgsButton);
         If Style = nil then
           exit;
         Result := @Style^.light[GTK_STATE_NORMAL];
@@ -5571,7 +5711,7 @@ begin
 
     clHIGHLIGHTTEXT :
       begin
-        Style := GetStyle('default');
+        Style := GetStyle(lgsDefault);
         If Style = nil then
           exit;
         Result := @Style^.bg[GTK_STATE_PRELIGHT];
@@ -5621,8 +5761,8 @@ begin
 
     clInfoBk :
       begin
-        Style := GetStyle('window');
-        widget := GetStyleWidget('window');
+        Style := GetStyle(lgsWindow);
+        widget := GetStyleWidget(lgsWindow);
  //       Style := GetStyle('tooltip');
         state := GTK_STATE_NORMAL;
         detail := 'tooltip';
@@ -5630,8 +5770,8 @@ begin
 
     clForm :
       begin
-        Style := GetStyle('window');
-        widget := GetStyleWidget('window');
+        Style := GetStyle(lgsWindow);
+        widget := GetStyleWidget(lgsWindow);
         state := GTK_STATE_NORMAL;
         detail := 'window';
       end;
@@ -6065,6 +6205,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.248  2004/01/23 13:55:30  mattias
+  style widgets are now realized, so all values are initialized
+
   Revision 1.247  2004/01/22 11:23:36  mattias
   started MaskBlt for gtkIF and applied patch for dir dlg in env opts from Vincent
 

@@ -247,20 +247,12 @@ end;
   procedure TgtkObject.FreeAllStyles;
  ------------------------------------------------------------------------------}
 procedure TgtkObject.FreeAllStyles;
-var
-  I : Integer;
 begin
-  If Assigned(Styles) then
-    Try
-      For I := Styles.Count - 1 downto 0 do
-        ReleaseStyle(Styles[I]);
-      Styles.Free;
-    Except
-      on E: Exception do begin
-        writeln('WARNING: TgtkObject.FreeAllStyles: ',E.Message);
-      end;
-    End;
-  Styles := Nil;
+  If Assigned(Styles) then begin
+    ReleaseAllStyles;
+    Styles.Free;
+    Styles:=nil;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -9211,6 +9203,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.455  2004/01/23 13:55:30  mattias
+  style widgets are now realized, so all values are initialized
+
   Revision 1.454  2004/01/22 11:23:36  mattias
   started MaskBlt for gtkIF and applied patch for dir dlg in env opts from Vincent
 

@@ -2236,7 +2236,7 @@ var
     aDC:=TDeviceContext(DC);
     DCOrigin:=GetDCOffset(aDC);
 
-    aStyle := GetStyle('button');
+    aStyle := GetStyle(lgsButton);
     If aStyle = nil then
       aStyle := gtk_widget_get_style(Widget)
     else begin
@@ -2301,17 +2301,17 @@ var
     aDC:=TDeviceContext(DC);
     DCOrigin:=GetDCOffset(aDC);
 
-    Style := GetStyle('checkbox');
+    Style := GetStyle(lgsCheckbox);
 
     If Style = nil then
-      Style := GetStyle('gtk_default');
+      Style := GetStyle(lgsGTK_Default);
 
     If Style <> nil then
       Style := gtk_style_attach(gtk_style_ref(Style),aDC.Drawable);
 
-    Widget := GetStyleWidget('checkbox');
+    Widget := GetStyleWidget(lgsCheckbox);
     If Widget = nil then
-      Widget := GetStyleWidget('default');
+      Widget := GetStyleWidget(lgsDefault);
     If (Widget <> nil) and (Style <> nil) then begin
       Widget^.Window := aDC.Drawable;
       if Style<>nil then
@@ -3385,9 +3385,9 @@ begin
   Result := IsValidDC(DC);
   if not Result then exit;
   if FrameWidth=0 then exit;
-  TheStyle:=GetStyle('button');
-  if TheStyle=nil then exit;
+  TheStyle:=GetStyle(lgsButton);
   //writeln('TGtkObject.Frame3d A ',HexStr(Cardinal(TheStyle),8));
+  if TheStyle=nil then exit;
 
   with TDeviceContext(DC) do
   begin
@@ -8700,6 +8700,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.321  2004/01/23 13:55:30  mattias
+  style widgets are now realized, so all values are initialized
+
   Revision 1.320  2004/01/22 11:23:36  mattias
   started MaskBlt for gtkIF and applied patch for dir dlg in env opts from Vincent
 

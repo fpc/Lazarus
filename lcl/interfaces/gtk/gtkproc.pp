@@ -556,11 +556,16 @@ procedure FreeClipboardTargetEntries(ClipboardType: TClipboardType);
 // forms
 Function CreateFormContents(AForm: TCustomForm; var FormWidget: Pointer): Pointer;
 
-// style
-function IndexOfStyle(const WName : String): integer;
-Procedure ReleaseStyle(const WName : String);
-function GetStyle(const WName : String) : PGTKStyle;
-Function GetStyleWidget(const WName : String) : PGTKWidget;
+// styles
+function IndexOfStyle(aStyle: TLazGtkStyle): integer;
+function IndexOfStyleWithName(const WName : String): integer;
+Procedure ReleaseAllStyles;
+Procedure ReleaseStyle(aStyle: TLazGtkStyle);
+Procedure ReleaseStyleWithName(const WName : String);
+function GetStyle(aStyle: TLazGtkStyle): PGTKStyle;
+function GetStyleWithName(const WName : String) : PGTKStyle;
+Function GetStyleWidget(aStyle: TLazGtkStyle) : PGTKWidget;
+Function GetStyleWidgetWithName(const WName : String) : PGTKWidget;
 Procedure StyleFillRectangle(drawable : PGDKDrawable; GC : PGDKGC; Color : TColorRef; x, y, width, height : gint);
 Function StyleForegroundColor(Color : TColorRef; DefaultColor : PGDKColor): PGDKColor;
 
@@ -806,7 +811,10 @@ end;
 {$I gtkproc.inc}
 {$I gtkcallback.inc}
 
-initialization
+procedure InitGTKProc;
+var
+  lgs: TLazGtkStyle;
+begin
 {$IFDEF UNIX}
 {$IFNDEF GTK2_2}
   MX11Display := nil;
@@ -823,7 +831,12 @@ initialization
   GdkTrapCalls := 0;
   LCLHandledKeyEvents:=nil;
 
-finalization
+  for lgs:=Low(TLazGtkStyle) to High(TLazGtkStyle) do
+    StandardStyles[lgs]:=nil;
+end;
+
+procedure DoneGTKProc;
+begin
   {$IFDEF UNIX}
   {$IFNDEF GTK2_2}
   if MX11Display <> nil
@@ -834,5 +847,13 @@ finalization
   {$ENDIF}
 
   DoneKeyboardTables;
+end;
+
+initialization
+  InitGTKProc;
+
+finalization
+  DoneGTKProc;
+
 end.
 
