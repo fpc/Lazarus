@@ -29,7 +29,7 @@ unit LCLProc;
 interface
 
 uses
-  Classes, SysUtils, LCLStrConsts, LCLType;
+  Classes, SysUtils, Math, LCLStrConsts, LCLType;
 
 type
   { TMethodList - array of TMethod }
@@ -85,6 +85,7 @@ procedure RegisterInterfaceFinalizationHandler(p: TProcedure);
 procedure CallInterfaceFinalizationHandlers;
 
 function OffsetRect(var ARect: TRect; dx,dy: Integer): Boolean;
+procedure MoveRectToFit(var ARect: TRect; const MaxRect: TRect);
 procedure MakeMinMax(var i1, i2: integer);
 procedure CalculateLeftTopWidthHeight(X1,Y1,X2,Y2: integer;
   var Left,Top,Width,Height: integer);
@@ -486,6 +487,30 @@ begin
   // creates an exception, that gdb catches:
   debugln(rsCreatingGdbCatchableError);
   if (length(Msg) div (length(Msg) div 10000))=0 then ;
+end;
+
+procedure MoveRectToFit(var ARect: TRect; const MaxRect: TRect);
+begin
+  if ARect.Left<MaxRect.Left then begin
+    // move rectangle right
+    ARect.Right:=Min(ARect.Right+MaxRect.Left-ARect.Left,MaxRect.Right);
+    ARect.Left:=MaxRect.Left;
+  end;
+  if ARect.Top<MaxRect.Top then begin
+    // move rectangle down
+    ARect.Bottom:=Min(ARect.Bottom+MaxRect.Top-ARect.Top,MaxRect.Bottom);
+    ARect.Top:=MaxRect.Top;
+  end;
+  if ARect.Right>MaxRect.Right then begin
+    // move rectangle left
+    ARect.Left:=Max(ARect.Left-ARect.Right+MaxRect.Right,MaxRect.Left);
+    ARect.Right:=MaxRect.Right;
+  end;
+  if ARect.Bottom>MaxRect.Bottom then begin
+    // move rectangle left
+    ARect.Top:=Max(ARect.Top-ARect.Bottom+MaxRect.Bottom,MaxRect.Top);
+    ARect.Bottom:=MaxRect.Bottom;
+  end;
 end;
 
 procedure MakeMinMax(var i1, i2: integer);

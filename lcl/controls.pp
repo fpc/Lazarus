@@ -670,7 +670,8 @@ type
     cfRequestAlignNeeded,
     cfClientWidthLoaded,
     cfClientHeightLoaded,
-    cfLastAlignedBoundsValid
+    cfLastAlignedBoundsValid,
+    cfBoundsRectForNewParentValid
     );
   TControlFlags = set of TControlFlag;
 
@@ -704,6 +705,7 @@ type
     FBaseBoundsLock: integer;
     FBaseParentClientSize: TPoint;
     FBorderSpacing: TControlBorderSpacing;
+    FBoundsRectForNewParent: TRect;
     FCaption: TCaption;
     FColor: TColor;
     FConstraints: TSizeConstraints;
@@ -804,6 +806,7 @@ type
     procedure DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
     procedure SetBorderSpacing(const AValue: TControlBorderSpacing);
     procedure SetBoundsRect(const ARect : TRect);
+    procedure SetBoundsRectForNewParent(const AValue: TRect);
     procedure SetClientHeight(Value: Integer);
     procedure SetClientSize(Value: TPoint);
     procedure SetClientWidth(Value: Integer);
@@ -1074,6 +1077,7 @@ type
     property Align: TAlign read FAlign write SetAlign;
     property BorderSpacing: TControlBorderSpacing read FBorderSpacing write SetBorderSpacing;
     property BoundsRect: TRect read GetBoundsRect write SetBoundsRect;
+    property BoundsRectForNewParent: TRect read FBoundsRectForNewParent write SetBoundsRectForNewParent;
     property Caption: TCaption read GetText write SetText stored IsCaptionStored;
     property ClientOrigin: TPoint read GetClientOrigin;
     property ClientRect: TRect read GetClientRect;
@@ -1517,7 +1521,7 @@ type
     procedure EndUpdateBounds;
     procedure LockRealizeBounds;
     procedure UnlockRealizeBounds;
-    procedure DockDrop(Source: TDragDockObject; X, Y: Integer); dynamic;
+    procedure DockDrop(DockObject: TDragDockObject; X, Y: Integer); dynamic;
     Function CanFocus : Boolean;
     Function ControlAtPos(const Pos : TPoint; AllowDisabled : Boolean): TControl;
     Function ControlAtPos(const Pos : TPoint;
@@ -2405,6 +2409,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.238  2004/08/18 22:56:11  mattias
+  implemented basic manual docking
+
   Revision 1.237  2004/08/18 09:31:21  mattias
   removed obsolete unit vclglobals
 

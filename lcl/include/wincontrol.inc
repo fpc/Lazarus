@@ -1925,6 +1925,7 @@ end;
 function TWinControl.DoUnDock(NewTarget: TWinControl; Client: TControl
   ): Boolean;
 begin
+  DebugLn('TWinControl.DoUnDock ',Name,' NewTarget=',DbgSName(NewTarget),' Client=',DbgSName(Client));
   if Assigned(FOnUnDock) then begin
     Result := True;
     FOnUnDock(Self,Client,NewTarget,Result);
@@ -3520,9 +3521,40 @@ begin
     RealizeBounds;
 end;
 
-procedure TWinControl.DockDrop(Source: TDragDockObject; X, Y: Integer);
+{------------------------------------------------------------------------------
+  procedure TWinControl.DockDrop(DockObject: TDragDockObject; X, Y: Integer);
+ ------------------------------------------------------------------------------}
+procedure TWinControl.DockDrop(DockObject: TDragDockObject; X, Y: Integer);
+var
+  DestRect: TRect;
+  ParentForm: TCustomForm;
+  MappedLeftTop: TPoint;
 begin
+  // get dock destination rectangle and map it to the client area
+  DestRect := DockObject.DockRect;
+  MappedLeftTop:=ScreenToClient(DestRect.TopLeft);
+  OffsetRect(DestRect,
+             DestRect.Left-MappedLeftTop.X,DestRect.Top-MappedLeftTop.Y);
+  DebugLn('TWinControl.DockDrop A ',Name,' DockControl=',DbgSName(DockObject.Control),' DestRect=',dbgs(DestRect));
+  DisableAlign;
+  try
+    if (not UseDockManager) or (DockManager=nil) then begin
+      // Delphi ignores the DropAlign when no DockManager is available
+      // Why that?
+      DockObject.Control.Align:=DockObject.DropAlign;
+    end;
+    DockObject.Control.Dock(Self, DestRect);
+    if UseDockManager and (DockManager <> nil) then
+      DockManager.InsertControl(DockObject.Control,
+        DockObject.DropAlign, DockObject.DropOnControl);
+  finally
+    EnableAlign;
+  end;
+  ParentForm := GetParentForm(Self);
+  if ParentForm<>nil then ParentForm.BringToFront;
 
+  if Assigned(FOnDockDrop) then
+    FOnDockDrop(Self, DockObject, X, Y);
 end;
 
 {------------------------------------------------------------------------------
@@ -3793,6 +3825,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.264  2004/08/18 22:56:11  mattias
+  implemented basic manual docking
+
   Revision 1.263  2004/08/18 20:49:02  mattias
   simple forms can now be child controls
 

@@ -99,10 +99,28 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.DoDock(NewDockSite: TWinControl; var ARect: TRect);
 begin
+
   if (NewDockSite = nil) then Parent := nil;
+  if NewDockSite<>nil then begin
+    DebugLn('TControl.DoDock BEFORE Adjusting ',Name,' ',dbgs(ARect));
+    // adjust new bounds, so that they at least fit into the client area of
+    // its parent
+    LCLProc.MoveRectToFit(ARect,NewDockSite.ClientRect);
+    // consider Align to increase chance the width/height is kept
+    case Align of
+    alLeft: OffsetRect(ARect,-ARect.Left,0);
+    alTop: OffsetRect(ARect,0,-ARect.Top);
+    alRight: OffsetRect(ARect,NewDockSite.ClientWidth-ARect.Right,0);
+    alBottom: OffsetRect(ARect,0,NewDockSite.ClientHeight-ARect.Bottom);
+    end;
+    DebugLn('TControl.DoDock AFTER Adjusting ',Name,' ',dbgs(ARect),' Align=',AlignNames[Align],' NewDockSite.ClientRect=',dbgs(NewDockSite.ClientRect));
+  end;
   //debugln('TControl.DoDock BEFORE MOVE ',Name,' BoundsRect=',dbgs(BoundsRect),' NewRect=',dbgs(ARect));
-  BoundsRect := ARect;
-  //debugln('TControl.DoDock AFTER MOVE ',Name,' BoundsRect=',dbgs(BoundsRect),' NewRect=',dbgs(ARect));
+  if Parent<>NewDockSite then
+    BoundsRectForNewParent := ARect
+  else
+    BoundsRect := ARect;
+  debugln('TControl.DoDock AFTER MOVE ',Name,' BoundsRect=',dbgs(BoundsRect),' TriedRect=',dbgs(ARect));
 end;
 
 {------------------------------------------------------------------------------
@@ -503,15 +521,22 @@ end;
 procedure TControl.CalculateDockSizes;
 begin
   if Floating then begin
+    // the control is floating. Save Width and Height for undocking
     UndockHeight:=Height;
     UndockWidth:=Width;
   end
   else if HostDockSite<>nil then begin
+    // the control is docked into a HostSite. That means some of it bounds
+    // were maximized to fit into the HostSite.
     if (DockOrientation=doHorizontal)
     or (HostDockSite.Align in [alLeft,alRight]) then
+      // the control is aligned left/right, that means its width is not
+      // maximized. Save Width for docking.
       LRDockWidth:=Width
     else if (DockOrientation=doVertical)
     or (HostDockSite.Align in [alTop,alBottom]) then
+      // the control is aligned top/bottom, that means its height is not
+      // maximized. Save Height for docking.
       TBDockHeight:=Height;
   end;
 end;
@@ -650,9 +675,9 @@ begin
   Result := FVisible and ((Parent = nil) or (Parent.IsVisible));
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl SetTabOrder                                                   }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TControl SetTabOrder
+------------------------------------------------------------------------------}
 Procedure TControl.SetTabOrder(Value : TTabOrder);
 Begin
   if csLoading in ComponentState then
@@ -661,9 +686,9 @@ Begin
     UpdateTabOrder(Value);
 end;
 
-{------------------------------------------------------------------------------}
-{  TControl UpdateTabOrder                                                     }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TControl UpdateTabOrder
+------------------------------------------------------------------------------}
 Procedure TControl.UpdateTabOrder(Value : TTabOrder);
 var
   CurentOrder,
@@ -1885,6 +1910,12 @@ Begin
     SetBounds(Left,Top,Right - Left, Bottom - Top);
 end;
 
+procedure TControl.SetBoundsRectForNewParent(const AValue: TRect);
+begin
+  Include(FControlFlags,cfBoundsRectForNewParentValid);
+  FBoundsRectForNewParent:=AValue;
+end;
+
 {------------------------------------------------------------------------------
   TControl SetClientHeight
 ------------------------------------------------------------------------------}
@@ -2497,6 +2528,10 @@ begin
   if FParent = NewParent then exit;
   CheckNewParent(NewParent);
   if FParent <> nil then FParent.RemoveControl(Self);
+  if cfBoundsRectForNewParentValid in FControlFlags then begin
+    Exclude(FControlFlags,cfBoundsRectForNewParentValid);
+    BoundsRect:=BoundsRectForNewParent;
+  end;
   if NewParent <> nil then NewParent.InsertControl(Self);
 end;
 
@@ -2794,27 +2829,39 @@ var
 begin
   if (NewDockSite=nil) then begin
     // undock / float this control
+    // float the control at the same screen position
     if HostDockSiteManagerAvailable(HostDockSite) then begin
       HostDockSite.DockManager.GetControlBounds(Self,NewBounds);
-      NewBounds.TopLeft:=HostDockSite.ControlToScreen(NewBounds.TopLeft);
+      NewBounds.TopLeft:=HostDockSite.ClientToScreen(NewBounds.TopLeft);
     end else begin
       NewBounds.TopLeft:=ControlOrigin;
     end;
     NewBounds := Bounds(NewBounds.Left,NewBounds.Top,UndockWidth,UndockHeight);
+    DebugLn('TControl.ManualDock ',Name,' NewDockSite=nil HostDockSiteManagerAvailable=',dbgs(HostDockSiteManagerAvailable(HostDockSite)),' NewBounds=',dbgs(NewBounds));
     Result := ManualFloat(NewBounds);
   end
   else
   begin
     // dock / unfloat this control
     CalculateDockSizes;
-    Result := (HostDockSite=nil) or HostDockSite.DoUndock(NewDockSite,Self);
+    
+    Result := (HostDockSite=nil);
+    if not Result then begin
+      // undock from old HostSite
+      DebugLn('TControl.ManualDock UNDOCKING ',Name);
+      Result:=HostDockSite.DoUndock(NewDockSite,Self);
+    end;
+    
     if Result then begin
+      DebugLn('TControl.ManualDock DOCKING ',Name);
+      // create TDragDockObject for docking parameters
       DockObject := TDragDockObject.Create(Self);
       try
-        // map from old HostSite to screen coordinates
-        NewPosition:=Point(Left,Top);
+        // get current screen coordinates
         if HostDockSite<>nil then
-          NewPosition:=HostDockSite.ControlToScreen(NewPosition);
+          NewPosition:=HostDockSite.ClientToScreen(Point(Left,Top))
+        else
+          NewPosition:=ControlOrigin;
         // initialize DockObject
         with DockObject do begin
           FDragTarget := NewDockSite;
@@ -2822,9 +2869,10 @@ begin
           FDropOnControl := DropControl;
           DockRect := Bounds(NewPosition.X,NewPosition.Y,Width,Height);
         end;
-        // map from screen to new HostSite coordinates
-        NewPosition:=NewDockSite.ScreenToControl(NewPosition);
+        // map from screen coordinates to new HostSite coordinates
+        NewPosition:=NewDockSite.ScreenToClient(NewPosition);
         // DockDrop
+        DebugLn('TControl.ManualDock DOCKDROP ',Name,' DockRect=',dbgs(DockObject.DockRect),' NewPos=',dbgs(NewPosition));
         NewDockSite.DockDrop(DockObject,NewPosition.X,NewPosition.Y);
       finally
         DockObject.Free;
@@ -3227,6 +3275,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.211  2004/08/18 22:56:11  mattias
+  implemented basic manual docking
+
   Revision 1.210  2004/08/18 20:49:02  mattias
   simple forms can now be child controls
 
