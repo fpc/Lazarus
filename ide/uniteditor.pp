@@ -2658,6 +2658,7 @@ Begin
   Result.OnEditorChange := @EditorChanged;
   Result.OnMouseMove := @EditorMouseMove;
   Result.OnMouseDown := @EditorMouseDown;
+  Result.OnMouseUp := @EditorMouseUp;
   Result.OnCreateBreakPoint := @BreakPointCreated;
   Result.OnDeleteBreakPoint := @BreakPointDeleted;
   {$IFDEF IDE_DEBUG}
