@@ -40,7 +40,8 @@ interface
 uses
   LazarusPackageIntf,
   Menus, Buttons, StdCtrls, ExtCtrls, ComCtrls, Forms, Grids, Controls,
-  Dialogs, Spin, Arrow, Calendar, MaskEdit, CheckLst, PairSplitter, ExtDlgs;
+  Dialogs, Spin, Arrow, Calendar, MaskEdit, CheckLst, PairSplitter, ExtDlgs,
+  DBCtrls;
   
 procedure Register;
 
@@ -64,6 +65,7 @@ begin
   RegisterUnit('Calendar',@Calendar.Register);
   RegisterUnit('PairSplitter',@PairSplitter.Register);
   RegisterUnit('ExtDlgs',@ExtDlgs.Register);
+  RegisterUnit('DBCtrls',@DBCtrls.Register);
 end;
 
 end.

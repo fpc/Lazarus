@@ -829,9 +829,9 @@ begin
     UsageOptions.UnitPath:=SetDirSeparators('$(LazarusDir)/packager/units');
 
     // add registering units
-    AddFile(SetDirSeparators('inc/process.pp'),'Process',pftUnit,
-            [pffHasRegisterProc],cpBase);
     AddFile(SetDirSeparators('db/db.pp'),'DB',pftUnit,
+            [pffHasRegisterProc],cpBase);
+    AddFile(SetDirSeparators('inc/process.pp'),'Process',pftUnit,
             [pffHasRegisterProc],cpBase);
 
     // use the packager/units/lazaruspackageintf.o file as indicator,
@@ -882,6 +882,7 @@ begin
     AddFile('calendar.pp','Calendar',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('pairsplitter.pas','PairSplitter',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('extdlgs.pp','ExtDlgs',pftUnit,[pffHasRegisterProc],cpBase);
+    AddFile('dbctrls.pp','DBCtrls',pftUnit,[pffHasRegisterProc],cpBase);
     // increase priority by one, so that the LCL components are inserted to the
     // left in the palette
     for i:=0 to FileCount-1 do

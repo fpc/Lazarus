@@ -341,6 +341,7 @@ Type
     function GetButtonValue(Index: Integer): string;
     procedure UpdateRadioButtonStates; override;
     procedure Loaded; override;
+    procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -394,6 +395,7 @@ Type
     procedure Notification(AComponent: TComponent;
                            Operation: TOperation); override;
     procedure Loaded; override;
+    procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -458,6 +460,7 @@ Type
     procedure UpdateData(Sender: TObject); virtual;
     procedure FocusRequest(Sender: TObject); virtual;
     procedure Loaded; override;
+    procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -526,6 +529,7 @@ Type
     procedure UpdateData(Sender: TObject); virtual;
     procedure FocusRequest(Sender: TObject); virtual;
     procedure Loaded; override;
+    procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -711,6 +715,7 @@ Type
 // ToDo: Move this to db.pp
 function ExtractFieldName(const Fields: string; var StartPos: Integer): string;
 
+procedure Register;
 
 implementation
 
@@ -724,6 +729,12 @@ begin
   Result:=Trim(Copy(Fields,StartPos,i-StartPos));
   if (i<=Length(Fields)) and (Fields[i]=';') then Inc(i);
   StartPos:=i;
+end;
+
+procedure Register;
+begin
+  RegisterComponents('Data Controls',[TDBText,TDBEdit,TDBMemo,TDBImage,
+    TDBListBox,TDBComboBox,TDBCheckBox,TDBRadioGroup,TDBCalendar,TDBGroupBox]);
 end;
 
 
@@ -1070,6 +1081,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.13  2003/09/19 09:40:58  mattias
+  registered TDBxxx controls
+
   Revision 1.12  2003/09/18 21:17:13  mattias
   added DataChange after Loaded
 

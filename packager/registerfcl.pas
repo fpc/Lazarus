@@ -57,8 +57,8 @@ end;
 
 procedure Register;
 begin
-  RegisterUnit('Process',@RegisterProcess);
   RegisterUnit('DB',@RegisterDB);
+  RegisterUnit('Process',@RegisterProcess);
 end;
 
 end.
