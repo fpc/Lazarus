@@ -3421,8 +3421,10 @@ Begin
   TempEditor:=GetActiveSE;
   if TempEditor <> nil then
   begin
-    //writeln('TSourceNotebook.NotebookPageChanged ',
-    //  NoteBook.Pages[FindPageWithEditor(TempEditor)]);
+    {$IFDEF VerboseFocus}
+    writeln('TSourceNotebook.NotebookPageChanged ',
+      NoteBook.Pages[FindPageWithEditor(TempEditor)]);
+    {$ENDIF}
     TempEditor.FocusEditor;
     UpdateStatusBar;
     UpdateActiveEditColors;
