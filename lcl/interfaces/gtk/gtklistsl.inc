@@ -538,10 +538,11 @@ begin
     li:=gtk_list_item_new_with_label(PChar(S));
     ConnectItemCallbacks(PGtkListItem(li));
     Include(FStates,glsItemCacheNeedsUpdate);
-    gtk_widget_show(li);
+    gtk_widget_show_all(li);
     gtk_list_insert_items(FGtkList, g_list_append(nil, li), Index);
     if (Owner is TListBox)
     and (TListBox(Owner).ItemHeight>1) then begin
+writeln('AAA1 ',TListBox(Owner).ItemHeight);
       if li^.Allocation.Width>1 then
         item_requisition.Width:=li^.Allocation.Width
       else
@@ -737,6 +738,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.16  2003/05/14 13:06:00  mattias
+  fixed setting TListBox.Selected before createhandle
+
   Revision 1.15  2003/04/29 13:35:39  mattias
   improved configure build lazarus dialog
 
