@@ -272,8 +272,11 @@ procedure TgtkObject.SendCachedLCLMessages;
           FixedMoveControl(ParentFixed, Widget,
                          LCLControl.Left, LCLControl.Top);
         end else if not (LCLControl.Parent is TNoteBook) then begin
-          writeln('WARNING: TgtkObject.SendCachedLCLMessages - no Fixed Widget found');
-          writeln('  Control=',LCLControl.Name,':',LCLControl.ClassName);
+          writeln('WARNING: TgtkObject.SendCachedLCLMessages - Parent''s Fixed Widget not found');
+          writeln('  Control=',LCLControl.Name,':',LCLControl.ClassName,
+            ' Parent=',LCLControl.Parent.Name,':',LCLControl.Parent.ClassName,
+            ' ParentWidget=',HexStr(Cardinal(ParentWidget),8),
+            '');
         end;
       end
       else begin
@@ -6611,6 +6614,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.286  2002/11/13 23:03:05  lazarus
+  MG: improved warning
+
   Revision 1.285  2002/11/13 08:40:44  lazarus
   MB: Fixed selection start/end/text for edits and combos. Add support for memos.
 
