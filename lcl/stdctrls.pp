@@ -395,22 +395,46 @@ type
     procedure MakeCurrentVisible;
     procedure Clear;
   public
+    property Align;
+    property Anchors;
     property BorderStyle : TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
     property Canvas: TCanvas read FCanvas;
+    property Constraints;
     property ExtendedSelect : boolean read FExtendedSelect write SetExtendedSelect;
+    property Font;
     property IntegralHeight: boolean read FIntegralHeight write FIntegralHeight; // not implemented
     property ItemHeight: Integer read GetItemHeight write SetItemHeight;
     property ItemIndex : integer read GetItemIndex write SetItemIndex;
     property Items : TStrings read FItems write SetItems;
     property MultiSelect: boolean read FMultiSelect write SetMultiSelect;
+    property OnChangeBounds;
+    property OnClick;
+    property OnDblClick;
     property OnDrawItem: TDrawItemEvent read FOnDrawItem write FOnDrawItem;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
+    property OnResize;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
     property SelCount : integer read GetSelCount;
     property Selected[Index: integer]: boolean read GetSelected write SetSelected;
+    property ShowHint;
     property Sorted: boolean read FSorted write SetSorted;
     property Style: TListBoxStyle read FStyle write SetStyle;
-    property TopIndex: Integer read GetTopIndex write SetTopIndex;
-  published
+    property TabOrder;
     property TabStop default true;
+    property TopIndex: Integer read GetTopIndex write SetTopIndex;
+    property Visible;
   end;
 
 
@@ -1520,6 +1544,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.139  2004/03/12 15:48:57  mattias
+  fixed 1.0.x compilation
+
   Revision 1.138  2004/03/08 22:36:01  mattias
   added TWinControl.ParentFormInitializeWnd
 

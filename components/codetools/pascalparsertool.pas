@@ -482,7 +482,9 @@ begin
     CurNode.Desc:=CurSection;
     ReadNextAtom; // read source name
     AtomIsIdentifier(true);
-    ReadNextAtom; // read ';'
+    ReadNextAtom; // read ';' (or 'platform;')
+    if UpAtomIs('PLATFORM') then
+      ReadNextAtom;
     if (CurPos.Flag<>cafSemicolon) then
       RaiseCharExpectedButAtomFound(';');
     if CurSection=ctnUnit then begin

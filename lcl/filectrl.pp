@@ -30,7 +30,7 @@
 This unit contains file and directory controls and supporting handling functions. 
 } 
 
-unit filectrl;
+unit FileCtrl;
 
 {$mode objfpc}{$H+}
 
@@ -42,12 +42,12 @@ interface
 
 uses
   Classes, SysUtils,
-{$ifdef VER1_0}
-// fpc 1.0.x needs unit in which redefined property originally is defined
-// otherwise IE 55665566 occurs.
-   Controls,
-{$endif}
-   StdCtrls;
+  {$ifdef VER1_0}
+  // fpc 1.0.x needs unit in which redefined property originally is defined
+  // otherwise IE 55665566 occurs.
+  Controls,
+  {$endif}
+  StdCtrls;
 
 Type
 
@@ -265,7 +265,7 @@ function TCustomFileListBox.IndexOfFile(const AFilename: string): integer;
 begin
   Result:=0;
   while (Result<Items.Count)
-  and (CompareFilenames(Filename,Items[Result])<>0) do
+  and (CompareFilenames(AFilename,Items[Result])<>0) do
     inc(Result);
   Result:=-1;
 end;
@@ -360,12 +360,13 @@ end;
 initialization
   InternalInit;
 
-finalization
-
 end.
 
 {
   $Log$
+  Revision 1.25  2004/03/12 15:48:57  mattias
+  fixed 1.0.x compilation
+
   Revision 1.24  2004/03/12 12:53:51  vincents
   fixed comment
 
