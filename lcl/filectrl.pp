@@ -93,8 +93,10 @@ function GetTempFilename(const Path, Prefix: string): string;
 
 implementation
 
-{$IFNDEF win32}
 uses
+{$IFDEF win32}
+  Dos;
+{$ELSE}
   {$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF};
 {$ENDIF}
 
@@ -122,6 +124,9 @@ end.
 
 {
   $Log$
+  Revision 1.15  2003/03/28 23:03:38  mattias
+  started TMemoScrollbar
+
   Revision 1.14  2003/03/26 11:39:08  mattias
   fixed rtl include path
 

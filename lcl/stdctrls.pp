@@ -479,14 +479,36 @@ type
   end;
   
   
+  { TMemoScrollbar }
+  
+  TMemoScrollbar = class(TControlScrollBar)
+  private
+  
+  public
+    property Increment: TScrollBarInc read FIncrement;
+    property Page: TScrollBarInc read FPage;
+    property Range: Integer read FRange;
+  published
+    property Smooth : Boolean read FSmooth write SetSmooth;// default True
+    property Position: Integer read FPosition write SetPosition default 0;
+    property Size: integer read GetSize write SetSize stored false;
+    property Visible: Boolean read FVisible write SetVisible;// default True;
+  end;
+  
+  
   { TCustomMemo }
 
   TCustomMemo = class(TCustomEdit)
   private
     FFont : TFont;
+    FHorzScrollBar: TMemoScrollBar;
     FLines: TStrings;
     FScrollBars: TScrollStyle;
+    FVertScrollBar: TMemoScrollBar;
     FWordWrap: Boolean;
+    procedure SetHorzScrollBar(const AValue: TMemoScrollBar);
+    procedure SetVertScrollBar(const AValue: TMemoScrollBar);
+    function StoreScrollBars: boolean;
   protected
     procedure SetLines(Value : TStrings);
     procedure SetWordWrap(const Value : boolean);
@@ -501,6 +523,10 @@ type
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
     property WordWrap: Boolean read FWordWrap write SetWordWrap;
     property Font : TFont read FFont write FFont;
+    property HorzScrollBar: TMemoScrollBar
+      read FHorzScrollBar write SetHorzScrollBar stored StoreScrollBars;
+    property VertScrollBar: TMemoScrollBar
+      read FVertScrollBar write SetVertScrollBar stored StoreScrollBars;
   end;
   
   
@@ -1417,6 +1443,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.85  2003/03/28 23:03:38  mattias
+  started TMemoScrollbar
+
   Revision 1.84  2003/03/25 16:56:57  mattias
   implemented TButtonControl.UseOnChange
 

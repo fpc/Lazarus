@@ -1692,93 +1692,22 @@ begin
   Result:=Value;
 end;
 
-Function CallSingleProc(s : Pointer; Address : Pointer; Value : Single;
-  Index,IVAlue : Longint) : Integer; assembler;
-  asm
-     movl S,%esi
-     movl Address,%edi
-     // Push value to set
-     leal Value,%eax
-     pushl (%eax)
-     // ? Indexed Procedure
-     movl Index,%eax
-     testl %eax,%eax
-     je .LIPNoPush
-     movl IValue,%eax
-     pushl %eax
-  .LIPNoPush:
-     push %esi
-     call %edi
-  end;
-
-Function CallDoubleProc(s : Pointer; Address : Pointer; const Value : Double;
-  Index, IVAlue : Longint) : Integer; assembler;
-  asm
-     movl S,%esi
-     movl Address,%edi
-     // Push value to set
-     leal Value,%eax
-     pushl (%eax)
-     pushl (%eax)
-     // ? Indexed Procedure
-     movl Index,%eax
-     testl %eax,%eax
-     je .LIPNoPush
-     movl IValue,%eax
-     pushl %eax
-  .LIPNoPush:
-     push %esi
-     call %edi
-  end;
-
-Function CallExtendedProc(s : Pointer; Address : Pointer; Value : Extended;
-  Index, IVAlue : Longint) : Integer; assembler;
-  asm
-     movl S,%esi
-     movl Address,%edi
-     // Push value to set
-     leal Value,%eax
-     pushl (%eax)
-     pushl 4(%eax)
-     pushl 8(%eax)
-     // ? Indexed Procedure
-     movl Index,%eax
-     testl %eax,%eax
-     je .LIPNoPush
-     movl IValue,%eax
-     pushl %eax
-  .LIPNoPush:
-     push %esi
-     call %edi
-  end;
-
-Function CallIntegerProc(s : Pointer; Address : Pointer; Value : Integer;
-  Index, IValue : Longint) : Integer; assembler;
-  asm
-     movl S,%esi
-     movl Address,%edi
-     // Push value to set
-     movl Value,%eax
-     pushl %eax
-     // ? Indexed Procedure
-     movl Index,%eax
-     testl %eax,%eax
-     je .LIPNoPush
-     movl IValue,%eax
-     pushl %eax
-  .LIPNoPush:
-     pushl %esi
-     call %edi
-  end;
-
 Procedure MySetFloatProp(Instance : TObject;PropInfo : PPropInfo;
   Value : Extended);
 
- Var IValue,Index : longint;
+type
+  TMySetExtendedProc = procedure(const AValue: Extended) of object;
+  TMySetExtendedProcIndex = procedure(Index: integer; const AValue: Extended) of object;
+  TMySetDoubleProc = procedure(const AValue: Double) of object;
+  TMySetDoubleProcIndex = procedure(Index: integer; const AValue: Double) of object;
+  TMySetSingleProc = procedure(const AValue: Single) of object;
+  TMySetSingleProcIndex = procedure(Index: integer; const AValue: Single) of object;
+
+Var IValue,Index : longint;
+  AMethod: TMethod;
 
 begin
   SetIndexValues(PropInfo,Index,Ivalue);
-  //writeln('MySetFloatProp ',PropInfo^.Name,' ',Value,' ',(PropInfo^.PropProcs shr 2) and 3,' ',ord(GetTypeData(PropInfo^.PropType)^.FloatType));
   case (PropInfo^.PropProcs shr 2) and 3 of
 
     ptfield:
@@ -1801,36 +1730,34 @@ begin
        }
        end;
 
-    ptstatic:
-      Case GetTypeData(PropInfo^.PropType)^.FloatType of
-        ftSingle:
-          CallSingleProc(Instance,PropInfo^.SetProc,Value,Index,IValue);
-        ftDouble:
-          begin
-            CallDoubleProc(Instance,PropInfo^.SetProc,Value,Index,IValue);
-          end;
-        ftExtended:
-          begin
-            CallExtendedProc(Instance,PropInfo^.SetProc,Value,Index,IValue);
-          end;
-      end;
+    ptStatic, ptVirtual:
+      begin
+        if ((PropInfo^.PropProcs shr 2) and 3)=ptStatic then
+          AMethod.Code:=PropInfo^.SetProc
+        else
+          AMethod.Code:=
+            PPointer(Pointer(Instance.ClassType)+Longint(PropInfo^.SetProc))^;
+        AMethod.Data:=Instance;
+        Case GetTypeData(PropInfo^.PropType)^.FloatType of
+          ftSingle:
+            if Index=0 then
+              TMySetSingleProc(AMethod)(Value)
+            else
+              TMySetSingleProcIndex(AMethod)(IValue,Value);
 
-    ptvirtual:
-      Case GetTypeData(PropInfo^.PropType)^.FloatType of
-        ftSingle:
-          CallSingleProc(Instance,
-            PPointer(Pointer(Instance.ClassType)+Longint(PropInfo^.SetProc))^,
-            Value,Index,IValue);
-        ftDouble:
-          CallDoubleProc(Instance,
-            PPointer(Pointer(Instance.ClassType)+Longint(PropInfo^.SetProc))^,
-            Value,Index,IValue);
-        ftExtended:
-          CallExtendedProc(Instance,
-            PPointer(Pointer(Instance.ClassType)+Longint(PropInfo^.SetProc))^,
-            Value,Index,IValue);
-      end;
+          ftDouble:
+            if Index=0 then
+              TMySetDoubleProc(AMethod)(Value)
+            else
+              TMySetDoubleProcIndex(AMethod)(IValue,Value);
 
+          ftExtended:
+            if Index=0 then
+              TMySetExtendedProc(AMethod)(Value)
+            else
+              TMySetExtendedProcIndex(AMethod)(IValue,Value);
+        end;
+      end;
   end;
 end;
 
@@ -1947,7 +1874,7 @@ begin
   Changed:=false;
   for I:=0 to FPropCount-1 do
     with FPropList^[I] do
-      Changed:=Changed or (GetFloatProp(Instance,PropInfo)<>NewValue);
+      Changed:=Changed or (MyGetFloatProp(Instance,PropInfo)<>NewValue);
   if Changed then begin
     for I:=0 to FPropCount-1 do
       with FPropList^[I] do MySetFloatProp(Instance,PropInfo,NewValue);

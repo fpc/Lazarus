@@ -23,7 +23,7 @@ procedure TControlScrollBar.SetPosition(Value: Integer);
   begin
     Tmp := FPosition;
     FPosition := Value;
-    FControl.ScrollBy(0, Tmp - FPosition);
+    ScrollControlBy(0, Tmp - FPosition);
     if FControl.HandleAllocated
     and (GetScrollPos(FControl.Handle, SB_VERT) <> FPosition) then
       SetScrollPos(FControl.Handle, SB_VERT, FPosition, Visible);
@@ -35,7 +35,7 @@ procedure TControlScrollBar.SetPosition(Value: Integer);
   begin
     Tmp := FPosition;
     FPosition := Value;
-    FControl.ScrollBy(Tmp - FPosition, 0);
+    ScrollControlBy(Tmp - FPosition, 0);
     if FControl.HandleAllocated
     and (GetScrollPos(FControl.Handle, SB_HORZ) <> FPosition) then
       SetScrollPos(FControl.Handle, SB_HORZ, FPosition, Visible);
@@ -47,7 +47,7 @@ begin
     exit;
   end;
 
-  If fControl.AutoScroll then begin
+  If ControlAutoScroll then begin
     if FAutoRange < 0 then
       AutoCalcRange;
 
@@ -68,7 +68,17 @@ begin
     SetVPosition
   else
     SetHPosition;
-  FControl.UpdateScrollBars;
+  ControlUpdateScrollBars;
+end;
+
+function TControlScrollBar.SmoothIsStored: boolean;
+begin
+  Result:=FSmooth;
+end;
+
+function TControlScrollBar.VisibleIsStored: boolean;
+begin
+  Result:=FVisible;
 end;
 
 function TControlScrollBar.GetSize: integer;
@@ -93,7 +103,7 @@ begin
   end;
   if FRange=Value then exit;
   FRange := Value;
-  FControl.UpdateScrollBars;
+  ControlUpdateScrollBars;
 end;
 
 procedure TControlScrollBar.SetSize(const AValue: integer);
@@ -105,14 +115,23 @@ procedure TControlScrollBar.SetVisible(Value: Boolean);
 begin
   if FVisible = Value then exit;
   FVisible := Value;
-  FControl.UpdateScrollBars;
+  ControlUpdateScrollBars;
+end;
+
+procedure TControlScrollBar.ScrollControlBy(DeltaX, DeltaY: integer);
+begin
+  if FControl is TScrollingWinControl then
+    TScrollingWinControl(FControl).ScrollBy(DeltaX, DeltaY)
+  else begin
+    writeln('TControlScrollBar.ScrollControlBy: ToDo');
+  end;
 end;
 
 procedure TControlScrollBar.SetSmooth(Value: Boolean);
 begin
   if FSmooth = Value then exit;
   FSmooth := Value;
-  FControl.UpdateScrollBars;
+  ControlUpdateScrollBars;
 end;
 
 procedure TControlScrollBar.AutoCalcRange;
@@ -152,13 +171,13 @@ procedure TControlScrollBar.AutoCalcRange;
   end;
 
 begin
-  if FControl.FAutoScroll then begin
+  if ControlAutoScroll then begin
     FVisible := True;
     if Kind = sbVertical then
       AutoCalcVRange
     else
       AutoCalcHRange;
-    FControl.UpdateScrollBars;
+    ControlUpdateScrollBars;
   end;
 end;
 
@@ -166,60 +185,67 @@ procedure TControlScrollBar.UpdateScrollBar;
 var
   ScrollInfo: TScrollInfo;
   SBSize : Longint;
+  
   procedure UpdateVScroll;
   begin
-    With FControl do begin
-      Page := Min(ClientHeight + 1,High(Page));
-      ScrollInfo.nPage := Page;
+    if FControl is TScrollingWinControl then
+      With TScrollingWinControl(FControl) do begin
+        Page := Min(ClientHeight + 1,High(Page));
+        ScrollInfo.nPage := Page;
 
-      if Visible then begin
-        If (FControl <> nil) and (FControl.HorzScrollBar.Visible) then
-          SBSize := FControl.HorzScrollBar.Size
+        if Visible then begin
+          If HorzScrollBar.Visible then
+            SBSize := HorzScrollBar.Size
+          else
+            SBSize := 0;
+          FAutoRange := (Range - ClientHeight)*Shortint(Range >= ClientHeight + SBSize);
+          ScrollInfo.nMax := Range;
+        end
         else
-          SBSize := 0;
-        FAutoRange := (Range - ClientHeight)*Shortint(Range >= ClientHeight + SBSize);
-        ScrollInfo.nMax := Range;
-      end
-      else
-        ScrollInfo.nMax := 0;
+          ScrollInfo.nMax := 0;
 
-      If (Self.Visible and not FAutoScroll)
-      or (FAutoScroll and (ScrollInfo.nMax > 0) and (ScrollInfo.nMax > Height))
-      then
-        Self.FVisible := True
-      else
-        Self.FVisible := False;
-      if HandleAllocated then
-        SetScrollInfo(Handle, SB_VERT, ScrollInfo, Self.Visible);
-    end;
+        If (Self.Visible and not FAutoScroll)
+        or (FAutoScroll and (ScrollInfo.nMax > 0) and (ScrollInfo.nMax > Height))
+        then
+          Self.FVisible := True
+        else
+          Self.FVisible := False;
+        if HandleAllocated then
+          SetScrollInfo(Handle, SB_VERT, ScrollInfo, Self.Visible);
+      end
+    else
+      writeln('UpdateVScroll ToDo');
   end;
 
   procedure UpdateHScroll;
   begin
-    With FControl do begin
-      Page := Min(ClientWidth + 1,High(Page));
-      ScrollInfo.nPage := Page;
+    if FControl is TScrollingWinControl then
+      With TScrollingWinControl(FControl) do begin
+        Page := Min(ClientWidth + 1,High(Page));
+        ScrollInfo.nPage := Page;
 
-      if Visible then begin
-        If (FControl <> nil) and (FControl.VertScrollBar.Visible) then
-          SBSize := FControl.VertScrollBar.Size
+        if Visible then begin
+          If VertScrollBar.Visible then
+            SBSize := VertScrollBar.Size
+          else
+            SBSize := 0;
+          FAutoRange := (Range - ClientWidth)*Shortint(Range >= ClientWidth + SBSize);
+          ScrollInfo.nMax := Range;
+        end
         else
-          SBSize := 0;
-        FAutoRange := (Range - ClientWidth)*Shortint(Range >= ClientWidth + SBSize);
-        ScrollInfo.nMax := Range;
-      end
-      else
-        ScrollInfo.nMax := 0;
+          ScrollInfo.nMax := 0;
 
-      If (Self.Visible and not FAutoScroll)
-      or (FAutoScroll and (ScrollInfo.nMax > 0) and (ScrollInfo.nMax > Width))
-      then
-        Self.FVisible := True
-      else
-        Self.FVisible := False;
-      if HandleAllocated then
-        SetScrollInfo(Handle, SB_HORZ, ScrollInfo, Self.Visible);
-    end;
+        If (Self.Visible and not FAutoScroll)
+        or (FAutoScroll and (ScrollInfo.nMax > 0) and (ScrollInfo.nMax > Width))
+        then
+          Self.FVisible := True
+        else
+          Self.FVisible := False;
+        if HandleAllocated then
+          SetScrollInfo(Handle, SB_HORZ, ScrollInfo, Self.Visible);
+      end
+    else
+      writeln('UpdateHScroll ToDo');
   end;
 
 begin
@@ -242,6 +268,14 @@ begin
   // results to Delphi 4
   if Smooth then
     Increment := Page div 10;
+end;
+
+function TControlScrollBar.ControlAutoScroll: boolean;
+begin
+  if FControl is TScrollingWinControl then
+    Result:=TScrollingWinControl(FControl).AutoScroll
+  else
+    Result:=false;
 end;
 
 procedure TControlScrollBar.ScrollHandler(var Message: TLMScroll);
@@ -276,7 +310,16 @@ begin
   end;
 end;
 
-constructor TControlScrollBar.Create(AControl: TScrollingWinControl; AKind: TScrollBarKind);
+procedure TControlScrollBar.ControlUpdateScrollBars;
+begin
+  if FControl is TScrollingWinControl then
+    TScrollingWinControl(FControl).UpdateScrollBars
+  else
+    writeln('TControlScrollBar.ControlUpdateScrollBars ToDo');
+end;
+
+constructor TControlScrollBar.Create(AControl: TWinControl;
+  AKind: TScrollBarKind);
 begin
   Inherited Create;
   FControl := AControl;
@@ -285,8 +328,8 @@ begin
   FIncrement := 8;
   FPosition := 0;
   FRange := 0;
-  //FSmooth := True;
-  //FVisible := True;
+  FSmooth := false;
+  FVisible := false;
 end;
 
 procedure TControlScrollBar.Assign(Source: TPersistent);
@@ -316,6 +359,10 @@ begin
   else
     Result:=0;
 end;
+
+
+//------------------------------------------------------------------------------
+
 
 procedure TScrollingWinControl.SetAutoScroll(Value: Boolean);
 begin

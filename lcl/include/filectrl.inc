@@ -650,13 +650,11 @@ end;
 function ProgramDirectory: string;
 begin
   Result:=ParamStr(0);
-  {$IFNDEF win32}
   if ExtractFilePath(Result)='' then begin
     // program was started via PATH
     Result:=SearchFileInPath(Result,'',GetEnv('PATH'),':',
                              [sffDontSearchInBasePath]);
   end;
-  {$ENDIF}
   // resolve links
   Result:=ReadAllLinks(Result,false);
   // extract file path and expand to full name
@@ -833,6 +831,9 @@ end;
 
 {
   $Log$
+  Revision 1.19  2003/03/28 23:03:38  mattias
+  started TMemoScrollbar
+
   Revision 1.18  2003/03/28 19:39:54  mattias
   started typeinfo for double extended
 

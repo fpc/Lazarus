@@ -69,6 +69,23 @@ begin
   Lines.Clear;
 end;
 
+procedure TCustomMemo.SetHorzScrollBar(const AValue: TMemoScrollBar);
+begin
+  if FHorzScrollBar=AValue then exit;
+  FHorzScrollBar:=AValue;
+end;
+
+procedure TCustomMemo.SetVertScrollBar(const AValue: TMemoScrollBar);
+begin
+  if FVertScrollBar=AValue then exit;
+  FVertScrollBar:=AValue;
+end;
+
+function TCustomMemo.StoreScrollBars: boolean;
+begin
+  Result:=true;
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomMemo.SetLines
   Params: 
@@ -118,6 +135,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2003/03/28 23:03:38  mattias
+  started TMemoScrollbar
+
   Revision 1.10  2003/03/17 08:51:09  mattias
   added IsWindowVisible
 

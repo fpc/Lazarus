@@ -71,7 +71,7 @@ type
 
   TControlScrollBar = class(TPersistent)
   private
-    FControl: TScrollingWinControl;
+    FControl: TWinControl;
 
     FAutoRange : Longint;
 
@@ -83,31 +83,35 @@ type
     FRange: Integer;
     FSmooth : Boolean;
     FVisible: Boolean;
-
-    function GetSize: integer;
-    procedure SetPosition(Value: Integer);
-    procedure SetRange(Value: Integer);
-    procedure SetSize(const AValue: integer);
-    procedure SetSmooth(Value: Boolean);
-    procedure SetVisible(Value: Boolean);
+    function SmoothIsStored: boolean;
+    function VisibleIsStored: boolean;
   protected
-    procedure AutoCalcRange;
-    Procedure UpdateScrollBar;
+    function GetSize: integer; virtual;
+    procedure SetPosition(Value: Integer); virtual;
+    procedure SetRange(Value: Integer); virtual;
+    procedure SetSize(const AValue: integer); virtual;
+    procedure SetSmooth(Value: Boolean); virtual;
+    procedure SetVisible(Value: Boolean); virtual;
+    procedure ScrollControlBy(DeltaX, DeltaY: integer); virtual;
+    procedure AutoCalcRange; virtual;
+    Procedure UpdateScrollBar; virtual;
+    function ControlAutoScroll: boolean; virtual;
     procedure ScrollHandler(var Message: TLMScroll);
+    procedure ControlUpdateScrollBars; virtual;
   public
-    constructor Create(AControl: TScrollingWinControl; AKind: TScrollBarKind);
+    constructor Create(AControl: TWinControl; AKind: TScrollBarKind);
     procedure Assign(Source: TPersistent); override;
-    function IsScrollBarVisible: Boolean;
-    function ScrollPos: Integer;
+    function IsScrollBarVisible: Boolean; virtual;
+    function ScrollPos: Integer; virtual;
     property Kind: TScrollBarKind read FKind;
   published
     property Increment: TScrollBarInc read FIncrement write FIncrement default 8;
     property Page: TScrollBarInc read FPage write FPage default 80;
-    property Smooth : Boolean read FSmooth write SetSmooth;// default True
+    property Smooth : Boolean read FSmooth write SetSmooth stored SmoothIsStored;
     property Position: Integer read FPosition write SetPosition default 0;
     property Range: Integer read FRange write SetRange default 0;
     property Size: integer read GetSize write SetSize stored false;
-    property Visible: Boolean read FVisible write SetVisible;// default True;
+    property Visible: Boolean read FVisible write SetVisible stored VisibleIsStored;
   end;
   
   
