@@ -45,8 +45,7 @@ interface
 
 uses
   {$IFDEF SYN_LAZARUS}
-  LCLLinux,
- LCLType,
+  LCLLinux, LCLType,
   {$ELSE}
   Windows,
   {$ENDIF}
@@ -90,9 +89,9 @@ type
     destructor Destroy; override;
 
     procedure AddCompletion(AToken, AValue, AComment: string);
-   {$IFDEF SYN_LAZARUS}
+    {$IFDEF SYN_LAZARUS}
     procedure DeleteCompletion(Index: integer);
-   {$ENDIF}
+    {$ENDIF}
     function AddEditor(AEditor: TCustomSynEdit): boolean;
     procedure Execute(AEditor: TCustomSynEdit); virtual;
     procedure ExecuteCompletion(AToken: string; AEditor: TCustomSynEdit);
@@ -372,6 +371,9 @@ begin
         AEditor.SelText := s;
         if NewCaretPos then
           AEditor.CaretXY := p;
+        {$IFDEF SYN_LAZARUS}
+        AEditor.EnsureCursorPosVisible;
+        {$ENDIF}
       finally
         AEditor.EndUpdate;                                                
       end;
