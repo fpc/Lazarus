@@ -53,8 +53,8 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, SourceChanger, CodeCache, BasicCodeTools, LinkScanner,
-  SourceLog, KeywordFuncLists, AVL_Tree, TypInfo;
+  Classes, SysUtils, SourceLog, KeywordFuncLists, BasicCodeTools, LinkScanner,
+  CodeCache, AVL_Tree, TypInfo, SourceChanger;
 
 type
   TGetStringProc = procedure(const s: string) of object;
@@ -3439,7 +3439,9 @@ begin
         ReadNextAtom;
         if AtomIsChar('(') or AtomIsChar('[') then
           ReadTilBracketClose(true);
-        if UpAtomIs('END') or AtomIsKeyWord then
+        if AtomIsWord and (not IsKeyWordInConstAllowed.DoItUppercase(UpperSrc,
+          CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
+        and (UpAtomIs('END') or AtomIsKeyWord) then
           RaiseException('syntax error: ; expected, but '+GetAtom+' found');
       until AtomIsChar(';');
       CurNode.EndPos:=CurPos.EndPos;

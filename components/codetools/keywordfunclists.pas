@@ -74,6 +74,7 @@ var
   IsKeyWordProcedureSpecifier,
   IsKeyWordProcedureTypeSpecifier,
   IsKeyWordSection,
+  IsKeyWordInConstAllowed,
   WordIsKeyWord,
   IsKeyWordBuiltInFunc,
   WordIsTermOperator,
@@ -432,6 +433,16 @@ begin
     Add('INITIALIZATION',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('FINALIZATION',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
+  IsKeyWordInConstAllowed:=TKeyWordFunctionList.Create;
+  with IsKeyWordInConstAllowed do begin
+    Add('OR',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('AND',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('XOR',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SHL',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SHR',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DIV',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('MOD',{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
   WordIsKeyWord:=TKeyWordFunctionList.Create;
   with WordIsKeyWord do begin
     Add('ABSOLUTE',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -544,6 +555,8 @@ finalization
   IsKeyWordProcedureTypeSpecifier:=nil;
   IsKeyWordSection.Free;
   IsKeyWordSection:=nil;
+  IsKeyWordInConstAllowed.Free;
+  IsKeyWordInConstAllowed:=nil;
   WordIsKeyWord.Free;
   WordIsKeyWord:=nil;
   IsKeyWordBuiltInFunc.Free;

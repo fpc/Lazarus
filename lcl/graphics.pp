@@ -697,7 +697,7 @@ end;
 
 function ColorToRGB(Color: TColor): Longint;
 begin
-  if (Cardinal(Color) and SYS_COLOR_BASE) <> 0
+  if (Cardinal(Color) and Cardinal(SYS_COLOR_BASE)) <> 0
   then Result := GetSysColor(Color and $000000FF)
   else Result := Color;
   Result := Result and $FFFFFF;
@@ -743,6 +743,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.15  2001/10/25 19:02:18  lazarus
+  MG: fixed parsing constants with OR, AND, XOR, MOD, DIV, SHL, SHR
+
   Revision 1.14  2001/10/24 00:35:55  lazarus
   MG: fixes for fpc 1.1: range check errors
 
