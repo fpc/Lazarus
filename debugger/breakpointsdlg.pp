@@ -108,9 +108,44 @@ type
     property BaseDirectory: string read FBaseDirectory write SetBaseDirectory;
     property BreakPoints: TIDEBreakPoints read FBreakPoints write SetBreakPoints;
   end;
+  
+function GetBreakPointStateDescription(ABreakpoint: TBaseBreakpoint): string;
+function GetBreakPointActionsDescription(ABreakpoint: TBaseBreakpoint): string;
 
 
 implementation
+
+function GetBreakPointStateDescription(ABreakpoint: TBaseBreakpoint): string;
+const
+  //                 enabled  valid
+  DEBUG_STATE: array[Boolean, TValidState] of String = (
+                {vsUnknown,     vsValid,   vsInvalid}
+    {Disabled} ('? (Off)','Disabled','Invalid (Off)'),
+    {Endabled} ('? (On)', 'Enabled', 'Invalid (On)'));
+begin
+  Result:=DEBUG_STATE[ABreakpoint.Enabled,ABreakpoint.Valid];
+end;
+
+function GetBreakPointActionsDescription(ABreakpoint: TBaseBreakpoint): string;
+const
+  DEBUG_ACTION: array[TIDEBreakPointAction] of string =
+    ('Break', 'Enable Group', 'Disable Group');
+
+var
+  CurBreakPoint: TIDEBreakPoint;
+  Action: TIDEBreakPointAction;
+begin
+  Result := '';
+  if ABreakpoint is TIDEBreakPoint then begin
+    CurBreakPoint:=TIDEBreakPoint(ABreakpoint);
+    for Action := Low(Action) to High(Action) do
+      if Action in CurBreakpoint.Actions
+      then begin
+        if Result <> '' then Result := Result + ', ';
+        Result := Result + DEBUG_ACTION[Action]
+      end;
+  end;
+end;
 
 procedure TBreakPointsDlg.BreakPointAdd(const ASender: TIDEBreakPoints;
   const ABreakpoint: TIDEBreakPoint);
@@ -408,18 +443,7 @@ end;
 
 procedure TBreakPointsDlg.UpdateItem(const AnItem: TListItem;
   const ABreakpoint: TIDEBreakPoint);
-const
-  DEBUG_ACTION: array[TIDEBreakPointAction] of string =
-    ('Break', 'Enable Group', 'Disable Group');
-    
-  //                 enabled  valid
-  DEBUG_STATE: array[Boolean, TValidState] of String = (
-                {vsUnknown,     vsValid,   vsInvalid}
-    {Disabled} ('? (Off)','Disabled','Invalid (Off)'),
-    {Endabled} ('? (On)', 'Enabled', 'Invalid (On)'));
 var
-  Action: TIDEBreakPointAction;
-  S: String;
   Filename: String;
 begin
   // Filename/Address
@@ -430,7 +454,7 @@ begin
   // Group
 
   // state
-  AnItem.Caption := DEBUG_STATE[ABreakpoint.Enabled, ABreakpoint.Valid];
+  AnItem.Caption := GetBreakPointStateDescription(ABreakpoint);
   
   // filename
   Filename:=ABreakpoint.Source;
@@ -447,14 +471,7 @@ begin
   AnItem.SubItems[2] := ABreakpoint.Expression;
   
   // actions
-  S := '';
-  for Action := Low(Action) to High(Action) do
-    if Action in ABreakpoint.Actions
-    then begin
-      if S <> '' then s := S + ', ';
-      S := S + DEBUG_ACTION[Action]
-    end;
-  AnItem.SubItems[3]  := S;
+  AnItem.SubItems[3]  := GetBreakPointActionsDescription(ABreakpoint);
   
   // hitcount
   AnItem.SubItems[4] := IntToStr(ABreakpoint.HitCount);
@@ -489,6 +506,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.20  2003/06/04 13:34:58  mattias
+  implemented breakpoints hints for source editor
+
   Revision 1.19  2003/06/03 11:20:12  mattias
   implemented enable/disable/delete breakpoints in same source
 

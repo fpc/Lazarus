@@ -43,15 +43,19 @@ uses
   
 type
   TSourceMarks = class;
-  
-  
+  TSourceMark = class;
+
   { TSourceMark }
   
+  TGetSourceMarkHintEvent =
+    procedure(SenderMark: TSourceMark; var Hint: string) of object;
+
   TSourceMarkHandler = (
     smhPositionChanged,
-    smhBeforeFree
+    smhBeforeFree,
+    smhGetHint
     );
-
+    
   TSourceMark = class(TSynEditMark)
   private
     FData: TObject;
@@ -86,6 +90,7 @@ type
     function CompareEditorAndLine(ASynEdit: TCustomSynEdit;
                                   ALine: integer): integer;
     function GetFilename: string;
+    function GetHint: string; virtual;
   public
     // handlers
     procedure RemoveAllHandlersForObject(HandlerObject: TObject);
@@ -93,6 +98,8 @@ type
     procedure RemovePositionChangedHandler(OnPositionChanged: TNotifyEvent);
     procedure AddBeforeFreeHandler(OnBeforeFree: TNotifyEvent);
     procedure RemoveBeforeFreeHandler(OnBeforeFree: TNotifyEvent);
+    procedure AddGetHintHandler(OnGetHint: TGetSourceMarkHintEvent);
+    procedure RemoveGetHintHandler(OnGetHint: TGetSourceMarkHintEvent);
   public
     // properties
     property Data: TObject read FData write SetData;
@@ -363,6 +370,16 @@ begin
   Result:=FSourceMarks.GetFilename(Self);
 end;
 
+function TSourceMark.GetHint: string;
+var
+  i: Integer;
+begin
+  Result:='';
+  i:=FHandlers[smhGetHint].Count;
+  while FHandlers[smhGetHint].NextDownIndex(i) do
+    TGetSourceMarkHintEvent(FHandlers[smhGetHint][i])(Self,Result);
+end;
+
 procedure TSourceMark.RemoveAllHandlersForObject(HandlerObject: TObject);
 var
   HandlerType: TSourceMarkHandler;
@@ -392,6 +409,16 @@ end;
 procedure TSourceMark.RemoveBeforeFreeHandler(OnBeforeFree: TNotifyEvent);
 begin
   FHandlers[smhBeforeFree].Remove(TMethod(OnBeforeFree));
+end;
+
+procedure TSourceMark.AddGetHintHandler(OnGetHint: TGetSourceMarkHintEvent);
+begin
+  AddHandler(smhGetHint,TMethod(OnGetHint));
+end;
+
+procedure TSourceMark.RemoveGetHintHandler(OnGetHint: TGetSourceMarkHintEvent);
+begin
+  FHandlers[smhGetHint].Remove(TMethod(OnGetHint));
 end;
 
 { TSourceMarks }

@@ -161,6 +161,7 @@ type
     fUndoAfterSave:boolean;
     fUseSyntaxHighlight:boolean;
     FCopyWordAtCursorOnCopyNone: boolean;
+    FShowGutterHints: boolean;
     fBlockIndent:integer;
     fUndoLimit:integer;
     fTabWidth:integer;
@@ -192,7 +193,6 @@ type
     fAutoDelayInMSec:integer;
     fCodeTemplateFileName:Ansistring;
     fCTemplIndentToTokenStart: boolean;
-    procedure SetCopyWordAtCursorOnCopyNone(const AValue: boolean);
   public
     constructor Create;
     destructor Destroy;  override;
@@ -235,7 +235,8 @@ type
     property UseSyntaxHighlight:boolean
         read fUseSyntaxHighlight write fUseSyntaxHighlight default true;
     property CopyWordAtCursorOnCopyNone: boolean read FCopyWordAtCursorOnCopyNone
-                                            write SetCopyWordAtCursorOnCopyNone;
+                                              write FCopyWordAtCursorOnCopyNone;
+    property ShowGutterHints: boolean read FShowGutterHints write FShowGutterHints;
     property BlockIndent:integer read fBlockIndent write fBlockIndent default 2;
     property UndoLimit:integer read fUndoLimit write fUndoLimit default 32767;
     property TabWidth:integer read fTabWidth write fTabWidth default 8;
@@ -333,6 +334,7 @@ type
     FindTextAtCursorCheckBox:TCheckBox;
     UseSyntaxHighlightCheckBox:TCheckBox;
     CopyWordAtCursorOnCopyNoneCheckBox:TCheckBox;
+    ShowGutterHintsCheckBox:TCheckBox;
     MouseLinksCheckBox: TCheckBox;
     BlockIndentComboBox:TComboBox;
     BlockIndentLabel:TLabel;
@@ -1041,12 +1043,6 @@ end;
 
 { TEditorOptions }
 
-procedure TEditorOptions.SetCopyWordAtCursorOnCopyNone(const AValue: boolean);
-begin
-  if FCopyWordAtCursorOnCopyNone=AValue then exit;
-  FCopyWordAtCursorOnCopyNone:=AValue;
-end;
-
 constructor TEditorOptions.Create;
 var ConfFileName: string;
   fs:TFileStream;
@@ -1073,6 +1069,7 @@ begin
   fCtrlMouseLinks:=true;
   fShowTabCloseButtons:=true;
   FCopyWordAtCursorOnCopyNone:=true;
+  FShowGutterHints:=true;
   fBlockIndent:=2;
   fUndoLimit:=32767;
   fTabWidth:=8;
@@ -1162,6 +1159,8 @@ begin
       XMLConfig.GetValue('EditorOptions/General/Editor/ShowTabCloseButtons',true);
     FCopyWordAtCursorOnCopyNone:=
       XMLConfig.GetValue('EditorOptions/General/Editor/CopyWordAtCursorOnCopyNone',true);
+    FShowGutterHints:=
+      XMLConfig.GetValue('EditorOptions/General/Editor/ShowGutterHints',true);
     fUndoAfterSave:=
       XMLConfig.GetValue('EditorOptions/General/Editor/UndoAfterSave',true);
     fFindTextAtCursor:=
@@ -1282,6 +1281,9 @@ begin
     XMLConfig.SetDeleteValue(
       'EditorOptions/General/Editor/CopyWordAtCursorOnCopyNone',
       FCopyWordAtCursorOnCopyNone,true);
+    XMLConfig.SetDeleteValue(
+      'EditorOptions/General/Editor/ShowGutterHints',
+      FShowGutterHints,true);
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/UndoAfterSave'
       ,fUndoAfterSave,true);
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/FindTextAtCursor'
@@ -3204,7 +3206,7 @@ begin
     Top:=5;
     Left:=5;
     Width:=MaxX-10;
-    Height:=24*11; // 24 pixels per line
+    Height:=24*12; // 24 pixels per line
     Caption:=lismenueditoroptions;
   end;
 
@@ -3352,6 +3354,18 @@ begin
     Height:=AltSetsColumnModeCheckBox.Height;
     Caption:=dlgMouseLinks;
     Checked:=EditorOpts.CtrlMouseLinks;
+  end;
+
+  ShowGutterHintsCheckBox:=TCheckBox.Create(Self);
+  with ShowGutterHintsCheckBox do begin
+    Name:='ShowGutterHintsCheckBox';
+    Parent:=EditorOptionsGroupBox;
+    Top:=MouseLinksCheckBox.Top+MouseLinksCheckBox.Height+5;
+    Left:=MouseLinksCheckBox.Left;
+    Width:=ChkBoxW;
+    Height:=AltSetsColumnModeCheckBox.Height;
+    Caption:=dlgShowGutterHints;
+    Checked:=EditorOpts.ShowGutterHints;
   end;
 
   // right side
@@ -3598,7 +3612,7 @@ begin
     Top:=5;
     Left:=5;
     Width:=MaxX-10;
-    Height:=24*11; // 24 pixels per option
+    Height:=21*12+31; // 21 pixels per option
   end;
 
   // many, many checkboxes ...
@@ -3675,6 +3689,13 @@ begin
   
   with MouseLinksCheckBox do begin
     Top:=ScrollPastEoFCheckBox.Top+ScrollPastEoFCheckBox.Height+5;
+    Left:=AltSetsColumnModeCheckBox.Left;
+    Width:=ChkBoxW;
+    Height:=AltSetsColumnModeCheckBox.Height;
+  end;
+
+  with ShowGutterHintsCheckBox do begin
+    Top:=MouseLinksCheckBox.Top+MouseLinksCheckBox.Height+5;
     Left:=AltSetsColumnModeCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
@@ -3774,20 +3795,8 @@ begin
     Width:=BlockIndentComboBox.Left-2-Left;
   end;
 
-  with UndoLimitComboBox do begin
-    Top:=BlockIndentComboBox.Top+BlockIndentComboBox.Height+5;
-    Left:=BlockIndentComboBox.Left;
-    Width:=70;
-  end;
-
-  with UndoLimitLabel do begin
-    Top:=UndoLimitComboBox.Top+2;
-    Left:=EditorOptionsGroupBox.Left+2;
-    Width:=UndoLimitComboBox.Left-Left-2;
-  end;
-
   with TabWidthsComboBox do begin
-    Top:=UndoLimitComboBox.Top+UndoLimitComboBox.Height+5;
+    Top:=BlockIndentComboBox.Top+BlockIndentComboBox.Height+5;
     Left:=BlockIndentComboBox.Left;
     Width:=70;
   end;
@@ -3796,6 +3805,18 @@ begin
     Top:=TabWidthsComboBox.Top+2;
     Left:=EditorOptionsGroupBox.Left+2;
     Width:=TabWidthsComboBox.Left-Left-2;
+  end;
+
+  with UndoLimitComboBox do begin
+    Top:=BlockIndentComboBox.Top;
+    Left:=BlockIndentComboBox.Left+BlockIndentComboBox.Width+50+70;
+    Width:=70;
+  end;
+
+  with UndoLimitLabel do begin
+    Top:=UndoLimitComboBox.Top+2;
+    Left:=UndoLimitComboBox.Left-70+2;
+    Width:=UndoLimitComboBox.Left-Left-2;
   end;
 end;
 
@@ -5245,6 +5266,7 @@ begin
   EditorOpts.UndoAfterSave:=UndoAfterSaveCheckBox.Checked;
   EditorOpts.CopyWordAtCursorOnCopyNone:=
                                      CopyWordAtCursorOnCopyNoneCheckBox.Checked;
+  EditorOpts.ShowGutterHints:=ShowGutterHintsCheckBox.Checked;
   EditorOpts.FindTextAtCursor:=FindTextAtCursorCheckBox.Checked;
   EditorOpts.UseSyntaxHighlight:=UseSyntaxHighlightCheckBox.Checked;
   EditorOpts.CtrlMouseLinks:=MouseLinksCheckBox.Checked;

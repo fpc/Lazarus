@@ -651,6 +651,7 @@ resourcestring
   dlgCloseButtonsNotebook = 'Show Close Buttons in notebook';
   dlgShowScrollHint = 'Show Scroll Hint';
   dlgMouseLinks = 'Mouse links';
+  dlgShowGutterHints = 'Show Gutter Hints';
   dlgSmartTabs = 'Smart Tabs';
   dlgTabsToSpaces = 'Tabs To Spaces';
   dlgTrimTrailingSpaces = 'Trim Trailing Spaces';

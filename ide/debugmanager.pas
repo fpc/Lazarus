@@ -171,6 +171,7 @@ type
     procedure SetSourceMark(const AValue: TSourceMark);
     procedure OnSourceMarkPositionChanged(Sender: TObject);
     procedure OnSourceMarkBeforeFree(Sender: TObject);
+    procedure OnSourceMarkGetHint(SenderMark: TSourceMark; var Hint: string);
   protected
     procedure AssignTo(Dest: TPersistent); override;
     procedure DoChanged; override;
@@ -249,6 +250,7 @@ begin
     FSourceMark.IsBreakPoint:=true;
     FSourceMark.Line:=Line;
     FSourceMark.Visible:=true;
+    FSourceMark.AddGetHintHandler(@OnSourceMarkGetHint);
     UpdateSourceMark;
   end;
 end;
@@ -261,6 +263,15 @@ end;
 procedure TManagedBreakPoint.OnSourceMarkBeforeFree(Sender: TObject);
 begin
   SourceMark:=nil;
+end;
+
+procedure TManagedBreakPoint.OnSourceMarkGetHint(SenderMark: TSourceMark;
+  var Hint: string);
+begin
+  Hint:=GetBreakPointStateDescription(Self)+EndOfLine
+      +'Hitcount: '+IntToStr(Hitcount)+EndOfLine
+      +'Action: '+GetBreakPointActionsDescription(Self)+EndOfLine
+      +'Condition: '+Expression;
 end;
 
 procedure TManagedBreakPoint.AssignTo(Dest: TPersistent);
@@ -1364,6 +1375,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.46  2003/06/04 13:34:58  mattias
+  implemented breakpoints hints for source editor
+
   Revision 1.45  2003/06/04 12:44:55  mattias
   implemented setting breakpoint while compiling
 
