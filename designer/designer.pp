@@ -33,7 +33,6 @@ unit Designer;
 interface
 
 {$DEFINE VerboseDesigner}
-{$DEFINE NewMousePos}
 
 uses
   Classes, LCLType, LCLLinux, Forms, Controls, LMessages, GraphType, Graphics,
@@ -343,9 +342,6 @@ end;
 procedure TDesigner.MouseDownOnControl(Sender: TControl; TheMessage: TLMMouse);
 var i,
   CompIndex:integer;
-  {$IfNDef NewMousePos}
-  SenderClientOrigin:TPoint;
-  {$EndIf}
   SelectedCompClass: TRegisteredComponent;
   NonVisualComp: TComponent;
 Begin
@@ -358,22 +354,13 @@ Begin
     MouseDownSender:=Sender;
   end;
 
-  {$IfDef NewMousePos}
   MouseDownPos:=GetFormRelativeMousePosition(Form);
-  {$Else}
-  SenderClientOrigin:=GetParentFormRelativeClientOrigin(Sender);
-  MouseDownPos := Point(TheMessage.Pos.X+SenderClientOrigin.X,
-                        TheMessage.Pos.Y+SenderClientOrigin.Y);
-  {$EndIf}
   LastMouseMovePos:=MouseDownPos;
 
   {$IFDEF VerboseDesigner}
   writeln('************************************************************');
   write('MouseDownOnControl');
   write(' ',Sender.Name,':',Sender.ClassName);
-  {$IfNDef NewMousePos}
-  write(' ClientOrg=',SenderClientOrigin.X,',',SenderClientOrigin.Y);
-  {$EndIf}
   write(' Msg=',TheMessage.Pos.X,',',TheMessage.Pos.Y);
   write(' Mouse=',MouseDownPos.X,',',MouseDownPos.Y);
   writeln('');
@@ -467,9 +454,6 @@ var
   Shift: TShiftState;
   SenderParentForm: TCustomForm;
   RubberBandWasActive: boolean;
-  {$IfNDef NewMousePos}
-  SenderClientOrigin: TPoint;
-  {$EndIf}
   ParentClientOrigin: TPoint;
   SelectedCompClass: TRegisteredComponent;
   NewParent: TWinControl;
@@ -488,13 +472,7 @@ Begin
   if (TheMessage.keys and MK_Control) = MK_Control then
     Shift := Shift +[ssCTRL];
 
-  {$IfDef NewMousePos}
   MouseUpPos:=GetFormRelativeMousePosition(Form);
-  {$Else}
-  SenderClientOrigin:=GetParentFormRelativeClientOrigin(Sender);
-  MouseUpPos := Point(TheMessage.Pos.X+SenderClientOrigin.X,
-                      TheMessage.Pos.Y+SenderClientOrigin.Y);
-  {$EndIf}
   MoveX:=MouseUpPos.X-MouseDownPos.X;
   MoveY:=MouseUpPos.Y-MouseDownPos.Y;
 
@@ -502,9 +480,6 @@ Begin
   writeln('************************************************************');
   write('MouseLeftUpOnControl');
   write(' ',Sender.Name,':',Sender.ClassName);
-  {$IfNDef NewMousePos}
-  write(' ClientOrigin=',SenderClientOrigin.X,',',SenderClientOrigin.Y);
-  {$EndIf}
   write(' Msg=',TheMessage.Pos.X,',',TheMessage.Pos.Y);
   write(' Move=',MoveX,',',MoveY);
   writeln('');
@@ -578,7 +553,7 @@ Begin
         SelectOnlyThisComponent(TComponent(NewCI.Control));
         if not (ssShift in Shift) then
           if Assigned(FOnUnselectComponentClass) then
-            // this resets the component toolbar to the mouse. (= selection tool)
+            // this resets the component palette to the selection tool
             FOnUnselectComponentClass(Self);
         Form.Invalidate;
         {$IFDEF VerboseDesigner}
@@ -603,9 +578,6 @@ Procedure TDesigner.MouseMoveOnControl(Sender: TControl;
   var TheMessage: TLMMouse);
 var
   Shift : TShiftState;
-  {$IfNDef NewMousePos}
-  SenderClientOrigin:TPoint;
-  {$EndIf}
   SenderParentForm:TCustomForm;
   OldMouseMovePos: TPoint;
 begin
@@ -624,32 +596,8 @@ begin
   if SenderParentForm=nil then exit;
   
   OldMouseMovePos:=LastMouseMovePos;
-  {$IfDef NewMousePos}
   LastMouseMovePos:=GetFormRelativeMousePosition(Form);
-  {$Else}
-  SenderClientOrigin:=GetParentFormRelativeClientOrigin(Sender);
-  LastMouseMovePos:=Point(TheMessage.Pos.X+SenderClientOrigin.X,
-                          TheMessage.Pos.Y+SenderClientOrigin.Y);
-  {$EndIf}
 
-
-  //debugging commented out
-{  if (Message.keys and MK_LButton) = MK_LButton then begin
-    Write('MouseMoveOnControl'
-          ,' ',Sender.ClassName
-          ,' ',GetCaptureControl<>nil
-          ,' ',Sender.Left,',',Sender.Top
-          ,' Origin=',SenderOrigin.X,',',SenderOrigin.Y
-          ,' Msg=',Message.Pos.x,',',Message.Pos.Y
-          ,' Mouse=',MouseX,',',MouseY
-    );
-    write(' ',MouseDownComponent is TWinControl);
-    if (MouseDownComponent is TControl) then begin
-      write(' ',csCaptureMouse in TWinControl(MouseDownComponent).ControlStyle);
-    end;
-    writeln();
-  end;
-}
   Shift := [];
   if (TheMessage.keys and MK_Shift) = MK_Shift then
     Shift := [ssShift];
@@ -699,21 +647,12 @@ begin
   end;
 end;
 
-procedure TDesigner.MouseRightUpOnControl(Sender : TControl; TheMessage:TLMMouse);
-{$IfNDef NewMousePos}
-var
-  SenderOrigin: TPoint;
-{$EndIf}
+procedure TDesigner.MouseRightUpOnControl(Sender : TControl;
+  TheMessage: TLMMouse);
 begin
   FHintTimer.Enabled := False;
 
-  {$IfDef NewMousePos}
   MouseUpPos:=GetFormRelativeMousePosition(Form);
-  {$Else}
-  SenderOrigin:=GetParentFormRelativeTopLeft(Sender);
-  MouseUpPos.X:=TheMessage.Pos.X+SenderOrigin.X;
-  MouseUpPos.Y:=TheMessage.Pos.Y+SenderOrigin.Y;
-  {$EndIf}
   BuildPopupMenu;
   FPopupMenu.Popup(MouseUpPos.X,MouseUpPos.Y);
 end;
