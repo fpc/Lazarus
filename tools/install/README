@@ -17,14 +17,16 @@ Creating the fpcsrc tgz:
   The download and pack script:
   The script create_fpc_export_tgz.sh makes a cvs export of the fpc.
   
-  For 1.0.7: ./create_fpc_export_tgz.sh stable 03/01/03
+  For 1.0.11: ./create_fpc_export_tgz.sh stable 05/01/04
 
-  For 1.1: ./create_fpc_export_tgz.sh devel 12/25/02
+  For 1.9: ./create_fpc_export_tgz.sh devel 05/01/04
 
+  The 05/01/04 means may 1 2004.
+  
   The copy and pack script:
   The script create_fpc_tgz_from_local_dir.sh needs as parameter the fpc cvs
   directory and compress it to a tgz. For example
-  ./create_fpc_tgz_from_local_dir.sh ~/pascal/fpc fpc-1.0.7.tgz
+  ./create_fpc_tgz_from_local_dir.sh ~/pascal/fpc fpc-1.0.10.tgz
 
 
 Creating the lazarus tgz:
@@ -49,19 +51,26 @@ RPM:
 
 Creating the fpc and the fpcsrc rpm:
 
-  There are two versions of the compiler: the stable 1.0.7 and the unstable
-  developer version 1.1. To build them, you must install fpc first. Install the
-  latest fpc package you can get. Note: The 1.0.7 can not be built with a 1.1
+  There are two versions of the compiler: the stable 1.0.11 and the unstable
+  developer version 1.9. To build them, you must install fpc first. Install the
+  stable fpc release (1.0.10). Note: The 1.0.11 can not be built with a 1.9
   compiler.
   The create_fpc_rpm.sh works nearly automatically. Become root and execute it.
-  For 1.0.7: ./create_fpc_rpm.sh stable
-  For 1.1:   ./create_fpc_rpm.sh devel
+  For 1.0.11: ./create_fpc_rpm.sh stable
+  For 1.9:   ./create_fpc_rpm.sh devel
 
   What it does: First it checks if the fpc source tgz is already created and
   if not, it automatically downloads it. The script does not use the current
   version, but the latest known to work with lazarus. Then it unpacks the
   source, compiles it and builds the rpm. Normally you can find the rpms under
   /usr/src/redhat/RPMS/i386/ and /usr/src/redhat/SRPMS/.
+
+  If you have your own fpc sources you can build the rpm with:
+  Become root and do:
+  cd <lazarus_directory>/tools/install
+  ./build_fpc_rpm.sh nodocs /home/mattias/pascal/fpc_sources/new19/fpc 040501
+  
+  The 040501 stands for: 2004 may 1
 
 
 Creating the lazarus rpm:
@@ -77,7 +86,7 @@ Creating the lazarus rpm:
 
 Creating other system specific rpms:
 
-  rpm --rebuild lazarus-0.8.5-1.src.rpm
+  rpm --rebuild lazarus-0.9.1-1.src.rpm
 
 
 --------------------------------------------------------------------------------
@@ -86,13 +95,13 @@ Debian:
 
 Creating the debian fpc and fpcsrc packages:
 
-  There are two versions of the compiler: the stable 1.0.7 and the unstable
-  developer version 1.1. To build them, you must install fpc first. Install the
-  latest fpc package you can get. Note: The 1.0.7 can not be built with a 1.1
+  There are two versions of the compiler: the stable 1.0.11 and the unstable
+  developer version 1.9. To build them, you must install fpc first. Install the
+  stable fpc release (1.0.10). Note: The 1.0.11 can not be built with a 1.9
   compiler.
   The create_fpc_deb.sh works nearly automatically. Become root and execute it.
-  For 1.0.7: ./create_fpc_deb.sh stable
-  For 1.1:   ./create_fpc_deb.sh devel
+  For 1.0.11: ./create_fpc_deb.sh stable
+  For 1.9:   ./create_fpc_deb.sh devel
 
   What it does: First it checks if the fpc source tgz is already created and
   if not, it automatically downloads it. The script does not use the current

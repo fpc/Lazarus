@@ -3,7 +3,6 @@
 set -x
 set -e
 
-
 #------------------------------------------------------------------------------
 # parse parameters
 #------------------------------------------------------------------------------
@@ -66,6 +65,16 @@ if [ "$CompilerPatch" != "0" ]; then
 fi
 
 
+
+#------------------------------------------------------------------------------
+# patch sources
+
+FPCMakefile=$TmpDir/Makefile
+SmartStripScript=smart_strip.sh
+
+# update smart_strip.sh
+cp $SmartStripScript $TmpDir/install/
+
 if [ "$PkgType" = "deb" ]; then
   # build fpc debs
 
@@ -115,9 +124,13 @@ else
 
   SpecFile=$TmpDir/install/fpc.spec
   SrcPatch=fpcsrc-patch
+  SmartSripScript=smart_strip.sh
 
-  # patch sources
-  patch -l -p2 -d $TmpDir/ -i $SrcPatch
+  # patch sources -> This should eventually go to the fpc cvs
+  # update smart_strip.sh
+  cp $SmartSripScript $TmpDir/install/
+
+  #patch -l -p2 -d $TmpDir/ -i $SrcPatch
 
   # change spec file
   cat $SpecFile | \
@@ -127,28 +140,30 @@ else
   #      -e 's/\(%define builddocdir.*\)/%define __strip smart_strip.sh\n\n\1/' \
   #      -e 's/^\%{fpcdir}\/samplecfg .*/%{fpcdir}\/samplecfg %{_libdir}\/fpc\/\\\$version/' \
   mv $SpecFile.New $SpecFile
-  if [ "$WithDOCS" = "no" ]; then
-    cat $SpecFile | \
-      sed -e 's/^\(.*\bmake\b.*\bdocs\b\)/#\1/g' \
-          -e 's/^\(%doc.*\*\.pdf\)/#\1/g' \
-    > $SpecFile.New
-    mv $SpecFile.New $SpecFile
-  fi
-  
-  # add smart_strip.sh
-  #cp smart_strip.sh $TmpDir
+  #if [ "$WithDOCS" = "no" ]; then
+    #cat $SpecFile | \
+    #  sed -e 's/^\(.*\bmake\b.*\bdocs\b\)/#\1/g' \
+    #      -e 's/^\(%doc.*\*\.pdf\)/#\1/g' \
+    #> $SpecFile.New
+    #mv $SpecFile.New $SpecFile
+  #fi
 
   # change Makefile for new rpmbuild, if not already done
   cd $TmpDir
-  if [ -n `grep rpmbuild Makefile` ]; then
+  if [ -n `grep -q rpmbuild Makefile` ]; then
     cat Makefile | \
       sed -e 's/rpm\( --nodeps -ba .*\)$/rpm\1 || rpmbuild\1/g' \
       > New.Makefile
     mv New.Makefile Makefile
   fi
   cd -
-
-  exit
+  
+  # fix fpc.spec bug: smart_strip.sh is searched at wrong location
+  SmartStripWhileBuild="/usr/src/redhat/BUILD/fpc-$CompilerVersion.$CompilerRelease.$CompilerPatch/smart_strip.sh"
+  cat $SpecFile | \
+    sed -e 's# %{buildroot}/smart_strip.sh# '"$SmartStripWhileBuild"'#' \
+    > $SpecFile.New
+  mv $SpecFile.New $SpecFile
 
   #----------------------------------------------------------------------------
   # compile

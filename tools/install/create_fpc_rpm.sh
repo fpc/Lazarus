@@ -41,16 +41,16 @@ fi
 
 # set here the fpc cvs dates for the various versions
 if [ "x$FPCVersion" = "xdevel" ]; then
-  Year=03
-  Month=06
-  Day=24
-  LazVersion=1.1
+  Year=04
+  Month=05
+  Day=01
+  LazVersion=1.9.3
 fi
 if [ "x$FPCVersion" = "xstable" ]; then
-  Year=03
-  Month=07
-  Day=11
-  LazVersion=1.0.10
+  Year=04
+  Month=05
+  Day=01
+  LazVersion=1.0.11
 fi
 
 Date=20$Year$Month$Day
