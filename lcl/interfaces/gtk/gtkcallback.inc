@@ -162,31 +162,15 @@ begin
 
       if TheWinControl<>nil then begin
         SetCursor(TheWinControl);
-        ConnectInternalWidgetsSignals(TheWinControl);
+        ConnectInternalWidgetsSignals(MainWidget,TheWinControl);
       end;
     end;
   end else begin
     // this is a hidden child widget of a lcl widget
-    
+    if HiddenLCLObject is TWinControl then
+      ConnectInternalWidgetsSignals(Widget,TWinControl(HiddenLCLObject));
   end;
 
-  Result := True;
-end;
-
-{-------------------------------------------------------------------------------
-  function GTKHiddenRealizeAfterCB
-  Params: Widget: PGtkWidget; Data: Pointer
-  Result: GBoolean
-
-  GTKHiddenRealizeAfterCB is called by the gtk, whenever a hidden widget is
-  realized (ie mapped), and after the widget itself got the realize signal.
-  That means that the gdk window on the xserver has been created and the widget
-  has initialized the gdkwindow.
--------------------------------------------------------------------------------}
-function GTKHiddenRealizeAfterCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
-begin
-  EventTrace('hiddenrealizeafter', nil);
-writeln('CCC1 GTKHiddenRealizeAfterCB ',HexStr(Cardinal(Widget),8));
   Result := True;
 end;
 
@@ -521,28 +505,22 @@ end;
   If the mouse is on the top-left pixel of the container widget then the
   coordinates can be negative, if there is frame around the client area.
 -------------------------------------------------------------------------------}
-function GTKMotionNotify(Widget:PGTKWidget; event: PGDKEventMotion;
-  data: gPointer): GBoolean; cdecl;
+function GTKMotionNotify(Widget:PGTKWidget; Event: PGDKEventMotion;
+  Data: gPointer): GBoolean; cdecl;
 var
   Msg: TLMMouseMove;
   ShiftState: TShiftState;
   MappedXY: TPoint;
-  HiddenLCLObject: TObject;
+  DesignOnlySignal: boolean;
 begin
   Result:=true;
   
-  HiddenLCLObject:=GetHiddenLCLObject(Widget);
-  if HiddenLCLObject<>nil then begin
-    // this is a hidden widget (= a gtk internal widget of a lcl widget)
-    if not (csDesigning in TControl(HiddenLCLObject).ComponentState) then begin
-      // if not in design mode, hidden widgets are controlled by the gtk ...
-      exit;
-    end;
-  end;
-
   {$IFDEF VerboseMouseBugfix}
+  DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseMotion);
   writeln('[GTKMotionNotify] ',
     TControl(Data).Name,':',TControl(Data).ClassName,
+    ' Widget=',HexStr(Cardinal(Widget),8),
+    ' DSO=',DesignOnlySignal,
     ' Event^.X=',trunc(Event^.X),' Event^.Y=',trunc(Event^.Y)
     );
   {$ENDIF}
@@ -550,6 +528,9 @@ begin
   if csDesigning in TControl(Data).ComponentState then begin
     // stop the signal, so that the widget does not auto react
     gtk_signal_emit_stop_by_name(PGTKObject(Widget),'motion-notify-event');
+  end else begin
+    DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseMotion);
+    if DesignOnlySignal then exit;
   end;
 
   MappedXY:=TranslateGdkPointToClientArea(Event^.Window,
@@ -620,7 +601,8 @@ var
   MappedXY: TPoint;
   //ShowDebugging : Boolean;
   //parWindow : PgdkWindow;  //the Parent's GDKWindow
-  HiddenLCLObject: TObject;
+  DesignOnlySignal: boolean;
+
 { $DEFINE VerboseMouseBugfix}
 
   function CheckMouseButtonDown(var LastMouse: TLastMouseClick;
@@ -663,21 +645,13 @@ var
 begin
   Result:=true;
   
-  HiddenLCLObject:=GetHiddenLCLObject(Widget);
-  if HiddenLCLObject<>nil then begin
-    writeln('DDD1 Hidden=',HexStr(Cardinal(Data),8),' ',HexStr(Cardinal(HiddenLCLObject),8));
-    writeln('     ',TControl(Data).Name,':',TControl(Data).ClassName);
-    // this is a hidden widget (= a child widget of a lcl widget)
-    if not (csDesigning in TControl(HiddenLCLObject).ComponentState) then begin
-      // if not in design mode, hidden widgets are controlled by the gtk ...
-      exit;
-    end;
-  end;
-
   {$IFDEF VerboseMouseBugfix}
+  DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMousePress);
   writeln('[gtkMouseBtnPress] ',
-    TControl(Data).Name,':',TObject(Data).ClassName,' ',
-    Trunc(Event^.X),',',Trunc(Event^.Y));
+    TControl(Data).Name,':',TObject(Data).ClassName,
+    ' Widget=',HexStr(Cardinal(Widget),8),
+    ' DSO=',DesignOnlySignal,
+    ' ',Trunc(Event^.X),',',Trunc(Event^.Y));
   {$ENDIF}
   //writeln('DDD1 MousePress Widget=',HexStr(Cardinal(Widget),8),
   //' ClientWidget=',HexStr(Cardinal(GetFixedWidget(Widget)),8),
@@ -695,6 +669,9 @@ begin
     // stop the signal, so that the widget does not auto react
     if TControl(Data).FCompStyle<>csNotebook then
       gtk_signal_emit_stop_by_name(PGTKObject(Widget),'button-press-event');
+  end else begin
+    DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMousePress);
+    if DesignOnlySignal then exit;
   end;
 
   ShiftState := GTKEventState2ShiftState(Event^.State);
@@ -702,26 +679,6 @@ begin
                                          Point(trunc(Event^.X),trunc(Event^.Y)),
                                          PGtkWidget(TWinControl(Data).Handle));
 
-  {ShowDebugging := False;
-  if ShowDebugging then
-  Begin
-  writeln('_______________');
-  Writeln('Button Down');
-  Writeln('Control = ',TControl(data).Name);
-  Writeln('Handle = ',Longint(TWinControl(data).Handle));
-  Writeln('Widget = ',LongInt(widget));
-  Writeln('Window = ',Longint(Event^.Window));
-  Writeln('Coords = ',trunc(Event^.x),',',trunc(Event^.Y));
-  Writeln('Event Type',Event^.thetype);
-  Writeln('Coords root = ',trunc(Event^.x_root),',',trunc(Event^.Y_root));
-  Writeln('State = ',event^.state);
-  Writeln('TGtkWidget^.Window is ',Longint(Widget^.Window));
-  parWindow := gtk_widget_get_parent_window(widget);
-  Writeln('Parwindow is ',LongInt(parwindow));
-  Writeln('_______________');
-  end;}
-
-  
   if event^.Button in [4,5] then begin
     // this is a mouse wheel event
     MessE.Msg := LM_MOUSEWHEEL;
@@ -771,7 +728,7 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  gtkMouseBtnPress
+  gtkMouseBtnPressAfter
   Params: widget: PGTKWidget; event: PGDKEventMotion; data: gPointer
   Returns: GBoolean
 
@@ -784,8 +741,9 @@ begin
   Result:=true;
   {$IFDEF VerboseMouseBugfix}
   writeln('[gtkMouseBtnPressAfter] ',
-    TControl(Data).Name,':',TObject(Data).ClassName,' ',
-    Trunc(Event^.X),',',Trunc(Event^.Y));
+    TControl(Data).Name,':',TObject(Data).ClassName,
+    ' Widget=',HexStr(Cardinal(Widget),8),
+    ' ',Trunc(Event^.X),',',Trunc(Event^.Y));
   {$ENDIF}
 
   // stop the signal, so that it is not sent to the parent widgets
@@ -805,8 +763,8 @@ var
   MessI : TLMMouse;
   ShiftState: TShiftState;
   MappedXY: TPoint;
-  HiddenLCLObject: TObject;
-  
+  DesignOnlySignal: boolean;
+
   function CheckMouseButtonUp(var LastMouse: TLastMouseClick;
     MsgUp: integer): boolean;
   begin
@@ -825,28 +783,25 @@ begin
   Result:=true;
 
   {$IFDEF VerboseMouseBugfix}
+  DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseRelease);
   writeln('[gtkMouseBtnRelease] A ',
     TControl(Data).Name,':',TObject(Data).ClassName,' ',
-    Trunc(Event^.X),',',Trunc(Event^.Y),' Btn=',event^.Button);
+    ' Widget=',HexStr(Cardinal(Widget),8),
+    ' DSO=',DesignOnlySignal,
+    ' ',Trunc(Event^.X),',',Trunc(Event^.Y),' Btn=',event^.Button);
   {$ENDIF}
 
   //writeln('EEE1 MouseRelease Widget=',HexStr(Cardinal(Widget),8),
   //' EventMask=',HexStr(Cardinal(gdk_window_get_events(Widget^.Window)),8),
   //' GDK_BUTTON_RELEASE_MASK=',HexStr(Cardinal(GDK_BUTTON_RELEASE_MASK),8));
 
-  HiddenLCLObject:=GetHiddenLCLObject(Widget);
-  if HiddenLCLObject<>nil then begin
-    // this is a hidden widget (= a child widget of a lcl widget)
-    if not (csDesigning in TControl(HiddenLCLObject).ComponentState) then begin
-      // if not in design mode, hidden widgets are controlled by the gtk ...
-      exit;
-    end;
-  end;
-  
   if csDesigning in TControl(Data).ComponentState then begin
     // stop the signal, so that the widget does not auto react
     if TControl(Data).FCompStyle<>csNotebook then
       gtk_signal_emit_stop_by_name(PGTKObject(Widget),'button-release-event');
+  end else begin
+    DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseRelease);
+    if DesignOnlySignal then exit;
   end;
 
   EventTrace('Mouse button release', data);
@@ -2143,6 +2098,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.101  2002/08/19 18:00:02  lazarus
+  MG: design signals for gtk internal widgets
+
   Revision 1.100  2002/08/19 08:50:28  lazarus
   MG: fixed parser for Clx enums and empty param lists
 
