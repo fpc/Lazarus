@@ -82,8 +82,7 @@ implementation
 
 { TMainMenuEditorForm }
 
-constructor TMainMenuEditorForm.CreateWithMenu(aOwner: TComponent; aMenu: TMenu;
-  aEditor: TComponentEditor; aDesigner: TDesigner);
+constructor TMainMenuEditorForm.CreateWithMenu(aOwner: TComponent; aMenu: TMenu; aEditor: TComponentEditor; aDesigner: TDesigner);
 var
   Cmp: TPanel;
   Cmp2: TScrollBox;
@@ -101,7 +100,7 @@ begin
   fEditor:=aEditor;
 
   
-  DesignerMainMenu:=TDesignerMainMenu.CreateWithMenu(Self, fMenu, fEditor);
+  DesignerMainMenu:=TDesignerMainMenu.Create(Self, fMenu, fEditor);
   
   Cmp2:=TScrollBox.Create(self);
   with Cmp2 do
@@ -198,7 +197,7 @@ begin
           fMenu:=TMenu(fDesigner.Form.Components[j]);
         end;
       end;
-      DesignerMainMenu:=TDesignerMainMenu.CreateWithMenu(Self, fMenu, fEditor);
+      DesignerMainMenu:=TDesignerMainMenu.Create(Self, fMenu, fEditor);
       with DesignerMainMenu do
       begin
         Parent:=Self;
@@ -225,8 +224,7 @@ end;
 
 { TMainMenuComponentEditor}
 
-constructor TMainMenuComponentEditor.Create(AComponent: TComponent;
-  aDesigner: TComponentEditorDesigner);
+constructor TMainMenuComponentEditor.Create(AComponent: TComponent; aDesigner: TComponentEditorDesigner);
 begin
   inherited Create(AComponent,ADesigner);
   fDesigner:=TDesigner(aDesigner);
