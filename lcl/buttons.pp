@@ -234,16 +234,18 @@ type
 
 implementation
 
+uses lclstrconsts;
+
 const
-  BitBtnModalResults : Array[TBitBtnKind] of TModalResult = (
-    0,mrOK,mrCAncel,0,mryes,mrNo,
-    0,mrAbort,mrRetry, mrIgnore, mrAll);
-  BitbtnCaption : Array[TBitBtnKind] of String = (
-    '','OK','Cancel','Help','','','Close','','','','All');
+  BitBtnModalResults : array[TBitBtnKind] of TModalResult = (0, mrOK, mrCancel, 0, mrYes, mrNo,
+    0, mrAbort, mrRetry, mrIgnore, mrAll);
+
+  BitbtnCaption : array[TBitBtnKind] of String = ('', rsmbOK, rsmbCancel, rsmbHelp, rsmbYes, rsmbNo, 
+    rsmbClose, rsmbAbort, rsmbRetry, rsmbIgnore, rsmbAll);
 
 
 var
-BitBtnImages : Array[TBitBtnKind] of PCharArray;
+  BitBtnImages : array[TBitBtnKind] of PCharArray;
 
 {$I buttons.inc}
 {$I bitbtn.inc}
@@ -267,6 +269,14 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.23  2002/09/03 11:32:49  lazarus
+  Added shortcut keys to labels
+  Support for alphabetically sorting the properties
+  Standardize message and add shortcuts ala Kylix
+  Published BorderStyle, unpublished BorderWidth
+  ShowAccelChar and FocusControl
+  ShowAccelChar and FocusControl for TLabel, escaped ampersands now work.
+
   Revision 1.22  2002/09/03 08:07:17  lazarus
   MG: image support, TScrollBox, and many other things from Andrew
 
