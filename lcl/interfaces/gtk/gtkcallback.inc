@@ -1023,7 +1023,6 @@ begin
     if VirtKeyCode = VK_UNKNOWN 
     then ListCode := KEYMAP_VKUNKNOWN and KeyCode
     else ListCode := VirtKeyCode;
-    
     if Extended then ListCode := ListCode or KEYMAP_EXTENDED;
     
     case theType of
@@ -1069,6 +1068,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2000/08/28 14:23:49  lazarus
+  Added a few files for the start of creating classes for the editor.  [SHANE]
+
   Revision 1.4  2000/08/11 14:59:09  lazarus
   Adding all the Synedit files.
   Changed the GDK_KEY_PRESS and GDK_KEY_RELEASE stuff to fix the problem in the editor with the shift key being ignored.

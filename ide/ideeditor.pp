@@ -69,6 +69,7 @@ type
     Procedure DeletePage(Value : Integer);
     Function GetEditorfromPage(Value : Integer) : TmwCustomEdit;
     Procedure SelectText(LineNum,CharStart,LineNum2,CharEnd : Integer);
+    Procedure KeyPressed(Sender : TObject; var key: char);
     property CurrentSource : TStrings read GetCurrentSource;
     property CurrentCursorXLine : Integer read GetCurrentCursorXLine write SetCurrentCursorXLine;
     property CurrentCursorYLine : Integer read GetCurrentCursorYLine write SetCurrentCursorYLine;
@@ -169,10 +170,17 @@ begin
 //    TmwPasSyn(HighLighter).CommentAttri.Foreground := clNavy;
 //    TmwPasSyn(HighLighter).NumberAttri.Foreground := clRed;
 //    TmwPasSyn(HighLighter).KeyAttri.Foreground := clGreen;
-    
+      OnKeyPress := @KeyPRessed;
   end;
 
 end;
+
+Procedure TIDEEditor.KeyPressed(Sender : TObject; var key: char);
+Begin
+writeln('KEYPRESS '+inttostr(ord(key)));
+end;
+
+
 
 Procedure TIDEEditor.IDEEditorPaint(Sender : TObject);
 Begin
