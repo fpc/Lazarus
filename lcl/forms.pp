@@ -505,14 +505,14 @@ type
     property FormCount: Integer read GetFormCount;
     property Forms[Index: Integer]: TForm read GetForms;
     property Fonts : TStrings read GetFonts;
-    property PixelsPerInch : integer read FPixelsPerInch;
-    property HintFont : TFont read FHintFont;
     property Height : Integer read Getheight;
+    property HintFont : TFont read FHintFont;
     property Width : Integer read GetWidth;
     property OnActiveControlChange: TNotifyEvent
       read FOnActiveControlChange write FOnActiveControlChange;
     property OnActiveFormChange: TNotifyEvent
       read FOnActiveFormChange write FOnActiveFormChange;
+    property PixelsPerInch : integer read FPixelsPerInch;
   end;
 
 

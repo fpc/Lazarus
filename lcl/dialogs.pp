@@ -83,6 +83,7 @@ type
     property Title : string read FTitle write FTitle;
     property UserChoice : integer read FUserChoice write FUserChoice;
     procedure Close;
+    function HandleAllocated: boolean;
   published
     property OnClose : TNotifyEvent read FOnClose write FOnClose;
     property OnCanClose: TCloseQueryEvent read FOnCanClose write FOnCanClose;
@@ -333,6 +334,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.27  2003/03/15 09:42:49  mattias
+  fixed transient windows
+
   Revision 1.26  2002/10/25 15:27:02  lazarus
   AJ: Moved form contents creation to gtkproc for code
       reuse between GNOME and GTK, and to make GNOME MDI
