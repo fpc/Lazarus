@@ -3159,10 +3159,11 @@ begin
       try
         Clipboard.GetFormat(SynEditClipboardFormat,MemStream);
         if MemStream.Size>=SizeOf(TSynSelectionMode)+1 then begin
-          GetMem(Buf,MemStream.Size);
+          GetMem(Buf,MemStream.Size+1);
           MemStream.Position:=0;
           MemStream.Read(Buf^,MemStream.Size);
           P:=PChar(Buf);
+          P[MemStream.Size]:=#0;
       {$ELSE}
       Clipboard.Open;
       try
@@ -3678,7 +3679,8 @@ var
       Start := PChar(Value);
       P := GetEOL(Start);
       if P^ <> #0 then begin
-        TrimmedSetLine(CaretY - 1, sLeftSide + Copy(Value, 1, P - Start));
+        SetString(Str, Value, P - Start);
+        TrimmedSetLine(CaretY - 1, sLeftSide + Str);
         TSynEditStringList(Lines).InsertLines(CaretY, CountLines(P));           // djlp 2000-09-07
       end else
         TrimmedSetLine(CaretY - 1, sLeftSide + Value + sRightSide);

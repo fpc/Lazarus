@@ -1,13 +1,13 @@
 #: lclstrconsts:rsmbyes
-msgid "Yes"
+msgid "&Yes"
 msgstr ""
 
 #: lclstrconsts:rsmbno
-msgid "No"
+msgid "&No"
 msgstr ""
 
 #: lclstrconsts:rsmbok
-msgid "OK"
+msgid "&OK"
 msgstr ""
 
 #: lclstrconsts:rsmbcancel
@@ -19,15 +19,15 @@ msgid "Abort"
 msgstr ""
 
 #: lclstrconsts:rsmbretry
-msgid "Retry"
+msgid "&Retry"
 msgstr ""
 
 #: lclstrconsts:rsmbignore
-msgid "Ignore"
+msgid "&Ignore"
 msgstr ""
 
 #: lclstrconsts:rsmball
-msgid "All?"
+msgid "&All"
 msgstr ""
 
 #: lclstrconsts:rsmbnotoall
@@ -39,7 +39,11 @@ msgid "Yes to all"
 msgstr ""
 
 #: lclstrconsts:rsmbhelp
-msgid "Help"
+msgid "&Help"
+msgstr ""
+
+#: lclstrconsts:rsmbclose
+msgid "&Close"
 msgstr ""
 
 #: lclstrconsts:rsmtwarning
