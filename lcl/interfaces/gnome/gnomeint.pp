@@ -192,10 +192,8 @@ end;
 
 procedure TGnomeObject.CreateComponent(Sender : TObject);
 var
-  Caption : AnsiString;
+  //Caption : AnsiString;
   StrTemp : PChar;               // same as "caption" but as PChar
-  TempWidget,
-  TempWidget2 : PGTKWidget;       // pointer to gtk-widget (local use when neccessary)
   p          : pointer;          // ptr to the newly created GtkWidget
   Box       : Pointer;           // currently only used for TBitBtn and TForm and TListView
   ParentForm: TCustomForm;
@@ -208,7 +206,7 @@ begin
   SetupProps := False;
 
   CompStyle := GetCompStyle(Sender);
-  Caption   := GetCaption(Sender);
+  //Caption   := GetCaption(Sender);
   strTemp := nil;
 
   Case CompStyle of
@@ -275,6 +273,9 @@ end.
 
 {
   $Log$
+  Revision 1.14  2002/11/03 22:40:00  lazarus
+  MG: fixed ControlAtPos
+
   Revision 1.13  2002/10/30 18:45:52  lazarus
   AJ: fixed compiling & removed '_' from custom stock items
 
