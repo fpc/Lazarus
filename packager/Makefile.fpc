@@ -1,0 +1,16 @@
+#   $Id$
+#
+#   Makefile.fpc for Lazarus for Free Pascal
+#
+
+[target]
+dirs=registration
+
+[clean]
+files=$(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT))
+
+[rules]
+cleanall: clean
+
+# end.
+
