@@ -61,6 +61,7 @@ type
   TPkgCompileFlag = (
     pcfCleanCompile,  // append -B to the compiler options
     pcfDoNotCompileDependencies,
+    pcfCompileDependenciesClean,
     pcfOnlyIfNeeded,
     pcfDoNotSaveEditorFiles
     );
@@ -130,6 +131,7 @@ const
   PkgCompileFlagNames: array[TPkgCompileFlag] of string = (
     'pcfCleanCompile',
     'pcfDoNotCompileDependencies',
+    'pcfCompileDependenciesClean',
     'pcfOnlyIfNeeded',
     'pcfAutomatic'
     );

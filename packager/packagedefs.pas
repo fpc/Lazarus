@@ -391,8 +391,6 @@ type
   TLazPackageFlag = (
     lpfAutoIncrementVersionOnBuild, // increment version before
     lpfModified,       // package needs saving
-    lpfAutoUpdate,     // auto compile, if this package
-                       // or any required package has been modified
     lpfNeeded,         // Set by PackageGraph, if package is in use
                        //   (for example because it is Installed or an Installed
                        //    package requires this package)
@@ -405,24 +403,34 @@ type
     );
   TLazPackageFlags = set of TLazPackageFlag;
   
-  TIterateComponentClassesEvent =
-    procedure(PkgComponent: TPkgComponent) of object;
-
   TPackageInstallType = (
     pitNope,
     pitStatic,
     pitDynamic
     );
     
+  TPackageUpdatePolicy = (
+    pupManually,
+    pupOnRebuildingAll,
+    pupAsNeeded
+    );
+  TPackageUpdatePolicies = set of TPackageUpdatePolicy;
+
+const
+  pupAllAuto = [pupAsNeeded,pupOnRebuildingAll];
+    
+type
+  TIterateComponentClassesEvent =
+    procedure(PkgComponent: TPkgComponent) of object;
   TPkgChangeNameEvent = procedure(Pkg: TLazPackage;
                                   const OldName: string) of object;
-    
+
   TLazPackage = class(TLazPackageID)
   private
     FAuthor: string;
     FAutoCreated: boolean;
     FAutoInstall: TPackageInstallType;
-    FBroken: boolean;
+    FAutoUpdate: TPackageUpdatePolicy;
     FCompilerOptions: TPkgCompilerOptions;
     FComponents: TList; // TList of TPkgComponent
     FDefineTemplates: TLazPackageDefineTemplates;
@@ -442,6 +450,7 @@ type
     FLastCompilerParams: string;
     FLicense: string;
     FMacros: TTransferMacroList;
+    FMissing: boolean;
     FModifiedLock: integer;
     FOutputStateFile: string;
     FPackageEditor: TBasePackageEditor;
@@ -454,7 +463,6 @@ type
     FUpdateLock: integer;
     FUsageOptions: TPkgAdditionalCompilerOptions;
     function GetAutoIncrementVersionOnBuild: boolean;
-    function GetAutoUpdate: boolean;
     function GetComponentCount: integer;
     function GetComponents(Index: integer): TPkgComponent;
     function GetRemovedCount: integer;
@@ -466,7 +474,7 @@ type
     procedure SetAutoCreated(const AValue: boolean);
     procedure SetAutoIncrementVersionOnBuild(const AValue: boolean);
     procedure SetAutoInstall(const AValue: TPackageInstallType);
-    procedure SetAutoUpdate(const AValue: boolean);
+    procedure SetAutoUpdate(const AValue: TPackageUpdatePolicy);
     procedure SetDescription(const AValue: string);
     procedure SetFilename(const AValue: string);
     procedure SetFlags(const AValue: TLazPackageFlags);
@@ -555,11 +563,13 @@ type
     property Author: string read FAuthor write SetAuthor;
     property AutoCreated: boolean read FAutoCreated write SetAutoCreated;
     property AutoIncrementVersionOnBuild: boolean
-       read GetAutoIncrementVersionOnBuild write SetAutoIncrementVersionOnBuild;
+                                           read GetAutoIncrementVersionOnBuild
+                                           write SetAutoIncrementVersionOnBuild;
     property AutoInstall: TPackageInstallType read FAutoInstall
                                               write SetAutoInstall;
-    property AutoUpdate: boolean read GetAutoUpdate write SetAutoUpdate;
-    property Broken: boolean read FBroken write FBroken;
+    property AutoUpdate: TPackageUpdatePolicy read FAutoUpdate
+                                              write SetAutoUpdate;
+    property Missing: boolean read FMissing write FMissing;
     property CompilerOptions: TPkgCompilerOptions read FCompilerOptions;
     property ComponentCount: integer read GetComponentCount;
     property Components[Index: integer]: TPkgComponent read GetComponents;
@@ -629,9 +639,15 @@ const
   LazPackageTypeIdents: array[TLazPackageType] of string = (
     'RunTime', 'DesignTime', 'RunAndDesignTime');
   LazPackageFlagNames: array[TLazPackageFlag] of string = (
-    'lpfAutoIncrementVersionOnBuild', 'lpfModified', 'lpfAutoUpdate',
+    'lpfAutoIncrementVersionOnBuild', 'lpfModified',
     'lpfNeeded', 'lpfVisited', 'lpfDestroying', 'lpfLoading', 'lpfSkipSaving',
     'lpfCircle', 'lpfStateFileLoaded');
+  PackageUpdatePolicies: array[TPackageUpdatePolicy] of string = (
+    'pupManually', 'pupOnRebuildingAll', 'pupAsNeeded'
+    );
+  AutoUpdateNames: array[TPackageUpdatePolicy] of string = (
+    'Manually', 'OnRebuildingAll', 'AsNeeded'
+    );
     
 var
   // All TPkgDependency are added to this AVL tree (sorted for names, not version!)
@@ -651,6 +667,7 @@ function GetUsageOptionsList(PackageList: TList): TList;
 function PkgFileTypeIdentToType(const s: string): TPkgFileType;
 function LazPackageTypeIdentToType(const s: string): TLazPackageType;
 function GetPkgFileTypeLocalizedName(FileType: TPkgFileType): string;
+function NameToAutoUpdatePolicy(const s: string): TPackageUpdatePolicy;
 
 procedure SortDependencyList(Dependencies: TList);
 procedure LoadPkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
@@ -675,7 +692,6 @@ function FindNextPkgDependecyNodeWithSameName(Node: TAVLTreeNode): TAVLTreeNode;
 function GetDependencyOwnerAsString(Dependency: TPkgDependency): string;
 
 function PackageFileNameIsValid(const AFilename: string): boolean;
-
 
 
 implementation
@@ -707,6 +723,13 @@ begin
   else
     Result:='Unknown';
   end;
+end;
+
+function NameToAutoUpdatePolicy(const s: string): TPackageUpdatePolicy;
+begin
+  for Result:=Low(TPackageUpdatePolicy) to High(TPackageUpdatePolicy) do
+    if AnsiCompareText(AutoUpdateNames[Result],s)=0 then exit;
+  Result:=pupAsNeeded;
 end;
 
 procedure LoadPkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
@@ -1559,11 +1582,6 @@ begin
   Result:=lpfAutoIncrementVersionOnBuild in FFlags;
 end;
 
-function TLazPackage.GetAutoUpdate: boolean;
-begin
-  Result:=lpfAutoUpdate in FFlags;
-end;
-
 function TLazPackage.GetComponentCount: integer;
 begin
   Result:=FComponents.Count;
@@ -1629,13 +1647,10 @@ begin
   FAutoInstall:=AValue;
 end;
 
-procedure TLazPackage.SetAutoUpdate(const AValue: boolean);
+procedure TLazPackage.SetAutoUpdate(const AValue: TPackageUpdatePolicy);
 begin
   if AValue=AutoUpdate then exit;
-  if AValue then
-    Include(FFlags,lpfAutoUpdate)
-  else
-    Exclude(FFlags,lpfAutoUpdate);
+  FAutoUpdate:=AValue;
   Modified:=true;
 end;
 
@@ -1670,7 +1685,7 @@ begin
   if FFlags=AValue then exit;
   ChangedFlags:=FFlags+AValue-(FFlags*AValue);
   FFlags:=AValue;
-  if ChangedFlags*[lpfAutoIncrementVersionOnBuild,lpfAutoUpdate]<>[] then
+  if ChangedFlags*[lpfAutoIncrementVersionOnBuild]<>[] then
     Modified:=true;
 end;
 
@@ -1829,7 +1844,8 @@ begin
   UpdateSourceDirectories;
   // set some nice start values
   if not (lpfDestroying in FFlags) then begin
-    FFlags:=[lpfAutoIncrementVersionOnBuild,lpfAutoUpdate];
+    FFlags:=[lpfAutoIncrementVersionOnBuild];
+    FAutoUpdate:=pupAsNeeded;
     fCompilerOptions.UnitOutputDirectory:='lib'+PathDelim;
     FUsageOptions.UnitPath:='$(PkgOutDir)';
   end else begin
@@ -1899,10 +1915,6 @@ var
       Include(FFlags,lpfAutoIncrementVersionOnBuild)
     else
       Exclude(FFlags,lpfAutoIncrementVersionOnBuild);
-    if XMLConfig.GetValue(ThePath+'AutoUpdate/Value',true) then
-      Include(FFlags,lpfAutoUpdate)
-    else
-      Exclude(FFlags,lpfAutoUpdate);
   end;
   
 begin
@@ -1916,6 +1928,8 @@ begin
   LockModified;
   Name:=XMLConfig.GetValue(Path+'Name/Value','');
   FAuthor:=XMLConfig.GetValue(Path+'Author/Value','');
+  FAutoUpdate:=NameToAutoUpdatePolicy(
+                                XMLConfig.GetValue(Path+'AutoUpdate/Value',''));
   FCompilerOptions.LoadFromXMLConfig(XMLConfig,Path+'CompilerOptions/');
   FDescription:=XMLConfig.GetValue(Path+'Description/Value','');
   FLicense:=XMLConfig.GetValue(Path+'License/Value','');
@@ -1955,12 +1969,13 @@ procedure TLazPackage.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string
   begin
     XMLConfig.SetDeleteValue(ThePath+'AutoIncrementVersionOnBuild/Value',
       AutoIncrementVersionOnBuild,true);
-    XMLConfig.SetDeleteValue(ThePath+'AutoUpdate/Value',AutoUpdate,true);
   end;
 
 begin
   XMLConfig.SetDeleteValue(Path+'Name/Value',FName,'');
   XMLConfig.SetDeleteValue(Path+'Author/Value',FAuthor,'');
+  XMLConfig.SetDeleteValue(Path+'AutoUpdate/Value',AutoUpdateNames[FAutoUpdate],
+                           AutoUpdateNames[pupAsNeeded]);
   FCompilerOptions.SaveToXMLConfig(XMLConfig,Path+'CompilerOptions/');
   XMLConfig.SetDeleteValue(Path+'Description/Value',FDescription,'');
   XMLConfig.SetDeleteValue(Path+'License/Value',FLicense,'');

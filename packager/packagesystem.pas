@@ -129,6 +129,7 @@ type
                                       FirstDependency: TPkgDependency): TList;
     function FindUnsavedDependencyPath(APackage: TLazPackage;
                                        FirstDependency: TPkgDependency): TList;
+    function FindAutoInstallDependencyPath(ChildPackage: TLazPackage): TList;
     function FindFileInAllPackages(const TheFilename: string;
                                 ResolveLinks, IgnoreDeleted: boolean): TPkgFile;
     function FindLowestPkgNodeByName(const PkgName: string): TAVLTreeNode;
@@ -145,7 +146,8 @@ type
     function FindUnitInAllPackages(const TheUnitName: string;
                                    IgnoreDeleted: boolean): TPkgFile;
     function GetAutoCompilationOrder(APackage: TLazPackage;
-                                     FirstDependency: TPkgDependency): TList;
+                                     FirstDependency: TPkgDependency;
+                                     Policies: TPackageUpdatePolicies): TList;
     function GetBrokenDependenciesWhenChangingPkgID(APackage: TLazPackage;
                          const NewName: string; NewVersion: TPkgVersion): TList;
     function PackageCanBeReplaced(OldPackage, NewPackage: TLazPackage): boolean;
@@ -803,7 +805,7 @@ begin
     Author:='FPC team';
     License:='LGPL-2';
     AutoInstall:=pitStatic;
-    AutoUpdate:=false;
+    AutoUpdate:=pupManually;
     Description:='The FCL - FreePascal Component Library '
                  +'provides the base classes for object pascal.';
     PackageType:=lptDesignTime;
@@ -838,7 +840,7 @@ begin
     Author:='Lazarus';
     License:='LGPL-2';
     AutoInstall:=pitStatic;
-    AutoUpdate:=false;
+    AutoUpdate:=pupManually;
     Description:='The LCL - Lazarus Component Library '
                  +'contains all base components for form editing.';
     PackageType:=lptDesignTime;
@@ -890,7 +892,7 @@ begin
     Author:='SynEdit - http://sourceforge.net/projects/synedit/';
     License:='LGPL-2';
     AutoInstall:=pitStatic;
-    AutoUpdate:=false;
+    AutoUpdate:=pupManually;
     Description:='SynEdit - the editor component used by Lazarus. '
                 +'http://sourceforge.net/projects/synedit/';
     PackageType:=lptDesignTime;
@@ -937,7 +939,7 @@ begin
     Version.SetValues(1,0,1,1);
     Author:='Anonymous';
     AutoInstall:=pitStatic;
-    AutoUpdate:=false;
+    AutoUpdate:=pupManually;
     Description:='This is the default package. '
                 +'Used only for components without a package. '
                 +'These components are outdated.';
@@ -1214,10 +1216,53 @@ begin
     Result.Insert(0,APackage);
 end;
 
-function TLazPackageGraph.GetAutoCompilationOrder(APackage: TLazPackage;
-  FirstDependency: TPkgDependency): TList;
+function TLazPackageGraph.FindAutoInstallDependencyPath(
+  ChildPackage: TLazPackage): TList;
   
-  procedure GetTopologicalOrder(Dependency: TPkgDependency);
+  procedure FindAutoInstallParent(APackage: TLazPackage);
+  var
+    ParentPackage: TLazPackage;
+    Dependency: TPkgDependency;
+  begin
+    Dependency:=APackage.FirstUsedByDependency;
+    while Dependency<>nil do begin
+      if Dependency.Owner is TLazPackage then begin
+        ParentPackage:=TLazPackage(Dependency.Owner);
+        if not (lpfVisited in ParentPackage.Flags) then begin
+          ParentPackage.Flags:=ParentPackage.Flags+[lpfVisited];
+          if ParentPackage.AutoInstall<>pitNope then begin
+            // auto install parent found
+            if Result=nil then Result:=TList.Create;
+            Result.Add(ParentPackage);
+            Result.Add(APackage);
+            exit;
+          end;
+          FindAutoInstallParent(ParentPackage);
+          if Result<>nil then begin
+            // build path
+            Result.Add(APackage);
+            exit;
+          end;
+        end;
+      end;
+      Dependency:=Dependency.NextRequiresDependency;
+    end;
+  end;
+
+begin
+  Result:=nil;
+  MarkAllPackagesAsNotVisited;
+  ChildPackage.Flags:=ChildPackage.Flags+[lpfVisited];
+  FindAutoInstallParent(ChildPackage);
+end;
+
+function TLazPackageGraph.GetAutoCompilationOrder(APackage: TLazPackage;
+  FirstDependency: TPkgDependency; Policies: TPackageUpdatePolicies): TList;
+// Returns all required auto update packages, including indirect requirements.
+// The packages will be in topological order, with the package that should be
+// compiled first at the end.
+
+  procedure GetLevelOrder(Dependency: TPkgDependency);
   var
     RequiredPackage: TLazPackage;
   begin
@@ -1226,9 +1271,9 @@ function TLazPackageGraph.GetAutoCompilationOrder(APackage: TLazPackage;
         RequiredPackage:=Dependency.RequiredPackage;
         if not (lpfVisited in RequiredPackage.Flags) then begin
           RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
-          if RequiredPackage.AutoUpdate then begin
+          if RequiredPackage.AutoUpdate in Policies then begin
             // add first all needed packages
-            GetTopologicalOrder(RequiredPackage.FirstRequiredDependency);
+            GetLevelOrder(RequiredPackage.FirstRequiredDependency);
             // then add this package
             if Result=nil then Result:=TList.Create;
             Result.Add(RequiredPackage);
@@ -1246,7 +1291,7 @@ begin
     APackage.Flags:=APackage.Flags+[lpfVisited];
     FirstDependency:=APackage.FirstRequiredDependency;
   end;
-  GetTopologicalOrder(FirstDependency);
+  GetLevelOrder(FirstDependency);
 end;
 
 procedure TLazPackageGraph.MarkAllPackagesAsNotVisited;
@@ -1368,7 +1413,7 @@ var
   Dependency: TPkgDependency;
 begin
   Result:=false;
-  if OldPackage.Broken and (AnsiCompareText(OldPackage.Name,NewPackage.Name)=0)
+  if OldPackage.Missing and (AnsiCompareText(OldPackage.Name,NewPackage.Name)=0)
   then begin
     Result:=true;
     exit;
@@ -1557,14 +1602,14 @@ begin
     BrokenPackage:=TLazPackage.Create;
     with BrokenPackage do begin
       BeginUpdate;
-      Broken:=true;
+      Missing:=true;
       AutoCreated:=true;
       Name:=Dependency.PackageName;
       Filename:='';
       Version.SetValues(0,0,0,0);
       Author:='?';
       License:='?';
-      AutoUpdate:=false;
+      AutoUpdate:=pupManually;
       Description:='This package is installed, but the lpk file was not found.'
                   +'All its components are deactivated. Please fix this.';
       PackageType:=lptDesignTime;

@@ -59,11 +59,14 @@ type
   TPkgManager = class(TBasePkgManager)
     // events
     function OnPackageEditorCompilePackage(Sender: TObject;
-      APackage: TLazPackage; CompileAll: boolean): TModalResult;
+                          APackage: TLazPackage;
+                          CompileClean, CompileRequired: boolean): TModalResult;
     function OnPackageEditorCreateFile(Sender: TObject;
                                    const Params: TAddToPkgResult): TModalResult;
     function OnPackageEditorInstallPackage(Sender: TObject;
-      APackage: TLazPackage): TModalResult;
+                                           APackage: TLazPackage): TModalResult;
+    function OnPackageEditorUninstallPackage(Sender: TObject;
+                                           APackage: TLazPackage): TModalResult;
     function OnPackageEditorOpenPackage(Sender: TObject; APackage: TLazPackage
                                         ): TModalResult;
     function OnPackageEditorSavePackage(Sender: TObject; APackage: TLazPackage;
@@ -98,7 +101,8 @@ type
     // helper functions
     function DoShowSavePackageAsDialog(APackage: TLazPackage): TModalResult;
     function CompileRequiredPackages(APackage: TLazPackage;
-                                 FirstDependency: TPkgDependency): TModalResult;
+                                 FirstDependency: TPkgDependency;
+                                 Policies: TPackageUpdatePolicies): TModalResult;
     function CheckPackageGraphForCompilation(APackage: TLazPackage;
                                  FirstDependency: TPkgDependency): TModalResult;
     function DoPreparePackageOutputDirectory(APackage: TLazPackage): TModalResult;
@@ -168,6 +172,7 @@ type
                           NewFilename: string): TModalResult; override;
     function DoAddActiveUnitToAPackage: TModalResult;
     function DoInstallPackage(APackage: TLazPackage): TModalResult;
+    function DoUninstallPackage(APackage: TLazPackage): TModalResult;
     function DoCompileAutoInstallPackages(Flags: TPkgCompileFlags
                                           ): TModalResult; override;
     function DoSaveAutoInstallConfig: TModalResult; override;
@@ -253,12 +258,13 @@ begin
 end;
 
 function TPkgManager.OnPackageEditorCompilePackage(Sender: TObject;
-  APackage: TLazPackage; CompileAll: boolean): TModalResult;
+  APackage: TLazPackage; CompileClean, CompileRequired: boolean): TModalResult;
 var
   Flags: TPkgCompileFlags;
 begin
   Flags:=[];
-  if CompileAll then Include(Flags,pcfCleanCompile);
+  if CompileClean then Include(Flags,pcfCleanCompile);
+  if CompileRequired then Include(Flags,pcfCompileDependenciesClean);
   Result:=DoCompilePackage(APackage,Flags);
 end;
 
@@ -316,6 +322,12 @@ function TPkgManager.OnPackageEditorInstallPackage(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
   Result:=DoInstallPackage(APackage);
+end;
+
+function TPkgManager.OnPackageEditorUninstallPackage(Sender: TObject;
+  APackage: TLazPackage): TModalResult;
+begin
+  Result:=DoUninstallPackage(APackage);
 end;
 
 procedure TPkgManager.OnPackageEditorFreeEditor(APackage: TLazPackage);
@@ -622,13 +634,15 @@ begin
 end;
 
 function TPkgManager.CompileRequiredPackages(APackage: TLazPackage;
-  FirstDependency: TPkgDependency): TModalResult;
+  FirstDependency: TPkgDependency;
+  Policies: TPackageUpdatePolicies): TModalResult;
 var
   AutoPackages: TList;
   i: Integer;
 begin
   writeln('TPkgManager.CompileRequiredPackages A ');
-  AutoPackages:=PackageGraph.GetAutoCompilationOrder(APackage,FirstDependency);
+  AutoPackages:=PackageGraph.GetAutoCompilationOrder(APackage,FirstDependency,
+                                                     Policies);
   if AutoPackages<>nil then begin
     writeln('TPkgManager.CompileRequiredPackages B Count=',AutoPackages.Count);
     try
@@ -1166,15 +1180,17 @@ constructor TPkgManager.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   OnGetDependencyOwnerDescription:=@GetDependencyOwnerDescription;
-  
-  
+
+  // componentpalette
   IDEComponentPalette:=TComponentPalette.Create;
   IDEComponentPalette.OnEndUpdate:=@IDEComponentPaletteEndUpdate;
   TComponentPalette(IDEComponentPalette).OnOpenPackage:=@IDEComponentPaletteOpenPackage;
-  
+
+  // package links
   PkgLinks:=TPackageLinks.Create;
   PkgLinks.UpdateAll;
 
+  // package graph
   PackageGraph:=TLazPackageGraph.Create;
   PackageGraph.OnChangePackageName:=@PackageGraphChangePackageName;
   PackageGraph.OnAddPackage:=@PackageGraphAddPackage;
@@ -1183,6 +1199,7 @@ begin
   PackageGraph.OnBeginUpdate:=@PackageGraphBeginUpdate;
   PackageGraph.OnEndUpdate:=@PackageGraphEndUpdate;
 
+  // package editors
   PackageEditors:=TPackageEditors.Create;
   PackageEditors.OnOpenFile:=@MainIDE.DoOpenMacroFile;
   PackageEditors.OnOpenPackage:=@OnPackageEditorOpenPackage;
@@ -1193,7 +1210,9 @@ begin
   PackageEditors.OnSavePackage:=@OnPackageEditorSavePackage;
   PackageEditors.OnCompilePackage:=@OnPackageEditorCompilePackage;
   PackageEditors.OnInstallPackage:=@OnPackageEditorInstallPackage;
-  
+  PackageEditors.OnUninstallPackage:=@OnPackageEditorUninstallPackage;
+
+  // package macros
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
     'PKGSRCPATH',nil,@MacroFunctionPkgSrcPath);
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
@@ -1201,6 +1220,7 @@ begin
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
     'PKGINCPATH',nil,@MacroFunctionPkgIncPath);
 
+  // idle handler
   Application.AddOnIdleHandler(@OnApplicationIdle);
 end;
 
@@ -1685,7 +1705,8 @@ begin
   try
     // automatically compile required packages
     if not (pcfDoNotCompileDependencies in Flags) then begin
-      Result:=CompileRequiredPackages(nil,AProject.FirstRequiredDependency);
+      Result:=CompileRequiredPackages(nil,AProject.FirstRequiredDependency,
+                                      [pupAsNeeded]);
       if Result<>mrOk then exit;
     end;
   finally
@@ -1703,6 +1724,7 @@ var
   CompilerParams: String;
   EffektiveCompilerParams: String;
   SrcFilename: String;
+  CompilePolicies: TPackageUpdatePolicies;
 begin
   Result:=mrCancel;
   
@@ -1726,7 +1748,10 @@ begin
   try
     // automatically compile required packages
     if not (pcfDoNotCompileDependencies in Flags) then begin
-      Result:=CompileRequiredPackages(APackage,nil);
+      CompilePolicies:=[pupAsNeeded];
+      if pcfCompileDependenciesClean in Flags then
+        Include(CompilePolicies,pupOnRebuildingAll);
+      Result:=CompileRequiredPackages(APackage,nil,[pupAsNeeded]);
       if Result<>mrOk then exit;
     end;
 
@@ -2047,6 +2072,7 @@ begin
       'The package "'+APackage.IDAsString+'" was marked for installation.'#13
       +'Currently lazarus only supports static linked packages. The real '
       +'installation needs rebuilding of lazarus.'#13
+      +#13
       +'Should lazarus now be rebuilt?',
       mtConfirmation,[mbYes,mbNo],0);
     if Result=mrNo then begin
@@ -2054,6 +2080,70 @@ begin
       exit;
     end;
     
+    // rebuild Lazarus
+    Result:=MainIDE.DoBuildLazarus([blfWithStaticPackages]);
+    if Result<>mrOk then exit;
+
+  finally
+    PackageGraph.EndUpdate;
+  end;
+  Result:=mrOk;
+end;
+
+function TPkgManager.DoUninstallPackage(APackage: TLazPackage): TModalResult;
+var
+  DependencyPath: TList;
+  ParentPackage: TLazPackage;
+  Dependency: TPkgDependency;
+begin
+  if (APackage.Installed=pitNope) and (APackage.AutoInstall=pitNope) then exit;
+  
+  // check if package is required by auto install package
+  DependencyPath:=PackageGraph.FindAutoInstallDependencyPath(APackage);
+  if DependencyPath<>nil then begin
+    DoShowPackageGraphPathList(DependencyPath);
+    ParentPackage:=TLazPackage(DependencyPath[0]);
+    Result:=MessageDlg('Package is required',
+      'The package '+APackage.IDAsString+' is required by '
+      +ParentPackage.IDAsString+', which is marked for installation.'#13
+      +'See package graph.',
+      mtError,[mbCancel,mbAbort],0);
+    exit;
+  end;
+  
+  PackageGraph.BeginUpdate(false);
+  try
+    // save package
+    if APackage.IsVirtual or APackage.Modified then begin
+      Result:=DoSavePackage(APackage,[]);
+      if Result<>mrOk then exit;
+    end;
+
+    // remove package from auto installed packages
+    if APackage.AutoInstall<>pitNope then begin
+      APackage.AutoInstall:=pitNope;
+      Dependency:=FindCompatibleDependencyInList(FirstAutoInstallDependency,
+                                                 pdlRequires,APackage);
+      if Dependency<>nil then begin
+        Dependency.RemoveFromList(FirstAutoInstallDependency,pdlRequires);
+        Dependency.Free;
+      end;
+      SaveAutoInstallDependencies;
+    end;
+
+    // ask user to rebuilt Lazarus now
+    Result:=MessageDlg('Rebuild Lazarus?',
+      'The package "'+APackage.IDAsString+'" was marked.'#13
+      +'Currently lazarus only supports static linked packages. The real '
+      +'un-installation needs rebuilding of lazarus.'#13
+      +#13
+      +'Should lazarus now be rebuilt?',
+      mtConfirmation,[mbYes,mbNo],0);
+    if Result=mrNo then begin
+      Result:=mrOk;
+      exit;
+    end;
+
     // rebuild Lazarus
     Result:=MainIDE.DoBuildLazarus([blfWithStaticPackages]);
     if Result<>mrOk then exit;
@@ -2100,7 +2190,7 @@ begin
     end;
     
     // compile all auto install dependencies
-    Result:=CompileRequiredPackages(nil,FirstAutoInstallDependency);
+    Result:=CompileRequiredPackages(nil,FirstAutoInstallDependency,[pupAsNeeded]);
     if Result<>mrOk then exit;
     
   finally

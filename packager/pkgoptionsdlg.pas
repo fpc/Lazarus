@@ -303,13 +303,13 @@ begin
   x:=3;
   y:=3;
   w:=(IDEPage.ClientWidth-2*x);
-  h:=85;
+  h:=90;
   with PkgTypeRadioGroup do begin
     SetBounds(x,y,w,h);
-    inc(y,h+5);
+    inc(y,h+10);
   end;
 
-  h:=75;
+  h:=90;
   with UpdateRadioGroup do
     SetBounds(x,y,w,h);
 end;
@@ -381,7 +381,11 @@ begin
 
   // Usage page
   LazPackage.PackageType:=NewPackageType;
-  LazPackage.AutoUpdate:=(UpdateRadioGroup.ItemIndex=0);
+  case UpdateRadioGroup.ItemIndex of
+  2: LazPackage.AutoUpdate:=pupManually;
+  1: LazPackage.AutoUpdate:=pupOnRebuildingAll;
+  else LazPackage.AutoUpdate:=pupAsNeeded;
+  end;
   with LazPackage.UsageOptions do begin
     UnitPath:=UnitPathEdit.Text;
     IncludePath:=IncludePathEdit.Text;
@@ -664,8 +668,9 @@ begin
     Caption:='Update/Rebuild';
     with Items do begin
       BeginUpdate;
-      Add('Automatically re-compile as needed');
-      Add('Manual compilation');
+      Add('Automatically rebuild as needed');
+      Add('Auto rebuild when rebuilding all');
+      Add('Manual compilation (never automatically)');
       EndUpdate;
     end;
     ItemIndex:=0;
@@ -835,10 +840,11 @@ begin
   // Usage page
   ReadPkgTypeFromPackage;
 
-  if LazPackage.AutoUpdate then
-    UpdateRadioGroup.ItemIndex:=0
-  else
-    UpdateRadioGroup.ItemIndex:=1;
+  case LazPackage.AutoUpdate of
+  pupAsNeeded: UpdateRadioGroup.ItemIndex:=0;
+  pupOnRebuildingAll: UpdateRadioGroup.ItemIndex:=1;
+  else UpdateRadioGroup.ItemIndex:=2;
+  end;
     
   with LazPackage.UsageOptions do begin
     UnitPathEdit.Text:=UnitPath;

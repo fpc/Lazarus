@@ -53,8 +53,10 @@ type
              SaveAs: boolean): TModalResult of object;
   TOnCompilePackage =
     function(Sender: TObject; APackage: TLazPackage;
-             CompileAll: boolean): TModalResult of object;
+             CompileClean, CompileRequired: boolean): TModalResult of object;
   TOnInstallPackage =
+    function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
+  TOnUninstallPackage =
     function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
   TOnCreateNewPkgFile =
     function(Sender: TObject;
@@ -109,7 +111,8 @@ type
     procedure ApplyDependencyButtonClick(Sender: TObject);
     procedure CallRegisterProcCheckBoxClick(Sender: TObject);
     procedure ChangeFileTypeMenuItemClick(Sender: TObject);
-    procedure CompileAllClick(Sender: TObject);
+    procedure CompileAllCleanClick(Sender: TObject);
+    procedure CompileCleanClick(Sender: TObject);
     procedure CompileBitBtnClick(Sender: TObject);
     procedure CompilerOptionsBitBtnClick(Sender: TObject);
     procedure FilePropsGroupBoxResize(Sender: TObject);
@@ -132,6 +135,7 @@ type
     procedure RemoveBitBtnClick(Sender: TObject);
     procedure SaveBitBtnClick(Sender: TObject);
     procedure SaveAsClick(Sender: TObject);
+    procedure UninstallClick(Sender: TObject);
     procedure UseMaxVersionCheckBoxClick(Sender: TObject);
     procedure UseMinVersionCheckBoxClick(Sender: TObject);
   private
@@ -159,7 +163,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure DoSave(SaveAs: boolean);
-    procedure DoCompile(CompileAll: boolean);
+    procedure DoCompile(CompileClean, CompileRequired: boolean);
   public
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
   end;
@@ -180,6 +184,7 @@ type
     FOnOpenFile: TOnOpenFile;
     FOnOpenPackage: TOnOpenPackage;
     FOnSavePackage: TOnSavePackage;
+    FOnUninstallPackage: TOnUninstallPackage;
     function GetEditors(Index: integer): TPackageEditorForm;
     procedure ApplyLayout(AnEditor: TPackageEditorForm);
     procedure SaveLayout(AnEditor: TPackageEditorForm);
@@ -203,9 +208,10 @@ type
                            const Params: TAddToPkgResult): TModalResult;
     function SavePackage(APackage: TLazPackage; SaveAs: boolean): TModalResult;
     function CompilePackage(APackage: TLazPackage;
-                            CompileAll: boolean): TModalResult;
+                            CompileClean,CompileRequired: boolean): TModalResult;
     procedure UpdateAllEditors;
     function InstallPackage(APackage: TLazPackage): TModalResult;
+    function UninstallPackage(APackage: TLazPackage): TModalResult;
   public
     property Editors[Index: integer]: TPackageEditorForm read GetEditors;
     property OnCreateNewFile: TOnCreateNewPkgFile read FOnCreateNewFile
@@ -222,6 +228,8 @@ type
                                                  write FOnCompilePackage;
     property OnInstallPackage: TOnInstallPackage read FOnInstallPackage
                                                  write FOnInstallPackage;
+    property OnUninstallPackage: TOnUninstallPackage read FOnUninstallPackage
+                                                 write FOnUninstallPackage;
   end;
   
 var
@@ -428,11 +436,18 @@ begin
 
   AddPopupMenuItem('Save',@SaveBitBtnClick,SaveBitBtn.Enabled);
   AddPopupMenuItem('Save As',@SaveAsClick,not LazPackage.AutoCreated);
+  AddPopupMenuItem('-',nil,true);
   AddPopupMenuItem('Compile',@CompileBitBtnClick,CompileBitBtn.Enabled);
-  AddPopupMenuItem('Compile All',@CompileAllClick,CompileBitBtn.Enabled);
+  AddPopupMenuItem('Recompile clean',@CompileCleanClick,CompileBitBtn.Enabled);
+  AddPopupMenuItem('Recompile all required',@CompileAllCleanClick,CompileBitBtn.Enabled);
+  AddPopupMenuItem('-',nil,true);
   AddPopupMenuItem('Add',@AddBitBtnClick,AddBitBtn.Enabled);
   AddPopupMenuItem('Remove',@RemoveBitBtnClick,RemoveBitBtn.Enabled);
+  AddPopupMenuItem('-',nil,true);
   AddPopupMenuItem('Install',@InstallBitBtnClick,InstallBitBtn.Enabled);
+  AddPopupMenuItem('Uninstall',@UninstallClick,
+          (LazPackage.Installed<>pitNope) or (LazPackage.AutoInstall<>pitNope));
+  AddPopupMenuItem('-',nil,true);
   AddPopupMenuItem('General Options',@OptionsBitBtnClick,OptionsBitBtn.Enabled);
   AddPopupMenuItem('Compiler Options',@CompilerOptionsBitBtnClick,CompilerOptionsBitBtn.Enabled);
 
@@ -651,6 +666,11 @@ end;
 procedure TPackageEditorForm.SaveAsClick(Sender: TObject);
 begin
   DoSave(true);
+end;
+
+procedure TPackageEditorForm.UninstallClick(Sender: TObject);
+begin
+  PackageEditors.UninstallPackage(LazPackage);
 end;
 
 procedure TPackageEditorForm.UseMaxVersionCheckBoxClick(Sender: TObject);
@@ -876,14 +896,19 @@ begin
   end;
 end;
 
-procedure TPackageEditorForm.CompileAllClick(Sender: TObject);
+procedure TPackageEditorForm.CompileAllCleanClick(Sender: TObject);
 begin
-  DoCompile(true);
+  DoCompile(true,true);
+end;
+
+procedure TPackageEditorForm.CompileCleanClick(Sender: TObject);
+begin
+  DoCompile(true,false);
 end;
 
 procedure TPackageEditorForm.CompileBitBtnClick(Sender: TObject);
 begin
-  DoCompile(false);
+  DoCompile(false,false);
 end;
 
 procedure TPackageEditorForm.CompilerOptionsBitBtnClick(Sender: TObject);
@@ -1535,9 +1560,9 @@ begin
   UpdateStatusBar;
 end;
 
-procedure TPackageEditorForm.DoCompile(CompileAll: boolean);
+procedure TPackageEditorForm.DoCompile(CompileClean, CompileRequired: boolean);
 begin
-  PackageEditors.CompilePackage(LazPackage,CompileAll);
+  PackageEditors.CompilePackage(LazPackage,CompileClean,CompileRequired);
   UpdateButtons;
   UpdateTitle;
   UpdateStatusBar;
@@ -1799,10 +1824,10 @@ begin
 end;
 
 function TPackageEditors.CompilePackage(APackage: TLazPackage;
-  CompileAll: boolean): TModalResult;
+  CompileClean, CompileRequired: boolean): TModalResult;
 begin
   if Assigned(OnCompilePackage) then
-    Result:=OnCompilePackage(Self,APackage,CompileAll);
+    Result:=OnCompilePackage(Self,APackage,CompileClean,CompileRequired);
 end;
 
 procedure TPackageEditors.UpdateAllEditors;
@@ -1814,7 +1839,14 @@ end;
 
 function TPackageEditors.InstallPackage(APackage: TLazPackage): TModalResult;
 begin
-  if Assigned(OnInstallPackage) then Result:=OnInstallPackage(Self,APackage);
+  if Assigned(OnInstallPackage) then
+    Result:=OnInstallPackage(Self,APackage);
+end;
+
+function TPackageEditors.UninstallPackage(APackage: TLazPackage): TModalResult;
+begin
+  if Assigned(OnUninstallPackage) then
+    Result:=OnUninstallPackage(Self,APackage);
 end;
 
 { TPackageEditorLayout }
