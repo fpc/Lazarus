@@ -2052,8 +2052,6 @@ Begin
       except
         writeln('Exception occured creating window');
       end;
-      If (FMainForm = Nil) And (Application.MainForm = Nil) Then
-        FMainForm := TForm(Sender);
       FParentWindow := Window;
       Assert(False, 'Trace:CreateComponent - Form Window Handle Value = $' + IntToHex(Window, 8));
       Assert(False, 'Trace:Creating a Form - SetProp');
@@ -2833,6 +2831,9 @@ End;
 
 {
   $Log$
+  Revision 1.115  2003/09/30 13:05:59  mattias
+  removed FMainForm by Micha
+
   Revision 1.114  2003/09/27 09:52:44  mattias
   TScrollBox for win32 intf from Karl
 

@@ -61,7 +61,6 @@ Type
     FToolTipWindow: HWND;
     FAccelGroup: HACCEL;
     FControlIndex: Cardinal; // Win32-API control index
-    FMainForm: TForm;
     FMenu: HMENU; // Main menu/menu bar
     FParentWindow: HWND; // The parent window
     FSubMenu: HMENU; // current sub menu
@@ -186,6 +185,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.44  2003/09/30 13:05:59  mattias
+  removed FMainForm by Micha
+
   Revision 1.43  2003/09/27 09:52:44  mattias
   TScrollBox for win32 intf from Karl
 
