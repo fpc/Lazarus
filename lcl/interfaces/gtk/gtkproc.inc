@@ -381,6 +381,45 @@ end;
 
 {$EndIf}
 
+procedure BeginGDKErrorTrap;
+begin
+  Inc(GdkTrapCalls);
+  if GdkTrapIsSet then
+    exit;
+
+  gdk_error_trap_push; //try to prevent GDK Bad Drawable/X Windows Errors
+                         // from killing us...
+
+  {$IfDef GDK_ERROR_TRAP_FLUSH}
+  gdk_flush; //only for debugging purposes DO NOT enable by default.
+               // slows things down intolerably for actual use, if we ever
+               // have a real need for it, it should be called from that
+               // specific function, since this gets called constantly during
+               // drawing.
+  {$EndIf}
+  
+  GdkTrapIsSet:=true;
+end;
+
+procedure EndGDKErrorTrap;
+var
+  Xerror : gint;
+begin
+  Dec(GdkTrapCalls);
+  if (not GdkTrapIsSet) or (GdkTrapCalls > 0) then
+    exit;
+    
+  Xerror := gdk_error_trap_pop;
+
+  GdkTrapIsSet:=false;
+
+  {$IfDef REPORT_GDK_ERRORS}
+  If (Xerror<>0) then
+    RaiseException('A GDK/X Error occured, this is normally fatal. The error code was : ' + IntToStr(Xerror));
+  {$EndIf}
+end;
+
+
 {------------------------------------------------------------------------------
   procedure RaiseException(const Msg: string);
 
@@ -571,6 +610,7 @@ begin
     PS^.rcPaint := Rect(0,0,0,0)
   else
     PS^.rcPaint := GtkPaintMsg.Data.Rect;
+
   Result.DC:=BeginPaint(THandle(GtkPaintMsg.Data.Widget), PS^);
   Result.PaintStruct:=PS;
   Result.Result:=0;
@@ -667,7 +707,9 @@ begin
     Green := ((AColor      ) and $00FF00) or ((AColor shr 8 ) and $0000FF);
     Blue :=  ((AColor shr 8) and $00FF00) or ((AColor shr 16) and $0000FF);
   end;
+  BeginGDKErrorTrap;
   gdk_colormap_alloc_color(gdk_colormap_get_system, @Result, False, True);
+  EndGDKErrorTrap;
 end;
 
 {------------------------------------------------------------------------------
@@ -691,13 +733,17 @@ begin
       Wnd := SourceDC.Wnd;
       Drawable := SourceDC.Drawable;
       if GC<>nil then begin
+        BeginGDKErrorTrap;
         gdk_gc_unref(GC);
+        EndGDKErrorTrap;
         GC:=nil;
         DCFlags:=DCFlags-[dcfPenSelected];
       end;
       if (SourceDC.GC <> nil) and (Drawable <> nil) then begin
+        BeginGDKErrorTrap;
         gdk_gc_get_values(SourceDC.GC, @GCValues);
         GC := gdk_gc_new_with_values(Drawable, @GCValues, 3 { $3FF});
+        EndGDKErrorTrap;
         DCFlags:=DCFlags-[dcfPenSelected];
       end;
       
@@ -731,6 +777,7 @@ var
   aRect : TGDKRectangle;
   SimpleRGN: PGdkRegion;
 begin
+  BeginGDKErrorTrap;
   If RGN = nil then
     Result := ERROR
   else
@@ -745,6 +792,7 @@ begin
       Result := COMPLEXREGION;
     gdk_region_destroy(SimpleRGN);
   end;
+  EndGDKErrorTrap;
 end;
 
 {------------------------------------------------------------------------------
@@ -760,6 +808,7 @@ var
 begin
   with TDeviceContext(DC) do
   begin
+    BeginGDKErrorTrap;
     gdk_gc_set_clip_region(gc,  nil);
     gdk_gc_set_clip_rectangle (gc,  nil);
     If (ClipRegion <> 0) then begin
@@ -769,7 +818,8 @@ begin
         gdk_gc_set_clip_region(gc,  PGDIObject(ClipRegion)^.GDIRegionObject);
       end;
     end;
-  end;
+    EndGDKErrorTrap;
+   end;
 end;
 
 function GDKRegionAsString(RGN: PGDKRegion): string;
@@ -777,7 +827,9 @@ var
   aRect: TGDKRectangle;
 begin
   Result:=HexStr(Cardinal(RGN),8);
+  BeginGDKErrorTrap;
   gdk_region_get_clipbox(RGN,@aRect);
+  EndGDKErrorTrap;
   Result:=Result+'('+IntToStr(aRect.x)+','+IntToStr(aRect.y)+','
                     +IntToStr(aRect.Width)+','+IntToStr(aRect.Height)+' '
                     +'Type='+IntToStr(RegionType(RGN))+')';
@@ -791,15 +843,19 @@ begin
   GDkRect.y:=ARect.Top;
   GDkRect.Width:=ARect.Right-ARect.Left;
   GDkRect.Height:=ARect.Bottom-ARect.Top;
+  BeginGDKErrorTrap;
   Result:=gdk_region_rectangle(@GDKRect);
+  EndGDKErrorTrap;
 end;
 
 Procedure FreeGDIColor(GDIColor: PGDIColor);
 begin
   if (cfColorAllocated in GDIColor^.ColorFlags) then begin
-    if (GDIColor^.Colormap <> nil) then
+    if (GDIColor^.Colormap <> nil) then begin
+      BeginGDKErrorTrap;
       gdk_colormap_free_colors(GDIColor^.Colormap,@(GDIColor^.Color), 1);
-
+      EndGDKErrorTrap;
+    end;
     //GDIColor.Color.Pixel := -1;
     Exclude(GDIColor^.ColorFlags,cfColorAllocated);
   end;
@@ -832,6 +888,8 @@ begin
       Pixel := 0;
     end;
 
+    BeginGDKErrorTrap;
+
     {with TDeviceContext(DC) do
       If CurrentPalette <> nil then
         GDIColor.Colormap := CurrentPalette^.PaletteColormap
@@ -839,6 +897,9 @@ begin
         GDIColor^.Colormap := GDK_Colormap_get_system;
 
     gdk_colormap_alloc_color(GDIColor^.Colormap, @(GDIColor^.Color),True,True);
+
+    EndGDKErrorTrap;
+    
     Include(GDIColor^.ColorFlags,cfColorAllocated);
   end;
 end;
@@ -863,6 +924,7 @@ var
     FreeGDIColor(GDIColor);
     SyGCValues:=GetSysGCValues(GDIColor^.ColorRef);
     With SyGCValues do begin
+      BeginGDKErrorTrap;
       gdk_gc_set_fill(GC, fill);
       AllocFG := Foreground.Pixel = 0;
       If AllocFG then
@@ -893,18 +955,21 @@ var
       end;
       If AllocFG then
         gdk_colormap_free_colors(GDK_Colormap_get_system, @Foreground,1);
+      EndGDKErrorTrap;
     end;
   end;
 
   Procedure EnsureAsColor;
   begin
     AllocGDIColor(DC, GDIColor);
+    BeginGDKErrorTrap;
     If AsBackground then
       gdk_gc_set_background(GC, @(GDIColor^.Color))
     else begin
       gdk_gc_set_fill(GC, GDK_SOLID);
       gdk_gc_set_foreground(GC, @(GDIColor^.Color));
     end;
+    EndGDKErrorTrap;
   end;
 
 begin
@@ -2040,9 +2105,11 @@ var
   {$ENDIF}
 begin
   TheWindow:=GetControlWindow(TheWidget);
-  if TheWindow<>nil then
-    gdk_window_get_origin(TheWindow,@Result.X,@Result.Y)
-  else begin
+  if TheWindow<>nil then begin
+    BeginGDKErrorTrap;
+    gdk_window_get_origin(TheWindow,@Result.X,@Result.Y);
+    EndGDKErrorTrap;
+  end else begin
     {$IFDEF RaiseExceptionOnNilPointers}
     LCLobject:=GetLCLObject(TheWidget);
     write('GetWidgetOrigin ');
@@ -2082,7 +2149,9 @@ begin
   if ClientWidget<>TheWidget then begin
     ClientWindow:=GetControlWindow(ClientWidget);
     if ClientWindow<>nil then begin
+      BeginGDKErrorTrap;
       gdk_window_get_origin(ClientWindow,@Result.X,@Result.Y);
+      EndGDKErrorTrap;
       exit;
     end;
   end;
@@ -2108,7 +2177,10 @@ begin
     {$ENDIF}
     writeln('WARNING: TranslateGdkPointToClientArea SourceWindow=nil');
   end;
+  BeginGDKErrorTrap;
   gdk_window_get_origin(SourceWindow,@SrcWindowOrigin.X,@SrcWindowOrigin.Y);
+  EndGDKErrorTrap;
+
   ClientAreaWindowOrigin:=GetWidgetClientOrigin(DestinationWidget);
   Src2ClientAreaVector.X:=ClientAreaWindowOrigin.X-SrcWindowOrigin.X;
   Src2ClientAreaVector.Y:=ClientAreaWindowOrigin.Y-SrcWindowOrigin.Y;
@@ -2174,8 +2246,11 @@ procedure SetCursor(AWinControl : TWinControl; Data: Pointer);
 
   procedure DoSetCursor(AWindow: PGdkWindow; Cursor: pGDKCursor);
   begin
-    if Cursor <> nil then
+    if Cursor <> nil then begin
+      BeginGDKErrorTrap;
       gdk_window_set_cursor(AWindow, Cursor);
+      EndGDKErrorTrap;
+    end;
   end;
 
   procedure SetDesigningCursor(AWindow: PGdkWindow; Cursor: PGdkCursor);
@@ -2184,7 +2259,10 @@ procedure SetCursor(AWinControl : TWinControl; Data: Pointer);
   begin
     DoSetCursor(AWindow, Cursor);
     
+    BeginGDKErrorTrap;
     ChildWindows:=gdk_window_get_children(AWindow);
+    EndGDKErrorTrap;
+
     ListEntry:=ChildWindows;
     while ListEntry<>nil do begin
       SetDesigningCursor(PGdkWindow(ListEntry^.Data), Cursor);
@@ -2913,8 +2991,10 @@ begin
   if GDIObject<>nil then begin
     IconImg:=GDIObject^.GDIBitmapObject;
     IconMask:=GDIObject^.GDIBitmapMaskObject;
+    BeginGDKErrorTrap;
     if IconImg<>nil then
       gdk_window_get_size (IconImg, @Width, @Height);
+    EndGDKErrorTrap;
   end;
 end;
 
@@ -3093,11 +3173,13 @@ begin
           (Widget^.Allocation.Height - IconHeight) div 2;
 
   // draw icon
+  BeginGDKErrorTrap;
   gdk_gc_set_clip_mask(gtk_widget_get_style(Widget)^.Black_gc, IconMask);
   gdk_gc_set_clip_origin(gtk_widget_get_style(Widget)^.Black_gc,ALeft,ATop);
   gdk_draw_pixmap(AWindow,gtk_widget_get_style(Widget)^.Black_gc,
      IconImg,0,0,ALeft,ATop,-1,-1);
   gdk_gc_set_clip_mask(gtk_widget_get_style(Widget)^.Black_gc, nil);
+  EndGDKErrorTrap;
 end;
 
 {------------------------------------------------------------------------------
@@ -4657,7 +4739,7 @@ begin
     Colormap := GDK_Colormap_Get_System;
   end;
   
-  gdk_error_trap_push;
+  BeginGDKErrorTrap;
 
   gdk_colormap_query_color(colormap, pixel, @color);
 
@@ -4665,7 +4747,7 @@ begin
   Result.Green := Color.Green shr 8;
   Result.Blue := Color.Blue shr 8;
 
-  gdk_error_trap_pop;
+  EndGDKErrorTrap;
 end;
 
 {------------------------------------------------------------------------------
@@ -4816,6 +4898,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.212  2003/09/25 16:02:16  ajgenius
+  try to catch GDK/X drawable errors and raise an AV to stop killing App
+
   Revision 1.211  2003/09/24 17:23:54  ajgenius
   more work toward GTK2 - partly fix CheckListBox, & MenuItems
 

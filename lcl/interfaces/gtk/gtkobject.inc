@@ -1136,12 +1136,19 @@ var
     if Context.WindowList=nil then
       Context.WindowList:=TList.Create;
     Context.WindowList.Add(PaintWindow);
+    BeginGDKErrorTrap;
 
     if (not gdk_window_is_visible(PaintWindow))
-    or (not gdk_window_is_viewable(PaintWindow)) then exit;
+      or (not gdk_window_is_viewable(PaintWindow))
+    then begin
+      EndGDKErrorTrap;
+      exit;
+    end;
 
     // check if window belongs to another LCL control
     gdk_window_get_user_data(PaintWindow,@UserData);
+    EndGDKErrorTrap;
+
     if (UserData<>nil)
     and (GtkWidgetIsA(PGtkWidget(UserData), GTK_TYPE_WIDGET))
     then begin
@@ -1155,6 +1162,7 @@ var
     AMessage.Result := 0;
 
     {$IFDEF VerboseDsgnPaintMsg}
+    BeginGDKErrorTrap;
     gdk_window_get_size(PaintWindow,@Width,@Height);
     gdk_window_get_origin(PaintWindow,@Left,@Top);
     writeln('SendInternalPaintMessage ',
@@ -1164,6 +1172,7 @@ var
       ' visible=',gdk_window_is_visible(PaintWindow),
       ' viewable=',gdk_window_is_viewable(PaintWindow),
       '');
+    EndGDKErrorTrap;
     {$ENDIF}
     DeliverMessage(AWinControl,AMessage);
 
@@ -1560,6 +1569,9 @@ begin
   end else
     p:=nil; // automatically create transparency mask
   Window:=nil; // use the X root window for colormap
+
+  BeginGDKErrorTrap;
+  
   if Window<>nil then
     ColorMap:=gdk_window_get_colormap(Window)
   else
@@ -1584,7 +1596,8 @@ begin
     gdk_visual_ref(GdiObject^.Visual);
 
   GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, GdkTrue);
-
+  EndGDKErrorTrap;
+  
   TheBitmap.Handle := HBITMAP(GdiObject);
   If GdiObject^.GDIBitmapMaskObject <> nil then
     TheBitmap.Transparent := True
@@ -1618,7 +1631,8 @@ var
       PGDIObject(TMP)^.GDIBitmapMaskObject,
       0);
 
-  Depth := gdk_drawable_get_depth(PGDIObject(TMP)^.GDIPixmapObject);
+    BeginGDKErrorTrap;
+    Depth := gdk_drawable_get_depth(PGDIObject(TMP)^.GDIPixmapObject);
 
     If PGDIObject(TMP)^.Visual <> nil then
       GDK_Visual_UnRef(PGDIObject(TMP)^.Visual);
@@ -1635,6 +1649,7 @@ var
     PGDIObject(TMP)^.Colormap :=
                              gdk_colormap_new(PGDIObject(TMP)^.Visual, GdkTrue);
 
+    EndGDKErrorTrap;
     TheBitmap.Handle := TMP;
     GDK_Pixbuf_Unref(Src);
     Result := True;
@@ -1717,13 +1732,15 @@ Type
       exit;
 
     With PGDIObject(Bitmap)^ do begin
+      BeginGDKErrorTrap;
       gdk_pixbuf_render_pixmap_and_mask(Src,
         GDIPixmapObject,
         GDIBitmapMaskObject,
         0);
 
 
-  Depth := gdk_drawable_get_depth(GDIPixmapObject);
+      Depth := gdk_drawable_get_depth(GDIPixmapObject);
+
       If Visual <> nil then
         GDK_Visual_UnRef(Visual);
 
@@ -1738,6 +1755,8 @@ Type
 
       Colormap := gdk_colormap_new(Visual, GdkTrue);
 
+      EndGDKErrorTrap;
+      
       GDK_Pixbuf_Unref(Src);
     end;
 
@@ -1778,22 +1797,7 @@ var
   FDIB: TDIBSection;
   X, Y: Longint;
   PadSize, Pos, BytesPerPixel: Longint;
-  TrapIsSet: boolean;
   Buf16Bit: word;
-
-  procedure BeginGDKErrorTrap;
-  begin
-    if TrapIsSet then exit;
-    gdk_error_trap_push; //try to prevent GDK from killing us...
-    TrapIsSet:=true;
-  end;
-
-  procedure EndGDKErrorTrap;
-  begin
-    if not TrapIsSet then exit;
-    gdk_error_trap_pop;
-    TrapIsSet:=false;
-  end;
 
   Procedure DataSourceInitialize(Bitmap : PGDIObject; Width : Longint);
   begin
@@ -1891,7 +1895,6 @@ begin
   Assert(False, 'trace:[TgtkObject.InternalGetDIBits]');
   Result := 0;
   if (DC=0) or (Usage=0) then ;
-  TrapIsSet:=false;
   if IsValidGDIObject(Bitmap)
   then begin
     case PGDIObject(Bitmap)^.GDIType of
@@ -1993,6 +1996,9 @@ begin
   Visual:=nil;
   Width:=0;
   Height:=0;
+
+  BeginGDKErrorTrap;
+
   If GDKWindow <> nil then begin
     Visual:=gdk_window_get_visual(GDKWindow);
     GDK_Window_Get_Size(GDKWindow,@Width,@Height);
@@ -2001,7 +2007,8 @@ begin
     Visual := GDK_Visual_Get_System;
     if Visual=nil then exit;
   end;
-
+  
+  EndGDKErrorTrap;
 
   FillChar(Desc^,SizeOf(TRawImageDescription),0);
 
@@ -2146,9 +2153,11 @@ begin
   then exit;
 
   // get gdk_image
+  BeginGDKErrorTrap;
   AnImage:=gdk_image_get(GDKWindow,SourceRect.Left,SourceRect.Top,
                          NewRawImage.Description.Width,
                          NewRawImage.Description.Height);
+  EndGDKErrorTrap;
   if AnImage=nil then begin
     writeln('WARNING: TgtkObject.GetRawImageFromGdkWindow gdk_image_get failed');
     exit;
@@ -2197,7 +2206,11 @@ begin
       ' DataSize=',NewRawImage.DataSize);
     {$ENDIF}
   finally
-    gdk_image_destroy(AnImage);
+    begin
+      BeginGDKErrorTrap;
+      gdk_image_destroy(AnImage);
+      EndGDKErrorTrap;
+    end;
   end;
 
   Result:=true;
@@ -2452,8 +2465,11 @@ var
 begin
   Widget := PgtkWidget(TCustomForm(Sender).Handle);
   AWindow:=GetControlWindow(Widget);
-  if AWindow<>nil then
+  if AWindow<>nil then begin
+    BeginGDKErrorTrap;
     gdk_window_raise(AWindow);
+    EndGDKErrorTrap;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -2982,9 +2998,11 @@ begin
             if (FormIconGdiObject<>nil) then begin
               AWindow:=GetControlWindow(PGtkWidget(Handle));
               if AWindow<>nil then begin
+                BeginGDKErrorTrap;
                 gdk_window_set_icon(AWindow, nil,
                   FormIconGdiObject^.GDIBitmapObject,
                   FormIconGdiObject^.GDIBitmapMaskObject);
+                EndGDKErrorTrap;
               end;
             end;
           end;
@@ -3865,8 +3883,11 @@ begin
       If FixWidget <> Widget then Widget := FixWidget;
 
       // set default background
-      if (Color=clNone) and (FixWidget^.Window<>nil) then
-        gdk_window_set_back_pixmap(FixWidget^.Window,nil,GdkFalse)
+      if (Color=clNone) and (FixWidget^.Window<>nil) then begin
+        BeginGDKErrorTrap;
+        gdk_window_set_back_pixmap(FixWidget^.Window,nil,GdkFalse);
+        EndGDKErrorTrap;
+      end
       else
       if ColorIsStored
       and ((Color and SYS_COLOR_BASE)=0) then begin
@@ -5438,11 +5459,13 @@ begin
   gtk_widget_show(Box);
 
   //drag icons
-  if Drag_Icon = nil then
+  if Drag_Icon = nil then begin
+    BeginGDKErrorTrap;
     Drag_Icon := gdk_pixmap_colormap_create_from_xpm_d (nil,
                          gtk_widget_get_colormap (Result), Drag_Mask,
                          nil, @IMGDrag_Icon);
-
+    EndGDKErrorTrap;
+  end;
   // main menu
   if (ACustomForm.Menu<>nil)
   and (ACustomForm.Menu.HandleAllocated) then begin
@@ -5783,10 +5806,12 @@ begin
        TCustomForm(Sender).BorderStyle := bsNone;
        gtk_widget_realize(p);
        AWindow:=GetControlWindow(P);
+       BeginGDKErrorTrap;
        gdk_window_set_decorations(AWindow,
          GetWindowDecorations(TCustomForm(Sender)));
        gdk_window_set_functions(AWindow,
          GetWindowFunction(TCustomForm(Sender)));
+       EndGDKErrorTrap;
        gtk_widget_show_all(p);
     end;
 
@@ -6208,8 +6233,10 @@ begin
         Func := GetWindowFunction(TCustomForm(Sender));
         gtk_widget_realize(SenderWidget);
         AWindow:=GetControlWindow(SenderWidget);
+        BeginGDKErrorTrap;
         gdk_window_set_decorations(AWindow, decor);
         gdk_window_set_functions(AWindow, func);
+        EndGDKErrorTrap;
       end;
       ShareWindowAccelGroups(SenderWidget);
     end;
@@ -6222,9 +6249,11 @@ begin
       if (AWindow<>nil) then begin
         FormIconGdiObject:=PGDIObject(TCustomForm(Sender).GetIconHandle);
         if (FormIconGdiObject<>nil) then begin
+          BeginGDKErrorTrap;
           gdk_window_set_icon(AWindow, nil,
                   FormIconGdiObject^.GDIBitmapObject,
                   FormIconGdiObject^.GDIBitmapMaskObject);
+          EndGDKErrorTrap;
         end;
       end;
     end;
@@ -6274,7 +6303,9 @@ begin
     on e: Exception do
       writeln('WARNING: TGtkObject.LoadXPMFromLazResource: '+e.Message);
   end;
+  BeginGDKErrorTrap;
   PixmapImg:=gdk_pixmap_create_from_xpm_d(Window,PixmapMask,nil,ImgData);
+  EndGDKErrorTrap;
   FreeMem(ImgData);
 end;
 
@@ -6299,7 +6330,9 @@ begin
     on e: Exception do
       writeln('WARNING: TGtkObject.LoadXPMFromLazResource: '+e.Message);
   end;
+  BeginGDKErrorTrap;
   pixbuf:=gdk_pixbuf_new_from_xpm_data(ImgData);
+  EndGDKErrorTrap;
   FreeMem(ImgData);
 end;
 {$EndIF}
@@ -6705,6 +6738,7 @@ begin
   //gc := gdk_gc_new(PgdkWindow(fWindow));
 
   if fWindow<>nil then begin
+    BeginGDKErrorTrap;
     gdk_draw_pixmap(fwindow,
       gtk_widget_get_style(widget)^.fg_gc[GTK_WIDGET_STATE (widget)],
       pixmap,
@@ -6712,6 +6746,7 @@ begin
       0,0,
       pgtkwidget(widget)^.allocation.width,
       pgtkwidget(widget)^.allocation.height);
+    EndGDKErrorTrap;
   end;
 end;
 
@@ -6743,7 +6778,9 @@ begin
   aDC.SelectedColors := dcscCustom;
   GDKColor:=AllocGDKColor(TLMSetGetPixel(data^).PixColor);
   gdk_gc_set_foreground(aDC.GC, @GDKColor);
+  BeginGDKErrorTrap;
   gdk_draw_point(aDC.Drawable, aDC.GC, X,Y);
+  EndGDKErrorTrap;
 end;
 
 {------------------------------------------------------------------------------
@@ -6776,6 +6813,7 @@ begin
   inc(X,DCOrigin.X);
   inc(Y,DCOrigin.Y);
 
+  BeginGDKErrorTrap;
   gdk_drawable_get_size(aDC.Drawable, @MaxX, @MaxY);
   if (X<0) or (Y<0) or (X>=MaxX) or (Y>=MaxY) then exit;
 
@@ -6794,6 +6832,8 @@ begin
 
   gdk_image_unref(Image);
 
+  EndGDKErrorTrap;
+  
   TLMSetGetPixel(data^).PixColor := TGDKColorToTColor(GDKColor);
 end;
 
@@ -7489,9 +7529,10 @@ begin
 
     If GDIBrushFill <> GDK_Solid then
       If GDIBrushPixmap <> nil then begin
+        BeginGDKErrorTrap;
         gdk_gc_set_fill(GC, GDIBrushFill);
-        gdk_error_trap_push;//Image errors can kill us
         gdk_gc_set_Stipple(GC,GDIBrushPixmap);
+        EndGDKErrorTrap;
       end
   end;
   TDeviceContext(DC).SelectedColors:=dcscBrush;
@@ -7527,8 +7568,10 @@ procedure TGTKObject.SelectGDKPenProps(DC: HDC);
 
   procedure SetDashes(const Dashes: array of gint8);
   begin
+    BeginGDKErrorTrap;
     laz_gdk_gc_set_dashes(TDeviceContext(DC).GC,0,Pgint8(@Dashes[Low(Dashes)]),
       High(Dashes)-Low(Dashes)+1);
+    EndGDKErrorTrap;
   end;
 
 begin
@@ -7548,9 +7591,12 @@ begin
         IsNullPen := GDIPenStyle = PS_NULL;
         if (GDIPenStyle = PS_SOLID) or (GDIPenStyle = PS_INSIDEFRAME)
         then begin
-          gdk_gc_set_line_attributes(GC, GDIPenWidth, GDK_LINE_SOLID, GDK_CAP_NOT_LAST, GDK_JOIN_MITER)
+          BeginGDKErrorTrap;
+          gdk_gc_set_line_attributes(GC, GDIPenWidth, GDK_LINE_SOLID, GDK_CAP_NOT_LAST, GDK_JOIN_MITER);
+          EndGDKErrorTrap;
         end
         else begin
+          BeginGDKErrorTrap;
           gdk_gc_set_line_attributes(GC,GDIPenWidth,GDK_LINE_ON_OFF_DASH,GDK_CAP_NOT_LAST,GDK_JOIN_MITER);
           case GDIPenStyle of
             {$IfDef GTK2}
@@ -7567,6 +7613,7 @@ begin
             //This is DEADLY!!!
             //PS_NULL:       gdk_gc_set_dashes(GC, 0, [0,4], 2);
           end;
+          EndGDKErrorTrap;
         end;
       end;
       Include(TDeviceContext(DC).DCFlags,dcfPenSelected);
@@ -7660,12 +7707,13 @@ begin
       ClientWidget:=TheWidget;
     aDC.SpecialOrigin:=GtkWidgetIsA(ClientWidget,GTK_LAYOUT_GET_TYPE);
     aDC.Drawable := TheWindow;
+    BeginGDKErrorTrap;
     aDC.GC := gdk_gc_new(aDC.Drawable);
     gdk_window_get_size(aDC.Drawable, @X, @Y);
     gdk_gc_set_function(aDC.GC, GDK_COPY);
 
     gdk_gc_get_values(aDC.GC, @Values);
-
+    EndGDKErrorTrap;
     {$Ifdef GTK2}
       if (gtk_widget_get_style(ClientWidget)<>nil) and
         (gtk_widget_get_style(ClientWidget)^.font_desc <> nil)
@@ -8398,6 +8446,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.428  2003/09/25 16:02:16  ajgenius
+  try to catch GDK/X drawable errors and raise an AV to stop killing App
+
   Revision 1.427  2003/09/24 17:23:54  ajgenius
   more work toward GTK2 - partly fix CheckListBox, & MenuItems
 

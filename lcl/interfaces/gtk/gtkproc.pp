@@ -24,6 +24,9 @@ interface
 {off $DEFINE NoGdkPixbufLib}
 {$ENDIF}
 
+{off $DEFINE GDK_ERROR_TRAP_FLUSH}
+{$DEFINE REPORT_GDK_ERRORS}
+
 uses
   SysUtils, Classes,
   {$IFDEF GTK1}
@@ -514,6 +517,9 @@ function gtk_widget_get_ythickness(Style : PGTKStyle) : gint; overload;
 function gtk_widget_get_xthickness(Style : PGTKWidget) : gint; overload;
 function gtk_widget_get_ythickness(Style : PGTKWidget) : gint; overload;
 
+procedure BeginGDKErrorTrap;
+procedure EndGDKErrorTrap;
+
 {$Ifdef GTK1}
   type
      PGtkOldEditable = PGtkEditable;
@@ -593,6 +599,9 @@ function gtk_widget_get_ythickness(Style : PGTKWidget) : gint; overload;
 
 implementation
 
+var
+  GdkTrapIsSet : Boolean;
+  GdkTrapCalls : Integer;
 
 procedure Set_RC_Name(Sender : TObject; AWidget: PGtkWidget);
 var RCName: string;
@@ -630,17 +639,24 @@ end;
 {$I gtkproc.inc}
 {$I gtkcallback.inc}
 
-{$IFDEF GTK1} //only needed to get X fonts
 initialization
+  {$IFDEF GTK1} //only needed to get X fonts
   X11Display := nil;
-  
+  {$EndIf}
+  GdkTrapIsSet := False;
+  GdkTrapCalls := 0;
+
 Finalization
+  GdkTrapCalls := 0;
+  EndGDKErrorTrap;
+
+  {$IFDEF GTK1} //only needed to get X fonts
   {$IfNdef Win32}
   If X11Display <> nil then
     XCloseDisplay(X11Display);
   {$EndIf}
   X11Display := nil;
-{$EndIf}
+  {$EndIf}
 
 end.
 

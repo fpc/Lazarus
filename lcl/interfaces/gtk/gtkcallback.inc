@@ -145,8 +145,10 @@ begin
       Decor := GetWindowDecorations(TheForm);
       Func := GetWindowFunction(TheForm);
 
+      BeginGDKErrorTrap;
       gdk_window_set_decorations(TheWindow, decor);
       gdk_window_set_functions(TheWindow, func);
+      EndGDKErrorTrap;
     end;
     
     if not (csDesigning in TComponent(Data).ComponentState) then
@@ -230,6 +232,7 @@ begin
       //if TheWinControl<>nil then write(' ',TheWinControl.Name,':',TheWinControl.ClassName,' ',HexStr(Cardinal(TheWinControl.Handle),8));
       //writeln(' Widget=',HexStr(Cardinal(Widget),8),' Fixed=',HexStr(Cardinal(GetFixedWidget(Widget)),8),' Main=',HexStr(Cardinal(GetMainWidget(Widget)),8));
       if (TheWinControl<>nil) then begin
+        BeginGDKErrorTrap;
         NewEventMask:=gdk_window_get_events(GetControlWindow(Widget))
                       or WinWidgetInfo^.EventMask;
         gdk_window_set_events(GetControlWindow(Widget),NewEventMask);
@@ -240,6 +243,7 @@ begin
           gdk_window_set_events(GetControlWindow(ClientWidget),NewEventMask);
         end;
         //writeln('BBB1 ',HexStr(Cardinal(NewEventMask),8),' ',HexStr(Cardinal(gdk_window_get_events(Widget^.Window)),8));
+        EndGDKErrorTrap;
       end;
 
       if TheWinControl<>nil then begin
@@ -1828,9 +1832,11 @@ var
   LCLComponent: TObject;
 begin
   if (Data=nil) then ;
+  BeginGDKErrorTrap;
   gdk_window_set_events(GetControlWindow(Widget),
     gdk_window_get_events(GetControlWindow(Widget))
       or GDK_KEY_RELEASE_MASK or GDK_KEY_PRESS_MASK);
+  EndGDKErrorTrap;
   LCLComponent:=GetLCLObject(Widget);
   if LCLComponent is TCommonDialog then
     TCommonDialog(LCLComponent).DoShow;
@@ -2424,7 +2430,11 @@ begin
   
   // get keystates
   if Scroll <> nil 
-  then gdk_window_get_pointer(GetControlWindow(Scroll), @X, @Y, @Mask);
+  then begin
+    BeginGDKErrorTrap;
+    gdk_window_get_pointer(GetControlWindow(Scroll), @X, @Y, @Mask);
+    EndGDKErrorTrap;
+  end;
 
   with Msg do
   begin
@@ -2479,8 +2489,11 @@ begin
   end;
   
   // get keystates
-  if Scroll <> nil then
-    gdk_window_get_pointer(GetControlWindow(Scroll), @X, @Y, @Mask)
+  if Scroll <> nil then begin
+    BeginGDKErrorTrap;
+    gdk_window_get_pointer(GetControlWindow(Scroll), @X, @Y, @Mask);
+    EndGDKErrorTrap;
+  end
   else
     Mask:=0;
 
@@ -2840,6 +2853,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.195  2003/09/25 16:02:16  ajgenius
+  try to catch GDK/X drawable errors and raise an AV to stop killing App
+
   Revision 1.194  2003/09/23 17:52:04  mattias
   added SetAnchors
 

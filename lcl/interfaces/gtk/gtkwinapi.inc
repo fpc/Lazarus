@@ -85,8 +85,10 @@ begin
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
         inc(X,DCOrigin.X);
         inc(Y,DCOrigin.Y);
+        BeginGDKErrorTrap;
         gdk_draw_arc(Drawable, GC, 0, X, Y, Width, Height,
                      Angle1 shl 2, Angle2 shl 2);
+        EndGDKErrorTrap;
       end else
         Result:=false;
     end;
@@ -171,7 +173,9 @@ begin
       AForm:=TCustomForm(GetLCLObject(PgtkWidget(hwnd)));
       if (AForm<>nil) and (AForm is TCustomForm) then
         Screen.MoveFormToZFront(AForm);
+      BeginGDKErrorTrap;
       gdk_window_raise(GdkWindow);
+      EndGDKErrorTrap;
       // how to set the keyboard focus to the raised window?
       //gtk_window_activate_focus(PGtkWindow(hWnd));
     end;
@@ -449,7 +453,7 @@ begin
           Stream.Write(SelData.Data^,SelData.Length);
         end;
       end;
-      
+
       {$IfDef DEBUG_CLIPBOARD}
       writeln('[TgtkObject.ClipboardGetData] END ',' Now=',Now);
       {$EndIf}
@@ -524,6 +528,7 @@ begin
   then exit;
   // request the list of supported formats from the selection owner
   AllID:=gdk_atom_intern('TARGETS',GdkFalse);
+
   SelData:=RequestSelectionData(ClipboardWidget,ClipboardType,AllID);
   
   try
@@ -548,7 +553,6 @@ begin
          and (SelData.{$IfDef GTK2}_Type{$Else}TheType{$EndIf}<>AllID))
     then
       exit;
-  
     Cnt:=SelData.Length div (SelData.Format shr 3);
     if (SelData.Data<>nil) and (Cnt>0) then begin
       Count:=Cnt;
@@ -692,6 +696,7 @@ begin
       ClipboardExtraGtkFormats[ClipboardType][gfTEXT]:=not IsFormatSupported(
                 gdk_atom_intern(PGChar(GtkClipboardFormatName[gfTEXT]),GdkFalse));
     end;
+
     for gtkFormat:=Low(TGtkClipboardFormat) to High(TGtkClipboardFormat) do
       if ClipboardExtraGtkFormats[ClipboardType][gtkFormat] then
         inc(ExpFormatCnt);
@@ -786,7 +791,9 @@ begin
   
 //write('TgtkObject.CreateBitmap->');
   GdiObject := NewGDIObject(gdiBitmap);
-  
+
+  BeginGDKErrorTrap;
+
   // if the bitcount is the system depth create a Pixmap
   // if depth is 1 then a Bitmap
   // else an image
@@ -820,6 +827,7 @@ begin
     end;
 
     GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, GdkTrue);
+    EndGDKErrorTrap;
 
     If BitmapBits <> nil then
       LoadFromPixbufData(hBitmap(GdiObject), BitmapBits);
@@ -902,6 +910,8 @@ begin
     GdiObject := NewGDIObject(gdiBitmap);
     GdiObject^.GDIBitmapType := gbPixmap;
 
+    BeginGDKErrorTrap;
+
     ImgWidth:=RawImage.Description.Width;
     ImgHeight:=RawImage.Description.Height;
     if RawImage.Data<>nil then begin
@@ -927,10 +937,14 @@ begin
         '');
       {$ENDIF}
       if (RawImage.Description.BitsPerPixel<>(cardinal(GdkImage^.bpp) shl 3))
-      then
+      then begin
+        EndGDKErrorTrap;
         RaiseGDBException('TgtkObject.CreateBitmapFromRawImage Incompatible BitsPerPixel');
-      if (ImgDataSize<>GdkImage^.bpl*ImgHeight) then
+      end;
+      if (ImgDataSize<>GdkImage^.bpl*ImgHeight) then begin
+        EndGDKErrorTrap;
         RaiseGDBException('TgtkObject.CreateBitmapFromRawImage Incompatible DataSize');
+      end;
       System.Move(ImgData^,GdkImage^.mem^,ImgDataSize);
       {for y:=0 to ImgHeight-1 do begin
         for x:=0 to ImgWidth-1 do begin
@@ -959,6 +973,7 @@ begin
 
     Result:=true;
   finally
+    EndGDKErrorTrap;
     if not Result then begin
       if Bitmap<>0 then DeleteObject(Bitmap);
       Bitmap:=0;
@@ -992,6 +1007,8 @@ begin
   Assert(False, Format('Trace:> [TgtkObject.CreateBrushIndirect]  Style: %d, Color: %8x', [LogBrush.lbStyle, LogBrush.lbColor]));
 
   sError := '';
+
+  BeginGDKErrorTrap;
 
 //write('CreateBrushIndirect->');
   GObject := NewGDIObject(gdiBrush);
@@ -1065,6 +1082,8 @@ begin
                         , [lbStyle]);
     end;
 
+    EndGDKErrorTrap;
+
     If (sError = '') and not GObject^.IsNullBrush then
       SetGDIColorRef(GObject^.GDIBrushColor,lbColor);
   end;
@@ -1133,6 +1152,7 @@ begin
 
   Depth := -1;
 
+  BeginGDKErrorTrap;
   if (IsValidDC(DC) and (TDeviceContext(DC).Drawable <> nil)) then begin
     DefGdkWindow := TDeviceContext(DC).Drawable;
     Depth := gdk_drawable_get_depth(TDeviceContext(DC).Drawable);
@@ -1146,6 +1166,7 @@ begin
     then begin
       Result := 0;
       WriteLn(Format('ERROR: [TgtkObject.CreateCompatibleBitmap] Illegal depth %d', [Depth]));
+      EndGDKErrorTrap;
       Exit;
     end;
 
@@ -1170,6 +1191,8 @@ begin
       gdk_visual_ref(GdiObject^.Visual);
 
     GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, GdkTrue);
+
+    EndGDKErrorTrap;
 
     Result := HBITMAP(GdiObject);
 
@@ -1634,12 +1657,17 @@ begin
 
     PaletteVisual := nil;
 
+    BeginGDKErrorTrap;
+
     PaletteVisual := gdk_visual_get_best_with_type(VisualType);
     If PaletteVisual = nil then begin
       PaletteVisual := GDK_Visual_Get_System;
       GDK_Visual_Ref(PaletteVisual);
     end;
     PaletteColormap := GDK_Colormap_new(PaletteVisual, GdkTrue);
+
+    EndGDKErrorTrap;
+    
     RGBTable := TDynHashArray.Create(-1);
     RGBTable.OnGetKeyForHashItem:=@GetRGBAsKey;
     IndexTable := TDynHashArray.Create(-1);
@@ -1703,6 +1731,9 @@ begin
   end else
     p:=nil; // automatically create transparency mask
   Window:=nil; // use the X root window for colormap
+
+  BeginGDKErrorTrap;
+
   if Window<>nil then
     ColorMap:=gdk_window_get_colormap(Window)
   else
@@ -1735,7 +1766,9 @@ begin
     if not ok then begin
       DisposeGDIObject(GdiObject);
       GdiObject:=nil;
-    end;
+      EndGDKErrorTrap;
+    end else
+      EndGDKErrorTrap;
   end;
   Result := HBITMAP(GdiObject);
 end;
@@ -1802,10 +1835,12 @@ begin
   R.Y := Y1;
   R.Width := X2 - X1;
   R.Height := Y2 - Y1;
+
   RRGN := gdk_region_new;
   RegionObj:=PGdkRegion(gdk_region_union_with_rect(RRGN,@R));
   GObject^.GDIRegionObject := RegionObj;
   gdk_region_destroy(RRGN);
+
   Result := HRGN(GObject);
   //writeln('TgtkObject.CreateRectRgn A ',GDKRegionAsString(RegionObj));
 end;
@@ -1920,11 +1955,17 @@ function TgtkObject.ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean;
     widget := GTK_WIDGET(combo);
     popup  := GTK_SCROLLED_WINDOW (combo^.popup);
     popwin := GTK_BIN (combo^.popwin);
+
+    BeginGDKErrorTrap;
     gdk_window_get_origin (combo^.entry^.window, @x, @y);
+    EndGDKErrorTrap;
+
     real_height := MIN (combo^.entry^.requisition.height,
                     combo^.entry^.allocation.height);
     y := y + real_height;
+
     avail_height := gdk_screen_height () - y;
+
     New(list_requisition);
     gtk_widget_size_request (combo^.list, list_requisition);
 
@@ -2004,7 +2045,11 @@ begin
       gtk_widget_set_uposition (comboWidget^.popwin,x, y);
       gtk_widget_set_usize(ComboWidget^.popwin,width ,height);
       gtk_widget_realize(ComboWidget^.popwin);
+
+      BeginGDKErrorTrap;
       gdk_window_resize(ComboWidget^.popwin^.window,width,height);
+      EndGDKErrorTrap;
+
       gtk_widget_show (ComboWidget^.popwin);
       gtk_widget_grab_focus(ComboWidget^.popwin);
     end else
@@ -2075,7 +2120,9 @@ begin
           RGN_AND,
           RGN_DIFF:
             begin
+              BeginGDKErrorTrap;
               GDK_Window_Get_Size(Drawable, @X, @Y);
+              EndGDKErrorTrap;
               Clip := CreateRectRGN(0,0,X,Y);
               Tmp := CreateEmptyRegion;
               Result := CombineRGN(Tmp, Clip, RGN, mode);
@@ -2136,19 +2183,23 @@ begin
           end;
         gdiBrush:
           begin
+            BeginGDKErrorTrap;
             if (GDIBrushPixmap <> nil)
             then gdk_bitmap_unref(GDIBrushPixmap);
-            
+            EndGDKErrorTrap;
+
             FreeGDIColor(@GDIBrushColor);
           end;
         gdiBitmap:
           begin
+            BeginGDKErrorTrap;
             if (GDIBitmapObject <> nil)
             then gdk_bitmap_unref(GDIBitmapObject);
             If Visual <> nil then
               gdk_visual_unref(Visual);
             If Colormap <> nil then
               gdk_colormap_unref(Colormap);
+            EndGDKErrorTrap;
           end;
         gdiPen:
           begin
@@ -2161,10 +2212,13 @@ begin
           end;
         gdiPalette:
           begin
+            BeginGDKErrorTrap;
             If PaletteVisual <> nil then
               gdk_visual_unref(PaletteVisual);
             If PaletteColormap <> nil then
               gdk_colormap_unref(PaletteColormap);
+            EndGDKErrorTrap;
+            
             RGBTable.Free;
             IndexTable.Free;
           end;
@@ -2508,6 +2562,8 @@ begin
       end;
 
       SelectedColors := dcscCustom;
+
+      BeginGDKErrorTrap;
       gdk_gc_set_fill(GC, GDK_SOLID);
 
       // Draw outer rect
@@ -2566,6 +2622,7 @@ begin
                            Width, Height);
       end;
 
+      EndGDKErrorTrap;
       // adjust rect if needed
       if (grfFlags and BF_ADJUST) = BF_ADJUST
       then Rect := R;
@@ -2898,6 +2955,9 @@ begin
       // first draw interior in brush color
       SelectGDKBrushProps(DC);
       DCOrigin:=GetDCOffset(TDeviceContext(DC));
+
+      BeginGDKErrorTrap;
+
       If not CurrentBrush^.IsNullBrush then
         gdk_draw_arc(Drawable, GC, 1, x+DCOrigin.X, y+DCOrigin.Y, Width, Height,
                    0, 360 shl 6);
@@ -2912,6 +2972,8 @@ begin
                      0, 360 shl 6);
       end else
         Result := False;
+        
+      EndGDKErrorTrap;
     end;
   end;
 end;
@@ -2986,8 +3048,10 @@ var
     with TDeviceContext(DC) do begin
       if (Dx=nil) then begin
         // no dist array -> write as one block
+        BeginGDKErrorTrap;
         gdk_draw_text(Drawable, UseFont, GC, TxtPt.X, TxtPt.Y,
                       LineStart, LineLen);
+        EndGDKErrorTrap;
       end else begin
         // dist array -> write each char separately
         CharsWritten:=integer(LineStart-Str);
@@ -2997,7 +3061,9 @@ var
         CurX:=TxtPt.X;
         LinePos:=LineStart;
         for i:=1 to LineLen do begin
+          BeginGDKErrorTrap;
           gdk_draw_text(Drawable, UseFont, GC, CurX, TxtPt.Y, LinePos, 1);
+          EndGDKErrorTrap;
           inc(LinePos);
           inc(CurX,CurDistX^);
           inc(CurDistX);
@@ -3009,7 +3075,9 @@ var
         else
           UnderLineLen := gdk_text_width(UseFont,LineStart, LineLen);
         Y := TxtPt.Y + 1;
+        BeginGDKErrorTrap;
         gdk_draw_line(Drawable, GC, TxtPt.X, Y, TxtPt.X+UnderLineLen, Y);
+        EndGDKErrorTrap;
       end;
     end;
   end;
@@ -3077,9 +3145,11 @@ begin
         Height := Rect^.Bottom - Rect^.Top;
         SelectedColors := dcscCustom;
         EnsureGCColor(DC, dccCurrentBackColor, True, False);
+        BeginGDKErrorTrap;
         gdk_draw_rectangle(Drawable, GC, 1,
                            Rect^.Left+DCOrigin.X, Rect^.Top+DCOrigin.Y,
                            Width, Height);
+        EndGDKErrorTrap;
       end;
 
       if UseFont<>nil then begin
@@ -3105,8 +3175,10 @@ begin
               LineLen:=Count;
           end;
         end;
+        BeginGDKErrorTrap;
         If UnRef then
           GDK_Font_UnRef(UseFont);
+        EndGDKErrorTrap;
       end;
     end;
   end;
@@ -3322,9 +3394,11 @@ begin
         SelectedColors:=dcscCustom;
         EnsureGCColor(DC, dccGDIBrushColor, True, False);//Brush Color
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
+        BeginGDKErrorTrap;
         gdk_draw_rectangle(Drawable, GC, 0,
                            ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
                            ARect.Right-ARect.Left, ARect.Bottom-ARect.Top);
+        EndGDKErrorTrap;
       end;
     end;
   end;
@@ -3428,7 +3502,9 @@ begin
  }
 
 Assert(False, 'Trace:GetCaretPos');
+  BeginGDKErrorTrap;
   gdk_window_get_pointer(nil,@lpPoint.X,@lpPoint.y,@modmask);
+  EndGDKErrorTrap;
 Assert(False, 'Trace:GetCaretPos');
   Result := True;
 end;
@@ -3488,6 +3564,7 @@ begin
   if Handle = 0 then Exit;
   Widget := pgtkwidget(Handle);
   ClientWidget := GetFixedWidget(Widget);
+  BeginGDKErrorTrap;
   if (ClientWidget <> Widget) then begin
     ClientWindow:=GetControlWindow(ClientWidget);
     MainWindow:=GetControlWindow(Widget);
@@ -3525,6 +3602,7 @@ begin
     with Widget^.Allocation do
       ARect := Rect(0,0,Width,Height);
   end;
+  EndGDKErrorTrap;
   Result:=true;
 end;
 
@@ -3608,7 +3686,9 @@ begin
   begin
     DCOrigin:=GetDCOffset(TDeviceContext(DC));
     If Not IsValidGDIObject(ClipRegion) then begin
+      BeginGDKErrorTrap;
       gdk_window_get_size(Drawable, @X, @Y);
+      EndGDKErrorTrap;
       lpRect^ := Rect(-DCOrigin.X, -DCOrigin.Y, X-DCOrigin.X, Y-DCOrigin.Y);
       Result := SIMPLEREGION;
     end
@@ -3778,7 +3858,7 @@ end;
 function TgtkObject.GetCursorPos(var lpPoint: TPoint ): Boolean;
 {$IfDef GTK2}
 begin
-  writeln('TGTKObject.TextOut ToDo');
+  writeln('TGTKObject.GetCursorPos ToDo');
   Result:=false;
 end;
 {$Else}
@@ -3789,7 +3869,7 @@ var
   TopList, List: PGList;
 begin
   Result := False;
-
+  BeginGDKErrorTrap;
   TopList := gdk_window_get_toplevels;
   List := TopList;
   while List <> nil do
@@ -3809,6 +3889,7 @@ begin
 
   if TopList <> nil
   then g_list_free(TopList);
+  EndGDKErrorTrap;
 end;
 {$EndIf}
 
@@ -3856,6 +3937,7 @@ begin
     ReleaseDC(0, DC);
   end;
   if not IsValidDC(DC) then exit;
+  BeginGDKErrorTrap;
   with TDeviceContext(DC) do
   Case Index of
   HORZRES : { Horizontal width in pixels }
@@ -3913,6 +3995,7 @@ begin
   else
     writeln('TgtkObject.GetDeviceCaps not supported: Type=',Index);
   end;
+  EndGDKErrorTrap;
 end;
 
 {------------------------------------------------------------------------------
@@ -3944,7 +4027,9 @@ begin
   If IsValidDC(DC) then
   with TDeviceContext(DC) do begin
     if Drawable<>nil then begin
+      BeginGDKErrorTrap;
       gdk_window_get_size(PGdkWindow(Drawable), @P.X, @P.Y);
+      EndGDKErrorTrap;
       Result := true;
     end else begin
       {$IFDEF RaiseExceptionOnNilPointers}
@@ -3973,6 +4058,8 @@ begin
   // Default to 0
   Result := 0;
   
+  BeginGDKErrorTrap;
+  
   TopList := gdk_window_get_toplevels;
   List := TopList;
   while List <> nil do
@@ -3996,6 +4083,8 @@ begin
 
   if TopList <> nil
   then g_list_free(TopList);
+  
+  EndGDKErrorTrap;
 end;
 
 {------------------------------------------------------------------------------
@@ -4147,6 +4236,7 @@ begin
               {dsBitfields: array[0..2] of DWORD;
               dshSection: THandle;
               dsOffset: DWORD;}
+              BeginGDKErrorTrap;
               case GDIBitmapType of
                 gbBitmap:
                   If GDIBitmapObject <> nil then begin
@@ -4180,6 +4270,7 @@ begin
               end else
                 biBitCount := Visual^.Depth;
 
+              EndGDKErrorTrap;
               If biBitCount < 16 then
                 NumColors := Colormap^.Size;
 
@@ -5152,7 +5243,9 @@ begin
   with TDeviceContext(DC) do begin
     DCOrigin:=GetDCOffset(TDeviceContext(DC));
     if Drawable<>nil then begin
+      BeginGDKErrorTrap;
       gdk_window_get_origin(PGdkWindow(Drawable), @(P^.X), @(P^.Y));
+      EndGDKErrorTrap;
       inc(P^.X,DCOrigin.X);
       inc(P^.Y,DCOrigin.Y);
       Result := 1;
@@ -5187,8 +5280,10 @@ begin
     Widget := pgtkwidget(Handle);
     Window:=GetControlWindow(Widget);
     if Window <> nil then Begin
+      BeginGDKErrorTrap;
       gdk_window_get_origin(Window, @X, @Y);
       gdk_window_get_size(Window, @W, @H);
+      EndGDKErrorTrap;
     end
     else
     Begin
@@ -5591,8 +5686,10 @@ begin
         if (CurrentPen^.IsNullPen) then exit;
 
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
+        BeginGDKErrorTrap;
         gdk_draw_line(Drawable, GC, PenPos.X+DCOrigin.X, PenPos.Y+DCOrigin.Y,
                       X+DCOrigin.X, Y+DCOrigin.Y);
+        EndGDKErrorTrap;
         PenPos:= Point(X, Y);
       end else
         Result := False;
@@ -5961,6 +6058,8 @@ begin
       // first draw interior in brush color
       SelectGDKBrushProps(DC);
 
+      BeginGDKErrorTrap;
+      
       If not CurrentBrush^.IsNullBrush then
         if Winding then begin
           // store old clipping
@@ -5991,6 +6090,8 @@ begin
       end else
         Result:=false;
 
+      EndGDKErrorTrap;
+      
       FreeMem(PointArray);
 
       Result := True;
@@ -6026,8 +6127,11 @@ begin
 
       If (dcfPenSelected in DCFlags) then begin
         Result := True;
-        if (not CurrentPen^.IsNullPen) then
+        if (not CurrentPen^.IsNullPen) then begin
+          BeginGDKErrorTrap;
           gdk_draw_lines(Drawable, GC, PointArray, NumPts);
+          EndGDKErrorTrap;
+        end;
       end else
         Result:=false;
         
@@ -6286,6 +6390,7 @@ begin
       // first draw interior in brush color
       SelectGDKBrushProps(DC);
       DCOrigin:=GetDCOffset(TDeviceContext(DC));
+      BeginGDKErrorTrap;
       If not CurrentBrush^.IsNullBrush then
         gdk_draw_rectangle(Drawable, GC, 1, Left+DCOrigin.X, Top+DCOrigin.Y,
                          Width, Height);
@@ -6300,7 +6405,8 @@ begin
                              Width, Height);
       end else
         Result:=false;
-        
+
+      EndGDKErrorTrap;
     end;
   end;
   Assert(False, Format('trace:< [TgtkObject.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
@@ -6789,12 +6895,14 @@ Begin
     end
     else begin
       Window:=GetControlWindow(Widget);
+      BeginGDKErrorTrap;
       if Window<>nil then
         gdk_window_get_origin(Window, @X, @Y)
       else begin
         X:=0;
         Y:=0;
       end;
+      EndGDKErrorTrap;
     end;
   end;
 
@@ -6936,11 +7044,13 @@ begin
           CurrentBrush := PGDIObject(GDIObj);
           if GC <> nil
           then begin
+            BeginGDKErrorTrap;
             gdk_gc_set_fill(GC, GDIBrushFill);
             case GDIBrushFill of
               GDK_STIPPLED: gdk_gc_set_stipple(GC, GDIBrushPixMap);
               GDK_TILED:    gdk_gc_set_tile(GC, GDIBrushPixMap);
             end;
+            EndGDKErrorTrap;
           end;
           SelectedColors := dcscCustom;
         end;
@@ -7927,7 +8037,9 @@ begin
 
   SW_SHOWNORMAL:
     begin
+      BeginGDKErrorTrap;
       gdk_window_show(PgtkWidget(GtkWindow)^.Window);
+      EndGDKErrorTrap;
     end;
 
   SW_MINIMIZE, SW_SHOWMAXIMIZED:
@@ -7996,6 +8108,7 @@ var
     if ((ClipMergeMask <> NIL) {and (ClipMergeMask^.UseMask)}
     and (ClipMergeMask^.GDIBitmapMaskObject <> nil)) then
     begin
+      BeginGDKErrorTrap;
       // create temporary mask with the size of the destination rectangle
       temp_mask := PGdkBitmap(gdk_pixmap_new(NIL, width, height, 1));
       // create temporary GC for mask with no clipping
@@ -8047,15 +8160,18 @@ var
       // position
       gdk_gc_set_clip_mask(DestGC, temp_mask);
       gdk_gc_set_clip_origin(DestGC, x, y);
+      EndGDKErrorTrap;
     end;
   end;
 
   Procedure ResetClipping(DestGC : PGDKGC);
   begin
+    BeginGDKErrorTrap;
     gdk_gc_set_clip_mask (DestGC, nil);
     gdk_gc_set_clip_origin (DestGC, 0,0);
     if (temp_mask <> nil) then gdk_bitmap_unref(temp_mask);
     SelectGDIRegion(DestDC);
+    EndGDKErrorTrap;
   end;
 
   Procedure SetRasterOperation(TheGC : PGDKGC);
@@ -8113,8 +8229,10 @@ var
         ScaleMethod := GDK_INTERP_BILINEAR//GDK_INTERP_HYPER
       else
         ScaleMethod := GDK_INTERP_BILINEAR;
+    BeginGDKErrorTrap;
     ScaleSRC := gdk_pixbuf_get_from_drawable(nil,Scale^.GDIPixmapObject,
       GDK_ColorMap_Get_System,0,0,0,0,SrcWidth,SrcHeight);
+    EndGDKErrorTrap;
     If ScaleSRC = nil then
       exit;
     If (Width > 0) and (Height > 0) then
@@ -8125,8 +8243,10 @@ var
     DeleteObject(ScaleBMP);
     ScaleBMP := CreateCompatibleBitmap(0, Width, Height);
     Scale := PGdiObject(ScaleBMP);
+    BeginGDKErrorTrap;
     gdk_pixbuf_render_pixmap_and_mask(ScaleDest,Scale^.GDIPixmapObject,
       Scale^.GDIBitmapMaskObject,0);
+    EndGDKErrorTrap;
     GDK_Pixbuf_Unref(ScaleDest);
     Result := True;
   {$Else not NoGdkPixbufLib}
@@ -8192,9 +8312,11 @@ var
     gdk_gc_set_clip_rectangle (fGC,  nil);
 
     // copy source into scale buffer
+    BeginGDKErrorTrap;
     gdk_window_copy_area(Scale^.GDIPixmapObject, fGC, 0, 0,
        SRC, XSRC, YSRC, SRCWidth, SRCHeight);
-       
+    EndGDKErrorTrap;
+    
     // restore the raster operation back to SRCCOPY in the destination GC
     GDK_GC_Set_Function(DestGC, GDK_Copy);
 
@@ -8226,8 +8348,12 @@ var
       CurrentBrush := PGdiObject(Brush);
       SelectedColors := dcscCustom;
       SelectGDKBrushProps(DC);
-      If not CurrentBrush^.IsNullBrush then
+
+      If not CurrentBrush^.IsNullBrush then begin
+        BeginGDKErrorTrap;
         gdk_draw_rectangle(Scale^.GDIPixmapObject, GC, 1, 0, 0, Width, Height);
+        EndGDKErrorTrap;
+      end;
       // Restore current brush
       SelectedColors := dcscCustom;
       CurrentBrush := OldCurrentBrush;
@@ -8260,10 +8386,11 @@ var
     SetClipping(DestDevContext.GC, Scale);
 
     // draw image
+    BeginGDKErrorTrap;
     gdk_window_copy_area(DestDevContext.Drawable,
       DestDevContext.GC, X, Y, Scale^.GDIPixmapObject,
       0, 0, Width, Height);
-
+    EndGDKErrorTrap;
     // unset clipping mask for transparency
     ResetClipping(DestDevContext.GC);
 
@@ -8302,10 +8429,12 @@ var
     SetClipping(DestDevContext.GC, Scale);
 
     // draw image
+    BeginGDKErrorTrap;
     gdk_window_copy_area(DestDevContext.Drawable,
       DestDevContext.GC,X, Y, Scale^.GDIPixmapObject,
       0, 0, Width, Height);
-
+    EndGDKErrorTrap;
+    
     // unset clipping mask for transparency
     ResetClipping(DestDevContext.GC);
 
@@ -8574,8 +8703,10 @@ begin
           TxtPt.Y := Y + DCTextMetric.TextMetric.tmAscent;
         {$EndIf}
         SelectGDKTextProps(DC);
+        BeginGDKErrorTrap;
         gdk_draw_text(Drawable, UseFont,
           GC, TxtPt.X+DCOrigin.X, TxtPt.Y+DCOrigin.Y, Str, Count);
+        EndGDKErrorTrap;
         If Underline or StrikeOut then begin
           {Create & select pen of font color}
           LogP.lopnStyle := PS_SOLID;
@@ -8795,6 +8926,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.288  2003/09/25 16:02:16  ajgenius
+  try to catch GDK/X drawable errors and raise an AV to stop killing App
+
   Revision 1.287  2003/09/19 00:41:52  ajgenius
   remove USE_PANGO define since pango now apears to work properly.
 
