@@ -14,7 +14,7 @@ units=interfaces
 implicitunits=gnomeint
 
 [compiler]
-options=-gl
+options=-gl -dgtk1  -dgnome1
 unitdir=../../units ../gtk .
 unittargetdir=../../units/gnome
 

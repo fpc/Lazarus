@@ -33,14 +33,13 @@ interface
 {$ASSERTIONS ON}
 {$endif}
 
-{$DEFINE Gnome1}
 {off $DEFINE NoGdkPixbufLib}
 {off $DEFINE NoGdkImlib}
 
 uses
   InterfaceBase, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} gtk, gdk,
   glib, SysUtils, LMessages, Classes, Controls, Forms, VclGlobals,
-  LCLIntf, LCLType, gtkDef, DynHashArray, LazQueue, GraphType,
+  LCLIntf, LCLType, gtkDef, DynHashArray, lazlinkedlist, GraphType,
   GraphMath, gtkInt, {$Ifndef NoGdkImlib}gdk_imlib,{$EndIf}
   libgnome, libart, libgnomeui;
 
@@ -208,8 +207,8 @@ begin
           //drag icons
           if Drag_Icon = nil then
             Drag_Icon := gdk_pixmap_colormap_create_from_xpm_d (nil,
-               gtk_widget_get_colormap (p), @Drag_Mask,
-               nil, @IMGDrag_Icon);
+               gtk_widget_get_colormap (p), Drag_Mask,
+               nil, IMGDrag_Icon);
         end;
       end;
     csMainMenu:
@@ -246,6 +245,9 @@ end.
 
 {
   $Log$
+  Revision 1.19  2003/09/23 17:19:01  ajgenius
+  fix compiling gnome interface
+
   Revision 1.18  2003/09/18 09:21:03  mattias
   renamed LCLLinux to LCLIntf
 
