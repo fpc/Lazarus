@@ -221,7 +221,7 @@ end;
 function FileIsWritable(const AFilename: string): boolean;
 begin
   {$IFDEF win32}
-  Result:=((FileGetAttr(Filename) and faReadOnly)>0);
+  Result:=((FileGetAttr(AFilename) and faReadOnly)>0);
   {$ELSE}
   Result:={$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.Access(
     AFilename,{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.W_OK);
