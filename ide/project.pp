@@ -254,7 +254,9 @@ type
     function IndexOfUnitWithName(const AnUnitName: string;
        OnlyProjectUnits:boolean; IgnoreUnit: TUnitInfo): integer;
     function IndexOfUnitWithForm(AForm: TComponent;
-       OnlyProjectUnits:boolean):integer;
+       OnlyProjectUnits:boolean; IgnoreUnit: TUnitInfo): integer;
+    function IndexOfUnitWithFormName(const AFormName: string;
+       OnlyProjectUnits:boolean; IgnoreUnit: TUnitInfo): integer;
     function IndexOfFilename(const AFilename: string): integer;
     function UnitWithEditorIndex(Index:integer): TUnitInfo;
     Function UnitWithForm(AForm: TComponent): TUnitInfo;
@@ -1401,13 +1403,32 @@ begin
 end;
 
 function TProject.IndexOfUnitWithForm(AForm: TComponent; 
-  OnlyProjectUnits:boolean):integer;
+  OnlyProjectUnits:boolean; IgnoreUnit: TUnitInfo):integer;
 begin
   Result:=UnitCount-1;
   while (Result>=0) do begin
     if (OnlyProjectUnits and Units[Result].IsPartOfProject) 
-    or (not OnlyProjectUnits) then begin
+    or (not OnlyProjectUnits)
+    and (IgnoreUnit<>Units[Result]) then begin
       if Units[Result].Form=AForm then
+        exit;
+    end;
+    dec(Result);
+  end;
+end;
+
+function TProject.IndexOfUnitWithFormName(const AFormName: string;
+  OnlyProjectUnits: boolean; IgnoreUnit: TUnitInfo): integer;
+begin
+  Result:=UnitCount-1;
+  while (Result>=0) do begin
+    if (OnlyProjectUnits and Units[Result].IsPartOfProject)
+    or (not OnlyProjectUnits)
+    and (IgnoreUnit<>Units[Result]) then begin
+      if (AnsiCompareText(Units[Result].FormName,AFormName)=0)
+      or ((Units[Result].Form<>nil)
+        and (AnsiCompareText(Units[Result].Form.Name,AFormName)=0))
+      then
         exit;
     end;
     dec(Result);
@@ -1880,6 +1901,9 @@ end.
 
 {
   $Log$
+  Revision 1.73  2002/08/23 07:05:15  lazarus
+  MG: started form renaming
+
   Revision 1.72  2002/08/21 07:16:59  lazarus
   MG: reduced mem leak of clipping stuff, still not fixed
 
