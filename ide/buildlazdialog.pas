@@ -113,7 +113,7 @@ uses
 
 const
   MakeModeNames: array[TMakeMode] of string = (
-      'None', 'Build', 'Clean & Build'
+      'None', 'Build', 'Clean+Build'
     );
 
 

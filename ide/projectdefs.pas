@@ -219,6 +219,7 @@ type
     procedure DeleteForwardHistory;
     procedure DeleteLast;
     destructor Destroy; override;
+    function IndexOf(APosition: TProjectJumpHistoryPosition): integer;
     function FindIndexOfFilename(const Filename: string; 
       StartIndex: integer): integer;
     procedure Insert(Index: integer; APosition: TProjectJumpHistoryPosition);
@@ -772,6 +773,14 @@ begin
   inherited Destroy;
 end;
 
+function TProjectJumpHistory.IndexOf(APosition: TProjectJumpHistoryPosition
+  ): integer;
+begin
+  Result:=Count-1;
+  while (Result>=0) and (not APosition.IsEqual(Items[Result])) do
+    dec(Result);
+end;
+
 procedure TProjectJumpHistory.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 var i, NewCount, NewHistoryIndex: integer;
@@ -896,7 +905,7 @@ begin
       //  ' New=',APosition.CaretXY.X,',',APosition.CaretXY.Y,' ',APosition.Filename,
       //  ' ');
       Insert(Index,APosition);
-      if (HistoryIndex>=0) and (HistoryIndex=Index-1) then
+      if (HistoryIndex<0) or (HistoryIndex=IndexOf(APosition)-1) then
         inc(FHistoryIndex);
     end;
     //writeln('  HistoryIndex=',HistoryIndex);
