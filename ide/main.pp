@@ -503,7 +503,7 @@ type
     property SelectedComponent : TRegisteredComponent 
       read FSelectedComponent write FSelectedComponent;
     procedure DoBringToFrontFormOrUnit;
-    procedure SetDesigning(Control : TComponent; Value : Boolean);
+    procedure SetDesigning(AComponent: TComponent; Value : Boolean);
 
     // editor and environment options
     procedure SaveEnvironment;
@@ -1444,10 +1444,10 @@ Begin
   DoBringToFrontFormOrUnit;
 end;
 
-Procedure TMainIDE.SetDesigning(Control : TComponent; Value : Boolean);
+Procedure TMainIDE.SetDesigning(AComponent: TComponent; Value : Boolean);
 Begin
-  Control.SetDesigning(Value);
-  if Value then CNSendMessage(LM_SETDESIGNING, Control, nil);
+  AComponent.SetDesigning(Value);
+  if Value then CNSendMessage(LM_SETDESIGNING, AComponent, nil);
 end;
 
 {------------------------------------------------------------------------------}
@@ -7288,6 +7288,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.406  2002/10/06 17:55:43  lazarus
+  MG: JITForms now sets csDesigning before creation
+
   Revision 1.405  2002/10/06 16:46:44  lazarus
   MG: added selection changes checks
 
