@@ -1033,9 +1033,6 @@ type
   TToolBar = class;
   TToolButton = class;
 
-  TToolButtonState = (tbsChecked, tbsPressed, tbsEnabled, tbsHidden,
-    tbsIndeterminate, tbsWrap, tbsEllipses, tbsMarked);
-
   { TToolButtonActionLink }
 
   TToolButtonActionLink = class(TControlActionLink)
@@ -2238,6 +2235,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.114  2004/02/22 16:22:53  mattias
+  fixed old toolbar compilation
+
   Revision 1.113  2004/02/22 16:20:29  mattias
   fixed old toolbar compilation
 

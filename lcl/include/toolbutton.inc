@@ -657,6 +657,14 @@ end;
 
 {$ELSE NewToolBar}
 
+const
+  ButtonStates: array[TToolButtonState] of Word = (TBSTATE_CHECKED,
+    TBSTATE_PRESSED, TBSTATE_ENABLED, TBSTATE_HIDDEN, TBSTATE_INDETERMINATE,
+    TBSTATE_WRAP, TBSTATE_ELLIPSES, TBSTATE_MARKED);
+
+  ButtonStyles: array[TToolButtonStyle] of Byte = (TBSTYLE_BUTTON, TBSTYLE_CHECK,
+    TBSTYLE_DROPDOWN, TBSTYLE_SEP, TBSTYLE_SEP);
+
 { TToolButton }
 
 constructor TToolButton.Create(AOwner: TComponent);
@@ -1121,6 +1129,9 @@ end;
 
 {
   $Log$
+  Revision 1.13  2004/02/22 16:22:53  mattias
+  fixed old toolbar compilation
+
   Revision 1.12  2004/02/22 16:20:29  mattias
   fixed old toolbar compilation
 
