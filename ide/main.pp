@@ -187,7 +187,6 @@ type
     //these numbers are used to determine where the mouse was when the button was pressed
     MouseDownPos, MouseUpPos, LastMouseMovePos : TPoint;
     MouseDownControl: TObject;
-    bpressed : Integer;
   end;
 
 
@@ -1224,69 +1223,6 @@ begin
   FormEditor1.AddSelected(AComponent);
 end;
 
-{------------------------------------------------------------------------------}
-{------------------------------------------------------------------------------}
-{
-   Currently Unused !
-          Used when we a control is clicked.  This is used
-            to update the Object Inspector.
-}
-{------------------------------------------------------------------------------}
-{------------------------------------------------------------------------------}
-{------------------------------------------------------------------------------}
-{Procedure TForm1.ClickOnControl(Sender : TObject);
-// We clicked on the form.  Let's see what the active selection is in the IDE
-// control bar. If it's the pointer, then we set the
-// FormEditor1.SelectedComponents to Sender,
-// otherwise we drop a control and call the CreateComponent function.
-var
-  ParentCI, NewCI : TComponentInterface;
-  CurDesigner:TDesigner;
-  NewLeft, NewTop, NewWidth, NewHeight : Integer;
-Begin
-  if BPressed = 1 then
-  Begin //mouse button pressed.
-    FormEditor1.ClearSelected;
-    Writeln('Clicked on the control!!!!!  Control name is '+TControl(sender).name);
-    // this will automatically inform the object inspector
-    FormEditor1.AddSelected(TComponent(Sender));
-  end
-  else
-  Begin  //add a new control
-    ParentCI:=TComponentInterface(FormEditor1.FindComponent(TComponent(Sender)));
-    if Assigned(ParentCI) then begin
-      NewLeft:=Min(MouseDownPos.X,MouseUpPos.X);
-      NewWidth:=Abs(MouseUpPos.X-MouseDownPos.X);
-      NewTop:=Min(MouseDownPos.Y,MouseUpPos.Y);
-      NewHeight:=Abs(MouseUpPos.Y-MouseDownPos.Y);
-      NewCI := TComponentInterface(FormEditor1.CreateComponent(ParentCI,
-        TComponentClass(TIdeComponent(ideComplist.items[bpressed-1]).ClassType)
-        ,NewLeft,NewTop,NewWidth,NewHeight));
-      NewCI.SetPropByName('Visible',True); //Control).Visible := True;
-
-      //set the ONCLICK event so we know when the control is selected;
-      TControl(NewCI.Control).OnClick := @ClickOnControl;
-
-      if NewCI.Control is TControl then begin
-        NewCI.SetPropByName('OnClick',@ClickOnControl);
-        // select form in Designer
-        if ParentCI.Control is TForm then
-          CurDesigner:=TDesigner(TForm(ParentCI.Control).Designer)
-        else if Assigned(ParentCI.Control.Owner)
-        and (ParentCI.Control.Owner is TForm) then
-          CurDesigner:=TDesigner(TForm(ParentCI.Control.Owner).Designer)
-        else
-          CurDesigner:=nil;
-        if (CurDesigner<>nil) then begin
-          CurDesigner.ControlSelection.Clear;
-          CurDesigner.ControlSelection.Add(TControl(NewCI.Control));
-        end;
-      end;
-    end;
-  end;
-
-  ControlClick(Notebook1);  //this resets it to the mouse.
-end;}
 
 {------------------------------------------------------------------------------}
 {------------------------------------------------------------------------------}
@@ -1314,7 +1250,7 @@ Begin
   Writeln(TComponent(Sender).Name+'.OnMouseDown at '+inttostr(MouseDownPos.x)
     +','+inttostr(MouseDownPos.Y)+' x='+IntToStr(x));
 
-  if BPressed = 1 then
+  if SelectedComponent = nil then
   Begin //mouse pointer button pressed.
     if not (Sender is TCustomForm) then begin
       SelectOnlyThisComponent(TComponent(Sender));
@@ -1334,7 +1270,7 @@ Begin
   end else begin
     CurDesigner:=FindDesigner(TComponent(Sender));
     if Assigned(MouseDownControl) then begin
-      if BPressed = 1 then begin
+      if SelectedComponent = nil then begin
         // mouse pointer button pressed
         if not (Sender is TCustomForm) then begin
           // move selection
@@ -1401,6 +1337,7 @@ Begin
       end;
       NewCI := TComponentInterface(FormEditor1.CreateComponent(ParentCI,SelectedComponent.ComponentClass
         ,NewLeft,NewTop,NewWidth,NewHeight));
+      NewCI.SetPropByName('Designing',True);
       NewCI.SetPropByName('Visible',True); //Control).Visible := True;
 
       ObjectInspector1.FillComponentComboBox;
@@ -1489,10 +1426,7 @@ Procedure TForm1.FileOpenedEvent(Sender : TObject; Filename : String);
 var
 MenuItem : TMenuItem;
 Begin
-//Writeln('OPENFILE... = '+OPenFilePopupmenu.Items[0].Caption);
-//if OPenFilePopupmenu.Items[0].Caption = 'No files have been opened' then
-// OPenFilePopupmenu.Items.Delete(0);
-Writeln('Filename is '+filename);
+//Add a new menuitem to the popup that displays the filename.
   MenuItem := TMenuItem.Create(Self);
   MenuItem.Caption := Filename;
   MenuItem.OnClick := @SourceNotebook.OpenClicked;
@@ -1809,8 +1743,7 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.26  2000/12/29 17:50:52  lazarus
-  Added a dropdown image to the resource and a downarrow button by the OPEN button.
+  Revision 1.27  2000/12/29 19:20:27  lazarus
   Shane
 
   Revision 1.25  2000/12/29 13:35:50  lazarus

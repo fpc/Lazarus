@@ -979,9 +979,14 @@ end;
 procedure TgtkObject.SetText(Child, Data: Pointer);
 type
    pMsg = ^TLMSetControlText;
+var
+   num : Integer;
 begin
    case pMsg(Data)^.fCompStyle of
-      csStatusBar : gtk_statusbar_push(PGTKStatusBar(Child),pMsg(Data)^.Panel,pMsg(Data)^.Userdata);
+      csStatusBar : begin
+                    num := gtk_statusbar_get_context_id(PGTKStatusBar(Child),PChar(inttostr(pMsg(Data)^.panel)));
+                    gtk_statusbar_push(PGTKStatusBar(Child),num,pMsg(Data)^.Userdata);
+                    end
    else        
       writeln ('STOPPOK: [TGtkObject.SetText] Possible superfluous use of SetText, use SetLabel instead!');
    end;
@@ -1834,15 +1839,6 @@ begin
 
       csSTATUSBAR :
       begin
-         Writeln('*****************************');
-         Writeln('*****************************');
-         Writeln('*****************************');
-         Writeln('*****************************');
-         Writeln('*******gtk_status_bar********');
-         Writeln('*****************************');
-         Writeln('*****************************');
-         Writeln('*****************************');
-         Writeln('*****************************');
          P := gtk_statusbar_new();
          Assert(False, 'Trace:In CreateComponent --StatusBar');
       end;
@@ -2697,8 +2693,7 @@ end;
  { =============================================================================
 
   $Log$
-  Revision 1.12  2000/12/29 18:33:54  lazarus
-  TStatusBar's create and destroy were not set to override TWinControls so they were never called.
+  Revision 1.13  2000/12/29 19:20:27  lazarus
   Shane
 
   Revision 1.11  2000/12/22 19:55:38  lazarus

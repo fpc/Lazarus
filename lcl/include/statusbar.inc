@@ -8,7 +8,7 @@ begin
  fCompStyle := csStatusBar;
  Align := alBottom;
 
- Setbounds(0,TWinControl(AOwner).Height-15,TWInControl(AOwner).Width,15);
+ Setbounds(0,TWinControl(AOwner).Height-21,TWInControl(AOwner).Width,20);
 
 
  FContext := 0;
@@ -26,7 +26,7 @@ begin
    if FSimpleText <> value then
    begin
       FSimpleText := Value;
-      Msg.Panel := 0;
+      Msg.Panel := length(Value);//0;
       Msg.fCompStyle := fCompStyle;
       gLAbel := StrAlloc(length(value) + 1);
       StrPCopy(gLabel,Value);
