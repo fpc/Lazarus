@@ -20,7 +20,7 @@ uses
   SynEditAutoComplete, SynhighlighterHTML, SynhighlighterCPP, SynHighlighterXML,
   SynHighlighterLFM, SynHighlighterPerl, SynHighlighterMulti, SynRegExpr,
   SynEditExport, SynExportHTML, SynMemo, SynMacroRecorder, SynEditPlugins,
-  SynEditRegexSearch;
+  SynEditRegexSearch, SynHighlighterPosition;
 
 implementation
 
@@ -29,6 +29,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.14  2002/12/02 16:38:13  mattias
+  started position highlighter
+
   Revision 1.13  2002/11/29 19:59:40  mattias
   added syneditregexsearch.pas
 

@@ -212,7 +212,7 @@ type
 
   { TMenu }
 
-  TMenu = class(TComponent) //TWinControl)
+  TMenu = class(TComponent)
   private
     FImageChangeLink: TChangeLink;
     FImages: TCustomImageList;
@@ -282,7 +282,7 @@ type
 
 
   // will be removed
-  TMenuBar = class(TComponent) //TWinControl)
+  TMenuBar = class(TComponent)
   private
     //fMenu: TMenuItem;
     //fOwner : TControl;
@@ -361,6 +361,9 @@ end.
 
 {
   $Log$
+  Revision 1.35  2002/12/02 16:38:13  mattias
+  started position highlighter
+
   Revision 1.34  2002/11/12 10:16:14  lazarus
   MG: fixed TMainMenu creation
 
