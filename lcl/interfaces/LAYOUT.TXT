@@ -12,11 +12,6 @@ interfaces
   |
   +--- ...
   |
-  +--- units
-
-interfaces:
-  The platform independent code to interface between the 
-  LCL and the graphic platform should go here.
 
 interfaces/gtk:
   All gtk specific code goes here.
@@ -27,5 +22,3 @@ interfaces/qt:
 interfaces/win32:
   All win32 specific code goes here.
 
-interfaces/units:
-  Containst the compiled units.

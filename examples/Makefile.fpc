@@ -3,7 +3,8 @@
 #
 
 [targets]
-programs=hello notebk comdialogs progressbar trackbar listboxtest
+programs=hello notebk comdialogs progressbar trackbar listboxtest \
+         bitbutton combobox checkbox
 
 [clean]
 units=$(basename $(wildcard *$(PPUEXT))) 
@@ -12,36 +13,12 @@ units=$(basename $(wildcard *$(PPUEXT)))
 packages=fcl gtk
 
 [dirs]
-fpcdir=../..
 targetdir=.
-##############################
-# replace following lines by the next line as soon
-# as the compiler dependency bug is fixed 
-##############################
-#unitdir=. ../lcl/units components/units 
-##############################
-unitdir=. ../lcl/units ../lcl ../lcl/interfaces/units ../lcl/interfaces/gtk ../components/$(THE_EDIT)
-incdir=. ../lcl/include
-##############################
+unitdir=. ../lcl/units ../components/units 
 
 [presettings]
-##############################
-# remove following lines by the next line as soon
-# as the compiler dependency bug is fixed 
-##############################
-ifneq (,$(findstring NEW_EDITOR,$(OPT)))
-  THE_EDIT=mwedit92
-else
-  THE_EDIT=mwedit
-endif
-##############################
-
-
 
 [libs]
-#libgcc=1
-#libother=1
-
 
 [rules]
 cleartarget:

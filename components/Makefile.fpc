@@ -6,7 +6,6 @@
 dirs=$(THE_EDIT)
 
 [dirs]
-fpcdir=../..
 
 [presettings]
 ifneq (,$(findstring NEW_EDITOR,$(OPT)))

@@ -39,6 +39,11 @@ begin
   Result := False;
 end;
 
+function TInterfaceBase.CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP;
+begin
+  Result := 0;
+end;
+
 function TInterfaceBase.CreateCompatibleDC(DC: HDC): HDC;
 begin
   Result := 0;
@@ -400,6 +405,12 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2000/09/10 19:58:47  lazarus
+  MWE:
+    * Updated makefiles for FPC release 1.0  binary units
+    * Changed creation, now LCL unit distributions are possible
+    * Moved interfaces.pp from LCL to interface dirs
+
   Revision 1.5  2000/08/14 12:31:12  lazarus
   Minor modifications for SynEdit .
   Shane

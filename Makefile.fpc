@@ -13,40 +13,23 @@ units=$(basename $(wildcard *$(PPUEXT)))
 packages=fcl gtk
 
 [dirs]
-fpcdir=..
 targetdir=.
-##############################
-# replace following lines by the next line as soon
-# as the compiler dependency bug is fixed 
-##############################
-#unitdir=. lcl/units components/units ./designer
-#incdir=. ./include ./include/$(OS_TARGET)
-##############################
-unitdir=. lcl/units lcl lcl/interfaces/units lcl/interfaces/gtk components/$(THE_EDIT) ./designer
-incdir=. ./include ./include/$(OS_TARGET) lcl/include
-##############################
+unitdir=. lcl/units components/units ./designer
+incdir=. ./include ./include/$(OS_TARGET)
 
 [presettings]
-##############################
-# remove following lines by the next line as soon
-# as the compiler dependency bug is fixed 
-##############################
-ifneq (,$(findstring NEW_EDITOR,$(OPT)))
-  THE_EDIT=mwedit92
-else
-  THE_EDIT=mwedit
-endif
-##############################
-
-
-[libs]
-#libgcc=1
-#libother=1
 
 [rules]
 .PHONY: examples lcl components ide
 
-lcl: lcl_all
+# temp hack        
+# make 6 times to solve all unit dependencies        
+lcl: lcl_all 
+        $(MAKE) -C lcl
+        $(MAKE) -C lcl
+        $(MAKE) -C lcl
+        $(MAKE) -C lcl
+        $(MAKE) -C lcl
 
 examples: lcl
         $(MAKE) -C examples

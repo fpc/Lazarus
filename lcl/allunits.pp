@@ -1,11 +1,12 @@
 program allunits;
 
 uses
-	buttons,    extctrls,        interfaces,   registry,   vclglobals, 
+  interfacebase, interfaces,
+	buttons,    extctrls,        registry,     vclglobals, 
 	clipbrd,    filectrl,        forms,        lcllinux,   spin, 
 	comctrls,   graphics,        lmessages,    stdctrls, 
 	controls,   imglist,         menus,        toolwin, 
-	dialogs,    interfacebase,   messages,     utrace;
+	dialogs,    messages,     utrace;
 	
 begin
 end.

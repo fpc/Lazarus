@@ -4,18 +4,17 @@
 
 [targets]
 programs=allunits
-dirs=interfaces
 
 [require]
 packages=fcl gtk
 
 [clean]
 units=$(basename $(wildcard $(UNITTARGETDIR)/*$(PPUEXT)))
+files=$(wildcard $(UNITTARGETDIR)/*$(OEXT))
 
 [dirs]
-fpcdir=../..
 unittargetdir=./units
-unitdir= ./units ./interfaces/units ./interfaces/gtk
+unitdir=$(UNITTARGETDIR) ./interfaces/$(LCLPLATFORM) 
 incdir=./include
 
 [install]
@@ -23,11 +22,15 @@ incdir=./include
 [libs]
 
 [presettings]
+ifndef LCLPLATFORM
+LCLPLATFORM=gtk
+endif
+
+[defaults]
 
 [rules]
-
 cleartarget:
         -$(DEL) allunits$(EXEEXT)
 
-all: cleartarget interfaces_all allunits$(EXEEXT)
+all: cleartarget allunits$(EXEEXT)
         -$(DEL) allunits$(EXEEXT)

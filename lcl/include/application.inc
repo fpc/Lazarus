@@ -44,8 +44,8 @@ end;
 {       TApplication Messagebox     }
 {------------------------------------------------------------------------------}
 function TApplication.MessageBox(Text, Caption : PChar; Flags : Longint) : Integer;
-Begin
-  Result:= InterfaceObject.MessageBox(Handle, Text, Caption, Flags);
+begin
+  Result:= LCLLinux.MessageBox(Handle, Text, Caption, Flags);
 end;
 
 {------------------------------------------------------------------------------}
@@ -238,6 +238,12 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2000/09/10 19:58:47  lazarus
+  MWE:
+    * Updated makefiles for FPC release 1.0  binary units
+    * Changed creation, now LCL unit distributions are possible
+    * Moved interfaces.pp from LCL to interface dirs
+
   Revision 1.1  2000/07/13 10:28:24  michael
   + Initial import
 
