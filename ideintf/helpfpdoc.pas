@@ -26,7 +26,7 @@ unit HelpFPDoc;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, HelpIntf, HelpHTML;
+  Classes, SysUtils, LCLProc, FileUtil, MacroIntf, HelpIntf, HelpHTML;
 
 type
   { TFPDocHTMLHelpDatabase }
@@ -97,7 +97,7 @@ begin
           TheBaseURL:=NewNode.URL;
           //debugln('A TheBaseURL=',TheBaseURL);
           if (HelpDatabases<>nil) then
-            HelpDatabases.SubstituteMacros(TheBaseURL);
+            IDEMacros.SubstituteMacros(TheBaseURL);
           //debugln('B TheBaseURL=',TheBaseURL);
           TheBaseURL:=ExtractURLDirectory(TheBaseURL);
           //debugln('C TheBaseURL=',TheBaseURL);

@@ -36,7 +36,7 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, StdCtrls, Dialogs,
   CodeToolManager, CodeAtom, CodeCache, CustomCodeTool, CodeTree,
   PascalParserTool, FindDeclarationTool,
-  HelpIntf, HelpHTML, HelpFPDoc,
+  HelpIntf, HelpHTML, HelpFPDoc, MacroIntf,
   LazarusIDEStrConsts, TransferMacros, DialogProcs, IDEOptionDefs,
   EnvironmentOpts, AboutFrm, MsgView, Project, PackageDefs, MainBar,
   HelpOptions, MainIntf;
@@ -71,8 +71,6 @@ type
     function GetBaseDirectoryForBasePathObject(BasePathObject: TObject): string; override;
     function ShowHelpForSourcePosition(Query: THelpQuerySourcePosition;
                                        var ErrMsg: string): TShowHelpResult; override;
-    function StrHasMacros(const s: string): boolean; override;
-    function SubstituteMacros(var s: string): boolean; override;
   end;
   
   
@@ -296,7 +294,7 @@ begin
     Result:=TProject(BasePathObject).ProjectDirectory
   else if BasePathObject is TLazPackage then
     Result:=TLazPackage(BasePathObject).Directory;
-  SubstituteMacros(Result);
+  IDEMacros.SubstituteMacros(Result);
 end;
 
 function TIDEHelpDatabases.ShowHelpForSourcePosition(
@@ -304,18 +302,6 @@ function TIDEHelpDatabases.ShowHelpForSourcePosition(
 begin
   Result:=HelpBoss.ShowHelpForSourcePosition(Query.Filename,
                                                    Query.SourcePosition,ErrMsg);
-end;
-
-function TIDEHelpDatabases.StrHasMacros(const s: string): boolean;
-begin
-  Result:=MainIDEInterface.MacroList.StrHasMacros(s);
-end;
-
-function TIDEHelpDatabases.SubstituteMacros(var s: string): boolean;
-begin
-  //debugln('TIDEHelpDatabases.SubstituteMacros s="',s,'" ');
-  Result:=MainIDEInterface.MacroList.SubstituteStr(s);
-  //debugln('TIDEHelpDatabases.SubstituteMacros END s="',s,'"');
 end;
 
 { THelpManager }

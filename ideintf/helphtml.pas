@@ -23,7 +23,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Process, FileUtil, ConfigStorage,
-  PropEdits, ObjInspStrConsts, HelpIntf;
+  PropEdits, ObjInspStrConsts, MacroIntf, HelpIntf;
   
 type
   { THTMLHelpDatabase }
@@ -148,7 +148,7 @@ begin
   if BaseURL<>'' then begin
     Result:=BaseURL;
     if (HelpDatabases<>nil) then
-      HelpDatabases.SubstituteMacros(Result);
+      IDEMacros.SubstituteMacros(Result);
   end else if (BasePathObject<>nil) and (Databases<>nil) then
     Result:=Databases.GetBaseURLForBasePathObject(BasePathObject);
   if (Result<>'') and (Result[length(Result)]<>'/') then

@@ -1,4 +1,5 @@
-{
+{ Copyright (C) 2004
+
  *****************************************************************************
  *                                                                           *
  *  See the file COPYING.modifiedLGPL, included in this distribution,        *
@@ -23,7 +24,7 @@ uses
   ComponentEditors, GraphPropEdits, ListViewPropEdit, ImageListEditor,
   ComponentTreeView, ActionsEditor, HelpIntf, TextTools, FormEditingIntf,
   SrcEditorIntf, ComponentReg, PackageIntf, HelpHTML, ConfigStorage,
-  HelpFPDoc, ProjectIntf, LazIDEIntf, NewItemIntf;
+  HelpFPDoc, ProjectIntf, LazIDEIntf, NewItemIntf, MacroIntf;
 
 implementation
 

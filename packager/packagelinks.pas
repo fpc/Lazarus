@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, SysUtils, OldAvLTree, Laz_XMLCfg, LCLProc, FileUtil, IDEProcs,
-  EnvironmentOpts, PackageDefs, LazConf;
+  MacroIntf, EnvironmentOpts, PackageDefs, LazConf;
   
 type
 
@@ -48,7 +48,7 @@ type
     
     Global: These are collected from the lazarus source directory.
             EnvironmentOptions.LazarusDirectory+'packager/globallinks/*.lpl'
-            This way packages can install/uninstal themselves to one lazarus
+            This way packages can install/uninstall themselves to one lazarus
             source directory, and this lazarus directory can then be shared
             by several users/configs.
             
@@ -101,9 +101,9 @@ type
 
   TPackageLinks = class
   private
-    FGlobalLinks: TAVLTree; // tree of TPackageLink sorted for ID
+    FGlobalLinks: TAVLTree; // tree of global TPackageLink sorted for ID
     FModified: boolean;
-    FUserLinks: TAVLTree; // tree of TPackageLink sorted for ID
+    FUserLinks: TAVLTree; // tree of user TPackageLink sorted for ID
     fUpdateLock: integer;
     FStates: TPkgLinksStates;
     function FindLeftMostNode(LinkTree: TAVLTree;
@@ -141,7 +141,7 @@ type
   end;
   
 var
-  PkgLinks: TPackageLinks;
+  PkgLinks: TPackageLinks; // set by the PkgBoss
 
 
 implementation
@@ -272,7 +272,7 @@ procedure TPackageLinks.UpdateGlobalLinks;
   function ParseFilename(const Filename: string;
     var PkgName: string; var PkgVersion: TPkgVersion): boolean;
   // checks if filename has the form
-  // identifier-int.int.int.int.lpl
+  // <identifier>-<version>.lpl
   var
     StartPos: Integer;
     i: Integer;
@@ -280,20 +280,23 @@ procedure TPackageLinks.UpdateGlobalLinks;
     ints: array[1..4] of integer;
   begin
     Result:=false;
+    if CompareFileExt(Filename,'.lpl',false)<>0 then exit;
     StartPos:=1;
     // parse identifier
     if (StartPos>length(Filename))
     or (not (Filename[StartPos] in ['a'..'z','A'..'Z'])) then exit;
     inc(StartPos);
     while (StartPos<=length(Filename))
-    and (Filename[StartPos] in ['a'..'z','A'..'Z']) do
+    and (Filename[StartPos] in ['a'..'z','A'..'Z','_','0'..'9']) do
       inc(StartPos);
     PkgName:=lowercase(copy(Filename,1,StartPos-1));
     // parse -
     if (StartPos>length(Filename)) or (Filename[StartPos]<>'-') then exit;
     inc(StartPos);
-    // parse 4 times 'int.'
-    for i:=Low(ints) to High(ints) do begin
+    // parse version (1-4 times 'int.')
+    for i:=Low(ints) to High(ints) do ints[i]:=0;
+    i:=Low(ints);
+    while i<=High(ints) do begin
       // parse int
       EndPos:=StartPos;
       while (EndPos<=length(Filename))
@@ -303,11 +306,10 @@ procedure TPackageLinks.UpdateGlobalLinks;
       StartPos:=EndPos;
       // parse .
       if (StartPos>length(Filename)) or (Filename[StartPos]<>'.') then exit;
+      if StartPos=length(Filename)-length('lpl') then break;
       inc(StartPos);
+      inc(i);
     end;
-    // parse lpl
-    if (AnsiCompareText(copy(Filename,StartPos,length(Filename)-StartPos+1),
-                        'lpl')<>0) then exit;
     PkgVersion.Major:=ints[1];
     PkgVersion.Minor:=ints[2];
     PkgVersion.Release:=ints[3];
@@ -351,7 +353,7 @@ begin
           DebugLn('WARNING: suspicious pkg link file found (content): ',CurFilename);
           continue;
         end;
-        NewFilename:=sl[0];
+        NewFilename:=SetDirSeparators(sl[0]);
       except
         on E: Exception do begin
           DebugLn('ERROR: unable to read pkg link file: ',CurFilename,' : ',E.Message);
@@ -363,7 +365,11 @@ begin
       NewPkgLink.Origin:=ploGlobal;
       NewPkgLink.Name:=NewPkgName;
       NewPkgLink.Version.Assign(PkgVersion);
-      NewPkgLink.Filename:=NewFilename;
+      IDEMacros.SubstituteMacros(NewFilename);
+      NewPkgLink.Filename:=TrimFilename(NewFilename);
+      //debugln('TPackageLinks.UpdateGlobalLinks PkgName="',NewPkgLink.Name,'" ',
+      //  ' PkgVersion=',NewPkgLink.Version.AsString,
+      //  ' Filename="',NewPkgLink.Filename,'"');
       if NewPkgLink.MakeSense then
         FGlobalLinks.Add(NewPkgLink)
       else

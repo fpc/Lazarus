@@ -69,7 +69,7 @@ uses
   OldAvLTree, Laz_XMLCfg, CodeToolsStructs, CodeToolManager, CodeCache,
   DefineTemplates,
   // IDE interface
-  AllIDEIntf, ObjectInspector, PropEdits, IDECommands, SrcEditorIntf,
+  AllIDEIntf, ObjectInspector, PropEdits, MacroIntf, IDECommands, SrcEditorIntf,
   NewItemIntf, PackageIntf, ProjectIntf, LazIDEIntf,
   // synedit
   SynEditKeyCmds,
@@ -940,6 +940,9 @@ begin
   // set the IDE mode to none (= editing mode)
   ToolStatus:=itNone;
 
+  // setup macros
+  SetupTransferMacros;
+
   // setup the code tools
   InitCodeToolBoss;
 
@@ -974,7 +977,6 @@ begin
   SetupObjectInspector;
   SetupFormEditor;
   SetupSourceNotebook;
-  SetupTransferMacros;
   SetupControlSelection;
   SetupIDEInterface;
 
@@ -1042,6 +1044,7 @@ begin
   FreeThenNil(HiddenWindowsOnRun);
   FreeThenNil(TheOutputFilter);
   FreeThenNil(MacroList);
+  FreeThenNil(IDEMacros);
   FreeThenNil(LazProjectFileDescriptors);
   FreeThenNil(LazProjectDescriptors);
   FreeThenNil(NewIDEItems);
@@ -1387,6 +1390,8 @@ end;
 procedure TMainIDE.SetupTransferMacros;
 begin
   MacroList:=TTransferMacroList.Create;
+  IDEMacros:=TLazIDEMacros.Create;
+  
   MacroList.Add(TTransferMacro.Create('Col','',
                     lisCursorColumnInCurrentEditor,nil,[]));
   MacroList.Add(TTransferMacro.Create('Row','',
@@ -10976,6 +10981,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.809  2004/12/16 22:09:52  mattias
+  added global package links for lazarus cvs packages
+
   Revision 1.808  2004/12/12 03:54:08  mattias
   implemented open project after open standard windows
 

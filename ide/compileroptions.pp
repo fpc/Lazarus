@@ -327,8 +327,8 @@ type
   TCompilerGraphStampIncreasedEvent = procedure of object;
 
 var
-  CompilerParseStamp: integer;
-  CompilerGraphStamp: integer;
+  CompilerParseStamp: integer; // TimeStamp of base value for macros
+  CompilerGraphStamp: integer; // TimeStamp of IDE graph (e.g. packages)
   OnParseString: TParseStringEvent;
   CompilerGraphStampIncreased: TCompilerGraphStampIncreasedEvent;
 

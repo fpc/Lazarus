@@ -27,7 +27,7 @@ unit HelpIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Controls, FileUtil, ConfigStorage,
+  Classes, SysUtils, LCLProc, Controls, FileUtil, ConfigStorage, MacroIntf,
   ObjInspStrConsts;
 
 type
@@ -442,9 +442,6 @@ type
     procedure ShowError(ShowResult: TShowHelpResult; const ErrMsg: string); virtual; abstract;
     function GetBaseURLForBasePathObject(BasePathObject: TObject): string; virtual;
     function GetBaseDirectoryForBasePathObject(BasePathObject: TObject): string; virtual;
-    property MacroTimeStamp: integer read FMacroTimeStamp write FMacroTimeStamp;
-    function StrHasMacros(const s: string): boolean; virtual;
-    function SubstituteMacros(var s: string): boolean; virtual;
   public
     // show help for ...
     function ShowHelpForNodes(Query: THelpQuery; Nodes: TList;
@@ -1265,16 +1262,6 @@ begin
   Result:='';
 end;
 
-function THelpDatabases.StrHasMacros(const s: string): boolean;
-begin
-  Result:=false;
-end;
-
-function THelpDatabases.SubstituteMacros(var s: string): boolean;
-begin
-  Result:=true;
-end;
-
 function THelpDatabases.ShowHelpForNodes(Query: THelpQuery; Nodes: TList;
   var ErrMsg: string): TShowHelpResult;
 var
@@ -1997,7 +1984,7 @@ var
 begin
   ExpFilename:=FFilename;
   if (HelpDatabases<>nil) then
-    HelpDatabases.SubstituteMacros(ExpFilename);
+    IDEMacros.SubstituteMacros(ExpFilename);
   ExpFilename:=TrimFilename(ExpFilename);
   if FilenameIsAbsolute(ExpFilename) then
     Result:=ExpFilename
