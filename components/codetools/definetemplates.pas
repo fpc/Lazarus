@@ -2997,11 +2997,15 @@ var
       if ADirPath='' then exit;
       if not (ADirPath[length(ADirPath)]=PathDelim) then
         ADirPath:=ADirPath+PathDelim;
-      if FindFirst(ADirPath+'*.*',faAnyFile,FileInfo)=0 then begin
+      if FindFirst(ADirPath+FileMask,faAnyFile,FileInfo)=0 then begin
         repeat
           AFilename:=FileInfo.Name;
+          if (AFilename='.') or (AFilename='..') then continue;
+          writeln('Browse Filename=',AFilename,' IsDir=',(FileInfo.Attr and faDirectory)>0);
           i:=High(IgnoreDirs);
           while (i>=Low(IgnoreDirs)) and (AFilename<>IgnoreDirs[i]) do dec(i);
+          if CompareText(AFilename,'fcl')=0 then
+            writeln('Browse ',AFilename,' IsDir=',(FileInfo.Attr and faDirectory)>0,' Ignore=',i>=Low(IgnoreDirs));
           if i>=Low(IgnoreDirs) then continue;
           AFilename:=ADirPath+AFilename;
           if (FileInfo.Attr and faDirectory)>0 then begin
@@ -3169,7 +3173,7 @@ var
   SrcPathMacro: String;
 begin
   {$IFDEF VerboseFPCSrcScan}
-  DebugLn('CreateFPCSrcTemplate ',FPCSrcDir,': length(UnitSearchPath)=',length(UnitSearchPath),' Valid=',UnitLinkListValid,' PPUExt=',PPUExt);
+  DebugLn('CreateFPCSrcTemplate ',FPCSrcDir,': length(UnitSearchPath)=',DbgS(length(UnitSearchPath)),' Valid=',DbgS(UnitLinkListValid),' PPUExt=',PPUExt);
   {$ENDIF}
   Result:=nil;
   if (FPCSrcDir='') or (not DirPathExists(FPCSrcDir)) then exit;

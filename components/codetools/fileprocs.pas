@@ -44,6 +44,11 @@ type
 
 const
   SpecialChar = '#'; // used to use PathDelim, e.g. #\
+  {$IFDEF win32}
+  FileMask = '*.*';
+  {$ELSE}
+  FileMask = '*';
+  {$ENDIF}
   {$ifdef win32}
   {$define CaseInsensitiveFilenames}
   {$endif}

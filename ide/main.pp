@@ -8544,7 +8544,8 @@ begin
     CurOptions:='-T'+Project1.CompilerOptions.TargetOS
   else
     CurOptions:='';
-  {writeln('TMainIDE.RescanCompilerDefines A ',CurOptions,
+  {$IFDEF VerboseFPCSrcScan}
+  writeln('TMainIDE.RescanCompilerDefines A ',CurOptions,
     ' OnlyIfCompilerChanged=',OnlyIfCompilerChanged,
     ' Valid=',InputHistories.FPCConfigCache.Valid(true),
     ' ID=',InputHistories.FPCConfigCache.FindItem(CurOptions),
@@ -8552,14 +8553,17 @@ begin
     ' EnvCompilerFilename=',EnvironmentOptions.CompilerFilename,
     ' CurDefinesCompilerOptions="',CurDefinesCompilerOptions,'"',
     ' CurOptions="',CurOptions,'"',
-    '');}
+    '');
+  {$ENDIF}
   // rescan compiler defines
   // ask the compiler for its settings
   if OnlyIfCompilerChanged
   and (CurDefinesCompilerFilename=EnvironmentOptions.CompilerFilename)
   and (CurDefinesCompilerOptions=CurOptions) then
     exit;
-  //writeln('TMainIDE.RescanCompilerDefines B rebuilding FPC templates');
+  {$IFDEF VerboseFPCSrcScan}
+  writeln('TMainIDE.RescanCompilerDefines B rebuilding FPC templates');
+  {$ENDIF}
   CompilerTemplate:=CodeToolBoss.DefinePool.CreateFPCTemplate(
                     EnvironmentOptions.CompilerFilename,CurOptions,
                     CreateCompilerTestPascalFilename,CompilerUnitSearchPath,
@@ -8583,7 +8587,9 @@ begin
         end;
       end;
     end;
-    //writeln('TMainIDE.RescanCompilerDefines B rescanning FPC sources  UnitLinksValid=',UnitLinksValid);
+    {$IFDEF VerboseFPCSrcScan}
+    writeln('TMainIDE.RescanCompilerDefines B rescanning FPC sources  UnitLinksValid=',UnitLinksValid);
+    {$ENDIF}
 
     // create compiler macros to simulate the Makefiles of the FPC sources
     CompilerUnitLinks:='';
@@ -8595,7 +8601,9 @@ begin
       CodeToolBoss.GetCompiledSrcExtForDirectory(''),
       TargetOS,TargetProcessor,
       UnitLinksValid, CompilerUnitLinks, CodeToolsOpts);
-    //writeln('TMainIDE.RescanCompilerDefines C UnitLinks=',copy(CompilerUnitLinks,1,100));
+    {$IFDEF VerboseFPCSrcScan}
+    writeln('TMainIDE.RescanCompilerDefines C UnitLinks=',copy(CompilerUnitLinks,1,100));
+    {$ENDIF}
     if FPCSrcTemplate<>nil then begin
       CodeToolBoss.DefineTree.RemoveRootDefineTemplateByName(
                                                            FPCSrcTemplate.Name);
@@ -10437,6 +10445,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.731  2004/06/25 00:30:15  mattias
+  fixed FileMask for FPCSrc scan
+
   Revision 1.730  2004/06/19 10:06:26  mattias
   added check for form name not a unit name
 
