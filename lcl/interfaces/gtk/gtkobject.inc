@@ -1223,19 +1223,20 @@ begin
       begin 
         Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Redraw', [Sender.ClassName]));
         if (Sender is TCanvas) then 
-          ReDraw(PgtkWidget((Sender as TCanvas).Handle))
+          ReDraw(PgtkWidget(TCanvas(Sender).Handle))
         else
-          if not (sender is TSpeedbutton) then begin
+          if not (Sender is TSpeedbutton) then begin
             if Sender is TControl then
               ReDraw(PgtkWidget(Handle))
-          end else
-            If TSpeedbutton(sender).Visible then
-              (Sender as TSpeedButton).Perform(LM_PAINT,0,0)
+          end else begin
+            If TSpeedbutton(Sender).Visible then
+              TSpeedButton(Sender).Perform(LM_PAINT,0,0)
             else
             Begin
-              Rect := TSpeedButton(sender).BoundsRect;
-              InvalidateRect(TSpeedButton(sender).Parent.Handle,@Rect,True);
+              Rect := TSpeedButton(Sender).BoundsRect;
+              InvalidateRect(TSpeedButton(Sender).Parent.Handle,@Rect,True);
             end;
+          end;
       end;
 
       LM_AddPage :
@@ -5356,6 +5357,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.179  2002/08/26 17:28:21  lazarus
+  MG: fixed speedbutton in designmode
+
   Revision 1.178  2002/08/25 14:27:45  lazarus
   MG: fixed unallocated spinedit handle bug
 
