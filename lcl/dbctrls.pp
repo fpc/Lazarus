@@ -172,6 +172,53 @@ Type
     property DataSource: TDataSource read GetDataSource write SetDataSource;
   end;
 
+  { TDBListBox }
+  TDBListBox = class(TCustomListBox)
+    FDataLink: TFieldDataLink;
+
+    procedure DataChange(Sender: TObject);
+    procedure EditingChange(Sender: TObject);
+    procedure UpdateData(Sender: TObject);
+
+    function GetDataField: string;
+    function GetDataSource: TDataSource;
+    function GetField: TField;
+
+    Procedure SetItems(Values : TStrings);
+
+    function GetReadOnly: Boolean;
+    procedure SetReadOnly(Value: Boolean);
+
+    procedure SetDataField(Value: string);
+    procedure SetDataSource(Value: TDataSource);
+  protected
+    procedure KeyPress(var Key: Char); override;
+
+    procedure Loaded; override;
+    procedure Notification(AComponent: TComponent;
+      Operation: TOperation); override;
+
+    procedure Click; override;
+
+    procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    property Field: TField read GetField;
+  published
+    property DataField: string read GetDataField write SetDataField;
+    property DataSource: TDataSource read GetDataSource write SetDataSource;
+
+    // we need to overrride the write method for db aware.
+    // the Read isn't an issue since the list will be updated
+    // on data change anyway
+    property Items write SetItems;
+
+    //same as dbedit need to match the datalink status
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
+  end;
+
 implementation
 
 {TFieldDataLink  Private Methods}
@@ -482,12 +529,16 @@ end;
 
 {$Include dbedit.inc}
 {$Include dbtext.inc}
+{$Include dblistbox.inc}
 
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.2  2003/09/15 01:56:48  ajgenius
+  Added TDBListBox. needs more work for ReadOnly
+
   Revision 1.1  2003/09/14 18:40:55  ajgenius
   add initial TFieldDataLink, TDBEdit and TDBText
 
