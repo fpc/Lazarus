@@ -298,12 +298,14 @@ procedure TWin32ComboBoxStringList.Delete(Index: integer);
 begin
   if GetCount <= 1 then
     SetComboHeight(FSender, FEditHeight + FItemHeight + 2);
+  inherited Delete(Index);
 end;
 
 procedure TWin32ComboBoxStringList.Insert(Index: integer; const S: string); 
 begin
   if GetCount = 0 then
     SetComboHeight(FSender, FEditHeight + FDropDownCount*FItemHeight + 2);
+  inherited Insert(Index, S);
 end;
 
     
@@ -568,6 +570,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.37  2004/11/08 21:35:16  vincents
+  Call inherited in TWin32ComboBoxStringList.Insert and Delete.
+
   Revision 1.36  2004/11/04 15:12:35  micha
   remove usage of fcompstyle in twin32liststringlist by using descendent class for combobox specific things
 
