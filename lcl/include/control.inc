@@ -150,8 +150,10 @@ begin
     FLastResize.X:= AWidth - FWidth;
     FLastResize.Y:= AHeight - FHeight;
 
+    {writeln('TControl.ChangeBounds A ',Name,':',ClassName);
+    InvalidateControl(Visible, False);
+    writeln('TControl.ChangeBounds B ',Name,':',ClassName);}
     DoSetBounds(ALeft,ATop,AWidth,AHeight);
-    
 
     if SizeChanged then
       Invalidate;
@@ -1190,7 +1192,8 @@ var
 begin
   if (IsVisible or (csDesigning in ComponentState)
   and not (csNoDesignVisible in ControlStyle))
-  and (Parent <> nil) and Parent.HandleAllocated then
+  and (Parent <> nil) and Parent.HandleAllocated
+  and (not (csLoading in Parent.ComponentState)) then
   begin
     Rect := BoundsRect;
     // ToDo: don't invalidate non TWinControls. Because some of them do not
@@ -1803,6 +1806,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.80  2002/09/06 13:58:13  lazarus
+  MG: added try for invalidate control
+
   Revision 1.79  2002/09/06 11:33:36  lazarus
   MG: added jitform error messagedlg
 
