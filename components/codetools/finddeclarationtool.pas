@@ -3953,8 +3953,13 @@ var
     and (ExprType.Context.Node.Desc in AllPascalStatements) then begin
       if CompareSrcIdentifier(CurAtom.StartPos,'SELF') then begin
         // SELF in a method is the object itself
-        // -> check if in a proc
-        ProcNode:=ExprType.Context.Node.GetNodeOfType(ctnProcedure);
+        // -> check if in a method or nested proc of a method
+        ProcNode:=ExprType.Context.Node;
+        while (ProcNode<>nil) do begin
+          if (ProcNode.Desc=ctnProcedure) and NodeIsMethodBody(ProcNode) then
+            break;
+          ProcNode:=ProcNode.Parent;
+        end;
         if (ProcNode<>nil)
         and ExprType.Context.Tool.FindClassOfMethod(ProcNode,Params,
                                                   not IsIdentifierEndOfVariable)
