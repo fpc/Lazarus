@@ -92,7 +92,7 @@ type
   
   { TMenuItem }
 
-  TMenuItem = class(TComponent)//TWinControl)
+  TMenuItem = class(TComponent)
   private
     FActionLink: TMenuActionLink;
     FAutoCheck: boolean;
@@ -214,15 +214,22 @@ type
 
   TMenu = class(TComponent) //TWinControl)
   private
+    FImageChangeLink: TChangeLink;
     FImages: TCustomImageList;
     FItems: TMenuItem;
     FParent: TComponent;
+    FOnChange: TMenuChangeEvent;
     procedure SetImages(const AValue: TCustomImageList);
     procedure SetParent(const AValue: TComponent);
+    procedure ImageListChange(Sender: TObject);
   protected
     procedure CreateHandle; virtual;
+    procedure DoChange(Source: TMenuItem; Rebuild: Boolean); virtual;
     function GetHandle: HMENU; virtual;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
+    procedure MenuChanged(Sender: TObject; Source: TMenuItem; Rebuild: Boolean); virtual;
+    property OnChange: TMenuChangeEvent read FOnChange write FOnChange;
+    procedure UpdateItems;
   public
     FCompStyle: LongInt;
     constructor Create(AOwner: TComponent); override;
@@ -248,6 +255,7 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property Items;
+    property OnChange;
   end;
   
   
@@ -353,6 +361,9 @@ end.
 
 {
   $Log$
+  Revision 1.34  2002/11/12 10:16:14  lazarus
+  MG: fixed TMainMenu creation
+
   Revision 1.33  2002/10/26 15:15:47  lazarus
   MG: broke LCL<->interface circles
 

@@ -427,7 +427,7 @@ type
     dvaNil, dvaCollection, dvaSingle, dvaCurrency, dvaDate, dvaWString,
     dvaInt64, dvaUTF8String);
     
-  UTF8String = ansistring;
+  //UTF8String = ansistring;
 
   TDelphiReader = class
   private

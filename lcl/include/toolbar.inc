@@ -542,9 +542,9 @@ begin
 end;
 
 procedure TToolBar.UpdateButtons;
-const
+{const
   BlankButton: TTBButton = (iBitmap: 0; idCommand: 0; fsState: 0;
-    fsStyle: TBSTYLE_BUTTON; bReserved: (0, 0); dwData: 0; iString: 0);
+    fsStyle: TBSTYLE_BUTTON; bReserved: (0, 0); dwData: 0; iString: 0);}
 var
   I: Integer;
   Count: Integer;
@@ -1502,6 +1502,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2002/11/12 10:16:17  lazarus
+  MG: fixed TMainMenu creation
+
   Revision 1.7  2002/10/30 13:20:10  lazarus
   MG: fixed example
 

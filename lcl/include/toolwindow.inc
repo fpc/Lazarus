@@ -77,7 +77,7 @@ procedure TToolWindow.LMNCPaint(var Message: TLMessage);
 const
   InnerStyles: array[TEdgeStyle] of Integer = (0, BDR_RAISEDINNER, BDR_SUNKENINNER);
   OuterStyles: array[TEdgeStyle] of Integer = (0, BDR_RAISEDOUTER, BDR_SUNKENOUTER);
-  Ctl3DStyles: array[Boolean] of Integer = (BF_MONO, 0);
+  //Ctl3DStyles: array[Boolean] of Integer = (BF_MONO, 0);
 var
   DC: HDC;
   RW: TRect;

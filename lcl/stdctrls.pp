@@ -889,8 +889,6 @@ type
 
 implementation
 
-uses Math;
-
 
 type
    TSelection = record
@@ -1382,6 +1380,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.66  2002/11/12 10:16:14  lazarus
+  MG: fixed TMainMenu creation
+
   Revision 1.65  2002/10/26 15:15:47  lazarus
   MG: broke LCL<->interface circles
 

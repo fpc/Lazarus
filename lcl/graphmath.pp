@@ -388,18 +388,18 @@ begin
   If Angle2 = 0 then
     exit;
 
-  B := Height / 2;
-  A := Width / 2;
+  B := Extended(Height) / 2;
+  A := Extended(Width) / 2;
 
   If A <> B then begin
     If A > B then begin
-      ScaleX := Width / Height;
+      ScaleX := Extended(Width) / Height;
       ScaleY := 1;
       A := B;
     end
     else begin
       ScaleX := 1;
-      ScaleY := Height / Width;
+      ScaleY := Extended(Height) / Width;
       B := A;
     end;
   end
@@ -1087,6 +1087,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.2  2002/11/12 10:16:14  lazarus
+  MG: fixed TMainMenu creation
+
   Revision 1.1  2002/10/26 15:15:46  lazarus
   MG: broke LCL<->interface circles
 

@@ -27,9 +27,12 @@
  ------------------------------------------------------------------------------}
 constructor TMenu.Create(AOwner: TComponent);
 begin
-  Inherited Create(AOwner);
   FItems := TMenuItem.Create(Self);
+  FItems.FOnChange := @MenuChanged;
   FItems.FMenu := Self;
+  FImageChangeLink := TChangeLink.Create;
+  FImageChangeLink.OnChange := @ImageListChange;
+  Inherited Create(AOwner);
 end;
 
 {------------------------------------------------------------------------------
@@ -54,6 +57,11 @@ begin
   FParent:=AValue;
 end;
 
+procedure TMenu.ImageListChange(Sender: TObject);
+begin
+  if Sender = Images then UpdateItems;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TMenu.CreateHandle
   Params:  None
@@ -72,6 +80,11 @@ begin
     Items[i].HandleNeeded;
 end;
 
+procedure TMenu.DoChange(Source: TMenuItem; Rebuild: Boolean);
+begin
+  if Assigned(FOnChange) then FOnChange(Self, Source, Rebuild);
+end;
+
 {------------------------------------------------------------------------------
   Method: TMenu.Destroy
   Params:  None
@@ -81,7 +94,8 @@ end;
  ------------------------------------------------------------------------------}
 destructor TMenu.Destroy;
 begin
-  FItems.Free;
+  FreeThenNil(FItems);
+  FreeThenNil(FImageChangeLink);
   inherited Destroy;
 end;
 
@@ -128,6 +142,26 @@ begin
        	    then Proc(TComponent (FItems [i]));
 end;
 
+procedure TMenu.MenuChanged(Sender: TObject; Source: TMenuItem; Rebuild: Boolean
+  );
+begin
+  if ComponentState * [csLoading, csDestroying] = [] then
+    DoChange(Source, Rebuild);
+end;
+
+procedure TMenu.UpdateItems;
+{
+  function UpdateItem(MenuItem: TMenuItem): Boolean;
+  begin
+    Result := False;
+    IterateMenus(@UpdateItem, MenuItem.FMerged, MenuItem);
+    MenuItem.SubItemChanged(MenuItem, MenuItem, True);
+  end;
+}
+begin
+  //IterateMenus(@UpdateItem, Items.FMerged, Items);
+end;
+
 {------------------------------------------------------------------------------
   Function: TMenu.HandleAllocated
   Params:   None
@@ -170,6 +204,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.16  2002/11/12 10:16:17  lazarus
+  MG: fixed TMainMenu creation
+
   Revision 1.15  2002/10/26 15:15:48  lazarus
   MG: broke LCL<->interface circles
 

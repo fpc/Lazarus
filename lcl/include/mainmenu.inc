@@ -40,8 +40,8 @@ end;
  ------------------------------------------------------------------------------}
 constructor TMainMenu.Create(AOwner : TComponent);
 begin
-  inherited Create(AOwner);
   FCompStyle := csMainMenu;
+  inherited Create(AOwner);
 end;
 
 // included by menus.pp
@@ -49,6 +49,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2002/11/12 10:16:17  lazarus
+  MG: fixed TMainMenu creation
+
   Revision 1.4  2002/08/07 09:55:30  lazarus
   MG: codecompletion now checks for filebreaks, savefile now checks for filedate
 

@@ -106,19 +106,21 @@ end;
 
 procedure TLCLMemManager.DisposeItem(AnItem: PLCLMemManagerItem);
 begin
-  if (FFreeCount<FMinFree) or (FFreeCount<((FCount shr 3)*FMaxFreeRatio)) then
-  begin
-    // add ANode to Free list
-    //AddItemToFreeList(AnItem);
-    inc(FFreeCount);
-  end else begin
-    // free list full -> free the ANode
-    //FreeItem(AnItem);
-    {$R-}
-    inc(FFreedCount);
-    {$IfDef RangeChecksOn}{$R+}{$Endif}
+  if AnItem<>nil then begin
+    if (FFreeCount<FMinFree) or (FFreeCount<((FCount shr 3)*FMaxFreeRatio)) then
+    begin
+      // add ANode to Free list
+      //AddItemToFreeList(AnItem);
+      inc(FFreeCount);
+    end else begin
+      // free list full -> free the ANode
+      //FreeItem(AnItem);
+      {$R-}
+      inc(FFreedCount);
+      {$IfDef RangeChecksOn}{$R+}{$Endif}
+    end;
+    dec(FCount);
   end;
-  dec(FCount);
 end;
 
 function TLCLMemManager.NewItem: PLCLMemManagerItem;

@@ -76,6 +76,7 @@ end;
 
 procedure TBitMap.Mask(ATransparentColor: TColor);
 begin
+
 end;
 
 function TBitmap.GetHandle: HBITMAP;
@@ -147,10 +148,12 @@ end;
 
 procedure TBitMap.LoadFromResourceName(Instance: THandle; const ResName: String);
 begin
+
 end;
 
 procedure TBitMap.LoadFromResourceID(Instance: THandle; ResID: Integer);
 begin
+
 end;
 
 Procedure TBitmap.LoadFromXPMFile(const Filename : String);
@@ -477,6 +480,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.23  2002/11/12 10:16:16  lazarus
+  MG: fixed TMainMenu creation
+
   Revision 1.22  2002/11/09 15:02:06  lazarus
   MG: fixed LM_LVChangedItem, OnShowHint, small bugs
 

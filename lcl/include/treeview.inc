@@ -35,7 +35,7 @@ const
   TTreeNodeStreamVersion : word = 1;
   
   // maximum scroll range
-  MAX_SCROLL = 32767;
+  //MAX_SCROLL = 32767;
 
 
 
