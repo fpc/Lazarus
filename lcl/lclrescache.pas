@@ -34,7 +34,8 @@ type
   { TResourceCacheItem }
 
   TResourceCacheItem = class
-  private
+  protected
+    FDestroying: boolean;
     FReferenceCount: integer;
   public
     Handle: THandle;
@@ -57,6 +58,8 @@ type
   { TResourceCacheDescriptor }
 
   TResourceCacheDescriptor = class
+  protected
+    FDestroying: boolean;
   public
     Item: TResourceCacheItem;
     Cache: TResourceCache;
@@ -173,8 +176,14 @@ end;
 
 destructor TResourceCacheItem.Destroy;
 begin
+  if FDestroying then
+    RaiseGDBException('');
+  FDestroying:=true;
   Cache.RemoveItem(Self);
+  //debugln('TResourceCacheItem.Destroy B ',dbgs(Self));
+  Handle:=0;
   inherited Destroy;
+  //debugln('TResourceCacheItem.Destroy END ',dbgs(Self));
 end;
 
 procedure TResourceCacheItem.IncreaseRefCount;
@@ -187,12 +196,20 @@ begin
 end;
 
 procedure TResourceCacheItem.DecreaseRefCount;
+
+  procedure RaiseRefCountZero;
+  begin
+    RaiseGDBException('TResourceCacheItem.DecreaseRefCount=0 '+ClassName);
+  end;
+
 begin
+  //debugln('TResourceCacheItem.DecreaseRefCount ',ClassName,' ',dbgs(Self),' ',dbgs(FReferenceCount));
   if FReferenceCount=0 then
-    RaiseGDBException('TResourceCacheItem.DecreaseRefCount=0');
+    RaiseRefCountZero;
   dec(FReferenceCount);
   if FReferenceCount=0 then
     Cache.ItemUnused(Self);
+  //debugln('TResourceCacheItem.DecreaseRefCount END ');
 end;
 
 procedure TResourceCacheItem.AddToList(var First, Last: TResourceCacheItem
@@ -234,6 +251,9 @@ end;
 
 destructor TResourceCacheDescriptor.Destroy;
 begin
+  if FDestroying then
+    RaiseGDBException('');
+  FDestroying:=true;
   Cache.RemoveDescriptor(Self);
   inherited Destroy;
 end;
@@ -274,7 +294,7 @@ begin
   if FDestroying then exit;
   Desc.RemoveFromList(Desc.Item.FirstDescriptor,Desc.Item.LastDescriptor);
   FDescriptors.Remove(Desc);
-  if Desc.Item.FirstDescriptor=nil then
+  if (Desc.Item.FirstDescriptor=nil) and (not Desc.Item.FDestroying) then
     Desc.Item.Free;
 end;
 
@@ -290,13 +310,17 @@ end;
 procedure TResourceCache.ItemUnused(Item: TResourceCacheItem);
 // called when Item is not used any more
 begin
+  //debugln('TResourceCache.ItemUnused A ',ClassName,' ',dbgs(Self));
   if not ItemIsUsed(Item) then
     raise Exception.Create('TResourceCache.ItemUnused');
+  //debugln('TResourceCache.ItemUnused B ',ClassName,' ',dbgs(Self));
   Item.AddToList(FFirstUnusedItem,FLastUnusedItem);
   inc(FUnUsedItemCount);
+  //debugln('TResourceCache.ItemUnused C ',ClassName,' ',dbgs(Self));
   if FUnUsedItemCount>FMaxUnusedItem then
     // maximum unused resources reached -> free the oldest
     FFirstUnusedItem.Free;
+  //debugln('TResourceCache.ItemUnused END ',ClassName,' ',dbgs(Self));
 end;
 
 function TResourceCache.ItemIsUsed(Item: TResourceCacheItem): boolean;
@@ -307,7 +331,7 @@ end;
 
 constructor TResourceCache.Create;
 begin
-  FMaxUnusedItem:=100;
+  FMaxUnusedItem:=2;
   FItems:=TAvgLvlTree.CreateObjectCompare(@CompareItems);
   FDescriptors:=TAvgLvlTree.CreateObjectCompare(@CompareDescriptors);
   FResourceCacheItemClass:=TResourceCacheItem;

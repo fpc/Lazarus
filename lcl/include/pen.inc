@@ -21,8 +21,11 @@
 
 procedure TPenHandleCache.RemoveItem(Item: TResourceCacheItem);
 begin
-  //debugln('TPenHandleCache.RemoveItem ',HexStr(Cardinal(Item.Handle),8));
+  if Item=nil then
+    RaiseGDBException('TPenHandleCache.RemoveItem');
+  debugln('TPenHandleCache.RemoveItem A ',HexStr(Cardinal(Item.Handle),8));
   DeleteObject(Item.Handle);
+  debugln('TPenHandleCache.RemoveItem B ',HexStr(Cardinal(Item.Handle),8));
   inherited RemoveItem(Item);
 end;
 
@@ -233,6 +236,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2004/11/07 01:10:05  mattias
+  fixed double calling destructor for resource cache items
+
   Revision 1.11  2004/08/11 22:05:07  mattias
   fixed brush handle cache size
 

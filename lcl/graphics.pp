@@ -256,9 +256,9 @@ const
   clBrightText = TColor(-8);
   clButtonText = TColor(-9);
   clBase = TColor(-10);
-  //clBackground = TColor(-11); defined above
+  clxBackground = TColor(-11); // only used as base for the CLX colors
   clShadow = TColor(-12);
-  //clHighlight = TColor(-13); defined above
+  clxHighlight = TColor(-13);  // only used as base for the CLX colors
   clHighlightedText = TColor(-14);
 
   // CLX mapped role offsets
@@ -277,9 +277,9 @@ const
   clNormalBrightText = TColor(clBrightText - cloNormal);
   clNormalButtonText = TColor(clButtonText - cloNormal);
   clNormalBase = TColor(clBase - cloNormal);
-  clNormalBackground = TColor(clBackground - cloNormal);
+  clNormalBackground = TColor(clxBackground - cloNormal);
   clNormalShadow = TColor(clShadow - cloNormal);
-  clNormalHighlight = TColor(clHighlight - cloNormal);
+  clNormalHighlight = TColor(clxHighlight - cloNormal);
   clNormalHighlightedText = TColor(clHighlightedText - cloNormal);
 
   // CLX disabled, mapped, pseudo, rgb values
@@ -293,9 +293,9 @@ const
   clDisabledBrightText = TColor(clBrightText - cloDisabled);
   clDisabledButtonText = TColor(clButtonText - cloDisabled);
   clDisabledBase = TColor(clBase - cloDisabled);
-  clDisabledBackground = TColor(clBackground - cloDisabled);
+  clDisabledBackground = TColor(clxBackground - cloDisabled);
   clDisabledShadow = TColor(clShadow - cloDisabled);
-  clDisabledHighlight = TColor(clHighlight - cloDisabled);
+  clDisabledHighlight = TColor(clxHighlight - cloDisabled);
   clDisabledHighlightedText = TColor(clHighlightedText - cloDisabled);
 
   // CLX active, mapped, pseudo, rgb values
@@ -309,9 +309,9 @@ const
   clActiveBrightText = TColor(clBrightText - cloActive);
   clActiveButtonText = TColor(clButtonText - cloActive);
   clActiveBase = TColor(clBase - cloActive);
-  clActiveBackground = TColor(clBackground - cloActive);
+  clActiveBackground = TColor(clxBackground - cloActive);
   clActiveShadow = TColor(clShadow - cloActive);
-  clActiveHighlight = TColor(clHighlight - cloActive);
+  clActiveHighlight = TColor(clxHighlight - cloActive);
   clActiveHighlightedText = TColor(clHighlightedText - cloActive);
 
 type
@@ -1783,6 +1783,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.159  2004/11/07 01:10:05  mattias
+  fixed double calling destructor for resource cache items
+
   Revision 1.158  2004/10/01 13:25:51  mattias
   fixed 1.0.10 compilation
 

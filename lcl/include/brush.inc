@@ -21,7 +21,6 @@
 
 procedure TBrushHandleCache.RemoveItem(Item: TResourceCacheItem);
 begin
-  //debugln('TBrushHandleCache.RemoveItem ',HexStr(Cardinal(Item.Handle),8));
   DeleteObject(Item.Handle);
   inherited RemoveItem(Item);
 end;
@@ -226,6 +225,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2004/11/07 01:10:05  mattias
+  fixed double calling destructor for resource cache items
+
   Revision 1.11  2004/10/01 13:16:44  mattias
   fixed unselecting TCanvas objects
 

@@ -22,9 +22,9 @@ unit GraphPropEdits;
 interface
 
 uses
-  Classes, TypInfo, SysUtils, Forms, Controls, LCLType, GraphType, Graphics,
-  StdCtrls, Buttons, ComCtrls, Menus, ExtCtrls, Dialogs, LCLIntf, ExtDlgs,
-  ObjInspStrConsts, PropEdits;
+  Classes, TypInfo, SysUtils, LCLProc, Forms, Controls, LCLType, GraphType,
+  Graphics, StdCtrls, Buttons, ComCtrls, Menus, ExtCtrls, Dialogs, LCLIntf,
+  ExtDlgs, ObjInspStrConsts, PropEdits;
 
 type
  {TGraphicPropertyEditor
@@ -64,12 +64,12 @@ type
     function OrdValueToVisualValue(OrdValue: longint): string; override;
     procedure GetValues(Proc: TGetStringProc); override;
     procedure SetValue(const NewValue: ansistring); override;
-    procedure ListMeasureWidth(const CurValue:ansistring; Index:integer;
-      ACanvas:TCanvas;  var AWidth:Integer);  override;
-    procedure ListDrawValue(const CurValue:ansistring; Index:integer;
-      ACanvas:TCanvas;  const ARect:TRect; AState: TPropEditDrawState); override;
-    procedure PropDrawValue(ACanvas:TCanvas; const ARect:TRect;
-      AState:TPropEditDrawState); override;
+    procedure ListMeasureWidth(const CurValue: ansistring; Index: integer;
+      ACanvas: TCanvas; var AWidth: Integer);  override;
+    procedure ListDrawValue(const CurValue: ansistring; Index: integer;
+      ACanvas: TCanvas; const ARect:TRect; AState: TPropEditDrawState); override;
+    procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
+      AState: TPropEditDrawState); override;
   end;
 
 { TFontNamePropertyEditor
@@ -574,6 +574,7 @@ var
   vRight,vBottom: Integer;
   vOldPenColor, vOldBrushColor: TColor;
 begin
+debugln('AAA1 ',CurValue);
   vRight := (ARect.Bottom - ARect.Top) + ARect.Left - 2;
   vBottom:=ARect.Bottom-2;
   with ACanvas do begin
@@ -606,9 +607,11 @@ begin
     Brush.Color := vOldBrushColor;
     Pen.Color := vOldPenColor;
   end;
+debugln('AAA2 ',CurValue);
   inherited ListDrawValue(CurValue, Index, ACanvas,
                           Rect(vRight, ARect.Top, ARect.Right, ARect.Bottom),
                           AState);
+debugln('AAA3 ',CurValue);
 end;
 
 procedure TColorPropertyEditor.ListMeasureWidth(const CurValue:ansistring;

@@ -194,7 +194,6 @@ end;
  ---------------------------------------------------------------------------}
 procedure InternalInit;
 begin
-  //writeln('InternalInit AAA1 ',Dos.FExpand{FExpand}('~/.lazarus'));
   PrimaryConfigPath:=ExpandFileName{FExpand}('~/.lazarus');
   SecondaryConfigPath:='/etc/lazarus';
 end;
