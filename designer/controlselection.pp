@@ -257,11 +257,16 @@ end;
 
 procedure TControlSelection.MoveSelection(dx, dy: integer);
 begin
+Writeln('**********');
 Writeln('Move Selection');
+Writeln(Format('dx,dy = %d,%d',[dx,dy]));
+Writeln(Format('FLeft,FTop= %d,%d',[FLeft,FTop]));
+Writeln('**********');
+
   if (dx<>0) or (dy<>0) then begin
     Inc(FLeft,dx);
     Inc(FTop,dy);
-    //MoveContent(dx,dy);
+  //  MoveContent(dx,dy);
     SetGrabbers;
   end;
 end;
@@ -390,6 +395,7 @@ end;
 
 procedure TControlSelection.ControlMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
+Writeln('TCOntrolSelection.ControlMOuseUp');
   if (Button = mbLeft) and FDragging
   then begin
     FDragging := False;
@@ -486,10 +492,16 @@ var
   n: Integer;
 begin
   writeln('[TControlSelection.MoveContent] dx='+IntToStr(dx)+', dy='+IntToStr(dy));
+  if FControlList.Count = 1 then
+     begin
+      TControl(FControlList[0]).SetBounds(FLeft, FTop, FWidth, FHeight);
+     end
+  else
   with FControlList do
     for n := 0 to Count -1 do
       with TControl(Items[n]) do
       begin
+
         SetBounds(Left+dx,Top+dy,Width,Height);
         //Left := Left + dx;
         //Top := Top + dy;

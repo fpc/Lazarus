@@ -222,11 +222,20 @@ end;
 
 procedure TDesigner.MouseDownOnControl(Sender : TControl; Message : TLMessage);
 Begin
-  Writeln('MouseDownOnControl');
+  Writeln('***************************');
+  Writeln('TDesigner.MouseDownOnControl');
+  Writeln(Format('X,Y = %d,%d',[TLMMOuse(Message).pos.x,TLMMOuse(Message).pos.Y]));
+  Writeln(Format('Control left and top are %d,%d',[TCOntrol(sender).Left,TCOntrol(sender).Top]));
+  Writeln('***************************');
+
+
   if GetCaptureGrabber<>nil then exit;
 
   MouseDownPos.X := TLMMOuse(Message).pos.X;
   MouseDownPos.Y := TLMMOuse(Message).pos.Y;
+
+
+  //adjust X and Y by adding the Control corners.
   if not (Sender is TCustomForm) then begin
     inc(MouseDownPos.X,TControl(Sender).Left);
     inc(MouseDownPos.Y,TControl(Sender).Top);
@@ -262,7 +271,10 @@ var
   Shift : TShiftState;
   X,Y : Integer;
 Begin
-   Writeln('In UpOnControl');
+  Writeln('***************************');
+   Writeln('In TDesigner.UpOnControl');
+  Writeln(Format('X,Y = %d,%d',[TLMMOuse(Message).pos.x,TLMMOuse(Message).pos.Y]));
+  Writeln('***************************');
   if (TLMMouse(Message).keys and MK_LButton) = MK_LButton then
     Button := mbLEft
    else
@@ -286,11 +298,12 @@ Begin
     exit;
   end;
 
-  if MOuseDownControl = Sender then
+  if MouseDownControl = Sender then
     Begin
     ControlSelection.MoveSelection(X-LastMouseMovePos.X, Y-LastMouseMovePos.Y);
     //do somerthing like ControlSelection.Sizecontent but move x and y from where
     // the grabber started to where it finished.
+    ControlSelection.MoveContent(X-MouseDownPos.X,Y-MouseDownPos.Y);
     end;
 
   MouseUpPos.X := TLMMouse(Message).pos.X;
@@ -365,9 +378,13 @@ var
   X,Y : Integer;
 Begin
   Writeln('MouseMoveOnControl');
-
   X :=TLMMouse(Message).Pos.x;
   Y := TLMMouse(Message).Pos.Y;
+  Writeln('MousePos');
+  Writeln(Format('X,y = %d,%d',[Mouse.CursorPos.X,MOuse.CursorPos.Y]));
+  Writeln('X and Y are '+inttostr(x)+','+inttostr(y));
+
+
 Writeln('Keys is '+inttostr(TlmMouse(Message).keys));
   if (TLMMouse(Message).keys and MK_LButton) = MK_LButton then
     Button := mbLEft
