@@ -189,7 +189,7 @@ type
       procedure SetMargin(const Value : integer);
       procedure SetNumGlyphs(Value : integer);
       procedure SetSpacing(const Value : integer);
-      property MouseInControl : Boolean read FMOuseInControl;
+      property MouseInControl : Boolean read FMouseInControl;
      public
       constructor Create(AOwner : TComponent); override;
       destructor Destroy; override;
@@ -247,6 +247,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.17  2002/08/26 17:28:20  lazarus
+  MG: fixed speedbutton in designmode
+
   Revision 1.16  2002/08/19 20:34:47  lazarus
   MG: improved Clipping, TextOut, Polygon functions
 
