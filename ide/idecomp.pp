@@ -46,18 +46,23 @@ unit IDEComp;
 interface
 
 uses
-  Classes, LclLinux, Process,StdCtrls, Forms, Buttons, Menus, ComCtrls, Arrow,
+  Classes, LclLinux,
+  // fcl
+  Process, db,
+  {$IFDEF INTERBASE}
+  // WANRING: Don't use this, use CustomIDEComps instead
+  interbase,
+  {$ENDIF}
+  // LCL
+  StdCtrls, Forms, Buttons, Menus, ComCtrls, Arrow,
   Spin, SysUtils, Controls, CompReg, Graphics, ExtCtrls, Dialogs, Calendar,
   ImgList, Grids, LResources, MaskEdit,
+  // synedit
   SynEditLazDsgn, SynEdit, SynCompletion, SynExportHTML, SynMacroRecorder,
    SynMemo, SynHighlighterPas, SynHighlighterCPP, SynHighlighterJava,
    SynHighlighterPerl, SynHighlighterHTML, SynHighlighterXML,
    SynHighlighterLFM, SynHighlighterMulti,
-  db
-  {$IFDEF INTERBASE}
-  // WANRING: Don't use this, use CustomIDEComps instead
-  ,interbase
-  {$ENDIF}
+  // custom components
   {$IFDEF CustomIDEComps}
   ,CustomIDEComps
   {$ENDIF}

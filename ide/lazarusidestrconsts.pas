@@ -368,7 +368,9 @@ resourcestring
   lisBackupFileFailed = 'Backup file failed';
   lisUnableToBackupFileTo = 'Unable to backup file %s%s%s to %s%s%s!';
   lisDeleteAmbigiousFile = 'Delete ambigious file?';
-  lisDeleteAmbigiousFile2 = 'Delete ambigious file %s%s%s?';
+  lisAmbigiousFileFoundThisFileCanBeMistakenWithDelete = 'Ambigious file '
+    +'found: %s%s%s%sThis file can be mistaken with %s%s%s%s%sDelete the '
+    +'ambigious file?';
   lisLazarusEditorV = 'Lazarus Editor v%s';
   lisnewProject = '%s - (new project)';
   lisUnableToFindFile = 'Unable to find file %s%s%s.';

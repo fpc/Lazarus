@@ -42,8 +42,8 @@ uses
 {$ENDIF}
   Classes, LCLType, LCLLinux, StdCtrls, Buttons, Menus, ComCtrls, SysUtils,
   Controls, Graphics, ExtCtrls, Dialogs, FileCtrl, Forms, CodeToolManager,
-  CodeCache, SynEditKeyCmds, LazConf, LazarusIDEStrConsts, ProjectDefs, Project,
-  BuildLazDialog, Compiler,
+  CodeCache, AVL_Tree, SynEditKeyCmds, LazConf, LazarusIDEStrConsts,
+  ProjectDefs, Project, BuildLazDialog, Compiler,
   {$IFDEF EnablePkgs}
   ComponentReg,
   {$ELSE}
@@ -399,7 +399,9 @@ type
     function DoBackupFile(const Filename:string;
       IsPartOfProject:boolean): TModalResult; virtual; abstract;
     function DoDeleteAmbigiousFiles(const Filename:string
-                                    ): TModalResult; virtual; abstract;
+                                    ): TModalResult; virtual;
+    function DoCheckUnitPathForAmbigiousPascalFiles(const UnitPath:string
+                                    ): TModalResult; virtual;
 
     procedure UpdateWindowsMenu; virtual;
     procedure SaveEnvironment; virtual; abstract;
@@ -1467,6 +1469,117 @@ begin
     exit;
   end;
   Result:=mrOk;
+end;
+
+function TMainIDEBar.DoDeleteAmbigiousFiles(const Filename: string
+  ): TModalResult;
+var
+  ADirectory: String;
+  FileInfo: TSearchRec;
+  ShortFilename: String;
+  CurFilename: String;
+  IsPascalUnit: Boolean;
+  UnitName: String;
+begin
+  Result:=mrOk;
+  if EnvironmentOptions.AmbigiousFileAction=afaIgnore then exit;
+  if EnvironmentOptions.AmbigiousFileAction
+    in [afaAsk,afaAutoDelete,afaAutoRename]
+  then begin
+    ADirectory:=AppendPathDelim(ExtractFilePath(Filename));
+    if SysUtils.FindFirst(ADirectory+FindMask,faAnyFile,FileInfo)=0 then begin
+      ShortFilename:=ExtractFileName(Filename);
+      IsPascalUnit:=FilenameIsPascalUnit(ShortFilename);
+      UnitName:=ExtractFilenameOnly(ShortFilename);
+      repeat
+        if (FileInfo.Name='.') or (FileInfo.Name='..')
+        or ((FileInfo.Attr and faDirectory)<>0) then continue;
+        if (ShortFilename=FileInfo.Name) then continue;
+        if (AnsiCompareText(ShortFilename,FileInfo.Name)<>0)
+        and ((not IsPascalUnit) or (not FilenameIsPascalUnit(FileInfo.Name))
+           or (AnsiCompareText(UnitName,ExtractFilenameOnly(FileInfo.Name))<>0))
+        then
+          continue;
+
+        CurFilename:=ADirectory+FileInfo.Name;
+        if EnvironmentOptions.AmbigiousFileAction=afaAsk then begin
+          if MessageDlg(lisDeleteAmbigiousFile,
+            Format(lisAmbigiousFileFoundThisFileCanBeMistakenWithDelete, ['"',
+              CurFilename, '"', #13, '"', ShortFilename, '"', #13, #13]),
+            mtConfirmation,[mbYes,mbNo],0)=mrNo
+          then continue;
+        end;
+        if EnvironmentOptions.AmbigiousFileAction in [afaAutoDelete,afaAsk]
+        then begin
+          if not DeleteFile(CurFilename) then begin
+            MessageDlg(lisDeleteFileFailed,
+              Format(lisPkgMangUnableToDeleteFile, ['"', CurFilename, '"']),
+              mtError,[mbOk],0);
+          end;
+        end else if EnvironmentOptions.AmbigiousFileAction=afaAutoRename then
+        begin
+          Result:=DoBackupFile(CurFilename,false);
+          if Result=mrABort then exit;
+          Result:=mrOk;
+        end;
+      until SysUtils.FindNext(FileInfo)<>0;
+    end;
+    FindClose(FileInfo);
+  end;
+end;
+
+function TMainIDEBar.DoCheckUnitPathForAmbigiousPascalFiles(
+  const UnitPath: string): TModalResult;
+var
+  EndPos: Integer;
+  StartPos: Integer;
+  CurDir: String;
+  FileInfo: TSearchRec;
+  UnitTree: TAVLTree;
+  ANode: TAVLTreeNode;
+  CurUnitName: String;
+  //CurFilename: String;
+begin
+  Result:=mrOk;
+  exit;
+  
+  
+  EndPos:=1;
+  while EndPos<=length(UnitPath) do begin
+    StartPos:=EndPos;
+    while (StartPos<=length(UnitPath)) and (UnitPath[StartPos]=':') do
+      inc(StartPos);
+    EndPos:=StartPos;
+    while (EndPos<=length(UnitPath)) and (UnitPath[EndPos]<>':') do
+      inc(EndPos);
+    if EndPos>StartPos then begin
+      CurDir:=AppendPathDelim(TrimFilename(copy(
+                                           UnitPath,StartPos,EndPos-StartPos)));
+      if SysUtils.FindFirst(CurDir+FindMask,faAnyFile,FileInfo)=0 then begin
+        repeat
+          if (FileInfo.Name='.') or (FileInfo.Name='..')
+          or ((FileInfo.Attr and faDirectory)<>0)
+          or (not FilenameIsPascalUnit(FileInfo.Name)) then continue;
+          CurUnitName:=ExtractFilenameOnly(FileInfo.Name);
+          //CurFilename:=CurDir+FileInfo.Name;
+          // check if unit already found
+          if (UnitTree<>nil) then begin
+            ANode:=UnitTree.FindKey(PChar(CurUnitName),@CompareStringPointerI);
+            if ANode<>nil then begin
+
+            end;
+          end;
+          // add unit
+          if UnitTree=nil then
+            UnitTree:=TAVLTree.Create(@CompareStringPointerI);
+
+        until SysUtils.FindNext(FileInfo)<>0;
+      end;
+      FindClose(FileInfo);
+    end;
+  end;
+  // clean up
+  UnitTree.Free;
 end;
 
 {-------------------------------------------------------------------------------

@@ -22,7 +22,7 @@ interface
 uses
   Classes, SysUtils, {$IFDEF VER1_0}Linux{$ELSE}Unix{$ENDIF}, Forms,
   Controls, Graphics, LMessages, VCLGlobals, InterfaceBase, GTKInt, LResources,
-  GLib, NVGL, NVGLX, GTKGLArea_Int;
+  GLib, NVGL, GTKGLArea_Int;
   
 type
   { TCustomGTKGLAreaControl }
@@ -201,6 +201,7 @@ begin
   FFrameDiffTime:=FCurrentFrameTime-FLastFrameTime;
   // if the hour changed, the minutes restarts:
   if (FFrameDiffTime<0) then inc(FFrameDiffTime,60*60*1000);
+  FLastFrameTime:=FCurrentFrameTime;
 end;
 
 initialization

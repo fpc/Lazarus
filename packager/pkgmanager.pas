@@ -64,6 +64,8 @@ type
                           CompileClean, CompileRequired: boolean): TModalResult;
     function OnPackageEditorCreateFile(Sender: TObject;
                                    const Params: TAddToPkgResult): TModalResult;
+    function OnPackageEditorDeleteAmbigiousFiles(Sender: TObject;
+      APackage: TLazPackage; const Filename: string): TModalResult;
     function OnPackageEditorInstallPackage(Sender: TObject;
                                            APackage: TLazPackage): TModalResult;
     function OnPackageEditorRevertPackage(Sender: TObject; APackage: TLazPackage
@@ -334,6 +336,12 @@ begin
 
   Result:=MainIDE.DoNewEditorFile(nuUnit,Params.UnitFilename,NewSource,
                     [nfOpenInEditor,nfIsNotPartOfProject,nfSave,nfAddToRecent]);
+end;
+
+function TPkgManager.OnPackageEditorDeleteAmbigiousFiles(Sender: TObject;
+  APackage: TLazPackage; const Filename: string): TModalResult;
+begin
+  Result:=MainIDE.DoDeleteAmbigiousFiles(Filename);
 end;
 
 function TPkgManager.OnPackageEditorInstallPackage(Sender: TObject;
@@ -1244,6 +1252,7 @@ begin
   PackageEditors.OnCompilePackage:=@OnPackageEditorCompilePackage;
   PackageEditors.OnInstallPackage:=@OnPackageEditorInstallPackage;
   PackageEditors.OnUninstallPackage:=@OnPackageEditorUninstallPackage;
+  PackageEditors.OnDeleteAmbigiousFiles:=@OnPackageEditorDeleteAmbigiousFiles;
 
   // package macros
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
@@ -1837,6 +1846,11 @@ begin
 
     // create package main source file
     Result:=DoSavePackageMainSource(APackage,Flags);
+    if Result<>mrOk then exit;
+    
+    // check ambigious units
+    Result:=MainIDE.DoCheckUnitPathForAmbigiousPascalFiles(
+                                                   APackage.GetUnitPath(false));
     if Result<>mrOk then exit;
 
     // create external tool to run the compiler

@@ -64,6 +64,9 @@ type
   TOnCreateNewPkgFile =
     function(Sender: TObject;
              const Params: TAddToPkgResult): TModalResult  of object;
+  TOnDeleteAmbigiousFiles =
+    function(Sender: TObject; APackage: TLazPackage;
+             const Filename: string): TModalResult of object;
   TOnFreePkgEditor = procedure(APackage: TLazPackage) of object;
 
 
@@ -183,6 +186,7 @@ type
     fLayouts: TAVLTree;// tree of TPackageEditorLayout sorted for filename
     FOnCompilePackage: TOnCompilePackage;
     FOnCreateNewFile: TOnCreateNewPkgFile;
+    FOnDeleteAmbigiousFiles: TOnDeleteAmbigiousFiles;
     FOnFreeEditor: TOnFreePkgEditor;
     FOnGetIDEFileInfo: TGetIDEFileStateEvent;
     FOnGetUnitRegisterInfo: TOnGetUnitRegisterInfo;
@@ -220,6 +224,8 @@ type
     procedure UpdateAllEditors;
     function InstallPackage(APackage: TLazPackage): TModalResult;
     function UninstallPackage(APackage: TLazPackage): TModalResult;
+    function DeleteAmbigiousFiles(APackage: TLazPackage;
+                                  const Filename: string): TModalResult;
   public
     property Editors[Index: integer]: TPackageEditorForm read GetEditors;
     property OnCreateNewFile: TOnCreateNewPkgFile read FOnCreateNewFile
@@ -243,6 +249,8 @@ type
                                                  write FOnInstallPackage;
     property OnUninstallPackage: TOnUninstallPackage read FOnUninstallPackage
                                                  write FOnUninstallPackage;
+    property OnDeleteAmbigiousFiles: TOnDeleteAmbigiousFiles
+                     read FOnDeleteAmbigiousFiles write FOnDeleteAmbigiousFiles;
   end;
   
 var
@@ -789,6 +797,7 @@ begin
         and (LazPackage.FindPkgFile(NewFilename,false,true)=nil) then
           LazPackage.AddFile(NewFilename,'',pftLRS,[],cpNormal);
       end;
+      PackageEditors.DeleteAmbigiousFiles(LazPackage,AddParams.UnitFilename);
       UpdateAll;
     end;
 
@@ -1910,6 +1919,15 @@ function TPackageEditors.UninstallPackage(APackage: TLazPackage): TModalResult;
 begin
   if Assigned(OnUninstallPackage) then
     Result:=OnUninstallPackage(Self,APackage);
+end;
+
+function TPackageEditors.DeleteAmbigiousFiles(APackage: TLazPackage;
+  const Filename: string): TModalResult;
+begin
+  if Assigned(OnDeleteAmbigiousFiles) then
+    Result:=OnDeleteAmbigiousFiles(Self,APackage,Filename)
+  else
+    Result:=mrOk;
 end;
 
 function TPackageEditors.RevertPackage(APackage: TLazPackage): TModalResult;
