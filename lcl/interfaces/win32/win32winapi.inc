@@ -1219,7 +1219,7 @@ var
 Begin
   Result := Windows.GetClientRect(Handle, @Rect);
   if not Result then exit;
-  OwnerObject := TObject(GetProp(Handle, 'Lazarus'));
+  OwnerObject := TObject(GetProp(Handle, 'Wincontrol'));
   if OwnerObject is TWinControl then begin
     TheWinControl:=TWinControl(OwnerObject);
     if TheWinControl is TCustomGroupBox then begin
@@ -1880,7 +1880,7 @@ var
 begin
   Result := Windows.GetWindowRect(Handle,@R);
   If (Windows.GetParent(Handle) = 0) then begin
-    OwnerObject := TObject(GetProp(Handle, 'Lazarus'));
+    OwnerObject := TObject(GetProp(Handle, 'Wincontrol'));
     if OwnerObject is TCustomForm then begin
       // the LCL defines the size of a form without the borders.
       // That means for the win32: The client area + menu
@@ -2832,6 +2832,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.86  2003/12/27 16:26:55  micha
+  remove redundant window property "lazarus" (from martin)
+
   Revision 1.85  2003/12/27 11:03:58  micha
   fix pixmap color (from vincent)
 

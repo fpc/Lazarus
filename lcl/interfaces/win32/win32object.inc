@@ -2236,9 +2236,6 @@ Begin
         Left, Top, Width, Height, Parent, MenuHandle, HInstance, Nil);
   end;
 
-  if Window <> HWND(nil) then
-    Windows.SetProp(Window, 'Lazarus', Integer(Sender));
-
   If (Sender Is TWinControl) Or (CompStyle = csImage) Then
   Begin
     TWinControl(Sender).Handle := Window;
@@ -2876,7 +2873,6 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32Object.SetOwner(Window: HWND; Owner: TObject);
 Begin
-  SetProp(Window, 'Lazarus', Owner);
   SetProp(Window, 'MsgList', Nil);
 End;
 
@@ -2887,6 +2883,9 @@ End;
 
 {
   $Log$
+  Revision 1.152  2003/12/27 16:26:55  micha
+  remove redundant window property "lazarus" (from martin)
+
   Revision 1.151  2003/12/21 11:51:35  micha
   use oldstyledialog flag
 

@@ -119,7 +119,7 @@ Var
     PageIndex, Flags: Integer;
     PageHandle: HWND;
   begin
-    Notebook := TObject(GetProp(NotebookHandle, 'Lazarus')) as TCustomNotebook;
+    Notebook := TObject(GetProp(NotebookHandle, 'Wincontrol')) as TCustomNotebook;
     PageIndex := Windows.SendMessage(NotebookHandle, TCM_GETCURSEL, 0, 0);
     PageHandle := Notebook.CustomPage(PageIndex).Handle;
     if Showing then
@@ -243,7 +243,7 @@ Begin
   NotifyUserInput := False;
 
   Assert(False, 'Trace:WindowProc - Getting Object With Callback Procedure');
-  OwnerObject := TObject(GetProp(Window, 'Lazarus'));
+  OwnerObject := TObject(GetProp(Window, 'Wincontrol'));
   Assert(False, 'Trace:WindowProc - Getting Callback Object');
 
   Assert(False, 'Trace:WindowProc - Checking Proc');
@@ -311,7 +311,7 @@ Begin
     End;
     WM_COMMAND:
     Begin
-      OwnerObject := TObject(GetProp(LParam, 'Lazarus'));
+      OwnerObject := TObject(GetProp(LParam, 'Wincontrol'));
       if LParam=0 then OwnerObject := GetMenuItemObject; {menuitem or shortcut}
 
 // is this for speedbuttons?
@@ -347,7 +347,7 @@ Begin
     End;
     WM_CTLCOLORMSGBOX..WM_CTLCOLORSTATIC:
     Begin
-      MsgObject := TObject(GetProp(LParam, 'Lazarus'));
+      MsgObject := TObject(GetProp(LParam, 'WinControl'));
       if MsgObject is TWinControl then
       begin
         Windows.SetTextColor(WParam, ColorToRGB(TWinControl(MsgObject).Font.Color));
@@ -394,7 +394,7 @@ Begin
         if ScrollBar <> 0 then
         begin
           // send message to actual scrollbar window
-          OwnerObject := TObject(Windows.GetProp(ScrollBar, 'Lazarus'));
+          OwnerObject := TObject(Windows.GetProp(ScrollBar, 'Wincontrol'));
         end;
       End;
     End;
@@ -689,7 +689,7 @@ Begin
         if ScrollBar <> 0 then
         begin
           // send message to actual scrollbar window
-          OwnerObject := TObject(Windows.GetProp(ScrollBar, 'Lazarus'));
+          OwnerObject := TObject(Windows.GetProp(ScrollBar, 'Wincontrol'));
         end;
       End;
     End;
@@ -909,6 +909,9 @@ end;
 
 {
   $Log$
+  Revision 1.81  2003/12/27 16:26:55  micha
+  remove redundant window property "lazarus" (from martin)
+
   Revision 1.80  2003/12/26 15:29:33  mattias
   various combobox and other fixes from  Vincent
 

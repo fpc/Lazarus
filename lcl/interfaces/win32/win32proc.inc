@@ -713,7 +713,7 @@ function GetLCLClientOriginOffset(Handle: HWnd;
 var
   OwnerObject: TObject;
 begin
-  OwnerObject := TObject(GetProp(Handle, 'Lazarus'));
+  OwnerObject := TObject(GetProp(Handle, 'Wincontrol'));
   Result:=GetLCLClientOriginOffset(OwnerObject,LeftOffset,TopOffset);
 end;
 
@@ -748,6 +748,9 @@ End;
  { =============================================================================
 
   $Log$
+  Revision 1.33  2003/12/27 16:26:55  micha
+  remove redundant window property "lazarus" (from martin)
+
   Revision 1.32  2003/12/19 18:18:17  micha
   fix window activation z-order
 
