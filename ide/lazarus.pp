@@ -34,8 +34,9 @@ uses
   compileroptions,
   dlgMessage,
   viewunit_dlg,  //dialog used to list the units in a project
-  viewform_dlg;  //dialog to display the forms in the project
-
+  viewform_dlg,  //dialog to display the forms in the project
+  editoroptions,
+  codetemplatedialog;
 
 var
   SplashForm: TSplashForm;
@@ -56,6 +57,7 @@ begin
    Application.CreateForm(TViewUnits1, ViewUnits1);
    Application.CreateForm(TfrmCompilerOptions, frmCompilerOptions);
    Application.CreateForm(TViewForms1, ViewForms1);
+   Application.CreateForm(TEditorOptionsForm,EditorOptionsForm );
    SplashForm.StartTimer;
    Application.Run;
 end.
@@ -63,6 +65,10 @@ end.
 
 {
   $Log$
+  Revision 1.12  2001/01/31 13:03:33  lazarus
+  Commitng source with new editor.
+  Shane
+
   Revision 1.11  2001/01/16 23:30:45  lazarus
   trying to determine what's crashing LAzarus on load.
   Shane

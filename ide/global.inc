@@ -5,88 +5,14 @@
  ******************************************************************************)
 
 
-constructor TUnitInfo.Create;
-begin
-  inherited Create;
-  Source := TStringList.Create;
-  Fpage := -1;
-  FName := '';
-  FFormName := '';
-end;
-
-destructor TUnitInfo.Destroy;
-begin
-  Source.Destroy;
-  inherited destroy;
-end;
-
-procedure TUnitInfo.SetFormName(Value : String);
-var
-  I : Integer;
-  Texts : String;
-  TempNum : Integer;
-  Replace : Boolean;
-  TempEdit : TmwCustomEdit;
-begin
-end;
-
-function TUnitInfo.GetFormName : String;
-begin
-  Result := FFormName;
-end;
-
-procedure TUnitInfo.SetPage(Value : Integer);
-begin
-  FPage := Value;
-end;
-
-function TUnitInfo.GetPage : Integer;
-begin
-  Result := FPage;
-end;
-
-{This function returns the index line number where the class definition starts}
-function TUnitInfo.FindStartClass(cName: String; LineStart: Integer) : Integer;
-var
-  I : Integer;
-  Texts : String;
-begin
-  for I := LineStart to Source.Count-1 do
-  begin
-    Texts := Source.Strings[i];
-    if  (pos(cName, Texts) > 0) 
-    and (pos('class', Texts) > 0) 
-    then begin
-      //validate it but for now, just break;
-      Result := i;
-      Break;
-    end;
-  end;
-end;
-
-
-procedure TUnitInfo.AddProcedureLine(value : String);
-var
-  TempEdit : TmwCustomEdit;
-  num,i : Integer;
-begin
-end;
-
-
-procedure TUnitInfo.AddControlLine(value : String); //adds the "Edit1 : TEdit" line
-var
-  TempEdit : TmwCustomEdit;
-  I : Integer;
-  Texts : String;
-  SpaceCount : Integer;
-  Num : Integer;
-  END_Found,PROC_Found, PUBLIC_Found, PRIVATE_Found : Boolean;
-begin
-end;
 
 { =============================================================================
 
   $Log$
+  Revision 1.3  2001/01/31 13:03:33  lazarus
+  Commitng source with new editor.
+  Shane
+
   Revision 1.2  2000/12/19 18:43:12  lazarus
   Removed IDEEDITOR.  This causes the PROJECT class to not function.
   Saving projects no longer works.

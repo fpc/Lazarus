@@ -28,5 +28,6 @@ end;
 
 procedure TStatusPanels.Update(Item: TCollectionItem);
 begin
+  FStatusBar.Invalidate;
 end;
 

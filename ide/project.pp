@@ -390,10 +390,12 @@ end;
 procedure TProject.AddUnit(AUnit: TUnitInfo);
 begin
   if (AUnit <> nil) then UnitList.Add(AUnit);
+
   { TODO:
       Add the unit to the .lpr file.
       Add an AutoCreate method call to the .lpr file for the unit.
   }
+
 end;
 
 {------------------------------------------------------------------------------
@@ -446,7 +448,7 @@ begin
   if (ProjectInfoFile = '') then exit;
 
   confPath := GetPrimaryConfigPath + '/' + ProjectInfoFile;
-
+  Writeln('[TPRoject] confPath = '+ConfPath);
   // See if config path exists and if not create it
   if (not DirectoryExists(GetPrimaryConfigPath)) then
   begin
@@ -474,6 +476,10 @@ end;
 end.
 {
   $Log$
+  Revision 1.6  2001/01/31 13:03:33  lazarus
+  Commitng source with new editor.
+  Shane
+
   Revision 1.5  2001/01/31 06:28:41  lazarus
   Removed global unit.
   Renamed TProjectUnitInfo to TUnitInfo.

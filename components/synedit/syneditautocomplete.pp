@@ -430,6 +430,8 @@ begin
     if sCompl <> '' then                                                        //mg 2000-11-07
       SaveEntry;
   end;
+  //Mattias
+  fParsed:=true;
 end;
 
 function TCustomSynAutoComplete.RemoveEditor(AEditor: TCustomSynEdit): boolean;

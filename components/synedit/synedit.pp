@@ -860,27 +860,33 @@ begin
 end;
 
 procedure TCustomSynEdit.DoCopyToClipboard(const SText: string);
-{$IFNDEF SYN_LAZARUS}
 var
+{$IFNDEF SYN_LAZARUS}
   Mem: HGLOBAL;
   P: PChar;
+{$ENDIF}
   SLen: integer;
   Failed: boolean;
-{$ENDIF}
 begin
-{$IFNDEF SYN_LAZARUS}
   if SText <> '' then begin
     Failed := TRUE; // assume the worst.
     SLen := Length(SText);
     // Open and Close are the only TClipboard methods we use because TClipboard
     // is very hard (impossible) to work with if you want to put more than one
     // format on it at a time.
+    {$IFNDEF SYN_LAZARUS}
     Clipboard.Open;
+    {$ENDIF}
     try
       // Clear anything already on the clipboard.
       EmptyClipboard;
       // Put it on the clipboard as normal text format so it can be pasted into
       // things like notepad or Delphi.
+      {$IFDEF SYN_LAZARUS}
+      if SLen>0 then
+        ClipBoard.SetTextBuf(PChar(SText));
+      Failed:=not ClipBoard.HasFormat(CF_TEXT);
+      {$ELSE}
       Mem := GlobalAlloc(GMEM_MOVEABLE or GMEM_DDESHARE, SLen + 1);
       if Mem <> 0 then begin
         P := GlobalLock(Mem);
@@ -916,13 +922,15 @@ begin
         // Don't free Mem!  It belongs to the clipboard now, and it will free it
         // when it is done with it.
       end;
+      {$ENDIF}
     finally
+      {$IFNDEF SYN_LAZARUS}
       Clipboard.Close;
+      {$ENDIF}
       if Failed then
         raise ESynEditError.Create('Clipboard copy operation failed');
     end;
   end;
-{$ENDIF}
 end;
 
 procedure TCustomSynEdit.CopyToClipboard;
@@ -1085,7 +1093,6 @@ destructor TCustomSynEdit.Destroy;
 var
   i: integer;
 begin
-writeln('[TCustomSynEdit.Destroy]');
   Highlighter := nil;
   // free listeners while other fields are still valid
   if Assigned(fHookedCommandHandlers) then begin
@@ -1113,7 +1120,6 @@ writeln('[TCustomSynEdit.Destroy]');
   fFontDummy.Free;
   Lines.Free;
   inherited Destroy;
-writeln('[TCustomSynEdit.Destroy] end');
 end;
 
 function TCustomSynEdit.GetBlockBegin: TPoint;
@@ -1443,7 +1449,6 @@ procedure TCustomSynEdit.InvalidateLines(FirstLine, LastLine: integer);
 var
   rcInval: TRect;
 begin
-writeln('[TCustomSynEdit.InvalidateLines] ',FirstLine,' ',LastLine);
   if Visible and HandleAllocated then
     if (FirstLine = -1) and (LastLine = -1) then begin
       rcInval := ClientRect;
@@ -1464,8 +1469,6 @@ writeln('[TCustomSynEdit.InvalidateLines] ',FirstLine,' ',LastLine);
         if sfLinesChanging in fStateFlags then
           UnionRect(fInvalidateRect, fInvalidateRect, rcInval)
         else
-writeln('[TCustomSynEdit.InvalidateLines] InvalidateRect ',rcInval.Left,' ',rcInval.Top
-      ,' ',rcInval.Right,' ',rcInval.Bottom);
           InvalidateRect(Handle, @rcInval, FALSE);
       end;
     end;
@@ -1608,7 +1611,8 @@ begin
   if (fMouseDownX < fGutterWidth) then
     Include(fStateFlags, sfPossibleGutterClick);
   {$IFDEF SYN_LAZARUS}
-  SetFocus;
+  LCLLinux.SetFocus(Handle);
+  ShowCaret;
   {$ELSE}
   Windows.SetFocus(Handle);
   {$ENDIF}
@@ -1699,6 +1703,7 @@ end;
 procedure TCustomSynEdit.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
+writeln('TCustomSynEdit.MouseUp x=',x,' y=',y);
   inherited MouseUp(Button, Shift, X, Y);
   fScrollTimer.Enabled := False;                                           
   if (Button = mbRight) and (Shift = [ssRight]) and Assigned(PopupMenu) then
@@ -1830,7 +1835,6 @@ var
   end;
 
 begin
-writeln('[TCustomSynEdit.PaintGutter]');
   if (FirstLine = 1) and (LastLine = 0) then
     LastLine := 1;
   // Changed to use fTextDrawer.BeginDrawing and fTextDrawer.EndDrawing only
@@ -1926,7 +1930,6 @@ writeln('[TCustomSynEdit.PaintGutter]');
       FreeMem(aGutterOffs);
     end;
   end;
-writeln('[TCustomSynEdit.PaintGutter] end');
 end;
 
 procedure TCustomSynEdit.PaintTextLines(AClip: TRect; FirstLine, LastLine,
@@ -2383,7 +2386,6 @@ var
 { end local procedures }
 
 begin
-writeln('[TCustomSynEdit.PaintTextLines]');
   colEditorBG := Color;
   if Assigned(Highlighter) and Assigned(Highlighter.WhitespaceAttribute) then
   begin
@@ -2447,7 +2449,6 @@ writeln('[TCustomSynEdit.PaintTextLines]');
       {$ENDIF}
     end;
   end;
-writeln('[TCustomSynEdit.PaintTextLines] end');
 end;
 
 procedure TCustomSynEdit.Update;
@@ -2457,19 +2458,19 @@ begin
 end;
 
 procedure TCustomSynEdit.PasteFromClipboard;
-{$IFNDEF SYN_LAZARUS}
 var
   StartOfBlock: TPoint;
   EndOfBlock: TPoint;
+{$IFNDEF SYN_LAZARUS}
   PasteMode: TSynSelectionMode;
   Mem: HGLOBAL;
   P: PChar;
   DummyTag: Integer;
 {$ENDIF}
 begin
-{$IFNDEF SYN_LAZARUS}
   BeginUndoBlock;                                                               //mh 2000-11-20
   try
+    {$IFNDEF SYN_LAZARUS}
     // Check for our special format first.
     if Clipboard.HasFormat(SynEditClipboardFormat) then begin
       Clipboard.Open;
@@ -2521,7 +2522,7 @@ begin
         Clipboard.Close;
       end;
     // If our special format isn't there, check for regular text format.
-    end else if Clipboard.HasFormat(CF_TEXT) then begin
+    end else {$ENDIF} if Clipboard.HasFormat(CF_TEXT) then begin
       // Normal text is much easier...
       if SelAvail then begin
 //        fUndoList.AddChange(crSelDelete, fBlockBegin, fBlockEnd, SelText,
@@ -2544,7 +2545,6 @@ begin
   EnsureCursorPosVisible;
   // Selection should have changed...
   StatusChanged([scSelection]);
-{$ENDIF}
 end;
 
 procedure TCustomSynEdit.SelectAll;
@@ -2734,7 +2734,8 @@ begin
     fGutterWidth := Value;
     fTextOffset := fGutterWidth + 2 - (LeftChar - 1) * fCharWidth;
     if HandleAllocated then begin
-      fCharsInWindow := (ClientWidth - fGutterWidth - 2) div fCharWidth;
+      fCharsInWindow := (ClientWidth - fGutterWidth -
+            {$IFDEF SYN_LAZARUS}2 - 15{$ELSE}2{$ENDIF}) div fCharWidth;
       UpdateScrollBars;
       Invalidate;
     end;
@@ -4647,13 +4648,11 @@ begin
 // vertical caret movement or selection
       ecUp, ecSelUp:
         begin
-writeln('[TCustomSynEdit.ExecuteCommand] ecUp,ecSelUp');
           MoveCaretVert(-1, Command = ecSelUp);
           Update;
         end;
       ecDown, ecSelDown:
         begin
-writeln('[TCustomSynEdit.ExecuteCommand] ecDown,ecSelDown');
           MoveCaretVert(1, Command = ecSelDown);
           Update;
         end;
@@ -4722,7 +4721,6 @@ writeln('[TCustomSynEdit.ExecuteCommand] ecDown,ecSelDown');
 {begin}                                                                         //mh 2000-10-30
       ecDeleteLastChar:
         if not ReadOnly then begin
-writeln('[TCustomSynEdit.ExecuteCommand] ecDeleteLastChar');
           if SelAvail then
             SetSelectedTextEmpty
           else begin
@@ -4790,7 +4788,6 @@ writeln('[TCustomSynEdit.ExecuteCommand] ecDeleteLastChar');
         end;
       ecDeleteChar:
         if not ReadOnly then begin
-writeln('[TCustomSynEdit.ExecuteCommand] ecDeleteChar');
           if SelAvail then
             SetSelectedTextEmpty
           else begin
@@ -4826,7 +4823,6 @@ writeln('[TCustomSynEdit.ExecuteCommand] ecDeleteChar');
         end;
       ecDeleteWord, ecDeleteEOL:
         if not ReadOnly then begin
-writeln('[TCustomSynEdit.ExecuteCommand] ecDeleteWord,ecDeleteEOL');
           Len := Length(LineText);
           if Command = ecDeleteWord then begin
             if CaretX > Len + 1 then
@@ -4851,7 +4847,6 @@ writeln('[TCustomSynEdit.ExecuteCommand] ecDeleteWord,ecDeleteEOL');
         end;
       ecDeleteLastWord, ecDeleteBOL:
         if not ReadOnly then begin
-writeln('[TCustomSynEdit.ExecuteCommand] ecDeleteLastWord');
           if Command = ecDeleteLastWord then
             WP := PrevWordPos
           else
@@ -4875,7 +4870,6 @@ writeln('[TCustomSynEdit.ExecuteCommand] ecDeleteLastWord');
       ecDeleteLine:
         if not ReadOnly and not ((Lines.Count = 1) and (Length(Lines[0]) = 0))
         then begin
-writeln('[TCustomSynEdit.ExecuteCommand] ecDeleteLastLine');
           if SelAvail then
             SetBlockBegin(CaretXY);
           if Lines.Count = 1 then begin
@@ -4897,7 +4891,6 @@ writeln('[TCustomSynEdit.ExecuteCommand] ecDeleteLastLine');
       ecInsertLine,
       ecLineBreak:
         if not ReadOnly then begin
-writeln('[TCustomSynEdit.ExecuteCommand] ecLineBreak');
           if SelAvail then begin
             fUndoList.AddChange(crDelete, fBlockBegin, fBlockEnd, SelText,
               SelectionMode);
@@ -5002,7 +4995,6 @@ writeln('[TCustomSynEdit.ExecuteCommand] ecLineBreak');
         FindMatchingBracket;
       ecChar:
         if not ReadOnly and (AChar >= #32) and (AChar <> #127) then begin
-writeln('[TCustomSynEdit.ExecuteCommand] ecChar ''',AChar,'''');
           if SelAvail then begin
             BeginUndoBlock;
             try
@@ -5111,7 +5103,6 @@ writeln('[TCustomSynEdit.ExecuteCommand] ecChar ''',AChar,'''');
         end;
       ecScrollUp:
         begin
-writeln('[TCustomSynEdit.ExecuteCommand] ecScrollUp');
           TopLine := TopLine - 1;
           if CaretY > TopLine + LinesInWindow - 1 then
             CaretY := TopLine + LinesInWindow - 1;
@@ -5119,7 +5110,6 @@ writeln('[TCustomSynEdit.ExecuteCommand] ecScrollUp');
         end;
       ecScrollDown:
         begin
-writeln('[TCustomSynEdit.ExecuteCommand] ecScrollDown');
           TopLine := TopLine + 1;
           if CaretY < TopLine then
             CaretY := TopLine;
@@ -5788,8 +5778,10 @@ end;
 procedure TCustomSynEdit.SizeOrFontChanged(bFont: boolean);
 begin
   if HandleAllocated then begin
-    fCharsInWindow := (ClientWidth - fGutterWidth - 2) div fCharWidth;
-    fLinesInWindow := ClientHeight div fTextHeight;
+    fCharsInWindow := (ClientWidth - fGutterWidth - 
+        {$IFDEF SYN_LAZARUS}15{$ELSE}2{$ENDIF}) div fCharWidth;
+    fLinesInWindow := (ClientHeight {$IFDEF SYN_LAZARUS}-13{$ENDIF})
+         div fTextHeight;
     if bFont then begin
       if Gutter.ShowLineNumbers then
         GutterChanged(Self)
@@ -6048,7 +6040,6 @@ end;
 
 procedure TCustomSynEdit.DestroyWnd;
 begin
-writeln('[TCustomSynEdit.DestroyWnd]');
   if (eoDropFiles in fOptions) and not (csDesigning in ComponentState) then
     {$IFDEF SYN_LAZARUS}
     // ToDo DragAcceptFiles
@@ -6056,9 +6047,7 @@ writeln('[TCustomSynEdit.DestroyWnd]');
     {$ELSE}
     DragAcceptFiles(Handle, FALSE);
     {$ENDIF}
-writeln('[TCustomSynEdit.DestroyWnd] B');
   inherited DestroyWnd;
-writeln('[TCustomSynEdit.DestroyWnd] C');
 end;
 
 procedure TCustomSynEdit.DoBlockIndent;

@@ -57,6 +57,8 @@ end;
 
 Procedure TStatusBar.DrawBevel(xLeft, PanelNum : Integer );
 Begin
+    Canvas.Brush.Color := color;
+    Canvas.FillRect(Rect(XLeft,Top,XLeft +Panels[PanelNum].Width,Top+Height));
 
   if Panels[PanelNum].Bevel = pbRaised then
   Begin

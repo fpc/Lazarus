@@ -22,48 +22,12 @@ unit global;
 {$mode objfpc}
 
 interface
-uses 
-   Classes,sysutils;
 
-type
-   TPRojFlags = (pfProject, pfForm, pfSource, pfNone);
 
-   TUnitInfo = class(TObject)
-   private
-      FName : String;
-      FFormName : String;
-      FFileName : String;
-      FFlags : TProjFlags;
-      FSource : TStringList;
-      FPage : Integer;
- //   FForm  : TDesignerForm;
-      Procedure SetFormName(Value : String);
-      Function GetFormName : String;
-      Procedure SetPage(Value : Integer);
-      Function GetPage : Integer;
-   public
-      constructor Create;
-      destructor Destroy; override;
-      Procedure AddControlLine(value : String); //adds the "Edit1 : TEdit" line
-      Procedure AddProcedureLine(value : String); //adds the "Procedure TFomr.Button1Click(sender: TObject);" line
-      Function FindStartClass(cName: String; LineStart: Integer) : Integer;
-      Property Name : String read FName write FName;
-      Property FormName: String read GetFormName write SetFormName;
-      Property Source : TStringList read FSource write FSource;
-      Property Page : Integer read GetPage write SetPage;
-      Property FileName : String read FFileName write FFilename;
-      Property Flags : TProjFlags read FFlags write FFLags;
-//    property Form  : TDesignerForm read fform write fform;
 
-   end;
-
-var
-  ActivePage : Integer;
 
 implementation
 
-uses
-   mwCustomEdit;
 
 {$I global.inc}
 
@@ -73,6 +37,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.5  2001/01/31 13:03:33  lazarus
+  Commitng source with new editor.
+  Shane
+
   Revision 1.4  2000/12/19 18:43:12  lazarus
   Removed IDEEDITOR.  This causes the PROJECT class to not function.
   Saving projects no longer works.
