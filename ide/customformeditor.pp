@@ -25,11 +25,12 @@ unit CustomFormEditor;
 interface
 
 uses
-  classes, abstractformeditor, controls,Typinfo;
+  classes, abstractformeditor, controls,prop_edits,Typinfo,Object_Inspector;
 
 Const OrdinalTypes = [tkInteger,tkChar,tkENumeration,tkbool];
 
 type
+
 
 {
 TComponentInterface is derived from TIComponentInterface.  It gives access to
@@ -77,24 +78,22 @@ TGetProc = Function : Variant of Object;
         Function Select : Boolean; override;
         Function Focus : Boolean; override;
         Function Delete : Boolean; override;
+        property Control : TComponent read FCOntrol;
   end;
 
 {
 TCustomFormEditor
-  One is created whenever a "NEw Form" is created.  The Form is contained in the MainControl
-  property.  FComponentClass tells whether this container is a TFORM or a TDataModule, or
-  something else new.
+
 }
 
  TControlClass = class of TControl;
 
  TCustomFormEditor = class(TAbstractFormEditor)
   private
-    FModified     : Boolean;
-    FComponentInterfaceList : TList; //used to track and find controls
-    FMainControl : TComponent;  //this needs to be recorded here so when a control
-                                //is created via the CreateComponent we can use this
-                                //to set the owner property.
+   FModified     : Boolean;
+   FComponentInterfaceList : TList; //used to track and find controls
+   FSelectedComponents : TComponentSelectionList;
+   FObj_Inspector : TObjectInspector;
   protected
 
   public
@@ -102,16 +101,25 @@ TCustomFormEditor
     constructor Create;
     destructor Destroy; override;
 
+    Function AddSelected(Value : TComponent) : Integer;
     Function Filename : String; override;
     Function FormModified : Boolean; override;
     Function FindComponent(const Name : String) : TIComponentInterface; override;
-    Function CreateComponent(CI : TIComponentInterface; TypeName : String;
+//    Function CreateComponent(CI : TIComponentInterface; TypeName : String;
+    Function CreateComponent(CI : TIComponentInterface; TypeClass : TComponentClass;
                              X,Y,W,H : Integer): TIComponentInterface; override;
-    property MainControl : TComponent read FMainControl write FMainControl;
+    Procedure ClearSelected;
+    property SelectedComponents : TComponentSelectionList read FSelectedComponents write FSelectedComponents;
+    property Obj_Inspector : TObjectInspector read FObj_Inspector write FObj_Inspector;
+
   end;
 
 
 implementation
+uses
+  SysUtils;
+
+
 
 {TComponentInterface}
 
@@ -428,14 +436,25 @@ end;
 
 constructor TCustomFormEditor.Create;
 begin
+inherited Create;
 FComponentInterfaceList := TList.Create;
-inherited;
+FSelectedComponents := TComponentSelectionList.Create;
 end;
 
 destructor TCustomFormEditor.Destroy;
 begin
-FComponentInterfaceList.Destroy;
 inherited;
+FComponentInterfaceList.Destroy;
+FSelectedComponents.Destroy;
+end;
+
+Function TCustomFormEditor.AddSelected(Value : TComponent) : Integer;
+Begin
+Result := -1;
+FSelectedComponents.Add(Value);
+Result := FSelectedComponents.Count;
+//call the OI to update it's selected.
+Obj_Inspector.Selections := FSelectedComponents;
 end;
 
 
@@ -462,28 +481,68 @@ Begin
       end;
 end;
 
-Function TCustomFormEditor.CreateComponent(CI : TIComponentInterface; TypeName : String;
+//Function TCustomFormEditor.CreateComponent(CI : TIComponentInterface; TypeName : String;
+Function TCustomFormEditor.CreateComponent(CI : TIComponentInterface; TypeClass : TComponentClass;
                              X,Y,W,H : Integer): TIComponentInterface;
 Var
 Temp : TComponentInterface;
+TempInterface : TComponentInterface;
+TempClass    : TPersistentClass;
 Begin
 Temp := TComponentInterface.Create;
-Temp.FControl := TControlClass(TypeName).Create(MainControl);
+Writeln('2');
+//TempClass := GetClass(Typename);
+Writeln('3');
+
+if SelectedComponents.Count = 0 then
+Temp.FControl := TypeClass.Create(nil)
+else
+Begin
+Writeln('Selected Components > 0');
+if (SelectedComponents.Items[0] is TWinControl) and (csAcceptsControls in TWinControl(SelectedComponents.Items[0]).ControlStyle) then
+    Begin
+       Writeln('The Control is a TWinControl and it accepts controls');
+       Writeln('SelectedComponents.Count = '+Inttostr(SelectedComponents.Count));
+       Temp.FControl := TypeClass.Create(TComponent(SelectedComponents.Items[0]));
+    end
+    else
+    Begin
+       Writeln('The Control is not a TWinControl or it does not accept controls');
+       Temp.FControl := TypeClass.Create(SelectedComponents.Items[0].Owner);
+    end;
+end;
+
+
+Writeln('4');
+
   if Assigned(CI) then
      Begin
-        if (TComponentInterface(CI).FControl is TWinControl) then
+        if (TComponentInterface(CI).FControl is TWinControl) and
+           (csAcceptsControls in TWinControl(TComponentInterface(CI).FControl).COntrolStyle)then
             begin
-            if (csAcceptsControls in TWinControl(TComponentInterface(CI).FControl).COntrolStyle) then
-                 Begin  //set CI the parent of the new one.
-                   TWinControl(Temp.FControl).Parent := TWinControl(TComponentInterface(CI).FControl);
-                 end;
-            end;
+               TWinControl(Temp.FControl).Parent := TWinControl(TComponentInterface(CI).FControl);
+            end
+            else
+               TWinControl(Temp.FControl).Parent := TWinControl(TComponentInterface(CI).FControl).Parent;
 
-     End;
 
+     End
+     else
+     Begin //CI is not assigned so check the selected control
+     if SelectedComponents.Count > 0 then
+        Begin
+            TempInterface := TComponentInterface(FindComponent(SelectedComponents.Items[0].Name));
+            if (TempInterface.FControl is TWinControl) and
+               (csAcceptsControls in TWinControl(TempInterface.FControl).ControlStyle)then
+                  TWinControl(Temp.FControl).Parent := TWinControl(TempInterface.FControl)
+            else
+                  TWinControl(Temp.FControl).Parent := TWinControl(TempInterface.FControl).Parent;
+        end
+     end;
+Writeln('5');
 if (Temp.FControl is TControl) then
 Begin
-if (X <> -1) and (Y <> -1) and (W <> -1) and (h <> -1) then
+if (X <> -1) and (Y <> -1) and (W <> -1) and (H <> -1) then
    TControl(Temp.FControl).SetBounds(X,Y,W,H)
 else
    Begin
@@ -502,9 +561,16 @@ else
 
 end;
 
+
+FComponentInterfaceList.Add(Temp);
+
  Result := Temp;
 end;
 
+Procedure TCUstomFormEditor.ClearSelected;
+Begin
+FSelectedComponents.Clear;
+end;
 
 
 end.

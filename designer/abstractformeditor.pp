@@ -84,7 +84,8 @@ or use TPropertyType
      Function GetSelCount : Integer; virtual; abstract;
      Function GetSelComponent(Index : Integer) : TIComponentInterface; virtual; abstract;
 
-     Function CreateComponent(CI : TIComponentInterface; TypeName : String;
+//     Function CreateComponent(CI : TIComponentInterface; TypeName : String;
+     Function CreateComponent(CI : TIComponentInterface; TypeClass : TComponentClass;
                              X,Y,W,H : Integer): TIComponentInterface; virtual; abstract;
   end;
 

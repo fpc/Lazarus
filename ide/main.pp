@@ -31,7 +31,7 @@ uses
   classes,LclLinux,compiler, stdctrls,forms,buttons,menus,comctrls,
   Spin, project,sysutils, global,
   compileroptions,Controls,graphics,extctrls, Dialogs,dlgMEssage,
-  designerform,process,idecomp,Find_dlg;
+  designerform,process,idecomp,Find_dlg,FormEditor,CustomFormEditor,Object_Inspector;
 
 const
   STANDARDBTNCOUNT = 50;
@@ -138,6 +138,9 @@ type
     procedure mnuSearchFindClicked(Sender : TObject);
     procedure mnuSearchFindAgainClicked(Sender : TObject);
 
+    procedure ClickonForm(Sender : TObject);
+    procedure ClickonControl(Sender : TObject);
+
     procedure ControlClick(Sender : TObject);
     procedure MessageViewDblClick(Sender : TObject);
     procedure DesignFormMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer); 
@@ -185,6 +188,8 @@ const
 
 var
 Form1 : TForm1;
+FormEditor1 : TFormEditor;
+ObjectInspector1 : TObjectInspector;
 Taginc : Integer;
 implementation
 uses
@@ -615,6 +620,14 @@ begin
   Compiler1 := TCompiler.Create;
   Compiler1.OutputString := @Messagedlg.Add;
 
+  ObjectInspector1 := TObjectInspector.Create(Self);
+  ObjectInspector1.left := 0;
+  ObjectInspector1.Top := Top+Height;
+  ObjectInspector1.Height := 400;
+
+  ObjectInspector1.Show;
+  FormEditor1 := TFormEditor.Create;
+  FormEditor1.Obj_Inspector := ObjectInspector1;
 
 end;
 
@@ -1498,6 +1511,79 @@ end;
 
 
 {------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------}
+{
+          Used when we a control is clicked.  This is used
+            to update the Object Inspector.
+}
+{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------}
+Procedure TForm1.ClickOnControl(Sender : TObject);
+var
+  CInterface : TComponentInterface;
+Begin
+//We clicked on the form.  Let's see what the active selection is in the IDE control
+//bar.  If it's the pointer, then we set the FormEditor1.SelectedComponents to Sender,
+//otherwise we drop a control and call the CreateComponent function.
+if BPressed = 1 then
+   Begin //mouse button pressed.
+      FormEditor1.ClearSelected;
+      Writeln('Clicked on the control!!!!!  Control name is '+TControl(sender).name);
+      FormEditor1.AddSelected(TComponent(Sender));
+   end
+   else
+   Begin  //add a new control
+     CInterface := TComponentInterface(FormEditor1.CreateComponent(nil,
+                         TComponentClass(TIdeComponent(ideComplist.items[bpressed-1]).ClassType),-1,-1,-1,-1));
+     TControl(CInterface.Control).Visible := True;
+
+     //set the ONCLICK event so we know when the control is selected;
+     TControl(CInterface.Control).OnClick := @ClickOnControl;
+
+
+   end;
+//TIdeComponent(ideComplist.items[bpressed-1]).
+end;
+
+{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------}
+{
+          Used when we click on a form that was created.
+                  This can be used to detect when
+                 a control is dropped onto a form
+}
+{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------}
+Procedure TForm1.ClickOnForm(Sender : TObject);
+var
+  CInterface : TComponentInterface;
+Begin
+//We clicked on the form.  Let's see what the active selection is in the IDE control
+//bar.  If it's the pointer, then we set the FormEditor1.SelectedComponents to Sender,
+//otherwise we drop a control and call the CreateComponent function.
+if BPressed = 1 then
+   Begin //mouse button pressed.
+      FormEditor1.ClearSelected;
+      Writeln('Clicked on the form!!!!!  Froms name is '+TFOrm(sender).name);
+      FormEditor1.AddSelected(TComponent(Sender));
+   end
+   else
+   Begin  //add a new control
+     CInterface := TComponentInterface(FormEditor1.CreateComponent(nil,
+                         TComponentClass(TIdeComponent(ideComplist.items[bpressed-1]).ClassType),-1,-1,-1,-1));
+     TControl(CInterface.Control).Visible := True;
+
+     //set the ONCLICK event so we know when the control is selected;
+     TControl(CInterface.Control).OnClick := @ClickOnControl;
+
+
+   end;
+//TIdeComponent(ideComplist.items[bpressed-1]).
+end;
+
+{------------------------------------------------------------------------------}
 procedure TForm1.mnuNewFormClicked(Sender : TObject);
 var
   I,N: Integer;
@@ -1505,48 +1591,20 @@ var
   TempName : String;
   TempFormName : String;
   Found : Boolean;
+  TempForm : TForm;
+  CInterface : TComponentInterface;
 begin
-  //Create new unit, then display it.
-  TempName:= '';
-  SList:= CreateUnit(TempName);
-  //get a name for the new form
-  SList.Form := CreateNewForm;
-  SList.Formname := SList.Form.Name;
-  TempFormName := SList.FormName;
-  SList.Filename := '';
-  SList.Flags := pfForm;
-  with SList.Source do begin
-    //Add the default lines
-    Add('unit '+TempName+';');
-    Add('');
-    Add('{$mode objfpc}');
-    Add('');
-    Add('interface');
-    Add('');
-    Add('uses');
-    Add('Classes,Messages, SysUtils, Graphics, Controls, Forms, Dialogs;');
-    Add('');
-    Add('type');
-    Add('  T'+TempFormName+' = class(TForm)');
-    Add('  private');
-    Add('    { Private declarations }');
-    Add('  public');
-    Add('    { Public declarations }');
-    Add('  end;');
-    Add('');
-    Add('var');
-    Add('  '+TempFormName+': T'+TempFormName+';');
-    Add('');
-    Add('implementation');
-    Add('');
-    Add('end.');
-    end;
+  TempForm := TForm.Create(Self);
+  TempForm.Parent := Self;
+  if not Assigned(FormEditor1) then
+  FormEditor1 := TFormEditor.Create;
+  FormEditor1.SelectedComponents.Clear;
+  CInterface := TComponentInterface(FormEditor1.CreateComponent(nil,TForm,50,50,300,400));
+  TForm(CInterface.Control).Show;
+  TForm(CInterface.Control).Name := 'Form1';
+//set the ONCLICK event so we know when a control is dropped onto the form.
+  TFOrm(CInterface.Control).OnClick := @ClickOnForm;
 
-  ideEditor1.AddPage(SList.Name,SList.Source);
-  SList.Page := ideEditor1.Notebook1.Pageindex;  //keep track of what page it is on
-  Project1.AddUnit(SList);
-  UpdateViewDialogs;
-  ideEditor1.Show;
 end;
 
 function TForm1.CreateNewForm : TDesignerForm;
@@ -2319,6 +2377,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.6  2000/11/27 18:52:37  lazarus
+  Added the Object Inspector code.
+  Added more form editor code.
+  Shane
+
   Revision 1.5  2000/08/10 13:22:51  lazarus
   Additions for the FIND dialog
   Shane

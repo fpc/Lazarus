@@ -163,8 +163,19 @@ type
       property ClientHandle: HWND read FClientHandle;
    published
       property ActiveCOntrol;
+      property Align;
+      property AutoSize;
+      property Caption;
+      property Color;
+      property ClientHeight;
+      property ClientWidth;
+      property Enabled;
       property FormStyle;
       property Position;
+      property Visible;
+//      property WindowState;
+      property OnCreate;
+      property OnDestroy;
    end;
 
   TFormClass = class of TForm;

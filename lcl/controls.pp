@@ -523,6 +523,7 @@ TCMDialogKey = TLMKEY;
     property Align : TAlign read FAlign write SetAlign;
     property BoundsRect : TRect read GetBoundsRect write SetBoundsRect;
     property Caption: TCaption read GetText write SetText stored IsCaptionStored;
+    property Cursor: TCursor read FCursor write SetCursor default crDefault;
     property Color : TColor read FCOlor write SetColor;  {should change the WRITE to do something eventually}
     property ControlState: TControlState read FControlState write FControlState;
     property ClientOrigin: TPoint read GetClientOrigin;
@@ -531,23 +532,22 @@ TCMDialogKey = TLMKEY;
     property ControlStyle : TControlStyle read FControlStyle write FControlStyle;
     property Enabled: Boolean read GetEnabled write SetEnabled default True;
     property Font : TFont read FFont write FFont;
-    property Height: Integer read FHeight write SetHeight;
     property HostDockSite : TWincontrol read FHostDockSite write FHostDockSite;
-    property Left: Integer read FLeft write SetLeft;
     property ClientHeight : Integer read FHeight write SetHeight;
     property ClientWidth : Integer read FWIdth write SetWidth;
     property Parent : TWinControl read FParent write SetParent;
     property ShowHint : Boolean read FShowHint write SetShowHint;
-    property Top: Integer read FTop write SetTop;
     property Visible: Boolean read FVisible write SetVisible;
-    property Width: Integer read FWidth write SetWidth;
    {events}
     property OnResize: TNotifyEvent read FOnResize write FOnResize;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
 //    property Owner: TComponent read FOwner write FOwner;
     property WindowProc: TWndMethod read FWindowProc write FWindowProc;
   published
-    property Cursor: TCursor read FCursor write SetCursor default crDefault;
+    property Left: Integer read FLeft write SetLeft;
+    property Top: Integer read FTop write SetTop;
+    property Height: Integer read FHeight write SetHeight;
+    property Width: Integer read FWidth write SetWidth;
     property Hint: String read FHint write SetHint;
   end;
 
@@ -1123,6 +1123,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.3  2000/11/27 18:52:37  lazarus
+  Added the Object Inspector code.
+  Added more form editor code.
+  Shane
+
   Revision 1.2  2000/07/30 21:48:32  lazarus
   MWE:
     = Moved ObjectToGTKObject to GTKProc unit

@@ -40,6 +40,7 @@ type
    private
      FImage : String;
      FClassName : String; //hold the main types classname
+     FClassType : TClass;
      procedure SetImage(Value : String);
    protected
      Function LoadImageintoPixmap : TPixmap;
@@ -51,6 +52,8 @@ type
      Function Speedbutton(AOwner : TComponent; nParent: TWinControl): TSpeedButton; Virtual;
      property image : string read FImage write SetImage;
      property ClassName : String read FClassName write FClassName;
+     property ClassType : TClass read FClassType write FClassType;
+
    end;
 
    {-------------------------------------------
@@ -276,6 +279,7 @@ begin
 inherited create;
 FImage := 'images/mouse.xpm';
 ClassName := 'TMOUSE';  //not really the classname for a mouse
+//ClassType := TComponent;
 end;
 
 function TIDEMouse.CreateMethod(AOwner : TComponent): TControl;
@@ -324,6 +328,7 @@ begin
 inherited create;
 FImage := 'images/menu.xpm';
 FClassName := 'TMenu';
+FClassType := TMenu;
 end;
 
 function TIDEMenu.CreateMethod(AOwner : TComponent): TControl;
