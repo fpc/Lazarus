@@ -17,7 +17,8 @@ How do I compile lazarus?
 Do something like this:
 $ cd lazarus
 $ make
-Top
+
+
 How do I build other projects based upon the LCL
 Add the following lines to the end of your fpc.cfg
 # Add Lazarus libs
@@ -32,7 +33,7 @@ ppc386 your.project.pp
 
 --------------------------------------------------------------------------------
 What version of FPC is required?
-Currently you need to use 1.0.7 of the FPC compiler. You can find the URL in
+Currently you need to use 1.0.10 of the FPC compiler. You can find the URL in
 the downloads section of this site.
 
 
@@ -46,7 +47,8 @@ I can't compile Lazarus
 
 
 --------------------------------------------------------------------------------
-When I try to compile delphi projects under lazarus, I have an error at the line :
+When I try to compile delphi projects under lazarus, I have an error at the
+line:
 {$R *.DFM}
 
 How can I solve this problem ?
@@ -55,16 +57,12 @@ in the way Delphi/win32 does. However Lazarus uses a method pretty compatible
 with this.
 You can still use your Delphi layouts if you use the following steps:
 
-   1.
-
-      You need a textual version of
+   1. You need a textual version of all form files (dfm)
       D4: created by copy/paste from ALT-F12
       D5: Native
    2. Create a file with lazres (in lazarus/tools)
       lazres yourform.lrs yourform.dfm
-   3.
-
-      Add the following initialization section to
+   3. Add the following initialization section to every unit with a form:
 
       initialization
       {$I yourform.lrs}
@@ -95,21 +93,6 @@ Environment -> General Options -> Files -> FPC source path
 Does the LCL aims to be a free replacement of the Borland's propietary VCL
 under Win32?
 Yes, LGPL.
-
-
---------------------------------------------------------------------------------
-How I can include lcl component in lazarus?
-see <lazarusdir>/components/custom/README
-
-
---------------------------------------------------------------------------------
-How to add a component to the IDE component palette?
-Lazarus has no package system, because the freepascal compiler does not yet
-fully support dynamic libraries. And without the package system, the only way
-to add components to the IDE is to compile them in.
-In other words: you have to change the IDE source. But it is easy.
-See /components/custom/README
-
 
 
 --------------------------------------------------------------------------------
@@ -194,7 +177,7 @@ Fatal: Can't find unit GLIB
 
    1. Check a clean rebuild: do a 'make clean all'
 
-   2. Check if the compiler has the correct version (1.0.7 or 1.1)
+   2. Check if the compiler has the correct version (1.0.10 or 1.1)
 
    3. Check if the compiler is using the right config file. The normal
       installation creates /etc/fpc.cfg. But fpc also searches for
@@ -204,9 +187,9 @@ Fatal: Can't find unit GLIB
 
    4. Check if the config file (/etc/fpc.cfg) contains the right paths to your
       fpc libs. There must be three lines like this:
-      -Fu/usr/lib/fpc/1.0.7/units/$target
-      -Fu/usr/lib/fpc/1.0.7/units/$target/*
-      -Fu/usr/lib/fpc/1.0.7/units/$target/rtl
+      -Fu/usr/lib/fpc/$version/units/$target
+      -Fu/usr/lib/fpc/$version/units/$target/*
+      -Fu/usr/lib/fpc/$version/units/$target/rtl
       The first part of these paths (/usr/lib/fpc) depends on your system. On
       some systems this can be for example /usr/local/lib/fpc/... .
       Hint: You can see your searchpaths with 'ppc386 -vt bogus'
@@ -224,7 +207,7 @@ Fatal: Can't find unit GLIB
 
    6. Check if the missing unit (glib.ppu) exists in your fpc lib directory.
       For example the gtk.ppu can be found in
-      /usr/lib/fpc/1.0.7/units/linux/gtk/.
+      /usr/lib/fpc/$version/units/linux/gtk/.
       If it does not exists, the fpc lib is corrupt and should be reinstalled.
 
    7. Check if the sources are in a NFS mounted directory. In some cases the

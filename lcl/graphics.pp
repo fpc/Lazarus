@@ -965,10 +965,10 @@ function ColorToString(Color: TColor): AnsiString;
 function StringToColor(const S: shortstring): TColor;
 procedure GetColorValues(Proc: TGetColorStringProc);
 
-Function Blue(rgb: longint) : BYTE;
-Function Green(rgb: longint) : BYTE;
-Function Red(rgb: longint) : BYTE;
-procedure RedGreenBlue(rgb: longint; var Red, Green, Blue: Byte);
+Function Blue(rgb: TColor) : BYTE;
+Function Green(rgb: TColor) : BYTE;
+Function Red(rgb: TColor) : BYTE;
+procedure RedGreenBlue(rgb: TColor; Red, Green, Blue: Byte);
 
 procedure GetCharsetValues(Proc: TGetStrProc);
 function CharsetToIdent(Charset: Longint; var Ident: string): Boolean;
@@ -1138,22 +1138,22 @@ begin
   for I := Low(Colors) to High(Colors) do Proc(Colors[I].Name);
 end;
 
-Function Blue(rgb : longint) : BYTE;
+Function Blue(rgb : TColor) : BYTE;
 begin
   Result := (rgb shr 16) and $000000ff;
 end;
 
-Function Green(rgb : longint) : BYTE;
+Function Green(rgb : TColor) : BYTE;
 begin
   Result := (rgb shr 8) and $000000ff;
 end;
 
-Function Red(rgb : longint) : BYTE;
+Function Red(rgb : TColor) : BYTE;
 begin
   Result := rgb and $000000ff;
 end;
 
-procedure RedGreenBlue(rgb: longint; var Red, Green, Blue: Byte);
+procedure RedGreenBlue(rgb: TColor; Red, Green, Blue: Byte);
 begin
   Red := rgb and $000000ff;
   Green := (rgb shr 8) and $000000ff;
@@ -1194,6 +1194,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.87  2003/09/05 21:27:28  mattias
+  fixed types
+
   Revision 1.86  2003/09/02 21:32:56  mattias
   implemented TOpenPictureDialog
 
