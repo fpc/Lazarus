@@ -62,6 +62,7 @@ var
   BGRed: Integer;
   BGGreen: Integer;
   BGBlue: Integer;
+  TokenStart: Integer;
 
   function InvertColor(AColor: TColor): TColor;
   var Red, Green, Blue: integer;
@@ -94,6 +95,20 @@ var
       NewColor:=InvertColor(NewColor);
     ACanvas.Font.Color:=NewColor;
   end;
+  
+  procedure WriteToken(var TokenStart, TokenEnd: integer);
+  var
+    CurToken: String;
+  begin
+    if TokenStart>=1 then begin
+      CurToken:=copy(AKey,TokenStart,TokenEnd-TokenStart);
+      ACanvas.TextOut(x+1, y, CurToken);
+      x := x + ACanvas.TextWidth(CurToken);
+      //debugln('Paint A Text="',CurToken,'" x=',dbgs(x),' y=',dbgs(y),' "',ACanvas.Font.Name,'" ',dbgs(ACanvas.Font.Height));
+      TokenStart:=0;
+    end;
+  end;
+  
   
 var
   i: Integer;
@@ -222,10 +237,12 @@ begin
   end else begin
     // parse AKey for text and style
     i := 1;
+    TokenStart:=0;
     while i <= Length(AKey) do begin
       case AKey[i] of
       #1, #2:
         begin
+          WriteToken(TokenStart,i);
           // set color
           ACanvas.Font.Color := (Ord(AKey[i + 3]) shl 8
                         + Ord(AKey[i + 2])) shl 8
@@ -234,6 +251,7 @@ begin
         end;
       #3:
         begin
+          WriteToken(TokenStart,i);
           // set style
           case AKey[i + 1] of
           'B': ACanvas.Font.Style := ACanvas.Font.Style + [fsBold];
@@ -246,11 +264,11 @@ begin
           inc(i, 2);
         end;
       else
-        ACanvas.TextOut(x+1, y, AKey[i]);
-        x := x + ACanvas.TextWidth(AKey[i]);
+        if TokenStart<1 then TokenStart:=i;
         inc(i);
       end;
     end;
+    WriteToken(TokenStart,i);
   end;
 end;
 

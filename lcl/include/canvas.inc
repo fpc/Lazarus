@@ -811,8 +811,7 @@ begin
   Flags := 0;
   If TextStyle.Opaque then
     Flags := ETO_Opaque;
-  ExtTextOut(FHandle, X, Y, Flags, nil,
-             PChar(Text), Length(Text), nil);
+  ExtUTF8Out(FHandle, X, Y, Flags, nil, PChar(Text), Length(Text), nil);
   MoveTo(X + TextWidth(Text), Y);
   Changed;
 end;
@@ -1269,6 +1268,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.85  2005/01/01 20:05:08  mattias
+  accelerated code completion box in IDE and replaced ExtTextOut with ExtUTF8Out in TCanvas.TextOut
+
   Revision 1.84  2004/11/07 17:21:08  micha
   fix text position to be at X, Y; if alignment/layout indicates so
 
