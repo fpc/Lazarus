@@ -516,6 +516,10 @@ begin
     the next line will produce a gtk warning. The PGtkWidget(Handle) is also
     a dirty cast. If Sender is TForm, Handle is a PGtkWindow !
 }
+            if gtk_type_is_a(gtk_object_type(PGtkObject(Handle)),
+              GTKAPIWidget_GetType)
+            then
+              DestroyCaret(Handle);
             gtk_widget_destroy(PGtkWidget(Handle));
 //writeln('>>> LM_DESTROY END ',Sender.Classname,' Sender=',HexStr(Cardinal(Sender),8),' Handle=',HexStr(Cardinal(Handle),8));
           end;
@@ -3479,7 +3483,11 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.86  2001/12/12 14:39:25  lazarus
+  MG: carets will now be auto destroyed on widget destroy
+
   Revision 1.85  2001/12/12 08:29:21  lazarus
+
         Add code to allow TOpenDialog to do multiple line selects.   MAH
 
   Revision 1.84  2001/12/11 16:51:37  lazarus

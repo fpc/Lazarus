@@ -403,12 +403,12 @@ begin
           1, X, Y, Width, Height
         )
       else
-        writeln('Draw Caret failed: X=',X,',Y=',Y,',W=',Width,',H=',Height,',',Pixmap<>nil,',',PGTKWidget(Client)^.Window<>nil,',',PGTKWidget(Client)^.theStyle<>nil);
+        writeln('***: Draw Caret failed: Client=',HexStr(Cardinal(Client),8),' X=',X,' Y=',Y,' W=',Width,' H=',Height,' ',Pixmap<>nil,',',PGTKWidget(Client)^.Window<>nil,',',PGTKWidget(Client)^.theStyle<>nil);
       IsDrawn := True;
 
     end;
     
-//writeln('GTKAPIWidgetClient_DrawCaret A Client=',HexStr(Cardinal(Client),8),' Timer=',Timer,' Blink=',Blinking,' Visible=',Visible,' ShowHideOnFocus=',ShowHideOnFocus,' Focus=',gtk_widget_has_focus(Widget));
+//writeln('GTKAPIWidgetClient_DrawCaret A Client=',HexStr(Cardinal(Client),8),' Timer=',Timer,' Blink=',Blinking,' Visible=',Visible,' ShowHideOnFocus=',ShowHideOnFocus,' Focus=',gtk_widget_has_focus(Widget),' W=',Width,' H=',Height);
     if Visible and Blinking and (Timer = 0) 
     and (not ShowHideOnFocus or HasFocus)
     then
@@ -462,7 +462,7 @@ end;
 
 procedure GTKAPIWidgetClient_DestroyCaret(Client: PGTKAPIWidgetClient); 
 begin
-writeln('********** [GTKAPIWidgetClient_DestroyCaret] A Client=',HexStr(Cardinal(Client),8));
+//writeln('********** [GTKAPIWidgetClient_DestroyCaret] A Client=',HexStr(Cardinal(Client),8));
   if Client = nil 
   then begin
     WriteLn('WARNING: [GTKAPIWidgetClient_DestroyCaret] Got nil client');
@@ -478,7 +478,7 @@ writeln('********** [GTKAPIWidgetClient_DestroyCaret] A Client=',HexStr(Cardinal
     end;
     Pixmap := nil;
   end;
-writeln('********** B[GTKAPIWidgetClient_DestroyCaret] A Client=',HexStr(Cardinal(Client),8));
+//writeln('********** B[GTKAPIWidgetClient_DestroyCaret] A Client=',HexStr(Cardinal(Client),8));
 end;
 
 procedure GTKAPIWidgetClient_SetCaretPos(Client: PGTKAPIWidgetClient;
@@ -699,6 +699,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.18  2001/12/12 14:39:26  lazarus
+  MG: carets will now be auto destroyed on widget destroy
+
   Revision 1.17  2001/12/12 14:23:19  lazarus
   MG: implemented DestroyCaret
 
