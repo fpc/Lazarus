@@ -106,23 +106,7 @@ type
 
   { TWSToolButton }
 
-  TWSToolButton = class(TWSButtonControl)
-  private
-  protected
-  public
-  end;
-
-  { TWSToolBar }
-
-  TWSToolBar = class(TWSToolWindow)
-  private
-  protected
-  public
-  end;
-
-  { TWSToolButton }
-
-  TWSToolButton = class(TWSButtonControl)
+  TWSToolButton = class(TWSCustomControl)
   private
   protected
   public

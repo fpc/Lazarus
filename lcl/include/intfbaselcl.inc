@@ -47,12 +47,6 @@ begin
   Result:=0;
 end;
 
-function TWidgetSet.ButtonCreateHandle(const AButton: TObject; const AParams: TCreateParams): THandle;
-begin
-  // Your default here
-  Result:=0;
-end;
-
 function TWidgetSet.CalendarCreateHandle(const ACalendar: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your default here
@@ -906,6 +900,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.25  2004/03/19 00:03:15  marc
+  * Moved the implementation of (GTK)ButtonCreateHandle to the new
+    (GTK)WSButton class
+
   Revision 1.24  2004/03/05 00:14:02  marc
   * Renamed TInterfaceBase to TWidgetSet
 

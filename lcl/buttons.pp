@@ -68,7 +68,6 @@ type
     procedure WMDefaultClicked(var Message: TLMessage); message LM_CLICKED;
   protected
     procedure Click; override;
-    function CreateWindowHandle(const AParams: TCreateParams): THandle; override;
     procedure CreateWnd; override;
     procedure DoSendBtnDefault; virtual;
 
@@ -330,6 +329,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.63  2004/03/19 00:03:14  marc
+  * Moved the implementation of (GTK)ButtonCreateHandle to the new
+    (GTK)WSButton class
+
   Revision 1.62  2004/03/17 13:10:01  mattias
   added TBitBtn.Margin
 

@@ -1341,7 +1341,6 @@ type
     procedure SetText(const Value: TCaption); override;
     procedure UpdateControlState;
     procedure CreateHandle; virtual;
-    function CreateWindowHandle(const AParams: TCreateParams): THandle; virtual;
     procedure CreateWnd; virtual; //creates the window
     procedure InitializeWnd; virtual; //gets called after the window is created
     procedure ParentFormInitializeWnd; virtual; //gets called by InitializeWnd of parent form
@@ -2241,6 +2240,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.191  2004/03/19 00:03:14  marc
+  * Moved the implementation of (GTK)ButtonCreateHandle to the new
+    (GTK)WSButton class
+
   Revision 1.190  2004/03/17 00:34:37  marc
   * Interface reconstruction. Created skeleton units, classes and wscontrols
 

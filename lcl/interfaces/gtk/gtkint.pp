@@ -281,10 +281,6 @@ type
     procedure UpdateStatusBarPanel(StatusBar: TObject; Index: integer;
                                    StatusPanelWidget: PGtkWidget); virtual;
 
-    // control functions for messages, callbacks
-    procedure HookWincontrolSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject); virtual;
-    procedure HookSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject); virtual;  //hooks all signals for controls
-
     procedure ResizeChild(Sender : TObject; Left,Top,Width,Height : Integer);virtual;
     procedure SetResizeRequest(Widget: PGtkWidget);virtual;
     procedure UnsetResizeRequest(Widget: PGtkWidget);virtual;
@@ -299,6 +295,10 @@ type
                                 NewWidth, NewHeight: integer); virtual;
     procedure FinishComponentCreate(const ALCLObject: TObject;
               const AGTKObject: Pointer; const ASetupProps : Boolean); virtual;
+
+    // control functions for messages, callbacks
+    procedure HookWincontrolSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject); virtual;
+    procedure HookSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject); virtual;  //hooks all signals for controls
   public
     constructor Create;
     destructor Destroy; override;
@@ -322,6 +322,9 @@ type
 
 {$I gtklistslh.inc}
 
+var
+  GTKWidgetSet: TGTKWidgetSet;
+
 implementation
 
 uses
@@ -333,7 +336,7 @@ uses
 ////////////////////////////////////////////////////
 // GtkWSActnList,
 // GtkWSArrow,
-// GtkWSButtons,
+ GtkWSButtons,
 // GtkWSCalendar,
 // GtkWSCheckLst,
 // GtkWSCListBox,
@@ -457,6 +460,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.176  2004/03/19 00:03:15  marc
+  * Moved the implementation of (GTK)ButtonCreateHandle to the new
+    (GTK)WSButton class
+
   Revision 1.175  2004/03/18 22:35:52  mattias
   improved TCustomListView.ItemAdded with an Index param  from Andrew
 

@@ -34,7 +34,6 @@ function AlignmentCreateHandle(const AAlignment: TObject; const AParams: TCreate
 function ArrowCreateHandle(const AArrow: TObject; const AParams: TCreateParams): THandle; override;
 
 function BitBtnCreateHandle(const ABitBtn: TObject; const AParams: TCreateParams): THandle; override;
-function ButtonCreateHandle(const AButton: TObject; const AParams: TCreateParams): THandle; override;
 
 function CalendarCreateHandle(const ACalendar: TObject; const AParams: TCreateParams): THandle; override;
 function CheckboxCreateHandle(const ACheckBox: TObject; const AParams: TCreateParams): THandle; override;
@@ -113,6 +112,10 @@ function WincontrolCreateHandle(const AFixed: TObject; const AParams: TCreatePar
 { =============================================================================
 
   $Log$
+  Revision 1.15  2004/03/19 00:03:15  marc
+  * Moved the implementation of (GTK)ButtonCreateHandle to the new
+    (GTK)WSButton class
+
   Revision 1.14  2004/03/09 15:30:15  peter
     * fixed gtk2 compilation
 

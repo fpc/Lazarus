@@ -43,7 +43,15 @@ uses
   Comctrls, Graphics, StdCtrls, Arrow, Controls, ImgList, Menus, Toolwin,
   Dialogs, Messages, Clistbox, ActnList, Grids, MaskEdit,
   Printers, PostScriptPrinter, CheckLst, PairSplitter, ExtDlgs,
-  DBCtrls, DBGrids, EditBtn;
+  DBCtrls, DBGrids, EditBtn,
+  // widgetset skeleton
+  WSActnList, WSArrow, WSButtons, WSCalendar,
+  WSCheckLst, WSCListBox, WSComCtrls, WSControls,
+  WSDbCtrls, WSDBGrids, WSDialogs, WSDirSel,
+  WSEditBtn, WSExtCtrls, WSExtDlgs, WSFileCtrl,
+  WSForms, WSGrids, WSImgList, WSMaskEdit,
+  WSMenus, WSPairSplitter, WSSpin, WSStdCtrls,
+  WSToolwin;
 
 implementation
 
@@ -52,6 +60,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.11  2004/03/19 00:03:14  marc
+  * Moved the implementation of (GTK)ButtonCreateHandle to the new
+    (GTK)WSButton class
+
   Revision 1.10  2004/02/24 21:53:12  mattias
   added StdActns definitions, no code yet
 

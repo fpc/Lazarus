@@ -2938,23 +2938,11 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TWinControl.CreateWindowHandle
-  Params:  AParams: The createparams to use
-  Returns: The handle created
-
-  Creates the interface object and assigns the handle
- ------------------------------------------------------------------------------}
-function TWinControl.CreateWindowHandle(const AParams: TCreateParams): THandle;
-begin
-  Result := IntfCreateHandle(Self, APArams);
-end;
-
-{------------------------------------------------------------------------------
   Method:  TWinControl.CreateWnd
   Params:  None
   Returns: Nothing
 
-  Prepares the creeation of the interface object.
+  Creates the interface object and assigns the handle
  ------------------------------------------------------------------------------}
 procedure TWinControl.CreateWnd;
 var
@@ -2988,13 +2976,13 @@ begin
 
   if FCreatingHandle
   then begin
-    WriteLN('[WARNING] Recursive call to CreateWindowHandle for ', ClassName, ' (', Name, ')');
+    WriteLN('[WARNING] Recursive call to CreateWnd for ', ClassName, ' (', Name, ')');
     Exit;
   end;
 
   FCreatingHandle := True;
   try
-    FHandle := CreateWindowHandle(Params);
+    FHandle := WidgetSetClass.CreateHandle(Self, Params);
     FFlags:=FFlags-[wcfColorChanged,wcfFontChanged];
     if not HandleAllocated then
       RaiseGDBException('Handle creation failed');
@@ -3457,6 +3445,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.213  2004/03/19 00:03:15  marc
+  * Moved the implementation of (GTK)ButtonCreateHandle to the new
+    (GTK)WSButton class
+
   Revision 1.212  2004/03/08 22:36:01  mattias
   added TWinControl.ParentFormInitializeWnd
 

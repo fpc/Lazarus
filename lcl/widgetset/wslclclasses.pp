@@ -27,13 +27,18 @@ unit WSLCLClasses;
 interface
 
 uses
-  Classes;
+  Classes, LCLType, InterfaceBase;
 
 type
 
   { TWSLCLComponent } 
   
-  TWSLCLComponent = class(TObject)
+  TWSLCLComponent = class(TObject) 
+  private
+  protected
+  public
+    class function CreateHandle(const AComponent: TComponent; 
+                                const AParams: TCreateParams): THandle; virtual;
   end;
 
   TWSLCLComponentClass = class of TWSLCLComponent;
@@ -80,10 +85,19 @@ begin
   Name := AComponent.ClassName;
   idx := MWSComponentList.IndexOf(Name);
   if idx = -1 
-  then MWSComponentList.AddObject(Name, TObject(AWSComponent))
-  else MWSComponentList.Objects[idx] := TObject(AWSComponent);
+  then MWSComponentList.AddObject(Name, TObject(Pointer(AWSComponent)))
+  else MWSComponentList.Objects[idx] := TObject(Pointer(AWSComponent));
 end;
-  
+
+
+{ TWSLCLComponent }    
+
+function TWSLCLComponent.CreateHandle(const AComponent: TComponent; 
+  const AParams: TCreateParams): THandle;
+begin
+  // For now default to the old creation routines
+  Result := InterfaceObject.IntfCreateHandle(AComponent, AParams);
+end;
   
 initialization
   MWSComponentList := TStringList.Create;

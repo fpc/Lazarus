@@ -40,7 +40,6 @@ function ArrowCreateHandle(const AArrow: TObject; const AParams: TCreateParams):
 procedure AttachMenuToWindow(AMenuObject: TComponent); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function BitBtnCreateHandle(const ABitBtn: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function ButtonCreateHandle(const AButton: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function CalendarCreateHandle(const ACalendar: TObject; const AParams: TCreateParams): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure CallDefaultWndHandler(Sender: TObject; var Message); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -205,6 +204,10 @@ procedure RaiseLastOSError;
 { =============================================================================
 
   $Log$
+  Revision 1.21  2004/03/19 00:03:15  marc
+  * Moved the implementation of (GTK)ButtonCreateHandle to the new
+    (GTK)WSButton class
+
   Revision 1.20  2004/02/27 00:42:41  marc
   * Interface CreateComponent splitup
   * Implemented CreateButtonHandle on GTK interface

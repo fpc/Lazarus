@@ -200,6 +200,8 @@ begin
   ClipboardTypeAtoms[ctPrimarySelection]:=GDK_SELECTION_PRIMARY;
   ClipboardTypeAtoms[ctSecondarySelection]:=GDK_SELECTION_SECONDARY;
   ClipboardTypeAtoms[ctClipboard]:=gdk_atom_intern('CLIPBOARD',GdkFalse);
+  
+  GTKWidgetSet := Self;
 end;
 
 {------------------------------------------------------------------------------
@@ -381,6 +383,8 @@ begin
   // finally remove our loghandler
   g_log_remove_handler(nil, FLogHandlerID);
 
+  GTKWidgetSet := nil;
+  
   inherited Destroy;
 end;
 
@@ -9297,6 +9301,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.482  2004/03/19 00:03:15  marc
+  * Moved the implementation of (GTK)ButtonCreateHandle to the new
+    (GTK)WSButton class
+
   Revision 1.481  2004/03/18 22:35:53  mattias
   improved TCustomListView.ItemAdded with an Index param  from Andrew
 

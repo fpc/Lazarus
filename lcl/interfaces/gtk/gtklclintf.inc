@@ -68,49 +68,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: ButtonCreateHandle
-  Params: AButton:
-          AParams:
-  Returns:
-
- ------------------------------------------------------------------------------}
-function TGtkWidgetSet.ButtonCreateHandle(const AButton: TObject;
-  const AParams: TCreateParams): THandle;
-var
-  Caption, Pattern: String;
-  AccelKey: Char;
-  Button: TButton;
-  WidgetInfo: PWinWidgetInfo;
-  Allocation: TGTKAllocation;
-begin
-  //TODO: support utf accelkey
-  
-  Button := AButton as TButton;
-
-  Caption := Button.Caption;
-  LabelFromAmpersands(Caption, Pattern, AccelKey);
-  Result := THandle(gtk_button_new_with_label(PChar(Caption)));
-  if Result = 0 then Exit;
-
-{$ifdef gtk1}
-  gtk_label_set_pattern(PGtkLabel(PGtkButton(Result)^.Child), PChar(Pattern));
-{$endif gtk1}
-  Accelerate(Button, PGtkWidget(Result), Ord(AccelKey), 0, 'clicked');
-  
-  WidgetInfo := CreateWidgetInfo(Result, Button, AParams);
-  WidgetInfo^.ImplementationWidget := PGtkWidget(Result);
-  
-  Allocation.X := AParams.X;
-  Allocation.Y := AParams.Y;
-  Allocation.Width := AParams.Width;
-  Allocation.Height := AParams.Height;
-  gtk_widget_size_allocate(PGtkWidget(Result), @Allocation);
-
-  HookWincontrolSignals(PGTKObject(Result), Button);
-  SetCallback(LM_CLICKED, PGTKObject(Result), Button);
-end;
-
-{------------------------------------------------------------------------------
   Function: CalendarCreateHandle
   Params: ACalendar:
           AParams:
@@ -1050,6 +1007,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.20  2004/03/19 00:03:15  marc
+  * Moved the implementation of (GTK)ButtonCreateHandle to the new
+    (GTK)WSButton class
+
   Revision 1.19  2004/03/09 15:30:15  peter
     * fixed gtk2 compilation
 

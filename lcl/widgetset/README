@@ -1,3 +1,58 @@
-This directory contains all interface component classes.
-These classes will never get instantiated and may only 
-contain class functions.
+This directory contains all sceleton widgetset component 
+classes. These classes will never get instantiated and may 
+only contain class functions.
+  
+=========  
+IMPORTANT
+=========  
+
+Derivation and inheritance of classes is different then one
+might be used to. It wil be explained by the following 
+example.
+
+Suppose the following LCL class hierarchy:
+
+ TLCLComponent
+     |
+     v     
+  TControl
+     |
+     v     
+ TWinControl
+ 
+the corresponding WS skeleton would be
+
+ TWSLCLComponent
+      |
+      v     
+  TWSControl
+      |
+      v     
+ TWSWinControl
+
+
+When method X of TWSControl gets implemented by 
+widgetset Q the hierarchy looks like
+
+
+ TWSLCLComponent
+      |
+      v     
+  TWSControl --> TQWSControl.X
+      |
+      v     
+ TWSWinControl
+
+
+When the same method X is required in TWSWinControl
+inheritance doesnt work since TWSWinControl.X calls
+TWSControl.X
+The following can be done to get around this:
+*) try to move the LCL functionality to the lowest 
+   class
+*) Implement TQWSWinControl.X by simply calling
+   TQWSControl.X
+*) Implement the functionality of TQWSControl.X
+   in the TQWidgetSet and call it from both    
+   TQWSControl.X and TQWSWinControl.X
+

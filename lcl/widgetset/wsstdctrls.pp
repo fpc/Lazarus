@@ -161,15 +161,7 @@ type
 
   { TWSCheckBox }
 
-  TWSCheckBox = class(TWSCustomControl)
-  private
-  protected
-  public
-  end;
-
-  { TWSCheckBox }
-
-  TWSCheckBox = class(TWSCustomControl)
+  TWSCheckBox = class(TWSCustomCheckBox)
   private
   protected
   public

@@ -39,14 +39,6 @@ begin
   SetInitialBounds(1, 1, 75, 25);
 end;
 
-function TButton.CreateWindowHandle(const AParams: TCreateParams): THandle;
-begin
-  if fCompStyle=csButton then
-    Result := ButtonCreateHandle(Self, APArams)
-  else
-    Result := inherited CreateWindowHandle(AParams);
-end;
-
 {------------------------------------------------------------------------------
   Method:  TButton.CreateWnd
   Params:  None
@@ -151,6 +143,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.23  2004/03/19 00:03:15  marc
+  * Moved the implementation of (GTK)ButtonCreateHandle to the new
+    (GTK)WSButton class
+
   Revision 1.22  2004/02/28 00:34:35  mattias
   fixed CreateComponent for buttons, implemented basic Drag And Drop
 

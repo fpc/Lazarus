@@ -11,6 +11,8 @@ lcl
  +--- templates
  |
  +--- units
+ |
+ +--- widgetset
 
 
 lcl: 
@@ -29,4 +31,8 @@ lcl/templates:
   definitions
   
 lcl/units:
-  Containst the compiled units.
+  Contains the compiled units.
+
+lcl/widgetset
+  Contains the definition of the widgetset class 
+  and the sceleton WSxxxComponent classes
