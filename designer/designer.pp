@@ -1021,6 +1021,7 @@ Begin
     {$ENDIF}
     PopupMenuComponentEditor:=nil;
     ControlSelection.Remove(AComponent);
+    TheFormEditor.DeleteControl(AComponent);
   end;
 end;
 
