@@ -339,6 +339,7 @@ Begin
   TWincontrol(Sender).Parent := nil;
   TWincontrol(Sender).Parent := aParent;
 
+//writeln('[TgtkObject.RecreateWnd] ',Sender.ClassName);
   ResizeChild(Sender,TWinControl(Sender).Left,TWinControl(Sender).Top,
      TWinControl(Sender).Width,TWinControl(Sender).Height);
   ShowHide(Sender);
@@ -810,8 +811,8 @@ writeln('[TgtkObject.IntSendMessage3] LM_SETFOCUS ',TObject(Sender).ClassName);
       LM_SetSize :
       begin
          Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> LM_SetSize(%d, %d, %d, %d)', [Sender.ClassNAme, PRect(Data)^.Left,PRect(Data)^.Top,PRect(Data)^.Right,PRect(Data)^.Bottom]));
-//writeln('[IntSendMessage3.lm_setsize] ',PRect(Data)^.Left,',',PRect(Data)^.Top,',',
-//             PRect(Data)^.Right,',',PRect(Data)^.Bottom);
+//writeln('[IntSendMessage3.lm_setsize] Left=',PRect(Data)^.Left,' Top=',PRect(Data)^.Top,
+//  ' Right=',PRect(Data)^.Right,' Bottom=',PRect(Data)^.Bottom);
 //writeln('[LM_SetSize] A ',Sender.ClassName,' ',PgtkWidget(Handle)^.window<>nil);
          ResizeChild(Sender,PRect(Data)^.Left,PRect(Data)^.Top,
              PRect(Data)^.Right,PRect(Data)^.Bottom);
@@ -1284,37 +1285,51 @@ var
   pFixed: PGTKFixed;
   pWidget: PGTKWidget;
   Parent: TWinControl;
+  IsTopLevelWidget: boolean;
 begin
+//writeln('[TgtkObject.ResizeChild] START ',TControl(Sender).Name,':',Sender.Classname,' Left=',Left,' Top=',Top,' Width=',Width,' Height=',Height);
   Assert(false, (Format('trace:  [TgtkObject.ResizeChild] %s --> Resize', [Sender.ClassNAme])));
 
   Parent := TControl(Sender).Parent;
 
-  if not (Sender is TSpeedButton) then
-  begin
-    pWidget := pgtkWidget(TWinControl(Sender).Handle);
+  if Sender is TWinControl then begin
+    if TWinControl(Sender).HandleAllocated then begin
+      if not (Sender is TSpeedButton) then begin
+        pWidget := pgtkWidget(TWinControl(Sender).Handle);
+    
+        IsTopLevelWidget:=(Sender is TCustomForm) and (Parent=nil);
 
-    if Sender is TCustomForm then
-       gtk_widget_set_usize(pWidget, -1, -1);
+        if IsTopLevelWidget then
+           gtk_window_set_default_size(PgtkWindow(pWidget),Width,Height);
+
+        if IsTopLevelWidget then
+           gtk_widget_set_usize(pWidget, -1, -1);
        
-    gtk_widget_set_usize(pWidget, Width, Height);
+        gtk_widget_set_usize(pWidget, Width, Height);
 
-    if Sender is TCustomForm then
-       gtk_window_set_default_size(PgtkWindow(pWidget),Width,Height);
-
-    if not ((Parent = nil) or (Sender is TCustomForm)) then
-    begin
-      pFixed := GetFixedWidget(PGtkWidget(Parent.Handle));
-      if pFixed <> nil then
-        begin
-          gtk_fixed_move(pFixed, pWidget, Left, Top);
+//writeln('[TgtkObject.ResizeChild] D IsTopLevelWidget=',IsTopLevelWidget);
+        if not IsTopLevelWidget then begin
+          if Parent<>nil then begin
+            pFixed := GetFixedWidget(PGtkWidget(Parent.Handle));
+            if pFixed <> nil then begin
+              gtk_fixed_move(pFixed, pWidget, Left, Top);
+            end
+            else begin
+              Assert(False, 'Trace:ERROR!!!!  - no Fixed Widget found to use when resizing....');
+            end;
+          end 
+          else begin
+            Assert(False, 'Trace:ERROR !!!  - no Fixed Widget found to use when resizing....');
+            raise Exception('ARG2');
+          end;
         end
-      else Assert(False, 'Trace:ERROR!!!!  - no Fixed Widget found to use when resizing....');
-    end
-    else
-     begin
-      gtk_widget_set_uposition(pWidget, Left, Top);
+        else begin
+          gtk_widget_set_uposition(pWidget, Left, Top);
+        end;
+      end;
     end;
   end;
+//writeln('[TgtkObject.ResizeChild] END ',Sender.Classname,' Left=',Left,' Top=',Top,' Width=',Width,' Height=',Height);
 end;
 
 {------------------------------------------------------------------------------
@@ -3640,6 +3655,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.96  2001/12/28 15:12:02  lazarus
+  MG: LM_SIZE and LM_MOVE messages are now send directly, not queued
+
   Revision 1.95  2001/12/21 18:17:00  lazarus
   Added TImage class
   Shane

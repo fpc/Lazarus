@@ -1,3 +1,5 @@
+// included by controls.pp
+
 (******************************************************************************
                                   TWinControl
  ******************************************************************************)
@@ -7,6 +9,8 @@
 //  {$C+}
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
+
+{ $DEFINE CHECK_POSITION}
 
 {------------------------------------------------------------------------------}
 {  TWinControl AdjustSize                                                      }
@@ -61,6 +65,9 @@ var
     Left2, Top2, Width2, Height2: Integer;
     R: TRect;
   begin
+{$IFDEF CHECK_POSITION}
+writeln('[TWinControl.AlignControls.DoPosition] A Control=',Control.Name);
+{$ENDIF}
     with Rect do
     begin
       { Just recalculate the anchors }
@@ -118,7 +125,13 @@ var
     end;
     if (Control.Left <> Left2) or (Control.Top <> Top2)
     or (Control.Width <> Width2) or (Control.Height <> Height2) then begin
+{$IFDEF CHECK_POSITION}
+writeln('[TWinControl.AlignControls.DoPosition] B1');
+{$ENDIF}
       Control.SetBounds(Left2, Top2, Width2, Height2);
+{$IFDEF CHECK_POSITION}
+writeln('[TWinControl.AlignControls.DoPosition] B2');
+{$ENDIF}
     end;  
 
     {Sometimes the control doesn't resize.  This will verifiy that it is the
@@ -136,6 +149,9 @@ var
               Inc(Bottom, Height2 - Control.Height);
             end;
         end;
+{$IFDEF CHECK_POSITION}
+writeln('[TWinControl.AlignControls.DoPosition] END Control=',Control.Name);
+{$ENDIF}
   end;
 
   function InsertBefore(Control1, Control2: TControl; AAlign: TAlign): Boolean;
@@ -635,7 +651,7 @@ Begin
 end;
 
 {------------------------------------------------------------------------------}
-{  TWinControl DestroyHandle                                                      }
+{  TWinControl DestroyHandle                                                   }
 {------------------------------------------------------------------------------}
 procedure TWinControl.DestroyHandle;
 var i : integer;
@@ -1032,12 +1048,10 @@ begin
   if (Control is TCustomForm)
   or (Control.FParentWindow <> 0) 
   then UpdateShowing;
-
-
 end;
 
 {------------------------------------------------------------------------------}
-{  TWinControl InsertControl                                                      }
+{  TWinControl InsertControl                                                   }
 {------------------------------------------------------------------------------}
 Procedure TWinControl.InsertControl(AControl : TControl);
 Begin
@@ -1059,12 +1073,10 @@ Begin
     AlignControl(AControl);
   end;
   Perform(CM_CONTROLCHANGE, Integer(AControl), Integer(True));
-
-
 End;
 
 {------------------------------------------------------------------------------}
-{  TWinControl removeControl                                                      }
+{  TWinControl removeControl                                                   }
 {------------------------------------------------------------------------------}
 Procedure TWinControl.RemoveControl(AControl : TControl);
 Begin
@@ -1084,7 +1096,7 @@ Begin
 End;
 
 {------------------------------------------------------------------------------}
-{  TWinControl AlignControl                                                      }
+{  TWinControl AlignControl                                                    }
 {------------------------------------------------------------------------------}
 procedure TWinControl.AlignControl(AControl : TControl);
 var
@@ -1166,7 +1178,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{  TWinControl GetHandle                                                 }
+{  TWinControl GetHandle                                                       }
 {------------------------------------------------------------------------------}
 function TWinControl.GetHandle: HWND;
 begin
@@ -1388,7 +1400,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMSize(Var Message : TLMSize);
 begin
-//writeln('[TWinControl.WMSize] ',ClassName);
+{$IFDEF CHECK_POSITION}
+writeln('[TWinControl.WMSize] Name=',Name,' Message.Width=',Message.Width,' Message.Height=',Message.Height,' Width=',Width,' Height=',Height);
+{$ENDIF}
   if (FWidth=Message.Width) and (FHeight=Message.Height) then exit;
   Assert(False, Format('Trace:[TWinControl.WMSize] %s', [ClassName]));
   { Just coordinate the bounds }
@@ -1407,6 +1421,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMMove(var Message: TLMMove);
 begin
+{$IFDEF CHECK_POSITION}
+writeln('[TWinControl.WMMove] Name=',Name,' Message.XPos=',Message.XPos,' Message.YPos=',Message.YPos,' Left=',Left,' Top=',Top);
+{$ENDIF}
   //if (FLeft=Message.XPos) and (FTop=Message.YPos) then exit;
   { Just sync the coordinates }
 //Writeln('[TWINCONTROL].WMMOVE');
@@ -1564,15 +1581,19 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMWindowPosChanged(var Message : TLMWindowPosChanged);
 begin
-//Writeln('[TWINCONTROL].WMWINDOWPOSCHANGED');
+{$IFDEF CHECK_POSITION}
+Writeln('[TWinControl.WMWindowPosChanged] Name=',Name,' Old=',FLeft,',',FTop,',',FWidth,',',FHeight);
+{$ENDIF}
   if Message.WindowPos <> nil then
   with Message.WindowPos^ do
   begin
-    //Writeln(Format('Sizes are %d,%d,%d,%d',[X,Y,cx,cy]));
     FLeft := X;
     FWidth := cX;
     FTop := Y;
     FHeight := cY;
+{$IFDEF CHECK_POSITION}
+Writeln('[TWinControl.WMWindowPosChanged] B Name=',Name,' New=',FLeft,',',FTop,',',FWidth,',',FHeight);
+{$ENDIF}
     Assert(False, Format('Trace:[TWinControl.WMWindowPosChanged] %s --> Message.WindowPos(%d, %d)(%d, %d)', [ClassName, X, Y, cx, cy]));
   end
   else Assert(False, Format('Trace:[TWinControl.WMWindowPosChanged] %s --> Message.WindowPos = nil', [ClassName]));
@@ -1791,10 +1812,16 @@ var
 begin
   if (ALeft = Left) and (ATop = Top) and (AWidth = Width) and (AHeight = Height)
   then Exit;
+{$IFDEF CHECK_POSITION}
+writeln('[TWinControl.SetBounds] ',Name,':',Classname,' Old=',Left,',',Top,',',Width,',',Height);
+{$ENDIF}
   FLeft := aLeft;
   FTop := aTop;
   FWidth := aWidth;
   FHeight := aHeight;
+{$IFDEF CHECK_POSITION}
+writeln('[TWinControl.SetBounds] ',Name,':',Classname,' New=',Left,',',Top,',',Width,',',Height);
+{$ENDIF}
 
   if HandleAllocated
   then begin
@@ -1806,7 +1833,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TWinControl.Text
+  Method:  TWinControl.SetText
   Params:  Value: the text to be set
   Returns: Nothing
 
@@ -1930,6 +1957,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.46  2001/12/28 15:12:02  lazarus
+  MG: LM_SIZE and LM_MOVE messages are now send directly, not queued
+
   Revision 1.45  2001/12/20 14:41:20  lazarus
   Fixed setfocus for TComboBox and TMemo
   Shane

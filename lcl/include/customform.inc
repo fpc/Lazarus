@@ -1,6 +1,11 @@
+// included by forms.pp
+
 (******************************************************************************
                                      TCustomForm
  ******************************************************************************)
+
+{ $DEFINE CHECK_POSITION}
+
 {------------------------------------------------------------------------------}
 {       TCustomForm AttachSignals                                              }
 {------------------------------------------------------------------------------}
@@ -272,8 +277,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.WMSize(var Message: TLMSize);
 Begin
-//Writeln('[TCUSTOMFORM].WMSIZE');
-//Writeln(Format('Size is width=%d    height= %d',[Message.Width,MEssage.height]));
+{$IFDEF CHECK_POSITION}
+Writeln('[TCustomForm.WMSize] Name=',Name,' Class=',ClassName,' Message.Width=',Message.Width,' Message.Height=',Message.Height);
+{$ENDIF}
   Assert(False, 'Trace:WMSIZE in TCustomForm');
   if not (csDesigning in ComponentState) then
     Case Message.SizeType of
@@ -630,10 +636,10 @@ end;
 {------------------------------------------------------------------------------}
 {       TCustomForm SetActiveControl                                                      }
 {------------------------------------------------------------------------------}
-Procedure TCustomForm.SetActiveCOntrol(Value : TWinControl);
+Procedure TCustomForm.SetActiveControl(Value : TWinControl);
 Begin
 //TODO: Finish SETACTIVECONTROL
-FACTIVECONTROL := Value;
+  FActiveControl := Value;
   Assert(False, 'Trace:TODO: [TCustomForm.SetActiveCOntrol]');
 end;
 
@@ -663,28 +669,35 @@ end;
 {------------------------------------------------------------------------------}
 constructor TCustomForm.Create(AOwner : TComponent);
 begin
+//writeln('[TCustomForm.Create] A Class=',Classname);
   try
     CreateNew(AOwner, 1);
+//writeln('[TCustomForm.Create] B Class=',Classname);
     if (ClassType <> TForm) and not (csDesigning in ComponentState) then
     begin
       Include(FFormState, fsCreating);
       try
+//writeln('[TCustomForm.Create] C Class=',Classname);
         if not InitResourceComponent(Self, TForm) then begin
           //writeln('[TCustomForm.Create] Resource '''+ClassName+''' not found');
           //Writeln('This is for information purposes only.   This is not critical at this time.');
           // MG:  Ignoring is best at the moment. (Delphi raises an exception.)
         end;
+//writeln('[TCustomForm.Create] D Class=',Classname);
         DoCreate;
+//writeln('[TCustomForm.Create] E Class=',Classname);
       finally
         Exclude(FFormState, fsCreating);
       end;
     end;
   finally
   end;
+//writeln('[TCustomForm.Create] END Class=',Classname);
 end;
 
 constructor TCustomForm.CreateNew(AOwner: TComponent; Num : Integer);
 Begin
+//writeln('[TCustomForm.CreateNew] Class=',Classname);
   FBorderStyle:= bsSizeable;
   inherited Create(AOwner);
   fCompStyle:= csForm;
@@ -778,7 +791,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{       TCustomForm Method CloseQuery                                               }
+{       TCustomForm Method CloseQuery                                          }
 {------------------------------------------------------------------------------}
 function TCustomForm.CloseQuery : boolean;
 //var i : integer;
@@ -845,7 +858,8 @@ end;
 {------------------------------------------------------------------------------}
 {       TCustomForm Method WantChildKey            }
 {------------------------------------------------------------------------------}
-function TCustomForm.WantChildKey(Child : TControl; var MEssage : TLMessage):Boolean;
+function TCustomForm.WantChildKey(Child : TControl; 
+  var Message : TLMessage):Boolean;
 begin
   Result := False;
 end;
@@ -879,7 +893,13 @@ procedure TCustomForm.UpdateShowing;
 var 
   X, Y : integer;
 begin
+{$IFDEF CHECK_POSITION}
+writeln('[TCustomForm.UpdateShowing] A Class=',Classname);
+{$ENDIF}
   inherited UpdateShowing;
+{$IFDEF CHECK_POSITION}
+writeln('[TCustomForm.UpdateShowing] B Class=',Classname);
+{$ENDIF}
   { If the the form is about to show, calculate its metrics }
   if Showing then 
   begin
@@ -913,8 +933,14 @@ begin
     end;  
     if X < 0 then X := 0;
     if Y < 0 then Y := 0;
+{$IFDEF CHECK_POSITION}
+writeln('[TCustomForm.UpdateShowing] C Class=',Classname);
+{$ENDIF}
     SetBounds(X, Y, Width, Height);
   end;
+{$IFDEF CHECK_POSITION}
+writeln('[TCustomForm.UpdateShowing] END Class=',Classname);
+{$ENDIF}
 end;
 
 {------------------------------------------------------------------------------}
@@ -947,6 +973,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.33  2001/12/28 15:12:02  lazarus
+  MG: LM_SIZE and LM_MOVE messages are now send directly, not queued
+
   Revision 1.32  2001/12/20 14:41:20  lazarus
   Fixed setfocus for TComboBox and TMemo
   Shane

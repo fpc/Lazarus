@@ -864,6 +864,7 @@ begin
       flags := 0;
     end;
     Assert(False, 'Trace:[gtksize_allocateCB] DeliverMessage LM_WINDOWPOSCHANGED');
+//writeln('[gtksize_allocateCB] Sending LM_WINDOWPOSCHANGED message: Target=',TObject(Data).ClassName,' Left=',Size^.X,' Top=',Size^.Y,' Width=',Size^.Width,' Height=',Size^.Height);
     Result := DeliverMessage(Data, PosMsg) = 0;
   finally
     Dispose(PosMsg.WindowPos);
@@ -891,8 +892,9 @@ Writeln('***********************');
       Height := Size^.Height;
     end;
     Assert(False, 'Trace:[gtksize_allocateCB] DeliverMessage LM_SIZE');
-
-    Result := DeliverPostMessage(Data, SizeMsg) or Result;
+    
+//writeln('[gtksize_allocateCB] Sending LM_SIZE message: Target=',TObject(Data).ClassName,' Width=',SizeMsg.Width,' Height=',SizeMsg.Height);
+    Result := (DeliverMessage(Data, SizeMsg) = 0) or Result;
     
     with MoveMsg do
     begin
@@ -901,7 +903,8 @@ Writeln('***********************');
       YPos := Size^.Y;
     end;
     Assert(False, 'Trace:[gtksize_allocateCB] DeliverMessage LM_MOVE');
-    Result := DeliverPostMessage(Data,  MoveMsg) or Result;
+//writeln('[gtksize_allocateCB] Sending LM_MOVE message: Target=',TObject(Data).ClassName,' XPos=',MoveMsg.XPos,' YPos=',MoveMsg.YPos);
+    Result := (DeliverMessage(Data,  MoveMsg) = 0) or Result;
   end;
   
 end;
@@ -1589,6 +1592,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.57  2001/12/28 15:12:02  lazarus
+  MG: LM_SIZE and LM_MOVE messages are now send directly, not queued
+
   Revision 1.56  2001/12/17 11:09:48  lazarus
   MG: fixed typed but not selected filename in TOpenDialog
 

@@ -3,21 +3,20 @@
 {------------------------------------------------------------------------------}
 constructor TCustomListView.Create(Aowner: TComponent);
 begin
- Inherited Create(AOwner);
+  Inherited Create(AOwner);
 
- ParentWindow := TScrolledwindow.Create(AOwner);
- ParentWindow.Show;
- {fix this call it is a hack}
+  //ParentWindow := TScrolledwindow.Create(AOwner);
+  //ParentWindow.Show;
+  //fix this call it is a hack
 
- Columns := TViewColumns.Create(self);
- Columns.OnChange := @ColumnsChanged;
- FListItems := TListITems.Create(self);
- fCompStyle := csListView;
- fViewStyle := vsList;
- fSorted := False;
- fSortColumn := 0;
- Setbounds(2,2,300,300);
-
+  Columns := TViewColumns.Create(self);
+  Columns.OnChange := @ColumnsChanged;
+  FListItems := TListITems.Create(self);
+  fCompStyle := csListView;
+  fViewStyle := vsList;
+  fSorted := False;
+  fSortColumn := 0;
+  Setbounds(2,2,300,300);
 end;
 
 
