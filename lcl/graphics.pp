@@ -576,7 +576,6 @@ type
     FMaskHandle: HBITMAP;
     FPalette: HPALETTE;
     FDIBHandle: HBITMAP;
-    FDIB: TDIBSection;
 {    FOS2Format: Boolean;
     FHalftone: Boolean;
 }
@@ -584,6 +583,7 @@ type
     procedure FreeHandle; override;
   public
     destructor Destroy; override;
+    FDIB: TDIBSection;
   end;
 
   TBitmap = class(TGraphic)
@@ -683,6 +683,10 @@ function ColorToString(Color: TColor): AnsiString;
 function StringToColor(const S: shortstring): TColor;
 procedure GetColorValues(Proc: TGetColorStringProc);
 
+Function Blue(rgb : longint) : BYTE;
+Function Green(rgb : longint) : BYTE;
+Function Red(rgb : longint) : BYTE;
+
 procedure GetCharsetValues(Proc: TGetStrProc);
 function CharsetToIdent(Charset: Longint; var Ident: string): Boolean;
 function IdentToCharset(const Ident: string; var Charset: Longint): Boolean;
@@ -703,7 +707,7 @@ function ReadXPMFromStream(Stream: TStream; Size: integer): PPChar;
 function ReadXPMSize(XPM: PPChar; var Width, Height, ColorCount: integer
   ): boolean;
 
-var 
+var
   { Stores information about the current screen }
   ScreenInfo : TLMScreenInit;
 
@@ -821,7 +825,20 @@ begin
   for I := Low(Colors) to High(Colors) do Proc(Colors[I].Name);
 end;
 
+Function Blue(rgb : longint) : BYTE;
+begin
+  Result := (rgb shr 16) and $000000ff;
+end;
 
+Function Green(rgb : longint) : BYTE;
+begin
+  Result := (rgb shr 8) and $000000ff;
+end;
+
+Function Red(rgb : longint) : BYTE;
+begin
+  Result := rgb and $000000ff;
+end;
 
 {$I graphicsobject.inc}
 {$I graphic.inc}
@@ -851,6 +868,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.43  2002/09/10 06:49:18  lazarus
+  MG: scrollingwincontrol from Andrew
+
   Revision 1.42  2002/09/05 12:11:43  lazarus
   MG: TNotebook is now streamable
 
