@@ -494,11 +494,13 @@ begin
         if TheDialog.Modified then begin
           LoadBitmap;
           SetOrdValue(Longint(ABitmap));
-          Modified;
         end;
       end
-      else
-        ABitmap.FreeImage;
+      else begin
+        ABitmap.Width:=0;
+        ABitmap.Height:=0;
+      end;
+      Modified;
     end;
   finally
     TheDialog.Free;
