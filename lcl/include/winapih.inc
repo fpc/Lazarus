@@ -271,7 +271,6 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); {$IFDEF IF_B
 
 //function UnionRect --> independent
 
-
 Function WindowFromPoint(Point : TPoint) : HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //##apiwiz##eps##     // Do not remove
 {******************************************************************************
@@ -363,6 +362,9 @@ Function RGB(R, G, B : Byte) : TColorRef;
 { =============================================================================
 
   $Log$
+  Revision 1.63  2003/01/01 12:38:53  mattias
+  clean ups
+
   Revision 1.62  2002/12/30 17:24:08  mattias
   added history to identifier completion
 
