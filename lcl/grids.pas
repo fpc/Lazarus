@@ -372,6 +372,7 @@ type
     fGridState: TGridState;
     procedure AutoAdjustColumn(aCol: Integer); virtual;
     procedure BeforeMoveSelection(const DCol,DRow: Integer); virtual;
+    procedure CheckLimits(var aCol,aRow: Integer);
     procedure ColRowDeleted(IsColumn: Boolean; index: Integer); dynamic;
     procedure ColRowExchanged(IsColumn: Boolean; index,WithIndex: Integer); dynamic;
     procedure ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer); dynamic;
@@ -785,7 +786,7 @@ begin
           CM_CONTROLCHANGE:         DebugLn(Hex, 'CM_CONTROLCHANGE');
           CM_SHOWINGCHANGED:        DebugLn(Hex, 'CM_SHOWINGCHANGED');
           CM_VISIBLECHANGED:        DebugLn(Hex, 'CM_VISIBLECHANGED');
-          else                    DebugLn(Hex, 'CM_BASE + ', Msg - CM_BASE);
+          else                    DebugLn(Hex, 'CM_BASE + ', IntToStr(Msg - CM_BASE));
         end;
       else
         case Msg of
@@ -821,10 +822,12 @@ end;
 
 { TCustomGrid }
 
-function TCustomGrid.Getrowheights(Arow: Integer): Integer;
+function TCustomGrid.GetRowHeights(Arow: Integer): Integer;
 begin
-  if aRow<RowCount then Result:=Integer(FRows[aRow])
-  else                  Result:=-1;
+  if (aRow<RowCount) and (aRow>0) then
+    Result:=Integer(FRows[aRow])
+  else
+    Result:=-1;
   if Result<0 then Result:=fDefRowHeight;
 end;
 
@@ -864,10 +867,12 @@ begin
   Result:=FRows.Count;
 end;
 
-function TCustomGrid.Getcolwidths(Acol: Integer): Integer;
+function TCustomGrid.GetColWidths(Acol: Integer): Integer;
 begin
-  if aCol<ColCount then Result := Integer(FCols[aCol])
-  else                  Result := -1;
+  if (aCol<ColCount) and (aCol>0) then
+    Result:=Integer(FCols[aCol])
+  else
+    Result:=-1;
   if result<0 then Result:=fDefColWidth;
 end;
 
@@ -2112,14 +2117,17 @@ procedure TCustomGrid.WMChar(var message: TLMChar);
 var
   Ch: Char;
 begin
+  inherited;
   Ch:=Char(message.CharCode);
   {$Ifdef GridTraceMsg}
   DebugLn(ClassName,'.WMchar CharCode= ', IntToStr(message.CharCode));
   {$Endif}
   if (goEditing in Options) and (Ch in [^H, #32..#255]) then
-    EditorShowChar(Ch)
+    EditorShowChar(Ch);
+  {
   else
     inherited;
+  }
 end;
 
 
@@ -3113,6 +3121,9 @@ begin
     NCol:=FCol + DCol;
     NRow:=FRow + DRow;
   end;
+  
+  Checklimits(NCol, NRow);
+  
   // Increment
   if DCol<0 then CInc:=-1 else
   if DCol>0 then CInc:= 1
@@ -3141,10 +3152,8 @@ begin
 
   dCol:=FCol*(1-Byte(not Relative))+DCol;
   dRow:=FRow*(1-Byte(not Relative))+DRow;
-  if dCol<FFixedCols then dCol:=FFixedCols else
-  if dCol>ColCount-1 then dcol:=ColCount-1;
-  if dRow<FFixedRows then dRow:=FFixedRows else
-  if dRow>RowCount-1 then dRow:=RowCount-1;
+  
+  CheckLimits( dCol, dRow );
 
   // Change on Focused cell?
   if (Dcol=FCol)and(DRow=FRow) then begin
@@ -3207,6 +3216,14 @@ end;
 procedure TCustomGrid.BeforeMoveSelection(const DCol,DRow: Integer);
 begin
   if Assigned(OnBeforeSelection) then OnBeforeSelection(Self, DCol, DRow);
+end;
+
+procedure TCustomGrid.CheckLimits(var aCol, aRow: Integer);
+begin
+  if aCol<FFixedCols then aCol:=FFixedCols else
+  if aCol>ColCount-1 then acol:=ColCount-1;
+  if aRow<FFixedRows then aRow:=FFixedRows else
+  if aRow>RowCount-1 then aRow:=RowCount-1;
 end;
 
 procedure TCustomGrid.MoveSelection;
@@ -4284,15 +4301,13 @@ end;
 
 function TStringGrid.GetCols(index: Integer): TStrings;
 var
-  i,j: Integer;
+  i: Integer;
 begin
   Result:=nil;
   if (ColCount>0)and(index>=0)and(index<ColCount) then begin
     Result:=TStringList.Create;
-    For i:=0 to RowCount-1 do begin
-      j:=Result.Add( Cells[index, i] );
-      Result.Objects[j]:=Objects[index, i];
-    end;
+    for i:=0 to RowCount-1 do
+      Result.AddObject(Cells[Index, i], Objects[Index, i]);
   end;
 end;
 
@@ -4307,15 +4322,13 @@ end;
 
 function TStringGrid.GetRows(index: Integer): TStrings;
 var
-  i,j: Integer;
+  i: Integer;
 begin
   Result:=nil;
   if (RowCount>0)and(index>=0)and(index<RowCount) then begin
     Result:=TStringList.Create;
-    For i:=0 to ColCount-1 do begin
-      j:=Result.Add( Cells[i, index] );
-      Result.Objects[j]:=Objects[i, index];
-    end;
+    for i:=0 to ColCount-1 do
+      Result.AddObject(Cells[i, Index], Objects[i, Index]);
   end;
 end;
 
@@ -4357,6 +4370,7 @@ begin
       New(C);
       C^.Text:=StrNew(pchar(Avalue));
       C^.Attr:=nil;
+      C^.Data:=nil;
       FGrid.Celda[aCol,aRow]:=C;
       InvalidateCell(aCol, aRow);
     end;
