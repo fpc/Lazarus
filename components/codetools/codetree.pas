@@ -52,55 +52,56 @@ const
   // CodeTreeNodeDescriptors
   ctnNone            = 0;
 
-  ctnClass           = 1;
-  ctnClassPublished  = 2;
-  ctnClassPrivate    = 3;
-  ctnClassProtected  = 4;
-  ctnClassPublic     = 5;
+  ctnProgram         = 1;
+  ctnPackage         = 2;
+  ctnLibrary         = 3;
+  ctnUnit            = 4;
+  ctnInterface       = 5;
+  ctnImplementation  = 6;
+  ctnInitialization  = 7;
+  ctnFinalization    = 8;
 
-  ctnProcedure       = 10;
-  ctnProcedureHead   = 11;
-  ctnParameterList   = 12;
+  ctnTypeSection     = 10;
+  ctnVarSection      = 11;
+  ctnConstSection    = 12;
+  ctnResStrSection   = 13;
+  ctnUsesSection     = 14;
 
-  ctnBeginBlock      = 20;
-  ctnAsmBlock        = 21;
+  ctnTypeDefinition  = 20;
+  ctnVarDefinition   = 21;
+  ctnConstDefinition = 22;
 
-  ctnProgram         = 30;
-  ctnPackage         = 31;
-  ctnLibrary         = 32;
-  ctnUnit            = 33;
-  ctnInterface       = 34;
-  ctnImplementation  = 35;
-  ctnInitialization  = 36;
-  ctnFinalization    = 37;
+  ctnClass           = 30;
+  ctnClassPublished  = 31;
+  ctnClassPrivate    = 32;
+  ctnClassProtected  = 33;
+  ctnClassPublic     = 34;
 
-  ctnTypeSection     = 40;
-  ctnVarSection      = 41;
-  ctnConstSection    = 42;
-  ctnResStrSection   = 43;
-  ctnUsesSection     = 44;
-
-  ctnTypeDefinition  = 50;
-  ctnVarDefinition   = 51;
-  ctnConstDefinition = 52;
-
-  ctnProperty        = 60;
+  ctnProperty        = 40;
   
-  ctnIdentifier      = 70;
-  ctnArrayType       = 71;
-  ctnRecordType      = 72;
-  ctnRecordCase      = 73;
-  ctnRecordVariant   = 74;
-  ctnProcedureType   = 75;
-  ctnSetType         = 76;
-  ctnRangeType       = 77;
-  ctnEnumType        = 78;
-  ctnLabelType       = 79;
-  ctnTypeType        = 80;
-  ctnFileType        = 81;
-  ctnPointerType     = 82;
-  ctnClassOfType     = 83;
+  ctnProcedure       = 50;
+  ctnProcedureHead   = 51;
+  ctnParameterList   = 52;
+
+  ctnIdentifier      = 60;
+  ctnArrayType       = 61;
+  ctnOfConstType     = 62;
+  ctnRecordType      = 63;
+  ctnRecordCase      = 64;
+  ctnRecordVariant   = 65;
+  ctnProcedureType   = 66;
+  ctnSetType         = 67;
+  ctnRangeType       = 68;
+  ctnEnumType        = 69;
+  ctnLabelType       = 70;
+  ctnTypeType        = 71;
+  ctnFileType        = 72;
+  ctnPointerType     = 73;
+  ctnClassOfType     = 74;
   
+  ctnBeginBlock      = 80;
+  ctnAsmBlock        = 81;
+
   ctnWithVariable    = 90;
   ctnWithStatement   = 91;
 
@@ -123,8 +124,9 @@ const
 
 
   // CodeTreeNodeSubDescriptors
-  ctnsNone               = 0;
-  ctnsForwardDeclaration = 1;
+  ctnsNone                 = 0;
+  ctnsForwardDeclaration   = 1;
+  ctnsProcHeadNodesCreated = 2;
   
 type
   TCodeTreeNode = class
@@ -548,7 +550,7 @@ begin
   FCount:=0;
   FAllocatedNodes:=0;
   FFreedNodes:=0;
-  FMinFree:=10000;
+  FMinFree:=100000;
   FMaxFreeRatio:=8; // 1:1
 end;
 
@@ -626,7 +628,7 @@ begin
   FFirstFree:=nil;
   FFreeCount:=0;
   FCount:=0;
-  FMinFree:=10000;
+  FMinFree:=20000;
   FMaxFreeRatio:=8; // 1:1
 end;
 

@@ -76,7 +76,8 @@ type
       phpWithoutName, phpWithVarModifiers, phpWithParameterNames,
       phpWithDefaultValues, phpWithResultType, phpWithComments, phpInUpperCase,
       phpWithoutBrackets, phpIgnoreForwards, phpIgnoreProcsWithBody,
-      phpOnlyWithClassname, phpFindCleanPosition, phpWithoutParamList);
+      phpOnlyWithClassname, phpFindCleanPosition, phpWithoutParamList,
+      phpCreateNodes);
   TProcHeadAttributes = set of TProcHeadAttribute;
   
   TProcHeadExtractPos = (phepNone, phepStart, phepName, phepParamList);
@@ -143,7 +144,8 @@ type
     procedure BuildBlockStatementStartKeyWordFuncList; virtual;
     function UnexpectedKeyWord: boolean;
     // read functions
-    function ReadTilProcedureHeadEnd(IsMethod, IsFunction, IsType: boolean;
+    function ReadTilProcedureHeadEnd(IsMethod, IsFunction, IsType,
+        CreateNodes: boolean;
         var HasForwardModifier: boolean): boolean;
     function ReadConstant(ExceptionOnError, Extract: boolean;
         Attr: TProcHeadAttributes): boolean;
@@ -162,6 +164,7 @@ type
     function ReadWithStatement(ExceptionOnError,
         CreateNodes: boolean): boolean;
     procedure ReadVariableType;
+    procedure ReadTilTypeOfProperty(PropertyNode: TCodeTreeNode);
   public
     CurSection: TCodeTreeNodeDesc;
 
@@ -176,6 +179,7 @@ type
         CursorPos: TCodeXYPosition; var CleanCursorPos: integer);
     procedure BuildSubTreeForClass(ClassNode: TCodeTreeNode); virtual;
     procedure BuildSubTreeForBeginBlock(BeginNode: TCodeTreeNode); virtual;
+    procedure BuildSubTreeForProcHead(ProcNode: TCodeTreeNode); virtual;
     function DoAtom: boolean; override;
     function ExtractPropName(PropNode: TCodeTreeNode;
         InUpperCase: boolean): string;
@@ -208,6 +212,7 @@ type
     function GetSourceType: TCodeTreeNodeDesc;
     function NodeHasParentOfType(ANode: TCodeTreeNode;
         NodeDesc: TCodeTreeNodeDesc): boolean;
+    function PropertyIsDefault(PropertyNode: TCodeTreeNode): boolean;
     constructor Create;
     destructor Destroy; override;
   end;
@@ -851,7 +856,7 @@ begin
   IsFunction:=UpAtomIs('FUNCTION');
   ReadNextAtom;
   HasForwardModifier:=false;
-  ReadTilProcedureHeadEnd(true,IsFunction,true,HasForwardModifier);
+  ReadTilProcedureHeadEnd(true,IsFunction,true,false,HasForwardModifier);
   Result:=true;
 end;
 
@@ -930,7 +935,7 @@ begin
   CurNode.Desc:=ctnProcedureHead;
   // read rest
   ReadNextAtom;
-  ReadTilProcedureHeadEnd(true,IsFunction,false,HasForwardModifier);
+  ReadTilProcedureHeadEnd(true,IsFunction,false,false,HasForwardModifier);
   // close procedure header
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
@@ -943,6 +948,7 @@ end;
 function TPascalParserTool.ReadParamList(ExceptionOnError, Extract: boolean;
   Attr: TProcHeadAttributes): boolean;
 var CloseBracket: char;
+  Desc: TCodeTreeNodeDesc;
 begin
   Result:=false;
   if AtomIsChar('(') or AtomIsChar('[') then begin
@@ -950,6 +956,10 @@ begin
       CloseBracket:=')'
     else
       CloseBracket:=']';
+    if (phpCreateNodes in Attr) then begin
+      CreateChildNode;
+      CurNode.Desc:=ctnParameterList;
+    end;
     if not Extract then
       ReadNextAtom
     else
@@ -958,25 +968,37 @@ begin
     CloseBracket:=#0;
   repeat
     // read parameter prefix modifier
-    if (UpAtomIs('VAR')) or (UpAtomIs('CONST')) or (UpAtomIs('OUT')) then
+    if (UpAtomIs('VAR')) or (UpAtomIs('CONST')) or (UpAtomIs('OUT')) then begin
+      Desc:=ctnVarDefinition;
       if not Extract then
         ReadNextAtom
       else
         ExtractNextAtom(phpWithVarModifiers in Attr,Attr);
+    end else
+      Desc:=ctnVarDefinition;
     // read parameter name(s)
     repeat
-      AtomIsIdentifier(ExceptionOnError);
+      if not AtomIsIdentifier(ExceptionOnError) then exit;
+      if (phpCreateNodes in Attr) then begin
+        CreateChildNode;
+        CurNode.Desc:=Desc;
+      end;
       if not Extract then
         ReadNextAtom
       else
         ExtractNextAtom(phpWithParameterNames in Attr,Attr);
       if not AtomIsChar(',') then
         break
-      else
+      else begin
+        if (phpCreateNodes in Attr) then begin
+          CurNode.EndPos:=LastAtoms.GetValueAt(0).EndPos;
+          EndChildNode;
+        end;
         if not Extract then
           ReadNextAtom
         else
           ExtractNextAtom(not (phpWithoutParamList in Attr),Attr);
+      end;
     until false;
     // read type
     if (AtomIsChar(':')) then begin
@@ -994,6 +1016,10 @@ begin
         ReadConstant(ExceptionOnError,
           Extract and (phpWithDefaultValues in Attr),Attr);
       end;
+    end;
+    if (phpCreateNodes in Attr) then begin
+      CurNode.EndPos:=CurPos.EndPos;
+      EndChildNode;
     end;
     // read next parameter
     if (CurPos.StartPos>SrcLen) then
@@ -1018,6 +1044,10 @@ begin
         RaiseException(
           'syntax error: '+CloseBracket+' expected, but '+GetAtom+' found')
       else exit;
+    if (phpCreateNodes in Attr) then begin
+      CurNode.EndPos:=CurPos.EndPos;
+      EndChildNode;
+    end;
     if not Extract then
       ReadNextAtom
     else
@@ -1032,6 +1062,10 @@ begin
   Result:=false;
   if AtomIsWord then begin
     if UpAtomIs('ARRAY') then begin
+      if (phpCreateNodes in Attr) then begin
+        CreateChildNode;
+        CurNode.Desc:=ctnArrayType;
+      end;
       if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
       if not UpAtomIs('OF') then
         if ExceptionOnError then
@@ -1039,6 +1073,12 @@ begin
         else exit;
       ReadNextAtom;
       if UpAtomIs('CONST') then begin
+        if (phpCreateNodes in Attr) then begin
+          CreateChildNode;
+          CurNode.Desc:=ctnArrayType;
+          CurNode.EndPos:=CurPos.EndPos;
+          EndChildNode;
+        end;
         if not Extract then
           ReadNextAtom
         else
@@ -1048,6 +1088,12 @@ begin
       end;
     end;
     if not AtomIsIdentifier(ExceptionOnError) then exit;
+    if (phpCreateNodes in Attr) then begin
+      CreateChildNode;
+      CurNode.Desc:=ctnIdentifier;
+      CurNode.EndPos:=CurPos.EndPos;
+      EndChildNode;
+    end;
     if not Extract then
       ReadNextAtom
     else
@@ -1062,7 +1108,7 @@ begin
 end;
 
 function TPascalParserTool.ReadTilProcedureHeadEnd(
-  IsMethod, IsFunction, IsType: boolean;
+  IsMethod, IsFunction, IsType, CreateNodes: boolean;
   var HasForwardModifier: boolean): boolean;
 { parse parameter list, result type, of object, method specifiers
 
@@ -1087,23 +1133,30 @@ function TPascalParserTool.ReadTilProcedureHeadEnd(
    [alias: <string constant>]
 }
 var IsSpecifier: boolean;
+  Attr: TProcHeadAttributes;
 begin
 //writeln('[TPascalParserTool.ReadTilProcedureHeadEnd] ',
 //'Method=',IsMethod,', Function=',IsFunction,', Type=',IsType);
   Result:=true;
   HasForwardModifier:=false;
-  if AtomIsChar('(') then
-    ReadParamList(true,false,[]);
+  if AtomIsChar('(') then begin
+    Attr:=[];
+    if CreateNodes then
+      Include(Attr,phpCreateNodes);
+    ReadParamList(true,false,Attr);
+  end;
   if IsFunction then begin
     // read function result type
     if not AtomIsChar(':') then
       RaiseException('syntax error: : expected, but '+GetAtom+' found');
     ReadNextAtom;
-    if (CurPos.StartPos>SrcLen)
-    or (not (UpperSrc[CurPos.StartPos] in ['A'..'Z','_']))
-    then
-      RaiseException(
-        'syntax error: method result type expected but '+GetAtom+' found');
+    AtomIsIdentifier(true);
+    if CreateNodes then begin
+      CreateChildNode;
+      CurNode.Desc:=ctnIdentifier;
+      CurNode.EndPos:=CurPos.EndPos;
+      EndChildNode;
+    end;
     ReadNextAtom;
   end;
   if UpAtomIs('OF') then begin
@@ -1537,7 +1590,7 @@ begin
   end;
   // read rest of procedure head
   HasForwardModifier:=false;
-  ReadTilProcedureHeadEnd(false,IsFunction,false,HasForwardModifier);
+  ReadTilProcedureHeadEnd(false,IsFunction,false,false,HasForwardModifier);
   if ChildCreated then begin
     if HasForwardModifier then
       ProcNode.SubDesc:=ctnsForwardDeclaration;
@@ -3057,6 +3110,67 @@ begin
     end;
     Result:=Result.NextBrother;
   end;
+end;
+
+procedure TPascalParserTool.ReadTilTypeOfProperty(PropertyNode: TCodeTreeNode);
+begin
+  MoveCursorToNodeStart(PropertyNode);
+  ReadNextAtom; // read keyword 'property'
+  ReadNextAtom; // read property name
+  AtomIsIdentifier(true);
+  ReadNextAtom;
+  if AtomIsChar('[') then begin
+    // read parameter list
+    ReadTilBracketClose(true);
+    ReadNextAtom;
+  end;
+  if not AtomIsChar(':') then
+    RaiseException('syntax error: : expected, but '+GetAtom+' found');
+  ReadNextAtom; // read type
+  AtomIsIdentifier(true);
+end;
+
+function TPascalParserTool.PropertyIsDefault(PropertyNode: TCodeTreeNode
+  ): boolean;
+begin
+  Result:=false;
+  if (PropertyNode=nil) or (PropertyNode.Desc<>ctnProperty) then exit;
+  MoveCursorToCleanPos(PropertyNode.EndPos);
+  ReadPriorAtom;
+  if (not AtomIsChar(';')) then exit;
+  ReadPriorAtom;
+  Result:=UpAtomIs('DEFAULT');
+end;
+
+procedure TPascalParserTool.BuildSubTreeForProcHead(ProcNode: TCodeTreeNode);
+var HasForwardModifier, IsFunction: boolean;
+begin
+  if ProcNode.Desc=ctnProcedureHead then ProcNode:=ProcNode.Parent;
+  if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedure)
+  or (ProcNode.FirstChild=nil) then
+    RaiseException('[TPascalParserTool.BuildSubTreeForProcHead] '
+      +'internal error: invalid ProcNode');
+  if ProcNode.FirstChild.SubDesc=ctnsProcHeadNodesCreated then exit;
+  MoveCursorToNodeStart(ProcNode);
+  ReadNextAtom;
+  if UpAtomIs('CLASS') then
+    ReadNextAtom;
+  IsFunction:=UpAtomIs('FUNCTION');
+  // read procedure head (= name + parameterlist + resulttype;)
+  CurNode:=ProcNode.FirstChild;
+  ReadNextAtom;// read first atom of head
+  AtomIsIdentifier(true);
+  ReadNextAtom;
+  if AtomIsChar('.') then begin
+    // read procedure name of a class method (the name after the . )
+    ReadNextAtom;
+    AtomIsIdentifier(true);
+    ReadNextAtom;
+  end;
+  // read rest of procedure head and build nodes
+  HasForwardModifier:=false;
+  ReadTilProcedureHeadEnd(false,IsFunction,false,true,HasForwardModifier);
+  ProcNode.FirstChild.SubDesc:=ctnsProcHeadNodesCreated;
 end;
 
 

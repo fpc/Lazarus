@@ -224,6 +224,10 @@ begin
     // CodeTreeNodeSubDescriptors
     ctnsForwardDeclaration : Result:='Forward';
     end;
+  ctnProcedureHead:
+    case SubDesc of
+    ctnsProcHeadNodesCreated: Result:='Nodes Created';
+    end;
   end;
 end;
 

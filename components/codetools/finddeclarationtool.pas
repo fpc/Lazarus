@@ -596,11 +596,19 @@ if (ContextNode.Desc=ctnClass) then
         ctnInterface, ctnImplementation,
         ctnClassPublic, ctnClassPrivate, ctnClassProtected, ctnClassPublished,
         ctnClass,
-        ctnRecordType, ctnRecordCase, ctnRecordVariant:
+        ctnRecordType, ctnRecordCase, ctnRecordVariant,
+        ctnParameterList:
           if (ContextNode.LastChild<>nil) then begin
             if not (fdfSearchForward in Params.Flags) then
               ContextNode:=ContextNode.LastChild
             else
+              ContextNode:=ContextNode.FirstChild;
+          end;
+          
+        ctnProcedureHead:
+          begin
+            BuildSubTreeForProcHead(ContextNode);
+            if ContextNode.FirstChild<>nil then
               ContextNode:=ContextNode.FirstChild;
           end;
 
@@ -645,15 +653,21 @@ writeln('  Definition Identifier found=',copy(Src,ContextNode.StartPos,Params.Id
 
         ctnProperty:
           begin
-            MoveCursorToNodeStart(ContextNode);
-            ReadNextAtom; // read keyword 'property'
-            ReadNextAtom; // read name
-            if CompareSrcIdentifiers(Params.IdentifierStartPos,CurPos.StartPos)
-            then begin
-              // identifier found
-              Result:=true;
-              Params.SetResult(Self,ContextNode,CurPos.StartPos);
-              exit;
+            if (Src[Params.IdentifierStartPos]<>'[') then begin
+              MoveCursorToNodeStart(ContextNode);
+              ReadNextAtom; // read keyword 'property'
+              ReadNextAtom; // read name
+              if CompareSrcIdentifiers(Params.IdentifierStartPos,CurPos.StartPos)
+              then begin
+                // identifier found
+                Result:=true;
+                Params.SetResult(Self,ContextNode,CurPos.StartPos);
+                exit;
+              end;
+            end else begin
+              // the default property is searched
+              Result:=PropertyIsDefault(ContextNode);
+              if Result then exit;
             end;
           end;
 
@@ -752,7 +766,8 @@ writeln('[TFindDeclarationTool.FindIdentifierInContext] Searching in Parent  Con
             ctnTypeSection, ctnVarSection, ctnConstSection, ctnResStrSection,
             ctnInterface, ctnImplementation,
             ctnClassPublished,ctnClassPublic,ctnClassProtected, ctnClassPrivate,
-            ctnRecordCase, ctnRecordVariant:
+            ctnRecordCase, ctnRecordVariant,
+            ctnProcedureHead, ctnParameterList:
               // these codetreenodes build a parent-child-relationship, but
               // for pascal it is only a range, hence after searching in the
               // childs of the last node, it must be searched next in the childs
@@ -900,11 +915,16 @@ begin
   ReadPriorAtom;
   CurAtom:=CurPos;
   CurAtomType:=GetCurrentAtomType;
-  if CurAtomType=atNone then begin
+  if CurAtomType in [atNone,atSpace,atINHERITED,atRoundBracketOpen,
+    atEdgedBracketOpen,atRoundBracketClose] then begin
     // no special context found -> the context node is the deepest node at
     // cursor, and this should already be in Params.ContextNode
     Result:=Params.ContextNode;
     exit;
+  end;
+  if (CurAtomType in [atRoundBracketClose,atEdgedBracketClose]) then begin
+    ReadBackTilBracketClose(true);
+    CurAtom.StartPos:=CurPos.StartPos;
   end;
   Result:=FindContextNodeAtCursor(Params);
   if Result=nil then exit;
@@ -934,20 +954,42 @@ writeln('');
         MoveCursorToCleanPos(NextAtom.StartPos);
         RaiseException('syntax error: "'+GetAtom+'" found');
       end;
-      if (Result=Params.ContextNode)
-      and (CompareSrcIdentifier(CurAtom.StartPos,'SELF')) then begin
-        // SELF in a method is the object itself
-        // -> check if in a proc
-        ProcNode:=Params.ContextNode;
-        while (ProcNode<>nil) do begin
-          if (ProcNode.Desc=ctnProcedure) then begin
-            // in a proc -> find the class context
-            if FindClassOfMethod(ProcNode,Params,true) then begin
-              Result:=Params.NewNode;
-              exit;
+      if (Result=Params.ContextNode) then begin
+        if CompareSrcIdentifier(CurAtom.StartPos,'SELF') then begin
+          // SELF in a method is the object itself
+          // -> check if in a proc
+          ProcNode:=Params.ContextNode;
+          while (ProcNode<>nil) do begin
+            if (ProcNode.Desc=ctnProcedure) then begin
+              // in a proc -> find the class context
+              if FindClassOfMethod(ProcNode,Params,true) then begin
+                Result:=Params.NewNode;
+                exit;
+              end;
             end;
+            ProcNode:=ProcNode.Parent;
           end;
-          ProcNode:=ProcNode.Parent;
+        end else if CompareSrcIdentifier(CurAtom.StartPos,'RESULT') then begin
+          // RESULT has a special meaning in a function
+          // -> check if in a function
+          ProcNode:=Params.ContextNode;
+          while (ProcNode<>nil) do begin
+            if (ProcNode.Desc=ctnProcedure) then begin
+              MoveCursorToNodeStart(ProcNode);
+              ReadNextAtom;
+              if UpAtomIs('CLASS') then ReadNextAtom;
+              if UpAtomIs('FUNCTION') then begin;
+                // in a function -> find the result type
+                BuildSubTreeForProcHead(ProcNode);
+                ProcNode:=ProcNode.FirstChild.FirstChild;
+                if Result.Desc=ctnParameterList then
+                  Result:=Result.NextBrother;
+                FindBaseTypeOfNode(Params,Result);
+                exit;
+              end;
+            end;
+            ProcNode:=ProcNode.Parent;
+          end;
         end;
       end;
       // find identifier
@@ -970,6 +1012,7 @@ writeln('');
       finally
         Params.Load(OldInput);
       end;
+      Result:=FindBaseTypeOfNode(Params,Result);
     end;
     
   atPoint:
@@ -1013,17 +1056,56 @@ writeln('');
           MoveCursorToCleanPos(CurAtom.StartPos);
           RaiseException('illegal qualifier ^');
         end;
-        Result:=Result.FirstChild;
+        Result:=FindBaseTypeOfNode(Params,Result.FirstChild);
       end else if NodeHasParentOfType(Result,ctnPointerType) then begin
         // this is a pointer type definition
         // -> the default context is ok
       end;
     end;
 
+  atEdgedBracketClose:
+    begin
+      // for example:  a[]
+      //   this could be:
+      //     1. ranged array
+      //     2. dynamic array
+      //     3. indexed pointer
+      //     4. default property
+      if Result<>Params.ContextNode then begin
+        case Result.Desc of
+        
+        ctnArrayType:
+          // the array type is the last child node
+          Result:=FindBaseTypeOfNode(Params,Result.LastChild);
 
-  // ToDo: atINHERITED, atRoundBracketClose, atEdgedBracketClose
+        ctnPointerType:
+          // the pointer type is the only child node
+          Result:=FindBaseTypeOfNode(Params,Result.FirstChild);
+
+        ctnClass:
+          begin
+            Params.Save(OldInput);
+            Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound]
+                          +fdfGlobals*Params.Flags;
+            Params.IdentifierStartPos:=CurAtom.StartPos;
+            Params.IdentifierEndPos:=CurAtom.StartPos+1;
+            Params.ContextNode:=Result;
+            FindIdentifierInContext(Params);
+            Result:=FindBaseTypeOfNode(Params,Params.NewNode);
+            Params.Load(OldInput);
+          end;
+
+        else
+          MoveCursorToCleanPos(CurAtom.StartPos);
+          RaiseException('illegal qualifier');
+        end;
+      end;
+    end;
+
+  // ToDo: atINHERITED, atRoundBracketClose
 
   else
+    // expression start found
     begin
       if (not (NextAtomType in [atSpace,atIdentifier,atRoundBracketOpen,
         atEdgedBracketOpen])) then
@@ -1036,9 +1118,6 @@ writeln('');
     end;
   end;
   
-  // try to get the base type of the found context
-  Result:=FindBaseTypeOfNode(Params,Result);
-
 {$IFDEF CTDEBUG}
 write('[TFindDeclarationTool.FindContextNodeAtCursor] END ',
   Params.ContextNode.DescAsString,' CurAtom=',AtomTypeNames[CurAtomType],
@@ -1088,11 +1167,6 @@ begin
         Params.Load(OldInput);
       end;
     end else
-    if (Result.Desc=ctnTypeType) then begin
-      // a TypeType is for example 'MyInt = type integer;'
-      // the context is not the 'type' keyword, but the identifier after it.
-      Result:=Result.FirstChild;
-    end else
     if (Result.Desc=ctnIdentifier) then begin
       // this type is just an alias for another type
       // -> search the basic type
@@ -1113,6 +1187,30 @@ begin
       finally
         Params.Load(OldInput);
       end;
+    end else
+    if (Result.Desc=ctnProperty) then begin
+      // this is a property -> search the type definition of the property
+      ReadTilTypeOfProperty(Result);
+      Params.Save(OldInput);
+      try
+        Params.IdentifierStartPos:=CurPos.StartPos;
+        Params.IdentifierEndPos:=CurPos.EndPos;
+        Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound]
+                      +(fdfGlobals*Params.Flags);
+        Params.ContextNode:=Result.Parent;
+        FindIdentifierInContext(Params);
+        if Result.HasAsParent(Params.NewNode) then
+          break
+        else
+          Result:=Params.NewNode;
+      finally
+        Params.Load(OldInput);
+      end;
+    end else
+    if (Result.Desc=ctnTypeType) then begin
+      // a TypeType is for example 'MyInt = type integer;'
+      // the context is not the 'type' keyword, but the identifier after it.
+      Result:=Result.FirstChild;
     end else
       break;
   end;
@@ -1139,6 +1237,8 @@ var
   ClassContextNode: TCodeTreeNode;
 begin
   Result:=false;
+  // if proc is a method, search in class
+  // -> find class name
   MoveCursorToNodeStart(ProcContextNode);
   ReadNextAtom; // read keyword
   ReadNextAtom; // read classname
