@@ -441,7 +441,6 @@ end;
 procedure TSpeedButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
-writeln('TSpeedButton.MouseDown A ');
   inherited MouseDown(Button, Shift, X, Y);
   
   if csDesigning in ComponentState then exit;
@@ -515,40 +514,25 @@ end;
  ------------------------------------------------------------------------------}
 procedure TSpeedButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
-var
-  DoClick: Boolean;
 begin
-writeln('TSpeedButton.MouseUp A ');
-  inherited MouseUp(Button, Shift, X, Y);
-  
-  if csDesigning in ComponentState then exit;
-  
-  if FDragging
+  if not (csDesigning in ComponentState) and FDragging
   then begin
     FDragging := False;
-    DoClick := (X >= 0) and (X < Width) and (Y >= 0) and (Y <= Height);
-    
+
     if FGroupIndex = 0 
     then begin
       FState := bsUp;
       FMouseInControl := False;
-      if DoClick and not (FState in [bsExclusive, bsDown]) then
+      if not (FState in [bsExclusive, bsDown]) then
         Invalidate;
     end
     else begin
-      if DoClick 
-      then begin
-        SetDown(not FDown);
-        if FDown then Repaint;
-      end
-      else begin
-        if FDown then FState := bsExclusive;
-        Repaint;
-      end;
+      SetDown(not FDown);
+      if FDown then Repaint;
     end;
-    if DoClick then Click;
     UpdateTracking;
   end;
+  inherited MouseUp(Button, Shift, X, Y);
 end;
 
 {------------------------------------------------------------------------------
@@ -672,6 +656,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.24  2002/09/03 22:31:25  lazarus
+  MG: removed old workaround in TSpeedButton
+
   Revision 1.23  2002/09/03 08:07:20  lazarus
   MG: image support, TScrollBox, and many other things from Andrew
 
