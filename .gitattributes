@@ -1024,7 +1024,6 @@ lcl/include/radiobutton.inc svneol=native#text/pascal
 lcl/include/radiogroup.inc svneol=native#text/pascal
 lcl/include/reginifile.inc svneol=native#text/pascal
 lcl/include/region.inc svneol=native#text/pascal
-lcl/include/registry.inc svneol=native#text/pascal
 lcl/include/screen.inc svneol=native#text/pascal
 lcl/include/scrollbar.inc svneol=native#text/pascal
 lcl/include/scrollbox.inc svneol=native#text/pascal
