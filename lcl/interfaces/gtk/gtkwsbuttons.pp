@@ -60,6 +60,7 @@ type
     class function  CreateHandle(const AComponent: TComponent; const AParams: TCreateParams): THandle; override;
     class procedure DefaultButtonChanged(const AButton: TCustomButton); override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
 
@@ -159,6 +160,12 @@ begin
   TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
 
   SignalConnect(AGtkWidget, 'clicked', @GtkWSButton_Clicked, AWidgetInfo);
+end;
+
+procedure TGtkWSButton.SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut);
+begin
+  // ToDo: use accelerator group of Form
+  Accelerate(AButton, PGtkWidget(AButton.Handle), NewShortcut, 'clicked');
 end;
 
 procedure TGtkWSButton.SetText(const AWinControl: TWinControl; const AText: String); 

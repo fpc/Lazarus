@@ -807,7 +807,7 @@ type
     // FAlignment: TLeftRight;
     FAllowGrayed: Boolean;
     FState: TCheckBoxState;
-    FShortCut : TLMShortcut;
+    FShortCut: TShortcut;
     procedure SetState(Value: TCheckBoxState);
     function GetState: TCheckBoxState;
     procedure DoChange(var Msg); message LM_CHANGED;
@@ -1174,6 +1174,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.167  2004/09/17 10:56:25  micha
+  convert LM_SHORTCUT message to interface methods
+
   Revision 1.166  2004/09/10 17:59:57  micha
   convert LM_APPENDTEXT to interface method
 

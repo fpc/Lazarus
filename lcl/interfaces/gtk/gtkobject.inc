@@ -3124,31 +3124,6 @@ begin
         PLMScreenInit(Data)^.ColorDepth:= gdk_visual_get_system^.depth;
       end;
 
-      LM_SETSHORTCUT :
-      begin
-        with TLMShortcut(data^) do begin
-          Widget:= PGtkWidget(Handle);
-        end;
-        if Sender is TControl then begin
-          case TControl(Sender).fCompStyle of
-            csBitBtn,
-            csButton,
-            csToolButton,
-            csRadioButton,
-            csCheckBox,
-            csToggleBox:
-              // ToDo: use accelerator group of Form
-              Accelerate(TComponent(Sender), Widget, TLMShortcut(data^), 'clicked');
-            else
-              // ToDo: use accelerator group of Form
-              Accelerate(TComponent(Sender), Widget, TLMShortcut(data^), 'activate_item');
-          end;
-        end else if Sender is TMenuItem then begin
-          Accelerate(TComponent(Sender), Widget, TLMShortcut(data^),
-            {$Ifdef GTK2}'activate'{$Else}'activate_item'{$EndIF});
-        end;
-      end;
-
       LM_SETGEOMETRY :
       begin
         if Sender is TWinControl then begin
@@ -7923,6 +7898,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.578  2004/09/17 10:56:25  micha
+  convert LM_SHORTCUT message to interface methods
+
   Revision 1.577  2004/09/17 07:55:13  micha
   convert LM_SETBORDER message to interface method
   fix widgetsets virtual methods to be published

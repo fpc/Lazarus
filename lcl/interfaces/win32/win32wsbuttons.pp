@@ -46,6 +46,7 @@ type
   protected
   public
     class procedure DefaultButtonChanged(const AButton: TCustomButton); override;
+    class procedure SetShortCut(const AButton: TCustomButton; const OldKey, NewKey: word); override;
   end;
 
   { TWin32WSBitBtn }
@@ -85,7 +86,12 @@ begin
     WindowStyle := WindowStyle or BS_PUSHBUTTON;
   Windows.SendMessage(AButton.Handle, BM_SETSTYLE, WindowStyle, 1);
 end;
-    
+
+procedure TWin32WSButton.SetShortCut(const AButton: TCustomButton; const OldKey, NewKey: word);
+begin
+  // TODO: implement me!
+end;
+
 { TWin32WSBitBtn }
 
 const

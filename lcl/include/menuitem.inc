@@ -1073,23 +1073,9 @@ end;
   Installs a new shortcut, removes an old one.
  ------------------------------------------------------------------------------}
 procedure TMenuItem.ShortcutChanged(const OldValue, Value: TShortcut);
-var Msg : TLMShortcut;
 begin
   if not HandleAllocated then Exit;
-  Msg.Handle:= Handle;
-  if OldValue = 0 then begin
-    Msg.OldKey:= 0;
-    Msg.OldModifier:= [];
-  end else begin
-    ShortCutToKey(OldValue, Msg.OldKey, Msg.OldModifier);
-  end;
-  if Value = 0 then begin
-    Msg.NewKey:= 0;
-    Msg.NewModifier:= [];
-  end else begin
-    ShortCutToKey(Value, Msg.NewKey, Msg.NewModifier);
-  end;
-  SendMsgToInterface(LM_SETSHORTCUT, Self, @Msg);
+  TWSMenuItemClass(WidgetSetClass).SetShortCut(Self, OldValue, Value);
 end;
 
 {------------------------------------------------------------------------------
@@ -1164,6 +1150,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.62  2004/09/17 10:56:25  micha
+  convert LM_SHORTCUT message to interface methods
+
   Revision 1.61  2004/09/10 18:58:21  micha
   convert LM_ATTACHMENU to interface method
 
@@ -1375,6 +1364,9 @@ end;
 
 
   $Log$
+  Revision 1.62  2004/09/17 10:56:25  micha
+  convert LM_SHORTCUT message to interface methods
+
   Revision 1.61  2004/09/10 18:58:21  micha
   convert LM_ATTACHMENU to interface method
 

@@ -24,12 +24,6 @@
 constructor TCustomButton.Create(TheOwner: TComponent);
 begin
   Inherited Create(TheOwner);
-  With FShortcut do begin
-    OldKey := 0;
-    OldModifier := [ssCtrl];
-    NewModifier := [ssCtrl];
-    NewKey := 0;
-  end;
   // set the component style to csButton
   fCompStyle := csButton;
   ControlStyle:=ControlStyle-[csClickEvents]+[csHasDefaultAction,csHasCancelAction];
@@ -200,18 +194,16 @@ procedure TCustomButton.RealSetText(const Value: TCaption);
 var
   ParseStr : String;
   AccelIndex : Longint;
+  OldShortCut: TShortCut;
 begin
   Inherited RealSetText(Value);
   If (not HandleAllocated) or (csDesigning in ComponentState) then exit;
   ParseStr := Value;
   AccelIndex := DeleteAmpersands(ParseStr);
   If AccelIndex > -1 then begin
-    With FShortcut do begin
-      Handle := Self.Handle;
-      OldKey := NewKey;
-      NewKey := Char2VK(ParseStr[AccelIndex]);
-    end;
-    CNSendMessage(LM_SETSHORTCUT, Self, @FShortcut);
+    OldShortCut := FShortCut;
+    FShortCut := ShortCut(Char2VK(ParseStr[AccelIndex]), [ssCtrl]);
+    TWSButtonClass(WidgetSetClass).SetShortCut(Self, OldShortCut, FShortCut);
   end;
 end;
 
@@ -224,6 +216,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.36  2004/09/17 10:56:25  micha
+  convert LM_SHORTCUT message to interface methods
+
   Revision 1.35  2004/09/11 14:54:01  micha
   convert LM_BTNDEFAULT_CHANGED message to interface method
 

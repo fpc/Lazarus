@@ -330,19 +330,6 @@ Begin
         Else
           Assert(False, Format('Trace:I don''t know how to destroy component %S', [Sender.ClassName]));
       End;
-      LM_SETSHORTCUT:
-      Begin
-        If Sender is TMenuItem Then
-        Begin
-          TWin32WSMenuItem.SetCaption(TMenuItem(Sender), LPSTR(TMenuItem(Sender).Caption+#9+ShortCutToText(ShortCut(TLMShortCut(Data^).NewKey, TLMShortCut(Data^).NewModifier))));
-          if (TMenuItem(Sender).Owner is TWinControl) and TMenuItem(Sender).HandleAllocated then
-          begin
-            SetAccelKey(TWinControl(TMenuItem(Sender).Owner).Handle, TMenuItem(Sender).Command, TLMShortCut(Data^).NewKey, TLMShortCut(Data^).NewModifier);
-          end else begin
-            DebugLn('LM_SETSHORTCUT: unable to set shortcut, menu has no window handle');
-          end;
-        End;
-      End;
       Else
         Assert(True, Format ('WARNING: Unhandled message %d in IntSendMessage3 send by %s --> message:Redraw', [LM_Message, Sender.ClassName]));
         // unhandled message
@@ -2085,6 +2072,9 @@ End;
 
 {
   $Log$
+  Revision 1.271  2004/09/17 10:56:25  micha
+  convert LM_SHORTCUT message to interface methods
+
   Revision 1.270  2004/09/17 07:55:13  micha
   convert LM_SETBORDER message to interface method
   fix widgetsets virtual methods to be published

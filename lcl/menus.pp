@@ -376,8 +376,8 @@ end;
 {$I popupmenu.inc}
 {$I menuactionlink.inc}
 
-Function ShortCut(const Key: Word; const Shift : TShiftState) : TShortCut;
-Begin
+function ShortCut(const Key: Word; const Shift : TShiftState) : TShortCut;
+begin
   Result := Key;
   if WordRec(Result).Hi <> 0 then begin
     Result:=0;
@@ -389,7 +389,7 @@ Begin
   if ssAlt in Shift then Inc(Result,scAlt);
 end;
 
-Procedure ShortCutToKey(const ShortCut: TShortCut; var Key: Word;
+procedure ShortCutToKey(const ShortCut: TShortCut; var Key: Word;
   var Shift : TShiftState);
 begin
   Key := ShortCut and $FF;
@@ -413,6 +413,9 @@ end.
 
 {
   $Log$
+  Revision 1.72  2004/09/17 10:56:24  micha
+  convert LM_SHORTCUT message to interface methods
+
   Revision 1.71  2004/09/10 09:43:12  micha
   convert LM_SETLABEL message to interface methods
 

@@ -36,9 +36,7 @@ uses
   Menus,
 ////////////////////////////////////////////////////
   WSMenus, WSLCLClasses,
-  {TODO: remove when TLMShortCut removed from AttachMenu}
-  LMessages,
-  Windows, Controls, Classes, SysUtils, Win32Int, InterfaceBase, LCLProc;
+  Windows, Controls, Classes, SysUtils, Win32Int, Win32Proc, InterfaceBase, LCLProc;
 
 type
 
@@ -50,6 +48,7 @@ type
   public
     class procedure AttachMenu(const AMenuItem: TMenuItem); override;
     class procedure SetCaption(const AMenuItem: TMenuItem; const ACaption: string); override;
+    class procedure SetShortCut(const AMenuItem: TMenuItem; const OldShortCut, NewShortCut: TShortCut); override;
   end;
 
   { TWin32WSMenu }
@@ -87,7 +86,6 @@ var
   MenuInfo: MENUITEMINFO;
   ParentMenuHandle: HMenu;
   ParentOfParent: HMenu;
-  Msg: TLMShortCut;
 
   function GetCheckBitmap(checked: boolean): HBitmap;
   {TODO: create "checked" icon}
@@ -193,9 +191,7 @@ begin
       fType:=MFT_STRING;
       if AMenuItem.ShortCut <> 0 then
       begin
-        Msg.Handle:=hSubMenu;
-        ShortCutToKey(AMenuItem.ShortCut, Msg.NewKey, Msg.NewModifier);
-        dwTypeData:=LPSTR(AMenuItem.Caption+#9+ShortCutToText(ShortCut(Msg.NewKey, Msg.NewModifier)));
+        dwTypeData:=LPSTR(AMenuItem.Caption+#9+ShortCutToText(AMenuItem.ShortCut));
       end else begin
         dwTypeData:=LPSTR(AMenuItem.Caption);
       end;
@@ -259,6 +255,22 @@ begin
     DrawMenuBar(TWinControl(AMenuItem.Owner).Handle);
 end;
   
+procedure TWin32WSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
+  const OldShortCut, NewShortCut: TShortCut);
+var
+  NewKey: word;
+  NewModifier: TShiftState;
+begin
+  SetCaption(AMenuItem, LPSTR(AMenuItem.Caption+#9+ShortCutToText(NewShortCut)));
+  if (AMenuItem.Owner is TWinControl) and AMenuItem.HandleAllocated then
+  begin
+    ShortCutToKey(NewShortCut, NewKey, NewModifier);
+    SetAccelKey(TWinControl(AMenuItem.Owner).Handle, AMenuItem.Command, NewKey, NewModifier);
+  end else begin
+    DebugLn('TWin32WSMenuItem.SetShortCut: unable to set shortcut, menu has no window handle');
+  end;
+end;
+
 { TWin32WSPopupMenu }
 
 procedure TWin32WSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X, Y: integer);

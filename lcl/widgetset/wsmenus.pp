@@ -46,7 +46,7 @@ uses
 ////////////////////////////////////////////////////
   Menus,
 ////////////////////////////////////////////////////
-  WSLCLClasses;
+  WSLCLClasses, LCLType;
 
 type
   { TWSMenuItem }
@@ -54,6 +54,7 @@ type
   TWSMenuItem = class(TWSLCLComponent)
     class procedure AttachMenu(const AMenuItem: TMenuItem); virtual;
     class procedure SetCaption(const AMenuItem: TMenuItem; const ACaption: string); virtual;
+    class procedure SetShortCut(const AMenuItem: TMenuItem; const OldShortCut, NewShortCut: TShortCut); virtual;
   end;
   TWSMenuItemClass = class of TWSMenuItem;
 
@@ -87,6 +88,11 @@ procedure TWSMenuItem.SetCaption(const AMenuItem: TMenuItem; const ACaption: str
 begin
 end;
 
+procedure TWSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
+  const OldShortCut, NewShortCut: TShortCut);
+begin
+end;
+          
 { TWSPopupMenu }
 
 procedure TWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X, Y: integer);

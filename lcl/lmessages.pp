@@ -66,8 +66,6 @@ const
 
   LM_SETDESIGNING   = LM_COMUSER+60;
 
-  LM_SETSHORTCUT    = LM_COMUSER+61;
-
   LM_SETGEOMETRY    = LM_COMUSER+62;
 
   LM_GETSELTEXT     = LM_COMUSER+66;
@@ -738,14 +736,6 @@ type
 
   TLMDestroy = TLMNoParams;
 
-  TLMShortCut = record
-    Handle : HWND;
-    OldKey : Word;
-    OldModifier : TShiftState;
-    NewKey : Word;
-    NewModifier : TShiftState;
-  end;
-
   TLMCommand = packed record
     Msg: Cardinal;
     ItemID: Word;
@@ -807,8 +797,6 @@ begin
   LM_MINIMIZE       :Result:='LM_MINIMIZE';
 
   LM_SETDESIGNING   :Result:='LM_SETDESIGNING';
-
-  LM_SETSHORTCUT    :Result:='LM_SETSHORTCUT';
 
   LM_SETGEOMETRY    :Result:='LM_SETGEOMETRY';
 
@@ -923,6 +911,9 @@ end.
 
 {
   $Log$
+  Revision 1.110  2004/09/17 10:56:24  micha
+  convert LM_SHORTCUT message to interface methods
+
   Revision 1.109  2004/09/17 07:55:13  micha
   convert LM_SETBORDER message to interface method
   fix widgetsets virtual methods to be published

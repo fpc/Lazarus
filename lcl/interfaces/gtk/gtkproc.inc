@@ -4619,22 +4619,25 @@ begin
 end;
 
 procedure Accelerate(Component: TComponent; const Widget : PGtkWidget;
-  const Msg: TLMShortCut; const Signal : string);
+  const NewShortCut: TShortCut; const Signal : string);
 var
   GDKModifier: TGdkModifierType;
   GDKKey: guint;
+  NewKey: word;
+  NewModifier: TShiftState;
 begin
   { Map the shift states }
   GDKModifier:= 0;
-  if ssShift in Msg.NewModifier then GDKModifier:= GDKModifier + GDK_SHIFT_MASK;
-  if ssAlt in Msg.NewModifier then GDKModifier:= GDKModifier + GDK_MOD1_MASK;
-  if ssCtrl in Msg.NewModifier then GDKModifier:= GDKModifier + GDK_CONTROL_MASK;
+  ShortCutToKey(NewShortCut, NewKey, NewModifier);
+  if ssShift in NewModifier then GDKModifier:= GDKModifier + GDK_SHIFT_MASK;
+  if ssAlt in NewModifier then GDKModifier:= GDKModifier + GDK_MOD1_MASK;
+  if ssCtrl in NewModifier then GDKModifier:= GDKModifier + GDK_CONTROL_MASK;
 
   // Send the unmodified keysym ?
-  if (ssShift in Msg.NewModifier)
-  and ((Msg.NewKey < VK_F1) or  (Msg.NewKey > VK_F24) )
-  then GDKKey := GetVKeyInfo(Msg.NewKey).KeySym[1]
-  else GDKKey := GetVKeyInfo(Msg.NewKey).KeySym[0];
+  if (ssShift in NewModifier)
+  and ((NewKey < VK_F1) or  (NewKey > VK_F24) )
+  then GDKKey := GetVKeyInfo(NewKey).KeySym[1]
+  else GDKKey := GetVKeyInfo(NewKey).KeySym[0];
 
   Accelerate(Component,Widget,GDKKey,GDKModifier,Signal);
 end;
@@ -7279,6 +7282,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.308  2004/09/17 10:56:25  micha
+  convert LM_SHORTCUT message to interface methods
+
   Revision 1.307  2004/09/12 19:00:17  mazen
   *Font width is now used with GTK2
 

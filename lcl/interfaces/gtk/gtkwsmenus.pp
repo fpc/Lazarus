@@ -45,6 +45,7 @@ type
   public
     class procedure AttachMenu(const AMenuItem: TMenuItem); override;
     class procedure SetCaption(const AMenuItem: TMenuItem; const ACaption: string); override;
+    class procedure SetShortCut(const AMenuItem: TMenuItem; const OldShortCut, NewShortCut: TShortCut); override;
   end;
 
   { TGtkWSMenu }
@@ -148,6 +149,13 @@ begin
   if not AMenuItem.HandleAllocated then exit;
   MenuItemWidget:=PGtkWidget(AMenuItem.Handle);
   UpdateInnerMenuItem(AMenuItem,MenuItemWidget);
+end;
+
+procedure TGtkWSMenuItem.SetShortCut(const AMenuItem: TMenuItem; 
+  const OldShortCut, NewShortCut: TShortCut);
+begin
+  Accelerate(AMenuItem, PGtkWidget(AMenuItem.Handle), NewShortcut,
+    {$Ifdef GTK2}'activate'{$Else}'activate_item'{$EndIF});
 end;
 
 { TGtkWSPopupMenu }

@@ -185,6 +185,8 @@ type
   private
   protected
   public
+    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; 
+      const OldShortCut, NewShortCut: TShortCut); override;
   end;
 
   { TGtkWSCheckBox }
@@ -594,6 +596,15 @@ begin
   WidgetSetSelLength(GetWidgetInfo(Pointer(ACustomEdit.Handle), true)^.CoreWidget, NewLength);
 end;
 
+{ TGtkWSCustomCheckBox }
+
+procedure TGtkWSCustomCheckBox.SetShortCut(const ACustomCheckBox: TCustomCheckBox;
+  const OldShortCut, NewShortCut: TShortCut);
+begin
+  // ToDo: use accelerator group of Form
+  Accelerate(ACustomCheckBox, PGtkWidget(ACustomCheckBox.Handle), NewShortcut, 'activate_item');
+end;
+
 { TGtkWSCustomMemo }
 
 procedure TGtkWSCustomMemo.AppendText(const ACustomMemo: TCustomMemo; AText: string);
@@ -633,7 +644,7 @@ initialization
 //  RegisterWSComponent(TCustomLabel, TGtkWSCustomLabel);
 //  RegisterWSComponent(TLabel, TGtkWSLabel);
 //  RegisterWSComponent(TButtonControl, TGtkWSButtonControl);
-//  RegisterWSComponent(TCustomCheckBox, TGtkWSCustomCheckBox);
+  RegisterWSComponent(TCustomCheckBox, TGtkWSCustomCheckBox);
 //  RegisterWSComponent(TCheckBox, TGtkWSCheckBox);
 //  RegisterWSComponent(TCheckBox, TGtkWSCheckBox);
 //  RegisterWSComponent(TToggleBox, TGtkWSToggleBox);

@@ -155,7 +155,10 @@ type
 
   { TWSCustomCheckBox }
 
+  TWSCustomCheckBoxClass = class of TWSCustomCheckBox;
   TWSCustomCheckBox = class(TWSButtonControl)
+    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; 
+      const OldShortCut, NewShortCut: TShortCut); virtual;
   end;
 
   { TWSCheckBox }
@@ -303,6 +306,12 @@ end;
 { TWSCustomMemo }
 
 procedure TWSCustomMemo.AppendText(const ACustomMemo: TCustomMemo; AText: string);
+begin
+end;
+
+{ TWSCustomCheckBox }
+
+procedure TWSCustomCheckBox.SetShortCut(const ACustomCheckBox: TCustomCheckBox; const OldShortCut, NewShortCut: TShortCut);
 begin
 end;
 

@@ -190,6 +190,7 @@ procedure TCustomCheckBox.RealSetText(const Value: TCaption);
 var
   ParseStr : String;
   AccelIndex : Longint;
+  OldKey: word;
 begin
   if Value=Text then exit;
   Inherited RealSetText(Value);
@@ -197,12 +198,9 @@ begin
   ParseStr := Value;
   AccelIndex := DeleteAmpersands(ParseStr);
   If AccelIndex > -1 then begin
-    With FShortcut do begin
-      Handle := Self.Handle;
-      OldKey := NewKey;
-      NewKey := Char2VK(ParseStr[AccelIndex]);
-    end;
-    CNSendMessage(LM_SETSHORTCUT, Self, @FShortcut);
+    OldKey := FShortCut;
+    FShortCut := Char2VK(ParseStr[AccelIndex]);
+    TWSCustomCheckBoxClass(WidgetSetClass).SetShortCut(Self, OldKey, FShortCut);
   end;
   DoAutoSize;
 end;
@@ -211,6 +209,9 @@ end;
 
 {
   $Log$
+  Revision 1.24  2004/09/17 10:56:25  micha
+  convert LM_SHORTCUT message to interface methods
+
   Revision 1.23  2004/07/16 21:49:00  mattias
   added RTTI controls
 

@@ -46,7 +46,7 @@ uses
 ////////////////////////////////////////////////////
   Buttons, Graphics, 
 ////////////////////////////////////////////////////
-  WSLCLClasses, WSStdCtrls, WSControls;
+  WSLCLClasses, WSStdCtrls, WSControls, LCLType;
 
 type
 
@@ -54,6 +54,7 @@ type
 
   TWSButton = class(TWSButtonControl)
     class procedure DefaultButtonChanged(const AButton: TCustomButton); virtual;
+    class procedure SetShortCut(const AButton: TCustomButton; const OldShortCut, NewShortCut: TShortCut); virtual;
   end;
   TWSButtonClass = class of TWSButton;
 
@@ -80,6 +81,10 @@ implementation
 { TWSButton }
 
 procedure TWSButton.DefaultButtonChanged(const AButton: TCustomButton);
+begin
+end;
+
+procedure TWSButton.SetShortCut(const AButton: TCustomButton; const OldShortCut, NewShortCut: TShortCut);
 begin
 end;
 

@@ -39,7 +39,8 @@ interface
 
 uses
   Classes, SysUtils, LCLType, LCLProc, LCLIntf, LCLStrConsts, GraphType,
-  Graphics, ImgList, ActnList, Controls, StdCtrls, lMessages, Forms;
+  Graphics, ImgList, ActnList, Controls, StdCtrls, lMessages, Forms,
+  Menus {for ShortCut procedures};
 
 type
   { TButton }
@@ -63,7 +64,7 @@ type
     FCancel: Boolean;
     FDefault: Boolean;
     FModalResult: TModalResult;
-    FShortCut: TLMShortcut;
+    FShortCut: TShortcut;
     procedure SetCancel(NewCancel: boolean);
     procedure SetDefault(Value : Boolean);
     procedure WMDefaultClicked(var Message: TLMessage); message LM_CLICKED;
@@ -380,6 +381,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.79  2004/09/17 10:56:24  micha
+  convert LM_SHORTCUT message to interface methods
+
   Revision 1.78  2004/09/09 09:18:53  mattias
   changed TCustomXXX published sections to public
 

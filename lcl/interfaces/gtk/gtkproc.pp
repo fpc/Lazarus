@@ -571,7 +571,7 @@ procedure ClearAccelKey(Widget: PGtkWidget);
 procedure Accelerate(Component: TComponent; const Widget: PGtkWidget;
   const Key: guint; Mods: TGdkModifierType; const Signal: string);
 procedure Accelerate(Component: TComponent; const Widget: PGtkWidget;
-  const Msg: TLMShortCut; const Signal: string);
+  const NewShortCut: TShortCut; const Signal: string);
 procedure ShareWindowAccelGroups(AWindow: PGtkWidget);
 procedure UnshareWindowAccelGroups(AWindow: PGtkWidget);
 
