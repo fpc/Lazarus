@@ -454,9 +454,6 @@ type
                       AddToProjectUsesClause: boolean); override;
     procedure RemoveUnit(Index: integer); override;
     function CreateProjectFile(const Filename: string): TLazProjectFile; override;
-    function AddNewFile(NewFileDescriptor: TProjectFileDescriptor;
-                        const NewFilename, NewSource: string;
-                        NewFlags: TNewFlags): TModalResult; override;
 
     // search
     function IndexOf(AUnitInfo: TUnitInfo): integer;
@@ -1647,13 +1644,6 @@ begin
   AnUnitInfo.SyntaxHighlighter:=
                ExtensionToLazSyntaxHighlighter(ExtractFileExt(NewBuf.Filename));
   Result:=AnUnitInfo;
-end;
-
-function TProject.AddNewFile(NewFileDescriptor: TProjectFileDescriptor;
-  const NewFilename, NewSource: string; NewFlags: TNewFlags): TModalResult;
-begin
-  Result:=LazarusIDE.DoNewEditorFile(NewFileDescriptor, NewFilename, NewSource,
-                                     NewFlags);
 end;
 
 {------------------------------------------------------------------------------
@@ -3131,6 +3121,9 @@ end.
 
 {
   $Log$
+  Revision 1.167  2004/10/01 13:18:41  mattias
+  removed uneeded function TProject.AddNewFile
+
   Revision 1.166  2004/10/01 11:23:07  mattias
   implemented custom project types
 
