@@ -531,7 +531,6 @@ type
     procedure SetClientSize(Value: TPoint);
     procedure SetClientWidth(Value: Integer);
     procedure SetConstraints(const Value : TSizeConstraints);
-    procedure SetColor(Value : TColor);
     procedure SetCursor(Value : TCursor);
     procedure SetFont(Value: TFont);
     procedure SetHeight(Value: Integer);
@@ -611,6 +610,7 @@ type
     procedure InvalidateControl(IsVisible, IsOpaque : Boolean);
     procedure InvalidateControl(IsVisible, IsOpaque, IgnoreWinControls: Boolean);
     procedure SendDockNotification(Msg: Cardinal; WParam, LParam : Integer);
+    procedure SetColor(Value : TColor); virtual;
     procedure SetDragMode (Value: TDragMode); virtual;
     procedure SetEnabled(Value: Boolean); virtual;
     procedure SetHint(const Value: String); virtual;
@@ -673,6 +673,7 @@ type
     procedure BeginDrag(Immediate: Boolean; Threshold: Integer); //overload;
     procedure BeginDrag(Immediate: Boolean); //overload;
     procedure BringToFront;
+    function ColorIsStored: boolean; virtual;
     constructor Create(AOwner: TComponent);override;
     destructor Destroy; override;
     function HasParent : Boolean; override;
@@ -706,7 +707,7 @@ type
     property Constraints : TSizeConstraints read FConstraints write SetConstraints;
     property ControlState: TControlState read FControlState write FControlState;
     property ControlStyle : TControlStyle read FControlStyle write FControlStyle;
-    property Color : TColor read FColor write SetColor;
+    property Color : TColor read FColor write SetColor stored ColorIsStored;
     property Ctl3D : Boolean read FCtl3D write FCtl3D;  //Is this needed for anything other than compatability?
     property Enabled: Boolean read GetEnabled write SetEnabled default True;
     property Font : TFont read FFont write SetFont;
@@ -863,6 +864,7 @@ type
     function  GetChildsRect(Scrolled: boolean): TRect; override;
     function  GetDeviceContext(var WindowHandle: HWnd): HDC; override;
     function  IsControlMouseMsg(var TheMessage : TLMMouse): Boolean;
+    procedure SetColor(Value : TColor); override;
     procedure SetZOrderPosition(Position: Integer); override;
     procedure SetZOrder(Topmost: Boolean); override;
     procedure SendMoveSizeMessages(SizeChanged, PosChanged: boolean); override;
@@ -1434,6 +1436,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.98  2002/12/27 17:46:04  mattias
+  fixed SetColor
+
   Revision 1.97  2002/12/27 17:12:37  mattias
   added more Delphi win32 compatibility functions
 
