@@ -624,11 +624,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenubuild
 msgid "Build"
-msgstr ""
+msgstr "Käännä"
 
 #: lazarusidestrconsts:lismenubuildall
 msgid "Build all"
-msgstr ""
+msgstr "Käännä kaikki"
 
 #: lazarusidestrconsts:srkmecbuildall
 msgid "build all files of program/project"
@@ -732,7 +732,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdiffdlgcaseinsensitive
 msgid "Case Insensitive"
-msgstr ""
+msgstr "Sama kirjainkoko"
 
 #: lazarusidestrconsts:dlgcasesensitive
 msgid "Case Sensitive"
@@ -1708,11 +1708,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenueditoroptions
 msgid "Editor options"
-msgstr ""
+msgstr "Editorin asetukset"
 
 #: lazarusidestrconsts:uemeditorproperties
 msgid "Editor properties"
-msgstr ""
+msgstr "Editorin asetukset"
 
 #: lazarusidestrconsts:dlgedelement
 msgid "Element"
@@ -1752,7 +1752,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgrunoenvironment
 msgid "Environment"
-msgstr ""
+msgstr "Käyttöympäristö"
 
 #: lazarusidestrconsts:srkmcatenvmenu
 msgid "Environment menu commands"
@@ -1760,7 +1760,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenugeneraloptions
 msgid "Environment options"
-msgstr ""
+msgstr "Käyttöliittymän asetukset"
 
 #: lazarusidestrconsts:liscodetemplerror
 msgid "Error"
@@ -2104,7 +2104,7 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguagefinnish
 msgid "Finnish"
-msgstr ""
+msgstr "suomi"
 
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
@@ -2112,7 +2112,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgforecolor
 msgid "Foreground color"
-msgstr ""
+msgstr "Kirjaimien väri"
 
 #: lazarusidestrconsts:dlgfrmeditor
 msgid "Form Editor"
@@ -2188,7 +2188,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuinsertgeneral
 msgid "General"
-msgstr ""
+msgstr "Yleistä"
 
 #: lazarusidestrconsts:srkmecenvironmentoptions
 msgid "General environment options"
@@ -2452,7 +2452,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgignoreverb
 msgid "Ignore"
-msgstr ""
+msgstr "Ohita"
 
 #: lazarusidestrconsts:lisdiffdlgignoreifspacecharswereadd
 msgid "Ignore amount of space chars"
@@ -2460,7 +2460,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdiffdlgignoreiflineendcharsdiffe
 msgid "Ignore difference in line ends (e.g. #10 = #13#10)"
-msgstr ""
+msgstr "Jätä huomiotta erilaiset rivinloppumerkinnät (esim. #10 = #13#10) "
 
 #: lazarusidestrconsts:lisdiskdiffignorediskchanges
 msgid "Ignore disk changes"
@@ -2480,7 +2480,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdiffdlgignorespacesatendofline
 msgid "Ignore spaces at end of line"
-msgstr ""
+msgstr "Ei huomioida välilyöntejä rivin lopussa"
 
 #: lazarusidestrconsts:lisdiffdlgignorespacesatstartofline
 msgid "Ignore spaces at start of line"
@@ -3180,7 +3180,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgcdtlower
 msgid "lowercase"
-msgstr ""
+msgstr "Pienet kirjaimet"
 
 #: lazarusidestrconsts:lismenulowercaseselection
 msgid "Lowercase selection"
@@ -3188,7 +3188,7 @@ msgstr "Muuta pieniksi kirjaimiksi"
 
 #: lazarusidestrconsts:dlg1up2low
 msgid "Lowercase, first letter up"
-msgstr ""
+msgstr "Ensimmäinen kirjain iso muut pieniä"
 
 #: lazarusidestrconsts:lispkgfiletypelrs
 msgid "LRS - Lazarus resource"
@@ -3320,7 +3320,7 @@ msgstr ""
 
 #: lazarusidestrconsts:uemodified
 msgid "Modified"
-msgstr ""
+msgstr "Muutettu"
 
 #: lazarusidestrconsts:lispckeditmodified
 msgid "Modified: %s"
@@ -3640,7 +3640,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuviewobjectinspector
 msgid "Object Inspector"
-msgstr ""
+msgstr "Komponenttimuokkain"
 
 #: lazarusidestrconsts:lislazbuildok
 msgid "Ok"
@@ -4120,7 +4120,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuprojectoptions
 msgid "Project Options..."
-msgstr "Projekti kohtaiset optiot"
+msgstr "Projekti kohtaiset asetukset"
 
 #: lazarusidestrconsts:lisprojectsrcpath
 msgid "Project Src Path"
@@ -4444,7 +4444,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuprojectrun
 msgid "Run"
-msgstr "Aja"
+msgstr "Suorita"
 
 #: lazarusidestrconsts:lismenurunfile
 msgid "Run File"
@@ -4456,11 +4456,11 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgrunparameters
 msgid "Run parameters"
-msgstr ""
+msgstr "Suoritusaikaiset parametrit"
 
 #: lazarusidestrconsts:lismenurunparameters
 msgid "Run Parameters ..."
-msgstr ""
+msgstr "Suoritusaikaiset parametrit..."
 
 #: lazarusidestrconsts:srkmecrun
 msgid "run program"
@@ -4672,11 +4672,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuselect
 msgid "Select"
-msgstr ""
+msgstr "Valitse"
 
 #: lazarusidestrconsts:lismenuselectall
 msgid "Select all"
-msgstr ""
+msgstr "Valitse kaikki"
 
 #: lazarusidestrconsts:lismenuselectcodeblock
 msgid "Select code block"
@@ -4704,7 +4704,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuselectline
 msgid "Select line"
-msgstr ""
+msgstr "Valitse rivi"
 
 #: lazarusidestrconsts:srkmecsellineend
 msgid "Select Line End"
@@ -5320,11 +5320,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdiffdlgtext1
 msgid "Text1"
-msgstr ""
+msgstr "Teksti 1"
 
 #: lazarusidestrconsts:lisdiffdlgtext2
 msgid "Text2"
-msgstr ""
+msgstr "Teksti 2"
 
 #: lazarusidestrconsts:liscodetoolsdefskylixmaindirectoryforproject
 msgid "The %s main directory,%swhere Borland has installed all %s sources,%swhich are used by this %s project.%sFor example: /home/user/kylix%s"
@@ -6064,7 +6064,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgedunder
 msgid "Underline"
-msgstr ""
+msgstr "Alleviivaus"
 
 #: lazarusidestrconsts:lismenuundo
 msgid "Undo"
@@ -6196,7 +6196,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgcdtuppercase
 msgid "UPPERCASE"
-msgstr ""
+msgstr "ISOT KIRJAIMET"
 
 #: lazarusidestrconsts:lismenuuppercaseselection
 msgid "Uppercase selection"
@@ -6344,7 +6344,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmectoggleobjectinsp
 msgid "View Object Inspector"
-msgstr ""
+msgstr "Näytä komponenttimuokkain"
 
 #: lazarusidestrconsts:dlgmainviewforms
 msgid "View project forms"
@@ -6476,7 +6476,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisuidyes
 msgid "yes"
-msgstr ""
+msgstr "kyllä"
 
 #: lazarusidestrconsts:lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."

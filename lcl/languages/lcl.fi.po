@@ -304,7 +304,7 @@ msgstr ""
 
 #: lclstrconsts:rsfdopenfile
 msgid "Open existing file"
-msgstr ""
+msgstr "Avaa tiedosto"
 
 #: lclstrconsts:rsfdoverwritefile
 msgid "Overwrite file ?"
@@ -336,7 +336,7 @@ msgstr ""
 
 #: lclstrconsts:rspickdate
 msgid "Select a date"
-msgstr ""
+msgstr "Valitse päivä"
 
 #: lclstrconsts:rsselectfonttitle
 msgid "Select a font"

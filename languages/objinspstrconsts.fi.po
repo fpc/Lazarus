@@ -20,11 +20,11 @@ msgstr ""
 
 #: objinspstrconsts:oiscadd
 msgid "&Add"
-msgstr ""
+msgstr "&Lisää"
 
 #: objinspstrconsts:oiscdelete
 msgid "&Delete"
-msgstr ""
+msgstr "&Poista"
 
 #: objinspstrconsts:sccsilbtnadd
 msgid "Add ..."
@@ -44,7 +44,7 @@ msgstr ""
 
 #: objinspstrconsts:oisevents
 msgid "Events"
-msgstr ""
+msgstr "Tapahtumat"
 
 #: objinspstrconsts:sccslvedtimgindexcaption
 msgid "Image index"
@@ -68,11 +68,11 @@ msgstr ""
 
 #: objinspstrconsts:oisobjectinspector
 msgid "Object Inspector"
-msgstr ""
+msgstr "Komponenttimuokkain"
 
 #: objinspstrconsts:oisproperties
 msgid "Properties"
-msgstr ""
+msgstr "Ominaisuudet"
 
 #: objinspstrconsts:cesstringgrideditor2
 msgid "StringGrid Editor"
