@@ -2871,9 +2871,10 @@ begin
   if not Enabled and (Parent <> nil)
   then RemoveFocus(False);
 
-  if HandleAllocated
-  and not (csDesigning in ComponentState)
-  then EnableWindow(Handle, Enabled);
+  if HandleAllocated and not (csDesigning in ComponentState) then begin
+    //if (not Enabled) then debugln('TWinControl.CMEnabledChanged disable ',Name,':',CLassName);
+    EnableWindow(Handle, Enabled);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -2887,8 +2888,6 @@ procedure TWinControl.CMShowHintChanged(var Message: TLMessage);
 begin
   NotifyControls(CM_PARENTSHOWHINTCHANGED);
 end;
-
-
 
 {------------------------------------------------------------------------------
   Method: TWinControl.WMSetFocus
@@ -3456,7 +3455,8 @@ begin
     FFlags:=FFlags-[wcfColorChanged,wcfFontChanged];
   end;
 
-  EnableWindow(Handle, Enabled);
+  if not (csDesigning in ComponentState) then
+    EnableWindow(Handle, Enabled);
   
   // Delay the setting of text until it is completely loaded
   if not (csLoading in ComponentState) 
@@ -3912,6 +3912,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.280  2004/09/21 10:05:26  mattias
+  fixed disable at designtime and bounding TProgressBar position
+
   Revision 1.279  2004/09/18 12:43:15  micha
   convert LM_DESTROY message to interface methods
 

@@ -1,15 +1,15 @@
 object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
   Caption = 'FindRenameIdentifierDialog'
-  ClientHeight = 400
+  ClientHeight = 433
   ClientWidth = 450
   OnClose = FindRenameIdentifierDialogClose
   OnCreate = FindRenameIdentifierDialogCreate
   PixelsPerInch = 90
   Position = poScreenCenter
   HorzScrollBar.Page = 451
-  VertScrollBar.Page = 401
+  VertScrollBar.Page = 434
   Left = 291
-  Height = 400
+  Height = 433
   Top = 163
   Width = 450
   object CurrentGroupBox: TGroupBox
@@ -70,12 +70,12 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
   object ScopeGroupBox: TGroupBox
     Anchors = [akTop, akLeft, akRight]
     Caption = 'ScopeGroupBox'
-    ClientHeight = 187
+    ClientHeight = 211
     ClientWidth = 433
     ParentColor = True
     TabOrder = 2
     Left = 8
-    Height = 204
+    Height = 228
     Top = 156
     Width = 437
     object ScopeCommentsCheckBox: TCheckBox
@@ -86,7 +86,7 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
       TabOrder = 0
       Left = 6
       Height = 23
-      Top = 157
+      Top = 181
       Width = 417
     end
     object ScopeRadioGroup: TRadioGroup
@@ -101,7 +101,7 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
       )
       ParentColor = True
       Left = 6
-      Height = 88
+      Height = 112
       Top = 5
       Width = 417
     end
@@ -115,7 +115,7 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
       TabOrder = 2
       Left = 6
       Height = 44
-      Top = 101
+      Top = 125
       Width = 417
       object ExtraFilesEdit: TEdit
         Anchors = [akTop, akLeft, akRight]
@@ -135,7 +135,7 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
     TabOrder = 3
     Left = 88
     Height = 25
-    Top = 368
+    Top = 400
     Width = 233
   end
   object CancelButton: TButton
@@ -145,7 +145,7 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
     TabOrder = 4
     Left = 336
     Height = 25
-    Top = 368
+    Top = 400
     Width = 89
   end
 end

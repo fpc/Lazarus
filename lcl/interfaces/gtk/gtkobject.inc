@@ -3436,9 +3436,9 @@ begin
       end
       else begin
         ConnectSenderSignal(gFixed, 'button-press-event', @gtkMouseBtnPress,
-                      GDK_BUTTON_PRESS_MASK);
+                            GDK_BUTTON_PRESS_MASK);
         ConnectSenderSignalAfter(gFixed, 'button-press-event',
-                      @gtkMouseBtnPressAfter, GDK_BUTTON_PRESS_MASK);
+                                 @gtkMouseBtnPressAfter, GDK_BUTTON_PRESS_MASK);
       end;
     end;
 
@@ -7675,6 +7675,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.589  2004/09/21 10:05:26  mattias
+  fixed disable at designtime and bounding TProgressBar position
+
   Revision 1.588  2004/09/20 21:01:04  micha
   convert LM_SETPROPERTIES to interface methods for TCustomComboBox
 

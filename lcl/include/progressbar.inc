@@ -120,8 +120,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TProgressBar.SetParams(AMin, AMax: Integer);
 begin
-  SetMax (AMax);
-  SetMin (AMin);
+  SetMax(AMax);
+  SetMin(AMin);
 end;
 
 
@@ -250,8 +250,14 @@ end;
  ------------------------------------------------------------------------------}
 procedure TProgressBar.ApplyChanges;
 begin
-  if HandleAllocated and (not (csLoading in ComponentState)) then
-    CNSendMessage(LM_SETPROPERTIES, Self, nil);
+  if not (csLoading in ComponentState) then begin
+    if FMin>Max then FMin:=Max;
+    if Position<Min then FPosition:=Min;
+    if Position>Max then FPosition:=Max;
+    if HandleAllocated then begin
+      CNSendMessage(LM_SETPROPERTIES, Self, nil);
+    end;
+  end;
 end;
 
 
@@ -296,6 +302,9 @@ end;
 
 {
   $Log$
+  Revision 1.9  2004/09/21 10:05:26  mattias
+  fixed disable at designtime and bounding TProgressBar position
+
   Revision 1.8  2004/09/19 18:50:28  micha
   convert LM_SETVALUE message to interface methods
 

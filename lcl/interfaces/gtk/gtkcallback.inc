@@ -234,6 +234,7 @@ begin
       //DebugLn(' Widget=',HexStr(Cardinal(Widget),8),' Fixed=',HexStr(Cardinal(GetFixedWidget(Widget)),8),' Main=',HexStr(Cardinal(GetMainWidget(Widget)),8));
       if (TheWinControl<>nil) then begin
         {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
+
         NewEventMask:=gdk_window_get_events(GetControlWindow(Widget))
                       or WinWidgetInfo^.EventMask;
         gdk_window_set_events(GetControlWindow(Widget),NewEventMask);
@@ -1121,7 +1122,7 @@ begin
   ShiftState := GTKEventState2ShiftState(Event^.State);
   MappedXY:=TranslateGdkPointToClientArea(Event^.Window,EventXY,
                                          PGtkWidget(AWinControl.Handle));
-  //DebugLn('DeliverMouseDownMessage ',AWinControl.Name,':',AWinControl.ClassName,' Mapped=',MappedXY.X,',',MappedXY.Y,' Event=',EventXY.X,',',EventXY.Y);
+  //DebugLn('DeliverMouseDownMessage ',AWinControl.Name,':',AWinControl.ClassName,' Mapped=',dbgs(MappedXY.X),',',dbgs(MappedXY.Y),' Event=',dbgs(EventXY.X),',',dbgs(EventXY.Y));
 
   if event^.Button in [4,5] then begin
     // this is a mouse wheel event
@@ -1187,13 +1188,13 @@ end;
 
   Called whenever the mouse is over a widget and a mouse button is pressed.
 -------------------------------------------------------------------------------}
-function gtkMouseBtnPress(widget: PGtkWidget; event : pgdkEventButton;
+function gtkMouseBtnPress(widget: PGtkWidget; event: pgdkEventButton;
   data: gPointer) : GBoolean; cdecl;
 var
   DesignOnlySignal: boolean;
   CaptureWidget: PGtkWidget;
 begin
-	Result := true;
+  Result := true;
 
   {$IFDEF VerboseMouseBugfix}
   DebugLn('');
@@ -1238,6 +1239,7 @@ begin
 			result := false;
     end;
   end;
+  //debugln('[gtkMouseBtnPress] calling DeliverMouseDownMessage');
   DeliverMouseDownMessage(Widget,Event,TWinControl(Data));
 end;
 
@@ -2904,6 +2906,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.248  2004/09/21 10:05:26  mattias
+  fixed disable at designtime and bounding TProgressBar position
+
   Revision 1.247  2004/09/10 16:28:50  mattias
   implemented very rudimentary TTabControl
 

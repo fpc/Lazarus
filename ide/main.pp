@@ -9301,6 +9301,7 @@ begin
         end else begin
           OwnerList:=PkgBoss.GetOwnersOfUnit(TargetUnitInfo.Filename);
           if Options.Scope=frAllOpenProjectsAndPackages then begin
+          
             // TODO
           end;
         end;
@@ -10808,6 +10809,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.775  2004/09/21 10:05:26  mattias
+  fixed disable at designtime and bounding TProgressBar position
+
   Revision 1.774  2004/09/20 20:22:11  mattias
   implemented Refactoring Tool: Find Identfier References
 

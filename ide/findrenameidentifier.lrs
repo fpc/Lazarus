@@ -2,11 +2,11 @@
 
 LazarusResources.Add('TFindRenameIdentifierDialog','FORMDATA',[
   'TPF0'#27'TFindRenameIdentifierDialog'#26'FindRenameIdentifierDialog'#7'Capti'
-  +'on'#6#26'FindRenameIdentifierDialog'#12'ClientHeight'#3#144#1#11'ClientWidt'
+  +'on'#6#26'FindRenameIdentifierDialog'#12'ClientHeight'#3#177#1#11'ClientWidt'
   +'h'#3#194#1#7'OnClose'#7#31'FindRenameIdentifierDialogClose'#8'OnCreate'#7' '
   +'FindRenameIdentifierDialogCreate'#13'PixelsPerInch'#2'Z'#8'Position'#7#14'p'
-  +'oScreenCenter'#18'HorzScrollBar.Page'#3#195#1#18'VertScrollBar.Page'#3#145#1
-  +#4'Left'#3'#'#1#6'Height'#3#144#1#3'Top'#3#163#0#5'Width'#3#194#1#0#9'TGroup'
+  +'oScreenCenter'#18'HorzScrollBar.Page'#3#195#1#18'VertScrollBar.Page'#3#178#1
+  +#4'Left'#3'#'#1#6'Height'#3#177#1#3'Top'#3#163#0#5'Width'#3#194#1#0#9'TGroup'
   +'Box'#15'CurrentGroupBox'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#7'Ca'
   +'ption'#6#15'CurrentGroupBox'#12'ClientHeight'#2'7'#11'ClientWidth'#3#176#1
   +#11'ParentColor'#9#8'TabOrder'#2#0#4'Left'#2#8#6'Height'#2'H'#3'Top'#2#8#5'W'
@@ -22,26 +22,26 @@ LazarusResources.Add('TFindRenameIdentifierDialog','FORMDATA',[
   +'e'#9#7'Caption'#6#14'RenameCheckBox'#8'OnChange'#7#20'RenameCheckBoxChange'
   +#8'TabOrder'#2#1#11'UseOnChange'#9#4'Left'#3#18#1#6'Height'#2#23#3'Top'#2#6#5
   +'Width'#3#151#0#0#0#0#9'TGroupBox'#13'ScopeGroupBox'#7'Anchors'#11#5'akTop'#6
-  +'akLeft'#7'akRight'#0#7'Caption'#6#13'ScopeGroupBox'#12'ClientHeight'#3#187#0
+  +'akLeft'#7'akRight'#0#7'Caption'#6#13'ScopeGroupBox'#12'ClientHeight'#3#211#0
   +#11'ClientWidth'#3#177#1#11'ParentColor'#9#8'TabOrder'#2#2#4'Left'#2#8#6'Hei'
-  +'ght'#3#204#0#3'Top'#3#156#0#5'Width'#3#181#1#0#9'TCheckBox'#21'ScopeComment'
+  +'ght'#3#228#0#3'Top'#3#156#0#5'Width'#3#181#1#0#9'TCheckBox'#21'ScopeComment'
   +'sCheckBox'#11'AllowGrayed'#9#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8
   +'AutoSize'#9#7'Caption'#6#21'ScopeCommentsCheckBox'#8'TabOrder'#2#0#4'Left'#2
-  +#6#6'Height'#2#23#3'Top'#3#157#0#5'Width'#3#161#1#0#0#11'TRadioGroup'#15'Sco'
+  +#6#6'Height'#2#23#3'Top'#3#181#0#5'Width'#3#161#1#0#0#11'TRadioGroup'#15'Sco'
   +'peRadioGroup'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#7'Caption'#6#15
   +'ScopeRadioGroup'#7'Enabled'#8#13'Items.Strings'#1#6#15'in current unit'#6#15
   +'in main project'#6#30'in project/package owning file'#6'!in all open projec'
-  +'ts and packages'#0#11'ParentColor'#9#4'Left'#2#6#6'Height'#2'X'#3'Top'#2#5#5
+  +'ts and packages'#0#11'ParentColor'#9#4'Left'#2#6#6'Height'#2'p'#3'Top'#2#5#5
   +'Width'#3#161#1#0#0#9'TGroupBox'#18'ExtraFilesGroupBox'#7'Anchors'#11#5'akTo'
   +'p'#6'akLeft'#7'akRight'#0#7'Caption'#6#18'ExtraFilesGroupBox'#12'ClientHeig'
   +'ht'#2#27#11'ClientWidth'#3#157#1#7'Enabled'#8#11'ParentColor'#9#8'TabOrder'
-  +#2#2#4'Left'#2#6#6'Height'#2','#3'Top'#2'e'#5'Width'#3#161#1#0#5'TEdit'#14'E'
+  +#2#2#4'Left'#2#6#6'Height'#2','#3'Top'#2'}'#5'Width'#3#161#1#0#5'TEdit'#14'E'
   +'xtraFilesEdit'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'TabOrder'#2#0
   +#4'Text'#6#14'ExtraFilesEdit'#8'TabOrder'#2#0#4'Left'#2#6#6'Height'#2#23#5'W'
   +'idth'#3#148#1#0#0#0#0#7'TButton'#18'FindOrRenameButton'#7'Anchors'#11#5'akT'
   +'op'#7'akRight'#0#7'Caption'#6#18'FindOrRenameButton'#7'OnClick'#7#23'FindOr'
-  +'RenameButtonClick'#8'TabOrder'#2#3#4'Left'#2'X'#6'Height'#2#25#3'Top'#3'p'#1
-  +#5'Width'#3#233#0#0#0#7'TButton'#12'CancelButton'#7'Anchors'#11#5'akTop'#7'a'
-  +'kRight'#0#7'Caption'#6#12'CancelButton'#11'ModalResult'#2#2#8'TabOrder'#2#4
-  +#4'Left'#3'P'#1#6'Height'#2#25#3'Top'#3'p'#1#5'Width'#2'Y'#0#0#0
+  +'RenameButtonClick'#8'TabOrder'#2#3#4'Left'#2'X'#6'Height'#2#25#3'Top'#3#144
+  +#1#5'Width'#3#233#0#0#0#7'TButton'#12'CancelButton'#7'Anchors'#11#5'akTop'#7
+  +'akRight'#0#7'Caption'#6#12'CancelButton'#11'ModalResult'#2#2#8'TabOrder'#2#4
+  +#4'Left'#3'P'#1#6'Height'#2#25#3'Top'#3#144#1#5'Width'#2'Y'#0#0#0
 ]);
