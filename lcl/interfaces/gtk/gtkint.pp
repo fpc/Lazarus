@@ -40,6 +40,7 @@ interface
 {$ELSE}
 {off $DEFINE NoGdkPixbufLib}
 {$ENDIF}
+{off $Define Critical_Sections_Support}
 
 uses
   InterfaceBase, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} gtk, gdk,
@@ -427,6 +428,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.61  2002/08/19 20:34:48  lazarus
+  MG: improved Clipping, TextOut, Polygon functions
+
   Revision 1.60  2002/08/19 18:00:02  lazarus
   MG: design signals for gtk internal widgets
 
