@@ -3609,7 +3609,7 @@ begin
       NewFilename:=ExpandFilename(SaveDialog.Filename);
       NewProgramName:=ExtractFileNameOnly(NewFilename);
 
-      // check filename
+      // check programname
       if (NewProgramName='') or (not IsValidIdent(NewProgramName)) then begin
         Result:=MessageDlg('Invalid project filename',
           '"'+SaveDialog.Filename+'" is an invalid project name.'#13
@@ -8216,6 +8216,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.512  2003/04/08 16:56:55  mattias
+  implemented saving package
+
   Revision 1.511  2003/04/07 23:49:03  mattias
   implemented adding units to packages
 
