@@ -217,7 +217,7 @@ procedure TCustomListBox.SendItemSelected(Index: integer; IsSelected: boolean);
 begin
   if HandleAllocated then begin
     LockSelectionChange;
-    TWSCustomListBox(WidgetSetClass).SelectItem(Self, Index, IsSelected);
+    TWSCustomListBoxClass(WidgetSetClass).SelectItem(Self, Index, IsSelected);
     UnlockSelectionChange;
   end;
 end;
