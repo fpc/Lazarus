@@ -507,6 +507,7 @@ lcl/controls.pp svneol=native#text/pascal
 lcl/dialogs.pp svneol=native#text/pascal
 lcl/dynhasharray.pp svneol=native#text/pascal
 lcl/extctrls.pp svneol=native#text/pascal
+lcl/extendedstrings.pas svneol=native#text/pascal
 lcl/filectrl.pp svneol=native#text/pascal
 lcl/forms.pp svneol=native#text/pascal
 lcl/graphics.pp svneol=native#text/pascal

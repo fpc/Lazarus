@@ -570,7 +570,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.Rectangle(const Rect: TRect);
 begin
- Rectangle(Rect.Left, REct.Top, Rect.RIght, REct.Bottom);
+  Rectangle(Rect.Left, Rect.Top, Rect.Right, Rect.Bottom);
 end;
 
 {------------------------------------------------------------------------------
@@ -1104,6 +1104,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.30  2002/10/04 14:24:14  lazarus
+  MG: added DrawItem to TComboBox/TListBox
+
   Revision 1.29  2002/09/27 20:52:22  lazarus
   MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
 
