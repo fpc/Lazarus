@@ -1165,7 +1165,7 @@ Begin
     DeliverMessage(lWinControl, PLMsg^);
 
   // respond to result of LCL handling the message
-  case LMessage.Msg of
+  case PLMsg^.Msg of
     LM_ERASEBKGND, LM_SETCURSOR:
     begin
       if LMessage.Result = 0 then
@@ -1437,6 +1437,9 @@ end;
 
 {
   $Log$
+  Revision 1.157  2004/11/07 17:58:17  micha
+  fix message handling (use actual message, not default), fixes edits begin readonly
+
   Revision 1.156  2004/11/05 15:23:23  micha
   correct silly mistake: "as" operator also checks for nil
 
