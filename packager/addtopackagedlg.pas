@@ -391,7 +391,7 @@ begin
   end;
 
   // check if required package exists
-  if not PackageGraph.DependencyExists(NewDependency,fpfSearchPackageEverywhere)
+  if not PackageGraph.DependencyExists(NewDependency,fpfSearchAllExisting)
   then begin
     MessageDlg(lisProjAddPackageNotFound,
       Format(lisA2PNoPackageFoundForDependencyPleaseChooseAnExisting, ['"',
@@ -1828,7 +1828,7 @@ var
   sl: TStringList;
 begin
   fPackages.Clear;
-  PackageGraph.IteratePackages(fpfSearchPackageEverywhere,@OnIteratePackages);
+  PackageGraph.IteratePackages(fpfSearchAllExisting,@OnIteratePackages);
   sl:=TStringList.Create;
   ANode:=fPackages.FindLowest;
   while ANode<>nil do begin

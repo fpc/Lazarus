@@ -90,7 +90,7 @@ type
       Dependency: TPkgDependency): TPackageLink;
     function FindLinkWithPackageIDInTree(LinkTree: TAVLTree;
       APackageID: TLazPackageID): TPackageLink;
-    procedure IteratePackagesInTree(LinkTree: TAVLTree;
+    procedure IteratePackagesInTree(MustExist: boolean; LinkTree: TAVLTree;
       Event: TIteratePackagesEvent);
     procedure SetModified(const AValue: boolean);
   public
@@ -109,7 +109,7 @@ type
     function FindLinkWithPkgName(const PkgName: string): TPackageLink;
     function FindLinkWithDependency(Dependency: TPkgDependency): TPackageLink;
     function FindLinkWithPackageID(APackageID: TLazPackageID): TPackageLink;
-    procedure IteratePackages(Event: TIteratePackagesEvent);
+    procedure IteratePackages(MustExist: boolean; Event: TIteratePackagesEvent);
     procedure AddUserLink(APackage: TLazPackage);
     procedure RemoveLink(APackageID: TLazPackageID);
   public
@@ -525,14 +525,17 @@ begin
     Result:=nil;
 end;
 
-procedure TPackageLinks.IteratePackagesInTree(LinkTree: TAVLTree;
-  Event: TIteratePackagesEvent);
+procedure TPackageLinks.IteratePackagesInTree(MustExist: boolean;
+  LinkTree: TAVLTree; Event: TIteratePackagesEvent);
 var
   ANode: TAVLTreeNode;
+  PkgLink: TPackageLink;
 begin
   ANode:=LinkTree.FindLowest;
   while ANode<>nil do begin
-    Event(TPackageLink(ANode.Data));
+    PkgLink:=TPackageLink(ANode.Data);
+    if (not MustExist) or FileExists(PkgLink.Filename) then
+      Event(PkgLink);
     ANode:=LinkTree.FindSuccessor(ANode);
   end;
 end;
@@ -566,10 +569,11 @@ begin
     Result:=FindLinkWithPackageIDInTree(FGlobalLinks,APackageID);
 end;
 
-procedure TPackageLinks.IteratePackages(Event: TIteratePackagesEvent);
+procedure TPackageLinks.IteratePackages(MustExist: boolean;
+  Event: TIteratePackagesEvent);
 begin
-  IteratePackagesInTree(FUserLinks,Event);
-  IteratePackagesInTree(FGlobalLinks,Event);
+  IteratePackagesInTree(MustExist,FUserLinks,Event);
+  IteratePackagesInTree(MustExist,FGlobalLinks,Event);
 end;
 
 procedure TPackageLinks.AddUserLink(APackage: TLazPackage);

@@ -56,14 +56,16 @@ type
     fpfSearchInPckgsWithEditor,
     fpfSearchInLoadedPkgs,
     fpfSearchInPkgLinks,
+    fpfPkgLinkMustExist,  // check if .pkg file exists
     fpfIgnoreVersion
     );
   TFindPackageFlags = set of TFindPackageFlag;
   
 const
-  fpfSearchPackageEverywhere =
+  fpfSearchEverywhere =
     [fpfSearchInInstalledPckgs,fpfSearchInAutoInstallPckgs,
      fpfSearchInPckgsWithEditor,fpfSearchInPkgLinks,fpfSearchInLoadedPkgs];
+  fpfSearchAllExisting = fpfSearchEverywhere+[fpfPkgLinkMustExist];
 
 type
   TPkgAddedEvent = procedure(APackage: TLazPackage) of object;
@@ -1802,7 +1804,7 @@ begin
   if Dependency.LoadPackageResult=lprUndefined then begin
     BeginUpdate(false);
     // search compatible package in opened packages
-    ANode:=FindNodeOfDependency(Dependency,fpfSearchPackageEverywhere);
+    ANode:=FindNodeOfDependency(Dependency,fpfSearchEverywhere);
     if (ANode<>nil) then begin
       Dependency.RequiredPackage:=TLazPackage(ANode.Data);
       Dependency.LoadPackageResult:=lprSuccess;
@@ -1964,7 +1966,7 @@ begin
   end;
   // iterate in package links
   if (fpfSearchInPkgLinks in Flags) then begin
-    PkgLinks.IteratePackages(Event);
+    PkgLinks.IteratePackages(fpfPkgLinkMustExist in Flags,Event);
   end;
 end;
 
