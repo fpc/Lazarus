@@ -5704,8 +5704,10 @@ begin
   csCheckbox,
   csToggleBox:
     begin
+      LockOnChange(PGtkObject(Handle),1);
       gtk_toggle_button_set_active(PGtkToggleButton(handle),
-        (TCheckBoxState(data^) = cbChecked))
+        (TCheckBoxState(data^) = cbChecked));
+      LockOnChange(PGtkObject(Handle),-1);
     end;
                     
   csCalendar   :
@@ -7067,6 +7069,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.341  2003/03/25 16:29:53  mattias
+  fixed sending TButtonControl.OnClick on every change
+
   Revision 1.340  2003/03/25 13:00:39  mattias
   implemented TMemo.SelLength, improved OI hints
 
