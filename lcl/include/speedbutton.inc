@@ -236,6 +236,8 @@ begin
     FState := bsDisabled;
     FDragging := False;
   end
+//  else
+//  if not Visible then exit
   else begin
     if FState = bsDisabled 
     then begin
@@ -524,6 +526,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2001/02/06 14:52:47  lazarus
+  Changed TSpeedbutton in gtkobject so it erases itself when it's set to visible=false;
+  Shane
+
   Revision 1.4  2001/01/12 18:46:50  lazarus
   Named the speedbuttons in MAINIDE and took out some writelns.
   Shane

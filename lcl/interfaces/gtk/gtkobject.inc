@@ -227,6 +227,7 @@ var
    GList     : pGList;                  // Only used for listboxes, replace with widget!!!!!
    SelectionMode : TGtkSelectionMode;   // currently only used for listboxes
    ListItem  : PGtkListItem;            // currently only used for listboxes
+   Rect      : TRect;
 
 begin
    result := 0;   //default value just in case nothing sets it
@@ -525,7 +526,14 @@ activate_time :	the time at which the activation event occurred.
           if not (sender is TSpeedbutton) then
             ReDraw(PgtkWidget(Handle))
          else
-            (Sender as TSpeedButton).perform(LM_PAINT,0,0);
+          if (sender is TSpeedButton) then
+            If TSpeedbutton(sender).Visible then (Sender as TSpeedButton).perform(LM_PAINT,0,0)
+              else
+              Begin
+              Rect := TSpeedButton(sender).BoundsRect;
+              InvalidateRect(TSpeedButton(sender).Parent.Handle,@Rect,True);
+
+              end;
       end;
 
       LM_AddPage :
@@ -2666,6 +2674,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.28  2001/02/06 14:52:47  lazarus
+  Changed TSpeedbutton in gtkobject so it erases itself when it's set to visible=false;
+  Shane
+
   Revision 1.27  2001/02/04 04:18:12  lazarus
   Code cleanup and JITFOrms bug fix.
   Shane
