@@ -729,3 +729,4 @@ tools/install/create_fpcsrc-1.1_rpm.sh -text svneol=native#application/x-sh
 tools/install/create_lazarus_tgz_from_local_dir.sh -text svneol=native#application/x-sh
 tools/lazarusmake.ini svneol=native#text/plain
 tools/lazres.pp svneol=native#text/pascal
+tools/runwait.sh -text svneol=native#application/x-sh

@@ -5234,7 +5234,7 @@ begin
   if not FileExists(ProgramFilename)
   then begin
     MessageDlg('File not found',
-      Format('No program file "%s" found!', [ProgramFilename]), mtError,
+      Format('No program file "%s" found.', [ProgramFilename]), mtError,
       [mbCancel], 0);
     Exit;
   end;
@@ -7988,6 +7988,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.491  2003/03/16 08:44:17  mattias
+  fixed run and wait script
+
   Revision 1.490  2003/03/15 15:50:10  mattias
   fixed DoJumpToError
 
