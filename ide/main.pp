@@ -3419,22 +3419,20 @@ begin
     
     // copy the source to the new buffer
     NewBuf.Source:=MainUnitInfo.Source.Source;
+    
+    // assign the new buffer to the MainUnit
     MainUnitInfo.Source:=NewBuf;
     if MainUnitSrcEdit<>nil then
       MainUnitSrcEdit.CodeBuffer:=NewBuf;
 
     // change program name
     MainUnitInfo.UnitName:=NewProgramName;
+    MainUnitInfo.Modified:=true;
 
     // TODO: rename resource include directive
 
-    // update source editor of main unit
-    MainUnitInfo.Modified:=true;
-    if MainUnitInfo.EditorIndex>=0 then begin
-      SourceNoteBook.NoteBook.Pages[MainUnitInfo.EditorIndex]:=
-        CreateSrcEditPageName(NewProgramName,MainUnitInfo.Filename,
-                              MainUnitInfo.EditorIndex);
-    end;
+    // update source notebook page names
+    UpdateSourceNames;
   end;
   Result:=mrOk;
 end;
@@ -4290,7 +4288,8 @@ writeln('TMainIDE.DoNewProject end ',CodeToolBoss.ConsistencyCheck);
 end;
 
 function TMainIDE.DoSaveProject(Flags: TSaveFlags):TModalResult;
-var MainUnitSrcEdit: TSourceEditor;
+var
+  MainUnitSrcEdit: TSourceEditor;
   MainUnitInfo: TUnitInfo;
   i: integer;
   DestFilename: string;
@@ -4320,6 +4319,9 @@ writeln('TMainIDE.DoSaveProject A SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',s
   else
     Project1.ActiveEditorIndexAtStart:=SourceNotebook.Notebook.PageIndex;
 
+  // update source notebook page names
+  UpdateSourceNames;
+
   // find mainunit
   GetMainUnit(MainUnitInfo,MainUnitSrcEdit,true);
 
@@ -4345,7 +4347,7 @@ writeln('TMainIDE.DoSaveProject A SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',s
                                                 Project1.ProjectInfoFile);
     if Result=mrAbort then exit;
   end;
-  
+
   // save main source
   if MainUnitInfo<>nil then begin
     if MainUnitInfo.Loaded then begin
@@ -4384,9 +4386,6 @@ writeln('TMainIDE.DoSaveProject A SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',s
       end;
     end;
   end;
-
-  // update source notebook page names
-  UpdateSourceNames;
 
 writeln('TMainIDE.DoSaveProject End');
 end;
@@ -7421,6 +7420,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.419  2002/10/30 18:24:42  lazarus
+  MG: fixed unitname update bug
+
   Revision 1.418  2002/10/30 17:29:42  lazarus
   MG: multi open file now skips checking for special files
 
