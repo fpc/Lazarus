@@ -328,7 +328,7 @@ Begin
 End;
 
 {------------------------------------------------------------------------------}
-{  TWinControl GetClientOrigin                                                      }
+{  TWinControl GetClientOrigin                                                 }
 {------------------------------------------------------------------------------}
 Function TWinControl.GetClientOrigin: TPoint;
 Begin
@@ -340,7 +340,7 @@ Begin
 end;
 
 {------------------------------------------------------------------------------}
-{  TWinControl ReCreateWnd                                                      }
+{  TWinControl ReCreateWnd                                                     }
 {------------------------------------------------------------------------------}
 Procedure TWinControl.ReCreateWnd;
 Begin
@@ -353,7 +353,7 @@ Begin
 end;
 
 {------------------------------------------------------------------------------}
-{  TWinControl SetBorderWidth                                                      }
+{  TWinControl SetBorderWidth                                                  }
 {------------------------------------------------------------------------------}
 Procedure TWinControl.SetBorderWidth(value : TBorderWidth);
 Begin
@@ -398,7 +398,8 @@ var
   bShow: Boolean;
   n: Integer;
 begin
-  bShow := (FVisible or (csDesigning in ComponentState) and not (csNoDesignVisible in ControlStyle))
+  bShow := (FVisible or (csDesigning in ComponentState) 
+    and not (csNoDesignVisible in ControlStyle))
     and not (csReadingState in ControlState);
 
   if bShow then
@@ -1656,7 +1657,7 @@ begin
   if Parent <> nil then AddControl;
   
   AttachSignals;
-  InitializeWnd;  
+  InitializeWnd;
 
   if FWInControls <> nil then begin
     for n := 0 to FWInControls.Count - 1 do
@@ -1948,8 +1949,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.36  2001/09/30 08:34:50  lazarus
-  MG: fixed mem leaks and fixed range check errors
+  Revision 1.37  2001/10/03 17:34:27  lazarus
+  MG: activated TCustomForm.OnCreate event
 
   Revision 1.35  2001/08/07 11:05:51  lazarus
   MG: small bugfixes

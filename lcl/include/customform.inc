@@ -658,7 +658,7 @@ end;
 {------------------------------------------------------------------------------}
 constructor TCustomForm.Create(AOwner : TComponent);
 begin
- try
+  try
     CreateNew(AOwner, 1);
     if (ClassType <> TForm) and not (csDesigning in ComponentState) then
     begin
@@ -669,6 +669,7 @@ begin
           //Writeln('This is for information purposes only.   This is not critical at this time.');
           // MG:  Ignoring is best at the moment. (Delphi raises an exception.)
         end;
+        DoCreate;
       finally
         Exclude(FFormState, fsCreating);
       end;
@@ -939,8 +940,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.25  2001/09/30 08:34:49  lazarus
-  MG: fixed mem leaks and fixed range check errors
+  Revision 1.26  2001/10/03 17:34:26  lazarus
+  MG: activated TCustomForm.OnCreate event
 
   Revision 1.24  2001/07/10 13:25:49  lazarus
   MG: repaints reduced
