@@ -1567,7 +1567,6 @@ lblState := TLabel.Create(Self);
 AboutForm := TForm.Create(Self);
   With AboutForm do
   begin
-    Parent := Self;           //+++++++++++++++++++++++++
     OnClose := @TestFormClose;//+++++ ABOUT +++++++++++++
     Height := 300;            //+++++++++++++++++++++++++
     Width := 420;
@@ -1580,7 +1579,6 @@ AboutForm := TForm.Create(Self);
 EventForm := TForm.Create(Self);
     With EventForm do
     Begin
-      Parent := Self;
       Height := 294;
       Width := 255;
       Caption := 'Events';
@@ -2879,6 +2877,9 @@ begin
 end;
 {
   $Log$
+  Revision 1.11  2003/01/01 11:11:50  mattias
+  fixed testall example
+
   Revision 1.10  2002/10/30 13:44:29  lazarus
   MG: fixed examples
 

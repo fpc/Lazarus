@@ -122,7 +122,7 @@ type
       Timer1            : TTimer;
       ToggleBox1        : TToggleBox;
       ToolBar1          : TToolBar;
-      ToolButton1       : TToolButton;
+    //ToolButton1       : TToolButton;
       TrackBar1, TrackBar2 : TTrackBar;
     //UpDown1           : TUpDown;
 //+++++++++++++ TestTools +++++++++++++++++++++++++++++
@@ -863,7 +863,6 @@ begin
   BenchForm[i] := TForm.Create(Self);
     With BenchForm[i] do
     Begin
-      Parent         := Self;
       OnMouseDown    := @EventOnMouseDown;
       OnMouseUp      := @EventOnMouseUp;
       OnClick        := @EventOnClick;
@@ -2505,7 +2504,7 @@ ToolBar1 := TToolBar.Create(Self);
   end;
 if Assigned(Toolbar1) then
 begin
-ToolButton1 := TToolButton.Create(ToolBar1);
+{ToolButton1 := TToolButton.Create(ToolBar1);
   with ToolButton1 do
   begin
     parent := ToolBar1;
@@ -2514,7 +2513,7 @@ ToolButton1 := TToolButton.Create(ToolBar1);
     Hint := 'ToolButton1';
     ShowHint := True;
     Show;
-  end;
+  end;}
 //ToolButton2 := TToolButton.Create(ToolBar1);
   //with ToolButton2 do
   //begin
@@ -2585,6 +2584,9 @@ END.
 
 {
   $Log$
+  Revision 1.12  2003/01/01 11:11:49  mattias
+  fixed testall example
+
   Revision 1.11  2002/10/29 08:22:32  lazarus
   MG: added interfaces unit
 
