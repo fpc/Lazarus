@@ -504,47 +504,31 @@ begin
 end;
 
 function ConvertSearchPathToCmdLine(
-  const switch, paths: String): String;
+  const Switch, Paths: String): String;
 var
-  tempsw, SS, Delim: String;
-  M: Integer;
+  StartPos: Integer;
+  l: Integer;
+  EndPos: LongInt;
 begin
-  Delim := ';';
+  if Switch='' then
+    RaiseException('ConvertSearchPathToCmdLine no Switch');
+  Result := '';
+  if (Paths = '') then exit;
 
-  if (switch = '') or (paths = '') then
-  begin
-    Result := '';
-    Exit;
-  end;
-
-  tempsw := '';
-  SS := paths;
-
-  repeat
-    M := Pos (Delim, SS);
-
-    if (M = 0) then
-    begin
-      if (tempsw <> '') then
-        tempsw := tempsw + ' ';
-      tempsw := tempsw + PrepareCmdLineOption(switch + SS);
-      Break;
-    end
-    else if (M = 1) then
-    begin
-      SS := Copy (SS, M + 1, Length(SS));
-      Continue;
-    end
-    else
-    begin
-      if (tempsw <> '') then
-        tempsw := tempsw + ' ';
-      tempsw := tempsw + PrepareCmdLineOption(switch + Copy (SS, 1, M - 1));
-      SS := Copy (SS, M + 1, Length(SS));
+  l:=length(Paths);
+  StartPos:=1;
+  while StartPos<=l do begin
+    while (StartPos<=l) and (Paths[StartPos]=' ') do inc(StartPos);
+    EndPos:=StartPos;
+    while (EndPos<=l) and (Paths[EndPos]<>';') do inc(EndPos);
+    if StartPos<EndPos then begin
+      if Result<>'' then
+        Result:=Result+' ';
+      Result:=Result
+           +PrepareCmdLineOption(Switch + copy(Paths,StartPos,EndPos-StartPos));
     end;
-  until (SS = '') or (M = 0);
-
-  Result := tempsw;
+    StartPos:=EndPos+1;
+  end;
 end;
 
 function ConvertOptionsToCmdLine(const Delim, Switch,
@@ -1249,13 +1233,22 @@ var
 begin
   // current path
   CurrentPath:=ParsedOpts.GetParsedValue(Option);
+  //if Option=pcosUnitPath then
+  //  debugln('TBaseCompilerOptions.GetParsedPath GetParsedValue ',dbgsName(Self),' RelativeToBaseDir=',dbgs(RelativeToBaseDir),' CurrentPath="',CurrentPath,'"');
+
   if (not RelativeToBaseDir) then
     CreateAbsolutePath(CurrentPath,BaseDirectory);
+  //if Option=pcosUnitPath then
+  //  debugln('TBaseCompilerOptions.GetParsedPath CreateAbsolutePath ',dbgsName(Self),' CurrentPath="',CurrentPath,'"');
 
   // inherited path
   InheritedPath:=GetInheritedOption(InheritedOption,RelativeToBaseDir);
+  //if Option=pcosUnitPath then
+  //  debugln('TBaseCompilerOptions.GetParsedPath Inherited ',dbgsName(Self),' InheritedPath="',InheritedPath,'"');
 
   Result:=MergeSearchPaths(CurrentPath,InheritedPath);
+  //if Option=pcosUnitPath then
+  //  debugln('TBaseCompilerOptions.GetParsedPath Total ',dbgsName(Self),' CurrentPath="',CurrentPath,'"');
 end;
 
 function TBaseCompilerOptions.GetCustomOptions: string;
@@ -1774,6 +1767,7 @@ Processor specific options:
 
   // unit path
   CurUnitPath:=GetUnitPath(true);
+  debugln('TBaseCompilerOptions.MakeOptionsString A ',dbgsName(Self),' CurUnitPath="',CurUnitPath,'"');
   // always add the current directory to the unit path, so that the compiler
   // checks for changed files in the directory
   CurUnitPath:=CurUnitPath+';.';

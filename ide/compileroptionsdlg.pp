@@ -462,7 +462,7 @@ begin
   PutCompilerOptions(true);
   CurOptions := CompilerOpts.MakeOptionsString(nil,
                                           CompilerOpts.DefaultMakeOptionsFlags);
-  DebugLn('CompilerOpts.MakeOptionsString: ' + CurOptions);
+  //DebugLn('CompilerOpts.MakeOptionsString: ' + CurOptions);
   ShowCompilerOptionsDialog(CurOptions);
 end;
 

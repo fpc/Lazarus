@@ -505,6 +505,9 @@ resourcestring
     +'unit with the name %s%s%s. Pascal identifiers must be unique.';
   lisSeeMessages = 'See messages.';
   lisError = 'Error: ';
+  lisSaveChanges = 'Save changes?';
+  lisSaveFileBeforeClosingForm =
+    'Save file %s%s%s%sbefore closing form %s%s%s?';
   lisUnableToRenameFormInSource = 'Unable to rename form in source.';
   lisSorryNotImplementedYet = 'Sorry, not implemented yet';
   lisUnableToFindMethodPlzFixTheErrorShownInTheMessage = 'Unable to find '

@@ -10375,9 +10375,10 @@ begin
   GetDesignerUnit(ADesigner,ASrcEdit,AnUnitInfo);
   if AnUnitInfo.NeedsSaveToDisk
   then begin
-    case MessageDlg('Save changes?',
-                    'Save file "'+AnUnitInfo.Filename+'"'#13
-                   +'before closing form "'+ADesigner.LookupRoot.Name+'"?',
+    case MessageDlg(lisSaveChanges,
+                    Format(lisSaveFileBeforeClosingForm, ['"',
+                      AnUnitInfo.Filename, '"', #13, '"',
+                      ADesigner.LookupRoot.Name, '"']),
                    mtConfirmation,[mbYes,mbNo,mbCancel],0) of
       mrYes: begin
         if DoSaveEditorFile(AnUnitInfo.EditorIndex,[sfCheckAmbigiousFiles])<>mrOk
@@ -11377,6 +11378,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.837  2005/01/24 02:42:34  mattias
+  fixed search path to cmd line param
+
   Revision 1.836  2005/01/21 22:08:11  micha
   implement restored size, let lazarus ide store restored size
 
