@@ -268,7 +268,7 @@ type
   TGetPropEditProc=procedure(Prop:TPropertyEditor) of object;
 
   TPropEditDrawStateType = (pedsSelected, pedsFocused, pedsInEdit,
-       pedsInComboList);
+       pedsInComboList, pedsPainted);
   TPropEditDrawState = set of TPropEditDrawStateType;
 
   TPropertyEditorHook = class;
@@ -326,11 +326,11 @@ type
     procedure SetPropEntry(Index:Integer; AInstance:TPersistent;
       APropInfo:PPropInfo);
     function ValueAvailable:Boolean;
-    procedure ListMeasureWidth(const NewValue:ansistring; Index:integer;
+    procedure ListMeasureWidth(const AValue:ansistring; Index:integer;
       ACanvas:TCanvas;  var AWidth:Integer); dynamic;
-    procedure ListMeasureHeight(const NewValue:ansistring; Index:integer;
+    procedure ListMeasureHeight(const AValue:ansistring; Index:integer;
       ACanvas:TCanvas;  var AHeight:Integer); dynamic;
-    procedure ListDrawValue(const NewValue:ansistring; Index:integer;
+    procedure ListDrawValue(const AValue:ansistring; Index:integer;
       ACanvas:TCanvas;  const ARect:TRect; AState: TPropEditDrawState); dynamic;
     procedure PropMeasureHeight(const NewValue:ansistring;  ACanvas:TCanvas;
       var AHeight:Integer); dynamic;
@@ -1789,19 +1789,19 @@ end;
   object/property inspector's drop down list editor. You don't need to
   override the two measure procedures if the default width or height don't
   need to be changed. }
-procedure TPropertyEditor.ListMeasureHeight(const NewValue:ansistring;
+procedure TPropertyEditor.ListMeasureHeight(const AValue:ansistring;
   Index:integer;  ACanvas:TCanvas;  var AHeight:Integer);
 begin
   //
 end;
 
-procedure TPropertyEditor.ListMeasureWidth(const NewValue:ansistring;
+procedure TPropertyEditor.ListMeasureWidth(const AValue:ansistring;
   Index:integer; ACanvas:TCanvas; var AWidth:Integer);
 begin
   //
 end;
 
-procedure TPropertyEditor.ListDrawValue(const NewValue:ansistring; Index:integer;
+procedure TPropertyEditor.ListDrawValue(const AValue:ansistring; Index:integer;
   ACanvas:TCanvas; const ARect:TRect; AState: TPropEditDrawState);
 var
   Style : TTextStyle;
@@ -1815,7 +1815,7 @@ begin
     WordBreak := False;
     SingleLine := True;
   end;
-  ACanvas.TextRect(ARect, 2,0,NewValue, Style);
+  ACanvas.TextRect(ARect, 2,0,AValue, Style);
 end;
 
 { these three procedures implement the default render behavior of the
