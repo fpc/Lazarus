@@ -113,7 +113,7 @@ writeln('TFindDeclarationTool.FindDeclaration C CleanCursorPos=',CleanCursorPos)
       1. if in begin..end block then parse for with and case statements
       2. search recursively and create/fill caches
       3. if possible use ppu files
-      4. create a protocol for identifier completion
+      4. save visible identifiers for identifier completion
       ...
     }
   end;

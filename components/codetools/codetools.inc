@@ -27,6 +27,6 @@
 
 { $DEFINE MEM_CHECK}
 
-{$DEFINE CTDEBUG}
+{ $DEFINE CTDEBUG}
 
 // end.
