@@ -864,6 +864,8 @@ var CleanCursorPos: integer;
     end;
   end;
 
+var
+  CleanPosInFront: integer;
 begin
   Result:=false;
   SkipChecks:=false;
@@ -879,8 +881,13 @@ begin
     writeln(DebugPrefix,'TFindDeclarationTool.FindDeclaration C CleanCursorPos=',CleanCursorPos);
     {$ENDIF}
     // find CodeTreeNode at cursor
-    CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
-    if IsIncludeDirectiveAtPos(CleanCursorPos,CursorNode.StartPos,NewPos.Code)
+    if (Tree.Root<>nil) and (Tree.Root.StartPos<CleanCursorPos) then
+      CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true)
+    else begin
+      CleanPosInFront:=1;
+      CursorNode:=nil;
+    end;
+    if IsIncludeDirectiveAtPos(CleanCursorPos,CleanPosInFront,NewPos.Code)
     then begin
       // include directive
       NewPos.X:=1;
@@ -891,6 +898,9 @@ begin
       Result:=(fsfIncludeDirective in SearchSmartFlags);
       exit;
     end;
+    if CursorNode=nil then
+      // raise exception
+      FindDeepestNodeAtPos(CleanCursorPos,true);
     {$IFDEF CTDEBUG}
     writeln('TFindDeclarationTool.FindDeclaration D CursorNode=',NodeDescriptionAsString(CursorNode.Desc));
     {$ENDIF}
