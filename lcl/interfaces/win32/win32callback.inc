@@ -854,7 +854,7 @@ Begin
 
         // the mousewheel message is for us
         // windows handles combobox's mousewheel messages
-        if TWinControl(lWinControl).FCompStyle <> csComboBox then
+        if lWinControl.FCompStyle <> csComboBox then
         begin
           Msg := LM_MOUSEWHEEL;
           WheelDelta := SmallInt(Hi(WParam));
@@ -867,13 +867,10 @@ Begin
     //TODO:LM_MOVEPAGE,LM_MOVETOROW,LM_MOVETOCOLUMN
     WM_NCHITTEST:
     begin
-      if (lWinControl is TControl) then
+      if lWinControl.FCompStyle = csHintWindow then
       begin
-        if TControl(lWinControl).FCompStyle = csHintWindow then
-        begin
-          LMessage.Result := HTTRANSPARENT;
-          WinProcess := false;
-        end;
+        LMessage.Result := HTTRANSPARENT;
+        WinProcess := false;
       end;
     end;
     WM_NCLBUTTONDOWN:
@@ -1118,23 +1115,20 @@ Begin
         GetWindowSize(Window, NewWidth, NewHeight);
         Width := NewWidth;
         Height := NewHeight;
-        if (lWinControl is TWinControl) then begin
-          lWinControl:=TWinControl(lWinControl);
-          {$IFDEF VerboseSizeMsg}
-          GetClientRect(Window,R);
-          writeln('Win32Callback: WM_SIZE ',lWinControl.Name,':',lWinControl.ClassName,
-            ' NewSize=',Width,',',Height,
-            ' HasVScroll=',(Windows.GetWindowLong(Window, GWL_STYLE) and WS_VSCROLL) <> 0,
-            ' HasHScroll=',(Windows.GetWindowLong(Window, GWL_STYLE) and WS_HSCROLL) <> 0,
-            ' OldClientSize=',lWinControl.CachedClientWidth,',',lWinControl.CachedClientHeight,
-            ' NewClientSize=',R.Right,',',R.Bottom);
-          {$ENDIF}
-          if (lWinControl.Width=Width)
-          and (lWinControl.Height=Height)
-          and (not lWinControl.ClientRectNeedsInterfaceUpdate) then
-            exit;
-          lWinControl.InvalidateClientRectCache(true);
-        end;
+        {$IFDEF VerboseSizeMsg}
+        GetClientRect(Window,R);
+        writeln('Win32Callback: WM_SIZE ',lWinControl.Name,':',lWinControl.ClassName,
+          ' NewSize=',Width,',',Height,
+          ' HasVScroll=',(Windows.GetWindowLong(Window, GWL_STYLE) and WS_VSCROLL) <> 0,
+          ' HasHScroll=',(Windows.GetWindowLong(Window, GWL_STYLE) and WS_HSCROLL) <> 0,
+          ' OldClientSize=',lWinControl.CachedClientWidth,',',lWinControl.CachedClientHeight,
+          ' NewClientSize=',R.Right,',',R.Bottom);
+        {$ENDIF}
+        if (lWinControl.Width=Width)
+        and (lWinControl.Height=Height)
+        and (not lWinControl.ClientRectNeedsInterfaceUpdate) then
+          exit;
+        lWinControl.InvalidateClientRectCache(true);
         OverlayWindow := GetWindowInfo(Window)^.Overlay;
         if OverlayWindow <> 0 then
           Windows.SetWindowPos(OverlayWindow, HWND_TOP, 0, 0, NewWidth, NewHeight, SWP_NOMOVE);
@@ -1440,6 +1434,9 @@ end;
 
 {
   $Log$
+  Revision 1.155  2004/11/04 17:02:10  micha
+  cleanup: remove redundant typecasts and checks
+
   Revision 1.154  2004/11/04 09:19:34  micha
   respond to LCL result of handling the message (fixes black background in listbox)
 
