@@ -2879,7 +2879,7 @@ begin
   if UpAtomIs('INHERITED') then
     ReadNextAtom;
   FirstIdentifier:=true;
-  if AtomIsWord and AtomIsIdentifier(true) then begin
+  if (CurPos.Flag in AllCommonAtomWords) and AtomIsIdentifier(true) then begin
     FirstIdentifier:=false;
     ReadNextAtom;
   end;

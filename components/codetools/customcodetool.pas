@@ -125,7 +125,6 @@ type
     procedure MoveCursorToCleanPos(ACleanPos: integer);
     procedure MoveCursorToCleanPos(ACleanPos: PChar);
     function IsPCharInSrc(ACleanPos: PChar): boolean;
-    function ReadTilSection(SectionType: TCodeTreeNodeDesc): boolean;
     function ReadTilBracketClose(ExceptionOnNotFound: boolean): boolean;
     function ReadBackTilBracketOpen(ExceptionOnNotFound: boolean): boolean;
     function DoAtom: boolean; virtual;
@@ -138,7 +137,6 @@ type
     function ReadNextUpAtomIs(const AnAtom: shortstring): boolean;
     function ReadNextAtomIsChar(const c: char): boolean;
     function AtomIsChar(const c: char): boolean;
-    function AtomIsWord: boolean;
     function AtomIsKeyWord: boolean;
     function AtomIsNumber: boolean;
     function AtomIsRealNumber: boolean;
@@ -218,8 +216,7 @@ end;
 procedure TCustomCodeTool.Clear;
 begin
   if Tree<>nil then DoDeleteNodes;
-  CurPos.StartPos:=1;
-  CurPos.EndPos:=-1;
+  CurPos:=StartAtomPosition;
   LastAtoms.Clear;
   NextPos.StartPos:=-1;
   ClearLastError;
@@ -439,12 +436,6 @@ begin
       and (Src[CurPos.StartPos]=c);
 end;
 
-function TCustomCodeTool.AtomIsWord: boolean;
-begin
-  Result:=(CurPos.StartPos<=SrcLen)
-      and (IsIdentStartChar[UpperSrc[CurPos.StartPos]])
-end;
-
 function TCustomCodeTool.AtomIsKeyWord: boolean;
 begin
   Result:=(CurPos.StartPos<=SrcLen)
@@ -604,7 +595,7 @@ procedure TCustomCodeTool.ReadNextAtom;
 var c1, c2: char;
   CommentLvl: integer;
 begin
-  if (CurPos.StartPos<CurPos.EndPos) and (CurPos.StartPos>=1) then
+  if (CurPos.StartPos<CurPos.EndPos) then
     LastAtoms.Add(CurPos);
   if NextPos.StartPos>=1 then begin
     CurPos:=NextPos;
@@ -612,9 +603,9 @@ begin
     exit;
   end;
   CurPos.StartPos:=CurPos.EndPos;
+  CurPos.Flag:=cafNone;
   // Skip all spaces and comments
   CommentLvl:=0;
-  //if CurPos.StartPos<1 then CurPos.StartPos:=SrcLen+1;
   while CurPos.StartPos<=SrcLen do begin
     if IsCommentStartChar[Src[CurPos.StartPos]] then begin
       case Src[CurPos.StartPos] of
@@ -673,6 +664,25 @@ begin
         while (CurPos.EndPos<=SrcLen)
         and (IsIdentChar[UpperSrc[CurPos.EndPos]]) do
           inc(CurPos.EndPos);
+        CurPos.Flag:=cafWord;
+        case UpperSrc[CurPos.StartPos] of
+        'B':
+          if (CurPos.EndPos-CurPos.StartPos=5)
+          and UpAtomIs('BEGIN')
+          then
+            CurPos.Flag:=cafBegin;
+        'E':
+          if (CurPos.EndPos-CurPos.StartPos=3)
+          and (UpperSrc[CurPos.StartPos+1]='N')
+          and (UpperSrc[CurPos.StartPos+2]='D')
+          then
+            CurPos.Flag:=cafEnd;
+        'R':
+          if (CurPos.EndPos-CurPos.StartPos=7)
+          and UpAtomIs('RECORD')
+          then
+            CurPos.Flag:=cafRecord;
+        end;
       end;
     '''','#':
       begin
@@ -759,6 +769,61 @@ begin
         and (IsHexNumberChar[UpperSrc[CurPos.EndPos]]) do
           inc(CurPos.EndPos);
       end;
+    ';':
+      begin
+        inc(CurPos.EndPos);
+        CurPos.Flag:=cafSemicolon;
+      end;
+    ',':
+      begin
+        inc(CurPos.EndPos);
+        CurPos.Flag:=cafComma;
+      end;
+    '=':
+      begin
+        inc(CurPos.EndPos);
+        CurPos.Flag:=cafEqual;
+      end;
+    '(':
+      begin
+        inc(CurPos.EndPos);
+        CurPos.Flag:=cafRoundBracketOpen;
+      end;
+    ')':
+      begin
+        inc(CurPos.EndPos);
+        CurPos.Flag:=cafRoundBracketClose;
+      end;
+    '[':
+      begin
+        inc(CurPos.EndPos);
+        CurPos.Flag:=cafEdgedBracketOpen;
+      end;
+    ']':
+      begin
+        inc(CurPos.EndPos);
+        CurPos.Flag:=cafEdgedBracketClose;
+      end;
+    ':':
+      begin
+        inc(CurPos.EndPos);
+        if (CurPos.EndPos>SrcLen) or (Src[CurPos.EndPos]<>'=') then begin
+          CurPos.Flag:=cafColon;
+        end else begin
+          // :=
+          inc(CurPos.EndPos);
+        end;
+      end;
+    '.':
+      begin
+        inc(CurPos.EndPos);
+        if (CurPos.EndPos>SrcLen) or (Src[CurPos.EndPos]<>'.') then begin
+          CurPos.Flag:=cafPoint;
+        end else begin
+          // ..
+          inc(CurPos.EndPos);
+        end;
+      end;
     else
       inc(CurPos.EndPos);
       if CurPos.EndPos<=SrcLen then begin
@@ -780,12 +845,15 @@ begin
 end;
 
 procedure TCustomCodeTool.ReadPriorAtom;
+var
+ CommentLvl, PrePos, OldPrePos: integer;
+ IsStringConstant: boolean;
 
   procedure ReadStringConstantBackward;
   var PrePos: integer;
   begin
     while (CurPos.StartPos>1) do begin
-      case Src[CurPos.StartPos-1] of
+      case UpperSrc[CurPos.StartPos-1] of
       '''':
         begin
           dec(CurPos.StartPos);
@@ -793,14 +861,18 @@ procedure TCustomCodeTool.ReadPriorAtom;
             dec(CurPos.StartPos);
           until (CurPos.StartPos<1) or (Src[CurPos.StartPos]='''');
         end;
-      '0'..'9':
+      '0'..'9','A'..'Z':
         begin
           // test if char constant
           PrePos:=CurPos.StartPos-1;
-          while (PrePos>1) and (IsNumberChar[Src[PrePos]]) do
+          while (PrePos>1) and (IsHexNumberChar[Src[PrePos]]) do
             dec(PrePos);
           if (PrePos<1) then break;
-          if Src[PrePos]='#' then
+          if (Src[PrePos]='$') then begin
+            dec(PrePos);
+            if (PrePos<1) then break;
+          end;
+          if (Src[PrePos]='#') then
             CurPos.StartPos:=PrePos
           else
             break;
@@ -809,6 +881,93 @@ procedure TCustomCodeTool.ReadPriorAtom;
         break;
       end;
     end;
+  end;
+  
+  procedure ReadBackTilCodeLineEnd;
+  begin
+    dec(CurPos.StartPos);
+    if (CurPos.StartPos>=1) and (Src[CurPos.StartPos] in [#10,#13])
+    and (Src[CurPos.StartPos+1]<>Src[CurPos.StartPos]) then
+      dec(CurPos.StartPos);
+
+    // read backwards till line start
+    PrePos:=CurPos.StartPos;
+    while (PrePos>=1) and (not (Src[PrePos] in [#10,#13])) do
+      dec(PrePos);
+    // read line forward to find out,
+    // if line ends in comment or string constant
+    IsStringConstant:=false;
+    repeat
+      inc(PrePos);
+      case Src[PrePos] of
+
+      '/':
+        if Src[PrePos+1]='/' then begin
+          // this was a delphi comment -> skip comment
+          CurPos.StartPos:=PrePos-1;
+          break;
+        end;
+
+      '{':
+        begin
+          // skip pascal comment
+          CommentLvl:=1;
+          inc(PrePos);
+          while (PrePos<=CurPos.StartPos) do begin
+            case Src[PrePos] of
+            '{': if Scanner.NestedComments then inc(CommentLvl);
+            '}':
+              begin
+                dec(CommentLvl);
+                if CommentLvl=0 then break;
+              end;
+            end;
+            inc(PrePos);
+          end;
+        end;
+
+      '(':
+        begin
+          if Src[PrePos+1]='*' then begin
+            // skip turbo pascal comment
+            inc(PrePos,2);
+            while (PrePos<CurPos.StartPos)
+            and ((Src[PrePos]<>'*') or (Src[PrePos+1]<>')')) do
+              inc(PrePos);
+            inc(PrePos);
+          end;
+        end;
+
+      '''':
+        begin
+          // a string constant -> skip it
+          OldPrePos:=PrePos;
+          repeat
+            inc(PrePos);
+            case Src[PrePos] of
+
+            '''':
+              break;
+
+            #10,#13:
+              begin
+                // string constant right border is the line end
+                // -> last atom of line found
+                IsStringConstant:=true;
+                break;
+              end;
+
+            end;
+          until false;
+          if IsStringConstant then break;
+        end;
+
+      #10,#13:
+        // no comment and no string constant found
+        break;
+
+      end;
+    until PrePos>=CurPos.StartPos;
   end;
 
 type
@@ -821,8 +980,6 @@ const
     ntIdentifier, ntCharConstant, ntFloat, ntFloatWithExponent];
 
 var c1, c2: char;
-  CommentLvl, PrePos, OldPrePos: integer;
-  IsStringConstant: boolean;
   ForbiddenNumberTypes: TNumberTypes;
 begin
   if LastAtoms.Count>0 then begin
@@ -833,6 +990,7 @@ begin
   // Skip all spaces and comments
   CommentLvl:=0;
   dec(CurPos.StartPos);
+  CurPos.Flag:=cafNone;
   IsStringConstant:=false;
   OldPrePos:=0;
   while CurPos.StartPos>=1 do begin
@@ -853,87 +1011,8 @@ begin
         end;
         
       #10,#13: // possible Delphi comment
-        begin
-          dec(CurPos.StartPos);
-          if (CurPos.StartPos>=1) and (Src[CurPos.StartPos] in [#10,#13])
-          and (Src[CurPos.StartPos+1]<>Src[CurPos.StartPos]) then
-            dec(CurPos.StartPos);
-          // read backwards till line start
-          PrePos:=CurPos.StartPos;
-          while (PrePos>=1) and (not (Src[PrePos] in [#10,#13])) do
-            dec(PrePos);
-          // read line forward to find out,
-          // if line ends in comment or string constant
-          repeat
-            inc(PrePos);
-            case Src[PrePos] of
-            
-            '/':
-              if Src[PrePos+1]='/' then begin
-                // this was a delphi comment -> skip comment
-                CurPos.StartPos:=PrePos-1;
-                break;
-              end;
-              
-            '{':
-              begin
-                // skip pascal comment
-                CommentLvl:=1;
-                inc(PrePos);
-                while (PrePos<=CurPos.StartPos) and (CommentLvl>0) do begin
-                  case Src[PrePos] of
-                  '{': if Scanner.NestedComments then inc(CommentLvl);
-                  '}': dec(CommentLvl);
-                  end;
-                  inc(PrePos);
-                end;
-              end;
-              
-            '(':
-              begin
-                inc(PrePos);
-                if Src[PrePos]='*' then begin
-                  // skip turbo pascal comment
-                  inc(PrePos);
-                  while (PrePos<CurPos.StartPos)
-                  and ((Src[PrePos]<>'*') or (Src[PrePos+1]<>')')) do
-                    inc(PrePos);
-                  inc(PrePos);
-                end;
-              end;
-              
-            '''':
-              begin
-                // a string constant -> skip it
-                OldPrePos:=PrePos;
-                repeat
-                  inc(PrePos);
-                  case Src[PrePos] of
-                  
-                  '''':
-                    break;
+        ReadBackTilCodeLineEnd;
 
-                  #10,#13:
-                    begin
-                      // string constant right border is the line end
-                      // -> last atom of line found
-                      IsStringConstant:=true;
-                      break;
-                    end;
-
-                  end;
-                until false;
-                if IsStringConstant then break;
-              end;
-              
-            #10,#13:
-              // no comment and no string constant found
-              break;
-
-            end;
-          until PrePos>=CurPos.StartPos;
-        end; // end of possible Delphi comment
-        
       ')': // old turbo pascal comment
         if (CurPos.StartPos>1) and (Src[CurPos.StartPos-1]='*') then begin
           dec(CurPos.StartPos,3);
@@ -970,13 +1049,30 @@ begin
   case c2 of
     '_','A'..'Z':
       begin
-        // definitely an identifier or a keyword
-        while (CurPos.StartPos>1)
-        and (IsIdentChar[UpperSrc[CurPos.StartPos-1]]) do
-          dec(CurPos.StartPos);
-        if (CurPos.StartPos>2)
-        and (Src[CurPos.StartPos-1]='@') and (Src[CurPos.StartPos-2]='@') then
-          dec(CurPos.StartPos,2);
+        // identifier or keyword or hexnumber
+        while (CurPos.StartPos>1) do begin
+          if (IsIdentChar[UpperSrc[CurPos.StartPos-1]]) then
+            dec(CurPos.StartPos)
+          else begin
+            case Src[CurPos.StartPos-1] of
+            '@':
+              // assembler label
+              if (CurPos.StartPos>2)
+              and (Src[CurPos.StartPos-2]='@') then
+                dec(CurPos.StartPos,2);
+            '$':
+              // hex number
+              dec(CurPos.StartPos);
+            else
+              WordToAtomFlag.DoItUpperCase(UpperSrc,CurPos.StartPos,
+                                           CurPos.EndPos-CurPos.StartPos);
+              CurPos.Flag:=WordToAtomFlag.Flag;
+              if CurPos.Flag=cafNone then
+                CurPos.Flag:=cafWord;
+            end;
+            break;
+          end;
+        end;
       end;
     '''':
       begin
@@ -1070,21 +1166,47 @@ begin
             inc(CurPos.StartPos);
             break;
           end;
-          if CurPos.StartPos<=1 then exit;
+          if CurPos.StartPos<=1 then break;
           dec(CurPos.StartPos);
         end;
+        if IsIdentStartChar[Src[CurPos.StartPos]] then begin
+          // it is an identifier
+          WordToAtomFlag.DoItUpperCase(UpperSrc,CurPos.StartPos,
+                                       CurPos.EndPos-CurPos.StartPos);
+          CurPos.Flag:=WordToAtomFlag.Flag;
+          if CurPos.Flag=cafNone then
+            CurPos.Flag:=cafWord;
+        end;
       end;
+      
+    ';': CurPos.Flag:=cafSemicolon;
+    ':': CurPos.Flag:=cafColon;
+    ',': CurPos.Flag:=cafComma;
+    '(': CurPos.Flag:=cafRoundBracketOpen;
+    ')': CurPos.Flag:=cafRoundBracketClose;
+    '[': CurPos.Flag:=cafEdgedBracketOpen;
+    ']': CurPos.Flag:=cafEdgedBracketClose;
+
     else
-      if CurPos.StartPos>1 then begin
-        c1:=Src[CurPos.StartPos-1];
-        // test for double char operators :=, +=, -=, /=, *=, <>, <=, >=, **, ><
-        if ((c2='=') and  (IsEqualOperatorStartChar[c1]))
-        or ((c1='<') and (c2='>'))
-        or ((c1='>') and (c2='<'))
-        or ((c1='.') and (c2='.'))
-        or ((c1='*') and (c2='*'))
-        or ((c1='@') and (c2='@'))
-        then dec(CurPos.StartPos);
+      begin
+        case c2 of
+        '=': CurPos.Flag:=cafEqual;
+        '.': CurPos.Flag:=cafPoint;
+        end;
+        if CurPos.StartPos>1 then begin
+          c1:=Src[CurPos.StartPos-1];
+          // test for double char operators :=, +=, -=, /=, *=, <>, <=, >=, **, ><
+          if ((c2='=') and  (IsEqualOperatorStartChar[c1]))
+          or ((c1='<') and (c2='>'))
+          or ((c1='>') and (c2='<'))
+          or ((c1='.') and (c2='.'))
+          or ((c1='*') and (c2='*'))
+          or ((c1='@') and (c2='@'))
+          then begin
+            dec(CurPos.StartPos);
+            CurPos.Flag:=cafNone;
+          end;
+        end;
       end;
   end;
 end;
@@ -1099,61 +1221,19 @@ begin
     RaiseException('TCustomCodeTool.UndoReadNextAtom impossible');
 end;
 
-function TCustomCodeTool.ReadTilSection(
-  SectionType: TCodeTreeNodeDesc): boolean;
-var SectionID: TCodeTreeNodeDesc;
-begin
-  Result:=false;
-  if not (SectionType in AllCodeSections) then exit;
-  Result:=false;
-  repeat
-    ReadNextAtom;
-    if (CurPos.StartPos>SrcLen) then break;
-    if IsKeyWordSection.DoItUppercase(UpperSrc,CurPos.StartPos,
-      CurPos.EndPos-CurPos.StartPos)
-    and (not LastAtomIs(1,'=')) then begin
-      if UpAtomIs('UNIT') then
-        SectionID:=ctnUnit
-      else if UpAtomIs('PROGRAM') then
-        SectionID:=ctnProgram
-      else if UpAtomIs('PACKAGE') then
-        SectionID:=ctnPackage
-      else if UpAtomIs('LIBRARY') then
-        SectionID:=ctnLibrary
-      else if UpAtomIs('INTERFACE') then
-        SectionID:=ctnInterface
-      else if UpAtomIs('IMPLEMENTATION') then
-        SectionID:=ctnImplementation
-      else if UpAtomIs('INITIALIZATION') then
-        SectionID:=ctnInitialization
-      else if UpAtomIs('FINALIZATION') then
-        SectionID:=ctnFinalization
-      else
-        SectionID:=ctnNone;
-      if (SectionType=SectionID)
-      or ((SectionType=ctnInterface)
-      and (SectionID in [ctnProgram,ctnPackage,ctnLibrary])) then begin
-        Result:=true;  exit;
-      end;
-      if SectionID>SectionType then
-        exit;
-    end;
-  until false;
-end;
-
 function TCustomCodeTool.ReadTilBracketClose(
   ExceptionOnNotFound: boolean): boolean;
 // reads code brackets (not comment brackets)
-var CloseBracket, AntiCloseBracket: char;
+var CloseBracket, AntiCloseBracket: TCommonAtomFlag;
   Start: TAtomPosition;
 begin
   Result:=false;
-  if AtomIsChar('(') then begin
-    CloseBracket:=')';
-    AntiCloseBracket:=']';
-  end else if AtomIsChar('[') then begin
-    CloseBracket:=']';
-    AntiCloseBracket:=')';
+  if (Curpos.Flag=cafRoundBracketOpen) then begin
+    CloseBracket:=cafRoundBracketClose;
+    AntiCloseBracket:=cafEdgedBracketClose;
+  end else if (Curpos.Flag=cafEdgedBracketOpen) then begin
+    CloseBracket:=cafEdgedBracketClose;
+    AntiCloseBracket:=cafRoundBracketClose;
   end else begin
     if ExceptionOnNotFound then
       SaveRaiseExceptionFmt(ctsBracketOpenExpectedButAtomFound,[GetAtom]);
@@ -1162,15 +1242,20 @@ begin
   Start:=CurPos;
   repeat
     ReadNextAtom;
-    if (AtomIsChar(CloseBracket)) then break;
-    if (CurPos.StartPos>SrcLen) or AtomIsChar(AntiCloseBracket)
-    or UpAtomIs('END') then begin
+    if (CurPos.Flag=CloseBracket) then break;
+    if (CurPos.StartPos>SrcLen)
+    or (CurPos.Flag in [cafEnd,cafRecord,AntiCloseBracket])
+    then begin
       CurPos:=Start;
-      if ExceptionOnNotFound then
-        SaveRaiseExceptionFmt(ctsBracketNotFound,[CloseBracket]);
+      if ExceptionOnNotFound then begin
+        if CloseBracket=cafRoundBracketOpen then
+          SaveRaiseExceptionFmt(ctsBracketNotFound,['('])
+        else
+          SaveRaiseExceptionFmt(ctsBracketNotFound,['[']);
+      end;
       exit;
     end;
-    if (AtomIsChar('(')) or (AtomIsChar('[')) then begin
+    if (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen]) then begin
       if not ReadTilBracketClose(ExceptionOnNotFound) then exit;
     end;
   until false;
@@ -1180,16 +1265,16 @@ end;
 function TCustomCodeTool.ReadBackTilBracketOpen(
   ExceptionOnNotFound: boolean): boolean;
 // reads code brackets (not comment brackets)
-var CloseBracket, AntiCloseBracket: char;
+var OpenBracket, AntiOpenBracket: TCommonAtomFlag;
   Start: TAtomPosition;
 begin
   Result:=false;
-  if AtomIsChar(')') then begin
-    CloseBracket:='(';
-    AntiCloseBracket:='[';
-  end else if AtomIsChar(']') then begin
-    CloseBracket:='[';
-    AntiCloseBracket:='(';
+  if (CurPos.Flag=cafRoundBracketClose) then begin
+    OpenBracket:=cafRoundBracketOpen;
+    AntiOpenBracket:=cafEdgedBracketOpen;
+  end else if (CurPos.Flag=cafEdgedBracketClose) then begin
+    OpenBracket:=cafEdgedBracketOpen;
+    AntiOpenBracket:=cafRoundBracketOpen;
   end else begin
     if ExceptionOnNotFound then
       SaveRaiseExceptionFmt(ctsBracketCloseExpectedButAtomFound,[GetAtom]);
@@ -1198,15 +1283,18 @@ begin
   Start:=CurPos;
   repeat
     ReadPriorAtom;
-    if (AtomIsChar(CloseBracket)) then break;
-    if (CurPos.StartPos<1) or AtomIsChar(AntiCloseBracket)
-    or UpAtomIs('END') or UpAtomIs('BEGIN') then begin
+    if (CurPos.Flag=OpenBracket) then break;
+    if (CurPos.StartPos<1)
+    or (CurPos.Flag in [AntiOpenBracket,cafEND,cafBegin]) then begin
       CurPos:=Start;
       if ExceptionOnNotFound then
-        SaveRaiseExceptionFmt(ctsBracketNotFound,[CloseBracket]);
+        if OpenBracket=cafRoundBracketOpen then
+          SaveRaiseExceptionFmt(ctsBracketNotFound,['('])
+        else
+          SaveRaiseExceptionFmt(ctsBracketNotFound,['[']);
       exit;
     end;
-    if (AtomIsChar(')')) or (AtomIsChar(']')) then begin
+    if CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose] then begin
       if not ReadBackTilBracketOpen(ExceptionOnNotFound) then exit;
     end;
   until false;
@@ -1234,8 +1322,7 @@ begin
         RaiseLastError;
     end;
     // init parsing values
-    CurPos.StartPos:=1;
-    CurPos.EndPos:=1;
+    CurPos:=StartAtomPosition;
     LastAtoms.Clear;
     NextPos.StartPos:=-1;
     CurNode:=nil;
@@ -1268,6 +1355,7 @@ procedure TCustomCodeTool.MoveCursorToCleanPos(ACleanPos: integer);
 begin
   CurPos.StartPos:=ACleanPos;
   CurPos.EndPos:=ACleanPos;
+  CurPos.Flag:=cafNone;
   LastAtoms.Clear;
   NextPos.StartPos:=-1;
   CurNode:=nil;
@@ -1472,9 +1560,7 @@ begin
       while (ALineEnd>=1) and (not (Src[ALineEnd] in [#10,#13])) do
         inc(ALineEnd);
       // search first atom in line
-      CurPos.StartPos:=ALineStart;
-      CurPos.EndPos:=ALineStart;
-      NextPos.StartPos:=-1;
+      MoveCursorToCleanPos(ALineStart);
       ReadNextAtom;
       AFirstAtomStart:=CurPos.StartPos;
       // search last atom in line

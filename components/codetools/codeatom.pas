@@ -39,7 +39,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, CodeCache;
+  Classes, SysUtils, CodeCache, KeywordFuncLists;
 
 type
   TCodePosition = record
@@ -52,11 +52,35 @@ type
     Code: TCodeBuffer;
   end;
 
+  TCommonAtomFlag = (
+    cafNone,
+    cafSemicolon, cafEqual, cafColon, cafComma, cafPoint,
+    cafRoundBracketOpen, cafRoundBracketClose,
+    cafEdgedBracketOpen, cafEdgedBracketClose,
+    cafWord, cafEnd, cafRecord, cafBegin
+    );
+    
+const
+  AllCommonAtomWords = [cafWord, cafEnd, cafRecord, cafBegin];
+  CommonAtomFlagNames: array[TCommonAtomFlag] of shortstring = (
+      'None',
+      'Semicolon', 'Equal', 'Colon', 'Comma', 'Point',
+      'RoundBracketOpen', 'RoundBracketClose',
+      'EdgedBracketOpen', 'EdgedBracketClose',
+      'Word', 'End', 'Record', 'Begin'
+    );
+    
+type
   TAtomPosition = record
     StartPos: integer; // first char of Atom
     EndPos: integer;   // char behind Atom
+    Flag: TCommonAtomFlag;
   end;
+  
+const
+  StartAtomPosition: TAtomPosition = (StartPos:1; EndPos:1; Flag:cafNone);
 
+type
   TAtomRing = class
   private
     FSize: integer;
@@ -68,7 +92,7 @@ type
     procedure Add(NewAtom: TAtomPosition);
     procedure UndoLastAdd;
     function GetValueAt(
-        RelativePos:integer):TAtomPosition;  // 0=current 1=prior current ...
+        RelativePos:integer): TAtomPosition;  // 0=current 1=prior current ...
     function Count: integer;
     property Size: integer read FSize write SetSize;
     procedure Clear;
@@ -76,12 +100,26 @@ type
     constructor Create;
     destructor Destroy; override;
   end;
-
+  
+  
+  TWordToAtomFlag = class(TKeyWordFunctionList)
+  private
+    function SetFlagToBegin: boolean;
+    function SetFlagToEnd: boolean;
+    function SetFlagToRecord: boolean;
+    function SetDefaultFlag: boolean;
+  public
+    Flag: TCommonAtomFlag;
+    constructor Create;
+  end;
 
 //-----------------------------------------------------------------------------
 // useful functions
 function AtomPosition(StartPos, EndPos: integer): TAtomPosition;
 function CodePosition(P: integer; Code: TCodeBuffer): TCodePosition;
+
+var
+  WordToAtomFlag: TWordToAtomFlag;
 
 
 implementation
@@ -183,6 +221,58 @@ begin
   writeln('');
 end;
 
+{ TWordToAtomFlag }
+
+function TWordToAtomFlag.SetFlagToBegin: boolean;
+begin
+  Flag:=cafBegin;
+  Result:=true;
+end;
+
+function TWordToAtomFlag.SetFlagToEnd: boolean;
+begin
+  Flag:=cafEnd;
+  Result:=true;
+end;
+
+function TWordToAtomFlag.SetFlagToRecord: boolean;
+begin
+  Flag:=cafRecord;
+  Result:=true;
+end;
+
+function TWordToAtomFlag.SetDefaultFlag: boolean;
+begin
+  Flag:=cafNone;
+  Result:=true;
+end;
+
+constructor TWordToAtomFlag.Create;
+begin
+  inherited Create;
+  DefaultKeyWordFunction:={$ifdef FPC}@{$endif}SetDefaultFlag;
+  Add('BEGIN',   {$ifdef FPC}@{$endif}SetFlagToBegin);
+  Add('END',     {$ifdef FPC}@{$endif}SetFlagToEnd);
+  Add('RECORD',  {$ifdef FPC}@{$endif}SetFlagToRecord);
+end;
+
+
+//-----------------------------------------------------------------------------
+procedure InternalInit;
+begin
+  WordToAtomFlag:=TWordToAtomFlag.Create;
+end;
+
+procedure InternalFinal;
+begin
+  FreeAndNil(WordToAtomFlag);
+end;
+
+initialization
+  InternalInit;
+
+finalization
+  InternalFinal;
 
 end.
 

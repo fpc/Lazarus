@@ -407,7 +407,7 @@ begin
   repeat
     EndPos:=CurPos.StartPos;
     ReadNextAtom; // read name
-    if not AtomIsWord then exit;
+    if not AtomIsIdentifier(false) then exit;
     inc(UnitCount);
     if UpAtomIs(UpperUnitName) then begin
       // unit found
@@ -1011,19 +1011,18 @@ begin
   MoveCursorToCleanPos(CleanCursorPos);
   if Src[CurPos.StartPos] in ['(','[','{'] then begin
     // jump forward to matching bracket
-    CurPos.EndPos:=CurPos.StartPos+1;
+    ReadNextAtom;
     if not ReadForwardTilAnyBracketClose then exit;
   end else if Src[CurPos.StartPos] in [')',']','}'] then begin
     // jump backward to matching bracket
-    CurPos.EndPos:=CurPos.StartPos+1;
+    ReadNextAtom;
     if not ReadBackwardTilAnyBracketClose then exit;
   end else begin;
     if Src[CurPos.StartPos] in [';','.'] then dec(CurPos.StartPos);
-    CurPos.EndPos:=CurPos.StartPos;
     while (CurPos.StartPos>2) and IsWordChar[Src[CurPos.StartPos-1]] do
       dec(CurPos.StartPos);
-    while (CurPos.EndPos<SrcLen) and (IsWordChar[Src[CurPos.EndPos]]) do
-      inc(CurPos.EndPos);
+    MoveCursorToCleanPos(CurPos.StartPos);
+    ReadNextAtom;
     if CurPos.EndPos=CurPos.StartPos then exit;
     // read till block keyword counterpart
     if UpAtomIs('BEGIN') or UpAtomIs('CASE') or UpAtomIs('ASM')
@@ -1055,8 +1054,8 @@ begin
   MoveCursorToCleanPos(CleanCursorPos);
   while (CurPos.StartPos>2) and IsWordChar[Src[CurPos.StartPos-1]] do
     dec(CurPos.StartPos);
-  while (CurPos.EndPos<SrcLen) and (IsWordChar[Src[CurPos.EndPos]]) do
-    inc(CurPos.EndPos);
+  MoveCursorToCleanPos(CurPos.StartPos);
+  ReadNextAtom;
   try
     repeat
       ReadPriorAtom;
@@ -1068,7 +1067,6 @@ begin
       end
       else if Src[CurPos.StartPos] in [')',']','}'] then begin
         // jump backward to matching bracket
-        CurPos.EndPos:=CurPos.StartPos+1;
         if not ReadBackwardTilAnyBracketClose then exit;
       end
       else if WordIsLogicalBlockStart.DoItUpperCase(UpperSrc,

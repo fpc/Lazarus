@@ -343,9 +343,7 @@ var Parts: array[TPropPart] of TAtomPosition;
     Parts[SpecWord]:=CurPos;
     ReadNextAtom;
     if AtomIsChar(';') then exit;
-    Result:=AtomIsWord;
-    if not Result then
-      RaiseExceptionFmt(ctsIdentExpectedButAtomFound,[GetAtom]);
+    AtomIsIdentifier(true);
     if WordIsPropertySpecifier.DoItUpperCase(UpperSrc,CurPos.StartPos,
         CurPos.EndPos-CurPos.StartPos) then exit;
     Parts[SpecParam]:=CurPos;
