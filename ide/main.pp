@@ -43,7 +43,7 @@ uses
   LMessages, ProjectDefs, Watchesdlg, BreakPointsdlg,ColumnDlg;
 
 const
-  Version_String = '0.8.1 alpha';
+  Version_String = '0.8.2 alpha';
 
 type
   {
@@ -5586,6 +5586,9 @@ end.
 =======
 
   $Log$
+  Revision 1.202  2002/01/17 11:00:00  lazarus
+  MG: increased IDE version to 0.8.2 alpha
+
   Revision 1.201  2002/01/15 20:21:37  lazarus
   MG: jump history for find declaration
 
@@ -5623,6 +5626,9 @@ end.
 
 <<<<<<< main.pp
   $Log$
+  Revision 1.202  2002/01/17 11:00:00  lazarus
+  MG: increased IDE version to 0.8.2 alpha
+
   Revision 1.201  2002/01/15 20:21:37  lazarus
   MG: jump history for find declaration
 
