@@ -76,7 +76,8 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    property Items[Index: integer]: TTransferMacro read GetItems write SetItems; default;
+    property Items[Index: integer]: TTransferMacro
+       read GetItems write SetItems; default;
     procedure SetValue(const MacroName, NewValue: string);
     function Count: integer;
     procedure Clear;

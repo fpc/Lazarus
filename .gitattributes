@@ -156,6 +156,7 @@ ide/projectopts.pp svneol=native#text/pascal
 ide/runparamsopts.pas svneol=native#text/pascal
 ide/splash.lrs svneol=native#text/pascal
 ide/splash.pp svneol=native#text/pascal
+ide/sysvaruseroverridedlg.pas svneol=native#text/pascal
 ide/tcolumndlg1.lfm svneol=native#text/plain
 ide/tinsertwatch.lfm svneol=native#text/plain
 ide/transfermacros.pp svneol=native#text/pascal

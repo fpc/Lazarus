@@ -2694,9 +2694,7 @@ procedure TListColumnsPropertyEditor.Edit;
 var
 
   ListColumns : TListColumns;
-  Column : TListColumn;
   ColumnDlg: TColumnDlg;
-  I,X        : Integer;
 begin
   ColumnDlg:=TColumnDlg.Create(Application);
   try
