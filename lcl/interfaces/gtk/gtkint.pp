@@ -104,6 +104,8 @@ type
                                   const GDIType: TGDIType): Boolean;
     function NewGDIObject(const GDIType: TGDIType): PGdiObject;
     procedure DisposeGDIObject(GdiObject: PGdiObject);
+    procedure SelectGDKBrushProps(DC: HDC);
+    procedure SelectGDKTextProps(DC: HDC);
     procedure SelectGDKPenProps(DC: HDC);
     function CreateDefaultBrush: PGdiObject;
     function CreateDefaultFont: PGdiObject;
@@ -523,6 +525,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.83  2002/10/08 13:42:23  lazarus
+  MG: added TDevContextColorType
+
   Revision 1.82  2002/10/07 20:50:58  lazarus
   MG: accelerated SelectGDKPenProps
 
