@@ -110,7 +110,7 @@ Var
   begin
     Notebook := TObject(GetProp(NotebookHandle, 'Lazarus')) as TCustomNotebook;
     PageIndex := SendMessage(NotebookHandle, TCM_GETCURSEL, 0, 0);
-    PageHandle := Notebook.Page[PageIndex].Handle;
+    PageHandle := Notebook.CustomPage(PageIndex).Handle;
     if Showing
       then ShowWindow(PageHandle, SW_SHOW)
       else ShowWindow(PageHandle, SW_HIDE);
@@ -595,6 +595,11 @@ Begin
 //      SendMessage(Window, WM_SIZE, 0, MakeLParam(R.right-R.left, R.bottom-R.top));
 //      WinProcess:=false;
     End;
+    WM_DRAWITEM:
+    Begin
+      CNSendMessage(LM_DRAWITEM, TObject(GetProp(PDRAWITEMSTRUCT(LParam)^.hwndItem ,'WinControl')), Pointer(LParam));
+      WinProcess := false;
+    End;
   End;
 
   If WinProcess Then
@@ -757,6 +762,9 @@ end;
 
 {
   $Log$
+  Revision 1.59  2003/09/21 10:42:48  mattias
+  implemented TBitBtn Text+Caption from Micha
+
   Revision 1.58  2003/09/20 13:27:49  mattias
   varois improvements for ParentColor from Micha
 

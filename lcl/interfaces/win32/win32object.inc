@@ -203,7 +203,8 @@ Begin
         TCI.cchTextMax := MAX_PATH;
         TCI.pszText := Caption;
         Assert(False, 'Trace:TWin32Object.GetText - Getting the text');
-        Result := (Windows.Sendmessage(Ctrl.Handle, TCM_GETITEM, TCustomPage(Sender).PageIndex, LPARAM(@TCI))<>0);
+        Result := (Windows.Sendmessage(Ctrl.Handle, TCM_GETITEM,
+          TCustomPage(Sender).PageIndex, LPARAM(@TCI))<>0);
         if Result
           then Data := StrPas(Caption);
         Assert(False, Format('Trace:TWin32Object.GetText - Returning the text --> %S', [Data]));
@@ -364,7 +365,7 @@ End;
 Function TWin32Object.IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer): Integer;
 Var
   XPMFIle : TFileStream;
-  Bitmap: HBITMAP; // Pixel map type image
+  //Bitmap: HBITMAP; // Pixel map type image
   //CBI: COMBOBOXINFO;
   DC: HDC;
   Handle: HWND;
@@ -380,6 +381,63 @@ Var
   OldPageIndex: Integer; //used by LM_SETITEMINDEX of a csNotebook
   AMenu: TMenu;
   TheWinControl: TWinControl;
+
+  Procedure DrawOwnerButton;
+  var flags:integer; // How the button looks like (pressed or not pressed)
+      BitmapHandle: HBITMAP; // Handle of bitmap
+      BitmapBuf: BITMAP; // Buffer for bitmap
+      hdcBitmap: HDC; // Memory device context for the bitmap
+      xDestBitmap: integer; // X coordinate of destination rectangle for bitmap
+      yDestBitmap: integer; // Y coordinate of destination rectangle for bitmap
+      TextSize: SIZE; // For computing the length of button caption in pixels
+      TextPosFlags:integer; // Flags for text position on the button
+  begin
+    with PDrawItemStruct(Data)^ do
+    begin
+      flags:=DFCS_BUTTONPUSH;
+      if (itemState and ODS_SELECTED)<>0 then flags:=flags or DFCS_PUSHED;
+      DrawFrameControl(_HDC, rcItem, DFC_BUTTON, flags);
+      InflateRect(rcItem, -2, -2);
+      if (itemState and ODS_SELECTED)<>0 then OffsetRect(rcItem, 2, 2);
+      SetBkMode(_HDC, TRANSPARENT);
+      BitmapHandle:=(Sender as TBitBtn).Glyph.Handle;
+      hdcBitmap := CreateCompatibleDC(_HDC);
+      GetObject(BitmapHandle, sizeof(BitmapBuf), @BitmapBuf);
+      SelectObject(hdcBitmap, BitmapHandle);
+      GetTextExtentPoint32(_HDC, LPSTR((Sender as TBitBtn).Caption), length((Sender as TBitBtn).Caption), TextSize);
+      case (Sender as TBitBtn).Layout of
+        blGlyphLeft: begin
+          xDestBitmap:=rcItem.Left+((rcItem.Right-rcItem.Left)-(TextSize.cx+BitmapBuf.bmWidth+2)) shr 1;
+          yDestBitmap:=rcItem.Top+((rcItem.Bottom-rcItem.Top)-BitmapBuf.bmHeight) shr 1;
+          TextPosFlags:=DT_SINGLELINE or DT_LEFT or DT_VCENTER;
+          Inc(rcItem.Left, xDestBitmap+BitmapBuf.bmWidth+2);
+        end;
+        blGlyphRight: begin
+          xDestBitmap:=rcItem.Right-((rcItem.Right-rcItem.Left)-(TextSize.cx+BitmapBuf.bmWidth+2)) shr 1 - BitmapBuf.bmWidth;
+          yDestBitmap:=rcItem.Top+((rcItem.Bottom-rcItem.Top)-BitmapBuf.bmHeight) shr 1;
+          TextPosFlags:=DT_SINGLELINE or DT_RIGHT or DT_VCENTER;
+          rcItem.Right:=xDestBitmap-2;
+        end;
+        blGlyphTop: begin
+          xDestBitmap:=rcItem.Left+((rcItem.Right-rcItem.Left)-BitmapBuf.bmWidth) shr 1;
+          yDestBitmap:=rcItem.Top+((rcItem.Bottom-rcItem.Top)-(TextSize.cy+BitmapBuf.bmHeight+2)) shr 1;
+          TextPosFlags:=DT_SINGLELINE or DT_CENTER or DT_TOP;
+          Inc(rcItem.Top, yDestBitmap+BitmapBuf.bmHeight+2);
+        end;
+        blGlyphBottom: begin
+          xDestBitmap:=rcItem.Left+((rcItem.Right-rcItem.Left)-BitmapBuf.bmWidth) shr 1;
+          yDestBitmap:=rcItem.Bottom-((rcItem.Bottom-rcItem.Top)-(TextSize.cy+BitmapBuf.bmHeight+2)) shr 1 - BitmapBuf.bmHeight;
+          TextPosFlags:=DT_SINGLELINE or DT_CENTER or DT_BOTTOM;
+          rcItem.Bottom:=yDestBitmap-2;
+        end;
+      end;
+      BitBlt(_HDC, xDestBitmap, yDestBitmap, BitmapBuf.bmWidth, BitmapBuf.bmHeight, hdcBitmap, 0, 0, SRCCOPY);
+      DrawText(_HDC, LPSTR((Sender as TBitBtn).Caption), -1, rcItem, TextPosFlags);
+      DeleteObject(BitmapHandle);
+      DeleteDC(hdcBitmap);
+    end;
+  end;
+  
 Begin
   Result := 0;   //default value just in case nothing sets it
   Assert(False, 'Trace:IntSendMessage3 - Start, Received (' + GetMessageName(LM_Message) + ')');
@@ -582,15 +640,22 @@ Begin
         LM_DRAGINFOCHANGED:
         Begin
         End;
+        LM_DRAWITEM:
+        Begin
+          if PDrawItemStruct(Data)^.CtlType = ODT_BUTTON then
+          Begin
+            DrawOwnerButton;
+          End;
+        End;
         //TBitBtn
         LM_IMAGECHANGED, LM_LAYOUTCHANGED:
         Begin
           Assert(False, 'Trace:[TWin32Object.IntSendMessage3 - Got LM_IMAGECHANGED or LM_LAYOUTCHANGED');
           Assert(False, 'Trace:********************');
           Assert(False, 'Trace:1');
-          Bitmap := (Sender As TBitBtn).Glyph.Handle;
+          {Bitmap := (Sender As TBitBtn).Glyph.Handle;
           SendMessage(Handle, BM_SETIMAGE, IMAGE_BITMAP, Bitmap);
-          SetWindowText(Handle, PChar((Sender As TWinControl).Caption));
+          SetWindowText(Handle, PChar((Sender As TWinControl).Caption));}
           Assert(False, 'Trace:5');
           Assert(False, 'Trace:********************');
         End;
@@ -875,10 +940,12 @@ activate_time :	the time at which the activation event occurred.
               begin
                 OldPageIndex := SendMessage(Handle,TCM_GETCURSEL,0,0);
                 SendMessage(Handle,TCM_SETCURSEL,WPARAM(Page),0);
-                if (Page>=0) And ((Parent As TCustomNotebook).Page[Page].HandleAllocated)
-                  then ShowWindow(TCustomNotebook(Parent).Page[Page].Handle, SW_SHOW);
-                if (OldPageIndex>=0) and (OldPageIndex<>Page) and (TCustomNotebook(Parent).Page[OldPageIndex].HandleAllocated)
-                  then ShowWindow(TCustomNotebook(Parent).Page[OldPageIndex].Handle, SW_HIDE);
+                if (Page>=0)
+                And ((Parent As TCustomNotebook).CustomPage(Page).HandleAllocated)
+                  then ShowWindow(TCustomNotebook(Parent).CustomPage(Page).Handle, SW_SHOW);
+                if (OldPageIndex>=0) and (OldPageIndex<>Page)
+                and (TCustomNotebook(Parent).CustomPage(OldPageIndex).HandleAllocated)
+                  then ShowWindow(TCustomNotebook(Parent).CustomPage(OldPageIndex).Handle, SW_HIDE);
               end;
             End;
           End;
@@ -1762,29 +1829,8 @@ End;
   Changes the form's default background color
  ------------------------------------------------------------------------------}
 Procedure TWin32Object.SetColor(Sender: TObject);
-Var
-  DC: HDC;
 Begin
-  With Sender Do
-  Begin
-    If Sender Is TWincontrol Then
-    Begin
-      With TWincontrol(Sender) Do
-      Begin
-        // Temphack to set backcolor, till better solution
-        // For what control does this work?
-{
-        If HandleAllocated Then
-        Begin
-          DC := Windows.GetDC(Handle);
-          SetBKColor(Handle, Color);
-          ReleaseDC(Handle, DC);
-        End;
-}
-      End;
-    End;
-  End;
-  //NOT USED RIGHT NOW..........CAUSES ALL FORMS TO USE THESE COLORS!!!!!!
+
 End;
 
 {------------------------------------------------------------------------------
@@ -1895,7 +1941,7 @@ Begin
     End;
     csBitBtn:
     Begin
-      Window := CreateWindow('BUTTON', Nil, Flags or BS_PUSHBUTTON Or BS_BITMAP, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+      Window := CreateWindow('BUTTON', Nil, Flags or BS_PUSHBUTTON Or BS_OWNERDRAW, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       IntSendMessage3(LM_LOADXPM, Sender, StrTemp);
     End;
     csButton:
@@ -2795,6 +2841,9 @@ End;
 
 {
   $Log$
+  Revision 1.112  2003/09/21 10:42:48  mattias
+  implemented TBitBtn Text+Caption from Micha
+
   Revision 1.111  2003/09/20 13:27:49  mattias
   varois improvements for ParentColor from Micha
 

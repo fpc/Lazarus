@@ -1417,6 +1417,12 @@ resourcestring
     +'Template';
   lisCodeToolsDefsInsertDelphi6ProjectTempl =
     'Insert Delphi 6 Project Template';
+  lisCodeToolsDefsInsertDelphi7CompilerTemp = 'Insert Delphi 7 Compiler '
+    +'Template';
+  lisCodeToolsDefsInsertDelphi7DirectoryTem = 'Insert Delphi 7 Directory '
+    +'Template';
+  lisCodeToolsDefsInsertDelphi7ProjectTempl =
+    'Insert Delphi 7 Project Template';
   lisCodeToolsDefsInsertKylix3CompilerTemp = 'Insert Kylix 3 Compiler '
     +'Template';
   lisCodeToolsDefsInsertKylix3DirectoryTem = 'Insert Kylix 3 Directory '

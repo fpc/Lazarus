@@ -79,9 +79,9 @@ type
     procedure DestroyHandle; override;
     function GetPageIndex: integer;
     procedure SetPageIndex(AValue: Integer);
-    property PageIndex: Integer read GetPageIndex write SetPageIndex;
     property TabVisible: Boolean read GetTabVisible write SetTabVisible default True;
   public
+    property PageIndex: Integer read GetPageIndex write SetPageIndex;
     constructor Create(TheOwner: TComponent); override;
     procedure AdjustClientRect(var ARect: TRect); override;
     function CanTab: boolean; override;
@@ -825,6 +825,9 @@ end.
 
  {
   $Log$
+  Revision 1.80  2003/09/21 10:42:47  mattias
+  implemented TBitBtn Text+Caption from Micha
+
   Revision 1.79  2003/09/20 15:24:54  mattias
   implemented TPageControl and TTabSheet
 

@@ -126,6 +126,9 @@ type
     InsertDelphi6CompilerDefinesTemplateMenuItem: TMenuItem;
     InsertDelphi6DirectoryTemplateMenuItem: TMenuItem;
     InsertDelphi6ProjectTemplateMenuItem: TMenuItem;
+    InsertDelphi7CompilerDefinesTemplateMenuItem: TMenuItem;
+    InsertDelphi7DirectoryTemplateMenuItem: TMenuItem;
+    InsertDelphi7ProjectTemplateMenuItem: TMenuItem;
     InsertKylix3CompilerDefinesTemplateMenuItem: TMenuItem;
     InsertKylix3DirectoryTemplateMenuItem: TMenuItem;
     InsertKylix3ProjectTemplateMenuItem: TMenuItem;
@@ -823,7 +826,9 @@ procedure TCodeToolsDefinesEditor.InsertDelphiCompilerDefinesTemplateMenuItemCli
   (Sender: TObject);
 var DelphiVersion: integer;
 begin
-  if Sender=InsertDelphi6CompilerDefinesTemplateMenuItem then
+  if Sender=InsertDelphi7CompilerDefinesTemplateMenuItem then
+    DelphiVersion:=7
+  else if Sender=InsertDelphi6CompilerDefinesTemplateMenuItem then
     DelphiVersion:=6
   else
     DelphiVersion:=5;
@@ -838,7 +843,9 @@ var InputFileDlg: TInputFileDialog;
   DelphiVersion: integer;
   DelphiName: string;
 begin
-  if Sender=InsertDelphi6DirectoryTemplateMenuItem then
+  if Sender=InsertDelphi7DirectoryTemplateMenuItem then
+    DelphiVersion:=7
+  else if Sender=InsertDelphi6DirectoryTemplateMenuItem then
     DelphiVersion:=6
   else
     DelphiVersion:=5;
@@ -876,7 +883,9 @@ var
   DelphiVersion: integer;
   DelphiName: string;
 begin
-  if Sender=InsertDelphi6ProjectTemplateMenuItem then
+  if Sender=InsertDelphi7ProjectTemplateMenuItem then
+    DelphiVersion:=7
+  else if Sender=InsertDelphi6ProjectTemplateMenuItem then
     DelphiVersion:=6
   else
     DelphiVersion:=5;
@@ -1400,6 +1409,29 @@ begin
               lisCodeToolsDefsInsertDelphi6ProjectTempl,
               InsertTemplateMenuItem);
   InsertDelphi6ProjectTemplateMenuItem.OnClick:=
+              @InsertDelphiProjectTemplateMenuItemClick;
+
+  // Delphi 7 templates
+  InsertTemplateMenuItem.Add(CreateSeperator);
+  AddMenuItem(InsertDelphi7CompilerDefinesTemplateMenuItem,
+              'InsertDelphi7CompilerDefinesTemplateMenuItem',
+              lisCodeToolsDefsInsertDelphi7CompilerTemp,
+              InsertTemplateMenuItem);
+  InsertDelphi7CompilerDefinesTemplateMenuItem.OnClick:=
+              @InsertDelphiCompilerDefinesTemplateMenuItemClick;
+
+  AddMenuItem(InsertDelphi7DirectoryTemplateMenuItem,
+              'InsertDelphi7DirectoryTemplateMenuItem',
+              lisCodeToolsDefsInsertDelphi7DirectoryTem,
+              InsertTemplateMenuItem);
+  InsertDelphi7DirectoryTemplateMenuItem.OnClick:=
+              @InsertDelphiDirectoryTemplateMenuItemClick;
+
+  AddMenuItem(InsertDelphi7ProjectTemplateMenuItem,
+              'InsertDelphi7ProjectTemplateMenuItem',
+              lisCodeToolsDefsInsertDelphi7ProjectTempl,
+              InsertTemplateMenuItem);
+  InsertDelphi7ProjectTemplateMenuItem.OnClick:=
               @InsertDelphiProjectTemplateMenuItemClick;
 
   // Kylix 3 templates
