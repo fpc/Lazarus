@@ -4479,15 +4479,6 @@ var
   i, MinParamCnt, MaxParamCnt: integer;
   ParamCompatibility: TTypeCompatibility;
 begin
-  {$IFDEF ShowExprEval}
-  writeln('[TFindDeclarationTool.IsParamListCompatible] ',
-  ' ExprParamList.Count=',ExprParamList.Count,
-  ' FirstParameterNode=',FirstParameterNode<>nil
-  );
-    try
-  {$ENDIF}
-  Result:=tcExact;
-
   // quick check: parameter count
   ParamNode:=FirstParameterNode;
   MinParamCnt:=0;
@@ -4501,6 +4492,16 @@ begin
     ParamNode:=ParamNode.NextBrother;
     inc(MaxParamCnt);
   end;
+
+  {$IFDEF ShowExprEval}
+  writeln('[TFindDeclarationTool.IsParamListCompatible] ',
+  ' ExprParamList.Count=',ExprParamList.Count,
+  ' MinParamCnt=',MinParamCnt,' MaxParamCnt=',MaxParamCnt
+  );
+    try
+  {$ENDIF}
+  Result:=tcExact;
+
   if (ExprParamlist.Count>MaxParamCnt)
   or ((not IgnoreMissingParameters) and (ExprParamList.Count<MinParamCnt)) then
   begin
@@ -4546,9 +4547,9 @@ begin
   end;
   {$IFDEF ShowExprEval}
     finally
-  writeln('[TFindDeclarationTool.IsParamListCompatible] END ',
-  ' Result=',TypeCompatibilityNames[Result],' ! ONLY VALID if no error !'
-  );
+      writeln('[TFindDeclarationTool.IsParamListCompatible] END ',
+      ' Result=',TypeCompatibilityNames[Result],' ! ONLY VALID if no error !'
+      );
     end;
   {$ENDIF}
 end;
@@ -5051,7 +5052,7 @@ end;
 function TFindDeclarationTool.IsBaseCompatible(const TargetType,
   ExpressionType: TExpressionType; Params: TFindDeclarationParams
   ): TTypeCompatibility;
-// can ExpressionType be assigned to TargetType
+// test if ExpressionType can be assigned to TargetType
 // both expression types must be base types
 var TargetNode, ExprNode: TCodeTreeNode;
 begin
@@ -5063,7 +5064,9 @@ begin
   Result:=tcIncompatible;
   if (TargetType.Desc=ExpressionType.Desc) then begin
     case TargetType.Desc of
+    
     xtNone: ;
+    
     xtContext:
       begin
         TargetNode:=TargetType.Context.Node;
@@ -5103,6 +5106,7 @@ begin
     else
       Result:=tcExact;
     end;
+    
   end else begin
     // check, if ExpressionType can be auto converted into TargetType
     if ((TargetType.Desc in xtAllRealTypes)
@@ -5118,13 +5122,20 @@ begin
     then
       Result:=tcCompatible
     else if (TargetType.Desc=xtContext) then begin
-      if ((TargetType.Context.Node.Desc
+      TargetNode:=TargetType.Context.Node;
+      if ((TargetNode.Desc
              in [ctnClass,ctnClassInterface,ctnProcedure])
         and (ExpressionType.Desc=xtNil))
-      or ((TargetType.Context.Node.Desc=ctnArrayType)
-        and (TargetType.Context.Node.FirstChild<>nil)
-        and (TargetType.Context.Node.FirstChild.Desc=ctnOfConstType)
+      or ((TargetNode.Desc=ctnArrayType)
+        and (TargetNode.FirstChild<>nil)
+        and (TargetNode.FirstChild.Desc=ctnOfConstType)
         and (ExpressionType.Desc=xtConstSet))
+      then
+        Result:=tcCompatible
+    end
+    else if (ExpressionType.Desc=xtContext) then begin
+      ExprNode:=ExpressionType.Context.Node;
+      if (TargetType.Desc=xtFile) and (ExprNode.Desc=ctnFileType)
       then
         Result:=tcCompatible
     end;
