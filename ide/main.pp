@@ -129,6 +129,9 @@ type
     procedure mnuCloseClicked(Sender : TObject);
     procedure mnuCloseAllClicked(Sender : TObject);
     procedure mnuCleanDirectoryClicked(Sender : TObject);
+    {$IFDEF UseStartLazarus}
+    procedure mnuRestartClicked(Sender : TObject);
+    {$ENDIF}
     procedure mnuQuitClicked(Sender : TObject);
 
     // edit menu
@@ -1543,6 +1546,9 @@ begin
     itmFileCloseAll.Enabled := False;
     itmFileCloseAll.OnClick := @mnuCloseAllClicked;
     itmFileCleanDirectory.OnClick := @mnuCleanDirectoryClicked;
+    {$IFDEF UseStartLazarus}
+    itmFileRestart.OnClick := @mnuRestartClicked;
+    {$ENDIF}
     itmFileQuit.OnClick := @mnuQuitClicked;
   end;
 end;
@@ -2307,6 +2313,15 @@ end;
 
 
 {------------------------------------------------------------------------------}
+
+{$IFDEF UseStartLazarus}
+procedure TMainIDE.mnuRestartClicked(Sender: TObject);
+begin
+  mnuQuitClicked(Sender);
+  if Application.Terminated then
+    ExitCode := 99;
+end;
+{$ENDIF}
 
 procedure TMainIDE.mnuQuitClicked(Sender : TObject);
 var CanClose: boolean;
@@ -10594,6 +10609,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.760  2004/08/26 21:32:31  vincents
+  Prepare lazarus for use with loader. Use -dUseStartLazarus to activate.
+
   Revision 1.759  2004/08/25 22:22:39  mattias
   added unit info to View menu
 

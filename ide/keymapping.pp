@@ -136,7 +136,12 @@ const
   ecClose                = ecUserFirst + 210;
   ecCloseAll             = ecUserFirst + 211;
   ecCleanDirectory       = ecUserFirst + 212;
+{$IFDEF UseStartLazarus}
+  ecRestart              = ecUserFirst + 213;
+  ecQuit                 = ecUserFirst + 214;
+{$ELSE}
   ecQuit                 = ecUserFirst + 213;
+{$ENDIF}
 
   // IDE navigation
   ecJumpToEditor         = ecUserFirst + 300;
@@ -605,6 +610,9 @@ begin
   ecClose: SetResult(VK_F4,[ssCtrl],VK_UNKNOWN,[]);
   ecCloseAll: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecCleanDirectory: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  {$IFDEF UseStartLazarus}
+  ecRestart: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  {$ENDIF}
   ecQuit: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // view menu
@@ -1087,7 +1095,10 @@ begin
     ecClose                 : Result:= lismenuclose;
     ecCloseAll              : Result:= srkmecCloseAll;
     ecCleanDirectory        : Result:= lisMenuCleanDirectory;
-    ecQuit                  : Result:= lismenuquit;
+    {$IFDEF UseStartLazarus}
+    ecRestart               : Result:= lisMenuRestart;
+    {$ENDIF}
+    ecQuit                  : Result:= lisMenuQuit;
     
     // edit menu
     ecSelectionUpperCase    : Result:= lismenuuppercaseselection;
@@ -2010,6 +2021,9 @@ begin
   AddDefault(C,'Close',ecClose);
   AddDefault(C,'CloseAll',ecCloseAll);
   AddDefault(C,'Clean Directory',ecCleanDirectory);
+  {$IFDEF UseStartLazarus}
+  AddDefault(C,'Restart',ecRestart);
+  {$ENDIF}
   AddDefault(C,'Quit',ecQuit);
 
   // view menu

@@ -426,6 +426,12 @@ begin
     if blfWithoutLinkingIDE in Flags then begin
       AppendExtraOption('-Cn');
     end;
+    {$IFDEF UseStartLazarus}
+      //TODO: Maybe only if running executable is lazarus and
+      //      we are not cross compiling.
+    AppendExtraOption('-olazarus.new'+GetDefaultExecutableExt);
+    {$ENDIF}
+
     // add package options for IDE
     AppendExtraOption(PackageOptions);
   end;

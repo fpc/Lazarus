@@ -403,6 +403,12 @@ begin
 
     CreateMenuItem(ParentMI,itmFileCleanDirectory,'itmFileCleanDirectory',lisMenuCleanDirectory);
 
+    {$IFDEF UseStartLazarus}
+    ParentMI.Add(CreateMenuSeparator);
+
+    CreateMenuItem(ParentMI,itmFileRestart,'itmFileRestart',lisMenuRestart);
+    {$ENDIF}
+
     ParentMI.Add(CreateMenuSeparator);
 
     CreateMenuItem(ParentMI,itmFileQuit,'itmFileQuit',lisMenuQuit);
@@ -746,6 +752,9 @@ begin
     itmFileClose.ShortCut:=CommandToShortCut(ecClose);
     itmFileCloseAll.ShortCut:=CommandToShortCut(ecCloseAll);
     itmFileCleanDirectory.ShortCut:=CommandToShortCut(ecCleanDirectory);
+    {$IFDEF UseStartLazarus}
+    itmFileQuit.ShortCut:=CommandToShortCut(ecQuit);
+    {$ENDIF}
     itmFileQuit.ShortCut:=CommandToShortCut(ecQuit);
 
     // edit menu

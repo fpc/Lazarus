@@ -92,6 +92,9 @@ type
     itmFileClose: TMenuItem;
     itmFileCloseAll: TMenuItem;
     itmFileCleanDirectory: TMenuItem;
+    {$IFDEF UseStartLazarus}
+    itmFileRestart: TMenuItem;
+    {$ENDIF}
     itmFileQuit: TMenuItem;
 
     // edit menu
