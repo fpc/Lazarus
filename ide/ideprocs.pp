@@ -2177,14 +2177,16 @@ begin
           if StartWord And EndWord then
           begin
             Result.Add(TheFileList.Strings[i]+'('+IntToStr(lines+1)+
-                       ','+ IntToStr(match) + ')'+' '+'None:'+' '+SearchFor);
+                       ','+ IntToStr(match) + ')'+' '+'None:'+' '+
+                       copy(ThisFile.Strings[Lines],Match,60));
             break;//junp out we found our match
           end;//if
         end;//if
         if not WholeWord and (Match > 0) then
         begin
           Result.Add(TheFileList.Strings[i]+'('+IntToStr(lines+1)+
-                     ','+IntToStr(match)+')'+' '+'None:'+' '+SearchFor);
+                     ','+IntToStr(match)+')'+' '+'None:'+' '+
+                     copy(ThisFile.Strings[Lines],Match,60));
           break;//junp out we found our match
         end;//if
       end;//for

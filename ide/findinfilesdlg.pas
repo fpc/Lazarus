@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils, LCLLinux, Controls, StdCtrls, Forms, Buttons, ExtCtrls,
-  LResources, LazarusIDEStrConsts;
+  LResources, LazarusIDEStrConsts, DirSel, Dialogs;
 
 type
   TLazFindInFilesDialog = class(TForm)
@@ -47,6 +47,7 @@ type
     procedure LazFindInFilesDialogResize(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
+    procedure DirectoryBrowseClick(Sender: TObject);
   private
     function GetFindText: string;
     procedure SetFindText(const NewFindText: string);
@@ -178,6 +179,7 @@ begin
       SetBounds(DirectoryComboBox.Left+DirectoryComboBox.Width+5,
         DirectoryComboBox.Top,25,25);
       Caption:='...';
+      OnClick:=@DirectoryBrowseClick;
     end;
     
     FileMaskLabel:=TLabel.Create(Self);
@@ -194,7 +196,7 @@ begin
       Parent:=DirectoryOptionsGroupBox;
       SetBounds(FileMaskLabel.Left, FileMaskLabel.Top+FileMaskLabel.Height+3,
          Self.ClientWidth-20-5-25,Height);
-      Text:='*.*';
+      Text:='*.pas;*.pp;*.inc';
     end;
     
     IncludeSubDirsCheckBox:=TCheckBox.Create(Self);
@@ -330,6 +332,22 @@ begin
   Result:=TextToFindComboBox.Text;
 end;
 
+procedure TLazFindInFilesDialog.DirectoryBrowseClick(Sender: TObject);
+var
+  TheDirectory: string; //Starting Directory and
+                        //Directory Returned from Function
+  TheRootDir: string;   //The root directory on the current dirve
+begin
+  TheDirectory:= GetCurrentDir;
+  TheRootDir:= ExtractFileDrive(TheDirectory);
+  if Length(TheRootDir)< 1 then
+    TheRootDir:= '/'   //Linux or Unix ?
+  else
+    TheRootDir:= TheRootDir + '\';
+  if SelectDirectory('Select A Directory', TheRootDir, TheDirectory, false) then
+     DirectoryComboBox.Text:= TheDirectory;
+     
+end;//DirectoryBrowseClick
 initialization
   FindInFilesDialog:=nil;
 
