@@ -32,7 +32,6 @@ components/gtk/gtkglarea/gtkglarea.pp svneol=native#text/pascal
 components/gtk/gtkglarea/gtkglarea_int.pp svneol=native#text/pascal
 components/gtk/gtkglarea/nvgl.pp svneol=native#text/pascal
 components/gtk/gtkglarea/nvglx.pas svneol=native#text/pascal
-components/gtk/gtkglarea/nvglxtokens.pas svneol=native#text/pascal
 components/synedit/allunits.pp svneol=native#text/pascal
 components/synedit/syncompletion.pas svneol=native#text/pascal
 components/synedit/synedit.inc svneol=native#text/pascal
