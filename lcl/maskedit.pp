@@ -91,13 +91,13 @@ type
     function FindLiteralChar (MaskOffset: Integer; InChar: Char): Integer;
     function GetEditText: string;
     function GetMasked: Boolean;
-    function GetText: string; override;
+    function GetMaskText: string;
     function GetMaxLength: Integer;
     function CharKeys(var CharCode: Char): Boolean;
     procedure SetEditText(const Value: string);
     procedure SetEditMask(const Value: string);
     procedure SetMaxLength(Value: Integer);
-    procedure SetText(const Value: string); override;
+    procedure SetMaskText(const Value: string);
     procedure DeleteKeys(CharCode: Word);
     procedure HomeEndKeys(CharCode: Word; Shift: TShiftState);
     procedure CursorInc(CursorPos: Integer; Incr: Integer);
@@ -135,7 +135,7 @@ type
     function GetTextLen: Integer;
     property IsMasked: Boolean read GetMasked;
     property EditText: string read GetEditText write SetEditText;
-    property Text: string read GetText write SetText;
+    property Text: string read GetMaskText write SetMaskText;
   end;
   
   { TMaskEdit }
@@ -675,7 +675,7 @@ begin
   Result := Length(Text);
 end;
 
-function TCustomMaskEdit.GetText: string;
+function TCustomMaskEdit.GetMaskText: string;
 begin
   if not IsMasked then
     Result := inherited Text
@@ -688,7 +688,7 @@ begin
   end;
 end;
 
-procedure TCustomMaskEdit.SetText(const Value: string);
+procedure TCustomMaskEdit.SetMaskText(const Value: string);
 var
   OldText: string;
   Pos: Integer;
