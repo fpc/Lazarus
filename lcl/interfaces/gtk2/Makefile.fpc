@@ -1,0 +1,35 @@
+#   $Id$
+#
+#   Makefile.fpc for Lazarus for Free Pascal
+#
+
+[package]
+main=lazarus/lcl
+version=0.8a
+
+[require]
+packages=rtl fcl gtk
+
+[target]
+units=interfaces
+implicitunits=gtk2int
+
+[compiler]
+options=-gl -dgtk2
+unitdir=../../units ../gtk .
+unittargetdir=../../units/gtk2
+
+[clean]
+files=$(wildcard ../../units/gtk2/*$(OEXT)) \
+      $(wildcard ../../units/gtk2/*$(PPUEXT)) \
+      $(wildcard ../../units/gtk2/*$(RSTEXT)) \
+      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+
+
+[rules]
+.PHONY: cleartarget all
+
+cleartarget:
+        -$(DEL) ../../units/gtk2/interfaces$(PPUEXT) ../../units/interfaces$(PPUEXT)
+
+all: cleartarget interfaces$(PPUEXT)

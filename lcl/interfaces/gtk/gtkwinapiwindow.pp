@@ -35,7 +35,12 @@ unit GTKWinapiWindow;
 interface
 
 uses
-  glib, gdk, gtk;
+  {$IFDEF gtk2}
+  glib2, gdk2pixbuf, gdk2, gtk2,
+  {$ELSE}
+  glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
+  {$ENDIF}
+  SysUtils;
 
 type
   PGTKAPIWidget = ^TGTKAPIWidget;
@@ -63,9 +68,6 @@ procedure GTKAPIWidget_SetCaretRespondToFocus(APIWidget: PGTKAPIWidget;
   ShowHideOnFocus: boolean); 
 
 implementation
-
-uses
-  sysutils;
 
 //---------------------------------------------------------------------------
 // gtk_winapiwindow_internal
@@ -732,6 +734,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.38  2002/12/15 11:52:28  mattias
+  started gtk2 interface
+
   Revision 1.37  2002/02/09 02:13:38  mattias
   undid the TWinControls can now contain childs in gtk, due to slowness
 

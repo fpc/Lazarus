@@ -14,9 +14,12 @@
 }
 unit KeyMap;
 
-{$mode objfpc}
+{$mode objfpc}{$H+}
 
 interface
+
+uses
+  LCLType, {$IFDEF gtk2}gdk2{$ELSE}gdk{$ENDIF};
 
 function VK2GDK(const Key : word) : word;
 function GDK2VK(const Key : word) : word;
@@ -25,13 +28,9 @@ function GDK2VK(const Key : word) : word;
 implementation
 
 
-uses LCLType, gdk;
-
 function VK2GDK(const Key : word) : word;
 begin
-
- { Can someone come up with a better method ? Boy, I love Python ... }
- case Key of
+  case Key of
    VK_UNKNOWN: Result:= 0;
    VK_LBUTTON: Result:= 1;
    VK_RBUTTON: Result:= 2;

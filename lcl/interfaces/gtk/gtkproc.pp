@@ -25,11 +25,17 @@ interface
 {$ENDIF}
 
 uses
+  SysUtils, Classes,
   {$Ifndef Win32}
   X, XLib,//Font retrieval
   {$EndIf}
-  InterfaceBase, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} gtk, gdk,
-  glib, SysUtils, LMessages, Classes, Controls, Forms, VclGlobals,
+  InterfaceBase,
+  {$IFDEF gtk2}
+  glib2, gdk2pixbuf, gdk2, gtk2,
+  {$ELSE}
+  glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
+  {$ENDIF}
+  LMessages, Controls, Forms, VclGlobals,
   LCLLinux, LCLType, gtkDef, DynHashArray, LazQueue, GraphType,
   GraphMath, Graphics, Buttons, Menus, GTKWinApiWindow, StdCtrls, ComCtrls,
   CListBox, KeyMap, Calendar, Arrow, Spin, CommCtrl, ExtCtrls, Dialogs,
