@@ -2746,6 +2746,8 @@ var
   ACaption, AText: string;
   CompResourceCode, LFMFilename, TestFilename, ResTestFilename: string;
 begin
+  Result:=mrCancel;
+  
   // save lrs - lazarus resource file and lfm - lazarus form text file
   // Note: When there is a bug in the source, no resource code can be found,
   //       but the LFM file should always be saved
@@ -2756,10 +2758,12 @@ begin
     // stream component to binary stream
     BinCompStream:=TMemoryStream.Create;
     try
+      Result:=mrOk;
       repeat
         try
           BinCompStream.Position:=0;
-          Driver:=TBinaryObjectWriter.Create(BinCompStream,4096);
+           // fix the buffer size, when we got the new compiler out:
+          Driver:=TBinaryObjectWriter.Create(BinCompStream,100000{4096});
           try
             Writer:=TWriter.Create(Driver);
             try
@@ -2781,7 +2785,7 @@ begin
           FormSavingOk:=false;
         end;
       until Result<>mrRetry;
-      
+
       // create lazarus form resource code
       if FormSavingOk then begin
         if ResourceCode=nil then begin
@@ -2864,6 +2868,7 @@ begin
             {$IFDEF IDE_DEBUG}
             writeln('TMainIDE.SaveFileResources E2 LFM=',LFMCode.Filename);
             {$ENDIF}
+            Result:=mrOk;
             repeat
               try
                 // transform binary to text
@@ -7183,6 +7188,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.391  2002/09/20 08:36:42  lazarus
+  MG: workaround for TBinaryObjectWriter till we announce the new compiler
+
   Revision 1.390  2002/09/20 07:26:34  lazarus
   MG: applied localization from Vasily
 
