@@ -6116,6 +6116,7 @@ begin
     ExtTool.ScanOutputForFPCMessages:=Tool.ScanForFPCMessages;
     ExtTool.ScanOutputForMakeMessages:=Tool.ScanForMakeMessages;
     ExtTool.ScanOutput:=true;
+    ExtTool.ShowAllOutput:=Tool.ShowAllMessages;
     ExtTool.Title:=ToolTitle;
     ExtTool.WorkingDirectory:=WorkingDir;
     ExtTool.CmdLineParams:=Params;
@@ -9705,7 +9706,6 @@ procedure TMainIDE.OnExtToolNeedsOutputFilter(var OutputFilter: TOutputFilter;
   var Abort: boolean);
 begin
   OutputFilter:=TheOutputFilter;
-  OutputFilter.Project:=Project1;
   if ToolStatus<>itNone then begin
     Abort:=true;
     exit;
@@ -10250,6 +10250,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.685  2003/12/21 18:21:32  mattias
+  implemented ShowAll and hide hints for unused package units option
+
   Revision 1.684  2003/12/21 18:14:29  micha
   fix openfile popupmenu to appear at correct position
 

@@ -66,9 +66,11 @@ type
     fScanOutputForFPCMessages: boolean;
     fScanOutputForMakeMessages: boolean;
     fShift: TShiftState;
+    FShowAllOutput: boolean;
     fTitle: string;
     fWorkingDirectory: string;
     procedure SetScanOutput(const AValue: boolean);
+    procedure SetShowAllOutput(const AValue: boolean);
   public
     procedure Assign(Source: TExternalToolOptions);
     constructor Create;
@@ -93,6 +95,7 @@ type
       read fWorkingDirectory write fWorkingDirectory;
     property EnvironmentOverrides: TStringList read FEnvironmentOverrides;
     property ScanOutput: boolean read FScanOutput write SetScanOutput;
+    property ShowAllOutput: boolean read FShowAllOutput write SetShowAllOutput;
   end;
 
   {
@@ -182,6 +185,12 @@ begin
   FScanOutput:=AValue;
 end;
 
+procedure TExternalToolOptions.SetShowAllOutput(const AValue: boolean);
+begin
+  if FShowAllOutput=AValue then exit;
+  FShowAllOutput:=AValue;
+end;
+
 procedure TExternalToolOptions.Assign(Source: TExternalToolOptions);
 begin
   if Source=Self then exit;
@@ -196,6 +205,8 @@ begin
     fShift:=Source.fShift;
     fScanOutputForFPCMessages:=Source.fScanOutputForFPCMessages;
     fScanOutputForMakeMessages:=Source.fScanOutputForMakeMessages;
+    FScanOutput:=Source.FScanOutput;
+    FShowAllOutput:=Source.FShowAllOutput;
   end;
 end;
 
@@ -222,23 +233,25 @@ begin
   fShift:=[];
   fScanOutputForFPCMessages:=false;
   fScanOutputForMakeMessages:=false;
+  FScanOutput:=false;
+  FShowAllOutput:=false;
 end;
 
 function TExternalToolOptions.Load(XMLConfig: TXMLConfig;
   const Path: string): TModalResult;
 begin
   Clear;
-  fTitle:=XMLConfig.GetValue(Path+'Title/Value',fTitle);
-  fFilename:=XMLConfig.GetValue(Path+'Filename/Value',fFilename);
-  fCmdLineParams:=XMLConfig.GetValue(Path+'CmdLineParams/Value',fCmdLineParams);
-  fWorkingDirectory:=XMLConfig.GetValue(
-                               Path+'WorkingDirectory/Value',fWorkingDirectory);
+  fTitle:=XMLConfig.GetValue(Path+'Title/Value','');
+  fFilename:=XMLConfig.GetValue(Path+'Filename/Value','');
+  fCmdLineParams:=XMLConfig.GetValue(Path+'CmdLineParams/Value','');
+  fWorkingDirectory:=XMLConfig.GetValue(Path+'WorkingDirectory/Value','');
   fScanOutputForFPCMessages:=XMLConfig.GetValue(
-               Path+'ScanOutputForFPCMessages/Value',fScanOutputForFPCMessages);
+                                   Path+'ScanOutputForFPCMessages/Value',false);
   fScanOutputForMakeMessages:=XMLConfig.GetValue(
-             Path+'ScanOutputForMakeMessages/Value',fScanOutputForMakeMessages);
+                                  Path+'ScanOutputForMakeMessages/Value',false);
+  FShowAllOutput:=XMLConfig.GetValue(Path+'ShowAllOutput/Value',false);
   LoadStringList(XMLConfig,FEnvironmentOverrides,Path+'EnvironmentOverrides/');
-  // key and shift are saved with the keymapping in the editoroptions
+  // key and shift are loaded with the keymapping in the editoroptions
   Result:=mrOk;
 end;
 
@@ -246,14 +259,17 @@ function TExternalToolOptions.Save(XMLConfig: TXMLConfig;
   const Path: string): TModalResult;
 begin
   XMLConfig.SetValue(Path+'Format/Version',ExternalToolOptionsFormat);
-  XMLConfig.SetValue(Path+'Title/Value',fTitle);
-  XMLConfig.SetValue(Path+'Filename/Value',fFilename);
-  XMLConfig.SetValue(Path+'CmdLineParams/Value',fCmdLineParams);
-  XMLConfig.SetValue(Path+'WorkingDirectory/Value',fWorkingDirectory);
-  XMLConfig.SetValue(
-               Path+'ScanOutputForFPCMessages/Value',fScanOutputForFPCMessages);
-  XMLConfig.SetValue(
-             Path+'ScanOutputForMakeMessages/Value',fScanOutputForMakeMessages);
+  XMLConfig.SetDeleteValue(Path+'Title/Value',fTitle,'');
+  XMLConfig.SetDeleteValue(Path+'Filename/Value',fFilename,'');
+  XMLConfig.SetDeleteValue(Path+'CmdLineParams/Value',fCmdLineParams,'');
+  XMLConfig.SetDeleteValue(Path+'WorkingDirectory/Value',fWorkingDirectory,'');
+  XMLConfig.SetDeleteValue(
+               Path+'ScanOutputForFPCMessages/Value',fScanOutputForFPCMessages,
+               false);
+  XMLConfig.SetDeleteValue(
+             Path+'ScanOutputForMakeMessages/Value',fScanOutputForMakeMessages,
+             false);
+  XMLConfig.SetDeleteValue(Path+'ShowAllOutput/Value',FShowAllOutput,false);
   SaveStringList(XMLConfig,FEnvironmentOverrides,Path+'EnvironmentOverrides/');
   // key and shift are saved with the keymapping in the editoroptions
   Result:=mrOk;
@@ -271,7 +287,8 @@ end;
 
 function TExternalToolOptions.NeedsOutputFilter: boolean;
 begin
-  Result:=ScanOutput or ScanOutputForFPCMessages or ScanOutputForMakeMessages;
+  Result:=ScanOutput or ScanOutputForFPCMessages or ScanOutputForMakeMessages
+                     or ShowAllOutput;
 end;
 
 

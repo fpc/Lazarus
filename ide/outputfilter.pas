@@ -37,6 +37,7 @@ type
   TOnGetIncludePath = function(const Directory: string): string of object;
   
   TOuputFilterOption = (
+    ofoShowAll,              // don't filter
     ofoSearchForFPCMessages, // scan for freepascal compiler messages
     ofoSearchForMakeMessages,// scan for make/gmake messages
     ofoExceptionOnError,     // raise exception on panic, fatal errors
@@ -50,6 +51,7 @@ type
 
   TOutputFilter = class
   private
+    FCompilerOptions: TBaseCompilerOptions;
     fCurrentDirectory: string;
     fFilteredOutput: TStringList;
     fOnReadLine: TOnOutputString;
@@ -61,8 +63,6 @@ type
     fOnGetIncludePath: TOnGetIncludePath;
     fOnOutputString: TOnOutputString;
     fOptions: TOuputFilterOptions;
-    fProject: TProject;
-    fPrgSourceFilename: string;
     FStopExecute: boolean;
     procedure DoAddFilteredLine(const s: string);
     procedure DoAddLastLinkerMessages(SkipLastLine: boolean);
@@ -79,8 +79,8 @@ type
     procedure Clear;
     constructor Create;
     destructor Destroy; override;
-    function IsHintForUnusedProjectUnit(const OutputLine,
-      ProgramSrcFile: string): boolean;
+    function IsHintForUnusedUnit(const OutputLine,
+      MainSrcFile: string): boolean;
     function IsParsing: boolean;
     procedure ReadLine(const s: string; DontFilterLine: boolean);
     function ReadFPCompilerLine(const s: string): boolean;
@@ -92,15 +92,14 @@ type
     property Lines: TStringList read fOutput;
     property LastErrorType: TErrorType read fLastErrorType;
     property LastMessageType: TOutputMessageType read fLastMessageType;
-    property PrgSourceFilename: string
-      read fPrgSourceFilename write fPrgSourceFilename;
     property OnGetIncludePath: TOnGetIncludePath
-      read fOnGetIncludePath write fOnGetIncludePath;
+                                 read fOnGetIncludePath write fOnGetIncludePath;
     property OnReadLine: TOnOutputString read fOnReadLine write fOnReadLine;
     property OnOutputString: TOnOutputString
-      read fOnOutputString write fOnOutputString;
+                                     read fOnOutputString write fOnOutputString;
     property Options: TOuputFilterOptions read fOptions write fOptions;
-    property Project: TProject read fProject write fProject;
+    property CompilerOptions: TBaseCompilerOptions read FCompilerOptions
+                                               write FCompilerOptions;
   end;
   
   EOutputFilterError = class(Exception)
@@ -208,8 +207,10 @@ begin
   fLastMessageType:=omtNone;
   fLastErrorType:=etNone;
   fOutput.Add(s);
-  if Assigned(OnReadLine) then OnReadLine(s,fCurrentDirectory);
-  if DontFilterLine then begin
+  if Assigned(OnReadLine) then
+    OnReadLine(s,fCurrentDirectory);
+
+  if DontFilterLine or (ofoShowAll in Options) then begin
     DoAddFilteredLine(s);
   end else if (ofoSearchForFPCMessages in Options) and (ReadFPCompilerLine(s))
   then begin
@@ -239,6 +240,7 @@ var i, j, FilenameEndPos: integer;
   CurCompHistory: string;
   CurFilenameLen: Integer;
   CurCompHistLen: Integer;
+  MainSrcFilename: String;
   
   function CheckForCompilingState: boolean;
   var
@@ -387,31 +389,34 @@ begin
       fLastMessageType:=omtFPC;
       
       SkipMessage:=true;
-      if Project<>nil then begin
+      if CompilerOptions<>nil then begin
         case MsgType of
 
         etHint:
           begin
-            SkipMessage:=not (Project.CompilerOptions.ShowHints
-                              or Project.CompilerOptions.ShowAll);
+            SkipMessage:=not (CompilerOptions.ShowHints
+                              or CompilerOptions.ShowAll);
             if (not SkipMessage)
-            and (not Project.CompilerOptions.ShowAll)
-            and (not Project.CompilerOptions.ShowHintsForUnusedProjectUnits)
-            and (PrgSourceFilename<>'')
-            and (IsHintForUnusedProjectUnit(s,PrgSourceFilename)) then
-              SkipMessage:=true;
+            and (not CompilerOptions.ShowAll)
+            and (not CompilerOptions.ShowHintsForUnusedUnitsInMainSrc) then
+            begin
+              MainSrcFilename:=CompilerOptions.GetDefaultMainSourceFileName;
+              if (MainSrcFilename<>'')
+              and (IsHintForUnusedUnit(s,MainSrcFilename)) then
+                SkipMessage:=true;
+            end;
           end;
 
         etNote:
           begin
-            SkipMessage:=not (Project.CompilerOptions.ShowNotes
-                              or Project.CompilerOptions.ShowAll);
+            SkipMessage:=not (CompilerOptions.ShowNotes
+                              or CompilerOptions.ShowAll);
           end;
 
         etError:
           begin
-            SkipMessage:=not (Project.CompilerOptions.ShowErrors
-                              or Project.CompilerOptions.ShowAll);
+            SkipMessage:=not (CompilerOptions.ShowErrors
+                              or CompilerOptions.ShowAll);
             if copy(s,j+2,length(s)-j-1)='Error while linking' then begin
               DoAddLastLinkerMessages(true);
             end
@@ -422,8 +427,8 @@ begin
 
         etWarning:
           begin
-            SkipMessage:=not (Project.CompilerOptions.ShowWarn
-                              or Project.CompilerOptions.ShowAll);
+            SkipMessage:=not (CompilerOptions.ShowWarn
+                              or CompilerOptions.ShowAll);
           end;
 
         etPanic, etFatal:
@@ -569,8 +574,8 @@ begin
   end;
 end;
 
-function TOutputFilter.IsHintForUnusedProjectUnit(const OutputLine,
-  ProgramSrcFile: string): boolean;
+function TOutputFilter.IsHintForUnusedUnit(const OutputLine,
+  MainSrcFile: string): boolean;
 { recognizes hints of the form
 
   mainprogram.pp(5,35) Hint: Unit UNUSEDUNIT not used in mainprogram
@@ -578,7 +583,7 @@ function TOutputFilter.IsHintForUnusedProjectUnit(const OutputLine,
 var Filename: string;
 begin
   Result:=false;
-  Filename:=ExtractFilename(ProgramSrcFile);
+  Filename:=ExtractFilename(MainSrcFile);
   if CompareFilenames(Filename,copy(OutputLine,1,length(Filename)))<>0 then
     exit;
   if (pos(') Hint: Unit ',OutputLine)<>0)

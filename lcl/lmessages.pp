@@ -231,6 +231,7 @@ const
   LM_MOUSEENTER     = LM_MOUSEFIRST2   +6;
   LM_MOUSELEAVE     = LM_MOUSEFIRST2   +7;
   LM_MOUSELAST2     = LM_MOUSELEAVE;
+  // for triple and quad clicks see below
 
   LM_GRABFOCUS      = LM_USER+79;
 
@@ -281,90 +282,89 @@ const
   // Messages
   //-------------
 
-  LM_NULL           = $0000;
+  LM_NULL              = $0000;
   // not yet these are defined as messages to the interface
-  //LM_CREATE        = $0001;
-  //LM_DESTROY       = $0002;
-  LM_MOVE           = $0003;
+  //LM_CREATE            = $0001;
+  //LM_DESTROY           = $0002;
+  LM_MOVE              = $0003;
 
-  LM_SIZE           = $0005;
-  LM_ACTIVATE       = $0006;
-  LM_SETFOCUS       = $0007;
-  LM_KILLFOCUS      = $0008;
-  LM_ENABLE         = $000A;
-  LM_GETTEXTLENGTH  = $000E;
-  LM_ERASEBKGND     = $0014;
+  LM_SIZE              = $0005;
+  LM_ACTIVATE          = $0006;
+  LM_SETFOCUS          = $0007;
+  LM_KILLFOCUS         = $0008;
+  LM_ENABLE            = $000A;
+  LM_GETTEXTLENGTH     = $000E;
+  LM_ERASEBKGND        = $0014;
 
-  LM_SHOWWINDOW     = $0018;
+  LM_SHOWWINDOW        = $0018;
 
-  LM_CANCELMODE     = $001F;
-  LM_SETCURSOR      = $0020;
-  LM_DRAWITEM       = $002B;
-  LM_MEASUREITEM    = $002C;
-  LM_DELETEITEM     = $002D;
-  LM_VKEYTOITEM     = $002E;
-  LM_CHARTOITEM     = $002F;
-  LM_SETFONT        = $0030;
+  LM_CANCELMODE        = $001F;
+  LM_SETCURSOR         = $0020;
+  LM_DRAWITEM          = $002B;
+  LM_MEASUREITEM       = $002C;
+  LM_DELETEITEM        = $002D;
+  LM_VKEYTOITEM        = $002E;
+  LM_CHARTOITEM        = $002F;
+  LM_SETFONT           = $0030;
 
-  LM_COMPAREITEM    = $0039;
+  LM_COMPAREITEM       = $0039;
   LM_WINDOWPOSCHANGING = $0046;
-  LM_WINDOWPOSCHANGED = $0047;
-  LM_NOTIFY         = $004E;
-  LM_NOTIFYFORMAT   = $0055;
+  LM_WINDOWPOSCHANGED  = $0047;
+  LM_NOTIFY            = $004E;
+  LM_NOTIFYFORMAT      = $0055;
 
-  LM_NCCALCSIZE     = $0083;
-  LM_NCHITTEST      = $0084;
-  LM_NCPAINT        = $0085;
-  LM_NCACTIVATE     = $0086;
-  LM_GETDLGCODE     = $0087;
-  LM_NCMOUSEMOVE    = $00A0;
-  LM_NCLBUTTONDOWN  = $00A1;
-  LM_NCLBUTTONUP    = $00A2;
-  LM_NCLBUTTONDBLCLK  = $00A3;
+  LM_NCCALCSIZE        = $0083;
+  LM_NCHITTEST         = $0084;
+  LM_NCPAINT           = $0085;
+  LM_NCACTIVATE        = $0086;
+  LM_GETDLGCODE        = $0087;
+  LM_NCMOUSEMOVE       = $00A0;
+  LM_NCLBUTTONDOWN     = $00A1;
+  LM_NCLBUTTONUP       = $00A2;
+  LM_NCLBUTTONDBLCLK   = $00A3;
 
-  LM_KEYFIRST       = $0100;
-  LM_KEYDOWN        = $0100;
-  LM_KEYUP          = $0101;
-  LM_CHAR           = $0102;
+  LM_KEYFIRST          = $0100;
+  LM_KEYDOWN           = $0100;
+  LM_KEYUP             = $0101;
+  LM_CHAR              = $0102;
 
-  LM_SYSKEYDOWN     = $0104;
-  LM_SYSKEYUP       = $0105;
-  LM_SYSCHAR        = $0106;
+  LM_SYSKEYDOWN        = $0104;
+  LM_SYSKEYUP          = $0105;
+  LM_SYSCHAR           = $0106;
 
-  LM_KEYLAST        = $0108;
+  LM_KEYLAST           = $0108;
 
-  LM_COMMAND        = $0111;
-  LM_SYSCOMMAND     = $0112;
+  LM_COMMAND           = $0111;
+  LM_SYSCOMMAND        = $0112;
 
-  LM_HSCROLL        = $0114;
-  LM_VSCROLL        = $0115;
-  LM_CTLCOLORMSGBOX   = $0132;
-  LM_CTLCOLOREDIT     = $0133;
-  LM_CTLCOLORLISTBOX  = $0134;
-  LM_CTLCOLORBTN      = $0135;
-  LM_CTLCOLORDLG      = $0136;
-  LM_CTLCOLORSCROLLBAR= $0137;
-  LM_CTLCOLORSTATIC   = $0138;
+  LM_HSCROLL           = $0114;
+  LM_VSCROLL           = $0115;
+  LM_CTLCOLORMSGBOX    = $0132;
+  LM_CTLCOLOREDIT      = $0133;
+  LM_CTLCOLORLISTBOX   = $0134;
+  LM_CTLCOLORBTN       = $0135;
+  LM_CTLCOLORDLG       = $0136;
+  LM_CTLCOLORSCROLLBAR = $0137;
+  LM_CTLCOLORSTATIC    = $0138;
 
-  LM_MOUSEFIRST     = $0200;
-  LM_MOUSEMOVE      = $0200;
-  LM_LBUTTONDOWN    = $0201;
-  LM_LBUTTONUP      = $0202;
-  LM_LBUTTONDBLCLK  = $0203;
-  LM_RBUTTONDOWN    = $0204;
-  LM_RBUTTONUP      = $0205;
-  LM_RBUTTONDBLCLK  = $0206;
-  LM_MButtonDown    = $0207;
-  LM_MBUTTONUP      = $0208;
-  LM_MBUTTONDBLCLK  = $0209;
-  LM_MOUSEWHEEL     = $020A;
-  LM_MOUSELAST      = $020A;
-  // for triple and quad clicks see below
+  LM_MOUSEFIRST        = $0200;
+  LM_MOUSEMOVE         = $0200;
+  LM_LBUTTONDOWN       = $0201;
+  LM_LBUTTONUP         = $0202;
+  LM_LBUTTONDBLCLK     = $0203;
+  LM_RBUTTONDOWN       = $0204;
+  LM_RBUTTONUP         = $0205;
+  LM_RBUTTONDBLCLK     = $0206;
+  LM_MButtonDown       = $0207;
+  LM_MBUTTONUP         = $0208;
+  LM_MBUTTONDBLCLK     = $0209;
+  LM_MOUSEWHEEL        = $020A;
+  LM_MOUSELAST         = $020A;
 
-  LM_CAPTURECHANGED = $0215;
-  LM_DROPFILES      = $0233;
+  LM_PARENTNOTIFY      = $0210;
+  LM_CAPTURECHANGED    = $0215;
+  LM_DROPFILES         = $0233;
 
-  LM_PARENTNOTIFY   = $0210;
 
   //-------------
   // End of Windows Compatability and messages
@@ -1092,6 +1092,9 @@ end.
 
 {
   $Log$
+  Revision 1.57  2003/12/21 18:21:32  mattias
+  implemented ShowAll and hide hints for unused package units option
+
   Revision 1.56  2003/11/15 13:07:09  mattias
   added ambigious unit check for IDE
 

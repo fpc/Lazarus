@@ -156,9 +156,8 @@ begin
         TheProcess.CurrentDirectory:=ProjectDir;
         
         if OutputFilter<>nil then begin
-          OutputFilter.PrgSourceFilename:=ProjectFilename;
           OutputFilter.Options:=[ofoSearchForFPCMessages,ofoExceptionOnError];
-          OutputFilter.Project:=AProject;
+          OutputFilter.CompilerOptions:=AProject.CompilerOptions;
           OutputFilter.Execute(TheProcess);
         end else begin
           TheProcess.Execute;
@@ -191,6 +190,9 @@ end.
 
 {
   $Log$
+  Revision 1.43  2003/12/21 18:21:32  mattias
+  implemented ShowAll and hide hints for unused package units option
+
   Revision 1.42  2003/12/20 01:20:52  mattias
   splitted output directories for cross compilation
 

@@ -124,6 +124,8 @@ begin
   until Result<>mrRetry;
   if (ACodeBuffer=nil) and (lbfCreateClearOnError in Flags) then begin
     ACodeBuffer:=CodeToolBoss.CreateFile(AFilename);
+    if ACodeBuffer<>nil then
+      Result:=mrOk;
   end;
 end;
 

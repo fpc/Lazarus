@@ -2117,7 +2117,7 @@ begin
 
           // compile package
           Result:=EnvironmentOptions.ExternalTools.Run(PkgCompileTool,
-                                                       MainIDE.MacroList);
+                                MainIDE.MacroList,nil,APackage.CompilerOptions);
           if Result<>mrOk then exit;
           // compilation succeded -> write state file
           Result:=DoSavePackageCompiledState(APackage,
@@ -2182,7 +2182,10 @@ begin
 
   // delete ambigious files
   Result:=MainIDE.DoDeleteAmbigiousFiles(SrcFilename);
-  if Result=mrAbort then exit;
+  if Result=mrAbort then begin
+    writeln('TPkgManager.DoSavePackageMainSource DoDeleteAmbigiousFiles failed');
+    exit;
+  end;
 
   // collect unitnames
   e:=EndOfLine;
@@ -2258,7 +2261,10 @@ begin
   // check if old code is already uptodate
   Result:=LoadCodeBuffer(CodeBuffer,SrcFilename,[lbfQuiet,lbfCheckIfText,
                                       lbfUpdateFromDisk,lbfCreateClearOnError]);
-  if Result<>mrOk then exit;
+  if Result<>mrOk then begin
+    writeln('TPkgManager.DoSavePackageMainSource LoadCodeBuffer ',SrcFilename,' failed');
+    exit;
+  end;
   OldSrc:=CodeToolBoss.ExtractCodeWithoutComments(CodeBuffer);
   if CompareTextIgnoringSpace(OldSrc,Src,true)=0 then begin
     Result:=mrOk;
@@ -2268,7 +2274,10 @@ begin
   // save source
   Result:=MainIDE.DoSaveStringToFile(SrcFilename, Src,
     lisPkgMangpackageMainSourceFile);
-  if Result<>mrOk then exit;
+  if Result<>mrOk then begin
+    writeln('TPkgManager.DoSavePackageMainSource DoSaveStringToFile ',SrcFilename,' failed');
+    exit;
+  end;
 
   Result:=mrOk;
 end;

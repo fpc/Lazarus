@@ -41,7 +41,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, LCLType, Controls, Forms, Buttons, StdCtrls, ComCtrls, 
   Dialogs, ExtCtrls, LResources, Laz_XMLCfg, ExtToolEditDlg, Process,
-  KeyMapping, TransferMacros, IDEProcs, OutputFilter, FileCtrl,
+  KeyMapping, TransferMacros, IDEProcs, CompilerOptions, OutputFilter, FileCtrl,
   LazarusIDEStrConsts;
 
 const
@@ -79,7 +79,8 @@ type
                  Macros: TTransferMacroList): TModalResult;
     function Run(ExtTool: TExternalToolOptions;
                  Macros: TTransferMacroList;
-                 TheOutputFilter: TOutputFilter): TModalResult;
+                 TheOutputFilter: TOutputFilter;
+                 CompilerOptions: TBaseCompilerOptions): TModalResult;
     function Run(Index: integer; Macros: TTransferMacroList): TModalResult;
     function Save(XMLConfig: TXMLConfig; const Path: string): TModalResult;
     procedure SaveShortCuts(KeyCommandRelationList: TKeyCommandRelationList);
@@ -255,7 +256,7 @@ end;
 function TExternalToolList.Run(ExtTool: TExternalToolOptions;
   Macros: TTransferMacroList): TModalResult;
 begin
-  Result:=Run(ExtTool,Macros,nil);
+  Result:=Run(ExtTool,Macros,nil,nil);
 end;
 
 function TExternalToolList.Run(Index: integer;
@@ -267,7 +268,8 @@ begin
 end;
 
 function TExternalToolList.Run(ExtTool: TExternalToolOptions;
-  Macros: TTransferMacroList; TheOutputFilter: TOutputFilter): TModalResult;
+  Macros: TTransferMacroList; TheOutputFilter: TOutputFilter;
+  CompilerOptions: TBaseCompilerOptions): TModalResult;
 var WorkingDir, Filename, Params, CmdLine, Title: string;
   TheProcess: TProcess;
   Abort, ErrorOccurred: boolean;
@@ -309,7 +311,7 @@ begin
     if TheOutputFilter<>nil then begin
       ErrorOccurred:=false;
       try
-        TheOutputFilter.PrgSourceFilename:='';
+        TheOutputFilter.CompilerOptions:=CompilerOptions;
         TheOutputFilter.Options:=[ofoExceptionOnError,
                                   ofoMakeFilenamesAbsolute];
         if ExtTool.ScanOutputForFPCMessages then
@@ -318,6 +320,8 @@ begin
         if ExtTool.ScanOutputForMakeMessages then
           TheOutputFilter.Options:=TheOutputFilter.Options
                                    +[ofoSearchForMakeMessages];
+        if ExtTool.ShowAllOutput then
+          TheOutputFilter.Options:=TheOutputFilter.Options+[ofoShowAll];
         try
           Result:=mrCancel;
           try

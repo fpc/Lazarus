@@ -151,6 +151,7 @@ type
     Command: string;
     ScanForFPCMessages: boolean;
     ScanForMakeMessages: boolean;
+    ShowAllMessages: boolean;
     procedure Clear;
     function IsEqual(Params: TCompilationTool): boolean;
     procedure Assign(Src: TCompilationTool);
@@ -248,7 +249,7 @@ type
     fShowCompProc: Boolean;
     fShowCond: Boolean;
     fShowNothing: Boolean;
-    fShowHintsForUnusedProjectUnits: Boolean;
+    fShowHintsForUnusedUnitsInMainSrc: Boolean;
     fWriteFPCLogo: Boolean;
     fStopAfterErrCount: integer;
 
@@ -410,8 +411,8 @@ type
     property ShowCompProc: Boolean read fShowCompProc write fShowCompProc;
     property ShowCond: Boolean read fShowCond write fShowCond;
     property ShowNothing: Boolean read fShowNothing write fShowNothing;
-    property ShowHintsForUnusedProjectUnits: Boolean 
-      read fShowHintsForUnusedProjectUnits write fShowHintsForUnusedProjectUnits;
+    property ShowHintsForUnusedUnitsInMainSrc: Boolean
+      read fShowHintsForUnusedUnitsInMainSrc write fShowHintsForUnusedUnitsInMainSrc;
     property WriteFPCLogo: Boolean read fWriteFPCLogo write fWriteFPCLogo;
     property StopAfterErrCount: integer
       read fStopAfterErrCount write fStopAfterErrCount;
@@ -612,7 +613,7 @@ type
     chkCompiledProc: TCheckBox;
     chkConditionals: TCheckBox;
     chkNothing: TCheckBox;
-    chkHintsForUnusedProjectUnits: TCheckBox;
+    chkHintsForUnusedUnitsInMainSrc: TCheckBox;
     chkFPCLogo: TCheckBox;
 
     grpErrorCnt: TGroupBox;
@@ -641,6 +642,7 @@ type
     ExecuteBeforeCommandEdit: TEdit;
     ExecuteBeforeScanFPCCheckBox: TCheckBox;
     ExecuteBeforeScanMakeCheckBox: TCheckBox;
+    ExecuteBeforeShowAllCheckBox: TCheckBox;
 
     grpCompiler: TGroupBox;
     edtCompiler: TEdit;
@@ -652,6 +654,7 @@ type
     ExecuteAfterCommandEdit: TEdit;
     ExecuteAfterScanFPCCheckBox: TCheckBox;
     ExecuteAfterScanMakeCheckBox: TCheckBox;
+    ExecuteAfterShowAllCheckBox: TCheckBox;
 
     { Buttons }
     btnShowOptions: TButton;
@@ -1255,7 +1258,7 @@ begin
   ShowCompProc := XMLConfigFile.GetValue(p+'Verbosity/ShowCompProc/Value', false);
   ShowCond := XMLConfigFile.GetValue(p+'Verbosity/ShowCond/Value', false);
   ShowNothing := XMLConfigFile.GetValue(p+'Verbosity/ShowNothing/Value', false);
-  ShowHintsForUnusedProjectUnits := XMLConfigFile.GetValue(p+'Verbosity/ShowHintsForUnusedProjectUnits/Value', false);
+  ShowHintsForUnusedUnitsInMainSrc := XMLConfigFile.GetValue(p+'Verbosity/ShowHintsForUnusedUnitsInMainSrc/Value', false);
   WriteFPCLogo := XMLConfigFile.GetValue(p+'WriteFPCLogo/Value', true);
   StopAfterErrCount := XMLConfigFile.GetValue(p+'ConfigFile/StopAfterErrCount/Value', 1);
 
@@ -1390,7 +1393,7 @@ begin
   XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowCompProc/Value', ShowCompProc,false);
   XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowCond/Value', ShowCond,false);
   XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowNothing/Value', ShowNothing,false);
-  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowHintsForUnusedProjectUnits/Value', ShowHintsForUnusedProjectUnits,false);
+  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowHintsForUnusedUnitsInMainSrc/Value', ShowHintsForUnusedUnitsInMainSrc,false);
   XMLConfigFile.SetDeleteValue(p+'WriteFPCLogo/Value', WriteFPCLogo,true);
   XMLConfigFile.SetDeleteValue(p+'ConfigFile/StopAfterErrCount/Value', StopAfterErrCount,1);
 
@@ -2242,7 +2245,7 @@ begin
   fShowCompProc := false;
   fShowCond := false;
   fShowNothing := false;
-  fShowHintsForUnusedProjectUnits := false;
+  fShowHintsForUnusedUnitsInMainSrc := false;
   fWriteFPCLogo := true;
   fStopAfterErrCount := 1;
 
@@ -2337,7 +2340,7 @@ begin
   fShowCompProc := CompOpts.fShowCompProc;
   fShowCond := CompOpts.fShowCond;
   fShowNothing := CompOpts.fShowNothing;
-  fShowHintsForUnusedProjectUnits := CompOpts.fShowHintsForUnusedProjectUnits;
+  fShowHintsForUnusedUnitsInMainSrc := CompOpts.fShowHintsForUnusedUnitsInMainSrc;
   fWriteFPCLogo := CompOpts.fWriteFPCLogo;
   fStopAfterErrCount := CompOpts.fStopAfterErrCount;
 
@@ -2428,7 +2431,7 @@ begin
     and (fShowCompProc = CompOpts.fShowCompProc)
     and (fShowCond = CompOpts.fShowCond)
     and (fShowNothing = CompOpts.fShowNothing)
-    and (fShowHintsForUnusedProjectUnits = CompOpts.fShowHintsForUnusedProjectUnits)
+    and (fShowHintsForUnusedUnitsInMainSrc = CompOpts.fShowHintsForUnusedUnitsInMainSrc)
     and (fWriteFPCLogo = CompOpts.fWriteFPCLogo)
     
     // other
@@ -2627,13 +2630,16 @@ begin
     inc(y,Height+5);
   end;
 
-  with ExecuteAfterScanFPCCheckBox do begin
-    SetBounds(x,y,w,Height);
+  with ExecuteAfterScanFPCCheckBox do
+    SetBounds(x,y,w div 2,Height);
+
+  with ExecuteAfterScanMakeCheckBox do begin
+    SetBounds(x+(w div 2),y,w div 2,Height);
     inc(y,Height+5);
   end;
 
-  with ExecuteAfterScanMakeCheckBox do
-    SetBounds(x,y,w,Height);
+  with ExecuteAfterShowAllCheckBox do
+    SetBounds(x,y,w div 2,Height);
 end;
 
 procedure TfrmCompilerOptions.ExecuteBeforeGroupBoxResize(Sender: TObject);
@@ -2654,13 +2660,16 @@ begin
     inc(y,Height+5);
   end;
 
-  with ExecuteBeforeScanFPCCheckBox do begin
-    SetBounds(x,y,w,Height);
+  with ExecuteBeforeScanFPCCheckBox do
+    SetBounds(x,y,w div 2,Height);
+
+  with ExecuteBeforeScanMakeCheckBox do begin
+    SetBounds(x+(w div 2),y,w div 2,Height);
     inc(y,Height+5);
   end;
 
-  with ExecuteBeforeScanMakeCheckBox do
-    SetBounds(x,y,w,Height);
+  with ExecuteBeforeShowAllCheckBox do
+    SetBounds(x,y,w div 2,Height);
 end;
 
 procedure TfrmCompilerOptions.FileBrowseBtnClick(Sender: TObject);
@@ -2864,8 +2873,8 @@ begin
   chkCompiledProc.Checked := Options.ShowCompProc;
   chkConditionals.Checked := Options.ShowCond;
   chkNothing.Checked := Options.ShowNothing;
-  chkHintsForUnusedProjectUnits.Checked :=
-    Options.ShowHintsForUnusedProjectUnits;
+  chkHintsForUnusedUnitsInMainSrc.Checked :=
+    Options.ShowHintsForUnusedUnitsInMainSrc;
 
   chkFPCLogo.Checked := Options.WriteFPCLogo;
 
@@ -2886,11 +2895,13 @@ begin
   ExecuteBeforeScanFPCCheckBox.Checked:=Options.ExecuteBefore.ScanForFPCMessages;
   ExecuteBeforeScanMakeCheckBox.Checked:=
                                       Options.ExecuteBefore.ScanForMakeMessages;
+  ExecuteBeforeShowAllCheckBox.Checked:=Options.ExecuteBefore.ShowAllMessages;
   edtCompiler.Text := Options.CompilerPath;
   chkSkipCompiler.Checked := Options.SkipCompiler;
   ExecuteAfterCommandEdit.Text:=Options.ExecuteAfter.Command;
   ExecuteAfterScanFPCCheckBox.Checked:=Options.ExecuteAfter.ScanForFPCMessages;
   ExecuteAfterScanMakeCheckBox.Checked:=Options.ExecuteAfter.ScanForMakeMessages;
+  ExecuteAfterShowAllCheckBox.Checked:=Options.ExecuteAfter.ShowAllMessages;
 end;
 
 {------------------------------------------------------------------------------}
@@ -3032,7 +3043,8 @@ begin
   Options.ShowCompProc := chkCompiledProc.Checked;
   Options.ShowCond := chkConditionals.Checked;
   Options.ShowNothing := chkNothing.Checked;
-  Options.ShowHintsForUnusedProjectUnits := chkHintsForUnusedProjectUnits.Checked;
+  Options.ShowHintsForUnusedUnitsInMainSrc :=
+                                        chkHintsForUnusedUnitsInMainSrc.Checked;
 
   Options.WriteFPCLogo := chkFPCLogo.Checked;
 
@@ -3056,6 +3068,7 @@ begin
                                            ExecuteBeforeScanFPCCheckBox.Checked;
   Options.ExecuteBefore.ScanForMakeMessages :=
                                           ExecuteBeforeScanMakeCheckBox.Checked;
+  Options.ExecuteBefore.ShowAllMessages:=ExecuteBeforeShowAllCheckBox.Checked;
   Options.CompilerPath := edtCompiler.Text;
   Options.SkipCompiler := chkSkipCompiler.Checked;
   Options.ExecuteAfter.Command := ExecuteAfterCommandEdit.Text;
@@ -3063,6 +3076,7 @@ begin
                                             ExecuteAfterScanFPCCheckBox.Checked;
   Options.ExecuteAfter.ScanForMakeMessages :=
                                            ExecuteAfterScanMakeCheckBox.Checked;
+  Options.ExecuteAfter.ShowAllMessages:=ExecuteAfterShowAllCheckBox.Checked;
 
 
   // check for change and save
@@ -4068,11 +4082,11 @@ begin
     Width := chkDebugInfo.Width;
   end;
 
-  chkHintsForUnusedProjectUnits := TCheckBox.Create(Self);
-  with chkHintsForUnusedProjectUnits do
+  chkHintsForUnusedUnitsInMainSrc := TCheckBox.Create(Self);
+  with chkHintsForUnusedUnitsInMainSrc do
   begin
     Parent := grpVerbosity;
-    Caption := dlgHintsUnused ;
+    Caption := dlgHintsUnused;
     Top := 174;
     Left := ChkErrors.Left;
     Height := ChkErrors.Height;
@@ -4259,6 +4273,13 @@ begin
     Caption:=lisCOScanForMakeMessages;
   end;
 
+  ExecuteBeforeShowAllCheckBox:=TCheckBox.Create(Self);
+  with ExecuteBeforeShowAllCheckBox do begin
+    Name:='ExecuteBeforeShowAllCheckBox';
+    Parent:=ExecuteBeforeGroupBox;
+    Caption:=lisCOShowAllMessages;
+  end;
+
   {------------------------------------------------------------}
 
   grpCompiler := TGroupBox.Create(Self);
@@ -4343,6 +4364,13 @@ begin
     Name:='ExecuteAfterScanMakeCheckBox';
     Parent:=ExecuteAfterGroupBox;
     Caption:=lisCOScanForMakeMessages;
+  end;
+
+  ExecuteAfterShowAllCheckBox:=TCheckBox.Create(Self);
+  with ExecuteAfterShowAllCheckBox do begin
+    Name:='ExecuteAfterShowAllCheckBox';
+    Parent:=ExecuteAfterGroupBox;
+    Caption:=lisCOShowAllMessages;
   end;
 
 end;
@@ -4996,6 +5024,7 @@ begin
   Command:='';
   ScanForFPCMessages:=false;
   ScanForMakeMessages:=false;
+  ShowAllMessages:=false;
 end;
 
 function TCompilationTool.IsEqual(Params: TCompilationTool
@@ -5004,6 +5033,7 @@ begin
   Result:= (Command=Params.Command)
         and ScanForFPCMessages=Params.ScanForFPCMessages
         and ScanForMakeMessages=Params.ScanForMakeMessages
+        and ShowAllMessages=Params.ShowAllMessages
         ;
 end;
 
@@ -5012,6 +5042,7 @@ begin
   Command:=Src.Command;
   ScanForFPCMessages:=Src.ScanForFPCMessages;
   ScanForMakeMessages:=Src.ScanForMakeMessages;
+  ShowAllMessages:=Src.ShowAllMessages;
 end;
 
 procedure TCompilationTool.LoadFromXMLConfig(XMLConfig: TXMLConfig;
@@ -5021,6 +5052,7 @@ begin
                             DoSwitchPathDelims);
   ScanForFPCMessages:=XMLConfig.GetValue(Path+'ScanForFPCMsgs/Value',false);
   ScanForMakeMessages:=XMLConfig.GetValue(Path+'ScanForMakeMsgs/Value',false);
+  ShowAllMessages:=XMLConfig.GetValue(Path+'ShowAllMessages/Value',false);
 end;
 
 procedure TCompilationTool.SaveToXMLConfig(XMLConfig: TXMLConfig;
@@ -5031,6 +5063,8 @@ begin
                            ScanForFPCMessages,false);
   XMLConfig.SetDeleteValue(Path+'ScanForMakeMsgs/Value',
                            ScanForMakeMessages,false);
+  XMLConfig.SetDeleteValue(Path+'ShowAllMessages/Value',
+                           ShowAllMessages,false);
 end;
 
 { TGlobalCompilerOptions }

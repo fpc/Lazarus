@@ -869,7 +869,7 @@ resourcestring
   dlgShowConditionals = 'Show Conditionals';
   dlgShowNothing = 'Show Nothing (only errors)';
   dlgWriteFPCLogo = 'Write an FPC Logo';
-  dlgHintsUnused = 'Show Hints for unused project units';
+  dlgHintsUnused = 'Show Hints for unused units in main source';
   dlgConfigFiles = 'Config Files:';
   dlgUseFpcCfg = 'Use Compiler Config File (fpc.cfg)';
   dlgUseAdditionalConfig = 'Use Additional Compiler Config File';
@@ -886,6 +886,7 @@ resourcestring
   lisCOCommand = 'Command:';
   lisCOScanForFPCMessages = 'Scan for FPC messages';
   lisCOScanForMakeMessages = 'Scan for Make messages';
+  lisCOShowAllMessages = 'Show all messages';
   dlgUnitOutp = 'Unit output directory:';
   dlgLCLWidgetType = 'LCL Widget Type';
   lisCOdefault = 'default (%s)';
