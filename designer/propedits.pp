@@ -1076,7 +1076,7 @@ type
 
 implementation
 
-uses Dialogs, ColumnDlg;
+uses Dialogs, ColumnDlg, LazarusIdeStrConsts, ControlSelection;
 
 const
   ListPropertyEditors: TList = nil;
@@ -2525,7 +2525,6 @@ end;
 Type
   TCollectionPropertyEditorForm = Class(TForm)
   protected
-    ButtonBevel: TBEVEL;
     CollectionList : TLISTBOX;
     ButtonPanel: TPANEL;
     AddButton: TSPEEDBUTTON;
@@ -2551,92 +2550,80 @@ begin
 
   Position := poDefault;
 
-  HEIGHT := 216;
-  WIDTH := 166;
+  Height:= 216;
+  Width:= 166;
 
-  ButtonPanel := TPANEL.Create(Self);
+  ButtonPanel := TPanel.Create(Self);
   With ButtonPanel do begin
     Parent := Self;
-    ALIGN := altop;
-    BEVELOUTER := bvnone;
-    HEIGHT := 41;
-    Show;
+    Align:= altop;
+    BevelOuter:= bvRaised;
+    BevelInner:= bvLowered;
+    BorderWidth:= 2;
+    Height:= 41;
   end;
 
-  ButtonBevel := TBEVEL.Create(Self);
-  With ButtonBevel do begin
-    Parent := ButtonPanel;
-    HEIGHT := 41;
-    LEFT := 1;
-    SHAPE := bsframe;
-    STYLE := bsraised;
-    WIDTH := 165;
-    LEFT := 1;
-    HEIGHT := 41;
-    WIDTH := 165;
-    Show;
-  end;
-
-  AddButton := TSPEEDBUTTON.Create(Self);
+  AddButton:= TSpeedButton.Create(Self);
   With AddButton do begin
-    Parent := ButtonPanel;
-    CAPTION := '&Add';
-    ONCLICK := @AddCLICK;
-    LEFT := 6;
-    HEIGHT := 27;
-    TOP := 6;
-    WIDTH := 43;
-    Show;
+    Parent:= ButtonPanel;
+    Caption:= liscAdd;
+    OnClick:= @AddClick;
+    SetBounds(6, 6, 43, 27);
   end;
 
-  DeleteButton := TSPEEDBUTTON.Create(Self);
+  DeleteButton := TSpeedButton.Create(Self);
   With DeleteButton do begin
-    Parent := ButtonPanel;
-    CAPTION := '&Delete';
-    ONCLICK := @DeleteCLICK;
-    LEFT := 56;
-    HEIGHT := 27;
-    TOP := 6;
-    WIDTH := 43;
-    Show;
+    Parent:= ButtonPanel;
+    Caption:= liscDelete;
+    OnClick:= @DeleteCLICK;
+    SetBounds(56, 6, 43, 27);
   end;
 
-  CollectionList := TLISTBOX.Create(Self);
+  CollectionList := TListBox.Create(Self);
   With CollectionList do begin
-    Parent := Self;
-    ALIGN := alclient;
-    ONCLICK := @ListCLICK;
-    Show;
+    Parent:= Self;
+    Align:= alclient;
+    MultiSelect:= true;
+    OnClick:= @ListClick;
   end;
 end;
 
-Procedure TCollectionPropertyEditorForm.UpdateCaption;
+procedure TCollectionPropertyEditorForm.UpdateCaption;
 begin
   //I think to match Delphi this should be formated like
   //"Editing ComponentName.PropertyName[Index]"
-  Caption := 'Editing ' + ComponentName + '.' + PropertyName;
+  Caption:= 'Editing ' + ComponentName + '.' + PropertyName;
   If CollectionList.ItemIndex > -1 then
     Caption := Caption + '[' +
       IntToStr(CollectionList.ItemIndex) + ']';
 end;
 
-Procedure TCollectionPropertyEditorForm.PropagateList;
+procedure TCollectionPropertyEditorForm.PropagateList;
 var
   I : Longint;
 begin
   CollectionList.Items.Clear;
-  For I := 0 to Collection.Count - 1 do
+  for I:= 0 to Collection.Count - 1 do
     CollectionList.Items.Add(Collection.Items[I].DisplayName);
-  DeleteButton.Enabled := CollectionList.ItemIndex > -1;
+  DeleteButton.Enabled:= CollectionList.ItemIndex > -1;
   UpdateCaption;
 end;
 
-procedure TCollectionPropertyEditorForm.ListCLICK(Sender: TObject);
+procedure TCollectionPropertyEditorForm.ListClick(Sender: TObject);
+//var i : integer;
 begin
   DeleteButton.Enabled := CollectionList.ItemIndex > -1;
   UpdateCaption;
-  //Select Collection.Items[CollectionList.ItemIndex]
-  //in OI
+  //XXX - Select Collection.Items[CollectionList.ItemIndex]
+  //in OI - once it supports TPersistent
+{  if CollectionList.SelCount > 0 then begin
+    TheControlSelection.BeginUpdate;
+    TheControlSelection.Clear;
+    for i:= 0 to CollectionList.Items.Count - 1 do begin
+      if CollectionList.Selected[i] then
+        TheControlSelection.Add(Collection.Items[i]);
+    end;
+  end;}
 end;
 
 procedure TCollectionPropertyEditorForm.AddCLICK(Sender: TObject);
