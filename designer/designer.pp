@@ -251,15 +251,15 @@ Begin
 end;
 
 procedure TDesigner.MoveSelection(DiffX, DiffY: integer);
-var
-  StepX, StepY: integer;
+//var
+//  StepX, StepY: integer;
 begin
-  if SnapToGrid then begin
+  {if SnapToGrid then begin
     StepX:=GridSizeX;
     StepY:=GridSizeY;
     DiffX:=DiffX+(StepX div 2)-(DiffX mod StepX);
     DiffY:=DiffY+(StepY div 2)-(DiffY mod StepY);
-  end;
+  end;}
   ControlSelection.MoveSelection(DiffX,DiffY);
 end;
 
