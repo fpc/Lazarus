@@ -2776,6 +2776,7 @@ Begin
     begin
       fMask:=fMask or MIIM_CHECKMARKS;
       hbmpUnchecked:=TMenuItem(Sender).Bitmap.Handle;
+      hbmpChecked:=0;
       {TODO: add support for getting icon from SubmenuImages as it will be
        implemented in LCL}
     end;
@@ -2812,6 +2813,9 @@ End;
 
 {
   $Log$
+  Revision 1.131  2003/11/21 08:40:54  micha
+  menuitems gone that have images, init bug
+
   Revision 1.130  2003/11/18 07:20:40  micha
   added "included by" notice at top of file
 
