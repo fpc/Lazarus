@@ -282,13 +282,23 @@ procedure TCustomForm.WMShowWindow(var message: TLMShowWindow);
 const
   SHOW_TEXT: array[Boolean] of string = ('Hide', 'Show');
 begin
+  {$IFDEF VerboseFocus}
+  write('TCustomForm.WMShowWindow A ',Name,':',ClassName,' fsShowing in FFormState=',fsShowing in FFormState,' Message.Show=',Message.Show);
+  if FActiveControl<>nil then begin
+    write(' FActiveControl=',FActiveControl.Name,':',FActiveControl.ClassName,' HandleAllocated=',FActiveControl.HandleAllocated);
+  end else begin
+    write(' FActiveControl=nil');
+  end;
+  writeln('');
+  {$ENDIF}
   if (fsShowing in FFormState) then exit;
-  Assert(False, Format('Trace: [TCustomForm.LMShowWindow] %s %s', [SHOW_TEXT[Message.Show], ClassName]));
   Include(FFormState, fsShowing);
   try
     if Message.Show then begin
       if (FActiveControl<>nil) and FActiveControl.HandleAllocated then begin
-        //writeln('TCustomForm.WMShowWindow ',FActiveControl.Name,':',FActiveControl.ClassName);
+        {$IFDEF VerboseFocus}
+        writeln('TCustomForm.WMShowWindow B ',FActiveControl.Name,':',FActiveControl.ClassName);
+        {$ENDIF}
         LCLLinux.SetFocus(FActiveControl.Handle);
       end;
       DoShow;
@@ -1153,6 +1163,16 @@ begin
 
   Assert(False, 'Trace:[TCustomForm.CreateWnd] FMenu.HandleNeeded');  
   if FMenu <> nil then FMenu.HandleNeeded;
+
+  // activate focus if visible
+  if Visible then begin
+    if (FActiveControl<>nil) and FActiveControl.HandleAllocated then begin
+      {$IFDEF VerboseFocus}
+      writeln('TCustomForm.CreateWnd A ',FActiveControl.Name,':',FActiveControl.ClassName);
+      {$ENDIF}
+      LCLLinux.SetFocus(FActiveControl.Handle);
+    end;
+  end;
   //writeln('TCustomForm.CreateWnd END ',ClassName);
 end;
 
@@ -1312,6 +1332,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.90  2003/03/17 13:54:34  mattias
+  fixed setting activecontrol after createwnd
+
   Revision 1.89  2003/03/13 10:11:41  mattias
   fixed TControl.Show in design mode
 

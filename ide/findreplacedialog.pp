@@ -98,7 +98,7 @@ type
       read GetComponentText write SetComponentText;
   end;
 
-var FindReplaceDlg:TLazFindReplaceDialog;
+var FindReplaceDlg: TLazFindReplaceDialog;
 
 
 implementation
