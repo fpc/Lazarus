@@ -34,10 +34,10 @@ unit BuildLazDialog;
 interface
 
 uses
-  Classes, SysUtils, Math, Forms, Controls, LCLType, LCLIntf, Graphics,
-  GraphType, StdCtrls, ExtCtrls, Buttons, FileCtrl, Dialogs, LResources,
-  Laz_XMLCfg, LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs,
-  InputHistory, ExtToolDialog, ExtToolEditDlg, CompilerOptions;
+  Classes, SysUtils, Math, LCLProc, Forms, Controls, LCLType, LCLIntf,
+  Graphics, GraphType, StdCtrls, ExtCtrls, Buttons, FileCtrl, Dialogs,
+  LResources, Laz_XMLCfg, LazarusIDEStrConsts, TransferMacros, LazConf,
+  IDEProcs, InputHistory, ExtToolDialog, ExtToolEditDlg, CompilerOptions;
 
 type
   { TBuildLazarusItem }
@@ -103,9 +103,9 @@ type
     FItemJITForm: TBuildLazarusItem;
     FItemLCL: TBuildLazarusItem;
     FItemPkgReg: TBuildLazarusItem;
-  {$IFDEF UseStartLazarus}
+    {$IFDEF UseStartLazarus}
     FItemStarter: TBuildLazarusItem;
-  {$ENDIF}
+    {$ENDIF}
     FItemSynEdit: TBuildLazarusItem;
     fExtraOptions: string;
     FTargetDirectory: string;
@@ -146,7 +146,6 @@ type
     {$ENDIF}
     property ItemExamples: TBuildLazarusItem read FItemExamples;
     property CleanAll: boolean read fCleanAll write fCleanAll;
-    //property MakeFilename: string read fMakeFilename write fMakeFilename;
     property ExtraOptions: string read fExtraOptions write fExtraOptions;
     property TargetOS: string read fTargetOS write SetTargetOS;
     property LCLPlatform: TLCLPlatform read fLCLPlatform write fLCLPlatform;
@@ -761,6 +760,8 @@ begin
   LCLInterfaceRadioGroup.ItemIndex:=ord(Options.LCLPlatform);
   WithStaticPackagesCheckBox.Checked:=Options.WithStaticPackages;
   TargetOSEdit.Text:=Options.TargetOS;
+  
+  Invalidate;
 end;
 
 procedure TConfigureBuildLazarusDlg.Save(DestOptions: TBuildLazarusOptions);
