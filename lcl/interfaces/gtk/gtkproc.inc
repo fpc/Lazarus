@@ -1327,19 +1327,19 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function GetControlWindow(Control: Pointer) : PGDKWindow;
+  Function GetControlWindow(Widget: Pointer) : PGDKWindow;
 
   Get the gdkwindow of a widget.
 ------------------------------------------------------------------------------}
-Function GetControlWindow(Control: Pointer) : PGDKWindow;
+Function GetControlWindow(Widget: Pointer) : PGDKWindow;
 begin
-  If Control <> nil then begin
-    If not GTKWidgetIsA(PGTKWidget(Control), GTK_Layout_Get_Type) then
-      Result := PGTKWidget(Control)^.Window
+  If Widget <> nil then begin
+    If not GTKWidgetIsA(PGTKWidget(Widget), GTK_Layout_Get_Type) then
+      Result := PGTKWidget(Widget)^.Window
     else
-      Result := PGtkLayout(Control)^.bin_window;
+      Result := PGtkLayout(Widget)^.bin_window;
   end else
-    RaiseException('GetControlWindow Control=nil');
+    RaiseException('GetControlWindow Widget=nil');
 end;
 
 {------------------------------------------------------------------------------
@@ -4102,6 +4102,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.180  2003/06/13 10:09:04  mattias
+  fixed Set/GetPixel
+
   Revision 1.179  2003/06/10 00:46:16  mattias
   fixed aligning controls
 
