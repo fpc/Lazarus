@@ -2344,36 +2344,232 @@ end;
   Returns: If the string was drawn, or CalcRect run
 
  ------------------------------------------------------------------------------}
-function TgtkObject.DrawText(DC : hDC; Str: PChar; Count : Integer;
-  var Rect: TRect; Flags : Cardinal): Integer;
+function Tgtkobject.DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer;
+var
+  TM : TTextmetric;
+  theRect     : TRect;
+  Lines : PPChar;
+  I, NumLines : Longint;
+  TempDC,
+  TempPen,
+  TempBrush : Longint;
+
+  Function LeftOffset : Longint;
+  begin
+    If (Flags and DT_Right) = DT_Right then
+      Result := DT_Right
+    else
+      If (Flags and DT_CENTER) = DT_CENTER then
+        Result := DT_CENTER
+    else
+      Result := DT_LEFT;
+  end;
+
+  Function TopOffset : Longint;
+  begin
+    If (Flags and DT_BOTTOM) = DT_BOTTOM then
+      Result := DT_BOTTOM
+    else
+      If (Flags and DT_VCENTER) = DT_VCENTER then
+        Result := DT_VCENTER
+    else
+      Result := DT_Top;
+  end;
+
+  Function CalcRect : Boolean;
+  begin
+    Result := (Flags and DT_CalcRect) = DT_CalcRect;
+  end;
+
+  Procedure DoCalcRect;
+  var
+    AP : TSize;
+    J, MaxLength,
+    LineWidth : Integer;
+  begin
+    theRect := Rect;
+
+    MaxLength := theRect.Right - theRect.Left;
+
+    If (Flags and DT_SingleLine) = DT_SingleLine then begin
+      GetTextExtentPoint(DC, Str, Count, AP);
+      theRect.Right := theRect.Left + Min(MaxLength, AP.cX);
+      theRect.Bottom := theRect.Top + TM.tmHeight;
+
+      If not CalcRect then
+        Case TopOffset of
+          DT_VCENTER :
+            OffsetRect(theRect, 0, (Rect.Bottom - theRect.Bottom) div 2);
+          DT_Bottom :
+            OffsetRect(theRect, 0, Rect.Bottom - theRect.Bottom);
+        end;
+    end
+    else begin
+      If (Flags and DT_WordBreak) <> DT_WordBreak then
+        MaxLength := Count*TM.tmMaxCharWidth;
+
+      Self.WordWrap(DC, Str, MaxLength, Lines, NumLines);
+      
+      If (Lines = nil) or (NumLines = 0) then
+        exit;
+
+      LineWidth := 0;
+
+      For J := 0 to NumLines - 1 do begin
+        GetTextExtentPoint(DC, Lines[J], StrLen(Lines[J]), AP);
+        LineWidth := Max(LineWidth, AP.cX);
+      end;
+      
+      LineWidth := Max(MaxLength, LineWidth);
+      
+      theRect.Right := theRect.Left + LineWidth;
+      theRect.Bottom := theRect.Top + NumLines*TM.tmHeight;
+    end;
+
+    If not CalcRect then
+      Case LeftOffset of
+        DT_CENTER :
+          OffsetRect(theRect, (Rect.Right - theRect.Right) div 2, 0);
+        DT_Right :
+          OffsetRect(theRect, Rect.Right - theRect.Right, 0);
+      end;
+  end;
+
+  Procedure DrawLine(theLine : PChar; LineLength, TopPos : Longint);
+  var
+    Points : Array[0..1] of TSize;
+    LogP : TLogPen;
+    pIndex : Longint;
+    AStr : String;
+    LeftPos : Longint;
+  begin
+    AStr := Copy(String(theLine), 1, LineLength);
+
+    If (Flags and DT_NoPrefix) <> DT_NoPrefix then
+      pIndex := DeleteAmpersands(aStr)
+    else
+      pIndex := -1;
+
+    If TempBrush = -1 then
+      TempBrush := SelectObject(DC, GetStockObject(NULL_BRUSH));
+
+    If LeftOffset <> DT_Left then
+      GetTextExtentPoint(DC, PChar(aStr), Length(aStr), Points[0]);
+
+    Case LeftOffset of
+      DT_Left:
+        LeftPos := theRect.Left;
+      DT_Center:
+        LeftPos := theRect.Left + (theRect.Right - theRect.Left) div 2
+                 - Points[0].cX div 2;
+      DT_Right:
+        LeftPos := theRect.Right - Points[0].cX;
+    end;
+
+    {Draw line of Text}
+    TextOut(DC, LeftPos, TopPos, PChar(aStr), Length(aStr));
+
+    {Draw Prefix}
+    If pIndex > 0 then begin
+      {Create & select pen of font color}
+      If TempPen = -1 then begin
+        LogP.lopnStyle := PS_SOLID;
+        LogP.lopnWidth.X := 1;
+        LogP.lopnColor := GetTextColor(DC);
+        TempPen := SelectObject(DC, CreatePenIndirect(LogP));
+      end;
+
+      {Get prefix line position}
+      GetTextExtentPoint(DC, PChar(aStr), pIndex - 1, Points[0]);
+      Points[0].cX := LeftPos + Points[0].cX;
+      Points[0].cY := TopPos + tm.tmHeight - TM.tmDescent + 1;
+
+      GetTextExtentPoint(DC, @aStr[pIndex], 1, Points[1]);
+      Points[1].cX := Points[0].cX + Points[1].cX;
+      Points[1].cY := Points[0].cY;
+
+      {Draw prefix line}
+      Polyline(DC, @Points[0], 2);
+    end;
+  end;
+
 begin
   if (Str=nil) or (Str[0]=#0) then exit;
   Assert(False, Format('trace:> [TgtkObject.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
     [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
+
   Result := Longint(IsValidDC(DC));
   if Boolean(Result)
   then with TDeviceContext(DC) do
   begin
-    If (FLAGS and DT_CalcRect) = DT_CalcRect then
-      Result := Inherited DrawText(DC, Str, Count, Rect, Flags)
-    else
-      if GC = nil
-      then begin
-        WriteLn('WARNING: [TgtkObject.DrawText] Uninitialized GC');
-        Result := 0;
+    if GC = nil
+    then begin
+      WriteLn('WARNING: [TgtkObject.DrawText] Uninitialized GC');
+      Result := 0;
+    end
+    else begin
+      Result := 0;
+      Lines := nil;
+      NumLines := 0;
+      TempDC := -1;
+      TempPen := -1;
+      TempBrush := -1;
+
+      Count := Min(StrLen(Str), Count);
+
+      GetTextMetrics(DC, TM);
+
+      DoCalcRect;
+
+      If (Flags and DT_CalcRect) <> DT_CalcRect then begin
+        TempDC := SaveDC(DC);
+
+      If (Flags and DT_NOCLIP) <> DT_NOCLIP then begin
+        If theRect.Right > Rect.Right then
+          theRect.Right := Rect.Right;
+        If theRect.Bottom > Rect.Bottom then
+          theRect.Bottom := Rect.Bottom;
+        IntersectClipRect(DC, theRect.Left, theRect.Top,
+          theRect.Right, theRect.Bottom);
+      end;
+
+      If (Flags and DT_SingleLine) = DT_SingleLine then begin
+        DrawLine(Str, Count, theRect.Top);
+        Result := 1;
       end
-    else
-      If not IsValidGDIObject(hFont(CurrentFont)) then begin
-        WriteLn('WARNING: [TgtkObject.DrawText] Invalid Font');
-        Result := 0;
+      else
+        If (Lines <> nil) and (NumLines <> 0) then begin
+          For I := 0 to NumLines - 1 do begin
+            If (((Flags and DT_EditControl) = DT_EditControl) and
+              (tm.tmHeight > (theRect.Bottom - theRect.Top))) or
+              (theRect.Top > theRect.Bottom)
+            then
+              break;
+
+            If Lines[I] <> nil then
+              DrawLine(Lines[I], StrLen(Lines[I]), theRect.Top);
+
+            Inc(theRect.Top, TM.tmHeight);
+          end;
+          Result := 1;
+        end;
       end
-    else
-      If CurrentFont^.GDIFontObject = nil then begin
-        WriteLn('WARNING: [TgtkObject.DrawText] Uninitialized Font');
-        Result := 0;
-      end
-    else
-      Result := Inherited DrawText(DC, Str, Count, Rect, Flags);
+      else begin
+        CopyRect(Rect, theRect);
+        Result := 1;
+      end;
+
+      Reallocmem(Lines, 0);
+
+      If TempBrush <> -1 then
+        SelectObject(DC, TempBrush);
+
+      If TempPen <> -1 then
+        DeleteObject(SelectObject(DC, TempPen));
+
+      If TempDC <> -1 then
+        RestoreDC(DC, TempDC);
+    end;
   end;
   Assert(False, Format('trace:> [TgtkObject.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
     [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
@@ -7178,6 +7374,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.158  2002/10/15 17:09:54  lazarus
+  AJ: fixed GTK DrawText to use WordWrap, and add DT_EditControl
+
   Revision 1.157  2002/10/15 16:01:38  lazarus
   MG: fixed timers
 
