@@ -50,6 +50,7 @@ type
   private
     fCurrentDirectory: string;
     fFilteredOutput: TStringList;
+    fOnReadLine: TOnOutputString;
     fOutput: TStringList;
     fLastErrorType: TErrorType;
     fLastMessageType: TOutputMessageType;
@@ -89,6 +90,7 @@ type
       read fPrgSourceFilename write fPrgSourceFilename;
     property OnGetIncludePath: TOnGetIncludePath
       read fOnGetIncludePath write fOnGetIncludePath;
+    property OnReadLine: TOnOutputString read fOnReadLine write fOnReadLine;
     property OnOutputString: TOnOutputString
       read fOnOutputString write fOnOutputString;
     property Options: TOuputFilterOptions read fOptions write fOptions;
@@ -192,6 +194,7 @@ begin
   fLastMessageType:=omtNone;
   fLastErrorType:=etNone;
   fOutput.Add(s);
+  if Assigned(OnReadLine) then OnReadLine(s);
   if DontFilterLine then begin
     DoAddFilteredLine(s);
   end else if (ofoSearchForFPCMessages in Options) and (ReadFPCompilerLine(s))

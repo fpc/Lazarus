@@ -45,19 +45,25 @@ type
   TMessagesView = class(TForm)
     MessageView : TListBox;
   private
+    FLastLineIsProgress: boolean;
     FOnSelectionChanged: TNotifyEvent;
     Function GetMessage: String;
     Procedure MessageViewClicked(sender : TObject);
+    procedure SetLastLineIsProgress(const AValue: boolean);
   protected
     Function GetSelectedLineIndex: Integer;
     procedure SetSelectedLineIndex(const AValue: Integer);
   public
-    constructor Create(AOwner : TComponent); override;
-    procedure Add(const Texts : String);
+    constructor Create(TheOwner: TComponent); override;
+    procedure Add(const Msg: String);
     procedure AddSeparator;
+    procedure ShowProgress(const Msg: String);
     procedure ClearTillLastSeparator;
+    procedure ShowTopMessage;
     function MsgCount: integer;
     procedure Clear;
+  public
+    property LastLineIsProgress: boolean read FLastLineIsProgress write SetLastLineIsProgress;
     property Message : String read GetMessage;
     property SelectedMessageIndex: Integer
       read GetSelectedLineIndex write SetSelectedLineIndex;
@@ -75,13 +81,13 @@ const SeparatorLine = '----------------------------';
 { TMessagesView }
 
 
-{------------------------------------------------------------------------------}
-{  TMessagesView.Create                                                        }
-{------------------------------------------------------------------------------}
-constructor TMessagesView.Create(AOwner : TComponent);
+{------------------------------------------------------------------------------
+  TMessagesView.Create
+------------------------------------------------------------------------------}
+constructor TMessagesView.Create(TheOwner : TComponent);
 var ALayout: TIDEWindowLayout;
 Begin
-  inherited Create(AOwner);
+  inherited Create(TheOwner);
   if LazarusResources.Find(ClassName)=nil then begin
     Caption:='Messages';
     MessageView := TListBox.Create(Self);
@@ -98,18 +104,33 @@ Begin
   ALayout.Apply;
 end;
 
-
-{------------------------------------------------------------------------------}
-{  TMessagesView.Add                                                           }
-{------------------------------------------------------------------------------}
-Procedure  TMessagesView.Add(const Texts : String);
+{------------------------------------------------------------------------------
+  TMessagesView.Add
+------------------------------------------------------------------------------}
+Procedure  TMessagesView.Add(const Msg: String);
 Begin
-  MessageView.Items.Add(Texts);
+  if FLastLineIsProgress then begin
+    MessageView.Items[MessageView.Items.Count-1]:=Msg;
+    FLastLineIsProgress:=false;
+  end else begin
+    MessageView.Items.Add(Msg);
+  end;
 end;
 
 Procedure TMessagesView.AddSeparator;
 begin
   Add(SeparatorLine);
+end;
+
+procedure TMessagesView.ShowProgress(const Msg: String);
+begin
+  if FLastLineIsProgress then
+    MessageView.Items[MessageView.Items.Count-1]:=Msg
+  else begin
+    MessageView.Items.Add(Msg);
+    FLastLineIsProgress:=true;
+  end;
+  MessageView.TopIndex:=MessageView.Items.Count-1;
 end;
 
 procedure TMessagesView.ClearTillLastSeparator;
@@ -122,9 +143,16 @@ begin
     if LastSeparator>=0 then begin
       while (Items.Count>LastSeparator) do begin
         Items.Delete(Items.Count-1);
+        FLastLineIsProgress:=false;
       end;
     end;
   end;
+end;
+
+procedure TMessagesView.ShowTopMessage;
+begin
+  if MessageView.Items.Count>0 then
+    MessageView.TopIndex:=0;
 end;
 
 function TMessagesView.MsgCount: integer;
@@ -132,25 +160,25 @@ begin
   Result:=MessageView.Items.Count;
 end;
 
-{------------------------------------------------------------------------------}
-{  TMessagesView.Clear                                                           }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TMessagesView.Clear
+------------------------------------------------------------------------------}
 Procedure  TMessagesView.Clear;
 Begin
   MessageView.Clear;
-
-  if not Assigned(MessagesView.MessageView.OnCLick) then //:= @MessagesView.MessageViewClicked;
-     MessageView.OnClick := @MessageViewClicked;
+  FLastLineIsProgress:=false;
+  if not Assigned(MessagesView.MessageView.OnClick) then
+    MessageView.OnClick := @MessageViewClicked;
 end;
 
-{------------------------------------------------------------------------------}
-{  TMessagesView.GetMessage                                                           }
-{------------------------------------------------------------------------------}
-Function  TMessagesView.GetMessage : String;
+{------------------------------------------------------------------------------
+  TMessagesView.GetMessage
+------------------------------------------------------------------------------}
+Function TMessagesView.GetMessage: String;
 Begin
   Result := '';
   if (MessageView.Items.Count > 0) and (MessageView.SelCount > 0) then
-      Result := MessageView.Items.Strings[GetSelectedLineIndex];
+    Result := MessageView.Items.Strings[GetSelectedLineIndex];
 end;
 
 Function TMessagesView.GetSelectedLineIndex : Integer;
@@ -176,6 +204,14 @@ begin
     If Assigned(OnSelectionChanged) then
       OnSelectionChanged(self);
   end;
+end;
+
+procedure TMessagesView.SetLastLineIsProgress(const AValue: boolean);
+begin
+  if FLastLineIsProgress=AValue then exit;
+  if FLastLineIsProgress then
+    MessageView.Items.Delete(MessageView.Items.Count-1);
+  FLastLineIsProgress:=AValue;
 end;
 
 procedure TMessagesView.SetSelectedLineIndex(const AValue: Integer);
