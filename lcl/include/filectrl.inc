@@ -821,11 +821,100 @@ end;
 
 {------------------------------------------------------------------------------
   function FileInFilenameMasks(const Filename, Masks: string): boolean;
+
+  Checks if 'Filename' fits to one of the mask in 'Masks'.
+  Note: It checks the whole Filename. So, for example /somewhere/unit1.pas does
+  not fit the mask 'unit*.pas', but it will fit '*.pas'.
+  
+  Masks is delimited by semicolon.
+  Masks allows asterisk (*) for arbitrary text and question mark (?) for one
+  arbitrary character.
+  Examples:
+    '*.pas;*.pp;*.inc'
+    '*.tar.*'
+    'lazarus*.xpm'
  ------------------------------------------------------------------------------}
 function FileInFilenameMasks(const Filename, Masks: string): boolean;
+var
+  TrimmedFile: String;
+  MasksLen: Integer;
+  MaskStartPos: Integer;
+  MaskEndPos: Integer;
+  MaskPos: LongInt;
+  FilePos: Integer;
+  FileLen: Integer;
+  MaskChar: Char;
 begin
-  // TODO
   Result:=false;
+  if (Filename='') or (Masks='') then exit;
+  TrimmedFile:=TrimFilename(Filename); // do not expand
+  // try each Mask
+  MasksLen:=length(Masks);
+  FileLen:=length(TrimmedFile);
+  MaskEndPos:=1;
+  repeat
+  
+    // find next Mask
+    MaskStartPos:=MaskEndPos;
+    while (MaskStartPos<=MasksLen) and (Masks[MaskStartPos]=';') do
+      inc(MaskStartPos);
+    if MaskStartPos>MasksLen then exit; // no mask -> end
+    MaskEndPos:=MaskStartPos+1;
+    while (MaskEndPos<=MasksLen) and (Masks[MaskEndPos]<>';') do
+      inc(MaskEndPos);
+      
+    // check if mask fits to filename
+    MaskPos:=MaskStartPos;
+    FilePos:=1;
+    while MaskPos<MaskEndPos do begin
+      MaskChar:=Masks[MaskPos];
+      case MaskChar of
+      
+      '?': begin
+          // skip one character
+          inc(FilePos);
+          inc(MaskPos);
+        end;
+        
+      '*': begin
+          // Anything. Will be handled by the 'else' part below
+          inc(MaskPos);
+        end;
+        
+      else
+        {$IFDEF win32}
+        if UpperCaseTable[byte(MaskChar)]
+          =UpperCaseTable[byte(TrimmedFile[FilePos])] then
+        {$ELSE}
+        if MaskChar=TrimmedFile[FilePos] then
+        {$ENDIF}
+        begin
+          // character fits
+          inc(MaskPos);
+          inc(FilePos);
+        end else begin
+          //character does not fit
+          // -> go back to last astersik (*)
+          while (MaskPos>MaskStartPos) and (Masks[MaskPos-1]<>'*') do begin
+            dec(MaskPos);
+            dec(FilePos);
+          end;
+          if (MaskPos=MaskStartPos) then begin
+            // there was no asterisk (*) => the filename does not fit this mask
+            break;
+          end else begin
+            // there is an asterisk (*) => try the next position
+            inc(FilePos);
+          end;
+        end;
+      end;
+    end;
+    if (MaskPos=MaskEndPos) and (FilePos>FileLen) then begin
+      // found
+      Result:=true;
+      exit;
+    end;
+  until false;
 end;
 
 {------------------------------------------------------------------------------
@@ -958,6 +1047,9 @@ end;
 
 {
   $Log$
+  Revision 1.48  2004/08/23 15:05:09  mattias
+  implemented help jump to FPDoc html unit
+
   Revision 1.47  2004/08/22 22:47:43  mattias
   implemented context help for source editor
 

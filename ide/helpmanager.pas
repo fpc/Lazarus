@@ -36,9 +36,9 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, StdCtrls, Dialogs,
   CodeToolManager, CodeAtom, CodeCache, CustomCodeTool, CodeTree,
   PascalParserTool, FindDeclarationTool,
-  HelpIntf, HelpHTML, DialogProcs,
-  IDEOptionDefs, EnvironmentOpts, AboutFrm, Project, PackageDefs, MainBar,
-  HelpOptions, MainIntf;
+  HelpIntf, HelpHTML, HelpFPDoc,
+  TransferMacros, DialogProcs, IDEOptionDefs, EnvironmentOpts, AboutFrm,
+  Project, PackageDefs, MainBar, HelpOptions, MainIntf;
 
 type
   { TBaseHelpManager }
@@ -62,13 +62,15 @@ type
 
   TIDEHelpDatabases = class(THelpDatabases)
   public
-    function ShowHelpSelector(Nodes: TList; var ErrMsg: string;
+    function ShowHelpSelector(Query: THelpQuery; Nodes: TList;
+                              var ErrMsg: string;
                               var Selection: THelpNode): TShowHelpResult; override;
     procedure ShowError(ShowResult: TShowHelpResult; const ErrMsg: string); override;
     function GetBaseDirectoryForBasePathObject(BasePathObject: TObject): string; override;
-    function ShowHelpForSourcePosition(const Filename: string;
-                                       const CodePos: TPoint;
+    function ShowHelpForSourcePosition(Query: THelpQuerySourcePosition;
                                        var ErrMsg: string): TShowHelpResult; override;
+    function StrHasMacros(const s: string): boolean; override;
+    function SubstituteMacros(var s: string): boolean; override;
   end;
   
   
@@ -81,6 +83,7 @@ type
     procedure mnuHelpOnlineHelpClicked(Sender: TObject);
   private
     FMainHelpDB: THelpDatabase;
+    FFCLHelpDB: THelpDatabase;
     procedure RegisterIDEHelpDatabases;
     procedure RegisterDefaultIDEHelpViewers;
   public
@@ -100,12 +103,15 @@ type
                                        var ErrMsg: string): TShowHelpResult; override;
   public
     property MainHelpDB: THelpDatabase read FMainHelpDB;
+    property FCLHelpDB: THelpDatabase read FFCLHelpDB;
   end;
 
   { Help Contexts for IDE help }
 const
   lihcStartPage = 'StartPage';
-  
+  lihcFCLStartPage = 'FCLStartPage';
+  lihcFCLUnits = 'FCLUnits';
+
 var
   HelpBoss: TBaseHelpManager;
 
@@ -232,8 +238,8 @@ end;
 
 { TIDEHelpDatabases }
 
-function TIDEHelpDatabases.ShowHelpSelector(Nodes: TList; var ErrMsg: string;
-  var Selection: THelpNode): TShowHelpResult;
+function TIDEHelpDatabases.ShowHelpSelector(Query: THelpQuery; Nodes: TList;
+  var ErrMsg: string; var Selection: THelpNode): TShowHelpResult;
 var
   Dialog: THelpSelectorDialog;
   i: LongInt;
@@ -284,12 +290,26 @@ begin
     Result:=TProject(BasePathObject).ProjectDirectory
   else if BasePathObject is TLazPackage then
     Result:=TLazPackage(BasePathObject).Directory;
+  SubstituteMacros(Result);
 end;
 
-function TIDEHelpDatabases.ShowHelpForSourcePosition(const Filename: string;
-  const CodePos: TPoint; var ErrMsg: string): TShowHelpResult;
+function TIDEHelpDatabases.ShowHelpForSourcePosition(
+  Query: THelpQuerySourcePosition; var ErrMsg: string): TShowHelpResult;
 begin
-  Result:=HelpBoss.ShowHelpForSourcePosition(Filename,CodePos,ErrMsg);
+  Result:=HelpBoss.ShowHelpForSourcePosition(Query.Filename,
+                                                   Query.SourcePosition,ErrMsg);
+end;
+
+function TIDEHelpDatabases.StrHasMacros(const s: string): boolean;
+begin
+  Result:=MainIDEInterface.MacroList.StrHasMacros(s);
+end;
+
+function TIDEHelpDatabases.SubstituteMacros(var s: string): boolean;
+begin
+  //debugln('TIDEHelpDatabases.SubstituteMacros s="',s,'" ');
+  Result:=MainIDEInterface.MacroList.SubstituteStr(s);
+  //debugln('TIDEHelpDatabases.SubstituteMacros END s="',s,'"');
 end;
 
 { THelpManager }
@@ -311,19 +331,60 @@ begin
 end;
 
 procedure THelpManager.RegisterIDEHelpDatabases;
-var
-  HTMLHelp: THTMLHelpDatabase;
-  StartNode: THelpNode;
+
+  procedure CreateMainIDEHelpDB;
+  var
+    StartNode: THelpNode;
+    HTMLHelp: THTMLHelpDatabase;
+  begin
+    FMainHelpDB:=HelpDatabases.CreateHelpDatabase('Lazarus IDE',
+                                                  THTMLHelpDatabase,true);
+    HTMLHelp:=FMainHelpDB as THTMLHelpDatabase;
+    HTMLHelp.BasePathObject:=Self;
+    // nodes
+    StartNode:=THelpNode.CreateURLID(HTMLHelp,'Lazarus',
+                                     'file://docs/index.html',lihcStartPage);
+    HTMLHelp.TOCNode:=THelpNode.Create(HTMLHelp,StartNode);
+    HTMLHelp.RegisterItemWithNode(StartNode);
+  end;
+  
+  procedure CreateFCLHelpDB;
+  var
+    HTMLHelp: TFPDocHTMLHelpDatabase;
+    StartNode: THelpNode;
+    FPDocNode: THelpNode;
+    DirItem: THelpDBSISourceDirectory;
+  begin
+    FFCLHelpDB:=HelpDatabases.CreateHelpDatabase('FCL',TFPDocHTMLHelpDatabase,
+                                                 true);
+    HTMLHelp:=FFCLHelpDB as TFPDocHTMLHelpDatabase;
+
+    // FCL
+    StartNode:=THelpNode.CreateURLID(HTMLHelp,
+                   'FCL - Free Pascal Component Library',
+                   'http://www.freepascal.org/docs-html/fcl/index.html',
+                   lihcFCLStartPage);
+    HTMLHelp.TOCNode:=THelpNode.Create(HTMLHelp,StartNode);
+    HTMLHelp.RegisterItemWithNode(StartNode);
+    
+    // FPDoc: units in the FCL
+    FPDocNode:=THelpNode.CreateURL(HTMLHelp,
+                   'FCL - Free Pascal Component Library Units',
+                   'http://www.freepascal.org/docs-html/fcl/index.html');
+    DirItem:=THelpDBSISourceDirectory.Create(FPDocNode,'$(FPCSrcDir)/fcl',
+                   '*.pp;*.pas',true);
+    HTMLHelp.RegisterItem(DirItem);
+
+    // FPDoc: some RTL units are documented in the FCL
+    DirItem:=THelpDBSISourceDirectory.Create(
+                   THelpNode.Create(HTMLHelp,FPDocNode),
+                   '$(FPCSrcDir)/rtl','classes.pp;',true);
+    HTMLHelp.RegisterItem(DirItem);
+  end;
+
 begin
-  FMainHelpDB:=HelpDatabases.CreateHelpDatabase('Lazarus IDE',THTMLHelpDatabase,
-                                                true);
-  HTMLHelp:=FMainHelpDB as THTMLHelpDatabase;
-  HTMLHelp.BasePathObject:=Self;
-  // nodes
-  StartNode:=THelpNode.CreateURLID(HTMLHelp,'Lazarus',
-                                   'file://docs/index.html',lihcStartPage);
-  HTMLHelp.TOCNode:=THelpNode.Create(HTMLHelp,StartNode);
-  HTMLHelp.RegisterItemWithNode(StartNode);
+  CreateMainIDEHelpDB;
+  CreateFCLHelpDB;
 end;
 
 procedure THelpManager.RegisterDefaultIDEHelpViewers;
@@ -519,7 +580,7 @@ begin
 
       // invoke help system
       debugln('THelpManager.ShowHelpForSourcePosition D PascalHelpContextLists.Count=',dbgs(PascalHelpContextLists.Count));
-      Result:=ShowHelpForPascalContexts(PascalHelpContextLists,ErrMsg);
+      ShowHelpForPascalContexts(Filename,CodePos,PascalHelpContextLists,ErrMsg);
     end else begin
       MainIDEInterface.DoJumpToCodeToolBossError;
     end;

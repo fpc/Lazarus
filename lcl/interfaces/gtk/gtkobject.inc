@@ -4283,7 +4283,7 @@ begin
   csPreviewFileDialog,
   csColorDialog,
   csFontDialog:
-    if GtkWidgetIsA(p,GTK_WINDOW_TYPE) then
+    if GtkWidgetIsA(p,gtk_window_get_type) then
       gtk_window_set_title(pGtkWindow(p),PLabel);
 
   csLabel:
@@ -9268,6 +9268,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.531  2004/08/23 15:05:09  mattias
+  implemented help jump to FPDoc html unit
+
   Revision 1.530  2004/08/19 18:50:53  mattias
   splitted IDE component owner hierachy to reduce notification time
 

@@ -22,7 +22,7 @@
 
   Abstract:
     This unit defines the classes TTransferMacro and TTransferMacroList. These
-    classes stores and substitutes macros in strings. Transfer macros are an
+    classes store and substitute macros in strings. Transfer macros are an
     easy way to transfer some ide variables to programs like the compiler,
     the debugger and all the other tools.
     Transfer macros have the form $(macro_name). It is also possible to define
@@ -100,12 +100,12 @@ type
     procedure Add(NewMacro: TTransferMacro);
     function FindByName(const MacroName: string): TTransferMacro; virtual;
     function SubstituteStr(var s:string): boolean; virtual;
+    function StrHasMacros(const s: string): boolean;
     property OnSubstitution: TOnSubstitution
        read fOnSubstitution write fOnSubstitution;
     property MarkUnhandledMacros: boolean read FMarkUnhandledMacros
                                           write SetMarkUnhandledMacros;
   end;
-
 
 implementation
 
@@ -371,6 +371,34 @@ begin
       dec(sLen);
     end;
     inc(MacroStart);
+  end;
+end;
+
+function TTransferMacroList.StrHasMacros(const s: string): boolean;
+// search for $( or $xxx(
+var
+  p: Integer;
+  Len: Integer;
+begin
+  Result:=false;
+  p:=1;
+  Len:=length(s);
+  while (p<Len) do begin
+    if s[p]='$' then begin
+      inc(p);
+      if (p<Len) and (s[p]<>'$') then begin
+        // skip macro function name
+        while (p<Len) and (s[p]<>'(') do inc(p);
+        if (p<Len) then begin
+          Result:=true;
+          exit;
+        end;
+      end else begin
+        // $$ is not a macro
+        inc(p);
+      end;
+    end else
+      inc(p);
   end;
 end;
 

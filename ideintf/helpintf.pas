@@ -14,6 +14,13 @@
   
   Abstract:
     This unit defines various base classes for the Help System used by the IDE.
+    
+  ToDo:
+    - Add Macro Support
+    - Add Show help for Classes
+    - Add Show help for (Compiler-) Messages
+    - Standalone help system for LCL applications
+    - Add Help Editing functions
 }
 unit HelpIntf;
 
@@ -22,7 +29,8 @@ unit HelpIntf;
 interface
 
 uses
-  Classes, SysUtils, Controls, FileCtrl, ConfigStorage, ObjInspStrConsts;
+  Classes, SysUtils, LCLProc, Controls, FileCtrl, ConfigStorage,
+  ObjInspStrConsts;
 
 type
   // All help-specific error messages should be thrown as this type.
@@ -40,7 +48,7 @@ type
     );
   TShowHelpResults = set of TShowHelpResult;
 
-  
+
   { TPascalHelpContextList }
 
   TPascalHelpContextType = (
@@ -70,6 +78,9 @@ type
     procedure Insert(Index: integer; const Context: TPascalHelpContext);
     procedure Clear;
     destructor Destroy; override;
+    function IsEqual(List: TPascalHelpContextList): boolean;
+    function CompareList(List: TPascalHelpContextList): integer;
+  public
     property Count: integer read FCount;
     property Items[Index: integer]: TPascalHelpContext read GetItems;
     property List: TPascalHelpContextPtr read fItems;
@@ -77,6 +88,7 @@ type
   
   
   THelpDatabase = class;
+  THelpDatabaseID = string;
 
   { THelpNode
     A help node is a position/place in a help database.
@@ -94,6 +106,7 @@ type
   THelpNode = class(TPersistent)
   private
     FContext: THelpContext;
+    FQueryItem: TObject;
     FURL: string;
     FHelpType: THelpNodeType;
     fID: string;
@@ -126,15 +139,16 @@ type
     property URL: string read FURL write FURL;
     property ID: string read fID write fID;
     property Context: THelpContext read FContext write FContext;
+    property QueryItem: TObject read FQueryItem write FQueryItem;
   end;
 
 
-  { THelpDBSearchItem
-    Base class for registration search items associated with a THelpDatabase.
+  { THelpDBItem
+    Base class for registration items associated with a THelpDatabase.
     See THelpDBSISourceDirectory for an example.
     Node is optional, pointing to a help page about the help item. }
 
-  THelpDBSearchItem = class(TPersistent)
+  THelpDBItem = class(TPersistent)
   private
     FNode: THelpNode;
   public
@@ -152,12 +166,13 @@ type
     For example: If BasePathObject is a TLazPackage the Filename is relative to
     the directory of the .lpk file }
 
-  THelpDBSISourceFile = class(THelpDBSearchItem)
+  THelpDBSISourceFile = class(THelpDBItem)
   private
     FBasePathObject: TObject;
     FFilename: string;
     procedure SetFilename(const AValue: string);
   public
+    constructor Create(TheNode: THelpNode; const TheFilename: string);
     function FileMatches(const AFilename: string): boolean; virtual;
     function GetFullFilename: string; virtual;
     function GetBasePath: string; virtual;
@@ -182,6 +197,8 @@ type
     FFileMask: string;
     FWithSubDirectories: boolean;
   public
+    constructor Create(TheNode: THelpNode; const TheFilename,
+                       TheFileMask: string; Recursive: boolean);
     function FileMatches(const AFilename: string): boolean; override;
   published
     property FileMask: string read FFileMask write FFileMask;
@@ -197,10 +214,116 @@ type
     comes without source. If the component comes with source use the
     THelpDBSISourceDirectory or THelpDBSISourceFile instead. }
 
-  THelpDBSIClass = class(THelpDBSearchItem)
+  THelpDBSIClass = class(THelpDBItem)
   private
     FTheClass: TClass;
   public
+    property TheClass: TClass read FTheClass write FTheClass;
+  end;
+  
+  
+  { THelpQuery }
+  
+  THelpQuery = class(TPersistent)
+  private
+    FHelpDatabaseID: THelpDatabaseID;
+  public
+    constructor Create(const TheHelpDatabaseID: THelpDatabaseID);
+    property HelpDatabaseID: THelpDatabaseID read FHelpDatabaseID
+                                             write FHelpDatabaseID;
+  end;
+  
+  
+  { THelpQueryNode }
+
+  THelpQueryNode = class(THelpQuery)
+  private
+    FNode: THelpNode;
+  public
+    constructor Create(const TheHelpDatabaseID: THelpDatabaseID;
+                       const TheNode: THelpNode);
+    property Node: THelpNode read FNode write FNode;
+  end;
+
+
+  { THelpQueryTOC }
+
+  THelpQueryTOC = class(THelpQueryNode)
+  end;
+
+
+  { THelpQueryContext }
+  
+  THelpQueryContext = class(THelpQuery)
+  private
+    FContext: THelpContext;
+  public
+    constructor Create(const TheHelpDatabaseID: THelpDatabaseID;
+                       const TheContext: THelpContext);
+    property Context: THelpContext read FContext write FContext;
+  end;
+
+
+  { THelpQueryKeyword }
+
+  THelpQueryKeyword = class(THelpQuery)
+  private
+    FKeyword: string;
+  public
+    constructor Create(const TheHelpDatabaseID: THelpDatabaseID;
+                       const TheKeyWord: string);
+    property Keyword: string read FKeyword write FKeyword;
+  end;
+  
+
+  { THelpQuerySourcePosition }
+
+  THelpQuerySourcePosition = class(THelpQuery)
+  private
+    FFilename: string;
+    FSourcePosition: TPoint;
+  public
+    constructor Create(const TheHelpDatabaseID: THelpDatabaseID;
+                       const TheFilename: string; const SrcPos: TPoint);
+    property Filename: string read FFilename write FFilename;
+    property SourcePosition: TPoint read FSourcePosition write FSourcePosition;
+  end;
+
+
+  { THelpQueryPascalContexts }
+
+  THelpQueryPascalContexts = class(THelpQuerySourcePosition)
+  private
+    FContextLists: TList;
+  public
+    constructor Create(const TheHelpDatabaseID: THelpDatabaseID;
+                       const TheFilename: string; const SrcPos: TPoint;
+                       ContextLists: TList);
+    property ListOfPascalHelpContextList: TList read FContextLists
+                                                write FContextLists;
+  end;
+
+
+  { THelpQueryMessage }
+
+  THelpQueryMessage = class(THelpQuery)
+  private
+    FWholeMessage: string;
+  public
+    constructor Create(const TheHelpDatabaseID: THelpDatabaseID;
+                       const TheMessage: string);
+    property WholeMessage: string read FWholeMessage write FWholeMessage;
+  end;
+
+
+  { THelpQueryClass }
+
+  THelpQueryClass = class(THelpQuery)
+  private
+    FTheClass: TClass;
+  public
+    constructor Create(const TheHelpDatabaseID: THelpDatabaseID;
+                       const AClass: TClass);
     property TheClass: TClass read FTheClass write FTheClass;
   end;
 
@@ -210,7 +333,6 @@ type
     BasePathObject: THelpDatabase can be created by packages.
                     The IDE will set BasePathObject accordingly. }
 
-  THelpDatabaseID = string;
   THelpDatabases = class;
   THelpViewer = class;
 
@@ -239,9 +361,10 @@ type
     function CanShowTableOfContents: boolean; virtual;
     procedure ShowTableOfContents; virtual;
     procedure ShowError(ShowResult: TShowHelpResult; const ErrMsg: string); virtual;
-    function ShowHelp(BaseNode, NewNode: THelpNode;
+    function ShowHelp(Query: THelpQuery; BaseNode, NewNode: THelpNode;
                       var ErrMsg: string): TShowHelpResult; virtual;
-    function ShowHelpFile(BaseNode: THelpNode; const Title, Filename: string;
+    function ShowHelpFile(Query: THelpQuery; BaseNode: THelpNode;
+                          const Title, Filename: string;
                           var ErrMsg: string): TShowHelpResult; virtual;
     function SupportsMimeType(const AMimeType: string): boolean; virtual;
     function GetNodesForKeyword(const HelpKeyword: string;
@@ -257,11 +380,12 @@ type
                         var Viewer: THelpViewer): TShowHelpResult; virtual;
   public
     // registration
-    procedure RegisterItem(NewItem: THelpDBSearchItem);
+    procedure RegisterItem(NewItem: THelpDBItem);
     procedure RegisterItemWithNode(Node: THelpNode);
-    procedure UnregisterItem(AnItem: THelpDBSearchItem);
+    procedure RegisterFileItemWithNode(const Filename: string; Node: THelpNode);
+    procedure UnregisterItem(AnItem: THelpDBItem);
     function RegisteredItemCount: integer;
-    function GetRegisteredItem(Index: integer): THelpDBSearchItem;
+    function GetRegisteredItem(Index: integer): THelpDBItem;
   public
     property Databases: THelpDatabases read FDatabases write SetDatabases;
     property ID: THelpDatabaseID read FID write SetID;
@@ -279,6 +403,7 @@ type
   private
     FItems: TList;
     FHelpDBClasses: TList;
+    FMacroTimeStamp: integer;
     function GetItems(Index: integer): THelpDatabase;
     procedure DoRegisterDatabase(ADatabase: THelpDatabase);
     procedure DoUnregisterDatabase(ADatabase: THelpDatabase);
@@ -300,24 +425,28 @@ type
     procedure ShowError(ShowResult: TShowHelpResult; const ErrMsg: string); virtual; abstract;
     function GetBaseURLForBasePathObject(BasePathObject: TObject): string; virtual;
     function GetBaseDirectoryForBasePathObject(BasePathObject: TObject): string; virtual;
+    property MacroTimeStamp: integer read FMacroTimeStamp write FMacroTimeStamp;
+    function StrHasMacros(const s: string): boolean; virtual;
+    function SubstituteMacros(var s: string): boolean; virtual;
   public
     // show help for ...
-    function ShowHelpForNodes(Nodes: TList; var ErrMsg: string): TShowHelpResult;
-    function ShowHelpForContext(HelpDatabaseID: THelpDatabaseID;
-                                HelpContext: THelpContext;
-                                var ErrMsg: string): TShowHelpResult;
-    function ShowHelpForKeyword(HelpDatabaseID: THelpDatabaseID;
-                                const HelpKeyword: string;
-                                var ErrMsg: string): TShowHelpResult;
-    function ShowHelpForPascalContexts(ListOfPascalHelpContextList: TList;
+    function ShowHelpForNodes(Query: THelpQuery; Nodes: TList;
+                              var ErrMsg: string): TShowHelpResult; virtual;
+    function ShowHelpForQuery(Query: THelpQuery; AutoFreeQuery: boolean;
+                              var ErrMsg: string): TShowHelpResult; virtual;
+    function ShowHelpForContext(Query: THelpQueryContext;
+                                var ErrMsg: string): TShowHelpResult; virtual;
+    function ShowHelpForKeyword(Query: THelpQueryKeyword;
+                                var ErrMsg: string): TShowHelpResult; virtual;
+    function ShowHelpForPascalContexts(Query: THelpQueryPascalContexts;
                                        var ErrMsg: string): TShowHelpResult; virtual;
-    function ShowHelpForSourcePosition(const Filename: string;
-                                       const CodePos: TPoint;
+    function ShowHelpForSourcePosition(Query: THelpQuerySourcePosition;
                                        var ErrMsg: string): TShowHelpResult; virtual;
-    function ShowHelpForMessageLine(const MessageLine: string;
-                                    var ErrMsg: string): TShowHelpResult;
-    function ShowHelpForClass(const AClass: TClass;
-                              var ErrMsg: string): TShowHelpResult;
+    function ShowHelpForMessageLine(Query: THelpQueryMessage;
+                                    var ErrMsg: string): TShowHelpResult; virtual;
+    function ShowHelpForClass(Query: THelpQueryClass;
+                              var ErrMsg: string): TShowHelpResult; virtual;
+    // search registered items in all databases
     function GetNodesForKeyword(const HelpKeyword: string;
                                 var ListOfNodes: TList; var ErrMsg: string
                                 ): TShowHelpResult; virtual;
@@ -327,7 +456,8 @@ type
     function GetNodesForPascalContexts(ListOfPascalHelpContextList: TList;
                                        var ListOfNodes: TList;
                                        var ErrMsg: string): TShowHelpResult; virtual;
-    function ShowHelpSelector(Nodes: TList; var ErrMsg: string;
+    function ShowHelpSelector(Query: THelpQuery; Nodes: TList;
+                              var ErrMsg: string;
                               var Selection: THelpNode): TShowHelpResult; virtual;
   public
     // registration of THelpDatabaseClass
@@ -425,13 +555,12 @@ function ShowHelpForKeyword(HelpDatabaseID: THelpDatabaseID;
 function ShowHelpForKeyword(const HelpKeyword: string; var ErrMsg: string
   ): TShowHelpResult;
 
-// help for pascal identifier
-function ShowHelpForPascalContexts(ListOfPascalHelpContextList: TList;
-  var ErrMsg: string): TShowHelpResult;
-function ShowHelpForPascalContext(ContextList: TPascalHelpContextList;
+// help for pascal sources
+function ShowHelpForPascalContexts(const Filename: string;
+  const SourcePosition: TPoint; ListOfPascalHelpContextList: TList;
   var ErrMsg: string): TShowHelpResult;
 function ShowHelpOrErrorForSourcePosition(const Filename: string;
-  const CodePos: TPoint): TShowHelpResult;
+  const SourcePosition: TPoint): TShowHelpResult;
 
 // help for messages (compiler messages, codetools messages, make messages, ...)
 function ShowHelpForMessageLine(const MessageLine: string;
@@ -442,6 +571,9 @@ function FilenameToURL(const Filename: string): string;
 procedure SplitURL(const URL: string; var URLType, URLPath, URLParams: string);
 function CombineURL(const URLType, URLPath, URLParams: string): string;
 function URLFilenameIsAbsolute(const Filename: string): boolean;
+function FindURLPathEnd(const URL: string): integer;
+function ChompURLParams(const URL: string): string;
+function ExtractURLDirectory(const URL: string): string;
 
 implementation
 
@@ -472,7 +604,9 @@ end;
 function ShowHelpForContext(HelpDatabaseID: THelpDatabaseID;
   HelpContext: THelpContext; var ErrMsg: string): TShowHelpResult;
 begin
-  Result:=HelpDatabases.ShowHelpForContext(HelpDatabaseID,HelpContext,ErrMsg);
+  Result:=HelpDatabases.ShowHelpForQuery(
+            THelpQueryContext.Create(HelpDatabaseID,HelpContext),
+            true,ErrMsg);
 end;
 
 function ShowHelpForContext(HelpContext: THelpContext; var ErrMsg: string
@@ -494,7 +628,9 @@ end;
 function ShowHelpForKeyword(HelpDatabaseID: THelpDatabaseID;
   const HelpKeyword: string; var ErrMsg: string): TShowHelpResult;
 begin
-  Result:=HelpDatabases.ShowHelpForKeyword(HelpDatabaseID,HelpKeyword,ErrMsg);
+  Result:=HelpDatabases.ShowHelpForQuery(
+            THelpQueryKeyword.Create(HelpDatabaseID,HelpKeyword),
+            true,ErrMsg);
 end;
 
 function ShowHelpForKeyword(const HelpKeyword: string; var ErrMsg: string
@@ -503,41 +639,35 @@ begin
   Result:=ShowHelpForKeyword('',HelpKeyword,ErrMsg);
 end;
 
-function ShowHelpForPascalContexts(ListOfPascalHelpContextList: TList;
+function ShowHelpForPascalContexts(const Filename: string;
+  const SourcePosition: TPoint; ListOfPascalHelpContextList: TList;
   var ErrMsg: string): TShowHelpResult;
 begin
-  Result:=HelpDatabases.ShowHelpForPascalContexts(ListOfPascalHelpContextList,
-                                                  ErrMsg);
-end;
-
-function ShowHelpForPascalContext(ContextList: TPascalHelpContextList;
-  var ErrMsg: string): TShowHelpResult;
-var
-  List: TList;
-begin
-  List:=TList.Create;
-  try
-    List.Add(ContextList);
-    Result:=ShowHelpForPascalContexts(List,ErrMsg);
-  finally
-    List.Free;
-  end;
+  Result:=HelpDatabases.ShowHelpForQuery(
+            THelpQueryPascalContexts.Create('',Filename,
+                                    SourcePosition,ListOfPascalHelpContextList),
+            true,ErrMsg);
 end;
 
 function ShowHelpOrErrorForSourcePosition(const Filename: string;
-  const CodePos: TPoint): TShowHelpResult;
+  const SourcePosition: TPoint): TShowHelpResult;
 var
   ErrMsg: String;
 begin
   ErrMsg:='';
-  Result:=HelpDatabases.ShowHelpForSourcePosition(Filename,CodePos,ErrMsg);
+  Result:=HelpDatabases.ShowHelpForQuery(
+            THelpQuerySourcePosition.Create('',Filename,
+                                            SourcePosition),
+            true,ErrMsg);
   HelpDatabases.ShowError(Result,ErrMsg);
 end;
 
 function ShowHelpForMessageLine(const MessageLine: string;
   var ErrMsg: string): TShowHelpResult;
 begin
-  Result:=HelpDatabases.ShowHelpForMessageLine(MessageLine,ErrMsg);
+  Result:=HelpDatabases.ShowHelpForQuery(
+            THelpQueryMessage.Create('',MessageLine),
+            true,ErrMsg);
 end;
 
 function FilenameToURL(const Filename: string): string;
@@ -599,9 +729,36 @@ begin
     Result:=FilenameIsAbsolute(SetDirSeparators(Filename));
 end;
 
-procedure CreateListAndAdd(const AnObject: TObject; var List: TList);
+function FindURLPathEnd(const URL: string): integer;
+var
+  Len: Integer;
 begin
-  if List=nil then List:=TList.Create;
+  Result:=1;
+  Len:=length(URL);
+  while (Result<=Len) and (URL[Result]<>'?') do inc(Result);
+end;
+
+function ChompURLParams(const URL: string): string;
+begin
+  Result:=copy(URL,1,FindURLPathEnd(URL)-1);
+end;
+
+function ExtractURLDirectory(const URL: string): string;
+var
+  p: Integer;
+begin
+  p:=FindURLPathEnd(URL);
+  while (p>0) and (URL[p]<>'/') do dec(p);
+  Result:=copy(URL,1,p);
+end;
+
+procedure CreateListAndAdd(const AnObject: TObject; var List: TList;
+  OnlyIfNotExists: boolean);
+begin
+  if List=nil then
+    List:=TList.Create
+  else if OnlyIfNotExists and (List.IndexOf(AnObject)>=0) then
+    exit;
   List.Add(AnObject);
 end;
 
@@ -690,10 +847,16 @@ procedure THelpDatabase.ShowTableOfContents;
 var
   ErrMsg: string;
   ShowResult: TShowHelpResult;
+  Query: THelpQueryTOC;
 begin
   if TOCNode=nil then exit;
   ErrMsg:='';
-  ShowResult:=ShowHelp(nil,TOCNode,ErrMsg);
+  Query:=THelpQueryTOC.Create(ID,TOCNode);
+  try
+    ShowResult:=ShowHelp(Query,nil,TOCNode,ErrMsg);
+  finally
+    Query.Free;
+  end;
   ShowError(ShowResult,ErrMsg);
 end;
 
@@ -707,21 +870,21 @@ begin
     raise EHelpSystemException.Create(ErrMsg);
 end;
 
-function THelpDatabase.ShowHelp(BaseNode, NewNode: THelpNode; var ErrMsg: string
-  ): TShowHelpResult;
+function THelpDatabase.ShowHelp(Query: THelpQuery; BaseNode, NewNode: THelpNode;
+  var ErrMsg: string): TShowHelpResult;
 begin
   ErrMsg:='';
   Result:=shrContextNotFound;
 end;
 
-function THelpDatabase.ShowHelpFile(BaseNode: THelpNode;
+function THelpDatabase.ShowHelpFile(Query: THelpQuery; BaseNode: THelpNode;
   const Title, Filename: string; var ErrMsg: string): TShowHelpResult;
 var
   FileNode: THelpNode;
 begin
   FileNode:=THelpNode.CreateURL(Self,Title,FilenameToURL(Filename));
   try
-    Result:=ShowHelp(BaseNode,FileNode,ErrMsg);
+    Result:=ShowHelp(Query,BaseNode,FileNode,ErrMsg);
   finally
     FileNode.Free;
   end;
@@ -747,10 +910,10 @@ begin
   // add the registered nodes
   if FSearchItems<>nil then begin
     for i:=0 to FSearchItems.Count-1 do begin
-      Node:=THelpDBSearchItem(FSearchItems[i]).Node;
+      Node:=THelpDBItem(FSearchItems[i]).Node;
       if (Node=nil) or (not Node.IDValid) then continue;
       if AnsiCompareText(Node.ID,HelpKeyword)<>0 then continue;
-      CreateListAndAdd(Node,ListOfNodes);
+      CreateListAndAdd(Node,ListOfNodes,true);
     end;
   end;
 end;
@@ -768,10 +931,10 @@ begin
   // add the registered nodes
   if FSearchItems<>nil then begin
     for i:=0 to FSearchItems.Count-1 do begin
-      Node:=THelpDBSearchItem(FSearchItems[i]).Node;
+      Node:=THelpDBItem(FSearchItems[i]).Node;
       if (Node=nil) or (not Node.ContextValid) then continue;
       if Node.Context<>HelpContext then continue;
-      CreateListAndAdd(Node,ListOfNodes);
+      CreateListAndAdd(Node,ListOfNodes,true);
     end;
   end;
 end;
@@ -784,9 +947,10 @@ function THelpDatabase.GetNodesForPascalContexts(
 var
   i: Integer;
   j: Integer;
-  SearchItem: THelpDBSearchItem;
+  SearchItem: THelpDBItem;
   PascalContext: TPascalHelpContextList;
   FileItem: THelpDBSISourceFile;
+  Filename: String;
 begin
   Result:=shrSuccess;
   ErrMsg:='';
@@ -794,16 +958,24 @@ begin
   or (ListOfPascalHelpContextList.Count=0) then exit;
   // add the registered nodes
   if FSearchItems<>nil then begin
-    for i:=0 to FSearchItems.Count-1 do begin
-      SearchItem:=THelpDBSearchItem(FSearchItems[i]);
-      if not (SearchItem is THelpDBSISourceFile) then continue;
-      FileItem:=THelpDBSISourceFile(SearchItem);
-      // check every pascal context
-      for j:=0 to ListOfPascalHelpContextList.Count-1 do begin
-        PascalContext:=TPascalHelpContextList(ListOfPascalHelpContextList[j]);
-        if (PascalContext.List[0].Descriptor=pihcFilename)
-        and (FileItem.FileMatches(PascalContext.List[0].Context)) then
-          CreateListAndAdd(FileItem.Node,ListOfNodes);
+    // check every pascal context
+    for j:=0 to ListOfPascalHelpContextList.Count-1 do begin
+      PascalContext:=TPascalHelpContextList(ListOfPascalHelpContextList[j]);
+      debugln('THelpDatabase.GetNodesForPascalContexts A PascalContext.Count=',dbgs(PascalContext.Count));
+      if (PascalContext.Count>0)
+      and (PascalContext.List[0].Descriptor=pihcFilename) then begin
+        // search file item
+        for i:=0 to FSearchItems.Count-1 do begin
+          SearchItem:=THelpDBItem(FSearchItems[i]);
+          if not (SearchItem is THelpDBSISourceFile) then continue;
+          FileItem:=THelpDBSISourceFile(SearchItem);
+          Filename:=PascalContext.List[0].Context;
+          debugln('THelpDatabase.GetNodesForPascalContexts B FileItem.ClassName=',FileItem.ClassName,' Filename=',Filename);
+          if (FileItem.FileMatches(Filename)) then begin
+            FileItem.Node.QueryItem:=PascalContext;
+            CreateListAndAdd(FileItem.Node,ListOfNodes,true);
+          end;
+        end;
       end;
     end;
   end;
@@ -830,7 +1002,7 @@ begin
   end;
 end;
 
-procedure THelpDatabase.RegisterItem(NewItem: THelpDBSearchItem);
+procedure THelpDatabase.RegisterItem(NewItem: THelpDBItem);
 begin
   if NewItem=nil then
     raise EHelpSystemException.Create('THelpDatabase.RegisterItem NewItem=nil');
@@ -845,10 +1017,16 @@ procedure THelpDatabase.RegisterItemWithNode(Node: THelpNode);
 begin
   if Node=nil then
     raise EHelpSystemException.Create('THelpDatabase.RegisterItemWithNode Node=nil');
-  RegisterItem(THelpDBSearchItem.Create(Node));
+  RegisterItem(THelpDBItem.Create(Node));
 end;
 
-procedure THelpDatabase.UnregisterItem(AnItem: THelpDBSearchItem);
+procedure THelpDatabase.RegisterFileItemWithNode(const Filename: string;
+  Node: THelpNode);
+begin
+  RegisterItem(THelpDBSISourceFile.Create(Node,Filename));
+end;
+
+procedure THelpDatabase.UnregisterItem(AnItem: THelpDBItem);
 begin
   if FSearchItems=nil then exit;
   FSearchItems.Remove(AnItem);
@@ -862,9 +1040,9 @@ begin
     Result:=FSearchItems.Count;
 end;
 
-function THelpDatabase.GetRegisteredItem(Index: integer): THelpDBSearchItem;
+function THelpDatabase.GetRegisteredItem(Index: integer): THelpDBItem;
 begin
-  Result:=THelpDBSearchItem(FSearchItems[Index]);
+  Result:=THelpDBItem(FSearchItems[Index]);
 end;
 
 procedure THelpDatabase.Reference;
@@ -1001,15 +1179,25 @@ begin
   Result:='';
 end;
 
-function THelpDatabases.ShowHelpForNodes(Nodes: TList; var ErrMsg: string
-  ): TShowHelpResult;
+function THelpDatabases.StrHasMacros(const s: string): boolean;
+begin
+  Result:=false;
+end;
+
+function THelpDatabases.SubstituteMacros(var s: string): boolean;
+begin
+  Result:=true;
+end;
+
+function THelpDatabases.ShowHelpForNodes(Query: THelpQuery; Nodes: TList;
+  var ErrMsg: string): TShowHelpResult;
 var
   Node: THelpNode;
 begin
   // check if several nodes found
   if (Nodes.Count>1) then begin
     Node:=nil;
-    Result:=ShowHelpSelector(Nodes,ErrMsg,Node);
+    Result:=ShowHelpSelector(Query,Nodes,ErrMsg,Node);
     if Result<>shrSuccess then exit;
     if Node=nil then exit;
   end else begin
@@ -1022,11 +1210,37 @@ begin
     ErrMsg:=Format(oisHelpHelpNodeHasNoHelpDatabase, ['"', Node.Title, '"']);
     exit;
   end;
-  Result:=Node.Owner.ShowHelp(nil,Node,ErrMsg);
+  Result:=Node.Owner.ShowHelp(Query,nil,Node,ErrMsg);
 end;
 
-function THelpDatabases.ShowHelpForContext(HelpDatabaseID: THelpDatabaseID;
-  HelpContext: THelpContext; var ErrMsg: string): TShowHelpResult;
+function THelpDatabases.ShowHelpForQuery(Query: THelpQuery;
+  AutoFreeQuery: boolean; var ErrMsg: string): TShowHelpResult;
+begin
+  try
+    // descendents first
+    if Query is THelpQueryPascalContexts then
+      Result:=ShowHelpForPascalContexts(THelpQueryPascalContexts(Query),ErrMsg)
+    else if Query is THelpQueryTOC then
+      Result:=ShowTableOfContents(ErrMsg)
+    else if Query is THelpQueryContext then
+      Result:=ShowHelpForContext(THelpQueryContext(Query),ErrMsg)
+    else if Query is THelpQueryKeyword then
+      Result:=ShowHelpForKeyword(THelpQueryKeyword(Query),ErrMsg)
+    else if Query is THelpQuerySourcePosition then
+      Result:=ShowHelpForSourcePosition(THelpQuerySourcePosition(Query),ErrMsg)
+    else if Query is THelpQueryMessage then
+      Result:=ShowHelpForMessageLine(THelpQueryMessage(Query),ErrMsg)
+    else if Query is THelpQueryClass then
+      Result:=ShowHelpForClass(THelpQueryClass(Query),ErrMsg)
+    else
+      Result:=shrContextNotFound;
+  finally
+    if AutoFreeQuery then Query.Free;
+  end;
+end;
+
+function THelpDatabases.ShowHelpForContext(Query: THelpQueryContext;
+  var ErrMsg: string): TShowHelpResult;
 var
   Nodes: TList;
   HelpDB: THelpDatabase;
@@ -1037,13 +1251,13 @@ begin
   // search node
   Nodes:=nil;
   try
-    if HelpDatabaseID<>'' then begin
+    if Query.HelpDatabaseID<>'' then begin
       HelpDB:=nil;
-      if not GetDatabase(HelpDatabaseID,HelpDB,Result,ErrMsg) then exit;
-      Result:=HelpDB.GetNodesForContext(HelpContext,Nodes,ErrMsg);
+      if not GetDatabase(Query.HelpDatabaseID,HelpDB,Result,ErrMsg) then exit;
+      Result:=HelpDB.GetNodesForContext(Query.Context,Nodes,ErrMsg);
       if Result<>shrSuccess then exit;
     end else begin
-      Result:=GetNodesForContext(HelpContext,Nodes,ErrMsg);
+      Result:=GetNodesForContext(Query.Context,Nodes,ErrMsg);
       if Result<>shrSuccess then exit;
     end;
 
@@ -1051,22 +1265,23 @@ begin
     if (Nodes<>nil) then Nodes.Pack;
     if (Nodes=nil) or (Nodes.Count=0) then begin
       Result:=shrContextNotFound;
-      if HelpDatabaseID<>'' then
+      if Query.HelpDatabaseID<>'' then
         ErrMsg:=Format(oisHelpHelpContextNotFoundInDatabase, [IntToStr(
-          HelpContext), '"', HelpDatabaseID, '"'])
+          Query.Context), '"', Query.HelpDatabaseID, '"'])
       else
-        ErrMsg:=Format(oisHelpHelpContextNotFound, [IntToStr(HelpContext)]);
+        ErrMsg:=Format(oisHelpHelpContextNotFound,
+                       [IntToStr(Query.Context)]);
       exit;
     end;
 
-    Result:=ShowHelpForNodes(Nodes,ErrMsg);
+    Result:=ShowHelpForNodes(Query,Nodes,ErrMsg);
   finally
     Nodes.Free;
   end;
 end;
 
-function THelpDatabases.ShowHelpForKeyword(HelpDatabaseID: THelpDatabaseID;
-  const HelpKeyword: string; var ErrMsg: string): TShowHelpResult;
+function THelpDatabases.ShowHelpForKeyword(Query: THelpQueryKeyword;
+  var ErrMsg: string): TShowHelpResult;
 var
   Nodes: TList;
   HelpDB: THelpDatabase;
@@ -1077,13 +1292,13 @@ begin
   // search node
   Nodes:=nil;
   try
-    if HelpDatabaseID<>'' then begin
+    if Query.HelpDatabaseID<>'' then begin
       HelpDB:=nil;
-      if not GetDatabase(HelpDatabaseID,HelpDB,Result,ErrMsg) then exit;
-      Result:=HelpDB.GetNodesForKeyword(HelpKeyword,Nodes,ErrMsg);
+      if not GetDatabase(Query.HelpDatabaseID,HelpDB,Result,ErrMsg) then exit;
+      Result:=HelpDB.GetNodesForKeyword(Query.Keyword,Nodes,ErrMsg);
       if Result<>shrSuccess then exit;
     end else begin
-      Result:=GetNodesForKeyword(HelpKeyword,Nodes,ErrMsg);
+      Result:=GetNodesForKeyword(Query.Keyword,Nodes,ErrMsg);
       if Result<>shrSuccess then exit;
     end;
 
@@ -1091,32 +1306,34 @@ begin
     if (Nodes<>nil) then Nodes.Pack;
     if (Nodes=nil) or (Nodes.Count=0) then begin
       Result:=shrContextNotFound;
-      if HelpDatabaseID<>'' then
-        ErrMsg:=Format(oisHelpHelpKeywordNotFoundInDatabase, ['"', HelpKeyword,
-          '"', '"', HelpDatabaseID, '"'])
+      if Query.HelpDatabaseID<>'' then
+        ErrMsg:=Format(oisHelpHelpKeywordNotFoundInDatabase, ['"',Query.Keyword,
+          '"', '"', Query.HelpDatabaseID, '"'])
       else
-        ErrMsg:=Format(oisHelpHelpKeywordNotFound, ['"', HelpKeyword, '"']);
+        ErrMsg:=Format(oisHelpHelpKeywordNotFound, ['"',Query.Keyword,'"']);
       exit;
     end;
 
-    Result:=ShowHelpForNodes(Nodes,ErrMsg);
+    Result:=ShowHelpForNodes(Query,Nodes,ErrMsg);
   finally
     Nodes.Free;
   end;
 end;
 
 function THelpDatabases.ShowHelpForPascalContexts(
-  ListOfPascalHelpContextList: TList; var ErrMsg: string): TShowHelpResult;
+  Query: THelpQueryPascalContexts; var ErrMsg: string): TShowHelpResult;
 var
   Nodes: TList;
 begin
   ErrMsg:='';
   Result:=shrSuccess;
 
+  debugln('THelpDatabases.ShowHelpForPascalContexts A');
   // search node
   Nodes:=nil;
   try
-    Result:=GetNodesForPascalContexts(ListOfPascalHelpContextList,Nodes,ErrMsg);
+    Result:=GetNodesForPascalContexts(Query.ListOfPascalHelpContextList,Nodes,
+                                      ErrMsg);
     if Result<>shrSuccess then exit;
 
     // check if at least one node found
@@ -1128,27 +1345,27 @@ begin
       exit;
     end;
 
-    Result:=ShowHelpForNodes(Nodes,ErrMsg);
+    Result:=ShowHelpForNodes(Query,Nodes,ErrMsg);
   finally
     Nodes.Free;
   end;
 end;
 
-function THelpDatabases.ShowHelpForSourcePosition(const Filename: string;
-  const CodePos: TPoint; var ErrMsg: string): TShowHelpResult;
+function THelpDatabases.ShowHelpForSourcePosition(
+  Query: THelpQuerySourcePosition; var ErrMsg: string): TShowHelpResult;
 begin
   Result:=shrHelpNotFound;
   ErrMsg:='THelpDatabases.ShowHelpForPascalSource not implemented';
 end;
 
-function THelpDatabases.ShowHelpForMessageLine(const MessageLine: string;
+function THelpDatabases.ShowHelpForMessageLine(Query: THelpQueryMessage;
   var ErrMsg: string): TShowHelpResult;
 begin
   Result:=shrHelpNotFound;
   ErrMsg:='THelpDatabases.ShowHelpForMessageLine not implemented';
 end;
 
-function THelpDatabases.ShowHelpForClass(const AClass: TClass;
+function THelpDatabases.ShowHelpForClass(Query: THelpQueryClass;
   var ErrMsg: string): TShowHelpResult;
 begin
   Result:=shrHelpNotFound;
@@ -1202,8 +1419,8 @@ begin
   end;
 end;
 
-function THelpDatabases.ShowHelpSelector(Nodes: TList; var ErrMsg: string;
-  var Selection: THelpNode): TShowHelpResult;
+function THelpDatabases.ShowHelpSelector(Query: THelpQuery; Nodes: TList;
+  var ErrMsg: string; var Selection: THelpNode): TShowHelpResult;
 // Nodes is a list of THelpNode
 begin
   Result:=shrSelectorError;
@@ -1474,7 +1691,7 @@ end;
 
 function THelpNode.URLValid: boolean;
 begin
-  Result:=FHelpType in [hntURLIDContext,hntURLID,hntURLContext];
+  Result:=FHelpType in [hntURL,hntURLIDContext,hntURLID,hntURLContext];
 end;
 
 function THelpNode.IDValid: boolean;
@@ -1501,14 +1718,14 @@ begin
     inherited Assign(Source);
 end;
 
-{ THelpDBSearchItem }
+{ THelpDBItem }
 
-constructor THelpDBSearchItem.Create(TheNode: THelpNode);
+constructor THelpDBItem.Create(TheNode: THelpNode);
 begin
   Node:=TheNode
 end;
 
-destructor THelpDBSearchItem.Destroy;
+destructor THelpDBItem.Destroy;
 begin
   Node.Free;
   inherited Destroy;
@@ -1550,30 +1767,72 @@ begin
   inherited Destroy;
 end;
 
+function TPascalHelpContextList.IsEqual(List: TPascalHelpContextList): boolean;
+begin
+  Result:=CompareList(List)=0;
+end;
+
+function TPascalHelpContextList.CompareList(List: TPascalHelpContextList
+  ): integer;
+var
+  i: Integer;
+begin
+  i:=0;
+  while (i<Count) and (i<List.Count) do begin
+    if fItems[i].Descriptor<List.fItems[i].Descriptor then begin
+      Result:=1;
+      exit;
+    end else if fItems[i].Descriptor>List.fItems[i].Descriptor then begin
+      Result:=-1;
+      exit;
+    end else begin
+      Result:=CompareText(fItems[i].Context,List.fItems[i].Context);
+      if Result<>0 then exit;
+    end;
+    inc(i);
+  end;
+  if Count>i then
+    Result:=-1
+  else
+    Result:=1;
+end;
+
 { THelpDBSISourceFile }
 
 procedure THelpDBSISourceFile.SetFilename(const AValue: string);
 begin
-  FFilename:=TrimFilename(AValue);
+  FFilename:=AValue;
+end;
+
+constructor THelpDBSISourceFile.Create(TheNode: THelpNode;
+  const TheFilename: string);
+begin
+  inherited Create(TheNode);
+  FFilename:=TrimFilename(SetDirSeparators(TheFilename));
 end;
 
 function THelpDBSISourceFile.FileMatches(const AFilename: string): boolean;
 begin
-  if (FFilename='') or (AFilename='') then
-    Result:=false
+  if (FFilename<>'') and (AFilename<>'') then
+    Result:=CompareFilenames(GetFullFilename,AFilename)=0
   else
-    Result:=CompareFilenames(GetFullFilename,AFilename)=0;
+    Result:=false;
 end;
 
 function THelpDBSISourceFile.GetFullFilename: string;
 var
   BaseDir: String;
+  ExpFilename: String;
 begin
-  if FilenameIsAbsolute(FFilename) then
-    Result:=FFilename
+  ExpFilename:=FFilename;
+  if (HelpDatabases<>nil) then
+    HelpDatabases.SubstituteMacros(ExpFilename);
+  ExpFilename:=TrimFilename(ExpFilename);
+  if FilenameIsAbsolute(ExpFilename) then
+    Result:=ExpFilename
   else begin
     BaseDir:=GetBasePath;
-    Result:=BaseDir+FFilename;
+    Result:=BaseDir+ExpFilename;
   end;
 end;
 
@@ -1588,22 +1847,107 @@ end;
 
 { THelpDBSISourceDirectory }
 
+constructor THelpDBSISourceDirectory.Create(TheNode: THelpNode;
+  const TheFilename, TheFileMask: string; Recursive: boolean);
+begin
+  inherited Create(TheNode,TheFilename);
+  FFileMask:=SetDirSeparators(TheFileMask);
+  WithSubDirectories:=Recursive;
+end;
+
 function THelpDBSISourceDirectory.FileMatches(const AFilename: string
   ): boolean;
 var
   TheDirectory: String;
 begin
   Result:=false;
+  debugln('THelpDBSISourceDirectory.FileMatches AFilename="',AFilename,'" FFilename="',FFilename,'"');
   if (FFilename='') or (AFilename='') then exit;
   TheDirectory:=GetFullFilename;
+  debugln('THelpDBSISourceDirectory.FileMatches TheDirectory="',TheDirectory,'" WithSubDirectories=',dbgs(WithSubDirectories));
   if WithSubDirectories then begin
     if not FileIsInPath(AFilename,TheDirectory) then exit;
   end else begin
     if not FileIsInDirectory(AFilename,TheDirectory) then exit;
   end;
+  debugln('THelpDBSISourceDirectory.FileMatches FileMask="',FileMask,'"');
   if (FileMask<>'')
   and (not FileInFilenameMasks(ExtractFilename(AFilename),FileMask)) then exit;
+  debugln('THelpDBSISourceDirectory.FileMatches Success');
   Result:=true;
+end;
+
+{ THelpQuery }
+
+constructor THelpQuery.Create(const TheHelpDatabaseID: THelpDatabaseID);
+begin
+  FHelpDatabaseID:=TheHelpDatabaseID;
+end;
+
+{ THelpQueryContext }
+
+constructor THelpQueryContext.Create(const TheHelpDatabaseID: THelpDatabaseID;
+  const TheContext: THelpContext);
+begin
+  inherited Create(TheHelpDatabaseID);
+  FContext:=TheContext;
+end;
+
+{ THelpQueryKeyword }
+
+constructor THelpQueryKeyword.Create(const TheHelpDatabaseID: THelpDatabaseID;
+  const TheKeyWord: string);
+begin
+  inherited Create(TheHelpDatabaseID);
+  FKeyword:=TheKeyWord;
+end;
+
+{ THelpQuerySourcePosition }
+
+constructor THelpQuerySourcePosition.Create(
+  const TheHelpDatabaseID: THelpDatabaseID; const TheFilename: string;
+  const SrcPos: TPoint);
+begin
+  inherited Create(TheHelpDatabaseID);
+  FFilename:=TheFilename;
+  FSourcePosition:=SrcPos;
+end;
+
+{ THelpQueryPascalContext }
+
+constructor THelpQueryPascalContexts.Create(
+  const TheHelpDatabaseID: THelpDatabaseID; const TheFilename: string;
+  const SrcPos: TPoint; ContextLists: TList);
+begin
+  inherited Create(TheHelpDatabaseID,TheFilename,SrcPos);
+  FContextLists:=ContextLists;
+end;
+
+{ THelpQueryMessage }
+
+constructor THelpQueryMessage.Create(const TheHelpDatabaseID: THelpDatabaseID;
+  const TheMessage: string);
+begin
+  inherited Create(TheHelpDatabaseID);
+  FWholeMessage:=TheMessage;
+end;
+
+{ THelpQueryClass }
+
+constructor THelpQueryClass.Create(const TheHelpDatabaseID: THelpDatabaseID;
+  const AClass: TClass);
+begin
+  inherited Create(TheHelpDatabaseID);
+  FTheClass:=AClass;
+end;
+
+{ THelpQueryNode }
+
+constructor THelpQueryNode.Create(const TheHelpDatabaseID: THelpDatabaseID;
+  const TheNode: THelpNode);
+begin
+  inherited Create(TheHelpDatabaseID);
+  FNode:=TheNode;
 end;
 
 initialization

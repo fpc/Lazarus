@@ -34,7 +34,9 @@ type
     procedure SetBaseURL(const AValue: string);
   public
     constructor Create(TheID: THelpDatabaseID); override;
-    function ShowHelp(BaseNode, NewNode: THelpNode;
+    function ShowURL(const URL, Title: string;
+                     var ErrMsg: string): TShowHelpResult; virtual;
+    function ShowHelp(Query: THelpQuery; BaseNode, NewNode: THelpNode;
                       var ErrMsg: string): TShowHelpResult; override;
     function GetEffectiveBaseURL: string;
   public
@@ -80,54 +82,62 @@ begin
   AddSupportedMimeType('text/html');
 end;
 
-function THTMLHelpDatabase.ShowHelp(BaseNode, NewNode: THelpNode;
-  var ErrMsg: string): TShowHelpResult;
+function THTMLHelpDatabase.ShowURL(const URL, Title: string; var ErrMsg: string
+  ): TShowHelpResult;
 var
   URLType, URLPath, URLParams: string;
   BaseURLType, BaseURLPath, BaseURLParams: string;
   Viewer: THelpViewer;
   EffBaseURL: String;
   Node: THelpNode;
-  URL: String;
+  FullURL: String;
+begin
+  DebugLn('THTMLHelpDatabase.ShowURL A URL="',URL,'" Title="',Title,'"');
+
+  // find HTML viewer
+  Result:=FindViewer('text/html',ErrMsg,Viewer);
+  if Result<>shrSuccess then exit;
+
+  // make URL absolute
+  SplitURL(URL,URLType,URLPath,URLParams);
+  debugln('THTMLHelpDatabase.ShowHelp A NewNode.URL=',URL,' URLType=',URLType,' URLPath=',URLPath,' URLParams=',URLParams);
+
+  if URLType='file' then begin
+    if not URLFilenameIsAbsolute(URLPath) then begin
+      EffBaseURL:=GetEffectiveBaseURL;
+      SplitURL(EffBaseURL,BaseURLType,BaseURLPath,BaseURLParams);
+      if (BaseURLType='file') and (BaseURLPath<>'') then
+        URLPath:=BaseURLPath+URLPath;
+    end;
+    if (not FileExists(URLPath)) then begin
+      Result:=shrContextNotFound;
+      ErrMsg:=Format(oisHelpTheHelpDatabaseWasUnableToFindFile, ['"', ID,
+        '"', '"', URLPath, '"']);
+      exit;
+    end;
+  end else begin
+
+  end;
+  FullURL:=CombineURL(URLType,URLPath,URLParams);
+  debugln('THTMLHelpDatabase.ShowHelp B URL=',URL,' URLType=',URLType,' URLPath=',URLPath,' URLParams=',URLParams);
+
+  // call viewer
+  Node:=nil;
+  try
+    Node:=THelpNode.CreateURL(Self,Title,FullURL);
+    Result:=Viewer.ShowNode(Node,ErrMsg);
+  finally
+    Node.Free;
+  end;
+end;
+
+function THTMLHelpDatabase.ShowHelp(Query: THelpQuery;
+  BaseNode, NewNode: THelpNode; var ErrMsg: string): TShowHelpResult;
 begin
   ErrMsg:='';
   Result:=shrContextNotFound;
   if NewNode.URLValid then begin
-    // find HTML viewer
-    Result:=FindViewer('text/html',ErrMsg,Viewer);
-    if Result<>shrSuccess then exit;
-    
-    // make URL absolute
-    SplitURL(NewNode.URL,URLType,URLPath,URLParams);
-    //debugln('THTMLHelpDatabase.ShowHelp A NewNode.URL=',NewNode.URL,' URLType=',URLType,' URLPath=',URLPath,' URLParams=',URLParams);
-    
-    if URLType='file' then begin
-      if not URLFilenameIsAbsolute(URLPath) then begin
-        EffBaseURL:=GetEffectiveBaseURL;
-        SplitURL(EffBaseURL,BaseURLType,BaseURLPath,BaseURLParams);
-        if (BaseURLType='file') and (BaseURLPath<>'') then
-          URLPath:=BaseURLPath+URLPath;
-      end;
-      if (not FileExists(URLPath)) then begin
-        Result:=shrContextNotFound;
-        ErrMsg:=Format(oisHelpTheHelpDatabaseWasUnableToFindFile, ['"', ID,
-          '"', '"', URLPath, '"']);
-        exit;
-      end;
-    end else begin
-
-    end;
-    URL:=CombineURL(URLType,URLPath,URLParams);
-    //debugln('THTMLHelpDatabase.ShowHelp B URL=',URL,' URLType=',URLType,' URLPath=',URLPath,' URLParams=',URLParams);
-
-    // call viewer
-    Node:=THelpNode.Create(Self,NewNode);
-    try
-      Node.URL:=URL;
-      Result:=Viewer.ShowNode(Node,ErrMsg);
-    finally
-      Node.Free;
-    end;
+    Result:=ShowURL(NewNode.URL,NewNode.Title,ErrMsg);
   end else begin
     Result:=shrContextNotFound;
     ErrMsg:='THTMLHelpDatabase.ShowHelp Node.URLValid=false';
@@ -137,9 +147,11 @@ end;
 function THTMLHelpDatabase.GetEffectiveBaseURL: string;
 begin
   Result:='';
-  if BaseURL<>'' then
-    Result:=BaseURL
-  else if (BasePathObject<>nil) and (Databases<>nil) then
+  if BaseURL<>'' then begin
+    Result:=BaseURL;
+    if (HelpDatabases<>nil) then
+      HelpDatabases.SubstituteMacros(Result);
+  end else if (BasePathObject<>nil) and (Databases<>nil) then
     Result:=Databases.GetBaseURLForBasePathObject(BasePathObject);
   if (Result<>'') and (Result[length(Result)]<>'/') then
     Result:=Result+'/';
