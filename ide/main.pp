@@ -468,7 +468,9 @@ type
     function DoRevertMainUnit: TModalResult;
     function DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
     procedure DoViewUnitDependencies;
-
+    function DoSaveStringToFile(const Filename, Src,
+                               FileDescription: string): TModalResult; override;
+    
     // project(s)
     function DoNewProject(NewProjectType:TProjectType):TModalResult;
     function DoSaveProject(Flags: TSaveFlags):TModalResult;
@@ -498,7 +500,7 @@ type
 
     // external tools
     function DoRunExternalTool(Index: integer): TModalResult;
-    function DoBuildLazarus: TModalResult;
+    function DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult; override;
 
     // useful information methods
     procedure GetCurrentUnit(var ActiveSourceEditor: TSourceEditor;
@@ -1303,8 +1305,10 @@ begin
                     lisProjectIncPath,nil,[]));
   MacroList.Add(TTransferMacro.Create('ProjSrcPath','',
                     lisProjectSrcPath,nil,[]));
+  MacroList.Add(TTransferMacro.Create('ConfDir','',
+                    lisProjectSrcPath,nil,[]));
+
   MacroList.OnSubstitution:=@OnMacroSubstitution;
-  
   CompilerOptions.OnParseString:=@OnSubstituteCompilerOption;
 end;
 
@@ -1919,7 +1923,7 @@ begin
      DoConvertDFMtoLFM;
 
    ecBuildLazarus:
-     DoBuildLazarus;
+     DoBuildLazarus([]);
      
    ecConfigBuildLazarus:
      mnuToolConfigBuildLazClicked(Self);
@@ -2405,7 +2409,7 @@ end;
 
 procedure TMainIDE.mnuToolBuildLazarusClicked(Sender : TObject);
 begin
-  DoBuildLazarus;
+  DoBuildLazarus([]);
 end;
 
 procedure TMainIDE.mnuToolConfigBuildLazClicked(Sender : TObject);
@@ -4580,6 +4584,32 @@ begin
     UnitDependenciesView.ShowOnTop;
 end;
 
+function TMainIDE.DoSaveStringToFile(const Filename, Src,
+  FileDescription: string): TModalResult;
+var
+  fs: TFileStream;
+begin
+  try
+    ClearFile(Filename,true);
+    fs:=TFileStream.Create(Filename,fmCreate);
+    try
+      if Src<>'' then
+        fs.Write(Src[1],length(Src));
+    finally
+      fs.Free;
+    end;
+  except
+    on E: Exception do begin
+      Result:=MessageDlg('Error writing file',
+        'Unable to write '+FileDescription+#13
+        +'"'+Filename+'".',
+        mtError,[mbCancel,mbAbort],0);
+      exit;
+    end;
+  end;
+  Result:=mrOk;
+end;
+
 function TMainIDE.DoOpenFileAtCursor(Sender: TObject):TModalResult;
 var ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
@@ -5461,7 +5491,7 @@ begin
 
   // compile required packages
   {$IFDEF EnablePkgs}
-  Result:=PkgBoss.DoCompileProjectDependencies(Project1,[pcfAutomatic]);
+  Result:=PkgBoss.DoCompileProjectDependencies(Project1,[pcfDoNotSaveEditorFiles]);
   if Result<>mrOk then exit;
   {$ENDIF}
 
@@ -5635,11 +5665,29 @@ begin
   DoCheckFilesOnDisk;
 end;
 
-function TMainIDE.DoBuildLazarus: TModalResult;
+function TMainIDE.DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult;
+var
+  PkgOptions: string;
 begin
+  // prepare static auto install packages
+  if blfWithStaticPackages in Flags then begin
+    // compile auto install static packages
+    Result:=PkgBoss.DoCompileAutoInstallPackages([]);
+    if Result<>mrOk then exit;
+    
+    // create uses addition for IDE
+    Result:=PkgBoss.DoSaveAutoInstallConfig;
+    if Result<>mrOk then exit;
+    
+    // create inherited compiler options
+    PkgOptions:=PkgBoss.DoGetIDEInstallPackageOptions;
+  end else
+    PkgOptions:='';
+
   SourceNotebook.ClearErrorLines;
   Result:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
-                       EnvironmentOptions.ExternalTools,MacroList);
+                       EnvironmentOptions.ExternalTools,MacroList,
+                       PkgOptions);
   DoCheckFilesOnDisk;
 end;
 
@@ -6357,6 +6405,9 @@ writeln('TMainIDE.OnMacroSubstitution A ',s,' ',EnvironmentOptions.CompilerFilen
       s:=GetProjPublishDir
     else
       s:='';
+  end else if MacroName='confdir' then begin
+    Handled:=true;
+    s:=GetPrimaryConfigPath;
   end;
 end;
 
@@ -8554,6 +8605,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.539  2003/04/27 09:29:56  mattias
+  implemented installing static packages
+
   Revision 1.538  2003/04/26 07:34:54  mattias
   implemented custom package initialization
 
