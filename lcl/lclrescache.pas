@@ -317,9 +317,11 @@ begin
   Item.AddToList(FFirstUnusedItem,FLastUnusedItem);
   inc(FUnUsedItemCount);
   //debugln('TResourceCache.ItemUnused C ',ClassName,' ',dbgs(Self));
-  if FUnUsedItemCount>FMaxUnusedItem then
+  if FUnUsedItemCount>FMaxUnusedItem then begin
     // maximum unused resources reached -> free the oldest
+    FFirstUnusedItem.RemoveFromList(FFirstUnusedItem,FLastUnusedItem);
     FFirstUnusedItem.Free;
+  end;
   //debugln('TResourceCache.ItemUnused END ',ClassName,' ',dbgs(Self));
 end;
 
@@ -331,7 +333,7 @@ end;
 
 constructor TResourceCache.Create;
 begin
-  FMaxUnusedItem:=2;
+  FMaxUnusedItem:=100;
   FItems:=TAvgLvlTree.CreateObjectCompare(@CompareItems);
   FDescriptors:=TAvgLvlTree.CreateObjectCompare(@CompareDescriptors);
   FResourceCacheItemClass:=TResourceCacheItem;
@@ -341,6 +343,8 @@ end;
 destructor TResourceCache.Destroy;
 begin
   FDestroying:=true;
+  while FFirstUnusedItem<>nil do
+    FFirstUnusedItem.RemoveFromList(FFirstUnusedItem,FLastUnusedItem);
   FItems.FreeAndClear;
   FItems.Free;
   FItems:=nil;

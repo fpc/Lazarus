@@ -607,11 +607,9 @@ debugln('AAA1 ',CurValue);
     Brush.Color := vOldBrushColor;
     Pen.Color := vOldPenColor;
   end;
-debugln('AAA2 ',CurValue);
   inherited ListDrawValue(CurValue, Index, ACanvas,
                           Rect(vRight, ARect.Top, ARect.Right, ARect.Bottom),
                           AState);
-debugln('AAA3 ',CurValue);
 end;
 
 procedure TColorPropertyEditor.ListMeasureWidth(const CurValue:ansistring;

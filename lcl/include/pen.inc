@@ -23,9 +23,7 @@ procedure TPenHandleCache.RemoveItem(Item: TResourceCacheItem);
 begin
   if Item=nil then
     RaiseGDBException('TPenHandleCache.RemoveItem');
-  debugln('TPenHandleCache.RemoveItem A ',HexStr(Cardinal(Item.Handle),8));
   DeleteObject(Item.Handle);
-  debugln('TPenHandleCache.RemoveItem B ',HexStr(Cardinal(Item.Handle),8));
   inherited RemoveItem(Item);
 end;
 
@@ -236,6 +234,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2004/11/07 01:36:18  mattias
+  fixed cleaning up unused resource cache item lists
+
   Revision 1.12  2004/11/07 01:10:05  mattias
   fixed double calling destructor for resource cache items
 

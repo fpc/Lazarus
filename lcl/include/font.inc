@@ -66,7 +66,8 @@ function TFontHandleCache.FindFont(TheFont: HFONT): TResourceCacheItem;
 var
   ANode: TAvgLvlTreeNode;
 begin
-  ANode:=FItems.FindKey(@THandle(TheFont), TListSortCompare(@ComparePHandleWithResourceCacheItem));
+  ANode:=FItems.FindKey(@THandle(TheFont),
+                        TListSortCompare(@ComparePHandleWithResourceCacheItem));
   if ANode<>nil then
     Result:=TResourceCacheItem(ANode.Data)
   else
@@ -82,7 +83,7 @@ begin
   LogFontAndName.LogFont:=LogFont;
   LogFontAndName.LongFontName:=LongFontName;
   ANode:=FDescriptors.Findkey(@LogFontAndName,
-                            TListSortCompare(@CompareLogFontAndNameWithResDesc));
+                           TListSortCompare(@CompareLogFontAndNameWithResDesc));
   if ANode<>nil then
     Result:=TFontHandleCacheDescriptor(ANode.Data)
   else
@@ -949,6 +950,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.19  2004/11/07 01:36:18  mattias
+  fixed cleaning up unused resource cache item lists
+
   Revision 1.18  2004/11/04 00:52:23  marc
   * Changed typing fixes to casting
 
