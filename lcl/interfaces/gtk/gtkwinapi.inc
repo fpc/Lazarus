@@ -3423,11 +3423,11 @@ begin
     pixmapwid := gtk_pixmap_new(pixmap,PgdiObject(SRCdc)^.GDIBitmapMAskObject);
 
     gdk_draw_pixmap(PDeviceContext(DestDC)^.Drawable, PDeviceContext(DestDC)^.GC, PgdkDrawable(pixmapwid^.window),
-      XSrc, YSrc, X, Y, Width, Height);
+      XSrc, YSrc, X, Y, SrcWidth, SrcHeight);
 }
 
     gdk_draw_pixmap(PDeviceContext(DestDC)^.Drawable, PDeviceContext(DestDC)^.GC, PDeviceContext(SrcDC)^.Drawable,
-      XSrc, YSrc, X, Y, Width, Height);
+      XSrc, YSrc, X, Y, SrcWidth, SrcHeight);
 
   end;
   Assert(True, Format('trace:< [TgtkObject.StretchBlt] DestDC:0x%x --> %s', [DestDC, BOOL_TEXT[Result]]));
@@ -3514,6 +3514,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.33  2001/04/13 13:22:23  lazarus
+       Made fix to buttonglyph to use the correct size of single glyph
+       Made fix to StretchBlt to use the correct height and width
+       Both of these corrected the Win32 Speedbutton problem        MAH
+
   Revision 1.32  2001/04/06 22:25:14  lazarus
   * TTimer uses winapi-interface now instead of sendmessage-interface, stoppok
 
