@@ -1160,6 +1160,8 @@ end;
 Procedure TCustomForm.SetFormStyle(Value : TFormStyle);
 Begin
   if FFormStyle = Value then exit;
+  if Value in [fsMDIChild, fsMDIForm] then
+    raise Exception.Create('TCustomForm.SetFormStyle MDI forms are not implemented yet');
   FFormStyle := Value;
   Include(FFormState,fsFormStyleChanged);
   if FFormStyle=fsSplash then begin
@@ -1864,6 +1866,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.174  2005/01/26 23:23:11  mattias
+  added error when setting FormStyle to MDI
+
   Revision 1.173  2005/01/25 20:07:03  mattias
   fixed updating restored form bounds for forms without handle
 

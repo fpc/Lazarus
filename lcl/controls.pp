@@ -210,7 +210,7 @@ type
   TCaption = TTranslateString;
   TCursor = -32768..32767;
 
-  TFormStyle = (fsNormal, fsMDIChild, fsMDIFORM, fsStayOnTop, fsSplash);
+  TFormStyle = (fsNormal, fsMDIChild, fsMDIForm, fsStayOnTop, fsSplash);
   TFormBorderStyle = (bsNone, bsSingle, bsSizeable, bsDialog, bsToolWindow,
                       bsSizeToolWin);
   TBorderStyle = bsNone..bsSingle;
@@ -2895,6 +2895,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.278  2005/01/26 23:23:11  mattias
+  added error when setting FormStyle to MDI
+
   Revision 1.277  2005/01/26 15:45:08  mattias
   implemented adding files from directory in project inspector, fixed extrac proc checking overlapping blocks
 
