@@ -1615,39 +1615,10 @@ end;
 ------------------------------------------------------------------------------}
 function TgtkObject.GetTopIndex(Sender: TObject): integer;
 var
-  ScrolledWindow: PGtkScrolledWindow;
-  VertAdj: PGTKAdjustment;
-  AdjValue: integer;
-  ListWidget: PGtkList;
-  AWidget: PGtkWidget;
-  GListItem: PGList;
-  ListItemWidget: PGtkWidget;
+  y: Integer;
 begin
-  Result:=-1;
-  if not (Sender is TWinControl) then exit;
-  case TWinControl(Sender).fCompStyle of
-
-  csListBox:
-    begin
-      AWidget:=PGtkWidget(TWinControl(Sender).Handle);
-      ListWidget:=PGtkList(GetWidgetInfo(AWidget, True)^.ImplementationWidget);
-      ScrolledWindow:=PGtkScrolledWindow(AWidget);
-      VertAdj:=gtk_scrolled_window_get_vadjustment(ScrolledWindow);
-      if VertAdj=nil then
-        AdjValue:=0
-      else
-        AdjValue:=round(VertAdj^.value);
-      GListItem:=ListWidget^.children;
-      while GListItem<>nil do begin
-        inc(Result);
-        ListItemWidget:=PGtkWidget(GListItem^.data);
-        dec(AdjValue,ListItemWidget^.Allocation.Height);
-        if AdjValue<0 then break;
-        GListItem:=GListItem^.next;
-      end;
-    end;
-
-  end;
+  y:=0;
+  Result:=GetIndexAtY(Sender,@y);
 end;
 
 {------------------------------------------------------------------------------
@@ -1689,6 +1660,49 @@ begin
       MaxAdjValue:=round(VertAdj^.upper-VertAdj^.page_size);
       if AdjValue>MaxAdjValue then AdjValue:=MaxAdjValue;
       gtk_adjustment_set_value(VertAdj,AdjValue);
+    end;
+
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  function TgtkObject.GetIndexAtY(Sender: TObject; PointerToY: Pointer): integer;
+------------------------------------------------------------------------------}
+function TgtkObject.GetIndexAtY(Sender: TObject; PointerToY: Pointer): integer;
+var
+  ScrolledWindow: PGtkScrolledWindow;
+  VertAdj: PGTKAdjustment;
+  AdjValue: integer;
+  ListWidget: PGtkList;
+  AWidget: PGtkWidget;
+  GListItem: PGList;
+  ListItemWidget: PGtkWidget;
+  Y: integer;
+begin
+  Result:=-1;
+  if not (Sender is TWinControl) then exit;
+  Y:=PInteger(PointerToY)^;
+  case TWinControl(Sender).fCompStyle of
+
+  csListBox:
+    begin
+      AWidget:=PGtkWidget(TWinControl(Sender).Handle);
+      ListWidget:=PGtkList(GetWidgetInfo(AWidget, True)^.ImplementationWidget);
+      ScrolledWindow:=PGtkScrolledWindow(AWidget);
+      VertAdj:=gtk_scrolled_window_get_vadjustment(ScrolledWindow);
+      if VertAdj=nil then
+        AdjValue:=y
+      else
+        AdjValue:=round(VertAdj^.value)+y;
+      GListItem:=ListWidget^.children;
+      while GListItem<>nil do begin
+        inc(Result);
+        ListItemWidget:=PGtkWidget(GListItem^.data);
+        dec(AdjValue,ListItemWidget^.Allocation.Height);
+        if AdjValue<0 then exit;
+        GListItem:=GListItem^.next;
+      end;
+      Result:=-1;
     end;
 
   end;
@@ -1795,6 +1809,7 @@ begin
     
     LM_LB_GETTOPINDEX: Result:=GetTopIndex(Sender);
     LM_LB_SETTOPINDEX: Result:=SetTopIndex(Sender,integer(Data));
+    LM_LB_GETINDEXAT:  Result:=GetIndexAtY(Sender,Data);
 
   else begin
     handle := hwnd(ObjectToGtkObject(Sender));
@@ -7244,6 +7259,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.359  2003/04/29 13:35:39  mattias
+  improved configure build lazarus dialog
+
   Revision 1.358  2003/04/26 10:45:34  mattias
   fixed right control release
 
