@@ -2303,7 +2303,8 @@ begin
             csButton,
             csToolButton,
             csRadioButton,
-            csCheckBox:
+            csCheckBox,
+            csToggleBox:
               // ToDo: use accelerator group of Form
               Accelerate(TComponent(Sender), Widget, TLMShortcut(data^), 'clicked');
             else
@@ -2614,14 +2615,15 @@ begin
       end;
     end;
 
-  csCheckBox    :
+  csCheckBox,
+  csToggleBox:
     begin
       aLabel := Ampersands2Underscore(PLabel);
       Try
         gtk_label_set_text(
-                    pGtkLabel(pgtkCheckButton(p)^.Toggle_Button.Button.Child),
+                    pGtkLabel(PGTKToggleButton(p)^.Button.Child),
                     aLabel);
-        gtk_label_parse_uline(pGtkLabel(pgtkCheckButton(p)^.Toggle_Button.Button.Child),
+        gtk_label_parse_uline(pGtkLabel(PGTKToggleButton(p)^.Button.Child),
           aLabel);
       Finally
         StrDispose(aLabel);
@@ -2655,7 +2657,7 @@ begin
     end;
 
   else
-    Assert(True, Format ('WARNING: [TgtkObject.SetLabel] --> not handled for class %s ', [Sender.ClassName]));
+    //writeln('WARNING: [TgtkObject.SetLabel] --> not handled for class ',Sender.ClassName);
   end;
   Assert(False, Format('trace:  [TgtkObject.SetLabel] %s --> END', [Sender.ClassName]));
 end;
@@ -5424,7 +5426,8 @@ begin
 
 
   csRadiobutton,
-  csCheckbox   :
+  csCheckbox,
+  csToggleBox:
     if gtk_toggle_button_get_active (PGtkToggleButton (handle))
     then PCheckBoxState(data)^ := cbChecked
     else PCheckBoxState(data)^ := cbUnChecked;
@@ -5442,7 +5445,7 @@ begin
     Begin
       Single(Data^):=gtk_spin_button_get_value_As_Float(PgtkSpinButton(Handle));
     end;
-
+    
   else
     writeln('Warning: TgtkObject.GetValue not implemented for ',Sender.ClassName);
     Assert (true, Format ('WARNING:[TgtkObject.GetValue] failed for %s', [Sender.ClassName]));
@@ -5496,9 +5499,11 @@ begin
     end;
 
   csRadiobutton,
-  csCheckbox   :
+  csCheckbox,
+  csToggleBox:
     begin
-      gtk_toggle_button_set_active(PGtkToggleButton(handle), (TCheckBoxState(data^) = cbChecked))
+      gtk_toggle_button_set_active(PGtkToggleButton(handle),
+        (TCheckBoxState(data^) = cbChecked))
     end;
                     
   csCalendar   :
@@ -6860,6 +6865,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.327  2003/03/09 17:44:12  mattias
+  finshed Make Resourcestring dialog and implemented TToggleBox
+
   Revision 1.326  2003/02/28 19:10:25  mattias
   added new ... dialog
 

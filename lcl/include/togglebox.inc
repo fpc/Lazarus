@@ -16,13 +16,10 @@
 }
 {------------------------------------------------------------------------------}
 
-constructor TToggleBox.Create(AOwner : TComponent);
+constructor TToggleBox.Create(TheOwner : TComponent);
 begin
-   if assigned(AOwner) then
-   begin
-      inherited Create(AOwner);
-      fCompStyle := csToggleBox;
-   end;
+  inherited Create(TheOwner);
+  fCompStyle := csToggleBox;
 end;
 
 {------------------------------------------------------------------------------}
