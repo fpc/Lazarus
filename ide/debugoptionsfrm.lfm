@@ -1,0 +1,284 @@
+object DebuggerOptionsForm: TDebuggerOptionsForm
+  BORDERSTYLE = bsdialog
+  CAPTION = 'Debugger Options'
+  CLIENTHEIGHT = 442
+  CLIENTWIDTH = 480
+  HORZSCROLLBAR.PAGE = 481
+  VERTSCROLLBAR.PAGE = 443
+  LEFT = 482
+  HEIGHT = 442
+  TOP = 291
+  WIDTH = 480
+  object nbDebugOptions: TNOTEBOOK
+    ALIGN = altop
+    PAGEINDEX = 0
+    HEIGHT = 398
+    WIDTH = 480
+    object pgGeneral: TPAGE
+      CAPTION = 'General'
+      LEFT = 2
+      HEIGHT = 368
+      TOP = 28
+      WIDTH = 476
+      object Groupbox1: TGROUPBOX
+        CAPTION = 'Debugger type and path'
+        PARENTCTL3D = False
+        LEFT = 2
+        HEIGHT = 54
+        TOP = 8
+        WIDTH = 472
+        object Combobox1: TCOMBOBOX
+          MAXLENGTH = 0
+          PARENTCTL3D = False
+          TABSTOP = True
+          LEFT = 6
+          HEIGHT = 25
+          TOP = 5
+          WIDTH = 160
+        end
+        object cmbPath: TCOMBOBOX
+          MAXLENGTH = 0
+          PARENTCTL3D = False
+          TABORDER = 1
+          TABSTOP = True
+          LEFT = 174
+          HEIGHT = 25
+          TOP = 5
+          WIDTH = 260
+        end
+        object Button1: TBUTTON
+          CAPTION = '...'
+          TABSTOP = True
+          TABORDER = 2
+          LEFT = 442
+          HEIGHT = 25
+          TOP = 5
+          WIDTH = 19
+        end
+      end
+      object Groupbox2: TGROUPBOX
+        CAPTION = 'Additional search path'
+        PARENTCTL3D = False
+        TABORDER = 1
+        LEFT = 2
+        HEIGHT = 52
+        TOP = 64
+        WIDTH = 472
+        object Edit1: TEDIT
+          TABSTOP = True
+          LEFT = 6
+          HEIGHT = 25
+          TOP = 5
+          WIDTH = 428
+        end
+        object Button2: TBUTTON
+          CAPTION = '...'
+          TABSTOP = True
+          TABORDER = 1
+          LEFT = 442
+          HEIGHT = 24
+          TOP = 5
+          WIDTH = 19
+        end
+      end
+      object Groupbox3: TGROUPBOX
+        CAPTION = 'Debugger specific options (depends on type of debugger)'
+        PARENTCTL3D = False
+        TABORDER = 2
+        LEFT = 2
+        HEIGHT = 244
+        TOP = 116
+        WIDTH = 472
+      end
+    end
+    object pgEventLog: TPAGE
+      CAPTION = 'Event Log'
+      LEFT = 2
+      HEIGHT = 368
+      TOP = 28
+      WIDTH = 476
+      object Groupbox4: TGROUPBOX
+        CAPTION = 'Groupbox4'
+        PARENTCTL3D = False
+        LEFT = 4
+        HEIGHT = 132
+        TOP = 8
+        WIDTH = 230
+      end
+      object Groupbox5: TGROUPBOX
+        CAPTION = 'Groupbox5'
+        PARENTCTL3D = False
+        TABORDER = 1
+        LEFT = 242
+        HEIGHT = 133
+        TOP = 8
+        WIDTH = 232
+      end
+    end
+    object pgExceptions: TPAGE
+      CAPTION = 'Language Exceptions'
+      LEFT = 2
+      HEIGHT = 368
+      TOP = 28
+      WIDTH = 476
+      object Groupbox6: TGROUPBOX
+        CAPTION = 'Ignore these exceptions'
+        PARENTCTL3D = False
+        LEFT = 4
+        HEIGHT = 328
+        TOP = 8
+        WIDTH = 468
+        object Scrollbox1: TSCROLLBOX
+          AUTOSIZE = False
+          DRAGCURSOR = 0
+          PARENTCTL3D = False
+          TABSTOP = True
+          HORZSCROLLBAR.PAGE = 444
+          VERTSCROLLBAR.PAGE = 262
+          LEFT = 8
+          HEIGHT = 265
+          TOP = 5
+          WIDTH = 447
+        end
+        object Button5: TBUTTON
+          ENABLED = False
+          CAPTION = 'Remove'
+          TABSTOP = True
+          TABORDER = 1
+          LEFT = 380
+          HEIGHT = 25
+          TOP = 277
+          WIDTH = 75
+        end
+        object Button6: TBUTTON
+          CAPTION = 'Add'
+          TABSTOP = True
+          TABORDER = 2
+          LEFT = 300
+          HEIGHT = 25
+          TOP = 277
+          WIDTH = 75
+        end
+      end
+      object Checkbox1: TCHECKBOX
+        ALLOWGRAYED = True
+        AUTOSIZE = True
+        CAPTION = 'Break on Lazarus Exceptions'
+        DRAGCURSOR = 0
+        TABORDER = 1
+        TABSTOP = True
+        LEFT = 2
+        HEIGHT = 20
+        TOP = 340
+        WIDTH = 188
+      end
+    end
+    object Page1: TPAGE
+      CAPTION = 'OS Exceptions'
+      LEFT = 2
+      HEIGHT = 368
+      TOP = 28
+      WIDTH = 476
+      object Groupbox7: TGROUPBOX
+        CAPTION = 'Signals'
+        PARENTCTL3D = False
+        LEFT = 4
+        HEIGHT = 354
+        TOP = 8
+        WIDTH = 468
+        object Button7: TBUTTON
+          ENABLED = False
+          CAPTION = 'Remove'
+          TABSTOP = True
+          LEFT = 381
+          HEIGHT = 25
+          TOP = 305
+          WIDTH = 75
+        end
+        object Button8: TBUTTON
+          CAPTION = 'Add'
+          TABSTOP = True
+          TABORDER = 1
+          LEFT = 296
+          HEIGHT = 25
+          TOP = 305
+          WIDTH = 75
+        end
+        object lvSignals: TLISTVIEW
+          COLUMNS = <          
+            item
+              CAPTION = 'Handled by'
+              VISIBLE = True
+              WIDTH = 75
+            end          
+            item
+              CAPTION = 'Resume'
+              VISIBLE = True
+              WIDTH = 75
+            end          
+            item
+              CAPTION = 'Name'
+              VISIBLE = True
+              WIDTH = 200
+            end          
+            item
+              CAPTION = 'ID'
+              VISIBLE = True
+              WIDTH = 50
+            end>
+          POPUPMENU = popSignal
+          VIEWSTYLE = vsreport
+          LEFT = 8
+          HEIGHT = 292
+          TOP = 5
+          WIDTH = 448
+        end
+      end
+    end
+  end
+  object cmdCancel: TBUTTON
+    MODALRESULT = 2
+    CANCEL = True
+    CAPTION = 'Cancel'
+    TABSTOP = True
+    TABORDER = 1
+    LEFT = 400
+    HEIGHT = 25
+    TOP = 408
+    WIDTH = 75
+  end
+  object cmdOK: TBUTTON
+    DEFAULT = True
+    MODALRESULT = 1
+    CAPTION = 'OK'
+    TABSTOP = True
+    TABORDER = 2
+    LEFT = 320
+    HEIGHT = 25
+    TOP = 408
+    WIDTH = 75
+  end
+  object popSignal: TPOPUPMENU
+    left = 408
+    top = 20
+    object mnuHandledByProgram: TMENUITEM
+      CAPTION = 'Handled by Program'
+      RADIOITEM = True
+    end
+    object mnuiHandledByDebugger: TMENUITEM
+      CAPTION = 'Handled by Debugger'
+      RADIOITEM = True
+    end
+    object N1: TMENUITEM
+      CAPTION = '-'
+    end
+    object mnuResumeHandled: TMENUITEM
+      CAPTION = 'Resume Handled'
+      RADIOITEM = True
+    end
+    object mnuResumeUnhandled: TMENUITEM
+      CAPTION = 'Resume Unhandled'
+      RADIOITEM = True
+    end
+  end
+end
