@@ -1087,6 +1087,7 @@ type
     Procedure FontChange(Sender: TObject);
   protected
     function  CanTab: boolean; override;
+    procedure CalcSize(var AWidth, AHeight: integer);
     procedure DoAutoSize; override;
     procedure CMTextChanged(var Message: TLMSetText); message CM_TEXTCHANGED;
 
@@ -1217,6 +1218,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.187  2005/01/21 14:18:11  micha
+  implement TCustomLabel.Layout
+
   Revision 1.186  2005/01/21 13:38:10  micha
   implement TCustomLabel.Transparent
 

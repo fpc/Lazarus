@@ -25,12 +25,33 @@
     - ?? Check For Full Delphi/Kylix Compatibility
 
 }
-Procedure TCustomLabel.DoAutoSize;
+
+procedure TCustomLabel.CalcSize(var AWidth, AHeight: integer);
+  { assumes: (Parent <> nil) and Parent.HandleAllocated }
 var
   R : TRect;
   DC : hDC;
   Flags: Cardinal;
   OldFont: HGDIOBJ;
+begin
+  DC := GetDC(Parent.Handle);
+  try
+    R := Rect(0,0, Width, Height);
+    OldFont:=SelectObject(DC, Font.Handle);
+    Flags:=DT_CalcRect or DT_NoPrefix;
+    if WordWrap then inc(Flags,DT_WordBreak);
+    DrawText(DC, PChar(Caption), Length(Caption), R, Flags);
+    SelectObject(DC, OldFont);
+    AWidth := R.Right - R.Left;
+    AHeight := R.Bottom - R.Top;
+  finally
+    ReleaseDC(Parent.Handle, DC);
+  end;
+end;
+
+Procedure TCustomLabel.DoAutoSize;
+var
+  NewWidth, NewHeight: integer;
 begin
   //debugln('TCustomLabel.DoAutoSize ',DbgSName(Self),' AutoSizing=',dbgs(AutoSizing),' AutoSize=',dbgs(AutoSize),' Parent=',DbgSName(Parent),' Parent.HandleAllocated=',dbgs(Parent.HandleAllocated),' csLoading=',dbgs(csLoading in ComponentState));
   If AutoSizing or not AutoSize then
@@ -39,19 +60,11 @@ begin
   or ([csLoading,csDestroying]*ComponentState<>[]) then
     exit;
   AutoSizing := True;
-  DC := GetDC(Parent.Handle);
-  Try
-    R := Rect(0,0, Width, Height);
-    OldFont:=SelectObject(DC, Font.Handle);
-    Flags:=DT_CalcRect or DT_NoPrefix;
-    if WordWrap then inc(Flags,DT_WordBreak);
-    DrawText(DC, PChar(Caption), Length(Caption), R, Flags);
-    SelectObject(DC, OldFont);
+  try
+    CalcSize(NewWidth, NewHeight);
     //debugln('TCustomLabel.DoAutoSize R=',dbgs(R));
-
-    SetBounds(Left,Top,R.Right - R.Left,R.Bottom - R.Top);
-  Finally
-    ReleaseDC(Parent.Handle, DC);
+    SetBounds(Left, Top, NewWidth, NewHeight);
+  finally
     AutoSizing := False;
   end;
 end;
@@ -174,6 +187,8 @@ Procedure TCustomLabel.Paint;
 var
   TR : TTextStyle;
   R : TRect;
+  TextLeft, TextTop: integer;
+  lTextWidth, lTextHeight: integer;
 begin
   R := Rect(0,0,Width,Height);
   With Canvas do begin
@@ -213,7 +228,14 @@ begin
       ShowPrefix := ShowAccelChar;
       SystemFont:=false;
     end;
-    TextRect(R, R.Left, R.Top, Caption, TR);
+    CalcSize(lTextWidth, lTextHeight);
+    TextLeft := R.Left;
+    case Layout of
+      tlTop:    TextTop := R.Top;
+      tlCenter: TextTop := (R.Bottom - R.Top - lTextHeight) div 2;
+      tlBottom: TextTop := R.Bottom - R.Top - lTextHeight;
+    end;
+    TextRect(R, TextLeft, TextTop, Caption, TR);
   end;
 end;
 
@@ -228,6 +250,9 @@ end;
 
 {
   $Log$
+  Revision 1.24  2005/01/21 14:18:11  micha
+  implement TCustomLabel.Layout
+
   Revision 1.23  2005/01/21 13:38:10  micha
   implement TCustomLabel.Transparent
 
