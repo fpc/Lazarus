@@ -21,6 +21,9 @@
  *                                                                         *
  ***************************************************************************
 }
+uses
+  windows;
+
 const
   DefaultFPCSrcDirs: array[1..1] of string = (
     'C:\pp'
@@ -111,7 +114,7 @@ end;
 function FindDefaultCompilerPath: string;
 begin
   Result:=SearchFileInPath(GetDefaultCompilerFilename,'',
-                           GetEnvironmentVariable('PATH'),';',
+                           SysUtils.GetEnvironmentVariable('PATH'),';',
                            [sffDontSearchInBasePath]);
   if Result<>'' then exit;
   Result:='c:\pp\bin\win32\ppc386.exe';
@@ -121,7 +124,7 @@ end;
 function FindDefaultMakePath: string;
 begin
   Result:=SearchFileInPath('make.exe','',
-                           GetEnvironmentVariable('PATH'),';',
+                           SysUtils.GetEnvironmentVariable('PATH'),';',
                            [sffDontSearchInBasePath]);
 end;
 
@@ -159,7 +162,7 @@ end;
 
 function GetDefaultTestBuildDirectory: string;
 begin
-  Result:=GetEnvironmentVariable('TEMP');
+  Result:=SysUtils.GetEnvironmentVariable('TEMP');
   if Result<>'' then exit;
   Result:='c:\temp\';
   if DirPathExists(Result) then exit;
@@ -187,19 +190,45 @@ begin
   Result:='win32';
 end;
 
+procedure GetLanguageIDs(var Lang, FallbackLang: string);
+var
+  Buffer: array[1..4] of char;
+  Country: string;
+  UserLCID: LCID;
+begin
+  //defaults
+  Lang := '';
+  FallbackLang:='';
+  UserLCID := GetUserDefaultLCID;
+  if GetLocaleInfo(UserLCID, LOCALE_SABBREVLANGNAME, @Buffer, 4)<>0 then
+    FallbackLang := lowercase(copy(Buffer,1,2));
+  if GetLocaleInfo(UserLCID, LOCALE_SABBREVCTRYNAME, @Buffer, 4)<>0 then begin
+    Country := copy(Buffer,1,2);
+
+    // some 2 letter codes are not the first two letters of the 3 letter code
+    // there are probably more, but first let us see if there are translations
+    if (Buffer='PRT') then Country:='PT';
+
+    Lang := FallbackLang+'_'+Country;
+  end;
+end;
+
 {---------------------------------------------------------------------------
   procedure InternalInit;
  ---------------------------------------------------------------------------}
 procedure InternalInit;
 begin
   PrimaryConfigPath:=ChompPathDelim(ExtractFilePath(Paramstr(0)));
-  SecondaryConfigPath:=GetEnvironmentVariable('WINDIR');
+  SecondaryConfigPath:=SysUtils.GetEnvironmentVariable('WINDIR');
   If SecondaryConfigPath = '' Then
     SecondaryConfigPath:='c:\windows';
 end;
 
 {
   $Log$
+  Revision 1.26  2004/12/09 14:30:12  vincents
+  moved GetLanguageIDs from Translations to LazConf
+
   Revision 1.25  2004/12/04 01:17:41  mattias
   implemented Target Directory for IDE
 

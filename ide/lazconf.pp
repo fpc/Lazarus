@@ -112,6 +112,9 @@ const
   function GetDefaultLCLWidgetType: string;
   procedure GetDefaultLCLLibPaths(List: TStrings);
   function GetDefaultLCLLibPaths(const Prefix, Postfix, Separator: string): string;
+  
+  // returns the user language ID from the OS
+  procedure GetLanguageIDs(var Lang, FallbackLang: string);
 
 const
   EmptyLine = LineEnding + LineEnding;
@@ -130,7 +133,7 @@ begin
     Result:=Executable
   else
     Result:=SearchFileInPath(Executable,'',
-                             GetEnvironmentVariable('PATH'),':',
+                             SysUtils.GetEnvironmentVariable('PATH'),':',
                              [sffDontSearchInBasePath]);
 end;
 
@@ -222,6 +225,9 @@ end.
 
 {
   $Log$
+  Revision 1.35  2004/12/09 14:30:12  vincents
+  moved GetLanguageIDs from Translations to LazConf
+
   Revision 1.34  2004/12/04 01:17:41  mattias
   implemented Target Directory for IDE
 

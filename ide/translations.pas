@@ -79,7 +79,7 @@ var
 implementation
 
 uses
-  Dos;
+  Dos, LazConf;
 
 function GetLazarusLanguageLocalizedName(const ID: string): String;
 begin
@@ -199,26 +199,6 @@ begin
     TranslateUnitResourceStrings(ResUnitName,Format(BaseFilename,[FallbackLang]));
   if Lang<>'' then
     TranslateUnitResourceStrings(ResUnitName,Format(BaseFilename,[Lang]));
-end;
-
-procedure GetLanguageIDs(var Lang, FallbackLang: string);
-begin
-  Lang := GetEnv('LC_ALL');
-  FallbackLang:='';
-
-  if Length(Lang) = 0 then
-  begin
-    Lang := GetEnv('LC_MESSAGES');
-    if Length(Lang) = 0 then
-    begin
-      Lang := GetEnv('LANG');
-      if Length(Lang) = 0 then
-        exit;   // no language defined via environment variables
-    end;
-  end;
-
-  FallbackLang := Copy(Lang, 1, 2);
-  Lang := Copy(Lang, 1, 5);
 end;
 
 {-------------------------------------------------------------------------------
