@@ -512,7 +512,7 @@ begin
     If not NoPrefix then
       DeleteAmpersands(tmpString);
 
-    If Str > '' then begin
+    If tmpString > '' then begin
       TextExtent(DC, tmpString);
       AP.cX := AP.cX div Length(tmpString);
     end
@@ -1362,6 +1362,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.52  2002/10/08 02:52:58  lazarus
+  AJ: fixed bug in drawtext, switched hintwindow's to use Canvas.TextRect
+
   Revision 1.51  2002/10/03 14:47:31  lazarus
   MG: added TComboBox.OnPopup+OnCloseUp+ItemWidth
 
