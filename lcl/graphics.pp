@@ -486,6 +486,7 @@ type
     Procedure CopyRect(const Dest : TRect; Canvas : TCanvas; const Source : TRect);
     destructor Destroy; override;
     Procedure Draw(X,Y: Integer; Graphic : TGraphic);
+    procedure StretchDraw(const Rect: TRect; Graphic: TGraphic);
     procedure Ellipse(x1, y1, x2, y2: Integer);
     procedure Ellipse(const Rect: TRect);
     procedure Pie(x,y,width,height,angle1,angle2 : Integer);
@@ -563,8 +564,8 @@ type
     FMaskHandle: HBITMAP;
     FPalette: HPALETTE;
     FDIBHandle: HBITMAP;
-{    FDIB: TDIBSection;
-    FOS2Format: Boolean;
+    FDIB: TDIBSection;
+{    FOS2Format: Boolean;
     FHalftone: Boolean;
 }
   protected
@@ -616,6 +617,7 @@ type
     procedure LoadFromResourceName(Instance: THandle; const ResName: String); virtual;
     procedure LoadFromResourceID(Instance: THandle; ResID: Integer); virtual;
     Procedure LoadFromXPMFile(Filename : String);
+    procedure LoadFromFile(const Filename: string); Override;
     procedure Mask(ATransparentColor: TColor);
     procedure SaveToStream(Stream: TStream); override;
     Function ReleaseHandle : HBITMAP;
@@ -846,6 +848,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.41  2002/09/03 08:07:18  lazarus
+  MG: image support, TScrollBox, and many other things from Andrew
+
   Revision 1.40  2002/09/02 08:13:16  lazarus
   MG: fixed GraphicClass.Create
 
