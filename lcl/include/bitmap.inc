@@ -348,6 +348,11 @@ begin
     Result:=inherited GetDefaultMimeType;
 end;
 
+function TBitmap.GetFileExtensions: string;
+begin
+  Result:='bmp;xpm';
+end;
+
 Procedure TBitmap.LoadFromXPMFile(const Filename : String);
 var
   pstr : PChar;
@@ -1024,7 +1029,7 @@ begin
   or (AnsiCompareText(ClassName,'TPixmap')=0) then begin
     if (AnsiCompareText(FileExtension,'.bmp')=0)
     or (AnsiCompareText(FileExtension,'bmp')=0) then
-      Result:=TFPReaderBMP
+      Result:=TLazReaderBMP
     else if (AnsiCompareText(FileExtension,'.xpm')=0)
     or (AnsiCompareText(FileExtension,'xpm')=0) then
       Result:=TLazReaderXPM;
@@ -1044,6 +1049,22 @@ begin
     or (AnsiCompareText(FileExtension,'xpm')=0) then
       Result:=TLazWriterXPM;
   end;
+end;
+
+function TBitmap.GetDefaultFPReader: TFPCustomImageReaderClass;
+begin
+  if (AnsiCompareText(ClassName,'TBitmap')=0) then
+    Result:=TLazReaderBMP
+  else
+    Result:=nil;
+end;
+
+function TBitmap.GetDefaultFPWriter: TFPCustomImageWriterClass;
+begin
+  if (AnsiCompareText(ClassName,'TBitmap')=0) then
+    Result:=TFPWriterBMP
+  else
+    Result:=nil;
 end;
 {$ENDIF}
 
@@ -1107,6 +1128,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.76  2004/02/29 22:51:54  mattias
+  added jpeg example
+
   Revision 1.75  2004/02/29 10:34:00  mattias
   fixed bmp reader reader skipping header
 

@@ -1,0 +1,82 @@
+object JPEGExampleForm: TJPEGExampleForm
+  Caption = 'Example for JPEG for Lazarus'
+  ClientHeight = 416
+  ClientWidth = 425
+  HorzScrollBar.Page = 426
+  VertScrollBar.Page = 417
+  Left = 291
+  Height = 416
+  Top = 163
+  Width = 425
+  object ImageGroupBox: TGroupBox
+    Align = alTop
+    Anchors = [akTop, akLeft, akBottom]
+    Caption = '...'
+    ClientHeight = 319
+    ClientWidth = 421
+    ParentColor = True
+    ParentCtl3D = False
+    TabOrder = 0
+    Height = 336
+    Width = 425
+    object Image1: TImage
+      Align = alClient
+      Transparent = True
+      Proportional = True
+      Height = 319
+      Width = 421
+    end
+  end
+  object LoadJPEGButton: TButton
+    Anchors = [akLeft, akBottom]
+    Caption = 'Load JPEG from file'
+    TabOrder = 1
+    OnClick = LoadJPEGButtonClick
+    Left = 229
+    Height = 25
+    Top = 346
+    Width = 173
+  end
+  object SaveJPEGButton: TButton
+    Anchors = [akLeft, akBottom]
+    Caption = 'Save as JPEG to file'
+    TabOrder = 2
+    OnClick = SaveJPEGButtonClick
+    Left = 229
+    Height = 25
+    Top = 380
+    Width = 173
+  end
+  object LoadImageButton: TButton
+    Anchors = [akLeft, akBottom]
+    Caption = 'Load Image'
+    TabOrder = 3
+    OnClick = LoadImageButtonClick
+    Left = 24
+    Height = 25
+    Top = 346
+    Width = 163
+  end
+  object SaveImageButton: TButton
+    Anchors = [akLeft, akBottom]
+    Caption = 'Save Image'
+    TabOrder = 4
+    OnClick = SaveImageButtonClick
+    Left = 24
+    Height = 25
+    Top = 380
+    Width = 163
+  end
+  object OpenPictureDialog1: TOpenPictureDialog
+    Filter = 'All files (*)|*|Graphic (*.png;*.xpm;*.bmp)|*.png;*.xpm;*.bmp|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp'
+    FilterIndex = 0
+    left = 88
+    top = 64
+  end
+  object SavePictureDialog1: TSavePictureDialog
+    Filter = 'All files (*)|*|Graphic (*.png;*.xpm;*.bmp)|*.png;*.xpm;*.bmp|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp'
+    FilterIndex = 0
+    left = 88
+    top = 112
+  end
+end

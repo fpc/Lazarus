@@ -876,8 +876,8 @@ begin
           Img.Height := Height;
           Img.Canvas.CopyRect(SrcRect, Image.Canvas,
                               Bounds(Col * Width, Row * Height, Width, Height));
-          Img.Canvas.Brush.Color:=clRed;
-          Img.Canvas.Fillrect(Rect(3,3,10,8));
+          //Img.Canvas.Brush.Color:=clRed;
+          //Img.Canvas.Fillrect(Rect(3,3,10,8));
           //Img.SaveToFile('debug_imglist_i'+IntToStr(Count)+'.bmp');
 
           if Mask<>nil then begin
@@ -1162,6 +1162,9 @@ end;
 {
 
   $Log$
+  Revision 1.27  2004/02/29 22:51:54  mattias
+  added jpeg example
+
   Revision 1.26  2004/02/28 00:34:35  mattias
   fixed CreateComponent for buttons, implemented basic Drag And Drop
 

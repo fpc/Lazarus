@@ -155,6 +155,17 @@ begin
   Result:='';
 end;
 
+{-------------------------------------------------------------------------------
+  function TGraphic.GetFileExtensions: string;
+
+  Returns standard file extensions for reading and writing separated by
+  semicolon and without point. For example: "bmp;xpm"
+-------------------------------------------------------------------------------}
+function TGraphic.GetFileExtensions: string;
+begin
+  Result:='';
+end;
+
 procedure TGraphic.LoadFromFile(const Filename: string);
 var
   Stream: TStream;
@@ -194,6 +205,16 @@ end;
 
 function TGraphic.GetFPWriterForFileExt(const FileExtension: string
   ): TFPCustomImageWriterClass;
+begin
+  Result:=nil;
+end;
+
+function TGraphic.GetDefaultFPReader: TFPCustomImageReaderClass;
+begin
+  Result:=nil;
+end;
+
+function TGraphic.GetDefaultFPWriter: TFPCustomImageWriterClass;
 begin
   Result:=nil;
 end;

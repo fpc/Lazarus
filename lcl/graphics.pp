@@ -608,11 +608,14 @@ type
       FormatID: TClipboardFormat); virtual;
     procedure GetSupportedSourceMimeTypes(List: TStrings); virtual;
     function GetDefaultMimeType: string; virtual;
+    class function GetFileExtensions: string; virtual;
     {$IFNDEF DisableFPImage}
     class function GetFPReaderForFileExt(
       const FileExtension: string): TFPCustomImageReaderClass; virtual;
     class function GetFPWriterForFileExt(
       const FileExtension: string): TFPCustomImageWriterClass; virtual;
+    class function GetDefaultFPReader: TFPCustomImageReaderClass; virtual;
+    class function GetDefaultFPWriter: TFPCustomImageWriterClass; virtual;
     {$ENDIF}
   public
     property Empty: Boolean read GetEmpty;
@@ -1020,6 +1023,7 @@ type
     procedure LoadFromMimeStream(Stream: TStream; const MimeType: string); override;
     procedure GetSupportedSourceMimeTypes(List: TStrings); override;
     function GetDefaultMimeType: string; override;
+    class function GetFileExtensions: string; override;
     Procedure LoadFromXPMFile(const Filename : String);
     procedure Mask(ATransparentColor: TColor);
     procedure SaveToStream(Stream: TStream); override;
@@ -1032,6 +1036,8 @@ type
       const FileExtension: string): TFPCustomImageReaderClass; override;
     class function GetFPWriterForFileExt(
       const FileExtension: string): TFPCustomImageWriterClass; override;
+    class function GetDefaultFPReader: TFPCustomImageReaderClass; override;
+    class function GetDefaultFPWriter: TFPCustomImageWriterClass; override;
     {$ENDIF}
   public
     property Canvas: TCanvas read GetCanvas write FCanvas;
@@ -1054,24 +1060,47 @@ type
   public
     function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
     procedure WriteStream(Stream: TStream; WriteSize: Boolean); override;
+    {$IFNDEF DisableFPImage}
+    class function GetDefaultFPReader: TFPCustomImageReaderClass; override;
+    class function GetDefaultFPWriter: TFPCustomImageWriterClass; override;
+    {$ENDIF}
   end;
 
 
-  { TPortableNetworkGraphic }
-
-  TPortableNetworkGraphic = class(TBitmap)
+  { TFPImageBitmap }
+  { Use this class to easily create a TBitmap descendent for FPImage
+    reader and writer }
+  
+  TFPImageBitmap = class(TBitmap)
   public
+    class function GetFileExtensions: string; override;
+    class function IsFileExtensionSupported(const FileExtension: string): boolean;
     {$IFNDEF DisableFPImage}
     class function GetFPReaderForFileExt(
       const FileExtension: string): TFPCustomImageReaderClass; override;
     class function GetFPWriterForFileExt(
       const FileExtension: string): TFPCustomImageWriterClass; override;
+    class function GetDefaultFPReader: TFPCustomImageReaderClass; override;
+    class function GetDefaultFPWriter: TFPCustomImageWriterClass; override;
     {$ENDIF}
     function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
     procedure ReadStream(Stream: TStream; UseSize: boolean; Size: Longint); override;
     procedure WriteStream(Stream: TStream; WriteSize: Boolean); override;
     function GetDefaultMimeType: string; override;
   end;
+
+
+  { TPortableNetworkGraphic }
+
+  TPortableNetworkGraphic = class(TFPImageBitmap)
+  public
+    class function GetFileExtensions: string; override;
+    {$IFNDEF DisableFPImage}
+    class function GetDefaultFPReader: TFPCustomImageReaderClass; override;
+    class function GetDefaultFPWriter: TFPCustomImageWriterClass; override;
+    {$ENDIF}
+  end;
+
 
   { TIcon }
   {
@@ -1080,6 +1109,7 @@ type
   }
   TIcon = class(TBitmap)
   end;
+
 
 
 function GraphicFilter(GraphicClass: TGraphicClass): string;
@@ -1432,6 +1462,115 @@ end;
 {$I png.inc}
 
 
+{ TFPImageBitmap }
+
+function TFPImageBitmap.GetFileExtensions: string;
+begin
+  Result:='';
+end;
+
+function TFPImageBitmap.IsFileExtensionSupported(
+  const FileExtension: string): boolean;
+var
+  Extensions: String;
+  StartPos: Integer;
+  EndPos: Integer;
+  i: Integer;
+begin
+  Result:=false;
+  if FileExtension='' then exit;
+  Extensions:=GetFileExtensions;
+  StartPos:=1;
+  while StartPos<=length(Extensions) do begin
+    if not (Extensions[StartPos] in [';',' ']) then begin
+      EndPos:=StartPos;
+      while (EndPos<=length(Extensions)) and (Extensions[EndPos]<>';') do
+        inc(EndPos);
+      if EndPos-StartPos=length(FileExtension) then begin
+        i:=1;
+        while (i<=length(FileExtension))
+        and (upcase(Extensions[StartPos+i-1])=upcase(FileExtension[i])) do
+          inc(i);
+        if i>length(FileExtension) then begin
+          Result:=true;
+          exit;
+        end;
+      end;
+      StartPos:=EndPos;
+    end else
+      inc(StartPos);
+  end;
+end;
+
+{$IFNDEF DisableFPImage}
+function TFPImageBitmap.GetFPReaderForFileExt(const FileExtension: string
+  ): TFPCustomImageReaderClass;
+begin
+  if IsFileExtensionSupported(FileExtension) then
+    Result:=GetDefaultFPReader
+  else
+    Result:=nil;
+end;
+
+function TFPImageBitmap.GetFPWriterForFileExt(const FileExtension: string
+  ): TFPCustomImageWriterClass;
+begin
+  if IsFileExtensionSupported(FileExtension) then
+    Result:=GetDefaultFPWriter
+  else
+    Result:=nil;
+end;
+
+function TFPImageBitmap.GetDefaultFPReader: TFPCustomImageReaderClass;
+begin
+  Result:=nil;
+end;
+
+function TFPImageBitmap.GetDefaultFPWriter: TFPCustomImageWriterClass;
+begin
+  Result:=nil;
+end;
+{$ENDIF}
+
+function TFPImageBitmap.LazarusResourceTypeValid(const ResourceType: string
+  ): boolean;
+begin
+  Result:=IsFileExtensionSupported(ResourceType);
+end;
+
+procedure TFPImageBitmap.ReadStream(Stream: TStream; UseSize: boolean;
+  Size: Longint);
+begin
+{$IFNDEF DisableFPImage}
+  ReadStreamWithFPImage(Stream,UseSize,Size,GetDefaultFPReader);
+{$ELSE}
+  RaiseGDBException('TFPImageBitmap.ReadStream needs FPImage');
+{$ENDIF}
+end;
+
+procedure TFPImageBitmap.WriteStream(Stream: TStream; WriteSize: Boolean);
+begin
+{$IFNDEF DisableFPImage}
+  WriteStreamWithFPImage(Stream,WriteSize,GetDefaultFPWriter);
+{$ELSE}
+  RaiseGDBException('TFPImageBitmap.WriteStream needs FPImage');
+{$ENDIF}
+end;
+
+function TFPImageBitmap.GetDefaultMimeType: string;
+var
+  DefaultFileExt: String;
+  i: Integer;
+begin
+  DefaultFileExt:=GetFileExtensions;
+  i:=1;
+  while (i<=length(DefaultFileExt)) and (DefaultFileExt[i]<>';') do
+    inc(i);
+  if i<=length(DefaultFileExt) then
+    DefaultFileExt:=copy(DefaultFileExt,1,i);
+  Result:='image/'+DefaultFileExt;
+end;
+
 initialization
   PicClipboardFormats:=nil;
   PicFileFormats:=nil;
@@ -1453,6 +1592,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.123  2004/02/29 22:51:54  mattias
+  added jpeg example
+
   Revision 1.122  2004/02/29 10:34:00  mattias
   fixed bmp reader reader skipping header
 

@@ -28,7 +28,7 @@ type
   TJPEGQualityRange = TFPJPEGCompressionQuality;
   TJPEGPerformance = TJPEGReadPerformance;
 
-  TJPEGImage = class(TBitmap)
+  TJPEGImage = class(TFPImageBitmap)
   private
     FPerformance: TJPEGPerformance;
     FProgressiveEncoding: boolean;
@@ -37,16 +37,11 @@ type
     procedure InitFPImageReader(ImgReader: TFPCustomImageReader); override;
     procedure FinalizeFPImageReader(ImgReader: TFPCustomImageReader); override;
     procedure InitFPImageWriter(ImgWriter: TFPCustomImageWriter); override;
-    procedure ReadStream(Stream: TStream; UseSize: boolean; Size: Longint); override;
-    procedure WriteStream(Stream: TStream; WriteSize: Boolean); override;
   public
     constructor Create; override;
-    function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
-    function GetDefaultMimeType: string; override;
-    class function GetFPReaderForFileExt(
-      const FileExtension: string): TFPCustomImageReaderClass; override;
-    class function GetFPWriterForFileExt(
-      const FileExtension: string): TFPCustomImageWriterClass; override;
+    class function GetFileExtensions: string; override;
+    class function GetDefaultFPReader: TFPCustomImageReaderClass; override;
+    class function GetDefaultFPWriter: TFPCustomImageWriterClass; override;
   public
     property CompressionQuality: TJPEGQualityRange read FQuality write FQuality;
     property ProgressiveEncoding: boolean read FProgressiveEncoding;
@@ -55,6 +50,7 @@ type
 
 const
   DefaultJPEGMimeType = 'image/jpeg';
+
 
 implementation
 
@@ -96,38 +92,14 @@ begin
   inherited InitFPImageWriter(ImgWriter);
 end;
 
-function TJPEGImage.LazarusResourceTypeValid(const ResourceType: string
-  ): boolean;
-begin
-  Result:=(ResourceType='JPG') or (ResourceType='JPEG');
-end;
-
-function TJPEGImage.GetDefaultMimeType: string;
-begin
-  Result:=DefaultJPEGMimeType;
-end;
-
-function TJPEGImage.GetFPReaderForFileExt(const FileExtension: string
-  ): TFPCustomImageReaderClass;
+function TJPEGImage.GetDefaultFPReader: TFPCustomImageReaderClass;
 begin
   Result:=TFPReaderJPEG;
 end;
 
-function TJPEGImage.GetFPWriterForFileExt(const FileExtension: string
-  ): TFPCustomImageWriterClass;
+function TJPEGImage.GetDefaultFPWriter: TFPCustomImageWriterClass;
 begin
   Result:=TFPWriterJPEG;
-end;
-
-procedure TJPEGImage.ReadStream(Stream: TStream; UseSize: boolean;
-  Size: Longint);
-begin
-  ReadStreamWithFPImage(Stream,UseSize,Size,TFPReaderJPEG);
-end;
-
-procedure TJPEGImage.WriteStream(Stream: TStream; WriteSize: Boolean);
-begin
-  WriteStreamWithFPImage(Stream,WriteSize,TFPWriterJPEG);
 end;
 
 constructor TJPEGImage.Create;
@@ -136,6 +108,11 @@ begin
   FPerformance:=jpBestQuality;
   FProgressiveEncoding:=false;
   FQuality:=75;
+end;
+
+function TJPEGImage.GetFileExtensions: string;
+begin
+  Result:='jpg;jpeg';
 end;
 
 initialization

@@ -268,24 +268,39 @@ begin
   Result:=(ResourceType='XPM');
 end;
 
-procedure TPixmap.WriteStream(Stream: TStream; WriteSize: Boolean);
 {$IFNDEF DisableFPImage}
+procedure TPixmap.WriteStream(Stream: TStream; WriteSize: Boolean);
 begin
   WriteStreamWithFPImage(Stream,WriteSize,TFPWriterBMP);
   if (FImage.SaveStream<>nil) and (FImage.SaveStreamType=bnNone) then
     FImage.SaveStreamType:=bnXPixmap;
 end;
-{$ELSE}
+
+function TPixmap.GetDefaultFPReader: TFPCustomImageReaderClass;
+begin
+  Result:=TLazReaderXPM;
+end;
+
+function TPixmap.GetDefaultFPWriter: TFPCustomImageWriterClass;
+begin
+  Result:=TLazWriterXPM;
+end;
+{$ELSE DisableFPImage}
+procedure TPixmap.WriteStream(Stream: TStream; WriteSize: Boolean);
 begin
   inherited WriteStream(Stream,WriteSize);
 end;
 {$ENDIF}
+
 
 // included by graphics.pp
 
 { =============================================================================
 
   $Log$
+  Revision 1.27  2004/02/29 22:51:54  mattias
+  added jpeg example
+
   Revision 1.26  2004/02/27 00:42:41  marc
   * Interface CreateComponent splitup
   * Implemented CreateButtonHandle on GTK interface

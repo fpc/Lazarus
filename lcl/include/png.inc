@@ -21,49 +21,21 @@
 { TPortableNetworkGraphic }
 
 {$IFNDEF DisableFPImage}
-function TPortableNetworkGraphic.GetFPReaderForFileExt(
-  const FileExtension: string): TFPCustomImageReaderClass;
+function TPortableNetworkGraphic.GetFileExtensions: string;
+begin
+  Result:='png';
+end;
+
+function TPortableNetworkGraphic.GetDefaultFPReader: TFPCustomImageReaderClass;
 begin
   Result:=TFPReaderPNG;
 end;
 
-function TPortableNetworkGraphic.GetFPWriterForFileExt(
-  const FileExtension: string): TFPCustomImageWriterClass;
+function TPortableNetworkGraphic.GetDefaultFPWriter: TFPCustomImageWriterClass;
 begin
   Result:=TFPWriterPNG;
 end;
 {$ENDIF}
-
-function TPortableNetworkGraphic.LazarusResourceTypeValid(
-  const ResourceType: string): boolean;
-begin
-  Result:=(ResourceType='PNG');
-end;
-
-procedure TPortableNetworkGraphic.ReadStream(Stream: TStream; UseSize: boolean;
-  Size: Longint);
-begin
-{$IFNDEF DisableFPImage}
-  ReadStreamWithFPImage(Stream,UseSize,Size,TFPReaderPNG);
-{$ELSE}
-  RaiseGDBException('TPortableNetworkGraphic.ReadStream needs FPImage');
-{$ENDIF}
-end;
-
-procedure TPortableNetworkGraphic.WriteStream(Stream: TStream;
-  WriteSize: Boolean);
-begin
-{$IFNDEF DisableFPImage}
-  WriteStreamWithFPImage(Stream,WriteSize,TFPWriterPNG);
-{$ELSE}
-  RaiseGDBException('TPortableNetworkGraphic.WriteStream needs FPImage');
-{$ENDIF}
-end;
-
-function TPortableNetworkGraphic.GetDefaultMimeType: string;
-begin
-  Result:='image/png';
-end;
 
 
 // included by graphics.pp
