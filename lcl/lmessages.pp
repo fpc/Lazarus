@@ -30,7 +30,7 @@ uses Classes,vclGlobals,LCLLinux;
 const
 
 // Commands sent to the interface units
-// add also a escription to a message at the end of this unit
+// add also a description to a message at the end of this unit
 LM_ComUser = $1000;
 LM_Create = LM_ComUser+1;
 LM_SetLabel = LM_ComUser+2;
@@ -51,24 +51,14 @@ LM_GetLineCount = LM_ComUser+16;
 LM_SETTEXT = LM_ComUser+17;
 LM_GETTEXT = LM_ComUser+18;
 LM_CANVASCREATE = LM_ComUser+19;
-//LM_DrawFIllRect = LM_ComUser+20;
-//LM_DrawRect = LM_ComUser+21;
-//LM_DrawLine = LM_ComUser+22;
-//LM_DrawText = LM_ComUser+23;
-//LM_FontSetSize = LM_ComUser+24;
-//LM_FontGetSize = LM_ComUser+25;
 LM_ReDraw  = LM_ComUser+26;
 LM_SetColor = LM_ComUser+27;
 LM_RemovePage = LM_ComUser+28;
 LM_ShowTabs = LM_ComUser+29;
 LM_SetTabPosition = LM_ComUser+30;
-//LM_FontSetName = LM_ComUser+31;
 LM_Invalidate = LM_ComUser+32;
-LM_InvalidateRect = LM_ComUser+33; 
 LM_SetPixel = LM_ComUser+34;
 LM_GetPixel = LM_ComUser+35;
-//LM_FontSetStyle = LM_ComUser+36;
-//LM_FontGetStyle = LM_ComUser+37;
 
 LM_SETPROPERTIES = LM_ComUser+39;         // update object to reflect current properties 
 LM_SETVALUE      = LM_ComUser+40;         // set actual value of object to visual object
@@ -201,6 +191,7 @@ LM_MBUTTONDBLCLK = $0209;
 LM_MOUSEWHEEL = $020A;
 LM_MOUSELAST = $020A;
 
+LM_CAPTURECHANGED = $0215;
 LM_DROPFILES = $0233;
 
 LM_PARENTNOTIFY  = $0210;
@@ -738,24 +729,14 @@ begin
     LM_SETTEXT          : Result :='LM_SETTEXT         ';
     LM_GETTEXT          : Result :='LM_GETTEXT         ';
     LM_CANVASCREATE     : Result :='LM_CANVASCREATE    ';
-//    LM_DrawFIllRect     : Result :='LM_DrawFIllRect    ';
-//    LM_DrawRect         : Result :='LM_DrawRect        ';
-//    LM_DrawLine         : Result :='LM_DrawLine        ';
-//    LM_DrawText         : Result :='LM_DrawText        ';
-//    LM_FontSetSize      : Result :='LM_FontSetSize     ';
-//    LM_FontGetSize      : Result :='LM_FontGetSize     ';
     LM_ReDraw           : Result :='LM_ReDraw          ';
     LM_SetColor         : Result :='LM_SetColor        ';
     LM_RemovePage       : Result :='LM_RemovePage      ';
     LM_ShowTabs         : Result :='LM_ShowTabs        ';
     LM_SetTabPosition   : Result :='LM_SetTabPosition  ';
-//    LM_FontSetName      : Result :='LM_FontSetName     ';
     LM_Invalidate       : Result :='LM_Invalidate      ';
-    LM_InvalidateRect   : Result :='LM_InvalidateRect  ';
     LM_SetPixel         : Result :='LM_SetPixel        ';
     LM_GetPixel         : Result :='LM_GetPixel        ';
-//    LM_FontSetStyle     : Result :='LM_FontSetStyle    ';
-//    LM_FontGetStyle     : Result :='LM_FontGetStyle    ';
     LM_SETPROPERTIES    : Result :='LM_SETPROPERTIES   ';      
     LM_SETVALUE         : Result :='LM_SETVALUE        ';     
     LM_GETVALUE         : Result :='LM_GETVALUE        ';     
@@ -784,6 +765,12 @@ end.
 
 {
   $Log$
+  Revision 1.8  2001/01/23 23:33:54  lazarus
+  MWE:
+    - Removed old LM_InvalidateRect
+    - did some cleanup in old  code
+    + added some comments  on gtkobject data (gtkproc)
+
   Revision 1.7  2000/12/22 19:55:37  lazarus
   Added the Popupmenu code to the LCL.
   Now you can right click on the editor and a PopupMenu appears.

@@ -524,7 +524,12 @@ end;
 (***********************************************************************
   Widget member functions
 ************************************************************************)
-
+// ----------------------------------------------------------------------
+// the core_child widget points to the actual widget which implements the 
+// functionality we needed. It is mainly used in composed controls like
+// a listbox. In that case the core_child is the listbox, where a scrolling
+// widget is main.
+// ----------------------------------------------------------------------
 function GetCoreChildWidget(const Widget: Pointer): Pointer;
 begin
   Result:= gtk_object_get_data(Widget, 'core_child');
@@ -537,6 +542,10 @@ begin
   gtk_object_set_data(ParentWidget, 'core_child', ChildWidget);
 end;
 
+// ----------------------------------------------------------------------
+// the main widget is the widget passed as handle to the winAPI
+// main data is stored in the fixed form to get a reference to its parent
+// ----------------------------------------------------------------------
 function GetMainWidget(const Widget: Pointer): Pointer;
 begin
   Result := gtk_object_get_data(Widget, 'Main');
@@ -549,6 +558,10 @@ begin
   gtk_object_set_data(ChildWidget, 'Main', ParentWidget);
 end;
 
+// ----------------------------------------------------------------------
+// the fixed widget is the container for controls. By default a widget
+// scales/places a control. whith the use of a fixed we can place them.
+// ----------------------------------------------------------------------
 function GetFixedWidget(const Widget: Pointer): Pointer;
 begin
   Result := gtk_object_get_data(Widget, 'Fixed');
@@ -560,6 +573,11 @@ begin
   gtk_object_set_data(ParentWidget, 'Fixed', FixedWidget);
 end;
 
+// ----------------------------------------------------------------------
+// Some need the LCLobject which created this widget.
+// 
+// MWE: IMO this shouldn't be needed
+// ----------------------------------------------------------------------
 procedure SetLCLObject(const Widget: Pointer; const AnObject: TObject);
 begin
   if (Widget <> nil) then
@@ -571,6 +589,9 @@ begin
   Result := TObject(gtk_object_get_data(Widget, 'Class'));
 end;
 
+// ----------------------------------------------------------------------
+// The Accelgroup and AccelKey is needed by menus
+// ----------------------------------------------------------------------
 procedure SetAccelGroup(const Widget: Pointer; const AnAccelGroup: Pointer);
 begin
   if (Widget <> nil) then
@@ -593,9 +614,9 @@ begin
   Result := Integer(gtk_object_get_data(Widget, 'AccelKey'));
 end;
 
-//-------------------------------------------
+// ----------------------------------------------------------------------
 // OBSOLETE ???
-//-------------------------------------------
+// ----------------------------------------------------------------------
 
 Procedure ReportnotObsolete(Texts : String);
 Begin
@@ -668,6 +689,12 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.8  2001/01/23 23:33:55  lazarus
+  MWE:
+    - Removed old LM_InvalidateRect
+    - did some cleanup in old  code
+    + added some comments  on gtkobject data (gtkproc)
+
   Revision 1.7  2001/01/08 21:59:36  lazarus
   MWE:
     ~ applieed patch from Peter Vreman to reflect compiler fix

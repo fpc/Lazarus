@@ -4,8 +4,6 @@
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
 
-var
-FCaptureHandle : Longint;  //temporary change because of an error in the CVS code
 
 // temp solution to fill msgqueue
 function DeliverPostMessage(const Target: Pointer; var Message): GBoolean;
@@ -20,6 +18,12 @@ begin
   end;
 end;
 
+procedure EventTrace(message : string; data : pointer);
+begin
+  if Data = nil 
+  then Assert(False, Format('Trace:Event [%s] fired',[message]))
+  else Assert(False, Format('Trace:Event [%s] fired for %s',[message, TObject(data).Classname]));
+end;
 
 {*************************************************************}
 {            callback routines                                }
@@ -76,7 +80,7 @@ begin
    Result := DeliverMessage(Data, Mess) = 0;
 end;
 
-function gtkdraw(Widget: PGtkWidget; area : PgdkRectangle; data: gPointer) : GBoolean; cdecl;
+function gtkdraw(Widget: PGtkWidget; area: PGDKRectangle; data: gPointer) : GBoolean; cdecl;
 var
    MSG: TLMPaint;
 begin
@@ -371,9 +375,9 @@ begin
 
   if ssLeft in ShiftState then WriteLN(Format('[GTKMotionNotify] widget: 0x%p', [widget]));
   
-  if (Pointer(FCaptureHandle) <> widget)
-  and (FCaptureHandle <> 0)
-  then  WriteLN(Format('[GTKMotionNotify] Capture differs -->  cap:0x%x gtk:0x%p', [FCaptureHandle, gtk_grab_get_current]));
+  if (Pointer(MCaptureHandle) <> widget)
+  and (MCaptureHandle <> 0)
+  then  WriteLN(Format('[GTKMotionNotify] Capture differs -->  cap:0x%x gtk:0x%p', [MCaptureHandle, gtk_grab_get_current]));
 end;
 
 function gtkMouseBtnPress( widget: PGtkWidget; event : pgdkEventButton; data: gPointer) : GBoolean; cdecl;
@@ -1031,13 +1035,6 @@ begin
   Result := DeliverMessage(Data, Msg) = 0;
 end;
 
-procedure EventTrace(message : string; data : pointer);
-begin
-  if Data = nil 
-  then Assert(False, Format('Trace:Event [%s] fired',[message]))
-  else Assert(False, Format('Trace:Event [%s] fired for %s',[message, TObject(data).Classname]));
-end;
-
 {------------------------------------------------------------------------------
   Function: GTKKeySnooper
   Params:  Widget: The widget for which this event is fired
@@ -1108,6 +1105,12 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.16  2001/01/23 23:33:55  lazarus
+  MWE:
+    - Removed old LM_InvalidateRect
+    - did some cleanup in old  code
+    + added some comments  on gtkobject data (gtkproc)
+
   Revision 1.15  2001/01/12 18:10:54  lazarus
   Changes for keyevents in the editor.
   Shane

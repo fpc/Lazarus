@@ -21,7 +21,6 @@ const
 constructor TGtkObject.Create; 
 begin
   inherited Create;
-  FCaptureHandle := 0;
   FKeyStateList := TList.Create;
   FDeviceContexts := TList.Create;
   FGDIObjects := TList.Create;
@@ -462,8 +461,8 @@ activate_time :	the time at which the activation event occurred.
 
       LM_SetSize :
       begin
-         Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> LM_SetSize(%d, %d, %d, %d)', [Sender.ClassNAme, pTRect(Data)^.Left,pTRect(Data)^.Top,pTRect(Data)^.Right,pTRect(Data)^.Bottom]));
-         ResizeChild(Sender,pTRect(Data)^.Left,pTRect(Data)^.Top,pTRect(Data)^.Right,pTRect(Data)^.Bottom);
+         Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> LM_SetSize(%d, %d, %d, %d)', [Sender.ClassNAme, PRect(Data)^.Left,PRect(Data)^.Top,PRect(Data)^.Right,PRect(Data)^.Bottom]));
+         ResizeChild(Sender,PRect(Data)^.Left,PRect(Data)^.Top,PRect(Data)^.Right,PRect(Data)^.Bottom);
       end;
 
       LM_ShowModal :
@@ -590,35 +589,6 @@ activate_time :	the time at which the activation event occurred.
 }
         gtk_widget_queue_draw(PGtkWidget(Handle));
       end; 
-
-      LM_InvalidateRect :
-      begin
-         //Erase and then write over that section in the rect
-         PixMap := gtk_object_get_data(PgtkObject(Handle),'Pixmap'); 
-         if Assigned(PixMap) then
-         begin
-            gdk_draw_rectangle(pixmap,GetPen(pixmap,TColortoTgdkColor(TCustomForm(Sender).Color)),1,TREct(data^).Left,TRect(data^).Top,TRect(Data^).Right-TRect(Data^).Left,TRect(Data^).Bottom-TRect(Data^).Top); 
-            gtk_widget_queue_draw(PGtkWidget(Handle));
-            //The following should eventually be implemented.  It's supposed
-            // to allow the component to ONLY draw the invalidated rectangle, not the entire widget.
-
-{var  TheStyle : pgtkStyle;
-     fWindow :pGdkWindow;
-   gc : pgdkGC;
-
-        widget := gtk_Object_get_data(pgtkobject(Handle),'Fixed');
-         fWindow := pGtkWidget(widget)^.window;
-         gc := gdk_gc_new(PgdkWindow(fWindow));
-
-         TheStyle := widget^.TheStyle;
-         gdk_draw_pixmap(fwindow,TheStyle^.fg_gc[GTK_WIDGET_STATE (widget)], 
-      pixmap,
-      TRect(data^).Left,TRect(data^).Top,
-      TRect(data^).Left,TRect(data^).Top,
-      TRect(data^).Right -TRect(data^).Left,TRect(data^).Bottom - TRect(data^).Top);
-}
-         end;
-      end;
 
       LM_SCREENINIT :
       begin
@@ -2073,112 +2043,6 @@ begin
     pgtkwidget(widget)^.allocation.width, pgtkwidget(widget)^.allocation.height);
 end;
 
-{------------------------------------------------------------------------------}
-{       TGtkObject FontSetName                                                 }
-{       *Note:                                                                 }
-{------------------------------------------------------------------------------}
-procedure TgtkObject.FontSetName(Sender : TObject);
-{var
-   StrTemp : PChar;
-   Name : String;
-   Msg : Integer;
-   NewHandle: THandle;}
-begin
-   Assert(False, 'Trace:OBSOLETE: [TgtkObject.FontSetName]');
-(*
-   Assert(False, 'Trace:1');
-   Name := TFont(Sender).Name;
-   Assert(False, 'Trace:2');
-   strTemp := StrAlloc(length(Name) + 1);
-   Assert(False, 'Trace:3');
-   StrPCopy(strTemp, Name);
-   Assert(False, 'Trace:4');
- 
-   NewHandle := THandle(gdk_font_load(strTemp));
-   if NewHandle = 0 then  //Load a DEFAULT font 
-   begin
-   Assert(False, 'Trace:  [TgtkObject.FontSetName] WARNING: Loading Default Font');
-   StrDispose(StrTemp);
-   strTemp := StrAlloc(Length('-*-courier-bold-r-normal--*-120-*-*-*-*-iso8859-1') + 1);
-   StrPCopy(strTemp, '-*-courier-bold-r-normal--*-120-*-*-*-*-iso8859-1');
-   NewHandle := THandle(gdk_font_load(strTemp));
-   end;
-
-   if NewHandle <> 0 
-   then begin
-     if TFont(sender).Handle <> 0 
-     then gdk_font_unref(pgdkFont(TFont(Sender).Handle));
-     Assert(False, 'Trace:5');
-
-     TFont(Sender).Handle := NewHandle;
-
-     Assert(False, 'Trace:6');
-     Msg := LM_Changed;
-     TObject(sender).Dispatch(Msg);
-   end
-   else Assert(False, Format('Trace:  [TgtkObject.FontSetName] WARNING: Could not load font: %s', [strTemp]));;
-
-   Assert(False, 'Trace:7');
-   StrDispose(StrTemp);
-   Assert(False, 'Trace:8');
-*)
-end;
-
-{------------------------------------------------------------------------------}
-{       TGtkObject GetFontInfo                                                 }
-{       *Note:                                                                 }
-{------------------------------------------------------------------------------}
-procedure TgtkObject.GetFontInfo(Sender : TObject; Data : Pointer);
-var
-   Font :pGdkfont;
-   lBearing,rBearing,w,ascent,descent : LongInt;
-   Str : String;
-   FontName : String;
-   I : Integer;
-begin
-   Assert(False, 'Trace:OBSOLETE: [TgtkObject.GetFontInfo]');
-{
-   Assert(False, 'Trace:FONT GetInfo');
-   Font := PgdkFont(TFont(Sender).Handle);
-   gdk_String_extents(Font,Data,@lbearing,@rBearing,@w,@ascent,@descent);
-   Assert(False, 'Trace:' + Inttostr(lbearing)+','+Inttostr(rBearing)+','+Inttostr(w)+','+Inttostr(Ascent)+','+Inttostr(descent)); 
-   
-   // Only for Extra properties
-   // TODO: implement them though GetTextMetrics, not here
-(*   
-   Str := String(Data^);
-   // use the name to see if the AVERAGE WIDTH is stored there, otherwise use w
-   FontName := TFont(Sender).Name;
-
-   for I := 1 to 11 do
-      delete(FontName,pos('-',FontName),1);
-
-   delete(FontName,1,pos('-',FontName));
-   //FontName should now start with the average SIZE or a dash
-   if (FontName[1] <> '-') and (FontName[1] <> '*') then
-   begin
-      Delete(FontName,pos('-',FontName),length(FontName));
-      W := StrtoInt(FontName);
-   end
-   else
-      w := gdk_Text_width(Font,Data,Length(Str));
-
-   if w <= 0 then
-   begin
-      gdk_String_extents(Font,Data,@lbearing,@rBearing,@w,@ascent,@descent); 
-      W := lBEaring + rBearing;
-   end;
-*)
-   // Extra properties
-   // TODO: implement them though GetTextMetrix, not here
-   //TFont(Sender).XBias := lbearing;;
-   //TFOnt(Sender).YBias := ascent - descent;
-   //TFont(Sender).Width := w;
-   //-----------------
-   TFont(Sender).height := Ascent+Descent;
-}
-end;
-
 {------------------------------------------------------------------------------
   Method: TGtkObject.SetPixel
   Params:  Sender : the lcl object which called this func via SenMessage
@@ -2708,6 +2572,12 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.19  2001/01/23 23:33:55  lazarus
+  MWE:
+    - Removed old LM_InvalidateRect
+    - did some cleanup in old  code
+    + added some comments  on gtkobject data (gtkproc)
+
   Revision 1.18  2001/01/13 03:09:37  lazarus
   Minor changes
   Shane

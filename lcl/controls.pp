@@ -696,7 +696,6 @@ TCMDialogKey = TLMKEY;
     Procedure DisableAlign;
     Procedure EnableAlign;
     Procedure Invalidate; override;
-    Procedure InvalidateRect(Sender : TObject; Rect : TRect; Value : Boolean);
     Procedure RemoveControl(AControl : TControl);
     Procedure InsertControl(AControl : TControl);
     Procedure Insert(AControl : TControl);
@@ -1125,6 +1124,12 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.10  2001/01/23 23:33:54  lazarus
+  MWE:
+    - Removed old LM_InvalidateRect
+    - did some cleanup in old  code
+    + added some comments  on gtkobject data (gtkproc)
+
   Revision 1.9  2000/12/29 13:14:05  lazarus
   Using the lresources.pp and registering components.
   This is a major change but will create much more flexibility for the IDE.

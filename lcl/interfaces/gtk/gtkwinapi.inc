@@ -1138,7 +1138,7 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.GetCapture: HWND;
 begin
-  Result := FCaptureHandle;
+  Result := MCaptureHandle;
 end;
 
 {------------------------------------------------------------------------------
@@ -2003,19 +2003,20 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-Function TGTKObject.InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean;
+function TGTKObject.InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean;
 var
   gdkRect : TGDKRectangle;
 begin
+  // Todo: Erase  ??? 
   Writeln('[InvalidateRect]');
   Writeln(format('Rect = %d,%d,%d,%d',[rect^.left,rect^.top,rect^.Right,rect^.Bottom]));
   Result := True;
-  Try
+  try
     gdkRect.X := Rect^.Left;
     gdkRect.Y := Rect^.Top;
-    gdkREct.Width := (Rect^.Right - Rect^.Left);
-    gdkREct.Height := (Rect^.Bottom - Rect^.Top);
-    gtk_widget_draw(PgtkWidget(aHandle),@gdkRect);
+    gdkRect.Width := (Rect^.Right - Rect^.Left);
+    gdkRect.Height := (Rect^.Bottom - Rect^.Top);
+    gtk_widget_draw(PgtkWidget(aHandle), @gdkRect);
   except
     Result := False;
   end;
@@ -2666,22 +2667,27 @@ function TgtkObject.SetCapture(Value: Longint): Longint;
 begin
   Assert(False, Format('Trace:> [TgtkObject.SetCapture] 0x%x', [Value]));
   
-  //CaptureHandle is defined in gtkint.pp class definition.
+  //CaptureHandle is defined in gtkint.pp pivate var definition.
   
-  //MWE: there are some problems with grabbing the ointer and tabs
+  //MWE: there are some problems with grabbing the pointer and tabs
   //     so back to gtk_grab
 
-  if FCaptureHandle <> 0 
+  if MCaptureHandle <> 0 
   //then gdk_pointer_ungrab(0); 
-  then gtk_grab_remove(pgtkwidget(FCaptureHandle));
+  then gtk_grab_remove(pgtkwidget(MCaptureHandle));
   
-  
-  Result := FCaptureHandle;
-  FCaptureHandle := Value;
+  //
+  Result := MCaptureHandle;
+  MCaptureHandle := Value;
 
-  if Value <> 0
+  if MCaptureHandle <> 0
   then begin
-    gtk_grab_add(pGTKWidget(FCaptureHandle));
+    WriteLN(Format('[TgtkObject.SetCapture] Current widget 0x%p', [gtk_grab_get_current]));
+    gtk_grab_add(Pointer(MCaptureHandle));
+    WriteLN(Format('[TgtkObject.SetCapture] handle: 0x%p gtk: 0x%p', [Pointer(MCaptureHandle), gtk_grab_get_current]));
+
+
+//    gtk_grab_add(pGTKWidget(FCaptureHandle));
 {
     if gdk_pointer_grab(PGTKWidget(Value)^.Window, gtk_False, 
       GDK_POINTER_MOTION_MASK or GDK_POINTER_MOTION_HINT_MASK or
@@ -2695,9 +2701,10 @@ begin
       assert(False, Format('trace:[TgtkObject.SetCapture] 0x%x failed', [Value]));
     end;
 }
+    if Result <>  0 
+    then SendMessage(Result, LM_CAPTURECHANGED, 0, MCaptureHandle);
   end;
      
-   // TODO send a WM_CaptureChanged
   Assert(False, Format('Trace:< [TgtkObject.SetCapture] 0x%x --> 0x%x', [Value, Result]));
 end;
 
@@ -3142,6 +3149,12 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.16  2001/01/23 23:33:55  lazarus
+  MWE:
+    - Removed old LM_InvalidateRect
+    - did some cleanup in old  code
+    + added some comments  on gtkobject data (gtkproc)
+
   Revision 1.15  2001/01/23 19:01:10  lazarus
   Fixxed bug in RestoreDC
   Shane

@@ -54,7 +54,7 @@ Function GetWindowRect(Handle : hwnd; Rect : PRect): Integer; override;
 
 function HideCaret(hWnd: HWND): Boolean; override;
 
-Function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; override;
+function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; override;
 
 function LineTo(DC: HDC; X, Y: Integer): Boolean; override;
 
@@ -102,6 +102,12 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2001/01/23 23:33:55  lazarus
+  MWE:
+    - Removed old LM_InvalidateRect
+    - did some cleanup in old  code
+    + added some comments  on gtkobject data (gtkproc)
+
   Revision 1.9  2001/01/23 19:13:57  lazarus
   Fixxed the errors I commited with Unionrect
   Shane

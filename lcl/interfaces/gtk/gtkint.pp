@@ -102,7 +102,6 @@ type
 
    TgtkObject = class(TInterfaceBase)
    private
-      FCaptureHandle: HWND;
       FKeyStateList: TList; // Keeps track of which keys are pressed
       FDeviceContexts: TList;
       FGDIObjects: TList;
@@ -138,8 +137,6 @@ type
       procedure AddNBPage(Parent,Child: TObject; Index: Integer);
       procedure RemoveNBPage(Parent: TObject; Index: Integer);
       procedure SetText(Child,Data : Pointer);
-      procedure GetFontinfo(Sender : TObject; Data : Pointer);
-      procedure FontSetName(Sender : TObject);
       procedure SetColor(Sender : TObject);
       Procedure SetPixel(Sender : TObject; Data : Pointer);
       Procedure GetPixel(Sender : TObject; Data : Pointer);
@@ -171,36 +168,7 @@ type
 
    end;
 
-
-type
-
-   TEventProc = record
-      Name : String[25];
-      CallBack : Procedure(Data : TObject);
-      Data : Pointer;
-   End;
-
-   CallbackProcedure = Procedure (Data : Pointer);
-
-   pTRect = ^TRect;
-
-
-procedure EventTrace(message : string; data : pointer);
-
-const
-   TargetEntrys = 3;
-var
-  target_table : Array[0..TargetEntrys-1] of TgtkTargetEntry;
-
-  //drag icons
-  TrashCan_Open : PgdkPixmap;
-  TrashCan_Open_Mask : PGdkPixmap;
-  Trashcan_closed : PGdkPixmap;
-  Trashcan_closed_mask : PGdkPixmap;
-  Drag_Icon : PgdkPixmap;
-  Drag_Mask : PgdkPixmap;
-
-  Dragging : Boolean;
+//procedure EventTrace(message : string; data : pointer);
 
 {$I gtklistslh.inc}
 
@@ -213,6 +181,24 @@ uses Graphics, buttons, Menus, GTKWinApiWindow, CListBox;
 {$I gtklistsl.inc}
 
 
+const
+  TARGET_ENTRYS = 3;
+  
+var
+  target_table : Array[0..TARGET_ENTRYS - 1] of TgtkTargetEntry;
+
+  //drag icons
+  TrashCan_Open : PgdkPixmap;
+  TrashCan_Open_Mask : PGdkPixmap;
+  Trashcan_closed : PGdkPixmap;
+  Trashcan_closed_mask : PGdkPixmap;
+  Drag_Icon : PgdkPixmap;
+  Drag_Mask : PgdkPixmap;
+
+  Dragging : Boolean;
+
+  MCaptureHandle: HWND;
+  
 const
 
   KEYMAP_VKUNKNOWN = $10000;
@@ -314,6 +300,7 @@ initialization
   Target_Table[2].Flags := 0;
   Target_Table[2].Info := TARGET_ROOTWIN;
 
+  MCaptureHandle := 0;
 
 
 end.
@@ -321,6 +308,12 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.3  2001/01/23 23:33:55  lazarus
+  MWE:
+    - Removed old LM_InvalidateRect
+    - did some cleanup in old  code
+    + added some comments  on gtkobject data (gtkproc)
+
   Revision 1.2  2000/07/30 21:48:33  lazarus
   MWE:
     = Moved ObjectToGTKObject to GTKProc unit

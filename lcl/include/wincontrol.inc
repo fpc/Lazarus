@@ -312,17 +312,6 @@ Begin
   Assert(False, Format('Trace:[TWinControl.GetClientOrigin] %s --> (%d, %d)',  [Classname, Result.X, Result.Y]));
 end;
 
-
-{------------------------------------------------------------------------------}
-{  TWinControl InvalidateRect                                                      }
-{------------------------------------------------------------------------------}
-Procedure TWinControl.InvalidateRect(Sender : TObject; Rect : TRect; Value : Boolean);
-Begin
-  Assert(False,'Trace:TWinControl InvalidateRect');
-  if HandleAllocated
-  then CNSendMessage(LM_InvalidateRect,Self,@Rect);
-end;
-
 {------------------------------------------------------------------------------}
 {  TWinControl ReCreateWnd                                                      }
 {------------------------------------------------------------------------------}
@@ -1895,6 +1884,12 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2001/01/23 23:33:54  lazarus
+  MWE:
+    - Removed old LM_InvalidateRect
+    - did some cleanup in old  code
+    + added some comments  on gtkobject data (gtkproc)
+
   Revision 1.10  2001/01/18 13:27:31  lazarus
   Minor changees
   Shane
