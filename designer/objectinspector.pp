@@ -144,7 +144,10 @@ type
     FLastMouseMovePos : TPoint;
     Procedure HintTimer(sender : TObject);
     Procedure ResetHintTimer(Sender : TObject; Shift: TShiftstate; X,Y : Integer);
+    procedure CurrentEditMouseDown(Sender : TObject;Button:TMouseButton; Shift:TShiftState; X,Y:integer);
 
+
+    PRocedure CurrentEditDblClick(Sender : TObject);
 
     function GetRow(Index:integer):TOIPropertyGridRow;
     function GetRowCount:integer;
@@ -333,7 +336,8 @@ begin
     Visible:=false;
     Enabled:=false;
     OnMouseMove := @ResetHintTimer;
-
+    OnMouseDown := @CurrentEditMouseDown;
+    OnDblClick := @CurrentEditDblClick;
   end;
 
   ValueComboBox:=TComboBox.Create(Self);
@@ -345,6 +349,8 @@ begin
     Enabled:=false;
     Parent:=Self;
     OnMouseMove := @ResetHintTimer;
+    OnMouseDown := @CurrentEditMouseDown;
+    OnDblClick := @CurrentEditDblClick;
   end;
 
   ValueButton:=TButton.Create(Self);
@@ -855,6 +861,10 @@ begin
   // XXX
   // the MouseDown event is fired two times
   // this is a workaround
+  
+  //hide the hint
+  if FHintWindow.Visible then FHintWindow.Visible := False;
+  
   if FOldMouseDownY=Y then begin
     FOldMouseDownY:=-1;
     exit;
@@ -1278,7 +1288,7 @@ begin
      FHintWindow.Visible := False;
      
   FHintTimer.Enabled := False;
-  FHintTimer.Enabled := True;
+  FHintTimer.Enabled := not ((ssLeft in Shift) or (ssRight in Shift) or (ssMiddle in Shift));
 
   if (Sender is TOIPropertyGrid) then
     Begin
@@ -1293,9 +1303,25 @@ begin
 end;
 
 procedure TOIPropertyGrid.WMMouseMove(var Msg: TWMMouseMove);
+var
+  Shift : TShiftState;
 begin
   inherited;
-  ResetHintTimer(self,[],Msg.pos.x,Msg.Pos.Y);
+  Shift := KeystoShiftState(Msg.Keys);  //KeystoShiftState found in Forms.pp
+  
+  ResetHintTimer(self,Shift,Msg.pos.x,Msg.Pos.Y);
+end;
+
+procedure TOIPropertyGrid.CurrentEditMouseDown(Sender : TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: integer);
+begin
+  //hide the hint window!
+  if FHintWindow.Visible then FHintWindow.Visible := False;
+end;
+
+PRocedure TOIPropertyGrid.CurrentEditDblClick(Sender : TObject);
+begin
+  writeln('CURRENTEDITDBLCLICK!!!!');
 end;
 
 //------------------------------------------------------------------------------

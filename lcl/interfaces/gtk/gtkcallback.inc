@@ -423,13 +423,10 @@ var
   ShiftState: TShiftState;
 begin
 //writeln('[gtkMouseBtnPress] ',ToBject(Data).ClassName,' ',Trunc(Event^.X),',',Trunc(Event^.Y));
-
   EventTrace('Mouse button Press', data);
-
   Assert(False, Format('Trace:[gtkMouseBtnPress] ', []));
    
   ShiftState := GTKEventState2ShiftState(Event^.State);
-   
   if event^.Button in [4,5]
   then begin
     MessE.Msg := LM_MOUSEWHEEL;
@@ -444,18 +441,20 @@ begin
     MessI.Keys := 0;
     case event^.Button of
          1 : begin
-               if LMouseButtonDown then Exit;
+               if (LMouseButtonDown) and (not (Event^.theType = gdk_2button_press)) then Exit;
                MessI.Keys := MessI.Keys or MK_LBUTTON;
+
                if event^.thetype = gdk_button_press then
                  MessI.Msg := LM_LBUTTONDOWN
                 else
-                 MessI.Msg := LM_LBUTTONDBLCLK;
-                 
+                   MessI.Msg := LM_LBUTTONDBLCLK;
+
              LMouseButtonDown := True;
 
              end;
          2 : begin
-               if MMouseButtonDown then Exit;
+               if (MMouseButtonDown) and (not (Event^.theType = gdk_2button_press)) then Exit;
+
                MessI.Keys := MessI.Keys or MK_MBUTTON;
                if event^.thetype = gdk_button_press then
                  MessI.Msg := LM_MBUTTONDOWN
@@ -464,7 +463,7 @@ begin
                MMouseButtonDown := True;
              end;
          3 : begin
-               if RMouseButtonDown then Exit;
+               if (RMouseButtonDown) and (not (Event^.theType = gdk_2button_press)) then Exit;
                MessI.Keys := MessI.Keys or MK_RBUTTON;
                if event^.thetype = gdk_button_press then
                  MessI.Msg := LM_RBUTTONDOWN
@@ -474,6 +473,7 @@ begin
              end;
          else MessI.Msg := LM_NULL;
     end; //case
+
     MessI.XPos := Trunc(Event^.X);
     MessI.YPos := Trunc(Event^.Y);
     if ssShift in ShiftState then MessI.Keys := MessI.Keys or MK_SHIFT;
@@ -481,8 +481,7 @@ begin
     if ssLeft in ShiftState then MessI.Keys := MessI.Keys or MK_LBUTTON;
     if ssRight in ShiftState then MessI.Keys := MessI.Keys or MK_RBUTTON;
     if ssMiddle in ShiftState then MessI.Keys := MessI.Keys or MK_MBUTTON;
-
-    if MessI.Msg <> LM_NULL then Result := DeliverPostMessage(Data, MessI); 
+    if MessI.Msg <> LM_NULL then Result := DeliverPostMessage(Data, MessI);
   end;
   
 end;
@@ -1415,6 +1414,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.46  2001/11/21 14:55:31  lazarus
+  Changes for combobox to receive butondown and up events
+  DblClick events now working.
+  Shane
+
   Revision 1.45  2001/11/20 17:20:45  lazarus
   Fixed designer problem with moving controls.
   Can no longer drag controls off the form.

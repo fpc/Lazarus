@@ -1609,8 +1609,6 @@ begin
     LM_SYSCHAR,
     LM_SYSKEYUP:
     begin
-      if (sender is TMemo) then
-        Writeln('KEY-PRESS-EVENT for TMemo');
       if (sender is TComboBox) then Begin
         ConnectSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.entry), 'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
         ConnectSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.entry), 'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
@@ -1651,13 +1649,31 @@ begin
     LM_MBUTTONDOWN,
     LM_MOUSEWHEEL :
     begin
-      ConnectSignal(gFixed, 'button-press-event', @gtkmousebtnpress, GDK_BUTTON_PRESS_MASK);
+      if (sender is TCustomComboBox) then
+         Begin
+           ConnectSignal(PgtkObject(PgtkCOmbo(gObject)^.entry), 'button-press-event',  @gtkmousebtnpress, GDK_BUTTON_PRESS_MASK);
+           ConnectSignal(PgtkObject(PgtkCOmbo(gObject)^.button) , 'button-press-event', @gtkmousebtnpress, GDK_BUTTON_PRESS_MASK);
+//         Connecting the list seems to cause errors. Maybe we are returning the wrong boolean in the callback func
+//           ConnectSignal(PgtkObject(PgtkCOmbo(gObject)^.list), 'button-press-event',  @gtkmousebtnpress, GDK_BUTTON_PRESS_MASK);
+
+         end
+         else
+           ConnectSignal(gFixed, 'button-press-event', @gtkmousebtnpress, GDK_BUTTON_PRESS_MASK);
     end;
 
     LM_LBUTTONUP,
     LM_RBUTTONUP,
     LM_MBUTTONUP:
     begin
+      if (sender is TCustomComboBox) then
+         Begin
+           ConnectSignal(PgtkObject(PgtkCOmbo(gObject)^.entry), 'button-release-event',  @gtkmousebtnrelease, GDK_BUTTON_RELEASE_MASK);
+           ConnectSignal(PgtkObject(PgtkCOmbo(gObject)^.button) , 'button-release-event', @gtkmousebtnrelease, GDK_BUTTON_RELEASE_MASK);
+//         Connecting the list seems to cause errors. Maybe we are returning the wrong boolean in the callback func
+//           ConnectSignal(PgtkObject(PgtkCOmbo(gObject)^.list), 'button-release-event',  @gtkmousebtnrelease, GDK_BUTTON_RELEASE_MASK);
+
+         end
+         else
       ConnectSignal(gFixed, 'button-release-event', @gtkmousebtnrelease, GDK_BUTTON_RELEASE_MASK);
     end;
 
@@ -3323,6 +3339,11 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.75  2001/11/21 14:55:33  lazarus
+  Changes for combobox to receive butondown and up events
+  DblClick events now working.
+  Shane
+
   Revision 1.74  2001/11/20 18:30:32  lazarus
   Pressing DEL when form is the only thing selected in designer no longer crashes Lazarus.
   Shane
