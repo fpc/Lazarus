@@ -86,6 +86,14 @@ const
   ecInsertUserName       = ecUserFirst + 81;
   ecInsertDateTime       = ecUserFirst + 82;
   ecInsertChangeLogEntry = ecUserFirst + 83;
+  ecInsertCVSAuthor      = ecUserFirst + 84;
+  ecInsertCVSDate        = ecUserFirst + 85;
+  ecInsertCVSHeader      = ecUserFirst + 86;
+  ecInsertCVSID          = ecUserFirst + 87;
+  ecInsertCVSLog         = ecUserFirst + 88;
+  ecInsertCVSName        = ecUserFirst + 89;
+  ecInsertCVSRevision    = ecUserFirst + 90;
+  ecInsertCVSSource      = ecUserFirst + 91;
 
   ecWordCompletion       = ecUserFirst + 100;
   ecCompleteCode         = ecUserFirst + 101;
@@ -509,6 +517,14 @@ begin
     ecInsertUserName: Result:='Insert current username';
     ecInsertDateTime: Result:='Insert current date and time';
     ecInsertChangeLogEntry: Result:='Insert ChangeLog entry';
+    ecInsertCVSAuthor: Result:='Insert CVS keyword Author';
+    ecInsertCVSDate: Result:='Insert CVS keyword Date';
+    ecInsertCVSHeader: Result:='Insert CVS keyword Header';
+    ecInsertCVSID: Result:='Insert CVS keyword ID';
+    ecInsertCVSLog: Result:='Insert CVS keyword Log';
+    ecInsertCVSName: Result:='Insert CVS keyword Name';
+    ecInsertCVSRevision: Result:='Insert CVS keyword Revision';
+    ecInsertCVSSource: Result:='Insert CVS keyword Source';
 
     // search menu
     ecFind: Result:= 'Find text';
@@ -1200,6 +1216,14 @@ begin
   Add(C,'Insert username',ecInsertUserName,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Insert date and time',ecInsertDateTime,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Insert ChangeLog entry',ecInsertChangeLogEntry,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Insert CVS keyword Author',ecInsertCVSAuthor,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Insert CVS keyword Date',ecInsertCVSDate,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Insert CVS keyword Header',ecInsertCVSHeader,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Insert CVS keyword ID',ecInsertCVSID,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Insert CVS keyword Log',ecInsertCVSLog,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Insert CVS keyword Name',ecInsertCVSName,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Insert CVS keyword Revision',ecInsertCVSRevision,VK_UNKNOWN,[],VK_UNKNOWN,[]);;
+  Add(C,'Insert CVS keyword Source',ecInsertCVSSource,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // command commands
   C:=Categories[AddCategory('CommandCommands','Command commands',caAll)];

@@ -155,13 +155,25 @@ type
     itmEditSelectLine: TMenuItem;
     itmEditSelectParagraph: TMenuItem;
     itmEditInsertText: TMenuItem;
+    itmEditCompleteCode: TMenuItem;
+
+    itmEditInsertCVSKeyWord: TMenuItem;
     itmEditInsertGeneral: TMenuItem;
+
+    itmEditInsertCVSAuthor: TMenuItem;
+    itmEditInsertCVSDate: TMenuItem;
+    itmEditInsertCVSHeader: TMenuItem;
+    itmEditInsertCVSID: TMenuItem;
+    itmEditInsertCVSLog: TMenuItem;
+    itmEditInsertCVSName: TMenuItem;
+    itmEditInsertCVSRevision: TMenuItem;
+    itmEditInsertCVSSource: TMenuItem;
+
     itmEditInsertGPLNotice: TMenuItem;
     itmEditInsertUsername: TMenuItem;
     itmEditInsertDateTime: TMenuItem;
     itmEditInsertChangeLogEntry: TMenuItem;
-    itmEditCompleteCode: TMenuItem;
-
+    
     itmSearchFind: TMenuItem;
     itmSearchFindNext: TMenuItem;
     itmSearchFindPrevious: TMenuItem;
@@ -542,6 +554,54 @@ begin
 
   begin
     // insert text sub menu items
+    itmEditInsertCVSKeyWord := TMenuItem.Create(Self);
+    itmEditInsertCVSKeyWord.Name:='itmEditInsertCVSKeyWord';
+    itmEditInsertCVSKeyWord.Caption := lisMenuInsertCVSKeyword;
+    itmEditInsertText.Add(itmEditInsertCVSKeyWord);
+
+    begin
+      // insert CVS keyword sub menu items
+      itmEditInsertCVSAuthor := TMenuItem.Create(Self);
+      itmEditInsertCVSAuthor.Name:='itmEditInsertCVSAuthor';
+      itmEditInsertCVSAuthor.Caption := 'Author';
+      itmEditInsertCVSKeyWord.Add(itmEditInsertCVSAuthor);
+      
+      itmEditInsertCVSDate := TMenuItem.Create(Self);
+      itmEditInsertCVSDate.Name:='itmEditInsertCVSDate';
+      itmEditInsertCVSDate.Caption := 'Date';
+      itmEditInsertCVSKeyWord.Add(itmEditInsertCVSDate);
+
+      itmEditInsertCVSHeader := TMenuItem.Create(Self);
+      itmEditInsertCVSHeader.Name:='itmEditInsertCVSHeader';
+      itmEditInsertCVSHeader.Caption := 'Header';
+      itmEditInsertCVSKeyWord.Add(itmEditInsertCVSHeader);
+
+      itmEditInsertCVSID := TMenuItem.Create(Self);
+      itmEditInsertCVSID.Name:='itmEditInsertCVSID';
+      itmEditInsertCVSID.Caption := 'ID';
+      itmEditInsertCVSKeyWord.Add(itmEditInsertCVSID);
+
+      itmEditInsertCVSLog := TMenuItem.Create(Self);
+      itmEditInsertCVSLog.Name:='itmEditInsertCVSLog';
+      itmEditInsertCVSLog.Caption := 'Log';
+      itmEditInsertCVSKeyWord.Add(itmEditInsertCVSLog);
+
+      itmEditInsertCVSName := TMenuItem.Create(Self);
+      itmEditInsertCVSName.Name:='itmEditInsertCVSName';
+      itmEditInsertCVSName.Caption := 'Name';
+      itmEditInsertCVSKeyWord.Add(itmEditInsertCVSName);
+
+      itmEditInsertCVSRevision := TMenuItem.Create(Self);
+      itmEditInsertCVSRevision.Name:='itmEditInsertCVSRevision';
+      itmEditInsertCVSRevision.Caption := 'Revision';
+      itmEditInsertCVSKeyWord.Add(itmEditInsertCVSRevision);
+
+      itmEditInsertCVSSource := TMenuItem.Create(Self);
+      itmEditInsertCVSSource.Name:='itmEditInsertCVSSource';
+      itmEditInsertCVSSource.Caption := 'Source';
+      itmEditInsertCVSKeyWord.Add(itmEditInsertCVSSource);
+    end;
+    
     itmEditInsertGeneral := TMenuItem.Create(Self);
     itmEditInsertGeneral.Name:='itmEditInsertGeneral';
     itmEditInsertGeneral.Caption := lisMenuInsertGeneral;
@@ -965,11 +1025,21 @@ begin
     itmEditSelectCodeBlock.ShortCut:=CommandToShortCut(ecSelectCodeBlock);
     itmEditSelectLine.ShortCut:=CommandToShortCut(ecSelectLine);
     itmEditSelectParagraph.ShortCut:=CommandToShortCut(ecSelectParagraph);
+    itmEditCompleteCode.ShortCut:=CommandToShortCut(ecCompleteCode);
+
+    itmEditInsertCVSAuthor.ShortCut:=CommandToShortCut(ecInsertCVSAuthor);
+    itmEditInsertCVSDate.ShortCut:=CommandToShortCut(ecInsertCVSDate);
+    itmEditInsertCVSHeader.ShortCut:=CommandToShortCut(ecInsertCVSHeader);
+    itmEditInsertCVSID.ShortCut:=CommandToShortCut(ecInsertCVSID);
+    itmEditInsertCVSLog.ShortCut:=CommandToShortCut(ecInsertCVSLog);
+    itmEditInsertCVSName.ShortCut:=CommandToShortCut(ecInsertCVSName);
+    itmEditInsertCVSRevision.ShortCut:=CommandToShortCut(ecInsertCVSRevision);
+    itmEditInsertCVSSource.ShortCut:=CommandToShortCut(ecInsertCVSSource);
+
     itmEditInsertGPLNotice.ShortCut:=CommandToShortCut(ecInsertGPLNotice);
     itmEditInsertUsername.ShortCut:=CommandToShortCut(ecInsertUserName);
     itmEditInsertDateTime.ShortCut:=CommandToShortCut(ecInsertDateTime);
     itmEditInsertChangeLogEntry.ShortCut:=CommandToShortCut(ecInsertChangeLogEntry);
-    itmEditCompleteCode.ShortCut:=CommandToShortCut(ecCompleteCode);
 
     itmSearchFind.ShortCut:=CommandToShortCut(ecFind);
     itmSearchFindNext.ShortCut:=CommandToShortCut(ecFindNext);

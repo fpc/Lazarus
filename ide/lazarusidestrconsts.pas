@@ -123,12 +123,14 @@ ResourceString
   lisMenuSelectLine = 'Select line';
   lisMenuSelectParagraph = 'Select paragraph';
   lisMenuInsertText = 'Insert text';
+  lisMenuInsertCVSKeyword = 'CVS keyword';
   lisMenuInsertGeneral = 'General';
+  lisMenuCompleteCode = 'Complete Code';
+
   lisMenuInsertGPLNotice = 'GPL notice';
   lisMenuInsertUserName = 'Current username';
   lisMenuInsertDateTime = 'Current date and time';
   lisMenuInsertChangeLogEntry = 'ChangeLog entry';
-  lisMenuCompleteCode = 'Complete Code';
 
   lisMenuFind = 'Find';
   lisMenuFindNext = 'Find &Next';
