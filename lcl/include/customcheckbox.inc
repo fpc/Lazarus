@@ -101,7 +101,7 @@ begin
   Inherited Create(TheOwner);
   fCompStyle := csCheckbox;
   FState       := cbUnchecked;
-  FAllowGrayed := True;
+  FAllowGrayed := false;
   TabStop := true;
   SetInitialBounds(0,0,90,23);
   AutoSize:=true;
@@ -227,6 +227,9 @@ end;
 
 {
   $Log$
+  Revision 1.29  2005/01/11 13:25:23  vincents
+  TCustomCheckBox.AllowGray defaults to false.
+
   Revision 1.28  2005/01/01 19:36:40  mattias
   fixed loading TRadioButton.Checked
 

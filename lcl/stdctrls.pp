@@ -857,7 +857,7 @@ type
     constructor Create(TheOwner: TComponent); override;
   public
     property AutoSize default true;
-    property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed default True;
+    property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed default false;
     property State: TCheckBoxState read GetState write SetState;
     property TabStop default true;
     property UseOnChange;
@@ -1216,6 +1216,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.182  2005/01/11 13:25:23  vincents
+  TCustomCheckBox.AllowGray defaults to false.
+
   Revision 1.181  2005/01/08 22:13:21  vincents
   TLabel.ShowAccelChar default value is True
 
