@@ -938,7 +938,10 @@ begin
   if Value=Color then exit;
   inherited SetColor(Value);
   if HandleAllocated and (not (csLoading in ComponentState)) then
-    CNSendMessage(LM_SETCOLOR, Self, nil);
+    CNSendMessage(LM_SETCOLOR, Self, nil)
+  else
+    Include(FFlags,wcfColorChanged);
+writeln('TWinControl.SetColor ',Name,':',ClassName,' ',wcfColorChanged in FFlags);
 end;
 
 procedure TWinControl.PaintHandler(var TheMessage: TLMPaint);
@@ -2295,6 +2298,7 @@ begin
   CNSendMessage(LM_SETSIZE, Self, @R);
   CNSendMessage(LM_SHOWHIDE, Self, nil);
   CNSendMessage(LM_SETCOLOR, Self, nil);
+  Exclude(FFlags,wcfColorChanged);
   
   EnableWindow(Handle, Enabled);
  
@@ -2303,6 +2307,19 @@ begin
 
   SetProp(Handle,'WinControl',TWinControl(Self));
   SetProp(Handle,'Control',TControl(Self));
+end;
+
+{------------------------------------------------------------------------------
+  procedure TWinControl.Loaded;
+ ------------------------------------------------------------------------------}
+procedure TWinControl.Loaded;
+begin
+  inherited Loaded;
+  if wcfColorChanged in FFlags then begin
+writeln('TWinControl.Loaded ',Name,':',ClassName);
+    CNSendMessage(LM_SETCOLOR, Self, nil);
+    Exclude(FFlags,wcfColorChanged);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -2563,6 +2580,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.113  2003/01/01 13:01:01  mattias
+  fixed setcolor for streamed components
+
   Revision 1.112  2002/12/29 18:13:38  mattias
   identifier completion: basically working, still hidden
 

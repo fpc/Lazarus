@@ -754,7 +754,7 @@ type
 
   { TWinControl }
 
-  TWinControlFlag = (wcfClientRectNeedsUpdate);
+  TWinControlFlag = (wcfClientRectNeedsUpdate,wcfColorChanged);
   TWinControlFlags = set of TWinControlFlag;
 
   TWinControl = class(TControl)
@@ -847,6 +847,7 @@ type
     procedure CreateHandle; virtual;
     procedure CreateWnd; virtual; //creates the window
     procedure InitializeWnd; virtual; //gets called after the window is created
+    procedure Loaded; override;
     procedure DestroyWnd; virtual;
     procedure UpdateShowing; virtual;
     procedure ShowControl(AControl: TControl); virtual;
@@ -1438,6 +1439,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.101  2003/01/01 13:01:01  mattias
+  fixed setcolor for streamed components
+
   Revision 1.100  2002/12/28 12:42:38  mattias
   focus fixes, reduced lpi size
 
