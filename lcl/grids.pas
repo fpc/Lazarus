@@ -508,6 +508,7 @@ type
     FStringEditor: TStringCellEditor;
     FExtendedColSizing: boolean;
     FExtendedRowSizing: boolean;
+    FUpdatingAutoFillCols: boolean;
     {.$ifdef UseXOR}
     FPrevLine: boolean;
     FPrevValue: Integer;
@@ -732,7 +733,7 @@ type
     property ColCount: Integer read GetColCount write SetColCount;
     property Columns: TGridColumns read GetColumns write SetColumns stored IsColumnsStored;
     property ColWidths[aCol: Integer]: Integer read GetColWidths write SetColWidths;
-    property DefaultColWidth: Integer read FDefColWidth write SetDefColWidth;
+    property DefaultColWidth: Integer read FDefColWidth write SetDefColWidth default 64;
     property DefaultRowHeight: Integer read FDefRowHeight write SetDefRowHeight default 20;
     property DefaultDrawing: Boolean read FDefaultDrawing write SetDefaultDrawing default True;
     property DefaultTextStyle: TTextStyle read FDefaultTextStyle write FDefaultTextStyle;
@@ -1394,6 +1395,13 @@ begin
 end;
 
 procedure TCustomGrid.InternalAutoFillColumns;
+  procedure SetColumnWidth(aCol,aWidth: Integer);
+  begin
+    if csLoading in ComponentState then
+      SetRawColWidths(aCol, aWidth)
+    else
+      SetColWidths(aCol, aWidth);
+  end;
 var
   I, ForcedIndex: Integer;
   Count: Integer;
@@ -1405,69 +1413,79 @@ begin
   if not AutoFillColumns then
     exit;
 
-
-  // if needed, last size can be obtained from FLastWidth
-  // when InternalAutoFillColumns is called from DoChangeBounds
-  // for example.
-
-  // Insert the algorithm that modify ColWidths accordingly
-  //
-  // For testing purposes, a simple algortihm is implemented:
-  // if SizePriority=0, column size should be unmodified
-  // if SizePriority<>0 means variable size column, its size
-  // is the average avalilable size.
-
-  Count := 0;
-  FixedSizeWidth := 0;
-  TotalWidth := 0;
-  for i:=0 to ColCount-1 do begin
-    GetAutoFillColumnInfo(i, aMin, aMax, aPriority);
-    AvailableSize := GetColWidths(i);
-    if aPriority>0 then
-      Inc(Count)
-    else
-      Inc(FixedSizeWidth, AvailableSize);
-    Inc(TotalWidth, AvailableSize);
-  end;
-  
-  if Count=0 then begin
-    //it's an autofillcolumns grid, so at least one
-    // of the columns must fill completly the grid's
-    // available width, let it be that column the last
-    ForcedIndex := ColCount-1;
-    Count := 1;
-  end else
-    ForcedIndex := -1;
-
-  AvailableSize := ClientWidth - FixedSizeWidth - Integer(BorderStyle);
-  if AvailableSize<0 then begin
-    // There is no space available to fill with
-    // Variable Size Columns, what to do?
+  if FUpdatingAutoFillCols then
+    exit;
     
-    // Simply set all Variable Size Columns
-    // to 0, decreasing the size beyond this
-    // shouldn't be allowed.
+  FUpdatingAutoFillCols:=True;
+  try
+    // if needed, last size can be obtained from FLastWidth
+    // when InternalAutoFillColumns is called from DoChangeBounds
+    // for example.
+
+    // Insert the algorithm that modify ColWidths accordingly
+    //
+    // For testing purposes, a simple algortihm is implemented:
+    // if SizePriority=0, column size should be unmodified
+    // if SizePriority<>0 means variable size column, its size
+    // is the average avalilable size.
+
+    Count := 0;
+    FixedSizeWidth := 0;
+    TotalWidth := 0;
     for i:=0 to ColCount-1 do begin
       GetAutoFillColumnInfo(i, aMin, aMax, aPriority);
+      AvailableSize := GetColWidths(i);
       if aPriority>0 then
-        SetColWidths(i,0);
-        //SetRawColWidths(i,0);
+        Inc(Count)
+      else
+        Inc(FixedSizeWidth, AvailableSize);
+      Inc(TotalWidth, AvailableSize);
     end;
-  end else begin
-    // Simpler case: There is actually available space to
-    //     to be shared for variable size columns.
-    FixedSizeWidth := AvailableSize mod Count; // space left after filling columns
-    AvailableSize := AvailableSize div Count;
-    for i:=0 to ColCount-1 do begin
-      GetAutoFillColumnInfo(i, aMin, aMax, aPriority);
-      if (APriority>0) or (i=ForcedIndex) then
-        if i=ColCount-1 then
-          // the last column gets all space left
-          SetColWidths(i, AvailableSize + FixedSizeWidth)
-        else
-          SetColWidths(i, AvailableSize)
-        //SetRawColWidths(i, AvailableSize);
+
+    if Count=0 then begin
+      //it's an autofillcolumns grid, so at least one
+      // of the columns must fill completly the grid's
+      // available width, let it be that column the last
+      ForcedIndex := ColCount-1;
+      Count := 1;
+    end else
+      ForcedIndex := -1;
+
+    AvailableSize := Width {ClientWidth} - FixedSizeWidth - Integer(BorderStyle);
+    if AvailableSize<0 then begin
+      // There is no space available to fill with
+      // Variable Size Columns, what to do?
+
+      // Simply set all Variable Size Columns
+      // to 0, decreasing the size beyond this
+      // shouldn't be allowed.
+      for i:=0 to ColCount-1 do begin
+        GetAutoFillColumnInfo(i, aMin, aMax, aPriority);
+        if aPriority>0 then
+          SetColumnWidth(i, 0);
+          //SetColWidths(i,0);
+          //SetRawColWidths(i,0);
+      end;
+    end else begin
+      // Simpler case: There is actually available space to
+      //     to be shared for variable size columns.
+      FixedSizeWidth := AvailableSize mod Count; // space left after filling columns
+      AvailableSize := AvailableSize div Count;
+      for i:=0 to ColCount-1 do begin
+        GetAutoFillColumnInfo(i, aMin, aMax, aPriority);
+        if (APriority>0) or (i=ForcedIndex) then
+          if i=ColCount-1 then
+            // the last column gets all space left
+            //SetColWidths(i, AvailableSize + FixedSizeWidth)
+            SetColumnWidth(i, AvailableSize + FixedSizeWidth)
+          else
+            //SetColWidths(i, AvailableSize)
+            //SetRawColWidths(i, AvailableSize);
+            SetColumnWidth(i, AvailableSize);
+      end;
     end;
+  finally
+    FUpdatingAutoFillCols:=False;
   end;
 end;
 
@@ -1491,10 +1509,12 @@ begin
   if AValue<0 then Avalue:=-1;
   if Avalue<>PtrInt(FCols[ACol]) then begin
     SetRawColWidths(ACol, Avalue);
-    VisualChange;
-    if (FEditor<>nil)and(Feditor.Visible)and(ACol<=FCol) then
-      EditorWidthChanged(aCol, aValue);
-    ColWidthsChanged;
+    if not (csLoading in ComponentState) then begin
+      VisualChange;
+      if (FEditor<>nil)and(Feditor.Visible)and(ACol<=FCol) then
+        EditorWidthChanged(aCol, aValue);
+      ColWidthsChanged;
+    end;
   end;
 end;
 
@@ -1772,10 +1792,14 @@ procedure TCustomGrid.SetDefColWidth(Valor: Integer);
 var
   i: Integer;
 begin
-  if Valor=fDefColwidth then Exit;
+  if Valor=fDefColwidth then
+    Exit;
   FDefColWidth:=Valor;
-  for i:=0 to ColCount-1 do FCols[i] := Pointer(-1);
-  VisualChange;
+  if not AutoFillColumns then begin
+    for i:=0 to ColCount-1 do
+      FCols[i] := Pointer(-1);
+    VisualChange;
+  end;
 end;
 
 procedure TCustomGrid.SetDefRowHeight(Valor: Integer);
@@ -1915,9 +1939,6 @@ var
   var
     i: Integer;
   begin
-    // Recalc colwidths if it is necesary
-    InternalAutoFillColumns;
-    
     // Calculate New Cached Values
     FGCache.GridWidth:=0;
     FGCache.FixedWidth:=0;
@@ -1950,14 +1971,17 @@ var
     FGCache.ClientHeight := Height - Integer(BorderStyle);
     HsbRange:=Width - Dv;
     VsbRange:=Height - Dh;
+    
     HsbVisible := (FScrollBars in [ssHorizontal, ssBoth]) or (FGCache.GridWidth > FGCache.ClientWidth);
     VsbVisible := (FScrollBars in [ssVertical, ssBoth]) or (FGCache.GridHeight > FGCache.ClientHeight);
     if ScrollBarAutomatic(ssHorizontal) then
-      HsbVisible := HsbVisible or (VsbVisible and (TW>HsbRange));
+      HsbVisible := not AutoFillColumns and (HsbVisible or (VsbVisible and (TW>HsbRange)));
     if ScrollBarAutomatic(ssVertical) then
       VsbVisible := VsbVisible or (HsbVisible and (TH>VsbRange));
+      
     if not HSBVisible then DH:=0;
     if not VSbVisible then DV:=0;
+    
     Dec(FGCache.ClientWidth, DV);
     Dec(FGCache.ClientHeight, DH);
   end;
@@ -1991,6 +2015,9 @@ var
 begin
   if FCols=nil then exit; // not yet initialized or already destroyed
   
+  if AutoFillColumns then
+    InternalAutoFillColumns;
+    
   CalcNewCachedSizes;
   
   CalcScrollbarsVisiblity;
@@ -2002,7 +2029,6 @@ begin
     FGCache.TLColOff:=0;
     FGCache.TLRowOff:=0;
   end;
-  
   {$Ifdef DbgVisualChange}
   DbgOut('Width=',IntTostr(Width));
   DbgOut(' Height=',IntToStr(height));
@@ -3880,40 +3906,57 @@ begin
 end;
 
 procedure TCustomGrid.DefineProperties(Filer: TFiler);
-  function SonIguales(L1,L2: TList): boolean;
+  function SonRowsIguales(aGrid: TCustomGrid): boolean;
   var
     i: Integer;
   begin
-    Result:=False; // store by default
-    for i:=0 to L1.Count-1 do begin
-      Result:=L1[i]=L2[i];
-      if not Result then break;
-    end;
+    result := aGrid.RowCount = RowCount;
+    if Result then
+      for i:=0 to RowCount-1 do
+        if aGrid.RowHeights[i]<>RowHeights[i] then begin
+          result := false;
+          break;
+        end;
+  end;
+  function SonColsIguales(aGrid: TCustomGrid): boolean;
+  var
+    i: Integer;
+  begin
+    result := aGrid.ColCount = ColCount;
+    if Result then
+      for i:=0 to ColCount-1 do
+        if aGrid.ColWidths[i]<>ColWidths[i] then begin
+          result := false;
+          break;
+        end;
   end;
   function SonDefault(IsColumn: Boolean; L1: TList): boolean;
   var
     i: Integer;
+    DefValue, Value: Integer;
   begin
     Result := True;
+    if IsColumn then DefValue := DefaultColWidth
+    else             DefValue := DefaultRowHeight;
     for i:=0 to L1.Count-1 do begin
-      if IsColumn then
-        Result := PtrInt(L1[i]) = DefaultColWidth
-      else
-        Result := PtrInt(L1[i]) = DefaultRowHeight;
-      if not Result then break;
+      Value := PtrInt(L1[i]);
+      Result := (Value = DefValue) or (Value<0);
+      if not Result then
+        break;
     end;
   end;
   function NeedWidths: boolean;
   begin
     if Filer.Ancestor <> nil then
-      Result := not SonIguales(TCustomGrid(Filer.Ancestor).FCols, FCols)
+      Result := not SonColsIguales(TCustomGrid(Filer.Ancestor))
     else
       Result := not SonDefault(True, FCols);
+    result := Result and not AutoFillColumns;
   end;
   function NeedHeights: boolean;
   begin
     if Filer.Ancestor <> nil then
-      Result := not SonIguales(TCustomGrid(Filer.Ancestor).FRows, FRows)
+      Result := not SonRowsIguales(TCustomGrid(Filer.Ancestor))
     else
       Result := not SonDefault(false, FRows);
   end;
@@ -6106,18 +6149,24 @@ procedure TCustomStringGrid.DefineProperties(Filer: TFiler);
     i,j: integer;
     AntGrid: TCustomStringGrid;
   begin
+    result := false;
     AntGrid := TCustomStringGrid(Filer.Ancestor);
-    //DebugLn('TCustomStringGrid.DefineProperties: Ancestor=',Integer(AntGrid));
-    if AntGrid<>nil then begin
-      result:=false;
-      for i:=0 to AntGrid.ColCount-1 do
-        for j:=0 to AntGrid.RowCount-1 do
-          if Cells[i,j]<>AntGrid.Cells[i,j] then begin
-          result:=true;
-          break;
-        end;
-   end else
-      result:=true;
+    if (AntGrid<>nil) then begin
+      result := (AntGrid.ColCount<>ColCount) or (AntGrid.RowCount<>RowCount);
+      if not result then
+        for i:=0 to AntGrid.ColCount-1 do
+          for j:=0 to AntGrid.RowCount-1 do
+            if Cells[i,j]<>AntGrid.Cells[i,j] then begin
+              result := true;
+              break;
+            end
+    end else
+      for i:=0 to ColCount-1 do
+        for j:=0 to RowCount-1 do
+          if Cells[i,j]<>'' then begin
+            result := true;
+            break;
+          end;
   end;
 begin
   inherited DefineProperties(Filer);
