@@ -9597,6 +9597,7 @@ begin
         Result:=LogicalToPhysicalCol(s,FirstNonBlank);
         exit;
       end;
+      dec(y);
     end;
   end;
 end;
