@@ -477,7 +477,6 @@ type
     FOnActiveFormChange: TNotifyEvent;
     FPixelsPerInch : integer;
     FSaveFocusedList: TList;
-
     procedure CreateCursors;
     procedure DeleteCursor(Index: Integer);
     procedure DestroyCursors;

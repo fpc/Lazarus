@@ -2383,6 +2383,7 @@ begin
     +';'+Dir+'rtl'+DS+'inc'+DS
     +';'+Dir+'rtl'+DS+TargetProcessor+DS
     +';'+Dir+'rtl'+DS+SrcOS+DS
+    +';'+Dir+'rtl'+DS+TargetOS+DS+TargetProcessor+DS
     +';'+Dir+'rtl'+DS+SrcOS+DS+TargetProcessor+DS;
   if (TargetOS<>'') and (TargetOS<>SrcOS) then
     s:=s+';'+Dir+'rtl'+DS+TargetOS+DS;
