@@ -115,8 +115,8 @@ type
     property Canvas : TCanvas read FCanvas;
   published
     property Panels: TStatusPanels read FPanels write SetPanels;
-    property SimpleText : String read FSimpleText write SetSimpleText;
-    property SimplePanel : Boolean read FSimplePanel write SetSimplePanel;
+    property SimpleText: String read FSimpleText write SetSimpleText;
+    property SimplePanel: Boolean read FSimplePanel write SetSimplePanel default True;
     property Visible;
   end;
 
@@ -1615,6 +1615,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.39  2002/09/05 13:33:10  lazarus
+  MG: set default value for TStatusBar.SimplePanel
+
   Revision 1.38  2002/09/03 08:07:17  lazarus
   MG: image support, TScrollBox, and many other things from Andrew
 
