@@ -792,23 +792,36 @@ end;
 {       Create a Form instance and sets the pointer to the internal form       }
 {       variable and loads the form into the application forms list            }
 {------------------------------------------------------------------------------}
-procedure TApplication.CreateForm(NewForm : TFormClass; var ref);
-var ok: boolean;
+procedure TApplication.CreateForm(InstanceClass: TComponentClass;
+  var Reference);
+var
+  Instance: TComponent;
+var
+  ok: boolean;
 begin
+  // Allocate the form instance, without calling the constructor
+  Instance := TComponent(InstanceClass.NewInstance);
+  // set the Reference before the constructor is called, so that
+  // events and constructors can refer to it
+  TComponent(Reference) := Instance;
   ok:=false;
   try
-    TForm(ref) := NewForm.Create(Self);
+    Instance.Create(Self);
     ok:=true;
   finally
-    if not ok then TObject(ref):=nil;
+    if not ok then
+      TComponent(Reference) := nil;
   end;
 
-  if FMainForm = nil then begin
-    FMainForm := TForm(ref);
-  end else begin
-    if not assigned(FList) then
-      FList := TList.Create;
-    FList.Add(TForm(ref));
+  if (Instance is TForm) then begin
+    if (FMainForm = nil) then begin
+      TForm(Instance).HandleNeeded;
+      FMainForm := TForm(Instance);
+    end else begin
+      if not assigned(FList) then
+        FList := TList.Create;
+      FList.Add(TForm(Instance));
+    end;
   end;
 end;
 
@@ -825,6 +838,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.36  2002/11/15 22:43:28  mattias
+  added Delphis trick to set the form reference before the constructor is called
+
   Revision 1.35  2002/11/09 18:13:33  lazarus
   MG: fixed gdkwindow checks
 
