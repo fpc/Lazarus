@@ -330,8 +330,6 @@ function TLazPackageGraph.FindUnit(StartPackage: TLazPackage;
   const TheUnitName: string;
   WithRequiredPackages, IgnoreDeleted: boolean): TPkgFile;
 var
-  Cnt: Integer;
-  i: Integer;
   ADependency: TPkgDependency;
   ARequiredPackage: TLazPackage;
 begin
@@ -339,15 +337,15 @@ begin
   if Result<>nil then exit;
   // search also in all required packages
   if WithRequiredPackages then begin
-    Cnt:=StartPackage.RequiredPkgCount;
-    for i:=0 to Cnt-1 do begin
-      ADependency:=StartPackage.RequiredPkgs[i];
+    ADependency:=StartPackage.FirstRequiredDependency;
+    while ADependency<>nil do begin
       if OpenDependency(ADependency,[fpfSearchInInstalledPckgs],ARequiredPackage)
          =lprSuccess
       then begin
         Result:=ARequiredPackage.FindUnit(TheUnitName,IgnoreDeleted);
         if Result<>nil then exit;
       end;
+      ADependency:=ADependency.NextRequiresDependency;
     end;
   end;
 end;
@@ -741,22 +739,20 @@ procedure TLazPackageGraph.IterateComponentClasses(APackage: TLazPackage;
   Event: TIterateComponentClassesEvent; WithUsedPackages,
   WithRequiredPackages: boolean);
 var
-  Cnt: Integer;
-  i: Integer;
   ARequiredPackage: TLazPackage;
   ADependency: TPkgDependency;
 begin
   APackage.IterateComponentClasses(Event,WithUsedPackages);
   // iterate through all required packages
   if WithRequiredPackages then begin
-    Cnt:=APackage.RequiredPkgCount;
-    for i:=0 to Cnt-1 do begin
-      ADependency:=APackage.RequiredPkgs[i];
+    ADependency:=APackage.FirstRequiredDependency;
+    while ADependency<>nil do begin
       if OpenDependency(ADependency,[fpfSearchInInstalledPckgs],ARequiredPackage)
          =lprSuccess
       then begin
         ARequiredPackage.IterateComponentClasses(Event,false);
       end;
+      ADependency:=ADependency.NextRequiresDependency;
     end;
   end;
 end;

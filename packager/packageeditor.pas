@@ -332,13 +332,13 @@ begin
       CurFile:=LazPackage.Files[NodeIndex];
       PackageEditors.OpenFile(Self,CurFile.Filename);
     end else if CurNode.Parent=RequiredPackagesNode then begin
-      CurDependency:=LazPackage.RequiredPkgs[NodeIndex];
+      CurDependency:=LazPackage.RequiredDepByIndex(NodeIndex);
       PackageEditors.OpenDependency(Self,CurDependency);
     end else if CurNode.Parent=RemovedFilesNode then begin
       CurFile:=LazPackage.RemovedFiles[NodeIndex];
       PackageEditors.OpenFile(Self,CurFile.Filename);
     end else if CurNode.Parent=RemovedRequiredNode then begin
-      CurDependency:=LazPackage.RemovedRequiredPkgs[NodeIndex];
+      CurDependency:=LazPackage.RemovedDepByIndex(NodeIndex);
       PackageEditors.OpenDependency(Self,CurDependency);
     end;
   end;
@@ -416,7 +416,7 @@ begin
     UpdateAll;
   end else if ANode.Parent=RequiredPackagesNode then begin
     // get current dependency
-    CurDependency:=LazPackage.RequiredPkgs[NodeIndex];
+    CurDependency:=LazPackage.RequiredDepByIndex(NodeIndex);
     if CurDependency<>nil then begin
       // confirm deletion
       if MessageDlg('Remove Dependency?',
@@ -936,9 +936,7 @@ end;
 
 procedure TPackageEditorForm.UpdateRequiredPkgs;
 var
-  Cnt: Integer;
   CurNode: TTreeNode;
-  i: Integer;
   CurDependency: TPkgDependency;
   NextNode: TTreeNode;
 begin
@@ -946,15 +944,15 @@ begin
   
   // required packages
   CurNode:=RequiredPackagesNode.GetFirstChild;
-  Cnt:=LazPackage.RequiredPkgCount;
-  for i:=0 to Cnt-1 do begin
+  CurDependency:=LazPackage.FirstRequiredDependency;
+  while CurDependency<>nil do begin
     if CurNode=nil then
       CurNode:=FilesTreeView.Items.AddChild(RequiredPackagesNode,'');
-    CurDependency:=LazPackage.RequiredPkgs[i];
     CurNode.Text:=CurDependency.AsString;
     CurNode.ImageIndex:=RequiredPackagesNode.ImageIndex;
     CurNode.SelectedIndex:=CurNode.ImageIndex;
     CurNode:=CurNode.GetNextSibling;
+    CurDependency:=CurDependency.NextRequiresDependency;
   end;
   while CurNode<>nil do begin
     NextNode:=CurNode.GetNextSibling;
@@ -964,8 +962,8 @@ begin
   RequiredPackagesNode.Expanded:=true;
   
   // removed required packages
-  Cnt:=LazPackage.RemovedRequiredPkgCount;
-  if Cnt>0 then begin
+  CurDependency:=LazPackage.FirstRemovedDependency;
+  if CurDependency<>nil then begin
     if RemovedRequiredNode=nil then begin
       RemovedRequiredNode:=
         FilesTreeView.Items.Add(nil,'Removed required packages (are not saved)');
@@ -973,14 +971,14 @@ begin
       RemovedRequiredNode.StateIndex:=RemovedRequiredNode.ImageIndex;
     end;
     CurNode:=RemovedRequiredNode.GetFirstChild;
-    for i:=0 to Cnt-1 do begin
+    while CurDependency<>nil do begin
       if CurNode=nil then
         CurNode:=FilesTreeView.Items.AddChild(RemovedRequiredNode,'');
-      CurDependency:=LazPackage.RemovedRequiredPkgs[i];
       CurNode.Text:=CurDependency.AsString;
       CurNode.ImageIndex:=RemovedRequiredNode.ImageIndex;
       CurNode.SelectedIndex:=CurNode.ImageIndex;
       CurNode:=CurNode.GetNextSibling;
+      CurDependency:=CurDependency.NextRequiresDependency;
     end;
     while CurNode<>nil do begin
       NextNode:=CurNode.GetNextSibling;
@@ -1009,7 +1007,9 @@ begin
   FPlugins.Clear;
   CurFile:=GetCurrentFile(Removed);
   if CurFile=nil then
-    Dependency:=GetCurrentDependency(Removed);
+    Dependency:=GetCurrentDependency(Removed)
+  else
+    Dependency:=nil;
 
   // make components visible
   UseMinVersionCheckBox.Visible:=Dependency<>nil;
@@ -1017,6 +1017,7 @@ begin
   UseMaxVersionCheckBox.Visible:=Dependency<>nil;
   MaxVersionEdit.Visible:=Dependency<>nil;
   ApplyDependencyButton.Visible:=Dependency<>nil;
+  
   CallRegisterProcCheckBox.Visible:=CurFile<>nil;
   RegisteredPluginsGroupBox.Visible:=CurFile<>nil;
 
@@ -1121,10 +1122,10 @@ begin
   if (CurNode<>nil) and (CurNode.Parent<>nil) then begin
     NodeIndex:=CurNode.Index;
     if CurNode.Parent=RequiredPackagesNode then begin
-      Result:=LazPackage.RequiredPkgs[NodeIndex];
+      Result:=LazPackage.RequiredDepByIndex(NodeIndex);
       Removed:=false;
     end else if CurNode.Parent=RemovedRequiredNode then begin
-      Result:=LazPackage.RemovedRequiredPkgs[NodeIndex];
+      Result:=LazPackage.RemovedDepByIndex(NodeIndex);
       Removed:=true;
     end;
   end;

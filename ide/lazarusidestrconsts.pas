@@ -206,7 +206,7 @@ resourcestring
   lisMenuRunParameters = 'Run Parameters ...';
   
   lisMenuConfigCustomComps = 'Configure custom components';
-  lisMenuOpenPackage = 'Edit package';
+  lisMenuOpenPackage = 'Open package';
   lisMenuOpenRecentPkg = 'Open recent package';
   lisMenuOpenPackageFile = 'Open package file';
   lisMenuPackageGraph = 'Package Graph';

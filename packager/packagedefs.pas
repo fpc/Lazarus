@@ -170,10 +170,15 @@ type
     );
   TPkgDependencyFlags = set of TPkgDependencyFlag;
   
+  TPkgDependencyList = (
+    pdlUsedBy,
+    pdlRequires
+    );
+  
   TPkgDependency = class
   private
     FFlags: TPkgDependencyFlags;
-    FOwnerPackage: TLazPackage;
+    FOwner: TObject;
     FMaxVersion: TPkgVersion;
     FMinVersion: TPkgVersion;
     FPackageName: string;
@@ -186,6 +191,7 @@ type
     procedure SetRemoved(const AValue: boolean);
     procedure SetRequiredPackage(const AValue: TLazPackage);
   public
+    NextDependency, PrevDependency: array[TPkgDependencyList] of TPkgDependency;
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
@@ -201,13 +207,21 @@ type
     procedure ConsistencyCheck;
     function IsCompatible(Pkg: TLazPackageID): boolean;
     function AsString: string;
+    function NextUsedByDependency: TPkgDependency;
+    function PrevUsedByDependency: TPkgDependency;
+    function NextRequiresDependency: TPkgDependency;
+    function PrevRequiresDependency: TPkgDependency;
+    procedure AddToList(var FirstDependency: TPkgDependency;
+      ListType: TPkgDependencyList);
+    procedure RemoveFromList(var FirstDependency: TPkgDependency;
+      ListType: TPkgDependencyList);
   public
     property PackageName: string read FPackageName write SetPackageName;
     property Flags: TPkgDependencyFlags read FFlags write SetFlags;
     property MinVersion: TPkgVersion read FMinVersion write SetMinVersion;
     property MaxVersion: TPkgVersion read FMaxVersion write SetMaxVersion;
     property Removed: boolean read FRemoved write SetRemoved;
-    property OwnerPackage: TLazPackage read FOwnerPackage write FOwnerPackage;
+    property Owner: TObject read FOwner write FOwner;
     property RequiredPackage: TLazPackage read FRequiredPackage write SetRequiredPackage;
   end;
   
@@ -279,6 +293,9 @@ type
     FEditorRect: TRect;
     FFilename: string;
     FFiles: TList; // TList of TPkgFile
+    FFirstRemovedDependency: TPkgDependency;
+    FFirstRequiredDependency: TPkgDependency;
+    FFirstUsedByDependency: TPkgDependency;
     FFlags: TLazPackageFlags;
     FIconFile: string;
     FInstalled: TPackageInstallType;
@@ -288,12 +305,9 @@ type
     FPackageType: TLazPackageType;
     FReadOnly: boolean;
     FRemovedFiles: TList; // TList of TPkgFile
-    FRemovedRequiredPkgs: TList; // TList of TPkgDependency
     FRegistered: boolean;
-    FRequiredPkgs: TList; // TList of TPkgDependency
     FTitle: string;
     FUsageOptions: TAdditionalCompilerOptions;
-    FUsedByPkgs: TList; // list of TPkgDependency
     function GetAutoIncrementVersionOnBuild: boolean;
     function GetAutoUpdate: boolean;
     function GetComponentCount: integer;
@@ -303,12 +317,6 @@ type
     function GetFileCount: integer;
     function GetFiles(Index: integer): TPkgFile;
     function GetModified: boolean;
-    function GetRemovedRequiredPkgCount: integer;
-    function GetRemovedRequiredPkgs(Index: integer): TPkgDependency;
-    function GetRequiredPkgCount: integer;
-    function GetRequiredPkgs(Index: integer): TPkgDependency;
-    function GetUsedByPkgCount: integer;
-    function GetUsedByPkgs(Index: integer): TPkgDependency;
     procedure SetAuthor(const AValue: string);
     procedure SetAutoCreated(const AValue: boolean);
     procedure SetAutoIncrementVersionOnBuild(const AValue: boolean);
@@ -350,6 +358,8 @@ type
     function FindUnit(const TheUnitName: string; IgnoreRemoved: boolean): TPkgFile;
     function FindRemovedPkgFile(const AFilename: string): TPkgFile;
     function FindDependencyByName(const PkgName: string): TPkgDependency;
+    function RequiredDepByIndex(Index: integer): TPkgDependency;
+    function RemovedDepByIndex(Index: integer): TPkgDependency;
     function NameAndVersion: string;
     function AddFile(const NewFilename, NewUnitName: string;
       NewFileType: TPkgFileType; NewFlags: TPkgFileFlags;
@@ -365,8 +375,8 @@ type
     procedure AddPkgComponent(APkgComponent: TPkgComponent);
     procedure RemovePkgComponent(APkgComponent: TPkgComponent);
     function Requires(APackage: TLazPackage): boolean;
-    procedure AddUsedByPackage(Dependency: TPkgDependency);
-    procedure RemoveUsedByPackage(Dependency: TPkgDependency);
+    procedure AddUsedByDependency(Dependency: TPkgDependency);
+    procedure RemoveUsedByDependency(Dependency: TPkgDependency);
   public
     property Author: string read FAuthor write SetAuthor;
     property AutoCreated: boolean read FAutoCreated write SetAutoCreated;
@@ -385,6 +395,9 @@ type
     property FileCount: integer read GetFileCount;
     property Filename: string read FFilename write SetFilename; // the .lpk filename
     property Files[Index: integer]: TPkgFile read GetFiles;
+    property FirstRemovedDependency: TPkgDependency read FFirstRemovedDependency;
+    property FirstRequiredDependency: TPkgDependency read FFirstRequiredDependency;
+    property FirstUsedByDependency: TPkgDependency read FFirstUsedByDependency;
     property Flags: TLazPackageFlags read FFlags write SetFlags;
     property IconFile: string read FIconFile write SetIconFile;
     property Installed: TPackageInstallType read FInstalled write SetInstalled;
@@ -396,15 +409,9 @@ type
     property ReadOnly: boolean read FReadOnly write SetReadOnly;
     property RemovedFilesCount: integer read GetRemovedCount;
     property RemovedFiles[Index: integer]: TPkgFile read GetRemovedFiles;
-    property RemovedRequiredPkgCount: integer read GetRemovedRequiredPkgCount;
-    property RemovedRequiredPkgs[Index: integer]: TPkgDependency read GetRemovedRequiredPkgs;
-    property RequiredPkgCount: integer read GetRequiredPkgCount;
-    property RequiredPkgs[Index: integer]: TPkgDependency read GetRequiredPkgs;
     property Title: string read FTitle write SetTitle;
     property UsageOptions: TAdditionalCompilerOptions
       read FUsageOptions;
-    property UsedByPkgCount: integer read GetUsedByPkgCount;
-    property UsedByPkgs[Index: integer]: TPkgDependency read GetUsedByPkgs;
   end;
   
   
@@ -440,6 +447,12 @@ procedure SortDependencyList(Dependencies: TList);
 function CompareLazPackageID(Data1, Data2: Pointer): integer;
 function CompareNameWithPackage(Key, Data: Pointer): integer;
 function CompareLazPackageName(Data1, Data2: Pointer): integer;
+function FindDependencyByNameInList(First: TPkgDependency;
+  ListType: TPkgDependencyList; const Name: string): TPkgDependency;
+function FindCompatibleDependencyInList(First: TPkgDependency;
+  ListType: TPkgDependencyList; ComparePackage: TLazPackageID): TPkgDependency;
+function GetDependencyWithIndex(First: TPkgDependency;
+  ListType: TPkgDependencyList; Index: integer): TPkgDependency;
 
 
 implementation
@@ -524,6 +537,37 @@ begin
   Pkg1:=TLazPackageID(Data1);
   Pkg2:=TLazPackageID(Data2);
   Result:=AnsiCompareText(Pkg1.Name,Pkg2.Name);
+end;
+
+function FindDependencyByNameInList(First: TPkgDependency;
+  ListType: TPkgDependencyList; const Name: string): TPkgDependency;
+begin
+  Result:=First;
+  while Result<>nil do begin
+    if AnsiCompareText(Result.PackageName,Name)=0 then exit;
+    Result:=Result.NextDependency[ListType];
+  end;
+end;
+
+function FindCompatibleDependencyInList(First: TPkgDependency;
+  ListType: TPkgDependencyList; ComparePackage: TLazPackageID): TPkgDependency;
+begin
+  Result:=First;
+  while Result<>nil do begin
+    if Result.IsCompatible(ComparePackage) then exit;
+    Result:=Result.NextDependency[ListType];
+  end;
+end;
+
+function GetDependencyWithIndex(First: TPkgDependency;
+  ListType: TPkgDependencyList; Index: integer): TPkgDependency;
+begin
+  if Index<0 then RaiseException('GetDependencyWithIndex');
+  Result:=First;
+  while (Result<>nil) and (Index>0) do begin
+    Result:=Result.NextDependency[ListType];
+    dec(Index);
+  end;
 end;
 
 { TPkgFile }
@@ -735,10 +779,10 @@ procedure TPkgDependency.SetRequiredPackage(const AValue: TLazPackage);
 begin
   if FRequiredPackage=AValue then exit;
   if FRequiredPackage<>nil then
-    FRequiredPackage.RemoveUsedByPackage(Self);
+    FRequiredPackage.RemoveUsedByDependency(Self);
   FRequiredPackage:=AValue;
   if FRequiredPackage<>nil then
-    FRequiredPackage.AddUsedByPackage(Self);
+    FRequiredPackage.AddUsedByDependency(Self);
 end;
 
 constructor TPkgDependency.Create;
@@ -848,6 +892,48 @@ begin
     Result:=Result+' (>='+MinVersion.AsString+')';
   if pdfMaxVersion in FFlags then
     Result:=Result+' (<='+MaxVersion.AsString+')';
+end;
+
+function TPkgDependency.NextUsedByDependency: TPkgDependency;
+begin
+  Result:=NextDependency[pdlUsedBy];
+end;
+
+function TPkgDependency.PrevUsedByDependency: TPkgDependency;
+begin
+  Result:=PrevDependency[pdlUsedBy];
+end;
+
+function TPkgDependency.NextRequiresDependency: TPkgDependency;
+begin
+  Result:=NextDependency[pdlRequires];
+end;
+
+function TPkgDependency.PrevRequiresDependency: TPkgDependency;
+begin
+  Result:=PrevDependency[pdlRequires];
+end;
+
+procedure TPkgDependency.AddToList(var FirstDependency: TPkgDependency;
+  ListType: TPkgDependencyList);
+begin
+  NextDependency[ListType]:=FirstDependency;
+  FirstDependency:=Self;
+  PrevDependency[ListType]:=nil;
+  if NextDependency[ListType]<>nil then
+    NextDependency[ListType].PrevDependency[ListType]:=Self;
+end;
+
+procedure TPkgDependency.RemoveFromList(var FirstDependency: TPkgDependency;
+  ListType: TPkgDependencyList);
+begin
+  if FirstDependency=Self then FirstDependency:=NextDependency[ListType];
+  if NextDependency[ListType]<>nil then
+    NextDependency[ListType].PrevDependency[ListType]:=PrevDependency[ListType];
+  if PrevDependency[ListType]<>nil then
+    PrevDependency[ListType].NextDependency[ListType]:=NextDependency[ListType];
+  NextDependency[ListType]:=nil;
+  PrevDependency[ListType]:=nil;
 end;
 
 { TPkgVersion }
@@ -990,36 +1076,6 @@ end;
 function TLazPackage.GetModified: boolean;
 begin
   Result:=lpfModified in FFlags;
-end;
-
-function TLazPackage.GetRemovedRequiredPkgCount: integer;
-begin
-  Result:=FRemovedRequiredPkgs.Count;
-end;
-
-function TLazPackage.GetRemovedRequiredPkgs(Index: integer): TPkgDependency;
-begin
-  Result:=TPkgDependency(FRemovedRequiredPkgs[Index]);
-end;
-
-function TLazPackage.GetRequiredPkgCount: integer;
-begin
-  Result:=FRequiredPkgs.Count;
-end;
-
-function TLazPackage.GetRequiredPkgs(Index: integer): TPkgDependency;
-begin
-  Result:=TPkgDependency(FRequiredPkgs[Index]);
-end;
-
-function TLazPackage.GetUsedByPkgCount: integer;
-begin
-  Result:=FUsedByPkgs.Count;
-end;
-
-function TLazPackage.GetUsedByPkgs(Index: integer): TPkgDependency;
-begin
-  Result:=TPkgDependency(FUsedByPkgs[Index]);
 end;
 
 procedure TLazPackage.SetAuthor(const AValue: string);
@@ -1165,13 +1221,10 @@ constructor TLazPackage.Create;
 begin
   inherited Create;
   FComponents:=TList.Create;
-  FRequiredPkgs:=TList.Create;
   FFiles:=TList.Create;
   FRemovedFiles:=TList.Create;
-  FRemovedRequiredPkgs:=TList.Create;
   FCompilerOptions:=TPkgCompilerOptions.Create;
   FUsageOptions:=TAdditionalCompilerOptions.Create;
-  FUsedByPkgs:=TList.Create;
   FInstalled:=pitNope;
   FAutoInstall:=pitNope;
   FFlags:=[lpfAutoIncrementVersionOnBuild,lpfAutoUpdate];
@@ -1181,12 +1234,9 @@ destructor TLazPackage.Destroy;
 begin
   Clear;
   FreeAndNil(FRemovedFiles);
-  FreeAndNil(FRemovedRequiredPkgs);
   FreeAndNil(FFiles);
   FreeAndNil(FComponents);
   FreeAndNil(FCompilerOptions);
-  FreeAndNil(FUsedByPkgs);
-  FreeAndNil(FRequiredPkgs);
   FreeAndNil(FUsageOptions);
   inherited Destroy;
 end;
@@ -1195,8 +1245,12 @@ procedure TLazPackage.Clear;
 var
   i: Integer;
 begin
-  while FUsedByPkgs.Count>0 do
-    TPkgDependency(FUsedByPkgs[0]).RequiredPackage:=nil;
+  while FFirstUsedByDependency<>nil do
+    FFirstUsedByDependency.RemoveFromList(FFirstUsedByDependency,pdlUsedBy);
+  while FFirstRemovedDependency<>nil do
+    FFirstRemovedDependency.RemoveFromList(FFirstRemovedDependency,pdlRequires);
+  while FFirstRequiredDependency<>nil do
+    FFirstRequiredDependency.RemoveFromList(FFirstRequiredDependency,pdlRequires);
   FAuthor:='';
   FAutoInstall:=pitNope;
   for i:=FComponents.Count-1 downto 0 do Components[i].Free;
@@ -1216,13 +1270,8 @@ begin
   FName:='';
   FPackageType:=lptRunTime;
   FRegistered:=false;
-  for i:=FRemovedRequiredPkgs.Count-1 downto 0 do RemovedRequiredPkgs[i].Free;
-  FRemovedRequiredPkgs.Clear;
-  for i:=FRequiredPkgs.Count-1 downto 0 do RequiredPkgs[i].Free;
-  FRequiredPkgs.Clear;
   FTitle:='';
   FUsageOptions.Clear;
-  FUsedByPkgs.Clear;
 end;
 
 procedure TLazPackage.LockModified;
@@ -1243,13 +1292,16 @@ var
   FileVersion: integer;
   OldFilename: String;
 
-  procedure LoadPkgDependencyList(const ThePath: string; List: TList);
+  procedure LoadPkgDependencyList(const ThePath: string;
+    var First: TPkgDependency; ListType: TPkgDependencyList);
   var
     i: Integer;
     PkgDependency: TPkgDependency;
     NewCount: Integer;
+    List: TList;
   begin
     NewCount:=XMLConfig.GetValue(ThePath+'Count',0);
+    List:=TList.Create;
     for i:=0 to NewCount-1 do begin
       PkgDependency:=TPkgDependency.Create;
       PkgDependency.LoadFromXMLConfig(XMLConfig,ThePath+'Item'+IntToStr(i+1)+'/',
@@ -1257,6 +1309,9 @@ var
       List.Add(PkgDependency);
     end;
     SortDependencyList(List);
+    for i:=0 to List.Count-1 do
+      TPkgDependency(List[i]).AddToList(First,ListType);
+    List.Free;
   end;
 
   procedure LoadFiles(const ThePath: string; List: TList);
@@ -1304,7 +1359,8 @@ begin
   FName:=XMLConfig.GetValue(Path+'Name/Value','');
   FPackageType:=LazPackageTypeIdentToType(XMLConfig.GetValue(Path+'Type/Value',
                                           LazPackageTypeIdents[lptRunTime]));
-  LoadPkgDependencyList(Path+'RequiredPkgs/',FRequiredPkgs);
+  LoadPkgDependencyList(Path+'RequiredPkgs/',
+                        FFirstRequiredDependency,pdlRequires);
   FTitle:=XMLConfig.GetValue(Path+'Title/Value','');
   FUsageOptions.LoadFromXMLConfig(XMLConfig,Path+'UsageOptions/');
   UnlockModified;
@@ -1313,16 +1369,20 @@ end;
 procedure TLazPackage.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string
   );
   
-  procedure SavePkgDependencyList(const ThePath: string; List: TList);
+  procedure SavePkgDependencyList(const ThePath: string;
+    First: TPkgDependency; ListType: TPkgDependencyList);
   var
     i: Integer;
-    PkgDependency: TPkgDependency;
+    Dependency: TPkgDependency;
   begin
-    XMLConfig.SetDeleteValue(ThePath+'Count',List.Count,0);
-    for i:=0 to List.Count-1 do begin
-      PkgDependency:=TPkgDependency(List[i]);
-      PkgDependency.SaveToXMLConfig(XMLConfig,ThePath+'Item'+IntToStr(i+1)+'/');
+    i:=0;
+    Dependency:=First;
+    while Dependency<>nil do begin
+      inc(i);
+      Dependency.SaveToXMLConfig(XMLConfig,ThePath+'Item'+IntToStr(i+1)+'/');
+      Dependency:=Dependency.NextDependency[ListType];
     end;
+    XMLConfig.SetDeleteValue(ThePath+'Count',i,0);
   end;
 
   procedure SaveFiles(const ThePath: string; List: TList);
@@ -1356,7 +1416,8 @@ begin
   XMLConfig.SetDeleteValue(Path+'Name/Value',FName,'');
   XMLConfig.SetDeleteValue(Path+'Type/Value',LazPackageTypeIdents[FPackageType],
                            LazPackageTypeIdents[lptRunTime]);
-  SavePkgDependencyList(Path+'RequiredPkgs/',FRequiredPkgs);
+  SavePkgDependencyList(Path+'RequiredPkgs/',
+                        FFirstRequiredDependency,pdlRequires);
   XMLConfig.SetDeleteValue(Path+'Title/Value',FTitle,'');
   FUsageOptions.SaveToXMLConfig(XMLConfig,Path+'UsageOptions/');
   Modified:=false;
@@ -1410,26 +1471,24 @@ procedure TLazPackage.IterateComponentClasses(
 var
   Cnt: Integer;
   i: Integer;
-  RequiredPackage: TLazPackage;
+  Dependency: TPkgDependency;
 begin
   // iterate through components in this package
   Cnt:=ComponentCount;
   for i:=0 to Cnt-1 do Event(Components[i]);
   // iterate through all used/required packages
   if WithUsedPackages then begin
-    Cnt:=RequiredPkgCount;
-    for i:=0 to Cnt-1 do begin
-      RequiredPackage:=RequiredPkgs[i].RequiredPackage;
-      if RequiredPackage<>nil then
-        RequiredPackage.IterateComponentClasses(Event,false);
+    Dependency:=FirstRequiredDependency;
+    while Dependency<>nil do begin
+      if Dependency.RequiredPackage<>nil then
+        Dependency.RequiredPackage.IterateComponentClasses(Event,false);
+      Dependency:=Dependency.NextRequiresDependency;
     end;
   end;
 end;
 
 procedure TLazPackage.ConsistencyCheck;
 begin
-  CheckList(FUsedByPkgs,true,true,true);
-  CheckList(FRequiredPkgs,true,true,true);
   CheckList(FRemovedFiles,true,true,true);
   CheckList(FFiles,true,true,true);
   CheckList(FComponents,true,true,true);
@@ -1518,16 +1577,19 @@ end;
 
 function TLazPackage.FindDependencyByName(const PkgName: string
   ): TPkgDependency;
-var
-  Cnt: Integer;
-  i: Integer;
 begin
-  Cnt:=RequiredPkgCount;
-  for i:=0 to Cnt-1 do begin
-    Result:=RequiredPkgs[i];
-    if AnsiCompareText(Result.PackageName,PkgName)=0 then exit;
-  end;
-  Result:=nil;
+  Result:=FindDependencyByNameInList(FFirstRequiredDependency,pdlRequires,
+                                     PkgName);
+end;
+
+function TLazPackage.RequiredDepByIndex(Index: integer): TPkgDependency;
+begin
+  Result:=GetDependencyWithIndex(FFirstRequiredDependency,pdlRequires,Index);
+end;
+
+function TLazPackage.RemovedDepByIndex(Index: integer): TPkgDependency;
+begin
+  Result:=GetDependencyWithIndex(FFirstRemovedDependency,pdlRequires,Index);
 end;
 
 function TLazPackage.NameAndVersion: string;
@@ -1574,21 +1636,21 @@ end;
 
 procedure TLazPackage.UnremoveRequiredPkg(Dependency: TPkgDependency);
 begin
-  FRequiredPkgs.Add(Dependency);
-  FRemovedRequiredPkgs.Remove(Dependency);
+  Dependency.RemoveFromList(FFirstRemovedDependency,pdlRequires);
+  Dependency.AddToList(FFirstRequiredDependency,pdlRequires);
   Dependency.Removed:=false;
 end;
 
 procedure TLazPackage.AddRequiredDependency(Dependency: TPkgDependency);
 begin
-  FRequiredPkgs.Add(Dependency);
-  Dependency.OwnerPackage:=Self;
+  Dependency.AddToList(FFirstRequiredDependency,pdlRequires);
+  Dependency.Owner:=Self;
 end;
 
 procedure TLazPackage.RemoveRequiredDependency(Dependency: TPkgDependency);
 begin
-  FRequiredPkgs.Remove(Dependency);
-  FRemovedRequiredPkgs.Add(Dependency);
+  Dependency.RemoveFromList(FFirstRequiredDependency,pdlRequires);
+  Dependency.AddToList(FFirstRemovedDependency,pdlRequires);
   Dependency.Removed:=true;
   Modified:=true;
 end;
@@ -1620,28 +1682,19 @@ begin
 end;
 
 function TLazPackage.Requires(APackage: TLazPackage): boolean;
-var
-  Cnt: Integer;
-  i: Integer;
 begin
-  Result:=false;
-  Cnt:=RequiredPkgCount;
-  for i:=0 to Cnt-1 do begin
-    if RequiredPkgs[i].IsCompatible(APackage) then begin
-      Result:=true;
-      break;
-    end;
-  end;
+  Result:=FindCompatibleDependencyInList(FFirstRequiredDependency,pdlRequires,
+                  APackage)<>nil;
 end;
 
-procedure TLazPackage.AddUsedByPackage(Dependency: TPkgDependency);
+procedure TLazPackage.AddUsedByDependency(Dependency: TPkgDependency);
 begin
-  FUsedByPkgs.Add(Dependency);
+  Dependency.AddToList(FFirstUsedByDependency,pdlUsedBy);
 end;
 
-procedure TLazPackage.RemoveUsedByPackage(Dependency: TPkgDependency);
+procedure TLazPackage.RemoveUsedByDependency(Dependency: TPkgDependency);
 begin
-  FUsedByPkgs.Remove(Dependency);
+  Dependency.RemoveFromList(FFirstUsedByDependency,pdlUsedBy);
 end;
 
 { TPkgComponent }

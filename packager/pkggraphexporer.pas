@@ -132,8 +132,6 @@ procedure TPkgGraphExplorer.PkgTreeViewExpanding(Sender: TObject;
 var
   Pkg, ChildPackage: TLazPackage;
   Dependency: TPkgDependency;
-  Cnt: Integer;
-  i: Integer;
   ViewNode: TTreeNode;
   NodeText: String;
   NodeImgIndex: Integer;
@@ -147,9 +145,8 @@ begin
   end else begin
     // node is a package
     ViewNode:=Node.GetFirstChild;
-    Cnt:=Pkg.RequiredPkgCount;
-    for i:=0 to Cnt-1 do begin
-      Dependency:=Pkg.RequiredPkgs[i];
+    Dependency:=Pkg.FirstRequiredDependency;
+    while Dependency<>nil do begin
       // find required package
       if PackageGraph.OpenDependency(Dependency,fpfSearchPackageEverywhere,
         ChildPackage)=lprSuccess then
@@ -175,8 +172,9 @@ begin
       ViewNode.StateIndex:=ViewNode.ImageIndex;
       ViewNode.Expanded:=false;
       ViewNode.HasChildren:=
-                      (ChildPackage<>nil) and (ChildPackage.RequiredPkgCount>0);
+            (ChildPackage<>nil) and (ChildPackage.FirstRequiredDependency<>nil);
       ViewNode:=ViewNode.GetNextSibling;
+      Dependency:=Dependency.NextRequiresDependency;
     end;
     // delete unneeded nodes
     while ViewNode<>nil do begin
@@ -269,8 +267,6 @@ procedure TPkgGraphExplorer.GetDependency(ANode: TTreeNode;
   var Pkg: TLazPackage; var Dependency: TPkgDependency);
 // if Dependency<>nil then Pkg is the Parent
 var
-  Cnt: Integer;
-  i: Integer;
   NodeText: String;
   NodePackageID: TLazPackageID;
 begin
@@ -291,12 +287,11 @@ begin
     Pkg:=PackageGraph.FindPackageWithID(NodePackageID);
     if Pkg=nil then exit;
     // there is a parent package -> search the dependency
-    Cnt:=Pkg.RequiredPkgCount;
-    for i:=0 to Cnt-1 do begin
-      Dependency:=Pkg.RequiredPkgs[i];
+    Dependency:=Pkg.FirstRequiredDependency;
+    while Dependency<>nil do begin
       if Dependency.AsString=NodeText then exit;
+      Dependency:=Dependency.NextRequiresDependency;
     end;
-    Dependency:=nil;
   finally
     NodePackageID.Free;
   end;
@@ -370,7 +365,7 @@ begin
       ViewNode:=PkgTreeView.Items.Add(nil,CurPkg.IDAsString)
     else
       ViewNode.Text:=CurPkg.IDAsString;
-    ViewNode.HasChildren:=CurPkg.RequiredPkgCount>0;
+    ViewNode.HasChildren:=CurPkg.FirstRequiredDependency<>nil;
     ViewNode.ImageIndex:=GetPackageImageIndex(CurPkg);
     ViewNode.StateIndex:=ViewNode.ImageIndex;
     ViewNode:=ViewNode.GetNextSibling;
