@@ -23,9 +23,7 @@ end;
 
 function TMenuActionLink.IsAutoCheckLinked: Boolean;
 begin
-  Result:=false;
-  // ToDo:
-  //Result := FClient.AutoCheck = (Action as TCustomAction).AutoCheck;
+  Result := FClient.AutoCheck = (Action as TCustomAction).AutoCheck;
 end;
 
 function TMenuActionLink.IsCaptionLinked: Boolean;
@@ -48,10 +46,8 @@ end;
 
 function TMenuActionLink.IsHelpContextLinked: Boolean;
 begin
-  Result:=false;
-  // ToDo:
-  //Result := inherited IsHelpContextLinked and
-  //  (FClient.HelpContext = (Action as TCustomAction).HelpContext);
+  Result := inherited IsHelpContextLinked
+            and (FClient.HelpContext = (Action as TCustomAction).HelpContext);
 end;
 
 function TMenuActionLink.IsHintLinked: Boolean;
@@ -92,8 +88,7 @@ end;
 
 procedure TMenuActionLink.SetAutoCheck(Value: Boolean);
 begin
-  // ToDo:
-  //if IsAutoCheckLinked then FClient.AutoCheck := Value;
+  if IsAutoCheckLinked then FClient.AutoCheck := Value;
 end;
 
 procedure TMenuActionLink.SetCaption(const Value: string);
@@ -113,8 +108,7 @@ end;
 
 procedure TMenuActionLink.SetHelpContext(Value: THelpContext);
 begin
-  // ToDo:
-  //if IsHelpContextLinked then FClient.HelpContext := Value;
+  if IsHelpContextLinked then FClient.HelpContext := Value;
 end;
 
 procedure TMenuActionLink.SetHint(const Value: string);

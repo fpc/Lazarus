@@ -104,6 +104,7 @@ type
     FBitmap: TBitmap;
     FGroupIndex: Byte;
     FHandle: HMenu;
+    FHelpContext: THelpContext;
     FHint: String;
     FImageIndex : Integer;
     FItems: TList; // list of TMenuItem
@@ -124,6 +125,7 @@ type
     function IsCaptionStored: boolean;
     function IsCheckedStored: boolean;
     function IsEnabledStored: boolean;
+    function IsHelpContextStored: boolean;
     function IsShortCutStored: boolean;
     function IsVisibleStored: boolean;
     procedure SetAutoCheck(const AValue: boolean);
@@ -141,13 +143,8 @@ type
     procedure SubItemChanged(Sender: TObject; Source: TMenuItem;
                              Rebuild: Boolean);
     procedure TurnSiblingsOff;
-    (*
-     *  MWE: Disabled this feature, it makes not much sense
-     *  See comments below
-    procedure VerifyGroupIndex(Position: Integer; Value: Byte);
-     *)
+    procedure DoActionChange(Sender: TObject);
   protected
-    property ActionLink: TMenuActionLink read FActionLink write FActionLink;
     procedure CreateHandle; virtual;
     procedure DestroyHandle; virtual;
     procedure DoClicked(var msg); message LM_ACTIVATE;
@@ -160,6 +157,13 @@ type
     procedure SetChildOrder(Child: TComponent; Order: Integer); override;
     procedure SetParentComponent(AValue : TComponent); override;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
+    function GetAction: TBasicAction;
+    procedure SetAction(Value: TBasicAction);
+    procedure InitiateActions;
+    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); dynamic;
+    function GetActionLinkClass: TMenuActionLinkClass; dynamic;
+  protected
+    property ActionLink: TMenuActionLink read FActionLink write FActionLink;
   public
     FCompStyle : LongInt;
     constructor Create(TheOwner: TComponent); override;
@@ -170,6 +174,7 @@ type
     function HandleAllocated : Boolean;
     function HasIcon: boolean; virtual;
     function HasParent : Boolean; override;
+    procedure InitiateAction; virtual;
     function IndexOf(Item: TMenuItem): Integer;
     function IndexOfCaption(const ACaption: string): Integer; virtual;
     function IsCheckItem: boolean; virtual;
@@ -191,6 +196,7 @@ type
     property Parent: TMenuItem read GetParent;
     property Command: integer read FCommand;
   published
+    property Action: TBasicAction read GetAction write SetAction;
     property AutoCheck: boolean read FAutoCheck write SetAutoCheck default False;
     property Caption: String read FCaption write SetCaption
                              stored IsCaptionStored;
@@ -201,6 +207,7 @@ type
                               stored IsEnabledStored default True;
     property Bitmap: TBitmap read FBitmap write SetBitmap;
     property GroupIndex: Byte read FGroupIndex write SetGroupIndex default 0;
+    property HelpContext: THelpContext read FHelpContext write FHelpContext stored IsHelpContextStored default 0;
     property Hint: String read FHint write FHint;
     property ImageIndex: Integer read FImageIndex write SetImageIndex;
     property RadioItem: Boolean read FRadioItem write SetRadioItem
@@ -386,6 +393,9 @@ end.
 
 {
   $Log$
+  Revision 1.59  2004/02/02 18:09:41  mattias
+  added TMenuItem.Action
+
   Revision 1.58  2004/01/10 18:09:38  mattias
   implemented TMenuItem.Clear
 

@@ -248,6 +248,73 @@ Begin
       Proc(TComponent (FItems [i]));
 end;
 
+function TMenuItem.GetAction: TBasicAction;
+begin
+  if FActionLink <> nil then
+    Result := FActionLink.Action
+  else
+    Result := nil;
+end;
+
+procedure TMenuItem.SetAction(Value: TBasicAction);
+begin
+  if Value = nil then begin
+    FActionLink.Free;
+    FActionLink := nil;
+  end else begin
+    if FActionLink = nil then
+      FActionLink := GetActionLinkClass.Create(Self);
+    FActionLink.Action := Value;
+    FActionLink.OnChange := @DoActionChange;
+    ActionChange(Value, csLoading in Value.ComponentState);
+    Value.FreeNotification(Self);
+  end;
+end;
+
+procedure TMenuItem.InitiateActions;
+var
+  i: Integer;
+begin
+  for i := 0 to Count - 1 do
+    Items[i].InitiateAction;
+end;
+
+procedure TMenuItem.ActionChange(Sender: TObject; CheckDefaults: Boolean);
+begin
+  if Sender is TCustomAction then begin
+    with TCustomAction(Sender) do
+    begin
+      if not CheckDefaults or (Self.AutoCheck = False) then
+        Self.AutoCheck := AutoCheck;
+      if not CheckDefaults or (Self.Caption = '') then
+        Self.Caption := Caption;
+      if not CheckDefaults or (Self.Checked = False) then
+        Self.Checked := Checked;
+      if not CheckDefaults or (Self.Enabled = True) then
+        Self.Enabled := Enabled;
+      if not CheckDefaults or (Self.HelpContext = 0) then
+        Self.HelpContext := HelpContext;
+      if not CheckDefaults or (Self.Hint = '') then
+        Self.Hint := Hint;
+      if RadioItem and (not CheckDefaults or (Self.GroupIndex = 0)) then
+        Self.GroupIndex := GroupIndex;
+      if not CheckDefaults or (Self.ImageIndex = -1) then
+        Self.ImageIndex := ImageIndex;
+      if not CheckDefaults or (Self.ShortCut = scNone) then
+        Self.ShortCut := ShortCut;
+      if not CheckDefaults or (Self.Visible = True) then
+        Self.Visible := Visible;
+      if not CheckDefaults or not Assigned(Self.OnClick) then
+        Self.OnClick := OnExecute;
+    end;
+  end;
+end;
+
+function TMenuItem.GetActionLinkClass: TMenuActionLinkClass;
+begin
+  Result := TMenuActionLink;
+end;
+
 {------------------------------------------------------------------------------
   Function: TMenuItem.GetCount
   Params:   none
@@ -341,6 +408,11 @@ end;
 function TMenuItem.IsEnabledStored: boolean;
 begin
   Result := (ActionLink = nil) or not FActionLink.IsEnabledLinked;
+end;
+
+function TMenuItem.IsHelpContextStored: boolean;
+begin
+  Result := (ActionLink = nil) or not FActionLink.IsHelpContextLinked;
 end;
 
 {------------------------------------------------------------------------------
@@ -471,6 +543,11 @@ end;
 function TMenuItem.HasParent : Boolean;
 begin
   Result := assigned (FParent);
+end;
+
+procedure TMenuItem.InitiateAction;
+begin
+  if FActionLink <> nil then FActionLink.Update;
 end;
 
 {------------------------------------------------------------------------------
@@ -961,6 +1038,11 @@ begin
     end;
 end;
 
+procedure TMenuItem.DoActionChange(Sender: TObject);
+begin
+  if Sender=Action then ActionChange(Sender,False);
+end;
+
 
 {------------------------------------------------------------------------------
   Method:  TMenuItem.VerifyGroupIndex
@@ -997,6 +1079,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.46  2004/02/02 18:09:41  mattias
+  added TMenuItem.Action
+
   Revision 1.45  2004/01/11 16:38:29  marc
   * renamed (Check|Enable)MenuItem to MenuItemSet(Check|Enable)
   + Started with accelerator nameing routines
@@ -1163,6 +1248,9 @@ end;
 
 
   $Log$
+  Revision 1.46  2004/02/02 18:09:41  mattias
+  added TMenuItem.Action
+
   Revision 1.45  2004/01/11 16:38:29  marc
   * renamed (Check|Enable)MenuItem to MenuItemSet(Check|Enable)
   + Started with accelerator nameing routines
