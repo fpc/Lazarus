@@ -76,6 +76,7 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AMenu: TMenu): HMENU; override;
     class procedure Popup(const APopupMenu: TPopupMenu; const X, Y: integer); override;
   end;
 
@@ -301,6 +302,11 @@ begin
 end;
 
 { TWin32WSPopupMenu }
+
+function  TWin32WSPopupMenu.CreateHandle(const AMenu: TMenu): HMENU;
+begin
+  Result := CreatePopupMenu;
+end;
 
 procedure TWin32WSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X, Y: integer);
 var
