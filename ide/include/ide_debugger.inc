@@ -212,14 +212,15 @@ begin
   // -------------------
   // dcRun, dcPause, dcStop, dcStepOver, dcStepInto, dcRunTo, dcJumpto, dcBreak, dcWatch
   // -------------------
-
-  RunSpeedButton.Enabled := dcRun in FDebugger.Commands;
+  
+  // For run end step bypass idle, so we can set the filename later
+  RunSpeedButton.Enabled := (dcRun in FDebugger.Commands) or (FDebugger.State = dsIdle);
   itmProjectRun.Enabled := RunSpeedButton.Enabled;
   PauseSpeedButton.Enabled := dcPause in FDebugger.Commands;
   itmProjectPause.Enabled := PauseSpeedButton.Enabled;
-  StepIntoSpeedButton.Enabled := dcStepInto in FDebugger.Commands;
+  StepIntoSpeedButton.Enabled := (dcStepInto in FDebugger.Commands) or (FDebugger.State = dsIdle);
   itmProjectStepInto.Enabled := StepIntoSpeedButton.Enabled;
-  StepOverSpeedButton.Enabled := dcStepOver in FDebugger.Commands;
+  StepOverSpeedButton.Enabled := (dcStepOver in FDebugger.Commands)  or (FDebugger.State = dsIdle);
   itmProjectStepOver.Enabled := StepOverSpeedButton.Enabled;
 
   itmProjectRunToCursor.Enabled := dcRunTo in FDebugger.Commands;
@@ -295,6 +296,7 @@ begin
     end;
     ADialog.Tag := Integer(@ADialog);
     ADialog.OnDestroy := @DebugDialogDestroy;
+    DoInitDebugger;
     ADialog.Debugger := FDebugger;
   end;
   ADialog.Show;
@@ -307,10 +309,13 @@ end;
 
 function TMainIDE.DoInitDebugger: TModalResult;
   procedure ResetDialogs;
-  begin
-    FDebugOutputDlg.Debugger := FDebugger;
-    FBreakPointsDlg.Debugger := FDebugger;
-    FLocalsDlg.Debugger := FDebugger;
+  begin          
+    if FDebugOutputDlg <> nil
+    then FDebugOutputDlg.Debugger := FDebugger;
+    if FBreakPointsDlg <> nil
+    then FBreakPointsDlg.Debugger := FDebugger;
+    if FLocalsDlg <> nil
+    then FLocalsDlg.Debugger := FDebugger;
   end;
 var
   OldBreakpoints: TDBGBreakpoints;
@@ -335,6 +340,7 @@ begin
         
         FDebugger.Free;
         FDebugger := nil;
+        ResetDialogs;
       end;
       if FDebugger = nil
       then begin
@@ -345,6 +351,7 @@ begin
         end;
         FDebugger := TGDBMIDebugger.Create(EnvironmentOptions.DebuggerFilename);
         FBreakPoints := FDebugger.BreakPoints;
+        ResetDialogs;
       end;
       if OldBreakpoints <> nil
       then FBreakPoints.Assign(OldBreakpoints);
@@ -356,6 +363,7 @@ begin
     
     FDebugger.Free;
     FDebugger := nil;
+    ResetDialogs;
     Exit;
   end;
   FDebugger.OnState:=@OnDebuggerChangeState;

@@ -55,7 +55,7 @@ type
      lshCPP, lshPerl);
 
   TAdditionalHilightAttribute = (ahaNone, ahaTextBlock, ahaExecutionPoint,
-    ahaEnabledBreakpoint, ahaDisabledBreakpoint, ahaErrorLine);
+    ahaEnabledBreakpoint, ahaDisabledBreakpoint, ahaInvalidBreakpoint, ahaErrorLine);
 
 const
   EditorOptsFormatVersion = 2;
@@ -65,7 +65,7 @@ const
     '',
     'Text block',
     'Execution point',
-    'Enabled breakpoint','Disabled breakpoint',
+    'Enabled breakpoint','Disabled breakpoint','Invalid breakpoint',
     'Error line'
   );
   
@@ -1621,6 +1621,11 @@ begin
     begin
       BG:=clGreen;
       FG:=clBlack;
+    end;
+  ahaInvalidBreakpoint:
+    begin
+      BG:=clOlive;
+      FG:=clGreen;
     end;
   ahaErrorLine:
     begin

@@ -52,7 +52,8 @@ type
     procedure popDeleteClick(Sender: TObject);
     popProperties: TMenuItem;
     procedure popPropertiesClick(Sender: TObject);
-  private
+  private 
+    FBreakpointsNotification: TDBGBreakPointsNotification;
     procedure BreakPointAdd(const ASender: TDBGBreakPoints; const ABreakpoint: TDBGBreakPoint);
     procedure BreakPointUpdate(const ASender: TDBGBreakPoints; const ABreakpoint: TDBGBreakPoint);
     procedure BreakPointRemove(const ASender: TDBGBreakPoints; const ABreakpoint: TDBGBreakPoint);
@@ -62,6 +63,8 @@ type
     procedure Loaded; override;
     procedure SetDebugger(const ADebugger: TDebugger); override;
   public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   published
     property Dummy: Boolean; // insert some dummies until fpcbug #1888 is fixed
   end;
@@ -101,6 +104,26 @@ end;
 procedure TBreakPointsDlg.BreakPointRemove(const ASender: TDBGBreakPoints; const ABreakpoint: TDBGBreakPoint);
 begin
   lvBreakPoints.Items.FindData(ABreakpoint).Free;
+end;
+
+constructor TBreakPointsDlg.Create(AOwner: TComponent);
+begin
+  inherited;
+  FBreakpointsNotification := TDBGBreakPointsNotification.Create;
+  FBreakpointsNotification.AddReference;
+  FBreakpointsNotification.OnAdd := @BreakPointAdd;
+  FBreakpointsNotification.OnUpdate := @BreakPointUpdate;
+  FBreakpointsNotification.OnRemove := @BreakPointRemove;
+end;       
+
+destructor TBreakPointsDlg.Destroy;
+begin
+  SetDebugger(nil);
+  FBreakpointsNotification.OnAdd := nil;
+  FBreakpointsNotification.OnUpdate := nil;
+  FBreakpointsNotification.OnRemove := nil;
+  FBreakpointsNotification.ReleaseReference;
+  inherited;
 end;
 
 procedure TBreakPointsDlg.Loaded;
@@ -185,16 +208,12 @@ begin
   then begin
     if Debugger <> nil
     then begin
-      Debugger.Breakpoints.OnAdd := nil;
-      Debugger.Breakpoints.OnUpdate := nil;
-      Debugger.Breakpoints.OnRemove := nil;
+      Debugger.Breakpoints.RemoveNotification(FBreakpointsNotification);
     end;
     inherited;
     if Debugger <> nil
     then begin
-      Debugger.Breakpoints.OnAdd := @BreakPointAdd;
-      Debugger.Breakpoints.OnUpdate := @BreakPointUpdate;
-      Debugger.Breakpoints.OnRemove := @BreakPointRemove;
+      Debugger.Breakpoints.AddNotification(FBreakpointsNotification);
     end;
   end
   else inherited;
@@ -244,6 +263,12 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.3  2002/03/25 22:38:29  lazarus
+  MWE:
+    + Added invalidBreakpoint image
+    * Reorganized uniteditor so that breakpoints can be added erternal
+    * moved breakpoints events to notification object
+
   Revision 1.2  2002/03/23 15:54:30  lazarus
   MWE:
     + Added locals dialog

@@ -124,29 +124,53 @@ type
     property Source: String read FSource; 
     property Line: Integer read FLine;
     property Valid: Boolean read FValid;
+  end;           
+
+{ ---------------------------------------------------------
+  TDebuggerNotification is a reference counted baseclass   
+  for handling notifications for locals, watches, breakpoints etc.
+  ---------------------------------------------------------}  
+  TDebuggerNotification = class(TObject)
+  private
+    FRefCount: Integer;
+  public
+    procedure AddReference;
+    constructor Create;
+    destructor Destroy; override;
+    procedure ReleaseReference;
   end;
 
   TDBGBreakPoints = class;
   TDBGBreakPointsEvent = procedure(const ASender: TDBGBreakPoints; const ABreakpoint: TDBGBreakPoint) of object;
-  TDBGBreakPoints = class(TCollection)
+  TDBGBreakPointsNotification = class(TDebuggerNotification)
   private
-    FDebugger: TDebugger;  // reference to our debugger
     FOnAdd:    TDBGBreakPointsEvent;
     FOnUpdate: TDBGBreakPointsEvent;  //Item will be nil in case all items need to be updated
     FOnRemove: TDBGBreakPointsEvent;
+  public
+    property OnAdd:    TDBGBreakPointsEvent read FOnAdd write FOnAdd;
+    property OnUpdate: TDBGBreakPointsEvent read FOnUpdate write FOnUpdate;  
+    property OnRemove: TDBGBreakPointsEvent read FOnRemove write FonRemove;
+  end;
+
+  TDBGBreakPoints = class(TCollection)
+  private
+    FDebugger: TDebugger;  // reference to our debugger
+    FNotificationList: TList;
     function GetItem(const AnIndex: Integer): TDBGBreakPoint;
     procedure SetItem(const AnIndex: Integer; const AValue: TDBGBreakPoint);
+    procedure Removed(const ABreakpoint: TDBGBreakPoint); // called by breakpoint when destructed
   protected
     procedure DoStateChange; virtual;
     procedure Update(Item: TCollectionItem); override;
   public 
-    constructor Create(const ADebugger: TDebugger; const ABreakPointClass: TDBGBreakPointClass);
     function Add(const ASource: String; const ALine: Integer): TDBGBreakPoint;
+    procedure AddNotification(const ANotification: TDBGBreakPointsNotification);
+    constructor Create(const ADebugger: TDebugger; const ABreakPointClass: TDBGBreakPointClass);
+    destructor Destroy; override;
     function Find(const ASource: String; const ALine: Integer): TDBGBreakPoint;
+    procedure RemoveNotification(const ANotification: TDBGBreakPointsNotification);
     property Items[const AnIndex: Integer]: TDBGBreakPoint read GetItem write SetItem; default;
-    property OnAdd:    TDBGBreakPointsEvent read FOnAdd write FOnAdd;
-    property OnUpdate: TDBGBreakPointsEvent read FOnUpdate write FOnUpdate;  
-    property OnRemove: TDBGBreakPointsEvent read FOnRemove write FonRemove;
   end;
   
   TDBGBreakPointGroup = class(TCollectionItem)
@@ -572,8 +596,7 @@ var
   n: Integer;
 begin
   if (TDBGBreakPoints(Collection) <> nil)
-  and Assigned(TDBGBreakPoints(Collection).FOnRemove) 
-  then TDBGBreakPoints(Collection).FOnRemove(TDBGBreakPoints(Collection), Self);
+  then TDBGBreakPoints(Collection).Removed(Self);
   
   if FGroup <> nil
   then FGroup.Remove(Self);
@@ -735,16 +758,43 @@ end;
 { =========================================================================== }
 
 function TDBGBreakPoints.Add(const ASource: String; const ALine: Integer): TDBGBreakPoint;
+var
+  n: Integer;
+  Notification: TDBGBreakPointsNotification;
 begin
   Result := TDBGBreakPoint(inherited Add);
   Result.SetLocation(ASource, ALine);
-  if Assigned(FOnAdd) then FOnAdd(Self, Result);
+  for n := 0 to FNotificationList.Count - 1 do
+  begin       
+    Notification := TDBGBreakPointsNotification(FNotificationList[n]);
+    if Assigned(Notification.FOnAdd) 
+    then Notification.FOnAdd(Self, Result); 
+  end;
+end;
+
+procedure TDBGBreakPoints.AddNotification(const ANotification: TDBGBreakPointsNotification);
+begin              
+  FNotificationList.Add(ANotification);
+  ANotification.AddReference;
 end;
 
 constructor TDBGBreakPoints.Create(const ADebugger: TDebugger; const ABreakPointClass: TDBGBreakPointClass);
 begin
   inherited Create(ABreakPointClass);
   FDebugger := ADebugger;
+  FNotificationList := TList.Create;
+end;
+
+destructor TDBGBreakPoints.Destroy;
+var
+  n: Integer;
+begin
+  for n := FNotificationList.Count - 1 downto 0 do
+    TDebuggerNotification(FNotificationList[n]).ReleaseReference;
+  
+  inherited;  
+    
+  FreeAndNil(FNotificationList);
 end;
 
 procedure TDBGBreakPoints.DoStateChange;
@@ -774,16 +824,42 @@ begin
   Result := TDBGBreakPoint(inherited GetItem(AnIndex));
 end;
 
+procedure TDBGBreakPoints.Removed(const ABreakpoint: TDBGBreakPoint); 
+var
+  n: Integer;
+  Notification: TDBGBreakPointsNotification;
+begin
+  for n := 0 to FNotificationList.Count - 1 do
+  begin       
+    Notification := TDBGBreakPointsNotification(FNotificationList[n]);
+    if Assigned(Notification.FOnRemove) 
+    then Notification.FOnRemove(Self, ABreakpoint); 
+  end;
+end;
+
+procedure TDBGBreakPoints.RemoveNotification(const ANotification: TDBGBreakPointsNotification);
+begin              
+  FNotificationList.Remove(ANotification);
+  ANotification.ReleaseReference;
+end;
+
 procedure TDBGBreakPoints.SetItem(const AnIndex: Integer; const AValue: TDBGBreakPoint);
 begin  
   SetItem(AnIndex, AValue);   
 end;
 
 procedure TDBGBreakPoints.Update(Item: TCollectionItem); 
+var
+  n: Integer;
+  Notification: TDBGBreakPointsNotification;
 begin
   // Note: Item will be nil in case all items need to be updated
-  if Assigned(FOnUpdate) 
-  then FOnUpdate(Self, TDBGBreakPoint(Item)); 
+  for n := 0 to FNotificationList.Count - 1 do
+  begin       
+    Notification := TDBGBreakPointsNotification(FNotificationList[n]);
+    if Assigned(Notification.FOnUpdate) 
+    then Notification.FOnUpdate(Self, TDBGBreakPoint(Item)); 
+  end;
 end;
 
 { =========================================================================== }
@@ -1001,10 +1077,44 @@ function TDBGLocals.GetValue(const AnIndex: Integer): String;
 begin
   Result := '';
 end;
+    
+{ =========================================================================== }
+{ TDebuggerNotification }
+{ =========================================================================== }
 
+procedure TDebuggerNotification.AddReference;
+begin
+  Inc(FRefcount);
+end;
+
+constructor TDebuggerNotification.Create;
+begin
+  FRefCount := 0;
+  inherited;
+end;
+
+destructor TDebuggerNotification.Destroy;
+begin
+  Assert(FRefcount = 0, 'Destroying referenced object');
+  inherited;
+end;
+
+procedure TDebuggerNotification.ReleaseReference;
+begin
+  Dec(FRefCount);
+  if FRefCount = 0 then Free;
+end;
+    
+    
 end.
 { =============================================================================
   $Log$
+  Revision 1.12  2002/03/25 22:38:29  lazarus
+  MWE:
+    + Added invalidBreakpoint image
+    * Reorganized uniteditor so that breakpoints can be added erternal
+    * moved breakpoints events to notification object
+
   Revision 1.11  2002/03/23 15:54:30  lazarus
   MWE:
     + Added locals dialog

@@ -41,7 +41,7 @@ uses
 type
   // --------------------------------------------------------------------------
 
-  TSrcEditMarkerType = (semActiveBreakPoint, semInactiveBreakPoint);
+  TSrcEditMarkerType = (semActiveBreakPoint, semInactiveBreakPoint, semInvalidBreakPoint);
   TSrcEditMarkerTypes = set of TSrcEditMarkerType;
 
   // --------------------------------------------------------------------------
@@ -141,6 +141,9 @@ type
 
     Procedure CreateEditor(AOwner : TComponent; AParent: TWinControl);
     procedure SetVisible(Value: boolean);
+    function  GetBreakPointMark(const ALine: Integer): TSynEditMark;
+    function  IsBreakPointMark(const ABreakPointMark: TSynEditMark): Boolean;
+    procedure RemoveBreakPoint(const ABreakPointMark: TSynEditMark); overload;
   protected
     FindText : String;
     ErrorMsgs : TStrings;
@@ -191,6 +194,8 @@ type
     procedure FindPrevious;
     procedure ShowGotoLineDialog;
     procedure GetDialogPosition(Width, Height:integer; var Left,Top:integer);
+    procedure SetBreakPoint(const ALine: Integer; const AType: TSrcEditMarkerType);
+    procedure RemoveBreakPoint(const ALine: Integer); overload;
     
     // editor commands
     procedure DoEditorExecuteCommand(EditorCommand: integer);
@@ -467,10 +472,12 @@ type
   TCompletionType = (ctNone, ctWordCompletion, ctTemplateCompletion,
                      ctIdentCompletion);
 
-const
-  TSrcEditMarkerImgIndex: array[TSrcEditMarkerType] of integer = (
+const        
+  // keep const recognizable IE. not prefixed with T(ype)
+  SRCEDITMARKERIMGINDEX: array[TSrcEditMarkerType] of integer = (
        10,  // active breakpoint
-       11   // inactive breakpoint
+       11,  // inactive breakpoint
+       12  // invalid breakpoint
     );
 
 var
@@ -801,77 +808,114 @@ Begin
     OnEditorChange(Sender);
 end;
 
+function TSourceEditor.IsBreakPointMark(const ABreakPointMark: TSynEditMark): Boolean;
+begin
+  Result := (ABreakPointMark <> nil)
+        and (ABreakPointMark.ImageIndex in [
+               SRCEDITMARKERIMGINDEX[semActiveBreakPoint], 
+               SRCEDITMARKERIMGINDEX[semInactiveBreakPoint],
+               SRCEDITMARKERIMGINDEX[semInvalidBreakPoint]
+             ]);
+end;
+
+function  TSourceEditor.GetBreakPointMark(const ALine: Integer): TSynEditMark;
+var 
+  n: Integer;
+  AllMarks: TSynEditMarks;
+begin
+  FEditor.Marks.GetMarksForLine(ALine, AllMarks);
+
+  for n := 1 to maxMarks do 
+  begin         
+    Result := AllMarks[n];
+    if  IsBreakPointMark(Result)
+    then Exit;
+  end;
+  Result := nil;
+end;
+
+procedure TSourceEditor.SetBreakPoint(const ALine: Integer; const AType: TSrcEditMarkerType);
+var
+  BreakPtMark: TSynEditMark;
+begin
+  BreakPtMark := GetBreakPointMark(ALine);
+  if BreakPtMark = nil
+  then begin
+    BreakPtMark := TSynEditMark.Create(FEditor);
+    BreakPtMark.Line := ALine;
+    FEditor.Marks.Place(BreakPtMark);
+    if Assigned(FOnCreateBreakPoint) then FOnCreateBreakPoint(Self, ALine);
+  end;
+  BreakPtMark.Visible := True;
+  BreakPtMark.ImageIndex := SRCEDITMARKERIMGINDEX[AType];
+  FModified:=true;
+end;
+
+procedure TSourceEditor.RemoveBreakPoint(const ALine: Integer);
+begin
+  RemoveBreakPoint(GetBreakPointMark(ALine));
+end;
+
+procedure TSourceEditor.RemoveBreakPoint(const ABreakPointMark: TSynEditMark); overload;
+begin
+  if not IsBreakPointMark(ABreakPointMark) then Exit;
+  if Assigned(FOnDeleteBreakPoint) then FOnDeleteBreakPoint(Self, ABreakPointMark.Line);
+  FEditor.Marks.Remove(ABreakPointMark);
+  ABreakPointMark.Free;
+  FModified:=true;
+end;
+
 procedure TSourceEditor.OnGutterClick(Sender: TObject; X, Y, Line: integer;
   mark: TSynEditMark);
-var i:integer;
-  AllMarks: TSynEditMarks;
+var 
   BreakPtMark: TSynEditMark;
 begin
   // create or delete breakpoint
   // find breakpoint mark at line
-  fEditor.Marks.GetMarksForLine(Line, AllMarks);
-  BreakPtMark:=nil;
-  for i:=1 to maxMarks do begin
-    if (AllMarks[i]<>nil)
-    and (AllMarks[i].ImageIndex=TSrcEditMarkerImgIndex[semActiveBreakPoint]) then
-    begin
-      BreakPtMark:=AllMarks[i];
-      break;
-    end;
-  end;
-  if BreakPtMark<>nil then begin
-    // delete breakpoint
-    if Assigned(FOnDeleteBreakPoint) then FOnDeleteBreakPoint(Self,Line);
-    fEditor.Marks.Remove(BreakPtMark);
-    BreakPtMark.Free;
-    fModified:=true;
-  end else begin
-    // create breakpoint
-    BreakPtMark:=TSynEditMark.Create(fEditor);
-    with BreakPtMark do begin
-      ImageIndex:=TSrcEditMarkerImgIndex[semActiveBreakPoint];
-      Visible:=true;
-    end;
-    BreakPtMark.Line:=Line;
-    fEditor.Marks.Place(BreakPtMark);
-    if Assigned(FOnCreateBreakPoint) then FOnCreateBreakPoint(Self,Line);
-    fModified:=true;
-  end;
+  BreakPtMark := GetBreakPointMark(Line);
+  if BreakPtMark = nil
+  then SetBreakpoint(Line, semActiveBreakPoint)
+  else RemoveBreakPoint(BreakPtMark);
 end;
 
 procedure TSourceEditor.OnEditorSpecialLineColor(Sender: TObject; Line: integer;
   var Special: boolean; var FG, BG: TColor);
-var i:integer;
+var 
+  i:integer;
   AllMarks: TSynEditMarks;
+  aha: TAdditionalHilightAttribute;
 begin
-  if ErrorLine=Line then begin
-    EditorOpts.GetSpecialLineColors(TCustomSynEdit(Sender).Highlighter,
-      ahaErrorLine,FG,BG);
-    Special:=true;
-  end else if ExecutionLine=Line then begin
-    EditorOpts.GetSpecialLineColors(TCustomSynEdit(Sender).Highlighter,
-      ahaExecutionPoint,FG,BG);
-    Special:=true;
-  end else begin
+  aha := ahaNone;
+  
+  if ErrorLine = Line 
+  then begin
+    aha := ahaErrorLine
+  end 
+  else if ExecutionLine = Line 
+  then begin
+    aha := ahaExecutionPoint;
+  end 
+  else begin
     fEditor.Marks.GetMarksForLine(Line, AllMarks);
-    for i:=1 to maxMarks do begin
-      if (AllMarks[i]<>nil) then begin
-        if (AllMarks[i].ImageIndex=TSrcEditMarkerImgIndex[semActiveBreakPoint])
-        then begin
-          EditorOpts.GetSpecialLineColors(TCustomSynEdit(Sender).Highlighter,
-            ahaEnabledBreakpoint,FG,BG);
-          Special:=true;
-          exit;
-        end else if 
-          (AllMarks[i].ImageIndex=TSrcEditMarkerImgIndex[semInactiveBreakPoint])
-        then begin
-          EditorOpts.GetSpecialLineColors(TCustomSynEdit(Sender).Highlighter,
-            ahaDisabledBreakpoint,FG,BG);
-          Special:=true;
-          exit;
-        end;
+    for i := 1 to maxMarks do 
+    begin
+      if (AllMarks[i] <> nil) 
+      then begin
+        if AllMarks[i].ImageIndex = SRCEDITMARKERIMGINDEX[semActiveBreakPoint] 
+        then aha := ahaEnabledBreakpoint
+        else if AllMarks[i].ImageIndex = SRCEDITMARKERIMGINDEX[semInactiveBreakPoint]
+        then aha := ahaDisabledBreakpoint
+        else if AllMarks[i].ImageIndex = SRCEDITMARKERIMGINDEX[semInvalidBreakPoint] 
+        then aha := ahaInvalidBreakpoint
+        else Continue;
+        Break;
       end;
     end;
+  end;
+  if aha <> ahaNone 
+  then begin
+    EditorOpts.GetSpecialLineColors(TCustomSynEdit(Sender).Highlighter, aha, FG, BG);
+    Special := True;
   end;
 end;
 
@@ -1604,6 +1648,12 @@ begin
   Pixmap1:=TPixMap.Create;
   Pixmap1.TransparentColor:=clBtnFace;
   if not LoadPixmapRes('InactiveBreakPoint',Pixmap1) then
+         LoadPixmapRes('default',Pixmap1);
+  MarksImgList.Add(Pixmap1,nil);
+  // load invalid breakpoint image
+  Pixmap1:=TPixMap.Create;
+  Pixmap1.TransparentColor:=clBtnFace;
+  if not LoadPixmapRes('InvalidBreakPoint',Pixmap1) then
          LoadPixmapRes('default',Pixmap1);
   MarksImgList.Add(Pixmap1,nil);
 
