@@ -1,4 +1,3 @@
-unit CompReg;
 {
  ***************************************************************************
  *                                                                         *
@@ -29,7 +28,9 @@ unit CompReg;
   ToDo:
     see XXX
 }
-{$MODE OBJFPC}
+unit CompReg;
+
+{$MODE OBJFPC}{$H+}
 
 interface
 
@@ -120,10 +121,9 @@ begin
   if Assigned(RegisterComponentsProc) then
     RegisterComponentsProc(Page, UnitName, ComponentClasses)
   else begin
-    // XXX ToDo:
-    {raise EComponentError.CreateRes(@SRegisterError);}
-    writeln('[RegisterComponents] Error: RegisterComponentsProc not assigned.');
-    halt;
+    raise EComponentError.Create(
+      '[RegisterComponents] Error: RegisterComponentsProc not assigned.'
+      {SRegisterError});
   end;
 end;
 
@@ -274,9 +274,6 @@ initialization
 
 finalization
   RegCompList.Destroy;
-
-
-
 
 
 end.

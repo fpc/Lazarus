@@ -355,6 +355,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TCustomNotebook.Destroy;
 begin
+  Pages.Clear;
   fAccess.Free;
   fAccess:=nil;
   fPageList.Free;
@@ -665,6 +666,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.22  2002/09/05 13:21:12  lazarus
+  MG: fixed removing notebook
+
   Revision 1.21  2002/09/05 12:11:43  lazarus
   MG: TNotebook is now streamable
 
