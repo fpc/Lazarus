@@ -25,7 +25,7 @@ unit notebku;
 
 interface
 
-uses Classes, SysUtils, Controls, Forms, ExtCtrls, Buttons{, TabNotBk};
+uses Classes, SysUtils, Controls, Forms, ExtCtrls, Buttons;
 
 type
    TForm1 = class(TForm)
@@ -213,7 +213,7 @@ end;
 procedure TForm1.Button3Click(Sender: TObject);
 begin
   //writeln('Close Button Clicked');
-  Free;
+  Close;
 end;
 
 procedure TForm1.Button4Click(Sender: TObject);
@@ -264,6 +264,9 @@ end.
 
 {
   $Log$
+  Revision 1.5  2002/10/30 13:23:48  lazarus
+  MG: fixed example
+
   Revision 1.4  2002/09/10 14:08:54  lazarus
   MG: fixed compiling examples
 

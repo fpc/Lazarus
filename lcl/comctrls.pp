@@ -38,9 +38,9 @@ unit ComCtrls;
 interface
 
 uses
-  SysUtils, Classes, Controls, Forms, LclLinux, LCLType, StdCtrls, ExtCtrls,
-  vclGlobals, lMessages, Menus, ImgList, GraphType, Graphics, ToolWin, CommCtrl,
-  Buttons;
+  SysUtils, Classes, Controls, Forms, LclLinux, LCLType, LCLProc, StdCtrls,
+  ExtCtrls, vclGlobals, lMessages, Menus, ImgList, GraphType, Graphics, ToolWin,
+  CommCtrl, Buttons;
 
 type
 
@@ -1698,6 +1698,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.57  2002/10/30 13:20:10  lazarus
+  MG: fixed example
+
   Revision 1.56  2002/10/26 11:20:29  lazarus
   MG: broke some interfaces.pp circles
 

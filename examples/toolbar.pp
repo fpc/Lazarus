@@ -38,70 +38,71 @@ uses
   SysUtils, ExtCtrls, Controls;
 
 type
-	TForm1 = class(TFORM)
-	public
-	  Toolbar1 : TToolbar;
-	  Toolbutton1 : TToolbutton;
-	  Toolbutton2 : TToolbutton; 
-	  Toolbutton3 : TToolbutton; 
+        TForm1 = class(TFORM)
+        public
+          Toolbar1 : TToolbar;
+          Toolbutton1 : TToolbutton;
+          Toolbutton2 : TToolbutton;
+          Toolbutton3 : TToolbutton;
           ComboBox1 : TComboBox;
-          constructor Create(AOwner: TComponent); override;	
-	  Procedure FormKill(Sender : TObject);
-	protected
+          constructor Create(AOwner: TComponent); override;
+        protected
         Procedure Button1Click(Sender : TObject);
         Procedure Button2Click(Sender : TObject);
         Procedure Button3Click(Sender : TObject);
-	end;
+        end;
 
 var
 Form1 : TForm1;
 
-constructor TForm1.Create(AOwner: TComponent);	
+constructor TForm1.Create(AOwner: TComponent);
 begin
    inherited Create(AOwner);
+   Name:='Form1';
    Caption := 'Toolbar Demo v0.1';
-   OnDestroy := @FormKill; 
-
-	{ set the height and width } 
-	Height := 350; 
-	Width := 700; 
-
-
-
+   {  set the height and width }
+   Height := 350;
+   Width := 700;
 
 ToolBar1 := TToolbar.Create(Self);
   with Toolbar1 do
   begin
+    Name:='ToolBar1';
     Parent := Self;
   end;
 
 Toolbutton1 := TToolButton.Create(Toolbar1);
 with ToolButton1 do
   Begin
-   Writeln('SETTING PARENT');
+    Name:='Toolbutton1';
     Parent := Toolbar1;
-    Caption := '1';   
+    Caption := '1';
     Style := tbsButton;
     OnClick := @Button1Click;
     Show;
   end;
-
+writeln('AAA1');
 Toolbutton2 := TToolButton.Create(Toolbar1);
 with ToolButton2 do
   Begin
-   Writeln('SETTING PARENT');
+    Name:='Toolbutton2';
+writeln('AAA2');
     Parent := Toolbar1;
-    Caption := '2';   
+writeln('AAA3');
+    Caption := '2';
+writeln('AAA3');
     Style := tbsButton;
+writeln('AAA4');
     OnClick := @Button2Click;
+writeln('AAA5');
     Show;
   end;
+writeln('AAA2');
 Toolbutton3 := TToolButton.Create(Toolbar1);
 with ToolButton3 do
   Begin
-   Writeln('SETTING PARENT');
     Parent := Toolbar1;
-    Caption := '3';   
+    Caption := '3';
     Style := tbsButton;
     OnClick := @Button3Click;
     Show;
@@ -111,7 +112,6 @@ with ToolButton3 do
 ComboBox1 := TComboBox.Create(Self);
 with ComboBox1 do
   Begin
-   Writeln('SETTING PARENT');
     Parent := Toolbar1;
     Items.Add('Item1');
     Items.Add('Item2');
@@ -139,25 +139,20 @@ Writeln('Toolbar button  1  clicked!');
 Writeln('******************');
 end;
 
-Procedure TFORM1.Button2Click(Sender : TObject); 
+Procedure TFORM1.Button2Click(Sender : TObject);
 Begin
 Writeln('******************');
 Writeln('Toolbar button  2  clicked!');
 Writeln('******************');
 end;
 
-Procedure TFORM1.Button3Click(Sender : TObject); 
+Procedure TFORM1.Button3Click(Sender : TObject);
 Begin
 Writeln('******************');
 Writeln('Toolbar button  3  clicked!');
 Writeln('******************');
 end;
 
-
-procedure TForm1.FormKill(Sender : TObject);
-Begin
-  Application.terminate;
-End;
 
 
 begin

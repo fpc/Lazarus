@@ -52,12 +52,10 @@ type
 	  Button5: TButton;
        	  Button6: TButton;
        	  Button7: TButton;
-          mnuBarMain: TMenuBar;
-          mnuFile: TMenu;
+          mnuFile: TMainMenu;
           itmFileQuit: TMenuItem;
           constructor Create(AOwner: TComponent); override;	
           procedure LoadMainMenu;
-	  Procedure FormKill(Sender : TObject);
 	  procedure mnuQuitClicked(Sender : TObject);
 	protected
 	  procedure Button1CLick(Sender : TObject);
@@ -152,19 +150,11 @@ Begin
          then Progre1.Position := Progre1.min;
    end;
 End;
-{------------------------------------------------------------------------------}
-
-procedure TForm1.FormKill(Sender : TObject);
-Begin
-  Application.terminate;
-End;
 
 {------------------------------------------------------------------------------}
 procedure TForm1.LoadMainMenu;
 
 begin
-	OnDestroy := @FormKill;
-
 	{ set the height and width }
 	Height := 350;
 	Width := 700;
@@ -264,23 +254,15 @@ begin
 	Button7.OnClick := @Button7Click;
 
 	{ create a menubar }
-	mnuFile := TMenu.Create(nil);
+	mnuFile := TMainMenu.Create(Self);
+        mnuFile.Name:='mnuFile';
+        Menu := mnuFile;
 
-	itmFileQuit := TMenuItem.Create(nil);
+	itmFileQuit := TMenuItem.Create(Self);
 	itmFileQuit.Caption := 'Quit';
 	itmFileQuit.OnClick := @mnuQuitClicked;
-//	itmFileQuit.Show;
+	mnuFile.Items.Add(itmFileQuit);
 
-//	mnuFile.AddMenuItem(itmFileQuit);
-
-	mnuBarMain := TMenuBar.Create(self);
-{	mnuBarMain.Height := 25;
-	mnuBarMain.Width := Width;
-	mnuBarMain.Top := 0;
-	mnuBarMain.Left := 0;
-}	mnuBarMain.Show;
-
-	mnuBarMain.AddMenu('File',mnuFile);
 end;
 
 {------------------------------------------------------------------------------}

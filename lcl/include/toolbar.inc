@@ -25,13 +25,10 @@
  ------------------------------------------------------------------------------}
 constructor TToolbar.Create(AOwner : TComponent);
 begin
- inherited Create(AOwner);
+  inherited Create(AOwner);
   ControlStyle := [csAcceptsControls, csCaptureMouse, csClickEvents,
     csDoubleClicks, csMenuEvents, csSetCaption];
-  Left := 1;
-  Top := 1;
-  Width := 150;
-  Height := 29;
+  SetBounds(1,1,150,29);
   Align := alTop;
   EdgeBorders := [ebTop];
   FButtonWidth := 23;
@@ -55,12 +52,13 @@ destructor TToolBar.Destroy;
 var
   I: Integer;
 begin
-  FNullBitmap.Free;
+  FreeThenNil(FNullBitmap);
 
   for I := 0 to FButtons.Count - 1 do
     if TControl(FButtons[I]) is TToolButton then
       TToolButton(FButtons[I]).FToolBar := nil;
-  FButtons.Free;
+
+  FreeThenNil(FButtons);
   inherited Destroy;
 end;
 
@@ -74,7 +72,9 @@ const
   TransparentStyles: array[Boolean] of DWORD = (0, TBSTYLE_TRANSPARENT);
 begin
   FNewStyle := InitCommonControl(ICC_BAR_CLASSES);
+
   inherited CreateParams(Params);
+
   CreateSubClass(Params, TOOLBARCLASSNAME);
   with Params do
   begin
@@ -82,7 +82,7 @@ begin
              or TransparentStyles[FTransparent];
     if ShowCaptions then
       Style := Style or TBSTYLE_TRANSPARENT;
-    WindowClass.style := WindowClass.style and 
+    WindowClass.style := WindowClass.style and
                            not Cardinal(CS_HREDRAW or CS_VREDRAW);
   end;
 end;
@@ -99,8 +99,8 @@ var
 begin
   inherited CreateWnd;
 
-    Perform(TB_SETEXTENDEDSTYLE, 0, Perform(TB_GETEXTENDEDSTYLE, 0, 0) or
-      TBSTYLE_EX_DRAWDDARROWS);
+  Perform(TB_SETEXTENDEDSTYLE, 0, Perform(TB_GETEXTENDEDSTYLE, 0, 0) or
+    TBSTYLE_EX_DRAWDDARROWS);
   FOldHandle := 0;
   StockFont := GetStockObject(SYSTEM_FONT);
   if StockFont <> 0 then
@@ -130,9 +130,9 @@ procedure TToolBar.CreateButtons(NewWidth, NewHeight: Integer);
     for I := 0 to FButtons.Count - 1 do
     begin
       Control := TControl(FButtons[I]);
-      if (Control is TToolButton) and ((csDesigning in ComponentState) or
-        Control.Visible) and not (TToolButton(Control).Style in
-        [tbsSeparator, tbsDivider]) then
+      if (Control is TToolButton)
+      and ((csDesigning in ComponentState) or Control.Visible)
+      and not (TToolButton(Control).Style in [tbsSeparator, tbsDivider]) then
       begin
         Result := True;
         Exit;
@@ -145,10 +145,9 @@ var
   ImageWidth, ImageHeight: Integer;
   I: Integer;
 begin
-Assert(False, 'Trace:IN TTOOLBAR.CREATEBUTTONS');
+  if not HandleAllocated then exit;
   BeginUpdate;
   try
-    HandleNeeded;
     Perform(TB_BUTTONSTRUCTSIZE, SizeOf(TTBButton), 0);
     Perform(TB_SETINDENT, FIndent, 0);
     if FImages <> nil then
@@ -156,13 +155,13 @@ Assert(False, 'Trace:IN TTOOLBAR.CREATEBUTTONS');
       ImageWidth := FImages.Width;
       ImageHeight := FImages.Height;
     end
-    else 
+    else
     if FDisabledImages <> nil then
     begin
       ImageWidth := FDisabledImages.Width;
       ImageHeight := FDisabledImages.Height;
     end
-    else 
+    else
     if FHotImages <> nil then
     begin
       ImageWidth := FHotImages.Width;
@@ -186,10 +185,10 @@ Assert(False, 'Trace:IN TTOOLBAR.CREATEBUTTONS');
     EndUpdate;
   end;
   Assert(False, Format('Trace:INTERNALBUTTONCOUNT = %d',[INTERNALBUTTONCOUNT]));
-  for I := 0 to InternalButtonCount - 1 do 
-   begin
+  for I := 0 to InternalButtonCount - 1 do
+  begin
     Perform(TB_DELETEBUTTON, 0, 0);
-   end;
+  end;
 
   UpdateButtons;
   UpdateImages;
@@ -204,7 +203,8 @@ var
   AdjustY: Integer;
 begin
   if (csLoading in ComponentState) or
-    (Perform(TB_GETBUTTON, Index, Longint(@TBButton)) = 0) then
+    (Perform(TB_GETBUTTON, Index, Longint(@TBButton)) = 0)
+  then
     Exit;
   if Perform(TB_GETITEMRECT, Index, Longint(@R)) <> 0 then
   begin
@@ -214,7 +214,8 @@ begin
       if not (Button is TToolButton) then
         with Button do
         begin
-          if Button is TWinControl then HandleNeeded;
+          if HandleAllocated and (Button is TWinControl) then
+            HandleNeeded;
 
           BoundsRect := R;
           if Height < R.Bottom - R.Top then
@@ -251,9 +252,9 @@ var
 begin
   if HandleAllocated then
   begin
-      LastIndex := Perform(TB_GETBUTTONSIZE, 0, 0);
-      AHeight := LastIndex shr 16;
-      AWidth := LastIndex and $FFFF;
+    LastIndex := Perform(TB_GETBUTTONSIZE, 0, 0);
+    AHeight := LastIndex shr 16;
+    AWidth := LastIndex and $FFFF;
   end;
 end;
 
@@ -279,7 +280,7 @@ procedure TToolBar.InsertButton(Control: TControl);
 var
   FromIndex, ToIndex: Integer;
 begin
-  if Control is TToolButton then 
+  if Control is TToolButton then
      Begin
       TToolButton(Control).FToolBar := Self;
       TToolButton(Control).HandleNeeded;
@@ -299,7 +300,8 @@ begin
   else
   begin
     ToIndex := FButtons.Add(Control);
-      if TToolbutton(Control).Handle = 0 then TToolButton(Control).HandleNeeded;
+    if HandleAllocated and (Control is TToolButton) then
+      TToolButton(Control).HandleNeeded;
     UpdateButton(ToIndex);
   end;
   if Wrapable then
@@ -357,7 +359,7 @@ begin
       with Button do
       begin
         fsStyle := ButtonStyles[Style];
-        if AutoSize then 
+        if AutoSize then
           fsStyle := fsStyle or TBSTYLE_AUTOSIZE;
       end;
       Button.fsState := GetButtonState;
@@ -372,11 +374,11 @@ begin
             captions.  If any one button's caption is empty (-1) then none of
             the buttons' captions will not be displayed. }
           CaptionText := ' ';
+        { TB_ADDSTRING requires two null terminators }
         Buffer:=StrAlloc(length(CaptionText)+2);
         try
           StrPCopy(Buffer, CaptionText);
-          { TB_ADDSTRING requires two null terminators }
-          Buffer[Length(CaptionText) + 1] := #0;
+          Buffer[Length(CaptionText)+1] := #0;
           Button.iString := Self.Perform(TB_ADDSTRING, 0, Longint(@Buffer));
         finally
           StrDispose(Buffer);
@@ -445,10 +447,10 @@ begin
             captions.  If any one button's caption is empty (-1) then none of
             the buttons' captions will not be displayed. }
           CaptionText := ' ';
+        { TB_ADDSTRING requires two null terminators }
         Buffer:=StrAlloc(length(CaptionText)+2);
         try
           StrPCopy(Buffer, CaptionText);
-          { TB_ADDSTRING requires two null terminators }
           Buffer[Length(CaptionText) + 1] := #0;
           //Button.iString := Self.Perform(TB_ADDSTRING, 0, Longint(@Buffer));
         finally
@@ -493,32 +495,34 @@ function TToolBar.RefreshButton(Index: Integer): Boolean;
 var
   Style: Longint;
 begin
-  if not (csLoading in ComponentState) and (FUpdateCount = 0) then
-  begin
-    BeginUpdate;
+  Result:=false;
+  if not (csLoading in ComponentState) and (FUpdateCount = 0)
+  or (not HandleAllocated) then
+    exit;
+
+  BeginUpdate;
+  try
+    Style := GetWindowLong(Handle, GWL_STYLE);
+    SetWindowLong(Handle, GWL_STYLE, Style and not WS_VISIBLE);
     try
-      Style := GetWindowLong(Handle, GWL_STYLE);
-      SetWindowLong(Handle, GWL_STYLE, Style and not WS_VISIBLE);
-      try
-        Result := (Index < InternalButtonCount) and
-          UpdateItem(TB_DELETEBUTTON, Index, Index) and
-          UpdateItem(TB_INSERTBUTTON, Index, Index);
-      finally
-        SetWindowLong(Handle, GWL_STYLE, Style);
-      end;
+      Result := (Index < InternalButtonCount) and
+        UpdateItem(TB_DELETEBUTTON, Index, Index) and
+        UpdateItem(TB_INSERTBUTTON, Index, Index);
     finally
-      EndUpdate;
+      SetWindowLong(Handle, GWL_STYLE, Style);
     end;
-  end
-  else
-    Result := False;
+  finally
+    EndUpdate;
+  end;
 end;
 
 procedure TToolBar.UpdateButton(Index: Integer);
 var
   Style: Longint;
 begin
-  if (csLoading in ComponentState) or (FUpdateCount > 0) then Exit;
+  if (csLoading in ComponentState) or (FUpdateCount > 0)
+  or (not HandleAllocated)then Exit;
+
   BeginUpdate;
   try
     HandleNeeded;
@@ -547,6 +551,8 @@ var
   Style: Longint;
 begin
 Assert(False, 'Trace:IN TTOOLBAR.UPDATEBUTTONS');
+  if not HandleAllocated then exit;
+
   BeginUpdate;
   try
     HandleNeeded;
@@ -558,7 +564,7 @@ Assert(False, 'Trace:IN TTOOLBAR.UPDATEBUTTONS');
       for I := 0 to FButtons.Count - 1 do
       begin
         if I < Count then
-	  Begin
+          Begin
           Assert(False, Format('Trace:????CALLING UPDATEITEM2???????????   I , Count = %d,%d',[I,Count]));
           UpdateItem2(TB_SETBUTTONINFO, I, I)
           end
@@ -629,7 +635,8 @@ begin
   if FList <> Value then
   begin
     FList := Value;
-    RecreateWnd;
+    if HandleAllocated then
+      RecreateWnd;
   end;
 end;
 
@@ -639,7 +646,8 @@ begin
   if FFlat <> Value then
   begin
     FFlat := Value;
-    RecreateWnd;
+    if HandleAllocated then
+      RecreateWnd;
   end;
 end;
 
@@ -648,7 +656,8 @@ begin
   if FTransparent <> Value then
   begin
     FTransparent := Value;
-    RecreateWnd;
+    if HandleAllocated then
+      RecreateWnd;
   end;
 end;
 
@@ -830,19 +839,18 @@ begin
   if FIndent <> Value then
   begin
     FIndent := Value;
-    RecreateWnd;
+    if HandleAllocated then
+      RecreateWnd;
   end;
 end;
 
 procedure TToolBar.RecreateButtons;
 begin
-  if not (csLoading in ComponentState) or HandleAllocated then
+  if not (csLoading in ComponentState) and HandleAllocated then
   begin
-
     CreateButtons(FButtonWidth, FButtonHeight);
     ResizeButtons;
   end;
-
 end;
 
 procedure TToolBar.WMKeyDown(var Message: TLMKeyDown);
@@ -920,7 +928,8 @@ end;
 function TToolBar.InternalButtonCount: Integer;
 begin
 //  Result := Perform(TB_BUTTONCOUNT, 0, 0);
-  Result := CNSendMessage(LM_TB_BUTTONCOUNT,Self,Nil);
+  if HandleAllocated then
+    Result := CNSendMessage(LM_TB_BUTTONCOUNT,Self,Nil);
 end;
 
 function TToolBar.ButtonIndex(OldIndex, ALeft, ATop: Integer): Integer;
@@ -1246,13 +1255,13 @@ case Message.msg of
   LM_SHOWMODAL : Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!LM_SHOWMODAL!!!!!!!!!!!!!!!!!!!');
    end;
   case Message.msg of
-    TB_INSERTBUTTON : Begin
-		      CNSendMessage(LM_INSERTTOOLBUTTON,TControl(TTBButton(Pointer(Message.lParam)^).dwData),nil);
-                      end;
-    TB_DELETEBUTTON : Begin
-		      CNSendMessage(LM_DELETETOOLBUTTON,TControl(FButtons[Message.wparam]),nil);
-                      end;
+    TB_INSERTBUTTON :
+      if HandleAllocated then
+        CNSendMessage(LM_INSERTTOOLBUTTON,TControl(TTBButton(Pointer(Message.lParam)^).dwData),nil);
 
+    TB_DELETEBUTTON :
+      if HandleAllocated then
+        CNSendMessage(LM_DELETETOOLBUTTON,TControl(FButtons[Message.wparam]),nil);
     end;
 
 
@@ -1274,7 +1283,7 @@ begin
 end;
 
 
-function ToolMenuGetMsgHook(Code: Integer; WParam: Longint; 
+function ToolMenuGetMsgHook(Code: Integer; WParam: Longint;
   var Msg: TMsg): Longint; stdcall;
 Begin
   // ToDo
@@ -1290,7 +1299,7 @@ begin
 end;
 
 
-function ToolMenuKeyMsgHook(Code: Integer; WParam: Longint; 
+function ToolMenuKeyMsgHook(Code: Integer; WParam: Longint;
   var Msg: TMsg): Longint; stdcall;
 begin
   // ToDo
@@ -1493,6 +1502,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2002/10/30 13:20:10  lazarus
+  MG: fixed example
+
   Revision 1.6  2002/05/10 06:05:55  lazarus
   MG: changed license to LGPL
 
