@@ -2295,15 +2295,15 @@ begin
   end;
   try
     {$IFDEF VerboseRawImage}
-    writeln('TGTKWidgetSet.GetRawImageMaskFromGdkBitmap A bpl=',AnImage^.bpl,' theType=',AnImage^.thetype,' depth=',AnImage^.depth,' bpp=',AnImage^.bpp);
+    writeln('TGTKWidgetSet.GetRawImageMaskFromGdkBitmap A BytesPerLine=',AnImage^.bpl,' theType=',AnImage^.thetype,' depth=',AnImage^.depth,' BitsPerpixel=',AnImage^.bpp);
     writeln('RawImage=',RawImageDescriptionAsString(@RawImage));
     {$ENDIF}
   
     // consistency checks
+    RawImage.Description.AlphaLineEnd:=rileDWordBoundary;
+    RawImage.Description.AlphaBitsPerPixel:=AnImage^.bpp;
     if RawImage.Description.AlphaBitsPerPixel<>AnImage^.Depth then
       RaiseGDBException('RawImage.Description.AlphaBitsPerPixel<>AnImage^.Depth '+IntToStr(RawImage.Description.AlphaBitsPerPixel)+'<>'+IntToStr(AnImage^.Depth));
-    if RawImage.Description.AlphaBitsPerPixel<>AnImage^.bpp then
-      RaiseGDBException('RawImage.Description.AlphaBitsPerPixel<>AnImage^.bpp');
 
     RawImage.MaskSize:=AnImage^.bpl * AnImage^.Height;
     {$IFDEF VerboseRawImage}
@@ -9394,6 +9394,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.491  2004/04/05 11:41:06  mattias
+  fixed retrieving gdkbitmaps  LineEnding=rileDWordBoundary
+
   Revision 1.490  2004/04/04 17:10:05  marc
   Patch from Andrew Haines
 

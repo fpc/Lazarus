@@ -774,6 +774,51 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCustomImageList.WriteData
+  Params:  AStream: The stream to write the data to
+  Returns: Nothing
+
+  Writes the imagelist data to stream
+ ------------------------------------------------------------------------------}
+procedure TCustomImageList.WriteData(AStream: TStream);
+var
+  CurImage: TBitMap;
+  i: Integer;
+  Signature: TImageListSignature;
+begin
+  {$IFDEF DisableFPImage}
+  //Write signature
+  Signature:=SIG_LAZ1;
+  AStream.Write(Signature,SizeOf(Signature));
+
+  //Count of image
+  AStream.WriteWord(Count);
+
+  for i:=0 to Count-1 do
+  begin
+    CurImage:=TBitmap(FImageList[i]);
+    CurImage.WriteStream(AStream,true);
+  end;
+  {$ELSE}
+  //Write signature
+  Signature:=SIG_LAZ2;
+  AStream.Write(Signature,SizeOf(Signature));
+
+  //Count of image
+  AStream.WriteDWord(Count);
+  AStream.WriteDWord(Width);
+  AStream.WriteDWord(Height);
+
+  for i:=0 to Count-1 do
+  begin
+    CurImage:=TBitmap(FImageList[i]);
+    //writeln('TCustomImageList.WriteData Position=',AStream.Position,' ',CurImage.Width,',',CurImage.Height);
+    CurImage.WriteNativeStream(AStream,true,bnXPixmap);
+  end;
+  {$ENDIF}
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCustomImageList.ReadData
   Params:  AStream: The stream to read the data from
   Returns: Nothing
@@ -781,6 +826,9 @@ end;
   Reads the imagelist data from stream
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.ReadData(AStream: TStream);
+var
+  Signature: TImageListSignature;
+  StreamPos: TStreamSeekType;
 
   procedure DoReadLaz1;
   var
@@ -810,11 +858,13 @@ procedure TCustomImageList.ReadData(AStream: TStream);
     NewCount := AStream.ReadDWord;
     Width := AStream.ReadDWord;
     Height := AStream.ReadDWord;
-    //writeln('TCustomImageList.ReadData DoReadLaz2 NewCount=',NewCount);
+    //writeln('TCustomImageList.ReadData DoReadLaz2 NewCount=',NewCount,' Width=',Width,' Height=',Height);
     for i := 0 to NewCount - 1 do
     begin
       bmp := TBitMap.Create;
+      //writeln('TCustomImageList.ReadData DoReadLaz2 i=',i,' ',AStream.Position);
       AStream.Read(Size, SizeOf(Size));
+      //writeln('TCustomImageList.ReadData DoReadLaz2 Size=',Size,' ',AStream.Position);
       bmp.ReadStream(AStream, True, Size);
       AddDirect(bmp, nil);
     end;
@@ -898,9 +948,30 @@ procedure TCustomImageList.ReadData(AStream: TStream);
   end;
   {$ENDIF}
   
+  {$IFDEF SaveDelphiImgListStream}
+  procedure SaveImgListStreamToFile;
+  var
+    CurStreamPos: TStreamSeekType;
+    fs: TFileStream;
+    i: Integer;
+    Filename: string;
+  begin
+    i:=0;
+    repeat
+      inc(i);
+      Filename:='TCustomImageList'+IntToStr(i)+'.stream';
+    until not FileExists(Filename);
+    CurStreamPos := AStream.Position;
+    writeln('TCustomImageList.ReadData Saving stream to ',Filename);
+    fs:=TFileStream.Create(Filename,fmCreate);
+    AStream.Position:=StreamPos;
+    fs.CopyFrom(AStream,AStream.Size-AStream.Position);
+    fs.Free;
+    AStream.Position:=CurStreamPos;
+  end;
+  {$ENDIF}
+  
 var
-  Signature: TImageListSignature;
-  StreamPos: TStreamSeekType;
   {$IFNDEF DisableFPImage}
   HasMask: Boolean;
   {$ENDIF}
@@ -908,6 +979,7 @@ var
   Size: integer;
 begin
   Clear;
+
   StreamPos := AStream.Position;                // check stream signature
   AStream.Read(Signature, SizeOf(Signature));
 
@@ -922,6 +994,12 @@ begin
     DoReadLaz2;
     Exit;
   end;
+
+  // Delphi streams
+
+  {$IFDEF SaveDelphiImgListStream}
+  SaveImgListStreamToFile;
+  {$ENDIF}
 
   if Signature = SIG_D3
   then begin
@@ -1148,50 +1226,6 @@ begin
   Value.Sender:=nil;
 end;
 
-{------------------------------------------------------------------------------
-  Method:  TCustomImageList.WriteData
-  Params:  AStream: The stream to write the data to
-  Returns: Nothing
-
-  Writes the imagelist data to stream
- ------------------------------------------------------------------------------}
-procedure TCustomImageList.WriteData(AStream: TStream);
-var
-  CurImage: TBitMap;
-  i: Integer;
-  Signature: TImageListSignature;
-begin
-  {$IFDEF DisableFPImage}
-  //Write signature
-  Signature:=SIG_LAZ1;
-  AStream.Write(Signature,SizeOf(Signature));
-
-  //Count of image
-  AStream.WriteWord(Count);
-
-  for i:=0 to Count-1 do
-  begin
-    CurImage:=TBitmap(FImageList[i]);
-    CurImage.WriteStream(AStream,true);
-  end;
-  {$ELSE}
-  //Write signature
-  Signature:=SIG_LAZ2;
-  AStream.Write(Signature,SizeOf(Signature));
-
-  //Count of image
-  AStream.WriteDWord(Count);
-  AStream.WriteDWord(Width);
-  AStream.WriteDWord(Height);
-
-  for i:=0 to Count-1 do
-  begin
-    CurImage:=TBitmap(FImageList[i]);
-    CurImage.WriteNativeStream(AStream,true,bnXPixmap);
-  end;
-  {$ENDIF}
-end;
-
 {******************************************************************************
                                   TChangeLink
  ******************************************************************************}
@@ -1227,6 +1261,9 @@ end;
 {
 
   $Log$
+  Revision 1.37  2004/04/05 11:41:06  mattias
+  fixed retrieving gdkbitmaps  LineEnding=rileDWordBoundary
+
   Revision 1.36  2004/04/03 16:47:46  mattias
   implemented converting gdkbitmap to RawImage mask
 

@@ -978,6 +978,10 @@ begin
     MemStream:=nil;
     // copy savestream to destination stream
     DoWriteOriginal;
+    {SetLength(s,FImage.SaveStream.Size);
+    FImage.SaveStream.Position:=0;
+    FImage.SaveStream.Read(s[1],length(s));
+    writeln(s);}
   finally
     MemStream.Free;
     IntfImg.Free;
@@ -1115,15 +1119,15 @@ end;
 procedure TBitmap.WriteNativeStream(Stream: TStream; WriteSize: Boolean;
   SaveStreamType: TBitmapNativeType);
 var
-  Reader: TFPCustomImageWriterClass;
+  Writer: TFPCustomImageWriterClass;
 begin
   case SaveStreamType of
-  bnWinBitmap: Reader:=TFPWriterBMP;
-  bnXPixmap: Reader:=TLazWriterXPM;
+  bnWinBitmap: Writer:=TFPWriterBMP;
+  bnXPixmap: Writer:=TLazWriterXPM;
   else
     RaiseGDBException('Invalid SaveStreamType');
   end;
-  WriteStreamWithFPImage(Stream,WriteSize,Reader);
+  WriteStreamWithFPImage(Stream,WriteSize,Writer);
   if (FImage.SaveStream<>nil) and (FImage.SaveStreamType=bnNone) then
     FImage.SaveStreamType:=SaveStreamType;
 end;
@@ -1189,6 +1193,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.83  2004/04/05 11:41:05  mattias
+  fixed retrieving gdkbitmaps  LineEnding=rileDWordBoundary
+
   Revision 1.82  2004/04/03 16:47:46  mattias
   implemented converting gdkbitmap to RawImage mask
 
