@@ -1,4 +1,3 @@
-unit editoroptions;
 {
   Author: Mattias Gaertner
 
@@ -16,6 +15,7 @@ unit editoroptions;
    - nicer TColorButton
    - create LFM file
 }
+unit editoroptions;
 
 {$mode objfpc}{$H+}
 
@@ -357,6 +357,7 @@ type
             High(AdditionalHiglightAttributes)] of TSynHighlightElement;
     CurHighlightElement:TSynHighlightElement;
     CurCodeTemplate: integer;
+    UpdatingColor: boolean;
 
     procedure SetupButtonBar;
     procedure SetupGeneralPage;
@@ -1061,6 +1062,8 @@ begin
     SetupButtonBar;
   end;
 
+  UpdatingColor:=false;
+
   for a:=Low(PreviewEdits) to High(PreviewEdits) do
     PreviewEdits[a]:=nil;
   EditorOpts.GetHighlighterSettings(PreviewPasSyn);
@@ -1172,23 +1175,27 @@ begin
   end;
   if CurHighlightElement<>nil then begin
     if Sender=ForeGroundUseDefaultCheckBox then begin
-      if not ForeGroundUseDefaultCheckBox.Checked then
-        NewColor:=ForeGroundColorButton.Color
-      else
-        NewColor:=clNone;
-      if NewColor<>CurHighlightElement.Foreground then begin
-        CurHighlightElement.Foreground:=NewColor;
-        InvalidatePreviews;
+      if UpdatingColor=false then begin
+        if not ForeGroundUseDefaultCheckBox.Checked then
+          NewColor:=ForeGroundColorButton.Color
+        else
+          NewColor:=clNone;
+        if NewColor<>CurHighlightElement.Foreground then begin
+          CurHighlightElement.Foreground:=NewColor;
+          InvalidatePreviews;
+        end;
       end;
     end;
     if Sender=BackGroundUseDefaultCheckBox then begin
-      if not BackGroundUseDefaultCheckBox.Checked then
-        NewColor:=BackGroundColorButton.Color
-      else
-        NewColor:=clNone;
-      if NewColor<>CurHighlightElement.Background then begin
-        CurHighlightElement.Background:=NewColor;
-        InvalidatePreviews;
+      if UpdatingColor=false then begin
+        if not BackGroundUseDefaultCheckBox.Checked then
+          NewColor:=BackGroundColorButton.Color
+        else
+          NewColor:=clNone;
+        if NewColor<>CurHighlightElement.Background then begin
+          CurHighlightElement.Background:=NewColor;
+          InvalidatePreviews;
+        end;
       end;
     end;
     if Sender=TextBoldCheckBox then begin
@@ -1237,14 +1244,14 @@ procedure TEditorOptionsForm.ColorButtonColorChanged(Sender:TObject);
 var a:integer;
 begin
   if Sender=ForeGroundColorButton then begin
-    if CurHighlightElement=nil then exit;
+    if (CurHighlightElement=nil) or UpdatingColor then exit;
     if not ForeGroundUseDefaultCheckBox.Checked then begin
       CurHighlightElement.Foreground:=ForeGroundColorButton.ButtonColor;
       InvalidatePreviews;
     end;
   end;
   if Sender=BackGroundColorButton then begin
-    if CurHighlightElement=nil then exit;
+    if (CurHighlightElement=nil) or UpdatingColor then exit;
     if not BackGroundUseDefaultCheckBox.Checked then begin
       CurHighlightElement.Background:=BackGroundColorButton.ButtonColor;
       InvalidatePreviews;
@@ -1447,7 +1454,8 @@ end;
 
 procedure TEditorOptionsForm.ShowCurAttribute;
 begin
-  if CurHighlightElement=nil then exit;
+  if (CurHighlightElement=nil) or UpdatingColor then exit;
+  UpdatingColor:=true;
   TextBoldCheckBox.Checked:=fsBold in CurHighlightElement.Style;
   TextItalicCheckBox.Checked:=fsItalic in CurHighlightElement.Style;
   TextUnderlineCheckBox.Checked:=fsUnderline in CurHighlightElement.Style;
@@ -1463,6 +1471,7 @@ begin
     BackGroundUseDefaultCheckBox.Checked:=false;
     BackGroundColorButton.ButtonColor:=CurHighlightElement.Background;
   end;
+  UpdatingColor:=false;
 end;
 
 procedure TEditorOptionsForm.KeyMappingListBoxMouseUp(Sender:TObject;
