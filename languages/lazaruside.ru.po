@@ -584,7 +584,7 @@ msgstr "Разорвать строку, оставить курсор"
 
 #: lazarusidestrconsts:lismenubeaklinesinselection
 msgid "Break Lines in selection"
-msgstr ""
+msgstr "Разрыв строк в выделенном"
 
 #: lazarusidestrconsts:lismenuviewbreakpoints
 msgid "BreakPoints"
@@ -752,7 +752,7 @@ msgstr "Символ"
 
 #: lazarusidestrconsts:lischaractermap
 msgid "Character Map"
-msgstr ""
+msgstr "Таблица символов"
 
 #: lazarusidestrconsts:dlgcheckconsistency
 msgid "Check consistency"
@@ -760,7 +760,7 @@ msgstr "Целостность?"
 
 #: lazarusidestrconsts:lismenuchecklfm
 msgid "Check LFM file in editor"
-msgstr ""
+msgstr "Проверить файл LFM в редакторе"
 
 #: lazarusidestrconsts:dlgcochecks
 msgid "Checks:"
@@ -784,7 +784,7 @@ msgstr "Выберите имя отладчика"
 
 #: lazarusidestrconsts:lischoosedelphiunit
 msgid "Choose Delphi unit"
-msgstr ""
+msgstr "Выбрать модуль Delphi"
 
 #: lazarusidestrconsts:lischoosedirectory
 msgid "Choose directory"
@@ -1112,7 +1112,7 @@ msgstr "Преобразовать"
 
 #: lazarusidestrconsts:lismenuconvertdelphiunit
 msgid "Convert Delphi unit to Lazarus unit"
-msgstr ""
+msgstr "Преобразовать модуль Delphi в Lazarus"
 
 #: lazarusidestrconsts:lismenuconvertdfmtolfm
 msgid "Convert DFM file to LFM"
@@ -1160,7 +1160,7 @@ msgstr "Счетчик (.pp;1)"
 
 #: lazarusidestrconsts:lisnewcreateanewcgiapplicationtheprogramfileismaintained
 msgid "Create a new cgi application.%sThe program file is maintained by Lazarus."
-msgstr ""
+msgstr "Создать новое приложение cgi.%sФайл программы поддерживается Lazarus"
 
 #: lazarusidestrconsts:lisnewdlgcreateaneweditorfilechooseatype
 msgid "Create a new editor file.%sChoose a type."
@@ -1860,7 +1860,7 @@ msgstr "Межстрочный интервал"
 
 #: lazarusidestrconsts:lismenuextractproc
 msgid "Extract procedure"
-msgstr ""
+msgstr "Выделить процедуру"
 
 #: lazarusidestrconsts:lisexttoolfailedtoruntool
 msgid "Failed to run tool"
@@ -2884,7 +2884,7 @@ msgstr "Требуется:"
 
 #: lazarusidestrconsts:rslanguageitalian
 msgid "Italian"
-msgstr ""
+msgstr "итальянский"
 
 #: lazarusidestrconsts:dlgedital
 msgid "Italic"
@@ -4420,6 +4420,10 @@ msgstr "Времени исполнения"
 
 #: lazarusidestrconsts:rslanguagerussian
 msgid "Russian"
+msgstr "Русский"
+
+#: lazarusidestrconsts:rslanguagerussianwin
+msgid "Russian(CP1251)"
 msgstr ""
 
 #: lazarusidestrconsts:dlgbckupsubdir
@@ -4576,7 +4580,7 @@ msgstr "Пути поиска:"
 
 #: lazarusidestrconsts:lismenuviewsearchresults
 msgid "Search Results"
-msgstr ""
+msgstr "Результаты поиска"
 
 #: lazarusidestrconsts:lisuesearchstringnotfound
 msgid "Search string '%s' not found!"
@@ -4996,7 +5000,7 @@ msgstr "Кнопка пробел"
 
 #: lazarusidestrconsts:rslanguagespanish
 msgid "Spanish"
-msgstr ""
+msgstr "Испанский"
 
 #: lazarusidestrconsts:lisuidsrc
 msgid "Src"
@@ -6240,7 +6244,7 @@ msgstr "Показать модули проекта"
 
 #: lazarusidestrconsts:srkmectogglesearchresults
 msgid "View Search Results"
-msgstr ""
+msgstr "Показать результаты поиска"
 
 #: lazarusidestrconsts:lismenuviewsource
 msgid "View Source"

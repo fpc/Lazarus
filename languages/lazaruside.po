@@ -3978,6 +3978,10 @@ msgstr ""
 msgid "Russian"
 msgstr ""
 
+#: lazarusidestrconsts:rslanguagerussianwin
+msgid "Russian(CP1251)"
+msgstr ""
+
 #: lazarusidestrconsts:rslanguagepolish
 msgid "polski"
 msgstr ""

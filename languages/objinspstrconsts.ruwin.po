@@ -1,0 +1,94 @@
+msgid ""
+msgstr ""
+""
+"Last-Translator: Vasily <vvi@localhost.localdomain>\n"
+"PO-Revision-Date: 2003-01-15 22:38+0300\n"
+"Language-Team: ru_RU.cp1251 \n"
+"Content-Type: text/plain; charset=CP1251\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.6\n"
+
+#: objinspstrconsts:sccsilcmbimglist
+msgid " Images "
+msgstr " Рисунки "
+
+#: objinspstrconsts:sccslvedtgrprcaption
+msgid " Item property "
+msgstr " Свойство элемента "
+
+#: objinspstrconsts:sccslvedtgrplcaption
+msgid " Items "
+msgstr " Элементы "
+
+#: objinspstrconsts:oisitemsselected
+msgid " items selected"
+msgstr " элементов выбрано"
+
+#: objinspstrconsts:sccsilcmbimgsel
+msgid " Selected image "
+msgstr " Выбранный рисунок "
+
+#: objinspstrconsts:oiscadd
+msgid "&Add"
+msgstr "&Добавить"
+
+#: objinspstrconsts:oiscdelete
+msgid "&Delete"
+msgstr "&Удалить"
+
+#: objinspstrconsts:sccsilbtnadd
+msgid "Add ..."
+msgstr "Добавить..."
+
+#: objinspstrconsts:sccsilbtnclear
+msgid "Clear"
+msgstr "Очистить"
+
+#: objinspstrconsts:sccsilconfirme
+msgid "Confirme clear all images ?"
+msgstr "Подтверждаете очистку всех изображений ?"
+
+#: objinspstrconsts:sccslvedtbtndel
+msgid "Delete"
+msgstr "Удалить"
+
+#: objinspstrconsts:oisevents
+msgid "Events"
+msgstr "События"
+
+#: objinspstrconsts:sccslvedtimgindexcaption
+msgid "Image index"
+msgstr "Индекс рисунка"
+
+#: objinspstrconsts:sccsiledtcaption
+msgid "Image list editor"
+msgstr "Редактор списка рисунков"
+
+#: objinspstrconsts:sccslvedtlabcaption
+msgid "Label"
+msgstr "Метка"
+
+#: objinspstrconsts:sccslvedtcaption
+msgid "ListView editor"
+msgstr "Редактор ListView"
+
+#: objinspstrconsts:sccslvedtbtnadd
+msgid "New"
+msgstr "Создать"
+
+#: objinspstrconsts:oisobjectinspector
+msgid "Object Inspector"
+msgstr "Инспектор объектов"
+
+#: objinspstrconsts:oisproperties
+msgid "Properties"
+msgstr "Свойства"
+
+#: objinspstrconsts:sccslvedtbtnaddsub
+msgid "Sub item"
+msgstr "Подэлемент"
+
+#: objinspstrconsts:oisunknown
+msgid "Unknown"
+msgstr ""
+

@@ -24,14 +24,14 @@ set +e
 # IDE without objectinspector
 rstconv -i lazarusidestrconsts.rst -o languages/lazaruside.po
 ./tools/updatepofiles languages/lazaruside.po
-for lang in de ru es fr pl it ca; do
+for lang in de ru ruwin es fr pl it ca; do
   msgfmt languages/lazaruside.$lang.po -o languages/lazaruside.$lang.mo
 done
 
 # Object Inspector
 rstconv -i objinspstrconsts.rst -o languages/objinspstrconsts.po
 tools/updatepofiles languages/objinspstrconsts.po
-for lang in de es fr ru pl it ca; do
+for lang in de es fr ru ruwin pl it ca; do
   msgfmt languages/objinspstrconsts.$lang.po \
     -o languages/objinspstrconsts.$lang.mo
 done
@@ -66,7 +66,7 @@ done
 # LCL
 rstconv -i lcl/units/lclstrconsts.rst -o lcl/languages/lcl.po
 ./tools/updatepofiles lcl/languages/lcl.po
-for lang in de es fr ru pl it ca; do
+for lang in de es fr ru ruwin pl it ca; do
   msgfmt lcl/languages/lcl.$lang.po -o lcl/languages/lcl.$lang.mo
 done
 
