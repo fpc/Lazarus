@@ -597,6 +597,10 @@ begin
   // read classname length
   NameLen:=0;
   s.Read(NameLen,1);
+  if (NameLen and $f0) = $f0 then begin
+    { Skip Flag Byte }
+    s.Read(NameLen,1);
+  end;
   // read classname
   if NameLen>0 then begin
     SetLength(Result,NameLen);

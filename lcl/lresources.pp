@@ -2372,7 +2372,7 @@ begin
     Flags := TFilerFlags(longint(Prefix and $0f));
     if ffChildPos in Flags then
     begin
-      ValueType := NextValue;
+      ValueType := ReadValue;
       case ValueType of
         vaInt8:
           AChildPos := ReadInt8;
