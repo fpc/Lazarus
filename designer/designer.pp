@@ -65,7 +65,8 @@ type
   TDesignerFlag = (
     dfHasSized,
     dfDuringPaintControl,
-    dfShowHints,
+    dfShowEditorHints,
+    dfShowComponentCaptionHints,
     dfDestroyingForm
     );
   TDesignerFlags = set of TDesignerFlag;
@@ -105,20 +106,22 @@ type
     FHintWIndow : THintWindow;
     
     function GetGridColor: TColor;
+    function GetShowComponentCaptionHints: boolean;
     function GetShowGrid: boolean;
     function GetGridSizeX: integer;
     function GetGridSizeY: integer;
     function GetIsControl: Boolean;
-    function GetShowHints: boolean;
+    function GetShowEditorHints: boolean;
     function GetSnapToGrid: boolean;
     Procedure HintTimer(sender : TObject);
     procedure InvalidateWithParent(AComponent: TComponent);
     procedure SetGridColor(const AValue: TColor);
+    procedure SetShowComponentCaptionHints(const AValue: boolean);
     procedure SetShowGrid(const AValue: boolean);
     procedure SetGridSizeX(const AValue: integer);
     procedure SetGridSizeY(const AValue: integer);
     procedure SetIsControl(Value: Boolean);
-    procedure SetShowHints(const AValue: boolean);
+    procedure SetShowEditorHints(const AValue: boolean);
     procedure SetSnapToGrid(const AValue: boolean);
   protected
     MouseDownComponent: TComponent;
@@ -228,10 +231,16 @@ type
     property OnGetNonVisualCompIconCanvas: TOnGetNonVisualCompIconCanvas
        read FOnGetNonVisualCompIconCanvas write FOnGetNonVisualCompIconCanvas;
     property ShowGrid: boolean read GetShowGrid write SetShowGrid;
-    property ShowHints: boolean read GetShowHints write SetShowHints;
-    property SnapToGrid: boolean read GetSnapToGrid write SetSnapToGrid;
-    property SourceEditor : TSourceEditor read FSourceEditor write FSourceEditor;
-    property TheFormEditor: TCustomFormEditor read FTheFormEditor write FTheFormEditor;
+    property ShowEditorHints: boolean
+       read GetShowEditorHints write SetShowEditorHints;
+    property ShowComponentCaptionHints: boolean
+       read GetShowComponentCaptionHints write SetShowComponentCaptionHints;
+    property SnapToGrid: boolean
+       read GetSnapToGrid write SetSnapToGrid;
+    property SourceEditor : TSourceEditor
+       read FSourceEditor write FSourceEditor;
+    property TheFormEditor: TCustomFormEditor
+       read FTheFormEditor write FTheFormEditor;
   end;
 
 
@@ -378,6 +387,12 @@ begin
   if GridColor=AValue then exit;
   EnvironmentOptions.GridColor:=AValue;
   Form.Invalidate;
+end;
+
+procedure TDesigner.SetShowComponentCaptionHints(const AValue: boolean);
+begin
+  if AValue=ShowComponentCaptionHints then exit;
+  Include(FFlags,dfShowComponentCaptionHints);
 end;
 
 function TDesigner.PaintControl(Sender: TControl; TheMessage: TLMPaint):boolean;
@@ -849,7 +864,7 @@ var
   ACursor: TCursor;
 begin
   SetCaptureControl(nil);
-  if ShowHints then begin
+  if [dfShowEditorHints,dfShowComponentCaptionHints]*FFlags<>[] then begin
     FHintTimer.Enabled := False;
 
     { don't want it enabled when a mouse button is pressed. }
@@ -1294,6 +1309,11 @@ begin
   Result:=EnvironmentOptions.GridColor;
 end;
 
+function TDesigner.GetShowComponentCaptionHints: boolean;
+begin
+  Result:=dfShowComponentCaptionHints in FFlags;
+end;
+
 function TDesigner.GetShowGrid: boolean;
 begin
   Result:=EnvironmentOptions.ShowGrid;
@@ -1316,9 +1336,9 @@ Begin
   Result := True;
 end;
 
-function TDesigner.GetShowHints: boolean;
+function TDesigner.GetShowEditorHints: boolean;
 begin
-  Result:=dfShowHints in FFlags;
+  Result:=dfShowEditorHints in FFlags;
 end;
 
 function TDesigner.GetSnapToGrid: boolean;
@@ -1350,10 +1370,10 @@ Begin
 
 end;
 
-procedure TDesigner.SetShowHints(const AValue: boolean);
+procedure TDesigner.SetShowEditorHints(const AValue: boolean);
 begin
-  if AValue=ShowHints then exit;
-  Include(FFlags,dfShowHints);
+  if AValue=ShowEditorHints then exit;
+  Include(FFlags,dfShowEditorHints);
 end;
 
 procedure TDesigner.DrawNonVisualComponents(aDDC: TDesignerDeviceContext);
@@ -1706,42 +1726,56 @@ Procedure TDesigner.HintTimer(sender : TObject);
 var
   Rect : TRect;
   AHint : String;
-  Control : TControl;
-  Position : TPoint;
-  BW       : Integer;
-  Window : TWInControl;
+  AControl : TControl;
+  Position, ClientPos : TPoint;
+  AWinControl: TWinControl;
+  AComponent: TComponent;
 begin
   FHintTimer.Enabled := False;
-  if not ShowHints then exit;
+  if [dfShowEditorHints,dfShowComponentCaptionHints]*FFlags=[] then exit;
 
   Position := Mouse.CursorPos;
-  Window := FindLCLWindow(Position);
-  if not(Assigned(window)) then Exit;
+  AWinControl := FindLCLWindow(Position);
+  if not(Assigned(AWinControl)) then Exit;
+  if GetParentForm(AWinControl)<>Form then exit;
 
-  //get the parent until parent is nil
-  While Window.Parent <> nil do
-  Window := Window.Parent;
+  // first search a non visual component at the position
+  ClientPos:=Form.ScreenToClient(Position);
+  AComponent:=NonVisualComponentAtPos(ClientPos.X,ClientPos.Y);
+  if AComponent=nil then begin
+    // then search a control at the position
+    ClientPos := AWinControl.ScreenToClient(Position);
 
-  if (window <> FCustomForm) then Exit;
-
-  BW := 0;
-//  if (FCustomForm is TForm) then
-//     BW := TForm(FCustomForm).BorderWidth;
-
-  if ((Position.X < (FCustomForm.Left + BW)) or (Position.X > (FCustomForm.Left+FCustomForm.Width - BW)) or (Position.Y < FCustomForm.Top+22) or (Position.Y > (FCustomForm.Top+FCustomForm.Height - BW))) then Exit;
-
-  Position := FCustomForm.ScreenToClient(Position);
-
-  Control := FCustomForm.ControlAtPos(Position,True);
-  if not Assigned(Control) then
-     Control := FCustomForm;
-  AHint := Control.Name + ' : '+Control.ClassName;
-  AHint := AHint + #10+'Left : '+Inttostr(Control.Left)+ '  Top : '+Inttostr(Control.Top)+
-                   #10+'Width : '+Inttostr(Control.Width)+ '  Height : '+Inttostr(Control.Height);
+    AComponent := AWinControl.ControlAtPos(ClientPos,True);
+    if not Assigned(AComponent) then
+      AComponent := AWinControl;
+  end;
+  
+  // create a nice hint:
+  
+  // component name and classname
+  if (dfShowComponentCaptionHints in FFlags) then
+    AHint := AComponent.Name+' : '+AComponent.ClassName
+  else
+    AHint:='';
+  // component position
+  if (dfShowEditorHints in FFlags) then begin
+    if AHint<>'' then AHint:=AHint+#10;
+    if AComponent is TControl then begin
+      AControl:=TControl(AComponent);
+      AHint := AHint + 'Left : '+IntToStr(AControl.Left)
+                     + '  Top : '+IntToStr(AControl.Top)
+                + #10+ 'Width : '+IntToStr(AControl.Width)
+                     + '  Height : '+IntToStr(AControl.Height);
+    end else begin
+      AHint := AHint + 'Left : '+IntToStr(GetComponentLeft(AComponent))
+                     + '  Top : '+IntToStr(GetComponentTop(AComponent));
+    end;
+  end;
 
   Rect := FHintWindow.CalcHintRect(0,AHint,nil);  //no maxwidth
-  Rect.Left := Mouse.CursorPos.X+10;
-  Rect.Top := Mouse.CursorPos.Y+5;
+  Rect.Left := Position.X+10;
+  Rect.Top := Position.Y+5;
   Rect.Right := Rect.Left + Rect.Right;
   Rect.Bottom := Rect.Top + Rect.Bottom;
 
