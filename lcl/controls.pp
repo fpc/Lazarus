@@ -156,6 +156,55 @@ const
    mrLast = mrYesToAll;
 
 
+
+{$IFNDEF UseFCLDataModule}
+type
+{ TDataModule }
+
+  TDataModule = class(TComponent)
+  private
+    FDesignSize: TPoint;
+    FDesignOffset: TPoint;
+    FOnCreate: TNotifyEvent;
+    FOnDestroy: TNotifyEvent;
+    FOldCreateOrder: Boolean;
+    procedure ReadHeight(Reader: TReader);
+    procedure ReadHorizontalOffset(Reader: TReader);
+    procedure ReadVerticalOffset(Reader: TReader);
+    procedure ReadWidth(Reader: TReader);
+    procedure WriteWidth(Writer: TWriter);
+    procedure WriteHorizontalOffset(Writer: TWriter);
+    procedure WriteVerticalOffset(Writer: TWriter);
+    procedure WriteHeight(Writer: TWriter);
+  protected
+    procedure DoCreate; virtual;
+    procedure DoDestroy; virtual;
+    procedure DefineProperties(Filer: TFiler); override;
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
+    function HandleCreateException: Boolean; dynamic;
+    procedure ReadState(Reader: TReader); override;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    constructor CreateNew(TheOwner: TComponent; CreateMode: Integer); virtual;
+    destructor Destroy; override;
+    procedure AfterConstruction; override;
+    procedure BeforeDestruction; override;
+    property DesignOffset: TPoint read FDesignOffset write FDesignOffset;
+    property DesignSize: TPoint read FDesignSize write FDesignSize;
+  published
+    property OldCreateOrder: Boolean read FOldCreateOrder write FOldCreateOrder;
+    property OnCreate: TNotifyEvent read FOnCreate write FOnCreate;
+    property OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
+  end;
+
+const
+  AddDataModule: procedure (DataModule: TDataModule) of object = nil;
+  RemoveDataModule: procedure (DataModule: TDataModule) of object = nil;
+  ApplicationHandleException: procedure (Sender: TObject) of object = nil;
+  ApplicationShowException: procedure (E: Exception) of object = nil;
+{$ENDIF}
+
+
 type
   TWinControl = class;
   TControl = class;
@@ -1422,7 +1471,211 @@ begin
   Result := IdentToInt(Ident, Cursor, Cursors);
 end;
 
+{$IFNDEF UseFCLDataModule}
+{ TDataModule }
 
+constructor TDataModule.Create(TheOwner: TComponent);
+begin
+  writeln('TDataModule.Create START');
+  //GlobalNameSpace.BeginWrite;
+  try
+    CreateNew(TheOwner,0);
+    if (ClassType <> TDataModule) and not (csDesigning in ComponentState) then
+    begin
+      if not InitInheritedComponent(Self, TDataModule) then
+        raise EResNotFound.CreateFmt(lisLCLResourceSNotFound, [ClassName]);
+      if OldCreateOrder then DoCreate;
+    end;
+  writeln('TDataModule.Create END');
+  finally
+    //GlobalNameSpace.EndWrite;
+  end;
+end;
+
+procedure TDataModule.AfterConstruction;
+begin
+  writeln('TDataModule.AfterConstruction');
+  if not OldCreateOrder then DoCreate;
+end;
+
+constructor TDataModule.CreateNew(TheOwner: TComponent; CreateMode: Integer);
+begin
+  writeln('TDataModule.CreateNew START');
+  inherited Create(TheOwner);
+
+  if Assigned(AddDataModule) and (CreateMode >= 0) then
+    AddDataModule(Self);
+  writeln('TDataModule.CreateNew END');
+end;
+
+procedure TDataModule.BeforeDestruction;
+begin
+  writeln('TDataModule.BeforeDestruction START');
+  //GlobalNameSpace.BeginWrite;
+  Destroying;
+  RemoveFixupReferences(Self, '');
+  if not OldCreateOrder then DoDestroy;
+  writeln('TDataModule.BeforeDestruction END');
+end;
+
+destructor TDataModule.Destroy;
+begin
+  writeln('TDataModule.Destroy START');
+  if not (csDestroying in ComponentState) then
+    ; //GlobalNameSpace.BeginWrite;
+  try
+    if OldCreateOrder then DoDestroy;
+    if Assigned(RemoveDataModule) then
+      RemoveDataModule(Self);
+    inherited Destroy;
+  finally
+    //GlobalNameSpace.EndWrite;
+  end;
+  writeln('TDataModule.Destroy END');
+end;
+
+procedure TDataModule.DoCreate;
+begin
+  if Assigned(FOnCreate) then
+  try
+    FOnCreate(Self);
+  except
+    begin
+      writeln('TDataModule.DoCreate A');
+      if not HandleCreateException then
+        raise;
+    end;
+  end;
+end;
+
+procedure TDataModule.DoDestroy;
+begin
+  if Assigned(FOnDestroy) then
+  try
+    FOnDestroy(Self);
+  except
+    begin
+      writeln('TDataModule.DoDestroy A');
+      if Assigned(ApplicationHandleException) then
+        ApplicationHandleException(Self);
+    end;
+  end;
+end;
+
+procedure TDataModule.DefineProperties(Filer: TFiler);
+var
+  Ancestor: TDataModule;
+
+  function DoWriteWidth: Boolean;
+  begin
+    Result := True;
+    if Ancestor <> nil then Result := FDesignSize.X <> Ancestor.FDesignSize.X;
+  end;
+
+  function DoWriteHorizontalOffset: Boolean;
+  begin
+    if Ancestor <> nil then
+      Result := FDesignOffset.X <> Ancestor.FDesignOffset.X else
+      Result := FDesignOffset.X <> 0;
+  end;
+
+  function DoWriteVerticalOffset: Boolean;
+  begin
+    if Ancestor <> nil then
+      Result := FDesignOffset.Y <> Ancestor.FDesignOffset.Y else
+      Result := FDesignOffset.Y <> 0;
+  end;
+
+  function DoWriteHeight: Boolean;
+  begin
+    Result := True;
+    if Ancestor <> nil then Result := FDesignSize.Y <> Ancestor.FDesignSize.Y;
+  end;
+
+begin
+  inherited DefineProperties(Filer);
+  Ancestor := TDataModule(Filer.Ancestor);
+  Filer.DefineProperty('Height', @ReadHeight, @WriteHeight, DoWriteHeight);
+  Filer.DefineProperty('HorizontalOffset', @ReadHorizontalOffset,
+                       @WriteHorizontalOffset, DoWriteHorizontalOffset);
+  Filer.DefineProperty('VerticalOffset', @ReadVerticalOffset,
+                       @WriteVerticalOffset, DoWriteVerticalOffset);
+  Filer.DefineProperty('Width', @ReadWidth, @WriteWidth, DoWriteWidth);
+end;
+
+procedure TDataModule.GetChildren(Proc: TGetChildProc; Root: TComponent);
+var
+  I: Integer;
+  OwnedComponent: TComponent;
+begin
+  inherited GetChildren(Proc, Root);
+  if Root = Self then begin
+    for I := 0 to ComponentCount - 1 do
+    begin
+      OwnedComponent := Components[I];
+      if not OwnedComponent.HasParent then Proc(OwnedComponent);
+    end;
+  end;
+end;
+
+function TDataModule.HandleCreateException: Boolean;
+begin
+  writeln('TDataModule.HandleCreateException A');
+  if Assigned(ApplicationHandleException) then
+  begin
+    ApplicationHandleException(Self);
+    Result := True;
+  end
+  else
+    Result := False;
+end;
+
+procedure TDataModule.ReadState(Reader: TReader);
+begin
+  FOldCreateOrder := false;
+  inherited ReadState(Reader);
+end;
+
+procedure TDataModule.ReadWidth(Reader: TReader);
+begin
+  FDesignSize.X := Reader.ReadInteger;
+end;
+
+procedure TDataModule.ReadHorizontalOffset(Reader: TReader);
+begin
+  FDesignOffset.X := Reader.ReadInteger;
+end;
+
+procedure TDataModule.ReadVerticalOffset(Reader: TReader);
+begin
+  FDesignOffset.Y := Reader.ReadInteger;
+end;
+
+procedure TDataModule.ReadHeight(Reader: TReader);
+begin
+  FDesignSize.Y := Reader.ReadInteger;
+end;
+
+procedure TDataModule.WriteWidth(Writer: TWriter);
+begin
+  Writer.WriteInteger(FDesignSize.X);
+end;
+
+procedure TDataModule.WriteHorizontalOffset(Writer: TWriter);
+begin
+  Writer.WriteInteger(FDesignOffset.X);
+end;
+
+procedure TDataModule.WriteVerticalOffset(Writer: TWriter);
+begin
+  Writer.WriteInteger(FDesignOffset.Y);
+end;
+
+procedure TDataModule.WriteHeight(Writer: TWriter);
+begin
+  Writer.WriteInteger(FDesignSize.Y);
+end;
+{$ENDIF}
 
 // turn off before includes !!
 {$IFDEF ASSERT_IS_ON}
@@ -1460,6 +1713,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.119  2003/05/30 16:25:47  mattias
+  started datamodule
+
   Revision 1.118  2003/05/24 08:51:41  mattias
   implemented designer close query
 
