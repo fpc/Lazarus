@@ -4653,6 +4653,7 @@ procedure TCustomGrid.EditorExit(Sender: TObject);
 begin
   if not FEditorHiding then begin
     {$IfDef dbgFocus} DebugLn('EditorExit INIT');{$Endif}
+    FEditorMode:=False;
     FEditorHiding:=True;
     EditorGetValue;
     if Editor<>nil then begin
