@@ -104,6 +104,7 @@ type
     procedure mnuEditInsertGPLNoticeClick(Sender: TObject);
     procedure mnuEditInsertUsernameClick(Sender: TObject);
     procedure mnuEditInsertDateTimeClick(Sender: TObject);
+    procedure mnuEditInsertChangeLogEntryClick(Sender: TObject);
     procedure mnuEditCompleteCodeClicked(Sender: TObject);
 
     // search menu
@@ -1296,6 +1297,7 @@ begin
   itmEditInsertGPLNotice.OnClick:=@mnuEditInsertGPLNoticeClick;
   itmEditInsertUsername.OnClick:=@mnuEditInsertUsernameClick;
   itmEditInsertDateTime.OnClick:=@mnuEditInsertDateTimeClick;
+  itmEditInsertChangeLogEntry.OnClick:=@mnuEditInsertChangeLogEntryClick;
   itmEditCompleteCode.OnClick:=@mnuEditCompleteCodeClicked;
 end;
 
@@ -6893,6 +6895,11 @@ begin
   DoEditMenuCommand(ecInsertDateTime);
 end;
 
+procedure TMainIDE.mnuEditInsertChangeLogEntryClick(Sender: TObject);
+begin
+  DoEditMenuCommand(ecInsertChangeLogEntry);
+end;
+
 procedure TMainIDE.mnuEditCompleteCodeClicked(Sender: TObject);
 begin
   DoCompleteCodeAtCursor;
@@ -6985,6 +6992,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.375  2002/09/11 12:18:18  lazarus
+  MG: added  insert ChangeLog Entry
+
   Revision 1.374  2002/09/11 12:05:45  lazarus
   MG: added  insert Username and Datetime
 
