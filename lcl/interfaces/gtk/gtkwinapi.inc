@@ -145,17 +145,23 @@ end;
 
  ------------------------------------------------------------------------------}
 Function TGTKObject.BringWindowToTop(hWnd : HWND): Boolean;
+{$IFDEF VerboseFocus}
+var
+  LCLObject: TControl;
+{$ENDIF}
 begin
   //hwnd should be a PgtkWidget.
-  Result := True;
-  try
+  {$IFDEF VerboseFocus}
+  write('TGTKObject.BringWindowToTop hWnd=',HexStr(Cardinal(hWnd),8));
+  LCLObject:=TControl(GetLCLObject(Pointer(hWnd)));
+  if LCLObject<>nil then
+    writeln(' LCLObject=',LCLObject.Name,':',LCLObject.ClassName)
+  else
+    writeln(' LCLObject=nil');
+  {$ENDIF}
+  Result := (hWnd<>0);
+  if Result then
     gdk_window_raise(GetControlWindow(PgtkWidget(hwnd)));
-  except
-    on E: Exception do begin
-      writeln('TGTKObject.BringWindowToTop: ',E.Message);
-      Result := False;
-    end;
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -6178,16 +6184,19 @@ var
   TopLevel: PGTKWidget;
   Widget, ImplWidget: PGtkWidget;
   {$IfDef VerboseFocus}
-  LCLObject: TWinControl;
+  LCLObject, AWinControl: TWinControl;
   {$EndIf}
 begin
   if hWnd=0 then exit;
   Widget:=PGtkWidget(hWnd);
   {$IfDef VerboseFocus}
-  writeln('[TgtkObject.SetFocus] A hWnd=',HexStr(Cardinal(hWnd),8));
+  writeln('');
+  write('[TgtkObject.SetFocus] A hWnd=',HexStr(Cardinal(hWnd),8));
   LCLObject:=TWinControl(GetLCLObject(Widget));
   if LCLObject<>nil then
-    writeln('[TgtkObject.SetFocus] A2 LCLObject=',LCLObject.Name,':',LCLObject.ClassName);
+    writeln(' LCLObject=',LCLObject.Name,':',LCLObject.ClassName)
+  else
+    writeln(' LCLObject=nil');
   {$EndIf}
   if hwnd = 0 then
     Result := 0
@@ -6196,15 +6205,32 @@ begin
     Result := GetFocus;
     TopLevel := gtk_widget_get_toplevel(Widget);
     {$IfDef VerboseFocus}
-    writeln('[TgtkObject.SetFocus] B hWnd=',HexStr(Cardinal(hWnd),8),' Result=',HexStr(Cardinal(Result),8),' TopLevel=',HexStr(Cardinal(TopLevel),8));
+    write('[TgtkObject.SetFocus] B hWnd=',HexStr(Cardinal(hWnd),8));
+    write(' TopLevel=',HexStr(Cardinal(TopLevel),8));
+    write(' OldFocus=',HexStr(Cardinal(Result),8));
+    AWinControl:=TWinControl(GetParentLCLObject(PGtkWidget(Result)));
+    if AWinControl<>nil then
+      write(' OldLCLParent=',AWinControl.Name,':',AWinControl.ClassName)
+    else
+      write(' OldLCLParent=nil');
+    writeln('');
     {$EndIf}
-    if gtk_type_is_a(gtk_object_type(PGTKObject(TopLevel)), gtk_window_get_type)
+    if PGtkWidget(GetFocus)=Widget then exit;
+    
+    if GtkWidgetIsA(TopLevel, gtk_window_get_type)
     then begin
       {$IfDef VerboseFocus}
-      writeln('[TgtkObject.SetFocus] C  TopLevel is a gtkwindow');
+      AWinControl:=TwinControl(GetParentLCLObject(PGtkWindow(TopLevel)^.focus_widget));
+      write('[TgtkObject.SetFocus] C  TopLevel is a gtkwindow ');
+      write(' focus_widget=',HexStr(Cardinal(PGtkWindow(TopLevel)^.focus_widget),8));
+      if AWinControl<>nil then
+        write(' LCLParent=',AWinControl.Name,':',AWinControl.ClassName)
+      else
+        write(' LCLParent=nil');
+      writeln('');
       {$EndIf}
       // TopLevel is a gtkwindow
-      if GTK_WIDGET_CAN_FOCUS(TOPLEVEL) then begin
+      if GTK_WIDGET_CAN_FOCUS(TopLevel) then begin
         // TopLevel window can focus
         {$IfDef VerboseFocus}
         writeln('[TgtkObject.SetFocus] D  TopLevel window can focus');
@@ -6221,20 +6247,24 @@ begin
         ', is mapped=',GTK_WIDGET_MAPPED(Widget)
         );
         {$EndIf}
-        if gtk_type_is_a(gtk_object_type(PGTKObject(hwnd)), gtk_combo_get_type)
+        if GtkWidgetIsA(Widget, gtk_combo_get_type)
         then begin
           // handle is a gtk combo
-          gtk_widget_grab_focus(PgtkWidget(PGtkCombo(hwnd)^.entry));
+          gtk_widget_grab_focus(PgtkWidget(PGtkCombo(Widget)^.entry));
           {$IfDef VerboseFocus}
-          writeln('[TgtkObject.SetFocus] H Entry=',HexStr(Cardinal(PGtkCombo(hwnd)^.entry),8),
-          ' has focus=',gtk_widget_has_focus(PgtkWidget(PGtkCombo(hwnd)^.entry)));
+          writeln('[TgtkObject.SetFocus] H Entry=',HexStr(Cardinal(PGtkCombo(Widget)^.entry),8),
+          ' has focus=',gtk_widget_has_focus(PgtkWidget(PGtkCombo(Widget)^.entry)));
           {$EndIf}
         end
         else begin
           ImplWidget:= GetWidgetInfo(Widget, true)^.ImplementationWidget;
           if ImplWidget <> nil then begin
             {$IfDef VerboseFocus}
-            writeln('[TgtkObject.SetFocus] I CoreChild=',HexStr(Cardinal(ImplWidget),8));
+            writeln('[TgtkObject.SetFocus] I CoreChild=',HexStr(Cardinal(ImplWidget),8),
+              ' Widget can focus=',GTK_WIDGET_CAN_FOCUS(ImplWidget),
+              ', is realized=',GTK_WIDGET_REALIZED(ImplWidget),
+              ', is mapped=',GTK_WIDGET_MAPPED(ImplWidget)
+              );
             {$EndIf}
             gtk_widget_grab_focus(ImplWidget)
           end else begin
@@ -6252,7 +6282,17 @@ begin
       end;
     end;
   end;
-//writeln('[TgtkObject.SetFocus] END hWnd=',HexStr(Cardinal(hWnd),8),' Result=',HexStr(Cardinal(Result),8),' TopLevel=',HexStr(Cardinal(TopLevel),8),' NewFocus=',HexStr(Cardinal(GetFocus),8));
+  {$IfDef VerboseFocus}
+  write('[TgtkObject.SetFocus] END hWnd=',HexStr(Cardinal(hWnd),8));
+  ImplWidget:=PGtkWidget(GetFocus);
+  write(' NewFocus=',HexStr(Cardinal(ImplWidget),8));
+  AWinControl:=TWinControl(GetParentLCLObject(ImplWidget));
+  if AWinControl<>nil then
+    write(' NewLCLParent=',AWinControl.Name,':',AWinControl.ClassName)
+  else
+    write(' NewLCLParent=nil');
+  writeln('');
+  {$EndIf}
 end;
 
 Function TgtkObject.SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean;
@@ -7413,6 +7453,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.168  2002/10/21 22:12:49  lazarus
+  MG: fixed frmactivate
+
   Revision 1.167  2002/10/21 18:21:39  lazarus
   AJ:minor styles improvement; fixed drawing checks under all(?) themes
 
