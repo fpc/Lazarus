@@ -282,33 +282,36 @@ type
     property OnMouseMove;
     property OnMouseUp;
   end;
+
+
+  { TBevel }
   
   TBevelStyle = (bsLowered, bsRaised);
   TBevelShape=(bsBox, bsFrame, bsTopLine, bsBottomLine, bsLeftLine, bsRightLine);
   
   TBevel = Class(TGraphicControl)
   private
-     FStyle:TBevelStyle;
-     FShape:TBevelShape;
-     Function GetStyle:TBevelStyle;
-     Procedure SetStyle(aStyle:TBevelStyle);
-     Function GetShape:TBevelShape;
-     Procedure SetShape(aShape:TBevelShape);
+    FStyle:TBevelStyle;
+    FShape:TBevelShape;
+    Function GetStyle:TBevelStyle;
+    Procedure SetStyle(aStyle:TBevelStyle);
+    Function GetShape:TBevelShape;
+    Procedure SetShape(aShape:TBevelShape);
   Protected
-     Procedure Paint; Override;
+    Procedure Paint; Override;
   Public
-     Constructor Create(AOwner:TComponent); override;
-     Destructor Destroy; override;
-     Procedure Invalidate; override;
+    Constructor Create(AOwner:TComponent); override;
+    Destructor Destroy; override;
+    Procedure Invalidate; override;
   Published
-     Property Height;
-     Property Left;
-     Property Name;
-     Property Shape:TBevelShape Read GetShape Write SetShape Default bsBox;
-     Property Top;
-     Property Style:TBevelStyle Read GetStyle Write SetStyle Default bsLowered;
-     Property Visible;
-     Property Width;
+    Property Height;
+    Property Left;
+    Property Name;
+    Property Shape:TBevelShape Read GetShape Write SetShape Default bsBox;
+    Property Top;
+    Property Style:TBevelStyle Read GetStyle Write SetStyle Default bsLowered;
+    Property Visible;
+    Property Width;
   End;
 
   {
@@ -463,6 +466,9 @@ end.
 
  {
   $Log$
+  Revision 1.27  2002/08/28 11:41:53  lazarus
+  MG: activated environment opts in debugger
+
   Revision 1.26  2002/07/27 15:38:01  lazarus
   MG: fixed search forward
 
