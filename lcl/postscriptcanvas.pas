@@ -1405,9 +1405,6 @@ begin
   //if not FPImage then draw ab Rectangle because other wise PostScript
   //interpreter wait infinite some RGB datas
   {$ifndef DisableFPImage}
-  //if not FPImage then draw ab Rectangle because other wise PostScript
-  //interpreter wait infinite some RGB datas
-  {$ifndef DisableFPImage}
   DrawWidth:=X1-X;
   DrawHeight:=Y-Y1;
   ClearBuffer;
@@ -1423,6 +1420,8 @@ begin
 
   GetRGBImage(SrcGraphic,fBuffer);
   WriteB('% end of image data');
+  WriteB('grestore');
+  
   {$else}
   WriteB('newpath');
   writeB(Format('    %d %d moveto',[X1,Y1]));
@@ -1431,17 +1430,8 @@ begin
   writeB(Format('    %d %d lineto',[X1,Y2]));
   writeB('closepath');
   {$endif}
-  WriteB('grestore');
 
   Write(fBuffer);
-  {$else}
-  WriteB('newpath');
-  writeB(Format('    %d %d moveto',[X1,Y1]));
-  writeB(Format('    %d %d lineto',[X2,Y1]));
-  writeB(Format('    %d %d lineto',[X2,Y2]));
-  writeB(Format('    %d %d lineto',[X1,Y2]));
-  writeB('closepath');
-  {$endif}
 
   Changed;
 end;
