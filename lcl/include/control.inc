@@ -1049,7 +1049,7 @@ procedure TControl.WMLButtonUp(var Message: TLMLButtonUp);
 begin
   //Writeln('TControl.WMLButtonUp A ',Name,':',ClassName,' csCaptureMouse=',csCaptureMouse in ControlStyle,' csClicked=',csClicked in ControlState);
   if csCaptureMouse in ControlStyle then
-     MouseCapture := False;
+    MouseCapture := False;
 
   if csClicked in ControlState then
   begin
@@ -1203,6 +1203,7 @@ end;
 {  TControl SetMouseCapture                                                    }
 {------------------------------------------------------------------------------}
 procedure TControl.SetMouseCapture(Value : Boolean);
+var bla: integer;
 begin
   if MouseCapture <> Value
   then begin
@@ -1940,6 +1941,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.92  2002/10/20 21:49:09  lazarus
+  MG: fixes for fpc1.1
+
   Revision 1.91  2002/10/11 07:28:03  lazarus
   MG: gtk interface now sends keyboard events via DeliverMessage
 
