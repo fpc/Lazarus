@@ -142,11 +142,6 @@ type
 
 implementation
 
-uses
-  // TODO: remove when implemented on win32
-  Controls, LMessages;
-
-
   { TWSCustomListView }
 
 procedure TWSCustomListView.ColumnDelete(const ALV: TCustomListView; const AIndex: Integer); 
@@ -200,8 +195,6 @@ end;
 
 procedure TWSCustomListView.ItemDelete(const ALV: TCustomListView; const AIndex: Integer); 
 begin
-  // TODO: remove when implemented on win32
-  CNSendMessage(LM_LV_DELETEITEM, ALV ,@AIndex);
 end;
 
 function TWSCustomListView.ItemGetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; var AIsSet: Boolean): Boolean; 
@@ -212,8 +205,6 @@ end;
 
 procedure TWSCustomListView.ItemInsert(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem); 
 begin
-  // TODO: remove when implemented on win32
-  CNSendMessage(LM_LV_ADDITEM, ALV, @AIndex);
 end;
 
 procedure TWSCustomListView.ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex, AImageIndex: Integer); 
@@ -242,7 +233,7 @@ initialization
 //  RegisterWSComponent(TCustomStatusBar, TWSStatusBar);
 //  RegisterWSComponent(TCustomTabSheet, TWSTabSheet);
 //  RegisterWSComponent(TCustomPageControl, TWSPageControl);
-  RegisterWSComponent(TCustomListView, TWSCustomListView);
+//  RegisterWSComponent(TCustomListView, TWSCustomListView);
 //  RegisterWSComponent(TCustomListView, TWSListView);
 //  RegisterWSComponent(TCustomProgressBar, TWSProgressBar);
 //  RegisterWSComponent(TCustomCustomUpDown, TWSCustomUpDown);

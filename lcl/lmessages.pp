@@ -120,17 +120,8 @@ const
   LM_SETSELMODE     = LM_COMUSER+78;
   LM_SETBORDER      = LM_COMUSER+79;
 
-  // TListView
-  LM_LV_FIRST       = LM_COMUSER+80;
-  LM_LV_ADDITEM     = LM_LV_FIRST+0;
-  LM_LV_CHANGEITEM  = LM_LV_FIRST+1;
-  LM_LV_DELETEITEM  = LM_LV_FIRST+2;
-//  LM_LV_SELECTITEM  = LM_LV_FIRST+3;
-//  LM_LV_SHOWITEM    = LM_LV_FIRST+4;
-  LM_LV_LAST        = LM_LV_FIRST+9; // LM_COMUSER+89
-
   // TComboBox
-  LM_CB_FIRST       = LM_LV_LAST+1;  // LM_COMUSER+90
+  LM_CB_FIRST       = LM_COMUSER+90;  // LM_COMUSER+90
   LM_CB_GETCOUNT    = LM_CB_FIRST+0;
   LM_CB_GETTEXT     = LM_CB_FIRST+1;
   LM_CB_ADDTEXT     = LM_CB_FIRST+2;
@@ -952,15 +943,6 @@ begin
   LM_SETSELMODE     :Result:='LM_SETSELMODE';
   LM_SETBORDER      :Result:='LM_SETBORDER';
 
-  // TListView
-  //LM_LV_FIRST       :Result:='LM_LV_FIRST';
-  LM_LV_ADDITEM     :Result:='LM_LV_ADDITEM';
-  LM_LV_CHANGEITEM  :Result:='LM_LV_CHANGEITEM';
-  LM_LV_DELETEITEM  :Result:='LM_LV_DELETEITEM';
-//  LM_LV_SELECTITEM  :Result:='LM_LV_SELECTITEM';
-//  LM_LV_SHOWITEM    :Result:='LM_LV_SHOWITEM';
-  //LM_LV_LAST        :Result:='LM_LV_LAST';
-
   // TComboBox
   //LM_CB_FIRST       :Result:='LM_CB_FIRST';
   LM_CB_GETCOUNT    :Result:='LM_CB_GETCOUNT';
@@ -1076,6 +1058,9 @@ end.
 
 {
   $Log$
+  Revision 1.71  2004/08/25 17:08:10  micha
+  use new lcl interface methods instead of messages (for win32; twscustomlistview)
+
   Revision 1.70  2004/08/25 15:04:44  micha
   use new lcl interface methods instead of messages (for win32; twsbitbtn)
 

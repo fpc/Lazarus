@@ -411,9 +411,7 @@ Var
   //CBI: COMBOBOXINFO;
   DC: HDC;
   Handle: HWND;
-  I, Num, Idx: Integer;
-  ListItemIndex: TListItem;
-  LVI: LV_ITEM;
+  I, Num: Integer;
   PStr, PStr2: PChar;
   SizeRect: TRECT; // used by LM_SETSIZE,LM_INVALIDATE,LM_CLB_SET_CHECKED and LM_REDRAW
   S: String;
@@ -522,74 +520,6 @@ Begin
       begin
         Result := integer(TWin32CheckListBoxStrings((Sender as TCheckListBox).Items).Checked[PInteger(data)^]);
       end;
-      LM_LV_DELETEITEM:
-      Begin
-        If Sender Is TListView Then
-          ListView_DeleteItem(Handle, Integer(Data^));
-      End;
-      LM_LV_CHANGEITEM:
-      Begin
-        If Sender Is TListView Then
-        Begin                   
-          idx := Integer(Data^);
-          ListItemIndex := (Sender As TListView).Items[idx];
-          With LVI Do
-          Begin
-            Mask := LVIF_TEXT;
-            IItem := idx;
-            iSubItem := 0;
-            pszText := PChar(ListItemIndex.Caption);
-            ListView_SetItem(Handle, LVI);
-          End;
-          num := TListView(Sender).Columns.Count - 1;
-          if num > ListItemIndex.SubItems.Count
-          then num := ListItemIndex.SubItems.Count;
-          for i := 1 to num do
-          begin            
-            LVI.iSubItem := i;
-            LVI.pszText := PChar(ListItemIndex.SubItems[i - 1]);
-            ListView_SetItem(Handle, LVI);
-          end;
-          for i := num + 1 to TListView(Sender).Columns.Count - 1 do
-          begin
-            LVI.iSubItem := i;
-            LVI.pszText := #0;                
-            ListView_SetItem(Handle, LVI);
-          end;
-        End;
-      End;
-      LM_LV_ADDITEM:
-      Begin
-        If Sender Is TListView Then
-        Begin
-          idx := TListView(Sender).Items.Count - 1;
-          ListItemIndex := TListView(Sender).Items[idx];
-          With LVI Do
-          Begin
-            Mask := LVIF_TEXT;
-            iItem := idx;    
-            iSubItem := 0;
-            pszText := PChar(ListItemIndex.Caption);
-          End;
-          ListView_InsertItem(Handle, LVI);
-          num := TListView(Sender).Columns.Count - 1;
-          if num > ListItemIndex.SubItems.Count
-          then num := ListItemIndex.SubItems.Count;
-          for i := 1 to num do
-          begin            
-            LVI.iSubItem := i;
-            LVI.pszText := PChar(ListItemIndex.SubItems[i - 1]);
-            ListView_SetItem(Handle, LVI);
-          end;
-          for i := num + 1 to TListView(Sender).Columns.Count - 1 do
-          begin
-            LVI.iSubItem := i;
-            LVI.pszText := #0;
-            ListView_SetItem(Handle, LVI);
-          end;
-          
-        End;
-      End;
       LM_BRINGTOFRONT:
       Begin
         Assert(False, 'Trace:TODO: [TWin32WidgetSet.IntSendMessage3] - LM_BRINGTOFRONT');
@@ -3136,6 +3066,9 @@ End;
 
 {
   $Log$
+  Revision 1.228  2004/08/25 17:08:10  micha
+  use new lcl interface methods instead of messages (for win32; twscustomlistview)
+
   Revision 1.227  2004/08/25 15:04:44  micha
   use new lcl interface methods instead of messages (for win32; twsbitbtn)
 
