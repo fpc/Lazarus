@@ -46,7 +46,11 @@ uses
   EditorOptions, InputHistory;
   
 type
-  TResourcestringInsertPolicy = (rsipAppend, rsipAlphabetically);
+  TResourcestringInsertPolicy = (
+    rsipNone,          // do not add/insert
+    rsipAppend,        // append at end
+    rsipAlphabetically // insert alphabetically
+    );
 
   TMakeResStrDialog = class(TForm)
     // source synedit
@@ -67,6 +71,9 @@ type
     // resourcestring section
     ResStrSectionLabel: TLabel;
     ResStrSectionComboBox: TComboBox;
+    // resourcestrings with same value
+    ResStrWithSameValueLabel: TLabel;
+    ResStrWithSameValuesCombobox: TComboBox;
     // insert position type
     AppendResStrRadioButton: TRadioButton;
     InsertAlphabeticallyResStrRadioButton: TRadioButton;
@@ -91,6 +98,7 @@ type
     procedure MakeResStrDialogResize(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure ResStrSectionComboBoxChange(Sender: TObject);
+    procedure ResStrWithSameValuesComboboxChange(Sender: TObject);
   private
     procedure SetupComponents;
   public
@@ -103,13 +111,16 @@ type
     procedure FillResourceStringSections(NewPositions: TCodeXYPositions);
     procedure FillIdentPrefixes;
     procedure FillIdentLengths;
+    procedure FillStringsWithSameValue;
     procedure UpdateIdentifier;
     procedure UpdateSourcePreview;
     function GetIdentifier: string;
     function GetDefaultIdentifier: string;
     procedure SetSource(NewCode: TCodeBuffer;
       const NewStartPos, NewEndPos: TPoint);
-    function ResourceStringExists(const Identifier: string): boolean;
+    function ResStrExistsInCurrentSection(const Identifier: string): boolean;
+    function ResStrExistsInAnySection(const Identifier: string): boolean;
+    function ResStrExistsWithSameValue(const Identifier: string): boolean;
     procedure GetNewSource(var NewSource, ResourceStringValue: string);
     procedure Init;
     procedure SaveHistories;
@@ -146,7 +157,7 @@ var
   ResourcestringSectionID: Integer;
 begin
   MakeResStrDialog:=TMakeResStrDialog.Create(Application);
-  MakeResStrDialog.Positions:=CodeToolBoss.Positions;
+  MakeResStrDialog.Positions:=CodeToolBoss.Positions.CreateCopy;
   MakeResStrDialog.SetSource(Code,StartPos,EndPos);
   MakeResStrDialog.Init;
 
@@ -156,10 +167,14 @@ begin
     // return results
     NewIdentifier:=MakeResStrDialog.GetIdentifier;
     MakeResStrDialog.GetNewSource(NewSourceLines,NewIdentifierValue);
-    if MakeResStrDialog.InsertAlphabeticallyResStrRadioButton.Checked then
-      InsertPolicy:=rsipAlphabetically
-    else
-      InsertPolicy:=rsipAppend;
+    if MakeResStrDialog.ResStrExistsWithSameValue(NewIdentifier) then
+      InsertPolicy:=rsipNone
+    else begin
+      if MakeResStrDialog.InsertAlphabeticallyResStrRadioButton.Checked then
+        InsertPolicy:=rsipAlphabetically
+      else
+        InsertPolicy:=rsipAppend;
+    end;
     ResourcestringSectionID:=MakeResStrDialog.ResStrSectionComboBox.ItemIndex;
     Section:=CodeToolBoss.Positions[ResourcestringSectionID];
     ResStrSectionCode:=Section^.Code;
@@ -169,6 +184,7 @@ begin
   // save settings and clean up
   IDEDialogLayoutList.SaveLayout(MakeResStrDialog);
 
+  MakeResStrDialog.Positions.Free;
   MakeResStrDialog.Free;
 end;
 
@@ -230,10 +246,23 @@ begin
               Parent.ClientWidth-Left-5,Height);
   end;
 
+  // existing resourcestrings with same value
+  with ResStrWithSameValueLabel do begin
+    SetBounds(ResStrSectionLabel.Left,
+              ResStrSectionComboBox.Top+ResStrSectionComboBox.Height+9,
+              150,Height);
+  end;
+
+  with ResStrWithSameValuesCombobox do begin
+    SetBounds(ResStrWithSameValueLabel.Left+ResStrWithSameValueLabel.Width+5,
+              ResStrSectionComboBox.Top+ResStrSectionComboBox.Height+5,
+              Parent.ClientWidth-Left-5,Height);
+  end;
+
   // insert position type
   with AppendResStrRadioButton do begin
     SetBounds(IdentPrefixLabel.Left,
-              ResStrSectionComboBox.Top+ResStrSectionComboBox.Height+7,
+              ResStrWithSameValuesCombobox.Top+ResStrWithSameValuesCombobox.Height+7,
               Min((Parent.ClientWidth-3*Left) div 2,150),Height);
   end;
 
@@ -280,19 +309,19 @@ begin
   with ConversionGroupBox do begin
     SetBounds(StringConstGroupBox.Left,
               StringConstGroupBox.Top+StringConstGroupBox.Height+5,
-              StringConstGroupBox.Width,140);
+              StringConstGroupBox.Width,170);
   end;
 
   // preview
   with SrcPreviewGroupBox do begin
     NewTop:=ConversionGroupBox.Top+ConversionGroupBox.Height+5;
     SetBounds(ConversionGroupBox.Left,NewTop,
-              ConversionGroupBox.Width,Parent.ClientHeight-NewTop-50);
+              ConversionGroupBox.Width,Parent.ClientHeight-NewTop-45);
   end;
 
   // ok+cancel buttons
   with OkButton do begin
-    SetBounds(Parent.ClientWidth-200,Parent.ClientHeight-35,
+    SetBounds(Parent.ClientWidth-200,Parent.ClientHeight-32,
               Width,Height);
   end;
 
@@ -312,6 +341,17 @@ begin
       mtError,[mbCancel],0);
     exit;
   end;
+  if ResStrExistsInAnySection(IdentifierEdit.Text)
+  and (not ResStrExistsWithSameValue(IdentifierEdit.Text)) then begin
+    if MessageDlg('Resourcestring already exists',
+      'The resourcestring "'+IdentifierEdit.Text+'" already exists.'#13
+      +'Please choose another name.'#13
+      +'Use Ignore to add it anyway.',
+      mtWarning,[mbOk,mbIgnore],0)
+      =mrOk
+    then
+      exit;
+  end;
   SaveHistories;
   ModalResult:=mrOk;
 end;
@@ -320,6 +360,17 @@ procedure TMakeResStrDialog.ResStrSectionComboBoxChange(Sender: TObject);
 begin
   UpdateIdentifier;
   UpdateSourcePreview;
+end;
+
+procedure TMakeResStrDialog.ResStrWithSameValuesComboboxChange(Sender: TObject);
+var
+  NewIdentifier: String;
+  i: Integer;
+begin
+  NewIdentifier:=ResStrWithSameValuesCombobox.Text;
+  i:=ResStrWithSameValuesCombobox.Items.IndexOf(NewIdentifier);
+  if i<0 then exit;
+  IdentifierEdit.Text:=NewIdentifier;
 end;
 
 procedure TMakeResStrDialog.SetupComponents;
@@ -412,6 +463,21 @@ begin
     Name:='ResStrSectionComboBox';
     Parent:=ConversionGroupBox;
     OnChange:=@ResStrSectionComboBoxChange;
+  end;
+
+  // existing resourcestrings with same value
+  ResStrWithSameValueLabel:=TLabel.Create(Self);
+  with ResStrWithSameValueLabel do begin
+    Name:='ResStrWithSameValueLabel';
+    Parent:=ConversionGroupBox;
+    Caption:='Strings with same value:';
+  end;
+
+  ResStrWithSameValuesCombobox:=TComboBox.Create(Self);
+  with ResStrWithSameValuesCombobox do begin
+    Name:='ResStrWithSameValuesCombobox';
+    Parent:=ConversionGroupBox;
+    OnChange:=@ResStrWithSameValuesComboboxChange;
   end;
 
   // insert position type
@@ -553,6 +619,46 @@ begin
   end;
 end;
 
+procedure TMakeResStrDialog.FillStringsWithSameValue;
+var
+  i: Integer;
+  CurSection: TCodeXYPosition;
+  NewSource, ResourceStringValue: string;
+  StringConstPositions: TCodeXYPositions;
+  ExistingIdentifier: string;
+begin
+  // get value of the new resourcestring
+  GetNewSource(NewSource, ResourceStringValue);
+  // get all existing resourcestrings with same value
+  StringConstPositions:=TCodeXYPositions.Create;
+  for i:=0 to Positions.Count-1 do begin
+    CurSection:=Positions[i]^;
+    CodeToolBoss.GatherResourceStringsWithValue(
+      CurSection.Code,CurSection.X,CurSection.Y,
+      ResourceStringValue,StringConstPositions);
+  end;
+  // fill combobox
+  ResStrWithSameValuesCombobox.Items.Clear;
+  for i:=0 to StringConstPositions.Count-1 do begin
+    CurSection:=StringConstPositions[i]^;
+    CodeToolBoss.GetIdentifierAt(CurSection.Code,CurSection.X,CurSection.Y,
+                                 ExistingIdentifier);
+    if ExistingIdentifier<>'' then
+      ResStrWithSameValuesCombobox.Items.Add(ExistingIdentifier);
+  end;
+  // enable components for selection
+  if ResStrWithSameValuesCombobox.Items.Count>0 then begin
+    ResStrWithSameValuesCombobox.Text:=ResStrWithSameValuesCombobox.Items[0];
+    ResStrWithSameValuesCombobox.Enabled:=true;
+  end else begin
+    ResStrWithSameValuesCombobox.Text:='';
+    ResStrWithSameValuesCombobox.Enabled:=false;
+  end;
+  ResStrWithSameValueLabel.Enabled:=ResStrWithSameValuesCombobox.Enabled;
+  // clean up
+  StringConstPositions.Free;
+end;
+
 procedure TMakeResStrDialog.UpdateIdentifier;
 var
   CustomIdent: Boolean;
@@ -591,13 +697,17 @@ var
   DefIdenLength: Integer;
   i: Integer;
 begin
+  if ResStrWithSameValuesCombobox.Items.Count>0 then begin
+    Result:=ResStrWithSameValuesCombobox.Items[0];
+    exit;
+  end;
   DefIdenLength:=StrToIntDef(IdentLengthComboBox.Text,8);
   if DefIdenLength<1 then DefIdenLength:=1;
   if DefIdenLength>80 then DefIdenLength:=80;
   Result:=IdentPrefixComboBox.Text+copy(DefaultIdentifier,1,DefIdenLength);
-  if ResourceStringExists(Result) then begin
+  if ResStrExistsInCurrentSection(Result) then begin
     i:=2;
-    while ResourceStringExists(Result+IntToStr(i)) do inc(i);
+    while ResStrExistsInCurrentSection(Result+IntToStr(i)) do inc(i);
     Result:=Result++IntToStr(i);
   end;
 end;
@@ -610,7 +720,7 @@ begin
   EndPos:=NewEndPos;
 end;
 
-function TMakeResStrDialog.ResourceStringExists(const Identifier: string
+function TMakeResStrDialog.ResStrExistsInCurrentSection(const Identifier: string
   ): boolean;
 var
   CodeXY: PCodeXYPosition;
@@ -622,6 +732,38 @@ begin
   CodeXY:=Positions.Items[Index];
   Result:=CodeToolBoss.IdentifierExistsInResourceStringSection(
                                 CodeXY^.Code,CodeXY^.X,CodeXY^.Y,Identifier);
+end;
+
+function TMakeResStrDialog.ResStrExistsInAnySection(const Identifier: string
+  ): boolean;
+var
+  CodeXY: PCodeXYPosition;
+  Index: Integer;
+begin
+  Result:=false;
+  for Index:=0 to Positions.Count-1 do begin
+    CodeXY:=Positions.Items[Index];
+    Result:=CodeToolBoss.IdentifierExistsInResourceStringSection(
+                                   CodeXY^.Code,CodeXY^.X,CodeXY^.Y,Identifier);
+    if Result then exit;
+  end;
+end;
+
+function TMakeResStrDialog.ResStrExistsWithSameValue(const Identifier: string
+  ): boolean;
+var
+  i: Integer;
+begin
+  if Identifier<>'' then begin
+    for i:=0 to ResStrWithSameValuesCombobox.Items.Count-1 do begin
+      if AnsiCompareText(Identifier,ResStrWithSameValuesCombobox.Items[i])=0
+      then begin
+        Result:=true;
+        exit;
+      end;
+    end;
+  end;
+  Result:=false;
 end;
 
 procedure TMakeResStrDialog.GetNewSource(var NewSource,
@@ -665,6 +807,8 @@ begin
   FillIdentPrefixes;
   // identifier lengths
   FillIdentLengths;
+  // existing resource strings with same value
+  FillStringsWithSameValue;
   // identifier
   CustomIdentifierCheckBox.Checked:=false;
   CodeToolBoss.CreateIdentifierFromStringConst(Code,StartPos.X,StartPos.Y,

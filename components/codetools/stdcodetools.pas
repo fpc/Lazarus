@@ -172,15 +172,18 @@ type
     function IdentifierExistsInResourceStringSection(
           const CursorPos: TCodeXYPosition;
           const ResStrIdentifier: string): boolean;
+    function GatherResourceStringsWithValue(const CursorPos: TCodeXYPosition;
+          const StringValue: string;
+          PositionList: TCodeXYPositions): boolean;
+    function AddResourcestring(const SectionPos: TCodeXYPosition;
+          const NewIdentifier, NewValue: string; InsertAlphabetically: boolean;
+          SourceChangeCache: TSourceChangeCache): boolean;
     function CreateIdentifierFromStringConst(
           const StartCursorPos, EndCursorPos: TCodeXYPosition;
           var Identifier: string; MaxLen: integer): boolean;
     function StringConstToFormatString(
           const StartCursorPos, EndCursorPos: TCodeXYPosition;
           var FormatStringConstant,FormatParameters: string): boolean;
-    function AddResourcestring(const SectionPos: TCodeXYPosition;
-          const NewIdentifier, NewValue: string; InsertAlphabetically: boolean;
-          SourceChangeCache: TSourceChangeCache): boolean;
   end;
 
 
@@ -1654,6 +1657,56 @@ begin
     end;
   until false;
   Result:=FormatStringConstant<>'';
+end;
+
+function TStandardCodeTool.GatherResourceStringsWithValue(
+  const CursorPos: TCodeXYPosition; const StringValue: string;
+  PositionList: TCodeXYPositions): boolean;
+  
+  procedure CompareStringConst(ANode: TCodeTreeNode);
+  var
+    CurValue: String;
+    NewCaret: TCodeXYPosition;
+  begin
+    MoveCursorToNodeStart(ANode);
+    ReadNextAtom; // read identifier
+    if not AtomIsIdentifier(false) then exit;
+    ReadNextAtom; // read =
+    if CurPos.Flag<>cafEqual then exit;
+    ReadNextAtom; // read start of string constant
+    if not AtomIsStringConstant then exit;
+    // extract string constant value
+    CurValue:=ReadStringConstantValue(CurPos.StartPos);
+    if CurValue<>StringValue then exit;
+    // values are the same
+    // -> add it to position list
+    // get x,y position
+    if not CleanPosToCaret(ANode.StartPos,NewCaret) then exit;
+    //writeln('TStandardCodeTool.GatherResourceStringsWithValue Found ',MainFilename,' Y=',NewCaret.Y);
+    PositionList.Add(NewCaret);
+  end;
+  
+var
+  CleanCursorPos: integer;
+  ANode: TCodeTreeNode;
+begin
+  Result:=false;
+  if PositionList=nil then exit;
+  // parse source and find clean positions
+  BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
+  // find resource string section
+  ANode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+  if (ANode=nil) then exit;
+  ANode:=ANode.GetNodeOfType(ctnResStrSection);
+  if ANode=nil then exit;
+  // search identifier in section
+  ANode:=ANode.FirstChild;
+  while ANode<>nil do begin
+    if (ANode.Desc=ctnConstDefinition) then begin
+      CompareStringConst(ANode);
+    end;
+    ANode:=ANode.NextBrother;
+  end;
 end;
 
 function TStandardCodeTool.AddResourcestring(const SectionPos: TCodeXYPosition;

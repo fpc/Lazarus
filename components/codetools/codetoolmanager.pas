@@ -39,10 +39,10 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, CodeToolsStrConsts, EventCodeTool, CodeTree, CodeAtom,
-  SourceChanger, DefineTemplates, CodeCache, ExprEval, LinkScanner,
-  KeywordFuncLists, TypInfo, AVL_Tree, CustomCodeTool, FindDeclarationTool,
-  IdentCompletionTool, ResourceCodeTool, CodeToolsStructs;
+  Classes, SysUtils, BasicCodeTools, CodeToolsStrConsts, EventCodeTool,
+  CodeTree, CodeAtom, SourceChanger, DefineTemplates, CodeCache, ExprEval,
+  LinkScanner, KeywordFuncLists, TypInfo, AVL_Tree, CustomCodeTool,
+  FindDeclarationTool, IdentCompletionTool, ResourceCodeTool, CodeToolsStructs;
 
 type
   TCodeToolManager = class;
@@ -237,10 +237,13 @@ type
     
     // gather identifiers (i.e. all visible)
     function GatherIdentifiers(Code: TCodeBuffer; X,Y: integer): boolean;
+    function GetIdentifierAt(Code: TCodeBuffer; X,Y: integer;
+          var Identifier: string): boolean;
 
     // resource string sections
     function GatherResourceStringSections(
-          Code: TCodeBuffer; X,Y: integer): boolean;
+          Code: TCodeBuffer; X,Y: integer;
+          CodePositions: TCodeXYPositions): boolean;
     function IdentifierExistsInResourceStringSection(Code: TCodeBuffer;
           X,Y: integer; const ResStrIdentifier: string): boolean;
     function CreateIdentifierFromStringConst(
@@ -251,6 +254,9 @@ type
           StartCode: TCodeBuffer; StartX, StartY: integer;
           EndCode: TCodeBuffer;   EndX, EndY: integer;
           var FormatStringConstant, FormatParameters: string): boolean;
+    function GatherResourceStringsWithValue(SectionCode: TCodeBuffer;
+          SectionX, SectionY: integer; const StringValue: string;
+          CodePositions: TCodeXYPositions): boolean;
     function AddResourcestring(SectionCode: TCodeBuffer;
           SectionX, SectionY: integer;
           const NewIdentifier, NewValue: string;
@@ -830,8 +836,27 @@ begin
   {$ENDIF}
 end;
 
-function TCodeToolManager.GatherResourceStringSections(Code: TCodeBuffer; X,
-  Y: integer): boolean;
+function TCodeToolManager.GetIdentifierAt(Code: TCodeBuffer; X, Y: integer;
+  var Identifier: string): boolean;
+var
+  CleanPos: integer;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.GetIdentifierAt A ',Code.Filename,' x=',x,' y=',y);
+  {$ENDIF}
+  Code.LineColToPosition(Y,X,CleanPos);
+  if (CleanPos>0) and (CleanPos<=Code.SourceLength) then begin
+    Identifier:=GetIdentifier(@Code.Source[CleanPos]);
+    Result:=true;
+  end else begin
+    Identifier:='';
+    Result:=false;
+  end;
+end;
+
+function TCodeToolManager.GatherResourceStringSections(Code: TCodeBuffer;
+  X, Y: integer; CodePositions: TCodeXYPositions): boolean;
 var
   CursorPos: TCodeXYPosition;
 begin
@@ -843,9 +868,12 @@ begin
   CursorPos.X:=X;
   CursorPos.Y:=Y;
   CursorPos.Code:=Code;
-  ClearPositions;
+  if CodePositions=nil then begin
+    ClearPositions;
+    CodePositions:=Positions;
+  end;
   try
-    Result:=FCurCodeTool.GatherResourceStringSections(CursorPos,Positions);
+    Result:=FCurCodeTool.GatherResourceStringSections(CursorPos,CodePositions);
   except
     on e: Exception do HandleException(e);
   end;
@@ -920,6 +948,32 @@ begin
   try
     Result:=FCurCodeTool.StringConstToFormatString(
              StartCursorPos,EndCursorPos,FormatStringConstant,FormatParameters);
+  except
+    on e: Exception do HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.GatherResourceStringsWithValue(
+  SectionCode: TCodeBuffer; SectionX, SectionY: integer;
+  const StringValue: string; CodePositions: TCodeXYPositions): boolean;
+var
+  CursorPos: TCodeXYPosition;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.GatherResourceStringsWithValue A ',Code.Filename,' x=',x,' y=',y);
+  {$ENDIF}
+  if not InitCurCodeTool(SectionCode) then exit;
+  CursorPos.X:=SectionX;
+  CursorPos.Y:=SectionY;
+  CursorPos.Code:=SectionCode;
+  if CodePositions=nil then begin
+    ClearPositions;
+    CodePositions:=Positions;
+  end;
+  try
+    Result:=FCurCodeTool.GatherResourceStringsWithValue(CursorPos,StringValue,
+                                                        CodePositions);
   except
     on e: Exception do HandleException(e);
   end;

@@ -56,8 +56,11 @@ type
     procedure Clear;
     function Add(const Position: TCodeXYPosition): integer;
     function Add(X,Y: integer; Code: TCodeBuffer): integer;
+    procedure Assign(Source: TCodeXYPositions);
+    function IsEqual(Source: TCodeXYPositions): boolean;
     function Count: integer;
     procedure Delete(Index: integer);
+    function CreateCopy: TCodeXYPositions;
   public
     property Items[Index: integer]: PCodeXYPosition
                                           read GetItems write SetItems; default;
@@ -160,6 +163,42 @@ begin
   Result:=Add(NewItem);
 end;
 
+procedure TCodeXYPositions.Assign(Source: TCodeXYPositions);
+var
+  i: Integer;
+begin
+  if IsEqual(Source) then exit;
+  Clear;
+  for i:=0 to Source.Count-1 do
+    Add(Source[i]^);
+end;
+
+function TCodeXYPositions.IsEqual(Source: TCodeXYPositions): boolean;
+var
+  SrcItem: TCodeXYPosition;
+  CurItem: TCodeXYPosition;
+  i: Integer;
+begin
+  if Source=Self then
+    Result:=true
+  else if (Source=nil) or (Source.Count<>Count) then
+    Result:=false
+  else begin
+    for i:=0 to Count-1 do begin
+      SrcItem:=Source[i]^;
+      CurItem:=Items[i]^;
+      if (SrcItem.X<>CurItem.X)
+      or (SrcItem.Y<>CurItem.Y)
+      or (SrcItem.Code<>CurItem.Code)
+      then begin
+        Result:=false;
+        exit;
+      end;
+    end;
+    Result:=true;
+  end;
+end;
+
 function TCodeXYPositions.Count: integer;
 begin
   if FItems<>nil then
@@ -175,6 +214,12 @@ begin
   Item:=Items[Index];
   Dispose(Item);
   FItems.Delete(Index);
+end;
+
+function TCodeXYPositions.CreateCopy: TCodeXYPositions;
+begin
+  Result:=TCodeXYPositions.Create;
+  Result.Assign(Self);
 end;
 
 end.
