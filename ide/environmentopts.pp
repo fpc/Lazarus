@@ -36,9 +36,10 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, FPCAdds, LCLProc, Forms, Controls, Buttons, GraphType,
-  Graphics,ExtCtrls, StdCtrls, Spin, Laz_XMLCfg, ObjectInspector, EditorOptions,
-  LResources, LazConf, Dialogs, ExtToolDialog, IDEProcs, IDEOptionDefs,
-  InputHistory, LazarusIDEStrConsts, FileUtil;
+  Graphics, ExtCtrls, StdCtrls, Spin, FileUtil, LResources, Dialogs,
+  Laz_XMLCfg, ObjectInspector,
+  LazarusIDEStrConsts, LazConf, ExtToolDialog, IDEProcs, IDEOptionDefs,
+  InputHistory, EditorOptions, Translations;
 
 const
   EnvOptsVersion: integer = 102;
@@ -84,58 +85,7 @@ const
   PascalExtension: array[TPascalExtType] of string = ('', '.pas', '.pp');
 
 
-  { IDE Language (Human, not computer) }
-
-type
-  TLazarusLanguage = (
-    llAutomatic,
-    llCatalan,
-    llEnglish,
-    llFrench,
-    llGerman,
-    llItalian,
-    llItalianISO_8859_1,
-    llPolish,
-    llPolishISO_8859_2,
-    llPolishCP1251,
-    llRussian,
-    llRussianCP1251,
-    llSpanish,
-    llFinnish,
-    llHebrew,
-    llArabic
-    );
-  
-const
-  // language names for the config files
-  // for the translations see function GetLazarusLanguageNames below
-  LazarusLanguageNames: array[TLazarusLanguage] of string = (
-    'Automatic (default is english)',
-    'Catalan',
-    'English',
-    'French',
-    'German',
-    'Italian',
-    'Italian(ISO 8859-1)',
-    'Polish',
-    'Polish(ISO 8859-2)',
-    'Polish(CP1250)',    
-    'Russian',
-    'Russian(CP1251)',
-    'Spanish',
-    'Finnish',
-    'Hebrew',
-    'Arabic'
-  );
-
-  LazarusLanguageIDs: array[TLazarusLanguage] of string = (
-    '', 'ca', 'en', 'fr', 'de', 'it', 'itiso', 'pl', 'pliso', 'plwin',
-    'ru', 'ruwin', 'es', 'fi', 'he', 'ar'
-  );
-  
-  
   { Ambigious files }
-
 type
   TAmbigiousFileAction = (
       afaAsk,
@@ -251,8 +201,8 @@ type
     fPascalFileAskLowerCase: boolean;
     fAmbigiousFileAction: TAmbigiousFileAction;
     
-    // language
-    fLanguage: TLazarusLanguage;
+    // language ID (see LazarusTranslations in translations.pas)
+    fLanguageID: string;
     
     procedure SetCompilerFilename(const AValue: string);
     procedure SetMakeFilename(const AValue: string);
@@ -411,7 +361,7 @@ type
                                                      write fAmbigiousFileAction;
        
     // language
-    property Language: TLazarusLanguage read fLanguage write fLanguage;
+    property LanguageID: string read fLanguageID write fLanguageID;
     
     // messages view
     property MsgViewDblClickJumps: boolean read fMsgViewDblClickJumps
@@ -637,7 +587,6 @@ var
 function DebuggerNameToType(const s: string): TDebuggerType;
 function PascalExtToType(const Ext: string): TPascalExtType;
 function AmbigiousFileActionNameToType(const Action: string): TAmbigiousFileAction;
-function GetLazarusLanguageNames(aLangId : TLazarusLanguage) : String;
 
 function CheckFileChanged(const OldFilename, NewFilename: string): boolean;
 function CheckExecutable(const OldFilename, NewFilename: string;
@@ -688,29 +637,6 @@ begin
       exit;
   end;
   Result:=afaAsk;
-end;
-
-function GetLazarusLanguageNames(aLangId: TLazarusLanguage) : String;
-begin
-  Result := '?';
-  Case aLangId of
-    llAutomatic         : Result := rsLanguageAutomatic;
-    llEnglish           : Result := rsLanguageEnglish;
-    llGerman            : Result := rsLanguageDeutsch;
-    llSpanish           : Result := rsLanguageSpanish;
-    llFrench            : Result := rsLanguageFrench;
-    llRussian           : Result := rsLanguageRussian;
-    llRussianCP1251     : Result := rsLanguageRussianWin;
-    llPolish            : Result := rsLanguagePolish;
-    llPolishISO_8859_2  : Result := rsLanguagePolishISO;
-    llPolishCP1251      : Result := rsLanguagePolishWin;
-    llItalian           : Result := rsLanguageItalian;
-    llItalianISO_8859_1 : Result := rsLanguageItalianISO;
-    llCatalan           : Result := rsLanguageCatalan;
-    llFinnish           : Result := rsLanguageFinnish;
-    llHebrew            : Result := rsLanguageHebrew;
-    llArabic            : Result := rsLanguageArabic;
-  end;
 end;
 
 function CheckFileChanged(const OldFilename,
@@ -809,7 +735,7 @@ begin
   FFilename:='';
 
   // language
-  Language:=llAutomatic;
+  LanguageID:='';
 
   // auto save
   FAutoSaveEditorFiles:=true;
@@ -993,15 +919,8 @@ var XMLConfig: TXMLConfig;
   end;
   
   procedure LoadLanguage;
-  var l: TLazarusLanguage;
-    s: string;
   begin
-    s:=XMLConfig.GetValue(
-       'EnvironmentOptions/Language/ID',LazarusLanguageIDs[fLanguage]);
-    for l:=Low(TLazarusLanguage) to High(TLazarusLanguage) do begin
-      if LazarusLanguageIDs[l]=s then
-        fLanguage:=l;
-    end;
+    fLanguageID:=XMLConfig.GetValue('EnvironmentOptions/Language/ID','');
   end;
 
 begin
@@ -1228,8 +1147,7 @@ begin
     XMLConfig.SetValue(Path+'Version/Value',EnvOptsVersion);
 
     // language
-    XMLConfig.SetDeleteValue(Path+'Language/ID'
-       ,LazarusLanguageIDs[fLanguage],LazarusLanguageIDs[llAutomatic]);
+    XMLConfig.SetDeleteValue(Path+'Language/ID',LanguageID,'');
 
     // auto save
     XMLConfig.SetDeleteValue(Path+'AutoSave/EditorFiles'
@@ -1606,8 +1524,10 @@ begin
 end;
 
 procedure TEnvironmentOptionsDialog.SetupDesktopPage(Page: integer);
-var MaxX:integer;
-  l: TLazarusLanguage;
+var
+  MaxX: integer;
+  i: Integer;
+  LangID: String;
 begin
   NoteBook.Page[Page].OnResize:=@OnDesktopPageResize;
 
@@ -1636,12 +1556,13 @@ begin
     with Items do
     begin
       BeginUpdate;
-      for l:=Low(TLazarusLanguage) to High(TLazarusLanguage) do
-      begin
-        If l<>Low(TLazarusLanguage) then
-          Add(GetLazarusLanguageNames(l)+' ['+LazarusLanguageIDs[l]+']')
+      for i:=0 to LazarusTranslations.Count-1 do begin
+        LangID:=LazarusTranslations[i].ID;
+        if LangID='' then
+          //No [] if automatic
+          Add(GetLazarusLanguageLocalizedName(LangID))
         else
-          Add(GetLazarusLanguageNames(l)); //No [] if automatic
+          Add(GetLazarusLanguageLocalizedName(LangID)+' ['+LangID+']');
       end;
       EndUpdate;
     end;
@@ -3639,7 +3560,7 @@ var i: integer;
 begin
   with AnEnvironmentOptions do begin
     // language
-    LanguageComboBox.ItemIndex:=ord(Language);
+    LanguageComboBox.ItemIndex:=LazarusTranslations.IndexOf(LanguageID);
 
     // auto save
     AutoSaveEditorFilesCheckBox.Checked:=AutoSaveEditorFiles;
@@ -3768,14 +3689,12 @@ end;
 
 procedure TEnvironmentOptionsDialog.WriteSettings(
   AnEnvironmentOptions: TEnvironmentOptions);
-var
-  l: TLazarusLanguage;
 begin
   with AnEnvironmentOptions do begin
     // language
-    for l:=low(TLazarusLanguage) to High(TLazarusLanguage) do
-      if ord(l)=LanguageComboBox.ItemIndex then
-        Language:=l;
+    if (LanguageComboBox.ItemIndex>=0)
+    and (LanguageComboBox.ItemIndex<LazarusTranslations.Count) then
+      LanguageID:=LazarusTranslations[LanguageComboBox.ItemIndex].ID;
 
     // auto save
     AutoSaveEditorFiles:=AutoSaveEditorFilesCheckBox.Checked;

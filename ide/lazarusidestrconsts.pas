@@ -379,6 +379,8 @@ resourcestring
   lisFileIsVirtual = 'File %s%s%s is virtual.';
   lisUnableToWrite = 'Unable to write %s%s%s%s%s.';
   lisFileNotText = 'File not text';
+  lisUnableToRenameFile = 'Unable to rename file';
+  lisUnableToRenameFileTo2 = 'Unable to rename file %s%s%s%sto %s%s%s.';
   lisFileDoesNotLookLikeATextFileOpenItAnyway = 'File %s%s%s%sdoes not look '
     +'like a text file.%sOpen it anyway?';
   lisInvalidCommand = 'Invalid command';
@@ -1816,6 +1818,9 @@ resourcestring
   lisCanNotCreateFile = 'Can not create file %s%s%s';
   lisUnableToCreateFilename = 'Unable to create file %s%s%s.';
   lisUnableToWriteFile = 'Unable to write file';
+  lisUnableToWriteFile2 = 'Unable to write file %s%s%s';
+  lisFileIsNotWritable = 'File is not writable';
+  lisUnableToWriteToFile2 = 'Unable to write to file %s%s%s';
   lisUnableToWriteFilename = 'Unable to write file %s%s%s.';
   lisUnableToReadFile = 'Unable to read file';
   lisUnableToReadFilename = 'Unable to read file %s%s%s.';
@@ -2033,6 +2038,7 @@ resourcestring
   lisPkgMangUnableToReadStateFileOfPackageError = 'Unable to read state file %'
     +'s%s%s%sof package %s.%sError: %s';
   lisPkgMangUnableToCreateDirectory = 'Unable to create directory';
+  lisUnableToCreateDirectory2 = 'Unable to create directory %s%s%s';
   lisPkgMangUnableToCreateOutputDirectoryForPackage = 'Unable to create '
     +'output directory %s%s%s%sfor package %s.';
   lisPkgMangUnableToDeleteFilename = 'Unable to delete file';

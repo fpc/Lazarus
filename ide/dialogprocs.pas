@@ -81,9 +81,9 @@ begin
       break;
     end else begin
       DlgButtons:=[mbCancel,mbRetry]+ExtraButtons;
-      Result:=MessageDlg('Unable to rename file',
-        'Unable to rename file "'+SrcFilename+'"'#13
-        +'to "'+DestFilename+'".',
+      Result:=MessageDlg(lisUnableToRenameFile,
+        Format(lisUnableToRenameFileTo2, ['"', SrcFilename, '"', #13, '"',
+          DestFilename, '"']),
         mtError,DlgButtons,0);
       if (Result<>mrRetry) then exit;
     end;
@@ -143,8 +143,8 @@ begin
     if Buffer<>nil then begin
       break;
     end else begin
-      Result:=MessageDlg('Unable to create file',
-        'Unable to create file "'+Filename+'".',
+      Result:=MessageDlg(lisUnableToCreateFile,
+        Format(lisUnableToCreateFilename, ['"', Filename, '"']),
         mtError,ErrorButtons+[mbCancel],0);
       if Result<>mrRetry then exit;
     end;
@@ -153,8 +153,8 @@ begin
     if Buffer.Save then begin
       break;
     end else begin
-      Result:=MessageDlg('Unable to write file',
-        'Unable to write file "'+Buffer.Filename+'"',
+      Result:=MessageDlg(lisUnableToWriteFile,
+        Format(lisUnableToWriteFile2, ['"', Buffer.Filename, '"']),
         mtError,ErrorButtons+[mbCancel],0);
       if Result<>mrRetry then exit;
     end;
@@ -167,8 +167,8 @@ function CheckFileIsWritable(const Filename: string;
 begin
   Result:=mrOk;
   while not FileIsWritable(Filename) do begin
-    Result:=MessageDlg('File is not writable',
-      'Unable to write to file "'+Filename+'"',
+    Result:=MessageDlg(lisFileIsNotWritable,
+      Format(lisUnableToWriteToFile2, ['"', Filename, '"']),
       mtError,ErrorButtons+[mbCancel],0);
     if Result<>mrRetry then exit;
   end;
@@ -187,8 +187,8 @@ begin
       Dir:=copy(Directory,1,i-1);
       if not DirPathExists(Dir) then begin
         while not CreateDir(Dir) do begin
-          Result:=MessageDlg('Unable to create directory',
-            'Unable to create directory "'+Dir+'"',
+          Result:=MessageDlg(lisPkgMangUnableToCreateDirectory,
+            Format(lisUnableToCreateDirectory2, ['"', Dir, '"']),
             mtError,ErrorButtons+[mbCancel],0);
           if Result<>mrRetry then exit;
         end;

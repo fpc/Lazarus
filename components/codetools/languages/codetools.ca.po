@@ -410,6 +410,10 @@ msgstr "especificador d'índex redefinit"
 msgid "inherited keyword only allowed in methods"
 msgstr "la paraula clau Inherited només és permesa dins dels mètodes"
 
+#: codetoolsstrconsts:ctsinstallerdirectories
+msgid "Installer directories"
+msgstr ""
+
 #: codetoolsstrconsts:ctsinsufficientmemory
 msgid "insufficient memory"
 msgstr "memòria insuficient"

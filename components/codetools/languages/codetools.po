@@ -506,6 +506,10 @@ msgstr ""
 msgid "Utils directories"
 msgstr ""
 
+#: codetoolsstrconsts:ctsinstallerdirectories
+msgid "Installer directories"
+msgstr ""
+
 #: codetoolsstrconsts:ctsdefsforlazarussources
 msgid "Definitions for the Lazarus Sources"
 msgstr ""

@@ -30,7 +30,7 @@ unit IDEProcs;
 interface
 
 uses
-  Classes, SysUtils, Laz_XMLCfg, GetText, FileUtil, FileProcs, SynRegExpr,
+  Classes, SysUtils, Laz_XMLCfg, FileUtil, FileProcs, SynRegExpr,
   LazConf;
 
 type
@@ -167,9 +167,6 @@ function SplitString(const s: string; Delimiter: char): TStringList;
 function SpecialCharsToSpaces(const s: string): string;
 function StringListToText(List: TStrings; const Delimiter: string;
                           IgnoreEmptyLines: boolean): string;
-
-// translation/internationalization/localization
-procedure TranslateResourceStrings(const BaseDirectory, CustomLang: string);
 
 // environment
 function EnvironmentAsStringList: TStringList;
@@ -1361,76 +1358,6 @@ begin
   end;
 end;
 
-procedure TranslateUnitResourceStrings(const ResUnitName, AFilename: string);
-var
-  mo: TMOFile;
-  TableID, StringID, TableCount: Integer;
-  s: String;
-begin
-  if (ResUnitName='') or (AFilename='') or (not FileExists(AFilename)) then
-    exit;
-  try
-    mo := TMOFile.Create(AFilename);
-    try
-      for TableID:=0 to ResourceStringTableCount - 1 do
-      begin
-        TableCount := ResourceStringCount(TableID);
-
-        // check if this table belongs to the ResUnitName
-        if TableCount=0 then continue;
-        s:=GetResourceStringName(TableID,0);
-        if AnsiCompareText(ResUnitName+'.',LeftStr(s,length(ResUnitName)+1))<>0
-        then continue;
-
-        // translate all resource strings of the unit
-        for StringID := 0 to TableCount - 1 do begin
-          s := mo.Translate(GetResourceStringDefaultValue(TableID,StringID),
-            GetResourceStringHash(TableID,StringID));
-          if Length(s) > 0 then begin
-            SetResourceStringValue(TableID,StringID,s);
-          end;
-        end;
-      end;
-    finally
-      mo.Free;
-    end;
-  except
-    on e: Exception do;
-  end;
-end;
-
-procedure TranslateUnitResourceStrings(const ResUnitName, BaseFilename,
-  Lang, FallbackLang: string);
-begin
-  if (ResUnitName='') or (BaseFilename='')
-  or ((Lang='') and (FallbackLang='')) then exit;
-  
-  if FallbackLang<>'' then
-    TranslateUnitResourceStrings(ResUnitName,Format(BaseFilename,[FallbackLang]));
-  if Lang<>'' then
-    TranslateUnitResourceStrings(ResUnitName,Format(BaseFilename,[Lang]));
-end;
-
-procedure GetLanguageIDs(var Lang, FallbackLang: string);
-begin
-  Lang := GetEnv('LC_ALL');
-  FallbackLang:='';
-  
-  if Length(Lang) = 0 then
-  begin
-    Lang := GetEnv('LC_MESSAGES');
-    if Length(Lang) = 0 then
-    begin
-      Lang := GetEnv('LANG');
-      if Length(Lang) = 0 then
-        exit;   // no language defined via environment variables
-    end;
-  end;
-
-  FallbackLang := Copy(Lang, 1, 2);
-  Lang := Copy(Lang, 1, 5);
-end;
-
 {-------------------------------------------------------------------------------
   function SpecialCharsToSpaces(const s: string): string;
 -------------------------------------------------------------------------------}
@@ -1482,49 +1409,6 @@ begin
       inc(p,length(s));
     end;
   end;
-end;
-
-{-------------------------------------------------------------------------------
-  TranslateResourceStrings
-
-  Params: none
-  Result: none
-
-  Translates all resourcestrings of the resource string files:
-    - lclstrconsts.pas
-    - codetoolsstrconsts.pas
-    - lazarusidestrconsts.pas
--------------------------------------------------------------------------------}
-procedure TranslateResourceStrings(const BaseDirectory, CustomLang: string);
-var
-  Lang, FallbackLang: String;
-  Dir: String;
-begin
-  if CustomLang='' then begin
-    GetLanguageIDs(Lang,FallbackLang);
-  end else begin
-    Lang:=CustomLang;
-    FallbackLang:='';
-  end;
-  Dir:=AppendPathDelim(BaseDirectory);
-  // LCL
-  TranslateUnitResourceStrings('LclStrConsts',
-    Dir+'lcl/languages/lcl.%s.mo',Lang,FallbackLang);
-  // IDE without objectinspector
-  TranslateUnitResourceStrings('LazarusIDEStrConsts',
-    Dir+'languages/lazaruside.%s.mo',Lang,FallbackLang);
-  // objectinspector
-  TranslateUnitResourceStrings('ObjInspStrConsts',
-    Dir+'languages/objinspstrconsts.%s.mo',Lang,FallbackLang);
-  // CodeTools
-  TranslateUnitResourceStrings('CodeToolsStrConsts',
-    Dir+'components/codetools/languages/codetools.%s.mo',Lang,FallbackLang);
-  // SynEdit
-  TranslateUnitResourceStrings('SynEditStrConst',
-    Dir+'components/synedit/languages/synedit.%s.mo',Lang,FallbackLang);
-  // SynMacroRecorder
-  TranslateUnitResourceStrings('SynMacroRecorder',
-    Dir+'components/synedit/languages/synmacrorecorder.%s.mo',Lang,FallbackLang);
 end;
 
 {-------------------------------------------------------------------------------

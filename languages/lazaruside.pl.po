@@ -329,6 +329,10 @@ msgstr "Dodaj element"
 msgid "add break point"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuaddbreakpoint
+msgid "Add breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetempladdcodetemplate
 msgid "Add code template"
 msgstr "Dodaj szablon kodu"
@@ -384,6 +388,14 @@ msgstr "Dodaj do pakietu"
 #: lazarusidestrconsts:lisa2paddunit
 msgid "Add Unit"
 msgstr "Dodaj moduł"
+
+#: lazarusidestrconsts:srkmecaddwatch
+msgid "add watch"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuaddwatch
+msgid "Add watch ..."
+msgstr ""
 
 #: lazarusidestrconsts:dlgedadd
 msgid "Add..."
@@ -2005,6 +2017,14 @@ msgstr "Błędy"
 msgid "Escape"
 msgstr "Escape"
 
+#: lazarusidestrconsts:srkmecevaluate
+msgid "evaluate/modify"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuevaluate
+msgid "Evaluate/Modify ..."
+msgstr ""
+
 #: lazarusidestrconsts:srvk_execute
 msgid "Execute"
 msgstr "Uruchom"
@@ -2030,8 +2050,8 @@ msgid "Execution paused"
 msgstr "Wykonanie przerwane"
 
 #: lazarusidestrconsts:lisexecutionpausedadress
-msgid "Execution paused%s  Adress: $%p%s  Procedure: %s%s  File: %s%s(Some day an assembler window might popup here :)%s"
-msgstr "Wykonanie przerwane%s  Adres: $%p%s  Procedura: %s%s  Plik: %s%s(Pewnego pięknego dnia w tym miejscu wyświetli się okno asemblera :)%s"
+msgid "Execution paused%s  Adress: $%s%s  Procedure: %s%s  File: %s%s(Some day an assembler window might popup here :)%s"
+msgstr ""
 
 #: lazarusidestrconsts:lisexecutionstopped
 msgid "Execution stopped"
@@ -2136,6 +2156,10 @@ msgstr "Plik należy do pakietu"
 #: lazarusidestrconsts:lispkgmangfileisinproject
 msgid "File is in Project"
 msgstr "Plik należy do projektu"
+
+#: lazarusidestrconsts:lisfileisnotwritable
+msgid "File is not writable"
+msgstr ""
 
 #: lazarusidestrconsts:uefilerocap
 msgid "File is readonly"
@@ -2785,10 +2809,6 @@ msgstr "Wetnij kod do"
 msgid "Indent selection"
 msgstr "Zwiększ wcięcie zaznaczenia"
 
-#: lazarusidestrconsts:dlgpoinfo
-msgid "Info"
-msgstr "Informacja"
-
 #: lazarusidestrconsts:lisinformationaboutunit
 msgid "Information about %s"
 msgstr "Informacja o %s"
@@ -2980,6 +3000,14 @@ msgstr "Wstaw szablon"
 #: lazarusidestrconsts:lismenuinserttext
 msgid "Insert text"
 msgstr "Wstaw tekst"
+
+#: lazarusidestrconsts:srkmecinspect
+msgid "inspect"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuinspect
+msgid "Inspect ..."
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditinstall
 msgid "Install"
@@ -3520,6 +3548,22 @@ msgstr "Makra"
 #: lazarusidestrconsts:dlgmainmenu
 msgid "Main Menu"
 msgstr "Menu główne"
+
+#: lazarusidestrconsts:lismainunithasapplicationcreateformstatements
+msgid "Main Unit has Application.CreateForm statements"
+msgstr ""
+
+#: lazarusidestrconsts:lismainunithasapplicationtitlestatements
+msgid "Main Unit has Application.Title statements"
+msgstr ""
+
+#: lazarusidestrconsts:lismainunithasusessectioncontainingallunitsofproject
+msgid "Main Unit has Uses Section containing all Units of project"
+msgstr ""
+
+#: lazarusidestrconsts:lismainunitispascalsource
+msgid "Main Unit is Pascal Source"
+msgstr ""
 
 #: lazarusidestrconsts:lispckoptsmajor
 msgid "Major"
@@ -4504,6 +4548,10 @@ msgstr "Inspektor projektu"
 #: lazarusidestrconsts:lisprojinspprojectinspector
 msgid "Project Inspector - %s"
 msgstr "Inspektor projektu- %s"
+
+#: lazarusidestrconsts:lisprojectisrunnable
+msgid "Project is runnable"
+msgstr ""
 
 #: lazarusidestrconsts:srkmcatprojectmenu
 msgid "Project menu commands"
@@ -5505,6 +5553,10 @@ msgstr "Przykro mi, ten typ jeszcze nie jest obsługiwany"
 msgid "Sort selection"
 msgstr "Posortuj zaznaczenie"
 
+#: lazarusidestrconsts:lismenuaddbpsource
+msgid "Source breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts:lissourcedirectorydoesnotexists
 msgid "Source directory %s%s%s does not exists."
 msgstr "Katalog źródłowy %s%s%s nie istnieje."
@@ -5950,8 +6002,8 @@ msgid "The file %s%s%s%sis currently not in the unitpath of the package.%s%sAdd 
 msgstr "Plik %s%s%s%sis jest poza ścieżką do modułów .%s%sCzy dodać %s%s%s do ścieżki do modułów?"
 
 #: lazarusidestrconsts:listhefileseemstobeaprogramclosecurrentproject
-msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%sCancel will load the file as normal source."
-msgstr "Plik %s%s%s%swydaje się być programem. Chcesz zamknąć bieżący projekt i utworzyć nowy dla tego programu?%sAnuluj załaduje plik jako normalne źródło."
+msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%s\"No\" will load the file as normal source."
+msgstr ""
 
 #: lazarusidestrconsts:listhefileseemstobetheprogramfileofanexistinglazarus
 msgid "The file %s%s%s%sseems to be the program file of an existing lazarus Project1.%sOpen project?%sCancel will load the file as normal source."
@@ -6457,6 +6509,10 @@ msgstr "Nie można utworzyć katalogu z kopią zapasową %s%s%s."
 msgid "Unable to create directory"
 msgstr "Nie można utworzyć katalogu"
 
+#: lazarusidestrconsts:lisunabletocreatedirectory2
+msgid "Unable to create directory %s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletocreatedirectory
 msgid "Unable to create directory %s%s%s."
 msgstr "Nie można utworzyć katalogu %s%s%s."
@@ -6581,9 +6637,17 @@ msgstr "Nie można usunąć starego pliku kopii zapasowej %s%s%s!"
 msgid "Unable to rename ambigious file %s%s%s%sto %s%s%s"
 msgstr "Nie udało się zmienić nazwy niejednoznacznego pliku %s%s%s%sna %s%s%s"
 
+#: lazarusidestrconsts:lisunabletorenamefile
+msgid "Unable to rename file"
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletorenamefileto
 msgid "Unable to rename file %s%s%s to %s%s%s!"
 msgstr "Nie udało się zmienić nazwy pliku %s%s%s na %s%s%s!"
+
+#: lazarusidestrconsts:lisunabletorenamefileto2
+msgid "Unable to rename file %s%s%s%sto %s%s%s."
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletorenameforminsource
 msgid "Unable to rename form in source."
@@ -6633,6 +6697,10 @@ msgstr "Nie można pisać do pliku %s%s%s%s%s."
 msgid "Unable to write file"
 msgstr "Nie można pisać do pliku"
 
+#: lazarusidestrconsts:lisunabletowritefile2
+msgid "Unable to write file %s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletowritefileerror
 msgid "Unable to write file %s%s%s%sError: %s"
 msgstr "Nie można zapisać do pliku %s%s%s%sBłąd: %s"
@@ -6648,6 +6716,10 @@ msgstr "Nie można zapisać pakietu %s%s%s%sdo pliku %s%s%s.%sBłąd: %s"
 #: lazarusidestrconsts:lispkgmangunabletowritestatefileofpackageerror
 msgid "Unable to write state file %s%s%s%sof package %s.%sError: %s"
 msgstr "Nie można zapisać pliku statusu %s%s%s%spakietu %s.%sBłąd: %s"
+
+#: lazarusidestrconsts:lisunabletowritetofile2
+msgid "Unable to write to file %s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletowritetofile
 msgid "Unable to write to file %s%s%s!"

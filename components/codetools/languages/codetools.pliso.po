@@ -421,6 +421,10 @@ msgstr "specyfikator indeksu powtórnie zdefiniowany"
 msgid "inherited keyword only allowed in methods"
 msgstr "s³owa kluczowego inherited mo¿na u¿ywaæ tyklko przy metodach"
 
+#: codetoolsstrconsts:ctsinstallerdirectories
+msgid "Installer directories"
+msgstr ""
+
 #: codetoolsstrconsts:ctsinsufficientmemory
 msgid "insufficient memory"
 msgstr "brak pamiêci"

@@ -638,6 +638,26 @@ msgstr ""
 msgid "Configure Build+Run File"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuinspect
+msgid "Inspect ..."
+msgstr ""
+
+#: lazarusidestrconsts:lismenuevaluate
+msgid "Evaluate/Modify ..."
+msgstr ""
+
+#: lazarusidestrconsts:lismenuaddwatch
+msgid "Add watch ..."
+msgstr ""
+
+#: lazarusidestrconsts:lismenuaddbreakpoint
+msgid "Add breakpoint"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuaddbpsource
+msgid "Source breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuopenpackage
 msgid "Open loaded package"
 msgstr ""
@@ -931,7 +951,7 @@ msgid "Project info file detected"
 msgstr ""
 
 #: lazarusidestrconsts:listhefileseemstobeaprogramclosecurrentproject
-msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%sCancel will load the file as normal source."
+msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%s\"No\" will load the file as normal source."
 msgstr ""
 
 #: lazarusidestrconsts:lisprogramdetected
@@ -1052,6 +1072,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfilenottext
 msgid "File not text"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletorenamefile
+msgid "Unable to rename file"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletorenamefileto2
+msgid "Unable to rename file %s%s%s%sto %s%s%s."
 msgstr ""
 
 #: lazarusidestrconsts:lisfiledoesnotlooklikeatextfileopenitanyway
@@ -2958,8 +2986,8 @@ msgstr ""
 msgid "Forms"
 msgstr ""
 
-#: lazarusidestrconsts:dlgpoinfo
-msgid "Info"
+#: lazarusidestrconsts:dlgpomisc
+msgid "Misc"
 msgstr ""
 
 #: lazarusidestrconsts:dlgapplicationsettings
@@ -2996,6 +3024,26 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgsaveeditorinfoproject
 msgid "Save editor info only for project files"
+msgstr ""
+
+#: lazarusidestrconsts:lismainunitispascalsource
+msgid "Main Unit is Pascal Source"
+msgstr ""
+
+#: lazarusidestrconsts:lismainunithasusessectioncontainingallunitsofproject
+msgid "Main Unit has Uses Section containing all Units of project"
+msgstr ""
+
+#: lazarusidestrconsts:lismainunithasapplicationcreateformstatements
+msgid "Main Unit has Application.CreateForm statements"
+msgstr ""
+
+#: lazarusidestrconsts:lismainunithasapplicationtitlestatements
+msgid "Main Unit has Application.Title statements"
+msgstr ""
+
+#: lazarusidestrconsts:lisprojectisrunnable
+msgid "Project is runnable"
 msgstr ""
 
 #: lazarusidestrconsts:dlgrunparameters
@@ -4076,6 +4124,18 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecconfigbuildfile
 msgid "config build file"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecinspect
+msgid "inspect"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecevaluate
+msgid "evaluate/modify"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecaddwatch
+msgid "add watch"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecexttoolsettings
@@ -5570,6 +5630,18 @@ msgstr ""
 msgid "Unable to write file"
 msgstr ""
 
+#: lazarusidestrconsts:lisunabletowritefile2
+msgid "Unable to write file %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lisfileisnotwritable
+msgid "File is not writable"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletowritetofile2
+msgid "Unable to write to file %s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletowritefilename
 msgid "Unable to write file %s%s%s."
 msgstr ""
@@ -5735,7 +5807,7 @@ msgid "Execution paused"
 msgstr ""
 
 #: lazarusidestrconsts:lisexecutionpausedadress
-msgid "Execution paused%s  Adress: $%p%s  Procedure: %s%s  File: %s%s(Some day an assembler window might popup here :)%s"
+msgid "Execution paused%s  Adress: $%s%s  Procedure: %s%s  File: %s%s(Some day an assembler window might popup here :)%s"
 msgstr ""
 
 #: lazarusidestrconsts:lisfilenotfound
@@ -6152,6 +6224,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangunabletocreatedirectory
 msgid "Unable to create directory"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletocreatedirectory2
+msgid "Unable to create directory %s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangunabletocreateoutputdirectoryforpackage

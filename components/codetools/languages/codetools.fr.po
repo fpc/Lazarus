@@ -420,6 +420,10 @@ msgstr "index spécifié déjà défini"
 msgid "inherited keyword only allowed in methods"
 msgstr "mot clé Inherited seulement permis dans les méthodes"
 
+#: codetoolsstrconsts:ctsinstallerdirectories
+msgid "Installer directories"
+msgstr ""
+
 #: codetoolsstrconsts:ctsinsufficientmemory
 msgid "insufficient memory"
 msgstr "Mémoire insuffisante"

@@ -421,6 +421,10 @@ msgstr "especificador de índice redefinido"
 msgid "inherited keyword only allowed in methods"
 msgstr "palabra clave inherited permitida sólo en métodos"
 
+#: codetoolsstrconsts:ctsinstallerdirectories
+msgid "Installer directories"
+msgstr ""
+
 #: codetoolsstrconsts:ctsinsufficientmemory
 msgid "insufficient memory"
 msgstr "memoria insuficiente"

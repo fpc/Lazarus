@@ -410,6 +410,10 @@ msgstr "модификатор индекса переопределено"
 msgid "inherited keyword only allowed in methods"
 msgstr "ключевое слово inherited (унаследовано) разрешено только в методах"
 
+#: codetoolsstrconsts:ctsinstallerdirectories
+msgid "Installer directories"
+msgstr ""
+
 #: codetoolsstrconsts:ctsinsufficientmemory
 msgid "insufficient memory"
 msgstr "мало памяти"

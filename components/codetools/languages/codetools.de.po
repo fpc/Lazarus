@@ -410,6 +410,10 @@ msgstr ""
 msgid "inherited keyword only allowed in methods"
 msgstr ""
 
+#: codetoolsstrconsts:ctsinstallerdirectories
+msgid "Installer directories"
+msgstr ""
+
 #: codetoolsstrconsts:ctsinsufficientmemory
 msgid "insufficient memory"
 msgstr ""

@@ -741,6 +741,7 @@ ide/startlazopts.pas svneol=native#text/pascal
 ide/sysvaruseroverridedlg.pas svneol=native#text/pascal
 ide/todolist.pp svneol=native#text/pascal
 ide/transfermacros.pp svneol=native#text/pascal
+ide/translations.pas svneol=native#text/pascal
 ide/unitdependencies.lrs svneol=native#text/pascal
 ide/unitdependencies.pas svneol=native#text/pascal
 ide/uniteditor.pp svneol=native#text/pascal

@@ -420,6 +420,10 @@ msgstr "ridefinito specificatore di indice"
 msgid "inherited keyword only allowed in methods"
 msgstr "una parolachiave ereditata è consentita solo in un metodo"
 
+#: codetoolsstrconsts:ctsinstallerdirectories
+msgid "Installer directories"
+msgstr ""
+
 #: codetoolsstrconsts:ctsinsufficientmemory
 msgid "insufficient memory"
 msgstr "memoria insufficiente"

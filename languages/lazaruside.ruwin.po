@@ -318,6 +318,10 @@ msgstr "Добавить элемент"
 msgid "add break point"
 msgstr "добавить точку останова"
 
+#: lazarusidestrconsts:lismenuaddbreakpoint
+msgid "Add breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetempladdcodetemplate
 msgid "Add code template"
 msgstr "Добавить шаблон кода"
@@ -373,6 +377,14 @@ msgstr "Добавить к пакету"
 #: lazarusidestrconsts:lisa2paddunit
 msgid "Add Unit"
 msgstr "Добавить модуль"
+
+#: lazarusidestrconsts:srkmecaddwatch
+msgid "add watch"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuaddwatch
+msgid "Add watch ..."
+msgstr ""
 
 #: lazarusidestrconsts:dlgedadd
 msgid "Add..."
@@ -1994,6 +2006,14 @@ msgstr "Ошибки"
 msgid "Escape"
 msgstr "Escape"
 
+#: lazarusidestrconsts:srkmecevaluate
+msgid "evaluate/modify"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuevaluate
+msgid "Evaluate/Modify ..."
+msgstr ""
+
 #: lazarusidestrconsts:srvk_execute
 msgid "Execute"
 msgstr "Выполнить"
@@ -2019,8 +2039,8 @@ msgid "Execution paused"
 msgstr "Выполнение приостановлено"
 
 #: lazarusidestrconsts:lisexecutionpausedadress
-msgid "Execution paused%s  Adress: $%p%s  Procedure: %s%s  File: %s%s(Some day an assembler window might popup here :)%s"
-msgstr "Выполнение приостановлено %s  Адрес: $%p%s Процедура %s%s  Файл: %s%s (Когда-нибудь здесь будет окно ассемблера :)%s"
+msgid "Execution paused%s  Adress: $%s%s  Procedure: %s%s  File: %s%s(Some day an assembler window might popup here :)%s"
+msgstr ""
 
 #: lazarusidestrconsts:lisexecutionstopped
 msgid "Execution stopped"
@@ -2125,6 +2145,10 @@ msgstr "Файл уже есть в пакете"
 #: lazarusidestrconsts:lispkgmangfileisinproject
 msgid "File is in Project"
 msgstr "Файл в проекте"
+
+#: lazarusidestrconsts:lisfileisnotwritable
+msgid "File is not writable"
+msgstr ""
 
 #: lazarusidestrconsts:uefilerocap
 msgid "File is readonly"
@@ -2774,10 +2798,6 @@ msgstr "Выровнять код по"
 msgid "Indent selection"
 msgstr "Сдвинуть блок вправо"
 
-#: lazarusidestrconsts:dlgpoinfo
-msgid "Info"
-msgstr "Информация"
-
 #: lazarusidestrconsts:lisinformationaboutunit
 msgid "Information about %s"
 msgstr "Информация о %s"
@@ -2969,6 +2989,14 @@ msgstr "Вставить шаблон"
 #: lazarusidestrconsts:lismenuinserttext
 msgid "Insert text"
 msgstr "Вставить текст"
+
+#: lazarusidestrconsts:srkmecinspect
+msgid "inspect"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuinspect
+msgid "Inspect ..."
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditinstall
 msgid "Install"
@@ -3509,6 +3537,22 @@ msgstr "Макросы"
 #: lazarusidestrconsts:dlgmainmenu
 msgid "Main Menu"
 msgstr "Главное меню"
+
+#: lazarusidestrconsts:lismainunithasapplicationcreateformstatements
+msgid "Main Unit has Application.CreateForm statements"
+msgstr ""
+
+#: lazarusidestrconsts:lismainunithasapplicationtitlestatements
+msgid "Main Unit has Application.Title statements"
+msgstr ""
+
+#: lazarusidestrconsts:lismainunithasusessectioncontainingallunitsofproject
+msgid "Main Unit has Uses Section containing all Units of project"
+msgstr ""
+
+#: lazarusidestrconsts:lismainunitispascalsource
+msgid "Main Unit is Pascal Source"
+msgstr ""
 
 #: lazarusidestrconsts:lispckoptsmajor
 msgid "Major"
@@ -4493,6 +4537,10 @@ msgstr "Инспектор проекта"
 #: lazarusidestrconsts:lisprojinspprojectinspector
 msgid "Project Inspector - %s"
 msgstr "Инспектор проекта - %s"
+
+#: lazarusidestrconsts:lisprojectisrunnable
+msgid "Project is runnable"
+msgstr ""
 
 #: lazarusidestrconsts:srkmcatprojectmenu
 msgid "Project menu commands"
@@ -5494,6 +5542,10 @@ msgstr "Извините, этот тип ещё не реализован"
 msgid "Sort selection"
 msgstr "Сортировка выбранного"
 
+#: lazarusidestrconsts:lismenuaddbpsource
+msgid "Source breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts:lissourcedirectorydoesnotexists
 msgid "Source directory %s%s%s does not exists."
 msgstr "Каталог исходников %s%s%s не существует."
@@ -5939,8 +5991,8 @@ msgid "The file %s%s%s%sis currently not in the unitpath of the package.%s%sAdd 
 msgstr "Файл %s%s%s%sсейчас не находится в списке путей модулей пакета.%s%sДобавить его туда?"
 
 #: lazarusidestrconsts:listhefileseemstobeaprogramclosecurrentproject
-msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%sCancel will load the file as normal source."
-msgstr "Файл %s%s%sпохож на программу. Закрыть текущий проект и создать новый проект lazarus из этой программы?%sОтмена загрузит файл как обычный исходник."
+msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%s\"No\" will load the file as normal source."
+msgstr ""
 
 #: lazarusidestrconsts:listhefileseemstobetheprogramfileofanexistinglazarus
 msgid "The file %s%s%s%sseems to be the program file of an existing lazarus Project1.%sOpen project?%sCancel will load the file as normal source."
@@ -6446,6 +6498,10 @@ msgstr "Не могу создать резервный каталог %s%s%s."
 msgid "Unable to create directory"
 msgstr "Не могу создать каталог"
 
+#: lazarusidestrconsts:lisunabletocreatedirectory2
+msgid "Unable to create directory %s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletocreatedirectory
 msgid "Unable to create directory %s%s%s."
 msgstr "Не могу создать каталог %s%s%s."
@@ -6570,9 +6626,17 @@ msgstr "Не могу стереть старый резервный файл %s%s%s!"
 msgid "Unable to rename ambigious file %s%s%s%sto %s%s%s"
 msgstr "Не могу переименовать двусмысленный файо %s%s%s%sв %s%s%s"
 
+#: lazarusidestrconsts:lisunabletorenamefile
+msgid "Unable to rename file"
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletorenamefileto
 msgid "Unable to rename file %s%s%s to %s%s%s!"
 msgstr "Не могу переименовать файл %s%s%s в %s%s%s!"
+
+#: lazarusidestrconsts:lisunabletorenamefileto2
+msgid "Unable to rename file %s%s%s%sto %s%s%s."
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletorenameforminsource
 msgid "Unable to rename form in source."
@@ -6622,6 +6686,10 @@ msgstr "Не могу записать %s%s%s%s%s."
 msgid "Unable to write file"
 msgstr "Не могу записать файл"
 
+#: lazarusidestrconsts:lisunabletowritefile2
+msgid "Unable to write file %s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletowritefileerror
 msgid "Unable to write file %s%s%s%sError: %s"
 msgstr "Не могу записать файл %s%s%s%sError: %s"
@@ -6637,6 +6705,10 @@ msgstr "Не могу записать пакет %s%s%s%sв файл %s%s%s.%sОшибка: %s"
 #: lazarusidestrconsts:lispkgmangunabletowritestatefileofpackageerror
 msgid "Unable to write state file %s%s%s%sof package %s.%sError: %s"
 msgstr "Не могу записать файл состояния %s%s%s%sпакета %s.%sОшибка: %s"
+
+#: lazarusidestrconsts:lisunabletowritetofile2
+msgid "Unable to write to file %s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletowritetofile
 msgid "Unable to write to file %s%s%s!"

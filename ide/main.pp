@@ -101,13 +101,12 @@ uses
   ViewUnit_dlg,
   // rest of the ide
   Splash, IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, SearchResultView,
-  PublishModule, EnvironmentOpts, TransferMacros, KeyMapping, IDEProcs,
-  ExtToolDialog, ExtToolEditDlg, MacroPromptDlg, OutputFilter, BuildLazDialog,
-  MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory, ProcessList,
-  InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList, DialogProcs,
-  FindReplaceDialog, FindInFilesDlg, CodeExplorer, BuildFileDlg, ExtractProcDlg,
-  FindRenameIdentifier,
-  DelphiUnit2Laz, CleanDirDlg,
+  PublishModule, EnvironmentOpts, TransferMacros, KeyMapping, Translations,
+  IDEProcs, ExtToolDialog, ExtToolEditDlg, MacroPromptDlg, OutputFilter,
+  BuildLazDialog, MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
+  ProcessList, InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList,
+  DialogProcs, FindReplaceDialog, FindInFilesDlg, CodeExplorer, BuildFileDlg,
+  ExtractProcDlg, FindRenameIdentifier, DelphiUnit2Laz, CleanDirDlg,
   // main ide
   MainBar, MainIntf, MainBase;
 
@@ -896,7 +895,7 @@ begin
     SetLazarusDefaultFilename;
     Load(false);
     TranslateResourceStrings(EnvironmentOptions.LazarusDirectory,
-      LazarusLanguageIDs[EnvironmentOptions.Language]);
+                             EnvironmentOptions.LanguageID);
 
     SetupCompilerFilename(InteractiveSetup);
     SetupFPCSourceDirectory(InteractiveSetup);
@@ -10963,6 +10962,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.803  2004/12/06 18:27:16  mattias
+  available translations are now searched automatically
+
   Revision 1.802  2004/12/02 11:23:41  mattias
   synedit now stops, when key was handled
 
