@@ -236,9 +236,12 @@ begin
           'a'..'z': VirtualKey := KeyCode - Ord('a') + Ord('A');
           '/': VirtualKey := VK_SLASH;
           ',': VirtualKey := VK_COMMA;
+          '=': VirtualKey := VK_EQUAL;
+          '*': VirtualKey := VK_MULTIPLY;
+          '+': VirtualKey := VK_ADD;
+          '-': VirtualKey := VK_SUBTRACT;
           '.': VirtualKey := VK_POINT;
         end;
-        
         { look for control code }
         if (ssCtrl in ShiftState) and (Chr(KeyCode) in ['@'..'Z']) then
           Dec(KeyCode, Ord('@'));
@@ -911,6 +914,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.32  2002/03/31 23:20:38  lazarus
+  MG: fixed initial size of TPage
+
   Revision 1.31  2002/03/31 22:01:38  lazarus
   MG: fixed unreleased/unpressed Ctrl/Alt/Shift
 
