@@ -240,8 +240,10 @@ begin
       Dest.ImageIndex:=Src.ImageIndex;
       Dest.ShortCut:=Src.ShortCut;
       Dest.Visible:=Src.Visible;
-      if (Dest is TContainedAction) and (Dest.ImageIndex>=0) then begin
-
+      if (Dest is TContainedAction) and (Dest.ImageIndex>=0)
+      and (Src is TContainedAction) then begin
+        // ToDo: copy image
+        
       end;
     end;
   finally

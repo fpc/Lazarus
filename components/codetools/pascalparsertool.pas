@@ -1098,11 +1098,13 @@ function TPascalParserTool.ReadParamType(ExceptionOnError, Extract: boolean;
   const Attr: TProcHeadAttributes): boolean;
 var
   copying: boolean;
+  IsArrayType: Boolean;
 begin
   copying:=[phpWithoutParamList,phpWithoutParamTypes]*Attr=[];
   Result:=false;
   if CurPos.Flag in AllCommonAtomWords then begin
-    if UpAtomIs('ARRAY') then begin
+    IsArrayType:=UpAtomIs('ARRAY');
+    if IsArrayType then begin
       if (phpCreateNodes in Attr) then begin
         CreateChildNode;
         CurNode.Desc:=ctnOpenArrayType;
@@ -1153,6 +1155,8 @@ begin
     end;
     if (phpCreateNodes in Attr) then begin
       EndChildNode;
+      if IsArrayType then
+        EndChildNode;
     end;
   end else begin
     if ExceptionOnError then

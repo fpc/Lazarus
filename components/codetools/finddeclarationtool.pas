@@ -1924,6 +1924,7 @@ var
   //          false if search should continue
   begin
     Result:=false;
+    //DebugLn('  Definition Identifier "',GetIdentifier(Params.Identifier),'" ',GetIdentifier(@UpperSrc[ContextNode.StartPos]));
     if (fdfCollect in Params.Flags)
     or CompareSrcIdentifiers(ContextNode.StartPos,Params.Identifier)
     then begin
@@ -2164,10 +2165,10 @@ begin
 
   {$IFDEF ShowTriedContexts}
   DebugLn('[TFindDeclarationTool.FindIdentifierInContext] Start Ident=',
-  '"',GetIdentifier(Params.Identifier),'"',
-  ' Context="',ContextNode.DescAsString,'" "',StringToPascalConst(copy(Src,ContextNode.StartPos,20)),'"',
-  ' File="',ExtractFilename(MainFilename)+'"',
-  ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']'
+  '"'+GetIdentifier(Params.Identifier)+'"',
+  ' Context="'+ContextNode.DescAsString+'" "'+StringToPascalConst(copy(Src,ContextNode.StartPos,20)),'"',
+  ' File="'+ExtractFilename(MainFilename)+'"',
+  ' Flags=['+FindDeclarationFlagsAsString(Params.Flags)+']'
   );
   {$ELSE}
     {$IFDEF ShowCollect}
@@ -3400,7 +3401,7 @@ begin
   DebugLn({$IFDEF DebugPrefix}DebugPrefix,{$ENDIF}
   'TFindDeclarationTool.FindIdentifierInInterface',
   ' Ident="',GetIdentifier(Params.Identifier),'"',
-  ' IgnoreUsedUnits=',fdfIgnoreUsedUnits in Params.Flags,
+  ' IgnoreUsedUnits=',dbgs(fdfIgnoreUsedUnits in Params.Flags),
   ' Self=',TCodeBuffer(Scanner.MainCode).Filename
   );
   {$ENDIF}
@@ -3544,7 +3545,7 @@ begin
     {$IFDEF ShowTriedContexts}
     DebugLn('[TFindDeclarationTool.FindIdentifierInUsedUnit] ',
     ' This source is=',TCodeBuffer(Scanner.MainCode).Filename,
-    ' NewCode=',NewCode.Filename,' IgnoreUsedUnits=',fdfIgnoreUsedUnits in Params.Flags);
+    ' NewCode=',NewCode.Filename,' IgnoreUsedUnits=',dbgs(fdfIgnoreUsedUnits in Params.Flags));
     {$ENDIF}
     if Assigned(FOnGetCodeToolForBuffer) then begin
       NewCodeTool:=FOnGetCodeToolForBuffer(Self,NewCode);
@@ -3629,7 +3630,7 @@ begin
   Result:=false;
   {$IFDEF ShowTriedContexts}
   DebugLn('[TFindDeclarationTool.FindIdentifierInHiddenUsedUnits] ',
-  '"',GetIdentifier(Params.Identifier),'" IgnoreUsedUnits=',fdfIgnoreUsedUnits in Params.Flags);
+  '"',GetIdentifier(Params.Identifier),'" IgnoreUsedUnits=',dbgs(fdfIgnoreUsedUnits in Params.Flags));
   {$ENDIF}
   if (Tree.Root<>nil) and (not (fdfIgnoreUsedUnits in Params.Flags)) then begin
     // check, if this is a special unit
@@ -5521,7 +5522,7 @@ begin
   // List1 is better, if first difference is better for List1
   Result:=(i>=0) and (List1[i]=tcExact);
   {$IFDEF ShowFoundIdentifier}
-  DebugLn('[TFindDeclarationTool.CompatibilityList1IsBetter] END i=',i);
+  DebugLn('[TFindDeclarationTool.CompatibilityList1IsBetter] END i=',dbgs(i));
   {$ENDIF}
 end;
 
