@@ -30,7 +30,7 @@
 {Should become unit Unix in the future. For both Linux and FreeBSD}
 uses
   {$IFNDEF VER1_0}
-  unix;
+  BaseUnix,unix;
   {$ELSE}
   linux;
   {$ENDIF}
@@ -39,6 +39,9 @@ uses
 
 {
   $Log$
+  Revision 1.13  2003/11/04 11:47:37  marco
+   * 1.1 fixes
+
   Revision 1.12  2003/11/03 16:57:47  peter
     * change $ifdef ver1_1 to $ifndef ver1_0 so it works also with
       fpc 1.9.x
