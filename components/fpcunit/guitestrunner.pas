@@ -43,23 +43,26 @@ type
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
+    Panel7: TPanel;
+    Panel8: TPanel;
+    pbBar: TPaintBox;
+    Panel6: TPanel;
     pbBar1: TPaintBox;
     PopupMenu1: TPopupMenu;
     PopupMenu2: TPopupMenu;
     SpeedButton1: TSpeedButton;
     SpeedButton2: TSpeedButton;
+    Splitter1: TSplitter;
+    TestTree: TTreeView;
     XMLMemo: TMemo;
-    pbBar: TPaintBox;
     Panel4: TPanel;
     Panel5: TPanel;
-    Splitter1: TSplitter;
     PageControl1: TPageControl;
     Panel1: TPanel;
     Panel2: TPanel;
     Panel3: TPanel;
     tsTestTree: TTabSheet;
     tsResultsXML: TTabSheet;
-    TestTree: TTreeView;
     procedure BtnCloseClick(Sender: TObject);
     procedure GUITestRunnerCreate(Sender: TObject);
     procedure GUITestRunnerShow(Sender: TObject);
@@ -82,6 +85,7 @@ type
     procedure PaintNodeFailure(aNode: TTreeNode);
     procedure PaintNodeSuccess(aNode: TTreeNode);
     procedure PaintRunnableSubnodes(aNode: TTreeNode);
+    procedure MemoLog(LogEntry: string);
   public
     procedure AddFailure(ATest: TTest; AFailure: TTestFailure);
     procedure AddError(ATest: TTest; AError: TTestFailure);
@@ -138,29 +142,31 @@ var
 begin
   if (Sender as TTreeView).Selected <> nil then
   begin
-    Memo1.Lines.Text := (Sender as TTreeview).Selected.Text;
     lblSelectedTest.Caption := (Sender as TTreeview).Selected.Text;
   end;
 end;
 
+
 procedure TGUITestRunner.pbBarPaint(Sender: TObject);
 var
   msg: string;
+  alltests: integer;
 begin
   with (Sender as TPaintBox) do
   begin
+    Canvas.Lock;
     Canvas.Brush.Color := clSilver;
     Canvas.Rectangle(0, 0, Width, Height);
+    Canvas.Font.Color := clWhite;
     if Assigned(TestSuite) then
     begin
-      if (FailureCounter = 0) and (ErrorCounter = 0) and
-      (TestsCounter = TestSuite.CountTestCases) then
+      alltests := TestSuite.CountTestCases;
+      if FailureCounter + ErrorCounter = 0 then
         barColor := clGreen;
       Canvas.Brush.Color := barColor;
       if TestsCounter <> 0 then
       begin
-        Canvas.Rectangle(0, 0, round(TestsCounter / TestSuite.CountTestCases * Width), Height);
-        Canvas.Font.Color := clWhite;
+        Canvas.Rectangle(0, 0, round(TestsCounter / alltests * Width), Height);
         msg := 'Runs: ' + IntToStr(TestsCounter);
         if ErrorCounter <> 0 then
           msg := msg + '    Number of test errors: ' + IntToStr(ErrorCounter);
@@ -169,12 +175,15 @@ begin
         Canvas.Textout(10, 10,  msg)
       end;
     end;
+    Canvas.UnLock;
   end;
 end;
 
 procedure TGUITestRunner.btnRunClick(Sender: TObject);
 var
   testResult: TTestResult;
+  FStopCrono: TDateTime;
+  FStartCrono: TDateTime;
 begin
   barcolor := clGreen;
   ResetNodeColors;
@@ -197,14 +206,19 @@ begin
   testResult := TTestResult.Create;
   try
     testResult.AddListener(self);
+    MemoLog('Running ' + TestTree.Selected.Text);
+    FStartCrono := Now;
     testSuite.Run(testResult);
+    FStopCrono := Now;
+    MemoLog('Runned ' + IntToStr(testResult.RunTests) + ' tests. Time elapsed: ' +
+      FormatDateTime('hh:nn:ss.zzz', FStopCrono - FStartCrono));
     XMLMemo.lines.text:= '<TestResults>' + system.sLineBreak +
       TestResultAsXML(testResult) + system.sLineBreak + '</TestResults>';
   finally
     testResult.Free;
   end;
-  pbBar.invalidate;
-  pbBar1.invalidate;
+  pbBar.Invalidate;
+  pbBar1.Invalidate;
 end;
 
 procedure TGUITestRunner.BuildTree(rootNode: TTreeNode; aSuite: TTestSuite);
@@ -296,6 +310,12 @@ begin
   end;
 end;
 
+procedure TGUITestRunner.MemoLog(LogEntry: string);
+begin
+  Memo1.Lines.Add(TimeToStr(Now) + ' - ' + LogEntry);
+end;
+
+
 procedure TGUITestRunner.AddFailure(ATest: TTest; AFailure: TTestFailure);
 var
   FailureNode, node: TTreeNode;
@@ -356,15 +376,13 @@ begin
     Node.ImageIndex := 0;
     Node.SelectedIndex := 0;
   end;
-  Application.ProcessMessages;
 end;
 
 procedure TGUITestRunner.EndTest(ATest: TTest);
 begin
   Inc(testsCounter);
-  pbBar.invalidate;
-  pbBar1.invalidate;
-  Application.ProcessMessages;
+  pbBar.Refresh;
+  pbBar1.Refresh;
 end;
 
 initialization

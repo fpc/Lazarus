@@ -1,8 +1,10 @@
 object GUITestRunner: TGUITestRunner
   ActiveControl = tsTestTree
   Caption = 'FPCUnit - run unit tests'
-  ClientHeight = 712
-  ClientWidth = 646
+  ClientHeight = 582
+  ClientWidth = 688
+  Constraints.MinHeight = 550
+  Constraints.MinWidth = 450
   Icon.Data = {
     C50100002F2A2058504D202A2F0A7374617469632063686172202A2062746E5F
     72756E5F78706D5B5D203D207B0A22313620313420382031222C0A2220096320
@@ -23,41 +25,58 @@ object GUITestRunner: TGUITestRunner
   OnCreate = GUITestRunnerCreate
   OnShow = GUITestRunnerShow
   PixelsPerInch = 96
-  HorzScrollBar.Page = 645
-  VertScrollBar.Page = 711
-  Left = 338
-  Height = 712
-  Top = 282
-  Width = 646
+  HorzScrollBar.Page = 687
+  VertScrollBar.Page = 581
+  Left = 231
+  Height = 582
+  Top = 261
+  Width = 688
   object Panel1: TPanel
     Align = alTop
     ClientHeight = 82
-    ClientWidth = 646
+    ClientWidth = 688
+    Constraints.MinHeight = 80
+    Constraints.MinWidth = 450
     FullRepaint = False
     TabOrder = 0
     TabStop = True
     Height = 82
-    Width = 646
+    Width = 688
     object Label1: TLabel
+      BorderSpacing.Left = 11
+      BorderSpacing.Top = 1
+      BorderSpacing.Right = 11
+      BorderSpacing.Bottom = 1
+      BorderSpacing.Around = 1
       Caption = 'Selected Test Suite:'
       ParentColor = True
-      Left = 160
+      AnchorSideLeft.Control = btnRun
+      Left = 129
       Height = 17
       Top = 16
-      Width = 176
+      Width = 181
     end
     object lblSelectedTest: TLabel
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 10
+      BorderSpacing.Right = 10
+      BorderSpacing.Around = 1
       Caption = 'All Tests'
       Color = clNone
       Font.CharSet = ANSI_CHARSET
       Font.Color = clBlue
-      Left = 161
+      AnchorSideLeft.Control = btnRun
+      AnchorSideRight.Control = btnClose
+      Left = 128
       Height = 23
       Top = 40
-      Width = 343
+      Width = 423
     end
     object btnRun: TBitBtn
+      Anchors = [akTop, akLeft, akRight]
       Caption = '&Run'
+      Constraints.MinHeight = 45
+      Constraints.MinWidth = 70
       Glyph.Data = {
         191C00002F2A2058504D202A2F0A7374617469632063686172202A2062746E5F
         72756E33325F78706D5B5D203D207B0A223332203238203332372032222C0A22
@@ -287,12 +306,17 @@ object GUITestRunner: TGUITestRunner
       }
       OnClick = btnRunClick
       TabOrder = 0
+      AnchorSideRight.Control = lblSelectedTest
       Left = 16
       Height = 47
       Top = 16
-      Width = 103
+      Width = 101
     end
     object btnClose: TBitBtn
+      Anchors = [akTop, akRight]
+      BorderSpacing.Left = 5
+      BorderSpacing.Right = 7
+      BorderSpacing.Around = 1
       Caption = '&Exit'
       Glyph.Data = {
         D60D00002F2A2058504D202A2F0A7374617469632063686172202A2065786974
@@ -409,118 +433,159 @@ object GUITestRunner: TGUITestRunner
       }
       OnClick = BtnCloseClick
       TabOrder = 1
-      Left = 536
+      Left = 562
       Height = 48
       Top = 15
-      Width = 96
+      Width = 112
     end
   end
   object Panel2: TPanel
     Align = alClient
     Caption = 'Panel2'
-    ClientHeight = 630
-    ClientWidth = 646
+    ClientHeight = 500
+    ClientWidth = 688
     FullRepaint = False
     TabOrder = 1
     TabStop = True
-    Height = 630
+    Height = 500
     Top = 82
-    Width = 646
+    Width = 688
     object PageControl1: TPageControl
       ActivePage = tsTestTree
       Align = alClient
+      Constraints.MinHeight = 500
       TabIndex = 0
       TabOrder = 0
       Left = 1
-      Height = 628
+      Height = 500
       Top = 1
-      Width = 644
+      Width = 686
       object tsTestTree: TTabSheet
         Caption = 'Testcase tree'
-        ClientHeight = 602
-        ClientWidth = 636
-        Height = 602
-        Width = 636
-        object TestTree: TTreeView
-          Align = alTop
-          AutoExpand = True
-          BackgroundColor = clBtnFace
-          DefaultItemHeight = 16
-          Images = ImageList1
-          ParentCtl3D = False
-          ScrollBars = ssAutoBoth
-          TabOrder = 0
-          OnSelectionChanged = TestTreeSelectionChanged
-          Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
-          Height = 480
-          Top = 63
-          Width = 636
-        end
+        ClientHeight = 474
+        ClientWidth = 678
+        Height = 474
+        Width = 678
         object Panel4: TPanel
           Align = alTop
+          BevelOuter = bvNone
           ClientHeight = 63
-          ClientWidth = 636
+          ClientWidth = 678
+          FullRepaint = False
+          TabOrder = 0
+          Height = 63
+          Width = 678
+          object Panel6: TPanel
+            Align = alTop
+            BorderSpacing.OnChange = nil
+            Caption = 'Panel6'
+            ClientHeight = 50
+            ClientWidth = 678
+            FullRepaint = False
+            TabOrder = 0
+            Height = 50
+            Width = 678
+            object pbBar: TPaintBox
+              Align = alClient
+              BorderSpacing.OnChange = nil
+              ParentColor = True
+              OnPaint = pbBarPaint
+              Left = 1
+              Height = 48
+              Top = 1
+              Width = 676
+            end
+          end
+        end
+        object Panel7: TPanel
+          Align = alTop
+          AutoSize = True
+          BorderSpacing.OnChange = nil
+          BevelOuter = bvNone
+          Caption = 'Panel7'
+          ClientHeight = 318
+          ClientWidth = 678
           FullRepaint = False
           TabOrder = 1
-          Height = 63
-          Width = 636
-          object pbBar: TPaintBox
-            ParentColor = True
-            OnPaint = pbBarPaint
-            Left = 22
-            Height = 32
-            Top = 15
-            Width = 601
+          Height = 318
+          Top = 63
+          Width = 678
+          object TestTree: TTreeView
+            Align = alClient
+            AutoExpand = True
+            BorderSpacing.OnChange = nil
+            BackgroundColor = clBtnFace
+            Color = clBtnFace
+            DefaultItemHeight = 16
+            Images = ImageList1
+            ScrollBars = ssAutoBoth
+            TabOrder = 0
+            OnSelectionChanged = TestTreeSelectionChanged
+            Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+            Height = 318
+            Width = 678
+          end
+        end
+        object Panel8: TPanel
+          Align = alClient
+          BevelOuter = bvNone
+          Caption = 'Panel8'
+          ClientHeight = 88
+          ClientWidth = 678
+          Constraints.MinHeight = 80
+          FullRepaint = False
+          TabOrder = 2
+          Height = 88
+          Top = 386
+          Width = 678
+          object Memo1: TMemo
+            Align = alClient
+            PopupMenu = PopupMenu2
+            ScrollBars = ssAutoVertical
+            TabOrder = 0
+            Height = 88
+            Width = 678
           end
         end
         object Splitter1: TSplitter
           Align = alTop
           Cursor = crVSplit
-          Height = 10
-          MinSize = 400
+          Height = 5
           ParentColor = True
-          Width = 636
+          Width = 678
           Cursor = crVSplit
-          Height = 10
-          Top = 543
-          Width = 636
-        end
-        object Memo1: TMemo
-          Align = alClient
-          PopupMenu = PopupMenu2
-          TabOrder = 2
-          Height = 49
-          Top = 553
-          Width = 636
+          Height = 5
+          Top = 381
+          Width = 678
         end
       end
       object tsResultsXML: TTabSheet
         Caption = 'Results XML'
-        ClientHeight = 602
-        ClientWidth = 636
-        Height = 602
-        Width = 636
+        ClientHeight = 474
+        ClientWidth = 678
+        Height = 474
+        Width = 678
         object Panel3: TPanel
           Align = alClient
+          BevelOuter = bvNone
           Caption = 'Panel3'
-          ClientHeight = 594
-          ClientWidth = 640
+          ClientHeight = 466
+          ClientWidth = 682
           FullRepaint = False
           TabOrder = 0
           TabStop = True
-          Height = 594
-          Width = 640
+          Height = 466
+          Width = 682
           object Panel5: TPanel
             Align = alTop
+            BevelOuter = bvNone
             BorderWidth = 1
-            ClientHeight = 58
-            ClientWidth = 638
+            ClientHeight = 48
+            ClientWidth = 682
             FullRepaint = False
             TabOrder = 0
-            Left = 1
-            Height = 58
-            Top = 1
-            Width = 638
+            Height = 48
+            Width = 682
             object SpeedButton1: TSpeedButton
               Action = actCopy
               Flat = True
@@ -641,7 +706,7 @@ object GUITestRunner: TGUITestRunner
               Left = 16
               Height = 30
               Hint = 'Copy results to clipboard'
-              Top = 14
+              Top = 4
               Width = 31
             end
             object SpeedButton2: TSpeedButton
@@ -702,26 +767,27 @@ object GUITestRunner: TGUITestRunner
               Left = 54
               Height = 30
               Hint = 'Cut results to clipboard'
-              Top = 14
+              Top = 4
               Width = 31
             end
             object pbBar1: TPaintBox
+              Align = alRight
+              Anchors = [akTop, akLeft, akRight, akBottom]
               ParentColor = True
               OnPaint = pbBarPaint
               Left = 110
-              Height = 31
-              Top = 14
-              Width = 512
+              Height = 46
+              Top = 1
+              Width = 571
             end
           end
           object XMLMemo: TMemo
             Align = alClient
             PopupMenu = PopupMenu1
             TabOrder = 1
-            Left = 1
-            Height = 534
-            Top = 59
-            Width = 638
+            Height = 418
+            Top = 48
+            Width = 682
           end
         end
       end
@@ -1934,8 +2000,8 @@ object GUITestRunner: TGUITestRunner
     end
   end
   object PopupMenu2: TPopupMenu
-    left = 688
-    top = 72
+    left = 472
+    top = 104
     object MenuItem3: TMenuItem
       Caption = 'Copy to clipboard'
       Bitmap.Data = {
