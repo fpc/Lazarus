@@ -1411,13 +1411,8 @@ begin
               Integer(Data), 1);    // column
               
           csNotebook:
-            begin
-              Assert(False, 'Trace:Setting Page to ' + IntToStr(TLMNotebookEvent(Data^).Page));
-              //writeln('LM_SETITEMINDEX A ',HexStr(Cardinal(Handle),8),', ',TLMNotebookEvent(Data^).Page);
-              gtk_notebook_set_page(PGtkNotebook(Handle),
-                                    TLMNotebookEvent(Data^).Page);
-              //writeln('LM_SETITEMINDEX B ',TLMNotebookEvent(Data^).Page);
-            end;
+            gtk_notebook_set_page(PGtkNotebook(Handle),
+                                  TLMNotebookEvent(Data^).Page);
           end;
         end;
           
@@ -1860,7 +1855,9 @@ begin
       csLabel       : //gtk_label_set_text(pGtkLabel(p), pLabel);
                       gtk_label_parse_uline(pGtkLabel(p),pLabel);
 
-      csCheckBox    : gtk_label_set_text(pGtkLabel( pgtkCheckButton(p)^.Toggle_Button.Button.Child),pLabel);
+      csCheckBox    : gtk_label_set_text(
+                        pGtkLabel(pgtkCheckButton(p)^.Toggle_Button.Button.Child),
+                        pLabel);
 
       csGroupBox    : gtk_frame_set_label(pgtkFrame(P),pLabel);
 
@@ -1877,11 +1874,13 @@ begin
                         gtk_text_thaw(PGtkText(P));
                       end;      
 
-      csPage        : gtk_notebook_set_tab_label_text(PGtkNotebook((TWinControl(Sender).Parent).handle),
-                                                      PGtkWidget(P),
-                                                      PGChar(data));
-//GET? WHY should this be right?  p := gtk_notebook_get_tab_label(PGTKNoteBook(TWinControl(Sender).Parent.Handle), P);
-      
+      csPage:
+        begin
+          gtk_notebook_set_tab_label_text(
+            PGtkNotebook((TWinControl(Sender).Parent).Handle),
+            PGtkWidget(P), PGChar(data));
+        end;
+        
       csComboBox    : gtk_entry_set_text(PGtkEntry(PGtkCombo(P)^.entry), PLabel);
    else
       Assert(True, Format ('WARNING: [TgtkObject.SetLabel] --> not handled for class %s ', [Sender.ClassName]));
@@ -2043,15 +2042,15 @@ begin
        end
        else
        if sender is TNotebook then
-          ConnectSignal(gObject, 'switch-page', @gtkswitchpage)
+         ConnectSignal(gObject, 'switch-page', @gtkswitchpage)
        else
        if sender is TCustomCombobox then
-          ConnectSignal (PGtkObject(PGtkCombo(gobject)^.entry), 'changed', @gtkchangedCB)
+         ConnectSignal (PGtkObject(PGtkCombo(gobject)^.entry), 'changed', @gtkchangedCB)
        else 
        if Sender is TCustomMemo then
-            ConnectSignal(PgtkObject(GetCoreChildWidget(PgtkWidget(TCustomMemo(sender).handle))),'changed', @gtkchanged_editbox)
+         ConnectSignal(PgtkObject(GetCoreChildWidget(PgtkWidget(TCustomMemo(sender).handle))),'changed', @gtkchanged_editbox)
        else
-            ConnectSignal(gObject, 'changed', @gtkchanged_editbox);
+         ConnectSignal(gObject, 'changed', @gtkchanged_editbox);
 
     LM_CLICKED :
     begin
@@ -4997,6 +4996,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.137  2002/06/07 07:40:45  lazarus
+  MG: goto bookmark now centers the cursor line
+
   Revision 1.136  2002/06/07 06:40:18  lazarus
   MG: gtk HandleEvents will now process all pending events
 
