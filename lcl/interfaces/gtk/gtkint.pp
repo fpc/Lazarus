@@ -91,6 +91,7 @@ type
     function IsValidGDIObjectType(const GDIObject: HGDIOBJ;
                                   const GDIType: TGDIType): Boolean;
     function NewGDIObject(const GDIType: TGDIType): PGdiObject;
+    procedure DisposeGDIObject(GdiObject: PGdiObject);
     function NewDC: PDeviceContext;
     function CreateDefaultBrush: PGdiObject;
     function CreateDefaultFont: PGdiObject;
@@ -428,6 +429,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.62  2002/08/21 08:13:37  lazarus
+  MG: accelerated new/dispose of gdiobjects
+
   Revision 1.61  2002/08/19 20:34:48  lazarus
   MG: improved Clipping, TextOut, Polygon functions
 
