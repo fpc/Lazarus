@@ -799,6 +799,13 @@ begin
   Result := False;
 end;
 
+function TInterfaceBase.GetCaretRespondToFocus(handle: HWND;
+  var ShowHideOnFocus: boolean): Boolean;
+begin
+  ShowHideOnFocus := true;
+  Result := False;
+end;
+
 Function TInterfaceBase.GetClientBounds(handle : HWND; var Rect : TRect) : Boolean;
 begin
   Result := False;
@@ -1626,6 +1633,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.77  2002/12/30 17:24:08  mattias
+  added history to identifier completion
+
   Revision 1.76  2002/12/27 17:12:38  mattias
   added more Delphi win32 compatibility functions
 
