@@ -1211,16 +1211,23 @@ end;
   Add a childwidget onto a client area (fixed or layout widget).
 ------------------------------------------------------------------------------}
 Procedure FixedPutControl(Parent, Child : PGTKWIdget; Left, Top : Longint);
+
+  procedure RaiseInvalidFixedWidget;
+  begin
+    // this is in a separate procedure for optimisation
+    WriteLn('[FixedPutControl] WARNING: Invalid Fixed Widget.',
+      ' Parent=',HexStr(Cardinal(Parent),8),
+      ' Child=',HexStr(Cardinal(Child),8)
+      );
+  end;
+
 begin
   If GTKWidgetIsA(Parent, GTK_Fixed_Get_Type) then
     gtk_fixed_put(PGtkFixed(Parent), Child, Left, Top)
   else If GTKWidgetIsA(Parent, GTK_Layout_Get_Type) then
     gtk_Layout_Put(PGtkLayout(Parent), Child, Left, Top)
   else
-    WriteLn('[FixedPutControl] WARNING: Invalid Fixed Widget.',
-      ' Parent=',HexStr(Cardinal(Parent),8),
-      ' Child=',HexStr(Cardinal(Child),8)
-      );
+    RaiseInvalidFixedWidget;
 end;
 
 {------------------------------------------------------------------------------
@@ -3985,6 +3992,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.161  2003/03/09 21:13:32  mattias
+  localized gtk interface
+
   Revision 1.160  2003/03/02 23:08:31  mattias
   fixed TComboBox.OnChange
 
