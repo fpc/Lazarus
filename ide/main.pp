@@ -349,8 +349,6 @@ type
     // methods for start
     procedure LoadGlobalOptions;
     procedure SetupMainMenu;
-    procedure SetRecentSubMenu(ParentMenuItem: TMenuItem; FileList: TStringList;
-       OnClickEvent: TNotifyEvent);
     procedure SetRecentFilesMenu;
     procedure SetRecentProjectFilesMenu;
     procedure SetupFileMenu; override;
@@ -505,7 +503,7 @@ type
     function DoLoadCodeBuffer(var ACodeBuffer: TCodeBuffer;
       const AFilename: string; Flags: TLoadBufferFlags): TModalResult;
     function DoBackupFile(const Filename:string;
-      IsPartOfProject:boolean): TModalResult;
+      IsPartOfProject:boolean): TModalResult; override;
     function DoCheckFilesOnDisk: TModalResult; override;
 
     // useful frontend methods
@@ -579,7 +577,7 @@ type
     procedure SetDesigning(AComponent: TComponent; Value : Boolean);
 
     // editor and environment options
-    procedure SaveEnvironment;
+    procedure SaveEnvironment; override;
     procedure LoadDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
     procedure SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
   end;
@@ -1370,29 +1368,6 @@ begin
   SetupEnvironmentMenu;
   SetupWindowsMenu;
   SetupHelpMenu;
-end;
-
-procedure TMainIDE.SetRecentSubMenu(ParentMenuItem: TMenuItem;
-  FileList: TStringList; OnClickEvent: TNotifyEvent);
-var i: integer;
-  AMenuItem: TMenuItem;
-begin
-  // create enough menuitems
-  while ParentMenuItem.Count<FileList.Count do begin
-    AMenuItem:=TMenuItem.Create(Self);
-    AMenuItem.Name:=
-      ParentMenuItem.Name+'Recent'+IntToStr(ParentMenuItem.Count);
-    ParentMenuItem.Add(AMenuItem);
-  end;
-  // delete unused menuitems
-  while ParentMenuItem.Count>FileList.Count do
-    ParentMenuItem.Items[ParentMenuItem.Count-1].Free;
-  // set captions
-  for i:=0 to FileList.Count-1 do begin
-    AMenuItem:=ParentMenuItem.Items[i];
-    AMenuItem.Caption := FileList[i];
-    AMenuItem.OnClick := OnClickEvent;
-  end;
 end;
 
 procedure TMainIDE.SetRecentFilesMenu;
@@ -8202,7 +8177,6 @@ begin
 end;
 
 
-
 //-----------------------------------------------------------------------------
 
 initialization
@@ -8216,6 +8190,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.513  2003/04/08 20:14:26  mattias
+  implemented open package
+
   Revision 1.512  2003/04/08 16:56:55  mattias
   implemented saving package
 
