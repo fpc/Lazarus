@@ -351,7 +351,7 @@ end;
 {------------------------------------------------------------------------------}
 {       TControl.CMHITTEST                                                     }
 {------------------------------------------------------------------------------}
-procedure TControl.CMHITTEST(var MEssage : TCMHitTest);
+procedure TControl.CMHITTEST(var Message : TCMHitTest);
 begin
   message.Result := 1;
 end;
@@ -379,7 +379,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.CMHintShow(var Message: TLMessage);
 begin
-  DoOnShowHint(@TCMHintShow(Message).HintInfo);
+  DoOnShowHint(TCMHintShow(Message).HintInfo);
   if (ActionLink <> nil)
   and not ActionLink.DoShowHint(TCMHintShow(Message).HintInfo^.HintStr)
   then
@@ -2041,6 +2041,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.100  2002/11/09 15:02:06  lazarus
+  MG: fixed LM_LVChangedItem, OnShowHint, small bugs
+
   Revision 1.99  2002/11/06 15:59:24  lazarus
   MG: fixed codetools abort
 

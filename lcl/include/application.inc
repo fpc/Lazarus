@@ -30,8 +30,7 @@ const
 function GetHintControl(Control: TControl): TControl;
 begin
   Result := Control;
-  while (Result <> nil)
-  and ((not Result.ShowHint) or (Result.Hint='')) do
+  while (Result <> nil) and (not Result.ShowHint) do
     Result := Result.Parent;
   if (Result <> nil)
   and ([csDesigning,csDestroying,csLoading]*Result.ComponentState<>[]) then
@@ -304,12 +303,10 @@ begin
   FShowHint:=AValue;
   if FShowHint then
   begin
-    FHintWindow := HintWindowClass.Create(Self);
-    FHintWindow.Color := FHintColor;
+    //
   end else
   begin
-    FHintWindow.Free;
-    FHintWindow := nil;
+    FreeThenNil(FHintWindow);
   end;
 end;
 
@@ -410,7 +407,6 @@ begin
   if not FShowHint then exit;
   FHintControl:=Info.Control;
 
-  FillChar(HintInfo,SizeOf(HintInfo),0);
   HintInfo.HintControl := FHintControl;
   HintInfo.HintPos := Info.MousePos;
   Inc(HintInfo.HintPos.Y, GetCursorHeightMargin);
@@ -439,8 +435,11 @@ begin
   if CanShow and (FHintControl <> nil) and (HintInfo.HintStr <> '') then
   begin
     // create hint window
+    if (FHintWindow<>nil) and (FHintWindow.ClassType<>HintInfo.HintWindowClass)
+    then
+      FreeThenNil(FHintWindow);
     if FHintWindow=nil then begin
-      FHintWindow:=THintWindow.Create(Self);
+      FHintWindow:=HintInfo.HintWindowClass.Create(Self);
       with FHintWindow do begin
         Visible := False;
         Caption := '';
@@ -475,8 +474,8 @@ begin
     FHintWindow.ActivateHint(HintWinRect,HintInfo.HintStr);
     // start hide timer
     StartHintTimer(HintHidePause,ahtHideHint);
-    Exit;
-  end;
+  end else
+    HideHint;
   //writeln('TApplication.ShowHintWindow Info.ControlHasHint=',Info.ControlHasHint,' Type=',ord(FHintTimerType));
 end;
 
@@ -818,6 +817,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.34  2002/11/09 15:02:06  lazarus
+  MG: fixed LM_LVChangedItem, OnShowHint, small bugs
+
   Revision 1.33  2002/11/05 23:44:47  lazarus
   MG: implemented Application.OnShowHint
 
