@@ -1878,8 +1878,11 @@ var
       end;
       Exit;
     end;
-
+{$IFDEF GTK2}
+    Result := Event^.KeyVal < $F000;
+{$ELSE GTK2}
     Result := (Event^.Length = 1) and (EventString <> nil);
+{$ENDIF GTK2}
   end;
 
 var
@@ -2050,7 +2053,7 @@ begin
         end;
 
         if Event^.Length = 0
-        then Msg.CharCode := 0 // ^@ was pressed
+        then Msg.CharCode := Event^.KeyVal // non ASCII key was pressed
         else Msg.CharCode := ord(EventString^);
         Msg.Result:=0;
         // send the message directly (not queued) to the LCL
@@ -6638,7 +6641,7 @@ begin
         else
           // ... and all others will be deleted
           inc(ShortenChars);
-      end;	
+      end; 
     end;
     inc(i);
   end;
@@ -7102,6 +7105,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.291  2004/08/12 15:50:46  mazen
+  + add support for passing non ASCII key values
+  * need to check for $F000 if it is the correct value
+
   Revision 1.290  2004/08/03 09:01:54  mattias
   LCL now handles for non win32 CN_CHAR
 
