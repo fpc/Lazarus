@@ -50,7 +50,7 @@ uses
   Types,
 {$ELSE}
   {$IFDEF SYN_LAZARUS}
-  LCLLinux,
+  LCLLinux, Controls,
   {$ELSE}
   Windows,
   {$ENDIF}
@@ -73,7 +73,7 @@ type
 {end}                                                                           //mh 2000-09-23
   published
     // inherited properties
-(*    property Align;
+    property Align;
 {$IFDEF SYN_COMPILER_4_UP}
     property Anchors;
     property Constraints;
@@ -173,7 +173,7 @@ type
     property OnStatusChange;
     {$IFNDEF SYN_LAZARUS}
     property OnPaintTransient;
-    {$ENDIF} *)
+    {$ENDIF}
   end;
 
 implementation
