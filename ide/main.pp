@@ -5067,9 +5067,10 @@ var ActiveSrcEdit: TSourceEditor;
                    +CurPath;
       end;
       for c:=0 to 2 do begin
+        // FPC searches first lowercase, then keeping case, then uppercase
         case c of
-          0: TempFile:=FName;
-          1: TempFile:=LowerCase(FName);
+          0: TempFile:=LowerCase(FName);
+          1: TempFile:=FName;
           2: TempFile:=UpperCase(FName);
         end;
         if ExtractFileExt(TempFile)='' then begin
@@ -10607,6 +10608,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.762  2004/08/29 08:59:37  mattias
+  fixed searching units first lowercase
+
   Revision 1.761  2004/08/29 08:54:39  mattias
   fixed aborting new project
 

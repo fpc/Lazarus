@@ -1225,6 +1225,7 @@ var
     APath:=ADir;
     if (APath<>'') and (APath[length(APath)]<>PathDelim) then
       APath:=APath+PathDelim;
+    // search as FPC: first lowercase, then keeping case, then uppercase
     if SearchSource then begin
       {$IFNDEF win32}
       if LoadFile(ADir+lowercase(AnUnitName)+'.pp',Result) then exit;
@@ -1232,11 +1233,18 @@ var
       {$ENDIF}
       if LoadFile(ADir+AnUnitName+'.pp',Result) then exit;
       if LoadFile(ADir+AnUnitName+'.pas',Result) then exit;
+      {$IFNDEF win32}
+      if LoadFile(ADir+UpperCaseStr(AnUnitName)+'.pp',Result) then exit;
+      if LoadFile(ADir+UpperCaseStr(AnUnitName)+'.pas',Result) then exit;
+      {$ENDIF}
     end else begin
       {$IFNDEF win32}
       if LoadFile(ADir+lowercase(AnUnitName)+CompiledSrcExt,Result) then exit;
       {$ENDIF}
       if LoadFile(ADir+AnUnitName+CompiledSrcExt,Result) then exit;
+      {$IFNDEF win32}
+      if LoadFile(ADir+UpperCaseStr(AnUnitName)+CompiledSrcExt,Result) then exit;
+      {$ENDIF}
     end;
     Result:=nil;
   end;
