@@ -749,6 +749,8 @@ begin
         and (MatchPos.Filename[SharedLen+1]=SharedPath[SharedLen+1])
         do
           inc(SharedLen);
+        while (SharedLen>0) and (SharedPath[SharedLen]<>PathDelim) do
+          dec(SharedLen);
         if SharedLen<>length(SharedPath) then
           SharedPath:=copy(SharedPath,1,SharedLen);
       end;

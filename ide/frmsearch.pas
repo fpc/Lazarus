@@ -444,7 +444,7 @@ end;//DoFindInSearchList
 
 procedure TSearchForm.ParseMask;
 var
-  //Position Tracking wihtin the string.
+  //Position Tracking within the string.
   curpos,startpos: integer;
   //Used as mask seperator
 const
