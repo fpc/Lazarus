@@ -1,30 +1,34 @@
 // included by spin.pp
 
+
+
+{-----------------------------------------------------------------------------}
+procedure TSpinEdit.UpdateControl;
+begin
+ CNSendMessage(LM_SetProperties,self,nil);
+end;
+
 {-----------------------------------------------------------------------------}
 procedure TSpinEdit.SetClimbRate(Num : Single);
 begin
  fClimbRate := Num;
-// ******************************
-// the following line has been commented out so that gtk dependency can be
-// removed from all files. The following function needs to be moved.   MAH
-//
-// PgtkSpinButton(fComponent)^.Climb_rate := fCLimbRate;
+ UpdateControl;
 end;
 
 {-----------------------------------------------------------------------------}
 Procedure TSpinEdit.SetValue(num : Single);
 begin
  FValue := Num;
-// ******************************
-// the following line has been commented out so that gtk dependency can be
-// removed from all files. The following function needs to be moved.   MAH
-//
-// gtk_spin_button_set_value(PgtkSpinButton(fComponent),FValue);
+ UpdateControl;
 end;
 
 {-----------------------------------------------------------------------------}
 Function TSpinEdit.GetValue : Single;
+Var
+  Temp : Real;
 begin
+ CNSendMessage(LM_GETVALUE,Self,@Temp);
+ FValue := Temp;
  getvalue := fValue;
 end;
 
@@ -32,6 +36,7 @@ end;
 procedure TSpinEdit.SetDecimals(Num : Integer);
 begin
  fDecimals := Num;
+ UpdateControl;
 end;
 
 {-----------------------------------------------------------------------------}

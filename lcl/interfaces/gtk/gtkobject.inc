@@ -2975,6 +2975,12 @@ begin
                     
 
                   end;
+
+      csSpinEdit : Begin
+                     Single(Data^) := gtk_spin_button_get_value_As_Float(PgtkSpinButton(Handle));
+
+                   end;
+
    else
       Assert (true, Format ('WARNING:[TgtkObject.GetValue] failed for %s', [Sender.ClassName]));
    end;
@@ -3324,6 +3330,13 @@ begin
           then TWinControl(sender).Handle := THandle(gtk_image_new(Image,nil))
           else gtk_image_set(PgtkImage(handle),Image,nil);
         end;
+      csSpinEdit:
+         Begin
+          gtk_spin_button_set_digits(PgtkSpinButton(Widget),TSpinEdit(Sender).Decimal_Places);
+          gtk_spin_button_set_value(PgtkSpinButton(Widget),TSpinEdit(Sender).Value);
+
+         End;
+
       else
          Assert (true, Format ('WARNING:[TgtkObject.SetProperties] failed for %s', [Sender.ClassName]));
    end;
@@ -3791,6 +3804,11 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.109  2002/03/14 20:28:49  lazarus
+  Bug fix for Mattias.
+  Fixed spinedit so you can now get the value and set the value.
+  Shane
+
   Revision 1.108  2002/03/13 22:48:16  lazarus
   Constraints implementation (first cut) and sizig - moving system rework to
   better match Delphi/Kylix way of doing things (the existing implementation

@@ -25,35 +25,35 @@ unit spin;
 
 interface
 
-uses classes,controls,sysutils, stdCtrls,vclGlobals;
+uses classes,controls,sysutils, stdCtrls,vclGlobals,LMessages;
 
 
 type
-	TSpinEdit = class(TWinControl)
-	private
-	 fdecimals : Integer;
-	 fValue    : Single;
-	 fClimbRate : Single;
+  TSpinEdit = class(TWinControl)
+  private
+   fdecimals : Integer;
+   fValue    : Single;
+   fClimbRate : Single;
+   Procedure UpdateControl;
 	protected
-         procedure SetDecimals(num : Integer);
-	 Function GetValue : Single;
-	 procedure SetValue(Num : Single);
-	 procedure SetClimbRate(num : Single);	 
-	public
-
-	 constructor Create(AOwner : TComponent); override;
-	 destructor Destroy; override;
-        published
-         property Align;
-	 property Decimal_Places : Integer read fDecimals write SetDecimals;
-         property Enabled;
-	 property Value : Single read GetValue write SetValue;
-	 property Climb_Rate : Single read fClimbRate write SetClimbRate;
-         property Visible;
-         property OnEnter;
-         property OnExit;
-         property PopupMenu;
-         property ShowHint;
+   procedure SetDecimals(num : Integer);
+   Function GetValue : Single;
+   procedure SetValue(Num : Single);
+   procedure SetClimbRate(num : Single);
+  public
+   constructor Create(AOwner : TComponent); override;
+   destructor Destroy; override;
+  published
+   property Align;
+   property Decimal_Places : Integer read fDecimals write SetDecimals;
+   property Enabled;
+   property Value : Single read GetValue write SetValue;
+   property Climb_Rate : Single read fClimbRate write SetClimbRate;
+   property Visible;
+   property OnEnter;
+   property OnExit;
+   property PopupMenu;
+   property ShowHint;
 	end;
 
 Implementation
