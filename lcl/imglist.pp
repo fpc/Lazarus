@@ -136,15 +136,13 @@ type
     procedure Initialize; virtual;
     procedure DefineProperties(Filer: TFiler); override;
     procedure SetWidthHeight(NewWidth,NewHeight: integer); virtual;
-    procedure ReadDelphi2Stream(Stream: TStream);
-    procedure ReadDelphi3Stream(Stream: TStream);
   public
     constructor Create(AOwner: TComponent); override;
 
     procedure AssignTo(Dest: TPersistent); override;
     procedure Assign(Source: TPersistent); override;
-    procedure WriteData(Stream: TStream); virtual;
-    procedure ReadData(Stream: TStream); virtual;
+    procedure WriteData(AStream: TStream); virtual;
+    procedure ReadData(AStream: TStream); virtual;
     procedure BeginUpdate;
     procedure EndUpdate;
 
@@ -211,6 +209,9 @@ end.
 
 {
   $Log$
+  Revision 1.16  2004/02/25 11:12:06  marc
+  + Added delphi stream reading support
+
   Revision 1.15  2004/02/22 10:43:20  mattias
   added child-parent checks
 
