@@ -123,7 +123,6 @@ begin
     if TObject(Data) is TCustomForm then begin
       TheForm:=TCustomForm(Data);
       TheWindow:=GetControlWindow(Widget);
-      Screen.MoveFormToFront(TheForm);
 
       //apart from none and sizeable, this will
       //only work if WM supports motif flags
@@ -2675,6 +2674,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.177  2003/04/16 22:11:35  mattias
+  fixed codetools Makefile, fixed default prop not found error
+
   Revision 1.176  2003/04/16 17:20:24  mattias
   implemented package check broken dependency on compile
 
