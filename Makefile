@@ -154,7 +154,12 @@ PACKAGESDIR:=$(wildcard $(FPCDIR) $(FPCDIR)/packages)
 override PACKAGE_NAME=lazarus
 override PACKAGE_VERSION=0.7a
 ifndef LCLPLATFORM
+ifeq ($(OS_TARGET), win32)
+LCLPLATFORM=win32
+export OPT+=-dSUPPORTS_RESOURCES
+else
 LCLPLATFORM=gtk
+endif
 export LCLPLATFORM
 endif
 override TARGET_DIRS+=lcl components
@@ -1639,11 +1644,14 @@ endif
 .SUFFIXES: .rc .res
 %.res: %.rc
 	windres -i $< -o $@
-.PHONY: examples lcl components ide tools all win32 win32clean cleanall makefile makefiles
+.PHONY: examples lcl components ide tools all cleanall makefile makefiles
 lcl: lcl_all
 examples: lcl examples_all
 components: lcl components_all
 ide:
+ifeq ($(LCLPLATFORM), win32)
+	$(MAKE) lazarus.res
+endif
 	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT)
 tools: lcl components tools_all
 all: lcl components ide
@@ -1652,13 +1660,10 @@ cleanall:
 	$(DEL) $(wildcard ./*$(PPUEXT)) $(wildcard ./*$(OEXT))
 	$(DEL) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT))
 	$(DEL) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./designer/*$(OEXT))
-win32:
-	$(MAKE) lazarus.res
-	$(MAKE) all LCLPLATFORM=win32 OPT=-dSUPPORTS_RESOURCES
-win32clean:
-	$(MAKE) cleanall LCLPLATFORM=win32
+ifeq ($(LCLPLATFORM), win32)
 	$(DEL) $(wildcard *.res)
 	$(DEL) lazarus.owr
+endif
 makefile: Makefile.fpc
 	-$(FPCMAKE) -w
 makefiles: makefile

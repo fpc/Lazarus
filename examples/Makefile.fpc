@@ -23,7 +23,12 @@ unitdir=. ../lcl/units ../components/units ../designer ../lcl/units/$(LCLPLATFOR
 
 [prerules]
 ifndef LCLPLATFORM
+ifeq ($(OS_TARGET), win32)
+LCLPLATFORM=win32
+else
 LCLPLATFORM=gtk
+endif
+export LCLPLATFORM
 endif
 
 [rules]

@@ -19,7 +19,12 @@ DIST_DESTDIR=$(BASEDIR)/../../dist
 
 [prerules]
 ifndef LCLPLATFORM
+ifeq ($(OS_TARGET), win32)
+LCLPLATFORM=win32
+else
 LCLPLATFORM=gtk
+endif
+export LCLPLATFORM
 endif
 
 [rules]

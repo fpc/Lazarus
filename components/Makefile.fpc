@@ -16,7 +16,11 @@ dirs=synedit codetools
 [prerules]
 DIST_DESTDIR=$(BASEDIR)/../dist
 ifndef LCLPLATFORM
+ifeq ($(OS_TARGET), win32)
+LCLPLATFORM=win32
+else
 LCLPLATFORM=gtk
+endif
 export LCLPLATFORM
 endif
 

@@ -154,7 +154,12 @@ PACKAGESDIR:=$(wildcard $(FPCDIR) $(FPCDIR)/packages)
 override PACKAGE_NAME=lazarus-examples
 override PACKAGE_VERSION=0.7a
 ifndef LCLPLATFORM
+ifeq ($(OS_TARGET), win32)
+LCLPLATFORM=win32
+else
 LCLPLATFORM=gtk
+endif
+export LCLPLATFORM
 endif
 override TARGET_EXAMPLES+=hello notebk comdialogs progressbar trackbar listboxtest bitbutton combobox checkbox scrollbar memotest groupbox speedtest toolbar messagedialogs notebooktest testall
 override COMPILER_OPTIONS+=-gl
