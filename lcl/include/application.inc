@@ -29,6 +29,7 @@ begin
   FList := nil;
   FOnIdle := nil;
   FIcon := nil;
+  ApplicationActionComponent:=Self;
 
   inherited Create(AOwner);
   // MG: if you prefer message boxes instead of terminal error messages uncomment
@@ -41,6 +42,7 @@ end;
 {------------------------------------------------------------------------------}
 destructor TApplication.Destroy;
 begin
+  ApplicationActionComponent:=nil;
   FIcon.Free;
   FIcon:=nil;
   FList.Free;
@@ -374,9 +376,22 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  function TApplication.HandleAllocated: boolean;
+  
+  Checks if Handle is allocated.
+------------------------------------------------------------------------------}
+function TApplication.HandleAllocated: boolean;
+begin
+  Result:=FHandle<>0;
+end;
+
 { =============================================================================
 
   $Log$
+  Revision 1.29  2002/10/26 11:05:59  lazarus
+  MG: broke actnlist <-> forms circle
+
   Revision 1.28  2002/10/24 10:37:05  lazarus
   MG: broke dialogs.pp <-> forms.pp circle
 
