@@ -3708,6 +3708,80 @@ begin
   SetComboBoxText(Widget, PChar(ComboBox.Text));
 end;
 
+Procedure TgtkObject.FinishComponentCreate(Sender : TObject; Handle : Pointer; SetupProps : Boolean);
+begin
+  // MWE: next will be obsoleted by WinWidgetInfo
+  //Set these for functions like GetWindowLong  Added 01/07/2000
+  if Handle <> nil then
+  Begin
+    SetLCLObject(Handle, Sender);
+    gtk_object_set_data(pgtkObject(Handle),'Style',0);
+    gtk_object_set_data(pgtkObject(Handle),'ExStyle',0);
+  end;
+  //--------------------------
+
+  if (Sender is TWinControl) then
+  begin
+    TWinControl(Sender).Handle := THandle(Handle);
+    if Handle <> nil then begin
+      gtk_object_set_data(pgtkobject(Handle),'Sender',Sender);
+      SetResizeRequest(Handle);
+    end;
+  end
+  else
+  if (Sender is TMenuItem) then
+    TMenuItem(Sender).Handle := HMenu(Handle)
+  else
+  if (Sender is TMenu) then
+    TMenu(Sender).Items.Handle := HMenu(Handle)
+  else
+  if (Sender is TCommonDialog) then
+    TCommonDialog(Sender).Handle:= THandle(Handle);
+
+
+  Set_RC_Name(Sender, Handle);
+
+  if SetupProps then SetProperties(Sender);
+
+  if Handle <> nil then begin
+    {$IfNDef win32}
+    if Sender is TCustomForm then
+      gtk_widget_set_app_paintable(Handle,true);
+    {$EndIf}
+    HookSignals(Sender);
+  end;
+end;
+
+Function TgtkObject.GetCompStyle(Sender : TObject) : Longint;
+begin
+  Result := csNone;
+  if (Sender is TControl) then
+    Result := TControl(Sender).FCompStyle
+  else
+    if (Sender is TMenuItem) then
+      Result := TMenuItem(Sender).FCompStyle
+  else
+    if (Sender is TMenu) or (Sender is TPopupMenu)
+    then
+      Result := TMenu(Sender).FCompStyle
+  else
+    if (Sender is TCommonDialog)
+    then
+      result := TCommonDialog(Sender).FCompStyle;
+end;
+
+Function TgtkObject.GetCaption(Sender : TObject) : String;
+begin
+  Result := Sender.ClassName;
+  if (Sender is TControl) then
+    Result := TControl(Sender).Caption
+  else
+    if (Sender is TMenuItem) then
+      Result := TMenuItem(Sender).Caption;
+
+  if Result = '' then Result := 'Blank';
+end;
+
 {------------------------------------------------------------------------------
   Function: TGTKObject.CreateComponent
   Params:   sender - object for which to create visual representation
@@ -3744,64 +3818,12 @@ var
   SetupProps : boolean;
   Titles: PPGChar;
   ABorderStyle: TFormBorderStyle;
-
-  procedure Set_RC_Name(AWidget: PGtkWidget);
-  var RCName: string;
-    AComponent: TComponent;
-  begin
-    if (AWidget=nil) or (not (Sender is TComponent)) then exit;
-
-    // check if a unique name can be created
-    AComponent:=TComponent(Sender);
-    while (AComponent<>nil) and (AComponent.Name<>'') do begin
-      AComponent:=AComponent.Owner;
-    end;
-    if (AComponent=nil) or (AComponent=TComponent(Application)) then begin
-      // create unique name
-      AComponent:=TComponent(Sender);
-      RCName:=AComponent.Name;
-      while (AComponent<>nil) do begin
-        AComponent:=TComponent(AComponent.Owner);
-        if (AComponent<>nil) and (AComponent.Name<>'') then
-          RCName:=AComponent.Name+'_'+RCName;
-      end;
-      gtk_widget_set_name(AWidget,PChar(RCName));
-      gtk_widget_set_rc_style(AWidget);
-    end;
-    if (Sender is TCustomForm)
-    and ((Application.MainForm=TCustomForm(Sender))
-      or (Application.MainForm=nil))
-    then
-      UpdateSysColorMap(AWidget);
-  end;
-
 begin
   p := nil;
   SetupProps:= false;
 
-  CompStyle := csNone;
-  Caption   := Sender.ClassName;
-  if (Sender is TControl) then
-  begin
-    Caption := TControl(Sender).Caption;
-    CompStyle := TControl(Sender).FCompStyle
-  end
-  else
-  if (Sender is TMenuItem) then
-  begin
-    Caption := TMenuItem(Sender).Caption;
-    CompStyle := TMenuItem(Sender).FCompStyle;
-  end
-  else
-  if (Sender is TMenu) or (Sender is TPopupMenu)
-  then
-    CompStyle := TMenu(Sender).FCompStyle
-  else
-  if (Sender is TCommonDialog)
-  then
-    CompStyle := TCommonDialog(Sender).FCompStyle;
-
-  if Caption = '' then Caption := 'Blank';
+  CompStyle := GetCompStyle(Sender);
+  Caption   := GetCaption(Sender);
 
   strTemp := StrAlloc(length(Caption) + 1);
   StrPCopy(strTemp, Caption);
@@ -4376,48 +4398,8 @@ begin
     end;
 
   end; //end case
-
-  // MWE: next will be obsoleted by WinWidgetInfo
-  //Set these for functions like GetWindowLong  Added 01/07/2000
-  if p <> nil then
-  Begin
-    SetLCLObject(p, Sender);
-    gtk_object_set_data(pgtkObject(p),'Style',0);
-    gtk_object_set_data(pgtkObject(p),'ExStyle',0);
-  end;
-  //--------------------------
-
-  if (Sender is TWinControl) then
-  begin
-    TWinControl(Sender).Handle := THandle(p);
-    if p <> nil then begin
-      gtk_object_set_data(pgtkobject(p),'Sender',Sender);
-      SetResizeRequest(p);
-    end;
-  end
-  else
-  if (Sender is TMenuItem) then
-    TMenuItem(Sender).Handle := HMenu(p)
-  else
-  if (Sender is TMenu) then
-    TMenu(Sender).Items.Handle := HMenu(p)
-  else
-  if (Sender is TCommonDialog) then
-    TCommonDialog(Sender).Handle:= THandle(p);
-
-
-  Set_RC_Name(p);
-
-  if SetupProps then SetProperties(Sender);
-
   StrDispose(StrTemp);
-  if P <> nil then begin
-    {$IfNDef win32}
-    if Sender is TCustomForm then
-      gtk_widget_set_app_paintable(p,true);
-    {$EndIf}
-    HookSignals(Sender);
-  end;
+  FinishComponentCreate(Sender, P, SetupProps);
 end;
 
 {------------------------------------------------------------------------------}
@@ -6517,6 +6499,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.265  2002/10/24 22:10:39  lazarus
+  AJ: More changes for better code reuse between gnome & gtk interfaces
+
   Revision 1.264  2002/10/24 08:56:30  lazarus
   MG: fixed TnoteBook AddPage and double creation of MeinMenu
 
