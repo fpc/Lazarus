@@ -453,9 +453,14 @@ type
     FVisible: Boolean;
     procedure DoConstrainedResize(var NewWidth, NewHeight : integer);
     procedure CheckMenuPopup(const P : TSmallPoint);
+    function GetClientHeight: Integer;
+    function GetClientWidth: Integer;
     procedure SetAlign(Value : TAlign);
     procedure SetAutoSize(value : Boolean);
     procedure SetBoundsRect(const Rect : TRect);
+    procedure SetClientHeight(Value: Integer);
+    procedure SetClientSize(Value: TPoint);
+    procedure SetClientWidth(Value: Integer);
     procedure SetConstraints(const Value : TSizeConstraints);
     procedure SetColor(Value : TColor);
     procedure SetCursor(Value : TCursor);
@@ -592,31 +597,31 @@ type
     Function  Dragging : Boolean;
     procedure Show;
     procedure Update; //override;   //pbd
+  public
     property Anchors : TAnchors read FAnchors write FAnchors default [akLeft,akTop];
     property Align : TAlign read FAlign write SetAlign;
     property BoundsRect : TRect read GetBoundsRect write SetBoundsRect;
     property Caption: TCaption read GetText write SetText stored IsCaptionStored;
-    property Cursor: TCursor read FCursor write SetCursor default crDefault;
-    property Color : TColor read FCOlor write SetColor;  {should change the WRITE to do something eventually}
-    property Constraints : TSizeConstraints read FConstraints write SetConstraints;
-    property ControlState: TControlState read FControlState write FControlState;
     property ClientOrigin: TPoint read GetClientOrigin;
     property ClientRect: TRect read GetClientRect;
-    property Ctl3D : Boolean read FCtl3D write FCtl3D;  //Is this needed for anything other than compatability?
+    property ClientHeight: Integer read GetClientHeight write SetClientHeight stored False;
+    property ClientWidth: Integer read GetClientWidth write SetClientWidth stored False;
+    property Constraints : TSizeConstraints read FConstraints write SetConstraints;
+    property ControlState: TControlState read FControlState write FControlState;
     property ControlStyle : TControlStyle read FControlStyle write FControlStyle;
+    property Color : TColor read FCOlor write SetColor;  {should change the WRITE to do something eventually}
+    property Ctl3D : Boolean read FCtl3D write FCtl3D;  //Is this needed for anything other than compatability?
+    property Cursor: TCursor read FCursor write SetCursor default crDefault;
     property Enabled: Boolean read GetEnabled write SetEnabled default True;
     property Font : TFont read FFont write FFont;
     property HostDockSite : TWincontrol read FHostDockSite write FHostDockSite;
-    property ClientHeight : Integer read FHeight write SetHeight;
-    property ClientWidth : Integer read FWidth write SetWidth;
     property Parent : TWinControl read FParent write SetParent;
     property ShowHint : Boolean read FShowHint write SetShowHint;
     property Visible: Boolean read FVisible write SetVisible;
-   {events}
+    property WindowProc: TWndMethod read FWindowProc write FWindowProc;
+  public
     property OnResize: TNotifyEvent read FOnResize write FOnResize;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
-//    property Owner: TComponent read FOwner write FOwner;
-    property WindowProc: TWndMethod read FWindowProc write FWindowProc;
   published
     property Left: Integer read FLeft write SetLeft;
     property Height: Integer read FHeight write SetHeight;
@@ -749,6 +754,7 @@ type
     function  DoKeyPress(var Message: TLMKey): Boolean;
     function  DoKeyUp(var Message: TLMKey): Boolean;
     function  GetClientOrigin: TPoint; override;
+    function  GetClientRect: TRect; override;
     function  GetDeviceContext(var WindowHandle: HWnd): HDC; override;
     Function  IsControlMouseMsg(var Message : TLMMouse): Boolean;
     property  BorderWidth : TBorderWidth read FBorderWidth write SetBorderWidth default 0;
@@ -1198,6 +1204,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.44  2002/04/24 16:11:17  lazarus
+  MG: started new client rectangle
+
   Revision 1.43  2002/04/24 09:29:06  lazarus
   MG: fixed typos
 
