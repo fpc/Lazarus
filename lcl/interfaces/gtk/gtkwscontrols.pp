@@ -27,6 +27,7 @@ unit GtkWSControls;
 interface
 
 uses
+  Gtk,
 ////////////////////////////////////////////////////
 // I M P O R T A N T                                
 ////////////////////////////////////////////////////
@@ -35,6 +36,7 @@ uses
 ////////////////////////////////////////////////////
 //  Controls,
 ////////////////////////////////////////////////////
+  Classes, LMessages,
   WSControls, WSLCLClasses;
 
 type
@@ -61,6 +63,7 @@ type
   private
   protected
   public
+    class procedure SetCallbacks(const AGTKObject: PGTKObject; const AComponent: TComponent);
   end;
 
   { TGtkWSGraphicControl }
@@ -89,6 +92,35 @@ type
 
 
 implementation
+
+uses
+  GtkProc, GtkDef, GtkInt;
+
+
+{ TGtkWSWinControl }
+  
+procedure TGtkWSWinControl.SetCallbacks(const AGTKObject: PGTKObject; const AComponent: TComponent);
+//TODO: Remove ALCLObject when the creation splitup is finished
+begin
+  GtkWidgetSet.SetCallback(LM_SHOWWINDOW, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(LM_DESTROY, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(LM_FOCUS, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(LM_WINDOWPOSCHANGED, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(LM_PAINT, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(LM_EXPOSEEVENT, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(LM_KEYDOWN, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(LM_KEYUP, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(LM_CHAR, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(LM_MOUSEMOVE, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(LM_LBUTTONDOWN, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(LM_LBUTTONUP, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(LM_RBUTTONDOWN, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(LM_RBUTTONUP, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(LM_MBUTTONDOWN, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(LM_MBUTTONUP, AGTKObject, AComponent);
+  GtkWidgetSet.SetCallback(LM_MOUSEWHEEL, AGTKObject, AComponent);
+end;
+
 
 initialization
 

@@ -296,7 +296,6 @@ type
               const AGTKObject: Pointer; const ASetupProps : Boolean); virtual;
 
     // control functions for messages, callbacks
-    procedure HookWincontrolSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject); virtual;
     procedure HookSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject); virtual;  //hooks all signals for controls
   public
     constructor Create;
@@ -342,7 +341,7 @@ uses
 // GtkWSCheckLst,
 // GtkWSCListBox,
 // GtkWSComCtrls,
-// GtkWSControls,
+ GtkWSControls,
 // GtkWSDbCtrls,
 // GtkWSDBGrids,
 // GtkWSDialogs,
@@ -461,6 +460,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.178  2004/03/24 01:21:41  marc
+  * Simplified signals for gtkwsbutton
+
   Revision 1.177  2004/03/19 00:53:34  marc
   * Removed all ComponentCreateHandle routines
 

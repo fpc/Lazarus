@@ -627,8 +627,8 @@ begin
         Result:=Result+'<Is FixedWidget>';
       WinWidgetInfo:=GetWidgetInfo(MainWidget,false);
       if WinWidgetInfo<>nil then begin
-        if WinWidgetInfo^.ImplementationWidget=Widget then
-          Result:=Result+'<Is ImplementationWidget>';
+        if WinWidgetInfo^.CoreWidget = Widget then
+          Result:=Result+'<Is CoreWidget>';
       end;
     end else begin
       Result:=Result+'<NOT HandleAllocated>'
@@ -733,13 +733,19 @@ end;
 
   Adds LockOffset to the OnChangeLock and returns the result.
  ------------------------------------------------------------------------------}
-function LockOnChange(GtkObject: PGtkObject; LockOffset: integer): integer;
+function LockOnChange(GtkObject: PGtkObject; LockOffset: integer): integer; 
+var
+  Info: PWidgetInfo;
 begin
-  Result:=Integer(gtk_object_get_data(GtkObject,'OnChangeLock'));
-  if LockOffset<>0 then begin
-    inc(Result,LockOffset);
-    gtk_object_set_data(GtkObject,'OnChangeLock',Pointer(Result));
+  Info := GetWidgetInfo(GtkObject, True);
+  if Info = nil
+  then begin
+    Result := 0;
+    Exit;
   end;
+  
+  Inc(Info^.ChangeLock, LockOffset);
+  Result := Info^.ChangeLock;
 end;
 
 {------------------------------------------------------------------------------
@@ -2556,15 +2562,15 @@ begin
   if ADialog is TOpenDialog then begin
 
     FileSelWidget:=GTK_FILE_SELECTION(DlgWindow);
-    FreeWinWidgetInfo(FileSelWidget^.selection_entry);
-    FreeWinWidgetInfo(FileSelWidget^.dir_list);
-    FreeWinWidgetInfo(FileSelWidget^.file_list);
+    FreeWidgetInfo(FileSelWidget^.selection_entry);
+    FreeWidgetInfo(FileSelWidget^.dir_list);
+    FreeWidgetInfo(FileSelWidget^.file_list);
     LCLFilterMenu:=PGTKWidget(gtk_object_get_data(PGtkObject(FileSelWidget),
                                        'LCLFilterMenu'));
-    if LCLFilterMenu<>nil then FreeWinWidgetInfo(LCLFilterMenu);
+    if LCLFilterMenu<>nil then FreeWidgetInfo(LCLFilterMenu);
     LCLHistoryMenu:=PGTKWidget(gtk_object_get_data(PGtkObject(FileSelWidget),
                                        'LCLHistoryMenu'));
-    if LCLHistoryMenu<>nil then FreeWinWidgetInfo(LCLHistoryMenu);
+    if LCLHistoryMenu<>nil then FreeWidgetInfo(LCLHistoryMenu);
 
     // free history
     HistoryList:=TList(gtk_object_get_data(PGtkObject(DlgWindow),
@@ -2987,15 +2993,15 @@ end;
 
 
 {------------------------------------------------------------------------------
-  function CreateWidgetInfo(const Widget: Pointer): PWinWidgetInfo;
+  function CreateWidgetInfo(const AWidget: Pointer): PWidgetInfo;
 
- Creates a WinWidget info structure for the given widget
+ Creates a WidgetInfo structure for the given widget
  Info needed by the API of a HWND (=Widget)
 
  This structure obsoletes all other object data, like
    "core-child", "fixed", "class"
  ------------------------------------------------------------------------------}
-function CreateWidgetInfo(const AWidget: Pointer): PWinWidgetInfo;
+function CreateWidgetInfo(const AWidget: Pointer): PWidgetInfo;
 begin
   if AWidget = nil then Result:= nil
   else begin
@@ -3006,57 +3012,58 @@ begin
 end;
 
 function CreateWidgetInfo(const AHandle: THandle; const AObject: TObject;
-  const AParams: TCreateParams): PWinWidgetInfo;
+  const AParams: TCreateParams): PWidgetInfo;
 begin
   Result := CreateWidgetInfo(Pointer(AHandle));
   if Result = nil then Exit;
   
   Result^.LCLObject := AObject;
-  //in most cases the created widger is teimplementation widget
+  // in most cases the created widget is the core widget
   // so default to it
-  Result^.ImplementationWidget := Pointer(AHandle);
+  Result^.CoreWidget := Pointer(AHandle);
   Result^.Style := AParams.Style;
   Result^.ExStyle := AParams.ExStyle;
   Result^.WndProc := Integer(AParams.WindowClass.lpfnWndProc);
 end;
 
-function GetWidgetInfo(const Widget: Pointer {; const Create: Boolean = False}): PWinWidgetInfo;
+function GetWidgetInfo(const AWidget: Pointer {; const Create: Boolean = False}): PWidgetInfo;
 begin
-  Result := GetWidgetInfo(Widget, False);
+  Result := GetWidgetInfo(AWidget, False);
 end;
 
-function GetWidgetInfo(const Widget: Pointer;
-  const Create: Boolean): PWinWidgetInfo;
+function GetWidgetInfo(const AWidget: Pointer;
+  const ACreate: Boolean): PWidgetInfo;
 var
   MainWidget: PGtkObject;
 begin
-  if Widget <> nil
+  if AWidget <> nil
   then begin
-    MainWidget := GetMainWidget(Widget);
-    if MainWidget = nil then MainWidget := Widget;
+    MainWidget := GetMainWidget(AWidget);
+    if MainWidget = nil then MainWidget := AWidget;
     Result := gtk_object_get_data(MainWidget, 'widgetinfo');
-    if (Result = nil) and Create
+    if (Result = nil) and ACreate
     then begin
       Result := CreateWidgetInfo(MainWidget);
-      Result^.ImplementationWidget := PGtkWidget(MainWidget);
+      // use the main widget as default
+      Result^.CoreWidget := PGtkWidget(MainWidget);
     end;  
   end
   else Result := nil;
 end;
 
-procedure FreeWinWidgetInfo(Widget: Pointer);
+procedure FreeWidgetInfo(AWidget: Pointer);
 var
-  WinWidgetInfo: PWinWidgetInfo;
+  Info: PWidgetInfo;
 begin
-  if Widget = nil then Exit;
-  WinWidgetInfo := gtk_object_get_data(Widget, 'widgetinfo');
-  if WinWidgetInfo = nil then Exit;
+  if AWidget = nil then Exit;
+  Info := gtk_object_get_data(AWidget, 'widgetinfo');
+  if Info = nil then Exit;
 
-  if WinWidgetInfo^.DoubleBuffer <> nil then
-      gdk_pixmap_unref(WinWidgetInfo^.DoubleBuffer);
-  gtk_object_set_data(Widget,'widgetinfo',nil);
+  if Info^.DoubleBuffer <> nil then
+      gdk_pixmap_unref(Info^.DoubleBuffer);
+  gtk_object_set_data(AWidget,'widgetinfo',nil);
 
-  Dispose(WinWidgetInfo);
+  Dispose(Info);
 end;
 
 {-------------------------------------------------------------------------------
@@ -3065,7 +3072,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure DestroyWidget(Widget: PGtkWidget);
 begin
-  FreeWinWidgetInfo(Widget);
+  FreeWidgetInfo(Widget);
   gtk_widget_destroy(Widget);
 end;
 
@@ -3323,7 +3330,7 @@ begin
   if GtkWidgetIsA(Widget,GTKAPIWidget_GetType) then begin
     WidgetInfo:=GetWidgetInfo(Widget,false);
     if WidgetInfo<>nil then
-      Result:=WidgetInfo^.ImplementationWidget;
+      Result:=WidgetInfo^.CoreWidget;
     exit;
   end;
   LCLObject:=GetNearestLCLObject(Widget);
@@ -3334,7 +3341,7 @@ begin
   then begin
     WidgetInfo:=GetWidgetInfo(PGtkWidget(TWinControl(LCLObject).Handle),false);
     if WidgetInfo<>nil then
-      Result:=WidgetInfo^.ImplementationWidget;
+      Result:=WidgetInfo^.CoreWidget;
   end;
 end;
 
@@ -3421,6 +3428,40 @@ begin
     NewCursor:= GetGDKMouseCursor(AWinControl.Cursor);
     if NewCursor <> nil then DoSetCursor(AWindow, NewCursor);
   end;
+end;
+
+{-------------------------------------------------------------------------------
+  procedure: SignalConnect
+  Params:  AWidget: PGTKWidget
+           ASignal: PChar
+           AProc:   Pointer
+           AInfo:   PWidgetInfo
+  Returns: Nothing
+
+  Connects a gtk signal handler.
+  This is wrappers to get around gtk casting
+-------------------------------------------------------------------------------}
+procedure SignalConnect(const AWidget: PGTKWidget; const ASignal: PChar;
+  const AProc: Pointer; const AInfo: PWidgetInfo);
+begin
+  g_signal_connect(PGtkObject(AWidget), ASignal, TGTKSignalFunc(AProc), AInfo);
+end;
+
+{-------------------------------------------------------------------------------
+  procedure: SignalConnectAfter
+  Params:  AWidget: PGTKWidget
+           ASignal: PChar
+           AProc:   Pointer
+           AInfo:   PGtkWSWidgetInfo
+  Returns: Nothing
+
+  Connects a gtk signal after handler. 
+  This is wrappers to get around gtk casting
+-------------------------------------------------------------------------------}
+procedure SignalConnectAfter(const AWidget:PGTKWidget; const ASignal: PChar;
+  const AProc: Pointer; const AInfo: PWidgetInfo);
+begin
+  g_signal_connect_after(PGTKObject(AWidget), ASignal, TGTKSignalFunc(AProc), AInfo);
 end;
 
 {-------------------------------------------------------------------------------
@@ -6662,6 +6703,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.271  2004/03/24 01:21:41  marc
+  * Simplified signals for gtkwsbutton
+
   Revision 1.270  2004/03/22 19:10:04  mattias
   implemented icons for TPage in gtk, mask for TCustomImageList
 

@@ -1370,7 +1370,7 @@ begin
         if TheMessage.Msg = CM_VISIBLECHANGED
         then begin
           with TheMessage do SendDockNotification(Msg,WParam,LParam);
-	end;
+        end;
       end;
     end;
   end;
@@ -2884,6 +2884,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.178  2004/03/24 01:21:41  marc
+  * Simplified signals for gtkwsbutton
+
   Revision 1.177  2004/03/08 22:36:01  mattias
   added TWinControl.ParentFormInitializeWnd
 

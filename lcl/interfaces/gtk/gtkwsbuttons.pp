@@ -27,16 +27,14 @@ unit GtkWSButtons;
 interface
 
 uses
-////////////////////////////////////////////////////
-// I M P O R T A N T                                
-////////////////////////////////////////////////////
-// To get as little as posible circles,
-// uncomment only when needed for registration
-////////////////////////////////////////////////////
-  Buttons,
-////////////////////////////////////////////////////
-  Classes, LCLType, LMessages,
-  WSButtons, WSLCLClasses;
+  // libs
+  GLib, Gtk, 
+  // LCL
+  Buttons, Classes, LCLType, LMessages,
+  // widgetset
+  WSButtons, WSLCLClasses, 
+  // interface
+  GtkDef;
 
 type
 
@@ -45,9 +43,9 @@ type
   TGtkWSButton = class(TWSButton)
   private
   protected
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
-    class function CreateHandle(const AComponent: TComponent; 
-                                const AParams: TCreateParams): THandle; override;
+    class function CreateHandle(const AComponent: TComponent; const AParams: TCreateParams): THandle; override;
   end;
 
   { TGtkWSBitBtn }
@@ -70,17 +68,28 @@ type
 implementation
 
 uses
-  Gtk, GtkProc, GtkDef, GtkInt;
+  GtkProc, GtkInt, GtkGlobals,
+  GtkWSControls;
 
-{ TGtkWSButton }      
+{ TGtkWSButton }
 
-function TGtkWSButton.CreateHandle(const AComponent: TComponent; 
-  const AParams: TCreateParams): THandle; 
+function GtkWSButton_Clicked(AWidget: PGtkWidget; AInfo: PWidgetInfo): GBoolean; cdecl;
+var
+  Msg: TLMessage;
+begin
+  Result := CallBackDefaultReturn;
+  if AInfo^.ChangeLock > 0 then Exit;
+  Msg.Msg := LM_CLICKED;
+  Result := DeliverMessage(AInfo^.LCLObject, Msg) = 0;
+end;
+
+
+function TGtkWSButton.CreateHandle(const AComponent: TComponent; const AParams: TCreateParams): THandle; 
 var
   Caption, Pattern: String;
   AccelKey: Char;
   Button: TButton;
-  WidgetInfo: PWinWidgetInfo;
+  WidgetInfo: PWidgetInfo;
   Allocation: TGTKAllocation;
 begin
   //TODO: support utf accelkey
@@ -98,7 +107,7 @@ begin
   Accelerate(Button, PGtkWidget(Result), Ord(AccelKey), 0, 'clicked');
   
   WidgetInfo := CreateWidgetInfo(Result, Button, AParams);
-  WidgetInfo^.ImplementationWidget := PGtkWidget(Result);
+  WidgetInfo^.CoreWidget := PGtkWidget(Result);
   
   Allocation.X := AParams.X;
   Allocation.Y := AParams.Y;
@@ -106,10 +115,15 @@ begin
   Allocation.Height := AParams.Height;
   gtk_widget_size_allocate(PGtkWidget(Result), @Allocation);
 
-  GtkWidgetSet.HookWincontrolSignals(PGTKObject(Result), Button);
-  GtkWidgetSet.SetCallback(LM_CLICKED, PGTKObject(Result), Button);
+  SetCallbacks(PGtkWidget(Result), WidgetInfo);
 end;
 
+procedure TGtkWSButton.SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
+begin        
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
+
+  SignalConnect(AGtkWidget, 'clicked', @GtkWSButton_Clicked, AWidgetInfo);
+end;
 
 initialization
 

@@ -203,30 +203,37 @@ type
   end;
   
   
-  TWinWidgetInfoFlag = (
+  TWidgetInfoFlag = (
     wwiNotOnParentsClientArea
     );
-  TWinWidgetInfoFlags = set of TWinWidgetInfoFlag;
+  TWidgetInfoFlags = set of TWidgetInfoFlag;
 
   // Info needed by the API of a HWND (=Widget) 
-  PWinWidgetInfo = ^TWinWidgetInfo;
-  TWinWidgetInfo = record
+  PWidgetInfo = ^TWidgetInfo;
+  TWidgetInfo = record
     LCLObject: TObject;               // the object which created this widget
     ClientWidget: PGTKWidget;         // the widget which contains the childwidgets
                                       // used to be "fixed" or "core-child"
-    ImplementationWidget: PGTKWidget; // the widget which implements the main functionality
-                                      // For a TListBox the GTKList is the ImplementationWidget
+    CoreWidget: PGTKWidget;           // the widget which implements the main functionality
+                                      // For a TListBox the GTKList is the CoreWidget
                                       // and the scrollbox around it is the handle
-                                      // So in most cases handle = ImplementationWidget
+                                      // So in most cases handle = CoreWidget
     UpdateRect: TRect;                // used by LM_Paint, beginpaint etc
     WndProc: Integer;                 // window data 
     Style: Integer;                   
     ExStyle: Integer;
     EventMask: TGdkEventMask;
     DoubleBuffer: PGdkPixmap;
-    Flags: TWinWidgetInfoFlags;
+    Flags: TWidgetInfoFlags;
+    ChangeLock: Integer;              // lock events
     UserData: Integer;
   end;
+  
+  //TODO: remove
+  PWinWidgetInfo = ^TWidgetInfo;
+  TWinWidgetInfo = TWidgetInfo;
+  //--
+  
   
 // clipboard
 type
@@ -561,6 +568,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.57  2004/03/24 01:21:41  marc
+  * Simplified signals for gtkwsbutton
+
   Revision 1.56  2004/03/22 19:10:04  mattias
   implemented icons for TPage in gtk, mask for TCustomImageList
 

@@ -179,7 +179,7 @@ begin
     begin
       aTreeView :=
         GTK_TREE_VIEW(GetWidgetInfo(Pointer(AWinControl.Handle), True)
-          ^.ImplementationWidget);
+          ^.CoreWidget);
 
       if gtk_tree_view_get_path_at_pos(aTreeView, 0, Y, aTreePath, aTreeColumn,
         nil, nil)
@@ -207,7 +207,7 @@ begin
   if TCustomListbox(ListBox).FCompStyle in [csListBox, csCheckListBox] then
   begin
     AWidget:=PGtkWidget(TCustomListbox(ListBox).Handle);
-    ListWidget:=PGtkList(GetWidgetInfo(AWidget, True)^.ImplementationWidget);
+    ListWidget:=PGtkList(GetWidgetInfo(AWidget, True)^.CoreWidget);
     ScrolledWindow:=PGtkScrolledWindow(AWidget);
     VertAdj:=gtk_scrolled_window_get_vadjustment(ScrolledWindow);
     if VertAdj=nil then
@@ -268,7 +268,7 @@ begin
   if TCustomListbox(ListBox).FCompStyle in [csListBox, csCheckListBox] then
   begin
     AWidget:=PGtkWidget(TCustomListbox(ListBox).Handle);
-    ListWidget:=PGtkList(GetWidgetInfo(AWidget, True)^.ImplementationWidget);
+    ListWidget:=PGtkList(GetWidgetInfo(AWidget, True)^.CoreWidget);
     ScrolledWindow:=PGtkScrolledWindow(AWidget);
     VertAdj:=gtk_scrolled_window_get_vadjustment(ScrolledWindow);
     if VertAdj=nil then
@@ -453,6 +453,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.23  2004/03/24 01:21:41  marc
+  * Simplified signals for gtkwsbutton
+
   Revision 1.22  2004/03/22 19:10:04  mattias
   implemented icons for TPage in gtk, mask for TCustomImageList
 

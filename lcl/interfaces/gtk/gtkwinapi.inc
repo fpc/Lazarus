@@ -7782,7 +7782,7 @@ begin
       // check if widget has a WinWidgetInfo record
       WinWidgetInfo:=GetWidgetInfo(Widget, false);
       if (WinWidgetInfo<>nil) then begin
-        ImplWidget:= WinWidgetInfo^.ImplementationWidget;
+        ImplWidget:= WinWidgetInfo^.CoreWidget;
         if ImplWidget <> nil then begin
           // handle has a ImplementationWidget
           {$IfDef VerboseFocus}
@@ -8733,6 +8733,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.341  2004/03/24 01:21:41  marc
+  * Simplified signals for gtkwsbutton
+
   Revision 1.340  2004/03/22 19:10:04  mattias
   implemented icons for TPage in gtk, mask for TCustomImageList
 

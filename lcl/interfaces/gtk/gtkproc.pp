@@ -292,11 +292,11 @@ function GetFixedWidget(const Widget: Pointer): Pointer;
 procedure SetFixedWidget(const ParentWidget, FixedWidget: Pointer);
 Function GetControlWindow(Widget: Pointer) : PGDKWindow;
 
-function CreateWidgetInfo(const AWidget: Pointer): PWinWidgetInfo;
-function CreateWidgetInfo(const AHandle: THandle; const AObject: TObject; const AParams: TCreateParams): PWinWidgetInfo;
-function GetWidgetInfo(const Widget: Pointer {; const Create: Boolean = False}): PWinWidgetInfo;
-function GetWidgetInfo(const Widget: Pointer; const Create: Boolean): PWinWidgetInfo;
-procedure FreeWinWidgetInfo(Widget: Pointer);
+function CreateWidgetInfo(const AWidget: Pointer): PWidgetInfo;
+function CreateWidgetInfo(const AHandle: THandle; const AObject: TObject; const AParams: TCreateParams): PWidgetInfo;
+function GetWidgetInfo(const AWidget: Pointer {; const ACreate: Boolean = False}): PWidgetInfo;
+function GetWidgetInfo(const AWidget: Pointer; const ACreate: Boolean): PWidgetInfo;
+procedure FreeWidgetInfo(AWidget: Pointer);
 
 procedure DestroyWidget(Widget: PGtkWidget);
 procedure SetLCLObject(const Widget: Pointer; const AnObject: TObject);
@@ -506,6 +506,13 @@ function GetDesignOnlySignalFlag(Widget: PGtkWidget;
   DesignSignalType: TDesignSignalType): boolean;
 
 // signals
+// new signal procs, these will obsolete the old ones
+procedure SignalConnect(const AWidget: PGTKWidget; const ASignal: PChar;
+  const AProc: Pointer; const AInfo: PWidgetInfo);
+procedure SignalConnectAfter(const AWidget: PGTKWidget; const ASignal: PChar;
+  const AProc: Pointer; const AInfo: PWidgetInfo);
+
+// old signal procs
 procedure ConnectSignal(const AnObject:PGTKObject; const ASignal: PChar;
   const ACallBackProc: Pointer; const ALCLObject: TObject;
   const AReqSignalMask: TGdkEventMask; const ASFlags: TConnectSignalFlags);
@@ -522,6 +529,7 @@ procedure ConnectSignalAfter(const AnObject:PGTKObject; const ASignal: PChar;
 
 procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
   AWinControl: TWinControl);
+//--
   
 // accelerators
 Function DeleteAmpersands(var Str : String) : Longint;

@@ -2793,7 +2793,7 @@ var
 begin
   ListView:=TListView(TheListView);
   LVWidget:= PgtkCList(
-           GetWidgetInfo(Pointer(ListView.Handle), True)^.ImplementationWidget);
+           GetWidgetInfo(Pointer(ListView.Handle), True)^.CoreWidget);
   ListItem := ListView.Items[Index];
   // set caption (= first column text)
   pStr:=PChar(ListItem.Caption);
@@ -2847,7 +2847,7 @@ var
 begin
   ListView:=TListView(TheListView);
   ListViewWidget:= PGtkCList(GetWidgetInfo(
-                         Pointer(ListView.Handle), True)^.ImplementationWidget);
+                         Pointer(ListView.Handle), True)^.CoreWidget);
   Count:=ListViewWidget^.columns;
   if Count=0 then begin
     writeln('WARNING: TGtkWidgetSet.ListViewAddItem  ListViewWidget^.columns=0');
@@ -2900,7 +2900,7 @@ begin
   csListBox, csCheckListBox:
     begin
       AWidget:=PGtkWidget(TWinControl(Sender).Handle);
-      ListWidget:=PGtkList(GetWidgetInfo(AWidget, True)^.ImplementationWidget);
+      ListWidget:=PGtkList(GetWidgetInfo(AWidget, True)^.CoreWidget);
       ScrolledWindow:=PGtkScrolledWindow(AWidget);
       AdjValue:=0;
       GListItem:=ListWidget^.children;
@@ -2953,12 +2953,12 @@ begin
 
     csListBox, csCheckListBox:
       gtk_list_set_selection_mode(PGtkList(
-        GetWidgetInfo(Widget, True)^.ImplementationWidget),
+        GetWidgetInfo(Widget, True)^.CoreWidget),
         SelectionMode);
 
     csCListBox:
       gtk_clist_set_selection_mode(PGtkCList(
-        GetWidgetInfo(Widget, True)^.ImplementationWidget),
+        GetWidgetInfo(Widget, True)^.CoreWidget),
           SelectionMode);
 
     else
@@ -3106,7 +3106,7 @@ begin
           Writeln('TODO: TGtkWidgetSet.IntSendMessage3 LM_LV_DELETEITEM');
           {$Else}
           Num := Integer(data^);
-          Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+          Widget:= GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
           gtk_clist_remove(PgtkCList(Widget),Num);
           {$EndIf}
         end;
@@ -3141,7 +3141,7 @@ begin
        {$IfDef GTK2}
         Writeln('TODO: TGtkWidgetSet.IntSendMessage3 LM_LV_SELECTITEM');
        {$Else}
-        Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+        Widget:= GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
         gtk_clist_unselect_all(PGtkCList(Widget));
         if Data<>nil then
           gtk_clist_select_row(PGtkCList(Widget),TListItem(Data).Index,0);
@@ -3557,7 +3557,7 @@ begin
 
           csCListBox:
             begin
-              Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+              Widget:= GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
 
               Data := TGtkCListStringList.Create(PGtkCList(Widget));
               if Sender is TCustomListBox then
@@ -3567,7 +3567,7 @@ begin
 
           csCheckListBox, csListBox:
             begin
-              Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+              Widget:= GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
               Data:= TGtkListStringList.Create(PGtkList(Widget),
                 TWinControl(Sender), TControl(Sender).fCompStyle = csCheckListBox);
               if Sender is TCustomListBox then
@@ -3598,9 +3598,9 @@ begin
                  Widget:=nil;
                  if TListBox(Sender).MultiSelect then
                    Widget:= PGtkList(GetWidgetInfo(Pointer(Handle), True)^.
-                                        ImplementationWidget)^.last_focus_child;
+                                        CoreWidget)^.last_focus_child;
                  if Widget=nil then begin
-                   GList:= PGtkList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget)^.selection;
+                   GList:= PGtkList(GetWidgetInfo(Pointer(Handle), True)^.CoreWidget)^.selection;
                    if GList <> nil then
                      Widget:= PGtkWidget(GList^.data);
                  end;
@@ -3609,14 +3609,14 @@ begin
                  else
                    Result:= gtk_list_child_position(PGtkList(
                                  GetWidgetInfo(Pointer(Handle), True)^.
-                                               ImplementationWidget), Widget);
+                                               CoreWidget), Widget);
                end else
                  Result:=-1;
              end;
 
            csCListBox:
              begin
-               GList:= PGtkCList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget)^.selection;
+               GList:= PGtkCList(GetWidgetInfo(Pointer(Handle), True)^.CoreWidget)^.selection;
                if GList = nil then
                  Result := -1
                else
@@ -3650,16 +3650,16 @@ begin
           begin
             if Integer(Data)>=0 then begin
               gtk_list_select_item(
-                PGtkList(GetWidgetInfo(Pointer(Handle),True)^.ImplementationWidget),
+                PGtkList(GetWidgetInfo(Pointer(Handle),True)^.CoreWidget),
                 Integer(Data))
             end else
               gtk_list_unselect_all(
-                PGtkList(GetWidgetInfo(Pointer(Handle),True)^.ImplementationWidget));
+                PGtkList(GetWidgetInfo(Pointer(Handle),True)^.CoreWidget));
           end;
 
           csCListBox:
             gtk_clist_select_row(PGtkCList(GetWidgetInfo(Pointer(Handle),
-                                   True)^.ImplementationWidget),
+                                   True)^.CoreWidget),
                                  Integer(Data), 1);    // column
           {$EndIf}
 
@@ -3684,7 +3684,7 @@ begin
             Widget:= PGtkWidget(PGtkCombo(Handle)^.entry);
           {$IfDef GTK1}
           csEdit, csMemo:
-        Widget:= GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
+        Widget:= GetWidgetInfo(Pointer(Handle), true)^.CoreWidget;
           {$EndIf}
       else
         Widget:= nil;
@@ -3711,7 +3711,7 @@ begin
           {$IfDef GTK1}
           csEdit, csMemo:
         begin
-          Widget:= GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
+          Widget:= GetWidgetInfo(Pointer(Handle), true)^.CoreWidget;
               with PGtkOldEditable(Widget)^ do begin
                 Result:=Abs(integer(selection_end_pos)-integer(selection_start_pos));
               end;
@@ -3739,7 +3739,7 @@ begin
 
           {$IfDef GTK1}
             csEdit, csMemo:
-              Widget:=GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
+              Widget:=GetWidgetInfo(Pointer(Handle), true)^.CoreWidget;
           {$EndIf}
 
           else
@@ -3761,7 +3761,7 @@ begin
 
           {$IfDef GTK1}
             csEdit, csMemo:
-              Widget:=GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
+              Widget:=GetWidgetInfo(Pointer(Handle), true)^.CoreWidget;
           {$EndIf}
 
           else
@@ -3791,10 +3791,10 @@ begin
         case (Sender as TControl).fCompStyle of
           csListBox, csCheckListBox :
             Result:=g_list_length(PGtkList(GetWidgetInfo(Pointer(Handle),
-                               True)^.ImplementationWidget)^.selection);
+                               True)^.CoreWidget)^.selection);
           csCListBox:
             Result:= g_list_length(PGtkCList(GetWidgetInfo(Pointer(Handle),
-                               True)^.ImplementationWidget)^.selection);
+                               True)^.CoreWidget)^.selection);
         end;
       end;
       {$EndIf}
@@ -3813,7 +3813,7 @@ begin
           csListBox, csCheckListBox:
             begin
               { Get the child in question of that index }
-              Widget:=GetWidgetInfo(Pointer(Handle),True)^.ImplementationWidget;
+              Widget:=GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
               ListItem:= g_list_nth_data(PGtkList(Widget)^.children, Integer(Data^));
               if (ListItem<>nil)
               and (g_list_index(PGtkList(Widget)^.selection, ListItem)>=0)
@@ -3822,7 +3822,7 @@ begin
           csCListBox:
             begin
               { Get the selections }
-              Widget:=GetWidgetInfo(Pointer(Handle),True)^.ImplementationWidget;
+              Widget:=GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
               GList:= PGtkCList(Widget)^.selection;
               while Assigned(GList) do begin
                 if integer(GList^.data) = integer(Data^) then begin
@@ -3849,7 +3849,7 @@ begin
         and (TControl(Sender).fCompStyle = csCheckListBox)
         then begin
           { Get the child in question of that index }
-          Widget := GetWidgetInfo(Pointer(Handle),True)^.ImplementationWidget;
+          Widget := GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
           ListItem := g_list_nth_data(PGtkList(Widget)^.children, Integer(Data^));
           if ListItem <> nil
           then begin
@@ -3873,7 +3873,7 @@ begin
         and (Sender is TControl)
         and (TControl(Sender).fCompStyle = csCheckListBox)
         then begin
-          Widget := GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+          Widget := GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
           ListItem := g_list_nth_data(PGtkList(Widget)^.children,
                                       TLMSetChecked(Data^).Index);
           if ListItem <> nil
@@ -3929,14 +3929,14 @@ begin
         then case TControl(Sender).fCompStyle of
           csListBox, csCheckListBox:
             begin
-              Widget := GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+              Widget := GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
               if TLMSetSel(Data^).Selected
               then gtk_list_select_item(PGtkList(Widget), TLMSetSel(Data^).Index)
               else gtk_list_unselect_item(PGtkList(Widget), TLMSetSel(Data^).Index);
             end;
           csCListBox:
             begin
-              Widget := GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+              Widget := GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
               if TLMSetSel(Data^).Selected
               then gtk_clist_select_row(PGtkCList(Widget), TLMSetSel(Data^).Index, 0)
               else gtk_clist_unselect_row(PGtkCList(Widget), TLMSetSel(Data^).Index, 0);
@@ -4075,7 +4075,7 @@ begin
 
    csMemo    : begin
                   CS := gtk_editable_get_chars(PGtkOldEditable(
-                    GetWidgetInfo(Pointer(TWinControl(Sender).Handle), True)^.ImplementationWidget), 0, -1);
+                    GetWidgetInfo(Pointer(TWinControl(Sender).Handle), True)^.CoreWidget), 0, -1);
                   Text := StrPas(CS);
                   g_free(CS);
                end;
@@ -4186,7 +4186,7 @@ begin
       csMemo:
       begin
         Widget:=GetWidgetInfo(Pointer(TWinControl(Sender).Handle),
-                              true)^.ImplementationWidget;
+                              true)^.CoreWidget;
         gtk_text_freeze(PGtkText(Widget));
         CurMemoLen := gtk_text_get_length(PGtkText(Widget));
         gtk_editable_insert_text(PGtkOldEditable(Widget),Str,StrLen(Str),@CurMemoLen);
@@ -4369,7 +4369,7 @@ begin
                   end;
 
   csMemo        : begin
-                    P:= GetWidgetInfo(P, True)^.ImplementationWidget;
+                    P:= GetWidgetInfo(P, True)^.CoreWidget;
 
                     gtk_text_freeze(PGtkText(P));
                     gtk_text_set_point(PGtkText(P), 0);
@@ -4465,7 +4465,7 @@ begin
   if gFixed = nil then gFixed := gObject;
 
   // gCore is the main widget (e.g. TListView has this)
-  gCore:= PGtkObject(GetWidgetInfo(gObject, True)^.ImplementationWidget);
+  gCore:= PGtkObject(GetWidgetInfo(gObject, True)^.CoreWidget);
 
   case AMsg of
     LM_SHOWWINDOW :
@@ -4952,7 +4952,7 @@ begin
   ClientWidget:=GetFixedWidget(MainWidget);
   WinWidgetInfo:=GetWidgetInfo(MainWidget,false);
   if WinWidgetInfo<>nil then
-    ImplWidget:=WinWidgetInfo^.ImplementationWidget
+    ImplWidget:=WinWidgetInfo^.CoreWidget
   else
     ImplWidget:=nil;
 
@@ -5081,8 +5081,8 @@ begin
   // childs
   if GtkWidgetIsA(Widget,GTK_COMBO_GET_TYPE) then begin
     SetComboBoxText(PGtkCombo(Widget),nil);
-    FreeWinWidgetInfo(PGtkCombo(Widget)^.Entry);
-    FreeWinWidgetInfo(PGtkCombo(Widget)^.Button);
+    FreeWidgetInfo(PGtkCombo(Widget)^.Entry);
+    FreeWidgetInfo(PGtkCombo(Widget)^.Button);
   end;
 
   // update mouse capturing
@@ -5128,35 +5128,6 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  TGtkWidgetSet.HookWincontrolSignals
-  Params: ALCLObject: TObject;
-          AGTKObject: PGTKObject;
-
-  Set default Callbacks for TWincontrol descendants defined by AGTKObject.
--------------------------------------------------------------------------------}
-//TODO: Remove ALCLObject when the creation splitup is finished
-procedure TGtkWidgetSet.HookWincontrolSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject);
-begin
-  SetCallback(LM_SHOWWINDOW, AGTKObject, ALCLObject);
-  SetCallback(LM_DESTROY, AGTKObject, ALCLObject);
-  SetCallback(LM_FOCUS, AGTKObject, ALCLObject);
-  SetCallback(LM_WINDOWPOSCHANGED, AGTKObject, ALCLObject);
-  SetCallback(LM_PAINT, AGTKObject, ALCLObject);
-  SetCallback(LM_EXPOSEEVENT, AGTKObject, ALCLObject);
-  SetCallback(LM_KEYDOWN, AGTKObject, ALCLObject);
-  SetCallback(LM_KEYUP, AGTKObject, ALCLObject);
-  SetCallback(LM_CHAR, AGTKObject, ALCLObject);
-  SetCallback(LM_MOUSEMOVE, AGTKObject, ALCLObject);
-  SetCallback(LM_LBUTTONDOWN, AGTKObject, ALCLObject);
-  SetCallback(LM_LBUTTONUP, AGTKObject, ALCLObject);
-  SetCallback(LM_RBUTTONDOWN, AGTKObject, ALCLObject);
-  SetCallback(LM_RBUTTONUP, AGTKObject, ALCLObject);
-  SetCallback(LM_MBUTTONDOWN, AGTKObject, ALCLObject);
-  SetCallback(LM_MBUTTONUP, AGTKObject, ALCLObject);
-  SetCallback(LM_MOUSEWHEEL, AGTKObject, ALCLObject);
-end;
-
-{-------------------------------------------------------------------------------
   TGtkWidgetSet.HookSignals
   Params: ALCLObject: TObject;
           AGTKObject: PGTKObject;
@@ -5168,7 +5139,7 @@ end;
 procedure TGtkWidgetSet.HookSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject);
 begin
   if (ALCLObject is TWinControl)
-  then HookWincontrolSignals(AGTKObject, ALCLObject);
+  then TGTKWSWinControl.SetCallbacks(AGTKObject, TWinControl(ALCLObject));
 
   if (ALCLObject is TControl)
   then begin
@@ -5931,8 +5902,8 @@ var
 begin
   Result := GTKAPIWidget_New;
   WinWidgetInfo:=GetWidgetInfo(Result,true);
-  WinWidgetInfo^.ImplementationWidget:=PGTKAPIWidget(Result)^.Client;
-  SetLCLObject(WinWidgetInfo^.ImplementationWidget,AWinControl);
+  WinWidgetInfo^.CoreWidget:=PGTKAPIWidget(Result)^.Client;
+  SetLCLObject(WinWidgetInfo^.CoreWidget,AWinControl);
 
   gtk_scrolled_window_set_policy(PGTKScrolledWindow(Result),
     GTK_POLICY_NEVER, GTK_POLICY_NEVER);
@@ -6089,7 +6060,7 @@ begin
   gtk_widget_show(MainWidget);
 
   SetMainWidget(MainWidget, ImpWidget);
-  GetWidgetInfo(MainWidget, True)^.ImplementationWidget := ImpWidget;
+  GetWidgetInfo(MainWidget, True)^.CoreWidget := ImpWidget;
 
   Result:=MainWidget;
 end;
@@ -6469,7 +6440,7 @@ begin
       gtk_widget_show(TempWidget);
 
       SetMainWidget(p, TempWidget);
-      GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
+      GetWidgetInfo(p, True)^.CoreWidget := TempWidget;
       SetSelectionMode(Sender,p,TCListBox(Sender).MultiSelect,
                        TCListBox(Sender).ExtendedSelect)
     end;
@@ -6593,7 +6564,7 @@ begin
       gtk_widget_show(TempWidget);
 
       SetMainWidget(p, TempWidget);
-      GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
+      GetWidgetInfo(p, True)^.CoreWidget := TempWidget;
       if Sender is TCustomListBox then
         SetSelectionMode(Sender,p,TCustomListBox(Sender).MultiSelect,
                          TCustomListBox(Sender).ExtendedSelect);
@@ -6639,7 +6610,7 @@ begin
         gtk_scrolled_window_get_vadjustment(PGtkScrolledWindow(p)));
 
       SetMainWidget(p, TempWidget);
-      GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
+      GetWidgetInfo(p, True)^.CoreWidget := TempWidget;
 
       gtk_text_set_editable (PGtkText(TempWidget), not TCustomMemo(Sender).ReadOnly);
       if TCustomMemo(Sender).WordWrap then
@@ -7954,7 +7925,7 @@ begin
     begin
       // set up columns..
 
-      Widget:= GetWidgetInfo(wHandle, True)^.ImplementationWidget;
+      Widget:= GetWidgetInfo(wHandle, True)^.CoreWidget;
 
       gtk_clist_freeze(GTK_CLIST(Widget));
 
@@ -8056,7 +8027,7 @@ begin
   {$IfDef GTK1}
   csMemo:
     begin
-      ImplWidget:= GetWidgetInfo(wHandle, true)^.ImplementationWidget;
+      ImplWidget:= GetWidgetInfo(wHandle, true)^.CoreWidget;
 
       gtk_text_set_editable (GTK_TEXT(ImplWidget), not (Sender as TCustomMemo).ReadOnly);
       if TCustomMemo(Sender).WordWrap then
@@ -9294,6 +9265,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.484  2004/03/24 01:21:41  marc
+  * Simplified signals for gtkwsbutton
+
   Revision 1.483  2004/03/22 19:10:04  mattias
   implemented icons for TPage in gtk, mask for TCustomImageList
 
