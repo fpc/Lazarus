@@ -120,7 +120,7 @@ begin
         Widget:=GetStyleWidget(lgsVerticalScrollbar);
         MinWidth:=Widget^.requisition.Width;
       end;
-      writeln('TGtkWidgetSet.GetControlConstraints A ',MinWidth,',',MinHeight,' ',TScrollBar(SizeConstraints.Control).Kind=sbHorizontal,' ',TScrollBar(SizeConstraints.Control).Name);
+      //writeln('TGtkWidgetSet.GetControlConstraints A ',MinWidth,',',MinHeight,' ',TScrollBar(SizeConstraints.Control).Kind=sbHorizontal,' ',TScrollBar(SizeConstraints.Control).Name);
       SizeConstraints.SetInterfaceConstraints(MinWidth,MinHeight,
                                               MinWidth,MinHeight);
     end;
@@ -463,6 +463,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.26  2004/04/02 20:20:21  mattias
+  implemented by guessing the 16bit bmp reader part
+
   Revision 1.25  2004/03/30 20:38:14  mattias
   fixed interface constraints, fixed syncompletion colors
 

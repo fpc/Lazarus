@@ -3,7 +3,7 @@ object PublishProjectDialog: TPublishProjectDialog
   ClientHeight = 462
   ClientWidth = 469
   OnResize = PublishProjectDialogRESIZE
-  Position = POSCREENCENTER
+  Position = poScreenCenter
   HorzScrollBar.Page = 470
   VertScrollBar.Page = 463
   Left = 307
@@ -11,10 +11,9 @@ object PublishProjectDialog: TPublishProjectDialog
   Top = 165
   Width = 469
   object OkButton: TButton
-    Anchors = [AKTOP, AKRIGHT]
+    Anchors = [akTop, akRight]
     ModalResult = 1
     Caption = 'Ok'
-    TabStop = True
     TabOrder = 0
     OnClick = OkButtonCLICK
     Left = 72
@@ -23,10 +22,9 @@ object PublishProjectDialog: TPublishProjectDialog
     Width = 75
   end
   object CancelButton: TButton
-    Anchors = [AKTOP, AKRIGHT]
+    Anchors = [akTop, akRight]
     ModalResult = 2
     Caption = 'Cancel'
-    TabStop = True
     TabOrder = 1
     Left = 371
     Height = 25
@@ -49,7 +47,6 @@ object PublishProjectDialog: TPublishProjectDialog
       MaxLength = 0
       ParentCtl3D = False
       TabOrder = 0
-      TabStop = True
       Text = 'DestDirComboBox'
       Left = 6
       Height = 25
@@ -57,13 +54,8 @@ object PublishProjectDialog: TPublishProjectDialog
       Width = 350
     end
     object BrowseDestDirBitBtn: TBitBtn
-      Glyph.Data = {
-        3A000000424D3A00000000000000360000002800000001000000010000000100
-        100000000000040000005A00000060000000400000004000000000000000
-      }
-      Spacing = 3
+      OnClick = BrowseDestDirBitBtnCLICK
       Caption = 'Browse'
-      TabStop = True
       TabOrder = 1
       OnClick = BrowseDestDirBitBtnCLICK
       Left = 366
@@ -75,7 +67,6 @@ object PublishProjectDialog: TPublishProjectDialog
       MaxLength = 0
       ParentCtl3D = False
       TabOrder = 2
-      TabStop = True
       Text = 'CommandAfterCombobox'
       Left = 6
       Height = 25
@@ -84,7 +75,6 @@ object PublishProjectDialog: TPublishProjectDialog
     end
     object CommandAfterLabel: TLabel
       Caption = 'Command after:'
-      Layout = TLTOP
       Left = 6
       Height = 17
       Top = 33
@@ -109,7 +99,6 @@ object PublishProjectDialog: TPublishProjectDialog
       Caption = 'Ignore binaries'
       DragCursor = 65524
       TabOrder = 0
-      TabStop = True
       Left = 6
       Height = 20
       Top = 1
@@ -134,7 +123,6 @@ object PublishProjectDialog: TPublishProjectDialog
       Caption = 'Save editor info of closed files'
       DragCursor = 65524
       TabOrder = 0
-      TabStop = True
       Left = 4
       Height = 20
       Top = 1
@@ -146,7 +134,6 @@ object PublishProjectDialog: TPublishProjectDialog
       Caption = 'Save editor info of non project files'
       DragCursor = 65524
       TabOrder = 1
-      TabStop = True
       Left = 4
       Height = 20
       Top = 26
@@ -154,9 +141,8 @@ object PublishProjectDialog: TPublishProjectDialog
     end
   end
   object SaveSettingsButton: TButton
-    Anchors = [AKTOP, AKRIGHT]
+    Anchors = [akTop, akRight]
     Caption = 'Save settings'
-    TabStop = True
     TabOrder = 5
     OnClick = SaveSettingsButtonCLICK
     Left = 198
@@ -183,7 +169,6 @@ object PublishProjectDialog: TPublishProjectDialog
       Caption = 'Use Include Filter'
       DragCursor = 65524
       TabOrder = 0
-      TabStop = True
       Left = 6
       Height = 20
       Top = 1
@@ -195,7 +180,6 @@ object PublishProjectDialog: TPublishProjectDialog
       Caption = 'Simple Syntax'
       DragCursor = 65524
       TabOrder = 1
-      TabStop = True
       Left = 196
       Height = 20
       Top = 2
@@ -205,7 +189,6 @@ object PublishProjectDialog: TPublishProjectDialog
       MaxLength = 0
       ParentCtl3D = False
       TabOrder = 2
-      TabStop = True
       Text = 'IncludeFilterCombobox'
       Left = 6
       Height = 25
@@ -232,7 +215,6 @@ object PublishProjectDialog: TPublishProjectDialog
       Caption = 'Use Exclude Filter'
       DragCursor = 65524
       TabOrder = 0
-      TabStop = True
       Left = 6
       Height = 20
       Top = 5
@@ -244,7 +226,6 @@ object PublishProjectDialog: TPublishProjectDialog
       Caption = 'Simple Syntax'
       DragCursor = 65524
       TabOrder = 1
-      TabStop = True
       Left = 199
       Height = 20
       Top = 6
@@ -254,7 +235,6 @@ object PublishProjectDialog: TPublishProjectDialog
       MaxLength = 0
       ParentCtl3D = False
       TabOrder = 2
-      TabStop = True
       Text = 'ExcludeFilterCombobox'
       Left = 6
       Height = 25

@@ -327,7 +327,7 @@ type
       ReadSize: Integer;       // Size (in bytes) of 1 scanline.
       BFI: TBitMapInfoHeader;  // The header as read from the stream.
       FPalette: PFPcolor;      // Buffer with Palette entries.
-      LineBuf: PByte;          // Buffer for 1 scanline. Can be Byte, TColorRGB or TColorRGBA
+      LineBuf: PByte;          // Buffer for 1 scanline. Can be Byte, Word, TColorRGB or TColorRGBA
 
       // SetupRead will allocate the needed buffers, and read the colormap if needed.
       procedure SetupRead(nPalette, nRowBits: Integer; Stream: TStream); virtual;
@@ -528,11 +528,11 @@ begin
   PrecMask:=(Cardinal(1) shl Prec)-1;
   P:=@(TheData[Position.Byte]);
 
-{$ifdef Endian_Little}
+  {$ifdef Endian_Little}
   FourBytes:=DWord(PWord(P)^) or (DWord((P+2)^) shl 16);
-{$else}
+  {$else}
   FourBytes:=(DWord(PWord(P)^) shl 8) or DWord(P^);
-{$endif}
+  {$endif}
   Bits:=Word(cardinal(FourBytes shr Shift) and PrecMask);
 
   if Prec<16 then begin
@@ -554,11 +554,11 @@ begin
   PrecMask:=(Cardinal(1) shl Prec)-1;
   P:=@(TheData[Position.Byte]);
 
-{$ifdef Endian_Little}
+  {$ifdef Endian_Little}
   FourBytes:=(DWord(PWord(P)^) shl 8) or DWord(P^);
-{$else}
+  {$else}
   FourBytes:=DWord(PWord(P)^) or (DWord((P+2)^) shl 16);
-{$endif}
+  {$endif}
 
   Bits:=Word(cardinal(FourBytes shr Shift) and PrecMask);
 
@@ -2895,6 +2895,21 @@ begin
     end;
 end;
 
+Function Bmp16BitToFPColor(Const RGB: Word): TFPColor;
+begin
+  // 5 bit for red  -> 16 bit for TFPColor
+  Result.Red:=(RGB shr 11) and $1f;
+  Result.Red:=(Result.Red shl 11) or MissingBits[5,Result.Red shr 2];
+  // 6 bit for green -> 16 bit for TFPColor
+  Result.Green:=(RGB shr 5) and $3f;
+  Result.Green:=(Result.Green shl 10) or MissingBits[6,Result.Green shr 3];
+  // 5 bit for blue -> 16 bit for TFPColor
+  Result.Blue:=RGB and $1f;
+  Result.Blue:=(Result.Red shl 11) or MissingBits[5,Result.Blue shr 2];
+  // opaque, no mask
+  Result.Alpha:=alphaOpaque;
+end;
+
 procedure TLazReaderBMP.FreeBufs;
 begin
   If (LineBuf<>Nil) then
@@ -2925,7 +2940,7 @@ begin
   if nPalette>0 then
     begin
     GetMem(FPalette, nPalette*SizeOf(TFPColor));
-{$ifdef VER1_0}
+    {$ifdef VER1_0}
     GetMem(ColInfo, nPalette*Sizeof(TColorBmpRGBA));
     if BFI.biClrUsed>0 then
       Stream.Read(ColInfo^[0],BFI.biClrUsed*SizeOf(TColorBmpRGBA))
@@ -2933,7 +2948,7 @@ begin
       Stream.Read(ColInfo^[0],nPalette*SizeOf(TColorBmpRGBA));
     for i := 0 to nPalette-1 do
       FPalette[i] := BmpRGBAToFPColor(ColInfo^[i]);
-{$else}
+    {$else}
     SetLength(ColInfo, nPalette);
     if BFI.biClrUsed>0 then
       Stream.Read(ColInfo[0],BFI.biClrUsed*SizeOf(TColorBmpRGBA))
@@ -2941,16 +2956,16 @@ begin
       Stream.Read(ColInfo[0],nPalette*SizeOf(TColorBmpRGBA));
     for i := 0 to High(ColInfo) do
       FPalette[i] := BmpRGBAToFPColor(ColInfo[i]);
-{$endif}
+    {$endif}
     end
   else if BFI.biClrUsed>0 then { Skip palette }
     Stream.Position := Stream.Position
                       + TStreamSeekType(BFI.biClrUsed*SizeOf(TColorBmpRGBA));
   ReadSize:=((nRowBits + 31) div 32) shl 2;
   GetMem(LineBuf,ReadSize);
-{$ifdef VER1_0}
-    FreeMem(ColInfo, nPalette*Sizeof(TColorBmpRGBA));
-{$endif}
+  {$ifdef VER1_0}
+  FreeMem(ColInfo, nPalette*Sizeof(TColorBmpRGBA));
+  {$endif}
 end;
 
 procedure TLazReaderBMP.ReadScanLine(Row: Integer; Stream: TStream);
@@ -2979,7 +2994,8 @@ begin
       for Column:=0 to img.Width-1 do
         img.colors[Column,Row]:=FPalette[LineBuf[Column]];
    16 :
-      Raise FPImageException.Create('16 bpp bitmaps not supported');
+      for Column:=0 to img.Width-1 do
+        img.colors[Column,Row]:=Bmp16BitToFPColor(PWord(LineBuf)[Column]);
    24 :
       for Column:=0 to img.Width-1 do
         img.colors[Column,Row]:=BmpRGBToFPColor(PColorBmpRGB(LineBuf)[Column]);
@@ -3011,7 +3027,7 @@ begin
     8 :
       SetupRead(256,Img.Width*8,Stream);
     16 :
-      Raise FPImageException.Create('16 bpp bitmaps not supported');
+      SetupRead(0,Img.Width*8*2,Stream);
     24:
       SetupRead(0,Img.Width*8*3,Stream);
     32:
@@ -3046,18 +3062,6 @@ destructor TLazReaderBMP.Destroy;
 begin
   FreeBufs;
   inherited Destroy;
-end;
-
-//------------------------------------------------------------------------------
-procedure InternalInit;
-var
-  c: Char;
-begin
-  for c:=Low(char) to High(char) do begin
-    IsSpaceChar[c]:=c in [' ',#9,#10,#13];
-    IsNumberChar[c]:=c in ['0'..'9'];
-    IsHexNumberChar[c]:=c in ['0'..'9','A'..'F','a'..'f'];
-  end;
 end;
 
 { TLazIntfImageMask }
@@ -3097,6 +3101,18 @@ constructor TLazIntfImageMask.CreateWithImage(TheImage: TLazIntfImage);
 begin
   FImage:=TheImage;
   inherited Create(FImage.Width,FImage.Height);
+end;
+
+//------------------------------------------------------------------------------
+procedure InternalInit;
+var
+  c: Char;
+begin
+  for c:=Low(char) to High(char) do begin
+    IsSpaceChar[c]:=c in [' ',#9,#10,#13];
+    IsNumberChar[c]:=c in ['0'..'9'];
+    IsHexNumberChar[c]:=c in ['0'..'9','A'..'F','a'..'f'];
+  end;
 end;
 
 initialization
