@@ -460,7 +460,7 @@ var
     DIB: TDIBSection;
   begin
     FillChar(DIB, sizeof(DIB), 0);
-    NewImage(0, 0, DIB, False);
+    //NewImage(0, 0, DIB, False);
   end;
 
   procedure ReadBMPStream;
@@ -768,7 +768,7 @@ begin
     // copy savestream to destination stream
     if WriteSize then begin
       StreamSize:=FImage.SaveStream.Size;
-      DestStream.WriteBuffer(StreamSize, SizeOf(StreamSize));
+      Stream.WriteBuffer(StreamSize, SizeOf(StreamSize));
     end;
     Stream.CopyFrom(FImage.SaveStream,FImage.SaveStream.Size);
   finally
@@ -1058,6 +1058,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.64  2004/02/11 11:40:18  mattias
+  fixes for compilation under fpc 1.0.10
+
   Revision 1.63  2004/02/11 11:34:15  mattias
   started new TToolBar
 
