@@ -69,10 +69,16 @@ type
     The connection between an RTTI control and a property editor }
     
   TPropertyLinkOption = (
-    ploReadOnIdle
+    ploReadOnIdle,
+    ploAutoSave
     //ToDo: ploReadOnly
     );
   TPropertyLinkOptions = set of TPropertyLinkOption;
+
+Const
+   DefaultLinkOptions = [ploReadOnIdle,ploAutoSave];
+   
+Type
   
   TTestEditing = function(Sender: TObject): boolean of object;
 
@@ -131,6 +137,7 @@ type
     procedure DoError(Writing: boolean; E: Exception); virtual;
   public
     // alias values
+    constructor create;
     procedure MapValues(Values, AliasStrings: TStrings;
                         var MappedValues: TStrings;
                         UseAllExistingAlias, AddValuesWithoutAlias,
@@ -163,7 +170,7 @@ type
     property OnSaveToProperty: TNotifyEvent read FOnSaveToProperty write FOnSaveToProperty;
     property OnTestEditing: TTestEditing read FOnTestEditing write FOnTestEditing;
     property OnTestEditor: TPropertyEditorFilterFunc read FOnTestEditor write FOnTestEditor;
-    property Options: TPropertyLinkOptions read FOptions write SetOptions;
+    property Options: TPropertyLinkOptions read FOptions write SetOptions default DefaultLinkOptions;
     property Owner: TComponent read FOwner;
     property SaveEnabled: boolean read FSaveEnabled write FSaveEnabled;
     property TIObject: TPersistent read FTIObject write SetTIObject;
@@ -1550,6 +1557,12 @@ begin
     LoadFromProperty;
 end;
 
+constructor TCustomPropertyLink.create;
+begin
+  Inherited create;
+  FOptions:=DefaultLinkOptions;
+end;
+
 procedure TCustomPropertyLink.MapValues(Values, AliasStrings: TStrings;
   var MappedValues: TStrings; UseAllExistingAlias, AddValuesWithoutAlias,
   IfNoValuesAvailableAddAllAlias: boolean);
@@ -1938,7 +1951,8 @@ end;
 procedure TTICustomEdit.EditingDone;
 begin
   inherited EditingDone;
-  FLink.SaveToProperty;
+  If ploAutoSave in FLink.OPtions then
+    FLink.SaveToProperty;
 end;
 
 { TTICustomComboBox }
@@ -2072,7 +2086,8 @@ end;
 procedure TTICustomComboBox.EditingDone;
 begin
   inherited EditingDone;
-  FLink.SaveToProperty;
+  If ploAutoSave in FLink.OPtions then
+    FLink.SaveToProperty;
 end;
 
 { TTICustomCheckBox }
@@ -2173,7 +2188,8 @@ end;
 procedure TTICustomCheckBox.EditingDone;
 begin
   inherited EditingDone;
-  FLink.SaveToProperty;
+  If ploAutoSave in FLink.options then
+    FLink.SaveToProperty;
 end;
 
 { TTICustomLabel }
@@ -2314,7 +2330,8 @@ end;
 procedure TTICustomRadioGroup.EditingDone;
 begin
   inherited EditingDone;
-  FLink.SaveToProperty;
+  If ploAutoSave in FLink.options then
+    FLink.SaveToProperty;
 end;
 
 { TTICustomCheckGroup }
@@ -2382,7 +2399,8 @@ end;
 procedure TTICustomCheckGroup.EditingDone;
 begin
   inherited EditingDone;
-  FLink.SaveToProperty;
+  If ploAutoSave in FLink.options then
+    FLink.SaveToProperty;
 end;
 
 { TTICustomMemo }
@@ -2466,7 +2484,8 @@ end;
 procedure TTICustomMemo.EditingDone;
 begin
   inherited EditingDone;
-  FLink.SaveToProperty;
+  If ploAutoSave in FLink.options then
+    FLink.SaveToProperty;
 end;
 
 { TTICustomCalendar }
@@ -2532,7 +2551,8 @@ end;
 procedure TTICustomCalendar.EditingDone;
 begin
   inherited EditingDone;
-  FLink.SaveToProperty;
+  If ploAutoSave in FLink.options then
+    FLink.SaveToProperty;
 end;
 
 { TTICustomSpinEdit }
@@ -2660,7 +2680,8 @@ end;
 procedure TTICustomSpinEdit.EditingDone;
 begin
   inherited EditingDone;
-  FLink.SaveToProperty;
+  If ploAutoSave in FLink.options then
+    FLink.SaveToProperty;
 end;
 
 { TTICustomImage }
@@ -2826,7 +2847,8 @@ end;
 procedure TTICustomTrackBar.EditingDone;
 begin
   inherited EditingDone;
-  FLink.SaveToProperty;
+  If ploAutoSave in FLink.options then
+    FLink.SaveToProperty;
 end;
 
 { TTICustomMaskEdit }
@@ -2879,7 +2901,8 @@ end;
 procedure TTICustomMaskEdit.EditingDone;
 begin
   inherited EditingDone;
-  FLink.SaveToProperty;
+  If ploAutoSave in FLink.OPtions then
+    FLink.SaveToProperty;
 end;
 
 { TTICustomButton }
@@ -2982,7 +3005,8 @@ end;
 procedure TTICustomCheckListBox.EditingDone;
 begin
   inherited EditingDone;
-  FLink.SaveToProperty;
+  If ploAutoSave in FLink.options then
+    FLink.SaveToProperty;
 end;
 
 { TTICustomListBox }
@@ -3103,7 +3127,8 @@ end;
 procedure TTICustomListBox.EditingDone;
 begin
   inherited EditingDone;
-  FLink.SaveToProperty;
+  If ploAutoSave in FLink.options then
+    FLink.SaveToProperty;
 end;
 
 { TPropertyLinkNotifier }
