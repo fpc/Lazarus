@@ -1,290 +1,368 @@
 object AnchorDesigner: TAnchorDesigner
   Caption = 'AnchorDesigner'
-  ClientHeight = 322
-  ClientWidth = 535
+  ClientHeight = 259
+  ClientWidth = 520
+  OnClose = AnchorDesignerClose
   OnCreate = AnchorDesignerCreate
+  OnDestroy = AnchorDesignerDestroy
+  OnShow = AnchorDesignerShow
   PixelsPerInch = 90
-  HorzScrollBar.Page = 536
-  VertScrollBar.Page = 323
+  HorzScrollBar.Page = 521
+  VertScrollBar.Page = 260
   Left = 290
-  Height = 322
+  Height = 259
   Top = 163
-  Width = 535
+  Width = 520
   object BorderSpaceGroupBox: TGroupBox
+    Anchors = [akTop, akLeft, akBottom]
     Caption = 'BorderSpaceGroupBox'
-    ClientHeight = 88
-    ClientWidth = 208
+    ClientHeight = 87
+    ClientWidth = 168
     ParentColor = True
     TabOrder = 0
-    Left = 160
-    Height = 105
-    Top = 104
-    Width = 212
-    object IncAllBorderSpaceSpeedButton: TSpeedButton
-      NumGlyphs = 0
-      Left = 71
-      Height = 22
-      Top = 30
-      Width = 23
-    end
-    object DecAllBorderSpaceSpeedButton: TSpeedButton
-      NumGlyphs = 0
-      Left = 100
-      Height = 22
-      Top = 30
-      Width = 23
-    end
+    Left = 172
+    Height = 104
+    Top = 80
+    Width = 172
     object LeftBorderSpaceSpinEdit: TSpinEdit
+      Decimal_Places = 0
       MaxValue = 100
+      ParentShowHint = False
+      ShowHint = True
       TabStop = True
       TabOrder = 0
+      Decimal_Places = 0
       MaxValue = 100
       Height = 20
       Top = 30
       Width = 50
     end
     object RightBorderSpaceSpinEdit: TSpinEdit
+      Decimal_Places = 0
       MaxValue = 100
+      ParentShowHint = False
+      ShowHint = True
       TabStop = True
       TabOrder = 1
+      Decimal_Places = 0
       MaxValue = 100
-      Left = 152
+      Left = 118
       Height = 20
       Top = 30
       Width = 50
     end
     object TopBorderSpaceSpinEdit: TSpinEdit
+      Decimal_Places = 0
       MaxValue = 100
+      ParentShowHint = False
+      ShowHint = True
       TabStop = True
       TabOrder = 2
+      Decimal_Places = 0
       MaxValue = 100
-      Left = 78
+      Left = 58
       Height = 20
       Width = 50
     end
     object BottomBorderSpaceSpinEdit: TSpinEdit
+      Decimal_Places = 0
       MaxValue = 100
+      ParentShowHint = False
+      ShowHint = True
       TabStop = True
       TabOrder = 3
+      Decimal_Places = 0
       MaxValue = 100
-      Left = 78
+      Left = 58
       Height = 20
-      Top = 63
+      Top = 57
+      Width = 50
+    end
+    object AroundBorderSpaceSpinEdit: TSpinEdit
+      Decimal_Places = 0
+      MaxValue = 100
+      ParentShowHint = False
+      ShowHint = True
+      TabStop = True
+      TabOrder = 4
+      Decimal_Places = 0
+      MaxValue = 100
+      Left = 58
+      Height = 20
+      Top = 30
       Width = 50
     end
   end
   object TopGroupBox: TGroupBox
+    Anchors = [akTop, akLeft, akRight]
     Caption = 'TopGroupBox'
-    ClientHeight = 88
-    ClientWidth = 208
+    ClientHeight = 33
+    ClientWidth = 404
     ParentColor = True
     TabOrder = 1
-    Left = 160
-    Height = 105
-    Width = 212
+    Left = 64
+    Height = 50
+    Width = 408
     object TopRefTopSpeedButton: TSpeedButton
+      Anchors = [akTop, akRight]
+      GroupIndex = 1
       NumGlyphs = 0
-      Left = 6
+      ShowHint = True
+      ParentShowHint = False
+      Left = 296
       Height = 30
-      Top = 57
       Width = 30
     end
     object TopRefBottomSpeedButton: TSpeedButton
+      Anchors = [akTop, akRight]
+      GroupIndex = 1
       NumGlyphs = 0
-      Left = 48
+      ShowHint = True
+      ParentShowHint = False
+      Left = 331
       Height = 30
-      Top = 57
       Width = 30
     end
     object TopRefCenterSpeedButton: TSpeedButton
+      Anchors = [akTop, akRight]
+      GroupIndex = 1
       NumGlyphs = 0
-      Left = 86
+      ShowHint = True
+      ParentShowHint = False
+      Left = 366
       Height = 30
-      Top = 57
       Width = 30
     end
     object TopAnchoredCheckBox: TCheckBox
-      Caption = 'TopAnchoredCheckBox'
+      Caption = 'Enabled'
       TabOrder = 0
+      Left = 2
       Height = 24
-      Width = 157
+      Width = 70
     end
     object TopSiblingComboBox: TComboBox
+      Anchors = [akTop, akLeft, akRight]
       MaxLength = 0
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 1
       Text = 'TopSiblingComboBox'
-      Left = 78
+      Left = 158
       Height = 25
-      Top = 29
-      Width = 128
+      Width = 129
     end
     object TopSiblingLabel: TLabel
-      Caption = 'TopSiblingLabel'
-      Left = 3
-      Height = 17
-      Top = 33
-      Width = 65
+      AutoSize = True
+      Caption = 'Sibling'
+      Left = 94
+      Height = 16
+      Top = 4
+      Width = 38
     end
   end
   object BottomGroupBox: TGroupBox
+    Anchors = [akLeft, akRight, akBottom]
     Caption = 'BottomGroupBox'
-    ClientHeight = 88
-    ClientWidth = 208
+    ClientHeight = 33
+    ClientWidth = 404
     ParentColor = True
     TabOrder = 2
-    Left = 160
-    Height = 105
-    Top = 208
-    Width = 212
+    Left = 64
+    Height = 50
+    Top = 200
+    Width = 408
     object BottomRefTopSpeedButton: TSpeedButton
+      Anchors = [akTop, akRight]
+      GroupIndex = 3
       NumGlyphs = 0
-      Left = 6
+      ShowHint = True
+      ParentShowHint = False
+      Left = 296
       Height = 30
-      Top = 54
       Width = 30
     end
     object BottomRefBottomSpeedButton: TSpeedButton
+      Anchors = [akTop, akRight]
+      GroupIndex = 3
       NumGlyphs = 0
-      Left = 48
+      ShowHint = True
+      ParentShowHint = False
+      Left = 331
       Height = 30
-      Top = 54
       Width = 30
     end
     object BottomRefCenterSpeedButton: TSpeedButton
+      Anchors = [akTop, akRight]
+      GroupIndex = 3
       NumGlyphs = 0
-      Left = 86
+      ShowHint = True
+      ParentShowHint = False
+      Left = 366
       Height = 30
-      Top = 54
       Width = 30
     end
     object BottomAnchoredCheckBox: TCheckBox
-      Caption = 'BottomAnchoredCheckBox'
+      Caption = 'Enabled'
       TabOrder = 0
+      Left = 2
       Height = 24
-      Width = 173
+      Width = 70
     end
     object BottomSiblingComboBox: TComboBox
+      Anchors = [akTop, akLeft, akRight]
       MaxLength = 0
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 1
       Text = 'BottomSiblingComboBox'
-      Left = 78
+      Left = 158
       Height = 25
-      Top = 25
-      Width = 128
+      Width = 129
     end
     object BottomSiblingLabel: TLabel
-      Caption = 'BottomSiblingLabel'
-      Left = 3
-      Height = 17
-      Top = 33
-      Width = 65
+      AutoSize = True
+      Caption = 'Sibling'
+      Left = 94
+      Height = 16
+      Top = 8
+      Width = 38
     end
   end
   object RightGroupBox: TGroupBox
+    Anchors = [akTop, akLeft, akBottom]
     Caption = 'RightGroupBox'
-    ClientHeight = 168
+    ClientHeight = 112
     ClientWidth = 146
     ParentColor = True
     TabOrder = 3
-    Left = 376
-    Height = 185
+    Left = 364
+    Height = 129
     Top = 64
     Width = 150
     object RightRefLeftSpeedButton: TSpeedButton
+      GroupIndex = 4
       NumGlyphs = 0
-      Left = 7
+      ShowHint = True
+      ParentShowHint = False
+      Left = 5
       Height = 30
-      Top = 101
+      Top = 81
       Width = 30
     end
     object RightRefRightSpeedButton: TSpeedButton
+      GroupIndex = 4
       NumGlyphs = 0
-      Left = 46
+      ShowHint = True
+      ParentShowHint = False
+      Left = 40
       Height = 30
-      Top = 101
+      Top = 81
       Width = 30
     end
     object RightRefCenterSpeedButton: TSpeedButton
+      GroupIndex = 4
       NumGlyphs = 0
-      Left = 86
+      ShowHint = True
+      ParentShowHint = False
+      Left = 75
       Height = 30
-      Top = 101
+      Top = 81
       Width = 30
     end
     object RightAnchoredCheckBox: TCheckBox
-      Caption = 'RightAnchoredCheckBox'
+      Caption = 'Enabled'
       TabOrder = 0
+      Left = 2
       Height = 24
-      Width = 164
+      Width = 70
     end
     object RightSiblingLabel: TLabel
-      Caption = 'RightSiblingLabel'
-      Left = 12
-      Height = 17
-      Top = 34
-      Width = 65
+      AutoSize = True
+      Caption = 'Sibling'
+      Left = 2
+      Height = 16
+      Top = 28
+      Width = 38
     end
     object RightSiblingComboBox: TComboBox
+      Anchors = [akTop, akLeft, akRight]
       MaxLength = 0
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 2
       Text = 'RightSiblingComboBox'
-      Left = 7
+      Left = 5
       Height = 25
-      Top = 56
+      Top = 49
       Width = 135
     end
   end
   object LeftGroupBox: TGroupBox
+    Anchors = [akTop, akLeft, akBottom]
     Caption = 'LeftGroupBox'
-    ClientHeight = 168
+    ClientHeight = 112
     ClientWidth = 146
     ParentColor = True
     TabOrder = 4
-    Left = 4
-    Height = 185
+    Left = 8
+    Height = 129
     Top = 64
     Width = 150
     object LeftRefLeftSpeedButton: TSpeedButton
+      GroupIndex = 2
       NumGlyphs = 0
-      Left = 6
+      ShowHint = True
+      ParentShowHint = False
+      Left = 5
       Height = 30
-      Top = 101
+      Top = 81
       Width = 30
     end
     object LeftRefRightSpeedButton: TSpeedButton
+      GroupIndex = 2
       NumGlyphs = 0
-      Left = 48
+      ShowHint = True
+      ParentShowHint = False
+      Left = 40
       Height = 30
-      Top = 101
+      Top = 81
       Width = 30
     end
     object LeftRefCenterSpeedButton: TSpeedButton
+      GroupIndex = 2
       NumGlyphs = 0
-      Left = 90
+      ShowHint = True
+      ParentShowHint = False
+      Left = 75
       Height = 30
-      Top = 101
+      Top = 81
       Width = 30
     end
     object LeftAnchoredCheckBox: TCheckBox
-      Caption = 'LeftAnchoredCheckBox'
+      Caption = 'Enabled'
       TabOrder = 0
+      Left = 2
       Height = 24
-      Width = 156
+      Width = 70
     end
     object LeftSiblingLabel: TLabel
-      Caption = 'LeftSiblingLabel'
-      Left = 6
-      Height = 17
-      Top = 34
-      Width = 65
+      AutoSize = True
+      Caption = 'Sibling'
+      Left = 2
+      Height = 16
+      Top = 28
+      Width = 38
     end
     object LeftSiblingComboBox: TComboBox
+      Anchors = [akTop, akLeft, akRight]
       MaxLength = 0
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 2
       Text = 'LeftSiblingComboBox'
-      Left = 4
+      Left = 5
       Height = 25
-      Top = 56
+      Top = 49
       Width = 134
     end
   end

@@ -524,6 +524,7 @@ begin
 
     CreateMenuItem(ParentMI,itmViewMessage,'itmViewMessage',lisMenuViewMessages);
     CreateMenuItem(ParentMI,itmViewSearchResults,'itmViewSearchResults',lisMenuViewSearchResults);
+    CreateMenuItem(ParentMI,itmViewAnchorEditor,'itmViewAnchorEditor',lisMenuViewAnchorEditor);
     CreateMenuItem(ParentMI,itmViewDebugWindows,'itmViewDebugWindows',lisMenuDebugWindows,'menu_debugger');
     begin
       CreateMenuItem(itmViewDebugWindows,itmViewWatches,'itmViewWatches',lisMenuViewWatches,'menu_watches');
@@ -799,6 +800,7 @@ begin
     itmViewToggleFormUnit.ShortCut:=CommandToShortCut(ecToggleFormUnit);
     itmViewMessage.ShortCut:=CommandToShortCut(ecToggleMessages);
     itmViewSearchResults.ShortCut:=CommandToShortCut(ecToggleSearchResults);
+    itmViewAnchorEditor.ShortCut:=CommandToShortCut(ecViewAnchorEditor);
 
     // project menu
     itmProjectNew.ShortCut:=CommandToShortCut(ecNewProject);

@@ -84,7 +84,7 @@ uses
   // designer
   ComponentPalette, ComponentReg,
   Designer, FormEditor, CustomFormEditor,
-  ControlSelection,
+  ControlSelection, AnchorEditor,
   {$DEFINE UseNewMenuEditor}
   {$IFDEF UseNewMenuEditor}
   MenuEditorForm,
@@ -115,6 +115,9 @@ uses
   MainBar, MainIntf, MainBase;
 
 type
+
+  { TMainIDE }
+
   TMainIDE = class(TMainIDEBase)
     // event handlers
 
@@ -207,6 +210,7 @@ type
     procedure mnuViewMessagesClick(Sender: TObject);
     procedure mnuViewSearchResultsClick(Sender: TObject);
     procedure mnuToggleFormUnitClicked(Sender: TObject);
+    procedure mnuViewAnchorEditorClicked(Sender: TObject);
 
     // project menu
     procedure mnuNewProjectClicked(Sender: TObject);
@@ -601,7 +605,7 @@ type
     // edit menu
     procedure DoCommand(EditorCommand: integer); override;
 
-    // tools
+    // Delphi conversion
     function DoConvertDFMtoLFM: TModalResult;
     function DoCheckLFMInEditor: TModalResult;
     function DoConvertDelphiUnit(const DelphiFilename: string): TModalResult;
@@ -759,6 +763,7 @@ type
     procedure InvalidateAllDesignerForms;
     procedure UpdateIDEComponentPalette;
     procedure ShowDesignerForm(AForm: TCustomForm);
+    procedure DoViewAnchorEditor;
 
     // editor and environment options
     procedure SaveEnvironment; override;
@@ -1091,6 +1096,7 @@ end;
 procedure TMainIDE.OIOnSelectPersistents(Sender: TObject);
 begin
   TheControlSelection.AssignSelection(ObjectInspector1.Selection);
+  GlobalDesignHook.SetSelection(ObjectInspector1.Selection);
 end;
 
 procedure TMainIDE.OIOnShowOptions(Sender: TObject);
@@ -1531,6 +1537,8 @@ begin
       DoShowProjectInspector;
     nmiwCodeExplorerName:
       DoShowCodeExplorer;
+    nmiwAnchorEditor:
+      DoViewAnchorEditor;
     nmiwBreakPoints:
       ;//itmViewBreakPoints.OnClick(Self);
     nmiwWatches:
@@ -1689,6 +1697,7 @@ begin
     itmViewToggleFormUnit.OnClick := @mnuToggleFormUnitClicked;
     itmViewMessage.OnClick := @mnuViewMessagesClick;
     itmViewSearchResults.OnClick := @mnuViewSearchResultsClick;
+    itmViewAnchorEditor.OnClick := @mnuViewAnchorEditorClicked;
   end;
 end;
 
@@ -1802,6 +1811,11 @@ end;
 procedure TMainIDE.mnuToggleFormUnitClicked(Sender: TObject);
 begin
   DoBringToFrontFormOrUnit;
+end;
+
+procedure TMainIDE.mnuViewAnchorEditorClicked(Sender: TObject);
+begin
+  DoViewAnchorEditor;
 end;
 
 Procedure TMainIDE.SetDesigning(AComponent: TComponent; Value: Boolean);
@@ -2371,6 +2385,24 @@ begin
   // do not call 'AForm.Show', because it will set Visible to true
   AForm.BringToFront;
   LCLIntf.ShowWindow(AForm.Handle,SW_SHOWNORMAL);
+end;
+
+procedure TMainIDE.DoViewAnchorEditor;
+var
+  WasVisible: boolean;
+  ALayout: TIDEWindowLayout;
+begin
+  if AnchorDesigner=nil then begin
+    AnchorDesigner:=TAnchorDesigner.Create(OwningComponent);
+    WasVisible:=false;
+  end else
+    WasVisible:=AnchorDesigner.Visible;
+
+  AnchorDesigner.Show;
+  ALayout:=EnvironmentOptions.IDEWindowLayoutList.ItemByForm(AnchorDesigner);
+  ALayout.Apply;
+  if not WasVisible then
+    AnchorDesigner.ShowOnTop;
 end;
 
 procedure TMainIDE.SetToolStatus(const AValue: TIDEToolStatus);
@@ -11292,6 +11324,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.820  2005/01/07 01:31:44  mattias
+  implemented TCheckBox.State=cbGrayed for gtk intf without visual representation
+
   Revision 1.819  2005/01/05 10:55:51  micha
   draw nonvisual components transparently
 

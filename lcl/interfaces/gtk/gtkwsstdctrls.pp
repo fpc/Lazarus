@@ -825,10 +825,16 @@ end;
 
 function  TGtkWSCustomCheckBox.RetrieveState(
   const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
+var
+  ToggleButton: PGtkToggleButton;
 begin
-  if gtk_toggle_button_get_active (PGtkToggleButton(ACustomCheckBox.Handle))
-  then Result := cbChecked
-  else Result := cbUnChecked;
+  ToggleButton:=PGtkToggleButton(ACustomCheckBox.Handle);
+  if (gtk_object_get_data(PgtkObject(ToggleButton),'Grayed')<>nil) then
+    Result:=cbGrayed
+  else if gtk_toggle_button_get_active(ToggleButton) then
+    Result := cbChecked
+  else
+    Result := cbUnChecked;
 end;
 
 procedure TGtkWSCustomCheckBox.SetShortCut(
@@ -838,6 +844,28 @@ begin
   // ToDo: use accelerator group of Form
   Accelerate(ACustomCheckBox, PGtkWidget(ACustomCheckBox.Handle), NewShortcut,
     'activate_item');
+end;
+
+procedure TGtkWSCustomCheckBox.SetState(const ACustomCheckBox: TCustomCheckBox;
+  const NewState: TCheckBoxState);
+var
+  GtkObject: PGtkObject;
+begin
+  GtkObject := PGtkObject(ACustomCheckBox.Handle);
+  LockOnChange(GtkObject,1);
+  if NewState=cbGrayed then
+    gtk_object_set_data(GtkObject, 'Grayed', GtkObject)
+  else
+    gtk_object_set_data(GtkObject, 'Grayed', nil);
+  gtk_toggle_button_set_active(PGtkToggleButton(GtkObject), NewState = cbChecked);
+  LockOnChange(GtkObject,-1);
+end;
+
+procedure TGtkWSCustomCheckBox.GetPreferredSize(const AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer);
+begin
+  GetGTKDefaultWidgetSize(AWinControl,PreferredWidth,PreferredHeight);
+  //debugln('TGtkWSCustomCheckBox.GetPreferredSize ',DbgSName(AWinControl),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
 end;
 
 { TGtkWSCustomMemo }
@@ -947,26 +975,6 @@ begin
 end;
 
 {$endif}
-
-{ TGtkWSCustomCheckBox }
-
-procedure TGtkWSCustomCheckBox.SetState(const ACustomCheckBox: TCustomCheckBox;
-  const NewState: TCheckBoxState);
-var
-  GtkObject: PGtkObject;
-begin
-  GtkObject := PGtkObject(ACustomCheckBox.Handle);
-  LockOnChange(GtkObject,1);
-  gtk_toggle_button_set_active(PGtkToggleButton(GtkObject), NewState = cbChecked);
-  LockOnChange(GtkObject,-1);
-end;
-
-procedure TGtkWSCustomCheckBox.GetPreferredSize(const AWinControl: TWinControl;
-  var PreferredWidth, PreferredHeight: integer);
-begin
-  GetGTKDefaultWidgetSize(AWinControl,PreferredWidth,PreferredHeight);
-  //debugln('TGtkWSCustomCheckBox.GetPreferredSize ',DbgSName(AWinControl),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
-end;
 
 { TGtkWSCustomGroupBox }
 

@@ -5041,6 +5041,10 @@ function TPersistentSelectionList.IsEqual(
  SourceSelectionList:TPersistentSelectionList):boolean;
 var a:integer;
 begin
+  if (SourceSelectionList=nil) and (Count=0) then begin
+    Result:=true;
+    exit;
+  end;
   Result:=false;
   if FPersistentList.Count<>SourceSelectionList.Count then exit;
   for a:=0 to FPersistentList.Count-1 do

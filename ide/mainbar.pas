@@ -171,6 +171,7 @@ type
     itmViewForms : TMenuItem;
     itmViewUnitDependencies : TMenuItem;
     itmViewUnitInfo: TMenuItem;
+    itmViewAnchorEditor : TMenuItem;
     itmViewMessage : TMenuItem;
     itmViewSearchResults : TMenuItem;
     itmViewToggleFormUnit: TMenuItem;

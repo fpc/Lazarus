@@ -377,8 +377,11 @@ var
 begin
   Result:= True;
   EventTrace('toggled', data);
-
   if LockOnChange(PgtkObject(Widget),0) > 0 then Exit;
+
+  if GtkWidgetIsA(Widget,GTK_TOGGLE_BUTTON_TYPE) then begin
+    gtk_object_set_data(PgtkObject(Widget), 'Grayed', nil);
+  end;
 
   Mess.Msg := LM_CHANGED;
   Mess.Result := 0;
@@ -2957,6 +2960,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.257  2005/01/07 01:31:44  mattias
+  implemented TCheckBox.State=cbGrayed for gtk intf without visual representation
+
   Revision 1.256  2005/01/05 14:46:35  mattias
   started anchor editor and moved OverWritePromp from lcl to gtk intf
 

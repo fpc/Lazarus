@@ -159,6 +159,7 @@ const
   ecToggleLocals         = ecUserFirst + 313;
   ecToggleCallStack      = ecUserFirst + 314;
   ecToggleSearchResults  = ecUserFirst + 315;
+  ecViewAnchorEditor     = ecUserFirst + 316;
 
   // sourcenotebook commands
   ecNextEditor           = ecUserFirst + 330;
@@ -635,6 +636,7 @@ begin
   ecViewUnitInfo: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecJumpToEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleFormUnit: SetResult(VK_F12,[],VK_UNKNOWN,[]);
+  ecViewAnchorEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // project menu
   ecNewProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1170,6 +1172,7 @@ begin
     ecViewForms             : Result:= srkmecViewForms;
     ecViewUnitDependencies  : Result:= srkmecViewUnitDependencies;
     ecViewUnitInfo          : Result:= srkmecViewUnitInfo;
+    ecViewAnchorEditor      : Result:= srkmecViewAnchorEditor;
 
     // codetools
     ecWordCompletion        : Result:= srkmecWordCompletion;
@@ -2058,6 +2061,7 @@ begin
   AddDefault(C,'View Unit Info',ecViewUnitInfo);
   AddDefault(C,'Focus to source editor',ecJumpToEditor);
   AddDefault(C,'Toggle between Unit and Form',ecToggleFormUnit);
+  AddDefault(C,'View Anchor Editor',ecViewAnchorEditor);
 
   // project menu
   C:=Categories[AddCategory('ProjectMenu',srkmCatProjectMenu,caAll)];

@@ -437,7 +437,7 @@ constructor TUnitDependenciesView.Create(TheOwner: TComponent);
       DebugLn('TUnitDependenciesView.Create: ',
         ' WARNING: icon not found: "',ResName,'"');
     Pixmap.LoadFromLazarusResource(ResName);
-    ImgList.Add(Pixmap,nil)
+    ImgList.Add(Pixmap,nil);
   end;
   
 var

@@ -248,6 +248,8 @@ const
 
 type
 
+  { TControlSelection }
+
   TControlSelection = class(TObject)
     FControls: TList;  // list of TSelectedControl
 
@@ -373,6 +375,7 @@ type
     procedure Remove(APersistent: TPersistent);
     procedure Delete(Index:integer);
     procedure Clear;
+    function Equals(const ASelection: TPersistentSelectionList): boolean;
     function AssignPersistent(APersistent: TPersistent): boolean;
     procedure Assign(AControlSelection: TControlSelection);
     procedure AssignSelection(const ASelection: TPersistentSelectionList);
@@ -1880,6 +1883,32 @@ begin
   DoChange;
 end;
 
+function TControlSelection.Equals(const ASelection: TPersistentSelectionList
+  ): boolean;
+var
+  i: Integer;
+  Index: Integer;
+  Instance: TPersistent;
+begin
+  if (ASelection=nil) or (Count=0) then begin
+    Result:=Count=0;
+    exit;
+  end;
+  Index:=0;
+  for i:=0 to ASelection.Count-1 do
+  begin
+    Instance := ASelection[i];
+    if Instance is TPersistent then begin
+      if (Index>=Count) or (Items[Index].Persistent<>Instance) then begin
+        Result:=false;
+        exit;
+      end;
+      inc(Index);
+    end;
+  end;
+  Result:=true;
+end;
+
 procedure TControlSelection.Assign(AControlSelection: TControlSelection);
 var i:integer;
 begin
@@ -1904,6 +1933,7 @@ var
   i:integer;
   instance: TPersistent;
 begin
+  if Equals(ASelection) then exit;
   if (cssNotSavingBounds in FStates) then exit;
   Include(FStates,cssNotSavingBounds);
   BeginUpdate;

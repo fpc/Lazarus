@@ -2628,6 +2628,8 @@ begin
   FSelection.Assign(ASelection);
   SetAvailComboBoxText;
   RefreshSelection;
+  if Assigned(FOnSelectPersistentsInOI) then
+    FOnSelectPersistentsInOI(Self);
 end;
 
 procedure TObjectInspector.RefreshSelection;

@@ -1702,6 +1702,7 @@ tools/install/file_filter.sh -text svneol=native#application/x-sh
 tools/install/get_lazarus_version.sh -text svneol=native#application/x-sh
 tools/install/macosx/fpc_installer_info.zip -text svneol=unset#application/zip
 tools/install/replace_in_files.pl -text svneol=native#application/x-perl
+tools/install/setup.sh -text svneol=native#application/x-sh
 tools/install/smart_strip.sh -text svneol=native#application/x-sh
 tools/install/win32/build-fpc.bat -text svneol=native#application/x-msdos-program
 tools/install/win32/build-lazarus.bat -text svneol=native#application/x-msdos-program

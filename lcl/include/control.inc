@@ -2585,7 +2585,7 @@ begin
   {$IFDEF CHECK_POSITION}
   DebugLn('[TControl.SetWidth] ',Name,':',ClassName,' ',Value);
   {$ENDIF}
-  SetBounds(FLeft, FTop, Value, FHeight);
+  SetBounds(FLeft, FTop, Max(0,Value), FHeight);
 end;
 
 {------------------------------------------------------------------------------
@@ -2596,7 +2596,7 @@ begin
   {$IFDEF CHECK_POSITION}
   DebugLn('[TControl.SetHeight] ',Name,':',ClassName,' ',Value);
   {$ENDIF}
-  SetBounds(FLeft, FTop, FWidth, Value);
+  SetBounds(FLeft, FTop, FWidth, Max(0,Value));
 end;
 
 {------------------------------------------------------------------------------
@@ -3459,6 +3459,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.231  2005/01/07 01:31:44  mattias
+  implemented TCheckBox.State=cbGrayed for gtk intf without visual representation
+
   Revision 1.230  2005/01/03 22:44:31  mattias
   implemented TControl.AnchorSide
 

@@ -194,6 +194,7 @@ resourcestring
   lisCopyAllMessagesToClipboard = 'Copy all messages to clipboard';
   lisSaveAllMessagesToFile = 'Save all messages to file';
   lisMenuViewSearchResults = 'Search Results';
+  lisMenuViewAnchorEditor = 'View Anchor Editor';
   lisMenuDebugWindows = 'Debug windows';
   lisMenuViewWatches = 'Watches';
   lisMenuViewBreakPoints = 'BreakPoints';
@@ -1291,6 +1292,7 @@ resourcestring
   srkmecViewForms                 = 'View forms';
   srkmecViewUnitDependencies      = 'View unit dependencies';
   srkmecViewUnitInfo              = 'View unit information';
+  srkmecViewAnchorEditor          = 'View anchor editor';
 
   // codetools
   srkmecWordCompletion            = 'Word completion';

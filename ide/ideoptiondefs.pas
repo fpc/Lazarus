@@ -82,7 +82,8 @@ type
     nmiwCallStack,
     nmiwEvaluate,
     // extra
-    nmiwSearchResultsViewName
+    nmiwSearchResultsViewName,
+    nmiwAnchorEditor
     );
 
 const
@@ -94,7 +95,8 @@ const
     nmiwSourceNoteBookName,
     nmiwMessagesViewName,
     nmiwDbgOutput,
-    nmiwSearchResultsViewName
+    nmiwSearchResultsViewName,
+    nmiwAnchorEditor
     ];
 
   // form names for non modal IDE windows:
@@ -117,7 +119,8 @@ const
     'CallStack',
     'EvaluateModify',
     // extra
-    'SearchResults'
+    'SearchResults',
+    'AnchorEditor'
    );
    
 type
