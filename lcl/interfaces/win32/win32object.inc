@@ -2582,8 +2582,8 @@ Begin
       csCombobox:
       begin
         Buddy := Windows.GetTopWindow(Window);
-        if Buddy <> HWND(nil) then
-          Windows.SetProp(Buddy, 'DefWndProc', Windows.SetWindowLong(Buddy, GWL_WNDPROC, LongInt(@ComboBoxEditWindowProc)));
+        Windows.SetProp(Buddy, 'ComboEdit', 1);
+        SubClassWndProc := @ChildEditWindowProc;
       end;
 
       csGroupBox:
@@ -2595,11 +2595,20 @@ Begin
         end;
       end;
 
+      csSpinEdit:
+      begin
+        SubClassWndProc := @ChildEditWindowProc;
+      end;
+
       end;
       Windows.SendMessage(Window, WM_SETFONT, WParam(FMessageFont), 0);
     end;
     If Buddy <> HWND(Nil) Then
+    begin
+      Windows.SetProp(Buddy, 'DefWndProc', Windows.SetWindowLong(Buddy, GWL_WNDPROC, LongInt(SubClassWndProc)));
+      Windows.SetProp(Buddy, 'Wincontrol', dword(Sender));
       Windows.SendMessage(Buddy, WM_SETFONT, WParam(FMessageFont), 0);
+    end;
   End
   Else If (Sender Is TMenuItem) Then
     TMenuItem(Sender).Handle := Window
@@ -3270,6 +3279,9 @@ End;
 
 {
   $Log$
+  Revision 1.210  2004/06/19 15:10:04  micha
+  fix spinedit not firing onchange event
+
   Revision 1.209  2004/06/18 20:47:34  vincents
   fixed pasting from clipboard
 

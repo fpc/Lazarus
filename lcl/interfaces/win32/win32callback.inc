@@ -29,11 +29,6 @@
 const
   WM_THEMECHANGED = $31A;
 
-{ forward declarations }
-
-function ComboBoxEditWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
-    LParam: Windows.LParam): LResult; stdcall; forward;
-
 {-----------------------------------------------------------------------------
   Function: DisableWindowsProc
   Params: Window - handle of toplevel windows to be disabled
@@ -217,6 +212,7 @@ Var
       exit;              
     
     // create a paint message
+    WinProcess := false;
     AWinControl := TWinControl(OwnerObject);
     if AWinControl.DoubleBuffered then
     begin
@@ -423,7 +419,7 @@ Begin
           BN_CLICKED:   LMessage.Msg := LM_CLICKED;
           BN_KILLFOCUS: LMessage.Msg := LM_EXIT;
         end
-      else if OwnerObject is TEdit then
+      else if (OwnerObject is TEdit) or (OwnerObject is TCustomSpinEdit) then
         case Hi(WParam) of
           EN_CHANGE:    LMessage.Msg := CM_TEXTCHANGED;
         end
@@ -713,7 +709,7 @@ Begin
 
         // check if the window is an edit control of a combobox, if so,
         // redirect it to the combobox, not the edit control
-        if Windows.GetWindowLong(TargetWindow, GWL_WNDPROC) = longint(@ComboBoxEditWindowProc) then
+        if Windows.GetProp(TargetWindow, 'ComboEdit') <> 0 then
           TargetWindow := Windows.GetParent(TargetWindow);
         if TargetWindow <> Window then
         begin
@@ -773,7 +769,7 @@ Begin
     WM_PAINT:
     Begin
       SendPaintMessage;
-      WinProcess := False; 
+      // SendPaintMessage sets winprocess to false
     End;
     WM_PASTE:
     Begin
@@ -1126,17 +1122,17 @@ begin
 end;
     
 {------------------------------------------------------------------------------
- Function: ComboBoxEditWindowProc
+ Function: ChildEditWindowProc
  Params: Window - The window that receives a message
          Msg    - The message received
          WParam - Word parameter
          LParam - Long-integer parameter
   Returns: 0 if Msg is handled; non-zero long-integer result otherwise
 
-  Handles the messages sent to the edit child of a combobox control by Windows 
-  or other applications
+  Handles the messages sent to the edit child of a (combobox, spinedit) control 
+  by Windows or other applications
  ------------------------------------------------------------------------------}
-function ComboBoxEditWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+function ChildEditWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
 var
   LMessage: TLMessage;
@@ -1260,6 +1256,9 @@ end;
 
 {
   $Log$
+  Revision 1.118  2004/06/19 15:10:04  micha
+  fix spinedit not firing onchange event
+
   Revision 1.117  2004/06/18 20:47:33  vincents
   fixed pasting from clipboard
 
