@@ -451,7 +451,7 @@ begin
   else
     NewZPosition:=-1;
   FPageList.Insert(Index,APage);
-  APage.Parent := fNotebook;
+  APage.Parent := Self;
   if NewZPosition>=0 then
     SetControlIndex(APage,NewZPosition);
   APage.Visible:=true;
@@ -788,6 +788,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.61  2004/09/23 16:37:13  vincents
+  fix compilation
+
   Revision 1.60  2004/09/23 14:54:55  vincents
   moved widgetset related code from TNBPages to TCustomNotebook
 
