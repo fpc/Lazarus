@@ -1892,23 +1892,23 @@ end;
 procedure TgtkObject.SetColor(Sender : TObject);
 var
   RCStyle : PGtkRCStyle;
-  Widget : PGTKWidget;
+  Widget, FixWidget : PGTKWidget;
 begin
   if Sender is TWinControl
   then with TWinControl(Sender) do
   begin
     // Temphack to set backcolor, till better solution
-    if HandleAllocated and (Color<>clWindow) then begin
+    if HandleAllocated and ((Color and SYS_COLOR_BASE)=0) then begin
       Widget:=PGtkWidget(Handle);
+      FixWidget:=GetFixedWidget(Widget);
+      if FixWidget<>nil then Widget:=FixWidget;
       RCStyle:=gtk_rc_style_new;
       RCStyle^.bg[GTK_STATE_NORMAL]:=TColortoTGDKColor(Color);
-      RCStyle^.fg[GTK_STATE_NORMAL]:=TColortoTGDKColor(Color);
-      RCStyle^.bg_pixmap_name[GTK_STATE_NORMAL]:=nil;
 
       // Indicate which colors the GtkRcStyle will affect;
       // unflagged colors will follow the theme
       RCStyle^.color_flags[GTK_STATE_NORMAL]:=
-        RCStyle^.color_flags[GTK_STATE_NORMAL] or GTK_RC_BG or GTK_RC_BASE or GTK_RC_FG;
+        RCStyle^.color_flags[GTK_STATE_NORMAL] or GTK_RC_BG;
 
       gtk_widget_modify_style(Widget,RCStyle);
       gtk_rc_style_unref(RCStyle);
@@ -5305,6 +5305,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.147  2002/07/09 17:46:58  lazarus
+  MG: fixed setcolor
+
   Revision 1.146  2002/07/09 17:18:22  lazarus
   MG: fixed parser for external vars
 
