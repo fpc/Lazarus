@@ -32,8 +32,8 @@ unit CodeExplorer;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  Buttons, ComCtrls, Menus,
+  Classes, SysUtils, LCLProc, LCLType, LResources, Forms, Controls, Graphics,
+  Dialogs, Buttons, ComCtrls, Menus,
   CodeToolManager, CodeAtom, CodeCache, CodeTree, PascalParserTool,
   IDECommands,
   LazarusIDEStrConsts, EnvironmentOpts, IDEOptionDefs, InputHistory, IDEProcs,
@@ -53,6 +53,8 @@ type
     );
   TCodeExplorerViewFlags = set of TCodeExplorerViewFlag;
 
+  { TCodeExplorerView }
+
   TCodeExplorerView = class(TForm)
     Imagelist1: TIMAGELIST;
     JumpToMenuitem: TMENUITEM;
@@ -66,6 +68,8 @@ type
     procedure CodeExplorerViewRESIZE(Sender: TObject);
     procedure CodeTreeviewDBLCLICK(Sender: TObject);
     procedure CodeTreeviewDELETION(Sender: TObject; Node: TTreeNode);
+    procedure CodeTreeviewKeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure JumpToMenuitemCLICK(Sender: TObject);
     procedure OptionsButtonClick(Sender: TObject);
     procedure RefreshButtonCLICK(Sender: TObject);
@@ -241,6 +245,13 @@ procedure TCodeExplorerView.CodeTreeviewDELETION(Sender: TObject;
 begin
   if Node.Data<>nil then
     TViewNodeData(Node.Data).Free;
+end;
+
+procedure TCodeExplorerView.CodeTreeviewKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key=VK_RETURN) and (Shift=[]) then
+    JumpToSelection;
 end;
 
 procedure TCodeExplorerView.CodeExplorerViewCLOSE(Sender: TObject;

@@ -2255,7 +2255,7 @@ end;
 
 procedure Register;
 begin
-  RegisterComponents('Common Controls',[TTrackbar,TCustomProgressBar,TTreeView,
+  RegisterComponents('Common Controls',[TTrackbar,TProgressBar,TTreeView,
     TListView,TStatusBar,TToolBar,TUpDown,TPageControl,TTabControl]);
   RegisterNoIcon([TToolButton,TTabSheet]);
 end;
@@ -2284,6 +2284,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.155  2005/01/03 01:07:08  mattias
+  fixed registering TProgressBar, disabled docking in TToolBar, return key for codeexplorer, updated finnish translation
+
   Revision 1.154  2005/01/01 18:56:47  mattias
   implemented TTIProgressBar
 

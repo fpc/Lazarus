@@ -99,7 +99,6 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.DoDock(NewDockSite: TWinControl; var ARect: TRect);
 begin
-
   if (NewDockSite = nil) then Parent := nil;
   if NewDockSite<>nil then begin
     DebugLn('TControl.DoDock BEFORE Adjusting ',Name,' ',dbgs(ARect));
@@ -3460,6 +3459,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.229  2005/01/03 01:07:08  mattias
+  fixed registering TProgressBar, disabled docking in TToolBar, return key for codeexplorer, updated finnish translation
+
   Revision 1.228  2005/01/01 14:38:36  mattias
   fixed loading TMemo.Lines - During Loading
 

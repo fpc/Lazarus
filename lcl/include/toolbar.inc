@@ -364,8 +364,9 @@ var
   I: Integer;
 begin
   // dock controls after streaming
-  for I := 0 to ControlCount - 1 do
-    Controls[I].HostDockSite := Self;
+  // TODO: activate when docking finished
+  //for I := 0 to ControlCount - 1 do
+  //  Controls[I].HostDockSite := Self;
   inherited Loaded;
   UpdateVisibleBar;
 end;
@@ -618,6 +619,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.35  2005/01/03 01:07:08  mattias
+  fixed registering TProgressBar, disabled docking in TToolBar, return key for codeexplorer, updated finnish translation
+
   Revision 1.34  2004/11/28 00:55:44  mattias
   deactivated sending SYSKey messages in gtk intf - they are not used anyway
 

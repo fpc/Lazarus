@@ -480,7 +480,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisapplicationagraphicallclfreepascalprogramtheprogra
 msgid "Application%sA graphical lcl/freepascal program. The program file is automatically maintained by lazarus."
-msgstr ""
+msgstr "Sovellus %sGraafinen lcl/freepascal ohjelma. Ohjelma tehdään Lazaruksella (Näistä suositeltavin vaihtoehto)."
 
 #: lazarusidestrconsts:dlgbutapply
 msgid "Apply"
@@ -680,7 +680,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenubuild
 msgid "Build"
-msgstr "Käännä¤"
+msgstr "Käännä"
 
 #: lazarusidestrconsts:lisbuildcodetools
 msgid "Build CodeTools"
@@ -1488,7 +1488,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liscustomprogramafreepascalprogram
 msgid "Custom Program%sA freepascal program."
-msgstr ""
+msgstr "Erikoisohjelma%sFreepascal ohjelma."
 
 #: lazarusidestrconsts:liskeycatcustom
 msgid "Custom commands"
@@ -1832,7 +1832,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgdownword
 msgid "Down"
-msgstr "Eteenpäin"
+msgstr ""
 
 #: lazarusidestrconsts:dlgdragdroped
 msgid "Drag Drop Editing"
@@ -2364,7 +2364,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfrifindorrenameidentifier
 msgid "Find or Rename Identifier"
-msgstr "Etsi tai vaihda tunnisteiden nimiä¤"
+msgstr "Etsi tai vaihda tunnisteiden nimiäÂ¤"
 
 #: lazarusidestrconsts:lismenufindblockotherendofcodeblock
 msgid "Find other end of code block"
@@ -4556,7 +4556,7 @@ msgstr "Ohjelman lähkekoodin tiedosto tarkennin pitää olla .pas, .pp tai .lpr
 
 #: lazarusidestrconsts:lisprogramafreepascalprogramtheprogramfileisautomatic
 msgid "Program%sA freepascal program. The program file is automatically maintained by lazarus."
-msgstr ""
+msgstr "Ohjelma%s Freepascal ohjelma. Ohjelmatiedosto hyödyntää lazarusta."
 
 #: lazarusidestrconsts:lisedtexttoolprogramfilename
 msgid "Programfilename:"
@@ -4884,7 +4884,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisrenamefile
 msgid "Rename file?"
-msgstr ""
+msgstr "Muutetaanko tiedoston nimeä?"
 
 #: lazarusidestrconsts:srkmecrenameidentifier
 msgid "Rename identifier"
@@ -5056,7 +5056,7 @@ msgstr "venäjä(CP1251)"
 
 #: lazarusidestrconsts:rslanguagerussianutf
 msgid "Russian(UTF8)"
-msgstr ""
+msgstr "venäjä(UTF8)"
 
 #: lazarusidestrconsts:dlgbckupsubdir
 msgid "Same name (in subdirectory)"
@@ -6308,7 +6308,7 @@ msgstr ""
 
 #: lazarusidestrconsts:listheunitisnotlowercasethefreepascalcompiler10xneeds
 msgid "The unit %s%s%s is not lowercase.%sThe FreePascal compiler 1.0.x needs lowercase filenames. If you do not use the fpc 1.0.x to compile this unit, you can ignore this message.%s%sRename file?"
-msgstr ""
+msgstr "Käännösyksikön (unit)  %s%s%s nimeä käytetään jo projektissa.%sOhita-näppäin jatkaa nimenvaihtoa,%sPeru-näppäin peruuttaa tämän tallennuksen ja Keskeytä-näppäin lopettaa kaikki tallennukset."
 
 #: lazarusidestrconsts:listheunititselfhasalreadythenamepascalidentifiersmus
 msgid "The unit itself has already the name %s%s%s. Pascal identifiers must be unique."
@@ -6432,7 +6432,7 @@ msgstr ""
 
 #: lazarusidestrconsts:listhislookslikeapascalfilefpc10xexpectspascalfiles
 msgid "This looks like a pascal file.%sfpc 1.0.x expects pascal files lowercase.%sRename it to lowercase?"
-msgstr ""
+msgstr "Tämä vaikuttaa pascal tiedostolta.%sfpc 1.0.x odottaa että pascal tiedostot nimetään pienillä kirjaimilla.%s Tallennetaanko tämä käyttäen pieniä kirjaimia?"
 
 #: lazarusidestrconsts:lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
 msgid "This package is installed, but the lpk file was not found.All its components are deactivated. Please fix this."
@@ -6956,7 +6956,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisunitnamealreadyexistscap
 msgid "Unitname already in project"
-msgstr ""
+msgstr "Tätä Käännösyksikön nimeä käytetään jo projektissa"
 
 #: lazarusidestrconsts:lismenuviewunits
 msgid "Units..."
@@ -6976,7 +6976,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgupword
 msgid "Up"
-msgstr "Taaksepäin"
+msgstr ""
 
 #: lazarusidestrconsts:lispckoptsupdaterebuild
 msgid "Update/Rebuild"

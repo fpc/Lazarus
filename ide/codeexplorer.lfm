@@ -40,6 +40,7 @@ object CodeExplorerView: TCodeExplorerView
     TabOrder = 2
     OnDblClick = CodeTreeviewDBLCLICK
     OnDeletion = CodeTreeviewDELETION
+    OnKeyUp = CodeTreeviewKeyUp
     Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
     Height = 480
     Top = 25
