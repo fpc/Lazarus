@@ -438,6 +438,7 @@ Var
   AliasLen      : Cardinal;
   AList         : TList;
   ColorCount    : Integer;
+  hdcScreen     : HDC;
   hdcBitmap     : HDC;
   hbmBitmap     : HBITMAP ;
   Height, Width : Integer;
@@ -445,8 +446,6 @@ Var
   PixmapArray   : PPixmapArray;
   Info          : String;
   PixmapInfo    : TStringList;
-Const
-  DC_SCREEN = 0;
 
   Procedure NormalizeString(Var Str: String);
   Var
@@ -500,7 +499,7 @@ Const
         New(ColorMap);
         ColorMap^.Alias := Copy(Elem, 1, AliasLen);
         If Copy(Elem, Length(Elem)-3, 4) <> 'None' Then begin
-          ColorMap^.Color :=StrToInt('$'+Copy(Elem,Idx,6));
+          //ColorMap^.Color :=StrToInt('$'+Copy(Elem,Idx,6));
           ColorMap^.Color :=RGB(StrToInt('$'+Copy(Elem,Idx,2)),StrToInt('$'+Copy(Elem,Idx+2,2)),StrToInt('$'+Copy(Elem,Idx+4,2)));
         end
         Else
@@ -616,8 +615,9 @@ Begin
   End;
 
   If (Width <> 0) And (Height <> 0) Then Begin
-    hdcBitmap := CreateCompatibleDC(DC_SCREEN);
-    hbmBitmap := CreateBitmap(Width,Height,1,24,nil);
+    hdcScreen := GetDC(GetDesktopWindow);
+    hdcBitmap := CreateCompatibleDC(hdcScreen);
+    hbmBitmap := CreateCompatibleBitmap(hdcScreen, Width, Height);
     OldObject := SelectObject(hdcBitmap, hbmBitmap);
     CreateColorMap;
     DoDrawBitmap;
@@ -626,6 +626,7 @@ Begin
   PixmapInfo.Free;
   PixmapInfo  := Nil;
   PixmapArray := Nil;
+  ReleaseDC(GetDesktopWindow, hdcScreen);
   DeleteDC(hdcBitmap);
   result:=hbmBitmap;
 
@@ -2305,6 +2306,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.21  2002/10/27 20:05:08  lazarus
+  AJ : Patch from Martin Smat fixing Pixmap loading on all Color Depths
+
   Revision 1.20  2002/10/01 10:16:34  lazarus
   MG: removed last clientrectbugfix switches
 
