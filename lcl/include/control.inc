@@ -1349,6 +1349,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.33  2002/03/08 11:37:42  lazarus
+  MG: outputfilter can now find include files
+
   Revision 1.32  2002/01/01 18:38:36  lazarus
   MG: more wmsize messages :(
 

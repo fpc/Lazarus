@@ -1,6 +1,8 @@
 {
-  Simple functions for file access, not yet in fpc.
-
+  Simple functions
+   - for file access, not yet in fpc.
+   - recent list
+   - xmlconfig formats
 }
 unit IDEProcs;
 
@@ -17,7 +19,7 @@ const
   EndOfLine:shortstring={$IFDEF win32}#13+{$ENDIF}#10;
 
 // files
-function FilenameIsAbsolute(TheFilename: string):boolean;
+function FilenameIsAbsolute(Filename: string):boolean;
 function DirectoryExists(DirectoryName: string): boolean;
 function ForceDirectory(DirectoryName: string): boolean;
 function ExtractFileNameOnly(const AFilename: string): string;
@@ -27,21 +29,23 @@ function FileIsReadable(const AFilename: string): boolean;
 function FileIsWritable(const AFilename: string): boolean;
 function FileIsText(const AFilename: string): boolean;
 function CompareFilenames(const Filename1, Filename2: string): integer;
+function AppendPathDelim(const Path: string): string;
+function SearchFileInPath(const Filename, BasePath, SearchPath,
+                          Delimiter: string): string;
 
 // XMLConfig
 procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStringList; 
   const Path: string);
 procedure SaveRecentList(XMLConfig: TXMLConfig; List: TStringList; 
   const Path: string);
+procedure AddToRecentList(const s: string; RecentList: TStringList;
+  Max: integer);
 procedure LoadRect(XMLConfig: TXMLConfig; const Path:string; var ARect:TRect);
 procedure SaveRect(XMLConfig: TXMLConfig; const Path:string; var ARect:TRect);
 
-// various
-procedure AddToRecentList(const s: string; RecentList: TStringList;
-  Max: integer);
-
 
 implementation
+
 
 // to get more detailed error messages consider the os
 {$IFDEF Win32}
@@ -165,15 +169,15 @@ begin
   Result:=copy(Result,1,length(Result)-ExtLen);
 end;
 
-function FilenameIsAbsolute(TheFilename: string):boolean;
+function FilenameIsAbsolute(Filename: string):boolean;
 begin
-  DoDirSeparators(TheFilename);
+  DoDirSeparators(Filename);
   {$IFDEF win32}
   // windows
-  Result:=(copy(TheFilename,1,2)='\\') or ((length(TheFilename)>3) and 
-     (upcase(TheFilename[1]) in ['A'..'Z']) and (copy(TheFilename,2,2)=':\'));
+  Result:=(copy(Filename,1,2)='\\') or ((length(Filename)>3) and
+     (upcase(Filename[1]) in ['A'..'Z']) and (copy(Filename,2,2)=':\'));
   {$ELSE}
-  Result:=(TheFilename<>'') and (TheFilename[1]='/');
+  Result:=(Filename<>'') and (Filename[1]='/');
   {$ENDIF}
 end;
 
@@ -260,6 +264,44 @@ begin
     end;
   except
   end;
+end;
+
+function AppendPathDelim(const Path: string): string;
+begin
+  if (Path<>'') and (Path[length(Path)]<>PathDelim) then
+    Result:=Path+PathDelim
+  else
+    Result:=Path;
+end;
+
+function SearchFileInPath(const Filename, BasePath, SearchPath,
+  Delimiter: string): string;
+var
+  p, StartPos, l: integer;
+  CurPath, Base: string;
+begin
+  if (Filename='')
+  or (FilenameIsAbsolute(Filename) and FileExists(Filename))
+  then begin
+    Result:=Filename;
+    exit;
+  end;
+  Base:=ExpandFilename(AppendPathDelim(BasePath));
+  StartPos:=1;
+  l:=length(SearchPath);
+  while StartPos<=l do begin
+    p:=StartPos;
+    while (p<=l) and (pos(SearchPath[p],Delimiter)<1) do inc(p);
+    CurPath:=Trim(copy(SearchPath,StartPos,p-StartPos));
+    if CurPath<>'' then begin
+      if not FilenameIsAbsolute(CurPath) then
+        CurPath:=Base+CurPath;
+      Result:=ExpandFilename(AppendPathDelim(CurPath)+Filename);
+      if FileExists(Result) then exit;
+    end;
+    StartPos:=p+1;
+  end;
+  Result:='';
 end;
 
 end.

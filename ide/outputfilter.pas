@@ -29,7 +29,8 @@ uses
   IDEProcs;
 
 type
-  TOnOutputString = procedure (const Value: String) of Object;
+  TOnOutputString = procedure(const Value: String) of Object;
+  TOnGetIncludePath = function(const Directory: string): string of object;
   
   TOuputFilterOption = (
         ofoSearchForFPCMessages, // scan for freepascal compiler messages
@@ -51,11 +52,13 @@ type
     fLastMessageType: TOutputMessageType;
     fCompilingHistory: TStringList;
     fMakeDirHistory: TStringList;
+    fOnGetIncludePath: TOnGetIncludePath;
     fOnOutputString: TOnOutputString;
     fOptions: TOuputFilterOptions;
     fProject: TProject;
     fPrgSourceFilename: string;
     procedure DoAddFilteredLine(const s: string);
+    function SearchIncludeFile(const ShortIncFilename: string): string;
   public
     procedure Execute(TheProcess: TProcess);
     function GetSourcePosition(const Line: string; var Filename:string;
@@ -75,6 +78,8 @@ type
     property LastMessageType: TOutputMessageType read fLastMessageType;
     property PrgSourceFilename: string
       read fPrgSourceFilename write fPrgSourceFilename;
+    property OnGetIncludePath: TOnGetIncludePath
+      read fOnGetIncludePath write fOnGetIncludePath;
     property OnOutputString: TOnOutputString
       read fOnOutputString write fOnOutputString;
     property Options: TOuputFilterOptions read fOptions write fOptions;
@@ -196,9 +201,11 @@ var i, j, FilenameEndPos: integer;
 begin
   Result:=false;
   if ('Compiling '=copy(s,1,length('Compiling '))) then begin
+    // for example 'Compiling ./subdir/unit1.pas'
     fLastMessageType:=omtFPC;
     fLastErrorType:=etNone;
     Result:=true;
+    // add path to history
     if fCompilingHistory=nil then fCompilingHistory:=TStringList.Create;
     i:=length('Compiling ');
     if (length(s)>=i+2) and (s[i+1]='.') and (s[i+2]=PathDelim) then
@@ -299,9 +306,14 @@ begin
         end;
       end else
         SkipMessage:=false;
+      // beautify compiler message
+      
+      // the compiler always gives short filenames, even if it has gone into a
+      // subdirectory
+      // -> prepend the current subdirectory
       Msg:=s;
       if (fCompilingHistory<>nil) then begin
-        Filename:=copy(s,1,FilenameEndPos);
+        Filename:=copy(Msg,1,FilenameEndPos);
         if not FilenameIsAbsolute(Filename) then begin
           i:=fCompilingHistory.Count-1;
           while (i>=0) do begin
@@ -314,10 +326,18 @@ begin
             end;
             dec(i);
           end;
+          if i<0 then begin
+            // this file is not a compiled pascal soure
+            // -> search for include files
+            Filename:=SearchIncludeFile(Filename);
+            Msg:=Filename+copy(Msg,FileNameEndPos+1,length(Msg)-FileNameEndPos);
+            FileNameEndPos:=length(Filename);
+          end;
         end;
       end;
+      
       if (ofoMakeFilenamesAbsolute in Options) then begin
-        Filename:=copy(s,1,FilenameEndPos);
+        Filename:=copy(Msg,1,FilenameEndPos);
         if not FilenameIsAbsolute(Filename) then begin
           Msg:=fCurrentDirectory+Msg;
         end;
@@ -417,6 +437,48 @@ begin
   fFilteredOutput.Add(s);
   if Assigned(OnOutputString) then
     OnOutputString(s);
+end;
+
+function TOutputFilter.SearchIncludeFile(const ShortIncFilename: string
+  ): string;
+// search the include file and make it relative to the current start directory
+var SearchedDirectories: TStringList;
+  FullDir, RelativeDir, IncludePath: string;
+  p: integer;
+begin
+  if fCompilingHistory=nil then begin
+    Result:=ShortIncFilename;
+    exit;
+  end;
+  SearchedDirectories:=TStringList.Create;
+  try
+    // try every compiled pascal source
+    for p:=fCompilingHistory.Count-1 downto 0 do begin
+      RelativeDir:=AppendPathDelim(ExtractFilePath(fCompilingHistory[p]));
+      FullDir:=AppendPathDelim(ExpandFilename(fCurrentDirectory+RelativeDir));
+      if SearchedDirectories.IndexOf(FullDir)>=0 then continue;
+      // new directory start a search
+      if FileExists(FullDir+ShortIncFilename) then begin
+        // file found in search dir
+        Result:=RelativeDir+ShortIncFilename;
+        exit;
+      end;
+      if Assigned(OnGetIncludePath) then begin
+        // search with include path of directory
+        IncludePath:=OnGetIncludePath(FullDir);
+        Result:=SearchFileInPath(ShortIncFilename,FullDir,IncludePath,';');
+        if Result<>'' then begin
+          if LeftStr(Result,length(fCurrentDirectory))=fCurrentDirectory then
+            Result:=RightStr(Result,length(Result)-length(fCurrentDirectory));
+          exit;
+        end;
+      end;
+      SearchedDirectories.Add(FullDir);
+    end;
+  finally
+    SearchedDirectories.Free;
+  end;
+  Result:=ShortIncFilename;
 end;
 
 destructor TOutputFilter.Destroy;
