@@ -38,6 +38,8 @@ begin
     FItems.Free;
   // and use the interface based list
   FItems:= NewStrings;
+
+  CNSendMessage(LM_SETITEMINDEX, Self, Pointer(FItemIndex));
 end;
 
 
@@ -719,6 +721,9 @@ end;
 
 {
   $Log$
+  Revision 1.20  2002/10/05 10:37:21  lazarus
+  MG: fixed TComboBox.ItemIndex on CreateWnd
+
   Revision 1.19  2002/10/04 20:46:51  lazarus
   MG: improved TComboBox.SetItemIndex
 
