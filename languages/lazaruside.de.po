@@ -922,6 +922,10 @@ msgstr "Ungueltiger Pascal Identifier"
 msgid "Italic"
 msgstr ""
 
+#: lazarusidestrconsts:dlgoiitemheight
+msgid "Item height"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
 msgstr "Spring zurueck"
@@ -1244,6 +1248,14 @@ msgstr "Oeffne bekanntes Projekt"
 
 #: lazarusidestrconsts:dlgoptimiz
 msgid "Optimizations:"
+msgstr ""
+
+#: lazarusidestrconsts:fdmsnaptogridoption
+msgid "Option: Snap to grid"
+msgstr ""
+
+#: lazarusidestrconsts:fdmsnaptoguidelinesoption
+msgid "Option: Snap to guide lines"
 msgstr ""
 
 #: lazarusidestrconsts:dlgfropts

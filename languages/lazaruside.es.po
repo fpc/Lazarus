@@ -922,6 +922,10 @@ msgstr "Identificador inválido de Pascal"
 msgid "Italic"
 msgstr "Cursiva"
 
+#: lazarusidestrconsts:dlgoiitemheight
+msgid "Item height"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
 msgstr "Saltar atrás"
@@ -1245,6 +1249,14 @@ msgstr "Abrir proyecto reciente"
 #: lazarusidestrconsts:dlgoptimiz
 msgid "Optimizations:"
 msgstr "Optimizaciones:"
+
+#: lazarusidestrconsts:fdmsnaptogridoption
+msgid "Option: Snap to grid"
+msgstr ""
+
+#: lazarusidestrconsts:fdmsnaptoguidelinesoption
+msgid "Option: Snap to guide lines"
+msgstr ""
 
 #: lazarusidestrconsts:dlgfropts
 msgid "Options"

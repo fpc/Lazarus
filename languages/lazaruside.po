@@ -986,6 +986,14 @@ msgstr ""
 msgid "Background color"
 msgstr ""
 
+#: lazarusidestrconsts:dlgoimiscellaneous
+msgid "Miscellaneous"
+msgstr ""
+
+#: lazarusidestrconsts:dlgoiitemheight
+msgid "Item height"
+msgstr ""
+
 #: lazarusidestrconsts:dlgenvcolors
 msgid "Colors"
 msgstr ""
@@ -2180,5 +2188,13 @@ msgstr ""
 
 #: lazarusidestrconsts:fdmdeleteselection
 msgid "Delete selection"
+msgstr ""
+
+#: lazarusidestrconsts:fdmsnaptogridoption
+msgid "Option: Snap to grid"
+msgstr ""
+
+#: lazarusidestrconsts:fdmsnaptoguidelinesoption
+msgid "Option: Snap to guide lines"
 msgstr ""
 

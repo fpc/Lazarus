@@ -8,6 +8,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.6\n"
 
+#: objinspstrconsts:sccsilcmbimglist
+msgid " Images "
+msgstr ""
+
 #: objinspstrconsts:sccslvedtgrprcaption
 msgid " Item property "
 msgstr ""
@@ -20,6 +24,10 @@ msgstr ""
 msgid " items selected"
 msgstr " элементов выбрано"
 
+#: objinspstrconsts:sccsilcmbimgsel
+msgid " Selected image "
+msgstr ""
+
 #: objinspstrconsts:oiscadd
 msgid "&Add"
 msgstr "&Добавить"
@@ -27,6 +35,18 @@ msgstr "&Добавить"
 #: objinspstrconsts:oiscdelete
 msgid "&Delete"
 msgstr "&Удалить"
+
+#: objinspstrconsts:sccsilbtnadd
+msgid "Add ..."
+msgstr ""
+
+#: objinspstrconsts:sccsilbtnclear
+msgid "Clear"
+msgstr ""
+
+#: objinspstrconsts:sccsilconfirme
+msgid "Confirme clear all images ?"
+msgstr ""
 
 #: objinspstrconsts:sccslvedtbtndel
 msgid "Delete"
@@ -38,6 +58,10 @@ msgstr "События"
 
 #: objinspstrconsts:sccslvedtimgindexcaption
 msgid "Image index"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtcaption
+msgid "Image list editor"
 msgstr ""
 
 #: objinspstrconsts:sccslvedtlabcaption
@@ -59,4 +83,8 @@ msgstr "Инспектор объектов"
 #: objinspstrconsts:oisproperties
 msgid "Properties"
 msgstr "Свойства"
+
+#: objinspstrconsts:sccslvedtbtnaddsub
+msgid "Sub item"
+msgstr ""
 

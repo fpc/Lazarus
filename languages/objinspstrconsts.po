@@ -50,3 +50,31 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
+#: objinspstrconsts:sccslvedtbtnaddsub
+msgid "Sub item"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtcaption
+msgid "Image list editor"
+msgstr ""
+
+#: objinspstrconsts:sccsilcmbimgsel
+msgid " Selected image "
+msgstr ""
+
+#: objinspstrconsts:sccsilcmbimglist
+msgid " Images "
+msgstr ""
+
+#: objinspstrconsts:sccsilbtnadd
+msgid "Add ..."
+msgstr ""
+
+#: objinspstrconsts:sccsilbtnclear
+msgid "Clear"
+msgstr ""
+
+#: objinspstrconsts:sccsilconfirme
+msgid "Confirme clear all images ?"
+msgstr ""
+

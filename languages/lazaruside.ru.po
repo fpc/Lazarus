@@ -922,6 +922,10 @@ msgstr "Некорректный идентификатор паскаля"
 msgid "Italic"
 msgstr "Курсив"
 
+#: lazarusidestrconsts:dlgoiitemheight
+msgid "Item height"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
 msgstr "Переход назад"
@@ -1245,6 +1249,14 @@ msgstr "Открыть недавний проект"
 #: lazarusidestrconsts:dlgoptimiz
 msgid "Optimizations:"
 msgstr "Оптимизация:"
+
+#: lazarusidestrconsts:fdmsnaptogridoption
+msgid "Option: Snap to grid"
+msgstr ""
+
+#: lazarusidestrconsts:fdmsnaptoguidelinesoption
+msgid "Option: Snap to guide lines"
+msgstr ""
 
 #: lazarusidestrconsts:dlgfropts
 msgid "Options"

@@ -1,3 +1,7 @@
+#: objinspstrconsts:sccsilcmbimglist
+msgid " Images "
+msgstr ""
+
 #: objinspstrconsts:sccslvedtgrprcaption
 msgid " Item property "
 msgstr ""
@@ -10,6 +14,10 @@ msgstr ""
 msgid " items selected"
 msgstr " elementos seleccionados"
 
+#: objinspstrconsts:sccsilcmbimgsel
+msgid " Selected image "
+msgstr ""
+
 #: objinspstrconsts:oiscadd
 msgid "&Add"
 msgstr "&Añadir"
@@ -17,6 +25,18 @@ msgstr "&Añadir"
 #: objinspstrconsts:oiscdelete
 msgid "&Delete"
 msgstr "&Suprimir"
+
+#: objinspstrconsts:sccsilbtnadd
+msgid "Add ..."
+msgstr ""
+
+#: objinspstrconsts:sccsilbtnclear
+msgid "Clear"
+msgstr ""
+
+#: objinspstrconsts:sccsilconfirme
+msgid "Confirme clear all images ?"
+msgstr ""
 
 #: objinspstrconsts:sccslvedtbtndel
 msgid "Delete"
@@ -28,6 +48,10 @@ msgstr "Eventos"
 
 #: objinspstrconsts:sccslvedtimgindexcaption
 msgid "Image index"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtcaption
+msgid "Image list editor"
 msgstr ""
 
 #: objinspstrconsts:sccslvedtlabcaption
@@ -49,4 +73,8 @@ msgstr "Inspector de Objetos"
 #: objinspstrconsts:oisproperties
 msgid "Properties"
 msgstr "Propiedades"
+
+#: objinspstrconsts:sccslvedtbtnaddsub
+msgid "Sub item"
+msgstr ""
 
