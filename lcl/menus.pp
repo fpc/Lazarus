@@ -161,7 +161,7 @@ type
   public
     FCompStyle : LongInt;
     procedure Add(Item: TMenuItem);
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(TheOwner: TComponent); override;
     procedure Delete(Index: Integer);
     destructor Destroy; override;
     function GetImageList: TCustomImageList; virtual;
@@ -464,6 +464,9 @@ end.
 
 {
   $Log$
+  Revision 1.28  2002/10/08 22:32:26  lazarus
+  MG: fixed cool little bug (menu double attaching bug)
+
   Revision 1.27  2002/09/19 16:45:54  lazarus
   MG: fixed Menu.Free and gdkwindow=nil bug
 

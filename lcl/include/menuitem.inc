@@ -18,9 +18,9 @@
  *****************************************************************************
 }
 const
-  SMenuNotFound = 'Sub-menu is not in menu';
+  SMenuNotFound   = 'Sub-menu is not in menu';
   SMenuIndexError = 'Menu index out of range';
-  SMenuItemIsNil = 'MenuItem is nil';
+  SMenuItemIsNil  = 'MenuItem is nil';
 
 {------------------------------------------------------------------------------
   Method:  TMenuItem.Add
@@ -36,16 +36,17 @@ end;
 
 {------------------------------------------------------------------------------
   Method: TMenuItem.Create
-  Params:  AOwner: the owner of the class
+  Params:  TheOwner: the owner of the class
   Returns: Nothing
 
   Constructor for the class.
  ------------------------------------------------------------------------------}
-constructor TMenuItem.Create(AOwner: TComponent);
+constructor TMenuItem.Create(TheOwner: TComponent);
 begin
-  if not assigned (aOwner) then writeln ('**SH: Warn: creating MenuItem with Owner = nil');
+  //writeln('TMenuItem.Create START TheOwner=',TheOwner.Name,':',TheOwner.ClassName);
+  if not assigned (TheOwner) then writeln ('**SH: Warn: creating MenuItem with Owner = nil');
   
-  Inherited Create(AOwner);
+  Inherited Create(TheOwner);
 
   FCompStyle := csMenuItem;
   FHandle := 0;
@@ -56,6 +57,7 @@ begin
   FChecked := False;
   FVisible := True;
   FEnabled := True;
+  //writeln('TMenuItem.Create END TheOwner=',TheOwner.Name,':',TheOwner.ClassName);
 end;
 
 {------------------------------------------------------------------------------
@@ -68,6 +70,7 @@ end;
 procedure TMenuItem.CreateHandle;
 var i: Integer;
 begin
+  //writeln('TMenuItem.CreateHandle START ',Name,':',ClassName);
   InterfaceObject.IntSendMessage3(LM_CREATE, Self, nil);
   if FItems<>nil then begin
     for i := 0 to Count - 1 do begin
@@ -92,6 +95,7 @@ begin
     end;
   end;
   }
+  //writeln('TMenuItem.CreateHandle END ',Name,':',ClassName);
 end;
 
 {------------------------------------------------------------------------------
@@ -208,11 +212,11 @@ procedure TMenuItem.GetChildren(Proc: TGetChildProc; Root: TComponent);
 var
   i : Integer;
 Begin
-   if not assigned (FItems) then exit;
+  if not assigned (FItems) then exit;
 
-   for i := 0 to FItems.Count - 1 
-      do if TComponent (FItems[i]).Owner = Root 
-       	    then Proc(TComponent (FItems [i]));
+  for i := 0 to FItems.Count - 1 do
+    if TComponent (FItems[i]).Owner = Root then
+      Proc(TComponent (FItems [i]));
 end;
 
 {------------------------------------------------------------------------------
@@ -469,7 +473,7 @@ begin
   
   if HandleAllocated then begin
     Item.HandleNeeded;
-    InterfaceObject.IntSendMessage3(LM_ATTACHMENU, Item, nil);
+    //InterfaceObject.IntSendMessage3(LM_ATTACHMENU, Item, nil);
   end;
   MenuChanged(FItems.Count = 1);
 end;
@@ -922,6 +926,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.27  2002/10/08 22:32:27  lazarus
+  MG: fixed cool little bug (menu double attaching bug)
+
   Revision 1.26  2002/08/22 13:45:58  lazarus
   MG: fixed non AutoCheck menuitems and editor bookmark popupmenu
 
@@ -1028,6 +1035,9 @@ end;
 
 
   $Log$
+  Revision 1.27  2002/10/08 22:32:27  lazarus
+  MG: fixed cool little bug (menu double attaching bug)
+
   Revision 1.26  2002/08/22 13:45:58  lazarus
   MG: fixed non AutoCheck menuitems and editor bookmark popupmenu
 
