@@ -932,8 +932,17 @@ end;
 {  TCustomForm ShowModal                                                       }
 {------------------------------------------------------------------------------}
 Function TCustomForm.ShowModal : Integer;
+{var
+  WindowList: Pointer;
+  SaveFocusCount: Integer;
+  SaveCursor: TCursor;
+  SaveCount: Integer;
+  ActiveWindow: HWnd;}
 begin
 //writeln('[TCustomForm.ShowModal] START ',Classname);
+  if Visible or not Enabled or (fsModal in FFormState) or
+    (FormStyle = fsMDIChild) then
+    raise EInvalidOperation.Create('TCustomForm.ShowModal impossible');
   { TODO : This has to be changed by WM_VISIBLECHANGED. Implement appropriate callback !!! }
   //Kill capture when opening another dialog
   if GetCapture <> 0 then SendMessage(GetCapture,LM_CANCELMODE,0,0);
@@ -958,6 +967,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.39  2002/04/26 12:26:50  lazarus
+  MG: improved clean up
+
   Revision 1.38  2002/03/25 17:59:20  lazarus
   GTK Cleanup
   Shane

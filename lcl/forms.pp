@@ -160,7 +160,7 @@ type
     Procedure SetFocus; override;
     function SetFocusedControl(Control : TWinControl): Boolean ; Virtual;
     Procedure FocusControl(Control : TWinControl);
-    Function  ShowModal : Integer;
+    Function ShowModal : Integer;
     property Active : Boolean read FActive;
     property BorderStyle : TFormBorderStyle read FBorderStyle write SetBorderStyle default bsSizeable;
     property Canvas: TControlCanvas read GetCanvas;
