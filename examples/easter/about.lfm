@@ -1,0 +1,64 @@
+object AboutBox: TAboutBox
+  ACTIVECONTROL = CloseButton
+  BORDERSTYLE = bsdialog
+  CAPTION = 'Info zu "Holy Days"'
+  CLIENTHEIGHT = 176
+  CLIENTWIDTH = 439
+  POSITION = pomainformcenter
+  HORZSCROLLBAR.PAGE = 440
+  VERTSCROLLBAR.PAGE = 177
+  LEFT = 341
+  HEIGHT = 176
+  TOP = 290
+  WIDTH = 439
+  object Label1: TLABEL
+    CAPTION = 'Osterberechung, umgesetztes Beispiel von Delphi nach Lazarus'
+    LAYOUT = tltop
+    LEFT = 16
+    HEIGHT = 17
+    TOP = 32
+    WIDTH = 408
+  end
+  object Label2: TLABEL
+    CAPTION = 'Copyright (C) 2003 Michael Starke und Toolbox, Ausgabe 5/2003'
+    LAYOUT = tltop
+    LEFT = 16
+    HEIGHT = 17
+    TOP = 48
+    WIDTH = 409
+  end
+  object Warn2Label: TLABEL
+    CAPTION = 'Diese Version funktioniert nur von 1900 bis 2099.'
+    LAYOUT = tltop
+    LEFT = 16
+    HEIGHT = 17
+    TOP = 104
+    WIDTH = 369
+  end
+  object CloseButton: TBUTTON
+    CAPTION = 'Exit'
+    TABSTOP = True
+    TABORDER = 3
+    ONCLICK = Button1CLICK
+    LEFT = 320
+    HEIGHT = 25
+    TOP = 144
+    WIDTH = 75
+  end
+  object Warn1Label: TLABEL
+    CAPTION = 'Achtung:'
+    LAYOUT = tltop
+    LEFT = 16
+    HEIGHT = 17
+    TOP = 72
+    WIDTH = 65
+  end
+  object Warn3Label: TLABEL
+    CAPTION = 'Es findet keine Fehlerueberpruefung statt!'
+    LAYOUT = tltop
+    LEFT = 16
+    HEIGHT = 17
+    TOP = 120
+    WIDTH = 376
+  end
+end

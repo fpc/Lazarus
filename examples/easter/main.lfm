@@ -1,0 +1,142 @@
+object Form1: TForm1
+  BORDERSTYLE = bsdialog
+  CAPTION = 'Holy Days'
+  CLIENTHEIGHT = 195
+  CLIENTWIDTH = 430
+  ONCREATE = Form1CREATE
+  ONSHOW = Form1SHOW
+  POSITION = podesktopcenter
+  HORZSCROLLBAR.PAGE = 431
+  VERTSCROLLBAR.PAGE = 196
+  LEFT = 392
+  HEIGHT = 195
+  TOP = 213
+  WIDTH = 430
+  object Bevel1: TBEVEL
+    HEIGHT = 165
+    LEFT = 13
+    NAME = 'Bevel1'
+    SHAPE = bsframe
+    TOP = 11
+    WIDTH = 282
+    LEFT = 13
+    HEIGHT = 165
+    TOP = 11
+    WIDTH = 282
+  end
+  object CalculateButton: TBUTTON
+    CAPTION = 'Berechne'
+    TABSTOP = True
+    TABORDER = 0
+    ONCLICK = Button1CLICK
+    LEFT = 312
+    HEIGHT = 35
+    TOP = 56
+    WIDTH = 104
+  end
+  object Listbox1: TLISTBOX
+    STYLE = lbownerdrawvariable
+    TABORDER = 1
+    TABSTOP = True
+    TOPINDEX = -1
+    LEFT = 136
+    HEIGHT = 101
+    TOP = 64
+    WIDTH = 141
+  end
+  object Edit1: TEDIT
+    TEXT = '2003'
+    TABSTOP = True
+    TABORDER = 2
+    LEFT = 136
+    HEIGHT = 23
+    TOP = 24
+    WIDTH = 141
+  end
+  object AshWednesdayLabel: TLABEL
+    CAPTION = 'Aschermittwoch:'
+    LAYOUT = tltop
+    LEFT = 24
+    HEIGHT = 17
+    TOP = 64
+    WIDTH = 104
+  end
+  object YearLabel: TLABEL
+    CAPTION = 'Jahr'
+    LAYOUT = tltop
+    LEFT = 24
+    HEIGHT = 17
+    TOP = 24
+    WIDTH = 104
+  end
+  object GoodFridayLabel: TLABEL
+    CAPTION = 'Karfreitag:'
+    LAYOUT = tltop
+    LEFT = 24
+    HEIGHT = 17
+    TOP = 81
+    WIDTH = 104
+  end
+  object EasterMondayLabel: TLABEL
+    CAPTION = 'Ostermontag'
+    LAYOUT = tltop
+    LEFT = 24
+    HEIGHT = 17
+    TOP = 98
+    WIDTH = 104
+  end
+  object AscensionDayLabel: TLABEL
+    CAPTION = 'Himmelfahrt'
+    LAYOUT = tltop
+    LEFT = 24
+    HEIGHT = 17
+    TOP = 115
+    WIDTH = 104
+  end
+  object PentecostLabel: TLABEL
+    CAPTION = 'Pfingsten'
+    LAYOUT = tltop
+    LEFT = 24
+    HEIGHT = 17
+    TOP = 131
+    WIDTH = 104
+  end
+  object CorpusCristiLabel: TLABEL
+    CAPTION = 'Fronleichnam'
+    LAYOUT = tltop
+    LEFT = 24
+    HEIGHT = 17
+    TOP = 149
+    WIDTH = 104
+  end
+  object EndButton: TBUTTON
+    CAPTION = 'Ende'
+    TABSTOP = True
+    TABORDER = 10
+    ONCLICK = Button2CLICK
+    LEFT = 312
+    HEIGHT = 35
+    TOP = 104
+    WIDTH = 104
+  end
+  object AboutButton: TBUTTON
+    CAPTION = 'Info'
+    TABSTOP = True
+    TABORDER = 11
+    ONCLICK = Button3CLICK
+    LEFT = 312
+    HEIGHT = 35
+    TOP = 152
+    WIDTH = 104
+  end
+  object LanguageButton: TBUTTON
+    CAPTION = 'English'
+    TABSTOP = True
+    TABORDER = 12
+    ONCLICK = LanguageButtonCLICK
+    LEFT = 312
+    HEIGHT = 35
+    TOP = 8
+    WIDTH = 104
+  end
+end
