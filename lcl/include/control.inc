@@ -118,31 +118,16 @@ begin
   PosChanged:= (FLeft <> ALeft) or (FTop <> ATop);
   if SizeChanged or PosChanged then begin
 
-    //The Following causes TCheckbox's to repaint
-    //ad infinitum. Just TCheckbox. not
-    //TRadioButton, not TPanel.. just TCheckbox.
-    //WHY!?!?!?!?!?!?!
-    
-    {If Self is TWinControl then begin
-      With Self as TWinControl do begin
-        If AutoSize and not AutoSizing then begin
-          DoAutoSize;
-          If SizeChanged then begin
-            AutoSizing := True;
-            If PosChanged then
-              ChangeBounds(ALeft, ATop, Width, Height);
-            AutoSizing := False;
-            exit;
-          end;
-        end;
-        If not AutoSizing then
-          If Parent <> nil then
-            Parent.DoAutoSize;
+    {If AutoSize and not AutoSizing then begin
+      If SizeChanged then begin
+        DoAutoSize;
+        AutoSizing := True;
+        If PosChanged then
+          ChangeBounds(ALeft, ATop, Width, Height);
+        AutoSizing := False;
+        exit;
       end;
-    end
-    else  }
-      If Parent <> nil then
-        Parent.DoAutoSize;
+    end;}
 
     FLastResize.X:= AWidth - FWidth;
     FLastResize.Y:= AHeight - FHeight;
@@ -192,7 +177,9 @@ begin
         WindowProc(TLMessage(MoveMsg));
       end;
     end;
-  end;    
+    If Parent <> nil then
+      Parent.DoAutoSize;
+  end;
 end;
 
 {-------------------------------------------------------------------------------
@@ -985,9 +972,18 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TControl.SetAutoSize(const value : Boolean);
 Begin
-  if FAutoSize <> value then
-  FAutosize := Value;
-  //TODO: Finish this by calling gtk and telling it to resize...?
+  If AutoSize <> Value then begin
+    FAutoSize := Value;
+    DoAutoSize;
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+{       TControl DoAutoSize                                                   }
+{------------------------------------------------------------------------------}
+Procedure TControl.DoAutoSize;
+Begin
+  //Handled by TWinControl, or other descendants
 end;
 
 {------------------------------------------------------------------------------}
@@ -1802,6 +1798,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.85  2002/09/10 06:49:19  lazarus
+  MG: scrollingwincontrol from Andrew
+
   Revision 1.84  2002/09/09 19:04:01  lazarus
   MG: started TTreeView dragging
 
