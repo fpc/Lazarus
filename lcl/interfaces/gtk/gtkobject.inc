@@ -1890,16 +1890,31 @@ end;
 {       *Note: Changes the form's default background color                                 }
 {------------------------------------------------------------------------------}
 procedure TgtkObject.SetColor(Sender : TObject);
-{var
-   TheStyle : pGtkStyle;
-   widget : pgtkWidget;
-   NewColor : TgdkColor;}
+var
+  RCStyle : PGtkRCStyle;
+  Widget : PGTKWidget;
 begin
-  if Sender is TWincontrol
-  then with TWincontrol(Sender) do
+  if Sender is TWinControl
+  then with TWinControl(Sender) do
   begin
     // Temphack to set backcolor, till better solution
-    if HandleAllocated then SetBKColor(Handle, ColorToRGB(Color));
+    if HandleAllocated and (Color<>clWindow) then begin
+      Widget:=PGtkWidget(Handle);
+      RCStyle:=gtk_rc_style_new;
+      RCStyle^.bg[GTK_STATE_NORMAL]:=TColortoTGDKColor(Color);
+      RCStyle^.fg[GTK_STATE_NORMAL]:=TColortoTGDKColor(Color);
+      RCStyle^.bg_pixmap_name[GTK_STATE_NORMAL]:=nil;
+
+      // Indicate which colors the GtkRcStyle will affect;
+      // unflagged colors will follow the theme
+      RCStyle^.color_flags[GTK_STATE_NORMAL]:=
+        RCStyle^.color_flags[GTK_STATE_NORMAL] or GTK_RC_BG or GTK_RC_BASE or GTK_RC_FG;
+
+      gtk_widget_modify_style(Widget,RCStyle);
+      gtk_rc_style_unref(RCStyle);
+
+      //SetBKColor(Handle, ColorToRGB(Color));
+    end;
   end;
   
 
@@ -3872,10 +3887,11 @@ begin
           Assert(False, 'WARNING: TgtkObject.ShowHide - no Fixed Widget found');
         end;
       end;
+      UnsetResizeRequest(SenderWidget);
     end;
-    UnsetResizeRequest(SenderWidget);
-    
+
     gtk_widget_show(SenderWidget);
+    SetColor(Sender);
     if (Sender is TCustomForm) and (SenderWidget^.Window<>nil) then begin
       FormIconGdiObject:=PGDIObject(TCustomForm(Sender).GetIconHandle);
       if (FormIconGdiObject<>nil) then begin
@@ -5289,6 +5305,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.146  2002/07/09 17:18:22  lazarus
+  MG: fixed parser for external vars
+
   Revision 1.145  2002/06/26 15:11:09  lazarus
   MG: added new tool: Guess misplaced $IFDEF/$ENDIF
 
