@@ -1576,7 +1576,7 @@ var
   Cmd: TSynEditorCommand;
 begin
 //writeln('[TCustomSynEdit.KeyDown] ',Key
-  ,' Shift=',ssShift in Shift,' Ctrl=',ssCtrl in Shift,' Alt=',ssAlt in Shift);
+//  ,' Shift=',ssShift in Shift,' Ctrl=',ssCtrl in Shift,' Alt=',ssAlt in Shift);
   inherited;
   Data := nil;
   C := #0;
