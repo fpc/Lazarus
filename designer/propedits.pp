@@ -1248,7 +1248,7 @@ end;
 
 procedure TPropertyEditor.Edit;
 type
-  TGetStrFunc=function(const StrValue:ansistring):Integer of object;
+  TGetStrFunc = function(const StrValue:ansistring):Integer of object;
 var
   I:Integer;
   Values:TStringList;
@@ -1258,8 +1258,8 @@ begin
   Values:=TStringList.Create;
   Values.Sorted:=paSortList in GetAttributes;
   try
-    AddValue:=@Values.Add;
-    GetValues(TGetStringProc(AddValue));
+    AddValue := @Values.Add;
+    GetValues(TGetStrProc((@AddValue)^));
     if Values.Count > 0 then begin
       I:=Values.IndexOf(FirstValue)+1;
       if I=Values.Count then I:=0;
