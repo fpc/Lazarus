@@ -2102,7 +2102,9 @@ var
   procedure DrawMark(iMark: integer);
   var
     iLine: integer;
+    itop : Longint;
   begin
+    iTop := 0;
     if Assigned(fBookMarkOpt.BookmarkImages) and not Marks[i].InternalImage then
     begin
       if Marks[iMark].ImageIndex <= fBookMarkOpt.BookmarkImages.Count then begin
@@ -2112,9 +2114,11 @@ var
           aGutterOffs^[iLine] := 0
         else if aGutterOffs^[iLine] = 0 then
           aGutterOffs^[iLine] := fBookMarkOpt.XOffset;
+        If fTextHeight > fBookMarkOpt.BookmarkImages.Height then
+          iTop := (fTextHeight - fBookMarkOpt.BookmarkImages.Height) div 2;
         with fBookMarkOpt do
           BookmarkImages.Draw(Canvas, LeftMargin + aGutterOffs^[iLine],
-            iLine * fTextHeight, Marks[iMark].ImageIndex,true);
+            iTop + iLine * fTextHeight, Marks[iMark].ImageIndex,true);
         Inc(aGutterOffs^[iLine], fBookMarkOpt.XOffset);
       end;
     end else
@@ -2158,7 +2162,8 @@ begin
         fTextDrawer.Style := [];
       // prepare the rect initially
       rcLine := AClip;
-      rcLine.Right := Max(rcLine.Right, fGutterWidth - 2);
+      rcLine.Right := fGutterWidth - 2;
+      //rcLine.Right := Max(rcLine.Right, fGutterWidth - 2);
       rcLine.Bottom := (FirstLine - TopLine) * fTextHeight;
       for iLine := FirstLine to LastLine do begin
         // next line rect
@@ -2167,8 +2172,11 @@ begin
         // erase the background and draw the line number string in one go
         s := fGutter.FormatLineNumber(iLine);
         {$IFDEF SYN_LAZARUS}
-        LCLLinux.ExtTextOut(DC, fGutter.LeftOffset, rcLine.Top, ETO_OPAQUE,
-          @rcLine, PChar(s), Length(s), nil);
+        InternalFillRect(DC, rcLine);
+        LCLLinux.DrawText(DC, PChar(S), Length(S), rcLine,
+          DT_RIGHT or DT_Center or DT_SINGLELINE or DT_NOPREFIX);
+        //LCLLinux.ExtTextOut(DC, fGutter.LeftOffset, rcLine.Top, ETO_OPAQUE,
+        //  @rcLine, PChar(s), Length(s), nil);
         {$ELSE}
         Windows.ExtTextOut(DC, fGutter.LeftOffset, rcLine.Top, ETO_OPAQUE,
           @rcLine, PChar(s), Length(s), nil);

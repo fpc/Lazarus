@@ -21,13 +21,60 @@ begin
    begin
       inherited Create(AOwner);
       fCompStyle := csCheckbox;
+      AutoSize := True;
    end;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCheckbox.SetText
+  Params:  Value : TCaption
+  Returns: nothing
+
+  Change the caption, and then AutoSize
+ ------------------------------------------------------------------------------}
+procedure TCheckbox.SetText(const Value: TCaption);
+begin
+  Inherited SetText(Value);
+  AutoSize := FAutoSize;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCheckbox.SetAutoSize
+  Params:  Value : Boolean
+  Returns: nothing
+
+  Sets AutoSize Flag, and if True, attempts to Size to fit Caption
+ ------------------------------------------------------------------------------}
+procedure TCheckbox.SetAutoSize(Value : Boolean);
+var
+  R : TRect;
+  DC : hDC;
+begin
+  FAutoSize := Value;
+  If not AutoSize then
+    Exit;
+  if not HandleAllocated then exit;
+  DC := GetDC(Handle);
+  Try
+    R := Rect(0,0, Width, Height);
+    DrawText(DC, PChar(Caption), Length(Caption), R,
+      DT_CalcRect or DT_NOPrefix);
+    If R.Right > Width then
+      Width := R.Right + 25;
+    If R.Bottom > Height then
+      Height := R.Bottom + 2;
+  Finally
+    ReleaseDC(Handle, DC);
+  end;
 end;
 
 // included by stdctrls.pp
 
 {
   $Log$
+  Revision 1.5  2002/08/24 06:51:22  lazarus
+  MG: from Andrew: style list fixes, autosize for radio/checkbtns
+
   Revision 1.4  2002/07/23 07:40:51  lazarus
   MG: fixed get widget position for inherited gdkwindows
 

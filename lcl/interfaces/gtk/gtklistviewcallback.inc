@@ -18,8 +18,12 @@ function gtkLVHScroll(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
 var
   Adjustment: PGTKAdjustment;
 begin
+  {$IfNDef Win32}
   Adjustment := gtk_clist_get_hadjustment(AList);
-  if Adjustment = nil 
+  {$Else}
+  Adjustment := nil;
+  {$EndIf}
+  if Adjustment = nil
   then Result := False
   else Result := GTKHScrollCB(Adjustment, AData);
 end;
@@ -30,8 +34,12 @@ function gtkLVVScroll(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
 var
   Adjustment: PGTKAdjustment;
 begin
+  {$IfNDef Win32}
   Adjustment := gtk_clist_get_vadjustment(AList);
-  if Adjustment = nil 
+  {$Else}
+  Adjustment := nil;
+  {$EndIf}
+  if Adjustment = nil
   then Result := False
   else Result := GTKVScrollCB(Adjustment, AData);
 end;

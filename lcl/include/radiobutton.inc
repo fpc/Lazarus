@@ -54,6 +54,7 @@ begin
   Hint := 'Radiobutton';
   ShowHint := True;
   fGroup := 0;
+  AutoSize := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -131,7 +132,7 @@ procedure TRadioButton.SetGroup(Value : THandle);
 begin
   Assert(False, 'Trace:IN SETGROUP.  Caption = '+ Self.Caption);
   FGroup := Value;
-//SH?   ReCreate;
+  RecreateWnd;
 end;
 
 {------------------------------------------------------------------------------
@@ -146,41 +147,57 @@ begin
   GetGroup := FGroup;
 end;
 
+{------------------------------------------------------------------------------
+  Method: TRadioButton.SetText
+  Params:  Value: TCaption
+  Returns: nothing
+
+  Change the caption, and then recreate to update, then call to AutoSize
+ ------------------------------------------------------------------------------}
+procedure TRadioButton.SetText(const Value: TCaption);
+begin
+  Inherited SetText(Value);
+  RecreateWnd;
+  AutoSize := FAutoSize;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCheckbox.SetAutoSize
+  Params:  Value : Boolean
+  Returns: nothing
+
+  Sets AutoSize Flag, and if True, attempts to Size to fit Caption
+ ------------------------------------------------------------------------------}
+procedure TRadioButton.SetAutoSize(Value : Boolean);
+var
+  R : TRect;
+  DC : hDC;
+begin
+  FAutoSize := Value;
+  If not AutoSize then
+    Exit;
+  if not HandleAllocated then exit;
+  DC := GetDC(Handle);
+  Try
+    R := Rect(0,0, Width, Height);
+    DrawText(DC, PChar(Caption), Length(Caption), R,
+      DT_CalcRect or DT_NOPrefix);
+    If R.Right > 25 then
+      Width := R.Right + 25;
+    If R.Bottom > 25 then
+      Height := R.Bottom + 2;
+  Finally
+    ReleaseDC(Handle, DC);
+  end;
+end;
 // included by stdctrls.pp
 
-(*
-procedure TRadioButton.ReCreate;
-//var
-// ******************************
-// the following line has been commented out so that gtk dependency can be
-// removed from all files. The following function needs to be moved.   MAH
-//
-//   gLabel : PgChar;
-
-begin
-
-   if Caption = '' then
-      Caption := 'RadioGroup1';
-
-// ******************************
-// the following line has been commented out so that gtk dependency can be
-// removed from all files. The following function needs to be moved.   MAH
-//
-//   gLAbel := StrAlloc(length(Self.Caption) + 1);
-//   StrPCopy(gLabel,Self.Caption);
-
-// ******************************
-// the following line has been commented out so that gtk dependency can be
-// removed from all files. The following function needs to be moved.   MAH
-//
-//   FComponent := gtk_radio_button_new_with_label(
-//   gtk_radio_button_group(GTk_Radio_Button(Group.FComponent)),gLabel);
-//   gtkGroup := gtk_radio_button_group(GTk_Radio_Button(Group.FComponent));
-end;
-*)
 
 {
   $Log$
+  Revision 1.6  2002/08/24 06:51:22  lazarus
+  MG: from Andrew: style list fixes, autosize for radio/checkbtns
+
   Revision 1.5  2002/05/13 14:47:00  lazarus
   MG: fixed client rectangles, TRadioGroup, RecreateWnd
 
