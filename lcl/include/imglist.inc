@@ -51,6 +51,11 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomImageList.Add(Image, Mask: TBitmap): Integer;
 begin
+  Result:=AddDirect(Image,Mask);
+end;
+
+function TCustomImageList.AddDirect(Image, Mask: TBitmap): Integer;
+begin
   try
     Result := Count;
     Insert(Result, Image, Mask);
@@ -61,6 +66,27 @@ begin
       Result := -1; // Ignore exceptions, just return -1
     end;
   end;
+end;
+
+function TCustomImageList.AddCopy(SrcImage, SrcMask: TBitmap): Integer;
+var
+  NewImage: TBitmap;
+  NewMask: TBitmap;
+begin
+  NewImage:=nil;
+  NewMask:=nil;
+  try
+    NewImage:=TBitmap.Create;
+    NewMask:=TBitmap.Create;
+    NewImage := TBitmap.Create;
+    NewImage.Assign(SrcImage);
+    NewMask := TBitmap.Create;
+    NewMask.Assign(SrcMask);
+  finally
+    NewImage.Free;
+    NewMask.Free;
+  end;
+  Result:=AddDirect(NewImage, NewMask);
 end;
 
 {------------------------------------------------------------------------------
@@ -91,36 +117,28 @@ var
   n: Integer;
   Image, Mask: TBitmap;
 begin
-  //!!! check one or more
-  if Value <> nil 
-  then begin
+  if Value = nil then exit;
+  Image:=nil;
+  Mask:=nil;
+  try
     Image := TBitmap.Create;
-    try
-      with Image do
-      begin
-        Height := FHeight;
-        Width := FWidth;
-      end;
-      Mask := TBitmap.Create;
-      try
-        with Mask do
-        begin
-          Height := FHeight;
-          Width := FWidth;
-        end;
-        with Value do 
-          for n := 0 to Count - 1 do 
-        begin
-          GetImages(n, Image, Mask);
-          Add(Image, Mask);
-        end;
-        Change;
-      finally
-        Mask.Free;
-      end;
-    finally
-      Image.Free;
+    with Image do begin
+      Height := FHeight;
+      Width := FWidth;
     end;
+    Mask := TBitmap.Create;
+    with Mask do begin
+      Height := FHeight;
+      Width := FWidth;
+    end;
+    for n := 0 to Count - 1 do begin
+      Value.GetImages(n, Image, Mask);
+      Add(Image, Mask);
+    end;
+    Change;
+  finally
+    Image.Free;
+    Mask.Free;
   end;
 end;
 
@@ -184,6 +202,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.Change;
 begin
+  FChanged := true;
+  if FUpdateCount > 0 then exit;
   NotifyChangeLink;
   if Assigned(FOnChange) then FOnChange(Self);
 end;
@@ -218,6 +238,14 @@ begin
   FWidth := 16;
   FImageList := TList.Create;  //shane
   Initialize;
+end;
+
+procedure TCustomImageList.AssignTo(Dest: TPersistent);
+begin
+  if Dest is TCustomImageList then
+    TCustomImageList(Dest).Assign(Self)
+  else
+    inherited AssignTo(Dest);
 end;
 
 {------------------------------------------------------------------------------
@@ -317,7 +345,7 @@ end;
            Image: a bitmap as a container for the bitmap
   Returns: Nothing
 
-  Fetches the index'th image into a bitmap.
+  Creates a copy of the index'th image.
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.GetBitmap(Index: Integer; Image: TBitmap);
 Var Stream : TMemoryStream;
@@ -337,13 +365,6 @@ begin
       Stream.Free;
     end;
   end;
-  {with Image do
-  begin
-    Width := FWidth;
-    Height := FHeight;
-    Self.Draw(Canvas, 0, 0, Index, True);
-  end;
-  }
 end;
 
 {------------------------------------------------------------------------------
@@ -435,7 +456,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomImageList.HandleAllocated: Boolean;
 begin
-  Result := FBitmap <> nil;
+  Result := (FBitmap <> nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -470,23 +491,6 @@ begin
   end;
 end;
 
-Type
-  THackBitMap = Class(TBitMap)
-  public
-    procedure ReadData(Stream : TStream); override;
-    procedure WriteData(Stream : TStream); override;
-  end;
-  
-procedure THackBitMap.ReadData(Stream : TStream);
-begin
-  Inherited ReadData(Stream);
-end;
-
-procedure THackBitMap.WriteData(Stream : TStream);
-begin
-  Inherited WriteData(Stream);
-end;
-
 procedure TCustomImageList.DefineProperties(Filer: TFiler);
 
   function DoWrite: Boolean;
@@ -506,33 +510,99 @@ begin
   Filer.DefineBinaryProperty('Bitmap', @ReadData, @WriteData, DoWrite);
 end;
 
+procedure TCustomImageList.SetWidthHeight(NewWidth, NewHeight: integer);
+begin
+  if (FHeight=NewHeight) and (FWidth=NewWidth) then exit;
+  FHeight := NewHeight;
+  FWidth := NewWidth;
+  FBitMap.Width := 0;
+  FBitMap.Height := 0;
+  AllocBitmap(0);
+  Clear;
+end;
+
+procedure TCustomImageList.ReadDelphi2Stream(Stream: TStream);
+var
+  FullImage, Image, FullMask, Mask: TBitmap;
+  I, J, Size, NewCount: Integer;
+  SrcRect: TRect;
+  Pos: TStreamSeekType;
+begin
+  FullImage := nil;
+  FullMask := nil;
+  Stream.ReadBuffer(Size, SizeOf(Size));
+  Stream.ReadBuffer(NewCount, SizeOf(NewCount));
+  try
+    Pos := Stream.Position;
+    // read FullImage
+    FullImage := TBitmap.Create;
+    FullImage.LoadFromStream(Stream);
+    Stream.Position := Pos + Size;
+    // read FullMask
+    FullMask := TBitmap.Create;
+    FullMask.LoadFromStream(Stream);
+    SrcRect := Rect(0, 0, Width, Height);
+    BeginUpdate;
+    try
+      for J := 0 to (FullImage.Height div Height) - 1 do
+      begin
+        if NewCount = 0 then Break;
+        for I := 0 to (FullImage.Width div Width) - 1 do
+        begin
+          if NewCount = 0 then Break;
+          Image := TBitmap.Create;
+          Image.Width := Width;
+          Image.Height := Height;
+          Mask := TBitmap.Create;
+          Mask.Monochrome := True;
+          Mask.Width := Width;
+          Mask.Height := Height;
+          Image.Canvas.CopyRect(SrcRect, FullImage.Canvas,
+            Bounds(I * Width, J * Height, Width, Height));
+          Mask.Canvas.CopyRect(SrcRect, FullMask.Canvas,
+            Bounds(I * Width, J * Height, Width, Height));
+          AddDirect(Image, Mask);
+          Image:=nil;
+          Mask:=nil;
+          Dec(NewCount);
+        end;
+      end;
+    finally
+      Image.Free;
+      Mask.Free;
+      EndUpdate;
+    end;
+  finally
+    FullMask.Free;
+    FullImage.Free;
+  end;
+end;
+
+procedure TCustomImageList.ReadDelphi3Stream(Stream: TStream);
+begin
+  // ToDo
+end;
+
 //Very simple assign with stream exchange
 procedure TCustomImageList.Assign(Source: TPersistent);
-Var Stream : TMemoryStream;
-    ImgSrc : TCustomImageList;
+Var
+  ImgSrc : TCustomImageList;
 begin
+  if (Source=Self) then exit;
   If Source is TCustomImageList then
   begin
     ImgSrc:=TCustomImageList(Source);
-    If (Width=ImgSrc.Width) and (Height=ImgSrc.Height) then
-    begin
-      Clear;
-      Stream:=TMemoryStream.Create;
-      try
-        ImgSrc.WriteData(Stream);
-        Stream.Position:=0;
-        ReadData(Stream);
-      finally
-        Stream.Free;
-      end;
-    end;
+    SetWidthHeight(ImgSrc.Width,ImgSrc.Height);
+    Clear;
+    AddImages(ImgSrc);
   end
   else inherited Assign(Source);
 end;
 
 procedure TCustomImageList.WriteData(Stream: TStream);
-Var Bmp     : THackBitMap;
-    i       : Integer;
+var
+  CurImage, CurMask: TBitMap;
+  i: Integer;
 begin
   //Write signature
   Stream.WriteWord($0001);
@@ -542,34 +612,64 @@ begin
 
   for i:=0 to Count-1 do
   begin
-    Bmp:=THackBitMap.Create;
-    Bmp.Width:=Width;
-    Bmp.Height:=Height;
-    Try
-      GetBitmap(i,Bmp);
-      Bmp.WriteData(Stream);
-    finally
-      Bmp.Free;
-    end;
+    GetInternalImage(i,CurImage,CurMask);
+    CurImage.WriteStream(Stream,true);
   end;
 end;
 
 procedure TCustomImageList.ReadData(Stream: TStream);
-Var Bmp     : THackBitMap;
-    i       : LongInt;
-    Sign,Nb : Word;
+var
+  CheckInt1, CheckInt2: Integer;
+  CheckByte1, CheckByte2: Byte;
+  StreamPos: TStreamSeekType;
+  NewImage, NewMask: TBitMap;
+  i       : integer;
+  Sign,NewCount : Word;
+  CurSize: integer;
 begin
+  Clear;
+  StreamPos := Stream.Position;                // check stream signature to
   Sign:=Stream.ReadWord;
-  if Sign=$0001 then
-  begin
-      Nb:=Stream.ReadWord;
-      for i:=0 to Nb-1 do
-      begin
-        Bmp:=THackBitMap.Create;
-        Bmp.ReadData(Stream);
-        Bmp.Transparent:=True;
-        Add(Bmp,nil);
-      end;
+  if Sign=$0001 then begin
+    // LCL format
+    NewCount:=Stream.ReadWord;
+    for i:=0 to NewCount-1 do begin
+      NewImage:=TBitMap.Create;
+      Stream.Read(CurSize, SizeOf(CurSize));
+      NewImage.ReadStream(Stream,CurSize);
+      NewImage.Transparent:=True;
+      AddDirect(NewImage,nil);
+    end;
+
+  end else begin
+    // Delphi formats
+    Stream.Position := StreamPos;              // check stream signature to
+    Stream.Read(CheckInt1, SizeOf(CheckInt1)); // determine a Delphi 2 or Delphi
+    Stream.Read(CheckInt2, SizeOf(CheckInt2)); // 3 imagelist stream.  Delphi 2
+    CheckByte1 := Lo(CheckInt1);       // streams can be read, but only
+    CheckByte2 := Hi(CheckInt1);       // Delphi 3 streams will be written
+    Stream.Position := StreamPos;
+    if (CheckInt1 <> CheckInt2) and (CheckByte1 = $49) and (CheckByte2 = $4C)
+    then
+      ReadDelphi3Stream(Stream)
+    else
+      ReadDelphi2Stream(Stream);
+  end;
+end;
+
+procedure TCustomImageList.BeginUpdate;
+begin
+  inc(FUpdateCount);
+end;
+
+procedure TCustomImageList.EndUpdate;
+begin
+  if FUpdateCount<=0 then
+    RaiseGDBException('');
+  dec(FUpdateCount);
+  if FChanged then begin
+    FChanged := False;
+    Change;
   end;
 end;
 
@@ -714,35 +814,10 @@ end;
   Moves an image from the CurIndex'th location to NewIndex'th location
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.Move(CurIndex, NewIndex: Integer);
-var
-  Image, Mask: TBitmap;
 begin
-  if CurIndex <> NewIndex then
-  begin
-    Image := TBitmap.Create;
-    try
-      with Image do
-      begin
-        Height := FHeight;
-        Width := FWidth;
-      end;
-      Mask := TBitmap.Create;
-      try
-        with Mask do
-        begin
-          Height := FHeight;
-          Width := FWidth;
-        end;
-        GetImages(CurIndex, Image, Mask);
-        Delete(CurIndex);
-        Insert(NewIndex, Image, Mask);
-        Change;
-      finally
-        Mask.Free;
-      end;
-    finally
-      Image.Free;
-    end;
+  if CurIndex <> NewIndex then begin
+    FImageList.Move(CurIndex,NewIndex);
+    Change;
   end;
 end;
 
@@ -862,6 +937,12 @@ begin
   end;
 end;
 
+procedure TCustomImageList.SetDrawingStyle(const AValue: TDrawingStyle);
+begin
+  if FDrawingStyle=AValue then exit;
+  FDrawingStyle:=AValue;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCustomImageList.SetHeight
   Params:  Value: the height of an image
@@ -872,19 +953,19 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.SetHeight(const Value: Integer);
 begin
-  if FHeight <> Value
-  then begin
-    FHeight := Value;
-    FBitMap.Height := 0;
-    AllocBitmap(0);
-    Clear;
-  end;
+  SetWidthHeight(Width,Value);
 end;
 
 procedure TCustomImageList.SetMasked(const AValue: boolean);
 begin
   if FMasked=AValue then exit;
   FMasked:=AValue;
+end;
+
+procedure TCustomImageList.SetShareImages(const AValue: Boolean);
+begin
+  if FShareImages=AValue then exit;
+  FShareImages:=AValue;
 end;
 
 {------------------------------------------------------------------------------
@@ -897,13 +978,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.SetWidth(const Value: Integer);
 begin
-  if FWidth <> Value
-  then begin
-    FWidth := Value;
-    FBitmap.Width := FWidth;
-    FMaskBitmap.Width := FWidth;
-    Clear;
-  end;
+  SetWidthHeight(Value,Height);
 end;
 
 {------------------------------------------------------------------------------
@@ -991,6 +1066,9 @@ end;
 {
 
   $Log$
+  Revision 1.21  2004/02/02 19:13:31  mattias
+  started reading TImageList in Delphi format
+
   Revision 1.20  2004/02/02 16:59:28  mattias
   more Actions  TAction, TBasicAction, ...
 

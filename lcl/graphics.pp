@@ -900,14 +900,12 @@ type
     procedure UnshareImage;
     procedure FreeSaveStream;
     procedure ReadData(Stream: TStream); override;
-    procedure ReadStream(Stream: TStream; Size: Longint); virtual;
     procedure SetWidthHeight(NewWidth, NewHeight: integer); virtual;
     procedure SetHeight(NewHeight: Integer); override;
     procedure SetPalette(Value: HPALETTE); override;
     procedure SetTransparentMode(Value: TTransparentMode);
     procedure SetWidth(NewWidth: Integer); override;
     procedure WriteData(Stream: TStream); override;
-    procedure WriteStream(Stream: TStream; WriteSize: Boolean); virtual;
     procedure StoreOriginalStream(Stream: TStream; Size: integer); virtual;
     {$IFDEF UseFPImage}
     procedure ReadStreamWithFPImage(Stream: TStream; Size: Longint;
@@ -936,6 +934,8 @@ type
     Procedure LoadFromXPMFile(const Filename : String);
     procedure Mask(ATransparentColor: TColor);
     procedure SaveToStream(Stream: TStream); override;
+    procedure ReadStream(Stream: TStream; Size: Longint); virtual;
+    procedure WriteStream(Stream: TStream; WriteSize: Boolean); virtual;
     Function ReleaseHandle: HBITMAP;
     function ReleasePalette: HPALETTE;
     {$IFDEF UseFPImage}
@@ -1261,6 +1261,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.106  2004/02/02 19:13:31  mattias
+  started reading TImageList in Delphi format
+
   Revision 1.105  2004/02/02 15:46:19  mattias
   implemented basic TSplitter, still many ToDos
 

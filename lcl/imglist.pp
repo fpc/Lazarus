@@ -50,7 +50,8 @@ interface
 {$endif}
 
 uses
-  SysUtils, Classes, LCLStrConsts, vclGlobals, Graphics, GraphType;
+  SysUtils, Classes, FPCAdds, LCLStrConsts, vclGlobals, LCLProc, Graphics,
+  GraphType;
 
 type
   TImageIndex = type integer;
@@ -94,13 +95,19 @@ type
       
       So a lot ToDo.
   }
+  TDrawingStyle = (dsFocus, dsSelected, dsNormal, dsTransparent);
+  TImageType = (itImage, itMask);
+
   TCustomImageList = Class(TComponent)
   private
+    FDrawingStyle: TDrawingStyle;
     FImageList : TList;  //shane
     FBitmap: TBitmap;
+    FImageType: TImageType;
     FMaskBitmap: TBitmap;
     FHeight: Integer;
     FMasked: boolean;
+    FShareImages: Boolean;
     FWidth: Integer;
     FAllocBy: Integer;
     FCount: Integer;
@@ -110,28 +117,40 @@ type
     FChangeLinkList: TList;
     FBkColor: TColor;
     FHandle: THandle;
+    FChanged: boolean;
     procedure AllocBitmap(Amount: Integer);
     procedure NotifyChangeLink;
     procedure SetBkColor(const Value: TColor);
+    procedure SetDrawingStyle(const AValue: TDrawingStyle);
     procedure SetHeight(const Value: Integer);
     procedure SetMasked(const AValue: boolean);
+    procedure SetShareImages(const AValue: Boolean);
     procedure SetWidth(const Value: Integer);
 
     Function GetCount: Integer;
 
     procedure ShiftImages(const Source: TCanvas; Start, Shift: Integer);
   protected
+    FUpdateCount: integer;
     procedure GetImages(Index: Integer; const Image, Mask: TBitmap);
     procedure Initialize; virtual;
     procedure DefineProperties(Filer: TFiler); override;
+    procedure SetWidthHeight(NewWidth,NewHeight: integer); virtual;
+    procedure ReadDelphi2Stream(Stream: TStream);
+    procedure ReadDelphi3Stream(Stream: TStream);
   public
     constructor Create(AOwner: TComponent); override;
 
+    procedure AssignTo(Dest: TPersistent); override;
     procedure Assign(Source: TPersistent); override;
     procedure WriteData(Stream: TStream); virtual;
     procedure ReadData(Stream: TStream); virtual;
+    procedure BeginUpdate;
+    procedure EndUpdate;
 
-    function Add(Image, Mask: TBitmap): Integer;
+    function Add(Image, Mask: TBitmap): Integer; // currently AddDirect
+    function AddDirect(Image, Mask: TBitmap): Integer;
+    function AddCopy(SrcImage, SrcMask: TBitmap): Integer;
     function AddIcon(Image: TIcon): Integer;
     procedure AddImages(Value: TCustomImageList);
     function AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
@@ -160,6 +179,7 @@ type
     property BlendColor: TColor read FBlendColor write FBlendColor default clNone;
     property BkColor: TColor read FBkColor write SetBkColor default clNone;
     property Count: Integer read GetCount;
+    property DrawingStyle: TDrawingStyle read FDrawingStyle write SetDrawingStyle default dsNormal;
     property Handle: THandle read FHandle;
     property Height: Integer read FHeight write SetHeight default 16;
     property Width: Integer read FWidth write SetWidth default 16;
@@ -167,6 +187,8 @@ type
     property Masked: boolean read FMasked write SetMasked;
     property Bitmap: TBitmap read FBitmap;
     property MaskBitmap: TBitmap read FMaskBitmap;
+    property ShareImages: Boolean read FShareImages write SetShareImages;
+    property ImageType: TImageType read FImageType write FImageType default itImage;
   end;
 
 
@@ -188,6 +210,9 @@ end.
 
 {
   $Log$
+  Revision 1.14  2004/02/02 19:13:31  mattias
+  started reading TImageList in Delphi format
+
   Revision 1.13  2004/02/02 16:59:28  mattias
   more Actions  TAction, TBasicAction, ...
 
