@@ -111,7 +111,7 @@ type
     ofRegularFile,   // open as regular file (e.g. do not open projects)
     ofVirtualFile,   // open the virtual file
     ofConvertMacros, // replace macros in filename
-    ofUseCache       // do not update file from file
+    ofUseCache       // do not update file from disk
     );
   TOpenFlags = set of TOpenFlag;
   
@@ -128,16 +128,6 @@ type
     );
   TCloseFlags = set of TCloseFlag;
   
-  // load buffer flags
-  TLoadBufferFlag = (
-    lbfUpdateFromDisk,
-    lbfRevert,
-    lbfCheckIfText,
-    lbfQuiet,
-    lbfCreateClearOnError
-    );
-  TLoadBufferFlags = set of TLoadBufferFlag;
-
   // codetools flags
   TCodeToolsFlag = (
     ctfSwitchToFormSource, // bring source notebook to front and show source of
@@ -228,6 +218,7 @@ type
     itmEditInsertCharacter: TMenuItem;
     itmEditInsertText: TMenuItem;
     itmEditCompleteCode: TMenuItem;
+    itmEditExtractProc: TMenuItem;
 
     itmEditInsertCVSKeyWord: TMenuItem;
     itmEditInsertGeneral: TMenuItem;
@@ -326,6 +317,8 @@ type
     itmToolSyntaxCheck: TMenuItem;
     itmToolGuessUnclosedBlock: TMenuItem;
     itmToolGuessMisplacedIFDEF: TMenuItem;
+    itmToolCheckLFM: TMenuItem;
+    itmToolConvertDelphiUnit: TMenuItem;
     itmToolConvertDFMtoLFM: TMenuItem;
     itmToolMakeResourceString: TMenuItem;
     itmToolDiff: TMenuItem;
@@ -427,9 +420,6 @@ type
                                  CheckReadable: boolean): TModalResult; virtual;
     function DoSaveStringToFile(const Filename, Src,
                                 FileDescription: string): TModalResult; virtual; abstract;
-    function DoLoadCodeBuffer(var ACodeBuffer: TCodeBuffer;
-                              const AFilename: string;
-                              Flags: TLoadBufferFlags): TModalResult; virtual; abstract;
     function DoSaveCodeBufferToFile(ABuffer: TCodeBuffer;
                                     const AFilename: string;
                                     IsPartOfProject:boolean): TModalResult; virtual; abstract;
@@ -856,6 +846,11 @@ begin
   itmEditCompleteCode.Name:='itmEditCompleteCode';
   itmEditCompleteCode.Caption := lisMenuCompleteCode;
   mnuEdit.Add(itmEditCompleteCode);
+
+  itmEditExtractProc := TMenuItem.Create(Self);
+  itmEditExtractProc.Name:='itmEditExtractProc';
+  itmEditExtractProc.Caption := lisMenuExtractProc;
+  mnuEdit.Add(itmEditExtractProc);
 end;
 
 procedure TMainIDEBar.SetupSearchMenu;
@@ -1303,6 +1298,16 @@ begin
 
   mnuTools.Add(CreateMenuSeparator);
 
+  itmToolCheckLFM := TMenuItem.Create(Self);
+  itmToolCheckLFM.Name:='itmToolCheckLFM';
+  itmToolCheckLFM.Caption := lisMenuCheckLFM;
+  mnuTools.Add(itmToolCheckLFM);
+
+  itmToolConvertDelphiUnit := TMenuItem.Create(Self);
+  itmToolConvertDelphiUnit.Name:='itmToolConvertDelphiUnit';
+  itmToolConvertDelphiUnit.Caption := lisMenuConvertDelphiUnit;
+  mnuTools.Add(itmToolConvertDelphiUnit);
+
   itmToolConvertDFMtoLFM := TMenuItem.Create(Self);
   itmToolConvertDFMtoLFM.Name:='itmToolConvertDFMtoLFM';
   itmToolConvertDFMtoLFM.Caption := lisMenuConvertDFMtoLFM;
@@ -1405,6 +1410,7 @@ begin
     itmEditSelectLine.ShortCut:=CommandToShortCut(ecSelectLine);
     itmEditSelectParagraph.ShortCut:=CommandToShortCut(ecSelectParagraph);
     itmEditCompleteCode.ShortCut:=CommandToShortCut(ecCompleteCode);
+    itmEditExtractProc.ShortCut:=CommandToShortCut(ecExtractProc);
 
     itmEditInsertCVSAuthor.ShortCut:=CommandToShortCut(ecInsertCVSAuthor);
     itmEditInsertCVSDate.ShortCut:=CommandToShortCut(ecInsertCVSDate);
@@ -1494,6 +1500,8 @@ begin
     itmToolMakeResourceString.ShortCut:=CommandToShortCut(ecMakeResourceString);
     itmToolDiff.ShortCut:=CommandToShortCut(ecDiff);
     itmToolConvertDFMtoLFM.ShortCut:=CommandToShortCut(ecConvertDFM2LFM);
+    itmToolCheckLFM.ShortCut:=CommandToShortCut(ecCheckLFM);
+    itmToolConvertDelphiUnit.ShortCut:=CommandToShortCut(ecConvertDelphiUnit);
     itmToolBuildLazarus.ShortCut:=CommandToShortCut(ecBuildLazarus);
     itmToolConfigureBuildLazarus.ShortCut:=CommandToShortCut(ecConfigBuildLazarus);
 

@@ -27,9 +27,6 @@
  ***************************************************************************
 
   Author: Mattias Gaertner
-
-  Abstract:
-    TProjectInspectorForm is the form of the project inspector.
 }
 unit AddToProjectDlg;
 

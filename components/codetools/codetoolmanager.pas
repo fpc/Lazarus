@@ -42,9 +42,9 @@ uses
   {$ENDIF}
   Classes, SysUtils, FileProcs, BasicCodeTools, CodeToolsStrConsts,
   EventCodeTool, CodeTree, CodeAtom, SourceChanger, DefineTemplates, CodeCache,
-  ExprEval, LinkScanner, KeywordFuncLists, TypInfo, AVL_Tree, CustomCodeTool,
-  FindDeclarationTool, IdentCompletionTool, ResourceCodeTool, CodeToolsStructs,
-  CodeTemplatesTool;
+  ExprEval, LinkScanner, KeywordFuncLists, TypInfo, AVL_Tree, LFMTrees,
+  CustomCodeTool, FindDeclarationTool, IdentCompletionTool, ResourceCodeTool,
+  CodeToolsStructs, CodeTemplatesTool, ExtractProcTool;
 
 type
   TCodeToolManager = class;
@@ -85,6 +85,7 @@ type
     FSetPropertyVariablename: string;
     FSourceExtensions: string; // default is '.pp;.pas;.lpr;.dpr;.dpk'
     FSourceTools: TAVLTree; // tree of TCustomCodeTool
+    FTabWidth: integer;
     FVisibleEditorLines: integer;
     FWriteExceptions: boolean;
     FWriteLockCount: integer;// Set/Unset counter
@@ -111,6 +112,7 @@ type
     procedure SetCheckFilesOnDisk(NewValue: boolean);
     procedure SetCompleteProperties(const AValue: boolean);
     procedure SetIndentSize(NewValue: integer);
+    procedure SetTabWidth(const AValue: integer);
     procedure SetVisibleEditorLines(NewValue: integer);
     procedure SetJumpCentered(NewValue: boolean);
     procedure SetCursorBeyondEOL(NewValue: boolean);
@@ -182,6 +184,7 @@ type
       read FSetPropertyVariablename write FSetPropertyVariablename;
     property VisibleEditorLines: integer
           read FVisibleEditorLines write SetVisibleEditorLines;
+    property TabWidth: integer read FTabWidth write SetTabWidth;
     property CompleteProperties: boolean
       read FCompleteProperties write SetCompleteProperties;
     property AddInheritedCodeToOverrideMethod: boolean
@@ -297,6 +300,15 @@ type
           var NewCode: TCodeBuffer;
           var NewX, NewY, NewTopLine: integer): boolean;
           
+    // extract proc
+    function CheckExtractProc(Code: TCodeBuffer;
+          const StartPoint, EndPoint: TPoint;
+          var MethodPossible, SubProcSameLvlPossible: boolean): boolean;
+    function ExtractProc(Code: TCodeBuffer; const StartPoint, EndPoint: TPoint;
+          ProcType: TExtractProcType; const ProcName: string;
+          var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer
+          ): boolean;
+
     // code templates
     function InsertCodeTemplate(Code: TCodeBuffer;
           SelectionStart, SelectionEnd: TPoint;
@@ -326,6 +338,8 @@ type
 
     // resources
     function FindLFMFileName(Code: TCodeBuffer): string;
+    function CheckLFM(UnitCode, LFMBuf: TCodeBuffer;
+          var LFMTree: TLFMTree): boolean;
     function FindNextResourceFile(Code: TCodeBuffer;
           var LinkIndex: integer): TCodeBuffer;
     function AddLazarusResourceHeaderComment(Code: TCodeBuffer;
@@ -344,6 +358,10 @@ type
     // register proc
     function HasInterfaceRegisterProc(Code: TCodeBuffer;
           var HasRegisterProc: boolean): boolean;
+          
+    // Delphi to Lazarus conversion
+    function ConvertDelphiToLazarusSource(Code: TCodeBuffer;
+          AddLRSCode: boolean): boolean;
 
     // Application.Createform(ClassName,VarName) statements in program source
     function FindCreateFormStatement(Code: TCodeBuffer; StartPos: integer;
@@ -1570,6 +1588,61 @@ begin
   end;
 end;
 
+function TCodeToolManager.CheckExtractProc(Code: TCodeBuffer; const StartPoint,
+  EndPoint: TPoint; var MethodPossible, SubProcSameLvlPossible: boolean): boolean;
+var
+  StartPos, EndPos: TCodeXYPosition;
+begin
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.CheckExtractProc A ',Code.Filename);
+  {$ENDIF}
+  Result:=false;
+  if not InitCurCodeTool(Code) then exit;
+  StartPos.X:=StartPoint.X;
+  StartPos.Y:=StartPoint.Y;
+  StartPos.Code:=Code;
+  EndPos.X:=EndPoint.X;
+  EndPos.Y:=EndPoint.Y;
+  EndPos.Code:=Code;
+  try
+    Result:=FCurCodeTool.CheckExtractProc(StartPos,EndPos,MethodPossible,
+                                          SubProcSameLvlPossible);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.ExtractProc(Code: TCodeBuffer; const StartPoint,
+  EndPoint: TPoint; ProcType: TExtractProcType; const ProcName: string;
+  var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer): boolean;
+var
+  StartPos, EndPos: TCodeXYPosition;
+  NewPos: TCodeXYPosition;
+begin
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.ExtractProc A ',Code.Filename);
+  {$ENDIF}
+  Result:=false;
+  if not InitCurCodeTool(Code) then exit;
+  StartPos.X:=StartPoint.X;
+  StartPos.Y:=StartPoint.Y;
+  StartPos.Code:=Code;
+  EndPos.X:=EndPoint.X;
+  EndPos.Y:=EndPoint.Y;
+  EndPos.Code:=Code;
+  try
+    Result:=FCurCodeTool.ExtractProc(StartPos,EndPos,ProcType,ProcName,
+                                     NewPos,NewTopLine,SourceChangeCache);
+    if Result then begin
+      NewX:=NewPos.X;
+      NewY:=NewPos.Y;
+      NewCode:=NewPos.Code;
+    end;
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
 function TCodeToolManager.InsertCodeTemplate(Code: TCodeBuffer;
   SelectionStart, SelectionEnd: TPoint; TopLine: integer;
   CodeTemplate: TCodeToolTemplate; var NewCode: TCodeBuffer; var NewX, NewY,
@@ -1815,6 +1888,21 @@ begin
       end;
       CurCode:=FCurCodeTool.FindNextIncludeInInitialization(LinkIndex);
     end;
+  except
+    on e: Exception do HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.CheckLFM(UnitCode, LFMBuf: TCodeBuffer;
+  var LFMTree: TLFMTree): boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.CheckLFM A ',UnitCode.Filename,' ',LFMBuf.Filename);
+  {$ENDIF}
+  if not InitCurCodeTool(UnitCode) then exit;
+  try
+    Result:=FCurCodeTool.CheckLFM(LFMBuf,LFMTree);
   except
     on e: Exception do HandleException(e);
   end;
@@ -2182,6 +2270,22 @@ begin
   end;
 end;
 
+function TCodeToolManager.ConvertDelphiToLazarusSource(Code: TCodeBuffer;
+  AddLRSCode: boolean): boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.ConvertDelphiToLazarusSource A ',Code.Filename);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.ConvertDelphiToLazarusSource(AddLRSCode,
+                                                      SourceChangeCache);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
 function TCodeToolManager.DoOnFindUsedUnit(SrcTool: TFindDeclarationTool;
   const TheUnitName, TheUnitInFilename: string): TCodeBuffer;
 begin
@@ -2271,6 +2375,14 @@ begin
   FIndentSize:=NewValue;
   if FCurCodeTool<>nil then
     FCurCodeTool.IndentSize:=NewValue;
+  SourceChangeCache.BeautifyCodeOptions.Indent:=NewValue;
+end;
+
+procedure TCodeToolManager.SetTabWidth(const AValue: integer);
+begin
+  if FTabWidth=AValue then exit;
+  FTabWidth:=AValue;
+  SourceChangeCache.BeautifyCodeOptions.TabWidth:=AValue;
 end;
 
 procedure TCodeToolManager.SetVisibleEditorLines(NewValue: integer);

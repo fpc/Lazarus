@@ -2539,7 +2539,7 @@ begin
   Result:=UnitCount-1;
   while (Result>=0) do begin
     if (pfsfOnlyEditorFiles in SearchFlags)
-    and (Units[Result].EditorIndex>=0) then begin
+    and (Units[Result].EditorIndex<0) then begin
       dec(Result);
       continue;
     end;
@@ -2736,6 +2736,9 @@ end.
 
 {
   $Log$
+  Revision 1.139  2003/10/15 18:01:10  mattias
+  implemented extract proc, check lfm and convert delphi unit
+
   Revision 1.138  2003/10/11 08:33:22  mattias
   added catalan
 

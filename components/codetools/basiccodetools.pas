@@ -45,6 +45,9 @@ function FindCommentEnd(const ASource: string; StartPos: integer;
     NestedComments: boolean): integer;
 function FindNextCompilerDirective(const ASource: string; StartPos: integer;
     NestedComments: boolean): integer;
+function FindNextCompilerDirectiveWithName(const ASource: string;
+    StartPos: integer; const DirectiveName: string;
+    NestedComments: boolean; var ParamPos: integer): integer;
 function FindNextIDEDirective(const ASource: string; StartPos: integer;
     NestedComments: boolean): integer;
 function CleanCodeFromComments(const DirtyCode: string;
@@ -54,8 +57,10 @@ function CleanCodeFromComments(const DirtyCode: string;
 procedure GetLineStartEndAtPosition(const Source:string; Position:integer;
     var LineStart,LineEnd:integer);
 function GetLineIndent(const Source: string; Position: integer): integer;
+function GetBlockMinIndent(const Source: string;
+    StartPos, EndPos: integer): integer;
 function GetIndentStr(Indent: integer): string;
-procedure IndentText(const Source: string; Indent: integer;
+procedure IndentText(const Source: string; Indent, TabWidth: integer;
     var NewSource: string);
 function LineEndCount(const Txt: string): integer;
 function LineEndCount(const Txt: string; var LengthOfLastLine:integer): integer;
@@ -83,6 +88,7 @@ function FindFirstLineEndInFrontOfInCode(const Source: string;
 function FindFirstLineEndAfterInCode(const Source: string;
     Position, MaxPosition: integer; NestedComments: boolean): integer;
 function ChompLineEndsAtEnd(const s: string): string;
+function TrimLineEnds(const s: string; TrimStart, TrimEnd: boolean): string;
 
 // brackets
 function GetBracketLvl(const Src: string; StartPos, EndPos: integer;
@@ -1049,6 +1055,37 @@ begin
   if Result>MaxPos+1 then Result:=MaxPos+1;
 end;
 
+function FindNextCompilerDirectiveWithName(const ASource: string;
+  StartPos: integer; const DirectiveName: string;
+  NestedComments: boolean; var ParamPos: integer): integer;
+var
+  Offset: Integer;
+  SrcLen: Integer;
+begin
+  Result:=StartPos;
+  ParamPos:=0;
+  SrcLen:=length(ASource);
+  repeat
+    Result:=FindNextCompilerDirective(ASource,Result,NestedComments);
+    if (Result<1) or (Result>SrcLen) then break;
+    if (ASource[Result]='{') then
+      Offset:=2
+    else if ASource[Result]='(' then
+      Offset:=3
+    else
+      Offset:=-1;
+    if Offset>0 then begin
+      if (CompareIdentifiers(PChar(DirectiveName),@ASource[Result+Offset])=0)
+      then begin
+        ParamPos:=FindNextNonSpace(ASource,Result+Offset+length(DirectiveName));
+        exit;
+      end;
+    end;
+    Result:=FindCommentEnd(ASource,Result,NestedComments);
+  until false;
+  Result:=-1;
+end;
+
 function FindNextNonSpace(const ASource: string; StartPos: integer
   ): integer;
 var
@@ -1698,6 +1735,46 @@ begin
   SetLength(Result,EndPos-1);
 end;
 
+function TrimLineEnds(const s: string; TrimStart, TrimEnd: boolean): string;
+var
+  StartPos: Integer;
+  EndPos: Integer;
+  LineEnd: Integer;
+begin
+  StartPos:=1;
+  if TrimStart then begin
+    // trim empty lines at start
+    while (StartPos<=length(s))
+    and (s[StartPos] in [#10,#13]) do begin
+      inc(StartPos);
+      if (StartPos<=length(s))
+      and (s[StartPos] in [#10,#13])
+      and (s[StartPos]<>s[StartPos-1]) then
+        inc(StartPos);
+    end;
+  end;
+  EndPos:=length(s)+1;
+  if TrimEnd then begin
+    // trim empty lines at end
+    while (EndPos>StartPos)
+    and (s[EndPos-1] in [#10,#13]) do begin
+      LineEnd:=EndPos-1;
+      if (LineEnd>StartPos) and (s[LineEnd-1] in [#10,#13])
+      and (s[LineEnd-1]<>s[LineEnd]) then begin
+        dec(LineEnd);
+      end;
+      if (LineEnd>StartPos) and (s[LineEnd-1] in [#10,#13]) then
+        EndPos:=LineEnd
+      else
+        break;
+    end;
+  end;
+  if EndPos-StartPos<length(s) then
+    Result:=copy(s,StartPos,EndPos-StartPos)
+  else
+    Result:=s;
+end;
+
 function GetBracketLvl(const Src: string; StartPos, EndPos: integer;
   NestedComments: boolean): integer;
 var
@@ -2145,6 +2222,35 @@ begin
     inc(Result);
 end;
 
+function GetBlockMinIndent(const Source: string;
+  StartPos, EndPos: integer): integer;
+var
+  SrcLen: Integer;
+  p: Integer;
+  CurIndent: Integer;
+begin
+  SrcLen:=length(Source);
+  if EndPos>SrcLen then EndPos:=SrcLen+1;
+  Result:=EndPos-StartPos;
+  p:=StartPos;
+  while p<=EndPos do begin
+    // skip line end and empty lines
+    while (p<EndPos) and (Source[p] in [#10,#13]) do
+      inc(p);
+    if (p>=EndPos) then break;
+    // count spaces at line start
+    CurIndent:=0;
+    while (p<EndPos) and (Source[p] in [#9,' ']) do begin
+      inc(p);
+      inc(CurIndent);
+    end;
+    if CurIndent<Result then Result:=CurIndent;
+    // skip rest of line
+    while (p<EndPos) and (not (Source[p] in [#10,#13])) do
+      inc(p);
+  end;
+end;
+
 function GetIndentStr(Indent: integer): string;
 begin
   SetLength(Result,Indent);
@@ -2152,8 +2258,67 @@ begin
     FillChar(Result[1],length(Result),' ');
 end;
 
-procedure IndentText(const Source: string; Indent: integer;
+procedure IndentText(const Source: string; Indent, TabWidth: integer;
   var NewSource: string);
+  
+  function UnindentTxt(CopyChars: boolean): integer;
+  var
+    Unindent: Integer;
+    SrcPos: Integer;
+    SrcLen: Integer;
+    NewSrcPos: Integer;
+    SkippedSpaces: Integer;
+    c: Char;
+  begin
+    Unindent:=-Indent;
+    SrcPos:=1;
+    SrcLen:=length(Source);
+    NewSrcPos:=1;
+    while SrcPos<=SrcLen do begin
+      // skip spaces at start of line
+      SkippedSpaces:=0;
+      while (SrcPos<=SrcLen) and (SkippedSpaces<Unindent) do begin
+        c:=Source[SrcPos];
+        if c=' ' then begin
+          inc(SkippedSpaces);
+          inc(SrcPos);
+        end else if c=#9 then begin
+          inc(SkippedSpaces,TabWidth);
+          inc(SrcPos);
+        end else
+          break;
+      end;
+      // deleting a tab can unindent too much, so insert some spaces
+      while SkippedSpaces>Unindent do begin
+        if CopyChars then
+          NewSource[NewSrcPos]:=' ';
+        inc(NewSrcPos);
+        dec(SkippedSpaces);
+      end;
+      // copy the rest of the line
+      while (SrcPos<=SrcLen) do begin
+        c:=Source[SrcPos];
+        // copy char
+        if CopyChars then
+          NewSource[NewSrcPos]:=Source[SrcPos];
+        inc(NewSrcPos);
+        inc(SrcPos);
+        if (c in [#10,#13]) then begin
+          // line end
+          if (SrcPos<=SrcLen) and (Source[SrcPos] in [#10,#13])
+          and (Source[SrcPos]<>Source[SrcPos-1]) then begin
+            if CopyChars then
+              NewSource[NewSrcPos]:=Source[SrcPos];
+            inc(NewSrcPos);
+            inc(SrcPos);
+          end;
+          break;
+        end;
+      end;
+    end;
+    Result:=NewSrcPos-1;
+  end;
+  
 var
   LengthOfLastLine: integer;
   LineEndCnt: Integer;
@@ -2161,7 +2326,8 @@ var
   SrcLen: Integer;
   NewSrcPos: Integer;
   c: Char;
-  
+  NewSrcLen: Integer;
+
   procedure AddIndent;
   var
     i: Integer;
@@ -2173,36 +2339,45 @@ var
   end;
   
 begin
-  if (Indent<=0) or (Source='') then begin
+  if (Indent=0) or (Source='') then begin
     NewSource:=Source;
     exit;
   end;
-  LineEndCnt:=LineEndCount(Source,LengthOfLastLine);
-  if LengthOfLastLine>0 then inc(LineEndCnt);
-  SetLength(NewSource,LineEndCnt*Indent+length(Source));
-  SrcPos:=1;
-  SrcLen:=length(Source);
-  NewSrcPos:=1;
-  AddIndent;
-  while SrcPos<=SrcLen do begin
-    c:=Source[SrcPos];
-    // copy char
-    NewSource[NewSrcPos]:=Source[SrcPos];
-    inc(NewSrcPos);
-    inc(SrcPos);
-    if (c in [#10,#13]) then begin
-      // line end
-      if (SrcPos<=SrcLen) and (Source[SrcPos] in [#10,#13])
-      and (Source[SrcPos]<>Source[SrcPos-1]) then begin
-        NewSource[NewSrcPos]:=Source[SrcPos];
-        inc(NewSrcPos);
-        inc(SrcPos);
-      end;
-      if (SrcPos<=SrcLen) and (not (Source[SrcPos] in [#10,#13])) then begin
-        // next line not empty -> indent
-        AddIndent;
+  if Indent>0 then begin
+    // indent text
+    LineEndCnt:=LineEndCount(Source,LengthOfLastLine);
+    if LengthOfLastLine>0 then inc(LineEndCnt);
+    SetLength(NewSource,LineEndCnt*Indent+length(Source));
+    SrcPos:=1;
+    SrcLen:=length(Source);
+    NewSrcPos:=1;
+    AddIndent;
+    while SrcPos<=SrcLen do begin
+      c:=Source[SrcPos];
+      // copy char
+      NewSource[NewSrcPos]:=Source[SrcPos];
+      inc(NewSrcPos);
+      inc(SrcPos);
+      if (c in [#10,#13]) then begin
+        // line end
+        if (SrcPos<=SrcLen) and (Source[SrcPos] in [#10,#13])
+        and (Source[SrcPos]<>Source[SrcPos-1]) then begin
+          NewSource[NewSrcPos]:=Source[SrcPos];
+          inc(NewSrcPos);
+          inc(SrcPos);
+        end;
+        if (SrcPos<=SrcLen) and (not (Source[SrcPos] in [#10,#13])) then begin
+          // next line is not empty -> indent
+          AddIndent;
+        end;
       end;
     end;
+    SetLength(NewSource,NewSrcPos-1);
+  end else begin
+    // unindent text
+    NewSrcLen:=UnindentTxt(false);
+    SetLength(NewSource,NewSrcLen);
+    UnindentTxt(true);
   end;
 end;
 

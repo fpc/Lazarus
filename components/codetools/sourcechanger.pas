@@ -61,7 +61,7 @@ type
     mipClassOrder      // try to copy the order of the class
     );
     
-  TForwardProcInsertPolicy = (
+  TForwardProcBodyInsertPolicy = (
     fpipLast,
     fpipInFrontOfMethods,
     fpipBehindMethods
@@ -94,10 +94,11 @@ type
     LineLength: integer;
     LineEnd: string; // default: #13#10
     Indent: integer;
+    TabWidth: integer;
     ClassPartInsertPolicy: TClassPartInsertPolicy;
-    MixMethodsAndPorperties: boolean;
+    MixMethodsAndProperties: boolean;
     MethodInsertPolicy: TMethodInsertPolicy;
-    ForwardProcInsertPolicy: TForwardProcInsertPolicy;
+    ForwardProcBodyInsertPolicy: TForwardProcBodyInsertPolicy;
     KeepForwardProcOrder: boolean;
     KeyWordPolicy: TWordPolicy;
     IdentifierPolicy: TWordPolicy;
@@ -108,7 +109,7 @@ type
     PropertyReadIdentPrefix: string;
     PropertyWriteIdentPrefix: string;
     PropertyStoredIdentPostfix: string;
-    PrivatVariablePrefix: string;
+    PrivateVariablePrefix: string;
     CurFlags: TBeautifyCodeFlags;
 
     function BeautifyProc(const AProcCode: string; IndentSize: integer;
@@ -225,7 +226,8 @@ const
       'Alphabetically', 'Last', 'ClassOrder'
     );
     
-  ForwardProcInsertPolicyNames: array[TForwardProcInsertPolicy] of shortstring =
+  ForwardProcBodyInsertPolicyNames: array[TForwardProcBodyInsertPolicy] of
+    shortstring =
     ('Last', 'InFrontOfMethods', 'BehindMethods');
     
     
@@ -239,8 +241,8 @@ function AtomTypeNameToType(const s: string): TAtomType;
 function WordPolicyNameToPolicy(const s: string): TWordPolicy;
 function ClassPartPolicyNameToPolicy(const s: string): TClassPartInsertPolicy;
 function MethodInsertPolicyNameToPolicy(const s: string): TMethodInsertPolicy;
-function ForwardProcInsertPolicyNameToPolicy(
-  const s: string): TForwardProcInsertPolicy;
+function ForwardProcBodyInsertPolicyNameToPolicy(
+  const s: string): TForwardProcBodyInsertPolicy;
 
 
 implementation
@@ -275,11 +277,12 @@ begin
   Result:=mipLast;
 end;
 
-function ForwardProcInsertPolicyNameToPolicy(
-  const s: string): TForwardProcInsertPolicy;
+function ForwardProcBodyInsertPolicyNameToPolicy(
+  const s: string): TForwardProcBodyInsertPolicy;
 begin
-  for Result:=Low(TForwardProcInsertPolicy) to High(TForwardProcInsertPolicy) do
-    if AnsiCompareText(ForwardProcInsertPolicyNames[Result],s)=0 then exit;
+  for Result:=Low(TForwardProcBodyInsertPolicy)
+  to High(TForwardProcBodyInsertPolicy) do
+    if AnsiCompareText(ForwardProcBodyInsertPolicyNames[Result],s)=0 then exit;
   Result:=fpipBehindMethods;
 end;
 
@@ -834,10 +837,11 @@ begin
   LineLength:=80;
   LineEnd:={$IFDEF win32}#13+{$ENDIF}#10;
   Indent:=2;
+  TabWidth:=8;
   ClassPartInsertPolicy:=cpipLast;
-  MixMethodsAndPorperties:=false;
+  MixMethodsAndProperties:=false;
   MethodInsertPolicy:=mipClassOrder;
-  ForwardProcInsertPolicy:=fpipBehindMethods;
+  ForwardProcBodyInsertPolicy:=fpipBehindMethods;
   KeepForwardProcOrder:=true;
   KeyWordPolicy:=wpLowerCase;
   IdentifierPolicy:=wpNone;
@@ -848,7 +852,7 @@ begin
   PropertyReadIdentPrefix:='Get';
   PropertyWriteIdentPrefix:='Set';
   PropertyStoredIdentPostfix:='IsStored';
-  PrivatVariablePrefix:='f';
+  PrivateVariablePrefix:='f';
 end;
 
 procedure TBeautifyCodeOptions.AddAtom(var CurCode: string; NewAtom: string);

@@ -78,6 +78,10 @@ type
         IgnoreJumpCentered: boolean): boolean;
     function FindNodeInTree(ATree: TAVLTree;
         const UpperCode: string): TCodeTreeNodeExtension;
+    function CreateSubProcPath(StartNode: TCodeTreeNode;
+        Attr: TProcHeadAttributes): TStringList;
+    function FindSubProcPath(SubProcPath: TStrings; Attr: TProcHeadAttributes;
+        SkipInterface: boolean): TCodeTreeNode;
     procedure WriteCodeTreeNodeExtTree(ExtTree: TAVLTree);
   public
     property AdjustTopLineDueToComment: boolean
@@ -896,6 +900,56 @@ begin
       exit;
   end;
   Result:=nil;
+end;
+
+function TMethodJumpingCodeTool.CreateSubProcPath(StartNode: TCodeTreeNode;
+  Attr: TProcHeadAttributes): TStringList;
+var
+  ProcHead: String;
+begin
+  Result:=TStringList.Create;
+  while StartNode<>nil do begin
+    if StartNode.Desc=ctnProcedure then begin
+      ProcHead:=ExtractProcHead(StartNode,Attr);
+      Result.Insert(0,ProcHead);
+    end;
+    StartNode:=StartNode.Parent;
+  end;
+  writeln('TMethodJumpingCodeTool.CreateSubProcPath END "',Result.Text,'"');
+end;
+
+function TMethodJumpingCodeTool.FindSubProcPath(SubProcPath: TStrings;
+  Attr: TProcHeadAttributes; SkipInterface: boolean): TCodeTreeNode;
+  
+  function SearchSubProcPath(StartNode: TCodeTreeNode; PathIndex: integer
+    ): TCodeTreeNode;
+  var
+    ProcHead: string;
+    ProcNode: TCodeTreeNode;
+  begin
+    Result:=nil;
+    if (PathIndex>SubProcPath.Count) or (StartNode=nil) then exit;
+    ProcHead:=SubProcPath[PathIndex];
+    ProcNode:=FindProcNode(StartNode,ProcHead,Attr);
+    writeln('TMethodJumpingCodeTool.SearchSubProcPath A ProcHead="',ProcHead,'" Found=',ProcNode<>nil);
+    if ProcNode=nil then exit;
+    if PathIndex=SubProcPath.Count-1 then begin
+      Result:=ProcNode;
+      exit;
+    end;
+    Result:=SearchSubProcPath(ProcNode.FirstChild,PathIndex+1);
+  end;
+  
+var
+  StartNode: TCodeTreeNode;
+begin
+  StartNode:=FindFirstSectionChild;
+  if SkipInterface and (StartNode<>nil) and (StartNode.Parent<>nil)
+  and (StartNode.Parent.Desc=ctnInterface) then begin
+    StartNode:=FindImplementationNode;
+    if StartNode<>nil then StartNode:=StartNode.FirstChild;
+  end;
+  Result:=SearchSubProcPath(StartNode,0);
 end;
 
 procedure TMethodJumpingCodeTool.WriteCodeTreeNodeExtTree(ExtTree: TAVLTree);

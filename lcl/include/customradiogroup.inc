@@ -51,14 +51,14 @@
 
 {------------------------------------------------------------------------------
   Method: TCustomRadioGroup.Create
-  Params:  AOwner: the owner of the class
+  Params:  TheOwner: the owner of the class
   Returns: Nothing
 
   Constructor for the radiogroup
  ------------------------------------------------------------------------------}
-constructor TCustomRadioGroup.Create (AOwner : TComponent);
+constructor TCustomRadioGroup.Create(TheOwner : TComponent);
 begin
-  inherited Create (AOwner);
+  inherited Create (TheOwner);
   FCreatingWnd := false;
   ControlStyle := ControlStyle + [csCaptureMouse, csClickEvents, csSetCaption,
                                   csDoubleClicks];
@@ -68,6 +68,7 @@ begin
   FItemIndex  := -1;
   FButtonList := TList.Create;
   FColumns  := 1;
+  FColumnLayout := clHorizontalThenVertical;
   Width:= 250;
   Height := 200;
 end;
@@ -193,13 +194,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomRadioGroup.SetColumns (value : integer);
 begin
-  if Value <> FColumns then 
-  begin
+  if Value <> FColumns then begin
     if (Value < 1)
        then raise Exception.Create('TCustomRadioGroup: Columns must be >= 1');
     FColumns := Value;
-    if HandleAllocated and (csLoading in ComponentState) then
-      RecreateWnd;
+    if HandleAllocated and (not (csLoading in ComponentState)) then
+      DoPositionButtons;
   end;
 end;
 
@@ -210,12 +210,12 @@ end;
 
   Assign items from a stringlist.
  ------------------------------------------------------------------------------}
-procedure TCustomRadioGroup.SetItem (value : TStrings);
+procedure TCustomRadioGroup.SetItem(Value: TStrings);
 begin
   if (Value <> FItems) then
   begin
     FItems.Assign(Value);
-    if HandleAllocated and (csLoading in ComponentState) then
+    if HandleAllocated and (not (csLoading in ComponentState)) then
       RecreateWnd;
   end;
 end;
@@ -331,35 +331,53 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomRadioGroup.DoPositionButtons;
 var
-  i       : integer;
-  temp    : TRadioButton;
-  nextTop : integer;
+  i: integer;
+  CurButton: TRadioButton;
+  nextTop: integer;
   nextLeft: integer;
   vertDist: integer;
   horzDist: integer;
-  rbWidth : integer;
+  rbWidth: integer;
+  MaxRows: Integer;
 begin
-  if FItems.Count>0 then begin
+  if (FItems.Count>0) and (FColumns>0) then begin
     // position in rows and columns
     vertDist := (Height - 20) DIV (((FItems.Count-1) DIV FColumns)+1);
     horzDist := (Width - 20) DIV FColumns;
     nextTop  := 0;
     nextLeft := 10;
     rbWidth  := horzDist;
+    MaxRows := (FItems.Count+FColumns-1) div FColumns;
     i := 0;
     while i < FItems.Count do begin
-      Temp := TRadioButton(FButtonList[i]);
-      Temp.SetBounds(nextLeft,nextTop,rbWidth,vertDist);
+      CurButton := TRadioButton(FButtonList[i]);
+      CurButton.SetBounds(nextLeft,nextTop,rbWidth,vertDist);
 
       inc (i);
-      if (i mod FColumns) = 0 then begin
-        inc(nextTop, vertDist);
-        nextLeft := 10;
+      if FColumnLayout=clHorizontalThenVertical then begin
+        if (i mod FColumns) = 0 then begin
+          inc(nextTop, vertDist);
+          nextLeft := 10;
+        end else begin
+          inc(nextLeft, horzDist);
+        end;
       end else begin
-        inc(nextLeft, horzDist);
+        if (i mod MaxRows) = 0 then begin
+          inc(nextLeft, horzDist);
+          nextTop := 0;
+        end else begin
+          inc(nextTop, vertDist);
+        end;
       end;
     end;
   end;
+end;
+
+procedure TCustomRadioGroup.SetColumnLayout(const AValue: TColumnLayout);
+begin
+  if FColumnLayout=AValue then exit;
+  FColumnLayout:=AValue;
+  DoPositionButtons;
 end;
 
 {------------------------------------------------------------------------------
@@ -377,6 +395,9 @@ end;
 
 {
   $Log$
+  Revision 1.23  2003/10/15 18:01:10  mattias
+  implemented extract proc, check lfm and convert delphi unit
+
   Revision 1.22  2003/07/10 15:17:43  mattias
   fixed reading empty stream and TCustomRadioGroup.ItemsChanged
 

@@ -71,15 +71,17 @@ uses
   // packager
   PkgManager, BasePkgManager,
   // source editing
-  UnitEditor, EditDefineTree, CodeToolsOptions, IDEOptionDefs, CodeToolsDefines,
-  DiffDialog, DiskDiffsDialog, UnitInfoDlg, EditorOptions, ViewUnit_dlg,
+  UnitEditor, EditDefineTree, CodeToolsOptions, IDEOptionDefs, CheckLFMDlg,
+  CodeToolsDefines, DiffDialog, DiskDiffsDialog, UnitInfoDlg, EditorOptions,
+  ViewUnit_dlg,
   // rest of the ide
   Splash, IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, PublishModule,
   EnvironmentOpts, TransferMacros, KeyMapping, IDEProcs, ExtToolDialog,
   ExtToolEditDlg, MacroPromptDlg, OutputFilter, BuildLazDialog, MiscOptions,
   InputHistory, UnitDependencies, ClipBoardHistory, ProcessList,
-  InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList, AboutFrm,
-  FindReplaceDialog, FindInFilesDlg, CodeExplorer, BuildFileDlg,
+  InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList, AboutFrm, DialogProcs,
+  FindReplaceDialog, FindInFilesDlg, CodeExplorer, BuildFileDlg, ExtractProcDlg,
+  DelphiUnit2Laz,
   // main ide
   MainBar;
 
@@ -131,6 +133,7 @@ type
     procedure mnuEditSelectLineClick(Sender: TObject);
     procedure mnuEditSelectParagraphClick(Sender: TObject);
     procedure mnuEditCompleteCodeClicked(Sender: TObject);
+    procedure mnuEditExtractProcClicked(Sender: TObject);
     procedure mnuEditInsertCharacterClicked(Sender: TObject);
 
     // edit->insert text->CVS keyword
@@ -209,6 +212,8 @@ type
     procedure mnuToolMakeResourceStringClicked(Sender : TObject);
     procedure mnuToolDiffClicked(Sender : TObject);
     procedure mnuToolConvertDFMtoLFMClicked(Sender : TObject);
+    procedure mnuToolCheckLFMClicked(Sender: TObject);
+    procedure mnuToolConvertDelphiUnitClicked(Sender: TObject);
     procedure mnuToolBuildLazarusClicked(Sender : TObject);
     procedure mnuToolConfigBuildLazClicked(Sender : TObject);
     procedure mnuCustomExtToolClick(Sender : TObject);
@@ -483,7 +488,9 @@ type
         Flags: TSaveFlags): TModalResult;
     function DoCloseEditorFile(PageIndex:integer;
         Flags: TCloseFlags):TModalResult;
-    function DoOpenEditorFile(AFileName:string; PageIndex: integer;
+    function DoCloseEditorFile(const Filename: string;
+        Flags: TCloseFlags): TModalResult;
+    function DoOpenEditorFile(AFileName: string; PageIndex: integer;
         Flags: TOpenFlags): TModalResult; override;
     function DoOpenFileAtCursor(Sender: TObject): TModalResult;
     function DoSaveAll(Flags: TSaveFlags): TModalResult;
@@ -522,6 +529,8 @@ type
     
     // tools
     function DoConvertDFMtoLFM: TModalResult;
+    function DoCheckLFMInEditor: TModalResult;
+    function DoConvertDelphiUnit(const DelphiFilename: string): TModalResult;
     procedure UpdateCustomToolsInMenu;
 
     // external tools
@@ -564,9 +573,6 @@ type
     function DoSaveCodeBufferToFile(ABuffer: TCodeBuffer;
                                     const AFilename: string;
                                     IsPartOfProject:boolean): TModalResult; override;
-    function DoLoadCodeBuffer(var ACodeBuffer: TCodeBuffer;
-                              const AFilename: string;
-                              Flags: TLoadBufferFlags): TModalResult; override;
     function DoBackupFile(const Filename:string;
                           IsPartOfProject:boolean): TModalResult; override;
     function DoRenameUnitLowerCase(AnUnitInfo: TUnitInfo;
@@ -587,8 +593,7 @@ type
     procedure HideIDE; override;
     procedure HideUnmodifiedDesigners;
     procedure UnhideIDE; override;
-    function DoConvertDFMFileToLFMFile(const DFMFilename: string): TModalResult;
-    
+
     // methods for codetools
     procedure InitCodeToolBoss;
     procedure RescanCompilerDefines(OnlyIfCompilerChanged: boolean);
@@ -617,6 +622,7 @@ type
     procedure DoFindDeclarationAtCaret(CaretXY: TPoint);
     function DoInitIdentCompletion: boolean;
     procedure DoCompleteCodeAtCursor;
+    procedure DoExtractProcFromSelection;
     function DoCheckSyntax: TModalResult;
     procedure DoGoToPascalBlockOtherEnd;
     procedure DoGoToPascalBlockStart;
@@ -1475,6 +1481,7 @@ begin
   itmEditSelectLine.OnClick:=@mnuEditSelectLineClick;
   itmEditSelectParagraph.OnClick:=@mnuEditSelectParagraphClick;
   itmEditCompleteCode.OnClick:=@mnuEditCompleteCodeClicked;
+  itmEditExtractProc.OnClick:=@mnuEditExtractProcClicked;
   itmEditInsertCharacter.OnClick:=@mnuEditInsertCharacterClicked;
 
   // insert text->CVS keyword
@@ -1567,6 +1574,7 @@ begin
   itmToolMakeResourceString.OnClick := @mnuToolMakeResourceStringClicked;
   itmToolDiff.OnClick := @mnuToolDiffClicked;
   itmToolConvertDFMtoLFM.OnClick := @mnuToolConvertDFMtoLFMClicked;
+  itmToolConvertDelphiUnit.OnClick := @mnuToolConvertDelphiUnitClicked;
   itmToolBuildLazarus.OnClick := @mnuToolBuildLazarusClicked;
   itmToolConfigureBuildLazarus.OnClick := @mnuToolConfigBuildLazClicked;
   CustomExtToolMenuSeparator:=nil;
@@ -1889,6 +1897,9 @@ begin
    ecCompleteCode:
      DoCompleteCodeAtCursor;
      
+   ecExtractProc:
+     DoExtractProcFromSelection;
+
    ecConfigCustomComps:
      PkgBoss.ShowConfigureCustomComponents;
       
@@ -2224,7 +2235,7 @@ Begin
           mtError,[mbOk],0);
         exit;
       end;
-      if mrOk<>DoLoadCodeBuffer(PreReadBuf,AFileName,
+      if mrOk<>LoadCodeBuffer(PreReadBuf,AFileName,
                           [lbfCheckIfText,lbfUpdateFromDisk,lbfRevert])
       then
         exit;
@@ -2460,6 +2471,44 @@ begin
   DoConvertDFMtoLFM;
 end;
 
+procedure TMainIDE.mnuToolCheckLFMClicked(Sender: TObject);
+begin
+  DoCheckLFMInEditor;
+end;
+
+procedure TMainIDE.mnuToolConvertDelphiUnitClicked(Sender: TObject);
+
+  procedure UpdateEnvironment;
+  begin
+    SetRecentFilesMenu;
+    SaveEnvironment;
+  end;
+
+var
+  OpenDialog: TOpenDialog;
+  AFilename: string;
+  i: Integer;
+begin
+  OpenDialog:=TOpenDialog.Create(Application);
+  try
+    InputHistories.ApplyFileDialogSettings(OpenDialog);
+    OpenDialog.Title:=lisChooseDelphiUnit;
+    OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
+    if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
+      for i := 0 to OpenDialog.Files.Count-1 do begin
+        AFilename:=CleanAndExpandFilename(OpenDialog.Files.Strings[i]);
+        if FileExists(AFilename)
+        and (DoConvertDelphiUnit(AFilename)=mrAbort) then
+          break;
+      end;
+      UpdateEnvironment;
+    end;
+    InputHistories.StoreFileDialogSettings(OpenDialog);
+  finally
+    OpenDialog.Free;
+  end;
+end;
+
 procedure TMainIDE.mnuToolBuildLazarusClicked(Sender : TObject);
 begin
   DoBuildLazarus([]);
@@ -2558,55 +2607,7 @@ begin
   Result:=SourceNoteBook.FindUniquePageName(Result,IgnorePageIndex);
 end;
 
-function TMainIDE.DoConvertDFMFileToLFMFile(const DFMFilename: string
-  ): TModalResult;
-var DFMStream, LFMStream: TMemoryStream;
-  LFMFilename: string;
-begin
-  Result:=mrOk;
-  DFMStream:=TMemoryStream.Create;
-  LFMStream:=TMemoryStream.Create;
-  try
-    try
-      DFMStream.LoadFromFile(DFMFilename);
-    except
-      on E: Exception do begin
-        Result:=MessageDlg(lisCodeToolsDefsReadError, Format(
-          lisUnableToReadFileError, ['"', DFMFilename, '"', #13, E.Message]),
-          mtError,[mbIgnore,mbAbort],0);
-        exit;
-      end;
-    end;
-    try
-      FormDataToText(DFMStream,LFMStream);
-    except
-      on E: Exception do begin
-        Result:=MessageDlg(lisFormatError,
-          Format(lisUnableToConvertFileError, ['"', DFMFilename, '"', #13,
-            E.Message]),
-          mtError,[mbIgnore,mbAbort],0);
-        exit;
-      end;
-    end;
-    LFMFilename:=ChangeFileExt(DFMFilename,'.lfm');
-    try
-      LFMStream.SaveToFile(LFMFilename);
-    except
-      on E: Exception do begin
-        Result:=MessageDlg(lisCodeToolsDefsWriteError,
-          Format(lisUnableToWriteFileError, ['"', LFMFilename, '"', #13,
-            E.Message]),
-          mtError,[mbIgnore,mbAbort],0);
-        exit;
-      end;
-    end;
-  finally
-    LFMSTream.Free;
-    DFMStream.Free;
-  end;
-end;
-
-procedure TMainIDE.OnLoadEnvironmentSettings(Sender: TObject; 
+procedure TMainIDE.OnLoadEnvironmentSettings(Sender: TObject;
   TheEnvironmentOptions: TEnvironmentOptions);
 begin
   LoadDesktopSettings(TheEnvironmentOptions);
@@ -2842,25 +2843,25 @@ begin
         DoJumpToCodeToolBossError;
       if (AnUnitInfo.ResourceFileName<>'')
       then begin
-        Result:=DoLoadCodeBuffer(ResourceCode,AnUnitInfo.ResourceFileName,
+        Result:=LoadCodeBuffer(ResourceCode,AnUnitInfo.ResourceFileName,
                                        [lbfCheckIfText]);
         if Result=mrAbort then exit;
       end;
     end;
-    // if no resource file found then tell the user
-    if (ResourceCode=nil) and (not IgnoreSourceErrors)
-    then begin
+    // if no resource file (aka normally .lrs file) found then tell the user
+    if (ResourceCode=nil) and (not IgnoreSourceErrors) then begin
       MsgTxt:=Format(lisUnableToLoadOldResourceFileTheResourceFileIs, [#13,
         #13, #13, AnUnitInfo.UnitName, #13]);
       Result:=MessageDlg(lisResourceLoadError, MsgTxt, mtWarning,
                          [mbIgnore,mbAbort],0);
       if Result=mrAbort then exit;
     end;
-    // load lfm file
+    
+    // then load the lfm file (without parsing)
     if (not AnUnitInfo.IsVirtual) and (AnUnitInfo.Component<>nil) then begin
       LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
       if (FileExists(LFMFilename)) then begin
-        Result:=DoLoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText]);
+        Result:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText]);
         if not (Result in [mrOk,mrIgnore]) then exit;
       end;
     end;
@@ -3466,7 +3467,7 @@ begin
   // load the source
   LoadFlags := [lbfCheckIfText,lbfUpdateFromDisk,lbfRevert];
   if ofQuiet in Flags then Include(LoadFlags, lbfQuiet);
-  Result:=DoLoadCodeBuffer(PreReadBuf,AFileName,LoadFlags);
+  Result:=LoadCodeBuffer(PreReadBuf,AFileName,LoadFlags);
   if Result<>mrOk then exit;
   NewUnitInfo:=nil;
 
@@ -3555,7 +3556,7 @@ begin
   end;
   
   // there is a lazarus form text file -> load it
-  Result:=DoLoadCodeBuffer(LFMBuf,LFMFilename,[lbfUpdateFromDisk]);
+  Result:=LoadCodeBuffer(LFMBuf,LFMFilename,[lbfUpdateFromDisk]);
   if Result<>mrOk then exit;
   
   ComponentLoadingOk:=true;
@@ -3618,11 +3619,16 @@ begin
         ACaption:=lisFormLoadError;
         AText:=Format(lisUnableToBuildFormFromFile, [#13, '"',
           LFMBuf.Filename, '"']);
-        Result:=MessageDlg(ACaption, AText, mterror, [mbok, mbcancel], 0);
+        Result:=MessageDlg(ACaption, AText, mtError, [mbOk, mbCancel], 0);
         if Result=mrCancel then Result:=mrAbort;
         if Result<>mrOk then exit;
         NewComponent:=nil;
         AnUnitInfo.Component:=NewComponent;
+        // open lfm file in editor
+        Result:=DoOpenEditorFile(LFMBuf.Filename,AnUnitInfo.EditorIndex+1,
+          Flags+[ofOnlyIfExists,ofQuiet,ofRegularFile]);
+        if Result=mrOk then Result:=mrCancel;
+        exit;
       end else begin
         NewComponent:=CInterface.Component;
         AnUnitInfo.Component:=NewComponent;
@@ -4402,6 +4408,24 @@ begin
   Result:=mrOk;
 end;
 
+function TMainIDE.DoCloseEditorFile(const Filename: string; Flags: TCloseFlags
+  ): TModalResult;
+var
+  UnitIndex: Integer;
+  AnUnitInfo: TUnitInfo;
+begin
+  Result:=mrOk;
+  if Filename='' then exit;
+  UnitIndex:=Project1.IndexOfFilename(TrimFilename(Filename),
+                                    [pfsfOnlyEditorFiles,pfsfResolveFileLinks]);
+  if UnitIndex<0 then exit;
+  AnUnitInfo:=Project1.Units[UnitIndex];
+  if AnUnitInfo.EditorIndex>=0 then
+    Result:=DoCloseEditorFile(AnUnitInfo.EditorIndex,Flags)
+  else
+    Result:=mrOk;
+end;
+
 function TMainIDE.DoOpenEditorFile(AFileName:string;
   PageIndex: integer; Flags: TOpenFlags):TModalResult;
 var
@@ -4541,7 +4565,7 @@ begin
       if ofRevert in Flags then
         Include(LoadBufferFlags,lbfRevert);
     end;
-    Result:=DoLoadCodeBuffer(NewBuf,AFileName,LoadBufferFlags);
+    Result:=LoadCodeBuffer(NewBuf,AFileName,LoadBufferFlags);
     if Result<>mrOk then exit;
     NewUnitInfo.Source:=NewBuf;
     NewUnitInfo.Modified:=NewUnitInfo.Source.FileOnDiskNeedsUpdate;
@@ -5231,7 +5255,7 @@ begin
 
   if Project1.MainUnitID>=0 then begin
     // read MainUnit Source
-    Result:=DoLoadCodeBuffer(NewBuf,Project1.MainFilename,
+    Result:=LoadCodeBuffer(NewBuf,Project1.MainFilename,
                              [lbfUpdateFromDisk,lbfRevert,lbfCheckIfText]);
     if Result=mrIgnore then Result:=mrAbort;
     if Result=mrAbort then exit;
@@ -6211,7 +6235,7 @@ begin
     if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
       For I := 0 to OpenDialog.Files.Count-1 do begin
         AFilename:=ExpandFilename(OpenDialog.Files.Strings[i]);
-        if DoConvertDFMFileToLFMFile(AFilename)=mrAbort then begin
+        if ConvertDFMFileToLFMFile(AFilename)=mrAbort then begin
           Result:=mrAbort;
           break;
         end else
@@ -6224,6 +6248,131 @@ begin
     OpenDialog.Free;
   end;
   DoCheckFilesOnDisk;
+end;
+
+function TMainIDE.DoCheckLFMInEditor: TModalResult;
+var
+  LFMSrcEdit: TSourceEditor;
+  LFMUnitInfo: TUnitInfo;
+  UnitFilename: String;
+  PascalBuf: TCodeBuffer;
+begin
+  // check, if a .lfm file is opened in the source editor
+  GetCurrentUnit(LFMSrcEdit,LFMUnitInfo);
+  if (LFMUnitInfo=nil)
+  or (CompareFileExt(LFMUnitInfo.Filename,'.lfm',false)<>0) then begin
+    MessageDlg('No LFM file',
+      'This function needs an open .lfm file in the source editor.',
+      mtError,[mbCancel],0);
+    Result:=mrCancel;
+    exit;
+  end;
+  // try to find the pascal unit
+  UnitFilename:=ChangeFileExt(LFMUnitInfo.Filename,'.pas');
+  if not FileExists(UnitFilename) then begin
+    UnitFilename:=ChangeFileExt(LFMUnitInfo.Filename,'.pp');
+    if not FileExists(UnitFilename) then begin
+      MessageDlg('No pascal file',
+        'Unable to find pascal unit (.pas,.pp) for .lfm file'#13
+        +'"'+LFMUnitInfo.Filename+'"',
+        mtError,[mbCancel],0);
+      Result:=mrCancel;
+      exit;
+    end;
+  end;
+
+  if ToolStatus<>itNone then begin
+    Result:=mrCancel;
+    exit;
+  end;
+  // load the pascal unit
+  SaveSourceEditorChangesToCodeCache(-1);
+  Result:=LoadCodeBuffer(PascalBuf,UnitFilename,[]);
+  if Result<>mrOk then exit;
+
+  // open messages window
+  SourceNotebook.ClearErrorLines;
+  MessagesView.Clear;
+  DoArrangeSourceEditorAndMessageView(false);
+  
+  // parse the LFM file and the pascal unit
+  if not CheckLFMBuffer(PascalBuf,LFMUnitInfo.Source,@MessagesView.AddMsg) then
+  begin
+    DoJumpToCompilerMessage(-1,true);
+  end;
+
+  Result:=mrOk;
+end;
+
+function TMainIDE.DoConvertDelphiUnit(const DelphiFilename: string
+  ): TModalResult;
+var
+  DFMFilename: String;
+  LazarusUnitFilename: String;
+  LRSFilename: String;
+  ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+begin
+  // check file and directory
+  writeln('TMainIDE.DoConvertDelphiUnit A');
+  Result:=CheckDelphiFileExt(DelphiFilename);
+  if Result<>mrOk then exit;
+  Result:=CheckFilenameForLCLPaths(DelphiFilename);
+  if Result<>mrOk then exit;
+  // close Delphi files in editor
+  writeln('TMainIDE.DoConvertDelphiUnit B ',DelphiFilename);
+  Result:=DoCloseEditorFile(DelphiFilename,[cfSaveFirst]);
+  if Result<>mrOk then exit;
+  DFMFilename:=FindDFMFileForDelphiUnit(DelphiFilename);
+  Result:=DoCloseEditorFile(DFMFilename,[cfSaveFirst]);
+  if Result<>mrOk then exit;
+  // rename files (.pas,.dfm) lowercase
+  writeln('TMainIDE.DoConvertDelphiUnit C');
+  Result:=RenameDelphiUnitToLazarusUnit(DelphiFilename,false);
+  if Result<>mrOk then exit;
+  // convert .dfm file to .lfm file
+  writeln('TMainIDE.DoConvertDelphiUnit D ',DFMFilename);
+  if DFMFilename<>'' then begin
+    Result:=ConvertDFMFileToLFMFile(DFMFilename);
+    if Result<>mrOk then exit;
+  end;
+  // create empty .lrs file
+  writeln('TMainIDE.DoConvertDelphiUnit E');
+  LazarusUnitFilename:=ConvertDelphiToLazarusFilename(DelphiFilename);
+  if DFMFilename<>'' then begin
+    LRSFilename:=ChangeFileExt(LazarusUnitFilename,'.lrs');
+    Result:=CreateEmptyFile(LRSFilename,[mbAbort,mbRetry]);
+    if Result<>mrOk then exit;
+  end else
+    LRSFilename:='';
+  // add {$mode delphi} directive
+  // remove windows unit and add LResources, LCLIntf
+  // remove {$R *.dfm} directive
+  // add initialization
+  // add {$i unit.lrs} directive
+  writeln('TMainIDE.DoConvertDelphiUnit F');
+  FOpenEditorsOnCodeToolChange:=true;
+  try
+    if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then begin
+      Result:=mrCancel;
+      exit;
+    end;
+    Result:=ConvertDelphiSourceToLazarusSource(LazarusUnitFilename,
+                                               LRSFilename<>'');
+    if Result<>mrOk then begin
+      DoJumpToCodeToolBossError;
+      exit;
+    end;
+
+    // ToDo: check lfm
+    writeln('TMainIDE.DoConvertDelphiUnit G');
+    // ToDo: convert lfm to lrs
+    writeln('TMainIDE.DoConvertDelphiUnit H');
+  finally
+    FOpenEditorsOnCodeToolChange:=false;
+  end;
+
+  Result:=mrOk;
 end;
 
 {-------------------------------------------------------------------------------
@@ -6465,52 +6614,6 @@ begin
       if Result=mrIgnore then Result:=mrOk;
     end;
   until Result<>mrRetry;
-end;
-
-function TMainIDE.DoLoadCodeBuffer(var ACodeBuffer: TCodeBuffer; 
-  const AFilename: string; Flags: TLoadBufferFlags): TModalResult;
-var
-  ACaption,AText:string;
-begin
-  repeat
-    {$IFDEF IDE_DEBUG}
-    writeln('[TMainIDE.DoLoadCodeBuffer] A ',AFilename);
-    {$ENDIF}
-    if (lbfCheckIfText in Flags)
-    and FileExists(AFilename) and (not FileIsText(AFilename))
-    then begin
-      if lbfQuiet in Flags then begin
-        Result:=mrCancel;
-      end else begin
-        ACaption:=lisFileNotText;
-        AText:=Format(lisFileDoesNotLookLikeATextFileOpenItAnyway2, ['"',
-          AFilename, '"', #13, #13]);
-        Result:=MessageDlg(ACaption, AText, mtConfirmation,
-                           [mbOk, mbIgnore, mbAbort], 0);
-      end;
-      if Result<>mrOk then break;
-    end;
-    ACodeBuffer:=CodeToolBoss.LoadFile(AFilename,lbfUpdateFromDisk in Flags,
-                                       lbfRevert in Flags);
-    if ACodeBuffer<>nil then begin
-      Result:=mrOk;
-      {$IFDEF IDE_DEBUG}
-      writeln('[TMainIDE.DoLoadCodeBuffer] ',ACodeBuffer.SourceLength,' ',ACodeBuffer.Filename);
-      {$ENDIF}
-    end else begin
-      if lbfQuiet in Flags then
-        Result:=mrCancel
-      else begin
-        ACaption:=lisReadError;
-        AText:=Format(lisUnableToReadFile2, ['"', AFilename, '"']);
-        Result:=MessageDlg(ACaption,AText,mtError,[mbAbort,mbRetry,mbIgnore],0);
-      end;
-      if Result=mrAbort then break;
-    end;
-  until Result<>mrRetry;
-  if (ACodeBuffer=nil) and (lbfCreateClearOnError in Flags) then begin
-    ACodeBuffer:=CodeToolBoss.CreateFile(AFilename);
-  end;
 end;
 
 {-------------------------------------------------------------------------------
@@ -7151,7 +7254,7 @@ end;
 function TMainIDE.DoJumpToCompilerMessage(Index:integer;
   FocusEditor: boolean): boolean;
 var MaxMessages: integer;
-  Filename, Ext, SearchedFilename: string;
+  Filename, SearchedFilename: string;
   CaretXY: TPoint;
   TopLine: integer;
   MsgType: TErrorType;
@@ -7188,41 +7291,38 @@ begin
     end;
 
     OpenFlags:=[ofOnlyIfExists,ofRegularFile];
-    if not IsTestUnitFilename(Filename) then
-      SearchedFilename := FindUnitFile(Filename)
-    else begin
+    if IsTestUnitFilename(Filename) then begin
       SearchedFilename := ExtractFileName(Filename);
       Include(OpenFlags,ofVirtualFile);
+    end else begin
+      SearchedFilename := FindUnitFile(Filename);
     end;
     
     if SearchedFilename<>'' then begin
       // open the file in the source editor
-      Ext:=lowercase(ExtractFileExt(SearchedFilename));
-      if (not FilenameIsFormText(SearchedFilename)) and (Ext<>'.lpi') then begin
-        Result:=(DoOpenEditorFile(SearchedFilename,-1,OpenFlags)=mrOk);
-        if Result then begin
-          // set caret position
-          SourceNotebook.AddJumpPointClicked(Self);
-          SrcEdit:=SourceNoteBook.GetActiveSE;
-          if CaretXY.Y>SrcEdit.EditorComponent.Lines.Count then
-            CaretXY.Y:=SrcEdit.EditorComponent.Lines.Count;
-          TopLine:=CaretXY.Y-(SrcEdit.EditorComponent.LinesInWindow div 2);
-          if TopLine<1 then TopLine:=1;
-          if FocusEditor then begin
-            //SourceNotebook.BringToFront;
-            MessagesView.ShowOnTop;
-            SourceNoteBook.ShowOnTop;
-            SourceNotebook.FocusEditor;
-          end;
-          SrcEdit.EditorComponent.CaretXY:=CaretXY;
-          SrcEdit.EditorComponent.TopLine:=TopLine;
-          with SrcEdit.EditorComponent do begin
-            BlockBegin:=CaretXY;
-            BlockEnd:=CaretXY;
-            LeftChar:=Max(CaretXY.X-CharsInWindow,1);
-          end;
-          SrcEdit.ErrorLine:=CaretXY.Y;
+      Result:=(DoOpenEditorFile(SearchedFilename,-1,OpenFlags)=mrOk);
+      if Result then begin
+        // set caret position
+        SourceNotebook.AddJumpPointClicked(Self);
+        SrcEdit:=SourceNoteBook.GetActiveSE;
+        if CaretXY.Y>SrcEdit.EditorComponent.Lines.Count then
+          CaretXY.Y:=SrcEdit.EditorComponent.Lines.Count;
+        TopLine:=CaretXY.Y-(SrcEdit.EditorComponent.LinesInWindow div 2);
+        if TopLine<1 then TopLine:=1;
+        if FocusEditor then begin
+          //SourceNotebook.BringToFront;
+          MessagesView.ShowOnTop;
+          SourceNoteBook.ShowOnTop;
+          SourceNotebook.FocusEditor;
         end;
+        SrcEdit.EditorComponent.CaretXY:=CaretXY;
+        SrcEdit.EditorComponent.TopLine:=TopLine;
+        with SrcEdit.EditorComponent do begin
+          BlockBegin:=CaretXY;
+          BlockEnd:=CaretXY;
+          LeftChar:=Max(CaretXY.X-CharsInWindow,1);
+        end;
+        SrcEdit.ErrorLine:=CaretXY.Y;
       end;
     end else begin
       if FilenameIsAbsolute(Filename) then begin
@@ -7396,7 +7496,6 @@ end;
   Find the source filename (pascal source or include file) and returns
   the absolute path.
   
-  ToDo:
   First it searches in the current projects src path, then its unit path, then
   its include path. Then all used package source directories are searched.
   Finally the fpc sources are searched.
@@ -8241,6 +8340,8 @@ begin
   if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then exit;
   SaveSourceEditorChangesToCodeCache(-1);
   CodeToolBoss.VisibleEditorLines:=ActiveSrcEdit.EditorComponent.LinesInWindow;
+  CodeToolBoss.TabWidth:=ActiveSrcEdit.EditorComponent.TabWidth;
+  CodeToolBoss.IndentSize:=ActiveSrcEdit.EditorComponent.BlockIndent;
   
   if ctfActivateAbortMode in Flags then
     ActivateCodeToolAbortableMode;
@@ -8789,11 +8890,45 @@ begin
   end;
 end;
 
+procedure TMainIDE.DoExtractProcFromSelection;
+var
+  ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  BlockBegin: TPoint;
+  BlockEnd: TPoint;
+  NewSource: TCodeBuffer;
+  NewX, NewY, NewTopLine: integer;
+  CTResult: boolean;
+begin
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
+  {$IFDEF IDE_DEBUG}
+  writeln('');
+  writeln('[TMainIDE.DoExtractProcFromSelection] ************');
+  {$ENDIF}
+  BlockBegin:=ActiveSrcEdit.EditorComponent.BlockBegin;
+  BlockEnd:=ActiveSrcEdit.EditorComponent.BlockEnd;
+  
+  FOpenEditorsOnCodeToolChange:=true;
+  try
+    CTResult:=ShowExtractProcDialog(ActiveUnitInfo.Source,BlockBegin,BlockEnd,
+      NewSource,NewX,NewY,NewTopLine)=mrOk;
+    ApplyCodeToolChanges;
+    if CodeToolBoss.ErrorMessage<>'' then begin
+      DoJumpToCodeToolBossError;
+    end else if CTResult then begin
+      DoJumpToCodePos(ActiveSrcEdit,ActiveUnitInfo,
+        NewSource,NewX,NewY,NewTopLine,true);
+    end;
+  finally
+    FOpenEditorsOnCodeToolChange:=false;
+  end;
+end;
+
 //-----------------------------------------------------------------------------
 
 procedure TMainIDE.MessagesViewSelectionChanged(sender : TObject);
 begin
-  DoJumpToCompilerMessage(TMessagesView(sender).SelectedMessageIndex,True);
+  DoJumpToCompilerMessage(TMessagesView(Sender).SelectedMessageIndex,True);
 end;
 
 Procedure TMainIDE.OnSrcNotebookEditorVisibleChanged(Sender : TObject);
@@ -9673,6 +9808,11 @@ begin
   DoCompleteCodeAtCursor;
 end;
 
+procedure TMainIDE.mnuEditExtractProcClicked(Sender: TObject);
+begin
+  DoExtractProcFromSelection;
+end;
+
 procedure TMainIDE.mnuEditInsertCharacterClicked(Sender: TObject);
 begin
   DoEditMenuCommand(ecInsertCharacter);
@@ -9817,6 +9957,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.656  2003/10/15 18:01:09  mattias
+  implemented extract proc, check lfm and convert delphi unit
+
   Revision 1.655  2003/10/11 08:33:22  mattias
   added catalan
 

@@ -486,10 +486,16 @@ type
 
 
   { TCustomRadioGroup }
+  
+  TColumnLayout = (
+    clHorizontalThenVertical,
+    clVerticalThenHorizontal
+    );
 
   TCustomRadioGroup = class(TCustomGroupBox)
   private
     FButtonList : TList; // list of TRadioButton
+    FColumnLayout: TColumnLayout;
     FHiddenButton: TRadioButton;
     FCreatingWnd: boolean;
     FItems      : TStrings;
@@ -500,6 +506,7 @@ type
     procedure ItemsChanged(Sender: TObject);
     procedure Clicked(Sender: TObject); virtual;
     procedure DoPositionButtons;
+    procedure SetColumnLayout(const AValue: TColumnLayout);
   protected
     procedure UpdateRadioButtonStates; virtual;
     procedure ReadState(Reader: TReader); override;
@@ -512,9 +519,10 @@ type
     property ItemIndex: integer read GetItemIndex write SetItemIndex default -1;
     property Items: TStrings read FItems write SetItem;
     property Columns: integer read FColumns write SetColumns default 1;
+    property ColumnLayout: TColumnLayout read FColumnLayout write SetColumnLayout default clHorizontalThenVertical;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
   public
-    constructor Create (AOwner : TComponent); override;
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function CanModify: boolean; virtual;
     procedure CreateWnd; override;
@@ -531,17 +539,18 @@ type
     property Align;
     property Anchors;
     property Caption;
+    property ColumnLayout;
+    property Columns;
     property Enabled;
     property ItemIndex;
     property Items;
-    property Columns;
-    property Visible;
-    property OnClick;
-    property OnResize;
     property OnChangeBounds;
+    property OnClick;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseuP;
+    property OnResize;
+    property Visible;
   end;
   
   
@@ -825,6 +834,9 @@ end.
 
  {
   $Log$
+  Revision 1.81  2003/10/15 18:01:10  mattias
+  implemented extract proc, check lfm and convert delphi unit
+
   Revision 1.80  2003/09/21 10:42:47  mattias
   implemented TBitBtn Text+Caption from Micha
 

@@ -27,13 +27,13 @@
 
   ToDo:
     - ignore errors behind cursor (implemented, not tested)
-    - find declaration in dead code
+    - find declaration in dead code (started)
     - high type expression evaluation
       (i.e. at the moment: integer+integer=longint
                    wanted: integer+integer=integer)
     - caching for procs
     - variants
-    - multi pass find declaration
+    - multi pass find declaration (i.e. searching with timeout)
     - Get and Set property access parameter lists
     - make @Proc context sensitive (started, but not complete)
     - operator overloading
@@ -504,8 +504,6 @@ type
     // sub methods for FindIdentifierInContext
     function DoOnIdentifierFound(Params: TFindDeclarationParams;
       FoundNode: TCodeTreeNode): TIdentifierFoundResult;
-    function CheckSrcIdentifier(Params: TFindDeclarationParams;
-      const FoundContext: TFindContext): TIdentifierFoundResult;
     function FindIdentifierInProcContext(ProcContextNode: TCodeTreeNode;
       Params: TFindDeclarationParams): TIdentifierFoundResult;
     function FindIdentifierInClassOfMethod(ProcContextNode: TCodeTreeNode;
@@ -568,6 +566,8 @@ type
     function FindTermTypeAsString(TermAtom: TAtomPosition;
       CursorNode: TCodeTreeNode; Params: TFindDeclarationParams): string;
   protected
+    function CheckSrcIdentifier(Params: TFindDeclarationParams;
+      const FoundContext: TFindContext): TIdentifierFoundResult;
     function FindDeclarationOfIdentAtCursor(
       Params: TFindDeclarationParams): boolean;
     function IdentifierIsDefined(IdentAtom: TAtomPosition;
@@ -1563,7 +1563,7 @@ function TFindDeclarationTool.FindDeclarationOfIdentAtCursor(
     ContextNode  // = DeepestNode at Cursor
     
   Result:
-    true, if NewPos+NewTopLine valid
+    true, if found
 
   Examples:
     A^.B().C[].Identifier
@@ -1725,9 +1725,11 @@ var
   procedure CacheResult(Found: boolean; EndNode: TCodeTreeNode);
   begin
     if not Found then exit;
+    FindIdentifierInContext:=true;
     if (FirstSearchedNode=nil) then exit;
     if ([fdfDoNotCache,fdfCollect]*Params.Flags<>[]) then exit;
     if ([fodDoNotCache]*Params.NewFlags<>[]) then exit;
+    if (Params.OnIdentifierFound<>@CheckSrcIdentifier) then exit;
     if (Params.FoundProc<>nil) then exit; // do not cache proc searches
     // cache result
     if (Params.NewNode<>nil) and (Params.NewNode.Desc=ctnProcedure) then begin
@@ -1790,7 +1792,7 @@ var
         }
         IdentFoundResult:=Params.NewCodeTool.DoOnIdentifierFound(Params,
                                                                 Params.NewNode);
-        if IdentFoundResult=ifrSuccess then
+        if (IdentFoundResult=ifrSuccess) then
           CacheResult(true,ContextNode);
         Result:=IdentFoundResult<>ifrProceedSearch;
         if IdentFoundResult<>ifrAbortSearch then exit;
@@ -1858,6 +1860,7 @@ var
       // identifier found
       Params.SetResult(Self,ContextNode);
       Result:=CheckResult(true,true);
+      exit;
     end;
     // search for enums
     Params.ContextNode:=ContextNode;
@@ -2724,7 +2727,7 @@ begin
         {$ENDIF}
         FindIdentifierInContext(Params);
         ClassContext:=Params.NewCodeTool.FindBaseTypeOfNode(
-                                                     Params,Params.NewNode);
+                                                         Params,Params.NewNode);
         if (ClassContext.Node=nil)
         or (ClassContext.Node.Desc<>ctnClass) then begin
           MoveCursorToCleanPos(ClassNameAtom.StartPos);
@@ -4356,7 +4359,9 @@ function TFindDeclarationTool.ConvertNodeToExpressionType(Node: TCodeTreeNode;
     end;
   end;
   
-var BaseContext: TFindContext;
+var
+  BaseContext: TFindContext;
+  OldInput: TFindDeclarationInput;
 begin
   {$IFDEF ShowExprEval}
   writeln('[TFindDeclarationTool.ConvertNodeToExpressionType] A',
@@ -4383,8 +4388,11 @@ begin
     MoveCursorToNodeStart(Node);
 
     // ToDo: check for circles
-
+    
+    Params.Save(OldInput);
+    Params.ContextNode:=Node;
     Result:=ReadOperandTypeAtCursor(Params);
+    Params.Load(OldInput);
     Result.Context:=CreateFindContext(Self,Node);
   end else if Node.Desc=ctnIdentifier then begin
 

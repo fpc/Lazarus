@@ -21,7 +21,7 @@
   Author: Mattias Gaertner
 
   Abstract:
-    TEventsCodeTool enhances TCodeCompletionCodeTool.
+    TEventsCodeTool enhances TExtractProcTool.
     TEventsCodeTool provides functions to work with published methods in the
     source. It can gather a list of compatible methods, test if method exists,
     jump to the method body, create a method, complete all missing published
@@ -44,12 +44,13 @@ uses
   {$ENDIF}
   Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom, PascalParserTool,
   CodeCompletionTool, SourceLog, KeywordFuncLists, BasicCodeTools, LinkScanner,
-  CodeCache, AVL_Tree, TypInfo, SourceChanger, FindDeclarationTool;
+  CodeCache, AVL_Tree, TypInfo, SourceChanger, FindDeclarationTool,
+  ExtractProcTool;
 
 type
   TGetStringProc = procedure(const s: string) of object;
   
-  TEventsCodeTool = class(TCodeCompletionCodeTool)
+  TEventsCodeTool = class(TExtractProcTool)
   private
     GetCompatibleMethodsProc: TGetStringProc;
     SearchedExprList: TExprTypeList;

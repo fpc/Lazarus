@@ -213,6 +213,7 @@ type
 
     function FindFirstNodeOnSameLvl(StartNode: TCodeTreeNode): TCodeTreeNode;
     function FindNextNodeOnSameLvl(StartNode: TCodeTreeNode): TCodeTreeNode;
+    function FindPrevNodeOnSameLvl(StartNode: TCodeTreeNode): TCodeTreeNode;
     
     function NodeHasParentOfType(ANode: TCodeTreeNode;
         NodeDesc: TCodeTreeNodeDesc): boolean;
@@ -3241,6 +3242,24 @@ begin
       Result:=Result.NextBrother;
     if Result=nil then exit;
     Result:=Result.FirstChild;
+  end;
+end;
+
+function TPascalParserTool.FindPrevNodeOnSameLvl(StartNode: TCodeTreeNode
+  ): TCodeTreeNode;
+begin
+  Result:=StartNode;
+  if Result=nil then exit;
+  if Result.PriorBrother<>nil then
+    Result:=Result.PriorBrother
+  else begin
+    Result:=Result.Parent;
+    if Result=nil then exit;
+    Result:=Result.PriorBrother;
+    while (Result<>nil) and (Result.LastChild=nil) do
+      Result:=Result.PriorBrother;
+    if Result=nil then exit;
+    Result:=Result.LastChild;
   end;
 end;
 

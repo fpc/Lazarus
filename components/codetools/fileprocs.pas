@@ -22,9 +22,6 @@
 
   Abstract:
     - simple file functions
-
-
-  ToDo:
 }
 unit FileProcs;
 

@@ -105,7 +105,7 @@ const
   ecInsertCVSRevision    = ecUserFirst + 92;
   ecInsertCVSSource      = ecUserFirst + 93;
 
-  // codetools
+  // source tools
   ecWordCompletion       = ecUserFirst + 100;
   ecCompleteCode         = ecUserFirst + 101;
   ecIdentCompletion      = ecUserFirst + 102;
@@ -113,8 +113,11 @@ const
   ecGuessUnclosedBlock   = ecUserFirst + 104;
   ecGuessMisplacedIFDEF  = ecUserFirst + 105;
   ecConvertDFM2LFM       = ecUserFirst + 106;
-  ecMakeResourceString   = ecUserFirst + 107;
-  ecDiff                 = ecUserFirst + 108;
+  ecCheckLFM             = ecUserFirst + 107;
+  ecConvertDelphiUnit    = ecUserFirst + 108;
+  ecMakeResourceString   = ecUserFirst + 109;
+  ecDiff                 = ecUserFirst + 110;
+  ecExtractProc          = ecUserFirst + 111;
 
   // file menu
   ecNew                  = ecUserFirst + 201;
@@ -194,7 +197,7 @@ const
   ecPackageGraph         = ecUserFirst + 604;
   ecConfigCustomComps    = ecUserFirst + 605;
 
-  // tools menu
+  // custom tools menu
   ecExtToolFirst         = ecUserFirst + 700;
   ecExtToolLast          = ecUserFirst + 799;
 
@@ -562,10 +565,13 @@ begin
   ecWordCompletion: SetResult(VK_W,[ssCtrl],VK_UNKNOWN,[]);
   ecCompleteCode: SetResult(VK_C,[ssCtrl,ssShift],VK_UNKNOWN,[]);
   ecIdentCompletion: SetResult(VK_SPACE,[ssCtrl],VK_UNKNOWN,[]);
+  ecExtractProc: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecSyntaxCheck: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGuessUnclosedBlock: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGuessMisplacedIFDEF: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecConvertDFM2LFM: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCheckLFM: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecConvertDelphiUnit: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecFindProcedureDefinition: SetResult(
                                  VK_UP,[ssShift,SSCtrl],VK_UNKNOWN,[]);
   ecFindProcedureMethod: SetResult(
@@ -1132,10 +1138,13 @@ begin
     ecWordCompletion        : Result:= srkmecWordCompletion;
     ecCompleteCode          : Result:= srkmecCompleteCode;
     ecIdentCompletion       : Result:= dlgedidcomlet;
+    ecExtractProc           : Result:= srkmecExtractProc;
     ecSyntaxCheck           : Result:= srkmecSyntaxCheck;
     ecGuessUnclosedBlock    : Result:= lismenuguessunclosedblock;
     ecGuessMisplacedIFDEF   : Result:= srkmecGuessMisplacedIFDEF;
-    ecConvertDFM2LFM        : Result:= lismenuconvertdfmtolfm;
+    ecConvertDFM2LFM        : Result:= lismenuConvertDFMToLFM;
+    ecCheckLFM              : Result:= lisMenuCheckLFM;
+    ecConvertDelphiUnit     : Result:= lisMenuConvertDelphiUnit;
     ecFindDeclaration       : Result:= srkmecFindDeclaration;
     ecFindBlockOtherEnd     : Result:= srkmecFindBlockOtherEnd;
     ecFindBlockStart        : Result:= srkmecFindBlockStart;
@@ -1949,10 +1958,11 @@ begin
   AddDefault(C,'Word completion',ecWordCompletion);
   AddDefault(C,'Complete code',ecCompleteCode);
   AddDefault(C,'Identifier completion',ecIdentCompletion);
+  AddDefault(C,'Extract proc',ecExtractProc);
   AddDefault(C,'Syntax check',ecSyntaxCheck);
   AddDefault(C,'Guess unclosed block',ecGuessUnclosedBlock);
   AddDefault(C,'Guess misplaced $IFDEF',ecGuessMisplacedIFDEF);
-  AddDefault(C,'Convert DFM file to LFM',ecConvertDFM2LFM);
+  AddDefault(C,'Check LFM file in editor',ecCheckLFM);
   AddDefault(C,'Find procedure definiton',ecFindProcedureDefinition);
   AddDefault(C,'Find procedure method',ecFindProcedureMethod);
   AddDefault(C,'Find declaration',ecFindDeclaration);
@@ -2056,6 +2066,8 @@ begin
   AddDefault(C,'Configure "Build Lazarus"',ecConfigBuildLazarus);
   AddDefault(C,'Make resource string',ecMakeResourceString);
   AddDefault(C,'Diff editor files',ecDiff);
+  AddDefault(C,'Convert DFM file to LFM',ecConvertDFM2LFM);
+  AddDefault(C,'Convert Delphi unit to lazarus unit',ecConvertDelphiUnit);
 
   // environment menu
   C:=Categories[AddCategory('EnvironmentMenu',srkmCatEnvMenu,caAll)];

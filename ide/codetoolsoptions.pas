@@ -59,8 +59,8 @@ type
     FCompleteProperties: boolean;
     FLineLength: integer;
     FClassPartInsertPolicy: TClassPartInsertPolicy;
-    FMixMethodsAndPorperties: boolean;
-    FForwardProcInsertPolicy: TForwardProcInsertPolicy;
+    FMixMethodsAndProperties: boolean;
+    FForwardProcBodyInsertPolicy: TForwardProcBodyInsertPolicy;
     FKeepForwardProcOrder: boolean;
     FMethodInsertPolicy: TMethodInsertPolicy;
     FKeyWordPolicy : TWordPolicy;
@@ -72,7 +72,7 @@ type
     FPropertyReadIdentPrefix: string;
     FPropertyWriteIdentPrefix: string;
     FPropertyStoredIdentPostfix: string;
-    FPrivatVariablePrefix: string;
+    FPrivateVariablePrefix: string;
     FSetPropertyVariablename: string;
     
     procedure SetFilename(const AValue: string);
@@ -111,10 +111,10 @@ type
     property LineLength: integer read FLineLength write FLineLength;
     property ClassPartInsertPolicy: TClassPartInsertPolicy
       read FClassPartInsertPolicy write FClassPartInsertPolicy;
-    property MixMethodsAndPorperties: boolean
-      read FMixMethodsAndPorperties write FMixMethodsAndPorperties;
-    property ForwardProcInsertPolicy: TForwardProcInsertPolicy
-      read FForwardProcInsertPolicy write FForwardProcInsertPolicy;
+    property MixMethodsAndProperties: boolean
+      read FMixMethodsAndProperties write FMixMethodsAndProperties;
+    property ForwardProcBodyInsertPolicy: TForwardProcBodyInsertPolicy
+      read FForwardProcBodyInsertPolicy write FForwardProcBodyInsertPolicy;
     property KeepForwardProcOrder: boolean
       read FKeepForwardProcOrder write FKeepForwardProcOrder;
     property MethodInsertPolicy: TMethodInsertPolicy
@@ -137,8 +137,8 @@ type
       read FPropertyWriteIdentPrefix write FPropertyWriteIdentPrefix;
     property PropertyStoredIdentPostfix: string
       read FPropertyStoredIdentPostfix write FPropertyStoredIdentPostfix;
-    property PrivatVariablePrefix: string
-      read FPrivatVariablePrefix write FPrivatVariablePrefix;
+    property PrivateVariablePrefix: string
+      read FPrivateVariablePrefix write FPrivateVariablePrefix;
     property SetPropertyVariablename: string
       read FSetPropertyVariablename write FSetPropertyVariablename;
   end;
@@ -156,7 +156,7 @@ type
     
     // Code Creation
     ClassPartInsertPolicyRadioGroup: TRadioGroup;
-    MixMethodsAndPorpertiesCheckBox: TCheckBox;
+    MixMethodsAndPropertiesCheckBox: TCheckBox;
     MethodInsertPolicyRadioGroup: TRadioGroup;
     ForwardProcsInsertPolicyRadioGroup: TRadioGroup;
     ForwardProcsKeepOrderCheckBox: TCheckBox;
@@ -168,8 +168,8 @@ type
     PropertyWriteIdentPrefixEdit: TEdit;
     PropertyStoredIdentPostfixLabel: TLabel;
     PropertyStoredIdentPostfixEdit: TEdit;
-    PrivatVariablePrefixLabel: TLabel;
-    PrivatVariablePrefixEdit: TEdit;
+    PrivateVariablePrefixLabel: TLabel;
+    PrivateVariablePrefixEdit: TEdit;
     SetPropertyVariablenameLabel: TLabel;
     SetPropertyVariablenameEdit: TEdit;
 
@@ -401,11 +401,11 @@ begin
     FClassPartInsertPolicy:=ClassPartPolicyNameToPolicy(XMLConfig.GetValue(
       'CodeToolsOptions/ClassPartInsertPolicy/Value',
       ClassPartInsertPolicyNames[cpipAlphabetically]));
-    FMixMethodsAndPorperties:=XMLConfig.GetValue(
+    FMixMethodsAndProperties:=XMLConfig.GetValue(
       'CodeToolsOptions/MixMethodsAndProperties/Value',false);
-    FForwardProcInsertPolicy:=ForwardProcInsertPolicyNameToPolicy(
-      XMLConfig.GetValue('CodeToolsOptions/ForwardProcInsertPolicy/Value',
-        ForwardProcInsertPolicyNames[fpipInFrontOfMethods]));
+    FForwardProcBodyInsertPolicy:=ForwardProcBodyInsertPolicyNameToPolicy(
+      XMLConfig.GetValue('CodeToolsOptions/ForwardProcBodyInsertPolicy/Value',
+        ForwardProcBodyInsertPolicyNames[fpipInFrontOfMethods]));
     FKeepForwardProcOrder:=XMLConfig.GetValue(
       'CodeToolsOptions/KeepForwardProcOrder/Value',true);
 
@@ -432,8 +432,8 @@ begin
       'CodeToolsOptions/PropertyWriteIdentPrefix/Value',''),'Set');
     FPropertyStoredIdentPostfix:=ReadIdentifier(XMLConfig.GetValue(
       'CodeToolsOptions/PropertyStoredIdentPostfix/Value',''),'IsStored');
-    FPrivatVariablePrefix:=ReadIdentifier(XMLConfig.GetValue(
-      'CodeToolsOptions/PrivatVariablePrefix/Value',''),'F');
+    FPrivateVariablePrefix:=ReadIdentifier(XMLConfig.GetValue(
+      'CodeToolsOptions/PrivateVariablePrefix/Value',''),'F');
     FSetPropertyVariablename:=ReadIdentifier(XMLConfig.GetValue(
       'CodeToolsOptions/SetPropertyVariablename/Value',''),'AValue');
 
@@ -480,11 +480,11 @@ begin
       ClassPartInsertPolicyNames[FClassPartInsertPolicy],
       ClassPartInsertPolicyNames[cpipAlphabetically]);
     XMLConfig.SetDeleteValue(
-      'CodeToolsOptions/MixMethodsAndProperties/Value',FMixMethodsAndPorperties,
+      'CodeToolsOptions/MixMethodsAndProperties/Value',FMixMethodsAndProperties,
       false);
-    XMLConfig.SetDeleteValue('CodeToolsOptions/ForwardProcInsertPolicy/Value',
-      ForwardProcInsertPolicyNames[FForwardProcInsertPolicy],
-      ForwardProcInsertPolicyNames[fpipInFrontOfMethods]);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/ForwardProcBodyInsertPolicy/Value',
+      ForwardProcBodyInsertPolicyNames[FForwardProcBodyInsertPolicy],
+      ForwardProcBodyInsertPolicyNames[fpipInFrontOfMethods]);
     XMLConfig.SetDeleteValue(
       'CodeToolsOptions/KeepForwardProcOrder/Value',FKeepForwardProcOrder,true);
     XMLConfig.SetDeleteValue('CodeToolsOptions/MethodInsertPolicy/Value',
@@ -510,8 +510,8 @@ begin
       FPropertyWriteIdentPrefix,'Set');
     XMLConfig.SetDeleteValue('CodeToolsOptions/PropertyStoredIdentPostfix/Value',
       FPropertyStoredIdentPostfix,'IsStored');
-    XMLConfig.SetDeleteValue('CodeToolsOptions/PrivatVariablePrefix/Value',
-      FPrivatVariablePrefix,'F');
+    XMLConfig.SetDeleteValue('CodeToolsOptions/PrivateVariablePrefix/Value',
+      FPrivateVariablePrefix,'F');
     XMLConfig.SetDeleteValue('CodeToolsOptions/SetPropertyVariablename/Value',
       FSetPropertyVariablename,'AValue');
 
@@ -563,8 +563,8 @@ begin
     // CodeCreation
     FLineLength:=CodeToolsOpts.FLineLength;
     FClassPartInsertPolicy:=CodeToolsOpts.FClassPartInsertPolicy;
-    FMixMethodsAndPorperties:=CodeToolsOpts.MixMethodsAndPorperties;
-    FForwardProcInsertPolicy:=CodeToolsOpts.ForwardProcInsertPolicy;
+    FMixMethodsAndProperties:=CodeToolsOpts.MixMethodsAndProperties;
+    FForwardProcBodyInsertPolicy:=CodeToolsOpts.ForwardProcBodyInsertPolicy;
     FKeepForwardProcOrder:=CodeToolsOpts.KeepForwardProcOrder;
     FMethodInsertPolicy:=CodeToolsOpts.FMethodInsertPolicy;
     FKeyWordPolicy:=CodeToolsOpts.FKeyWordPolicy;
@@ -576,7 +576,7 @@ begin
     FPropertyReadIdentPrefix:=CodeToolsOpts.FPropertyReadIdentPrefix;
     FPropertyWriteIdentPrefix:=CodeToolsOpts.FPropertyWriteIdentPrefix;
     FPropertyStoredIdentPostfix:=CodeToolsOpts.FPropertyStoredIdentPostfix;
-    FPrivatVariablePrefix:=CodeToolsOpts.FPrivatVariablePrefix;
+    FPrivateVariablePrefix:=CodeToolsOpts.FPrivateVariablePrefix;
     FSetPropertyVariablename:=CodeToolsOpts.FSetPropertyVariablename;
   end else begin
     Clear;
@@ -600,8 +600,8 @@ begin
   FCompleteProperties:=true;
   FLineLength:=80;
   FClassPartInsertPolicy:=cpipLast;
-  FMixMethodsAndPorperties:=false;
-  FForwardProcInsertPolicy:=fpipInFrontOfMethods;
+  FMixMethodsAndProperties:=false;
+  FForwardProcBodyInsertPolicy:=fpipInFrontOfMethods;
   FKeepForwardProcOrder:=true;
   FMethodInsertPolicy:=mipClassOrder;
   FKeyWordPolicy:=wpLowerCase;
@@ -613,7 +613,7 @@ begin
   FPropertyReadIdentPrefix:='Get';
   FPropertyWriteIdentPrefix:='Set';
   FPropertyStoredIdentPostfix:='IsStored';
-  FPrivatVariablePrefix:='f';
+  FPrivateVariablePrefix:='f';
   FSetPropertyVariablename:='AValue';
 end;
 
@@ -644,8 +644,8 @@ begin
     // CodeCreation
     and (FLineLength=CodeToolsOpts.FLineLength)
     and (FClassPartInsertPolicy=CodeToolsOpts.FClassPartInsertPolicy)
-    and (FMixMethodsAndPorperties=CodeToolsOpts.MixMethodsAndPorperties)
-    and (FForwardProcInsertPolicy=CodeToolsOpts.ForwardProcInsertPolicy)
+    and (FMixMethodsAndProperties=CodeToolsOpts.MixMethodsAndProperties)
+    and (FForwardProcBodyInsertPolicy=CodeToolsOpts.ForwardProcBodyInsertPolicy)
     and (FKeepForwardProcOrder=CodeToolsOpts.KeepForwardProcOrder)
     and (FMethodInsertPolicy=CodeToolsOpts.FMethodInsertPolicy)
     and (FKeyWordPolicy=CodeToolsOpts.FKeyWordPolicy)
@@ -657,7 +657,7 @@ begin
     and (FPropertyReadIdentPrefix=CodeToolsOpts.FPropertyReadIdentPrefix)
     and (FPropertyWriteIdentPrefix=CodeToolsOpts.FPropertyWriteIdentPrefix)
     and (FPropertyStoredIdentPostfix=CodeToolsOpts.FPropertyStoredIdentPostfix)
-    and (FPrivatVariablePrefix=CodeToolsOpts.FPrivatVariablePrefix)
+    and (FPrivateVariablePrefix=CodeToolsOpts.FPrivateVariablePrefix)
     and (FSetPropertyVariablename=CodeToolsOpts.FSetPropertyVariablename)
    ;
 end;
@@ -694,8 +694,8 @@ begin
   with Boss.SourceChangeCache do begin
     BeautifyCodeOptions.LineLength:=LineLength;
     BeautifyCodeOptions.ClassPartInsertPolicy:=ClassPartInsertPolicy;
-    BeautifyCodeOptions.MixMethodsAndPorperties:=MixMethodsAndPorperties;
-    BeautifyCodeOptions.ForwardProcInsertPolicy:=ForwardProcInsertPolicy;
+    BeautifyCodeOptions.MixMethodsAndProperties:=MixMethodsAndProperties;
+    BeautifyCodeOptions.ForwardProcBodyInsertPolicy:=ForwardProcBodyInsertPolicy;
     BeautifyCodeOptions.KeepForwardProcOrder:=KeepForwardProcOrder;
     BeautifyCodeOptions.MethodInsertPolicy:=MethodInsertPolicy;
     BeautifyCodeOptions.KeyWordPolicy:=KeyWordPolicy;
@@ -707,7 +707,7 @@ begin
     BeautifyCodeOptions.PropertyReadIdentPrefix:=PropertyReadIdentPrefix;
     BeautifyCodeOptions.PropertyWriteIdentPrefix:=PropertyWriteIdentPrefix;
     BeautifyCodeOptions.PropertyStoredIdentPostfix:=PropertyStoredIdentPostfix;
-    BeautifyCodeOptions.PrivatVariablePrefix:=PrivatVariablePrefix;
+    BeautifyCodeOptions.PrivateVariablePrefix:=PrivateVariablePrefix;
   end;
   Boss.SetPropertyVariablename:=SetPropertyVariablename;
 end;
@@ -877,9 +877,9 @@ begin
     Visible:=true;
   end;
   
-  MixMethodsAndPorpertiesCheckBox:=TCheckBox.Create(Self);
-  with MixMethodsAndPorpertiesCheckBox do begin
-    Name:='MixMethodsAndPorpertiesCheckBox';
+  MixMethodsAndPropertiesCheckBox:=TCheckBox.Create(Self);
+  with MixMethodsAndPropertiesCheckBox do begin
+    Name:='MixMethodsAndPropertiesCheckBox';
     Parent:=NoteBook.Page[PageID];
     SetBounds(ClassPartInsertPolicyRadioGroup.Left,
        ClassPartInsertPolicyRadioGroup.Top+ClassPartInsertPolicyRadioGroup.Height+5,
@@ -893,8 +893,8 @@ begin
     Name:='MethodInsertPolicyRadioGroup';
     Parent:=NoteBook.Page[PageID];
     SetBounds(ClassPartInsertPolicyRadioGroup.Left,
-      MixMethodsAndPorpertiesCheckBox.Top
-      +MixMethodsAndPorpertiesCheckBox.Height+10,
+      MixMethodsAndPropertiesCheckBox.Top
+      +MixMethodsAndPropertiesCheckBox.Height+10,
       ClassPartInsertPolicyRadioGroup.Width,
       100);
     Caption:=dlgMethodInsPolicy;
@@ -1018,9 +1018,9 @@ begin
     Visible:=true;
   end;
 
-  PrivatVariablePrefixLabel:=TLabel.Create(Self);
-  with PrivatVariablePrefixLabel do begin
-    Name:='PrivatVariablePrefixLabel';
+  PrivateVariablePrefixLabel:=TLabel.Create(Self);
+  with PrivateVariablePrefixLabel do begin
+    Name:='PrivateVariablePrefixLabel';
     Parent:=PropertyCompletionGroupBox;
     SetBounds((PropertyCompletionGroupBox.ClientWidth-20) div 2,
       PropertyReadIdentPrefixLabel.Top,120,Height);
@@ -1028,11 +1028,11 @@ begin
     Visible:=true;
   end;
 
-  PrivatVariablePrefixEdit:=TEdit.Create(Self);
-  with PrivatVariablePrefixEdit do begin
-    Name:='PrivatVariablePrefixEdit';
+  PrivateVariablePrefixEdit:=TEdit.Create(Self);
+  with PrivateVariablePrefixEdit do begin
+    Name:='PrivateVariablePrefixEdit';
     Parent:=PropertyCompletionGroupBox;
-    SetBounds(PrivatVariablePrefixLabel.Left+150,PrivatVariablePrefixLabel.Top,
+    SetBounds(PrivateVariablePrefixLabel.Left+150,PrivateVariablePrefixLabel.Top,
       80,Height);
     Visible:=true;
   end;
@@ -1041,8 +1041,8 @@ begin
   with SetPropertyVariablenameLabel do begin
     Name:='SetPropertyVariablenameLabel';
     Parent:=PropertyCompletionGroupBox;
-    SetBounds(PrivatVariablePrefixLabel.Left,
-      PrivatVariablePrefixLabel.Top+PrivatVariablePrefixLabel.Height+5,
+    SetBounds(PrivateVariablePrefixLabel.Left,
+      PrivateVariablePrefixLabel.Top+PrivateVariablePrefixLabel.Height+5,
       120,Height);
     Caption:=dlgSetPropertyVariable ;
     Visible:=true;
@@ -1052,8 +1052,8 @@ begin
   with SetPropertyVariablenameEdit do begin
     Name:='SetPropertyVariablenameEdit';
     Parent:=PropertyCompletionGroupBox;
-    SetBounds(PrivatVariablePrefixEdit.Left,
-      PrivatVariablePrefixLabel.Top+PrivatVariablePrefixLabel.Height+5,
+    SetBounds(PrivateVariablePrefixEdit.Left,
+      PrivateVariablePrefixLabel.Top+PrivateVariablePrefixLabel.Height+5,
       80,Height);
     Visible:=true;
   end;
@@ -1260,7 +1260,7 @@ begin
     SetBounds(8,6,(Self.ClientWidth div 2)-12,70);
   end;
 
-  with MixMethodsAndPorpertiesCheckBox do begin
+  with MixMethodsAndPropertiesCheckBox do begin
     SetBounds(ClassPartInsertPolicyRadioGroup.Left,
        ClassPartInsertPolicyRadioGroup.Top
          +ClassPartInsertPolicyRadioGroup.Height+5,
@@ -1269,8 +1269,8 @@ begin
 
   with MethodInsertPolicyRadioGroup do begin
     SetBounds(ClassPartInsertPolicyRadioGroup.Left,
-      MixMethodsAndPorpertiesCheckBox.Top
-        +MixMethodsAndPorpertiesCheckBox.Height+10,
+      MixMethodsAndPropertiesCheckBox.Top
+        +MixMethodsAndPropertiesCheckBox.Height+10,
       ClassPartInsertPolicyRadioGroup.Width,
       100);
   end;
@@ -1331,25 +1331,25 @@ begin
       PropertyStoredIdentPostfixLabel.Top,80,Height);
   end;
 
-  with PrivatVariablePrefixLabel do begin
+  with PrivateVariablePrefixLabel do begin
     SetBounds((PropertyCompletionGroupBox.ClientWidth-20) div 2,
       PropertyReadIdentPrefixLabel.Top,120,Height);
   end;
 
-  with PrivatVariablePrefixEdit do begin
-    SetBounds(PrivatVariablePrefixLabel.Left+150,PrivatVariablePrefixLabel.Top,
+  with PrivateVariablePrefixEdit do begin
+    SetBounds(PrivateVariablePrefixLabel.Left+150,PrivateVariablePrefixLabel.Top,
       80,Height);
   end;
 
   with SetPropertyVariablenameLabel do begin
-    SetBounds(PrivatVariablePrefixLabel.Left,
-      PrivatVariablePrefixLabel.Top+PrivatVariablePrefixLabel.Height+5,
+    SetBounds(PrivateVariablePrefixLabel.Left,
+      PrivateVariablePrefixLabel.Top+PrivateVariablePrefixLabel.Height+5,
       120,Height);
   end;
 
   with SetPropertyVariablenameEdit do begin
-    SetBounds(PrivatVariablePrefixEdit.Left,
-      PrivatVariablePrefixLabel.Top+PrivatVariablePrefixLabel.Height+5,
+    SetBounds(PrivateVariablePrefixEdit.Left,
+      PrivateVariablePrefixLabel.Top+PrivateVariablePrefixLabel.Height+5,
       80,Height);
   end;
 end;
@@ -1533,8 +1533,8 @@ begin
     // cpipLast
     ClassPartInsertPolicyRadioGroup.ItemIndex:=1;
   end;
-  MixMethodsAndPorpertiesCheckBox.Checked:=Options.MixMethodsAndPorperties;
-  case Options.ForwardProcInsertPolicy of
+  MixMethodsAndPropertiesCheckBox.Checked:=Options.MixMethodsAndProperties;
+  case Options.ForwardProcBodyInsertPolicy of
   fpipLast: ForwardProcsInsertPolicyRadioGroup.ItemIndex:=0;
   fpipInFrontOfMethods: ForwardProcsInsertPolicyRadioGroup.ItemIndex:=1;
   else
@@ -1581,7 +1581,7 @@ begin
   PropertyReadIdentPrefixEdit.Text:=Options.PropertyReadIdentPrefix;
   PropertyWriteIdentPrefixEdit.Text:=Options.PropertyWriteIdentPrefix;
   PropertyStoredIdentPostfixEdit.Text:=Options.PropertyStoredIdentPostfix;
-  PrivatVariablePrefixEdit.Text:=Options.PrivatVariablePrefix;
+  PrivateVariablePrefixEdit.Text:=Options.PrivateVariablePrefix;
   SetPropertyVariablenameEdit.Text:=Options.SetPropertyVariablename;
 end;
 
@@ -1601,11 +1601,11 @@ begin
   0: Options.ClassPartInsertPolicy:=cpipAlphabetically;
   1: Options.ClassPartInsertPolicy:=cpipLast;
   end;
-  Options.MixMethodsAndPorperties:=MixMethodsAndPorpertiesCheckBox.Checked;
+  Options.MixMethodsAndProperties:=MixMethodsAndPropertiesCheckBox.Checked;
   case ForwardProcsInsertPolicyRadioGroup.ItemIndex of
-  0: Options.ForwardProcInsertPolicy:=fpipLast;
-  1: Options.ForwardProcInsertPolicy:=fpipInFrontOfMethods;
-  2: Options.ForwardProcInsertPolicy:=fpipBehindMethods;
+  0: Options.ForwardProcBodyInsertPolicy:=fpipLast;
+  1: Options.ForwardProcBodyInsertPolicy:=fpipInFrontOfMethods;
+  2: Options.ForwardProcBodyInsertPolicy:=fpipBehindMethods;
   end;
   Options.KeepForwardProcOrder:=ForwardProcsKeepOrderCheckBox.Checked;
   case MethodInsertPolicyRadioGroup.ItemIndex of
@@ -1636,8 +1636,8 @@ begin
     ReadIdentifier(PropertyWriteIdentPrefixEdit.Text,'Set');
   Options.PropertyStoredIdentPostfix:=
     ReadIdentifier(PropertyStoredIdentPostfixEdit.Text,'IsStored');
-  Options.PrivatVariablePrefix:=
-    ReadIdentifier(PrivatVariablePrefixEdit.Text,'F');
+  Options.PrivateVariablePrefix:=
+    ReadIdentifier(PrivateVariablePrefixEdit.Text,'F');
   Options.SetPropertyVariablename:=
     ReadIdentifier(SetPropertyVariablenameEdit.Text,'AValue');
 end;
@@ -1711,11 +1711,11 @@ begin
   0: Options.ClassPartInsertPolicy:=cpipAlphabetically;
   1: Options.ClassPartInsertPolicy:=cpipLast;
   end;
-  Options.MixMethodsAndPorperties:=MixMethodsAndPorpertiesCheckBox.Checked;
+  Options.MixMethodsAndProperties:=MixMethodsAndPropertiesCheckBox.Checked;
   case ForwardProcsInsertPolicyRadioGroup.ItemIndex of
-  0: Options.ForwardProcInsertPolicy:=fpipLast;
-  1: Options.ForwardProcInsertPolicy:=fpipInFrontOfMethods;
-  2: Options.ForwardProcInsertPolicy:=fpipBehindMethods;
+  0: Options.ForwardProcBodyInsertPolicy:=fpipLast;
+  1: Options.ForwardProcBodyInsertPolicy:=fpipInFrontOfMethods;
+  2: Options.ForwardProcBodyInsertPolicy:=fpipBehindMethods;
   end;
   Options.KeepForwardProcOrder:=ForwardProcsKeepOrderCheckBox.Checked;
   case MethodInsertPolicyRadioGroup.ItemIndex of
@@ -1745,8 +1745,8 @@ begin
     ReadIdentifier(PropertyWriteIdentPrefixEdit.Text,'Set');
   Options.PropertyStoredIdentPostfix:=
     ReadIdentifier(PropertyStoredIdentPostfixEdit.Text,'IsStored');
-  Options.PrivatVariablePrefix:=
-    ReadIdentifier(PrivatVariablePrefixEdit.Text,'F');
+  Options.PrivateVariablePrefix:=
+    ReadIdentifier(PrivateVariablePrefixEdit.Text,'F');
 end;
 
 procedure TCodeToolsOptsDlg.UpdateExamples(Sender: TObject);

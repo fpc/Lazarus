@@ -1154,6 +1154,9 @@ begin
     Add('TEXT'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('TRUE'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('WIDESTRING' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('EXIT'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('BREAK'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CONTINUE'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     // only fpc 1.1
     Add('LONGWORD'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('COPY'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1193,6 +1196,9 @@ begin
     Add('TRUE'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('WIDESTRING' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('WORD'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('EXIT'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('BREAK'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CONTINUE'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 end;
 

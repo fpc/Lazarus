@@ -40,8 +40,8 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, CodeToolsStrConsts, BasicCodeTools, AVL_Tree,
-  CodeToolMemManager;
+  Classes, SysUtils, CodeToolsStrConsts, CodeToolsStructs, BasicCodeTools,
+  AVL_Tree, CodeToolMemManager;
 
 //-----------------------------------------------------------------------------
 
@@ -151,7 +151,14 @@ const
   ctnsNeedJITParsing      = 1 shl 1;
   ctnsHasDefaultValue     = 1 shl 2;
 
-  
+  ClassSectionNodeType: array[TPascalClassSection] of TCodeTreeNodeDesc = (
+    ctnClassPrivate,
+    ctnClassProtected,
+    ctnClassPublic,
+    ctnClassPublished
+    );
+
+
 type
   // Procedure Specifiers
   TProcedureSpecifier = (

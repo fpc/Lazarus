@@ -102,7 +102,13 @@ type
     function FindClassNode(StartNode: TCodeTreeNode;
         const UpperClassName: string;
         IgnoreForwards, IgnoreNonForwards: boolean): TCodeTreeNode;
+    function FindClassSection(ClassNode: TCodeTreeNode;
+        NodeDesc: TCodeTreeNodeDesc): TCodeTreeNode;
+    function FindLastClassSection(ClassNode: TCodeTreeNode;
+        NodeDesc: TCodeTreeNodeDesc): TCodeTreeNode;
     function FindClassNodeInInterface(const UpperClassName: string;
+        IgnoreForwards, IgnoreNonForwards, ErrorOnNotFound: boolean): TCodeTreeNode;
+    function FindClassNodeInUnit(const UpperClassName: string;
         IgnoreForwards, IgnoreNonForwards, ErrorOnNotFound: boolean): TCodeTreeNode;
     function FindFirstIdentNodeInClass(ClassNode: TCodeTreeNode): TCodeTreeNode;
     function ClassSectionNodeStartsWithWord(ANode: TCodeTreeNode): boolean;
@@ -113,6 +119,7 @@ type
     function FindTypeNodeOfDefinition(
         DefinitionNode: TCodeTreeNode): TCodeTreeNode;
     function NodeIsPartOfTypeDefinition(ANode: TCodeTreeNode): boolean;
+    function ExtractDefinitionNodeType(DefinitionNode: TCodeTreeNode): string;
 
     // sections
     function GetSourceType: TCodeTreeNodeDesc;
@@ -121,7 +128,9 @@ type
     function FindInterfaceNode: TCodeTreeNode;
     function FindImplementationNode: TCodeTreeNode;
     function FindInitializationNode: TCodeTreeNode;
+    function FindFinalizationNode: TCodeTreeNode;
     function FindMainBeginEndNode: TCodeTreeNode;
+    function FindFirstSectionChild: TCodeTreeNode;
 
     // uses sections
     procedure MoveCursorToUsesEnd(UsesNode: TCodeTreeNode);
@@ -942,6 +951,22 @@ begin
   end;
 end;
 
+function TPascalReaderTool.FindClassSection(ClassNode: TCodeTreeNode;
+  NodeDesc: TCodeTreeNodeDesc): TCodeTreeNode;
+begin
+  Result:=ClassNode.FirstChild;
+  while (Result<>nil) and (Result.Desc<>NodeDesc) do
+    Result:=Result.NextBrother;
+end;
+
+function TPascalReaderTool.FindLastClassSection(ClassNode: TCodeTreeNode;
+  NodeDesc: TCodeTreeNodeDesc): TCodeTreeNode;
+begin
+  Result:=ClassNode.LastChild;
+  while (Result<>nil) and (Result.Desc<>NodeDesc) do
+    Result:=Result.PriorBrother;
+end;
+
 function TPascalReaderTool.FindClassNodeInInterface(
   const UpperClassName: string; IgnoreForwards, IgnoreNonForwards,
   ErrorOnNotFound: boolean): TCodeTreeNode;
@@ -955,6 +980,28 @@ begin
   Result:=Tree.Root;
   if Result<>nil then begin
     if Result.Desc=ctnUnit then begin
+      Result:=Result.NextBrother;
+    end;
+    if Result<>nil then
+      Result:=FindClassNode(Result.FirstChild,UpperClassName,
+                   IgnoreForwards, IgnoreNonForwards);
+  end;
+  if (Result=nil) and ErrorOnNotFound then
+    RaiseClassNotFound;
+end;
+
+function TPascalReaderTool.FindClassNodeInUnit(const UpperClassName: string;
+  IgnoreForwards, IgnoreNonForwards, ErrorOnNotFound: boolean): TCodeTreeNode;
+
+  procedure RaiseClassNotFound;
+  begin
+    RaiseExceptionFmt(ctsClassSNotFound, [UpperClassName]);
+  end;
+
+begin
+  Result:=Tree.Root;
+  if Result<>nil then begin
+    if Result.Desc in [ctnUnit,ctnLibrary,ctnPackage] then begin
       Result:=Result.NextBrother;
     end;
     if Result<>nil then
@@ -1040,6 +1087,13 @@ begin
     Result:=Result.NextBrother;
 end;
 
+function TPascalReaderTool.FindFinalizationNode: TCodeTreeNode;
+begin
+  Result:=Tree.Root;
+  while (Result<>nil) and (Result.Desc<>ctnFinalization) do
+    Result:=Result.NextBrother;
+end;
+
 function TPascalReaderTool.FindMainBeginEndNode: TCodeTreeNode;
 begin
   Result:=Tree.Root;
@@ -1053,6 +1107,15 @@ begin
   end;
   if Result=nil then exit;
   if Result.Desc<>ctnBeginBlock then Result:=nil;
+end;
+
+function TPascalReaderTool.FindFirstSectionChild: TCodeTreeNode;
+begin
+  Result:=Tree.Root;
+  while (Result<>nil) and (Result.FirstChild=nil) do
+    Result:=Result.NextBrother;
+  if (Result=nil) then exit;
+  Result:=Result.FirstChild;
 end;
 
 function TPascalReaderTool.NodeIsInAMethod(Node: TCodeTreeNode): boolean;
@@ -1120,6 +1183,18 @@ begin
     ANode:=ANode.Parent;
   end;
   Result:=false;
+end;
+
+function TPascalReaderTool.ExtractDefinitionNodeType(
+  DefinitionNode: TCodeTreeNode): string;
+var
+  TypeNode: TCodeTreeNode;
+begin
+  Result:='';
+  TypeNode:=FindTypeNodeOfDefinition(DefinitionNode);
+  if TypeNode=nil then exit;
+  if TypeNode.Desc=ctnIdentifier then
+    Result:=GetIdentifier(@Src[TypeNode.StartPos]);
 end;
 
 function TPascalReaderTool.PropertyIsDefault(PropertyNode: TCodeTreeNode

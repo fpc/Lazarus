@@ -143,6 +143,7 @@ resourcestring
   lisMenuInsertCVSKeyword = 'CVS keyword';
   lisMenuInsertGeneral = 'General';
   lisMenuCompleteCode = 'Complete Code';
+  lisMenuExtractProc = 'Extract procedure';
 
   lisMenuInsertGPLNotice = 'GPL notice';
   lisMenuInsertLGPLNotice = 'LGPL notice';
@@ -226,6 +227,8 @@ resourcestring
   lisMenuMakeResourceString = 'Make Resource String';
   lisMenuDiff = 'Diff';
   lisMenuConvertDFMtoLFM = 'Convert DFM file to LFM';
+  lisMenuCheckLFM = 'Check LFM file in editor';
+  lisMenuConvertDelphiUnit = 'Convert Delphi unit to Lazarus unit';
   lisMenuBuildLazarus = 'Build Lazarus';
   lisMenuConfigureBuildLazarus = 'Configure "Build Lazarus"';
   
@@ -249,6 +252,7 @@ resourcestring
   lisLazarusProjectInfoLpiLpiAllFiles = 'Lazarus Project Info (*.lpi)|*.lpi|'
     +'All Files|*.*';
   lisCompilerOptionsForProject = 'Compiler Options for Project: %s';
+  lisChooseDelphiUnit = 'Choose Delphi unit';
   lisUnableToReadFileError = 'Unable to read file %s%s%s%sError: %s';
   lisFormatError = 'Format error';
   lisUnableToConvertFileError = 'Unable to convert file %s%s%s%sError: %s';
@@ -1137,6 +1141,7 @@ resourcestring
   // codetools
   srkmecWordCompletion            = 'Word completion';
   srkmecCompletecode              = 'Complete code';
+  srkmecExtractProc               = 'Extract procedure';
   srkmecSyntaxCheck               = 'Syntax check';
   srkmecGuessMisplacedIFDEF       = 'Guess misplaced $IFDEF';
   srkmecFindDeclaration           = 'Find declaration';

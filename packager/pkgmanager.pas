@@ -45,15 +45,16 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, LCLProc, Forms, Controls, FileCtrl,
-  Dialogs, Menus, CodeToolManager, CodeCache, BasicCodeTools, Laz_XMLCfg,
-  AVL_Tree, LazarusIDEStrConsts, KeyMapping, EnvironmentOpts, MiscOptions,
-  IDEProcs, ProjectDefs, InputHistory, IDEDefs, Project, ComponentReg,
-  UComponentManMain, PackageEditor, AddToPackageDlg, PackageDefs, PackageLinks,
-  PackageSystem, OpenInstalledPkgDlg, PkgGraphExplorer, BrokenDependenciesDlg,
-  CompilerOptions, ExtToolDialog, ExtToolEditDlg, EditDefineTree, MsgView,
-  BuildLazDialog, DefineTemplates, LazConf, ProjectInspector, ComponentPalette,
-  UnitEditor, AddFileToAPackageDlg, LazarusPackageIntf, PublishProjectDlg,
-  BasePkgManager, MainBar;
+  Dialogs, Menus,
+  CodeToolManager, CodeCache, BasicCodeTools, Laz_XMLCfg, AVL_Tree,
+  DialogProcs, LazarusIDEStrConsts, IDEProcs, IDEDefs, KeyMapping,
+  EnvironmentOpts, MiscOptions, ProjectDefs, InputHistory, Project,
+  ComponentReg, UComponentManMain, PackageEditor, AddToPackageDlg, PackageDefs,
+  PackageLinks, PackageSystem, OpenInstalledPkgDlg, PkgGraphExplorer,
+  BrokenDependenciesDlg, CompilerOptions, ExtToolDialog, ExtToolEditDlg,
+  EditDefineTree, MsgView, BuildLazDialog, DefineTemplates, LazConf,
+  ProjectInspector, ComponentPalette, UnitEditor, AddFileToAPackageDlg,
+  LazarusPackageIntf, PublishProjectDlg, BasePkgManager, MainBar;
 
 type
   TPkgManager = class(TBasePkgManager)
@@ -2191,8 +2192,9 @@ begin
   Src:=HeaderSrc+Src;
 
   // check if old code is already uptodate
-  MainIDE.DoLoadCodeBuffer(CodeBuffer,SrcFilename,[lbfQuiet,lbfCheckIfText,
+  Result:=LoadCodeBuffer(CodeBuffer,SrcFilename,[lbfQuiet,lbfCheckIfText,
                                       lbfUpdateFromDisk,lbfCreateClearOnError]);
+  if Result<>mrOk then exit;
   OldSrc:=CodeToolBoss.ExtractCodeWithoutComments(CodeBuffer);
   if CompareTextIgnoringSpace(OldSrc,Src,true)=0 then begin
     Result:=mrOk;

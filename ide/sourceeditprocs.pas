@@ -1,6 +1,6 @@
 {
 /***************************************************************************
-                             SourceEditProcs.pas
+                             sourceeditprocs.pas
                              -------------------
 
  ***************************************************************************/
@@ -50,7 +50,7 @@ procedure PaintCompletionItem(const AKey: string; ACanvas: TCanvas;
   aCompletion : TSynCompletion; CurrentCompletionType: TCompletionType);
 function GetIdentCompletionValue(aCompletion : TSynCompletion;
   var ValueType: TIdentComplValue; var CursorToLeft: integer): string;
-  
+
 
 implementation
 

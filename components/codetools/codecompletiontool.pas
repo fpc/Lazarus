@@ -54,23 +54,36 @@ uses
   {$ENDIF}
   Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom, PascalParserTool,
   MethodJumpTool, FindDeclarationTool, SourceLog, KeywordFuncLists,
-  BasicCodeTools, LinkScanner, CodeCache, AVL_Tree, TypInfo, SourceChanger;
+  CodeToolsStructs, BasicCodeTools, LinkScanner, CodeCache, AVL_Tree, TypInfo,
+  SourceChanger;
 
 type
   TNewClassPart = (ncpPrivateProcs, ncpPrivateVars,
+                   ncpProtectedProcs, ncpProtectedVars,
+                   ncpPublicProcs, ncpPublicVars,
                    ncpPublishedProcs, ncpPublishedVars);
-
+                   
+const
+  NewClassPartVisibilty: array[TNewClassPart] of TPascalClassSection = (
+    pcsPrivate, pcsPrivate,
+    pcsProtected, pcsProtected,
+    pcsPublic, pcsPublic,
+    pcsPublished, pcsPublished
+    );
+  
+type
   TCodeCompletionCodeTool = class(TMethodJumpingCodeTool)
   private
     ASourceChangeCache: TSourceChangeCache;
-    CompletingClassNode: TCodeTreeNode; // the class that is to be completed
-    StartNode: TCodeTreeNode; // the first variable/method/GUID node in CompletingClassNode
+    FCodeCompleteClassNode: TCodeTreeNode; // the class that is to be completed
+    CompletingStartNode: TCodeTreeNode; // the first variable/method/GUID node in FCodeCompleteClassNode
     FAddInheritedCodeToOverrideMethod: boolean;
     FCompleteProperties: boolean;
     FirstInsert: TCodeTreeNodeExtension; // list of insert requests
     FSetPropertyVariablename: string;
     JumpToProcName: string;
-    NewPrivatSectionIndent, NewPrivatSectionInsertPos: integer;
+    NewClassSectionIndent: array[TPascalClassSection] of integer;
+    NewClassSectionInsertPos: array[TPascalClassSection] of integer;
     FullTopLvlName: string;
     procedure AddNewPropertyAccessMethodsToClassProcs(ClassProcs: TAVLTree;
         const TheClassName: string);
@@ -79,7 +92,7 @@ type
     procedure SetCodeCompleteClassNode(const AClassNode: TCodeTreeNode);
     procedure SetCodeCompleteSrcChgCache(const AValue: TSourceChangeCache);
     function OnTopLvlIdentifierFound(Params: TFindDeclarationParams;
-      const FoundContext: TFindContext): TIdentifierFoundResult;
+        const FoundContext: TFindContext): TIdentifierFoundResult;
   protected
     function ProcExistsInCodeCompleteClass(const NameAndParams: string): boolean;
     function VarExistsInCodeCompleteClass(const UpperName: string): boolean;
@@ -91,13 +104,15 @@ type
     function InsertAllNewClassParts: boolean;
     function CreateMissingProcBodies: boolean;
     function NodeExtIsVariable(ANodeExt: TCodeTreeNodeExtension): boolean;
-    function NodeExtIsPrivate(ANodeExt: TCodeTreeNodeExtension): boolean;
+    function NodeExtHasVisibilty(ANodeExt: TCodeTreeNodeExtension;
+      Visibility: TPascalClassSection): boolean;
     procedure FindInsertPositionForForwardProc(
-                                          SourceChangeCache: TSourceChangeCache;
-                                          ProcNode: TCodeTreeNode;
-                                          var Indent, InsertPos: integer);
+           SourceChangeCache: TSourceChangeCache;
+           ProcNode: TCodeTreeNode; var Indent, InsertPos: integer);
+    procedure FindInsertPositionForProcInterface(var Indent, InsertPos: integer;
+           SourceChangeCache: TSourceChangeCache);
     function CheckLocalVarAssignmentSyntax(CleanCursorPos: integer;
-      var VarNameAtom,AssignmentOperator,TermAtom: TAtomPosition): boolean;
+           var VarNameAtom,AssignmentOperator,TermAtom: TAtomPosition): boolean;
     function AddLocalVariable(CleanCursorPos: integer; OldTopLine: integer;
                           VariableName, VariableType: string;
                           var NewPos: TCodeXYPosition; var NewTopLine: integer;
@@ -110,7 +125,7 @@ type
                        SourceChangeCache: TSourceChangeCache): boolean;
   protected
     property CodeCompleteClassNode: TCodeTreeNode
-                                  read CompletingClassNode write SetCodeCompleteClassNode;
+                        read FCodeCompleteClassNode write SetCodeCompleteClassNode;
     property CodeCompleteSrcChgCache: TSourceChangeCache
                        read ASourceChangeCache write SetCodeCompleteSrcChgCache;
   public
@@ -155,7 +170,7 @@ begin
   if not Result then begin
     // ToDo: check ancestor procs too
     // search in current class
-    Result:=(FindProcNode(StartNode,NameAndParams,[phpInUpperCase])<>nil);
+    Result:=(FindProcNode(CompletingStartNode,NameAndParams,[phpInUpperCase])<>nil);
   end;
 end;
 
@@ -163,12 +178,12 @@ procedure TCodeCompletionCodeTool.SetCodeCompleteClassNode(
   const AClassNode: TCodeTreeNode);
 begin
   FreeClassInsertionList;
-  CompletingClassNode:=AClassNode;
-  BuildSubTreeForClass(CompletingClassNode);
-  StartNode:=CompletingClassNode.FirstChild;
-  while (StartNode<>nil) and (StartNode.FirstChild=nil) do
-    StartNode:=StartNode.NextBrother;
-  if StartNode<>nil then StartNode:=StartNode.FirstChild;
+  FCodeCompleteClassNode:=AClassNode;
+  BuildSubTreeForClass(FCodeCompleteClassNode);
+  CompletingStartNode:=FCodeCompleteClassNode.FirstChild;
+  while (CompletingStartNode<>nil) and (CompletingStartNode.FirstChild=nil) do
+    CompletingStartNode:=CompletingStartNode.NextBrother;
+  if CompletingStartNode<>nil then CompletingStartNode:=CompletingStartNode.FirstChild;
   JumpToProcName:='';
 end;
 
@@ -221,7 +236,7 @@ begin
   if not Result then begin
     // ToDo: check ancestor vars too
     // search in current class
-    Result:=(FindVarNode(StartNode,UpperName)<>nil);
+    Result:=(FindVarNode(CompletingStartNode,UpperName)<>nil);
   end;
 end;
 
@@ -311,11 +326,25 @@ begin
        or (ANodeExt.Flags=ord(ncpPublishedVars));
 end;
 
-function TCodeCompletionCodeTool.NodeExtIsPrivate(
-  ANodeExt: TCodeTreeNodeExtension): boolean;
+function TCodeCompletionCodeTool.NodeExtHasVisibilty(
+  ANodeExt: TCodeTreeNodeExtension; Visibility: TPascalClassSection): boolean;
 begin
-  Result:=(ANodeExt.Flags=ord(ncpPrivateVars))
-       or (ANodeExt.Flags=ord(ncpPrivateProcs));
+  case Visibility of
+  pcsPrivate:
+    Result:=(ANodeExt.Flags=ord(ncpPrivateVars))
+         or (ANodeExt.Flags=ord(ncpPrivateProcs));
+  pcsProtected:
+    Result:=(ANodeExt.Flags=ord(ncpProtectedVars))
+         or (ANodeExt.Flags=ord(ncpProtectedProcs));
+  pcsPublic:
+    Result:=(ANodeExt.Flags=ord(ncpPublicVars))
+         or (ANodeExt.Flags=ord(ncpPublicProcs));
+  pcsPublished:
+    Result:=(ANodeExt.Flags=ord(ncpPublishedVars))
+         or (ANodeExt.Flags=ord(ncpPublishedProcs));
+  else
+    Result:=false;
+  end;
 end;
 
 procedure TCodeCompletionCodeTool.FindInsertPositionForForwardProc(
@@ -436,7 +465,7 @@ begin
     end;
   end;
   
-  if SourceChangeCache.BeautifyCodeOptions.ForwardProcInsertPolicy
+  if SourceChangeCache.BeautifyCodeOptions.ForwardProcBodyInsertPolicy
     = fpipInFrontOfMethods
   then begin
     // Try to insert new proc in front of existing methods
@@ -459,7 +488,7 @@ begin
       end;
       exit;
     end;
-  end else if SourceChangeCache.BeautifyCodeOptions.ForwardProcInsertPolicy
+  end else if SourceChangeCache.BeautifyCodeOptions.ForwardProcBodyInsertPolicy
     = fpipBehindMethods
   then begin
     // Try to insert new proc behind existing methods
@@ -487,6 +516,48 @@ begin
 
   RaiseException('TCodeCompletionCodeTool.FindInsertPositionForForwardProc '
    +' Internal Error: no insert position found');
+end;
+
+procedure TCodeCompletionCodeTool.FindInsertPositionForProcInterface(
+  var Indent, InsertPos: integer; SourceChangeCache: TSourceChangeCache);
+var
+  InsertNode: TCodeTreeNode;
+begin
+  InsertNode:=FindInterfaceNode;
+  if InsertNode<>nil then begin
+    // there is an interface
+    // -> append at end of interface
+    InsertPos:=FindLineEndOrCodeInFrontOfPosition(InsertNode.EndPos,true);
+    Indent:=GetLineIndent(Src,InsertNode.EndPos);
+  end;
+  if InsertPos<1 then begin
+    // there is no interface
+    // -> insert in front of any proc
+    InsertNode:=FindFirstSectionChild;
+    while (InsertNode<>nil) and (InsertNode.Desc<>ctnProcedure) do
+      InsertNode:=InsertNode.NextBrother;
+    if InsertNode<>nil then begin
+      InsertPos:=FindLineEndOrCodeInFrontOfPosition(InsertNode.StartPos,true);
+      Indent:=GetLineIndent(Src,InsertPos);
+    end;
+  end;
+  if InsertPos<1 then begin
+    InsertNode:=FindFirstSectionChild;
+    if InsertNode<>nil then begin
+      Indent:=GetLineIndent(Src,InsertNode.StartPos);
+      if InsertNode.Desc=ctnUsesSection then
+        // insert behind uses section
+        InsertPos:=FindLineEndOrCodeAfterPosition(InsertNode.EndPos)
+      else
+        // insert as first
+        InsertPos:=FindLineEndOrCodeInFrontOfPosition(InsertNode.StartPos);
+    end else begin
+      // insert in interface or somewhere at start
+      InsertNode:=Tree.Root;
+      InsertPos:=FindLineEndOrCodeInFrontOfPosition(InsertNode.EndPos,true);
+      Indent:=GetLineIndent(Src,InsertNode.EndPos);
+    end;
+  end;
 end;
 
 function TCodeCompletionCodeTool.CheckLocalVarAssignmentSyntax(
@@ -567,8 +638,8 @@ begin
     // -> create a new var section and append variable
     Indent:=GetLineIndent(Src,BeginNode.StartPos);
     InsertTxt:='var'+SourceChangeCache.BeautifyCodeOptions.LineEnd
-                +GetIndentStr(Indent+SourceChangeCache.BeautifyCodeOptions.Indent)
-                +InsertTxt;
+               +GetIndentStr(Indent+SourceChangeCache.BeautifyCodeOptions.Indent)
+               +InsertTxt;
     InsertPos:=BeginNode.StartPos;
   end;
   
@@ -908,7 +979,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
                                    Parts[ppName].EndPos-Parts[ppName].StartPos);
       end else begin
         // create the default read identifier for a variable
-        AccessParam:=BeautifyCodeOpts.PrivatVariablePrefix
+        AccessParam:=BeautifyCodeOpts.PrivateVariablePrefix
                                  +copy(Src,Parts[ppName].StartPos,
                                    Parts[ppName].EndPos-Parts[ppName].StartPos);
       end;
@@ -1251,22 +1322,18 @@ var ANodeExt: TCodeTreeNodeExtension;
   Indent, InsertPos: integer;
   CurCode: string;
   IsVariable, InsertBehind: boolean;
+  Visibility: TPascalClassSection;
 begin
   ANodeExt:=FirstInsert;
+  Visibility:=NewClassPartVisibilty[PartType];
   // insert all nodes of specific type
   while ANodeExt<>nil do begin
     IsVariable:=NodeExtIsVariable(ANodeExt);
     if (cardinal(ord(PartType))=ANodeExt.Flags) then begin
       // search a destination section
-      if NodeExtIsPrivate(ANodeExt) then begin
-        // search a privat section in front of the node
-        ClassSectionNode:=ANodeExt.Node.Parent.PriorBrother;
-        while (ClassSectionNode<>nil)
-        and (ClassSectionNode.Desc<>ctnClassPrivate) do
-          ClassSectionNode:=ClassSectionNode.PriorBrother;
-      end else begin
+      if Visibility=pcsPublished then begin
         // insert into first published section
-        ClassSectionNode:=CompletingClassNode.FirstChild;
+        ClassSectionNode:=FCodeCompleteClassNode.FirstChild;
         // the first class section is always a published section, even if there
         // is no 'published' keyword. If the class starts with the 'published'
         // keyword, then it will be more beautiful to insert vars and procs to
@@ -1276,13 +1343,19 @@ begin
         and (ClassSectionNode.NextBrother.Desc=ctnClassPublished)
         then
           ClassSectionNode:=ClassSectionNode.NextBrother;
+      end else if ANodeExt.Node<>nil then begin
+        // search a section of the same Visibility in front of the node
+        ClassSectionNode:=ANodeExt.Node.Parent.PriorBrother;
+        while (ClassSectionNode<>nil)
+        and (ClassSectionNode.Desc<>ClassSectionNodeType[Visibility]) do
+          ClassSectionNode:=ClassSectionNode.PriorBrother;
       end;
       if ClassSectionNode=nil then begin
         // there is no existing class section node
         // -> insert in the new one
-        Indent:=NewPrivatSectionIndent
+        Indent:=NewClassSectionIndent[Visibility]
                     +ASourceChangeCache.BeautifyCodeOptions.Indent;
-        InsertPos:=NewPrivatSectionInsertPos;
+        InsertPos:=NewClassSectionInsertPos[Visibility];
       end else begin
         // there is an existing class section to insert into
         
@@ -1318,23 +1391,26 @@ begin
               end else begin
                 // the insertion is a new method
                 case ANode.Desc of
-                  ctnProcedure:
+                
+                ctnProcedure:
+                  begin
+                    CurCode:=ExtractProcName(ANode,[]);
+                    if AnsiCompareStr(CurCode,ANodeExt.ExtTxt2)>0 then
+                      break;
+                  end;
+                  
+                ctnProperty:
+                  begin
+                    if ASourceChangeCache.BeautifyCodeOptions
+                        .MixMethodsAndProperties then
                     begin
-                      CurCode:=ExtractProcName(ANode,[]);
+                      CurCode:=ExtractPropName(ANode,false);
                       if AnsiCompareStr(CurCode,ANodeExt.ExtTxt2)>0 then
                         break;
-                    end;
-                  ctnProperty:
-                    begin
-                      if ASourceChangeCache.BeautifyCodeOptions
-                          .MixMethodsAndPorperties then
-                      begin
-                        CurCode:=ExtractPropName(ANode,false);
-                        if AnsiCompareStr(CurCode,ANodeExt.ExtTxt2)>0 then
-                          break;
-                      end else
-                        break;
-                    end;
+                    end else
+                      break;
+                  end;
+                  
                 end;
               end;
               InsertNode:=ANode;
@@ -1353,7 +1429,7 @@ begin
               end else begin
                 // the insertion is a method
                 if (not ASourceChangeCache.BeautifyCodeOptions
-                   .MixMethodsAndPorperties)
+                   .MixMethodsAndProperties)
                 and (ANode.Desc=ctnProperty) then
                   break;
               end;
@@ -1404,7 +1480,7 @@ begin
       and (ASourceChangeCache.BeautifyCodeOptions.MethodInsertPolicy
         =mipClassOrder) then
       begin
-        // this was a new method defnition and the body should be added in
+        // this was a new method definition and the body should be added in
         // Class Order
         // -> save information about the inserted position
         ANodeExt.Position:=InsertPos;
@@ -1415,75 +1491,142 @@ begin
 end;
   
 function TCodeCompletionCodeTool.InsertAllNewClassParts: boolean;
-var ANodeExt: TCodeTreeNodeExtension;
-  PrivatNode, ANode, TopMostPrivateNode: TCodeTreeNode;
-  PublishedNeeded: boolean;
+var
+  PublishedKeyWordNeeded: boolean;
+
+  function GetTopMostPositionNode(Visibility: TPascalClassSection
+    ): TCodeTreeNode;
+  var
+    ANodeExt: TCodeTreeNodeExtension;
+  begin
+    Result:=nil;
+    ANodeExt:=FirstInsert;
+    while ANodeExt<>nil do begin
+      if ((Result=nil)
+      or (Result.StartPos>ANodeExt.Node.StartPos))
+        and (NodeExtHasVisibilty(ANodeExt,pcsPrivate))
+      then
+        Result:=ANodeExt.Node;
+      ANodeExt:=ANodeExt.Next;
+    end;
+  end;
+  
+  function GetFirstNodeExtWithVisibility(Visibility: TPascalClassSection
+    ): TCodeTreeNodeExtension;
+  begin
+    Result:=FirstInsert;
+    while Result<>nil do begin
+      if NodeExtHasVisibilty(Result,Visibility) then
+        break;
+      Result:=Result.Next;
+    end;
+  end;
+  
+  procedure AddClassSection(Visibility: TPascalClassSection);
+  var
+    TopMostPositionNode: TCodeTreeNode;
+    SectionNode: TCodeTreeNode;
+    SectionKeyWord: String;
+    ANode: TCodeTreeNode;
+  begin
+    NewClassSectionInsertPos[Visibility]:=-1;
+    NewClassSectionIndent[Visibility]:=0;
+    if GetFirstNodeExtWithVisibility(Visibility)=nil then exit;
+    // search topmost position node for this Visibility
+    TopMostPositionNode:=GetTopMostPositionNode(Visibility);
+    SectionNode:=nil;
+    // search a Visibility section in front of topmost position node
+    if TopMostPositionNode<>nil then
+      SectionNode:=TopMostPositionNode.Parent.PriorBrother
+    else
+      SectionNode:=FCodeCompleteClassNode.LastChild;
+    while (SectionNode<>nil)
+    and (SectionNode.Desc<>ClassSectionNodeType[Visibility]) do
+      SectionNode:=SectionNode.PriorBrother;
+    if (SectionNode<>nil) then begin
+      exit;
+    end;
+    { There is no section of this Visibility in front (or at all)
+      -> Insert a new section in front of topmost node.
+      Normally the best place for a new section is at the end of
+      the first published section. But if a variable is already
+      needed in the first published section, then the new section
+      must be inserted in front of all }
+    if (TopMostPositionNode<>nil)
+    and (FCodeCompleteClassNode.FirstChild.EndPos>TopMostPositionNode.StartPos)
+    then begin
+      // topmost node is in the first section
+      // -> insert the new section as the first section
+      ANode:=FCodeCompleteClassNode.FirstChild;
+      NewClassSectionIndent[Visibility]:=GetLineIndent(Src,ANode.StartPos);
+      if (ANode.FirstChild<>nil) and (ANode.FirstChild.Desc<>ctnClassGUID)
+      then
+        NewClassSectionInsertPos[Visibility]:=ANode.StartPos
+      else
+        NewClassSectionInsertPos[Visibility]:=ANode.FirstChild.EndPos;
+      if (not PublishedKeyWordNeeded)
+      and (CompareNodeIdentChars(ANode,'PUBLISHED')<>0) then begin
+        PublishedKeyWordNeeded:=true;
+        NewClassSectionInsertPos[pcsPublished]:=
+          NewClassSectionInsertPos[Visibility];
+        NewClassSectionIndent[pcsPublished]:=
+          NewClassSectionIndent[Visibility];
+      end;
+    end else begin
+      ANode:=nil;
+      case Visibility of
+      pcsProtected:
+        // insert after last private section
+        ANode:=FindLastClassSection(FCodeCompleteClassNode,ctnClassPrivate);
+      pcsPublic:
+        begin
+          // insert after last private, protected section
+          ANode:=FindClassSection(FCodeCompleteClassNode,ctnClassProtected);
+          if ANode=nil then
+            ANode:=FindClassSection(FCodeCompleteClassNode,ctnClassPrivate);
+        end;
+      end;
+      if ANode=nil then begin
+        // default: insert new section behind first published section
+        ANode:=FCodeCompleteClassNode.FirstChild;
+      end;
+      NewClassSectionIndent[Visibility]:=GetLineIndent(Src,ANode.StartPos);
+      NewClassSectionInsertPos[Visibility]:=ANode.EndPos;
+    end;
+    SectionKeyWord:=PascalClassSectionKeywords[Visibility];
+    ASourceChangeCache.Replace(gtNewLine,gtNewLine,
+      NewClassSectionInsertPos[Visibility],
+      NewClassSectionInsertPos[Visibility],
+      GetIndentStr(NewClassSectionIndent[Visibility])+
+        ASourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord(SectionKeyWord));
+  end;
+
 begin
   if FirstInsert=nil then begin
     Result:=true;
     exit;
   end;
-  NewPrivatSectionInsertPos:=-1;
-  NewPrivatSectionIndent:=0;
-  PublishedNeeded:=false;// 'published' keyword after first private section needed
-  PrivatNode:=nil;
-  // search topmost node of private node extensions
-  TopMostPrivateNode:=nil;
-  ANodeExt:=FirstInsert;
-  while ANodeExt<>nil do begin
-    if ((TopMostPrivateNode=nil)
-    or (TopMostPrivateNode.StartPos>ANodeExt.Node.StartPos))
-      and (NodeExtIsPrivate(ANodeExt))
-    then
-      TopMostPrivateNode:=ANodeExt.Node;
-    ANodeExt:=ANodeExt.Next;
-  end;
-  if TopMostPrivateNode<>nil then begin
-    // search privat section in front of topmost node
-    PrivatNode:=TopMostPrivateNode.Parent.PriorBrother;
-    while (PrivatNode<>nil) and (PrivatNode.Desc<>ctnClassPrivate) do
-      PrivatNode:=PrivatNode.PriorBrother;
-    if (PrivatNode=nil) then begin
-      { Insert a new private section in front of topmost node
-        normally the best place for a new private section is at the end of
-        the first published section. But if a privat variable is already
-        needed in the first published section, then the new private section
-        must be inserted in front of all }
-      if (CompletingClassNode.FirstChild.EndPos>TopMostPrivateNode.StartPos)
-      then begin
-        // topmost node is in the first section
-        // -> insert as the first section
-        ANode:=CompletingClassNode.FirstChild;
-        NewPrivatSectionIndent:=GetLineIndent(Src,ANode.StartPos);
-        if (ANode.FirstChild<>nil) and (ANode.FirstChild.Desc<>ctnClassGUID)
-        then
-          NewPrivatSectionInsertPos:=ANode.StartPos
-        else
-          NewPrivatSectionInsertPos:=ANode.FirstChild.EndPos;
-        PublishedNeeded:=CompareNodeIdentChars(ANode,'PUBLISHED')<>0;
-      end else begin
-        // default: insert new privat section behind first published section
-        ANode:=CompletingClassNode.FirstChild;
-        NewPrivatSectionIndent:=GetLineIndent(Src,ANode.StartPos);
-        NewPrivatSectionInsertPos:=ANode.EndPos;
-      end;
-      ASourceChangeCache.Replace(gtNewLine,gtNewLine,
-        NewPrivatSectionInsertPos,NewPrivatSectionInsertPos,
-        GetIndentStr(NewPrivatSectionIndent)+
-          ASourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord('private'));
-    end;
-  end;
+  PublishedKeyWordNeeded:=false;// 'published' keyword after first private section needed
 
+  AddClassSection(pcsPrivate);
   InsertNewClassParts(ncpPrivateVars);
   InsertNewClassParts(ncpPrivateProcs);
 
-  if PublishedNeeded then begin
+  AddClassSection(pcsProtected);
+  InsertNewClassParts(ncpProtectedVars);
+  InsertNewClassParts(ncpProtectedProcs);
+
+  AddClassSection(pcsPublic);
+  InsertNewClassParts(ncpPublicVars);
+  InsertNewClassParts(ncpPublicProcs);
+
+  if PublishedKeyWordNeeded then begin
     ASourceChangeCache.Replace(gtNewLine,gtNewLine,
-      NewPrivatSectionInsertPos,NewPrivatSectionInsertPos,
-      GetIndentStr(NewPrivatSectionIndent)+
+      NewClassSectionInsertPos[pcsPublished],
+      NewClassSectionInsertPos[pcsPublished],
+      GetIndentStr(NewClassSectionIndent[pcsPublished])+
         ASourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord('published'));
   end;
-  
   InsertNewClassParts(ncpPublishedVars);
   InsertNewClassParts(ncpPublishedProcs);
 
@@ -1555,7 +1698,8 @@ begin
       if ProcCall[length(ProcCall)]<>';' then
         ProcCall:=ProcCall+';';
       if NodeIsFunction(ProcNode) then
-        ProcCall:=BeautifyCodeOptions.BeautifyIdentifier('Result')+':='+ProcCall;
+        ProcCall:=BeautifyCodeOptions.BeautifyIdentifier('Result')
+                  +':='+ProcCall;
       ProcCode:=ProcCode+BeautifyCodeOptions.LineEnd
                   +'begin'+BeautifyCodeOptions.LineEnd
                   +GetIndentStr(BeautifyCodeOptions.Indent)
@@ -1631,14 +1775,14 @@ var
   
   procedure GatherExistingClassProcBodies;
   begin
-    TypeSectionNode:=CompletingClassNode.Parent;
+    TypeSectionNode:=FCodeCompleteClassNode.Parent;
     if (TypeSectionNode<>nil) and (TypeSectionNode.Parent<>nil)
     and (TypeSectionNode.Parent.Desc=ctnTypeSection) then
       TypeSectionNode:=TypeSectionNode.Parent;
     ClassProcs:=nil;
     ProcBodyNodes:=GatherProcNodes(TypeSectionNode,
-                         [phpInUpperCase,phpIgnoreForwards,phpOnlyWithClassname],
-                         ExtractClassName(CompletingClassNode,true));
+                        [phpInUpperCase,phpIgnoreForwards,phpOnlyWithClassname],
+                        ExtractClassName(FCodeCompleteClassNode,true));
   end;
   
   procedure FindTopMostAndBottomMostProcCodies;
@@ -1707,7 +1851,7 @@ var
   
   procedure FindInsertPointForNewClass;
   begin
-    if NodeHasParentOfType(CompletingClassNode,ctnInterface) then begin
+    if NodeHasParentOfType(FCodeCompleteClassNode,ctnInterface) then begin
       // class is in interface section
       // -> insert at the end of the implementation section
       ImplementationNode:=FindImplementationNode;
@@ -1724,7 +1868,7 @@ var
     end else begin
       // class is not in interface section
       // -> insert at the end of the type section
-      ANode:=CompletingClassNode.Parent; // type definition
+      ANode:=FCodeCompleteClassNode.Parent; // type definition
       if ANode=nil then
         RaiseException(ctsClassNodeWithoutParentNode);
       if ANode.Parent.Desc=ctnTypeSection then
@@ -1741,7 +1885,7 @@ var
     // insert class comment
     if ClassProcs.Count>0 then begin
       ClassStartComment:=GetIndentStr(Indent)
-                          +'{ '+ExtractClassName(CompletingClassNode,false)+' }';
+                         +'{ '+ExtractClassName(FCodeCompleteClassNode,false)+' }';
       ASourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
          ClassStartComment);
     end;
@@ -1762,11 +1906,12 @@ begin
     {$IFDEF CTDEBUG}
     writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method declarations ... ');
     {$ENDIF}
-    TheClassName:=ExtractClassName(CompletingClassNode,false);
+    TheClassName:=ExtractClassName(FCodeCompleteClassNode,false);
 
     // gather existing class proc definitions
-    ClassProcs:=GatherProcNodes(StartNode,[phpInUpperCase,phpAddClassName],
-       ExtractClassName(CompletingClassNode,true));
+    ClassProcs:=GatherProcNodes(CompletingStartNode,
+       [phpInUpperCase,phpAddClassName],
+       ExtractClassName(FCodeCompleteClassNode,true));
 
     // check for double defined methods in ClassProcs
     CheckForDoubleDefinedMethods;
@@ -1972,7 +2117,7 @@ var CleanCursorPos, Indent, insertPos: integer;
       {$IFDEF CTDEBUG}
       writeln('TCodeCompletionCodeTool.CompleteCode Complete Properties ... ');
       {$ENDIF}
-      SectionNode:=CompletingClassNode.FirstChild;
+      SectionNode:=FCodeCompleteClassNode.FirstChild;
       while SectionNode<>nil do begin
         ANode:=SectionNode.FirstChild;
         while ANode<>nil do begin
@@ -2021,13 +2166,13 @@ var CleanCursorPos, Indent, insertPos: integer;
         // find CodeTreeNode at cursor
         CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
 
-        CompletingClassNode:=CursorNode;
-        while (CompletingClassNode<>nil)
-        and (CompletingClassNode.Desc<>ctnClass) do
-          CompletingClassNode:=CompletingClassNode.Parent;
-        if CompletingClassNode=nil then
+        FCodeCompleteClassNode:=CursorNode;
+        while (FCodeCompleteClassNode<>nil)
+        and (FCodeCompleteClassNode.Desc<>ctnClass) do
+          FCodeCompleteClassNode:=FCodeCompleteClassNode.Parent;
+        if FCodeCompleteClassNode=nil then
           RaiseException('oops, I lost your class');
-        ANode:=CompletingClassNode.Parent;
+        ANode:=FCodeCompleteClassNode.Parent;
         if ANode=nil then
           RaiseException(ctsClassNodeWithoutParentNode);
         if (ANode.Parent<>nil) and (ANode.Parent.Desc=ctnTypeSection) then
@@ -2052,40 +2197,97 @@ var CleanCursorPos, Indent, insertPos: integer;
     end;
   end;
   
-  procedure CompleteForwardProc;
+  procedure CompleteMethod;
+  begin
+    // ToDo
+  end;
+  
+  procedure CompleteForwardProcs;
+  // add proc bodies for forward procs
   var
     RevertableJump: boolean;
+    ProcBodyNodes: TAVLTree;
+    StartProcNode: TCodeTreeNode;
+    CurProcNode: TCodeTreeNode;
+    EndProcNode: TCodeTreeNode;
   begin
     {$IFDEF CTDEBUG}
     writeln('TCodeCompletionCodeTool.CompleteCode in a forward procedure ... ');
     {$ENDIF}
 
-    // check if proc already exists
-    ProcCode:=ExtractProcHead(ProcNode,[phpInUpperCase]);
-    if FindProcNode(FindNextNodeOnSameLvl(ProcNode),ProcCode,
-           [phpInUpperCase])<>nil
-    then exit;
+    // gather all proc bodies
+    ProcBodyNodes:=GatherProcNodes(FindNextNodeOnSameLvl(ProcNode),
+                        [phpInUpperCase,phpIgnoreForwards,phpIgnoreMethods],'');
+    try
+      // find first forward proc without body
+      StartProcNode:=ProcNode;
+      CurProcNode:=StartProcNode;
+      repeat
+        ProcCode:=ExtractProcHead(CurProcNode,[phpInUpperCase]);
+        if FindNodeInTree(ProcBodyNodes,ProcCode)<>nil then begin
+          // node is already completed
+          if CurProcNode=ProcNode then begin
+            // cursor node is already completed -> stop completion
+            exit;
+          end;
+          break;
+        end;
+        StartProcNode:=CurProcNode;
+        CurProcNode:=FindPrevNodeOnSameLvl(CurProcNode);
+      until (CurProcNode=nil) or (CurProcNode.Desc<>ctnProcedure)
+      or ((CurProcNode.SubDesc and ctnsForwardDeclaration)=0);
 
-    // find a nice insert position
-    FindInsertPositionForForwardProc(SourceChangeCache,ProcNode,
-                                     Indent,InsertPos);
+      // find last forward proc without body
+      EndProcNode:=ProcNode;
+      CurProcNode:=EndProcNode;
+      repeat
+        ProcCode:=ExtractProcHead(CurProcNode,[phpInUpperCase]);
+        if FindNodeInTree(ProcBodyNodes,ProcCode)<>nil then begin
+          // node is already completed
+          if CurProcNode=ProcNode then begin
+            // cursor node is already completed -> stop completion
+            exit;
+          end;
+          break;
+        end;
+        EndProcNode:=CurProcNode;
+        CurProcNode:=FindNextNodeOnSameLvl(CurProcNode);
+      until (CurProcNode=nil) or (CurProcNode.Desc<>ctnProcedure)
+      or ((CurProcNode.SubDesc and ctnsForwardDeclaration)=0);
 
-    // build nice proc
-    ProcCode:=ExtractProcHead(ProcNode,[phpWithStart,phpWithoutClassKeyword,
-                phpWithVarModifiers,phpWithParameterNames,phpWithResultType,
-                phpWithComments,phpWithCallingSpecs]);
-    if ProcCode='' then
-      RaiseException('unable to reparse proc node');
-    ProcCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyProc(ProcCode,
-                       Indent,true);
-    if not SourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,
-      InsertPos,InsertPos,ProcCode) then
-        RaiseException('unable to insert new proc body');
-    if not SourceChangeCache.Apply then
-      RaiseException('unable to apply changes');
+      // find a nice insert position
+      FindInsertPositionForForwardProc(SourceChangeCache,StartProcNode,
+                                       Indent,InsertPos);
 
-    // reparse code and find jump point into new proc
-    Result:=FindJumpPoint(CursorPos,NewPos,NewTopLine,RevertableJump);
+      // build nice procs
+      CurProcNode:=StartProcNode;
+      repeat
+        ProcCode:=ExtractProcHead(CurProcNode,[phpWithStart,
+                    phpWithoutClassKeyword,
+                    phpWithVarModifiers,phpWithParameterNames,phpWithResultType,
+                    phpWithComments,phpWithCallingSpecs]);
+        if ProcCode='' then
+          RaiseException('unable to parse forward proc node');
+        ProcCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyProc(ProcCode,
+                                                                   Indent,true);
+        if not SourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,
+          InsertPos,InsertPos,ProcCode) then
+            RaiseException('unable to insert new proc body');
+        // next
+        if CurProcNode=EndProcNode then break;
+        CurProcNode:=FindNextNodeOnSameLvl(CurProcNode);
+      until false;
+      if not SourceChangeCache.Apply then
+        RaiseException('unable to apply changes');
+
+      // reparse code and find jump point into new proc
+      Result:=FindJumpPoint(CursorPos,NewPos,NewTopLine,RevertableJump);
+    finally
+      if ProcBodyNodes<>nil then begin
+        ProcBodyNodes.FreeAndClear;
+        ProcBodyNodes.Free;
+      end;
+    end;
   end;
 
   function CompleteEventAssignment: boolean;
@@ -2095,7 +2297,7 @@ var CleanCursorPos, Indent, insertPos: integer;
       OnClick:=@AnEve|nt
       with Button1 do OnMouseDown:=@|
 
-    If OnClick is a method then it will completed to
+    If OnClick is a method then it will be completed to
       Button1.OnClick:=@Button1Click;
     and a 'procedure Button1Click(Sender: TObject);' with a method body will
     be added to the published section of the class of the Begin..End Block.
@@ -2424,15 +2626,13 @@ begin
   {$ENDIF}
   
   // test if forward proc
-  ProcNode:=CursorNode.GetNodeOfType(ctnProcedureHead);
-  if ProcNode<>nil then
-    ProcNode:=ProcNode.Parent;
+  ProcNode:=CursorNode.GetNodeOfType(ctnProcedure);
   if (ProcNode=nil) and (CursorNode.Desc=ctnProcedure) then
     ProcNode:=CursorNode;
   if (ProcNode<>nil) and (ProcNode.Desc=ctnProcedure)
   and ((ProcNode.SubDesc and ctnsForwardDeclaration)>0) then begin
     // Node is forward Proc
-    CompleteForwardProc;
+    CompleteForwardProcs;
     exit;
   end;
   
@@ -2444,6 +2644,19 @@ begin
   Result:=CompleteLocalVariableAssignment(CleanCursorPos,OldTopLine,CursorNode,
                                           NewPos,NewTopLine,SourceChangeCache);
   if Result then exit;
+  
+  // test if method body
+  
+  ProcNode:=CursorNode.GetNodeOfType(ctnProcedure);
+  if (ProcNode=nil) and (CursorNode.Desc=ctnProcedure) then
+    ProcNode:=CursorNode;
+  if (ProcNode<>nil) and (ProcNode.Desc=ctnProcedure)
+  and ((ProcNode.SubDesc and ctnsForwardDeclaration)=0)
+  and NodeIsMethodBody(ProcNode) then begin
+    CompleteMethod;
+    exit;
+  end;
+
 
   {$IFDEF CTDEBUG}
   writeln('TCodeCompletionCodeTool.CompleteCode  nothing to complete ... ');

@@ -45,6 +45,13 @@ type
     rsipContext        // insert context sensitive
     );
 
+  TPascalClassSection = (
+    pcsPrivate,
+    pcsProtected,
+    pcsPublic,
+    pcsPublished
+    );
+
   { TCodeXYPositions - a list of PCodeXYPosition }
 
   TCodeXYPositions = class
@@ -74,7 +81,16 @@ type
     property Codes[Index: integer]: TCodeBuffer read GetCodes write SetCodes;
   end;
 
+const
+  PascalClassSectionKeywords: array[TPascalClassSection] of string = (
+    'private',
+    'protected',
+    'public',
+    'published'
+    );
+
 implementation
+
 
 { TCodeXYPositions }
 

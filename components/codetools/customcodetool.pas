@@ -221,6 +221,7 @@ type
     procedure MoveCursorToNodeStart(ANode: TCodeTreeNode);
     procedure MoveCursorToCleanPos(ACleanPos: integer);
     procedure MoveCursorToCleanPos(ACleanPos: PChar);
+    procedure MoveCursorToNearestAtom(ACleanPos: integer);
     function IsPCharInSrc(ACleanPos: PChar): boolean;
     procedure MoveHybridCursorToPos(DirtyPos: PChar);
     function GetHybridCursorStart: integer;
@@ -1744,6 +1745,23 @@ begin
   if (NewPos<1) or (NewPos>SrcLen) then
     RaiseNotInSrc;
   MoveCursorToCleanPos(NewPos);
+end;
+
+procedure TCustomCodeTool.MoveCursorToNearestAtom(ACleanPos: integer);
+var
+  ANode: TCodeTreeNode;
+  BestPos: Integer;
+begin
+  ANode:=FindDeepestNodeAtPos(ACleanPos,true);
+  if ANode=nil then
+    RaiseException('TCustomCodeTool.MoveCursorToNearestAtom internal error');
+  MoveCursorToNodeStart(ANode);
+  BestPos:=CurPos.StartPos;
+  while (CurPos.StartPos<=ACleanPos) and (CurPos.StartPos<=SrcLen) do begin
+    BestPos:=CurPos.StartPos;
+    ReadNextAtom;
+  end;
+  MoveCursorToCleanPos(BestPos);
 end;
 
 function TCustomCodeTool.IsPCharInSrc(ACleanPos: PChar): boolean;

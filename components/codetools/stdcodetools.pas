@@ -29,8 +29,9 @@
       - Application.CreateForm statements
       - published variables
       - resource strings
-      - IDE directives
-
+      - compiler and IDE directives
+      - code exploring
+      - code blocks
 }
 unit StdCodeTools;
 
@@ -46,10 +47,10 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom,
-  IdentCompletionTool, PascalReaderTool, PascalParserTool, SourceLog,
-  KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, AVL_Tree, TypInfo,
-  SourceChanger, CustomCodeTool, CodeToolsStructs;
+  Classes, SysUtils, CodeToolsStrConsts, FileProcs, CodeTree, CodeAtom,
+  FindDeclarationTool, IdentCompletionTool, PascalReaderTool, PascalParserTool,
+  SourceLog, KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, AVL_Tree,
+  TypInfo, LFMTrees, SourceChanger, CustomCodeTool, CodeToolsStructs;
 
 type
   TStandardCodeTool = class(TIdentCompletionTool)
@@ -109,6 +110,7 @@ type
     function RenameInclude(LinkIndex: integer; const NewFilename: string;
           KeepPath: boolean;
           SourceChangeCache: TSourceChangeCache): boolean;
+    function CheckLFM(LFMBuf: TCodeBuffer; var LFMTree: TLFMTree): boolean;
 
     // createform
     function FindCreateFormStatement(StartPos: integer;
@@ -152,12 +154,16 @@ type
           var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
     function GuessUnclosedBlock(const CursorPos: TCodeXYPosition;
           var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+    function FindBlockCleanBounds(const CursorPos: TCodeXYPosition;
+          var BlockCleanStart, BlockCleanEnd: integer): boolean;
       
     // compiler directives
     function GuessMisplacedIfdefEndif(const CursorPos: TCodeXYPosition;
           var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
     function FindEnclosingIncludeDirective(const CursorPos: TCodeXYPosition;
           var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+    function FindModeDirective(DoBuildTree: boolean;
+          var ACleanPos: integer): boolean;
       
     // search & replace
     function ReplaceIdentifiers(IdentList: TStrings;
@@ -201,6 +207,10 @@ type
           
     // register procedure
     function HasInterfaceRegisterProc(var HasRegisterProc: boolean): boolean;
+    
+    // Delphi to Lazarus conversion
+    function ConvertDelphiToLazarusSource(AddLRSCode: boolean;
+          SourceChangeCache: TSourceChangeCache): boolean;
     
     // IDE % directives
     function GetIDEDirectives(DirectiveList: TStrings): boolean;
@@ -295,6 +305,8 @@ function TStandardCodeTool.FindUnitInUsesSection(UsesNode: TCodeTreeNode;
   var NamePos, InPos: TAtomPosition): boolean;
 begin
   Result:=false;
+  NamePos.StartPos:=0;
+  InPos.StartPos:=0;
   if (UsesNode=nil) or (UpperUnitName='') or (length(UpperUnitName)>255)
   or (UsesNode.Desc<>ctnUsesSection) then exit;
   MoveCursorToNodeStart(UsesNode);
@@ -664,7 +676,7 @@ begin
 end;
 
 function TStandardCodeTool.FindLazarusResourceInBuffer(
-  ResourceCode: TCodeBuffer;  const ResourceName: string): TAtomPosition;
+  ResourceCode: TCodeBuffer; const ResourceName: string): TAtomPosition;
 var ResNameCode: string;
 
   function ReadLazResource: boolean;
@@ -856,6 +868,333 @@ begin
     NewFilename) then exit;
   if not SourceChangeCache.Apply then exit;
   Result:=true;
+end;
+
+function TStandardCodeTool.CheckLFM(LFMBuf: TCodeBuffer; var LFMTree: TLFMTree
+  ): boolean;
+var
+  RootContext: TFindContext;
+  
+  function CheckLFMObjectValues(LFMObject: TLFMObjectNode;
+    const ClassContext: TFindContext): boolean; forward;
+
+  function FindLFMIdentifier(LFMNode: TLFMTreeNode;
+    DefaultErrorPosition: integer;
+    const IdentName: string; const ClassContext: TFindContext): TFindContext;
+  var
+    Params: TFindDeclarationParams;
+  begin
+    Result:=CleanFindContext;
+    if (ClassContext.Node=nil) or (ClassContext.Node.Desc<>ctnClass) then begin
+      writeln('TStandardCodeTool.CheckLFM.FindLFMIdentifier Internal error');
+      exit;
+    end;
+    Params:=TFindDeclarationParams.Create;
+    try
+      Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound,
+        fdfExceptionOnPredefinedIdent,fdfIgnoreMissingParams,
+        fdfIgnoreOverloadedProcs];
+      Params.ContextNode:=ClassContext.Node;
+      Params.SetIdentifier(ClassContext.Tool,PChar(IdentName),nil);
+      try
+        {writeln('FindLFMIdentifier A ',
+          ' Ident=',
+          '"',GetIdentifier(Params.Identifier),'"',
+          ' Context="',ClassContext.Node.DescAsString,'" "',StringToPascalConst(copy(ClassContext.Tool.Src,ClassContext.Node.StartPos,20)),'"',
+          ' File="',ExtractFilename(ClassContext.Tool.MainFilename)+'"',
+          ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']'
+          );}
+        if ClassContext.Tool.FindIdentifierInContext(Params) then begin
+          Result:=CreateFindContext(Params);
+        end;
+      except
+        // ignore search/parse errors
+        on E: ECodeToolError do ;
+      end;
+    finally
+      Params.Free;
+    end;
+    if Result.Node=nil then begin
+      LFMTree.AddError(lfmeIdentifierNotFound,LFMNode,
+                       'identifier '+IdentName+' not found',
+                       DefaultErrorPosition);
+      exit;
+    end;
+  end;
+  
+  function FindClassNodeForLFMObject(LFMNode: TLFMTreeNode;
+    DefaultErrorPosition: integer;
+    StartTool: TFindDeclarationTool; DefinitionNode: TCodeTreeNode): TFindContext;
+  var
+    Params: TFindDeclarationParams;
+    Identifier: PChar;
+    OldInput: TFindDeclarationInput;
+  begin
+    Result:=CleanFindContext;
+    Params:=TFindDeclarationParams.Create;
+    Identifier:=@StartTool.Src[DefinitionNode.StartPos];
+    try
+      Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound,
+        fdfSearchInParentNodes,
+        fdfExceptionOnPredefinedIdent,fdfIgnoreMissingParams,
+        fdfIgnoreOverloadedProcs];
+      Params.ContextNode:=DefinitionNode;
+      Params.SetIdentifier(StartTool,Identifier,nil);
+      try
+        Params.Save(OldInput);
+        if FindIdentifierInContext(Params) then begin
+          Params.Load(OldInput);
+          Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,Params.NewNode);
+          if (Result.Node=nil) or (Result.Node.Desc<>ctnClass) then
+            Result:=CleanFindContext;
+        end;
+      except
+        // ignore search/parse errors
+        on E: ECodeToolError do ;
+      end;
+    finally
+      Params.Free;
+    end;
+    if Result.Node=nil then begin
+      LFMTree.AddError(lfmeIdentifierNotFound,LFMNode,
+                       'identifier '+GetIdentifier(Identifier)+' not found',
+                       DefaultErrorPosition);
+      exit;
+    end;
+  end;
+
+  function CreateFootNote(const Context: TFindContext): string;
+  var
+    Caret: TCodeXYPosition;
+  begin
+    Result:=' see '+Context.Tool.MainFilename;
+    if Context.Tool.CleanPosToCaret(Context.Node.StartPos,Caret) then
+      Result:=Result+'('+IntToStr(Caret.Y)+','+IntToStr(Caret.X)+')';
+  end;
+  
+  procedure CheckLFMChildObject(LFMObject: TLFMObjectNode;
+    const ParentContext: TFindContext);
+  var
+    LFMObjectName: String;
+    ChildContext: TFindContext;
+    VariableTypeName: String;
+    DefinitionNode: TCodeTreeNode;
+    ClassContext: TFindContext;
+  begin
+    // find variable for object
+    
+    // find identifier in Lookup Root
+    LFMObjectName:=LFMObject.Name;
+    //writeln('CheckChildObject A LFMObjectName="',LFMObjectName,'"');
+    if LFMObjectName='' then begin
+      LFMTree.AddError(lfmeObjectNameMissing,LFMObject,'missing object name',
+                       LFMObject.StartPos);
+      exit;
+    end;
+    ChildContext:=FindLFMIdentifier(LFMObject,LFMObject.NamePosition,
+      LFMObjectName,RootContext);
+    if ChildContext.Node=nil then exit;
+    
+    // check if identifier is variable
+    if not ChildContext.Node.Desc=ctnVarDefinition then begin
+      LFMTree.AddError(lfmeObjectIncompatible,LFMObject,
+                       LFMObjectName+' is not a variable'
+                       +CreateFootNote(ChildContext),
+                       LFMObject.NamePosition);
+      exit;
+    end;
+    DefinitionNode:=ChildContext.Tool.FindTypeNodeOfDefinition(
+                                                             ChildContext.Node);
+    if DefinitionNode=nil then begin
+      ChildContext.Node:=DefinitionNode;
+      LFMTree.AddError(lfmeObjectIncompatible,LFMObject,
+                       LFMObjectName+' is not a variable.'
+                       +CreateFootNote(ChildContext),
+                       LFMObject.NamePosition);
+      exit;
+    end;
+
+    // check if variable has a compatible type
+    if LFMObject.TypeName<>'' then begin
+      VariableTypeName:=ChildContext.Tool.ExtractDefinitionNodeType(
+                                                             ChildContext.Node);
+      if (VariableTypeName='')
+      or (AnsiCompareText(VariableTypeName,LFMObject.TypeName)<>0) then begin
+        ChildContext.Node:=DefinitionNode;
+        LFMTree.AddError(lfmeObjectIncompatible,LFMObject,
+                       VariableTypeName+' expected, but '+LFMObject.TypeName+' found.'
+                       +CreateFootNote(ChildContext),
+                       LFMObject.NamePosition);
+        exit;
+      end;
+    end;
+
+    // check if variable is published
+    if (ChildContext.Node.Parent=nil)
+    or (ChildContext.Node.Parent.Desc<>ctnClassPublished) then begin
+      LFMTree.AddError(lfmeIdentifierNotPublished,LFMObject,
+                       LFMObjectName+' is not published',
+                       LFMObject.NamePosition);
+      exit;
+    end;
+    
+    // find class node
+    ClassContext:=FindClassNodeForLFMObject(LFMObject,LFMObject.TypeNamePosition,
+                                            ChildContext.Tool,DefinitionNode);
+    if ClassContext.Node=nil then exit;
+
+    // check child LFM nodes
+    CheckLFMObjectValues(LFMObject,ClassContext);
+  end;
+  
+  function FindClassNodeForProperty(LFMProperty: TLFMPropertyNode;
+    DefaultErrorPosition: integer; const PropertyContext: TFindContext
+    ): TFindContext;
+  var
+    Params: TFindDeclarationParams;
+  begin
+    Result:=CleanFindContext;
+    Params:=TFindDeclarationParams.Create;
+    try
+      Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound,
+        fdfSearchInParentNodes,
+        fdfExceptionOnPredefinedIdent,fdfIgnoreMissingParams,
+        fdfIgnoreOverloadedProcs];
+      Params.ContextNode:=PropertyContext.Node;
+      Params.SetIdentifier(PropertyContext.Tool,nil,nil);
+      try
+        Result:=PropertyContext.Tool.FindBaseTypeOfNode(Params,
+                                                        PropertyContext.Node);
+      except
+        // ignore search/parse errors
+        on E: ECodeToolError do ;
+      end;
+    finally
+      Params.Free;
+    end;
+    if Result.Node=nil then begin
+      LFMTree.AddError(lfmePropertyHasNoSubProperties,LFMProperty,
+                       'property has no sub properties',
+                       DefaultErrorPosition);
+      exit;
+    end;
+
+  end;
+
+  procedure CheckLFMProperty(LFMProperty: TLFMPropertyNode;
+    const ParentContext: TFindContext);
+  var
+    i: Integer;
+    CurName: string;
+    CurPropertyContext: TFindContext;
+    SearchContext: TFindContext;
+  begin
+    // find complete property name
+    //writeln('CheckLFMProperty A LFMProperty Name="',LFMProperty.CompleteName,'"');
+
+    if LFMProperty.CompleteName='' then begin
+      LFMTree.AddError(lfmePropertyNameMissing,LFMProperty,
+                       'property without name',LFMProperty.StartPos);
+      exit;
+    end;
+    
+    // find every part of the property name
+    SearchContext:=ParentContext;
+    for i:=0 to LFMProperty.NameParts.Count-1 do begin
+      if SearchContext.Node.Desc=ctnProperty then begin
+        SearchContext:=FindClassNodeForProperty(LFMProperty,
+          LFMProperty.NameParts.NamePositions[i],SearchContext);
+        if SearchContext.Node=nil then exit;
+      end;
+
+      CurName:=LFMProperty.NameParts.Names[i];
+      CurPropertyContext:=FindLFMIdentifier(LFMProperty,
+                                         LFMProperty.NameParts.NamePositions[i],
+                                         CurName,SearchContext);
+      if CurPropertyContext.Node=nil then
+        break;
+      SearchContext:=CurPropertyContext;
+    end;
+    
+    // ToDo: check value
+  end;
+
+  function CheckLFMObjectValues(LFMObject: TLFMObjectNode;
+    const ClassContext: TFindContext): boolean;
+  var
+    CurLFMNode: TLFMTreeNode;
+  begin
+    //writeln('TStandardCodeTool.CheckLFM.CheckLFMObjectValues A ',LFMObject.Name,':',LFMObject.TypeName);
+    CurLFMNode:=LFMObject.FirstChild;
+    while CurLFMNode<>nil do begin
+      //writeln('TStandardCodeTool.CheckLFM.CheckLFMObjectValues B ',CurLFMNode.ClassName);
+      case CurLFMNode.TheType of
+      
+      lfmnObject:
+        CheckLFMChildObject(TLFMObjectNode(CurLFMNode),ClassContext);
+
+      lfmnProperty:
+        CheckLFMProperty(TLFMPropertyNode(CurLFMNode),ClassContext);
+
+      end;
+      CurLFMNode:=CurLFMNode.NextSibling;
+    end;
+    Result:=true;
+  end;
+
+  function CheckLFMRoot: boolean;
+  var
+    LookupRootLFMNode: TLFMObjectNode;
+    LookupRootTypeName: String;
+    RootClassNode: TCodeTreeNode;
+  begin
+    Result:=false;
+    
+    //writeln('TStandardCodeTool.CheckLFM.CheckLFMRoot checking root ...');
+    // get root object node
+    if (LFMTree.Root=nil) or (not (LFMTree.Root is TLFMObjectNode)) then begin
+      LFMTree.AddError(lfmeMissingRoot,nil,'missing root object',1);
+      exit;
+    end;
+    LookupRootLFMNode:=TLFMObjectNode(LFMTree.Root);
+    
+    // get type name of root object
+    LookupRootTypeName:=UpperCaseStr(LookupRootLFMNode.TypeName);
+    if LookupRootTypeName='' then begin
+      LFMTree.AddError(lfmeMissingRoot,nil,'missing type of root object',1);
+      exit;
+    end;
+    
+    // find root type
+    RootClassNode:=FindClassNodeInInterface(LookupRootTypeName,true,false,false);
+    if RootClassNode=nil then begin
+      LFMTree.AddError(lfmeMissingRoot,LookupRootLFMNode,
+                       'type '+LookupRootLFMNode.TypeName+' not found',
+                       LookupRootLFMNode.TypeNamePosition);
+      exit;
+    end;
+
+    RootContext:=CleanFindContext;
+    RootContext.Node:=RootClassNode;
+    RootContext.Tool:=Self;
+    Result:=CheckLFMObjectValues(LookupRootLFMNode,RootContext);
+  end;
+  
+begin
+  Result:=false;
+  //writeln('TStandardCodeTool.CheckLFM A');
+  // create tree from LFM file
+  LFMTree:=TLFMTree.Create;
+  //writeln('TStandardCodeTool.CheckLFM parsing LFM ...');
+  if not LFMTree.Parse(LFMBuf) then exit;
+  // parse unit and find LookupRoot
+  //writeln('TStandardCodeTool.CheckLFM parsing unit ...');
+  BuildTree(true);
+  // find every identifier
+  //writeln('TStandardCodeTool.CheckLFM checking identifiers ...');
+  if not CheckLFMRoot then exit;
+
+  Result:=LFMTree.FirstError=nil;
 end;
 
 function TStandardCodeTool.FindCreateFormStatement(StartPos: integer;
@@ -1781,6 +2120,148 @@ begin
   Result:=true;
 end;
 
+function TStandardCodeTool.ConvertDelphiToLazarusSource(AddLRSCode: boolean;
+  SourceChangeCache: TSourceChangeCache): boolean;
+
+  function AddModeDelphiDirective: boolean;
+  var
+    ModeDirectivePos: integer;
+    InsertPos: Integer;
+  begin
+    Result:=false;
+    if not FindModeDirective(false,ModeDirectivePos) then begin
+      // add {$MODE Delphi} behind source type
+      if Tree.Root=nil then exit;
+      MoveCursorToNodeStart(Tree.Root);
+      ReadNextAtom; // 'unit', 'program', ..
+      ReadNextAtom; // name
+      ReadNextAtom; // semicolon
+      InsertPos:=CurPos.EndPos;
+      SourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
+        '{$MODE Delphi}');
+    end;
+    Result:=true;
+  end;
+
+  function ConvertUsedUnits: boolean;
+  // replace unit 'Windows' with 'LCLIntf' and add 'LResources'
+  var
+    NamePos, InPos: TAtomPosition;
+  begin
+    Result:=false;
+    if FindUnitInAllUsesSections('WINDOWS',NamePos,InPos)
+    and (InPos.StartPos<1) then begin
+      if not SourceChangeCache.Replace(gtNone,gtNone,
+                           NamePos.StartPos,NamePos.EndPos,'LCLIntf') then exit;
+    end;
+    if AddLRSCode then
+      if not AddUnitToMainUsesSection('LResources','',SourceChangeCache) then
+        exit;
+    if not RemoveUnitFromAllUsesSections('VARIANTS',SourceChangeCache) then
+      exit;
+    Result:=true;
+  end;
+
+  function RemoveDFMResourceDirective: boolean;
+  // remove {$R *.dfm} directive
+  var
+    ParamPos: Integer;
+    ACleanPos: Integer;
+    StartPos: Integer;
+  begin
+    Result:=false;
+    // find $R directive
+    ACleanPos:=1;
+    repeat
+      ACleanPos:=FindNextCompilerDirectiveWithName(Src,ACleanPos,'R',
+        Scanner.NestedComments,ParamPos);
+      if (ACleanPos<1) or (ACleanPos>SrcLen) or (ParamPos>SrcLen) then break;
+      if (Src[ACleanPos]='{')
+      and (copy(UpperSrc,ParamPos,6)='*.DFM}') then begin
+        StartPos:=FindLineEndOrCodeInFrontOfPosition(ACleanPos,true);
+        if not SourceChangeCache.Replace(gtNone,gtNone,StartPos,ParamPos+6,'')
+        then exit;
+        break;
+      end;
+    until false;
+    Result:=true;
+  end;
+
+  function AddLRSIncludeDirective: boolean;
+  // add initialization and {$i unit.lrs} include directive
+  var
+    FirstInclude: TCodeBuffer;
+    LRSFilename: String;
+    InitializationNode: TCodeTreeNode;
+    ImplementationNode: TCodeTreeNode;
+    NewCode: String;
+    InsertPos: Integer;
+    LinkIndex: Integer;
+  begin
+    Result:=false;
+    if AddLRSCode then begin
+      LRSFilename:=ExtractFilenameOnly(MainFilename)+'.lrs';
+      LinkIndex:=-1;
+      FirstInclude:=FindNextIncludeInInitialization(LinkIndex);
+      if (FirstInclude<>nil)
+      and (CompareFilenames(FirstInclude.Filename,LRSFilename)=0) then begin
+        // already there
+        Result:=true;
+        exit;
+      end;
+      if Tree.Root.Desc=ctnUnit then begin
+        InitializationNode:=FindInitializationNode;
+        NewCode:=GetIndentStr(SourceChangeCache.BeautifyCodeOptions.Indent)
+                 +'{$i '+LRSFilename+'}';
+        if InitializationNode=nil then begin
+          // add also an initialization section
+          ImplementationNode:=FindImplementationNode;
+          InsertPos:=ImplementationNode.EndPos;
+          NewCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord(
+                     'initialization')
+                   +SourceChangeCache.BeautifyCodeOptions.LineEnd
+                   +NewCode;
+          if not SourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,
+                                           InsertPos,InsertPos,
+                                           NewCode) then exit;
+        end else begin
+          InsertPos:=InitializationNode.StartPos+length('initialization');
+          if not SourceChangeCache.Replace(gtNewLine,gtNewLine,
+                                           InsertPos,InsertPos,
+                                           NewCode) then exit;
+        end;
+      end else begin
+        // only Units supported yet
+        exit;
+      end;
+    end;
+    Result:=true;
+  end;
+
+begin
+  Result:=false;
+  if SourceChangeCache=nil then exit;
+  BuildTree(false);
+  SourceChangeCache.MainScanner:=Scanner;
+  SourceChangeCache.BeginUpdate;
+  try
+    writeln('ConvertDelphiToLazarusSource AddModeDelphiDirective');
+    if not AddModeDelphiDirective then exit;
+    writeln('ConvertDelphiToLazarusSource RemoveDFMResourceDirective');
+    if not RemoveDFMResourceDirective then exit;
+    writeln('ConvertDelphiToLazarusSource AddLRSIncludeDirective');
+    if not AddLRSIncludeDirective then exit;
+    writeln('ConvertDelphiToLazarusSource ConvertUsedUnits');
+    if not ConvertUsedUnits then exit;
+    writeln('ConvertDelphiToLazarusSource Apply');
+    if not SourceChangeCache.Apply then exit;
+  finally
+    SourceChangeCache.EndUpdate;
+  end;
+  writeln('ConvertDelphiToLazarusSource END');
+  Result:=true;
+end;
+
 function TStandardCodeTool.GetIDEDirectives(DirectiveList: TStrings): boolean;
 var
   StartPos: Integer;
@@ -2242,7 +2723,7 @@ begin
     // jump backward to matching bracket
     ReadNextAtom;
     if not ReadBackwardTilAnyBracketClose then exit;
-  end else begin;
+  end else begin
     if Src[CurPos.StartPos] in [';','.'] then dec(CurPos.StartPos);
     while (CurPos.StartPos>2) and IsWordChar[Src[CurPos.StartPos-1]] do
       dec(CurPos.StartPos);
@@ -2362,6 +2843,76 @@ begin
   //WriteDebugTreeReport;
 end;
 
+function TStandardCodeTool.FindBlockCleanBounds(
+  const CursorPos: TCodeXYPosition; var BlockCleanStart, BlockCleanEnd: integer
+  ): boolean;
+var
+  CleanCursorPos: integer;
+  BlockStartFound: Boolean;
+begin
+  Result:=false;
+  // scan code
+  BeginParsingAndGetCleanPos(true,false,CursorPos,CleanCursorPos);
+  // read word at cursor
+  MoveCursorToCleanPos(CleanCursorPos);
+  while (CurPos.StartPos>2) and IsWordChar[Src[CurPos.StartPos-1]] do
+    dec(CurPos.StartPos);
+  MoveCursorToCleanPos(CurPos.StartPos);
+  ReadNextAtom;
+  BlockStartFound:=false;
+  repeat
+    ReadPriorAtom;
+    if (CurPos.StartPos<0) then begin
+      // start of source found -> this is always a block start
+      CurPos.StartPos:=1;
+      BlockStartFound:=true;
+      break;
+    end
+    else if Src[CurPos.StartPos] in [')',']','}'] then begin
+      // jump backward to matching bracket
+      if not ReadBackwardTilAnyBracketClose then exit;
+    end
+    else if WordIsLogicalBlockStart.DoItUpperCase(UpperSrc,
+      CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
+    begin
+      // block start found
+      BlockStartFound:=true;
+      break;
+    end else if UpAtomIs('END') or UpAtomIs('FINALLY') or UpAtomIs('EXCEPT')
+    or UpAtomIs('UNTIL') then
+    begin
+      // read backward till BEGIN, CASE, ASM, RECORD, REPEAT
+      ReadBackTilBlockEnd(true);
+    end;
+  until false;
+  if not BlockStartFound then exit;
+  BlockCleanStart:=CurPos.StartPos;
+  
+  // read word at cursor
+  MoveCursorToCleanPos(BlockCleanStart);
+  if Src[CurPos.StartPos] in ['(','[','{'] then begin
+    // jump forward to matching bracket
+    ReadNextAtom;
+    if not ReadForwardTilAnyBracketClose then exit;
+  end else begin
+    if Src[CurPos.StartPos] in [';','.'] then dec(CurPos.StartPos);
+    while (CurPos.StartPos>2) and IsWordChar[Src[CurPos.StartPos-1]] do
+      dec(CurPos.StartPos);
+    MoveCursorToCleanPos(CurPos.StartPos);
+    ReadNextAtom;
+    if CurPos.EndPos=CurPos.StartPos then exit;
+    // read till block keyword counterpart
+    if UpAtomIs('BEGIN') or UpAtomIs('CASE') or UpAtomIs('ASM')
+    or UpAtomIs('RECORD') or UpAtomIs('TRY') or UpAtomIs('REPEAT') then begin
+      // read forward till END, FINALLY, EXCEPT
+      ReadTilBlockEnd(true,false);
+    end else
+      exit;
+  end;
+  BlockCleanEnd:=CurPos.StartPos;
+  Result:=true;
+end;
+
 function TStandardCodeTool.GuessMisplacedIfdefEndif(
   const CursorPos: TCodeXYPosition;
   var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
@@ -2416,6 +2967,18 @@ begin
   finally
     ClearIgnoreErrorAfter;
   end;
+end;
+
+function TStandardCodeTool.FindModeDirective(DoBuildTree: boolean;
+  var ACleanPos: integer): boolean;
+var
+  ParamPos: Integer;
+begin
+  Result:=false;
+  if DoBuildTree then BuildTree(true);
+  ACleanPos:=FindNextCompilerDirectiveWithName(Src,1,'Mode',
+    Scanner.NestedComments,ParamPos);
+  Result:=(ACleanPos>0) and (ACleanPos<=SrcLen);
 end;
 
 function TStandardCodeTool.ReadTilGuessedUnclosedBlock(

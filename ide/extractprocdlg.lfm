@@ -1,0 +1,66 @@
+object ExtractProcDialog: TExtractProcDialog
+  CAPTION = 'ExtractProcDialog'
+  CLIENTHEIGHT = 230
+  CLIENTWIDTH = 446
+  ONCREATE = ExtractProcDialogCREATE
+  HORZSCROLLBAR.PAGE = 447
+  VERTSCROLLBAR.PAGE = 231
+  LEFT = 358
+  HEIGHT = 230
+  TOP = 247
+  WIDTH = 446
+  object TypeRadiogroup: TRADIOGROUP
+    ANCHORS = [aktop, akleft]
+    CAPTION = 'TypeRadiogroup'
+    COLUMNLAYOUT = clverticalthenhorizontal
+    LEFT = 8
+    HEIGHT = 120
+    TOP = 8
+    WIDTH = 430
+  end
+  object OkButton: TBUTTON
+    ANCHORS = [aktop, akleft]
+    CAPTION = 'OkButton'
+    TABSTOP = True
+    TABORDER = 1
+    ONCLICK = OkButtonCLICK
+    LEFT = 112
+    HEIGHT = 25
+    TOP = 192
+    WIDTH = 99
+  end
+  object CancelButton: TBUTTON
+    ANCHORS = [aktop, akleft]
+    MODALRESULT = 2
+    CAPTION = 'CancelButton'
+    TABSTOP = True
+    TABORDER = 2
+    LEFT = 240
+    HEIGHT = 25
+    TOP = 192
+    WIDTH = 94
+  end
+  object NameGroupbox: TGROUPBOX
+    ANCHORS = [aktop, akleft]
+    CAPTION = 'NameGroupbox'
+    CLIENTHEIGHT = 27
+    CLIENTWIDTH = 426
+    COLOR = -2147483633
+    PARENTCOLOR = True
+    PARENTCTL3D = False
+    TABORDER = 3
+    LEFT = 8
+    HEIGHT = 44
+    TOP = 135
+    WIDTH = 430
+    object NameEdit: TEDIT
+      ALIGN = altop
+      ANCHORS = [aktop, akleft]
+      TEXT = 'NameEdit'
+      TABSTOP = True
+      TABORDER = 0
+      HEIGHT = 23
+      WIDTH = 426
+    end
+  end
+end

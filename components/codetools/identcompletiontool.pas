@@ -749,7 +749,7 @@ begin
       NewItem:=TIdentifierListItem.Create(
           icompUnknown,true,0,
           CurrentIdentifierList.CreateIdentifier(
-            BeautifyCodeOptions.PrivatVariablePrefix+PropertyName),
+            BeautifyCodeOptions.PrivateVariablePrefix+PropertyName),
           0,nil,nil,ctnVarDefinition);
       CurrentIdentifierList.Add(NewItem);
     end;

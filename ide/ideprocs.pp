@@ -483,8 +483,8 @@ begin
   Result:='';
 end;
 
-function SearchDirectoryInSearchPath(const SearchPath,
-  Directory: string; DirStartPos: integer): integer;
+function SearchDirectoryInSearchPath(const SearchPath, Directory: string;
+  DirStartPos: integer): integer;
 var
   PathLen: Integer;
   DirLen: Integer;
@@ -537,6 +537,7 @@ begin
         dec(i);
       end;
       if i<0 then begin
+      
         Result:=StartPos;
         exit;
       end;
