@@ -1430,7 +1430,7 @@ var
   P: PChar;
 begin
   {$IFDEF SYN_LAZARUS}
-  sLineBreak:=AdjustLineBreaks(#$0D#$0A);
+  sLineBreak:=AdjustLineBreaks(#13#10);
   {$ENDIF}
   if not SelAvail then
     Result := ''
@@ -5452,18 +5452,59 @@ end;
 procedure TCustomSynEdit.EnsureCursorPosVisible;
 var
   PhysCaretXY: TPoint;
+  {$IFDEF SYN_LAZARUS}
+  MinX: Integer;
+  MaxX: Integer;
+  PhysBlockBeginXY: TPoint;
+  PhysBlockEndXY: TPoint;
+  {$ENDIF}
 begin
   IncPaintLock;
   try
     // Make sure X is visible
     //writeln('[TCustomSynEdit.EnsureCursorPosVisible] A CaretX=',CaretX,' LeftChar=',LeftChar,' CharsInWindow=',CharsInWindow,' ClientWidth=',ClientWidth);
     PhysCaretXY:=LogicalToPhysicalPos(CaretXY);
+    {$IFDEF SYN_LAZARUS}
+    // try also to make the current selection visible
+    MinX:=PhysCaretXY.X;
+    MaxX:=PhysCaretXY.X;
+    PhysBlockBeginXY:=LogicalToPhysicalPos(BlockBegin);
+    PhysBlockEndXY:=LogicalToPhysicalPos(BlockEnd);
+    if (PhysBlockBeginXY.X<>PhysBlockEndXY.X)
+    or (PhysBlockBeginXY.Y<>PhysBlockEndXY.Y) then begin
+      if (SelectionMode<>smColumn) and (PhysBlockBeginXY.Y<>PhysBlockEndXY.Y) then
+        PhysBlockBeginXY.X:=1;
+      if MinX>PhysBlockBeginXY.X then
+        MinX:=Max(PhysBlockBeginXY.X,PhysCaretXY.X-CharsInWindow+1);
+      if MinX>PhysBlockEndXY.X then
+        MinX:=Max(PhysBlockEndXY.X,PhysCaretXY.X-CharsInWindow+1);
+      if MaxX<PhysBlockBeginXY.X then
+        MaxX:=Min(PhysBlockBeginXY.X,MinX+CharsInWindow-1);
+      if MaxX<PhysBlockEndXY.X then
+        MaxX:=Min(PhysBlockEndXY.X,MinX+CharsInWindow-1);
+    end;
+    {writeln('TCustomSynEdit.EnsureCursorPosVisible A CaretX=',PhysCaretXY.X,
+    ' BlockX=',PhysBlockBeginXY.X,'-',PhysBlockEndXY.X,
+    ' ChrInWnd=',CharsInWindow,
+    ' MinX=',MinX,
+    ' MaxX=',MaxX,
+    ' LeftChar=',LeftChar,
+    '');}
+    if MinX < LeftChar then
+      LeftChar := MinX
+    else if LeftChar < MaxX - (CharsInWindow - 1) then
+      LeftChar := MaxX - (CharsInWindow - 1)
+    else
+      LeftChar := LeftChar;                                                     //mh 2000-10-19
+    //writeln('TCustomSynEdit.EnsureCursorPosVisible B LeftChar=',LeftChar);
+    {$ELSE}
     if PhysCaretXY.X < LeftChar then
       LeftChar := PhysCaretXY.X
     else if PhysCaretXY.X > CharsInWindow + LeftChar then
       LeftChar := PhysCaretXY.X - CharsInWindow + 1
     else
       LeftChar := LeftChar;                                                     //mh 2000-10-19
+    {$ENDIF}
     // Make sure Y is visible
     if CaretY < TopLine then
       TopLine := CaretY
