@@ -35,8 +35,9 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, LCLType, LCLLinux, Graphics, GraphType,
-  StdCtrls, ExtCtrls, Buttons, LResources, Laz_XMLCfg, LazarusIDEStrConsts,
-  ExtToolDialog, ExtToolEditDlg, TransferMacros, LazConf, FileCtrl, IDEProcs;
+  StdCtrls, ExtCtrls, Buttons, Dialogs, LResources, Laz_XMLCfg,
+  LazarusIDEStrConsts, ExtToolDialog, ExtToolEditDlg, TransferMacros, LazConf,
+  FileCtrl, IDEProcs;
 
 type
   { TBuildLazarusItem }
@@ -60,7 +61,8 @@ type
     blfWithoutIDE,
     blfOnlyIDE,
     blfQuick,
-    blfWithStaticPackages
+    blfWithStaticPackages,
+    blfUseMakeIDECfg
     );
   TBuildLazarusFlags = set of TBuildLazarusFlag;
   
@@ -124,6 +126,7 @@ type
     destructor Destroy; override;
     procedure Clear;
     procedure CreateDefaults;
+    function IndexOf(Item: TBuildLazarusItem): integer;
     procedure Load(XMLConfig: TXMLConfig; const Path: string);
     procedure Save(XMLConfig: TXMLConfig; const Path: string);
     procedure Assign(Source: TBuildLazarusOptions);
@@ -196,14 +199,24 @@ function ShowConfigureBuildLazarusDlg(
 function BuildLazarus(Options: TBuildLazarusOptions;
   ExternalTools: TExternalToolList; Macros: TTransferMacroList;
   const PackageOptions: string; Flags: TBuildLazarusFlags): TModalResult;
+function CreateBuildLazarusOptions(Options: TBuildLazarusOptions;
+  ItemIndex: integer; Macros: TTransferMacroList;
+  const PackageOptions: string; Flags: TBuildLazarusFlags;
+  var ExtraOptions: string): TModalResult;
+function SaveIDEMakeOptions(Options: TBuildLazarusOptions;
+  Macros: TTransferMacroList;
+  const PackageOptions: string; Flags: TBuildLazarusFlags): TModalResult;
+function GetMakeIDEConfigFilename: string;
 
 
 implementation
 
 uses
   Math;
-
+  
 const
+  DefaultIDEMakeOptionFilename = 'idemake.cfg';
+
   MakeModeNames: array[TMakeMode] of string = (
       'None', 'Build', 'Clean+Build'
     );
@@ -264,25 +277,6 @@ var
   CurItem: TBuildLazarusItem;
   ExtraOptions: String;
   CurMakeMode: TMakeMode;
-  
-  function RemoveProfilerOption(const ExtraOptions: string): string;
-  var
-    p, StartPos: integer;
-  begin
-    Result:=ExtraOptions;
-    // delete profiler option
-    p:=Pos('-pg',Result);
-    if (p>0)
-    and ((p+3>length(Result)) or (Result[p+3]=' ')) // option end
-    and ((p=1) or (Result[p-1]=' ')) then begin
-      // profiler option found
-      StartPos:=p;
-      while (StartPos>1) and (Result[StartPos-1]=' ') do
-        dec(StartPos);
-      System.Delete(Result,StartPos,p-StartPos+3);
-    end;
-  end;
-  
 begin
   Result:=mrCancel;
   Tool:=TExternalToolOptions.Create;
@@ -324,15 +318,10 @@ begin
       Tool.WorkingDirectory:='$(LazarusDir)/'+CurItem.Directory;
       Tool.CmdLineParams:=CurItem.Commands[CurItem.MakeMode];
       // append extra options
-      ExtraOptions:=Options.ExtraOptions;
-      if CurItem=Options.ItemJITForm then begin
-        ExtraOptions:=RemoveProfilerOption(ExtraOptions);
-      end else if CurItem=Options.ItemIDE then begin
-        if PackageOptions<>'' then begin
-          if ExtraOptions<>'' then ExtraOptions:=ExtraOptions+' ';
-          ExtraOptions:=ExtraOptions+PackageOptions;
-        end;
-      end;
+      ExtraOptions:='';
+      Result:=CreateBuildLazarusOptions(Options,i,Macros,PackageOptions,Flags,
+                                        ExtraOptions);
+      if Result<>mrOk then exit;
       if ExtraOptions<>'' then
         Tool.CmdLineParams:=Tool.CmdLineParams+' OPT='''+ExtraOptions+'''';
       // append target OS
@@ -346,6 +335,142 @@ begin
   finally
     Tool.Free;
   end;
+end;
+
+function CreateBuildLazarusOptions(Options: TBuildLazarusOptions;
+  ItemIndex: integer; Macros: TTransferMacroList;
+  const PackageOptions: string; Flags: TBuildLazarusFlags;
+  var ExtraOptions: string): TModalResult;
+
+  function RemoveProfilerOption(const ExtraOptions: string): string;
+  var
+    p, StartPos: integer;
+  begin
+    Result:=ExtraOptions;
+    // delete profiler option
+    p:=Pos('-pg',Result);
+    if (p>0)
+    and ((p+3>length(Result)) or (Result[p+3]=' ')) // option end
+    and ((p=1) or (Result[p-1]=' ')) then begin
+      // profiler option found
+      StartPos:=p;
+      while (StartPos>1) and (Result[StartPos-1]=' ') do
+        dec(StartPos);
+      System.Delete(Result,StartPos,p-StartPos+3);
+    end;
+  end;
+
+var
+  CurItem: TBuildLazarusItem;
+  MakeIDECfgFilename: String;
+begin
+  Result:=mrOk;
+  CurItem:=Options.Items[ItemIndex];
+  // check for special IDE config file
+  if CurItem=Options.ItemIDE then begin
+    MakeIDECfgFilename:=GetMakeIDEConfigFilename;
+    if (blfUseMakeIDECfg in Flags) and (CurItem=Options.ItemIDE)
+    and (FileExists(MakeIDECfgFilename)) then begin
+      ExtraOptions:='@'+MakeIDECfgFilename;
+      exit;
+    end;
+  end;
+
+  // create extra options
+  ExtraOptions:=Options.ExtraOptions;
+
+  if CurItem=Options.ItemJITForm then begin
+    // remove profiler option for JIT form
+    ExtraOptions:=RemoveProfilerOption(ExtraOptions);
+  end else if CurItem=Options.ItemIDE then begin
+    // add package options for IDE
+    if PackageOptions<>'' then begin
+      if ExtraOptions<>'' then ExtraOptions:=ExtraOptions+' ';
+      ExtraOptions:=ExtraOptions+PackageOptions;
+    end;
+  end;
+end;
+
+function SaveIDEMakeOptions(Options: TBuildLazarusOptions;
+  Macros: TTransferMacroList;
+  const PackageOptions: string; Flags: TBuildLazarusFlags): TModalResult;
+  
+  function BreakOptions(const OptionString: string): string;
+  var
+    StartPos: Integer;
+    EndPos: Integer;
+    c: Char;
+  begin
+    Result:='';
+    // write each option into a line of its own
+    StartPos:=1;
+    repeat
+      while (StartPos<=length(OptionString)) and (OptionString[StartPos]=' ') do
+        inc(StartPos);
+      EndPos:=StartPos;
+      while EndPos<=length(OptionString) do begin
+        c:=OptionString[EndPos];
+        case c of
+        ' ': break;
+
+        '''','"','`':
+          begin
+            repeat
+              inc(c);
+              if (OptionString[EndPos]=c) then begin
+                inc(EndPos);
+                break;
+              end;
+            until (EndPos>length(OptionString));
+          end;
+
+        else
+          inc(EndPos);
+        end;
+      end;
+      if EndPos>StartPos then
+        Result:=Result+copy(OptionString,StartPos,EndPos-StartPos)+LineEnding;
+      StartPos:=EndPos;
+    until StartPos>length(OptionString);
+  end;
+  
+var
+  ExtraOptions: String;
+  Filename: String;
+  fs: TFileStream;
+  OptionsAsText: String;
+begin
+  ExtraOptions:='';
+  Result:=CreateBuildLazarusOptions(Options,Options.IndexOf(Options.ItemIDE),
+                                    Macros,PackageOptions,Flags,
+                                    ExtraOptions);
+  if Result<>mrOk then exit;
+  Filename:=GetMakeIDEConfigFilename;
+  try
+    fs:=TFileStream.Create(Filename,fmCreate);
+    try
+      if ExtraOptions<>'' then begin
+        OptionsAsText:=BreakOptions(ExtraOptions);
+        fs.Write(OptionsAsText[1],length(OptionsAsText));
+      end;
+    finally
+      fs.Free;
+    end;
+  except
+    on E: Exception do begin
+      Result:=MessageDlg('Error writing file',
+        'Unable to write file "'+Filename+'":'#13
+        +E.Message,
+        mtError,[mbCancel,mbAbort],0);
+      exit;
+    end;
+  end;
+  Result:=mrOk;
+end;
+
+function GetMakeIDEConfigFilename: string;
+begin
+  Result:=AppendPathDelim(GetPrimaryConfigPath)+DefaultIDEMakeOptionFilename;
 end;
 
 { TConfigureBuildLazarusDlg }
@@ -934,6 +1059,12 @@ begin
   FItemExamples:=TBuildLazarusItem.Create(
     'Examples',lisBuildExamples,'examples',mmBuild);
   fItems.Add(FItemExamples);
+end;
+
+function TBuildLazarusOptions.IndexOf(Item: TBuildLazarusItem): integer;
+begin
+  Result:=Count-1;
+  while (Result>=0) and (Items[Result]<>Item) do dec(Result);
 end;
 
 { TBuildLazarusItem }
