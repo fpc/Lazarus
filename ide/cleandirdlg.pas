@@ -433,6 +433,7 @@ begin
     Top:=Self.ClientHeight-35;
     Width:=100;
     Height:=25;
+    Anchors:=[akLeft,akBottom];
     Caption:='Delete';
     ModalResult:=mrOk;
   end;
@@ -445,6 +446,7 @@ begin
     Top:=Self.ClientHeight-35;
     Width:=100;
     Height:=25;
+    Anchors:=[akLeft,akBottom];
     Caption:='Cancel';
     ModalResult:=mrCancel;
   end;
