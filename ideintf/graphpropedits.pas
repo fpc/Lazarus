@@ -574,7 +574,6 @@ var
   vRight,vBottom: Integer;
   vOldPenColor, vOldBrushColor: TColor;
 begin
-debugln('AAA1 ',CurValue);
   vRight := (ARect.Bottom - ARect.Top) + ARect.Left - 2;
   vBottom:=ARect.Bottom-2;
   with ACanvas do begin
