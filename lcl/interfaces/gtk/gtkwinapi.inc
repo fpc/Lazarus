@@ -2563,7 +2563,7 @@ begin
       begin
         Width := Rect^.Right - Rect^.Left;
         Height := Rect^.Bottom - Rect^.Top;
-        EnsureGCColor(DC, GC, CurrentBackColor, True, False);
+        EnsureGCColor(DC, dccCurrentBackColor, True, False);
         gdk_draw_rectangle(Drawable, GC, 1,
                            Rect^.Left+DCOrigin.X, Rect^.Top+DCOrigin.Y,
                            Width, Height);
@@ -7209,6 +7209,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.147  2002/10/08 13:42:26  lazarus
+  MG: added TDevContextColorType
+
   Revision 1.146  2002/10/08 10:08:47  lazarus
   MG: accelerated GDIColor allocating
 
