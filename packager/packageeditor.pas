@@ -426,14 +426,20 @@ var
       NewMenuItem.Caption:=GetPkgFileTypeLocalizedName(CurPFT);
       NewMenuItem.OnClick:=@ChangeFileTypeMenuItemClick;
       if CurPFT=CurFile.FileType then
+        // menuitem to keep the current type
         NewMenuItem.Enabled:=true
-      else if CurFile.FileType=pftVirtualUnit then
+      else if (CurFile.FileType=pftVirtualUnit)
+      or (CurPFT=pftVirtualUnit) then
+        // a virtual unit can not be changed
         NewMenuItem.Enabled:=false
       else if (CurPFT<>pftUnit) then
+        // all other files can be changed into a non unit type
         NewMenuItem.Enabled:=true
       else if FilenameIsPascalUnit(CurFile.Filename) then
+        // a unit can be changed into anything
         NewMenuItem.Enabled:=true
       else
+        // default is to not allow
         NewMenuItem.Enabled:=false;
       FileTypeMenuItem.Add(NewMenuItem);
     end;

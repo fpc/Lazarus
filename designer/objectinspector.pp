@@ -327,7 +327,7 @@ type
     procedure SetOnShowOptions(const AValue: TNotifyEvent);
     procedure SetPropertyEditorHook(NewValue:TPropertyEditorHook);
     procedure SetSelections(const NewSelections:TComponentSelectionList);
-    procedure AddComponentToAvailComboBox(AComponent:TComponent);
+    procedure AddComponentToList(AComponent:TComponent; List: TStrings);
     procedure PropEditLookupRootChange;
     procedure OnGridModified(Sender: TObject);
     procedure SetAvailComboBoxText;
@@ -2223,15 +2223,16 @@ begin
   ShowOptionsPopupMenuItem.Visible:=FOnShowOptions<>nil;
 end;
 
-procedure TObjectInspector.AddComponentToAvailComboBox(AComponent: TComponent);
+procedure TObjectInspector.AddComponentToList(AComponent: TComponent;
+  List: TStrings);
 var Allowed:boolean;
 begin
+  if csDestroying in AComponent.ComponentState then exit;
   Allowed:=true;
   if Assigned(FOnAddAvailableComponent) then
     FOnAddAvailableComponent(AComponent,Allowed);
   if Allowed then
-    AvailCompsComboBox.Items.AddObject(
-      ComponentToString(AComponent),AComponent);
+    List.AddObject(ComponentToString(AComponent),AComponent);
 end;
 
 procedure TObjectInspector.PropEditLookupRootChange;
@@ -2245,33 +2246,41 @@ procedure TObjectInspector.FillComponentComboBox;
 var a:integer;
   Root:TComponent;
   OldText:AnsiString;
+  NewList: TStringList;
 begin
 //writeln('[TObjectInspector.FillComponentComboBox] A ',FUpdatingAvailComboBox
 //,' ',FPropertyEditorHook<>nil,'  ',FPropertyEditorHook.LookupRoot<>nil);
   if FUpdatingAvailComboBox then exit;
   FUpdatingAvailComboBox:=true;
   
-  AvailCompsComboBox.Items.BeginUpdate;
-  if AvailCompsComboBox.Items.Count=1 then
-    OldText:=AvailCompsComboBox.Text
-  else
-    OldText:='';
-  AvailCompsComboBox.Items.Clear;
-  if (FPropertyEditorHook<>nil)
-  and (FPropertyEditorHook.LookupRoot<>nil) then begin
-    Root:=FPropertyEditorHook.LookupRoot;
-    AddComponentToAvailComboBox(Root);
-//writeln('[TObjectInspector.FillComponentComboBox] B  ',Root.Name,'  ',Root.ComponentCount);
-    for a:=0 to Root.ComponentCount-1 do
-      AddComponentToAvailComboBox(Root.Components[a]);
+  NewList:=TStringList.Create;
+  try
+    if (FPropertyEditorHook<>nil)
+    and (FPropertyEditorHook.LookupRoot<>nil) then begin
+      Root:=FPropertyEditorHook.LookupRoot;
+      AddComponentToList(Root,NewList);
+  //writeln('[TObjectInspector.FillComponentComboBox] B  ',Root.Name,'  ',Root.ComponentCount);
+      for a:=0 to Root.ComponentCount-1 do
+        AddComponentToList(Root.Components[a],NewList);
+    end;
+    
+    AvailCompsComboBox.Items.BeginUpdate;
+    if AvailCompsComboBox.Items.Count=1 then
+      OldText:=AvailCompsComboBox.Text
+    else
+      OldText:='';
+    AvailCompsComboBox.Items.Assign(NewList);
+    AvailCompsComboBox.Items.EndUpdate;
+    FUpdatingAvailComboBox:=false;
+    a:=AvailCompsComboBox.Items.IndexOf(OldText);
+    if (OldText='') or (a<0) then
+      SetAvailComboBoxText
+    else
+      AvailCompsComboBox.ItemIndex:=a;
+
+  finally
+    NewList.Free;
   end;
-  AvailCompsComboBox.Items.EndUpdate;
-  FUpdatingAvailComboBox:=false;
-  a:=AvailCompsComboBox.Items.IndexOf(OldText);
-  if (OldText='') or (a<0) then
-    SetAvailComboBoxText
-  else
-    AvailCompsComboBox.ItemIndex:=a;
 end;
 
 procedure TObjectInspector.BeginUpdate;
