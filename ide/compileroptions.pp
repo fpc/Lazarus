@@ -1412,7 +1412,6 @@ begin
   XMLConfigFile.SetDeleteValue(p+'Optimizations/UncertainOptimizations/Value', UncertainOptimizations,false);
   XMLConfigFile.SetDeleteValue(p+'Optimizations/OptimizationLevel/Value', OptimizationLevel,1);
   XMLConfigFile.SetDeleteValue(p+'TargetOS/Value', TargetOS,'');
-  XMLConfigFile.SetDeleteValue(p+'LinkStyle/Value', LinkStyle,1);
 
   { Linking }
   p:=Path+'Linking/';
@@ -1423,6 +1422,7 @@ begin
   XMLConfigFile.SetDeleteValue(p+'Debugging/UseValgrind/Value', UseValgrind,false);
   XMLConfigFile.SetDeleteValue(p+'Debugging/GenGProfCode/Value', GenGProfCode,false);
   XMLConfigFile.SetDeleteValue(p+'Debugging/StripSymbols/Value', StripSymbols,false);
+  XMLConfigFile.SetDeleteValue(p+'LinkStyle/Value', LinkStyle,1);
   XMLConfigFile.SetDeleteValue(p+'Options/PassLinkerOptions/Value', PassLinkerOptions,false);
   XMLConfigFile.SetDeleteValue(p+'Options/LinkerOptions/Value', LinkerOptions,'');
   XMLConfigFile.SetDeleteValue(p+'Options/Win32/GraphicApplication/Value', Win32GraphicApp,false);
