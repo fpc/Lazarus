@@ -1982,27 +1982,58 @@ end;
 function gtkTimerCB(Data: gPointer): gint; cdecl;
 var
   Mess : TLMessage;
+  TimerInfo: PGtkITimerinfo;
 begin
   EventTrace ('TimerCB', nil);
-  Result := 1;  // assume: timer will continue
-  if PGtkITimerinfo(Data)^.TimerFunc <> nil
-  then begin    // Call users timer function
-    PGtkITimerinfo(Data)^.TimerFunc(PGtkITimerinfo(Data)^.Handle, 
-                        LM_TIMER,
-                        PGtkITimerinfo(Data)^.IDEvent, 
-                        0{WARN: should be: GetTickCount});
+  Result := 0;  // assume: timer will stop
+  
+  if (FTimerData=nil) or (FTimerData.IndexOf(Data)<0) then begin
+    // timer was killed
+    Result:=0; // stop timer
+    exit;
+  end;
+  
+  TimerInfo:=PGtkITimerinfo(Data);
+  if TimerInfo^.TimerFunc <> nil
+  then begin
+    // Call users timer function
+    TimerInfo^.TimerFunc(TimerInfo^.Handle,
+                         LM_TIMER,
+                         TimerInfo^.IDEvent,
+                         0{WARN: should be: GetTickCount});
+    Result:=1; // timer will go on
   end
-  else if (pointer (PGtkITimerinfo(Data)^.Handle) <> nil)
+  else if (pointer (TimerInfo^.Handle) <> nil)
   then begin    // Handle through default message handler
     Mess.msg    := LM_TIMER;
-    Mess.WParam := PGtkITimerinfo(Data)^.IDEvent;
-    Mess.LParam := LongInt (PGtkITimerinfo(Data)^.TimerFunc);
-    DeliverMessage (Pointer (PGtkITimerinfo(Data)^.Handle), Mess);
+    Mess.WParam := TimerInfo^.IDEvent;
+    Mess.LParam := LongInt (TimerInfo^.TimerFunc);
+    Mess.Result := 0;
+    if DeliverMessage (Pointer (TimerInfo^.Handle), Mess)=0 then
+      Result:=1
+    else
+      Result:=0;
   end
   else begin
-     result := 0;       // stop timer
-     FOldTimerData.Remove(Data);
-     dispose (PGtkITimerinfo(Data));     // free memory with timer data
+    Result := 0;       // stop timer
+  end;
+  
+  if (Result<>0) and (FTimerData.IndexOf(Data)<0) then begin
+    // timer was killed
+    // -> stop timer
+    Result:=0;
+  end;
+
+  if Result=0 then begin
+    // timer will be stopped
+    // -> free timer data, if not already done
+    if (FTimerData.IndexOf(Data)>=0)
+    or (FOldTimerData.IndexOf(Data)>=0) then
+    begin
+      FOldTimerData.Remove(Data);
+      FTimerData.Remove(Data);
+      Dispose (TimerInfo);     // free memory with timer data
+    end;
   end;
 end;
 
@@ -2465,6 +2496,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.146  2002/10/14 19:00:49  lazarus
+  MG: fixed zombie timers
+
   Revision 1.145  2002/10/11 07:28:03  lazarus
   MG: gtk interface now sends keyboard events via DeliverMessage
 
