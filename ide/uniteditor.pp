@@ -17,7 +17,7 @@
  *                                                                         *
  ***************************************************************************/
 }
-{This unit builds the TSourceNotbook that the editors are held on.  It also has
+{This unit builds the TSourceNotebook that the editors are held on.  It also has
  a class that controls the editors (TSourceEditor)
 }
 
@@ -38,7 +38,8 @@ uses
   FindReplaceDialog, EditorOptions, CustomFormEditor, KeyMapping, StdCtrls,
   Compiler, MsgView, WordCompletion, CodeToolManager, CodeCache, SourceLog,
   SynEdit, SynEditHighlighter, SynHighlighterPas, SynEditAutoComplete,
-  SynEditKeyCmds,SynCompletion, Graphics, Extctrls, Menus, Splash, FindInFilesDlg,LMessages;
+  SynEditKeyCmds, SynCompletion, Graphics, Extctrls, Menus, Splash,
+  FindInFilesDlg, LMessages;
 
 type
   // --------------------------------------------------------------------------
@@ -96,10 +97,11 @@ type
     FOnMouseDown: TMouseEvent;
     FOnKeyDown: TKeyEvent;
 
-    Procedure EditorMouseMoved(Sender : TObject;Shift : TShiftState; X,Y : Integer);
-    Procedure EditorMouseDown(Sender : TObject; Button : TMouseButton; Shift : TShiftState; X,Y : Integer);
-    Procedure EditorKeyDown(Sender : TObject; var Key : Word; Shift : TShiftState);
-    Function FindFile(const Value : String) : String;
+    Procedure EditorMouseMoved(Sender: TObject; Shift: TShiftState; X,Y: Integer);
+    Procedure EditorMouseDown(Sender: TObject; Button: TMouseButton;
+          Shift: TShiftState; X,Y: Integer);
+    Procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    Function FindFile(const Value: String) : String;
 
     procedure SetCodeBuffer(NewCodeBuffer: TCodeBuffer);
     Function GetSource : TStrings;
@@ -136,8 +138,8 @@ type
     Procedure ccAddMessage(Texts : String);
     Function  ccParse(Texts : String) : TStrings;
 
-    Procedure FocusEditor;  // called by TSourceNotebook when the Notebook page
-                            // changes so the editor is focused
+    Procedure FocusEditor;// called by TSourceNotebook when the Notebook page
+                          // changes so the editor is focused
     Procedure EditorStatusChanged(Sender: TObject; Changes: TSynStatusChanges);
     procedure OnGutterClick(Sender: TObject; X, Y, Line: integer;
          mark: TSynEditMark);
@@ -168,6 +170,7 @@ type
     procedure DoFindAndReplace;
     procedure FindNext;
     procedure FindPrevious;
+    procedure ShowGotoLineDialog;
     procedure GetDialogPosition(Width, Height:integer; var Left,Top:integer);
 
     //used to get the word at the mouse cursor
@@ -214,9 +217,14 @@ type
     property OnMouseMove : TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
     property OnMouseDown : TMouseEvent read FOnMouseDown write FOnMouseDown;
     property OnKeyDown : TKeyEvent read FOnKeyDown write FOnKeyDown;
-
   end;
 
+  TJumpHistoryAction = (jhaBack, jhaForward);
+ 
+  TOnJumpToHistoryPoint = procedure(var NewCaretXY: TPoint;
+    var NewTopLine, NewPageIndex: integer; Action: TJumpHistoryAction) of object;
+  TOnAddJumpPoint = procedure(ACaretXY: TPoint; ATopLine: integer; 
+    APageIndex: integer; DeleteForwardHistory: boolean) of object;
 
   TSourceNotebook = class(TForm)
   private
@@ -230,18 +238,22 @@ type
 
     FSaveDialog : TSaveDialog;
 
+    FOnAddJumpPoint: TOnAddJumpPoint;
+    FOnCloseClicked : TNotifyEvent;
+    FOnDeleteLastJumpPoint: TNotifyEvent;
+    FOnEditorVisibleChanged: TNotifyEvent;
+    FOnJumpToHistoryPoint: TOnJumpToHistoryPoint;
     FOnNewClicked : TNotifyEvent;
     FOnOpenClicked : TNotifyEvent;
     FOnOpenFileAtCursorClicked : TNotifyEvent;
-    FOnCloseClicked : TNotifyEvent;
-    FOnSaveClicked : TNotifyEvent;
+    FOnProcessUserCommand: TOnProcessUserCommand;
     FOnSaveAsClicked : TNotifyEvent;
     FOnSaveAllClicked : TNotifyEvent;
-    FOnToggleFormUnitClicked : TNotifyEvent;
-    FOnProcessUserCommand: TOnProcessUserCommand;
-    FOnUserCommandProcessed: TOnProcessUserCommand;
+    FOnSaveClicked : TNotifyEvent;
     FOnShowUnitInfo: TNotifyEvent;
-    FOnEditorVisibleChanged: TNotifyEvent;
+    FOnToggleFormUnitClicked : TNotifyEvent;
+    FOnUserCommandProcessed: TOnProcessUserCommand;
+    FOnViewJumpHistory: TNotifyEvent;
 
     // PopupMenu
     Procedure BuildPopupMenu;
@@ -257,6 +269,7 @@ type
     Procedure BookMarkToggle(Value : Integer);
   protected
     ccSelection : String;
+    MarksImgList : TImageList;
      
     Function CreateNotebook : Boolean;
     Function DisplayPage(SE : TSourceEditor) : Boolean;
@@ -270,16 +283,15 @@ type
     procedure OnSynCompletionSearchPosition(var APosition:integer);
     
 //hintwindow stuff
-    FHintWIndow : THintWindow;
+    FHintWindow : THintWindow;
     FHintTimer : TTimer;
     Procedure HintTimer(sender : TObject);
     Procedure EditorMouseMove(Sender : TObject; Shift: TShiftstate; X,Y : Integer);
-    Procedure EditorMouseDown(Sender : TObject; Button : TMouseButton; Shift: TShiftstate; X,Y : Integer);
-//    Procedure KeyDown(Sender : TObject; var Key : Word; Shift: TShiftstate);
+    Procedure EditorMouseDown(Sender : TObject; Button : TMouseButton; 
+       Shift: TShiftstate; X,Y : Integer);
 
     Procedure NextEditor;
     Procedure PrevEditor;
-    MarksImgList : TImageList;
     Procedure ProcessParentCommand(Sender: TObject; 
        var Command: TSynEditorCommand; var AChar: char; Data: pointer);
     Procedure ParentCommandProcessed(Sender: TObject; 
@@ -289,11 +301,12 @@ type
     function GetEditors(Index:integer):TSourceEditor;
     
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
-    
 
   public
     SearchPaths: string;
 
+    Procedure NotebookPageChanged(Sender : TObject);
+    
     property Editors[Index:integer]:TSourceEditor read GetEditors;
     function EditorCount:integer;
     function FindSourceEditorWithPageIndex(PageIndex:integer):TSourceEditor;
@@ -327,6 +340,13 @@ type
     procedure FindPreviousClicked(Sender : TObject);
     procedure FindInFilesClicked(Sender : TObject);
     procedure ReplaceClicked(Sender : TObject);
+    procedure GotoLineClicked(Sender: TObject);
+    procedure HistoryJump(Sender: TObject; Action: TJumpHistoryAction);
+    procedure JumpBackClicked(Sender: TObject);
+    procedure JumpForwardClicked(Sender: TObject);
+    procedure AddJumpPointClicked(Sender: TObject);
+    procedure DeleteLastJumpPointClicked(Sender: TObject);
+    procedure ViewJumpHistoryClicked(Sender: TObject);
 
     Procedure NewFile(const NewShortName: String; ASource : TCodeBuffer);
     Procedure CloseFile(PageIndex:integer);
@@ -350,28 +370,35 @@ type
     SrcPopUpMenu : TPopupMenu;
     StatusBar : TStatusBar;
     ToggleMenuItem : TMenuItem;
-    Procedure NotebookPageChanged(Sender : TObject);
+    property OnAddJumpPoint: TOnAddJumpPoint 
+       read FOnAddJumpPoint write FOnAddJumpPoint;
+    property OnCloseClicked : TNotifyEvent read FOnCloseClicked write FOnCloseClicked;
+    property OnDeleteLastJumpPoint: TNotifyEvent
+       read FOnDeleteLastJumpPoint write FOnDeleteLastJumpPoint;
+    property OnEditorVisibleChanged: TNotifyEvent
+       read FOnEditorVisibleChanged write FOnEditorVisibleChanged;
+    property OnJumpToHistoryPoint: TOnJumpToHistoryPoint
+       read FOnJumpToHistoryPoint write FOnJumpToHistoryPoint;
     property OnNewClicked : TNotifyEvent read FOnNewClicked write FOnNewClicked;
     property OnOpenClicked : TNotifyEvent read FOnOPenClicked write FOnOpenClicked;
     property OnOpenFileAtCursorClicked : TNotifyEvent 
        read FOnOpenFileAtCursorClicked write FOnOpenFileAtCursorClicked;
-    property OnCloseClicked : TNotifyEvent read FOnCloseClicked write FOnCloseClicked;
-    property OnSaveClicked : TNotifyEvent read FOnSaveClicked write FOnSaveClicked;
     property OnSaveAsClicked : TNotifyEvent 
        read FOnSaveAsClicked write FOnSaveAsClicked;
     property OnSaveAllClicked : TNotifyEvent 
        read FOnSaveAllClicked write FOnSaveAllClicked;
+    property OnSaveClicked : TNotifyEvent read FOnSaveClicked write FOnSaveClicked;
+    property OnShowUnitInfo: TNotifyEvent 
+       read FOnShowUnitInfo write FOnShowUnitInfo;
     property OnToggleFormUnitClicked : TNotifyEvent 
        read FOnToggleFormUnitClicked write FOnToggleFormUnitClicked;
     property OnProcessUserCommand: TOnProcessUserCommand
        read FOnProcessUserCommand write FOnProcessUserCommand;
     property OnUserCommandProcessed: TOnUserCommandProcessed
        read FOnUserCommandProcessed write FOnUserCommandProcessed;
-    property OnShowUnitInfo: TNotifyEvent 
-       read FOnShowUnitInfo write FOnShowUnitInfo;
-    property OnEditorVisibleChanged: TNotifyEvent
-       read FOnEditorVisibleChanged write FOnEditorVisibleChanged;
-      end;
+    property OnViewJumpHistory: TNotifyEvent
+       read FOnViewJumpHistory write FOnViewJumpHistory;
+ end;
 
 {Goto dialog}
 
@@ -453,13 +480,25 @@ Var
   P : TPoint;
   TopLine: integer;
 Begin
+  TSourceNotebook(Owner).AddJumpPointClicked(Self);
   P.X := 0;
   P.Y := Value;
   TopLine := P.Y - (FEditor.LinesInWindow div 2);
   if TopLine < 1 then TopLine:=1;
   FEditor.CaretXY := P;
+  with FEditor do begin
+    BlockBegin:=CaretXY;
+    BlockEnd:=CaretXY;
+  end;
   FEditor.TopLine := TopLine;
   Result:=FEditor.CaretY;
+end;
+
+procedure TSourceEditor.ShowGotoLineDialog;
+begin 
+  GotoDialog.Edit1.Text:='';
+  if (GotoDialog.ShowModal = mrOK) then
+    GotoLine(StrToIntDef(GotoDialog.Edit1.Text,1));
 end;
 
 {--------------------------TEXT UNDER CURSOR-----------------------------------}
@@ -642,6 +681,7 @@ var OldCaretXY:TPoint;
   AText,ACaption:AnsiString;
   TopLine: integer;
 begin
+  TSourceNotebook(Owner).AddJumpPointClicked(Self);
   OldCaretXY:=EditorComponent.CaretXY;
   if EditorComponent.SelAvail then begin
     if ssoBackwards in FindReplaceDlg.Options then
@@ -657,6 +697,7 @@ begin
     ACaption:='Not found';
     AText:='Search string '''+FindReplaceDlg.FindText+''' not found!';
     MessageDlg(ACaption,AText,mtInformation,[mbOk],0);
+    TSourceNotebook(Owner).DeleteLastJumpPointClicked(Self);
   end else begin
     TopLine := EditorComponent.CaretY - (EditorComponent.LinesInWindow div 2);
     if TopLine < 1 then TopLine:=1;
@@ -683,6 +724,8 @@ begin
     Action:=raCancel;
   end;
 end;
+
+//-----------------------------------------------------------------------------
 
 Procedure TSourceEditor.FocusEditor;
 Begin
@@ -742,7 +785,6 @@ Begin
         P := ClientToScreen(Point(CaretXPix - length(TextS2)*CharWidth
                 , CaretYPix + LineHeight));
       aCompletion.Editor:=TCustomSynEdit(Sender);
-  writeln('');
       aCompletion.Execute(TextS2,P.X,P.Y);
     end;
 
@@ -763,17 +805,8 @@ Begin
     StartFindAndReplace(true);
 
   ecGotoLineNumber :
-    begin 
-      GotoDialog.Edit1.Text:='';
-      if (GotoDialog.ShowModal = mrOK) then begin
-        try
-          GotoLine(StrToInt(GotoDialog.Edit1.Text));
-        except
-          GotoLine(0);
-        end;
-      end;
-    end;
-
+    ShowGotoLineDialog;
+    
   ecPeriod :
     Begin
       Y := CurrentCursorYLine;
@@ -1396,11 +1429,12 @@ end;
 
 Function TSourceEditor.GetWordAtPosition(Position : TPoint) : String;
 var
-  TopLine : Integer;
-  LineHeight : Integer;
+  //TopLine : Integer;
+  //LineHeight : Integer;
   LineNum : Integer;
   XLine : Integer;
-  EditorLine,Texts : String;
+  EditorLine: string;
+  Texts : String;
   CaretPos : TPoint;
 begin
   Result := '';
@@ -1469,7 +1503,7 @@ var
   LineHeight : Integer;
   LineNum : Integer;
   XLine : Integer;
-  EditorLine,Texts : String;
+  //EditorLine,Texts : String;
 begin
   //Figure out the line number
   TopLine := FEditor.TopLine;
@@ -2424,6 +2458,71 @@ Begin
   end;
 End;
 
+procedure TSourceNotebook.GotoLineClicked(Sender: TObject);
+var SrcEdit: TSourceEditor;
+begin
+  SrcEdit:=GetActiveSE;
+  if SrcEdit<>nil then SrcEdit.ShowGotoLineDialog;
+end;
+
+procedure TSourceNotebook.HistoryJump(Sender: TObject; 
+  Action: TJumpHistoryAction);
+var NewCaretXY: TPoint;
+  NewTopLine: integer;
+  NewPageIndex: integer;
+  SrcEdit: TSourceEditor;
+begin
+  if (NoteBook<>nil) and Assigned(OnJumpToHistoryPoint) then begin
+    NewCaretXY.X:=-1;
+    NewPageIndex:=-1;
+    OnJumpToHistoryPoint(NewCaretXY,NewTopLine,NewPageIndex,Action);
+    SrcEdit:=FindSourceEditorWithPageIndex(NewPageIndex);
+    if SrcEdit<>nil then begin
+      NoteBook.PageIndex:=NewPageIndex;
+      with SrcEdit.EditorComponent do begin
+        TopLine:=NewTopLine;
+        CaretXY:=NewCaretXY;
+        BlockBegin:=CaretXY;
+        BlockEnd:=CaretXY;
+      end;
+    end;
+  end;
+end;
+
+procedure TSourceNotebook.JumpBackClicked(Sender: TObject);
+begin
+  HistoryJump(Sender,jhaBack);
+end;
+
+procedure TSourceNotebook.JumpForwardClicked(Sender: TObject);
+begin
+  HistoryJump(Sender,jhaForward);
+end;
+
+procedure TSourceNotebook.AddJumpPointClicked(Sender: TObject);
+var SrcEdit: TSourceEditor;
+begin
+  if Assigned(OnAddJumpPoint) then begin
+    SrcEdit:=GetActiveSE;
+    if SrcEdit<>nil then begin
+      OnAddJumpPoint(SrcEdit.EditorComponent.CaretXY, 
+        SrcEdit.EditorComponent.TopLine, Notebook.PageIndex, true);
+    end;
+  end;
+end;
+
+procedure TSourceNotebook.DeleteLastJumpPointClicked(Sender: TObject);
+begin
+  if Assigned(OnDeleteLastJumpPoint) then
+    OnDeleteLastJumpPoint(Sender);
+end;
+
+procedure TSourceNotebook.ViewJumpHistoryClicked(Sender: TObject);
+begin
+  if Assigned(OnViewJumpHistory) then
+    OnViewJumpHistory(Sender);
+end;
+
 Procedure TSourceNotebook.BookMarkClicked(Sender : TObject);
 // popup menu toggle bookmark clicked
 var
@@ -2842,6 +2941,19 @@ begin
 
   ecSetMarker0..ecSetMarker9:
     BookMarkToggle(Command - ecSetMarker0);
+    
+  ecJumpBack:
+    HistoryJump(Self,jhaBack);
+  
+  ecJumpForward:
+    HistoryJump(Self,jhaForward);
+    
+  ecAddJumpPoint:
+    AddJumpPointClicked(Self);
+    
+  ecViewJumpHistory:
+    ViewJumpHistoryClicked(Self);
+    
   else
     Handled:=false;
   end;  //case

@@ -39,10 +39,11 @@ uses
   IDEComp, AbstractFormEditor, FormEditor, CustomFormEditor, ObjectInspector,
   PropEdits, ControlSelection, UnitEditor, CompilerOptions, EditorOptions,
   EnvironmentOpts, TransferMacros, KeyMapping, ProjectOpts, IDEProcs, Process,
-  UnitInfoDlg, Debugger, RunParamsOpts, ExtToolDialog, MacroPromptDlg, lMessages;
+  UnitInfoDlg, Debugger, RunParamsOpts, ExtToolDialog, MacroPromptDlg,
+  LMessages, ProjectDefs;
 
 const
-  Version_String = '0.8 alpha';
+  Version_String = '0.8.1 alpha';
 
 type
   {
@@ -107,7 +108,11 @@ type
     itmSearchFindPrevious: TMenuItem;
     itmSearchFindInFiles: TMenuItem;
     itmSearchReplace: TMenuItem;
-    itmGotoLineNumber: TMenuItem;
+    itmGotoLine: TMenuItem;
+    itmJumpBack: TMenuItem;
+    itmJumpForward: TMenuItem;
+    itmAddJumpPoint: TMenuItem;
+    itmJumpHistory: TMenuItem;
 
     itmViewInspector: TMenuItem;
     itmViewProject: TMenuItem; 
@@ -205,19 +210,26 @@ type
     Procedure ControlClick(Sender : TObject);
 
     // SourceNotebook events
+    Procedure OnSrcNoteBookActivated(Sender : TObject);
+    Procedure OnSrcNoteBookAddJumpPoint(ACaretXY: TPoint; ATopLine: integer; 
+      APageIndex: integer; DeleteForwardHistory: boolean);
+    Procedure OnSrcNotebookDeleteLastJumPoint(Sender: TObject);
+    Procedure OnSrcNotebookEditorVisibleChanged(Sender : TObject);
     Procedure OnSrcNotebookFileNew(Sender : TObject);
     Procedure OnSrcNotebookFileOpen(Sender : TObject);
     Procedure OnSrcNotebookFileOpenAtCursor(Sender : TObject);
     Procedure OnSrcNotebookFileSave(Sender : TObject);
     Procedure OnSrcNotebookFileSaveAs(Sender : TObject);
     Procedure OnSrcNotebookFileClose(Sender : TObject);
-    Procedure OnSrcNotebookSaveAll(Sender : TObject);
-    Procedure OnSrcNotebookToggleFormUnit(Sender : TObject);
-    Procedure OnSrcNotebookEditorVisibleChanged(Sender : TObject);
+    Procedure OnSrcNotebookJumpToHistoryPoint(var NewCaretXY: TPoint;
+      var NewTopLine, NewPageIndex: integer; Action: TJumpHistoryAction);
     Procedure OnSrcNotebookProcessCommand(Sender: TObject; Command: integer;
-        var Handled: boolean);
+      var Handled: boolean);
+    Procedure OnSrcNotebookSaveAll(Sender : TObject);
     procedure OnSrcNoteBookShowUnitInfo(Sender: TObject);
-    Procedure OnSrcNoteBookActivated(Sender : TObject);
+    Procedure OnSrcNotebookToggleFormUnit(Sender : TObject);
+    Procedure OnSrcNotebookViewJumpHistory(Sender : TObject);
+    
     // ObjectInspector events
     procedure OIOnAddAvailableComponent(AComponent:TComponent;
        var Allowed:boolean);
@@ -573,25 +585,34 @@ begin
 
   // source editor / notebook
   SourceNotebook := TSourceNotebook.Create(Self);
+  SourceNotebook.OnActivate := @OnSrcNoteBookActivated;
+  SourceNotebook.OnAddJumpPoint := @OnSrcNoteBookAddJumpPoint;
+  SourceNotebook.OnCloseClicked := @OnSrcNotebookFileClose;
+  SourceNotebook.OnDeleteLastJumpPoint := @OnSrcNotebookDeleteLastJumPoint;
+  SourceNotebook.OnEditorVisibleChanged := @OnSrcNotebookEditorVisibleChanged;
+  SourceNotebook.OnJumpToHistoryPoint := @OnSrcNotebookJumpToHistoryPoint;
   SourceNotebook.OnNewClicked := @OnSrcNotebookFileNew;
   SourceNotebook.OnOpenClicked := @ OnSrcNotebookFileOpen;
   SourceNotebook.OnOpenFileAtCursorClicked := @OnSrcNotebookFileOpenAtCursor;
+  SourceNotebook.OnProcessUserCommand := @OnSrcNotebookProcessCommand;
   SourceNotebook.OnSaveClicked := @OnSrcNotebookFileSave;
   SourceNotebook.OnSaveAsClicked := @OnSrcNotebookFileSaveAs;
-  SourceNotebook.OnCloseClicked := @OnSrcNotebookFileClose;
   SourceNotebook.OnSaveAllClicked := @OnSrcNotebookSaveAll;
-  SourceNotebook.OnToggleFormUnitClicked := @OnSrcNotebookToggleFormUnit;
-  SourceNotebook.OnProcessUserCommand := @OnSrcNotebookProcessCommand;
   SourceNotebook.OnShowUnitInfo := @OnSrcNoteBookShowUnitInfo;
-  SourceNotebook.OnEditorVisibleChanged := @OnSrcNotebookEditorVisibleChanged;
-  SourceNotebook.OnActivate := @OnSrcNoteBookActivated;
+  SourceNotebook.OnToggleFormUnitClicked := @OnSrcNotebookToggleFormUnit;
+  SourceNotebook.OnViewJumpHistory := @OnSrcNotebookViewJumpHistory;
 
-  // find / replace dialog
+  // search menus
   itmSearchFind.OnClick := @SourceNotebook.FindClicked;
   itmSearchFindNext.OnClick := @SourceNotebook.FindNextClicked;
   itmSearchFindPrevious.OnClick := @SourceNotebook.FindPreviousClicked;
   itmSearchFindInFiles.OnClick := @SourceNotebook.FindInFilesClicked;
   itmSearchReplace.OnClick := @SourceNotebook.ReplaceClicked;
+  itmGotoLine.OnClick := @SourceNotebook.GotoLineClicked;
+  itmJumpBack.OnClick := @SourceNotebook.JumpBackClicked;
+  itmJumpForward.OnClick := @SourceNotebook.JumpForwardClicked;
+  itmAddJumpPoint.OnClick := @SourceNotebook.AddJumpPointClicked;
+  itmJumpHistory.OnClick := @SourceNotebook.ViewJumpHistoryClicked;
 
   // message view
   FMessagesViewBoundsRectValid:=false;
@@ -1049,6 +1070,35 @@ begin
   itmSearchReplace.Caption := 'Replace';
   mnuSearch.add(itmSearchReplace);
 
+  mnuSearch.Add(CreateSeperator);
+  
+  itmGotoLine := TMenuItem.Create(nil);
+  itmGotoLine.Name:='itmGotoLine';
+  itmGotoLine.Caption := 'Goto line';
+  mnuSearch.add(itmGotoLine);
+  
+  mnuSearch.Add(CreateSeperator);
+  
+  itmJumpBack := TMenuItem.Create(nil);
+  itmJumpBack.Name:='itmJumpBack';
+  itmJumpBack.Caption := 'Jump back';
+  mnuSearch.add(itmJumpBack);
+  
+  itmJumpForward := TMenuItem.Create(nil);
+  itmJumpForward.Name:='itmJumpForward';
+  itmJumpForward.Caption := 'Jump forward';
+  mnuSearch.add(itmJumpForward);
+
+  itmAddJumpPoint := TMenuItem.Create(nil);
+  itmAddJumpPoint.Name:='itmAddJumpPoint';
+  itmAddJumpPoint.Caption := 'Add jump point to history';
+  mnuSearch.add(itmAddJumpPoint);
+
+  itmJumpHistory := TMenuItem.Create(nil);
+  itmJumpHistory.Name:='itmJumpHistory';
+  itmJumpHistory.Caption := 'View Jump-History';
+  mnuSearch.add(itmJumpHistory);
+  
 //--------------
 // View
 //--------------
@@ -3747,7 +3797,8 @@ begin
   end;
 end;
 
-procedure TMainIDE.OnDebuggerCurrentLine(Sender: TObject; const ALocation: TDBGLocationRec);
+procedure TMainIDE.OnDebuggerCurrentLine(Sender: TObject; 
+  const ALocation: TDBGLocationRec);
 // debugger paused program due to pause or error
 // -> show the current execution line in editor
 // if SrcLine = -1 then no source is available
@@ -3760,9 +3811,12 @@ begin
   if DoOpenEditorFile(ALocation.SrcFile, false) <> mrOk then exit;
   ActiveSrcEdit:=SourceNoteBook.GetActiveSE;
   if ActiveSrcEdit=nil then exit;
-  ActiveSrcEdit.EditorComponent.CaretXY:=Point(1, ALocation.SrcLine);
-  ActiveSrcEdit.EditorComponent.TopLine:=
-    ALocation.SrcLine - (ActiveSrcEdit.EditorComponent.LinesInWindow div 2);
+  with ActiveSrcEdit.EditorComponent do begin
+    CaretXY:=Point(1, ALocation.SrcLine);
+    BlockBegin:=CaretXY;
+    BlockEnd:=CaretXY;
+    TopLine:=ALocation.SrcLine-(LinesInWindow div 2);
+  end;
   ActiveSrcEdit.ErrorLine:=ALocation.SrcLine;
 end;
 
@@ -3813,9 +3867,13 @@ begin
       if Result=mrOk then begin
         ActiveSrcEdit:=SourceNoteBook.GetActiveSE;
         SourceNotebook.BringToFront;
-        ActiveSrcEdit.EditorComponent.SetFocus;
-        ActiveSrcEdit.EditorComponent.CaretXY:=Point(NewX,NewY);
-        ActiveSrcEdit.EditorComponent.TopLine:=NewTopLine;
+        with ActiveSrcEdit.EditorComponent do begin
+          SetFocus;
+          CaretXY:=Point(NewX,NewY);
+          BlockBegin:=CaretXY;
+          BlockEnd:=CaretXY;
+          TopLine:=NewTopLine;
+        end;
         ActiveSrcEdit.ErrorLine:=NewY;
       end;
     end;
@@ -4279,6 +4337,7 @@ begin
         Result:=(DoOpenEditorFile(SearchedFilename,false)=mrOk);
         if Result then begin
           // set caret position
+          SourceNotebook.AddJumpPointClicked(Self);
           SrcEdit:=SourceNoteBook.GetActiveSE;
           TopLine:=CaretXY.Y-(SrcEdit.EditorComponent.LinesInWindow div 2);
           if TopLine<1 then TopLine:=1;
@@ -4288,6 +4347,10 @@ begin
           end;
           SrcEdit.EditorComponent.CaretXY:=CaretXY;
           SrcEdit.EditorComponent.TopLine:=TopLine;
+          with SrcEdit.EditorComponent do begin
+            BlockBegin:=CaretXY;
+            BlockEnd:=CaretXY;
+          end;
           SrcEdit.ErrorLine:=CaretXY.Y;
         end;
       end;
@@ -4675,8 +4738,12 @@ writeln('[TMainIDE.DoJumpToProcedureSection] ************');
       NewSrcEdit:=ActiveSrcEdit;
     end;
 //writeln('[TMainIDE.DoJumpToProcedureSection] ',NewX,',',NewY,',',NewTopLine);
-    NewSrcEdit.EditorComponent.CaretXY:=Point(NewX,NewY);
-    NewSrcEdit.EditorComponent.TopLine:=NewTopLine;
+    with NewSrcEdit.EditorComponent do begin
+      CaretXY:=Point(NewX,NewY);
+      BlockBegin:=CaretXY;
+      BlockEnd:=CaretXY;
+      TopLine:=NewTopLine;
+    end;
   end else begin
     // probably a syntax error or just not in a procedure head/body -> ignore
   end;
@@ -4714,8 +4781,12 @@ writeln('[TMainIDE.DoCompleteCodeAtCursor] ************');
       NewSrcEdit:=ActiveSrcEdit;
     end;
 //writeln('[TMainIDE.DoJumpToProcedureSection] ',NewX,',',NewY,',',NewTopLine);
-    NewSrcEdit.EditorComponent.CaretXY:=Point(NewX,NewY);
-    NewSrcEdit.EditorComponent.TopLine:=NewTopLine;
+    with NewSrcEdit.EditorComponent do begin
+      CaretXY:=Point(NewX,NewY);
+      BlockBegin:=CaretXY;
+      BlockEnd:=CaretXY;
+      TopLine:=NewTopLine;
+    end;
   end else begin
     // error: probably a syntax error or just not in a procedure head/body
     // or not in a class
@@ -4745,15 +4816,100 @@ end;
 
 Procedure TMainIDE.OnSrcNoteBookActivated(Sender : TObject);
 begin
-    FCodeLastActivated:=True;
+  FCodeLastActivated:=True;
 end;
 
 Procedure TMainIDE.OnDesignerActivated(Sender : TObject);
 begin
-    FCodeLastActivated:=False;
-    FLastFormActivated := TCustomForm(Sender);
-
+  FCodeLastActivated:=False;
+  FLastFormActivated := TCustomForm(Sender);
 end;
+
+Procedure TMainIDE.OnSrcNoteBookAddJumpPoint(ACaretXY: TPoint; 
+  ATopLine: integer; APageIndex: integer; DeleteForwardHistory: boolean);
+var
+  ActiveUnitInfo: TUnitInfo;
+  NewJumpPoint: TProjectJumpHistoryPosition;
+begin
+writeln('[TMainIDE.OnSrcNoteBookAddJumpPoint] A Line=',ACaretXY.Y,',DeleteForwardHistory=',DeleteForwardHistory,' Count=',Project.JumpHistory.Count,',HistoryIndex=',Project.JumpHistory.HistoryIndex);
+  ActiveUnitInfo:=Project.UnitWithEditorIndex(APageIndex);
+  if (ActiveUnitInfo=nil) then exit;
+  NewJumpPoint:=TProjectJumpHistoryPosition.Create(ActiveUnitInfo.Filename,
+    ACaretXY,ATopLine);
+  if DeleteForwardHistory then Project.JumpHistory.DeleteForwardHistory;
+  Project.JumpHistory.InsertSmart(Project.JumpHistory.HistoryIndex+1,
+    NewJumpPoint);
+  if Project.JumpHistory.HistoryIndex=Project.JumpHistory.Count-2 then
+    Project.JumpHistory.HistoryIndex:=Project.JumpHistory.Count-1;
+writeln('[TMainIDE.OnSrcNoteBookAddJumpPoint] END Line=',ACaretXY.Y,',DeleteForwardHistory=',DeleteForwardHistory,' Count=',Project.JumpHistory.Count,',HistoryIndex=',Project.JumpHistory.HistoryIndex);
+Project.JumpHistory.WriteDebugReport;
+end;
+
+Procedure TMainIDE.OnSrcNotebookDeleteLastJumPoint(Sender: TObject);
+begin
+  Project.JumpHistory.DeleteLast;
+end;
+
+Procedure TMainIDE.OnSrcNotebookJumpToHistoryPoint(var NewCaretXY: TPoint;
+  var NewTopLine, NewPageIndex: integer;  Action: TJumpHistoryAction);
+var DestIndex, UnitIndex, NewHistoryIndex: integer;
+  ActiveSrcEdit: TSourceEditor;
+  DestJumpPoint: TProjectJumpHistoryPosition;
+begin
+writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] A Back=',Action=jhaBack);
+  { jumping back/forward is also a jump, that's why the current source position
+    should be saved to the jump history before the jump.
+    The InsertSmart method prevents putting positions twice in the history. }
+    
+  // update jump history (e.g. delete jumps to closed editors)
+  Project.JumpHistory.DeleteInvalidPositions;
+  
+writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] B Count=',Project.JumpHistory.Count,',HistoryIndex=',Project.JumpHistory.HistoryIndex);
+  DestIndex:=Project.JumpHistory.HistoryIndex;
+  if Action=jhaForward then begin
+    inc(DestIndex,2);
+    if DestIndex=Project.JumpHistory.Count then
+      Dec(DestIndex);
+  end;
+  if (DestIndex<0) or (DestIndex>=Project.JumpHistory.Count) then exit;
+  DestJumpPoint:=Project.JumpHistory[DestIndex];
+writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] C Line=',DestJumpPoint.CaretXY.Y);
+  NewHistoryIndex:=Project.JumpHistory.HistoryIndex;
+  if Action=jhaBack then begin
+    dec(NewHistoryIndex);
+    if Project.JumpHistory.HistoryIndex=Project.JumpHistory.Count-1 then begin
+      // insert current source position into history
+      if SourceNoteBook.NoteBook=nil then exit;
+      ActiveSrcEdit:=SourceNotebook.GetActiveSE;
+      if (ActiveSrcEdit=nil) then exit;
+      OnSrcNoteBookAddJumpPoint(ActiveSrcEdit.EditorComponent.CaretXY,
+        ActiveSrcEdit.EditorComponent.TopLine,SourceNotebook.Notebook.PageIndex,
+        false);
+    end;
+  end else
+    inc(NewHistoryIndex);
+  Project.JumpHistory.HistoryIndex:=NewHistoryIndex;
+  
+  UnitIndex:=Project.IndexOfFilename(DestJumpPoint.Filename);
+  if (UnitIndex>=0) and (Project.Units[UnitIndex].EditorIndex>=0) then begin
+    with Project.JumpHistory do begin
+      NewCaretXY:=DestJumpPoint.CaretXY;
+      NewTopLine:=DestJumpPoint.TopLine;
+    end;
+    NewPageIndex:=Project.Units[UnitIndex].EditorIndex;
+  end;
+writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] END Count=',Project.JumpHistory.Count,',HistoryIndex=',Project.JumpHistory.HistoryIndex);
+Project.JumpHistory.WriteDebugReport;
+end;
+
+Procedure TMainIDE.OnSrcNotebookViewJumpHistory(Sender : TObject);
+begin
+  // ToDo
+  MessageDlg('Not implemented yet','Sorry, not implemented yet',mtInformation,
+     [mbOk],0);
+end;
+
+//-----------------------------------------------------------------------------
 
 initialization
   { $I mainide.lrs}
@@ -4767,6 +4923,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.160  2001/12/01 22:17:26  lazarus
+  MG: added jump-history
+
   Revision 1.159  2001/11/27 15:06:11  lazarus
   MG: added multi language syntax hilighting
 

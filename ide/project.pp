@@ -33,141 +33,10 @@ interface
 uses
   Classes, SysUtils, LCLLinux, XMLCfg, LazConf, CompilerOptions, FileCtrl,
   CodeToolManager, CodeCache, Forms, Controls, EditorOptions, Dialogs, IDEProcs,
-  RunParamsOpts;
+  RunParamsOpts, ProjectDefs;
 
 type
-  //---------------------------------------------------------------------------
-  TProjectBookmark = class
-  private
-    fCursorPos: TPoint;
-    fEditorIndex: integer;
-    fID: integer;
-  public
-    constructor Create;
-    constructor Create(X,Y, AnEditorIndex, AnID: integer);
-    property CursorPos: TPoint read fCursorPos write fCursorPos;
-    property EditorIndex: integer read fEditorIndex write fEditorIndex;
-    property ID:integer read fID write fID;
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-  end;
-
-  TProjectBookmarkList = class
-  private
-    FBookmarks:TList;  // list of TProjectBookmark
-    function GetBookmarks(Index:integer):TProjectBookmark;
-    procedure SetBookmarks(Index:integer;  ABookmark: TProjectBookmark);
-  public
-    constructor Create;
-    destructor Destroy; override;
-    property Items[Index:integer]:TProjectBookmark
-       read GetBookmarks write SetBookmarks; default;
-    function Count:integer;
-    procedure Delete(Index:integer);
-    procedure Clear;
-    function Add(ABookmark: TProjectBookmark):integer;
-    procedure DeleteAllWithEditorIndex(EditorIndex:integer);
-    function IndexOfID(ID:integer):integer;
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-  end;
-
-//-----------------------------------------------------------------------------
-type
-  TProjectWatchType = (pwtDefault, pwtChar, pwtString, pwtDecimal, pwtHex,
-    pwtFloat, pwtPointer, pwtRecord, pwtMemDump);
-const
-  ProjectWatchTypeNames : array[TProjectWatchType] of string = (
-    'Default', 'Character', 'String', 'Decimal', 'Hexadecimal',
-    'Float', 'Pointer', 'Record', 'MemDump');
-
-type
-  TProjectWatch = class
-  private
-    fExpression: string;
-    fRepeatCount: integer;
-    fDigits: integer;
-    fEnabled: boolean;
-    fAllowFunctionCalls: boolean;
-    fTheType: TProjectWatchType;
-  public
-    constructor Create;
-    procedure Clear;
-    destructor Destroy; override; 
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    property Expression: string read fExpression write fExpression;
-    property RepeatCount: integer read fRepeatCount write fRepeatCount;
-    property Digits: integer read fDigits write fDigits;
-    property Enabled: boolean read fEnabled write fEnabled;
-    property AllowFunctionCalls: boolean 
-          read fAllowFunctionCalls write fAllowFunctionCalls;
-    property TheType: TProjectWatchType read fTheType write fTheType;
-  end;
-
-//---------------------------------------------------------------------------
-type
-  TProjectBreakPoint = class
-  private
-    fActivated: boolean;
-    fBreakExecution: boolean;
-    fCondition: string;
-    fEnableGroup: string;
-    fEvalExpression: string;
-    fDisableGroup: string;
-    fGroup: string;
-    fHandleSubsequentExceptions: boolean;
-    fIgnoreSubsequentExceptions: boolean;
-    fLineNumber: integer;
-    fLogMessage: string;
-    fLogExpressionResult: boolean;
-    fPassCount: integer;
-  public
-    constructor Create;
-    procedure Clear;
-    destructor Destroy; override; 
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    property Activated: boolean read fActivated write fActivated;
-    property BreakExecution: boolean read fBreakExecution write fBreakExecution;
-    property Condition: string read fCondition write fCondition;
-    property EnableGroup: string read fEnableGroup write fEnableGroup;
-    property EvalExpression: string read fEvalExpression write fEvalExpression;
-    property DisableGroup: string read fDisableGroup write fDisableGroup;
-    property Group: string read fGroup write fGroup;
-    property HandleSubsequentExceptions: boolean
-          read fHandleSubsequentExceptions write fHandleSubsequentExceptions;
-    property IgnoreSubsequentExceptions: boolean
-          read fIgnoreSubsequentExceptions write fIgnoreSubsequentExceptions;
-    property LineNumber: integer read fLineNumber write fLineNumber;
-    property LogMessage: string read fLogMessage write fLogMessage;
-    property LogExpressionResult: boolean 
-          read fLogExpressionResult write fLogExpressionResult;
-    property PassCount: integer read fPassCount write fPassCount;
- end;
-
-  TProjectBreakPointList = class
-  private
-    FBreakPoints:TList;  // list of TProjectBreakPoint
-    function GetBreakPoints(Index:integer):TProjectBreakPoint;
-    procedure SetBreakPoints(Index:integer;  ABreakPoint: TProjectBreakPoint);
-  public
-    function Add(ABreakPoint: TProjectBreakPoint):integer;
-    constructor Create;
-    procedure Clear;
-    function Count:integer;
-    procedure Delete(Index:integer);
-    destructor Destroy; override;
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    property Items[Index:integer]:TProjectBreakPoint 
-       read GetBreakPoints write SetBreakPoints; default;
-  end;
-
-
-  //---------------------------------------------------------------------------
   TUnitInfo = class;
-
 
   TOnFileBackup = function(const FileToBackup:string; 
                            IsPartOfProject:boolean):TModalResult of object;
@@ -267,6 +136,7 @@ type
     fBookmarks: TProjectBookmarkList;
     fCompilerOptions: TCompilerOptions;
     fIconPath: String;
+    fJumpHistory: TProjectJumpHistory;
     fMainUnit: Integer;  // only for ptApplication
     fModified: boolean;
     fOnFileBackup: TOnFileBackup;
@@ -291,6 +161,8 @@ type
                               IsPartOfProject:boolean):TModalResult;
     procedure OnUnitNameChange(AnUnitInfo: TUnitInfo; 
        const OldUnitName, NewUnitName: string;  var Allowed: boolean);
+    function JumpHistoryCheckPosition(
+       APosition:TProjectJumpHistoryPosition): boolean;
   public
     constructor Create(TheProjectType: TProjectType);
     destructor Destroy; override;
@@ -309,9 +181,10 @@ type
        OnlyProjectUnits:boolean):integer;
     function IndexOfUnitWithForm(AForm: TComponent;
        OnlyProjectUnits:boolean):integer;
-
+    function IndexOfFilename(const AFilename: string): integer;
     function UnitWithEditorIndex(Index:integer):TUnitInfo;
     Function UnitWithForm(AForm : TComponent) : TUnitInfo;
+    
     procedure CloseEditorIndex(EditorIndex:integer);
     procedure InsertEditorIndex(EditorIndex:integer);
     procedure Clear;
@@ -331,6 +204,8 @@ type
     property CompilerOptions: TCompilerOptions 
        read fCompilerOptions write fCompilerOptions;
     property IconPath: String read fIconPath write fIconPath;
+    property JumpHistory: TProjectJumpHistory
+       read fJumpHistory write fJumpHistory;
     property MainUnit: Integer //this is the unit index of the program file
        read fMainUnit write fMainUnit;
     property Modified: boolean read fModified write fModified;
@@ -385,7 +260,6 @@ const
   DefaultTargetFileExt : string = {$IFDEF win32}'.exe'{$ELSE}''{$ENDIF};
 
 function ProjectTypeNameToType(const s:string): TProjectType;
-function ProjectWatchTypeNameToType(const s: string): TProjectWatchType;
 
 implementation
 
@@ -396,333 +270,6 @@ begin
     if (lowercase(ProjectTypeNames[Result])=lowercase(s)) then exit;
   Result:=ptCustomProgram;
 end;
-
-function ProjectWatchTypeNameToType(const s: string): TProjectWatchType;
-begin
-  for Result:=Low(TProjectWatchType) to High(TProjectWatchType) do
-    if lowercase(s)=lowercase(ProjectWatchTypeNames[Result]) then exit;
-  Result:=pwtDefault;
-end;
-
-
-{ TProjectBookmark }
-
-constructor TProjectBookmark.Create;
-begin
-  inherited Create;
-end;
-
-constructor TProjectBookmark.Create(X,Y, AnEditorIndex, AnID: integer);
-begin
-  inherited Create;
-  fCursorPos.X:=X;
-  fCursorPos.Y:=Y;
-  fEditorIndex:=AnEditorIndex;
-  fID:=AnID;
-end;
-
-procedure TProjectBookmark.SaveToXMLConfig(XMLConfig: TXMLConfig; 
-  const Path: string);
-begin
-  XMLConfig.SetValue(Path+'ID',ID);
-  XMLConfig.SetValue(Path+'CursorPosX',CursorPos.X);
-  XMLConfig.SetValue(Path+'CursorPosY',CursorPos.Y);
-  XMLConfig.SetValue(Path+'EditorIndex',EditorIndex);
-end;
-
-procedure TProjectBookmark.LoadFromXMLConfig(XMLConfig: TXMLConfig; 
-  const Path: string);
-begin
-  ID:=XMLConfig.GetValue(Path+'ID',-1);
-  CursorPos.X:=XMLConfig.GetValue(Path+'CursorPosX',0);
-  CursorPos.Y:=XMLConfig.GetValue(Path+'CursorPosY',0);
-  EditorIndex:=XMLConfig.GetValue(Path+'EditorIndex',-1);
-end;
-
-
-{ TProjectBookmarkList }
-
-constructor TProjectBookmarkList.Create;
-begin
-  inherited Create;
-  fBookmarks:=TList.Create;
-end;
-
-destructor TProjectBookmarkList.Destroy;
-begin
-  Clear;
-  fBookmarks.Free;
-  inherited Destroy;
-end;
-
-procedure TProjectBookmarkList.Clear;
-var a:integer;
-begin
-  for a:=0 to fBookmarks.Count-1 do Items[a].Free;
-  fBookmarks.Clear;
-end;
-
-function TProjectBookmarkList.Count:integer;
-begin
-  Result:=fBookmarks.Count;
-end;
-
-function TProjectBookmarkList.GetBookmarks(Index:integer):TProjectBookmark;
-begin
-  Result:=TProjectBookmark(fBookmarks[Index]);
-end;
-
-procedure TProjectBookmarkList.SetBookmarks(Index:integer;  
-  ABookmark: TProjectBookmark);
-begin
-  fBookmarks[Index]:=ABookmark;
-end;
-
-function TProjectBookmarkList.IndexOfID(ID:integer):integer;
-begin
-  Result:=Count-1;
-  while (Result>=0) and (Items[Result].ID<>ID) do dec(Result);
-end;
-
-procedure TProjectBookmarkList.Delete(Index:integer);
-begin
-  Items[Index].Free;
-  fBookmarks.Delete(Index);
-end;
-
-procedure TProjectBookmarkList.DeleteAllWithEditorIndex(
-  EditorIndex:integer);
-var i:integer;
-begin
-  i:=Count-1;
-  while (i>=0) do begin
-    if Items[i].EditorIndex=EditorIndex then Delete(i);
-    dec(i);
-  end;
-end;
-
-function TProjectBookmarkList.Add(ABookmark: TProjectBookmark):integer;
-begin
-  Result:=fBookmarks.Add(ABookmark);
-end;
-
-procedure TProjectBookmarkList.SaveToXMLConfig(XMLConfig: TXMLConfig; 
-  const Path: string);
-var a:integer;
-begin
-  XMLConfig.SetValue(Path+'Bookmarks/Count',Count);
-  for a:=0 to Count-1 do
-    Items[a].SaveToXMLConfig(XMLConfig,Path+'Bookmarks/Mark'+IntToStr(a)+'/');
-end;
-
-procedure TProjectBookmarkList.LoadFromXMLConfig(XMLConfig: TXMLConfig; 
-  const Path: string);
-var a,NewCount:integer;
-  NewBookmark:TProjectBookmark;
-begin
-  Clear;
-  NewCount:=XMLConfig.GetValue(Path+'Bookmarks/Count',0);
-  for a:=0 to NewCount-1 do begin
-    NewBookmark:=TProjectBookmark.Create;
-    Add(NewBookmark);
-    NewBookmark.LoadFromXMLConfig(XMLConfig,Path+'Bookmarks/Mark'+IntToStr(a)+'/');
-  end;
-end;
-
-{ TProjectWatch }
-
-constructor TProjectWatch.Create;
-begin
-  inherited Create;
-  Clear;
-end;
-
-procedure TProjectWatch.Clear;
-begin
-  fExpression:='';
-  fRepeatCount:=0;
-  fDigits:=4;
-  fEnabled:=true;
-  fAllowFunctionCalls:=true;
-  fTheType:=pwtDefault;
-end;
-
-destructor TProjectWatch.Destroy;
-begin
-  inherited Destroy;
-end;
-
-procedure TProjectWatch.LoadFromXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string);
-begin
-  Clear;
-  fExpression:=XMLConfig.GetValue(Path+'Expression',fExpression);
-  fRepeatCount:=XMLConfig.GetValue(Path+'RepeatCount',fRepeatCount);
-  fDigits:=XMLConfig.GetValue(Path+'Digits',fDigits);
-  fEnabled:=XMLConfig.GetValue(Path+'Enabled',fEnabled);
-  fAllowFunctionCalls:=XMLConfig.GetValue(Path+'AllowFunctionCalls',
-    fAllowFunctionCalls);
-  fTheType:=ProjectWatchTypeNameToType(XMLConfig.GetValue(Path+'TheType',''));
-end;
-
-procedure TProjectWatch.SaveToXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string);
-begin
-  XMLConfig.SetValue(Path+'Expression',fExpression);
-  XMLConfig.SetValue(Path+'RepeatCount',fRepeatCount);
-  XMLConfig.SetValue(Path+'Digits',fDigits);
-  XMLConfig.SetValue(Path+'Enabled',fEnabled);
-  XMLConfig.SetValue(Path+'AllowFunctionCalls',fAllowFunctionCalls);
-  XMLConfig.SetValue(Path+'TheType',ProjectWatchTypeNames[fTheType]);
-end;
-
-
-{ TProjectBreakPoint }
-
-constructor TProjectBreakPoint.Create;
-begin
-  inherited Create;
-  Clear;
-end;
-
-destructor TProjectBreakPoint.Destroy;
-begin
-  inherited Destroy;
-end;
-
-procedure TProjectBreakPoint.Clear;
-begin
-  fActivated:=true;
-  fBreakExecution:=true;
-  fCondition:='';
-  fEnableGroup:='';
-  fEvalExpression:='';
-  fDisableGroup:='';
-  fGroup:='';
-  fHandleSubsequentExceptions:=false;
-  fIgnoreSubsequentExceptions:=false;
-  fLineNumber:=-1;
-  fLogMessage:='';
-  fLogExpressionResult:=true;
-  fPassCount:=0;
-end;
-
-procedure TProjectBreakPoint.SaveToXMLConfig(XMLConfig: TXMLConfig; 
-  const Path: string);
-begin
-  XMLConfig.SetValue(Path+'LineNumber',LineNumber);
-  XMLConfig.SetValue(Path+'Activated',Activated);
-  XMLConfig.SetValue(Path+'BreakExecution',BreakExecution);
-  XMLConfig.SetValue(Path+'Condition',Condition);
-  XMLConfig.SetValue(Path+'EnableGroup',EnableGroup);
-  XMLConfig.SetValue(Path+'EvalExpression',EvalExpression);
-  XMLConfig.SetValue(Path+'DisableGroup',DisableGroup);
-  XMLConfig.SetValue(Path+'Group',Group);
-  XMLConfig.SetValue(Path+'HandleSubsequentExceptions',HandleSubsequentExceptions);
-  XMLConfig.SetValue(Path+'IgnoreSubsequentExceptions',IgnoreSubsequentExceptions);
-  XMLConfig.SetValue(Path+'LineNumber',LineNumber);
-  XMLConfig.SetValue(Path+'LogMessage',LogMessage);
-  XMLConfig.SetValue(Path+'LogExpressionResult',LogExpressionResult);
-  XMLConfig.SetValue(Path+'PassCount',PassCount);
-end;
-
-procedure TProjectBreakPoint.LoadFromXMLConfig(XMLConfig: TXMLConfig; 
-  const Path: string);
-begin
-  Clear;
-  LineNumber:=XMLConfig.GetValue(Path+'LineNumber',LineNumber);
-  Activated:=XMLConfig.GetValue(Path+'Activated',Activated);
-  BreakExecution:=XMLConfig.GetValue(Path+'BreakExecution',BreakExecution);
-  Condition:=XMLConfig.GetValue(Path+'Condition',Condition);
-  EnableGroup:=XMLConfig.GetValue(Path+'EnableGroup',EnableGroup);
-  EvalExpression:=XMLConfig.GetValue(Path+'EvalExpression',EvalExpression);
-  DisableGroup:=XMLConfig.GetValue(Path+'DisableGroup',DisableGroup);
-  Group:=XMLConfig.GetValue(Path+'Group',Group);
-  HandleSubsequentExceptions:=XMLConfig.GetValue(
-            Path+'HandleSubsequentExceptions',HandleSubsequentExceptions);
-  IgnoreSubsequentExceptions:=XMLConfig.GetValue(
-            Path+'IgnoreSubsequentExceptions',IgnoreSubsequentExceptions);
-  LineNumber:=XMLConfig.GetValue(Path+'LineNumber',LineNumber);
-  LogMessage:=XMLConfig.GetValue(Path+'LogMessage',LogMessage);
-  LogExpressionResult:=XMLConfig.GetValue(Path+'LogExpressionResult',
-            LogExpressionResult);
-  PassCount:=XMLConfig.GetValue(Path+'PassCount',PassCount);
-end;
-
-
-{ TProjectBreakPointList }
-
-constructor TProjectBreakPointList.Create;
-begin
-  inherited Create;
-  fBreakPoints:=TList.Create;
-end;
-
-destructor TProjectBreakPointList.Destroy;
-begin
-  Clear;
-  fBreakPoints.Free;
-  inherited Destroy;
-end;
-
-procedure TProjectBreakPointList.Clear;
-var a:integer;
-begin
-  for a:=0 to fBreakPoints.Count-1 do Items[a].Free;
-  fBreakPoints.Clear;
-end;
-
-function TProjectBreakPointList.Count:integer;
-begin
-  Result:=fBreakPoints.Count;
-end;
-
-function TProjectBreakPointList.GetBreakPoints(Index:integer):TProjectBreakPoint;
-begin
-  Result:=TProjectBreakPoint(fBreakPoints[Index]);
-end;
-
-procedure TProjectBreakPointList.SetBreakPoints(Index:integer;
-  ABreakPoint: TProjectBreakPoint);
-begin
-  fBreakPoints[Index]:=ABreakPoint;
-end;
-
-procedure TProjectBreakPointList.Delete(Index:integer);
-begin
-  Items[Index].Free;
-  fBreakPoints.Delete(Index);
-end;
-
-function TProjectBreakPointList.Add(ABreakPoint: TProjectBreakPoint):integer;
-begin
-  Result:=fBreakPoints.Add(ABreakPoint);
-end;
-
-procedure TProjectBreakPointList.SaveToXMLConfig(XMLConfig: TXMLConfig; 
-  const Path: string);
-var a:integer;
-begin
-  XMLConfig.SetValue(Path+'BreakPoints/Count',Count);
-  for a:=0 to Count-1 do
-    Items[a].SaveToXMLConfig(XMLConfig,Path+'BreakPoints/Point'+IntToStr(a)+'/');
-end;
-
-procedure TProjectBreakPointList.LoadFromXMLConfig(XMLConfig: TXMLConfig; 
-  const Path: string);
-var a,NewCount:integer;
-  NewBreakPoint:TProjectBreakPoint;
-begin
-  Clear;
-  NewCount:=XMLConfig.GetValue(Path+'BreakPoints/Count',0);
-  for a:=0 to NewCount-1 do begin
-    NewBreakPoint:=TProjectBreakPoint.Create;
-    Add(NewBreakPoint);
-    NewBreakPoint.LoadFromXMLConfig(XMLConfig
-      ,Path+'BreakPoints/Point'+IntToStr(a)+'/');
-  end;
-end;
-
 
 {------------------------------------------------------------------------------
                               TUnitInfo Class
@@ -1052,6 +599,8 @@ begin
   fBookmarks := TProjectBookmarkList.Create;
   fCompilerOptions := TCompilerOptions.Create;
   fIconPath := '';
+  fJumpHistory:=TProjectJumpHistory.Create;
+  fJumpHistory.OnCheckPosition:=@JumpHistoryCheckPosition;
   fMainUnit := -1;
   fModified := false;
   fOutputDirectory := '.';
@@ -1113,6 +662,7 @@ begin
   fBookmarks.Free;
   if (xmlconfig <> nil) then xmlconfig.Free;
   fUnitList.Free;
+  fJumpHistory.Free;
   fRunParameterOptions.Free;
   fCompilerOptions.Free;
 
@@ -1154,6 +704,8 @@ begin
         xmlconfig.SetValue('ProjectOptions/General/UnitOutputDirectory/Value'
             ,UnitOutputDirectory);
         fBookmarks.SaveToXMLConfig(xmlconfig,'ProjectOptions/');
+        fJumpHistory.DeleteInvalidPositions;
+        fJumpHistory.SaveToXMLConfig(xmlconfig,'ProjectOptions/');
 
         // Set options for each Unit
         xmlconfig.SetValue('ProjectOptions/Units/Count',UnitCount);
@@ -1223,6 +775,7 @@ begin
     UnitOutputDirectory := xmlconfig.GetValue(
        'ProjectOptions/General/UnitOutputDirectory/Value', '.');
     fBookmarks.LoadFromXMLConfig(xmlconfig,'ProjectOptions/');
+    fJumpHistory.LoadFromXMLConfig(xmlconfig,'ProjectOptions/');
 
     NewUnitCount:=xmlconfig.GetValue('ProjectOptions/Units/Count',0);
     for i := 0 to NewUnitCount - 1 do begin
@@ -1325,6 +878,7 @@ begin
   fBookmarks.Clear;
   fCompilerOptions.Clear;
   fIconPath := '';
+  fJumpHistory.Clear;
   fMainUnit := -1;
   fModified := false;
   fOutputDirectory := '.';
@@ -1671,6 +1225,14 @@ begin
   end;
 end;
 
+function TProject.JumpHistoryCheckPosition(
+  APosition:TProjectJumpHistoryPosition): boolean;
+var i: integer;
+begin
+  i:=IndexOfFilename(APosition.Filename);
+  Result:=(i>=0) and (Units[i].EditorIndex>=0);
+end;
+
 function TProject.SomethingModified: boolean;
 var i: integer;
 begin
@@ -1690,12 +1252,25 @@ begin
 
 end;
 
+function TProject.IndexOfFilename(const AFilename: string): integer;
+begin
+  Result:=UnitCount-1;
+  while (Result>=0) do begin
+    if CompareFilenames(AFilename,Units[Result].Filename)=0 then exit;
+    dec(Result);
+  end;
+end;
+
+
 end.
 
 
 
 {
   $Log$
+  Revision 1.43  2001/12/01 22:17:26  lazarus
+  MG: added jump-history
+
   Revision 1.42  2001/11/17 09:48:56  lazarus
   MG: changing project filename will now also change the title
 

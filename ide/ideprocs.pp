@@ -19,6 +19,7 @@ function DirectoryExists(DirectoryName: string): boolean;
 function ForceDirectory(DirectoryName: string): boolean;
 function ExtractFileNameOnly(const AFilename: string): string;
 procedure CheckIfFileIsExecutable(const AFilename: string);
+function CompareFilenames(const Filename1, Filename2: string): integer;
 
 implementation
 
@@ -32,6 +33,15 @@ uses
  {$ENDIF}
  ;
  {$ENDIF}
+
+function CompareFilenames(const Filename1, Filename2: string): integer;
+begin
+  {$IFDEF WIN32}
+  Result:=AnsiCompareText(Filename1, Filename2);
+  {$ELSE}
+  Result:=AnsiCompareStr(Filename1, Filename2);
+  {$ENDIF}
+end;
 
 procedure CheckIfFileIsExecutable(const AFilename: string);
 var AText: string;

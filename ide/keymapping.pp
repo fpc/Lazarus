@@ -31,20 +31,25 @@ uses
 const
   // editor commands constants. see syneditkeycmds.pp for more
   ecFind                = ecUserFirst + 1;
-  ecFindAgain          = ecUserFirst + 2;
-  ecFindNext           = ecFindAgain;
-  ecReplace            = ecUserFirst + 3;
+  ecFindAgain           = ecUserFirst + 2;
+  ecFindNext            = ecFindAgain;
+  ecReplace             = ecUserFirst + 3;
   ecFindProcedureDefinition = ecUserFirst + 4;
   ecFindProcedureMethod = ecUserFirst + 5;
-  ecGotoLineNumber     = ecUserFirst + 6;
+  ecGotoLineNumber      = ecUserFirst + 6;
 
-  ecNextEditor         = ecUserFirst + 7;
-  ecPrevEditor         = ecUserFirst + 8;
+  ecNextEditor          = ecUserFirst + 7;
+  ecPrevEditor          = ecUserFirst + 8;
 
   ecPeriod              = ecUserFirst + 9;
 
-  ecFindPrevious      = ecUserFirst + 10;
-  ecFindInFiles       = ecUserFirst + 11;
+  ecFindPrevious        = ecUserFirst + 10;
+  ecFindInFiles         = ecUserFirst + 11;
+  ecJumpBack            = ecUserFirst + 12;
+  ecJumpForward         = ecUserFirst + 13;
+  ecAddJumpPoint        = ecUserFirst + 14;
+  ecViewJumpHistory     = ecUserFirst + 15;
+  
 
   ecWordCompletion     = ecUserFirst + 100;
   ecCompleteCode       = ecUserFirst + 101;
@@ -333,6 +338,10 @@ begin
     ecFindProcedureDefinition: Result:= 'find procedure definition';
     ecFindProcedureMethod: Result:= 'find procedure method';
     ecGotoLineNumber: Result:= 'goto line number';
+    ecJumpBack: Result:='jump back';
+    ecJumpForward: Result:='jump forward';
+    ecAddJumpPoint: Result:='add jump point';
+    ecViewJumpHistory: Result:='view jump history';
     ecNextEditor: Result:= 'next editor';
     ecPrevEditor: Result:= 'previous editor';
     ecPeriod: Result:= 'period';
@@ -921,6 +930,10 @@ begin
   Add('Find procedure method',ecFindProcedureMethod,
                                  VK_DOWN,[ssShift,SSCtrl],VK_UNKNOWN,[]);
   Add('Go to line number',ecGotoLineNumber,VK_G,[ssCtrl],VK_UNKNOWN,[]);
+  Add('Jump back',ecJumpBack,VK_H,[ssCtrl],VK_UNKNOWN,[]);
+  Add('Jump forward',ecJumpForward,VK_H,[ssCtrl,ssShift],VK_UNKNOWN,[]);
+  Add('Add jump point',ecAddJumpPoint,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add('View jump history',ecViewJumpHistory,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   Add('Go to next editor',ecNextEditor, VK_S, [ssShift,ssCtrl], VK_UNKNOWN, []);
   Add('Go to prior editor',ecPrevEditor, VK_A, [ssShift,ssCtrl], VK_UNKNOWN, []);
