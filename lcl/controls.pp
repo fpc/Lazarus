@@ -44,7 +44,7 @@ uses
 
 
 const
-  CM_BASE                 = $B000;
+  CM_BASE                 = $B000;                                                      l
   CM_ACTIVATE             = CM_BASE + 0;
   CM_DEACTIVATE           = CM_BASE + 1;
   CM_GOTFOCUS             = CM_BASE + 2;
@@ -1374,6 +1374,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.77  2002/10/14 15:22:57  lazarus
+  MG: default all hints to off
+
   Revision 1.76  2002/10/09 11:46:04  lazarus
   MG: fixed loading TListView from stream
 
