@@ -1818,8 +1818,6 @@ begin
   end;   // end of 1st case
 end;
 
-
-
 {------------------------------------------------------------------------------
   Function: TGtkObject.GetText
   Params:  Sender: The control to retrieve the text from
@@ -1838,11 +1836,9 @@ begin
      begin
        Text := StrPas(gtk_entry_get_text(PGtkEntry(PGtkCombo(
                                          TComboBox(Sender).Handle)^.entry)));
-       //writeln(' TGtkObject.GetText "',Text,'"');
      end;
      
-   csEdit    :
-     Text := StrPas(gtk_entry_get_text(PgtkEntry(TWinControl(Sender).Handle)));
+   csEdit: Text:= StrPas(gtk_entry_get_text(PgtkEntry(TWinControl(Sender).Handle)));
 
    csMemo    : begin
                   CS := gtk_editable_get_chars(PGtkEditable(
@@ -2078,7 +2074,9 @@ begin
 
   csGroupBox    : gtk_frame_set_label(pgtkFrame(P),pLabel);
 
-  csEdit        : gtk_entry_set_text(pGtkEntry(P),pLabel);
+  csEdit        : begin
+                    gtk_entry_set_text(pGtkEntry(P), pLabel);
+                  end;    
 
   csMemo        : begin
                     P:= GetWidgetInfo(P, True)^.ImplementationWidget;
@@ -2224,12 +2222,10 @@ begin
 
     LM_ACTIVATE :
     begin
-      if (Sender is TCustomForm) then
-         Begin
+      if (Sender is TCustomForm) then begin
          ConnectSenderSignal(gObject, 'focus-in-event', @gtkfrmactivate);
          ConnectSenderSignal(gObject, 'focus-out-event', @gtkfrmdeactivate);
-         end
-      else
+      end else
         ConnectSenderSignal(gObject, 'activate', @gtkactivateCB);
     end;
 
@@ -2804,8 +2800,9 @@ begin
         End;
 
         csEdit,csMemo:
-        Begin
+        begin
           SetCallback(LM_CHANGED,Sender);
+          SetCallback(LM_ACTIVATE, Sender);
           SetCallback(LM_CUTTOCLIP,Sender);
           SetCallback(LM_COPYTOCLIP,Sender);
           SetCallback(LM_PASTEFROMCLIP,Sender);
@@ -4797,7 +4794,7 @@ begin
      end;
      
   csArrow :
-    Begin
+    begin
       if TLmArrow(data^).ArrowType = atUp then
         ArrowType := GTK_ARROW_UP
       else
@@ -4860,14 +4857,18 @@ begin
    
   case TControl(Sender).fCompStyle of
     csEdit :
-        with (TCustomEdit(Sender)) do
-           Begin
-             gtk_entry_set_editable(PgtkEntry(handle),not(TCustomEdit(sender).ReadOnly));
-             gtk_entry_set_max_length(PgtkEntry(handle),TCustomEdit(sender).MaxLength);
-           end;
+      with TCustomEdit(Sender) do
+        begin
+          // XXX TODO: GTK 1.x does not support EchoMode emNone.
+          // This will have to be coded around, but not a priority
+        
+          gtk_entry_set_editable(PgtkEntry(Handle), not (TCustomEdit(Sender).ReadOnly));
+          gtk_entry_set_max_length(PgtkEntry(Handle), TCustomEdit(Sender).MaxLength);
+          gtk_entry_set_visibility(PGtkEntry(Handle), TCustomEdit(Sender).EchoMode = emNormal);
+        end;
 
     csProgressBar :
-       with (TProgressBar (Sender)) do
+       with TProgressBar(Sender) do
        begin
           Widget := PGtkWidget( gtk_adjustment_new (0, Min, Max, 0, 0, 0));
           gtk_progress_set_adjustment (GTK_PROGRESS (handle), PGtkAdjustment (Widget));
@@ -5663,6 +5664,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.204  2002/09/07 12:14:51  lazarus
+  EchoMode for TCustomEdit. emNone not implemented for GTK+, falls back to emPassword
+  behaviour.
+
   Revision 1.203  2002/09/06 22:32:21  lazarus
   Enabled cursor property + property editor.
 
