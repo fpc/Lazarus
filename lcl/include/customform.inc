@@ -1363,6 +1363,8 @@ var
   //SaveCount: Integer;
   ActiveWindow: HWnd;
 begin
+  if Self=nil then raise
+    EInvalidOperation.Create('TCustomForm.ShowModal Self=nil');
   // cancel drags
   CancelDrag;
   // close popupmenus
@@ -1432,6 +1434,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.105  2003/06/16 23:12:59  mattias
+  fixed TCustomForm.ShowModal when Self=nil
+
   Revision 1.104  2003/06/16 22:47:19  mattias
   fixed keeping TForm.Visible=false
 
