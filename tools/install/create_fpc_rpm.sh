@@ -36,13 +36,13 @@ fi
 if [ "x$FPCVersion" = "xdevel" ]; then
   Year=03
   Month=06
-  Day=17
+  Day=20
   LazVersion=1.1
 fi
 if [ "x$FPCVersion" = "xstable" ]; then
   Year=03
   Month=06
-  Day=17
+  Day=20
   LazVersion=1.0.8
 fi
 
