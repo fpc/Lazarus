@@ -23,6 +23,8 @@
  **********************************************************************}
 unit MemCheck;
 
+{$MODE ObjFPC}
+
 interface
 
 { define EXTRA to add more
@@ -34,13 +36,14 @@ interface
 {off $DEFINE Extra}
 
 
-procedure MemError;
+// additions for codetools
+{$DEFINE MC_Interface}
+{$i memcheck_laz.inc}
+{$UNDEF MC_Interface}
 
 {$IFNDEF VER1_0}
 
 {$goto on}
-
-{off $DEFINE EXTRA}
 
 Procedure DumpHeap;
 Procedure MarkHeap;
@@ -53,7 +56,7 @@ Procedure MarkHeap;
 
 type
    tFillExtraInfoProc = procedure(p : pointer);
-   tdisplayextrainfoProc = procedure (var ptext : text;p : pointer);
+   tDisplayExtraInfoProc = procedure (var ptext : text;p : pointer);
 
 { Allows to add info pre memory block, see ppheap.pas of the compiler
   for example source }
@@ -76,9 +79,9 @@ const
   quicktrace : boolean=true;
   { calls halt() on error }
   HaltOnError : boolean = false;
-  { raise gdb catchable exception on error }
+  { ExceptOnError: raise gdb catchable exception on error }
   ExceptOnError: boolean = true;
-  { set this to true if you suspect that memory
+  { keepreleased: set this to true if you suspect that memory
     is freed several times }
 {$ifdef EXTRA}
   keepreleased : boolean=true;
@@ -92,31 +95,22 @@ const
     this allows to test for writing into that part }
   usecrc : boolean = true;
 
-// StartAddition for CodeTools
-procedure CheckHeap;
-procedure CheckHeap(const txt: ansistring);
-procedure CheckHeapWrtMemCnt(const txt: ansistring);
-procedure WriteGetMemCount(const txt: ansistring);
-
-function MemCheck_getmem_cnt: longint;
-function MemCheck_freemem_cnt: longint;
-function MemCheck_getmem_size: longint;
-function MemCheck_freemem_size: longint;
-function MemCheck_getmem8_size: longint;
-function MemCheck_freemem8_size: longint;
-// End Addition for CodeTools
-
 implementation
 
+// additions for codetools
+{$DEFINE MC_ImplementationStart}
+{$i memcheck_laz.inc}
+{$UNDEF MC_ImplementationStart}
+
 type
-   plongint = ^longint;
+   pptrint = ^ptrint;
 
 const
   { allows to add custom info in heap_mem_info, this is the size that will
     be allocated for this information }
-  extra_info_size : word = 0;
-  exact_info_size : word = 0;
-  EntryMemUsed    : longint = 0;
+  extra_info_size : ptrint = 0;
+  exact_info_size : ptrint = 0;
+  EntryMemUsed    : ptrint = 0;
   { function to fill this info up }
   fill_extra_info_proc : TFillExtraInfoProc = nil;
   display_extra_info_proc : TDisplayExtraInfoProc = nil;
@@ -126,12 +120,7 @@ const
   { only set using environment variables          }
   outputstr : shortstring = '';
 
-const
-  NullCall = nil;
-
 type
-  TCall = pointer;
-
   pheap_extra_info = ^theap_extra_info;
   theap_extra_info = record
     check       : cardinal;  { used to check if the procvar is still valid }
@@ -151,18 +140,17 @@ type
   theap_mem_info = record
     previous,
     next     : pheap_mem_info;
-    size     : longint;
+    size     : ptrint;
     sig      : longword;
 {$ifdef EXTRA}
     release_sig : longword;
     prev_valid  : pheap_mem_info;
 {$endif EXTRA}
-    calls    : array [1..tracesize] of TCall;
+    calls    : array [1..tracesize] of pointer;
     exact_info_size : word;
     extra_info_size : word;
     extra_info      : pheap_extra_info;
   end;
-
 
 var
   ptext : ^text;
@@ -174,113 +162,12 @@ var
 {$endif EXTRA}
   heap_mem_root : pheap_mem_info;
   getmem_cnt,
-  freemem_cnt   : longint;
+  freemem_cnt   : ptrint;
   getmem_size,
-  freemem_size   : longint;
+  freemem_size   : ptrint;
   getmem8_size,
-  freemem8_size   : longint;
+  freemem8_size   : ptrint;
 
-
-// StartAddition for CodeTools
-procedure CheckHeap;
-var
-  p: pointer;
-  OldQuickTrace: boolean;
-begin
-  writeln('>>> memcheck.pp - CheckHeap');
-  OldQuickTrace:=QuickTrace;
-  QuickTrace:=false;
-  GetMem(p,4);
-  FreeMem(p);
-  QuickTrace:=OldQuickTrace;
-end;
-
-procedure CheckHeap(const txt: ansistring);
-var
-  p: pointer;
-  OldQuickTrace: boolean;
-begin
-  writeln('>>> memcheck.pp - CheckHeap "',txt,'"');
-  OldQuickTrace:=QuickTrace;
-  QuickTrace:=false;
-  GetMem(p,4);
-  FreeMem(p);
-  QuickTrace:=OldQuickTrace;
-end;
-
-const
-  LastWrittenGetMemCnt: longint = 0;
-  HiddenGetMemCnt: longint = 0;
-
-procedure CheckHeapWrtMemCnt(const txt: ansistring);
-var
-  p: pointer;
-  StartGetMemCnt, CurGetMemCount, DiffGetMemCount: longint;
-  OldQuickTrace: boolean;
-begin
-  StartGetMemCnt:=MemCheck_getmem_cnt;
-  CurGetMemCount:=StartGetMemCnt-HiddenGetMemCnt;
-  DiffGetMemCount:=CurGetMemCount-LastWrittenGetMemCnt;
-  LastWrittenGetMemCnt:=CurGetMemCount;
-
-  writeln('>>> memcheck.pp - CheckHeap2 "',txt,'" ',
-    CurGetMemCount,'(',StartGetMemCnt,') +',DiffGetMemCount);
-  OldQuickTrace:=QuickTrace;
-  QuickTrace:=false;
-  GetMem(p,4);
-  FreeMem(p);
-  QuickTrace:=OldQuickTrace;
-
-  // don't count mem counts of this proc
-  inc(HiddenGetMemCnt,MemCheck_getmem_cnt-StartGetMemCnt);
-end;
-
-procedure WriteGetMemCount(const txt: ansistring);
-var
-  StartGetMemCnt, CurGetMemCount, DiffGetMemCount: longint;
-begin
-  StartGetMemCnt:=MemCheck_getmem_cnt;
-  CurGetMemCount:=StartGetMemCnt-HiddenGetMemCnt;
-  DiffGetMemCount:=CurGetMemCount-LastWrittenGetMemCnt;
-  LastWrittenGetMemCnt:=CurGetMemCount;
-
-  writeln('>>> memcheck.pp - WriteGetMemCount "',txt,'" ',
-    CurGetMemCount,'(',StartGetMemCnt,') +',DiffGetMemCount);
-
-  // don't count mem counts of this proc
-  inc(HiddenGetMemCnt,MemCheck_getmem_cnt-StartGetMemCnt);
-end;
-
-function MemCheck_getmem_cnt: longint;
-begin
-  MemCheck_getmem_cnt:=getmem_cnt;
-end;
-
-function MemCheck_freemem_cnt: longint;
-begin
-  MemCheck_freemem_cnt:=freemem_cnt;
-end;
-
-function MemCheck_getmem_size: longint;
-begin
-  MemCheck_getmem_size:=getmem_size;
-end;
-
-function MemCheck_freemem_size: longint;
-begin
-  MemCheck_freemem_size:=freemem_size;
-end;
-
-function MemCheck_getmem8_size: longint;
-begin
-  MemCheck_getmem8_size:=getmem8_size;
-end;
-
-function MemCheck_freemem8_size: longint;
-begin
-  MemCheck_freemem8_size:=freemem8_size;
-end;
-// Addition for CodeTools
 
 {*****************************************************************************
                                    Crc 32
@@ -307,9 +194,9 @@ begin
 end;
 
 
-Function UpdateCrc32(InitCrc:longword;var InBuf;InLen:Longint):longword;
+Function UpdateCrc32(InitCrc:longword;var InBuf;InLen:ptrint):longword;
 var
-  i : longint;
+  i : ptrint;
   p : pchar;
 begin
   p:=@InBuf;
@@ -324,18 +211,18 @@ end;
 Function calculate_sig(p : pheap_mem_info) : longword;
 var
    crc : longword;
-   pl : plongint;
+   pl : pptrint;
 begin
    crc:=cardinal($ffffffff);
-   crc:=UpdateCrc32(crc,p^.size,sizeof(longint));
-   crc:=UpdateCrc32(crc,p^.calls,tracesize*sizeof(longint));
+   crc:=UpdateCrc32(crc,p^.size,sizeof(ptrint));
+   crc:=UpdateCrc32(crc,p^.calls,tracesize*sizeof(ptrint));
    if p^.extra_info_size>0 then
      crc:=UpdateCrc32(crc,p^.extra_info^,p^.exact_info_size);
    if add_tail then
      begin
         { Check also 4 bytes just after allocation !! }
         pl:=pointer(p)+p^.extra_info_size+sizeof(theap_mem_info)+p^.size;
-        crc:=UpdateCrc32(crc,pl^,sizeof(longint));
+        crc:=UpdateCrc32(crc,pl^,sizeof(ptrint));
      end;
    calculate_sig:=crc;
 end;
@@ -344,11 +231,11 @@ end;
 Function calculate_release_sig(p : pheap_mem_info) : longword;
 var
    crc : longword;
-   pl : plongint;
+   pl : pptrint;
 begin
    crc:=$ffffffff;
-   crc:=UpdateCrc32(crc,p^.size,sizeof(longint));
-   crc:=UpdateCrc32(crc,p^.calls,tracesize*sizeof(longint));
+   crc:=UpdateCrc32(crc,p^.size,sizeof(ptrint));
+   crc:=UpdateCrc32(crc,p^.calls,tracesize*sizeof(ptrint));
    if p^.extra_info_size>0 then
      crc:=UpdateCrc32(crc,p^.extra_info^,p^.exact_info_size);
    { Check the whole of the whole allocation }
@@ -359,7 +246,7 @@ begin
      begin
         { Check also 4 bytes just after allocation !! }
         pl:=pointer(p)+p^.extra_info_size+sizeof(theap_mem_info)+p^.size;
-        crc:=UpdateCrc32(crc,pl^,sizeof(longint));
+        crc:=UpdateCrc32(crc,pl^,sizeof(ptrint));
      end;
    calculate_release_sig:=crc;
 end;
@@ -372,31 +259,31 @@ end;
 
 procedure call_stack(pp : pheap_mem_info;var ptext : text);
 var
-  i  : longint;
+  i  : ptrint;
 begin
-  writeln(ptext,'Call trace for block 0x',hexstr(longint(pointer(pp)+sizeof(theap_mem_info)),8),' size ',pp^.size);
+  writeln(ptext,'Call trace for block $',hexstr(ptrint(pointer(pp)+sizeof(theap_mem_info)),8),' size ',pp^.size);
   for i:=1 to tracesize do
-   if pp^.calls[i]<>NullCall then
+   if pp^.calls[i]<>nil then
      writeln(ptext,BackTraceStrFunc(pp^.calls[i]));
   { the check is done to be sure that the procvar is not overwritten }
   if assigned(pp^.extra_info) and
      (pp^.extra_info^.check=$12345678) and
      assigned(pp^.extra_info^.displayproc) then
-    pp^.extra_info^.displayproc(ptext,@pp^.extra_info^.data);
+   pp^.extra_info^.displayproc(ptext,@pp^.extra_info^.data);
 end;
 
 
 procedure call_free_stack(pp : pheap_mem_info;var ptext : text);
 var
-  i  : longint;
+  i  : ptrint;
 begin
-  writeln(ptext,'Call trace for block at 0x',hexstr(longint(pointer(pp)+sizeof(theap_mem_info)),8),' size ',pp^.size);
+  writeln(ptext,'Call trace for block at $',hexstr(ptrint(pointer(pp)+sizeof(theap_mem_info)),8),' size ',pp^.size);
   for i:=1 to tracesize div 2 do
-   if pp^.calls[i]<>NullCall then
+   if pp^.calls[i]<>nil then
      writeln(ptext,BackTraceStrFunc(pp^.calls[i]));
   writeln(ptext,' was released at ');
   for i:=(tracesize div 2)+1 to tracesize do
-   if pp^.calls[i]<>NullCall then
+   if pp^.calls[i]<>nil then
      writeln(ptext,BackTraceStrFunc(pp^.calls[i]));
   { the check is done to be sure that the procvar is not overwritten }
   if assigned(pp^.extra_info) and
@@ -408,7 +295,7 @@ end;
 
 procedure dump_already_free(p : pheap_mem_info;var ptext : text);
 begin
-  Writeln(ptext,'Marked memory at 0x',HexStr(longint(pointer(p)+sizeof(theap_mem_info)),8),' released');
+  Writeln(ptext,'Marked memory at $',HexStr(ptrint(pointer(p)+sizeof(theap_mem_info)),8),' released');
   call_free_stack(p,ptext);
   Writeln(ptext,'freed again at');
   dump_stack(ptext,get_caller_frame(get_frame));
@@ -416,7 +303,7 @@ end;
 
 procedure dump_error(p : pheap_mem_info;var ptext : text);
 begin
-  Writeln(ptext,'Marked memory at 0x',HexStr(longint(pointer(p)+sizeof(theap_mem_info)),8),' invalid');
+  Writeln(ptext,'Marked memory at $',HexStr(ptrint(pointer(p)+sizeof(theap_mem_info)),8),' invalid');
   Writeln(ptext,'Wrong signature $',hexstr(p^.sig,8),' instead of ',hexstr(calculate_sig(p),8));
   dump_stack(ptext,get_caller_frame(get_frame));
 end;
@@ -424,9 +311,9 @@ end;
 {$ifdef EXTRA}
 procedure dump_change_after(p : pheap_mem_info;var ptext : text);
  var pp : pchar;
-     i : longint;
+     i : ptrint;
 begin
-  Writeln(ptext,'Marked memory at 0x',HexStr(longint(pointer(p)+sizeof(theap_mem_info)),8),' invalid');
+  Writeln(ptext,'Marked memory at $',HexStr(ptrint(pointer(p)+sizeof(theap_mem_info)),8),' invalid');
   Writeln(ptext,'Wrong release CRC $',hexstr(p^.release_sig,8),' instead of ',hexstr(calculate_release_sig(p),8));
   Writeln(ptext,'This memory was changed after call to freemem !');
   call_free_stack(p,ptext);
@@ -437,9 +324,9 @@ begin
 end;
 {$endif EXTRA}
 
-procedure dump_wrong_size(p : pheap_mem_info;size : longint;var ptext : text);
+procedure dump_wrong_size(p : pheap_mem_info;size : ptrint;var ptext : text);
 begin
-  Writeln(ptext,'Marked memory at 0x',HexStr(longint(pointer(p)+sizeof(theap_mem_info)),8),' invalid');
+  Writeln(ptext,'Marked memory at $',HexStr(ptrint(pointer(p)+sizeof(theap_mem_info)),8),' invalid');
   Writeln(ptext,'Wrong size : ',p^.size,' allocated ',size,' freed');
   dump_stack(ptext,get_caller_frame(get_frame));
   { the check is done to be sure that the procvar is not overwritten }
@@ -453,7 +340,7 @@ end;
 
 function is_in_getmem_list (p : pheap_mem_info) : boolean;
 var
-  i  : longint;
+  i  : ptrint;
   pp : pheap_mem_info;
 begin
   is_in_getmem_list:=false;
@@ -466,8 +353,7 @@ begin
         (pp^.sig <>$AAAAAAAA) then
       begin
         writeln(ptext^,'error in linked list of heap_mem_info');
-        // MG: changes for codetools:
-        MemError;
+        runerror(204);
       end;
      if pp=p then
       is_in_getmem_list:=true;
@@ -476,10 +362,10 @@ begin
      if i>getmem_cnt-freemem_cnt then begin
        writeln(ptext^,'error in linked list of heap_mem_info',
          ' FreedCnt=',getmem_cnt-freemem_cnt,' RealCnt=',i);
-       // MG: changes for codetools:
-       MemError;
+       runerror(204);
      end;
      pp:=pp^.previous;
+     // MG: end of changes for codetools
    end;
 end;
 
@@ -488,12 +374,13 @@ end;
                                TraceGetMem
 *****************************************************************************}
 
-Function TraceGetMem(size:longint):pointer;
+Function TraceGetMem(size:ptrint):pointer;
 var
-  allocsize,i: longint;
-  bp : TCall;
+  allocsize,i : ptrint;
+  oldbp,
+  bp : pointer;
   pl : pdword;
-  p : pointer;
+  p  : pointer;
   pp : pheap_mem_info;
 begin
   inc(getmem_size,size);
@@ -501,15 +388,15 @@ begin
 { Do the real GetMem, but alloc also for the info block }
   allocsize:=size+sizeof(theap_mem_info)+extra_info_size;
   if add_tail then
-    inc(allocsize,sizeof(longint));
+    inc(allocsize,sizeof(ptrint));
   p:=SysGetMem(allocsize);
   pp:=pheap_mem_info(p);
   inc(p,sizeof(theap_mem_info));
 { Create the info block }
   pp^.sig:=$DEADBEEF;
   pp^.size:=size;
-  pp^.extra_info_size:=extra_info_size;
-  pp^.exact_info_size:=exact_info_size;
+  pp^.extra_info_size:=word(extra_info_size);
+  pp^.exact_info_size:=word(exact_info_size);
   {
     the end of the block contains:
     <tail>   4 bytes
@@ -533,7 +420,7 @@ begin
    pp^.extra_info:=nil;
   if add_tail then
     begin
-      pl:=pointer(pp)+allocsize-pp^.extra_info_size-sizeof(longint);
+      pl:=pointer(pp)+allocsize-pp^.extra_info_size-sizeof(ptrint);
       pl^:=$DEADBEEF;
     end;
   { clear the memory }
@@ -543,7 +430,10 @@ begin
   for i:=1 to tracesize do
    begin
      pp^.calls[i]:=get_caller_addr(bp);
+     oldbp:=bp;
      bp:=get_caller_frame(bp);
+     if (bp<oldbp) or (bp>(StackBottom + StackLength)) then
+       bp:=nil;
    end;
   { insert in the linked list }
   if heap_mem_root<>nil then
@@ -572,59 +462,55 @@ end;
                                 TraceFreeMem
 *****************************************************************************}
 
-function TraceFreeMemSize(p:pointer;size:longint):longint;
+function TraceFreeMemSize(p:pointer;size:ptrint):ptrint;
 var
-  i, ppsize : longint;
-  bp: TCall;
+  i,ppsize : ptrint;
+  bp : pointer;
   pp : pheap_mem_info;
 {$ifdef EXTRA}
   pp2 : pheap_mem_info;
 {$endif}
-  extra_size : longint;
+  extra_size : ptrint;
 begin
   inc(freemem_size,size);
   inc(freemem8_size,((size+7) div 8)*8);
   pp:=pheap_mem_info(p-sizeof(theap_mem_info));
   ppsize:= size + sizeof(theap_mem_info)+pp^.extra_info_size;
   if add_tail then
-    inc(ppsize,sizeof(longint));
+    inc(ppsize,sizeof(ptrint));
   if not quicktrace then
     begin
       if not(is_in_getmem_list(pp)) then
-        // MG: changes for codetools:
-        MemError;
+       runerror(204);
     end;
   if (pp^.sig=$AAAAAAAA) and not usecrc then
     begin
-      error_in_heap:=true;
-      dump_already_free(pp,ptext^);
-      // MG: changes for codetools:
-      MemError;
+       error_in_heap:=true;
+       dump_already_free(pp,ptext^);
+       if haltonerror then Halt(1);
     end
   else if ((pp^.sig<>$DEADBEEF) or usecrc) and
         ((pp^.sig<>calculate_sig(pp)) or not usecrc) then
     begin
-      error_in_heap:=true;
-      dump_error(pp,ptext^);
+       error_in_heap:=true;
+       dump_error(pp,ptext^);
 {$ifdef EXTRA}
-      dump_error(pp,error_file);
+       dump_error(pp,error_file);
 {$endif EXTRA}
-      { don't release anything in this case !! }
-      // MG: changes for codetools:
-      MemError;
-      exit;
+       { don't release anything in this case !! }
+       if haltonerror then Halt(1);
+       exit;
     end
   else if pp^.size<>size then
     begin
-      error_in_heap:=true;
-      dump_wrong_size(pp,size,ptext^);
+       error_in_heap:=true;
+       dump_wrong_size(pp,size,ptext^);
 {$ifdef EXTRA}
-      dump_wrong_size(pp,size,error_file);
+       dump_wrong_size(pp,size,error_file);
 {$endif EXTRA}
-      // MG: changes for codetools:
-      MemError;
-      { don't release anything in this case !! }
-      exit;
+       if haltonerror then Halt(1);
+       { don't release anything in this case !! }
+       exit;
     end;
   { save old values }
   extra_size:=pp^.extra_info_size;
@@ -688,28 +574,28 @@ begin
    { return the correct size }
    dec(i,sizeof(theap_mem_info)+extra_size);
    if add_tail then
-     dec(i,sizeof(longint));
+     dec(i,sizeof(ptrint));
    TraceFreeMemSize:=i;
 end;
 
 
-function TraceMemSize(p:pointer):Longint;
+function TraceMemSize(p:pointer):ptrint;
 var
-  l : longint;
+  l : ptrint;
   pp : pheap_mem_info;
 begin
   pp:=pheap_mem_info(p-sizeof(theap_mem_info));
   l:=SysMemSize(pp);
   dec(l,sizeof(theap_mem_info)+pp^.extra_info_size);
   if add_tail then
-   dec(l,sizeof(longint));
+   dec(l,sizeof(ptrint));
   TraceMemSize:=l;
 end;
 
 
-function TraceFreeMem(p:pointer):longint;
+function TraceFreeMem(p:pointer):ptrint;
 var
-  size : longint;
+  size : ptrint;
   pp : pheap_mem_info;
 begin
   pp:=pheap_mem_info(p-sizeof(theap_mem_info));
@@ -730,16 +616,17 @@ end;
                                 ReAllocMem
 *****************************************************************************}
 
-function TraceReAllocMem(var p:pointer;size:longint):Pointer;
+function TraceReAllocMem(var p:pointer;size:ptrint):Pointer;
 var
   newP: pointer;
   oldsize,
   allocsize,
-  i : longint;
-  bp: TCall;
+  i  : ptrint;
+  bp : pointer;
   pl : pdword;
   pp : pheap_mem_info;
-  oldextrasize, oldexactsize : word;
+  oldextrasize,
+  oldexactsize : ptrint;
   old_fill_extra_info_proc : tfillextrainfoproc;
   old_display_extra_info_proc : tdisplayextrainfoproc;
 begin
@@ -748,8 +635,7 @@ begin
    begin
      if p<>nil then
       TraceFreeMem(p);
-     // MG: changes for codetools: P:=nil
-     P:=nil;
+     p:=nil;
      TraceReallocMem:=P;
      exit;
    end;
@@ -772,7 +658,7 @@ begin
      dump_error(pp,error_file);
 {$endif EXTRA}
      { don't release anything in this case !! }
-     MemError;
+     if haltonerror then Halt(1);
      exit;
    end;
   { save info }
@@ -786,7 +672,7 @@ begin
   { Do the real ReAllocMem, but alloc also for the info block }
   allocsize:=size+sizeof(theap_mem_info)+pp^.extra_info_size;
   if add_tail then
-   inc(allocsize,sizeof(longint));
+   inc(allocsize,sizeof(ptrint));
   { Try to resize the block, if not possible we need to do a
     getmem, move data, freemem }
   if not SysTryResizeMem(pp,allocsize) then
@@ -813,8 +699,8 @@ begin
 { Recreate the info block }
   pp^.sig:=$DEADBEEF;
   pp^.size:=size;
-  pp^.extra_info_size:=oldextrasize;
-  pp^.exact_info_size:=oldexactsize;
+  pp^.extra_info_size:=word(oldextrasize);
+  pp^.exact_info_size:=word(oldexactsize);
   { add the new extra_info and tail }
   if pp^.extra_info_size>0 then
    begin
@@ -830,7 +716,7 @@ begin
    pp^.extra_info:=nil;
   if add_tail then
     begin
-      pl:=pointer(pp)+allocsize-pp^.extra_info_size-sizeof(longint);
+      pl:=pointer(pp)+allocsize-pp^.extra_info_size-sizeof(ptrint);
       pl^:=$DEADBEEF;
     end;
   { generate new backtrace }
@@ -863,7 +749,6 @@ var
    __stklen : longword;external name '__stklen';
    __stkbottom : longword;external name '__stkbottom';
    edata : longword; external name 'edata';
-   heap_at_init : pointer;
 {$endif go32v2}
 
 {$ifdef win32}
@@ -877,23 +762,23 @@ var
 
 procedure CheckPointer(p : pointer);[saveregisters,public, alias : 'FPC_CHECKPOINTER'];
 var
-  i  : longint;
+  i  : ptrint;
   pp : pheap_mem_info;
-  //get_ebp,stack_top : longword;
-  //data_end : longword;
+{$IF gov32 or win32}
+  get_ebp,stack_top : longword;
+  data_end : longword;
+{$ENDIF}
 label
   _exit;
 begin
   if p=nil then
-    // MG: changes for codetools:
-    MemError;
+    runerror(204);
 
   i:=0;
 
 {$ifdef go32v2}
-  if cardinal(p)<$1000 then
-    // MG: changes for codetools:
-    MemError;
+  if ptruint(p)<$1000 then
+    runerror(216);
   asm
      movl %ebp,get_ebp
      leal edata,%eax
@@ -901,34 +786,23 @@ begin
   end;
   stack_top:=__stkbottom+__stklen;
   { allow all between start of code and end of data }
-  if cardinal(p)<=data_end then
-    goto _exit;
-  { .bss section }
-  if cardinal(p)<=cardinal(heap_at_init) then
+  if ptruint(p)<=data_end then
     goto _exit;
   { stack can be above heap !! }
 
-  if (cardinal(p)>=get_ebp) and (cardinal(p)<=stack_top) then
+  if (ptruint(p)>=get_ebp) and (ptruint(p)<=stack_top) then
     goto _exit;
 {$endif go32v2}
 
   { I don't know where the stack is in other OS !! }
 {$ifdef win32}
-  if (cardinal(p)>=$40000) and (p<=HeapOrg) then
-    goto _exit;
   { inside stack ? }
-{$ifdef ver1_0}
   asm
      movl %ebp,get_ebp
   end;
-  if (cardinal(p)>get_ebp) and
-     (cardinal(p)<Win32StackTop) then
+  if (ptruint(p)>get_ebp) and
+     (ptruint(p)<Win32StackTop) then
     goto _exit;
-{$else ver1_0}
-  if (p>get_frame) and
-     (p<pointer(Win32StackTop)) then
-    goto _exit;
-{$endif ver1_0}
 {$endif win32}
 
   { first try valid list faster }
@@ -939,8 +813,8 @@ begin
    begin
      { inside this valid block ! }
      { we can be changing the extrainfo !! }
-     if (cardinal(p)>=cardinal(pp)+sizeof(theap_mem_info){+extra_info_size}) and
-        (cardinal(p)<=cardinal(pp)+sizeof(theap_mem_info)+extra_info_size+pp^.size) then
+     if (ptruint(p)>=ptruint(pp)+sizeof(theap_mem_info){+extra_info_size}) and
+        (ptruint(p)<=ptruint(pp)+sizeof(theap_mem_info)+extra_info_size+pp^.size) then
        begin
           { check allocated block }
           if ((pp^.sig=$DEADBEEF) and not usecrc) or
@@ -953,8 +827,7 @@ begin
             begin
               writeln(ptext^,'corrupted heap_mem_info');
               dump_error(pp,ptext^);
-              ExceptOnError:=true;
-              MemError;
+              Halt(1);
             end;
        end
      else
@@ -963,8 +836,7 @@ begin
      if i>getmem_cnt-freemem_cnt then
       begin
          writeln(ptext^,'error in linked list of heap_mem_info');
-         ExceptOnError:=true;
-         MemError;
+         Halt(1);
       end;
    end;
   i:=0;
@@ -973,31 +845,28 @@ begin
   while pp<>nil do
    begin
      { inside this block ! }
-     if (cardinal(p)>=cardinal(pp)+sizeof(theap_mem_info)+cardinal(extra_info_size)) and
-        (cardinal(p)<=cardinal(pp)+sizeof(theap_mem_info)+cardinal(extra_info_size)+cardinal(pp^.size)) then
+     if (ptruint(p)>=ptruint(pp)+sizeof(theap_mem_info)+ptruint(extra_info_size)) and
+        (ptruint(p)<=ptruint(pp)+sizeof(theap_mem_info)+ptruint(extra_info_size)+ptruint(pp^.size)) then
         { allocated block }
        if ((pp^.sig=$DEADBEEF) and not usecrc) or
           ((pp^.sig=calculate_sig(pp)) and usecrc) then
           goto _exit
        else
          begin
-            writeln(ptext^,'pointer $',hexstr(longint(p),8),' points into invalid memory block');
+            writeln(ptext^,'pointer $',hexstr(ptrint(p),8),' points into invalid memory block');
             dump_error(pp,ptext^);
-            // MG: changes for codetools:
-            MemError;
+            runerror(204);
          end;
      pp:=pp^.previous;
      inc(i);
      if i>getmem_cnt then
       begin
          writeln(ptext^,'error in linked list of heap_mem_info');
-         ExceptOnError:=true;
-         MemError;
+         Halt(1);
       end;
    end;
-  writeln(ptext^,'pointer $',hexstr(longint(p),8),' does not point to valid memory block');
-  // MG: changes for codetools:
-  MemError;
+  writeln(ptext^,'pointer $',hexstr(ptrint(p),8),' does not point to valid memory block');
+  runerror(204);
 _exit:
 end;
 
@@ -1008,11 +877,11 @@ end;
 procedure dumpheap;
 var
   pp : pheap_mem_info;
-  i : longint;
-  ExpectedMemAvail : longint;
+  i : ptrint;
+  ExpectedMemAvail : ptrint;
 begin
   pp:=heap_mem_root;
-  Writeln(ptext^,'Heap dump by memcheck unit');
+  Writeln(ptext^,'Heap dump by heaptrc unit');
   Writeln(ptext^,getmem_cnt, ' memory blocks allocated : ',getmem_size,'/',getmem8_size);
   Writeln(ptext^,freemem_cnt,' memory blocks freed     : ',freemem_size,'/',freemem8_size);
   Writeln(ptext^,getmem_cnt-freemem_cnt,' unfreed memory blocks : ',getmem_size-freemem_size);
@@ -1082,7 +951,7 @@ end;
                                 AllocMem
 *****************************************************************************}
 
-function TraceAllocMem(size:longint):Pointer;
+function TraceAllocMem(size:ptrint):Pointer;
 begin
   TraceAllocMem:=SysAllocMem(size);
 end;
@@ -1092,17 +961,17 @@ end;
                             No specific tracing calls
 *****************************************************************************}
 
-function TraceMemAvail:longint;
+function TraceMemAvail:ptrint;
 begin
   TraceMemAvail:=SysMemAvail;
 end;
 
-function TraceMaxAvail:longint;
+function TraceMaxAvail:ptrint;
 begin
   TraceMaxAvail:=SysMaxAvail;
 end;
 
-function TraceHeapSize:longint;
+function TraceHeapSize:ptrint;
 begin
   TraceHeapSize:=SysHeapSize;
 end;
@@ -1113,7 +982,7 @@ end;
 *****************************************************************************}
 
 Procedure SetHeapTraceOutput(const name : string);
-var i : longint;
+var i : ptrint;
 begin
    if ptext<>@stderr then
      begin
@@ -1132,7 +1001,7 @@ begin
    writeln(ptext^);
 end;
 
-procedure SetHeapExtraInfo( size : longint;fillproc : tfillextrainfoproc;displayproc : tdisplayextrainfoproc);
+procedure SetHeapExtraInfo( size : ptrint;fillproc : tfillextrainfoproc;displayproc : tdisplayextrainfoproc);
 begin
   { the total size must stay multiple of 8, also allocate 2 pointers for
     the fill and display procvars }
@@ -1146,7 +1015,6 @@ end;
 {*****************************************************************************
                            Install MemoryManager
 *****************************************************************************}
-
 const
   TraceManager:TMemoryManager=(
     NeedLock : true;
@@ -1174,10 +1042,6 @@ begin
   Assign(error_file,'heap.err');
   Rewrite(error_file);
 {$endif EXTRA}
-  { checkpointer init }
-{$ifdef go32v2}
-  Heap_at_init:=HeapPtr;
-{$endif}
 end;
 
 
@@ -1189,7 +1053,7 @@ begin
   ioresult;
   if (exitcode<>0) and (erroraddr<>nil) then
     begin
-       Writeln(ptext^,'No heap dump by memcheck unit');
+       Writeln(ptext^,'No heap dump by heaptrc unit');
        Writeln(ptext^,'Exitcode = ',exitcode);
        if ptext<>@stderr then
          begin
@@ -1213,26 +1077,32 @@ begin
 end;
 
 {$ifdef win32}
-
-{$h+}
-
-   function GetEnvironmentVariable(lpName: pchar; lpBuffer: pchar; nSize: dword) : dword; stdcall;
-     external 'kernel32' name 'GetEnvironmentVariableA'; 
+   function GetEnvironmentStrings : pchar; stdcall;
+     external 'kernel32' name 'GetEnvironmentStringsA';
    function FreeEnvironmentStrings(p : pchar) : longbool; stdcall;
-     external 'kernel32' name 'FreeEnvironmentStringsA'; 
+     external 'kernel32' name 'FreeEnvironmentStringsA';
 Function  GetEnv(envvar: string): string;
 var
-  len : longint;
+   s : string;
+   i : ptrint;
+   hp,p : pchar;
 begin
-  len := GetEnvironmentVariable(pchar(envvar), nil, 0);
-  if len = 0 then
-  begin
-    getenv := ''
-  end else begin
-    { len includes null-terminator }
-    SetLength(getenv, len-1);
-    GetEnvironmentVariable(pchar(envvar), pchar(getenv), len);
-  end;
+   getenv:='';
+   p:=GetEnvironmentStrings;
+   hp:=p;
+   while hp^<>#0 do
+     begin
+        s:=strpas(hp);
+        i:=pos('=',s);
+        if upcase(copy(s,1,i-1))=upcase(envvar) then
+          begin
+             getenv:=copy(s,i+1,length(s)-i);
+             break;
+          end;
+        { next string entry}
+        hp:=hp+strlen(hp)+1;
+     end;
+   FreeEnvironmentStrings(p);
 end;
 {$else}
 Function GetEnv(P:string):Pchar;
@@ -1243,7 +1113,7 @@ Function GetEnv(P:string):Pchar;
 }
 var
   ep    : ppchar;
-  i     : longint;
+  i     : ptrint;
   found : boolean;
 Begin
   p:=p+'=';            {Else HOST will also find HOSTNAME, etc}
@@ -1273,8 +1143,8 @@ end;
 
 procedure LoadEnvironment;
 var
-  i,j : longint;
-  s: string;
+  i,j : ptrint;
+  s   : string;
 begin
   s:=Getenv('HEAPTRC');
   if pos('keepreleased',s)>0 then
@@ -1294,11 +1164,10 @@ begin
    end;
 end;
 
-procedure MemError;
-begin
-  if HaltOnError then Halt(1);
-  if ExceptOnError then if 0=(1 div ((ord(ExceptOnError) and 1) shr 1)) then ;
-end;
+// additions for codetools
+{$DEFINE MC_ImplementationEnd}
+{$i memcheck_laz.inc}
+{$UNDEF MC_ImplementationEnd}
 
 Initialization
   LoadEnvironment;
@@ -1310,7 +1179,7 @@ finalization
     TraceExit;
 end.
 
-{$endif VER1_1}
+{$endif not VER1_0}
 
 //==============================================================================
 { 1.0.x doesn't have good rangechecking for cardinals }
@@ -1341,7 +1210,7 @@ const
   tracesize = 8;
 {$endif EXTRA}
   quicktrace : boolean=true;
-  { calls halt() on error }
+  { calls Halt() on error }
   HaltOnError : boolean = false;
   { raise gdb catchable exception on error }
   ExceptOnError: boolean = true;
@@ -1359,26 +1228,17 @@ const
   usecrc : boolean = true;
   no_trace_if_halt : boolean = false;
 
-// StartAddition for CodeTools
-procedure CheckHeap;
-procedure CheckHeap(const txt: ansistring);
-procedure CheckHeapWrtMemCnt(const txt: ansistring);
-procedure WriteGetMemCount(const txt: ansistring);
-
-function MemCheck_getmem_cnt: longint;
-function MemCheck_freemem_cnt: longint;
-function MemCheck_getmem_size: longint;
-function MemCheck_freemem_size: longint;
-function MemCheck_getmem8_size: longint;
-function MemCheck_freemem8_size: longint;
-// End Addition for CodeTools
-
 implementation
 
 {$ifdef win32}
   uses
     windows;
 {$endif}
+
+// additions for codetools
+{$DEFINE MC_ImplementationStart}
+{$i memcheck_laz.inc}
+{$UNDEF MC_ImplementationStart}
 
 type
    plongint = ^longint;
@@ -1435,107 +1295,6 @@ var
   freemem_size   : longint;
   getmem8_size,
   freemem8_size   : longint;
-
-// StartAddition for CodeTools
-procedure CheckHeap;
-var
-  p: pointer;
-  OldQuickTrace: boolean;
-begin
-  writeln('>>> memcheck.pp - CheckHeap');
-  OldQuickTrace:=QuickTrace;
-  QuickTrace:=false;
-  GetMem(p,4);
-  FreeMem(p);
-  QuickTrace:=OldQuickTrace;
-end;
-
-procedure CheckHeap(const txt: ansistring);
-var
-  p: pointer;
-  OldQuickTrace: boolean;
-begin
-  writeln('>>> memcheck.pp - CheckHeap "',txt,'"');
-  OldQuickTrace:=QuickTrace;
-  QuickTrace:=false;
-  GetMem(p,4);
-  FreeMem(p);
-  QuickTrace:=OldQuickTrace;
-end;
-
-const
-  LastWrittenGetMemCnt: longint = 0;
-  HiddenGetMemCnt: longint = 0;
-
-procedure CheckHeapWrtMemCnt(const txt: ansistring);
-var
-  p: pointer;
-  StartGetMemCnt, CurGetMemCount, DiffGetMemCount: longint;
-  OldQuickTrace: boolean;
-begin
-  StartGetMemCnt:=MemCheck_getmem_cnt;
-  CurGetMemCount:=StartGetMemCnt-HiddenGetMemCnt;
-  DiffGetMemCount:=CurGetMemCount-LastWrittenGetMemCnt;
-  LastWrittenGetMemCnt:=CurGetMemCount;
-
-  writeln('>>> memcheck.pp - CheckHeap2 "',txt,'" ',
-    CurGetMemCount,'(',StartGetMemCnt,') +',DiffGetMemCount);
-  OldQuickTrace:=QuickTrace;
-  QuickTrace:=false;
-  GetMem(p,4);
-  FreeMem(p);
-  QuickTrace:=OldQuickTrace;
-
-  // don't count mem counts of this proc
-  inc(HiddenGetMemCnt,MemCheck_getmem_cnt-StartGetMemCnt);
-end;
-
-procedure WriteGetMemCount(const txt: ansistring);
-var
-  StartGetMemCnt, CurGetMemCount, DiffGetMemCount: longint;
-begin
-  StartGetMemCnt:=MemCheck_getmem_cnt;
-  CurGetMemCount:=StartGetMemCnt-HiddenGetMemCnt;
-  DiffGetMemCount:=CurGetMemCount-LastWrittenGetMemCnt;
-  LastWrittenGetMemCnt:=CurGetMemCount;
-
-  writeln('>>> memcheck.pp - WriteGetMemCount "',txt,'" ',
-    CurGetMemCount,'(',StartGetMemCnt,') +',DiffGetMemCount);
-
-  // don't count mem counts of this proc
-  inc(HiddenGetMemCnt,MemCheck_getmem_cnt-StartGetMemCnt);
-end;
-
-function MemCheck_getmem_cnt: longint;
-begin
-  MemCheck_getmem_cnt:=getmem_cnt;
-end;
-
-function MemCheck_freemem_cnt: longint;
-begin
-  MemCheck_freemem_cnt:=freemem_cnt;
-end;
-
-function MemCheck_getmem_size: longint;
-begin
-  MemCheck_getmem_size:=getmem_size;
-end;
-
-function MemCheck_freemem_size: longint;
-begin
-  MemCheck_freemem_size:=freemem_size;
-end;
-
-function MemCheck_getmem8_size: longint;
-begin
-  MemCheck_getmem8_size:=getmem8_size;
-end;
-
-function MemCheck_freemem8_size: longint;
-begin
-  MemCheck_freemem8_size:=freemem8_size;
-end;
-// Addition for CodeTools
 
 {*****************************************************************************
                                    Crc 32
@@ -1746,7 +1505,7 @@ begin
      begin
        writeln(ptext^,'error in linked list of heap_mem_info');
        // MG: changes for codetools:
-       MemError;
+       runerror(214);
      end;
      if pp=p then
        is_in_getmem_list:=true;
@@ -1756,7 +1515,7 @@ begin
        writeln(ptext^,'error in linked list of heap_mem_info',
          ' FreedCnt=',getmem_cnt-freemem_cnt,' RealCnt=',i);
        // MG: changes for codetools:
-       MemError;
+       runerror(214);
      end;
      pp:=pp^.previous;
    end;
@@ -1845,12 +1604,12 @@ begin
   pp:=pheap_mem_info(p);
   if not quicktrace and not(is_in_getmem_list(pp)) then
     // MG: changes for codetools:
-    MemError;
+    runerror(214);
   if (pp^.sig=$AAAAAAAA) and not usecrc then
     begin
        error_in_heap:=true;
        dump_already_free(pp,ptext^);
-       MemError;
+       runerror(214);
     end
   else if ((pp^.sig<>$DEADBEEF) or usecrc) and
         ((pp^.sig<>calculate_sig(pp)) or not usecrc) then
@@ -1861,7 +1620,7 @@ begin
        dump_error(pp,error_file);
 {$endif EXTRA}
        { don't release anything in this case !! }
-       MemError;
+       runerror(214);
        exit;
     end
   else if pp^.size<>size then
@@ -1871,7 +1630,7 @@ begin
 {$ifdef EXTRA}
        dump_wrong_size(pp,size,error_file);
 {$endif EXTRA}
-       MemError;
+       runerror(214);
        { don't release anything in this case !! }
        exit;
     end;
@@ -2014,7 +1773,7 @@ begin
      dump_error(pp,error_file);
 {$endif EXTRA}
      { don't release anything in this case !! }
-     MemError;
+     runerror(214);
      exit;
    end;
   { Do the real ReAllocMem, but alloc also for the info block }
@@ -2125,7 +1884,7 @@ begin
 {$ifdef go32v2}
   if cardinal(p)<$1000 then
     // MG: changes for codetools:
-    MemError;
+    runerror(214);
   asm
      movl %ebp,get_ebp
      leal edata,%eax
@@ -2259,7 +2018,7 @@ begin
               writeln(ptext^,'corrupted heap_mem_info');
               dump_error(pp,ptext^);
               ExceptOnError:=true;
-              MemError;
+              runerror(214);
             end;
        end
      else
@@ -2269,7 +2028,7 @@ begin
       begin
          writeln(ptext^,'error in linked list of heap_mem_info');
          ExceptOnError:=true;
-         MemError;
+         runerror(214);
       end;
    end;
   i:=0;
@@ -2289,7 +2048,7 @@ begin
             writeln(ptext^,'pointer $',hexstr(longint(p),8),' points into invalid memory block');
             dump_error(pp,ptext^);
             // MG: changes for codetools:
-            MemError;
+            runerror(214);
          end;
      pp:=pp^.previous;
      inc(i);
@@ -2297,7 +2056,7 @@ begin
       begin
          writeln(ptext^,'error in linked list of heap_mem_info');
          ExceptOnError:=true;
-         MemError;
+         runerror(214);
       end;
    end;
 {$ifdef win32}
@@ -2314,7 +2073,7 @@ begin
     begin
       writeln(ptext^,'pointer $',hexstr(longint(p),8),' does not point to valid memory block');
       // MG: changes for codetools:
-      MemError;
+      runerror(214);
     end
   else
     exit;
@@ -2322,7 +2081,7 @@ begin
   writeln(ptext^,'pointer $',hexstr(longint(p),8),' does not point to valid memory block');
 
   // MG: changes for codetools:
-  MemError;
+  runerror(214);
 {$endif not win32}
 _exit:
 end;
@@ -2529,11 +2288,10 @@ Procedure SetExtraInfoString(func : ExtraInfoStringType);
     extra_info_string_func:=func;
   end;
 
-procedure MemError;
-begin
-  if HaltOnError then Halt(1);
-  if ExceptOnError then if 0=(1 div ((ord(ExceptOnError) and 1) shr 1)) then ;
-end;
+// additions for codetools
+{$DEFINE MC_Implementation}
+{$i memcheck_laz.inc}
+{$UNDEF MC_Implementation}
 
 Initialization
   EntryMemUsed:=System.HeapSize-MemAvail;
@@ -2553,11 +2311,16 @@ finalization
 end.
 
 {$endif}
+
+
 //==============================================================================
 
 
 {
   $Log$
+  Revision 1.31  2004/07/12 20:59:25  mattias
+  updated memcheck.pas and made it more easy to update
+
   Revision 1.30  2004/04/11 10:15:58  micha
   - removed: startupheapend, it's unused
   - fixed calling convention which fixes startup crash

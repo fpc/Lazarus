@@ -47,6 +47,7 @@ components/codetools/laz_xmlwrite.pas svneol=native#text/pascal
 components/codetools/lfmtrees.pas svneol=native#text/pascal
 components/codetools/linkscanner.pas svneol=native#text/pascal
 components/codetools/memcheck.pas svneol=native#text/pascal
+components/codetools/memcheck_laz.inc svneol=native#text/pascal
 components/codetools/methodjumptool.pas svneol=native#text/pascal
 components/codetools/multikeywordlisttool.pas svneol=native#text/pascal
 components/codetools/pascalparsertool.pas svneol=native#text/pascal
