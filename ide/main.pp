@@ -1949,35 +1949,37 @@ writeln('TMainIDE.DoOpenEditorFile');
     SrcStream:=TMemoryStream.Create;
     try
       Result:=DoLoadMemoryStreamFromFile(SrcStream,AFilename);
-      if Result=mrAbort then exit;
-      SetLength(NewSource,SrcStream.Size);
-      SrcStream.Read(NewSource[1],length(NewSource));
-      // check if unit is a program
-      if (not ProjectLoading) and (not ReOpen)
-      and ((Ext='.pp') or (Ext='.pas') or (Ext='.dpr') or (Ext='.lpr')) then
-      begin
-        NewProgramName:=FindProgramNameInSource(NewSource,
-           ProgramNameStart,ProgramNameEnd);
-        if NewProgramName<>'' then begin
-          if FileExists(ChangeFileExt(AFilename,'.lpi')) then begin
-            AText:='The file "'+AFilename+'"'
-               +' seems to be the program file of an existing lazarus project.'
-               +' Open project?';
-            ACaption:='Project info file detected';
-            if Application.MessageBox(PChar(AText),PChar(ACaption)
-                ,MB_OKCANCEL)=mrOk then begin
-              Result:=DoOpenProjectFile(ChangeFileExt(AFilename,'.lpi'));
-              exit;
-            end;
-          end else begin
-            AText:='The file "'+AFilename+'"'
-              +' seems to be a program. Close current project'
-              +' and create a new lazarus project for this program?';
-            ACaption:='Program detected';
-            if Application.MessageBox(PChar(AText),PChar(ACaption)
-               ,MB_OKCANCEL)=mrOK then begin
-              Result:=DoCreateProjectForProgram(AFilename,NewSource);
-              exit;
+      if (Result in [mrAbort, mrIgnore]) then exit;
+      if Result=mrOk then begin
+        SetLength(NewSource,SrcStream.Size);
+        SrcStream.Read(NewSource[1],length(NewSource));
+        // check if unit is a program
+        if (not ProjectLoading) and (not ReOpen)
+        and ((Ext='.pp') or (Ext='.pas') or (Ext='.dpr') or (Ext='.lpr')) then
+        begin
+          NewProgramName:=FindProgramNameInSource(NewSource,
+             ProgramNameStart,ProgramNameEnd);
+          if NewProgramName<>'' then begin
+            if FileExists(ChangeFileExt(AFilename,'.lpi')) then begin
+              AText:='The file "'+AFilename+'"'
+                 +' seems to be the program file of an existing lazarus project.'
+                 +' Open project?';
+              ACaption:='Project info file detected';
+              if Application.MessageBox(PChar(AText),PChar(ACaption)
+                  ,MB_OKCANCEL)=mrOk then begin
+                Result:=DoOpenProjectFile(ChangeFileExt(AFilename,'.lpi'));
+                exit;
+              end;
+            end else begin
+              AText:='The file "'+AFilename+'"'
+                +' seems to be a program. Close current project'
+                +' and create a new lazarus project for this program?';
+              ACaption:='Program detected';
+              if Application.MessageBox(PChar(AText),PChar(ACaption)
+                 ,MB_OKCANCEL)=mrOK then begin
+                Result:=DoCreateProjectForProgram(AFilename,NewSource);
+                exit;
+              end;
             end;
           end;
         end;
@@ -1994,8 +1996,10 @@ writeln('TMainIDE.DoOpenEditorFile');
     if not ReOpen then begin
       // this was a new file -> remove the NewUnitInfo
       Project.RemoveUnit(Project.IndexOf(NewUnitInfo));
-      exit;
-    end;
+      NewUnitInfo.Free;
+    end else
+      NewUnitInfo.Loaded:=false;
+    exit;
   end;
   // create a new source editor
   NewUnitInfo.SyntaxHighlighter:=ExtensionToLazSyntaxHighlighter(Ext);
@@ -2016,7 +2020,7 @@ writeln('TMainIDE.DoOpenEditorFile');
   NewSrcEdit.SyntaxHighlighterType:=NewUnitInfo.SyntaxHighlighter;
   NewSrcEdit.EditorComponent.CaretXY:=NewUnitInfo.CursorPos;
   NewSrcEdit.EditorComponent.TopLine:=NewUnitInfo.TopLine;
-  NewSrcEdit.EditorComponent.LeftChar:=0;
+  NewSrcEdit.EditorComponent.LeftChar:=1;
   NewUnitInfo.Loaded:=true;
   // read form data
   if (NewUnitInfo.Unitname<>'') then begin
@@ -2293,7 +2297,7 @@ begin
     Result:=mrAbort;
     exit;
   end;
-writeln('TMainIDE.DoSaveProject 1');
+writeln('TMainIDE.DoSaveProject A');
   // check that all new units are saved first
   for i:=0 to Project.UnitCount-1 do begin
     if (Project.Units[i].Loaded) and (Project.Units[i].Filename='')
@@ -3323,8 +3327,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.94  2001/05/16 10:00:00  lazarus
-  MG: fixed wrong page index in editor closing
+  Revision 1.95  2001/05/21 21:49:08  lazarus
+  MG: bugfixes for non existing files during reload
 
   Revision 1.92  2001/04/21 14:50:21  lazarus
   MG: bugfix for mainunits ext <> .lpr

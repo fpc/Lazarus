@@ -593,8 +593,7 @@ begin
       AText:='Unable to read file "'+fFilename+'"!';
       Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
          ,MB_ABORTRETRYIGNORE);
-      if Result=mrAbort then exit;
-      if Result=mrIgnore then Result:=mrOk;
+      if Result in [mrAbort,mrIgnore] then exit;
     end;
   until Result<>mrRetry;
   if ReadUnitName then
@@ -1403,8 +1402,8 @@ end.
 
 {
   $Log$
-  Revision 1.21  2001/05/15 06:39:48  lazarus
-  MG: bugfixed editor restore order
+  Revision 1.22  2001/05/21 21:49:09  lazarus
+  MG: bugfixes for non existing files during reload
 
   Revision 1.20  2001/04/04 13:55:35  lazarus
   MG: finished TComponentPropertyEditor, added OnModified to oi, cfe and designer
