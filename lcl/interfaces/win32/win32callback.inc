@@ -378,16 +378,21 @@ Begin
         end
       else if OwnerObject is TCustomCombobox then
         case Hi(WParam) of
-	  { no need to handle CBN_SELCHANGED here: upon receiving of CBN_SELCHANGED,
-	    text is not actually changed yet }
-          CBN_EDITCHANGE{, CBN_SELCHANGED}: LMessage.Msg := LM_CHANGED;
-	  { closeup message is sent before text is actually changed... *sigh*
-	    itemindex is updated, so set text manually }
-	  CBN_CLOSEUP: 
-	  begin
-	    with TCustomComboBox(OwnerObject) do
-	      Text := Items[ItemIndex];
-	  end;
+          CBN_EDITCHANGE: LMessage.Msg := LM_CHANGED;
+          { CBN_EDITCHANGE is only sent after the user changes the edit box.
+            CBN_SELCHANGE is sent when the user changes the text by
+            selecting in the list, but before text is actually changed.
+            itemindex is updated, so set text manually }
+          CBN_SELCHANGE: begin
+            with TCustomComboBox(OwnerObject) do
+              Text := Items[ItemIndex];
+            LMessage.Msg := LM_CHANGED;
+          end;
+          { closeup message is sent before text is actually changed... *sigh*
+            itemindex is updated, so set text manually }
+          CBN_CLOSEUP:
+            with TCustomComboBox(OwnerObject) do
+              Text := Items[ItemIndex];
         end;
       // no specific message found? try send a general msg
       if LMessage.Msg = LM_NULL then
@@ -1150,6 +1155,9 @@ end;
 
 {
   $Log$
+  Revision 1.105  2004/05/14 21:37:29  vincents
+  combobox change event after selecting in list fixed
+
   Revision 1.104  2004/05/14 17:48:39  micha
   fix itemheight of listbox, handle measureitem message
 
