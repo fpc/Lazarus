@@ -158,6 +158,7 @@ end;
 procedure TLazarusManager.LazarusProcessStart(Sender: TObject);
 begin
   SplashForm.Hide;
+  Application.ProcessMessages;
 end;
 
 procedure TLazarusManager.WaitForLazarus;
@@ -261,6 +262,9 @@ end;
 end.
 {
   $Log$
+  Revision 1.13  2004/11/23 18:11:18  vincents
+  fixed hiding splash screen for gtk
+
   Revision 1.12  2004/11/20 13:14:28  vincents
   fixed typo.
 
