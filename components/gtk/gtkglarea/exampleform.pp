@@ -61,6 +61,7 @@ type
     procedure GTKGLAreaControl1Resize(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   private
     AreaInitialized: boolean;
   end;
@@ -82,6 +83,7 @@ type
     //procedure Stop;
   public
     constructor Create;
+    destructor Destroy; override;
   private
     procedure RespawnParticle(i: integer);
   end;
@@ -93,7 +95,7 @@ var AnExampleForm: TExampleForm;
     checked, blended, lighted, ParticleBlended, MoveCube, MoveBackground: boolean;
     textures       : array [0..2] of GLuint;    // Storage For 3 Textures
     MyglTextures   : array [0..2] of TglTexture;
-    lightamb, lightdif, lightpos, light2pos, light2dif, 
+    lightamb, lightdif, lightpos, light2pos, light2dif,
     light3pos, light3dif, light4pos, light4dif, fogcolor: array [0..3] of GLfloat;
     ParticleEngine: TParticleEngine;
     ParticleList, CubeList, BackList: GLuint;
@@ -162,8 +164,8 @@ type
 
   PBITMAPINFO = ^BITMAPINFO;
 
-  TBitsObj = array[1..1] of byte;
-  PBitsObj = ^TBitsObj;
+  //TBitsObj = array[1..1] of byte;
+  //PBitsObj = ^TBitsObj;
 
   TRawImage = packed record
      p:array[0..0] of byte;
@@ -224,21 +226,24 @@ begin
       PixelCount:=Image.Width*Image.Height;
       GetMem(Image.Data,PixelCount * 3);
       try
-        for i:=0 to PixelCount-1 do begin
-          MemStream.Read(AnRGBQuad,sizeOf(RGBQuad));
-          {$IFOPT R+}{$DEFINE RangeCheckOn}{$R-}{$ENDIF}
-          with PRawImage(Image.Data)^ do begin
-            p[i*3+0]:=AnRGBQuad.rgbRed;
-            p[i*3+1]:=AnRGBQuad.rgbGreen;
-            p[i*3+2]:=AnRGBQuad.rgbBlue;
+        try
+          for i:=0 to PixelCount-1 do begin
+            MemStream.Read(AnRGBQuad,sizeOf(RGBQuad));
+            {$IFOPT R+}{$DEFINE RangeCheckOn}{$R-}{$ENDIF}
+            with PRawImage(Image.Data)^ do begin
+              p[i*3+0]:=AnRGBQuad.rgbRed;
+              p[i*3+1]:=AnRGBQuad.rgbGreen;
+              p[i*3+2]:=AnRGBQuad.rgbBlue;
+            end;
+            {$IFDEF RangeCheckOn}{$R+}{$ENDIF}
           end;
-          {$IFDEF RangeCheckOn}{$R+}{$ENDIF}
+        except
+          writeln('Error converting bitmap');
+          exit;
         end;
-      except
-        writeln('Error converting bitmap');
+      finally
         FreeMem(Image.Data);
         Image.Data:=nil;
-        exit;
       end;
     finally
       FreeMem(BmpInfo);
@@ -366,6 +371,18 @@ begin
   FormResize(Self);
 end;
 
+destructor TExampleForm.Destroy;
+var i: integer;
+begin
+  for i:=0 to 2 do begin
+    Textures[i]:=0;
+    FreeAndNil(MyglTextures[i]);
+  end;
+  FreeAndNil(ParticleEngine);
+
+  inherited Destroy;
+end;
+
 // --------------------------------------------------------------------------
 //                              Particle Engine
 // --------------------------------------------------------------------------
@@ -375,6 +392,13 @@ var i: integer;
 begin
   for i:=1 to 2001 do Particle[i]:=TParticle.Create;
   xspawn:=0;
+end;
+
+destructor TParticleEngine.Destroy;
+var i: integer;
+begin
+  for i:=1 to 2001 do FreeAndNil(Particle[i]);
+  inherited Destroy;
 end;
 
 procedure TParticleEngine.DrawParticles;

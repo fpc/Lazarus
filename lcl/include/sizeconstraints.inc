@@ -1,3 +1,5 @@
+// included by controls.pp
+
 {******************************************************************************
                                   TSizeConstraints
 				
@@ -122,4 +124,6 @@ begin
     inherited AssignTo(Dest);
   end;    
 end;
+
+// included by controls.pp
 
