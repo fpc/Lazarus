@@ -43,7 +43,7 @@ uses
   LazarusIDEStrConsts, FileCtrl;
 
 const
-  EnvOptsVersion: integer = 101;
+  EnvOptsVersion: integer = 102;
 
   //----------------------------------------------------------------------------
   
@@ -202,7 +202,8 @@ type
     
     // naming conventions
     fPascalFileExtension: TPascalExtType;
-    fPascalFileLowerCase: boolean;
+    fPascalFileAutoLowerCase: boolean;
+    fPascalFileAskLowerCase: boolean;
     fAmbigiousFileAction: TAmbigiousFileAction;
     
     // language
@@ -338,8 +339,10 @@ type
     // naming conventions
     property PascalFileExtension: TPascalExtType read fPascalFileExtension
                                                  write fPascalFileExtension;
-    property PascalFileLowerCase: boolean read fPascalFileLowerCase
-                                          write fPascalFileLowerCase;
+    property PascalFileAutoLowerCase: boolean read fPascalFileAutoLowerCase
+                                              write fPascalFileAutoLowerCase;
+    property PascalFileAskLowerCase: boolean read fPascalFileAskLowerCase
+                                             write fPascalFileAskLowerCase;
     property AmbigiousFileAction: TAmbigiousFileAction read fAmbigiousFileAction
                                                      write fAmbigiousFileAction;
        
@@ -468,7 +471,8 @@ type
     
     // naming conventions
     PascalFileExtRadiogroup: TRadioGroup;
-    PascalFileLowercaseCheckBox: TCheckBox;
+    PascalFileAutoLowercaseCheckBox: TCheckBox;
+    PascalFileAskLowercaseCheckBox: TCheckBox;
     AmbigiousFileActionRadioGroup: TRadioGroup;
 
     // buttons at bottom
@@ -713,7 +717,8 @@ begin
   fExternalTools:=TExternalToolList.Create;
   
   fPascalFileExtension:=petPAS;
-  fPascalFileLowerCase:=true;
+  fPascalFileAutoLowerCase:=false;
+  fPascalFileAskLowerCase:=true;
 end;
 
 destructor TEnvironmentOptions.Destroy;
@@ -970,8 +975,10 @@ begin
     
     // naming
     LoadPascalFileExt('EnvironmentOptions/');
-    fPascalFileLowerCase:=XMLConfig.GetValue(
-      'EnvironmentOptions/PascalFileLowerCase/Value',true);
+    fPascalFileAutoLowerCase:=XMLConfig.GetValue(
+      'EnvironmentOptions/PascalFileAutoLowerCase/Value',false);
+    fPascalFileAskLowerCase:=XMLConfig.GetValue(
+      'EnvironmentOptions/PascalFileAskLowerCase/Value',true);
     fAmbigiousFileAction:=AmbigiousFileActionNameToType(XMLConfig.GetValue(
       'EnvironmentOptions/AmbigiousFileAction/Value',
         AmbigiousFileActionNames[fAmbigiousFileAction]));
@@ -1146,8 +1153,10 @@ begin
     // naming
     XMLConfig.SetValue('EnvironmentOptions/Naming/PascalFileExtension',
       PascalExtension[fPascalFileExtension]);
-    XMLConfig.SetValue('EnvironmentOptions/PascalFileLowerCase/Value',
-      fPascalFileLowerCase);
+    XMLConfig.SetValue('EnvironmentOptions/PascalFileAutoLowerCase/Value',
+      fPascalFileAutoLowerCase);
+    XMLConfig.SetValue('EnvironmentOptions/PascalFileAskLowerCase/Value',
+      fPascalFileAskLowerCase);
     XMLConfig.SetValue('EnvironmentOptions/AutoDeleteAmbigiousSources/Value',
       AmbigiousFileActionNames[fAmbigiousFileAction]);
 
@@ -2463,23 +2472,34 @@ begin
     Visible:=true;
   end;
 
-  PascalFileLowercaseCheckBox:=TCheckBox.Create(Self);
-  with PascalFileLowercaseCheckBox do begin
-    Name:='PascalFileLowercaseCheckBox';
+  PascalFileAutoLowercaseCheckBox:=TCheckBox.Create(Self);
+  with PascalFileAutoLowercaseCheckBox do begin
+    Name:='PascalFileAutoLowercaseCheckBox';
     Parent:=NoteBook.Page[Page];
     Left:=PascalFileExtRadiogroup.Left;
     Top:=PascalFileExtRadiogroup.Top+PascalFileExtRadiogroup.Height+10;
     Width:=300;
-    Caption:=dlgPasLower;
+    Caption:=Format(dlgPasAutoLower,['"','"']);
     Visible:=true;
   end;
   
+  PascalFileAskLowercaseCheckBox:=TCheckBox.Create(Self);
+  with PascalFileAskLowercaseCheckBox do begin
+    Name:='PascalFileAskLowercaseCheckBox';
+    Parent:=NoteBook.Page[Page];
+    Left:=PascalFileAutoLowercaseCheckBox.Left;
+    Top:=PascalFileAutoLowercaseCheckBox.Top+PascalFileAutoLowercaseCheckBox.Height+10;
+    Width:=300;
+    Caption:=Format(dlgPasAskLower,['"','"']);
+    Visible:=true;
+  end;
+
   AmbigiousFileActionRadioGroup:=TRadioGroup.Create(Self);
   with AmbigiousFileActionRadioGroup do begin
     Name:='AmbigiousFileActionRadioGroup';
     Parent:=NoteBook.Page[Page];
-    Left:=PascalFileLowercaseCheckBox.Left;
-    Top:=PascalFileLowercaseCheckBox.Top+PascalFileLowercaseCheckBox.Height+15;
+    Left:=PascalFileAskLowercaseCheckBox.Left;
+    Top:=PascalFileAskLowercaseCheckBox.Top+PascalFileAskLowercaseCheckBox.Height+15;
     Width:=200;
     Height:=130;
     Caption:=dlgAmbigFileAct;
@@ -2787,15 +2807,21 @@ begin
     Height:=80;
   end;
 
-  with PascalFileLowercaseCheckBox do begin
+  with PascalFileAutoLowercaseCheckBox do begin
     Left:=PascalFileExtRadiogroup.Left;
     Top:=PascalFileExtRadiogroup.Top+PascalFileExtRadiogroup.Height+10;
     Width:=300;
   end;
 
+  with PascalFileAskLowercaseCheckBox do begin
+    Left:=PascalFileAutoLowercaseCheckBox.Left;
+    Top:=PascalFileAutoLowercaseCheckBox.Top+PascalFileAutoLowercaseCheckBox.Height+10;
+    Width:=300;
+  end;
+
   with AmbigiousFileActionRadioGroup do begin
-    Left:=PascalFileLowercaseCheckBox.Left;
-    Top:=PascalFileLowercaseCheckBox.Top+PascalFileLowercaseCheckBox.Height+15;
+    Left:=PascalFileAskLowercaseCheckBox.Left;
+    Top:=PascalFileAskLowercaseCheckBox.Top+PascalFileAskLowercaseCheckBox.Height+15;
     Width:=200;
     Height:=130;
   end;
@@ -3334,7 +3360,8 @@ begin
     for i:=0 to PascalFileExtRadiogroup.Items.Count-1 do
       if PascalFileExtRadiogroup.Items[i]=PascalExtension[PascalFileExtension]
       then PascalFileExtRadiogroup.ItemIndex:=i;
-    PascalFileLowercaseCheckBox.Checked:=PascalFileLowerCase;
+    PascalFileAutoLowercaseCheckBox.Checked:=PascalFileAutoLowerCase;
+    PascalFileAskLowercaseCheckBox.Checked:=PascalFileAskLowerCase;
     AmbigiousFileActionRadioGroup.ItemIndex:=ord(AmbigiousFileAction);
   end;
 end;
@@ -3457,7 +3484,8 @@ begin
         PascalFileExtRadiogroup.Items[PascalFileExtRadiogroup.ItemIndex])
     else
       PascalFileExtension:=petPAS;
-    PascalFileLowerCase:=PascalFileLowercaseCheckBox.Checked;
+    PascalFileAutoLowerCase:=PascalFileAutoLowercaseCheckBox.Checked;
+    PascalFileAskLowerCase:=PascalFileAskLowercaseCheckBox.Checked;
     AmbigiousFileAction:=
       TAmbigiousFileAction(AmbigiousFileActionRadioGroup.ItemIndex);
   end;

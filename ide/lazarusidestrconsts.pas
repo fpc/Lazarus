@@ -375,7 +375,8 @@ resourcestring
   dlgRubberbandSelectsGrandChilds = 'Select grand childs';
   dlgRubberBandGroup='Rubber band';
   dlgPasExt = 'Default pascal extension';
-  dlgPasLower = 'Save pascal files lowercase';
+  dlgPasAutoLower = '%sSave As%s always saves pascal files lowercase';
+  dlgPasAskLower = '%sSave As%s asks to save pascal files lowercase';
   dlgAmbigFileAct = 'Ambigious file action:';
   dlgEnvAsk = 'Ask';
   dlgAutoDel = 'Auto delete file';
