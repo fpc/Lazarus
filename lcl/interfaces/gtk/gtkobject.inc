@@ -1447,7 +1447,8 @@ begin
           //only work if WM supports motif flags
           //properly, which very few actually do.
 
-          If (Sender <> Application.MainForm)
+          If (Application.MainForm<>nil)
+          and (Sender <> Application.MainForm)
           and Application.MainForm.HandleAllocated then begin
             //gtk_window_set_transient_for(PGtkWindow(handle),
             //  PGtkWindow(Application.MainForm.handle));
@@ -5899,6 +5900,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.229  2002/10/04 07:28:14  lazarus
+  MG: fixed showmodal without Application.MainForm
+
   Revision 1.228  2002/10/03 14:47:31  lazarus
   MG: added TComboBox.OnPopup+OnCloseUp+ItemWidth
 
