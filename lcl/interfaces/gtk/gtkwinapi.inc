@@ -4705,7 +4705,7 @@ begin
   OffSetRect(ARect,DCOrigin.x,DCOrigin.y);
 
   GDKWindow:=PGdkWindow(TDeviceContext(SrcDC).Drawable);
-  Result:=GetRawImageFromGdkWindow(GDKWindow,ARect,NewRawImage);
+  Result:=GetRawImageFromGdkWindow(GDKWindow,nil,ARect,NewRawImage);
 end;
 
 {------------------------------------------------------------------------------
@@ -4719,10 +4719,11 @@ var
   GdkPixmap: PGdkPixmap;
   GDIMaskImg: PGDIObject;
   GdkMaskBitmap: PGdkBitmap;
-  MaskRawImage: TRawImage;
 begin
   Result:=false;
+  {$IFDEF VerboseRawImage}
   writeln('TGtkWidgetSet.GetRawImageFromBitmap A');
+  {$ENDIF}
   FillChar(NewRawImage,SizeOf(NewRawImage),0);
 
   if (not IsValidGDIObject(SrcBitmap)) then begin
@@ -4745,9 +4746,9 @@ begin
       writeln('WARNING: [TGtkWidgetSet.GetRawImageFromBitmap] GDI_RGBImage not implemented');
       exit;
     end;
-    { $IFDEF VerboseRawImage}
+    {$IFDEF VerboseRawImage}
     writeln('TGtkWidgetSet.GetRawImageFromBitmap A GdkPixmap=',HexStr(Cardinal(GdkPixmap),8),' SrcMaskBitmap=',HexStr(Cardinal(SrcMaskBitmap),8));
-    { $ENDIF}
+    {$ENDIF}
 
     GDIMaskImg:=nil;
     GdkMaskBitmap:=nil;
@@ -4767,49 +4768,17 @@ begin
       // no mask available
     end;
 
-    if not GetRawImageFromGdkWindow(PGdkWindow(GdkPixmap),SrcRect,NewRawImage)
-    then exit;
-
-    writeln('TGtkWidgetSet.GetRawImageFromBitmap B');
-    // get rawimage for MaskBitmap
-    { $IFDEF VerboseRawImage}
-    writeln('TGtkWidgetSet.GetRawImageFromBitmap GdkMaskBitmap=',HexStr(Cardinal(GdkMaskBitmap),8));
-    { $ENDIF}
-    if GdkMaskBitmap<>nil then begin
-      if not GetRawImageFromGdkWindow(PGdkWindow(GdkMaskBitmap),SrcRect,
-                                      MaskRawImage)
-      then exit;
-
-      // check if mask is compatible
-      if (MaskRawImage.Description.Width<>NewRawImage.Description.Width)
-      or (MaskRawImage.Description.Height<>NewRawImage.Description.Height) then begin
-        writeln('WARNING: [TGtkWidgetSet.GetRawImageFromBitmap] MaskBitmap has different Size than Bitmap');
-        exit;
-      end;
-      if (MaskRawImage.Description.Depth<>1) then begin
-        writeln('WARNING: [TGtkWidgetSet.GetRawImageFromBitmap] MaskBitmap Depth<>1 ',MaskRawImage.Description.Depth);
-        exit;
-      end;
-      if (MaskRawImage.Description.HasPalette) then begin
-        writeln('WARNING: [TGtkWidgetSet.GetRawImageFromBitmap] MaskBitmap HasPalette');
-        exit;
-      end;
-
-      // merge mask
-      if NewRawImage.Mask<>nil then FreeMem(NewRawImage.Mask);
-      NewRawImage.Mask:=MaskRawImage.Data;
-      NewRawImage.MaskSize:=MaskRawImage.DataSize;
-      NewRawImage.Description.AlphaSeparate:=true;
-      NewRawImage.Description.AlphaPrec:=MaskRawImage.Description.Depth;
-      NewRawImage.Description.AlphaShift:=0;
+    if not GetRawImageFromGdkWindow(PGdkWindow(GdkPixmap),GdkMaskBitmap,SrcRect,
+      NewRawImage)
+    then begin
+      writeln('WARNING: [TGtkWidgetSet.GetRawImageFromBitmap] unable to GetRawImageFromGdkWindow Image');
+      exit;
     end;
 
     Result:=true;
   finally
     if not Result then begin
-      ReAllocMem(NewRawImage.Data,0);
-      ReAllocMem(NewRawImage.Mask,0);
-      ReAllocMem(NewRawImage.Palette,0);
+      FreeRawImageData(@NewRawImage);
     end;
   end;
 end;
@@ -8746,6 +8715,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.345  2004/04/03 16:47:46  mattias
+  implemented converting gdkbitmap to RawImage mask
+
   Revision 1.344  2004/04/02 14:28:44  vincents
   Fixed compilation with -dVerboseFocus
 

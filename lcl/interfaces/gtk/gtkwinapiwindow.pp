@@ -400,11 +400,11 @@ procedure GTKAPIWidgetClient_Realize(AWidget: PGTKWidget); cdecl;
 
         attrmask := attrmask or GDK_IC_PREEDIT_POSITION_REQ;
         ic_attr^.spot_location.x := 0;
-        ic_attr^.spot_location.y := height;
+        ic_attr^.spot_location.y := guint16(height);
         ic_attr^.preedit_area.x := 0;
         ic_attr^.preedit_area.y := 0;
-        ic_attr^.preedit_area.width := width;
-        ic_attr^.preedit_area.height := height;
+        ic_attr^.preedit_area.width := guint16(width);
+        ic_attr^.preedit_area.height := guint16(height);
         ic_attr^.preedit_fontset := PGtkStyle(AWidget^.thestyle)^.font;
       end;
     end;                         
@@ -533,8 +533,8 @@ begin
   and (gdk_ic_get_style(ic) and GDK_IM_PREEDIT_POSITION <> 0)
   then begin
     gdk_window_get_size(AWidget^.Window, @width, @height);
-    ic_attr^.preedit_area.width := width;
-    ic_attr^.preedit_area.height := height;
+    ic_attr^.preedit_area.width := guint16(width);
+    ic_attr^.preedit_area.height := guint16(height);
     _gdk_ic_set_attr(ic, ic_attr, GDK_IC_PREEDIT_AREA);
   end;
 {$ENDIF}    
@@ -1137,6 +1137,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.54  2004/04/03 16:47:46  mattias
+  implemented converting gdkbitmap to RawImage mask
+
   Revision 1.53  2004/04/02 00:07:51  marc
   * Implemented IM to get composed keyevents
 

@@ -787,7 +787,7 @@ var
   begin
     MemStream.WriteBuffer(Bits^, Header.InfoHeader.biSizeImage);
   end;
-  
+
 var
   Bits: PByte;
   Header: TBitmapHeader;
@@ -1111,6 +1111,22 @@ begin
   else
     Result:=nil;
 end;
+
+procedure TBitmap.WriteNativeStream(Stream: TStream; WriteSize: Boolean;
+  SaveStreamType: TBitmapNativeType);
+var
+  Reader: TFPCustomImageWriterClass;
+begin
+  case SaveStreamType of
+  bnWinBitmap: Reader:=TFPWriterBMP;
+  bnXPixmap: Reader:=TLazWriterXPM;
+  else
+    RaiseGDBException('Invalid SaveStreamType');
+  end;
+  WriteStreamWithFPImage(Stream,WriteSize,Reader);
+  if (FImage.SaveStream<>nil) and (FImage.SaveStreamType=bnNone) then
+    FImage.SaveStreamType:=SaveStreamType;
+end;
 {$ENDIF}
 
 function TBitmap.GetEmpty: boolean;
@@ -1173,6 +1189,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.82  2004/04/03 16:47:46  mattias
+  implemented converting gdkbitmap to RawImage mask
+
   Revision 1.81  2004/03/28 12:57:03  mattias
   fixed 1.0.10 compilation
 

@@ -18,10 +18,13 @@
  *****************************************************************************
 }
 
+type
+  TImageListSignature = array[0..1] of char;
+
 const
   SIG_LAZ1 = #1#0;
   SIG_LAZ2 = 'li';
-  SIG_D3 = 'IL';
+  SIG_D3   = 'IL';
 
 {------------------------------------------------------------------------------
   Method:  CopyImage
@@ -123,31 +126,27 @@ end;
 procedure TCustomImageList.AddImages(Value: TCustomImageList);
 var
   n: Integer;
-  Image, Mask: TBitmap;
+  SrcImage: TBitmap;
+  SrcMask: TBitmap;
+  NewImage: TBitmap;
+  NewMask: TBitmap;
 begin
-  if Value = nil then exit;
-  Image:=nil;
-  Mask:=nil;
-  try
-    Image := TBitmap.Create;
-    with Image do begin
-      Height := FHeight;
-      Width := FWidth;
+  if (Value = nil) or (Value=Self) then exit;
+  for n := 0 to Value.Count - 1 do begin
+    SrcImage:=TBitmap(Value.FImageList[n]);
+    if SrcImage<>nil then begin
+      NewImage:=TBitmap.Create;
+      NewImage.Assign(SrcImage);
+      SrcMask:=TBitmap(Value.FMaskList[n]);
+      if SrcMask<>nil then begin
+        NewMask:=TBitmap.Create;
+        NewMask.Assign(SrcMask);
+      end else
+        NewMask:=nil;
+      AddDirect(NewImage,NewMask);
     end;
-    Mask := TBitmap.Create;
-    with Mask do begin
-      Height := FHeight;
-      Width := FWidth;
-    end;
-    for n := 0 to Value.Count - 1 do begin
-      Value.GetImages(n, Image, Mask);
-      AddCopy(Image, Mask);
-    end;
-    Change;
-  finally
-    Image.Free;
-    Mask.Free;
   end;
+  Change;
 end;
 
 {------------------------------------------------------------------------------
@@ -209,8 +208,10 @@ begin
     // add an extra block for the remainder.
     if Amount mod FAllocBy <> 0 then Inc(Num);
 
-    FBitMap.Height := FBitMap.Height + Num * FAllocBy * FHeight;
-    FMaskBitmap.Height := FBitMap.Height;
+    if FBitMap<>nil then
+      FBitMap.Height := FBitMap.Height + Num * FAllocBy * FHeight;
+    if FMaskBitmap<>nil then
+      FMaskBitmap.Height := FBitMap.Height;
     Inc(FAllocCount, Num * FAllocBy);
   end;
 
@@ -291,7 +292,7 @@ end;
 procedure TCustomImageList.Clear;
 begin
   if FCount=0 then exit;
-  While Count<>0 do
+  While Count>0 do
     Delete(0);
   FCount := 0;
   FImageList.Clear;
@@ -306,9 +307,9 @@ end;
 
   Constructor for the class.
  ------------------------------------------------------------------------------}
-constructor TCustomImageList.Create(AOwner: TComponent);
+constructor TCustomImageList.Create(TheOwner: TComponent);
 begin
-  inherited Create(AOwner);
+  inherited Create(TheOwner);
   FHeight := 16;
   FWidth := 16;
   FImageList := TList.Create;  //shane
@@ -380,13 +381,11 @@ begin
     Obj:=TObject(fImageList.Items[Index]);
     If Assigned(Obj) then
       Obj.Free;
-    fImageList.Items[Index]:=nil;
-    fImageList.Pack;
+    fImageList.Delete(Index);
     Obj:=TObject(fMaskList.Items[Index]);
     If Assigned(Obj) then
       Obj.Free;
-    fMaskList.Items[Index]:=nil;
-    fMaskList.Pack;
+    fMaskList.Delete(Index);
 //    ShiftImages(FBitmap.Canvas, Index, 1);
 //    ShiftImages(FMaskBitmap.Canvas, Index, 1);
     Change;
@@ -788,14 +787,35 @@ procedure TCustomImageList.ReadData(AStream: TStream);
     i, NewCount, Size: Integer;
     bmp: TBitmap;
   begin
-    // provided for compatebility for earlier lazarus streams
+    //writeln('TCustomImageList.ReadData DoReadLaz1');
+    // provided for compatability for earlier lazarus streams
     NewCount := AStream.ReadWord;
+    //writeln('TCustomImageList.ReadData DoReadLaz1 NewCount=',NewCount);
     for i := 0 to NewCount - 1 do
     begin
       bmp := TBitMap.Create;
       AStream.Read(Size, SizeOf(Size));
       bmp.ReadStream(AStream, True, Size);
       bmp.Transparent := True;
+      AddDirect(bmp, nil);
+    end;
+  end;
+
+  procedure DoReadLaz2;
+  var
+    i, NewCount, Size: cardinal;
+    bmp: TBitmap;
+  begin
+    //writeln('TCustomImageList.ReadData DoReadLaz2');
+    NewCount := AStream.ReadDWord;
+    Width := AStream.ReadDWord;
+    Height := AStream.ReadDWord;
+    //writeln('TCustomImageList.ReadData DoReadLaz2 NewCount=',NewCount);
+    for i := 0 to NewCount - 1 do
+    begin
+      bmp := TBitMap.Create;
+      AStream.Read(Size, SizeOf(Size));
+      bmp.ReadStream(AStream, True, Size);
       AddDirect(bmp, nil);
     end;
   end;
@@ -879,7 +899,7 @@ procedure TCustomImageList.ReadData(AStream: TStream);
   {$ENDIF}
   
 var
-  Signature: array[0..1] of Char;
+  Signature: TImageListSignature;
   StreamPos: TStreamSeekType;
   {$IFNDEF DisableFPImage}
   HasMask: Boolean;
@@ -894,6 +914,12 @@ begin
   if Signature = SIG_LAZ1
   then begin
     DoReadLaz1;
+    Exit;
+  end;
+
+  if Signature = SIG_LAZ2
+  then begin
+    DoReadLaz2;
     Exit;
   end;
 
@@ -1133,18 +1159,37 @@ procedure TCustomImageList.WriteData(AStream: TStream);
 var
   CurImage: TBitMap;
   i: Integer;
+  Signature: TImageListSignature;
 begin
+  {$IFDEF DisableFPImage}
   //Write signature
-  AStream.WriteWord($0001);
+  Signature:=SIG_LAZ1;
+  AStream.Write(Signature,SizeOf(Signature));
 
   //Count of image
-  AStream.WriteWord(Word(Count));
+  AStream.WriteWord(Count);
 
   for i:=0 to Count-1 do
   begin
     CurImage:=TBitmap(FImageList[i]);
     CurImage.WriteStream(AStream,true);
   end;
+  {$ELSE}
+  //Write signature
+  Signature:=SIG_LAZ2;
+  AStream.Write(Signature,SizeOf(Signature));
+
+  //Count of image
+  AStream.WriteDWord(Count);
+  AStream.WriteDWord(Width);
+  AStream.WriteDWord(Height);
+
+  for i:=0 to Count-1 do
+  begin
+    CurImage:=TBitmap(FImageList[i]);
+    CurImage.WriteNativeStream(AStream,true,bnXPixmap);
+  end;
+  {$ENDIF}
 end;
 
 {******************************************************************************
@@ -1182,6 +1227,9 @@ end;
 {
 
   $Log$
+  Revision 1.36  2004/04/03 16:47:46  mattias
+  implemented converting gdkbitmap to RawImage mask
+
   Revision 1.35  2004/03/30 17:45:31  mattias
   fixed FindEndOfExpression for bogus statements
 

@@ -202,7 +202,10 @@ type
     function GetWindowRawImageDescription(GDKWindow: PGdkWindow;
       Desc: PRawImageDescription): boolean;
     function GetRawImageFromGdkWindow(GDKWindow: PGdkWindow;
-      const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
+      MaskBitmap: PGdkBitmap; const SrcRect: TRect;
+      var NewRawImage: TRawImage): boolean;
+    function GetRawImageMaskFromGdkBitmap(MaskBitmap: PGdkBitmap;
+      const SrcRect: TRect; var RawImage: TRawImage): boolean;
     function StretchCopyArea(DestDC: HDC; X, Y, Width, Height: Integer;
       SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer;
       Mask: HBITMAP; XMask, YMask: Integer;
@@ -460,6 +463,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.180  2004/04/03 16:47:46  mattias
+  implemented converting gdkbitmap to RawImage mask
+
   Revision 1.179  2004/03/26 21:20:54  vincents
   Fixed line endings
 

@@ -1040,6 +1040,8 @@ type
       const FileExtension: string): TFPCustomImageWriterClass; override;
     class function GetDefaultFPReader: TFPCustomImageReaderClass; override;
     class function GetDefaultFPWriter: TFPCustomImageWriterClass; override;
+    procedure WriteNativeStream(Stream: TStream; WriteSize: Boolean;
+      SaveStreamType: TBitmapNativeType); virtual;
     {$ENDIF}
   public
     property Canvas: TCanvas read GetCanvas write FCanvas;
@@ -1602,6 +1604,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.131  2004/04/03 16:47:46  mattias
+  implemented converting gdkbitmap to RawImage mask
+
   Revision 1.130  2004/03/28 12:49:22  mattias
   implemented mask merge and extraction for raw images
 

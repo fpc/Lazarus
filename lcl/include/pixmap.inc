@@ -271,7 +271,7 @@ end;
 {$IFNDEF DisableFPImage}
 procedure TPixmap.WriteStream(Stream: TStream; WriteSize: Boolean);
 begin
-  WriteStreamWithFPImage(Stream,WriteSize,TFPWriterBMP);
+  WriteStreamWithFPImage(Stream,WriteSize,TLazWriterXPM);
   if (FImage.SaveStream<>nil) and (FImage.SaveStreamType=bnNone) then
     FImage.SaveStreamType:=bnXPixmap;
 end;
@@ -298,6 +298,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.28  2004/04/03 16:47:46  mattias
+  implemented converting gdkbitmap to RawImage mask
+
   Revision 1.27  2004/02/29 22:51:54  mattias
   added jpeg example
 

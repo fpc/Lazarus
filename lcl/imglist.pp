@@ -142,7 +142,7 @@ type
     procedure DefineProperties(Filer: TFiler); override;
     procedure SetWidthHeight(NewWidth,NewHeight: integer); virtual;
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(TheOwner: TComponent); override;
 
     procedure AssignTo(Dest: TPersistent); override;
     procedure Assign(Source: TPersistent); override;
@@ -215,6 +215,9 @@ end.
 
 {
   $Log$
+  Revision 1.21  2004/04/03 16:47:46  mattias
+  implemented converting gdkbitmap to RawImage mask
+
   Revision 1.20  2004/03/28 12:49:22  mattias
   implemented mask merge and extraction for raw images
 

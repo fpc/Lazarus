@@ -50,7 +50,7 @@ uses
 
 const
   //See @link  TGraphicPropertyEditorForm.LoadBTNCLICK for explanations
-  FormatsSupported : Array[0..1] of String =('.xpm',
+  FormatsSupported: Array[0..1] of String =('.xpm',
                                              '.bmp');
 
 Type
@@ -59,31 +59,33 @@ Type
   //Editor dialog
   TImageListEditorDlg = Class(TForm)
   private
-    fImg : TImage;
-    fLv  : TListView;
+    fImg: TImage;
+    fLv : TListView;
     fImgL: TImageList;
-    fBtnAdd   : TButton;
-    fBtnDel   : TButton;
-    fBtnClear : TButton;
-    fDirName  : String;
+    fBtnAdd  : TButton;
+    fBtnDel  : TButton;
+    fBtnClear: TButton;
+    fDirName : String;
+    FModified: boolean;
     
     procedure OnLVLSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
-    procedure OnClickAdd(Sender : TObject);
-    procedure OnClickDel(Sender : TObject);
-    procedure OnClickClear(Sender : TObject);
+    procedure OnClickAdd(Sender: TObject);
+    procedure OnClickDel(Sender: TObject);
+    procedure OnClickClear(Sender: TObject);
+    procedure SetModified(const AValue: boolean);
   public
-    constructor Create(aOwner : TComponent); override;
+    constructor Create(aOwner: TComponent); override;
 
     //Assign an List images at editor and initialise the
     //TListView component
-    Procedure AssignImageList(aImgL : TImageList);
+    Procedure AssignImageList(aImgL: TImageList);
+    property Modified: boolean read FModified write SetModified;
   end;
 
   //Editor call by Lazarus with 1 verbe only
   TImageListComponentEditor = class(TDefaultComponentEditor)
   protected
     procedure DoShowEditor;
-
   public
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
@@ -94,22 +96,22 @@ Implementation
 
 //If Select item, preview the image
 procedure TImageListEditorDlg.OnLVLSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
-Var Bmp : TBitMap;
+Var Bmp: TBitMap;
 begin
   if Assigned(Item) and Selected then
   begin
-    if (Item.ImageIndex<>-1) then
+    if (Item.ImageIndex>=0) then
     begin
       //Clear old image
       fImg.Picture.BitMap.Canvas.Brush.Color:=clWhite;
       fImg.Picture.BitMap.Canvas.FillRect(Rect(0,0,fImg.Width,fImg.Height));
 
       //Draw new image
-      //The created bitmap will be freed by fImg
       Bmp:=TBitMap.Create;
       fImgL.GetBitmap(Item.ImageIndex,Bmp);
 
       fImg.Picture.BitMap:=Bmp;
+      Bmp.Free;
 
       fBtnDel.Enabled:=True;
       fImg.Visible:=True;
@@ -121,12 +123,12 @@ end;
 
 //Select new image file and add in list
 procedure TImageListEditorDlg.OnClickAdd(Sender: TObject);
-Var OpenDlg : TOpenDialog;
-    Ext     : String;
+Var OpenDlg: TOpenDialog;
+    Ext    : String;
     FileName: String;
-    IL      : TListItem;
-    i       : Integer;
-    Bmp     : TBitMap;
+    AListItem: TListItem;
+    i      : Integer;
+    Bmp    : TBitMap;
 begin
  Opendlg := TOpenDialog.Create(Self);
  Try
@@ -158,11 +160,12 @@ begin
        begin
          Bmp:=TBitMap.Create;
          Bmp.LoadFromFile(FileName);
+         Modified:=true;
          i:=fImgL.Add(Bmp,nil);
-         IL:=fLV.Items.Add;
-         Il.Caption:=IntToStr(i);
-         IL.ImageIndex:=i;
-         fLV.Selected:=IL;
+         AListItem:=fLV.Items.Add;
+         AListItem.Caption:=IntToStr(i);
+         AListItem.ImageIndex:=i;
+         fLV.Selected:=AListItem;
        end;
     end;
    end;
@@ -173,11 +176,12 @@ end;
 
 //Delete the selected image and refresh screen
 procedure TImageListEditorDlg.OnClickDel(Sender: TObject);
-Var IL  : TListItem;
-    i,j : Integer;
+Var IL : TListItem;
+    i,j: Integer;
 begin
   If Assigned(fLV.Selected) then
   begin
+    Modified:=true;
     fImgL.Delete(fLV.Selected.ImageIndex);
     IL:=flv.Selected;
     i:=Il.Index;
@@ -210,8 +214,10 @@ end;
 //Delete all images of list  and items for TListView
 procedure TImageListEditorDlg.OnClickClear(Sender: TObject);
 begin
-  if MessageDlg(sccsILConfirme,mtConfirmation,[mbYes,mbNo],0)=mrYes then
+  if (fImgL.Count>0)
+  and (MessageDlg(sccsILConfirme,mtConfirmation,[mbYes,mbNo],0)=mrYes) then
   begin
+    Modified:=true;
     fImgL.Clear;
     while fLV.Items.Count<>0 do
       fLV.Items.Delete(0);
@@ -221,9 +227,15 @@ begin
   end;
 end;
 
+procedure TImageListEditorDlg.SetModified(const AValue: boolean);
+begin
+  if FModified=AValue then exit;
+  FModified:=AValue;
+end;
+
 { TImageListEditorDlg }
 constructor TImageListEditorDlg.Create(aOwner: TComponent);
-Var Cmp : TWinControl;
+Var Cmp: TWinControl;
 begin
   inherited Create(aOwner);
   BorderStyle:=bssingle;
@@ -361,8 +373,8 @@ end;
 
 //Assign an List images at editor
 procedure TImageListEditorDlg.AssignImageList(aImgL: TImageList);
-Var IL : TListItem;
-    i  : Integer;
+Var IL: TListItem;
+    i : Integer;
 begin
   If Assigned(aImgL) then
   begin
@@ -371,8 +383,6 @@ begin
     while fLV.Items.Count<>0 do
       fLV.Items.Delete(0);
 
-    fImgL.Width:=aImgL.Width;
-    fImgL.Height:=aImgL.Height;
     fImgL.Assign(aImgL);
 
     for i:=0 to fImgL.Count-1 do
@@ -383,15 +393,15 @@ begin
     end;
     
     //If possible zoom the selected image
-    if (fImgL.Width*2<97) and (fImgL.Height*2<97) then
+    if (fImgL.Width<97) and (fImgL.Height<97) then
     begin
-      fImg.Width  :=fImgL.Width*2;
-      fImg.Height :=fImgL.Height*2;
-      fImg.Stretch:=True;
+      fImg.Width  :=fImgL.Width;
+      fImg.Height :=fImgL.Height;
+      fImg.Stretch:=false;// scaling is not yet supported for transparent images
 
       //Center the image
-      fImg.Left:=12+((97-fImg.Width) div 2);
-      fImg.Top := 7+((97-fImg.Height) div 2);
+      fImg.Left:=12+(97-fImg.Width);
+      fImg.Top := 7+(97-fImg.Height);
     end
     else
     begin
@@ -400,7 +410,7 @@ begin
       fImg.Height :=97;
       fImg.Top    :=7;
       fImg.Left   :=12;
-      fImg.Stretch:=True;
+      fImg.Stretch:=false;// scaling is not yet supported for transparent images
     end;
     
     fBtnDel.Enabled:=(fImgL.Count<>0);
@@ -417,7 +427,7 @@ end;
 { TImageListComponentEditor }
 
 procedure TImageListComponentEditor.DoShowEditor;
-Var Dlg : TImageListEditorDlg;
+Var Dlg: TImageListEditorDlg;
     Hook: TPropertyEditorHook;
     aImg: TImageList;
 begin
@@ -430,10 +440,13 @@ begin
       Dlg.AssignImageList(aImg);
 
       //ShowEditor
-      if Dlg.ShowModal=mrOK then
+      if (Dlg.ShowModal=mrOK) and Dlg.Modified then
       begin
+      
         //Apply the modifications
+        writeln('TImageListComponentEditor.DoShowEditor A ',aImg.Count,' ',aImg.Width,',',aImg.Height);
         aImg.Assign(Dlg.fImgL);
+        writeln('TImageListComponentEditor.DoShowEditor B ',aImg.Count,' ',aImg.Width,',',aImg.Height);
 
         //not work :o( aImg.AddImages(Dlg.fImgL);
         if Assigned(Hook) then
@@ -443,6 +456,7 @@ begin
   finally
     Dlg.Free;
   end;
+  writeln('TImageListComponentEditor.DoShowEditor END ');
 end;
 
 procedure TImageListComponentEditor.ExecuteVerb(Index: Integer);

@@ -2052,9 +2052,9 @@ begin
       WindowType:=gdk_window_get_type(GDKWindow);
       if WindowType=GDK_WINDOW_PIXMAP then begin
         // a pixmap without visual
-        writeln('TGtkWidgetSet.GetWindowRawImageDescription GdkBitmap Type=',WindowType,' ',Width,',',Height,' ',GDK_WINDOW_PIXMAP);
+        //writeln('TGtkWidgetSet.GetWindowRawImageDescription GdkBitmap Type=',WindowType,' ',Width,',',Height,' ',GDK_WINDOW_PIXMAP);
         // ToDo: find a test: gdkpixmap or gdkbitmap
-        IsGdkBitmap:=true;
+        //if IsBitmap then IsGdkBitmap:=true;
       end;
     end;
   end;
@@ -2154,7 +2154,8 @@ begin
 end;
 
 function TGtkWidgetSet.GetRawImageFromGdkWindow(GDKWindow: PGdkWindow;
-  const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
+  MaskBitmap: PGdkBitmap; const SrcRect: TRect;
+  var NewRawImage: TRawImage): boolean;
 var
   ARect: TRect;
   MaxRect: TRect;
@@ -2171,7 +2172,10 @@ begin
   writeln('TGtkWidgetSet.GetRawImageFromGdkWindow Get Desc GdkWindow=',HexStr(Cardinal(GdkWindow),8));
   {$ENDIF}
   if not GetWindowRawImageDescription(GdkWindow,@NewRawImage.Description) then
+  begin
+    writeln('WARNING: TGtkWidgetSet.GetRawImageFromGdkWindow GetWindowRawImageDescription failed');
     exit;
+  end;
 
   // get intersection
   ARect:=SrcRect;
@@ -2187,11 +2191,14 @@ begin
   {$IFDEF VerboseRawImage}
   writeln('TGtkWidgetSet.GetRawImageFromGdkWindow get image ',SourceRect.Left,',',SourceRect.Top,',',SourceRect.Right,',',SourceRect.Bottom,' GDKWindow=',HexStr(Cardinal(GDkWindow),8));
   {$ENDIF}
-  if (NewRawImage.Description.Width=0) or (NewRawImage.Description.Height=0)
-  then exit;
+  if (NewRawImage.Description.Width<=0) or (NewRawImage.Description.Height<=0)
+  then begin
+    writeln('WARNING: TGtkWidgetSet.GetRawImageFromGdkWindow Intersection empty');
+    exit;
+  end;
 
   if NewRawImage.Description.Depth=1 then begin
-    writeln('TGtkWidgetSet.GetRawImageFromGdkWindow get bitmap ',SourceRect.Left,',',SourceRect.Top,',',SourceRect.Right,',',SourceRect.Bottom,' GDKWindow=',HexStr(Cardinal(GDkWindow),8));
+    RaiseException('TGtkWidgetSet.GetRawImageFromGdkWindow Depth=1 invalid');
     exit;
   end;
 
@@ -2241,6 +2248,81 @@ begin
       ' Height=',NewRawImage.Description.Height,
       ' Depth=',NewRawImage.Description.Depth,
       ' DataSize=',NewRawImage.DataSize);
+    {$ENDIF}
+  finally
+    gdk_image_destroy(AnImage);
+  end;
+  
+  if MaskBitmap<>nil then begin
+    // get mask
+    {$IFDEF VerboseRawImage}
+    writeln('TGtkWidgetSet.GetRawImageFromGdkWindow get mask ',SourceRect.Left,',',SourceRect.Top,',',SourceRect.Right,',',SourceRect.Bottom,' MaskBitmap=',HexStr(Cardinal(MaskBitmap),8));
+    {$ENDIF}
+    if not GetRawImageMaskFromGdkBitmap(MaskBitmap,SourceRect,NewRawImage) then
+      exit;
+  end;
+
+  Result:=true;
+end;
+
+function TGTKWidgetSet.GetRawImageMaskFromGdkBitmap(MaskBitmap: PGdkBitmap;
+  const SrcRect: TRect; var RawImage: TRawImage): boolean;
+// SrcRect must ly completely in the MaskBitmap
+var
+  Width, Height: cardinal;
+  AnImage: PGdkImage;
+begin
+  Result:=false;
+
+  Width:=SrcRect.Right-SrcRect.Left;
+  Height:=SrcRect.Bottom-SrcRect.Top;
+
+  // check consistency
+  if not RawImage.Description.AlphaSeparate then
+    RaiseException('TGTKWidgetSet.GetRawImageMaskFromGdkBitmap RawImage.Description.AlphaSeparate=false');
+  if (Width<>RawImage.Description.Width) then
+    RaiseException('TGTKWidgetSet.GetRawImageMaskFromGdkBitmap Width<>RawImage.Description.Width');
+  if (Height<>RawImage.Description.Height) then
+    RaiseException('TGTKWidgetSet.GetRawImageMaskFromGdkBitmap Height<>RawImage.Description.Height');
+  if RawImage.Mask<>nil then
+    RaiseException('TGTKWidgetSet.GetRawImageMaskFromGdkBitmap RawImage.Mask<>nil');
+
+  // get gdk_image from gdkbitmap
+  AnImage:=gdk_image_get(MaskBitmap,SrcRect.Left,SrcRect.Top,Width,Height);
+  if AnImage=nil then begin
+    writeln('WARNING: TGtkWidgetSet.GetRawImageFromGdkWindow gdk_image_get failed');
+    exit;
+  end;
+  try
+    {$IFDEF VerboseRawImage}
+    writeln('TGTKWidgetSet.GetRawImageMaskFromGdkBitmap A bpl=',AnImage^.bpl,' theType=',AnImage^.thetype,' depth=',AnImage^.depth,' bpp=',AnImage^.bpp);
+    writeln('RawImage=',RawImageDescriptionAsString(@RawImage));
+    {$ENDIF}
+  
+    // consistency checks
+    if RawImage.Description.AlphaBitsPerPixel<>AnImage^.Depth then
+      RaiseGDBException('RawImage.Description.AlphaBitsPerPixel<>AnImage^.Depth '+IntToStr(RawImage.Description.AlphaBitsPerPixel)+'<>'+IntToStr(AnImage^.Depth));
+    if RawImage.Description.AlphaBitsPerPixel<>AnImage^.bpp then
+      RaiseGDBException('RawImage.Description.AlphaBitsPerPixel<>AnImage^.bpp');
+
+    RawImage.MaskSize:=AnImage^.bpl * AnImage^.Height;
+    {$IFDEF VerboseRawImage}
+    writeln('TGtkWidgetSet.GetRawImageFromGdkWindow G Width=',AnImage^.Width,' Height=',AnImage^.Height,' BitsPerPixel=',RawImage.Description.AlphaBitsPerPixel,' bpl=',AnImage^.bpl);
+    {$ENDIF}
+    if RawImage.MaskSize<>cardinal(AnImage^.bpl) * AnImage^.Height then
+      RaiseGDBException('RawImage.MaskSize<>AnImage^.bpl*AnImage^.Height');
+
+    // copy data
+    ReAllocMem(RawImage.Mask,RawImage.MaskSize);
+    if RawImage.MaskSize>0 then
+      System.Move(AnImage^.Mem^,RawImage.Mask^,RawImage.MaskSize);
+
+    {$IFDEF VerboseRawImage}
+    writeln('TGtkWidgetSet.GetRawImageMaskFromGdkBitmap H ',
+      ' Width=',RawImage.Description.Width,
+      ' Height=',RawImage.Description.Height,
+      ' AlphaBitsPerPixel=',RawImage.Description.AlphaBitsPerPixel,
+      ' MaskSize=',RawImage.MaskSize);
     {$ENDIF}
   finally
     gdk_image_destroy(AnImage);
@@ -2398,9 +2480,7 @@ var
         SelectGDKBrushProps(DC);
 
         If not CurrentBrush^.IsNullBrush then begin
-          BeginGDKErrorTrap;
           gdk_draw_rectangle(TempPixmap, GC, 1, 0, 0, Width, Height);
-          EndGDKErrorTrap;
         end;
         // Restore current brush
         SelectedColors := dcscCustom;
@@ -9298,6 +9378,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.488  2004/04/03 16:47:46  mattias
+  implemented converting gdkbitmap to RawImage mask
+
   Revision 1.487  2004/04/03 12:51:17  mattias
   fixed shrinking forms under gtk  from vincent
 
