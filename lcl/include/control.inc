@@ -86,15 +86,64 @@ begin
   BeginDrag(Mouse.DragImmediate,Mouse.DragThreshold);
 end;
 
-procedure TControl.Dock(NewDockSite: TWinControl; ARect: TRect);
+procedure TControl.DoEndDock(Target: TObject; X, Y: Integer);
+begin
+  if Assigned(FOnEndDock) then
+    FOnEndDock(Self,Target,X,Y);
+end;
+
+procedure TControl.DoDock(NewDockSite: TWinControl; var ARect: TRect);
 begin
 
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl.BoundsChanged                                                 
-}
-{------------------------------------------------------------------------------}
+procedure TControl.DoStartDock(var DragObject: TDragObject);
+begin
+  if Assigned(FOnStartDock) then
+    FOnStartDock(Self,TDragDockObject(DragObject));
+end;
+
+{------------------------------------------------------------------------------
+  function TControl.GetDockEdge(const MousePos: TPoint): TAlign;
+
+  Calculate the dock side depending on current MousePos.
+  MousePos is relative to control's Left, top.
+------------------------------------------------------------------------------}
+function TControl.GetDockEdge(const MousePos: TPoint): TAlign;
+var
+  BestDistance: Integer;
+  
+  procedure FindMinDistance(CurAlign: TAlign; CurDistance: integer);
+  begin
+    if CurDistance>=BestDistance then exit;
+    Result:=CurAlign;
+    BestDistance:=CurDistance;
+  end;
+  
+begin
+  // check if MousePos outside the control
+  if MousePos.X<=0 then
+    Result:=alLeft
+  else if MousePos.Y<=0 then
+    Result:=alTop
+  else if MousePos.X>=Width then
+    Result:=alRight
+  else if MousePos.Y>=Height then
+    Result:=alBottom
+  else begin
+    // MousePos is inside the control -> find nearest edge
+    BestDistance:=MousePos.X;
+    Result:=alLeft;
+    FindMinDistance(alRight,Width-MousePos.X);
+    FindMinDistance(alTop,MousePos.Y);
+    FindMinDistance(alBottom,Height-MousePos.Y);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+       TControl.BoundsChanged
+
+------------------------------------------------------------------------------}
 procedure TControl.BoundsChanged;
 begin
   { Notifications can be performed here }
@@ -2163,6 +2212,11 @@ begin
           and not (csReadingState in ControlState);
 end;
 
+procedure TControl.Dock(NewDockSite: TWinControl; ARect: TRect);
+begin
+
+end;
+
 procedure TControl.AddHandlerOnResize(OnResizeEvent: TNotifyEvent;
   AsLast: boolean);
 begin
@@ -2481,6 +2535,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.151  2003/08/26 20:30:39  mattias
+  fixed updating component tree on delete component
+
   Revision 1.150  2003/08/26 14:33:40  mattias
   implemented component tree for OI
 

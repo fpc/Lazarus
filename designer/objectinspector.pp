@@ -2326,6 +2326,8 @@ begin
 //,' ',FPropertyEditorHook<>nil,'  ',FPropertyEditorHook.LookupRoot<>nil);
   if FUpdatingAvailComboBox then exit;
   FUpdatingAvailComboBox:=true;
+  if ComponentTree<>nil then
+    ComponentTree.Selections:=FComponentList;
   NewList:=TStringList.Create;
   try
     if (FPropertyEditorHook<>nil)

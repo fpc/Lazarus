@@ -323,7 +323,6 @@ type
 
 
   { TDragObject }
-          
 
   TDragObject = class;
 
@@ -397,7 +396,7 @@ type
 
   TBaseDragControlObject = class(TDragObject)
   private
-    FControl : TControl;
+    FControl: TControl;
   protected
     Procedure EndDrag(Target: TObject; X, Y: Integer); Virtual;
     procedure Finished(Target: TObject; X, Y: Integer; Accepted: Boolean); override;
@@ -599,6 +598,7 @@ type
     FOnDblClick: TNotifyEvent;
     FOnDragDrop: TDragDropEvent;
     FOnDragOver: TDragOverEvent;
+    FOnEndDock: TEndDragEvent;
     FOnEndDrag: TEndDragEvent;
     FOnMouseDown: TMouseEvent;
     FOnMouseEnter: TNotifyEvent;
@@ -608,6 +608,7 @@ type
     FOnQuadClick: TNotifyEvent;
     FOnResize: TNotifyEvent;
     FOnShowHint: TControlShowHintEvent;
+    FOnStartDock: TStartDockEvent;
     FOnStartDrag: TStartDragEvent;
     FOnTripleClick: TNotifyEvent;
     FParent: TWinControl;
@@ -724,7 +725,10 @@ type
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight : integer); virtual;
     procedure ChangeScale(M,D : Integer); dynamic;
     procedure BeginAutoDrag; dynamic;
-    procedure Dock(NewDockSite: TWinControl; ARect: TRect); dynamic;
+    procedure DoEndDock(Target: TObject; X, Y: Integer); dynamic;
+    procedure DoDock(NewDockSite: TWinControl; var ARect: TRect); dynamic;
+    procedure DoStartDock(var DragObject: TDragObject); dynamic;
+    function GetDockEdge(const MousePos: TPoint): TAlign; dynamic;
     procedure Click; dynamic;
     procedure DblClick; dynamic;
     procedure TripleClick; dynamic;
@@ -789,12 +793,14 @@ type
     property OnQuadClick: TNotifyEvent read FOnQuadClick write FOnQuadClick;
     property OnDragDrop: TDragDropEvent read FOnDragDrop write FOnDragDrop;
     property OnDragOver: TDragOverEvent read FOnDragOver write FOnDragOver;
+    property OnEndDock: TEndDragEvent read FOnEndDock write FOnEndDock;
     property OnEndDrag: TEndDragEvent read FOnEndDrag write FOnEndDrag;
     property OnMouseDown: TMouseEvent read FOnMouseDown write FOnMouseDown;
     property OnMouseMove: TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
     property OnMouseUp: TMouseEvent read FOnMouseUp write FOnMouseUp;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnStartDock: TStartDockEvent read FOnStartDock write FOnStartDock;
     property OnStartDrag: TStartDragEvent read FOnStartDrag write FOnStartDrag;
   public
     FCompStyle : LongInt;
@@ -829,6 +835,7 @@ type
     procedure SetZOrderPosition(Position : Integer); virtual;
     Procedure SetZOrder(Topmost: Boolean); virtual;
     function HandleObjectShouldBeVisible: boolean; virtual;
+    procedure Dock(NewDockSite: TWinControl; ARect: TRect); dynamic;
   public
     // Event lists
     procedure RemoveAllControlHandlersOfObject(AnObject: TObject);
@@ -1661,6 +1668,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.145  2003/08/26 20:30:39  mattias
+  fixed updating component tree on delete component
+
   Revision 1.144  2003/08/25 16:18:15  mattias
   fixed background color of TPanel and clicks of TSpeedButton from Micha
 
