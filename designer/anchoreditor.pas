@@ -329,6 +329,7 @@ begin
 
     if (Values=nil) then begin
       Caption:='Anchor Editor - no control selected';
+      BorderSpaceGroupBox.Enabled:=false;
       TopGroupBox.Enabled:=false;
       LeftGroupBox.Enabled:=false;
       RightGroupBox.Enabled:=false;
@@ -337,6 +338,7 @@ begin
       Caption:='Anchors of selected controls';
 
       // all
+      BorderSpaceGroupBox.Enabled:=true;
       if Values.AmbigiousBorderspaceAround then
         AroundBorderSpaceSpinEdit.Value:=-1
       else

@@ -1402,7 +1402,7 @@ type
     FBrush: TBrush;
     FAdjustClientRectRealized: TRect;
     FChildSizing: TControlChildSizing;
-    FControls: TList;
+    FControls: TList; // the child controls (only TControl, no TWinControl)
     FDefWndProc: Pointer;
     FDockClients: TList;
     //FDockSite: Boolean;
@@ -1435,7 +1435,7 @@ type
     FTabStop: Boolean;
     FTabList: TList;
     FUseDockManager: Boolean;
-    FWinControls: TList;
+    FWinControls: TList; // the child controls (only TWinControl, no TControl)
     procedure AlignControl(AControl: TControl);
     function GetBrush: TBrush;
     function GetControl(const Index: Integer): TControl;
@@ -2820,6 +2820,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.268  2005/01/17 16:42:35  mattias
+  improved TLabel autosizing
+
   Revision 1.267  2005/01/17 11:53:39  mattias
   added showing all four sides to AnchorEditor
 

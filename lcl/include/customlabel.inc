@@ -29,21 +29,27 @@ Procedure TCustomLabel.DoAutoSize;
 var
   R : TRect;
   DC : hDC;
+  Flags: Cardinal;
+  OldFont: HGDIOBJ;
 begin
+  //debugln('TCustomLabel.DoAutoSize ',DbgSName(Self),' AutoSizing=',dbgs(AutoSizing),' AutoSize=',dbgs(AutoSize),' Parent=',DbgSName(Parent),' Parent.HandleAllocated=',dbgs(Parent.HandleAllocated),' csLoading=',dbgs(csLoading in ComponentState));
   If AutoSizing or not AutoSize then
     Exit;
-  if (Parent = nil) or (not Parent.HandleAllocated) or ([csLoading,csDestroying]*ComponentState<>[]) then
+  if (Parent = nil) or (not Parent.HandleAllocated)
+  or ([csLoading,csDestroying]*ComponentState<>[]) then
     exit;
   AutoSizing := True;
   DC := GetDC(Parent.Handle);
   Try
     R := Rect(0,0, Width, Height);
-    SelectObject(DC, Font.Handle);
-    DrawText(DC, PChar(Caption), Length(Caption), R,
-      DT_CalcRect or DT_NoPrefix or DT_WordBreak);
+    OldFont:=SelectObject(DC, Font.Handle);
+    Flags:=DT_CalcRect or DT_NoPrefix;
+    if WordWrap then inc(Flags,DT_WordBreak);
+    DrawText(DC, PChar(Caption), Length(Caption), R, Flags);
+    SelectObject(DC, OldFont);
+    //debugln('TCustomLabel.DoAutoSize R=',dbgs(R));
 
-    Width := R.Right - R.Left;
-    Height := R.Bottom - R.Top;
+    SetBounds(Left,Top,R.Right - R.Left,R.Bottom - R.Top);
   Finally
     ReleaseDC(Parent.Handle, DC);
     AutoSizing := False;
@@ -146,6 +152,12 @@ begin
   end;
 end;
 
+procedure TCustomLabel.Loaded;
+begin
+  inherited Loaded;
+  DoAutoSize;
+end;
+
 Procedure TCustomLabel.Paint;
 var
   TR : TTextStyle;
@@ -179,6 +191,8 @@ begin
       LineTo(Width - 1,Height);
     end;
 }
+    //Brush.Color:=clRed;
+    //FillRect(R);
     FillChar(TR,SizeOf(TR),0);
     With TR do begin
       Alignment := Self.Alignment;
@@ -202,6 +216,9 @@ end;
 
 {
   $Log$
+  Revision 1.22  2005/01/17 16:42:35  mattias
+  improved TLabel autosizing
+
   Revision 1.21  2005/01/08 22:13:21  vincents
   TLabel.ShowAccelChar default value is True
 

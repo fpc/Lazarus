@@ -3557,6 +3557,7 @@ procedure TWinControl.CreateWnd;
 var
   Params: TCreateParams;
   n: Integer;
+  i: Integer;
 
 {  procedure WriteClientRect(const Prefix: string);
   var r: TRect;
@@ -3619,6 +3620,9 @@ begin
   // size this control
   {$IFDEF EnablePreferredSize}
   AdjustSize;
+  if FControls<>nil then
+    for i:=0 to FControls.Count-1 do
+      TControl(FControls[i]).DoAutoSize;
   {$ENDIF}
   // realign childs
   ReAlign;
@@ -4299,6 +4303,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.299  2005/01/17 16:42:35  mattias
+  improved TLabel autosizing
+
   Revision 1.298  2005/01/16 11:40:10  mattias
   fixed TGtkWidgetSet.ExtSelectClipRGN for DCOrigin
 

@@ -2700,7 +2700,8 @@ end;
   Returns: If the string was drawn, or CalcRect run
 
  ------------------------------------------------------------------------------}
-function TGtkWidgetSet.DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer;
+function TGtkWidgetSet.DrawText(DC: HDC; Str: PChar; Count: Integer;
+  var Rect: TRect; Flags: Cardinal): Integer;
 var
   TM : TTextmetric;
   theRect     : TRect;
@@ -2748,6 +2749,7 @@ var
     MaxLength := theRect.Right - theRect.Left;
 
     If (Flags and DT_SingleLine) = DT_SingleLine then begin
+      // ignore word and line breaks
       GetTextExtentPoint(DC, Str, Count, AP);
       theRect.Right := theRect.Left + Min(MaxLength, AP.cX);
       theRect.Bottom := theRect.Top + TM.tmHeight;
@@ -2761,24 +2763,28 @@ var
         end;
     end
     else begin
-      If (Flags and DT_WordBreak) <> DT_WordBreak then
-        MaxLength := Count*TM.tmMaxCharWidth;
+      // consider line breaks
+      If (Flags and DT_WordBreak) <> DT_WordBreak then begin
+        // do not break at word boundaries
+        GetTextExtentPoint(DC, Str, Count, AP);
+        MaxLength := AP.cX;
+      end;
       Self.WordWrap(DC, Str, MaxLength, Lines, NumLines);
-
-      If (Lines = nil) or (NumLines = 0) then
-        exit;
 
       LineWidth := 0;
 
-      For J := 0 to NumLines - 1 do begin
-        GetTextExtentPoint(DC, Lines[J], StrLen(Lines[J]), AP);
-        LineWidth := Max(LineWidth, AP.cX);
+      If (Lines <> nil) then begin
+        For J := 0 to NumLines - 1 do begin
+          GetTextExtentPoint(DC, Lines[J], StrLen(Lines[J]), AP);
+          LineWidth := Max(LineWidth, AP.cX);
+        end;
       end;
 
       LineWidth := Min(MaxLength, LineWidth);
 
       theRect.Right := theRect.Left + LineWidth;
       theRect.Bottom := theRect.Top + NumLines*TM.tmHeight;
+      //debugln('TGtkWidgetSet.DrawText A ',dbgs(theRect),' TM.tmHeight=',dbgs(TM.tmHeight),' LineWidth=',dbgs(LineWidth),' NumLines=',dbgs(NumLines));
     end;
 
     If not CalcRect then
@@ -2876,8 +2882,13 @@ begin
 
       DoCalcRect;
 
-      If (Flags and DT_CalcRect) <> DT_CalcRect then begin
+      If (Flags and DT_CalcRect) = DT_CalcRect then begin
+        CopyRect(Rect, theRect);
+        Result := 1;
+        exit;
+      end else begin
         TempDC := SaveDC(DC);
+      end;
 
       If (Flags and DT_NOCLIP) <> DT_NOCLIP then begin
         If theRect.Right > Rect.Right then
@@ -2892,25 +2903,19 @@ begin
         DrawLine(Str, Count, theRect.Top);
         Result := 1;
       end
-      else
-        If (Lines <> nil) and (NumLines <> 0) then begin
-          For I := 0 to NumLines - 1 do begin
-            If (((Flags and DT_EditControl) = DT_EditControl) and
-              (tm.tmHeight > (theRect.Bottom - theRect.Top))) or
-              (theRect.Top > theRect.Bottom)
-            then
-              break;
+      else If (Lines <> nil) and (NumLines <> 0) then begin
+        For I := 0 to NumLines - 1 do begin
+          If (((Flags and DT_EditControl) = DT_EditControl) and
+            (tm.tmHeight > (theRect.Bottom - theRect.Top))) or
+            (theRect.Top > theRect.Bottom)
+          then
+            break;
 
-            If Lines[I] <> nil then
-              DrawLine(Lines[I], StrLen(Lines[I]), theRect.Top);
+          If Lines[I] <> nil then
+            DrawLine(Lines[I], StrLen(Lines[I]), theRect.Top);
 
-            Inc(theRect.Top, TM.tmHeight);
-          end;
-          Result := 1;
+          Inc(theRect.Top, TM.tmHeight);
         end;
-      end
-      else begin
-        CopyRect(Rect, theRect);
         Result := 1;
       end;
 
@@ -8852,6 +8857,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.387  2005/01/17 16:42:35  mattias
+  improved TLabel autosizing
+
   Revision 1.386  2005/01/17 15:36:31  mattias
   improved gtk intf to calculate TextHeight
 

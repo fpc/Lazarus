@@ -1099,6 +1099,7 @@ type
     procedure SetLayout(Value: TTextLayout);
     procedure SetShowAccelChar(Value: Boolean);
     procedure SetWordWrap(Value: Boolean);
+    procedure Loaded; override;
 
     property Alignment: TAlignment read GetAlignment write SetAlignment;
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
@@ -1212,6 +1213,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.184  2005/01/17 16:42:35  mattias
+  improved TLabel autosizing
+
   Revision 1.183  2005/01/11 21:36:36  micha
   remove TStaticText.Layout property, not supported by delphi, hard to implement
 
