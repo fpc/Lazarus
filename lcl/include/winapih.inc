@@ -133,8 +133,9 @@ function GetPaletteEntries(Palette: HPALETTE; StartIndex, NumEntries: UINT;
 Function GetParent(Handle : HWND): HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function GetProp(Handle : hwnd; Str : PChar): Pointer;{$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function GetScrollBarSize(Handle: HWND; BarKind: Integer): integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function GetScrollInfo(Handle: HWND; BarFlag: Integer; var ScrollInfo: TScrollInfo): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function GetScrollBarSize(Handle: HWND; SBStyle: Integer): integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function GetScrollInfo(Handle: HWND; SBStyle: Integer; var ScrollInfo: TScrollInfo): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function GetScrollPos --> independent
 //function GetScrollRange --> independent
 function GetStockObject(Value: Integer): LongInt; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -222,7 +223,7 @@ function SetMapMode(DC: HDC; MapMode: Integer): Integer; {$IFDEF IF_BASE_MEMBER}
 Function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function SetRect --> independent
 //function SetRectEmpty --> independent
-function SetScrollInfo(Handle: HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; Redraw : Boolean): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function SetScrollInfo(Handle: HWND; SBStyle: Integer; ScrollInfo: TScrollInfo; Redraw : Boolean): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function SetScrollPos --> independent
 //function SetScrollRange --> independent
 function SetStretchBltMode(DC: HDC; StretchMode: Integer): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -374,6 +375,9 @@ procedure RaiseLastOSError;
 { =============================================================================
 
   $Log$
+  Revision 1.73  2003/03/29 17:20:05  mattias
+  added TMemoScrollBar
+
   Revision 1.72  2003/03/17 20:53:16  mattias
   removed SetRadioButtonGroupMode
 

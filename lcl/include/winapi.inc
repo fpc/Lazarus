@@ -470,14 +470,19 @@ begin
   Result := InterfaceObject.GetRGNBox(RGN, lpRect);
 end;
 
-function GetScrollBarSize(Handle: HWND; BarKind: Integer): integer;
+function GetScrollBarSize(Handle: HWND; SBStyle: Integer): integer;
 begin
-  Result := InterfaceObject.GetScrollBarSize(Handle, BarKind);
+  Result := InterfaceObject.GetScrollBarSize(Handle, SBStyle);
 end;
 
-function GetScrollInfo(Handle: HWND; BarFlag: Integer; var ScrollInfo: TScrollInfo): Boolean;
+function GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean;
 begin
-  Result := InterfaceObject.GetScrollInfo(Handle, BarFlag, ScrollInfo);
+  Result := InterfaceObject.GetScrollbarVisible(Handle, SBStyle);
+end;
+
+function GetScrollInfo(Handle: HWND; SBStyle: Integer; var ScrollInfo: TScrollInfo): Boolean;
+begin
+  Result := InterfaceObject.GetScrollInfo(Handle, SBStyle, ScrollInfo);
 end;
 
 function GetStockObject(Value : Integer): Longint;
@@ -1222,6 +1227,7 @@ function GetScrollPos(Handle: HWND; nBar: Integer): Integer;
 var
   Info: TScrollInfo;
 begin
+  Info.fMask:=SIF_POS;
   GetScrollInfo(Handle, nBar, Info);
   Result := Info.nPos;
 end;
@@ -1236,6 +1242,7 @@ function GetScrollRange(Handle: HWND; nBar: Integer; var lpMinPos, lpMaxPos: Int
 var
   Info: TScrollInfo;
 begin
+  Info.fMask:=SIF_RANGE;
   Result := GetScrollInfo(Handle, nBar, Info);
   lpMinPos := Info.nMin;
   lpMaxPos := Info.nMax;
@@ -1573,6 +1580,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.79  2003/03/29 17:20:05  mattias
+  added TMemoScrollBar
+
   Revision 1.78  2003/03/17 20:53:16  mattias
   removed SetRadioButtonGroupMode
 

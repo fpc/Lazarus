@@ -932,12 +932,18 @@ begin
 end;
 
 function TInterfaceBase.GetScrollBarSize(Handle: HWND;
-  BarKind: Integer): integer;
+  SBStyle: Integer): integer;
 begin
-  Result := GetSystemMetrics(BarKind);
+  Result := GetSystemMetrics(SBStyle);
 end;
 
-function TInterfaceBase.GetScrollInfo(Handle: HWND; BarFlag: Integer;
+function TInterfaceBase.GetScrollbarVisible(Handle: HWND;
+  SBStyle: Integer): boolean;
+begin
+  Result := false;
+end;
+
+function TInterfaceBase.GetScrollInfo(Handle: HWND; SBStyle: Integer;
   var ScrollInfo: TScrollInfo): Boolean;
 begin
   Result := False;
@@ -1660,6 +1666,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.86  2003/03/29 17:20:05  mattias
+  added TMemoScrollBar
+
   Revision 1.85  2003/03/17 20:53:16  mattias
   removed SetRadioButtonGroupMode
 
