@@ -179,7 +179,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; Override;
-  published
+  public
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsGlyphStored;
     property Kind: TBitBtnKind read FKind write SetKind default bkCustom;
     property Layout: TButtonLayout read FLayout write SetLayout default blGlyphLeft;
@@ -292,7 +292,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Click; override;
-  published
+  public
     property AllowAllUp: Boolean read FAllowAllUp write SetAllowAllUp default false;
     property Down: Boolean read FDown write SetDown default false;
     property Flat: Boolean read FFlat write SetFlat default false;
@@ -380,6 +380,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.78  2004/09/09 09:18:53  mattias
+  changed TCustomXXX published sections to public
+
   Revision 1.77  2004/08/26 19:09:33  mattias
   moved navigation key handling to TApplication and added options for custom navigation
 
