@@ -25,6 +25,7 @@
   ToDo:
     - Editing
     - Columns
+    - create FTopLvlItems only on demand and update only if easy
 }
 
 
@@ -33,6 +34,7 @@
 const
   TTreeNodeStreamVersion : word = 1;
   TVAutoHeightString = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789|\()^';
+  MinNodeCapacity = 10;
 
   // maximum scroll range
   //MAX_SCROLL = 32767;
@@ -2092,9 +2094,10 @@ begin
     FTopLvlCapacity:=FTopLvlCapacity shl 1;
     ReAllocMem(FTopLvlItems,SizeOf(Pointer)*FTopLvlCapacity);
   end else begin
-    FTopLvlCapacity:=10;
+    FTopLvlCapacity:=MinNodeCapacity;
     GetMem(FTopLvlItems,SizeOf(Pointer)*FTopLvlCapacity);
   end;
+  //debugln('TTreeNodes.GrowTopLvlItems END FTopLvlCapacity=',FTopLvlCapacity,' FTopLvlCount=',FTopLvlCount,' ',FTopLvlItems<>nil);
 end;
 
 function TTreeNodes.GetTopLvlItems(Index: integer): TTreeNode;
@@ -2103,33 +2106,47 @@ begin
 end;
 
 procedure TTreeNodes.ShrinkTopLvlItems;
+var
+  OldCapacity: LongInt;
 begin
-  if FTopLvlCount>0 then begin
+  if FTopLvlItems<>nil then begin
+    OldCapacity:=FTopLvlCapacity;
     FTopLvlCapacity:=FTopLvlCapacity shr 1;
     if FTopLvlCapacity<FTopLvlCount then FTopLvlCapacity:=FTopLvlCount;
+    if (FTopLvlCapacity<MinNodeCapacity) then begin
+      if (FTopLvlCount>0) then
+        FTopLvlCapacity:=MinNodeCapacity
+      else
+        FTopLvlCapacity:=0;
+    end;
+    if OldCapacity=FTopLvlCapacity then exit;
+    //debugln('TTreeNodes.ShrinkTopLvlItems A FTopLvlCapacity=',FTopLvlCapacity,' FTopLvlCount=',FTopLvlCount,' ',FTopLvlItems<>nil);
     ReAllocMem(FTopLvlItems,SizeOf(Pointer)*FTopLvlCapacity);
+    //debugln('TTreeNodes.ShrinkTopLvlItems B FTopLvlCapacity=',FTopLvlCapacity,' FTopLvlCount=',FTopLvlCount,' ',FTopLvlItems<>nil);
   end else begin
-    FTopLvlCapacity:=0;
-    FreeMem(FTopLvlItems);
-    FTopLvlItems:=nil;
+    if (FTopLvlCapacity>0) then
+      TreeNodeError('TTreeNodes.ShrinkTopLvlItems FTopLvlCapacity>0');
   end;
 end;
 
 function TTreeNodes.IndexOfTopLvlItem(Node: TTreeNode): integer;
 begin
-  if (FTopLvlCount>0) and (FTopLvlItems[0]=Node) then exit(0);
+  if (FTopLvlItems<>nil) and (FTopLvlItems[0]=Node) then exit(0);
   Result:=FTopLvlCount-1;
   while (Result>=0) and (FTopLvlItems[Result]<>Node) do dec(Result);
 end;
 
 procedure TTreeNodes.MoveTopLvlNode(TopLvlFromIndex, TopLvlToIndex: integer;
   Node: TTreeNode);
+// TopLvlFromIndex = -1 and is insert
+// TopLvlToIndex = -1 is remove
 var i: integer;
 begin
   {$IFDEF TREEVIEW_DEBUG}
   DebugLn('[TTreeNodes.MoveTopLvlNode] TopLvlFromIndex=',TopLvlFromIndex,
   ' TopLvlToIndex=',TopLvlToIndex,' Node.Text=',Node.Text);
   {$ENDIF}
+  if TopLvlFromIndex=TopLvlToIndex then exit;
   if (TopLvlFromIndex>=FTopLvlCount) then
     TreeNodeError('TTreeNodes.MoveTopLvlNode TopLvlFromIndex>FTopLvlCount');
   if (TopLvlToIndex>FTopLvlCount) then
@@ -2138,7 +2155,6 @@ begin
     Node:=FTopLvlItems[TopLvlFromIndex];
     if (TopLvlToIndex>=0) then begin
       // move node
-      if TopLvlToIndex=TopLvlFromIndex then exit;
       if TopLvlFromIndex<TopLvlToIndex then begin
         // move forward
         for i:=TopLvlFromIndex to TopLvlToIndex-1 do
@@ -2151,9 +2167,13 @@ begin
       FTopLvlItems[TopLvlToIndex]:=Node;
     end else begin
       // remove node
-      for i:=TopLvlFromIndex to FTopLvlCount-2 do
-        FTopLvlItems[i]:=FTopLvlItems[i+1];
+      if FTopLvlItems<>nil then begin
+        for i:=TopLvlFromIndex to FTopLvlCount-2 do
+          FTopLvlItems[i]:=FTopLvlItems[i+1];
+      end;
       Dec(FTopLvlCount);
+      if FTopLvlCount<0 then
+        TreeNodeError('TTreeNodes.MoveTopLvlNode FTopLvlCount<0');
       if FTopLvlCount<(FTopLvlCapacity shr 2) then ShrinkTopLvlItems;
     end;
   end else begin
@@ -2161,11 +2181,13 @@ begin
       if Node=nil then
         TreeNodeError('TTreeNodes.MoveTopLvlNode inserting nil');
       // insert node
-      if FTopLvlCount=FTopLvlCapacity then GrowTopLvlItems;
+      if (FTopLvlCount=FTopLvlCapacity) then GrowTopLvlItems;
       inc(FTopLvlCount);
-      for i:=FTopLvlCount-1 downto TopLvlToIndex+1 do
-        FTopLvlItems[i]:=FTopLvlItems[i-1];
-      FTopLvlItems[TopLvlToIndex]:=Node;
+      if FTopLvlItems<>nil then begin
+        for i:=FTopLvlCount-1 downto TopLvlToIndex+1 do
+          FTopLvlItems[i]:=FTopLvlItems[i-1];
+        FTopLvlItems[TopLvlToIndex]:=Node;
+      end;
     end else begin
       // nothing to do
     end;

@@ -48,7 +48,7 @@ begin
   if IsImageIndexLinked then TToolButton(FClient).ImageIndex := Value;
 end;
 
-{$IFDEF NewToolBar}
+{$IFNDEF OldToolBar}
 
 { TToolButton }
 
@@ -731,7 +731,7 @@ begin
   inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
 end;
 
-{$ELSE NewToolBar}
+{$ELSE OldToolBar}
 
 const
   ButtonStates: array[TToolButtonState] of Word = (TBSTATE_CHECKED,
@@ -1200,12 +1200,15 @@ begin
 end;
 
 
-{$ENDIF}
+{$ENDIF OldToolBar}
 
 // included by comctrls.pp
 
 {
   $Log$
+  Revision 1.21  2004/07/23 16:44:27  mattias
+  activated new TToolbar, old can be activated with -dOldToolBar
+
   Revision 1.20  2004/06/17 20:52:19  mattias
   fixed setting ImageIndex when TMenuItem.ActionChange
 

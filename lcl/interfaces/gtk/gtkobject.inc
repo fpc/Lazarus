@@ -1128,9 +1128,7 @@ procedure TGtkWidgetSet.RealizeWidgetSize(Widget: PGtkWidget; NewWidth,
   NewHeight: integer);
 var
   Requisition: TGtkRequisition;
-  {$IFDEF NewToolBar}
   FixedWidget: Pointer;
-  {$ENDIF}
   {$IFDEF VerboseSizeMsg}
   LCLObject: TObject;
   {$ENDIF}
@@ -1173,7 +1171,7 @@ begin
       PGtkCombo(Widget)^.entry^.allocation.width, NewHeight);
   end;
 
-  {$IFDEF NewToolBar}
+  {$IFNDEF OldToolBar}
   if GtkWidgetIsA(Widget,gtk_toolbar_get_type) then begin
     FixedWidget:=GetFixedWidget(Widget);
     if (FixedWidget<>nil) and (FixedWidget<>Widget) then begin
@@ -3060,14 +3058,16 @@ var
   Widget      : PGtkWidget;            // pointer to gtk-widget (local use when neccessary)
   ChildWidget : PGtkWidget;            // generic pointer to a child gtk-widget (local use when neccessary)
   AParent     : TWinControl;           // only used twice, replace with typecasts!
-  Num         : Integer;               // currently only used for LM_INSERTTOOLBUTTON and LM_ADDITEM
-  pStr2       : PChar;                 // currently only used for LM_INSERTTOOLBUTTON
   GList       : pGList;                // Only used for listboxes, replace with widget!!!!!
   ListItem    : PGtkListItem;          // currently only used for listboxes
   Rect        : TRect;
   FormIconGdiObject: PGdiObject;     // currently only used by LM_SETFORMICON
   Geometry    : TGdkGeometry;
   AWindow     : PGdkWindow;
+  {$IFDEF OldToolBar}
+  Num         : Integer;               // currently only used for LM_INSERTTOOLBUTTON and LM_ADDITEM
+  pStr2       : PChar;                 // currently only used for LM_INSERTTOOLBUTTON
+  {$ENDIF}
 begin
   Result := 0;   //default value just in case nothing sets it
 
@@ -3132,7 +3132,7 @@ begin
       LM_AddChild :
       begin
         Assert(False, 'Trace:Adding a child to Parent');
-        {$IFNDEF NewToolBar}
+        {$IFDEF OldToolBar}
         If (TControl(Sender).Parent is TToolbar) then Begin
           exit;
         end;
@@ -3333,13 +3333,14 @@ begin
 
       LM_TB_BUTTONCOUNT:
       begin
-        {$IFDEF NewToolBar}
+        {$IFNDEF OldToolBar}
         DebugLn('Obsolete: TGtkWidgetSet.IntSendMessage3 LM_TB_BUTTONCOUNT');
         exit;
-        {$ENDIF}
+        {$ELSE OldToolBar}
         if (Sender is TToolbar)
         then Result := pgtkToolbar(Handle)^.num_Children
         else Result := -1;
+        {$ENDIF OldToolBar}
       end;
 
   //SH: think of TCanvas.handle!!!!
@@ -3393,10 +3394,10 @@ begin
 
       LM_INSERTTOOLBUTTON:
       begin
-        {$IFDEF NewToolBar}
+        {$IFNDEF OldToolBar}
         DebugLn('Obsolete: TGtkWidgetSet.IntSendMessage3 LM_INSERTTOOLBUTTON');
         exit;
-        {$ENDIF}
+        {$ELSE OldToolBar}
          If (SENDER is TToolbutton) Then
          Begin
             pStr := StrAlloc(Length(TToolbutton(SENDER).Caption)+1);
@@ -3420,20 +3421,22 @@ begin
               pgtkwidget(handle),pstr,pStr2,Num);
          StrDispose(pStr);
          StrDispose(pStr2);
+        {$ENDIF OldToolBar}
       end;
 
       LM_DELETETOOLBUTTON:
       Begin
-        {$IFDEF NewToolBar}
+        {$IFNDEF OldToolBar}
         DebugLn('Obsolete: TGtkWidgetSet.IntSendMessage3 LM_DELETETOOLBUTTON');
         exit;
-        {$ENDIF}
+        {$ELSE OldToolBar}
          with pgtkToolbar(TToolbar(TWinControl(Sender).parent).handle)^ do
             children := g_list_remove(pgList(children), sender);
   // Next 3 lines: should be same as above, remove when above lines are proofed
   //         pgtkToolbar(TToolbar(TWinControl(Sender).parent).handle)^.children :=
   //            g_list_remove(pgList(pgtkToolbar(TToolbar(TWinControl(Sender).parent).handle)^.children),
   //               sender);
+        {$ENDIF OldToolBar}
       end;
 
       LM_Invalidate :
@@ -4223,7 +4226,7 @@ begin
     csBitBtn,
     csButton: DebugLn('[WARNING] Obsolete call to TGTKOBject.SetLabel for ', Sender.ClassName);
   
-{$IFNDEF NewToolBar}
+{$IFDEF OldToolBar}
   csToolButton:
     with PgtkButton(P)^ do
     begin
@@ -4248,7 +4251,7 @@ begin
         StrDispose(aLabel);
       end;
     end;
-{$ENDIF}
+{$ENDIF OldToolBar}
 
   csForm,
   csFileDialog, csOpenFileDialog, csSaveFileDialog, csSelectDirectoryDialog,
@@ -6263,13 +6266,11 @@ end;
   child and get all LCL TControl abilities.
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.CreateToolBar(ToolBarObject: TObject): PGtkWidget;
-{$IFDEF NewToolBar}
 var
   ClientWidget: PGtkWidget;
-{$ENDIF}
 begin
   Result := gtk_toolbar_new();
-  {$IFDEF NewToolBar}
+  {$IFNDEF OldToolBar}
   ClientWidget := gtk_fixed_new();
   gtk_toolbar_insert_widget(PGTKToolbar(Result),ClientWidget,nil,nil,0);
   gtk_widget_show(ClientWidget);
@@ -6304,7 +6305,7 @@ var
   AccelKey  : guint;
   SetupProps : boolean;
   AWindow: PGdkWindow;
-  {$IFNDEF NewToolBar}
+  {$IFDEF OldToolBar}
   WidgetInfo: PWinWidgetInfo;
   {$ENDIF}
 begin
@@ -6697,9 +6698,9 @@ begin
 
   csToolButton:
     begin
-      {$IFDEF NewToolBar}
+      {$IFNDEF OldToolBar}
       p := gtk_fixed_new();
-      {$ELSE}
+      {$ELSE OldToolBar}
       AccelText := Ampersands2Underscore(StrTemp);
       //p := gtk_button_new_with_label(StrTemp);
       p := gtk_button_new_with_label(AccelText);
@@ -6713,7 +6714,7 @@ begin
       WidgetInfo:=GetWidgetInfo(P,true);
       Include(WidgetInfo^.Flags,wwiNotOnParentsClientArea);
       gtk_widget_show (P);
-      {$ENDIF}
+      {$ENDIF OldToolBar}
     end;
 
   csTrackBar:
@@ -9210,6 +9211,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.516  2004/07/23 16:44:27  mattias
+  activated new TToolbar, old can be activated with -dOldToolBar
+
   Revision 1.515  2004/07/16 21:49:00  mattias
   added RTTI controls
 

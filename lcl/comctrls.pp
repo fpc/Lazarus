@@ -780,7 +780,7 @@ type
   end;
 
 
-  {$IFDEF NewToolBar}
+  {$IFNDEF OldToolBar}
 
   { TToolButton }
 
@@ -1059,7 +1059,7 @@ type
     property OnStartDrag;
   end;
   
-  {$ELSE NewToolBar}
+  {$ELSE OldToolBar}
 
   { TToolBar }
 
@@ -1341,7 +1341,7 @@ type
     property OnStartDrag;
   end;
 
-  {$ENDIF}
+  {$ENDIF OldToolBar}
 
 
   { TCustomTrackBar }
@@ -2304,6 +2304,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.138  2004/07/23 16:44:27  mattias
+  activated new TToolbar, old can be activated with -dOldToolBar
+
   Revision 1.137  2004/07/14 15:57:53  mattias
   fixed 1.0.10 compilation  from Vincent
 

@@ -19,7 +19,7 @@
 
 }
 
-{$IFDEF NewToolBar}
+{$IFNDEF OldToolBar}
 
 function CompareToolBarControl(Control1, Control2: TControl): integer;
 var
@@ -85,6 +85,9 @@ begin
       TToolButton(FButtons[I]).FToolBar := nil;
 
   FreeThenNil(FButtons);
+  FreeThenNil(FHotImageChangeLink);
+  FreeThenNil(FImageChangeLink);
+  FreeThenNil(FDisabledImageChangeLink);
   inherited Destroy;
 end;
 
@@ -612,7 +615,7 @@ begin
   Button.Click;
 end;
 
-{$ELSE NewToolBar}
+{$ELSE OldToolBar}
 
 var
   StillModal: boolean;
@@ -2089,11 +2092,14 @@ begin
   Result := FMenuResult;
 end;
 
-{$ENDIF NewToolBar}
+{$ENDIF OldToolBar}
 
 { =============================================================================
 
   $Log$
+  Revision 1.28  2004/07/23 16:44:27  mattias
+  activated new TToolbar, old can be activated with -dOldToolBar
+
   Revision 1.27  2004/05/11 12:16:47  mattias
   replaced writeln by debugln
 
