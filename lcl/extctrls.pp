@@ -570,6 +570,7 @@ type
   public
     constructor Create(AOwner:TComponent); override;
     destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
     procedure Invalidate; override;
   published
     property Align;
@@ -989,6 +990,9 @@ end.
 
  {
   $Log$
+  Revision 1.131  2005/01/28 18:48:35  micha
+  implement assign for tbevel
+
   Revision 1.130  2005/01/17 12:49:48  micha
   properly support TImage.OnPaint event, fix infinite loop
 

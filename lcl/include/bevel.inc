@@ -28,6 +28,16 @@ Begin
   Inherited Destroy;
 End;
 
+procedure TBevel.Assign(Source: TPersistent);
+begin
+  if Source is TBevel then
+  begin
+    FShape := TBevel(Source).Shape;
+    FStyle := TBevel(Source).Style;
+  end else
+    inherited;
+end;
+
 Procedure TBevel.Invalidate;
 Begin
   if Canvas.HandleAllocated then Paint;
@@ -251,6 +261,9 @@ End;
 
 {
   $Log$
+  Revision 1.10  2005/01/28 18:48:35  micha
+  implement assign for tbevel
+
   Revision 1.9  2004/04/10 17:58:56  mattias
   implemented mainunit hints for include files
 
