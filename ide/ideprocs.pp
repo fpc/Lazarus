@@ -94,6 +94,8 @@ function CopyDirectoryWithMethods(const SrcDirectory, DestDirectory: string;
 function ProgramDirectory: string;
 function FindFilesCaseInsensitive(const Directory,
   CaseInsensitiveFilename: string; IgnoreExact: boolean): TStringList;
+function FindFirstFileWithExt(const Directory, Ext: string): string;
+function FindShortFileNameOnDisk(const Filename: string): string;
 function FilenameIsPascalUnit(const Filename: string): boolean;
 function FilenameIsPascalSource(const Filename: string): boolean;
 function FilenameIsFormText(const Filename: string): boolean;
@@ -106,7 +108,6 @@ function SearchDirectoryInSearchPath(const SearchPath, Directory: string;
 function CreateRelativePath(const Filename, BaseDirectory: string): string;
 function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string): string;
 function CreateAbsolutePath(const SearchPath, BaseDirectory: string): string;
-function FindFirstFileWithExt(const Directory, Ext: string): string;
 
 // XMLConfig
 procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStringList;
@@ -235,7 +236,7 @@ begin
       if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;
       if (AnsiCompareText(CaseInsensitiveFilename,FileInfo.Name)=0)
       and ((not IgnoreExact)
-           or (CaseInsensitiveFilename<>FileInfo.Name))
+           or (CompareFilenames(CaseInsensitiveFilename,FileInfo.Name)<>0))
       then begin
         if Result=nil then Result:=TStringList.Create;
         Result.Add(FileInfo.Name);
@@ -252,6 +253,30 @@ begin
   Result:=((Ext='.pp') or (Ext='.pas') or (Ext='.lpr')
           or (Ext='.dpr') or (Ext='.dpk'))
           and (ExtractFileNameOnly(Filename)<>'');
+end;
+
+function FindShortFileNameOnDisk(const Filename: string): string;
+var
+  FileInfo: TSearchRec;
+  ADirectory: String;
+  ShortFilename: String;
+begin
+  Result:='';
+  ADirectory:=ExtractFilePath(Filename);
+  if SysUtils.FindFirst(AppendPathDelim(ADirectory)+FindMask,
+                        faAnyFile,FileInfo)=0
+  then begin
+    ShortFilename:=ExtractFilename(Filename);
+    repeat
+      // check if special file
+      if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;
+      if CompareFilenames(ShortFilename,FileInfo.Name)=0 then begin
+        Result:=FileInfo.Name;
+        break;
+      end;
+    until SysUtils.FindNext(FileInfo)<>0;
+  end;
+  SysUtils.FindClose(FileInfo);
 end;
 
 function FilenameIsPascalUnit(const Filename: string): boolean;
