@@ -50,6 +50,14 @@ begin
   end;
 end;
 
+procedure TDBListBox.FocusRequest(Sender: TObject);
+begin
+  //the FieldLink has requested the control
+  //recieve focus for some reason..
+  //perhaps an error occured?
+  SetFocus;
+end;
+
 function TDBListBox.GetDataField: string;
 begin
   Result := FDataLink.FieldName;
@@ -191,6 +199,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2003/09/18 14:36:17  ajgenius
+  added TFieldDataLink.FocusControl/OnFocusRequest
+
   Revision 1.1  2003/09/15 01:56:48  ajgenius
   Added TDBListBox. needs more work for ReadOnly
 

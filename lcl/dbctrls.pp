@@ -58,6 +58,7 @@ Type
     FOnEditingChange: TNotifyEvent;
     FOnUpdateData: TNotifyEvent;
     FOnActiveChange: TNotifyEvent;
+    FOnFocusRequest: TNotifyEvent;
 
     function FieldCanModify: Boolean;
     function GetCanModify: Boolean;
@@ -75,6 +76,8 @@ Type
     procedure LayoutChanged; override;
     procedure RecordChanged(aField: TField); override;
     procedure UpdateData; override;
+
+    procedure FocusControl(aField: TFieldRef); Override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -102,6 +105,7 @@ Type
     property OnEditingChange: TNotifyEvent read FOnEditingChange write FOnEditingChange;
     property OnUpdateData: TNotifyEvent read FOnUpdateData write FOnUpdateData;
     property OnActiveChange: TNotifyEvent read FOnActiveChange write FOnActiveChange;
+    property OnFocusRequest: TNotifyEvent read FOnFocusRequest write FOnFocusRequest;
   end;
 
 
@@ -114,6 +118,7 @@ Type
     procedure DataChange(Sender: TObject);
     procedure EditingChange(Sender: TObject);
     procedure UpdateData(Sender: TObject);
+    procedure FocusRequest(Sender: TObject);
 
     function GetDataField: string;
     function GetDataSource: TDataSource;
@@ -147,6 +152,46 @@ Type
     property DataSource: TDataSource read GetDataSource write SetDataSource;
 
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
+
+    property Anchors;
+    property AutoSize;
+    property CharCase;
+    property Color;
+    property Constraints;
+    property Ctl3D;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property Enabled;
+    property EditMask;
+    property Font;
+    property MaxLength;
+    property ParentColor;
+    property ParentCtl3D;
+    property ParentFont;
+    property ParentShowHint;
+    property PasswordChar;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Text;
+    property Visible;
+    property OnChange;
+    property OnClick;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnStartDrag;
   end;
 
 
@@ -175,6 +220,19 @@ Type
   published
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
+
+    property Align;
+    property Alignment;
+    property AutoSize;
+    property Anchors;
+    property Caption;
+    property Color;
+    property FocusControl;
+    property Font;
+    property Visible;
+    property Layout;
+    property ShowAccelChar;
+    property WordWrap;
   end;
 
 
@@ -186,6 +244,7 @@ Type
     procedure DataChange(Sender: TObject);
     procedure EditingChange(Sender: TObject);
     procedure UpdateData(Sender: TObject);
+    procedure FocusRequest(Sender: TObject);
 
     function GetDataField: string;
     function GetDataSource: TDataSource;
@@ -224,6 +283,33 @@ Type
 
     //same as dbedit need to match the datalink status
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
+
+    property Align;
+    property Anchors;
+    property BorderStyle;
+    property ExtendedSelect;
+    property ItemHeight;
+    property MultiSelect;
+    property OnClick;
+    property OnDblClick;
+    property OnDrawItem;
+    property OnEnter;
+    property OnExit;
+    property OnKeyPress;
+    property OnKeyDown;
+    property OnKeyUp;
+    property OnMouseMove;
+    property OnMouseDown;
+    property OnMouseUp;
+    property OnResize;
+    property ParentShowHint;
+    property ShowHint;
+    property Sorted;
+    property Style;
+    property TabOrder;
+    property TabStop;
+    property TopIndex;
+    property Visible;
   end;
 
 
@@ -304,6 +390,7 @@ Type
     function GetFieldCheckState: TCheckBoxState; virtual;
     procedure DataChange(Sender: TObject); virtual;
     procedure UpdateData(Sender: TObject); virtual;
+    procedure FocusRequest(Sender: TObject); virtual;
     procedure Notification(AComponent: TComponent;
                            Operation: TOperation); override;
   public
@@ -368,6 +455,7 @@ Type
     procedure Notification(AComponent: TComponent;
                            Operation: TOperation); override;
     procedure UpdateData(Sender: TObject); virtual;
+    procedure FocusRequest(Sender: TObject); virtual;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -434,6 +522,7 @@ Type
     procedure Notification(AComponent: TComponent;
                            Operation: TOperation); override;
     procedure UpdateData(Sender: TObject); virtual;
+    procedure FocusRequest(Sender: TObject); virtual;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -757,6 +846,27 @@ begin
     FOnUpdateData(Self);
 end;
 
+{ Delphi Help ->
+    Call FocusControl to give the Control associated with this TFieldDataLink
+    object the input focus. FocusControl checks whether the Control can receive
+    input focus, and if so, calls its SetFocus method to move focus to the
+    Control.
+  <-- Delphi Help
+
+  so seems it just calls SetFocus on TWinControls, since this DataLink should
+  really go into the FCL, we just add our own callback which the DB aware
+  controls that can get focus then assign to do the real SetFocus, thus removing
+  need for visual dependency.
+}
+
+Procedure TFieldDataLink.FocusControl(aField: TFieldRef);
+begin
+  If Assigned(aField) and (aField^ = FField) then
+    if Assigned(FOnFocusRequest) then begin
+      aField^ := nil;
+      FOnFocusRequest(Self);
+    end;
+end;
 
 {TFieldDataLink  Public Methods}
 
@@ -857,6 +967,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.9  2003/09/18 14:36:17  ajgenius
+  added TFieldDataLink.FocusControl/OnFocusRequest
+
   Revision 1.8  2003/09/18 14:00:09  mattias
   implemented TDBGroupBox
 

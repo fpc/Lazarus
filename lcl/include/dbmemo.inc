@@ -125,6 +125,14 @@ begin
   inherited ReadOnly:=True;
 end;
 
+procedure TDBMemo.FocusRequest(Sender: TObject);
+begin
+  //the FieldLink has requested the control
+  //recieve focus for some reason..
+  //perhaps an error occured?
+  SetFocus;
+end;
+
 destructor TDBMemo.Destroy;
 begin
   FDataLink.Free;

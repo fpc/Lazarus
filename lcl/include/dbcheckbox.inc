@@ -118,6 +118,14 @@ begin
     end;
 end;
 
+Procedure TDBCheckBox.FocusRequest(Sender: TObject);
+begin
+  //the FieldLink has requested the control
+  //recieve focus for some reason..
+  //perhaps an error occured?
+  SetFocus;
+end;
+
 procedure TDBCheckBox.Notification(AComponent: TComponent; Operation: TOperation
   );
 begin

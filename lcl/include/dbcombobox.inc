@@ -117,6 +117,14 @@ begin
   FDataLink.Field.AsString:=GetComboText;
 end;
 
+procedure TDBComboBox.FocusRequest(Sender: TObject);
+begin
+  //the FieldLink has requested the control
+  //recieve focus for some reason..
+  //perhaps an error occured?
+  SetFocus;
+end;
+
 constructor TDBComboBox.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
