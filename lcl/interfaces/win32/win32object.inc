@@ -236,9 +236,6 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TWin32WidgetSet.SetCallback(Msg: LongInt; Sender: TObject);
 Var
-  {$IFDEF VER1_1_MSG}
-  List: TMsgArray;
-  {$ENDIF}
   Window: HWnd;
 Begin
   Assert(False, 'Trace:TWin32WidgetSet.SetCallback - Start');
@@ -252,13 +249,6 @@ Begin
     Window := TWinControl(Sender).Handle;
   if Window=0 then exit;
 
-  {$IFDEF VER1_1_MSG}
-    List := TMsgArray(GetProp(Window, 'MsgList'));
-    SetLength(List, Length(List) + 1);
-    List[Length(List) + 1] := Msg;
-    SetProp(Window, 'MsgList', Pointer(List));
-  {$ENDIF}
-
   Assert(False, 'Trace:TWin32WidgetSet.SetCallback - Exit');
 End;
 
@@ -271,9 +261,6 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32WidgetSet.RemoveCallbacks(Sender: TObject);
 Var
-  {$IFDEF VER1_1_MSG}
-  List: TMsgArray;
-  {$ENDIF}
   Window: HWnd;
 Begin
   If Sender Is TControlCanvas Then
@@ -283,12 +270,6 @@ Begin
   Else
     Window := (Sender as TWinControl).Handle;
   if Window=0 then exit;
-
-  {$IFDEF VER1_1_MSG}
-    List := TMsgArray(GetProp(Window, 'MsgList'));
-    Pointer(List) := Nil;
-    SetProp(Window, 'MsgList', Pointer(List));
-  {$ENDIF}
 End;
 
 function TWin32WidgetSet.InitHintFont(HintFont: TObject): Boolean;
@@ -686,516 +667,20 @@ Begin
   End;
 End;
 
-{------------------------------------------------------------------------------
+ {------------------------------------------------------------------------------
   Function: TWin32WidgetSet.CreateComponent
   Params:   Sender - object for which to create visual representation
   Returns:  nothing
 
   Tells Windows to create a control
  ------------------------------------------------------------------------------}
-Function TWin32WidgetSet.CreateComponent(Sender: TObject): THandle;
-Var
-  Buddy, Parent, Handle, Window: HWnd;
-  CompStyle, Left, Top, Height, Width: Integer;
-  AlternateCreateWindow: Boolean;
-  MenuHandle: HMENU;
-  Caption : String;
-  Flags, FlagsEx: DWord;
-  SubClassWndProc: Pointer;
-  StrCaption: PChar;
-  WindowTitle: PChar;
-  pClassName: PChar;
-  R: TRect;
-  //TCI: TC_ITEM;
-Const
-  ComboBoxStyles: array[TComboBoxStyle] of DWORD = (
-    CBS_DROPDOWN, CBS_SIMPLE, CBS_DROPDOWNLIST,
-    CBS_DROPDOWNLIST or CBS_OWNERDRAWFIXED,
-    CBS_DROPDOWNLIST or CBS_OWNERDRAWVARIABLE);
-          
-  LISTVIEWSTYLES: array[TViewStyle] of DWORD = (
-    LVS_LIST, LVS_REPORT
-  );
-Begin
-  Assert(False, 'Trace:CreateComponent - Start');
-  Assert(False, 'Trace:CreateComponent - Value of Sender is $' + IntToHex(LongInt(Sender), 8));
-  Assert(False, 'Trace:CreateComponent - 1');
-   
+function TWin32WidgetSet.CreateComponent(Sender: TObject): THandle;
+begin
+  DebugLn('WARNING: TWin32WidgetSet.CreateComponent is deprecated, should not be reachable!!');
   Result := 0;
-   
-  Flags := WS_CHILD or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
-  FlagsEx := 0;
-  Assert(False, 'Trace:Setting flags');
-  Window := HWND(Nil);
-  Buddy := HWND(Nil);
-  Assert(False, 'Trace:Setting window');
-
-  If (Sender Is TWinControl) And (TWinControl(Sender).Parent <> Nil) Then
-  Begin
-    Assert(False, Format('Trace:TWin32WidgetSet.CreateComponent - %S parent --> %S', [Sender.ClassName, TWinControl(Sender).Parent.ClassName]));
-    Parent := TWinControl(Sender).Parent.Handle;
-    Assert(False, Format('Trace:TWin32WidgetSet.CreateComponent - parent handle --> 0x%X', [Parent]));
-    Assert(False, 'Trace:Setting parent');
-  End
-  Else
-    Parent := FAppHandle;
-
-  SubClassWndProc := @WindowProc;
-  AlternateCreateWindow := false;
-  CompStyle := csNone;
-  WindowTitle := nil;
-  Assert(False, 'Trace:Setting compstyle');
-  //Caption := '';
-  Assert(False, 'Trace:Setting caption');
-  If (Sender Is TControl) Then
-  Begin
-    Caption := TControl(Sender).Caption;
-    CompStyle := TControl(Sender).FCompStyle;
-    Height := TControl(Sender).Height;
-    Left := TControl(Sender).Left;
-    //Parent := TControl(Sender).Parent;
-    Top := TControl(Sender).Top;
-    Width := TControl(Sender).Width;
-    if TControl(Sender).Visible then
-      Flags := Flags or WS_VISIBLE;
-    if csAcceptsControls in TControl(Sender).ControlStyle then
-      FlagsEx := FlagsEx or WS_EX_CONTROLPARENT;
-    if TControl(Sender).TabStop then
-      Flags := Flags or WS_TABSTOP;
-    Assert(False, 'Trace:Setting dimentions');
-    LCLBoundsToWin32Bounds(Sender, Left, Top, Width, Height);
-    if Sender is TCustomControl then
-      if TCustomControl(Sender).BorderStyle = bsSingle then
-        FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
-    {$IFDEF VerboseSizeMsg}
-    writeln('TWin32WidgetSet.CreateComponent A ',TControl(Sender).Name,':',TControl(Sender).ClassName,' ',Left,',',Top,',',Width,',',Height);
-    {$ENDIF}
-  End;
-
-  Assert(False, Format('Trace:TWin32WidgetSet.CreateComponent - Creating component %S with the caption of %S', [Sender.ClassName, Caption]));
-  Assert(False, Format('Trace:TWin32WidgetSet.CreateComponent - Left: %D, Top: %D, Width: %D, Height: %D, Parent handle: 0x%X, instance handle: 0x%X', [Left, Top, Width, Height, Parent, HInstance]));
-
-  // until here remove when debug not needed
-  StrCaption := PChar(Caption);
-  Assert(False, 'Trace:CreateComponent - Control Style is ' + CS_To_String(CompStyle));
-
-  Case CompStyle Of
-    // controls with a window handle
-    csBitBtn:
-    Begin
-      pClassName := 'BUTTON';
-      if TCustomBitBtn(Sender).Default Then
-        Flags := Flags or BS_DEFPUSHBUTTON
-      else
-        Flags := Flags or BS_PUSHBUTTON;
-      Flags := Flags or BS_BITMAP;
-      WindowTitle := nil;
-    End;
-    csButton:
-    Begin
-      Assert(False, 'Trace:CreateComponent - Creating Button');
-      if TCustomButton(Sender).Default Then
-        Flags := Flags or BS_DEFPUSHBUTTON
-      else
-        Flags := Flags or BS_PUSHBUTTON;
-      pClassName := 'BUTTON';
-      WindowTitle := StrCaption;
-    End;
-    csCalendar:
-    Begin
-      pClassName := 'SysMonthCal32';
-      WindowTitle := StrCaption;
-      Flags := WS_CHILD or WS_VISIBLE;
-      SubClassWndProc := nil;
-    End;
-    csCheckbox:
-    Begin
-      pClassName := 'BUTTON';
-      WindowTitle := StrCaption;
-      Flags := Flags Or BS_AUTOCHECKBOX;
-    End;
-    csComboBox:
-    Begin
-      Flags := Flags or ComboBoxStyles[TCustomComboBox(Sender).Style];
-      If TComboBox(Sender).Sorted Then
-        Flags:= Flags or CBS_SORT;
-      pClassName := 'COMBOBOX';
-      Flags := Flags or WS_VSCROLL or CBS_AUTOHSCROLL or CBS_HASSTRINGS;
-      SubClassWndProc := @ComboBoxWindowProc;
-    End;
-    csListBox, csCheckListBox:
-    Begin
-      With TCustomListBox(Sender) do
-      Begin
-        If Sorted Then
-          Flags:= Flags or LBS_SORT;
-        If MultiSelect Then
-          if ExtendedSelect then
-            Flags:= Flags or LBS_EXTENDEDSEL
-          else
-            Flags:= Flags or LBS_MULTIPLESEL;
-        if CompStyle = csCheckListBox then
-          Flags := Flags or LBS_OWNERDRAWFIXED
-        else case Style of
-          lbOwnerDrawFixed: Flags := Flags or LBS_OWNERDRAWFIXED;
-          lbOwnerDrawVariable: Flags := Flags or LBS_OWNERDRAWVARIABLE;
-        end;
-      end;
-      FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
-      pClassName := 'LISTBOX';
-      Flags := Flags or (WS_VSCROLL or LBS_NOINTEGRALHEIGHT or LBS_HASSTRINGS);
-    End;
-    csCListBox:
-    Begin
-      With TCustomListBox(Sender) do
-      Begin
-        If Sorted Then
-          Flags:= Flags or LBS_SORT;
-        If MultiSelect Then
-          if ExtendedSelect then
-            Flags:= Flags or LBS_EXTENDEDSEL
-          else
-            Flags:= Flags or LBS_MULTIPLESEL;
-      End;
-      FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
-      pClassName := 'LISTBOX';
-      Flags := Flags or LBS_MULTICOLUMN or WS_HSCROLL;
-    End;
-    csEdit:
-    Begin
-      FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
-      pClassName := 'EDIT';
-      WindowTitle := StrCaption;
-      Flags := Flags Or ES_AUTOHSCROLL;
-    End;
-    csArrow, csFixed, csToolButton:
-    Begin
-      Assert(False, 'Trace:TODO: Figure out what component style csFixed is and code the component.  No component created.');
-      pClassName := @ClsName;
-      WindowTitle := StrCaption;
-      SubClassWndProc := nil;
-    End;
-    csForm:
-    Begin
-      Assert(False, 'Trace:CreateComponent - Creating a Form Window');
-      Flags := BorderStyleToWin32Flags(TCustomForm(Sender).BorderStyle);
-      FlagsEx := BorderStyleToWin32FlagsEx(TCustomForm(Sender).BorderStyle);
-      if (TCustomForm(Sender).FormStyle in fsAllStayOnTop)
-      and (not (csDesigning in TCustomForm(Sender).ComponentState)) then
-        FlagsEx := FlagsEx or WS_EX_TOPMOST;
-      pClassName := @ClsName;
-      WindowTitle := StrCaption;
-      Left := LongInt(CW_USEDEFAULT);
-      Top := LongInt(CW_USEDEFAULT);
-      Width := LongInt(CW_USEDEFAULT);
-      Height := LongInt(CW_USEDEFAULT);
-      SubClassWndProc := nil;
-    End;
-    csHintWindow:
-    Begin
-      pClassName := @ClsName;
-      WindowTitle := StrCaption;
-      Flags := WS_POPUP;
-      FlagsEx := FlagsEx or WS_EX_TOOLWINDOW;
-      Left := LongInt(CW_USEDEFAULT);
-      Top := LongInt(CW_USEDEFAULT);
-      Width := LongInt(CW_USEDEFAULT);
-      Height := LongInt(CW_USEDEFAULT);
-      SubClassWndProc := nil;
-    End;
-    {csFrame,} csGroupBox:
-    Begin
-      if FThemesActive and (Sender is TWinControl) and (TWinControl(Sender).Parent <> nil) and 
-        (TWinControl(Sender).Parent.FCompStyle = csGroupBox) then
-      begin
-        // the parent of this groupbox is another groupbox: there is a bug in 
-        // drawing the caption in that case, the caption of the child groupbox
-        // is drawn in system font, make an intermediate "ParentPanel", then
-        // the bug is hidden. Use 'ParentPanel' property of groupbox window
-        // to determine reference to this parent panel
-        // do not use 'ParentPanel' property for other controls!
-        Parent := CreateWindowEx(0, @ClsName, nil, WS_CHILD or WS_CLIPSIBLINGS or (Flags and WS_VISIBLE), 
-          Left, Top, Width, Height, Parent, 0, HInstance, nil);
-        Buddy := Parent;
-        Left := 0;
-        Top := 0;
-        Flags := Flags or WS_VISIBLE;
-      end;
-      pClassName := 'BUTTON';
-      WindowTitle := StrCaption;
-      Flags := Flags Or BS_GROUPBOX;
-    End;
-    csLabel:
-    Begin
-      pClassName := 'STATIC';
-      WindowTitle := StrCaption;
-      Flags := Flags Or SS_LEFT;
-    End;
-    csPairSplitter, csPairSplitterSide:
-    begin
-      pClassName := 'STATIC';
-      WindowTitle := StrCaption;
-    end;
-    csListView:
-    Begin
-      pClassName := WC_LISTVIEW;
-      WindowTitle := StrCaption;
-      Flags := Flags or LISTVIEWSTYLES[TListView(Sender).ViewStyle] or LVS_SINGLESEL;
-      FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;   
-    End;
-    csMemo:
-    Begin
-      Assert(False, 'Trace:TWin32WidgetSet.CreateComponent - Creating a MEMO...');
-      Flags := Flags Or ES_AUTOVSCROLL Or ES_MULTILINE Or ES_WANTRETURN;
-      If TCustomMemo(Sender).ReadOnly Then
-        Flags := Flags Or ES_READONLY;
-      If not TCustomMemo(Sender).WordWrap Then
-        Flags := Flags Or ES_AUTOHSCROLL;
-      Case TCustomMemo(Sender).ScrollBars Of
-        ssHorizontal:
-          Flags := Flags Or WS_HSCROLL;
-        ssVertical:
-          Flags := Flags Or WS_VSCROLL;
-        ssBoth:
-          Flags := Flags Or WS_HSCROLL Or WS_VSCROLL;
-      End;
-      FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
-      pClassName := 'EDIT';
-      WindowTitle := StrCaption;
-    End;
-    csNotebook:
-    Begin
-      pClassName := WC_TABCONTROL;
-    End;
-    csRadioButton:
-    Begin
-      pClassName := 'BUTTON';
-      WindowTitle := StrCaption;
-      // BS_AUTORADIOBUTTON may hang the application,
-      // if the radiobuttons are not consecutive controls.
-      Flags := Flags Or BS_RADIOBUTTON;
-    End;
-    csScrollBar:
-    Begin
-      Case TScrollBar(Sender).Kind Of
-        sbHorizontal:
-          Flags := Flags Or SBS_HORZ;
-        sbVertical:
-          Flags := Flags Or SBS_VERT;
-      End;
-      pClassName := 'SCROLLBAR';
-    End;
-    csScrollBox:
-    Begin
-      //Todo: Make control respond to user scroll request
-      FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
-      pClassName := @ClsName;
-      Flags := Flags or WS_HSCROLL or WS_VSCROLL;
-      SubClassWndProc := nil;
-    End;
-    csScrolledWindow:
-    Begin
-      Assert(False, 'TRACE: CreateComponent - creating a scrolled window');
-      pClassName := @ClsName;
-      WindowTitle := StrCaption;
-      Flags := WS_OVERLAPPEDWINDOW or WS_HSCROLL or WS_VSCROLL or WS_VISIBLE;
-      Left := LongInt(CW_USEDEFAULT);
-      Top := LongInt(CW_USEDEFAULT);
-      Width := LongInt(CW_USEDEFAULT);
-      Height := LongInt(CW_USEDEFAULT);
-      SubClassWndProc := nil;
-    End;
-    csStatusBar:
-    Begin
-      Assert(False, 'TRACE:CreateComponent - Creating Status Bar');
-      pClassName := STATUSCLASSNAME;
-      WindowTitle := StrCaption;
-      Left := LongInt(CW_USEDEFAULT);
-      Top := LongInt(CW_USEDEFAULT);
-      Width := LongInt(CW_USEDEFAULT);
-      Height := LongInt(CW_USEDEFAULT);
-    End; 
-(*    
-    csGTKTable:
-    Begin
-      // Commented out because of error in 1.0.5 (bug?)
-      //Assert(False, 'Trace:TODO: Create GTK Table.  I''m not sure how to do this (or even if this is needed in Win32), but I assume an array (or TList) of records containing the rows and columns and the properties(x, y, width, height, etc) of everything.  If you think you can help, be my guest.');
-      MessageBox(GetDesktopWindow, 'csGTKTable expected to be created', Nil, MB_OK);
-      //TControl(Sender).FCompStyle := csForm;
-      //IntSendMessage3(LM_CREATE, Sender, Nil);
-      Assert(False, 'TRACE:GTK Table not created');
-    End;
-*)    
-    csToggleBox:
-    Begin
-      Assert(False, 'TRACE: CreateComponent - Creating toggle box');
-      pClassName := 'BUTTON';
-      WindowTitle := StrCaption;
-      Flags := Flags Or BS_AUTOCHECKBOX Or BS_PUSHLIKE;
-    End;
-    csToolBar:
-    Begin
-      pClassName := TOOLBARCLASSNAME;
-      Flags := Flags OR CCS_ADJUSTABLE;
-    End;
-    // TCustomPage - Notebook page
-    csPage:
-    Begin
-      Assert(False, 'Trace:Create a csPage component.');
-      pClassName := @ClsName;
-      Flags := Flags and DWORD(not WS_VISIBLE);
-      SubClassWndProc := nil;
-    End;
-    csPanel:
-    Begin
-      Assert(False, 'Trace:Create a csPanel component.');
-      pClassName := @ClsName;
-      SubClassWndProc := nil;
-    End;
-    csProgressBar:
-    Begin
-      with TProgressBar(Sender) do
-      begin
-        if Smooth then
-          Flags := Flags or PBS_SMOOTH;
-        if (Orientation = pbVertical) or (Orientation = pbTopDown) then
-          Flags := Flags or PBS_VERTICAL;
-      end;
-      pClassName := PROGRESS_CLASS;
-    End;
-    csTrackBar:
-    Begin
-      Assert(False, 'TRACE:CreateComponent - Creating a Track Bar (if we''re lucky)');
-      pClassName := TRACKBAR_CLASS;
-      WindowTitle := StrCaption;
-    End;
-  else
-    AlternateCreateWindow := true;
-    case CompStyle of
-      // these controls create no window handle using CreateWindowEx
-      csAlignment:
-      Begin
-        Assert(False, 'Trace:TODO: Code csAlignment.  If anyone knows how to do this, please do.');
-        Handle:=TWinControl(Sender).Handle;
-        GetClientRect(Handle, R);
-        MoveWindow(Handle, R.Right - Left, R.Bottom - Top, (R.Right - R.Left) - (Left Div 2), (R.Bottom - R.Top) - (Top Div 2), True);
-        Window := Handle;
-      End;
-(*
-      csFont:
-      Begin
-        Assert(False, 'Trace:CreateComponent - Creating a font');
-        With LPLogFont(@Sender)^ Do
-          Window := CreateFont(LFHeight, LFWidth, LFEscapement, LFOrientation, LFWeight, LFItalic, LFUnderLine, LFStrikeOut, LFCharSet, LFOutPrecision, LFClipPrecision, LFQuality, LFPitchAndFamily, LFFaceName);
-      End;
-*)      
-      csImage:
-      Begin
-        // nothing to do
-      End;
-      csSpinEdit:
-      Begin
-        //this needs to be created in the actual code because it requires a gtkadjustment Win32Control
-        Buddy := CreateWindowEx(WS_EX_CLIENTEDGE, 'EDIT', StrCaption, Flags Or ES_AUTOHSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
-        Window := CreateUpDownControl(Flags or DWORD(WS_BORDER or UDS_ALIGNRIGHT or UDS_NOTHOUSANDS or UDS_ARROWKEYS or UDS_WRAP or UDS_SETBUDDYINT),
-          0, 0,       // pos -  ignored for buddy
-          0, 0,       // size - ignored for buddy
-          Parent, 0, HInstance, Buddy,
-          Trunc(TSpinEdit(Sender).MaxValue),
-          Trunc(TSpinEdit(Sender).MinValue),
-          Trunc(TSpinEdit(Sender).Value));
-      End;
-    end;
-  End; {Case}
-
-  if not AlternateCreateWindow then
-  begin
-    if (Flags and WS_CHILD) <> 0 then
-    begin
-      // menu handle is also for specifying a control id if this is a child
-      MenuHandle := HMENU(Sender);
-    end else begin
-      MenuHandle := HMENU(nil);
-    end;
-    Window := CreateWindowEx(FlagsEx, pClassName, WindowTitle, Flags,
-        Left, Top, Width, Height, Parent, MenuHandle, HInstance, Nil);  
-    if Window = 0 then
-    begin
-      raise exception.create('failed to create win32 control, error: '+IntToStr(GetLastError()));
-    end;
-    { after creating a child window the following happens:
-      1) the previously bottom window is thrown to the top
-      2) the created window is added at the bottom
-      undo this by throwing them both to the bottom again }
-    Windows.SetWindowPos(Windows.GetTopWindow(Parent), HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
-    Windows.SetWindowPos(Window, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
-  end;
-  
-  Result := Window;      
-  
-
-  If (Sender Is TWinControl) Then
-  Begin
-    TWinControl(Sender).Handle := Window;
-    If Window <> HWND(Nil) Then
-    begin
-      Windows.SetProp(Window, 'Wincontrol', dword(Sender));
-      if SubClassWndProc <> nil then
-        Windows.SetProp(Window, 'DefWndProc', Windows.SetWindowLong(Window, GWL_WNDPROC, LongInt(SubClassWndProc)));
-      // subclass edit control of combobox too
-      case CompStyle of
-      csCombobox:
-      begin
-        Buddy := Windows.GetTopWindow(Window);
-        Windows.SetProp(Buddy, 'ComboEdit', 1);
-        SubClassWndProc := @ChildEditWindowProc;
-      end;
-
-      csGroupBox:
-      begin
-        if Buddy <> 0 then
-        begin
-          Windows.SetProp(Window, 'ParentPanel', Parent);
-          // no need to subclass this parentpanel
-          Buddy := 0;
-        end;
-      end;
-
-      csSpinEdit:
-      begin
-        SubClassWndProc := @ChildEditWindowProc;
-      end;
-
-      end;
-      Windows.SendMessage(Window, WM_SETFONT, WParam(FMessageFont), 0);
-    end;
-    If Buddy <> HWND(Nil) Then
-    begin
-      Windows.SetProp(Buddy, 'AWincontrol', dword(Sender));
-      Windows.SetProp(Buddy, 'DefWndProc', Windows.SetWindowLong(Buddy, GWL_WNDPROC, LongInt(SubClassWndProc)));
-      Windows.SendMessage(Buddy, WM_SETFONT, WParam(FMessageFont), 0);
-    end;
-  end;
-
-  case CompStyle of
-    csCListBox:
-    begin
-      Windows.SendMessage(Window, LB_SETCOLUMNWIDTH, Windows.WPARAM(TCListBox(Sender).Width Div (TCListBox(Sender).ListColumns)), 0);
-    end;
-    {csFrame,} csGroupBox:
-      TWinControl(Sender).InvalidateClientRectCache(true);
-    csListView:
-      SetOwner(Window, Sender);
-    csPage:
-      ShowWindow(Window, SW_HIDE);
-    csStatusBar:
-      StatusBarUpdate(Sender);
-  end;
-
-  Assert(False, 'Trace:Leaving CreateComponent');
-End;
-
-{------------------------------------------------------------------------------
+end;
+ 
+ {------------------------------------------------------------------------------
   Method: TWin32WidgetSet.AssignSelf
   Params: Window - The window to assign
           Data   - The data to assign to the window
@@ -1290,19 +775,6 @@ begin
   Result := Windows.GetPixel(CanvasHandle, X, Y);
 end;
 
-{------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.SetOwner
-  Params: Window - Window to which an owner will be set
-          Owner  - The owner to set
-  Returns: Nothing
-
-  Assigns an owner object to a window
- ------------------------------------------------------------------------------}
-Procedure TWin32WidgetSet.SetOwner(Window: HWND; Owner: TObject);
-Begin
-  SetProp(Window, 'MsgList', Nil);
-End;
-
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
   {$C-}
@@ -1310,6 +782,9 @@ End;
 
 {
   $Log$
+  Revision 1.291  2004/10/15 09:51:09  micha
+  splitup of CreateComponent to widgetset CreateHandle methods
+
   Revision 1.290  2004/10/13 20:03:22  vincents
   From Jesus: Set default window class style to CS_DBLCLKS.
 

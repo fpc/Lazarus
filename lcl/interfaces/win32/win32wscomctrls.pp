@@ -33,7 +33,9 @@ uses
   ComCtrls, LCLType, Controls, Graphics,
   LCLProc, InterfaceBase, Win32Int,
   // widgetset
-  WSComCtrls, WSLCLClasses, WSProc;
+  WSComCtrls, WSLCLClasses, WSProc,
+  // win32 widgetset
+  Win32WSControls;
 
 type
 
@@ -43,6 +45,8 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
   end;
 
   { TWin32WSTabSheet }
@@ -67,6 +71,8 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
     class procedure ColumnDelete(const ALV: TCustomListView; const AIndex: Integer); override;
     class function  ColumnGetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn): Integer; override;
     class procedure ColumnInsert(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn); override;
@@ -105,6 +111,8 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
     class procedure ApplyChanges(const AProgressBar: TProgressBar); override;
     class procedure SetPosition(const AProgressBar: TProgressBar; const NewPosition: integer); override;
   end;
@@ -139,6 +147,8 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
 {$ifdef OldToolbar}  
     class function  GetButtonCount(const AToolBar: TToolBar): integer; override;
     class procedure InsertToolButton(const AToolBar: TToolbar; const AControl: TControl); override;
@@ -152,6 +162,8 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
     class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); override;
     class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
     class procedure SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer); override;
@@ -176,8 +188,34 @@ type
 
 implementation
 
-  { TWin32WSCustomListView } 
-     
+{ TWin32WSStatusBar }
+
+function TWin32WSStatusBar.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    pClassName := STATUSCLASSNAME;
+    WindowTitle := StrCaption;
+    Left := LongInt(CW_USEDEFAULT);
+    Top := LongInt(CW_USEDEFAULT);
+    Width := LongInt(CW_USEDEFAULT);
+    Height := LongInt(CW_USEDEFAULT);
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  TWin32WidgetSet(InterfaceObject).StatusBarUpdate(AWinControl);
+  Result := Params.Window;
+end;
+
+
+
+{ TWin32WSCustomListView } 
      
 const                        
   // TODO: move to windows unit     
@@ -195,6 +233,28 @@ type
     iImage: Integer;
     iOrder: Integer;
   end;
+
+function TWin32WSCustomListView.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+const  
+  LISTVIEWSTYLES: array[TViewStyle] of DWORD = (LVS_LIST, LVS_REPORT);
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    pClassName := WC_LISTVIEW;
+    WindowTitle := StrCaption;
+    Flags := Flags or LISTVIEWSTYLES[TListView(AWinControl).ViewStyle] or LVS_SINGLESEL;
+    FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;   
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  Result := Params.Window;
+end;
 
 procedure TWin32WSCustomListView.ColumnDelete(const ALV: TCustomListView; const AIndex: Integer); 
 var
@@ -514,6 +574,30 @@ end;
 
 { TWin32WSProgressBar }
 
+function TWin32WSProgressBar.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    with TProgressBar(AWinControl) do
+    begin
+      if Smooth then
+        Flags := Flags or PBS_SMOOTH;
+      if (Orientation = pbVertical) or (Orientation = pbTopDown) then
+        Flags := Flags or PBS_VERTICAL;
+    end;
+    pClassName := PROGRESS_CLASS;
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  Result := Params.Window;
+end;
+
 procedure TWin32WSProgressBar.ApplyChanges(const AProgressBar: TProgressBar);
 begin
   with AProgressBar do
@@ -545,6 +629,24 @@ begin
 end;
 
 { TWin32WSToolbar}
+
+function TWin32WSToolBar.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    pClassName := TOOLBARCLASSNAME;
+    Flags := Flags or CCS_ADJUSTABLE;
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  Result := Params.Window;
+end;
 
 {$ifdef OldToolbar}
 
@@ -607,6 +709,24 @@ end;
 
 { TWin32WSTrackBar }
 
+function TWin32WSTrackBar.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    pClassName := TRACKBAR_CLASS;
+    WindowTitle := StrCaption;
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  Result := Params.Window;
+end;
+
 procedure TWin32WSTrackBar.ApplyChanges(const ATrackBar: TCustomTrackBar);
 var
   wHandle: HWND;
@@ -668,7 +788,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TCustomStatusBar, TWin32WSStatusBar);
+  RegisterWSComponent(TStatusBar, TWin32WSStatusBar);
 //  RegisterWSComponent(TCustomTabSheet, TWin32WSTabSheet);
 //  RegisterWSComponent(TCustomPageControl, TWin32WSPageControl);
   RegisterWSComponent(TCustomListView, TWin32WSCustomListView);

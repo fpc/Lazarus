@@ -33,9 +33,9 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Calendar, SysUtils,
+  Calendar, SysUtils, Controls, LCLType,
 ////////////////////////////////////////////////////
-  WSCalendar, WSLCLClasses, Windows, Win32Def;
+  WSCalendar, WSLCLClasses, Windows, Win32Def, Win32WSControls;
 
 type
 
@@ -45,6 +45,8 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
     class function  GetDateTime(const ACalendar: TCustomCalendar): TDateTime; override;
     class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); override;
     class procedure SetDisplaySettings(const ACalendar: TCustomCalendar; const ASettings: TDisplaySettings); override;
@@ -53,6 +55,28 @@ type
 
 
 implementation
+
+{ TWin32WSCalendar }
+
+function TWin32WSCalendar.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    pClassName := 'SysMonthCal32';
+    WindowTitle := StrCaption;
+    Flags := WS_CHILD or WS_VISIBLE;
+    SubClassWndProc := nil;
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  Result := Params.Window;
+end;
 
 function  TWin32WSCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;
 var

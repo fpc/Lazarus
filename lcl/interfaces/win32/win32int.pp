@@ -130,7 +130,6 @@ Type
         Desc: PRawImageDescription);
 
     Function WinRegister: Boolean;
-    Procedure SetOwner(Window: HWND; Owner: TObject);
     Procedure PaintPixmap(Surface: TObject; PixmapData: Pointer);
     Procedure NormalizeIconName(Var IconName: String);
     Procedure NormalizeIconName(Var IconName: PChar);
@@ -177,6 +176,7 @@ Type
     {$I win32lclintfh.inc}
 
     property AppHandle: HWND read FAppHandle;
+    property MessageFont: HFONT read FMessageFont;
     property ThemesActive: boolean read FThemesActive;
   End;
 
@@ -186,6 +186,15 @@ const
   BOOL_RESULT: Array[Boolean] Of String = ('False', 'True');
   ClsName : array[0..6] of char = 'Window'#0;
 
+{ export for widgetset implementation }
+
+function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+function ComboBoxWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+function ChildEditWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+    
 Implementation
 
 Uses
@@ -261,6 +270,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.121  2004/10/15 09:51:09  micha
+  splitup of CreateComponent to widgetset CreateHandle methods
+
   Revision 1.120  2004/10/06 10:52:46  micha
   split up common dialogs code
 

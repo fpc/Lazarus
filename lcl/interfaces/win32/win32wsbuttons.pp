@@ -33,9 +33,9 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Windows, Buttons, Graphics,
+  Windows, Buttons, Graphics, Controls,
 ////////////////////////////////////////////////////
-  WSButtons, WSLCLClasses;
+  WSButtons, WSLCLClasses, Win32WSControls, LCLType;
 
 type
 
@@ -45,6 +45,8 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
     class procedure DefaultButtonChanged(const AButton: TCustomButton); override;
     class procedure SetShortCut(const AButton: TCustomButton; const OldKey, NewKey: word); override;
   end;
@@ -52,6 +54,8 @@ type
   { TWin32WSBitBtn }
 
   TWin32WSBitBtn = class(TWSBitBtn)
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
     class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TBitmap); override;
     class procedure SetLayout(const ABitBtn: TCustomBitBtn; const AValue: TButtonLayout); override;
     class procedure SetMargin(const ABitBtn: TCustomBitBtn; const AValue: Integer); override;
@@ -74,6 +78,28 @@ uses
   Win32Int, InterfaceBase;
 
 { TWin32WSButton }
+
+function TWin32WSButton.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    if TCustomButton(AWinControl).Default Then
+      Flags := Flags or BS_DEFPUSHBUTTON
+    else
+      Flags := Flags or BS_PUSHBUTTON;
+    pClassName := 'BUTTON';
+    WindowTitle := StrCaption;
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  Result := Params.Window;
+end;
 
 procedure TWin32WSButton.DefaultButtonChanged(const AButton: TCustomButton);
 var
@@ -145,7 +171,7 @@ var
   OldFontHandle: HFONT; // Handle of previous font in hdcNewBitmap
   hdcNewBitmap: HDC; // Device context of the new Bitmap
   BitmapInfo: BITMAP; // Buffer for bitmap
-  TextSize: SIZE; // For computing the length of button caption in pixels
+  TextSize: Windows.SIZE; // For computing the length of button caption in pixels
   OldBitmap: HBITMAP; // Handle to the old selected bitmap
   NewBitmap: HBITMAP; // Handle of the new bitmap
   XDestBitmap, YDestBitmap: integer; // X,Y coordinate of destination rectangle for bitmap
@@ -332,6 +358,29 @@ begin
   SelectObject(hdcNewBitmap, OldFontHandle);
   DeleteDC(hdcNewBitmap);
   ReleaseDC(BitBtnHandle, BitBtnDC);
+end;
+
+function TWin32WSBitBtn.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    pClassName := 'BUTTON';
+    if TCustomBitBtn(AWinControl).Default Then
+      Flags := Flags or BS_DEFPUSHBUTTON
+    else
+      Flags := Flags or BS_PUSHBUTTON;
+    Flags := Flags or BS_BITMAP;
+    WindowTitle := nil;
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  Result := Params.Window;
 end;
 
 procedure TWin32WSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;

@@ -93,6 +93,8 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
   end;
 
   { TWin32WSImageList }
@@ -103,12 +105,141 @@ type
   public
   end;
 
+  
+type
+  TCreateWindowExParams = record
+    Buddy, Parent, Window: HWND;
+    Left, Top, Height, Width: integer;
+    MenuHandle: HMENU;
+    Flags, FlagsEx: dword;
+    SubClassWndProc: pointer;
+    WindowTitle, StrCaption: PChar;
+    pClassName: PChar;
+  end;
+
+
+// TODO: better names?
+
+procedure PrepareCreateWindow(const AWinControl: TWinControl; var Params: TCreateWindowExParams);
+procedure FinishCreateWindow(const AWinControl: TWinControl; var Params: TCreateWindowExParams;
+  const AlternateCreateWindow: boolean);
+procedure WindowCreateInitBuddy(const AWinControl: TWinControl; 
+  var Params: TCreateWindowExParams);
 
 implementation
 
 uses
   Windows, Win32Int, Win32WSButtons;
 
+{ Global helper routines }
+
+procedure PrepareCreateWindow(const AWinControl: TWinControl; var Params: TCreateWindowExParams);
+begin
+  with Params do
+  begin
+    Flags := WS_CHILD or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
+    FlagsEx := 0;
+    Assert(False, 'Trace:Setting flags');
+    Window := HWND(Nil);
+    Buddy := HWND(Nil);
+    Assert(False, 'Trace:Setting window');
+
+    if AWinControl.Parent <> nil then
+    begin
+      Parent := AWinControl.Parent.Handle;
+    end else
+      Parent := TWin32WidgetSet(InterfaceObject).AppHandle;
+
+    SubClassWndProc := @WindowProc;
+    WindowTitle := nil;
+    StrCaption := PChar(AWinControl.Caption);
+    WindowTitle := nil;
+    Height := AWinControl.Height;
+    Left := AWinControl.Left;
+    //Parent := AWinControl.Parent;
+    Top := AWinControl.Top;
+    Width := AWinControl.Width;
+    if AWinControl.Visible then
+      Flags := Flags or WS_VISIBLE;
+    if csAcceptsControls in AWinControl.ControlStyle then
+      FlagsEx := FlagsEx or WS_EX_CONTROLPARENT;
+    if AWinControl.TabStop then
+      Flags := Flags or WS_TABSTOP;
+    Assert(False, 'Trace:Setting dimentions');
+    LCLBoundsToWin32Bounds(AWinControl, Left, Top, Width, Height);
+    if AWinControl is TCustomControl then
+      if TCustomControl(AWinControl).BorderStyle = bsSingle then
+        FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
+    {$IFDEF VerboseSizeMsg}
+    writeln('TWin32WidgetSet.CreateComponent A ',AWinControl.Name,':',AWinControl.ClassName,' ',Left,',',Top,',',Width,',',Height);
+    {$ENDIF}
+
+    Assert(False, Format('Trace:TWin32WidgetSet.CreateComponent - Creating component %S with the caption of %S', [AWinControl.ClassName, AWinControl.Caption]));
+    Assert(False, Format('Trace:TWin32WidgetSet.CreateComponent - Left: %D, Top: %D, Width: %D, Height: %D, Parent handle: 0x%X, instance handle: 0x%X', [Left, Top, Width, Height, Parent, HInstance]));
+  end;
+end;
+
+procedure FinishCreateWindow(const AWinControl: TWinControl; var Params: TCreateWindowExParams;
+  const AlternateCreateWindow: boolean);
+begin
+  if not AlternateCreateWindow then
+  begin
+    with Params do
+    begin
+      if (Flags and WS_CHILD) <> 0 then
+      begin
+        // menu handle is also for specifying a control id if this is a child
+        MenuHandle := HMENU(AWinControl);
+      end else begin
+        MenuHandle := HMENU(nil);
+      end;
+      Window := CreateWindowEx(FlagsEx, pClassName, WindowTitle, Flags,
+          Left, Top, Width, Height, Parent, MenuHandle, HInstance, Nil);  
+      if Window = 0 then
+      begin
+        raise exception.create('failed to create win32 control, error: '+IntToStr(GetLastError()));
+      end;
+    end;
+    { after creating a child window the following happens:
+      1) the previously bottom window is thrown to the top
+      2) the created window is added at the bottom
+      undo this by throwing them both to the bottom again }
+    { not needed anymore, tab order is handled entirely by LCL now
+    Windows.SetWindowPos(Windows.GetTopWindow(Parent), HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
+    Windows.SetWindowPos(Window, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
+    }
+  end;
+  
+  with Params do
+  begin
+    if Window <> HWND(Nil) then
+    begin
+      Windows.SetProp(Window, 'Wincontrol', dword(AWinControl));
+      if SubClassWndProc <> nil then
+        Windows.SetProp(Window, 'DefWndProc', Windows.SetWindowLong(Window, GWL_WNDPROC, LongInt(SubClassWndProc)));
+      Windows.SendMessage(Window, WM_SETFONT, WParam(TWin32WidgetSet(InterfaceObject).MessageFont), 0);
+    end;
+  end;
+end;
+
+procedure WindowCreateInitBuddy(const AWinControl: TWinControl; 
+  var Params: TCreateWindowExParams);
+begin
+  with Params do
+    if Buddy <> HWND(Nil) then
+    begin
+      Windows.SetProp(Buddy, 'AWincontrol', dword(AWinControl));
+      Windows.SetProp(Buddy, 'DefWndProc', Windows.SetWindowLong(Buddy, GWL_WNDPROC, LongInt(SubClassWndProc)));
+      Windows.SendMessage(Buddy, WM_SETFONT, WParam(TWin32WidgetSet(InterfaceObject).MessageFont), 0);
+    end;
+end;
+
+{ TWin32WSControl }
+
+procedure TWin32WSControl.SetCursor(const AControl: TControl; const ACursor: TCursor);
+begin
+  Windows.SetCursor(Windows.LoadCursor(0, LclCursorToWin32CursorMap[ACursor]));
+end;
 
 { TWin32WSWinControl }
 
@@ -169,11 +300,6 @@ begin
     else
       Result := false;
   end;
-end;
-
-procedure TWin32WSControl.SetCursor(const AControl: TControl; const ACursor: TCursor);
-begin
-  Windows.SetCursor(Windows.LoadCursor(0, LclCursorToWin32CursorMap[ACursor]));
 end;
 
 procedure TWin32WSWinControl.SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
@@ -345,6 +471,29 @@ begin
   TWin32WidgetSet(InterfaceObject).ShowHide(AWinControl);
 end;
 
+{ TWin32WSCustomControl }
+
+function TWin32WSCustomControl.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    pClassName := @ClsName;
+    WindowTitle := StrCaption;
+    SubClassWndProc := nil;
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  Result := Params.Window;
+end;
+
+
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -357,7 +506,7 @@ initialization
   RegisterWSComponent(TControl, TWin32WSControl);
   RegisterWSComponent(TWinControl, TWin32WSWinControl);
 //  RegisterWSComponent(TGraphicControl, TWin32WSGraphicControl);
-//  RegisterWSComponent(TCustomControl, TWin32WSCustomControl);
+  RegisterWSComponent(TCustomControl, TWin32WSCustomControl);
 //  RegisterWSComponent(TImageList, TWin32WSImageList);
 ////////////////////////////////////////////////////
 end.

@@ -45,10 +45,45 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
   end;
 
 
 implementation
+
+{ TWin32WSCListBox }
+
+function TWin32WSCListBox.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    with TCustomListBox(AWinControl) do
+    begin
+      if Sorted then
+        Flags := Flags or LBS_SORT;
+      if MultiSelect then
+        if ExtendedSelect then
+          Flags := Flags or LBS_EXTENDEDSEL
+        else
+          Flags := Flags or LBS_MULTIPLESEL;
+    end;
+    FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
+    pClassName := 'LISTBOX';
+    Flags := Flags or LBS_MULTICOLUMN or WS_HSCROLL;
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  Windows.SendMessage(Params.Window, LB_SETCOLUMNWIDTH, Windows.WPARAM(
+    TCListBox(AWinControl).Width div (TCListBox(AWinControl).ListColumns)), 0);
+  Result := Params.Window;
+end;
 
 initialization
 
@@ -58,6 +93,6 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TCListBox, TWin32WSCListBox);
+  RegisterWSComponent(TCListBox, TWin32WSCListBox);
 ////////////////////////////////////////////////////
 end.

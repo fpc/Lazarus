@@ -33,10 +33,11 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Spin,
+  Spin, Controls, LCLType,
 ////////////////////////////////////////////////////
-  WSSpin, WSLCLClasses, Win32WSStdCtrls, Windows;
-
+  WSSpin, WSLCLClasses, Windows, Win32Int,
+  Win32WSStdCtrls, Win32WSControls;
+  
 type
 
   { TWin32WSCustomSpinEdit }
@@ -45,6 +46,8 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
     class function  GetSelStart(const ACustomSpinEdit: TCustomSpinEdit): integer; override;
     class function  GetSelLength(const ACustomSpinEdit: TCustomSpinEdit): integer; override;
     class function  GetValue(const ACustomSpinEdit: TCustomSpinEdit): single; override;
@@ -67,6 +70,34 @@ type
 implementation
 
 { TWin32WSCustomSpinEdit }
+
+function TWin32WSCustomSpinEdit.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    //this needs to be created in the actual code because it requires a gtkadjustment Win32Control
+    Buddy := CreateWindowEx(WS_EX_CLIENTEDGE, 'EDIT', StrCaption, Flags Or ES_AUTOHSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+    Window := CreateUpDownControl(Flags or DWORD(WS_BORDER or UDS_ALIGNRIGHT or UDS_NOTHOUSANDS or UDS_ARROWKEYS or UDS_WRAP or UDS_SETBUDDYINT),
+      0, 0,       // pos -  ignored for buddy
+      0, 0,       // size - ignored for buddy
+      Parent, 0, HInstance, Buddy,
+      Trunc(TSpinEdit(AWinControl).MaxValue),
+      Trunc(TSpinEdit(AWinControl).MinValue),
+      Trunc(TSpinEdit(AWinControl).Value));
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, true);
+  // init buddy
+  Params.SubClassWndProc := @ChildEditWindowProc;
+  WindowCreateInitBuddy(AWinControl, Params);
+  Result := Params.Window;
+end;
 
 function  TWin32WSCustomSpinEdit.GetSelStart(const ACustomSpinEdit: TCustomSpinEdit): integer;
 begin

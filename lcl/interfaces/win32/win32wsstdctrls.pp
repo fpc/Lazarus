@@ -35,7 +35,8 @@ uses
 ////////////////////////////////////////////////////
   Classes, StdCtrls, Controls, Graphics, Forms,
 ////////////////////////////////////////////////////
-  WSStdCtrls, WSLCLClasses, Windows, Win32Int, Win32Proc, InterfaceBase, LCLType;
+  WSStdCtrls, WSLCLClasses, Windows, LCLType, 
+  Win32Int, Win32Proc, InterfaceBase, Win32WSControls;
 
 type
 
@@ -45,6 +46,8 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
     class procedure SetParams(const AScrollBar: TScrollBar); override;
   end;
 
@@ -54,6 +57,8 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
   end;
 
   { TWin32WSGroupBox }
@@ -70,6 +75,8 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
     class function  GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
     class function  GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;
     class function  GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
@@ -101,6 +108,8 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
     class function  GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
     class function  GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
     class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
@@ -130,6 +139,8 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
     class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetMaxLength(const ACustomEdit: TCustomEdit): integer; {override;}
@@ -149,6 +160,8 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
     class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
@@ -176,6 +189,8 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
     class procedure SetAlignment(const ACustomLabel: TCustomLabel; const NewAlignment: TAlignment); override;
     class procedure SetLayout(const ACustomLabel: TCustomLabel; const NewLayout: TTextLayout); override;
     class procedure SetWordWrap(const ACustomLabel: TCustomLabel; const NewWordWrap: boolean); override;
@@ -203,6 +218,8 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
     class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox;
           const OldShortCut, NewShortCut: TShortCut); override;
@@ -223,6 +240,8 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
   end;
 
   { TWin32WSRadioButton }
@@ -231,6 +250,8 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
   end;
 
   { TWin32WSCustomStaticText }
@@ -260,6 +281,29 @@ implementation
 
 { TWin32WSScrollBar }
 
+function TWin32WSScrollBar.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    case TScrollBar(AWinControl).Kind of
+      sbHorizontal:
+        Flags := Flags or SBS_HORZ;
+      sbVertical:
+        Flags := Flags or SBS_VERT;
+    end;
+    pClassName := 'SCROLLBAR';
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  Result := Params.Window;
+end;
+
 procedure TWin32WSScrollBar.SetParams(const AScrollBar: TScrollBar);
 begin
   with AScrollBar do
@@ -276,7 +320,90 @@ begin
   end;
 end;
 
+{ TWin32WSCustomGroupBox }
+
+function TWin32WSCustomGroupBox.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    if TWin32WidgetSet(InterfaceObject).ThemesActive and (AWinControl.Parent <> nil) and 
+      (AWinControl.Parent is TCustomGroupBox) then
+    begin
+      // the parent of this groupbox is another groupbox: there is a bug in 
+      // drawing the caption in that case, the caption of the child groupbox
+      // is drawn in system font, make an intermediate "ParentPanel", then
+      // the bug is hidden. Use 'ParentPanel' property of groupbox window
+      // to determine reference to this parent panel
+      // do not use 'ParentPanel' property for other controls!
+      Parent := CreateWindowEx(0, @ClsName, nil, WS_CHILD or WS_CLIPSIBLINGS or (Flags and WS_VISIBLE), 
+        Left, Top, Width, Height, Parent, 0, HInstance, nil);
+      Buddy := Parent;
+      Left := 0;
+      Top := 0;
+      Flags := Flags or WS_VISIBLE;
+    end;
+    pClassName := 'BUTTON';
+    WindowTitle := StrCaption;
+    Flags := Flags Or BS_GROUPBOX;
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  // handle winxp panel hack
+  with Params do
+  begin
+    if Buddy <> 0 then
+    begin
+      Windows.SetProp(Window, 'ParentPanel', Parent);
+      // no need to subclass this parentpanel
+      Buddy := 0;
+    end;
+  end;
+  AWinControl.InvalidateClientRectCache(true);
+  Result := Params.Window;
+end;
+
 { TWin32WSCustomListBox }
+
+function TWin32WSCustomListBox.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    with TCustomListBox(AWinControl) do
+    begin
+      if Sorted then
+        Flags := Flags or LBS_SORT;
+      if MultiSelect then
+        if ExtendedSelect then
+          Flags := Flags or LBS_EXTENDEDSEL
+        else
+          Flags := Flags or LBS_MULTIPLESEL;
+      if AWinControl.FCompStyle = csCheckListBox then
+        Flags := Flags or LBS_OWNERDRAWFIXED
+      else case Style of
+        lbOwnerDrawFixed: Flags := Flags or LBS_OWNERDRAWFIXED;
+        lbOwnerDrawVariable: Flags := Flags or LBS_OWNERDRAWVARIABLE;
+      end;
+    end;
+    FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
+    pClassName := 'LISTBOX';
+    Flags := Flags or (WS_VSCROLL or LBS_NOINTEGRALHEIGHT or LBS_HASSTRINGS);
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  Result := Params.Window;
+end;
 
 function  TWin32WSCustomListBox.GetItemIndex(const ACustomListBox: TCustomListBox): integer;
 var
@@ -404,6 +531,41 @@ end;
 
 { TWin32WSCustomComboBox }
 
+function TWin32WSCustomComboBox.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+const  
+  ComboBoxStyles: array[TComboBoxStyle] of DWORD = (
+    CBS_DROPDOWN, CBS_SIMPLE, CBS_DROPDOWNLIST,
+    CBS_DROPDOWNLIST or CBS_OWNERDRAWFIXED,
+    CBS_DROPDOWNLIST or CBS_OWNERDRAWVARIABLE);
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    Flags := Flags or ComboBoxStyles[TCustomComboBox(AWinControl).Style];
+    If TComboBox(AWinControl).Sorted Then
+      Flags:= Flags or CBS_SORT;
+    pClassName := 'COMBOBOX';
+    Flags := Flags or WS_VSCROLL or CBS_AUTOHSCROLL or CBS_HASSTRINGS;
+    SubClassWndProc := @ComboBoxWindowProc;
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  // get edit window within
+  with Params do
+  begin
+    Buddy := Windows.GetTopWindow(Window);
+    Windows.SetProp(Buddy, 'ComboEdit', 1);
+    SubClassWndProc := @ChildEditWindowProc;
+  end;
+  WindowCreateInitBuddy(AWinControl, Params);
+  Result := Params.Window;
+end;
+
 function  TWin32WSCustomComboBox.GetSelStart(const ACustomComboBox: TCustomComboBox): integer;
 begin
   Result := Low(SendMessage(ACustomComboBox.Handle, CB_GETEDITSEL, Windows.WPARAM(nil), Windows.LPARAM(nil)));
@@ -516,6 +678,26 @@ end;
 
 { TWin32WSCustomEdit }
 
+function TWin32WSCustomEdit.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
+    pClassName := 'EDIT';
+    WindowTitle := StrCaption;
+    Flags := Flags or ES_AUTOHSCROLL;
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  Result := Params.Window;
+end;
+
 function  TWin32WSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
 begin
   Result := EditGetSelStart(ACustomEdit.Handle);
@@ -574,6 +756,38 @@ end;
 
 { TWin32WSCustomMemo }
 
+function TWin32WSCustomMemo.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    Flags := Flags or ES_AUTOVSCROLL or ES_MULTILINE or ES_WANTRETURN;
+    if TCustomMemo(AWinControl).ReadOnly then
+      Flags := Flags or ES_READONLY;
+    if not TCustomMemo(AWinControl).WordWrap then
+      Flags := Flags or ES_AUTOHSCROLL;
+    case TCustomMemo(AWinControl).ScrollBars of
+      ssHorizontal:
+        Flags := Flags or WS_HSCROLL;
+      ssVertical:
+        Flags := Flags or WS_VSCROLL;
+      ssBoth:
+        Flags := Flags or WS_HSCROLL or WS_VSCROLL;
+    end;
+    FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
+    pClassName := 'EDIT';
+    WindowTitle := StrCaption;
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  Result := Params.Window;
+end;
+
 procedure TWin32WSCustomMemo.AppendText(const ACustomMemo: TCustomMemo; const AText: string);
 var
   S: string;
@@ -599,6 +813,25 @@ begin
 end;
 
 { TWin32WSCustomLabel }
+
+function TWin32WSCustomLabel.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    pClassName := 'STATIC';
+    WindowTitle := StrCaption;
+    Flags := Flags or SS_LEFT;
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  Result := Params.Window;
+end;
 
 procedure TWin32WSCustomLabel.SetAlignment(const ACustomLabel: TCustomLabel; const NewAlignment: TAlignment);
 var
@@ -645,6 +878,25 @@ end;
 
 { TWin32WSCustomCheckBox }
 
+function TWin32WSCustomCheckBox.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    pClassName := 'BUTTON';
+    WindowTitle := StrCaption;
+    Flags := Flags Or BS_AUTOCHECKBOX;
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  Result := Params.Window;
+end;
+
 function  TWin32WSCustomCheckBox.RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
 begin
   case SendMessage(ACustomCheckBox.Handle, BM_GETCHECK, 0, 0) of
@@ -674,6 +926,53 @@ begin
   Windows.SendMessage(ACustomCheckBox.Handle, BM_SETCHECK, Flags, 0);
 end;
 
+{ TWin32WSToggleBox }
+
+function TWin32WSToggleBox.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    pClassName := 'BUTTON';
+    WindowTitle := StrCaption;
+    Flags := Flags or BS_AUTOCHECKBOX or BS_PUSHLIKE;
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  Result := Params.Window;
+end;
+
+
+{ TWin32WSRadioButton }
+
+function TWin32WSRadioButton.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    pClassName := 'BUTTON';
+    WindowTitle := StrCaption;
+    // BS_AUTORADIOBUTTON may hang the application,
+    // if the radiobuttons are not consecutive controls.
+    Flags := Flags Or BS_RADIOBUTTON;
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  Result := Params.Window;
+end;
+
+
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -683,7 +982,7 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
   RegisterWSComponent(TScrollBar, TWin32WSScrollBar);
-//  RegisterWSComponent(TCustomGroupBox, TWin32WSCustomGroupBox);
+  RegisterWSComponent(TCustomGroupBox, TWin32WSCustomGroupBox);
 //  RegisterWSComponent(TGroupBox, TWin32WSGroupBox);
   RegisterWSComponent(TCustomComboBox, TWin32WSCustomComboBox);
 //  RegisterWSComponent(TComboBox, TWin32WSComboBox);
@@ -699,8 +998,8 @@ initialization
   RegisterWSComponent(TCustomCheckBox, TWin32WSCustomCheckBox);
 //  RegisterWSComponent(TCheckBox, TWin32WSCheckBox);
 //  RegisterWSComponent(TCheckBox, TWin32WSCheckBox);
-//  RegisterWSComponent(TToggleBox, TWin32WSToggleBox);
-//  RegisterWSComponent(TRadioButton, TWin32WSRadioButton);
+  RegisterWSComponent(TToggleBox, TWin32WSToggleBox);
+  RegisterWSComponent(TRadioButton, TWin32WSRadioButton);
 //  RegisterWSComponent(TCustomStaticText, TWin32WSCustomStaticText);
 //  RegisterWSComponent(TStaticText, TWin32WSStaticText);
 ////////////////////////////////////////////////////

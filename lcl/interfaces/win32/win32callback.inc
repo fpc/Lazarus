@@ -371,7 +371,7 @@ Begin
     End;
     WM_CLOSE:
     Begin
-      if (Window = TWin32WidgetSet(InterfaceObject).FAppHandle) and 
+      if (Window = TWin32WidgetSet(InterfaceObject).AppHandle) and 
         (Application.MainForm <> nil) then
       begin
         Windows.SendMessage(Application.MainForm.Handle, WM_CLOSE, 0, 0);
@@ -1276,6 +1276,9 @@ end;
 
 {
   $Log$
+  Revision 1.143  2004/10/15 09:51:09  micha
+  splitup of CreateComponent to widgetset CreateHandle methods
+
   Revision 1.142  2004/10/06 10:52:46  micha
   split up common dialogs code
 

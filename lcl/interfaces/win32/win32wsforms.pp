@@ -33,9 +33,10 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Forms,
+  Forms, Controls, LCLType, Classes,
 ////////////////////////////////////////////////////
-  WSForms, WSLCLClasses, Windows, SysUtils, WinExt;
+  WSForms, WSLCLClasses, Windows, SysUtils, WinExt, 
+  Win32Int, Win32Proc, Win32WSControls;
 
 type
 
@@ -53,6 +54,8 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
   end;
 
   { TWin32WSCustomFrame }
@@ -77,6 +80,8 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
     class procedure SetIcon(const AForm: TCustomForm; const AIcon: HICON); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
   end;
@@ -95,6 +100,8 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
   end;
 
   { TWin32WSScreen }
@@ -140,7 +147,60 @@ begin
   EnableWindow(Window,False);
 end;
 
+{ TWin32WSScrollBox }
+
+function TWin32WSScrollBox.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    //TODO: Make control respond to user scroll request
+    FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
+    pClassName := @ClsName;
+    Flags := Flags or WS_HSCROLL or WS_VSCROLL;
+    SubClassWndProc := nil;
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  Result := Params.Window;
+end;
+
+
+
 { TWin32WSCustomForm }
+
+function TWin32WSCustomForm.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    Flags := BorderStyleToWin32Flags(TCustomForm(AWinControl).BorderStyle);
+    FlagsEx := BorderStyleToWin32FlagsEx(TCustomForm(AWinControl).BorderStyle);
+    if (TCustomForm(AWinControl).FormStyle in fsAllStayOnTop)
+    and (not (csDesigning in TCustomForm(AWinControl).ComponentState)) then
+      FlagsEx := FlagsEx or WS_EX_TOPMOST;
+    pClassName := @ClsName;
+    WindowTitle := StrCaption;
+    Left := LongInt(CW_USEDEFAULT);
+    Top := LongInt(CW_USEDEFAULT);
+    Width := LongInt(CW_USEDEFAULT);
+    Height := LongInt(CW_USEDEFAULT);
+    SubClassWndProc := nil;
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  Result := Params.Window;
+end;
 
 procedure TWin32WSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);
 begin
@@ -156,6 +216,33 @@ begin
   ShowWindow(FormHandle, SW_SHOW);
 end;
 
+{ TWin32WSHintWindow }
+
+function TWin32WSHintWindow.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    pClassName := @ClsName;
+    WindowTitle := StrCaption;
+    Flags := WS_POPUP;
+    FlagsEx := FlagsEx or WS_EX_TOOLWINDOW;
+    Left := LongInt(CW_USEDEFAULT);
+    Top := LongInt(CW_USEDEFAULT);
+    Width := LongInt(CW_USEDEFAULT);
+    Height := LongInt(CW_USEDEFAULT);
+    SubClassWndProc := nil;
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  Result := Params.Window;
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -165,12 +252,12 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TScrollingWinControl, TWin32WSScrollingWinControl);
-//  RegisterWSComponent(TScrollBox, TWin32WSScrollBox);
+  RegisterWSComponent(TScrollBox, TWin32WSScrollBox);
 //  RegisterWSComponent(TCustomFrame, TWin32WSCustomFrame);
 //  RegisterWSComponent(TFrame, TWin32WSFrame);
   RegisterWSComponent(TCustomForm, TWin32WSCustomForm);
 //  RegisterWSComponent(TForm, TWin32WSForm);
-//  RegisterWSComponent(THintWindow, TWin32WSHintWindow);
+  RegisterWSComponent(THintWindow, TWin32WSHintWindow);
 //  RegisterWSComponent(TScreen, TWin32WSScreen);
 //  RegisterWSComponent(TApplicationProperties, TWin32WSApplicationProperties);
 ////////////////////////////////////////////////////

@@ -33,7 +33,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Windows, ExtCtrls, Classes,
+  Windows, ExtCtrls, Classes, Controls, LCLType,
 ////////////////////////////////////////////////////
   WSExtCtrls, WSLCLClasses, WinExt, Win32Int, InterfaceBase, Win32WSControls;
 
@@ -45,6 +45,8 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
     class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
   end;
 
@@ -54,6 +56,8 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
     class procedure AddPage(const ANotebook: TCustomNotebook; 
       const AChild: TCustomPage; const AIndex: integer); override;
     class procedure MovePage(const ANotebook: TCustomNotebook; 
@@ -200,6 +204,8 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
   end;
 
   { TWin32WSPanel }
@@ -266,12 +272,51 @@ end;
 
 { TWin32WSCustomPage }
 
+function TWin32WSCustomPage.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    pClassName := @ClsName;
+    Flags := Flags and DWORD(not WS_VISIBLE);
+    SubClassWndProc := nil;
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+
+  // TODO: created (not WS_VISIBLE), following still needed?
+  // ShowWindow(Window, SW_HIDE);
+  Result := Params.Window;
+end;
+
 procedure TWin32WSCustomPage.UpdateProperties(const ACustomPage: TCustomPage);
 begin
   // TODO: implement me!
 end;
 
 { TWin32WSCustomNotebook }
+
+function TWin32WSCustomNotebook.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    pClassName := WC_TABCONTROL;
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  Result := Params.Window;
+end;
 
 procedure TWin32WSCustomNotebook.AddPage(const ANotebook: TCustomNotebook; 
   const AChild: TCustomPage; const AIndex: integer);
@@ -367,6 +412,28 @@ begin
   end;
 end;
 
+{ TWin32WSCustomPanel }
+
+function TWin32WSCustomPanel.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    pClassName := @ClsName;
+    SubClassWndProc := nil;
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  Result := Params.Window;
+end;
+
+
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -393,7 +460,7 @@ initialization
 //  RegisterWSComponent(TBoundLabel, TWin32WSBoundLabel);
 //  RegisterWSComponent(TCustomLabeledEdit, TWin32WSCustomLabeledEdit);
 //  RegisterWSComponent(TLabeledEdit, TWin32WSLabeledEdit);
-//  RegisterWSComponent(TCustomPanel, TWin32WSCustomPanel);
+  RegisterWSComponent(TCustomPanel, TWin32WSCustomPanel);
 //  RegisterWSComponent(TPanel, TWin32WSPanel);
 ////////////////////////////////////////////////////
 end.
