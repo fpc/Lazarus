@@ -1725,10 +1725,20 @@ var
   RegionObj: PGdkRegion;
 begin
   GObject := NewGDIObject(gdiRegion);
-  R.X := gint16(X1);
-  R.Y := gint16(Y1);
-  R.Width := X2 - X1;
-  R.Height := Y2 - Y1;
+  if X1<=X2 then begin
+    R.X := gint16(X1);
+    R.Width := X2 - X1;
+  end else begin
+    R.X := gint16(X2);
+    R.Width := X1 - X2;
+  end;
+  if Y1<=Y2 then begin
+    R.Y := gint16(Y1);
+    R.Height := Y2 - Y1;
+  end else begin
+    R.Y := gint16(Y2);
+    R.Height := Y1 - Y1;
+  end;
 
   RRGN := gdk_region_new;
   RegionObj:=PGdkRegion(gdk_region_union_with_rect(RRGN,@R));
@@ -9036,6 +9046,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.308  2004/01/03 20:31:02  mattias
+  fixed CreateRectRgn for negative widths/heights
+
   Revision 1.307  2003/12/30 21:05:13  micha
   fix gtk interface due to lcl interface change (from vincent
 
