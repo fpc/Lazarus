@@ -746,6 +746,7 @@ var
 
 procedure FreeInterfaceObject;
 
+procedure Register;
 
 implementation
 
@@ -990,6 +991,11 @@ begin
   FreeAllClipBoards;
   InterfaceObject.Free;
   InterfaceObject:=nil;
+end;
+
+procedure Register;
+begin
+  RegisterComponents('Additional',[TScrollBox]);
 end;
 
 //==============================================================================

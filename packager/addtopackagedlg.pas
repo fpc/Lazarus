@@ -39,7 +39,8 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Buttons, StdCtrls, ExtCtrls,
-  Dialogs, LazarusIDEStrConsts, IDEOptionDefs, PackageDefs;
+  Dialogs, LazarusIDEStrConsts, IDEOptionDefs, InputHistory, FileCtrl, IDEProcs,
+  EnvironmentOpts, PackageDefs;
   
 type
   TAddToPackageDlg = class(TForm)
@@ -67,18 +68,22 @@ type
     CancelNewComponentButton: TButton;
     procedure AddToPackageDlgResize(Sender: TObject);
     procedure AddUnitButtonClick(Sender: TObject);
+    procedure AddUnitFileBrowseButtonClick(Sender: TObject);
     procedure AddUnitPageResize(Sender: TObject);
     procedure CancelAddUnitButtonClick(Sender: TObject);
     procedure CancelNewComponentButtonClick(Sender: TObject);
+    procedure ComponentUnitButtonClick(Sender: TObject);
     procedure NewComponentButtonClick(Sender: TObject);
     procedure NewComponentPageResize(Sender: TObject);
   private
     FLazPackage: TLazPackage;
+    fCurAncestorIndex: integer;
     procedure SetLazPackage(const AValue: TLazPackage);
     procedure SetupComponents;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure UpdateAvailableAncestorTypes;
   public
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
   end;
@@ -110,6 +115,29 @@ procedure TAddToPackageDlg.AddUnitButtonClick(Sender: TObject);
 begin
   // ToDo
   ShowMessage('Not implemented yet');
+end;
+
+procedure TAddToPackageDlg.AddUnitFileBrowseButtonClick(Sender: TObject);
+var
+  OpenDialog: TOpenDialog;
+  AFilename: string;
+begin
+  OpenDialog:=TOpenDialog.Create(Application);
+  try
+    InputHistories.ApplyFileDialogSettings(OpenDialog);
+    OpenDialog.Title:=lisOpenFile;
+    OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist,ofPathMustExist];
+    if OpenDialog.Execute then begin
+      AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
+      if FileExists(AFilename) then begin
+        LazPackage.ShortenFilename(AFilename);
+        AddUnitFilenameEdit.Text:=AFilename;
+      end;
+    end;
+    InputHistories.StoreFileDialogSettings(OpenDialog);
+  finally
+    OpenDialog.Free;
+  end;
 end;
 
 procedure TAddToPackageDlg.AddUnitPageResize(Sender: TObject);
@@ -148,6 +176,32 @@ end;
 procedure TAddToPackageDlg.CancelNewComponentButtonClick(Sender: TObject);
 begin
   ModalResult:=mrCancel;
+end;
+
+procedure TAddToPackageDlg.ComponentUnitButtonClick(Sender: TObject);
+var
+  OpenDialog: TOpenDialog;
+  AFilename: string;
+begin
+  OpenDialog:=TOpenDialog.Create(Application);
+  try
+    InputHistories.ApplyFileDialogSettings(OpenDialog);
+    OpenDialog.Title:=lisOpenFile;
+    if OpenDialog.Execute then begin
+      AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
+      if FilenameIsPascalUnit(AFilename) then begin
+        LazPackage.ShortenFilename(AFilename);
+        ComponentUnitEdit.Text:=AFilename;
+      end else begin
+        MessageDlg('Invalid file',
+         'A pascal unit must have the extension .pp or .pas',
+         mtError,[mbCancel],0);
+      end;
+    end;
+    InputHistories.StoreFileDialogSettings(OpenDialog);
+  finally
+    OpenDialog.Free;
+  end;
 end;
 
 procedure TAddToPackageDlg.NewComponentButtonClick(Sender: TObject);
@@ -216,6 +270,7 @@ procedure TAddToPackageDlg.SetLazPackage(const AValue: TLazPackage);
 begin
   if FLazPackage=AValue then exit;
   FLazPackage:=AValue;
+  UpdateAvailableAncestorTypes;
 end;
 
 procedure TAddToPackageDlg.SetupComponents;
@@ -246,7 +301,7 @@ begin
   with AddUnitFilenameEdit do begin
     Name:='AddUnitFilenameEdit';
     Parent:=AddUnitPage;
-    Text:='';
+    Text:='<choose an existing file>';
   end;
 
   AddUnitFileBrowseButton:=TButton.Create(Self);
@@ -254,6 +309,7 @@ begin
     Name:='AddUnitFileBrowseButton';
     Parent:=AddUnitPage;
     Caption:='...';
+    OnClick:=@AddUnitFileBrowseButtonClick;
   end;
 
   AddUnitButton:=TButton.Create(Self);
@@ -283,6 +339,7 @@ begin
   with AncestorComboBox do begin
     Name:='AncestorComboBox';
     Parent:=NewComponentPage;
+    Text:='';
   end;
 
   ClassNameLabel:=TLabel.Create(Self);
@@ -296,6 +353,7 @@ begin
   with ClassNameEdit do begin
     Name:='ClassNameEdit';
     Parent:=NewComponentPage;
+    Text:='';
   end;
 
   PalettePageLabel:=TLabel.Create(Self);
@@ -309,6 +367,7 @@ begin
   with PalettePageCombobox do begin
     Name:='PalettePageCombobox';
     Parent:=NewComponentPage;
+    Text:='';
   end;
 
   ComponentUnitLabel:=TLabel.Create(Self);
@@ -322,6 +381,7 @@ begin
   with ComponentUnitEdit do begin
     Name:='ComponentUnitEdit';
     Parent:=NewComponentPage;
+    Text:='';
   end;
 
   ComponentUnitButton:=TButton.Create(Self);
@@ -329,6 +389,7 @@ begin
     Name:='ComponentUnitButton';
     Parent:=NewComponentPage;
     Caption:='...';
+    OnClick:=@ComponentUnitButtonClick;
   end;
 
   NewComponentButton:=TButton.Create(Self);
@@ -361,6 +422,12 @@ end;
 destructor TAddToPackageDlg.Destroy;
 begin
   inherited Destroy;
+end;
+
+procedure TAddToPackageDlg.UpdateAvailableAncestorTypes;
+begin
+  fCurAncestorIndex:=0;
+  //LazPackage.IterateComponentClasses(@OnIterateComponentClasses);
 end;
 
 end.

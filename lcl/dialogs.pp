@@ -133,7 +133,7 @@ type
   
   TOpenOption = (
     ofReadOnly,
-    ofOverwritePrompt, // tests if secected file exists and if so shows a
+    ofOverwritePrompt, // tests if selected file exists and if so shows a
                        // message, to inform the user, that file will be
                        // overwritten
     ofHideReadOnly,
@@ -252,6 +252,7 @@ type
   Function PasswordBox(const ACaption, APrompt : String) : String;
   
 
+procedure Register;
 
 implementation
 
@@ -268,6 +269,11 @@ const
   cBitmapY  = 10;      // y-position for bitmap in messagedialog
   cLabelSpacing = 10;   // distance between icon & label
 
+procedure Register;
+begin
+  RegisterComponentsProc('Dialogs',[TOpenDialog,TSaveDialog,
+                                    TColorDialog,TFontDialog]);
+end;
 
 function ShowMessageBox(Text, Caption : PChar; Flags : Longint) : Integer;
 var
@@ -334,6 +340,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.28  2003/04/04 16:35:24  mattias
+  started package registration
+
   Revision 1.27  2003/03/15 09:42:49  mattias
   fixed transient windows
 

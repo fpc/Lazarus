@@ -319,10 +319,13 @@ procedure RegisterStandardComponents;
 begin
   //RegisterComponentsProc:=@RegisterComponents;
   
+  //============================================================================
+  // LCL components
+  
   // Standard
   RegisterComponents('Standard','Menus',[TMainMenu,TPopupMenu]);
-  RegisterComponents('Standard','StdCtrls',[TLabel,TEdit,TMemo]);
   RegisterComponents('Standard','Buttons',[TButton]);
+  RegisterComponents('Standard','StdCtrls',[TLabel,TEdit,TMemo]);
   RegisterComponents('Standard','StdCtrls',[TToggleBox, TCheckBox,
           TRadioButton, TListBox,TComboBox,TScrollBar,TGroupBox,TStaticText]);
   RegisterComponents('Standard','ExtCtrls',[TRadioGroup,TCheckGroup,TPanel]);
@@ -345,7 +348,6 @@ begin
 
   // System
   RegisterComponents('System','ExtCtrls',[TTimer,TIdleTimer]);
-  RegisterComponents('System','Process',[TProcess]);
 
   // Dialogs
   RegisterComponents('Dialogs','Dialogs',[TOpenDialog,TSaveDialog,
@@ -354,7 +356,15 @@ begin
   // Samples
   RegisterComponents('Samples','Spin',[TSpinEdit]);
 
-  // Data Access
+  // unselectable components
+  // components that are streamed but not selectable in the IDE
+  RegisterComponents('','ExtCtrls',[TPage]);
+  RegisterComponents('','ComCtrls',[TToolbutton]);
+  RegisterComponents('','Menus', [TMenuItem]);
+
+  //============================================================================
+  // FCL components
+  RegisterComponents('System','Process',[TProcess]);
   RegisterComponents('Data Access','Db',[TDatasource,TDatabase]);
 
   // Interbase Data Access
@@ -363,6 +373,7 @@ begin
           TIBQuery,TIBDatabase]);
   {$ENDIF}
 
+  //============================================================================
   // synedit
   RegisterComponents('SynEdit','SynEdit', [TSynEdit]);
   RegisterComponents('SynEdit','SynCompletion', [TSynAutoComplete]);
@@ -378,12 +389,9 @@ begin
   RegisterComponents('SynEdit','SynHighlighterLFM', [TSynLFMSyn]);
   RegisterComponents('SynEdit','SynHighlighterMulti', [TSynMultiSyn]);
 
-  // unselectable components
-  // components that are streamed but not selectable in the IDE
-  RegisterComponents('','ExtCtrls',[TPage]);
-  RegisterComponents('','ComCtrls',[TToolbutton]);
-  RegisterComponents('','Menus', [TMenuItem]);
 
+  //============================================================================
+  // custom components
   {$IFDEF CustomIDEComps}
   CustomIDEComps.RegisterCustomComponents(@RegisterComponent);
   {$ENDIF}

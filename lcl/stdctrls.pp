@@ -949,6 +949,8 @@ type
 var
   DefaultButtonControlUseOnChange: boolean;
 
+procedure Register;
+
 implementation
 
 
@@ -969,6 +971,12 @@ type
       procedure Delete(index : Integer); override;
       procedure Insert(index: Integer; const S: String); override;
    end;
+
+procedure Register;
+begin
+  RegisterComponents('Standard',[TLabel,TEdit,TMemo,TToggleBox,TCheckBox,
+       TRadioButton,TListBox,TComboBox,TScrollBar,TGroupBox,TStaticText]);
+end;
 
  { TComboBoxStrings = class(TStrings)
   private
@@ -1444,6 +1452,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.87  2003/04/04 16:35:24  mattias
+  started package registration
+
   Revision 1.86  2003/03/29 17:20:05  mattias
   added TMemoScrollBar
 

@@ -553,9 +553,6 @@ var
 
 function DebuggerNameToType(const s: string): TDebuggerType;
 function PascalExtToType(const Ext: string): TPascalExtType;
-function FilenameIsPascalUnit(const Filename: string): boolean;
-function FilenameIsPascalSource(const Filename: string): boolean;
-function FilenameIsFormText(const Filename: string): boolean;
 function AmbigiousFileActionNameToType(const Action: string): TAmbigiousFileAction;
 function GetLazarusLanguageNames(aLangId : TLazarusLanguage) : String;
 
@@ -570,31 +567,6 @@ begin
     Result:=j
   else
     Result:=i;
-end;
-
-function FilenameIsPascalSource(const Filename: string): boolean;
-var Ext: string;
-begin
-  Ext:=lowercase(ExtractFileExt(Filename));
-  Result:=((Ext='.pp') or (Ext='.pas') or (Ext='.lpr')
-          or (Ext='.dpr') or (Ext='.dpk'))
-          and (ExtractFileNameOnly(Filename)<>'');
-end;
-
-function FilenameIsPascalUnit(const Filename: string): boolean;
-var Ext: string;
-begin
-  Ext:=lowercase(ExtractFileExt(Filename));
-  Result:=((Ext='.pp') or (Ext='.pas'))
-          and (ExtractFileNameOnly(Filename)<>'');
-end;
-
-function FilenameIsFormText(const Filename: string): boolean;
-var Ext: string;
-begin
-  Ext:=lowercase(ExtractFileExt(Filename));
-  Result:=((Ext='.lfm') or (Ext='.dfm') or (Ext='.xfm'))
-          and (ExtractFileNameOnly(Filename)<>'');
 end;
 
 function DebuggerNameToType(const s: string): TDebuggerType;

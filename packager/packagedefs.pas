@@ -45,13 +45,15 @@ unit PackageDefs;
 interface
 
 uses
-  Classes, SysUtils, Laz_XMLCfg, CompilerOptions, Forms, FileCtrl, IDEProcs;
+  Classes, SysUtils, LCLProc, Laz_XMLCfg, CompilerOptions, Forms, FileCtrl,
+  IDEProcs;
 
 type
   TLazPackage = class;
   TPkgFile = class;
   TBasePackageEditor = class;
-  
+  TPkgDependency = class;
+
 
   { TPkgVersion }
 
@@ -67,6 +69,7 @@ type
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     function Compare(Version2: TPkgVersion): integer;
     procedure Assign(Source: TPkgVersion);
+    function AsString: string;
   end;
   
   
@@ -75,12 +78,19 @@ type
   TPkgComponent = class
   private
     FComponentClass: TComponentClass;
+    FDefaultCompClassName: string;
     FPkgFile: TPkgFile;
+    procedure SetDefaultCompClassName(const AValue: string);
   public
-    constructor Create(ThePkgFile: TPkgFile; TheComponentClass: TComponentClass);
+    constructor Create(ThePkgFile: TPkgFile; TheComponentClass: TComponentClass;
+      const TheDefCompClassName: string);
     destructor Destroy; override;
+    function GetComponentClassName: string;
+    procedure ConsistencyCheck;
   public
     property ComponentClass: TComponentClass read FComponentClass;
+    property DefaultCompClassName: string read FDefaultCompClassName
+                                          write SetDefaultCompClassName;
     property PkgFile: TPkgFile read FPkgFile;
   end;
   
@@ -105,11 +115,13 @@ type
     FFileType: TPkgFileType;
     FFlags: TPkgFileFlags;
     FPackage: TLazPackage;
+    FUnitName: string;
     function GetHasRegisteredProc: boolean;
     procedure SetFilename(const AValue: string);
     procedure SetFileType(const AValue: TPkgFileType);
     procedure SetFlags(const AValue: TPkgFileFlags);
     procedure SetHasRegisteredProc(const AValue: boolean);
+    procedure UpdateUnitName;
   public
     constructor Create(ThePackage: TLazPackage);
     destructor Destroy; override;
@@ -117,13 +129,16 @@ type
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
       FileVersion: integer);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure ConsistencyCheck;
+    function IsVirtual: boolean;
+    function UnitName: string;
   public
     property Filename: string read FFilename write SetFilename;
     property FileType: TPkgFileType read FFileType write SetFileType;
     property Flags: TPkgFileFlags read FFlags write SetFlags;
     property HasRegisteredProc: boolean
       read GetHasRegisteredProc write SetHasRegisteredProc;
-    property Package: TLazPackage read FPackage;
+    property LazPackage: TLazPackage read FPackage;
   end;
   
   
@@ -158,6 +173,8 @@ type
     function IsCompatible(const PkgName: string;
       const Version: TPkgVersion): boolean;
     function Compare(Dependency2: TPkgDependency): integer;
+    procedure ConsistencyCheck;
+    function IsCompatible(Pkg: TLazPackage): boolean;
   public
     property PackageName: string read FPackageName write SetPackageName;
     property Flags: TPkgDependencyFlags read FFlags write SetFlags;
@@ -190,6 +207,9 @@ type
     lpfOpenInIDE           // open packageeditor in IDE
     );
   TLazPackageFlags = set of TLazPackageFlag;
+  
+  TIterateComponentClassesEvent =
+    procedure(PkgComponent: TPkgComponent) of object;
 
   TLazPackage = class
   private
@@ -199,6 +219,7 @@ type
     FConflictPkgs: TList; // TList of TPkgDependency
     FCompilerOptions: TPkgCompilerOptions;
     FComponents: TList; // TList of TPkgComponent
+    FDependingPkgs: TList; // TList of TLazPackage
     FDescription: string;
     FDirectory: string;
     FEditorRect: TRect;
@@ -216,11 +237,14 @@ type
     FRequiredPkgs: TList; // TList of TPkgDependency
     FTitle: string;
     FUsageOptions: TAdditionalCompilerOptions;
+    FUsedPkgs: TList; // list of TLazPackage
     function GetAutoIncrementVersionOnBuild: boolean;
     function GetAutoUpdate: boolean;
     function GetComponents(Index: integer): TPkgComponent;
     function GetConflictPkgCount: integer;
     function GetConflictPkgs(Index: integer): TPkgDependency;
+    function GetDependingPkgCount: integer;
+    function GetDependingPkgs(Index: integer): TLazPackage;
     function GetDirectory: string;
     function GetFileCount: integer;
     function GetFiles(Index: integer): TPkgFile;
@@ -228,6 +252,8 @@ type
     function GetOpen: boolean;
     function GetRequiredPkgCount: integer;
     function GetRequiredPkgs(Index: integer): TPkgDependency;
+    function GetUsedPkgCount: integer;
+    function GetUsedPkgs(Index: integer): TLazPackage;
     procedure SetAuthor(const AValue: string);
     procedure SetAutoIncrementVersionOnBuild(const AValue: boolean);
     procedure SetAutoLoad(const AValue: boolean);
@@ -256,6 +282,14 @@ type
     function IsVirtual: boolean;
     procedure CheckInnerDependencies;
     function Compare(Package2: TLazPackage): integer;
+    procedure ShortenFilename(var ExpandedFilename: string);
+    procedure LongenFilename(var ExpandedFilename: string);
+    procedure IterateComponentClasses(Event: TIterateComponentClassesEvent;
+                                      WithRequiredPackages: boolean);
+    procedure ConsistencyCheck;
+    function IndexOfPkgComponent(PkgComponent: TPkgComponent): integer;
+    function FindUnit(const TheUnitName: string): TPkgFile;
+    function NameAndVersion: string;
   public
     property Author: string read FAuthor write SetAuthor;
     property AutoIncrementVersionOnBuild: boolean
@@ -269,6 +303,8 @@ type
     property Components[Index: integer]: TPkgComponent read GetComponents;
     property ConflictPkgCount: integer read GetConflictPkgCount;
     property ConflictPkgs[Index: integer]: TPkgDependency read GetConflictPkgs;
+    property DependingPkgCount: integer read GetDependingPkgCount;
+    property DependingPkgs[Index: integer]: TLazPackage read GetDependingPkgs;
     property Description: string read FDescription write SetDescription;
     property Directory: string read GetDirectory; // the path of the .lpk file
     property FileCount: integer read GetFileCount;
@@ -284,6 +320,8 @@ type
       read FPackageType write SetPackageType;
     property RequiredPkgCount: integer read GetRequiredPkgCount;
     property RequiredPkgs[Index: integer]: TPkgDependency read GetRequiredPkgs;
+    property UsedPkgCount: integer read GetUsedPkgCount;
+    property UsedPkgs[Index: integer]: TLazPackage read GetUsedPkgs;
     property Title: string read FTitle write SetTitle;
     property UsageOptions: TAdditionalCompilerOptions
       read FUsageOptions;
@@ -407,6 +445,7 @@ procedure TPkgFile.SetFilename(const AValue: string);
 begin
   if FFilename=AValue then exit;
   FFilename:=AValue;
+  UpdateUnitName;
 end;
 
 function TPkgFile.GetHasRegisteredProc: boolean;
@@ -435,6 +474,14 @@ begin
     Exclude(FFlags,pffHasRegisterProc);
 end;
 
+procedure TPkgFile.UpdateUnitName;
+begin
+  if FilenameIsPascalUnit(FFilename) then
+    FUnitName:=ExtractFileNameOnly(FFilename)
+  else
+    FUnitName:='';
+end;
+
 constructor TPkgFile.Create(ThePackage: TLazPackage);
 begin
   Clear;
@@ -459,17 +506,41 @@ begin
   if FileVersion=1 then ;
   Clear;
   FFilename:=XMLConfig.GetValue(Path+'Filename/Value','');
+  FPackage.LongenFilename(FFilename);
+  UpdateUnitName;
   HasRegisteredProc:=XMLConfig.GetValue(Path+'HasRegisteredProc/Value',false);
   FileType:=PkgFileTypeIdentToType(XMLConfig.GetValue(Path+'Type/Value',''));
 end;
 
 procedure TPkgFile.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+var
+  TmpFilename: String;
 begin
-  XMLConfig.SetDeleteValue(Path+'Filename/Value',Filename,'');
+  TmpFilename:=Filename;
+  FPackage.ShortenFilename(TmpFilename);
+  XMLConfig.SetDeleteValue(Path+'Filename/Value',TmpFilename,'');
   XMLConfig.SetDeleteValue(Path+'HasRegisteredProc/Value',HasRegisteredProc,
                            false);
   XMLConfig.SetDeleteValue(Path+'Type/Value',PkgFileTypeIdents[FileType],
                            PkgFileTypeIdents[pftUnit]);
+end;
+
+procedure TPkgFile.ConsistencyCheck;
+begin
+  if FPackage=nil then
+    RaiseGDBException('TPkgFile.ConsistencyCheck FPackage=nil');
+  if FFilename='' then
+    RaiseGDBException('TPkgFile.ConsistencyCheck FFilename=""');
+end;
+
+function TPkgFile.IsVirtual: boolean;
+begin
+  Result:=FilenameIsAbsolute(FFilename);
+end;
+
+function TPkgFile.UnitName: string;
+begin
+  Result:=FUnitName;
 end;
 
 { TPkgDependency }
@@ -577,6 +648,16 @@ begin
   Result:=MaxVersion.Compare(Dependency2.MaxVersion);
 end;
 
+procedure TPkgDependency.ConsistencyCheck;
+begin
+
+end;
+
+function TPkgDependency.IsCompatible(Pkg: TLazPackage): boolean;
+begin
+  Result:=IsCompatible(Pkg.Name,Pkg.Version);
+end;
+
 { TPkgVersion }
 
 procedure TPkgVersion.Clear;
@@ -623,6 +704,12 @@ begin
   Release:=Source.Release;
 end;
 
+function TPkgVersion.AsString: string;
+begin
+  Result:=IntToStr(Major)+'.'+IntToStr(Minor)+'.'+IntToStr(Build)+'.'
+          +IntToStr(Release)+'.';
+end;
+
 { TLazPackage }
 
 function TLazPackage.GetAutoIncrementVersionOnBuild: boolean;
@@ -648,6 +735,16 @@ end;
 function TLazPackage.GetConflictPkgs(Index: integer): TPkgDependency;
 begin
   Result:=TPkgDependency(FConflictPkgs[Index]);
+end;
+
+function TLazPackage.GetDependingPkgCount: integer;
+begin
+  Result:=FDependingPkgs.Count;
+end;
+
+function TLazPackage.GetDependingPkgs(Index: integer): TLazPackage;
+begin
+  Result:=TLazPackage(FDependingPkgs[Index]);
 end;
 
 function TLazPackage.GetDirectory: string;
@@ -683,6 +780,16 @@ end;
 function TLazPackage.GetRequiredPkgs(Index: integer): TPkgDependency;
 begin
   Result:=TPkgDependency(FRequiredPkgs[Index]);
+end;
+
+function TLazPackage.GetUsedPkgCount: integer;
+begin
+  Result:=FUsedPkgs.Count;
+end;
+
+function TLazPackage.GetUsedPkgs(Index: integer): TLazPackage;
+begin
+  Result:=TLazPackage(FUsedPkgs[Index]);
 end;
 
 procedure TLazPackage.SetAuthor(const AValue: string);
@@ -814,10 +921,12 @@ begin
   FVersion:=TPkgVersion.Create;
   FConflictPkgs:=TList.Create;
   FComponents:=TList.Create;
+  FDependingPkgs:=Tlist.Create;
   FRequiredPkgs:=TList.Create;
   FFiles:=TList.Create;
   FCompilerOptions:=TPkgCompilerOptions.Create;
   FUsageOptions:=TAdditionalCompilerOptions.Create;
+  FUsedPkgs:=TList.Create;
 end;
 
 destructor TLazPackage.Destroy;
@@ -827,6 +936,8 @@ begin
   FreeAndNil(FComponents);
   FreeAndNil(FCompilerOptions);
   FreeAndNil(FConflictPkgs);
+  FreeAndNil(FDependingPkgs);
+  FreeAndNil(FUsedPkgs);
   FreeAndNil(FRequiredPkgs);
   FreeAndNil(FVersion);
   FreeAndNil(FUsageOptions);
@@ -857,6 +968,7 @@ begin
   FRequiredPkgs.Clear;
   FTitle:='';
   FUsageOptions.Clear;
+  FUsedPkgs.Clear;
 end;
 
 procedure TLazPackage.LockModified;
@@ -1013,18 +1125,124 @@ begin
   Result:=Version.Compare(Package2.Version);
 end;
 
+procedure TLazPackage.ShortenFilename(var ExpandedFilename: string);
+var
+  PkgDir: String;
+  CurPath: String;
+begin
+  if IsVirtual then exit;
+  PkgDir:=Directory;
+  CurPath:=ExtractFilePath(ExpandedFilename);
+  if CompareFilenames(PkgDir,CurPath)=0 then begin
+    ExpandedFilename:=copy(ExpandedFilename,length(CurPath)+1,
+                           length(ExpandedFilename)-length(CurPath));
+  end;
+end;
+
+procedure TLazPackage.LongenFilename(var ExpandedFilename: string);
+begin
+  if IsVirtual then exit;
+  if not FilenameIsAbsolute(ExpandedFilename) then
+    ExpandedFilename:=TrimFilename(Directory+ExpandedFilename);
+end;
+
+procedure TLazPackage.IterateComponentClasses(
+  Event: TIterateComponentClassesEvent; WithRequiredPackages: boolean);
+var
+  Cnt: Integer;
+  i: Integer;
+begin
+  // iterate through components in this package
+  Cnt:=ComponentCount;
+  for i:=0 to Cnt-1 do Event(Components[i]);
+  // iterate through all used packages
+  if WithRequiredPackages then begin
+    // ToDo
+  end;
+end;
+
+procedure TLazPackage.ConsistencyCheck;
+begin
+  CheckList(FUsedPkgs,true,true,true);
+  CheckList(FDependingPkgs,true,true,true);
+  CheckList(FRequiredPkgs,true,true,true);
+  CheckList(FConflictPkgs,true,true,true);
+  CheckList(FFiles,true,true,true);
+  CheckList(FComponents,true,true,true);
+  CheckEmptyListCut(FDependingPkgs,FUsedPkgs);
+  
+end;
+
+function TLazPackage.IndexOfPkgComponent(PkgComponent: TPkgComponent): integer;
+begin
+  Result:=FComponents.IndexOf(PkgComponent);
+end;
+
+function TLazPackage.FindUnit(const TheUnitName: string): TPkgFile;
+var
+  Cnt: Integer;
+  i: Integer;
+begin
+  if TheUnitName<>'' then begin
+    Cnt:=FileCount;
+    for i:=0 to Cnt-1 do begin
+      Result:=Files[i];
+      if AnsiCompareText(Result.UnitName,TheUnitName)=0 then exit;
+    end;
+  end;
+  Result:=nil;
+end;
+
+function TLazPackage.NameAndVersion: string;
+begin
+  Result:=Name+' '+Version.AsString;
+end;
+
 { TPkgComponent }
 
+procedure TPkgComponent.SetDefaultCompClassName(const AValue: string);
+begin
+  if FDefaultCompClassName=AValue then exit;
+  FDefaultCompClassName:=AValue;
+end;
+
 constructor TPkgComponent.Create(ThePkgFile: TPkgFile;
-  TheComponentClass: TComponentClass);
+  TheComponentClass: TComponentClass; const TheDefCompClassName: string);
 begin
   FPkgFile:=ThePkgFile;
   FComponentClass:=TheComponentClass;
+  if FComponentClass<>nil then
+    FDefaultCompClassName:=FComponentClass.ClassName
+  else
+    FDefaultCompClassName:=TheDefCompClassName;
 end;
 
 destructor TPkgComponent.Destroy;
 begin
   inherited Destroy;
+end;
+
+function TPkgComponent.GetComponentClassName: string;
+begin
+  if ComponentClass<>nil then
+    Result:=ComponentClass.ClassName
+  else
+    Result:=DefaultCompClassName;
+end;
+
+procedure TPkgComponent.ConsistencyCheck;
+begin
+  if (FComponentClass<>nil)
+  and (AnsiCompareText(FComponentClass.ClassName,FDefaultCompClassName)<>0) then
+    RaiseGDBException('TPkgComponent.ConsistencyCheck FComponentClass.ClassName<>FDefaultCompClassName');
+  if FPkgFile=nil then
+    RaiseGDBException('TPkgComponent.ConsistencyCheck FPkgFile=nil');
+  if FPkgFile.LazPackage=nil then
+    RaiseGDBException('TPkgComponent.ConsistencyCheck FPkgFile.LazPackage=nil');
+  if FPkgFile.LazPackage.IndexOfPkgComponent(Self)<0 then
+    RaiseGDBException('TPkgComponent.ConsistencyCheck FPkgFile.LazPackage.IndexOfPkgComponent(Self)<0');
+  if not IsValidIdent(FDefaultCompClassName) then
+    RaiseGDBException('TPkgComponent.ConsistencyCheck not IsValidIdent(FDefaultCompClassName)');
 end;
 
 end.

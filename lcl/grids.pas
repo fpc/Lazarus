@@ -666,6 +666,7 @@ Type
   Procedure DebugRect(S:String; R:TRect);
   Procedure DebugPoint(S:String; P:TPoint);
       
+procedure Register;
 
 implementation
 
@@ -1622,6 +1623,11 @@ Procedure DebugPoint(S:String; P:TPoint);
 begin
   WriteLn(S, 'X=',P.X,' Y=',P.Y);
 End;
+
+procedure Register;
+begin
+  RegisterComponents('Additional',[TStringGrid,TDrawGrid]);
+end;
 
 procedure TCustomGrid.DrawCellGrid(Rect: TRect; aCol,aRow: Integer; aState: TGridDrawState);
 Var

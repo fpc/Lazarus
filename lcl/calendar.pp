@@ -88,7 +88,14 @@ Type
     property OnYearChanged : TNotifyEvent read FYearChanged write FYearChanged;
   end;
   
+procedure Register;
+  
 implementation
+
+procedure Register;
+begin
+  RegisterComponents('Misc',[TCalendar]);
+end;
 
 { TCalendar }
 

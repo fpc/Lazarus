@@ -178,7 +178,9 @@ type
     Property Width;
   end;
 }
+
 implementation
+
 uses dialogs;
 
 {$I imglist.inc}
@@ -187,6 +189,9 @@ end.
 
 {
   $Log$
+  Revision 1.12  2003/04/04 16:35:24  mattias
+  started package registration
+
   Revision 1.11  2003/03/11 07:46:43  mattias
   more localization for gtk- and win32-interface and lcl
 

@@ -113,7 +113,7 @@ function FindRegsiteredComponentClass(
   const AClassName: string): TRegisteredComponent;
 
 var
-  RegCompList:TRegisteredComponentList;
+  RegCompList: TRegisteredComponentList;
   
 
 implementation

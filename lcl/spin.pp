@@ -69,7 +69,14 @@ type
     property Visible;
   end;
 
+procedure Register;
+
 Implementation
+
+procedure Register;
+begin
+  RegisterComponents('Misc',[TSpinEdit]);
+end;
 
 {$I spinedit.inc}
 

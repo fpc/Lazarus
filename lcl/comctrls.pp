@@ -1669,6 +1669,7 @@ type
 function InitCommonControl(CC: Integer): Boolean;
 procedure CheckCommonControl(CC: Integer);
 
+procedure Register;
 
 Implementation
 
@@ -1706,6 +1707,13 @@ begin
 
 end;
 
+procedure Register;
+begin
+  RegisterComponents('Common Controls',[TTrackbar,TProgressBar,TTreeView,
+    TListView,TStatusBar,TToolBar,TUpDown]);
+  RegisterNoIcon([TToolButton]);
+end;
+
 {$I statusbar.inc}
 {$I statuspanel.inc}
 {$I statuspanels.inc}
@@ -1727,6 +1735,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.69  2003/04/04 16:35:24  mattias
+  started package registration
+
   Revision 1.68  2003/04/02 13:23:23  mattias
   fixed default font
 

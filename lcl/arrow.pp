@@ -70,7 +70,14 @@ Type
     property OnMouseDown;
   end;
   
+procedure Register;
+  
 implementation
+
+procedure Register;
+begin
+  RegisterComponents('Misc',[TArrow]);
+end;
 
 
 { TArrow }

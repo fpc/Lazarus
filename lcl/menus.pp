@@ -305,6 +305,8 @@ function TextToShortCut(const ShortCutText: string): TShortCut;
 function ShortCutToText(ShortCut: TShortCut): string;
 
 
+procedure Register;
+
 implementation
 
 
@@ -322,6 +324,12 @@ end;
 function ShortCutToText(ShortCut: TShortCut): string;
 begin
   Result:=ShortCutToShortCutText(ShortCut);
+end;
+
+procedure Register;
+begin
+  RegisterComponents('Standard',[TMainMenu,TPopupMenu]);
+  RegisterNoIcon([TMenuItem]);
 end;
 
 function TextToShortCut(const ShortCutText: string): TShortCut;
@@ -364,6 +372,9 @@ end.
 
 {
   $Log$
+  Revision 1.40  2003/04/04 16:35:24  mattias
+  started package registration
+
   Revision 1.39  2003/03/16 09:41:05  mattias
   fixed checking menuitems
 
