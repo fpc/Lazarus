@@ -324,6 +324,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.23  2001/11/13 18:50:10  lazarus
+  Changes to facilitate the toggle between form and unit
+  Shane
+
   Revision 1.22  2001/11/12 16:56:08  lazarus
   MG: CLIPBOARD
 

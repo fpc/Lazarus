@@ -226,6 +226,7 @@ type
     FOnProcessUserCommand: TOnProcessUserCommand;
     FOnUserCommandProcessed: TOnProcessUserCommand;
     FOnShowUnitInfo: TNotifyEvent;
+    FOnEditorVisibleChanged: TNotifyEvent;
 
     // PopupMenu
     Procedure BuildPopupMenu;
@@ -346,7 +347,9 @@ type
        read FOnUserCommandProcessed write FOnUserCommandProcessed;
     property OnShowUnitInfo: TNotifyEvent 
        read FOnShowUnitInfo write FOnShowUnitInfo;
-  end;
+    property OnEditorVisibleChanged: TNotifyEvent
+       read FOnEditorVisibleChanged write FOnEditorVisibleChanged;
+      end;
 
 {Goto dialog}
 
@@ -2746,6 +2749,8 @@ Begin
   begin
     TempEditor.FocusEditor;
     UpdateStatusBar;
+    if Assigned(FOnEditorVisibleChanged) then
+       FOnEditorVisibleChanged(sender);
   end;
 end;
 

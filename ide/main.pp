@@ -206,6 +206,7 @@ type
     Procedure OnSrcNotebookFileClose(Sender : TObject);
     Procedure OnSrcNotebookSaveAll(Sender : TObject);
     Procedure OnSrcNotebookToggleFormUnit(Sender : TObject);
+    Procedure OnSrcNotebookEditorVisibleChanged(Sender : TObject);
     Procedure OnSrcNotebookProcessCommand(Sender: TObject; Command: integer;
         var Handled: boolean);
     procedure OnSrcNoteBookShowUnitInfo(Sender: TObject);
@@ -570,6 +571,8 @@ begin
   SourceNotebook.OnToggleFormUnitClicked := @OnSrcNotebookToggleFormUnit;
   SourceNotebook.OnProcessUserCommand := @OnSrcNotebookProcessCommand;
   SourceNotebook.OnShowUnitInfo := @OnSrcNoteBookShowUnitInfo;
+  SourceNotebook.OnEditorVisibleChanged := @OnSrcNotebookEditorVisibleChanged;
+
 
   // find / replace dialog
   itmSearchFind.OnClick := @SourceNotebook.FindClicked;
@@ -1246,7 +1249,6 @@ end;
 
 Procedure TMainIDE.mnuToggleFormUnitClicked(Sender : TObject);
 Begin
-  writeln('Toggle form clicked');
   FCodeLastActivated:=not FCodeLastActivated;
   DoBringToFrontFormOrUnit;
 end;
@@ -2068,6 +2070,7 @@ CheckHeap('TMainIDE.DoNewEditorUnit L '+IntToStr(GetMem_Cnt));
 {$ENDIF}
   NewSrcEdit:=SourceNotebook.GetActiveSE;
   NewSrcEdit.SyntaxHighlighterType:=NewUnitInfo.SyntaxHighlighter;
+  NewUnitInfo.Form := CInterface.Control;  //added sxm 2001-11-12
   Project.InsertEditorIndex(SourceNotebook.NoteBook.PageIndex);
   NewUnitInfo.EditorIndex:=SourceNotebook.NoteBook.PageIndex;
 
@@ -3927,11 +3930,14 @@ begin
         SourceNoteBook.NoteBook.PageIndex);
       if (ActiveUnitInfo<>nil) then
         AForm:=TCustomForm(ActiveUnitInfo.Form);
+        
+        
      end;
   end;
 
   if AForm<>nil then
    begin
+//    AForm.BringToFront;
     AForm.Hide;
     AForm.Show;
    end;
@@ -4541,6 +4547,16 @@ begin
   DoJumpToCompilerMessage(TMessagesView(sender).SelectedMessageIndex,True);
 end;
 
+Procedure TMainIDE.OnSrcNotebookEditorVisibleChanged(Sender : TObject);
+var
+  NewSrcEdit : TSourceEditor;
+begin
+  if SourceNotebook.Notebook = nil then Exit;
+  
+  NewSrcEdit:=SourceNotebook.GetActiveSE;
+  ToggleFormSpeedBtn.Enabled := Assigned(NewSrcEdit.Control);
+end;
+
 initialization
   { $I mainide.lrs}
   {$I images/laz_images.lrs}
@@ -4553,6 +4569,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.142  2001/11/13 18:50:08  lazarus
+  Changes to facilitate the toggle between form and unit
+  Shane
+
   Revision 1.141  2001/11/12 16:56:04  lazarus
   MG: CLIPBOARD
 

@@ -99,7 +99,8 @@ procedure GTKAPIWidgetClient_DrawCaret(Client: PGTKAPIWidgetClient); forward;
 function GTKAPIWidgetClient_Timer(Client: Pointer): gint; cdecl;
 // returning 0 would stop the timer, 1 will restart it
 begin
-  if PGTKAPIWidgetClient(Client)^.Caret.Timer=0 then begin
+try
+  if PGTKAPIWidgetClient(Client)^.Caret.Timer<=0 then begin
     Result := 0;
     exit;
   end;
@@ -108,6 +109,14 @@ begin
     Result := 1
   else
     Result := 0;
+except
+  Writeln('------Exception in GTKAPIWidgetClient_Timer------');
+  writeln('Client = ',longint(Client));
+  if Assigned(Client) then
+     begin
+        writeln('Timer is ',Longint(PGTKAPIWidgetClient(Client)^.Caret.Timer));
+     end;
+end;
 end;
 
 procedure GTKAPIWidgetClient_Realize(Widget: PGTKWidget); cdecl;
@@ -635,6 +644,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.16  2001/11/13 18:50:10  lazarus
+  Changes to facilitate the toggle between form and unit
+  Shane
+
   Revision 1.15  2001/10/25 13:21:06  lazarus
   Added an IFDEF for VER1_1
   Shane
