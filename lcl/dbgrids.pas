@@ -312,6 +312,7 @@ type
     FOldPosition: Integer;
     function GetCurrentField: TField;
     function GetDataSource: TDataSource;
+    function GetRecordCount: Integer;
     procedure OnRecordChanged(Field:TField);
     procedure OnDataSetChanged(aDataSet: TDataSet);
     procedure OnDataSetOpen(aDataSet: TDataSet);
@@ -446,7 +447,7 @@ type
     property Constraints;
     property DataSource;
     property DefaultDrawing;
-    property DefaultRowHeight;
+    property DefaultRowHeight default 20;
     //property DragCursor;
     //property DragKind;
     //property DragMode;
@@ -568,6 +569,11 @@ end;
 function TCustomDbGrid.GetDataSource: TDataSource;
 begin
   Result:= FDataLink.DataSource;
+end;
+
+function TCustomDbGrid.GetRecordCount: Integer;
+begin
+  result := FDataLink.DataSet.RecordCount;
 end;
 
 function TCustomDbGrid.GetCurrentField: TField;
@@ -809,9 +815,43 @@ end;
 
 procedure TCustomDbGrid.WMVScroll(var Message: TLMVScroll);
 var
-  IsSeq, IsFirst, IsLast: boolean;
+  IsSeq: boolean;
   aPos: Integer;
   DeltaRec: integer;
+  
+  function MaxPos: Integer;
+  begin
+    if IsSeq then
+      result := GetRecordCount
+    else
+      result := 4;
+  end;
+
+  procedure CalcPos(Delta: Integer);
+  begin
+    if FDataLink.Dataset.BOF then
+      aPos := 0
+    else if FDatalink.DataSet.EOF then
+      aPos := MaxPos
+    else if IsSeq then
+      aPos := FOldPosition + Delta
+    else
+      aPos := 2;
+  end;
+  
+  procedure DsMoveBy(Delta: Integer);
+  begin
+    FDataLink.MoveBy(Delta);
+    CalcPos(Delta);
+  end;
+  
+  procedure DsGoto(BOF: boolean);
+  begin
+    if BOF then FDatalink.DataSet.First
+    else        FDataLink.DataSet.Last;
+    CalcPos(0);
+  end;
+
 begin
   if not FDatalink.Active then exit;
   
@@ -821,44 +861,46 @@ begin
   {$endif}
 
   IsSeq := FDatalink.DataSet.IsSequenced {$ifndef EnableIsSeq} and false {$endif};
-  if IsSeq then begin
-    aPos := Message.Pos;
-    FDatalink.DataSet.RecNo := aPos;
-  end else begin
-    IsFirst := false;
-    IsLast := false;
-    case Message.ScrollCode of
-      SB_PAGEUP: DeltaRec := -VisibleRowCount;
-      SB_LINEUP: DeltaRec := -1;
-      SB_LINEDOWN: DeltaRec := 1;
-      SB_PAGEDOWN: DeltaRec := VisibleRowCount;
-      SB_THUMBPOSITION:
-        begin
-          if Message.Pos=4 then IsLast := True
-          else if Message.Pos=0 then IsFirst := True
-          else begin
-            DeltaRec := Message.Pos - FOldPosition;
-            if DeltaRec=0 then exit; // no movement at all
-            if DeltaRec<-1 then DeltaRec := -VisibleRowCount
-            else if DeltaRec>1 then DeltaRec := VisibleRowCount;
-          end;
+  case Message.ScrollCode of
+    SB_TOP:
+      DsGoto(True);
+    SB_BOTTOM:
+      DsGoto(False);
+    SB_PAGEUP:
+      DsMoveBy(-VisibleRowCount);
+    SB_LINEUP:
+      DsMoveBy(-1);
+    SB_LINEDOWN:
+      DsMoveBy(1);
+    SB_PAGEDOWN:
+      DsMoveBy(VisibleRowCount);
+    SB_THUMBPOSITION:
+      begin
+        aPos := Message.Pos;
+        if aPos>=MaxPos then
+          dsGoto(False)
+        else if aPos=0 then
+          dsGoto(True)
+        else if IsSeq then
+          FDatalink.DataSet.RecNo := aPos
+        else begin
+          DeltaRec := Message.Pos - FOldPosition;
+          if DeltaRec=0 then
+            exit
+          else if DeltaRec<-1 then
+            DsMoveBy(-VisibleRowCount)
+          else if DeltaRec>1 then
+            DsMoveBy(VisibleRowCount)
+          else
+            DsMoveBy(DeltaRec);
         end;
-      else
-        exit; // SB_THUMPOSITION, SB_ENDSCROLL
-    end;
-    if IsFirst then FDataLink.DataSet.First
-    else if IsLast then FDatalink.DataSet.Last
-    else if (DeltaRec<>0) then FDatalink.Moveby(DeltaRec);
-
-    if FDatalink.Dataset.BOF then aPos := 0
-    else if FDataLink.DataSet.EOF then aPos := 4
-    else aPos := 2;
+      end;
+    else
+      Exit;
   end;
-  
+
   ScrollBarPosition(SB_VERT, aPos);
   FOldPosition:=aPos;
-  
-  
   {$ifdef dbgdbgrid}
   DebugLn('---- Diff=',dbgs(DeltaRec), ' FinalPos=',dbgs(aPos));
   {$endif}
@@ -1036,17 +1078,18 @@ var
   isSeq: boolean;
   ScrollInfo: TScrollInfo;
 begin
+  if not HandleAllocated then exit;
   if FDatalink.Active then begin
     IsSeq := FDatalink.dataset.IsSequenced{$ifndef EnableIsSeq}and false{$endif};
     if IsSeq then begin
-      aRange := FDatalink.DataSet.RecordCount + 2;
+      aRange := GetRecordCount + VisibleRowCount - 1;
       aPage := VisibleRowCount;
       if aPage<1 then aPage := 1;
       aPos := FDataLink.DataSet.RecNo;
     end else begin
       aRange := 6;
       aPage := 2;
-      if FDatalink.EOF then aPos := 5 else
+      if FDatalink.EOF then aPos := 4 else
       if FDatalink.BOF then aPos := 0
       else aPos := 2;
     end;
@@ -1055,11 +1098,16 @@ begin
     aPage := 0;
     aPos := 0;
   end;
-
+  FillChar(ScrollInfo, SizeOf(ScrollInfo), 0);
   ScrollInfo.cbSize := SizeOf(ScrollInfo);
+  {$ifdef WIN32}
+  ScrollInfo.fMask := SIF_ALL;
+  ScrollInfo.ntrackPos := 0;
+  {$else}
   ScrollInfo.fMask := SIF_ALL or SIF_UPDATEPOLICY;
   //ScrollInfo.ntrackPos := SB_POLICY_CONTINUOUS;
   ScrollInfo.ntrackPos := SB_POLICY_DISCONTINUOUS;
+  {$endif}
   ScrollInfo.nMin := 0;
   ScrollInfo.nMax := aRange;
   ScrollInfo.nPos := aPos;
@@ -1067,8 +1115,9 @@ begin
   SetScrollInfo(Handle, SB_VERT, ScrollInfo, true);
   FOldPosition := aPos;
   {$ifdef dbgdbgrid}
-  DebugLn('UpdateScrollBarRange: aRange=' + IntToStr(aRange)+
-    ' aPage=' + IntToStr(aPage) + ' aPos='+IntToStr(aPos));
+  DebugLn('UpdateScrollBarRange: Handle=',IntToStr(Handle),
+   ' aRange=', IntToStr(aRange),
+   ' aPage=', IntToStr(aPage), ' aPos=', IntToStr(aPos));
   {$endif}
 end;
 procedure TCustomDbGrid.BeginVisualChange;
@@ -1307,6 +1356,7 @@ procedure TCustomDbGrid.CreateWnd;
 begin
   inherited CreateWnd;
   LayoutChanged;
+  ScrollBarShow(SB_VERT, True);
 end;
 
 procedure TCustomDbGrid.DefineProperties(Filer: TFiler);
@@ -1372,11 +1422,19 @@ end;
 
 procedure TCustomDbGrid.DoOnChangeBounds;
 begin
+  BeginUpdate;
+  inherited DoOnChangeBounds;
+  if HandleAllocated then
+    LayoutChanged;
+  EndUpdate(False);
+  {
   BeginVisualChange;
   inherited DoOnChangeBounds;
   if HandleAllocated then
     LayoutChanged;
   EndVisualChange;
+  UpdateScrollBarRange;
+  }
 end;
 
 procedure TCustomDbGrid.BeforeMoveSelection(const DCol,DRow: Integer);
@@ -1831,6 +1889,8 @@ begin
     DebugLn(Name,'.UpdateActive: ActiveRecord=', dbgs(ActiveRecord),
             ' FixedRows=',dbgs(FixedRows), ' Row=', dbgs(Row));
     {$endif}
+    if FixedRows + ActiveRecord <> Row then
+      InvalidateRow(Row);
     Row:= FixedRows + ActiveRecord;
   end;
   //Invalidate;
@@ -1926,7 +1986,7 @@ begin
   FStringEditor.Text:='';
   FStringEditor.Align:=alNone;
 
-
+  DefaultRowHeight := 20;
   //ClearGrid;
 end;
 
@@ -2794,6 +2854,9 @@ end.
 
 {
   $Log$
+  Revision 1.23  2004/12/22 20:02:25  mattias
+  defaultrowheight property is set to 20 pixels and fixes  from Jesus
+
   Revision 1.22  2004/12/21 22:49:29  mattias
   implemented scrollbar codes for gtk intf  from Jesus
 

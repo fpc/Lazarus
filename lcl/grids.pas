@@ -1431,6 +1431,7 @@ begin
     {$Ifdef DbgScroll}
     DebugLn('ScrollbarRange: Which=',IntToStr(Which),' Range=',IntToStr(aRange));
     {$endif}
+    FillChar(ScrollInfo, SizeOf(ScrollInfo), 0);
     ScrollInfo.cbSize := SizeOf(ScrollInfo);
     ScrollInfo.fMask := SIF_RANGE or SIF_PAGE or SIF_DISABLENOSCROLL;
     ScrollInfo.nMin := 0;
@@ -1452,6 +1453,7 @@ begin
     if Which = SB_VERT then Vis := FVSbVisible else
     if Which = SB_HORZ then Vis := FHSbVisible
     else vis := false;
+    FillChar(ScrollInfo, SizeOf(ScrollInfo), 0);
     ScrollInfo.cbSize := SizeOf(ScrollInfo);
     ScrollInfo.fMask := SIF_POS;
     ScrollInfo.nPos:= Value;
