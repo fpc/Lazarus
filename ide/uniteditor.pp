@@ -229,6 +229,7 @@ type
     
     // selections
     Procedure SelectText(LineNum,CharStart,LineNum2,CharEnd : Integer);
+    procedure ReplaceLines(StartLine, EndLine: integer; const NewText: string);
     procedure UpperCaseSelection;
     procedure LowerCaseSelection;
     procedure TabsToSpacesInSelection;
@@ -1703,6 +1704,16 @@ Begin
   P.X := CharEnd;
   P.Y := LineNum2;
   FEditor.BlockEnd := P;
+end;
+
+procedure TSourceEditor.ReplaceLines(StartLine, EndLine: integer;
+  const NewText: string);
+begin
+  FEditor.BeginUndoBlock;
+  FEditor.BlockBegin:=Point(1,StartLine);
+  FEditor.BlockEnd:=Point(length(FEditor.Lines[Endline-1])+1,EndLine);
+  FEditor.SelText:=NewText;
+  FEditor.EndUndoBlock;
 end;
 
 Function TSourceEditor.GetModified : Boolean;
