@@ -188,6 +188,7 @@ type
     FFont: TFont;
     FisDefaultFont: Boolean;
     FPickList: TStrings;
+    FMinSize, FMaxSize, FSizePriority: ^Integer;
     
     procedure FontChanged(Sender: TObject);
     function GetAlignment: TAlignment;
@@ -197,6 +198,9 @@ type
     function GetFont: TFont;
     function GetGrid: TCustomDBGrid;
     function GetLayout: TTextLayout;
+    function GetMaxSize: Integer;
+    function GetMinSize: Integer;
+    function GetSizePriority: Integer;
     function GetPickList: TStrings;
     function GetReadOnly: Boolean;
     function GetVisible: Boolean;
@@ -205,7 +209,10 @@ type
     function IsColorStored: boolean;
     function IsFontStored: boolean;
     function IsLayoutStored: boolean;
+    function IsMinSizeStored: boolean;
+    function IsMaxSizeStored: boolean;
     function IsReadOnlyStored: boolean;
+    function IsSizePriorityStored: boolean;
     function IsVisibleStored: boolean;
     function IsWidthStored: boolean;
     procedure SetAlignment(const AValue: TAlignment);
@@ -216,8 +223,11 @@ type
     procedure SetFieldName(const AValue: String);
     procedure SetFont(const AValue: TFont);
     procedure SetLayout(const AValue: TTextLayout);
+    procedure SetMaxSize(const AValue: Integer);
+    procedure SetMinSize(const Avalue: Integer);
     procedure SetPickList(const AValue: TStrings);
     procedure SetReadOnly(const AValue: Boolean);
+    procedure SetSizePriority(const AValue: Integer);
     procedure SetTitle(const AValue: TColumnTitle);
     procedure SetVisible(const AValue: Boolean);
     procedure SetWidth(const AValue: Integer);
@@ -225,6 +235,9 @@ type
     function GetDataSet: TDataSet;
     function GetDefaultReadOnly: boolean;
     function GetDefaultWidth: Integer;
+    function GetDefaultMinSize: Integer;
+    function GetDefaultMaxSize: Integer;
+    function GetDefaultSizePriority: Integer;
   protected
   {$ifdef ver1_0}
   // workaround to access protected procedure in base class
@@ -252,8 +265,11 @@ type
     property FieldName: String read FFieldName write SetFieldName;
     property Font: TFont read GetFont write SetFont stored IsFontStored;
     property Layout: TTextLayout read GetLayout write SetLayout stored IsLayoutStored;
+    property MinSize: Integer read GetMinSize write SetMinSize stored IsMinSizeStored;
+    property MaxSize: Integer read GetMaxSize write SetMaxSize stored isMaxSizeStored;
     property PickList: TStrings read GetPickList write SetPickList;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly stored IsReadOnlyStored;
+    property SizePriority: Integer read GetSizePriority write SetSizePriority stored IsSizePriorityStored;
     property Title: TColumnTitle read FTitle write SetTitle;
     property Width: Integer read GetWidth write SetWidth stored IsWidthStored;
     property Visible: Boolean read GetVisible write SetVisible stored IsVisibleStored;
@@ -387,6 +403,7 @@ type
     function  EditorCanAcceptKey(const ch: Char): boolean; override;
     function  EditorIsReadOnly: boolean; override;
     procedure EndLayout;
+    procedure GetAutoFillColumnInfo(const Index: Integer; var aMin,aMax,aPriority: Integer); override;
     function  GetEditMask(aCol, aRow: Longint): string; override;
     function  GetEditText(aCol, aRow: Longint): string; override;
     function  GridCanModify: boolean;
@@ -440,6 +457,7 @@ type
     property Align;
     property Anchors;
     property AutoAdvance;
+    property AutoFillColumns;
     //property BiDiMode;
     property BorderStyle;
     property Color;
@@ -1723,6 +1741,25 @@ begin
     DoLayoutChanged;
 end;
 
+procedure TCustomDbGrid.GetAutoFillColumnInfo(const Index: Integer; var aMin,
+  aMax, aPriority: Integer);
+var
+  C: TColumn;
+begin
+  if Index<FixedCols then
+    APriority := 0
+  else if FColumns.Enabled then begin
+    C := ColumnFromGridColumn(Index);
+    if C<>nil then begin
+      aMin := C.MinSize;
+      aMax := C.MaxSize;
+      aPriority := C.SizePriority;
+    end else
+      APriority := 1;
+  end else
+    APriority := 1;
+end;
+
 procedure TCustomDbGrid.DoExit;
 begin
   if not EditorShowing then begin
@@ -2384,6 +2421,30 @@ begin
     result := FLayout^;
 end;
 
+function TColumn.GetMaxSize: Integer;
+begin
+  if FMaxSize=nil then
+    result := GetDefaultMaxSize
+  else
+    result := FMaxSize^;
+end;
+
+function TColumn.GetMinSize: Integer;
+begin
+  if FMinSize=nil then
+    result := GetDefaultMinSize
+  else
+    result := FMinSize^;
+end;
+
+function TColumn.GetSizePriority: Integer;
+begin
+  if FMaxSize=nil then
+    result := GetDefaultSizePriority
+  else
+    result := FSizePriority^;
+end;
+
 function TColumn.GetPickList: TStrings;
 begin
   Result := FPickList;
@@ -2436,9 +2497,24 @@ begin
   result := FLayout <> nil;
 end;
 
+function TColumn.IsMinSizeStored: boolean;
+begin
+  result := FMinSize <> nil;
+end;
+
+function TColumn.IsMaxSizeStored: boolean;
+begin
+  result := FMaxSize <> nil;
+end;
+
 function TColumn.IsReadOnlyStored: boolean;
 begin
   result := FReadOnly <> nil;
+end;
+
+function TColumn.IsSizePriorityStored: boolean;
+begin
+  result := FSizePriority <> nil;
 end;
 
 function TColumn.IsVisibleStored: boolean;
@@ -2518,6 +2594,26 @@ begin
   FieldChanged;
 end;
 
+procedure TColumn.SetMaxSize(const AValue: Integer);
+begin
+  if FMaxSize = nil then
+    New(FMaxSize)
+  else if FMaxSize^ = AVAlue then
+    exit;
+  FMaxSize^ := AValue;
+  FieldChanged;
+end;
+
+procedure TColumn.SetMinSize(const Avalue: Integer);
+begin
+  if FMinSize = nil then
+    New(FMinSize)
+  else if FMinSize^ = AVAlue then
+    exit;
+  FMinSize^ := AValue;
+  FieldChanged;
+end;
+
 procedure TColumn.SetPickList(const AValue: TStrings);
 begin
   if AValue=nil then
@@ -2533,6 +2629,16 @@ begin
   else if FReadOnly^ = AValue then
     exit;
   FReadOnly^ := Avalue;
+  FieldChanged;
+end;
+
+procedure TColumn.SetSizePriority(const AValue: Integer);
+begin
+  if FSizePriority = nil then
+    New(FSizePriority)
+  else if FSizePriority^ = AVAlue then
+    exit;
+  FSizePriority^ := AValue;
   FieldChanged;
 end;
 
@@ -2589,6 +2695,31 @@ begin
     result := FField.DisplayWidth * CalcCanvasCharWidth(TheGrid.Canvas)
   else
     result := 64;
+end;
+
+function TColumn.GetDefaultMinSize: Integer;
+begin
+  // get a better default
+  result := 10;
+end;
+
+function TColumn.GetDefaultMaxSize: Integer;
+begin
+  // get a better default
+  result := 200;
+end;
+
+function TColumn.GetDefaultSizePriority: Integer;
+var
+  TheGrid: TCustomDbGrid;
+begin
+  // Get a better default
+  TheGrid := Grid;
+  Result := 0;
+  if (theGrid<>nil)and(TheGrid.AutoFillColumns) then
+    result := 1
+  else
+    result := 0;
 end;
 
 procedure TColumn.FillDefaultFont;
@@ -2667,7 +2798,8 @@ function TColumn.IsDefault: boolean;
 begin
   result := FTitle.IsDefault and (FAlignment=nil) and (FColor=nil)
     and (FVisible=nil) and (FReadOnly=nil) and (FWidth=nil) and FIsDefaultFont
-    and (FLayout=nil);
+    and (FLayout=nil) and (FMaxSize=nil) and (FMinSize=nil)
+    and (FSizePriority=nil);
 end;
 
 { TColumnTitle }
@@ -2854,8 +2986,8 @@ end.
 
 {
   $Log$
-  Revision 1.23  2004/12/22 20:02:25  mattias
-  defaultrowheight property is set to 20 pixels and fixes  from Jesus
+  Revision 1.24  2004/12/23 19:24:46  mattias
+  added auto column sizing  from Jesus
 
   Revision 1.22  2004/12/21 22:49:29  mattias
   implemented scrollbar codes for gtk intf  from Jesus

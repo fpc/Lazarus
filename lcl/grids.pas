@@ -267,6 +267,7 @@ type
   TCustomGrid=class(TCustomControl)
   private
     FAutoAdvance: TAutoAdvance;
+    FAutoFillColumns: boolean;
     FDefaultDrawing: Boolean;
     FEditor: TWinControl;
     FEditorHiding: Boolean;
@@ -305,12 +306,15 @@ type
     FGSMHBar, FGSMVBar: Integer; // Scrollbar's metrics
     FVSbVisible, FHSbVisible: boolean;
     FDefaultTextStyle: TTextStyle;
+    FLastWidth: Integer;
 
     procedure AdjustCount(IsColumn:Boolean; OldValue, NewValue:Integer);
     procedure CacheVisibleGrid;
+    function  CalcColumnWidth(Index: Integer): Integer;
     procedure CheckFixedCount(aCol,aRow,aFCol,aFRow: Integer);
     procedure CheckCount(aNewColCount, aNewRowCount: Integer);
     function  CheckTopLeft(aCol,aRow: Integer; CheckCols,CheckRows: boolean): boolean;
+    procedure SetAutoFillColumns(const AValue: boolean);
     procedure SetFlat(const AValue: Boolean);
     procedure SetFocusRectVisible(const AValue: Boolean);
     function  doColSizing(X,Y: Integer): Boolean;
@@ -339,6 +343,7 @@ type
     function  GetVisibleColCount: Integer;
     function  GetVisibleGrid: TRect;
     function  GetVisibleRowCount: Integer;
+    procedure InternalAutoFillColumns;
     procedure MyTextRect(R: TRect; Offx,Offy:Integer; S:string; Clipping: boolean);
     procedure ReadColWidths(Reader: TReader);
     procedure ReadRowHeights(Reader: TReader);
@@ -346,6 +351,7 @@ type
     function  ScrollGrid(Relative:Boolean; DCol,DRow: Integer): TPoint;
     procedure SetCol(Valor: Integer);
     procedure SetColwidths(Acol: Integer; Avalue: Integer);
+    procedure SetRawColWidths(ACol: Integer; AValue: Integer);
     procedure SetColCount(Valor: Integer);
     procedure SetDefColWidth(Valor: Integer);
     procedure SetDefRowHeight(Valor: Integer);
@@ -381,6 +387,7 @@ type
     fGridState: TGridState;
     procedure AutoAdjustColumn(aCol: Integer); virtual;
     procedure BeforeMoveSelection(const DCol,DRow: Integer); virtual;
+    procedure CalcAutoSizeColumn(const Index: Integer; var AMin,AMax,APriority: Integer); dynamic;
     procedure CalcFocusRect(var ARect: TRect);
     procedure CellClick(const aCol,aRow: Integer); virtual;
     procedure CheckLimits(var aCol,aRow: Integer);
@@ -397,6 +404,7 @@ type
     procedure DoExit; override;
     procedure DoEnter; override;
     procedure DoOnChangeBounds; override;
+    procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure DrawBackGround; virtual;
     procedure DrawBorder;
     procedure DrawByRows; virtual;
@@ -413,6 +421,7 @@ type
     procedure EditordoSetValue; virtual;
     function  EditorCanAcceptKey(const ch: Char): boolean; virtual;
     function  EditorIsReadOnly: boolean; virtual;
+    procedure GetAutoFillColumnInfo(const Index: Integer; var aMin,aMax,aPriority: Integer); dynamic;
     function  GetFixedcolor: TColor; virtual;
     function  GetSelectedColor: TColor; virtual;
     function  GetEditMask(ACol, ARow: Longint): string; dynamic;
@@ -466,6 +475,7 @@ type
     procedure WndProc(var TheMessage : TLMessage); override;
 
     property AutoAdvance: TAutoAdvance read FAutoAdvance write FAutoAdvance default aaRight;
+    property AutoFillColumns: boolean read FAutoFillColumns write SetAutoFillColumns;
     property BorderStyle default bsSingle;
     property Col: Integer read FCol write SetCol;
     property ColCount: Integer read GetColCount write SetColCount;
@@ -568,6 +578,7 @@ type
     procedure DrawFocusRect(aCol,aRow: Integer; ARect: TRect); override;
     procedure HeaderClick(IsColumn: Boolean; index: Integer); override;
     procedure HeaderSized(IsColumn: Boolean; index: Integer); override;
+    procedure GetAutoFillColumnInfo(const Index: Integer; var aMin,aMax,aPriority: Integer); override;
     function  GetEditMask(aCol, aRow: Longint): string; override;
     function  GetEditText(aCol, aRow: Longint): string; override;
     function  SelectCell(aCol,aRow: Integer): boolean; override;
@@ -873,20 +884,8 @@ procedure DrawRubberRect(Canvas: TCanvas; aRect: TRect; Color: TColor);
         inc(X1, constRubberSpace);
       end;
   end;
-// var OldStyle: TPenStyle;
 begin
   with aRect do begin
-    {
-    OldStyle := Canvas.Pen.Style;
-    Canvas.Pen.Color:=Color;
-    Canvas.Pen.Style:=psDot;
-    Canvas.MoveTo(Left,    Top);
-    Canvas.LineTo(Right-2, Top);
-    Canvas.LineTo(Right-2, Bottom-2);
-    Canvas.LineTo(Left,    Bottom-2);
-    Canvas.LineTo(Left,    Top+1);
-    Canvas.Pen.Style:=OldStyle
-    }
     DrawHorzLine(Left, Top, Right-1);
     DrawVertLine(Right-1, Top, Bottom-1);
     DrawHorzLine(Right-1, Bottom-1, Left);
@@ -926,6 +925,77 @@ begin
   Result:=r.bottom-r.top+1;
 end;
 
+procedure TCustomGrid.InternalAutoFillColumns;
+var
+  I, ForcedIndex: Integer;
+  Count: Integer;
+  aPriority, aMin, aMax: Integer;
+  AvailableSize: Integer;
+  TotalWidth: Integer;     // total grid's width
+  FixedSizeWidth: Integer; // total width of Fixed Sized Columns
+begin
+  if not AutoFillColumns then
+    exit;
+
+
+  // if needed, last size can be obtained from FLastWidth
+  // when InternalAutoFillColumns is called from DoChangeBounds
+  // for example.
+
+  // Insert the algorithm that modify ColWidths accordingly
+  //
+  // For testing purposes, a simple algortihm is implemented:
+  // if SizePriority=0, column size should be unmodified
+  // if SizePriority<>0 means variable size column, its size
+  // is the average avalilable size.
+
+  Count := 0;
+  FixedSizeWidth := 0;
+  TotalWidth := 0;
+  for i:=0 to ColCount-1 do begin
+    GetAutoFillColumnInfo(i, aMin, aMax, aPriority);
+    AvailableSize := GetColWidths(i);
+    if aPriority>0 then
+      Inc(Count)
+    else
+      Inc(FixedSizeWidth, AvailableSize);
+    Inc(TotalWidth, AvailableSize);
+  end;
+  
+  if Count=0 then begin
+    //it's an autofillcolumns grid, so at least one
+    // of the columns must fill completly the grid's
+    // available width, let it be that column the last
+    ForcedIndex := ColCount-1;
+    Count := 1;
+  end else
+    ForcedIndex := -1;
+
+  AvailableSize := Width - FixedSizeWidth;
+  if AvailableSize<0 then begin
+    // There is no space available to fill with
+    // Variable Size Columns, what to do?
+    
+    // Simply set all Variable Size Columns
+    // to 0, decreasing the size beyond this
+    // shouldn't be allowed.
+    for i:=0 to ColCount-1 do begin
+      GetAutoFillColumnInfo(i, aMin, aMax, aPriority);
+      if aPriority>0 then
+        SetRawColWidths(i,0);
+    end;
+  end else begin
+    // Simpler case: There is actually available space to
+    //     to be shared for variable size columns.
+    AvailableSize := AvailableSize div Count;
+    for i:=0 to ColCount-1 do begin
+      GetAutoFillColumnInfo(i, aMin, aMax, aPriority);
+      if (APriority>0) or (i=ForcedIndex) then
+        SetRawColWidths(i, AvailableSize);
+    end;
+  end;
+end;
+
 function TCustomGrid.GetLeftCol: Integer;
 begin
   result:=fTopLeft.x;
@@ -947,7 +1017,8 @@ begin
     Result:=Integer(FCols[aCol])
   else
     Result:=-1;
-  if result<0 then Result:=fDefColWidth;
+  if result<0 then
+    Result:=fDefColWidth;
 end;
 
 procedure TCustomGrid.SetEditor(AValue: TWinControl);
@@ -1073,11 +1144,16 @@ procedure TCustomGrid.Setcolwidths(Acol: Integer; Avalue: Integer);
 begin
   if AValue<0 then Avalue:=-1;
   if Avalue<>Integer(FCols[ACol]) then begin
-    FCols[ACol]:=Pointer(AValue);
+    SetRawColWidths(ACol, Avalue);
     VisualChange;
     if (FEditor<>nil)and(Feditor.Visible)and(ACol<=FCol) then EditorPos;
     ColWidthsChanged;
   end;
+end;
+
+procedure TCustomGrid.SetRawColWidths(ACol: Integer; AValue: Integer);
+begin
+  FCols[ACol]:=Pointer(Avalue);
 end;
 
 procedure TCustomGrid.AdjustCount(IsColumn: Boolean; OldValue, newValue: Integer);
@@ -1296,6 +1372,9 @@ var
   var
     i: Integer;
   begin
+    // Recalc colwidths if it is necesary
+    InternalAutoFillColumns;
+    
     // Calculate New Cached Values
     FGCache.GridWidth:=0;
     FGCache.FixedWidth:=0;
@@ -2419,6 +2498,13 @@ begin
     doTopleftChange(False)
 end;
 
+procedure TCustomGrid.SetAutoFillColumns(const AValue: boolean);
+begin
+  FAutoFillColumns := AValue;
+  if FAutoFillColumns then
+    VisualChange;
+end;
+
 procedure TCustomGrid.SetFlat(const AValue: Boolean);
 begin
   if FFlat=AValue then exit;
@@ -2465,6 +2551,18 @@ begin
       R:=CellRect(VisibleGrid.Right, VisibleGrid.Bottom);
       MaxClientXY:=R.BottomRight;
     end;
+  end;
+end;
+
+function TCustomGrid.CalcColumnWidth(Index: Integer): Integer;
+var
+  AMin,AMax,APriority: Integer;
+begin
+  CalcAutoSizeColumn(Index, aMin, aMax, aPriority);
+  if aPriority=0 then
+    Result := GetColWidths(Index)
+  else begin
+
   end;
 end;
 
@@ -3003,6 +3101,12 @@ begin
   VisualChange;
 end;
 
+procedure TCustomGrid.DoSetBounds(ALeft, ATop, AWidth, AHeight: integer);
+begin
+  FLastWidth := ClientWidth;
+  inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
+end;
+
 procedure TCustomGrid.doExit;
 begin
   if FEditorShowing then begin
@@ -3436,6 +3540,12 @@ begin
   if Assigned(OnBeforeSelection) then OnBeforeSelection(Self, DCol, DRow);
 end;
 
+procedure TCustomGrid.CalcAutoSizeColumn(const Index: Integer; var AMin, AMax,
+  APriority: Integer);
+begin
+  APriority := 0;
+end;
+
 procedure TCustomGrid.CalcFocusRect(var ARect: TRect);
 {
 var
@@ -3670,6 +3780,11 @@ end;
 function TCustomGrid.EditorIsReadOnly: boolean;
 begin
   result := false;
+end;
+
+procedure TCustomGrid.GetAutoFillColumnInfo(const Index: Integer; var aMin,aMax,aPriority: Integer);
+begin
+  aPriority := 0;
 end;
 
 procedure TCustomGrid.EditorExit(Sender: TObject);
@@ -4625,6 +4740,15 @@ begin
   if Assigned(OnHeaderSized) then OnHeaderSized(Self, IsColumn, index);
 end;
 
+procedure TDrawGrid.GetAutoFillColumnInfo(const Index: Integer; var aMin, aMax,
+  aPriority: Integer);
+begin
+  if Index<FixedCols then
+    aPriority := 0
+  else
+    aPriority := 1;
+end;
+
 function TDrawGrid.GetEditMask(aCol, aRow: Longint): string;
 begin
   result:='';
@@ -4924,6 +5048,7 @@ begin
     //MyTExtRect(aRect, 3, 0, Cells[aCol,aRow], Canvas.Textstyle.Clipping);
   end;
 end;
+
 {
 procedure TStringGrid.EditordoGetValue;
 var

@@ -35,7 +35,7 @@
         <UsageCount Value="29"/>
       </Unit1>
       <Unit2>
-        <CursorPos X="30" Y="16"/>
+        <CursorPos X="6" Y="26"/>
         <EditorIndex Value="1"/>
         <Filename Value="viewunit.pas"/>
         <ComponentName Value="ViewForm"/>
