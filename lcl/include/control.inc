@@ -353,25 +353,35 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.CMHITTEST(var Message : TCMHitTest);
 begin
-  message.Result := 1;
+  Message.Result := 1;
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl.CMMouseEnter                                                  }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TControl.CMMouseEnter
+------------------------------------------------------------------------------}
 Procedure TControl.CMMouseEnter(var Message :TLMessage);
 Begin
-  if FParent <> nil then
-    FParent.Perform(CM_MOUSEENTER,0,longint(Self));
+  // this is a LCL based mouse message, so don't call DoBeforeMouseMessage
+  if not FMouseEntered then begin
+    FMouseEntered:=true;
+    if Assigned(OnMouseEnter) then OnMouseEnter(Self);
+    if FParent <> nil then
+      FParent.Perform(CM_MOUSEENTER,0,longint(Self));
+  end;
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl.CMMouseLEave                                                  }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TControl.CMMouseLeave
+------------------------------------------------------------------------------}
 Procedure TControl.CMMouseLeave(var Message :TLMessage);
 Begin
-  if FParent <> nil then
-    FParent.Perform(CM_MOUSELEAVE,0,longint(Self));
+  // this is a LCL based mouse message, so don't call DoBeforeMouseMessage
+  if FMouseEntered then begin
+    FMouseEntered:=false;
+    if Assigned(OnMouseLeave) then OnMouseLeave(Self);
+    if FParent <> nil then
+      FParent.Perform(CM_MOUSELEAVE,0,longint(Self));
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -408,9 +418,18 @@ begin
     FOnConstrainedResize(Self, MinWidth, MinHeight, MaxWidth, MaxHeight);
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl.DoConstrainedResize                                           }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  procedure TControl.DoBeforeMouseMessage;
+------------------------------------------------------------------------------}
+procedure TControl.DoBeforeMouseMessage;
+begin
+  if Application<>nil then
+    Application.DoBeforeMouseMessage(Self);
+end;
+
+{------------------------------------------------------------------------------
+       TControl.DoConstrainedResize
+------------------------------------------------------------------------------}
 procedure TControl.DoConstrainedResize(var NewWidth, NewHeight : integer);
 var MinWidth, MinHeight, MaxWidth, MaxHeight : TConstraintSize;
 begin
@@ -965,6 +984,7 @@ begin
   {$IFDEF VerboseMouseBugfix}
   Writeln('TCONTROL WMLBUTTONDOWN A ',Name,':',ClassName);
   {$ENDIF}
+  DoBeforeMouseMessage;
   if csCaptureMouse in ControlStyle then MouseCapture := True;
   if csClickEvents in ControlStyle then Include(FControlState, csClicked);
   DoMouseDown(Message, mbLeft, []);
@@ -980,6 +1000,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMRButtonDown(var Message: TLMRButtonDown);
 begin
+  DoBeforeMouseMessage;
   DoMouseDown(Message, mbRight, []);
 end;
 
@@ -992,6 +1013,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMMButtonDown(var Message: TLMMButtonDown);
 begin
+  DoBeforeMouseMessage;
   DoMouseDown(Message, mbMiddle, []);
 end;
 
@@ -1004,6 +1026,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMLButtonDblClk(var Message: TLMLButtonDblClk);
 begin
+  DoBeforeMouseMessage;
   //TODO: SendCancelMode(self);
   if csCaptureMouse in ControlStyle then MouseCapture := True;
   if csClickEvents in ControlStyle then DblClick;
@@ -1019,6 +1042,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMRButtonDblClk(var Message: TLMRButtonDblClk);
 begin
+  DoBeforeMouseMessage;
   DoMouseDown(Message, mbRight ,[ssDouble]);
 end;
 
@@ -1031,6 +1055,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMMButtonDblClk(var Message: TLMMButtonDblClk);
 begin
+  DoBeforeMouseMessage;
   DoMouseDown(Message, mbMiddle ,[ssDouble]);
 end;
 
@@ -1043,6 +1068,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMLButtonTripleClk(var Message: TLMLButtonTripleClk);
 begin
+  DoBeforeMouseMessage;
   //TODO: SendCancelMode(self);
   if csCaptureMouse in ControlStyle then MouseCapture := True;
   if csClickEvents in ControlStyle then TripleClick;
@@ -1058,6 +1084,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMRButtonTripleClk(var Message: TLMRButtonTripleClk);
 begin
+  DoBeforeMouseMessage;
   DoMouseDown(Message, mbRight ,[ssTriple]);
 end;
 
@@ -1070,6 +1097,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMMButtonTripleClk(var Message: TLMMButtonTripleClk);
 begin
+  DoBeforeMouseMessage;
   DoMouseDown(Message, mbMiddle ,[ssTriple]);
 end;
 
@@ -1082,6 +1110,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMLButtonQuadClk(var Message: TLMLButtonQuadClk);
 begin
+  DoBeforeMouseMessage;
   //TODO: SendCancelMode(self);
   if csCaptureMouse in ControlStyle then MouseCapture := True;
   if csClickEvents in ControlStyle then QuadClick;
@@ -1097,6 +1126,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMRButtonQuadClk(var Message: TLMRButtonQuadClk);
 begin
+  DoBeforeMouseMessage;
   DoMouseDown(Message, mbRight ,[ssQuad]);
 end;
 
@@ -1109,6 +1139,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMMButtonQuadClk(var Message: TLMMButtonQuadClk);
 begin
+  DoBeforeMouseMessage;
   DoMouseDown(Message, mbMiddle ,[ssQuad]);
 end;
 
@@ -1121,6 +1152,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMLButtonUp(var Message: TLMLButtonUp);
 begin
+  DoBeforeMouseMessage;
   //Writeln('TControl.WMLButtonUp A ',Name,':',ClassName,' csCaptureMouse=',csCaptureMouse in ControlStyle,' csClicked=',csClicked in ControlState);
   if csCaptureMouse in ControlStyle then
     MouseCapture := False;
@@ -1148,6 +1180,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMRButtonUp(var Message: TLMRButtonUp);
 begin
+  DoBeforeMouseMessage;
   DoMouseUp(Message, mbRight);
   if Message.Result = 0 then CheckMenuPopup(Message.pos);
 end;
@@ -1161,6 +1194,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMMButtonUp(var Message: TLMMButtonUp);
 begin
+  DoBeforeMouseMessage;
   DoMouseUp(Message, mbMiddle);
 end;
 
@@ -1656,6 +1690,7 @@ Begin
   {$IFDEF VerboseMouseBugfix}
   writeln('[TControl.WMMouseMove] ',Name,':',ClassName);
   {$ENDIF}
+  DoBeforeMouseMessage;
   if not (csNoStdEvents in ControlStyle)
   then with Message do
     MouseMove(KeystoShiftState(Keys), XPos, YPos);
@@ -2041,6 +2076,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.104  2002/11/21 18:49:53  mattias
+  started OnMouseEnter and OnMouseLeave
+
   Revision 1.103  2002/11/18 13:38:44  mattias
   fixed buffer overrun and added several checks
 
