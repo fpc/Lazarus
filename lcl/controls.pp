@@ -475,13 +475,11 @@ type
     procedure DoDragMsg(var Dragmsg : TCMDrag);
     procedure DoMouseDown(var Message: TLMMouse; Button: TMouseButton; Shift:TShiftState);
     procedure DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
-
   protected
     FControlState: TControlState;
     procedure AdjustSize; dynamic;
     procedure BoundsChanged; dynamic;
     procedure DoConstraintsChange(Sender : TObject); virtual;
-    { events need to be protected otherwise they can't be overridden ??}
     procedure Changed;
     procedure WMLButtonDown(Var Message: TLMLButtonDown); message LM_LBUTTONDOWN;
     procedure WMRButtonDown(Var Message: TLMRButtonDown); message LM_RBUTTONDOWN;
@@ -538,9 +536,9 @@ type
     function GetText: TCaption; virtual;
     procedure SetText(const Value: TCaption); virtual;
     procedure WndProc(var Message : TLMessage); virtual;
-    Procedure MouseDown(Button: TMOuseButton; Shift:TShiftState; X,Y:Integer); dynamic;
+    Procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); dynamic;
     Procedure MouseMove(Shift: TShiftState; X,Y: Integer);Dynamic;
-    Procedure MouseUp(Button: TMOuseButton; Shift:TShiftState; X,Y:Integer); dynamic;
+    Procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     Function CanAutoSize(var NewWidth, NewHeight : Integer): Boolean; virtual;
     Function GetClientOrigin : TPoint; virtual;
@@ -553,10 +551,10 @@ type
     property DragKind : TDragKind read FDragKind write FDragKind default dkDrag;
     property DragMode : TDragMode read fDragMode write SetDragMode default dmManual;
     property IsControl : Boolean read FIsControl write FIsControl;
-    property MouseCapture: Boolean read GetMouseCapture write SetMOuseCapture;
+    property MouseCapture: Boolean read GetMouseCapture write SetMouseCapture;
     property ParentFont : Boolean  read FParentFont write FParentFont;
     property ParentColor : Boolean  read FParentColor write FParentColor;
-    property ParentShowHint : Boolean read FParentShowHint write SetPArentShowHint default True;
+    property ParentShowHint : Boolean read FParentShowHint write SetParentShowHint default True;
     property PopupMenu : TPopupmenu read GetPopupmenu write SetPopupMenu;
     property Text: TCaption read GetText write SetText;
     property OnConstrainedResize : TConstrainedResizeEvent read FOnConstrainedResize write FOnConstrainedResize;
@@ -586,12 +584,12 @@ type
     Procedure DragDrop(Source: TObject; X,Y : Integer); Dynamic;
     procedure SendToBack;
     procedure SetBounds(aLeft, aTop, aWidth, aHeight : integer); virtual;
-    function GetTextBuf(Buffer: PChar; BufSize: Integer): Integer;
+    function  GetTextBuf(Buffer: PChar; BufSize: Integer): Integer;
     Procedure SetTextBuf(Buffer : PChar);
-    Function Perform(Msg:Cardinal; WParam , LParam : LongInt): LongInt;
-    Function ScreenToClient(const Point : TPoint) : TPoint;
-    Function ClientToScreen(const Point : TPoint) : TPoint;
-    Function Dragging : Boolean;
+    Function  Perform(Msg:Cardinal; WParam , LParam : LongInt): LongInt;
+    Function  ScreenToClient(const Point : TPoint) : TPoint;
+    Function  ClientToScreen(const Point : TPoint) : TPoint;
+    Function  Dragging : Boolean;
     procedure Show;
     procedure Update; //override;   //pbd
     property Anchors : TAnchors read FAnchors write FAnchors default [akLeft,akTop];
@@ -680,12 +678,12 @@ type
     FWinControls : TList;
     procedure AlignControl(AControl : TControl);
     Procedure CMDrag(var Message : TCMDrag); message CM_DRAG;
-    function GetControl(const Index: Integer): TControl;
-    function GetControlCount: Integer;
-    function GetHandle : HWND;
-    function GetIsResizing: boolean;
+    function  GetControl(const Index: Integer): TControl;
+    function  GetControlCount: Integer;
+    function  GetHandle : HWND;
+    function  GetIsResizing: boolean;
     procedure SetHandle(NewHandle: HWND);
-    Function GetTabOrder: TTabOrder;
+    Function  GetTabOrder: TTabOrder;
     Procedure SetBorderWidth(Value : TBorderWidth);
     Procedure SetParentCtl3D(value : Boolean);
     Procedure SetTabOrder(Value : TTabOrder);
@@ -882,7 +880,6 @@ const
     [akLeft, akTop, akRight, akBottom]);
 
 function CNSendMessage(LM_Message : integer; Sender : TObject; data : pointer) : integer;
-Function StringOfChar(Value : Char; Len : Integer) : String;
 Function FindDragTarget(const Pos : TPoint; AllowDisabled: Boolean): TControl;
 Function FindLCLWindow(const Pos : TPoint) : TWinControl;
 Function FindControl(Handle : hwnd) : TWinControl;
@@ -901,7 +898,7 @@ implementation
 
 //uses clause
 //Needs dialogs for the SetVisible procedure.
-Uses Forms, Dialogs, Interfaces;
+uses Forms, Dialogs, Interfaces;
 
 var
   CaptureControl: TControl;
@@ -921,36 +918,19 @@ Procedure MoveWindowOrg(dc : hdc; X,Y : Integer);
 var
 P : TPoint;
 Begin
-//writeln('[MoveWindowOrg] ',x,' ',y);
+  //writeln('[MoveWindowOrg] ',x,' ',y);
   GetWindowOrgEx(dc, P);
   SetWindowOrgEx(dc,P.x - x, P.y - y, P);
 end;
 
 {------------------------------------------------------------------------------}
-{  CNSendMessage                                                                 }
+{  CNSendMessage                                                               }
 {------------------------------------------------------------------------------}
-function CNSendMessage(LM_Message : integer; Sender : TObject; data : pointer) : integer;
+function CNSendMessage(LM_Message : integer; Sender : TObject;
+  Data : pointer) : integer;
 begin
-   result := InterfaceObject.IntSendMessage3(LM_Message, Sender, data);
+  result := InterfaceObject.IntSendMessage3(LM_Message, Sender, Data);
 end;
-
-{------------------------------------------------------------------------------}
-{  StringOfChar                                                                 }
-{------------------------------------------------------------------------------}
-Function StringOfChar(Value : Char; Len : Integer) : String;
-Var
-Str : String;
-I : Integer;
-Begin
-Str := '';
-if Len > 0 then
-  Begin
-  For I := 1 to Len do
-  Str := Str + Value;
-  End;
-Result := Str;
-End;
-
 
 {------------------------------------------------------------------------------}
 {  FindControl                                                                 }
@@ -965,17 +945,16 @@ end;
 
 function DoControlMsg(handle:hwnd; var Message) : Boolean;
 var
-Control : TWinControl;
+  Control : TWinControl;
 begin
-Result := False;
-Control := FindControl(handle);
-if Control <> nil then
-   with TLMessage(Message) do
-     Begin
+  Result := False;
+  Control := FindControl(handle);
+  if Control <> nil then
+    with TLMessage(Message) do
+    Begin
       Control.Perform(Msg + CN_BASE,WParam, LParam);
       DoControlMsg := True;
-     end;
-
+    end;
 end;
 
 
@@ -1027,28 +1006,26 @@ end;
 
 Procedure DragTo(P : TPoint);
 Begin
-Assert(False, 'Trace:********************************************');
-Assert(False, 'Trace:*******************D R A G T O***************');
-Assert(False, 'Trace:********************************************');
-
+  Assert(False, 'Trace:********************************************');
+  Assert(False, 'Trace:*******************D R A G T O***************');
+  Assert(False, 'Trace:********************************************');
 end;
 
 Function DragMessage(Handle : HWND; Msg : TDragMessage; Source : TDragObject; Target : Pointer; const Pos : TPoint): longint;
 var
-DragRec : TDragRec;
+  DragRec : TDragRec;
 Begin
-Assert(False, 'Trace:******');
-Assert(False, 'Trace:DragMessage');
+  Assert(False, 'Trace:******');
+  Assert(False, 'Trace:DragMessage');
 
-Result := 0;
-if Handle <> 0 then
-   Begin
-   DragRec.Pos := Pos;
-   DragRec.Target := Target;
-   DragRec.Source := Source;
-   DragRec.Docking := False;//TODO: not supported at this point
-   Result := SendMessage(Handle, CM_DRAG,longint(msg),Longint(@DragRec));
-   end;
+  Result := 0;
+  if Handle <> 0 then Begin
+    DragRec.Pos := Pos;
+    DragRec.Target := Target;
+    DragRec.Source := Source;
+    DragRec.Docking := False;//TODO: not supported at this point
+    Result := SendMessage(Handle, CM_DRAG,longint(msg),Longint(@DragRec));
+  end;
 end;
 
 
@@ -1059,8 +1036,8 @@ var
   DragMsg : TDragMEssage;
   TargetPos : TPoint;
 Begin
-Assert(False, 'Trace:*************************');
-Assert(False, 'Trace:*********DRAGDONE********');
+  Assert(False, 'Trace:*************************');
+  Assert(False, 'Trace:*********DRAGDONE********');
 
   Accepted:=false;
   if (DragObject = nil) or (DragObject.Cancelling) then Exit;
@@ -1188,7 +1165,7 @@ begin
 
 end;
 
-// turnof before includes !!
+// turn off before includes !!
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
   {$C-}
@@ -1205,9 +1182,10 @@ end;
 {$I customcontrol.inc}
 {$I mouse.inc}
 {$I dragobject.inc}
+
 initialization
 
-//writeln('controls.pp - initialization');
+  //writeln('controls.pp - initialization');
   Mouse := TMouse.create;
   DragControl := nil;
   CaptureControl := nil;
@@ -1220,6 +1198,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.43  2002/04/24 09:29:06  lazarus
+  MG: fixed typos
+
   Revision 1.42  2002/04/22 13:07:44  lazarus
   MG: fixed AdjustClientRect of TGroupBox
 
