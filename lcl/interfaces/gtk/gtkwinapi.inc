@@ -2697,6 +2697,8 @@ begin
     FillChar(Values, SizeOf(Values), #0);
   end
   else begin
+    // ToDo: other widget types
+    
     pFixed := GetFixedWidget(Pointer(hWnd));
     if pFixed = nil
     then begin
@@ -5396,6 +5398,8 @@ begin
 
   Point.X := NewX;
   Point.Y := NewY;
+  
+  
   Result := True;
 end;
 
@@ -6196,6 +6200,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.115  2002/08/29 00:07:03  lazarus
+  MG: fixed TComboBox and InvalidateControl
+
   Revision 1.114  2002/08/28 09:40:50  lazarus
   MG: reduced paint messages and DC getting/releasing
 
