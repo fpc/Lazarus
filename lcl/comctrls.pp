@@ -467,7 +467,6 @@ type
   TToolButton = class(TButtonControl)
   private
     FAllowAllUp: Boolean;
-    FAutoSize: Boolean;
     FDown: Boolean;
     FGrouped: Boolean;
     FImageIndex: Integer;
@@ -483,7 +482,7 @@ type
     function IsCheckedStored: Boolean;
     function IsImageIndexStored: Boolean;
     function IsWidthStored: Boolean;
-    procedure SetAutoSize(Value: Boolean);
+    procedure SetAutoSize(const Value: Boolean); Override;
     procedure SetButtonState(State: Byte);
     procedure SetDown(Value: Boolean);
     procedure SetDropdownMenu(Value: TPopupMenu);
@@ -518,7 +517,7 @@ type
     property Index: Integer read GetIndex;
   published
     property AllowAllUp: Boolean read FAllowAllUp write FAllowAllUp default False;
-    property AutoSize: Boolean read FAutoSize write SetAutoSize default False;
+    property AutoSize default False;
     property Caption;
     property Down: Boolean read FDown write SetDown stored IsCheckedStored default False;
     property DragCursor;
@@ -1492,6 +1491,63 @@ type
     property Items;
   end;
 
+  TScrollBox = class(TWinControl)
+  private
+    FAutoScroll : Boolean;
+    Procedure SetAutoScroll(Value : Boolean);
+    Procedure DoAutoSize; Override;
+  public
+    constructor Create(AOwner: TComponent); override;
+  published
+    property Align;
+    property Anchors;
+    property AutoScroll : Boolean read FAutoScroll write SetAutoScroll;
+    property AutoSize;
+    //property BiDiMode;
+    //property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
+    property Constraints;
+    //property DockSite;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property Enabled;
+    property Color nodefault;
+    property Ctl3D;
+    property Font;
+    //property ParentBiDiMode;
+    property ParentColor;
+    property ParentCtl3D;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+    //property OnCanResize;
+    property OnClick;
+    property OnConstrainedResize;
+    property OnDblClick;
+    //property OnDockDrop;
+    //property OnDockOver;
+    property OnDragDrop;
+    property OnDragOver;
+    //property OnEndDock;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    //property OnGetSiteInfo;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
+    property OnResize;
+    //property OnStartDock;
+    property OnStartDrag;
+    //property OnUnDock;
+  end;
 
 
 function InitCommonControl(CC: Integer): Boolean;
@@ -1551,6 +1607,7 @@ end;
 {$I toolbar.inc}
 {$I trackbar.inc}
 {$I treeview.inc}
+{$I scrollbox.inc}
 
 
 end.
@@ -1558,6 +1615,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.38  2002/09/03 08:07:17  lazarus
+  MG: image support, TScrollBox, and many other things from Andrew
+
   Revision 1.37  2002/08/17 15:45:31  lazarus
   MG: removed ClientRectBugfix defines
 

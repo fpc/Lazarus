@@ -116,7 +116,7 @@ end;
 Procedure TCustomForm.Deactivate;
 Begin
   if Assigned(FOnDeactivate) then
-      FOnDeactivate(Self);
+    FOnDeactivate(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -180,7 +180,7 @@ end;
 function TCustomForm.GetIconHandle: HICON;
 begin
 //writeln('[TCustomForm.GetIconHandle] ',ClassName,' ',FIcon<>nil);
-  if FIcon<>nil then
+  if (FIcon<>nil) and not Icon.Empty then
     Result := FIcon.Handle
   else
     Result := Application.GetIconHandle;
@@ -1025,6 +1025,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.54  2002/09/03 08:07:19  lazarus
+  MG: image support, TScrollBox, and many other things from Andrew
+
   Revision 1.53  2002/08/31 11:37:09  lazarus
   MG: fixed destroying combobox
 

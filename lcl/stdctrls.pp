@@ -495,15 +495,13 @@ type
   end;
 
   TCheckBox = class(TCustomCheckBox)
-  private
-    FAutoSize : Boolean;
-    procedure SetAutoSize(Value : Boolean);
   protected
+    procedure DoAutoSize; Override;
     procedure SetText(const Value: TCaption); Override;
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property AutoSize : Boolean read FAutoSize write SetAutoSize;
+    property AutoSize;
     property AllowGrayed;
     property Anchors;
     property Caption;
@@ -570,11 +568,10 @@ type
   TRadioButton = class(TCustomCheckBox)
   private
     fGroup : THandle; // handle to the previous button in the group this button belongs to
-    FAutoSize : Boolean;
     procedure SetGroup (Value : THandle);
     function GetGroup : THandle;
-    procedure SetAutoSize(Value : Boolean);
   protected
+    procedure DoAutoSize; Override;
     procedure CreateWnd; override;
     procedure DestroyWnd; override;
     procedure SetText(const Value: TCaption); Override;
@@ -583,7 +580,7 @@ type
     property group : THandle read GetGroup write SetGroup;
   published
     property Anchors;
-    property AutoSize : Boolean read FAutoSize write SetAutoSize;
+    property AutoSize;
     property AllowGrayed;
     property Caption;
     property Checked;
@@ -714,7 +711,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.39  2002/09/03 08:07:19  lazarus
+  MG: image support, TScrollBox, and many other things from Andrew
+
   Revision 1.38  2002/08/30 06:46:03  lazarus
+
   Use comboboxes. Use history. Prettify the dialog. Preselect text on show.
   Make the findreplace a dialog. Thus removing resiying code (handled by Anchors now anyway).
   Make Anchors work again and publish them for various controls.

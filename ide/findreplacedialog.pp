@@ -176,6 +176,7 @@ begin
     with CaseSensitiveCheckBox do begin
       Name:='CaseSensitiveCheckBox';
       Parent:=OptionsGroupBox;
+      AutoSize := True;
       Left:=8;
       Top:=6;
       Width:=135;
@@ -188,6 +189,7 @@ begin
     with WholeWordsOnlyCheckBox do begin
       Name:='WholeWordsOnlyCheckBox';
       Parent:=OptionsGroupBox;
+      AutoSize := False;
       Left:=8;
       Top:=26;
       Width:=135;
@@ -200,6 +202,7 @@ begin
     with RegularExpressionsCheckBox do begin
       Name:='RegularExpressionsCheckBox';
       Parent:=OptionsGroupBox;
+      AutoSize := False;
       Left:=8;
       Top:=46;
       Width:=135;
@@ -212,6 +215,7 @@ begin
     with PromptOnReplaceCheckBox do begin
       Name:='PromptOnReplaceCheckBox';
       Parent:=OptionsGroupBox;
+      AutoSize := False;
       Left:=8;
       Top:=66;
       Width:=135;

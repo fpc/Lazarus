@@ -28,6 +28,7 @@ end;
 constructor TForm.Create(AOwner : TComponent);
 begin
   inherited Create(AOwner);
+  Icon := TIcon.Create;
 end;
 
 

@@ -112,6 +112,7 @@ begin
     while (FButtonList.Count<FItems.Count) do begin
       Temp := TRadioButton.Create (self);
       Temp.Name:='RadioButton'+IntToStr(FButtonList.Count);
+      Temp.AutoSize := False;
       Temp.Parent := Self;
       Temp.OnClick := @Clicked;
       FButtonList.Add(Temp);
@@ -337,6 +338,9 @@ end;
 
 {
   $Log$
+  Revision 1.14  2002/09/03 08:07:19  lazarus
+  MG: image support, TScrollBox, and many other things from Andrew
+
   Revision 1.13  2002/08/30 12:32:20  lazarus
   MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
 

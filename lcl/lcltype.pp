@@ -148,6 +148,7 @@ const
   DT_NOCLIP = $100;
   DT_CALCRECT = $400;
   DT_NOPREFIX = $800;
+  DT_INTERNAL = $1000;
 
 //==============================================
 // Draw frame constants
@@ -725,6 +726,22 @@ type
   end;
   BITMAP = tagBITMAP;
 
+  PBitmapInfoHeader = ^TagBitmapInfoHeader;
+  tagBITMAPINFOHEADER = packed record
+    biSize : DWORD;
+    biWidth : Longint;
+    biHeight : Longint;
+    biPlanes : WORD;
+    biBitCount : WORD;
+    biCompression : DWORD;
+    biSizeImage : DWORD;
+    biXPelsPerMeter : Longint;
+    biYPelsPerMeter : Longint;
+    biClrUsed : DWORD;
+    biClrImportant : DWORD;
+  end;
+  BITMAPINFOHEADER = tagBITMAPINFOHEADER;
+
 { ********************************** }
 {        B I T M A P    S T U F F    }
 
@@ -744,14 +761,13 @@ type
 
   tagDIBSECTION = packed record
     dsBm: TagBitmap;
-    dsBmih: pointer;//TBitmapInfoHeader;
+    dsBmih: tagBITMAPINFOHEADER;
     dsBitfields: array[0..2] of DWORD;
     dshSection: THandle;
     dsOffset: DWORD;
   end;
   TDIBSection = tagDIBSECTION;
   DIBSECTION = tagDIBSECTION;
-
 
 const
   TRUETYPE_FONTTYPE = 4;
@@ -1470,6 +1486,9 @@ end.
 
 {
   $Log$
+  Revision 1.13  2002/09/03 08:07:19  lazarus
+  MG: image support, TScrollBox, and many other things from Andrew
+
   Revision 1.12  2002/08/27 06:40:50  lazarus
   MG: ShortCut support for buttons from Andrew
 

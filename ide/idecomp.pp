@@ -1,8 +1,8 @@
 {
  /***************************************************************************
-                              idecomp.pp  -
-                            -------------------
-                              TIDEComponent
+                              idecomp.pp
+                              ----------
+                             TIDEComponent
 
 
                    Initial Revision  : Sun Mar 28 23:15:32 CST 1999
@@ -29,7 +29,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit idecomp;
+unit IDEComp;
 
 {$mode objfpc}{$H+}
 
@@ -40,15 +40,15 @@ interface
 
 uses
   Classes, LclLinux, StdCtrls, Forms, Buttons, Menus, ComCtrls,Arrow,
-  Spin, SysUtils, Controls, CompReg, Graphics, ExtCtrls, Dialogs,Calendar,ImgList
-
-{$IFDEF DATABASE}
-,db
-{$ENDIF}
-{$IFDEF INTERBASE}
-,interbase
-{$ENDIF}
-;
+  Spin, SysUtils, Controls, CompReg, Graphics, ExtCtrls, Dialogs, Calendar,
+  ImgList
+  {$IFDEF DATABASE}
+  ,db
+  {$ENDIF}
+  {$IFDEF INTERBASE}
+  ,interbase
+  {$ENDIF}
+  ;
 
 const
   ComponentPaletteBtnWidth  = 25;
@@ -302,9 +302,6 @@ end;
 
 {--------------------------------------------------}
 
-
-
-
 procedure RegisterStandardComponents(
   ARegisteredComponentList:TRegisteredComponentList);
 
@@ -316,26 +313,26 @@ procedure RegisterStandardComponents(
   end;
 
 begin
-
   RegisterComponentsProc:=@RegisterComponents;
+  
   RegisterComponents('Standard','Menus',[TMainMenu,TPopupMenu]);
   RegisterComponents('Standard','Buttons',[TButton]);
-  RegisterComponents('Standard','StdCtrls',[TEdit,TLabel,TMemo,TCheckBox
-          ,TListBox,TRadioButton,TComboBox,TScrollBar,TGroupBox,TToggleBox]);
+  RegisterComponents('Standard','StdCtrls',[TEdit,TLabel,TMemo,TCheckBox,
+          TListBox,TRadioButton,TComboBox,TScrollBar,TGroupBox,TToggleBox]);
   RegisterComponents('Standard', 'ExtCtrls',[TPanel]);
   RegisterComponents('Additional','Buttons',[TBitBtn,TSpeedButton]);
-  RegisterComponents('Additional','ExtCtrls',[TNoteBook,TPaintBox
-          ,TBevel,TRadioGroup,TImage]);
-  RegisterComponents('Additional','ComCtrls',[TStatusBar,TListView,TTreeView
-          ,TProgressBar,TToolBar,TTrackbar]);
+  RegisterComponents('Additional','ExtCtrls',[TNoteBook,TPaintBox,
+          TBevel,TRadioGroup,TImage]);
+  RegisterComponents('Additional','ComCtrls',[TStatusBar,TListView,TTreeView,
+          TProgressBar,TToolBar,TTrackbar,TScrollBox]);
   RegisterComponents('Additional','ImgList',[TImageList]);
 
   RegisterComponents('Misc','Calendar',[TCalendar]);
   RegisterComponents('Misc','Arrow',[TArrow]);
 
   RegisterComponents('System','ExtCtrls',[TTimer]);
-  RegisterComponents('Dialogs','Dialogs',[TOpenDialog,TSaveDialog
-          ,TColorDialog,TFontDialog]);
+  RegisterComponents('Dialogs','Dialogs',[TOpenDialog,TSaveDialog,
+          TColorDialog,TFontDialog]);
 
   RegisterComponents('Samples','Spin',[TSpinEdit]);
 
@@ -344,8 +341,10 @@ begin
 {$ENDIF}
 {$IFDEF INTERBASE}
 //Interbase
-  RegisterComponents('Interbase Data Access','Interbase',[TIBStoredProc,TIBQuery,TIBDatabase]);
+  RegisterComponents('Interbase Data Access','Interbase',[TIBStoredProc,
+          TIBQuery,TIBDatabase]);
 {$ENDIF}
+
   // unselectable components
   // components that are streamed but not selectable in the IDE
   RegisterComponents('','ExtCtrls',[TPage]);
@@ -353,11 +352,7 @@ begin
   RegisterComponents('','menus', [TMenuItem]);
 
   RegisterComponentsProc:=nil;
-
-
 end;
-
-
 
 
 initialization

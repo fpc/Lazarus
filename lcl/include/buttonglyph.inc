@@ -20,6 +20,7 @@ constructor TButtonGlyph.Create;
 begin
 //  Inherited Create;
   FOriginal := TBitmap.Create;
+  FOriginal.OnChange := @GlyphChanged;
 end;
 
 {------------------------------------------------------------------------------}
@@ -35,20 +36,28 @@ end;
 {       TButtonGlyph SetGlyph                                                  }
 {------------------------------------------------------------------------------}
 procedure TButtonGlyph.SetGlyph(Value : TBitmap);
-var GlyphCount : integer;
+var
+  GlyphCount : integer;
 begin
   if FOriginal = Value then exit;
 //  FOriginal.Assign(Value);
   FOriginal.Free;
   FOriginal:= Value;
-  if (Value <> nil) and (Value.Height > 0) then begin
-    if Value.Width mod Value.Height = 0 then begin
-      GlyphCount:= Value.Width div Value.Height;
+  FOriginal.OnChange := @GlyphChanged;
+  if (FOriginal <> nil) and (FOriginal.Height > 0) then begin
+    if FOriginal.Width mod FOriginal.Height = 0 then begin
+      GlyphCount:= FOriginal.Width div FOriginal.Height;
       if GlyphCount > 4 then GlyphCount:= 1;
-      NumGlyphs:= GlyphCount;
+      FNumGlyphs:= GlyphCount;
     end;
   end;
-  //Invalidate;
+  GlyphChanged(FOriginal);
+end;
+
+procedure TButtonGlyph.GlyphChanged(Sender: TObject);
+begin
+  if Sender = FOriginal then
+    if Assigned(FOnChange) then FOnChange(Self);
 end;
 
 {------------------------------------------------------------------------------}
@@ -100,6 +109,6 @@ procedure TButtonGlyph.SetNumGlyphs(Value : TNumGlyphs);
 begin
   if Value <> FNumGlyphs then begin
     FNumGlyphs := Value;
-    if Assigned(FOnChange) then FOnChange(Glyph);
+    GlyphChanged(FOriginal);
   end;
 end;

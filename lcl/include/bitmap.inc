@@ -23,7 +23,8 @@ end;
 
 procedure TBitmap.Draw(ACanvas: TCanvas; const Rect: TRect);
 begin
-  Assert(False, 'Trace:TODO: [TBitmap.Draw]');
+  HandleNeeded;
+  ACanvas.CopyRect(Rect, Self.Canvas, Classes.Rect(0, 0, Width, Height));
 end;
 
 constructor TBitmap.Create;
@@ -50,6 +51,7 @@ end;
 
 procedure TBitMap.FreeImage;
 begin
+  Handle := 0;
 end;
 
 function TBitmap.HandleAllocated: boolean;
@@ -74,7 +76,10 @@ begin
 end;
 
 procedure TBitMap.HandleNeeded;
-var n : integer;
+var
+  n : integer;
+  UseWidth,
+  UseHeight : Longint;
 begin
 //  if FHandle = 0 then CNSendMessage(LM_CREATE, Self, nil);
   if FImage.FHandle = 0 then begin
@@ -89,9 +94,11 @@ begin
       pf32bit : n:= 32;
       else raise EInvalidOperation.Create('Unsupported bitmap format.');
     end;
-    if Width<1 then Width:=1;
-    if Height<1 then Height:=1;
-    FImage.FHandle:= CreateBitmap(Width, Height, 1, n, nil);
+    UseWidth := Width;
+    UseHeight := Height;
+    if UseWidth<1 then UseWidth:=1;
+    if UseHeight<1 then UseHeight:=1;
+    FImage.FHandle:= CreateBitmap(UseWidth, UseHeight, 1, n, nil);
   end;
 end;
 
@@ -145,6 +152,10 @@ Begin
   end;
 end;
 
+Procedure TBitmap.LoadFromFile(Const Filename : String);
+begin
+  LoadFromXPMFile(FileName);
+end;
 
 Procedure TBitmap.NewImage(NHandle: HBITMAP; NPallette: HPALETTE;
    const NDIB : TDIBSection; OS2Format : Boolean);
@@ -158,31 +169,6 @@ end;
 
 procedure TBitmap.ReadStream(Stream: TStream; Size: Longint);
 type
-  BITMAP = packed record
-          bmType : Longint;
-          bmWidth : Longint;
-          bmHeight : Longint;
-          bmWidthBytes : Longint;
-          bmPlanes : Word;
-          bmBitsPixel : Word;
-          bmBits : Pointer;
-       end;
-  PBITMAP = ^BITMAP;
-
-  BITMAPINFOHEADER = packed record
-          biSize : DWORD;
-          biWidth : Longint;
-          biHeight : Longint;
-          biPlanes : WORD;
-          biBitCount : WORD;
-          biCompression : DWORD;
-          biSizeImage : DWORD;
-          biXPelsPerMeter : Longint;
-          biYPelsPerMeter : Longint;
-          biClrUsed : DWORD;
-          biClrImportant : DWORD;
-       end;
-
   RGBQUAD = packed record
           rgbBlue : BYTE;
           rgbGreen : BYTE;
@@ -211,7 +197,6 @@ var
   ImgSize:longint;
   Bits:PBitsObj;
   InfoSize: integer;
-  //BmpWidth,BmpHeight:integer;
   BitsPerPixel,ColorsUsed:integer;
 begin
   FreeContext;
@@ -250,10 +235,7 @@ begin
       end;
       // Palette is fake now. Then it'll be better!
       // EInOutError.Create('Only truecolor is supported yet.');
-      
-      //BmpHeight:=BmpInfo^.bmiHeader.biHeight;
-      //BmpWidth:=BmpInfo^.bmiHeader.biWidth;
-      
+
       ImgSize:=BmpInfo^.bmiHeader.biSizeImage;
       GetMem(Bits,ImgSize);
       try
@@ -261,7 +243,8 @@ begin
         if ReadSize<>ImgSize then
           raise EInOutError.Create('Invalid windows bitmap (bits)');
 
-        // ToDo: create a bitmap handle
+        Handle := CreateBitmap(Width, Height,
+          BmpInfo^.bmiHeader.biPlanes, BitsPerPixel, Bits);
 
       finally
         FreeMem(Bits);
@@ -290,8 +273,7 @@ end;
 
 procedure TBitmap.SetHandle(Value: HBITMAP);
 begin
-  // TODO: get the properties from new bitmap (Width, Height)
-  //       When this is done, then check TPixmap.ReadStream
+  // TODO: the properties from new bitmap
   with FImage do
     if FHandle <> Value then
     begin
@@ -300,6 +282,9 @@ begin
       FImage := TBitmapImage.Create;
       Reference;
       FHandle:=Value;
+      FillChar(FDIB, sizeof(FDIB), 0);
+      if Value <> 0 then
+        GetObject(FHandle, SizeOf(FDIB), @FDIB);
       Changed(Self);
     end;
 end;
@@ -319,7 +304,8 @@ end;
 
 Function TBitmap.ReleaseHandle : HBITMAP;
 Begin
-  Result := GetHandle;
+  If HandleAllocated then
+    Result := GetHandle;
   FImage.FHandle := 0;
 end;
 
@@ -331,12 +317,14 @@ end;
 
 function TBitmap.GetHeight: Integer;
 begin
-  Result := FHeight;
+  with FImage do
+    Result := FDIB.dsbm.bmHeight;
 end;
 
 function TBitmap.GetWidth: Integer;
 begin
-  Result := FWidth;
+  with FImage do
+    Result := FDIB.dsbm.bmWidth;
 end;
 
 procedure TBitmap.ReadData(Stream: TStream);
@@ -354,20 +342,38 @@ end;
 
 procedure TBitmap.SetWidth(Value: Integer);
 begin
-  FWidth:=Value;
-  // ToDo
+  with FImage do
+    if FDIB.dsbm.bmWidth <> Value then
+    begin
+      FDIB.dsbm.bmWidth := Value;
+      If (Value > 0) and (Height > 0) then
+        HandleNeeded
+      else
+        FreeImage;
+      Changed(Self);
+    end;
 end;
 
 procedure TBitmap.SetHeight(Value: Integer);
 begin
-  FHeight:=Value;
-  // ToDo
+  with FImage do
+    if FDIB.dsbm.bmHeight <> Value then
+    begin
+      FDIB.dsbm.bmHeight := Value;
+      If (Value > 0) and (Width > 0) then
+        HandleNeeded
+      else
+        FreeImage;
+      Changed(Self);
+    end;
 end;
-
 
 { =============================================================================
 
   $Log$
+  Revision 1.16  2002/09/03 08:07:19  lazarus
+  MG: image support, TScrollBox, and many other things from Andrew
+
   Revision 1.15  2002/09/02 08:13:16  lazarus
   MG: fixed GraphicClass.Create
 

@@ -21,6 +21,7 @@ begin
   Inherited Create(AOwner);
   FCompStyle := csBitBtn;
   FGlyph := TButtonGlyph.Create;
+  TButtonGlyph(FGlyph).OnChange := @GlyphChanged;
   {set default alignment}
   Align := alNone;
   FCanvas := TCanvas.Create;
@@ -68,6 +69,10 @@ Procedure TBitbtn.SetGlyph(Value : TBitmap);
 Begin
   Assert(False, 'Trace:SETGLYPH');
   TButtonGlyph(FGlyph).Glyph := Value;
+end;
+
+procedure TBitBtn.GlyphChanged(Sender: TObject);
+begin
   if HandleAllocated then begin
     CNSendMessage(LM_IMAGECHANGED,Self,nil);
     Invalidate;

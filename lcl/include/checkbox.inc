@@ -35,25 +35,25 @@ end;
 procedure TCheckbox.SetText(const Value: TCaption);
 begin
   Inherited SetText(Value);
-  AutoSize := FAutoSize;
+  DoAutoSize;
 end;
 
 {------------------------------------------------------------------------------
-  Method: TCheckbox.SetAutoSize
+  Method: TCheckbox.DoAutoSize
   Params:  Value : Boolean
   Returns: nothing
 
-  Sets AutoSize Flag, and if True, attempts to Size to fit Caption
+  Attempts to Size to fit Caption if AutoSize is True
  ------------------------------------------------------------------------------}
-procedure TCheckbox.SetAutoSize(Value : Boolean);
+procedure TCheckbox.DoAutoSize;
 var
   R : TRect;
   DC : hDC;
 begin
-  FAutoSize := Value;
-  If not AutoSize then
+  If AutoSizing or not AutoSize then
     Exit;
   if not HandleAllocated then exit;
+  AutoSizing := True;
   DC := GetDC(Handle);
   Try
     R := Rect(0,0, Width, Height);
@@ -65,6 +65,7 @@ begin
       Height := R.Bottom + 2;
   Finally
     ReleaseDC(Handle, DC);
+    AutoSizing := False;
   end;
 end;
 
@@ -72,6 +73,9 @@ end;
 
 {
   $Log$
+  Revision 1.6  2002/09/03 08:07:19  lazarus
+  MG: image support, TScrollBox, and many other things from Andrew
+
   Revision 1.5  2002/08/24 06:51:22  lazarus
   MG: from Andrew: style list fixes, autosize for radio/checkbtns
 

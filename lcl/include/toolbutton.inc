@@ -176,11 +176,11 @@ begin
   if FMarked then Result := Result or ButtonStates[tbsMarked];
 end;
 
-procedure TToolButton.SetAutoSize(Value: Boolean);
+procedure TToolButton.SetAutoSize(const Value: Boolean);
 begin
   if Value <> AutoSize then
   begin
-    FAutoSize := Value;
+    Inherited SetAutoSize(Value);
     UpdateControl;
     if not (csLoading in ComponentState) and (FToolBar <> nil) and
       FToolBar.ShowCaptions then
@@ -454,6 +454,9 @@ end;
 
 {
   $Log$
+  Revision 1.3  2002/09/03 08:07:20  lazarus
+  MG: image support, TScrollBox, and many other things from Andrew
+
   Revision 1.2  2002/05/10 06:05:56  lazarus
   MG: changed license to LGPL
 

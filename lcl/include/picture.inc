@@ -45,6 +45,14 @@ begin
   Add('bmp', 'Bitmaps', TBitmap);
   Add('xpm', 'Pixmap', TPixmap);
   Add('ico', 'Icon', TIcon);
+{      ('.xpm',
+     '.bmp',
+     '.png',
+     '.gif',
+     '.jpg',
+     '.jpeg',
+     '.tiff');}
+
 end;
 
 procedure TPicFileFormatsList.Clear;
@@ -338,25 +346,27 @@ end;
 procedure TPicture.SetGraphic(Value: TGraphic);
 var
   NewGraphic: TGraphic;
-  ok: boolean;
+  //ok: boolean;
 begin
   NewGraphic := nil;
   if Value <> nil then begin
-    NewGraphic := TGraphicClass(Value.ClassType).Create;
-    NewGraphic.Assign(Value);
+    //NewGraphic := TGraphicClass(Value.ClassType).Create;
+    //NewGraphic.Assign(Value);
+    NewGraphic := Value;//Assign Doesn't Work yet
     NewGraphic.OnChange := @Changed;
     NewGraphic.OnProgress := @Progress;
   end;
-  ok:=false;
+  //ok:=false;
   try
     FGraphic.Free;
     FGraphic := NewGraphic;
     Changed(Self);
-    ok:=true;
+    //ok:=true;
   finally
     // this try..finally construction will in case of an exception
     // not alter the error backtrace output
-    if not ok then NewGraphic.Free;
+
+    //if not ok then NewGraphic.Free;
   end;
 end;
 
@@ -376,28 +386,23 @@ begin
   if GraphicClass = nil then
     raise EInvalidGraphic.CreateFmt('Unknown picture extension', [Ext]);
 
-writeln('TPicture.LoadFromFile A ',GraphicClass.ClassName);
-  NewGraphic := GraphicClass.Create;
-writeln('TPicture.LoadFromFile B ',NewGraphic.ClassName);
+    NewGraphic := GraphicClass.Create;
+
   ok:=false;
   try
     NewGraphic.OnProgress := @Progress;
-writeln('TPicture.LoadFromFile C ');
     NewGraphic.LoadFromFile(Filename);
-writeln('TPicture.LoadFromFile D ');
     ok:=true;
   finally
     // this try..finally construction will in case of an exception
     // not alter the error backtrace output
     if not ok then NewGraphic.Free;
   end;
-writeln('TPicture.LoadFromFile E ');
-  FGraphic.Free;
-writeln('TPicture.LoadFromFile F ');
+  If FGraphic <> nil then
+    FGraphic.Free;
   FGraphic := NewGraphic;
   FGraphic.OnChange := @Changed;
   Changed(Self);
-writeln('TPicture.LoadFromFile END ');
 end;
 
 procedure TPicture.SaveToFile(const Filename: string);
