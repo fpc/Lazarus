@@ -64,7 +64,6 @@ type
     FWidgetsWithResizeRequest: TDynHashArray; // hasharray of PGtkWidget
     FGTKToolTips: PGtkToolTips;
     FAccelGroup: PgtkAccelGroup;
-    FTimerData : TList;       // keeps track of timer event structures
     FDefaultFont : PGdkFont;
     FNoteBookCloseBtnPixmapImg: PGdkPixmap;
     FNoteBookCloseBtnPixmapMask: PGdkPixmap;
@@ -257,6 +256,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.88  2002/10/14 19:00:49  lazarus
+  MG: fixed zombie timers
+
   Revision 1.87  2002/10/14 14:29:50  lazarus
   AJ: Improvements to TUpDown; Added TStaticText & GNOME DrawText
 
