@@ -114,9 +114,9 @@ function AddToRecentList(const s: string; RecentList: TStringList;
 procedure RemoveFromRecentList(const s: string; RecentList: TStringList);
 procedure LoadRect(XMLConfig: TXMLConfig; const Path:string; var ARect:TRect);
 procedure SaveRect(XMLConfig: TXMLConfig; const Path:string; var ARect:TRect);
-procedure LoadStringList(XMLConfig: TXMLConfig; List: TStringList;
+procedure LoadStringList(XMLConfig: TXMLConfig; List: TStrings;
   const Path: string);
-procedure SaveStringList(XMLConfig: TXMLConfig; List: TStringList;
+procedure SaveStringList(XMLConfig: TXMLConfig; List: TStrings;
   const Path: string);
 
 // text conversion
@@ -501,7 +501,7 @@ begin
   LoadStringList(XMLConfig,List,Path);
 end;
 
-procedure LoadStringList(XMLConfig: TXMLConfig; List: TStringList;
+procedure LoadStringList(XMLConfig: TXMLConfig; List: TStrings;
   const Path: string);
 var i,Count: integer;
   s: string;
@@ -514,7 +514,7 @@ begin
   end;
 end;
 
-procedure SaveStringList(XMLConfig: TXMLConfig; List: TStringList;
+procedure SaveStringList(XMLConfig: TXMLConfig; List: TStrings;
   const Path: string);
 var i: integer;
 begin
