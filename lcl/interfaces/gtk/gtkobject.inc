@@ -4430,7 +4430,7 @@ begin
     begin
       if TLabel(Sender).ShowAccelChar then begin
         If TLabel(sender).WordWrap and (TLabel(Sender).Caption<>'') then begin
-          DC := GetDC(TLabel(Sender).Handle);
+          DC := GetDC(HDC(GetStyleWidget(lgsLabel)));
           aLabel := ForceLineBreaks(DC, pLabel, TLabel(Sender).Width, True);
           DeleteDC(DC);
         end
@@ -4440,14 +4440,14 @@ begin
           AccelKey:= gtk_label_parse_uline(pGtkLabel(p), aLabel);
           Accelerate(TComponent(Sender),PGtkWidget(p),AccelKey,0,'grab_focus');
         finally
-    StrDispose(aLabel);
-  end;
+          StrDispose(aLabel);
+        end;
       end else begin
         If TLabel(sender).WordWrap then begin
-          DC := GetDC(TLabel(Sender).Handle);
+          DC := GetDC(HDC(GetStyleWidget(lgsLabel)));
           aLabel := ForceLineBreaks(DC, pLabel, TLabel(Sender).Width, False);
           gtk_label_set_text(PGtkLabel(p), aLabel);
-    StrDispose(aLabel);
+          StrDispose(aLabel);
           DeleteDC(DC);
         end
         else
@@ -9378,6 +9378,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.489  2004/04/03 18:08:39  mattias
+  fixed TLabel.AutoWrap=true and label on formless parent in gtk intf
+
   Revision 1.488  2004/04/03 16:47:46  mattias
   implemented converting gdkbitmap to RawImage mask
 

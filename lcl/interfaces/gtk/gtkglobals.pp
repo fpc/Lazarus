@@ -95,6 +95,7 @@ type
     lgsGTK_Default, // without anything
     lgsDefault,     // with rc file
     lgsButton,
+    lgsLabel,
     lgsWindow,
     lgsCheckbox,
     lgsRadiobutton,
@@ -115,6 +116,7 @@ const
     'gtk_default',
     'default',
     'button',
+    'label',
     'window',
     'checkbox',
     'radiobutton',

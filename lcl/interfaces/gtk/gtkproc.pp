@@ -59,25 +59,25 @@ uses
   
 
 {$IFNDEF GTK2}
-  function  GTK_TYPE_WIDGET  : TGTKType; cdecl; external gtkdll name 'gtk_widget_get_type';
-  function  GTK_TYPE_CONTAINER : TGTKType; cdecl; external gtkdll name 'gtk_container_get_type';
-  function  GTK_TYPE_BIN  : TGTKType; cdecl; external gtkdll name 'gtk_bin_get_type';
-  function  GTK_TYPE_HBOX  : TGTKType; cdecl; external gtkdll name 'gtk_hbox_get_type';
-  function  GTK_TYPE_SCROLLED_WINDOW : TGTKType; cdecl; external gtkdll name 'gtk_scrolled_window_get_type';
-  function  GTK_TYPE_COMBO  : TGTKType; cdecl; external gtkdll name 'gtk_combo_get_type';
-  function  GTK_TYPE_WINDOW  : TGTKType; cdecl; external gtkdll name 'gtk_window_get_type';
-  function  GTK_TYPE_MENU  : TGTKType; cdecl; external gtkdll name 'gtk_menu_get_type';
-  function  GTK_TYPE_MENU_ITEM  : TGTKType; cdecl; external gtkdll name 'gtk_menu_item_get_type';
-  function  GTK_TYPE_MENU_BAR  : TGTKType; cdecl; external gtkdll name 'gtk_menu_bar_get_type';
-  function  GTK_TYPE_RADIO_MENU_ITEM  : TGTKType; cdecl; external gtkdll name 'gtk_radio_menu_item_get_type';
-  function  GTK_TYPE_CHECK_MENU_ITEM  : TGTKType; cdecl; external gtkdll name 'gtk_check_menu_item_get_type';
-  function  GTK_TYPE_TEXT  : TGTKType; cdecl; external gtkdll name 'gtk_text_get_type';
-  function  GTK_TYPE_ENTRY  : TGTKType; cdecl; external gtkdll name 'gtk_entry_get_type';
-  function  GTK_TYPE_RANGE  : TGTKType; cdecl; external gtkdll name 'gtk_range_get_type';
-  function  GTK_TYPE_SCROLLBAR : TGTKType; cdecl; external gtkdll name 'gtk_scrollbar_get_type';
-  function  GTK_TYPE_HSCROLLBAR : TGTKType; cdecl; external gtkdll name 'gtk_hscrollbar_get_type';
-  function  GTK_TYPE_VSCROLLBAR : TGTKType; cdecl; external gtkdll name 'gtk_vscrollbar_get_type';
-  function  GTK_TYPE_LIST_ITEM : TGTKType; cdecl; external gtkdll name 'gtk_list_item_get_type';
+  function  GTK_TYPE_WIDGET : TGTKType; cdecl; external gtkdll name 'gtk_widget_get_type';
+  function  GTK_TYPE_CONTAINER: TGTKType; cdecl; external gtkdll name 'gtk_container_get_type';
+  function  GTK_TYPE_BIN : TGTKType; cdecl; external gtkdll name 'gtk_bin_get_type';
+  function  GTK_TYPE_HBOX : TGTKType; cdecl; external gtkdll name 'gtk_hbox_get_type';
+  function  GTK_TYPE_SCROLLED_WINDOW: TGTKType; cdecl; external gtkdll name 'gtk_scrolled_window_get_type';
+  function  GTK_TYPE_COMBO : TGTKType; cdecl; external gtkdll name 'gtk_combo_get_type';
+  function  GTK_TYPE_WINDOW : TGTKType; cdecl; external gtkdll name 'gtk_window_get_type';
+  function  GTK_TYPE_MENU : TGTKType; cdecl; external gtkdll name 'gtk_menu_get_type';
+  function  GTK_TYPE_MENU_ITEM : TGTKType; cdecl; external gtkdll name 'gtk_menu_item_get_type';
+  function  GTK_TYPE_MENU_BAR : TGTKType; cdecl; external gtkdll name 'gtk_menu_bar_get_type';
+  function  GTK_TYPE_RADIO_MENU_ITEM : TGTKType; cdecl; external gtkdll name 'gtk_radio_menu_item_get_type';
+  function  GTK_TYPE_CHECK_MENU_ITEM : TGTKType; cdecl; external gtkdll name 'gtk_check_menu_item_get_type';
+  function  GTK_TYPE_TEXT : TGTKType; cdecl; external gtkdll name 'gtk_text_get_type';
+  function  GTK_TYPE_ENTRY : TGTKType; cdecl; external gtkdll name 'gtk_entry_get_type';
+  function  GTK_TYPE_RANGE : TGTKType; cdecl; external gtkdll name 'gtk_range_get_type';
+  function  GTK_TYPE_SCROLLBAR: TGTKType; cdecl; external gtkdll name 'gtk_scrollbar_get_type';
+  function  GTK_TYPE_HSCROLLBAR: TGTKType; cdecl; external gtkdll name 'gtk_hscrollbar_get_type';
+  function  GTK_TYPE_VSCROLLBAR: TGTKType; cdecl; external gtkdll name 'gtk_vscrollbar_get_type';
+  function  GTK_TYPE_LIST_ITEM: TGTKType; cdecl; external gtkdll name 'gtk_list_item_get_type';
 {$ENDIF}
 
 procedure laz_gdk_gc_set_dashes(gc:PGdkGC; dash_offset:gint;
@@ -85,38 +85,38 @@ procedure laz_gdk_gc_set_dashes(gc:PGdkGC; dash_offset:gint;
 
 
 // GTKCallback.inc headers
-procedure EventTrace(const TheMessage : string; data : pointer);
+procedure EventTrace(const TheMessage: string; data: pointer);
 function gtkNoteBookCloseBtnClicked(Widget: PGtkWidget;
   Data: Pointer): GBoolean; cdecl;
 function gtkRealizeCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
 function gtkRealizeAfterCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
-function gtkshowCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
-function gtkHideCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
-function gtkactivateCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
-function gtkchangedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
-function gtkchanged_editbox( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
-function gtkdaychanged(Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkshowCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkHideCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkactivateCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkchangedCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkchanged_editbox( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkdaychanged(Widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 {$IfNdef GTK2}
 function gtkDrawAfter(Widget: PGtkWidget; area: PGDKRectangle;
-  data: gPointer) : GBoolean; cdecl;
+  data: gPointer): GBoolean; cdecl;
 {$EndIf}
-function gtkExposeEventAfter(Widget: PGtkWidget; Event : PGDKEventExpose;
+function gtkExposeEventAfter(Widget: PGtkWidget; Event: PGDKEventExpose;
   Data: gPointer): GBoolean; cdecl;
-function gtkfrmactivateAfter( widget: PGtkWidget; Event : PgdkEventFocus;
-  data: gPointer) : GBoolean; cdecl;
-function gtkfrmdeactivateAfter( widget: PGtkWidget; Event : PgdkEventFocus;
-  data: gPointer) : GBoolean; cdecl;
+function gtkfrmactivateAfter( widget: PGtkWidget; Event: PgdkEventFocus;
+  data: gPointer): GBoolean; cdecl;
+function gtkfrmdeactivateAfter( widget: PGtkWidget; Event: PgdkEventFocus;
+  data: gPointer): GBoolean; cdecl;
 function GTKMap(Widget: PGTKWidget; Data: gPointer): GBoolean; cdecl;
-function GTKKeyUpDown(Widget: PGtkWidget; Event : pgdkeventkey;
-  Data: gPointer) : GBoolean; cdecl;
-function GTKFocusCB(widget: PGtkWidget; event:PGdkEventFocus; data: gPointer) : GBoolean; cdecl;
-function GTKFocusCBAfter(widget: PGtkWidget; event:PGdkEventFocus; data: gPointer) : GBoolean; cdecl;
-function GTKKillFocusCB(widget: PGtkWidget; event:PGdkEventFocus; data: gPointer) : GBoolean; cdecl;
-function GTKKillFocusCBAfter(widget: PGtkWidget; event:PGdkEventFocus; data: gPointer) : GBoolean; cdecl;
-function gtkdestroyCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
-function gtkdeleteCB( widget : PGtkWidget; event : PGdkEvent; data : gPointer) : GBoolean; cdecl;
-function gtkresizeCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
-function gtkMonthChanged(Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function GTKKeyUpDown(Widget: PGtkWidget; Event: pgdkeventkey;
+  Data: gPointer): GBoolean; cdecl;
+function GTKFocusCB(widget: PGtkWidget; event:PGdkEventFocus; data: gPointer): GBoolean; cdecl;
+function GTKFocusCBAfter(widget: PGtkWidget; event:PGdkEventFocus; data: gPointer): GBoolean; cdecl;
+function GTKKillFocusCB(widget: PGtkWidget; event:PGdkEventFocus; data: gPointer): GBoolean; cdecl;
+function GTKKillFocusCBAfter(widget: PGtkWidget; event:PGdkEventFocus; data: gPointer): GBoolean; cdecl;
+function gtkdestroyCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkdeleteCB( widget: PGtkWidget; event: PGdkEvent; data: gPointer): GBoolean; cdecl;
+function gtkresizeCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkMonthChanged(Widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 procedure DeliverMouseMoveMessage(Widget:PGTKWidget; Event: PGDKEventMotion;
   AWinControl: TWinControl);
 function ControlGetsMouseMoveBefore(AControl: TControl): boolean;
@@ -125,32 +125,32 @@ function gtkMotionNotify(Widget:PGTKWidget; Event: PGDKEventMotion;
 function GTKMotionNotifyAfter(widget:PGTKWidget; event: PGDKEventMotion;
   data: gPointer): GBoolean; cdecl;
 function ControlGetsMouseDownBefore(AControl: TControl): boolean;
-procedure DeliverMouseDownMessage(widget: PGtkWidget; event : pgdkEventButton;
+procedure DeliverMouseDownMessage(widget: PGtkWidget; event: pgdkEventButton;
   AWinControl: TWinControl);
-function gtkMouseBtnPress(widget: PGtkWidget; event : pgdkEventButton;
-  data: gPointer) : GBoolean; cdecl;
-function gtkMouseBtnPressAfter(widget: PGtkWidget; event : pgdkEventButton;
-  data: gPointer) : GBoolean; cdecl;
+function gtkMouseBtnPress(widget: PGtkWidget; event: pgdkEventButton;
+  data: gPointer): GBoolean; cdecl;
+function gtkMouseBtnPressAfter(widget: PGtkWidget; event: pgdkEventButton;
+  data: gPointer): GBoolean; cdecl;
 function ControlGetsMouseUpBefore(AControl: TControl): boolean;
-procedure DeliverMouseUpMessage(widget: PGtkWidget; event : pgdkEventButton;
+procedure DeliverMouseUpMessage(widget: PGtkWidget; event: pgdkEventButton;
   AWinControl: TWinControl);
-function gtkMouseBtnRelease(widget: PGtkWidget; event : pgdkEventButton;
-  data: gPointer) : GBoolean; cdecl;
-function gtkMouseBtnReleaseAfter(widget: PGtkWidget; event : pgdkEventButton;
-  data: gPointer) : GBoolean; cdecl;
-function gtkclickedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkMouseBtnRelease(widget: PGtkWidget; event: pgdkEventButton;
+  data: gPointer): GBoolean; cdecl;
+function gtkMouseBtnReleaseAfter(widget: PGtkWidget; event: pgdkEventButton;
+  data: gPointer): GBoolean; cdecl;
+function gtkclickedCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 
-function gtkOpenDialogRowSelectCB( widget : PGtkWidget; row : gint;
-  column : gint; event : pgdkEventButton; data : gPointer ) : GBoolean; cdecl;
+function gtkOpenDialogRowSelectCB( widget: PGtkWidget; row: gint;
+  column: gint; event: pgdkEventButton; data: gPointer ): GBoolean; cdecl;
 function gtkDialogOKclickedCB( widget: PGtkWidget;
-  data: gPointer) : GBoolean; cdecl;
+  data: gPointer): GBoolean; cdecl;
 function gtkDialogCancelclickedCB(widget: PGtkWidget; data: gPointer): GBoolean;cdecl;
 function gtkDialogHelpclickedCB(widget: PGtkWidget; data: gPointer): GBoolean;cdecl;
 function gtkDialogApplyclickedCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkDialogCloseQueryCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 procedure UpdateDetailView(OpenDialog: TOpenDialog);
-function GTKDialogKeyUpDownCB(Widget: PGtkWidget; Event : pgdkeventkey;
-  Data: gPointer) : GBoolean; cdecl;
+function GTKDialogKeyUpDownCB(Widget: PGtkWidget; Event: pgdkeventkey;
+  Data: gPointer): GBoolean; cdecl;
 function GTKDialogRealizeCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
 function GTKDialogFocusInCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function GTKDialogSelectRowCB(widget: PGtkWidget; Row, Column: gInt;
@@ -158,45 +158,45 @@ function GTKDialogSelectRowCB(widget: PGtkWidget; Row, Column: gInt;
 function GTKDialogMenuActivateCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkDialogDestroyCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 
-function gtkPressedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
-function gtkEnterCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
-function gtkLeaveCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
-function gtkMoveCursorCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkPressedCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkEnterCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkLeaveCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkMoveCursorCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtksize_allocateCB(widget: PGtkWidget; size :pGtkAllocation;
-  data: gPointer) : GBoolean; cdecl;
+  data: gPointer): GBoolean; cdecl;
 function gtksize_allocate_client(widget: PGtkWidget; size :pGtkAllocation;
-  data: gPointer) : GBoolean; cdecl;
-function gtkswitchpage(widget: PGtkWidget; page: Pgtkwidget; pagenum : integer;
-  data: gPointer) : GBoolean; cdecl;
-function gtkconfigureevent( widget: PGtkWidget; event : PgdkEventConfigure;
-  data: gPointer) : GBoolean; cdecl;
-function gtkreleasedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
-function gtkInsertText( widget: PGtkWidget; char : pChar; NewTextLength : Integer; Position : pgint; data: gPointer) : GBoolean; cdecl;
-function gtkDeleteText( widget: PGtkWidget; Startpos, EndPos : Integer; data: gPointer) : GBoolean; cdecl;
-function gtkSetEditable( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
-function gtkMoveWord( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
-function gtkMovePage( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
-function gtkMoveToRow( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
-function gtkMoveToColumn( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
-function gtkKillChar( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
-function gtkKillWord( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
-function gtkKillLine( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
-function gtkCutToClip( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
-function gtkCopyToClip( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
-function gtkPasteFromClip( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
-function gtkValueChanged(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+  data: gPointer): GBoolean; cdecl;
+function gtkswitchpage(widget: PGtkWidget; page: Pgtkwidget; pagenum: integer;
+  data: gPointer): GBoolean; cdecl;
+function gtkconfigureevent( widget: PGtkWidget; event: PgdkEventConfigure;
+  data: gPointer): GBoolean; cdecl;
+function gtkreleasedCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkInsertText( widget: PGtkWidget; char: pChar; NewTextLength: Integer; Position: pgint; data: gPointer): GBoolean; cdecl;
+function gtkDeleteText( widget: PGtkWidget; Startpos, EndPos: Integer; data: gPointer): GBoolean; cdecl;
+function gtkSetEditable( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkMoveWord( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkMovePage( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkMoveToRow( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkMoveToColumn( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkKillChar( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkKillWord( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkKillLine( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkCutToClip( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkCopyToClip( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkPasteFromClip( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkValueChanged(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkTimerCB(Data: gPointer): {$IFDEF Gtk2}gBoolean{$ELSE}gint{$ENDIF}; cdecl;
-function gtkFocusInNotifyCB (widget : PGtkWidget; event : PGdkEvent;
-  data : gpointer) : GBoolean; cdecl;
-function gtkFocusOutNotifyCB (widget : PGtkWidget; event : PGdkEvent;
-  data : gpointer) : GBoolean; cdecl;
+function gtkFocusInNotifyCB (widget: PGtkWidget; event: PGdkEvent;
+  data: gpointer): GBoolean; cdecl;
+function gtkFocusOutNotifyCB (widget: PGtkWidget; event: PGdkEvent;
+  data: gpointer): GBoolean; cdecl;
 function GTKHScrollCB(Adjustment: PGTKAdjustment; data: GPointer): GBoolean; cdecl;
 function GTKVScrollCB(Adjustment: PGTKAdjustment;
   data: GPointer): GBoolean; cdecl;
 function GTKCheckMenuToggeledCB(AMenuItem: PGTKCheckMenuItem; AData: gPointer): GBoolean; cdecl;
 function GTKKeySnooper(Widget: PGtkWidget; Event: PGdkEventKey;
   FuncData: gPointer): gInt; cdecl;
-function gtkYearChanged(Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkYearChanged(Widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 procedure ClipboardSelectionReceivedHandler(TargetWidget: PGtkWidget;
   SelectionData: PGtkSelectionData; TimeID: cardinal; Data: Pointer); cdecl;
 procedure ClipboardSelectionRequestHandler(TargetWidget: PGtkWidget;
@@ -208,23 +208,23 @@ Procedure GTKStyleChanged(Widget: PGtkWidget; previous_style :
   PGTKStyle; Data: Pointer); cdecl;
 
 // gtkDragCallback.inc headers
-Function edit_drag_data_received(widget : pgtkWidget;
-			          Context : pGdkDragContext;
-			          X : Integer;
-			          Y : Integer;
-			          seldata : pGtkSelectionData;
-			          info : Integer;
-			          time : Integer;
-                                  data : pointer) : GBoolean; cdecl;
-Function edit_source_drag_data_get(widget : pgtkWidget;
-			          Context : pGdkDragContext;
-			          Selection_data : pGtkSelectionData;
-			          info : Integer;
-			          time : Integer;
-                                  data : pointer) : GBoolean; cdecl;
-Function Edit_source_drag_data_delete (widget : pGtkWidget;
-			                context : pGdkDragContext;
-			                data : gpointer): gBoolean ; cdecl;
+Function edit_drag_data_received(widget: pgtkWidget;
+			          Context: pGdkDragContext;
+			          X: Integer;
+			          Y: Integer;
+			          seldata: pGtkSelectionData;
+			          info: Integer;
+			          time: Integer;
+                                  data: pointer): GBoolean; cdecl;
+Function edit_source_drag_data_get(widget: pgtkWidget;
+			          Context: pGdkDragContext;
+			          Selection_data: pGtkSelectionData;
+			          info: Integer;
+			          time: Integer;
+                                  data: pointer): GBoolean; cdecl;
+Function Edit_source_drag_data_delete (widget: pGtkWidget;
+			                context: pGdkDragContext;
+			                data: gpointer): gBoolean ; cdecl;
 
 // gtklistviewcallbacks.inc headers
 
@@ -250,7 +250,7 @@ function PageIconWidgetExposeAfter(Widget: PGtkWidget; Event: PGDKEventExpose;
   Data: gPointer): GBoolean; cdecl;
 {$IfNdef GTK2}
 function PageIconWidgetDrawAfter(Widget: PGtkWidget; area: PGDKRectangle;
-  data: gPointer) : GBoolean; cdecl;
+  data: gPointer): GBoolean; cdecl;
 {$EndIf}
 
 // callbacks for menu items
@@ -268,7 +268,7 @@ function GetWidgetDebugReport(Widget: PGtkWidget): string;
 function GetWindowDebugReport(AWindow: PGDKWindow): string;
 
 // gtk resources
-procedure Set_RC_Name(Sender : TObject; AWidget: PGtkWidget);
+procedure Set_RC_Name(Sender: TObject; AWidget: PGtkWidget);
 
 // messages
 function DeliverPostMessage(const Target: Pointer; var TheMessage): GBoolean;
@@ -294,7 +294,7 @@ function GetMainWidget(const Widget: Pointer): Pointer;
 procedure SetMainWidget(const ParentWidget, ChildWidget: Pointer);
 function GetFixedWidget(const Widget: Pointer): Pointer;
 procedure SetFixedWidget(const ParentWidget, FixedWidget: Pointer);
-Function GetControlWindow(Widget: Pointer) : PGDKWindow;
+Function GetControlWindow(Widget: Pointer): PGDKWindow;
 
 function CreateWidgetInfo(const AWidget: Pointer): PWidgetInfo;
 function CreateWidgetInfo(const AHandle: THandle; const AObject: TObject; const AParams: TCreateParams): PWidgetInfo;
@@ -314,8 +314,8 @@ function FindFixedChildListItem(ParentFixed: PGtkFixed; Child: PGtkWidget): PGLi
 function FindFixedLastChildListItem(ParentFixed: PGtkFixed): PGList;
 
 // fixed widgets
-Procedure FixedMoveControl(Parent, Child : PGTKWIdget; Left, Top : Longint);
-Procedure FixedPutControl(Parent, Child : PGTKWidget; Left, Top : Longint);
+Procedure FixedMoveControl(Parent, Child: PGTKWIdget; Left, Top: Longint);
+Procedure FixedPutControl(Parent, Child: PGTKWidget; Left, Top: Longint);
 
 // caret
 procedure HideCaretOfWidgetGroup(ChildWidget: PGtkWidget;
@@ -343,16 +343,16 @@ function CreateRectGDKRegion(const ARect: TRect): PGDKRegion;
 function GDKRegionAsString(RGN: PGDKRegion): string;
 
 // color
-Procedure FreeGDIColor(GDIColor : PGDIColor);
+Procedure FreeGDIColor(GDIColor: PGDIColor);
 Procedure AllocGDIColor(DC: hDC; GDIColor: PGDIColor);
-procedure BuildColorRefFromGDKColor(var GDIColor : TGDIColor);
-procedure SetGDIColorRef(var GDIColor : TGDIColor; NewColorRef: TColorRef);
+procedure BuildColorRefFromGDKColor(var GDIColor: TGDIColor);
+procedure SetGDIColorRef(var GDIColor: TGDIColor; NewColorRef: TColorRef);
 Procedure EnsureGCColor(DC: hDC; ColorType: TDevContextsColorType;
   IsSolidBrush, AsBackground: Boolean);
 procedure CopyGDIColor(var SourceGDIColor, DestGDIColor: TGDIColor);
 function AllocGDKColor(const AColor: LongInt): TGDKColor;
-function TGDKColorToTColor(const value : TGDKColor) : TColor;
-function TColortoTGDKColor(const value : TColor) : TGDKColor;
+function TGDKColorToTColor(const value: TGDKColor): TColor;
+function TColortoTGDKColor(const value: TColor): TGDKColor;
 procedure UpdateSysColorMap(Widget: PGtkWidget);
 function IsBackgroundColor(Color: TColor): boolean;
 
@@ -361,20 +361,20 @@ procedure RealizeGtkStyleColor(Style: PGTKStyle; Color: PGDKColor);
 Function GetSysGCValues(Color: TColorRef; ThemeWidget: PGtkWidget): TGDKGCValues;
 
 Function GDKPixel2GDIRGB(Pixel: Longint; Visual: PGDKVisual;
-  Colormap: PGDKColormap) : TGDIRGB;
+  Colormap: PGDKColormap): TGDIRGB;
 
 function CompareGDIColor(const Color1, Color2: TGDIColor): boolean;
 function CompareGDIFill(const Fill1, Fill2: TGdkFill): boolean;
 function CompareGDIBrushes(Brush1, Brush2: PGdiObject): boolean;
 
 // palette
-function PaletteIndexExists(Pal : PGDIObject; I : longint): Boolean;
-function PaletteRGBExists(Pal : PGDIObject; RGB : longint): Boolean;
-function PaletteAddIndex(Pal : PGDIObject; I, RGB : Longint): Boolean;
-function PaletteDeleteIndex(Pal : PGDIObject; I : Longint): Boolean;
-function PaletteIndexToRGB(Pal : PGDIObject; I : longint): longint;
-function PaletteRGBToIndex(Pal : PGDIObject; RGB : longint): longint;
-Procedure InitializePalette(Pal : PGDIObject; Entries : PPALETTEENTRY; RGBCount : Longint);
+function PaletteIndexExists(Pal: PGDIObject; I: longint): Boolean;
+function PaletteRGBExists(Pal: PGDIObject; RGB: longint): Boolean;
+function PaletteAddIndex(Pal: PGDIObject; I, RGB: Longint): Boolean;
+function PaletteDeleteIndex(Pal: PGDIObject; I: Longint): Boolean;
+function PaletteIndexToRGB(Pal: PGDIObject; I: longint): longint;
+function PaletteRGBToIndex(Pal: PGDIObject; RGB: longint): longint;
+Procedure InitializePalette(Pal: PGDIObject; Entries: PPALETTEENTRY; RGBCount: Longint);
 function GetIndexAsKey(p: pointer): pointer;
 function GetRGBAsKey(p: pointer): pointer;
 
@@ -394,8 +394,8 @@ function GetVKeyInfo(const AVKey: Byte): TVKeyInfo;
 function IsToggleKey(const AVKey: Byte): Boolean;
 //function GTKEventState2ShiftState(KeyState: Word): TShiftState;
 //function KeyToListCode_(KeyCode, VirtKeyCode: Word; Extended: boolean): integer;
-procedure gdk_event_key_get_string(Event : PGDKEventKey; var theString : Pointer);
-function gdk_event_get_type(Event : Pointer) : guint;
+procedure gdk_event_key_get_string(Event: PGDKEventKey; var theString: Pointer);
+function gdk_event_get_type(Event: Pointer): guint;
 procedure RememberKeyEventWasHandledByLCL(Event: PGdkEventKey);
 function KeyEventWasHandledByLCL(Event: PGdkEventKey): boolean;
 // ----
@@ -416,7 +416,7 @@ function GetWidgetOrigin(TheWidget: PGtkWidget): TPoint;
 function GetWidgetClientOrigin(TheWidget: PGtkWidget): TPoint;
 function TranslateGdkPointToClientArea(SourceWindow: PGdkWindow;
   SourcePos: TPoint;  DestinationWidget: PGtkWidget): TPoint;
-procedure SetCursor(AWinControl : TWinControl; Data: Pointer);
+procedure SetCursor(AWinControl: TWinControl; Data: Pointer);
 
 // mouse capturing
 procedure CaptureMouseForWidget(Widget: PGtkWidget; Owner: TMouseCaptureType);
@@ -536,10 +536,10 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
 //--
   
 // accelerators
-Function DeleteAmpersands(var Str : String) : Longint;
-function Ampersands2Underscore(Src: PChar) : PChar;
+Function DeleteAmpersands(var Str: String): Longint;
+function Ampersands2Underscore(Src: PChar): PChar;
 function Ampersands2Underscore(const ASource: String): String;
-function RemoveAmpersands(Src: PChar; LineLength : Longint) : PChar;
+function RemoveAmpersands(Src: PChar; LineLength: Longint): PChar;
 function RemoveAmpersands(const ASource: String): String;
 procedure LabelFromAmpersands(var AText, APattern: String; var AAccelChar: Char);
 
@@ -550,10 +550,10 @@ procedure SetAccelGroup(const Widget: PGtkWidget;
 procedure FreeAccelGroup(const Widget: PGtkWidget);
 procedure RegroupAccelerator(Widget: PGtkWidget);
 procedure ClearAccelKey(Widget: PGtkWidget);
-procedure Accelerate(Component: TComponent; const Widget : PGtkWidget;
-  const Key: guint; Mods: TGdkModifierType; const Signal : string);
-procedure Accelerate(Component: TComponent; const Widget : PGtkWidget;
-  const Msg : TLMShortCut; const Signal : string);
+procedure Accelerate(Component: TComponent; const Widget: PGtkWidget;
+  const Key: guint; Mods: TGdkModifierType; const Signal: string);
+procedure Accelerate(Component: TComponent; const Widget: PGtkWidget;
+  const Msg: TLMShortCut; const Signal: string);
 procedure ShareWindowAccelGroups(AWindow: PGtkWidget);
 procedure UnshareWindowAccelGroups(AWindow: PGtkWidget);
 
@@ -570,12 +570,12 @@ function ScalePixmap(ScaleGC: PGDKGC;
   SrcPixmap: PGdkPixmap; SrcX, SrcY, SrcWidth, SrcHeight: integer;
   SrcColorMap: PGdkColormap;
   NewWidth, NewHeight: integer;
-  var NewPixmap: PGdkPixmap) : Boolean;
+  var NewPixmap: PGdkPixmap): Boolean;
 procedure DrawImageListIconOnWidget(ImgList: TCustomImageList;
   Index: integer; DestWidget: PGTKWidget);
 {$IfDef Win32}
-Procedure gdk_window_copy_area(Dest : PGDKWindow; GC : PGDKGC;
-  DestX, DestY : Longint; SRC : PGDKWindow; XSRC, YSRC, Width, Height : Longint);
+Procedure gdk_window_copy_area(Dest: PGDKWindow; GC: PGDKGC;
+  DestX, DestY: Longint; SRC: PGDKWindow; XSRC, YSRC, Width, Height: Longint);
 {$EndIf}
 function CreateGdkBitmap(Window: PGdkWindow; Width, Height: integer): PGdkBitmap;
 function ExtractGdkBitmap(Bitmap: PGdkBitmap; const SrcRect: TRect): PGdkBitmap;
@@ -597,7 +597,7 @@ procedure GetGdkPixmapFromMenuItem(LCLMenuItem: TMenuItem;
 procedure SaveSizeNotification(Widget: PGtkWidget);
 procedure SaveClientSizeNotification(FixWidget: PGtkWidget);
 function CreateTopologicalSortedWidgets(HashArray: TDynHashArray): TList;
-Procedure ReportNotObsolete(const Texts : String);
+Procedure ReportNotObsolete(const Texts: String);
 function WaitForClipboardAnswer(c: PClipboardEventData): boolean;
 function RequestSelectionData(ClipboardWidget: PGtkWidget;
   ClipboardType: TClipboardType;  FormatID: cardinal): TGtkSelectionData;
@@ -608,48 +608,48 @@ Function CreateFormContents(AForm: TCustomForm; var FormWidget: Pointer): Pointe
 
 // styles
 function IndexOfStyle(aStyle: TLazGtkStyle): integer;
-function IndexOfStyleWithName(const WName : String): integer;
+function IndexOfStyleWithName(const WName: String): integer;
 Procedure ReleaseAllStyles;
 Procedure ReleaseStyle(aStyle: TLazGtkStyle);
-Procedure ReleaseStyleWithName(const WName : String);
+Procedure ReleaseStyleWithName(const WName: String);
 function GetStyle(aStyle: TLazGtkStyle): PGTKStyle;
-function GetStyleWithName(const WName : String) : PGTKStyle;
-Function GetStyleWidget(aStyle: TLazGtkStyle) : PGTKWidget;
-Function GetStyleWidgetWithName(const WName : String) : PGTKWidget;
-Procedure StyleFillRectangle(drawable : PGDKDrawable; GC : PGDKGC; Color : TColorRef; x, y, width, height : gint);
-Function StyleForegroundColor(Color : TColorRef; DefaultColor : PGDKColor): PGDKColor;
+function GetStyleWithName(const WName: String): PGTKStyle;
+Function GetStyleWidget(aStyle: TLazGtkStyle): PGTKWidget;
+Function GetStyleWidgetWithName(const WName: String): PGTKWidget;
+Procedure StyleFillRectangle(drawable: PGDKDrawable; GC: PGDKGC; Color: TColorRef; x, y, width, height: gint);
+Function StyleForegroundColor(Color: TColorRef; DefaultColor: PGDKColor): PGDKColor;
 procedure UpdateWidgetStyleOfControl(AWinControl: TWinControl);
 
 // fonts
 {$Ifdef GTK2}
 function LoadDefaultFontDesc: PPangoFontDescription;
-Procedure GetTextExtentIgnoringAmpersands(FontDesc : PPangoFontDescription; Str : PChar;
-  LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
+Procedure GetTextExtentIgnoringAmpersands(FontDesc: PPangoFontDescription; Str: PChar;
+  LineLength: Longint; lbearing, rbearing, width, ascent, descent: Pgint);
 {$ENDIF}
 {$IFDEF GTK1}
 function FontIsDoubleByteCharsFont(TheFont: PGdkFont): boolean;
 function LoadDefaultFont: PGDKFont;
-Procedure GetTextExtentIgnoringAmpersands(Font : PGDKFont; Str : PChar;
-  LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
+Procedure GetTextExtentIgnoringAmpersands(Font: PGDKFont; Str: PChar;
+  LineLength: Longint; lbearing, rbearing, width, ascent, descent: Pgint);
 {$EndIf}
 function GetDefaultFontName: string;
-Procedure FillScreenFonts(ScreenFonts : TStrings);
+Procedure FillScreenFonts(ScreenFonts: TStrings);
 function GetTextHeight(DCTextMetric: TDevContextTextMetric): integer;
 
 // decoration
-Function GetWindowDecorations(AForm : TCustomForm) : Longint;
-Function GetWindowFunction(AForm : TCustomForm) : Longint;
+Function GetWindowDecorations(AForm: TCustomForm): Longint;
+Function GetWindowFunction(AForm: TCustomForm): Longint;
 
 // mouse cursor
 function GetGDKMouseCursor(Cursor: TCursor): PGdkCursor;
 Procedure FreeGDKCursors;
 
 // functions for easier GTK2<->GTK1 Compatibility/Consistency  ---->
-function gtk_widget_get_xthickness(Style : PGTKStyle) : gint; overload;
-function gtk_widget_get_ythickness(Style : PGTKStyle) : gint; overload;
+function gtk_widget_get_xthickness(Style: PGTKStyle): gint; overload;
+function gtk_widget_get_ythickness(Style: PGTKStyle): gint; overload;
 
-function gtk_widget_get_xthickness(Style : PGTKWidget) : gint; overload;
-function gtk_widget_get_ythickness(Style : PGTKWidget) : gint; overload;
+function gtk_widget_get_xthickness(Style: PGTKWidget): gint; overload;
+function gtk_widget_get_ythickness(Style: PGTKWidget): gint; overload;
 
 // debugging
 procedure BeginGDKErrorTrap;
@@ -659,77 +659,77 @@ procedure EndGDKErrorTrap;
   type
      PGtkOldEditable = PGtkEditable;
 
-  function gtk_class_get_type(aclass : Pointer) : TGtkType;
+  function gtk_class_get_type(aclass: Pointer): TGtkType;
 
   //routines to mimic GObject routines/behaviour-->
   procedure g_signal_emit_by_name(anObject:PGtkObject; name:Pgchar; args:array of const); cdecl; overload; external gtkdll name 'gtk_signal_emit_by_name';
   procedure g_signal_emit_by_name(anObject:PGtkObject; name:Pgchar); cdecl; overload; external gtkdll name 'gtk_signal_emit_by_name';
 
-  Procedure g_signal_handlers_destroy(anObject : PGtkObject); cdecl; external gtkdll name 'gtk_signal_handlers_destroy';
-  Procedure g_signal_stop_emission_by_name(anObject : PGtkObject; detailed_signal : Pgchar); cdecl; external gtkdll name 'gtk_signal_emit_stop_by_name';
-  Function g_signal_connect(anObject : PGtkObject; name : Pgchar; func : TGtkSignalFunc; func_data : gpointer) : guint; cdecl; external gtkdll name 'gtk_signal_connect';
-  Function g_signal_connect_after(anObject : PGtkObject; name : Pgchar; func : TGtkSignalFunc; func_data : gpointer) : guint; cdecl; external gtkdll name 'gtk_signal_connect_after';
-  Function g_signal_lookup(name : Pgchar; anObject : TGTKType) : guint; cdecl; external gtkdll name 'gtk_signal_lookup';
+  Procedure g_signal_handlers_destroy(anObject: PGtkObject); cdecl; external gtkdll name 'gtk_signal_handlers_destroy';
+  Procedure g_signal_stop_emission_by_name(anObject: PGtkObject; detailed_signal: Pgchar); cdecl; external gtkdll name 'gtk_signal_emit_stop_by_name';
+  Function g_signal_connect(anObject: PGtkObject; name: Pgchar; func: TGtkSignalFunc; func_data: gpointer): guint; cdecl; external gtkdll name 'gtk_signal_connect';
+  Function g_signal_connect_after(anObject: PGtkObject; name: Pgchar; func: TGtkSignalFunc; func_data: gpointer): guint; cdecl; external gtkdll name 'gtk_signal_connect_after';
+  Function g_signal_lookup(name: Pgchar; anObject: TGTKType): guint; cdecl; external gtkdll name 'gtk_signal_lookup';
 
   //routines to mimic similar GTK2 routines/behaviour-->
-  function gtk_object_get_class(anobject : Pointer) : Pointer;
+  function gtk_object_get_class(anobject: Pointer): Pointer;
   Function gtk_window_get_modal(window:PGtkWindow):gboolean;
-  Function gtk_bin_get_child(bin : PGTKBin) : PGTKWidget;
-  Procedure gtk_menu_item_set_right_justified(menu_item : PGtkMenuItem; right_justified : gboolean);
-  Function gtk_check_menu_item_get_active(menu_item : PGtkCheckMenuItem) : gboolean;
-  Procedure gtk_menu_append(menu : PGTKWidget; Item : PGtkWidget);
-  Procedure gtk_menu_insert(menu : PGtkWidget; Item : PGTKWidget; Index : gint);
-  Procedure gtk_menu_bar_insert(menubar : PGtkWidget; Item : PGTKWidget; Index : gint);
-  Function gtk_image_new : PGTKWidget;
-  Function gtk_toolbar_new : PGTKWidget;
-  Procedure gtk_color_selection_get_current_color(colorsel : PGTKColorSelection; Color : PGDKColor);
-  Procedure gtk_color_selection_set_current_color(colorsel : PGTKColorSelection; Color : PGDKColor);
+  Function gtk_bin_get_child(bin: PGTKBin): PGTKWidget;
+  Procedure gtk_menu_item_set_right_justified(menu_item: PGtkMenuItem; right_justified: gboolean);
+  Function gtk_check_menu_item_get_active(menu_item: PGtkCheckMenuItem): gboolean;
+  Procedure gtk_menu_append(menu: PGTKWidget; Item: PGtkWidget);
+  Procedure gtk_menu_insert(menu: PGtkWidget; Item: PGTKWidget; Index: gint);
+  Procedure gtk_menu_bar_insert(menubar: PGtkWidget; Item: PGTKWidget; Index: gint);
+  Function gtk_image_new: PGTKWidget;
+  Function gtk_toolbar_new: PGTKWidget;
+  Procedure gtk_color_selection_get_current_color(colorsel: PGTKColorSelection; Color: PGDKColor);
+  Procedure gtk_color_selection_set_current_color(colorsel: PGTKColorSelection; Color: PGDKColor);
 
   //routines to mimic similar GDK2 routines/behaviour-->
-  procedure gdk_image_unref(Image : PGdkImage);
-  Function gdk_image_get_colormap(Image : PGDKImage) : PGdkColormap;
-  Procedure gdk_colormap_query_color(colormap : PGDKColormap; Pixel : gulong; Result : PGDKColor);
+  procedure gdk_image_unref(Image: PGdkImage);
+  Function gdk_image_get_colormap(Image: PGDKImage): PGdkColormap;
+  Procedure gdk_colormap_query_color(colormap: PGDKColormap; Pixel: gulong; Result: PGDKColor);
 
   //Wrapper around misnamed "regions" routines -->
-  Function gdk_region_intersect(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
-  Function gdk_region_union(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
-  Function gdk_region_subtract(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
-  Function gdk_region_xor(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
+  Function gdk_region_intersect(source1:PGdkRegion; source2:PGdkRegion): PGdkRegion;
+  Function gdk_region_union(source1:PGdkRegion; source2:PGdkRegion): PGdkRegion;
+  Function gdk_region_subtract(source1:PGdkRegion; source2:PGdkRegion): PGdkRegion;
+  Function gdk_region_xor(source1:PGdkRegion; source2:PGdkRegion): PGdkRegion;
   function gdk_region_copy(region: PGDKRegion): PGDKRegion;
   function gdk_region_rectangle(rect: PGdkRectangle): PGDKRegion;
 
   //routines to mimic similar GDK2 routines/behaviour-->
-  Function gdk_pixmap_create_from_xpm_d (window : PGdkWindow; var mask : PGdkBitmap; transparent_color : PGdkColor; data : PPgchar) : PGdkPixmap;
-  Function gdk_pixmap_colormap_create_from_xpm_d (window : PGdkWindow; colormap: PGdkColormap; var mask : PGdkBitmap; transparent_color : PGdkColor; data : PPgchar) : PGdkPixmap;
-  Function gdk_pixmap_colormap_create_from_xpm (window : PGdkWindow; colormap: PGdkColormap; var mask : PGdkBitmap; transparent_color : PGdkColor; filename : Pgchar) : PGdkPixmap;
+  Function gdk_pixmap_create_from_xpm_d (window: PGdkWindow; var mask: PGdkBitmap; transparent_color: PGdkColor; data: PPgchar): PGdkPixmap;
+  Function gdk_pixmap_colormap_create_from_xpm_d (window: PGdkWindow; colormap: PGdkColormap; var mask: PGdkBitmap; transparent_color: PGdkColor; data: PPgchar): PGdkPixmap;
+  Function gdk_pixmap_colormap_create_from_xpm (window: PGdkWindow; colormap: PGdkColormap; var mask: PGdkBitmap; transparent_color: PGdkColor; filename: Pgchar): PGdkPixmap;
 
   {$IfNDef NoGdkPixbufLib}
-  Procedure gdk_pixbuf_render_pixmap_and_mask(pixbuf : PGdkPixbuf; var pixmap_return : PGdkPixmap; var mask_return : PGdkBitmap; alpha_threshold : gint);
+  Procedure gdk_pixbuf_render_pixmap_and_mask(pixbuf: PGdkPixbuf; var pixmap_return: PGdkPixmap; var mask_return: PGdkBitmap; alpha_threshold: gint);
   {$EndIf}
   
   //Wrapper around window functions like gtk2 -->
-  Function gdk_drawable_get_depth(Drawable : PGDKDrawable) : gint;
-  Procedure gdk_drawable_get_size(Drawable : PGDKDrawable; Width, Height : PGInt);
-  Function gdk_drawable_get_image(Drawable : PGDKDrawable; x, y, width, height : gint) : PGdkImage;
-  Function gdk_drawable_get_colormap(Drawable : PGDKDrawable) : PGdkColormap;
+  Function gdk_drawable_get_depth(Drawable: PGDKDrawable): gint;
+  Procedure gdk_drawable_get_size(Drawable: PGDKDrawable; Width, Height: PGInt);
+  Function gdk_drawable_get_image(Drawable: PGDKDrawable; x, y, width, height: gint): PGdkImage;
+  Function gdk_drawable_get_colormap(Drawable: PGDKDrawable): PGdkColormap;
 {$EndIF}
 
 {$Ifdef GTK2}
-  function gtk_class_get_type(aclass : Pointer) : TGtkType;
+  function gtk_class_get_type(aclass: Pointer): TGtkType;
 
   //we wrap our own versions to handle nil tests -->
-  function gtk_object_get_class(anobject : Pointer) : Pointer;
+  function gtk_object_get_class(anobject: Pointer): Pointer;
   Function gtk_window_get_modal(window:PGtkWindow):gboolean;
 
   //we wrap our own versions to do gtk1 style result = new region -->
-  Function gdk_region_union_with_rect(region:PGdkRegion; rect:PGdkRectangle) : PGdkRegion;
-  Function gdk_region_intersect(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
-  Function gdk_region_union(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
-  Function gdk_region_subtract(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
-  Function gdk_region_xor(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
+  Function gdk_region_union_with_rect(region:PGdkRegion; rect:PGdkRectangle): PGdkRegion;
+  Function gdk_region_intersect(source1:PGdkRegion; source2:PGdkRegion): PGdkRegion;
+  Function gdk_region_union(source1:PGdkRegion; source2:PGdkRegion): PGdkRegion;
+  Function gdk_region_subtract(source1:PGdkRegion; source2:PGdkRegion): PGdkRegion;
+  Function gdk_region_xor(source1:PGdkRegion; source2:PGdkRegion): PGdkRegion;
 
   //mimic GDKFont Routines With Pango -->
-  Procedure gdk_text_extents(FontDesc : PPangoFontDescription; Str : PChar; LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
+  Procedure gdk_text_extents(FontDesc: PPangoFontDescription; Str: PChar; LineLength: Longint; lbearing, rbearing, width, ascent, descent: Pgint);
 {$EndIf}
 
 implementation
@@ -809,10 +809,10 @@ var
 {$ENDIF}
 
 var
-  GdkTrapIsSet : Boolean;
-  GdkTrapCalls : Integer;
+  GdkTrapIsSet: Boolean;
+  GdkTrapCalls: Integer;
 
-procedure Set_RC_Name(Sender : TObject; AWidget: PGtkWidget);
+procedure Set_RC_Name(Sender: TObject; AWidget: PGtkWidget);
 var RCName: string;
   AComponent: TComponent;
 begin

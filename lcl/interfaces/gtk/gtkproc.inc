@@ -5394,6 +5394,11 @@ begin
       StyleObject^.Widget := GTK_BUTTON_NEW;
       lgs:=lgsButton;
     end else
+      If AnsiCompareText(WName,LazGtkStyleNames[lgsLabel])=0 then begin
+        StyleObject^.Widget := GTK_LABEL_NEW('StyleLabel');
+        lgs:=lgsLabel;
+      end
+    else
       If AnsiCompareText(WName,LazGtkStyleNames[lgsDefault])=0 then begin
         lgs:=lgsDefault;
         AddToStyleWindow:=false;
@@ -6739,6 +6744,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.273  2004/04/03 18:08:40  mattias
+  fixed TLabel.AutoWrap=true and label on formless parent in gtk intf
+
   Revision 1.272  2004/03/28 12:49:23  mattias
   implemented mask merge and extraction for raw images
 
