@@ -980,18 +980,33 @@ end;
 {------------------------------------------------------------------------------}
 
 Procedure TMainIDE.UpdateViewDialogs;
-var a:integer;
+var a,ProgramNameStart,ProgramNameEnd:integer;
+  s,SrcTxt:string;
 Begin
   ViewUnits1.Listbox1.Items.BeginUpdate;
   ViewUnits1.Listbox1.Items.Clear;
-  ViewForms1.Listbox1.Items.BeginUpdate;
-  ViewForms1.Listbox1.Items.Clear;
+//  ViewForms1.Listbox1.Items.BeginUpdate;
+//  ViewForms1.Listbox1.Items.Clear;
   for a:=0 to Project.UnitCount-1 do begin
-    ViewUnits1.Listbox1.Items.Add(Project.Units[a].Unitname);
-    // ToDo: forms
+    if Project.Units[a].IsPartOfProject then begin
+      if (Project.Units[a].Unitname<>'') then begin
+        ViewUnits1.Listbox1.Items.Add(Project.Units[a].Unitname);
+//        if Project.Units[a].FormName<>'' then
+//          ViewForms1.Listbox1.Items.Add(Project.Units[a].Unitname);
+      end else if (Project.MainUnit=a) 
+      and (Project.ProjectType in [ptProgram,ptApplication]) then begin
+        s:=ExtractFilename(Project.Units[a].Filename);
+        if s='' then begin
+          SrcTxt:=Project.Units[a].Source.Text;
+          s:=FindProgramNameInSource(SrcTxt,ProgramNameStart,ProgramnameEnd);
+        end;
+        if s<>'' then
+          ViewUnits1.Listbox1.Items.Add(s);
+      end;      
+    end;
   end;
   ViewUnits1.Listbox1.Items.EndUpdate;
-  ViewForms1.Listbox1.Items.EndUpdate;
+//  ViewForms1.Listbox1.Items.EndUpdate;
 End;
 
 {------------------------------------------------------------------------------}
@@ -1004,7 +1019,7 @@ Begin
   writeln('Toggle form clicked');
 
   if FCodeLastActivated then
-    SourceNotebook.DisplayFormforActivePage
+    SourceNotebook.DisplayFormForActivePage
   else
     SourceNotebook.DisplayCodeforControl(FControlLastActivated);
 end;
@@ -1326,13 +1341,17 @@ end;
 Procedure TMainIDE.mnuViewUnitsClicked(Sender : TObject);
 Begin
   Writeln('View Units Clicked');
+  UpdateViewDialogs;
   ViewUnits1.ShowModal;
   Writeln('Done with ViewUnits Clicked');
 end;
 
 Procedure TMainIDE.mnuViewFormsClicked(Sender : TObject);
 Begin
-
+  Writeln('View Forms Clicked');
+  UpdateViewDialogs;
+  ViewForms1.ShowModal;
+  Writeln('Done with ViewForms Clicked');
 end;
 
 Procedure TMainIDE.mnuViewCodeExplorerClick(Sender : TObject);
@@ -2172,23 +2191,25 @@ end;
 
 function TMainIDE.DoCloseProject:TModalResult;
 begin
-writeln('TMainIDE.DoCloseProject');
+writeln('TMainIDE.DoCloseProject 1');
   // close all loaded files
   while SourceNotebook.NoteBook<>nil do begin
     Result:=DoCloseEditorUnit(SourceNotebook.Notebook.Pages.Count-1,false);
     if Result=mrAbort then exit;
   end;
+writeln('TMainIDE.DoCloseProject 2');
   // close Project
   Project.Free;
   Project:=nil;
   Result:=mrOk;
+writeln('TMainIDE.DoCloseProject end');
 end;
 
 function TMainIDE.DoOpenProjectFile(AFileName:string):TModalResult;
 var Ext,AText,ACaption,LPIFilename:string;
   LowestEditorIndex,LowestUnitIndex,LastEditorIndex,i:integer;
 begin
-writeln('TMainIDE.DoOpenProjectFile');
+writeln('TMainIDE.DoOpenProjectFile 1');
   Result:=mrCancel;
   if AFileName='' then exit;
   AFilename:=ExpandFileName(AFilename);
@@ -2211,10 +2232,13 @@ writeln('TMainIDE.DoOpenProjectFile');
   // close the old project
   Result:=DoCloseProject;
   if Result=mrAbort then exit;
+writeln('TMainIDE.DoOpenProjectFile 2');
   // create a new one
   LPIFilename:=ChangeFileExt(AFilename,'.lpi');
   Project:=TProject.Create(ptProgram);
+writeln('TMainIDE.DoOpenProjectFile 3');
   Project.ReadProject(LPIFilename);
+writeln('TMainIDE.DoOpenProjectFile 4');
   UpdateCaption;
   // restore files
   LastEditorIndex:=-1;
@@ -2241,10 +2265,12 @@ writeln('TMainIDE.DoOpenProjectFile');
       LastEditorIndex:=LowestEditorIndex;
     end;
   until LowestEditorIndex<0;
+writeln('TMainIDE.DoOpenProjectFile 5');
   // set active editor source editor
   if (SourceNoteBook.NoteBook<>nil) and (Project.ActiveEditorIndexAtStart>=0)
   and (Project.ActiveEditorIndexAtStart<SourceNoteBook.NoteBook.Pages.Count) then
     SourceNoteBook.Notebook.PageIndex:=Project.ActiveEditorIndexAtStart;
+writeln('TMainIDE.DoOpenProjectFile end');
 end;
 
 function TMainIDE.DoSaveAll: TModalResult;
@@ -2420,6 +2446,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.69  2001/03/05 14:24:52  lazarus
+  bugfixes for ide project code
+
   Revision 1.68  2001/03/03 11:06:15  lazarus
   added project support, codetools
 

@@ -33,7 +33,7 @@ interface
 
 uses
   Classes, SysUtils, LCLLinux, XMLCfg, LazConf, CompilerOptions, FileCtrl,
-  CodeTools, Forms, Controls, EditorOptions;
+  CodeTools, Forms, Controls, EditorOptions, Dialogs;
 
 type
   //---------------------------------------------------------------------------
@@ -212,7 +212,7 @@ type
                               IsPartOfProject:boolean):TModalResult;
     function GetProjectInfoFile:string;
     procedure SetProjectInfoFile(NewFilename:string);
-    procedure OnLoadSaveFilename(var Filename:string; Load:boolean);
+    procedure OnLoadSaveFilename(var AFilename:string; Load:boolean);
     procedure OnUnitNameChange(AnUnitInfo: TUnitInfo; 
        OldUnitName, NewUnitName: string;  var Allowed: boolean);
   public
@@ -245,7 +245,8 @@ type
     property ActiveEditorIndexAtStart: integer 
        read fActiveEditorIndexAtStart write fActiveEditorIndexAtStart;
     property Bookmarks: TProjectBookmarkList read fBookmarks write fBookmarks;
-    property CompilerOptions: TCompilerOptions read fCompilerOptions write fCompilerOptions;
+    property CompilerOptions: TCompilerOptions 
+       read fCompilerOptions write fCompilerOptions;
     property IconPath: String read fIconPath write fIconPath;
     property MainUnit: Integer  // the MainUnit is the unit index of the program file
        read fMainUnit write fMainUnit;
@@ -257,7 +258,8 @@ type
     property ProjectType: TProjectType read fProjectType write fProjectType;
     property TargetFileExt: String read fTargetFileExt write fTargetFileExt;
     property Title: String read fTitle write fTitle;
-    property UnitOutputDirectory: String read fUnitOutputDirectory write fUnitOutputDirectory;
+    property UnitOutputDirectory: String
+       read fUnitOutputDirectory write fUnitOutputDirectory;
   end;
 
 const
@@ -627,6 +629,7 @@ begin
   AFilename:=XMLConfig.GetValue(Path+'Filename/Value','');
   if Assigned(fOnLoadSaveFilename) then
     fOnLoadSaveFilename(AFilename,true);
+writeln('TUnitInfo.LoadFromXMLConfig ',AFilename);
   fFilename:=AFilename;
   fFormName:=XMLConfig.GetValue(Path+'FormName/Value','');
   HasResources:=XMLConfig.GetValue(Path+'HasResources/Value',false);
@@ -873,12 +876,22 @@ var
   NewUnitInfo: TUnitInfo;
   NewUnitCount,i: integer;
 begin
+writeln('TProject.ReadProject 1');
   Result := mrCancel;
   Clear;
 
   ProjectInfoFile:=LPIFilename;
-  xmlcfg := TXMLConfig.Create(ProjectInfoFile);
+writeln('TProject.ReadProject 2 ',LPIFilename);
+  try
+    xmlcfg := TXMLConfig.Create(ProjectInfoFile);
+  except
+    MessageDlg('Unable to read the project info file "'+ProjectInfoFile+'".'
+        ,mtError,[mbOk],0);
+    Result:=mrCancel;
+    exit;
+  end;
 
+writeln('TProject.ReadProject 3');
   try
     MainUnit := xmlcfg.GetValue('ProjectOptions/General/MainUnit/Value', -1);
     ActiveEditorIndexAtStart := xmlcfg.GetValue(
@@ -893,25 +906,29 @@ begin
        'ProjectOptions/General/UnitOutputDirectory/Value', '.');
     fBookmarks.LoadFromXMLConfig(xmlcfg,'ProjectOptions/');
 
+writeln('TProject.ReadProject 4');
     NewUnitCount:=xmlcfg.GetValue('ProjectOptions/Units/Count',0);
     for i := 0 to NewUnitCount - 1 do begin
       NewUnitInfo:=TUnitInfo.Create;
+      AddUnit(NewUnitInfo,false);
       NewUnitInfo.LoadFromXMLConfig(
          xmlcfg,'ProjectOptions/Units/Unit'+IntToStr(i)+'/');
-      AddUnit(NewUnitInfo,false);
     end;
 
+writeln('TProject.ReadProject 5');
     // Load the compiler options
     CompilerOptions.XMLConfigFile := xmlcfg;
     CompilerOptions.ProjectFile := ProjectFile;
     CompilerOptions.LoadCompilerOptions(true);
 
+writeln('TProject.ReadProject 6');
   finally
     xmlcfg.Free;
     xmlcfg:=nil;
   end;
 
   Result := mrOk;
+writeln('TProject.ReadProject end');
 end;
 
 {------------------------------------------------------------------------------
@@ -1250,10 +1267,12 @@ begin
     // change programname in source
     NewProgramName:=ExtractFilename(NewProjectFilename);
     NewProgramName:=copy(NewProgramName,1,length(NewProgramName)-length(Ext));
-    SrcTxt:=Units[MainUnit].Source.Text;
-    SrcChanged:=RenameProgramInSource(SrcTxt,NewProgramName);
-    if SrcChanged then
-      Units[MainUnit].Source.Text:=SrcTxt;
+    if MainUnit>=0 then begin
+      SrcTxt:=Units[MainUnit].Source.Text;
+      SrcChanged:=RenameProgramInSource(SrcTxt,NewProgramName);
+      if SrcChanged then
+        Units[MainUnit].Source.Text:=SrcTxt;
+    end;
   end;
   if MainUnit>=0 then begin
     Units[MainUnit].Filename:=ChangeFileExt(NewProjectFilename
@@ -1286,17 +1305,17 @@ begin
   ProjectFile:=NewFilename;
 end;
 
-procedure TProject.OnLoadSaveFilename(var Filename:string; Load:boolean);
+procedure TProject.OnLoadSaveFilename(var AFilename:string; Load:boolean);
 
-  function FilenameIsAbsolute(AFilename: string):boolean;
+  function FilenameIsAbsolute(TheFilename: string):boolean;
   begin
-    DoDirSeparators(AFilename);
+    DoDirSeparators(TheFilename);
     {$IFDEF linux}
-    Result:=(AFilename='') or (AFilename[1]='/');
+    Result:=(TheFilename='') or (TheFilename[1]='/');
     {$ELSE}
     // windows
-    Result:=(length(AFilename)<3) or (copy(AFilename,1,2)='\\')
-        or ((upcase(AFilename[1]) in ['A'..'Z']) and (copy(AFilename,2,2)=':\');
+    Result:=(length(TheFilename)<3) or (copy(TheFilename,1,2)='\\')
+        or ((upcase(TheFilename[1]) in ['A'..'Z']) and (copy(TheFilename,2,2)=':\');
     {$ENDIF}
   end;
 
@@ -1304,17 +1323,18 @@ procedure TProject.OnLoadSaveFilename(var Filename:string; Load:boolean);
 var ProjectPath:string;
 begin
   ProjectPath:=ExtractFilePath(ProjectFile);
-  DoDirSeparators(Filename);
+  if ProjectPath='' then ProjectPath:=GetCurrentDir;
+  DoDirSeparators(AFilename);
   if Load then begin
     // make filename absolute
-    if not FilenameIsAbsolute(Filename) then
-      Filename:=ProjectPath+Filename;
+    if not FilenameIsAbsolute(AFilename) then
+      AFilename:=ProjectPath+AFilename;
   end else begin
     // try making filename relative to project file
-    if FilenameIsAbsolute(Filename) 
-    and (copy(Filename,1,length(ProjectPath))=ProjectPath) then
-      Filename:=copy(Filename,length(ProjectPath)+1,
-           length(Filename)-length(ProjectPath));
+    if FilenameIsAbsolute(AFilename) 
+    and (copy(AFilename,1,length(ProjectPath))=ProjectPath) then
+      AFilename:=copy(AFilename,length(ProjectPath)+1,
+           length(AFilename)-length(ProjectPath));
   end;
 end;
 
@@ -1348,6 +1368,9 @@ end.
 
 {
   $Log$
+  Revision 1.11  2001/03/05 14:24:52  lazarus
+  bugfixes for ide project code
+
   Revision 1.10  2001/03/03 11:06:15  lazarus
   added project support, codetools
 

@@ -143,7 +143,7 @@ begin
     while (EndPos<DirEnd) and (Directive[EndPos] in IdentifierChar) do
       inc(EndPos);
     DirectiveName:=lowercase(copy(Directive,DirStart,EndPos-DirStart));
-    Parameters:=copy(Directive,EndPos+1,DirEnd-EndPos+1);
+    Parameters:=copy(Directive,EndPos+1,DirEnd-EndPos-1);
     Result:=true;
   end else
     Result:=false;

@@ -2066,7 +2066,7 @@ begin
   Result := nil;
   if (FSourceEditorList=nil)
     or (Notebook=nil) 
-    or (PageIndex<0) or (PageIndex>Notebook.Pages.Count) then exit;
+    or (PageIndex<0) or (PageIndex>=Notebook.Pages.Count) then exit;
   TempEditor:=nil;
   with Notebook.Page[PageIndex] do
     for I := 0 to ControlCount-1 do
