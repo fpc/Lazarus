@@ -30,6 +30,8 @@
       - add missing method bodies
           - add useful statements
       - add missing forward proc bodies
+      - complete event assignments
+      - complete local variables
 
   ToDo:
     -ProcExists: search procs in ancestors too
