@@ -949,7 +949,7 @@ begin
       {$IFDEF SYN_LAZARUS}
       NewBlockBegin:=CaretXY;
       CurLine:=TSynEditStringList(Lines).ExpandedStrings[NewBlockBegin.Y - 1];
-      while (NewBlockBegin.X>1)
+      while (NewBlockBegin.X>1) and (NewBlockBegin.X-1<=length(CurLine))
       and (CurLine[NewBlockBegin.X-1] in ['a'..'z','A'..'Z','0'..'9','_']) do
         dec(NewBlockBegin.X);
       BlockBegin:=NewBlockBegin;

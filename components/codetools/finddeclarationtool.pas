@@ -551,8 +551,6 @@ type
     function FindContextNodeAtCursor(
       Params: TFindDeclarationParams): TFindContext;
     function FindIdentifierInContext(Params: TFindDeclarationParams): boolean;
-    function FindBaseTypeOfNode(Params: TFindDeclarationParams;
-      Node: TCodeTreeNode): TFindContext;
     function FindClassOfMethod(ProcNode: TCodeTreeNode;
       Params: TFindDeclarationParams; FindClassContext: boolean): boolean;
     function FindAncestorOfClass(ClassNode: TCodeTreeNode;
@@ -597,7 +595,8 @@ type
   public
     procedure BuildTree(OnlyInterfaceNeeded: boolean); override;
     destructor Destroy; override;
-    
+    function ConsistencyCheck: integer; override;
+
     function FindDeclaration(const CursorPos: TCodeXYPosition;
       var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
     function FindDeclaration(const CursorPos: TCodeXYPosition;
@@ -607,7 +606,10 @@ type
     function FindUnitSource(const AnUnitName,
       AnUnitInFilename: string): TCodeBuffer;
     function FindSmartHint(const CursorPos: TCodeXYPosition): string;
-      
+    function BaseTypeOfNodeHasSubIdents(ANode: TCodeTreeNode): boolean;
+    function FindBaseTypeOfNode(Params: TFindDeclarationParams;
+      Node: TCodeTreeNode): TFindContext;
+
     property InterfaceIdentifierCache: TInterfaceIdentifierCache
       read FInterfaceIdentifierCache;
     property OnGetCodeToolForBuffer: TOnGetCodeToolForBuffer
@@ -618,7 +620,6 @@ type
       read FOnFindUsedUnit write FOnFindUsedUnit;
     property OnGetSrcPathForCompiledUnit: TOnGetSrcPathForCompiledUnit
       read FOnGetSrcPathForCompiledUnit write FOnGetSrcPathForCompiledUnit;
-    function ConsistencyCheck: integer; override;
   end;
 
 const
@@ -1424,6 +1425,29 @@ begin
       end;
       Result:=Result+')';
     end;
+  end;
+end;
+
+function TFindDeclarationTool.BaseTypeOfNodeHasSubIdents(ANode: TCodeTreeNode
+  ): boolean;
+var
+  FindContext: TFindContext;
+  Params: TFindDeclarationParams;
+begin
+  Result:=false;
+  if (ANode=nil) then exit;
+  ActivateGlobalWriteLock;
+  Params:=TFindDeclarationParams.Create;
+  try
+    FindContext:=FindBaseTypeOfNode(Params,ANode);
+    if (FindContext.Node<>nil)
+    and (FindContext.Node.Desc in [ctnRecordType,ctnClass,ctnClassInterface])
+    and (FindContext.Node.FirstChild<>nil)
+    then
+      Result:=true;
+  finally
+    Params.Free;
+    DeactivateGlobalWriteLock;
   end;
 end;
 

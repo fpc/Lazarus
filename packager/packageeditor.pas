@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, ComCtrls, Buttons,
-  LResources, LazarusIDEStrConsts, PackageDefs;
+  LResources, LazarusIDEStrConsts, PackageDefs, AddToPackageDlg;
   
 type
   { TPackageEditorForm }

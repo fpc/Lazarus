@@ -576,28 +576,31 @@ function FilenameIsPascalSource(const Filename: string): boolean;
 var Ext: string;
 begin
   Ext:=lowercase(ExtractFileExt(Filename));
-  Result:=(Ext='.pp') or (Ext='.pas') or (Ext='.lpr')
-          or (Ext='.dpr') or (Ext='.dpk');
+  Result:=((Ext='.pp') or (Ext='.pas') or (Ext='.lpr')
+          or (Ext='.dpr') or (Ext='.dpk'))
+          and (ExtractFileNameOnly(Filename)<>'');
 end;
 
 function FilenameIsPascalUnit(const Filename: string): boolean;
 var Ext: string;
 begin
   Ext:=lowercase(ExtractFileExt(Filename));
-  Result:=(Ext='.pp') or (Ext='.pas');
+  Result:=((Ext='.pp') or (Ext='.pas'))
+          and (ExtractFileNameOnly(Filename)<>'');
 end;
 
 function FilenameIsFormText(const Filename: string): boolean;
 var Ext: string;
 begin
   Ext:=lowercase(ExtractFileExt(Filename));
-  Result:=(Ext='.lfm') or (Ext='.dfm') or (Ext='.xfm');
+  Result:=((Ext='.lfm') or (Ext='.dfm') or (Ext='.xfm'))
+          and (ExtractFileNameOnly(Filename)<>'');
 end;
 
 function DebuggerNameToType(const s: string): TDebuggerType;
 begin
   for Result:=Low(TDebuggerType) to High(TDebuggerType) do
-    if UpperCase(DebuggerName[Result])=uppercase(s) then exit;
+    if AnsiCompareText(DebuggerName[Result],s)=0 then exit;
   Result:=dtNone;
 end;
 

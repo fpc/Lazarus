@@ -233,50 +233,65 @@ var
   Index: Integer;
   IdentItem: TIdentifierListItem;
   IdentList: TIdentifierList;
+  CursorAtEnd: boolean;
 begin
   Result:='';
   CursorToLeft:=0;
+  CursorAtEnd:=true;
   Index:=aCompletion.Position;
   IdentList:=CodeToolBoss.IdentifierList;
   IdentItem:=IdentList.FilteredItems[Index];
+  IdentItem.CheckHasChilds;
   ValueType:=icvIdentifier;
   if IdentItem=nil then exit;
 
   Result:=GetIdentifier(IdentItem.Identifier);
-  case IdentItem.GetDesc of
-  
-  ctnProcedure:
-    if IdentItem.IsProcNodeWithParams then
-      ValueType:=icvProcWithParams;
 
-  ctnProperty:
-    if IdentItem.IsPropertyWithParams then
-      ValueType:=icvIndexedProp;
+  case IdentItem.GetDesc of
+
+    ctnProcedure:
+      if IdentItem.IsProcNodeWithParams then
+        ValueType:=icvProcWithParams;
+
+    ctnProperty:
+      if IdentItem.IsPropertyWithParams then
+        ValueType:=icvIndexedProp;
 
   end;
 
   // add brackets for parameter lists
   case ValueType of
+  
+    icvProcWithParams:
+      if (not IdentList.StartUpAtomBehindIs('('))
+      and (not IdentList.StartUpAtomInFrontIs('@')) then begin
+        Result:=Result+'()';
+        inc(CursorToLeft);
+        CursorAtEnd:=false;
+      end;
 
-  icvProcWithParams:
-    if (not IdentList.StartUpAtomBehindIs('('))
-    and (not IdentList.StartUpAtomInFrontIs('@')) then begin
-      Result:=Result+'()';
-      inc(CursorToLeft);
-    end;
-
-  icvIndexedProp:
-    if (not IdentList.StartUpAtomBehindIs('[')) then begin
-      Result:=Result+'[]';
-      inc(CursorToLeft);
-    end;
+    icvIndexedProp:
+      if (not IdentList.StartUpAtomBehindIs('[')) then begin
+        Result:=Result+'[]';
+        inc(CursorToLeft);
+        CursorAtEnd:=false;
+      end;
   end;
 
+  {if (ilcfStartIsLValue in IdentList.ContextFlags)
+  and (not IdentItem.HasChilds)
+  and IdentItem.CanBeAssigned
+  then begin
+    Result:=Result+' := ';
+    CursorAtEnd:=false;
+  end;}
+
   // add semicolon for statement ends
-  if ilcfContextNeedsEndSemicolon in IdentList.ContextFlags then begin
+  if (ilcfContextNeedsEndSemicolon in IdentList.ContextFlags) then begin
     Result:=Result+';';
-    if CursorToLeft>0 then
-     inc(CursorToLeft);
+    if (not CursorAtEnd) or IdentItem.HasChilds
+    or (ilcfStartIsLValue in IdentList.ContextFlags) then
+      inc(CursorToLeft);
   end;
 end;
 

@@ -74,6 +74,12 @@ type
     );
   TIdentifierCompatibilities = set of TIdentifierCompatibility;
   
+  TIdentListItemFlag = (
+    iliHasChilds,
+    iliBaseExprTypeValid
+    );
+  TIdentListItemFlags = set of TIdentListItemFlag;
+  
   TIdentifierListItem = class
   private
     FParamList: string;
@@ -82,13 +88,14 @@ type
     procedure SetParamList(const AValue: string);
   public
     Compatibility: TIdentifierCompatibility;
-    HasChilds: boolean;   // identifier can contain childs (class, record)
     HistoryIndex: integer;
     Identifier: PChar;
     Level: integer;
     Node: TCodeTreeNode;
     Tool: TFindDeclarationTool;
     DefaultDesc: TCodeTreeNodeDesc;
+    Flags: TIdentListItemFlags;
+    BaseExprType: TExpressionType;
     function AsString: string;
     function GetDesc: TCodeTreeNodeDesc;
     constructor Create(NewCompatibility: TIdentifierCompatibility;
@@ -98,6 +105,10 @@ type
       NewDefaultDesc: TCodeTreeNodeDesc);
     function IsProcNodeWithParams: boolean;
     function IsPropertyWithParams: boolean;
+    function CheckHasChilds: boolean;
+    function CanBeAssigned: boolean;
+    procedure UpdateBaseContext;
+    function HasChilds: boolean;
   public
     property ParamList: string read GetParamList write SetParamList;
   end;
@@ -106,6 +117,8 @@ type
   TIdentifierListFlags = set of TIdentifierListFlag;
   
   TIdentifierListContextFlag = (
+    ilcfStartInStatement,
+    ilcfStartIsLValue,
     ilcfContextNeedsEndSemicolon
     );
   TIdentifierListContextFlags = set of TIdentifierListContextFlag;
@@ -790,12 +803,16 @@ begin
       MoveCursorToCleanPos(IdentEndPos);
       ReadNextAtom;
       CurrentIdentifierList.StartAtomBehind:=CurPos;
+      // check if in statement
       if CursorNode.Desc in AllPascalStatements then begin
-        if (CurPos.Flag=cafEnd)
-        or ((AtomIsIdentifier(false))
+        CurrentIdentifierList.ContextFlags:=
+          CurrentIdentifierList.ContextFlags+[ilcfStartInStatement];
+        // check if at end of statement
+        if (CurPos.Flag in [cafEnd,cafBegin])
+        or ((not UpAtomIs('ELSE'))
+            and (CurPos.Flag=cafWord)
             and (not PositionsInSameLine(Src,IdentEndPos,CurPos.StartPos)))
         then
-          // new identifier will be at end of a statement
           if CurrentIdentifierList.StartBracketLvl=0 then
             CurrentIdentifierList.ContextFlags:=
               CurrentIdentifierList.ContextFlags+[ilcfContextNeedsEndSemicolon];
@@ -805,7 +822,16 @@ begin
     MoveCursorToCleanPos(IdentStartPos);
     ReadPriorAtom;
     CurrentIdentifierList.StartAtomInFront:=CurPos;
-    
+    // check if LValue
+    if (ilcfStartInStatement in CurrentIdentifierList.ContextFlags) then begin
+      if (CurPos.Flag in [cafSemicolon,cafBegin,cafEnd])
+         or WordIsBlockKeyWord.DoItUpperCase(UpperSrc,
+                                  CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
+      then
+        CurrentIdentifierList.ContextFlags:=
+          CurrentIdentifierList.ContextFlags+[ilcfStartIsLValue];
+    end;
+
     Result:=true;
   finally
     Params.Free;
@@ -871,13 +897,14 @@ constructor TIdentifierListItem.Create(
   NewDefaultDesc: TCodeTreeNodeDesc);
 begin
   Compatibility:=NewCompatibility;
-  HasChilds:=NewHasChilds;
+  if NewHasChilds then Include(FLags,iliHasChilds);
   HistoryIndex:=NewHistoryIndex;
   Identifier:=NewIdentifier;
   Level:=NewLevel;
   Node:=NewNode;
   Tool:=NewTool;
   DefaultDesc:=NewDefaultDesc;
+  BaseExprType:=CleanExpressionType;
 end;
 
 function TIdentifierListItem.IsProcNodeWithParams: boolean;
@@ -888,6 +915,58 @@ end;
 function TIdentifierListItem.IsPropertyWithParams: boolean;
 begin
   Result:=(Node<>nil) and Tool.PropertyNodeHasParamList(Node);
+end;
+
+function TIdentifierListItem.CheckHasChilds: boolean;
+// returns true if test was successful
+begin
+  Result:=false;
+  if GetDesc in [ctnClass,ctnRecordType,ctnClassInterface] then begin
+    Result:=true;
+    exit;
+  end;
+  if Node=nil then exit;
+  UpdateBaseContext;
+  if (BaseExprType.Desc=xtContext)
+    and (BaseExprType.Context.Node<>nil)
+    and (BaseExprType.Context.Node.Desc
+      in [ctnClass,ctnRecordType,ctnClassInterface])
+  then
+    Include(Flags,iliHasChilds);
+end;
+
+function TIdentifierListItem.CanBeAssigned: boolean;
+begin
+  Result:=false;
+  if (Node=nil) then exit;
+  if (GetDesc=ctnVarDefinition) then
+    Result:=true;
+end;
+
+procedure TIdentifierListItem.UpdateBaseContext;
+var
+  Params: TFindDeclarationParams;
+begin
+  if (iliBaseExprTypeValid in Flags) then exit;
+  BaseExprType.Desc:=xtNone;
+  if (Node<>nil) and (Tool<>nil) then begin
+    Tool.ActivateGlobalWriteLock;
+    Params:=TFindDeclarationParams.Create;
+    try
+      BaseExprType.Context:=Tool.FindBaseTypeOfNode(Params,Node);
+      if (BaseExprType.Context.Node<>nil) then
+        BaseExprType.Desc:=xtContext;
+    finally
+      Params.Free;
+      Tool.DeactivateGlobalWriteLock;
+    end;
+  end;
+  Include(Flags,iliBaseExprTypeValid);
+end;
+
+function TIdentifierListItem.HasChilds: boolean;
+begin
+  Result:=iliHasChilds in Flags;
 end;
 
 { TIdentifierHistoryList }
