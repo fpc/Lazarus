@@ -353,6 +353,9 @@ begin
   gtk_window_set_modal(GtkWindow, true);
   gtk_widget_show(PGtkWidget(GtkWindow));
 
+  {$IFDEF VerboseTransient}
+  writeln('TgtkObject.ShowModal ',Sender.ClassName);
+  {$ENDIF}
   UpdateTransientWindows;
 end;
 
@@ -368,7 +371,7 @@ type
     Component: TComponent;
     IsModal: boolean;
     SortIndex: integer;
-    TransientWindow: PGtkWindow;
+    TransientParent: PGtkWindow;
   end;
 
 var
@@ -384,8 +387,12 @@ var
   ATransientWindow1: PTransientWindow;
   ATransientWindow2: PTransientWindow;
   ParentTransientWindow: PTransientWindow;
+  OldTransientParent: PGtkWindow;
 begin
   if not UseTransientForModalWindows then exit;
+  {$IFDEF VerboseTransient}
+  writeln('TgtkObject.UpdateTransientWindows');
+  {$ENDIF}
   AllWindows:=nil;
 
   // find all currently visible gtkwindows
@@ -410,7 +417,8 @@ begin
           ATransientWindow^.SortIndex:=ModalWindows.IndexOf(Window)
         else
           ATransientWindow^.SortIndex:=-1;
-        ATransientWindow^.IsModal:=ATransientWindow^.SortIndex>=0;
+        ATransientWindow^.IsModal:=(ATransientWindow^.SortIndex>=0)
+          and (GTK_WIDGET_VISIBLE(PGtkWidget(Window)));
         if not ATransientWindow^.IsModal then begin
           if LCLObject is TCustomForm then
             ATransientWindow^.SortIndex:=
@@ -445,10 +453,12 @@ begin
     // -> break all transient window relation ships
     for i:=0 to AllWindows.Count-1 do begin
       ATransientWindow:=PTransientWindow(AllWindows[i]);
-      //write('TgtkObject.UpdateTransientWindows  Untransient ',i);
-      //if ATransientWindow^.Component<>nil then
-      //  write(' ',ATransientWindow^.Component.Name,':',ATransientWindow^.Component.ClassName);
-      //writeln('');
+      {$IFDEF VerboseTransient}
+      write('TgtkObject.UpdateTransientWindows  Untransient ',i);
+      if ATransientWindow^.Component<>nil then
+        write(' ',ATransientWindow^.Component.Name,':',ATransientWindow^.Component.ClassName);
+      writeln('');
+      {$ENDIF}
       gtk_window_set_transient_for(ATransientWindow^.GtkWindow,nil);
     end;
   end else begin
@@ -485,21 +495,42 @@ begin
       if (ATransientWindow^.Component<>nil)
       and GTK_WIDGET_VISIBLE(PgtkWidget(ATransientWindow^.GtkWindow)) then begin
         if ParentTransientWindow<>nil then begin
-          //writeln('Set TRANSIENT Parent=',ParentTransientWindow^.Component.Name,':',ParentTransientWindow^.Component.ClassName,' ',ParentTransientWindow^.SortIndex,
-          //' Child=',ATransientWindow^.Component.Name,':',ATransientWindow^.Component.ClassName,' ',ATransientWindow^.SortIndex);
-          ATransientWindow^.TransientWindow:=ParentTransientWindow^.GtkWindow;
-          gtk_window_set_transient_for(ATransientWindow^.GtkWindow,
-                                       ParentTransientWindow^.GtkWindow);
+          {$IFDEF VerboseTransient}
+          writeln('Set TRANSIENT Parent=',
+            ParentTransientWindow^.Component.Name,':',
+              ParentTransientWindow^.Component.ClassName,
+            ' Index=',ParentTransientWindow^.SortIndex,
+            ' Wnd=',HexStr(Cardinal(ParentTransientWindow^.GtkWindow),8),
+          ' Child=',ATransientWindow^.Component.Name,':',
+                             ATransientWindow^.Component.ClassName,
+            ' Index=',ATransientWindow^.SortIndex,
+            ' Wnd=',HexStr(Cardinal(ATransientWindow^.GtkWindow),8),
+            '');
+          {$ENDIF}
+          ATransientWindow^.TransientParent:=ParentTransientWindow^.GtkWindow;
         end;
         ParentTransientWindow:=ATransientWindow;
       end;
     end;
-    
+
+    // Each transient relationship can reorder the visible forms
+    // To reduce flickering and creation of temporary circles
+    // do the setup in two separate steps:
+
+    // break unneeded transient relationships
     for i:=0 to AllWindows.Count-1 do begin
       ATransientWindow:=PTransientWindow(AllWindows[i]);
-      if ATransientWindow^.TransientWindow=nil then continue;
+      OldTransientParent:=ATransientWindow^.GtkWindow^.transient_parent;
+      if (OldTransientParent<>ATransientWindow^.TransientParent) then
+        gtk_window_set_transient_for(ATransientWindow^.GtkWindow,nil);
+    end;
+
+    // setup transient relationships
+    for i:=0 to AllWindows.Count-1 do begin
+      ATransientWindow:=PTransientWindow(AllWindows[i]);
+      if ATransientWindow^.TransientParent=nil then continue;
       gtk_window_set_transient_for(ATransientWindow^.GtkWindow,
-                                   ATransientWindow^.TransientWindow);
+                                   ATransientWindow^.TransientParent);
     end;
   end;
 
@@ -515,13 +546,29 @@ end;
   procedure TgtkObject.UntransientWindow(GtkWindow: PGtkWindow);
  ------------------------------------------------------------------------------}
 procedure TgtkObject.UntransientWindow(GtkWindow: PGtkWindow);
+{$IFDEF VerboseTransient}
+var
+  LCLObject: TObject;
+{$ENDIF}
 begin
-  gtk_window_set_transient_for(GtkWindow,nil);
+  {$IFDEF VerboseTransient}
+  write('TgtkObject.UntransientWindow ',HexStr(Cardinal(GtkWindow),8));
+  LCLObject:=GetLCLObject(PGtkWidget(GtkWindow));
+  if LCLObject<>nil then
+    write(' LCLObject=',LCLObject.ClassName)
+  else
+    write(' LCLObject=nil');
+  writeln('');
+  {$ENDIF}
+  // hide window, so that UpdateTransientWindows untransients it
+  if GTK_WIDGET_VISIBLE(PgtkWidget(GtkWindow)) then
+    gtk_widget_hide(PgtkWidget(GtkWindow));
+  UpdateTransientWindows;
+  // remove it from the modal window list
   if ModalWindows<>nil then begin
     ModalWindows.Remove(GtkWindow);
     if ModalWindows.Count=0 then FreeAndNil(ModalWindows);
   end;
-  UpdateTransientWindows;
 end;
 
 {------------------------------------------------------------------------------
@@ -3542,6 +3589,9 @@ begin
 
   if GtkWidgetIsA(Widget,GTK_WINDOW_TYPE) then begin
     //writeln('tgtkObject.DestroyLCLControl Untransient ',Sender.ClassName);
+    {$IFDEF VerboseTransient}
+    writeln('TgtkObject.DestroyLCLComponent ',Sender.ClassName);
+    {$ENDIF}
     UntransientWindow(PGtkWindow(Widget));
   end;
 
@@ -5081,16 +5131,18 @@ begin
     if (Sender is TCustomForm) then begin
       UnshareWindowAccelGroups(SenderWidget);
     end;
-    if GtkWidgetIsA(SenderWidget,GTK_WINDOW_TYPE) then
-      gtk_window_set_transient_for(PGtkWindow(SenderWIdget),nil);
 
     if not gtk_widget_visible(SenderWidget) then
       exit;
       
     gtk_widget_hide(SenderWidget);
 
-    if GtkWidgetIsA(SenderWidget,GTK_WINDOW_TYPE) then
+    if GtkWidgetIsA(SenderWidget,GTK_WINDOW_TYPE) then begin
+      {$IFDEF VerboseTransient}
+      writeln('TgtkObject.ShowHide HIDE ',Sender.ClassName);
+      {$ENDIF}
       UntransientWindow(PGtkWindow(SenderWIdget));
+    end;
   end;
   //if Sender is TForm then
   //  writeln('[TgtkObject.ShowHide] END ',Sender.ClassName,' Window=',FormWidget^.Window<>nil);
@@ -7112,6 +7164,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.345  2003/03/29 19:15:30  mattias
+  fixed untransienting
+
   Revision 1.344  2003/03/27 22:16:01  mattias
   implemented findeclaration gdb exceptions
 
