@@ -526,6 +526,11 @@ procedure TPostscriptPrinterCanvas.BeginDoc;
 begin
   Inherited BeginDoc;
   
+  //Clear all existing values
+  //before starting an new document
+  fDocument.Clear;
+  fHeader.Clear;
+  
   FirstUpdatefont:=True;
   Font.Size:=12;
   Font.Color:=clBlack;
