@@ -39,9 +39,10 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, ComCtrls, Buttons,
-  LResources, Graphics, LCLType, Menus, Dialogs, Laz_XMLCfg, AVL_Tree, IDEProcs,
-  LazConf, LazarusIDEStrConsts, IDEOptionDefs, IDEDefs, CompilerOptions,
-  ComponentReg, PackageDefs, PkgOptionsDlg, AddToPackageDlg, PackageSystem;
+  LResources, Graphics, LCLType, Menus, Dialogs, FileCtrl, Laz_XMLCfg, AVL_Tree,
+  IDEProcs, LazConf, LazarusIDEStrConsts, IDEOptionDefs, IDEDefs,
+  CompilerOptions, ComponentReg, PackageDefs, PkgOptionsDlg, AddToPackageDlg,
+  PackageSystem;
   
 type
   TOnOpenFile =
@@ -162,6 +163,7 @@ type
     function GetCurrentFile(var Removed: boolean): TPkgFile;
     function StoreCurrentTreeSelection: TStringList;
     procedure ApplyTreeSelection(ASelection: TStringList; FreeList: boolean);
+    procedure ExtendUnitPathForNewUnit(const AFilename: string);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -769,6 +771,7 @@ begin
 
   d2ptUnit:
     begin
+      ExtendUnitPathForNewUnit(AddParams.UnitFilename);
       // add unit file
       with AddParams do
         LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
@@ -791,6 +794,7 @@ begin
 
   d2ptNewComponent:
     begin
+      ExtendUnitPathForNewUnit(AddParams.UnitFilename);
       // add file
       with AddParams do
         LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
@@ -1577,6 +1581,33 @@ begin
   end;
   if ANode<>nil then FilesTreeView.Selected:=ANode;
   if FreeList then ASelection.Free;
+end;
+
+procedure TPackageEditorForm.ExtendUnitPathForNewUnit(const AFilename: string);
+var
+  NewDirectory: String;
+  UnitPath: String;
+  i: Integer;
+begin
+  if LazPackage=nil then exit;
+  // check if directory is already in the unit path of the package
+  NewDirectory:=ExtractFilePath(AFilename);
+  UnitPath:=LazPackage.GetUnitPath(false);
+  i:=SearchDirectoryInSearchPath(UnitPath,NewDirectory,1);
+  if i>=1 then begin
+    // directory is there
+    exit;
+  end;
+  // ask user to add the unit path
+  LazPackage.ShortenFilename(NewDirectory);
+  if MessageDlg(lisPkgEditNewUnitNotInUnitpath,
+      Format(lisPkgEditTheFileIsCurrentlyNotInTheUnitpathOfThePackage, ['"',
+        AFilename, '"', #13, #13, #13, '"', NewDirectory, '"']),
+      mtConfirmation,[mbYes,mbNo],0)<>mrYes
+  then exit;
+  // add path
+  with LazPackage.CompilerOptions do
+    OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,NewDirectory);
 end;
 
 procedure TPackageEditorForm.DoSave(SaveAs: boolean);

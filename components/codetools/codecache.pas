@@ -304,7 +304,7 @@ end;
 function TCodeCache.SaveBufferAs(OldBuffer: TCodeBuffer; 
   const AFilename: string; var NewBuffer: TCodeBuffer): boolean;
 begin
-//writeln('[TCodeCache.SaveBufferAs] ',OldBuffer.Filename,' ',AFilename);
+  //writeln('[TCodeCache.SaveBufferAs] ',OldBuffer.Filename,' ',AFilename);
   if (OldBuffer=nil) then begin
     NewBuffer:=nil;
     Result:=false;
@@ -316,14 +316,14 @@ begin
     exit;
   end;
   NewBuffer:=FindFile(AFilename);
-//writeln('[TCodeCache.SaveBufferAs] B ',NewBuffer=nil);
-//WriteAllFileNames;
+  //writeln('[TCodeCache.SaveBufferAs] B ',NewBuffer=nil);
+  //WriteAllFileNames;
   if NewBuffer=nil then begin
     NewBuffer:=TCodeBuffer.Create;
     NewBuffer.FileName:=AFilename;
     NewBuffer.Source:=OldBuffer.Source;
     Result:=NewBuffer.Save;
-//writeln('[TCodeCache.SaveBufferAs] C ',Result,' ',NewBuffer.IsVirtual);
+    //writeln('[TCodeCache.SaveBufferAs] C ',Result,' ',NewBuffer.IsVirtual);
     if not Result then begin
       NewBuffer.Free;
       NewBuffer:=nil;

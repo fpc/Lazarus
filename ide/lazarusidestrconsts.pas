@@ -1519,6 +1519,7 @@ resourcestring
 
   // file checks
   lisUnableToCreateFile = 'Unable to create file';
+  lisCanNotCreateFile = 'Can not create file %s%s%s';
   lisUnableToCreateFilename = 'Unable to create file %s%s%s.';
   lisUnableToWriteFile = 'Unable to write file';
   lisUnableToWriteFilename = 'Unable to write file %s%s%s.';
@@ -2034,6 +2035,10 @@ resourcestring
   lisPckEditpackageNotSaved = 'package %s not saved';
   lisPckEditReadOnly = 'Read Only: %s';
   lisPckEditModified = 'Modified: %s';
+  lisPkgEditNewUnitNotInUnitpath = 'New unit not in unitpath';
+  lisPkgEditTheFileIsCurrentlyNotInTheUnitpathOfThePackage = 'The file %s%s%s%'
+    +'sis currently not in the unitpath of the package.%s%sAdd %s%s%s to '
+    +'UnitPath?';
 
   // package options dialog
   lisPckOptsUsage = 'Usage';
