@@ -1337,11 +1337,12 @@ Var
   Handle: HWND;
   TM: TEXTMETRICA;
 Begin
-  if Sender is TCustomForm then
-  begin
-    inc(Width, 50);
-    inc(Height, 50);
-  end;
+  If Sender Is TCustomForm Then
+  Begin
+    Inc(Width, 50);
+    Inc(Height, 50);
+  End;
+
   Handle := (Sender As TWinControl).Handle;
   If (TControl(Sender).Parent Is TCustomGroupBox) Or (TControl(Sender).Parent Is TPage) Then
   Begin
@@ -2501,6 +2502,9 @@ End;
 
 {
   $Log$
+  Revision 1.23  2002/08/28 17:28:11  lazarus
+  Keith: Win32 fixes.  Much appreciation to Markus Lüdin.
+
   Revision 1.22  2002/08/25 21:33:54  lazarus
   Keith: Minor sizing enhancements
 
