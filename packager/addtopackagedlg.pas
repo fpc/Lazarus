@@ -40,9 +40,29 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Buttons, StdCtrls, ExtCtrls,
   Dialogs, LazarusIDEStrConsts, IDEOptionDefs, InputHistory, FileCtrl, AVL_Tree,
-  IDEProcs, EnvironmentOpts, PackageSystem, PackageDefs, ComponentReg;
+  CodeToolManager, IDEDefs, IDEProcs, EnvironmentOpts, PackageSystem,
+  PackageDefs, ComponentReg;
   
 type
+  TAddToPkgType = (
+    d2ptUnit,
+    d2ptNewComponent,
+    d2ptRequiredPkg
+    );
+    
+  TAddToPkgResult = record
+    AddType: TAddToPkgType;
+    Dependency: TPkgDependency;
+    UnitFilename: string;
+    UnitName: string;
+    AncestorType: string;
+    ClassName: string;
+    PageName: string;
+    FileType: TPkgFileType;
+    PkgFileFlags: TPkgFileFlags;
+    UsedUnitname: string;
+  end;
+
   TAddToPackageDlg = class(TForm)
     // notebook
     NoteBook: TNoteBook;
@@ -63,15 +83,16 @@ type
     ClassNameEdit: TEdit;
     PalettePageLabel: TLabel;
     PalettePageCombobox: TCombobox;
-    ComponentUnitLabel: TLabel;
-    ComponentUnitEdit: TEdit;
-    ComponentUnitButton: TButton;
+    ComponentUnitFileLabel: TLabel;
+    ComponentUnitFileEdit: TEdit;
+    ComponentUnitFileButton: TButton;
+    ComponentUnitNameLabel: TLabel;
+    ComponentUnitNameEdit: TEdit;
     NewComponentButton: TButton;
     CancelNewComponentButton: TButton;
-    // new require/conflict
+    // new required package
     DependPkgNameLabel: TLabel;
     DependPkgNameComboBox: TComboBox;
-    DependTypeRadioGroup: TRadioGroup;
     DependMinVersionLabel: TLabel;
     DependMinVersionEdit: TEdit;
     DependMaxVersionLabel: TLabel;
@@ -87,14 +108,16 @@ type
     procedure CancelAddUnitButtonClick(Sender: TObject);
     procedure CancelNewComponentButtonClick(Sender: TObject);
     procedure ClassNameEditChange(Sender: TObject);
-    procedure ComponentUnitButtonClick(Sender: TObject);
+    procedure ComponentUnitFileButtonClick(Sender: TObject);
     procedure NewComponentButtonClick(Sender: TObject);
     procedure NewComponentPageResize(Sender: TObject);
+    procedure NewDependButtonClick(Sender: TObject);
     procedure NewDependPageResize(Sender: TObject);
   private
     fLastNewComponentAncestorType: string;
     fLastNewComponentClassName: string;
     FLazPackage: TLazPackage;
+    FOnGetIDEFileInfo: TGetIDEFileStateEvent;
     fPkgComponents: TAVLTree;// tree of TPkgComponent
     fPackages: TAVLTree;// tree of  TLazPackage or TPackageLink
     procedure SetLazPackage(const AValue: TLazPackage);
@@ -103,7 +126,10 @@ type
     procedure OnIteratePackages(APackageID: TLazPackageID);
     procedure AutoCompleteNewComponent;
     procedure AutoCompleteNewComponentUnitName;
+    function CheckUnitFilename(AddFileType: TAddToPkgType;
+      var AFilename: string): boolean;
   public
+    Params: TAddToPkgResult;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure UpdateAvailableAncestorTypes;
@@ -111,21 +137,28 @@ type
     procedure UpdateAvailableDependencyNames;
   public
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
+    property OnGetIDEFileInfo: TGetIDEFileStateEvent read FOnGetIDEFileInfo
+                                                     write FOnGetIDEFileInfo;
   end;
   
-function ShowAddToPackageDlg(Pkg: TLazPackage): TModalResult;
+function ShowAddToPackageDlg(Pkg: TLazPackage; var Params: TAddToPkgResult;
+  OnGetIDEFileInfo: TGetIDEFileStateEvent): TModalResult;
 
 
 implementation
 
 
-function ShowAddToPackageDlg(Pkg: TLazPackage): TModalResult;
+function ShowAddToPackageDlg(Pkg: TLazPackage; var Params: TAddToPkgResult;
+  OnGetIDEFileInfo: TGetIDEFileStateEvent): TModalResult;
 var
   AddDlg: TAddToPackageDlg;
 begin
   AddDlg:=TAddToPackageDlg.Create(Application);
   AddDlg.LazPackage:=Pkg;
+  AddDlg.OnGetIDEFileInfo:=OnGetIDEFileInfo;
   Result:=AddDlg.ShowModal;
+  if Result=mrOk then
+    Params:=AddDlg.Params;
   IDEDialogLayoutList.SaveLayout(AddDlg);
   AddDlg.Free;
 end;
@@ -138,60 +171,15 @@ begin
 end;
 
 procedure TAddToPackageDlg.AddUnitButtonClick(Sender: TObject);
-var
-  AFilename: String;
-  AnUnitName: String;
-  PkgFile: TPkgFile;
-  Msg: String;
 begin
-  // normalize filename
-  AFilename:=CleanAndExpandFilename(AddUnitFilenameEdit.Text);
-  // check if file exists
-  if not FileExists(AFilename) then begin
-    MessageDlg('File not found',
-      'File "'+AFilename+'" not found.',mtError,[mbCancel],0);
-    exit;
-  end;
-  // check file extension
-  if not FilenameIsPascalUnit(AFilename) then begin
-    MessageDlg('File not unit',
-      'Pascal units must have the extension .pp or .pas',
-      mtWarning,[mbCancel],0);
-    exit;
-  end;
-  // check unitname
-  AnUnitName:=ExtractFileNameOnly(AFilename);
-  if not IsValidIdent(AnUnitName) then begin
-    MessageDlg('File not unit',
-      +'"'+AnUnitName+'" is not a valid unit name.',
-      mtWarning,[mbCancel],0);
-    exit;
-  end;
-  // check if unitname already exists in package
-  PkgFile:=PackageGraph.FindUnit(LazPackage,AnUnitName,true);
-  if PkgFile<>nil then begin
-    if PkgFile.LazPackage=LazPackage then begin
-      MessageDlg('Unitname already exists',
-        'The unitname "'+AnUnitName+'" already exists in this package.',
-        mtError,[mbCancel],0);
-      exit;
-    end else begin
-      if MessageDlg('Unitname already exists',
-        'The unitname "'+AnUnitName+'" already exists in the package:'#13
-        +PkgFile.LazPackage.IDAsString,
-        mtWarning,[mbCancel,mbIgnore],0)<>mrIgnore then exit;
-    end;
-  end;
-  // check if file already exists in package
-  PkgFile:=LazPackage.FindPkgFile(AFilename,true);
-  if PkgFile<>nil then begin
-    Msg:='File "'+AFilename+'" already exists in the project.';
-    if PkgFile.Filename<>AFilename then
-      Msg:=#13+'Existing file: "'+PkgFile.Filename+'"';
-    MessageDlg('File already exists',Msg,mtError,[mbCancel],0);
-    exit;
-  end;
-  
+  Params.AddType:=d2ptUnit;
+
+  Params.UnitFilename:=AddUnitFilenameEdit.Text;
+  if not CheckUnitFilename(Params.AddType,Params.UnitFilename) then exit;
+  Params.UnitName:=ExtractFileNameOnly(Params.UnitFilename);
+  Params.FileType:=pftUnit;
+  Params.PkgFileFlags:=[];
+
   // add it ...
   ModalResult:=mrOk;
 end;
@@ -273,7 +261,7 @@ begin
   AutoCompleteNewComponentUnitName;
 end;
 
-procedure TAddToPackageDlg.ComponentUnitButtonClick(Sender: TObject);
+procedure TAddToPackageDlg.ComponentUnitFileButtonClick(Sender: TObject);
 var
   OpenDialog: TOpenDialog;
   AFilename: string;
@@ -287,7 +275,7 @@ begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
       if FilenameIsPascalUnit(AFilename) then begin
         LazPackage.ShortenFilename(AFilename);
-        ComponentUnitEdit.Text:=AFilename;
+        ComponentUnitFileEdit.Text:=AFilename;
       end else begin
         MessageDlg('Invalid file',
          'A pascal unit must have the extension .pp or .pas',
@@ -301,9 +289,115 @@ begin
 end;
 
 procedure TAddToPackageDlg.NewComponentButtonClick(Sender: TObject);
+var
+  PkgFile: TPkgFile;
+  PkgComponent: TPkgComponent;
+  ARequiredPackage: TLazPackage;
 begin
-  // ToDo
-  ShowMessage('Not implemented yet');
+  Params.AddType:=d2ptNewComponent;
+  Params.FileType:=pftUnit;
+  Params.PkgFileFlags:=[pffHasRegisterProc];
+  Params.AncestorType:=AncestorComboBox.Text;
+  Params.ClassName:=ClassNameEdit.Text;
+  Params.PageName:=PalettePageCombobox.Text;
+  Params.UnitName:=ComponentUnitNameEdit.Text;
+  Params.UnitFilename:=ComponentUnitFileEdit.Text;
+  Params.UsedUnitname:='';
+
+  // check Ancestor Type
+  if not IsValidIdent(Params.AncestorType) then begin
+    MessageDlg('Invalid Ancestor Type',
+      'The ancestor type "'+Params.AncestorType+'"'
+      +' is not a valid pascal identifier.',
+      mtError,[mbCancel],0);
+    exit;
+  end;
+
+  // check pagename
+  if length(Params.PageName)>100 then begin
+    MessageDlg('Page Name too long',
+      'The page name "'+Params.PageName+'" is too long (max 100 chars).',
+      mtError,[mbCancel],0);
+    exit;
+  end;
+
+  // check unitname - filename redundancy
+  if AnsiCompareText(Params.Unitname,ExtractFileNameOnly(Params.UnitFilename))<>0
+  then begin
+    MessageDlg('Unit Name Invalid',
+      'The unit name "'+Params.UnitName+'" does not correspond to the filename.',
+      mtError,[mbCancel],0);
+    exit;
+  end;
+
+  // check classname
+  if not IsValidIdent(Params.ClassName) then begin
+    MessageDlg('Invalid Class Name',
+      'The class name "'+Params.ClassName+'" is not a valid pascal identifier.',
+      mtError,[mbCancel],0);
+    exit;
+  end;
+
+  // check classname<>ancestortype
+  if AnsiCompareText(Params.ClassName,Params.AncestorType)=0 then begin
+    MessageDlg('Invalid Circle',
+      'The class name "'+Params.ClassName+'" and ancestor type "'
+      +Params.AncestorType+'" are the same.',
+      mtError,[mbCancel],0);
+    exit;
+  end;
+
+  // check ancestor type is not unitname
+  PkgFile:=PackageGraph.FindUnit(LazPackage,Params.AncestorType,true);
+  if PkgFile<>nil then begin
+    if MessageDlg('Ambigious Ancestor Type',
+      'The ancestor type "'+Params.AncestorType+'" has the same name as'#13
+      +'the unit "'+PkgFile.Filename+'".',
+      mtError,[mbCancel,mbIgnore],0)<>mrIgnore
+    then
+      exit;
+  end;
+  
+  // check classname does not interfere with an existing unitname
+  PkgFile:=PackageGraph.FindUnit(LazPackage,Params.ClassName,true);
+  if PkgFile<>nil then begin
+    if MessageDlg('Ambigious Class Name',
+      'The class name "'+Params.AncestorType+'" has the same name as'#13
+      +'the unit "'+PkgFile.Filename+'".',
+      mtError,[mbCancel,mbIgnore],0)<>mrIgnore
+    then
+      exit;
+  end;
+
+  // check if classname already exists
+  PkgComponent:=
+    TPkgComponent(IDEComponentPalette.FindComponent(Params.Classname));
+  if PkgComponent<>nil then begin
+    if MessageDlg('Class Name already exists',
+      'The class name "'+Params.ClassName+'" exists already in'#13
+      +'Package '+PkgComponent.PkgFile.LazPackage.IDAsString+#13
+      +'File: "'+PkgComponent.PkgFile.Filename+'"',
+      mtError,[mbCancel,mbIgnore],0)<>mrIgnore
+    then
+      exit;
+  end;
+
+  // check filename
+  if not CheckUnitFilename(Params.AddType,Params.UnitFilename) then exit;
+
+  // create dependency if needed
+  PkgComponent:=
+    TPkgComponent(IDEComponentPalette.FindComponent(Params.AncestorType));
+  if PkgComponent<>nil then begin
+    Params.UsedUnitname:=PkgComponent.GetUnitName;
+    ARequiredPackage:=PkgComponent.PkgFile.LazPackage;
+    if (LazPackage<>ARequiredPackage)
+    and (not LazPackage.Requires(PkgComponent.PkgFile.LazPackage))
+    then
+      Params.Dependency:=ARequiredPackage.CreateDependencyForThisPkg;
+  end;
+
+  ModalResult:=mrOk;
 end;
 
 procedure TAddToPackageDlg.NewComponentPageResize(Sender: TObject);
@@ -345,18 +439,27 @@ begin
   x:=5;
   inc(y,PalettePageCombobox.Height+5);
 
-  with ComponentUnitLabel do
+  with ComponentUnitFileLabel do
     SetBounds(x,y+2,100,Height);
-  inc(x,ComponentUnitLabel.Width+5);
+  inc(x,ComponentUnitFileLabel.Width+5);
 
-  with ComponentUnitEdit do
+  with ComponentUnitFileEdit do
     SetBounds(x,y,Parent.ClientWidth-x-Height-5,Height);
-  inc(x,ComponentUnitEdit.Width+2);
+  inc(x,ComponentUnitFileEdit.Width+2);
 
-  with ComponentUnitButton do
-    SetBounds(x,y,ComponentUnitEdit.Height,ComponentUnitEdit.Height);
+  with ComponentUnitFileButton do
+    SetBounds(x,y,ComponentUnitFileEdit.Height,ComponentUnitFileEdit.Height);
   x:=5;
-  inc(y,ComponentUnitEdit.Height+15);
+  inc(y,ComponentUnitFileEdit.Height+5);
+
+  with ComponentUnitNameLabel do
+    SetBounds(x,y+2,100,Height);
+  inc(x,ComponentUnitNameLabel.Width+5);
+
+  with ComponentUnitNameEdit do
+    SetBounds(x,y,100,Height);
+  inc(y,ComponentUnitNameEdit.Height+15);
+  x:=5;
 
   with NewComponentButton do
     SetBounds(x,y,80,Height);
@@ -364,6 +467,70 @@ begin
 
   with CancelNewComponentButton do
     SetBounds(x,y,80,Height);
+end;
+
+procedure TAddToPackageDlg.NewDependButtonClick(Sender: TObject);
+var
+  NewDependency: TPkgDependency;
+  NewPckName: String;
+begin
+  NewDependency:=TPkgDependency.Create;
+  try
+    // check minimum version
+    if DependMinVersionEdit.Text<>'' then begin
+      if not NewDependency.MinVersion.ReadString(DependMinVersionEdit.Text) then
+      begin
+        MessageDlg('Invalid version',
+          'The Minimum Version "'+DependMinVersionEdit.Text+'" is invalid.'#13
+          +'Please use the format major.minor.build.release'#13
+          +'For exmaple: 1.0.20.10',
+          mtError,[mbCancel],0);
+        exit;
+      end;
+      NewDependency.Flags:=NewDependency.Flags+[pdfMinVersion];
+    end;
+    // check maximum version
+    if DependMaxVersionEdit.Text<>'' then begin
+      if not NewDependency.MaxVersion.ReadString(DependMaxVersionEdit.Text) then
+      begin
+        MessageDlg('Invalid version',
+          'The Maximum Version "'+DependMaxVersionEdit.Text+'" is invalid.'#13
+          +'Please use the format major.minor.build.release'#13
+          +'For exmaple: 1.0.20.10',
+          mtError,[mbCancel],0);
+        exit;
+      end;
+      NewDependency.Flags:=NewDependency.Flags+[pdfMaxVersion];
+    end;
+    // check packagename
+    NewPckName:=DependPkgNameComboBox.Text;
+    if not IsValidIdent(NewPckName) then begin
+      MessageDlg('Invalid packagename',
+        'The packagename "'+NewPckName+'" is invalid.'#13
+        +'Plase choose an existing package.',
+        mtError,[mbCancel],0);
+      exit;
+    end;
+    NewDependency.PackageName:=NewPckName;
+    if PackageGraph.FindWithDependency(NewDependency,fpfSearchPackageEverywhere)
+      =nil then
+    begin
+      MessageDlg('Package not found',
+        'The packagename "'+DependPkgNameComboBox.Text+'" was not found.'#13
+        +'Please choose an existing package.',
+        mtError,[mbCancel],0);
+      exit;
+    end;
+    
+    // ok
+    Params.Dependency:=NewDependency;
+    NewDependency:=nil;
+    Params.AddType:=d2ptRequiredPkg;
+
+    ModalResult:=mrOk;
+  finally
+    NewDependency.Free;
+  end;
 end;
 
 procedure TAddToPackageDlg.NewDependPageResize(Sender: TObject);
@@ -380,10 +547,6 @@ begin
   with DependPkgNameComboBox do
     SetBounds(x+DependPkgNameLabel.Width+5,y,150,Height);
   inc(y,DependPkgNameComboBox.Height+5);
-
-  with DependTypeRadioGroup do
-    SetBounds(x,y,200,50);
-  inc(y,DependTypeRadioGroup.Height+10);
 
   with DependMinVersionLabel do
     SetBounds(x,y+3,170,Height);
@@ -426,7 +589,7 @@ begin
     AddUnitPage:=Page[0];
     Pages.Add('New Component');
     NewComponentPage:=Page[1];
-    Pages.Add('New Require, Conflict');
+    Pages.Add('New Requirement');
     NewDependPage:=Page[2];
     PageIndex:=0;
     Align:=alClient;
@@ -532,26 +695,40 @@ begin
     Text:='';
   end;
 
-  ComponentUnitLabel:=TLabel.Create(Self);
-  with ComponentUnitLabel do begin
-    Name:='ComponentUnitLabel';
+  ComponentUnitFileLabel:=TLabel.Create(Self);
+  with ComponentUnitFileLabel do begin
+    Name:='ComponentUnitFileLabel';
     Parent:=NewComponentPage;
     Caption:='Unit File Name:';
   end;
 
-  ComponentUnitEdit:=TEdit.Create(Self);
-  with ComponentUnitEdit do begin
-    Name:='ComponentUnitEdit';
+  ComponentUnitFileEdit:=TEdit.Create(Self);
+  with ComponentUnitFileEdit do begin
+    Name:='ComponentUnitFileEdit';
     Parent:=NewComponentPage;
     Text:='';
   end;
 
-  ComponentUnitButton:=TButton.Create(Self);
-  with ComponentUnitButton do begin
-    Name:='ComponentUnitButton';
+  ComponentUnitFileButton:=TButton.Create(Self);
+  with ComponentUnitFileButton do begin
+    Name:='ComponentUnitFileButton';
     Parent:=NewComponentPage;
     Caption:='...';
-    OnClick:=@ComponentUnitButtonClick;
+    OnClick:=@ComponentUnitFileButtonClick;
+  end;
+
+  ComponentUnitNameLabel:=TLabel.Create(Self);
+  with ComponentUnitNameLabel do begin
+    Name:='ComponentUnitNameLabel';
+    Parent:=NewComponentPage;
+    Caption:='Unit Name:';
+  end;
+
+  ComponentUnitNameEdit:=TEdit.Create(Self);
+  with ComponentUnitNameEdit do begin
+    Name:='ComponentUnitNameEdit';
+    Parent:=NewComponentPage;
+    Text:='';
   end;
 
   NewComponentButton:=TButton.Create(Self);
@@ -571,7 +748,7 @@ begin
   end;
 
 
-  // add require, conflict
+  // add require
   
   DependPkgNameLabel:=TLabel.Create(Self);
   with DependPkgNameLabel do begin
@@ -587,17 +764,6 @@ begin
     Text:='';
   end;
   
-  DependTypeRadioGroup:=TRadioGroup.Create(Self);
-  with DependTypeRadioGroup do begin
-    Name:='DependTypeRadioGroup';
-    Parent:=NewDependPage;
-    Items.Add('Require');
-    Items.Add('Conflict');
-    ItemIndex:=0;
-    Columns:=2;
-    Caption:='Type';
-  end;
-
   DependMinVersionLabel:=TLabel.Create(Self);
   with DependMinVersionLabel do begin
     Name:='DependMinVersionLabel';
@@ -631,6 +797,7 @@ begin
     Name:='NewDependButton';
     Parent:=NewDependPage;
     Caption:='Ok';
+    OnClick:=@NewDependButtonClick;
   end;
 
   CancelDependButton:=TButton.Create(Self);
@@ -680,15 +847,21 @@ var
   NewUnitName: String;
   NewFileName: String;
 begin
+  // check if update needed
   CurClassName:=ClassNameEdit.Text;
   if fLastNewComponentClassName=CurClassName then exit;
   fLastNewComponentClassName:=CurClassName;
+
+  // check classname
   if not IsValidIdent(CurClassName) then exit;
+
   // create unitname
   NewUnitName:=CurClassName;
   if NewUnitName[1]='T' then
     NewUnitName:=copy(NewUnitName,2,length(NewUnitName)-1);
   NewUnitName:=PackageGraph.CreateUniqueUnitName(NewUnitName);
+  ComponentUnitNameEdit.Text:=NewUnitName;
+
   // create filename
   NewFileName:=NewUnitName;
   if EnvironmentOptions.PascalFileAutoLowerCase
@@ -700,7 +873,117 @@ begin
   // prepend path
   if LazPackage.HasDirectory then
     NewFileName:=LazPackage.Directory+NewFileName;
-  ComponentUnitEdit.Text:=NewFileName;
+  ComponentUnitFileEdit.Text:=NewFileName;
+end;
+
+function TAddToPackageDlg.CheckUnitFilename(AddFileType: TAddToPkgType;
+  var AFilename: string): boolean;
+var
+  AnUnitName: String;
+  PkgFile: TPkgFile;
+  Msg: String;
+  IDEFileFlags: TIDEFileStateFlags;
+begin
+  Result:=false;
+  
+  // normalize filename
+  AFilename:=TrimFilename(AFilename);
+  if (not FilenameIsAbsolute(AFilename)) then begin
+    if LazPackage.HasDirectory then
+      AFilename:=LazPackage.Directory+AFilename
+    else begin
+      MessageDlg('Invalid filename',
+        'The filename "'+AFilename+'" is ambigious.'#13
+        +'Please specifiy a filename with full path.',
+        mtError,[mbCancel],0);
+      exit;
+    end;
+  end;
+  
+  // check if file exists
+  if not FileExists(AFilename) then begin
+    if AddFileType=d2ptUnit then begin
+      MessageDlg('File not found',
+        'File "'+AFilename+'" not found.',mtError,[mbCancel],0);
+      exit;
+    end;
+  end;
+  
+  // check file extension
+  if not FilenameIsPascalUnit(AFilename) then begin
+    MessageDlg('File not unit',
+      'Pascal units must have the extension .pp or .pas',
+      mtWarning,[mbCancel],0);
+    exit;
+  end;
+  
+  // check unitname
+  AnUnitName:=ExtractFileNameOnly(AFilename);
+  if not IsValidIdent(AnUnitName) then begin
+    MessageDlg('File not unit',
+      +'"'+AnUnitName+'" is not a valid unit name.',
+      mtWarning,[mbCancel],0);
+    exit;
+  end;
+  
+  // check if unitname already exists in package
+  PkgFile:=PackageGraph.FindUnit(LazPackage,AnUnitName,true);
+  if PkgFile<>nil then begin
+    if PkgFile.LazPackage=LazPackage then begin
+      MessageDlg('Unitname already exists',
+        'The unitname "'+AnUnitName+'" already exists in this package.',
+        mtError,[mbCancel],0);
+      exit;
+    end else begin
+      if MessageDlg('Unitname already exists',
+        'The unitname "'+AnUnitName+'" already exists in the package:'#13
+        +PkgFile.LazPackage.IDAsString,
+        mtWarning,[mbCancel,mbIgnore],0)<>mrIgnore then exit;
+    end;
+  end;
+  
+  // check if unitname is a componentclass
+  if IDEComponentPalette.FindComponent(AnUnitName)<>nil then begin
+    if MessageDlg('Ambigious Unit Name',
+      'The unit name "'+AnUnitName+'" is the same as an registered component.'#13
+      +'Using this can cause strange error messages.',
+      mtWarning,[mbCancel,mbIgnore],0)<>mrIgnore
+    then
+      exit;
+  end;
+  
+  // check if file already exists in package
+  PkgFile:=LazPackage.FindPkgFile(AFilename,true);
+  if PkgFile<>nil then begin
+    Msg:='File "'+AFilename+'" already exists in the project.';
+    if PkgFile.Filename<>AFilename then
+      Msg:=#13+'Existing file: "'+PkgFile.Filename+'"';
+    MessageDlg('File already exists',Msg,mtError,[mbCancel],0);
+    exit;
+  end;
+  
+  // check if file is part of project or marked readonly
+  if Assigned(OnGetIDEFileInfo) then begin
+    IDEFileFlags:=[];
+    OnGetIDEFileInfo(Self,AFilename,[ifsPartOfProject,ifsReadOnly],
+                     IDEFileFlags);
+    if (ifsPartOfProject in IDEFileFlags) then begin
+      MessageDlg('File is used',
+        'The file "'+AFilename+'" is part of the current project.'#13
+        +'It is a bad idea to share files between projects and packages.',
+        mtError,[mbCancel],0);
+      exit;
+    end;
+    if (ifsReadOnly in IDEFileFlags) then begin
+      MessageDlg('File is readonly',
+        'The file "'+AFilename+'" is marked as readonly.',
+        mtError,[mbCancel],0);
+      exit;
+    end;
+  end;
+
+  // ok
+  Result:=true;
 end;
 
 constructor TAddToPackageDlg.Create(TheOwner: TComponent);
@@ -776,7 +1059,7 @@ begin
   sl:=TStringList.Create;
   ANode:=fPackages.FindLowest;
   while ANode<>nil do begin
-    sl.Add(TLazPackageID(ANode.Data).IDAsString);
+    sl.Add(TLazPackageID(ANode.Data).Name);
     ANode:=fPackages.FindSuccessor(ANode);
   end;
   DependPkgNameComboBox.Items.Assign(sl);

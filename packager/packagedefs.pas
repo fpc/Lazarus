@@ -92,6 +92,7 @@ type
     function Compare(Version2: TPkgVersion): integer;
     procedure Assign(Source: TPkgVersion);
     function AsString: string;
+    function ReadString(const s: string): boolean;
     procedure SetValues(NewMajor, NewMinor, NewBuild, NewRelease: integer);
   end;
   
@@ -240,11 +241,6 @@ type
   TIterateComponentClassesEvent =
     procedure(PkgComponent: TPkgComponent) of object;
 
-  TPkgDependencyType = (
-    pdtRequired,
-    pdtConflict
-    );
-    
   TPackageInstallType = (
     pitNope,
     pitStatic,
@@ -258,7 +254,6 @@ type
     FAutoInstall: TPackageInstallType;
     FCompilerOptions: TPkgCompilerOptions;
     FComponents: TList; // TList of TPkgComponent
-    FConflictPkgs: TList; // TList of TPkgDependency
     FDependingPkgs: TList; // TList of TLazPackage
     FDescription: string;
     FDirectory: string;
@@ -281,8 +276,6 @@ type
     function GetAutoUpdate: boolean;
     function GetComponentCount: integer;
     function GetComponents(Index: integer): TPkgComponent;
-    function GetConflictPkgCount: integer;
-    function GetConflictPkgs(Index: integer): TPkgDependency;
     function GetDependingPkgCount: integer;
     function GetDependingPkgs(Index: integer): TLazPackage;
     function GetFileCount: integer;
@@ -335,12 +328,12 @@ type
       NewFileType: TPkgFileType; NewFlags: TPkgFileFlags;
       CompPriorityCat: TComponentPriorityCategory): TPkgFile;
     procedure AddRequiredDependency(Dependency: TPkgDependency);
-    procedure AddConflictDependency(Dependency: TPkgDependency);
     function CreateDependencyForThisPkg: TPkgDependency;
     function AddComponent(PkgFile: TPkgFile; const Page: string;
       TheComponentClass: TComponentClass): TPkgComponent;
     procedure AddPkgComponent(APkgComponent: TPkgComponent);
     procedure RemovePkgComponent(APkgComponent: TPkgComponent);
+    function Requires(APackage: TLazPackage): boolean;
   public
     property Author: string read FAuthor write SetAuthor;
     property AutoCreated: boolean read FAutoCreated write SetAutoCreated;
@@ -352,8 +345,6 @@ type
       read FCompilerOptions;
     property ComponentCount: integer read GetComponentCount;
     property Components[Index: integer]: TPkgComponent read GetComponents;
-    property ConflictPkgCount: integer read GetConflictPkgCount;
-    property ConflictPkgs[Index: integer]: TPkgDependency read GetConflictPkgs;
     property DependingPkgCount: integer read GetDependingPkgCount;
     property DependingPkgs[Index: integer]: TLazPackage read GetDependingPkgs;
     property Description: string read FDescription write SetDescription;
@@ -412,6 +403,7 @@ function LazPackageTypeIdentToType(const s: string): TLazPackageType;
 procedure SortDependencyList(Dependencies: TList);
 function CompareLazPackageID(Data1, Data2: Pointer): integer;
 function CompareNameWithPackage(Key, Data: Pointer): integer;
+function CompareLazPackageName(Data1, Data2: Pointer): integer;
 
 
 implementation
@@ -486,6 +478,16 @@ begin
     Result:=AnsiCompareText(Name,Pkg.Name);
   end else
     Result:=-1;
+end;
+
+function CompareLazPackageName(Data1, Data2: Pointer): integer;
+var
+  Pkg1: TLazPackageID;
+  Pkg2: TLazPackageID;
+begin
+  Pkg1:=TLazPackageID(Data1);
+  Pkg2:=TLazPackageID(Data2);
+  Result:=AnsiCompareText(Pkg1.Name,Pkg2.Name);
 end;
 
 { TPkgFile }
@@ -824,6 +826,40 @@ begin
           +IntToStr(Release);
 end;
 
+function TPkgVersion.ReadString(const s: string): boolean;
+var
+  ints: array[1..4] of integer;
+  i: integer;
+  CurPos: Integer;
+  StartPos: Integer;
+begin
+  Result:=false;
+  for i:=Low(ints) to High(ints) do begin
+    // read int
+    StartPos:=1;
+    CurPos:=StartPos;
+    ints[i]:=0;
+    while (CurPos<=length(s)) and (s[CurPos] in ['0'..'9']) do begin
+      ints[i]:=ints[i]*10+ord(s[CurPos])-ord('0');
+      inc(CurPos);
+    end;
+    if (StartPos=CurPos) then exit;
+    // read point
+    if (CurPos>length(s)) then begin
+      if i<High(ints) then exit;
+    end else begin
+      if s[CurPos]<>'.' then exit;
+      inc(CurPos);
+    end;
+  end;
+  Major:=ints[1];
+  Minor:=ints[2];
+  Build:=ints[3];
+  Release:=ints[4];
+  
+  Result:=true;
+end;
+
 procedure TPkgVersion.SetValues(NewMajor, NewMinor, NewBuild,
   NewRelease: integer);
 begin
@@ -853,16 +889,6 @@ end;
 function TLazPackage.GetComponents(Index: integer): TPkgComponent;
 begin
   Result:=TPkgComponent(FComponents[Index]);
-end;
-
-function TLazPackage.GetConflictPkgCount: integer;
-begin
-  Result:=FConflictPkgs.Count;
-end;
-
-function TLazPackage.GetConflictPkgs(Index: integer): TPkgDependency;
-begin
-  Result:=TPkgDependency(FConflictPkgs[Index]);
 end;
 
 function TLazPackage.GetDependingPkgCount: integer;
@@ -1048,7 +1074,6 @@ end;
 constructor TLazPackage.Create;
 begin
   FVersion:=TPkgVersion.Create;
-  FConflictPkgs:=TList.Create;
   FComponents:=TList.Create;
   FDependingPkgs:=Tlist.Create;
   FRequiredPkgs:=TList.Create;
@@ -1066,7 +1091,6 @@ begin
   FreeAndNil(FFiles);
   FreeAndNil(FComponents);
   FreeAndNil(FCompilerOptions);
-  FreeAndNil(FConflictPkgs);
   FreeAndNil(FDependingPkgs);
   FreeAndNil(FUsedPkgs);
   FreeAndNil(FRequiredPkgs);
@@ -1081,8 +1105,6 @@ var
 begin
   FAuthor:='';
   FAutoInstall:=pitNope;
-  for i:=FConflictPkgs.Count-1 downto 0 do ConflictPkgs[i].Free;
-  FConflictPkgs.Clear;
   for i:=FComponents.Count-1 downto 0 do Components[i].Free;
   FComponents.Clear;
   FCompilerOptions.Clear;
@@ -1171,7 +1193,6 @@ begin
   Clear;
   LockModified;
   FAuthor:=XMLConfig.GetValue(Path+'Author/Value','');
-  LoadPkgDependencyList(Path+'ConflictPkgs/',FConflictPkgs);
   FCompilerOptions.LoadFromXMLConfig(XMLConfig,Path+'CompilerOptions/');
   FDescription:=XMLConfig.GetValue(Path+'Description','');
   FVersion.LoadFromXMLConfig(XMLConfig,Path+'Version/',FileVersion);
@@ -1223,7 +1244,6 @@ procedure TLazPackage.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string
 
 begin
   XMLConfig.SetDeleteValue(Path+'Author/Value',FAuthor,'');
-  SavePkgDependencyList(Path+'ConflictPkgs/',FConflictPkgs);
   FCompilerOptions.SaveToXMLConfig(XMLConfig,Path+'CompilerOptions/');
   XMLConfig.SetDeleteValue(Path+'Description',FDescription,'');
   FVersion.SaveToXMLConfig(XMLConfig,Path+'Version/');
@@ -1298,7 +1318,6 @@ begin
   CheckList(FUsedPkgs,true,true,true);
   CheckList(FDependingPkgs,true,true,true);
   CheckList(FRequiredPkgs,true,true,true);
-  CheckList(FConflictPkgs,true,true,true);
   CheckList(FFiles,true,true,true);
   CheckList(FComponents,true,true,true);
   CheckEmptyListCut(FDependingPkgs,FUsedPkgs);
@@ -1369,11 +1388,6 @@ begin
   FRequiredPkgs.Add(Dependency);
 end;
 
-procedure TLazPackage.AddConflictDependency(Dependency: TPkgDependency);
-begin
-  FConflictPkgs.Add(Dependency);
-end;
-
 function TLazPackage.CreateDependencyForThisPkg: TPkgDependency;
 begin
   Result:=TPkgDependency.Create;
@@ -1398,6 +1412,21 @@ end;
 procedure TLazPackage.RemovePkgComponent(APkgComponent: TPkgComponent);
 begin
   FComponents.Remove(APkgComponent);
+end;
+
+function TLazPackage.Requires(APackage: TLazPackage): boolean;
+var
+  Cnt: Integer;
+  i: Integer;
+begin
+  Result:=false;
+  Cnt:=RequiredPkgCount;
+  for i:=0 to Cnt-1 do begin
+    if RequiredPkgs[i].IsCompatible(APackage) then begin
+      Result:=true;
+      break;
+    end;
+  end;
 end;
 
 { TPkgComponent }

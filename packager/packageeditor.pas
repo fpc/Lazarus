@@ -40,13 +40,16 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, ComCtrls, Buttons,
   LResources, Graphics, LCLType, Menus, LazarusIDEStrConsts, IDEOptionDefs,
-  PackageDefs, AddToPackageDlg, PackageSystem;
+  IDEDefs, ComponentReg, PackageDefs, AddToPackageDlg, PackageSystem;
   
 type
   TOnOpenFile =
     function(Sender: TObject; const Filename: string): TModalResult of Object;
   TOnOpenPackage =
     function(Sender: TObject; APackage: TLazPackage): TModalResult of Object;
+  TOnCreateNewPkgFile =
+    function(Sender: TObject;
+             const Params: TAddToPkgResult): TModalResult  of object;
 
   { TPackageEditorForm }
 
@@ -78,7 +81,6 @@ type
     FLazPackage: TLazPackage;
     FilesNode: TTreeNode;
     RequiredPackagesNode: TTreeNode;
-    ConflictPackagesNode: TTreeNode;
     FPlugins: TStringList;
     procedure SetLazPackage(const AValue: TLazPackage);
     procedure SetupComponents;
@@ -87,7 +89,6 @@ type
     procedure UpdateButtons;
     procedure UpdateFiles;
     procedure UpdateRequiredPkgs;
-    procedure UpdateConflictPkgs;
     procedure UpdateSelectedFile;
     procedure UpdateStatusBar;
   public
@@ -103,6 +104,8 @@ type
   TPackageEditors = class
   private
     FItems: TList; // list of TPackageEditorForm
+    FOnCreateNewFile: TOnCreateNewPkgFile;
+    FOnGetIDEFileInfo: TGetIDEFileStateEvent;
     FOnOpenFile: TOnOpenFile;
     FOnOpenPackage: TOnOpenPackage;
     function GetEditors(Index: integer): TPackageEditorForm;
@@ -118,10 +121,16 @@ type
     function OpenFile(Sender: TObject; const Filename: string): TModalResult;
     function OpenDependency(Sender: TObject;
                             Dependency: TPkgDependency): TModalResult;
+    function CreateNewFile(Sender: TObject;
+                           const Params: TAddToPkgResult): TModalResult;
   public
     property Editors[Index: integer]: TPackageEditorForm read GetEditors;
+    property OnCreateNewFile: TOnCreateNewPkgFile read FOnCreateNewFile
+                                                  write FOnCreateNewFile;
     property OnOpenFile: TOnOpenFile read FOnOpenFile write FOnOpenFile;
     property OnOpenPackage: TOnOpenPackage read FOnOpenPackage write FOnOpenPackage;
+    property OnGetIDEFileInfo: TGetIDEFileStateEvent read FOnGetIDEFileInfo
+                                                     write FOnGetIDEFileInfo;
   end;
   
 var
@@ -199,8 +208,7 @@ begin
   if CurNode<>nil then begin
     if CurNode.Parent=FilesNode then begin
       AddPopupMenuItem('Open file',@OpenFileMenuItemClick);
-    end else if (CurNode.Parent=RequiredPackagesNode)
-    or (CurNode.Parent=ConflictPackagesNode) then begin
+    end else if (CurNode.Parent=RequiredPackagesNode) then begin
       AddPopupMenuItem('Open package',@OpenFileMenuItemClick);
     end;
   end else begin
@@ -292,8 +300,44 @@ begin
 end;
 
 procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
+var
+  AddParams: TAddToPkgResult;
 begin
-  if ShowAddToPackageDlg(LazPackage)<>mrOk then exit;
+  if ShowAddToPackageDlg(LazPackage,AddParams,PackageEditors.OnGetIDEFileInfo)
+    <>mrOk
+  then
+    exit;
+
+  case AddParams.AddType of
+  d2ptUnit:
+    begin
+      with AddParams do
+        LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
+      UpdateFiles;
+    end;
+
+  d2ptNewComponent:
+    begin
+      // add file
+      with AddParams do
+        LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
+      UpdateFiles;
+      // add dependency
+      if AddParams.Dependency<>nil then begin
+        LazPackage.AddRequiredDependency(AddParams.Dependency);
+        UpdateRequiredPkgs;
+      end;
+      // open file in editor
+      PackageEditors.CreateNewFile(Self,AddParams);
+    end;
+
+  d2ptRequiredPkg:
+    begin
+      LazPackage.AddRequiredDependency(AddParams.Dependency);
+      UpdateRequiredPkgs;
+    end;
+    
+  end;
 end;
 
 procedure TPackageEditorForm.SetLazPackage(const AValue: TLazPackage);
@@ -409,9 +453,6 @@ begin
     RequiredPackagesNode:=Items.Add(nil,'Required Packages');
     RequiredPackagesNode.ImageIndex:=1;
     RequiredPackagesNode.SelectedIndex:=RequiredPackagesNode.ImageIndex;
-    ConflictPackagesNode:=Items.Add(nil,'Conflict Packages');
-    ConflictPackagesNode.ImageIndex:=2;
-    ConflictPackagesNode.SelectedIndex:=ConflictPackagesNode.ImageIndex;
     EndUpdate;
     PopupMenu:=FilesPopupMenu;
     OnMouseUp:=@FilesTreeViewMouseUp;
@@ -464,7 +505,6 @@ begin
   UpdateButtons;
   UpdateFiles;
   UpdateRequiredPkgs;
-  UpdateConflictPkgs;
   UpdateSelectedFile;
   UpdateStatusBar;
   FilesTreeView.EndUpdate;
@@ -518,6 +558,7 @@ begin
     CurNode.Free;
     CurNode:=NextNode;
   end;
+  FilesNode.Expanded:=true;
   FilesTreeView.EndUpdate;
 end;
 
@@ -547,35 +588,6 @@ begin
     CurNode:=NextNode;
   end;
   RequiredPackagesNode.Expanded:=true;
-  FilesTreeView.EndUpdate;
-end;
-
-procedure TPackageEditorForm.UpdateConflictPkgs;
-var
-  Cnt: Integer;
-  CurNode: TTreeNode;
-  i: Integer;
-  CurDependency: TPkgDependency;
-  NextNode: TTreeNode;
-begin
-  Cnt:=LazPackage.ConflictPkgCount;
-  FilesTreeView.BeginUpdate;
-  CurNode:=ConflictPackagesNode.GetFirstChild;
-  for i:=0 to Cnt-1 do begin
-    if CurNode=nil then
-      CurNode:=FilesTreeView.Items.AddChild(ConflictPackagesNode,'');
-    CurDependency:=LazPackage.ConflictPkgs[i];
-    CurNode.Text:=CurDependency.AsString;
-    CurNode.ImageIndex:=ConflictPackagesNode.ImageIndex;
-    CurNode.SelectedIndex:=CurNode.ImageIndex;
-    CurNode:=CurNode.GetNextSibling;
-  end;
-  while CurNode<>nil do begin
-    NextNode:=CurNode.GetNextSibling;
-    CurNode.Free;
-    CurNode:=NextNode;
-  end;
-  ConflictPackagesNode.Expanded:=true;
   FilesTreeView.EndUpdate;
 end;
 
@@ -728,6 +740,14 @@ begin
   begin
     if Assigned(OnOpenPackage) then Result:=OnOpenPackage(Sender,APackage);
   end;
+end;
+
+function TPackageEditors.CreateNewFile(Sender: TObject;
+  const Params: TAddToPkgResult): TModalResult;
+begin
+  Result:=mrCancel;
+  if Assigned(OnCreateNewFile) then
+    Result:=OnCreateNewFile(Sender,Params);
 end;
 
 initialization

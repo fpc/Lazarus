@@ -41,9 +41,9 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, LazarusIDEStrConsts, LCLType, LclLinux, Compiler, StdCtrls, Forms,
-  Buttons, Menus, ComCtrls, Spin, Project, SysUtils, FileCtrl, Controls,
-  Graphics, ExtCtrls, Dialogs, LazConf, CompReg, CodeToolManager,
-  Splash, ObjectInspector, PropEdits, SynEditKeyCmds, OutputFilter,
+  Buttons, Menus, ComCtrls, Spin, ProjectDefs, Project, SysUtils, FileCtrl,
+  Controls, Graphics, ExtCtrls, Dialogs, LazConf, CompReg, CodeToolManager,
+  Splash, ObjectInspector, PropEdits, SynEditKeyCmds, OutputFilter, IDEDefs,
   MsgView, EnvironmentOpts, EditorOptions, IDEComp, FormEditor,
   KeyMapping, IDEProcs, UnitEditor, Debugger, IDEOptionDefs, CodeToolsDefines;
 
@@ -70,9 +70,18 @@ type
     );
 
   // new file flags
-  TNewFlag = (nfIsPartOfProject // force IsPartOfProject,
-                                //   default is to use a heuristic
-              );
+  TNewFlag = (
+    nfIsPartOfProject, // force IsPartOfProject,
+                       //   default is to use a heuristic
+    nfIsNotPartOfProject,// forbid IsPartOfProject
+    nfOpenInEditor,    // open in editor
+    nfSave,            // save file instantly
+    nfAddToRecent,     // add file to recent files
+    nfQuiet,           // less messages
+    nfConvertMacros,   // replace macros in filename
+    nfBeautifySrc,     // beautify custom source
+    nfCreateDefaultSrc // create initial source based on the type
+    );
   TNewFlags = set of TNewFlag;
 
   // save file flags
@@ -331,7 +340,12 @@ type
     function GetTestUnitFilename(AnUnitInfo: TUnitInfo): string; virtual; abstract;
     function IsTestUnitFilename(const AFilename: string): boolean; virtual; abstract;
     function GetRunCommandLine: string; virtual; abstract;
+    procedure GetIDEFileState(Sender: TObject; const AFilename: string;
+      NeededFlags: TIDEFileStateFlags; var ResultFlags: TIDEFileStateFlags); virtual; abstract;
 
+    function DoNewEditorFile(NewUnitType: TNewUnitType;
+        NewFilename: string; const NewSource: string;
+        NewFlags: TNewFlags): TModalResult; virtual; abstract;
     function DoOpenEditorFile(AFileName:string; PageIndex: integer;
         Flags: TOpenFlags): TModalResult; virtual; abstract;
     function DoInitProjectRun: TModalResult; virtual; abstract;
@@ -343,6 +357,7 @@ type
       Compiling: boolean): TModalResult;
       
     procedure UpdateWindowsMenu; virtual;
+    procedure SaveSourceEditorChangesToCodeCache(PageIndex: integer); virtual; abstract;
   end;
 
 var

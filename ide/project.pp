@@ -64,17 +64,6 @@ type
        var Allowed: boolean) of object;
 
   //---------------------------------------------------------------------------
-  TNewUnitType = (
-     nuEmpty,   // no code
-     nuUnit,    // unit
-     nuForm,    // unit with form
-     nuText,
-     nuCustomProgram  // program
-   );
-   
-  TUnitUsage = (uuIsPartOfProject, uuIsLoaded, uuIsModified, uuNotUsed);
-
-      
   TUnitInfo = class(TObject)
   private
     fAutoRevertLockCount: integer;
@@ -314,6 +303,7 @@ type
     function ProjectUnitWithUnitname(const AnUnitName: string): TUnitInfo;
     function UnitWithEditorIndex(Index:integer): TUnitInfo;
     Function UnitWithForm(AForm: TComponent): TUnitInfo;
+    function UnitInfoWithFilename(const AFilename: string): TUnitInfo;
 
     procedure CloseEditorIndex(EditorIndex:integer);
     procedure InsertEditorIndex(EditorIndex:integer);
@@ -894,9 +884,9 @@ begin
        'unit '+fUnitName+';'+LE
       +LE
       +'{$mode objfpc}{$H+}'+LE
-      ++LE
+      +LE
       +'interface'+LE
-      ++LE
+      +LE
       +'uses'+LE);
     case NewUnitType of
      nuUnit:
@@ -909,7 +899,7 @@ begin
      nuForm:
       begin
         NewSource:=NewSource+Beautified(
-          '  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources;'+LE
+          '  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs;'+LE
           +LE
           +'type'+LE
           +'  T'+fFormName+' = class(TForm)'+LE
@@ -2072,6 +2062,17 @@ begin
     Result:=Result.fNextUnitWithForm;
 end;
 
+function TProject.UnitInfoWithFilename(const AFilename: string): TUnitInfo;
+var
+  i: Integer;
+begin
+  i:=IndexOfFilename(AFilename);
+  if i>=0 then
+    Result:=Units[i]
+  else
+    Result:=nil;
+end;
+
 function TProject.IndexOfFilename(const AFilename: string): integer;
 begin
   Result:=UnitCount-1;
@@ -2281,6 +2282,9 @@ end.
 
 {
   $Log$
+  Revision 1.102  2003/04/07 23:49:03  mattias
+  implemented adding units to packages
+
   Revision 1.101  2003/03/29 21:41:19  mattias
   fixed path delimiters for environment directories
 

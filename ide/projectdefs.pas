@@ -45,6 +45,17 @@ type
   TProjectWriteFlag = (pwfDontSaveClosedUnits, pwfSaveOnlyProjectUnits);
   TProjectWriteFlags = set of TProjectWriteFlag;
 
+  TNewUnitType = (
+     nuEmpty,   // no code
+     nuUnit,    // unit
+     nuForm,    // unit with form
+     nuText,
+     nuCustomProgram  // program
+   );
+
+  TUnitUsage = (uuIsPartOfProject, uuIsLoaded, uuIsModified, uuNotUsed);
+
+
   //---------------------------------------------------------------------------
   // bookmarks of a single file
   TFileBookmark = class

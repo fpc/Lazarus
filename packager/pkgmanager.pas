@@ -44,13 +44,16 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, LCLProc, Forms, COntrols, KeyMapping, EnvironmentOpts,
-  UComponentManMain, PackageEditor, PackageDefs, PackageLinks, PackageSystem,
-  ComponentReg, OpenInstalledPkgDlg,
+  Classes, SysUtils, LCLProc, Forms, Controls, CodeToolManager,
+  KeyMapping, EnvironmentOpts, IDEProcs, ProjectDefs, IDEDefs,
+  UComponentManMain, PackageEditor, AddToPackageDlg, PackageDefs, PackageLinks,
+  PackageSystem, ComponentReg, OpenInstalledPkgDlg,
   BasePkgManager, MainBar;
 
 type
   TPkgManager = class(TBasePkgManager)
+    function OnPackageEditorCreateFile(Sender: TObject;
+      const Params: TAddToPkgResult): TModalResult;
     function OnPackageEditorOpenPackage(Sender: TObject; APackage: TLazPackage
       ): TModalResult;
     procedure mnuConfigCustomCompsClicked(Sender: TObject);
@@ -74,6 +77,56 @@ type
 implementation
 
 { TPkgManager }
+
+function TPkgManager.OnPackageEditorCreateFile(Sender: TObject;
+  const Params: TAddToPkgResult): TModalResult;
+var
+  LE: String;
+  UsesLine: String;
+  NewSource: String;
+begin
+  Result:=mrCancel;
+  // create sourcecode
+  LE:=EndOfLine;
+  UsesLine:='Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs';
+  if System.Pos(Params.UsedUnitname,UsesLine)<1 then
+    UsesLine:=UsesLine+', '+Params.UsedUnitname;
+  NewSource:=
+     'unit '+Params.UnitName+';'+LE
+    +LE
+    +'{$mode objfpc}{$H+}'+LE
+    +LE
+    +'interface'+LE
+    +LE
+    +'uses'+LE
+    +'  '+UsesLine+';'+LE
+    +LE
+    +'type'+LE
+    +'  '+Params.ClassName+' = class('+Params.AncestorType+')'+LE
+    +'  private'+LE
+    +'    { Private declarations }'+LE
+    +'  protected'+LE
+    +'    { Protected declarations }'+LE
+    +'  public'+LE
+    +'    { Public declarations }'+LE
+    +'  published'+LE
+    +'    { Published declarations }'+LE
+    +'  end;'+LE
+    +LE
+    +'procedure Register;'+LE
+    +LE
+    +'implementation'+LE
+    +LE
+    +'procedure Register;'+LE
+    +'begin'+LE
+    +'  RegisterComponents('''+Params.PageName+''',['+Params.ClassName+']);'+LE
+    +'end;'+LE
+    +LE
+    +'end.'+LE;
+
+  Result:=MainIDE.DoNewEditorFile(nuUnit,Params.UnitFilename,NewSource,
+                    [nfOpenInEditor,nfIsNotPartOfProject,nfSave,nfAddToRecent]);
+end;
 
 function TPkgManager.OnPackageEditorOpenPackage(Sender: TObject;
   APackage: TLazPackage): TModalResult;
@@ -103,6 +156,8 @@ begin
   PackageEditors:=TPackageEditors.Create;
   PackageEditors.OnOpenFile:=@MainIDE.DoOpenMacroFile;
   PackageEditors.OnOpenPackage:=@OnPackageEditorOpenPackage;
+  PackageEditors.OnCreateNewFile:=@OnPackageEditorCreateFile;
+  PackageEditors.OnGetIDEFileInfo:=@MainIDE.GetIDEFileState;
 end;
 
 destructor TPkgManager.Destroy;
@@ -136,6 +191,7 @@ procedure TPkgManager.LoadInstalledPackages;
 begin
   // base packages
   PackageGraph.AddStaticBasePackages;
+  
   PackageGraph.RegisterStaticPackages;
   // custom packages
   // ToDo
