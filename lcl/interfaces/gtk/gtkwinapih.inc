@@ -54,7 +54,7 @@ function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: strin
 function CreatePalette(const LogPalette: TLogPalette): HPALETTE;
 function CreatePenIndirect(const LogPen: TLogPen): HPEN; override;
 function CreatePixmapIndirect(const Data: Pointer; const TransColor: Longint): HBITMAP; override;
-Function CreatePolygonRgn(Points: PPoint; NumPts: Integer; Winding : Boolean): HRGN; Override;
+Function CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN; Override;
 function CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN; override;
 
 function DeleteDC(hDC: HDC): Boolean; override;
@@ -109,7 +109,6 @@ Function GetWindowLong(Handle : hwnd; int: Integer): Longint; override;
 Function GetWindowOrgEx(dc : hdc; var P: TPoint): Integer;  override;
 Function GetWindowRect(Handle : hwnd; var ARect: TRect): Integer; override;
 Function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean; override;
-
 function GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
   Meshes: Pointer; NumMeshes : Longint; Mode : Longint): Boolean; Override;
 
@@ -191,6 +190,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.56  2002/12/25 13:30:37  mattias
+  added more windows funcs and fixed jump to compiler error end of file
+
   Revision 1.55  2002/12/05 22:16:35  mattias
   double byte char font started
 
