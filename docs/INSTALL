@@ -19,9 +19,12 @@ The following will describe how to get FreePascal and how to install lazarus
 properly:
 
 
+================================================================================
 1. Installing FreePascal
 
+--------------------------------------------------------------------------------
 1.1 Installing FreePascal under Linux:
+
   Lazarus requires a fpc (FreePascal) version 1.0.7 not older than
   21th september 2002 and it requires both - the compiled fpc libs (binaries)
   and the fpc sources. The fpc 1.0.6 is too buggy.
@@ -30,12 +33,12 @@ properly:
   At the lazarus downloads section (www.lazarus.freepascal.org) you can get the
   rpm/deb of the freepascal compiler (compiler / linux) and its packages. Or if
   you don't have a rpm system, you can download and install the tars from the
-  same place.
+  www.freepascal.org.
+  If you want to compile the binaries for yourself see the BSD section.
 
   The fpc sources:
-  The easiest way to get the freepascal sources is via cvs. But cvs requires an
-  internet connection. If you want to download it as whole, see
-  http://www.freepascal.org/develop.html
+  The easiest way to get the freepascal sources is via cvs. Of course you can
+  also download it as whole, see http://www.freepascal.org/develop.html
   for the daily snapshot of the release tree (1.0.x).
 
   The fpc sources via cvs:
@@ -62,6 +65,7 @@ properly:
 
 
 
+--------------------------------------------------------------------------------
 1.2 Installing FreePascal under Windows:
 
     ToDo: Write me.
@@ -69,10 +73,68 @@ properly:
     See www.freepascal.org.
 
 
+--------------------------------------------------------------------------------
+1.3 Installing FreePascal under BSD/manually:
 
+ Effectively, you need:
+
+ - a file with all sources, or two (fpc and lazarus)
+    (1) e.g. for fpc  ftp://ftp.freepascal.org/fpc/dist/Linux/separate/sources.tar
+     preferably an export (no CVS/ dirs). The above file misses this
+    (2) Lazarus source snapshot.
+  - _any_ starting compiler from the 1.0 branch) You can do a check by parsing
+	the output of ppc386 -i   if it is 1.0.6 .. 1.0.8 it is ok.
+  - dependant packages. (for FreeBSD that is gtk12, glib12 and gdk_pixbuf and
+    GNU make, iconv and gettext)
+
+
+  FPC build:
+
+  (1) (fetch)   necessary files (FPC source, starting compiler)
+  (2) (extract) Then de-tgz in work directory,
+  (3  (build)   enter work/fpc/  and run
+
+  	$MAKE all OPT='-gl -O3p3'  PP=/path/to/startingcompiler-name-ppc386
+
+  	(/path/to/ can be omitted when ppc386 is in the path)
+        ($MAKE is make on linux and gmake on BSD)
+
+  (4) (install) then, again in work/fpc, run
+  	$MAKE install PP=compiler/ppc386 PREFIX=$THEPREFIX
+
+  	(THEPREFIX= usually is /usr/lcoal, but e.g. on NetBSD it is /usr/pkg
+  	            for ports)
+
+       Create a symlink
+         ln -s $THEPREFIX/lib/fpc/1.0.8/ppc386 $THEPREFIX/bin/ppc386
+
+       install sourceinstall PREFIX=$THEPREFIX
+
+  (5) (configure) run compiler/utils/samplecfg  $THEPREFIX/lib/fpc/1.0.8 $ETCDIR
+  (6) (optional, test), see if ppc386 -i gives output, else give a warning
+                        that user need to add $PREFIX/bin to his current path.
+      Try to compiler a program with -viwn, and see if that gives errors.
+
+
+  Notes:
+  - If you need fpcmake package lists, you need to generate or supply them
+    yourself, (in the port, or in an extra archive)
+    either way, do a dummy install to /tmp/pack and determine the files
+    installed with find . >ll
+
+  - $THEPREFIX and $ETCDIR should be user configurable. Otherwise local installs
+  	aren't possible.
+
+  - BSDHIER=1 on all make commands forces BSD hierarchy conventions.
+
+
+
+================================================================================
 2. Installing Lazarus
 
-2.1 Installing Lazarus under Linux:
+--------------------------------------------------------------------------------
+2.1 Installing Lazarus under Linux/BSD:
+
   You can either install the rpms for lazarus, or follow these instructions.
   Because the whole lazarus stuff is installed into one directory, uninstall
   is very easy and you don't need to be root to install lazarus.
@@ -91,7 +153,6 @@ properly:
   
   connect to the cvs server (note: lazarus and freepascal use the same server)
   
-  []$ bash
   []$ export CVSROOT=:pserver:cvs@cvs.freepascal.org:/FPC/CVS
   []$ cvs login
 
@@ -104,7 +165,7 @@ properly:
   compile lazarus:
 
   []$ cd lazarus
-  []$ make
+  []$ make          (gmake on BSD)
 
   If fpc is installed correct, the compilation should work without problems. If
   not, see FAQ.
@@ -129,13 +190,19 @@ properly:
 
 
   Hint:
-  To download the latest changes you can use
+  To update lazarus you can use
 
   []$ cd /home/username/freepascal/lazarus
   []$ cvs -z3 update -dP
+  []$ make clean all   (gmake on BSD)
+  
+  This will rebuild lazarus and create an IDE without lazarus packages. To
+  link your installed packages do *after* the above:
+  
+  []$ make idepkg
 
 
-
+--------------------------------------------------------------------------------
 2.1 Installing Lazarus under Windows:
 
   Under windows the IDE does not run well. So don't expect too much.
@@ -174,9 +241,7 @@ properly:
 
   That's all.
 
-
+--------------------------------------------------------------------------------
 3.1 Installing Lazarus under BSD
 
-  ToDo: Write Me.
-  
-  
+
