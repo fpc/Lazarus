@@ -98,11 +98,14 @@ function FilenameIsPascalUnit(const Filename: string): boolean;
 function FilenameIsPascalSource(const Filename: string): boolean;
 function FilenameIsFormText(const Filename: string): boolean;
 function MergeSearchPaths(const OldSearchPath, AddSearchPath: string): string;
+function GetNextDirectoryInSearchPath(const SearchPath: string;
+                                      var NextStartPos: integer): string;
 function SearchDirectoryInSearchPath(const SearchPath, Directory: string;
                                      DirStartPos: integer): integer;
 function CreateRelativePath(const Filename, BaseDirectory: string): string;
 function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string): string;
 function CreateAbsolutePath(const SearchPath, BaseDirectory: string): string;
+function FindFirstFileWithExt(const Directory, Ext: string): string;
 
 // XMLConfig
 procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStringList;
@@ -294,6 +297,25 @@ begin
       Result:=Result+NewPath;
     end;
   end;
+end;
+
+function GetNextDirectoryInSearchPath(const SearchPath: string;
+                                      var NextStartPos: integer): string;
+var
+  PathLen: Integer;
+  CurStartPos: Integer;
+begin
+  PathLen:=length(SearchPath);
+  repeat
+    while (NextStartPos<=PathLen) and (SearchPath[NextStartPos]=';') do
+      inc(NextStartPos);
+    CurStartPos:=NextStartPos;
+    while (NextStartPos<=PathLen) and (SearchPath[NextStartPos]<>';') do
+      inc(NextStartPos);
+    Result:=TrimFilename(copy(SearchPath,CurStartPos,NextStartPos-CurStartPos));
+    if Result<>'' then exit;
+  until (NextStartPos>PathLen);
+  Result:='';
 end;
 
 function SearchDirectoryInSearchPath(const SearchPath,
@@ -493,6 +515,26 @@ begin
     end;
     StartPos:=EndPos;
   end;
+end;
+
+function FindFirstFileWithExt(const Directory, Ext: string): string;
+var
+  FileInfo: TSearchRec;
+begin
+  Result:='';
+  if SysUtils.FindFirst(AppendPathDelim(Directory)+FindMask,
+                        faAnyFile,FileInfo)=0
+  then begin
+    repeat
+      // check if special file
+      if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;
+      if CompareFileExt(Directory,Ext,false)=0 then begin
+        Result:=AppendPathDelim(Directory)+FileInfo.Name;
+        break;
+      end;
+    until SysUtils.FindNext(FileInfo)<>0;
+  end;
+  SysUtils.FindClose(FileInfo);
 end;
 
 procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStringList;
@@ -897,10 +939,12 @@ var
   EndPos: Integer;
   StartPos: Integer;
   l: Integer;
+  BaseDir: String;
 begin
   Result:='';
   EndPos:=1;
   l:=length(SearchPath);
+  BaseDir:=AppendPathDelim(TrimFilename(BaseDirectory));
   while EndPos<=l do begin
     StartPos:=EndPos;
     while (StartPos<=l) and (SearchPath[StartPos]=';') do inc(StartPos);
@@ -909,8 +953,8 @@ begin
     while (EndPos<=l) and (SearchPath[EndPos]<>';') do inc(EndPos);
     CurPath:=copy(SearchPath,StartPos,EndPos-StartPos);
     if CurPath<>'' then begin
-      if (BaseDirectory<>'') and (not FilenameIsAbsolute(CurPath)) then
-        CurPath:=BaseDirectory+CurPath;
+      if (BaseDir<>'') and (not FilenameIsAbsolute(CurPath)) then
+        CurPath:=BaseDir+CurPath;
       CurPath:=TrimFilename(CurPath);
       if Result<>'' then
         CurPath:=';'+CurPath;
