@@ -702,7 +702,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.SetItemIndex(Val : integer);
 begin
-  if FItemIndex = Val then exit;
+  if Val=GetItemIndex then exit;
   FItemIndex:= Val;
   //if (FItemIndex>=0) and (not (csLoading in ComponentState)) then
   //  Text:=FItems[FItemIndex];
@@ -793,6 +793,9 @@ end;
 
 {
   $Log$
+  Revision 1.49  2004/11/27 22:29:56  vincents
+  fixed setting itemindex, if it had been changed by the interface before
+
   Revision 1.48  2004/10/17 14:40:38  micha
   fix parentcolor initialization, in createwnd is too late
 
