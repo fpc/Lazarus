@@ -3260,17 +3260,33 @@ begin
           gtk_clist_select_row(PGtkCList(Widget),TListItem(Data).Index,0);
        {$EndIf}
       end;
+      LM_LV_SHOWITEM:
+      if (Sender is TListView) then
+      begin
+        if Data<>nil 
+        then begin
+          Widget:= GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
+          //0=NotVisible
+          //1=PartiallyVisible
+          //2=Fully Visible
+          if gtk_clist_row_is_visible(PGtkCList(Widget),
+                               TListItem(Data).Index) < 2 
+          then gtk_clist_moveto(PGtkCList(Widget),TListItem(Data).Index,0,1,0);
+          
+        end;
+      end;
 
       LM_BRINGTOFRONT:
       begin
-  {         Assert(False, 'Trace:TODO:bringtofront');
-         //For now just hide and show again.
-     if (Sender is TControl) then begin
-       TControl(Sender).Parent.RemoveControl(TControl(Sender));
-       writeln('Removed control ', TControl(Sender).Name);
-       TControl(Sender).Parent.InsertControl(TControl(Sender));
-       writeln('Inserted control ', TControl(Sender).Name);
-    end;
+  {       Assert(False, 'Trace:TODO:bringtofront');
+        //For now just hide and show again.
+        if (Sender is TControl) 
+        then begin
+          TControl(Sender).Parent.RemoveControl(TControl(Sender));
+          writeln('Removed control ', TControl(Sender).Name);
+          TControl(Sender).Parent.InsertControl(TControl(Sender));
+          writeln('Inserted control ', TControl(Sender).Name);
+        end;
     }
         if (Sender is TCustomForm) then
           BringFormToFront(Sender);
@@ -9378,6 +9394,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.490  2004/04/04 17:10:05  marc
+  Patch from Andrew Haines
+
   Revision 1.489  2004/04/03 18:08:39  mattias
   fixed TLabel.AutoWrap=true and label on formless parent in gtk intf
 

@@ -132,6 +132,16 @@ begin
   else
     Result := -1;
 end;
+{------------------------------------------------------------------------------}
+{   TListItem MakeVisible                                                      }
+{------------------------------------------------------------------------------}
+procedure TListItem.MakeVisible(PartialOK: Boolean);
+begin
+  if FOwner <> nil then
+    if FOwner.Fowner <> nil then
+      FOwner.FOwner.SetItemVisible(Self);
+end;
+
 
 {------------------------------------------------------------------------------}
 {   TListItem SetState                                                         }
@@ -147,6 +157,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.16  2004/04/04 17:10:05  marc
+  Patch from Andrew Haines
+
   Revision 1.15  2003/03/15 13:26:07  mattias
   fixes for fpc 1.1
 

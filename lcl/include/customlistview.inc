@@ -28,6 +28,7 @@ begin
   FViewStyle := vsList;
   FSortType := stNone;
   FSortColumn := 0;
+  FOnCompare := nil;
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @ImageChanged;
   FSelected := nil;
@@ -246,7 +247,14 @@ End;
 procedure TCustomListView.SetItems(const AValue : TListItems);
 begin
 end;
-
+{------------------------------------------------------------------------------}
+{   TCustomListView SetItemVisible                                             }
+{------------------------------------------------------------------------------}
+procedure TCustomListView.SetItemVisible(const AValue : TListItem);
+begin
+  if (not HandleAllocated) or (csLoading in ComponentState) then exit;
+  CNSendMessage(LM_LV_SHOWITEM,self,AValue);
+end;
 {------------------------------------------------------------------------------}
 {   TCustomListView Delete                                                     }
 {------------------------------------------------------------------------------}
@@ -286,13 +294,16 @@ end;
 
 
 {------------------------------------------------------------------------------}
-{   TCustomListView SetSortType                                                  }
+{   TCustomListView SetSortType                                                }
 {------------------------------------------------------------------------------}
 procedure TCustomListView.SetSortType(const AValue: TSortType);
 begin
   if FSortType = AValue then Exit;
   FSortType := AValue;
+  if not(AValue in [stNone]) then
+    Sort;
   UpdateProperties;
+  ColumnsChanged;
 end;
 
 {------------------------------------------------------------------------------}
@@ -302,7 +313,45 @@ procedure TCustomListView.SetSortColumn(const AValue : Integer);
 begin
   if FSortColumn = AValue then Exit;
   FSortColumn := AValue;
+  if not(FSortType in [stNone]) then
+    Sort;
   UpdateProperties;
+end;
+
+function CompareItems(Item1, Item2: Pointer): Integer;
+var
+  Str1: String;
+  Str2: String;
+  ListView: TCustomListView;
+begin
+  ListView := TListItem(Item1).Owner.Owner;
+  if Assigned(ListView.FOnCompare) then begin
+    ListView.FOnCompare(ListView, TListItem(Item1), TListItem(Item2),0 ,Result);
+  end
+  else begin
+    if ListView.FSortColumn = 0 then begin
+      Str1 := TListItem(Item1).Caption;
+      Str2 := TListItem(Item2).Caption;
+    end
+    else begin
+      if ListView.FSortColumn <= TListItem(Item1).SubItems.Count then
+        Str1 := TListItem(Item1).SubItems.Strings[ListView.FSortColumn-1]
+      else Str1 := '';
+      if ListView.FSortColumn <= TListItem(Item2).SubItems.Count then
+        Str2 := TListItem(Item2).SubItems.Strings[ListView.FSortColumn-1]
+      else Str2 := '';
+    end;
+    Result := AnsiCompareText(Str1, Str2);
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+{   TCustomListView Sort                                                       }
+{------------------------------------------------------------------------------}
+procedure TCustomListView.Sort;
+begin
+  if FListItems.Count < 2 then Exit;
+  FListItems.FItems.Sort(@CompareItems);
 end;
 
 {------------------------------------------------------------------------------}
@@ -565,6 +614,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.32  2004/04/04 17:10:05  marc
+  Patch from Andrew Haines
+
   Revision 1.31  2004/03/18 22:35:52  mattias
   improved TCustomListView.ItemAdded with an Index param  from Andrew
 

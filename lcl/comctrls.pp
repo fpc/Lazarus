@@ -280,7 +280,7 @@ type
   TListItems = class;  //forward declaration!
   TCustomListView = class;  //forward declaration!
   TSortType = (stNone, stData, stText, stBoth);
-
+  
   TListItem = class(TPersistent)
   private
     FOwner: TListItems;
@@ -293,7 +293,6 @@ type
     FState:byte;//by VVI - for state (currently Selected) accumulating
     function GetState(const AnIndex: Integer): Boolean;
     procedure SetState(const AnIndex: Integer; const AState: Boolean);
-
     procedure SetData(const AValue: Pointer);
     procedure SetImageIndex(const AValue: Integer);
     procedure SetCaption(const AValue : String);
@@ -309,6 +308,7 @@ type
     destructor Destroy; override;
     procedure Delete;
   public
+    procedure MakeVisible(PartialOK: Boolean);
     property Caption : String read FCaption write SetCaption;
     property Cut: Boolean index 0 read GetState write SetState;
     property Data: Pointer read FData write SetData;
@@ -433,6 +433,8 @@ type
                                   Column: TListColumn) of object;
   TLVColumnRClickEvent = procedure(Sender: TObject; Column: TListColumn;
                                    Point: TPoint) of object;
+  TLVCompareEvent = procedure(Sender: TObject; Item1, Item2: TListItem;
+                               Data: Integer; var Compare: Integer) of object;
   TLVDeletedEvent = procedure(Sender: TObject; Item: TListItem) of object;
   TLVSelectItemEvent = procedure(Sender: TObject; Item: TListItem;
                                  Selected: Boolean) of object;
@@ -460,6 +462,7 @@ type
     FUpdateCount: integer;
     FOnChange: TLVChangeEvent;
     FOnColumnClick: TLVColumnClickEvent;
+    FOnCompare: TLVCompareEvent;
     FOnDeletion: TLVDeletedEvent;
     FOnSelectItem: TLVSelectItemEvent;
     FStates: TListViewStates;
@@ -468,6 +471,7 @@ type
     procedure SetColumns(const AValue: TListColumns);
     procedure SetDefaultItemHeight(AValue: integer);
     procedure SetItems(const AValue : TListItems);
+    procedure SetItemVisible(const Avalue: TListItem);
     procedure SetMultiSelect(const AValue: Boolean);
     procedure SetSmallImages(const AValue: TCustomImageList);
     procedure SetScrollBars(const Value: TScrollStyle);
@@ -477,6 +481,7 @@ type
     procedure SetSortColumn(const AValue: Integer);
     procedure SetSortType(const AValue: TSortType);
     procedure SetViewStyle (const Avalue: TViewStyle);
+    procedure Sort;
     procedure UpdateScrollbars;
     procedure CNNotify(var AMessage: TLMNotify); message CN_NOTIFY;
     procedure DoUpdate;
@@ -486,6 +491,7 @@ type
     procedure Loaded; override;
     procedure Change(AItem: TListItem; AChange: Integer); dynamic;
     procedure ColClick(AColumn: TListColumn); dynamic;
+
     procedure Delete(Item : TListItem);
     procedure DoDeletion(AItem: TListItem); dynamic;
     procedure DoSelectItem(AItem: TListItem; ASelected: Boolean); dynamic;
@@ -517,6 +523,7 @@ type
     property ViewStyle: TViewStyle read FViewStyle write SetViewStyle;
     property OnChange: TLVChangeEvent read FOnChange write FOnChange;
     property OnColumnClick: TLVColumnClickEvent read FOnColumnClick write FOnColumnClick;
+    property OnCompare: TLVCompareEvent read FOnCompare write FOnCompare;
     property OnDeletion: TLVDeletedEvent read FOnDeletion write FOnDeletion;
     property OnSelectItem: TLVSelectItemEvent read FOnSelectItem write FOnSelectItem;
   public
@@ -560,6 +567,7 @@ type
     property OnChange;
     property OnClick;
     property OnColumnClick;
+    property OnCompare;
     property OnDblClick;
     property OnMouseDown;
     property OnMouseUp;
@@ -2241,6 +2249,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.121  2004/04/04 17:10:05  marc
+  Patch from Andrew Haines
+
   Revision 1.120  2004/03/18 22:35:52  mattias
   improved TCustomListView.ItemAdded with an Index param  from Andrew
 

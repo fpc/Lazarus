@@ -132,6 +132,7 @@ const
   LM_LV_CHANGEITEM  = LM_LV_FIRST+1;
   LM_LV_DELETEITEM  = LM_LV_FIRST+2;
   LM_LV_SELECTITEM  = LM_LV_FIRST+3;
+  LM_LV_SHOWITEM    = LM_LV_FIRST+4;
   LM_LV_LAST        = LM_LV_FIRST+9; // LM_COMUSER+89
 
   // TComboBox
@@ -970,6 +971,7 @@ begin
   LM_LV_CHANGEITEM  :Result:='LM_LV_CHANGEITEM';
   LM_LV_DELETEITEM  :Result:='LM_LV_DELETEITEM';
   LM_LV_SELECTITEM  :Result:='LM_LV_SELECTITEM';
+  LM_LV_SHOWITEM    :Result:='LM_LV_SHOWITEM';
   //LM_LV_LAST        :Result:='LM_LV_LAST';
 
   // TComboBox
@@ -1087,6 +1089,9 @@ end.
 
 {
   $Log$
+  Revision 1.61  2004/04/04 17:10:05  marc
+  Patch from Andrew Haines
+
   Revision 1.60  2004/02/04 22:17:09  mattias
   removed workaround VirtualCreate
 
