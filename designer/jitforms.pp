@@ -32,8 +32,6 @@
 
   ToDo:
     -Add recursion needed for frames.
-    -activate SetDesigning in TJITForm.Create when LCL is ready for components
-      in designing state
 }
 unit JITForms;
 
@@ -136,8 +134,7 @@ end;
 
 constructor TJITForm.Create(AOwner: TComponent);
 begin
-// XXX ToDo: uncomment this when LCL is ready for csDesigning
-  //SetDesigning(true);
+  SetDesigning(true);
   inherited Create(AOwner);
 end;
 

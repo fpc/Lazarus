@@ -1707,7 +1707,6 @@ Procedure TMainIDE.SetDesigning(Control : TComponent; Value : Boolean);
 Begin
   Control.SetDesigning(Value);
   if Value then CNSendMessage(LM_SETDESIGNING, Control, nil);
-
 end;
 
 {------------------------------------------------------------------------------}
@@ -6503,6 +6502,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.315  2002/06/21 17:54:22  lazarus
+  MG: in design mode the mouse cursor is now also set for hidden gdkwindows
+
   Revision 1.314  2002/06/19 19:46:05  lazarus
   MG: Form Editing: snapping, guidelines, modified on move/resize, creating components in csDesigning, ...
 

@@ -74,15 +74,43 @@ end;
   Params: Widget: PGtkWidget; Data: Pointer
   Result: GBoolean
   
-  GTKRealizeCB is called by the gtk, whenever a widget is realized (ie mapped).
-  That means that the gdk window on the xserver has been created. This function
-  is used for the second part of the initialization of a widget.
+  GTKRealizeCB is called by the gtk, whenever a widget is realized (ie mapped),
+  but before the widget itself got the realize signal.
+  That means that the gdk window on the xserver has been created.
 -------------------------------------------------------------------------------}
 function GTKRealizeCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
+begin
+  EventTrace('realize', nil);
+
+  if Data<>nil then begin
+    if TObject(Data) is TCustomForm then begin
+      if TCustomForm(Data).BorderStyle=bsNone then begin
+        // remove window decorations
+        gdk_window_set_decorations(Widget^.Window,0);
+      end;
+    end;
+  end;
+      
+  Result := True;
+end;
+
+{-------------------------------------------------------------------------------
+  function GTKRealizeAfterCB
+  Params: Widget: PGtkWidget; Data: Pointer
+  Result: GBoolean
+
+  GTKRealizeCB is called by the gtk, whenever a widget is realized (ie mapped),
+  and after the widget itself got the realize signal.
+  That means that the gdk window on the xserver has been created and the widget
+  has initialized the gdkwindow. This function is used for the second part of
+  the initialization of a widget.
+-------------------------------------------------------------------------------}
+function GTKRealizeAfterCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
 var
   WinWidgetInfo: PWinWidgetInfo;
 begin
   EventTrace('realize', nil);
+  
   // set extra signal masks after the widget window is created
   // define extra events we're interrested in
   WinWidgetInfo:=GetWidgetInfo(Widget,true);
@@ -91,16 +119,10 @@ begin
 
   if Data<>nil then begin
     if TObject(Data) is TWinControl then begin
-      if TWinControl(Data) is TCustomForm then begin
-        if TCustomForm(Data).BorderStyle=bsNone then begin
-          // remove window decorations
-          gdk_window_set_decorations(Widget^.Window,0);
-        end;
-      end;
       SetCursor(TWinControl(Data));
     end;
   end;
-  
+
   Result := True;
 end;
 
@@ -2035,6 +2057,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.87  2002/06/21 17:54:23  lazarus
+  MG: in design mode the mouse cursor is now also set for hidden gdkwindows
+
   Revision 1.86  2002/06/21 16:59:15  lazarus
   MG: TControl.Cursor is now set, reduced auto reaction of widgets in design mode
 
