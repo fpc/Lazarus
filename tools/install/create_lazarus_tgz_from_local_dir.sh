@@ -1,10 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -x
 set -e
 
 LazSrcDir=$1
-OutFile=lazarus-0.8.5-1.tgz
+OutFile=lazarus-0.9.1-5.tgz
 
 if [ "x$LazSrcDir" = "x" ]; then
   echo "Usage: $0 <lazarus_source_directory>"
@@ -21,15 +21,7 @@ rm -rf /tmp/lazarus
 cd -
 cp -a $LazSrcDir /tmp/lazarus
 
-echo "cleaning up (CVS, ppu, o) ..."
-cd /tmp/lazarus
-make cleanall
-for Ext in ppu ppw ppl o ow rst cvsignore bak; do
-  find . -name "*.$Ext" -exec rm -f {} \;
-done
-find . -name "*.~*" -exec rm -f {} \;
-rm -rf tools/install/*.tgz
-cd -
+sh clean_lazaru_directory.sh $LazSrcDir
 
 # pack
 echo "packing ..."
