@@ -63,6 +63,9 @@ type
     procedure BuildDefaultKeyWordFunctions; virtual;
     procedure SetScanner(NewScanner: TLinkScanner); virtual;
     procedure DoDeleteNodes; virtual;
+    procedure RaiseIdentExpectedButAtomFound;
+    procedure RaiseBracketOpenExpectedButAtomFound;
+    procedure RaiseBracketCloseExpectedButAtomFound;
   protected
     LastErrorMessage: string;
     LastErrorCurPos: TAtomPosition;
@@ -454,6 +457,12 @@ begin
 end;
 
 function TCustomCodeTool.AtomIsIdentifier(ExceptionOnNotFound: boolean):boolean;
+
+  procedure RaiseIdentExpectedButEOFFound;
+  begin
+    SaveRaiseException(ctsIdentExpectedButEOFFound);
+  end;
+
 begin
   if CurPos.StartPos<=SrcLen then begin
     if IsIdentStartChar[UpperSrc[CurPos.StartPos]] then begin
@@ -462,19 +471,19 @@ begin
         Result:=true
       else begin
         if ExceptionOnNotFound then
-          SaveRaiseExceptionFmt(ctsIdentExpectedButKeyWordFound,[GetAtom])
+          RaiseIdentExpectedButAtomFound
         else
           Result:=false;
       end;
     end else begin
       if ExceptionOnNotFound then
-        SaveRaiseExceptionFmt(ctsIdentExpectedButAtomFound,[GetAtom])
+        RaiseIdentExpectedButAtomFound
       else
         Result:=false;
     end;
   end else begin
     if ExceptionOnNotFound then
-      SaveRaiseException(ctsIdentExpectedButEOFFound)
+      RaiseIdentExpectedButEOFFound
     else
       Result:=false;
   end;
@@ -1235,13 +1244,19 @@ begin
 end;
 
 procedure TCustomCodeTool.UndoReadNextAtom;
+
+  procedure RaiseUndoImpossible;
+  begin
+    RaiseException('TCustomCodeTool.UndoReadNextAtom impossible');
+  end;
+
 begin
   if LastAtoms.Count>0 then begin
     NextPos:=CurPos;
     CurPos:=LastAtoms.GetValueAt(0);
     LastAtoms.UndoLastAdd;
   end else
-    RaiseException('TCustomCodeTool.UndoReadNextAtom impossible');
+    RaiseUndoImpossible;
 end;
 
 function TCustomCodeTool.ReadTilBracketClose(
@@ -1249,6 +1264,15 @@ function TCustomCodeTool.ReadTilBracketClose(
 // reads code brackets (not comment brackets)
 var CloseBracket, AntiCloseBracket: TCommonAtomFlag;
   Start: TAtomPosition;
+  
+  procedure RaiseBracketNotFound;
+  begin
+    if CloseBracket=cafRoundBracketOpen then
+      SaveRaiseExceptionFmt(ctsBracketNotFound,['('])
+    else
+      SaveRaiseExceptionFmt(ctsBracketNotFound,['[']);
+  end;
+  
 begin
   Result:=false;
   if (Curpos.Flag=cafRoundBracketOpen) then begin
@@ -1259,7 +1283,7 @@ begin
     AntiCloseBracket:=cafRoundBracketClose;
   end else begin
     if ExceptionOnNotFound then
-      SaveRaiseExceptionFmt(ctsBracketOpenExpectedButAtomFound,[GetAtom]);
+      RaiseBracketOpenExpectedButAtomFound;
     exit;
   end;
   Start:=CurPos;
@@ -1271,10 +1295,7 @@ begin
     then begin
       CurPos:=Start;
       if ExceptionOnNotFound then begin
-        if CloseBracket=cafRoundBracketOpen then
-          SaveRaiseExceptionFmt(ctsBracketNotFound,['('])
-        else
-          SaveRaiseExceptionFmt(ctsBracketNotFound,['[']);
+        RaiseBracketNotFound;
       end;
       exit;
     end;
@@ -1290,6 +1311,15 @@ function TCustomCodeTool.ReadBackTilBracketOpen(
 // reads code brackets (not comment brackets)
 var OpenBracket, AntiOpenBracket: TCommonAtomFlag;
   Start: TAtomPosition;
+  
+  procedure RaiseBracketNotFound;
+  begin
+    if OpenBracket=cafRoundBracketOpen then
+      SaveRaiseExceptionFmt(ctsBracketNotFound,['('])
+    else
+      SaveRaiseExceptionFmt(ctsBracketNotFound,['[']);
+  end;
+  
 begin
   Result:=false;
   if (CurPos.Flag=cafRoundBracketClose) then begin
@@ -1300,7 +1330,7 @@ begin
     AntiOpenBracket:=cafRoundBracketOpen;
   end else begin
     if ExceptionOnNotFound then
-      SaveRaiseExceptionFmt(ctsBracketCloseExpectedButAtomFound,[GetAtom]);
+      RaiseBracketCloseExpectedButAtomFound;
     exit;
   end;
   Start:=CurPos;
@@ -1311,10 +1341,7 @@ begin
     or (CurPos.Flag in [AntiOpenBracket,cafEND,cafBegin]) then begin
       CurPos:=Start;
       if ExceptionOnNotFound then
-        if OpenBracket=cafRoundBracketOpen then
-          SaveRaiseExceptionFmt(ctsBracketNotFound,['('])
-        else
-          SaveRaiseExceptionFmt(ctsBracketNotFound,['[']);
+        RaiseBracketNotFound;
       exit;
     end;
     if CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose] then begin
@@ -1391,14 +1418,25 @@ begin
 end;
 
 procedure TCustomCodeTool.MoveCursorToCleanPos(ACleanPos: PChar);
+
+  procedure RaiseSrcEmpty;
+  begin
+    RaiseException('[TCustomCodeTool.MoveCursorToCleanPos - PChar] Src empty');
+  end;
+  
+  procedure RaiseNotInSrc;
+  begin
+    RaiseException('[TCustomCodeTool.MoveCursorToCleanPos - PChar] '
+      +'CleanPos not in Src');
+  end;
+
 var NewPos: integer;
 begin
   if Src='' then
-    RaiseException('[TCustomCodeTool.MoveCursorToCleanPos - PChar] Src empty');
+    RaiseSrcEmpty;
   NewPos:=Integer(ACleanPos)-Integer(@Src[1])+1;
   if (NewPos<1) or (NewPos>SrcLen) then
-    RaiseException('[TCustomCodeTool.MoveCursorToCleanPos - PChar] '
-      +'CleanPos not in Src');
+    RaiseNotInSrc;
   MoveCursorToCleanPos(NewPos);
 end;
 
@@ -1511,6 +1549,12 @@ end;
 
 function TCustomCodeTool.FindDeepestNodeAtPos(StartNode: TCodeTreeNode;
   P: integer; ExceptionOnNotFound: boolean): TCodeTreeNode;
+  
+  procedure RaiseNoNodeFoundAtCursor;
+  begin
+    SaveRaiseException(ctsNoNodeFoundAtCursor);
+  end;
+  
 begin
   if StartNode<>nil then begin
 //writeln('SearchInNode ',NodeDescriptionAsString(ANode.Desc),
@@ -1535,7 +1579,7 @@ begin
     Result:=nil;
   if (Result=nil) and ExceptionOnNotFound then begin
     MoveCursorToCleanPos(P);
-    SaveRaiseException(ctsNoNodeFoundAtCursor);
+    RaiseNoNodeFoundAtCursor;
   end;
 end;
 
@@ -1758,6 +1802,21 @@ end;
 procedure TCustomCodeTool.DoDeleteNodes;
 begin
   Tree.Clear;
+end;
+
+procedure TCustomCodeTool.RaiseIdentExpectedButAtomFound;
+begin
+  SaveRaiseExceptionFmt(ctsIdentExpectedButKeyWordFound,[GetAtom])
+end;
+
+procedure TCustomCodeTool.RaiseBracketOpenExpectedButAtomFound;
+begin
+  SaveRaiseExceptionFmt(ctsBracketOpenExpectedButAtomFound,[GetAtom]);
+end;
+
+procedure TCustomCodeTool.RaiseBracketCloseExpectedButAtomFound;
+begin
+  SaveRaiseExceptionFmt(ctsBracketCloseExpectedButAtomFound,[GetAtom]);
 end;
 
 procedure TCustomCodeTool.ActivateGlobalWriteLock;

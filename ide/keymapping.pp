@@ -335,7 +335,8 @@ begin
       for i:=VK_IRREGULAR+33 to VK_IRREGULAR+255 do
         VirtualKeyStrings.Add(KeyAndShiftStateToStr(i,[]),Pointer(i));
     end;
-  end;
+  end else
+    exit;
   Data:=VirtualKeyStrings.Data[s];
   if Data<>nil then
     Result:=integer(Data);

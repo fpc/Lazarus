@@ -568,10 +568,16 @@ begin
 end;
 
 function TLinkScanner.LinkSize(Index: integer): integer;
-begin
-  if (Index<0) or (Index>=LinkCount) then
+
+  procedure IndexOutOfBounds;
+  begin
     RaiseException('TLinkScanner.LinkSize  index '
        +IntToStr(Index)+' out of bounds: 0-'+IntToStr(LinkCount));
+  end;
+
+begin
+  if (Index<0) or (Index>=LinkCount) then
+    IndexOutOfBounds;
   if Index<LinkCount-1 then
     Result:=Links[Index+1].CleanedPos-Links[Index].CleanedPos
   else
@@ -626,6 +632,19 @@ begin
 end;
 
 function TLinkScanner.LinkIndexAtCleanPos(ACleanPos: integer): integer;
+
+  procedure ConsistencyError1;
+  begin
+    raise Exception.Create(
+      'TLinkScanner.LinkAtCleanPos Consistency-Error 1');
+  end;
+
+  procedure ConsistencyError2;
+  begin
+    raise Exception.Create(
+      'TLinkScanner.LinkAtCleanPos Consistency-Error 2');
+  end;
+
 var l,r,m: integer;
 begin
   Result:=-1;
@@ -649,12 +668,10 @@ begin
         Result:=m;
         exit;
       end else
-        raise Exception.Create(
-            'TLinkScanner.LinkAtCleanPos Consistency-Error 2');
+        ConsistencyError2;
     end;
   end;
-  raise Exception.Create(
-      'TLinkScanner.LinkAtCleanPos Consistency-Error 1');
+  ConsistencyError1;
 end;
 
 function TLinkScanner.LinkIndexAtCursorPos(ACursorPos: integer; ACode: Pointer
@@ -678,12 +695,18 @@ begin
 end;
 
 procedure TLinkScanner.SetSource(ACode: pointer);
+
+  procedure RaiseUnableToGetCode;
+  begin
+    RaiseException('unable to get source with Code='+HexStr(Cardinal(Code),8));
+  end;
+
 var SrcLog: TSourceLog;
 begin
   if Assigned(FOnGetSource) then begin
     SrcLog:=FOnGetSource(Self,ACode);
     if SrcLog=nil then
-      RaiseException('unable to get source with Code='+HexStr(Cardinal(Code),8));
+      RaiseUnableToGetCode;
     AddSourceChangeStep(ACode,SrcLog.ChangeStep);
     Src:=SrcLog.Source;
     Code:=ACode;
@@ -693,7 +716,7 @@ begin
     SrcLen:=length(Src);
     LastCleanSrcPos:=0;
   end else begin
-    RaiseException('unable to get source with Code='+HexStr(Cardinal(Code),8));
+    RaiseUnableToGetCode;
   end;
 end;
 
@@ -1042,13 +1065,19 @@ begin
 end;
 
 procedure TLinkScanner.AddSourceChangeStep(ACode: pointer;AChangeStep: integer);
+
+  procedure RaiseCodeNil;
+  begin
+    RaiseException('TLinkScanner.AddSourceChangeStep ACode=nil');
+  end;
+
 var l,r,m: integer;
   NewSrcChangeStep: PSourceChangeStep;
   c: pointer;
 begin
   //writeln('[TLinkScanner.AddSourceChangeStep] ',HexStr(Cardinal(ACode),8));
   if ACode=nil then
-    RaiseException('TLinkScanner.AddSourceChangeStep ACode=nil');
+    RaiseCodeNil;
   l:=0;
   r:=FSourceChangeSteps.Count-1;
   m:=0;
@@ -1841,10 +1870,16 @@ end;
 
 function TLinkScanner.EndifDirective: boolean;
 // {$endif comment}
+
+  procedure RaiseAWithoutB;
+  begin
+    RaiseExceptionFmt(ctsAwithoutB,['$ENDIF','$IF'])
+  end;
+
 begin
   dec(IfLevel);
   if IfLevel<0 then
-    RaiseExceptionFmt(ctsAwithoutB,['$ENDIF','$IF'])
+    RaiseAWithoutB
   else if IfLevel<FSkipIfLevel then
     FSkippingTillEndif:=false;
   Result:=true;
@@ -1852,9 +1887,15 @@ end;
 
 function TLinkScanner.ElseDirective: boolean;
 // {$else comment}
+
+  procedure RaiseAWithoutB;
+  begin
+    RaiseExceptionFmt(ctsAwithoutB,['$ELSE','$IF']);
+  end;
+
 begin
   if IfLevel=0 then
-    RaiseExceptionFmt(ctsAwithoutB,['$ELSE','$IF']);
+    RaiseAWithoutB;
   if not FSkippingTillEndif then
     SkipTillEndifElse
   else if IfLevel=FSkipIfLevel then
@@ -2123,12 +2164,18 @@ end;
 
 procedure TLinkScanner.PushIncludeLink(ACleanedPos, ASrcPos: integer;
   ACode: pointer);
+  
+  procedure RaiseIncludeCircleDetected;
+  begin
+    RaiseException(ctsIncludeCircleDetected);
+  end;
+  
 var NewLink: PSourceLink;
   i: integer;
 begin
   for i:=0 to FIncludeStack.Count-1 do
     if PSourceLink(FIncludeStack[i])^.Code=ACode then
-      RaiseException(ctsIncludeCircleDetected);
+      RaiseIncludeCircleDetected;
   NewLink:=PSourceLinkMemManager.NewPSourceLink;
   with NewLink^ do begin
     CleanedPos:=ACleanedPos;
@@ -2335,6 +2382,13 @@ end;
 
 function TLinkScanner.CleanedPosToCursor(ACleanedPos: integer;
   var ACursorPos: integer; var ACode: Pointer): boolean;
+
+  procedure ConsistencyCheckI(i: integer);
+  begin
+    raise Exception.Create(
+      'TLinkScanner.CleanedPosToCursor Consistency-Error '+IntToStr(i));
+  end;
+
 var l,r,m: integer;
 begin
   Result:=(ACleanedPos>=1) and (ACleanedPos<=CleanedLen);
@@ -2360,12 +2414,10 @@ begin
           ACursorPos:=ACleanedPos-Links[m].CleanedPos+Links[m].SrcPos;
           exit;
         end else
-          raise Exception.Create(
-              'TLinkScanner.CleanedPosToCursor Consistency-Error 2');
+          ConsistencyCheckI(2);
       end;
     end;
-    raise Exception.Create(
-        'TLinkScanner.CleanedPosToCursor Consistency-Error 1');
+    ConsistencyCheckI(1);
   end;
 end;
 
