@@ -126,7 +126,7 @@ type
 implementation
 
 uses 
-  Graphics, Buttons, Menus, GTKWinApiWindow, CListBox;
+  Graphics, Buttons, Menus, GTKWinApiWindow, CListBox, KeyMap;
 
 {$I gtklistsl.inc}
 
@@ -325,6 +325,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.27  2002/02/18 22:46:11  lazarus
+  Implented TMenuItem.ShortCut (not much tested).
+
   Revision 1.26  2002/02/03 00:24:01  lazarus
   TPanel implemented.
   Basic graphic primitives split into GraphType package, so that we can
