@@ -32,7 +32,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Windows, ExtCtrls, Classes, Controls, LCLType,
+  Windows, ExtCtrls, Classes, Controls, LCLType, SysUtils,
 ////////////////////////////////////////////////////
   WSExtCtrls, WSLCLClasses, WinExt, Win32Int, Win32Proc, InterfaceBase, 
   Win32WSControls;
@@ -49,6 +49,7 @@ type
           const AParams: TCreateParams): HWND; override;
     class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
   end;
 
   { TWin32WSCustomNotebook }
@@ -339,6 +340,32 @@ begin
         or (lWidth <> wWidth) or (lHeight <> wHeight) then
     begin
       LCLControlSizeNeedsUpdate(AWinControl, true);
+    end;
+  end;
+end;
+
+procedure TWin32WSCustomPage.SetText(const AWinControl: TWinControl; const AText: string);
+var
+  TCI: TC_ITEM;
+  PageIndex: integer;
+  NotebookHandle: HWND;
+begin
+  PageIndex := TCustomPage(AWinControl).PageIndex;
+  NotebookHandle := AWinControl.Parent.Handle;
+  // We can't set label of a page not yet added,
+  // Check for valid page index
+  if (PageIndex>=0) and
+    (PageIndex < Windows.SendMessage(NotebookHandle, TCM_GETITEMCOUNT,0,0)) then
+  begin
+    // retrieve page handle from tab as extra check (in case page isn't added yet).
+    TCI.mask := TCIF_PARAM;
+    Windows.SendMessage(NotebookHandle, TCM_GETITEM, PageIndex, LPARAM(@TCI));
+    if dword(TCI.lParam)=dword(AWinControl) then
+    begin
+      Assert(False, Format('Trace:TWin32WSCustomPage.SetText --> %S', [AText]));
+      TCI.mask := TCIF_TEXT;
+      TCI.pszText := PChar(AText);
+      Windows.SendMessage(NotebookHandle, TCM_SETITEM, PageIndex, LPARAM(@TCI));
     end;
   end;
 end;

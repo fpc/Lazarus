@@ -1193,6 +1193,7 @@ Begin
   Include(FFormState,fsFirstShow);
   //DebugLn('[TCustomForm.CreateNew] Class=',Classname);
   BeginFormUpdate;
+  FBorderIcons := [biSystemMenu, biMinimize, biMaximize];
   // set border style before handle is allocated
   if not (fsBorderStyleChanged in FFormState) then
     FFormBorderStyle:= bsSizeable;
@@ -1818,6 +1819,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.161  2004/10/25 14:35:13  micha
+  fix bordericons initialization
+  fix setting tab page caption (win32)
+
   Revision 1.160  2004/10/24 18:54:57  micha
   add TCustomForm.BorderIcons (delphi compat)
   tweak win32 window dialog flags, to create better dialog look
