@@ -46,7 +46,7 @@ interface
 uses
   Classes, SysUtils, FPCAdds, LCLStrConsts, LCLProc, LCLType, LCLIntf, Controls,
   GraphType, Graphics, Forms, DynamicArray, LMessages, XMLCfg, StdCtrls,
-  LResources, MaskEdit, Buttons;
+  LResources, MaskEdit, Buttons, Clipbrd;
 
 const
   //GRIDFILEVERSION = 1; // Original
@@ -460,6 +460,7 @@ type
     FEditorShowing: Boolean;
     FEditorKey: Boolean;
     FEditorOptions: Integer;
+    FExtendedSelect: boolean;
     FFastEditing: boolean;
     FFlat: Boolean;
     FOnCompareCells: TOnCompareCells;
@@ -615,6 +616,8 @@ type
     procedure DefineProperties(Filer: TFiler); override;
     procedure DestroyHandle; override;
     function  DoCompareCells(Acol,ARow,Bcol,BRow: Integer): Integer; dynamic;
+    procedure DoCopyToClipboard; virtual;
+    procedure DoCutToClipboard; virtual;
     procedure DoEditorHide; virtual;
     procedure DoEditorShow; virtual;
     procedure DoExit; override;
@@ -622,6 +625,7 @@ type
     function  DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     function  DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     procedure DoOnChangeBounds; override;
+    procedure DoPasteFromClipboard; virtual;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure DrawBackGround; virtual;
     procedure DrawBorder;
@@ -723,7 +727,7 @@ type
     property Columns: TGridColumns read GetColumns write SetColumns stored IsColumnsStored;
     property ColWidths[aCol: Integer]: Integer read GetColWidths write SetColWidths;
     property DefaultColWidth: Integer read FDefColWidth write SetDefColWidth;
-    property DefaultRowHeight: Integer read FDefRowHeight write SetDefRowHeight;
+    property DefaultRowHeight: Integer read FDefRowHeight write SetDefRowHeight default 20;
     property DefaultDrawing: Boolean read FDefaultDrawing write SetDefaultDrawing default True;
     property DefaultTextStyle: TTextStyle read FDefaultTextStyle write FDefaultTextStyle;
     property DragDx: Integer read FDragDx write FDragDx;
@@ -736,6 +740,7 @@ type
     property EditorShowing: boolean read FEditorShowing write FEditorShowing;
     property ExtendedColSizing: boolean read FExtendedColSizing write FExtendedColSizing;
     property ExtendedRowSizing: boolean read FExtendedRowSizing write FExtendedRowSizing;
+    property ExtendedSelect: boolean read FExtendedSelect write FExtendedSelect;
     property FastEditing: boolean read FFastEditing write FFastEditing;
     property FixedCols: Integer read FFixedCols write SetFixedCols default 1;
     property FixedRows: Integer read FFixedRows write SetFixedRows default 1;
@@ -1062,6 +1067,9 @@ type
       procedure AutoAdjustColumn(aCol: Integer); override;
       procedure CalcCellExtent(acol, aRow: Integer; var aRect: TRect); override;
       procedure DefineProperties(Filer: TFiler); override;
+      procedure DoCopyToClipboard; override;
+      procedure DoCutToClipboard; override;
+      procedure DoPasteFromClipboard; override;
       procedure DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); override;
       //procedure EditordoGetValue; override;
       //procedure EditordoSetValue; override;
@@ -1070,11 +1078,13 @@ type
       procedure SaveContent(cfg: TXMLConfig); override;
       //procedure DrawInteriorCells; override;
       //procedure SelectEditor; override;
+      procedure SelectionSetText(TheText: String);
       procedure SetEditText(aCol, aRow: Longint; const aValue: string); override;
 
     public
       constructor Create(AOwner: TComponent); override;
       //destructor Destroy; override;
+      procedure AutoSizeColumn(aCol: Integer);
       procedure AutoSizeColumns;
       procedure Clean; overload;
       procedure Clean(CleanOptions: TCleanOptions); overload;
@@ -3294,7 +3304,8 @@ end;
 procedure TCustomGrid.SetSelectActive(const AValue: Boolean);
 begin
   if FSelectActive=AValue then exit;
-  FSelectActive:=AValue and not(goEditing in Options);
+  FSelectActive:=AValue and
+    (not(goEditing in Options) or (ExtendedSelect and not EditorAlwaysShown));
   if FSelectActive then FPivot:=Point(FCol,FRow);
 end;
 
@@ -3707,11 +3718,13 @@ begin
           fGridState:=gsSelecting;
           FSplitter:=MouseToCell(Point(X,Y));
           if not Focused then setFocus;
-          if not (goEditing in Options) then begin
+          
+          if not (goEditing in Options) or
+            (ExtendedSelect and not EditorAlwaysShown) then begin
             if ssShift in Shift then begin
               SelectActive:=(goRangeSelect in Options);
             end else begin
-              if not SelectACtive then begin
+              if not SelectActive then begin
                 FPivot:=FSplitter;
                 FSelectActive:=true;
               end;
@@ -3721,6 +3734,7 @@ begin
             EditorShow(True);
             exit;
           end;
+          
           if not MoveExtend(False, FSplitter.X, FSplitter.Y) then begin
             if EditorAlwaysShown then begin
               SelectEditor;
@@ -3745,7 +3759,8 @@ begin
   case fGridState of
     gsSelecting:
       begin
-        if not (goEditing in Options) then begin
+        if not (goEditing in Options) or
+          (ExtendedSelect and not EditorAlwaysShown) then begin
           P:=MouseToLogcell(Point(X,Y));
           MoveExtend(False, P.x, P.y);
         end;
@@ -3922,6 +3937,14 @@ begin
     OnCompareCells(Self, ACol, ARow, BCol, BRow, Result);
 end;
 
+procedure TCustomGrid.DoCopyToClipboard;
+begin
+end;
+
+procedure TCustomGrid.DoCutToClipboard;
+begin
+end;
+
 procedure TCustomGrid.DoEditorHide;
 begin
   Editor.Visible:=False;
@@ -3943,6 +3966,11 @@ procedure TCustomGrid.DoOnChangeBounds;
 begin
   inherited DoOnChangeBounds;
   VisualChange;
+end;
+
+procedure TCustomGrid.DoPasteFromClipboard;
+begin
+  //
 end;
 
 procedure TCustomGrid.DoSetBounds(ALeft, ATop, AWidth, AHeight: integer);
@@ -4116,6 +4144,27 @@ begin
         if not FEditorKey then begin
           EditorShowChar(^H);
           key:=0;
+        end;
+      end;
+    VK_C:
+      begin
+        if ssCtrl in Shift then begin
+          Key := 0;
+          doCopyToClipboard;
+        end;
+      end;
+    VK_V:
+      begin
+        if ssCtrl in Shift then begin
+          Key := 0;
+          doPasteFromClipboard;
+        end;
+      end;
+    VK_X:
+      begin
+        if ssCtrl in Shift then begin
+          Key := 0;
+          doCutToClipboard;
         end;
       end;
 
@@ -5090,7 +5139,7 @@ begin
       RowCount:=Cfg.GetValue('grid/design/rowcount', 5);
       FixedCols:=Cfg.GetValue('grid/design/fixedcols', 1);
       FixedRows:=Cfg.GetValue('grid/design/fixedrows', 1);
-      DefaultRowheight:=Cfg.GetValue('grid/design/defaultrowheight', 24);
+      DefaultRowheight:=Cfg.GetValue('grid/design/defaultrowheight', 20);
       DefaultColWidth:=Cfg.getValue('grid/design/defaultcolwidth', 64);
 
       Path:='grid/design/columns/';
@@ -5193,7 +5242,7 @@ begin
   FScrollbars:=ssAutoBoth;
   fGridState:=gsNormal;
   fDefColWidth:=64;//40;
-  fDefRowHeight:=24;//18;
+  fDefRowHeight:=20;//18;
   fGridLineColor:=clSilver;//clGray;
   FGridLineStyle:=psSolid;
   fFocusColor:=clRed;
@@ -5223,7 +5272,7 @@ begin
   FStringEditor.Text:='';
   FStringEditor.Visible:=False;
   FStringEditor.Align:=alNone;
-
+  FFastEditing := True;
 end;
 
 destructor TCustomGrid.Destroy;
@@ -6043,6 +6092,45 @@ begin
   end;
 end;
 
+procedure TCustomStringGrid.DoCopyToClipboard;
+var
+  SelStr: String;
+  Sel: TRect;
+  i: LongInt;
+  j: LongInt;
+begin
+  SelStr := '';
+  Sel := Selection;
+  for i:=Sel.Top to Sel.Bottom do begin
+    for j:=Sel.Left to Sel.Right do begin
+      SelStr := SelStr + Cells[j,i];
+      if j<>Sel.Right then
+        SelStr := SelStr + #9;
+    end;
+    SelStr := SelStr + #13#10;
+  end;
+  Clipboard.AsText := SelStr;
+  {
+  SelStr := StringReplace(SelStr, #13#10,'|', [rfReplaceAll]);
+  SelStr := StringReplace(SelStr, #9,'*', [rfReplaceAll]);
+  DebugLn('Copied: ',SelStr);
+  }
+end;
+
+procedure TCustomStringGrid.DoCutToClipboard;
+begin
+  doCopyToClipboard;
+  //if not GridReadOnly then
+  Clean(Selection, []);
+end;
+
+procedure TCustomStringGrid.DoPasteFromClipboard;
+begin
+  if Clipboard.HasFormat(CF_TEXT) then begin
+    SelectionSetText(Clipboard.AsText);
+  end;
+end;
+
 procedure TCustomStringGrid.DrawCell(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
 begin
@@ -6089,6 +6177,47 @@ begin
         end;
       end;
    end;
+end;
+
+procedure TCustomStringGrid.SelectionSetText(TheText: String);
+var
+  L,SubL: TStringList;
+  i,j,StartCol,StartRow: Integer;
+  procedure CollectCols(const S: String);
+  var
+    P,Ini: PChar;
+    St: String;
+  begin
+    Subl.Clear;
+    P := Pchar(S);
+    if P<>nil then
+      while P^<>#0 do begin
+        ini := P;
+        while (P^<>#0) and (P^<>#9) do
+          Inc(P);
+        SetLength(St, P-Ini);
+        Move(Ini^,St[1],P-Ini);
+        SubL.Add(St);
+        if P^<>#0 then
+          Inc(P);
+      end;
+  end;
+begin
+  L := TStringList.Create;
+  SubL := TStringList.Create;
+  StartCol := Selection.left;
+  StartRow := Selection.Top;
+  try
+    L.Text := TheText;
+    for j:=0 to L.Count-1 do begin
+      CollectCols(L[j]);
+      for i:=0 to SubL.Count-1 do
+        Cells[i + StartCol, j + StartRow] := SubL[i];
+    end;
+  finally
+    SubL.Free;
+    L.Free;
+  end;
 end;
 
 procedure TCustomStringGrid.LoadContent(Cfg: TXMLConfig; Version:Integer);
@@ -6175,6 +6304,12 @@ begin
     Clipping := True;
     //WordBreak := False
   end;
+  ExtendedSelect := True;
+end;
+
+procedure TCustomStringGrid.AutoSizeColumn(aCol: Integer);
+begin
+  AutoAdjustColumn(aCol);
 end;
 
 procedure TCustomStringGrid.AutoSizeColumns;
