@@ -578,7 +578,6 @@ end;
 function TDesigner.DoPasteSelectionFromClipboard(
   PasteFlags: TComponentPasteSelectionFlags): boolean;
 var
-  PasteParent: TComponent;
   AllComponentText: string;
   CurTextCompStream: TMemoryStream;
 begin
@@ -590,8 +589,8 @@ begin
   CurTextCompStream:=TMemoryStream.Create;
   try
     CurTextCompStream.Write(AllComponentText[1],length(AllComponentText));
-    PasteParent:=GetPasteParent;
-    if not DoInsertFromStream(CurTextCompStream,PasteParent,PasteFlags) then
+    CurTextCompStream.Position:=0;
+    if not DoInsertFromStream(CurTextCompStream,nil,PasteFlags) then
       exit;
   finally
     CurTextCompStream.Free;
@@ -686,14 +685,19 @@ var
 
 begin
   Result:=false;
+  //debugln('TDesigner.DoInsertFromStream A');
   if (cpsfReplace in PasteFlags) and (not DeleteSelection) then exit;
 
+  //debugln('TDesigner.DoInsertFromStream B s.Size=',dbgs(s.Size),' S.Position=',dbgs(S.Position));
   if PasteParent=nil then PasteParent:=GetPasteParent;
   NewSelection:=TControlSelection.Create;
   try
 
     // read component stream from clipboard
-    if (s.Size<=S.Position) then exit;
+    if (s.Size<=S.Position) then begin
+      debugln('TDesigner.DoInsertFromStream Stream Empty s.Size=',dbgs(s.Size),' S.Position=',dbgs(S.Position));
+      exit;
+    end;
     l:=s.Size-s.Position;
     SetLength(AllComponentText,l);
     s.Read(AllComponentText[1],length(AllComponentText));
@@ -702,6 +706,7 @@ begin
     EndPos:=StartPos;
     // read till 'end'
     while EndPos<=length(AllComponentText) do begin
+      //debugln('TDesigner.DoInsertFromStream C');
       if (AllComponentText[EndPos] in ['e','E'])
       and (EndPos>1)
       and (AllComponentText[EndPos-1] in [#10,#13])
