@@ -1785,77 +1785,116 @@ procedure TgtkObject.SetLabel(Sender : TObject; Data : Pointer);
     //        PGtkNotebook((TWinControl(Sender).Parent).Handle),
     //        PGtkWidget(P), PGChar(data));
   end;
+  
+  procedure SetMenuItemCaption;
+  var
+    MenuItemWidget: PGtkWidget;
+    LabelWidget: PGtkLabel;
+    MenuItem: TMenuItem;
+    AmpPos: integer;
+    NewCaption: string;
+  begin
+    MenuItem:=TMenuItem(Sender);
+    MenuItemWidget:=PGtkWidget(MenuItem.Handle);
+    if MenuItemWidget=nil then exit;
+    LabelWidget:=PGTKLabel(PGTKBin(MenuItemWidget)^.Child);
+    if LabelWidget=nil then exit;
+
+    NewCaption:=MenuItem.Caption;
+    if NewCaption <> '-' then
+    begin
+      //Check for a shortcut key
+      AmpPos := pos('&', NewCaption);
+      if AmpPos <> 0 then begin
+        NewCaption[AmpPos - 1] := '_';
+        SetAccelKey(MenuItemWidget,gtk_label_parse_uline(LabelWidget,
+                    PChar(NewCaption)));
+      end
+      else
+        gtk_label_set_text(LabelWidget,PChar(NewCaption));
+    end
+    else
+      gtk_label_set_text(LabelWidget,PChar(NewCaption));
+  end;
+  
 
 var
   P : Pointer;
   pLabel: pchar;
 begin
+  if Sender is TMenuItem then begin
+    SetMenuItemCaption;
+    exit;
+  end;
+
   if Sender is TWinControl
-    then Assert(False, Format('Trace:  [TgtkObject.SetLabel] %s --> label %s', [Sender.ClassName, TControl(Sender).Caption]))
-    else begin
-      Assert(False, Format('Trace:WARNING: [TgtkObject.SetLabel] %s --> No Decendant of TWinControl', [Sender.ClassName]));
-      writeln('[TgtkObject.SetLabel] ERROR: Sender (',Sender.Classname,')'
-          ,'is not TWinControl ');
-      Halt;
-    end;
+  then Assert(False, Format('Trace:  [TgtkObject.SetLabel] %s --> label %s', [Sender.ClassName, TControl(Sender).Caption]))
+  else begin
+    Assert(False, Format('Trace:WARNING: [TgtkObject.SetLabel] %s --> No Decendant of TWinControl', [Sender.ClassName]));
+    raise Exception.Create('[TgtkObject.SetLabel] ERROR: Sender ('+Sender.Classname+')'
+        +' is not TWinControl ');
+  end;
 
-   P := Pointer(TWinControl(Sender).Handle);
-   Assert(p = nil, 'Trace:WARNING: [TgtkObject.SetLabel] --> got nil pointer');
-   Assert(False, 'Trace:Setting Str1 in SetLabel');
-   pLabel := pchar(Data);
+  P := Pointer(TWinControl(Sender).Handle);
+  Assert(p = nil, 'Trace:WARNING: [TgtkObject.SetLabel] --> got nil pointer');
+  Assert(False, 'Trace:Setting Str1 in SetLabel');
+  pLabel := pchar(Data);
 
-   case TControl(Sender).fCompStyle of
-      csBitBtn      : IntSendMessage3(LM_IMAGECHANGED,Sender,nil);
+  case TControl(Sender).fCompStyle of
+  csBitBtn      : IntSendMessage3(LM_IMAGECHANGED,Sender,nil);
 
-      csButton,
-      csToolButton  : with PgtkButton(P)^ do
-                      begin
-                         if Child = nil then 
-                         begin
-                            Assert(False, Format('trace:  [TgtkObject.SetLabel] %s has no child label', [Sender.ClassName]));
-                            child := gtk_label_new(pLabel)
-                         end
-                         else begin
-                            Assert(False, Format('trace:  [TgtkObject.SetLabel] %s has child label', [Sender.ClassName]));
-                            gtk_label_set_text(pgtkLabel(Child), PLabel);
-                         end;
-                      end;
+  csButton,
+  csToolButton  : with PgtkButton(P)^ do
+                  begin
+                     if Child = nil then 
+                     begin
+                        Assert(False, Format('trace:  [TgtkObject.SetLabel] %s has no child label', [Sender.ClassName]));
+                        child := gtk_label_new(pLabel)
+                     end
+                     else begin
+                        Assert(False, Format('trace:  [TgtkObject.SetLabel] %s has child label', [Sender.ClassName]));
+                        gtk_label_set_text(pgtkLabel(Child), PLabel);
+                     end;
+                  end;
 
-      csForm, 
-      csFileDialog, 
-      csColorDialog,
-      csFontDialog  : gtk_window_set_title(pGtkWindow(p),PLabel);
+  csForm, 
+  csFileDialog, 
+  csColorDialog,
+  csFontDialog  : gtk_window_set_title(pGtkWindow(p),PLabel);
 
-      csLabel       : gtk_label_set_text(pGtkLabel(p), pLabel);
-                      //gtk_label_parse_uline(pGtkLabel(p),pLabel);
+  csLabel       : gtk_label_set_text(pGtkLabel(p), pLabel);
+                  //gtk_label_parse_uline(pGtkLabel(p),pLabel);
 
-      csCheckBox    : gtk_label_set_text(
-                        pGtkLabel(pgtkCheckButton(p)^.Toggle_Button.Button.Child),
-                        pLabel);
+  csCheckBox    : gtk_label_set_text(
+                    pGtkLabel(pgtkCheckButton(p)^.Toggle_Button.Button.Child),
+                    pLabel);
 
-      csGroupBox    : gtk_frame_set_label(pgtkFrame(P),pLabel);
+  csGroupBox    : gtk_frame_set_label(pgtkFrame(P),pLabel);
 
-      csEdit        : gtk_entry_set_text(pGtkEntry(P),pLabel);
+  csEdit        : gtk_entry_set_text(pGtkEntry(P),pLabel);
 
-      csMemo        : begin
-                        P := GetCoreChildWidget(P);
-                        gtk_text_freeze(PGtkText(P));
-                        gtk_text_set_point(PGtkText(P), 0);
-                        gtk_text_forward_delete(
-                           PGtkText(P),
-                           gtk_text_get_length(PGtkText(P)));
-                        gtk_text_insert(PGtkText(P), nil, nil, nil, pLabel, -1);
-                        gtk_text_thaw(PGtkText(P));
-                      end;      
+  csMemo        : begin
+                    P := GetCoreChildWidget(P);
+                    gtk_text_freeze(PGtkText(P));
+                    gtk_text_set_point(PGtkText(P), 0);
+                    gtk_text_forward_delete(
+                       PGtkText(P),
+                       gtk_text_get_length(PGtkText(P)));
+                    gtk_text_insert(PGtkText(P), nil, nil, nil, pLabel, -1);
+                    gtk_text_thaw(PGtkText(P));
+                  end;      
 
-      csPage:
-        SetNotebookPageTabLabel;
+  csPage:
+    SetNotebookPageTabLabel;
+    
+  csMenuItem:
+    SetMenuItemCaption;
 
-      csComboBox    : gtk_entry_set_text(PGtkEntry(PGtkCombo(P)^.entry), PLabel);
-   else
-      Assert(True, Format ('WARNING: [TgtkObject.SetLabel] --> not handled for class %s ', [Sender.ClassName]));
-   end;
-   Assert(False, Format('trace:  [TgtkObject.SetLabel] %s --> END', [Sender.ClassName]));
+  csComboBox    : gtk_entry_set_text(PGtkEntry(PGtkCombo(P)^.entry), PLabel);
+  else
+    Assert(True, Format ('WARNING: [TgtkObject.SetLabel] --> not handled for class %s ', [Sender.ClassName]));
+  end;
+  Assert(False, Format('trace:  [TgtkObject.SetLabel] %s --> END', [Sender.ClassName]));
 end;
 
 {------------------------------------------------------------------------------}
@@ -3624,10 +3663,10 @@ begin
         begin
           StrTemp[tempInt - 1] := '_';
           P := gtk_menu_item_new_with_label('');
-          SetAccelKey(P, gtk_label_parse_uline(PGTKLabel(PGTKBin(p)^.Child), StrTemp));
+          SetAccelKey(P,gtk_label_parse_uline(PGTKLabel(PGTKBin(p)^.Child),StrTemp));
         end
         else
-        P := gtk_menu_item_new_with_label(Strtemp)
+          P := gtk_menu_item_new_with_label(Strtemp)
       end
       else
         P := gtk_menu_item_new;
@@ -5282,6 +5321,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.154  2002/08/05 10:45:04  lazarus
+  MG: TMenuItem.Caption can now be set after creation
+
   Revision 1.153  2002/08/05 08:56:56  lazarus
   MG: TMenuItems can now be enabled and disabled
 
