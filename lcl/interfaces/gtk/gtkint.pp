@@ -59,6 +59,8 @@ type
     FGDIObjects: TDynHashArray;    // hasharray of PGdiObject
     FMessageQueue: TLazQueue;      // queue of PMsg
     FPaintMessages: TDynHashArray; // hasharray of PLazQueueItem
+    WaitingForMessages: boolean;
+    
     FRCFilename: string;
     FRCFileParsed: boolean;
     FRCFileAge: integer;
@@ -303,6 +305,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.99  2002/11/02 22:25:36  lazarus
+  MG: implemented TMethodList and Application Idle handlers
+
   Revision 1.98  2002/10/30 12:37:25  lazarus
   MG: mouse cursors are now allocated on demand
 
