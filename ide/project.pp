@@ -227,26 +227,44 @@ type
 
   //---------------------------------------------------------------------------
 
+  { TProjectCompilationTool }
+  TProjectCompilationTool = class(TCompilationTool)
+  public
+    CompileReasons: TCompileReasons;
+    procedure Clear; override;
+    function IsEqual(Params: TCompilationTool): boolean; override;
+    procedure Assign(Src: TCompilationTool); override;
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+                                DoSwitchPathDelims: boolean); override;
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string); override;
+  end;
+  
   { TProjectCompilerOptions }
 
-  TProjectCompilerOptions = class(TCompilerOptions)
+  TProjectCompilerOptions = class(TBaseCompilerOptions)
   private
     FGlobals: TGlobalCompilerOptions;
     FOwnerProject: TProject;
+    FCompileReasons: TCompileReasons;
   protected
+    procedure LoadTheCompilerOptions(const APath: string); override;
+    procedure SaveTheCompilerOptions(const APath: string); override;
+
     procedure SetTargetCPU(const AValue: string); override;
     procedure SetTargetOS(const AValue: string); override;
-    procedure Assign(CompOpts: TBaseCompilerOptions); override;
     procedure UpdateGlobals; virtual;
   public
-    constructor Create(TheProject: TProject);
+    constructor Create(const AOwner: TObject); override;
     destructor Destroy; override;
     function GetOwnerName: string; override;
     function GetDefaultMainSourceFileName: string; override;
     procedure GetInheritedCompilerOptions(var OptionsList: TList); override;
+    procedure Assign(CompOpts: TBaseCompilerOptions); override;
+    function IsEqual(CompOpts: TBaseCompilerOptions): boolean; override;
   public
     property OwnerProject: TProject read FOwnerProject;
     property Globals: TGlobalCompilerOptions read FGlobals;
+    property CompileReasons: TCompileReasons read FCompileReasons write FCompileReasons;
   end;
   
   
@@ -2653,8 +2671,63 @@ begin
   AnUnitInfo.fPrev[ListType]:=nil;
 end;
 
+{ TProjectCompilationTool }
+
+procedure TProjectCompilationTool.Clear;
+begin
+  inherited Clear;
+  CompileReasons := crAll;
+end;
+
+function TProjectCompilationTool.IsEqual(Params: TCompilationTool): boolean;
+begin
+  Result := (Params is TProjectCompilationTool)
+        and (CompileReasons = TProjectCompilationTool(Params).CompileReasons)
+        and inherited IsEqual(Params);
+end;
+
+procedure TProjectCompilationTool.Assign(Src: TCompilationTool);
+begin
+  inherited Assign(Src);
+  if Src is TProjectCompilationTool
+  then begin
+    CompileReasons := TProjectCompilationTool(Src).CompileReasons;
+  end
+  else begin
+    CompileReasons := crAll;
+  end;
+end;
+
+procedure TProjectCompilationTool.LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string; DoSwitchPathDelims: boolean);
+begin
+  inherited LoadFromXMLConfig(XMLConfig, Path, DoSwitchPathDelims);
+  CompileReasons := LoadXMLCompileReasons(XMLConfig, Path+'CompileReasons/');
+end;
+
+procedure TProjectCompilationTool.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+begin
+  inherited SaveToXMLConfig(XMLConfig, Path);
+  SaveXMLCompileReasons(XMLConfig, Path+'CompileReasons/', CompileReasons);
+end;
 
 { TProjectCompilerOptions }
+
+procedure TProjectCompilerOptions.LoadTheCompilerOptions(const APath: string);
+begin
+  inherited LoadTheCompilerOptions(APath);
+  
+  // old compatebility
+  if XMLConfigFile.GetValue(APAth+'SkipCompiler/Value',false)
+  then FCompileReasons := []
+  else FCompileReasons := LoadXMLCompileReasons(XMLConfigFile,APath+'CompileReasons/');
+end;
+
+procedure TProjectCompilerOptions.SaveTheCompilerOptions(const APath: string);
+begin
+  inherited SaveTheCompilerOptions(APath);
+  
+  SaveXMLCompileReasons(XMLConfigFile, APath+'CompileReasons/', FCompileReasons);
+end;
 
 procedure TProjectCompilerOptions.SetTargetCPU(const AValue: string);
 begin
@@ -2671,7 +2744,18 @@ end;
 procedure TProjectCompilerOptions.Assign(CompOpts: TBaseCompilerOptions);
 begin
   inherited Assign(CompOpts);
+  if CompOpts is TProjectCompilerOptions
+  then FCompileReasons := TProjectCompilerOptions(CompOpts).FCompileReasons
+  else FCompileReasons := [crCompile, crBuild, crRun];
+  
   UpdateGlobals;
+end;
+
+function TProjectCompilerOptions.IsEqual(CompOpts: TBaseCompilerOptions): boolean;
+begin
+  Result := (CompOpts is TProjectCompilerOptions)
+        and (FCompileReasons = TProjectCompilerOptions(CompOpts).FCompileReasons)
+        and inherited IsEqual(CompOpts);
 end;
 
 procedure TProjectCompilerOptions.UpdateGlobals;
@@ -2680,12 +2764,14 @@ begin
   FGlobals.TargetOS:=TargetOS;
 end;
 
-constructor TProjectCompilerOptions.Create(TheProject: TProject);
+constructor TProjectCompilerOptions.Create(const AOwner: TObject);
 begin
-  FGlobals:=TGlobalCompilerOptions.Create;
-  inherited Create(TheProject);
+  FGlobals := TGlobalCompilerOptions.Create;
+  FCompileReasons := [crCompile, crBuild, crRun];
+  inherited Create(AOwner, TProjectCompilationTool);
   UpdateGlobals;
-  fOwnerProject:=TheProject;
+  if AOwner <> nil
+  then FOwnerProject := AOwner as TProject;
 end;
 
 destructor TProjectCompilerOptions.Destroy;
@@ -2818,6 +2904,11 @@ end.
 
 {
   $Log$
+  Revision 1.161  2004/09/04 21:54:08  marc
+  + Added option to skip compiler step on compile, build or run
+  * Fixed adding of runtime watches
+  * Fixed runnerror reporting (correct number and location is shown)
+
   Revision 1.160  2004/09/01 10:25:58  mattias
   added some project flags to start getting rid of TProjectType
 

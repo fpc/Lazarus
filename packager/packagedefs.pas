@@ -321,7 +321,11 @@ type
   TPkgCompilerOptions = class(TBaseCompilerOptions)
   private
     FLazPackage: TLazPackage;
+    FSkipCompiler: Boolean;
   protected
+    procedure LoadTheCompilerOptions(const APath: string); override;
+    procedure SaveTheCompilerOptions(const APath: string); override;
+
     procedure SetLazPackage(const AValue: TLazPackage);
     procedure SetModified(const NewValue: boolean); override;
     procedure SetCustomOptions(const AValue: string); override;
@@ -333,15 +337,19 @@ type
     procedure SetOtherUnitFiles(const AValue: string); override;
     procedure SetUnitOutputDir(const AValue: string); override;
   public
-    constructor Create(ThePackage: TLazPackage);
+    constructor Create(const AOwner: TObject); override;
     procedure Clear; override;
     procedure GetInheritedCompilerOptions(var OptionsList: TList); override;
     function GetOwnerName: string; override;
     procedure InvalidateOptions;
     function GetDefaultMainSourceFileName: string; override;
     function CreateTargetFilename(const MainSourceFileName: string): string; override;
+
+    procedure Assign(CompOpts: TBaseCompilerOptions); override;
+    function IsEqual(CompOpts: TBaseCompilerOptions): boolean; override;
   public
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
+    property SkipCompiler: Boolean read FSkipCompiler write FSkipCompiler;
   end;
   
   
@@ -2883,6 +2891,20 @@ end;
 
 { TPkgCompilerOptions }
 
+procedure TPkgCompilerOptions.LoadTheCompilerOptions(const APath: string);
+begin
+  inherited LoadTheCompilerOptions(APath);
+
+  FSkipCompiler := XMLConfigFile.GetValue(APath+'SkipCompiler/Value', False);
+end;
+
+procedure TPkgCompilerOptions.SaveTheCompilerOptions(const APath: string);
+begin
+  inherited SaveTheCompilerOptions(APath);
+  
+  XMLConfigFile.SetDeleteValue(APath+'SkipCompiler/Value', FSkipCompiler, False);
+end;
+
 procedure TPkgCompilerOptions.SetLazPackage(const AValue: TLazPackage);
 begin
   if FLazPackage=AValue then exit;
@@ -2953,10 +2975,11 @@ begin
   LazPackage.DefineTemplates.OutputDirectoryChanged;
 end;
 
-constructor TPkgCompilerOptions.Create(ThePackage: TLazPackage);
+constructor TPkgCompilerOptions.Create(const AOwner: TObject);
 begin
-  inherited Create(ThePackage);
-  fLazPackage:=ThePackage;
+  inherited Create(AOwner);
+  if AOwner <> nil
+  then FLazPackage := AOwner as TLazPackage;
 end;
 
 procedure TPkgCompilerOptions.Clear;
@@ -2991,6 +3014,25 @@ function TPkgCompilerOptions.CreateTargetFilename(
   const MainSourceFileName: string): string;
 begin
   Result:='';
+end;
+
+procedure TPkgCompilerOptions.Assign(CompOpts: TBaseCompilerOptions);
+begin
+  inherited Assign(CompOpts);
+  if CompOpts is TPkgCompilerOptions
+  then begin
+    FSkipCompiler := TPkgCompilerOptions(CompOpts).FSkipCompiler;
+  end
+  else begin
+    FSkipCompiler := False;
+  end;
+end;
+
+function TPkgCompilerOptions.IsEqual(CompOpts: TBaseCompilerOptions): boolean;
+begin
+  Result := (CompOpts is TPkgCompilerOptions)
+        and (FSkipCompiler = TPkgCompilerOptions(CompOpts).FSkipCompiler)
+        and inherited IsEqual(CompOpts);
 end;
 
 { TPkgAdditionalCompilerOptions }

@@ -81,7 +81,8 @@ type
 
     procedure DoRestoreDebuggerMarks(AnUnitInfo: TUnitInfo); virtual; abstract;
 
-    function DoInitDebugger: TModalResult; virtual; abstract;
+    function InitDebugger: Boolean; virtual; abstract;
+    
     function DoPauseProject: TModalResult; virtual; abstract;
     function DoStepIntoProject: TModalResult; virtual; abstract;
     function DoStepOverProject: TModalResult; virtual; abstract;
@@ -169,6 +170,11 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.21  2004/09/04 21:54:08  marc
+  + Added option to skip compiler step on compile, build or run
+  * Fixed adding of runtime watches
+  * Fixed runnerror reporting (correct number and location is shown)
+
   Revision 1.20  2004/08/26 23:50:04  marc
   * Restructured debugger view classes
   * Fixed help

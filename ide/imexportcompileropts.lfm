@@ -1,91 +1,88 @@
 object ImExportCompOptsDlg: TImExportCompOptsDlg
-  CAPTION = 'ImExportCompOptsDlg'
-  CLIENTHEIGHT = 235
-  CLIENTWIDTH = 554
-  ONCLOSE = ImExportCompOptsDlgCLOSE
-  ONCREATE = ImExportCompOptsDlgCREATE
-  HORZSCROLLBAR.PAGE = 555
-  VERTSCROLLBAR.PAGE = 236
-  LEFT = 316
-  HEIGHT = 235
-  TOP = 212
-  WIDTH = 554
-  object OpenRecentGroupbox: TGROUPBOX
-    ANCHORS = [aktop, akleft, akright, akbottom]
-    CAPTION = 'OpenRecentGroupbox'
-    CLIENTHEIGHT = 159
-    CLIENTWIDTH = 532
-    PARENTCTL3D = False
-    TABORDER = 0
-    LEFT = 8
-    HEIGHT = 176
-    TOP = 8
-    WIDTH = 536
-    object RecentListbox: TLISTBOX
-      ALIGN = altop
-      ANCHORS = [aktop, akleft, akbottom]
-      ONCLICK = RecentListboxCLICK
-      ONDBLCLICK = RecentListboxDBLCLICK
-      TABORDER = 0
-      TABSTOP = True
-      TOPINDEX = -1
-      HEIGHT = 121
-      WIDTH = 532
+  Caption = 'ImExportCompOptsDlg'
+  ClientHeight = 235
+  ClientWidth = 554
+  OnClose = ImExportCompOptsDlgCLOSE
+  OnCreate = ImExportCompOptsDlgCREATE
+  PixelsPerInch = 90
+  HorzScrollBar.Page = 555
+  VertScrollBar.Page = 236
+  Left = 316
+  Height = 235
+  Top = 212
+  Width = 554
+  object OpenRecentGroupbox: TGroupBox
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Caption = 'OpenRecentGroupbox'
+    ClientHeight = 159
+    ClientWidth = 532
+    ParentColor = True
+    ParentCtl3D = False
+    TabOrder = 0
+    Left = 8
+    Height = 176
+    Top = 8
+    Width = 536
+    object RecentListbox: TListBox
+      Align = alTop
+      Anchors = [akTop, akLeft, akBottom]
+      ClickOnSelChange = False
+      OnClick = RecentListboxCLICK
+      OnDblClick = RecentListboxDBLCLICK
+      TabOrder = 0
+      TopIndex = 18446744073709551615
+      Height = 121
+      Width = 532
     end
-    object OpenRecentButton: TBUTTON
-      ANCHORS = [akleft, akbottom]
-      CAPTION = 'OpenRecentButton'
-      TABSTOP = True
-      TABORDER = 1
-      ONCLICK = OpenRecentButtonCLICK
-      LEFT = 9
-      HEIGHT = 25
-      TOP = 129
-      WIDTH = 150
+    object OpenRecentButton: TButton
+      Anchors = [akLeft, akBottom]
+      Caption = 'OpenRecentButton'
+      OnClick = OpenRecentButtonCLICK
+      TabOrder = 1
+      Left = 9
+      Height = 25
+      Top = 129
+      Width = 150
     end
-    object SaveToRecentButton: TBUTTON
-      ANCHORS = [akleft, akbottom]
-      CAPTION = 'SaveToRecentButton'
-      TABSTOP = True
-      TABORDER = 2
-      ONCLICK = SaveToRecentButtonCLICK
-      LEFT = 182
-      HEIGHT = 25
-      TOP = 129
-      WIDTH = 150
+    object SaveToRecentButton: TButton
+      Anchors = [akLeft, akBottom]
+      Caption = 'SaveToRecentButton'
+      OnClick = SaveToRecentButtonCLICK
+      TabOrder = 2
+      Left = 182
+      Height = 25
+      Top = 129
+      Width = 150
     end
   end
-  object OpenButton: TBUTTON
-    ANCHORS = [akleft, akbottom]
-    CAPTION = 'OpenButton'
-    TABSTOP = True
-    TABORDER = 1
-    ONCLICK = OpenButtonCLICK
-    LEFT = 8
-    HEIGHT = 25
-    TOP = 200
-    WIDTH = 167
+  object OpenButton: TButton
+    Anchors = [akLeft, akBottom]
+    Caption = 'OpenButton'
+    OnClick = OpenButtonCLICK
+    TabOrder = 1
+    Left = 8
+    Height = 25
+    Top = 200
+    Width = 167
   end
-  object CancelButton: TBUTTON
-    ANCHORS = [akleft, akbottom]
-    MODALRESULT = 2
-    CAPTION = 'CancelButton'
-    TABSTOP = True
-    TABORDER = 2
-    LEFT = 432
-    HEIGHT = 25
-    TOP = 200
-    WIDTH = 110
+  object CancelButton: TButton
+    Anchors = [akLeft, akBottom]
+    Caption = 'CancelButton'
+    ModalResult = 2
+    TabOrder = 2
+    Left = 432
+    Height = 25
+    Top = 200
+    Width = 110
   end
-  object SaveButton: TBUTTON
-    ANCHORS = [akleft, akbottom]
-    CAPTION = 'SaveButton'
-    TABSTOP = True
-    TABORDER = 3
-    ONCLICK = SaveButtonCLICK
-    LEFT = 214
-    HEIGHT = 25
-    TOP = 200
-    WIDTH = 167
+  object SaveButton: TButton
+    Anchors = [akLeft, akBottom]
+    Caption = 'SaveButton'
+    OnClick = SaveButtonCLICK
+    TabOrder = 3
+    Left = 214
+    Height = 25
+    Top = 200
+    Width = 167
   end
 end

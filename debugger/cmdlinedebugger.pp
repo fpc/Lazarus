@@ -263,7 +263,6 @@ end;
 
 destructor TCmdLineDebugger.Destroy;
 begin
-  FreeAndNil(FLineEnds);
   inherited;
   try
     FDbgProcess.Free;
@@ -271,6 +270,7 @@ begin
   except
     on E: Exception do WriteLN('Exeption while freeing debugger: ', E.Message);
   end;
+  FreeAndNil(FLineEnds);
 end;
 
 procedure TCmdLineDebugger.Flush;
@@ -435,6 +435,11 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.34  2004/09/04 21:54:08  marc
+  + Added option to skip compiler step on compile, build or run
+  * Fixed adding of runtime watches
+  * Fixed runnerror reporting (correct number and location is shown)
+
   Revision 1.33  2004/03/13 00:01:53  marc
   * fixed debugtarget PID parsing (for win32)
 

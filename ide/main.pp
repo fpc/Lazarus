@@ -69,7 +69,8 @@ uses
   // synedit
   SynEditKeyCmds,
   // compile
-  Compiler, CompilerOptions, CheckCompilerOpts, ImExportCompilerOpts,
+  Compiler, CompilerOptions, CompilerOptionsDlg, CheckCompilerOpts,
+  ImExportCompilerOpts,
   // projects
   ProjectIntf, Project, ProjectDefs, NewProjectDlg, ProjectOpts,
   PublishProjectDlg, ProjectInspector,
@@ -565,7 +566,7 @@ type
     function DoRemoveFromProjectDialog: TModalResult;
     procedure DoWarnAmbigiousFiles;
     function DoSaveForBuild: TModalResult; override;
-    function DoBuildProject(BuildAll: boolean): TModalResult;
+    function DoBuildProject(const AReason: TCompileReason): TModalResult;
     function DoAbortBuild: TModalResult;
     function DoInitProjectRun: TModalResult; override;
     function DoRunProject: TModalResult;
@@ -2016,10 +2017,10 @@ begin
       and AnUnitInfo.BuildFileIfActive then
         DoBuildFile
       else
-        DoBuildProject(Command=ecBuildAll);
+        DoBuildProject(crCompile);
     end;
 
-  ecBuildAll:    DoBuildProject(Command=ecBuildAll);
+  ecBuildAll:    DoBuildProject(crBuild);
   ecAbortBuild:  DoAbortBuild;
 
   ecRun:
@@ -2548,12 +2549,12 @@ end;
 
 Procedure TMainIDE.mnuBuildProjectClicked(Sender : TObject);
 Begin
-  DoBuildProject(false);
+  DoBuildProject(crCompile);
 end;
 
 Procedure TMainIDE.mnuBuildAllProjectClicked(Sender : TObject);
 Begin
-  DoBuildProject(true);
+  DoBuildProject(crBuild);
 end;
 
 Procedure TMainIDE.mnuAbortBuildProjectClicked(Sender : TObject);
@@ -2593,7 +2594,7 @@ end;
 
 procedure TMainIDE.mnuProjectCompilerSettingsClicked(Sender : TObject);
 var
-  frmCompilerOptions:TfrmCompilerOptions;
+  frmCompilerOptions: TfrmCompilerOptions;
   NewCaption: String;
 begin
   frmCompilerOptions:=TfrmCompilerOptions.Create(Application);
@@ -5947,7 +5948,7 @@ begin
   end;
 end;
 
-function TMainIDE.DoBuildProject(BuildAll: boolean): TModalResult;
+function TMainIDE.DoBuildProject(const AReason: TCompileReason): TModalResult;
 var
   DefaultFilename: string;
 begin
@@ -5981,12 +5982,16 @@ begin
     DoWarnAmbigiousFiles;
 
     // execute compilation tool 'Before'
-    Result:=DoExecuteCompilationTool(Project1.CompilerOptions.ExecuteBefore,
-                                     Project1.ProjectDirectory,
-                                     'Executing command before');
+    if (AReason in TProjectCompilationTool(Project1.CompilerOptions.ExecuteBefore).CompileReasons)
+    then begin
+      Result:=DoExecuteCompilationTool(Project1.CompilerOptions.ExecuteBefore,
+                                       Project1.ProjectDirectory,
+                                       lisExecutingCommandBefore);
+    end;
 
     if (Result=mrOk)
-    and (not Project1.CompilerOptions.SkipCompiler) then begin
+    and (AReason in Project1.CompilerOptions.CompileReasons)
+    then begin
       try
         // change tool status
         ToolStatus:=itBuilder;
@@ -5995,7 +6000,7 @@ begin
         TheOutputFilter.OnReadLine:=@MessagesView.AddProgress;
 
         // compile
-        Result:=TheCompiler.Compile(Project1,BuildAll,DefaultFilename);
+        Result:=TheCompiler.Compile(Project1, AReason = crBuild, DefaultFilename);
         if Result<>mrOk then
           DoJumpToCompilerMessage(-1,true);
       finally
@@ -6004,14 +6009,17 @@ begin
     end;
 
     // execute compilation tool 'After'
-    if Result=mrOk then begin
+    if  (Result = mrOk)
+    and (AReason in TProjectCompilationTool(Project1.CompilerOptions.ExecuteAfter).CompileReasons)
+    then begin
       Result:=DoExecuteCompilationTool(Project1.CompilerOptions.ExecuteAfter,
                                        Project1.ProjectDirectory,
-                                       'Executing command after');
+                                       lisExecutingCommandAfter);
     end;
 
     // add success message
-    if Result=mrOk then begin
+    if Result=mrOk
+    then begin
       MessagesView.AddMsg(
             Format(lisProjectSuccessfullyBuilt, ['"', Project1.Title, '"']),'');
     end;
@@ -6049,7 +6057,7 @@ begin
   then Exit;
 
   // Build project first
-  if DoBuildProject(false) <> mrOk
+  if DoBuildProject(crRun) <> mrOk
   then Exit;
 
   // Check project build
@@ -6065,7 +6073,7 @@ begin
   // Setup debugger
   if EnvironmentOptions.DebuggerClass <> ''
   then begin
-    if (DebugBoss.DoInitDebugger <> mrOk)
+    if not DebugBoss.InitDebugger
     then Exit;
   end
   else begin
@@ -10636,6 +10644,11 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.766  2004/09/04 21:54:08  marc
+  + Added option to skip compiler step on compile, build or run
+  * Fixed adding of runtime watches
+  * Fixed runnerror reporting (correct number and location is shown)
+
   Revision 1.765  2004/09/01 10:25:58  mattias
   added some project flags to start getting rid of TProjectType
 

@@ -386,6 +386,8 @@ resourcestring
     +'environment options,%syou can create new projects and build them at '
     +'once.%sSave project?';
   lisProjectSuccessfullyBuilt = 'Project %s%s%s successfully built. :)';
+  lisExecutingCommandBefore = 'Executing command befor';
+  lisExecutingCommandAfter = 'Executing command after';
   lisNoProgramFileSFound = 'No program file %s%s%s found.';
   lisErrorInitializingProgramSErrorS = 'Error initializing program%s%s%s%s%s'
     +'Error: %s';
@@ -927,8 +929,13 @@ resourcestring
   dlgCOSources = 'Other Sources (.pp/.pas files, used only by IDE not by compiler)';
   dlgCOLibraries = 'Libraries (-Fl):';
   dlgCODebugPath = 'Debugger path addition (none):';
-  dlgToFPCPath = 'Path To Compiler:';
+  lisCompiler = 'Compiler';
+  lisToFPCPath = 'Path:';
   lisCOSkipCallingCompiler = 'Skip calling Compiler';
+  lisCOCallOn = 'Call on:';
+  lisCOCallOnCompile = 'Compile';
+  lisCOCallOnBuild = 'Build';
+  lisCOCallOnRun = 'Run';
   lisCOExecuteAfter = 'Execute after';
   lisCOExecuteBefore = 'Execute before';
   lisAdditionalCompilerOptionsInheritedFromPackages = 'Additional compiler '
@@ -1818,6 +1825,12 @@ resourcestring
   lisTheFileWasNotFoundDoYouWantToLocateItYourself = 'The file %s%s%s%swas '
     +'not found.%sDo you want to locate it yourself ?%s';
   lisRunToFailed = 'Run-to failed';
+  lisLaunchingApplicationInvalid = 'Launching application invalid';
+  lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta = 'The launching '
+    +'application %s%s%'
+    +'s%sdoes not exists or is not executable.%s%sSee Run -> Run parameters -> '
+    +'Local';
+
   lisDebuggerInvalid = 'Debugger invalid';
   lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro = 'The debugger %s%s%'
     +'s%sdoes not exists or is not executable.%s%sSee Environment -> Debugger '

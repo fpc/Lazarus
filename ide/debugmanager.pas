@@ -111,6 +111,7 @@ type
     procedure InitLocalsDlg;
     procedure InitCallStackDlg;
 
+    procedure FreeDebugger;
   protected
     function  GetState: TDBGState; override;
     function  GetCommands: TDBGCommands; override;
@@ -127,7 +128,8 @@ type
     procedure DoRestoreDebuggerMarks(AnUnitInfo: TUnitInfo); override;
     procedure ClearDebugOutputLog;
 
-    function DoInitDebugger: TModalResult; override;
+    function InitDebugger: Boolean; override;
+    
     function DoPauseProject: TModalResult; override;
     function DoStepIntoProject: TModalResult; override;
     function DoStepOverProject: TModalResult; override;
@@ -216,6 +218,8 @@ type
     procedure AssignTo(Dest: TPersistent); override;
     function GetValid: TValidState; override;
     function GetValue: String; override;
+    procedure SetEnabled(const AValue: Boolean); override;
+    procedure SetExpression(const AValue: String); override;
   public
     constructor Create(ACollection: TCollection); override;
     procedure ResetMaster;
@@ -440,6 +444,20 @@ begin
   if FMaster = nil
   then Result := inherited GetValue
   else Result := FMaster.GetValue;
+end;
+
+procedure TManagedWatch.SetEnabled(const AValue: Boolean);
+begin
+  if Enabled = AValue then Exit;
+  inherited SetEnabled(AValue);
+  if FMaster <> nil then FMaster.Enabled := AValue;
+end;
+
+procedure TManagedWatch.SetExpression(const AValue: String);
+begin
+  if AValue = Expression then Exit;
+  inherited SetExpression(AValue);
+  if FMaster <> nil then FMaster.Expression := AValue;
 end;
 
 constructor TManagedWatch.Create(ACollection: TCollection);
@@ -977,8 +995,8 @@ begin
   if OldState = dsNone then Exit;
 
   EndDebugging;
-  OnDebuggerChangeState(FDebugger, OldState);
-  DoInitDebugger;
+//  OnDebuggerChangeState(FDebugger, OldState);
+//  InitDebugger;
 end;
 
 procedure TDebugManager.mnuDebuggerOptionsClick(Sender: TObject);
@@ -1116,21 +1134,20 @@ begin
   end;
 
   case FDebugger.State of 
-
-  dsError:
-    begin
+    dsError: begin
       WriteLN('Ooops, the debugger entered the error state');
       MessageDlg(lisDebuggerError,
         Format(lisDebuggerErrorOoopsTheDebuggerEnteredTheErrorState, [#13#13,
           #13, #13#13]),
         mtError, [mbOK],0);
     end;
-
-  dsStop:
-    if (OldState<>dsIdle) then begin
-      MessageDlg(lisExecutionStopped,
-        Format(lisExecutionStoppedOn, [#13#13]),
-        mtInformation, [mbOK],0);
+    dsStop: begin
+      if (OldState<>dsIdle)
+      then begin
+        MessageDlg(lisExecutionStopped,
+          Format(lisExecutionStoppedOn, [#13#13]),
+          mtInformation, [mbOK],0);
+      end;
     end;
 
   end;
@@ -1529,17 +1546,20 @@ end;
 // Debugger routines
 //-----------------------------------------------------------------------------
 
-function TDebugManager.DoInitDebugger: TModalResult;
-  procedure FreeDebugger;
-  var
-    dbg: TDebugger;
-  begin
-    dbg := FDebugger;
-    SetDebugger(nil);
-    dbg.Free;
-    Exclude(FManagerStates,dmsDebuggerObjectBroken);
-  end;
+procedure TDebugManager.FreeDebugger;
+var
+  dbg: TDebugger;
+begin
+  dbg := FDebugger;
+  SetDebugger(nil);
+  dbg.Free;
+  FManagerStates := [];
+  
+  if MainIDE.ToolStatus = itDebugger
+  then MainIDE.ToolStatus := itNone;
+end;
 
+function TDebugManager.InitDebugger: Boolean;
 var
   LaunchingCmdLine, LaunchingApplication, LaunchingParams: String;
   NewWorkingDir: String;
@@ -1547,19 +1567,27 @@ var
 begin
   WriteLN('[TDebugManager.DoInitDebugger] A');
 
-  Result:=mrCancel;
+  Result := False;
   if (Project1.MainUnitID < 0) or Destroying then Exit;
 
-  LaunchingCmdLine:=MainIDE.GetRunCommandLine;
-  SplitCmdLine(LaunchingCmdLine,LaunchingApplication,LaunchingParams);
-  if (not FileExists(LaunchingApplication)) then exit;
+  LaunchingCmdLine := MainIDE.GetRunCommandLine;
+  SplitCmdLine(LaunchingCmdLine,LaunchingApplication, LaunchingParams);
+  if not FileIsExecutable(LaunchingApplication)
+  then begin
+    MessageDlg(lisLaunchingApplicationInvalid,
+      Format(lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta, ['"',
+        EnvironmentOptions.DebuggerFilename, '"', #13, #13, #13]),
+      mtError, [mbOK],0);
+    Exit;
+  end;
 
-  if not FileIsExecutable(EnvironmentOptions.DebuggerFilename) then begin
+  if not FileIsExecutable(EnvironmentOptions.DebuggerFilename)
+  then begin
     MessageDlg(lisDebuggerInvalid,
       Format(lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro, ['"',
         EnvironmentOptions.DebuggerFilename, '"', #13, #13, #13]),
-      mtError,[mbCancel],0);
-    exit;
+      mtError,[mbOK],0);
+    Exit;
   end;
   
   DebuggerClass := FindDebuggerClass(EnvironmentOptions.DebuggerClass);
@@ -1590,8 +1618,7 @@ begin
   if FDebugger = nil
   then begin
     // something went wrong
-    Result := mrCancel;
-    exit;
+    Exit;
   end;
 
   ClearDebugOutputLog;
@@ -1609,8 +1636,8 @@ begin
     Exclude(FManagerStates,dmsInitializingDebuggerObject);
     if dmsInitializingDebuggerObjectFailed in FManagerStates
     then begin
-      Result:=mrCancel;
-      exit;
+      FreeDebugger;
+      Exit;
     end;
   end;
 
@@ -1623,15 +1650,14 @@ begin
   FDebugger.WorkingDir:=NewWorkingDir;
 
   // check if debugging needs restart
-  if ((FDebugger=nil) or (dmsDebuggerObjectBroken in FManagerStates))
-  and (MainIDE.ToolStatus=itDebugger)
+  // mwe: can this still happen ?
+  if (dmsDebuggerObjectBroken in FManagerStates)
   then begin
-    MainIDE.ToolStatus:=itNone;
-    Result:=mrCancel;
-    exit;
+    FreeDebugger;
+    Exit;
   end;
 
-  Result := mrOk;
+  Result := True;
   WriteLN('[TDebugManager.DoInitDebugger] END');
 end;
 
@@ -1719,6 +1745,8 @@ end;
 procedure TDebugManager.EndDebugging;
 begin
   if FDebugger <> nil then FDebugger.Done;
+  // if not already freed
+  FreeDebugger;
 end;
 
 function TDebugManager.Evaluate(const AExpression: String;
@@ -1863,6 +1891,11 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.72  2004/09/04 21:54:08  marc
+  + Added option to skip compiler step on compile, build or run
+  * Fixed adding of runtime watches
+  * Fixed runnerror reporting (correct number and location is shown)
+
   Revision 1.71  2004/08/27 09:19:27  micha
   fix compile by adding braces
 

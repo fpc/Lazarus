@@ -55,7 +55,7 @@ uses
   {$IFDEF AddStaticPkgs}
   {$I staticpackages.inc}
   {$ENDIF}
-  MainBase;
+  MainBase, compileroptionsdlg;
   
 begin
   Application.Initialize;
@@ -99,6 +99,11 @@ end.
 
 {
   $Log$
+  Revision 1.60  2004/09/04 21:54:08  marc
+  + Added option to skip compiler step on compile, build or run
+  * Fixed adding of runtime watches
+  * Fixed runnerror reporting (correct number and location is shown)
+
   Revision 1.59  2004/08/08 18:02:44  mattias
   splitted TMainIDE (main control instance) and TMainIDEBar (IDE menu and palette), added mainbase.pas and mainintf.pas
 

@@ -85,6 +85,7 @@ type
     FCommandQueue: TStringList;
     FTargetPID: Integer;
     FBreakErrorBreakID: Integer;
+    FRunErrorBreakID: Integer;
     FExceptionBreakID: Integer;
     FVersion: String;
     FPauseWaitState: TGDBMIPauseWaitState;
@@ -409,6 +410,7 @@ end;
 constructor TGDBMIDebugger.Create(const AExternalDebugger: String);
 begin
   FBreakErrorBreakID := -1;
+  FRunErrorBreakID := -1;
   FExceptionBreakID := -1;
   FCommandQueue := TStringList.Create;
   FTargetPID := 0;
@@ -1230,11 +1232,15 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
     ErrorNo: Integer;
     Location: TDBGLocationRec;
   begin
-    ErrorNo := Integer(GetData('$fp+8', []));
+    if tfRTLUsesRegCall in FTargetFlags
+    then ErrorNo := GetIntValue('$eax', [])
+    else ErrorNo := Integer(GetData('$fp+8', []));
     
     Location.SrcLine := -1;
     Location.SrcFile := '';
-    Location.Address := GetData('$fp+12', []);
+    if tfRTLUsesRegCall in FTargetFlags
+    then Location.Address := Pointer(GetIntValue('$edx', []))
+    else Location.Address := GetData('$fp+12', []);
     Location.FuncName := '';
     if ExecuteCommand('info line * pointer(%d)', [Integer(Location.Address)], S, [cfIgnoreError, cfNoMiCommand])
     then begin
@@ -1246,6 +1252,30 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
     DoCurrent(Location);
   end;
   
+  procedure ProcessRunError;
+  var
+    S: String;
+    ErrorNo: Integer;
+    List: TStrings;
+  begin
+    if tfRTLUsesRegCall in FTargetFlags
+    then ErrorNo := GetIntValue('$eax', [])
+    else ErrorNo := Integer(GetData('$fp+8', []));
+
+    DoException(Format('RunError(%d)', [ErrorNo]), '');
+
+    if ExecuteCommand('-stack-list-frames 1 1', [], S, [cfIgnoreError])
+    then begin
+      List := CreateMIValueList(S);
+      S := List.Values['stack'];
+      FreeAndNil(List);
+      List := CreateMIValueList(S);
+      S := List.Values['frame'];
+      FreeAndNil(List);
+      ProcessFrame(S);
+    end;
+  end;
+
   procedure ProcessSignalReceived(const AList: TStringList);
   var
     SigInt: Boolean;
@@ -1322,6 +1352,13 @@ begin
         Exit;
       end;
 
+      if BreakID = FRunErrorBreakID
+      then begin
+        SetState(dsPause);
+        ProcessRunError;
+        Exit;
+      end;
+      
       if BreakID = FExceptionBreakID
       then begin
         SetState(dsPause);
@@ -1444,11 +1481,27 @@ function TGDBMIDebugger.StartDebugging(const AContinueCommand: String): Boolean;
     //    params are passes by stack
     Exclude(FTargetFlags, tfRTLUsesRegCall);
   end;
+  
+  function InsertBreakPoint(const AName: String): Integer;
+  var
+    S: String;
+    ResultList, BkptList: TStringList;
+    ResultState: TDBGState;
+  begin
+    ExecuteCommand('-break-insert %s', [AName], ResultState, S, [cfIgnoreError]);
+    if ResultState <> dsError
+    then begin
+      ResultList := CreateMIValueList(S);
+      BkptList := CreateMIValueList(ResultList.Values['bkpt']);
+      Result := StrToIntDef(BkptList.Values['number'], -1);
+      ResultList.Free;
+      BkptList.Free;
+    end;
+  end;
 
 var
   S, FileType, EntryPoint: String;
   ResultState: TDBGState;
-  ResultList, BkptList: TStringList;
   TargetPIDPart: String;
   TempInstalled: Boolean;
 begin
@@ -1482,35 +1535,15 @@ begin
     TempInstalled := False;
   end;
   
-  // try to insert Exception breakpoint
-  // we might have rtl symbols
-  if FExceptionBreakID = -1
-  then begin
-    ExecuteCommand('-break-insert FPC_RAISEEXCEPTION', [],  ResultState, S, [cfIgnoreError]);
-    if ResultState <> dsError
-    then begin
-      ResultList := CreateMIValueList(S);
-      BkptList := CreateMIValueList(ResultList.Values['bkpt']);
-      FExceptionBreakID := StrToIntDef(BkptList.Values['number'], -1);
-      ResultList.Free;
-      BkptList.Free;
-    end;
-  end;
-
   // try Insert Break breakpoint
   // we might have rtl symbols
+  if FExceptionBreakID = -1
+  then FExceptionBreakID := InsertBreakPoint('FPC_RAISEEXCEPTION');
   if FBreakErrorBreakID = -1
-  then begin
-    ExecuteCommand('-break-insert FPC_BREAK_ERROR', [], ResultState, S, [cfIgnoreError]);
-    if ResultState <> dsError
-    then begin
-      ResultList := CreateMIValueList(S);
-      BkptList := CreateMIValueList(ResultList.Values['bkpt']);
-      FBreakErrorBreakID := StrToIntDef(BkptList.Values['number'], -1);
-      ResultList.Free;
-      BkptList.Free;
-    end;
-  end;
+  then FBreakErrorBreakID := InsertBreakPoint('FPC_BREAK_ERROR');
+  if FRunErrorBreakID = -1
+  then FRunErrorBreakID := InsertBreakPoint('FPC_RUNERROR');
+
   
   // try to retrieve the filetype and program entry point
   if ExecuteCommand('info file', [], ResultState, S, [cfIgnoreError, cfNoMICommand])
@@ -2250,6 +2283,11 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.49  2004/09/04 21:54:08  marc
+  + Added option to skip compiler step on compile, build or run
+  * Fixed adding of runtime watches
+  * Fixed runnerror reporting (correct number and location is shown)
+
   Revision 1.48  2004/08/26 23:50:05  marc
   * Restructured debugger view classes
   * Fixed help
