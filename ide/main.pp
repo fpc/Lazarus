@@ -227,6 +227,7 @@ type
       var NewTopLine, NewPageIndex: integer; Action: TJumpHistoryAction);
     procedure OnSrcNotebookMovingPage(Sender: TObject;
       OldPageIndex, NewPageIndex: integer);
+    procedure OnSrcNotebookReadOnlyChanged(Sender : TObject);
     procedure OnSrcNotebookSaveAll(Sender : TObject);
     procedure OnSrcNotebookShowHintForSource(SrcEdit: TSourceEditor;
           ClientPos: TPoint; CaretPos: TPoint);
@@ -1130,6 +1131,7 @@ begin
   SourceNotebook.OnOpenClicked := @OnSrcNotebookFileOpen;
   SourceNotebook.OnOpenFileAtCursorClicked := @OnSrcNotebookFileOpenAtCursor;
   SourceNotebook.OnProcessUserCommand := @OnProcessIDECommand;
+  SourceNotebook.OnReadOnlyChanged := @OnSrcNotebookReadOnlyChanged;
   SourceNotebook.OnSaveClicked := @OnSrcNotebookFileSave;
   SourceNotebook.OnSaveAsClicked := @OnSrcNotebookFileSaveAs;
   SourceNotebook.OnSaveAllClicked := @OnSrcNotebookSaveAll;
@@ -3784,7 +3786,6 @@ begin
     UpdateSourceNames;
 
   // if file is readonly then a simple Save is skipped
-  ActiveUnitInfo.ReadOnly:=ActiveSrcEdit.ReadOnly;
   if (ActiveUnitInfo.ReadOnly) and ([sfSaveToTestDir,sfSaveAs]*Flags=[]) then
   begin
     Result:=mrOk;
@@ -3879,7 +3880,6 @@ begin
     FLastFormActivated:=nil;
 
   // save some meta data of the source
-  ActiveUnitInfo.ReadOnly:=ActiveSrcEdit.ReadOnly;
   ActiveUnitInfo.TopLine:=ActiveSrcEdit.EditorComponent.TopLine;
   ActiveUnitInfo.CursorPos:=ActiveSrcEdit.EditorComponent.CaretXY;
   
@@ -4021,8 +4021,7 @@ begin
   end;
 
   // check readonly
-  NewUnitInfo.ReadOnly:=NewUnitInfo.ReadOnly
-                        or (not FileIsWritable(NewUnitInfo.Filename));
+  NewUnitInfo.FileReadOnly:=(not FileIsWritable(NewUnitInfo.Filename));
 
   {$IFDEF IDE_DEBUG}
   writeln('[TMainIDE.DoOpenEditorFile] B');
@@ -7259,6 +7258,15 @@ begin
   Project1.MoveEditorIndex(OldPageIndex,NewPageIndex);
 end;
 
+procedure TMainIDE.OnSrcNotebookReadOnlyChanged(Sender: TObject);
+var
+  ActiveSourceEditor: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+begin
+  GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
+  ActiveUnitInfo.UserReadOnly:=ActiveSourceEditor.ReadOnly;
+end;
+
 Procedure TMainIDE.OnSrcNotebookViewJumpHistory(Sender : TObject);
 begin
   // ToDo
@@ -7762,6 +7770,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.469  2003/02/26 12:44:52  mattias
+  readonly flag is now only saved if user set
+
   Revision 1.468  2003/02/24 11:51:44  mattias
   combobox height can now be set, added OI item height option
 
