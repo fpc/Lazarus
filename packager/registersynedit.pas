@@ -43,6 +43,8 @@ uses
   SynMemo, SynHighlighterPas, SynHighlighterCPP, SynHighlighterJava,
   SynHighlighterPerl, SynHighlighterHTML, SynHighlighterXML,
   SynHighlighterLFM, SynHighlighterMulti, SynHighlighterUNIXShellScript,
+  SynHighlighterCss, SynHighlighterPHP, SynHighlighterTeX,
+  SynHighlighterHashEntries, SynHighlighterSQL,
   LazarusPackageIntf, LazarusIDEStrConsts;
 
 procedure Register;
@@ -114,6 +116,26 @@ begin
   RegisterComponents('SynEdit',[TSynUNIXShellScriptSyn]);
 end;
 
+procedure RegisterSynHighlighterCSS;
+begin
+  RegisterComponents('SynEdit',[TSynCssSyn]);
+end;
+
+procedure RegisterSynHighlighterPHP;
+begin
+  RegisterComponents('SynEdit',[TSynPHPSyn]);
+end;
+
+procedure RegisterSynHighlighterTeX;
+begin
+  RegisterComponents('SynEdit',[TSynTeXSyn]);
+end;
+
+procedure RegisterSynHighlighterSQL;
+begin
+  RegisterComponents('SynEdit',[TSynSQLSyn]);
+end;
+
 procedure RegisterSynHighlighterMulti;
 begin
   RegisterComponents('SynEdit',[TSynMultiSyn]);
@@ -135,6 +157,11 @@ begin
   RegisterUnit('SynHighlighterLFM',@RegisterSynHighlighterLFM);
   RegisterUnit('SynHighlighterUNIXShellScript',
                                         @RegisterSynHighlighterUNIXShellScript);
+  RegisterUnit('SynHighlighterCss',@RegisterSynHighlighterCSS);
+  RegisterUnit('SynHighlighterPHP',@RegisterSynHighlighterPHP);
+  RegisterUnit('SynHighlighterTeX',@RegisterSynHighlighterTeX);
+  RegisterUnit('SynHighlighterSQL',@RegisterSynHighlighterSQL);
+  
   RegisterUnit('SynHighlighterMulti',@RegisterSynHighlighterMulti);
 end;
 

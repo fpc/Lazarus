@@ -21,7 +21,8 @@ uses
   SynHighlighterLFM, SynHighlighterPerl, SynHighlighterMulti, SynRegExpr,
   SynEditExport, SynExportHTML, SynMemo, SynMacroRecorder, SynEditPlugins,
   SynEditRegexSearch, SynHighlighterPosition, SynHighlighterJava,
-  SynHighlighterUNIXShellScript,
+  SynHighlighterUNIXShellScript, SynHighlighterCss, SynHighlighterPHP,
+  SynHighlighterTeX, SynHighlighterHashEntries, SynHighlighterSQL,
   SynEditLazDsgn;
 
 implementation
@@ -31,6 +32,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.2  2004/03/02 23:04:11  mattias
+  added sql, php, tex, css synedit highlighter
+
   Revision 1.1  2003/11/15 13:07:09  mattias
   added ambigious unit check for IDE
 

@@ -18,7 +18,9 @@ implicitunits=syntextdrawer syneditkeycmds synedittypes syneditstrconst \
   syneditsearch syneditmiscprocs syneditmiscclasses synedittextbuffer \
   synedit synedithighlighter synhighlightermulti synregexpr synexporthtml \
   syneditexport synmemo synmacrorecorder syneditplugins syneditregexsearch \
-  synhighlighterposition synhighlighterjava
+  synhighlighterposition synhighlighterjava synhighlightercss \
+  synhighlighterphp synhighlightertex synhighlighterhashentries \
+  synhighlightersql
 
 [require]
 # Adding lcl does not work, because it adds the source path.

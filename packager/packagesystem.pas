@@ -961,6 +961,10 @@ begin
     AddFile('synhighlighterunixshellscript.pas','SynHighlighterUNIXShellScript',
                                                              pftUnit,[],cpBase);
     AddFile('synhighlightermulti.pas','SynHighlighterMulti',pftUnit,[],cpBase);
+    AddFile('synhighlightercss.pas','SynHighlighterCss',pftUnit,[],cpBase);
+    AddFile('synhighlighterphp.pas','SynHighlighterPHP',pftUnit,[],cpBase);
+    AddFile('synhighlightertex.pas','SynHighlighterTeX',pftUnit,[],cpBase);
+    AddFile('synhighlightersql.pas','SynHighlighterSQL',pftUnit,[],cpBase);
 
     // add unit paths
     UsageOptions.UnitPath:=SetDirSeparators(

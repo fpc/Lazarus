@@ -143,6 +143,12 @@ const
   SYNS_AttrValue                =  'Value';
   SYNS_AttrVariable             =  'Variable';
   SYNS_AttrWhitespace           =  'Whitespace';
+  SYNS_AttrTableName            =  'Table Name';
+  SYNS_AttrMathMode             =  'Math Mode';
+  SYNS_AttrTextMathMode         =  'Text in Math Mode';
+  SYNS_AttrSquareBracket        =  'Square Bracket';
+  SYNS_AttrRoundBracket         =  'Round Bracket';
+  SYNS_AttrTeXCommand           =  'TeX Command';
 
 {$IFDEF SYN_LAZARUS}
 resourcestring
@@ -212,7 +218,8 @@ resourcestring
   SYNS_FilterXML                =  'XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd';
   SYNS_FilterGWS                =  'GW-TEL Script Files (*.gws)|*.gws';
   SYNS_FilterSynGenMsgfiles     =  'Msg files (*.msg)|*.msg';
-  SYNS_FilterUNIXShellScript    = 'UNIX Shell Scripts (*.sh)|*.sh';
+  SYNS_FilterUNIXShellScript    =  'UNIX Shell Scripts (*.sh)|*.sh';
+  SYNS_FilterTeX                =  'TeX Files (*.tex)|*.tex';
 
 {$IFDEF SYN_LAZARUS}
 // Currently the language names are used to identify the language
@@ -267,7 +274,7 @@ const
   SYNS_LangGWS                  =  'GW-TEL script';
   SYNS_LangSynGenMsgfiles       =  'SynGen Msg files';
   SYNS_LangUnreal               =  'Unreal';
-
+  SYNS_LangTeX                  =  'TeX';
 
 implementation
 
