@@ -436,7 +436,6 @@ type
       ValidGrid: Boolean;     // true if there is something to show
       AccumWidth: TList;       // Accumulated width per column
       AccumHeight: TList;     // Accumulated Height per row
-      HScrDiv,VScrDiv: Double;      // Transform const for ThumbTracking
       TLColOff,TLRowOff: Integer;   // TopLeft Offset in pixels
       MaxTopLeft: TPoint;     // Max Top left ( cell coorditates)
     end;
@@ -770,6 +769,7 @@ type
     procedure EndUpdate(UO: TUpdateOption); overload;
     procedure EndUpdate(FullUpdate: Boolean); overload;
     procedure EndUpdate; overload;
+    procedure EraseBackground(DC: HDC); override;
     procedure ExchangeColRow(IsColumn: Boolean; index, WithIndex: Integer);
     function  IscellSelected(aCol,aRow: Integer): Boolean;
     function  IscellVisible(aCol, aRow: Integer): Boolean;
@@ -1882,8 +1882,6 @@ var
             TW:= Integer(AccumWidth[MaxTopLeft.X])-(HsbRange-ClientWidth);
             HsbRange:=HsbRange + TW - FixedWidth + 1;
           end;
-          if HsbRange>ClientWidth then
-            HscrDiv := Double(ColCount-FixedCols-1)/(HsbRange-ClientWidth);
         end;
       end else
       if FScrollBars in [ssHorizontal, ssBoth] then HsbRange:=0;
@@ -1891,14 +1889,10 @@ var
       if ScrollBarAutomatic(ssVertical)  then begin
         if VSbVisible then begin
           VSbRange:= GridHeight + 2 - Integer(BorderStyle){ + dh};
-
           if not (goSmoothScroll in Options) then begin
             TH:= Integer(accumHeight[MaxTopLeft.Y])-(VsbRange-ClientHeight);
             VsbRange:=VsbRange + TH -FixedHeight + 1;
           end;
-
-          if VSbRange>ClientHeight then
-            VScrDiv:= Double(RowCount-FixedRows-1)/(VsbRange-ClientHeight);
         end;
       end else
       if FScrollBars in [ssVertical, ssBoth] then VsbRange:= 0;
@@ -1914,8 +1908,6 @@ begin
   FGCache.ScrollWidth:=FGCache.ClientWidth-FGCache.FixedWidth;
   FGCache.ScrollHeight:=FGCache.ClientHeight-FGCache.FixedHeight;
   FGCache.MaxTopLeft:=CalcMaxTopLeft;
-  FGCache.HScrDiv:=0;
-  FGCache.VScrDiv:=0;
   if not(goSmoothScroll in Options) then begin
     FGCache.TLColOff:=0;
     FGCache.TLRowOff:=0;
@@ -2644,41 +2636,17 @@ begin
 	if goTabs in Options then Msg.Result:= Msg.Result or DLGC_WANTTAB;
 end;
 
-//
-// NOTE: WMHScroll and VMHScroll
-// This methods are used to pre-calculate the scroll position
-//
 procedure TCustomGrid.WMHScroll(var message: TLMHScroll);
 var
   C,TL,CTL: Integer;
 begin
 
-  // Avoid invalidating right know, just let the scrollbar
-  // calculate its position
-  {
-  BeginUpdate;
-  Inherited;
-  message.Result:=1;
-  EndUpdate(uoNone);
-  }
-
   {$IfDef dbgScroll}
   DebugLn('HSCROLL: Code=',IntToStr(message.ScrollCode),' Position=', IntToStr(message.Pos));
   {$Endif}
 
-
-  if FGCache.HScrDiv<=0 then Exit;
   if FEditor<>nil then
     EditorGetValue;
-
-  if goThumbTracking in Options then begin
-    C:=FFixedCols + Round( message.Pos * FGCache.HScrDiv );
-    if (FCol<>C) then begin
-      Inc(FUpdateScrollBarsCount);
-      MoveExtend(False, C, FRow);
-      Dec(FUpdateScrollBarsCount);
-    end;
-  end else begin
 
     TL:=  Integer(FGCache.AccumWidth[ FGCache.MaxTopLeft.X ]) - FGCAche.FixedWidth;
     CTL:= Integer(FGCache.AccumWidth[ FtopLeft.X ]) - FGCache.FixedWidth;
@@ -2694,8 +2662,13 @@ begin
       SB_PAGEDOWN:   C := CTL + FGCache.ClientWidth;
       SB_PAGEUP:     C := CTL - FGCache.ClientWidth;
         // Scrolls to the current scroll bar position
-      SB_THUMBPOSITION,
-      SB_THUMBTRACK: C := message.Pos;
+    SB_THUMBPOSITION:
+      C := Message.Pos;
+    SB_THUMBTRACK:
+      if goThumbTracking in Options then
+        C := message.Pos
+      else
+        Exit;
         // Ends scrolling
       SB_ENDSCROLL: Exit;
     end;
@@ -2733,34 +2706,16 @@ begin
       Invalidate;
     end;
   end;
-end;
 
 procedure TCustomGrid.WMVScroll(var message: TLMVScroll);
 var
   C, TL, CTL: Integer;
 begin
-  // Avoid invalidating right know, just let the scrollbar
-  // calculate its position
-  {
-  BeginUpdate;
-  Inherited;
-  message.Result:=1;
-  EndUpdate(uoNone);
-  }
   {$IfDef dbgScroll}
   DebugLn('VSCROLL: Code=',IntToStr(message.ScrollCode),' Position=', IntToStr(message.Pos));
   {$Endif}
 
-  if FGCache.VScrDiv<=0 then Exit;
   if FEditor<>nil then EditorGetValue;
-  if goThumbTracking in Options then begin
-    C:=FFixedRows + Round( message.Pos * FGCache.VScrDiv );
-    if (C<>FRow) then begin
-      Inc(FUpdateScrollBarsCount);
-      MoveExtend(False, FCol, C);
-      Dec(FUpdateScrollBarsCount);
-    end;
-  end else begin
 
     TL:=  Integer(FGCache.AccumHeight[ FGCache.MaxTopLeft.Y ]) - FGCache.FixedHeight;
     CTL:= Integer(FGCache.AccumHeight[ FtopLeft.Y ]) - FGCache.FixedHeight;
@@ -2776,8 +2731,13 @@ begin
       SB_PAGEDOWN:   C := CTL + FGCache.ClientHeight;
       SB_PAGEUP:     C := CTL - FGCache.ClientHeight;
         // Scrolls to the current scroll bar position
-      SB_THUMBPOSITION,
-      SB_THUMBTRACK: C := message.Pos;
+    SB_THUMBPOSITION:
+      C := message.Pos;
+    SB_THUMBTRACK:
+      if goThumbTracking in Options then
+        C := message.Pos
+      else
+        Exit;
         // Ends scrolling
       SB_ENDSCROLL: Exit;
     end;
@@ -2814,7 +2774,6 @@ begin
       Invalidate;
     end;
   end;
-end;
 
 procedure TCustomGrid.WMChar(var message: TLMChar);
 var
@@ -4231,6 +4190,11 @@ end;
 procedure TCustomGrid.EndUpdate;
 begin
   EndUpdate(true);
+end;
+
+procedure TCustomGrid.EraseBackground(DC: HDC);
+begin
+  //
 end;
 
 function TCustomGrid.IsCellSelected(aCol, aRow: Integer): Boolean;

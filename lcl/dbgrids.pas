@@ -155,6 +155,8 @@ type
     property Items[Index: Integer]: TColumn read GetColumn write SetColumn; default;
   end;
 
+  { TCustomDbGrid }
+
   TCustomDbGrid=class(TCustomGrid)
   private
     FDataLink: TComponentDataLink;
@@ -174,9 +176,11 @@ type
     FDrawingActiveRecord: Boolean;
     FEditingColumn: Integer;
     FOldPosition: Integer;
+    FDefaultColWidths: boolean;
     function GetCurrentField: TField;
     function GetDataSource: TDataSource;
     function GetRecordCount: Integer;
+    function GetThumbTracking: boolean;
     procedure OnRecordChanged(Field:TField);
     procedure OnDataSetChanged(aDataSet: TDataSet);
     procedure OnDataSetOpen(aDataSet: TDataSet);
@@ -193,6 +197,7 @@ type
     procedure SetCurrentField(const AValue: TField);
     procedure SetDataSource(const AValue: TDataSource);
     procedure SetOptions(const AValue: TDbGridOptions);
+    procedure SetThumbTracking(const AValue: boolean);
     procedure UpdateBufferCount;
     procedure UpdateData;
     
@@ -279,8 +284,10 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     procedure DefaultDrawColumnCell(const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure ResetColWidths;
     destructor Destroy; override;
     property SelectedField: TField read GetCurrentField write SetCurrentField;
+    property ThumbTracking: boolean read GetThumbTracking write SetThumbTracking;
   end;
   
   
@@ -431,6 +438,11 @@ begin
   result := FDataLink.DataSet.RecordCount;
 end;
 
+function TCustomDbGrid.GetThumbTracking: boolean;
+begin
+  Result :=  goThumbTracking in inherited Options;
+end;
+
 function TCustomDbGrid.GetCurrentField: TField;
 begin
   result := GetFieldFromGridColumn( Col );
@@ -453,6 +465,7 @@ begin
   {$Ifdef dbgdbgrid}
   DebugLn('(',name,') ','TCustomDBGrid.OnDataSetOpen');
   {$endif}
+  FDefaultColWidths := True;
   LinkActive(True);
   UpdateActive;
 end;
@@ -504,6 +517,7 @@ begin
   {$ifdef dbgdbgrid}
   DebugLn('(',name,') ','TCustomDBGrid.OnNewDataSet');
   {$endif}
+  FDefaultColWidths := True;
   LinkActive(True);
   UpdateActive;
 end;
@@ -549,6 +563,7 @@ end;
 procedure TCustomDbGrid.SetDataSource(const AValue: TDataSource);
 begin
   if AValue = FDatalink.Datasource then Exit;
+  FDefaultColWidths := True;
   FDataLink.DataSource := AValue;
   UpdateActive;
 end;
@@ -606,6 +621,14 @@ begin
     
     EndLayout;
   end;
+end;
+
+procedure TCustomDbGrid.SetThumbTracking(const AValue: boolean);
+begin
+  if Avalue then
+    inherited Options := Inherited Options + [goThumbTracking]
+  else
+    inherited Options := Inherited Options - [goThumbTracking];
 end;
 
 procedure TCustomDbGrid.UpdateBufferCount;
@@ -827,7 +850,7 @@ begin
   i := 0;
   result := -1;
   if FDataLink.Active then
-  while (i<FDataLink.DataSet.FieldCount) do begin
+  while (i<FDataLink.DataSet.FieldCount)and(Column>=0) do begin
     if FDataLink.Fields[i].Visible then begin
         Dec(Column);
         if Column<0 then begin
@@ -843,10 +866,12 @@ procedure TCustomDbGrid.UpdateGridColumnSizes;
 var
   i: Integer;
 begin
-  if dgIndicator in Options then
-    ColWidths[0]:=12;
-  for i:=FixedCols to ColCount-1 do
-    ColWidths[i] := GetColumnWidth(i);
+  if FDefaultColWidths then begin
+    if dgIndicator in Options then
+      ColWidths[0]:=12;
+    for i:=FixedCols to ColCount-1 do
+      ColWidths[i] := GetColumnWidth(i);
+  end;
 end;
 
 procedure TCustomDbGrid.UpdateScrollbarRange;
@@ -863,7 +888,9 @@ begin
       aRange := GetRecordCount + VisibleRowCount - 1;
       aPage := VisibleRowCount;
       if aPage<1 then aPage := 1;
-      aPos := FDataLink.DataSet.RecNo;
+      if FDatalink.BOF then aPos := 0 else
+      if FDatalink.EOF then aPos := aRange
+      else aPos := FDataLink.DataSet.RecNo - 1; // RecNo is 1 based
     end else begin
       aRange := 6;
       aPage := 2;
@@ -1505,12 +1532,14 @@ procedure TCustomDbGrid.HeaderSized(IsColumn: Boolean; Index: Integer);
 var
   i: Integer;
 begin
-  if IsColumn then
+  if IsColumn then begin
     if Columns.Enabled then begin
       i := ColumnIndexFromGridColumn(Index);
       if i>=0 then
         Columns[i].Width := ColWidths[Index];
     end;
+    FDefaultColWidths := True;
+  end;
 end;
 
 procedure TCustomDbGrid.UpdateActive;
@@ -1521,8 +1550,10 @@ begin
     DebugLn(Name,'.UpdateActive: ActiveRecord=', dbgs(ActiveRecord),
             ' FixedRows=',dbgs(FixedRows), ' Row=', dbgs(Row));
     {$endif}
-    if FixedRows + ActiveRecord <> Row then
+    if FixedRows + ActiveRecord <> Row then begin
       InvalidateRow(Row);
+      EditingColumn(Col, false);
+    end;
     Row:= FixedRows + ActiveRecord;
   end;
   //Invalidate;
@@ -1598,6 +1629,8 @@ begin
   FDataLink.OnUpdateData:=@OnUpdateData;
   FDataLink.VisualControl:= True;
 
+  FDefaultColWidths := True;
+
   FOptions := [dgColumnResize, dgTitles, dgIndicator, dgRowLines, dgColLines,
     dgConfirmDelete, dgCancelOnExit, dgTabs, dgEditing, dgAlwaysShowSelection];
     
@@ -1654,6 +1687,14 @@ begin
     R := FixRectangle();
     Canvas.TextRect(R,R.Left,R.Top,S);
     //Canvas.TextOut(aRect.Left+2,ARect.Top+2, S);
+  end;
+end;
+
+procedure TCustomDbGrid.ResetColWidths;
+begin
+  if not FDefaultColWidths then begin
+    FDefaultColWidths := True;
+    LayoutChanged;
   end;
 end;
 
@@ -1961,6 +2002,9 @@ end.
 
 {
   $Log$
+  Revision 1.31  2005/02/06 22:43:38  mattias
+  dbgrid.ThumbTracking and fixes  from Jesus
+
   Revision 1.30  2005/01/16 13:16:31  mattias
   added DoCompareCells, changed OnCompareCell  from Jesus
 
