@@ -5748,6 +5748,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TgtkObject.PairSplitterGetInterfaceInfo: Boolean;
+ ------------------------------------------------------------------------------}
+function TgtkObject.PairSplitterGetInterfaceInfo: Boolean;
+begin
+  Result:=true;
+end;
+
+{------------------------------------------------------------------------------
   function TgtkObject.PairSplitterRemoveSide(SplitterHandle, SideHandle: hWnd;
     Side: integer): Boolean;
  ------------------------------------------------------------------------------}
@@ -8701,6 +8709,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.270  2003/08/26 08:12:33  mattias
+  applied listbox/combobox patch from Karl
+
   Revision 1.269  2003/08/18 19:24:18  mattias
   fixed TCanvas.Pie
 

@@ -1320,6 +1320,11 @@ begin
   Result:=false;
 end;
 
+function TInterfaceBase.PairSplitterGetInterfaceInfo: boolean;
+begin
+  Result:=false;
+end;
+
 function TInterfaceBase.PairSplitterRemoveSide(SplitterHandle, SideHandle: hWnd;
   Side: integer): Boolean;
 begin
@@ -1822,6 +1827,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.102  2003/08/26 08:12:33  mattias
+  applied listbox/combobox patch from Karl
+
   Revision 1.101  2003/08/25 16:43:32  mattias
   moved many graphics types form graphtype.pp to graphics.pp
 

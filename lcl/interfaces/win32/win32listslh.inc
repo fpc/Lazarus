@@ -32,7 +32,7 @@ Type
     FSender: TControl;
     FEditHeight: Integer;
     FItemHeight: Integer;
-    FDropDownCount: Integer;
+    FDDownCount: Integer;
     //Win32 Flags
     FFlagSort: Cardinal;
     FFlagGetText:Cardinal;
@@ -86,6 +86,9 @@ Type
 { =============================================================================
 
   $Log$
+  Revision 1.9  2003/08/26 08:12:33  mattias
+  applied listbox/combobox patch from Karl
+
   Revision 1.8  2003/08/13 21:23:10  mattias
   fixed log
 

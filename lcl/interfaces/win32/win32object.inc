@@ -983,17 +983,7 @@ activate_time :	the time at which the activation event occurred.
           End;
         End;
         LM_SETSELMODE:
-          If (Sender is TCustomListBox) And Assigned(data) Then
-          Begin
-           //The win32 api doesn't change the selection mode on the fly: it needs recreate the window
-           //RecreateWnd(Sender); -> cause endless loop
-           //Recreates the window step by step
-
-           If TCustomListBox(Sender).FCompStyle = csListBox Then
-             RecreateListControl(Handle,TControl(Sender),TListBox(Sender).Sorted)
-           Else
-             RecreateListControl(Handle,TControl(Sender),TCListBox(Sender).Sorted);
-           End;
+          SetSelectionMode(Sender);
 
         LM_SETBORDER:
         Begin
@@ -2592,141 +2582,146 @@ begin
     Assert (False, 'Trace:WARNING: [TWin32Object.SetProperties] --> got nil pointer');
 
   Case TControl(Sender).FCompStyle Of
-    csEdit:
-      With (TCustomEdit(Sender)) Do
-      Begin
-        SendMessage(Handle, EM_SETREADONLY, WPARAM(ReadOnly), 0);
-        SendMessage(Handle, EM_LIMITTEXT, MaxLength, 0);
-      End;
-    csListView:
-    Begin
-      With TCustomListView(Sender) Do
-      Begin
-        If ViewStyle = vsReport Then
-        Begin
-          For I := 0 To Columns.Count - 1 Do
-          Begin
-            With LVC Do
-            Begin
-              Mask := LVCF_FMT Or LVCF_TEXT Or LVCF_WIDTH;
-              Fmt := Integer(Columns.Items[I].Alignment);
-              CX := Columns.Items[I].Width;
-              PSzText := PChar(Columns.Items[I].Caption);
-            End;
-            ListView_SetColumn(Handle, I, LVC);
-          End;
-        End;
-        //If Sorted Then
-          //ListView_SortItems(Handle, @CompareFunc, 0);
-        If MultiSelect Then
-          SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) And Not LVS_SINGLESEL);
-        If SmallImages <> Nil Then
-          ListView_SetImageList(Handle, SmallImages.Handle, LVSIL_NORMAL);
-      End;
-    End;
-    csProgressBar:
-      With (TProgressBar(Sender)) Do
-      Begin
-        { smooth and vertical need window recreation }
-        if ((GetWindowLong(Handle, GWL_STYLE) and PBS_SMOOTH  ) <>
-             Integer(Smooth) * PBS_SMOOTH) or
-           ((GetWindowLong(Handle, GWL_STYLE) and PBS_VERTICAL) <>
-             Integer((Orientation = pbVertical) or (Orientation = pbTopDown)) * PBS_VERTICAL) then
-          Self.RecreateWnd(Sender);
 
-        SendMessage(Handle, PBM_SETRANGE, 0, MakeLParam(Min, Max));
-        SendMessage(Handle, PBM_SETPOS, Position, 0);
+  csEdit:
+    With (TCustomEdit(Sender)) Do
+    Begin
+      SendMessage(Handle, EM_SETREADONLY, WPARAM(ReadOnly), 0);
+      SendMessage(Handle, EM_LIMITTEXT, MaxLength, 0);
+    End;
+    
+  csListView:
+    With TCustomListView(Sender) Do
+    Begin
+      If ViewStyle = vsReport Then
+      Begin
+        For I := 0 To Columns.Count - 1 Do
+        Begin
+          With LVC Do
+          Begin
+            Mask := LVCF_FMT Or LVCF_TEXT Or LVCF_WIDTH;
+            Fmt := Integer(Columns.Items[I].Alignment);
+            CX := Columns.Items[I].Width;
+            PSzText := PChar(Columns.Items[I].Caption);
+          End;
+          ListView_SetColumn(Handle, I, LVC);
+        End;
+      End;
+      //If Sorted Then
+        //ListView_SortItems(Handle, @CompareFunc, 0);
+      If MultiSelect Then
+        SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) And Not LVS_SINGLESEL);
+      If SmallImages <> Nil Then
+        ListView_SetImageList(Handle, SmallImages.Handle, LVSIL_NORMAL);
+    End;
+
+  csProgressBar:
+    With (TProgressBar(Sender)) Do
+    Begin
+      { smooth and vertical need window recreation }
+      if ((GetWindowLong(Handle, GWL_STYLE) and PBS_SMOOTH  ) <>
+           Integer(Smooth) * PBS_SMOOTH) or
+         ((GetWindowLong(Handle, GWL_STYLE) and PBS_VERTICAL) <>
+           Integer((Orientation = pbVertical) or (Orientation = pbTopDown)) * PBS_VERTICAL) then
+        Self.RecreateWnd(Sender);
+
+      SendMessage(Handle, PBM_SETRANGE, 0, MakeLParam(Min, Max));
+      SendMessage(Handle, PBM_SETPOS, Position, 0);
 
 { TODO: Implementable?
-        If BarShowText Then
-        Begin
-          SetWindowText(Handle, StrToPChar((Sender As TControl).Caption));
-        End
-        Else
-          SetWindowText(Handle, Nil);
+      If BarShowText Then
+      Begin
+        SetWindowText(Handle, StrToPChar((Sender As TControl).Caption));
+      End
+      Else
+        SetWindowText(Handle, Nil);
 }
     End;
-    csScrollBar:
-      With (TScrollBar(Sender)) Do
-      Begin
-        SendMessage(Handle, SBM_SETRANGE, Min, Max);
-        SendMessage(Handle, SBM_SETPOS, Position, LPARAM(True));
-        Case Kind Of
-          sbHorizontal:
-            SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or SBS_HORZ);
-          sbVertical:
-            SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or SBS_VERT);
-        End;
-        Assert(False, 'Trace:TODO: [TWin32Object.SetProperties] Set up step and page increments for csScrollBar');
+
+  csScrollBar:
+    With (TScrollBar(Sender)) Do
+    Begin
+      SendMessage(Handle, SBM_SETRANGE, Min, Max);
+      SendMessage(Handle, SBM_SETPOS, Position, LPARAM(True));
+      Case Kind Of
+        sbHorizontal:
+          SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or SBS_HORZ);
+        sbVertical:
+          SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or SBS_VERT);
       End;
-    csSpinEdit:
+      Assert(False, 'Trace:TODO: [TWin32Object.SetProperties] Set up step and page increments for csScrollBar');
+    End;
+
+  csSpinEdit:
     Begin
       SendMessage(Handle, UDM_SETPOS, 0, MakeLong(Trunc(TSpinEdit(Sender).Value), 0));
     End;
-    csTrackbar:
-      With(TTrackBar(Sender)) Do
-      Begin
-        SendMessage(Handle, TBM_SETRANGEMAX, WPARAM(True), Max);
-        SendMessage(Handle, TBM_SETRANGEMIN, WPARAM(True), Min);
-        SendMessage(Handle, TBM_SETPOS, WPARAM(True), Position);
-        SendMessage(Handle, TBM_SETLINESIZE, 0, LineSize);
-        SendMessage(Handle, TBM_SETPAGESIZE, 0, PageSize);
-        Case Orientation Of
-          trVertical:
-            SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or TBS_VERT);
-          trHorizontal:
-            SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or TBS_HORZ);
-        End;
-        If ShowScale Then
-        Begin
-          Case ScalePos of
-            trLeft:
-              SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or TBS_LEFT Or TBS_VERT);
-            trRight:
-              SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or TBS_RIGHT Or TBS_VERT);
-            trTop:
-              SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or TBS_TOP Or TBS_HORZ);
-            trBottom:
-              SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or TBS_BOTTOM Or TBS_HORZ);
-          End;
-        End;
-        //Not here (Delphi compatibility)
-      End;
-    csLabel:
-      With TLabel(Sender) Do
-      Begin
-        Case Alignment of
-          taLeftJustify:
-            Style := Style Or SS_LEFT;
-          taCenter:
-            Style := Style Or SS_CENTER;
-          taRightJustify:
-            Style := Style Or SS_CENTER;
-          Else
-            Style := STYLE Or SS_LEFT; // default, shouldn't happen
-        End;
-        Case Layout of
-          tlTop:
-            Style := Style Or BS_TOP;
-          tlCenter:
-            Style := Style Or BS_VCENTER;
-          tlBottom:
-            Style := Style Or BS_BOTTOM;
-          Else
-            Style := Style Or BS_BOTTOM; //default, shouldn't happen
-        End;
-        // Experimental wordwrapping support
-        If Wordwrap Then
-          Style := Style And Not SS_LEFTNOWORDWRAP
-        Else
-          Style := Style Or SS_LEFTNOWORDWRAP;
 
-        SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or Style);
-        Assert(False, 'TRACE:Wordwrapping of labels is not currently implemented');
-        Assert(False, 'Trace:TODO: Code wordwrapping labels');
+  csTrackbar:
+    With(TTrackBar(Sender)) Do
+    Begin
+      SendMessage(Handle, TBM_SETRANGEMAX, WPARAM(True), Max);
+      SendMessage(Handle, TBM_SETRANGEMIN, WPARAM(True), Min);
+      SendMessage(Handle, TBM_SETPOS, WPARAM(True), Position);
+      SendMessage(Handle, TBM_SETLINESIZE, 0, LineSize);
+      SendMessage(Handle, TBM_SETPAGESIZE, 0, PageSize);
+      Case Orientation Of
+        trVertical:
+          SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or TBS_VERT);
+        trHorizontal:
+          SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or TBS_HORZ);
       End;
-    Else
-      Assert (True, Format('WARNING: [TWin32Object.SetProperties] failed for %S', [Sender.ClassName]));
+      If ShowScale Then
+      Begin
+        Case ScalePos of
+          trLeft:
+            SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or TBS_LEFT Or TBS_VERT);
+          trRight:
+            SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or TBS_RIGHT Or TBS_VERT);
+          trTop:
+            SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or TBS_TOP Or TBS_HORZ);
+          trBottom:
+            SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or TBS_BOTTOM Or TBS_HORZ);
+        End;
+      End;
+      //Not here (Delphi compatibility)
+    End;
+
+  csLabel:
+    With TLabel(Sender) Do
+    Begin
+      Case Alignment of
+        taLeftJustify:
+          Style := Style Or SS_LEFT;
+        taCenter:
+          Style := Style Or SS_CENTER;
+        taRightJustify:
+          Style := Style Or SS_CENTER;
+        Else
+          Style := STYLE Or SS_LEFT; // default, shouldn't happen
+      End;
+      Case Layout of
+        tlTop:
+          Style := Style Or BS_TOP;
+        tlCenter:
+          Style := Style Or BS_VCENTER;
+        tlBottom:
+          Style := Style Or BS_BOTTOM;
+        Else
+          Style := Style Or BS_BOTTOM; //default, shouldn't happen
+      End;
+      // Experimental wordwrapping support
+      If Wordwrap Then
+        Style := Style And Not SS_LEFTNOWORDWRAP
+      Else
+        Style := Style Or SS_LEFTNOWORDWRAP;
+
+      SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or Style);
+      Assert(False, 'TRACE:Wordwrapping of labels is not currently implemented');
+      Assert(False, 'Trace:TODO: Code wordwrapping labels');
+    End;
+  Else
+    Assert (True, Format('WARNING: [TWin32Object.SetProperties] failed for %S', [Sender.ClassName]));
   End;
 End;
 
@@ -2796,6 +2791,28 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
+  Method: TWin32Object.SetSelectionMode
+  Params: Sender - a LCL control
+  Returns: Nothing
+
+  Sets multiselect.
+ ------------------------------------------------------------------------------}
+procedure TWin32Object.SetSelectionMode(Sender: TObject);
+begin
+  If (Sender is TCustomListBox) then begin
+    //The win32 api doesn't change the selection mode on the fly: it needs recreate the window
+
+    //RecreateWnd(Sender); -> cause endless loop
+    //Recreates the window step by step
+
+    //If TCustomListBox(Sender).FCompStyle = csListBox Then
+    //  RecreateListControl(Handle,TControl(Sender),TListBox(Sender).Sorted)
+    //Else
+    //  RecreateListControl(Handle,TControl(Sender),TCListBox(Sender).Sorted);
+  End;
+end;
+
+{------------------------------------------------------------------------------
   Method: TWin32Object.SetName
   Params: Window - The window to which to assign a name
           Value  - The value to assign
@@ -2829,6 +2846,9 @@ End;
 
 {
   $Log$
+  Revision 1.96  2003/08/26 08:12:33  mattias
+  applied listbox/combobox patch from Karl
+
   Revision 1.95  2003/08/25 16:18:16  mattias
   fixed background color of TPanel and clicks of TSpeedButton from Micha
 

@@ -376,8 +376,8 @@ type
       State: TOwnerDrawState); virtual;
   protected
     property ExtendedSelect : boolean read FExtendedSelect write SetExtendedSelect;
-    property Sorted : boolean read FSorted write SetSorted;
-    property Style : TListBoxStyle read FStyle write SetStyle;
+    property Sorted: boolean read FSorted write SetSorted;
+    property Style: TListBoxStyle read FStyle write SetStyle;
     property ItemHeight: Integer read GetItemHeight write SetItemHeight;
     property OnDrawItem: TDrawItemEvent read FOnDrawItem write FOnDrawItem;
   public
@@ -389,7 +389,7 @@ type
     property Canvas: TCanvas read FCanvas;
     property ItemIndex : integer read GetItemIndex write SetItemIndex;
     property Items : TStrings read FItems write SetItems;
-    property MultiSelect : boolean read FMultiSelect write SetMultiSelect;
+    property MultiSelect: boolean read FMultiSelect write SetMultiSelect;
     property SelCount : integer read GetSelCount;
     property Selected[Index: integer]: boolean read GetSelected write SetSelected;
     property TopIndex: Integer read GetTopIndex write SetTopIndex;
@@ -1464,6 +1464,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.102  2003/08/26 08:12:33  mattias
+  applied listbox/combobox patch from Karl
+
   Revision 1.101  2003/07/30 13:03:44  mattias
   replaced label with memo
 

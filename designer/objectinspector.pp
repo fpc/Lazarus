@@ -40,7 +40,7 @@ interface
 uses
   Forms, SysUtils, Buttons, Classes, Graphics, GraphType, StdCtrls, LCLType,
   LCLLinux, LMessages, Controls, ComCtrls, ExtCtrls, TypInfo, Messages,
-  LResources, Laz_XMLCfg, Menus, Dialogs, ObjInspStrConsts,
+  LResources, PairSplitter, Laz_XMLCfg, Menus, Dialogs, ObjInspStrConsts,
   PropEdits, GraphPropEdits, ListViewPropEdit, ImageListEditor,
   ComponentTreeView;
 
@@ -316,6 +316,8 @@ type
 
   TObjectInspector = class (TForm)
     AvailCompsComboBox: TComboBox;
+    PairSplitter1: TPairSplitter;
+    ComponentTree: TComponentTreeView;
     NoteBook: TNoteBook;
     PropertyGrid: TOIPropertyGrid;
     EventGrid: TOIPropertyGrid;
@@ -326,7 +328,6 @@ type
     ShowHintsPopupMenuItem: TMenuItem;
     ShowComponentTreePopupMenuItem: TMenuItem;
     ShowOptionsPopupMenuItem: TMenuItem;
-    ComponentTree: TComponentTreeView;
     procedure AvailComboBoxCloseUp(Sender: TObject);
     procedure ComponentTreeSelectionChanged(Sender: TObject);
     procedure OnBackgroundColPopupMenuItemClick(Sender :TObject);
@@ -361,6 +362,7 @@ type
     procedure HookGetSelectedComponents(Selection: TComponentSelectionList);
     procedure SetShowComponentTree(const AValue: boolean);
     procedure SetUsePairSplitter(const AValue: boolean);
+    procedure CreatePairSplitter;
   public
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
@@ -2154,6 +2156,7 @@ begin
   FComponentTreeHeight:=100;
   {$IFDEF CompTree}
   FShowComponentTree:=true;
+  FUsePairSplitter:=TPairSplitter.IsSupportedByInterface;
   {$ENDIF}
 
   // StatusBar
@@ -2206,13 +2209,21 @@ begin
     Visible:=not FShowComponentTree;
   end;
   
+  if FUsePairSplitter and ShowComponentTree then
+    CreatePairSplitter;
+
   // Component Tree at top (filled with available components)
   ComponentTree:=TComponentTreeView.Create(Self);
   with ComponentTree do begin
     Name:='ComponentTree';
     Height:=ComponentTreeHeight;
-    Parent:=Self;
-    Align:=alTop;
+    if PairSplitter1<>nil then begin
+      Parent:=PairSplitter1.Sides[0];
+      Align:=alClient;
+    end else begin
+      Parent:=Self;
+      Align:=alTop;
+    end;
     OnSelectionChanged:=@ComponentTreeSelectionChanged;
     Visible:=FShowComponentTree;
   end;
@@ -2221,7 +2232,12 @@ begin
   NoteBook:=TNoteBook.Create(Self);
   with NoteBook do begin
     Name:='NoteBook';
-    Parent:=Self;
+    if PairSplitter1<>nil then begin
+      Parent:=PairSplitter1.Sides[1];
+    end else begin
+      Parent:=Self;
+    end;
+    Align:= alClient;
     if PageCount>0 then
       Pages.Strings[0]:=oisProperties
     else
@@ -2229,7 +2245,6 @@ begin
     Pages.Add(oisEvents);
     PageIndex:=0;
     PopupMenu:=MainPopupMenu;
-    Align:= alClient;
   end;
 
   // property grid
@@ -2502,8 +2517,6 @@ begin
       if Execute then begin
         PropertyGrid.BackgroundColor:=Color;
         EventGrid.BackgroundColor:=Color;
-        PropertyGrid.Invalidate;
-        EventGrid.Invalidate;
       end;
     end;
   finally
@@ -2540,15 +2553,53 @@ begin
   {$ENDIF}
   if FShowComponentTree=AValue then exit;
   FShowComponentTree:=AValue;
+  BeginUpdate;
   ShowComponentTreePopupMenuItem.Checked:=FShowComponentTree;
+  writeln('TObjectInspector.SetShowComponentTree A ',FShowComponentTree);
   ComponentTree.Visible:=FShowComponentTree;
   AvailCompsComboBox.Visible:=not FShowComponentTree;
+  if FUsePairSplitter and FShowComponentTree then begin
+    CreatePairSplitter;
+    ComponentTree.Parent:=PairSplitter1.Sides[0];
+    ComponentTree.Align:=alClient;
+    NoteBook.Parent:=PairSplitter1.Sides[1];
+    NoteBook.Align:=alClient;
+    writeln('TObjectInspector.SetShowComponentTree B ',NoteBook.Parent.Name,':',NoteBook.Parent.ClassName,' ',
+      NoteBook.Visible,' ',NoteBook.Height,' ',NoteBook.Parent.ClientHeight,' ',
+      NoteBook.Parent.Height,' ',
+      PairSplitter1.Height,' ',NoteBook.HandleAllocated);
+  end else begin
+    PairSplitter1.Visible:=false;
+    ComponentTree.Parent:=Self;
+    ComponentTree.Align:=alTop;
+    ComponentTree.Height:=ComponentTreeHeight;
+    NoteBook.Parent:=Self;
+    NoteBook.Align:=alClient;
+    PairSplitter1.Free;
+    PairSplitter1:=nil;
+  end;
+  EndUpdate;
 end;
 
 procedure TObjectInspector.SetUsePairSplitter(const AValue: boolean);
 begin
   if FUsePairSplitter=AValue then exit;
   FUsePairSplitter:=AValue;
+end;
+
+procedure TObjectInspector.CreatePairSplitter;
+begin
+  // pair splitter between component tree and notebook
+  PairSplitter1:=TPairSplitter.Create(Self);
+  with PairSplitter1 do begin
+    Name:='PairSplitter1';
+    Parent:=Self;
+    SplitterType:=pstVertical;
+    Align:=alClient;
+    Position:=ComponentTreeHeight;
+    Sides[0].Name:=Name+'Side1';
+    Sides[1].Name:=Name+'Side2';
+  end;
 end;
 
 procedure TObjectInspector.OnShowHintPopupMenuItemClick(Sender : TObject);

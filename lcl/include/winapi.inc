@@ -731,6 +731,11 @@ begin
   Result:=InterfaceObject.PairSplitterAddSide(SplitterHandle,SideHandle,Side);
 end;
 
+function PairSplitterGetInterfaceInfo: boolean;
+begin
+  Result:=InterfaceObject.PairSplitterGetInterfaceInfo;
+end;
+
 function PairSplitterRemoveSide(SplitterHandle, SideHandle: hWnd;
   Side: integer): Boolean;
 begin
@@ -1671,6 +1676,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.97  2003/08/26 08:12:33  mattias
+  applied listbox/combobox patch from Karl
+
   Revision 1.96  2003/08/25 16:43:32  mattias
   moved many graphics types form graphtype.pp to graphics.pp
 

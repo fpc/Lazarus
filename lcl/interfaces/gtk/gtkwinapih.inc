@@ -140,6 +140,7 @@ function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; override;
 function MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean; override;
 
 function PairSplitterAddSide(SplitterHandle, SideHandle: hWnd; Side: integer): Boolean; override;
+function PairSplitterGetInterfaceInfo: Boolean; override;
 function PairSplitterRemoveSide(SplitterHandle, SideHandle: hWnd; Side: integer): Boolean; override;
 function PairSplitterSetPosition(SplitterHandle: hWnd; var NewPosition: integer): Boolean; override;
 function PeekMessage(var lpMsg : TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean; override;
@@ -211,6 +212,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.76  2003/08/26 08:12:33  mattias
+  applied listbox/combobox patch from Karl
+
   Revision 1.75  2003/08/18 19:24:18  mattias
   fixed TCanvas.Pie
 

@@ -103,6 +103,7 @@ type
     procedure UpdatePosition;
     procedure CreateSides;
     procedure Loaded; override;
+    class function IsSupportedByInterface: boolean;
   public
     property Sides[Index: integer]: TPairSplitterSide read GetSides;
     property SplitterType: TPairSplitterType read FSplitterType
@@ -352,6 +353,11 @@ begin
   CreateSides;
   if HandleAllocated then
     PairSplitterSetPosition(Handle,FPosition);
+end;
+
+function TCustomPairSplitter.IsSupportedByInterface: boolean;
+begin
+  Result:=PairSplitterGetInterfaceInfo;
 end;
 
 end.

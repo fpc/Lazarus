@@ -95,7 +95,8 @@ Type
     Procedure GetPixel(Sender: TObject; Data: Pointer);
     Function GetValue (Sender: TObject; Data: Pointer): Integer;
     Function SetValue (Sender: TObject; Data: Pointer): Integer;
-    Function SetProperties (Sender: TObject): Integer;
+    Function SetProperties(Sender: TObject): Integer;
+    procedure SetSelectionMode(Sender: TObject);
     Procedure AttachMenu(Sender: TObject);
 
     Function WinRegister: Boolean;
@@ -190,6 +191,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.35  2003/08/26 08:12:33  mattias
+  applied listbox/combobox patch from Karl
+
   Revision 1.34  2003/08/26 07:04:04  mattias
   fixed win32int
 

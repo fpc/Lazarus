@@ -41,7 +41,7 @@ Begin
 end;
 
 Procedure SetComboHeight(Sender: TObject;
-  ALeft, ATop, AWidth, AHeight, AEditHeight:Integer);
+  ALeft, ATop, AWidth, AHeight:Integer);
 var
   ComboHandle: HWnd;
 begin
@@ -50,6 +50,7 @@ begin
   MoveWindow(ComboHandle,ALeft,ATop,AWidth,AHeight,true);
   LCLControlSizeNeedsUpdate(Sender,true);
 end;
+
 {*************************************************************}
 {                      TWin32ListStringList methods           }
 {*************************************************************}
@@ -86,8 +87,8 @@ Begin
                Windows.GetClientRect(FWin32List,@R);
                FEditHeight:= R.Bottom;    
                FItemHeight:= SendMessage(FWin32List,CB_GETITEMHEIGHT,0,0);
-               FDropDownCount:= TComboBox(TheOwner).DropDownCount;
-               If FDropDownCount = 0 then FDropDownCount:= 8;
+               FDDownCount:= TComboBox(FSender).DropDownCount;
+               If FDDownCount = 0 then FDDownCount:= 8;
     	       end;
     csListBox:begin
     	      FFlagSort:=LBS_SORT;
@@ -128,7 +129,7 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32ListStringList.Sort;
 Begin
-  RecreateListControl(FWin32List,FSender,FSorted);
+  //RecreateListControl(FWin32List,FSender,FSorted);
 End;
 
 {------------------------------------------------------------------------------
@@ -150,9 +151,9 @@ Begin
     if FSender.FCompStyle=csComboBox Then
     begin
       if Count = 0 then
-        SetComboHeight(FSender,FSender.Left,FSender.Top,FSender.Width,FEditHeight + FItemHeight + 2,FEditHeight)
+        SetComboHeight(FSender,FSender.Left,FSender.Top,FSender.Width,FEditHeight + FItemHeight + 2)
       else
-        SetComboHeight(FSender,FSender.Left,FSender.Top,FSender.Width,FEditHeight + FDropDownCount*FItemHeight + 2,FEditHeight);
+        SetComboHeight(FSender,FSender.Left,FSender.Top,FSender.Width,FEditHeight + FDDownCount*FItemHeight + 2);
     end;
   End
   Else
@@ -201,7 +202,7 @@ Procedure TWin32ListStringList.Clear;
 Begin	
   if FSender.FCompStyle=csComboBox Then
     SetComboHeight(FSender,FSender.Left,FSender.Top,FSender.Width,
-                   FEditHeight + FItemHeight + 2,FEditHeight);
+                   FEditHeight + FItemHeight + 2);
   SendMessage(FWin32List,FFlagResetContent, 0, 0);
 End;  
 
@@ -216,7 +217,7 @@ Begin
   If (FSender.FCompStyle = csComboBox)
   and (GetCount <= 1) Then
     SetComboHeight(FSender,FSender.Left,FSender.Top,FSender.Width,
-                   FEditHeight + FItemHeight + 2,FEditHeight);
+                   FEditHeight + FItemHeight + 2);
   SendMessage(FWin32List,FFlagDeleteString, Index, 0);
 End;
 
@@ -231,7 +232,7 @@ Begin
   If (FSender.FCompStyle = csComboBox) 
   and (GetCount = 0) Then
     SetComboHeight(FSender,FSender.Left,FSender.Top,FSender.Width,
-                   FEditHeight + FItemHeight + 2,FEditHeight);
+                   FEditHeight + FDDownCount*FItemHeight + 2);
   If FSorted Then
     SendMessage(FWin32List,FFlagAddString, 0, LPARAM(PChar(S)))
   Else 
@@ -282,7 +283,7 @@ End;
 Procedure TWin32CListStringList.Sort;
 Begin
   // The win api doesn't allow to change the sort on the fly, so is needed to recreate the window 
-  RecreateListControl(FWin32CList,FSender,FSorted);
+  //RecreateListControl(FWin32CList,FSender,FSorted);
 End;
 
 {------------------------------------------------------------------------------
@@ -405,6 +406,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.16  2003/08/26 08:12:33  mattias
+  applied listbox/combobox patch from Karl
+
   Revision 1.15  2003/08/23 21:17:09  mattias
   several fixes for the win32 intf, added pending OnResize events
 

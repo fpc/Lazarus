@@ -3250,6 +3250,7 @@ end;
 
 procedure TMethodPropertyEditor.GetValues(Proc: TGetStringProc);
 begin
+RaiseGDBException('TMethodPropertyEditor.GetValues');
 writeln('### TMethodPropertyEditor.GetValues');
   Proc('(None)');
   PropertyHook.GetMethods(GetTypeData(GetPropType), Proc);
