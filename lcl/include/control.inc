@@ -1031,6 +1031,11 @@ begin
 
 end;
 
+procedure TControl.SetFont(Value: TFont);
+begin
+  FFont.Assign(Value);
+end;
+
 {------------------------------------------------------------------------------}
 {  TControl SetEnabled                                                         }
 {------------------------------------------------------------------------------}
@@ -1041,7 +1046,6 @@ begin
     FEnabled := Value;
     Perform(CM_ENABLEDCHANGED, 0, 0);
   end;
-
 end;
 
 {------------------------------------------------------------------------------}
@@ -1283,6 +1287,11 @@ begin
   writeln('[TControl.SetWidth] ',Name,':',ClassName,' ',Value);
   {$ENDIF}
   SetBounds(FLeft, FTop, Value, FHeight);
+end;
+
+procedure SetFont(Value: TFont);
+begin
+
 end;
 
 {------------------------------------------------------------------------------}
@@ -1752,6 +1761,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.55  2002/06/04 15:17:22  lazarus
+  MG: improved TFont for XLFD font names
+
   Revision 1.54  2002/05/30 21:17:27  lazarus
   lcl/controls.pp
 
