@@ -14,8 +14,8 @@
 }
 type
 
-  PCharArray = Array[0..18+60] of PChar;
-
+  PCharArray   = Array[0..18+60] of PChar;
+  PCharArray22 = Array[0..22] of PChar;
 const
 
   //IMGOK_Check : array [0..18+60] of PChar =
@@ -430,7 +430,83 @@ const
   '.....rs**tz.........',
   '......zwxz..........',
   '.......zz...........');
+  
+  IMG_NO : PCharArray22 =
+    (
+  '18 18 4 1',
+  'a c #800000',
+  'b c #808080',
+  '# c #ff0000',
+  '. c None',
+  '..................',
+  '......######......',
+  '....##aaaaaa##....',
+  '...#aaabbbbaaab...',
+  '..#aaab....baaab..',
+  '..#aaaa#.....#ab..',
+  '.#aabaaa#....#aab.',
+  '.#ab.baaa#....#ab.',
+  '.#ab..baaa#...#ab.',
+  '.#ab...baaa#..#ab.',
+  '.#ab....baaa#.#ab.',
+  '.#aab....baaa#aab.',
+  '..#aa.....baaaab..',
+  '..#aa##....aaaab..',
+  '...baaa####aaab...',
+  '....bbaaaaaabb....',
+  '......bbbbbb......',
+  '..................');
 
+  IMG_RETRY : PCharArray22 =
+  (
+  '19 18 4 1',
+  'b c #000080',
+  'a c #008000',
+  '# c #00ff00',
+  '. c none',
+  '...................',
+  '......######.......',
+  '....##aaaaaa##..#..',
+  '...#aaaaaaaaaa##ab.',
+  '..#aaabbbbbaaaaaab.',
+  '..#aab.....bbaaaab.',
+  '.#aab.......#aaaab.',
+  '.#bbb......#aaaaab.',
+  '............bbbbbb.',
+  '...................',
+  '.#######...........',
+  '.aaaaaa......#bbb..',
+  '.aaaaa.......#aab..',
+  '.aaaaa#.....#aaab..',
+  '.aaaaaa#####aaab...',
+  '.aabbaaaaaaaaab....',
+  '.ab..baaaaaabb.....',
+  '......bbbbbb.......');
 
+  IMG_IGNIORE: PCharArray22 =
+  (
+  '18 18 5 1',
+  'b c #000080',
+  'c c #008000',
+  '# c #008080',
+  'a c #00ff00',
+  '. c none',
+  '........###.......',
+  '.......#aab.......',
+  '.......#acb.......',
+  '.......bbab.......',
+  '........ccab......',
+  '.......ccaaab.....',
+  '......acaacaab....',
+  '....#acbaabbcab...',
+  '..#aacb#acb.#ab...',
+  '..bbbb##aab.#ab...',
+  '......#aaacc#b#...',
+  '.....caacccb#.....',
+  '....#aabb#cab#....',
+  '....aab#..#cab....',
+  '...cacb....#a##...',
+  '..aaab......cab...',
+  '.bbbb#.....bbbb...');
 
 

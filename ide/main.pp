@@ -173,6 +173,7 @@ type
     procedure mnuToolSyntaxCheckClicked(Sender : TObject);
     procedure mnuToolGuessUnclosedBlockClicked(Sender : TObject);
     procedure mnuToolGuessMisplacedIFDEFClicked(Sender : TObject);
+    procedure mnuToolMakeResourceStringClicked(Sender : TObject);
     procedure mnuToolConvertDFMtoLFMClicked(Sender : TObject);
     procedure mnuToolBuildLazarusClicked(Sender : TObject);
     procedure mnuToolConfigBuildLazClicked(Sender : TObject);
@@ -506,6 +507,7 @@ type
     procedure DoJumpToGuessedMisplacedIFDEF(FindNext: boolean);
     procedure DoGotoIncludeDirective;
     procedure SaveIncludeLinks;
+    function DoMakeResourceString: TModalResult;
 
     // methods for debugging, compiling and external tools
     function DoJumpToCompilerMessage(Index:integer;
@@ -1441,6 +1443,7 @@ begin
   itmToolSyntaxCheck.OnClick := @mnuToolSyntaxCheckClicked;
   itmToolGuessUnclosedBlock.OnClick := @mnuToolGuessUnclosedBlockClicked;
   itmToolGuessMisplacedIFDEF.OnClick := @mnuToolGuessMisplacedIFDEFClicked;
+  itmToolMakeResourceString.OnClick := @mnuToolMakeResourceStringClicked;
   itmToolConvertDFMtoLFM.OnClick := @mnuToolConvertDFMtoLFMClicked;
   itmToolBuildLazarus.OnClick := @mnuToolBuildLazarusClicked;
   itmToolConfigureBuildLazarus.OnClick := @mnuToolConfigBuildLazClicked;
@@ -1778,6 +1781,9 @@ begin
     
    ecGuessMisplacedIFDEF:
      DoJumpToGuessedMisplacedIFDEF(true);
+
+   ecMakeResourceString:
+     DoMakeResourceString;
 
    ecConvertDFM2LFM:
      DoConvertDFMtoLFM;
@@ -2234,6 +2240,11 @@ end;
 procedure TMainIDE.mnuToolGuessMisplacedIFDEFClicked(Sender : TObject);
 begin
   DoJumpToGuessedMisplacedIFDEF(true);
+end;
+
+procedure TMainIDE.mnuToolMakeResourceStringClicked(Sender : TObject);
+begin
+  DoMakeResourceString;
 end;
 
 procedure TMainIDE.mnuToolConvertDFMtoLFMClicked(Sender : TObject);
@@ -6762,10 +6773,10 @@ var ActiveSrcEdit: TSourceEditor;
   NewX, NewY, NewTopLine: integer;
 begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
-  { $IFDEF IDE_DEBUG}
+  {$IFDEF IDE_DEBUG}
   writeln('');
   writeln('[TMainIDE.DoGotoIncludeDirective] ************');
-  { $ENDIF}
+  {$ENDIF}
   if CodeToolBoss.FindEnclosingIncludeDirective(ActiveUnitInfo.Source,
     ActiveSrcEdit.EditorComponent.CaretX,
     ActiveSrcEdit.EditorComponent.CaretY,
@@ -6785,8 +6796,28 @@ begin
   CodeToolBoss.SourceCache.SaveIncludeLinksToFile(AFilename);
 end;
 
+function TMainIDE.DoMakeResourceString: TModalResult;
+var
+  ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  //StartX, StartY, EndX, EndY: integer;
+begin
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
+  {$IFDEF IDE_DEBUG}
+  writeln('');
+  writeln('[TMainIDE.DoGotoIncludeDirective] ************');
+  {$ENDIF}
+  // ToDo:
+  // - determine start and end of string constant in source
+  // - write and open wizard
+  MessageDlg('Not implemented yet','Sorry, not implemented yet.',mtInformation,
+    [mbCancel],0);
+  Result:=mrCancel;
+end;
+
 procedure TMainIDE.DoCompleteCodeAtCursor;
-var ActiveSrcEdit: TSourceEditor;
+var
+  ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   NewSource: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
@@ -7628,6 +7659,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.455  2003/01/19 14:44:27  mattias
+  started make resource string
+
   Revision 1.454  2003/01/15 09:08:08  mattias
   fixed search paths for virtual projects
 
