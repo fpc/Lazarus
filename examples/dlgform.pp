@@ -87,7 +87,7 @@ begin
     Tag := 1;
     Show;
   end;
- 
+
   openButton := TButton.Create(Self);
   with openButton do
   begin
@@ -119,8 +119,8 @@ begin
     caption := 'Font';
     Tag := 4;
     Show;
-  end; 
-  
+  end;
+
   colorButton := TButton.Create(Self);
   with colorButton do
   begin
@@ -157,6 +157,7 @@ begin
     2 : with TOpenDialog.Create(Self) do
         begin
           Filter := '*.pp';
+          Options := Options + [ofAllowMultiSelect];
           if Execute then fileLabel.Caption := FileName;
           Free;
         end;
