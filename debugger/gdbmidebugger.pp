@@ -1543,9 +1543,7 @@ begin
   // try to find PID
   if ExecuteCommand('info program', [], ResultState, S, [cfIgnoreError, cfNoMICommand])
   then begin
-     TargetPIDPart:=GetPart('child process ', '.', S);
-     if TargetPIDPart='' then
-       TargetPIDPart:=GetPart('child Thread ', ' ', S);
+     TargetPIDPart := GetPart(['child process ', 'child thread '], [' ', '.'], S, True);
      FTargetPID := StrToIntDef(TargetPIDPart, 0);
 
      WriteLN('[Debugger] Target PID: ', FTargetPID);
@@ -2263,6 +2261,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.44  2004/03/13 00:01:53  marc
+  * fixed debugtarget PID parsing (for win32)
+
   Revision 1.43  2004/03/12 21:39:29  vincents
   Lazarus can communicate with debugger on win32
 

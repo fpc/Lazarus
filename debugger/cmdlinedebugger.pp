@@ -398,12 +398,12 @@ begin
   if FFlushAfterRead 
   then FOutputBuf := '';
   FFlushAfterRead := False;
-  writeln('TCmdLineDebugger.ReadLine returns ', result);
+  //writeln('TCmdLineDebugger.ReadLine returns ', result);
 end;
 
 procedure TCmdLineDebugger.SendCmdLn(const ACommand: String); overload;
 begin
-  writeln('TCmdLineDebugger.SendCmdLn "',ACommand,'"');
+  //writeln('TCmdLineDebugger.SendCmdLn "',ACommand,'"');
   if DebugProcessRunning
   then begin
     DoDbgOutput('<' + ACommand + '>');
@@ -435,6 +435,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.33  2004/03/13 00:01:53  marc
+  * fixed debugtarget PID parsing (for win32)
+
   Revision 1.32  2004/03/12 22:12:53  vincents
   fixed non-win32 compilation
 
