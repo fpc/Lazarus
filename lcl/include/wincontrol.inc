@@ -924,12 +924,12 @@ var
                    )
                   );
       {$IFDEF VerboseMouseBugfix}
-      writeln('BBB GetControlAtPos ',Name,
+      {writeln('BBB GetControlAtPos ',Name,
       ' Pos=',Pos.X,',',Pos.Y,
       ' P=',P.X,',',P.Y,
       ' ClientBounds=',ClientBounds.Left,',',ClientBounds.Top,',',ClientBounds.Right,',',ClientBounds.Bottom,
       ' OnlyCl=',OnlyClientAreas,
-      ' Result=',Result);
+      ' Result=',Result);}
       {$ENDIF}
       if Result then
         LControl := AControl;
@@ -1011,7 +1011,7 @@ Begin
          {$IFDEF VerboseMouseBugfix}
          writeln('TWinControl.WndPRoc A ',Name,':',ClassName);
          {$ENDIF}
-         if IsControlMouseMSG(TLMMOUSE(Message)) then
+         if IsControlMouseMSG(TLMMouse(Message)) then
            Exit;
          {$IFDEF VerboseMouseBugfix}
          writeln('TWinControl.WndPRoc B ',Name,':',ClassName);
@@ -2288,6 +2288,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.72  2002/06/11 13:41:09  lazarus
+  MG: fixed mouse coords and fixed mouse clicked thru bug
+
   Revision 1.71  2002/05/28 15:05:59  lazarus
   MG: reduced output
 
