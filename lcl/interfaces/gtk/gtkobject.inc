@@ -3114,6 +3114,26 @@ begin
   InitializeCommonDialog(TCommonDialog(FontDialog),SelWidget);
 end;
 
+{-------------------------------------------------------------------------------
+  Function: TGTKObject.CreateComboBox
+  Params:   ComboBox: TComboBox
+  Returns:  PGtkCombo
+  
+  
+-------------------------------------------------------------------------------}
+function CreateComboBox(ComboBox: TComboBox): Pointer;
+var
+ Caption: string;
+begin
+  Result:=gtk_combo_new();
+  if ComboBox.Caption<>'' then begin
+    Caption:=ComboBox.Caption;
+    gtk_entry_set_text(PGtkEntry(PGtkCombo(Result)^.entry), PChar(Caption));
+  end;
+  SetMainWidget(Result,PGtkCombo(Result)^.entry);
+  SetMainWidget(Result,PGtkCombo(Result)^.button);
+end;
+
 {------------------------------------------------------------------------------
   Function: TGTKObject.CreateComponent
   Params:   sender - object for which to create visual representation
@@ -3323,15 +3343,10 @@ begin
     end;
 
   csComboBox :
-    begin
-       p := gtk_combo_new();
-       gtk_entry_set_text(PGtkEntry(PGtkCombo(p)^.entry), StrTemp);
-    end;
+    p:=CreateComboBox(TComboBox(Sender));
 
   csEdit :
-    begin
-       p :=  gtk_entry_new();
-    end;
+    p :=  gtk_entry_new();
 
   csFileDialog :
     InitializeFileDialog(TFileDialog(Sender),p,StrTemp);
@@ -3756,6 +3771,7 @@ begin
       gtk_widget_set_app_paintable(p,true);
     {$ENDIF}
     HookSignals(Sender);
+writeln('Sender=',Sender.ClassName,' p=',HexStr(Cardinal(p),8),' ',HexStr(Cardinal(GetWidgetInfo(p,false)),8));
   end;
 end;
 
@@ -5283,6 +5299,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.169  2002/08/21 11:42:09  lazarus
+  MG: fixed mem leaks
+
   Revision 1.168  2002/08/21 11:29:35  lazarus
   MG: fixed mem some leaks in ide and gtk
 
