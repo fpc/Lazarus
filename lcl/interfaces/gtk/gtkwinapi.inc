@@ -7384,7 +7384,7 @@ var
   Points : array[0..1] of TSize;
 begin
   Result := IsValidDC(DC);
-  if Result
+  if Result and (Count>0)
   then with TDeviceContext(DC) do
   begin
     if GC = nil
@@ -7638,6 +7638,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.203  2003/01/01 10:46:59  mattias
+  fixes for win32 listbox/combobox from Karl Brandt
+
   Revision 1.202  2002/12/30 17:24:08  mattias
   added history to identifier completion
 
