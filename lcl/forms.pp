@@ -333,7 +333,7 @@ function InitResourceComponent(Instance: TComponent;
   RootAncestor: TClass):Boolean;
 
   function InitComponent(ClassType: TClass): Boolean;
-  var CompResource:LResource;
+  var CompResource:TLResource;
     a:integer;
   begin
     Result:=false;
@@ -341,7 +341,7 @@ function InitResourceComponent(Instance: TComponent;
     if Assigned(ClassType.ClassParent) then
       Result:=InitComponent(ClassType.ClassParent);
     CompResource:=LazarusResources.Find(Instance.ClassName);
-    if (CompResource.Value='') then exit;
+    if (CompResource = nil) or (CompResource.Value='') then exit;
 //    Writeln('Compresource.value is '+CompResource.Value);
     if (ClassType.InheritsFrom(TForm))
     and (CompResource.ValueType<>'FORMDATA') then exit;

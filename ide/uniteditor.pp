@@ -954,11 +954,11 @@ constructor TSourceNotebook.Create(AOwner: TComponent);
 function LoadResource(ResourceName:string; PixMap:TPixMap):boolean;
   var
     ms:TMemoryStream;
-    res:LResource;
+    res:TLResource;
   begin
     Result:=false;
     res:=LazarusResources.Find(ResourceName);
-    if (res.Value<>'') then begin
+    if (res = nil) or (res.Value<>'') then begin
       if res.ValueType='XPM' then begin
         ms:=TMemoryStream.Create;
         try

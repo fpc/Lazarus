@@ -226,11 +226,11 @@ uses
   function LoadResource(ResourceName:string; PixMap:TPixMap):boolean;
   var
     ms:TMemoryStream;
-    res:LResource;
+    res:TLResource;
   begin
     Result:=false;
     res:=LazarusResources.Find(ResourceName);
-    if (res.Value<>'') then begin
+    if (res = nil) or (res.Value<>'') then begin
       if res.ValueType='XPM' then begin
         ms:=TMemoryStream.Create;
         try
@@ -1013,7 +1013,7 @@ Var
   ResourceData : String;
   I,A            : Integer;
   Instance     : TComponent;
-  CompResource : LResource;
+  CompResource : TLResource;
 Begin
   textFile := TStringList.Create;
   TextFile.LoadFromFile(Value);
@@ -1933,6 +1933,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.46  2001/01/16 16:21:29  lazarus
+  Changed LResources to TLResources
+  Shane
+
   Revision 1.45  2001/01/15 20:55:44  lazarus
   Changes for loading filesa
   Shane

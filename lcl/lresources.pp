@@ -25,15 +25,15 @@ uses
   Classes, SysUtils, Strings;
 
 type
-  PLResource = ^LResource;
-  LResource = record
+  TLResource = class
+  public
     Name: AnsiString;
     ValueType: AnsiString;
     Value: AnsiString;
   end;
 
   TLResourceList = class(TObject)
-  private
+  public //private
     FList:TList;  // main list with all resource pointer
     FMergeList:TList; // list needed for mergesort
     FSortedCount:integer; // 0 .. FSortedCount-1 resources are sorted
@@ -43,7 +43,7 @@ type
     procedure Merge(List,MergeList:TList;Pos1,Pos2,Pos3:integer);
   public
     procedure Add(Name,ValueType,Value:AnsiString);
-    function Find(Name:AnsiString):LResource;
+    function Find(Name:AnsiString):TLResource;
     constructor Create;
     destructor Destroy;  override;
   end;
@@ -225,56 +225,55 @@ end;
 
 destructor TLResourceList.Destroy;
 var a:integer;
-  p:PLResource;
 begin
-  for a:=0 to FList.Count-1 do begin
-    p:=FList[a];
-    LResource(p^).Name:='';
-    LResource(p^).ValueType:='';
-    LResource(p^).Value:='';
-    FreeMem(p);
-  end;
+  for a:=0 to FList.Count-1 do
+    TLResource(FList[a]).Free;
   FList.Free;
   FMergeList.Free;
 end;
 
 procedure TLResourceList.Add(Name,ValueType,Value:AnsiString);
-var NewPLResource:PLResource;
+var
+  NewLResource:TLResource;
 begin
-  GetMem(NewPLResource,SizeOf(LResource));
-  NewPLResource^.Name:=Name;
-  NewPLResource^.ValueType:=uppercase(ValueType);
-  NewPLResource^.Value:=Value;
-  FList.Add(NewPLResource);
+  NewLResource:=TLResource.Create;
+  NewLResource.Name:=Name;
+  NewLResource.ValueType:=uppercase(ValueType);
+  NewLResource.Value:=Value;
+  FList.Add(NewLResource);
 end;
 
-function TLResourceList.Find(Name:AnsiString):LResource;
+function TLResourceList.Find(Name:AnsiString):TLResource;
 var p:integer;
 begin
   p:=FindPosition(Name);
-  if (p>=0) and (p<FList.Count)
-  and (AnsiCompareText(LResource(FList[p]^).Name,Name)=0) then
-    Result:=LResource(FList[p]^)
-  else begin
-    Result.Name:=Name;
-    Result.Value:='';
-    Result.ValueType:='';
-  end;
+  if (p>=0) and (p<FList.Count) and (AnsiCompareText(TLResource(FList[p]).Name,Name)=0) then
+    begin
+      Result:=TLResource(FList[p]);
+    end
+    else
+    begin
+//      Writeln('returning nil');
+      Result:=nil;
+    end;
 end;
 
 function TLResourceList.FindPosition(Name:AnsiString):integer;
 var l,r,cmp:integer;
 begin
-  if FSortedCount<FList.Count then Sort;
+  if FSortedCount<FList.Count then
+     Sort;
   Result:=-1;
   l:=0;
   r:=FList.Count-1;
   while (l<=r) do begin
     Result:=(l+r) shr 1;
-    cmp:=AnsiCompareText(Name,LResource(FList[Result]^).Name);
+//    Writeln(Format('l,r,Name,FList[Result].Name = %d,%d,%s,%s',[l,r,Name,TLResource(FList[Result]).Name]));
+    cmp:=AnsiCompareText(Name,TLResource(FList[Result]).Name);
     if cmp<0 then
       r:=Result-1
-    else if cmp>0 then
+    else
+    if cmp>0 then
       l:=Result+1
     else
       exit;
@@ -298,7 +297,7 @@ begin
   if Pos1=Pos2 then begin
   end else if Pos1+1=Pos2 then begin
     cmp:=AnsiCompareText(
-           LResource(List[Pos1]^).Name,LResource(List[Pos2]^).Name);
+           TLResource(List[Pos1]).Name,TLResource(List[Pos2]).Name);
     if cmp>0 then begin
       MergeList[Pos1]:=List[Pos1];
       List[Pos1]:=List[Pos2];
@@ -325,7 +324,7 @@ begin
   DestPos:=Pos3;
   while (Src2Pos>=Pos2) and (Src1Pos>=Pos1) do begin
     cmp:=AnsiCompareText(
-           LResource(List[Src1Pos]^).Name,LResource(List[Src2Pos]^).Name);
+           TLResource(List[Src1Pos]).Name,TLResource(List[Src2Pos]).Name);
     if cmp>0 then begin
       MergeList[DestPos]:=List[Src1Pos];
       dec(Src1Pos);
