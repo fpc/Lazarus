@@ -157,18 +157,21 @@ Var
 begin
   if [csloading,csdestroying]*ComponentState<>[] then exit;
   Clear;
-  If SysUtils.FindFirst(FDirectory+DirectorySeparator+FMask, faAnyFile, Info)=0
+  If SysUtils.FindFirst(FDirectory+DirectorySeparator+GetAllFilesMask,faAnyFile,
+    Info)=0
   then
     Repeat
-      Added:=false;
-      AddFile(ftReadOnly,faReadOnly);
-      AddFile(ftHidden,faHidden);
-      AddFile(ftSystem,faSysFile);
-      AddFile(ftVolumeID,faVolumeId);
-      AddFile(ftDirectory,faDirectory);
-      AddFile(ftArchive,faArchive);
-      AddFile(ftNormal,faArchive);
-    Until SysUtils.FindNext(info) <> 0;
+      if FileInFilenameMasks(Info.Name,Mask) then begin
+        Added:=false;
+        AddFile(ftReadOnly,faReadOnly);
+        AddFile(ftHidden,faHidden);
+        AddFile(ftSystem,faSysFile);
+        AddFile(ftVolumeID,faVolumeId);
+        AddFile(ftDirectory,faDirectory);
+        AddFile(ftArchive,faArchive);
+        AddFile(ftNormal,faArchive);
+      end;
+    Until SysUtils.FindNext(Info) <> 0;
   SysUtils.FindClose(Info);
 
   UpdateSelectedFileName;
@@ -315,6 +318,9 @@ end.
 
 {
   $Log$
+  Revision 1.32  2004/11/15 22:58:13  mattias
+  implemented Multi mask for TFileListBox
+
   Revision 1.31  2004/09/27 21:45:44  vincents
   splitted off unit FileUtil, it doesn't depend on other LCL units
 

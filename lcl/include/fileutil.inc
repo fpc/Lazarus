@@ -858,6 +858,7 @@ begin
   Result:=false;
   if (Filename='') or (Masks='') then exit;
   TrimmedFile:=TrimFilename(Filename); // only cleanup, do not expand
+  if TrimmedFile='' then exit;
   // try each Mask
   MasksLen:=length(Masks);
   FileLen:=length(TrimmedFile);
@@ -882,6 +883,7 @@ begin
       
       '?': begin
           // skip one character
+          if FilePos>FileLen then break;
           inc(FilePos);
           inc(MaskPos);
         end;
@@ -892,29 +894,32 @@ begin
         end;
         
       else
-        {$IFDEF win32}
-        if UpperCaseTable[byte(MaskChar)]
-          =UpperCaseTable[byte(TrimmedFile[FilePos])] then
-        {$ELSE}
-        if MaskChar=TrimmedFile[FilePos] then
-        {$ENDIF}
         begin
-          // character fits
-          inc(MaskPos);
-          inc(FilePos);
-        end else begin
-          //character does not fit
-          // -> go back to last astersik (*)
-          while (MaskPos>MaskStartPos) and (Masks[MaskPos-1]<>'*') do begin
-            dec(MaskPos);
-            dec(FilePos);
-          end;
-          if (MaskPos=MaskStartPos) then begin
-            // there was no asterisk (*) => the filename does not fit this mask
-            break;
-          end else begin
-            // there is an asterisk (*) => try the next position
+          if FilePos>FileLen then break;
+          {$IFDEF win32}
+          if UpperCaseTable[byte(MaskChar)]
+            =UpperCaseTable[byte(TrimmedFile[FilePos])] then
+          {$ELSE}
+          if MaskChar=TrimmedFile[FilePos] then
+          {$ENDIF}
+          begin
+            // character fits
+            inc(MaskPos);
             inc(FilePos);
+          end else begin
+            //character does not fit
+            // -> go back to last astersik (*)
+            while (MaskPos>MaskStartPos) and (Masks[MaskPos-1]<>'*') do begin
+              dec(MaskPos);
+              dec(FilePos);
+            end;
+            if (MaskPos=MaskStartPos) then begin
+              // there was no asterisk (*) => the filename does not fit this mask
+              break;
+            end else begin
+              // there is an asterisk (*) => try the next position
+              inc(FilePos);
+            end;
           end;
         end;
       end;
@@ -1069,6 +1074,9 @@ end;
 
 {
   $Log$
+  Revision 1.5  2004/11/15 22:58:13  mattias
+  implemented Multi mask for TFileListBox
+
   Revision 1.4  2004/11/15 19:59:32  mattias
   fixed compilation for current FPC 1.9.5
 
