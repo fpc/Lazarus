@@ -1713,6 +1713,7 @@ var
   var
     State: TGtkStateType;
     Shadow: TGtkShadowType;
+    aStyle : PGTKStyle;
   begin
     if Widget<>nil then begin
     
@@ -1756,11 +1757,41 @@ var
           Shadow:=GTK_SHADOW_OUT;
         end;
       end;
-      gtk_draw_box(Widget^.TheStyle,Widget^.Window,
+
+      aStyle := GetStyle('button');
+      If aStyle = nil then
+        aStyle := Widget^.theStyle
+      else
+        If State = GTK_STATE_SELECTED then
+          State := GTK_STATE_ACTIVE;
+
+      Case Shadow of
+        GTK_SHADOW_NONE:
+          gtk_paint_flat_box(aStyle,Widget^.Window,
+             State,
+             Shadow,
+             nil,
+             Widget,
+             'button',
+             Rect.Left,Rect.Top,
+             Rect.Right-Rect.Left,Rect.Bottom-Rect.Top);
+        else
+          gtk_paint_box(aStyle,Widget^.Window,
+             State,
+             Shadow,
+             nil,
+             Widget,
+             'button',
+             Rect.Left,Rect.Top,
+             Rect.Right-Rect.Left,Rect.Bottom-Rect.Top);
+      end;
+
+      {gtk_draw_box(Widget^.TheStyle,Widget^.Window,
              State,
              Shadow,
              Rect.Left,Rect.Top,
-             Rect.Right-Rect.Left,Rect.Bottom-Rect.Top);
+             Rect.Right-Rect.Left,Rect.Bottom-Rect.Top);}
+             
     end else begin
       // draw without widget style
       Result := DrawEdge(DC, Rect,
@@ -3420,9 +3451,15 @@ begin
 //write('[TgtkObject.GetWindowOrgEx] ',p.x,' ',p.y);
 //  gdk_window_get_root_origin(pgtkwidget(PdeviceContext(dc)^.hwnd)^.window, @P.X, @P.Y);
 //write(' / ',p.x,' ',p.y);
-  gdk_window_get_origin(pgtkwidget(PdeviceContext(dc)^.hwnd)^.window, @P.X, @P.Y);
+  result := 0;
+  P := Point(0,0);
+  If IsValidDC(dc) then
+    If pgtkwidget(PdeviceContext(dc)^.hwnd) <> nil then
+      If pgtkwidget(PdeviceContext(dc)^.hwnd)^.window <> nil then begin
+        gdk_window_get_origin(pgtkwidget(PdeviceContext(dc)^.hwnd)^.window, @P.X, @P.Y);
+        Result := 1;
+      end;
 //writeln(' / ',p.x,' ',p.y);
-  result := 1;
 end;
 
 
@@ -6000,6 +6037,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.109  2002/08/22 16:43:36  lazarus
+  MG: improved theme support from Andrew
+
   Revision 1.108  2002/08/22 16:22:39  lazarus
   MG: started debugging of mouse capturing
 
