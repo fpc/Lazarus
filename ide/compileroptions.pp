@@ -105,6 +105,7 @@ type
     fLibraries: String;
     fOtherUnitFiles: String;
     fCompilerPath: String;
+    fUnitOutputDir: string;
 
     procedure LoadTheCompilerOptions;
     procedure SaveTheCompilerOptions;
@@ -190,6 +191,7 @@ type
     property Libraries: String read fLibraries write fLibraries;
     property OtherUnitFiles: String read fOtherUnitFiles write fOtherUnitFiles;
     property CompilerPath: String read fCompilerPath write fCompilerPath;
+    property UnitOutputDirectory: string read fUnitOutputDir write fUnitOutputDir;
   end;
 
   { Compiler options form }
@@ -303,6 +305,9 @@ type
 
     grpCompiler: TGroupBox;
     edtCompiler: TEdit;
+    
+    grpUnitOutputDir: TGroupBox;
+    edtUnitOutputDir: TEdit;
 
     { Buttons }
     btnTest: TButton;
@@ -461,6 +466,7 @@ begin
   Libraries := XMLConfigFile.GetValue('CompilerOptions/SearchPaths/Libraries/Value', '');
   OtherUnitFiles := XMLConfigFile.GetValue('CompilerOptions/SearchPaths/OtherUnitFiles/Value', '');
   CompilerPath := XMLConfigFile.GetValue('CompilerOptions/SearchPaths/CompilerPath/Value', '/opt/fpc/ppc386');
+  UnitOutputDirectory := XMLConfigFile.GetValue('CompilerOptions/SearchPaths/UnitOutputDirectory/Value', '');
 end;
 
 {------------------------------------------------------------------------------}
@@ -559,8 +565,9 @@ begin
   XMLConfigFile.SetValue('CompilerOptions/SearchPaths/Libraries/Value', Libraries);
   XMLConfigFile.SetValue('CompilerOptions/SearchPaths/OtherUnitFiles/Value', OtherUnitFiles);
   XMLConfigFile.SetValue('CompilerOptions/SearchPaths/CompilerPath/Value', CompilerPath);
+  XMLConfigFile.SetValue('CompilerOptions/SearchPaths/UnitOutputDirectory/Value', UnitOutputDirectory);
+  
   XMLConfigFile.Flush;
-
 end;
 
 {------------------------------------------------------------------------------}
@@ -1000,6 +1007,10 @@ begin
     switches := switches + ' ' + ParseSearchPaths('-Fu', OtherUnitFiles);
 
   { CompilerPath - Nothing needs to be done with this one }
+  
+  { Unit output directory }
+  if UnitOutputDirectory<>'' then
+    switches := switches + ' -FU' + UnitOutputDirectory;
 
   { TODO: Implement the following switches. They need to be added
           to the dialog. }
@@ -1008,8 +1019,6 @@ begin
      Lxxx = Use xxx as dynamic linker (LINUX only)
      oxxx = Object files
      rxxx = Compiler messages file
-     Uxxx = Write units to xxx directory instead of current directory
-
 }
 
   { ----------------------------------------------- }
@@ -1049,9 +1058,11 @@ begin
   -Xc = Link with C library (LINUX only)
        
 }
-  if (TargetFilename <> '') or (MainSourceFilename<>'') then begin
+  if (TargetFilename<>'') or (MainSourceFilename<>'') 
+  or (UnitOutputDirectory<>'') then begin
     tempsw:=CreateTargetFilename(MainSourceFilename);
-    if tempsw <> ChangeFileExt(MainSourceFilename,'') then
+    if (tempsw <> ChangeFileExt(MainSourceFilename,''))
+    or (UnitOutputDirectory<>'') then
       switches := switches + ' -o' + tempsw;
   end;
 
@@ -1211,6 +1222,7 @@ begin
   fLibraries := '';
   fOtherUnitFiles := '';
   fCompilerPath := '/opt/fpc/ppc386';
+  fUnitOutputDir := '';
 end;
 
 {------------------------------------------------------------------------------}
@@ -1447,6 +1459,7 @@ begin
   edtLibraries.Text := CompilerOpts.Libraries;
   edtOtherUnits.Text := CompilerOpts.OtherUnitFiles;
   edtCompiler.Text := CompilerOpts.CompilerPath;
+  edtUnitOutputDir.Text := CompilerOpts.UnitOutputDirectory;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1567,6 +1580,7 @@ begin
   CompilerOpts.Libraries := edtLibraries.Text;
   CompilerOpts.OtherUnitFiles := edtOtherUnits.Text;
   CompilerOpts.CompilerPath := edtCompiler.Text;
+  CompilerOpts.UnitOutputDirectory := edtUnitOutputDir.Text;
 end;
 
 {------------------------------------------------------------------------------}
@@ -2634,6 +2648,31 @@ begin
     Visible := True;
   end;
   
+  {------------------------------------------------------------}
+
+  grpUnitOutputDir := TGroupBox.Create(Self);
+  with grpUnitOutputDir do
+  begin
+    Parent := nbMain.Page[4];
+    Top := grpCompiler.Top + grpCompiler.Height + 7;
+    Left := 10;
+    Height := 55;
+    Width := 350;
+    Caption := 'Unit output directory:';
+    Visible := True;
+  end;
+
+  edtUnitOutputDir := TEdit.Create(grpCompiler);
+  with edtUnitOutputDir do
+  begin
+    Parent := grpUnitOutputDir;
+    Top := 8;
+    Left := 8;
+    Height := 23;
+    Width := 330;
+    Text := '';
+    Visible := True;
+  end;  
 end;
 
 {------------------------------------------------------------------------------}
