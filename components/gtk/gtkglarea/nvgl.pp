@@ -1,9 +1,9 @@
 // File: nvGL.pp
-// modified: 01-04-2003
+// modified: 29-07-2003
 //
 // FreePascal Bindings for libGL
-// Version 0.5.0
-// supported NVIDIA Driver Version: 4348
+// Version 0.7.0
+// supported NVIDIA Driver Version: 4494
 // Author: Reimar Grabowski
 
 {
@@ -107,6 +107,7 @@ type
      GL_EXT_clip_volume_hint = 1;
      GL_EXT_compiled_vertex_array = 1;
      GL_EXT_color_table = 1;
+     GL_EXT_depth_bounds_test = 1;
      GL_EXT_draw_range_elements = 1;
      GL_EXT_fog_coord = 1;
      GL_EXT_multi_draw_arrays = 1;
@@ -136,7 +137,6 @@ type
      GL_IBM_texture_mirrored_repeat = 1;
      GL_NV_blend_square = 1;
      GL_NV_copy_depth_to_color = 1;
-     GL_NV_depth_bounds_test = 1;
      GL_NV_depth_clamp = 1;
      GL_NV_draw_mesh = 1;
      GL_NV_extended_combiner_program = 1;
@@ -1996,9 +1996,9 @@ type
      GL_POINT_SIZE_MAX_ARB = $8127;
      GL_POINT_FADE_THRESHOLD_SIZE_ARB = $8128;
      GL_POINT_DISTANCE_ATTENUATION_ARB = $8129;
-  { NV_depth_bounds_test  }
-     GL_DEPTH_BOUNDS_TEST_NV = $8890;
-     GL_DEPTH_BOUNDS_NV = $8891;
+  { EXT_depth_bounds_test  }
+     GL_DEPTH_BOUNDS_TEST_EXT = $8890;
+     GL_DEPTH_BOUNDS_EXT = $8891;
   { ARB_vertex_program  }
      GL_VERTEX_PROGRAM_ARB = $8620;
      GL_VERTEX_PROGRAM_POINT_SIZE_ARB = $8642;
@@ -2377,7 +2377,7 @@ procedure glDeleteProgramsARB(n: GLsizei; const programs: PGLuint); cdecl; exter
 procedure glDeleteProgramsNV(n: GLsizei; const programs: PGLuint); cdecl; external;
 procedure glDeleteTextures(n: GLsizei; const textures: PGLuint); cdecl; external;
 procedure glDeleteTexturesEXT(n: GLsizei; const textures: PGLuint); cdecl; external;
-procedure glDepthBoundsNV(zmin: GLclampd; zmax: GLclampd); cdecl; external;
+procedure glDepthBoundsEXT(zmin: GLclampd; zmax: GLclampd); cdecl; external;
 procedure glDepthFunc(func: GLenum); cdecl; external;
 procedure glDepthMask(flag: GLBoolean); cdecl; external;
 procedure glDepthRange(near_val, far_val: GLclampd); cdecl; external;

@@ -1,9 +1,9 @@
 // File: nvGLX.pp
-// modified: 01-04-2003
+// modified: 29-07-2003
 //
 // FreePascal Bindings for libGLX
-// Version 0.5.0
-// supported NVIDIA Driver Version: 4348
+// Version 0.7.0
+// supported NVIDIA Driver Version: 4494
 // Author: Reimar Grabowski
 
 {
@@ -33,6 +33,7 @@ uses
 const
   GLX_VERSION_1_1 = 1;
   GLX_VERSION_1_2 = 1;
+  GLX_VERSION_1_3 = 1;
 { GLX Extensions  }
   GLX_EXT_import_context = 1;
   GLX_EXT_visual_info = 1;
@@ -40,6 +41,7 @@ const
   GLX_SGIX_fbconfig = 1;
   GLX_SGIX_pbuffer = 1;
   GLX_NV_float_buffer = 1;
+  GLX_ARB_get_proc_address = 1;
 { Names for attributes to glXGetConfig. }
 { support GLX rendering  }
   GLX_USE_GL = 1;
