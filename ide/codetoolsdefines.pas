@@ -112,6 +112,9 @@ type
     InsertDelphi5CompilerDefinesTemplateMenuItem: TMenuItem;
     InsertDelphi5DirectoryTemplateMenuItem: TMenuItem;
     InsertDelphi5ProjectTemplateMenuItem: TMenuItem;
+    InsertDelphi6CompilerDefinesTemplateMenuItem: TMenuItem;
+    InsertDelphi6DirectoryTemplateMenuItem: TMenuItem;
+    InsertDelphi6ProjectTemplateMenuItem: TMenuItem;
 
     // define tree
     DefineTreeView: TTreeView;
@@ -172,9 +175,9 @@ type
     procedure InsertFPCompilerDefinesTemplateMenuItemClick(Sender: TObject);
     procedure InsertFPCSourceDirDefinesTemplateMenuItemClick(Sender: TObject);
     procedure InsertLazarusSourceDefinesTemplateMenuItemClick(Sender: TObject);
-    procedure InsertDelphi5CompilerDefinesTemplateMenuItemClick(Sender: TObject);
-    procedure InsertDelphi5DirectoryTemplateMenuItemClick(Sender: TObject);
-    procedure InsertDelphi5ProjectTemplateMenuItemClick(Sender: TObject);
+    procedure InsertDelphiCompilerDefinesTemplateMenuItemClick(Sender: TObject);
+    procedure InsertDelphiDirectoryTemplateMenuItemClick(Sender: TObject);
+    procedure InsertDelphiProjectTemplateMenuItemClick(Sender: TObject);
   private
     FDefineTree: TDefineTree;
     FLastSelectedNode: TTreeNode;
@@ -251,14 +254,6 @@ function SaveProjectSpecificCodeToolsDefines(ACodeToolBoss: TCodeToolManager;
   const ProjectInfoFile: string): TModalResult;
 var
   XMLConfig: TXMLConfig;
-  
-{  procedure WriteTime;
-  var hour, minutes, secs, msecs, usecs: word;
-  begin
-    GetTime(hour, minutes, secs, msecs, usecs);
-    writeln('hour=',hour,' minutes=',minutes,' secs=',secs,' msecs=',msecs);
-  end;}
-  
 begin
   Result:=mrCancel;
   try
@@ -944,74 +939,100 @@ begin
   end;
 end;
 
-procedure TCodeToolsDefinesEditor.InsertDelphi5CompilerDefinesTemplateMenuItemClick
+procedure TCodeToolsDefinesEditor.InsertDelphiCompilerDefinesTemplateMenuItemClick
   (Sender: TObject);
+var DelphiVersion: integer;
 begin
-  InsertTemplate(Boss.DefinePool.CreateDelphi5CompilerDefinesTemplate);
+  if Sender=InsertDelphi6CompilerDefinesTemplateMenuItem then
+    DelphiVersion:=6
+  else
+    DelphiVersion:=5;
+  InsertTemplate(Boss.DefinePool.CreateDelphiCompilerDefinesTemplate(
+                                                                DelphiVersion));
 end;
 
-procedure TCodeToolsDefinesEditor.InsertDelphi5DirectoryTemplateMenuItemClick(
+procedure TCodeToolsDefinesEditor.InsertDelphiDirectoryTemplateMenuItemClick(
   Sender: TObject);
 var InputFileDlg: TInputFileDialog;
   DirTemplate: TDefineTemplate;
+  DelphiVersion: integer;
+  DelphiName: string;
 begin
+  if Sender=InsertDelphi6DirectoryTemplateMenuItem then
+    DelphiVersion:=6
+  else
+    DelphiVersion:=5;
+  DelphiName:='Delphi'+IntToStr(DelphiVersion);
+
   InputFileDlg:=GetInputFileDialog;
   InputFileDlg.Macros:=Macros;
   with InputFileDlg do begin
     BeginUpdate;
-    Caption:='Create Defines for Delphi5 Directory';
+    Caption:='Create Defines for '+DelphiName+' Directory';
     FileCount:=1;
     
-    FileTitles[0]:='Delphi5 directory';
-    FileDescs[0]:='The Delphi5 main directory,'#13
-          +'where Borland has installed all Delphi5 sources.'#13
-          +'For example: C:/Programme/Borland/Delphi5';
-    FileNames[0]:=SetDirSeparators('C:/Programme/Borland/Delphi5');
+    FileTitles[0]:=DelphiName+' directory';
+    FileDescs[0]:='The '+DelphiName+' main directory,'#13
+          +'where Borland has installed all '+DelphiName+' sources.'#13
+          +'For example: C:/Programme/Borland/Delphi'+IntToStr(DelphiVersion);
+    FileNames[0]:=SetDirSeparators(
+                        'C:/Programme/Borland/Delphi'+IntToStr(DelphiVersion));
     FileFlags[0]:=[iftDirectory,iftNotEmpty,iftMustExist];
     
     EndUpdate;
     if ShowModal=mrCancel then exit;
-    DirTemplate:=Boss.DefinePool.CreateDelphi5DirectoryTemplate(FileNames[0]);
+    DirTemplate:=Boss.DefinePool.CreateDelphiDirectoryTemplate(FileNames[0],
+                                                               DelphiVersion);
     if DirTemplate=nil then exit;
-    DirTemplate.Name:='Delphi5 ('+FileNames[0]+')';
+    DirTemplate.Name:=DelphiName+' ('+FileNames[0]+')';
     InsertTemplate(DirTemplate);
   end;
 end;
 
-procedure TCodeToolsDefinesEditor.InsertDelphi5ProjectTemplateMenuItemClick(
+procedure TCodeToolsDefinesEditor.InsertDelphiProjectTemplateMenuItemClick(
   Sender: TObject);
 var
   InputFileDlg: TInputFileDialog;
   ProjTemplate: TDefineTemplate;
+  DelphiVersion: integer;
+  DelphiName: string;
 begin
+  if Sender=InsertDelphi6ProjectTemplateMenuItem then
+    DelphiVersion:=6
+  else
+    DelphiVersion:=5;
+  DelphiName:='Delphi'+IntToStr(DelphiVersion);
+
   InputFileDlg:=GetInputFileDialog;
   InputFileDlg.Macros:=Macros;
   with InputFileDlg do begin
     BeginUpdate;
-    Caption:='Create Defines for Delphi5 Project';
+    Caption:='Create Defines for '+DelphiName+' Project';
 
     FileCount:=2;
     
-    FileTitles[0]:='Delphi5 project directory';
-    FileDescs[0]:='The Delphi5 project directory,'#13
+    FileTitles[0]:=DelphiName+' project directory';
+    FileDescs[0]:='The '+DelphiName+' project directory,'#13
           +'which contains the .dpr, dpk file.';
-    FileNames[0]:=SetDirSeparators('C:/Programme/Borland/Delphi5/YourProject');
+    FileNames[0]:=SetDirSeparators('C:/Programme/Borland/Delphi'
+                   +IntToStr(DelphiVersion)+'/YourProject');
     FileFlags[0]:=[iftDirectory,iftNotEmpty,iftMustExist];
     
-    FileTitles[1]:='Delphi5 directory';
-    FileDescs[1]:='The Delphi5 main directory,'#13
-          +'where Borland has installed all Delphi5 sources,'#13
-          +'which are used by this Delphi5 project.'#13
-          +'For example: C:/Programme/Borland/Delphi5';
-    FileNames[1]:=SetDirSeparators('C:/Programme/Borland/Delphi5');
+    FileTitles[1]:=DelphiName+' directory';
+    FileDescs[1]:='The '+DelphiName+' main directory,'#13
+          +'where Borland has installed all '+DelphiName+' sources,'#13
+          +'which are used by this '+DelphiName+' project.'#13
+          +'For example: C:/Programme/Borland/Delphi'+IntToStr(DelphiVersion);
+    FileNames[1]:=SetDirSeparators('C:/Programme/Borland/Delphi'
+                                                      +IntToStr(DelphiVersion));
     FileFlags[1]:=[iftDirectory,iftNotEmpty,iftMustExist];
 
     EndUpdate;
     if ShowModal=mrCancel then exit;
-    ProjTemplate:=Boss.DefinePool.CreateDelphi5ProjectTemplate(FileNames[0],
-                                                               FileNames[1]);
+    ProjTemplate:=Boss.DefinePool.CreateDelphiProjectTemplate(FileNames[0],
+                                                    FileNames[1],DelphiVersion);
     if ProjTemplate=nil then exit;
-    ProjTemplate.Name:='Delphi5 Project ('+FileNames[0]+')';
+    ProjTemplate.Name:=DelphiName+' Project ('+FileNames[0]+')';
     InsertTemplate(ProjTemplate);
   end;
 end;
@@ -1317,22 +1338,44 @@ begin
               'Insert Delphi 5 Compiler Template',
               InsertTemplateMenuItem);
   InsertDelphi5CompilerDefinesTemplateMenuItem.OnClick:=
-              @InsertDelphi5CompilerDefinesTemplateMenuItemClick;
+              @InsertDelphiCompilerDefinesTemplateMenuItemClick;
   
   AddMenuItem(InsertDelphi5DirectoryTemplateMenuItem,
               'InsertDelphi5DirectoryTemplateMenuItem',
               'Insert Delphi 5 Directory Template',
               InsertTemplateMenuItem);
   InsertDelphi5DirectoryTemplateMenuItem.OnClick:=
-              @InsertDelphi5DirectoryTemplateMenuItemClick;
+              @InsertDelphiDirectoryTemplateMenuItemClick;
 
   AddMenuItem(InsertDelphi5ProjectTemplateMenuItem,
               'InsertDelphi5ProjectTemplateMenuItem',
               'Insert Delphi 5 Project Template',
               InsertTemplateMenuItem);
   InsertDelphi5ProjectTemplateMenuItem.OnClick:=
-              @InsertDelphi5ProjectTemplateMenuItemClick;
+              @InsertDelphiProjectTemplateMenuItemClick;
 
+
+  InsertTemplateMenuItem.Add(CreateSeperator);
+  AddMenuItem(InsertDelphi6CompilerDefinesTemplateMenuItem,
+              'InsertDelphi6CompilerDefinesTemplateMenuItem',
+              'Insert Delphi 6 Compiler Template',
+              InsertTemplateMenuItem);
+  InsertDelphi6CompilerDefinesTemplateMenuItem.OnClick:=
+              @InsertDelphiCompilerDefinesTemplateMenuItemClick;
+
+  AddMenuItem(InsertDelphi6DirectoryTemplateMenuItem,
+              'InsertDelphi6DirectoryTemplateMenuItem',
+              'Insert Delphi 6 Directory Template',
+              InsertTemplateMenuItem);
+  InsertDelphi6DirectoryTemplateMenuItem.OnClick:=
+              @InsertDelphiDirectoryTemplateMenuItemClick;
+
+  AddMenuItem(InsertDelphi6ProjectTemplateMenuItem,
+              'InsertDelphi6ProjectTemplateMenuItem',
+              'Insert Delphi 6 Project Template',
+              InsertTemplateMenuItem);
+  InsertDelphi6ProjectTemplateMenuItem.OnClick:=
+              @InsertDelphiProjectTemplateMenuItemClick;
 
   // define tree----------------------------------------------------------------
   CreateWinControl(DefineTreeView,TTreeView,'DefineTreeView',Self);

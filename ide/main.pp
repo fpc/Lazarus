@@ -6063,7 +6063,8 @@ end;
 
 procedure TMainIDE.mnuEditIndentBlockClicked(Sender: TObject);
 begin
-  DoEditMenuCommand(ecBlockIndent);
+  writeln('AAA1 TMainIDE.mnuEditIndentBlockClicked');
+  //DoEditMenuCommand(ecBlockIndent);
 end;
 
 procedure TMainIDE.mnuEditUnindentBlockClicked(Sender: TObject);
@@ -6243,6 +6244,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.284  2002/04/26 12:27:26  lazarus
+  MG: added Delphi6 Templates
+
   Revision 1.283  2002/04/22 07:16:34  lazarus
   MG: fixed missing include directives
 
