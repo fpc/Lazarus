@@ -215,7 +215,7 @@ begin
    end;     
 
    { Create a button which toggles the checkbox }
-   Button2 := TBitBtn.Create(Self);
+   Button2 := TButton.Create(Self);
    Button2.Parent := Panel1;
    Button2.Left := 5;
    Button2.Top := 45;
@@ -413,6 +413,9 @@ end.
 
 {
   $Log$
+  Revision 1.9  2004/07/24 20:13:36  vincents
+  fixed compilation: TBitBtn is not a TButton anymore
+
   Revision 1.8  2003/11/01 10:27:40  mattias
   fpc 1.1 fixes, started scrollbar hiding, started polymorphing client areas
 
