@@ -711,6 +711,7 @@ procedure TGtkWidgetSet.SendCachedLCLMessages;
       DebugLn('WARNING: resizing BIG ',
         ' Control=',LCLControl.Name,':',LCLControl.ClassName,
         ' NewSize=',dbgs(LCLWidth),',',dbgs(LCLHeight));
+      //RaiseException('');
     end;
 
     procedure RaiseWidgetWithoutControl;
@@ -763,6 +764,10 @@ procedure TGtkWidgetSet.SendCachedLCLMessages;
           LCLHeight:=1;
         if (LCLWidth>10000) or (LCLHeight>10000) then begin
           WriteBigWarning;
+          if LCLWidth>10000 then
+            LCLWidth:=10000
+          else
+            LCLHeight:=10000;
         end;
         RealizeWidgetSize(Widget,LCLWidth, LCLHeight);
 
@@ -6989,6 +6994,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.616  2005/01/12 23:18:07  mattias
+  limited widget sizes to 10000x10000
+
   Revision 1.615  2005/01/11 21:40:29  micha
   fix gtk compilation for tstatictext.layout
 

@@ -866,14 +866,10 @@ end;
 procedure TControl.DoConstrainedResize(var NewWidth, NewHeight : integer);
 var MinWidth, MinHeight, MaxWidth, MaxHeight : TConstraintSize;
 begin
-  if Constraints.MinWidth > 0 then MinWidth:= Constraints.MinWidth
-  else MinWidth:= 0;
-  if Constraints.MinHeight > 0 then MinHeight:= Constraints.MinHeight
-  else MinHeight:= 0;
-  if Constraints.MaxWidth > 0 then MaxWidth:= Constraints.MaxWidth
-  else MaxWidth:= 0;
-  if Constraints.MaxHeight > 0 then MaxHeight:= Constraints.MaxHeight
-  else MaxHeight:= 0;
+  MinWidth:= Constraints.EffectiveMinWidth;
+  MinHeight:= Constraints.EffectiveMinHeight;
+  MaxWidth:= Constraints.EffectiveMaxWidth;
+  MaxHeight:= Constraints.EffectiveMaxHeight;
 
   ConstrainedResize(MinWidth, MinHeight, MaxWidth, MaxHeight);
 
@@ -886,11 +882,12 @@ begin
     NewHeight:= MinHeight
   else if (MaxHeight > 0) and (NewHeight > MaxHeight) then
     NewHeight:= MaxHeight;
+  //debugln('TControl.DoConstrainedResize ',DbgSName(Self),' ',dbgs(NewWidth),',',dbgs(NewHeight));
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl.DoConstraintsChange					       }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TControl.DoConstraintsChange
+------------------------------------------------------------------------------}
 procedure TControl.DoConstraintsChange(Sender : TObject);
 begin
   AdjustSize;
@@ -3403,6 +3400,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.233  2005/01/12 23:18:07  mattias
+  limited widget sizes to 10000x10000
+
   Revision 1.232  2005/01/08 14:23:56  micha
   move taborder and tabstop to twincontrol
 

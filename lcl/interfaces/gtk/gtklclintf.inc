@@ -145,17 +145,21 @@ var
   Widget: PGtkWidget;
   MinWidth: Integer;
   MinHeight: Integer;
+  MaxWidth: Integer;
+  MaxHeight: Integer;
 begin
   Result:=true;
   if Constraints is TSizeConstraints then begin
+    MinWidth := 0;
+    MinHeight := 0;
+    MaxWidth:=10000;
+    MaxHeight:=10000;
     SizeConstraints:=TSizeConstraints(Constraints);
 
     if (SizeConstraints.Control=nil) then exit;
 
     // TScrollBar
     if SizeConstraints.Control is TScrollBar then begin
-      MinWidth := 0;
-      MinHeight := 0;
       if TScrollBar(SizeConstraints.Control).Kind=sbHorizontal then begin
         Widget:=GetStyleWidget(lgsHorizontalScrollbar);
         MinHeight:=Widget^.requisition.Height;
@@ -166,12 +170,11 @@ begin
       //DebugLn('TGtkWidgetSet.GetControlConstraints A ',MinWidth,',',MinHeight,' ',TScrollBar(SizeConstraints.Control).Kind=sbHorizontal,' ',TScrollBar(SizeConstraints.Control).Name);
       SizeConstraints.SetInterfaceConstraints(MinWidth,MinHeight,
                                               MinWidth,MinHeight);
+      exit;
     end;
     
     // TCustomSplitter
     if SizeConstraints.Control is TCustomSplitter then begin
-      MinWidth := 0;
-      MinHeight := 0;
       if TCustomSplitter(SizeConstraints.Control).Align in [alTop,alBottom] then
       begin
         Widget:=GetStyleWidget(lgsHorizontalPaned);
@@ -182,8 +185,11 @@ begin
       end;
       SizeConstraints.SetInterfaceConstraints(MinWidth,MinHeight,
                                               MinWidth,MinHeight);
+      exit;
     end;
 
+    SizeConstraints.SetInterfaceConstraints(MinWidth,MinHeight,
+                                            MaxWidth,MaxHeight);
   end;
 end;
 
@@ -505,6 +511,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.35  2005/01/12 23:18:07  mattias
+  limited widget sizes to 10000x10000
+
   Revision 1.34  2004/10/23 14:47:44  micha
   remove old code: statusbar methods in twidgetset
 

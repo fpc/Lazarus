@@ -67,37 +67,39 @@ end;
 
 function TSizeConstraints.EffectiveMinWidth: integer;
 begin
-  if (MinInterfaceWidth=0)
-  or ((MinWidth>MinInterfaceWidth) and (MinWidth<=MaxInterfaceWidth)) then
-    Result:=MinWidth
-  else
+  if (MinWidth>MinInterfaceWidth) then begin
+    Result:=MinWidth;
+    if (MaxInterfaceWidth>0) and (MaxInterfaceWidth<MinWidth) then
+      Result:=MaxInterfaceWidth;
+  end else
     Result:=MinInterfaceWidth;
 end;
 
 function TSizeConstraints.EffectiveMinHeight: integer;
 begin
-  if (MinInterfaceHeight=0)
-  or ((MinHeight>MinInterfaceHeight) and (MinHeight<=MaxInterfaceHeight)) then
-    Result:=MinHeight
-  else
+  if (MinHeight>MinInterfaceHeight) then begin
+    Result:=MinHeight;
+    if (MaxInterfaceHeight>0) and (Result>MaxInterfaceHeight) then
+      Result:=MaxInterfaceHeight;
+  end else
     Result:=MinInterfaceHeight;
 end;
 
 function TSizeConstraints.EffectiveMaxWidth: integer;
 begin
-  if (MaxInterfaceWidth=0)
-  or ((MaxWidth<MaxInterfaceWidth) and (MaxWidth>=MinInterfaceWidth)) then
-    Result:=MaxWidth
-  else
+  if (MaxWidth<MaxInterfaceWidth) then begin
+    Result:=MaxWidth;
+    if (Result<MinInterfaceWidth) then Result:=MinInterfaceWidth;
+  end else
     Result:=MaxInterfaceWidth;
 end;
 
 function TSizeConstraints.EffectiveMaxHeight: integer;
 begin
-  if (MaxInterfaceHeight=0)
-  or ((MaxHeight<MaxInterfaceHeight) and (MaxHeight>=MinInterfaceHeight)) then
-    Result:=MaxHeight
-  else
+  if (MaxHeight<MaxInterfaceHeight) then begin
+    Result:=MaxHeight;
+    if Result<MinInterfaceHeight then Result:=MinInterfaceHeight;
+  end else
     Result:=MaxInterfaceHeight;
 end;
 
