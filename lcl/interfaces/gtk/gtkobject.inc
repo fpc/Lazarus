@@ -769,6 +769,7 @@ writeln('[TgtkObject.IntSendMessage3] LM_SETFOCUS ',TObject(Sender).ClassName);
         gtk_window_set_position(PGtkWindow(handle), GTK_WIN_POS_CENTER);
         if Sender is TColorDialog then
           SetColorDialogColor(Pointer(Handle),TColorDialog(Sender).Color);
+          
         gtk_widget_show(PGtkWidget(handle));
         gtk_window_set_modal(PGtkWindow(handle), true);
       end;
@@ -2087,6 +2088,14 @@ begin
             gtk_signal_connect( gtk_object((PGtkFileSelection(P))^.help_button), 'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), Sender);
          {$endif}
          gtk_signal_connect( gtk_object(P), 'destroy', gtk_Signal_Func(@gtkDialogDestroyCB), Sender);
+         
+         if Sender is TOpenDialog then begin
+           // set extra options
+           if ofAllowMultiSelect in TOpenDialog(Sender).Options then begin
+             {gtk_clist_set_selection_mode(
+               PGtkCList(PGtkFileSelection(P)^.file_list),GTK_SELECTION_BROWSE);}
+           end;
+         end;
       end;
 
       csColorDialog :
@@ -3471,6 +3480,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.83  2001/12/11 14:36:41  lazarus
+  MG: started multiselection for TOpenDialog
+
   Revision 1.82  2001/12/07 20:12:15  lazarus
   Added a watch dialog.
   Shane

@@ -1,3 +1,5 @@
+// included by dialogs.pp
+
 {******************************************************************************
                                   TCommonDialog
  ******************************************************************************}
@@ -10,7 +12,7 @@
  ------------------------------------------------------------------------------}
 constructor TCommonDialog.Create (AOwner : TComponent);
 begin
-   inherited Create(AOwner);
+  inherited Create(AOwner);
 end;
 
 function TCommonDialog.Execute : boolean;
@@ -38,6 +40,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2001/12/11 14:36:41  lazarus
+  MG: started multiselection for TOpenDialog
+
   Revision 1.2  2001/08/05 10:14:50  lazarus
   MG: removed double props in OI, small bugfixes
 

@@ -1,6 +1,27 @@
+// included by dialogs.pp
+
 {******************************************************************************
                                   TFileDialog
  ******************************************************************************}
+
+{------------------------------------------------------------------------------}
+{  TFileDialog Create                                                          }
+{------------------------------------------------------------------------------}
+constructor TFileDialog.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  fCompStyle := csFileDialog;
+  FFiles := TStringList.Create;
+end;
+
+{------------------------------------------------------------------------------}
+{  TFileDialog Destroy                                                         }
+{------------------------------------------------------------------------------}
+destructor TFileDialog.Destroy;
+begin
+  FFiles.Free;
+  inherited;
+end;
 
 {------------------------------------------------------------------------------}
 {  TFileDialog Execute                                                         }
@@ -27,6 +48,7 @@ function TFileDialog.DoExecute : boolean;
 begin
   CNSendMessage(LM_SETFILTER, Self, nil);
   CNSendMessage(LM_SETFILENAME, Self, nil);
+  
   Result:= inherited DoExecute;
 end;
 
@@ -35,7 +57,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TFileDialog.SetFilter(value : string);
 begin
-   FFilter := value;  // make sure this is defined first before the CNSendMessage
+  FFilter := value;  // make sure this is defined first before the CNSendMessage
 end;
 
 {------------------------------------------------------------------------------}
@@ -43,7 +65,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TFileDialog.SetFileName(value : string);
 begin
-   FFileName := value;  // make sure this is defined first before the CNSendMessage
+  FFileName := value;  // make sure this is defined first before the CNSendMessage
 end;
 
 {******************************************************************************
@@ -59,8 +81,8 @@ end;
 constructor TOpenDialog.Create (AOwner : TComponent);
 begin
   inherited Create(AOwner);
-  fCompStyle := csFileDialog;
   FTitle:= 'Open existing file:';
+  FOptions := [];
 end;
 
 {******************************************************************************
@@ -83,6 +105,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2001/12/11 14:36:41  lazarus
+  MG: started multiselection for TOpenDialog
+
   Revision 1.2  2001/03/27 11:11:13  lazarus
   MG: fixed mouse msg, added filedialog initialdir
 

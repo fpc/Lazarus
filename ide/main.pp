@@ -1538,6 +1538,7 @@ begin
     try
       OpenDialog.Title:='Open file';
       OpenDialog.InitialDir:=EnvironmentOptions.LastOpenDialogDir;
+      OpenDialog.Options:=[ofAllowMultiSelect];
       if OpenDialog.Execute then begin
         AFilename:=ExpandFilename(OpenDialog.Filename);
         EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(AFilename);
@@ -5185,6 +5186,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.173  2001/12/11 14:36:40  lazarus
+  MG: started multiselection for TOpenDialog
+
   Revision 1.172  2001/12/11 11:14:10  lazarus
   MG: fixed save project, saving units twice
 

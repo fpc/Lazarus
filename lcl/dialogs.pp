@@ -27,13 +27,13 @@
 Detailed description of the Unit.
 } 
 
-unit dialogs;
+unit Dialogs;
 
 {$mode objfpc}{$H+}
 
 interface
 
-uses classes, Forms, Controls, vclGlobals, lmessages;
+uses Classes, Forms, Controls, VCLGlobals, LMessages;
 
 //type
 //   TDialogButtons = (mbYes, mbNo, mbOK, mbCancel, mbAbort, mbRetry,
@@ -53,89 +53,108 @@ const
    mbAbortRetryIgnore = [mbAbort, mbRetry, mbIgnore];
 
 type
-   TCommonDialog = class(TComponent)
-   private
-     FHandle : integer;
-     FOnShow, FOnClose : TNotifyEvent;
-     FTitle : string;
-     FUserChoice: integer;
-   protected
-      function DoExecute : boolean; virtual;
-   public
-      FCompStyle : LongInt;
-      constructor Create (AOwner : TComponent); override;
-      function Execute : boolean; virtual;
-      property Handle : integer read FHandle write FHandle;
-      property Title : string read FTitle write FTitle;
-      property UserChoice : integer read FUserChoice write FUserChoice;
-      property OnClose : TNotifyEvent read FOnClose write FOnClose;
-      property OnShow : TNotifyEvent read FOnShow write FOnShow;
-   end;
+  TCommonDialog = class(TComponent)
+  private
+    FHandle : integer;
+    FOnShow, FOnClose : TNotifyEvent;
+    FTitle : string;
+    FUserChoice: integer;
+  protected
+    function DoExecute : boolean; virtual;
+  public
+    FCompStyle : LongInt;
+    constructor Create (AOwner : TComponent); override;
+    function Execute : boolean; virtual;
+    property Handle : integer read FHandle write FHandle;
+    property Title : string read FTitle write FTitle;
+    property UserChoice : integer read FUserChoice write FUserChoice;
+    property OnClose : TNotifyEvent read FOnClose write FOnClose;
+    property OnShow : TNotifyEvent read FOnShow write FOnShow;
+  end;
 
-   TFileDialog = class(TCommonDialog)
-   private
-     FFileName : String;
-     FFilter: String;
-     FInitialDir: string;
-     FOldWorkingDir: string;
-   protected
-     function DoExecute : boolean; override;
-     procedure SetFileName(value :String);
-     procedure SetFilter(value :String);
-   public
-     function Execute : boolean; override;
-     property FileName : String read FFileName write SetFileName;
-     property Filter : String read FFilter write SetFilter;
-     property InitialDir: string read FInitialDir write FInitialDir;
-   end;
+  TFileDialog = class(TCommonDialog)
+  private
+    FFileName : String;
+    FFiles: TStrings;
+    FFilter: String;
+    FInitialDir: string;
+    FOldWorkingDir: string;
+  protected
+    function DoExecute : boolean; override;
+    procedure SetFileName(value :String);
+    procedure SetFilter(value :String);
+  public
+    constructor Create(AOwner : TComponent); override;
+    destructor Destroy; override;
+    function Execute : boolean; override;
+    property Files: TStrings read FFiles;
+  published
+    property FileName : String read FFileName write SetFileName;
+    property Filter : String read FFilter write SetFilter;
+    property InitialDir: string read FInitialDir write FInitialDir;
+  end;
 
-   TOpenDialog = class(TFileDialog)
-   public
-      constructor Create (AOwner : TComponent); override;
-   end;
+  TOpenOption = ({ofReadOnly, ofOverwritePrompt, ofHideReadOnly,
+    ofNoChangeDir, ofShowHelp, ofNoValidate,} ofAllowMultiSelect{,
+    ofExtensionDifferent, ofPathMustExist, ofFileMustExist, ofCreatePrompt,
+    ofShareAware, ofNoReadOnlyReturn, ofNoTestFileCreate, ofNoNetworkButton,
+    ofNoLongNames, ofOldStyleDialog, ofNoDereferenceLinks, ofEnableIncludeNotify,
+    ofEnableSizing});
+  TOpenOptions = set of TOpenOption;
+  
+  TOpenDialog = class(TFileDialog)
+  private
+    FOptions: TOpenOptions;
+  public
+    constructor Create (AOwner : TComponent); override;
+  published
+    property Options: TOpenOptions read FOptions write FOptions
+      {default [ofHideReadOnly, ofEnableSizing]};
+  end;
 
-   TSaveDialog  = class(TFileDialog)
-   public
-      constructor Create (AOwner : TComponent); override;
-   end;
+  TSaveDialog  = class(TFileDialog)
+  public
+    constructor Create (AOwner : TComponent); override;
+  end;
 
 
-   TColorDialog = class(TCommonDialog)
-   private
-      FColor : TColor;
-   public
-      constructor Create (AOwner : TComponent); override;
-      property Color : TColor read FColor write FColor;
-   end;
+  TColorDialog = class(TCommonDialog)
+  private
+    FColor : TColor;
+  public
+    constructor Create (AOwner : TComponent); override;
+  published
+    property Color : TColor read FColor write FColor;
+  end;
 
-   TFontDialog = class(TCommonDialog)
-   private
-      FFontName : String;
-   public
-      constructor Create (AOwner : TComponent); override;
-      property FontName : String read FFontName write FFontName;
-   end;
+  TFontDialog = class(TCommonDialog)
+  private
+    FFontName : String;
+  public
+    constructor Create (AOwner : TComponent); override;
+  published
+    property FontName : String read FFontName write FFontName;
+  end;
 
-   function CreateMessageDialog(const aMsg: string; DlgType: TMsgDlgType;
+  function CreateMessageDialog(const aMsg: string; DlgType: TMsgDlgType;
               Buttons: TMsgDlgButtons): TForm;
-   function MessageDlg(const aMsg: string; DlgType: TMsgDlgType;
+  function MessageDlg(const aMsg: string; DlgType: TMsgDlgType;
               Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
-   function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
+  function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
               Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
-   function MessageDlgPos(const aMsg: string; DlgType: TMsgDlgType;
+  function MessageDlgPos(const aMsg: string; DlgType: TMsgDlgType;
               Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer): Integer;
-   function MessageDlgPosHelp(const aMsg: string; DlgType: TMsgDlgType;
+  function MessageDlgPosHelp(const aMsg: string; DlgType: TMsgDlgType;
               Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer;
               const HelpFileName: string): Integer;
-   procedure ShowMessage(const aMsg: string);
-   procedure ShowMessageFmt(const aMsg: string; Params: array of const);
-   procedure ShowMessagePos(const aMsg: string; X, Y: Integer);
+  procedure ShowMessage(const aMsg: string);
+  procedure ShowMessageFmt(const aMsg: string; Params: array of const);
+  procedure ShowMessagePos(const aMsg: string; X, Y: Integer);
 
 implementation
 
 uses
-   buttons, stdctrls, LCLlinux, graphics, sysutils;
-//  SysUtils;
+  Buttons, StdCtrls, LCLlinux, Graphics, SysUtils;
 
 resourcestring
    rsMbYes    = 'Yes';
@@ -213,6 +232,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.9  2001/12/11 14:36:41  lazarus
+  MG: started multiselection for TOpenDialog
+
   Revision 1.8  2001/11/01 18:48:51  lazarus
   Changed Application.Messagebox to use TMessageBox class.
   Added icon images for mtError and mtConfirmation
