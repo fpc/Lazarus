@@ -26,6 +26,9 @@
  ***************************************************************************
 
   Author: Mattias Gaertner
+  
+  Abstract:
+    Methods for creating diffs and ToDo: applying them (patching).
 
 }
 unit DiffPatch;
@@ -39,20 +42,30 @@ uses
 
 type
   TTextDiffFlag = (
+    tdfIgnoreCase,            // ignore case of letters
+    tdfIgnoreEmptyLineChanges,// ignore if empty lines were added or removed
+    tdfIgnoreHeadingSpaces,   // ignore spaces at start of line
+    tdfIgnoreLineEnds,        // ignore if line end chars differ (e.g. #10 = #13#10)
     tdfIgnoreSpaceCharAmount, // ignore if space chars were added or removed
                               // except if all spaces were removed
     tdfIgnoreSpaceChars,      // ignore spaces (newline chars not included)
-    tdfIgnoreHeadingSpaces,   // ignore spaces at start of line
-    tdfIgnoreTrailingSpaces,  // ignore spaces at end of line
-    tdfIgnoreEmptyLineChanges,// ignore if empty lines were added or removed
-    tdfIgnoreLineEnds,        // ignore if line chars differ (e.g. #10 = #13#10)
-    tdfIgnoreCase             // ignore case of letters
+    tdfIgnoreTrailingSpaces   // ignore spaces at end of line
   );
   TTextDiffFlags = set of TTextDiffFlag;
 
 function CreateTextDiff(const Text1, Text2: string; Flags: TTextDiffFlags
   ): string;
 
+const
+  TextDiffFlagNames: array[TTextDiffFlag] of string = (
+    'IgnoreCase',
+    'IgnoreEmptyLineChanges',
+    'IgnoreHeadingSpaces',
+    'IgnoreLineEnds',
+    'IgnoreSpaceCharAmount',
+    'IgnoreSpaceChars',
+    'IgnoreTrailingSpaces'
+    );
 
 implementation
 
@@ -215,7 +228,7 @@ begin
   while (Pos1<End1) and (Pos2<End2) do begin
     if not IsSpaceChars[Text1[Pos1]] then begin
       // Text1 contains a normal char
-      if not IsSpaceChars[Text1[Pos1]] then begin
+      if not IsSpaceChars[Text2[Pos2]] then begin
         // Text2 contains a normal char
         if tdfIgnoreCase in Flags then begin
           // compare case insensitive
@@ -250,7 +263,7 @@ begin
           // skip all spaces in Text2 and proceed the search
           repeat
             inc(Pos2);
-          until (Pos2>=End2) or (IsSpaceChars[Text2[Pos2]]);
+          until (Pos2>=End2) or (not IsSpaceChars[Text2[Pos2]]);
         end;
       end;
     end else begin
@@ -265,7 +278,7 @@ begin
           // skip all spaces in Text1 and proceed the search
           repeat
             inc(Pos1);
-          until (Pos1>=End1) or (IsSpaceChars[Text1[Pos1]]);
+          until (Pos1>=End1) or (not IsSpaceChars[Text1[Pos1]]);
         end;
       end else begin
         // Text2 contains a space
@@ -273,10 +286,10 @@ begin
           // skip all spaces in Text1 and Text2 and proceed the search
           repeat
             inc(Pos1);
-          until (Pos1>=End1) or (IsSpaceChars[Text1[Pos1]]);
+          until (Pos1>=End1) or (not IsSpaceChars[Text1[Pos1]]);
           repeat
             inc(Pos2);
-          until (Pos2>=End2) or (IsSpaceChars[Text2[Pos2]]);
+          until (Pos2>=End2) or (not IsSpaceChars[Text2[Pos2]]);
         end else begin
           // compare the space chars
           if Text1[Pos1]=Text2[Pos2] then begin

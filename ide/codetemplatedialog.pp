@@ -23,8 +23,6 @@
   Abstract:
     A dialog for adding and editing code templates
 
-  ToDo:
-    -check if token already exists
 }
 unit CodeTemplateDialog;
 
@@ -34,7 +32,7 @@ interface
 
 uses
   Classes, SysUtils, LCLLinux, LResources, Forms, Buttons, Controls,
-  SynEditAutoComplete, StdCtrls, SynEditKeyCmds, Dialogs;
+  SynEditAutoComplete, LazarusIDEStrConsts, StdCtrls, SynEditKeyCmds, Dialogs;
 
 type
   TCodeTemplateEditForm = class(TForm)
@@ -69,8 +67,8 @@ begin
   try
     CodeTemplateEditForm.SynAutoComplete:=ASynAutoComplete;
     CodeTemplateEditForm.TemplateIndex:=ASynAutoComplete.Completions.Count;
-    CodeTemplateEditForm.Caption:='Add code template';
-    CodeTemplateEditForm.OkButton.Caption:='Add';
+    CodeTemplateEditForm.Caption:=lisCodeTemplAddCodeTemplate;
+    CodeTemplateEditForm.OkButton.Caption:=lisCodeTemplAdd;
     CodeTemplateEditForm.TokenEdit.Text:=Token;
     CodeTemplateEditForm.CommentEdit.Text:=Comment;
     Result:=CodeTemplateEditForm.ShowModal;
@@ -94,8 +92,8 @@ begin
   try
     CodeTemplateEditForm.SynAutoComplete:=ASynAutoComplete;
     CodeTemplateEditForm.TemplateIndex:=Index;
-    CodeTemplateEditForm.Caption:='Edit code template';
-    CodeTemplateEditForm.OkButton.Caption:='Change';
+    CodeTemplateEditForm.Caption:=lisCodeTemplEditCodeTemplate;
+    CodeTemplateEditForm.OkButton.Caption:=lisCodeTemplChange;
     CodeTemplateEditForm.TokenEdit.Text:=ASynAutoComplete.Completions[Index];
     CodeTemplateEditForm.CommentEdit.Text:=
       ASynAutoComplete.CompletionComments[Index];
@@ -126,7 +124,7 @@ begin
     with TokenLabel do begin
       Name:='TokenLabel';
       Parent:=Self;
-      Caption:='Token:';
+      Caption:=lisCodeTemplToken;
       Left:=12;
       Top:=6;
       Width:=Self.ClientWidth-Left-Left;
@@ -148,7 +146,7 @@ begin
     with CommentLabel do begin
       Name:='CommentLabel';
       Parent:=Self;
-      Caption:='Comment:';
+      Caption:=lisCodeTemplComment;
       Left:=12;
       Top:=TokenEdit.Top+TokenEdit.Height+10;
       Width:=Self.ClientWidth-Left-Left;
@@ -170,7 +168,7 @@ begin
     with OkButton do begin
       Name:='OkButton';
       Parent:=Self;
-      Caption:='Ok';
+      Caption:=lisLazBuildOk;
       OnClick:=@OkButtonClick;
       Left:=50;
       Top:=Self.ClientHeight-Height-12;
@@ -182,7 +180,7 @@ begin
     with CancelButton do begin
       Name:='CancelButton';
       Parent:=Self;
-      Caption:='Cancel';
+      Caption:=dlgCancel;
       ModalResult:=mrCancel;
       Width:=80;
       Left:=Self.ClientWidth-50-Width;
@@ -240,8 +238,8 @@ begin
   if (a<0) or (a=TemplateIndex) then
     ModalResult:=mrOk
   else begin
-    AText:=' A token '''+TokenEdit.Text+''' already exists! ';
-    ACaption:='Error';
+    AText:=Format(lisCodeTemplATokenAlreadyExists, ['"', TokenEdit.Text, '"']);
+    ACaption:=lisCodeTemplError;
 
 //    Application.MessageBox(PChar(AText),PChar(ACaption),0);
     MessageDlg(ACaption,AText,mterror,[mbok],0);

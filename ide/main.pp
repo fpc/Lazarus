@@ -55,7 +55,7 @@ uses
   BuildLazDialog, MiscOptions, EditDefineTree, CodeToolsOptions, TypInfo,
   IDEOptionDefs, CodeToolsDefines, LocalsDlg, DebuggerDlg, InputHistory,
   DiskDiffsDialog, UnitDependencies, PublishProjectDlg, ClipBoardHistory,
-  ProcessList, InitialSetupDlgs, NewDialog, MakeResStrDlg,
+  ProcessList, InitialSetupDlgs, NewDialog, MakeResStrDlg, DiffDialog,
   // main ide
   BaseDebugManager, DebugManager, MainBar;
 
@@ -175,6 +175,7 @@ type
     procedure mnuToolGuessUnclosedBlockClicked(Sender : TObject);
     procedure mnuToolGuessMisplacedIFDEFClicked(Sender : TObject);
     procedure mnuToolMakeResourceStringClicked(Sender : TObject);
+    procedure mnuToolDiffClicked(Sender : TObject);
     procedure mnuToolConvertDFMtoLFMClicked(Sender : TObject);
     procedure mnuToolBuildLazarusClicked(Sender : TObject);
     procedure mnuToolConfigBuildLazClicked(Sender : TObject);
@@ -407,7 +408,7 @@ type
     destructor Destroy; override;
 
     // files/units
-    function DoNewEditorFile(NewUnitType:TNewUnitType;
+    function DoNewEditorFile(NewUnitType: TNewUnitType;
         NewFilename: string; NewFlags: TNewFlags): TModalResult;
     function DoNewOther: TModalResult;
     function DoSaveEditorFile(PageIndex:integer;
@@ -452,14 +453,14 @@ type
     function DoBuildLazarus: TModalResult;
 
     // useful information methods
-    procedure GetCurrentUnit(var ActiveSourceEditor:TSourceEditor; 
-      var ActiveUnitInfo:TUnitInfo); override;
-    procedure GetUnitWithPageIndex(PageIndex:integer;
-      var ActiveSourceEditor:TSourceEditor; var ActiveUnitInfo:TUnitInfo);
+    procedure GetCurrentUnit(var ActiveSourceEditor: TSourceEditor;
+      var ActiveUnitInfo: TUnitInfo); override;
+    procedure GetUnitWithPageIndex(PageIndex: integer;
+      var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
     procedure GetDesignerUnit(ADesigner: TDesigner;
-      var ActiveSourceEditor:TSourceEditor; var ActiveUnitInfo:TUnitInfo);
+      var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
     procedure GetUnitWithForm(AForm: TCustomForm;
-      var ActiveSourceEditor:TSourceEditor; var ActiveUnitInfo:TUnitInfo);
+      var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
     function GetSourceEditorForUnitInfo(AnUnitInfo: TUnitInfo): TSourceEditor;
     procedure UpdateDefaultPascalFileExtensions;
     function CreateSrcEditPageName(const AnUnitName, AFilename: string;
@@ -518,6 +519,7 @@ type
     procedure DoGotoIncludeDirective;
     procedure SaveIncludeLinks;
     function DoMakeResourceString: TModalResult;
+    function DoDiff: TModalResult;
 
     // methods for debugging, compiling and external tools
     function DoJumpToCompilerMessage(Index:integer;
@@ -1473,6 +1475,7 @@ begin
   itmToolGuessUnclosedBlock.OnClick := @mnuToolGuessUnclosedBlockClicked;
   itmToolGuessMisplacedIFDEF.OnClick := @mnuToolGuessMisplacedIFDEFClicked;
   itmToolMakeResourceString.OnClick := @mnuToolMakeResourceStringClicked;
+  itmToolDiff.OnClick := @mnuToolDiffClicked;
   itmToolConvertDFMtoLFM.OnClick := @mnuToolConvertDFMtoLFMClicked;
   itmToolBuildLazarus.OnClick := @mnuToolBuildLazarusClicked;
   itmToolConfigureBuildLazarus.OnClick := @mnuToolConfigBuildLazClicked;
@@ -1818,6 +1821,9 @@ begin
 
    ecMakeResourceString:
      DoMakeResourceString;
+
+   ecDiff:
+     DoDiff;
 
    ecConvertDFM2LFM:
      DoConvertDFMtoLFM;
@@ -2274,6 +2280,11 @@ end;
 procedure TMainIDE.mnuToolMakeResourceStringClicked(Sender : TObject);
 begin
   DoMakeResourceString;
+end;
+
+procedure TMainIDE.mnuToolDiffClicked(Sender : TObject);
+begin
+  DoDiff;
 end;
 
 procedure TMainIDE.mnuToolConvertDFMtoLFMClicked(Sender : TObject);
@@ -7030,6 +7041,32 @@ begin
   end;
 end;
 
+function TMainIDE.DoDiff: TModalResult;
+var
+  ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  OpenDiffInEditor: boolean;
+  DiffText: string;
+  Files: TDiffFiles;
+  NewDiffFilename: String;
+begin
+  Result:=mrCancel;
+  GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
+  if ActiveSrcEdit=nil then exit;
+  
+  Files:=SourceNoteBook.GetDiffFiles;
+  Result:=ShowDiffDialog(Files,ActiveSrcEdit.PageIndex,@SourceNotebook.GetText,
+                         OpenDiffInEditor,DiffText);
+  Files.Free;
+  if OpenDiffInEditor then begin
+    NewDiffFilename:=CreateSrcEditPageName('','diff.txt',-1);
+    Result:=DoNewEditorFile(nuText,NewDiffFilename,[]);
+    GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
+    if ActiveSrcEdit=nil then exit;
+    ActiveSrcEdit.EditorComponent.Lines.Text:=DiffText;
+  end;
+end;
+
 procedure TMainIDE.DoCompleteCodeAtCursor;
 var
   ActiveSrcEdit: TSourceEditor;
@@ -7896,6 +7933,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.486  2003/03/14 21:38:36  mattias
+  implemented diff dialog
+
   Revision 1.485  2003/03/14 14:57:03  mattias
   make resourcestring dialog now checks for doubles (idents and values)
 
