@@ -110,7 +110,7 @@ Begin
     Exit;
   End;
   
-  FToolTipWindow := CreateWindowEx(WS_EX_TOPMOST, TOOLTIPS_CLASS, NULL, WS_POPUP Or TTS_NOPREFIX Or TTS_ALWAYSTIP, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, FParentWindow, HMENU(NULL), HInstance, NULL);
+  FToolTipWindow := CreateWindowEx(WS_EX_TOPMOST, TOOLTIPS_CLASS, nil, WS_POPUP Or TTS_NOPREFIX Or TTS_ALWAYSTIP, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, FParentWindow, HMENU(nil), HInstance, nil);
   Windows.SendMessage(FParentWindow, TTM_ACTIVATE, WPARAM(True), 0);
 
   try
@@ -813,14 +813,14 @@ activate_time :	the time at which the activation event occurred.
         Begin
           If (Sender as TControl).FCompStyle = csComboBox Then
           Begin
-            Result := Low(SendMessage(Handle, CB_GETEDITSEL, WPARAM(NULL), LPARAM(NULL)));           
+            Result := Low(SendMessage(Handle, CB_GETEDITSEL, WPARAM(nil), LPARAM(nil)));           
           End;
         End;
         LM_GETSELLEN:
         Begin
           If (Sender as TControl).FCompStyle = csComboBox then
           Begin
-            Result := SendMessage(Handle, CB_GETEDITSEL, WPARAM(NULL), LPARAM(NULL));
+            Result := SendMessage(Handle, CB_GETEDITSEL, WPARAM(nil), LPARAM(nil));
             Result := High(Result) - Low(Result);
           End;
         End;
@@ -1154,7 +1154,7 @@ Begin
   Assert(False, 'Trace:WinRegister - Start');
   With WindowClass Do
   Begin
-    Style := CS_HRedraw or CS_VRedraw;
+    Style := 0{CS_HRedraw or CS_VRedraw};
     LPFnWndProc := WndProc(@WindowProc);
     CbClsExtra := 40;
     CbWndExtra := 40;
@@ -1175,7 +1175,7 @@ var
 begin
   with WinClass do begin
     cbSize := Sizeof(WndClassEx);
-    Style := CS_HRedraw or CS_VRedraw;
+    Style := 0{CS_HRedraw or CS_VRedraw};
     lpfnWndProc := WndProc(@TimerWindowProc);
     cbClsExtra := 0;
     cbWndExtra := 0;
@@ -1194,13 +1194,13 @@ Function TWin32Object.ToolBtnWinRegister: boolean;
 var WinClass: WndClass;
 begin
   with WinClass do begin
-    Style := CS_HRedraw or CS_VRedraw;
+    Style := 0{CS_HRedraw or CS_VRedraw};
     lpfnWndProc := WndProc(@ToolBtnWindowProc);
     cbClsExtra := 40;
     cbWndExtra := 40;
     hInstance := System.HInstance;
-    hIcon := LoadIcon(0, IDI_Application);
-    hCursor := LoadCursor(0, IDC_Arrow);
+    hIcon := 0{LoadIcon(0, IDI_Application)};
+    hCursor := 0{LoadCursor(0, IDC_Arrow)};
     hbrBackground := GetStockObject(WHITE_BRUSH);
     lpszMenuName := HMenu(nil);
     lpszClassName := @ToolBtnClsName;
@@ -1364,6 +1364,16 @@ Var
     If ofShowHelp In Options Then
       Result := Result Or OFN_SHOWHELP;
   End;
+
+  function GetOwnerHandle: HWND;
+  begin
+    if (Sender As TComponent).Owner Is TWinControl then
+      Result := ((Sender As TComponent).Owner As TWinControl).Handle
+    else if (Sender AS TComponent).Owner Is TApplication then
+      Result := ((Sender As TComponent).Owner As TApplication).Handle
+    else Result := 0;
+  end;
+
 Begin
   Assert(False, 'Trace:TWin32Object.CreateCommonDialog - Start');
   Assert(False, Format('Trace:TWin32Object.CreateCommonDialog - class name --> ', [Sender.ClassName]));
@@ -1374,7 +1384,7 @@ Begin
     With CC Do
     Begin
       LStructSize := SizeOf(TChooseColor);
-      HWndOwner := ((Sender As TComponent).Owner As TWinControl).Handle;
+      HWndOwner := GetOwnerHandle;
       RGBResult := (Sender As TColorDialog).Color;
       LPCustColors := @CustomColors;
       Flags := CC_FullOpen Or CC_RGBInit;
@@ -1383,41 +1393,41 @@ Begin
   End
   Else If Sender Is TFileDialog Then
   Begin
-    If Sender Is TOpenDialog Then
+    If Sender Is TSaveDialog Then {must be before TOpenDialog because TSaveDialog IS TOpenDialog}
     Begin
       OpenFile := LPOpenFileName(@Sender)^;
       ZeroMemory(@OpenFile, SizeOf(OpenFileName));
       With OpenFile Do
       Begin
         LStructSize := SizeOf(OpenFileName);
-        HWndOwner := ((Sender As TComponent).Owner As TWinControl).Handle;
-        LPStrFilter := PChar((Sender As TOpenDialog).Filter);
-        {If (Sender As TOpenDialog).FileName <> '' Then
-          LPStrFile := PChar((Sender As TOpenDialog).FileName);}
-        LPStrFileTitle := PChar((Sender As TOpenDialog).Title);
-        LPStrInitialDir := PChar((Sender As TOpenDialog).InitialDir);
-          Flags := GetFlagsFromOptions((Sender As TOpenDialog).Options);
-      End;
-      Ret := GetOpenFileName(@OpenFile)
-    End
-    Else If Sender Is TSaveDialog Then
-    Begin
-      OpenFile := LPOpenFileName(@Sender)^;
-      ZeroMemory(@OpenFile, SizeOf(OpenFileName));
-      With OpenFile Do
-      Begin
-        LStructSize := SizeOf(OpenFileName);
-        HWndOwner := ((Sender As TComponent).Owner As TWinControl).Handle;
+        HWndOwner := GetOwnerHandle;
         LPStrFilter := PChar((Sender As TSaveDialog).Filter);
         {If (Sender As TSaveDialog).FileName <> '' Then
           LPStrFile := PChar((Sender As TSaveDialog).FileName);}
         LPStrFileTitle := PChar((Sender As TSaveDialog).Title);
         LPStrInitialDir := PChar((Sender As TSaveDialog).InitialDir);
-        If Sender Is TOpenDialog Then
-          Flags := GetFlagsFromOptions((Sender As TOpenDialog).Options);
+        Flags := GetFlagsFromOptions((Sender As TOpenDialog).Options);
       End;
       Ret := GetSaveFileName(@OpenFile);
-    End;
+    End
+    Else If Sender Is TOpenDialog Then
+    Begin
+      OpenFile := LPOpenFileName(@Sender)^;
+      ZeroMemory(@OpenFile, SizeOf(OpenFileName));
+      With OpenFile Do
+      Begin
+        LStructSize := SizeOf(OpenFileName);
+        HWndOwner := GetOwnerHandle;
+        LPStrFilter := PChar((Sender As TOpenDialog).Filter);
+        {If (Sender As TOpenDialog).FileName <> '' Then
+          LPStrFile := PChar((Sender As TOpenDialog).FileName);}
+        LPStrFileTitle := PChar((Sender As TOpenDialog).Title);
+        LPStrInitialDir := PChar((Sender As TOpenDialog).InitialDir);
+
+          Flags := GetFlagsFromOptions((Sender As TOpenDialog).Options);
+      End;
+      Ret := GetOpenFileName(@OpenFile)
+    End
   End
   Else If Sender Is TFontDialog Then
   Begin
@@ -1427,7 +1437,7 @@ Begin
     With CF Do
     Begin
       LStructSize := SizeOf(TChooseFont);
-      HWndOwner := ((Sender As TComponent).Owner As TWinControl).Handle;
+      HWndOwner := GetOwnerHandle;
       LPLogFont := @LF;
       Flags := CF_EFFECTS Or CF_FORCEFONTEXIST Or CF_INITTOLOGFONTSTRUCT Or CF_SCREENFONTS;
       //RGBColors := (Sender As TFontDialog).Color;
@@ -1756,7 +1766,7 @@ Begin
     csFixed:
     Begin
       Assert(False, 'Trace:TODO: Figure out what component style csFixed is and code the component.  No component created.');
-      Window := CreateWindow(ClsName, StrTemp, WS_OVERLAPPEDWINDOW Or WS_HSCROLL Or WS_VSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+      Window := CreateWindow(ClsName, StrTemp, Flags, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
@@ -1994,7 +2004,7 @@ Begin
     End;
     csProgressBar:
     Begin
-      Window := CreateWindow(PROGRESS_CLASS, NULL, Flags, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+      Window := CreateWindow(PROGRESS_CLASS, nil, Flags, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
@@ -2618,6 +2628,9 @@ End;
 
 {
   $Log$
+  Revision 1.46  2003/02/08 10:37:32  mattias
+  applied patch from Martin for TFileDialog
+
   Revision 1.45  2003/02/01 12:56:10  lazarus
   Keith: My brother fixed the problem where menu items default to disbaled.
 
