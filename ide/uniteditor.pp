@@ -519,7 +519,8 @@ type
     
     procedure ActivateHint(const ScreenPos: TPoint; const TheHint: string);
     
-    Procedure NewFile(const NewShortName: String; ASource : TCodeBuffer);
+    Procedure NewFile(const NewShortName: String; ASource : TCodeBuffer;
+                      FocusIt: boolean);
     Procedure CloseFile(PageIndex:integer);
     procedure FocusEditor;
 
@@ -3470,7 +3471,7 @@ begin
 End;
 
 Procedure TSourceNotebook.NewFile(const NewShortName: String; 
-  ASource : TCodeBuffer);
+  ASource : TCodeBuffer; FocusIt: boolean);
 Var
   TempEditor : TSourceEditor;
 Begin
@@ -3487,6 +3488,7 @@ Begin
   writeln('[TSourceNotebook.NewFile] D ');
   {$ENDIF}
   TempEditor.PageName:=FindUniquePageName(NewShortName,Notebook.PageIndex);
+  if FocusIt then FocusEditor;
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.NewFile] end');
   {$ENDIF}
