@@ -111,7 +111,6 @@ begin
   FLookupRoot:=AValue;
   if FLookupRoot<>nil then begin
     Caption:=FLookupRoot.Name;
-    writeln('TNonControlForm.SetLookupRoot ',FLookupRoot.Name,':',FLookupRoot.ClassName);
   end;
   DoLoadBounds;
 end;
@@ -128,12 +127,10 @@ begin
   inherited Create(TheOwner);
   FFrameWidth:=1;
   ControlStyle:=ControlStyle-[csAcceptsControls];
-  writeln('TNonControlForm.Create ');
 end;
 
 destructor TNonControlForm.Destroy;
 begin
-  writeln('TNonControlForm.Destroy ');
   inherited Destroy;
 end;
 
@@ -199,7 +196,6 @@ begin
     NewTop:=CurDataModule.DesignOffset.Y;
     NewWidth:=CurDataModule.DesignSize.X;
     NewHeight:=CurDataModule.DesignSize.Y;
-writeln('TDataModuleForm.DoLoadBounds ',NewLeft,',',NewTop,',',NewWidth,',',NewHeight);
     SetBounds(NewLeft,NewTop,NewWidth,NewHeight);
   end;
 end;
@@ -214,7 +210,6 @@ begin
     CurDataModule.DesignOffset.Y:=Top;
     CurDataModule.DesignSize.X:=Width;
     CurDataModule.DesignSize.Y:=Height;
-writeln('TDataModuleForm.DoSaveBounds ',Left,',',Top,',',Width,',',Height);
   end;
   inherited DoSaveBounds;
 end;
