@@ -850,9 +850,7 @@ begin
   //TODO: SendCancelMode(self);
   if csCaptureMouse in ControlStyle then MouseCapture := True;
   if csClickEvents in ControlStyle then TripleClick;
-  {$IFDEF VER1_0_7}
   DoMouseDown(Message, mbLeft ,[ssTriple]);
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -864,9 +862,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMRButtonTripleClk(var Message: TLMRButtonTripleClk);
 begin
-  {$IFDEF VER1_0_7}
   DoMouseDown(Message, mbRight ,[ssTriple]);
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -878,9 +874,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMMButtonTripleClk(var Message: TLMMButtonTripleClk);
 begin
-  {$IFDEF VER1_0_7}
   DoMouseDown(Message, mbMiddle ,[ssTriple]);
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -895,9 +889,7 @@ begin
   //TODO: SendCancelMode(self);
   if csCaptureMouse in ControlStyle then MouseCapture := True;
   if csClickEvents in ControlStyle then QuadClick;
-  {$IFDEF VER1_0_7}
   DoMouseDown(Message, mbLeft ,[ssQuad]);
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -909,9 +901,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMRButtonQuadClk(var Message: TLMRButtonQuadClk);
 begin
-  {$IFDEF VER1_0_7}
   DoMouseDown(Message, mbRight ,[ssQuad]);
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -923,9 +913,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMMButtonQuadClk(var Message: TLMMButtonQuadClk);
 begin
-  {$IFDEF VER1_0_7}
   DoMouseDown(Message, mbMiddle ,[ssQuad]);
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -1811,6 +1799,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.75  2002/09/03 08:40:53  lazarus
+  MG: lazarus now requires the stable 1.0.6 fpc with ssTriple
+
   Revision 1.74  2002/09/03 08:07:19  lazarus
   MG: image support, TScrollBox, and many other things from Andrew
 
