@@ -476,6 +476,59 @@ begin
   end;
 end;
 
+procedure ReadRawImageBits_24(TheData: PByte;
+  const Position: TRawImagePosition;
+  Prec, Shift: cardinal;
+  var Bits: word);
+var
+  P: PByte;
+  PrecMask: Cardinal;
+  FourBytes: Cardinal;
+begin
+  PrecMask:=(Cardinal(1) shl Prec)-1;
+  P:=@(TheData[Position.Byte]);
+
+{$ifdef Endian_Little}
+  FourBytes:=DWord(PWord(P)^) or (DWord((P+2)^) shl 16);
+{$else}
+  FourBytes:=(DWord(PWord(P)^) shl 8) or DWord(P^);
+{$endif}
+  Bits:=Word(cardinal(FourBytes shr Shift) and PrecMask);
+
+  if Prec<16 then begin
+    // add missing bits
+    Bits:=(Bits shl (16-Prec));
+    Bits:=Bits or MissingBits[Prec,Bits shr 13];
+  end;
+end;
+
+procedure ReadRawImageBits_ReversedBytes_24(TheData: PByte;
+  const Position: TRawImagePosition;
+  Prec, Shift: cardinal;
+  var Bits: word);
+var
+  P: PByte;
+  PrecMask: Cardinal;
+  FourBytes: Cardinal;
+begin
+  PrecMask:=(Cardinal(1) shl Prec)-1;
+  P:=@(TheData[Position.Byte]);
+
+{$ifdef Endian_Little}
+  FourBytes:=(DWord(PWord(P)^) shl 8) or DWord(P^);
+{$else}
+  FourBytes:=DWord(PWord(P)^) or (DWord((P+2)^) shl 16);
+{$endif}
+
+  Bits:=Word(cardinal(FourBytes shr Shift) and PrecMask);
+
+  if Prec<16 then begin
+    // add missing bits
+    Bits:=(Bits shl (16-Prec));
+    Bits:=Bits or MissingBits[Prec,Bits shr 13];
+  end;
+end;
+
 procedure ReadRawImageBits_32(TheData: PByte;
   const Position: TRawImagePosition;
   Prec, Shift: cardinal;
@@ -626,6 +679,68 @@ begin
   PWord(P)^:=TwoBytes;
 end;
 
+procedure WriteRawImageBits_24(TheData: PByte;
+  const Position: TRawImagePosition;
+  Prec, Shift: cardinal; Bits: word);
+var
+  P: PByte;
+  PrecMask: Cardinal;
+  FourBytes: Cardinal;
+begin
+  P:=@(TheData[Position.Byte]);
+  PrecMask:=(Cardinal(1) shl Prec)-1;
+  Bits:=Bits shr (16-Prec);
+
+{$ifdef Endian_Little}
+  FourBytes:=DWord(PWord(P)^) or (DWord((P+2)^) shl 16);
+{$else}
+  FourBytes:=(DWord(PWord(P)^) shl 8) or DWord(P^);
+{$endif}
+  
+  PrecMask:=not (PrecMask shl Shift);
+  FourBytes:=FourBytes and PrecMask; // clear old
+  FourBytes:=FourBytes or cardinal(Bits shl Shift); // set new
+
+{$ifdef Endian_little}
+  PWord(P)^ := Word(FourBytes);
+  (P+2)^ := Byte(FourBytes shr 16);
+{$else}  
+  PWord(P)^ := Word(FourBytes shr 8);
+  P^ := Byte(FourBytes);
+{$endif}
+end;
+
+procedure WriteRawImageBits_ReversedBytes_24(TheData: PByte;
+  const Position: TRawImagePosition;
+  Prec, Shift: cardinal; Bits: word);
+var
+  P: PByte;
+  PrecMask: Cardinal;
+  FourBytes: Cardinal;
+begin
+  P:=@(TheData[Position.Byte]);
+  PrecMask:=(Cardinal(1) shl Prec)-1;
+  Bits:=Bits shr (16-Prec);
+
+{$ifdef Endian_Little}
+  FourBytes:=(DWord(PWord(P)^) shl 8) or DWord(P^);
+{$else}
+  FourBytes:=DWord(PWord(P)^) or (DWord((P+2)^) shl 16);
+{$endif}
+  
+  PrecMask:=not (PrecMask shl Shift);
+  FourBytes:=FourBytes and PrecMask; // clear old
+  FourBytes:=FourBytes or cardinal(Bits shl Shift); // set new
+
+{$ifdef Endian_little}
+  PWord(P)^ := Word(FourBytes shr 8);
+  P^ := Byte(FourBytes);
+{$else}  
+  PWord(P)^ := Word(FourBytes);
+  (P+2)^ := Byte(FourBytes shr 16);
+{$endif}
+end;
+
 procedure WriteRawImageBits_32(TheData: PByte;
   const Position: TRawImagePosition;
   Prec, Shift: cardinal; Bits: word);
@@ -747,6 +862,17 @@ begin
     end else begin
       ProcReadRawImageBits  := @ReadRawImageBits_ReversedBytes_16;
       ProcWriteRawImageBits := @WriteRawImageBits_ReversedBytes_16;
+    end;
+  end;
+
+  24:
+  begin
+    if DefaultByteOrder=ByteOrder then begin
+      ProcReadRawImageBits  := @ReadRawImageBits_24;
+      ProcWriteRawImageBits := @WriteRawImageBits_24;
+    end else begin
+      ProcReadRawImageBits  := @ReadRawImageBits_ReversedBytes_24;
+      ProcWriteRawImageBits := @WriteRawImageBits_ReversedBytes_24;
     end;
   end;
 
