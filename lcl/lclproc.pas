@@ -54,7 +54,7 @@ var
 function SendApplicationMessage(Msg: Cardinal; WParam, LParam: Longint):Longint;
 procedure OwnerFormDesignerModified(AComponent: TComponent);
 function OffSetRect(var ARect: TRect; dx,dy: Integer): Boolean;
-
+procedure FreeThenNil(var AnObject: TObject);
 
 implementation
 
@@ -242,6 +242,14 @@ Begin
     Result := True
   else
     Result := False;
+end;
+
+procedure FreeThenNil(var AnObject: TObject);
+begin
+  if AnObject<>nil then begin
+    AnObject.Free;
+    AnObject:=nil;
+  end;
 end;
 
 initialization
