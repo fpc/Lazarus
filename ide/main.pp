@@ -4978,13 +4978,13 @@ var
   Rect : TRect;
   AHint : String;
   cPosition : TPoint;
-  TextPosition : TPoint;
-  SE : TSourceEditor;
+//  TextPosition : TPoint;
+//  SE : TSourceEditor;
   WIndow : TWInControl;
-  Caret : TPoint;
+//  Caret : TPoint;
   Control : TCOntrol;
-  Control2 : TControl;
-  tempPosition : TPoint;
+//  Control2 : TControl;
+//  tempPosition : TPoint;
 begin
   HintTimer1.Enabled := False;
 
@@ -5064,6 +5064,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.164  2001/12/05 18:19:10  lazarus
+  MG: added calendar to allunits and removed unused vars
+
   Revision 1.163  2001/12/04 14:28:04  lazarus
   Added hints to the main ide.
   Shane

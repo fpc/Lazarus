@@ -98,11 +98,10 @@ begin
 end;
 
 procedure TCalendar.SetDate(const AValue: String);
-var
-  Temp : TDateTime;
+//var Temp : TDateTime;
 begin
    try
-     Temp := StrtoDate(AValue);  //test to see if valid date....
+     {Temp := }StrtoDate(AValue);  //test to see if valid date....
 
      FDate := AValue;
      SetProps;

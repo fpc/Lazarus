@@ -12,8 +12,8 @@ unit allunits;
 interface
 uses
   interfacebase, interfaces,
-	buttons,    extctrls,        registry,     vclglobals, 
-	clipbrd,    filectrl,        forms,        lcllinux,   spin, 
+	buttons,    extctrls,        registry,     vclglobals,   calendar,
+	clipbrd,    filectrl,        forms,        lcllinux,     spin, 
 	comctrls,   graphics,        lmessages,    stdctrls, 
 	controls,   imglist,         menus,        toolwin, 
 	dialogs,    messages,        utrace,       dynhasharray,
@@ -25,6 +25,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.9  2001/12/05 18:19:11  lazarus
+  MG: added calendar to allunits and removed unused vars
+
   Revision 1.8  2001/06/16 09:14:38  lazarus
   MG: added lazqueue and used it for the messagequeue
 
