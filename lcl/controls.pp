@@ -705,6 +705,7 @@ type
     procedure Update; //override;   //pbd
     procedure SetZOrderPosition(Position : Integer); virtual;
     Procedure SetZOrder(Topmost: Boolean); virtual;
+    function HandleObjectShouldBeVisible: boolean; virtual;
   public
     property Anchors : TAnchors read FAnchors write FAnchors default [akLeft,akTop];
     property Align : TAlign read FAlign write SetAlign;
@@ -1445,6 +1446,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.107  2003/03/11 23:14:19  mattias
+  added TControl.HandleObjectShouldBeVisible
+
   Revision 1.106  2003/03/11 22:56:41  mattias
   added visiblechanging
 
