@@ -64,11 +64,12 @@ implementation
 constructor TSplashForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  BorderStyle  := bsNone;
+  FormStyle := fsStayOnTop;
   Caption := 'Lazarus';
   Width := 429;
   Height := 341;
   Position:= poScreenCenter;
-  BorderStyle  := bsNone;
 
   FPixmap := TPixmap.Create;
   FPixmap.LoadFromLazarusResource('splash_logo');
@@ -140,6 +141,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.18  2003/01/06 12:00:16  mattias
+  implemented fsStayOnTop+bsNone for forms under gtk (useful for splash)
+
   Revision 1.17  2002/09/30 20:19:12  lazarus
   MG: fixed flickering of modal forms
 

@@ -775,8 +775,10 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TCustomForm.SetBorderStyle(Value : TFormBorderStyle);
 Begin
+  if FBorderStyle = Value then exit;
   //TODO: Finish SETBORDERSTYLE
   FBorderStyle := Value;
+  Include(FFormState,fsBorderStyleChanged);
 end;
 
 {------------------------------------------------------------------------------}
@@ -833,9 +835,10 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TCustomForm.SetFormStyle(Value : TFormStyle);
 Begin
+  if FFormStyle = Value then exit;
   //TODO: Finish SETFORMSTYLE
   FFormStyle := Value;
-  Assert(False, 'Trace:TODO: [TCustomForm.SetFormStyle]');
+  Include(FFormState,fsFormStyleChanged);
 end;
 
 {------------------------------------------------------------------------------}
@@ -849,29 +852,29 @@ begin
   end;    
 end;
 
-{------------------------------------------------------------------------------}
-{       TCustomForm Constructor                                                      }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TCustomForm Constructor
+------------------------------------------------------------------------------}
 constructor TCustomForm.Create(AOwner : TComponent);
 begin
-//writeln('[TCustomForm.Create] A Class=',Classname);
+  //writeln('[TCustomForm.Create] A Class=',Classname);
   try
     BeginFormUpdate;
     CreateNew(AOwner, 1);
-//writeln('[TCustomForm.Create] B Class=',Classname);
+    //writeln('[TCustomForm.Create] B Class=',Classname);
     if (ClassType <> TForm) and not (csDesigning in ComponentState) then
     begin
       Include(FFormState, fsCreating);
       try
-//writeln('[TCustomForm.Create] C Class=',Classname);
+        //writeln('[TCustomForm.Create] C Class=',Classname);
         if not InitResourceComponent(Self, TForm) then begin
           //writeln('[TCustomForm.Create] Resource '''+ClassName+''' not found');
           //Writeln('This is for information purposes only.   This is not critical at this time.');
           // MG:  Ignoring is best at the moment. (Delphi raises an exception.)
         end;
-//writeln('[TCustomForm.Create] D Class=',Classname);
+        //writeln('[TCustomForm.Create] D Class=',Classname);
         DoCreate;
-//writeln('[TCustomForm.Create] E Class=',Classname);
+        //writeln('[TCustomForm.Create] E Class=',Classname);
       finally
         Exclude(FFormState, fsCreating);
       end;
@@ -879,19 +882,27 @@ begin
     EndFormUpdate;
   finally
   end;
-//writeln('[TCustomForm.Create] END Class=',Classname);
+  //writeln('[TCustomForm.Create] END Class=',Classname);
 end;
 
+{------------------------------------------------------------------------------
+  constructor TCustomForm.CreateNew(AOwner: TComponent; Num : Integer);
+------------------------------------------------------------------------------}
 constructor TCustomForm.CreateNew(AOwner: TComponent; Num : Integer);
 Begin
-//writeln('[TCustomForm.CreateNew] Class=',Classname);
+  //writeln('[TCustomForm.CreateNew] Class=',Classname);
   BeginFormUpdate;
-  FBorderStyle:= bsSizeable;
+  // set border style before handle is allocated
+  if not (fsBorderStyleChanged in FFormState) then
+    FBorderStyle:= bsSizeable;
+  // set form style before handle is allocated
+  if not (fsFormStyleChanged in FFormState) then
+    FFormStyle:= fsNormal;
+
   inherited Create(AOwner);
   fCompStyle:= csForm;
 
-  FFormState := [];
-  FMenu	:= nil;	
+  FMenu	:= nil;
 
   ControlStyle := ControlStyle + [csAcceptsControls, csCaptureMouse,
                                   csClickEvents, csSetCaption, csDoubleClicks];
@@ -903,24 +914,24 @@ Begin
   ParentColor := False;
   ParentFont := False;
   Ctl3D := True;
-//  FBorderIcons := [biSystemMenu, biMinimize, biMaximize];
+  //  FBorderIcons := [biSystemMenu, biMinimize, biMaximize];
   FWindowState := wsNormal;
-//  FDefaultMonitor := dmActiveForm;
+  //  FDefaultMonitor := dmActiveForm;
   FIcon := TIcon.Create;
-//  FInCMParentBiDiModeChanged := False;
+  //  FInCMParentBiDiModeChanged := False;
   {apply a drawing surface}
   FKeyPreview :=  False;
   Color := clBtnface;
-//  FPixelsPerInch := Screen.PixelsPerInch;
-//  FPrintScale := poProportional;
-//  FloatingDockSiteClass := TWinControlClass(ClassType);
+  //  FPixelsPerInch := Screen.PixelsPerInch;
+  //  FPrintScale := poProportional;
+  //  FloatingDockSiteClass := TWinControlClass(ClassType);
   Screen.AddForm(Self);
   EndFormUpdate;
 End;
 
-{------------------------------------------------------------------------------}
-{  TCustomForm CreateParams                                                    }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TCustomForm CreateParams
+------------------------------------------------------------------------------}
 procedure TCustomForm.CreateParams(var Params : TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -1120,13 +1131,14 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.CreateWnd;
 begin
-//writeln('TCustomForm.CreateWnd START ',ClassName);
+  //writeln('TCustomForm.CreateWnd START ',ClassName);
+  FFormState:=FFormState-[fsBorderStyleChanged,fsFormStyleChanged];
   inherited CreateWnd;
   CNSendMessage(LM_SETFORMICON, Self, Pointer(GetIconHandle));
 
   Assert(False, 'Trace:[TCustomForm.CreateWnd] FMenu.HandleNeeded');  
   if FMenu <> nil then FMenu.HandleNeeded;
-//writeln('TCustomForm.CreateWnd END ',ClassName);
+  //writeln('TCustomForm.CreateWnd END ',ClassName);
 end;
 
 procedure TCustomForm.Loaded;
@@ -1277,6 +1289,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.84  2003/01/06 12:00:16  mattias
+  implemented fsStayOnTop+bsNone for forms under gtk (useful for splash)
+
   Revision 1.83  2003/01/04 12:06:53  mattias
   fixed TCustomform.BringToFront
 

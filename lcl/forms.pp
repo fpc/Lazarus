@@ -231,7 +231,9 @@ type
     fsVisible,   // form should be shown
     fsShowing,
     fsModal,     // form is modal
-    fsCreatedMDIChild
+    fsCreatedMDIChild,
+    fsBorderStyleChanged,
+    fsFormStyleChanged
     );
   TFormState = set of TFormStateType;
 
@@ -267,7 +269,7 @@ type
     procedure DoDestroy;
     procedure SetActive(AValue: Boolean);
     procedure SetActiveControl(AWinControl: TWinControl);
-    procedure SetBorderStyle(Value : TFORMBorderStyle);
+    procedure SetBorderStyle(Value : TFormBorderStyle);
     procedure SetDesigner(Value : TIDesigner);
     procedure SetMenu(Value : TMainMenu);
     procedure SetFormStyle(Value : TFormStyle);
