@@ -92,7 +92,7 @@ end;
 { TDBGWatches }
 
 constructor TDBGWatches.Create;
-begin
+begin                   
   inherited Create(TDBGWatch);
 end;
 
@@ -109,6 +109,10 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.5  2001/11/06 23:59:13  lazarus
+  MWE: + Initial breakpoint support
+       + Added exeption handling on process.free
+
   Revision 1.4  2001/11/05 00:12:51  lazarus
   MWE: First steps of a debugger.
 

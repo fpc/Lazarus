@@ -62,7 +62,7 @@ type
     procedure DoDbgOutput(const AText: String);
     procedure DoOutput(const AText: String);
     procedure DoState;
-    function  GetFlags: TDBGCommands;       virtual;
+    function  GetFlags: TDBGCommands; virtual;
     function  RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; virtual; abstract; // True if succesful
     procedure SetFileName(const Value: String); virtual;
     procedure SetState(const Value: TDBGState); 
@@ -91,6 +91,16 @@ type
     property OnDbgOutput: TDBGOutputEvent read FOnDbgOutput write FOnDbgOutput;// Passes all debuggeroutput        
   end;
 
+  TInternalDebugger = class(TDebugger)
+  private  
+  protected
+  public
+    procedure BreakActionChange(const ABreakPoint: TDBGBreakpoint); virtual;
+    procedure BreakAdd(const ABreakPoint: TDBGBreakpoint); virtual;
+    procedure BreakEnableChange(const ABreakPoint: TDBGBreakpoint); virtual;
+    procedure BreakExpressionChange(const ABreakPoint: TDBGBreakpoint); virtual;
+    procedure BreakRemove(const ABreakPoint: TDBGBreakpoint); virtual;
+  end;
 
 implementation
 
@@ -119,7 +129,7 @@ begin
   FState := dsNone;
   FArguments := '';
   FFilename := '';
-  FBreakPointGroups := TDBGBreakPointGroups.Create;
+  FBreakPointGroups := TDBGBreakPointGroups.Create(Self);
   FWatches := TDBGWatches.Create;
 end;
 
@@ -236,9 +246,36 @@ begin
   ReqCmd(dcStop, []);
 end;
 
+{ TInternalDebugger }
+
+procedure TInternalDebugger.BreakActionChange(const ABreakPoint: TDBGBreakpoint); 
+begin
+end;
+
+procedure TInternalDebugger.BreakAdd(const ABreakPoint: TDBGBreakpoint); 
+begin
+end;
+
+procedure TInternalDebugger.BreakEnableChange(const ABreakPoint: TDBGBreakpoint); 
+begin
+end;
+
+procedure TInternalDebugger.BreakExpressionChange(const ABreakPoint: TDBGBreakpoint); 
+begin
+end;
+
+procedure TInternalDebugger.BreakRemove(const ABreakPoint: TDBGBreakpoint); 
+begin
+end;
+
+
 end.
 { =============================================================================
   $Log$
+  Revision 1.4  2001/11/06 23:59:13  lazarus
+  MWE: + Initial breakpoint support
+       + Added exeption handling on process.free
+
   Revision 1.3  2001/11/05 00:12:51  lazarus
   MWE: First steps of a debugger.
 

@@ -117,8 +117,11 @@ begin
     FDebugger.OnOutput := @DBGTargetOutput;
     FDebugger.OnCurrent := @DBGCurrent;
     FDebugger.OnState := @DBGState;
-    
-    FOutputForm := TDBGOutputForm.Create(nil);
+                                               
+    // Something strange going on here, 
+    // sometimes the form crashes during load with Application as owner
+    // sometimes the form crashes during load with nil as owner
+    FOutputForm := TDBGOutputForm.Create(Application);
     FOutputForm.OnDestroy := @OutputFormDestroy;
     FOutputForm.Show;
   end;
@@ -230,6 +233,10 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.2  2001/11/06 23:59:13  lazarus
+  MWE: + Initial breakpoint support
+       + Added exeption handling on process.free
+
   Revision 1.1  2001/11/05 00:12:51  lazarus
   MWE: First steps of a debugger.
 

@@ -32,7 +32,7 @@ uses
   Classes, Process, Debugger{, strmlsnr};
 
 type
-  TCmdLineDebugger = class(TDebugger)
+  TCmdLineDebugger = class(TInternalDebugger)
   private
     FTargetProcess: TProcess;         // The target process to be debugged
     FDbgProcess: TProcess;            // The process used to call the debugger
@@ -54,7 +54,7 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
-    procedure TestCmd(const ACommand: String); // For internal debugging purposes
+    procedure TestCmd(const ACommand: String); virtual;// For internal debugging purposes
   end;
 
 procedure SendBreak(const AHandle: Integer);
@@ -177,7 +177,11 @@ procedure TCmdLineDebugger.CreateDebugProcess(const AName:String);
 begin
   if FDbgProcess = nil 
   then begin
-    FDbgProcess := TProcess.Create(AName, [poUsePipes, poNoConsole, poExecuteOnCreate]);
+    FDbgProcess := TProcess.Create(nil);
+    FDbgProcess.CommandLine := AName;
+    FDbgProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut];
+    FDbgProcess.ShowWindow := swoNone;
+    FDbgProcess.Execute;
     WriteLn('[TCmdLineDebugger] Debug PID: ', FDbgProcess.Handle);
     GetOutput;
   end;
@@ -187,15 +191,27 @@ procedure TCmdLineDebugger.CreateTargetProcess(const AName:String);
 begin
   // TODO: Better cleanup
   FTargetProcess.Free;
-  FTargetProcess := TProcess.Create(AName, [poUsePipes, poNoConsole, poExecuteOnCreate, poRunSuspended]);
+  FTargetProcess := TProcess.Create(nil);
+  FTargetProcess.CommandLine := AName;
+  FTargetProcess.Options:= [poUsePipes, poNoConsole, poRunSuspended, poStdErrToOutPut];
+  FTargetProcess.ShowWindow := swoNone;
+  FTargetProcess.Execute;
   WriteLN('[TCmdLineDebugger] Target PID = ', FTargetProcess.Handle);
 end;
 
 destructor TCmdLineDebugger.Destroy;
 begin
   inherited;
-  FDbgProcess.Free;
-  FTargetProcess.Free;
+  try
+    FTargetProcess.Free;
+  except
+    on E: Exception do WriteLN('Exeption while freeing target: ', E.Message);
+  end;
+  try
+    FDbgProcess.Free;
+  except
+    on E: Exception do WriteLN('Exeption while freeing debugger: ', E.Message);
+  end;
 end;
 
 procedure TCmdLineDebugger.GetOutput;
@@ -271,7 +287,11 @@ procedure TCmdLineDebugger.KillTargetProcess;
 begin
   FTargetProcess.Terminate(0);
   FTargetProcess.WaitOnExit;
-  FTargetProcess.Free;
+  try
+    FTargetProcess.Free;
+  except
+    on E: Exception do WriteLN('Exeption while freeing target: ', E.Message);
+  end;
   FTargetProcess:= nil;
 end;
 
@@ -302,6 +322,10 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.2  2001/11/06 23:59:12  lazarus
+  MWE: + Initial breakpoint support
+       + Added exeption handling on process.free
+
   Revision 1.1  2001/11/05 00:12:51  lazarus
   MWE: First steps of a debugger.
 

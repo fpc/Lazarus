@@ -28,7 +28,7 @@ unit GDBDebugger;
 interface
 
 uses
-  Classes, Process, Debugger, CmdLineDebugger;
+  Classes, Process, Debugger, CmdLineDebugger, DBGBreakPoint;
 
 type                       
 
@@ -45,6 +45,12 @@ type
     function  GetGDBState: TDBGState;
     function  GetLocation: TDBGLocationRec;
   protected
+    procedure BreakActionChange(const ABreakPoint: TDBGBreakpoint); override;
+    procedure BreakAdd(const ABreakPoint: TDBGBreakpoint); override;
+    procedure BreakEnableChange(const ABreakPoint: TDBGBreakpoint); override;
+    procedure BreakExpressionChange(const ABreakPoint: TDBGBreakpoint); override;
+    procedure BreakRemove(const ABreakPoint: TDBGBreakpoint); override;
+
     function  GetFlags: TDBGCommands; override;
     function  RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; override;
   public
@@ -53,6 +59,8 @@ type
   
     procedure Init; override;         // Initializes external debugger
     procedure Done; override;         // Kills external debugger
+    // internal testing
+    procedure TestCmd(const ACommand: String); override;
   end;
 
 
@@ -62,6 +70,26 @@ uses
   SysUtils;
   
 { TGDBDebugger }
+
+procedure TGDBDebugger.BreakActionChange(const ABreakPoint: TDBGBreakpoint); 
+begin
+end;
+
+procedure TGDBDebugger.BreakAdd(const ABreakPoint: TDBGBreakpoint); 
+begin
+end;
+
+procedure TGDBDebugger.BreakEnableChange(const ABreakPoint: TDBGBreakpoint); 
+begin
+end;
+
+procedure TGDBDebugger.BreakExpressionChange(const ABreakPoint: TDBGBreakpoint); 
+begin
+end;
+
+procedure TGDBDebugger.BreakRemove(const ABreakPoint: TDBGBreakpoint); 
+begin
+end;
 
 constructor TGDBDebugger.Create;
 begin
@@ -144,14 +172,12 @@ begin
   end;
 
   dState := GetGDBState;
-  if dState = dsRun 
+  if dState <> dsPause 
   then Exit;
-  
-  if dState = dsPause
-  then begin
-    SendCmdLn('kill', True);
-    dState := GetGDBState;
-  end;
+
+  SendCmdLn('kill', True);
+  dState := GetGDBState;   
+
   if dState = dsStop
   then KillTargetProcess;
   SetState(dState);
@@ -168,6 +194,7 @@ var
 begin
   SendCmdLn('info program', True);
   S := OutputLines.Text;
+  WriteLn('Info: ',S);
   if Pos('stopped', S) > 0 
   then Result := dsPause
   else if Pos('not being run', S) > 0 
@@ -254,9 +281,21 @@ begin
   SetState(GetGDBState);
 end;
 
+procedure TGDBDebugger.TestCmd(const ACommand: String);
+begin
+  SetState(dsRun);
+  inherited TestCmd(ACommand);
+  DoCurrent(GetLocation);
+  SetState(GetGDBState);
+end;
+
 end.
 { =============================================================================
   $Log$
+  Revision 1.2  2001/11/06 23:59:13  lazarus
+  MWE: + Initial breakpoint support
+       + Added exeption handling on process.free
+
   Revision 1.1  2001/11/05 00:12:51  lazarus
   MWE: First steps of a debugger.
 
