@@ -1,3 +1,5 @@
+// included by comctrls.pp
+
 {******************************************************************************
                                   TTrackBar
  ******************************************************************************}
@@ -381,6 +383,9 @@ end;
 
 {
   $Log$
+  Revision 1.3  2002/01/04 21:07:49  lazarus
+  MG: added TTreeView
+
   Revision 1.2  2000/07/23 19:03:10  lazarus
   changed some comments, stoppok
 

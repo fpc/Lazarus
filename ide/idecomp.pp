@@ -304,7 +304,7 @@ begin
   RegisterComponents('Additional','Buttons',[TBitBtn,TSpeedButton]);
   RegisterComponents('Additional','ExtCtrls',[TNoteBook,TPaintBox
           ,TBevel,TRadioGroup,TImage]);
-  RegisterComponents('Additional','ComCtrls',[TStatusBar,TListView
+  RegisterComponents('Additional','ComCtrls',[TStatusBar,TListView,TTreeView
           ,TProgressBar,TToolBar,TTrackbar]);
 
   RegisterComponents('Misc','Calendar',[TCalendar]);

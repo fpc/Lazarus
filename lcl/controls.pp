@@ -215,6 +215,9 @@ TCMDialogKey = TLMKEY;
   TCaption = String;
   TCursor = -32768..32767;
 
+  TFormStyle = (fsNormal, fsMDIChild, fsMDIFORM, fsStayOnTop);
+  TFormBorderStyle = (bsNone, bsSingle, bsSizeable, bsDialog, bsToolWindow, bsSizeToolWin);
+  TBorderStyle = bsNone..bsSingle;
 
   TMouseButton = (mbLeft, mbRight, mbMiddle);
 
@@ -1148,6 +1151,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.30  2002/01/04 21:07:49  lazarus
+  MG: added TTreeView
+
   Revision 1.29  2002/01/01 18:38:36  lazarus
   MG: more wmsize messages :(
 

@@ -3824,7 +3824,8 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer;
+function TgtkObject.SetScrollInfo(Handle : HWND; SBStyle : Integer; 
+  ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer;
 const
   POLICY: array[BOOLEAN] of TGTKPolicyType = (GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 var
@@ -3837,23 +3838,37 @@ begin
   if (Handle <> 0)
   then begin
     case SBStyle of
+    
       SB_HORZ:
-        if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), gtk_scrolled_window_get_type) then
-           Adjustment := gtk_scrolled_window_get_hadjustment(PGTKScrolledWindow(Handle))
+        if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), 
+         gtk_scrolled_window_get_type) 
+        then
+          Adjustment := gtk_scrolled_window_get_hadjustment(
+                           PGTKScrolledWindow(Handle))
         else
-        if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), gtk_hscrollbar_get_type) then
-           Adjustment :=  PgtkhScrollBar(handle)^.Scrollbar.Range.Adjustment;
+        if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), 
+          gtk_hscrollbar_get_type) 
+        then
+          Adjustment :=  PgtkhScrollBar(handle)^.Scrollbar.Range.Adjustment;
+          
       SB_VERT:
-        if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), gtk_scrolled_window_get_type) then
-           Adjustment := gtk_scrolled_window_get_vadjustment(PGTKScrolledWindow(Handle))
+        if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), 
+                         gtk_scrolled_window_get_type) 
+        then
+          Adjustment := gtk_scrolled_window_get_vadjustment(
+                           PGTKScrolledWindow(Handle))
         else
-        if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), gtk_vscrollbar_get_type) then
-           Adjustment :=  PgtkvScrollBar(handle)^.Scrollbar.Range.Adjustment;
+        if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), 
+          gtk_vscrollbar_get_type) 
+        then
+          Adjustment :=  PgtkvScrollBar(handle)^.Scrollbar.Range.Adjustment;
+          
       SB_CTL:
         if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), gtk_range_get_type)
         then begin
           Adjustment := gtk_range_get_adjustment(PGTKRange(Handle));
         end;
+        
       else
         Adjustment := nil;
     end;
@@ -3872,6 +3887,8 @@ begin
         Page_Size := nPage;
         Page_Increment := nPage;
       end;
+      
+//writeln('[TgtkObject.SetScrollInfo] Result=',Result,' Lower=',round(Lower),' Upper=',round(Upper),' Page_Size=',round(Page_Size),' Page_Increment=',round(Page_Increment),' bRedraw=',bRedraw,' Handle=',Handle);
 
       // do we have to set this allways ?
       if bRedraw then
@@ -4300,6 +4317,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.56  2002/01/04 21:07:49  lazarus
+  MG: added TTreeView
+
   Revision 1.55  2002/01/02 15:24:58  lazarus
   MG: added TCanvas.Polygon and TCanvas.Polyline
 

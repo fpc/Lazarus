@@ -37,10 +37,6 @@ interface
 uses classes, controls, vclglobals, sysutils,graphics,Menus, LCLLinux,LMessages;
 
 type
-  TFormStyle = (fsNormal, fsMDIChild, fsMDIFORM, fsStayOnTop);
-  TFormBorderStyle = (bsNone, bsSingle, bsSizeable, bsDialog, bsToolWindow, bsSizeToolWin);
-  TBorderStyle = bsNone..bsSingle;
-
   TPosition = (poDesigned, poDefault, poDefaultPosOnly, poDefaultSizeOnly, poScreenCenter, poDesktopCenter, poMainFormCenter, poOwnerFormCenter);
 
   TWindowState = (wsNormal, wsMinimized, wsMaximized);

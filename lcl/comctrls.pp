@@ -32,8 +32,8 @@ unit ComCtrls;
 interface
 
 uses
-  SysUtils, Classes, Controls,LclLinux, stdCtrls, vclGlobals, lMessages,
-  Menus, ImgList, Graphics, Toolwin;
+  SysUtils, Classes, Controls, LclLinux, StdCtrls, ExtCtrls, vclGlobals,
+  lMessages, Menus, ImgList, Graphics, ToolWin;
 
 
   const
@@ -370,13 +370,21 @@ type
     property SimpleText : String read FSimpleText write SetSimpleText;
     property SimplePanel : Boolean read FSimplePanel write SetSimplePanel;
     property Visible;
- end;
+  end;
+
+ { Custom draw }
+
+  TCustomDrawTarget = (dtControl, dtItem, dtSubItem);
+  TCustomDrawStage = (cdPrePaint, cdPostPaint, cdPreErase, cdPostErase);
+  TCustomDrawState = set of (cdsSelected, cdsGrayed, cdsDisabled, cdsChecked,
+    cdsFocused, cdsDefault, cdsHot, cdsMarked, cdsIndeterminate);
 
 
- TListItems = class;  //forward declaration!
- TCustomListView = class;  //forward declaration!
 
- TListItem = class(TPersistent)
+  TListItems = class;  //forward declaration!
+  TCustomListView = class;  //forward declaration!
+
+  TListItem = class(TPersistent)
   private
     FOwner : TListItems;
     FSubItems: TStrings;
@@ -978,10 +986,680 @@ type
   end;
 
 
+{ TTreeNode }
+
+type
+  TCustomTreeView = class;
+  TTreeNodes = class;
+  TTreeNode = class;
+
+  TNodeState = (nsCut, nsDropHilited, nsFocused, nsSelected, nsExpanded,
+                nsHasChildren);
+  TNodeStates = set of TNodeState;
+  TNodeAttachMode = (naAdd, naAddFirst, naAddChild, naAddChildFirst, naInsert);
+
+  TAddMode = (taAddFirst, taAdd, taInsert);
+
+  TSortType = (stNone, stData, stText, stBoth);
+
+  TTreeNodeArray = ^TTreeNode;
+
+  ETreeNodeError = class(Exception);
+  ETreeViewError = class(ETreeNodeError);
+
+const
+  NodeAttachModeNames: array[TNodeAttachMode] of string =
+    ('naAdd', 'naAddFirst', 'naAddChild', 'naAddChildFirst', 'naInsert');
+  AddModeNames: array[TAddMode] of string =
+    ('taAddFirst', 'taAdd', 'taInsert');
+
+type
+  TTVChangingEvent = procedure(Sender: TObject; Node: TTreeNode;
+    var AllowChange: Boolean) of object;
+  TTVChangedEvent = procedure(Sender: TObject; Node: TTreeNode) of object;
+  TTVEditingEvent = procedure(Sender: TObject; Node: TTreeNode;
+    var AllowEdit: Boolean) of object;
+  TTVEditedEvent = procedure(Sender: TObject; Node: TTreeNode;
+    var S: string) of object;
+  TTVExpandingEvent = procedure(Sender: TObject; Node: TTreeNode;
+    var AllowExpansion: Boolean) of object;
+  TTVCollapsingEvent = procedure(Sender: TObject; Node: TTreeNode;
+    var AllowCollapse: Boolean) of object;
+  TTVExpandedEvent = procedure(Sender: TObject; Node: TTreeNode) of object;
+  TTVCompareEvent = procedure(Sender: TObject; Node1, Node2: TTreeNode;
+    var Compare: Integer) of object;
+  TTVCustomDrawEvent = procedure(Sender: TCustomTreeView; const ARect: TRect;
+    var DefaultDraw: Boolean) of object;
+  TTVCustomDrawItemEvent = procedure(Sender: TCustomTreeView; Node: TTreeNode;
+    State: TCustomDrawState; var DefaultDraw: Boolean) of object;
+  TTVAdvancedCustomDrawEvent = procedure(Sender: TCustomTreeView;
+    const ARect: TRect; Stage: TCustomDrawStage;
+    var DefaultDraw: Boolean) of object;
+  TTVAdvancedCustomDrawItemEvent = procedure(Sender: TCustomTreeView;
+    Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
+    var PaintImages, DefaultDraw: Boolean) of object;
+
+  THitTest = (htAbove, htBelow, htNowhere, htOnItem, htOnButton, htOnIcon,
+    htOnIndent, htOnLabel, htOnRight, htOnStateIcon, htToLeft, htToRight);
+  THitTests = set of THitTest;
+
+  TTreeNodeCompare = function(Node1, Node2: TTreeNode): integer of object;
+
+  PTreeNodeInfo = ^TTreeNodeInfo;
+  TTreeNodeInfo = packed record
+    ImageIndex: Integer;
+    SelectedIndex: Integer;
+    StateIndex: Integer;
+    OverlayIndex: Integer;
+    Data: Pointer;
+    Count: Integer;
+    Height: integer;
+    Expanded: boolean;
+    TextLen: integer;
+    // here follows the text
+  end;
+
+  // this is the delphi node stream record
+  PDelphiNodeInfo = ^TDelphiNodeInfo;
+  TDelphiNodeInfo = packed record
+    ImageIndex: Integer;
+    SelectedIndex: Integer;
+    StateIndex: Integer;
+    OverlayIndex: Integer;
+    Data: Pointer;
+    Count: Integer;
+    Text: string[255];
+  end;
+
+  TTreeNode = class(TPersistent)
+  private
+    FOwner: TTreeNodes;   // the object, which contains all nodes of the tree
+    FCapacity: integer;   // size of FItems
+    FCount: integer;      // # of first level childs in FItems
+    FData: Pointer;       // custom data
+    FDeleting: Boolean;
+    FHeight: integer;     // height in pixels
+    FInTree: Boolean;
+    FImageIndex: integer;
+    //FItemId: HTreeItem;
+    FItems: TTreeNodeArray;  // first level child nodes
+    FNextBrother: TTreeNode; // next sibling
+    FOverlayIndex: Integer;
+    FParent: TTreeNode;
+    FPrevBrother: TTreeNode; // previous sibling
+    FSelectedIndex: Integer;
+    FStateIndex: Integer;
+    FStates: TNodeStates;
+    FSubTreeCount: integer;// total of all child nodes and self
+    FText: string;
+    FTop: integer;        // top coordinate
+    function AreParentsExpanded: Boolean;
+    function CompareCount(CompareMe: Integer): Boolean;
+    function DoCanExpand(ExpandIt: Boolean): Boolean;
+    procedure DoExpand(ExpandIt: Boolean);
+    procedure ExpandItem(ExpandIt: Boolean; Recurse: Boolean);
+    function GetAbsoluteIndex: Integer;
+    function GetHasChildren: Boolean;
+    function GetCount: Integer;
+    function GetCut: boolean;
+    //function GetDropTarget: Boolean;
+    function GetExpanded: Boolean;
+    function GetFocused: Boolean;
+    function GetHeight: integer;
+    function GetIndex: Integer;
+    function GetItems(AnIndex: Integer): TTreeNode;
+    function GetLevel: Integer;
+    function GetSelected: Boolean;
+    function GetState(NodeState: TNodeState): Boolean;
+    function GetTreeNodes: TTreeNodes;
+    function GetTreeView: TCustomTreeView;
+    function GetTop: integer;
+    procedure InternalMove(ANode: TTreeNode; AddMode: TAddMode);
+    function IsEqual(Node: TTreeNode): Boolean;
+    function IsNodeVisible: Boolean;
+    procedure ReadData(Stream: TStream; StreamVersion: integer;
+      Info: PTreeNodeInfo);
+    procedure ReadDelphiData(Stream: TStream; Info: PDelphiNodeInfo);
+    procedure SetCut(AValue: Boolean);
+    procedure SetData(AValue: Pointer);
+    //procedure SetDropTarget(Value: Boolean);
+    procedure SetExpanded(AValue: Boolean);
+    procedure SetFocused(AValue: Boolean);
+    procedure SetHasChildren(AValue: Boolean);
+    procedure SetHeight(AValue: integer);
+    procedure SetImageIndex(AValue: integer);
+    procedure SetItems(AnIndex: Integer; AValue: TTreeNode);
+    procedure SetOverlayIndex(AValue: Integer);
+    procedure SetSelected(AValue: Boolean);
+    procedure SetSelectedIndex(AValue: Integer);
+    procedure SetStateIndex(AValue: Integer);
+    procedure SetText(const S: string);
+    procedure Unbind;
+    procedure WriteData(Stream: TStream; Info: PTreeNodeInfo);
+    procedure WriteDelphiData(Stream: TStream; Info: PDelphiNodeInfo);
+  public
+    constructor Create(AnOwner: TTreeNodes);
+    function AlphaSort: Boolean;
+    procedure Assign(Source: TPersistent); override;
+    procedure Collapse(Recurse: Boolean);
+    function CustomSort(SortProc: TTreeNodeCompare): Boolean;
+    function DefaultTreeViewSort(Node1, Node2: TTreeNode): Integer;
+    procedure Delete;
+    procedure DeleteChildren;
+    destructor Destroy; override;
+    function DisplayExpandSignLeft: integer;
+    function DisplayExpandSignRect: TRect;
+    function DisplayExpandSignRight: integer;
+    function DisplayIconLeft: integer;
+    function DisplayRect(TextOnly: Boolean): TRect;
+    function DisplayStateIconLeft: integer;
+    function DisplayTextLeft: integer;
+    function DisplayTextRight: integer;
+    function EditText: Boolean;
+    procedure EndEdit(Cancel: Boolean);
+    procedure Expand(Recurse: Boolean);
+    procedure ExpandParents;
+    function Bottom: integer;
+    function BottomExpanded: integer;
+    function GetFirstChild: TTreeNode;
+    function GetHandle: THandle;
+    function GetLastSibling: TTreeNode;
+    function GetLastChild: TTreeNode;
+    function GetLastSubChild: TTreeNode;
+    function GetNext: TTreeNode;
+    function GetNextChild(AValue: TTreeNode): TTreeNode;
+    function GetNextSibling: TTreeNode;
+    function GetNextVisible: TTreeNode;
+    function GetPrev: TTreeNode;
+    function GetPrevChild(AValue: TTreeNode): TTreeNode;
+    function GetPrevSibling: TTreeNode;
+    function GetPrevVisible: TTreeNode;
+    function HasAsParent(AValue: TTreeNode): Boolean;
+    function IndexOf(AValue: TTreeNode): Integer;
+    procedure MakeVisible;
+    procedure MoveTo(Destination: TTreeNode; Mode: TNodeAttachMode); virtual;
+    procedure Update;
+    function ConsistencyCheck: integer;
+    procedure WriteDebugReport(const Prefix: string; Recurse: boolean);
+    property AbsoluteIndex: Integer read GetAbsoluteIndex;
+    property Count: Integer read GetCount;
+    property Cut: Boolean read GetCut write SetCut;
+    property Data: Pointer read FData write SetData;
+    property Deleting: Boolean read FDeleting;
+    property Focused: Boolean read GetFocused write SetFocused;
+    //property DropTarget: Boolean read GetDropTarget write SetDropTarget;
+    property Expanded: Boolean read GetExpanded write SetExpanded;
+    property Handle: THandle read GetHandle;
+    property HasChildren: Boolean read GetHasChildren write SetHasChildren;
+    property Height: integer read GetHeight write SetHeight;
+    property ImageIndex: integer read FImageIndex write SetImageIndex;
+    property Index: Integer read GetIndex;
+    property IsVisible: Boolean read IsNodeVisible;
+    property Items[Index: Integer]: TTreeNode read GetItems write SetItems; default;
+    //property ItemId: HTreeItem read FItemId;
+    property Level: Integer read GetLevel;
+    property OverlayIndex: Integer read FOverlayIndex write SetOverlayIndex;
+    property Owner: TTreeNodes read FOwner;
+    property Parent: TTreeNode read FParent;
+    property Selected: Boolean read GetSelected write SetSelected;
+    property SelectedIndex: Integer read FSelectedIndex write SetSelectedIndex;
+    property SubTreeCount: integer read FSubTreeCount;
+    property StateIndex: Integer read FStateIndex write SetStateIndex;
+    property Text: string read FText write SetText;
+    property TreeNodes: TTreeNodes read GetTreeNodes;
+    property TreeView: TCustomTreeView read GetTreeView;
+    property Top: integer read GetTop;
+  end;
+
+{ TTreeNodes }
+
+  PNodeCache = ^TNodeCache;
+  TNodeCache = record
+    CacheNode: TTreeNode;
+    CacheIndex: Integer;
+  end;
+
+  TTreeNodes = class(TPersistent)
+  private
+    FCount: integer;
+    FNodeCache: TNodeCache;
+    FOwner: TCustomTreeView;
+    FTopLvlCapacity: integer;
+    FTopLvlCount: integer;
+    FTopLvlItems: TTreeNodeArray; // root and root siblings
+    FUpdateCount: Integer;
+    FKeepCollapsedNodes: boolean;
+    procedure AddedNode(AValue: TTreeNode);
+    procedure ClearCache;
+    function GetHandle: THandle;
+    function GetNodeFromIndex(Index: Integer): TTreeNode;
+    function GetTopLvlItems(Index: integer): TTreeNode;
+    procedure GrowTopLvlItems;
+    function IndexOfTopLvlItem(Node: TTreeNode): integer;
+    procedure MoveTopLvlNode(TopLvlFromIndex, TopLvlToIndex: integer;
+      Node: TTreeNode);
+    procedure ReadData(Stream: TStream);
+    procedure ReadExpandedState(Stream: TStream);
+    procedure Repaint(ANode: TTreeNode);
+    procedure ShrinkTopLvlItems;
+    procedure SetTopLvlItems(Index: integer; AValue: TTreeNode);
+    procedure WriteData(Stream: TStream);
+    procedure WriteExpandedState(Stream: TStream);
+  protected
+    //function AddItem(Parent, Target: HTreeItem; const Item: TTVItem;
+    //  AddMode: TAddMode): HTreeItem;
+    function InternalAddObject(Node: TTreeNode; const S: string;
+      Data: Pointer; AddMode: TAddMode): TTreeNode;
+    procedure DefineProperties(Filer: TFiler); override;
+    //function CreateItem(Node: TTreeNode): TTVItem;
+    function GetCount: Integer;
+    procedure SetItem(Index: Integer; AValue: TTreeNode);
+    procedure SetUpdateState(Updating: Boolean);
+  public
+    constructor Create(AnOwner: TCustomTreeView);
+    destructor Destroy; override;
+    function Add(Node: TTreeNode; const S: string): TTreeNode;
+    function AddChild(Node: TTreeNode; const S: string): TTreeNode;
+    function AddChildFirst(Node: TTreeNode; const S: string): TTreeNode;
+    function AddChildObject(Node: TTreeNode; const S: string;
+      Data: Pointer): TTreeNode;
+    function AddChildObjectFirst(Node: TTreeNode; const S: string;
+      Data: Pointer): TTreeNode;
+    function AddFirst(Node: TTreeNode; const S: string): TTreeNode;
+    function AddObject(Node: TTreeNode; const S: string;
+      Data: Pointer): TTreeNode;
+    function AddObjectFirst(Node: TTreeNode; const S: string;
+      Data: Pointer): TTreeNode;
+    procedure Assign(Source: TPersistent); override;
+    procedure BeginUpdate;
+    procedure Clear;
+    procedure Delete(Node: TTreeNode);
+    procedure EndUpdate;
+    function GetFirstNode: TTreeNode;
+    //function GetNode(ItemId: HTreeItem): TTreeNode;
+    function GetLastNode: TTreeNode; // last top level node
+    function GetLastSubNode: TTreeNode; // absolute last node
+    function GetLastExpandedSubNode: TTreeNode; // absolute last node
+    function Insert(Node: TTreeNode; const S: string): TTreeNode;
+    function InsertObject(NextNode: TTreeNode; const S: string;
+      Data: Pointer): TTreeNode;
+    function ConsistencyCheck: integer;
+    procedure WriteDebugReport(const Prefix: string; AllNodes: boolean);
+    property Count: Integer read GetCount;
+    //property Handle: HWND read GetHandle;
+    property Items[Index: Integer]: TTreeNode read GetNodeFromIndex; default;
+    property KeepCollapsedNodes: boolean
+      read FKeepCollapsedNodes write FKeepCollapsedNodes;
+    property Owner: TCustomTreeView read FOwner;
+    property TopLvlCount: integer read FTopLvlCount;
+    property TopLvlItems[Index: integer]: TTreeNode
+      read GetTopLvlItems write SetTopLvlItems;
+  end;
+
+{ TCustomTreeView }
+
+  TTreeViewState = (tvsScrollbarChanged, tvsMaxRightNeedsUpdate,
+    tvsTopsNeedsUpdate, tvsMaxLvlNeedsUpdate, tvsTopItemNeedsUpdate,
+    tvsBottomItemNeedsUpdate, tvsCanvasChanged, tvsDragged, tvsIsEditing,
+    tvsStateChanging, tvsManualNotify, tvsUpdating, tvsMouseCapture,
+    tvsWaitForDragging, tvsDblClicked);
+  TTreeViewStates = set of TTreeViewState;
+
+  TTreeViewOption = (tvoAutoExpand, tvoHideSelection, tvoHotTrack,
+    tvoRightClickSelect, tvoReadOnly, tvoShowButtons, tvoShowRoot, tvoShowLines,
+    tvoToolTips, tvoRowSelect, tvoKeepCollapsedNodes, tvoShowSeparators);
+  TTreeViewOptions = set of TTreeViewOption;
+
+  TTreeViewExpandSignType = (tvestPlusMinus, tvestArrow);
+
+  TCustomTreeView = class(TCustomControl)
+  private
+    FBackgroundColor: TColor;
+    FBorderStyle: TBorderStyle;
+    FBottomItem: TTreeNode;
+    FCanvas: TCanvas;
+    FExpandSignType: TTreeViewExpandSignType;
+    FExpandSignSize: integer;
+    FDefEditProc: Pointer;
+    FDefItemHeight: integer;
+    FDragImage: TDragImageList;
+    FDragNode: TTreeNode;
+    FEditHandle: THandle;
+    FIndent: integer;
+    FImageChangeLink: TChangeLink;
+    FImages: TCustomImageList;
+    FLastDropTarget: TTreeNode;
+    FLastHorzScrollInfo: TScrollInfo;
+    FLastVertScrollInfo: TScrollInfo;
+    FMaxLvl: integer; // maximum level of all nodes
+    FMaxRight: integer; // maximum text width of all nodes (needed for horizontal scrolling)
+    //FMemStream: TMemoryStream;
+    fMouseDownX: integer;
+    fMouseDownY: integer;
+    FOnAdvancedCustomDraw: TTVAdvancedCustomDrawEvent;
+    FOnAdvancedCustomDrawItem: TTVAdvancedCustomDrawItemEvent;
+    FOnChange: TTVChangedEvent;
+    FOnChanging: TTVChangingEvent;
+    FOnCollapsed: TTVExpandedEvent;
+    FOnCollapsing: TTVCollapsingEvent;
+    FOnCompare: TTVCompareEvent;
+    FOnCustomDraw: TTVCustomDrawEvent;
+    FOnCustomDrawItem: TTVCustomDrawItemEvent;
+    FOnDeletion: TTVExpandedEvent;
+    FOnEditing: TTVEditingEvent;
+    FOnEdited: TTVEditedEvent;
+    FOnExpanded: TTVExpandedEvent;
+    FOnExpanding: TTVExpandingEvent;
+    FOnGetImageIndex: TTVExpandedEvent;
+    FOnGetSelectedIndex: TTVExpandedEvent;
+    FOptions: TTreeViewOptions;
+    FRClickNode: TTreeNode;
+    //FSaveIndex: Integer;
+    FSaveItems: TStringList;
+    //FSaveTopIndex: Integer;
+    FScrollBars: TScrollStyle;
+    FScrolledLeft: integer; // horizontal scrolled pixels (hidden pixels at top)
+    FScrolledTop: integer;  // vertical scrolled pixels (hidden pixels at top)
+    FSelectedColor: TColor;
+    FSelectedNode: TTreeNode;
+    FSortType: TSortType;
+    FStateChangeLink: TChangeLink;
+    FStateImages: TCustomImageList;
+    FStates: TTreeViewStates;
+    FTopItem: TTreeNode;
+    FTreeLineColor: TColor;
+    FTreeNodes: TTreeNodes;
+    FUpdateCount: integer;
+    //FWideText: WideString;
+    procedure CanvasChanged(Sender: TObject);
+    //procedure CMColorChanged(var Message: TMessage); message CM_COLORCHANGED;
+    //procedure CMCtl3DChanged(var Message: TMessage); message CM_CTL3DCHANGED;
+    //procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
+    //procedure CMDrag(var Message: TCMDrag); message CM_DRAG;
+    //procedure CNNotify(var Message: TWMNotify); message CN_NOTIFY;
+    procedure EditWndProc(var Message: TLMessage);
+    //procedure DoDragOver(Source: TDragObject; X, Y: Integer; CanDrop: Boolean);
+    function GetAutoExpand: boolean;
+    function GetBottomItem: TTreeNode;
+    function GetChangeDelay: Integer;
+    //function GetDropTarget: TTreeNode;
+    function GetHideSelection: boolean;
+    function GetHotTrack: boolean;
+    function GetKeepCollapsedNodes: boolean;
+    //function GetNodeFromItem(const Item: TTVItem): TTreeNode;
+    function GetReadOnly: boolean;
+    function GetRightClickSelect: boolean;
+    function GetRowSelect: boolean;
+    function GetSelection: TTreeNode;
+    function GetShowButtons: boolean;
+    function GetShowLines: boolean;
+    function GetShowRoot: boolean;
+    function GetShowSeparators: boolean;
+    function GetToolTips: boolean;
+    function GetTopItem: TTreeNode;
+    procedure ImageListChange(Sender: TObject);
+    procedure OnChangeTimer(Sender: TObject);
+    procedure SetAutoExpand(Value: Boolean);
+    procedure SetBackgroundColor(Value: TColor);
+    procedure SetBorderStyle(Value: TBorderStyle);
+    procedure SetBottomItem(Value: TTreeNode);
+    procedure SetChangeDelay(Value: Integer);
+    procedure SetDefaultItemHeight(Value: integer);
+    procedure SetExpandSignType(Value: TTreeViewExpandSignType);
+    //procedure SetDropTarget(Value: TTreeNode);
+    procedure SetHideSelection(Value: Boolean);
+    procedure SetHotTrack(Value: Boolean);
+    //procedure SetImageList(Value: HImageList; Flags: Integer);
+    procedure SetIndent(Value: Integer);
+    procedure SetImages(Value: TCustomImageList);
+    procedure SetKeepCollapsedNodes(Value: Boolean);
+    procedure SetReadOnly(Value: Boolean);
+    procedure SetRightClickSelect(Value: Boolean);
+    procedure SetRowSelect(Value: Boolean);
+    procedure SetScrollBars(const Value: TScrollStyle);
+    procedure SetScrolledLeft(AValue: integer);
+    procedure SetScrolledTop(AValue: integer);
+    procedure SetSelection(Value: TTreeNode);
+    procedure SetShowButton(Value: Boolean);
+    procedure SetShowLines(Value: Boolean);
+    procedure SetShowRoot(Value: Boolean);
+    procedure SetShowSeparators(Value: Boolean);
+    procedure SetSortType(Value: TSortType);
+    procedure SetStateImages(Value: TCustomImageList);
+    procedure SetToolTips(Value: Boolean);
+    procedure SetTreeLineColor(Value: TColor);
+    procedure SetTreeNodes(Value: TTreeNodes);
+    procedure SetTopItem(Value: TTreeNode);
+    procedure UpdateAllTops;
+    procedure UpdateBottomItem;
+    procedure UpdateMaxLvl;
+    procedure UpdateMaxRight;
+    procedure UpdateTopItem;
+    procedure UpdateScrollbars;
+    procedure WMHScroll(var Msg: TLMScroll); message LM_HSCROLL;
+    procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
+    procedure WMLButtonDown(var Message: TLMLButtonDown); message LM_LBUTTONDOWN;
+    procedure WMNotify(var Message: TLMNotify); message LM_NOTIFY;
+    //procedure WMContextMenu(var Message: TLMContextMenu); message LM_CONTEXTMENU;
+    //procedure CMSysColorChange(var Message: TMessage); message CM_SYSCOLORCHANGE;
+  protected
+    FChangeTimer: TTimer;
+    function CanEdit(Node: TTreeNode): Boolean; dynamic;
+    function CanChange(Node: TTreeNode): Boolean; dynamic;
+    function CanCollapse(Node: TTreeNode): Boolean; dynamic;
+    function CanExpand(Node: TTreeNode): Boolean; dynamic;
+    procedure Change(Node: TTreeNode); dynamic;
+    procedure Collapse(Node: TTreeNode); dynamic;
+    function CreateNode: TTreeNode; virtual;
+    procedure CreateParams(var Params: TCreateParams); override;
+    procedure CreateWnd; override;
+    function CustomDraw(const ARect: TRect;
+      Stage: TCustomDrawStage): Boolean; virtual;
+    function CustomDrawItem(Node: TTreeNode; State: TCustomDrawState;
+      Stage: TCustomDrawStage; var PaintImages: Boolean): Boolean; virtual;
+    procedure Delete(Node: TTreeNode); dynamic;
+    procedure DestroyWnd; override;
+    procedure DoEndDrag(Target: TObject; X, Y: Integer); override;
+    procedure DoPaint; virtual;
+    procedure DoPaintNode(Node: TTreeNode); virtual;
+    procedure DoStartDrag(var DragObject: TDragObject); override;
+    //procedure Edit(const Item: TTVItem); dynamic;
+    procedure EndEditing;
+    procedure EnsureNodeIsVisible(ANode: TTreeNode);
+    procedure Expand(Node: TTreeNode); dynamic;
+    //function GetDragImages: TDragImageList; override;
+    procedure GetImageIndex(Node: TTreeNode); virtual;
+    function GetMaxLvl: integer;
+    function GetMaxScrollLeft: integer;
+    function GetMaxScrollTop: integer;
+    function GetNodeAtInternalY(Y: Integer): TTreeNode;
+    function GetNodeAtY(Y: Integer): TTreeNode;
+    procedure GetSelectedIndex(Node: TTreeNode); virtual;
+    function IsCustomDrawn(Target: TCustomDrawTarget;
+      Stage: TCustomDrawStage): Boolean;
+    function IsNodeVisible(ANode: TTreeNode): Boolean;
+    procedure Loaded; override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y:
+      Integer); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+      override;
+    procedure Notification(AComponent: TComponent;
+      Operation: TOperation); override;
+    procedure Paint; override;
+    procedure SetDragMode(Value: TDragMode); override;
+    procedure SetOptions(NewOptions: TTreeViewOptions);
+    procedure WndProc(var Message: TLMessage); override;
+    property AutoExpand: Boolean read GetAutoExpand write SetAutoExpand default False;
+    property BorderStyle: TBorderStyle
+      read FBorderStyle write SetBorderStyle default bsSingle;
+    property ChangeDelay: Integer read GetChangeDelay write SetChangeDelay default 0;
+    property HideSelection: Boolean
+      read GetHideSelection write SetHideSelection default True;
+    property HotTrack: Boolean read GetHotTrack write SetHotTrack default False;
+    property Images: TCustomImageList read FImages write SetImages;
+    property Indent: Integer read fIndent write SetIndent;
+    property Items: TTreeNodes read FTreeNodes write SetTreeNodes;
+    property OnAdvancedCustomDraw: TTVAdvancedCustomDrawEvent
+      read FOnAdvancedCustomDraw write FOnAdvancedCustomDraw;
+    property OnAdvancedCustomDrawItem: TTVAdvancedCustomDrawItemEvent
+      read FOnAdvancedCustomDrawItem write FOnAdvancedCustomDrawItem;
+    property OnChange: TTVChangedEvent read FOnChange write FOnChange;
+    property OnChanging: TTVChangingEvent read FOnChanging write FOnChanging;
+    property OnCollapsed: TTVExpandedEvent read FOnCollapsed write FOnCollapsed;
+    property OnCollapsing: TTVCollapsingEvent read FOnCollapsing write FOnCollapsing;
+    property OnCompare: TTVCompareEvent read FOnCompare write FOnCompare;
+    property OnCustomDraw: TTVCustomDrawEvent read FOnCustomDraw write FOnCustomDraw;
+    property OnCustomDrawItem: TTVCustomDrawItemEvent
+      read FOnCustomDrawItem write FOnCustomDrawItem;
+    property OnDeletion: TTVExpandedEvent read FOnDeletion write FOnDeletion;
+    property OnEditing: TTVEditingEvent read FOnEditing write FOnEditing;
+    property OnEdited: TTVEditedEvent read FOnEdited write FOnEdited;
+    property OnExpanding: TTVExpandingEvent read FOnExpanding write FOnExpanding;
+    property OnExpanded: TTVExpandedEvent read FOnExpanded write FOnExpanded;
+    property OnGetImageIndex: TTVExpandedEvent
+      read FOnGetImageIndex write FOnGetImageIndex;
+    property OnGetSelectedIndex: TTVExpandedEvent
+      read FOnGetSelectedIndex write FOnGetSelectedIndex;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
+    property RightClickSelect: Boolean
+      read GetRightClickSelect write SetRightClickSelect default False;
+    property RowSelect: Boolean read GetRowSelect write SetRowSelect default False;
+    property ScrolledLeft: integer read FScrolledLeft write SetScrolledLeft;
+    property ScrolledTop: integer read FScrolledTop write SetScrolledTop;
+    property ShowButtons: Boolean read GetShowButtons write SetShowButton default True;
+    property ShowLines: Boolean read GetShowLines write SetShowLines default True;
+    property ShowRoot: Boolean read GetShowRoot write SetShowRoot default True;
+    property ShowSeparators: Boolean read GetShowSeparators write SetShowSeparators default True;
+    property SortType: TSortType read FSortType write SetSortType default stNone;
+    property StateImages: TCustomImageList read FStateImages write SetStateImages;
+    property ToolTips: Boolean read GetToolTips write SetToolTips default True;
+  public
+    constructor Create(AnOwner: TComponent); override;
+    destructor Destroy; override;
+    function AlphaSort: Boolean;
+    procedure BeginUpdate;
+    function CustomSort(SortProc: TTreeNodeCompare): Boolean;
+    procedure EndUpdate;
+    procedure FullCollapse;
+    procedure FullExpand;
+    function GetHitTestInfoAt(X, Y: Integer): THitTests;
+    function GetNodeAt(X, Y: Integer): TTreeNode;
+    function IsEditing: Boolean;
+    procedure LoadFromFile(const FileName: string);
+    procedure LoadFromStream(Stream: TStream);
+    procedure SaveToFile(const FileName: string);
+    procedure SaveToStream(Stream: TStream);
+    function ConsistencyCheck: integer;
+    procedure WriteDebugReport(const Prefix: string; AllNodes: boolean);
+    property BackgroundColor: TColor
+      read FBackgroundColor write SetBackgroundColor;
+    property BorderWidth;
+    property BottomItem: TTreeNode read GetBottomItem write SetBottomItem;
+    property Canvas: TCanvas read FCanvas;
+    //property DropTarget: TTreeNode read GetDropTarget write SetDropTarget;
+    property DefaultItemHeight: integer
+      read FDefItemHeight write SetDefaultItemHeight;
+    property ExpandSignType: TTreeViewExpandSignType
+      read FExpandSignType write SetExpandSignType;
+    property KeepCollapsedNodes: boolean
+      read GetKeepCollapsedNodes write SetKeepCollapsedNodes;
+    property Options: TTreeViewOptions read FOptions write SetOptions;
+    property ScrollBars: TScrollStyle
+      read FScrollBars write SetScrollBars default ssBoth;
+    property Selected: TTreeNode read GetSelection write SetSelection;
+    property TopItem: TTreeNode read GetTopItem write SetTopItem;
+    property TreeLineColor: TColor read FTreeLineColor write FTreeLineColor;
+  end;
+
+  TTreeView = class(TCustomTreeView)
+  published
+    property Align;
+    property Anchors;
+    property AutoExpand;
+    //property BiDiMode;
+    property BorderStyle;
+    property BorderWidth;
+    property ChangeDelay;
+    property Color;
+    property Ctl3D;
+    //property Constraints;
+    property DefaultItemHeight;
+    property DragKind;
+    property DragCursor;
+    property DragMode;
+    property Enabled;
+    property ExpandSignType;
+    property Font;
+    property HideSelection;
+    property HotTrack;
+    property Images;
+    property Indent;
+    //property ParentBiDiMode;
+    property ParentColor default False;
+    property ParentCtl3D;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ReadOnly;
+    property RightClickSelect;
+    property RowSelect;
+    property ScrollBars;
+    property ShowButtons;
+    property ShowHint;
+    property ShowLines;
+    property ShowRoot;
+    property SortType;
+    property StateImages;
+    property TabOrder;
+    property TabStop default True;
+    property ToolTips;
+    property Visible;
+    property OnAdvancedCustomDraw;
+    property OnAdvancedCustomDrawItem;
+    property OnChange;
+    property OnChanging;
+    property OnClick;
+    property OnCollapsed;
+    property OnCollapsing;
+    property OnCompare;
+    //property OnContextPopup;
+    property OnCustomDraw;
+    property OnCustomDrawItem;
+    property OnDblClick;
+    property OnDeletion;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEdited;
+    property OnEditing;
+    //property OnEndDock;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnExpanding;
+    property OnExpanded;
+    property OnGetImageIndex;
+    property OnGetSelectedIndex;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property Options;
+    //property OnStartDock;
+    property OnStartDrag;
+    property Items;
+  end;
+
+
 
 function InitCommonControl(CC: Integer): Boolean;
 procedure CheckCommonControl(CC: Integer);
+
+
 Implementation
+
 
 uses Forms,Interfaces;
 
@@ -1009,7 +1687,7 @@ var
 
 function InitCommonControl(CC: Integer): Boolean;
 begin
-Result := True;
+  Result := True;
 end;
 
 procedure CheckCommonControl(CC: Integer);
@@ -1028,6 +1706,7 @@ end;
 {$I toolbutton.inc}
 {$I toolbar.inc}
 {$I trackbar.inc}
+{$I treeview.inc}
 {$I viewcolumns.inc}
 {$I viewcolumn.inc}
 
@@ -1037,6 +1716,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.15  2002/01/04 21:07:49  lazarus
+  MG: added TTreeView
+
   Revision 1.14  2002/01/04 20:29:04  lazarus
   Added images to TListView.
   Shane
