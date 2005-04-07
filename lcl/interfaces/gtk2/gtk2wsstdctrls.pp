@@ -34,7 +34,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  StdCtrls,
+  StdCtrls, LMessages,
 ////////////////////////////////////////////////////
   glib2, gdk2pixbuf, gdk2, gtk2, Pango,
   WSStdCtrls, WSLCLClasses, GtkWSStdCtrls, Gtk2Int, LCLType, GtkDef, LCLProc,
@@ -87,6 +87,7 @@ type
   TGtk2WSCustomListBox = class(TGtkWSCustomListBox)
   private
   protected
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
     class function  GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
     class function  GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
@@ -100,6 +101,7 @@ type
       AMultiSelect: boolean); override;
     class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
     class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TGtk2WSListBox }
@@ -123,7 +125,9 @@ type
   TGtk2WSCustomMemo = class(TGtkWSCustomMemo)
   private
   protected
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
   end;
 
@@ -228,9 +232,21 @@ type
 
 implementation
 
+uses GtkWSControls;
+
 {$I gtk2memostrings.inc}
 
 { TGtk2WSCustomListBox }
+
+procedure Gtk2WS_ListBoxChange(Selection: PGtkTreeSelection; WidgetInfo: PWidgetInfo); cdecl;
+var
+  Mess: TLMessage;
+begin
+  EventTrace('Gtk2WS_ListBoxChange', WidgetInfo^.LCLObject);
+  FillChar(Mess,SizeOf(Mess),0);
+  Mess.msg := LM_SelChange;
+  DeliverMessage(WidgetInfo^.LCLObject, Mess);
+end;
 
 function TGtk2WSCustomListBox.GetItemIndex(const ACustomListBox: TCustomListBox
   ): integer;
@@ -373,6 +389,72 @@ begin
   inherited SetTopIndex(ACustomListBox, NewTopIndex);
 end;
 
+function TGtk2WSCustomListBox.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  TempWidget: PGtkWidget;
+  p: PGtkWidget;                 // ptr to the newly created GtkWidget
+  SetupProps : boolean;
+  liststore : PGtkListStore;
+  Selection: PGtkTreeSelection;
+  renderer : PGtkCellRenderer;
+  column : PGtkTreeViewColumn;
+  WidgetInfo: PWidgetInfo;
+begin
+  
+  Result := TGtkWSBaseScrollingWinControl.CreateHandle(AWinControl,AParams);
+  p:= PGtkWidget(Result);
+  
+  if Result = 0 then exit;
+  
+  GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
+  GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
+  gtk_scrolled_window_set_policy(PGtkScrolledWindow(p),
+                                 GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+  gtk_scrolled_window_set_shadow_type(PGtkScrolledWindow(p),GTK_SHADOW_IN);
+  gtk_widget_show(p);
+
+  liststore := gtk_list_store_new (2, [G_TYPE_STRING, G_TYPE_POINTER, nil]);
+
+  TempWidget:= gtk_tree_view_new_with_model (GTK_TREE_MODEL (liststore));
+  g_object_unref (G_OBJECT (liststore));
+
+  renderer := gtk_cell_renderer_text_new();
+  column := gtk_tree_view_column_new_with_attributes ('LISTITEMS', renderer, ['text', 0, nil]);
+  gtk_tree_view_append_column (GTK_TREE_VIEW (TempWidget), column);
+  gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
+
+  gtk_tree_view_set_headers_visible(GTK_TREE_VIEW (TempWidget), False);
+
+  gtk_container_add(GTK_CONTAINER(p), TempWidget);
+  gtk_widget_show(TempWidget);
+
+  SetMainWidget(p, TempWidget);
+  GetWidgetInfo(p, True)^.CoreWidget := TempWidget;
+
+  Selection := gtk_tree_view_get_selection(PGtkTreeView(TempWidget));
+
+  case TCustomListBox(AWinControl).MultiSelect of
+    True : gtk_tree_selection_set_mode(Selection, GTK_SELECTION_MULTIPLE);
+    False: gtk_tree_selection_set_mode(Selection, GTK_SELECTION_SINGLE);
+  end;
+
+  WidgetInfo := GetWidgetInfo(p, False);
+  SetCallbacks(p, WidgetInfo);
+end;
+
+procedure TGtk2WSCustomListBox.SetCallbacks(const AGtkWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+var
+Selection: PGtkTreeSelection;
+begin
+  TGtkWSBaseScrollingWinControl.SetCallbacks(AGtkWidget,AWidgetInfo);
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AWidgetInfo^.CoreWidget), TComponent(AWidgetInfo^.LCLObject));
+  
+  Selection := gtk_tree_view_get_selection(PGtkTreeView(AWidgetInfo^.CoreWidget));
+  SignalConnect(PGtkWidget(Selection), 'changed', @Gtk2WS_ListBoxChange, AWidgetInfo);
+end;
+
 function TGtk2WSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox
   ): integer;
 var
@@ -447,6 +529,7 @@ end;
 
 { TGtk2WSCustomCheckBox }
 
+
 function TGtk2WSCustomCheckBox.RetrieveState(
   const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
 var
@@ -477,16 +560,7 @@ begin
   LockOnChange(GtkObject,-1);
 end;
 
-{ TGtk2WSCustomMemo }
-
-function TGtk2WSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo
-  ): TStrings;
-var
-TextView: PGtkTextView;
-begin
-  TextView := PGtkTextView(GetWidgetInfo(Pointer(ACustomMemo.Handle), False)^.CoreWidget);
-  Result := TGtk2MemoStrings.Create(TextView, ACustomMemo);
-end;
+{$I gtk2wscustommemo.inc}
 
 initialization
 

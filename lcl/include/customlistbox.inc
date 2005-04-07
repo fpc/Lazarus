@@ -106,21 +106,23 @@ begin
     GetItemIndex;
   //DebugLn('[TCustomListBox.DestroyHandle] A ',FItems.ClassName);
   // create internal item list
-  NewStrings:= TExtendedStringList.Create(GetCachedDataSize);
+  if Assigned(FItems) then begin;
+    NewStrings:= TExtendedStringList.Create(GetCachedDataSize);
 
-  // copy items (text+objects) from the interface items list
-  NewStrings.Assign(Items);
-  // copy items attributes
-  Cnt:=Items.Count;
-  for i:=0 to Cnt-1 do
-    AssignItemDataToCache(i, NewStrings.Records[i]);
+    // copy items (text+objects) from the interface items list
+    NewStrings.Assign(Items);
+    // copy items attributes
+    Cnt:=Items.Count;
+    for i:=0 to Cnt-1 do
+      AssignItemDataToCache(i, NewStrings.Records[i]);
 
-  // free the interface items list
-  FItems.Free;
-  // new item list is the internal item list
-  FItems:= NewStrings;
-  FCacheValid := True;
-  //DebugLn('[TCustomListBox.DestroyHandle] B ',FItems.ClassName);
+    // free the interface items list
+    FItems.Free;
+    // new item list is the internal item list
+    FItems:= NewStrings;
+    FCacheValid := True;
+    //DebugLn('[TCustomListBox.DestroyHandle] B ',FItems.ClassName);
+  end;
   inherited DestroyHandle;
   //DebugLn('[TCustomListBox.DestroyHandle] END ',FItems.ClassName);
   UnlockSelectionChange;
@@ -436,8 +438,8 @@ begin
   Destroying;
   DestroyWnd;
   FreeAndNil(FCanvas);
-  inherited Destroy;
   FreeAndNil(FItems);
+  inherited Destroy;
 end;
 
 function TCustomListBox.GetItemIndex : integer;

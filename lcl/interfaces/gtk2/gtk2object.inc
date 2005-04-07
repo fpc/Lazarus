@@ -247,84 +247,6 @@ begin
       gtk_editable_set_editable (PGtkEditable(P), not TCustomEdit(Sender).ReadOnly);
       gtk_widget_show_all(P);
     end;
-
-  csListBox, csCheckListBox:
-    begin
-      p:= gtk_scrolled_window_new(nil, nil);
-      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
-      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
-      gtk_scrolled_window_set_policy(PGtkScrolledWindow(p),
-                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-      gtk_widget_show(p);
-
-      if (CompStyle = csListBox) then
-        liststore := gtk_list_store_new (1, [G_TYPE_STRING, nil])
-      else
-        liststore := gtk_list_store_new (2, [G_TYPE_BOOLEAN, G_TYPE_STRING, nil]);
-
-      TempWidget:= gtk_tree_view_new_with_model (GTK_TREE_MODEL (liststore));
-      g_object_unref (G_OBJECT (liststore));
-
-      TempInt := 0;
-      if (CompStyle = csCheckListBox) then begin
-        renderer := gtk_cell_renderer_toggle_new();
-        column := gtk_tree_view_column_new_with_attributes('', renderer, ['active', 0,  nil]);
-         gtk_cell_renderer_toggle_set_active(GTK_CELL_RENDERER_TOGGLE(renderer), True);
-        gtk_tree_view_append_column (GTK_TREE_VIEW (TempWidget), column);
-        gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
-        g_signal_connect (renderer, 'toggled',
-       G_CALLBACK (@gtk_clb_toggle),
-       Sender);
-        g_signal_connect (TempWidget, 'row_activated',
-       G_CALLBACK (@gtk_clb_toggle_row_activated),
-       Sender);
-        TempInt := 1;
-      end;
-
-      renderer := gtk_cell_renderer_text_new();
-      column := gtk_tree_view_column_new_with_attributes ('LISTITEMS', renderer, ['text', TempInt, nil]);
-      gtk_tree_view_append_column (GTK_TREE_VIEW (TempWidget), column);
-      gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
-
-      gtk_tree_view_set_headers_visible(GTK_TREE_VIEW (TempWidget), False);
-
-      gtk_container_add(GTK_CONTAINER(p), TempWidget);
-      gtk_widget_show(TempWidget);
-
-      SetMainWidget(p, TempWidget);
-      GetWidgetInfo(p, True)^.CoreWidget := TempWidget;
-      if Sender is TCustomListBox then
-        SetSelectionMode(Sender,p,TCustomListBox(Sender).MultiSelect,
-                         TCustomListBox(Sender).ExtendedSelect);
-    end;
-  csListView:
-    p:=CreateListView(Sender);
-
-  csMemo :
-    begin
-      P := gtk_scrolled_window_new(nil, nil);
-      TempWidget := gtk_text_view_new();
-      gtk_container_add(PGtkContainer(p), TempWidget);
-
-      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
-      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
-      gtk_scrolled_window_set_policy(PGtkScrolledWindow(p),
-                                     GTK_POLICY_AUTOMATIC,
-                                     GTK_POLICY_AUTOMATIC);
-      gtk_scrolled_window_set_shadow_type(PGtkScrolledWindow(p),GTK_SHADOW_IN);
-      SetMainWidget(p, TempWidget);
-      GetWidgetInfo(p, True)^.CoreWidget := TempWidget;
-
-      gtk_text_view_set_editable (PGtkTextView(TempWidget), not TCustomMemo(Sender).ReadOnly);
-      if TCustomMemo(Sender).WordWrap then
-        gtk_text_view_set_wrap_mode(PGtkTextView(TempWidget), GTK_WRAP_WORD)
-      else
-        gtk_text_view_set_wrap_mode(PGtkTextView(TempWidget), GTK_WRAP_NONE);
-
-      gtk_widget_show_all(P);
-
-      SetupProps:= true;
-    end;
     else begin
       StrDispose(StrTemp);
       Result:=Inherited CreateComponent(Sender);
@@ -334,12 +256,6 @@ begin
   StrDispose(StrTemp);
   FinishComponentCreate(Sender, P, SetupProps);
   Result := THandle(P);
-end;
-
-function TGtk2WidgetSet.CreateListView(ListViewObject: TObject): PGtkWidget;
-begin
-  DebugLn('Warning: deprecated call to TGtkWidgetSet.CreateListView');
-  Result:=nil;
 end;
 
 function TGtk2WidgetSet.GetText(Sender: TComponent; var Text: String): Boolean;
@@ -1551,6 +1467,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.32  2005/04/07 22:04:02  marc
+  * gtk2 patch from Andrew
+
   Revision 1.31  2005/03/08 00:28:03  mattias
   implemented gtk2 AppMinimize
 

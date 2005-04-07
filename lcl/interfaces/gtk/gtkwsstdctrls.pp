@@ -549,6 +549,7 @@ procedure TGtkWSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox;
 begin
   DebugLn('TODO: TGtkWSCustomListBox.SetTopIndex');
 end;
+
 {$Else}
 var
   ScrolledWindow: PGtkScrolledWindow;

@@ -56,7 +56,6 @@ type
   protected
     procedure AppendText(Sender: TObject; Str: PChar);
     function CreateComponent(Sender : TObject): THandle; override;
-    function CreateListView(ListViewObject: TObject): PGtkWidget; override;
     function GetText(Sender: TComponent; var Text: String): Boolean;
     procedure HookSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject); override;
     //function IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer; override;
@@ -91,11 +90,6 @@ type
     function GetObject(Index: Integer): TObject; override;
     procedure PutObject(Index: Integer; AnObject: TObject); override;
     procedure SetSorted(Val : boolean); virtual;
-    procedure ConnectItemCallbacks(Index: integer);
-    procedure ConnectItemCallbacks(Li: TGtkTreeIter); virtual;
-    procedure ConnectAllCallbacks; virtual;
-    procedure RemoveItemCallbacks(Index: integer); virtual;
-    procedure RemoveAllCallbacks; virtual;
     procedure UpdateItemCache;
   public
     constructor Create(ListStore : PGtkListStore; ColumnIndex : Integer; TheOwner: TWinControl);
@@ -141,7 +135,7 @@ uses
 // Gtk2WSArrow,
 // Gtk2WSButtons,
 // Gtk2WSCalendar,
-// Gtk2WSCheckLst,
+ Gtk2WSCheckLst,
 // Gtk2WSCListBox,
  Gtk2WSComCtrls,
  Gtk2WSControls,
@@ -199,13 +193,11 @@ begin
     'TGtkListStoreStringList.Create Unspecified owner');
   FOwner:=TheOwner;
   Include(FStates,glsItemCacheNeedsUpdate);
-  ConnectAllCallbacks;
 end;
 
 destructor TGtkListStoreStringList.Destroy;
 begin
   // don't destroy the widgets
-  RemoveAllCallbacks;
   ReAllocMem(FCachedItems,0);
   inherited Destroy;
 end;
@@ -231,70 +223,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TGtkListStoreStringList.ConnectItemCallbacks(Index: integer);
-
- ------------------------------------------------------------------------------}
-procedure TGtkListStoreStringList.ConnectItemCallbacks(Index: integer);
-var
-  ListItem: TGtkTreeIter;
-begin
-  UpdateItemCache;
-  ListItem:=FCachedItems[Index];
-  ConnectItemCallbacks(ListItem);
-end;
-
-{------------------------------------------------------------------------------
-  procedure TGtkListStoreStringList.ConnectItemCallbacks(Li: PGtkListItem);
-
- ------------------------------------------------------------------------------}
-procedure TGtkListStoreStringList.ConnectItemCallbacks(Li: TGtkTreeIter);
-begin
-  {gtk_object_set_data(PGtkObject(li.user_data),GtkListItemLCLListTag,Self);
-  gtk_object_set_data(PGtkObject(li.user_data),GtkListItemGtkListTag,FGtkList);}
-end;
-
-{------------------------------------------------------------------------------
-  procedure TGtkListStoreStringList.ConnectAllCallbacks;
- ------------------------------------------------------------------------------}
-procedure TGtkListStoreStringList.ConnectAllCallbacks;
-var
-  i, Cnt: integer;
-begin
-  BeginUpdate;
-  Cnt:=Count-1;
-  for i:=0 to Cnt-1 do
-    ConnectItemCallbacks(i);
-  EndUpdate;
-end;
-
-{------------------------------------------------------------------------------
-  procedure TGtkListStoreStringList.RemoveItemCallbacks(Index: integer);
-
- ------------------------------------------------------------------------------}
-procedure TGtkListStoreStringList.RemoveItemCallbacks(Index: integer);
-//var
-//  ListItem: TGtkTreeIter;
-begin
-  UpdateItemCache;
-  debugln('TGtkListStoreStringList.RemoveItemCallbacks TODO');
-  //ListItem:=FCachedItems[Index];
-  {gtk_object_set_data(PGtkObject(ListItem),GtkListItemLCLListTag,nil);
-  gtk_object_set_data(PGtkObject(ListItem),GtkListItemGtkListTag,nil);}
-end;
-
-{------------------------------------------------------------------------------
   procedure TGtkListStoreStringList.RemoveAllCallbacks;
 
  ------------------------------------------------------------------------------}
-procedure TGtkListStoreStringList.RemoveAllCallbacks;
-var
-  i: integer;
-begin
-  BeginUpdate;
-  for i:=0 to Count-1 do
-    RemoveItemCallbacks(i);
-  EndUpdate;
-end;
 
 procedure TGtkListStoreStringList.UpdateItemCache;
 var
@@ -314,18 +245,15 @@ begin
 end;
 
 procedure TGtkListStoreStringList.PutObject(Index: Integer; AnObject: TObject);
-//var
-//  ListItem : TGtkTreeIter;
+var
+  ListItem : TGtkTreeIter;
 begin
   if (Index < 0) or (Index >= Count) then
     RaiseException('TGtkListStoreStringList.PutObject Out of bounds.')
   else if FGtkListStore<>nil then begin
     UpdateItemCache;
-    debugln('TGtkListStoreStringList.PutObject TODO');
-    {ListItem:=FCachedItems[Index];
-    if ListItem <> nil then begin
-      gtk_object_set_data(PGtkObject(ListItem),'LCLStringsObject',AnObject);
-    end;}
+    ListItem:=FCachedItems[Index];
+    gtk_list_store_set(FGtkListStore, @ListItem, [FColumnIndex+1, AnObject, -1]);
   end;
 end;
 
@@ -458,17 +386,15 @@ end;
 
 function TGtkListStoreStringList.GetObject(Index: Integer): TObject;
 var
-  ListItem : PGtkTreeIter;
+  ListItem : TGtkTreeIter;
 begin
   Result:=nil;
   if (Index < 0) or (Index >= Count) then
     RaiseException('TGtkListStoreStringList.GetObject Out of bounds.')
   else if FGtkListStore<>nil then begin
     UpdateItemCache;
-    ListItem:=@FCachedItems[Index];
-    if ListItem<>nil then begin
-      //Result:=TObject(gtk_object_get_data(PGtkObject(ListItem),'LCLStringsObject'));
-    end;
+    ListItem:=FCachedItems[Index];
+    gtk_tree_model_get(FGtkListStore, @ListItem, [FColumnIndex+1, @Result, -1]);
   end;
 end;
 
@@ -496,7 +422,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtkListStoreStringList.Clear;
 begin
-  RemoveAllCallbacks;
   Include(FStates,glsItemCacheNeedsUpdate);
   gtk_list_store_clear(FGtkListStore)
 end;
@@ -511,7 +436,6 @@ procedure TGtkListStoreStringList.Delete(Index : integer);
 var
   ListItem : TGtkTreeIter;
 begin
-  RemoveItemCallbacks(Index);
   Include(FStates,glsItemCacheNeedsUpdate);
   gtk_tree_model_iter_nth_child (FGtkListStore, @ListItem, nil, Index);
   gtk_list_store_remove(FGtkListStore, @ListItem);
@@ -586,8 +510,6 @@ begin
     gtk_list_store_insert(FGtkListStore, @li, Index);
     gtk_list_store_set(FGtkListStore, @li, [FColumnIndex, PChar(S), -1]);
 
-    ConnectItemCallbacks(li);
-
     Include(FStates,glsItemCacheNeedsUpdate);
 
   finally
@@ -599,6 +521,9 @@ end.
 
 {
   $Log$
+  Revision 1.44  2005/04/07 22:04:02  marc
+  * gtk2 patch from Andrew
+
   Revision 1.43  2005/03/25 17:47:55  mattias
   implemented TMemo text for gtk2, TRadioGroup.OnClick is now called whenever ItemIndex changed, so it works now also under gtk2 Delphi compatible  from Andrew Haines
 

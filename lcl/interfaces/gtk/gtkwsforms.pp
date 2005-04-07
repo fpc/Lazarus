@@ -172,7 +172,7 @@ begin
   GDK_WINDOW_SHOW_IN_TASKBAR(AWindow,AValue);
   {$ENDIF}
   
-  {$IFDEF GTK2}
+  {$IFDEF HASGTK2_2}
   gtk_window_set_skip_taskbar_hint(PGtkWindow(AForm.Handle), not AValue);
   {$ENDIF}
 end;
