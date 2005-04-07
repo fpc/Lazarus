@@ -1395,7 +1395,20 @@ Begin
 
         // we cannot tell for sure windows didn't want the key
         // winapi too inconsistent about return value
+        PLMsg^.Result := 0;
         DeliverMessage(lWinControl, PLMsg^);
+
+        // handle Ctrl-A for edit controls
+        if (PLMsg^.Result = 0) and (Msg = WM_KEYDOWN) and (WParam = Ord('A')) 
+          and (GetKeyState(VK_CONTROL) < 0) and (GetKeyState(VK_MENU) >= 0) then
+        begin
+          GetClassName(Window, winClassName, 20);
+          if CompareMem(@winClassName, @EditClsName, High(EditClsName)+1) then
+          begin
+            // select all
+            Windows.SendMessage(Window, EM_SETSEL, 0, -1);
+          end;
+        end;
       end;
     end;
   end;
@@ -1524,6 +1537,9 @@ end;
 
 {
   $Log$
+  Revision 1.198  2005/04/07 15:52:31  micha
+  implement Ctrl+A to select all text for edit controls
+
   Revision 1.197  2005/04/06 10:43:40  micha
   customcheckbox: do not unnecessarily ask state twice
   first let widget process BM_SETCHECK, so we do not see itemindex=-1 in between

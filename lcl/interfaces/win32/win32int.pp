@@ -191,6 +191,7 @@ Type
 const
   BOOL_RESULT: Array[Boolean] Of String = ('False', 'True');
   ClsName: array[0..6] of char = 'Window'#0;
+  EditClsName: array[0..4] of char = 'Edit'#0;
   ButtonClsName: array[0..6] of char = 'Button'#0;
   ComboboxClsName: array[0..8] of char = 'ComboBox'#0;
   TabControlClsName: array[0..15] of char = 'SysTabControl32'#0;
@@ -290,6 +291,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.136  2005/04/07 15:52:31  micha
+  implement Ctrl+A to select all text for edit controls
+
   Revision 1.135  2005/03/03 13:13:51  vincents
   fixed thread synchronize support for fpc 1.9.9 using WakeMainThread
 
