@@ -731,7 +731,6 @@ Begin
       if WindowInfo^.Overlay<>HWND(nil) then
         Windows.DestroyWindow(WindowInfo^.Overlay);
       LMessage.Msg := LM_DESTROY;
-      PostQuitMessage(0);
     End;
     WM_DESTROYCLIPBOARD:
     Begin
@@ -1537,6 +1536,9 @@ end;
 
 {
   $Log$
+  Revision 1.199  2005/04/08 16:59:37  micha
+  fix bug 684 properly, opendialog closes automatically after messagedlg (much thanks to uberto)
+
   Revision 1.198  2005/04/07 15:52:31  micha
   implement Ctrl+A to select all text for edit controls
 
