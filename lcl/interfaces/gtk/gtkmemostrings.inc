@@ -80,10 +80,9 @@ begin
 end;
 
 function TGtkMemoStrings.GetCount: integer;
-var
-X: Integer;
 begin
   Result := FCachedCount;
+  if Get(FCachedCount-1) = '' then Dec(Result);
 end;
 
 function TGtkMemoStrings.Get(Index: Integer): string;
@@ -91,17 +90,15 @@ var
 LineStart,
 LineEnd: Integer;
 begin
-  if Index = 0 then
-    LineStart := 0
-  else
-    LineStart := FLineStartPos[Index];
+  LineStart := FLineStartPos[Index];
   if FCachedCount-1 = Index then begin
     LineEnd := gtk_text_get_length(FGtkText);
   end
   else begin
     LineEnd := FLineStartPos[Index+1]-Length(LineEnding);
   end;
-  Result := gtk_editable_get_chars(@(FGtkText^.editable), LineStart, LineEnd);
+  if LineStart=LineEnd then Result := ''
+  else Result := gtk_editable_get_chars(@(FGtkText^.editable), LineStart, LineEnd);
 end;
 
 procedure TGtkMemoStrings.AdjustIndices(FromIndex, ToIndex: Integer; ACount: Integer;
@@ -160,8 +157,9 @@ StartLine: Integer;
 RealStartLine: Integer;
 
 begin
+ if NewTextLength = 0 then exit;
  fDeleting := False;
- If (FCachedCount = 0) and (NewTextLength > 0) then SetCachedCount(1);
+ //If (FCachedCount = 0) and (NewTextLength > 0) then SetCachedCount(1);
  LineCount := 0;
  LineIndicesCapacity := 0;
  for X := 0 to NewTextLength-1 do begin
@@ -190,10 +188,9 @@ end;
 
 procedure TGtkMemoStrings.TextDeleted(StartPos, EndPos: gint);
 var
-X: Integer;
-ShrinkCount: Integer;
-StartLine,
-EndLine: Integer;
+  ShrinkCount: Integer;
+  StartLine,
+  EndLine: Integer;
 begin
   if EndPos - StartPos = 0 then Exit;
   fDeleting := True;
@@ -207,7 +204,7 @@ begin
   end;
   AdjustIndices(StartLine, FCachedCount-1, EndPos-StartPos, True);
   
-  if (FCachedCount = 1) and (gtk_text_get_length(FGtkText)-(endpos-startpos) = 0) then SetCachedCount(0);
+  //if (FCachedCount = 1) and (gtk_text_get_length(FGtkText)-(endpos-startpos) = 0) then SetCachedCount(0);
   // see if any Indices in the cache are within the array, shrink the array , adjust the indices
   fDeleting := False;
 
@@ -221,7 +218,7 @@ begin
  // TODO maybe make this work faster by moving by more than 1 Index at a time
  // although it doesn't seem slow....
  X := StartLine;
- if FCachedCount = 0 then Exit;
+// if FCachedCount = 0 then Exit;
 
  while (FLineStartPos[X] < Position) and (X <= FCachedCount-1) do begin
    if (not fDeleting) and (X = FCachedCount-1) then Break;
@@ -238,7 +235,7 @@ begin
   FLineStartCapacity := 50;
   SetLength(FLineStartPos, FLineStartCapacity);
   FLineStartPos[0] := 0;
-  FCachedCount := 0;
+  FCachedCount := 1;
   fDeleting := False;
   fTextInsertEvent := @TextInserted;
   fTextDeleteEvent := @TextDeleted;
@@ -265,7 +262,7 @@ end;
 procedure TGtkMemoStrings.Clear;
 begin
   gtk_editable_delete_text(PGtkEditable(FGtkText), 0, gtk_text_get_length(FGtkText));
-  SetCachedCount(0);
+  //SetCachedCount(0);
 end;
 
 procedure TGtkMemoStrings.Delete(Index: integer);
@@ -289,28 +286,28 @@ end;
 
 procedure TGtkMemoStrings.Insert(Index: integer; const S: string);
 var
-LineStart: Integer;
-fCount: Integer;
+  LineStart: Integer;
+  NewLine: String;
 begin
   if FGtkText^.freeze_count = 0 then begin
     gtk_text_freeze(FGtkText);
     gtk_idle_add(TGtkfunction(@GtkWS_GtkTextUnFreeze), FGtkText);
   end;
-  fCount := FCachedCount;
-  if fCount = 0 then begin
-    // insert
-    LineStart := 0;
-    gtk_editable_insert_text(PGtkEditable(FGtkText),PChar(S), Length(S), @LineStart);
-  end
-  else if Index < fCount then begin
+
+  if Index < FCachedCount then begin
     //insert with LineEnding
     LineStart := FLineStartPos[Index];
-    gtk_editable_insert_text(PGtkEditable(FGtkText),PChar(S+LineEnding), Length(S+LineEnding), @LineStart);
+    NewLine := S+LineEnding;
+    gtk_editable_insert_text(PGtkEditable(FGtkText),PChar(NewLine), Length(NewLine), @LineStart);
   end
   else begin
-    //append with a preceding LineEnding
+    //append with a preceding and appending LineEnding
     LineStart := gtk_text_get_length(FGtkText);
-    gtk_editable_insert_text(PGtkEditable(FGtkText),PChar(LineEnding+S), Length(LineEnding+S), @LineStart);
+    if (FCachedCount = Count) then
+      NewLine := LineEnding+S+LineEnding
+    else
+      NewLine := S+LineEnding;
+    gtk_editable_insert_text(PGtkEditable(FGtkText),PChar(NewLine), Length(NewLine), @LineStart)
   end;
 end;
 

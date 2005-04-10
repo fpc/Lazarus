@@ -11,6 +11,7 @@ TWin32MemoStrings = class(TStrings)
     function GetLineStart(Index: Integer): Integer;
   protected
     function GetTextStr: string; override;
+    function GetRealCount: integer;
     function GetCount: integer; override;
     function Get(Index : Integer) : string; override;
     //procedure SetSorted(Val : boolean); virtual;
@@ -44,7 +45,6 @@ function TWin32MemoStrings.GetTextStr: string;
 var
   CapLen: dword;
   Caption: PChar;
-  Handle: HWND;
 begin
   Result := '';
   // TODO: this can be made shorter probably, using SetLength(AText, ...)
@@ -55,10 +55,15 @@ begin
   StrDispose(Caption);
 end;
 
+function TWin32MemoStrings.GetRealCount: integer;
+begin
+  Result := SendMessage(fHandle, EM_GETLINECOUNT, 0, 0);
+end;
+
 function TWin32MemoStrings.GetCount: integer;
 begin
- Result := SendMessage(fHandle, EM_GETLINECOUNT, 0, 0);
- if (Result = 1) and (GetLineLength(0) = 0) then Result := 0;
+  Result := GetRealCount;
+  if Get(Result-1) = '' then Dec(Result);
 end;
 
 function TWin32MemoStrings.Get(Index: Integer): string;
@@ -69,13 +74,12 @@ begin
   fLength := GetLineLength(Index);
   if fLength = 0 then Result := ''
   else begin
-    GetMem(textbuf, sizeof(char)*fLength+1);
+    textbuf := AllocMem(sizeof(char)*fLength+1);
     PWord(textbuf)^ := Word(sizeof(char)*fLength+1);
     SendMessage(fHandle, EM_GETLINE, Index, lparam(textbuf));
     Result := StrPas(textbuf);
     ReAllocMem(textbuf, 0);
   end;
-
 end;
 
 constructor TWin32MemoStrings.Create(Handle: HWND; TheOwner: TWinControl);
@@ -121,26 +125,26 @@ end;
 procedure TWin32MemoStrings.Insert(Index: integer; const S: string);
 var
   LineStart: Integer;
+  NewLine: String;
 begin
   LineStart := GetLineStart(Index);
-  if Count = 0 then begin
-    // insert
-    SendMessage(fHandle, EM_SETSEL, LineStart, LineStart);
-    SendMessage(fHandle, EM_REPLACESEL,0 , lparam(PChar(S)));
-  end
-  else if Index < Count then begin
+  if Index < GetRealCount then begin
     //insert with LineEnding
     LineStart := GetLineStart(Index);
+    NewLine := S+LineEnding;
     SendMessage(fHandle, EM_SETSEL, LineStart, LineStart);
-    SendMessage(fHandle, EM_REPLACESEL,0 , lparam(PChar(S+LineEnding)));
+    SendMessage(fHandle, EM_REPLACESEL,0 , lparam(PChar(NewLine)));
   end
   else begin
     //append with a preceding LineEnding
     LineStart := GetLineStart(Index-1)+GetLineLength(Index-1);
     SendMessage(fHandle, EM_SETSEL, LineStart, LineStart);
-    SendMessage(fHandle, EM_REPLACESEL,0 , lparam(PChar(LineEnding+S)));
+    if GetRealCount = Count then
+      NewLine := LineEnding+S+LineEnding
+    else
+      NewLine := S+LineEnding;
+    SendMessage(fHandle, EM_REPLACESEL,0 , lparam(PChar(NewLine)));
   end;
-
 end;
 
 procedure TWin32MemoStrings.SetText(TheText: PChar);

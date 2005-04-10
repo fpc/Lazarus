@@ -47,18 +47,9 @@ begin
 end;
 
 function TGtk2MemoStrings.GetCount: integer;
-var
-StartIter,
-EndIter: TGtkTextIter;
 begin
-  Result := 0;
   Result := gtk_text_buffer_get_line_count(FGtkBuf);
-  // even with no text there is 1 row. so if length of row 0 = 0 then there are "0" rows
-  if Result = 1 then begin
-    gtk_text_buffer_get_start_iter(FGtkBuf, @StartIter);
-    gtk_text_buffer_get_end_iter(FGtkBuf, @EndIter);
-    if Length(gtk_text_iter_get_text(@StartIter, @EndIter)) = 0 then Result := 0;
-  end;
+  if Get(Result-1) = '' then Dec(Result);
 end;
 
 function TGtk2MemoStrings.Get(Index: Integer): string;
@@ -67,7 +58,7 @@ StartIter,
 EndIter: TGtkTextIter;
 begin
   gtk_text_buffer_get_iter_at_line(FGtkBuf, @StartIter, Index);
-  if Index = Count then
+  if Index = gtk_text_buffer_get_line_count(FGtkBuf) then
     gtk_text_buffer_get_end_iter(FGtkBuf, @EndIter)
   else begin
     gtk_text_buffer_get_iter_at_line(FGtkBuf, @EndIter, Index);
@@ -133,21 +124,22 @@ end;
 procedure TGtk2MemoStrings.Insert(Index: integer; const S: string);
 var
 StartIter: TGtkTextIter;
+NewLine: String;
 begin
-  if Count = 0 then begin
-    // insert
-    gtk_text_buffer_get_start_iter(FGtkBuf, @StartIter);
-    gtk_text_buffer_insert(FGtkBuf, @StartIter, PChar(S) ,-1);
-  end
-  else if Index < Count then begin
+  if Index < gtk_text_buffer_get_line_count(FGtkBuf) then begin
     //insert with LineEnding
+    NewLine := S+LineEnding;
     gtk_text_buffer_get_iter_at_line(FGtkBuf, @StartIter, Index);
-    gtk_text_buffer_insert(FGtkBuf, @StartIter, PChar(S+LineEnding) ,-1);
+    gtk_text_buffer_insert(FGtkBuf, @StartIter, PChar(NewLine) ,-1);
   end
   else begin
     //append with a preceding LineEnding
     gtk_text_buffer_get_end_iter(FGtkBuf, @StartIter);
-    gtk_text_buffer_insert(FGtkBuf, @StartIter, PChar(LineEnding+S) ,-1);
+    if gtk_text_buffer_get_line_count(FGtkBuf) = Count then
+      NewLine := LineEnding+S+LineEnding
+    else
+      NewLine := S+LineEnding;
+    gtk_text_buffer_insert(FGtkBuf, @StartIter, PChar(NewLine) ,-1);
   end;
 end;
 
