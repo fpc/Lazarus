@@ -2369,7 +2369,8 @@ begin
     exit;
   end;
   MouseCapture := False;
-  if (sfPossibleGutterClick in fStateFlags) and (X < fGutterWidth) then
+  if (sfPossibleGutterClick in fStateFlags) and (X < fGutterWidth) 
+    {$IFDEF SYN_LAZARUS}and (Button = mbLeft){$ENDIF} then
     DoOnGutterClick(X, Y)
   else
   if fStateFlags * [sfDblClicked,
