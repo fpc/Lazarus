@@ -91,6 +91,10 @@ begin
   FFlagAddString    := UINT(LB_ADDSTRING);
   FFlagGetItemData  := UINT(LB_GETITEMDATA);
   FFlagSetItemData  := UINT(LB_SETITEMDATA);
+  FFlagGetItemIndex := UINT(LB_GETCURSEL);
+  FFlagSetItemIndex := UINT(LB_SETCURSEL);
+  FFlagGetSelected  := UINT(LB_GETSEL);
+  FFlagSetSelected  := UINT(LB_SETSEL);
 end;
 
 {------------------------------------------------------------------------------
@@ -224,6 +228,38 @@ Begin
     Windows.SendMessage(FWin32List, FFlagInsertString, Index, LPARAM(PChar(S)));
 End;
 
+procedure TWin32ListStringList.Put(Index: integer; const S: string);
+var
+  lItemIndex: integer;
+  lSelected: boolean;
+begin
+  // remember selection
+  lItemIndex := -1;
+  if FFlagGetSelected <> 0 then
+  begin
+    lItemIndex := SendMessage(FWin32List, FFlagGetSelected, Index, 0);
+    lSelected := lItemIndex > 0;
+    if lItemIndex <> LB_ERR then
+      lItemIndex := Index;
+  end;
+  if lItemIndex = -1 then
+  begin
+    lItemIndex := SendMessage(FWin32List, FFlagGetItemIndex, 0, 0);
+    lSelected := true;
+  end;
+  
+  inherited;
+ 
+  if lSelected then
+  begin
+    if (FFlagSetSelected = 0) 
+      or (SendMessage(FWin32List, FFlagSetSelected, Windows.WParam(true), lItemIndex) = -1) then
+    begin
+      SendMessage(FWin32List, FFlagSetItemIndex, lItemIndex, 0);
+    end;
+  end;
+end;
+    
 {------------------------------------------------------------------------------
   Method: TWin32ListStringList.PutObject
   Params:
@@ -251,6 +287,10 @@ begin
   FFlagAddString    := UINT(CB_ADDSTRING);
   FFlagGetItemData  := UINT(CB_GETITEMDATA);
   FFlagSetItemData  := UINT(CB_SETITEMDATA);
+  FFlagGetItemIndex := UINT(CB_GETCURSEL);
+  FFlagSetItemIndex := UINT(CB_SETCURSEL);
+  FFlagGetSelected  := UINT(0);
+  FFlagSetSelected  := UINT(0);
   //Get edit and item sizes
   Windows.GetClientRect(FWin32List,@R);
   FEditHeight := R.Bottom;
@@ -570,6 +610,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.38  2005/04/11 12:35:17  micha
+  fixed: listbox loses selection when updating selected item (fixes 780)
+
   Revision 1.37  2004/11/08 21:35:16  vincents
   Call inherited in TWin32ComboBoxStringList.Insert and Delete.
 

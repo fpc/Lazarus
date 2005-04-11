@@ -44,10 +44,15 @@ Type
     FFlagAddString: Cardinal;
     FFlagGetItemData: Cardinal;
     FFlagSetItemData: Cardinal;
+    FFlagGetItemIndex: cardinal;
+    FFlagSetItemIndex: cardinal;
+    FFlagGetSelected: cardinal;
+    FFlagsetSelected: cardinal;
   Protected
     Function Get(Index: Integer): String; Override;
     Function GetCount: Integer; Override;
     Function GetObject(Index: Integer): TObject; Override;
+    procedure Put(Index: integer; const S: string); override;
     Procedure PutObject(Index: Integer; AObject: TObject); Override;
 
     procedure InitFlags; virtual;
@@ -134,6 +139,9 @@ Type
 { =============================================================================
 
   $Log$
+  Revision 1.18  2005/04/11 12:35:17  micha
+  fixed: listbox loses selection when updating selected item (fixes 780)
+
   Revision 1.17  2004/11/04 15:12:35  micha
   remove usage of fcompstyle in twin32liststringlist by using descendent class for combobox specific things
 
