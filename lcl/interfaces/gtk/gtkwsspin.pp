@@ -133,9 +133,9 @@ begin
     AnAdjustment^.upper:=ACustomSpinEdit.MaxValue;
     gtk_adjustment_changed(AnAdjustment);
   end;
-  gtk_spin_button_set_digits(SpinWidget, ACustomSpinEdit.Decimal_Places);
+  gtk_spin_button_set_digits(SpinWidget, ACustomSpinEdit.DecimalPlaces);
   gtk_spin_button_set_value(SpinWidget,ACustomSpinEdit.Value);
-  AnAdjustment^.step_increment := ACustomSpinEdit.Climb_Rate;
+  AnAdjustment^.step_increment := ACustomSpinEdit.ClimbRate;
 end;
 
 initialization

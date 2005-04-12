@@ -49,7 +49,7 @@ type
     fValue: Single;
     FValueEmpty: boolean;
     fValueNeedsUpdate: boolean;
-    function Climb_RateIsStored: boolean;
+    function ClimbRateIsStored: boolean;
     function GetModified: Boolean;
     function GetSelLength: integer;
     function GetSelStart: integer;
@@ -90,13 +90,19 @@ type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property Text;
   public
-    property Decimal_Places: Integer read fDecimals write SetDecimals default 2;
-    property Climb_Rate : Single read fClimbRate write SetClimbRate stored Climb_RateIsStored;
+    property DecimalPlaces: Integer read FDecimals write SetDecimals default 2;
+    property ClimbRate : Single read FClimbRate write SetClimbRate stored ClimbRateIsStored;
     property MinValue: single read FMinValue write SetMinValue stored MinValueIsStored;
     property MaxValue: single read FMaxValue write SetMaxValue stored MaxValueIsStored;
     property TabStop default true;
     property Value: Single read GetValue write SetValue stored ValueIsStored;
     property ValueEmpty: boolean read FValueEmpty write SetValueEmpty default False;
+  published
+    // name compatebility for old configs
+    // strreamed data now still can be read
+    // TODO: remove
+    property Decimal_Places: Integer write SetDecimals;
+    property Climb_Rate : Single write SetClimbRate;
   end;
   
   
@@ -107,9 +113,9 @@ type
     property Align;
     property Anchors;
     property BorderSpacing;
-    property Climb_Rate;
+    property ClimbRate;
     property Constraints;
-    property Decimal_Places;
+    property DecimalPlaces;
     property Enabled;
     property MaxValue;
     property MinValue;

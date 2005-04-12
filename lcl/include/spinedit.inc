@@ -52,9 +52,9 @@ begin
   UpdateControl;
 end;
 
-function TCustomSpinEdit.Climb_RateIsStored: boolean;
+function TCustomSpinEdit.ClimbRateIsStored: boolean;
 begin
-  Result:=fClimbRate<>1;
+  Result := FClimbRate <> 1;
 end;
 
 function TCustomSpinEdit.GetModified: Boolean;
