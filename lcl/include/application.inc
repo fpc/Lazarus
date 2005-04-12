@@ -1335,7 +1335,8 @@ begin
     if Form<>nil then begin
       if (anoReturnForDefaultControl in Navigation)
       and (Form.DefaultControl <> nil) 
-      and Form.DefaultControl.Enabled then
+      and ((Form.DefaultControl.Parent = nil) or (Form.DefaultControl.Parent.CanFocus))
+      and Form.DefaultControl.Enabled and Form.DefaultControl.Visible then
       begin
         //debugln('TApplication.ControlKeyUp VK_RETURN ', Acontrol.Name);
         Form.DefaultControl.ExecuteDefaultAction;
@@ -1454,6 +1455,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.115  2005/04/12 10:02:47  micha
+  when executing defaultcontrol action, check if control visible
+
   Revision 1.114  2005/04/01 09:26:56  micha
   only execute button action when enabled (fixes bug 676)
 
