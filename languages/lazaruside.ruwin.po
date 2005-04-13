@@ -370,6 +370,10 @@ msgstr "Добавить параметры к зависимым пакетам и проектам"
 msgid "Add paths to dependent packages/projects"
 msgstr "Добавить пути к зависимым пакетам/проектам"
 
+#: lazarusidestrconsts:lisoifaddtofavouriteproperties
+msgid "Add to favourite properties"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2paddtopackage
 msgid "Add to package"
 msgstr "Добавить к пакету"
@@ -922,6 +926,10 @@ msgstr "Выберите каталог Lazarus"
 msgid "Choose Scheme"
 msgstr "Выбрать схему"
 
+#: lazarusidestrconsts:lisoifchooseabaseclassforthefavouriteproperty
+msgid "Choose a base class for the favourite property %s%s%s."
+msgstr ""
+
 #: lazarusidestrconsts:lischooseadifferentname
 msgid "Choose a different name"
 msgstr "Выберите другое имя"
@@ -965,6 +973,10 @@ msgstr "Циклическая зависимость пакетов"
 #: lazarusidestrconsts:lisclassisnotaregisteredcomponentclassunabletopaste
 msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
 msgstr "Класс %s%s%s - не зарегистрированный класс компонента.%sНе могу вставить."
+
+#: lazarusidestrconsts:lisoifclassnotfound
+msgid "Class %s%s%s not found."
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pclassnamealreadyexists
 msgid "Class Name already exists"
@@ -4913,6 +4925,10 @@ msgstr "Удалить файлы по фильтру"
 #: lazarusidestrconsts:lismenuremovefromproject
 msgid "Remove from Project"
 msgstr "Убрать из проекта"
+
+#: lazarusidestrconsts:lisoifremovefromfavouriteproperties
+msgid "Remove from favourite properties"
+msgstr ""
 
 #: lazarusidestrconsts:lisremovefromproject
 msgid "Remove from project"

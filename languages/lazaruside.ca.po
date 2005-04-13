@@ -370,6 +370,10 @@ msgstr "Afegeix les opcions en els paquets i projectes dependents"
 msgid "Add paths to dependent packages/projects"
 msgstr "Afegeix les trajectòries en els paquets/projectes dependents"
 
+#: lazarusidestrconsts:lisoifaddtofavouriteproperties
+msgid "Add to favourite properties"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2paddtopackage
 msgid "Add to package"
 msgstr "Afegeix al paquet"
@@ -922,6 +926,10 @@ msgstr "Tria un directori del Lazarus"
 msgid "Choose Scheme"
 msgstr "Tria un Esquema"
 
+#: lazarusidestrconsts:lisoifchooseabaseclassforthefavouriteproperty
+msgid "Choose a base class for the favourite property %s%s%s."
+msgstr ""
+
 #: lazarusidestrconsts:lischooseadifferentname
 msgid "Choose a different name"
 msgstr "Tria un nom diferent"
@@ -965,6 +973,10 @@ msgstr "Cercle en les dependències del paquet"
 #: lazarusidestrconsts:lisclassisnotaregisteredcomponentclassunabletopaste
 msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
 msgstr "La classe %s%s%s no està registrada com a component de classe. %sNo es pot enganxar"
+
+#: lazarusidestrconsts:lisoifclassnotfound
+msgid "Class %s%s%s not found."
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pclassnamealreadyexists
 msgid "Class Name already exists"
@@ -4913,6 +4925,10 @@ msgstr "Elimina els fitxers que concordin amb el filtre"
 #: lazarusidestrconsts:lismenuremovefromproject
 msgid "Remove from Project"
 msgstr "Elimina del projecte"
+
+#: lazarusidestrconsts:lisoifremovefromfavouriteproperties
+msgid "Remove from favourite properties"
+msgstr ""
 
 #: lazarusidestrconsts:lisremovefromproject
 msgid "Remove from project"

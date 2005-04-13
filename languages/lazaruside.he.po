@@ -381,6 +381,10 @@ msgstr "הוסף אפשרויות לחבילות למיזמים וחבילות"
 msgid "Add paths to dependent packages/projects"
 msgstr "תלויים הוסף נתיב ל מיזם/חבילה"
 
+#: lazarusidestrconsts:lisoifaddtofavouriteproperties
+msgid "Add to favourite properties"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2paddtopackage
 msgid "Add to package"
 msgstr "הוסף לחבילה"
@@ -933,6 +937,10 @@ msgstr ""
 msgid "Choose Scheme"
 msgstr ""
 
+#: lazarusidestrconsts:lisoifchooseabaseclassforthefavouriteproperty
+msgid "Choose a base class for the favourite property %s%s%s."
+msgstr ""
+
 #: lazarusidestrconsts:lischooseadifferentname
 msgid "Choose a different name"
 msgstr ""
@@ -975,6 +983,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisclassisnotaregisteredcomponentclassunabletopaste
 msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
+msgstr ""
+
+#: lazarusidestrconsts:lisoifclassnotfound
+msgid "Class %s%s%s not found."
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pclassnamealreadyexists
@@ -4923,6 +4935,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuremovefromproject
 msgid "Remove from Project"
+msgstr ""
+
+#: lazarusidestrconsts:lisoifremovefromfavouriteproperties
+msgid "Remove from favourite properties"
 msgstr ""
 
 #: lazarusidestrconsts:lisremovefromproject

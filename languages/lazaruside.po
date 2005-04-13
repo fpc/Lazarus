@@ -1342,6 +1342,10 @@ msgstr ""
 msgid "Class not found"
 msgstr ""
 
+#: lazarusidestrconsts:lisoifclassnotfound
+msgid "Class %s%s%s not found."
+msgstr ""
+
 #: lazarusidestrconsts:lisclassisnotaregisteredcomponentclassunabletopaste
 msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
 msgstr ""
@@ -8048,5 +8052,17 @@ msgstr ""
 
 #: lazarusidestrconsts:lisnpcreate
 msgid "Create"
+msgstr ""
+
+#: lazarusidestrconsts:lisoifchooseabaseclassforthefavouriteproperty
+msgid "Choose a base class for the favourite property %s%s%s."
+msgstr ""
+
+#: lazarusidestrconsts:lisoifaddtofavouriteproperties
+msgid "Add to favourite properties"
+msgstr ""
+
+#: lazarusidestrconsts:lisoifremovefromfavouriteproperties
+msgid "Remove from favourite properties"
 msgstr ""
 

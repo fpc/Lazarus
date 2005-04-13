@@ -382,6 +382,10 @@ msgstr "Opties aan packages en projecten toevoegen"
 msgid "Add paths to dependent packages/projects"
 msgstr "Paden aan packages en projecten toevoegen"
 
+#: lazarusidestrconsts:lisoifaddtofavouriteproperties
+msgid "Add to favourite properties"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2paddtopackage
 msgid "Add to package"
 msgstr ""
@@ -934,6 +938,10 @@ msgstr "Kies Lazarus directory"
 msgid "Choose Scheme"
 msgstr "Kies schema"
 
+#: lazarusidestrconsts:lisoifchooseabaseclassforthefavouriteproperty
+msgid "Choose a base class for the favourite property %s%s%s."
+msgstr ""
+
 #: lazarusidestrconsts:lischooseadifferentname
 msgid "Choose a different name"
 msgstr "Kies een andere naam"
@@ -977,6 +985,10 @@ msgstr ""
 #: lazarusidestrconsts:lisclassisnotaregisteredcomponentclassunabletopaste
 msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
 msgstr "Class %s%s%s is geen geregistreerde component Class.%sKan niet plakken."
+
+#: lazarusidestrconsts:lisoifclassnotfound
+msgid "Class %s%s%s not found."
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pclassnamealreadyexists
 msgid "Class Name already exists"
@@ -4925,6 +4937,10 @@ msgstr ""
 #: lazarusidestrconsts:lismenuremovefromproject
 msgid "Remove from Project"
 msgstr "Verwijder van Project"
+
+#: lazarusidestrconsts:lisoifremovefromfavouriteproperties
+msgid "Remove from favourite properties"
+msgstr ""
 
 #: lazarusidestrconsts:lisremovefromproject
 msgid "Remove from project"

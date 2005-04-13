@@ -370,6 +370,10 @@ msgstr ""
 msgid "Add paths to dependent packages/projects"
 msgstr ""
 
+#: lazarusidestrconsts:lisoifaddtofavouriteproperties
+msgid "Add to favourite properties"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2paddtopackage
 msgid "Add to package"
 msgstr ""
@@ -608,7 +612,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgbackcolor
 msgid "Background"
-msgstr ""
+msgstr "Taustaväri"
 
 #: lazarusidestrconsts:srvk_back
 msgid "Backspace"
@@ -922,6 +926,10 @@ msgstr ""
 msgid "Choose Scheme"
 msgstr ""
 
+#: lazarusidestrconsts:lisoifchooseabaseclassforthefavouriteproperty
+msgid "Choose a base class for the favourite property %s%s%s."
+msgstr ""
+
 #: lazarusidestrconsts:lischooseadifferentname
 msgid "Choose a different name"
 msgstr "Valitse toisenlainen nimi"
@@ -964,6 +972,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisclassisnotaregisteredcomponentclassunabletopaste
 msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
+msgstr ""
+
+#: lazarusidestrconsts:lisoifclassnotfound
+msgid "Class %s%s%s not found."
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pclassnamealreadyexists
@@ -1232,7 +1244,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
-msgstr ""
+msgstr "Komponentin nimi (name) %s%s%s ei ole sallittu tunnus"
 
 #: lazarusidestrconsts:srkmcatcomponentsmenu
 msgid "Components menu commands"
@@ -4914,6 +4926,10 @@ msgstr "Poistettavien tiedostojen tiedostopäätteet"
 msgid "Remove from Project"
 msgstr "Poista projektista"
 
+#: lazarusidestrconsts:lisoifremovefromfavouriteproperties
+msgid "Remove from favourite properties"
+msgstr ""
+
 #: lazarusidestrconsts:lisremovefromproject
 msgid "Remove from project"
 msgstr ""
@@ -6436,7 +6452,7 @@ msgstr "Käännösyksikön (unit)  %s%s%s nimeä käytetään jo projektissa.%sO
 
 #: lazarusidestrconsts:listheunititselfhasalreadythenamepascalidentifiersmus
 msgid "The unit itself has already the name %s%s%s. Pascal identifiers must be unique."
-msgstr ""
+msgstr "Käännösyksikkö (unit) on jo nimeltään %s%s%s. Pascal:ssa tunnukset pitää olla yksilöllisiä"
 
 #: lazarusidestrconsts:lisprojaddtheunitnamealreadyexistsintheproject
 msgid "The unit name %s%s%s already exists in the project%swith file: %s%s%s."

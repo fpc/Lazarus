@@ -381,6 +381,10 @@ msgstr "Añadir opciones a los proyectos y paquetes dependientes"
 msgid "Add paths to dependent packages/projects"
 msgstr "Añadir rutas a los paquetes/proyectos dependientes"
 
+#: lazarusidestrconsts:lisoifaddtofavouriteproperties
+msgid "Add to favourite properties"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2paddtopackage
 msgid "Add to package"
 msgstr "Añadir a paquete"
@@ -933,6 +937,10 @@ msgstr "Escoja Directorio de Lazarus"
 msgid "Choose Scheme"
 msgstr "Escoja Esquema"
 
+#: lazarusidestrconsts:lisoifchooseabaseclassforthefavouriteproperty
+msgid "Choose a base class for the favourite property %s%s%s."
+msgstr ""
+
 #: lazarusidestrconsts:lischooseadifferentname
 msgid "Choose a different name"
 msgstr "Escoja un nombre distinto"
@@ -975,6 +983,10 @@ msgstr "Círculo en las dependencias del paquete"
 
 #: lazarusidestrconsts:lisclassisnotaregisteredcomponentclassunabletopaste
 msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
+msgstr ""
+
+#: lazarusidestrconsts:lisoifclassnotfound
+msgid "Class %s%s%s not found."
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pclassnamealreadyexists
@@ -4924,6 +4936,10 @@ msgstr "Eliminar archivos según el filtro determinado"
 #: lazarusidestrconsts:lismenuremovefromproject
 msgid "Remove from Project"
 msgstr "Eliminar del Proyecto"
+
+#: lazarusidestrconsts:lisoifremovefromfavouriteproperties
+msgid "Remove from favourite properties"
+msgstr ""
 
 #: lazarusidestrconsts:lisremovefromproject
 msgid "Remove from project"
