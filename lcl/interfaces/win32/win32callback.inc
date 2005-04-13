@@ -141,6 +141,7 @@ Var
   eraseBkgndCommand: TEraseBkgndCommand;
   winClassName: array[0..19] of char;
   WindowInfo: PWindowInfo;
+  Flags: dword;
 
   LMInsertText: TLMInsertText; // used by CB_INSERTSTRING, LB_INSERTSTRING
   LMScroll: TLMScroll; // used by WM_HSCROLL
@@ -1122,14 +1123,15 @@ Begin
         Status := LParam;
       End;
 
-      if assigned(lWinControl) and
-        (lWinControl=Application.MainForm) then begin
+      if assigned(lWinControl) and ((WParam<>0) or not lWinControl.Visible) 
+        and ((WParam=0) or lWinControl.Visible)
+        and (Application<>nil) and (lWinControl=Application.MainForm) then 
+      begin
         if WParam=0 then
-          Windows.ShowWindow(TWin32WidgetSet(InterfaceObject).FAppHandle,
-            SW_HIDE)
+          Flags := SW_HIDE
         else
-          Windows.ShowWindow(TWin32WidgetSet(InterfaceObject).FAppHandle,
-            SW_SHOW)
+          Flags := SW_SHOW;
+        Windows.ShowWindow(TWin32WidgetSet(InterfaceObject).FAppHandle, Flags);
       end;
     End;
     WM_SYSCHAR:
@@ -1536,6 +1538,9 @@ end;
 
 {
   $Log$
+  Revision 1.200  2005/04/13 17:17:16  micha
+  fix taskbar button being removed and reinserted when minimizing mainform
+
   Revision 1.199  2005/04/08 16:59:37  micha
   fix bug 684 properly, opendialog closes automatically after messagedlg (much thanks to uberto)
 
