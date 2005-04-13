@@ -153,6 +153,7 @@ function DbgS(const p: pointer): string;
 function DbgS(const e: extended): string;
 function DbgS(const b: boolean): string;
 function DbgSName(const p: TObject): string;
+function DbgSName(const p: TClass): string;
 function DbgStr(const StringWithSpecialChars: string): string;
 function dbgMemRange(P: PByte; Count: integer): string;
 function dbgMemStream(MemStream: TCustomMemoryStream; Count: integer): string;
@@ -1084,6 +1085,14 @@ begin
     Result:='nil'
   else if p is TComponent then
     Result:=TComponent(p).Name+':'+p.ClassName
+  else
+    Result:=p.ClassName;
+end;
+
+function DbgSName(const p: TClass): string;
+begin
+  if p=nil then
+    Result:='nil'
   else
     Result:=p.ClassName;
 end;

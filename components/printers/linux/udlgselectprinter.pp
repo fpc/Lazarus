@@ -173,6 +173,7 @@ end;
 
 procedure TdlgSelectPrinter.tkbPriorityCHANGE(Sender: TObject);
 begin
+  if Sender=nil then ;
   edPriority.Value:=tkbPriority.Position;
 end;
 
@@ -365,6 +366,7 @@ end;
 //Initialization of screen
 procedure TdlgSelectPrinter.dlgSelectPrinterSHOW(Sender: TObject);
 begin
+  if Sender=nil then ;
   NbOpts.PageIndex:=0;
   
   //Printers
@@ -377,6 +379,7 @@ end;
 
 procedure TdlgSelectPrinter.cbTasktimeCHANGE(Sender: TObject);
 begin
+  if Sender=nil then ;
   //Time is active if last item is selected
   edTimeTask.Enabled:=(cbTaskTime.ItemIndex=cbTaskTime.Items.Count-1);
   edTimeTask.Text:=FormatDateTime('hh:nn:ss',Now);
@@ -384,6 +387,7 @@ end;
 
 procedure TdlgSelectPrinter.dlgSelectPrinterCREATE(Sender: TObject);
 begin
+  if Sender=nil then ;
   fPropertiesSetting:=False;
 end;
 
@@ -391,6 +395,7 @@ end;
 procedure TdlgSelectPrinter.cbReverseCLICK(Sender: TObject);
 Var St : string;
 begin
+  if Sender=nil then ;
   St:='collate';
   If not cbCollate.Checked then
    St:='un'+St;
@@ -404,6 +409,7 @@ end;
 
 procedure TdlgSelectPrinter.cbPrintersKEYPRESS(Sender: TObject; var Key: Char);
 begin
+  if Sender=nil then ;
   Key:=#0;
 end;
 
@@ -411,6 +417,7 @@ end;
 //if it's 1 then "Less ..."
 procedure TdlgSelectPrinter.btnReducCLICK(Sender: TObject);
 begin
+  if Sender=nil then ;
   if btnReduc.Tag=1 then
   begin
     btnReduc.Tag:=0;
@@ -427,6 +434,7 @@ end;
 
 procedure TdlgSelectPrinter.btnPrintCLICK(Sender: TObject);
 begin
+  if Sender=nil then ;
   InitPrinterOptions;
 end;
 
@@ -434,6 +442,7 @@ end;
 procedure TdlgSelectPrinter.btnPropCLICK(Sender: TObject);
 var Dlg : Tdlgpropertiesprinter;
 begin
+  if Sender=nil then ;
   //Set default printer
   THackCUPSPrinter(Printer).SelectCurrentPrinterOrDefault;
 
@@ -451,6 +460,7 @@ end;
 
 procedure TdlgSelectPrinter.cbPrintersCHANGE(Sender: TObject);
 begin
+  if Sender=nil then ;
   Printer.SetPrinter(cbPrinters.Text);
   fPropertiesSetting:=False;
   RefreshInfos;

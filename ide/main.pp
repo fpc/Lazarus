@@ -1338,9 +1338,7 @@ begin
   ObjectInspector1.OnSelectPersistentsInOI:=@OIOnSelectPersistents;
   ObjectInspector1.OnShowOptions:=@OIOnShowOptions;
   ObjectInspector1.OnRemainingKeyUp:=@OIRemainingKeyUp;
-  {$IFDEF EnableOIFavourites}
   ObjectInspector1.ShowFavouritePage:=true;
-  {$ENDIF}
   ObjectInspector1.Favourites:=LoadOIFavouriteProperties;
   ObjectInspector1.OnAddToFavourites:=@OIOnAddToFavourites;
   ObjectInspector1.OnRemoveFromFavourites:=@OIOnRemoveFromFavourites;
@@ -3217,6 +3215,9 @@ procedure TMainIDE.SaveEnvironment;
 begin
   SaveDesktopSettings(EnvironmentOptions);
   EnvironmentOptions.Save(false);
+  //debugln('TMainIDE.SaveEnvironment A ',dbgsName(ObjectInspector1.Favourites));
+  if (ObjectInspector1<>nil) and (ObjectInspector1.Favourites<>nil) then
+    SaveOIFavouriteProperties(ObjectInspector1.Favourites);
 end;
 
 //==============================================================================
@@ -5586,12 +5587,9 @@ begin
 
   // search file in path (search especially for pascal files)
   if FindFile(FName,SPath) then begin
-    result:=mrOk;
+    Result:=mrOk;
     InputHistories.FileDialogSettings.InitialDir:=ExtractFilePath(FName);
-    if DoOpenEditorFile(FName,-1,[])=mrOk then begin
-      EnvironmentOptions.AddToRecentOpenFiles(FName);
-      SetRecentFilesMenu;
-      SaveEnvironment;
+    if DoOpenEditorFile(FName,-1,[ofAddToRecent])=mrOk then begin
     end;
   end;
 end;
@@ -6567,7 +6565,7 @@ begin
   SaveEnvironment;
   SaveIncludeLinks;
   InputHistories.Save;
-  // ToDo: save package, cvs settings, ...
+  // ToDo: save open packages, cvs settings, ...
 end;
 
 procedure TMainIDE.DoRestart;
@@ -11544,6 +11542,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.864  2005/04/13 09:33:15  mattias
+  implemented favourite properties for ObjectInspector
+
   Revision 1.863  2005/03/29 09:30:14  mattias
   started OI favourites
 

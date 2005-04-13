@@ -471,6 +471,7 @@ resourcestring
   lisNOTECouldNotCreateDefineTemplateForFreePascal = 'NOTE: Could not create '
     +'Define Template for Free Pascal Sources';
   lisClassNotFound = 'Class not found';
+  lisOIFClassNotFound = 'Class %s%s%s not found.';
   lisClassIsNotARegisteredComponentClassUnableToPaste = 'Class %s%s%s is not '
     +'a registered component class.%sUnable to paste.';
   lisControlNeedsParent = 'Control needs parent';
@@ -2708,6 +2709,10 @@ resourcestring
   lisNPSelectAProjectType = 'Select a project type';
   lisNPCreateANewProject = 'Create a new project';
   lisNPCreate = 'Create';
+  lisOIFChooseABaseClassForTheFavouriteProperty = 'Choose a base class for '
+    +'the favourite property %s%s%s.';
+  lisOIFAddToFavouriteProperties = 'Add to favourite properties';
+  lisOIFRemoveFromFavouriteProperties = 'Remove from favourite properties';
 
 implementation
 end.

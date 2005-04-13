@@ -24,11 +24,10 @@ interface
 
 uses
   Classes, SysUtils, ObjectInspector, Forms, Controls, Buttons, StdCtrls,
-  ExtCtrls, Dialogs,
-  ConfigStorage, LazarusIDEStrConsts;
+  ExtCtrls, Dialogs, LCLProc,
+  FileUtil, LazConf, ConfigStorage, LazarusIDEStrConsts;
   
 type
-
   { TOIAddRemoveFavouriteDlg }
 
   TOIAddRemoveFavouriteDlg = class(TForm)
@@ -55,11 +54,18 @@ type
     property AddMode: Boolean read FAddMode write SetAddMode;
   end;
 
-function CreateDefaultOIFavouriteProperties: TOIFavouriteProperties;
+const
+  DefaultOIFavouriteConfigFilename = 'objectinspectorfavourites.xml';
+
+var
+  DefaultOIFavouriteProperties: TOIFavouriteProperties;
+
 function ShowAddRemoveFavouriteDialog(ObjInspector: TObjectInspector;
   Add: Boolean): TModalResult;
+function CreateDefaultOIFavouriteProperties: TOIFavouriteProperties;
 function LoadOIFavouriteProperties: TOIFavouriteProperties;
-procedure SaveOIFavouriteProperties(ObjInspector: TObjectInspector);
+procedure SaveOIFavouriteProperties(Favourites: TOIFavouriteProperties);
+function GetOIFavouriteConfigFilename: string;
 
 implementation
 
@@ -73,13 +79,21 @@ function CreateDefaultOIFavouriteProperties: TOIFavouriteProperties;
 begin
   Result:=TOIFavouriteProperties.Create;
   // TControl
-  Add(TControl,'Name');
+  Add(TComponent,'Name');
   Add(TControl,'Anchors');
   Add(TControl,'Caption');
   Add(TControl,'OnClick');
   // miscellaneous
-  Add(TGroupBox,'Align');
-  Add(TImage,'Align');
+  Add(TCustomGroupBox,'Align');
+  Add(TCustomImage,'Align');
+  Add(TCustomButton,'ModalResult');
+  Add(TCustomLabel,'WordWrap');
+  Add(TCustomEdit,'Text');
+  Add(TCustomMemo,'Lines');
+  Add(TCustomCheckBox,'Checked');
+  Add(TCustomRadioGroup,'Items');
+  Add(TCustomRadioGroup,'ItemIndex');
+  Result.DeleteDoubles;
 end;
 
 function ShowAddRemoveFavouriteDialog(ObjInspector: TObjectInspector;
@@ -95,14 +109,75 @@ begin
 end;
 
 function LoadOIFavouriteProperties: TOIFavouriteProperties;
+var
+  ConfigStore: TConfigStorage;
 begin
-  Result:=CreateDefaultOIFavouriteProperties;
-  // TODO: load and merge
+  Result:=DefaultOIFavouriteProperties.CreateCopy;
+  {$IFDEF DebugFavouriteroperties}
+  debugln('LoadOIFavouriteProperties A FileExists(GetOIFavouriteConfigFilename)=',dbgs(FileExists(GetOIFavouriteConfigFilename)));
+  Result.WriteDebugReport;
+  {$ENDIF}
+  if not FileExists(GetOIFavouriteConfigFilename) then exit;
+  try
+    ConfigStore:=DefaultConfigClass.Create(GetOIFavouriteConfigFilename,true);
+    try
+      Result.MergeConfig(ConfigStore,'ObjectInspector/Favourites/');
+      Result.Modified:=false;
+    finally
+      ConfigStore.Free;
+    end;
+  except
+    on E: Exception do begin
+      debugln('Error: LoadOIFavouriteProperties: unable to read ',
+              GetOIFavouriteConfigFilename);
+    end;
+  end;
 end;
 
-procedure SaveOIFavouriteProperties(ObjInspector: TObjectInspector);
+procedure SaveOIFavouriteProperties(Favourites: TOIFavouriteProperties);
+var
+  ConfigStore: TConfigStorage;
+  DefaultFavourites: TOIFavouriteProperties;
 begin
-  // TODO save only changes
+  {$IFDEF DebugFavouriteroperties}
+  debugln('SaveOIFavouriteProperties Favourites.Modified=',dbgs(Favourites.Modified),
+    ' FileExists(GetOIFavouriteConfigFilename)=',dbgs(FileExists(GetOIFavouriteConfigFilename)));
+  {$ENDIF}
+  if (not Favourites.Modified) and FileExists(GetOIFavouriteConfigFilename)
+  then
+    exit;
+  DefaultFavourites:=CreateDefaulTOIFavouriteProperties;
+  try
+    if DefaultFavourites.IsEqual(Favourites) then exit;
+    {$IFDEF DebugFavouriteroperties}
+    debugln('SaveOIFavouriteProperties is not default');
+    DefaultFavourites.WriteDebugReport;
+    Favourites.WriteDebugReport;
+    {$ENDIF}
+    try
+      ConfigStore:=DefaultConfigClass.Create(GetOIFavouriteConfigFilename,false);
+      try
+        Favourites.SaveNewItemsToConfig(ConfigStore,'ObjectInspector/Favourites/',
+                                        DefaultFavourites);
+        ConfigStore.WriteToDisk;
+        Favourites.Modified:=false;
+      finally
+        ConfigStore.Free;
+      end;
+    except
+      on E: Exception do begin
+        debugln('Error: LoadOIFavouriteProperties: unable to write ',
+                GetOIFavouriteConfigFilename);
+      end;
+    end;
+  finally
+    DefaultFavourites.Free;
+  end;
+end;
+
+function GetOIFavouriteConfigFilename: string;
+begin
+  Result:=AppendPathDelim(GetPrimaryConfigPath)+DefaultOIFavouriteConfigFilename;
 end;
 
 { TOIAddRemoveFavouriteDlg }
@@ -130,7 +205,8 @@ begin
       CurClass:=CurClass.ClassParent;
     end;
   end;
-  MessageDlg('Class not found','Class "'+NewClassName+'" not found.',mtError,
+  MessageDlg(lisClassNotFound, Format(lisOIFClassNotFound, ['"', NewClassName,
+    '"']), mtError,
              [mbOk],0);
 end;
 
@@ -157,8 +233,8 @@ end;
 
 procedure TOIAddRemoveFavouriteDlg.UpdateLabel;
 begin
-  NoteLabel.Caption:='Choose a base class for the favourite '
-    +'property "'+PropertyName+'".';
+  NoteLabel.Caption:=Format(lisOIFChooseABaseClassForTheFavouriteProperty, [
+    '"', PropertyName, '"']);
 end;
 
 procedure TOIAddRemoveFavouriteDlg.UpdateComboBox;
@@ -172,7 +248,9 @@ begin
     CurClass:=ObjectInspector.Selection[0].ClassType;
     // add only classes, that are TPersistent and have a registered class
     while CurClass.InheritsFrom(TPersistent) do begin
-      NewItems.Add(CurClass.ClassName);
+      // add only registered classes
+      if GetClass(CurClass.ClassName)<>nil then
+        NewItems.Add(CurClass.ClassName);
       CurClass:=CurClass.ClassParent;
     end;
   end;
@@ -185,11 +263,11 @@ end;
 procedure TOIAddRemoveFavouriteDlg.UpdateMode;
 begin
   if AddMode then begin
-    Caption:='Add to favourite properties';
-    OkButton.Caption:='Add';
+    Caption:=lisOIFAddToFavouriteProperties;
+    OkButton.Caption:=lisCodeTemplAdd;
   end else begin
-    Caption:='Remove from favourite properties';
-    OkButton.Caption:='Remove';
+    Caption:=lisOIFRemoveFromFavouriteProperties;
+    OkButton.Caption:=lisExtToolRemove;
   end;
 end;
 
@@ -221,7 +299,7 @@ begin
   with OkButton do begin
     Name:='AddButton';
     SetBounds(5,100,80,25);
-    Caption:='Add';
+    Caption:=lisCodeTemplAdd;
     Parent:=Self;
     OnClick:=@OkButtonClick;
   end;
@@ -231,7 +309,7 @@ begin
   with CancelButton do begin
     Name:='CancelButton';
     SetBounds(120,100,80,25);
-    Caption:='Cancel';
+    Caption:=dlgCancel;
     Parent:=Self;
     ModalResult:=mrCancel;
   end;
@@ -239,6 +317,9 @@ begin
   
   UpdateMode;
 end;
+
+initialization
+  DefaultOIFavouriteProperties:=CreateDefaultOIFavouriteProperties;
 
 end.
 
