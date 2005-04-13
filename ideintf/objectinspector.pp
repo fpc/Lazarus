@@ -2501,7 +2501,7 @@ begin
 
     if FileVersion>=2 then begin
       for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
-        FGridSplitterX[oipgpProperties]:=ConfigStore.GetValue(
+        FGridSplitterX[Page]:=ConfigStore.GetValue(
            Path+'Bounds/'+DefaultOIPageNames[Page]+'/SplitterX',110);
     end else begin
       FGridSplitterX[oipgpProperties]:=ConfigStore.GetValue(
