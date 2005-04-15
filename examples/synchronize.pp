@@ -35,13 +35,15 @@
 program Synchronize;
 
 {$mode objfpc}{$H+}
-{$threading on}
+
+{ threading directive not needed anymore for 1.9.8+ }
+{ $threading on}
 
 uses
-  Interfaces, Classes, StdCtrls, Forms, Buttons, Menus, ComCtrls,
 {$ifdef UNIX}
-  cthreads,
+  CThreads,
 {$endif}
+  Interfaces, Classes, StdCtrls, Forms, Buttons, Menus, ComCtrls,
   SysUtils, Extctrls;
 
 
@@ -117,6 +119,8 @@ threadvar
 var
   Form1 : TForm1;
   TotalCount: integer;
+  { GlobalData is an example of what you should NOT do :)
+    Access from multiple threads to same variable unprotected }
   GlobalData: integer;
 
 constructor TAThread.Create(CreateSuspended: boolean);
