@@ -1,29 +1,35 @@
 <?xml version="1.0"?>
 <CONFIG>
   <Package Version="2">
-    <Name Value="SQLiteLaz"/>
-    <Author Value="FPC Team"/>
+    <PathDelim Value="\"/>
+    <Name Value="sqlitedslaz"/>
+    <Author Value="Luiz Americo Pereira Camara"/>
     <CompilerOptions>
+      <Version Value="4"/>
+      <PathDelim Value="\"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib/"/>
+        <UnitOutputDirectory Value="lib\"/>
       </SearchPaths>
+      <CodeGeneration>
+        <Generate Value="Faster"/>
+      </CodeGeneration>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Description Value="SQLite"/>
+    <Description Value="Package for TSqliteDataset class"/>
     <License Value="LGPL"/>
-    <Version Major="1" Release="1"/>
+    <Version Minor="1" Release="1"/>
     <Files Count="2">
       <Item1>
-        <Filename Value="sqlitedataset.pas"/>
+        <Filename Value="sqliteds.pas"/>
         <HasRegisterProc Value="True"/>
         <Type Value="Virtual Unit"/>
-        <UnitName Value="SQLiteDataset"/>
+        <UnitName Value="sqliteds"/>
       </Item1>
       <Item2>
-        <Filename Value="sqliteresources.pas"/>
-        <UnitName Value="SQLiteResources"/>
+        <Filename Value="sqlitedsresources.pas"/>
+        <UnitName Value="sqlitedsresources"/>
       </Item2>
     </Files>
     <Type Value="RunAndDesignTime"/>
@@ -33,10 +39,11 @@
       </Item1>
     </RequiredPkgs>
     <UsageOptions>
-      <UnitPath Value="$(PkgOutDir)/"/>
+      <UnitPath Value="$(PkgOutDir)\"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
+      <DestinationDirectory Value=""/>
       <IgnoreBinaries Value="False"/>
     </PublishOptions>
   </Package>
