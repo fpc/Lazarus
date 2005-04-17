@@ -213,6 +213,14 @@ begin
   end;
 end;
 
+procedure GetDefaultBrowser(var Browser, Params: string);
+begin
+  Browser:= SearchFileInPath('rundll32.exe','',
+                           SysUtils.GetEnvironmentVariable('PATH'),';',
+                           [sffDontSearchInBasePath]);
+  Params:='url.dll,FileProtocolHandler %s';
+end;
+
 {---------------------------------------------------------------------------
   procedure InternalInit;
  ---------------------------------------------------------------------------}
@@ -226,6 +234,9 @@ end;
 
 {
   $Log$
+  Revision 1.28  2005/04/17 11:15:41  vincents
+  implemented using default browser on windows
+
   Revision 1.27  2005/03/23 10:45:05  mattias
   fixed ambigious with ambiguous
 

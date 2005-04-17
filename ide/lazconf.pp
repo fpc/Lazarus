@@ -115,6 +115,9 @@ const
   
   // returns the user language ID from the OS
   procedure GetLanguageIDs(var Lang, FallbackLang: string);
+  
+  // returrns the default browser
+  procedure GetDefaultBrowser(var Browser, Params: string);
 
 const
   EmptyLine = LineEnding + LineEnding;
@@ -255,6 +258,9 @@ end.
 
 {
   $Log$
+  Revision 1.40  2005/04/17 11:15:41  vincents
+  implemented using default browser on windows
+
   Revision 1.39  2005/03/23 10:45:04  mattias
   fixed ambigious with ambiguous
 

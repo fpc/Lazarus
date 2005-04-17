@@ -39,7 +39,7 @@ uses
   PropEdits, HelpIntf, HelpHTML, HelpFPDoc, MacroIntf,
   LazarusIDEStrConsts, TransferMacros, DialogProcs, IDEOptionDefs,
   EnvironmentOpts, AboutFrm, MsgView, Project, PackageDefs, MainBar,
-  HelpOptions, MainIntf;
+  HelpOptions, MainIntf, LazConf;
 
 type
   { TBaseHelpManager }
@@ -92,6 +92,7 @@ type
     FRTLHelpDBPath: THelpBasePathObject;
     procedure RegisterIDEHelpDatabases;
     procedure RegisterDefaultIDEHelpViewers;
+    procedure FindDefaultBrowser(var DefaultBrowser, Params: string);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -440,8 +441,17 @@ begin
 end;
 
 procedure THelpManager.RegisterDefaultIDEHelpViewers;
+var
+  HelpViewer: THTMLBrowserHelpViewer;
 begin
-  HelpViewers.RegisterViewer(THTMLBrowserHelpViewer.Create);
+  HelpViewer:= THTMLBrowserHelpViewer.Create;
+  HelpViewer.OnFindDefaultBrowser := @FindDefaultBrowser;
+  HelpViewers.RegisterViewer(HelpViewer);
+end;
+
+procedure THelpManager.FindDefaultBrowser(var DefaultBrowser, Params: string);
+begin
+  GetDefaultBrowser(DefaultBrowser, Params);
 end;
 
 constructor THelpManager.Create(TheOwner: TComponent);

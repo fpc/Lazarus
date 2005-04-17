@@ -216,6 +216,26 @@ begin
   Lang := Copy(Lang, 1, 5);
 end;
 
+procedure GetDefaultBrowser(var Browser, Params: string);
+  function Find(const ShortFilename: string; var Filename: string): boolean;
+  begin
+    Filename:=SearchFileInPath(ShortFilename,'',
+                   SysUtils.GetEnvironmentVariable('PATH'),PathSeparator,[]);
+    Result:=Filename<>'';
+  end;
+
+begin
+  Params:='%s';
+  Browser:='';
+  // prefer open source ;)
+  if Find('mozilla',Browser) then exit;
+  if Find('galeon',Browser) then exit;
+  if Find('konqueror',Browser) then exit;
+  if Find('safari',Browser) then exit;
+  if Find('netscape',Browser) then exit;
+  if Find('opera',Browser) then exit;
+end;
+
 {---------------------------------------------------------------------------
   procedure InternalInit;
  ---------------------------------------------------------------------------}

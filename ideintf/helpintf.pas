@@ -556,6 +556,7 @@ type
     property BasePath: string read FBasePath write SetBasePath;
   end;
   
+  TOnFindDefaultBrowser = procedure(var DefaultBrowser, Params: string) of object;
   
 var
   HelpDatabases: THelpDatabases; // initialized by the IDE

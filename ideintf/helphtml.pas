@@ -52,20 +52,27 @@ type
   
   { THTMLBrowserHelpViewer }
   
+  //TOnFindDefaultBrowser = procedure(var DefaultBrowser: string) of object;
+
   THTMLBrowserHelpViewer = class(THelpViewer)
   private
     FBrowserParams: string;
     FBrowserPath: string;
+    FDefaultBrowser: string;
+    FDefaultBrowserParams: string;
+    FOnFindDefaultBrowser: TOnFindDefaultBrowser;
     procedure SetBrowserParams(const AValue: string);
     procedure SetBrowserPath(const AValue: string);
   public
     constructor Create;
     function ShowNode(Node: THelpNode; var ErrMsg: string): TShowHelpResult; override;
-    function FindDefaultBrowser: string; virtual;
+    procedure FindDefaultBrowser(var Browser, Params: string); virtual;
     procedure Assign(Source: TPersistent); override;
     procedure Load(Storage: TConfigStorage); override;
     procedure Save(Storage: TConfigStorage); override;
     function GetLocalizedName: string; override;
+    property OnFindDefaultBrowser: TOnFindDefaultBrowser
+               read FOnFindDefaultBrowser write FOnFindDefaultBrowser;
   published
     property BrowserPath: string read FBrowserPath write SetBrowserPath;
     property BrowserParams: string read FBrowserParams write SetBrowserParams;
@@ -236,8 +243,9 @@ begin
 
   // check browser path
   CommandLine:=BrowserPath;
+  Params:=BrowserParams;
   if CommandLine='' then
-    CommandLine:=FindDefaultBrowser;
+    FindDefaultBrowser(CommandLine, Params);
   if CommandLine='' then begin
     ErrMsg:=Format(oisHelpNoHTMLBrowserFoundPleaseDefineOneInHelpConfigureHe, [
       #13]);
@@ -255,7 +263,6 @@ begin
   //debugln('THTMLBrowserHelpViewer.ShowNode Node.URL=',Node.URL);
   
   // create params and replace %s for URL
-  Params:=BrowserParams;
   URLMacroPos:=Pos('%s',Params);
   if URLMacroPos>=1 then
     Params:=copy(Params,1,URLMacroPos-1)+Node.URL
@@ -285,26 +292,14 @@ begin
   end;
 end;
 
-function THTMLBrowserHelpViewer.FindDefaultBrowser: string;
-
-  function Find(const ShortFilename: string; var Filename: string): boolean;
-  begin
-    Filename:=SearchFileInPath(ShortFilename{$IFDEF win32}+'.exe'{$ENDIF},'',
-                   Application.EnvironmentVariable['PATH'],PathSeparator,[]);
-    Result:=Filename<>'';
-  end;
-
+procedure THTMLBrowserHelpViewer.FindDefaultBrowser(var Browser, Params: string);
 begin
-  Result:='';
-  // prefer open source ;)
-  if Find('mozilla',Result) then exit;
-  if Find('galeon',Result) then exit;
-  if Find('konqueror',Result) then exit;
-  if Find('safari',Result) then exit;
-  if Find('netscape',Result) then exit;
-  if Find('opera',Result) then exit;
-  if Find('iexplore',Result) then exit;
-  Result:='';
+  if FDefaultBrowser='' then begin
+    if Assigned(OnFindDefaultBrowser) then
+      OnFindDefaultBrowser(FDefaultBrowser, FDefaultBrowserParams);
+  end;
+  Browser:=FDefaultBrowser;
+  Params:=FDefaultBrowserParams;
 end;
 
 procedure THTMLBrowserHelpViewer.Assign(Source: TPersistent);
