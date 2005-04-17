@@ -25,8 +25,9 @@ uses
   windows;
 
 const
-  DefaultFPCSrcDirs: array[1..1] of string = (
-    'C:\pp'
+  DefaultFPCSrcDirs: array[1..2] of string = (
+    '$(LazarusDir)\fpcsrc',  // this value is set in internalinit
+    'c:\pp\source'
     );
 
 var
@@ -113,19 +114,21 @@ end;
 
 function FindDefaultCompilerPath: string;
 begin
-  Result:=SearchFileInPath(GetDefaultCompilerFilename,'',
+  Result:=SearchFileInPath(GetDefaultCompilerFilename,
+                           AppendPathDelim(ProgramDirectory)+'pp\bin\i386-win32',
                            SysUtils.GetEnvironmentVariable('PATH'),';',
-                           [sffDontSearchInBasePath]);
+                           []);
   if Result<>'' then exit;
-  Result:='c:\pp\bin\win32\ppc386.exe';
+  Result:='c:\pp\bin\i386-win32\ppc386.exe';
   if not FileExists(Result) then Result:='';
 end;
 
 function FindDefaultMakePath: string;
 begin
-  Result:=SearchFileInPath('make.exe','',
+  Result:=SearchFileInPath('make.exe',
+                           AppendPathDelim(ProgramDirectory)+'pp\bin\i386-win32',
                            SysUtils.GetEnvironmentVariable('PATH'),';',
-                           [sffDontSearchInBasePath]);
+                           []);
 end;
 
 function CreateCompilerTestPascalFilename: string;
@@ -171,12 +174,14 @@ end;
 
 procedure GetDefaultCompilerFilenames(List: TStrings);
 begin
-  List.Add('c:\pp\bin\win32\ppc386.exe');
+  List.Add(AppendPathDelim(ProgramDirectory)+'pp\bin\i386-win32\ppc386.exe');
+  List.Add('c:\pp\bin\i386-win32\ppc386.exe');
 end;
 
 procedure GetDefaultMakeFilenames(List: TStrings);
 begin
-  List.Add('c:\pp\bin\win32\make.exe');
+  List.Add(AppendPathDelim(ProgramDirectory)+'pp\bin\i386-win32\make.exe');
+  List.Add('c:\pp\bin\i386-win32\make.exe');
 end;
 
 procedure GetDefaultTestBuildDirs(List: TStrings);
@@ -230,10 +235,14 @@ begin
   SecondaryConfigPath:=SysUtils.GetEnvironmentVariable('WINDIR');
   If SecondaryConfigPath = '' Then
     SecondaryConfigPath:='c:\windows';
+  DefaultFPCSrcDirs[1]:=AppendPathDelim(ProgramDirectory)+'fpcsrc';
 end;
 
 {
   $Log$
+  Revision 1.29  2005/04/17 20:23:23  vincents
+  implemented finding ppc386.exe and fpc source installed by win32 installer (bug 699)
+
   Revision 1.28  2005/04/17 11:15:41  vincents
   implemented using default browser on windows
 
