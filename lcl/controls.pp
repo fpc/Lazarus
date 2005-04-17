@@ -1057,6 +1057,7 @@ type
     procedure SendToBack;
     procedure SetTempCursor(Value: TCursor);
     procedure UpdateRolesForForm; virtual;
+    procedure ActiveDefaultControlChanged(NewControl: TControl); virtual;
     function  GetTextBuf(Buffer: PChar; BufSize: Integer): Integer; virtual;
     function  GetTextLen: Integer; virtual;
     Procedure SetTextBuf(Buffer: PChar); virtual;
@@ -2890,6 +2891,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.295  2005/04/17 18:41:15  micha
+  implement active default control switching
+  pressing return key executes active default control action
+
   Revision 1.294  2005/04/04 11:43:36  mattias
   fixed compilation and designtime drawing of gtkglarea
 

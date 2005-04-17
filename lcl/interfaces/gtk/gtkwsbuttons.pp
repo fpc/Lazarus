@@ -58,7 +58,7 @@ type
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure DefaultButtonChanged(const AButton: TCustomButton); override;
+    class procedure ActiveDefaultButtonChanged(const AButton: TCustomButton); override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
@@ -136,9 +136,9 @@ begin
   SetCallbacks(PGtkWidget(Result), WidgetInfo);
 end;
 
-procedure TGtkWSButton.DefaultButtonChanged(const AButton: TCustomButton);
+procedure TGtkWSButton.ActiveDefaultButtonChanged(const AButton: TCustomButton);
 begin
-  if (AButton.Default)
+  if (AButton.Active)
   and (GTK_WIDGET_CAN_DEFAULT(pgtkwidget(AButton.Handle))) then
     //gtk_widget_grab_default(pgtkwidget(handle))
   else begin

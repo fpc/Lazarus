@@ -837,6 +837,7 @@ type
     property Color;
     property Constraints;
     //property EditLabel; sub components not implemented in FCL
+    property EditLabel;
     property Enabled;
     property LabelPosition;
     property LabelSpacing;
@@ -996,6 +997,10 @@ end.
 
  {
   $Log$
+  Revision 1.135  2005/04/17 18:41:15  micha
+  implement active default control switching
+  pressing return key executes active default control action
+
   Revision 1.134  2005/03/25 17:47:55  mattias
   implemented TMemo text for gtk2, TRadioGroup.OnClick is now called whenever ItemIndex changed, so it works now also under gtk2 Delphi compatible  from Andrew Haines
 

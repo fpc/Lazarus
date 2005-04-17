@@ -53,7 +53,7 @@ type
   { TWSButton }
 
   TWSButton = class(TWSButtonControl)
-    class procedure DefaultButtonChanged(const AButton: TCustomButton); virtual;
+    class procedure ActiveDefaultButtonChanged(const AButton: TCustomButton); virtual;
     class procedure SetShortCut(const AButton: TCustomButton; const OldShortCut, NewShortCut: TShortCut); virtual;
   end;
   TWSButtonClass = class of TWSButton;
@@ -80,7 +80,7 @@ implementation
 
 { TWSButton }
 
-procedure TWSButton.DefaultButtonChanged(const AButton: TCustomButton);
+procedure TWSButton.ActiveDefaultButtonChanged(const AButton: TCustomButton);
 begin
 end;
 

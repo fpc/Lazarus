@@ -55,7 +55,7 @@ end;
 procedure TCustomButton.DoSendBtnDefault;
 begin
   if HandleAllocated then
-    TWSButtonClass(WidgetSetClass).DefaultButtonChanged(Self);
+    TWSButtonClass(WidgetSetClass).ActiveDefaultButtonChanged(Self);
 end;
 
 procedure TCustomButton.ControlKeyDown(var Key: Word; Shift: TShiftState);
@@ -157,7 +157,7 @@ end;
 
 procedure TCustomButton.ExecuteDefaultAction;
 begin
-  if FDefault then
+  if FActive then
     Click;
 end;
 
@@ -186,6 +186,39 @@ Begin
   inherited Click;
 end;
 
+procedure TCustomButton.ActiveDefaultControlChanged(NewControl: TControl);
+var
+  lPrevActive: boolean;
+  lForm: TCustomForm;
+begin
+  lPrevActive := FActive;
+  if NewControl = Self then
+  begin
+    FActive := true;
+    lForm := GetParentForm(Self);
+    if lForm <> nil then
+      lForm.ActiveDefaultControl := Self;
+  end else 
+  if NewControl <> nil then
+  begin
+    FActive := false;
+  end else begin
+    FActive := FDefault;
+  end;
+  if lPrevActive <> FActive then
+    DoSendBtnDefault;
+end;
+
+procedure TCustomButton.CMUIActivate(var Message: TLMessage);
+var
+  lForm: TCustomForm;
+begin
+  lForm := GetParentForm(Self);
+  if lForm = nil then exit;
+
+  ActiveDefaultControlChanged(lForm.ActiveControl);
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCustomButton.CMDefaultClicked
   Params:  None
@@ -196,6 +229,25 @@ end;
 procedure TCustomButton.WMDefaultClicked(var Message: TLMessage);
 begin
   Click;
+end;
+
+procedure TCustomButton.WMKillFocus(var Message: TLMKillFocus);
+var
+  lForm: TCustomForm;
+begin
+  inherited;
+
+  if FActive then
+  begin
+    FActive := FDefault;
+    if not FActive then
+    begin
+      lForm := GetParentForm(Self);
+      if (lForm <> nil) and (lForm.ActiveDefaultControl = Self) then
+        lForm.ActiveDefaultControl := nil;
+      DoSendBtnDefault;
+    end;
+  end;
 end;
 
 procedure TCustomButton.RealSetText(const Value: TCaption);
@@ -234,6 +286,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.44  2005/04/17 18:41:15  micha
+  implement active default control switching
+  pressing return key executes active default control action
+
   Revision 1.43  2005/03/23 10:45:06  mattias
   fixed ambigious with ambiguous
 

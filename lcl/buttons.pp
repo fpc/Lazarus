@@ -65,12 +65,15 @@ type
   private
     FCancel: Boolean;
     FDefault: Boolean;
+    FActive: boolean;
     FModalResult: TModalResult;
     FShortCut: TShortcut;
     procedure SetCancel(NewCancel: boolean);
     procedure SetDefault(Value: Boolean);
     procedure SetModalResult(const AValue: TModalResult);
+    procedure CMUIActivate(var Message: TLMessage); message CM_UIACTIVATE;
     procedure WMDefaultClicked(var Message: TLMessage); message LM_CLICKED;
+    procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
   protected
     procedure Click; override;
     procedure CreateWnd; override;
@@ -84,8 +87,10 @@ type
     constructor Create(TheOwner: TComponent); override;
     procedure ExecuteDefaultAction; override;
     procedure ExecuteCancelAction; override;
+    procedure ActiveDefaultControlChanged(NewControl: TControl); override;
     procedure UpdateRolesForForm; override;
   public
+    property Active: boolean read FActive stored false;
     property Color default clBtnFace;
     property Default: Boolean read FDefault write SetDefault default false;
     property ModalResult: TModalResult read FModalResult write SetModalResult default mrNone;
@@ -399,6 +404,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.94  2005/04/17 18:41:15  micha
+  implement active default control switching
+  pressing return key executes active default control action
+
   Revision 1.93  2005/03/23 10:45:06  mattias
   fixed ambigious with ambiguous
 

@@ -1985,6 +1985,10 @@ begin
   TWSControlClass(WidgetSetClass).SetCursor(Self, Value);
 end;
 
+procedure TControl.ActiveDefaultControlChanged(NewControl: TControl);
+begin
+end;
+
 procedure TControl.UpdateRolesForForm;
 begin
   // called by the form when the "role" controls DefaultControl or CancelControl
@@ -3512,6 +3516,10 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.255  2005/04/17 18:41:15  micha
+  implement active default control switching
+  pressing return key executes active default control action
+
   Revision 1.254  2005/04/01 19:10:42  micha
   make method Hide a member of TControl (fixes bug 707)
 

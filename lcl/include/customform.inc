@@ -1165,6 +1165,19 @@ Begin
   end;
 end;
 
+procedure TCustomForm.SetActiveDefaultControl(AControl: TControl);
+var
+  lPrevControl: TControl;
+begin
+  if AControl = FActiveDefaultControl then exit;
+  lPrevControl := FActiveDefaultControl;
+  FActiveDefaultControl := AControl;
+
+  if ((lPrevControl = nil) <> (AControl = nil))
+    and (FDefaultControl <> nil) then
+    FDefaultControl.ActiveDefaultControlChanged(AControl);
+end;
+
 {------------------------------------------------------------------------------
        TCustomForm SetFormStyle
 ------------------------------------------------------------------------------}
@@ -1916,6 +1929,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.183  2005/04/17 18:41:15  micha
+  implement active default control switching
+  pressing return key executes active default control action
+
   Revision 1.182  2005/03/26 14:01:18  micha
   save BorderIcons setting internally
 

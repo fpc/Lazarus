@@ -371,6 +371,7 @@ type
   private
     FActive: Boolean;
     FActiveControl: TWinControl;
+    FActiveDefaultControl: TControl;
     FBorderIcons: TBorderIcons;
     FDefaultControl: TControl;
     FCancelControl: TControl;
@@ -417,6 +418,7 @@ type
     function GetShowInTaskBarDefault: boolean;
     procedure SetActive(AValue: Boolean);
     procedure SetActiveControl(AWinControl: TWinControl);
+    procedure SetActiveDefaultControl(AControl: TControl);
     procedure SetBorderIcons(NewIcons: TBorderIcons);
     procedure SetFormBorderStyle(NewStyle: TFormBorderStyle);
     procedure SetCancelControl(NewControl: TControl);
@@ -517,6 +519,7 @@ type
   public
     property Active: Boolean read FActive;
     property ActiveControl: TWinControl read FActiveControl write SetActiveControl;
+    property ActiveDefaultControl: TControl read FActiveDefaultControl write SetActiveDefaultControl;
     property BorderIcons: TBorderIcons read FBorderIcons write SetBorderIcons 
       default [biSystemMenu, biMinimize, biMaximize];
     property BorderStyle: TFormBorderStyle

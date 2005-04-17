@@ -1329,18 +1329,24 @@ procedure TApplication.DoReturnKey(AControl: TWinControl; var Key: Word;
   Shift: TShiftState);
 var
   Form: TCustomForm;
+  lDefaultControl: TControl;
 begin
   if (Shift = []) and (Key = VK_RETURN) then begin
     Form := GetParentForm(AControl);
     if Form<>nil then begin
-      if (anoReturnForDefaultControl in Navigation)
-      and (Form.DefaultControl <> nil) 
-      and ((Form.DefaultControl.Parent = nil) or (Form.DefaultControl.Parent.CanFocus))
-      and Form.DefaultControl.Enabled and Form.DefaultControl.Visible then
+      if anoReturnForDefaultControl in Navigation then
       begin
-        //debugln('TApplication.ControlKeyUp VK_RETURN ', Acontrol.Name);
-        Form.DefaultControl.ExecuteDefaultAction;
-        Key := VK_UNKNOWN;
+        lDefaultControl := Form.ActiveDefaultControl;
+        if lDefaultControl = nil then
+          lDefaultControl := Form.DefaultControl;
+        if (lDefaultControl <> nil) 
+          and ((lDefaultControl.Parent = nil) or (lDefaultControl.Parent.CanFocus))
+          and lDefaultControl.Enabled and lDefaultControl.Visible then
+        begin
+          //debugln('TApplication.ControlKeyUp VK_RETURN ', Acontrol.Name);
+          lDefaultControl.ExecuteDefaultAction;
+          Key := VK_UNKNOWN;
+        end;
       end;
     end;
   end;
@@ -1455,6 +1461,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.116  2005/04/17 18:41:15  micha
+  implement active default control switching
+  pressing return key executes active default control action
+
   Revision 1.115  2005/04/12 10:02:47  micha
   when executing defaultcontrol action, check if control visible
 

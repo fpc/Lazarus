@@ -47,7 +47,7 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-    class procedure DefaultButtonChanged(const AButton: TCustomButton); override;
+    class procedure ActiveDefaultButtonChanged(const AButton: TCustomButton); override;
     class procedure SetShortCut(const AButton: TCustomButton; const OldKey, NewKey: word); override;
   end;
 
@@ -102,12 +102,12 @@ begin
   Result := Params.Window;
 end;
 
-procedure TWin32WSButton.DefaultButtonChanged(const AButton: TCustomButton);
+procedure TWin32WSButton.ActiveDefaultButtonChanged(const AButton: TCustomButton);
 var
   WindowStyle: dword;
 begin
   WindowStyle := Windows.GetWindowLong(AButton.Handle, GWL_STYLE) and not (BS_DEFPUSHBUTTON or BS_PUSHBUTTON);
-  If AButton.Default then
+  If AButton.Active then
     WindowStyle := WindowStyle or BS_DEFPUSHBUTTON
   else
     WindowStyle := WindowStyle or BS_PUSHBUTTON;
