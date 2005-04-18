@@ -110,7 +110,7 @@ begin
   FActivating := True;
   try
     //debugln('THintWindow.ActivateHint OldHint="',DbgStr(Caption),'" NewHint="',DbgStr(AHint),'"');
-    InvalidateNeeded:=Visible and (Caption<>Hint);
+    InvalidateNeeded:=Visible and (Caption<>AHint);
     Caption := AHint;
     if ARect.Bottom > Screen.Height then
     begin
