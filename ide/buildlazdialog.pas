@@ -740,6 +740,7 @@ var
   ButtonWidth: Integer;
   ButtonHeight: Integer;
   ButtonRect: TRect;
+  InnerButtonRect: TRect;
   CurItem: TBuildLazarusItem;
   CurStr: String;
   TxtH: Integer;
@@ -770,8 +771,17 @@ begin
     ButtonRect.Right:=x+ButtonWidth;
     ButtonRect.Bottom:=ButtonRect.Top+ButtonHeight;
     ButtonState:=DFCS_BUTTONPUSH;
-    if CurItem.MakeMode=mm then
+    if CurItem.MakeMode=mm then begin
       inc(ButtonState,DFCS_PUSHED);
+      ItemsListBox.Canvas.Brush.Color := clBtnHiLight;
+    end
+    else
+      ItemsListBox.Canvas.Brush.Color := clBtnFace;
+    // draw button background
+    InnerButtonRect := ButtonRect;
+    inc(InnerButtonRect.Top); inc(InnerButtonRect.Left);
+    dec(InnerButtonRect.Bottom); dec(InnerButtonRect.Right);
+    ItemsListBox.Canvas.FillRect(InnerButtonRect);
     DrawFrameControl(
       ItemsListBox.Canvas.GetUpdatedHandle([csBrushValid,csPenValid]),
       ButtonRect, DFC_BUTTON, ButtonState);
