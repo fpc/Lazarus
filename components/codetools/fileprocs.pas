@@ -1098,7 +1098,7 @@ end;
 
 function DbgS(const p: pointer): string;
 begin
-  Result:=DbgS(p);
+  Result:=HexStr(PtrInt(p),sizeof(PtrInt));
 end;
 
 function DbgS(const e: extended): string;
