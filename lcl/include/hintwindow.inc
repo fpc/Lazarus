@@ -103,10 +103,14 @@ begin
 end;
 
 procedure THintWindow.ActivateHint(ARect: TRect; const AHint: String);
+var
+  InvalidateNeeded: Boolean;
 begin
   if FActivating then exit;
   FActivating := True;
   try
+    //debugln('THintWindow.ActivateHint OldHint="',DbgStr(Caption),'" NewHint="',DbgStr(AHint),'"');
+    InvalidateNeeded:=Visible and (Caption<>Hint);
     Caption := AHint;
     if ARect.Bottom > Screen.Height then
     begin
@@ -125,6 +129,7 @@ begin
     Visible := True;
     TCustomTimer(FAutoHideTimer).Enabled := False;
     TCustomTimer(FAutoHideTimer).Enabled := FAutoHide;
+    if InvalidateNeeded then Invalidate;
   finally
     FActivating := False;
   end;

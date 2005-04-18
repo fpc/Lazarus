@@ -8,7 +8,7 @@
         <SaveOnlyProjectUnits Value="True"/>
       </Flags>
       <MainUnit Value="0"/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <ActiveEditorIndexAtStart Value="1"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
       <Title Value="project1"/>
@@ -16,7 +16,7 @@
     <Units Count="2">
       <Unit0>
         <CursorPos X="40" Y="32"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="2"/>
         <Filename Value="project1.lpr"/>
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
@@ -25,7 +25,7 @@
         <UsageCount Value="41"/>
       </Unit0>
       <Unit1>
-        <CursorPos X="20" Y="185"/>
+        <CursorPos X="11" Y="171"/>
         <EditorIndex Value="0"/>
         <Filename Value="unit1.pas"/>
         <ComponentName Value="Form1"/>

@@ -641,6 +641,7 @@ begin
 
     FHintWindow.Color := HintInfo.HintColor;
 
+    //debugln('TApplication.ShowHintWindow B HintWinRect=',dbgs(HintWinRect),' HintStr="',DbgStr(HintInfo.HintStr),'"');
     FHintWindow.ActivateHint(HintWinRect,HintInfo.HintStr);
     // start hide timer
     StartHintTimer(HintHidePause,ahtHideHint);
@@ -1461,6 +1462,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.117  2005/04/18 14:40:36  mattias
+  fixed invaldating hintwindow on changing hintstr
+
   Revision 1.116  2005/04/17 18:41:15  micha
   implement active default control switching
   pressing return key executes active default control action
