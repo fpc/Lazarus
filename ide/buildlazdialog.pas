@@ -773,7 +773,7 @@ begin
     ButtonState:=DFCS_BUTTONPUSH;
     if CurItem.MakeMode=mm then begin
       inc(ButtonState,DFCS_PUSHED);
-      ItemsListBox.Canvas.Brush.Color := clBtnHiLight;
+      ItemsListBox.Canvas.Brush.Color := clHighlight;
     end
     else
       ItemsListBox.Canvas.Brush.Color := clBtnFace;
