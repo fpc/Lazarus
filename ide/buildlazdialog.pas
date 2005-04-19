@@ -36,7 +36,7 @@ interface
 uses
   Classes, SysUtils, Math, LCLProc, Forms, Controls, LCLType, LCLIntf,
   Graphics, GraphType, StdCtrls, ExtCtrls, Buttons, FileUtil, Dialogs,
-  LResources, Laz_XMLCfg,
+  LResources,  Laz_XMLCfg,
   LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs,
   InputHistory, ExtToolDialog, ExtToolEditDlg,
   CompilerOptions;
@@ -185,6 +185,7 @@ type
                                    ARect: TRect; State: TOwnerDrawState);
     procedure ItemsListBoxMouseDown(Sender: TOBject; Button: TMouseButton;
                                     Shift: TShiftState; X, Y: Integer);
+    procedure ItemsListBoxShowHint(Sender: TObject; HintInfo: Pointer);
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
     procedure TargetDirectoryButtonClick(Sender: TObject);
@@ -193,6 +194,7 @@ type
     ImageIndexNone: integer;
     ImageIndexBuild: integer;
     ImageIndexCleanBuild: integer;
+    function GetMakeModeAtX(const X: Integer; var MakeMode: TMakeMode): boolean;
     function MakeModeToInt(MakeMode: TMakeMode): integer;
     function IntToMakeMode(i: integer): TMakeMode;
     procedure SetupComponents;
@@ -820,22 +822,29 @@ end;
 procedure TConfigureBuildLazarusDlg.ItemsListBoxMouseDown(Sender: TOBject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
-  ButtonWidth: Integer;
   NewMakeMode: TMakeMode;
   i: Integer;
 begin
-  ButtonWidth:=ImageList.Width+4;
-  i:=X div ButtonWidth;
-  case i of
-  0: NewMakeMode:=mmNone;
-  1: NewMakeMode:=mmBuild;
-  2: NewMakeMode:=mmCleanBuild;
-  else exit;
-  end;
+  if not GetMakeModeAtX(X, NewMakeMode) then exit;
   i:=ItemsListBox.GetIndexAtY(Y);
   if (i<0) or (i>=Options.Count) then exit;
   Options.Items[i].MakeMode:=NewMakeMode;
   ItemsListBox.Invalidate;
+end;
+
+procedure TConfigureBuildLazarusDlg.ItemsListBoxShowHint(Sender:TObject;
+  HintInfo:Pointer);
+var
+  MakeMode: TMakeMode;
+  i: Integer;
+begin
+  with PHintInfo(HintInfo)^ do begin
+    HintStr:='';
+    if not GetMakeModeAtX(CursorPos.X, MakeMode) then exit;
+    i:=ItemsListBox.GetIndexAtY(CursorPos.Y);
+    if (i<0) or (i>=Options.Count) then exit;
+    HintStr := MakeModeNames[MakeMode] ;
+  end;
 end;
 
 procedure TConfigureBuildLazarusDlg.OkButtonClick(Sender: TObject);
@@ -923,6 +932,23 @@ begin
   end;
 end;
 
+function TConfigureBuildLazarusDlg.GetMakeModeAtX(const X: Integer;
+  var MakeMode: TMakeMode): boolean;
+var
+  ButtonWidth: Integer;
+  i: integer;
+begin
+  Result:=True;
+  ButtonWidth:=ImageList.Width+4;
+  i:=X div ButtonWidth;
+  case i of
+  0: MakeMode:=mmNone;
+  1: MakeMode:=mmBuild;
+  2: MakeMode:=mmCleanBuild;
+  else Result:=False;
+  end;
+end;
+
 function TConfigureBuildLazarusDlg.IntToMakeMode(i: integer): TMakeMode;
 begin
   case i of
@@ -978,9 +1004,11 @@ begin
   with ItemsListBox do begin
     Name:='ItemsListBox';
     Parent:=Self;
+    ShowHint:=True;
     Style:= lbOwnerDrawFixed;
     OnMouseDown:=@ItemsListBoxMouseDown;
     OnDrawItem:=@ItemsListBoxDrawItem;
+    OnShowHint:=@ItemsListBoxShowHint;
     ItemHeight:=ImageList.Height+6;
   end;
 
