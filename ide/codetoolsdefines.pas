@@ -162,6 +162,8 @@ type
     // misc
     procedure CodeToolsDefinesEditorKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure CodeToolsDefinesEditorKeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure FormResize(Sender: TObject);
     procedure SelectedItemGroupBoxResize(Sender: TObject);
     procedure ValueNoteBookResize(Sender: TObject);
@@ -357,6 +359,13 @@ procedure TCodeToolsDefinesEditor.CodeToolsDefinesEditorKeyDown(
   Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if (Shift=[]) and (Key=VK_ESCAPE) then ModalResult:=mrCancel;
+end;
+
+procedure TCodeToolsDefinesEditor.CodeToolsDefinesEditorKeyUp(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if (Key=VK_ESCAPE) and (Shift=[]) then
+    ModalResult:=mrCancel;
 end;
 
 procedure TCodeToolsDefinesEditor.DefineTreeViewMouseUp(Sender: TObject;
@@ -1991,6 +2000,8 @@ begin
   end;
   FDefineTree:=TDefineTree.Create;
   FormResize(Self);
+  KeyPreview:=true;
+  OnKeyUp:=@CodeToolsDefinesEditorKeyUp;
 end;
 
 destructor TCodeToolsDefinesEditor.Destroy;
