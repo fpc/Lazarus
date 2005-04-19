@@ -97,12 +97,14 @@ Type
 
 procedure Tdlgpropertiesprinter.dlgpropertiesprinterSHOW(Sender: TObject);
 begin
+  if Sender=nil then ;
   RefreshInfos;
 end;
 
 procedure Tdlgpropertiesprinter.cbPaperSizeKEYPRESS(Sender: TObject;
   var Key: Char);
 begin
+  if Sender=nil then ;
   Key:=#0;
 end;
 
@@ -126,6 +128,8 @@ Var Lst : TStringList;
     pOr : TPrinterOrientation;
     St  : String;
 begin
+  if Sender=nil then ;
+
   InitCombo(cbPaperSize,'PageSize',Printer.PaperSize.PaperName);
   InitCombo(cbPaperType,'MediaType','Plain Paper');
   InitCombo(cbPaperSrc ,'InputSlot','Auto Sheet Feeder');
@@ -194,6 +198,7 @@ end;
 
 procedure Tdlgpropertiesprinter.rbPortraitCLICK(Sender: TObject);
 begin
+  if Sender=nil then ;
   RefreshInfos;
 end;
 

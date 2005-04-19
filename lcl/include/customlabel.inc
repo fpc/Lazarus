@@ -137,6 +137,7 @@ begin
   Height := 17;
   FShowAccelChar := True;
   Color := clNone;
+  AutoSize:=true;
 end;
 
 function TCustomLabel.GetTransparent: boolean;
@@ -271,6 +272,9 @@ end;
 
 {
   $Log$
+  Revision 1.29  2005/04/19 15:06:30  mattias
+  fixed small aesthetical editoroptions bugs
+
   Revision 1.28  2005/02/03 15:10:23  micha
   implement shortcut handling, tcustomlabel accelerator focuscontrol functionality
 

@@ -4755,7 +4755,7 @@ begin
   begin
     Name:='TextBoldCheckBox';
     Parent:=TextAttributesGroupBox;
-    Top:=5;
+    Top:=0;
     Left:=5;
     Width:=50;
     Height:=16;
@@ -4889,7 +4889,7 @@ begin
   end;
 
   with ForegroundColorButton do begin
-    Top:=2;
+    Top:=0;
     Left:=5;
     Width:=70;
     Height:=20;
@@ -4910,7 +4910,7 @@ begin
   end;
 
   with BackgroundColorButton do begin
-    Top:=2;
+    Top:=0;
     Left:=5;
     Width:=70;
     Height:=20;
@@ -4932,7 +4932,7 @@ begin
 
   w:=(TextBoldCheckBox.Parent.ClientWidth-20) div 3;
   with TextBoldCheckBox do begin
-    Top:=5;
+    Top:=0;
     Left:=5;
     Width:=w;
     Height:=16;

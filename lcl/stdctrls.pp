@@ -1133,6 +1133,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     procedure Paint; override;
+    property AutoSize default True;
   end;
   
   
@@ -1237,6 +1238,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.201  2005/04/19 15:06:30  mattias
+  fixed small aesthetical editoroptions bugs
+
   Revision 1.200  2005/04/05 19:41:19  mattias
   accelerated TMemo on gtk, gtk2 and win32 interface  from Andrew Haines
 

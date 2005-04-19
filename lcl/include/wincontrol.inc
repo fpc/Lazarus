@@ -55,7 +55,8 @@ end;
 ------------------------------------------------------------------------------}
 function TWinControl.AutoSizeDelayed: boolean;
 begin
-  Result:=(wcfCreatingChildHandles in FWinControlFlags)
+  Result:=(not HandleAllocated)
+          or (wcfCreatingChildHandles in FWinControlFlags)
           or (inherited AutoSizeDelayed);
   //if Result then debugln('TWinControl.AutoSizeDelayed A ',DbgSName(Self),' wcfCreatingChildHandles=',dbgs(wcfCreatingChildHandles in FWinControlFlags),' csLoading=',dbgs(csLoading in ComponentState));
 end;
@@ -4481,6 +4482,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.322  2005/04/19 15:06:30  mattias
+  fixed small aesthetical editoroptions bugs
+
   Revision 1.321  2005/04/01 19:10:42  micha
   make method Hide a member of TControl (fixes bug 707)
 
