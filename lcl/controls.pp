@@ -239,6 +239,23 @@ type
     procedure FreeHandle;
     property Control: TControl read FControl write SetControl;
   end;
+  
+  { Hint stuff }
+  
+  PHintInfo = ^THintInfo;
+  THintInfo = record
+    HintControl: TControl;
+    HintWindowClass: TWinControlClass;
+    HintPos: TPoint;
+    HintMaxWidth: Integer;
+    HintColor: TColor;
+    CursorRect: TRect;
+    CursorPos: TPoint;
+    ReshowTimeout: Integer;
+    HideTimeout: Integer;
+    HintStr: string;
+    HintData: Pointer;
+  end;
 
 
   { TDragImageList }
@@ -654,8 +671,9 @@ type
 
   TTabOrder = -1..32767;
 
-  TControlShowHintEvent = procedure(Sender: TObject; HintInfo: Pointer) of object;
-  TContextPopupEvent = procedure(Sender: TObject; MousePos: TPoint; var Handled: Boolean) of object;
+  TControlShowHintEvent = procedure(Sender: TObject; HintInfo: PHintInfo) of object;
+  TContextPopupEvent = procedure(Sender: TObject; MousePos: TPoint;
+                                 var Handled: Boolean) of object;
   
   TControlFlag = (
     cfRequestAlignNeeded,
@@ -2891,6 +2909,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.296  2005/04/20 07:14:00  mattias
+  moved THintInfo from forms.pp to controls.pp and changed TControlShowHint event from pointer to PHintHinfo
+
   Revision 1.295  2005/04/17 18:41:15  micha
   implement active default control switching
   pressing return key executes active default control action

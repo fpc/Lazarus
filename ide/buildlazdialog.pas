@@ -185,7 +185,7 @@ type
                                    ARect: TRect; State: TOwnerDrawState);
     procedure ItemsListBoxMouseDown(Sender: TOBject; Button: TMouseButton;
                                     Shift: TShiftState; X, Y: Integer);
-    procedure ItemsListBoxShowHint(Sender: TObject; HintInfo: Pointer);
+    procedure ItemsListBoxShowHint(Sender: TObject; HintInfo: PHintInfo);
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
     procedure TargetDirectoryButtonClick(Sender: TObject);
@@ -833,17 +833,17 @@ begin
 end;
 
 procedure TConfigureBuildLazarusDlg.ItemsListBoxShowHint(Sender:TObject;
-  HintInfo:Pointer);
+  HintInfo: PHintInfo);
 var
   MakeMode: TMakeMode;
   i: Integer;
 begin
-  with PHintInfo(HintInfo)^ do begin
+  with HintInfo^ do begin
     HintStr:='';
     if not GetMakeModeAtX(CursorPos.X, MakeMode) then exit;
     i:=ItemsListBox.GetIndexAtY(CursorPos.Y);
     if (i<0) or (i>=Options.Count) then exit;
-    HintStr := MakeModeNames[MakeMode] ;
+    HintStr := MakeModeNames[MakeMode];
   end;
 end;
 

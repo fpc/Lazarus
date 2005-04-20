@@ -817,21 +817,6 @@ type
   //TODO: move to LMessages ?
 
   // application hint stuff
-  PHintInfo = ^THintInfo;
-  THintInfo = record
-    HintControl: TControl;
-    HintWindowClass: THintWindowClass;
-    HintPos: TPoint;
-    HintMaxWidth: Integer;
-    HintColor: TColor;
-    CursorRect: TRect;
-    CursorPos: TPoint;
-    ReshowTimeout: Integer;
-    HideTimeout: Integer;
-    HintStr: string;
-    HintData: Pointer;
-  end;
-
   TCMHintShow = record
     Msg: Cardinal;
     Reserved: WPARAM;

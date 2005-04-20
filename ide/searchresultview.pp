@@ -114,7 +114,7 @@ type
     procedure btnSearchAgainClick(Sender: TObject);
     procedure ListboxDrawitem(Control: TWinControl; Index: Integer;
                               ARect: TRect; State: TOwnerDrawState);
-    procedure LazLBShowHint(Sender: TObject; HintInfo: Pointer);
+    procedure LazLBShowHint(Sender: TObject; HintInfo: PHintInfo);
     procedure LazLBMousemove(Sender: TObject; Shift: TShiftState;
                              X, Y: Integer);
     Procedure LazLBMouseWheel(Sender: TObject; Shift: TShiftState;
@@ -439,7 +439,8 @@ begin
 end;//AddResult
 
 
-procedure TSearchResultsView.LazLBShowHint(Sender: TObject; HintInfo: Pointer);
+procedure TSearchResultsView.LazLBShowHint(Sender: TObject;
+  HintInfo: PHintInfo);
 var
   MatchPos: TLazSearchMatchPos;
   HintStr: string;
@@ -466,7 +467,6 @@ begin
     end;//with
   end;//if
 end;//LazLBShowHint
-
 
 procedure TSearchResultsView.ListboxDrawitem(Control: TWinControl;
                                              Index: Integer; ARect: TRect;

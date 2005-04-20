@@ -600,6 +600,10 @@ begin
   HintInfo.HintWindowClass := HintWindowClass;
   HintInfo.HintData := nil;
   CanShow := FHintControl.Perform(CM_HINTSHOW, 0, LParam(@HintInfo)) = 0;
+  if (HintInfo.HintWindowClass=nil)
+  or (not HintInfo.HintWindowClass.InheritsFrom(THintWindow)) then
+    HintInfo.HintWindowClass := HintWindowClass;
+  
   if CanShow and Assigned(FOnShowHint) then
     FOnShowHint(HintInfo.HintStr, CanShow, HintInfo);
   if CanShow and (FHintControl <> nil) and (HintInfo.HintStr <> '') then
@@ -609,7 +613,7 @@ begin
     then
       FreeThenNil(FHintWindow);
     if FHintWindow=nil then begin
-      FHintWindow:=HintInfo.HintWindowClass.Create(Self);
+      FHintWindow:=THintWindowClass(HintInfo.HintWindowClass).Create(Self);
       with FHintWindow do begin
         Visible := False;
         Caption := '';
@@ -1462,6 +1466,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.118  2005/04/20 07:14:00  mattias
+  moved THintInfo from forms.pp to controls.pp and changed TControlShowHint event from pointer to PHintHinfo
+
   Revision 1.117  2005/04/18 14:40:36  mattias
   fixed invaldating hintwindow on changing hintstr
 

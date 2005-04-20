@@ -374,7 +374,7 @@ type
     procedure MoveEditorLeftClicked(Sender: TObject);
     procedure MoveEditorRightClicked(Sender: TObject);
     Procedure NotebookPageChanged(Sender: TObject);
-    procedure NotebookShowTabHint(Sender: TObject; HintInfo: Pointer);
+    procedure NotebookShowTabHint(Sender: TObject; HintInfo: PHintInfo);
     Procedure OpenAtCursorClicked(Sender: TObject);
     Procedure ReadOnlyClicked(Sender: TObject);
     procedure OnPopupMenuOpenPasFile(Sender: TObject);
@@ -2866,7 +2866,7 @@ begin
 end;
 
 procedure TSourceNotebook.NotebookShowTabHint(Sender: TObject;
-  HintInfo: Pointer);
+  HintInfo: PHintInfo);
 var
   Tabindex: integer;
   ASrcEdit: TSourceEditor;
@@ -2878,7 +2878,7 @@ begin
   ASrcEdit:=FindSourceEditorWithPageIndex(TabIndex);
   if ASrcEdit=nil then exit;
   if ASrcEdit.CodeBuffer<>nil then begin
-    PHintInfo(HintInfo)^.HintStr:=ASrcEdit.CodeBuffer.Filename;
+    HintInfo^.HintStr:=ASrcEdit.CodeBuffer.Filename;
   end;
 end;
 
