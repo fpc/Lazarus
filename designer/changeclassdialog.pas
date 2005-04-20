@@ -119,8 +119,8 @@ var
   procedure ShowAbortMessage(const Msg: string);
   begin
     MessageDlg('Error',
-      Msg+#13
-      +'Unable to change class of '+PersistentName+' to '+NewClass.ClassName,
+      Format(lisUnableToChangeClassOfTo, [Msg, #13, PersistentName,
+        NewClass.ClassName]),
       mtError,[mbCancel],0);
   end;
 
@@ -134,7 +134,7 @@ var
     ComponentStream:=TMemoryStream.Create;
     if (not FormEditingHook.SaveSelectionToStream(ComponentStream))
     or (ComponentStream.Size=0) then begin
-      ShowAbortMessage('Unable to stream selected components.');
+      ShowAbortMessage(lisUnableToStreamSelectedComponents2);
       exit;
     end;
     Result:=true;
@@ -147,18 +147,18 @@ var
   begin
     Result:=false;
     if not CodeToolBoss.GatherExternalChanges then begin
-      ShowAbortMessage('Unable to gather editor changes.');
+      ShowAbortMessage(lisUnableToGatherEditorChanges);
       exit;
     end;
     MainIDEInterface.GetUnitInfoForDesigner(ADesigner,SrcEdit,UnitInfo);
     if UnitInfo=nil then begin
-      ShowAbortMessage('Unable to get source for designer.');
+      ShowAbortMessage(lisUnableToGetSourceForDesigner);
       exit;
     end;
     UnitCode:=UnitInfo.Source;
     LFMBuffer:=CodeToolBoss.CreateTempFile('changeclass.lfm');
     if (LFMBuffer=nil) or (ComponentStream.Size=0) then begin
-      ShowAbortMessage('Unable to create temporary lfm buffer.');
+      ShowAbortMessage(lisUnableToCreateTemporaryLfmBuffer);
       exit;
     end;
     ComponentStream.Position:=0;
@@ -171,7 +171,7 @@ var
       if CodeToolBoss.ErrorMessage<>'' then
         MainIDEInterface.DoJumpToCodeToolBossError
       else begin
-        Msg:='Error parsing lfm component stream.';
+        Msg:=lisErrorParsingLfmComponentStream;
         if LFMTree<>nil then Msg:=Msg+#13#13+LFMTree.FirstErrorAsString+#13;
         ShowAbortMessage(Msg);
       end;
@@ -202,7 +202,7 @@ var
       end;
       CurNode:=CurNode.NextSibling;
     end;
-    ShowAbortMessage('Unable to find '+PersistentName+' in LFM Stream.');
+    ShowAbortMessage(Format(lisUnableToFindInLFMStream, [PersistentName]));
   end;
 
   function CheckProperties: boolean;
@@ -227,7 +227,7 @@ var
       MemStream.Position:=0;
       Result:=FormEditingHook.InsertFromStream(MemStream,nil,[cpsfReplace]);
       if not Result then
-        ShowAbortMessage('Replacing selection failed.');
+        ShowAbortMessage(lisReplacingSelectionFailed);
     finally
       MemStream.Free;
     end;
@@ -243,7 +243,7 @@ begin
   if APersistent is TComponent then begin
     PersistentName:=TComponent(APersistent).Name+':'+PersistentName;
   end else begin
-    ShowAbortMessage('Can only change the class of TComponents.');
+    ShowAbortMessage(lisCanOnlyChangeTheClassOfTComponents);
     exit;
   end;
   ComponentStream:=nil;
@@ -265,12 +265,12 @@ end;
 
 procedure TChangeClassDlg.ChangeClassDlgCreate(Sender: TObject);
 begin
-  OldGroupBox.Caption:='Old Class';
-  NewGroupBox.Caption:='New Class';
-  OldAncestorGroupBox.Caption:='Old Ancestors';
-  NewAncestorGroupBox.Caption:='New Ancestors';
-  OkButton.Caption:='Ok';
-  CancelButton.Caption:='Cancel';
+  OldGroupBox.Caption:=lisOldClass;
+  NewGroupBox.Caption:=lisNewClass;
+  OldAncestorGroupBox.Caption:=lisOldAncestors;
+  NewAncestorGroupBox.Caption:=lisNewAncestors;
+  OkButton.Caption:=lisLazBuildOk;
+  CancelButton.Caption:=dlgCancel;
 end;
 
 procedure TChangeClassDlg.NewClassComboBoxEditingDone(Sender: TObject);

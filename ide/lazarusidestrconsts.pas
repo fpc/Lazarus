@@ -2713,6 +2713,22 @@ resourcestring
     +'the favourite property %s%s%s.';
   lisOIFAddToFavouriteProperties = 'Add to favourite properties';
   lisOIFRemoveFromFavouriteProperties = 'Remove from favourite properties';
+  lisReplacingSelectionFailed = 'Replacing selection failed.';
+  lisUnableToFindInLFMStream = 'Unable to find %s in LFM Stream.';
+  lisErrorParsingLfmComponentStream = 'Error parsing lfm component stream.';
+  lisUnableToCreateTemporaryLfmBuffer =
+    'Unable to create temporary lfm buffer.';
+  lisUnableToGetSourceForDesigner = 'Unable to get source for designer.';
+  lisUnableToGatherEditorChanges = 'Unable to gather editor changes.';
+  lisUnableToStreamSelectedComponents2 =
+    'Unable to stream selected components.';
+  lisUnableToChangeClassOfTo = '%s%sUnable to change class of %s to %s';
+  lisCanOnlyChangeTheClassOfTComponents = 'Can only change the class of '
+    +'TComponents.';
+  lisOldClass = 'Old Class';
+  lisNewClass = 'New Class';
+  lisOldAncestors = 'Old Ancestors';
+  lisNewAncestors = 'New Ancestors';
 
 implementation
 end.

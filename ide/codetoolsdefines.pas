@@ -164,11 +164,10 @@ type
       Shift: TShiftState);
     procedure CodeToolsDefinesEditorKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure DefineTreeViewSelectionChanged(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure SelectedItemGroupBoxResize(Sender: TObject);
     procedure ValueNoteBookResize(Sender: TObject);
-    procedure DefineTreeViewMouseUp(Sender: TObject; Button: TMouseButton;
-                                    Shift: TShiftState;  X,Y: integer);
 
     // exit menu
     procedure SaveAndExitMenuItemClick(Sender: TObject);
@@ -368,8 +367,8 @@ begin
     ModalResult:=mrCancel;
 end;
 
-procedure TCodeToolsDefinesEditor.DefineTreeViewMouseUp(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: integer);
+procedure TCodeToolsDefinesEditor.DefineTreeViewSelectionChanged(Sender: TObject
+  );
 begin
   ShowSelectedValues;
 end;
@@ -1489,7 +1488,7 @@ begin
     DefaultItemHeight:=22;
     Images:=TheImageList;
     StateImages:=TheImageList;
-    OnMouseUp:=@DefineTreeViewMouseUp;
+    OnSelectionChanged:=@DefineTreeViewSelectionChanged;
   end;
 
   // selected item
