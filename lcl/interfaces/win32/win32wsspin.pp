@@ -54,7 +54,8 @@ type
 
     class procedure SetSelStart(const ACustomSpinEdit: TCustomSpinEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomSpinEdit: TCustomSpinEdit; NewLength: integer); override;
-  
+    class procedure ShowHide(const AWinControl: TWinControl); override;
+
     class procedure UpdateControl(const ACustomSpinEdit: TCustomSpinEdit); override;
   end;
 
@@ -137,6 +138,20 @@ end;
 procedure TWin32WSCustomSpinEdit.SetSelLength(const ACustomSpinEdit: TCustomSpinEdit; NewLength: integer);
 begin
   EditSetSelLength(SendMessage(ACustomSpinEdit.Handle, UDM_GETBUDDY, 0, 0), NewLength); 
+end;
+
+procedure TWin32WSCustomSpinEdit.ShowHide(const AWinControl: TWinControl);
+var
+  Buddy: HWND;
+begin
+  // call inherited
+  TWin32WSWinControl.ShowHide(AWinControl);
+  Buddy := SendMessage(AWinControl.Handle, UDM_GETBUDDY, 0, 0);
+  if AWinControl.HandleObjectShouldBeVisible then
+    ShowWindow(Buddy, SW_SHOW)
+  else
+    ShowWindow(Buddy, SW_HIDE);
+
 end;
 
 procedure TWin32WSCustomSpinEdit.UpdateControl(const ACustomSpinEdit: TCustomSpinEdit);

@@ -381,12 +381,20 @@ Var
     end;
   end;
   
-  procedure DestroySpinEditBuddy(SpinEdit: TCustomSpinEdit);
+  procedure DestroySpinEditBuddy(SpinEditHandle: HWND);
   var
     Buddy: HWND;
   begin
-    Buddy := SendMessage(SpinEdit.Handle, UDM_GETBUDDY, 0, 0);
+    Buddy := SendMessage(SpinEditHandle, UDM_GETBUDDY, 0, 0);
     DestroyWindow(Buddy);
+  end;
+
+  procedure EnableSpinEditBuddy(SpinEditHandle: HWND; Enable: boolean);
+  var
+    Buddy: HWND;
+  begin
+    Buddy := SendMessage(SpinEditHandle, UDM_GETBUDDY, 0, 0);
+    Windows.EnableWindow(Buddy, Enable);
   end;
 
   procedure DisposeComboEditWindowInfo(ComboBox: TCustomComboBox);
@@ -726,7 +734,7 @@ Begin
       if lWinControl is TCheckListBox then
         TWin32CheckListBoxStrings.DeleteItemRecords(Window);
       if lWinControl is TCustomSpinEdit then
-        DestroySpinEditBuddy(TCustomSpinEdit(lWinControl));
+        DestroySpinEditBuddy(Window);
       if lWinControl is TCustomComboBox then
         DisposeComboEditWindowInfo(TCustomComboBox(lWinControl));
       if WindowInfo^.Overlay<>HWND(nil) then
@@ -776,7 +784,9 @@ Begin
     Begin
       If WParam <> 0 Then
         LMessage.Msg := LM_SETEDITABLE;
-      
+
+      If (lWinControl is TCustomSpinEdit) then
+        EnableSpinEditBuddy(Window, WParam<>0);
       // ugly hack to give bitbtns a nice look
       // When no theming active, the internal image needs to be 
       // recreated when the enabled state is changed
@@ -1538,6 +1548,9 @@ end;
 
 {
   $Log$
+  Revision 1.201  2005/04/20 14:08:38  vincents
+  fixed SpinEdit.Visible and SpinEdit.Enabled
+
   Revision 1.200  2005/04/13 17:17:16  micha
   fix taskbar button being removed and reinserted when minimizing mainform
 
