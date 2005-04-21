@@ -63,12 +63,17 @@ Type
 
     function GetXDPI: Integer; override;
     function GetYDPI: Integer; override;
+    
+    function GetHandlePrinter : HDC;
   public
     constructor Create; override;
     destructor Destroy; override;
     
     function PrintDialog : Boolean; override;
     function PrinterSetup : Boolean; override;
+    
+    //Warning it is a not potable property
+    property Handle : HDC read GetHandlePrinter;
   end;
   
 

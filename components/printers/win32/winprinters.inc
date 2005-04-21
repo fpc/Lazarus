@@ -40,6 +40,12 @@ begin
   inherited Destroy;
 end;
 
+function TWinPrinter.GetHandlePrinter : HDC;
+begin
+  SetIC;
+  Result:=fDC;
+end;
+
 function TWinPrinter.BaseDialogs(aFlag : DWORD):boolean;
 var lpp        : tagPD;
     PDev       : TPrinterDevice;
@@ -155,7 +161,7 @@ begin
     fDC:=CreateIC(PChar(PDev.Driver),PChar(PDev.Device),
            PChar(PDev.Port),@PDev.DevMode);
     if fDC=0 then
-      raise EPrinter.Create('Invalide printer');
+      raise EPrinter.Create(Format('Invalide printer (DC=%d Driver=%s Device=%s Port=%s)',[fDC,Pdev.Driver,PDev.Device,PDev.Port]));
     if Assigned(Canvas) then
       Canvas.Handle:=fDC;
     fLastHandleType:=1;
@@ -173,7 +179,7 @@ begin
     fDC:=CreateDC(PChar(PDev.Driver),PChar(PDev.Device),
             PChar(PDev.Port),@PDev.DevMode);
     if fDC=0 then
-      raise EPrinter.Create('Invalide printer');
+      raise EPrinter.Create(Format('Invalide printer (DC=%d Driver=%s Device=%s Port=%s)',[fDC,Pdev.Driver,PDev.Device,PDev.Port]));
     if Assigned(Canvas) then
       Canvas.Handle:=fDC;
     fLastHandleType:=2;
@@ -257,7 +263,7 @@ begin
   //Evaluate buffer size
   Needed:=0;
   EnumPrinters(Flags,nil,Level,nil,0,Needed,PrtCount);
-  if Needed<>0 then
+  if Needed>0 then
   begin
     GetMem(Buffer,Needed);
     try
@@ -270,15 +276,9 @@ begin
   end
   else
   begin
-    LstStr:=TStringList.Create;
-    try
-      GetProfileString(PChar('windows'),PChar('device'),PChar(''),DefaultPrinter,SizeOf(DefaultPrinter));
-      LstStr.CommaText:=DefaultPrinter;
-      if LstStr.Count>0 then
-       DefaultPrinter:=LstStr.Strings[0];
-    finally
-      LstStr.Free;
-    end;
+    GetProfileString(PChar('windows'),PChar('device'),PChar(''),DefaultPrinter,SizeOf(DefaultPrinter));
+    if pos(',',DefaultPrinter)<>0 then
+       DefaultPrinter:=Copy(DefaultPrinter,1,Pos(',',DefaultPrinter)-1);
   end;
 
   Flags:=PRINTER_ENUM_CONNECTIONS or PRINTER_ENUM_LOCAL;
@@ -447,7 +447,6 @@ begin
       Result:=1;
     end;
   end;
-
 end;
 
 function TWinPrinter.DoSetPrinter(aName: string): Integer;
@@ -533,6 +532,10 @@ INITIALIZATION
   Printer:=TWinPrinter.Create;
 
 {end.}
+
+
+
+
 
 
 

@@ -15,9 +15,9 @@
  *****************************************************************************
 
   Abstract:
-    This unit provide an access at Printers spool and other functions for manage 
+    This unit provide an access at Printers spool and other functions for manage
     the printers on Win32
-    
+
   Documentations
     - Wine project
     - Microsoft MSDN Web
@@ -40,7 +40,7 @@ const
   {$i winutilprnconst.inc}
 
   LibWinSpool = 'winspool.drv';
-  
+
 type
   PDevNames = ^tagDEVNAMES;
   tagDEVNAMES = record
@@ -51,7 +51,7 @@ type
   end;
 
   TFcntHook = function(Wnd: HWND; uiMsg: UINT; wParam: WPARAM; lParam: LPARAM): UINT stdcall;
-  
+
   tagPD=packed Record
     lStructSize  : DWORD;
     hWndOwner    : HWND;
@@ -144,7 +144,7 @@ type
      pName        : PChar;
      pComment     : PChar;
   end;
-  
+
   PPRINTER_INFO_2 = ^_PRINTER_INFO_2;
   _PRINTER_INFO_2 = Record
      pServerName     : PChar;
@@ -208,10 +208,10 @@ Function EnumForms(
       hPrinter  : THandle;  // handle to printer object
       Level     : DWORD;    // data level
       pForm     : Pointer;  // form information buffer
-      cbBuf     : DWord;    // size of form information buffer
+     cbBuf     : DWord;    // size of form information buffer
   var pcbNeeded : DWORD;    // bytes received or required
   var pcReturned: DWORD     // number of forms received
-  
+
 ): BOOL; stdcall; external LibWinSpool name 'EnumFormsA';}
 
 {Function not compatible with all versions of Windows
@@ -249,4 +249,5 @@ function AbortDoc(DC: HDC): Integer; stdcall; external 'gdi32.dll' name 'AbortDo
 implementation
 
 end.
+
 
