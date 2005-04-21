@@ -249,6 +249,48 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
+{   TListItems FindCaption                                                     }
+{------------------------------------------------------------------------------}
+function TListItems.FindCaption(StartIndex: Integer; Value: string;
+  Partial, Inclusive, Wrap: Boolean): TListItem;
+var
+  I: Integer;
+  CaptionFound, AllChecked: Boolean;
+begin
+  result := nil;
+  if (Count = 0) or (StartIndex > Count) or (not Inclusive and (count = 1)) then Exit;
+  CaptionFound := False;
+  AllChecked := False;
+  if Inclusive then
+    I := StartIndex
+  else begin
+    I := succ(StartIndex);
+    if I >= Count then I := 0;
+  end;
+  if Wrap then Wrap := (StartIndex <> 0);
+  repeat
+    if not AllChecked then begin
+      if Partial then CaptionFound := pos(Value, Item[I].Caption) > 0
+                 else CaptionFound := Value = Item[I].Caption;
+    end;
+    if not CaptionFound then begin
+      Inc(I);
+      if Wrap then begin
+        if I = Count then
+          I := 0
+        else
+          if I = StartIndex then
+            AllChecked := True;
+      end else begin
+        if I = Count then AllChecked := True;
+      end;
+    end;
+  until CaptionFound or AllChecked;
+  if CaptionFound then result := Item[I];
+end;
+
+
+{------------------------------------------------------------------------------}
 {   TListItems FindData                                                        }
 {------------------------------------------------------------------------------}
 function TListItems.FindData(const AData: Pointer): TListItem;
@@ -467,6 +509,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.29  2005/04/21 16:15:52  mattias
+  added TListView.FindCaption  from Matthijs Willemstein
+
   Revision 1.28  2005/02/26 17:08:41  marc
   * Reworked listviews to match new interface
 

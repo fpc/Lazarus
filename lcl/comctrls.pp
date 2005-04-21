@@ -635,6 +635,7 @@ type
     constructor Create(AOwner : TCustomListView);
     destructor Destroy; override;
     procedure Delete(const AIndex : Integer);
+    function FindCaption(StartIndex: Integer; Value: string; Partial, Inclusive, Wrap: Boolean): TListItem;
     function FindData(const AData: Pointer): TListItem;
     function Insert(const AIndex: Integer) : TListItem;
     procedure InsertItem(AItem: TListItem; const AIndex: Integer);
@@ -889,7 +890,7 @@ type
     destructor Destroy; override;
     procedure BeginUpdate;
     procedure EndUpdate;
-  public
+    function FindCaption(StartIndex: Integer; Value: string; Partial, Inclusive, Wrap: Boolean): TListItem;
     property BoundingRect: TRect read GetBoundingRect;
     property Canvas: TCanvas read FCanvas;
     property Checkboxes: Boolean index Ord(lvpCheckboxes) read GetProperty write SetProperty {$IFNDEF VER1_0}default False{$ENDIF};
@@ -2408,6 +2409,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.171  2005/04/21 16:15:52  mattias
+  added TListView.FindCaption  from Matthijs Willemstein
+
   Revision 1.170  2005/03/07 00:52:51  mattias
   various Delphi compatibilities  from C Western
 
