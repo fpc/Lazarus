@@ -252,13 +252,13 @@ end;
 {   TListItems FindCaption                                                     }
 {------------------------------------------------------------------------------}
 function TListItems.FindCaption(StartIndex: Integer; Value: string;
-  Partial, Inclusive, Wrap: Boolean): TListItem;
+  Partial, Inclusive, Wrap: Boolean; PartStart: Boolean): TListItem;
 var
   I: Integer;
   CaptionFound, AllChecked: Boolean;
 begin
   result := nil;
-  if (Count = 0) or (StartIndex > Count) or (not Inclusive and (count = 1)) then Exit;
+  if (Count = 0) or (StartIndex >= Count) or (not Inclusive and (count = 1)) then Exit;
   CaptionFound := False;
   AllChecked := False;
   if Inclusive then
@@ -269,10 +269,13 @@ begin
   end;
   if Wrap then Wrap := (StartIndex <> 0);
   repeat
-    if not AllChecked then begin
-      if Partial then CaptionFound := pos(Value, Item[I].Caption) > 0
-                 else CaptionFound := Value = Item[I].Caption;
-    end;
+    if Partial then begin
+      if PartStart then
+        CaptionFound := pos(Value, Item[I].Caption) = 1
+      else
+        CaptionFound := pos(Value, Item[I].Caption) <> 0;
+    end else
+      CaptionFound := Value = Item[I].Caption;
     if not CaptionFound then begin
       Inc(I);
       if Wrap then begin
@@ -509,6 +512,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.30  2005/04/22 08:19:39  mattias
+  added TListItems.FindCaption partstart parameter
+
   Revision 1.29  2005/04/21 16:15:52  mattias
   added TListView.FindCaption  from Matthijs Willemstein
 

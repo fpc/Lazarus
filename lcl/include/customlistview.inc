@@ -408,7 +408,7 @@ begin
 end;
 
 function TCustomListView.FindCaption(StartIndex: Integer; Value: string;
-  Partial, Inclusive, Wrap: Boolean): TListItem;
+  Partial, Inclusive, Wrap: Boolean; PartStart: Boolean = True): TListItem;
 begin
   Result := FListItems.FindCaption(StartIndex, Value, Partial, Inclusive, Wrap);
 end;
@@ -752,6 +752,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.46  2005/04/22 08:19:39  mattias
+  added TListItems.FindCaption partstart parameter
+
   Revision 1.45  2005/04/21 16:15:52  mattias
   added TListView.FindCaption  from Matthijs Willemstein
 

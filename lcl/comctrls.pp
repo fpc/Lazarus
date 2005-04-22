@@ -635,7 +635,9 @@ type
     constructor Create(AOwner : TCustomListView);
     destructor Destroy; override;
     procedure Delete(const AIndex : Integer);
-    function FindCaption(StartIndex: Integer; Value: string; Partial, Inclusive, Wrap: Boolean): TListItem;
+    function FindCaption(StartIndex: Integer; Value: string;
+                     Partial, Inclusive, Wrap: Boolean;
+                     PartStart: Boolean{$IFNDEF 1_0} = True{$ENDIF}): TListItem;
     function FindData(const AData: Pointer): TListItem;
     function Insert(const AIndex: Integer) : TListItem;
     procedure InsertItem(AItem: TListItem; const AIndex: Integer);
@@ -886,11 +888,11 @@ type
     property WidgetSetClass;
     {$endif}
   public
-    constructor Create(Aowner: TComponent); override;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure BeginUpdate;
     procedure EndUpdate;
-    function FindCaption(StartIndex: Integer; Value: string; Partial, Inclusive, Wrap: Boolean): TListItem;
+    function FindCaption(StartIndex: Integer; Value: string; Partial, Inclusive, Wrap: Boolean; PartStart: Boolean = True): TListItem;
     property BoundingRect: TRect read GetBoundingRect;
     property Canvas: TCanvas read FCanvas;
     property Checkboxes: Boolean index Ord(lvpCheckboxes) read GetProperty write SetProperty {$IFNDEF VER1_0}default False{$ENDIF};
@@ -2409,6 +2411,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.172  2005/04/22 08:19:39  mattias
+  added TListItems.FindCaption partstart parameter
+
   Revision 1.171  2005/04/21 16:15:52  mattias
   added TListView.FindCaption  from Matthijs Willemstein
 
