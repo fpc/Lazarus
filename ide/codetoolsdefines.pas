@@ -1533,9 +1533,8 @@ begin
     eoDragDropEditing, eoHalfPageScroll, eoScrollByOneLess, eoScrollPastEol,
     eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces];
   ValueAsTextSynEdit.Gutter.Visible:=false;
-  ValueAsTextSynEdit.Align:=alClient;
   ValueAsTextSynEdit.Scrollbars:=ssBoth;
-  ValueAsTextSynEdit.Align:=alLeft;
+  ValueAsTextSynEdit.Align:=alClient;
 
   CreateControl(ValueAsFilePathsSynEdit,TSynEdit,'ValueAsFilePathsSynEdit',
                    ValueNoteBook.Page[1]);
