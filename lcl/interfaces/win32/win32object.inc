@@ -676,6 +676,10 @@ Begin
           wsMinimized: Flags := SW_SHOWMINIMIZED;
         end;
       Windows.ShowWindow(Handle, Flags);
+      { ShowWindow does not send WM_SHOWWINDOW when creating overlapped maximized window }
+      { TODO: multiple WM_SHOWWINDOW when maximizing after initial show? }
+      if Flags = SW_SHOWMAXIMIZED then
+        Windows.SendMessage(Handle, WM_SHOWWINDOW, 1, 0);
     end;
     If (Sender Is TCustomForm) Then
       SetClassLong(Handle, GCL_HICON, LONG(TCustomForm(Sender).GetIconHandle));
@@ -737,6 +741,9 @@ end;
 
 {
   $Log$
+  Revision 1.309  2005/04/22 10:48:42  micha
+  showwindow does not send WM_SHOWWINDOW message after maximized window creation (patch from jesus)
+
   Revision 1.308  2005/03/03 13:13:51  vincents
   fixed thread synchronize support for fpc 1.9.9 using WakeMainThread
 
