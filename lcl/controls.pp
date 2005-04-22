@@ -990,7 +990,6 @@ type
   protected
     // optional properties (not every descendent supports them)
     property ActionLink: TControlActionLink read FActionLink write FActionLink;
-    property AutoSize: Boolean read FAutoSize write SetAutoSize default FALSE;
     property Ctl3D: Boolean read FCtl3D write FCtl3D;//Is this needed for anything other than compatability?
     property DragCursor: TCursor read FDragCursor write SetDragCursor default crDrag;
     property DragKind: TDragKind read FDragKind write FDragKind default dkDrag;
@@ -1105,6 +1104,7 @@ type
     property Align: TAlign read FAlign write SetAlign;
     property Anchors: TAnchors read FAnchors write SetAnchors stored IsAnchorsStored;
     property AnchorSide[Kind: TAnchorKind]: TAnchorSide read GetAnchorSide;
+    property AutoSize: Boolean read FAutoSize write SetAutoSize default False;
     property BorderSpacing: TControlBorderSpacing read FBorderSpacing write SetBorderSpacing;
     property BoundsRect: TRect read GetBoundsRect write SetBoundsRect;
     property BoundsRectForNewParent: TRect read FBoundsRectForNewParent write SetBoundsRectForNewParent;
@@ -2909,6 +2909,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.297  2005/04/22 09:29:30  mattias
+  made TContro.AutoSize public
+
   Revision 1.296  2005/04/20 07:14:00  mattias
   moved THintInfo from forms.pp to controls.pp and changed TControlShowHint event from pointer to PHintHinfo
 
