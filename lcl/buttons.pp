@@ -306,6 +306,7 @@ type
     procedure SetNumGlyphs(Value: integer);
     procedure SetSpacing(const Value: integer);
     procedure RealSetText(const Value: TCaption); override;
+    procedure SetEnabled(NewEnabled: boolean); override;
     procedure UpdateState(InvalidateOnChange: boolean); virtual;
     function GetDrawFlags: integer; virtual;
     property MouseInControl: Boolean read FMouseInControl;
@@ -404,6 +405,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.95  2005/04/24 13:42:04  micha
+  update speedbutton state if Enabled changed (fixes bug 735)
+
   Revision 1.94  2005/04/17 18:41:15  micha
   implement active default control switching
   pressing return key executes active default control action

@@ -127,6 +127,13 @@ begin
   end;
 end;
 
+procedure TCustomSpeedButton.SetEnabled(NewEnabled: boolean);
+begin
+  inherited;
+
+  UpdateState(true);
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomSpeedButton.SetFlat
   Params: Value:
@@ -784,6 +791,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.65  2005/04/24 13:42:04  micha
+  update speedbutton state if Enabled changed (fixes bug 735)
+
   Revision 1.64  2005/02/09 11:25:19  mattias
   fixed loading TSpeedButton.Down  from Yoyong
 
