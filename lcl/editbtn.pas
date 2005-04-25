@@ -539,12 +539,15 @@ end;
 
 procedure TCustomEditButton.CMVisibleChanged(var Msg: TLMessage);
 begin
+  inherited CMVisibleChanged(Msg);
+  
   CheckButtonVisible;
 end;
 
 procedure TCustomEditButton.CMEnabledChanged(var Msg: TLMessage);
 begin
   inherited CMEnabledChanged(Msg);
+
   if FButton<>nil then
     FButton.Enabled:=Enabled;
 end;
