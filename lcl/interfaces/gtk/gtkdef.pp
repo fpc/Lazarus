@@ -38,6 +38,15 @@ uses
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
   Classes, LCLIntf, LCLProc, LCLType, LCLMemManager, DynHashArray, GraphType;
+  
+{$ifdef TraceGdiCalls}
+const
+  MaxTraces    = 5;
+  MaxCallBacks = 7;
+type
+  TCallBacksArray = array[0..MaxCallBacks] of Pointer;
+  PCallBacksArray = ^TCallBacksArray;
+{$endif}
 
 type
   TGDIType = (gdiBitmap, gdiBrush, gdiFont, gdiPen, gdiRegion, gdiPalette);
@@ -73,6 +82,9 @@ type
   PGDIObject = ^TGDIObject;
   TGDIObject = record
     RefCount: integer;
+    {$ifdef TraceGdiCalls}
+    StackAddrs: TCallBacksArray;
+    {$endif}
     Next: PGDIObject; // 'Next' is used by the internal mem manager
     case GDIType: TGDIType of
       gdiBitmap: (
@@ -183,6 +195,10 @@ type
     Origin: TPoint;
     SpecialOrigin: boolean;
     PenPos: TPoint;
+    
+    {$ifdef TraceGdiCalls}
+    StackAddrs: TCallBacksArray;
+    {$endif}
     
     // drawing settings
     CurrentBitmap: PGdiObject;
@@ -582,6 +598,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.67  2005/04/25 07:55:33  mattias
+  backtraces for gtk gdi objects  -dTraceGdiCalls  from Jesus
+
   Revision 1.66  2005/03/07 21:59:45  vincents
   changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
 

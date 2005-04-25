@@ -264,6 +264,43 @@ begin
   end;
 end;
 
+{$ifdef TraceGdiCalls}
+procedure DumpBackTrace(BackTrace: TCallBacksArray);
+var
+  func,source: shortString;
+  line: longint;
+  i: integer;
+begin
+  for i:=0 to MaxCallBacks do begin
+    GetLineInfo(longWord(BackTrace[i]), Func, source, line);
+    DebugLn('$', Hexstr(LongInt(BackTrace[i]),8),'  ', Func, ',  line ',
+      dbgs(line),' of ',Source);
+  end;
+end;
+
+procedure FillStackAddrs(bp: pointer; BackTraces: PCallBacksArray);
+var
+  prevbp: pointer;
+  caller_frame,
+  caller_addr : Pointer;
+  i: Integer;
+begin
+  Prevbp := bp-1;
+  i:=0;
+  while (bp>prevbp)do begin
+    caller_addr := get_caller_addr(bp);
+    caller_frame := get_caller_frame(bp);
+    BackTraces^[i] := Caller_Addr;
+    inc(i);
+   if (caller_addr=nil) or
+      (caller_frame=nil) or
+      (i>MaxCallBacks) then
+     break;
+   prevbp:=bp;
+   bp:=caller_frame;
+  end;
+end;
+{$endif}
 {------------------------------------------------------------------------------
   Method: TGtkWidgetSet.Destroy
   Params:  None
@@ -314,7 +351,8 @@ begin
     DebugLn(ProcName, Format(rsWarningUnremovedPaintMessages,
       [IntToStr(fMessageQueue.NumberOfPaintMessages)]));
   end;
-
+  
+  {$ifndef TraceGdiCalls}
   if (FDeviceContexts.Count > 0)
   then begin
     DebugLn(ProcName, Format(rsWarningUnreleasedDCsDump,
@@ -331,7 +369,8 @@ begin
     end;
     DebugLn();
   end;
-
+  {$endif}
+  
   if (FGDIObjects.Count > 0)
   then begin
     DebugLn(ProcName,Format(rsWarningUnreleasedGDIObjectsDump,
@@ -340,22 +379,29 @@ begin
       GDITypeCount[GDIType] := 0;
 
     n:=0;
+    {$ifndef TraceGdiCalls}
     write(ProcName,'   GDIOs:');
+    {$endif}
     HashItem := FGDIObjects.FirstHashItem;
     while (HashItem <> nil) do
     begin
+      {$ifndef TraceGdiCalls}
       if n < 7
-      then DbgOut(' ',DbgS(HashItem^.Item));
+      then
+        DbgOut(' ',DbgS(HashItem^.Item));
+      {$endif}
 
       Inc(GDITypeCount[PGdiObject(HashItem^.Item)^.GDIType]);
       HashItem := HashItem^.Next;
       Inc(n);
     end;
+    {$ifndef TraceGdiCalls}
     DebugLn();
 
     for GDIType := Low(GDIType) to High(GDIType) do
       if GDITypeCount[GDIType] > 0 then
         DebugLn(ProcName,Format('   %s: %d', [GDITYPENAME[GDIType], GDITypeCount[GDIType]]));
+    {$endif}
   end;
 
 
@@ -378,6 +424,47 @@ begin
       FTimerData.Delete (n);
     end;
   end;
+  
+  {$ifdef TraceGdiCalls}
+  if (FGDIObjects.Count > 0)
+  then begin
+    //DebugLn('BackTrace for unreleased gdi objects follows:');
+    for GDIType := Low(TGDIType) to High(TGDIType) do begin
+      if GDITypeCount[GDIType]<>0 then begin
+        n:=0;
+        HashItem := FGDIObjects.FirstHashItem;
+        while (HashItem <> nil) and (n<MaxTraces) do begin
+          DebugLn(GdiTypeName[gdiType],': ', dbgs(HashItem^.Item));
+          DumpBackTrace(PgdiObject(HashItem^.Item)^.StackAddrs);
+          DebugLn();
+          HashItem := HashItem^.Next;
+          inc(n);
+        end;
+        if (n>=MaxTraces) then begin
+          DebugLn('... Truncated ',GDITYPENAME[GDIType],' leakage dump.');
+          DebugLn();
+        end;
+      end;
+    end;
+  end;
+
+  if FDeviceContexts.Count>0 then begin
+    //DebugLn('BackTrace for unreleased device contexts follows:');
+    n:=0;
+    HashItem:=FDeviceContexts.FirstHashItem;
+    while (HashItem<>nil) and (n<MaxTraces) do
+    begin
+      DebugLn('DC: ', Dbgs(HashItem^.Item));
+      DumpBackTrace(TDeviceContext(HashItem^.Item).StackAddrs);
+      DebugLn();
+      HashItem:=HashItem^.Next;
+    end;
+    if (n>=MaxTraces) then begin
+      DebugLn('... Truncated dump DeviceContext leakage dump.');
+      DebugLn();
+    end;
+  end;
+  {$endif}
 
   FreeAndNil(FWidgetsWithResizeRequest);
   FreeAndNil(FWidgetsResized);
@@ -5882,6 +5969,9 @@ begin
   Result:=GtkDef.NewDeviceContext;
   with Result do
   begin
+    {$ifdef TraceGdiCalls}
+    FillStackAddrs(get_caller_frame(get_frame), @StackAddrs);
+    {$endif}
     gdk_color_black(gdk_colormap_get_system, @CurrentTextColor.Color);
     BuildColorRefFromGDKColor(CurrentTextColor);
     gdk_color_white(gdk_colormap_get_system, @CurrentBackColor.Color);
@@ -6114,6 +6204,9 @@ function TGtkWidgetSet.NewGDIObject(const GDIType: TGDIType): PGdiObject;
 begin
   Assert(False, Format('Trace:> [TGtkWidgetSet.NewGDIObject]', []));
   Result:=GtkDef.NewPGDIObject;
+  {$ifdef TraceGdiCalls}
+  FillStackAddrs(get_caller_frame(get_frame), @Result^.StackAddrs);
+  {$endif}
   Result^.GDIType := GDIType;
   inc(Result^.RefCount);
   FGDIObjects.Add(Result);
@@ -6911,6 +7004,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.646  2005/04/25 07:55:33  mattias
+  backtraces for gtk gdi objects  -dTraceGdiCalls  from Jesus
+
   Revision 1.645  2005/03/21 09:03:54  mattias
   implemented Multi Masks for gtk1 filedialogs
 

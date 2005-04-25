@@ -62,6 +62,9 @@ uses
   // if not, Rect and Point are taken from the windows unit instead of classes.
   Windows,
   {$ENDIF}
+  {$IFDEF TraceGdiCalls}
+  LineInfo,
+  {$ENDIF}
   // rtl+fcl
   Classes, SysUtils, FPCAdds,
   // interfacebase
@@ -438,6 +441,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.224  2005/04/25 07:55:33  mattias
+  backtraces for gtk gdi objects  -dTraceGdiCalls  from Jesus
+
   Revision 1.223  2005/03/05 23:00:16  mattias
   adding panels to statusbar during designing now sets SimplePanel:=false
 
