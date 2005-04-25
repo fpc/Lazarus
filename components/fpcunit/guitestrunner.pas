@@ -23,6 +23,9 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   Buttons, ComCtrls, ActnList, Menus, Clipbrd, StdCtrls,
+  {$IFNDEF VER1_9_8}
+  testdecorator,
+  {$ENDIF}
   testreport, fpcunit, testregistry;
 
 type
@@ -32,9 +35,16 @@ type
   TGUITestRunner = class(TForm, ITestListener)
     actCopy: TAction;
     actCut: TAction;
+    ActCloseForm: TAction;
+    actCopyErrorMsg: TAction;
+    miRunTest: TMenuItem;
+    miShowfailureMsg: TMenuItem;
+    PopupMenu3: TPopupMenu;
+    RunAction: TAction;
     ActionList1: TActionList;
-    btnClose: TBitBtn;
-    btnRun: TBitBtn;
+    ActionList2: TActionList;
+    BtnRun: TBitBtn;
+    BtnClose: TBitBtn;
     ImageList1: TImageList;
     ImageList2: TImageList;
     Label1: TLabel;
@@ -63,15 +73,18 @@ type
     Panel3: TPanel;
     tsTestTree: TTabSheet;
     tsResultsXML: TTabSheet;
-    procedure BtnCloseClick(Sender: TObject);
+    procedure ActCloseFormExecute(Sender: TObject);
+    procedure RunActionUpdate(Sender: TObject);
+    procedure RunExecute(Sender: TObject);
     procedure GUITestRunnerCreate(Sender: TObject);
     procedure GUITestRunnerShow(Sender: TObject);
     procedure MenuItem3Click(Sender: TObject);
     procedure TestTreeSelectionChanged(Sender: TObject);
+    procedure actCopyErrorMsgExecute(Sender: TObject);
+    procedure actCopyErrorMsgUpdate(Sender: TObject);
     procedure pbBarPaint(Sender: TObject);
     procedure actCopyExecute(Sender: TObject);
     procedure actCutExecute(Sender: TObject);
-    procedure btnRunClick(Sender: TObject);
   private
     failureCounter: Integer;
     errorCounter: Integer;
@@ -120,68 +133,9 @@ begin
   BuildTree(TestTree.Items.AddObject(nil, 'All Tests', GetTestRegistry), GetTestRegistry);
 end;
 
-procedure TGUITestRunner.BtnCloseClick(Sender: TObject);
-begin
-  Close;
-end;
-
-procedure TGUITestRunner.GUITestRunnerShow(Sender: TObject);
-begin
-  if (ParamStr(1) = '--now') or (ParamStr(1) = '-n') then
-    BtnRunClick(Self);
-end;
-
-procedure TGUITestRunner.MenuItem3Click(Sender: TObject);
-begin
-  Clipboard.AsText := Memo1.Lines.Text;
-end;
-
-procedure TGUITestRunner.TestTreeSelectionChanged(Sender: TObject);
+procedure TGUITestRunner.RunExecute(Sender: TObject);
 var
-  i: integer;
-begin
-  if (Sender as TTreeView).Selected <> nil then
-  begin
-    lblSelectedTest.Caption := (Sender as TTreeview).Selected.Text;
-  end;
-end;
-
-
-procedure TGUITestRunner.pbBarPaint(Sender: TObject);
-var
-  msg: string;
-  alltests: integer;
-begin
-  with (Sender as TPaintBox) do
-  begin
-    Canvas.Lock;
-    Canvas.Brush.Color := clSilver;
-    Canvas.Rectangle(0, 0, Width, Height);
-    Canvas.Font.Color := clWhite;
-    if Assigned(TestSuite) then
-    begin
-      alltests := TestSuite.CountTestCases;
-      if FailureCounter + ErrorCounter = 0 then
-        barColor := clGreen;
-      Canvas.Brush.Color := barColor;
-      if TestsCounter <> 0 then
-      begin
-        Canvas.Rectangle(0, 0, round(TestsCounter / alltests * Width), Height);
-        msg := 'Runs: ' + IntToStr(TestsCounter);
-        if ErrorCounter <> 0 then
-          msg := msg + '    Number of test errors: ' + IntToStr(ErrorCounter);
-        if (FailureCounter <> 0) then
-        msg := msg + '     Number of test failures: ' + IntToStr(FailureCounter);
-        Canvas.Textout(10, 10,  msg)
-      end;
-    end;
-    Canvas.UnLock;
-  end;
-end;
-
-procedure TGUITestRunner.btnRunClick(Sender: TObject);
-var
-  testResult: TTestResult;
+  testResult:TTestResult;
   FStopCrono: TDateTime;
   FStartCrono: TDateTime;
 begin
@@ -210,15 +164,89 @@ begin
     FStartCrono := Now;
     testSuite.Run(testResult);
     FStopCrono := Now;
-    MemoLog('Runned ' + IntToStr(testResult.RunTests) + ' tests. Time elapsed: ' +
-      FormatDateTime('hh:nn:ss.zzz', FStopCrono - FStartCrono));
+    MemoLog('Number of executed tests: ' + IntToStr(testResult.RunTests) + '  Time elapsed: ' +
+    FormatDateTime('hh:nn:ss.zzz', FStopCrono - FStartCrono));
     XMLMemo.lines.text:= '<TestResults>' + system.sLineBreak +
-      TestResultAsXML(testResult) + system.sLineBreak + '</TestResults>';
-  finally
+    TestResultAsXML(testResult) + system.sLineBreak + '</TestResults>';
+    pbBar.Invalidate;
+    pbBar1.Invalidate;
+   finally
     testResult.Free;
   end;
-  pbBar.Invalidate;
-  pbBar1.Invalidate;
+end;
+
+procedure TGUITestRunner.ActCloseFormExecute(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TGUITestRunner.RunActionUpdate(Sender: TObject);
+begin
+  (Sender as TAction).Enabled := ((TestTree.Selected <> nil)
+    and (TestTree.Selected.Data <> nil)) or (not TestTree.Focused);
+end;
+
+procedure TGUITestRunner.GUITestRunnerShow(Sender: TObject);
+begin
+  if (ParamStr(1) = '--now') or (ParamStr(1) = '-n') then
+    RunExecute(Self);
+end;
+
+procedure TGUITestRunner.MenuItem3Click(Sender: TObject);
+begin
+  Clipboard.AsText := Memo1.Lines.Text;
+end;
+
+procedure TGUITestRunner.TestTreeSelectionChanged(Sender: TObject);
+var
+  i: integer;
+begin
+  if ((Sender as TTreeView).Selected <> nil) and
+    Assigned((Sender as TTreeview).Selected.Data)  then
+    lblSelectedTest.Caption := (Sender as TTreeview).Selected.Text
+  else
+    lblSelectedTest.Caption := '';
+end;
+
+procedure TGUITestRunner.actCopyErrorMsgExecute(Sender: TObject);
+begin
+  ClipBoard.AsText := Copy(TestTree.Selected.text, 10, MaxInt)
+end;
+
+procedure TGUITestRunner.actCopyErrorMsgUpdate(Sender: TObject);
+begin
+  (Sender as TAction).Enabled := Assigned(TestTree.selected) and
+    (Copy(TestTree.Selected.Text, 1, 9) = 'Message: ');
+end;
+
+procedure TGUITestRunner.pbBarPaint(Sender: TObject);
+var
+  msg: string;
+  alltests: integer;
+begin
+  with (Sender as TPaintBox) do
+  begin
+    Canvas.Lock;
+    Canvas.Brush.Color := clSilver;
+    Canvas.Rectangle(0, 0, Width, Height);
+    Canvas.Font.Color := clWhite;
+    if Assigned(TestSuite) then
+    begin
+      alltests := TestSuite.CountTestCases;
+      if FailureCounter + ErrorCounter = 0 then
+        barColor := clGreen;
+      Canvas.Brush.Color := barColor;
+      if TestsCounter <> 0 then
+      begin
+        Canvas.Rectangle(0, 0, round(TestsCounter / alltests * Width), Height);
+        msg := 'Runs: ' + IntToStr(TestsCounter) + '/' + IntToStr(alltests);
+        msg := msg + '    Errors: ' + IntToStr(ErrorCounter);
+        msg := msg + '     Failures: ' + IntToStr(FailureCounter);
+        Canvas.Textout(10, 10,  msg)
+      end;
+    end;
+    Canvas.UnLock;
+  end;
 end;
 
 procedure TGUITestRunner.BuildTree(rootNode: TTreeNode; aSuite: TTestSuite);
@@ -230,10 +258,16 @@ begin
   begin
     node := TestTree.Items.AddChildObject(rootNode, ASuite.Test[i].TestName, ASuite.Test[i]);
     if ASuite.Test[i] is TTestSuite then
-      BuildTree(Node, ASuite.Test[i] as TTestSuite);
+      BuildTree(Node, TTestSuite(ASuite.Test[i]))
+    {$IFNDEF VER1_9_8}
+    else
+      if TObject(ASuite.Test[i]).InheritsFrom(TTestDecorator) then
+        BuildTree(Node, TTestSuite(TTestDecorator(ASuite.Test[i]).Test))
+    {$ENDIF};
     node.ImageIndex := 12;
     node.SelectedIndex := 12;
   end;
+  rootNode.Expand(True);
 end;
 
 function TGUITestRunner.FindNode(aTest: TTest): TTreeNode;
@@ -351,15 +385,29 @@ begin
     node := TestTree.Items.AddChild(ErrorNode, 'Exception class: ' + AError.ExceptionClassName);
     node.ImageIndex := 4;
     node.SelectedIndex := 4;
-    node := TestTree.Items.AddChild(ErrorNode, 'Unit name: ' + AError.SourceUnitName);
-    node.ImageIndex := 11;
-    node.SelectedIndex := 11;
-    node := TestTree.Items.AddChild(ErrorNode, 'Method name: ' + AError.MethodName);
-    node.ImageIndex := 11;
-    node.SelectedIndex := 11;
-    node := TestTree.Items.AddChild(ErrorNode, 'Line number: ' + IntToStr(AError.LineNumber));
-    node.ImageIndex := 11;
-    node.SelectedIndex := 11;
+    if (AError.SourceUnitName <> '') and
+    {$IFNDEF VER1_9_8}
+      (AError.FailedMethodName <> '')
+    {$ELSE}
+      (AError.MethodName <> '')
+    {$ENDIF}
+          then
+    begin
+      node := TestTree.Items.AddChild(ErrorNode, 'Unit name: ' + AError.SourceUnitName);
+      node.ImageIndex := 11;
+      node.SelectedIndex := 11;
+      node := TestTree.Items.AddChild(ErrorNode, 'Method name: ' +
+      {$IFNDEF VER1_9_8}
+      AError.FailedMethodName);
+      {$ELSE}
+      AError.MethodName);
+      {$ENDIF}
+      node.ImageIndex := 11;
+      node.SelectedIndex := 11;
+      node := TestTree.Items.AddChild(ErrorNode, 'Line number: ' + IntToStr(AError.LineNumber));
+      node.ImageIndex := 11;
+      node.SelectedIndex := 11;
+    end;
     PaintNodeError(ErrorNode);
   end;
   Inc(errorCounter);
