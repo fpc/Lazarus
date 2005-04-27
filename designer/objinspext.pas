@@ -320,6 +320,9 @@ end;
 
 initialization
   DefaultOIFavouriteProperties:=CreateDefaultOIFavouriteProperties;
+  
+finalization
+  FreeAndNil(DefaultOIFavouriteProperties)
 
 end.
 
