@@ -1205,7 +1205,7 @@ function GetParentForm(Control:TControl): TCustomForm;
 function GetDesignerForm(AComponent: TComponent): TCustomForm;
 function FindRootDesigner(AComponent: TComponent): TIDesigner;
 
-function IsAccel(VK : Word; const Str : ShortString): Boolean;
+function IsAccel(VK: word; const Str: string): Boolean;
 procedure NotifyApplicationUserInput(Msg: Cardinal);
 
 function InitResourceComponent(Instance: TComponent;
@@ -1346,9 +1346,16 @@ begin
 end;
 
 //------------------------------------------------------------------------------
-function IsAccel(VK : Word; const Str : ShortString): Boolean;
+function IsAccel(VK: word; const Str: string): Boolean;
+var
+  lPos: integer;
 begin
-  Result := true;
+  { TODO: MBCS/UTF-8 }
+  lPos := Pos('&', Str);
+  Result := false;
+  if (0 < lPos) and (lPos < Length(Str)) then
+    if UpCase(Str[lPos+1]) = UpCase(char(VK)) then
+      Result := true;
 end;
 
 //==============================================================================

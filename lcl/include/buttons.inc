@@ -186,6 +186,16 @@ Begin
   inherited Click;
 end;
 
+function TCustomButton.DialogChar(var Message: TLMKey): boolean;
+begin
+  if IsAccel(Message.CharCode, Caption) and CanFocus then
+  begin
+    Click;
+    Result := true;
+  end else
+    Result := inherited;
+end;
+
 procedure TCustomButton.ActiveDefaultControlChanged(NewControl: TControl);
 var
   lPrevActive: boolean;
@@ -286,6 +296,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.45  2005/04/27 12:37:28  micha
+  implement/fix button/label shortcut accelchar handling
+
   Revision 1.44  2005/04/17 18:41:15  micha
   implement active default control switching
   pressing return key executes active default control action

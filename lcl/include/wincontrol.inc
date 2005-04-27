@@ -3620,13 +3620,15 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMChar(var Message: TLMChar);
 begin
-  DoRemainingKeyPress(Message);
+  if DoRemainingKeyPress(Message) then
+    Message.Result := 1;
   Assert(False, Format('Trace:[TWinControl.WMChar] %s', [ClassName]));
 end;
 
 procedure TWinControl.WMSysChar(var Message: TLMChar);
 begin
-  DoRemainingKeyPress(Message);
+  if DoRemainingKeyPress(Message) then
+    Message.Result := 1;
 end;
 
 {------------------------------------------------------------------------------
@@ -4482,6 +4484,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.323  2005/04/27 12:37:28  micha
+  implement/fix button/label shortcut accelchar handling
+
   Revision 1.322  2005/04/19 15:06:30  mattias
   fixed small aesthetical editoroptions bugs
 

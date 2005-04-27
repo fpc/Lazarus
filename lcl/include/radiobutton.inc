@@ -70,6 +70,16 @@ begin
   AdjustSize;
 end;
 
+function TRadioButton.DialogChar(var Message: TLMKey): boolean;
+begin
+  if IsAccel(Message.CharCode, Caption) and CanFocus then
+  begin
+    SetFocus;
+    Result := true;
+  end else
+    Result := inherited;
+end;
+
 {$IFNDEF EnablePreferredSize}
 procedure TRadioButton.DoAutoSize;
 var
@@ -102,6 +112,9 @@ end;
 
 {
   $Log$
+  Revision 1.22  2005/04/27 12:37:28  micha
+  implement/fix button/label shortcut accelchar handling
+
   Revision 1.21  2005/01/24 12:23:11  mattias
   fixed TColorButton.Paint
 

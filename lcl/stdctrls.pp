@@ -858,6 +858,7 @@ type
     function RetrieveState: TCheckBoxState;
     procedure InitializeWnd; override;
     procedure Toggle; virtual;
+    function DialogChar(var Message: TLMKey): boolean; override;
     function GetChecked: Boolean; override;
     procedure SetChecked(Value: Boolean); override;
     procedure RealSetText(const Value: TCaption); override;
@@ -1047,6 +1048,7 @@ type
 
   TRadioButton = class(TCustomCheckBox)
   protected
+    function DialogChar(var Message: TLMKey): boolean; override;
     procedure RealSetText(const Value: TCaption); override;
     {$IFNDEF EnablePreferredSize}
     procedure DoAutoSize; override;
@@ -1238,6 +1240,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.202  2005/04/27 12:37:28  micha
+  implement/fix button/label shortcut accelchar handling
+
   Revision 1.201  2005/04/19 15:06:30  mattias
   fixed small aesthetical editoroptions bugs
 

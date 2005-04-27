@@ -216,10 +216,24 @@ begin
   AdjustSize;
 end;
 
+function TCustomCheckBox.DialogChar(var Message: TLMKey): boolean;
+begin
+  if IsAccel(Message.CharCode, Caption) and CanFocus then
+  begin
+    SetFocus;
+    if Focused then Toggle;
+    Result := true;
+  end else
+    Result := inherited;
+end;
+
 // included by stdctrls.pp
 
 {
   $Log$
+  Revision 1.34  2005/04/27 12:37:28  micha
+  implement/fix button/label shortcut accelchar handling
+
   Revision 1.33  2005/04/06 10:43:40  micha
   customcheckbox: do not unnecessarily ask state twice
   first let widget process BM_SETCHECK, so we do not see itemindex=-1 in between

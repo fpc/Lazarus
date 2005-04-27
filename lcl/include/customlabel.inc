@@ -180,23 +180,17 @@ begin
 end;
 
 function TCustomLabel.DialogChar(var Message: TLMKey): boolean;
-var
-  PrefixIndex: integer;
-  PrefixChar: char;
 begin
   Result := false;
   if not FShowAccelChar then exit;
   if FFocusControl = nil then exit;
 
-  PrefixIndex := Pos('&', Caption);
-  if PrefixIndex < Length(Caption) then
-    PrefixChar := Caption[PrefixIndex+1];
-  if ssAlt in KeyDataToShiftState(Message.KeyData) then
-    if char(Message.CharCode and $ff) = PrefixChar then
-    begin
-      Result := true;
-      FFocusControl.SetFocus;
-    end;
+  if IsAccel(Message.CharCode, Caption) then
+  begin
+    Result := true;
+    FFocusControl.SetFocus;
+  end else
+    Result := inherited;
 end;
 
 procedure TCustomLabel.Loaded;
@@ -272,6 +266,9 @@ end;
 
 {
   $Log$
+  Revision 1.30  2005/04/27 12:37:28  micha
+  implement/fix button/label shortcut accelchar handling
+
   Revision 1.29  2005/04/19 15:06:30  mattias
   fixed small aesthetical editoroptions bugs
 

@@ -82,6 +82,7 @@ type
     procedure ControlKeyUp(var Key: Word; Shift: TShiftState); override;
     procedure SetParent(AParent: TWinControl); override;
     procedure RealSetText(const Value: TCaption); override;
+    function DialogChar(var Message: TLMKey): boolean; override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -405,6 +406,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.96  2005/04/27 12:37:28  micha
+  implement/fix button/label shortcut accelchar handling
+
   Revision 1.95  2005/04/24 13:42:04  micha
   update speedbutton state if Enabled changed (fixes bug 735)
 
