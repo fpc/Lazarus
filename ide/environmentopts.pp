@@ -2117,7 +2117,7 @@ begin
   with MaxRecentProjectFilesLabel do begin
     Name:='MaxRecentProjectFilesLabel';
     Left:=MaxRecentOpenFilesLabel.Left;
-    Top:=MaxRecentOpenFilesLabel.Top+MaxRecentOpenFilesLabel.Height+3;
+    Top:=MaxRecentOpenFilesComboBox.Top+MaxRecentOpenFilesComboBox.Height+3;
     Width:=MaxRecentOpenFilesLabel.Width;
     Height:=MaxRecentOpenFilesLabel.Height;
     Parent:=NoteBook.Page[Page];
@@ -2954,7 +2954,7 @@ begin
 
   with MaxRecentProjectFilesLabel do begin
     Left:=MaxRecentOpenFilesLabel.Left;
-    Top:=MaxRecentOpenFilesLabel.Top+MaxRecentOpenFilesLabel.Height+3;
+    Top:=MaxRecentOpenFilesComboBox.Top+MaxRecentOpenFilesComboBox.Height+3;
     Width:=MaxRecentOpenFilesLabel.Width;
   end;
 

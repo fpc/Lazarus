@@ -1147,7 +1147,8 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
 
   procedure OutLn(const s: String);
   begin
-    OutStr(s + #13#10);
+    OutStr(s + #13#10); // windows line ends fo Delphi comaptibility
+                        // and to compare .lfm files
   end;
 
   procedure OutString(const s: String);
@@ -1162,18 +1163,54 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
       NewInString := InString;
       case s[i] of
         #0..#31: begin
-            if InString then
-              NewInString := False;
+            NewInString := False;
             NewStr := '#' + IntToStr(Ord(s[i]));
           end;
         '''':
             if InString then NewStr := ''''''
             else NewStr := '''''''';
         else begin
-          if not InString then
-            NewInString := True;
+          NewInString := True;
           NewStr := s[i];
         end;
+      end;
+      if NewInString <> InString then begin
+        NewStr := '''' + NewStr;
+        InString := NewInString;
+      end;
+      res := res + NewStr;
+    end;
+    if InString then res := res + '''';
+    OutStr(res);
+  end;
+
+  procedure OutWideString(const s: WideString);
+  var
+    res, NewStr: String;
+    i: Integer;
+    InString, NewInString: Boolean;
+  begin
+    //debugln('OutWideString ',s);
+    res := '';
+    InString := False;
+    for i := 1 to Length(s) do begin
+      NewInString := InString;
+      if (ord(s[i])<ord(' ')) or (ord(s[i])>=127) then begin
+        // special char
+        NewInString := False;
+        NewStr := '#' + IntToStr(Ord(s[i]));
+      end
+      else if s[i]='''' then begin
+        // '
+        if InString then
+          NewStr := ''''''
+        else
+          NewStr := '''''''';
+      end
+      else begin
+        // normal char
+        NewInString := True;
+        NewStr := s[i];
       end;
       if NewInString <> InString then begin
         NewStr := '''' + NewStr;
@@ -1193,7 +1230,7 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
       vaInt8: Result := ShortInt(Input.ReadByte);
       vaInt16: begin
           w:=ReadLRSWord(Input);
-          DebugLn('ReadInt vaInt16 w=',IntToStr(w));
+          //DebugLn('ReadInt vaInt16 w=',IntToStr(w));
           Result := SmallInt(ReadLRSWord(Input));
         end;
       vaInt32: Result := ReadLRSInteger(Input);
@@ -1271,7 +1308,7 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
           try
             Output.Position:=Output.Position-length(HintStr);
             Output.Read(HintStr[1],length(HintStr));
-            debugln('ObjectLRSToText:');
+            //debugln('ObjectLRSToText:');
             debugln(DbgStr(HintStr));
           except
           end;
@@ -1402,7 +1439,8 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
         {$ifdef HASWIDESTRING}
         vaWString: begin
             AWideString:=ReadLRSWideString(Input);
-            OutLn(AWideString);
+            OutWideString(AWideString);
+            OutLn('');
           end;
         {$endif HASWIDESTRING}
         else
@@ -1410,7 +1448,7 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
             // vaUTF8String
             // Delphi saves widestrings as UTF8 strings
             // The LCL does not use widestrings, but UTF8 directly
-            // so, simply read the string
+            // so, simply read and write the string
             OutString(ReadLongString);
             OutLn('');
           end else
@@ -1560,6 +1598,15 @@ var
       Output.Write(s[1], Length(s));
   end;
 
+  {$IFDEF HASWIDESTRING}
+  procedure WriteWideString(const s: String);
+  begin
+    WriteLRSInteger(Output,Length(s));
+    if Length(s) > 0 then
+      Output.Write(s[1], Length(s)*2);
+  end;
+  {$ENDIF}
+
   procedure WriteInteger(value: LongInt);
   begin
     if (value >= -128) and (value <= 127) then begin
@@ -1591,15 +1638,31 @@ var
     else
       WriteInteger(StrToInt(s));
   end;
+  
+  {$IFDEF HASWIDESTRING}
+  function WideStringNeeded(const s: widestring): Boolean;
+  var
+    i: Integer;
+  begin
+    i:=length(s);
+    while (i>=1) and (ord(s[i])<256) do dec(i);
+    Result:=i>=1;
+  end;
+  {$ENDIF}
 
   procedure ProcessProperty; forward;
 
   procedure ProcessValue;
   var
     flt: Extended;
-    s: String;
+    {$IFDEF HASWIDESTRING}
+    toStringBuf: WideString;
+    {$ELSE}
+    toStringBuf: String;
+    {$ENDIF}
     stream: TMemoryStream;
     BinDataSize: LongInt;
+    i: Integer;
   begin
     case parser.Token of
       toInteger:
@@ -1616,19 +1679,37 @@ var
         end;
       toString:
         begin
-          s := parser.TokenString;
+          {$IFDEF HASWIDESTRING}
+          toStringBuf := parser.TokenWideString;
+          {$ELSE}
+          toStringBuf := parser.TokenString;
+          {$ENDIF}
           while parser.NextToken = '+' do
           begin
             parser.NextToken;   // Get next string fragment
             parser.CheckToken(toString);
-            s := s + parser.TokenString;
+            {$IFDEF HASWIDESTRING}
+            toStringBuf := toStringBuf + parser.TokenString;
+            {$ELSE}
+            toStringBuf := toStringBuf + parser.TokenWideString;
+            {$ENDIF}
           end;
-          if length(s)<256 then begin
+          {$IFDEF HASWIDESTRING}
+          if WideStringNeeded(toStringBuf) then begin
+            //debugln('LRSObjectTextToBinary.ProcessValue WriteWideString');
+            Output.WriteByte(Ord(vaWString));
+            WriteWideString(toStringBuf);
+          end
+          else
+          {$ENDIF}
+          if length(toStringBuf)<256 then begin
+            //debugln('LRSObjectTextToBinary.ProcessValue WriteShortString');
             Output.WriteByte(Ord(vaString));
-            WriteShortString(s);
+            WriteShortString(toStringBuf);
           end else begin
+            //debugln('LRSObjectTextToBinary.ProcessValue WriteLongString');
             Output.WriteByte(Ord(vaLString));
-            WriteLongString(s);
+            WriteLongString(toStringBuf);
           end;
         end;
       toSymbol:
@@ -2554,6 +2635,8 @@ begin
       end;
     vaLString:
       i:=ReadIntegerContent;
+  else
+    raise Exception.Create('TLRSObjectReader.ReadString invalid StringType');
   end;
   SetLength(Result, i);
   if i > 0 then
@@ -2570,6 +2653,7 @@ begin
   SetLength(Result, i);
   if i > 0 then
     Read(Pointer(@Result[1])^, i*2);
+  //debugln('TLRSObjectReader.ReadWideString ',Result);
 end;
 {$endif HASWIDESTRING}
 
