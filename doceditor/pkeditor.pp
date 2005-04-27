@@ -195,8 +195,13 @@ end;
 
 procedure TCustomPackageEditor.SetCurrentModule(Value: TDomElement);
 begin
-  CurrentPackage:=Value.ParentNode as TDomElement;
-  FCurrentModule:=Value;
+//matthijs 10-4-2005 19:16 added checks on Value and Value.ParentNode
+  if (Value <> nil) then begin
+    if (Value.ParentNode <> nil) then begin
+      CurrentPackage:=Value.ParentNode as TDomElement;
+      FCurrentModule:=Value;
+    end;
+  end;
 end;
 
 procedure TCustomPackageEditor.SetCurrentPackage(Value: TDomElement);
@@ -851,7 +856,7 @@ begin
     Raise Exception.CreateFmt(SErrNoNodeForTopic,[M['name']]);
 end;
 
-Function TPackageEditor.FindElementNode(E : TDomElement; N : TTreeNode) : TTreeNode;
+Function TPackageEditor.FindElementNode(E: TDomElement; N: TTreeNode): TTreeNode;
 
 Var
   P : TTreeNode;
@@ -868,8 +873,9 @@ begin
       P:=FModuleNode;
     Result:=SubNodeWithElement(P,E);
     end;
-  If (Result=Nil) then
-    Raise Exception.CreateFmt(SErrNoNodeForElement,[E['name']]);
+//matthijs     10-4-2005 19:22 Made next two lines comments.
+//  If (Result=Nil) then
+//    Raise Exception.CreateFmt(SErrNoNodeForElement,[E['name']]);
 end;
 
 Procedure TPackageEditor.AddElement(E : TDomElement);
@@ -963,7 +969,8 @@ end;
 Procedure TPackageEditor.SetCurrentElement(E : TDomElement);
 
 begin
-  If (E<>FCurrentElement) then
+//matthijs 10-4-2005 19:27 Added Check on E = nil.
+  If (E<>FCurrentElement) and (E <> nil) then
     begin
     Inherited;
     CurrentModule:=E.ParentNode as TDomElement;
