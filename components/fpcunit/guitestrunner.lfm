@@ -1,9 +1,10 @@
 object GUITestRunner: TGUITestRunner
+  ActiveControl = tsTestTree
   Caption = 'FPCUnit - run unit tests'
-  ClientHeight = 571
-  ClientWidth = 582
-  Constraints.MinHeight = 550
-  Constraints.MinWidth = 450
+  ClientHeight = 397
+  ClientWidth = 574
+  Constraints.MinHeight = 200
+  Constraints.MinWidth = 250
   Icon.Data = {
     C50100002F2A2058504D202A2F0A7374617469632063686172202A2062746E5F
     72756E5F78706D5B5D203D207B0A22313620313420382031222C0A2220096320
@@ -23,21 +24,20 @@ object GUITestRunner: TGUITestRunner
   }
   OnCreate = GUITestRunnerCreate
   OnShow = GUITestRunnerShow
-  PixelsPerInch = 95
+  PixelsPerInch = 96
   Position = poDesktopCenter
-  HorzScrollBar.Page = 581
-  VertScrollBar.Page = 570
-  Left = 240
-  Height = 571
-  Top = 110
-  Width = 582
+  HorzScrollBar.Page = 573
+  VertScrollBar.Page = 396
+  Left = 120
+  Height = 397
+  Width = 574
   object Panel1: TPanel
     Align = alTop
     BorderSpacing.OnChange = nil
     BevelInner = bvRaised
     BevelOuter = bvNone
     ClientHeight = 56
-    ClientWidth = 582
+    ClientWidth = 574
     Color = clSilver
     Constraints.MinHeight = 50
     Constraints.MinWidth = 450
@@ -45,7 +45,7 @@ object GUITestRunner: TGUITestRunner
     TabOrder = 0
     TabStop = True
     Height = 56
-    Width = 582
+    Width = 574
     object Label1: TLabel
       BorderSpacing.OnChange = nil
       BorderSpacing.Left = 11
@@ -252,7 +252,7 @@ object GUITestRunner: TGUITestRunner
       ParentShowHint = False
       ShowHint = True
       TabOrder = 1
-      Left = 484
+      Left = 476
       Height = 34
       Hint = 'Quit Testing'
       Top = 11
@@ -263,52 +263,50 @@ object GUITestRunner: TGUITestRunner
     Align = alClient
     BorderSpacing.OnChange = nil
     Caption = 'Panel2'
-    ClientHeight = 515
-    ClientWidth = 582
+    ClientHeight = 341
+    ClientWidth = 574
     FullRepaint = False
     TabOrder = 1
     TabStop = True
-    Height = 515
+    Height = 341
     Top = 56
-    Width = 582
+    Width = 574
     object PageControl1: TPageControl
       ActivePage = tsTestTree
       Align = alClient
       BorderSpacing.OnChange = nil
-      Constraints.MinHeight = 500
+      Constraints.MinHeight = 150
       TabIndex = 0
       TabOrder = 0
       Left = 1
-      Height = 513
+      Height = 339
       Top = 1
-      Width = 580
+      Width = 572
       object tsTestTree: TTabSheet
         Caption = 'Testcase tree'
-        ClientHeight = 483
-        ClientWidth = 576
-        Left = 2
-        Height = 483
-        Top = 28
-        Width = 576
+        ClientHeight = 313
+        ClientWidth = 564
+        Height = 313
+        Width = 564
         object Panel4: TPanel
           Align = alTop
           BorderSpacing.OnChange = nil
           BevelOuter = bvNone
           ClientHeight = 63
-          ClientWidth = 576
+          ClientWidth = 564
           FullRepaint = False
           TabOrder = 0
           Height = 63
-          Width = 576
+          Width = 564
           object Panel6: TPanel
             Align = alTop
             Caption = 'Panel6'
             ClientHeight = 50
-            ClientWidth = 576
+            ClientWidth = 564
             FullRepaint = False
             TabOrder = 0
             Height = 50
-            Width = 576
+            Width = 564
             object pbBar: TPaintBox
               Align = alClient
               ParentColor = True
@@ -316,7 +314,7 @@ object GUITestRunner: TGUITestRunner
               Left = 1
               Height = 48
               Top = 1
-              Width = 574
+              Width = 562
             end
           end
         end
@@ -325,13 +323,13 @@ object GUITestRunner: TGUITestRunner
           AutoSize = True
           BevelOuter = bvNone
           Caption = 'Panel7'
-          ClientHeight = 318
-          ClientWidth = 576
+          ClientHeight = 158
+          ClientWidth = 564
           FullRepaint = False
           TabOrder = 1
-          Height = 318
+          Height = 158
           Top = 63
-          Width = 576
+          Width = 564
           object TestTree: TTreeView
             Align = alClient
             BackgroundColor = clBtnFace
@@ -342,8 +340,8 @@ object GUITestRunner: TGUITestRunner
             ScrollBars = ssAutoBoth
             TabOrder = 0
             OnSelectionChanged = TestTreeSelectionChanged
-            Height = 318
-            Width = 576
+            Height = 158
+            Width = 564
           end
         end
         object Panel8: TPanel
@@ -351,22 +349,22 @@ object GUITestRunner: TGUITestRunner
           BorderSpacing.OnChange = nil
           BevelOuter = bvNone
           Caption = 'Panel8'
-          ClientHeight = 97
-          ClientWidth = 576
+          ClientHeight = 87
+          ClientWidth = 564
           Constraints.MinHeight = 80
           FullRepaint = False
           TabOrder = 2
-          Height = 97
-          Top = 386
-          Width = 576
+          Height = 87
+          Top = 226
+          Width = 564
           object Memo1: TMemo
             Align = alClient
             BorderSpacing.OnChange = nil
             PopupMenu = PopupMenu2
             ScrollBars = ssAutoVertical
             TabOrder = 0
-            Height = 97
-            Width = 576
+            Height = 87
+            Width = 564
           end
         end
         object Splitter1: TSplitter
@@ -374,44 +372,42 @@ object GUITestRunner: TGUITestRunner
           Cursor = crVSplit
           Height = 5
           ParentColor = True
-          Width = 576
+          Width = 564
           Cursor = crVSplit
           Height = 5
-          Top = 381
-          Width = 576
+          Top = 221
+          Width = 564
         end
       end
       object tsResultsXML: TTabSheet
         Caption = 'Results XML'
-        ClientHeight = 483
-        ClientWidth = 576
-        Left = 2
-        Height = 483
-        Top = 28
-        Width = 576
+        ClientHeight = 313
+        ClientWidth = 564
+        Height = 313
+        Width = 564
         object Panel3: TPanel
           Align = alClient
           BorderSpacing.OnChange = nil
           BevelOuter = bvNone
           Caption = 'Panel3'
-          ClientHeight = 483
-          ClientWidth = 576
+          ClientHeight = 309
+          ClientWidth = 568
           FullRepaint = False
           TabOrder = 0
           TabStop = True
-          Height = 483
-          Width = 576
+          Height = 309
+          Width = 568
           object Panel5: TPanel
             Align = alTop
             BorderSpacing.OnChange = nil
             BevelOuter = bvNone
             BorderWidth = 1
             ClientHeight = 48
-            ClientWidth = 576
+            ClientWidth = 568
             FullRepaint = False
             TabOrder = 0
             Height = 48
-            Width = 576
+            Width = 568
             object SpeedButton1: TSpeedButton
               Action = actCopy
               BorderSpacing.OnChange = nil
@@ -607,7 +603,7 @@ object GUITestRunner: TGUITestRunner
               Left = 110
               Height = 46
               Top = 1
-              Width = 465
+              Width = 457
             end
           end
           object XMLMemo: TMemo
@@ -615,9 +611,9 @@ object GUITestRunner: TGUITestRunner
             BorderSpacing.OnChange = nil
             PopupMenu = PopupMenu1
             TabOrder = 1
-            Height = 435
+            Height = 261
             Top = 48
-            Width = 576
+            Width = 568
           end
         end
       end
@@ -1856,8 +1852,8 @@ object GUITestRunner: TGUITestRunner
   end
   object PopupMenu1: TPopupMenu
     Images = ImageList2
-    left = 112
-    top = 528
+    left = 120
+    top = 456
     object MenuItem1: TMenuItem
       Action = actCopy
       Caption = '&Copy '
@@ -1871,8 +1867,8 @@ object GUITestRunner: TGUITestRunner
     end
   end
   object PopupMenu2: TPopupMenu
-    left = 472
-    top = 104
+    left = 336
+    top = 120
     object MenuItem3: TMenuItem
       Caption = 'Copy to clipboard'
       Bitmap.Data = {
