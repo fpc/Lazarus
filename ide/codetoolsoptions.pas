@@ -254,7 +254,9 @@ const
   
   AtomTypeDescriptions: array[TAtomType] of shortstring = (
       'None', 'Keyword', 'Identifier', 'Colon', 'Semicolon', 'Comma', 'Point',
-      'At', 'Number', 'String constant', 'Newline', 'Space', 'Symbol'
+      'At', 'Number', 'String constant', 'Newline', 'Space',
+      'Comment start', 'Compiler directive start', 'Comment end',
+      'Symbol'
     );
   DoNotSplitAtoms = [atKeyword, atIdentifier, atColon, atSemicolon, atComma,
                atPoint, atAt, atNumber, atStringConstant, atSpace, atSymbol];
@@ -271,6 +273,7 @@ const
       +'const i=1+2+3;'#13
       +'begin'#13
       +'  A:=@B.C;D:=3;'#13
+      +'  {$I unit1.lrs}'#13
       +'end;';
 
 function AtomTypeDescriptionToType(const s: string): TAtomType;

@@ -71,7 +71,8 @@ type
   TWordPolicy = (wpNone, wpLowerCase, wpUpperCase, wpLowerCaseFirstLetterUp);
   TAtomType = (atNone, atKeyword, atIdentifier, atColon, atSemicolon, atComma,
                atPoint, atAt, atNumber, atStringConstant, atNewLine,
-               atSpace, atSymbol);
+               atSpace, atCommentStart, atDirectiveStart, atCommentEnd,
+               atSymbol);
   TAtomTypes = set of TAtomType;
   
   TBeautifyCodeFlag = (
@@ -228,7 +229,9 @@ type
 const
   AtomTypeNames: array[TAtomType] of shortstring = (
       'None', 'Keyword', 'Identifier', 'Colon', 'Semicolon', 'Comma', 'Point',
-      'At', 'Number', 'StringConstant', 'NewLine', 'Space', 'Symbol'
+      'At', 'Number', 'StringConstant', 'NewLine', 'Space',
+      'CommentStart', 'DirectiveStart', 'CommentEnd',
+      'Symbol'
     );
 
   WordPolicyNames: array[TWordPolicy] of shortstring = (
@@ -1028,7 +1031,7 @@ begin
   if AtomStart<=SrcLen then begin
     c1:=UpperSrc[CurPos];
     case c1 of
-      'A'..'Z','_':
+      'A'..'Z','_': // identifier
         begin
           CurAtomType:=atIdentifier;
           repeat
@@ -1038,7 +1041,7 @@ begin
           then
             CurAtomType:=atKeyword;
         end;
-      #10,#13:
+      #10,#13: // line break
         begin
           CurAtomType:=atNewLine;
           inc(CurPos);
@@ -1046,14 +1049,14 @@ begin
           and (Src[CurPos]<>c1) then
             inc(CurPos);
         end;
-      #0..#9,#11..#12,#14..#32:
+      #0..#9,#11..#12,#14..#32: // special char
         begin
           CurAtomType:=atSpace;
           repeat
             inc(CurPos);
           until (CurPos>SrcLen) or (not IsSpaceChar[Src[CurPos]]);
         end;
-      '0'..'9':
+      '0'..'9': // decimal number
         begin
           CurAtomType:=atNumber;
           repeat
@@ -1079,7 +1082,7 @@ begin
             end;
           end;
         end;
-      '''','#':
+      '''','#': // string constant
         begin
           CurAtomType:=atStringConstant;
           while (CurPos<=SrcLen) do begin
@@ -1104,19 +1107,74 @@ begin
             end;
           end;
         end;
-      '%':
+      '%': // binary number
         begin
           CurAtomType:=atNumber;
           repeat
             inc(CurPos);
           until (CurPos>SrcLen) or (not (Src[CurPos] in ['0','1']));
         end;
-      '$':
+      '$': // hex number
         begin
           CurAtomType:=atNumber;
           repeat
             inc(CurPos);
           until (CurPos>SrcLen) or (not IsHexNumberChar[Src[CurPos]]);
+        end;
+      '{': // curly bracket comment or directive
+        begin
+          inc(CurPos);
+          if (CurPos<=SrcLen) and (Src[CurPos]='$') then begin
+            inc(CurPos);
+            CurAtomType:=atDirectiveStart;
+          end else begin
+            CurAtomType:=atCommentStart;
+          end;
+        end;
+      '}': // curly bracket comment end
+        begin
+          inc(CurPos);
+          CurAtomType:=atCommentEnd;
+        end;
+      '(': // (* comment or directive
+        begin
+          inc(CurPos);
+          if (CurPos<=SrcLen) and (Src[CurPos]='*') then begin
+            inc(CurPos);
+            if (CurPos<=SrcLen) and (Src[CurPos]='$') then begin
+              inc(CurPos);
+              CurAtomType:=atDirectiveStart;
+            end else begin
+              CurAtomType:=atCommentStart;
+            end;
+          end else begin
+            CurAtomType:=atSymbol;
+          end;
+        end;
+      '*': // *) comment end
+        begin
+          inc(CurPos);
+          if (CurPos<=SrcLen) and (Src[CurPos]=')') then begin
+            inc(CurPos);
+            CurAtomType:=atCommentEnd;
+          end else begin
+            CurAtomType:=atSymbol;
+          end;
+        end;
+      '/': // line comment or directive
+        begin
+          inc(CurPos);
+          if (CurPos<=SrcLen) and (Src[CurPos]='/') then begin
+            inc(CurPos);
+            if (CurPos<=SrcLen) and (Src[CurPos]='$') then begin
+              inc(CurPos);
+              CurAtomType:=atDirectiveStart;
+            end else begin
+              CurAtomType:=atCommentStart;
+            end;
+          end else begin
+            CurAtomType:=atSymbol;
+          end;
         end;
       else
         begin
@@ -1131,9 +1189,6 @@ begin
             or ((c1='>') and (c2='<'))
             or ((c1='.') and (c2='.'))
             or ((c1='*') and (c2='*'))
-            or ((c1='/') and (c2='/'))
-            or ((c1='(') and (c2='*'))
-            or ((c1='*') and (c2=')'))
             then
               inc(CurPos);
           end;
@@ -1208,7 +1263,8 @@ begin
       until false;
       if ((Result='') or (Result[length(Result)]<>' '))
       and ((CurAtomType in DoInsertSpaceInFront)
-      or (LastAtomType in DoInsertSpaceAfter)) then
+      or (LastAtomType in DoInsertSpaceAfter))
+      and (CurAtom<>'$') then
         AddAtom(Result,' ');
       if (not (CurAtomType in DoNotSplitLineInFront))
       and (not (LastAtomType in DoNotSplitLineAfter)) then
