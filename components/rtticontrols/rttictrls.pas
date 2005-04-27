@@ -323,10 +323,7 @@ Type
   { TTIEdit }
   
   TTIEdit = class(TTICustomEdit)
-  private
-    FMyWideString: widestring;
   published
-    property MyWideString: widestring read FMyWideString write FMyWideString;
     property Action;
     property Align;
     property Anchors;
