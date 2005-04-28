@@ -185,7 +185,7 @@ begin
   if not FShowAccelChar then exit;
   if FFocusControl = nil then exit;
 
-  if IsAccel(Message.CharCode, Caption) then
+  if IsAccel(Message.CharCode, Caption) and FFocusControl.CanFocus then
   begin
     Result := true;
     FFocusControl.SetFocus;
@@ -266,6 +266,10 @@ end;
 
 {
   $Log$
+  Revision 1.31  2005/04/28 10:05:29  micha
+  fix accelerator handling firing too quickly, better WM_CHAR has-been-handled heuristic
+  check for focusability of label.focuscontrol
+
   Revision 1.30  2005/04/27 12:37:28  micha
   implement/fix button/label shortcut accelchar handling
 

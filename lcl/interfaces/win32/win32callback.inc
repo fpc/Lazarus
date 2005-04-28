@@ -1371,9 +1371,12 @@ Begin
       WM_CHAR, WM_KEYDOWN, WM_KEYUP,
       WM_SYSCHAR, WM_SYSKEYDOWN, WM_SYSKEYUP:
       begin
+        PLMsg^.Result := 0;
         case Msg of
           WM_CHAR: 
           begin
+            // if want chars, then handled already
+            PLMsg^.Result := CallDefaultWindowProc(Window, WM_GETDLGCODE, 0, 0) and DLGC_WANTCHARS;
             LMChar.CharCode := Word(WParam);
             LMChar.Msg := LM_CHAR;
           end;
@@ -1405,9 +1408,10 @@ Begin
         end;
 
         // we cannot tell for sure windows didn't want the key
+        // for WM_CHAR check WM_GETDLGCODE/DLGC_WANTCHARS
         // winapi too inconsistent about return value
-        PLMsg^.Result := 0;
-        DeliverMessage(lWinControl, PLMsg^);
+        if PLMsg^.Result = 0 then
+          DeliverMessage(lWinControl, PLMsg^);
 
         // handle Ctrl-A for edit controls
         if (PLMsg^.Result = 0) and (Msg = WM_KEYDOWN) and (WParam = Ord('A')) 
@@ -1548,6 +1552,10 @@ end;
 
 {
   $Log$
+  Revision 1.202  2005/04/28 10:05:29  micha
+  fix accelerator handling firing too quickly, better WM_CHAR has-been-handled heuristic
+  check for focusability of label.focuscontrol
+
   Revision 1.201  2005/04/20 14:08:38  vincents
   fixed SpinEdit.Visible and SpinEdit.Enabled
 
