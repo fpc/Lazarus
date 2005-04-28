@@ -195,7 +195,6 @@ end;
 
 procedure TCustomPackageEditor.SetCurrentModule(Value: TDomElement);
 begin
-//matthijs 10-4-2005 19:16 added checks on Value and Value.ParentNode
   if (Value <> nil) then begin
     if (Value.ParentNode <> nil) then begin
       CurrentPackage:=Value.ParentNode as TDomElement;
@@ -873,9 +872,6 @@ begin
       P:=FModuleNode;
     Result:=SubNodeWithElement(P,E);
     end;
-//matthijs     10-4-2005 19:22 Made next two lines comments.
-//  If (Result=Nil) then
-//    Raise Exception.CreateFmt(SErrNoNodeForElement,[E['name']]);
 end;
 
 Procedure TPackageEditor.AddElement(E : TDomElement);
@@ -969,7 +965,6 @@ end;
 Procedure TPackageEditor.SetCurrentElement(E : TDomElement);
 
 begin
-//matthijs 10-4-2005 19:27 Added Check on E = nil.
   If (E<>FCurrentElement) and (E <> nil) then
     begin
     Inherited;

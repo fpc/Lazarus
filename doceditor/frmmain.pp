@@ -531,16 +531,15 @@ Var
 
 begin
   FRecent.Clear;
-  With TInifile.Create(GetoptionFileName) do
-    begin
+  With TInifile.Create(GetoptionFileName) do begin
     Count:=ReadInteger('Recent','Count',0);
-    For I:=1 to Count do
-      begin
+    For I:=1 to Count do begin
       S:=ReadString('Recent','File'+IntToStr(i),'');
       If S<>'' then
         FRecent.Add(S);
-      end;
     end;
+    Free;
+  end;
   BuildReopenList;
 end;
 
