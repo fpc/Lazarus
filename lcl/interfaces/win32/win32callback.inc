@@ -507,7 +507,7 @@ Begin
   begin
     lWinControl := WindowInfo^.AWinControl;
     // filter messages we want to pass on to LCL
-    if (Msg <> WM_KILLFOCUS) and (Msg <> WM_SETFOCUS)
+    if (Msg <> WM_KILLFOCUS) and (Msg <> WM_SETFOCUS) and (Msg <> WM_NCDESTROY)
       and ((Msg < WM_KEYFIRST) or (Msg > WM_KEYLAST))
       and ((Msg < WM_MOUSEFIRST) or (Msg > WM_MOUSELAST)) then
     begin
@@ -1552,6 +1552,9 @@ end;
 
 {
   $Log$
+  Revision 1.203  2005/04/28 13:11:05  vincents
+  let wm_ncdestroy through, so we can destroy the windowinfo
+
   Revision 1.202  2005/04/28 10:05:29  micha
   fix accelerator handling firing too quickly, better WM_CHAR has-been-handled heuristic
   check for focusability of label.focuscontrol
