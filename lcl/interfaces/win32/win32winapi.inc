@@ -1564,13 +1564,14 @@ begin
       end;
     16:
       begin
-        // 5-6-5 mode
+        // 5-5-5 mode
         Desc^.RedPrec := 5;
         Desc^.GreenPrec := 5;
         Desc^.BluePrec := 5;
         Desc^.RedShift := 10;
         Desc^.GreenShift := 5;
         Desc^.BlueShift := 0;
+        Desc^.Depth := 15;
       end;
     24:
       begin
@@ -1590,6 +1591,7 @@ begin
     Desc^.RedShift := 16;
     Desc^.GreenShift := 8;
     Desc^.BlueShift := 0;
+    Desc^.Depth := 24;
   end;
 end;
 
@@ -1607,14 +1609,14 @@ begin
   Desc^.LineOrder := riloTopToBottom;
   Desc^.ColorCount := 0;                // entries in color palette. Ignore when no palette.
   Desc^.BitsPerPixel := BitmapInfo.bmBitsPixel;    // bits per pixel. can be greater than Depth.
-  Desc^.LineEnd := rileWordBoundary;
+  Desc^.LineEnd := rileDWordBoundary;
   FillRawImageDescriptionColors(Desc);
   Desc^.AlphaShift := 0;
-  Desc^.AlphaSeparate := false; // the alpha is stored as separate Mask
+  Desc^.AlphaSeparate := true; // the alpha is stored as separate Mask
   // The next values are only valid, if there is a separate alpha mask
-  Desc^.AlphaBitsPerPixel := Desc^.BitsPerPixel; // bits per alpha mask pixel.
-  Desc^.AlphaPrec := Desc^.AlphaBitsPerPixel;
-  Desc^.AlphaLineEnd := rileWordBoundary;
+  Desc^.AlphaBitsPerPixel := 1; // bits per alpha mask pixel.
+  Desc^.AlphaPrec := 1;
+  Desc^.AlphaLineEnd := rileDWordBoundary;
   Desc^.AlphaBitOrder := riboReversedBits;
   Desc^.AlphaByteOrder := riboLSBFirst;
 end;
@@ -3120,6 +3122,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.143  2005/04/29 19:50:27  micha
+  tweak color specification a bit
+
   Revision 1.142  2005/04/06 10:39:36  mattias
   aesthetical improvements for colorbuttons  from Luca Minuti
 
