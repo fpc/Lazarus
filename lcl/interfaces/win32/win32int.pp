@@ -259,6 +259,9 @@ const
       
 
 var
+  MouseDownTime: dword;
+  MouseDownWindow: HWND;
+  MouseDownFocusChange: boolean;
   OnClipBoardRequest: TClipboardRequestEvent;
 
 {$I win32listsl.inc}
@@ -274,6 +277,10 @@ Initialization
   MessageStackDepth := '';
 {$endif}
   EraseBkgndStack := 0;
+  { initialize mousedownclick to far before double click time }
+  MouseDownFocusChange := false;
+  MouseDownTime := GetTickCount - 5000;
+  MouseDownWindow := 0;
 
 {$ifndef VER1_0}
   { TThread.Synchronize support }
@@ -291,6 +298,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.137  2005/04/29 11:53:25  micha
+  send double click to window, if pattern mouse-click, focus-change, mouse-click detected (fixes bug 794)
+
   Revision 1.136  2005/04/07 15:52:31  micha
   implement Ctrl+A to select all text for edit controls
 

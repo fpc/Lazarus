@@ -880,6 +880,17 @@ Begin
     End;
     WM_LBUTTONDOWN:
     Begin
+      // if mouse-click, focus-change, mouse-click, simulate double click
+      // assume focus change due to first mouse-click
+      if MouseDownFocusChange and (MouseDownWindow = Window)
+          and (GetTickCount - MouseDownTime <= GetDoubleClickTime) then
+      begin
+        PostMessage(Window, WM_LBUTTONDBLCLK, WParam, LParam);
+      end;
+      
+      MouseDownTime := GetTickCount;
+      MouseDownFocusChange := false;
+      MouseDownWindow := Window;
       NotifyUserInput := True;
       PLMsg:=@LMMouse;
       With LMMouse Do
@@ -1119,6 +1130,11 @@ Begin
     end;
     WM_SETFOCUS:
     Begin
+      if Window <> MouseDownWindow then
+      begin
+        MouseDownFocusChange := true;
+        MouseDownWindow := Window;
+      end;
       LMessage.Msg := LM_SETFOCUS;
       if (lWinControl <> nil) and (lWinControl.FCompStyle = csEdit) then
         Windows.SendMessage(Window, EM_SETSEL, 0, -1);
@@ -1552,6 +1568,9 @@ end;
 
 {
   $Log$
+  Revision 1.204  2005/04/29 11:53:25  micha
+  send double click to window, if pattern mouse-click, focus-change, mouse-click detected (fixes bug 794)
+
   Revision 1.203  2005/04/28 13:11:05  vincents
   let wm_ncdestroy through, so we can destroy the windowinfo
 
