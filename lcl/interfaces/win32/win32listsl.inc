@@ -303,6 +303,7 @@ end;
 procedure TWin32ComboBoxStringList.Assign(Source: TPersistent); 
 var
   EditText: string;
+  lItemIndex: integer;
 begin
   if Source is TStrings then
   begin
@@ -314,6 +315,9 @@ begin
     // restore text in edit box
     SetComboHeight(FSender, ComboHeight);
     TWin32WSCustomComboBox.SetText(FSender, EditText);
+    lItemIndex := IndexOf(EditText);
+    if lItemIndex <> -1 then
+      TWin32WSCustomComboBox.SetItemIndex(TCustomComboBox(FSender), lItemIndex);
   end else
     inherited Assign(Source);
 end;
@@ -610,6 +614,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.39  2005/04/29 09:44:56  micha
+  fix double-clicking in combobox in object inspector, set itemindex when assigning list of strings
+
   Revision 1.38  2005/04/11 12:35:17  micha
   fixed: listbox loses selection when updating selected item (fixes 780)
 
