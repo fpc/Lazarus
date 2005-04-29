@@ -89,6 +89,8 @@ type
           const AParams: TCreateParams): HWND; override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, 
           AWidth, AHeight: Integer); override;
+    class procedure SetFormBorderStyle(const AForm: TCustomForm;
+                             const AFormBorderStyle: TFormBorderStyle); override;
     class procedure SetIcon(const AForm: TCustomForm; const AIcon: HICON); override;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: Boolean); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
@@ -222,12 +224,24 @@ begin
   end;
 end;
 
+procedure CalcFormWindowFlags(const AForm: TCustomForm; var Flags, FlagsEx: dword);
+var
+  BorderStyle: TFormBorderStyle;
+begin
+  BorderStyle := AForm.BorderStyle;
+  Flags := BorderStyleToWin32Flags(BorderStyle);
+  FlagsEx := BorderStyleToWin32FlagsEx(BorderStyle);
+  if (AForm.FormStyle in fsAllStayOnTop) and 
+      not (csDesigning in AForm.ComponentState) then
+    FlagsEx := FlagsEx or WS_EX_TOPMOST;
+  Flags := Flags or CalcBorderIconsFlags(AForm);
+end;
+
 function TWin32WSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
   lForm: TCustomForm;
-  BorderStyle: TFormBorderStyle;
 begin
   // general initialization of Params
   PrepareCreateWindow(AWinControl, Params);
@@ -235,13 +249,7 @@ begin
   with Params do
   begin
     lForm := TCustomForm(AWinControl);
-    BorderStyle := lForm.BorderStyle;
-    Flags := BorderStyleToWin32Flags(BorderStyle);
-    FlagsEx := BorderStyleToWin32FlagsEx(BorderStyle);
-    if (lForm.FormStyle in fsAllStayOnTop) and 
-        not (csDesigning in lForm.ComponentState) then
-      FlagsEx := FlagsEx or WS_EX_TOPMOST;
-    Flags := Flags or CalcBorderIconsFlags(lForm);
+    CalcFormWindowFlags(lForm, Flags, FlagsEx);
     pClassName := @ClsName;
     WindowTitle := StrCaption;
     Left := LongInt(CW_USEDEFAULT);
@@ -280,6 +288,18 @@ begin
   SetIcon(AForm, 0);
 end;
 
+procedure TWin32WSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
+          const AFormBorderStyle: TFormBorderStyle);
+var
+  Flags, FlagsEx: dword;
+  winHandle: HWND;
+begin
+  winHandle := AForm.Handle;
+  CalcFormWindowFlags(AForm, Flags, FlagsEx);
+  Windows.SetWindowLong(winHandle, GWL_STYLE, Flags);
+  Windows.SetWindowLong(winHandle, GWL_EXSTYLE, FlagsEx);
+end;
+                            
 procedure TWin32WSCustomForm.SetBounds(const AWinControl: TWinControl; 
     const ALeft, ATop, AWidth, AHeight: Integer);
 var
