@@ -4,14 +4,16 @@ object TabOrderDialog: TTabOrderDialog
   ClientWidth = 310
   OnClose = TabOrderDialogCLOSE
   OnCreate = TabOrderDialogCREATE
-  HorzScrollBar.Page = 311
-  VertScrollBar.Page = 388
+  PixelsPerInch = 96
+  HorzScrollBar.Page = 309
+  VertScrollBar.Page = 386
   Left = 381
   Height = 387
   Top = 167
   Width = 310
   object UpSpeedbutton: TSpeedButton
-    Anchors = [AKTOP, AKRIGHT]
+    Anchors = [akTop, akRight]
+    BorderSpacing.OnChange = nil
     NumGlyphs = 0
     OnClick = UpSpeedbuttonCLICK
     ShowHint = True
@@ -23,7 +25,8 @@ object TabOrderDialog: TTabOrderDialog
     Width = 25
   end
   object DownSpeedbutton: TSpeedButton
-    Anchors = [AKTOP, AKRIGHT]
+    Anchors = [akTop, akRight]
+    BorderSpacing.OnChange = nil
     NumGlyphs = 0
     OnClick = DownSpeedbuttonCLICK
     ShowHint = True
@@ -35,21 +38,23 @@ object TabOrderDialog: TTabOrderDialog
     Width = 25
   end
   object OkButton: TButton
-    Anchors = [AKRIGHT, AKBOTTOM]
+    Anchors = [akRight, akBottom]
+    BorderSpacing.OnChange = nil
     Caption = 'Ok'
-    TabStop = True
-    TabOrder = 0
+    Default = True
     OnClick = OkButtonCLICK
+    TabOrder = 0
     Left = 120
     Height = 25
     Top = 350
     Width = 75
   end
   object CancelButton: TButton
-    Anchors = [AKRIGHT, AKBOTTOM]
-    ModalResult = 2
+    Anchors = [akRight, akBottom]
+    BorderSpacing.OnChange = nil
+    Cancel = True
     Caption = 'Cancel'
-    TabStop = True
+    ModalResult = 2
     TabOrder = 1
     Left = 216
     Height = 25
@@ -57,28 +62,25 @@ object TabOrderDialog: TTabOrderDialog
     Width = 75
   end
   object ItemTreeview: TTreeView
-    Anchors = [AKTOP, AKLEFT, AKRIGHT, AKBOTTOM]
-    DefaultItemHeight = 17
-    DragCursor = 65524
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.OnChange = nil
+    DefaultItemHeight = 15
     HideSelection = False
     ParentCtl3D = False
     RightClickSelect = True
     TabOrder = 2
-    Options = [TVOAUTOITEMHEIGHT, TVOKEEPCOLLAPSEDNODES, TVORIGHTCLICKSELECT, TVOSHOWBUTTONS, TVOSHOWLINES, TVOSHOWROOT, TVOTOOLTIPS]
+    Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
     Left = 9
     Height = 304
     Top = 8
     Width = 238
   end
   object ShowOldValuesCheckbox: TCheckBox
-    AllowGrayed = True
-    Anchors = [AKLEFT, AKBOTTOM]
-    AutoSize = True
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.OnChange = nil
     Caption = 'ShowOldValuesCheckbox'
-    DragCursor = 65524
     OnClick = ShowOldValuesCheckboxCLICK
     TabOrder = 3
-    TabStop = True
     Left = 9
     Height = 20
     Top = 320
