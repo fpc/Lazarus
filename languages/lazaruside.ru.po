@@ -86,6 +86,10 @@ msgstr "%s%sНажмите ОК, если точно хотите это сделать."
 msgid "%s%sFile Name: %s%s%s"
 msgstr "%s%sИмя файла: %s%s%s"
 
+#: lazarusidestrconsts:lisunabletochangeclassofto
+msgid "%s%sUnable to change class of %s to %s"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgsysunitname
 msgid "%s%sUnit Name: %s%s%s"
 msgstr "%s%sИмя модуля: %s%s%s"
@@ -821,6 +825,10 @@ msgstr "Не могу создать файл %s%s%s"
 #: lazarusidestrconsts:lispkgsyscannotregistercomponentswithoutunit
 msgid "Can not register components without unit"
 msgstr "Не могу зарегистрировать компоненты без модуля"
+
+#: lazarusidestrconsts:liscanonlychangetheclassoftcomponents
+msgid "Can only change the class of TComponents."
+msgstr ""
 
 #: lazarusidestrconsts:dlgcancel
 msgid "Cancel"
@@ -2053,6 +2061,10 @@ msgstr "Ошибка перемещения компонента"
 #: lazarusidestrconsts:liserrormovingcomponent2
 msgid "Error moving component %s:%s"
 msgstr "Ошибка перемещения компонента %s:%s"
+
+#: lazarusidestrconsts:liserrorparsinglfmcomponentstream
+msgid "Error parsing lfm component stream."
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefserrorreading
 msgid "Error reading %s%s%s%s%s"
@@ -3998,6 +4010,14 @@ msgstr "Создать"
 msgid "New ..."
 msgstr "Создать ..."
 
+#: lazarusidestrconsts:lisnewancestors
+msgid "New Ancestors"
+msgstr ""
+
+#: lazarusidestrconsts:lisnewclass
+msgid "New Class"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pnewcomponent
 msgid "New Component"
 msgstr "Новый компонент"
@@ -4173,6 +4193,14 @@ msgstr "Инспектор объектов"
 #: lazarusidestrconsts:lislazbuildok
 msgid "Ok"
 msgstr "ОК"
+
+#: lazarusidestrconsts:lisoldancestors
+msgid "Old Ancestors"
+msgstr ""
+
+#: lazarusidestrconsts:lisoldclass
+msgid "Old Class"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuonlinehelp
 msgid "Online Help"
@@ -5009,6 +5037,10 @@ msgstr "Заменить текст"
 #: lazarusidestrconsts:lisuereplacethisoccurrenceofwith
 msgid "Replace this occurrence of %s%s%s%s with %s%s%s?"
 msgstr "Заменить %s%s%s%s на %s%s%s в этом месте?"
+
+#: lazarusidestrconsts:lisreplacingselectionfailed
+msgid "Replacing selection failed."
+msgstr ""
 
 #: lazarusidestrconsts:dlgreport
 msgid "Report"
@@ -6782,6 +6814,10 @@ msgstr "Не могу создать каталог исходника пакета %s%s%s%sдля пакета %s."
 msgid "Unable to create target directory for lazarus:%s%s%s%s.%sThis directory is needed for the new changed lazarus IDE with your custom packages."
 msgstr "Не могу создать каталог цели для lazarus:%s%s%s%s.%sЭтот каталог нужен для вновь изменённой IDE lazarus с вашими пакетами."
 
+#: lazarusidestrconsts:lisunabletocreatetemporarylfmbuffer
+msgid "Unable to create temporary lfm buffer."
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletodeleteambiguousfile
 msgid "Unable to delete ambiguous file %s%s%s"
 msgstr "Не могу удалить двусмысленный файл %s%s%s"
@@ -6797,6 +6833,10 @@ msgstr "Не могу удалить файл %s%s%s."
 #: lazarusidestrconsts:lispkgmangunabletodeleteoldstatefileforpackage
 msgid "Unable to delete old state file %s%s%s%sfor package %s."
 msgstr "Не могу удалить старый файл %s%s%s%s из пакета %s."
+
+#: lazarusidestrconsts:lisunabletofindinlfmstream
+msgid "Unable to find %s in LFM Stream."
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletofindaresourcestringsectioninthisoranyofthe
 msgid "Unable to find a ResourceString section in this or any of the used units."
@@ -6817,6 +6857,14 @@ msgstr "Не могу найти файл %s%s%s.%sПроверьте путь поиска в%sПроект->Параметры к
 #: lazarusidestrconsts:lisunabletofindmethodplzfixtheerrorshowninthemessage
 msgid "Unable to find method. Plz fix the error shown in the message window."
 msgstr "Не могу найти метод. Исправьте ошибки в окне сообщений."
+
+#: lazarusidestrconsts:lisunabletogathereditorchanges
+msgid "Unable to gather editor changes."
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletogetsourcefordesigner
+msgid "Unable to get source for designer."
+msgstr ""
 
 #: lazarusidestrconsts:lisdebugunabletoloadfile
 msgid "Unable to load file"
@@ -6913,6 +6961,10 @@ msgstr "Не могу сделать поток %s:T%s."
 #: lazarusidestrconsts:lisunabletostreamselectedcomponents
 msgid "Unable to stream selected components"
 msgstr "Не могу скопировать выбранные компоненты в поток"
+
+#: lazarusidestrconsts:lisunabletostreamselectedcomponents2
+msgid "Unable to stream selected components."
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletotransformbinarycomponentstreamoftintotext
 msgid "Unable to transform binary component stream of %s:T%s into text."

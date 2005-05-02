@@ -86,6 +86,10 @@ msgstr "%s%sPremeu D'ACORD si n'esteu segur."
 msgid "%s%sFile Name: %s%s%s"
 msgstr "%s%sNom del fitxer: %s%s%s"
 
+#: lazarusidestrconsts:lisunabletochangeclassofto
+msgid "%s%sUnable to change class of %s to %s"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgsysunitname
 msgid "%s%sUnit Name: %s%s%s"
 msgstr "%s%sNom de la unitat: %s%s%s"
@@ -821,6 +825,10 @@ msgstr "No es pot crear el fitxer %s%s%s"
 #: lazarusidestrconsts:lispkgsyscannotregistercomponentswithoutunit
 msgid "Can not register components without unit"
 msgstr "No es poden registrar els components sense unitat"
+
+#: lazarusidestrconsts:liscanonlychangetheclassoftcomponents
+msgid "Can only change the class of TComponents."
+msgstr ""
 
 #: lazarusidestrconsts:dlgcancel
 msgid "Cancel"
@@ -2053,6 +2061,10 @@ msgstr "S'ha produït un error mentre es movia el component"
 #: lazarusidestrconsts:liserrormovingcomponent2
 msgid "Error moving component %s:%s"
 msgstr "S'ha produït un error mentre es movia el component %s:%s"
+
+#: lazarusidestrconsts:liserrorparsinglfmcomponentstream
+msgid "Error parsing lfm component stream."
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefserrorreading
 msgid "Error reading %s%s%s%s%s"
@@ -3998,6 +4010,14 @@ msgstr "Nou"
 msgid "New ..."
 msgstr "Nou ..."
 
+#: lazarusidestrconsts:lisnewancestors
+msgid "New Ancestors"
+msgstr ""
+
+#: lazarusidestrconsts:lisnewclass
+msgid "New Class"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pnewcomponent
 msgid "New Component"
 msgstr "Nou component"
@@ -4173,6 +4193,14 @@ msgstr "Inspector dels objectes"
 #: lazarusidestrconsts:lislazbuildok
 msgid "Ok"
 msgstr "D'acord"
+
+#: lazarusidestrconsts:lisoldancestors
+msgid "Old Ancestors"
+msgstr ""
+
+#: lazarusidestrconsts:lisoldclass
+msgid "Old Class"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuonlinehelp
 msgid "Online Help"
@@ -5009,6 +5037,10 @@ msgstr "Substitueix el text"
 #: lazarusidestrconsts:lisuereplacethisoccurrenceofwith
 msgid "Replace this occurrence of %s%s%s%s with %s%s%s?"
 msgstr "Voleu substituir aquesta ocurrència de %s%s%s%s amb %s%s%s?"
+
+#: lazarusidestrconsts:lisreplacingselectionfailed
+msgid "Replacing selection failed."
+msgstr ""
 
 #: lazarusidestrconsts:dlgreport
 msgid "Report"
@@ -6782,6 +6814,10 @@ msgstr "No es pot crear el directori sortida font %s%s%s%s pel paquet %s."
 msgid "Unable to create target directory for lazarus:%s%s%s%s.%sThis directory is needed for the new changed lazarus IDE with your custom packages."
 msgstr "No es pot crear el directori destinació del Lazarus:%s%s%s%s.%sAquest directori el necessita el nou IDE Lazarus amb els vostres paquets personalitzats."
 
+#: lazarusidestrconsts:lisunabletocreatetemporarylfmbuffer
+msgid "Unable to create temporary lfm buffer."
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletodeleteambiguousfile
 msgid "Unable to delete ambiguous file %s%s%s"
 msgstr ""
@@ -6797,6 +6833,10 @@ msgstr "No es pot eliminar el fitxer %s%s%s."
 #: lazarusidestrconsts:lispkgmangunabletodeleteoldstatefileforpackage
 msgid "Unable to delete old state file %s%s%s%sfor package %s."
 msgstr "No es pot eliminar el fitxer antic %s%s%s%spel paquet %s."
+
+#: lazarusidestrconsts:lisunabletofindinlfmstream
+msgid "Unable to find %s in LFM Stream."
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletofindaresourcestringsectioninthisoranyofthe
 msgid "Unable to find a ResourceString section in this or any of the used units."
@@ -6817,6 +6857,14 @@ msgstr "No es pot trobar el fitxer %s%s%s.%sComproveu la trajectòria a%sProjecte
 #: lazarusidestrconsts:lisunabletofindmethodplzfixtheerrorshowninthemessage
 msgid "Unable to find method. Plz fix the error shown in the message window."
 msgstr "No es pot trobar el mètode. Si us plau, comproveu l'error mostrat a la finestra de missatges."
+
+#: lazarusidestrconsts:lisunabletogathereditorchanges
+msgid "Unable to gather editor changes."
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletogetsourcefordesigner
+msgid "Unable to get source for designer."
+msgstr ""
 
 #: lazarusidestrconsts:lisdebugunabletoloadfile
 msgid "Unable to load file"
@@ -6913,6 +6961,10 @@ msgstr "No es pot afluir %s:T%s."
 #: lazarusidestrconsts:lisunabletostreamselectedcomponents
 msgid "Unable to stream selected components"
 msgstr "No es poden afluir els components seleccionats"
+
+#: lazarusidestrconsts:lisunabletostreamselectedcomponents2
+msgid "Unable to stream selected components."
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletotransformbinarycomponentstreamoftintotext
 msgid "Unable to transform binary component stream of %s:T%s into text."

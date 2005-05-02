@@ -97,6 +97,10 @@ msgstr ""
 msgid "%s%sFile Name: %s%s%s"
 msgstr "%s%sNombre de Archivo: %s%s%s"
 
+#: lazarusidestrconsts:lisunabletochangeclassofto
+msgid "%s%sUnable to change class of %s to %s"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgsysunitname
 msgid "%s%sUnit Name: %s%s%s"
 msgstr "%s%sNombre de Unidad: %s%s%s"
@@ -832,6 +836,10 @@ msgstr "No se puede crear el archivo %s%s%s"
 #: lazarusidestrconsts:lispkgsyscannotregistercomponentswithoutunit
 msgid "Can not register components without unit"
 msgstr "No se puede registrar los componentes sin una unidad"
+
+#: lazarusidestrconsts:liscanonlychangetheclassoftcomponents
+msgid "Can only change the class of TComponents."
+msgstr ""
 
 #: lazarusidestrconsts:dlgcancel
 msgid "Cancel"
@@ -2063,6 +2071,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liserrormovingcomponent2
 msgid "Error moving component %s:%s"
+msgstr ""
+
+#: lazarusidestrconsts:liserrorparsinglfmcomponentstream
+msgid "Error parsing lfm component stream."
 msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefserrorreading
@@ -4009,6 +4021,14 @@ msgstr "Nuevo"
 msgid "New ..."
 msgstr "Nuevo ..."
 
+#: lazarusidestrconsts:lisnewancestors
+msgid "New Ancestors"
+msgstr ""
+
+#: lazarusidestrconsts:lisnewclass
+msgid "New Class"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pnewcomponent
 msgid "New Component"
 msgstr "Nuevo Componente"
@@ -4184,6 +4204,14 @@ msgstr "Inspector de Objetos"
 #: lazarusidestrconsts:lislazbuildok
 msgid "Ok"
 msgstr "Aceptar"
+
+#: lazarusidestrconsts:lisoldancestors
+msgid "Old Ancestors"
+msgstr ""
+
+#: lazarusidestrconsts:lisoldclass
+msgid "Old Class"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuonlinehelp
 msgid "Online Help"
@@ -5020,6 +5048,10 @@ msgstr "Reemplazar texto"
 #: lazarusidestrconsts:lisuereplacethisoccurrenceofwith
 msgid "Replace this occurrence of %s%s%s%s with %s%s%s?"
 msgstr "¿Reemplazar esta coincidencia de %s%s%s%s con %s%s%s?"
+
+#: lazarusidestrconsts:lisreplacingselectionfailed
+msgid "Replacing selection failed."
+msgstr ""
 
 #: lazarusidestrconsts:dlgreport
 msgid "Report"
@@ -6793,6 +6825,10 @@ msgstr "No se ha podido crear el directorio fuente de paquete %s%s%s%s para el p
 msgid "Unable to create target directory for lazarus:%s%s%s%s.%sThis directory is needed for the new changed lazarus IDE with your custom packages."
 msgstr "No se ha podido crear el directorio objetivo para lazarus:%s%s%s%s.%s Este directorio se necesita paralos cambios realizados en el IDE de lazarus con sus propios paquetes."
 
+#: lazarusidestrconsts:lisunabletocreatetemporarylfmbuffer
+msgid "Unable to create temporary lfm buffer."
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletodeleteambiguousfile
 msgid "Unable to delete ambiguous file %s%s%s"
 msgstr "No se ha podido borrar el archivo ambiguo %s%s%s"
@@ -6808,6 +6844,10 @@ msgstr "No se ha podido borrar el archivo %s%s%s."
 #: lazarusidestrconsts:lispkgmangunabletodeleteoldstatefileforpackage
 msgid "Unable to delete old state file %s%s%s%sfor package %s."
 msgstr "No se ha podido borrar el archivo de estado viejo %s%s%s%s para el paquete %s."
+
+#: lazarusidestrconsts:lisunabletofindinlfmstream
+msgid "Unable to find %s in LFM Stream."
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletofindaresourcestringsectioninthisoranyofthe
 msgid "Unable to find a ResourceString section in this or any of the used units."
@@ -6828,6 +6868,14 @@ msgstr ""
 #: lazarusidestrconsts:lisunabletofindmethodplzfixtheerrorshowninthemessage
 msgid "Unable to find method. Plz fix the error shown in the message window."
 msgstr "No se ha podido encontrar el método. Por favor corrija el error mostrado en la ventana de mensaje."
+
+#: lazarusidestrconsts:lisunabletogathereditorchanges
+msgid "Unable to gather editor changes."
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletogetsourcefordesigner
+msgid "Unable to get source for designer."
+msgstr ""
 
 #: lazarusidestrconsts:lisdebugunabletoloadfile
 msgid "Unable to load file"
@@ -6923,6 +6971,10 @@ msgstr "No se ha podido establecer flujo%s:T%s."
 
 #: lazarusidestrconsts:lisunabletostreamselectedcomponents
 msgid "Unable to stream selected components"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletostreamselectedcomponents2
+msgid "Unable to stream selected components."
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletotransformbinarycomponentstreamoftintotext

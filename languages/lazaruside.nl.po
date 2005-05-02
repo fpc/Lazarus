@@ -1,12 +1,3 @@
-# translation of lazaruside.nl.po to 
-# translation of lazaruside.nl.po to
-# translation of lazaruside.nl.po to
-# , 2005.
-# , 2005.
-# , 2005.
-# , 2005.
-# , 2005.
-# , 2005.
 msgid ""
 msgstr ""
 "Last-Translator: \n"
@@ -105,6 +96,10 @@ msgstr "%s%sKlik op OK als u zeker bent."
 #: lazarusidestrconsts:lispkgsysfilename
 msgid "%s%sFile Name: %s%s%s"
 msgstr "%s%sbestandsnaam: %s%s%s"
+
+#: lazarusidestrconsts:lisunabletochangeclassofto
+msgid "%s%sUnable to change class of %s to %s"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgsysunitname
 msgid "%s%sUnit Name: %s%s%s"
@@ -841,6 +836,10 @@ msgstr "Kan bestand %s%s%s niet maken."
 #: lazarusidestrconsts:lispkgsyscannotregistercomponentswithoutunit
 msgid "Can not register components without unit"
 msgstr "Kan componenten zonder unit niet registreren."
+
+#: lazarusidestrconsts:liscanonlychangetheclassoftcomponents
+msgid "Can only change the class of TComponents."
+msgstr ""
 
 #: lazarusidestrconsts:dlgcancel
 msgid "Cancel"
@@ -2073,6 +2072,10 @@ msgstr "Fout bij verplaatsen component"
 #: lazarusidestrconsts:liserrormovingcomponent2
 msgid "Error moving component %s:%s"
 msgstr "Fout bij verplaatsen component %s;%s"
+
+#: lazarusidestrconsts:liserrorparsinglfmcomponentstream
+msgid "Error parsing lfm component stream."
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefserrorreading
 msgid "Error reading %s%s%s%s%s"
@@ -4018,6 +4021,14 @@ msgstr "Nieuw"
 msgid "New ..."
 msgstr "Nieuw ..."
 
+#: lazarusidestrconsts:lisnewancestors
+msgid "New Ancestors"
+msgstr ""
+
+#: lazarusidestrconsts:lisnewclass
+msgid "New Class"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pnewcomponent
 msgid "New Component"
 msgstr "Nieuw Component"
@@ -4192,6 +4203,14 @@ msgstr "Object Inspector"
 
 #: lazarusidestrconsts:lislazbuildok
 msgid "Ok"
+msgstr ""
+
+#: lazarusidestrconsts:lisoldancestors
+msgid "Old Ancestors"
+msgstr ""
+
+#: lazarusidestrconsts:lisoldclass
+msgid "Old Class"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuonlinehelp
@@ -5029,6 +5048,10 @@ msgstr "Vervang tekst"
 #: lazarusidestrconsts:lisuereplacethisoccurrenceofwith
 msgid "Replace this occurrence of %s%s%s%s with %s%s%s?"
 msgstr "Vervang dit exemplaar van %s%s%s%s met %s%s%s?"
+
+#: lazarusidestrconsts:lisreplacingselectionfailed
+msgid "Replacing selection failed."
+msgstr ""
 
 #: lazarusidestrconsts:dlgreport
 msgid "Report"
@@ -6802,6 +6825,10 @@ msgstr ""
 msgid "Unable to create target directory for lazarus:%s%s%s%s.%sThis directory is needed for the new changed lazarus IDE with your custom packages."
 msgstr ""
 
+#: lazarusidestrconsts:lisunabletocreatetemporarylfmbuffer
+msgid "Unable to create temporary lfm buffer."
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletodeleteambiguousfile
 msgid "Unable to delete ambiguous file %s%s%s"
 msgstr ""
@@ -6816,6 +6843,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangunabletodeleteoldstatefileforpackage
 msgid "Unable to delete old state file %s%s%s%sfor package %s."
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletofindinlfmstream
+msgid "Unable to find %s in LFM Stream."
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletofindaresourcestringsectioninthisoranyofthe
@@ -6836,6 +6867,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lisunabletofindmethodplzfixtheerrorshowninthemessage
 msgid "Unable to find method. Plz fix the error shown in the message window."
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletogathereditorchanges
+msgid "Unable to gather editor changes."
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletogetsourcefordesigner
+msgid "Unable to get source for designer."
 msgstr ""
 
 #: lazarusidestrconsts:lisdebugunabletoloadfile
@@ -6932,6 +6971,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisunabletostreamselectedcomponents
 msgid "Unable to stream selected components"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletostreamselectedcomponents2
+msgid "Unable to stream selected components."
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletotransformbinarycomponentstreamoftintotext
