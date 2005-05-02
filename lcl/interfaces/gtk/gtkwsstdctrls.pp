@@ -629,6 +629,7 @@ end;
 procedure TGtkWSCustomComboBox.SetSelStart(
   const ACustomComboBox: TCustomComboBox; NewStart: integer);
 begin
+  if NewStart < 0 then NewStart := 0; // prevent SegFault in gtk
   gtk_editable_set_position(
            PGtkOldEditable(PGtkCombo(ACustomComboBox.Handle)^.entry), NewStart);
 end;
