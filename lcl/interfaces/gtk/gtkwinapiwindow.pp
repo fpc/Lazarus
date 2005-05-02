@@ -539,9 +539,6 @@ begin
   DebugLn('GTKAPIWidgetClient_ButtonPress ',DbgS(Widget));
   {$ENDIF}
   if Event=nil then ;
-  if not gtk_widget_has_focus(Widget) then
-    gtk_widget_grab_focus(Widget);
-  
   Result := gtk_False;
 end;
 
@@ -1130,6 +1127,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.69  2005/05/02 08:39:29  mattias
+  removed obsolete focussing after buttonpress on gtkapiwidget
+
   Revision 1.68  2005/03/07 21:59:45  vincents
   changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
 
