@@ -1298,6 +1298,8 @@ end;
   predefined in XML: }
 
 procedure TXMLReader.ResolveEntities(RootNode: TDOMNode);
+var
+  Node, NextNode: TDOMNode;
 
   procedure ReplaceEntityRef(EntityNode: TDOMNode; const Replacement: String);
   var
@@ -1311,6 +1313,7 @@ procedure TXMLReader.ResolveEntities(RootNode: TDOMNode);
       RootNode.RemoveChild(EntityNode);
       if Assigned(NextSibling) and (NextSibling.NodeType = TEXT_NODE) then
       begin
+        NextNode := NextSibling.NextSibling;
         TDOMCharacterData(PrevSibling).AppendData(
         TDOMCharacterData(NextSibling).Data);
         RootNode.RemoveChild(NextSibling);
@@ -1324,13 +1327,11 @@ procedure TXMLReader.ResolveEntities(RootNode: TDOMNode);
         RootNode.ReplaceChild(Doc.CreateTextNode(Replacement), EntityNode);
   end;
 
-var
-  Node, NextSibling: TDOMNode;
 begin
   Node := RootNode.FirstChild;
   while Assigned(Node) do
   begin
-    NextSibling := Node.NextSibling;
+    NextNode := Node.NextSibling;
     if Node.NodeType = ENTITY_REFERENCE_NODE then
       if Node.NodeName = 'amp' then
         ReplaceEntityRef(Node, '&')
@@ -1342,7 +1343,7 @@ begin
         ReplaceEntityRef(Node, '<')
       else if Node.NodeName = 'quot' then
         ReplaceEntityRef(Node, '"');
-    Node := NextSibling;
+    Node := NextNode;
   end;
 end;
 
@@ -1564,6 +1565,9 @@ end;
 end.
 {
   $Log$
+  Revision 1.16  2005/05/02 13:06:38  vincents
+  fixed parsing of &quot;
+
   Revision 1.15  2005/01/29 14:36:04  mattias
   reactivated fast xml units without widestrings
 
