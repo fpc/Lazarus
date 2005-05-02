@@ -1154,7 +1154,6 @@ begin
       else
         ExtractNextAtom(copying,Attr);
       if not AtomIsIdentifier(ExceptionOnError) then exit;
-      CurNode.EndPos:=CurPos.EndPos;
       if not Extract then
         ReadNextAtom
       else
@@ -1251,6 +1250,18 @@ begin
         EndChildNode;
       end;
       ReadNextAtom;
+      if CurPos.Flag=cafPoint then begin
+        //  unitname.identifier -> read identifier
+        ReadNextAtom;
+        AtomIsIdentifier(true);
+        if (pphCreateNodes in ParseAttr) then begin
+          CreateChildNode;
+          CurNode.Desc:=ctnIdentifier;
+          CurNode.EndPos:=CurPos.EndPos;
+          EndChildNode;
+        end;
+        ReadNextAtom;
+      end;
     end else begin
       if (Scanner.CompilerMode<>cmDelphi) then
         RaiseCharExpectedButAtomFound(':')
@@ -1402,6 +1413,12 @@ begin
       else exit;
     end;
     if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+    if CurPos.Flag=cafPoint then begin
+      // Unitname.Constant 
+      if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+      Result:=ReadConstant(ExceptionOnError,Extract,Attr);
+      exit;
+    end;
     if WordIsTermOperator.DoItUpperCase(UpperSrc,
          CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
     then begin

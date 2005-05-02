@@ -101,7 +101,7 @@ type
   
   
   { TButton }
-  
+
   TButton = class(TCustomButton)
   public
     procedure Click; override;
@@ -406,6 +406,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.97  2005/05/02 09:17:08  mattias
+  started TButtonActionLink
+
   Revision 1.96  2005/04/27 12:37:28  micha
   implement/fix button/label shortcut accelchar handling
 

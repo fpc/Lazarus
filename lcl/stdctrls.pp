@@ -836,6 +836,18 @@ type
     constructor Create(TheOwner: TComponent); override;
   end;
 
+  { TButtonActionLink - Finish me }
+
+  TButtonActionLink = class(TWinControlActionLink)
+  protected
+    FClientButton: TButtonControl;
+    procedure AssignClient(AClient: TObject); override;
+    function IsCheckedLinked: Boolean; override;
+    procedure SetChecked(Value: Boolean); override;
+  end;
+
+  TButtonActionLinkClass = class of TButtonActionLink;
+
 
   { TCustomCheckBox }
 
@@ -1240,6 +1252,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.203  2005/05/02 09:17:08  mattias
+  started TButtonActionLink
+
   Revision 1.202  2005/04/27 12:37:28  micha
   implement/fix button/label shortcut accelchar handling
 

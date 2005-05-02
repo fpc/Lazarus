@@ -72,5 +72,31 @@ begin
   Color:=clBtnFace;
 end;
 
+{ TButtonActionLink }
+
+procedure TButtonActionLink.AssignClient(AClient: TObject);
+begin
+  inherited AssignClient(AClient);
+  FClientButton := AClient as TButtonControl;
+end;
+
+function TButtonActionLink.IsCheckedLinked: Boolean;
+begin
+  Result:=inherited IsCheckedLinked
+          and (FClientButton.Checked = (Action as TCustomAction).Checked);
+end;
+
+procedure TButtonActionLink.SetChecked(Value: Boolean);
+begin
+  if IsCheckedLinked then begin
+    FClientButton.ClicksDisabled := True;
+    try
+      FClientButton.Checked := Value;
+    finally
+      FClientButton.ClicksDisabled := False;
+    end;
+  end;
+end;
+
 // included by stdctrls.pp
 
