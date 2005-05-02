@@ -4976,17 +4976,7 @@ begin
   KeyPress(Key); // grid must get all keypresses, even if they are from the editor
   case Key of
     ^C,^V,^X:;
-    {
-    ^V:
-      begin
-        if Clipboard.FormatCount>0 then begin
-          DebugLn('El clipboard tiene ', Dbgs(Clipboard.FormatCount),'formatos, HasText=', dbgs(Clipboard.HasFormat(CF_TEXT)));
-        end else begin
-          DebugLn('El clipboard esta vacio');
-          Key := #0;
-        end;
-      end;
-    }
+    ^M: Key:=#0; // key is already handled in KeyDown
     #8:
       if EditorIsReadOnly then
         Key := #0;
@@ -5855,6 +5845,11 @@ procedure TStringCellEditor.KeyDown(var Key: Word; Shift: TShiftState);
     else
       Result := False;
   end;
+  procedure CheckEditingKey;
+  begin
+    if (FGrid=nil) or FGrid.EditorIsReadOnly then
+      Key := 0;
+  end;
 var
   IntSel: boolean;
 begin
@@ -5868,6 +5863,8 @@ begin
         SelLength := 0;
         SelStart := Length(Text);
       end;
+    VK_DELETE:
+      CheckEditingKey;
     VK_UP, VK_DOWN:
       doGridKeyDown;
     VK_LEFT, VK_RIGHT:
