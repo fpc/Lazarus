@@ -592,11 +592,11 @@ begin
     {$IFDEF DebugEditor}
     DebugEditor('BeforeMoveSelection: ', FExtraBtnEditor);
     {$ENDIF}
-    EditorHiding := True;
+    LockEditor;
     FExtraBtnEditor.Parent := nil;
     UnlinkPropertyEditor(FExtraBtnEditor);
     FExtraBtnEditor.Visible := false;
-    EditorHiding := false;
+    UnlockEditor;
   end;
 end;
 
@@ -1227,7 +1227,7 @@ begin
       FEditorControl:=EditorClass.Create(FGrid);
     end;
     FEditorControl.OnKeyUp:=@EditorControlKeyUp;
-    FEditorControl.AutoSize:=false;
+    //FEditorControl.AutoSize:=false;
     if Assigned(Grid.OnInitCellEditor) then
       Grid.OnInitCellEditor(Self,FEditorControl);
     if Assigned(Grid.OnInitCellEditor) and (FButtonEditorControl<>nil) then

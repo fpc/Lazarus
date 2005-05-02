@@ -67,7 +67,7 @@ type
     dgMultiselect
   );
   TDbGridOptions = set of TDbGridOption;
-  TDbGridStatusItem = (gsVisibleMove);
+  TDbGridStatusItem = (gsVisibleMove, gsUpdatingData);
   TDbGridStatus = set of TDbGridStatusItem;
 
 type
@@ -203,6 +203,7 @@ type
     FOldPosition: Integer;
     FDefaultColWidths: boolean;
     FGridStatus: TDbGridStatus;
+    FOldControlStyle: TControlStyle;
     procedure EmptyGrid;
     function GetCurrentField: TField;
     function GetDataSource: TDataSource;
@@ -248,6 +249,9 @@ type
     function  ISEOF: boolean;
     function  ValidDataSet: boolean;
     function  InsertCancelable: boolean;
+    procedure StartUpdating;
+    procedure EndUpdating;
+    function  UpdatingData: boolean;
   protected
   {$ifdef ver1_0}
     property FixedColor;
@@ -293,6 +297,7 @@ type
     procedure MoveSelection; override;
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     procedure PrepareCanvas(aCol,aRow: Integer; aState:TGridDrawState); override;
+    procedure SelectEditor; override;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
     function  ScrollBarAutomatic(Which: TScrollStyle): boolean; override;
     function  SelectCell(aCol, aRow: Integer): boolean; override;
@@ -301,6 +306,7 @@ type
     procedure UpdateVertScrollbar(const aVisible: boolean; const aRange,aPage: Integer); override;
     procedure VisualChange; override;
     procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
+    procedure WndProc(var TheMessage : TLMessage); override;
     
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property Options: TDbGridOptions read FOptions write SetOptions;
@@ -315,6 +321,7 @@ type
     property OnTitleClick: TDBGridClickEvent read FOnTitleClick write FOnTitleClick;
   public
     constructor Create(AOwner: TComponent); override;
+    procedure InitiateAction; override;
     procedure DefaultDrawColumnCell(const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure ResetColWidths;
     destructor Destroy; override;
@@ -326,8 +333,10 @@ type
   TdbGrid=class(TCustomDbGrid)
   public
     property Canvas;
+    property DefaultTextStyle;
     property EditorBorderStyle;
     property ExtendedColSizing;
+    property FastEditing;
     property FocusColor;
     property FocusRectVisible;
     property GridLineColor;
@@ -370,6 +379,7 @@ type
     property TabOrder;
     property TabStop;
     property TitleFont;
+    property TitleStyle;
     property Visible;
     property OnCellClick;
     property OnColEnter;
@@ -537,8 +547,11 @@ procedure TCustomDbGrid.OnEditingChanged(aDataSet: TDataSet);
 begin
   {$ifdef dbgdbgrid}
   DebugLn('(',name,') ','TCustomDBGrid.OnEditingChanged');
-  DebugLn('Editing=', BoolToStr(dsEdit = aDataSet.State));
-  DebugLn('Inserting=',BoolToStr(dsInsert = aDataSet.State));
+  if aDataSet<>nil then begin
+    DebugLn('Editing=', BoolToStr(dsEdit = aDataSet.State));
+    DebugLn('Inserting=',BoolToStr(dsInsert = aDataSet.State));
+  end else
+    DebugLn('Dataset=nil');
   {$endif}
   FDataLink.Modified := False;
   UpdateActive;
@@ -712,19 +725,20 @@ var
   selField,edField: TField;
 begin
   // get Editor text and update field content
-  if (FEditingColumn>-1) and FDatalink.Editing then begin
+  if not UpdatingData and (FEditingColumn>-1) and FDatalink.Editing then begin
     SelField := SelectedField;
     edField := GetFieldFromGridColumn(FEditingColumn);
     if (edField<>nil) and (edField = SelField) then begin
-    //if (edField<>nil) and (FEditingField=SelField) then
-    {$ifdef dbgdbgrid}
-    DebugLn('UpdateData: Field[', edField.Fieldname, ']=', FTempText,' INIT');
-    {$endif}
+      {$ifdef dbgdbgrid}
+      DebugLn('---> UpdateData: Field[', edField.Fieldname, ']=', FTempText,' INIT');
+      {$endif}
+      StartUpdating;
       edField.AsString := FTempText;
-    {$ifdef dbgdbgrid}
-    DebugLn('UpdateData: Chk: Field:=',edField.ASString,' END');
-    {$endif}
-    EditingColumn(FEditingColumn, False);
+      EndUpdating;
+      EditingColumn(FEditingColumn, False);
+      {$ifdef dbgdbgrid}
+      DebugLn('<--- UpdateData: Chk: Field:=',edField.ASString,' END');
+      {$endif}
     end;
   end;
 end;
@@ -838,6 +852,19 @@ begin
   {$ifdef dbgdbgrid}
   DebugLn('---- Diff=',dbgs(DeltaRec), ' FinalPos=',dbgs(aPos));
   {$endif}
+end;
+
+procedure TCustomDbGrid.WndProc(var TheMessage: TLMessage);
+begin
+  if (TheMessage.Msg=LM_SETFOCUS) and (gsUpdatingData in FGridStatus) then begin
+    {$ifdef dbgGrid}DebugLn('dbgrid.LM_SETFOCUS while updating');{$endif}
+    if EditorMode then begin
+      LCLIntf.SetFocus(Editor.Handle);
+      EditorSelectAll;
+    end;
+    exit;
+  end;
+  inherited WndProc(TheMessage);
 end;
 
 
@@ -1055,6 +1082,34 @@ function TCustomDbGrid.InsertCancelable: boolean;
 begin
   with FDatalink.DataSet do
   Result := (State=dsInsert) and not (Modified or FDataLink.FModified);
+end;
+
+procedure TCustomDbGrid.StartUpdating;
+begin
+  if not UpdatingData then begin
+    {$ifdef dbgdbgrid} DebugLn('dbgrid.StartUpdating');{$endif}
+    Include(FGridStatus, gsUpdatingData);
+    FOldControlStyle := ControlStyle;
+    ControlStyle := ControlStyle + [csActionClient];
+    LockEditor;
+  end
+  else
+    {$ifdef dbgdbgrid} DebugLn('WARNING: multiple call to StartUpdating');{$endif}
+end;
+
+procedure TCustomDbGrid.EndUpdating;
+begin
+  {$ifdef dbgdbgrid} DebugLn('dbGrid.EndUpdating');{$endif}
+  Exclude(FGridStatus, gsUpdatingData);
+  ControlStyle := FOldControlStyle;
+  UnLockEditor;
+  if csActionClient in ControlStyle then
+    DebugLn('WARNING: still got csActionClient');
+end;
+
+function TCustomDbGrid.UpdatingData: boolean;
+begin
+  result := gsUpdatingData in FGridStatus;
 end;
 
 procedure TCustomDbGrid.LinkActive(Value: Boolean);
@@ -1443,8 +1498,15 @@ var
       EditorMode := False;
   end;
 begin
-  if csDesigning in componentState then Exit;
-  if not GCache.ValidGrid then Exit;
+  {$ifdef dbgdbgrid}DebugLn('dbgrid.mousedown - INIT');{$endif}
+  if (csDesigning in componentState) or not GCache.ValidGrid then
+    exit;
+
+  if UpdatingData then begin
+    {$ifdef dbgdbgrid}DebugLn('DbGrid.MouseDown - UpdatingData');{$endif}
+    exit;
+  end;
+  
   if button<>mbLeft then begin
     doInherited;
     exit;
@@ -1482,6 +1544,14 @@ begin
   if (not FDatalink.Active) and ((gdSelected in aState) or
     (gdFocused in aState)) then
     Canvas.Brush.Color := Self.Color;
+end;
+
+procedure TCustomDbGrid.SelectEditor;
+begin
+  if FDatalink.Active then
+    inherited SelectEditor
+  else
+    Editor := nil;
 end;
 
 procedure TCustomDbGrid.SetEditText(ACol, ARow: Longint; const Value: string);
@@ -1786,7 +1856,7 @@ procedure TCustomDbGrid.UpdateActive;
 var
   PrevRow: Integer;
 begin
-  if not FDatalink.Active then
+  if (csDestroying in ComponentState) or not FDatalink.Active then
     exit;
     {$IfDef dbgdbgrid}
   DebugLn(Name,'.UpdateActive: ActiveRecord=', dbgs(FDataLink.ActiveRecord),
@@ -1886,6 +1956,22 @@ begin
   DefaultTextStyle.Layout := tlCenter;
 
   DefaultRowHeight := 18;
+end;
+
+procedure TCustomDbGrid.InitiateAction;
+begin
+  {$ifdef dbgdbgrid}DebugLn('===> dbgrid.InitiateAction INIT');{$endif}
+  inherited InitiateAction;
+  if (gsUpdatingData in FGridStatus) then begin
+    EndUpdating;
+    {
+    if EditorMode then begin
+      Editor.SetFocus;
+      EditorSelectAll;
+    end;
+    }
+  end;
+  {$ifdef dbgdbgrid}DebugLn('<=== dbgrid.InitiateAction FIN');{$endif}
 end;
 
 procedure TCustomDbGrid.DefaultDrawColumnCell(const Rect: TRect;
@@ -2307,6 +2393,9 @@ end.
 
 {
   $Log$
+  Revision 1.40  2005/05/02 08:35:42  mattias
+  fix bug 878 (can not paste from clipboard) new property TitleStyle  from Jesus
+
   Revision 1.39  2005/04/03 10:13:34  mattias
   dbgrids: Stops propagating ENTER key when modifying a field  from Jesus
 

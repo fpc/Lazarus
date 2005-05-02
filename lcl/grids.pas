@@ -33,10 +33,10 @@ The log was moved to end of file, search for: The_Log
 
 }
 
-{$Define UseClipRect}
-{$IFDEF WIN32}
-{$Define GoodClipping}
-{$ENDIF}
+{$define UseClipRect}
+{$ifdef WIN32}
+{$define GoodClipping}
+{$endif}
 unit Grids;
 
 {$mode objfpc}{$H+}
@@ -52,7 +52,6 @@ const
   //GRIDFILEVERSION = 1; // Original
   //GRIDFILEVERSION = 2; // Introduced goSmoothScroll
   GRIDFILEVERSION = 3; // Introduced Col/Row FixedAttr and NormalAttr
-
 
 const
   GM_SETVALUE   = LM_USER + 100;
@@ -123,11 +122,12 @@ type
   TUpdateOption = (uoNone, uoQuick, uoFull);
   TAutoAdvance = (aaNone,aaDown,aaRight,aaLeft);
 
-  TGridStatus = (stNormal, stEditorHiding, stEditorShowing, stFocusing);
   TItemType = (itNormal,itCell,itColumn,itRow,itFixed,itFixedColumn,itFixedRow,itSelected);
   
   TColumnButtonStyle = (cbsAuto, cbsEllipsis, cbsNone);
   TCleanOptions = set of TGridZone;
+  
+  TTitleStyle = (tsLazarus, tsStandard, tsNative);
 
 const
   soAll: TSaveOptions = [soDesign, soAttributes, soContent, soPosition];
@@ -170,7 +170,7 @@ type
   private
     FGrid: TCustomGrid;
   protected
-    //procedure WndProc(var TheMessage : TLMessage); override;
+    procedure WndProc(var TheMessage : TLMessage); override;
     procedure Change; override;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
     procedure msg_SetMask(var Msg: TGridMessage); message GM_SETMASK;
@@ -219,6 +219,8 @@ type
     procedure(sender: TObject; Col,Row: Integer;
               aState:TGridDrawState) of object;
 
+  { TVirtualGrid }
+
   TVirtualGrid=class
     private
       FColCount: Integer;
@@ -238,6 +240,7 @@ type
       procedure DeleteColRow(IsColumn: Boolean; index: Integer);
       procedure MoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
       procedure ExchangeColRow(IsColumn:Boolean; index,WithIndex: Integer);
+      procedure InsertColRow(IsColumn:Boolean; Index: Integer);
       procedure DisposeCell(var P: PCellProps); virtual;
       procedure DisposeColRow(var p: PColRowProps); virtual;
     public
@@ -401,7 +404,9 @@ type
     property Width: Integer read GetWidth write SetWidth stored IsWidthStored default 64;
     property Visible: Boolean read GetVisible write SetVisible stored IsVisibleStored default true;
   end;
-  
+
+  { TGridColumns }
+
   TGridColumns = class(TCollection)
   private
     FGrid: TCustomGrid;
@@ -411,17 +416,20 @@ type
     function GetVisibleCount: Integer;
   protected
     procedure Update(Item: TCollectionItem); override;
-    //function ColumnFromField(Field: TField): TColumn;
     procedure TitleFontChanged;
     procedure FontChanged;
+    procedure RemoveColumn(Index: Integer);
+    procedure MoveColumn(FromIndex,ToIndex: Integer);
+    procedure ExchangeColumn(Index,WithIndex: Integer);
+    procedure InsertColumn(Index: Integer);
   public
     constructor Create(TheGrid: TCustomGrid);
     constructor Create(TheGrid: TCustomGrid; aItemClass: TCollectionItemClass);
     function  Add: TGridColumn;
-    //procedure LinkFields;
     function RealIndex(Index: Integer): Integer;
     function IndexOf(Column: TGridColumn): Integer;
     function IsDefault: boolean;
+    function HasIndex(Index: Integer): boolean;
     property Grid: TCustomGrid read FGrid;
     property Items[Index: Integer]: TGridColumn read GetColumn write SetColumn; default;
     property VisibleCount: Integer read GetVisibleCount;
@@ -461,7 +469,7 @@ type
     FDefaultDrawing: Boolean;
     FEditor: TWinControl;
     FEditorBorderStyle: TBorderStyle;
-    FEditorHiding: Boolean;
+    FEditorHidingCount: Integer;
     FEditorMode: Boolean;
     FEditorShowing: Boolean;
     FEditorKey: Boolean;
@@ -469,6 +477,7 @@ type
     FExtendedSelect: boolean;
     FFastEditing: boolean;
     FFlat: Boolean;
+    FTitleStyle: TTitleStyle;
     FOnCompareCells: TOnCompareCells;
     FGridLineStyle: TPenStyle;
     FGridLineWidth: Integer;
@@ -517,6 +526,7 @@ type
     procedure CacheVisibleGrid;
     procedure CheckFixedCount(aCol,aRow,aFCol,aFRow: Integer);
     procedure CheckCount(aNewColCount, aNewRowCount: Integer);
+    procedure CheckIndex(IsColumn: Boolean; Index: Integer);
     function  CheckTopLeft(aCol,aRow: Integer; CheckCols,CheckRows: boolean): boolean;
     procedure SetAutoFillColumns(const AValue: boolean);
     procedure SetColumns(const AValue: TGridColumns);
@@ -525,6 +535,7 @@ type
     procedure SetFlat(const AValue: Boolean);
     procedure SetFocusRectVisible(const AValue: Boolean);
     procedure SetTitleFont(const AValue: TFont);
+    procedure SetTitleStyle(const AValue: TTitleStyle);
     procedure SetUseXorFeatures(const AValue: boolean);
     function  doColSizing(X,Y: Integer): Boolean;
     function  doRowSizing(X,Y: Integer): Boolean;
@@ -536,7 +547,6 @@ type
     function  EditorCanProcessKey(var Key: Char): boolean;
     procedure EditorGetValue;
     procedure EditorPos;
-    procedure EditorSelectAll;
     procedure EditorShowChar(Ch: Char);
     procedure EditorSetMode(const AValue: Boolean);
     procedure EditorSetValue;
@@ -610,6 +620,7 @@ type
     procedure CheckLimits(var aCol,aRow: Integer);
     procedure ColRowDeleted(IsColumn: Boolean; index: Integer); dynamic;
     procedure ColRowExchanged(IsColumn: Boolean; index,WithIndex: Integer); dynamic;
+    procedure ColRowInserted(IsColumn: boolean; index: integer); dynamic;
     procedure ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer); dynamic;
     function  ColRowToOffset(IsCol,Fisical:Boolean; index: Integer; var Ini,Fin:Integer): Boolean;
     function  ColumnIndexFromGridColumn(Column: Integer): Integer;
@@ -632,13 +643,17 @@ type
     function  DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     function  DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     procedure DoOnChangeBounds; override;
+    procedure DoOPDeleteColRow(IsColumn: Boolean; index: Integer);
+    procedure DoOPExchangeColRow(IsColumn: Boolean; index, WithIndex: Integer);
+    procedure DoOPInsertColRow(IsColumn: boolean; index: integer);
+    procedure DoOPMoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
     procedure DoPasteFromClipboard; virtual;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure DrawBackGround; virtual;
     procedure DrawBorder;
     procedure DrawByRows; virtual;
     procedure DrawCell(aCol,aRow:Integer; aRect:TRect; aState:TGridDrawState); virtual;
-    procedure DrawCellGrid(aCol,aRow: Integer; aRect: TRect; astate: TGridDrawState);
+    procedure DrawCellGrid(aCol,aRow: Integer; aRect: TRect; astate: TGridDrawState); virtual;
     procedure DrawColRowMoving;
     procedure DrawEdges;
     //procedure DrawFixedCells; virtual;
@@ -652,6 +667,8 @@ type
     function  EditorCanAcceptKey(const ch: Char): boolean; virtual;
     function  EditorIsReadOnly: boolean; virtual;
     procedure EditorHide; virtual;
+    function  EditorLocked: boolean;
+    procedure EditorSelectAll;
     procedure EditorShow(const SelAll: boolean); virtual;
     procedure EditorWidthChanged(aCol,aWidth: Integer); virtual;
     procedure GetAutoFillColumnInfo(const Index: Integer; var aMin,aMax,aPriority: Integer); dynamic;
@@ -686,6 +703,7 @@ type
     procedure KeyUp(var Key : Word; Shift : TShiftState); override;
     procedure LoadContent(cfg: TXMLConfig; Version: Integer); virtual;
     procedure Loaded; override;
+    procedure LockEditor;
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     procedure MouseMove(Shift: TShiftState; X,Y: Integer);override;
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
@@ -696,7 +714,6 @@ type
     function  OffsetToColRow(IsCol,Fisical:Boolean; Offset:Integer; var Rest:Integer): Integer;
     procedure Paint; override;
     procedure PrepareCanvas(aCol,aRow: Integer; aState:TGridDrawState); virtual;
-    procedure ProcessEditor(LastEditor:TWinControl; DCol,DRow: Integer; WasVis: Boolean);
     procedure ResetOffset(chkCol, ChkRow: Boolean);
     procedure ResizeColumn(aCol, aWidth: Integer);
     procedure ResizeRow(aRow, aHeight: Integer);
@@ -718,12 +735,15 @@ type
     procedure Sort(ColSorting: Boolean; index,IndxFrom,IndxTo:Integer); virtual;
     procedure TopLeftChanged; dynamic;
     function  TryMoveSelection(Relative: Boolean; var DCol, DRow: Integer): Boolean;
+    procedure UnLockEditor;
     procedure UpdateHorzScrollBar(const aVisible: boolean; const aRange,aPage: Integer); virtual;
     procedure UpdateVertScrollbar(const aVisible: boolean; const aRange,aPage: Integer); virtual;
     procedure VisualChange; virtual;
     //procedure ValidateCols(FromCol, ToCol: Integer);
-    procedure WMHScroll(var message : TLMHScroll); message LM_HScroll;
-    procedure WMVScroll(var message : TLMVScroll); message LM_VScroll;
+    procedure WMHScroll(var message : TLMHScroll); message LM_HSCROLL;
+    procedure WMVScroll(var message : TLMVScroll); message LM_VSCROLL;
+    procedure WMKillFocus(var message: TLMKillFocus); message LM_KILLFOCUS;
+    procedure WMSetFocus(var message: TLMSetFocus); message LM_SETFOCUS;
     procedure WndProc(var TheMessage : TLMessage); override;
 
     property AutoAdvance: TAutoAdvance read FAutoAdvance write FAutoAdvance default aaRight;
@@ -742,7 +762,6 @@ type
     property EditorBorderStyle: TBorderStyle read FEditorBorderStyle write SetEditorBorderStyle;
     property EditorMode: Boolean read FEditorMode write EditorSetMode;
     property EditorKey: boolean read FEditorKey write FEditorKey;
-    property EditorHiding: boolean read FEditorHiding write FEditorHiding;
     property EditorOptions: Integer read FEditorOptions write SetEditorOptions;
     property EditorShowing: boolean read FEditorShowing write FEditorShowing;
     property ExtendedColSizing: boolean read FExtendedColSizing write FExtendedColSizing;
@@ -772,6 +791,7 @@ type
     property Selection: TGridRect read GetSelection write SetSelection;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
     property TitleFont: TFont read FTitleFont write SetTitleFont;
+    property TitleStyle: TTitleStyle read FTitleStyle write SetTitleStyle;
     property TopRow: Integer read GetTopRow write SetTopRow;
     property UseXORFeatures: boolean read FUseXORFeatures write SetUseXorFeatures;
     property VisibleColCount: Integer read GetVisibleColCount;
@@ -796,7 +816,7 @@ type
     procedure BeginUpdate;
     function  CellRect(ACol, ARow: Integer): TRect;
     procedure Clear;
-    procedure DeleteColRow(IsColumn: Boolean; index: Integer);
+
     function  EditorByStyle(Style: TColumnButtonStyle): TWinControl;
     procedure EditorExit(Sender: TObject);
     procedure EditorKeyDown(Sender: TObject; var Key:Word; Shift:TShiftState);
@@ -806,7 +826,7 @@ type
     procedure EndUpdate(FullUpdate: Boolean); overload;
     procedure EndUpdate; overload;
     procedure EraseBackground(DC: HDC); override;
-    procedure ExchangeColRow(IsColumn: Boolean; index, WithIndex: Integer);
+
     function  IscellSelected(aCol,aRow: Integer): Boolean;
     function  IscellVisible(aCol, aRow: Integer): Boolean;
     procedure LoadFromFile(FileName: string);
@@ -815,19 +835,19 @@ type
     function  MouseToLogcell(Mouse: TPoint): TPoint;
     function  MouseToGridZone(X,Y: Integer): TGridZone;
     function  CellToGridZone(aCol,aRow: Integer): TGridZone;
-    procedure MoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
     procedure SaveToFile(FileName: string);
-    procedure SortColRow(IsColumn: Boolean; index:Integer); overload;
-    procedure SortColRow(IsColumn: Boolean; index,FromIndex,ToIndex: Integer); overload;
   end;
 
   TGetEditEvent = procedure (Sender: TObject; ACol, ARow: Integer; var Value: string) of object;
   TSetEditEvent = procedure (Sender: TObject; ACol, ARow: Integer; const Value: string) of object;
 
+  { TCustomDrawGrid }
+
   TCustomDrawGrid=class(TCustomGrid)
   private
     FOnColRowDeleted: TgridOperationEvent;
     FOnColRowExchanged: TgridOperationEvent;
+    FOnColRowInserted: TGridOperationEvent;
     FOnColRowMoved: TgridOperationEvent;
     FOnGetEditMask: TGetEditEvent;
     FOnGetEditText: TGetEditEvent;
@@ -839,6 +859,7 @@ type
     procedure CalcCellExtent(acol, aRow: Integer; var aRect: TRect); virtual;
     procedure ColRowDeleted(IsColumn: Boolean; index: Integer); override;
     procedure ColRowExchanged(IsColumn: Boolean; index,WithIndex: Integer); override;
+    procedure ColRowInserted(IsColumn: boolean; index: integer); override;
     procedure ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer); override;
     function  CreateVirtualGrid: TVirtualGrid; virtual;
     procedure DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); override;
@@ -857,6 +878,13 @@ type
     // to easy user call
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure DeleteColRow(IsColumn: Boolean; index: Integer);
+    procedure ExchangeColRow(IsColumn: Boolean; index, WithIndex: Integer);
+    procedure InsertColRow(IsColumn: boolean; index: integer);
+    procedure MoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
+    procedure SortColRow(IsColumn: Boolean; index:Integer); overload;
+    procedure SortColRow(IsColumn: Boolean; Index,FromIndex,ToIndex: Integer); overload;
+
     procedure DefaultDrawCell(aCol,aRow: Integer; var aRect: TRect; aState:TGridDrawState); virtual;
     // properties
     property Canvas;
@@ -928,6 +956,7 @@ type
     property OnClick;
     property OnColRowDeleted: TgridOperationEvent read FOnColRowDeleted write FOnColRowDeleted;
     property OnColRowExchanged: TgridOperationEvent read FOnColRowExchanged write FOnColRowExchanged;
+    property OnColRowInserted: TGridOperationEvent read FOnColRowInserted write FOnColRowInserted;
     property OnColRowMoved: TgridOperationEvent read FOnColRowMoved write FOnColRowMoved;
     property OnCompareCells;
     property OnDblClick;
@@ -1008,6 +1037,7 @@ type
     property ShowHint;
     property TabOrder;
     property TabStop;
+    property TitleStyle;
     property Visible;
     property VisibleColCount;
     property VisibleRowCount;
@@ -1017,6 +1047,7 @@ type
     property OnClick;
     property OnColRowDeleted;
     property OnColRowExchanged;
+    property OnColRowInserted;
     property OnColRowMoved;
     property OnCompareCells;
     property OnDblClick;
@@ -1147,6 +1178,7 @@ type
     property ShowHint;
     property TabOrder;
     property TabStop;
+    property TitleStyle;
     property Visible;
     property VisibleColCount;
     property VisibleRowCount;
@@ -1157,6 +1189,7 @@ type
     property OnClick;
     property OnColRowDeleted;
     property OnColRowExchanged;
+    property OnColRowInserted;
     property OnColRowMoved;
     property OnCompareCells;
     property OnDblClick;
@@ -1205,28 +1238,6 @@ procedure Register;
 
 implementation
 
-{
-// Dibujar una linea en el borde izquierdo de esta celda
-Dc:=GetDC(handle);
-Pen:=CreatePen(PS_SOLID, 3, clRed);
-OldPen:=SelectObject(Dc, Pen);
-MoveToEx(Dc, R.left, 0, nil);
-LineTo(Dc, R.Left, FGCache.MaxClientXY.Y);
-SelectObject(Dc, OldPen);
-DeleteObject(Pen);
-ReleaseDC(Handle, Dc);
-FMoveLast:=P;
-}
-
-{function RndStr:string;
-var
-  i: Integer;
-begin
-  Result:='';
-  For i:=1 to 10 do begin
-    Result:=Result+ Char(Ord('A')+Random(20));
-  end;
-end;}
 function PointIgual(const P1,P2: TPoint): Boolean;
 begin
   result:=(P1.X=P2.X)and(P1.Y=P2.Y);
@@ -1267,61 +1278,64 @@ end;
 
 {$ifdef GridTraceMsg}
 function TransMsg(const S: String; const TheMsg: TLMessage): String;
-var
-	hex: string;
 begin
-  with TheMsg do begin
-    hex:= S + '['+IntToHex(msg, 8)+'] W='+IntToHex(WParam,8)+' L='+IntToHex(LParam,8)+' ';
-    case Msg of
-      CM_BASE..CM_MOUSEWHEEL:
-        case Msg of
-          CM_MOUSEENTER,CM_MOUSELEAVE:;
-          //CM_MOUSEENTER:          DebugLn(hex, 'CM_MOUSEENTER');
-          //CM_MOUSELEAVE:          DebugLn(hex, 'CM_MOUSELEAVE');
-          CM_TEXTCHANGED:           DebugLn(hex, 'CM_TEXTCHANGED');
-          CM_PARENTCTL3DCHANGED:    DebugLn(hex, 'CM_PARENTCTL3DCHANGED');
-          CM_UIACTIVATE:            DebugLn(hex, 'CM_UIACTIVATE');
-          CM_CONTROLLISTCHANGE:     DebugLn(hex, 'CM_CONTROLLISTCHANGE');
-          
-          CM_PARENTCOLORCHANGED:  DebugLn(hex, 'CM_PARENTCOLORCHANGED');
-          CM_PARENTFONTCHANGED:   DebugLn(hex, 'CM_PARENTFONTCHANGED');
-          CM_PARENTSHOWHINTCHANGED: DebugLn(hex, 'CM_PARENTSHOWHINTCHANGED');
-          CM_PARENTBIDIMODECHANGED: DebugLn(hex, 'CM_PARENTBIDIMODECHANGED');
-          CM_CONTROLCHANGE:         DebugLn(Hex, 'CM_CONTROLCHANGE');
-          CM_SHOWINGCHANGED:        DebugLn(Hex, 'CM_SHOWINGCHANGED');
-          CM_VISIBLECHANGED:        DebugLn(Hex, 'CM_VISIBLECHANGED');
-          CM_HITTEST:               ;//DebugLn(HEx, 'CM_HITTEST');
-          else                    DebugLn(Hex, 'CM_BASE + ', IntToStr(Msg - CM_BASE));
-        end;
-      else
-        case Msg of
-          //CN_BASE MESSAGES
-          CN_COMMAND:             DebugLn(hex, 'LM_CNCOMMAND');
-          // NORMAL MESSAGES
-          LM_SETFOCUS:            DebugLn(hex, 'LM_SetFocus');
-          LM_LBUTTONDOWN:         DebugLn(hex, 'LM_MOUSEDOWN');
-          LM_LBUTTONUP:           DebugLn(hex, 'LM_LBUTTONUP');
-          LM_RBUTTONDOWN:         DebugLn(hex, 'LM_RBUTTONDOWN');
-          LM_RBUTTONUP:           DebugLn(hex, 'LM_RBUTTONUP');
-          LM_GETDLGCODE:          DebugLn(hex, 'LM_GETDLGCODE');
-          LM_KEYDOWN:             DebugLn(hex, 'LM_KEYDOWN');
-          LM_KEYUP:               DebugLn(hex, 'LM_KEYUP');
-          LM_CAPTURECHANGED:      DebugLn(hex, 'LM_CAPTURECHANGED');
-          LM_ERASEBKGND:          DebugLn(hex, 'LM_ERASEBKGND');
-          LM_KILLFOCUS:           DebugLn(hex, 'LM_KILLFOCUS');
-          LM_CHAR:                DebugLn(hex, 'LM_CHAR');
-          LM_SHOWWINDOW:          DebugLn(hex, 'LM_SHOWWINDOW');
-          LM_SIZE:                DebugLn(hex, 'LM_SIZE');
-          LM_WINDOWPOSCHANGED:    DebugLn(hex, 'LM_WINDOWPOSCHANGED');
-          LM_HSCROLL:             DebugLn(hex, 'LM_HSCROLL');
-          LM_VSCROLL:             DebugLn(hex, 'LM_VSCROLL');
-          LM_MOUSEMOVE:           ;//DebugLn(hex, 'LM_MOUSEMOVE');
-          LM_MOUSEWHEEL:          DebugLn(Hex, 'LM_MOUSEWHEEL');
-          1105:                   ;//DebugLn(hex, '?EM_SETWORDBREAKPROCEX?');
-          else                    DebugLn(hex, GetMessageName(Msg));
-        end;
-    end;
+  case TheMsg.Msg of
+    CM_BASE..CM_MOUSEWHEEL:
+      case TheMsg.Msg of
+        CM_MOUSEENTER:            exit; //Result := 'CM_MOUSEENTER';
+        CM_MOUSELEAVE:            exit; //Result := 'CM_MOUSELEAVE';
+        CM_TEXTCHANGED:           Result := 'CM_TEXTCHANGED';
+        CM_PARENTCTL3DCHANGED:    Result := 'CM_PARENTCTL3DCHANGED';
+        CM_UIACTIVATE:            Result := 'CM_UIACTIVATE';
+        CM_CONTROLLISTCHANGE:     Result := 'CM_CONTROLLISTCHANGE';
+        
+        CM_PARENTCOLORCHANGED:    Result := 'CM_PARENTCOLORCHANGED';
+        CM_PARENTFONTCHANGED:     Result := 'CM_PARENTFONTCHANGED';
+        CM_PARENTSHOWHINTCHANGED: Result := 'CM_PARENTSHOWHINTCHANGED';
+        CM_PARENTBIDIMODECHANGED: Result := 'CM_PARENTBIDIMODECHANGED';
+        CM_CONTROLCHANGE:         Result := 'CM_CONTROLCHANGE';
+        CM_SHOWINGCHANGED:        Result := 'CM_SHOWINGCHANGED';
+        CM_VISIBLECHANGED:        Result := 'CM_VISIBLECHANGED';
+        CM_HITTEST:               exit;//Result := 'CM_HITTEST';
+        else                      Result := 'CM_BASE + '+ IntToStr(TheMsg.Msg - CM_BASE);
+      end;
+    else
+      case TheMsg.Msg of
+        //CN_BASE MESSAGES
+        CN_COMMAND:               Result := 'CN_COMMAND';
+        CN_KEYDOWN:               Result := 'CN_KEYDOWN';
+        CN_KEYUP:                 Result := 'CN_KEYUP';
+        CN_CHAR:                  Result := 'CN_CHAR';
+        
+        // NORMAL MESSAGES
+        LM_SETFOCUS:              Result := 'LM_SetFocus';
+        LM_LBUTTONDOWN:           Result := 'LM_MOUSEDOWN';
+        LM_LBUTTONUP:             Result := 'LM_LBUTTONUP';
+        LM_LBUTTONDBLCLK:         Result := 'LM_LBUTTONDBLCLK';
+        LM_RBUTTONDOWN:           Result := 'LM_RBUTTONDOWN';
+        LM_RBUTTONUP:             Result := 'LM_RBUTTONUP';
+        LM_RBUTTONDBLCLK:         Result := 'LM_RBUTTONDBLCLK';
+        LM_GETDLGCODE:            Result := 'LM_GETDLGCODE';
+        LM_KEYDOWN:               Result := 'LM_KEYDOWN';
+        LM_KEYUP:                 Result := 'LM_KEYUP';
+        LM_CAPTURECHANGED:        Result := 'LM_CAPTURECHANGED';
+        LM_ERASEBKGND:            Result := 'LM_ERASEBKGND';
+        LM_KILLFOCUS:             Result := 'LM_KILLFOCUS';
+        LM_CHAR:                  Result := 'LM_CHAR';
+        LM_SHOWWINDOW:            Result := 'LM_SHOWWINDOW';
+        LM_SIZE:                  Result := 'LM_SIZE';
+        LM_WINDOWPOSCHANGED:      Result := 'LM_WINDOWPOSCHANGED';
+        LM_HSCROLL:               Result := 'LM_HSCROLL';
+        LM_VSCROLL:               Result := 'LM_VSCROLL';
+        LM_MOUSEMOVE:             exit;//Result := 'LM_MOUSEMOVE';
+        LM_MOUSEWHEEL:            Result := 'LM_MOUSEWHEEL';
+        1105:                     exit;//Result := '?EM_SETWORDBREAKPROCEX?';
+        else                      Result := GetMessageName(TheMsg.Msg);
+      end;
   end;
+  Result:= S + '['+IntToHex(TheMsg.msg, 8)+'] W='+IntToHex(TheMsg.WParam,8)+
+    ' L='+IntToHex(TheMsg.LParam,8)+' '+Result;
+  DebugLn(Result);
 end;
 {$Endif GridTraceMsg}
 
@@ -1525,7 +1539,9 @@ begin
   FFixedCols:=AValue;
   fTopLeft.x:=AValue;
   fCol:=Avalue;
-  if not (csLoading in componentState) then doTopleftChange(true);
+  UpdateSelectionRange;
+  if not (csLoading in componentState) then
+    doTopleftChange(true);
 end;
 
 procedure TCustomGrid.InternalUpdateColumnWidths;
@@ -1609,6 +1625,7 @@ begin
     FFixedCols:=AValue;
     fTopLeft.x:=AValue;
     fCol:=Avalue;
+    UpdateSelectionRange;
     if not (csLoading in componentState) then TopLeftChanged;
     ColumnsChanged(nil);
   end else
@@ -1623,7 +1640,8 @@ begin
   fTopLeft.y:=AValue;
   FRow:=AValue;
   UpdateSelectionRange;
-  if not (csLoading in ComponentState) then doTopleftChange(true);
+  if not (csLoading in ComponentState) then
+    doTopleftChange(true);
 end;
 
 procedure TCustomGrid.SetGridLineColor(const AValue: TColor);
@@ -1833,7 +1851,7 @@ procedure TCustomGrid.Sort(ColSorting: Boolean; index, IndxFrom, IndxTo: Integer
     repeat
       I:=L;
       J:=R;
-      P:=(L+R)Div 2;
+      P:=(L+R) div 2;
       repeat
         if ColSorting then begin
           while DoCompareCells(index, P, index, i)>0 do I:=I+1;
@@ -1844,7 +1862,7 @@ procedure TCustomGrid.Sort(ColSorting: Boolean; index, IndxFrom, IndxTo: Integer
         end;
         if I<=J then begin
           if I<>J then
-          ExchangeColRow(not ColSorting, i,j);
+          DoOPExchangeColRow(not ColSorting, i,j);
           I:=I+1;
           J:=j-1;
         end;
@@ -1854,6 +1872,9 @@ procedure TCustomGrid.Sort(ColSorting: Boolean; index, IndxFrom, IndxTo: Integer
     until I>=R;
   end;
 begin
+  CheckIndex(ColSorting, Index);
+  CheckIndex(not ColSorting, IndxFrom);
+  CheckIndex(not ColSorting, IndxTo);
   BeginUpdate;
   QuickSort(IndxFrom, IndxTo);
   EndUpdate(True);
@@ -2297,6 +2318,9 @@ end;
 procedure TCustomGrid.ColRowExchanged(isColumn: Boolean; index, WithIndex: Integer);
 begin
 end;
+procedure TCustomGrid.ColRowInserted(IsColumn: boolean; index: integer);
+begin
+end;
 procedure TCustomGrid.DrawFocusRect(aCol, aRow: Integer; ARect: TRect);
 begin
 end;
@@ -2723,6 +2747,7 @@ end;
 procedure TCustomGrid.DrawCellGrid(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState);
 var
   dv,dh: Boolean;
+  aR: TRect;
 begin
   // Draw Cell Grid or Maybe in the future Borders..
   with Canvas, aRect do begin
@@ -2731,10 +2756,23 @@ begin
       Dh := goFixedHorzLine in Options;
       Pen.Style := psSolid;
       if not FFlat then begin
-        Pen.Color := cl3DHilight;
-        MoveTo(Right - 1, Top);
-        LineTo(Left, Top);
-        LineTo(Left, Bottom);
+        if FTitleStyle=tsNative then begin
+          aR := aRect;
+          DrawFrameControl(Handle, ar, DFC_BUTTON, DFCS_BUTTONPUSH);
+          exit;
+        end else begin
+          Pen.Color := cl3DHilight;
+          MoveTo(Right - 1, Top);
+          LineTo(Left, Top);
+          LineTo(Left, Bottom);
+          if FTitleStyle=tsStandard then begin
+            // more contrast
+            Pen.Color := cl3DShadow;
+            MoveTo(Left+1, Bottom-2);
+            LineTo(Right-2, Bottom-2);
+            LineTo(Right-2, Top);
+          end;
+        end;
       end;
       Pen.Color := cl3DDKShadow;
     end else begin
@@ -2929,7 +2967,8 @@ begin
   if not FGCache.ValidGrid then
     Exit;
 
-  if FEditor<>nil then EditorGetValue;
+  if FEditor<>nil then
+    EditorGetValue;
 
   TL:=  PtrInt(FGCache.AccumHeight[ FGCache.MaxTopLeft.Y ]) - FGCache.FixedHeight;
   CTL:= PtrInt(FGCache.AccumHeight[ FtopLeft.Y ]) - FGCache.FixedHeight;
@@ -2990,6 +3029,29 @@ begin
   end;
 end;
 
+procedure TCustomGrid.WMKillFocus(var message: TLMKillFocus);
+begin
+  {$ifdef dbgGrid}
+  if csDestroying in ComponentState then exit;
+  DbgOut('*** grid.WMKillFocus, FocusedWnd=', dbgs(Message.FocusedWnd),'[',dbgs(pointer(Message.FocusedWnd)),'] ');
+  if EditorMode and (Message.FocusedWnd = FEditor.Handle) then
+    DebugLn('Editor')
+  else
+    DebugLn('ExternalWindow');
+  {$endif}
+end;
+
+procedure TCustomGrid.WMSetFocus(var message: TLMSetFocus);
+begin
+  {$ifdef dbgGrid}
+  DbgOut('*** grid.WMSetFocus, FocusedWnd=', dbgs(Message.FocusedWnd),'[',dbgs(pointer(Message.FocusedWnd)),'] ');
+  if EditorMode and (Message.FocusedWnd = FEditor.Handle) then
+    DebugLn('Editor')
+  else
+    DebugLn('ExternalWindow');
+  {$endif}
+end;
+
 procedure TCustomGrid.WMChar(var message: TLMChar);
 var
   Ch: Char;
@@ -3006,16 +3068,14 @@ end;
 
 procedure TCustomGrid.WndProc(var TheMessage: TLMessage);
 begin
-	{$IfDef GridTraceMsg}
+	{$ifdef GridTraceMsg}
 	TransMsg('GRID: ', TheMessage);
-	{$Endif}
- 
-  with TheMessage do
-  if (csDesigning in ComponentState) and
-     ((Msg = LM_HSCROLL)or(Msg = LM_VSCROLL))
-  then
-          Exit;
-
+	{$endif}
+  case TheMessage.Msg of
+    LM_HSCROLL, LM_VSCROLL:
+      if csDesigning in ComponentState then
+        exit;
+  end;
   inherited WndProc(TheMessage);
 end;
 
@@ -3143,6 +3203,13 @@ begin
   end;
 end;
 
+procedure TCustomGrid.CheckIndex(IsColumn: Boolean; Index: Integer);
+begin
+  if (IsColumn and ((Index<0) or (Index>ColCount-1))) or
+     (not IsColumn and ((Index<0) or (Index>RowCount-1))) then
+    raise EGridException.Create('Index out of range');
+end;
+
 function TCustomGrid.CheckTopLeft(aCol,aRow: Integer; CheckCols, CheckRows: boolean): boolean;
 var
   OldTopLeft: TPoint;
@@ -3257,6 +3324,13 @@ procedure TCustomGrid.SetTitleFont(const AValue: TFont);
 begin
   FTitleFont.Assign(AValue);
   VisualChange;
+end;
+
+procedure TCustomGrid.SetTitleStyle(const AValue: TTitleStyle);
+begin
+  if FTitleStyle=AValue then exit;
+  FTitleStyle:=AValue;
+  Invalidate;
 end;
 
 procedure TCustomGrid.SetUseXorFeatures(const AValue: boolean);
@@ -3647,41 +3721,112 @@ begin
     Result := gzNormal;
 end;
 
-procedure TCustomGrid.ExchangeColRow(IsColumn: Boolean; index, WithIndex: Integer
+procedure TCustomGrid.DoOPExchangeColRow(IsColumn: Boolean; index, WithIndex: Integer
   );
 begin
+  if IsColumn and Columns.Enabled then begin
+    Columns.ExchangeColumn(Index,WithIndex);
+    ColRowExchanged(IsColumn, index, WithIndex);
+    exit;
+  end;
   if IsColumn then FCols.Exchange(index, WithIndex)
   else             FRows.Exchange(index, WithIndex);
   ColRowExchanged(IsColumn, index, WithIndex);
   VisualChange;
 end;
 
-procedure TCustomGrid.MoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
+procedure TCustomGrid.DoOPInsertColRow(IsColumn: boolean; index: integer);
 begin
-  if IsColumn then FCols.Move(FromIndex, ToIndex)
-  else             FRows.Move(FromIndex, ToIndex);
-  ColRowMoved(IsColumn, FromIndex, ToIndex);
+  if Index<0 then Index:=0;
+  if IsColumn then begin
+    if Index>ColCount-1 then
+      Index := ColCount-1;
+    if columns.Enabled then begin
+      Columns.InsertColumn(index);
+      ColRowInserted(true, index);
+      exit;
+    end else begin
+      FCols.Insert(Index, pointer(-1));
+      FGCache.AccumWidth.Insert(Index, nil);
+    end;
+  end else begin
+    Frows.Insert(Index, pointer(-1));
+    FGCache.AccumHeight.Insert(Index, nil);
+  end;
+  ColRowInserted(IsColumn, index);
   VisualChange;
 end;
 
-procedure TCustomGrid.SortColRow(IsColumn: Boolean; index: Integer);
+procedure TCustomGrid.doOPMoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
+
+  procedure doMoveColumn;
+  begin
+    CheckIndex(IsColumn, FromIndex);
+    CheckIndex(IsColumn, ToIndex);
+    if Columns.Enabled then begin
+      Columns.MoveColumn(FromIndex,ToIndex);
+      ColRowMoved(True, FromIndex, ToIndex);
+      exit;
+    end else begin
+      FCols.Move(FromIndex, ToIndex);
+      ColRowMoved(True, FromIndex, ToIndex);
+      VisualChange;
+    end;
+  end;
+  procedure doMoveRow;
+  begin
+    CheckIndex(IsColumn, FromIndex);
+    CheckIndex(IsColumn, ToIndex);
+    FRows.Move(FromIndex, ToIndex);
+    ColRowMoved(false, FromIndex, ToIndex);
+    VisualChange;
+  end;
 begin
-  if IsColumn then SortColRow(IsColumn, index, FFixedRows, RowCount-1)
-  else             SortColRow(IsColumn, index, FFixedCols, ColCount-1);
+  if IsColumn then
+    doMoveColumn
+  else
+    doMoveRow;
 end;
 
-procedure TCustomGrid.SortColRow(IsColumn: Boolean; index, FromIndex,
-  ToIndex: Integer);
+procedure TCustomGrid.DoOPDeleteColRow(IsColumn: Boolean; index: Integer);
+  procedure doDeleteColumn;
+  begin
+    CheckIndex(IsColumn,Index);
+    CheckFixedCount(ColCount-1, RowCount, FFixedCols, FFixedRows);
+    CheckCount(ColCount-1, RowCount);
+    if Columns.Enabled then begin
+      Columns.RemoveColumn(Index);
+      ColRowDeleted(True, Index);
+    end else begin
+      if Index<FixedCols then begin
+        Dec(FFixedCols);
+        FTopLeft.x := FFixedCols;
+      end;
+      FCols.Delete(Index);
+      FGCache.AccumWidth.Delete(Index);
+      ColRowDeleted(True, Index);
+      VisualChange;
+    end;
+  end;
+  procedure doDeleteRow;
+  begin
+    CheckIndex(IsColumn, Index);
+    CheckFixedCount(ColCount, RowCount-1, FFixedCols, FFixedRows);
+    CheckCount(ColCount, RowCount-1);
+    if Index<FixedRows then begin
+      Dec(FFixedRows);
+      FTopLeft.y := FFixedRows;
+    end;
+    FRows.Delete(Index);
+    FGCache.AccumHeight.Delete(Index);
+    ColRowDeleted(False,Index);
+    VisualChange;
+  end;
 begin
-  Sort(IsColumn, index, FromIndex, ToIndex);
-end;
-
-procedure TCustomGrid.DeleteColRow(IsColumn: Boolean; index: Integer);
-begin
-  if IsColumn then FCols.Delete(index)
-  else             FRows.Delete(index);
-  ColRowDeleted(IsColumn, index);
-  VisualChange;
+  if IsColumn then
+    doDeleteColumn
+  else
+    doDeleteRow;
 end;
 
 function TCustomGrid.EditorByStyle(Style: TColumnButtonStyle): TWinControl;
@@ -3705,9 +3850,9 @@ var
 begin
   inherited MouseDown(Button, Shift, X, Y);
 
-  if not FGCache.ValidGrid then Exit;
-  if not (ssLeft in Shift) then Exit;
-  if csDesigning in componentState then Exit;
+  if (csDesigning in componentState) or not FGCache.ValidGrid or
+      not (ssLeft in Shift) then
+    Exit;
 
   {$IfDef dbgGrid} DebugLn('MouseDown INIT'); {$Endif}
 
@@ -3841,7 +3986,7 @@ begin
       begin
         //DebugLn('Move Col From ',Fsplitter.x,' to ', FMoveLast.x);
         if FMoveLast.X>=0 then begin
-          MoveColRow(True, Fsplitter.X, FMoveLast.X);
+          DoOPMoveColRow(True, Fsplitter.X, FMoveLast.X);
           Cursor:=crDefault;
         end else
           if Cur.X=FSplitter.X then HeaderClick(True, FSplitter.X);
@@ -3850,7 +3995,7 @@ begin
       begin
         //DebugLn('Move Row From ',Fsplitter.Y,' to ', FMoveLast.Y);
         if FMoveLast.Y>=0 then begin
-          MoveColRow(False, Fsplitter.Y, FMoveLast.Y);
+          DoOPMoveColRow(False, Fsplitter.Y, FMoveLast.Y);
           Cursor:=crDefault;
         end else
           if Cur.Y=FSplitter.Y then HeaderClick(False, FSplitter.Y);
@@ -4006,18 +4151,20 @@ end;
 procedure TCustomGrid.DoEditorHide;
 begin
   Editor.Visible:=False;
-  Editor.Parent:=nil;
+  //Editor.Parent:=nil;
   LCLIntf.SetFocus(Self.Handle);
 end;
 
 procedure TCustomGrid.DoEditorShow;
 begin
+  {$ifdef dbgGrid}DebugLn('grid.DoEditorShow INIT');{$endif}
   ScrollToCell(FCol,FRow);
   EditorSetValue;
   Editor.Parent:=Self;
   Editor.Visible:=True;
-  LCLIntf.SetFocus(Editor.Handle);
+  Editor.SetFocus;
   InvalidateCell(FCol,FRow,True);
+  {$ifdef dbgGrid}DebugLn('grid.DoEditorShow FIN');{$endif}
 end;
 
 procedure TCustomGrid.DoOnChangeBounds;
@@ -4051,20 +4198,15 @@ end;
 procedure TCustomGrid.DoEnter;
 begin
   inherited DoEnter;
-  if FEditorHiding then begin
-    {$IfDef dbgGrid}DebugLn('DoEnter - EditorHiding');{$Endif}
+  if EditorLocked then begin
+    {$IfDef dbgGrid}DebugLn('DoEnter - EditorLocked');{$Endif}
   end else begin
     {$IfDef dbgGrid}DebugLn('DoEnter - Ext');{$Endif}
-    //exit;
     if EditorAlwaysShown then begin
       SelectEditor;
-      if Feditor=nil then
-        //Invalidate
-      else begin
+      if Feditor<>nil then
         EditorShow(true);
-      end;
-    end else
-      //Invalidate;
+    end;
   end;
 end;
 
@@ -4214,21 +4356,21 @@ begin
         end;
       end;
     VK_C:
-      begin
+      if not FEditorKey then begin
         if ssCtrl in Shift then begin
           Key := 0;
           doCopyToClipboard;
         end;
       end;
     VK_V:
-      begin
+      if not FEditorKey then begin
         if ssCtrl in Shift then begin
           Key := 0;
           doPasteFromClipboard;
         end;
       end;
     VK_X:
-      begin
+      if not FEditorKey then begin
         if ssCtrl in Shift then begin
           Key := 0;
           doCutToClipboard;
@@ -4325,18 +4467,14 @@ end;
 function TCustomGrid.MoveExtend(Relative: Boolean; DCol, DRow: Integer): Boolean;
 var
   InvalidateAll: Boolean;
-  //LastEditor: TWinControl;
-  //WasVis: Boolean;
 begin
   Result:=TryMoveSelection(Relative,DCol,DRow);
   if (not Result) then Exit;
 
+  EditorGetValue;
+
   {$IfDef dbgGrid}DebugLn(' MoveExtend INIT FCol= ',IntToStr(FCol), ' FRow= ',IntToStr(FRow));{$Endif}
   BeforeMoveSelection(DCol,DRow);
-
-  //LastEditor:=Editor;
-  //WasVis:=(LastEditor<>nil)and(LastEditor.Visible);
-  EditorGetValue;
 
   InvalidateAll:=False;
   // default range
@@ -4384,8 +4522,6 @@ begin
   if (FEditor<>nil) and EditorAlwaysShown then
     EditorShow(true);
     
-  //ProcessEditor(LastEditor,DCol,DRow,WasVis);
-  
   {$IfDef dbgGrid}DebugLn(' MoveExtend FIN FCol= ',IntToStr(FCol), ' FRow= ',IntToStr(FRow));{$Endif}
 end;
 
@@ -4467,6 +4603,12 @@ begin
   end;
 end;
 
+procedure TCustomGrid.UnLockEditor;
+begin
+  Dec(FEditorHidingCount);
+  {$ifdef dbgGrid}DebugLn('==< LockEditor: ', dbgs(FEditorHidingCount)); {$endif}
+end;
+
 procedure TCustomGrid.UpdateHorzScrollBar(const aVisible: boolean;
   const aRange,aPage: Integer);
 begin
@@ -4481,43 +4623,6 @@ begin
   ScrollBarShow(SB_VERT, aVisible);
   if aVisible then
     ScrollbarRange(SB_VERT, aRange, aPage );
-end;
-
-procedure TCustomGrid.ProcessEditor(LastEditor: TWinControl; DCol, DRow: Integer; WasVis: Boolean);
-  procedure RestoreEditor;
-  var
-    WC: TWinControl;
-  begin
-    WC := FEditor;
-    FEditor := LastEditor;
-    LastEditor := WC;
-    SwapInt(FCol,DCol);
-    SwapInt(FRow,DRow);
-  end;
-  procedure HideLastEditor;
-  begin
-    RestoreEditor;
-    EditorGetValue;
-    RestoreEditor;
-  end;
-var
-  WillVis: Boolean;
-begin
-  WillVis:=(FEditor<>nil)and EditorAlwaysShown;
-  {$ifdef dbgGrid}
-  DebugLn('  ProcessEditor INIT WasVis=', BoolToStr(WasVis),' WillVis=', BoolToStr(WillVis));
-  {$endif}
-  if WillVis or WasVis then begin
-    if not WillVis then HideLastEditor else
-    if not WasVis then EditorShow(EditorAlwaysShown)
-    else begin
-      HideLastEditor;
-      EditorShow(EditorAlwaysShown);
-    end;
-  end;
-  {$ifdef dbgGrid}
-  DebugLn('  ProcessEditor FIN');
-  {$endif}
 end;
 
 procedure TCustomGrid.BeforeMoveSelection(const DCol,DRow: Integer);
@@ -4646,7 +4751,7 @@ end;
 procedure TCustomGrid.EditorGetValue;
 begin
   if not (csDesigning in ComponentState) then begin
-    EditordoGetValue;
+    EditorDoGetValue;
     EditorHide;
   end;
 end;
@@ -4661,16 +4766,24 @@ end;
 
 procedure TCustomGrid.EditorHide;
 begin
-  if not FEditorHiding and (Editor<>nil) and Editor.HandleAllocated
-  and Editor.Visible then
+  if not EditorLocked and (Editor<>nil) and Editor.HandleAllocated
+    and Editor.Visible then
   begin
     FEditorMode:=False;
-    {$IfDef dbgGrid} DebugLn('EditorHide [',Editor.ClassName,'] INIT FCol=',IntToStr(FCol),' FRow=',IntToStr(FRow));{$Endif}
-    FEditorHiding:=True;
-    DoEditorHide;
-    FEditorHiding:=False;
-    {$IfDef dbgGrid} DebugLn('EditorHide FIN'); {$Endif}
+    {$ifdef dbgGrid}DebugLn('EditorHide [',Editor.ClassName,'] INIT FCol=',IntToStr(FCol),' FRow=',IntToStr(FRow));{$endif}
+    LockEditor;
+    try
+      DoEditorHide;
+    finally
+      UnLockEditor;
+    end;
+    {$ifdef dbgGrid}DebugLn('EditorHide FIN');{$endif}
   end;
+end;
+
+function TCustomGrid.EditorLocked: boolean;
+begin
+  Result := FEditorHidingCount <> 0;
 end;
 
 procedure TCustomGrid.EditorShow(const SelAll: boolean);
@@ -4687,9 +4800,9 @@ begin
     FEditorShowing:=True;
     doEditorShow;
     FEditorShowing:=False;
-    {$IfDef dbgGrid} DebugLn('EditorShow FIN');{$Endif}
     if SelAll then
       EditorSelectAll;
+    {$IfDef dbgGrid} DebugLn('EditorShow FIN');{$Endif}
   end;
 end;
 
@@ -4727,11 +4840,13 @@ procedure TCustomGrid.EditorSelectAll;
 var
   Msg: TGridMessage;
 begin
+  {$ifdef dbgGrid}DebugLn('EditorSelectALL INIT');{$endif}
   if FEditor<>nil then
     if FEditorOptions and EO_SELECTALL = EO_SELECTALL then begin
       Msg.MsgID:=GM_SELECTALL;
       FEditor.Dispatch(Msg);
     end;
+  {$ifdef dbgGrid}DebugLn('EditorSelectALL FIN');{$endif}
 end;
 
 procedure TCustomGrid.EditordoGetValue;
@@ -4802,24 +4917,27 @@ end;
 
 procedure TCustomGrid.EditorExit(Sender: TObject);
 begin
-  if not FEditorHiding then begin
+  if not EditorLocked then begin
     {$IfDef dbgGrid} DebugLn('EditorExit INIT');{$Endif}
-    FEditorMode:=False;
-    FEditorHiding:=True;
-    EditorGetValue;
-    
-    if Editor<>nil then begin
-      Editor.Visible:=False;
-      Editor.Parent:=nil;
-      //InvalidateCell(FCol,FRow, True);
+    LockEditor;
+    try
+      EditorGetValue;
+      if (FEditor<>nil)and(FEditor.Visible) then begin
+        Editor.Visible:=False;
+        //Editor.Parent:=nil;
+        FEditorMode := False;
+        //InvalidateCell(FCol,FRow, True);
+      end;
+    finally
+      UnlockEditor;
+      {$IfDef dbgGrid} DebugLn('EditorExit FIN'); {$Endif}
     end;
-    FEditorHiding:=False;
-    {$IfDef dbgGrid} DebugLn('EditorExit FIN'); {$Endif}
   end;
 end;
 
 procedure TCustomGrid.EditorKeyDown(Sender: TObject; var Key:Word; Shift:TShiftState);
 begin
+  {$ifdef dbgGrid}DebugLn('Grid.EditorKeyDown Key=',dbgs(Key),' INIT');{$endif}
   FEditorKey:=True; // Just a flag to see from where the event comes
   KeyDown(Key, shift);
   case Key of
@@ -4840,15 +4958,16 @@ begin
       end;
     VK_RETURN:
       begin
+        Key := 0;
         if not MoveNextAuto then begin
           EditorGetValue;
           if EditorAlwaysShown then
             EditorShow(True);
         end;
-        Key := 0;
       end;
   end;
   FEditorKey:=False;
+  {$ifdef dbgGrid}DebugLn('Grid.EditorKeyDown Key=',dbgs(Key),' FIN');{$endif}
 end;
 
 procedure TCustomGrid.EditorKeyPress(Sender: TObject; var Key: Char);
@@ -4856,6 +4975,18 @@ begin
   FEditorKey := True;
   KeyPress(Key); // grid must get all keypresses, even if they are from the editor
   case Key of
+    ^C,^V,^X:;
+    {
+    ^V:
+      begin
+        if Clipboard.FormatCount>0 then begin
+          DebugLn('El clipboard tiene ', Dbgs(Clipboard.FormatCount),'formatos, HasText=', dbgs(Clipboard.HasFormat(CF_TEXT)));
+        end else begin
+          DebugLn('El clipboard esta vacio');
+          Key := #0;
+        end;
+      end;
+    }
     #8:
       if EditorIsReadOnly then
         Key := #0;
@@ -4920,6 +5051,7 @@ end;
 
 procedure TCustomGrid.EditorSetMode(const AValue: Boolean);
 begin
+  {$ifdef dbgGrid}DebugLn('Grid.EditorSetMode=',dbgs(Avalue),' INIT');{$endif}
   if not AValue then begin
     EditorHide;
     //SetFocus;
@@ -4927,6 +5059,7 @@ begin
   begin
     EditorShow(false);
   end;
+  {$ifdef dbgGrid}DebugLn('Grid.EditorSetMode FIN');{$endif}
 end;
 
 function TCustomGrid.GetSelectedColor: TColor;
@@ -5292,6 +5425,12 @@ begin
   VisualChange;
 end;
 
+procedure TCustomGrid.LockEditor;
+begin
+  inc(FEditorHidingCount);
+  {$ifdef dbgGrid}DebugLn('==> LockEditor: ', dbgs(FEditorHidingCount)); {$endif}
+end;
+
 constructor TCustomGrid.Create(AOwner: TComponent);
 begin
   // Inherited create Calls SetBounds->WM_SIZE->VisualChange so
@@ -5355,6 +5494,8 @@ end;
 destructor TCustomGrid.Destroy;
 begin
   {$Ifdef dbg}DebugLn('TCustomGrid.Destroy');{$Endif}
+  FreeThenNil(FStringEditor);
+  FreeThenNil(FButtonEditor);
   FreeThenNil(FColumns);
   FreeThenNil(FGCache.AccumWidth);
   FreeThenNil(FGCache.AccumHeight);
@@ -5645,48 +5786,43 @@ begin
   else             FRows.ExchangeColRow(True, index, WithIndex);
 end;
 
+procedure TVirtualGrid.InsertColRow(IsColumn: Boolean; Index: Integer);
+begin
+  if IsColumn then begin
+    ColCount := ColCount + 1;
+    MoveColRow(true, ColCount-1, Index);
+  end else begin
+    RowCount := RowCount + 1;
+    MoveColRow(false, RowCount-1, Index);
+  end;
+end;
 
-{
 procedure TStringCellEditor.WndProc(var TheMessage: TLMessage);
 begin
-  DbgOut(Name+'.WndProc msg= ');
-  case TheMessage.Msg of
-    LM_SHOWWINDOW: DebugLn('LM_SHOWWINDOW');
-    LM_SETFOCUS: DebugLn('LM_SETFOCUS');
-    LM_PAINT: DebugLn('LM_PAINT');
-    LM_KEYUP: DebugLn('LM_KEYUP');
-    LM_WINDOWPOSCHANGED: DebugLn('LM_WINDOWPOSCHANGED');
-    LM_MOVE: DebugLn('LM_MOVE');
-    LM_KILLFOCUS: DebugLn('LM_KILLFOCUS');
-    CM_BASE..CM_MOUSEWHEEL:
-      begin
-        case TheMessage.Msg of
-          CM_MOUSEENTER: DebugLn('CM_MOUSEENTER');
-          CM_MOUSELEAVE: DebugLn('CM_MOUSELEAVE');
-          CM_VISIBLECHANGED: DebugLn('CM_VISIBLECHANGED');
-          CM_TEXTCHANGED: DebugLn('CM_TEXTCHANGED');
-          CM_SHOWINGCHANGED: DebugLn('CM_SHOWINGCHANGED');
-          else DebugLn('CM_BASE + ',TheMessage.Msg-CM_BASE);
-        end
-
-      end;
-    CN_BASE..CN_NOTIFY:
-      begin
-        DebugLn('CN_BASE + ',TheMessage.Msg-CN_BASE);
-      end;
-    else
-      DebugLn(TheMessage.Msg,' (',IntToHex(TheMessage.Msg, 4),')');
-  end;
+	{$IfDef GridTraceMsg}
+	TransMsg('StrCellEditor: ', TheMessage);
+	{$Endif}
+  if FGrid<>nil then
+    case TheMessage.Msg of
+      LM_CLEARSEL,
+      LM_CUTTOCLIP,
+      LM_PASTEFROMCLIP:
+        begin
+          if FGrid.EditorIsReadOnly then
+            exit;
+        end;
+    end;
   inherited WndProc(TheMessage);
 end;
-}
+
 { TStringCellEditor }
 
 procedure TStringCellEditor.Change;
 begin
   inherited Change;
-  if FGrid<>nil then
+  if FGrid<>nil then begin
     FGrid.SetEditText(FGrid.Col, FGrid.Row, Text);
+  end;
 end;
 
 procedure TStringCellEditor.KeyDown(var Key: Word; Shift: TShiftState);
@@ -5834,21 +5970,32 @@ end;
 
 procedure TCustomDrawGrid.ColRowExchanged(IsColumn:Boolean; index, WithIndex: Integer);
 begin
-  Fgrid.ExchangeColRow(IsColumn, index, WithIndex);
+  if not IsColumn or not Columns.Enabled then
+    Fgrid.ExchangeColRow(IsColumn, index, WithIndex);
   if Assigned(OnColRowExchanged) then
     OnColRowExchanged(Self, IsColumn, index, WithIndex);
 end;
 
+procedure TCustomDrawGrid.ColRowInserted(IsColumn: boolean; index: integer);
+begin
+  if not IsColumn or not Columns.Enabled then
+    FGrid.InsertColRow(IsColumn, Index);
+  if Assigned(OnColRowInserted) then
+    OnColRowInserted(Self, IsColumn, index, index);
+end;
+
 procedure TCustomDrawGrid.ColRowDeleted(IsColumn: Boolean; index: Integer);
 begin
-  FGrid.DeleteColRow(IsColumn, index);
+  if not IsColumn or not Columns.Enabled then
+    FGrid.DeleteColRow(IsColumn, index);
   if Assigned(OnColRowDeleted) then
     OnColRowDeleted(Self, IsColumn, index, index);
 end;
 
 procedure TCustomDrawGrid.ColRowMoved(IsColumn: Boolean; FromIndex, ToIndex: Integer);
 begin
-  FGrid.MoveColRow(IsColumn, FromIndex, ToIndex);
+  if not IsColumn or not Columns.Enabled then
+    FGrid.MoveColRow(IsColumn, FromIndex, ToIndex);
   if Assigned(OnColRowMoved) then
     OnColRowMoved(Self, IsColumn, FromIndex, toIndex);
 end;
@@ -5926,6 +6073,40 @@ begin
   //DebugLn('Font.Name',Font.Name);
   FreeThenNil(FGrid);
   inherited Destroy;
+end;
+
+procedure TCustomDrawGrid.DeleteColRow(IsColumn: Boolean; index: Integer);
+begin
+  DoOPDeleteColRow(IsColumn, Index);
+end;
+
+procedure TCustomDrawGrid.ExchangeColRow(IsColumn: Boolean; index,
+  WithIndex: Integer);
+begin
+  DoOPExchangeColRow(IsColumn, Index, WithIndex);
+end;
+
+procedure TCustomDrawGrid.InsertColRow(IsColumn: boolean; index: integer);
+begin
+  doOPInsertColRow(IsColumn, Index);
+end;
+
+procedure TCustomDrawGrid.MoveColRow(IsColumn: Boolean; FromIndex,
+  ToIndex: Integer);
+begin
+  DoOPMoveColRow(IsColumn, FromIndex, ToIndex);
+end;
+
+procedure TCustomDrawGrid.SortColRow(IsColumn: Boolean; index: Integer);
+begin
+  if IsColumn then Sort(IsColumn, index, FFixedRows, RowCount-1)
+  else             Sort(IsColumn, index, FFixedCols, ColCount-1);
+end;
+
+procedure TCustomDrawGrid.SortColRow(IsColumn: Boolean; Index, FromIndex,
+  ToIndex: Integer);
+begin
+  Sort(IsColumn, Index, FromIndex, ToIndex);
 end;
 
 procedure TCustomDrawGrid.DefaultDrawCell(aCol, aRow: Integer; var aRect: TRect;
@@ -6985,8 +7166,9 @@ begin
   if FReadOnly<>nil then Dispose(FReadOnly);
   if FWidth<>nil then Dispose(FWidth);
   if FLayout<>nil then Dispose(FLayout);
-  FFont.Free;
-  FTitle.Free;
+  FreeThenNil(FPickList);
+  FreeThenNil(FFont);
+  FreeThenNil(FTitle);
   inherited Destroy;
 end;
 
@@ -7066,6 +7248,47 @@ begin
   end;
 end;
 
+procedure TGridColumns.RemoveColumn(Index: Integer);
+begin
+  if HasIndex(Index) then
+    Delete(Index)
+  else
+    raise Exception.Create('Index out of range')
+end;
+
+procedure TGridColumns.MoveColumn(FromIndex, ToIndex: Integer);
+begin
+  if HasIndex(FromIndex) then
+    if HasIndex(ToIndex) then
+      Items[FromIndex].Index := ToIndex
+    else
+      raise Exception.Create('ToIndex out of range')
+  else
+    raise Exception.Create('FromIndex out of range')
+end;
+
+procedure TGridColumns.ExchangeColumn(Index, WithIndex: Integer);
+begin
+  if HasIndex(Index) then
+    if HasIndex(WithIndex) then begin
+      BeginUpdate;
+      Items[WithIndex].Index := Index;
+      Items[Index+1].Index := WithIndex;
+      EndUpdate;
+    end else
+      raise Exception.Create('WithIndex out of range')
+  else
+    raise Exception.Create('Index out of range')
+end;
+
+procedure TGridColumns.InsertColumn(Index: Integer);
+begin
+  BeginUpdate;
+  Add;
+  MoveColumn(Count-1, Index);
+  EndUpdate;
+end;
+
 constructor TGridColumns.Create(TheGrid: TCustomGrid);
 begin
   inherited Create( TGridColumn );
@@ -7120,6 +7343,11 @@ begin
   result := True;
   for i:=0 to Count-1 do
     result := Result and Items[i].IsDefault;
+end;
+
+function TGridColumns.HasIndex(Index: Integer): boolean;
+begin
+  result := (index>-1)and(index<count);
 end;
 
 { TButtonCellEditor }

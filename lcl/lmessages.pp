@@ -85,6 +85,7 @@ const
   LM_TIMER          = LM_USER+40;
   //LM_MOUSEBTNPRESS  = LM_USER+41;
   //LM_MOUSEBTNRELEASE  = LM_USER+42;
+  LM_CLEARSEL       = LM_USER+50; // WM_CLEAR
   LM_EXIT           = LM_USER+60;
   LM_CLOSEQUERY     = LM_USER+62;
   LM_DRAGSTART      = LM_USER+63;
@@ -936,6 +937,9 @@ end.
 
 {
   $Log$
+  Revision 1.130  2005/05/02 08:35:42  mattias
+  fix bug 878 (can not paste from clipboard) new property TitleStyle  from Jesus
+
   Revision 1.129  2005/03/23 10:45:06  mattias
   fixed ambigious with ambiguous
 

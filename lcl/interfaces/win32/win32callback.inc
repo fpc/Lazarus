@@ -720,6 +720,10 @@ Begin
         end;
       end;
     end;
+    WM_CLEAR:
+    begin
+      LMessage.Msg := LM_CLEARSEL;
+    end;
     WM_COPY:
     Begin
       LMessage.Msg := LM_COPYTOCLIP;
@@ -1568,6 +1572,9 @@ end;
 
 {
   $Log$
+  Revision 1.205  2005/05/02 08:35:42  mattias
+  fix bug 878 (can not paste from clipboard) new property TitleStyle  from Jesus
+
   Revision 1.204  2005/04/29 11:53:25  micha
   send double click to window, if pattern mouse-click, focus-change, mouse-click detected (fixes bug 794)
 

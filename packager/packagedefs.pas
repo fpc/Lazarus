@@ -1156,7 +1156,7 @@ end;
 
 function GetDependencyOwnerAsString(Dependency: TPkgDependency): string;
 begin
-  OnGetDependencyOwnerDescription(Dependency,Result)
+  OnGetDependencyOwnerDescription(Dependency,Result);
 end;
 
 function PackageFileNameIsValid(const AFilename: string): boolean;
