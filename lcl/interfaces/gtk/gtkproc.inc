@@ -2030,6 +2030,31 @@ var
     Result := (Event^.Length>0);
               //and (not (Event^.KeyVal in [0..$F000,GDK_KP_0..GDK_KP_9]);
   end;
+  
+  function KeyAlreadyHandledByGtk: boolean;
+  begin
+    Result:=false;
+    if Widget=nil then exit;
+    
+    if GtkWidgetIsA(Widget,gtk_entry_get_type) then begin
+      // the gtk_entry handles the following keys
+      if (event^.length > 0)
+      or (event^.keyval=GDK_BackSpace)
+      or (event^.keyval=GDK_Clear)
+      or (event^.keyval=GDK_Insert)
+      or (event^.keyval=GDK_Delete)
+      or (event^.keyval=GDK_Home)
+      or (event^.keyval=GDK_End)
+      or (event^.keyval=GDK_Left)
+      or (event^.keyval=GDK_Right)
+      or (event^.keyval=GDK_Return)
+      or (event^.keyval=GDK_Tab)
+      or (event^.keyval=GDK_Escape)
+      or ((event^.keyval >= $20) and (event^.keyval <= $FF))
+      then
+        Result:=true;
+    end;
+  end;
 
 var
   VKey: TVKeyRecord;
@@ -2060,6 +2085,7 @@ begin
 
   TargetWidget:=Widget;
   TargetData:=Data;
+  FocusedWinControl:=nil;
 
   // The gtk sends keys first to the gtkwindow and then to the focused control.
   // The LCL expects only once to the focused control.
@@ -2168,8 +2194,13 @@ begin
       end else begin
         if SysKey then
           Msg.msg := LM_SYSKEYDOWN
-        else
+        else begin
           Msg.msg := LM_KEYDOWN;
+          
+          // some widgets handle keys, but do not eat it.
+          // To avoid, that the LCL also reacts it some keys for some widgets
+          if KeyAlreadyHandledByGtk then exit;
+        end;
       end;
 
       // todo  repeat
@@ -8123,6 +8154,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.353  2005/05/03 16:34:25  mattias
+  skip keys handled by gtk_entry - more a hack, than a generic solution
+
   Revision 1.352  2005/03/21 09:03:54  mattias
   implemented Multi Masks for gtk1 filedialogs
 
