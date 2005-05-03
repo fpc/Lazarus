@@ -2060,15 +2060,27 @@ end;
 Function TWin32WidgetSet.GetWindowSize(Handle : hwnd;
   var Width, Height: integer): boolean;
 var
+  WP: WINDOWPLACEMENT;
   R: TRect;
   Style, ExStyle: LongInt;
 begin
-  Result := Boolean(Windows.GetWindowRect(Handle,@R));
-  with R Do
-  begin
-    Width := Right - Left;
-    Height := Bottom - Top;
-  end;
+  WP.length := SizeOf(WP);
+  Result := Boolean(Windows.GetWindowPlacement(Handle, WP));
+  if (WP.showCmd=SW_MAXIMIZE) then begin
+  // if the form is maximized, you can't use the normal size
+    Result := Boolean(Windows.GetWindowRect(Handle,@R));
+    with R Do
+    begin
+      Width := Right - Left;
+      Height := Bottom - Top;
+    end;
+  end
+  else
+    with WP.rcNormalPosition do
+    begin
+      Width := Right - Left;
+      Height := Bottom - Top;
+    end;
 
   // convert top level lcl window coordinaties to win32 coord
   Style := Windows.GetWindowLong(Handle, GWL_STYLE);
@@ -3122,6 +3134,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.144  2005/05/03 14:56:33  vincents
+  fixed getting the size of a minimized window (bug 886)
+
   Revision 1.143  2005/04/29 19:50:27  micha
   tweak color specification a bit
 

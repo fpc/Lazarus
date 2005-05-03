@@ -1683,7 +1683,7 @@ var
   X, Y : integer;
 begin
   {$IFDEF CHECK_POSITION}
-  DebugLn('[TCustomForm.UpdateShowing] A  Class=',Name,':',Classname,' Pos=',Left,',',Top,' Visible=',Visible);
+  DebugLn('[TCustomForm.UpdateShowing] A  Class=',Name,':',Classname,' Pos=',DbgS(Left),',',DbgS(Top),' Visible=',DbgS(Visible));
   {$ENDIF}
   { If the the form is about to show, calculate its metrics }
   if Visible then begin
@@ -1730,11 +1730,11 @@ begin
     end;
   end;
   {$IFDEF CHECK_POSITION}
-  DebugLn('[TCustomForm.UpdateShowing] B  ',Name,':',Classname,' Pos=',Left,',',Top);
+  DebugLn('[TCustomForm.UpdateShowing] B  ',Name,':',Classname,' Pos=',DbgS(Left),',',DbgS(Top));
   {$ENDIF}
   inherited UpdateShowing;
   {$IFDEF CHECK_POSITION}
-  DebugLn('[TCustomForm.UpdateShowing] END  ',Name,':',Classname,' Pos=',Left,',',Top);
+  DebugLn('[TCustomForm.UpdateShowing] END  ',Name,':',Classname,' Pos=',DbgS(Left),',',DbgS(Top));
   {$ENDIF}
 end;
 
@@ -1929,6 +1929,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.184  2005/05/03 14:56:33  vincents
+  fixed getting the size of a minimized window (bug 886)
+
   Revision 1.183  2005/04/17 18:41:15  micha
   implement active default control switching
   pressing return key executes active default control action

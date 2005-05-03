@@ -568,7 +568,7 @@ Begin
   {$ENDIF}
   LCLBoundsToWin32Bounds(Sender, Left, Top, Width, Height);
   {$IFDEF VerboseSizeMsg}
-  writeln('TWin32WidgetSet.ResizeChild A ',AWinControl.Name,':',AWinControl.ClassName,
+  writeln('TWin32WidgetSet.ResizeChild A ',Sender.Name,':',Sender.ClassName,
     ' LCL=',OldLeft,',',OldTop,',',Width,',',Height,
     ' Win32=',Left,',',Top,',',Width,',',Height,
     '');
@@ -741,6 +741,9 @@ end;
 
 {
   $Log$
+  Revision 1.310  2005/05/03 14:56:33  vincents
+  fixed getting the size of a minimized window (bug 886)
+
   Revision 1.309  2005/04/22 10:48:42  micha
   showwindow does not send WM_SHOWWINDOW message after maximized window creation (patch from jesus)
 
