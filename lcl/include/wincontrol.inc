@@ -3501,11 +3501,13 @@ var
 begin
   //debugln('TWinControl.CNChar A ',DbgSName(Self),' ',dbgs(Message.CharCode),' ',dbgs(IntfSendsUTF8KeyPress));
   if not DoKeyPress(Message) then {inherited}; // there is nothing to inherit
+  if Message.CharCode=0 then exit;
+
   //debugln('TWinControl.CNChar B ',DbgSName(Self),' ',dbgs(Message.CharCode),' ',dbgs(IntfSendsUTF8KeyPress));
   if not IntfSendsUTF8KeyPress then begin
     // current interface does not (yet) send UTF8 key press notifications
     // -> emulate
-    if Message.CharCode < %11000000 then begin
+    if (Message.CharCode < %11000000) then begin
       c:=chr(Message.CharCode);
       IntfUTF8KeyPress(c,1);
       if (length(c)<>1) or (c[1]<>chr(Message.CharCode)) then begin
@@ -4484,6 +4486,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.324  2005/05/03 15:40:45  mattias
+  exit CNChar if key already processed
+
   Revision 1.323  2005/04/27 12:37:28  micha
   implement/fix button/label shortcut accelchar handling
 
