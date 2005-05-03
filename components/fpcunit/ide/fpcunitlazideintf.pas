@@ -32,7 +32,7 @@ unit FPCUnitLazIDEIntf;
 interface
 
 uses
-  Classes, SysUtils, LazIDEIntf, ProjectIntf;
+  Classes, SysUtils, LazIDEIntf, ProjectIntf, testcaseopts;
 
 type
   { TFPCUnitApplicationDescriptor }
@@ -49,8 +49,14 @@ type
   { TFileDescPascalUnitFPCUnitTestCase }
 
   TFileDescPascalUnitFPCUnitTestCase = class(TFileDescPascalUnit)
+  private
+    FTestCaseName: string;
+    FCreateSetup: boolean;
+    FCreateTearDown: boolean;
   public
     constructor Create; override;
+    function CreateSource(const Filename, SourceName,
+                          ResourceName: string): string; override;
     function GetInterfaceUsesSection: string; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
@@ -58,12 +64,15 @@ type
                                 ResourceName: string): string;override;
     function GetImplementationSource(const Filename, SourceName,
                                      ResourceName: string): string; override;
+    property TestCaseName: string read FTestCaseName write FTestCaseName;
+    property CreateSetup: boolean read FCreateSetup write FCreateSetup;
+    property CreateTeardown: boolean read FCreateTeardown write FCreateTeardown;
   end;
 
 var
   ProjectDescriptorFPCUnitApplication: TFPCUnitApplicationDescriptor;
   FileDescriptorFPCUnitTestCase: TFileDescPascalUnitFPCUnitTestCase;
-  
+
 procedure Register;
 
 implementation
@@ -155,6 +164,51 @@ begin
   DefaultSourceName:='TestCase1';
 end;
 
+function TFileDescPascalUnitFPCUnitTestCase.CreateSource(const Filename,
+  SourceName, ResourceName: string): string;
+var
+  LE: string;
+begin
+  CreateSetup := false;
+  CreateTeardown := false;
+  LE:=LineEnding;
+  with TTestCaseOptionsForm.Create(nil) do
+  try
+    edDefaultName.Text := 'T' + SourceName;
+    ShowModal;
+    if edDefaultName.Text <> '' then
+      TestCaseName := edDefaultName.Text
+    else
+      TestCaseName:= 'T' + SourceName;
+    if cbSetup.Checked then
+      CreateSetup := True
+    else
+      CreateSetup := False;
+    if cbTeardown.Checked then
+      CreateTeardown := True
+    else
+      CreateTeardown := False;
+  finally
+    Free;
+  end;
+  Result:=
+     'unit '+SourceName+';'+LE
+    +LE
+    +'{$mode objfpc}{$H+}'+LE
+    +LE
+    +'interface'+LE
+    +LE
+    +'uses'+LE
+    +'  '+GetInterfaceUsesSection+';'+LE
+    +LE
+    +GetInterfaceSource(Filename,SourceName,ResourceName)
+    +'implementation'+LE
+    +LE
+    +GetImplementationSource(Filename,SourceName,ResourceName)
+    +'end.'+LE
+    +LE;
+end;
+
 function TFileDescPascalUnitFPCUnitTestCase.GetInterfaceUsesSection: string;
 begin
   Result:=inherited GetInterfaceUsesSection;
@@ -176,12 +230,23 @@ function TFileDescPascalUnitFPCUnitTestCase.GetInterfaceSource(const Filename,
   SourceName, ResourceName: string): string;
 var
   le: string;
-  TestCaseName: string;
+  setupMethod: string;
+  teardownMethod: string;
+  protectedSection: string;
 begin
-  TestCaseName:= 'T'+SourceName;
   le:=System.LineEnding;
-  Result:='type'+le
-    +'  '+TestCaseName+'=class(TTestCase)'+le
+  if CreateSetup or CreateTeardown then
+    protectedSection := '  protected' + le;
+  if CreateSetup then
+    setupMethod := '    procedure SetUp; override;' + le;
+  if CreateTeardown then
+    teardownMethod := '    procedure TearDown; override;' + le;
+  Result := 'type' + le
+    + le
+    +'  '+TestCaseName+'= class(TTestCase)'+le
+    + protectedSection
+    + setupMethod
+    + teardownMethod
     +'  published'+le
     +'    procedure TestHookUp;'+le
     +'  end;'+le+le;
@@ -191,14 +256,28 @@ function TFileDescPascalUnitFPCUnitTestCase.GetImplementationSource(
   const Filename, SourceName, ResourceName: string): string;
 var
   le: string;
-  TestCaseName: string;
+  setupMethod: string;
+  teardownMethod: string;
 begin
-  TestCaseName:= 'T'+SourceName;
   le:=System.LineEnding;
+  if CreateSetup then
+  setupMethod :=  'procedure '+TestCaseName+'.SetUp;'+le
+                  +'begin'+le
+                  +le
+                  +'end;'+le;
+  if CreateTeardown then
+  teardownMethod := 'procedure '+TestCaseName+'.TearDown;'+le
+                   +'begin'+le
+                   +le
+                   +'end;'+le;
   Result:='procedure '+TestCaseName+'.TestHookUp;'+le
     +'begin'+le
     +'  Fail(''Write your own test'');'+le
     +'end;'+le
+    +le
+    +setupMethod
+    +le
+    +teardownMethod
     +le
     +'Initialization'+le
     +le

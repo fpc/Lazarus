@@ -125,8 +125,6 @@ begin
 end;
 
 procedure TGUITestRunner.GUITestRunnerCreate(Sender: TObject);
-var
-  i: integer;
 begin
   barColor := clGreen;
   TestTree.Items.Clear;
@@ -198,8 +196,6 @@ begin
 end;
 
 procedure TGUITestRunner.TestTreeSelectionChanged(Sender: TObject);
-var
-  i: integer;
 begin
   if ((Sender as TTreeView).Selected <> nil) and
     Assigned((Sender as TTreeview).Selected.Data)  then

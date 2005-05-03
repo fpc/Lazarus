@@ -1,0 +1,93 @@
+object TestCaseOptionsForm: TTestCaseOptionsForm
+  BorderStyle = bsDialog
+  Caption = 'TestCase Options'
+  ClientHeight = 248
+  ClientWidth = 266
+  PixelsPerInch = 95
+  Position = poDesktopCenter
+  HorzScrollBar.Page = 265
+  VertScrollBar.Page = 247
+  Left = 464
+  Height = 248
+  Top = 464
+  Width = 266
+  object gbNames: TGroupBox
+    Align = alTop
+    BorderSpacing.OnChange = nil
+    Caption = 'Names'
+    ClientHeight = 72
+    ClientWidth = 262
+    ParentColor = True
+    TabOrder = 0
+    Height = 89
+    Width = 266
+    object Label1: TLabel
+      BorderSpacing.OnChange = nil
+      Caption = 'Default Test Name'
+      Color = clNone
+      FocusControl = edDefaultName
+      Left = 16
+      Height = 12
+      Top = 9
+      Width = 102
+    end
+    object edDefaultName: TEdit
+      BorderSpacing.OnChange = nil
+      MaxLength = 30
+      TabOrder = 0
+      Text = 'TTestCase1'
+      Left = 16
+      Height = 23
+      Top = 25
+      Width = 232
+    end
+  end
+  object Panel1: TPanel
+    Align = alBottom
+    BorderSpacing.OnChange = nil
+    BevelOuter = bvNone
+    ClientHeight = 42
+    ClientWidth = 266
+    FullRepaint = False
+    TabOrder = 1
+    Height = 42
+    Top = 206
+    Width = 266
+    object btnAccept: TButton
+      Caption = 'Create unit'
+      OnClick = btnAcceptClick
+      TabOrder = 0
+      Left = 64
+      Height = 25
+      Top = 10
+      Width = 120
+    end
+  end
+  object gbFixture: TGroupBox
+    Align = alClient
+    Caption = 'Fixture'
+    ClientHeight = 100
+    ClientWidth = 262
+    ParentColor = True
+    TabOrder = 2
+    Height = 117
+    Top = 89
+    Width = 266
+    object cbSetup: TCheckBox
+      Caption = 'Create Setup Method'
+      TabOrder = 0
+      Left = 22
+      Height = 23
+      Top = 11
+      Width = 216
+    end
+    object cbTeardown: TCheckBox
+      Caption = 'Create TearDown method'
+      TabOrder = 1
+      Left = 22
+      Height = 23
+      Top = 59
+      Width = 216
+    end
+  end
+end
