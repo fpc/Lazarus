@@ -2005,11 +2005,11 @@ begin
     DebugLn('TCustomSynEdit.UTF8KeyPress ',DbgSName(Self),' Key="',DbgStr(Key),'" UseUTF8=',dbgs(UseUTF8));
     {$ENDIF}
     CommandProcessor(ecChar, Key, nil);
-    // Key was handled anyway, so eat it!
-    Key:='';
   end else
     // don't ignore further keys
     Exclude(fStateFlags, sfIgnoreNextChar);
+  // Key was handled anyway, so eat it!
+  Key:='';
 end;
 {$ENDIF}
 
@@ -2022,11 +2022,18 @@ begin
     {$ENDIF}
     if Assigned(OnKeyPress) then OnKeyPress(Self, Key);
     CommandProcessor(ecChar, Key, nil);
+    {$IFNDEF SYN_LAZARUS}
     // Key was handled anyway, so eat it!
     Key:=#0;
+    {$ENDIF}
   end else
     // don't ignore further keys
     Exclude(fStateFlags, sfIgnoreNextChar);
+  {$IFDEF SYN_LAZARUS}
+  // Key was handled anyway, so eat it!
+  // MG: the comment was right, the implmentation not consequently enough
+  Key:=#0;
+  {$ENDIF}
 end;
 
 function TCustomSynEdit.LeftSpaces(const Line: string): Integer;
