@@ -146,6 +146,61 @@ begin
   inherited EditingDone;
 end;
 
+procedure TDBMemo.Change;
+begin
+  FDatalink.Modified;
+  inherited Change;
+end;
+
+procedure TDBMemo.KeyPress(var Key: Char);
+  function CheckValidChar: boolean;
+  begin
+    result := FDBMemoLoaded and (FDatalink.Field<>nil) and
+      FDatalink.Field.IsValidChar(Key);
+    if Result then
+      FDatalink.Edit
+    else
+      Key := #0;
+  end;
+  function CheckEditingKey: boolean;
+  begin
+    result := FDbMemoLoaded;
+    if Result then
+      FDatalink.Edit
+    else
+      Key := #0;
+  end;
+begin
+  inherited KeyPress(Key);
+  case key of
+    #32..#255: // alphabetic characters
+      CheckValidChar;
+    ^M: // enter key
+      if not CheckEditingKey then
+        LoadMemo;
+    #27: // escape
+      if FDbMemoLoaded then
+        FDatalink.Reset
+      else
+        Key:=#0;
+    ^X,^V, #8: // special keys
+      CheckEditingKey;
+    else
+      Key := #0;
+  end;
+end;
+
+procedure TDBMemo.WndProc(var AMessage: TLMessage);
+begin
+  case AMessage.Msg of
+    LM_CLEARSEL,
+    LM_CUTTOCLIP,
+    LM_PASTEFROMCLIP:
+      FDatalink.Edit;
+  end;
+  inherited WndProc(AMessage);
+end;
+
 destructor TDBMemo.Destroy;
 begin
   FDataLink.Free;

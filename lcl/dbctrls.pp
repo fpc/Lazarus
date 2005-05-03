@@ -534,6 +534,9 @@ Type
     procedure FocusRequest(Sender: TObject); virtual;
     procedure Loaded; override;
     procedure EditingDone; override;
+    procedure Change; override;
+    procedure KeyPress(var Key:Char); override;
+    procedure WndProc(var AMessage : TLMessage); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -1299,6 +1302,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.28  2005/05/03 16:43:43  mattias
+  added key handling for TDBMemo  from Jesus
+
   Revision 1.27  2005/04/03 10:13:34  mattias
   dbgrids: Stops propagating ENTER key when modifying a field  from Jesus
 
