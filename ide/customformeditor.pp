@@ -1252,12 +1252,18 @@ Begin
       // create component interface
       Temp := TComponentInterface.Create(NewComponent);
       // calc parent
-      if (ParentComponent is TWinControl)
-      and (csAcceptsControls in TWinControl(ParentComponent).ControlStyle) then
-      begin
-        AParent := TWinControl(ParentComponent);
-      end else begin
-        AParent := TControl(ParentComponent).Parent;
+      AParent:=nil;
+      if ParentComponent is TControl then begin
+        if (ParentComponent is TWinControl) then
+          AParent:=TWinControl(ParentComponent)
+        else
+          AParent:=TControl(ParentComponent).Parent;
+        while (AParent<>nil) do begin
+          if (AParent is TWinControl)
+          and (csAcceptsControls in AParent.ControlStyle) then
+            break;
+          AParent:=AParent.Parent;
+        end;
       end;
       DebugLn('Parent is '''+dbgsName(AParent)+'''');
     end else begin

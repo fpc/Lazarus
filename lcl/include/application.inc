@@ -1432,7 +1432,7 @@ begin
       ProcessMessages;
     end;
   end;
-  {$IFNDEF AfterConstructionDataModuleNotWorking}
+  {$IFDEF AfterConstructionDataModuleNotWorking}
   if (Instance is TDataModule) then begin
     TDataModule(instance).AfterConstruction;
   end;
@@ -1466,6 +1466,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.119  2005/05/03 16:52:29  mattias
+  fixed triggering TDataModule, and improved parent search for new designer controls.  from Jesus
+
   Revision 1.118  2005/04/20 07:14:00  mattias
   moved THintInfo from forms.pp to controls.pp and changed TControlShowHint event from pointer to PHintHinfo
 
