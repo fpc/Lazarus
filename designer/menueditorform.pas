@@ -311,9 +311,10 @@ end;
 
 destructor TMainMenuComponentEditor.Destroy;
 begin
-  if MainMenuEditorForm.DesignerMainMenu.Menu=Component then begin
+  if (MainMenuEditorForm <> nil) and (MainMenuEditorForm.DesignerMainMenu <> nil)
+      and (MainMenuEditorForm.DesignerMainMenu.Menu=Component) then 
     FreeThenNil(MainMenuEditorForm);
-  end;
+
   inherited Destroy;
 end;
 
