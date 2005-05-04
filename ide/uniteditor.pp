@@ -2088,7 +2088,7 @@ end;
 
 function TSourceEditor.GetWordFromCaret(const ACaretPos: TPoint): String;
 begin
-  Result := GetWordFromCaretEx(ACaretPos, ['A'..'Z', 'a'..'z', '0'..'9'], ['A'..'Z', 'a'..'z', '0'..'9']);
+  Result := GetWordFromCaretEx(ACaretPos, ['A'..'Z', 'a'..'z', '0'..'9','_'], ['A'..'Z', 'a'..'z', '0'..'9', '_']);
 end;
 
 function TSourceEditor.GetWordFromCaretEx(const ACaretPos: TPoint; const ALeftLimit, ARightLimit: TCharSet): String;
