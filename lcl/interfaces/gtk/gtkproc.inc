@@ -2038,6 +2038,10 @@ var
     
     if GtkWidgetIsA(Widget,gtk_entry_get_type) then begin
       // the gtk_entry handles the following keys
+      if (event^.keyval=GDK_Return)
+      or (event^.keyval=GDK_Escape)
+      or (event^.keyval=GDK_Tab) then
+        exit;
       if (event^.length > 0)
       or (event^.keyval=GDK_BackSpace)
       or (event^.keyval=GDK_Clear)
@@ -2047,9 +2051,6 @@ var
       or (event^.keyval=GDK_End)
       or (event^.keyval=GDK_Left)
       or (event^.keyval=GDK_Right)
-      or (event^.keyval=GDK_Return)
-      or (event^.keyval=GDK_Tab)
-      or (event^.keyval=GDK_Escape)
       or ((event^.keyval >= $20) and (event^.keyval <= $FF))
       then
         Result:=true;
@@ -8154,6 +8155,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.354  2005/05/04 15:21:18  mattias
+  fixed skipping tab, return, escape key in gtk_entry
+
   Revision 1.353  2005/05/03 16:34:25  mattias
   skip keys handled by gtk_entry - more a hack, than a generic solution
 
