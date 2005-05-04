@@ -54,7 +54,11 @@ type
   //      MBCS languages like Japanese or Korean.
 
   PSynSelectionMode = ^TSynSelectionMode;
+  // to be binary (clipboard) compatible with other (Delphi compiled) synedits
+  // use {$PACKENUM 1}
+{$IFDEF SYN_LAZARUS}{$PACKENUM 1}{$ENDIF SYN_LAZARUS}
   TSynSelectionMode = (smNormal, smLine, smColumn);
+{$IFDEF SYN_LAZARUS}{$PACKENUM 4}{$ENDIF SYN_LAZARUS}
 
   TSynSearchOption = (ssoMatchCase, ssoWholeWord, ssoBackwards,
     ssoEntireScope, ssoSelectedOnly, ssoReplace, ssoReplaceAll, ssoPrompt
