@@ -376,37 +376,30 @@ End;
 Function TWin32WidgetSet.ClipboardGetData(ClipboardType: TClipboardType;
   FormatID: TClipboardFormat; Stream: TStream): Boolean;
 var
-  UsedFormatID: TClipboardFormat;
   DataHandle: HGLOBAL;
   Data: pointer;
+  Size: integer;
   TextData: PChar;
 Begin
   Assert(False, 'TWin32WidgetSet.ClipboardGetData - Start');
   Result := false;
-  if (FormatID=0) or (Stream=nil) then exit;
+  if (FormatID=0) or (Stream=nil) or
+    not Windows.IsClipboardFormatAvailable(FormatID) then exit;
 
-  UsedFormatID := 0;
-  
-  if Windows.IsClipboardFormatAvailable(FormatID) then
-    UsedFormatID := FormatID;
-  
-  if UsedFormatID = 0 then exit;
-  
   if Windows.OpenClipboard(Windows.HWND(nil)) then
     try
-      DataHandle := Windows.GetClipboardData(UsedFormatID);
+      DataHandle := Windows.GetClipboardData(FormatID);
       if DataHandle<>HWND(0) then begin
-        Data := Windows.GlobalLock(DataHandle);
-        try
-          if (FormatID=Windows.CF_TEXT) then begin
-            TextData := PChar(Data);
-            Stream.Write(TextData^, strlen(TextData));
-          end else begin
+        Size := Windows.GlobalSize(DataHandle);
+        if Size>0 then begin
+          Data := Windows.GlobalLock(DataHandle);
+          try
+            Stream.Write(Data^, Size);
+          finally
+            Windows.GlobalUnlock(DataHandle);
           end;
-        finally
-          Windows.GlobalUnlock(DataHandle);
+          Result := true;
         end;
-        Result := true;
       end;
     finally
       Windows.CloseClipboard;
@@ -3134,6 +3127,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.145  2005/05/04 12:27:46  vincents
+  implented reading non-text formats from the clipboard
+
   Revision 1.144  2005/05/03 14:56:33  vincents
   fixed getting the size of a minimized window (bug 886)
 
