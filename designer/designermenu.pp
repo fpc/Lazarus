@@ -345,7 +345,7 @@ begin
   MenuItem^.SubMenuArrow.Parent:=MenuItem^.SelfPanel;
   MenuItem^.SubMenuArrow.ArrowType:=atright;
   MenuItem^.SubMenuArrow.Width:=20;
-  MenuItem^.SubMenuArrow.Height:=10;
+  MenuItem^.SubMenuArrow.Height:=13;
   MenuItem^.SubMenuArrow.ShadowType:=stout;
   MenuItem^.SubMenuArrow.Visible:=false;
   MenuItem^.SubMenuArrow.OnMouseDown:=@MenuItemMouseDown;
@@ -535,12 +535,12 @@ begin
     begin
       MenuItem^.SubMenuArrow.ArrowType:=atright;
     end;
-    MenuItem^.SubMenuArrow.Left:=MenuItem^.SelfPanel.Width - MenuItem^.SubMenuArrow.Width;
+    MenuItem^.SubMenuArrow.Left:=MenuItem^.SelfPanel.Width - MenuItem^.SubMenuArrow.Width - 1;
     MenuItem^.SubMenuArrow.Top:=(MenuItem^.SelfPanel.Height - MenuItem^.SubMenuArrow.Height) div 2;
     MenuItem^.SubMenuArrow.Visible:=true;
   end else
   begin
-    MenuItem^.SubMenuArrow.Left:=MenuItem^.SelfPanel.Width - MenuItem^.SubMenuArrow.Width;
+    MenuItem^.SubMenuArrow.Left:=MenuItem^.SelfPanel.Width - MenuItem^.SubMenuArrow.Width - 1;
     MenuItem^.SubMenuArrow.Top:=(MenuItem^.SelfPanel.Height - MenuItem^.SubMenuArrow.Height) div 2;
     MenuItem^.SubMenuArrow.Visible:=false;
   end;
