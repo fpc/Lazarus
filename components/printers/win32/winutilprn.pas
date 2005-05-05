@@ -1,3 +1,5 @@
+{ force CRLF fix }
+
 {
   Author: Olivier Guilbaud
 
