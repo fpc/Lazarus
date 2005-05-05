@@ -2038,22 +2038,46 @@ var
     
     if GtkWidgetIsA(Widget,gtk_entry_get_type) then begin
       // the gtk_entry handles the following keys
-      if (event^.keyval=GDK_Return)
-      or (event^.keyval=GDK_Escape)
-      or (event^.keyval=GDK_Tab) then
+      if (event^.keyval=GDK_Key_Return)
+      or (event^.keyval=GDK_Key_Escape)
+      or (event^.keyval=GDK_Key_Tab) then
         exit;
       if (event^.length > 0)
-      or (event^.keyval=GDK_BackSpace)
-      or (event^.keyval=GDK_Clear)
-      or (event^.keyval=GDK_Insert)
-      or (event^.keyval=GDK_Delete)
-      or (event^.keyval=GDK_Home)
-      or (event^.keyval=GDK_End)
-      or (event^.keyval=GDK_Left)
-      or (event^.keyval=GDK_Right)
+      or (event^.keyval=GDK_Key_BackSpace)
+      or (event^.keyval=GDK_Key_Clear)
+      or (event^.keyval=GDK_Key_Insert)
+      or (event^.keyval=GDK_Key_Delete)
+      or (event^.keyval=GDK_Key_Home)
+      or (event^.keyval=GDK_Key_End)
+      or (event^.keyval=GDK_Key_Left)
+      or (event^.keyval=GDK_Key_Right)
       or ((event^.keyval >= $20) and (event^.keyval <= $FF))
       then
         Result:=true;
+      exit;
+    end;
+    
+    if GtkWidgetIsA(Widget,gtk_text_get_type) then begin
+      // the gtk_text handles the following keys
+      if (event^.keyval=GDK_Escape) then
+        exit;
+      if (event^.length > 0)
+      or (event^.keyval=GDK_Key_Return)
+      or (event^.keyval=GDK_Key_Tab)
+      or (event^.keyval=GDK_Key_BackSpace)
+      or (event^.keyval=GDK_Key_Clear)
+      or (event^.keyval=GDK_Key_Insert)
+      or (event^.keyval=GDK_Key_Delete)
+      or (event^.keyval=GDK_Key_Home)
+      or (event^.keyval=GDK_Key_End)
+      or (event^.keyval=GDK_Key_Left)
+      or (event^.keyval=GDK_Key_Right)
+      or (event^.keyval=GDK_Key_Up)
+      or (event^.keyval=GDK_Key_Down)
+      or ((event^.keyval >= $20) and (event^.keyval <= $FF))
+      then
+        Result:=true;
+      exit;
     end;
   end;
 
@@ -8155,6 +8179,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.355  2005/05/05 08:16:57  mattias
+  extended the gtk handled key skipping hack for gtk_text
+
   Revision 1.354  2005/05/04 15:21:18  mattias
   fixed skipping tab, return, escape key in gtk_entry
 
