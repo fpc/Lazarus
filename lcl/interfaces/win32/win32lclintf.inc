@@ -41,6 +41,10 @@ begin
   drawRect := TControl(Arrow).ClientRect;
   canvasHandle := TCanvas(Canvas).Handle;
   Windows.FillRect(canvasHandle, drawRect, GetSysColorBrush(COLOR_BTNFACE));
+  dec(drawRect.Left, 2);
+  dec(drawRect.Top, 2);
+  inc(drawRect.Right, 2);
+  inc(drawRect.Bottom, 2);
   Windows.DrawFrameControl(TCanvas(Canvas).Handle, drawRect,
 	DFC_SCROLL, ArrowTypeToState[TArrow(Arrow).ArrowType]);
 end;
@@ -193,6 +197,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.23  2005/05/05 20:53:37  micha
+  hack: avoid drawing border of scrollbar arrow, by drawing it outside of clipped region
+
   Revision 1.22  2005/05/05 14:51:05  micha
   better looking arrow, not ideal, but better anyway (fixes 760)
 
