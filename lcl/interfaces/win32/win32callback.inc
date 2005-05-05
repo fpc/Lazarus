@@ -886,15 +886,16 @@ Begin
     Begin
       // if mouse-click, focus-change, mouse-click, simulate double click
       // assume focus change due to first mouse-click
-      if MouseDownFocusChange and (MouseDownWindow = Window)
+      if (MouseDownFocusStatus = mfFocusChanged) and (MouseDownFocusWindow = Window)
           and (GetTickCount - MouseDownTime <= GetDoubleClickTime) then
       begin
         PostMessage(Window, WM_LBUTTONDBLCLK, WParam, LParam);
       end;
       
       MouseDownTime := GetTickCount;
-      MouseDownFocusChange := false;
       MouseDownWindow := Window;
+      MouseDownFocusWindow := 0;
+      MouseDownFocusStatus := mfFocusSense;
       NotifyUserInput := True;
       PLMsg:=@LMMouse;
       With LMMouse Do
@@ -918,6 +919,8 @@ Begin
     End;
     WM_LBUTTONUP:
     Begin
+      if (MouseDownWindow = Window) and (MouseDownFocusStatus = mfNone) then
+        MouseDownFocusStatus := mfFocusSense;
       NotifyUserInput := True;
       PLMsg:=@LMMouse;
       With LMMouse Do
@@ -1134,10 +1137,11 @@ Begin
     end;
     WM_SETFOCUS:
     Begin
-      if Window <> MouseDownWindow then
+      // handle feature mouse-click, setfocus, mouse-click -> double-click
+      if (Window <> MouseDownWindow) and (MouseDownFocusStatus <> mfNone) then
       begin
-        MouseDownFocusChange := true;
-        MouseDownWindow := Window;
+        MouseDownFocusStatus := mfFocusChanged;
+        MouseDownFocusWindow := Window;
       end;
       LMessage.Msg := LM_SETFOCUS;
       if (lWinControl <> nil) and (lWinControl.FCompStyle = csEdit) then
@@ -1374,6 +1378,12 @@ Begin
 
   else
     case Msg of
+      WM_LBUTTONDOWN, WM_LBUTTONUP:
+      begin
+        if MouseDownFocusStatus = mfFocusSense then
+          MouseDownFocusStatus := mfNone;
+      end;
+      
       WM_NCDESTROY:
       begin
         // free our own data associated with window
@@ -1572,6 +1582,9 @@ end;
 
 {
   $Log$
+  Revision 1.206  2005/05/05 12:57:43  micha
+  improve click-focus-click implies doubleclick heuristic to check for focus change within handling of mouseclick
+
   Revision 1.205  2005/05/02 08:35:42  mattias
   fix bug 878 (can not paste from clipboard) new property TitleStyle  from Jesus
 

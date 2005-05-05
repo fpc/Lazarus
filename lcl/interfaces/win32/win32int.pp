@@ -257,11 +257,14 @@ const
   MCM_FIRST             = $1000;
   MCM_GETMINREQRECT     = MCM_FIRST + 9;
       
+type
+  TMouseDownFocusStatus = (mfNone, mfFocusSense, mfFocusChanged);
 
 var
   MouseDownTime: dword;
   MouseDownWindow: HWND;
-  MouseDownFocusChange: boolean;
+  MouseDownFocusWindow: HWND;
+  MouseDownFocusStatus: TMouseDownFocusStatus;
   OnClipBoardRequest: TClipboardRequestEvent;
 
 {$I win32listsl.inc}
@@ -278,7 +281,7 @@ Initialization
 {$endif}
   EraseBkgndStack := 0;
   { initialize mousedownclick to far before double click time }
-  MouseDownFocusChange := false;
+  MouseDownFocusStatus := mfNone;
   MouseDownTime := GetTickCount - 5000;
   MouseDownWindow := 0;
 
@@ -298,6 +301,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.138  2005/05/05 12:57:43  micha
+  improve click-focus-click implies doubleclick heuristic to check for focus change within handling of mouseclick
+
   Revision 1.137  2005/04/29 11:53:25  micha
   send double click to window, if pattern mouse-click, focus-change, mouse-click detected (fixes bug 794)
 
