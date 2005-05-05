@@ -452,6 +452,7 @@ type
       ALeft, ATop, AWidth, AHeight: integer);
     procedure DrawMarkers(DC: TDesignerDeviceContext);
     property ActiveGrabber: TGrabber read FActiveGrabber write SetActiveGrabber;
+    procedure InvalidateMarkers;
     procedure InvalidateMarkersForComponent(AComponent: TComponent);
 
     // user wished bounds:
@@ -1915,6 +1916,7 @@ begin
   if FControls.Count=0 then exit;
   InvalidateGrabbers;
   InvalidateGuideLines;
+  InvalidateMarkers;
   for i:=0 to FControls.Count-1 do Items[i].Free;
   FControls.Clear;
   FStates:=FStates+cssSelectionChangeFlags-[cssLookupRootSelected];
@@ -2196,6 +2198,15 @@ begin
     or (not Items[i].IsVisible) then continue;
     DoDrawMarker(i,DC);
   end;
+end;
+
+procedure TControlSelection.InvalidateMarkers;
+var
+  I: integer;
+begin
+  for I := 0 to Count - 1 do
+    If Items[I].IsTComponent then
+      InvalidateMarkersForComponent(TComponent(Items[I].Persistent));
 end;
 
 procedure TControlSelection.InvalidateMarkersForComponent(AComponent: TComponent
