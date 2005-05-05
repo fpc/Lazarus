@@ -1,5 +1,3 @@
-{ force CRLF fix }
-
 //WinSpool consts
 
   //Commands printer
