@@ -2059,7 +2059,7 @@ var
     
     if GtkWidgetIsA(Widget,gtk_text_get_type) then begin
       // the gtk_text handles the following keys
-      if (event^.keyval=GDK_Escape) then
+      if (event^.keyval=GDK_Key_Escape) then
         exit;
       if (event^.length > 0)
       or (event^.keyval=GDK_Key_Return)
@@ -8179,6 +8179,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.356  2005/05/05 19:47:15  micha
+  fix gtk2 compilation (from drewski)
+
   Revision 1.355  2005/05/05 08:16:57  mattias
   extended the gtk handled key skipping hack for gtk_text
 
