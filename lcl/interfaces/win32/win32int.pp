@@ -241,7 +241,7 @@ Uses
  Win32WSStdCtrls,
 // Win32WSToolwin,
 ////////////////////////////////////////////////////
-  Calendar, CListBox, Spin, CheckLst, WinExt, LclProc;
+ Arrow, Calendar, CListBox, Spin, CheckLst, WinExt, LclProc;
 
 type
   { Linked list of objects for events }
@@ -301,6 +301,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.139  2005/05/05 14:51:05  micha
+  better looking arrow, not ideal, but better anyway (fixes 760)
+
   Revision 1.138  2005/05/05 12:57:43  micha
   improve click-focus-click implies doubleclick heuristic to check for focus change within handling of mouseclick
 

@@ -30,14 +30,19 @@
 //##apiwiz##sps##   // Do not remove
 
 procedure TWin32WidgetSet.DrawArrow(Arrow: TComponent; Canvas: TPersistent);
+const
+    { up, down, left, right }
+  ArrowTypeToState: array[TArrowType] of dword = (DFCS_SCROLLUP, DFCS_SCROLLDOWN,
+    DFCS_SCROLLLEFT, DFCS_SCROLLRIGHT);
+var
+  drawRect: Windows.RECT;
+  canvasHandle: HDC;
 begin
-  Windows.DrawFrameControl(TCanvas(Canvas).Handle, 
-{$ifdef VER1_0}
-  	Windows.RECT(TControl(Arrow).ClientRect),
-{$else}  
-  	TControl(Arrow).ClientRect,
-{$endif}  
-	DFC_MENU, DFCS_MENUARROW);
+  drawRect := TControl(Arrow).ClientRect;
+  canvasHandle := TCanvas(Canvas).Handle;
+  Windows.FillRect(canvasHandle, drawRect, GetSysColorBrush(COLOR_BTNFACE));
+  Windows.DrawFrameControl(TCanvas(Canvas).Handle, drawRect,
+	DFC_SCROLL, ArrowTypeToState[TArrow(Arrow).ArrowType]);
 end;
 
 {------------------------------------------------------------------------------
@@ -188,6 +193,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.22  2005/05/05 14:51:05  micha
+  better looking arrow, not ideal, but better anyway (fixes 760)
+
   Revision 1.21  2005/02/23 01:12:47  marc
   + Added RemoveProp winapi call
   * Some maintenace on winapi/lclintf files
