@@ -788,6 +788,11 @@ Begin
     Begin
       If WParam <> 0 Then
         LMessage.Msg := LM_SETEDITABLE;
+      If Window=TWin32WidgetSet(InterfaceObject).FAppHandle then
+        if WParam=0 then
+          DisableApplicationWindows(Window)
+        else
+          EnableApplicationWindows(Window);
 
       If (lWinControl is TCustomSpinEdit) then
         EnableSpinEditBuddy(Window, WParam<>0);
@@ -1582,6 +1587,9 @@ end;
 
 {
   $Log$
+  Revision 1.207  2005/05/06 20:07:29  vincents
+  disable all application windows, when the AppHandle is disabled (fixes bug 788)
+
   Revision 1.206  2005/05/05 12:57:43  micha
   improve click-focus-click implies doubleclick heuristic to check for focus change within handling of mouseclick
 

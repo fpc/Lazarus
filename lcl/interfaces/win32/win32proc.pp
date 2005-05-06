@@ -87,6 +87,16 @@ function GetFileVersion(FileName: string): dword;
 function AllocWindowInfo(Window: HWND): PWindowInfo;
 function DisposeWindowInfo(Window: HWND): boolean;
 function GetWindowInfo(Window: HWND): PWindowInfo;
+function DisableWindowsProc(Window: HWND; Data: LParam): LongBool; stdcall;
+procedure DisableApplicationWindows(Window: HWND);
+procedure EnableApplicationWindows(Window: HWND);
+
+type
+  PDisableWindowsInfo = ^TDisableWindowsInfo;
+  TDisableWindowsInfo = record
+    NewModalWindow: HWND;
+    DisabledWindowList: TList;
+  end;
 
 var
   DefaultWindowInfo: TWindowInfo;
@@ -880,7 +890,7 @@ begin
   Result := WS_CLIPCHILDREN or WS_CLIPSIBLINGS;
   case Style of
   bsSizeable, bsSizeToolWin:
-    Result := Result or (WS_POPUP or WS_THICKFRAME or WS_CAPTION);
+    Result := Result or (WS_OVERLAPPED or WS_THICKFRAME or WS_CAPTION);
   bsSingle, bsToolWindow:
     Result := Result or (WS_OVERLAPPED or WS_BORDER or WS_CAPTION);
   bsDialog:
@@ -949,6 +959,70 @@ begin
   Result := PWindowInfo(Windows.GetProp(Window, PChar(dword(WindowInfoAtom))));
   if Result = nil then
     Result := @DefaultWindowInfo;
+end;
+
+{-----------------------------------------------------------------------------
+  Function: DisableWindowsProc
+  Params: Window - handle of toplevel windows to be disabled
+          Data   - handle of current window form
+  Returns: Whether the enumeration should continue
+
+  Used in LM_SHOWMODAL to disable the windows of application thread
+  except the current form.
+ -----------------------------------------------------------------------------}
+function DisableWindowsProc(Window: HWND; Data: LParam): LongBool; stdcall;
+var
+  Buffer: array[0..15] of Char;
+begin
+  Result:=true;
+
+  // Don't disable the current window form
+  if Window = PDisableWindowsInfo(Data)^.NewModalWindow then exit;
+
+  // Don't disable any ComboBox listboxes
+  if (GetClassName(Window, @Buffer, sizeof(Buffer))<sizeof(Buffer))
+    and (StrIComp(Buffer, 'ComboLBox')=0) then exit;
+
+  if not IsWindowVisible(Window) or not IsWindowEnabled(Window) then exit;
+
+  PDisableWindowsInfo(Data)^.DisabledWindowList.Add(Pointer(Window));
+  EnableWindow(Window,False);
+end;
+
+var
+  InDisableApplicationWindows: boolean = false;
+
+procedure DisableApplicationWindows(Window: HWND);
+var
+  DisableWindowsInfo: PDisableWindowsInfo;
+  WindowInfo: PWindowInfo;
+begin
+  // prevent recursive calling when the AppHandle window is disabled
+  If InDisableApplicationWindows then exit;
+  InDisableApplicationWindows:=true;
+  New(DisableWindowsInfo);
+  DisableWindowsInfo^.NewModalWindow := Window;
+  DisableWindowsInfo^.DisabledWindowList := TList.Create;
+  WindowInfo := GetWindowInfo(DisableWindowsInfo^.NewModalWindow);
+  WindowInfo^.DisabledWindowList := DisableWindowsInfo^.DisabledWindowList;
+  EnumThreadWindows(GetWindowThreadProcessId(DisableWindowsInfo^.NewModalWindow, nil),
+    @DisableWindowsProc, LPARAM(DisableWindowsInfo));
+  Dispose(DisableWindowsInfo);
+  InDisableApplicationWindows := false;
+end;
+
+procedure EnableApplicationWindows(Window: HWND);
+var
+  WindowInfo: PWindowInfo;
+  I: integer;
+begin
+  WindowInfo := GetWindowInfo(Window);
+  if WindowInfo^.DisabledWindowList <> nil then
+  begin
+    for I := 0 to WindowInfo^.DisabledWindowList.Count - 1 do
+      EnableWindow(HWND(WindowInfo^.DisabledWindowList.Items[I]), true);
+    FreeAndNil(WindowInfo^.DisabledWindowList);
+  end;
 end;
 
 {$IFDEF ASSERT_IS_ON}
