@@ -3854,6 +3854,10 @@ msgstr "Enllaçaments del ratolí"
 msgid "Move Down"
 msgstr "Mou avall"
 
+#: lazarusidestrconsts:lismenueditormovedown
+msgid "Move Down (or right)"
+msgstr ""
+
 #: lazarusidestrconsts:uemmoveeditorleft
 msgid "Move Editor Left"
 msgstr "Mou l'editor a l'esquerra"
@@ -3867,12 +3871,8 @@ msgid "Move Up"
 msgstr "Mou amunt"
 
 #: lazarusidestrconsts:lismenueditormoveup
-msgid "Move Up(left)"
-msgstr "Mou amunt (esquerra)"
-
-#: lazarusidestrconsts:lismenueditormovedown
-msgid "Move Up(right)"
-msgstr "Mou amunt (dreta)"
+msgid "Move Up (or left)"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecpagedown
 msgid "Move cursor down one page"

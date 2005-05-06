@@ -7563,11 +7563,11 @@ msgid "Handle OnClick Event"
 msgstr ""
 
 #: lazarusidestrconsts:lismenueditormoveup
-msgid "Move Up(left)"
+msgid "Move Up (or left)"
 msgstr ""
 
 #: lazarusidestrconsts:lismenueditormovedown
-msgid "Move Up(right)"
+msgid "Move Down (or right)"
 msgstr ""
 
 #: lazarusidestrconsts:lismenueditorinsertfromtemplate

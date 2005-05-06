@@ -3865,6 +3865,10 @@ msgstr "Liens souris"
 msgid "Move Down"
 msgstr "Descendre"
 
+#: lazarusidestrconsts:lismenueditormovedown
+msgid "Move Down (or right)"
+msgstr ""
+
 #: lazarusidestrconsts:uemmoveeditorleft
 msgid "Move Editor Left"
 msgstr "Déplacer la page vers la gauche"
@@ -3878,12 +3882,8 @@ msgid "Move Up"
 msgstr "Monter"
 
 #: lazarusidestrconsts:lismenueditormoveup
-msgid "Move Up(left)"
-msgstr "Monter (gauche)"
-
-#: lazarusidestrconsts:lismenueditormovedown
-msgid "Move Up(right)"
-msgstr "Monter (droite)"
+msgid "Move Up (or left)"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecpagedown
 msgid "Move cursor down one page"

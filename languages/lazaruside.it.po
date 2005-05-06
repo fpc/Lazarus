@@ -3864,6 +3864,10 @@ msgstr "Collegamenti al mouse"
 msgid "Move Down"
 msgstr "Sposta in giù"
 
+#: lazarusidestrconsts:lismenueditormovedown
+msgid "Move Down (or right)"
+msgstr ""
+
 #: lazarusidestrconsts:uemmoveeditorleft
 msgid "Move Editor Left"
 msgstr "Sposta l'editor a sinistra"
@@ -3877,12 +3881,8 @@ msgid "Move Up"
 msgstr "Sposta in su"
 
 #: lazarusidestrconsts:lismenueditormoveup
-msgid "Move Up(left)"
-msgstr "Sposta in su(sinistra)"
-
-#: lazarusidestrconsts:lismenueditormovedown
-msgid "Move Up(right)"
-msgstr "Sposta in giù(destra)"
+msgid "Move Up (or left)"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecpagedown
 msgid "Move cursor down one page"

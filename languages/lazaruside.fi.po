@@ -3854,6 +3854,10 @@ msgstr ""
 msgid "Move Down"
 msgstr ""
 
+#: lazarusidestrconsts:lismenueditormovedown
+msgid "Move Down (or right)"
+msgstr ""
+
 #: lazarusidestrconsts:uemmoveeditorleft
 msgid "Move Editor Left"
 msgstr "Siirry vasemmanpuoleiselle välilehdelle"
@@ -3867,11 +3871,7 @@ msgid "Move Up"
 msgstr ""
 
 #: lazarusidestrconsts:lismenueditormoveup
-msgid "Move Up(left)"
-msgstr ""
-
-#: lazarusidestrconsts:lismenueditormovedown
-msgid "Move Up(right)"
+msgid "Move Up (or left)"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecpagedown

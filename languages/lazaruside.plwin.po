@@ -3865,6 +3865,10 @@ msgstr "Powi¹zania myszy"
 msgid "Move Down"
 msgstr "W dó³"
 
+#: lazarusidestrconsts:lismenueditormovedown
+msgid "Move Down (or right)"
+msgstr ""
+
 #: lazarusidestrconsts:uemmoveeditorleft
 msgid "Move Editor Left"
 msgstr "Przesuñ zak³adkê w lewo"
@@ -3878,12 +3882,8 @@ msgid "Move Up"
 msgstr "W górê"
 
 #: lazarusidestrconsts:lismenueditormoveup
-msgid "Move Up(left)"
-msgstr "W górê na lewo"
-
-#: lazarusidestrconsts:lismenueditormovedown
-msgid "Move Up(right)"
-msgstr "W górê na prawo"
+msgid "Move Up (or left)"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecpagedown
 msgid "Move cursor down one page"

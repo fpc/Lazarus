@@ -3854,6 +3854,10 @@ msgstr "Ссылки мыши"
 msgid "Move Down"
 msgstr "Сдвинуть вниз"
 
+#: lazarusidestrconsts:lismenueditormovedown
+msgid "Move Down (or right)"
+msgstr ""
+
 #: lazarusidestrconsts:uemmoveeditorleft
 msgid "Move Editor Left"
 msgstr "Подвинуть страницу влево"
@@ -3867,12 +3871,8 @@ msgid "Move Up"
 msgstr "Вверх"
 
 #: lazarusidestrconsts:lismenueditormoveup
-msgid "Move Up(left)"
-msgstr "Вверх(влево)"
-
-#: lazarusidestrconsts:lismenueditormovedown
-msgid "Move Up(right)"
-msgstr "Вверх(вправо)"
+msgid "Move Up (or left)"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecpagedown
 msgid "Move cursor down one page"

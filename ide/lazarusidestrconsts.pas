@@ -2530,8 +2530,8 @@ resourcestring
   lisMenuEditorDeleteItem = 'Delete Item';
   lisMenuEditorCreateSubMenu = 'Create Submenu';
   lisMenuEditorHandleOnClickEvent = 'Handle OnClick Event';
-  lisMenuEditorMoveUp = 'Move Up(left)';
-  lisMenuEditorMoveDown = 'Move Up(right)';
+  lisMenuEditorMoveUp = 'Move Up (or left)';
+  lisMenuEditorMoveDown = 'Move Down (or right)';
   lisMenuEditorInsertFromTemplate = 'Insert From Template...';
   lisMenuEditorSaveAsTemplate = 'Save As Template...';
   lisMenuEditorDeleteFromTemplate = 'Delete From Template...';
