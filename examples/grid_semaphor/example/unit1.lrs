@@ -3,28 +3,28 @@
 LazarusResources.Add('TForm1','FORMDATA',[
   'TPF0'#6'TForm1'#5'Form1'#7'Caption'#6#16'Try SemaphorGrid'#12'ClientHeight'#3
   +'+'#1#11'ClientWidth'#3#24#2#8'OnCreate'#7#11'Form1Create'#13'PixelsPerInch'
-  +#2'`'#18'HorzScrollBar.Page'#3#23#2#18'VertScrollBar.Page'#3'*'#1#4'Left'#2
-  +#18#6'Height'#3'+'#1#3'Top'#3#141#0#5'Width'#3#24#2#0#7'TButton'#7'Button1'
-  +#22'BorderSpacing.OnChange'#13#7'Caption'#6#15'Toggle Semaphor'#7'OnClick'#7
-  +#12'Button1Click'#8'TabOrder'#2#0#4'Left'#2#8#6'Height'#2#25#3'Top'#3#232#0#5
-  +'Width'#2'p'#0#0#7'TButton'#7'Button2'#22'BorderSpacing.OnChange'#13#7'Capti'
-  +'on'#6#19'Next Semafore Style'#7'OnClick'#7#12'Button2Click'#8'TabOrder'#2#1
-  +#4'Left'#3#128#0#6'Height'#2#25#3'Top'#3#232#0#5'Width'#2'~'#0#0#7'TButton'#7
-  +'Button3'#22'BorderSpacing.OnChange'#13#7'Caption'#6#14'Next Alignment'#7'On'
-  +'Click'#7#12'Button3Click'#8'TabOrder'#2#2#4'Left'#2#8#6'Height'#2#25#3'Top'
-  +#3#8#1#5'Width'#2'r'#0#0#7'TButton'#7'Button4'#22'BorderSpacing.OnChange'#13
-  +#7'Caption'#6#5'Close'#7'OnClick'#7#12'Button4Click'#8'TabOrder'#2#3#4'Left'
-  +#3'K'#1#6'Height'#2#25#3'Top'#3#8#1#5'Width'#2'K'#0#0#7'TButton'#7'Button5'
-  +#22'BorderSpacing.OnChange'#13#7'Caption'#6#12'Save to File'#7'OnClick'#7#12
-  +'Button5Click'#8'TabOrder'#2#4#4'Left'#3#128#0#6'Height'#2#25#3'Top'#3#8#1#5
-  +'Width'#2'X'#0#0#7'TButton'#7'Button6'#22'BorderSpacing.OnChange'#13#7'Capti'
-  +'on'#6#14'Load from File'#7'OnClick'#7#12'Button6Click'#8'TabOrder'#2#5#4'Le'
-  +'ft'#3#227#0#6'Height'#2#25#3'Top'#3#8#1#5'Width'#2'`'#0#0#7'TButton'#7'Butt'
-  +'on7'#22'BorderSpacing.OnChange'#13#7'Caption'#6#9'AutoWidth'#7'OnClick'#7#12
-  +'Button7Click'#8'TabOrder'#2#6#4'Left'#3#8#1#6'Height'#2#17#3'Top'#3#232#0#5
-  +'Width'#2'C'#0#0#7'TButton'#7'Button8'#22'BorderSpacing.OnChange'#13#7'Capti'
-  +'on'#6#10'AutoHeight'#7'OnClick'#7#12'Button8Click'#8'TabOrder'#2#7#4'Left'#3
-  +'N'#1#6'Height'#2#17#3'Top'#3#232#0#5'Width'#2'H'#0#0#7'TButton'#7'Button9'
+  +#2'`'#18'HorzScrollBar.Page'#3#23#2#18'VertScrollBar.Page'#3'*'#1#4'Left'#3
+  +#219#0#6'Height'#3'+'#1#3'Top'#3#192#0#5'Width'#3#24#2#0#7'TButton'#7'Button'
+  +'1'#22'BorderSpacing.OnChange'#13#7'Caption'#6#15'Toggle Semaphor'#7'OnClick'
+  +#7#12'Button1Click'#8'TabOrder'#2#0#4'Left'#2#8#6'Height'#2#25#3'Top'#3#232#0
+  +#5'Width'#2'p'#0#0#7'TButton'#7'Button2'#22'BorderSpacing.OnChange'#13#7'Cap'
+  +'tion'#6#19'Next Semafore Style'#7'OnClick'#7#12'Button2Click'#8'TabOrder'#2
+  +#1#4'Left'#3#128#0#6'Height'#2#25#3'Top'#3#232#0#5'Width'#2'~'#0#0#7'TButton'
+  +#7'Button3'#22'BorderSpacing.OnChange'#13#7'Caption'#6#14'Next Alignment'#7
+  +'OnClick'#7#12'Button3Click'#8'TabOrder'#2#2#4'Left'#2#8#6'Height'#2#25#3'To'
+  +'p'#3#8#1#5'Width'#2'r'#0#0#7'TButton'#7'Button4'#22'BorderSpacing.OnChange'
+  +#13#7'Caption'#6#5'Close'#7'OnClick'#7#12'Button4Click'#8'TabOrder'#2#3#4'Le'
+  +'ft'#3'K'#1#6'Height'#2#25#3'Top'#3#8#1#5'Width'#2'K'#0#0#7'TButton'#7'Butto'
+  +'n5'#22'BorderSpacing.OnChange'#13#7'Caption'#6#12'Save to File'#7'OnClick'#7
+  +#12'Button5Click'#8'TabOrder'#2#4#4'Left'#3#128#0#6'Height'#2#25#3'Top'#3#8#1
+  +#5'Width'#2'X'#0#0#7'TButton'#7'Button6'#22'BorderSpacing.OnChange'#13#7'Cap'
+  +'tion'#6#14'Load from File'#7'OnClick'#7#12'Button6Click'#8'TabOrder'#2#5#4
+  +'Left'#3#227#0#6'Height'#2#25#3'Top'#3#8#1#5'Width'#2'`'#0#0#7'TButton'#7'Bu'
+  +'tton7'#22'BorderSpacing.OnChange'#13#7'Caption'#6#9'AutoWidth'#7'OnClick'#7
+  +#12'Button7Click'#8'TabOrder'#2#6#4'Left'#3#8#1#6'Height'#2#17#3'Top'#3#232#0
+  +#5'Width'#2'C'#0#0#7'TButton'#7'Button8'#22'BorderSpacing.OnChange'#13#7'Cap'
+  +'tion'#6#10'AutoHeight'#7'OnClick'#7#12'Button8Click'#8'TabOrder'#2#7#4'Left'
+  +#3'N'#1#6'Height'#2#17#3'Top'#3#232#0#5'Width'#2'H'#0#0#7'TButton'#7'Button9'
   +#22'BorderSpacing.OnChange'#13#7'Caption'#6#12'Sort Cols[4]'#7'OnClick'#7#12
   +'Button9Click'#8'TabOrder'#2#8#4'Left'#3#176#0#6'Height'#2#20#3'Top'#3#167#0
   +#5'Width'#2'K'#0#0#12'TRadioButton'#12'RadioButton1'#22'BorderSpacing.OnChan'
@@ -43,31 +43,29 @@ LazarusResources.Add('TForm1','FORMDATA',[
   +#7'Caption'#6#6'Panel1'#12'ClientHeight'#3#154#0#11'ClientWidth'#3#208#1#11
   +'FullRepaint'#8#8'TabOrder'#2#14#4'Left'#2#8#6'Height'#3#154#0#3'Top'#2#8#5
   +'Width'#3#208#1#0#13'TSemaphorGrid'#13'SemaphorGrid1'#9'Alignment'#7#8'taCen'
-  +'ter'#5'CHSEP'#6#1#255#8'Semaphor'#9#9'StringRed'#6#2'no'#12'StringYellow'#6
-  +#5'maybe'#11'StringGreen'#6#3'yes'#13'SemaphorShape'#7#6'ssDisk'#22'BorderSp'
-  +'acing.OnChange'#13#5'Color'#7#7'clWhite'#8'ColCount'#2#5#15'DefaultColWidth'
-  +#2'@'#16'DefaultRowHeight'#2#24#10'FixedColor'#7#9'clBtnFace'#13'GridLineWid'
-  +'th'#2#0#7'Options'#11#15'goFixedVertLine'#15'goFixedHorzLine'#10'goVertLine'
-  +#10'goHorzLine'#13'goRangeSelect'#14'goSmoothScroll'#0#8'RowCount'#2#5#10'Sc'
-  +'rollBars'#7#10'ssAutoBoth'#8'TabOrder'#2#0#7'TabStop'#9#15'VisibleColCount'
-  +#2#4#15'VisibleRowCount'#2#4#6'Height'#3#148#0#5'Width'#3#200#1#9'ColWidths'
-  +#1#2'@'#2'@'#2'@'#2'@'#2'@'#0#10'RowHeights'#1#2#24#2#24#2#24#2#24#2#24#0#5
-  +'Cells'#1#2#24#2#0#2#0#6#3'a\n'#2#0#2#1#6#1'a'#2#0#2#2#6#1'b'#2#0#2#3#6#1'c'
-  +#2#0#2#4#6#1'd'#2#1#2#0#6#1'1'#2#1#2#1#6#2'no'#2#1#2#2#6#5'alpha'#2#1#2#3#6#3
-  +'zed'#2#1#2#4#6#5'maybe'#2#2#2#0#6#1'2'#2#2#2#1#6#3'yes'#2#2#2#2#6#9'Salvato'
-  +'re'#2#2#2#3#6#6'0.9877'#2#2#2#4#6#3'yes'#2#3#2#0#6#1'3'#2#3#2#2#6#2'no'#2#3
-  +#2#3#6#7'Coppola'#2#3#2#4#6#5'maybe'#2#4#2#0#6#1'4'#2#4#2#1#6#1'5'#2#4#2#2#6
-  +#2'12'#2#4#2#3#6#2'-1'#2#4#2#4#6#1'2'#0#0#0#0#7'TButton'#8'Button12'#22'Bord'
-  +'erSpacing.OnChange'#13#7'Caption'#6#12'Sort Cols[1]'#7'OnClick'#7#13'Button'
-  +'12Click'#8'TabOrder'#2#15#4'Left'#3#176#0#6'Height'#2#18#3'Top'#3#190#0#5'W'
-  +'idth'#2'K'#0#0#10'TToggleBox'#10'ToggleBox1'#22'BorderSpacing.OnChange'#13#7
-  +'Caption'#6#10'UnEditable'#7'OnClick'#7#15'ToggleBox1Click'#8'TabOrder'#2#16
-  +#4'Left'#3#128#1#6'Height'#2#25#3'Top'#3#167#0#5'Width'#2'Z'#0#0#9'TCheckBox'
-  +#9'CheckBox2'#22'BorderSpacing.OnChange'#13#7'Caption'#6#10'Only Float'#7'On'
-  +'Click'#7#14'CheckBox2Click'#8'TabOrder'#2#17#4'Left'#3#128#1#6'Height'#2#23
-  ,#3'Top'#3#203#0#5'Width'#2'Y'#0#0#11'TSaveDialog'#11'SaveDialog1'#5'Title'#6
-  +#12'Save file as'#11'FilterIndex'#2#0#5'Title'#6#12'Save file as'#4'left'#2
-  +'('#3'top'#3'h'#1#0#0#11'TOpenDialog'#11'OpenDialog1'#5'Title'#6#18'Open exi'
-  +'sting file'#11'FilterIndex'#2#0#5'Title'#6#18'Open existing file'#4'left'#2
-  +#8#3'top'#3'h'#1#0#0#0
+  +'ter'#8'Semaphor'#9#9'StringRed'#6#2'no'#12'StringYellow'#6#5'maybe'#11'Stri'
+  +'ngGreen'#6#3'yes'#13'SemaphorShape'#7#6'ssDisk'#22'BorderSpacing.OnChange'
+  +#13#5'Color'#7#7'clWhite'#8'ColCount'#2#5#16'DefaultRowHeight'#2#24#10'Fixed'
+  +'Color'#7#9'clBtnFace'#13'GridLineWidth'#2#0#7'Options'#11#15'goFixedVertLin'
+  +'e'#15'goFixedHorzLine'#10'goVertLine'#10'goHorzLine'#13'goRangeSelect'#14'g'
+  +'oSmoothScroll'#0#8'RowCount'#2#5#10'ScrollBars'#7#10'ssAutoBoth'#8'TabOrder'
+  +#2#0#7'TabStop'#9#15'VisibleColCount'#2#4#15'VisibleRowCount'#2#4#6'Height'#3
+  +#148#0#5'Width'#3#200#1#5'Cells'#1#2#24#2#0#2#0#6#3'a\n'#2#0#2#1#6#1'a'#2#0#2
+  +#2#6#1'b'#2#0#2#3#6#1'c'#2#0#2#4#6#1'd'#2#1#2#0#6#1'1'#2#1#2#1#6#2'no'#2#1#2
+  +#2#6#5'alpha'#2#1#2#3#6#3'zed'#2#1#2#4#6#5'maybe'#2#2#2#0#6#1'2'#2#2#2#1#6#3
+  +'yes'#2#2#2#2#6#9'Salvatore'#2#2#2#3#6#6'0.9877'#2#2#2#4#6#3'yes'#2#3#2#0#6#1
+  +'3'#2#3#2#2#6#2'no'#2#3#2#3#6#7'Coppola'#2#3#2#4#6#5'maybe'#2#4#2#0#6#1'4'#2
+  +#4#2#1#6#1'5'#2#4#2#2#6#2'12'#2#4#2#3#6#2'-1'#2#4#2#4#6#1'2'#0#0#0#0#7'TButt'
+  +'on'#8'Button12'#22'BorderSpacing.OnChange'#13#7'Caption'#6#12'Sort Cols[1]'
+  +#7'OnClick'#7#13'Button12Click'#8'TabOrder'#2#15#4'Left'#3#176#0#6'Height'#2
+  +#18#3'Top'#3#190#0#5'Width'#2'K'#0#0#10'TToggleBox'#10'ToggleBox1'#22'Border'
+  +'Spacing.OnChange'#13#7'Caption'#6#10'UnEditable'#7'OnClick'#7#15'ToggleBox1'
+  +'Click'#8'TabOrder'#2#16#4'Left'#3#128#1#6'Height'#2#25#3'Top'#3#167#0#5'Wid'
+  +'th'#2'Z'#0#0#9'TCheckBox'#9'CheckBox2'#22'BorderSpacing.OnChange'#13#7'Capt'
+  +'ion'#6#10'Only Float'#7'OnClick'#7#14'CheckBox2Click'#8'TabOrder'#2#17#4'Le'
+  +'ft'#3#128#1#6'Height'#2#23#3'Top'#3#203#0#5'Width'#2'Y'#0#0#11'TSaveDialog'
+  +#11'SaveDialog1'#5'Title'#6#12'Save file as'#11'FilterIndex'#2#0#5'Title'#6
+  ,#12'Save file as'#4'left'#2'('#3'top'#3'h'#1#0#0#11'TOpenDialog'#11'OpenDial'
+  +'og1'#5'Title'#6#18'Open existing file'#11'FilterIndex'#2#0#5'Title'#6#18'Op'
+  +'en existing file'#4'left'#2#8#3'top'#3'x'#1#0#0#0
 ]);

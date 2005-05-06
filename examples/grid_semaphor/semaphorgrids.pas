@@ -48,6 +48,9 @@ Date: 03-Apr-2005
 - introduced System Metrics in AutoWidth and AutoHeight (keep in count
   scrollbars);
 
+Date: 04-May-2005
+- set default CHARSEP to #255
+
 knowed bug:
   re-sorting a column that have two or more cells equal, the
   corrispondent rows are swapped, so there are more than one grid sorted by
@@ -130,7 +133,7 @@ type
     { Published declarations }
     property Constraints;
     property Alignment: TAlignment read  FAlignment write SetAlignment;
-    property CHSEP : Char read FCHSEP write SetCHSEP;
+    property CHSEP : Char read FCHSEP write SetCHSEP default #255;
     property Semaphor : boolean read FSemaphor write SetSemaphor;
     property StringRed : string read FStringRed write SetStringRed;
     property StringYellow : string read FStringYellow write SetStringYellow;
