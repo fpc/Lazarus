@@ -1,0 +1,596 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"PO-Revision-Date: 2005-05-06 15:36+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-15\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: objinspstrconsts:oisobjectinspector
+msgid "Object Inspector"
+msgstr "Object Inspector"
+
+#: objinspstrconsts:oisall
+msgid "All"
+msgstr "Alles"
+
+#: objinspstrconsts:oiserror
+msgid "Error"
+msgstr "Fout"
+
+#: objinspstrconsts:oisitemsselected
+msgid "%u items selected"
+msgstr "%u onderdelen geselecteerd"
+
+#: objinspstrconsts:oiscadd
+msgid "&Add"
+msgstr "&Toevoegen"
+
+#: objinspstrconsts:oiscdelete
+msgid "&Delete"
+msgstr "&Verwijderen"
+
+#: objinspstrconsts:oisconfirmdelete
+msgid "Confirm delete"
+msgstr "Bevestigen verwijderen"
+
+#: objinspstrconsts:oisdeleteitem
+msgid "Delete item %s%s%s?"
+msgstr "Verwijder onderdelen %s%s%s?"
+
+#: objinspstrconsts:oisunknown
+msgid "Unknown"
+msgstr "Onbekend"
+
+#: objinspstrconsts:oisobject
+msgid "Object"
+msgstr "Object"
+
+#: objinspstrconsts:oisclass
+msgid "Class"
+msgstr "Class"
+
+#: objinspstrconsts:oisword
+msgid "Word"
+msgstr "Word"
+
+#: objinspstrconsts:oisstring
+msgid "String"
+msgstr "String"
+
+#: objinspstrconsts:oisfloat
+msgid "Float"
+msgstr "Float"
+
+#: objinspstrconsts:oisset
+msgid "Set"
+msgstr "Set"
+
+#: objinspstrconsts:oismethod
+msgid "Method"
+msgstr "Method"
+
+#: objinspstrconsts:oisvariant
+msgid "Variant"
+msgstr "Variant"
+
+#: objinspstrconsts:oisarray
+msgid "Array"
+msgstr "Array"
+
+#: objinspstrconsts:oisrecord
+msgid "Record"
+msgstr "Record"
+
+#: objinspstrconsts:oisinterface
+msgid "Interface"
+msgstr "Interface"
+
+#: objinspstrconsts:oisproperties
+msgid "Properties"
+msgstr "Eigenschappen"
+
+#: objinspstrconsts:oisevents
+msgid "Events"
+msgstr "Gebeurtenissen"
+
+#: objinspstrconsts:oisfavourites
+msgid "Favourites"
+msgstr "Favorieten"
+
+#: objinspstrconsts:oissettodefault
+msgid "Set to default: %s"
+msgstr "Zet naar standaardinstelling: %s"
+
+#: objinspstrconsts:oissettodefaultvalue
+msgid "Set to default value"
+msgstr "Zet naar standaardwaarde"
+
+#: objinspstrconsts:oisvalue
+msgid "Value:"
+msgstr "Waarde:"
+
+#: objinspstrconsts:oisinteger
+msgid "Integer"
+msgstr "Integer"
+
+#: objinspstrconsts:oisint64
+msgid "Int64"
+msgstr "Int64"
+
+#: objinspstrconsts:oisboolean
+msgid "Boolean"
+msgstr "Boolean"
+
+#: objinspstrconsts:oisenumeration
+msgid "Enumeration"
+msgstr "Enumeration"
+
+#: objinspstrconsts:oischar
+msgid "Char"
+msgstr "Char"
+
+#: objinspstrconsts:sccslvedtcaption
+msgid "ListView editor"
+msgstr "Lijstindeling editor"
+
+#: objinspstrconsts:sccslvedtgrplcaption
+msgid " Items "
+msgstr " Onderdelen "
+
+#: objinspstrconsts:sccslvedtgrprcaption
+msgid " Item property "
+msgstr " Onderdelen eigenschap "
+
+#: objinspstrconsts:sccslvedtlabcaption
+msgid "Label"
+msgstr "Etiket"
+
+#: objinspstrconsts:sccslvedtimgindexcaption
+msgid "Image index"
+msgstr "Plaatjes Index"
+
+#: objinspstrconsts:sccslvedtbtnadd
+msgid "New"
+msgstr "Nieuw"
+
+#: objinspstrconsts:sccslvedtbtndel
+msgid "Delete"
+msgstr "Verwijderen"
+
+#: objinspstrconsts:oiscategory
+msgid "Category"
+msgstr "Categorie"
+
+#: objinspstrconsts:oisaction
+msgid "Action"
+msgstr "Actie"
+
+#: objinspstrconsts:sccslvedtbtnaddsub
+msgid "Sub item"
+msgstr "Sub onderdeel"
+
+#: objinspstrconsts:sccsiledtcaption
+msgid "Image list editor"
+msgstr "Plaatjeslijst editor"
+
+#: objinspstrconsts:sccsilcmbimgsel
+msgid " Selected image "
+msgstr "Geselecteerd plaatje"
+
+#: objinspstrconsts:sccsilcmbimglist
+msgid " Images "
+msgstr "Plaatje"
+
+#: objinspstrconsts:sccsilbtnadd
+msgid "Add ..."
+msgstr "Toevoegen ..."
+
+#: objinspstrconsts:sccsilbtnclear
+msgid "Clear"
+msgstr "Opschonen"
+
+#: objinspstrconsts:sccsilconfirme
+msgid "Confirme clear all images ?"
+msgstr "Bevestig opschonen alle plaatjes"
+
+#: objinspstrconsts:cesstringgrideditor
+msgid "StringGrid Editor ..."
+msgstr "StringGrid Editor ..."
+
+#: objinspstrconsts:cesstringgrideditor2
+msgid "StringGrid Editor"
+msgstr "StringGrid Editor"
+
+#: objinspstrconsts:oiscreatedefaultevent
+msgid "Create default event"
+msgstr "Creëer standaard gebeurtenis"
+
+#: objinspstrconsts:cactionlisteditorunknowncategory
+msgid "(Unknown)"
+msgstr "(Onbekend)"
+
+#: objinspstrconsts:cactionlisteditorallcategory
+msgid "(All)"
+msgstr "(Alles)"
+
+#: objinspstrconsts:cactionlisteditoreditcategory
+msgid "Edit"
+msgstr "Edit"
+
+#: objinspstrconsts:cactionlisteditorhelpcategory
+msgid "Help"
+msgstr "Help"
+
+#: objinspstrconsts:cactionlisteditordialogcategory
+msgid "Dialog"
+msgstr "Dialoog"
+
+#: objinspstrconsts:cactionlisteditorfilecategory
+msgid "File"
+msgstr "Bestand"
+
+#: objinspstrconsts:cactionlisteditordatabasecategory
+msgid "Database"
+msgstr "Database"
+
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr "Edit actie lijst"
+
+#: objinspstrconsts:oisactionlisteditor
+msgid "Action List Editor"
+msgstr "Actielijst Editor"
+
+#: objinspstrconsts:cactionlisteditornewaction
+msgid "New Action"
+msgstr "Nieuwe actie"
+
+#: objinspstrconsts:cactionlisteditornewstdaction
+msgid "New Standard Action"
+msgstr "Nieuwe Standaard Actie"
+
+#: objinspstrconsts:cactionlisteditormovedownaction
+msgid "Move Down"
+msgstr "Ga naar beneden"
+
+#: objinspstrconsts:cactionlisteditormoveupaction
+msgid "Move Up"
+msgstr "Ga naar boven"
+
+#: objinspstrconsts:cactionlisteditordeleteactionhint
+msgid "Delete Action"
+msgstr "Verwijder Actie"
+
+#: objinspstrconsts:cactionlisteditorpaneldescrriptions
+msgid "Panel Descriptions"
+msgstr " Panel Beschrijvingen "
+
+#: objinspstrconsts:cactionlisteditorpaneltoolbar
+msgid "Toolbar"
+msgstr "Gereedschapsbalk"
+
+#: objinspstrconsts:oistdacteditcutheadline
+msgid "Cu&t"
+msgstr "Knip he&t"
+
+#: objinspstrconsts:oistdacteditcopyheadline
+msgid "&Copy"
+msgstr "&Copieëer"
+
+#: objinspstrconsts:oistdacteditpasteheadline
+msgid "&Paste"
+msgstr "&PLakken"
+
+#: objinspstrconsts:oistdacteditselectallheadline
+msgid "Select &All"
+msgstr "Selcteer &Alles"
+
+#: objinspstrconsts:oistdacteditundoheadline
+msgid "&Undo"
+msgstr "&Ongedaan maken"
+
+#: objinspstrconsts:oistdacthelpcontentsheadline
+msgid "&Contents"
+msgstr "&Inhoud"
+
+#: objinspstrconsts:oistdacthelptopicsearchheadline
+msgid "&Topic Search"
+msgstr "O&nderwerp Zoeken"
+
+#: objinspstrconsts:oistdacthelphelphelpheadline
+msgid "&Help on Help"
+msgstr "&Help voor Help"
+
+#: objinspstrconsts:oistdactfileopenheadline
+msgid "&Open..."
+msgstr "&Openen..."
+
+#: objinspstrconsts:oistdactfilesaveasheadline
+msgid "Save &As..."
+msgstr "&Bewaren Als"
+
+#: objinspstrconsts:oistdactfileexitheadline
+msgid "E&xit"
+msgstr "A&fsluiten"
+
+#: objinspstrconsts:oistdactcolorselect1headline
+msgid "Select &Color..."
+msgstr "Selecteer &Kleur"
+
+#: objinspstrconsts:oistdactfonteditheadline
+msgid "Select &Font..."
+msgstr "Selecteer &Lettertype"
+
+#: objinspstrconsts:oistdactdatasetfirstheadline
+msgid "&First"
+msgstr "Eer&ste"
+
+#: objinspstrconsts:oistdactdatasetpriorheadline
+msgid "&Prior"
+msgstr "&Vorige"
+
+#: objinspstrconsts:oistdactdatasetnextheadline
+msgid "&Next"
+msgstr "&Volgende"
+
+#: objinspstrconsts:oistdactdatasetlastheadline
+msgid "&Last"
+msgstr "&Laatste"
+
+#: objinspstrconsts:oistdactdatasetinsertheadline
+msgid "&Insert"
+msgstr "&Invoegen"
+
+#: objinspstrconsts:oistdactdataseteditheadline
+msgid "&Edit"
+msgstr "&Edit"
+
+#: objinspstrconsts:oistdactdatasetpostheadline
+msgid "P&ost"
+msgstr "&Bewaren"
+
+#: objinspstrconsts:oistdactdatasetcancelheadline
+msgid "&Cancel"
+msgstr "&Ongedaan"
+
+#: objinspstrconsts:oistdactdatasetrefreshheadline
+msgid "&Refresh"
+msgstr "&Verversen"
+
+#: objinspstrconsts:oistdacteditcutshortcut
+msgid "Ctrl+X"
+msgstr "Ctrl+X"
+
+#: objinspstrconsts:oistdacteditcopyshortcut
+msgid "Ctrl+C"
+msgstr "Ctrl+C"
+
+#: objinspstrconsts:oistdacteditpasteshortcut
+msgid "Ctrl+V"
+msgstr "Ctrl+V"
+
+#: objinspstrconsts:oistdacteditselectallshortcut
+msgid "Ctrl+A"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditundoshortcut
+msgid "Ctrl+Z"
+msgstr "Ctrl+Z"
+
+#: objinspstrconsts:oistdacteditdeleteshortcut
+msgid "Del"
+msgstr "Del"
+
+#: objinspstrconsts:oistdactfileopenshortcut
+msgid "Ctrl+O"
+msgstr "Ctrl+O"
+
+#: objinspstrconsts:oistdacteditcutshorthint
+msgid "Cut"
+msgstr "Knip"
+
+#: objinspstrconsts:oistdacteditcopyshorthint
+msgid "Copy"
+msgstr "Copieëer"
+
+#: objinspstrconsts:oistdacteditpasteshorthint
+msgid "Paste"
+msgstr "Plakken"
+
+#: objinspstrconsts:oistdacteditselectallshorthint
+msgid "Select All"
+msgstr "Alles Selecteren"
+
+#: objinspstrconsts:oistdacteditundoshorthint
+msgid "Undo"
+msgstr "Ongedaan maken"
+
+#: objinspstrconsts:oistdacthelpcontentshint
+msgid "Help Contents"
+msgstr "Inhoud van de Help"
+
+#: objinspstrconsts:oistdacthelptopicsearchhint
+msgid "Topic Search"
+msgstr "Onderwerp zoeken"
+
+#: objinspstrconsts:oistdacthelphelphelphint
+msgid "Help on help"
+msgstr "Help bij help"
+
+#: objinspstrconsts:oistdactfileopenhint
+msgid "Open"
+msgstr "Open"
+
+#: objinspstrconsts:oistdactfilesaveashint
+msgid "Save As"
+msgstr "Opslaan als"
+
+#: objinspstrconsts:oistdactfileexithint
+msgid "Exit"
+msgstr "Eruit"
+
+#: objinspstrconsts:oistdactcolorselecthint
+msgid "Color Select"
+msgstr "Kleur Selecteren"
+
+#: objinspstrconsts:oistdactfontedithint
+msgid "Font Select"
+msgstr "Lettertype Selecteren"
+
+#: objinspstrconsts:oistdactdatasetfirsthint
+msgid "First"
+msgstr "Eerse"
+
+#: objinspstrconsts:oistdactdatasetpriorhint
+msgid "Prior"
+msgstr "Vorige"
+
+#: objinspstrconsts:oistdactdatasetnexthint
+msgid "Next"
+msgstr "Volgende"
+
+#: objinspstrconsts:oistdactdatasetlasthint
+msgid "Last"
+msgstr "Laatste"
+
+#: objinspstrconsts:oistdactdatasetinserthint
+msgid "Insert"
+msgstr "Invoegen"
+
+#: objinspstrconsts:oistdactdatasetposthint
+msgid "Post"
+msgstr "Bewaren"
+
+#: objinspstrconsts:oistdactdatasetcancel1hint
+msgid "Cancel"
+msgstr "Ongedaan maken"
+
+#: objinspstrconsts:oistdactdatasetrefreshhint
+msgid "Refresh"
+msgstr "Verversen"
+
+#: objinspstrconsts:oisstdactionlisteditor
+msgid "Standard Action Classes"
+msgstr "Standaard Actie Classen"
+
+#: objinspstrconsts:oisstdactionlisteditorclass
+msgid "Available Action Classes:"
+msgstr "Beschikbare Actie Classe"
+
+#: objinspstrconsts:oisselectafile
+msgid "Select a file"
+msgstr "Selecteer een bestand"
+
+#: objinspstrconsts:oisallfiles
+msgid "All files (*.*)|*.*"
+msgstr "Alle bestanden (*.*)|*.*"
+
+#: objinspstrconsts:oissort
+msgid "Sort"
+msgstr "Sorteren"
+
+#: objinspstrconsts:oisstringseditordialog
+msgid "Strings Editor Dialog"
+msgstr "Strings Editor Dialoog"
+
+#: objinspstrconsts:oishelpthehelpdatabasewasunabletofindfile
+msgid "The help database %s%s%s was unable to find file %s%s%s."
+msgstr "De helpdatabase %s%s%s kon dit bestand niet vinden: %s%s%s."
+
+#: objinspstrconsts:oishelpthemacrosinbrowserparamswillbereplacedbytheurl
+msgid "The macro %s in BrowserParams will be replaced by the URL."
+msgstr "De macro %s in BrowserParams wordt vervangen door de URL."
+
+#: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
+msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
+msgstr "Geen HTML Browser gevonden.%sMaak een keuze via Help -> Configure Help -> Viewers"
+
+#: objinspstrconsts:oishelpbrowsernotfound
+msgid "Browser %s%s%s not found."
+msgstr "Browser %s%s%s niet gevonden."
+
+#: objinspstrconsts:oishelpbrowsernotexecutable
+msgid "Browser %s%s%s not executable."
+msgstr "Browser %s%s%s kan niet worden getart."
+
+#: objinspstrconsts:oishelperrorwhileexecuting
+msgid "Error while executing %s%s%s:%s%s"
+msgstr "Fout gedurende uitvoeren %s%s%s:%s%s"
+
+#: objinspstrconsts:oishelphelpnodehasnohelpdatabase
+msgid "Help node %s%s%s has no Help Database"
+msgstr "Help node %s%s%s heeft geen Help Database"
+
+#: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
+msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
+msgstr "Help Database %s%s%s heeft geen viewer gevonden voor een helppagina van het type %s"
+
+#: objinspstrconsts:oishelpalreadyregistered
+msgid "%s: Already registered"
+msgstr "Reeds geregistreerd"
+
+#: objinspstrconsts:oishelpnotregistered
+msgid "%s: Not registered"
+msgstr "Niet geregistreerd"
+
+#: objinspstrconsts:oishelphelpdatabasenotfound
+msgid "Help Database %s%s%s not found"
+msgstr "Helpdatabase %s%s%s is niet gevonden."
+
+#: objinspstrconsts:oishelphelpkeywordnotfoundindatabase
+msgid "Help keyword %s%s%s not found in Database %s%s%s."
+msgstr "Help keyword %s%s%s werd niet gevonden in de database %s%s%s."
+
+#: objinspstrconsts:oishelphelpkeywordnotfound
+msgid "Help keyword %s%s%s not found."
+msgstr "Help keyword %s%s%s niet gevonden."
+
+#: objinspstrconsts:oishelphelpcontextnotfoundindatabase
+msgid "Help context %s not found in Database %s%s%s."
+msgstr "Help context %s werd niet gevonden in de Database %s%s%s"
+
+#: objinspstrconsts:oishelphelpcontextnotfound
+msgid "Help context %s not found."
+msgstr "Help context %s werd niet gevonden."
+
+#: objinspstrconsts:oishelpnohelpfoundforsource
+msgid "No help found for line %d, column %d of %s."
+msgstr "Er is geen help gevondenvoor regel %d, kolom % van %s."
+
+#: objinspstrconsts:oisloadimagedialog
+msgid "Load Image Dialog"
+msgstr "Laad Plaatjes Dialoog"
+
+#: objinspstrconsts:oisok
+msgid "&OK"
+msgstr "&OK"
+
+#: objinspstrconsts:oisload
+msgid "&Load"
+msgstr "&Laden"
+
+#: objinspstrconsts:oissave
+msgid "&Save"
+msgstr "&Opslaan"
+
+#: objinspstrconsts:oisclear
+msgid "C&lear"
+msgstr "Opsc&honen"
+
+#: objinspstrconsts:oiserrorloadingimage
+msgid "Error loading image"
+msgstr "Fout bij het laden van het plaatje"
+
+#: objinspstrconsts:oiserrorloadingimage2
+msgid "Error loading image %s%s%s:%s%s"
+msgstr "Fout bij het laden van plaatje %s%s%s:%s%s"
+
+
