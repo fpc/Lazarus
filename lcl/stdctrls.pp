@@ -408,6 +408,7 @@ type
     procedure UpdateSorted;
     procedure LMDrawListItem(var TheMessage: TLMDrawListItem); message LM_DrawListItem;
     procedure LMSelChange(var TheMessage); message LM_SelChange;
+    procedure WMLButtonDown(Var Message: TLMLButtonDown); message LM_LBUTTONDOWN;
     procedure SendItemSelected(Index: integer; IsSelected: boolean);
   protected
     procedure AssignItemDataToCache(const AIndex: Integer; const AData: Pointer); virtual; // called to store item data while the handle isn't created
@@ -1256,6 +1257,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.205  2005/05/06 10:21:38  micha
+  prevent double onclick event when using click-on-selchange
+
   Revision 1.204  2005/05/06 09:39:49  micha
   introduce intfselectionchanged procedure for widgetsets that do not send LM_SELCHANGED automatically
   fix senditemindex to cause onclick event

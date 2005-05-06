@@ -227,6 +227,14 @@ begin
   IntfSelectionChanged;
 end;
 
+procedure TCustomListBox.WMLButtonDown(var Message: TLMLButtonDown);
+begin
+  inherited WMLButtonDown(Message);
+  // prevent Click to be called twice when using selchange as click
+  if ClickOnSelChange then
+    Exclude(FControlState, csClicked);
+end;
+
 {------------------------------------------------------------------------------
   procedure TCustomListBox.SendItemSelected(Index: integer; IsSelected: boolean);
 
