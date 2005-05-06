@@ -1041,7 +1041,7 @@ begin
     else if (AValue is TMenuItem)
       then TMenuItem(AValue).Add(Self)
     else
-      raise Exception.Create('TMenuItem.SetParentComponent: suggestet parent not of type TMenu or TMenuItem');
+      raise Exception.Create('TMenuItem.SetParentComponent: suggested parent not of type TMenu or TMenuItem');
    end;
 end;
 
@@ -1210,6 +1210,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.66  2005/05/06 07:52:58  micha
+  fix spelling
+
   Revision 1.65  2004/12/10 21:36:27  mattias
   implemented TMenuItem.SetVisible
 
@@ -1435,6 +1438,9 @@ end;
 
 
   $Log$
+  Revision 1.66  2005/05/06 07:52:58  micha
+  fix spelling
+
   Revision 1.65  2004/12/10 21:36:27  mattias
   implemented TMenuItem.SetVisible
 
