@@ -41,7 +41,10 @@ basedir=share/lazarus
 destdir=$(BASEDIR)/dist
 
 [prerules]
-RCPP?=$(strip $(firstword $(wildcard $(addsuffix /cpp$(SRCEXEEXT), $(SEARCHPATH)))))
+# old RCPP
+# RCPP?=$(strip $(firstword $(wildcard $(addsuffix /cpp$(SRCEXEEXT), $(SEARCHPATH)))))
+# new RCPP, hint from bug 652
+RCPP?=$(strip $(firstword cpp$(SRCEXEEXT)))
 #
 # LCL Platform
 ifndef LCL_PLATFORM

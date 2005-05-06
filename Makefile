@@ -214,7 +214,7 @@ endif
 PACKAGESDIR:=$(wildcard $(FPCDIR) $(FPCDIR)/packages/base $(FPCDIR)/packages/extra)
 override PACKAGE_NAME=lazarus
 override PACKAGE_VERSION=0.9b
-RCPP?=$(strip $(firstword $(wildcard $(addsuffix /cpp$(SRCEXEEXT), $(SEARCHPATH)))))
+RCPP?=$(strip $(firstword cpp$(SRCEXEEXT)))
 ifndef LCL_PLATFORM
 ifeq ($(OS_TARGET),win32)
 LCL_PLATFORM=win32
