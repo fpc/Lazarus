@@ -508,6 +508,9 @@ begin
     Windows.SendMessage(Handle, LB_SETSEL, Windows.WParam(true), Windows.LParam(AIndex));
   end else
     Windows.SendMessage(Handle, LB_SETCURSEL, Windows.WParam(AIndex), 0);
+
+  // windows does not send selection changed notify message
+  ACustomListBox.IntfSelectionChanged;
 end;
 
 procedure TWin32WSCustomListBox.SetSelectionMode(const ACustomListBox: TCustomListBox;

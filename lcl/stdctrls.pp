@@ -451,6 +451,10 @@ type
     procedure LockSelectionChange;
     procedure UnlockSelectionChange;
   public
+    { to be called by widgetset backend }
+    // equivalent of LM_SELCHANGED
+    procedure IntfSelectionChanged; virtual;
+  public
     property Align;
     property Anchors;
     property BorderStyle default bsSingle;
@@ -1252,6 +1256,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.204  2005/05/06 09:39:49  micha
+  introduce intfselectionchanged procedure for widgetsets that do not send LM_SELCHANGED automatically
+  fix senditemindex to cause onclick event
+
   Revision 1.203  2005/05/02 09:17:08  mattias
   started TButtonActionLink
 

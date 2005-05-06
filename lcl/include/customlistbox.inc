@@ -33,14 +33,22 @@ procedure TCustomListBox.AssignCacheToItemData(const AIndex: Integer;
   const AData: Pointer);
 begin
   if PCustomListBoxItemRecord(AData)^.Selected or (FItemIndex = AIndex) then
+  begin
+    LockSelectionChange;
     SendItemSelected(AIndex, True);
+    UnlockSelectionChange;
+  end;
 end;
 
 procedure TCustomListBox.Loaded;
 begin
   inherited Loaded;
   if HandleAllocated then
+  begin
+    LockSelectionChange;
     SendItemIndex;
+    UnlockSelectionChange;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -202,10 +210,7 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  procedure TCustomListBox.LMSelChange(var TheMessage);
-------------------------------------------------------------------------------}
-procedure TCustomListBox.LMSelChange(var TheMessage);
+procedure TCustomListBox.IntfSelectionChanged;
 begin
   if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then exit;
   //debugln('TCustomListBox.LMSelChange ',Name,':',ClassName,' ItemIndex=',dbgs(ItemIndex),' FLockSelectionChange=',dbgs(FLockSelectionChange));
@@ -215,17 +220,22 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TCustomListBox.LMSelChange(var TheMessage);
+------------------------------------------------------------------------------}
+procedure TCustomListBox.LMSelChange(var TheMessage);
+begin
+  IntfSelectionChanged;
+end;
+
+{------------------------------------------------------------------------------
   procedure TCustomListBox.SendItemSelected(Index: integer; IsSelected: boolean);
 
   Tell the interface whether an item is selected.
 ------------------------------------------------------------------------------}
 procedure TCustomListBox.SendItemSelected(Index: integer; IsSelected: boolean);
 begin
-  if HandleAllocated then begin
-    LockSelectionChange;
+  if HandleAllocated then
     TWSCustomListBoxClass(WidgetSetClass).SelectItem(Self, Index, IsSelected);
-    UnlockSelectionChange;
-  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -367,13 +377,8 @@ end;
 
 procedure TCustomListBox.SendItemIndex;
 begin
-  LockSelectionChange;
-  try
-    // TODO 64bit
-    TWSCustomListBoxClass(WidgetSetClass).SetItemIndex(Self, FItemIndex);
-  finally
-    UnlockSelectionChange;
-  end;
+  // TODO 64bit
+  TWSCustomListBoxClass(WidgetSetClass).SetItemIndex(Self, FItemIndex);
 end;
 
 {------------------------------------------------------------------------------}
