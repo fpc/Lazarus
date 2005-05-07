@@ -455,12 +455,12 @@ Type
     procedure SetDataSource(const AValue: TDataSource);
     procedure SetReadOnly(const AValue: Boolean);
   protected
-    function GetComboText: string; virtual;
-    procedure SetComboText(const NewText: string); virtual;
     procedure DataChange(Sender: TObject); virtual;
+    procedure ActiveChange(Sender: TObject); //virtual;
     procedure EditingChange(Sender: TObject); virtual;
     procedure Notification(AComponent: TComponent;
                            Operation: TOperation); override;
+    procedure Change; override;
     procedure UpdateData(Sender: TObject); virtual;
     procedure FocusRequest(Sender: TObject); virtual;
     procedure Loaded; override;
@@ -1172,10 +1172,10 @@ begin
   if not IsModified then
     exit;
 
-  IsModified := False;
-
   if Assigned(FOnUpdateData) then
     FOnUpdateData(Self);
+
+  IsModified := False;
 end;
 
 { Delphi Help ->
@@ -1302,6 +1302,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.29  2005/05/07 13:00:18  mattias
+  fixed TDBComboBox update (bug 873)  from Joost van der Sluis
+
   Revision 1.28  2005/05/03 16:43:43  mattias
   added key handling for TDBMemo  from Jesus
 

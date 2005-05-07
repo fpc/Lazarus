@@ -31,6 +31,18 @@ begin
   Result:=FDataLink.Field;
 end;
 
+procedure TDBComboBox.Change;
+begin
+  //need to override this to make sure the datalink gets notified
+  //its been modified, then when post etc, it will call
+  //updatedata to update the field data with current value
+  FDatalink.edit;
+  FDataLink.Modified;
+
+  inherited Change;
+end;
+
+
 function TDBComboBox.GetReadOnly: Boolean;
 begin
   Result:=FDataLink.ReadOnly;
@@ -54,46 +66,18 @@ begin
   FDataLink.ReadOnly:=AValue;
 end;
 
-function TDBComboBox.GetComboText: string;
-var
-  i: Integer;
-begin
-  if Style in [csDropDown,csSimple] then
-    Result:=Text
-  else begin
-    i:=ItemIndex;
-    if i<0 then
-      Result:=''
-    else
-      Result:=Items[i];
-  end;
-end;
-
-procedure TDBComboBox.SetComboText(const NewText: string);
-var
-  i: Integer;
-begin
-  if NewText=GetComboText then exit;
-  if NewText='' then
-    i:=-1
-  else
-    i:=Items.IndexOf(NewText);
-  ItemIndex:=i;
-  if ItemIndex>=0 then Exit;
-  if Style in [csDropDown,csSimple] then Text:=NewText;
-end;
 
 procedure TDBComboBox.DataChange(Sender: TObject);
 begin
   if not (Style=csSimple) and DroppedDown then Exit;
   if FDataLink.Field <> nil then
     // ToDo: use Field.Text
-    SetComboText(FDataLink.Field.DisplayText)
+      Text := FDataLink.Field.DisplayText
   else
     if csDesigning in ComponentState then
-      SetComboText(Name)
+      Text := Name
     else
-      SetComboText('');
+      Text := '';
 end;
 
 procedure TDBComboBox.EditingChange(Sender: TObject);
@@ -112,9 +96,10 @@ begin
 end;
 
 procedure TDBComboBox.UpdateData(Sender: TObject);
+
 begin
-  // ToDo: use Field.Text
-  FDataLink.Field.AsString:=GetComboText;
+  FDataLink.Field.Text := text;
+  FDataLink.Field.AsString := text;
 end;
 
 procedure TDBComboBox.FocusRequest(Sender: TObject);
@@ -138,6 +123,17 @@ begin
   inherited EditingDone;
 end;
 
+procedure TDBComboBox.ActiveChange(Sender: TObject);
+
+begin
+  if FDatalink.Active then datachange(sender)
+  else
+    begin
+    text := '';
+    FDataLink.reset;
+    end;
+end;
+
 constructor TDBComboBox.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -146,6 +142,7 @@ begin
   FDataLink.Control:=Self;
   FDataLink.OnDataChange:=@DataChange;
   FDataLink.OnUpdateData:=@UpdateData;
+  FDataLInk.OnActiveChange := @ActiveChange;
   FDataLink.OnEditingChange:=@EditingChange;
 end;
 
