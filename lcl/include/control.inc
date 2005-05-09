@@ -379,8 +379,7 @@ begin
   if FSizeLock>0 then exit;
 
   // invalidate
-  if SizeChanged
-  and (not (csLoading in ComponentState))
+  if (not (csLoading in ComponentState))
   and (not (Self is TWinControl)) then
     Invalidate;
   // notify user about resize
@@ -3516,6 +3515,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.256  2005/05/09 14:52:33  vincents
+  also invalidate control, if it is only moved, but not resized.
+
   Revision 1.255  2005/04/17 18:41:15  micha
   implement active default control switching
   pressing return key executes active default control action

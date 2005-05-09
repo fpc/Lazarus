@@ -836,7 +836,6 @@ type
     property CharCase;
     property Color;
     property Constraints;
-    //property EditLabel; sub components not implemented in FCL
     property EditLabel;
     property Enabled;
     property LabelPosition;
@@ -997,6 +996,9 @@ end.
 
  {
   $Log$
+  Revision 1.136  2005/05/09 14:52:33  vincents
+  also invalidate control, if it is only moved, but not resized.
+
   Revision 1.135  2005/04/17 18:41:15  micha
   implement active default control switching
   pressing return key executes active default control action
