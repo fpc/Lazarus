@@ -112,7 +112,9 @@ procedure TCustomLabeledEdit.CreateInternalLabel;
 begin
   if FEditLabel<>nil then exit;
   FEditLabel := TBoundLabel.Create(Self);
+{$IFNDEF VER1_9_8} //fpc 1.9.8 can't stream subcomponents.
   Include(FEditLabel.ComponentStyle, csSubComponent);
+{$ENDIF}
   FEditLabel.FreeNotification(Self);
   FEditLabel.FocusControl := Self;
 end;
