@@ -724,19 +724,15 @@ var
   Mask: TBitmap;
 begin
   Mask := TBitmap.Create;
-  try
-    with Mask do
-    begin
-      Height := Image.Height;
-      Width := Image.Width;
-      Assign(Image);
-      Mask(MaskColor);
-    end;
-    Insert(Index, Image, Mask);
-    Change;
-  finally
-    Mask.Free;
+  with Mask do
+  begin
+    Height := Image.Height;
+    Width := Image.Width;
+    Assign(Image);
+    Mask(MaskColor);
   end;
+  Insert(Index, Image, Mask);
+  Change;
 end;
 
 {------------------------------------------------------------------------------
@@ -1262,6 +1258,9 @@ end;
 {
 
   $Log$
+  Revision 1.42  2005/05/09 10:41:56  vincents
+  don't free maskimage, that is created to add to the imagelist.
+
   Revision 1.41  2005/03/07 21:59:44  vincents
   changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
 
