@@ -206,13 +206,13 @@ begin
 
   // this stops a loop when you use the shift key to select multiple entries
   for i := 0 to Widgets^.ItemCache.Count-1 do begin
-    if (Widgets^.ItemCache.Strings[i] = Str) and (Widgets^.ItemCache.Objects[i] = TObject(Ord(path_is_currently_selected)))
+    if (Widgets^.ItemCache.Strings[i] = Str) and (Widgets^.ItemCache.Objects[i] = TObject(ptrint(Ord(path_is_currently_selected))))
     then begin
       Result := False;
       Exit;
     end;
   end;
-  WIdgets^.ItemCache.AddObject(Str,TObject(Ord(path_is_currently_selected)));
+  Widgets^.ItemCache.AddObject(Str,TObject(ptrint(Ord(path_is_currently_selected))));
 end;
 
 { TGtk2WSCustomListView }
@@ -614,7 +614,7 @@ begin
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
   with Widgets^ do begin
     GtkColumn := gtk_tree_view_get_column(PGtkTreeView(MainView), AIndex);
-    g_object_set_data(G_OBJECT(GtkColumn), PChar('Visible'), gpointer(Integer(Ord(AVisible))));
+    g_object_set_data(G_OBJECT(GtkColumn), PChar('Visible'), gpointer(ptrint(Ord(AVisible))));
     if TLVHack(ALV).ViewStyle = vsReport then begin
       gtk_tree_view_column_set_visible(GtkColumn, AVisible);
     end;
