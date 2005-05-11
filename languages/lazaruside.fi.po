@@ -2248,7 +2248,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangfilenotfound
 msgid "File %s%s%s not found."
-msgstr ""
+msgstr "Tiedostoa %s%s%s ei löytynyt."
 
 #: lazarusidestrconsts:lisfilenotfound2
 msgid "File %s%s%s not found.%s"
@@ -2320,7 +2320,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfilenotfound
 msgid "File not found"
-msgstr ""
+msgstr "Tiedostoa ei löytynyt"
 
 #: lazarusidestrconsts:lisfilenotlowercase
 msgid "File not lowercase"
@@ -4652,7 +4652,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisprogramdetected
 msgid "Program detected"
-msgstr ""
+msgstr "Tunnistettiin ohjelmaksi"
 
 #: lazarusidestrconsts:lisprogramsourcemusthaveapascalextensionlikepaspporlp
 msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
@@ -6296,7 +6296,7 @@ msgstr ""
 
 #: lazarusidestrconsts:listhefileseemstobeaprogramclosecurrentproject
 msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%s\"No\" will load the file as normal source."
-msgstr ""
+msgstr "Tiedosto %s%s%s%s näyttää olevan Pascal-ohjelma. Suljetaanko nykyinen projekti ja avataan tämä uutena projektina?%s\"Ei\"-näppäin avaa sen vain lähdekoodina."
 
 #: lazarusidestrconsts:listhefileseemstobetheprogramfileofanexistinglazarus
 msgid "The file %s%s%s%sseems to be the program file of an existing lazarus Project1.%sOpen project?%sCancel will load the file as normal source."
@@ -6456,7 +6456,7 @@ msgstr ""
 
 #: lazarusidestrconsts:listheprojectinfofileisequaltotheprojectmainsource
 msgid "The project info file %s%s%s%sis equal to the project main source file!"
-msgstr ""
+msgstr "Projektn info tiedosto %s%s%s%son/olisi saman niminen kuin projektin pääohjelman lähdekoodi tiedosto!"
 
 #: lazarusidestrconsts:listheprojectmustbesavedbeforebuildingifyousetthetest
 msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
@@ -6544,7 +6544,7 @@ msgstr ""
 
 #: lazarusidestrconsts:listhereisafilewiththesamenameandasimilarextension
 msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbiguous File: %s%s%sDelete ambiguous file?"
-msgstr ""
+msgstr "Kansiosta löytyy jo myös samanlainen (epäselvä) tiedosto samantapaisella tiedostopäätteellä%sTallennettavatiedosto: %s%sSamanlainen (epäselvä) tiedosto: %s%s%sPoistetaanko samanlainen (epäselvä) tiedosto?"
 
 #: lazarusidestrconsts:lisexttoolthereisamaximumoftools
 msgid "There is a maximum of %s tools."
