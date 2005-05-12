@@ -360,6 +360,7 @@ begin
   with PkgListBox do begin
     Name:='PkgListBox';
     Parent:=Self;
+    ClickOnSelChange := False;
     OnClick:=@PkgListBoxClick;
     OnDblClick:=@PkgListBoxDblClick;
   end;
