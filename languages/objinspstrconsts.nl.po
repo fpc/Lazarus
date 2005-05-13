@@ -10,7 +10,7 @@ msgstr ""
 
 #: objinspstrconsts:sccsilcmbimglist
 msgid " Images "
-msgstr "Plaatje"
+msgstr " Plaatjes "
 
 #: objinspstrconsts:sccslvedtgrprcaption
 msgid " Item property "
@@ -94,7 +94,7 @@ msgstr "&Openen..."
 
 #: objinspstrconsts:oistdacteditpasteheadline
 msgid "&Paste"
-msgstr "&PLakken"
+msgstr "&Plakken"
 
 #: objinspstrconsts:oistdactdatasetpriorheadline
 msgid "&Prior"
@@ -130,7 +130,7 @@ msgstr "Actie"
 
 #: objinspstrconsts:oisactionlisteditor
 msgid "Action List Editor"
-msgstr "Actielijst Editor"
+msgstr "Action List Bewerker"
 
 #: objinspstrconsts:sccsilbtnadd
 msgid "Add ..."
@@ -210,7 +210,7 @@ msgstr "Creëer standaard gebeurtenis"
 
 #: objinspstrconsts:oistdacteditselectallshortcut
 msgid "Ctrl+A"
-msgstr ""
+msgstr "Ctrl+A"
 
 #: objinspstrconsts:oistdacteditcopyshortcut
 msgid "Ctrl+C"
@@ -234,7 +234,7 @@ msgstr "Ctrl+Z"
 
 #: objinspstrconsts:oistdacteditcutheadline
 msgid "Cu&t"
-msgstr "Knip he&t"
+msgstr "Kn&ip"
 
 #: objinspstrconsts:oistdacteditcutshorthint
 msgid "Cut"
@@ -254,7 +254,7 @@ msgstr "Verwijderen"
 
 #: objinspstrconsts:cactionlisteditordeleteactionhint
 msgid "Delete Action"
-msgstr "Verwijder Actie"
+msgstr "Verwijder Action"
 
 #: objinspstrconsts:oisdeleteitem
 msgid "Delete item %s%s%s?"
@@ -274,7 +274,7 @@ msgstr "Edit"
 
 #: objinspstrconsts:oiseditactionlist
 msgid "Edit action list..."
-msgstr "Edit actie lijst"
+msgstr "Bewerk action list..."
 
 #: objinspstrconsts:oisenumeration
 msgid "Enumeration"
@@ -370,7 +370,7 @@ msgstr "Plaatjes Index"
 
 #: objinspstrconsts:sccsiledtcaption
 msgid "Image list editor"
-msgstr "Plaatjeslijst editor"
+msgstr "Image list bewerker"
 
 #: objinspstrconsts:oistdactdatasetinserthint
 msgid "Insert"
@@ -398,7 +398,7 @@ msgstr "Laatste"
 
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView editor"
-msgstr "Lijstindeling editor"
+msgstr "LijstView bewerker"
 
 #: objinspstrconsts:oisloadimagedialog
 msgid "Load Image Dialog"
@@ -486,7 +486,7 @@ msgstr "Verversen"
 
 #: objinspstrconsts:oistdactfilesaveasheadline
 msgid "Save &As..."
-msgstr "&Bewaren Als"
+msgstr "Opslaan &Als"
 
 #: objinspstrconsts:oistdactfilesaveashint
 msgid "Save As"
@@ -494,15 +494,15 @@ msgstr "Opslaan als"
 
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"
-msgstr "Selcteer &Alles"
+msgstr "Selecteer &Alles"
 
 #: objinspstrconsts:oistdactcolorselect1headline
 msgid "Select &Color..."
-msgstr "Selecteer &Kleur"
+msgstr "Selecteer &Kleur..."
 
 #: objinspstrconsts:oistdactfonteditheadline
 msgid "Select &Font..."
-msgstr "Selecteer &Lettertype"
+msgstr "Selecteer &Lettertype..."
 
 #: objinspstrconsts:oistdacteditselectallshorthint
 msgid "Select All"
@@ -538,7 +538,7 @@ msgstr "String"
 
 #: objinspstrconsts:cesstringgrideditor2
 msgid "StringGrid Editor"
-msgstr "StringGrid Editor"
+msgstr "StringGrid Bewerker"
 
 #: objinspstrconsts:cesstringgrideditor
 msgid "StringGrid Editor ..."
