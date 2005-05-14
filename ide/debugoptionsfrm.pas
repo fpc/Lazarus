@@ -34,7 +34,7 @@ uses
   Classes, SysUtils, TypInfo, LResources, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, StdCtrls, Buttons, ComCtrls, Menus, Spin, CheckLst, FileUtil,
   PropEdits, ObjectInspector,
-  LazarusIDEStrConsts, InputHistory, IDEProcs,
+  LazarusIDEStrConsts, InputHistory, IDEProcs, LCLProc,
   PathEditorDlg, EnvironmentOpts, BaseDebugManager, Debugger, DBGUtils;
 
 type
