@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, Dialogs, Controls, LazConf, GDBMIDebugger, DBGUtils,
-  BaseDebugManager, Debugger, PropEdits, Graphics;
+  BaseDebugManager, Debugger, PropEdits, Graphics, LCLProc;
   
 type
   TSSHGDBMIDebugger = class(TGDBMIDebugger)
@@ -206,6 +206,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.10  2005/05/14 12:09:36  marc
+  * included debugger result tye in execcommand (start fixing debugging on Mac OSX)
+
   Revision 1.9  2004/01/17 13:29:04  mattias
   using now fpc constant LineEnding   from Vincent
 

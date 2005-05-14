@@ -53,12 +53,6 @@ type
   end;
   
 function GetLine(var ABuffer: String): String;
-function StripLN(const ALine: String): String;
-function GetPart(const ASkipTo, AnEnd: String; var ASource: String): String; overload;
-function GetPart(const ASkipTo, AnEnd: String; var ASource: String; const AnIgnoreCase: Boolean): String; overload;
-function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String): String; overload;
-function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String; const AnIgnoreCase: Boolean): String; overload;
-function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String; const AnIgnoreCase, AnUpdateSource: Boolean): String; overload;
 function ConvertToCString(const AText: String): String;
 function DeleteEscapeChars(const AText: String; const AEscapeChar: Char): String;
 
@@ -115,115 +109,6 @@ begin
     Result := Copy(ABuffer, 1, idx);
     Delete(ABuffer, 1, idx);
   end;
-end;
-
-function StripLN(const ALine: String): String;
-var
-  idx: Integer;
-begin
-  idx := Pos(#10, ALine);
-  if idx = 0
-  then begin
-    idx := Pos(#13, ALine);
-    if idx = 0
-    then begin
-      Result := ALine;
-      Exit;
-    end;
-  end
-  else begin
-    if (idx > 1)
-    and (ALine[idx - 1] = #13)
-    then Dec(idx);
-  end;
-  Result := Copy(ALine, 1, idx - 1);
-end;           
-
-function GetPart(const ASkipTo, AnEnd: String; var ASource: String): String;
-begin
-  Result := GetPart([ASkipTo], [AnEnd], ASource, False, True);
-end;
-
-function GetPart(const ASkipTo, AnEnd: String; var ASource: String; const AnIgnoreCase: Boolean): String; overload;
-begin
-  Result := GetPart([ASkipTo], [AnEnd], ASource, AnIgnoreCase, True);
-end;
-
-function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String): String; overload;
-begin
-  Result := GetPart(ASkipTo, AnEnd, ASource, False, True);
-end;
-
-function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String; const AnIgnoreCase: Boolean): String; overload;
-begin
-  Result := GetPart(ASkipTo, AnEnd, ASource, AnIgnoreCase, True);
-end;
-
-function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String; const AnIgnoreCase, AnUpdateSource: Boolean): String; overload;
-var
-  n, i, idx: Integer;
-  S, Source, Match: String;
-  HasEscape: Boolean;
-begin                  
-  Source := ASource;
-
-  if High(ASkipTo) >= 0
-  then begin
-    idx := 0;
-    HasEscape := False;
-    if AnIgnoreCase
-    then S := UpperCase(Source)
-    else S := Source;
-    for n := Low(ASkipTo) to High(ASkipTo) do
-    begin
-      if ASkipTo[n] = ''
-      then begin
-        HasEscape := True;
-        Continue;
-      end;
-      if AnIgnoreCase
-      then i := Pos(UpperCase(ASkipTo[n]), S)
-      else i := Pos(ASkipTo[n], S);
-      if i > idx
-      then begin
-        idx := i;
-        Match := ASkipTo[n];
-      end;
-    end;
-    if (idx = 0) and not HasEscape
-    then begin
-      Result := '';
-      Exit;
-    end;
-    if idx > 0
-    then Delete(Source, 1, idx + Length(Match) - 1);
-  end;
-  
-  if AnIgnoreCase
-  then S := UpperCase(Source)
-  else S := Source;
-  idx := MaxInt;
-  for n := Low(AnEnd) to High(AnEnd) do
-  begin
-    if AnEnd[n] = '' then Continue;
-    if AnIgnoreCase
-    then i := Pos(UpperCase(AnEnd[n]), S)
-    else i := Pos(AnEnd[n], S);
-    if (i > 0) and (i < idx) then idx := i;
-  end;
-
-  if idx = MaxInt
-  then begin
-    Result := Source;
-    Source := '';
-  end
-  else begin
-    Result := Copy(Source, 1, idx - 1);
-    Delete(Source, 1, idx - 1);
-  end;
-  
-  if AnUpdateSource
-  then ASource := Source;
 end;
 
 function ConvertToCString(const AText: String): String;
@@ -316,6 +201,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.14  2005/05/14 12:09:36  marc
+  * included debugger result tye in execcommand (start fixing debugging on Mac OSX)
+
   Revision 1.13  2005/02/05 14:46:09  mattias
   fixed compilation
 

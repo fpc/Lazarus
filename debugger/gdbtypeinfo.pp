@@ -100,6 +100,8 @@ type
     property Items[const AIndex: Integer]: TGDBType read GetType; default;
   end;
 
+  { TGDBType }
+
   TGDBType = class(TObject)
   private
     FAncestor: String;
@@ -618,6 +620,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.5  2005/05/14 12:09:36  marc
+  * included debugger result tye in execcommand (start fixing debugging on Mac OSX)
+
   Revision 1.4  2004/11/21 15:19:08  marc
   * worked aound lack of %u as formatspecifier
   + introduced dbgptr for dealing with pointers on the target

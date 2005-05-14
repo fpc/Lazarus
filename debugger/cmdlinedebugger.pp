@@ -247,10 +247,13 @@ end;
 
 destructor TCmdLineDebugger.Destroy;
 begin
+  if (FDbgProcess <> nil) and (FDbgProcess.Running)
+  then FDbgProcess.Terminate(0);
+  
   inherited;
+  
   try
-    FDbgProcess.Free;
-    FDbgProcess:=nil;
+    FreeAndNil(FDbgProcess);
   except
     on E: Exception do DebugLn('Exeption while freeing debugger: ', E.Message);
   end;
@@ -403,6 +406,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.39  2005/05/14 12:09:36  marc
+  * included debugger result tye in execcommand (start fixing debugging on Mac OSX)
+
   Revision 1.38  2004/11/19 12:18:50  vincents
   create debugger without console.
 
