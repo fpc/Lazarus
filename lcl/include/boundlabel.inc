@@ -24,7 +24,8 @@
 constructor TBoundLabel.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  Name := 'EditLabel';
+  Name := 'SubLabel';
+  SetSubComponent(True);
   if Assigned(TheOwner) then
     Caption := TheOwner.Name;
 end;
