@@ -66,9 +66,9 @@ type
     function(Msg: Cardinal; WParam: WParam; LParam: LParam):Longint;
   TOwnerFormDesignerModifiedProc =
     procedure(AComponent: TComponent);
-  TSendMessageToInterfaceFunction =
-    function(LM_Message: Integer; Sender: TObject; data: pointer): integer
-             of object;
+//  TSendMessageToInterfaceFunction =
+//    function(LM_Message: Integer; Sender: TObject; data: pointer): integer
+//             of object;
              
 
 var
@@ -161,6 +161,21 @@ function dbgObjMem(AnObject: TObject): string;
 
 function DbgS(const i1,i2,i3,i4: integer): string;
 function DbgS(const Shift: TShiftState): string;
+
+// some string manipulation functions
+function StripLN(const ALine: String): String;
+function GetPart(const ASkipTo, AnEnd: String; var ASource: String): String; overload;
+function GetPart(const ASkipTo, AnEnd: String; var ASource: String; const AnIgnoreCase: Boolean): String; overload;
+function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String): String; overload;
+function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String; const AnIgnoreCase: Boolean): String; overload;
+function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String; const AnIgnoreCase, AnUpdateSource: Boolean): String; overload;
+
+// case..of utility functions
+function StringCase(const AString: String; const ACase: array of String {; const AIgnoreCase = False, APartial = false: Boolean}): Integer; overload;
+function StringCase(const AString: String; const ACase: array of String; const AIgnoreCase, APartial: Boolean): Integer; overload;
+function ClassCase(const AClass: TClass; const ACase: array of TClass {; const ADecendant: Boolean = True}): Integer; overload;
+function ClassCase(const AClass: TClass; const ACase: array of TClass; const ADecendant: Boolean): Integer; overload;
+
 
 // UTF utility functions
 // MG: Should be moved to the RTL
@@ -1183,6 +1198,166 @@ begin
   if ssTriple in Shift then Add('ssTriple');
   if ssQuad in Shift then Add('ssQuad');
   Result:='['+Result+']';
+end;
+
+function StripLN(const ALine: String): String;
+var
+  idx: Integer;
+begin
+  idx := Pos(#10, ALine);
+  if idx = 0
+  then begin
+    idx := Pos(#13, ALine);
+    if idx = 0
+    then begin
+      Result := ALine; 
+      Exit;
+    end;
+  end
+  else begin
+    if (idx > 1)
+    and (ALine[idx - 1] = #13)
+    then Dec(idx);
+  end;
+  Result := Copy(ALine, 1, idx - 1);
+end;           
+
+function GetPart(const ASkipTo, AnEnd: String; var ASource: String): String;
+begin
+  Result := GetPart([ASkipTo], [AnEnd], ASource, False, True);
+end;
+
+function GetPart(const ASkipTo, AnEnd: String; var ASource: String; const AnIgnoreCase: Boolean): String; overload;
+begin
+  Result := GetPart([ASkipTo], [AnEnd], ASource, AnIgnoreCase, True);
+end;
+
+function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String): String; overload;
+begin
+  Result := GetPart(ASkipTo, AnEnd, ASource, False, True);
+end;
+
+function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String; const AnIgnoreCase: Boolean): String; overload;
+begin
+  Result := GetPart(ASkipTo, AnEnd, ASource, AnIgnoreCase, True);
+end;
+
+function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String; const AnIgnoreCase, AnUpdateSource: Boolean): String; overload;
+var
+  n, i, idx: Integer;
+  S, Source, Match: String;
+  HasEscape: Boolean;
+begin                  
+  Source := ASource;
+
+  if High(ASkipTo) >= 0
+  then begin
+    idx := 0;
+    HasEscape := False;
+    if AnIgnoreCase
+    then S := UpperCase(Source)
+    else S := Source;
+    for n := Low(ASkipTo) to High(ASkipTo) do
+    begin
+      if ASkipTo[n] = ''
+      then begin
+        HasEscape := True;
+        Continue;
+      end;
+      if AnIgnoreCase
+      then i := Pos(UpperCase(ASkipTo[n]), S)
+      else i := Pos(ASkipTo[n], S);
+      if i > idx
+      then begin
+        idx := i;
+        Match := ASkipTo[n];
+      end;
+    end;
+    if (idx = 0) and not HasEscape
+    then begin
+      Result := '';
+      Exit;
+    end;
+    if idx > 0
+    then Delete(Source, 1, idx + Length(Match) - 1);
+  end;
+  
+  if AnIgnoreCase
+  then S := UpperCase(Source)
+  else S := Source;
+  idx := MaxInt;
+  for n := Low(AnEnd) to High(AnEnd) do
+  begin
+    if AnEnd[n] = '' then Continue;
+    if AnIgnoreCase
+    then i := Pos(UpperCase(AnEnd[n]), S)
+    else i := Pos(AnEnd[n], S);
+    if (i > 0) and (i < idx) then idx := i;
+  end;
+
+  if idx = MaxInt
+  then begin
+    Result := Source;
+    Source := '';
+  end
+  else begin
+    Result := Copy(Source, 1, idx - 1);
+    Delete(Source, 1, idx - 1);
+  end;
+  
+  if AnUpdateSource
+  then ASource := Source;
+end;
+
+function StringCase(const AString: String; const ACase: array of String {; const AIgnoreCase = False, APartial = false: Boolean}): Integer;
+begin
+  Result := StringCase(AString, ACase, False, False);
+end;
+
+function StringCase(const AString: String; const ACase: array of String; const AIgnoreCase, APartial: Boolean): Integer;
+var
+  Search, S: String;
+begin
+  if High(ACase) = -1
+  then begin
+    Result := -1;
+    Exit;
+  end;
+
+  if AIgnoreCase
+  then Search := UpperCase(AString)
+  else Search := AString;
+  
+  for Result := Low(ACase) to High(ACase) do
+  begin
+    if AIgnoreCase
+    then S := UpperCase(ACase[Result])
+    else S := ACase[Result];
+
+    if Search = S then Exit;
+    if not APartial then Continue;
+    if Length(Search) >= Length(S) then Continue;
+    if StrLComp(PChar(Search), PChar(S), Length(Search)) = 0 then Exit;
+  end;
+  
+  Result := -1;
+end;
+
+function ClassCase(const AClass: TClass; const ACase: array of TClass {; const ADecendant: Boolean = True}): Integer;
+begin
+  Result := ClassCase(AClass, ACase, True);
+end;
+
+function ClassCase(const AClass: TClass; const ACase: array of TClass; const ADecendant: Boolean): Integer;
+begin
+  for Result := Low(ACase) to High(ACase) do
+  begin
+    if AClass = ACase[Result] then Exit;
+    if not ADecendant then Continue;
+    if AClass.InheritsFrom(ACase[Result]) then Exit;
+  end;
+
+  Result := -1;
 end;
 
 function UTF8CharacterLength(p: PChar): integer;
