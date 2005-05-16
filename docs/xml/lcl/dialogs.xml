@@ -608,7 +608,7 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TOpenOption">
-        <short>A set of Options for the OpenDialog</short>
+        <short>A set of possible options which can be used in OpenDialog</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TOpenOption.ofReadOnly">
@@ -1264,8 +1264,8 @@ choice of colour for text or graphics.</descr>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TFindOption">
-        <short>A set of posible options which can be used in Find-dialogs.</short>
-        <descr>A set of posible options which can be used in Find-dialogs.</descr>
+        <short>A set of possible options which can be used in Find-dialogs.</short>
+        <descr>A set of possible options which can be used in Find-dialogs.</descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TFindOption.frDown">

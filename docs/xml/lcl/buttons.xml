@@ -102,9 +102,7 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TButtonLayout">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>A set of constants to define the position of a glyph on a button.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TButtonLayout.blGlyphLeft">
@@ -124,9 +122,7 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TButtonState">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>A set of constants to define the state of a SpeedButton.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TButtonState.bsUp">
@@ -152,10 +148,8 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomButton">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>The ancestor class for TButton</short>
+        <descr>TCustomButton is the ancestor for TButton. If you want to define your own button class, you should use this class to derive it from.</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomButton.FCancel">
@@ -377,29 +371,29 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TButton">
-        <short>TButton is a push button control</short>
+        <short>A push button control</short>
         <descr>TButton is a push button control. An user pushes a button to start an action.</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TButton.Click">
         <short>Click, calling this method will invoke the OnClick event of the button</short>
-        <descr>If you want to programmatically Click on a button you can call it Click method. This will have the same effect as a user clicking on the button.</descr>
+        <descr>If you want to programmatically Click on a button you can call its Click method. This will have the same effect as a user clicking on the button.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TButton.Action">
-        <short>Action can be used with ActionList</short>
-        <descr>If you assign an action from an ActionList to a TButton.Action the correspondig execute-method is assign to the OnClick event of to button.</descr>
+        <short>The action executed when the user clicks the button.</short>
+        <descr>If you assign an action from an ActionList to a TButton.Action the correspondig execute-method is assigned to the OnClick event of the button. Assigning a action sets ohter properties of the button as well, like Enabled and Caption.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TButton.Align">
-        <short>Align is used to allign a button to a border of a parent control.</short>
-        <descr>Allign is used to allign a button to a border of a parent control, even if the parent control is resized.
-Possible values fo Allign are:
-alTop: Places the control at the top, using the full clientwidth of its parent control.
-alBottom: Places the control at the bottom, using the full clientwidth of its parent control.
-alLeft: Places the control at the left side of its parent and uses the available height between any top or bottom alligned controls.
-alRight: Like alLeft but on the right side of the parent control.
-alNone: The control can be placed anywhere on the parent control
+        <short>Is used to align a button to a border of a parent control.</short>
+        <descr>Align is used to align a control to a border of a parent control, even if the parent control is resized.<br/><br/>
+Possible values fo Allign are:<br/>
+alTop: Places the control at the top, using the full clientwidth of its parent control.<br/>
+alBottom: Places the control at the bottom, using the full clientwidth of its parent control.<br/>
+alLeft: Places the control at the left side of its parent and uses the available height between any top or bottom alligned controls.<br/>
+alRight: Like alLeft but on the right side of the parent control.<br/>
+alNone: The control can be placed anywhere on the parent control.<br/>
 alClient: The control takes al available space on parent control next to controls aligned to the top, bottom, right or left.</descr>
       </element>
       <!-- property Visibility: published -->
@@ -420,12 +414,12 @@ For instance setting Anchors to [akBottom, akRight] will keep the control at a c
       </element>
       <!-- property Visibility: published -->
       <element name="TButton.Cancel">
-        <short>Cancel setting this property will make is OnClick event executed when the user hits ESC.</short>
+        <short>Setting this property will make the OnClick event executed when the user hits ESC.</short>
         <descr>Setting this property to true, will have the effect that when the user hits ESC this button is Clicked. Usually the Button which reacts to ESC sets the ModalResult of the form to mrCancel.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TButton.Caption">
-        <short>The Caption is used to set the text displayed on the button.</short>
+        <short>Sets the text displayed on the button.</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TButton.Constraints">
@@ -434,14 +428,14 @@ For instance setting Anchors to [akBottom, akRight] will keep the control at a c
       </element>
       <!-- property Visibility: published -->
       <element name="TButton.Default">
-        <short>If the default porperty is set of a Button its OnClick event will be called when the user presses ENTER</short>
+        <short>Setting this property will make the OnClick event executed when the user hits ENTER</short>
         <descr>Defines if a button is the default on a form. That is, pressing enter will execute its onClick wether the control has focus or not!</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TButton.Enabled">
-        <short>If a button can be clicked on is determined by the Enabled property.</short>
-        <descr>Setting this property determines if the control can be used. If Enabled is false a button cannot be clicked. Setting the Enabled property to false also makes its caption grayed.
-If an Action has been assigned to the button and this action is disabled then the button gets its Enabled property set to false as well.</descr>
+        <short>Determines if the button reacts to a click.</short>
+        <descr>Setting this property determines if the control can be used. If Enabled is false a button cannot be clicked. Setting the Enabled property to false also makes its appearance grayed.
+If an Action has been assigned to the button and this action is disabled then the enabled property is set to false as well.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TButton.Font">
@@ -566,10 +560,7 @@ If an Action has been assigned to the button and this action is disabled then th
       </element>
       <!-- object Visibility: default -->
       <element name="TButtonGlyph">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>A special class used in buttons with a Glyph (TSpeedButton and TBitBtn)</short>
       </element>
       <!-- variable Visibility: private -->
       <element name="TButtonGlyph.FOriginal">
@@ -691,9 +682,7 @@ If an Action has been assigned to the button and this action is disabled then th
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TBitBtnKind">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>A set of possible types for BitButtons.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TBitBtnKind.bkCustom">
@@ -748,17 +737,11 @@ If an Action has been assigned to the button and this action is disabled then th
         <short/>
       </element>
       <!-- set type Visibility: default -->
-      <element name="TBitBtnKinds">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TBitBtnKinds"/>
       <!-- object Visibility: default -->
       <element name="TCustomBitBtn">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>The ancestor class for TBitBtn.</short>
+        <descr>TCustomBitBtn is the ancestor for TBitBtn. If you want to define your own bitbutton class, you should use this class to derive it from.</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomBitBtn.FButtonGlyph">
@@ -1008,24 +991,30 @@ If an Action has been assigned to the button and this action is disabled then th
       <!-- object Visibility: default -->
       <element name="TBitBtn">
         <short>A push button that can show a glyph.</short>
+        <descr>TBitBtn is a push button control which can show a glyph. An user pushes a button to start an action.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.Action">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The action executed when the user clicks the button.</short>
+        <descr>If you assign an action from an ActionList to a TBitBtn.Action the correspondig execute-method is assigned to the OnClick event of the button. Assigning a action sets ohter properties of the button as well, like Enabled and Caption.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.Align">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Is used to allign a bitbutton to a border of a parent control.</short>
+        <descr>Align is used to align a control to a border of a parent control, even if the parent control is resized.<br/><br/>
+Possible values fo Allign are:<br/>
+alTop: Places the control at the top, using the full clientwidth of its parent control.<br/>
+alBottom: Places the control at the bottom, using the full clientwidth of its parent control.<br/>
+alLeft: Places the control at the left side of its parent and uses the available height between any top or bottom alligned controls.<br/>
+alRight: Like alLeft but on the right side of the parent control.<br/>
+alNone: The control can be placed anywhere on the parent control.<br/>
+alClient: The control takes al available space on parent control next to controls aligned to the top, bottom, right or left.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.Anchors">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Anchors are used to keep a button on a defined distance to certain borders of the parent control.</short>
+        <descr>Anchors can be used to keep control at a certain distance from a side of its parent control, when the parent control is resized.<br/><br/>
+For instance setting Anchors to [akBottom, akRight] will keep the control at a constant distance to the bottom right corner.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.BorderSpacing">
@@ -1035,33 +1024,27 @@ If an Action has been assigned to the button and this action is disabled then th
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.Cancel">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Setting this property will make the OnClick event executed when the user hits ESC.</short>
+        <descr>Setting this property to true, will have the effect that when the user hits ESC this button is Clicked. Usually the Button which reacts to ESC sets the ModalResult of the form to mrCancel.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.Caption">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Sets the text displayed on the button.</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.Constraints">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Used to give a control certain minimum and or maximum dimensions.</short>
+        <descr>Sets the minimum and maximum sizes for a control. If a control is resized the new dimensions are allways within the ranges given here. You should take care when setting these options that they do not conflict with the Anchors en Allign settings.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.Default">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Setting this property will make the OnClick event executed when the user hits ENTER</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.Enabled">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Determines if the button reacts to a click.</short>
+        <descr>Setting this property determines if the control can be used. If Enabled is false a bitbutton cannot be clicked. Setting the Enabled property to false also makes its appearance grayed.
+If an Action has been assigned to the bitbutton and this action is disabled then the enabled property is set to false as well.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.Font">
@@ -1209,10 +1192,7 @@ If an Action has been assigned to the button and this action is disabled then th
       </element>
       <!-- object Visibility: default -->
       <element name="TSpeedButtonActionLink">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Links a TSpeedButton with an action.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TSpeedButtonActionLink.AssignClient">
@@ -1271,10 +1251,8 @@ If an Action has been assigned to the button and this action is disabled then th
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomSpeedButton">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>The ancestor class for TSpeedButton</short>
+        <descr>TCustomSpeedButton is the ancestor for TSpeedButton. If you want to define your own speedbutton class, you should use this class to derive it from.</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomSpeedButton.FAllowAllUp">
@@ -1783,22 +1761,26 @@ If an Action has been assigned to the button and this action is disabled then th
       </element>
       <!-- object Visibility: default -->
       <element name="TSpeedButton">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>A button control</short>
+        <descr>TSpeedButton is a button control. It can show a glyph and has a state. An user pushes a button to start an action or set a mode. When a user clicks on a SpeedButton focus is not shifted. A SpeedButton never gets focus.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Action">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The action executed when the user clicks the speedbutton.</short>
+        <descr>If you assign an action from an ActionList to a TSpeedButton.Action the correspondig execute-method is assigned to the OnClick event of the SpeedButton. Assigning a action sets ohter properties of the button as well, like Enabled and Caption.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Align">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Is used to align the button to a border of a parent control.</short>
+        <descr>Align is used to align a control to a border of a parent control, even if the parent control is resized.
+<br/><br/>
+Possible values fo Allign are:<br/>
+alTop: Places the control at the top, using the full clientwidth of its parent control.<br/>
+alBottom: Places the control at the bottom, using the full clientwidth of its parent control.<br/>
+alLeft: Places the control at the left side of its parent and uses the available height between any top or bottom alligned controls.<br/>
+alRight: Like alLeft but on the right side of the parent control.<br/>
+alNone: The control can be placed anywhere on the parent control.<br/>
+alClient: The control takes al available space on parent control next to controls aligned to the top, bottom, right or left.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Anchors">
@@ -1808,9 +1790,8 @@ If an Action has been assigned to the button and this action is disabled then th
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.AllowAllUp">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Determines wether all speedbuttons in a group can be up.</short>
+        <descr>SpeedButtons can be grouped by setting their GroupIndex. AllowAllUp specifies whether or not all SpeedButtons in this group can be unselected (all have the state Up). Changing this property for one SpeedButtons sets this for all SpeedButtons in the same group. A GroupIndex of 0 has no effect, that is AllowAllUp has no effect if GroupIndex is 0.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.BorderSpacing">
@@ -1826,21 +1807,18 @@ If an Action has been assigned to the button and this action is disabled then th
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Caption">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Sets the text displayed on the button.</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Down">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Maintains the state of the button.</short>
+        <descr>If the groupindex of a SpeedButton is unequal to 0, its state can be up or down. Use this properties to read or set the state of a speedbutton.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Enabled">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Determines if the button reacts to a click.</short>
+        <descr>Setting this property determines if the control can be used. If Enabled is false a speedbutton cannot be clicked. Setting the Enabled property to false also makes its appearance grayed.<br/>
+If an Action has been assigned to the speedbutton and this action is disabled then the enabled property is set to false as well.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Flat">
@@ -1850,21 +1828,27 @@ If an Action has been assigned to the button and this action is disabled then th
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Glyph">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Property to read and set the glyph.</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.GroupIndex">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Determines how a SpeedButton reacts when it is clicked.</short>
+        <descr>If GroupIndex = 0, the speedbutton reacts like a ordinary push button. That is it appears down when the user clicks on it and it comes up again when the user releases the mouse button.
+
+If GroupIndex &gt; 0, the speedbuttons remains down after the user clicks on it, until it receives a second click.
+
+If more SpeedButtons have the same GroupIndex the behave like a group. You can use SpeedButtons in a group to present mutually exclusive choices to the user. If the user clicks on a SpeedButton in a group, this SpeedButton gets the down state, returning all other buttons to the up state.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Layout">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Determines the place of the glyph with respect to the caption.</short>
+        <descr>Determines the place of the glyph with respect to the caption. 
+<br/><br/>
+Possible values are:<br/>
+blGlyphBottom: The glyph is shown under the caption.<br/>
+blGlyphLeft: The glyph is shown left of the caption.<br/>
+blGlyphRight: The glyph is shown right of the caption.<br/>
+blGlyphTop: The glyph is shown above the caption.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Margin">
