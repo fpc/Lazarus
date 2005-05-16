@@ -162,7 +162,7 @@ type
     function  GetSupportedCommands: TDBGCommands; override;
     procedure InterruptTarget; virtual;
     {$IFDEF WIN32}
-    procedure InterruptTargetCallback(var AResultState: TDBGState; var AResultValues: String; const ATag: Integer); virtual;
+    procedure InterruptTargetCallback(const AResult: TGDBMIExecResult; const ATag: Integer); virtual;
     {$ENDIF}
     function  ParseInitialization: Boolean; virtual;
     function  RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; override;
@@ -1290,16 +1290,16 @@ begin
 end;
 
 {$IFDEF WIN32}
-procedure TGDBMIDebugger.InterruptTargetCallback(const AResultState: TDBGState; const AResultValues: String; const AResultFlags: TGDBMIResultFlags; const ATag: Integer);
+procedure TGDBMIDebugger.InterruptTargetCallback(const AResult: TGDBMIExecResult; const ATag: Integer);
 var
+  R: TGDBMIExecResult;
   S: String;
-  ResultFlags: TGDBMIResultFlags;
   List: TStringList;
   n: Integer;
   ID1, ID2: Integer;
 begin
   // check if we need to get out of the interrupt thread
-  S := AResultValues;
+  S := AResult.Values;
   S := GetPart(['.0x'], ['.'], S, True, False);
   if StrToIntDef('$'+S, 0) <> ATag then Exit;
 
@@ -1307,8 +1307,8 @@ begin
   if FPauseWaitState = pwsInternal then Exit; // internal, dont care
   
   S := '';
-  if not ExecuteCommand('-thread-list-ids', [cfIgnoreError], S, ResultFlags) then Exit;
-  List := CreateMIValueList(S);
+  if not ExecuteCommand('-thread-list-ids', [cfIgnoreError], R) then Exit;
+  List := CreateMIValueList(R);
   try
     n := StrToIntDef(List.Values['number-of-threads'], 0);
     if n < 2 then Exit; //nothing to switch
@@ -1550,13 +1550,37 @@ begin
 end;
 
 function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIntState: Boolean): Boolean;
+  function GetFrame(const AIndex: Integer): String;
+  var
+    R: TGDBMIExecResult;
+    S: String;
+    List: TStringList;
+  begin
+    Result := '';
+    if ExecuteCommand('-stack-list-frames %d %d', [AIndex, AIndex], [cfIgnoreError], R)
+    then begin
+      List := CreateMIValueList(R);
+      S := List.Values['stack'];
+      List.Free;
+      List := CreateMIValueList(S);
+      Result := List.Values['frame'];
+      List.Free;
+    end;
+  end;
+
   procedure ProcessFrame(const AFrame: String);
   var
+    S: String;
+    e: Integer;
     Frame: TStringList;
     Location: TDBGLocationRec;
-    e: Integer;
   begin
-    Frame := CreateMIValueList(AFrame);
+    // Do we have a frame ?
+    if AFrame = ''
+    then S := GetFrame(0)
+    else S := AFrame;
+
+    Frame := CreateMIValueList(S);
 
     Location.Address := 0;
     Val(Frame.Values['addr'], Location.Address, e);
@@ -1639,27 +1663,14 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
   
   procedure ProcessRunError;
   var
-    S: String;
-    R: TGDBMIExecResult;
     ErrorNo: Integer;
-    List: TStrings;
   begin
     if tfRTLUsesRegCall in FTargetFlags
     then ErrorNo := GetIntValue('$eax', [])
     else ErrorNo := Integer(GetData('$fp+8', []));
 
     DoException(Format('RunError(%d)', [ErrorNo]), '');
-
-    if ExecuteCommand('-stack-list-frames 1 1', [], [cfIgnoreError], R)
-    then begin
-      List := CreateMIValueList(R);
-      S := List.Values['stack'];
-      FreeAndNil(List);
-      List := CreateMIValueList(S);
-      S := List.Values['frame'];
-      FreeAndNil(List);
-      ProcessFrame(S);
-    end;
+    ProcessFrame(GetFrame(1));
   end;
 
   procedure ProcessSignalReceived(const AList: TStringList);
@@ -1963,21 +1974,26 @@ begin
     TempInstalled := R.State <> dsError;
   end;
   
+  FTargetPID := 0;
+  
   // fire the first step
   if TempInstalled
-  then ExecuteCommand('-exec-run', []);
-
-
-  // try to find PID
-  if ExecuteCommand('info program', [], [cfIgnoreError, cfNoMICommand], R)
+  and ExecuteCommand('-exec-run', [], R)
   then begin
-     TargetPIDPart := GetPart(['child process ', 'child thread ', 'lwp '], 
-                              [' ', '.', ')'], R.Values, True);
-     FTargetPID := StrToIntDef(TargetPIDPart, 0);
-     DebugLn('[Debugger] Target PID: ', IntToStr(FTargetPID));
-  end
-  else begin
-    FTargetPID := 0;
+    // some versions of gdb (OSX) output the PID here
+    TargetPIDPart := GetPart(['process '],
+                             [' local'], R.Values, True);
+    FTargetPID := StrToIntDef(TargetPIDPart, 0);
+    R.State := dsNone;
+  end;
+
+  // try to find PID (if not already found)
+  if (FTargetPID = 0)
+  and ExecuteCommand('info program', [], [cfIgnoreError, cfNoMICommand], R)
+  then begin
+    TargetPIDPart := GetPart(['child process ', 'child thread ', 'lwp '],
+                             [' ', '.', ')'], R.Values, True);
+    FTargetPID := StrToIntDef(TargetPIDPart, 0);
   end;
 
   if FTargetPID = 0
@@ -1986,7 +2002,9 @@ begin
     SetState(dsError);
     Exit;
   end;
-  
+
+  DebugLn('[Debugger] Target PID: %u', [FTargetPID]);
+
   if R.State = dsNone
   then begin
     SetState(dsInit);
@@ -2678,6 +2696,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.63  2005/05/16 12:43:27  marc
+  * Fixed win32 compilation
+
   Revision 1.62  2005/05/14 12:09:36  marc
   * included debugger result tye in execcommand (start fixing debugging on Mac OSX)
 
