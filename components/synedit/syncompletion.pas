@@ -79,7 +79,7 @@ type
     FAnsi: boolean;
     {$IFDEF SYN_LAZARUS}
     FBackgroundColor: TColor;
-    FOnSearchPosition:TSynBaseCompletionSearchPosition;
+    FOnSearchPosition: TSynBaseCompletionSearchPosition;
     FOnKeyCompletePrefix: TNotifyEvent;
     FTextColor: TColor;
     FTextSelectedColor: TColor;
