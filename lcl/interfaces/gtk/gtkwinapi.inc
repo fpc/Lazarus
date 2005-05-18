@@ -5741,7 +5741,8 @@ end;
   or a two way Rectangle Gradient, each Vertex point also supports optional
   Alpha/Transparency for more advanced Gradients.
  ------------------------------------------------------------------------------}
-function TGtkWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
+function TGtkWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
+  NumVertices : Longint;
   Meshes: Pointer; NumMeshes : Longint; Mode : Longint): Boolean;
 
   Function DoFillTriangle : Boolean;
@@ -5867,12 +5868,14 @@ function TGtkWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices :
   end;
 
 const
-  MeshSize : Array[Boolean] of Integer = (SizeOf(tagGradientRect), SizeOf(tagGradientTriangle));
+  MeshSize: Array[Boolean] of Integer = (
+    SizeOf(tagGradientRect), SizeOf(tagGradientTriangle));
 var
   I : Integer;
 begin
   //Currently Alpha blending is ignored... Ideas anyone?
-  Result := (Meshes <> nil) and (NumMeshes >= 1) and (NumVertices >= 2) and (Vertices <> nil);
+  Result := (Meshes <> nil) and (NumMeshes >= 1) and (NumVertices >= 2)
+            and (Vertices <> nil);
   If Result and DoFillTriangle then
     Result := NumVertices >= 3;
   If Result then begin
@@ -6113,13 +6116,15 @@ end;
 
 function MessageButtonClicked(Widget : PGtkWidget; data: gPointer) : GBoolean; cdecl;
 begin
-DebugLn('[MessageButtonClicked] ',dbgs(data),' ',dbgs(gtk_object_get_data(PGtkObject(Widget), 'modal_result')));
+  //DebugLn('[MessageButtonClicked] ',dbgs(data),' ',dbgs(gtk_object_get_data(PGtkObject(Widget), 'modal_result')));
   if Integer(data^) = 0 then
-    Integer(data^):= Integer(gtk_object_get_data(PGtkObject(Widget), 'modal_result'));
+    Integer(data^):=
+               Integer(gtk_object_get_data(PGtkObject(Widget), 'modal_result'));
   Result:=false;
 end;
 
-function MessageBoxClosed(Widget : PGtkWidget; Event : PGdkEvent; data: gPointer) : GBoolean; cdecl;
+function MessageBoxClosed(Widget : PGtkWidget; Event : PGdkEvent;
+  data: gPointer) : GBoolean; cdecl;
 var ModalResult : integer;
 begin
   { We were requested by window manager to close }
@@ -6150,8 +6155,10 @@ var Dialog, ALabel : PGtkWidget;
       if RetValue = IDCANCEL then begin
         gtk_object_set_data(PGtkObject(Dialog), 'modal_result', Pointer(IDCANCEL));
       end;
-      gtk_object_set_data(PGtkObject(AButton), 'modal_result', Pointer(PtrInt(RetValue)));
-      g_signal_connect(PGtkObject(AButton), 'clicked', TGtkSignalFunc(@MessageButtonClicked), @ADialogResult);
+      gtk_object_set_data(PGtkObject(AButton), 'modal_result',
+                          Pointer(PtrInt(RetValue)));
+      g_signal_connect(PGtkObject(AButton), 'clicked',
+                       TGtkSignalFunc(@MessageButtonClicked), @ADialogResult);
       gtk_container_add (PGtkContainer(PGtkDialog(Dialog)^.action_area), AButton);
     end;
 
@@ -6225,7 +6232,8 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TGtkWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
+function TGtkWidgetSet.MoveToEx(DC: HDC; X, Y: Integer;
+  OldPoint: PPoint): Boolean;
 begin
   Assert(False, Format('trace:> [TGtkWidgetSet.MoveToEx] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
   Result := IsValidDC(DC);
@@ -8997,6 +9005,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.419  2005/05/18 09:12:21  mattias
+  fixed retrieving TCanvas.Width/Height
+
   Revision 1.418  2005/03/21 18:59:50  mattias
   gtk1 intf no longer moves a focused window to another desktop  from Andrew Haines
 

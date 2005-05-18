@@ -32,9 +32,9 @@ begin
       Pen.Style := psDash;
       Pen.Color:=clBlack;
       Brush.Style := bsClear;
-      Rectangle(0, 0, Width - 1, Height - 1);
-      Line(0,0,Width-1,Height-1);
-      Line(Width-1,0,0,Height-1);
+      Rectangle(0, 0, Self.Width - 1, Self.Height - 1);
+      Line(0,0,Self.Width-1,Self.Height-1);
+      Line(Self.Width-1,0,0,Self.Height-1);
     end;
     exit;
   end;

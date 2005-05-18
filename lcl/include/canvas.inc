@@ -300,11 +300,12 @@ end;
 
 function TCanvas.GetHeight: integer;
 var
-  w: Integer;
+  p: TPoint;
 begin
-  if HandleAllocated then
-    GetWindowSize(Handle,w,Result)
-  else
+  if HandleAllocated then begin
+    GetDeviceSize(Handle,p);
+    Result:=p.y;
+  end else
     Result:=0;
 end;
 
@@ -315,11 +316,12 @@ end;
 
 function TCanvas.GetWidth: integer;
 var
-  h: Integer;
+  p: TPoint;
 begin
-  if HandleAllocated then
-    GetWindowSize(Handle,Result,h)
-  else
+  if HandleAllocated then begin
+    GetDeviceSize(Handle,p);
+    Result:=p.y;
+  end else
     Result:=0;
 end;
 
@@ -1535,6 +1537,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.93  2005/05/18 09:12:21  mattias
+  fixed retrieving TCanvas.Width/Height
+
   Revision 1.92  2005/03/07 21:59:44  vincents
   changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
 
