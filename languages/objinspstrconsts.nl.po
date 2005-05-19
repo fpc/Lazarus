@@ -1,6 +1,6 @@
 #: objinspstrconsts:sccsilcmbimglist
 msgid " Images "
-msgstr "Plaatjes"
+msgstr " Plaatjes "
 
 #: objinspstrconsts:sccslvedtgrprcaption
 msgid " Item property "
@@ -12,7 +12,7 @@ msgstr " Onderdelen "
 
 #: objinspstrconsts:sccsilcmbimgsel
 msgid " Selected image "
-msgstr "Geslecteerd plaatje"
+msgstr " Geselecteerd plaatje "
 
 #: objinspstrconsts:oishelpalreadyregistered
 msgid "%s: Already registered"
@@ -568,7 +568,7 @@ msgstr "Onbekend"
 
 #: objinspstrconsts:oisvalue
 msgid "Value:"
-msgstr "Waarde"
+msgstr "Waarde:"
 
 #: objinspstrconsts:oisvariant
 msgid "Variant"
