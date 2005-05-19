@@ -1,16 +1,6 @@
-msgid ""
-msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"PO-Revision-Date: 2005-05-06 15:36+0200\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-15\n"
-"Content-Transfer-Encoding: 8bit\n"
-
 #: objinspstrconsts:sccsilcmbimglist
 msgid " Images "
-msgstr " Plaatjes "
+msgstr "Plaatjes"
 
 #: objinspstrconsts:sccslvedtgrprcaption
 msgid " Item property "
@@ -22,7 +12,7 @@ msgstr " Onderdelen "
 
 #: objinspstrconsts:sccsilcmbimgsel
 msgid " Selected image "
-msgstr "Geselecteerd plaatje"
+msgstr "Geslecteerd plaatje"
 
 #: objinspstrconsts:oishelpalreadyregistered
 msgid "%s: Already registered"
@@ -398,7 +388,7 @@ msgstr "Laatste"
 
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView editor"
-msgstr "LijstView bewerker"
+msgstr "ListView bewerker"
 
 #: objinspstrconsts:oisloadimagedialog
 msgid "Load Image Dialog"
@@ -486,7 +476,7 @@ msgstr "Verversen"
 
 #: objinspstrconsts:oistdactfilesaveasheadline
 msgid "Save &As..."
-msgstr "Opslaan &Als"
+msgstr "Opslaan &Als..."
 
 #: objinspstrconsts:oistdactfilesaveashint
 msgid "Save As"
@@ -542,7 +532,7 @@ msgstr "StringGrid Bewerker"
 
 #: objinspstrconsts:cesstringgrideditor
 msgid "StringGrid Editor ..."
-msgstr "StringGrid Editor ..."
+msgstr "StringGrid Bewerker ..."
 
 #: objinspstrconsts:oisstringseditordialog
 msgid "Strings Editor Dialog"
@@ -578,7 +568,7 @@ msgstr "Onbekend"
 
 #: objinspstrconsts:oisvalue
 msgid "Value:"
-msgstr "Waarde:"
+msgstr "Waarde"
 
 #: objinspstrconsts:oisvariant
 msgid "Variant"
