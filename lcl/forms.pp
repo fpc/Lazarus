@@ -619,6 +619,7 @@ type
     property OnMouseUp;
     property OnPaint;
     property OnResize;
+    property OnShortCut;
     property OnShow;
     property OnStartDock;
     property OnUnDock;

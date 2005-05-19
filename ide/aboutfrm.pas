@@ -87,6 +87,8 @@ begin
   Caption:=lisAboutLazarus;
   Label1.Caption := lisVersion+' #: '+lisLazarusVersionString;
   Label2.Caption := lisDate+': '+GetLocalizedBuildDate;
+  Constraints.MinWidth:= 600;
+  Constraints.MinHeight:= 300;
   
   Memo1.Lines.Text:=Format(lisAboutLazarusMsg,[LineEnding,LineEnding,LineEnding])
     +LineEnding+LineEnding
