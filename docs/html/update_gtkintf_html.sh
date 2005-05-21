@@ -4,7 +4,6 @@
 #
 # Creates the fpdoc HTML output for the gtk interface
 
-set -x
 set -e
 
 FPDoc=$1

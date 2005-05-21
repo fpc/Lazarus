@@ -4,13 +4,15 @@
 #
 # Creates the fpdoc HTML output for the LCL
 
-set -x
+# set -x
 set -e
 
 FPDoc=$1
 if [ -z $FPDoc ]; then
   FPDoc=fpdoc
 fi
+FPDocFooter=$2
+RtlContent=$3
 
 PackageName=lcl
 XMLSrcDir=../xml/lcl/
@@ -39,9 +41,17 @@ for unit in $UnitList; do
   echo ../${PasSrcDir}$unit -Fi../${PasSrcDir}include >> $CurInputFileList
 done
 
+FPDocParams='--content=lcl.cnt --package=lcl --format=html'
+if [ -n $FPDocFooter ]; then
+  FPDocParams="$FPDocParams --footer=$FPDocFooter"
+fi
+if [ -n $RtlContent ]; then
+  FPDocParams="$FPDocParams --import=$RtlContent,../rtl/"
+fi
+
+
 cd $PackageName
-$FPDoc $DescrFiles --input=@$InputFileList --content=lcl.cnt --package=lcl \
-   --format=html
+$FPDoc $DescrFiles --input=@$InputFileList $FPDocParams
 cd -
    
 # --output=lcl
