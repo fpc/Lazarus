@@ -2804,6 +2804,22 @@ procedure InitKeyboardTables;
       end;
     end;
   end;
+  
+  function IgnoreShifted(const AUnshiftKeySym: TKeySym): Boolean;
+  begin
+    case AUnshiftKeySym of
+      GDK_KEY_END,
+      GDK_KEY_HOME,
+      GDK_KEY_LEFT,
+      GDK_KEY_RIGHT,
+      GDK_KEY_UP,
+      GDK_KEY_DOWN,
+      GDK_KEY_PAGE_UP,
+      GDK_KEY_PAGE_DOWN: Result := True;
+    else
+      Result := False;
+    end;
+  end;
 
   procedure NextFreeVK(var AFreeVK: Byte);
   begin
@@ -2887,7 +2903,15 @@ begin
     for m := 0 to 3 do
     begin
       ByteKey:=Byte(n);
-      KeySym[m] := XKeyCodeToKeysym(Display, ByteKey, m);
+      
+      // don't allow a keysym for shifted navigation keys
+      // somehow the default keymap on OSX combines U/ D= L+ R*
+      // As a simple hack I think we can ignore keysyms for shifted
+      // navigation keys
+      if ((m and 1) = 1) and IgnoreShifted(KeySym[m - 1])
+      then KeySym[m] := 0
+      else KeySym[m] := XKeyCodeToKeysym(Display, ByteKey, m);
+      
       if (VKey = $FF) and (KeySym[m] <> 0)
       then begin
         HasKey := True;
@@ -2903,7 +2927,7 @@ begin
       VKey := FreeVK;
       NextFreeVK(FreeVK);
     end;
-    
+
     // The keypadkeys have 2 VK_keycodes :(
     // In that case we have to FIndKeyInfo for every keysym
     DoMultiVK := HasMultiVK;
@@ -2984,6 +3008,7 @@ begin
     if VKey <> $FF
     then MVKeyInfo[VKey].KeyCode := Byte(n);
   end;
+  WriteLN;
 end;
 {$ENDIF}
 
@@ -8179,6 +8204,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.357  2005/05/21 19:27:41  marc
+  * fixed synedit navigation on OSX
+
   Revision 1.356  2005/05/05 19:47:15  micha
   fix gtk2 compilation (from drewski)
 
