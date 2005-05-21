@@ -44,6 +44,7 @@ function IntfSendsUTF8KeyPress: boolean; override;
 
 function MenuItemSetCheck(BaseMenuItem: TComponent): Boolean; override;
 function MenuItemSetEnable(BaseMenuItem: TComponent): Boolean; override;
+function RightJustifyMenuItem(BaseMenuItem: TComponent): Boolean; override;
 
 function ReplaceBitmapMask(var Image, Mask: HBitmap; NewMask: HBitmap): boolean; override;
 
@@ -57,6 +58,9 @@ procedure StatusBarUpdate(StatusBar: TObject); override;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2005/05/21 15:58:44  mattias
+  implemented right justification for menuitems for winapi intf  from Martin Smat
+
   Revision 1.2  2005/02/23 01:12:46  marc
   + Added RemoveProp winapi call
   * Some maintenace on winapi/lclintf files

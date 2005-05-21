@@ -37,12 +37,16 @@ function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer; override;
 
 function MenuItemSetCheck(BaseMenuItem: TComponent): Boolean; override;
 function MenuItemSetEnable(BaseMenuItem: TComponent): Boolean; override;
+function RightJustifyMenuItem(BaseMenuItem: TComponent): Boolean; override;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
 { =============================================================================
 
   $Log$
+  Revision 1.17  2005/05/21 15:58:44  mattias
+  implemented right justification for menuitems for winapi intf  from Martin Smat
+
   Revision 1.16  2005/02/23 01:12:47  marc
   + Added RemoveProp winapi call
   * Some maintenace on winapi/lclintf files

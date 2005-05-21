@@ -404,10 +404,9 @@ begin
   Result := InterfaceObject.RequestInput(InputCaption, InputPrompt, MaskInput, Value);
 end;
 
-function RightJustifyMenuItem(HndMenu: HMenu;
-  bRightJustify: boolean): boolean;
+function RightJustifyMenuItem(AMenuItem: TComponent): boolean;
 begin
-  Result := InterfaceObject.RightJustifyMenuItem(hndMenu, bRightJustify);
+  Result := InterfaceObject.RightJustifyMenuItem(AMenuItem);
 end;
 
 procedure SendCachedLCLMessages;
@@ -526,6 +525,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.30  2005/05/21 15:58:44  mattias
+  implemented right justification for menuitems for winapi intf  from Martin Smat
+
   Revision 1.29  2005/03/31 21:29:45  micha
   move GetNotebookTabIndexAtPos to the widgetset interface
   implement it for win32 widgetset (fixes bug 669)

@@ -46,6 +46,7 @@ function IntfSendsUTF8KeyPress: boolean; override;
 
 function MenuItemSetCheck(BaseMenuItem: TComponent): Boolean; override;
 function MenuItemSetEnable(BaseMenuItem: TComponent): Boolean; override;
+function RightJustifyMenuItem(BaseMenuItem: TComponent): Boolean; override;
 
 function ReplaceBitmapMask(var Image, Mask: HBitmap; NewMask: HBitmap): boolean; override;
 
@@ -54,6 +55,9 @@ function ReplaceBitmapMask(var Image, Mask: HBitmap; NewMask: HBitmap): boolean;
 { =============================================================================
 
   $Log$
+  Revision 1.24  2005/05/21 15:58:44  mattias
+  implemented right justification for menuitems for winapi intf  from Martin Smat
+
   Revision 1.23  2005/03/31 21:29:45  micha
   move GetNotebookTabIndexAtPos to the widgetset interface
   implement it for win32 widgetset (fixes bug 669)

@@ -238,6 +238,7 @@ begin
       dwTypeData:=nil;
       cch:=0;
     end;
+    if AMenuItem.RightJustify then fType := fType or MFT_RIGHTJUSTIFY;
     if AmenuItem.HasIcon then {adds the menuitem icon}
     begin
       fMask:=fMask or MIIM_CHECKMARKS;

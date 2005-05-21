@@ -965,7 +965,7 @@ begin
   if FRightJustify=AValue then exit;
   FRightJustify:=AValue;
   if HandleAllocated then
-    RightJustifyMenuItem(Handle,RightJustify);
+    RightJustifyMenuItem(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -1210,6 +1210,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.67  2005/05/21 15:58:44  mattias
+  implemented right justification for menuitems for winapi intf  from Martin Smat
+
   Revision 1.66  2005/05/06 07:52:58  micha
   fix spelling
 
@@ -1438,6 +1441,9 @@ end;
 
 
   $Log$
+  Revision 1.67  2005/05/21 15:58:44  mattias
+  implemented right justification for menuitems for winapi intf  from Martin Smat
+
   Revision 1.66  2005/05/06 07:52:58  micha
   fix spelling
 

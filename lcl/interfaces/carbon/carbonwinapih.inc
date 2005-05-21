@@ -170,7 +170,6 @@ function RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer): Boolean; override
 function ReleaseCapture : Boolean; override;
 function ReleaseDC(hWnd: HWND; DC: HDC): Integer; override;
 function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; override;
-function RightJustifyMenuItem(HndMenu: HMenu; bRightJustify: boolean): Boolean; override;
 function RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean;  override;
 
 function SaveDC(DC: HDC): Integer; override;
@@ -215,6 +214,9 @@ function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2005/05/21 15:58:44  mattias
+  implemented right justification for menuitems for winapi intf  from Martin Smat
+
   Revision 1.3  2005/03/04 13:50:09  mattias
   fixed Arc and changed x,y to Left,Top to make meaning more clear
 

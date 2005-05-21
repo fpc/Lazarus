@@ -725,12 +725,6 @@ begin
   Result:=inherited RestoreDC(DC, SavedDC);
 end;
 
-function TCarbonWidgetSet.RightJustifyMenuItem(HndMenu: HMenu;
-  bRightJustify: boolean): Boolean;
-begin
-  Result:=inherited RightJustifyMenuItem(HndMenu, bRightJustify);
-end;
-
 function TCarbonWidgetSet.RoundRect(DC: hDC; X1, Y1, X2, Y2: Integer; RX,
   RY: Integer): Boolean;
 begin
@@ -926,6 +920,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2005/05/21 15:58:44  mattias
+  implemented right justification for menuitems for winapi intf  from Martin Smat
+
   Revision 1.3  2005/03/04 13:50:09  mattias
   fixed Arc and changed x,y to Left,Top to make meaning more clear
 

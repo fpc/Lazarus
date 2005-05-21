@@ -409,6 +409,25 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: RightJustifyMenuItem
+  Params:  HndMenu: HMenu; bRightJustify: boolean
+  Returns: true on success
+
+  Sets left or right justification of a menuitem
+-------------------------------------------------------------------------------}
+function TGtkWidgetSet.RightJustifyMenuItem(BaseMenuItem: TComponent): Boolean;
+var
+  AMenuItem: TMenuItem;
+  MenuItemWidget: PGtkMenuItem;
+begin
+  AMenuItem:=BaseMenuItem as TMenuItem;
+  MenuItemWidget:=PGtkMenuItem(AMenuItem.Handle);
+  gtk_menu_item_set_right_justified(MenuItemWidget, AMenuItem.RightJustify);
+  gtk_widget_queue_resize(GTK_WIDGET(MenuItemWidget));
+  Result:=false;
+end;
+
+{------------------------------------------------------------------------------
   Procedure: ReplaceBitmapMask
   Params: Image    The HBitmap of the image
           Mask     The HBitmap of the mask (will be freed)
@@ -468,6 +487,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.38  2005/05/21 15:58:44  mattias
+  implemented right justification for menuitems for winapi intf  from Martin Smat
+
   Revision 1.37  2005/03/31 21:29:45  micha
   move GetNotebookTabIndexAtPos to the widgetset interface
   implement it for win32 widgetset (fixes bug 669)

@@ -192,11 +192,38 @@ Begin
   Result := Boolean(Windows.EnableMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command, EnableFlag));
 End;
 
+{------------------------------------------------------------------------------
+  Function: RightJustifyMenuItem
+  Params: BaseMenuItem:
+  Returns:
+
+  Sets left or right justification of a menuitem
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.RightJustifyMenuItem(BaseMenuItem: TComponent): Boolean;
+var
+  AMenuItem: TMenuItem;
+  MenuInfo: MENUITEMINFO;
+begin
+  AMenuItem:=BaseMenuItem as TMenuItem;
+  MenuInfo.cbSize := sizeof(MenuInfo);
+  MenuInfo.fMask := MIIM_TYPE;
+  GetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
+  if AMenuItem.RightJustify then MenuInfo.fType := MenuInfo.fType or MFT_RIGHTJUSTIFY
+  else MenuInfo.fType := MenuInfo.fType and (not MFT_RIGHTJUSTIFY);
+  MenuInfo.dwTypeData := LPSTR(AMenuItem.Caption);
+  Result := SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
+  DrawMenuBar(TWinControl(AMenuItem.Owner).Handle);
+end;
+
+
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
 { =============================================================================
 
   $Log$
+  Revision 1.24  2005/05/21 15:58:44  mattias
+  implemented right justification for menuitems for winapi intf  from Martin Smat
+
   Revision 1.23  2005/05/05 20:53:37  micha
   hack: avoid drawing border of scrollbar arrow, by drawing it outside of clipped region
 

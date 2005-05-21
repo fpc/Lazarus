@@ -584,8 +584,7 @@ begin
     Result := false;
 end;
 
-function TWidgetSet.RightJustifyMenuItem(HndMenu: HMenu;
-  bRightJustify: boolean): Boolean;
+function TWidgetSet.RightJustifyMenuItem(AMenuItem: TComponent): Boolean;
 begin
   Result := False;
 end;
@@ -627,6 +626,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.35  2005/05/21 15:58:44  mattias
+  implemented right justification for menuitems for winapi intf  from Martin Smat
+
   Revision 1.34  2005/03/31 21:29:45  micha
   move GetNotebookTabIndexAtPos to the widgetset interface
   implement it for win32 widgetset (fixes bug 669)

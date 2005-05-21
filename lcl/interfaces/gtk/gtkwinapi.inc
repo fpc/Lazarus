@@ -7197,24 +7197,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: RightJustifyMenuItem
-  Params:  HndMenu: HMenu; bRightJustify: boolean
-  Returns: true on success
-
-  Sets left or justification of a menuitem
--------------------------------------------------------------------------------}
-function TGtkWidgetSet.RightJustifyMenuItem(HndMenu: HMenu;
-  bRightJustify: boolean): Boolean;
-var
-  MenuItemWidget: PGtkMenuItem;
-begin
-  MenuItemWidget:=PGtkMenuItem(HndMenu);
-  gtk_menu_item_set_right_justified(MenuItemWidget, bRightJustify);
-  gtk_widget_queue_resize(GTK_WIDGET(MenuItemWidget));
-  Result:=false;
-end;
-
-{------------------------------------------------------------------------------
   Method:   RoundRect
   Params:   X1, Y1, X2, Y2, RX, RY
   Returns:  If succesfull
@@ -9005,6 +8987,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.420  2005/05/21 15:58:44  mattias
+  implemented right justification for menuitems for winapi intf  from Martin Smat
+
   Revision 1.419  2005/05/18 09:12:21  mattias
   fixed retrieving TCanvas.Width/Height
 

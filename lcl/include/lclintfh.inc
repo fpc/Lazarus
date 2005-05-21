@@ -108,7 +108,7 @@ function RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer): Boolean; {$IFDEF 
 function ReleaseDesignerDC(hWnd: HWND; DC: HDC): Integer;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ReplaceBitmapMask(var Image, Mask: HBitmap; NewMask: HBitmap): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function RequestInput(const InputCaption, InputPrompt : String; MaskInput : Boolean; var Value : String) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function RightJustifyMenuItem(HndMenu: HMenu; bRightJustify: boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function RightJustifyMenuItem(AMenuItem: TComponent): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 procedure SendCachedLCLMessages; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function DrawSplitter(DC: HDC; const ARect: TRect; Horizontal: boolean): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -150,6 +150,9 @@ procedure RaiseLastOSError;
 { =============================================================================
 
   $Log$
+  Revision 1.30  2005/05/21 15:58:44  mattias
+  implemented right justification for menuitems for winapi intf  from Martin Smat
+
   Revision 1.29  2005/03/31 21:29:45  micha
   move GetNotebookTabIndexAtPos to the widgetset interface
   implement it for win32 widgetset (fixes bug 669)

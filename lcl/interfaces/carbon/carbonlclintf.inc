@@ -90,6 +90,11 @@ begin
   Result:=inherited MenuItemSetEnable(BaseMenuItem);
 end;
 
+function TCarbonWidgetSet.RightJustifyMenuItem(BaseMenuItem: TComponent): Boolean;
+begin
+  Result:=inherited RightJustifyMenuItem(BaseMenuItem);
+end;
+
 function TCarbonWidgetSet.ReplaceBitmapMask(var Image, Mask: HBitmap;
   NewMask: HBitmap): boolean;
 begin
@@ -119,6 +124,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2005/05/21 15:58:44  mattias
+  implemented right justification for menuitems for winapi intf  from Martin Smat
+
   Revision 1.2  2005/02/23 01:12:46  marc
   + Added RemoveProp winapi call
   * Some maintenace on winapi/lclintf files
