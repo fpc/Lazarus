@@ -964,13 +964,14 @@ procedure TCanvas.TextRect(ARect: TRect; X, Y : Integer; const Text : String;
 var
   Options : Longint;
   fRect : TRect;
+  DCIndex: Integer;
 begin
   //debugln('TCanvas.TextRect A Text="',Text,'" ',dbgs(ARect));
   Changing;
   Options := 0;
   case Style.Alignment of
     taRightJustify : Options := DT_RIGHT;
-    taCenter : Options := DT_Center;
+    taCenter : Options := DT_CENTER;
   end;
   case Style.Layout of
     tlCenter : Options := Options or DT_VCENTER;
@@ -1002,6 +1003,7 @@ begin
     fRect.Left := X;
   if Style.Layout = tlTop then
     fRect.Top := Y;
+
   if (Style.Alignment in [taRightJustify,taCenter])
   or (Style.Layout in [tlCenter,tlBottom]) then begin
     DrawText(Self.Handle,pChar(Text),Length(Text),fRect,DT_CALCRECT or Options);
@@ -1015,14 +1017,30 @@ begin
       tlBottom : OffsetRect(fRect, 0, ARect.Bottom - fRect.Bottom);
     end;
   end;
+
+  if Style.Clipping then begin
+    DCIndex := SaveDC(Self.Handle);
+    IntersectRect(ARect, ARect, fRect);
+    with ARect do
+      InterSectClipRect(Self.Handle, Left, Top, Right, Bottom);
+    Options := Options or DT_NOCLIP; // no clipping as we are handling it here
+  end;
+  
   If Style.Opaque then begin
     RequiredState([csHandleValid, csBrushValid]);
     FillRect(fRect);
   end;
+  
   If Style.SystemFont then
     SetTextColor(Self.Handle, Font.Color);
   //debugln('TCanvas.TextRect DRAW Text="',Text,'" ',dbgs(fRect));
   DrawText(Self.Handle, pChar(Text), Length(Text), fRect, Options);
+  
+  if Style.Clipping then begin
+    if DCIndex <> -1 then
+      RestoreDC(Self.Handle, DCIndex);
+  end;
+
   Changed;
 end;
 
@@ -1537,6 +1555,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.94  2005/05/21 13:24:58  mattias
+  TextRect clipping patch  from Jesus
+
   Revision 1.93  2005/05/18 09:12:21  mattias
   fixed retrieving TCanvas.Width/Height
 

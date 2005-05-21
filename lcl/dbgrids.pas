@@ -1953,7 +1953,6 @@ begin
   // What a dilema!, we need ssAutoHorizontal and ssVertical!!!
   ScrolLBars:=ssBoth;
   DefaultTextStyle.Wordbreak := False;
-  DefaultTextStyle.Layout := tlCenter;
 
   DefaultRowHeight := 18;
 end;
@@ -2393,6 +2392,9 @@ end.
 
 {
   $Log$
+  Revision 1.41  2005/05/21 13:24:58  mattias
+  TextRect clipping patch  from Jesus
+
   Revision 1.40  2005/05/02 08:35:42  mattias
   fix bug 878 (can not paste from clipboard) new property TitleStyle  from Jesus
 
