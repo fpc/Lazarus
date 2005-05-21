@@ -3370,8 +3370,21 @@ begin
 end;
 
 function TPkgManager.DoOpenPackageSource(APackage: TLazPackage): TModalResult;
+var
+  Filename: String;
 begin
-  Result:=MainIDE.DoOpenEditorFile(APackage.GetSrcFilename,-1,[ofRegularFile]);
+  Result:=mrCancel;
+  if APackage.IsVirtual then begin
+    MessageDlg(lisPkgMangThisIsAVirtualPackageItHasNoSourceYetPleaseSaveThe,
+      mtError, [mbCancel], 0);
+    exit;
+  end;
+  Filename:=APackage.GetSrcFilename;
+  if (not FilenameIsAbsolute(Filename)) or (not FileExists(Filename)) then begin
+    MessageDlg(lisPkgMangPleaseSaveThePackageFirst, mtError, [mbCancel], 0);
+    exit;
+  end;
+  Result:=MainIDE.DoOpenEditorFile(Filename,-1,[ofRegularFile]);
 end;
 
 function TPkgManager.DoCompileAutoInstallPackages(

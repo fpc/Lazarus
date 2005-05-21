@@ -605,8 +605,11 @@ begin
 end;
 
 procedure TPackageEditorForm.MoreBitBtnClick(Sender: TObject);
+var
+  p: TPoint;
 begin
-  FilesPopupMenu.Popup(MoreBitBtn.Left,MoreBitBtn.Top+MoreBitBtn.Height);
+  p:=MoreBitBtn.ClientToScreen(Point(0,MoreBitBtn.Height));
+  FilesPopupMenu.Popup(p.x,p.y);
 end;
 
 procedure TPackageEditorForm.MoveDependencyUpClick(Sender: TObject);
