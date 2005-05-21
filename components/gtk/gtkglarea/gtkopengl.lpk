@@ -32,12 +32,12 @@ Please make sure that you link to the right libgtkgl. If you accidently link to 
       </Item2>
       <Item3>
         <Filename Value="gtkglarea_int.pp"/>
-        <Type Value="Text"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="GTKGLArea_Int"/>
       </Item3>
       <Item4>
         <Filename Value="openglgtkwidget.pas"/>
-        <Type Value="Text"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="OpenGLGtkWidget"/>
       </Item4>
       <Item5>

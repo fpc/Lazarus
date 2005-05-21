@@ -4,7 +4,7 @@
     <Name Value="Printer4Lazarus"/>
     <Author Value="Olivier Guilbaud"/>
     <CompilerOptions>
-      <Version Value="4"/>
+      <Version Value="5"/>
       <SearchPaths>
         <IncludeFiles Value="$(LazarusDir)/components/printers/$(TargetOS)/"/>
         <OtherUnitFiles Value="$(LazarusDir)/components/printers/$(TargetOS)/"/>
@@ -49,12 +49,12 @@
       </Item6>
       <Item7>
         <Filename Value="linux/udlgselectprinter.pp"/>
-        <Type Value="Text"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="uDlgSelectPrinter"/>
       </Item7>
       <Item8>
         <Filename Value="linux/cupsdyn.pp"/>
-        <Type Value="Text"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="cupsdyn"/>
       </Item8>
       <Item9>
@@ -100,7 +100,7 @@
       </Item18>
       <Item19>
         <Filename Value="linux/udlgpropertiesprinter.pp"/>
-        <Type Value="Text"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="uDlgPropertiesPrinter"/>
       </Item19>
       <Item20>
