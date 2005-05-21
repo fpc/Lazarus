@@ -132,7 +132,7 @@ begin
       NodeExt2:=TCodeTreeNodeExtension(AVLNode2.Data);
       cmp:=CompareTextIgnoringSpace(NodeExt1.Txt,NodeExt2.Txt,false);
       if cmp<0 then begin
-        // node of tree1 does not exists in tree2
+        // node of tree1 does not exist in tree2
         // -> delete
         Tree1.FreeAndDelete(AVLNode1);
       end else if cmp=0 then begin
@@ -141,13 +141,13 @@ begin
           NodeExt1.Data:=AVLNode2;
         AVLNode2:=Tree2.FindSuccessor(AVLNode2);
       end else begin
-        // node of tree2 does not exists in tree1
+        // node of tree2 does not exist in tree1
         // -> skip node of tree2
         AVLNode2:=Tree2.FindSuccessor(AVLNode2);
         continue;
       end;
     end else begin
-      // node of tree1 does not exists in tree2
+      // node of tree1 does not exist in tree2
       // -> delete
       Tree1.FreeAndDelete(AVLNode1);
     end;
@@ -866,7 +866,7 @@ begin
       SearchInNode:=SearchInNodes.FindSuccessor(SearchInNode);
       if (Result=nil) or (SearchInNode=nil) then exit;
     end else begin
-      // node in SearchInNodes does not exists in SearchForNodes
+      // node in SearchInNodes does not exist in SearchForNodes
       // -> ignore and search next
       SearchInNode:=SearchInNodes.FindSuccessor(SearchInNode);
     end;

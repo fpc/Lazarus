@@ -4564,7 +4564,7 @@ begin
   if FileExists(LRSFilename) and (FileAge(LFMFilename)<=FileAge(LRSFilename))
   then exit;
   debugln('TMainIDE.DoUpdateLRSFromLFM ',LRSFilename,' ',dbgs(FileAge(LFMFilename)),' ',dbgs(FileAge(LRSFilename)));
-  // the .lrs file does not exists, or is older than the .lfm file
+  // the .lrs file does not exist, or is older than the .lfm file
   // -> update .lrs file
   Result:=ConvertLFMToLRSFileInteractive(LFMFilename,LRSFilename);
 end;
@@ -4599,7 +4599,7 @@ begin
   case ErrorData.Error of
     ceSrcDirDoesNotExists:
       MessageDlg(lisCopyError2,
-        Format(lisSourceDirectoryDoesNotExists, ['"', ErrorData.Param1, '"']),
+        Format(lisSourceDirectoryDoesNotExist, ['"', ErrorData.Param1, '"']),
         mtError,[mbCancel],0);
     ceCreatingDirectory:
       MessageDlg(lisCopyError2,
@@ -5146,7 +5146,7 @@ begin
 
   // check if file exists
   if FilenameIsAbsolute(AFilename) and (not FileExists(AFilename)) then begin
-    // file does not exists
+    // file does not exist
     if (ofRevert in Flags) then begin
       // revert failed, due to missing file
       if not (ofQuiet in Flags) then begin
@@ -11542,6 +11542,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.865  2005/05/21 15:38:07  mattias
+  fixed some typos
+
   Revision 1.864  2005/04/13 09:33:15  mattias
   implemented favourite properties for ObjectInspector
 

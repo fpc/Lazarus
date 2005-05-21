@@ -53,7 +53,7 @@ type
   PInterfaceIdentCacheEntry = ^TInterfaceIdentCacheEntry;
   TInterfaceIdentCacheEntry = record
     Identifier: PChar;
-    Node: TCodeTreeNode; // if node = nil then identifier does not exists in
+    Node: TCodeTreeNode; // if node = nil then identifier does not exist in
                          //                    this interface
     CleanPos: integer;
     NextEntry: PInterfaceIdentCacheEntry; // used by memory manager

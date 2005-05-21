@@ -1872,7 +1872,7 @@ begin
   FromPos:=-1;
   if FindCreateFormStatement(MainBeginNode.StartPos,UpperCaseStr(AClassName),
     UpperCaseStr(AVarName),OldPosition)=-1 then begin
-    // does not exists -> create as last in front of 'Application.Run'
+    // does not exist -> create as last in front of 'Application.Run'
     MoveCursorToCleanPos(MainBeginNode.StartPos);
     repeat
       if ReadNextUpAtomIs('APPLICATION') then begin
@@ -1938,7 +1938,7 @@ begin
   FromPos:=-1;
   if FindCreateFormStatement(MainBeginNode.StartPos,UpperCaseStr(OldClassName),
     UpperCaseStr(OldVarName),OldPosition)=-1 then begin
-    // does not exists
+    // does not exist
     if OnlyIfExists then begin
       Result:=true;
       exit;

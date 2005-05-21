@@ -67,7 +67,7 @@ const
   { Config Path Functions }
 
   { The primary config path is the local or user specific path.
-    If the primary config path does not exists, it will automatically be
+    If the primary config path does not exist, it will automatically be
     created by the IDE.
     The secondary config path is for templates. The IDE will never write to it.
     If a config file is not found in the primary config file, Lazarus will
@@ -258,6 +258,9 @@ end.
 
 {
   $Log$
+  Revision 1.41  2005/05/21 15:38:07  mattias
+  fixed some typos
+
   Revision 1.40  2005/04/17 11:15:41  vincents
   implemented using default browser on windows
 

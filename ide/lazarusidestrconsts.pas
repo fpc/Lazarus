@@ -371,7 +371,7 @@ resourcestring
   lisErrorCreatingFile = 'Error creating file';
   lisUnableToCreateFile3 = 'Unable to create file%s%s%s%s';
   lisCopyError2 = 'Copy error';
-  lisSourceDirectoryDoesNotExists = 'Source directory %s%s%s does not exists.';
+  lisSourceDirectoryDoesNotExist = 'Source directory %s%s%s does not exist.';
   lisUnableToCreateDirectory = 'Unable to create directory %s%s%s.';
   lisUnableToCopyFileTo = 'Unable to copy file %s%s%s%sto %s%s%s';
   lisSorryThisTypeIsNotYetImplemented = 'Sorry, this type is not yet '
@@ -1954,12 +1954,12 @@ resourcestring
   lisLaunchingApplicationInvalid = 'Launching application invalid';
   lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta = 'The launching '
     +'application %s%s%'
-    +'s%sdoes not exists or is not executable.%s%sSee Run -> Run parameters -> '
+    +'s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> '
     +'Local';
 
   lisDebuggerInvalid = 'Debugger invalid';
   lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro = 'The debugger %s%s%'
-    +'s%sdoes not exists or is not executable.%s%sSee Environment -> Debugger '
+    +'s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger '
     +'Options';
   lisPleaseOpenAUnitBeforeRun = 'Please open a unit before run.';
   
