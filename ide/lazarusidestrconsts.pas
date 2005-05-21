@@ -2448,6 +2448,10 @@ resourcestring
   lisPckEditCallRegisterProcedureOfSelectedUnit = 'Call %sRegister%s '
     +'procedure of selected unit';
   lisPckEditRegisteredPlugins = 'Registered plugins';
+  lisPkgMangAddUnitToUsesClauseOfPackageDisableThisOnlyForUnit = 'Add unit to '
+    +'uses clause of package. Disable this only for units, that should not be '
+    +'compiled in all cases.';
+  lisPkgMangUseUnit = 'Use unit';
   lisPckEditMinimumVersion = 'Minimum Version:';
   lisPckEditMaximumVersion = 'Maximum Version:';
   lisPckEditApplyChanges = 'Apply changes';

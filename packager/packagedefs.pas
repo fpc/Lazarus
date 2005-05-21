@@ -135,10 +135,13 @@ const
 type
   TPkgFileFlag = (
     pffHasRegisterProc,  // file is unit and has a 'register' procedure
+    pffAddToPkgUsesSection,// unit is added to uses section if package source
     pffReportedAsRemoved // file has been reported as removed
     );
   TPkgFileFlags = set of TPkgFileFlag;
   
+  { TPkgFile }
+
   TPkgFile = class
   private
     FAutoReferenceSourceDir: boolean;
@@ -153,8 +156,10 @@ type
     FSourceDirectoryReferenced: boolean;
     FSourceDirNeedReference: boolean;
     FUnitName: string;
+    function GetAddToUsesPkgSection: boolean;
     function GetComponents(Index: integer): TPkgComponent;
     function GetHasRegisterProc: boolean;
+    procedure SetAddToUsesPkgSection(const AValue: boolean);
     procedure SetAutoReferenceSourceDir(const AValue: boolean);
     procedure SetRemoved(const AValue: boolean);
     procedure SetFilename(const AValue: string);
@@ -187,7 +192,9 @@ type
     property FileType: TPkgFileType read FFileType write SetFileType;
     property Flags: TPkgFileFlags read FFlags write SetFlags;
     property HasRegisterProc: boolean
-      read GetHasRegisterProc write SetHasRegisterProc;
+                               read GetHasRegisterProc write SetHasRegisterProc;
+    property AddToUsesPkgSection: boolean
+                       read GetAddToUsesPkgSection write SetAddToUsesPkgSection;
     property LazPackage: TLazPackage read FPackage;
     property UnitName: string read FUnitName write FUnitName;
     property ComponentPriority: TComponentPriority read FComponentPriority
@@ -766,7 +773,7 @@ const
   PkgFileTypeIdents: array[TPkgFileType] of string = (
     'Unit', 'Virtual Unit', 'LFM', 'LRS', 'Include', 'Text', 'Binary');
   PkgFileFlag: array[TPkgFileFlag] of string = (
-    'pffHasRegisterProc', 'pffReportedAsRemoved');
+    'pffHasRegisterProc', 'pffAddToPkgUsesSection', 'pffReportedAsRemoved');
   PkgDependencyFlagNames: array[TPkgDependencyFlag] of string = (
     'pdfMinVersion', 'pdfMaxVersion');
   LazPackageTypeNames: array[TLazPackageType] of string = (
@@ -1224,6 +1231,15 @@ begin
   Result:=pffHasRegisterProc in FFlags;
 end;
 
+procedure TPkgFile.SetAddToUsesPkgSection(const AValue: boolean);
+begin
+  if AddToUsesPkgSection=AValue then exit;
+  if AValue then
+    Include(FFlags,pffAddToPkgUsesSection)
+  else
+    Exclude(FFlags,pffAddToPkgUsesSection);
+end;
+
 procedure TPkgFile.SetAutoReferenceSourceDir(const AValue: boolean);
 begin
   if FAutoReferenceSourceDir=AValue then exit;
@@ -1243,6 +1259,11 @@ end;
 function TPkgFile.GetComponents(Index: integer): TPkgComponent;
 begin
   Result:=TPkgComponent(FComponents[Index]);
+end;
+
+function TPkgFile.GetAddToUsesPkgSection: boolean;
+begin
+  Result:=pffAddToPkgUsesSection in FFlags;
 end;
 
 procedure TPkgFile.SetFileType(const AValue: TPkgFileType);
@@ -1352,6 +1373,8 @@ begin
   Filename:=AFilename;
   FileType:=PkgFileTypeIdentToType(XMLConfig.GetValue(Path+'Type/Value',''));
   HasRegisterProc:=XMLConfig.GetValue(Path+'HasRegisterProc/Value',false);
+  AddToUsesPkgSection:=XMLConfig.GetValue(Path+'AddToUsesPkgSection/Value',
+                                          FileType in PkgFileUnitTypes);
   fUnitName:=XMLConfig.GetValue(Path+'UnitName/Value','');
   if FileType in PkgFileUnitTypes then begin
     // make sure the unitname makes sense
@@ -1370,6 +1393,8 @@ begin
   XMLConfig.SetDeleteValue(Path+'Filename/Value',TmpFilename,'');
   XMLConfig.SetDeleteValue(Path+'HasRegisterProc/Value',HasRegisterProc,
                            false);
+  XMLConfig.SetDeleteValue(Path+'AddToUsesPkgSection/Value',AddToUsesPkgSection,
+                           FileType in PkgFileUnitTypes);
   XMLConfig.SetDeleteValue(Path+'Type/Value',PkgFileTypeIdents[FileType],
                            PkgFileTypeIdents[pftUnit]);
   XMLConfig.SetDeleteValue(Path+'UnitName/Value',FUnitName,'');

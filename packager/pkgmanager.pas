@@ -2554,6 +2554,7 @@ var
   OutputDir: String;
   OldSrc: String;
   CaseInsensitiveUnitName: String;
+  NeedsRegisterProcCall: boolean;
 begin
   {$IFDEF VerbosePkgCompile}
   writeln('TPkgManager.DoSavePackageMainSource A');
@@ -2603,11 +2604,14 @@ begin
       if SysUtils.CompareText(CurUnitName,CaseInsensitiveUnitName)<>0 then
         CurUnitName:=CaseInsensitiveUnitName;
       if (CurUnitName<>'') and IsValidIdent(CurUnitName) then begin
-        if UsedUnits<>'' then
-          UsedUnits:=UsedUnits+', ';
-        UsedUnits:=UsedUnits+CurUnitName;
-        if (APackage.PackageType in [lptDesignTime,lptRunAndDesignTime])
-        and CurFile.HasRegisterProc then begin
+        NeedsRegisterProcCall:=CurFile.HasRegisterProc
+          and (APackage.PackageType in [lptDesignTime,lptRunAndDesignTime]);
+        if NeedsRegisterProcCall or CurFile.AddToUsesPkgSection then begin
+          if UsedUnits<>'' then
+            UsedUnits:=UsedUnits+', ';
+          UsedUnits:=UsedUnits+CurUnitName;
+        end;
+        if NeedsRegisterProcCall then begin
           RegistrationCode:=RegistrationCode+
             '  RegisterUnit('''+CurUnitName+''',@'+CurUnitName+'.Register);'+e;
         end;

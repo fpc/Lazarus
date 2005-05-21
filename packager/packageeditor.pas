@@ -108,6 +108,7 @@ type
     FilePropsGroupBox: TGroupBox;
     // file properties
     CallRegisterProcCheckBox: TCheckBox;
+    AddToUsesPkgSectionCheckBox: TCheckBox;
     RegisteredPluginsGroupBox: TGroupBox;
     RegisteredListBox: TListBox;
     // dependency properties
@@ -122,6 +123,7 @@ type
     ImageList: TImageList;
     FilesPopupMenu: TPopupMenu;
     procedure AddBitBtnClick(Sender: TObject);
+    procedure AddToUsesPkgSectionCheckBoxClick(Sender: TObject);
     procedure ApplyDependencyButtonClick(Sender: TObject);
     procedure CallRegisterProcCheckBoxClick(Sender: TObject);
     procedure ChangeFileTypeMenuItemClick(Sender: TObject);
@@ -855,10 +857,16 @@ procedure TPackageEditorForm.FilePropsGroupBoxResize(Sender: TObject);
 var
   y: Integer;
   x: Integer;
+  w: Integer;
 begin
   // components for files
+  w:=(ClientWidth-15) div 2;
   with CallRegisterProcCheckBox do
-    SetBounds(3,0,Parent.ClientWidth,Height);
+    SetBounds(3,0,w,Height);
+  x:=3+w+9;
+    
+  with AddToUsesPkgSectionCheckBox do
+    SetBounds(x,0,w,Height);
 
   y:=CallRegisterProcCheckBox.Top+CallRegisterProcCheckBox.Height+3;
   with RegisteredPluginsGroupBox do
@@ -990,6 +998,20 @@ begin
   PackageGraph.EndUpdate;
 end;
 
+procedure TPackageEditorForm.AddToUsesPkgSectionCheckBoxClick(Sender: TObject);
+var
+  CurFile: TPkgFile;
+  Removed: boolean;
+begin
+  if LazPackage=nil then exit;
+  CurFile:=GetCurrentFile(Removed);
+  if (CurFile=nil) then exit;
+  if CurFile.AddToUsesPkgSection=AddToUsesPkgSectionCheckBox.Checked then exit;
+  CurFile.AddToUsesPkgSection:=AddToUsesPkgSectionCheckBox.Checked;
+  LazPackage.Modified:=not Removed;
+  UpdateAll;
+end;
+
 procedure TPackageEditorForm.ApplyDependencyButtonClick(Sender: TObject);
 var
   CurDependency: TPkgDependency;
@@ -1045,6 +1067,7 @@ begin
   if LazPackage=nil then exit;
   CurFile:=GetCurrentFile(Removed);
   if (CurFile=nil) then exit;
+  if CurFile.HasRegisterProc=CallRegisterProcCheckBox.Checked then exit;
   CurFile.HasRegisterProc:=CallRegisterProcCheckBox.Checked;
   LazPackage.Modified:=not Removed;
   UpdateAll;
@@ -1313,6 +1336,17 @@ begin
     UseOnChange:=true;
     OnClick:=@CallRegisterProcCheckBoxClick;
     Hint:=Format(lisPckEditCallRegisterProcedureOfSelectedUnit, ['"', '"']);
+    ShowHint:=true;
+  end;
+
+  AddToUsesPkgSectionCheckBox:=TCheckBox.Create(Self);
+  with AddToUsesPkgSectionCheckBox do begin
+    Name:='AddToUsesPkgSectionCheckBox';
+    Parent:=FilePropsGroupBox;
+    Caption:=lisPkgMangUseUnit;
+    UseOnChange:=true;
+    OnClick:=@AddToUsesPkgSectionCheckBoxClick;
+    Hint:=lisPkgMangAddUnitToUsesClauseOfPackageDisableThisOnlyForUnit;
     ShowHint:=true;
   end;
 
@@ -1593,6 +1627,7 @@ begin
   ApplyDependencyButton.Visible:=Dependency<>nil;
 
   CallRegisterProcCheckBox.Visible:=CurFile<>nil;
+  AddToUsesPkgSectionCheckBox.Visible:=CurFile<>nil;
   RegisteredPluginsGroupBox.Visible:=CurFile<>nil;
 
   if CurFile<>nil then begin
@@ -1602,6 +1637,9 @@ begin
     CallRegisterProcCheckBox.Enabled:=(not LazPackage.ReadOnly)
                              and (CurFile.FileType in [pftUnit,pftVirtualUnit]);
     CallRegisterProcCheckBox.Checked:=pffHasRegisterProc in CurFile.Flags;
+    AddToUsesPkgSectionCheckBox.Checked:=pffAddToPkgUsesSection in CurFile.Flags;
+    AddToUsesPkgSectionCheckBox.Enabled:=(not LazPackage.ReadOnly)
+                                     and (CurFile.FileType in PkgFileUnitTypes);
     // fetch all registered plugins
     CurListIndex:=0;
     RegCompCnt:=CurFile.ComponentCount;
