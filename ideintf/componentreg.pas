@@ -612,7 +612,7 @@ var
   i: Integer;
 begin
   if FindComponent(Prefix)=nil then begin
-    Result:=Prefix;
+    Result:=Prefix+'1';
   end else begin
     i:=1;
     repeat

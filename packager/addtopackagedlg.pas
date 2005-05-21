@@ -1659,13 +1659,14 @@ begin
   if not IsValidIdent(fLastNewComponentAncestorType) then exit;
   PkgComponent:=TPkgComponent(
     IDEComponentPalette.FindComponent(fLastNewComponentAncestorType));
-  if PkgComponent=nil then exit;
-  
+
   // create unique classname
-  ClassNameEdit.Text:=IDEComponentPalette.CreateNewClassName(
+  if (not IsValidIdent(ClassNameEdit.Text)) or (ClassNameEdit.Text='') then
+    ClassNameEdit.Text:=IDEComponentPalette.CreateNewClassName(
                                                  fLastNewComponentAncestorType);
   // choose the same page name
-  PalettePageCombobox.Text:=PkgComponent.Page.PageName;
+  if (PalettePageCombobox.Text='') and (PkgComponent<>nil) then
+    PalettePageCombobox.Text:=PkgComponent.Page.PageName;
   // filename
   AutoCompleteNewComponentUnitName;
 end;
@@ -1789,13 +1790,18 @@ begin
     PackageGraph.IterateComponentClasses(LazPackage,@OnIterateComponentClasses,
                                          true,true);
   end;
-  // put them into the combobox
+  // put them into a list
   sl:=TStringList.Create;
   ANode:=fPkgComponents.FindLowest;
   while ANode<>nil do begin
     sl.Add(TPkgComponent(ANode.Data).ComponentClass.ClassName);
     ANode:=fPkgComponents.FindSuccessor(ANode);
   end;
+  // add at least TComponent
+  sl.Add('TComponent');
+  sl.Sort;
+  
+  // put them into the combobox
   OldAncestorType:=AncestorComboBox.Text;
   AncestorComboBox.Items.Assign(sl);
   AncestorComboBox.Text:=OldAncestorType;

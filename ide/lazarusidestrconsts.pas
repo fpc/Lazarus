@@ -2277,7 +2277,8 @@ resourcestring
   // add to package dialog
   lisA2PInvalidFilename = 'Invalid filename';
   lisA2PTheFilenameIsAmbiguousPleaseSpecifiyAFilename = 'The filename %s%s%s '
-    +'is ambiguous.%sPlease specifiy a filename with full path.';
+    +'is ambiguous, because the package has no default directory yet.%s'
+    +'Please specify a filename with full path.';
   lisA2PFileNotUnit = 'File not unit';
   lisA2PPascalUnitsMustHaveTheExtensionPPOrPas = 'Pascal units must have the '
     +'extension .pp or .pas';
