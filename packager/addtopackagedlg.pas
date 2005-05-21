@@ -1420,6 +1420,8 @@ begin
     Parent:=NewComponentPage;
     Caption:='...';
     OnClick:=@ComponentUnitFileBrowseButtonClick;
+    ShowHint:=true;
+    Hint:='Open file dialog';
   end;
 
   ComponentUnitFileShortenButton:=TButton.Create(Self);
@@ -1428,6 +1430,8 @@ begin
     Parent:=NewComponentPage;
     Caption:='<>';
     OnClick:=@ComponentUnitFileShortenButtonClick;
+    ShowHint:=true;
+    Hint:='Shorten or expand filename';
   end;
 
   ComponentUnitNameLabel:=TLabel.Create(Self);

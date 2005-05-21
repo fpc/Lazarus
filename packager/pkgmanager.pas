@@ -495,7 +495,8 @@ begin
   // create sourcecode
   LE:=LineEnding;
   UsesLine:='Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs';
-  if System.Pos(Params.UsedUnitname,UsesLine)<1 then
+  if (System.Pos(Params.UsedUnitname,UsesLine)<1)
+  and (Params.UsedUnitname<>'') then
     UsesLine:=UsesLine+', '+Params.UsedUnitname;
   NewSource:=
      'unit '+Params.UnitName+';'+LE
