@@ -386,6 +386,10 @@ msgstr "Добавить к пакету"
 msgid "Add to project"
 msgstr "Добавить к проекту"
 
+#: lazarusidestrconsts:lispkgmangaddunittousesclauseofpackagedisablethisonlyforunit
+msgid "Add unit to uses clause of package. Disable this only for units, that should not be compiled in all cases."
+msgstr ""
+
 #: lazarusidestrconsts:lismenuaddwatch
 msgid "Add watch ..."
 msgstr "Добавить наблюдение..."
@@ -4570,6 +4574,10 @@ msgstr "Нажмите любую клавишу..."
 msgid "Please save the file before adding it to a package."
 msgstr "Сохраните файл перед добавлением в пакет."
 
+#: lazarusidestrconsts:lispkgmangpleasesavethepackagefirst
+msgid "Please save the package first."
+msgstr ""
+
 #: lazarusidestrconsts:lisoippleaseselectapackage
 msgid "Please select a package"
 msgstr "Выберите пакет"
@@ -5790,9 +5798,9 @@ msgstr "Источник и назначение одинаковы:%s%s"
 msgid "Source breakpoint"
 msgstr "Точка останова в исходнике"
 
-#: lazarusidestrconsts:lissourcedirectorydoesnotexists
-msgid "Source directory %s%s%s does not exists."
-msgstr "Каталог исходников %s%s%s не существует."
+#: lazarusidestrconsts:lissourcedirectorydoesnotexist
+msgid "Source directory %s%s%s does not exist."
+msgstr ""
 
 #: lazarusidestrconsts:lissourcemodified
 msgid "Source modified"
@@ -6243,8 +6251,8 @@ msgid "The current unit path for the file%s%s%s%s is%s%s%s%s.%s%sThe path to the
 msgstr "Текущий путь модуля для файла %s%s%s%s - %s%s%s%s.%s%sПуть к модулям LCL %s%s%s отсутствует.%s%sПодсказка для новичков:%sСоздайте приложение lazarus и поместите файл в каталог проекта."
 
 #: lazarusidestrconsts:listhedebuggerdoesnotexistsorisnotexecutableseeenviro
-msgid "The debugger %s%s%s%sdoes not exists or is not executable.%s%sSee Environment -> Debugger Options"
-msgstr "Отладчик %s%s%s%sне существует или не является исполняемым.%s%sСм. Окружение -> Параметры отладчика"
+msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger Options"
+msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvaliddebuggerfilenamemsg
 msgid "The debugger file \"%s\" is not an executable."
@@ -6331,8 +6339,8 @@ msgid "The filename %s%s%s does not correspond to the package name %s%s%s in the
 msgstr "Имя файла %s%s%s не соответствует имени пакета %s%s%s в файле.%sСменить имя пакета на %s%s%s?"
 
 #: lazarusidestrconsts:lisa2pthefilenameisambiguouspleasespecifiyafilename
-msgid "The filename %s%s%s is ambiguous.%sPlease specifiy a filename with full path."
-msgstr "Имя файла %s%s%s неоднозначно.%sУкажите полное имя файла (включая путь)."
+msgid "The filename %s%s%s is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
+msgstr ""
 
 #: lazarusidestrconsts:listhefollowingpackagesfailedtoload
 msgid "The following package(s) failed to load:%s%s"
@@ -6347,8 +6355,8 @@ msgid "The host application %s%s%s is not executable."
 msgstr "Главное приложение %s%s%s - не исполняемый файл."
 
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
-msgid "The launching application %s%s%s%sdoes not exists or is not executable.%s%sSee Run -> Run parameters -> Local"
-msgstr "Запускающее приложение %s%s%s%sне существует или не является испоняемым файлом.%s%sСм. Запуск->Параметры запуска->Локальные"
+msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
+msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvalidlazarusdir
 msgid "The lazarus directory \"%s\" does not look correct. Normally it contains directories like lcl, debugger, designer, components, ... ."
@@ -6596,6 +6604,10 @@ msgstr "Этот файл отсутствует во всех загруженных пакетах."
 
 #: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
 msgid "This file was automatically created by Lazarus. Do not edit!"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthisisavirtualpackageithasnosourceyetpleasesavethe
+msgid "This is a virtual package. It has no source yet. Please save the package first."
 msgstr ""
 
 #: lazarusidestrconsts:lisresourcefilecomment
@@ -7221,6 +7233,10 @@ msgstr "Использовать стандартный файл настроек (fpc.cfg)"
 #: lazarusidestrconsts:dlgusesyntaxhighlight
 msgid "Use syntax highlight"
 msgstr "Подсветка синтаксиса"
+
+#: lazarusidestrconsts:lispkgmanguseunit
+msgid "Use unit"
+msgstr ""
 
 #: lazarusidestrconsts:rsiwpusewindowmanagersetting
 msgid "Use windowmanager setting"

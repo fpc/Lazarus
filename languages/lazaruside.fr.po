@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Last-Translator: beuz <vincent@beuselinck.com>\n"
-"PO-Revision-Date: 2005-04-24 18:47+0200\n"
+"PO-Revision-Date: 2005-05-20 22:29+0200\n"
 "Language-Team:  <fr@li.org>\n"
 "Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.3\n"
+"X-Generator: KBabel 1.9.1\n"
 "Project-Id-Version: lazaruside\n"
 "MIME-Version: 1.0\n"
 
@@ -387,7 +387,7 @@ msgstr "Ajouter les chemins aux paquets/projets dépendants"
 
 #: lazarusidestrconsts:lisoifaddtofavouriteproperties
 msgid "Add to favourite properties"
-msgstr ""
+msgstr "Ajouter aux propriétés favorites"
 
 #: lazarusidestrconsts:lisa2paddtopackage
 msgid "Add to package"
@@ -396,6 +396,10 @@ msgstr "Ajouter au paquet"
 #: lazarusidestrconsts:lisprojaddtoproject
 msgid "Add to project"
 msgstr "Ajouter au projet"
+
+#: lazarusidestrconsts:lispkgmangaddunittousesclauseofpackagedisablethisonlyforunit
+msgid "Add unit to uses clause of package. Disable this only for units, that should not be compiled in all cases."
+msgstr ""
 
 #: lazarusidestrconsts:lismenuaddwatch
 msgid "Add watch ..."
@@ -1395,7 +1399,7 @@ msgstr "Copier la sélection vers le presse-papiers"
 
 #: lazarusidestrconsts:dlgcopywordatcursoroncopynone
 msgid "Copy word on copy none"
-msgstr ""
+msgstr "Copier le mot si rien à copier"
 
 #: lazarusidestrconsts:liscopyingawholeformisnotimplemented
 msgid "Copying a whole form is not implemented."
@@ -2539,7 +2543,7 @@ msgstr "Fonction: enlever un délimiteur de chemin"
 
 #: lazarusidestrconsts:listmfunctionextractfileextension
 msgid "Function: extract file extension"
-msgstr "Fonction: extraire l'extention du fichier"
+msgstr "Fonction: extraire l'extension du fichier"
 
 #: lazarusidestrconsts:listmfunctionextractfilenameonly
 msgid "Function: extract file name only"
@@ -2547,7 +2551,7 @@ msgstr "Fonction: extraire le nom de fichier seul."
 
 #: lazarusidestrconsts:listmfunctionextractfilenameextension
 msgid "Function: extract file name+extension"
-msgstr "Fonction: extraire le nom et l'extention du fichier"
+msgstr "Fonction: extraire le nom et l'extension du fichier"
 
 #: lazarusidestrconsts:listmfunctionextractfilepath
 msgid "Function: extract file path"
@@ -2579,7 +2583,7 @@ msgstr "Générer des infos pour le débogueur DBX (ralentit la compilation)"
 
 #: lazarusidestrconsts:dlgcogdb
 msgid "Generate Debugging Info For GDB (Slows Compiling)"
-msgstr "Générer des infos pour le débugueur GDB (ralentit la compilation)"
+msgstr "Générer des infos pour le débogueur GDB (ralentit la compilation)"
 
 #: lazarusidestrconsts:dlggprof
 msgid "Generate code for gprof"
@@ -2803,7 +2807,7 @@ msgstr "Début"
 
 #: lazarusidestrconsts:dlghomekeyjumpstoneareststart
 msgid "Home key jumps to nearest start"
-msgstr ""
+msgstr "La touche Home va au plus proche début"
 
 #: lazarusidestrconsts:lishorizontal
 msgid "Horizontal"
@@ -2887,7 +2891,7 @@ msgstr "Ignorer le nombre d'espaces"
 
 #: lazarusidestrconsts:lisdiffdlgignoreiflineendcharsdiffe
 msgid "Ignore difference in line ends (e.g. #10 = #13#10)"
-msgstr "Ignorer les différence de fin de lignes (#10 = #13#10)"
+msgstr "Ignorer les différences de fin de lignes (#10 = #13#10)"
 
 #: lazarusidestrconsts:lisdiskdiffignorediskchanges
 msgid "Ignore disk changes"
@@ -2899,7 +2903,7 @@ msgstr "Ignorer lignes vides ajoutées ou supprimées"
 
 #: lazarusidestrconsts:lisdiffdlgignorespaces
 msgid "Ignore spaces (newline chars not included)"
-msgstr "Ignorer les espaces (sauf caractères de nouvelle ligne)"
+msgstr "Ignorer les espaces (sauf caract. de nouvelle ligne)"
 
 #: lazarusidestrconsts:lisdiffdlgignorespacesatendofline
 msgid "Ignore spaces at end of line"
@@ -4581,6 +4585,10 @@ msgstr "Pressez une touche"
 msgid "Please save the file before adding it to a package."
 msgstr "Veuillez enregistrer le fichier avant de l'ajouter à un paquet"
 
+#: lazarusidestrconsts:lispkgmangpleasesavethepackagefirst
+msgid "Please save the package first."
+msgstr ""
+
 #: lazarusidestrconsts:lisoippleaseselectapackage
 msgid "Please select a package"
 msgstr "Veuillez sélectionner un paquet"
@@ -4775,7 +4783,7 @@ msgstr "Achèvement de propriété"
 
 #: lazarusidestrconsts:dlgpropnamecolor
 msgid "Property name"
-msgstr ""
+msgstr "nom de propriété"
 
 #: lazarusidestrconsts:lisprotectedmethod
 msgid "Protected Method"
@@ -5139,7 +5147,7 @@ msgstr "Couleur de la marge droite"
 
 #: lazarusidestrconsts:dlgrightmousemovescursor
 msgid "Right mouse moves caret"
-msgstr "La touche droite de la souris déplace le curseur"
+msgstr "Le bouton droit de la souris déplace le curseur"
 
 #: lazarusidestrconsts:lisrightsides
 msgid "Right sides"
@@ -5219,7 +5227,7 @@ msgstr "Enregistrer sous"
 
 #: lazarusidestrconsts:dlgcharcasefileact
 msgid "Save As - auto rename pascal files lower case"
-msgstr ""
+msgstr "Enregistrer sous - renommer automatiquement les fichiers pascal en minuscule"
 
 #: lazarusidestrconsts:lismenueditorsaveastemplate
 msgid "Save As Template..."
@@ -5659,11 +5667,11 @@ msgstr "Afficher tous les messages"
 
 #: lazarusidestrconsts:dlgshowprocserror
 msgid "Show all procs on error"
-msgstr "Afficher toutes les procédures en cas d'erreur"
+msgstr "Afficher les procédures en cas d'erreur"
 
 #: lazarusidestrconsts:dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
-msgstr "Afficher les boutons fermer dans le livre de notes"
+msgstr "Afficher un bouton fermer par onglet"
 
 #: lazarusidestrconsts:dlgshowcompiledprocedures
 msgid "Show compiled procedures"
@@ -5801,9 +5809,9 @@ msgstr "La source et la destination sont identiques:%s%s"
 msgid "Source breakpoint"
 msgstr "Point d'arrêt source"
 
-#: lazarusidestrconsts:lissourcedirectorydoesnotexists
-msgid "Source directory %s%s%s does not exists."
-msgstr "Le répertoire source %s%s% n'existe pas"
+#: lazarusidestrconsts:lissourcedirectorydoesnotexist
+msgid "Source directory %s%s%s does not exist."
+msgstr ""
 
 #: lazarusidestrconsts:lissourcemodified
 msgid "Source modified"
@@ -5939,7 +5947,7 @@ msgstr "Sous-répertoire"
 
 #: lazarusidestrconsts:dlgsubpropkcolor
 msgid "Subpropertes"
-msgstr ""
+msgstr "Sous-propriétés"
 
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"
@@ -6254,8 +6262,8 @@ msgid "The current unit path for the file%s%s%s%s is%s%s%s%s.%s%sThe path to the
 msgstr "Le chemin d'unité actuel pour le fichier%s%s%s%s est%s%s%s%s.%s%sLe chemin vers les unités LCL %s%s%s manque.%s%sSuggestion pour les nouveaux venus à Lazarus:%sCréez une application Lazarus et placez le fichier dans le dossier du projet."
 
 #: lazarusidestrconsts:listhedebuggerdoesnotexistsorisnotexecutableseeenviro
-msgid "The debugger %s%s%s%sdoes not exists or is not executable.%s%sSee Environment -> Debugger Options"
-msgstr "Le débogueur %s%s%s%sn'existe pas ou n'est pas exécutable.%s%sVoir Configuration->Options du débogueur"
+msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger Options"
+msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvaliddebuggerfilenamemsg
 msgid "The debugger file \"%s\" is not an executable."
@@ -6342,8 +6350,8 @@ msgid "The filename %s%s%s does not correspond to the package name %s%s%s in the
 msgstr "Le nom de fichier %s%s%s ne correspond pas au paquet nommé %s%s%s dans le fichier.%sChanger le nom du paquet pour %s%s%s?"
 
 #: lazarusidestrconsts:lisa2pthefilenameisambiguouspleasespecifiyafilename
-msgid "The filename %s%s%s is ambiguous.%sPlease specifiy a filename with full path."
-msgstr "Le nom de fichier %s%s%s est ambigu.%sVeuillez spécifier un nom de fichier avec chemin complet."
+msgid "The filename %s%s%s is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
+msgstr ""
 
 #: lazarusidestrconsts:listhefollowingpackagesfailedtoload
 msgid "The following package(s) failed to load:%s%s"
@@ -6358,8 +6366,8 @@ msgid "The host application %s%s%s is not executable."
 msgstr "L'application hôte %s%s%s n'est pas exécutable."
 
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
-msgid "The launching application %s%s%s%sdoes not exists or is not executable.%s%sSee Run -> Run parameters -> Local"
-msgstr "L'application de démarrage %s%s%sn'existe pas ou n'est pas exécutable.%s%sVoir Exécuter->Paramètres d'exécution->Local"
+msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
+msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvalidlazarusdir
 msgid "The lazarus directory \"%s\" does not look correct. Normally it contains directories like lcl, debugger, designer, components, ... ."
@@ -6607,6 +6615,10 @@ msgstr "Ce fichier n'est dans aucun des paquets chargés."
 
 #: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
 msgid "This file was automatically created by Lazarus. Do not edit!"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthisisavirtualpackageithasnosourceyetpleasesavethe
+msgid "This is a virtual package. It has no source yet. Please save the package first."
 msgstr ""
 
 #: lazarusidestrconsts:lisresourcefilecomment
@@ -7233,6 +7245,10 @@ msgstr "Utiliser le fichier de configuration standard du compilateur (fpc.cfg)"
 msgid "Use syntax highlight"
 msgstr "Mise en évidence de la syntaxe"
 
+#: lazarusidestrconsts:lispkgmanguseunit
+msgid "Use unit"
+msgstr ""
+
 #: lazarusidestrconsts:rsiwpusewindowmanagersetting
 msgid "Use windowmanager setting"
 msgstr "Utiliser le gestionnaire de fenêtres"
@@ -7679,7 +7695,7 @@ msgstr "non"
 
 #: lazarusidestrconsts:dlgnoautomaticrenaming
 msgid "no automatic renaming"
-msgstr ""
+msgstr "ne pas renommer automatiquement"
 
 #: lazarusidestrconsts:lisnoname
 msgid "noname"

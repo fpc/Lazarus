@@ -397,6 +397,10 @@ msgstr "Añadir a paquete"
 msgid "Add to project"
 msgstr ""
 
+#: lazarusidestrconsts:lispkgmangaddunittousesclauseofpackagedisablethisonlyforunit
+msgid "Add unit to uses clause of package. Disable this only for units, that should not be compiled in all cases."
+msgstr ""
+
 #: lazarusidestrconsts:lismenuaddwatch
 msgid "Add watch ..."
 msgstr ""
@@ -4581,6 +4585,10 @@ msgstr "Por favor apriete una tecla ..."
 msgid "Please save the file before adding it to a package."
 msgstr "Por favor guarde el archivo antes de añadirlo al paquete"
 
+#: lazarusidestrconsts:lispkgmangpleasesavethepackagefirst
+msgid "Please save the package first."
+msgstr ""
+
 #: lazarusidestrconsts:lisoippleaseselectapackage
 msgid "Please select a package"
 msgstr "Por favor seleccione un paquete"
@@ -5801,9 +5809,9 @@ msgstr ""
 msgid "Source breakpoint"
 msgstr ""
 
-#: lazarusidestrconsts:lissourcedirectorydoesnotexists
-msgid "Source directory %s%s%s does not exists."
-msgstr "El directorio fuente %s%s%s no existe."
+#: lazarusidestrconsts:lissourcedirectorydoesnotexist
+msgid "Source directory %s%s%s does not exist."
+msgstr ""
 
 #: lazarusidestrconsts:lissourcemodified
 msgid "Source modified"
@@ -6254,8 +6262,8 @@ msgid "The current unit path for the file%s%s%s%s is%s%s%s%s.%s%sThe path to the
 msgstr "La ruta de la unidad actual para el archivo%s%s%s%s es%s%s%s%s.%s%sLa ruta a las unidades LCL %s%s%s está faltando.%s%sSugerencia para los principiantes:%sCrear una aplicación de Lazarus y poner el archivo dentro del directorio del proyecto."
 
 #: lazarusidestrconsts:listhedebuggerdoesnotexistsorisnotexecutableseeenviro
-msgid "The debugger %s%s%s%sdoes not exists or is not executable.%s%sSee Environment -> Debugger Options"
-msgstr "El depurador %s%s%s%s no existe o no es ejecutable.%s%s Vea Entorno -> Depurador Opciones"
+msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger Options"
+msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvaliddebuggerfilenamemsg
 msgid "The debugger file \"%s\" is not an executable."
@@ -6342,8 +6350,8 @@ msgid "The filename %s%s%s does not correspond to the package name %s%s%s in the
 msgstr "El nombre de archivo %s%s%s no se corresponde con el nombre del paquete %s%s%s en el archivo.¿Cambiar el nombre del paquete a %s%s%s?"
 
 #: lazarusidestrconsts:lisa2pthefilenameisambiguouspleasespecifiyafilename
-msgid "The filename %s%s%s is ambiguous.%sPlease specifiy a filename with full path."
-msgstr "El nombre de archivo %s%s%s es ambiguo.%sPor favor especifique un nombre de archivo con una ruta entera."
+msgid "The filename %s%s%s is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
+msgstr ""
 
 #: lazarusidestrconsts:listhefollowingpackagesfailedtoload
 msgid "The following package(s) failed to load:%s%s"
@@ -6358,7 +6366,7 @@ msgid "The host application %s%s%s is not executable."
 msgstr "La aplicación huésped %s%s%s no es ejecutable."
 
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
-msgid "The launching application %s%s%s%sdoes not exists or is not executable.%s%sSee Run -> Run parameters -> Local"
+msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
 msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvalidlazarusdir
@@ -6607,6 +6615,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
 msgid "This file was automatically created by Lazarus. Do not edit!"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthisisavirtualpackageithasnosourceyetpleasesavethe
+msgid "This is a virtual package. It has no source yet. Please save the package first."
 msgstr ""
 
 #: lazarusidestrconsts:lisresourcefilecomment
@@ -7232,6 +7244,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgusesyntaxhighlight
 msgid "Use syntax highlight"
 msgstr "Usar resaltado de sintaxis"
+
+#: lazarusidestrconsts:lispkgmanguseunit
+msgid "Use unit"
+msgstr ""
 
 #: lazarusidestrconsts:rsiwpusewindowmanagersetting
 msgid "Use windowmanager setting"

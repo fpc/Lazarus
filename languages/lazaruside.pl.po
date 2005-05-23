@@ -397,6 +397,10 @@ msgstr "Dodaj do pakietu"
 msgid "Add to project"
 msgstr ""
 
+#: lazarusidestrconsts:lispkgmangaddunittousesclauseofpackagedisablethisonlyforunit
+msgid "Add unit to uses clause of package. Disable this only for units, that should not be compiled in all cases."
+msgstr ""
+
 #: lazarusidestrconsts:lismenuaddwatch
 msgid "Add watch ..."
 msgstr ""
@@ -4581,6 +4585,10 @@ msgstr "Wciśnij klawisz ..."
 msgid "Please save the file before adding it to a package."
 msgstr "Zapisz plik przed dodaniem go do pakietu."
 
+#: lazarusidestrconsts:lispkgmangpleasesavethepackagefirst
+msgid "Please save the package first."
+msgstr ""
+
 #: lazarusidestrconsts:lisoippleaseselectapackage
 msgid "Please select a package"
 msgstr "[wybierz pakiet]"
@@ -5801,9 +5809,9 @@ msgstr ""
 msgid "Source breakpoint"
 msgstr ""
 
-#: lazarusidestrconsts:lissourcedirectorydoesnotexists
-msgid "Source directory %s%s%s does not exists."
-msgstr "Katalog źródłowy %s%s%s nie istnieje."
+#: lazarusidestrconsts:lissourcedirectorydoesnotexist
+msgid "Source directory %s%s%s does not exist."
+msgstr ""
 
 #: lazarusidestrconsts:lissourcemodified
 msgid "Source modified"
@@ -6254,7 +6262,7 @@ msgid "The current unit path for the file%s%s%s%s is%s%s%s%s.%s%sThe path to the
 msgstr "Obecna ścieżka do modułów dla pliku %s%s%s%s to%s%s%s%s.%s%sBrakuje ścieżki do modułów LCL %s%s%s.%s%sWskazówka dla początkujących:%sUtwórz aplikację Lazarusa i umieść plik w katalogu projektu."
 
 #: lazarusidestrconsts:listhedebuggerdoesnotexistsorisnotexecutableseeenviro
-msgid "The debugger %s%s%s%sdoes not exists or is not executable.%s%sSee Environment -> Debugger Options"
+msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger Options"
 msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvaliddebuggerfilenamemsg
@@ -6342,8 +6350,8 @@ msgid "The filename %s%s%s does not correspond to the package name %s%s%s in the
 msgstr "Nazwa pliku %s%s%s nie odpowiada nazwie pakietu %s%s%s w tym pliku.%sChcesz zmienić nazwę pakietu na %s%s%s?"
 
 #: lazarusidestrconsts:lisa2pthefilenameisambiguouspleasespecifiyafilename
-msgid "The filename %s%s%s is ambiguous.%sPlease specifiy a filename with full path."
-msgstr "Nazwa pliku %s%s%s jest niejednoznaczna.%sOkreśl nazwę pliku z pełną ścieżką."
+msgid "The filename %s%s%s is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
+msgstr ""
 
 #: lazarusidestrconsts:listhefollowingpackagesfailedtoload
 msgid "The following package(s) failed to load:%s%s"
@@ -6358,7 +6366,7 @@ msgid "The host application %s%s%s is not executable."
 msgstr "Aplikacja hosta %s%s%s nie jest wykonywalna."
 
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
-msgid "The launching application %s%s%s%sdoes not exists or is not executable.%s%sSee Run -> Run parameters -> Local"
+msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
 msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvalidlazarusdir
@@ -6607,6 +6615,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
 msgid "This file was automatically created by Lazarus. Do not edit!"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthisisavirtualpackageithasnosourceyetpleasesavethe
+msgid "This is a virtual package. It has no source yet. Please save the package first."
 msgstr ""
 
 #: lazarusidestrconsts:lisresourcefilecomment
@@ -7232,6 +7244,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgusesyntaxhighlight
 msgid "Use syntax highlight"
 msgstr "Podświetlaj składnię"
+
+#: lazarusidestrconsts:lispkgmanguseunit
+msgid "Use unit"
+msgstr ""
 
 #: lazarusidestrconsts:rsiwpusewindowmanagersetting
 msgid "Use windowmanager setting"

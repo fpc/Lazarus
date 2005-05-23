@@ -400,6 +400,10 @@ msgstr "In Paket aufnehmen"
 msgid "Add to project"
 msgstr "In Projekt aufnehmen"
 
+#: lazarusidestrconsts:lispkgmangaddunittousesclauseofpackagedisablethisonlyforunit
+msgid "Add unit to uses clause of package. Disable this only for units, that should not be compiled in all cases."
+msgstr ""
+
 #: lazarusidestrconsts:lismenuaddwatch
 msgid "Add watch ..."
 msgstr "Überwachten Ausdrück hinzufügen..."
@@ -4584,6 +4588,10 @@ msgstr "Beliebige Taste drücken..."
 msgid "Please save the file before adding it to a package."
 msgstr "Bitte speichern Sie die Datei vor dem Hinzufügen in ein Paket."
 
+#: lazarusidestrconsts:lispkgmangpleasesavethepackagefirst
+msgid "Please save the package first."
+msgstr ""
+
 #: lazarusidestrconsts:lisoippleaseselectapackage
 msgid "Please select a package"
 msgstr "Bitte wählen Sie ein Paket aus"
@@ -5804,9 +5812,9 @@ msgstr "Gleiche Quelle und Ziel:%s%s"
 msgid "Source breakpoint"
 msgstr "Quelltext-Haltepunkt"
 
-#: lazarusidestrconsts:lissourcedirectorydoesnotexists
-msgid "Source directory %s%s%s does not exists."
-msgstr "Quelltextverzeichnis %s%s%s gibt es nicht."
+#: lazarusidestrconsts:lissourcedirectorydoesnotexist
+msgid "Source directory %s%s%s does not exist."
+msgstr ""
 
 #: lazarusidestrconsts:lissourcemodified
 msgid "Source modified"
@@ -6257,8 +6265,8 @@ msgid "The current unit path for the file%s%s%s%s is%s%s%s%s.%s%sThe path to the
 msgstr "Der aktuelle Unitpfad der Datei %s%s%s%sist%s%s%s%s.%s%s Der Pfad zu den LCL-Units %s%s%s fehlt.%s%sHinweis für Einsteiger:%sErzeugen Sie eine Lazarus-Applikation und legen Sie die Datei ins Projektverzeichnis."
 
 #: lazarusidestrconsts:listhedebuggerdoesnotexistsorisnotexecutableseeenviro
-msgid "The debugger %s%s%s%sdoes not exists or is not executable.%s%sSee Environment -> Debugger Options"
-msgstr "Der Debugger %s%s%s%sfehlt oder ist nicht ausführbar.%s%sSiehe Einstellungen->Debuggereinstellungen"
+msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger Options"
+msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvaliddebuggerfilenamemsg
 msgid "The debugger file \"%s\" is not an executable."
@@ -6345,8 +6353,8 @@ msgid "The filename %s%s%s does not correspond to the package name %s%s%s in the
 msgstr "Der Dateiname %s%s%s stimmte nicht dem Paketnamen %s%s%s in der Datei überein.%sSoll der Paketname zu %s%s%s geändert werden?"
 
 #: lazarusidestrconsts:lisa2pthefilenameisambiguouspleasespecifiyafilename
-msgid "The filename %s%s%s is ambiguous.%sPlease specifiy a filename with full path."
-msgstr "Der Dateiname %s%s%s ist nicht eindeutig.%sBitte geben Sie einen Dateinamen mit dem vollen Pfad an."
+msgid "The filename %s%s%s is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
+msgstr ""
 
 #: lazarusidestrconsts:listhefollowingpackagesfailedtoload
 msgid "The following package(s) failed to load:%s%s"
@@ -6361,8 +6369,8 @@ msgid "The host application %s%s%s is not executable."
 msgstr "Die Hostapplikation %s%s%s ist nicht ausführbar"
 
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
-msgid "The launching application %s%s%s%sdoes not exists or is not executable.%s%sSee Run -> Run parameters -> Local"
-msgstr "Die aufrufende Applikation %s%s%s%sist nicht vorhanden oder ist nicht ausführbar.%s%sSiehe Start->Startparameter->Lokal"
+msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
+msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvalidlazarusdir
 msgid "The lazarus directory \"%s\" does not look correct. Normally it contains directories like lcl, debugger, designer, components, ... ."
@@ -6610,6 +6618,10 @@ msgstr "Datei ist in keinem der geladenen Pakete vorhanden."
 
 #: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
 msgid "This file was automatically created by Lazarus. Do not edit!"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthisisavirtualpackageithasnosourceyetpleasesavethe
+msgid "This is a virtual package. It has no source yet. Please save the package first."
 msgstr ""
 
 #: lazarusidestrconsts:lisresourcefilecomment
@@ -7235,6 +7247,10 @@ msgstr "Standard-Compilerkonfigurationsdatei (fpc.cfg) verwenden"
 #: lazarusidestrconsts:dlgusesyntaxhighlight
 msgid "Use syntax highlight"
 msgstr "Verwende Syntaxhervorhebung"
+
+#: lazarusidestrconsts:lispkgmanguseunit
+msgid "Use unit"
+msgstr ""
 
 #: lazarusidestrconsts:rsiwpusewindowmanagersetting
 msgid "Use windowmanager setting"

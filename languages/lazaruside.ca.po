@@ -386,6 +386,10 @@ msgstr "Afegeix al paquet"
 msgid "Add to project"
 msgstr "Afegeix al projecte"
 
+#: lazarusidestrconsts:lispkgmangaddunittousesclauseofpackagedisablethisonlyforunit
+msgid "Add unit to uses clause of package. Disable this only for units, that should not be compiled in all cases."
+msgstr ""
+
 #: lazarusidestrconsts:lismenuaddwatch
 msgid "Add watch ..."
 msgstr "Afegeix control ..."
@@ -4570,6 +4574,10 @@ msgstr "Premeu una tecla ..."
 msgid "Please save the file before adding it to a package."
 msgstr "Si us plau, deseu el fitxer abans d'afegir-lo a un paquet."
 
+#: lazarusidestrconsts:lispkgmangpleasesavethepackagefirst
+msgid "Please save the package first."
+msgstr ""
+
 #: lazarusidestrconsts:lisoippleaseselectapackage
 msgid "Please select a package"
 msgstr "Si us plau, seleccioneu un paquet"
@@ -5790,9 +5798,9 @@ msgstr "Font i destinació son el mateix:%s%s"
 msgid "Source breakpoint"
 msgstr "Punt de ruptura de les fonts"
 
-#: lazarusidestrconsts:lissourcedirectorydoesnotexists
-msgid "Source directory %s%s%s does not exists."
-msgstr "No existeix el directori del codi font %s%s%s."
+#: lazarusidestrconsts:lissourcedirectorydoesnotexist
+msgid "Source directory %s%s%s does not exist."
+msgstr ""
 
 #: lazarusidestrconsts:lissourcemodified
 msgid "Source modified"
@@ -6243,8 +6251,8 @@ msgid "The current unit path for the file%s%s%s%s is%s%s%s%s.%s%sThe path to the
 msgstr "La trajectòria de la unitat actual pel fitxer%s%s%s%s és %s%s%s%s.%s%sFalta la trajectòria a les unitats LCL %s%s%s.%s%sSuggeriment per aprenents:%sCreeu una aplicació Lazarus i poseu el fitxer dins del directori del projecte."
 
 #: lazarusidestrconsts:listhedebuggerdoesnotexistsorisnotexecutableseeenviro
-msgid "The debugger %s%s%s%sdoes not exists or is not executable.%s%sSee Environment -> Debugger Options"
-msgstr "El depurador %s%s%s%sno existeix o no és executable.%s%sComproveu Entorn -> Opcions del Depurador"
+msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger Options"
+msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvaliddebuggerfilenamemsg
 msgid "The debugger file \"%s\" is not an executable."
@@ -6331,7 +6339,7 @@ msgid "The filename %s%s%s does not correspond to the package name %s%s%s in the
 msgstr "El nom de fitxer %s%s%s no correspon al nom del paquet %s%s%s en el fitxer. %sVoleu canviar nom del paquet a %s%s%s?"
 
 #: lazarusidestrconsts:lisa2pthefilenameisambiguouspleasespecifiyafilename
-msgid "The filename %s%s%s is ambiguous.%sPlease specifiy a filename with full path."
+msgid "The filename %s%s%s is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
 msgstr ""
 
 #: lazarusidestrconsts:listhefollowingpackagesfailedtoload
@@ -6347,8 +6355,8 @@ msgid "The host application %s%s%s is not executable."
 msgstr "L'aplicació amfitriona %s%s%s no és executable"
 
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
-msgid "The launching application %s%s%s%sdoes not exists or is not executable.%s%sSee Run -> Run parameters -> Local"
-msgstr "L'aplicació %s%s%s%s no existeix o no és executable.%s%sMireu Executa -> Paràmetres d'Execució -> Local"
+msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
+msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvalidlazarusdir
 msgid "The lazarus directory \"%s\" does not look correct. Normally it contains directories like lcl, debugger, designer, components, ... ."
@@ -6597,6 +6605,10 @@ msgstr "Aquest fitxer no és cap paquet carregat."
 #: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
 msgid "This file was automatically created by Lazarus. Do not edit!"
 msgstr "Aquest fitxer l'ha creat automàticament el Lazarus. No l'editeu!"
+
+#: lazarusidestrconsts:lispkgmangthisisavirtualpackageithasnosourceyetpleasesavethe
+msgid "This is a virtual package. It has no source yet. Please save the package first."
+msgstr ""
 
 #: lazarusidestrconsts:lisresourcefilecomment
 msgid "This is an automatically generated lazarus resource file"
@@ -7221,6 +7233,10 @@ msgstr "Utilitza el fitxer de configuració normalitzat (fpc.cfg)"
 #: lazarusidestrconsts:dlgusesyntaxhighlight
 msgid "Use syntax highlight"
 msgstr "Utilitza el ressaltat de sintaxi"
+
+#: lazarusidestrconsts:lispkgmanguseunit
+msgid "Use unit"
+msgstr ""
 
 #: lazarusidestrconsts:rsiwpusewindowmanagersetting
 msgid "Use windowmanager setting"
