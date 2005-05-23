@@ -60,6 +60,8 @@ type
   { TLazIDEInterface }
 
   TLazIDEInterface = class(TComponent)
+  protected
+    function GetActiveProject: TLazProject; virtual; abstract;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -71,6 +73,8 @@ type
         Flags: TOpenFlags): TModalResult; virtual; abstract;
     function DoOpenFileAndJumpToIdentifier(const AFilename, AnIdentifier: string;
         PageIndex: integer; Flags: TOpenFlags): TModalResult; virtual; abstract;
+  public
+    property ActiveProject: TLazProject read GetActiveProject;
   end;
   
 var

@@ -143,6 +143,7 @@ type
   TMainIDEInterface = class(TLazIDEInterface)
   protected
     function GetToolStatus: TIDEToolStatus; virtual; abstract;
+    function GetActiveProject: TLazProject; override;
   public
     MacroList: TTransferMacroList;
     HiddenWindowsOnRun: TList; // list of forms, that were automatically hidden
@@ -364,6 +365,11 @@ begin
 end;
 
 { TMainIDEInterface }
+
+function TMainIDEInterface.GetActiveProject: TLazProject;
+begin
+  Result:=Project1;
+end;
 
 constructor TMainIDEInterface.Create(TheOwner: TComponent);
 begin
