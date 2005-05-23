@@ -178,7 +178,6 @@ var
 
   ObjectInspector1 : TObjectInspector;
   SourceNotebook : TSourceNotebook;
-  Project1: TProject;
 
 implementation
 
