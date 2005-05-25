@@ -2,20 +2,20 @@
 This source is only used to compile and install the package.
  }
 
-unit sqlitedslaz; 
+unit sqlitedslaz;
 
 interface
 
 uses
-  sqliteds, sqlitedsresources, LazarusPackageIntf; 
+  sqliteds, tableeditorform, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('sqliteds', @sqliteds.Register); 
-end; 
+  RegisterUnit('tableeditorform',@tableeditorform.Register);
+end;
 
 initialization
-  RegisterPackage('sqlitedslaz', @Register); 
+  RegisterPackage('sqlitedslaz',@Register);
 end.

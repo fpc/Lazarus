@@ -1,0 +1,34 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TSqliteTableEditorForm','FORMDATA',[
+  'TPF0'#22'TSqliteTableEditorForm'#21'SqliteTableEditorForm'#7'Caption'#6#19'S'
+  +'qlite Table Editor'#12'ClientHeight'#3#16#1#11'ClientWidth'#3''''#1#6'OnSho'
+  +'w'#7#25'SqliteTableEditorFormShow'#13'PixelsPerInch'#2'S'#18'HorzScrollBar.'
+  +'Page'#3'&'#1#18'VertScrollBar.Page'#3#15#1#4'Left'#3#180#1#6'Height'#3#16#1
+  +#3'Top'#3#180#0#5'Width'#3''''#1#0#6'TLabel'#6'Label1'#7'Caption'#6#10'Field'
+  +' Name'#5'Color'#7#6'clNone'#4'Left'#3#147#0#6'Height'#2#12#3'Top'#2'@'#5'Wi'
+  +'dth'#2'@'#0#0#6'TLabel'#6'Label2'#7'Caption'#6#10'Field Type'#5'Color'#7#6
+  +'clNone'#4'Left'#3#147#0#6'Height'#2#12#3'Top'#2'x'#5'Width'#2'<'#0#0#6'TLab'
+  +'el'#11'lblFilePath'#7'Caption'#6#11'lblFilePath'#5'Color'#7#6'clNone'#4'Lef'
+  +'t'#2#8#6'Height'#2#12#3'Top'#2#4#5'Width'#2';'#0#0#6'TLabel'#6'Label3'#7'Ca'
+  +'ption'#6#6'Label3'#5'Color'#7#6'clNone'#4'Left'#2#8#6'Height'#2#12#3'Top'#2
+  +#20#5'Width'#2'&'#0#0#8'TListBox'#10'listFields'#17'OnSelectionChange'#7#25
+  +'listFieldsSelectionChange'#8'TabOrder'#2#6#8'TopIndex'#2#255#4'Left'#2#8#6
+  +'Height'#3#192#0#3'Top'#2'@'#5'Width'#2'|'#0#0#7'TButton'#9'butCreate'#7'Cap'
+  +'tion'#6#12'Create Table'#7'OnClick'#7#10'butOkClick'#8'TabOrder'#2#1#7'TabS'
+  +'top'#8#4'Left'#3#147#0#6'Height'#2#25#3'Top'#3#192#0#5'Width'#3#136#0#0#0#7
+  +'TButton'#8'butClose'#7'Caption'#6#5'Close'#7'OnClick'#7#14'butCancelClick'#8
+  +'TabOrder'#2#2#7'TabStop'#8#4'Left'#3#147#0#6'Height'#2#25#3'Top'#3#232#0#5
+  +'Width'#3#136#0#0#0#5'TEdit'#13'editFieldName'#13'OnEditingDone'#7#24'editFi'
+  +'eldNameEditingDone'#8'TabOrder'#2#4#4'Left'#3#147#0#6'Height'#2#23#3'Top'#2
+  +'P'#5'Width'#3#136#0#0#0#9'TComboBox'#14'comboFieldType'#13'DropDownCount'#2
+  +#10#13'Items.Strings'#1#6#6'String'#6#7'Integer'#6#7'AutoInc'#6#4'Word'#6#5
+  +'Float'#6#7'Boolean'#6#8'DateTime'#6#4'Date'#6#4'Time'#6#4'Memo'#0#9'ItemInd'
+  +'ex'#2#0#9'MaxLength'#2#0#8'OnChange'#7#20'comboFieldTypeChange'#5'Style'#7
+  +#14'csDropDownList'#8'TabOrder'#2#5#4'Text'#6#6'String'#4'Left'#3#147#0#6'He'
+  +'ight'#2#21#3'Top'#3#136#0#5'Width'#3#136#0#0#0#7'TButton'#6'butAdd'#7'Capti'
+  +'on'#6#3'Add'#7'OnClick'#7#11'butAddClick'#8'TabOrder'#2#0#4'Left'#2#8#6'Hei'
+  +'ght'#2#25#3'Top'#2'('#5'Width'#2'@'#0#0#7'TButton'#9'butDelete'#7'Caption'#6
+  +#6'Delete'#7'OnClick'#7#14'butDeleteClick'#8'TabOrder'#2#3#4'Left'#2'H'#6'He'
+  +'ight'#2#25#3'Top'#2'('#5'Width'#2'<'#0#0#0
+]);
