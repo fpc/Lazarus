@@ -33,8 +33,9 @@ unit IDEOptionDefs;
 interface
 
 uses
-  Classes, SysUtils, Laz_XMLCfg, LCLProc,
-  Forms, Controls, StdCtrls, Buttons, ConfigStorage, LazarusIDEStrConsts;
+  Classes, SysUtils, Laz_XMLCfg, LCLProc, FileUtil,
+  Forms, Controls, StdCtrls, Buttons, ConfigStorage,
+  LazConf, LazarusIDEStrConsts;
 
 type
   { TXMLOptionsStorage }
@@ -63,6 +64,7 @@ type
     property XMLConfig: TXMLConfig read FXMLConfig;
     property FreeXMLConfig: boolean read FFreeXMLConfig write FFreeXMLConfig;
     procedure WriteToDisk; override;
+    function GetFilename: string; override;
   end;
 
 
@@ -376,6 +378,8 @@ function NonModalIDEFormIDToEnum(const FormID: string): TNonModalIDEWindow;
 var
   IDEDialogLayoutList: TIDEDialogLayoutList;
 
+function GetLazIDEConfigStorage(const Filename: string; LoadFromDisk: Boolean
+                                ): TConfigStorage;
 
 implementation
 
@@ -457,6 +461,20 @@ begin
     if NonModalIDEWindowNames[Result]=FormID then
       exit;
   Result:=nmiwNone;
+end;
+
+function GetLazIDEConfigStorage(const Filename: string; LoadFromDisk: Boolean
+  ): TConfigStorage;
+var
+  ConfigFilename: String;
+begin
+  if LoadFromDisk then begin
+    // copy template config file to users config directory
+    CopySecondaryConfigFile(Filename);
+  end;
+  // create storage
+  ConfigFilename:=AppendPathDelim(GetPrimaryConfigPath)+Filename;
+  Result:=TXMLOptionsStorage.Create(ConfigFilename,LoadFromDisk);
 end;
 
 { TIDEWindowLayout }
@@ -1364,9 +1382,15 @@ begin
   FXMLConfig.Flush;
 end;
 
+function TXMLOptionsStorage.GetFilename: string;
+begin
+  Result:=FXMLConfig.Filename;
+end;
+
 initialization
   IDEDialogLayoutList:=nil;
   DefaultConfigClass:=TXMLOptionsStorage;
+  GetIDEConfigStorage:=@GetLazIDEConfigStorage;
 
 end.
 

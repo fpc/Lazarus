@@ -62,12 +62,18 @@ type
     procedure AppendBasePath(const Path: string);
     procedure UndoAppendBasePath;
     procedure WriteToDisk; virtual; abstract;
+    function GetFilename: string; virtual; abstract;
   end;
   
   TConfigStorageClass = class of TConfigStorage;
   
+  TGetIDEConfigStorage = function(const Filename: string; LoadFromDisk: Boolean
+                                  ): TConfigStorage;
+  
 var
-  DefaultConfigClass: TConfigStorageClass;
+  DefaultConfigClass: TConfigStorageClass;   // will be set by the IDE
+  GetIDEConfigStorage: TGetIDEConfigStorage; // will be set by the IDE
+
   
 implementation
 
