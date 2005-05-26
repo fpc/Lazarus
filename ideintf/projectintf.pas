@@ -22,7 +22,7 @@ unit ProjectIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, NewItemIntf;
+  Classes, SysUtils, LCLProc, FileUtil, Controls, Forms, NewItemIntf;
   
 const
   FileDescGroupName = 'File';
@@ -420,29 +420,40 @@ type
     );
   TProjectFlags = set of TProjectFlag;
 
+  { TProjectDescriptor
+    - to show an option dialog to the user override the DoInitDescriptor
+    - to initialize project compiler settings and paths override InitProject
+    - to create files on creation override CreateStartFiles
+  }
+
   TProjectDescriptor = class(TPersistent)
   private
     FDefaultExt: string;
     FFlags: TProjectFlags;
+    FInitialized: boolean;
     FName: string;
     FReferenceCount: integer;
     FVisibleInNewDialog: boolean;
   protected
     procedure SetName(const AValue: string); virtual;
     procedure SetFlags(const AValue: TProjectFlags); virtual;
+    procedure SetInitialized;
+    function DoInitDescriptor: TModalResult; virtual;// put here option dialogs
   public
     constructor Create; virtual;
     function GetLocalizedName: string; virtual;
     function GetLocalizedDescription: string; virtual;
     procedure Release;
     procedure Reference;
-    procedure InitProject(AProject: TLazProject); virtual;
-    procedure CreateStartFiles(AProject: TLazProject); virtual;
+    function InitDescriptor: TModalResult;
+    function InitProject(AProject: TLazProject): TModalResult; virtual;
+    function CreateStartFiles(AProject: TLazProject): TModalResult; virtual;
   public
     property Name: string read FName write SetName;
     property VisibleInNewDialog: boolean read FVisibleInNewDialog write FVisibleInNewDialog;
     property Flags: TProjectFlags read FFlags write SetFlags;
     property DefaultExt: string read FDefaultExt write FDefaultExt;
+    property Initialized: boolean read FInitialized;
   end;
   TProjectDescriptorClass = class of TProjectDescriptor;
 
@@ -830,6 +841,16 @@ begin
   FFlags:=AValue;
 end;
 
+procedure TProjectDescriptor.SetInitialized;
+begin
+  FInitialized:=true;
+end;
+
+function TProjectDescriptor.DoInitDescriptor: TModalResult;
+begin
+  Result:=mrOk;
+end;
+
 procedure TProjectDescriptor.SetName(const AValue: string);
 begin
   if FName=AValue then exit;
@@ -868,15 +889,26 @@ begin
   inc(FReferenceCount);
 end;
 
-procedure TProjectDescriptor.InitProject(AProject: TLazProject);
+function TProjectDescriptor.InitDescriptor: TModalResult;
+begin
+  if not Initialized then begin
+    Result:=DoInitDescriptor;
+    SetInitialized;
+  end else
+    Result:=mrOk;
+end;
+
+function TProjectDescriptor.InitProject(AProject: TLazProject): TModalResult;
 begin
   AProject.Title:='project1';
   AProject.Flags:=Flags;
+  Result:=mrOk;
 end;
 
-procedure TProjectDescriptor.CreateStartFiles(AProject: TLazProject);
+function TProjectDescriptor.CreateStartFiles(AProject: TLazProject
+  ): TModalResult;
 begin
-
+  Result:=mrOk;
 end;
 
 { TLazProject }

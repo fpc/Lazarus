@@ -3938,14 +3938,13 @@ begin
     MaxValue:=100;
   end;
   
-  OIShowHintCheckBox :=TCheckBox.Create(Self);
+  OIShowHintCheckBox:=TCheckBox.Create(Self);
   with OIShowHintCheckBox do begin
     Name := 'OIShowHintCheckBox';
     Parent := OIMiscGroupBox;
     Left := 6;
     Top := 33;
-    Height := 25;
-    Caption := 'Show hints';
+    Caption := lisShowHintsInObjectInspector;
   end;
 
   OIDefaultItemHeightLabel:=TLabel.Create(Self);

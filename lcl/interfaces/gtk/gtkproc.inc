@@ -476,7 +476,7 @@ begin
     descent^ := PANGO_DESCENT(extents) div PANGO_SCALE;
 end;
 
-{$EndIf}
+{$EndIf Gtk2}
 
 procedure BeginGDKErrorTrap;
 begin
@@ -8204,6 +8204,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.358  2005/05/26 15:54:02  mattias
+  changed OI SHow Hints option to resource string, added TProjectDescriptor.DoInitDescriptor
+
   Revision 1.357  2005/05/21 19:27:41  marc
   * fixed synedit navigation on OSX
 

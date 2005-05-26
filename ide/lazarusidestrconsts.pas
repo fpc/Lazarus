@@ -728,6 +728,7 @@ resourcestring
 
   dlgOIMiscellaneous = 'Miscellaneous';
   dlgOIItemHeight = 'Item height';
+  lisShowHintsInObjectInspector = 'Show hints in Object Inspector';
   dlgEnvColors = 'Colors';
   dlgEnvBackupHelpNote =
     'Notes: Project files are all files in the project directory';

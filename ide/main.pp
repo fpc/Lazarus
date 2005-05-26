@@ -523,7 +523,8 @@ type
     function CloseDesignerForm(AnUnitInfo: TUnitInfo): TModalResult;
 
     // methods for creating a project
-    function CreateProjectObject(ProjectDesc: TProjectDescriptor): TProject;
+    function CreateProjectObject(ProjectDesc,
+                             FallbackProjectDesc: TProjectDescriptor): TProject;
     procedure OnLoadProjectInfoFromXMLConfig(TheProject: TProject;
                                              XMLConfig: TXMLConfig);
     procedure OnSaveProjectInfoToXMLConfig(TheProject: TProject;
@@ -4289,9 +4290,19 @@ begin
   Result:=mrOk;
 end;
 
-function TMainIDE.CreateProjectObject(ProjectDesc: TProjectDescriptor): TProject;
+function TMainIDE.CreateProjectObject(ProjectDesc,
+  FallbackProjectDesc: TProjectDescriptor): TProject;
 begin
   Result:=TProject.Create(ProjectDesc);
+  // custom initialization
+  if ProjectDesc.InitProject(Result)<>mrOk then begin
+    Result.Free;
+    Result:=nil;
+    if FallbackProjectDesc=nil then exit;
+    Result:=TProject.Create(FallbackProjectDesc);
+    FallbackProjectDesc.InitProject(Result);
+  end;
+
   Result.OnFileBackup:=@DoBackupFile;
   Result.OnLoadProjectInfo:=@OnLoadProjectInfoFromXMLConfig;
   Result.OnSaveProjectInfo:=@OnSaveProjectInfoToXMLConfig;
@@ -5620,7 +5631,10 @@ function TMainIDE.DoNewProject(ProjectDesc: TProjectDescriptor):TModalResult;
 var i:integer;
 Begin
   DebugLn('TMainIDE.DoNewProject A');
-  Result:=mrCancel;
+  
+  // init the descriptor (it can now ask the user for options)
+  Result:=ProjectDesc.InitDescriptor;
+  if Result<>mrOk then exit;
 
   // invalidate cached substituted macros
   IncreaseCompilerParseStamp;
@@ -5649,7 +5663,7 @@ Begin
 
   // create new project (TProject will automatically create the mainunit)
 
-  Project1:=CreateProjectObject(ProjectDesc);
+  Project1:=CreateProjectObject(ProjectDesc,ProjectDescriptorProgram);
   Project1.BeginUpdate(true);
   try
     Project1.CompilerOptions.CompilerPath:='$(CompPath)';
@@ -5659,7 +5673,9 @@ Begin
     // add and load default required packages
     PkgBoss.AddDefaultDependencies(Project1);
 
-    ProjectDesc.CreateStartFiles(Project1);
+    if ProjectDesc.CreateStartFiles(Project1)<>mrOk then begin
+      debugln('TMainIDE.DoNewProject ProjectDesc.CreateStartFiles failed');
+    end;
 
     // rebuild codetools defines
     RescanCompilerDefines(true);
@@ -5896,7 +5912,8 @@ begin
   writeln('TMainIDE.DoOpenProjectFile B');
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile B');{$ENDIF}
-  Project1:=CreateProjectObject(ProjectDescriptorProgram);
+  Project1:=CreateProjectObject(ProjectDescriptorProgram,
+                                ProjectDescriptorProgram);
   Project1.BeginUpdate(true);
   try
     if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
@@ -6106,7 +6123,7 @@ begin
     ExpandFilename(ExtractFilePath(ProgramBuf.Filename));
 
   // create a new project
-  Project1:=CreateProjectObject(NewProjectDesc);
+  Project1:=CreateProjectObject(NewProjectDesc,ProjectDescriptorProgram);
   Project1.BeginUpdate(true);
   try
     if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
@@ -7287,7 +7304,7 @@ begin
   // create a new project
   debugln('TMainIDE.DoConvertDelphiProject creating new project ...');
   NewProjectDesc:=TProjectEmptyProgramDescriptor.Create;
-  Project1:=CreateProjectObject(NewProjectDesc);
+  Project1:=CreateProjectObject(NewProjectDesc,ProjectDescriptorApplication);
   Project1.BeginUpdate(true);
   try
     if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
@@ -11542,6 +11559,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.866  2005/05/26 15:54:02  mattias
+  changed OI SHow Hints option to resource string, added TProjectDescriptor.DoInitDescriptor
+
   Revision 1.865  2005/05/21 15:38:07  mattias
   fixed some typos
 

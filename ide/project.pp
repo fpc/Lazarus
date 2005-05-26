@@ -308,8 +308,8 @@ type
     constructor Create; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
-    procedure InitProject(AProject: TLazProject); override;
-    procedure CreateStartFiles(AProject: TLazProject); override;
+    function InitProject(AProject: TLazProject): TModalResult; override;
+    function CreateStartFiles(AProject: TLazProject): TModalResult; override;
   end;
 
   { TProjectProgramDescriptor }
@@ -319,8 +319,8 @@ type
     constructor Create; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
-    procedure InitProject(AProject: TLazProject); override;
-    procedure CreateStartFiles(AProject: TLazProject); override;
+    function InitProject(AProject: TLazProject): TModalResult; override;
+    function CreateStartFiles(AProject: TLazProject): TModalResult; override;
   end;
 
   { TProjectManualProgramDescriptor }
@@ -332,8 +332,8 @@ type
     constructor Create; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
-    procedure InitProject(AProject: TLazProject); override;
-    procedure CreateStartFiles(AProject: TLazProject); override;
+    function InitProject(AProject: TLazProject): TModalResult; override;
+    function CreateStartFiles(AProject: TLazProject): TModalResult; override;
     property AddMainSource: boolean read FAddMainSource write FAddMainSource;
   end;
 
@@ -1210,9 +1210,6 @@ begin
   fTargetFileExt := GetDefaultExecutableExt;
   Title := '';
   fUnitList := TList.Create;  // list of TUnitInfo
-  
-  // custom initialization
-  ProjectDescription.InitProject(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -3001,13 +2998,14 @@ begin
   Result:=Format(lisProgramAFreepascalProgramTheProgramFileIsAutomatic, [#13]);
 end;
 
-procedure TProjectProgramDescriptor.InitProject(AProject: TLazProject);
+function TProjectProgramDescriptor.InitProject(AProject: TLazProject
+  ): TModalResult;
 var
   le: String;
   NewSource: String;
   MainFile: TLazProjectFile;
 begin
-  inherited InitProject(AProject);
+  Result:=inherited InitProject(AProject);
 
   MainFile:=AProject.CreateProjectFile('project1.lpr');
   MainFile.IsPartOfProject:=true;
@@ -3030,10 +3028,11 @@ begin
   AProject.MainFile.SetSourceText(NewSource);
 end;
 
-procedure TProjectProgramDescriptor.CreateStartFiles(AProject: TLazProject);
+function TProjectProgramDescriptor.CreateStartFiles(AProject: TLazProject
+  ): TModalResult;
 begin
-  LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,
-                              [ofProjectLoading,ofRegularFile]);
+  Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,
+                                      [ofProjectLoading,ofRegularFile]);
 end;
 
 { TProjectApplicationDescriptor }
@@ -3054,13 +3053,14 @@ begin
   Result:=Format(lisApplicationAGraphicalLclFreepascalProgramTheProgra, [#13]);
 end;
 
-procedure TProjectApplicationDescriptor.InitProject(AProject: TLazProject);
+function TProjectApplicationDescriptor.InitProject(
+  AProject: TLazProject): TModalResult;
 var
   le: string;
   NewSource: String;
   MainFile: TLazProjectFile;
 begin
-  inherited InitProject(AProject);
+  Result:=inherited InitProject(AProject);
 
   MainFile:=AProject.CreateProjectFile('project1.lpr');
   MainFile.IsPartOfProject:=true;
@@ -3092,10 +3092,10 @@ begin
   AProject.LazCompilerOptions.Win32GraphicApp:=true;
 end;
 
-procedure TProjectApplicationDescriptor.CreateStartFiles(AProject: TLazProject
-  );
+function TProjectApplicationDescriptor.CreateStartFiles(AProject: TLazProject
+  ): TModalResult;
 begin
-  LazarusIDE.DoNewEditorFile(FileDescriptorForm,'','',
+  Result:=LazarusIDE.DoNewEditorFile(FileDescriptorForm,'','',
                          [nfIsPartOfProject,nfOpenInEditor,nfCreateDefaultSrc]);
 end;
 
@@ -3121,13 +3121,14 @@ begin
   Result:=Format(lisCustomProgramAFreepascalProgram, [#13])
 end;
 
-procedure TProjectManualProgramDescriptor.InitProject(AProject: TLazProject);
+function TProjectManualProgramDescriptor.InitProject(AProject: TLazProject
+  ): TModalResult;
 var
   le: string;
   NewSource: String;
   MainFile: TLazProjectFile;
 begin
-  inherited InitProject(AProject);
+  Result:=inherited InitProject(AProject);
   
   if AddMainSource then begin
     MainFile:=AProject.CreateProjectFile('project1.pas');
@@ -3152,11 +3153,11 @@ begin
   end;
 end;
 
-procedure TProjectManualProgramDescriptor.CreateStartFiles(AProject: TLazProject
-  );
+function TProjectManualProgramDescriptor.CreateStartFiles(AProject: TLazProject
+  ): TModalResult;
 begin
-  LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,
-                              [ofProjectLoading,ofRegularFile]);
+  Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,
+                                      [ofProjectLoading,ofRegularFile]);
 end;
 
 { TProjectEmptyProgramDescriptor }
@@ -3171,6 +3172,9 @@ end.
 
 {
   $Log$
+  Revision 1.183  2005/05/26 15:54:02  mattias
+  changed OI SHow Hints option to resource string, added TProjectDescriptor.DoInitDescriptor
+
   Revision 1.182  2005/03/23 10:45:05  mattias
   fixed ambigious with ambiguous
 
