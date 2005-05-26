@@ -386,22 +386,23 @@ type
 
   TCustomListBox = class(TWinControl)
   private
+    FCacheValid: Boolean;
     FCanvas: TCanvas;
     FClickOnSelChange: boolean;
+    FClickTriggeredBySelectionChange: Boolean;
     FExtendedSelect: boolean;
-    FMultiSelect: boolean;
     FIntegralHeight: boolean;
-    FItems: TStrings;
     FItemHeight: Integer;
     FItemIndex: integer;
+    FItems: TStrings;
     FLockSelectionChange: integer;
+    FMultiSelect: boolean;
     FOnDrawItem: TDrawItemEvent;
     FOnMeasureItem: TMeasureItemEvent;
     FOnSelectionChange: TSelectionChangeEvent;
     FSorted: boolean;
     FStyle: TListBoxStyle;
     FTopIndex: integer;
-    FCacheValid: Boolean;
     function GetTopIndex: Integer;
     procedure SetTopIndex(const AValue: Integer);
     procedure UpdateSelectionMode;
@@ -437,7 +438,7 @@ type
     procedure SendItemIndex;
   protected
     property OnMeasureItem: TMeasureItemEvent
-      read FOnMeasureItem write FOnMeasureItem;
+                                       read FOnMeasureItem write FOnMeasureItem;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -1257,6 +1258,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.206  2005/05/26 22:15:51  mattias
+  fixed triggering TListBox.Click when clicking on selected item
+
   Revision 1.205  2005/05/06 10:21:38  micha
   prevent double onclick event when using click-on-selchange
 

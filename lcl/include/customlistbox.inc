@@ -224,15 +224,19 @@ end;
 ------------------------------------------------------------------------------}
 procedure TCustomListBox.LMSelChange(var TheMessage);
 begin
+  //debugln('TCustomListBox.LMSelChange ',DbgSName(Self),' ',dbgs(ItemIndex));
   IntfSelectionChanged;
 end;
 
 procedure TCustomListBox.WMLButtonDown(var Message: TLMLButtonDown);
 begin
+  //debugln('TCustomListBox.WMLButtonDown ',DbgSName(Self),' ',dbgs(ItemIndex));
   inherited WMLButtonDown(Message);
   // prevent Click to be called twice when using selchange as click
-  if ClickOnSelChange then
+  if ClickOnSelChange and FClickTriggeredBySelectionChange then
     Exclude(FControlState, csClicked);
+  // reset flag
+  FClickTriggeredBySelectionChange:=false;
 end;
 
 {------------------------------------------------------------------------------
@@ -380,7 +384,12 @@ procedure TCustomListBox.DoSelectionChange(User: Boolean);
 begin
   if Assigned(OnSelectionChange) then
     OnSelectionChange(Self,User);
-  if User and ClickOnSelChange then Click;
+  if User and ClickOnSelChange then begin
+    Click;
+    // set flag, that we triggered a Click, so that a possible MouseClick will
+    // not trigger it again
+    FClickTriggeredBySelectionChange:=true;
+  end;
 end;
 
 procedure TCustomListBox.SendItemIndex;
@@ -389,29 +398,29 @@ begin
   TWSCustomListBoxClass(WidgetSetClass).SetItemIndex(Self, FItemIndex);
 end;
 
-{------------------------------------------------------------------------------}
-{  function TCustomListBox.GetCachedData                                       }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  function TCustomListBox.GetCachedData
+------------------------------------------------------------------------------}
 function TCustomListBox.GetCachedData(const AIndex: Integer): Pointer;
 begin
   if not FCacheValid then raise EInvalidOperation.Create('Reading form invalid cache');
   Result := TExtendedStringList(FItems).Records[AIndex];
 end;
 
-{------------------------------------------------------------------------------}
-{  function TCustomListBox.GetCachedDataSize                                   }
-{                                                                              }
-{  Returns the amount of data needed when the widged isn't realized in the     }
-{  interface                                                                   }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  function TCustomListBox.GetCachedDataSize
+
+  Returns the amount of data needed when the widged isn't realized in the
+  interface
+------------------------------------------------------------------------------}
 function TCustomListBox.GetCachedDataSize: Integer;
 begin
   Result := SizeOf(TCustomListBoxItemRecord);
 end;
 
-{------------------------------------------------------------------------------}
-{  function TCustomListBox.SetItems                                   }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  function TCustomListBox.SetItems
+------------------------------------------------------------------------------}
 procedure TCustomListBox.SetItems(Value : TStrings);
 begin
   if (Value <> FItems) then begin

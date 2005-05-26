@@ -422,7 +422,7 @@ begin
             Font.Name:=fListBoxFont.Name;
             Font.Height:=fListBoxFont.Height;
             ShowHint:= true;
-            NewLIstBox.Canvas.Color:= clWhite;
+            NewListBox.Canvas.Color:= clWhite;
           end;//with
         end;//if
       end;//else
