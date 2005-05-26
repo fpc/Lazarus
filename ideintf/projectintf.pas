@@ -430,14 +430,12 @@ type
   private
     FDefaultExt: string;
     FFlags: TProjectFlags;
-    FInitialized: boolean;
     FName: string;
     FReferenceCount: integer;
     FVisibleInNewDialog: boolean;
   protected
     procedure SetName(const AValue: string); virtual;
     procedure SetFlags(const AValue: TProjectFlags); virtual;
-    procedure SetInitialized;
     function DoInitDescriptor: TModalResult; virtual;// put here option dialogs
   public
     constructor Create; virtual;
@@ -453,7 +451,6 @@ type
     property VisibleInNewDialog: boolean read FVisibleInNewDialog write FVisibleInNewDialog;
     property Flags: TProjectFlags read FFlags write SetFlags;
     property DefaultExt: string read FDefaultExt write FDefaultExt;
-    property Initialized: boolean read FInitialized;
   end;
   TProjectDescriptorClass = class of TProjectDescriptor;
 
@@ -488,6 +485,8 @@ type
     procedure SetFiles(Index: integer; const AValue: TLazProjectFile); virtual; abstract;
     procedure SetTitle(const AValue: String); virtual;
     procedure SetFlags(const AValue: TProjectFlags); virtual;
+    function GetProjectInfoFile: string; virtual; abstract;
+    procedure SetProjectInfoFile(const NewFilename: string); virtual; abstract;
   public
     constructor Create(ProjectDescription: TProjectDescriptor); virtual;
     function CreateProjectFile(const Filename: string
@@ -507,6 +506,8 @@ type
     property Flags: TProjectFlags read FFlags write SetFlags;
     property LazCompilerOptions: TLazCompilerOptions read FLazCompilerOptions
                                                      write SetLazCompilerOptions;
+    property ProjectInfoFile: string
+                               read GetProjectInfoFile write SetProjectInfoFile;
   end;
   TLazProjectClass = class of TLazProject;
 
@@ -841,11 +842,6 @@ begin
   FFlags:=AValue;
 end;
 
-procedure TProjectDescriptor.SetInitialized;
-begin
-  FInitialized:=true;
-end;
-
 function TProjectDescriptor.DoInitDescriptor: TModalResult;
 begin
   Result:=mrOk;
@@ -891,11 +887,7 @@ end;
 
 function TProjectDescriptor.InitDescriptor: TModalResult;
 begin
-  if not Initialized then begin
-    Result:=DoInitDescriptor;
-    SetInitialized;
-  end else
-    Result:=mrOk;
+  Result:=DoInitDescriptor;
 end;
 
 function TProjectDescriptor.InitProject(AProject: TLazProject): TModalResult;

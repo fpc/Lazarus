@@ -229,6 +229,10 @@ type
 
     procedure FindInFilesPerDialog(AProject: TProject); virtual; abstract;
     procedure FindInFiles(AProject: TProject; const FindText: string); virtual; abstract;
+
+    function GetPrimaryConfigPath: String; override;
+    function GetSecondaryConfigPath: String; override;
+    procedure CopySecondaryConfigFile(const AFilename: String); override;
   end;
 
 var
@@ -381,6 +385,21 @@ destructor TMainIDEInterface.Destroy;
 begin
   inherited Destroy;
   MainIDEInterface:=nil;
+end;
+
+function TMainIDEInterface.GetPrimaryConfigPath: String;
+begin
+  Result:=LazConf.GetPrimaryConfigPath;
+end;
+
+function TMainIDEInterface.GetSecondaryConfigPath: String;
+begin
+  Result:=LazConf.GetSecondaryConfigPath;
+end;
+
+procedure TMainIDEInterface.CopySecondaryConfigFile(const AFilename: String);
+begin
+  LazConf.CopySecondaryConfigFile(AFilename);
 end;
 
 { TFileDescPascalUnitWithForm }

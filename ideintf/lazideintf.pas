@@ -73,8 +73,12 @@ type
         Flags: TOpenFlags): TModalResult; virtual; abstract;
     function DoOpenFileAndJumpToIdentifier(const AFilename, AnIdentifier: string;
         PageIndex: integer; Flags: TOpenFlags): TModalResult; virtual; abstract;
+    function GetPrimaryConfigPath: String; virtual; abstract;
+    function GetSecondaryConfigPath: String; virtual; abstract;
+    procedure CopySecondaryConfigFile(const AFilename: String); virtual; abstract;
   public
     property ActiveProject: TLazProject read GetActiveProject;
+
   end;
   
 var

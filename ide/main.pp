@@ -859,12 +859,12 @@ begin
     writeln(PrimaryConfPathOptLong,' <path>');
     writeln('or ',PrimaryConfPathOptShort,' <path>');
     writeln(BreakString(lisprimaryConfigDirectoryWhereLazarusStoresItsConfig,
-                        75, 22), GetPrimaryConfigPath);
+                        75, 22), LazConf.GetPrimaryConfigPath);
     writeln('');
     writeln(SecondaryConfPathOptLong,' <path>');
     writeln('or ',SecondaryConfPathOptShort,' <path>');
     writeln(BreakString(lissecondaryConfigDirectoryWhereLazarusSearchesFor,
-                        75, 22), GetSecondaryConfigPath);
+                        75, 22), LazConf.GetSecondaryConfigPath);
     writeln('');
     writeln(DebugLogOpt,' <file>');
     writeln(BreakString(lisFileWhereDebugOutputIsWritten, 75, 22));
@@ -4896,6 +4896,7 @@ begin
   end;
 
   // if nothing modified then a simple Save can be skipped
+  //writeln('TMainIDE.DoSaveEditorFile A ',ActiveUnitInfo.Filename,' ',ActiveUnitInfo.NeedsSaveToDisk);
   if ([sfSaveToTestDir,sfSaveAs]*Flags=[])
   and (not ActiveUnitInfo.NeedsSaveToDisk) then begin
     Result:=mrOk;
@@ -4922,7 +4923,7 @@ begin
 
   // save source
   if not (sfSaveToTestDir in Flags) then begin
-    if ActiveUnitInfo.Modified then begin
+    if ActiveUnitInfo.Modified or ActiveUnitInfo.NeedsSaveToDisk then begin
       // save source to file
       Result:=ActiveUnitInfo.WriteUnitSource;
       if Result=mrAbort then exit;
@@ -5712,8 +5713,9 @@ begin
   SaveSourceEditorChangesToCodeCache(-1);
   SkipSavingMainSource:=false;
 
+
   {$IFDEF IDE_DEBUG}
-  writeln('TMainIDE.DoSaveProject A SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',sfSaveToTestDir in Flags);
+  writeln('TMainIDE.DoSaveProject A SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',sfSaveToTestDir in Flags,' ProjectInfoFile=',Project1.ProjectInfoFile);
   {$ENDIF}
   
   // check that all new units are saved first to get valid filenames
@@ -11559,6 +11561,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.867  2005/05/26 20:17:49  mattias
+  added TLazProject.ProjectInfoFile, fixed saving editor files if deleted
+
   Revision 1.866  2005/05/26 15:54:02  mattias
   changed OI SHow Hints option to resource string, added TProjectDescriptor.DoInitDescriptor
 

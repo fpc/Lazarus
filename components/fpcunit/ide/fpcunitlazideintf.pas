@@ -32,7 +32,7 @@ unit FPCUnitLazIDEIntf;
 interface
 
 uses
-  Classes, SysUtils, LazIDEIntf, ProjectIntf, testcaseopts;
+  Classes, SysUtils, LazIDEIntf, ProjectIntf, Controls, Forms,testcaseopts;
 
 type
   { TFPCUnitApplicationDescriptor }
@@ -42,8 +42,8 @@ type
     constructor Create; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
-    procedure InitProject(AProject: TLazProject); override;
-    procedure CreateStartFiles(AProject: TLazProject); override;
+    Function InitProject(AProject: TLazProject) : TModalResult; override;
+    Function CreateStartFiles(AProject: TLazProject): TModalResult; override;
   end;
 
   { TFileDescPascalUnitFPCUnitTestCase }
@@ -109,7 +109,7 @@ begin
           +'automatically maintained by Lazarus.';
 end;
 
-procedure TFPCUnitApplicationDescriptor.InitProject(AProject: TLazProject);
+Function TFPCUnitApplicationDescriptor.InitProject(AProject: TLazProject) : TModalResult;
 var
   le: string;
   NewSource: String;
@@ -146,12 +146,14 @@ begin
   
   // compiler options
   AProject.LazCompilerOptions.UseLineInfoUnit:=true;
+  Result:=mrOK;
 end;
 
-procedure TFPCUnitApplicationDescriptor.CreateStartFiles(AProject: TLazProject);
+Function TFPCUnitApplicationDescriptor.CreateStartFiles(AProject: TLazProject) :TModalResult;
 begin
   LazarusIDE.DoNewEditorFile(FileDescriptorFPCUnitTestCase,'','',
                          [nfIsPartOfProject,nfOpenInEditor,nfCreateDefaultSrc]);
+  Result:=mrOK;
 end;
 
 { TFileDescPascalUnitFPCUnitTestCase }

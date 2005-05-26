@@ -399,7 +399,6 @@ type
     function GetFirstUnitWithEditorIndex: TUnitInfo;
     function GetMainFilename: String;
     function GetMainUnitInfo: TUnitInfo;
-    function GetProjectInfoFile: string;
     function GetTargetFilename: string;
     function GetUnits(Index: integer): TUnitInfo;
     function JumpHistoryCheckPosition(
@@ -413,7 +412,6 @@ type
     procedure SetAutoOpenDesignerFormsDisabled(const AValue: boolean);
     procedure SetCompilerOptions(const AValue: TProjectCompilerOptions);
     procedure SetModified(const AValue: boolean);
-    procedure SetProjectInfoFile(const NewFilename: string);
     procedure SetTargetFilename(const NewTargetFilename: string);
     procedure SetUnits(Index:integer; AUnitInfo: TUnitInfo);
     procedure SetMainUnitID(const AValue: Integer);
@@ -425,6 +423,8 @@ type
     function GetFiles(Index: integer): TLazProjectFile; override;
     procedure SetFiles(Index: integer; const AValue: TLazProjectFile); override;
     procedure SetFlags(const AValue: TProjectFlags); override;
+    function GetProjectInfoFile: string; override;
+    procedure SetProjectInfoFile(const NewFilename: string); override;
   protected
     // special unit lists
     procedure AddToList(AnUnitInfo: TUnitInfo; ListType: TUnitInfoList);
@@ -1796,7 +1796,7 @@ function TProject.NewUniqueUnitName(const AnUnitName: string):string;
   begin
     Result:=true;
     ExpName:=ExpandedUnitName(AnUnitName);
-    if ExtractFileNameOnly(fProjectInfoFile)=Expname then exit;
+    if ExtractFileNameOnly(fProjectInfoFile)=ExpName then exit;
     for i:=0 to UnitCount-1 do
       if (Units[i].IsPartOfProject) 
       and (ExpandedUnitName(Units[i].FileName)=ExpName) then
@@ -2034,7 +2034,8 @@ end;
 
 function TProject.IsVirtual: boolean;
 begin
-  Result:=(MainUnitID>=0) and MainUnitInfo.IsVirtual;
+  Result:=((MainUnitID>=0) and MainUnitInfo.IsVirtual)
+          or (ProjectInfoFile='') or (not FilenameIsAbsolute(ProjectInfoFile));
 end;
 
 function TProject.IndexOf(AUnitInfo: TUnitInfo):integer;
@@ -2240,6 +2241,7 @@ procedure TProject.SetProjectInfoFile(const NewFilename:string);
 var
   NewProjectInfoFile: String;
   OldProjectInfoFile: String;
+  DefaultTitle: String;
 begin
   NewProjectInfoFile:=TrimFilename(NewFilename);
   if NewProjectInfoFile='' then exit;
@@ -2247,9 +2249,10 @@ begin
   if fProjectInfoFile=NewProjectInfoFile then exit;
   OldProjectInfoFile:=fProjectInfoFile;
   fProjectInfoFile:=NewProjectInfoFile;
-  if (AnsiCompareText(Title,ExtractFileNameOnly(OldProjectInfoFile))=0)
+  DefaultTitle:=ExtractFileNameOnly(OldProjectInfoFile);
+  if (CompareText(Title,DefaultTitle)=0)
   or (OldProjectInfoFile='') or (Title='') then begin
-    Title:=ExtractFileNameOnly(NewProjectInfoFile);
+    Title:=DefaultTitle;
   end;
   UpdateProjectDirectory;
   Modified:=true;
@@ -3172,6 +3175,9 @@ end.
 
 {
   $Log$
+  Revision 1.184  2005/05/26 20:17:49  mattias
+  added TLazProject.ProjectInfoFile, fixed saving editor files if deleted
+
   Revision 1.183  2005/05/26 15:54:02  mattias
   changed OI SHow Hints option to resource string, added TProjectDescriptor.DoInitDescriptor
 
