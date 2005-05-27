@@ -597,6 +597,8 @@ type
     function DoAddActiveUnitToProject: TModalResult;
     function DoRemoveFromProjectDialog: TModalResult;
     procedure DoWarnAmbiguousFiles;
+    procedure DoUpdateProjectResourceInfo;
+    function DoUpdateProjectAutomaticFiles: TModalResult;
     function DoSaveForBuild: TModalResult; override;
     function DoBuildProject(const AReason: TCompileReason): TModalResult;
     function DoAbortBuild: TModalResult;
@@ -4141,6 +4143,11 @@ begin
   // there is a lazarus form text file -> load it
   Result:=LoadCodeBuffer(LFMBuf,LFMFilename,[lbfUpdateFromDisk]);
   if Result<>mrOk then exit;
+  
+  if not AnUnitInfo.HasResources then begin
+    // someone created a .lfm file -> Update HasResources
+    AnUnitInfo.HasResources:=true;
+  end;
 
   ComponentLoadingOk:=true;
 
@@ -4704,6 +4711,8 @@ var
   OldUnitIndex: Integer;
   AncestorType: TPersistentClass;
   NewResBuffer: TCodeBuffer;
+  LFMFilename: String;
+  SearchFlags: TProjectFileSearchFlags;
 begin
   debugln('TMainIDE.DoNewEditorFile A NewFilename=',NewFilename);
   SaveSourceEditorChangesToCodeCache(-1);
@@ -4809,6 +4818,23 @@ begin
 
     if nfSave in NewFlags then begin
       NewBuffer.Save;
+    end;
+  end;
+  
+  // Update HasResources property (if the .lfm file was created separately)
+  if (not NewUnitInfo.HasResources)
+  and FilenameIsPascalUnit(NewUnitInfo.Filename) then begin
+    debugln('TMainIDE.DoNewEditorFile no HasResources ',NewUnitInfo.Filename);
+    LFMFilename:=ChangeFileExt(NewUnitInfo.Filename,'.lfm');
+    SearchFlags:=[];
+    if NewUnitInfo.IsPartOfProject then
+      Include(SearchFlags,pfsfOnlyProjectFiles);
+    if NewUnitInfo.IsVirtual then
+      Include(SearchFlags,pfsfOnlyVirtualFiles);
+    if (Project1.UnitInfoWithFilename(LFMFilename,SearchFlags)<>nil) then begin
+      debugln('TMainIDE.DoNewEditorFile no HasResources ',NewUnitInfo.Filename,' ResourceFile exists');
+      NewUnitInfo.ResourceFileName:=ChangeFileExt(NewUnitInfo.Filename,'.lrs');
+      NewUnitInfo.HasResources:=true;
     end;
   end;
 
@@ -5751,6 +5777,9 @@ begin
     Result:=DoShowSaveProjectAsDialog;
     if Result<>mrOk then exit;
   end;
+  
+  // update HasResources information
+  DoUpdateProjectResourceInfo;
 
   // save project info file
   if not (sfSaveToTestDir in Flags) then begin
@@ -5808,15 +5837,7 @@ begin
   end;
   
   // update all lrs files
-  AnUnitInfo:=Project1.FirstPartOfProject;
-  while AnUnitInfo<>nil do begin
-    if AnUnitInfo.HasResources then begin
-      Result:=DoUpdateLRSFromLFM(AnUnitInfo.ResourceFileName);
-      if Result=mrIgnore then Result:=mrOk;
-      if Result<>mrOk then exit;
-    end;
-    AnUnitInfo:=AnUnitInfo.NextPartOfProject;
-  end;
+  DoUpdateProjectAutomaticFiles;
 
   DebugLn('TMainIDE.DoSaveProject End');
 end;
@@ -6288,6 +6309,49 @@ begin
   end;
 end;
 
+procedure TMainIDE.DoUpdateProjectResourceInfo;
+var
+  AnUnitInfo: TUnitInfo;
+  LFMFilename: String;
+begin
+  AnUnitInfo:=Project1.FirstPartOfProject;
+  while AnUnitInfo<>nil do begin
+    if (not AnUnitInfo.HasResources)
+    and (not AnUnitInfo.IsVirtual) and FilenameIsPascalUnit(AnUnitInfo.Filename)
+    then begin
+      LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
+      if FileExists(LFMFilename) then begin
+        AnUnitInfo.HasResources:=true;
+        AnUnitInfo.ResourceFileName:=ChangeFileExt(LFMFilename,'.lrs');
+      end else begin
+        AnUnitInfo.HasResources:=false;
+      end;
+    end;
+    if AnUnitInfo.HasResources and (not AnUnitInfo.IsVirtual) then begin
+      if (AnUnitInfo.ResourceFileName='')
+      or (not FilenameIsAbsolute(AnUnitInfo.ResourceFileName)) then begin
+        AnUnitInfo.ResourceFileName:=ChangeFileExt(AnUnitInfo.Filename,'.lrs');
+      end;
+    end;
+    AnUnitInfo:=AnUnitInfo.NextPartOfProject;
+  end;
+end;
+
+function TMainIDE.DoUpdateProjectAutomaticFiles: TModalResult;
+var
+  AnUnitInfo: TUnitInfo;
+begin
+  AnUnitInfo:=Project1.FirstPartOfProject;
+  while AnUnitInfo<>nil do begin
+    if AnUnitInfo.HasResources then begin
+      Result:=DoUpdateLRSFromLFM(AnUnitInfo.ResourceFileName);
+      if Result=mrIgnore then Result:=mrOk;
+      if Result<>mrOk then exit;
+    end;
+    AnUnitInfo:=AnUnitInfo.NextPartOfProject;
+  end;
+end;
+
 function TMainIDE.DoSaveForBuild: TModalResult;
 begin
   Result:=mrCancel;
@@ -6368,6 +6432,8 @@ end;
 function TMainIDE.DoBuildProject(const AReason: TCompileReason): TModalResult;
 var
   DefaultFilename: string;
+  ToolBefore: TProjectCompilationTool;
+  ToolAfter: TProjectCompilationTool;
 begin
   Result:=PrepareForCompile;
   if Result<>mrOk then exit;
@@ -6383,7 +6449,7 @@ begin
     Result:=PkgBoss.DoCompileProjectDependencies(Project1,
                                                  [pcfDoNotSaveEditorFiles]);
     if Result<>mrOk then exit;
-
+    
     // get main source filename
     if not Project1.IsVirtual then
       DefaultFilename:=''
@@ -6397,18 +6463,17 @@ begin
 
     // warn ambiguous files
     DoWarnAmbiguousFiles;
-
+    
     // execute compilation tool 'Before'
-    if (AReason in TProjectCompilationTool(Project1.CompilerOptions.ExecuteBefore).CompileReasons)
-    then begin
+    ToolBefore:=TProjectCompilationTool(Project1.CompilerOptions.ExecuteBefore);
+    if (AReason in ToolBefore.CompileReasons) then begin
       Result:=DoExecuteCompilationTool(Project1.CompilerOptions.ExecuteBefore,
                                        Project1.ProjectDirectory,
                                        lisExecutingCommandBefore);
+      if Result<>mrOk then exit;
     end;
 
-    if (Result=mrOk)
-    and (AReason in Project1.CompilerOptions.CompileReasons)
-    then begin
+    if (AReason in Project1.CompilerOptions.CompileReasons) then begin
       try
         // change tool status
         ToolStatus:=itBuilder;
@@ -6418,32 +6483,32 @@ begin
 
         // compile
         Result:=TheCompiler.Compile(Project1, AReason = crBuild, DefaultFilename);
-        if Result<>mrOk then
+        if Result<>mrOk then begin
           DoJumpToCompilerMessage(-1,true);
+          exit;
+        end;
       finally
         ToolStatus:=itNone;
       end;
     end;
 
     // execute compilation tool 'After'
-    if  (Result = mrOk)
-    and (AReason in TProjectCompilationTool(Project1.CompilerOptions.ExecuteAfter).CompileReasons)
-    then begin
+    ToolAfter:=TProjectCompilationTool(Project1.CompilerOptions.ExecuteAfter);
+    if  (Result = mrOk) and (AReason in ToolAfter.CompileReasons) then begin
       Result:=DoExecuteCompilationTool(Project1.CompilerOptions.ExecuteAfter,
                                        Project1.ProjectDirectory,
                                        lisExecutingCommandAfter);
+      if Result<>mrOk then exit;
     end;
 
     // add success message
-    if Result=mrOk
-    then begin
-      MessagesView.AddMsg(
+    MessagesView.AddMsg(
             Format(lisProjectSuccessfullyBuilt, ['"', Project1.Title, '"']),'');
-    end;
 
+  finally
     // check sources
     DoCheckFilesOnDisk;
-  finally
+    
     MessagesView.EndBlock;
   end;
 end;
@@ -11561,6 +11626,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.868  2005/05/27 21:08:31  mattias
+  implemented automatic update of TUnitInfo.HasResource on save project
+
   Revision 1.867  2005/05/26 20:17:49  mattias
   added TLazProject.ProjectInfoFile, fixed saving editor files if deleted
 
