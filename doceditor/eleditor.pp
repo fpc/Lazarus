@@ -441,7 +441,7 @@ end;
 Function TElementeditor.TestSave(S : String) : Boolean;
 
 Const
-  Head = '<?xml version="1.0" encoding="ISO8859-1"?><fpdoc-descriptions>';
+  Head = '<?xml version="1.0" encoding="ISO-8859-1"?><fpdoc-descriptions>';
   Tail = '</fpdoc-descriptions>';
   SErrorSaving = 'There is an error in the documentation nodes:'+LineEnding+
                  '%s'+LineEnding+
