@@ -96,8 +96,7 @@ type
     procedure ResetNodeColors;
     procedure PaintNodeError(aNode: TTreeNode);
     procedure PaintNodeFailure(aNode: TTreeNode);
-    procedure PaintNodeSuccess(aNode: TTreeNode);
-    procedure PaintRunnableSubnodes(aNode: TTreeNode);
+    procedure PaintNodeNonFailed(aNode: TTreeNode);
     procedure MemoLog(LogEntry: string);
   public
     procedure AddFailure(ATest: TTest; AFailure: TTestFailure);
@@ -139,18 +138,16 @@ var
 begin
   barcolor := clGreen;
   ResetNodeColors;
+
   if (TestTree.Selected <> nil) and (TestTree.Selected.Data <> nil) then
   begin
     testSuite := TTest(TestTree.Selected.Data);
-    PaintNodeSuccess(TestTree.Selected);
-    PaintRunnableSubnodes(TestTree.Selected);
+    TestTree.Selected.Expand(false);
   end
   else
     begin
       testSuite := GetTestRegistry;
       TestTree.Selected := TestTree.Items[0];
-      ResetNodeColors;
-      PaintRunnableSubnodes(TestTree.Selected);
     end;
   failureCounter := 0;
   errorCounter := 0;
@@ -263,7 +260,8 @@ begin
     node.ImageIndex := 12;
     node.SelectedIndex := 12;
   end;
-  rootNode.Expand(True);
+  rootNode.Expand(False);
+  ResetNodeColors;
 end;
 
 function TGUITestRunner.FindNode(aTest: TTest): TTreeNode;
@@ -296,6 +294,7 @@ begin
   begin
     aNode.ImageIndex := 2;
     aNode.SelectedIndex := 2;
+    aNode.Expand(True);
     aNode := aNode.Parent;
     if Assigned(aNode) and (aNode.ImageIndex in [0, 3, 12, -1]) then
       PaintNodeError(aNode);
@@ -310,6 +309,7 @@ begin
     begin
       aNode.ImageIndex := 3;
       aNode.SelectedIndex := 3;
+      aNode.Expand(true);
     end;
     aNode := aNode.Parent;
     if Assigned(aNode) and (aNode.ImageIndex in [0, -1, 12]) then
@@ -317,27 +317,32 @@ begin
   end;
 end;
 
-procedure TGUITestRunner.PaintNodeSuccess(aNode: TTreeNode);
-begin
-  if Assigned(aNode) then
-  begin
-    aNode.ImageIndex := 0;
-    aNode.SelectedIndex := 0;
-  end;
-end;
-
-procedure TGUITestRunner.PaintRunnableSubnodes(aNode: TTreeNode);
+procedure TGUITestRunner.PaintNodeNonFailed(aNode: TTreeNode);
 var
+  noFailedSibling: boolean;
   i: integer;
 begin
   if Assigned(aNode) then
   begin
-    aNode.ImageIndex := 0;
-    aNode.SelectedIndex := 0;
-    for i := 0 to aNode.Count - 1 do
-      if aNode.Items[i].Count > 0 then
-        PaintRunnableSubnodes(aNode.Items[i]);
+    if aNode.ImageIndex in [12, -1] then
+    begin
+      aNode.ImageIndex := 0;
+      aNode.SelectedIndex := 0;
+    end;
   end;
+  if Assigned(aNode.Parent) then
+    if aNode.Index = aNode.Parent.Count -1 then
+    begin
+    aNode := aNode.Parent;
+    noFailedSibling := true;
+    for i := 0 to aNode.Count -2 do
+    begin
+      if aNode.Items[i].ImageIndex <> 0 then
+        noFailedSibling := false;;
+    end;
+    if (aNode.ImageIndex = 12) and noFailedSibling then
+      PaintNodeNonFailed(aNode);
+    end;
 end;
 
 procedure TGUITestRunner.MemoLog(LogEntry: string);
@@ -411,22 +416,18 @@ begin
 end;
 
 procedure TGUITestRunner.StartTest(ATest: TTest);
-var
-  Node: TTreeNode;
 begin
-  Node := FindNode(ATest);
-  if Assigned(Node) then
-  begin
-    Node.ImageIndex := 0;
-    Node.SelectedIndex := 0;
-  end;
 end;
 
 procedure TGUITestRunner.EndTest(ATest: TTest);
+var
+  Node: TTreeNode;
 begin
   Inc(testsCounter);
-  pbBar.Refresh;
-  pbBar1.Refresh;
+  Node := FindNode(ATest);
+  PaintNodeNonFailed(Node);
+  pbbar.Refresh;
+  pbbar1.Refresh;
 end;
 
 initialization
