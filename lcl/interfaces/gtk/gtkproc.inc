@@ -2206,7 +2206,7 @@ begin
   GDK_KEY_PRESS:
     begin
       {$IFDEF VerboseKeyboard}
-      DebugLn('[HandleGTKKeyUpDown] GDK_KEY_PRESS VKey=',dbgs(VKey.VKey));
+      DebugLn('[HandleGTKKeyUpDown] GDK_KEY_PRESS VKey=',dbgs(VKey.VKey),' SysKey=',dbgs(SysKey));
       {$ENDIF}
 
       Msg.CharCode := VKey.VKey;
@@ -8204,6 +8204,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.359  2005/05/28 00:41:15  mattias
+  removed verbosity
+
   Revision 1.358  2005/05/26 15:54:02  mattias
   changed OI SHow Hints option to resource string, added TProjectDescriptor.DoInitDescriptor
 
