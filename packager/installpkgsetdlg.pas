@@ -45,6 +45,11 @@ uses
   PackageDefs, PackageSystem;
 
 type
+  TOnCheckInstallPackageList =
+                            procedure(PkgIDs: TList; var Ok: boolean) of object;
+
+  { TInstallPkgSetDialog }
+
   TInstallPkgSetDialog = class(TForm)
     AddToInstallButton: TButton;
     AvailableListBox: TListBox;
@@ -71,6 +76,7 @@ type
   private
     FNewInstalledPackages: TList;
     FOldInstalledPackages: TPkgDependency;
+    FOnCheckInstallPackageList: TOnCheckInstallPackageList;
     fPackages: TAVLTree;// tree of TLazPackageID (all available packages and links)
     FRebuildIDE: boolean;
     procedure SetOldInstalledPackages(const AValue: TPkgDependency);
@@ -93,15 +99,19 @@ type
                                                   write SetOldInstalledPackages;
     property NewInstalledPackages: TList read FNewInstalledPackages;
     property RebuildIDE: boolean read FRebuildIDE write FRebuildIDE;
+    property OnCheckInstallPackageList: TOnCheckInstallPackageList
+               read FOnCheckInstallPackageList write FOnCheckInstallPackageList;
   end;
 
 function ShowEditInstallPkgsDialog(OldInstalledPackages: TPkgDependency;
+  CheckInstallPackageList: TOnCheckInstallPackageList;
   var NewInstalledPackages: TList; // list of TLazPackageID (must be freed)
   var RebuildIDE: boolean): TModalResult;
 
 implementation
 
 function ShowEditInstallPkgsDialog(OldInstalledPackages: TPkgDependency;
+  CheckInstallPackageList: TOnCheckInstallPackageList;
   var NewInstalledPackages: TList; // list of TLazPackageID
   var RebuildIDE: boolean): TModalResult;
 var
@@ -112,6 +122,7 @@ begin
     InstallPkgSetDialog.OldInstalledPackages:=OldInstalledPackages;
     InstallPkgSetDialog.UpdateAvailablePackages;
     InstallPkgSetDialog.UpdateButtonStates;
+    InstallPkgSetDialog.OnCheckInstallPackageList:=CheckInstallPackageList;
     Result:=InstallPkgSetDialog.ShowModal;
     NewInstalledPackages:=InstallPkgSetDialog.GetNewInstalledPackages;
   finally
@@ -255,6 +266,7 @@ begin
       FNewInstalledPackages.Add(Additions[i]);
     Additions.Clear;
     UpdateNewInstalledPackages;
+    UpdateButtonStates;
   finally
     // clean up
     NewPackageID.Free;
@@ -332,6 +344,7 @@ begin
       OldPackageID.Free;
     end;
     UpdateNewInstalledPackages;
+    UpdateButtonStates;
   finally
     Deletions.Free;
   end;
@@ -440,8 +453,7 @@ end;
 
 function TInstallPkgSetDialog.CheckSelection: boolean;
 begin
-  Result:=false;
-  // TODO
+  OnCheckInstallPackageList(FNewInstalledPackages,Result);
 end;
 
 procedure TInstallPkgSetDialog.UpdateButtonStates;
@@ -598,9 +610,16 @@ begin
 end;
 
 function TInstallPkgSetDialog.GetNewInstalledPackages: TList;
+var
+  i: Integer;
+  NewPackageID: TLazPackageID;
 begin
-  Result:=FNewInstalledPackages;
-  FNewInstalledPackages:=TList.Create;
+  Result:=TList.Create;
+  for i:=0 to FNewInstalledPackages.Count-1 do begin
+    NewPackageID:=TLazPackageID.Create;
+    NewPackageID.AssignID(TLazPackageID(FNewInstalledPackages[i]));
+    Result.Add(NewPackageID);
+  end;
 end;
 
 initialization

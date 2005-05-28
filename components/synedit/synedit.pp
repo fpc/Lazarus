@@ -2031,7 +2031,7 @@ begin
     Exclude(fStateFlags, sfIgnoreNextChar);
   {$IFDEF SYN_LAZARUS}
   // Key was handled anyway, so eat it!
-  // MG: the comment was right, the implmentation not consequently enough
+  // MG: the comment was right, the implementation not consequent enough
   Key:=#0;
   {$ENDIF}
 end;

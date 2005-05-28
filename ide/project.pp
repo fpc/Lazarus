@@ -1827,10 +1827,11 @@ function TProject.NewUniqueComponentName(const AComponentPrefix: string
   var i: integer;
   begin
     Result:=true;
+    if GetClass(AComponentName)<>nil then exit;
     for i:=0 to UnitCount-1 do begin
       if (Units[i].Component<>nil) then begin
-        if AnsiCompareText(Units[i].Component.Name,AComponentName)=0 then exit;
-        if AnsiCompareText(Units[i].Component.ClassName,'T'+AComponentName)=0
+        if CompareText(Units[i].Component.Name,AComponentName)=0 then exit;
+        if CompareText(Units[i].Component.ClassName,'T'+AComponentName)=0
         then exit;
       end else if (Units[i].ComponentName<>'')
       and ((Units[i].IsPartOfProject) or (Units[i].Loaded)) then begin
@@ -3175,6 +3176,9 @@ end.
 
 {
   $Log$
+  Revision 1.185  2005/05/28 11:25:17  mattias
+  auto clean/create .lrs file on creating custom .lfm file
+
   Revision 1.184  2005/05/26 20:17:49  mattias
   added TLazProject.ProjectInfoFile, fixed saving editor files if deleted
 

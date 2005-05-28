@@ -241,10 +241,12 @@ type
     );
 
   TPkgDependencyList = (
-    pdlUsedBy,
-    pdlRequires
+    pdlRequires,
+    pdlUsedBy
     );
   
+  { TPkgDependency }
+
   TPkgDependency = class
   private
     FFlags: TPkgDependencyFlags;
@@ -279,6 +281,7 @@ type
       const Version: TPkgVersion): boolean;
     function Compare(Dependency2: TPkgDependency): integer;
     procedure Assign(Source: TPkgDependency);
+    procedure Assign(Source: TLazPackageID);
     procedure ConsistencyCheck;
     function IsCompatible(Pkg: TLazPackageID): boolean;
     procedure MakeCompatible(const PkgName: string; const Version: TPkgVersion);
@@ -823,6 +826,11 @@ procedure LoadPkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
   HoldPackages: boolean);
 procedure SavePkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
   First: TPkgDependency; ListType: TPkgDependencyList);
+procedure ListPkgIDToDependencyList(ListOfTLazPackageID: TList;
+  var First: TPkgDependency; ListType: TPkgDependencyList; Owner: TObject;
+  HoldPackages: boolean);
+procedure FreeDependencyList(var First: TPkgDependency;
+  ListType: TPkgDependencyList);
 
 function FindDependencyByNameInList(First: TPkgDependency;
   ListType: TPkgDependencyList; const Name: string): TPkgDependency;
@@ -944,6 +952,37 @@ begin
     Dependency:=Dependency.NextDependency[ListType];
   end;
   XMLConfig.SetDeleteValue(ThePath+'Count',i,0);
+end;
+
+procedure ListPkgIDToDependencyList(ListOfTLazPackageID: TList;
+  var First: TPkgDependency; ListType: TPkgDependencyList; Owner: TObject;
+  HoldPackages: boolean);
+var
+  NewDependency: TPkgDependency;
+  i: Integer;
+  PkgID: TLazPackageID;
+begin
+  First:=nil;
+  for i:=ListOfTLazPackageID.Count-1 downto 0 do begin
+    PkgID:=TLazPackageID(ListOfTLazPackageID[i]);
+    NewDependency:=TPkgDependency.Create;
+    NewDependency.Assign(PkgID);
+    NewDependency.Owner:=Owner;
+    NewDependency.HoldPackage:=HoldPackages;
+    NewDependency.AddToList(First,ListType);
+  end;
+end;
+
+procedure FreeDependencyList(var First: TPkgDependency;
+  ListType: TPkgDependencyList);
+var
+  NextDependency: TPkgDependency;
+begin
+  while First<>nil do begin
+    NextDependency:=First.NextDependency[ListType];
+    First.Free;
+    First:=NextDependency;
+  end;
 end;
 
 procedure SortDependencyList(Dependencies: TList);
@@ -1610,6 +1649,13 @@ begin
   Flags:=Source.Flags;
   MinVersion.Assign(Source.MinVersion);
   MaxVersion.Assign(Source.MaxVersion);
+end;
+
+procedure TPkgDependency.Assign(Source: TLazPackageID);
+begin
+  PackageName:=Source.Name;
+  Flags:=[pdfMinVersion];
+  MinVersion.Assign(Source.Version);
 end;
 
 procedure TPkgDependency.ConsistencyCheck;

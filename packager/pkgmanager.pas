@@ -141,6 +141,7 @@ type
                                             var Description: string);
     procedure GetWritablePkgOutputDirectory(APackage: TLazPackage;
                                             var AnOutDirectory: string);
+    procedure OnCheckInstallPackageList(PkgIDList: TList; var Ok: boolean);
   private
     FirstAutoInstallDependency: TPkgDependency;
     // helper functions
@@ -350,22 +351,47 @@ end;
 procedure TPkgManager.MainIDEitmPkgEditInstallPkgsClick(Sender: TObject);
 var
   RebuildIDE: Boolean;
-  i: Integer;
-  List: TList;
+  PkgIDList: TList;
+  NewFirstAutoInstallDependency: TPkgDependency;
+  BuildIDEFlags: TBuildLazarusFlags;
+  ok: boolean;
 begin
   RebuildIDE:=false;
-  List:=nil;
+  PkgIDList:=nil;
+  NewFirstAutoInstallDependency:=nil;
   try
-    if ShowEditInstallPkgsDialog(FirstAutoInstallDependency,List,RebuildIDE)
-      <>mrOk
+    if ShowEditInstallPkgsDialog(FirstAutoInstallDependency,
+      @OnCheckInstallPackageList,PkgIDList,RebuildIDE)<>mrOk
     then exit;
-    // TODO: rebuild auto install list
-    // TODO: rebuild IDE
-  finally
-    if List<>nil then begin
-      for i:=0 to List.Count-1 do TObject(List[i]).Free;
-      List.Free;
+    
+    OnCheckInstallPackageList(PkgIDList,ok);
+    if not ok then exit;
+
+    // create new auto install dependency PkgIDList
+    ListPkgIDToDependencyList(PkgIDList,NewFirstAutoInstallDependency,
+      pdlRequires,Self,true);
+
+    // replace install list
+    FreeDependencyList(FirstAutoInstallDependency,pdlRequires);
+    FirstAutoInstallDependency:=NewFirstAutoInstallDependency;
+    NewFirstAutoInstallDependency:=nil;
+
+    // save package list
+    SortAutoInstallDependencies;
+    SaveAutoInstallDependencies(true);
+
+    // save IDE build configs, so user can build IDE on command line
+    BuildIDEFlags:=[blfWithStaticPackages,blfDontClean,blfOnlyIDE];
+    if MainIDE.DoSaveBuildIDEConfigs(BuildIDEFlags)<>mrOk then exit;
+
+    if RebuildIDE then begin
+      // rebuild Lazarus
+      if MainIDE.DoBuildLazarus(BuildIDEFlags)<>mrOk then exit;
     end;
+
+  finally
+    if PkgIDList<>nil then FreeListObjects(PkgIDList,true);
+    FreeDependencyList(NewFirstAutoInstallDependency,pdlRequires);
   end;
 end;
 
@@ -444,6 +470,57 @@ begin
                           +APackage.Name+NewOutDir);
   AnOutDirectory:=NewOutDir;
   debugln('TPkgManager.GetWritablePkgOutputDirectory APackage=',APackage.IDAsString,' AnOutDirectory="',AnOutDirectory,'"');
+end;
+
+procedure TPkgManager.OnCheckInstallPackageList(PkgIDList: TList;
+  var Ok: boolean);
+var
+  NewFirstAutoInstallDependency: TPkgDependency;
+  CurDependency: TPkgDependency;
+  OpenResult: TLoadPackageResult;
+  PkgList: TList;
+  i: Integer;
+  APackage: TLazPackage;
+begin
+  Ok:=false;
+  try
+    // create new auto install dependency PkgIDList
+    ListPkgIDToDependencyList(PkgIDList,NewFirstAutoInstallDependency,
+      pdlRequires,Self,true);
+
+    // load all packages
+    CurDependency:=NewFirstAutoInstallDependency;
+    while CurDependency<>nil do begin
+      OpenResult:=PackageGraph.OpenDependency(CurDependency);
+      if OpenResult<>lprSuccess then begin
+        MessageDlg('Error',
+          'Unable to load package "'+CurDependency.AsString+'"',
+          mtError,[mbCancel],0);
+        exit;
+      end;
+      CurDependency:=CurDependency.NextRequiresDependency;
+    end;
+
+    // get all required packages
+    PackageGraph.GetAllRequiredPackages(NewFirstAutoInstallDependency,PkgList);
+
+    // check if any package is a runtime package
+    for i:=0 to PkgList.Count-1 do begin
+      APackage:=TLazPackage(PkgList[i]);
+      if APackage.PackageType=lptRunTime then begin
+        MessageDlg(lisPkgMangPackageIsNoDesigntimePackage,
+          Format(lisPkgMangThePackageIsARuntimeOnlyPackageRuntimeOnlyPackages, [
+            APackage.IDAsString, #13]),
+          mtError,[mbCancel],0);
+        exit;
+      end;
+    end;
+
+    Ok:=true;
+  finally
+    FreeDependencyList(NewFirstAutoInstallDependency,pdlRequires);
+    PkgList.Free;
+  end;
 end;
 
 procedure TPkgManager.MainIDEitmPkgAddCurUnitToPkgClick(Sender: TObject);
@@ -3269,34 +3346,35 @@ begin
         NeedSaving:=true;
       end;
     end;
-    if NeedSaving then begin
-      SortAutoInstallDependencies;
-      SaveAutoInstallDependencies(true);
-    end;
-
-    // save IDE build configs, so user can build IDE on command line
-    BuildIDEFlags:=[blfWithStaticPackages,blfDontClean,blfOnlyIDE];
-    Result:=MainIDE.DoSaveBuildIDEConfigs(BuildIDEFlags);
-    if Result<>mrOk then exit;
-
-    // ask user to rebuilt Lazarus now
-    Result:=MessageDlg(lisPkgMangRebuildLazarus,
-      Format(lisPkgMangThePackageWasMarkedForInstallationCurrentlyLazarus, [
-        '"', APackage.IDAsString, '"', #13, #13, #13]),
-      mtConfirmation,[mbYes,mbNo],0);
-    if Result=mrNo then begin
-      Result:=mrOk;
-      exit;
-    end;
-    
-    // rebuild Lazarus
-    Result:=MainIDE.DoBuildLazarus(BuildIDEFlags);
-    if Result<>mrOk then exit;
-
   finally
     PackageGraph.EndUpdate;
     PkgList.Free;
   end;
+
+  if NeedSaving then begin
+    SortAutoInstallDependencies;
+    SaveAutoInstallDependencies(true);
+  end;
+
+  // save IDE build configs, so user can build IDE on command line
+  BuildIDEFlags:=[blfWithStaticPackages,blfDontClean,blfOnlyIDE];
+  Result:=MainIDE.DoSaveBuildIDEConfigs(BuildIDEFlags);
+  if Result<>mrOk then exit;
+
+  // ask user to rebuilt Lazarus now
+  Result:=MessageDlg(lisPkgMangRebuildLazarus,
+    Format(lisPkgMangThePackageWasMarkedForInstallationCurrentlyLazarus, [
+      '"', APackage.IDAsString, '"', #13, #13, #13]),
+    mtConfirmation,[mbYes,mbNo],0);
+  if Result=mrNo then begin
+    Result:=mrOk;
+    exit;
+  end;
+  
+  // rebuild Lazarus
+  Result:=MainIDE.DoBuildLazarus(BuildIDEFlags);
+  if Result<>mrOk then exit;
+
   Result:=mrOk;
 end;
 

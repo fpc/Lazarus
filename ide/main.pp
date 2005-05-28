@@ -4761,6 +4761,15 @@ begin
       NewBuffer.Source:=BeautifySrc(NewSource)
     else
       NewBuffer.Source:=NewSource;
+    if (NewFileDescriptor.ResourceClass<>nil)
+    or (CompareFileExt(NewBuffer.Filename,'.lfm')=0) then begin
+      // create/clean the .lrs file
+      NewResBuffer:=CodeToolBoss.CreateFile(
+                                    ChangeFileExt(NewFilename,ResourceFileExt));
+      if NewResBuffer=nil then begin
+        RaiseException('TMainIDE.DoNewEditorFile Internal error');
+      end;
+    end;
     NewUnitInfo.Modified:=true;
   end;
 
@@ -11626,6 +11635,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.869  2005/05/28 11:25:17  mattias
+  auto clean/create .lrs file on creating custom .lfm file
+
   Revision 1.868  2005/05/27 21:08:31  mattias
   implemented automatic update of TUnitInfo.HasResource on save project
 

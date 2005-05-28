@@ -198,7 +198,7 @@ procedure CheckList(List: TList; TestListNil, TestDoubles, TestNils: boolean);
 procedure CheckEmptyListCut(List1, List2: TList);
 function AnsiSearchInStringList(List: TStrings; const s: string): integer;
 procedure ReverseList(List: TList);
-
+procedure FreeListObjects(List: TList; FreeList: boolean);
 
 implementation
 
@@ -1197,6 +1197,17 @@ begin
     inc(i);
     dec(j);
   end;
+end;
+
+procedure FreeListObjects(List: TList; FreeList: boolean);
+var
+  i: Integer;
+begin
+  for i:=0 to List.Count-1 do
+    TObject(List[i]).Free;
+  List.Clear;
+  if FreeList then
+    List.Free;
 end;
 
 {-------------------------------------------------------------------------------

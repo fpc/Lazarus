@@ -648,7 +648,7 @@ begin
     FDefaultResourceName:=''
   else begin
     FDefaultResourceName:=
-      copy(FResourceClass.ClassName,2,length(FResourceClass.ClassName)-1);
+      copy(FResourceClass.ClassName,2,length(FResourceClass.ClassName)-1)+'1';
   end;
 end;
 
