@@ -2596,14 +2596,46 @@ end;
 
 function TProject.UnitInfoWithFilename(const AFilename: string;
   SearchFlags: TProjectFileSearchFlags): TUnitInfo;
+
+  function MakeFilenameComparable(const TheFilename: string): string;
+  begin
+    Result:=TheFilename;
+    if (pfsfResolveFileLinks in SearchFlags)
+    and (FilenameIsAbsolute(Result)) then
+      Result:=ReadAllLinks(Result,false);
+  end;
+
 var
   i: Integer;
+  ListType: TUnitInfoList;
+  BaseFilename: String;
+  CurBaseFilename: String;
 begin
-  i:=IndexOfFilename(AFilename,SearchFlags);
-  if i>=0 then
-    Result:=Units[i]
-  else
-    Result:=nil;
+  if (SearchFlags-[pfsfResolveFileLinks]=[pfsfOnlyEditorFiles]) then
+    // search only in list of Files with EditorIndex
+    // There is a list, so we can search much faster
+    ListType:=uilWithEditorIndex
+  else if (SearchFlags-[pfsfResolveFileLinks]=[pfsfOnlyProjectFiles]) then
+    // search only in list of project files
+    // There is a list, so we can search much faster
+    ListType:=uilPartOfProject
+  else begin
+    // slow search
+    i:=IndexOfFilename(AFilename,SearchFlags);
+    if i>=0 then
+      Result:=Units[i]
+    else
+      Result:=nil;
+  end;
+    
+  BaseFilename:=MakeFilenameComparable(AFilename);
+  Result:=fFirst[ListType];
+  while Result<>nil do begin
+    CurBaseFilename:=MakeFilenameComparable(Result.Filename);
+    if CompareFilenames(BaseFilename,CurBaseFilename)=0 then exit;
+    Result:=Result.fNext[ListType];
+  end;
+  Result:=nil;
 end;
 
 function TProject.UnitWithUnitname(const AnUnitname: string): TUnitInfo;
@@ -2628,13 +2660,20 @@ end;
 
 function TProject.IndexOfFilename(const AFilename: string;
   SearchFlags: TProjectFileSearchFlags): integer;
+
+  function MakeFilenameComparable(const TheFilename: string): string;
+  begin
+    Result:=TheFilename;
+    if (pfsfResolveFileLinks in SearchFlags)
+    and (FilenameIsAbsolute(Result)) then
+      Result:=ReadAllLinks(Result,false);
+  end;
+
 var
   BaseFilename: String;
   CurBaseFilename: String;
 begin
-  BaseFilename:=AFilename;
-  if pfsfResolveFileLinks in SearchFlags then
-    BaseFilename:=ReadAllLinks(AFilename,false);
+  BaseFilename:=MakeFilenameComparable(AFilename);
   Result:=UnitCount-1;
   while (Result>=0) do begin
     if (pfsfOnlyEditorFiles in SearchFlags)
@@ -2652,9 +2691,7 @@ begin
       dec(Result);
       continue;
     end;
-    CurBaseFilename:=Units[Result].Filename;
-    if pfsfResolveFileLinks in SearchFlags then
-      CurBaseFilename:=ReadAllLinks(CurBaseFilename,false);
+    CurBaseFilename:=MakeFilenameComparable(Units[Result].Filename);
     if CompareFilenames(BaseFilename,CurBaseFilename)=0 then exit;
     dec(Result);
   end;
@@ -3176,6 +3213,9 @@ end.
 
 {
   $Log$
+  Revision 1.186  2005/05/28 23:16:21  mattias
+  added TProjectFileDescriptor.GetResourceSource to create custom forms with custom .lfm sources
+
   Revision 1.185  2005/05/28 11:25:17  mattias
   auto clean/create .lrs file on creating custom .lfm file
 

@@ -312,6 +312,7 @@ type
     constructor Create; virtual;
     function GetLocalizedName: string; virtual;
     function GetLocalizedDescription: string; virtual;
+    function GetResourceSource: string; virtual;
     procedure Release;
     procedure Reference;
     function CreateSource(const Filename, SourceName,
@@ -707,6 +708,12 @@ end;
 function TProjectFileDescriptor.GetLocalizedDescription: string;
 begin
   Result:=GetLocalizedName;
+end;
+
+function TProjectFileDescriptor.GetResourceSource: string;
+// This function can override the automatic creation of the .lfm file source.
+begin
+  Result:=''; // if empty, the IDE will create the source automatically
 end;
 
 procedure TProjectFileDescriptor.Release;

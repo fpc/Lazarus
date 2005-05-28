@@ -518,6 +518,8 @@ type
     function DoOpenFileInSourceEditor(AnUnitInfo: TUnitInfo;
         PageIndex: integer; Flags: TOpenFlags): TModalResult;
     function DoLoadLFM(AnUnitInfo: TUnitInfo; Flags: TOpenFlags): TModalResult;
+    function DoLoadLFM(AnUnitInfo: TUnitInfo; LFMBuf: TCodeBuffer;
+                       Flags: TOpenFlags; CloseDsgnForm: boolean): TModalResult;
 
     // methods for 'close unit'
     function CloseDesignerForm(AnUnitInfo: TUnitInfo): TModalResult;
@@ -658,10 +660,15 @@ type
     function FindUnitFile(const AFilename: string): string; override;
     function FindSourceFile(const AFilename, BaseDirectory: string;
                             Flags: TFindSourceFlags): string; override;
+    function FileExistsInIDE(const Filename: string;
+                             SearchFlags: TProjectFileSearchFlags): boolean;
     function DoSaveStreamToFile(AStream:TStream; const Filename:string;
                                 IsPartOfProject:boolean): TModalResult;
     function DoSaveStringToFile(const Filename, Src,
                                FileDescription: string): TModalResult; override;
+    function LoadIDECodeBuffer(var ACodeBuffer: TCodeBuffer;
+                               const AFilename: string;
+                               Flags: TLoadBufferFlags): TModalResult;
     function DoLoadMemoryStreamFromFile(MemStream: TMemoryStream;
                                         const AFilename:string): TModalResult;
     function DoSaveCodeBufferToFile(ABuffer: TCodeBuffer;
@@ -4115,11 +4122,33 @@ end;
 
 function TMainIDE.DoLoadLFM(AnUnitInfo: TUnitInfo;
   Flags: TOpenFlags): TModalResult;
+var
+  LFMFilename: string;
+  LFMBuf: TCodeBuffer;
+begin
+  CloseDesignerForm(AnUnitInfo);
+
+  LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
+  LFMBuf:=nil;
+  if not FileExistsInIDE(LFMFilename,[pfsfOnlyEditorFiles]) then begin
+    // there is no LFM file -> ok
+    debugln('TMainIDE.DoLoadLFM there is no LFM file for "',AnUnitInfo.Filename,'"');
+    Result:=mrOk;
+    exit;
+  end;
+
+  // there is a lazarus form text file -> load it
+  Result:=LoadIDECodeBuffer(LFMBuf,LFMFilename,[lbfUpdateFromDisk]);
+  if Result<>mrOk then exit;
+  
+  Result:=DoLoadLFM(AnUnitInfo,LFMBuf,Flags,false);
+end;
+
+function TMainIDE.DoLoadLFM(AnUnitInfo: TUnitInfo; LFMBuf: TCodeBuffer;
+  Flags: TOpenFlags; CloseDsgnForm: boolean): TModalResult;
 const
   BufSize = 4096; // allocating mem in 4k chunks helps many mem managers
 var
-  LFMFilename, ACaption, AText: string;
-  LFMBuf: TCodeBuffer;
   ComponentLoadingOk: boolean;
   TxtLFMStream, BinLFMStream: TExtMemoryStream;
   CInterface: TComponentInterface;
@@ -4129,25 +4158,19 @@ var
   NewClassName: String;
   NewAncestorName: String;
   APersistentClass: TPersistentClass;
+  ACaption, AText: String;
 begin
-  CloseDesignerForm(AnUnitInfo);
+  if CloseDsgnForm then
+    CloseDesignerForm(AnUnitInfo);
 
-  LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
-  LFMBuf:=nil;
-  if not FileExists(LFMFilename) then begin
-    // there is no LFM file -> ok
-    Result:=mrOk;
-    exit;
-  end;
+  //debugln('TMainIDE.DoLoadLFM LFM file loaded, parsing "',LFMBuf.Filename,'" ...');
 
-  // there is a lazarus form text file -> load it
-  Result:=LoadCodeBuffer(LFMBuf,LFMFilename,[lbfUpdateFromDisk]);
-  if Result<>mrOk then exit;
-  
   if not AnUnitInfo.HasResources then begin
     // someone created a .lfm file -> Update HasResources
     AnUnitInfo.HasResources:=true;
   end;
+  
+  //debugln('TMainIDE.DoLoadLFM LFM="',LFMBuf.Source,'"');
 
   ComponentLoadingOk:=true;
 
@@ -4163,7 +4186,7 @@ begin
       NewClassName:=FindLFMClassName(TxtLFMStream);
       if NewClassName='' then begin
         Result:=MessageDlg(lisLFMFileCorrupt,
-          Format(lisUnableToFindAValidClassnameIn, ['"', LFMFilename, '"']),
+          Format(lisUnableToFindAValidClassnameIn, ['"', LFMBuf.Filename, '"']),
           mtError,[mbIgnore,mbCancel,mbAbort],0);
         exit;
       end;
@@ -4710,9 +4733,10 @@ var
   NewBuffer: TCodeBuffer;
   OldUnitIndex: Integer;
   AncestorType: TPersistentClass;
-  NewResBuffer: TCodeBuffer;
   LFMFilename: String;
   SearchFlags: TProjectFileSearchFlags;
+  LFMSourceText: String;
+  LFMCode: TCodeBuffer;
 begin
   debugln('TMainIDE.DoNewEditorFile A NewFilename=',NewFilename);
   SaveSourceEditorChangesToCodeCache(-1);
@@ -4744,16 +4768,12 @@ begin
   NewUnitInfo.ImproveUnitNameCache(NewUnitName);
 
   // create source code
+  //debugln('TMainIDE.DoNewEditorFile A nfCreateDefaultSrc=',nfCreateDefaultSrc in NewFlags,' ResourceClass=',dbgs(NewFileDescriptor.ResourceClass));
   if nfCreateDefaultSrc in NewFlags then begin
     if (NewFileDescriptor.ResourceClass<>nil) then begin
       NewUnitInfo.ComponentName:=
         Project1.NewUniqueComponentName(NewFileDescriptor.DefaultResourceName);
       NewUnitInfo.ComponentResourceName:='';
-      NewResBuffer:=CodeToolBoss.CreateFile(
-                                    ChangeFileExt(NewFilename,ResourceFileExt));
-      if NewResBuffer=nil then begin
-        RaiseException('TMainIDE.DoNewEditorFile Internal error');
-      end;
     end;
     NewUnitInfo.CreateStartCode(NewFileDescriptor,NewUnitName);
   end else begin
@@ -4761,18 +4781,9 @@ begin
       NewBuffer.Source:=BeautifySrc(NewSource)
     else
       NewBuffer.Source:=NewSource;
-    if (NewFileDescriptor.ResourceClass<>nil)
-    or (CompareFileExt(NewBuffer.Filename,'.lfm')=0) then begin
-      // create/clean the .lrs file
-      NewResBuffer:=CodeToolBoss.CreateFile(
-                                    ChangeFileExt(NewFilename,ResourceFileExt));
-      if NewResBuffer=nil then begin
-        RaiseException('TMainIDE.DoNewEditorFile Internal error');
-      end;
-    end;
     NewUnitInfo.Modified:=true;
   end;
-
+  
   // add to project
   with NewUnitInfo do begin
     Loaded:=true;
@@ -4805,7 +4816,19 @@ begin
     // create component
     AncestorType:=NewFileDescriptor.ResourceClass;
     if AncestorType<>nil then begin
-      Result:=CreateNewForm(NewUnitInfo,AncestorType,nil);
+      LFMSourceText:=NewFileDescriptor.GetResourceSource;
+      if LFMSourceText<>'' then begin
+        // the NewFileDescriptor provides a custom .lfm source
+        // -> put it into a new .lfm buffer and load it
+        LFMFilename:=ChangeFileExt(NewUnitInfo.Filename,'.lfm');
+        LFMCode:=CodeToolBoss.CreateFile(LFMFilename);
+        LFMCode.Source:=LFMSourceText;
+        //debugln('TMainIDE.DoNewEditorFile A ',LFMFilename);
+        Result:=DoLoadLFM(NewUnitInfo,LFMCode,[],false);
+      end else begin
+        // create a default form/datamodule
+        Result:=CreateNewForm(NewUnitInfo,AncestorType,nil);
+      end;
       if Result<>mrOk then exit;
     end;
 
@@ -4833,7 +4856,7 @@ begin
   // Update HasResources property (if the .lfm file was created separately)
   if (not NewUnitInfo.HasResources)
   and FilenameIsPascalUnit(NewUnitInfo.Filename) then begin
-    debugln('TMainIDE.DoNewEditorFile no HasResources ',NewUnitInfo.Filename);
+    //debugln('TMainIDE.DoNewEditorFile no HasResources ',NewUnitInfo.Filename);
     LFMFilename:=ChangeFileExt(NewUnitInfo.Filename,'.lfm');
     SearchFlags:=[];
     if NewUnitInfo.IsPartOfProject then
@@ -4841,7 +4864,7 @@ begin
     if NewUnitInfo.IsVirtual then
       Include(SearchFlags,pfsfOnlyVirtualFiles);
     if (Project1.UnitInfoWithFilename(LFMFilename,SearchFlags)<>nil) then begin
-      debugln('TMainIDE.DoNewEditorFile no HasResources ',NewUnitInfo.Filename,' ResourceFile exists');
+      //debugln('TMainIDE.DoNewEditorFile no HasResources ',NewUnitInfo.Filename,' ResourceFile exists');
       NewUnitInfo.ResourceFileName:=ChangeFileExt(NewUnitInfo.Filename,'.lrs');
       NewUnitInfo.HasResources:=true;
     end;
@@ -5490,6 +5513,14 @@ begin
     end;
   end;
   Result:=mrOk;
+end;
+
+function TMainIDE.LoadIDECodeBuffer(var ACodeBuffer: TCodeBuffer;
+  const AFilename: string; Flags: TLoadBufferFlags): TModalResult;
+begin
+  if Project1.UnitInfoWithFilename(AFilename,[pfsfOnlyEditorFiles])<>nil then
+    Exclude(Flags,lbfUpdateFromDisk);
+  Result:=LoadCodeBuffer(ACodeBuffer,AFilename,Flags);
 end;
 
 function TMainIDE.DoOpenFileAtCursor(Sender: TObject):TModalResult;
@@ -9040,6 +9071,13 @@ begin
   Result:='';
 end;
 
+function TMainIDE.FileExistsInIDE(const Filename: string;
+  SearchFlags: TProjectFileSearchFlags): boolean;
+begin
+  Result:=FileExists(Filename)
+          or (Project1.UnitInfoWithFilename(Filename,SearchFlags)<>nil);
+end;
+
 //------------------------------------------------------------------------------
 
 procedure TMainIDE.OnDesignerGetSelectedComponentClass(Sender: TObject;
@@ -11088,7 +11126,7 @@ function TMainIDE.GetFormOfSource(AnUnitInfo: TUnitInfo; LoadForm: boolean
   ): TCustomForm;
 begin
   Result:=nil;
-  if (AnUnitInfo.Component=nil) and LoadForm and (not AnUnitInfo.IsVirtual)
+  if (AnUnitInfo.Component=nil) and LoadForm
   and FilenameIsPascalSource(AnUnitInfo.Filename) then begin
     DoLoadLFM(AnUnitInfo,[]);
   end;
@@ -11635,6 +11673,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.870  2005/05/28 23:16:21  mattias
+  added TProjectFileDescriptor.GetResourceSource to create custom forms with custom .lfm sources
+
   Revision 1.869  2005/05/28 11:25:17  mattias
   auto clean/create .lrs file on creating custom .lfm file
 
