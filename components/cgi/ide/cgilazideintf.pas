@@ -34,7 +34,8 @@ unit CGILazIDEIntf;
 interface
 
 uses
-  Classes, SysUtils, cgiApp, cgiModules, LazIDEIntf, ProjectIntf;
+  Classes, SysUtils, cgiApp, cgiModules, LazIDEIntf, ProjectIntf,
+  Controls, Forms;
 
 type
   { TCGIApplicationDescriptor }
@@ -44,8 +45,8 @@ type
     constructor Create; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
-    procedure InitProject(AProject: TLazProject); override;
-    procedure CreateStartFiles(AProject: TLazProject); override;
+    function InitProject(AProject: TLazProject): TModalResult; override;
+    function CreateStartFiles(AProject: TLazProject): TModalResult; override;
   end;
 
   { TFileDescPascalUnitWithCGIDataModule }
@@ -94,7 +95,7 @@ begin
           +'automatically maintained by Lazarus.';
 end;
 
-procedure TCGIApplicationDescriptor.InitProject(AProject: TLazProject);
+function TCGIApplicationDescriptor.InitProject(AProject: TLazProject): TModalResult;
 var
   le: string;
   NewSource: String;
@@ -132,12 +133,14 @@ begin
 
   // compiler options
   AProject.LazCompilerOptions.Win32GraphicApp:=false;
+  Result:= mrOK;
 end;
 
-procedure TCGIApplicationDescriptor.CreateStartFiles(AProject: TLazProject);
+function TCGIApplicationDescriptor.CreateStartFiles(AProject: TLazProject): TModalResult;
 begin
   LazarusIDE.DoNewEditorFile(FileDescriptorCGIModule,'','',
                          [nfIsPartOfProject,nfOpenInEditor,nfCreateDefaultSrc]);
+  Result:= mrOK;
 end;
 
 { TFileDescPascalUnitWithCGIDataModule }

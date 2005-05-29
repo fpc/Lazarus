@@ -42,8 +42,8 @@ type
     constructor Create; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
-    procedure InitProject(AProject: TLazProject); override;
-    procedure CreateStartFiles(AProject: TLazProject); override;
+    function InitProject(AProject: TLazProject): TModalResult; override;
+    function CreateStartFiles(AProject: TLazProject): TModalResult; override;
   end;
   
   { TFPCUnitConsoleApplicationDescriptor }
@@ -53,8 +53,8 @@ type
     constructor Create; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
-    procedure InitProject(AProject: TLazProject); override;
-    procedure CreateStartFiles(AProject: TLazProject); override;
+    function InitProject(AProject: TLazProject): TModalResult; override;
+    function CreateStartFiles(AProject: TLazProject): TModalResult; override;
   end;
 
   { TFileDescPascalUnitFPCUnitTestCase }
@@ -123,7 +123,7 @@ begin
           +'automatically maintained by Lazarus.';
 end;
 
-procedure TFPCUnitApplicationDescriptor.InitProject(AProject: TLazProject);
+function TFPCUnitApplicationDescriptor.InitProject(AProject: TLazProject): TModalResult;
 var
   le: string;
   NewSource: String;
@@ -160,12 +160,14 @@ begin
   
   // compiler options
   AProject.LazCompilerOptions.UseLineInfoUnit:=true;
+  Result:=mrOK;
 end;
 
-procedure TFPCUnitApplicationDescriptor.CreateStartFiles(AProject: TLazProject);
+function TFPCUnitApplicationDescriptor.CreateStartFiles(AProject: TLazProject): TModalResult;
 begin
   LazarusIDE.DoNewEditorFile(FileDescriptorFPCUnitTestCase,'','',
                          [nfIsPartOfProject,nfOpenInEditor,nfCreateDefaultSrc]);
+  Result:=mrOK;
 end;
 
 { TFileDescPascalUnitFPCUnitTestCase }
@@ -323,8 +325,8 @@ begin
           +'automatically maintained by Lazarus.';
 end;
 
-procedure TFPCUnitConsoleApplicationDescriptor.InitProject(
-  AProject: TLazProject);
+function TFPCUnitConsoleApplicationDescriptor.InitProject(
+  AProject: TLazProject): TModalResult;
 var
   le: string;
   NewSource: string;
@@ -463,13 +465,15 @@ begin
 
   // compiler options
   AProject.LazCompilerOptions.UseLineInfoUnit:=true;
+  Result:=mrOK;
 end;
 
-procedure TFPCUnitConsoleApplicationDescriptor.CreateStartFiles(
-  AProject: TLazProject);
+function TFPCUnitConsoleApplicationDescriptor.CreateStartFiles(
+  AProject: TLazProject): TModalResult;
 begin
   LazarusIDE.DoNewEditorFile(FileDescriptorFPCUnitTestCase,'','',
                          [nfIsPartOfProject,nfOpenInEditor,nfCreateDefaultSrc]);
+  Result:=mrOK;
 end;
 
 end.
