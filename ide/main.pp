@@ -588,12 +588,13 @@ type
     procedure DoShowCodeExplorer;
 
     // project(s)
-    function DoNewProject(ProjectDesc: TProjectDescriptor): TModalResult;
-    function DoSaveProject(Flags: TSaveFlags): TModalResult;
-    function DoCloseProject: TModalResult;
-    function DoOpenProjectFile(AFileName: string; Flags: TOpenFlags): TModalResult;
+    function DoNewProject(ProjectDesc: TProjectDescriptor): TModalResult; override;
+    function DoSaveProject(Flags: TSaveFlags): TModalResult; override;
+    function DoCloseProject: TModalResult; override;
+    function DoOpenProjectFile(AFileName: string;
+                               Flags: TOpenFlags): TModalResult; override;
     function DoPublishProject(Flags: TSaveFlags;
-                              ShowDialog: boolean): TModalResult;
+                              ShowDialog: boolean): TModalResult; override;
     function DoImExportCompilerOptions(Sender: TObject): TModalResult; override;
     function DoShowProjectInspector: TModalResult; override;
     function DoAddActiveUnitToProject: TModalResult;
@@ -3998,6 +3999,8 @@ end;
 
 function TMainIDE.DoOpenNotExistingFile(const AFileName: string;
   Flags: TOpenFlags): TModalResult;
+var
+  NewFlags: TNewFlags;
 begin
   if ofProjectLoading in Flags then begin
     // this is a file, that was loaded last time, but was removed from disk
@@ -4026,12 +4029,13 @@ begin
     ,mtInformation,[mbYes,mbNo],0)=mrYes then
   begin
     // create new file
+    NewFlags:=[nfOpenInEditor,nfCreateDefaultSrc];
+    if ofAddToProject in Flags then
+      Include(NewFlags,nfIsPartOfProject);
     if FilenameIsPascalSource(AFilename) then
-      Result:=DoNewEditorFile(FileDescriptorUnit,AFilename,'',
-                              [nfOpenInEditor,nfCreateDefaultSrc])
+      Result:=DoNewEditorFile(FileDescriptorUnit,AFilename,'',NewFlags)
     else
-      Result:=DoNewEditorFile(FileDescriptorText,AFilename,'',
-                              [nfOpenInEditor,nfCreateDefaultSrc]);
+      Result:=DoNewEditorFile(FileDescriptorText,AFilename,'',NewFlags);
   end;
 end;
 
@@ -4099,6 +4103,12 @@ begin
   if FilenameIsPascalSource(NewUnitInfo.Filename) then
     NewUnitInfo.ReadUnitNameFromSource(true);
   Project1.AddFile(NewUnitInfo,false);
+  if (ofAddToProject in Flags) and (not NewUnitInfo.IsPartOfProject) then
+  begin
+    NewUnitInfo.IsPartOfProject:=true;
+    Project1.Modified:=true;
+  end;
+  
   Result:=mrOk;
 end;
 
@@ -5190,6 +5200,11 @@ begin
     end;
     if ReOpen then begin
       NewUnitInfo:=Project1.Units[UnitIndex];
+      if (ofAddToProject in Flags) and (not NewUnitInfo.IsPartOfProject) then
+      begin
+        NewUnitInfo.IsPartOfProject:=true;
+        Project1.Modified:=true;
+      end;
       if (not (ofProjectLoading in Flags)) and NewUnitInfo.Loaded then begin
         // file already open -> change source notebook page
         SourceNoteBook.NoteBook.PageIndex:=NewUnitInfo.EditorIndex;
@@ -5212,6 +5227,11 @@ begin
       exit;
     end;
     ReOpen:=true;
+    if (ofAddToProject in Flags) and (not NewUnitInfo.IsPartOfProject) then
+    begin
+      NewUnitInfo.IsPartOfProject:=true;
+      Project1.Modified:=true;
+    end;
   end;
 
   // check if file exists
@@ -11673,6 +11693,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.871  2005/05/31 21:26:10  mattias
+  added TLazIDEInterface.DoOpenProject
+
   Revision 1.870  2005/05/28 23:16:21  mattias
   added TProjectFileDescriptor.GetResourceSource to create custom forms with custom .lfm sources
 

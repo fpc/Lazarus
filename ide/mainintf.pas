@@ -100,15 +100,6 @@ type
     dsInspector2  // focussing object inspector after form
     );
 
-  // save file flags
-  TSaveFlag = (
-    sfSaveAs,
-    sfSaveToTestDir,
-    sfProjectSaving,
-    sfCheckAmbiguousFiles
-    );
-  TSaveFlags = set of TSaveFlag;
-
   // revert file flags
   TRevertFlag = (
     rfQuiet
@@ -253,7 +244,8 @@ const
      'ofConvertMacros',
      'ofUseCache',
      'ofMultiOpen',
-     'ofDoNotLoadResource'
+     'ofDoNotLoadResource',
+     'ofAddToProject'
     );
 
   SaveFlagNames: array[TSaveFlag] of string = (

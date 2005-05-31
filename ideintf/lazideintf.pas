@@ -37,7 +37,8 @@ type
     ofConvertMacros, // replace macros in filename
     ofUseCache,      // do not update file from disk
     ofMultiOpen,     // set during loading multiple files
-    ofDoNotLoadResource// do not open form, datamodule, ...
+    ofDoNotLoadResource,// do not open form, datamodule, ...
+    ofAddToProject   // add file to project (if exists)
     );
   TOpenFlags = set of TOpenFlag;
 
@@ -56,6 +57,15 @@ type
     );
   TNewFlags = set of TNewFlag;
 
+  // save file flags
+  TSaveFlag = (
+    sfSaveAs,
+    sfSaveToTestDir,
+    sfProjectSaving,
+    sfCheckAmbiguousFiles
+    );
+  TSaveFlags = set of TSaveFlag;
+
 
   { TLazIDEInterface }
 
@@ -73,6 +83,15 @@ type
         Flags: TOpenFlags): TModalResult; virtual; abstract;
     function DoOpenFileAndJumpToIdentifier(const AFilename, AnIdentifier: string;
         PageIndex: integer; Flags: TOpenFlags): TModalResult; virtual; abstract;
+
+    function DoNewProject(ProjectDesc: TProjectDescriptor): TModalResult; virtual; abstract;
+    function DoSaveProject(Flags: TSaveFlags): TModalResult; virtual; abstract;
+    function DoCloseProject: TModalResult; virtual; abstract;
+    function DoOpenProjectFile(AFileName: string;
+                               Flags: TOpenFlags): TModalResult; virtual; abstract;
+    function DoPublishProject(Flags: TSaveFlags;
+                              ShowDialog: boolean): TModalResult; virtual; abstract;
+
     function GetPrimaryConfigPath: String; virtual; abstract;
     function GetSecondaryConfigPath: String; virtual; abstract;
     procedure CopySecondaryConfigFile(const AFilename: String); virtual; abstract;

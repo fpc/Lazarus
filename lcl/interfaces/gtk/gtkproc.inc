@@ -7901,12 +7901,13 @@ end;
                     LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
 
   Gets text extent of a string, ignoring escaped Ampersands.
+  That means, ampersands are not counted.
 -------------------------------------------------------------------------------}
 {$Ifdef GTK2}
 Procedure GetTextExtentIgnoringAmpersands(FontDesc : PPangoFontDescription; Str : PChar;
   LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
 {$Else}
-Procedure GetTextExtentIgnoringAmpersands(Font : PGDKFont; Str : PChar;
+Procedure GetTextExtentIgnoringAmpersands(FontDesc : PGDKFont; Str : PChar;
   LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
 {$EndIf}
 var
@@ -7923,13 +7924,8 @@ begin
       LineLength:=StrLen(NewStr);
     end;
   end;
-{$Ifdef GTK2}
   gdk_text_extents(FontDesc, NewStr, LineLength,
                    lbearing, rBearing, width, ascent, descent);
-{$Else}
-  gdk_text_extents(Font, NewStr, LineLength,
-                   lbearing, rBearing, width, ascent, descent);
-{$EndIf}
   if NewStr<>Str then
     StrDispose(NewStr);
 end;
@@ -8204,6 +8200,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.360  2005/05/31 21:26:10  mattias
+  added TLazIDEInterface.DoOpenProject
+
   Revision 1.359  2005/05/28 00:41:15  mattias
   removed verbosity
 

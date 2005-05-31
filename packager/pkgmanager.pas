@@ -349,12 +349,54 @@ begin
 end;
 
 procedure TPkgManager.MainIDEitmPkgEditInstallPkgsClick(Sender: TObject);
+
+  function CreateChangeReport(OldDependencyList,
+    NewDependencyList: TPkgDependency): string;
+  var
+    CurDependency: TPkgDependency;
+    OldDependency: TPkgDependency;
+    NewDependency: TPkgDependency;
+  begin
+    Result:='';
+
+    // list all packages, that will be installed
+    CurDependency:=NewDependencyList;
+    while CurDependency<>nil do begin
+      Result:=Result+CurDependency.AsString;
+      OldDependency:=FindDependencyByNameInList(OldDependencyList,pdlRequires,
+                                                CurDependency.PackageName);
+      if OldDependency<>nil then begin
+        // stay installed
+        if CurDependency.AsString<>OldDependency.AsString then
+          Result:=Result+' (old: '+OldDependency.AsString+')';
+      end else begin
+        // newly installed
+        Result:=Result+' (new)';
+      end;
+      Result:=Result+#13;
+      CurDependency:=CurDependency.NextRequiresDependency;
+    end;
+
+    // list all packages, that will be removed
+    CurDependency:=OldDependencyList;
+    while CurDependency<>nil do begin
+      NewDependency:=FindDependencyByNameInList(NewDependencyList,pdlRequires,
+                                                CurDependency.PackageName);
+      if NewDependency=nil then begin
+        // this package will be removed
+        Result:=Result+CurDependency.AsString+' (remove)'#13;
+      end;
+      CurDependency:=CurDependency.NextRequiresDependency;
+    end;
+  end;
+
 var
   RebuildIDE: Boolean;
   PkgIDList: TList;
   NewFirstAutoInstallDependency: TPkgDependency;
   BuildIDEFlags: TBuildLazarusFlags;
   ok: boolean;
+  Report: String;
 begin
   RebuildIDE:=false;
   PkgIDList:=nil;
@@ -371,7 +413,21 @@ begin
     ListPkgIDToDependencyList(PkgIDList,NewFirstAutoInstallDependency,
       pdlRequires,Self,true);
 
+    PackageGraph.SortDependencyListTopologically(NewFirstAutoInstallDependency,
+                                                 false);
+
+    // tell the user, which packages will stay, which will be removed and
+    // which will be newly installed
+    Report:=CreateChangeReport(FirstAutoInstallDependency,
+                               NewFirstAutoInstallDependency);
+    if MessageDlg('Confirm new package set for the IDE',
+      'This will happen:'#13#13
+      +Report+#13'Continue?',mtConfirmation,[mbYes,mbNo],0)<>mrYes then exit;
+
     // replace install list
+    // TODO
+    exit;
+    
     FreeDependencyList(FirstAutoInstallDependency,pdlRequires);
     FirstAutoInstallDependency:=NewFirstAutoInstallDependency;
     NewFirstAutoInstallDependency:=nil;
