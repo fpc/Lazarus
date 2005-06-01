@@ -79,7 +79,7 @@ begin
 end;
 
 type
-  TEraseBkgndCommand = (ecDefault, ecPaint, ecNoMsg);
+  TEraseBkgndCommand = (ecDefault, ecNoMsg);
 const
   EraseBkgndStackMask = $3;
   EraseBkgndStackShift = 2;
@@ -242,15 +242,9 @@ Var
     begin
       // if this is a groupbox in a tab, then the next erasebackground is for
       // drawing the background of the caption, send paint message then
-      if ((GetWindowLong(Window, GWL_STYLE) and BS_GROUPBOX) = BS_GROUPBOX)
-          and CompareMem(@winClassName, @ButtonClsName, High(ButtonClsName)+1) then
-      begin
-  {$ifdef MSG_DEBUG}
-        writeln(MessageStackDepth, ' *forcing next WM_ERASEBKGND to send paint message');
-  {$endif}
-        PushEraseBkgndCommand(ecPaint);
-      end;
-        
+      // update: tgroupbox does not have csOpaque, so it gets painted
+
+      
       // if need to start paint, paint by calling parent, and we have no 
       // controls, is a native control, use default win32 painting to avoid flicker
       if (lWinControl.ControlCount = 0) 
@@ -815,7 +809,8 @@ Begin
         LMessage.WParam := WParam;
         LMessage.LParam := LParam;
       end else begin
-        if eraseBkgndCommand = ecPaint then
+        if WindowInfo^.hasTabParent and ((lWinControl = nil) 
+            or not (csOpaque in lWinControl.ControlStyle)) then
           SendPaintMessage;
         LMessage.Result := 1;
       end;
@@ -1587,6 +1582,9 @@ end;
 
 {
   $Log$
+  Revision 1.208  2005/06/01 18:55:59  micha
+  fix painting of panels on notebooks with themes (fixes bug 915)
+
   Revision 1.207  2005/05/06 20:07:29  vincents
   disable all application windows, when the AppHandle is disabled (fixes bug 788)
 
