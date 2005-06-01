@@ -724,7 +724,7 @@ Procedure GetTextExtentIgnoringAmpersands(FontDesc: PPangoFontDescription; Str: 
 function FontIsDoubleByteCharsFont(TheFont: PGdkFont): boolean;
 {$IFDEF GTK1}
 function LoadDefaultFont: PGDKFont;
-Procedure GetTextExtentIgnoringAmpersands(Font: PGDKFont; Str: PChar;
+Procedure GetTextExtentIgnoringAmpersands(FontDesc: PGDKFont; Str: PChar;
   LineLength: Longint; lbearing, rbearing, width, ascent, descent: Pgint);
 {$EndIf}
 function GetDefaultFontName: string;
