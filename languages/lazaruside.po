@@ -2018,6 +2018,10 @@ msgstr ""
 msgid "Item height"
 msgstr ""
 
+#: lazarusidestrconsts:lisshowhintsinobjectinspector
+msgid "Show hints in Object Inspector"
+msgstr ""
+
 #: lazarusidestrconsts:dlgenvcolors
 msgid "Colors"
 msgstr ""

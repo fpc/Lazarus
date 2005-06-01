@@ -5706,6 +5706,10 @@ msgstr "Показать сетку"
 msgid "Show gutter hints"
 msgstr ""
 
+#: lazarusidestrconsts:lisshowhintsinobjectinspector
+msgid "Show hints in Object Inspector"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowlinenumbers
 msgid "Show line numbers"
 msgstr "Показать номера строк"

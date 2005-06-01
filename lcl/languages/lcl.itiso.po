@@ -1,20 +1,20 @@
 msgid ""
 msgstr ""
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
-"PO-Revision-Date: 2004-06-21 23:00+0200\n"
+"PO-Revision-Date: 2005-06-01 22:09+0200\n"
 "Language-Team: italiano <tp@lists.linux.it>\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: 0.9.2\n"
 "MIME-Version: 1.0\n"
 
 #: lclstrconsts:rsmodified
 msgid "  modified "
-msgstr ""
+msgstr "  modificato "
 
 #: lclstrconsts:rssize
 msgid "  size "
-msgstr ""
+msgstr "  ampiezza "
 
 #: lclstrconsts:rswarningunreleasedtimerinfos
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
@@ -138,15 +138,15 @@ msgstr "Blocca"
 
 #: lclstrconsts:ifsvk_accept
 msgid "Accept"
-msgstr ""
+msgstr "Accetta"
 
 #: lclstrconsts:rsallfiles
 msgid "All files (%s)|%s|%s"
-msgstr ""
+msgstr "Tutti i file (%s)|%s|%s"
 
 #: lclstrconsts:ifsvk_back
 msgid "Backspace"
-msgstr ""
+msgstr "Backspace"
 
 #: lclstrconsts:rsblank
 msgid "Blank"
@@ -174,11 +174,11 @@ msgstr "Le tele non permettono il disegno"
 
 #: lclstrconsts:ifsvk_capital
 msgid "Capital"
-msgstr ""
+msgstr "Maiuscola"
 
 #: lclstrconsts:ifsvk_clear
 msgid "Clear"
-msgstr ""
+msgstr "Cancella"
 
 #: lclstrconsts:rsmtconfirmation
 msgid "Confirmation"
@@ -186,11 +186,11 @@ msgstr "Conferma"
 
 #: lclstrconsts:ifsvk_control
 msgid "Control"
-msgstr ""
+msgstr "Controllo"
 
 #: lclstrconsts:ifsvk_convert
 msgid "Convert"
-msgstr ""
+msgstr "Converti"
 
 #: lclstrconsts:rscreatinggdbcatchableerror
 msgid "Creating gdb catchable error:"
@@ -202,7 +202,7 @@ msgstr "Personalizza"
 
 #: lclstrconsts:ifsvk_delete
 msgid "Delete"
-msgstr ""
+msgstr "Elimina"
 
 #: lclstrconsts:rsfddirectorymustexist
 msgid "Directory must exist"
@@ -210,7 +210,7 @@ msgstr "La directory deve esistere"
 
 #: lclstrconsts:ifsvk_down
 msgid "Down"
-msgstr ""
+msgstr "Giù"
 
 #: lclstrconsts:sduplicatemenus
 msgid "Duplicate menus"
@@ -222,7 +222,7 @@ msgstr "Errore nell'LCL:"
 
 #: lclstrconsts:ifsvk_end
 msgid "End"
-msgstr ""
+msgstr "Fine"
 
 #: lclstrconsts:rsmterror
 msgid "Error"
@@ -246,7 +246,7 @@ msgstr "Errore:"
 
 #: lclstrconsts:ifsvk_escape
 msgid "Escape"
-msgstr ""
+msgstr "Escape"
 
 #: lclstrconsts:rsexception
 msgid "Exception"
@@ -254,7 +254,7 @@ msgstr "Eccezzione"
 
 #: lclstrconsts:ifsvk_execute
 msgid "Execute"
-msgstr ""
+msgstr "Esegui"
 
 #: lclstrconsts:rsfileinformation
 msgid "File information"
@@ -270,11 +270,11 @@ msgstr "Il file deve esistere"
 
 #: lclstrconsts:rsgtkfilter
 msgid "Filter:"
-msgstr ""
+msgstr "Filtro:"
 
 #: lclstrconsts:ifsvk_final
 msgid "Final"
-msgstr ""
+msgstr "Finale"
 
 #: lclstrconsts:rsfixedcolstoobig
 msgid "FixedCols can't be >= ColCount"
@@ -298,19 +298,19 @@ msgstr "GroupIndex non può essere inferiore ad un GroupIndex di un elemento menu
 
 #: lclstrconsts:ifsvk_hanja
 msgid "Hanja"
-msgstr ""
+msgstr "Hanja"
 
 #: lclstrconsts:ifsvk_help
 msgid "Help"
-msgstr ""
+msgstr "Aiuto"
 
 #: lclstrconsts:rsgtkhistory
 msgid "History:"
-msgstr ""
+msgstr "Cronologia:"
 
 #: lclstrconsts:ifsvk_home
 msgid "Home"
-msgstr ""
+msgstr "Home"
 
 #: lclstrconsts:rsindexoutofrange
 msgid "Index Out of range Cell[Col=%d Row=%d]"
@@ -322,15 +322,15 @@ msgstr "Informazioni"
 
 #: lclstrconsts:ifsvk_insert
 msgid "Insert"
-msgstr ""
+msgstr "Inserimento"
 
 #: lclstrconsts:rsinvaliddate
 msgid "Invalid Date : %s"
-msgstr ""
+msgstr "Data non valida: %s"
 
 #: lclstrconsts:rsinvaliddaterangehint
 msgid "Invalid Date: %s. Must be between %s and %s"
-msgstr ""
+msgstr "Data non valida: %s. Deve essere tra %s e %s"
 
 #: lclstrconsts:sinvalidindex
 msgid "Invalid ImageList Index"
@@ -366,15 +366,15 @@ msgstr "Formato stream non valido"
 
 #: lclstrconsts:ifsvk_junja
 msgid "Junja"
-msgstr ""
+msgstr "Junja"
 
 #: lclstrconsts:ifsvk_kana
 msgid "Kana"
-msgstr ""
+msgstr "Kana"
 
 #: lclstrconsts:ifsvk_left
 msgid "Left"
-msgstr ""
+msgstr "Sinistra"
 
 #: lclstrconsts:rslistindexexceedsbounds
 msgid "List index exceeds bounds (%d)"
@@ -386,7 +386,7 @@ msgstr "L'elenco deve essere vuoto"
 
 #: lclstrconsts:ifsvk_menu
 msgid "Menu"
-msgstr ""
+msgstr "Menu"
 
 #: lclstrconsts:smenuindexerror
 msgid "Menu index out of range"
@@ -398,27 +398,27 @@ msgstr "La voce menu è nulla"
 
 #: lclstrconsts:ifsvk_modechange
 msgid "Mode Change"
-msgstr ""
+msgstr "Cambiamento di modalità"
 
 #: lclstrconsts:ifsvk_lbutton
 msgid "Mouse Button Left"
-msgstr ""
+msgstr "Tasto sinistro del mouse"
 
 #: lclstrconsts:ifsvk_mbutton
 msgid "Mouse Button Middle"
-msgstr ""
+msgstr "Tasto centrale del mouse"
 
 #: lclstrconsts:ifsvk_rbutton
 msgid "Mouse Button Right"
-msgstr ""
+msgstr "Tasto destro del mouse"
 
 #: lclstrconsts:ifsvk_next
 msgid "Next"
-msgstr ""
+msgstr "Successivo"
 
 #: lclstrconsts:snomdiform
 msgid "No MDI form present."
-msgstr ""
+msgstr "Nessuna form MDI presente."
 
 #: lclstrconsts:rsnointerfaceobject
 msgid "No interface object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
@@ -434,7 +434,7 @@ msgstr "No a tutto"
 
 #: lclstrconsts:ifsvk_nonconvert
 msgid "Nonconvert"
-msgstr ""
+msgstr "Nnoconvertire"
 
 #: lclstrconsts:rsnotavalidgridfile
 msgid "Not a valid grid file"
@@ -442,11 +442,11 @@ msgstr "Non è un file griglia valido"
 
 #: lclstrconsts:ifsvk_numlock
 msgid "Numlock"
-msgstr ""
+msgstr "BlocNum"
 
 #: lclstrconsts:ifsvk_numpad
 msgid "Numpad %d"
-msgstr ""
+msgstr "TastNum %d"
 
 #: lclstrconsts:rsfdopenfile
 msgid "Open existing file"
@@ -462,15 +462,15 @@ msgstr "Il percorso deve esistere"
 
 #: lclstrconsts:ifsvk_pause
 msgid "Pause key"
-msgstr ""
+msgstr "Tasto pausa"
 
 #: lclstrconsts:ifsvk_print
 msgid "Print"
-msgstr ""
+msgstr "Stampa"
 
 #: lclstrconsts:ifsvk_prior
 msgid "Prior"
-msgstr ""
+msgstr "Precedente"
 
 #: lclstrconsts:rspropertydoesnotexist
 msgid "Property %s does not exist"
@@ -482,11 +482,11 @@ msgstr "Risorsa %s non trovata"
 
 #: lclstrconsts:ifsvk_return
 msgid "Return"
-msgstr ""
+msgstr "Invio"
 
 #: lclstrconsts:ifsvk_right
 msgid "Right"
-msgstr ""
+msgstr "Destra"
 
 #: lclstrconsts:rsfdfilesaveas
 msgid "Save file as"
@@ -494,7 +494,7 @@ msgstr "Salva con nome"
 
 #: lclstrconsts:ifsvk_scroll
 msgid "Scroll"
-msgstr ""
+msgstr "Scorrimento"
 
 #: lclstrconsts:rsscrollbaroutofrange
 msgid "ScrollBar property out of range"
@@ -502,7 +502,7 @@ msgstr "Proprietà barra di scorrimento fuori dal range"
 
 #: lclstrconsts:ifsvk_select
 msgid "Select"
-msgstr ""
+msgstr "Selezione"
 
 #: lclstrconsts:rsfdselectdirectory
 msgid "Select Directory"
@@ -522,15 +522,15 @@ msgstr "Selezionare un colore"
 
 #: lclstrconsts:ifsvk_shift
 msgid "Shift"
-msgstr ""
+msgstr "Maiusc"
 
 #: lclstrconsts:ifsvk_snapshot
 msgid "Snapshot"
-msgstr ""
+msgstr "Istantanea"
 
 #: lclstrconsts:ifsvk_space
 msgid "Space key"
-msgstr ""
+msgstr "Tasto di spaziatura"
 
 #: lclstrconsts:smenunotfound
 msgid "Sub-menu is not in menu"
@@ -538,7 +538,7 @@ msgstr "Il sottomenu non è nel menu"
 
 #: lclstrconsts:ifsvk_tab
 msgid "Tab"
-msgstr ""
+msgstr "Tab"
 
 #: lclstrconsts:rsfddirectorynotexist
 msgid "The directory \"%s\" does not exist."
@@ -566,7 +566,7 @@ msgstr "Impossibile caricare il font predefinito"
 
 #: lclstrconsts:ifsvk_unknown
 msgid "Unknown"
-msgstr ""
+msgstr "Sconosciuto"
 
 #: lclstrconsts:rsunknownpictureextension
 msgid "Unknown picture extension"
@@ -582,7 +582,7 @@ msgstr "Formato degli appunti non supportato %s"
 
 #: lclstrconsts:ifsvk_up
 msgid "Up"
-msgstr ""
+msgstr "Su"
 
 #: lclstrconsts:rsmtwarning
 msgid "Warning"
@@ -598,7 +598,7 @@ msgstr "Sì a tutto"
 
 #: lclstrconsts:ifsvk_apps
 msgid "application key"
-msgstr ""
+msgstr "tasto applicazione"
 
 #: lclstrconsts:rsinvalidformobjectstream
 msgid "invalid Form object stream"
@@ -606,7 +606,7 @@ msgstr "Stream form oggetto non valido"
 
 #: lclstrconsts:ifsvk_lwin
 msgid "left windows key"
-msgstr ""
+msgstr "tasto windows sinistro"
 
 #: lclstrconsts:rsdefaultfileinfovalue
 msgid "permissions user group size date time"
@@ -614,5 +614,5 @@ msgstr "permessi utente gruppo ampiezza data ora"
 
 #: lclstrconsts:ifsvk_rwin
 msgid "right windows key"
-msgstr ""
+msgstr "tasto windows destro"
 

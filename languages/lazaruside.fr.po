@@ -5717,6 +5717,10 @@ msgstr "Afficher la grille"
 msgid "Show gutter hints"
 msgstr "Afficher les astuces de gouttière"
 
+#: lazarusidestrconsts:lisshowhintsinobjectinspector
+msgid "Show hints in Object Inspector"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowlinenumbers
 msgid "Show line numbers"
 msgstr "Voir les numéros de ligne"
