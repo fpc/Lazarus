@@ -2046,6 +2046,7 @@ begin
   end;
 
   // First destroy all children handles
+  Include(FControlState, csDestroyingHandle);
   if FWinControls <> nil then begin
     for i:= 0 to FWinControls.Count - 1 do begin
       //DebugLn('  i=',i);
@@ -2056,6 +2057,7 @@ begin
     end;
   end;
   DestroyWnd;
+  Exclude(FControlState, csDestroyingHandle);
 end;
 
 {------------------------------------------------------------------------------
@@ -3921,7 +3923,8 @@ begin
   CurControl:=Self;
   while CurControl<>nil do begin
     if (not CurControl.HandleAllocated)
-    or ([csDestroying,csDestroyingHandle]*ComponentState<>[]) then
+    or (csDestroying in CurControl.ComponentState)
+    or (csDestroyingHandle in CurControl.ControlState) then
       exit;
     CurControl:=CurControl.Parent;
   end;
@@ -4004,6 +4007,8 @@ begin
           exit;
       end;
     end;
+  
+    Assert(not ParentDestroyingHandle, Format('WARNING:[TWinControl.HandleNeeded] creating handle for %s while destroying handles!', [ClassName]));
     CreateHandle;
   end;
 end;
@@ -4486,6 +4491,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.325  2005/06/02 12:11:54  micha
+  need to recreate form window when changing border flags
+  implement lock-flag when destroying handle, do not focus control that is destroying handles
+
   Revision 1.324  2005/05/03 15:40:45  mattias
   exit CNChar if key already processed
 

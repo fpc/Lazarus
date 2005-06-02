@@ -831,6 +831,7 @@ begin
             if (FActiveControl <> nil) and (FActiveControl <> Self)
             and FActiveControl.Visible and FActiveControl.Enabled
             and ([csLoading,csDestroying]*ComponentState=[])
+            and not FActiveControl.ParentDestroyingHandle
             then
               // get or create handle of FActiveControl
               FocusHandle := FActiveControl.Handle;
@@ -1929,6 +1930,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.185  2005/06/02 12:11:54  micha
+  need to recreate form window when changing border flags
+  implement lock-flag when destroying handle, do not focus control that is destroying handles
+
   Revision 1.184  2005/05/03 14:56:33  vincents
   fixed getting the size of a minimized window (bug 886)
 

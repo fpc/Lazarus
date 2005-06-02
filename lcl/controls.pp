@@ -1088,6 +1088,7 @@ type
     procedure SetZOrderPosition(NewPosition: Integer); virtual;
     Procedure SetZOrder(TopMost: Boolean); virtual;
     function HandleObjectShouldBeVisible: boolean; virtual;
+    function ParentDestroyingHandle: boolean;
     function ParentHandlesAllocated: boolean; virtual;
     procedure InitiateAction; virtual;
   public
@@ -2909,6 +2910,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.298  2005/06/02 12:11:54  micha
+  need to recreate form window when changing border flags
+  implement lock-flag when destroying handle, do not focus control that is destroying handles
+
   Revision 1.297  2005/04/22 09:29:30  mattias
   made TContro.AutoSize public
 

@@ -2851,6 +2851,25 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TControl.ParentDestroyingHandle: boolean;
+  
+  Returns whether any parent is destroying it's handle (and its children's)
+ ------------------------------------------------------------------------------}
+function TControl.ParentDestroyingHandle: boolean;
+var
+  CurControl: TControl;
+begin
+  Result:=false;
+  CurControl:=Self;
+  while CurControl<>nil do begin
+    if csDestroyingHandle in CurControl.ControlState then
+      exit;
+    CurControl:=CurControl.Parent;
+  end;
+  Result:=true;
+end;
+
+{------------------------------------------------------------------------------
   function TControl.ParentHandlesAllocated: boolean;
 ------------------------------------------------------------------------------}
 function TControl.ParentHandlesAllocated: boolean;
@@ -3517,6 +3536,10 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.258  2005/06/02 12:11:54  micha
+  need to recreate form window when changing border flags
+  implement lock-flag when destroying handle, do not focus control that is destroying handles
+
   Revision 1.257  2005/06/02 11:18:39  micha
   fix win32 themes drawing bug 915
 

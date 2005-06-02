@@ -250,10 +250,7 @@ var
   Flags, FlagsEx: dword;
   winHandle: HWND;
 begin
-  winHandle := AForm.Handle;
-  CalcFormWindowFlags(AForm, Flags, FlagsEx);
-  Windows.SetWindowLong(winHandle, GWL_STYLE, Flags);
-  Windows.SetWindowLong(winHandle, GWL_EXSTYLE, FlagsEx);
+  RecreateWnd(AForm);
 end;
                             
 procedure TWin32WSCustomForm.SetBounds(const AWinControl: TWinControl; 
