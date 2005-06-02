@@ -3220,8 +3220,10 @@ begin
   //  DebugLn('TControl.Create START ',Name,':',ClassName);
   inherited Create(TheOwner);
 
-  FControlStyle := [csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks,
-                    csOpaque];
+  // no csOpaque: delphi compatible, win32 themes notebook depend on it
+  // csOpaque means entire client area will be drawn 
+  // (most controls are semi-transparent)
+  FControlStyle := [csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks];
   FConstraints:= TSizeConstraints.Create(Self);
   FBorderSpacing:=TControlBorderSpacing.Create(Self);
   FBorderSpacing.OnChange:= @DoBorderSpacingChange;
@@ -3515,6 +3517,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.257  2005/06/02 11:18:39  micha
+  fix win32 themes drawing bug 915
+
   Revision 1.256  2005/05/09 14:52:33  vincents
   also invalidate control, if it is only moved, but not resized.
 
