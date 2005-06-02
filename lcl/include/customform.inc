@@ -416,24 +416,28 @@ begin
   if (fsShowing in FFormState) then exit;
   Include(FFormState, fsShowing);
   try
-    if Message.Show then begin
-      if FActiveControl = nil then begin
-        FActiveControl := FindFirstControl;
-        {$IFDEF VerboseFocus}
-        DebugLn('TCustomForm.WMShowWindow Set FActiveControl := FindFirstControl = ',DbgSName(FActiveControl));
-        {$ENDIF}
+    // only fire event if reason is not some other window hide/showing etc.
+    if Message.Status = 0 then
+    begin
+      if Message.Show then begin
+        if FActiveControl = nil then begin
+          FActiveControl := FindFirstControl;
+          {$IFDEF VerboseFocus}
+          DebugLn('TCustomForm.WMShowWindow Set FActiveControl := FindFirstControl = ',DbgSName(FActiveControl));
+          {$ENDIF}
+        end;
+        if ([csLoading,csDestroying]*ComponentState=[])
+        and (FActiveControl<>nil) and FActiveControl.HandleAllocated
+        and FActiveControl.Visible and FActiveControl.Enabled then begin
+          {$IFDEF VerboseFocus}
+          DebugLn('TCustomForm.WMShowWindow SetFocus ',DbgSName(FActiveControl));
+          {$ENDIF}
+          LCLIntf.SetFocus(FActiveControl.Handle);
+        end;
+        DoShow;
+      end else begin
+        DoHide;
       end;
-      if ([csLoading,csDestroying]*ComponentState=[])
-      and (FActiveControl<>nil) and FActiveControl.HandleAllocated
-      and FActiveControl.Visible and FActiveControl.Enabled then begin
-        {$IFDEF VerboseFocus}
-        DebugLn('TCustomForm.WMShowWindow SetFocus ',DbgSName(FActiveControl));
-        {$ENDIF}
-        LCLIntf.SetFocus(FActiveControl.Handle);
-      end;
-      DoShow;
-    end else begin
-      DoHide;
     end;
   finally
     Exclude(FFormState, fsShowing);
@@ -1930,6 +1934,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.186  2005/06/02 20:31:19  micha
+  fix lm_showwindow handling to not fire onshow event in case of restore and unzoom (fixes bug 928)
+
   Revision 1.185  2005/06/02 12:11:54  micha
   need to recreate form window when changing border flags
   implement lock-flag when destroying handle, do not focus control that is destroying handles
