@@ -1344,7 +1344,7 @@ begin
         lDefaultControl := Form.ActiveDefaultControl;
         if lDefaultControl = nil then
           lDefaultControl := Form.DefaultControl;
-        if (lDefaultControl <> nil) 
+        if (lDefaultControl <> nil)
           and ((lDefaultControl.Parent = nil) or (lDefaultControl.Parent.CanFocus))
           and lDefaultControl.Enabled and lDefaultControl.Visible then
         begin
@@ -1466,6 +1466,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.120  2005/06/03 20:58:23  mattias
+  fixed focussing modal forms on gtk intf
+
   Revision 1.119  2005/05/03 16:52:29  mattias
   fixed triggering TDataModule, and improved parent search for new designer controls.  from Jesus
 

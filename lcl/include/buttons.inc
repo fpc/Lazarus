@@ -157,7 +157,7 @@ end;
 
 procedure TCustomButton.ExecuteDefaultAction;
 begin
-  if FActive then
+  if FActive or FDefault then
     Click;
 end;
 
@@ -296,6 +296,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.46  2005/06/03 20:58:23  mattias
+  fixed focussing modal forms on gtk intf
+
   Revision 1.45  2005/04/27 12:37:28  micha
   implement/fix button/label shortcut accelchar handling
 

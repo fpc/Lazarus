@@ -2112,7 +2112,7 @@ resourcestring
     +'create package source directory %s%s%s%sfor package %s.';
   lisPkgMangUnableToLoadPackage = 'Unable to load package';
   lisPkgMangUnableToOpenThePackage = 'Unable to open the package %s%s%s.%'
-    +'sThis package was marked for for installation.';
+    +'sThis package was marked for installation.';
   lisPkgMangInvalidPackageName2 = 'Invalid Package Name';
   lisPkgMangThePackageNameOfTheFileIsInvalid = 'The package name %s%s%s of%'
     +'sthe file %s%s%s is invalid.';

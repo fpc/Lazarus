@@ -211,7 +211,18 @@ begin
     if GdkWindow<>nil then begin
       AForm:=TCustomForm(GetLCLObject(PgtkWidget(hwnd)));
       if (AForm<>nil) and (AForm is TCustomForm) and (AForm.Parent=nil) then
+      begin
+        if Screen.CustomFormZIndex(AForm)<Screen.GetCurrentModalFormZIndex then
+        begin
+          debugln('TGtkWidgetSet.BringWindowToTop Form=',DbgSName(AForm),
+                  ' can not be raised, because ',
+                  DbgSName(Screen.GetCurrentModalForm),
+                  ' is modal and above.');
+          Result:=false;
+          exit;
+        end;
         Screen.MoveFormToZFront(AForm);
+      end;
       {$IFDEF DebugGDKTraps}
       BeginGDKErrorTrap;
       {$ENDIF}
@@ -229,7 +240,8 @@ begin
         // which could be undesirable.
         
         // check if the window is on all desktops or is on the current desktop
-        if (WindowDesktop < 0) or (WindowDesktop = GDK_GET_CURRENT_DESKTOP) then begin
+        if (WindowDesktop < 0) or (WindowDesktop = GDK_GET_CURRENT_DESKTOP) then
+        begin
           GDK_WINDOW_ACTIVATE(FormWindow);
         end
         else begin
@@ -7870,18 +7882,23 @@ end;
   The SetFocus function sets the keyboard focus to the specified window
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.SetFocus(hWnd: HWND): HWND;
+{off $DEFINE VerboseFocus}
 var
   Widget, TopLevel, ImplWidget, NewFocusWidget: PGtkWidget;
   WinWidgetInfo: PWinWidgetInfo;
   {$IfDef VerboseFocus}
   LCLObject, AWinControl: TWinControl;
+  NewTopLevel: PGtkWidget;
   {$EndIf}
+  NewTopLevelWidget: PGtkWidget;
+  NewTopLevelObject: TObject;
+  NewForm: TCustomForm;
 begin
   if hWnd=0 then exit;
   Widget:=PGtkWidget(hWnd);
   {$IfDef VerboseFocus}
   DebugLn('');
-  write('[TGtkWidgetSet.SetFocus] A hWnd=',GetWidgetDebugReport(Widget));
+  writeln('[TGtkWidgetSet.SetFocus] A hWnd=',GetWidgetDebugReport(Widget));
   LCLObject:=TWinControl(GetLCLObject(Widget));
   {$EndIf}
   if hwnd = 0 then begin
@@ -7918,6 +7935,20 @@ begin
       write(' LCLParent=nil');
     DebugLn('');
     {$EndIf}
+
+    NewTopLevelObject:=GetNearestLCLObject(TopLevel);
+    if (NewTopLevelObject is TCustomForm) then begin
+      NewForm:=TCustomForm(NewTopLevelObject);
+      if Screen.GetCurrentModalFormZIndex>Screen.CustomFormZIndex(NewForm) then
+      begin
+        // there is a modal form above -> focus forbidden
+        {$IfDef VerboseFocus}
+        DebugLn('  there is a modal form above -> focus forbidden');
+        {$EndIf}
+        exit;
+      end;
+    end;
+    
     if (NewFocusWidget=nil)
     and GtkWidgetIsA(Widget, gtk_combo_get_type) then begin
       // handle is a gtk combo
@@ -7932,7 +7963,7 @@ begin
       if (WinWidgetInfo<>nil) then begin
         ImplWidget:= WinWidgetInfo^.CoreWidget;
         if ImplWidget <> nil then begin
-          // handle has a ImplementationWidget
+          // handle has an ImplementationWidget
           if GtkWidgetIsA(ImplWidget, gtk_list_get_type) then begin
             {$IfDef VerboseFocus}
             DebugLn('  E using list');
@@ -7959,7 +7990,7 @@ begin
       {$EndIf}
     end;
     {$IfDef VerboseFocus}
-    write('  G NewFocusWidget=',DbgS(NewFocusWidget));
+    write('  G NewFocusWidget=',DbgS(NewFocusWidget),' ',DbgSName(GetNearestLCLObject(NewFocusWidget)));
     write(' WidVisible=',GTK_WIDGET_VISIBLE(PGtkWidget(NewFocusWidget)));
     write(' WidRealized=',GTK_WIDGET_REALIZED(PGtkWidget(NewFocusWidget)));
     write(' WidMapped=',GTK_WIDGET_MAPPED(PGtkWidget(NewFocusWidget)));
@@ -7971,7 +8002,7 @@ begin
       if (PGtkWindow(TopLevel)^.Focus_Widget<>NewFocusWidget)
       then begin
         {$IfDef VerboseFocus}
-        DebugLn('  H SETTING NewFocusWidget=',DbgS(NewFocusWidget));
+        DebugLn('  H SETTING NewFocusWidget=',dbgs(NewFocusWidget),' ',DbgSName(GetNearestLCLObject(NewFocusWidget)));
         {$EndIf}
         gtk_window_set_focus(PGtkWindow(TopLevel),NewFocusWidget);
         {$IfDef VerboseFocus}
@@ -7984,18 +8015,19 @@ begin
     NewFocusWidget:=Widget;
   end;
 
-  if (NewFocusWidget <> nil) and not gtk_widget_has_focus(NewFocusWidget) then begin
+  if (NewFocusWidget <> nil) and not gtk_widget_has_focus(NewFocusWidget) then
+  begin
     // grab the focus to the parent window
+    NewTopLevelWidget := gtk_widget_get_toplevel(NewFocusWidget);
     if (Screen<>nil)
-    and (Screen.FocusedForm<>nil)
-    and (fsModal in Screen.FocusedForm.FormState)
-    and (GetNearestLCLObject(TopLevel)<>Screen.FocusedForm) then begin
+    and (GetNearestLCLObject(NewTopLevelWidget)<>Screen.GetCurrentModalForm)
+    then begin
       {$IFDEF VerboseFocus}
       DebugLn('[TGtkWidgetSet.SetFocus] there is a modal form -> not grabbing');
       {$ENDIF}
     end else begin
       {$IfDef VerboseFocus}
-      DebugLn('  J Grabbing focus');
+      DebugLn('  J Grabbing focus ',GetWidgetDebugReport(NewFocusWidget));
       {$EndIf}
       gtk_widget_grab_focus(NewFocusWidget);
     end;
@@ -8987,6 +9019,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.421  2005/06/03 20:58:23  mattias
+  fixed focussing modal forms on gtk intf
+
   Revision 1.420  2005/05/21 15:58:44  mattias
   implemented right justification for menuitems for winapi intf  from Martin Smat
 

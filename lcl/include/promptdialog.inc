@@ -93,6 +93,7 @@ var
 begin
   if (Key=VK_Escape) then
     ModalResult := -1;
+
   if (Key=VK_LEFT) or (Key=VK_RIGHT) then begin
     // focus the next button to the left or right
     
@@ -339,6 +340,7 @@ begin
     and (TCustomBitBtn(Components[i]).Default) then
     begin
       ActiveControl:=TCustomBitBtn(Components[i]);
+      DefaultControl:=TCustomBitBtn(Components[i]);
       break;
     end;
   end;
@@ -745,6 +747,9 @@ end;
 
 {
    $Log$
+   Revision 1.20  2005/06/03 20:58:23  mattias
+   fixed focussing modal forms on gtk intf
+
    Revision 1.19  2005/01/28 10:48:28  mattias
    fixed compilation
 

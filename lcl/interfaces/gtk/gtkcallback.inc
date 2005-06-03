@@ -491,7 +491,7 @@ begin
   if GtkWidgetIsA(Widget, gtk_window_get_type) then
     Mess.ActiveWindow:=HWnd(PGTKWindow(Widget)^.focus_widget);
   Mess.Result := 0;
-  DeliverPostMessage(Data, Mess);
+  DeliverMessage(Data, Mess); // send message directly (not Post)
 
   Result := CallBackDefaultReturn;
 end;
@@ -518,7 +518,7 @@ begin
   UpdateMouseCaptureControl;
 
   Mess.Msg := LM_DEACTIVATE;
-  DeliverPostMessage(Data, Mess);
+  DeliverMessage(Data, Mess);
 
   Result := CallBackDefaultReturn;
 end;
@@ -2986,6 +2986,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.279  2005/06/03 20:58:23  mattias
+  fixed focussing modal forms on gtk intf
+
   Revision 1.278  2005/04/04 11:57:47  mattias
   reduced gtk2 warnings  from Danny Milosavljevic
 
