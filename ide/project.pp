@@ -2605,20 +2605,31 @@ function TProject.UnitInfoWithFilename(const AFilename: string;
       Result:=ReadAllLinks(Result,false);
   end;
 
+  function FindFileInList(ListType: TUnitInfoList): TUnitInfo;
+  var
+    BaseFilename: String;
+    CurBaseFilename: String;
+  begin
+    BaseFilename:=MakeFilenameComparable(AFilename);
+    Result:=fFirst[ListType];
+    while Result<>nil do begin
+      CurBaseFilename:=MakeFilenameComparable(Result.Filename);
+      if CompareFilenames(BaseFilename,CurBaseFilename)=0 then exit;
+      Result:=Result.fNext[ListType];
+    end;
+  end;
+
 var
   i: Integer;
-  ListType: TUnitInfoList;
-  BaseFilename: String;
-  CurBaseFilename: String;
 begin
   if (SearchFlags-[pfsfResolveFileLinks]=[pfsfOnlyEditorFiles]) then
     // search only in list of Files with EditorIndex
     // There is a list, so we can search much faster
-    ListType:=uilWithEditorIndex
+    Result:=FindFileInList(uilWithEditorIndex)
   else if (SearchFlags-[pfsfResolveFileLinks]=[pfsfOnlyProjectFiles]) then
     // search only in list of project files
     // There is a list, so we can search much faster
-    ListType:=uilPartOfProject
+    Result:=FindFileInList(uilPartOfProject)
   else begin
     // slow search
     i:=IndexOfFilename(AFilename,SearchFlags);
@@ -2627,15 +2638,6 @@ begin
     else
       Result:=nil;
   end;
-    
-  BaseFilename:=MakeFilenameComparable(AFilename);
-  Result:=fFirst[ListType];
-  while Result<>nil do begin
-    CurBaseFilename:=MakeFilenameComparable(Result.Filename);
-    if CompareFilenames(BaseFilename,CurBaseFilename)=0 then exit;
-    Result:=Result.fNext[ListType];
-  end;
-  Result:=nil;
 end;
 
 function TProject.UnitWithUnitname(const AnUnitname: string): TUnitInfo;
@@ -3213,6 +3215,9 @@ end.
 
 {
   $Log$
+  Revision 1.187  2005/06/05 19:44:20  vincents
+  fixed UnitInfoWithFilename (bug 937)
+
   Revision 1.186  2005/05/28 23:16:21  mattias
   added TProjectFileDescriptor.GetResourceSource to create custom forms with custom .lfm sources
 
