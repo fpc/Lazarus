@@ -121,14 +121,15 @@ Name: default; MessagesFile: compiler:Default.isl
 Name: ca; MessagesFile: compiler:Languages\Catalan.isl; LicenseFile: {#LicenseDir}\GPL-ca.txt
 Name: cs; MessagesFile: compiler:Languages\Czech.isl
 Name: de; MessagesFile: compiler:Languages\German.isl
+Name: fi; MessagesFile: Finnish-5.1.0.isl
 Name: fr; MessagesFile: compiler:Languages\French.isl
 Name: nl; MessagesFile: compiler:Languages\Dutch.isl; LicenseFile: {#LicenseDir}\GPL-nl.txt
 Name: no; MessagesFile: compiler:Languages\Norwegian.isl
 Name: pl; MessagesFile: compiler:Languages\Polish.isl
-Name: pt; MessagesFile: compiler:Languages\PortugueseStd.isl; LicenseFile: {#LicenseDir}\GPL-pt.txt
+Name: pt; MessagesFile: compiler:Languages\Portuguese.isl; LicenseFile: {#LicenseDir}\GPL-pt.txt
+Name: pt_BR; MessagesFile: compiler:Languages\BrazilianPortuguese.isl; LicenseFile: {#LicenseDir}\GPL-pt_BR.txt
 Name: ru; MessagesFile: compiler:Languages\Russian.isl
 Name: sl; MessagesFile: compiler:Languages\Slovenian.isl
-Name: pt_BR; MessagesFile: Portuguese_BR.isl; LicenseFile: {#LicenseDir}\GPL-pt_BR.txt
 
 [Code]
 function NextButtonClick(CurPage: Integer): Boolean;

@@ -1882,6 +1882,7 @@ tools/install/smart_strip.sh -text svneol=native#application/x-sh
 tools/install/win32/build-fpc.bat -text svneol=native#application/x-msdos-program
 tools/install/win32/build-lazarus.bat -text svneol=native#application/x-msdos-program
 tools/install/win32/create_installer.bat -text svneol=native#application/x-msdos-program
+tools/install/win32/create_snapshot_installer.bat -text svneol=native#application/x-msdos-program
 tools/install/win32/editoroptions.xml svneol=native#text/xml
 tools/install/win32/environmentoptions.xml svneol=native#text/xml
 tools/install/win32/lazarus_install_cheetah.bmp -text svneol=unset#image/bmp
