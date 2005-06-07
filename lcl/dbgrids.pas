@@ -90,6 +90,7 @@ type
     fOnNewDataSet: TDataSetNotifyEvent;
     FOnRecordChanged: TFieldNotifyEvent;
     FOnUpdateData: TDataSetNotifyEvent;
+    fOldFirstRecord: Integer;
     
     function GetDataSetName: string;
     function GetFields(Index: Integer): TField;
@@ -103,6 +104,7 @@ type
     procedure FocusControl(Field: TFieldRef); override;
     // Testing Events
     procedure CheckBrowseMode; override;
+    function  CheckFirstRecord: boolean;
     procedure EditingChanged; override;
     procedure UpdateData; override;
     function  MoveBy(Distance: Integer): Integer; override;
@@ -139,9 +141,12 @@ type
     FDisplayFormatChanged: boolean;
     FFieldName: String;
     FField: TField;
+    FIsAutomaticColumn: boolean;
+    FDesignIndex: Integer;
     procedure ApplyDisplayFormat;
     function  GetDisplayFormat: string;
     function  GetField: TField;
+    function  GetIsDesignColumn: boolean;
     function  IsDisplayFormatStored: boolean;
     procedure SetDisplayFormat(const AValue: string);
     procedure SetField(const AValue: TField);
@@ -157,15 +162,22 @@ type
     function  GetDefaultVisible: boolean; override;
     function  InternalDefaultWidth: Integer; override;
     function  CreateTitle: TGridColumnTitle; override;
+    property  IsAutomaticColumn: boolean read FIsAutomaticColumn;
+    property  IsDesignColumn: boolean read GetIsDesignColumn;
   public
+    constructor Create(ACollection: TCollection); override;
     function  IsDefault: boolean; override;
-    property Field: TField read GetField write SetField;
+    property  DesignIndex: integer read FDesignIndex;
+    property  Field: TField read GetField write SetField;
   published
-    property FieldName: String read FFieldName write SetFieldName;
+    property  FieldName: String read FFieldName write SetFieldName;
     property DisplayFormat: string read GetDisplayFormat write SetDisplayFormat
       stored IsDisplayFormatStored;
   end;
 
+  TColumnOrder = (coDesignOrder, coFieldIndexOrder);
+  
+  { TDbGridColumns }
   TDbGridColumns = class(TGridColumns)
   private
     function GetColumn(Index: Integer): TColumn;
@@ -173,10 +185,14 @@ type
   protected
     procedure Update(Item: TCollectionItem); override;
     function ColumnFromField(Field: TField): TColumn;
+    function  HasAutomaticColumns: boolean;
+    function  HasDesignColumns: boolean;
+    procedure RemoveAutomaticColumns;
   public
-    constructor Create(TheGrid: TCustomDBGrid);
+    constructor Create(AGrid: TCustomDBGrid);
     function  Add: TColumn;
     procedure LinkFields;
+    procedure ResetColumnsOrder(ColumnOrder: TColumnOrder);
     property Items[Index: Integer]: TColumn read GetColumn write SetColumn; default;
   end;
 
@@ -195,6 +211,7 @@ type
     FReadOnly: Boolean;
     FColEnterPending: Boolean;
     FLayoutChangedCount: integer;
+    FUseAutoColumns: boolean;
     FVisualChangeCount: Integer;
     FSelectionLock: Boolean;
     FTempText : string;
@@ -226,6 +243,7 @@ type
     procedure SetDataSource(const AValue: TDataSource);
     procedure SetOptions(const AValue: TDbGridOptions);
     procedure SetThumbTracking(const AValue: boolean);
+    procedure SetUseAutoColumns(const AValue: boolean);
     procedure UpdateBufferCount;
     procedure UpdateData;
     
@@ -256,6 +274,7 @@ type
   {$ifdef ver1_0}
     property FixedColor;
   {$endif}
+    procedure AddAutomaticColumns;
     procedure BeforeMoveSelection(const DCol,DRow: Integer); override;
     procedure BeginLayout;
     procedure CellClick(const aCol,aRow: Integer); override;
@@ -311,6 +330,7 @@ type
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property Options: TDbGridOptions read FOptions write SetOptions;
     property ReadOnly: Boolean read FReadOnly write FReadOnly default false;
+    property UseAutoColumns: boolean read FUseAutoColumns write SetUseAutoColumns;
     
     property OnCellClick: TDBGridClickEvent read FOnCellClick write FOnCellClick;
     property OnColEnter: TNotifyEvent read FOnColEnter write FOnColEnter;
@@ -342,6 +362,7 @@ type
     property GridLineColor;
     property GridLineStyle;
     property SelectedColor;
+    property UseAutoColumns;
     //property SelectedRows;
   published
     property Align;
@@ -394,6 +415,7 @@ type
     //property OnEndDrag;
     property OnEnter;
     property OnExit;
+    property OnFieldEditMask;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
@@ -516,7 +538,7 @@ begin
   if aDataSet=nil then DebugLn('nil)')
   else DebugLn(aDataSet.Name,')');
   {$endif}
-  if not (gsVisibleMove in FGridStatus) then
+  if not (gsVisibleMove in FGridStatus) or FDatalink.CheckFirstRecord then
     LayoutChanged
   else
     UpdateScrollBarRange;
@@ -706,6 +728,18 @@ begin
   EndUpdate(uoNone);
 end;
 
+procedure TCustomDbGrid.SetUseAutoColumns(const AValue: boolean);
+begin
+  if AValue <> FUseAutoColumns then begin
+    FUseAutoColumns := AValue;
+    if AValue then
+      AddAutomaticColumns
+    else if TDbGridColumns(Columns).HasAutomaticColumns then
+      TDbgridColumns(Columns).RemoveAutomaticColumns;
+    UpdateActive;
+  end;
+end;
+
 procedure TCustomDbGrid.UpdateBufferCount;
 var
   BuffCount: Integer;
@@ -728,18 +762,22 @@ begin
   if not UpdatingData and (FEditingColumn>-1) and FDatalink.Editing then begin
     SelField := SelectedField;
     edField := GetFieldFromGridColumn(FEditingColumn);
+    
     if (edField<>nil) and (edField = SelField) then begin
       {$ifdef dbgdbgrid}
       DebugLn('---> UpdateData: Field[', edField.Fieldname, ']=', FTempText,' INIT');
       {$endif}
+      
       StartUpdating;
       edField.AsString := FTempText;
       EndUpdating;
+      
       EditingColumn(FEditingColumn, False);
       {$ifdef dbgdbgrid}
       DebugLn('<--- UpdateData: Chk: Field:=',edField.ASString,' END');
       {$endif}
     end;
+    
   end;
 end;
 
@@ -1112,8 +1150,43 @@ begin
   result := gsUpdatingData in FGridStatus;
 end;
 
+procedure TCustomDbGrid.AddAutomaticColumns;
+var
+  i: Integer;
+  F: TField;
+begin
+  // add as many columns as there are fields in the dataset
+  // do this only at runtime.
+  if (csDesigning in ComponentState) or not FDatalink.Active then
+    exit;
+
+  for i:=0 to FDataLink.DataSet.FieldCount-1 do begin
+  
+    F:= FDataLink.DataSet.Fields[i];
+    
+    if TDbGridColumns(Columns).ColumnFromField(F) <> nil then
+      // this field is already in the collection. This could only happen
+      // if AddAutomaticColumns was called out of LayoutChanged.
+      // to avoid duplicate columns skip this field.
+      continue;
+
+    if (F<>nil) then begin
+      with TColumn(Columns.Add) do begin
+        FIsAutomaticColumn := True;
+        Field := F;
+        Visible := F.Visible;
+      end;
+    end;
+    
+  end;
+  // honor the field.index
+  TDbGridColumns(Columns).ResetColumnsOrder(coFieldIndexOrder);
+end;
+
 procedure TCustomDbGrid.LinkActive(Value: Boolean);
 begin
+  if not Value then
+    TDbGridColumns(Columns).RemoveAutoMaticColumns;
   LayoutChanged;
 end;
 
@@ -1126,7 +1199,9 @@ begin
     if Columns.Count>0 then
       TDbGridColumns(Columns).LinkFields
     else if not FDataLink.Active then
-      FDataLink.BufferCount := 0;
+      FDataLink.BufferCount := 0
+    else
+      AddAutomaticColumns;
     EndLayout;
   end;
 end;
@@ -1158,16 +1233,12 @@ procedure TCustomDbGrid.ColRowMoved(IsColumn: Boolean; FromIndex,
   ToIndex: Integer);
 var
   F,CurField: TField;
-  i,j: Integer;
+  ColIndex: Integer;
 begin
   if IsColumn then begin
     CurField := SelectedField;
-    if Columns.Enabled then begin
-      i := ColumnIndexFromGridColumn( FromIndex );
-      j := ColumnIndexFromGridColumn( ToIndex );
-      if (i>=0)and(j>=0) then
-        Columns[i].Index := J;
-    end
+    if Columns.Enabled then
+      inherited ColRowMoved(IsColumn, FromIndex, ToIndex)
     else if FDatalink.Active and (FDataLink.DataSet<>nil) then begin
       F := GetDsFieldFromGridColumn(FromIndex);
       if F<>nil then begin
@@ -1176,16 +1247,17 @@ begin
         {$ENDIF}
       end;
     end;
-    i := GetGridColumnFromField(CurField);
-    if (i>FixedCols) and (i<>Col) then begin
+    ColIndex := GetGridColumnFromField(CurField);
+    if (ColIndex>FixedCols) and (ColIndex<>Col) then begin
       // todo: buscar alguna otra forma de hacer esto
       FSelectionLock := true;
       try
-        Col := i;
+        Col := ColIndex;
       finally
         FSelectionLock := False;
       end;
     end;
+    
     if Assigned(OnColumnMoved) then
       OnColumnMoved(Self, FromIndex, ToIndex);
   end;
@@ -1321,6 +1393,7 @@ begin
   begin
     {$IfDef dbgGrid}DebugLn('KeyDown.DoMoveBySmall(',IntToStr(Amount),')');{$Endif}
     Include(FGridStatus, gsVisibleMove);
+    FDatalink.CheckFirstRecord;
     FDatalink.MoveBy(Amount);
     Exclude(FGridStatus, gsVisibleMove);
     {$IfDef dbgGrid}DebugLn('KeyDown.doMoveBySmall FIN');{$Endif}
@@ -1715,10 +1788,12 @@ begin
   if FDataLink.Active then begin
     aField := GetFieldFromGridColumn(aCol);
     if (aField<>nil) then begin
+      {$ifdef EnableFieldEditMask}
       // enable following line if TField gets in the future a MaskEdit property
       //Result := aField.EditMask;
       if assigned(OnFieldEditMask) then
         OnFieldEditMask(Self, AField, Result);
+      {$endif}
     end;
   end;
 end;
@@ -2067,7 +2142,7 @@ end;
 procedure TComponentDataLink.DataSetChanged;
 begin
   {$ifdef dbgdbgrid}
-  DebugLn('TComponentDataLink.DataSetChanged');
+  DebugLn('TComponentDataLink.DataSetChanged, FirstRecord=', dbgs(FirstRecord));
   {$Endif}
   // todo: improve this routine, for example: OnDatasetInserted
   if Assigned(OnDataSetChanged) then
@@ -2138,6 +2213,12 @@ begin
   inherited CheckBrowseMode;
 end;
 
+function TComponentDataLink.CheckFirstRecord: boolean;
+begin
+  Result := FOldFirstRecord<>FirstRecord;
+  FOldFirstRecord := FirstRecord;
+end;
+
 procedure TComponentDataLink.EditingChanged;
 begin
   {$ifdef dbgdbgrid}
@@ -2202,10 +2283,92 @@ begin
   result:=nil;
 end;
 
-constructor TDbGridColumns.Create(TheGrid: TCustomDBGrid);
+function TDbGridColumns.HasAutomaticColumns: boolean;
+var
+  i: Integer;
 begin
-  inherited Create( TheGrid, TColumn );
-  //FGrid := TheGrid;
+  Result := False;
+  for i:=0 to Count-1 do
+    if Items[i].IsAutomaticColumn then begin
+      Result := true;
+      break;
+    end;
+end;
+
+function TDbGridColumns.HasDesignColumns: boolean;
+var
+  i: Integer;
+begin
+  Result := False;
+  for i:=0 to Count-1 do
+    if Items[i].IsDesignColumn then begin
+      Result := true;
+      break;
+    end;
+end;
+
+procedure TDbGridColumns.RemoveAutomaticColumns;
+var
+  i: Integer;
+begin
+  for i:=Count-1 downto 0 do
+    if Items[i].IsAutomaticColumn then
+      Delete(i);
+end;
+
+function CompareFieldIndex(P1,P2:Pointer): integer;
+begin
+  if P1=P2 then
+    Result := 0
+  else if (P1=nil) or (TColumn(P1).Field=nil) then
+    Result := 1
+  else if (P2=nil) or (TColumn(P2).Field=nil) then
+    Result := -1
+  else
+    Result := TColumn(P1).Field.Index - TColumn(P2).Field.Index;
+end;
+
+function CompareDesignIndex(P1,P2:Pointer): integer;
+begin
+  result := TColumn(P1).DesignIndex - TColumn(P2).DesignIndex;
+end;
+
+procedure TDbGridColumns.ResetColumnsOrder(ColumnOrder: TColumnOrder);
+var
+  L: TList;
+  i: Integer;
+begin
+
+  L := TList.Create;
+  try
+
+    for i:=0 to Count-1 do
+      L.Add(Items[i]);
+
+    case ColumnOrder of
+      coDesignOrder:
+        begin
+          if not HasDesignColumns then
+            exit;
+          L.Sort(@CompareDesignIndex)
+        end;
+      coFieldIndexOrder:
+        L.Sort(@CompareFieldIndex);
+      else
+        exit;
+    end;
+
+    for i:=0 to L.Count-1 do
+      TColumn(L.Items[i]).Index := i;
+
+  finally
+    L.Free;
+  end;
+end;
+
+constructor TDbGridColumns.Create(AGrid: TCustomDBGrid);
+begin
+  inherited Create( AGrid, TColumn );
 end;
 
 function TDbGridColumns.Add: TColumn;
@@ -2234,6 +2397,11 @@ begin
   if (FFieldName<>'') and (FField<>nil) then
     LinkField;
   result := FField;
+end;
+
+function TColumn.GetIsDesignColumn: boolean;
+begin
+  result := (DesignIndex>=0) and (DesignIndex<10000);
 end;
 
 procedure TColumn.ApplyDisplayFormat;
@@ -2288,22 +2456,22 @@ end;
 
 function TColumn.GetDataSet: TDataSet;
 var
-  TheGrid: TCustomDBGrid;
+  AGrid: TCustomDBGrid;
 begin
-  TheGrid := TCustomDBGrid(Grid);
-  if (TheGrid<>nil) then
-    result := TheGrid.FDataLink.DataSet
+  AGrid := TCustomDBGrid(Grid);
+  if (AGrid<>nil) then
+    result := AGrid.FDataLink.DataSet
   else
     result :=nil;
 end;
 
 function TColumn.InternalDefaultWidth: Integer;
 var
-  TheGrid: TCustomDbGrid;
+  AGrid: TCustomDbGrid;
 begin
-  TheGrid := TCustomDBGrid(Grid);
-  if (theGrid<>nil)and(TheGrid.HandleAllocated)and(FField<>nil) then
-    result := FField.DisplayWidth * CalcCanvasCharWidth(TheGrid.Canvas)
+  AGrid := TCustomDBGrid(Grid);
+  if (AGrid<>nil)and(AGrid.HandleAllocated)and(FField<>nil) then
+    result := FField.DisplayWidth * CalcCanvasCharWidth(AGrid.Canvas)
   else
     result := 64;
 end;
@@ -2313,6 +2481,20 @@ begin
   Result := TColumnTitle.Create(Self);
 end;
 
+constructor TColumn.Create(ACollection: TCollection);
+var
+  AGrid: TCustomGrid;
+begin
+  inherited Create(ACollection);
+  if ACollection is TDbGridColumns then begin
+    AGrid := TDbGridColumns(ACollection).Grid;
+    if (AGrid<>nil) and (csLoading in AGrid.ComponentState) then
+      FDesignIndex := Index
+    else
+      FDesignIndex := 10000;
+  end;
+end;
+
 function TColumn.IsDefault: boolean;
 begin
   result := not FDisplayFormatChanged and (inherited IsDefault());
@@ -2320,11 +2502,11 @@ end;
 
 procedure TColumn.LinkField;
 var
-  TheGrid: TCustomDbGrid;
+  AGrid: TCustomDbGrid;
 begin
-  TheGrid:= TCustomDBGrid(Grid);
-  if (TheGrid<>nil) and TheGrid.FDatalink.Active then begin
-    Field := TheGrid.FDataLink.DataSet.FindField(FFieldName);
+  AGrid:= TCustomDBGrid(Grid);
+  if (AGrid<>nil) and AGrid.FDatalink.Active then begin
+    Field := AGrid.FDataLink.DataSet.FindField(FFieldName);
     ApplyDisplayFormat;
   end else
     Field := nil;
@@ -2343,10 +2525,10 @@ end;
 
 function TColumn.InternalDefaultReadOnly: boolean;
 var
-  TheGrid: TCustomDBGrid;
+  AGrid: TCustomDBGrid;
 begin
-  TheGrid := TCustomDBGrid(Grid);
-  Result := ((TheGrid<>nil)and(TheGrid.ReadOnly)) or ((FField<>nil)and(FField.ReadOnly))
+  AGrid := TCustomDBGrid(Grid);
+  Result := ((AGrid<>nil)and(AGrid.ReadOnly)) or ((FField<>nil)and(FField.ReadOnly))
 end;
 
 function TColumn.GetDefaultVisible: boolean;
@@ -2392,6 +2574,9 @@ end.
 
 {
   $Log$
+  Revision 1.42  2005/06/07 19:29:24  vincents
+  fixes for bugs 922,924 and updating <10 recs. Automatic Columns, picklist implementation    from Jesus
+
   Revision 1.41  2005/05/21 13:24:58  mattias
   TextRect clipping patch  from Jesus
 

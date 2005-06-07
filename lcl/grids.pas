@@ -124,7 +124,7 @@ type
 
   TItemType = (itNormal,itCell,itColumn,itRow,itFixed,itFixedColumn,itFixedRow,itSelected);
   
-  TColumnButtonStyle = (cbsAuto, cbsEllipsis, cbsNone);
+  TColumnButtonStyle = (cbsAuto, cbsEllipsis, cbsNone, cbsPickList);
   TCleanOptions = set of TGridZone;
   
   TTitleStyle = (tsLazarus, tsStandard, tsNative);
@@ -184,8 +184,28 @@ type
   private
     FGrid: TCustomGrid;
   protected
-    Procedure msg_SetGrid(Var Msg: TGridMessage); Message GM_SETGRID;
-    Procedure msg_SetPos(Var Msg: TGridMessage); Message GM_SETPOS;
+    procedure msg_SetGrid(var Msg: TGridMessage); message GM_SETGRID;
+    procedure msg_SetPos(var Msg: TGridMessage); message GM_SETPOS;
+  end;
+
+  { TPickListCellEditor }
+
+  TPickListCellEditor = class(TCustomComboBox)
+  private
+    FGrid: TCustomGrid;
+    FMouseSelecting: boolean;
+  protected
+    procedure WndProc(var TheMessage : TLMessage); override;
+    procedure KeyDown(var Key : Word; Shift : TShiftState); override;
+    procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
+    procedure Change; override;
+    procedure DropDown; override;
+    procedure CloseUp; override;
+    procedure msg_GetValue(var Msg: TGridMessage); message GM_GETVALUE;
+    procedure msg_SetGrid(var Msg: TGridMessage); message GM_SETGRID;
+    procedure msg_SetValue(var Msg: TGridMessage); message GM_SETVALUE;
+  public
+    property BorderStyle;
   end;
 
 
@@ -419,13 +439,13 @@ type
     procedure TitleFontChanged;
     procedure FontChanged;
     procedure RemoveColumn(Index: Integer);
-    procedure MoveColumn(FromIndex,ToIndex: Integer);
+    procedure MoveColumn(FromIndex,ToIndex: Integer); virtual;
     procedure ExchangeColumn(Index,WithIndex: Integer);
     procedure InsertColumn(Index: Integer);
   public
-    constructor Create(TheGrid: TCustomGrid);
-    constructor Create(TheGrid: TCustomGrid; aItemClass: TCollectionItemClass);
-    function  Add: TGridColumn;
+    constructor Create(AGrid: TCustomGrid);
+    constructor Create(AGrid: TCustomGrid; aItemClass: TCollectionItemClass);
+    function Add: TGridColumn;
     function RealIndex(Index: Integer): Integer;
     function IndexOf(Column: TGridColumn): Integer;
     function IsDefault: boolean;
@@ -468,7 +488,6 @@ type
     FAutoFillColumns: boolean;
     FDefaultDrawing: Boolean;
     FEditor: TWinControl;
-    FEditorBorderStyle: TBorderStyle;
     FEditorHidingCount: Integer;
     FEditorMode: Boolean;
     FEditorShowing: Boolean;
@@ -515,13 +534,12 @@ type
     FColumns: TGridColumns;
     FButtonEditor: TButtonCellEditor;
     FStringEditor: TStringCellEditor;
+    FPickListEditor: TPickListCellEditor;
     FExtendedColSizing: boolean;
     FExtendedRowSizing: boolean;
     FUpdatingAutoFillCols: boolean;
-    {.$ifdef UseXOR}
     FPrevLine: boolean;
     FPrevValue: Integer;
-    {.$endif}
     procedure AdjustCount(IsColumn:Boolean; OldValue, NewValue:Integer);
     procedure CacheVisibleGrid;
     procedure CheckFixedCount(aCol,aRow,aFCol,aFRow: Integer);
@@ -555,6 +573,7 @@ type
     function  GetColCount: Integer;
     function  GetColWidths(Acol: Integer): Integer;
     function  GetColumns: TGridColumns;
+    function  GetEditorBorderStyle: TBorderStyle;
     function  GetRowCount: Integer;
     function  GetRowHeights(Arow: Integer): Integer;
     function  GetSelection: TGridRect;
@@ -567,7 +586,7 @@ type
     procedure InternalSetColWidths(aCol,aValue: Integer);
     procedure InternalSetFixedCols(const AValue: Integer);
     procedure InternalUpdateColumnWidths;
-    function IsColumnsStored: boolean;
+    function  IsColumnsStored: boolean;
     procedure MyTextRect(R: TRect; Offx,Offy:Integer; S:string; Clipping: boolean);
     procedure OnTitleFontChanged(Sender: TObject);
     procedure ReadColumns(Reader: TReader);
@@ -759,7 +778,7 @@ type
     property DefaultTextStyle: TTextStyle read FDefaultTextStyle write FDefaultTextStyle;
     property DragDx: Integer read FDragDx write FDragDx;
     property Editor: TWinControl read FEditor write SetEditor;
-    property EditorBorderStyle: TBorderStyle read FEditorBorderStyle write SetEditorBorderStyle;
+    property EditorBorderStyle: TBorderStyle read GetEditorBorderStyle write SetEditorBorderStyle;
     property EditorMode: Boolean read FEditorMode write EditorSetMode;
     property EditorKey: boolean read FEditorKey write FEditorKey;
     property EditorOptions: Integer read FEditorOptions write SetEditorOptions;
@@ -1604,8 +1623,12 @@ begin
   FEditor:=AValue;
   if FEditor<>nil then begin
 
-    if FEditor.Parent=nil then FEditor.Visible:=False;
-    if FEditor.Parent<>Self then FEditor.Parent:=Self;
+    if FEditor.Parent=nil then
+      FEditor.Visible:=False;
+      
+    if FEditor.Parent<>Self then
+      FEditor.Parent:=Self;
+      
     FEditor.TabStop:=False;
 
     Msg.MsgID:=GM_SETGRID;
@@ -2314,6 +2337,9 @@ begin
 end;
 procedure TCustomGrid.ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer);
 begin
+  if IsColumn and Columns.Enabled then
+    Columns.MoveColumn(ColumnIndexFromGridColumn(FromIndex),
+      ColumnIndexFromGridColumn(ToIndex));
 end;
 procedure TCustomGrid.ColRowExchanged(isColumn: Boolean; index, WithIndex: Integer);
 begin
@@ -2541,20 +2567,53 @@ begin
 end;
 *)
 procedure TCustomGrid.DrawColRowMoving;
+{$ifdef AlternativeMoveIndicator}
+var
+  x, y, dx, dy: Integer;
+  R: TRect;
+{$endif}
 begin
   if (FGridState=gsColMoving)and(fMoveLast.x>=0) then begin
+    {$ifdef AlternativeMoveIndicator}
+    dx := 4;
+    dy := 4;
+    Canvas.pen.Width := 1;
+    Canvas.Pen.Color := clHighlight;
+    Canvas.Brush.Color := clHighlight;
+    R := CellRect(FMoveLast.X, 0);
+    X := R.Left;
+    Y := R.Bottom - dy;
+    Canvas.Polygon([Point(x-dx,y),point(x+dx,y),point(x,y+dy), point(x-dx,y)]);
+    Y := R.Top + dy;
+    Canvas.Polygon([Point(x-dx,y),point(x+dx,y),point(x,y-dy), point(x-dx,y)]);
+    {$else}
     Canvas.Pen.Width:=3;
     Canvas.Pen.Color:=clRed;
     Canvas.MoveTo(fMoveLast.y, 0);
     Canvas.Lineto(fMovelast.y, FGCache.MaxClientXY.Y);
     Canvas.Pen.Width:=1;
+    {$endif}
   end else
   if (FGridState=gsRowMoving)and(FMoveLast.y>=0) then begin
+    {$ifdef AlternativeMoveIndicator}
+    dx := 4;
+    dy := 4;
+    Canvas.pen.Width := 1;
+    Canvas.Pen.Color := clHighlight;
+    Canvas.Brush.Color := clHighlight;
+    R := CellRect(0, FMoveLast.Y);
+    X := R.Right - dx;
+    Y := R.Top;
+    Canvas.Polygon([Point(x,y+dy),point(x,y-dy),point(x+dx,y), point(x,y+dy)]);
+    X := R.Left + dx;
+    Canvas.Polygon([Point(x,y+dy),point(x,y-dy),point(x-dx,y), point(x,y+dy)]);
+    {$else}
     Canvas.Pen.Width:=3;
     Canvas.Pen.Color:=clRed;
     Canvas.MoveTo(0, FMoveLast.X);
     Canvas.LineTo(FGCache.MaxClientXY.X, FMoveLast.X);
     Canvas.Pen.Width:=1;
+    {$endif}
   end;
 end;
 
@@ -3241,6 +3300,15 @@ begin
     doTopleftChange(False)
 end;
 
+function TCustomGrid.GetEditorBorderStyle: TBorderStyle;
+begin
+  result := bsSingle;
+  if FEditor = FstringEditor then
+    Result := FStringEditor.BorderStyle
+  else if FEditor = FPickListEditor then
+    Result := FStringEditor.BorderStyle;
+end;
+
 function TCustomGrid.GetColumns: TGridColumns;
 begin
   result := FColumns;
@@ -3298,9 +3366,23 @@ end;
 
 procedure TCustomGrid.SetEditorBorderStyle(const AValue: TBorderStyle);
 begin
+  // supposedly instances cannot access protected properties
+  // of parent classes, so why the next works?
+  {
+  if FEditor.BorderStyle <> AValue then begin
+    FEditor.BorderStyle := AValue;
+    if EditorMode then
+      EditorPos;
+  end;
+  }
   if FStringEditor.BorderStyle<>AValue then begin
     FStringEditor.BorderStyle := AValue;
-    if (Editor=FStringEditor) and EditorMode then
+    if (FEditor = FStringEditor) and EditorMode then
+      EditorPos;
+  end;
+  if FPicklistEditor.BorderStyle<>AValue then begin
+    FPicklistEditor.BorderStyle := AValue;
+    if (FEditor = FPicklistEditor) and EditorMode then
       EditorPos;
   end;
 end;
@@ -3548,7 +3630,11 @@ begin
       if P.x<=FSplitter.X then fMoveLast.Y:=R.left
       else                     FMoveLast.Y:=R.Right;
       fMoveLast.X:=P.X;
+      {$ifdef AlternativeMoveIndicator}
+      InvalidateRow(0);
+      {$else}
       Invalidate;
+      {$endif}
   end;
 end;
 
@@ -3725,7 +3811,8 @@ procedure TCustomGrid.DoOPExchangeColRow(IsColumn: Boolean; index, WithIndex: In
   );
 begin
   if IsColumn and Columns.Enabled then begin
-    Columns.ExchangeColumn(Index,WithIndex);
+    Columns.ExchangeColumn( ColumnIndexFromGridColumn(Index),
+      ColumnIndexFromGridColumn(WithIndex));
     ColRowExchanged(IsColumn, index, WithIndex);
     exit;
   end;
@@ -3742,7 +3829,7 @@ begin
     if Index>ColCount-1 then
       Index := ColCount-1;
     if columns.Enabled then begin
-      Columns.InsertColumn(index);
+      Columns.InsertColumn(ColumnIndexFromGridColumn(index));
       ColRowInserted(true, index);
       exit;
     end else begin
@@ -3758,34 +3845,16 @@ begin
 end;
 
 procedure TCustomGrid.doOPMoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
-
-  procedure doMoveColumn;
-  begin
-    CheckIndex(IsColumn, FromIndex);
-    CheckIndex(IsColumn, ToIndex);
-    if Columns.Enabled then begin
-      Columns.MoveColumn(FromIndex,ToIndex);
-      ColRowMoved(True, FromIndex, ToIndex);
-      exit;
-    end else begin
-      FCols.Move(FromIndex, ToIndex);
-      ColRowMoved(True, FromIndex, ToIndex);
-      VisualChange;
-    end;
-  end;
-  procedure doMoveRow;
-  begin
-    CheckIndex(IsColumn, FromIndex);
-    CheckIndex(IsColumn, ToIndex);
+begin
+  CheckIndex(IsColumn, FromIndex);
+  CheckIndex(IsColumn, ToIndex);
+  if IsColumn and Columns.Enabled then
+    ColRowMoved(True, FromIndex, ToIndex)
+  else begin
     FRows.Move(FromIndex, ToIndex);
-    ColRowMoved(false, FromIndex, ToIndex);
+    ColRowMoved(IsColumn, FromIndex, ToIndex);
     VisualChange;
   end;
-begin
-  if IsColumn then
-    doMoveColumn
-  else
-    doMoveRow;
 end;
 
 procedure TCustomGrid.DoOPDeleteColRow(IsColumn: Boolean; index: Integer);
@@ -3795,7 +3864,7 @@ procedure TCustomGrid.DoOPDeleteColRow(IsColumn: Boolean; index: Integer);
     CheckFixedCount(ColCount-1, RowCount, FFixedCols, FFixedRows);
     CheckCount(ColCount-1, RowCount);
     if Columns.Enabled then begin
-      Columns.RemoveColumn(Index);
+      Columns.RemoveColumn(ColumnIndexFromGridColumn(Index));
       ColRowDeleted(True, Index);
     end else begin
       if Index<FixedCols then begin
@@ -3832,8 +3901,12 @@ end;
 function TCustomGrid.EditorByStyle(Style: TColumnButtonStyle): TWinControl;
 begin
   case Style of
-    cbsNone: Result := nil;
-    cbsEllipsis: Result := FButtonEditor;
+    cbsNone:
+      Result := nil;
+    cbsEllipsis:
+      Result := FButtonEditor;
+    cbsPicklist:
+      Result := FPicklistEditor;
     cbsAuto:
       begin
         Result := FStringEditor;
@@ -3986,10 +4059,17 @@ begin
       begin
         //DebugLn('Move Col From ',Fsplitter.x,' to ', FMoveLast.x);
         if FMoveLast.X>=0 then begin
+          if FMoveLast.X=FSplitter.X then
+            {$ifdef AlternativeMoveIndicator}
+            InvalidateRow(0);
+            {$else}
+            Invalidate;
+            {$endif}
           DoOPMoveColRow(True, Fsplitter.X, FMoveLast.X);
           Cursor:=crDefault;
         end else
-          if Cur.X=FSplitter.X then HeaderClick(True, FSplitter.X);
+          if Cur.X=FSplitter.X then
+            HeaderClick(True, FSplitter.X);
       end;
     gsRowMoving:
       begin
@@ -4159,6 +4239,7 @@ procedure TCustomGrid.DoEditorShow;
 begin
   {$ifdef dbgGrid}DebugLn('grid.DoEditorShow INIT');{$endif}
   ScrollToCell(FCol,FRow);
+  Editor.parent := nil;
   EditorSetValue;
   Editor.Parent:=Self;
   Editor.Visible:=True;
@@ -4795,14 +4876,14 @@ begin
   if (goEditing in Options) and
      not FEditorShowing and (Editor<>nil) and not Editor.Visible then
   begin
-    {$IfDef dbgGrid} DebugLn('EditorShow [',Editor.ClassName,']INIT FCol=',IntToStr(FCol),' FRow=',IntToStr(FRow));{$Endif}
+    {$ifdef dbgGrid} DebugLn('EditorShow [',Editor.ClassName,']INIT FCol=',IntToStr(FCol),' FRow=',IntToStr(FRow));{$endif}
     FEditorMode:=True;
     FEditorShowing:=True;
     doEditorShow;
     FEditorShowing:=False;
     if SelAll then
       EditorSelectAll;
-    {$IfDef dbgGrid} DebugLn('EditorShow FIN');{$Endif}
+    {$ifdef dbgGrid} DebugLn('EditorShow FIN');{$endif}
   end;
 end;
 
@@ -4815,17 +4896,13 @@ procedure TCustomGrid.EditorPos;
 var
   msg: TGridMessage;
 begin
+  {$ifdef dbgGrid} DebugLn('Grid.EditorPos INIT');{$endif}
   if FEditor<>nil then begin
     Msg.CellRect:=CellRect(FCol,FRow);
     if FEditorOptions and EO_AUTOSIZE = EO_AUTOSIZE then begin
-      if (FEditor=FStringEditor) and
-        (FStringEditor.BorderStyle=bsNone) then
+      if EditorBorderStyle = bsNone then
           InflateRect(Msg.CellRect, -1, -1);
-      with Msg.CellRect do begin
-        Right:=Right-Left;
-        Bottom:=Bottom-Top;
-        FEditor.SetBounds(Left, Top, Right, Bottom);
-      end;
+      FEditor.BoundsRect := Msg.CellRect;
     end else begin
       Msg.MsgID:=GM_SETPOS;
       Msg.Grid:=Self;
@@ -4834,6 +4911,7 @@ begin
       FEditor.Dispatch(Msg);
     end;
   end;
+  {$ifdef dbgGrid} DebugLn('Grid.EditorPos FIN');{$endif}
 end;
 
 procedure TCustomGrid.EditorSelectAll;
@@ -4971,12 +5049,22 @@ begin
 end;
 
 procedure TCustomGrid.EditorKeyPress(Sender: TObject; var Key: Char);
+{$ifdef dbgGrid}
+function PrintKey:String;
 begin
+  Result := Dbgs(ord(key))+' $' + IntToHex(ord(key),2);
+  if Key>#31 then
+    Result := Key + ' ' + Result
+end;
+{$endif}
+begin
+  {$ifdef dbgGrid}DebugLn('Grid.EditorKeyPress: INIT Key=',PrintKey);{$Endif}
   FEditorKey := True;
   KeyPress(Key); // grid must get all keypresses, even if they are from the editor
+  {$ifdef dbgGrid}DebugLn('Grid.EditorKeyPress: inter Key=',PrintKey);{$Endif}
   case Key of
     ^C,^V,^X:;
-    ^M: Key:=#0; // key is already handled in KeyDown
+    ^M, #27: Key:=#0; // key is already handled in KeyDown
     #8:
       if EditorIsReadOnly then
         Key := #0;
@@ -4984,6 +5072,7 @@ begin
       EditorCanProcessKey(Key)
   end;
   FEditorKey := False;
+  {$ifdef dbgGrid}DebugLn('Grid.EditorKeyPress: FIN Key=',PrintKey);{$Endif}
 end;
 
 procedure TCustomGrid.EditorKeyUp(Sender: TObject; var key: Word;
@@ -5000,7 +5089,7 @@ var
 begin
   aEditor := GetDefaultEditor(Col);
   if (goEditing in Options) and Assigned(OnSelectEditor) then
-    OnSelectEditor(Self, fCol,FRow, aEditor);
+    OnSelectEditor(Self, fCol, FRow, aEditor);
   if aEditor<>Editor then
     Editor:=aEditor;
 end;
@@ -5019,14 +5108,23 @@ begin
   SelectEditor;
   if FEditor<>nil then begin
     //DebugLn('Posting editor LM_CHAR, ch=',ch, ' ', InttoStr(Ord(ch)));
-    if EditorCanProcessKey(ch) then begin
+    if EditorCanProcessKey(ch) and not EditorIsReadOnly then begin
       EditorShow(true);
       {$ifdef WIN32}
-      PostMessage(FEditor.Handle, LM_CHAR, Word(Ch), 0);
+      // lcl win32 interface does a big mess with the message
+      // as we only need the message to be handled by destination
+      // then we send it directly to it bypassing the queue.
+      //PostMessage(FEditor.Handle, LM_CHAR, Word(Ch), 0);
+      SendMessage(FEditor.Handle, LM_CHAR, Word(Ch), 0);
       {$else}
       ///
       // Note. this is a workaround because the call above doesn't work
       ///
+      {$ifdef EnableFieldEditMask}
+      if (FEditor=FStringEditor) and (FStringEditor.IsMasked) then
+        SendMessage(FEditor.Handle, CN_CHAR, Word(Ch), 0)
+      else begin
+      {$Endif}
       Msg.MsgID:=GM_SETVALUE;
       Msg.Grid:=Self;
       Msg.Col:=FCol;
@@ -5034,7 +5132,10 @@ begin
       if Ch=^H then Msg.Value:=''
       else          Msg.Value:=ch;
       FEditor.Dispatch(Msg);
+      {$ifdef EnableFieldEditMask}
+      end;
       {$endif}
+      {$endif WIN32}
     end;
   end;
 end;
@@ -5176,13 +5277,24 @@ begin
   result := nil;
   if (goEditing in Options) then begin
     C := ColumnFromGridColumn(Column);
-    if C<>nil then bs := C.ButtonStyle
-    else           bs := cbsAuto;
+    if C<>nil then begin
+      bs := C.ButtonStyle;
+      if (bs=cbsAuto) and (C.PickList<>nil) and (C.PickList.Count>0) then
+        bs := cbsPicklist
+    end else
+      bs := cbsAuto;
+
     result := EditorByStyle( Bs );
-    {
-    if (result is TPickListCellEditor)and(C<>nil)and(C.PickList<>nil) then
-      TPickListCellEditor(Result).Items.Assign(C.PickList);
-    }
+    
+    // by default do the editor setup here
+    // if user wants to change our setup, this can
+    // be done in OnSelectEditor
+    if (bs=cbsPickList) and (C<>nil) and (C.PickList<>nil) and
+        (result = FPicklistEditor) then begin
+      FPickListEditor.Items.Assign(C.PickList);
+      FPickListEditor.DropDownCount := C.DropDownRows;
+    end
+
   end;
 end;
 
@@ -5478,12 +5590,18 @@ begin
   FStringEditor.Text:='';
   FStringEditor.Visible:=False;
   FStringEditor.Align:=alNone;
+  
+  FPicklistEditor := TPickListCellEditor.Create(nil);
+  FPickListEditor.Name := 'PickListEditor';
+  FPickListEditor.Visible := False;
+  
   FFastEditing := True;
 end;
 
 destructor TCustomGrid.Destroy;
 begin
   {$Ifdef dbg}DebugLn('TCustomGrid.Destroy');{$Endif}
+  FreeThenNil(FPickListEditor);
   FreeThenNil(FStringEditor);
   FreeThenNil(FButtonEditor);
   FreeThenNil(FColumns);
@@ -5991,8 +6109,11 @@ end;
 
 procedure TCustomDrawGrid.ColRowMoved(IsColumn: Boolean; FromIndex, ToIndex: Integer);
 begin
-  if not IsColumn or not Columns.Enabled then
+  if IsColumn and Columns.Enabled then
+    inherited ColRowMoved(IsColumn, FromIndex, ToIndex)
+  else
     FGrid.MoveColRow(IsColumn, FromIndex, ToIndex);
+    
   if Assigned(OnColRowMoved) then
     OnColRowMoved(Self, IsColumn, FromIndex, toIndex);
 end;
@@ -6663,12 +6784,12 @@ end;
 
 procedure TGridColumnTitle.FillTitleDefaultFont;
 var
-  TheGrid: TCustomGrid;
+  AGrid: TCustomGrid;
 begin
-  TheGrid :=  FColumn.Grid;
-  if TheGrid<>nil then
-    FFont.Assign( TheGrid.TitleFont )
-    //FFont.Assign( TheGrid.Font )
+  AGrid :=  FColumn.Grid;
+  if AGrid<>nil then
+    FFont.Assign( AGrid.TitleFont )
+    //FFont.Assign( AGrid.Font )
   else
     FFont.Assign( FColumn.Font );
 end;
@@ -6866,7 +6987,7 @@ end;
 
 function TGridColumn.GetSizePriority: Integer;
 begin
-  if FMaxSize=nil then
+  if FSizePriority=nil then
     result := GetDefaultSizePriority
   else
     result := FSizePriority^;
@@ -7171,11 +7292,11 @@ end;
 
 procedure TGridColumn.FillDefaultFont;
 var
-  TheGrid: TCustomGrid;
+  AGrid: TCustomGrid;
 begin
-  TheGrid := Grid;
-  if (theGrid<>nil) then begin
-    FFont.Assign(TheGrid.Font);
+  AGrid := Grid;
+  if (AGrid<>nil) then begin
+    FFont.Assign(AGrid.Font);
   end;
 end;
 
@@ -7286,17 +7407,17 @@ begin
   EndUpdate;
 end;
 
-constructor TGridColumns.Create(TheGrid: TCustomGrid);
+constructor TGridColumns.Create(AGrid: TCustomGrid);
 begin
   inherited Create( TGridColumn );
-  FGrid := Thegrid;
+  FGrid := AGrid;
 end;
 
-constructor TGridColumns.Create(TheGrid: TCustomGrid;
+constructor TGridColumns.Create(AGrid: TCustomGrid;
   aItemClass: TCollectionItemClass);
 begin
   inherited Create( aItemClass );
-  FGrid := TheGrid;
+  FGrid := AGrid;
 end;
 
 function TGridColumns.Add: TGridColumn;
@@ -7361,6 +7482,171 @@ begin
     if Right-Left>25 then Left:=Right-25;
     SetBounds(Left, Top, Right-Left, Bottom-Top);
   End;
+end;
+
+{ TPickListCellEditor }
+procedure TPickListCellEditor.WndProc(var TheMessage: TLMessage);
+begin
+	{$IfDef GridTraceMsg}
+	TransMsg('PicklistEditor: ', TheMessage);
+	{$Endif}
+  if TheMessage.msg=LM_KILLFOCUS then begin
+    if TheMessage.WParamLo = Handle then begin
+      // what a weird thing, we are losing the focus
+      // and giving it to ourselves
+      TheMessage.Result := 0; // doesn't allow such thing
+      exit;
+    end;
+  end;
+  inherited WndProc(TheMessage);
+end;
+
+procedure TPickListCellEditor.KeyDown(var Key: Word; Shift: TShiftState);
+  function AllSelected: boolean;
+  begin
+    result := (SelLength>0) and (SelLength=Length(Text));
+  end;
+  function AtStart: Boolean;
+  begin
+    Result:= (SelStart=0);
+  end;
+  function AtEnd: Boolean;
+  begin
+    result := ((SelStart+1)>Length(Text)) or AllSelected;
+  end;
+  procedure doEditorKeyDown;
+  begin
+    if FGrid<>nil then
+      FGrid.EditorkeyDown(Self, key, shift);
+  end;
+  procedure doGridKeyDown;
+  begin
+    if FGrid<>nil then
+      FGrid.KeyDown(Key, shift);
+  end;
+  function GetFastEntry: boolean;
+  begin
+    if FGrid<>nil then
+      Result := FGrid.FastEditing
+    else
+      Result := False;
+  end;
+  procedure CheckEditingKey;
+  begin
+    // if editor is not readonly, start editing
+    // else not interested
+    if (FGrid=nil) or FGrid.EditorIsReadOnly then
+      Key := 0;
+  end;
+var
+  IntSel: boolean;
+begin
+  {$IfDef dbgGrid}
+  DebugLn('TPickListCellEditor.KeyDown INI: Key=',Dbgs(Key));
+  {$Endif}
+  inherited KeyDown(Key,Shift);
+  case Key of
+  
+    VK_F2:
+      if AllSelected then begin
+        SelLength := 0;
+        SelStart := Length(Text);
+      end;
+      
+    VK_RETURN:
+      if DroppedDown then begin
+        CheckEditingKey;
+        DroppedDown := False;
+        if Key<>0 then begin
+          doEditorKeyDown;
+          Key:=0;
+        end;
+      end else
+        doEditorKeyDown;
+        
+    VK_DELETE:
+      CheckEditingKey;
+      
+    VK_UP, VK_DOWN:
+      if not DroppedDown then
+        doGridKeyDown;
+        
+    VK_LEFT, VK_RIGHT:
+      if GetFastEntry then begin
+        IntSel:=
+          ((Key=VK_LEFT) and not AtStart) or
+          ((Key=VK_RIGHT) and not AtEnd);
+        if not IntSel then begin
+            doGridKeyDown;
+      end;
+    end;
+    
+    VK_END, VK_HOME:
+      ;
+    else
+      doEditorKeyDown;
+  end;
+  {$IfDef dbgGrid}
+  DebugLn('TPickListCellEditor.KeyDown FIN: Key=',Dbgs(Key));
+  {$Endif}
+end;
+
+procedure TPickListCellEditor.MouseDown(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  inherited MouseDown(Button, Shift, X, Y);
+  FMouseSelecting:=True;
+end;
+
+procedure TPickListCellEditor.Change;
+begin
+  inherited Changed;
+  if FGrid<>nil then begin
+    {$ifdef dbgGrid}
+    DebugLn('TPickListCellEditor.Change: Text=', Text);
+    {$endif}
+    if FMouseSelecting then begin
+      // usually editor.change doesn't mean the editor is really
+      // modified (for example when selecting using the keyboard
+      // but when selecting with the mouse, editor.change is the
+      // only way I found to detect that the user actually changed
+      // something
+      FMouseSelecting := False;
+      if FGrid.EditorIsReadOnly then
+        exit
+    end;
+    FGrid.SetEditText(FGrid.Col, FGrid.Row, Text);
+  end;
+end;
+
+procedure TPickListCellEditor.DropDown;
+begin
+  inherited DropDown;
+  //DebugLn('*********** DROPDOWN ********** ');
+end;
+
+procedure TPickListCellEditor.CloseUp;
+begin
+  inherited CloseUp;
+  //DebugLn('*********** CLOSEUP ********** ');
+end;
+
+procedure TPickListCellEditor.msg_GetValue(var Msg: TGridMessage);
+begin
+  Msg.Value:=Text;
+end;
+
+procedure TPickListCellEditor.msg_SetGrid(var Msg: TGridMessage);
+begin
+  FGrid:=Msg.Grid;
+  Msg.Options:=EO_AUTOSIZE or EO_HOOKEXIT or EO_SELECTALL or EO_HOOKKEYPRESS
+    or EO_HOOKKEYUP;
+end;
+
+procedure TPickListCellEditor.msg_SetValue(var Msg: TGridMessage);
+begin
+  Text:=Msg.Value;
+  SelStart := Length(Text);
 end;
 
 end.
