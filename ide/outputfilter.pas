@@ -52,19 +52,62 @@ type
   { TOutputLine }
 
   TOutputLine = class(TStringList)
-  private
-    FDirectory: string;
-    procedure SetDirectory(const AValue: string);
-  public
-    property Directory: string read FDirectory write SetDirectory;
   end;
   
-  { TOutputLines }
-  
+  { TOutputLines
+    A TStringList automatically freeing its Objects.
+    TOutputFilter puts all lines into in instance of TOutputLines and parses
+    each line. If it sees FPC output it adds a TStringList as Object to the line
+    and set various Name=Value pairs.
+
+      Name    | Value
+      --------|-----------------------------------------------------------------
+      Stage    Indicates what part of the build process the message
+               belongs to. Common values are 'FPC', 'Linker' or 'make'
+      Type     For FPC: 'Hint', 'Note', 'Warning', 'Error', 'Fatal', 'Panic',
+               'Compiling', 'Assembling'
+               For make:
+               For Linker:
+      Line     An integer for the linenumber as given by FPC in brackets.
+      Column   An integer for the column as given by FPC in brackets.
+      Message  The message text without other parsed items.
+
+
+    Example:
+      Message written by FPC:
+        unit1.pas(21,3) Warning: unit buttons not used
+
+      Results in
+        Stage=FPC
+        Type=Warning
+        Line=21
+        Column=3
+        Message=unit buttons not used
+  }
   TOutputLines = class(TStringList)
   public
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
+  end;
+  
+  { TFilteredOutputLines
+    A TStringList maintaining an original index for each string.
+    TOutputFilter creates an instance of this class as a result of filtering
+    output.
+  }
+  TFilteredOutputLines = class(TStringList)
+  private
+    FOriginalIndices: PInteger;
+    function GetOriginalIndices(Index: integer): integer;
+    procedure SetOriginalIndices(Index: integer; const AValue: integer);
+  protected
+    procedure SetCapacity(NewCapacity: Integer); override;
+    procedure InsertItem(Index: Integer; const S: string); override;
+    procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
+  public
+    procedure Delete(Index: Integer); override;
+    procedure Exchange(Index1, Index2: Integer); override;
+    property OriginalIndices[Index: integer]: integer read GetOriginalIndices write SetOriginalIndices;
   end;
 
   { TOutputFilter }
@@ -74,7 +117,7 @@ type
     FCompilerOptions: TBaseCompilerOptions;
     FBufferingOutputLock: integer;
     fCurrentDirectory: string;
-    fFilteredOutput: TStringList;
+    fFilteredOutput: TFilteredOutputLines;
     fOnReadLine: TOnOutputString;
     fOutput: TOutputLines;
     fLastErrorType: TErrorType;
@@ -92,6 +135,7 @@ type
     procedure DoAddFilteredLine(const s: string);
     procedure DoAddLastLinkerMessages(SkipLastLine: boolean);
     procedure DoAddLastAssemblerMessages;
+    function GetCurrentMessageParts: TOutputLine;
     function SearchIncludeFile(const ShortIncFilename: string): string;
     procedure SetStopExecute(const AValue: boolean);
     procedure InternalSetCurrentDirectory(const Dir: string);
@@ -115,7 +159,7 @@ type
     procedure EndBufferingOutput;
   public
     property CurrentDirectory: string read fCurrentDirectory;
-    property FilteredLines: TStringList read fFilteredOutput;
+    property FilteredLines: TFilteredOutputLines read fFilteredOutput;
     property StopExecute: boolean read FStopExecute write SetStopExecute;
     property Lines: TOutputLines read fOutput;
     property LastErrorType: TErrorType read fLastErrorType;
@@ -128,6 +172,7 @@ type
     property Options: TOuputFilterOptions read fOptions write fOptions;
     property CompilerOptions: TBaseCompilerOptions read FCompilerOptions
                                                write FCompilerOptions;
+    property CurrentMessageParts: TOutputLine read GetCurrentMessageParts;
   end;
   
   EOutputFilterError = class(Exception)
@@ -157,7 +202,7 @@ end;
 constructor TOutputFilter.Create;
 begin
   inherited Create;
-  fFilteredOutput:=TStringList.Create;
+  fFilteredOutput:=TFilteredOutputLines.Create;
   fOutput:=TOutputLines.Create;
   Clear;
 end;
@@ -283,6 +328,11 @@ var i, j, FilenameEndPos: integer;
   CurCompHistLen: Integer;
   MainSrcFilename: String;
   NewFilename: String;
+  LineNumberStartPos: LongInt;
+  ColumnNumberStartPos: LongInt;
+  ColumnNumberEndPos: LongInt;
+  MessageStartPos: Integer;
+  LineNumberEndPos: LongInt;
   
   function CheckForCompilingState: boolean;
   var
@@ -293,7 +343,6 @@ var i, j, FilenameEndPos: integer;
       // for example 'Compiling ./subdir/unit1.pas'
       fLastMessageType:=omtFPC;
       fLastErrorType:=etNone;
-      Result:=true;
       // add path to history
       if fCompilingHistory=nil then fCompilingHistory:=TStringList.Create;
       i:=length('Compiling ');
@@ -301,6 +350,10 @@ var i, j, FilenameEndPos: integer;
         inc(i,2);
       AFilename:=TrimFilename(copy(s,i+1,length(s)-i));
       fCompilingHistory.Add(AFilename);
+      CurrentMessageParts.Values['Stage']:='FPC';
+      CurrentMessageParts.Values['Type']:='Compiling';
+      CurrentMessageParts.Values['Filename']:=AFilename;
+      Result:=true;
     end;
   end;
   
@@ -311,6 +364,8 @@ var i, j, FilenameEndPos: integer;
     then begin
       fLastMessageType:=omtFPC;
       fLastErrorType:=etNone;
+      CurrentMessageParts.Values['Stage']:='FPC';
+      CurrentMessageParts.Values['Type']:='Assembling';
       Result:=true;
     end;
   end;
@@ -340,6 +395,12 @@ var i, j, FilenameEndPos: integer;
         fLastMessageType:=omtLinker;
         fLastErrorType:=etFatal;
       end;
+      if fLastMessageType=omtLinker then
+        CurrentMessageParts.Values['Stage']:='Linker'
+      else
+        CurrentMessageParts.Values['Stage']:='FPC';
+      CurrentMessageParts.Values['Type']:=ErrorTypeNames[fLastErrorType];
+
       NewLine:=s;
       if fLastErrorType in [etPanic,etFatal] then begin
         // fatal and panic errors are not very informative
@@ -355,8 +416,10 @@ var i, j, FilenameEndPos: integer;
             if FileExists(FullFilename) then
               LastFile:=FullFilename;
           end;
-          if FileExists(FullFilename) then
+          if FileExists(FullFilename) then begin
+            CurrentMessageParts.Values['Filename']:=FullFilename;
             NewLine:=LastFile+'(1,1) '+NewLine;
+          end;
         end;
       end;
       DoAddFilteredLine(NewLine);
@@ -372,6 +435,9 @@ var i, j, FilenameEndPos: integer;
     Result:=false;
     if ('Note: '=copy(s,1,length('Note: '))) then begin
       DoAddFilteredLine(s);
+      fLastErrorType:=etNote;
+      CurrentMessageParts.Values['Stage']:='FPC';
+      CurrentMessageParts.Values['Type']:=ErrorTypeNames[fLastErrorType];
       Result:=true;
       exit;
     end;
@@ -413,7 +479,7 @@ var i, j, FilenameEndPos: integer;
     if not CheckForNumber(s,p) then exit;
     if not CheckForChar(s,p,' ') then exit;
     Result:=true;
-    // I don't think it should be kept: DoAddFilteredLine(s);
+    // I don't think it should be shown in filtered lines: DoAddFilteredLine(s);
   end;
   
   function CheckForLinesCompiled: boolean;
@@ -462,11 +528,18 @@ begin
   FilenameEndPos:=i-1;
   inc(i);
   // search for number
+  LineNumberStartPos:=i;
   if not CheckForNumber(s,i) then exit;
+  LineNumberEndPos:=i;
   if (i<length(s)) and (s[i]=',') and (s[i+1] in ['0'..'9']) then begin
     // skip second number
     inc(i);
+    ColumnNumberStartPos:=i;
     while (i<=length(s)) and (s[i] in ['0'..'9']) do inc(i);
+    ColumnNumberEndPos:=i;
+  end else begin
+    ColumnNumberStartPos:=i;
+    ColumnNumberEndPos:=i;
   end;
   // search for ') <ErrorType>: '
   if not CheckForChar(s,i,')') then exit;
@@ -475,6 +548,7 @@ begin
   j:=i+1;
   while (j<=length(s)) and (s[j] in ['a'..'z']) do inc(j);
   if (j+1>length(s)) or (s[j]<>':') or (s[j+1]<>' ') then exit;
+  MessageStartPos:=j+2;
   MsgTypeName:=copy(s,i,j-i);
   for MsgType:=Succ(etNone) to High(TErrorType) do begin
     if ErrorTypeNames[MsgType]=MsgTypeName then begin
@@ -482,7 +556,14 @@ begin
       // -> filter message
       fLastErrorType:=MsgType;
       fLastMessageType:=omtFPC;
-      
+      CurrentMessageParts.Values['Stage']:='FPC';
+      CurrentMessageParts.Values['Type']:=ErrorTypeNames[fLastErrorType];
+      CurrentMessageParts.Values['Line']:=
+                 copy(s,LineNumberStartPos,LineNumberEndPos-LineNumberStartPos);
+      CurrentMessageParts.Values['Column']:=
+           copy(s,ColumnNumberStartPos,ColumnNumberEndPos-ColumnNumberStartPos);
+      CurrentMessageParts.Values['Message']:=copy(s,MessageStartPos,length(s));
+
       SkipMessage:=true;
       
       case MsgType of
@@ -588,6 +669,7 @@ begin
           Msg:=Filename+copy(Msg,FilenameEndPos+1,length(Msg)-FilenameEndPos);
         end;
       end;
+      CurrentMessageParts.Values['Filename']:=Filename;
 
       // add line
       if not SkipMessage then
@@ -691,6 +773,7 @@ end;
 procedure TOutputFilter.DoAddFilteredLine(const s: string);
 begin
   fFilteredOutput.Add(s);
+  fFilteredOutput.OriginalIndices[fFilteredOutput.Count-1]:=fOutput.Count-1;
   if Assigned(OnOutputString) then
     OnOutputString(s,fCurrentDirectory);
 end;
@@ -726,6 +809,21 @@ begin
     if (fOutput[i]<>'') then
       DoAddFilteredLine(fOutput[i]);
     inc(i);
+  end;
+end;
+
+function TOutputFilter.GetCurrentMessageParts: TOutputLine;
+var
+  Cnt: LongInt;
+begin
+  Result:=nil;
+  if (fOutput=nil) then exit;
+  Cnt:=fOutput.Count;
+  if (Cnt=0) then exit;
+  Result:=TOutputLine(fOutput.Objects[Cnt-1]);
+  if Result=nil then begin
+    Result:=TOutputLine.Create;
+    fOutput.Objects[Cnt-1]:=Result;
   end;
 end;
 
@@ -842,7 +940,8 @@ begin
   i:=length(MakeBeginPattern);
   if copy(s,1,i)<>MakeBeginPattern then exit;
   Result:=true;
-  
+  CurrentMessageParts.Values['Stage']:='make';
+
   inc(i);
   if (i>length(s)) or (not (s[i] in ['0'..'9'])) then exit;
   while (i<=length(s)) and (s[i] in ['0'..'9']) do inc(i);
@@ -920,15 +1019,6 @@ begin
     WriteOutput(true);
 end;
 
-
-{ TOutputLine }
-
-procedure TOutputLine.SetDirectory(const AValue: string);
-begin
-  if FDirectory=AValue then exit;
-  FDirectory:=AValue;
-end;
-
 { TOutputLines }
 
 procedure TOutputLines.Clear;
@@ -943,6 +1033,61 @@ procedure TOutputLines.Delete(Index: Integer);
 begin
   Objects[Index].Free;
   inherited Delete(Index);
+end;
+
+{ TFilteredOutputLines }
+
+function TFilteredOutputLines.GetOriginalIndices(Index: integer): integer;
+begin
+  Result:=FOriginalIndices[Index];
+end;
+
+procedure TFilteredOutputLines.SetOriginalIndices(Index: integer;
+  const AValue: integer);
+begin
+  FOriginalIndices[Index]:=AValue;
+end;
+
+procedure TFilteredOutputLines.SetCapacity(NewCapacity: Integer);
+begin
+  ReAllocMem(FOriginalIndices,SizeOf(Integer)*NewCapacity);
+  inherited SetCapacity(NewCapacity);
+end;
+
+procedure TFilteredOutputLines.InsertItem(Index: Integer; const S: string);
+begin
+  inherited InsertItem(Index, S);
+  if Index<Count-1 then
+    System.Move(FOriginalIndices[Index],FOriginalIndices[Index+1],
+                (Count-Index)*SizeOf(Integer));
+end;
+
+procedure TFilteredOutputLines.InsertItem(Index: Integer; const S: string;
+  O: TObject);
+begin
+  inherited InsertItem(Index, S, O);
+  if Index<Count-1 then
+    System.Move(FOriginalIndices[Index],FOriginalIndices[Index+1],
+                (Count-Index)*SizeOf(Integer));
+end;
+
+procedure TFilteredOutputLines.Delete(Index: Integer);
+begin
+  if (Index>=0) and (Index<Count-1) then
+    System.Move(FOriginalIndices[Index+1],
+                FOriginalIndices[Index],
+                (Count-Index)*SizeOf(TStringItem));
+  inherited Delete(Index);
+end;
+
+procedure TFilteredOutputLines.Exchange(Index1, Index2: Integer);
+var
+  i: LongInt;
+begin
+  inherited Exchange(Index1, Index2);
+  i:=FOriginalIndices[Index1];
+  FOriginalIndices[Index1]:=FOriginalIndices[Index2];
+  FOriginalIndices[Index2]:=i;
 end;
 
 end.

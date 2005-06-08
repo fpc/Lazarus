@@ -325,11 +325,12 @@ type
     by the IDE. Common names and values are:
       Name    | Value
       --------|-----------------------------------------------------------------
-      Stage    Indicates what to what part of the build process the message
-               belongs. Common values are 'FPC', 'Linker' or 'Make'
-      Type     'Hint', 'Note', 'Warning', 'Error', 'Fatal', 'Panic', 'Progress'.
-               'Progress' is used for example for messages like
-               'compiling unit1.pass'
+      Stage    Indicates what part of the build process the message
+               belongs to. Common values are 'FPC', 'Linker' or 'make'
+      Type     For FPC: 'Hint', 'Note', 'Warning', 'Error', 'Fatal', 'Panic',
+               'Compiling', 'Assembling'
+               For make:
+               For Linker:
       Line     An integer for the linenumber as given by FPC in brackets.
       Column   An integer for the column as given by FPC in brackets.
       Message  The message text without other parsed items.
