@@ -6899,8 +6899,8 @@ msgid "Unable to load package"
 msgstr "No es pot carregar el paquet"
 
 #: lazarusidestrconsts:lispkgmangunabletoopenthepackage
-msgid "Unable to open the package %s%s%s.%sThis package was marked for for installation."
-msgstr "No es pot carregar el paquet %s%s%s.%sAquest paquet està marcat per a ser instal·lat."
+msgid "Unable to open the package %s%s%s.%sThis package was marked for installation."
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletoreadfile
 msgid "Unable to read file"

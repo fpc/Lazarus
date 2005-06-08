@@ -508,7 +508,7 @@ msgstr "Sovellus"
 
 #: lazarusidestrconsts:dlgapplicationsettings
 msgid "Application Settings"
-msgstr ""
+msgstr "Sovelluksen asetukset"
 
 #: lazarusidestrconsts:lisapplicationagraphicallclfreepascalprogramtheprogra
 msgid "Application%sA graphical lcl/freepascal program. The program file is automatically maintained by lazarus."
@@ -5068,7 +5068,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisresourceloaderror
 msgid "Resource load error"
-msgstr ""
+msgstr "Resurssitiedoston lukeminen epäonnistui"
 
 #: lazarusidestrconsts:lisresourcesaveerror
 msgid "Resource save error"
@@ -6644,7 +6644,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgpotitle
 msgid "Title:"
-msgstr ""
+msgstr "Nimi:"
 
 #: lazarusidestrconsts:listodolistcaption
 msgid "ToDo List"
@@ -6872,7 +6872,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisunabletofindmethodplzfixtheerrorshowninthemessage
 msgid "Unable to find method. Plz fix the error shown in the message window."
-msgstr ""
+msgstr "Metodia ei löydetty. Ole hyvä ja korjaa kääntäjän viestin mukainen virhe."
 
 #: lazarusidestrconsts:lisunabletogathereditorchanges
 msgid "Unable to gather editor changes."
@@ -6892,14 +6892,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lisunabletoloadoldresourcefiletheresourcefileis
 msgid "Unable to load old resource file.%sThe resource file is the first include file in the%sinitialization section.%sFor example {$I %s.lrs}.%sProbably a syntax error."
-msgstr ""
+msgstr "Resurssitiedoston lukeminen ei onnistunut.%sResurssitiedosto pitää olla ensimmäisenä tiedostona %sinitialization osassa.%sEli tämän kaltainen määrittely siellä pitäisi olla {$I %s.lrs}.%sTodennäköisesti kyseessä on syntaksivirhe."
 
 #: lazarusidestrconsts:lispkgmangunabletoloadpackage
 msgid "Unable to load package"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangunabletoopenthepackage
-msgid "Unable to open the package %s%s%s.%sThis package was marked for for installation."
+msgid "Unable to open the package %s%s%s.%sThis package was marked for installation."
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletoreadfile
