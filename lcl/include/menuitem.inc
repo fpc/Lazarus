@@ -44,6 +44,8 @@ end;
 
 {------------------------------------------------------------------------------
   procedure TMenuItem.Click;
+  
+  Call hooks and actions.
  ------------------------------------------------------------------------------}
 procedure TMenuItem.Click;
 begin
@@ -1210,6 +1212,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.68  2005/06/08 08:02:09  mattias
+  added message parts to Help interface
+
   Revision 1.67  2005/05/21 15:58:44  mattias
   implemented right justification for menuitems for winapi intf  from Martin Smat
 
@@ -1441,6 +1446,9 @@ end;
 
 
   $Log$
+  Revision 1.68  2005/06/08 08:02:09  mattias
+  added message parts to Help interface
+
   Revision 1.67  2005/05/21 15:58:44  mattias
   implemented right justification for menuitems for winapi intf  from Martin Smat
 

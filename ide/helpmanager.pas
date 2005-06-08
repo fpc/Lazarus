@@ -671,8 +671,16 @@ begin
 end;
 
 procedure THelpManager.ShowHelpForMessage(Line: integer);
+
+  function ParseMessage(const Msg: string): TStringList;
+  begin
+    Result:=TStringList.Create;
+    Result.Values['Message']:=Msg;
+  end;
+
 var
   Msg: String;
+  MessageParts: TStringList;
 begin
   debugln('THelpManager.ShowHelpForMessage A Line=',dbgs(Line));
   if MessagesView=nil then exit;
@@ -681,7 +689,8 @@ begin
   if (Line<0) or (Line>=MessagesView.VisibleItemCount) then exit;
   Msg:=MessagesView.VisibleItems[Line].Msg;
   if Msg<>'' then begin
-    ShowHelpOrErrorForMessageLine(Msg);
+    MessageParts:=ParseMessage(Msg);
+    ShowHelpOrErrorForMessageLine(Msg,MessageParts);
   end;
 end;
 

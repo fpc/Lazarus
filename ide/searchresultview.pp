@@ -412,6 +412,7 @@ begin
           begin
             Parent:= Page[NewPage];
             Align:= alClient;
+            ClickOnSelChange:=false;
             OnClick:= @ListBoxClicked;
             OnDblClick:= @ListBoxDoubleClicked;
             Style:= lbOwnerDrawFixed;

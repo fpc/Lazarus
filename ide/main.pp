@@ -8611,10 +8611,12 @@ var
   OpenFlags: TOpenFlags;
   SrcEdit: TSourceEditor;
 begin
+  Result:=false;
   CreateSearchResultWindow;
   if pos('(',SearchResultsView.GetSelectedText) > 0 then
   begin
     AFileName:= SearchResultsView.GetSourceFileName;
+    if AFilename='' then exit;
     LogCaretXY:= SearchResultsView.GetSourcePositon;
     OpenFlags:=[ofOnlyIfExists,ofRegularFile];
     if IsTestUnitFilename(AFilename) then begin
@@ -8624,7 +8626,7 @@ begin
       SearchedFilename := FindUnitFile(AFilename);
     end;
     if SearchedFilename<>'' then begin
-    // open the file in the source editor
+      // open the file in the source editor
       Result:=(DoOpenEditorFile(SearchedFilename,-1,OpenFlags)=mrOk);
       if Result then begin
         // set caret position
@@ -8649,7 +8651,7 @@ begin
         end;
         SrcEdit.ErrorLine:=LogCaretXY.Y;
       end;
-    end else begin
+    end else if AFilename<>'' then begin
       if FilenameIsAbsolute(AFilename) then begin
         MessageDlg(Format(lisUnableToFindFile, ['"', AFilename, '"']),
            mtInformation,[mbOk],0)
@@ -11693,6 +11695,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.872  2005/06/08 08:02:08  mattias
+  added message parts to Help interface
+
   Revision 1.871  2005/05/31 21:26:10  mattias
   added TLazIDEInterface.DoOpenProject
 

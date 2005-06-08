@@ -48,6 +48,26 @@ type
   TOutputMessageType = (omtNone, omtFPC, omtLinker, omtMake);
 
   TErrorType = (etNone, etHint, etNote, etWarning, etError, etFatal, etPanic);
+  
+  { TOutputLine }
+
+  TOutputLine = class(TStringList)
+  private
+    FDirectory: string;
+    procedure SetDirectory(const AValue: string);
+  public
+    property Directory: string read FDirectory write SetDirectory;
+  end;
+  
+  { TOutputLines }
+  
+  TOutputLines = class(TStringList)
+  public
+    procedure Clear; override;
+    procedure Delete(Index: Integer); override;
+  end;
+
+  { TOutputFilter }
 
   TOutputFilter = class
   private
@@ -56,7 +76,7 @@ type
     fCurrentDirectory: string;
     fFilteredOutput: TStringList;
     fOnReadLine: TOnOutputString;
-    fOutput: TStringList;
+    fOutput: TOutputLines;
     fLastErrorType: TErrorType;
     fLastMessageType: TOutputMessageType;
     fCompilingHistory: TStringList;
@@ -85,7 +105,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function IsHintForUnusedUnit(const OutputLine,
-      MainSrcFile: string): boolean;
+                                 MainSrcFile: string): boolean;
     function IsParsing: boolean;
     procedure ReadLine(const s: string; DontFilterLine: boolean);
     function ReadFPCompilerLine(const s: string): boolean;
@@ -97,7 +117,7 @@ type
     property CurrentDirectory: string read fCurrentDirectory;
     property FilteredLines: TStringList read fFilteredOutput;
     property StopExecute: boolean read FStopExecute write SetStopExecute;
-    property Lines: TStringList read fOutput;
+    property Lines: TOutputLines read fOutput;
     property LastErrorType: TErrorType read fLastErrorType;
     property LastMessageType: TOutputMessageType read fLastMessageType;
     property OnGetIncludePath: TOnGetIncludePath
@@ -138,7 +158,7 @@ constructor TOutputFilter.Create;
 begin
   inherited Create;
   fFilteredOutput:=TStringList.Create;
-  fOutput:=TStringList.Create;
+  fOutput:=TOutputLines.Create;
   Clear;
 end;
 
@@ -218,6 +238,8 @@ begin
 end;
 
 procedure TOutputFilter.ReadLine(const s: string; DontFilterLine: boolean);
+// this is called for every line written by the external tool (=Output)
+// it parses the output
 begin
   //writeln('TOutputFilter: "',s,'"');
   fLastMessageType:=omtNone;
@@ -227,7 +249,7 @@ begin
   if Assigned(OnReadLine) then
     OnReadLine(s,fCurrentDirectory);
 
-  if DontFilterLine or (ofoShowAll in Options) then begin
+  if DontFilterLine then begin
     DoAddFilteredLine(s);
   end else if (ofoSearchForFPCMessages in Options) and (ReadFPCompilerLine(s))
   then begin
@@ -235,6 +257,8 @@ begin
   end else if (ofoSearchForMakeMessages in Options) and (ReadMakeLine(s))
   then begin
     exit;
+  end else if (ofoShowAll in Options) then begin
+    DoAddFilteredLine(s);
   end;
 end;
 
@@ -871,8 +895,8 @@ const
   HalfASecond =0.5/(24*60*60); // 0.5 divided by the number of seconds per day
 begin
   CurTime:=Now;
-  if ((CurTime-fLastOutputTime)>HalfASecond) or
-    Flush or (FBufferingOutputLock<=0) then begin
+  if ((CurTime-fLastOutputTime)>HalfASecond)
+  or Flush or (FBufferingOutputLock<=0) then begin
     s:='';
     while FLastOutputLine<fOutput.Count-1 do begin
       inc(FLastOutputLine);
@@ -896,6 +920,30 @@ begin
     WriteOutput(true);
 end;
 
+
+{ TOutputLine }
+
+procedure TOutputLine.SetDirectory(const AValue: string);
+begin
+  if FDirectory=AValue then exit;
+  FDirectory:=AValue;
+end;
+
+{ TOutputLines }
+
+procedure TOutputLines.Clear;
+var
+  i: Integer;
+begin
+  for i:=0 to Count-1 do Objects[i].Free;
+  inherited Clear;
+end;
+
+procedure TOutputLines.Delete(Index: Integer);
+begin
+  Objects[Index].Free;
+  inherited Delete(Index);
+end;
 
 end.
 

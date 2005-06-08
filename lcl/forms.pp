@@ -68,8 +68,8 @@ type
 
   // form position policies:
   TPosition = (
-    poDesigned,        // bounds from the designer
-    poDefault,         // LCL decision (normally window manager)
+    poDesigned,        // use bounds from the designer (read from stream)
+    poDefault,         // LCL decision (normally window manager decides)
     poDefaultPosOnly,  // designed size and LCL position
     poDefaultSizeOnly, // designed position and LCL size
     poScreenCenter,    // center form on screen

@@ -1977,6 +1977,7 @@ var
   EventString: PChar; // GTK1 and GTK2 workaround
                       // (and easy access to bytes)
   Character: TUTF8Char;
+  SysKey: Boolean;
 
   procedure StopKeyEvent(const AnEventName: PChar);
   begin
@@ -2080,12 +2081,19 @@ var
       exit;
     end;
   end;
+  
+  function KeyActivatedAccelerator: boolean;
+  begin
+    Result:=false;
+    if not SysKey then exit;
+    // it is a system key -> try menus
+    
+  end;
 
 var
   VKey: TVKeyRecord;
   CommonKeyData: Integer;
   Flags: Integer;
-  SysKey: Boolean;
   FocusedWidget: PGtkWidget;
   LCLObject: TObject;
   FocusedWinControl: TWinControl;
@@ -2223,7 +2231,7 @@ begin
           Msg.msg := LM_KEYDOWN;
           
           // some widgets handle keys, but do not eat it.
-          // To avoid, that the LCL also reacts it some keys for some widgets
+          // To avoid, that the LCL also reacts stop here
           if KeyAlreadyHandledByGtk then exit;
         end;
       end;
@@ -2242,6 +2250,9 @@ begin
         // key was changed by LCL
         StopKeyEvent('key_press_event');
       end;
+      
+      if KeyActivatedAccelerator then exit;
+      
 
       if (not EventStopped) and CanSendChar
       then begin
@@ -8200,6 +8211,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.361  2005/06/08 08:02:09  mattias
+  added message parts to Help interface
+
   Revision 1.360  2005/05/31 21:26:10  mattias
   added TLazIDEInterface.DoOpenProject
 

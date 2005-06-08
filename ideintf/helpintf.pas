@@ -221,15 +221,16 @@ type
   
   
   { THelpDBIMessage
-    Help registration item for a class.
-    Used by the IDE to search for help for a class without source.
-    For example for a registered component class in the component palette, that
-    comes without source. If the component comes with source use the
-    THelpDBISourceDirectory or THelpDBISourceFile instead. }
+    Help registration item for a message (e.g. a fpc warning).
+    Used by the IDE to search for help for one message (typically a line).
+    For example a line like
+      "/usr/share/lazarus/components/synedit/syneditkeycmds.pp(532,10) Warning: Function result does not seem to be set"
+    }
 
   THelpDBIMessage = class(THelpDBItem)
   public
-    function MessageMatches(const TheMessage: string): boolean; virtual; abstract;
+    function MessageMatches(const TheMessage: string; MessageParts: TStrings
+                            ): boolean; virtual; abstract;
   end;
 
 
@@ -315,15 +316,49 @@ type
   end;
 
 
-  { THelpQueryMessage }
+  { THelpQueryMessage
+    A query for messages, like the compiler warnings and errors.
+
+    'WholeMessage' is the complete line as string.
+    
+    'MessageParts' can be a list of Name=Value pairs, that has been extracted
+    by the IDE. Common names and values are:
+      Name    | Value
+      --------|-----------------------------------------------------------------
+      Stage    Indicates what to what part of the build process the message
+               belongs. Common values are 'FPC', 'Linker' or 'Make'
+      Type     'Hint', 'Note', 'Warning', 'Error', 'Fatal', 'Panic', 'Progress'.
+               'Progress' is used for example for messages like
+               'compiling unit1.pass'
+      Line     An integer for the linenumber as given by FPC in brackets.
+      Column   An integer for the column as given by FPC in brackets.
+      Message  The message text without other parsed items.
+      
+
+    Example:
+      Message written by FPC:
+        unit1.pas(21,3) Warning: unit buttons not used
+       
+      Results in
+        Stage=FPC
+        Type=Warning
+        Line=21
+        Column=3
+        Message=unit buttons not used
+      
+    }
 
   THelpQueryMessage = class(THelpQuery)
   private
+    FMessageParts: TStrings;
     FWholeMessage: string;
   public
     constructor Create(const TheHelpDatabaseID: THelpDatabaseID;
-                       const TheMessage: string);
+                       const TheMessage: string;
+                       TheMessageParts: TStrings);
+    destructor Destroy; override;
     property WholeMessage: string read FWholeMessage write FWholeMessage;
+    property MessageParts: TStrings read FMessageParts write FMessageParts;
   end;
 
 
@@ -390,7 +425,7 @@ type
     function GetNodesForClass(AClass: TClass;
                               var ListOfNodes: TList; var ErrMsg: string
                               ): TShowHelpResult; virtual;
-    function GetNodesForMessage(const AMessage: string;
+    function GetNodesForMessage(const AMessage: string; MessageParts: TStrings;
                                 var ListOfNodes: TList; var ErrMsg: string
                                 ): TShowHelpResult; virtual;
     function FindViewer(const MimeType: string; var ErrMsg: string;
@@ -475,7 +510,7 @@ type
     function GetNodesForClass(AClass: TClass;
                               var ListOfNodes: TList; var ErrMsg: string
                               ): TShowHelpResult; virtual;
-    function GetNodesForMessage(const AMessage: string;
+    function GetNodesForMessage(const AMessage: string; MessageParts: TStrings;
                                 var ListOfNodes: TList; var ErrMsg: string
                                 ): TShowHelpResult; virtual;
     function ShowHelpSelector(Query: THelpQuery; Nodes: TList;
@@ -601,9 +636,9 @@ function ShowHelpOrErrorForSourcePosition(const Filename: string;
 
 // help for messages (compiler messages, codetools messages, make messages, ...)
 function ShowHelpForMessageLine(const MessageLine: string;
-  var ErrMsg: string): TShowHelpResult;
-function ShowHelpOrErrorForMessageLine(const MessageLine: string
-  ): TShowHelpResult;
+  MessageParts: TStrings; var ErrMsg: string): TShowHelpResult;
+function ShowHelpOrErrorForMessageLine(const MessageLine: string;
+  MessageParts: TStrings): TShowHelpResult;
 
 // URL functions
 function FilenameToURL(const Filename: string): string;
@@ -615,6 +650,7 @@ function FindURLPathEnd(const URL: string): integer;
 function ChompURLParams(const URL: string): string;
 function ExtractURLDirectory(const URL: string): string;
 function TrimUrl(const URL: string): string;
+
 
 implementation
 
@@ -704,20 +740,21 @@ begin
 end;
 
 function ShowHelpForMessageLine(const MessageLine: string;
-  var ErrMsg: string): TShowHelpResult;
+  MessageParts: TStrings; var ErrMsg: string): TShowHelpResult;
+// MessageParts will be freed
 begin
   Result:=HelpDatabases.ShowHelpForQuery(
-            THelpQueryMessage.Create('',MessageLine),
+            THelpQueryMessage.Create('',MessageLine,MessageParts),
             true,ErrMsg);
 end;
 
-function ShowHelpOrErrorForMessageLine(const MessageLine: string
-  ): TShowHelpResult;
+function ShowHelpOrErrorForMessageLine(const MessageLine: string;
+  MessageParts: TStrings): TShowHelpResult;
 var
   ErrMsg: String;
 begin
   ErrMsg:='';
-  Result:=ShowHelpForMessageLine(MessageLine,ErrMsg);
+  Result:=ShowHelpForMessageLine(MessageLine,MessageParts,ErrMsg);
   HelpDatabases.ShowError(Result,ErrMsg);
 end;
 
@@ -1091,7 +1128,8 @@ begin
 end;
 
 function THelpDatabase.GetNodesForMessage(const AMessage: string;
-  var ListOfNodes: TList; var ErrMsg: string): TShowHelpResult;
+  MessageParts: TStrings; var ListOfNodes: TList;
+  var ErrMsg: string): TShowHelpResult;
 // if ListOfNodes<>nil new nodes will be appended
 // if ListOfNodes=nil and nodes exists a new list will be created
 var
@@ -1105,7 +1143,8 @@ begin
     for i:=0 to FSearchItems.Count-1 do begin
       SearchItem:=THelpDBItem(FSearchItems[i]);
       if not (SearchItem is THelpDBIMessage) then continue;
-      if not THelpDBIMessage(SearchItem).MessageMatches(AMessage) then continue;
+      if not THelpDBIMessage(SearchItem).MessageMatches(AMessage,MessageParts)
+      then continue;
       CreateListAndAdd(SearchItem.Node,ListOfNodes,true);
     end;
   end;
@@ -1352,7 +1391,7 @@ function THelpDatabases.ShowHelpForQuery(Query: THelpQuery;
   AutoFreeQuery: boolean; var ErrMsg: string): TShowHelpResult;
 begin
   try
-    // descendents first
+    // descendants first
     if Query is THelpQueryPascalContexts then
       Result:=ShowHelpForPascalContexts(THelpQueryPascalContexts(Query),ErrMsg)
     else if Query is THelpQueryTOC then
@@ -1505,7 +1544,8 @@ begin
   // search node
   Nodes:=nil;
   try
-    Result:=GetNodesForMessage(Query.WholeMessage,Nodes,ErrMsg);
+    Result:=GetNodesForMessage(Query.WholeMessage,Query.MessageParts,Nodes,
+                               ErrMsg);
     if Result<>shrSuccess then exit;
 
     // check if at least one node found
@@ -1616,7 +1656,8 @@ begin
 end;
 
 function THelpDatabases.GetNodesForMessage(const AMessage: string;
-  var ListOfNodes: TList; var ErrMsg: string): TShowHelpResult;
+  MessageParts: TStrings; var ListOfNodes: TList;
+  var ErrMsg: string): TShowHelpResult;
 // if ListOfNodes<>nil then new nodes will be appended
 // if ListOfNodes=nil and nodes exists a new list will be created
 var
@@ -1625,7 +1666,8 @@ begin
   Result:=shrSuccess;
   ErrMsg:='';
   for i:=Count-1 downto 0 do begin
-    Result:=Items[i].GetNodesForMessage(AMessage,ListOfNodes,ErrMsg);
+    Result:=Items[i].GetNodesForMessage(AMessage,MessageParts,ListOfNodes,
+                                        ErrMsg);
     if Result<>shrSuccess then exit;
   end;
 end;
@@ -2190,10 +2232,17 @@ end;
 { THelpQueryMessage }
 
 constructor THelpQueryMessage.Create(const TheHelpDatabaseID: THelpDatabaseID;
-  const TheMessage: string);
+  const TheMessage: string; TheMessageParts: TStrings);
 begin
   inherited Create(TheHelpDatabaseID);
   FWholeMessage:=TheMessage;
+  FMessageParts:=TheMessageParts;
+end;
+
+destructor THelpQueryMessage.Destroy;
+begin
+  FMessageParts.Free;
+  inherited Destroy;
 end;
 
 { THelpQueryClass }

@@ -1296,6 +1296,8 @@ begin
 end;
 
 function TApplication.IsShortcut(var Message: TLMKey): boolean;
+var
+  ModalForm: TCustomForm;
 begin
   Result := false;
   if Assigned(FOnShortcut) then
@@ -1304,10 +1306,26 @@ begin
     if Result then
       exit;
   end;
-  // only send shortcuts to main form if no form is showing modal
-  //  or otherwise disabling the main form
-  if Assigned(FMainForm) and IsWindowEnabled(FMainForm.Handle) then
+  
+  // next: if there is a modal form, let it handle the short cut
+  ModalForm:=Screen.GetCurrentModalForm;
+  if ModalForm<>nil then begin
     Result := FMainForm.IsShortcut(Message);
+  end else begin
+    // there is no modal form
+
+    // let the current focused form handle the shortcut
+    if Screen.ActiveCustomForm<>nil then begin
+      Result := Screen.ActiveCustomForm.IsShortcut(Message);
+      if Result then exit;
+    end;
+
+    // let the main form handle the shortcut
+    if (MainForm<>nil) and (Screen.ActiveCustomForm<>MainForm) then begin
+      Result := FMainForm.IsShortcut(Message);
+      if Result then exit;
+    end;
+  end;
 end;
 
 procedure TApplication.DoEscapeKey(AControl: TWinControl; var Key: Word;
@@ -1466,6 +1484,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.121  2005/06/08 08:02:09  mattias
+  added message parts to Help interface
+
   Revision 1.120  2005/06/03 20:58:23  mattias
   fixed focussing modal forms on gtk intf
 
