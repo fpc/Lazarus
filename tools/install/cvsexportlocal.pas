@@ -21,14 +21,15 @@
   Author: Vincent Snijders
 
   Name:
-       cvsexportlocal - creates a directory structure like 'cvs export' does.
+       cvsexportlocal - creates a directory structure like 'cvs export'
+                        or 'svn export' does.
 
   Synopsis:
        cvsexportlocal sourcedirectory destinationdirectory
 
   Description:
-       cvsexportlocal assumes source directory is a local copy of a cvs
-          directory. It looks in the CVS subdirectory to see, what files and
+       cvsexportlocal assumes source directory is a local copy of a cvs (svn)
+          directory. It looks in the CVS () subdirectory to see, what files and
           directories are part of CVS and copies them recursively to the
           destination directory.
 }

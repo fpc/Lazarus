@@ -30,7 +30,10 @@ unit Translations;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, GetText, FileUtil, LazarusIDEStrConsts;
+  Classes, SysUtils, LCLProc, GetText, FileUtil, LazarusIDEStrConsts
+  {$IFDEF UseUTF8Translations}
+  ,cwstring
+  {$ENDIF};
   
   { IDE Language (Human, not computer) }
 
