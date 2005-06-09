@@ -54,9 +54,11 @@ TmpDir=/tmp/fpc_patchdir
 if [ "$WithTempDir" = "yes" ]; then
   rm -rf $TmpDir
 
-  ppc386 -Fu../../lcl/units/i386/linux cvsexportlocal.pas
-  echo "extracting FPC from local cvs ..."
-  ./cvsexportlocal $FPCSrcDir $TmpDir
+  #ppc386 -Fu../../lcl/units/i386/linux cvsexportlocal.pas
+  #echo "extracting FPC from local cvs ..."
+  #./cvsexportlocal $FPCSrcDir $TmpDir
+  echo "extracting FPC from local svn ..."
+  svn export $FPCSrcDir $TmpDir
 else
   TmpDir=$FPCSrcDir
 fi
