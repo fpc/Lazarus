@@ -757,7 +757,7 @@ var
 {$endif}
 
 
-procedure CheckPointer(p : pointer);{$ifndef NOSAVEREGISTERS}saveregisters;{$endif}[public, alias : 'FPC_CHECKPOINTER'];
+procedure CheckPointer(p : pointer);[public, alias : 'FPC_CHECKPOINTER'];
 var
   i  : ptrint;
   pp : pheap_mem_info;
@@ -880,49 +880,25 @@ procedure dumpheap;
 var
   pp : pheap_mem_info;
   i : ptrint;
-{$IFDEF HASGETHEAPSTATUS}
   ExpectedHeapFree : ptrint;
-  {$IFDEF HASGETFPCHEAPSTATUS}
-    status : TFPCHeapStatus;
-  {$ELSE}
-    status : THeapStatus;
-  {$ENDIF}
-{$ELSE}
-  ExpectedMemAvail : ptrint;
-{$ENDIF}
+  status : TFPCHeapStatus;
 begin
   pp:=heap_mem_root;
   Writeln(ptext^,'Heap dump by heaptrc unit');
   Writeln(ptext^,getmem_cnt, ' memory blocks allocated : ',getmem_size,'/',getmem8_size);
   Writeln(ptext^,freemem_cnt,' memory blocks freed     : ',freemem_size,'/',freemem8_size);
   Writeln(ptext^,getmem_cnt-freemem_cnt,' unfreed memory blocks : ',getmem_size-freemem_size);
-{$IFDEF HASGETHEAPSTATUS}
-  {$IFDEF HASGETFPCHEAPSTATUS}
-    status:=SysGetFPCHeapStatus;
-  {$ELSE}
-    SysGetHeapStatus(status);
-  {$ENDIF}
+  status:=SysGetFPCHeapStatus;
   Write(ptext^,'True heap size : ',status.CurrHeapSize);
-{$ELSE}
-  Write(ptext^,'True heap size : ',system.HeapSize);
-{$ENDIF}
   if EntryMemUsed > 0 then
     Writeln(ptext^,' (',EntryMemUsed,' used in System startup)')
   else
     Writeln(ptext^);
-{$IFDEF HASGETHEAPSTATUS}
   Writeln(ptext^,'True free heap : ',status.CurrHeapFree);
   ExpectedHeapFree:=status.CurrHeapSize-(getmem8_size-freemem8_size)-
     (getmem_cnt-freemem_cnt)*(sizeof(theap_mem_info)+extra_info_size)-EntryMemUsed;
   If ExpectedHeapFree<>status.CurrHeapFree then
     Writeln(ptext^,'Should be : ',ExpectedHeapFree);
-{$ELSE}
-  Writeln(ptext^,'True free heap : ',MemAvail);
-  ExpectedMemAvail:=system.HeapSize-(getmem8_size-freemem8_size)-
-    (getmem_cnt-freemem_cnt)*(sizeof(theap_mem_info)+extra_info_size)-EntryMemUsed;
-  If ExpectedMemAvail<>MemAvail then
-    Writeln(ptext^,'Should be : ',ExpectedMemAvail);
-{$ENDIF}
   i:=getmem_cnt-freemem_cnt;
   while pp<>nil do
    begin
@@ -989,39 +965,15 @@ end;
                             No specific tracing calls
 *****************************************************************************}
 
-{$IFDEF HASGETHEAPSTATUS}
-  {$IFDEF HASGETFPCHEAPSTATUS}
-  function TraceGetHeapStatus: THeapStatus;
-  begin
-    Result:=SysGetHeapStatus;
-  end;
-
-  function TraceGetFPCHeapStatus: TFPCHeapStatus;
-  begin
-    Result:=SysGetFPCHeapStatus;
-  end;
-  {$ELSE}
-  procedure TraceGetHeapStatus(var status:THeapStatus);
-  begin
-    SysGetHeapStatus(status);
-  end;
-  {$ENDIF}
-{$ELSE}
-function TraceMemAvail:ptrint;
+function TraceGetHeapStatus:THeapStatus;
 begin
-  TraceMemAvail:=SysMemAvail;
+  TraceGetHeapStatus:=SysGetHeapStatus;
 end;
 
-function TraceMaxAvail:ptrint;
+function TraceGetFPCHeapStatus:TFPCHeapStatus;
 begin
-  TraceMaxAvail:=SysMaxAvail;
+    TraceGetFPCHeapStatus:=SysGetFPCHeapStatus;
 end;
-
-function TraceHeapSize:ptrint;
-begin
-  TraceHeapSize:=SysHeapSize;
-end;
-{$ENDIF}
 
 
 {*****************************************************************************
@@ -1072,40 +1024,17 @@ const
     AllocMem : @TraceAllocMem;
     ReAllocMem : @TraceReAllocMem;
     MemSize : @TraceMemSize;
-{$IFDEF HASGETHEAPSTATUS}
     GetHeapStatus : @TraceGetHeapStatus;
-    {$IFDEF HASGETFPCHEAPSTATUS}
-      GetFPCHeapStatus : @TraceGetFPCHeapStatus;
-    {$ENDIF}
-{$ELSE}
-    MemAvail : @TraceMemAvail;
-    MaxAvail : @TraceMaxAvail;
-    HeapSize : @TraceHeapsize;
-{$ENDIF}
+    GetFPCHeapStatus : @TraceGetFPCHeapStatus;
   );
 
 
 procedure TraceInit;
-{$IFDEF HASGETHEAPSTATUS}
 var
-  {$IFDEF HASGETFPCHEAPSTATUS}
-    initheapstatus : TFPCHeapStatus;
-  {$ELSE}
-    initheapstatus : THeapStatus;
-  {$ENDIF}
-{$ENDIF}
+  initheapstatus : TFPCHeapStatus;
 begin
-{$IFDEF HASGETHEAPSTATUS}
-  {$IFDEF HASGETFPCHEAPSTATUS}
   initheapstatus:=SysGetFPCHeapStatus;
   EntryMemUsed:=initheapstatus.CurrHeapUsed;
-  {$ELSE}
-  SysGetHeapStatus(initheapstatus);
-  EntryMemUsed:=initheapstatus.CurrHeapUsed;
-  {$ENDIF}
-{$ELSE}
-  EntryMemUsed:=System.HeapSize-MemAvail;
-{$ENDIF}
   MakeCRC32Tbl;
   SetMemoryManager(TraceManager);
   ptext:=@stderr;
@@ -2391,6 +2320,9 @@ end.
 
 {
   $Log$
+  Revision 1.42  2005/06/10 07:00:08  vincents
+  merged changes from heaptrc.pp
+
   Revision 1.41  2005/03/07 21:59:43  vincents
   changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
 
