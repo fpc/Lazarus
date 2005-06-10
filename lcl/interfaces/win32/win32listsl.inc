@@ -134,6 +134,7 @@ End;
 Procedure TWin32ListStringList.Assign(Source: TPersistent);
 Var
   Counter: Integer;
+  AnIndex: Integer;
 Begin
   { Do not call inherited Assign as it does things we do not want to happen }
   If Source Is TStrings Then
@@ -141,13 +142,28 @@ Begin
     Windows.SendMessage(FWin32List, FFlagResetContent, 0, 0);
     For Counter := 0 To (TStrings(Source).Count - 1) Do
     Begin
-      Windows.SendMessage(FWin32List, FFlagAddString, 0, LPARAM(PChar(TStrings(Source)[Counter]))); //Insert
-      PutObject(Counter, TStrings(Source).Objects[Counter]);
+      AnIndex := Windows.SendMessage(FWin32List, FFlagAddString, 0, LPARAM(PChar(TStrings(Source)[Counter]))); //Insert
+      PutObject(AnIndex, TStrings(Source).Objects[Counter]);
     end;
   End
   Else
     inherited Assign(Source);
 End;
+
+
+{------------------------------------------------------------------------------
+  Method: TWin32ListStringList.Add
+  Params:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWin32ListStringList.Add(const S: string): Integer;
+begin
+  Result := Count;
+  Insert(Count, S);
+  if FSorted then
+    Result := FLastInsertedIndex;
+end;
 
 {------------------------------------------------------------------------------
   Method: TWin32ListStringList.Get
@@ -222,8 +238,9 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32ListStringList.Insert(Index: Integer; Const S: String);
 Begin
+  FLastInsertedIndex := Index;
   If FSorted Then
-    Windows.SendMessage(FWin32List, FFlagAddString, 0, LPARAM(PChar(S)))
+    FLastInsertedIndex := Windows.SendMessage(FWin32List, FFlagAddString, 0, LPARAM(PChar(S)))
   Else
     Windows.SendMessage(FWin32List, FFlagInsertString, Index, LPARAM(PChar(S)));
 End;
@@ -614,6 +631,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.40  2005/06/10 18:57:12  vincents
+  fixed objects with a sorted listbox   from Jesus
+
   Revision 1.39  2005/04/29 09:44:56  micha
   fix double-clicking in combobox in object inspector, set itemindex when assigning list of strings
 

@@ -165,7 +165,10 @@ end;
 
 function TGtkListStringList.Add(const S: string): Integer;
 begin
-  Result:=Count;
+  if FSorted then
+    Result := GetInsertPosition(S)
+  else
+    Result:=Count;
   Insert(Count,S);
 end;
 
@@ -994,6 +997,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.32  2005/06/10 18:57:12  vincents
+  fixed objects with a sorted listbox   from Jesus
+
   Revision 1.31  2005/03/21 08:12:10  mattias
   fixed removing focus of a gtk listbox on delete item  from Collin Western
 

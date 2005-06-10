@@ -32,6 +32,7 @@ Type
     FWin32List: HWND;
     FSorted: Boolean;
     FSender: TWinControl;
+    FlastInsertedIndex: Integer;
   protected
     //Win32 Flags
     FFlagSort: Cardinal;
@@ -49,6 +50,7 @@ Type
     FFlagGetSelected: cardinal;
     FFlagsetSelected: cardinal;
   Protected
+    function Add(const S: string): Integer; override;
     Function Get(Index: Integer): String; Override;
     Function GetCount: Integer; Override;
     Function GetObject(Index: Integer): TObject; Override;
@@ -139,6 +141,9 @@ Type
 { =============================================================================
 
   $Log$
+  Revision 1.19  2005/06/10 18:57:12  vincents
+  fixed objects with a sorted listbox   from Jesus
+
   Revision 1.18  2005/04/11 12:35:17  micha
   fixed: listbox loses selection when updating selected item (fixes 780)
 
