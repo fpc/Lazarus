@@ -31,9 +31,9 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, GetText, FileUtil, LazarusIDEStrConsts
-  {$IFDEF UseUTF8Translations}
+  {$IFNDEF win32}{$IFDEF UseUTF8Translations}
   ,cwstring
-  {$ENDIF};
+  {$ENDIF}{$ENDIF};
   
   { IDE Language (Human, not computer) }
 
