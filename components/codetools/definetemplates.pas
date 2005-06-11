@@ -3023,9 +3023,10 @@ var
     
     procedure BrowseDirectory(ADirPath: string);
     const
-      IgnoreDirs: array[1..12] of shortstring =(
-          '.', '..', 'CVS', 'examples', 'example', 'tests', 'fake', 'ide',
-          'demo', 'docs', 'template', 'fakertl'
+      IgnoreDirs: array[1..16] of shortstring =(
+          '.', '..', 'CVS', '.svn', 'examples', 'example', 'tests', 'fake',
+          'ide', 'demo', 'docs', 'template', 'fakertl', 'install', 'installer',
+          'compiler'
         );
     var
       AFilename, Ext, UnitName, MacroFileName: string;
@@ -3524,6 +3525,7 @@ var
   ElseTemplate: TDefineTemplate;
   LCLWidgetSetDir: TDefineTemplate;
   IDEIntfDir: TDefineTemplate;
+  ToolsInstallDirTempl: TDefineTemplate;
 begin
   Result:=nil;
   if (LazarusSrcDir='') or (WidgetType='') then exit;
@@ -3913,28 +3915,6 @@ begin
      ,da_DefineRecurse));
   DirTempl.AddChild(SubDirTempl);
 
-  // <LazarusSrcDir>/components/htmllite
-  SubDirTempl:=TDefineTemplate.Create('HTMLLite',
-    'HTMLLite',
-    '','htmllite',da_Directory);
-  SubDirTempl.AddChild(TDefineTemplate.Create('HL_LAZARUS',
-    'Define HL_LAZARUS','HL_LAZARUS','',da_DefineRecurse));
-  DirTempl.AddChild(SubDirTempl);
-
-  // <LazarusSrcDir>/components/turbopower_ipro
-  SubDirTempl:=TDefineTemplate.Create('TurboPower InternetPro',
-    'TurboPower InternetPro components',
-    '','turbopower_ipro',da_Directory);
-  SubDirTempl.AddChild(TDefineTemplate.Create('IP_LAZARUS',
-    'Define IP_LAZARUS','IP_LAZARUS','',da_DefineRecurse));
-  SubDirTempl.AddChild(TDefineTemplate.Create('codetools',
-    Format(ctsAddsDirToSourcePath,['../codetools']),
-    ExternalMacroStart+'SrcPath',
-    d('../codetools'
-    +';'+SrcPath)
-    ,da_DefineRecurse));
-  DirTempl.AddChild(SubDirTempl);
-
   // <LazarusSrcDir>/components/custom
   SubDirTempl:=TDefineTemplate.Create('Custom Components',
     ctsCustomComponentsDirectory,
@@ -3949,8 +3929,7 @@ begin
 
   // <LazarusSrcDir>/tools
   DirTempl:=TDefineTemplate.Create('Tools',
-    ctsToolsDirectory,
-    '','tools',da_Directory);
+    ctsToolsDirectory,'','tools',da_Directory);
   DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
     Format(ctsAddsDirToSourcePath,['lcl']),
     ExternalMacroStart+'SrcPath',
@@ -3958,8 +3937,19 @@ begin
     +';../components/codetools')
     +';'+SrcPath
     ,da_Define));
+    // <LazarusSrcDir>/tools/install
+    ToolsInstallDirTempl:=TDefineTemplate.Create('Install',
+      ctsInstallDirectory,'','install',da_Directory);
+    DirTempl.AddChild(ToolsInstallDirTempl);
+    ToolsInstallDirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
+      Format(ctsAddsDirToSourcePath,['lcl']),
+      ExternalMacroStart+'SrcPath',
+      d('../../lcl;../../lcl/interfaces/'+WidgetType
+      +';../../components/codetools')
+      +';'+SrcPath
+      ,da_Define));
   MainDir.AddChild(DirTempl);
-  
+
   // extra options
   SubTempl:=CreateFPCCommandLineDefines(StdDefTemplLazarusBuildOpts,
                                         ExtraOptions,true,Owner);

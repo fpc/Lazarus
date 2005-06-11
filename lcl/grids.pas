@@ -124,7 +124,7 @@ type
 
   TItemType = (itNormal,itCell,itColumn,itRow,itFixed,itFixedColumn,itFixedRow,itSelected);
   
-  TColumnButtonStyle = (cbsAuto, cbsEllipsis, cbsNone, cbsPickList);
+  TColumnButtonStyle = (cbsAuto, cbsEllipsis, cbsNone, cbsPickList, cbsCheckboxColumn); //SSY
   TCleanOptions = set of TGridZone;
   
   TTitleStyle = (tsLazarus, tsStandard, tsNative);
@@ -836,7 +836,7 @@ type
     function  CellRect(ACol, ARow: Integer): TRect;
     procedure Clear;
 
-    function  EditorByStyle(Style: TColumnButtonStyle): TWinControl;
+    function  EditorByStyle(Style: TColumnButtonStyle): TWinControl; virtual;
     procedure EditorExit(Sender: TObject);
     procedure EditorKeyDown(Sender: TObject; var Key:Word; Shift:TShiftState);
     procedure EditorKeyPress(Sender: TObject; var Key: Char);
@@ -3901,7 +3901,7 @@ end;
 function TCustomGrid.EditorByStyle(Style: TColumnButtonStyle): TWinControl;
 begin
   case Style of
-    cbsNone:
+    cbsNone, cbsCheckboxColumn:   //SSY
       Result := nil;
     cbsEllipsis:
       Result := FButtonEditor;
@@ -7491,7 +7491,7 @@ begin
 	TransMsg('PicklistEditor: ', TheMessage);
 	{$Endif}
   if TheMessage.msg=LM_KILLFOCUS then begin
-    if TheMessage.WParamLo = Handle then begin
+    if (TheMessage.WParam and $FFFF) = Handle then begin
       // what a weird thing, we are losing the focus
       // and giving it to ourselves
       TheMessage.Result := 0; // doesn't allow such thing

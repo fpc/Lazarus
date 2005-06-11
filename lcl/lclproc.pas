@@ -190,6 +190,7 @@ function UTF8FindNearestCharStart(UTF8Str: PChar; Len: integer;
                                   BytePos: integer): integer;
 // find the n-th UTF8 character, ignoring BIDI
 function UTF8CharStart(UTF8Str: PChar; Len, Index: integer): PChar;
+procedure UTF8FixBroken(P: PChar);
 
 
 // ======================================================================
@@ -1577,6 +1578,42 @@ begin
     end;
     if (Index>0) or (Len<0) then
       Result:=nil;
+  end;
+end;
+
+procedure UTF8FixBroken(P: PChar);
+// fix any broken UTF8 sequences with spaces
+begin
+  if p=nil then exit;
+  while p^<>#0 do begin
+    if ord(p^)<%11000000 then begin
+      // regular single byte character
+      inc(p);
+    end
+    else if ((ord(p^) and %11100000) = %11000000) then begin
+      // should be 2 byte character
+      if (ord(p[1]) and %11000000) = %10000000 then
+        inc(p,2)
+      else if p[1]<>#0 then
+        p^:=' ';
+    end
+    else if ((ord(p^) and %11110000) = %11100000) then begin
+      // should be 3 byte character
+      if ((ord(p[1]) and %11000000) = %10000000)
+      and ((ord(p[2]) and %11000000) = %10000000) then
+        inc(p,3)
+      else
+        p^:=' ';
+    end
+    else if ((ord(p^) and %11111000) = %11110000) then begin
+      // should be 4 byte character
+      if ((ord(p[1]) and %11000000) = %10000000)
+      and ((ord(p[2]) and %11000000) = %10000000)
+      and ((ord(p[3]) and %11000000) = %10000000) then
+        inc(p,4)
+      else
+        p^:=' ';
+    end
   end;
 end;
 

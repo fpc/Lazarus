@@ -207,6 +207,7 @@ ResourceString
   ctsComponentsDirectory = 'Components Directory';
   ctsCustomComponentsDirectory = 'Custom Components Directory';
   ctsToolsDirectory = 'Tools Directory';
+  ctsInstallDirectory = 'Install Directory';
   ctsDesignerDirectory = 'Designer Directory';
   ctsIDEIntfDirectory = 'IDEIntf Directory';
   ctsJITFormDirectory = 'JITForm Directory';

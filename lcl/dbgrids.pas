@@ -43,14 +43,7 @@ uses
 type
   TCustomDbGrid = class;
   TColumn = class;
-  TDataSetScrolledEvent = procedure(DataSet: TDataSet; Distance: Integer) of object;
-  TDBGridClickEvent = procedure(Column: TColumn) of object;
-  TMovedEvent = procedure(Sender: TObject; FromIndex, ToIndex: Integer) of object;
-  TDrawColumnCellEvent = procedure(Sender: TObject; const Rect: TRect;
-    DataCol: Integer; Column: TColumn; State: TGridDrawState) of object;
-  TGetDbEditMaskEvent =
-    procedure (Sender: TObject; const Field: TField; var Value: string) of object;
-
+  
   TDBGridOption = (
     dgEditing,                          // Ya
     dgTitles,                           // Ya
@@ -67,8 +60,27 @@ type
     dgMultiselect
   );
   TDbGridOptions = set of TDbGridOption;
+  
+  TDbGridExtraOption = (
+    dgeAutoColumns,       // if uncustomized columns, add them anyway?
+    dgeCheckboxColumn     // enable the use of checkbox in columns
+  );
+  TDbGridExtraOptions = set of TDbGridExtraOption;
+  
   TDbGridStatusItem = (gsVisibleMove, gsUpdatingData);
   TDbGridStatus = set of TDbGridStatusItem;
+  
+  TDBGridCheckBoxState = (gcbpUnChecked, gcbpChecked, gcbpGrayed);
+
+  TDataSetScrolledEvent = procedure(DataSet: TDataSet; Distance: Integer) of object;
+  TDBGridClickEvent = procedure(Column: TColumn) of object;
+  TMovedEvent = procedure(Sender: TObject; FromIndex, ToIndex: Integer) of object;
+  TDrawColumnCellEvent = procedure(Sender: TObject; const Rect: TRect;
+    DataCol: Integer; Column: TColumn; State: TGridDrawState) of object;
+  TGetDbEditMaskEvent =
+    procedure (Sender: TObject; const Field: TField; var Value: string) of object;
+  TUserCheckBoxBitmapEvent = procedure(Sender: TObject;
+    const CheckedState: TDbGridCheckboxState; ABitmap: TBitmap) of object;
 
 type
 
@@ -143,29 +155,39 @@ type
     FField: TField;
     FIsAutomaticColumn: boolean;
     FDesignIndex: Integer;
+    FValueChecked,FValueUnchecked: PChar;
     procedure ApplyDisplayFormat;
+    function  GetDataSet: TDataSet;
     function  GetDisplayFormat: string;
     function  GetField: TField;
     function  GetIsDesignColumn: boolean;
+    function  GetValueChecked: string;
+    function  GetValueUnchecked: string;
     function  IsDisplayFormatStored: boolean;
+    function  IsValueCheckedStored: boolean;
+    function  IsValueUncheckedStored: boolean;
     procedure SetDisplayFormat(const AValue: string);
     procedure SetField(const AValue: TField);
     procedure SetFieldName(const AValue: String);
-    function  GetDataSet: TDataSet;
+    procedure SetValueChecked(const AValue: string);
+    procedure SetValueUnchecked(const AValue: string);
   protected
-    procedure LinkField;
-    function  GetDefaultDisplayFormat: string;
-    function  GetDisplayName: string; override;
+    function  CreateTitle: TGridColumnTitle; override;
     // FPC 1.0 has TAlignment in the DB unit too
     function  GetDefaultAlignment: {$IFDEF VER1_0}Classes.{$ENDIF}TAlignment; override;
-    function  InternalDefaultReadOnly: boolean; override;
+    function  GetDefaultDisplayFormat: string;
+    function  GetDefaultValueChecked: string; virtual;
+    function  GetDefaultValueUnchecked: string; virtual;
     function  GetDefaultVisible: boolean; override;
+    function  GetDisplayName: string; override;
+    function  InternalDefaultReadOnly: boolean; override;
     function  InternalDefaultWidth: Integer; override;
-    function  CreateTitle: TGridColumnTitle; override;
     property  IsAutomaticColumn: boolean read FIsAutomaticColumn;
     property  IsDesignColumn: boolean read GetIsDesignColumn;
+    procedure LinkField;
   public
     constructor Create(ACollection: TCollection); override;
+    destructor Destroy; override;
     function  IsDefault: boolean; override;
     property  DesignIndex: integer read FDesignIndex;
     property  Field: TField read GetField write SetField;
@@ -173,6 +195,10 @@ type
     property  FieldName: String read FFieldName write SetFieldName;
     property DisplayFormat: string read GetDisplayFormat write SetDisplayFormat
       stored IsDisplayFormatStored;
+    property ValueChecked: string read GetValueChecked write SetValueChecked
+      stored IsValueCheckedStored;
+    property ValueUnchecked: string read GetValueUnchecked write SetValueUnchecked
+      stored IsValueUncheckedStored;
   end;
 
   TColumnOrder = (coDesignOrder, coFieldIndexOrder);
@@ -187,7 +213,7 @@ type
     function ColumnFromField(Field: TField): TColumn;
     function  HasAutomaticColumns: boolean;
     function  HasDesignColumns: boolean;
-    procedure RemoveAutomaticColumns;
+    procedure RemoveAutoColumns;
   public
     constructor Create(AGrid: TCustomDBGrid);
     function  Add: TColumn;
@@ -201,17 +227,20 @@ type
   TCustomDbGrid=class(TCustomGrid)
   private
     FDataLink: TComponentDataLink;
+    FExtraOptions: TDbgridExtraOptions;
     FOnCellClick: TDBGridClickEvent;
     FOnColEnter,FOnColExit: TNotifyEvent;
     FOnColumnMoved: TMovedEvent;
     FOnDrawColumnCell: TDrawColumnCellEvent;
     FOnFieldEditMask: TGetDbEditMaskEvent;
     FOnTitleClick: TDBGridClickEvent;
+    FOnUserCheckboxBitmap: TUserCheckboxBitmapEvent;
     FOptions: TDbGridOptions;
     FReadOnly: Boolean;
     FColEnterPending: Boolean;
     FLayoutChangedCount: integer;
-    FUseAutoColumns: boolean;
+    //FUseAutoColumns: boolean;
+    //FUseCheckBoxColumn: boolean;
     FVisualChangeCount: Integer;
     FSelectionLock: Boolean;
     FTempText : string;
@@ -221,6 +250,8 @@ type
     FDefaultColWidths: boolean;
     FGridStatus: TDbGridStatus;
     FOldControlStyle: TControlStyle;
+    FIsEditingCheckBox: Boolean;  // For checkbox column editing emulation (by SSY)
+    FCheckedBitmap, FUnCheckedBitmap, FGrayedBitmap: TBitmap;
     procedure EmptyGrid;
     function GetCurrentField: TField;
     function GetDataSource: TDataSource;
@@ -241,9 +272,9 @@ type
     //procedure SetColumns(const AValue: TDBGridColumns);
     procedure SetCurrentField(const AValue: TField);
     procedure SetDataSource(const AValue: TDataSource);
+    procedure SetExtraOptions(const AValue: TDbgridExtraOptions);
     procedure SetOptions(const AValue: TDbGridOptions);
     procedure SetThumbTracking(const AValue: boolean);
-    procedure SetUseAutoColumns(const AValue: boolean);
     procedure UpdateBufferCount;
     procedure UpdateData;
     
@@ -270,6 +301,8 @@ type
     procedure StartUpdating;
     procedure EndUpdating;
     function  UpdatingData: boolean;
+    procedure SwapCheckBox;
+    function ValueMatch(const BaseValue, TestValue: string): Boolean; 
   protected
   {$ifdef ver1_0}
     property FixedColor;
@@ -280,6 +313,7 @@ type
     procedure CellClick(const aCol,aRow: Integer); override;
     procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer); override;
+    function  ColumnEditorStyle(aCol: Integer; F: TField): TColumnButtonStyle;
     function  CreateColumns: TGridColumns; override;
     procedure CreateWnd; override;
     procedure DefineProperties(Filer: TFiler); override;
@@ -292,6 +326,7 @@ type
     procedure DrawFocusRect(aCol,aRow:Integer; ARect:TRect); override;
     procedure DrawRow(ARow: Integer); override;
     procedure DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); override;
+    procedure DrawCheckboxBitmaps(aCol: Integer; aRect: TRect; F: TField);
     procedure EditingColumn(aCol: Integer; Ok: boolean);
     procedure EditorCancelEditing;
     procedure EditorDoGetValue; override;
@@ -306,6 +341,8 @@ type
     
     function  GetEditMask(aCol, aRow: Longint): string; override;
     function  GetEditText(aCol, aRow: Longint): string; override;
+    function  GetImageForCheckBox(CheckBoxView: TDBGridCheckBoxState): TBitmap;
+    
     function  GridCanModify: boolean;
     procedure HeaderClick(IsColumn: Boolean; index: Integer); override;
     procedure HeaderSized(IsColumn: Boolean; Index: Integer); override;
@@ -316,6 +353,7 @@ type
     procedure MoveSelection; override;
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     procedure PrepareCanvas(aCol,aRow: Integer; aState:TGridDrawState); override;
+    procedure RemoveAutomaticColumns;
     procedure SelectEditor; override;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
     function  ScrollBarAutomatic(Which: TScrollStyle): boolean; override;
@@ -329,9 +367,9 @@ type
     
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property Options: TDbGridOptions read FOptions write SetOptions;
+    property OptionsExtra: TDbgridExtraOptions read FExtraOptions write SetExtraOptions;
     property ReadOnly: Boolean read FReadOnly write FReadOnly default false;
-    property UseAutoColumns: boolean read FUseAutoColumns write SetUseAutoColumns;
-    
+
     property OnCellClick: TDBGridClickEvent read FOnCellClick write FOnCellClick;
     property OnColEnter: TNotifyEvent read FOnColEnter write FOnColEnter;
     property OnColExit: TNotifyEvent read FOnColExit write FOnColExit;
@@ -339,10 +377,12 @@ type
     property OnDrawColumnCell: TDrawColumnCellEvent read FOnDrawColumnCell write FOnDrawColumnCell;
     property OnFieldEditMask: TGetDbEditMaskEvent read FOnFieldEditMask write FOnFieldEditMask;
     property OnTitleClick: TDBGridClickEvent read FOnTitleClick write FOnTitleClick;
+    property OnUserCheckboxBitmap: TUserCheckboxBitmapEvent read FOnUserCheckboxBitmap write FOnUserCheckboxBitmap;
   public
     constructor Create(AOwner: TComponent); override;
     procedure InitiateAction; override;
     procedure DefaultDrawColumnCell(const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    function  EditorByStyle(Style: TColumnButtonStyle): TWinControl; override;
     procedure ResetColWidths;
     destructor Destroy; override;
     property SelectedField: TField read GetCurrentField write SetCurrentField;
@@ -362,7 +402,6 @@ type
     property GridLineColor;
     property GridLineStyle;
     property SelectedColor;
-    property UseAutoColumns;
     //property SelectedRows;
   published
     property Align;
@@ -388,6 +427,7 @@ type
     //property ImeMode;
     //property ImeName;
     property Options;
+    property OptionsExtra;
     //property ParentBiDiMode;
     property ParentColor;
     //property ParentCtl3D;
@@ -426,10 +466,86 @@ type
     //property OnStartDock;
     //property OnStartDrag;
     property OnTitleClick;
+    property OnUserCheckboxBitmap;
   end;
   
+  PCharArray   = Array[0..6+13] of PChar;
+
+const
+  IMGDBGrayedBox : PCharArray =
+    (
+  '13 13 6 1',
+  ' 	c None',
+  '.	c #808080',
+  '+	c #FFFFFF',
+  '@	c #404040',
+  '#	c #D4D0C8',
+  '$	c #000000',
+
+  '############+',
+  '#..........#+',
+  '#.##########+',
+  '#.#######.##+',
+  '#.######..##+',
+  '#.#.###...##+',
+  '#.#..#...###+',
+  '#.#.....####+',
+  '#.##...#####+',
+  '#.###.######+',
+  '#.##########+',
+  '############+',
+  '+++++++++++++');
+
+  IMGDBCheckedBox : PCharArray =
+    (
+  '13 13 6 1',
+  ' 	c None',
+  '.	c #808080',
+  '+	c #FFFFFF',
+  '@	c #404040',
+  '#	c #D4D0C8',
+  '$	c #000000',
+
+  '............+',
+  '.@@@@@@@@@@#+',
+  '.@+++++++++#+',
+  '.@+++++++$+#+',
+  '.@++++++$$+#+',
+  '.@+$+++$$$+#+',
+  '.@+$$+$$$++#+',
+  '.@+$$$$$+++#+',
+  '.@++$$$++++#+',
+  '.@+++$+++++#+',
+  '.@+++++++++#+',
+  '.###########+',
+  '+++++++++++++');
+
+  IMGDBUnCheckedBox : PCharArray =
+    (
+  '13 13 6 1',
+  ' 	c None',
+  '.	c #808080',
+  '+	c #FFFFFF',
+  '@	c #404040',
+  '#	c #D4D0C8',
+  '$	c #000000',
+
+  '............+',
+  '.@@@@@@@@@@#+',
+  '.@+++++++++#+',
+  '.@+++++++++#+',
+  '.@+++++++++#+',
+  '.@+++++++++#+',
+  '.@+++++++++#+',
+  '.@+++++++++#+',
+  '.@+++++++++#+',
+  '.@+++++++++#+',
+  '.@+++++++++#+',
+  '.###########+',
+  '+++++++++++++');
+
 procedure Register;
-  
+ 
 implementation
 
 procedure Register;
@@ -664,6 +780,34 @@ begin
   UpdateActive;
 end;
 
+procedure TCustomDbGrid.SetExtraOptions(const AValue: TDbgridExtraOptions);
+var
+  OldOptions: TDbGridExtraOptions;
+
+  function IsOptionChanged(Op: TDbgridExtraOption): boolean;
+  begin
+    result := ((op in OldOptions) and not (op in AValue)) or
+      (not (op in OldOptions) and (op in AValue));
+  end;
+
+begin
+  if FExtraOptions=AValue then exit;
+  OldOptions := FExtraOptions;
+  FExtraOptions := AValue;
+
+  if IsOptionChanged(dgeCheckboxColumn) then
+    Invalidate;
+  
+  if IsOptionChanged(dgeAutoColumns) then begin
+    if dgeAutoColumns in aValue then
+      AddAutomaticColumns
+    else if TDbGridColumns(Columns).HasAutomaticColumns then
+      RemoveAutomaticColumns;
+    UpdateActive;
+  end;
+  
+end;
+
 procedure TCustomDbGrid.SetOptions(const AValue: TDbGridOptions);
 var
   OldOptions: TGridOptions;
@@ -726,18 +870,6 @@ begin
   else
     inherited Options := Inherited Options - [goThumbTracking];
   EndUpdate(uoNone);
-end;
-
-procedure TCustomDbGrid.SetUseAutoColumns(const AValue: boolean);
-begin
-  if AValue <> FUseAutoColumns then begin
-    FUseAutoColumns := AValue;
-    if AValue then
-      AddAutomaticColumns
-    else if TDbGridColumns(Columns).HasAutomaticColumns then
-      TDbgridColumns(Columns).RemoveAutomaticColumns;
-    UpdateActive;
-  end;
 end;
 
 procedure TCustomDbGrid.UpdateBufferCount;
@@ -1183,10 +1315,46 @@ begin
   TDbGridColumns(Columns).ResetColumnsOrder(coFieldIndexOrder);
 end;
 
+procedure TCustomDbGrid.SwapCheckBox;
+var
+	TempColumn: TColumn;
+  SelField: TField;
+begin
+  if not GridCanModify then
+    exit; // raise exception?
+    
+  SelField := SelectedField;
+
+  if SelField.DataType=ftBoolean then
+  begin
+    SelField.Dataset.Edit;
+  	SelField.AsBoolean := not SelField.AsBoolean
+  end else
+  begin
+    TempColumn := TColumn(ColumnFromGridColumn(Col));
+    if not TempColumn.ReadOnly then
+    begin
+      SelField.Dataset.Edit;
+      if ValueMatch(TempColumn.ValueChecked, SelField.AsString) then
+        SelField.AsString := TempColumn.ValueUnchecked
+      else
+        SelField.AsString := TempColumn.ValueChecked;
+    end;
+  end;
+end;
+
+function TCustomDbGrid.ValueMatch(const BaseValue, TestValue: string): Boolean;
+begin
+  if BaseValue=TestValue then
+    Result := True
+  else
+    Result := False;
+end;
+
 procedure TCustomDbGrid.LinkActive(Value: Boolean);
 begin
   if not Value then
-    TDbGridColumns(Columns).RemoveAutoMaticColumns;
+    RemoveAutomaticColumns;
   LayoutChanged;
 end;
 
@@ -1263,6 +1431,21 @@ begin
   end;
 end;
 
+function TCustomDbGrid.ColumnEditorStyle(aCol: Integer; F: TField): TColumnButtonStyle;
+begin
+  Result := cbsAuto;
+  if Columns.Enabled then
+    Result := ColumnFromGridColumn(aCol).ButtonStyle;
+    
+  if (Result=cbsAuto) and (F<>nil) then
+    case F.DataType of
+      ftBoolean: Result := cbsCheckboxColumn;
+    end;
+
+  if (result = cbsCheckBoxColumn) and not (dgeCheckboxColumn in FExtraOptions) then
+    Result := cbsAuto;
+end;
+
 function TCustomDbGrid.CreateColumns: TGridColumns;
 begin
   result := TDbGridColumns.Create(Self);
@@ -1331,19 +1514,25 @@ begin
     end else
     if (aRow=0)and(ACol>=FixedCols) then begin
       FixRectangle;
-      Canvas.TextRect(ARect,ARect.Left,ARect.Top,GeTGridColumnTitle(aCol));
+      Canvas.TextRect(ARect,ARect.Left,ARect.Top,GetGridColumnTitle(aCol));
     end;
   end else begin
     F := GetFieldFromGridColumn(aCol);
-    if F<>nil then begin
-      if F.dataType <> ftBlob then
-        S := F.DisplayText
-      else
-        S := '(blob)';
-    end else
-      S := '';
-    FixRectangle;
-    Canvas.TextRect(Arect,ARect.Left,ARect.Top, S);
+    case ColumnEditorStyle(aCol, F) of
+      cbsCheckBoxColumn:
+        DrawCheckBoxBitmaps(aCol, aRect, F);
+      else begin
+        if F<>nil then begin
+          if F.dataType <> ftBlob then
+            S := F.DisplayText
+          else
+            S := '(blob)';
+        end else
+          S := '';
+        FixRectangle;
+        Canvas.TextRect(Arect,ARect.Left,ARect.Top, S);
+      end;
+    end;
   end;
 end;
 
@@ -1522,6 +1711,14 @@ begin
         end;
         Key:=0;
       end;
+      
+    VK_SPACE:
+      begin
+        if ColumnEditorStyle(Col, SelectedField) = cbsCheckboxColumn then begin
+      		SwapCheckBox;
+          Key:=0;
+        end;
+      end;
 
     else
       inherited KeyDown(Key, Shift);
@@ -1619,6 +1816,12 @@ begin
     Canvas.Brush.Color := Self.Color;
 end;
 
+procedure TCustomDbGrid.RemoveAutomaticColumns;
+begin
+  if not (csDesigning in ComponentState) then
+    TDbgridColumns(Columns).RemoveAutoColumns;
+end;
+
 procedure TCustomDbGrid.SelectEditor;
 begin
   if FDatalink.Active then
@@ -1683,6 +1886,11 @@ end;
 
 procedure TCustomDbGrid.CellClick(const aCol, aRow: Integer);
 begin
+  if ColumnEditorStyle(ACol, SelectedField) = cbsCheckboxColumn then
+    if FIsEditingCheckBox then
+			SwapCheckBox
+    else
+    	FIsEditingCheckBox := True;
   if Assigned(OnCellClick) then
     OnCellClick(TColumn(ColumnFromGridColumn(aCol)));
 end;
@@ -1810,6 +2018,19 @@ begin
   end;
 end;
 
+function  TCustomDbGrid.GetImageForCheckBox(CheckBoxView: TDBGridCheckBoxState): TBitmap;
+begin
+  if CheckboxView=gcbpUnchecked then
+    Result := FUncheckedBitmap
+  else if CheckboxView=gcbpChecked then
+    Result := FCheckedBitmap
+  else
+  	Result := FGrayedBitmap;
+
+  if Assigned(OnUserCheckboxBitmap) then
+    OnUserCheckboxBitmap(Self, CheckBoxView, Result);
+end;
+
 function TCustomDbGrid.GridCanModify: boolean;
 begin
   result := not ReadOnly and (dgEditing in Options) and not FDataLink.ReadOnly
@@ -1820,6 +2041,7 @@ procedure TCustomDbGrid.MoveSelection;
 begin
   if FSelectionLock then
     exit;
+  FIsEditingCheckBox := False;
   {$ifdef dbgdbgrid}DebugLn('DbGrid.MoveSelection INIT');{$Endif}
   inherited MoveSelection;
   if FColEnterPending and Assigned(OnColEnter) then begin
@@ -1888,6 +2110,40 @@ begin
     OnDrawColumnCell(Self, aRect, aCol, TColumn(ColumnFromGridColumn(aCol)), aState)
   else
     DefaultDrawCell(aCol, aRow, aRect, aState);
+end;
+
+procedure TCustomDbGrid.DrawCheckboxBitmaps(aCol: Integer; aRect: TRect;
+  F: TField);
+var
+  ChkBitmap: TBitmap;
+  XPos,YPos: Integer;
+begin
+  // by SSY
+	if (F<>nil) then
+  	if F.DataType=ftBoolean then
+      if F.IsNull then
+    		ChkBitmap := GetImageForCheckBox(gcbpGrayed)
+      else
+        if F.AsBoolean then
+          ChkBitmap := GetImageForCheckBox(gcbpChecked)
+        else
+        	ChkBitmap := GetImageForCheckBox(gcbpUnChecked)
+    else
+      if ValueMatch(F.AsString, TColumn(ColumnFromGridColumn(aCol)).ValueChecked) then
+        ChkBitmap := GetImageForCheckBox(gcbpChecked)
+      else
+      	if ValueMatch(F.AsString, TColumn(ColumnFromGridColumn(aCol)).ValueUnChecked) then
+      		ChkBitmap := GetImageForCheckBox(gcbpUnChecked)
+        else
+          ChkBitmap := GetImageForCheckBox(gcbpGrayed)
+  else
+    ChkBitmap := GetImageForCheckBox(gcbpGrayed);
+
+  if ChkBitmap<>nil then begin
+    XPos := Trunc((aRect.Left+aRect.Right-ChkBitmap.Width)/2);
+    YPos := Trunc((aRect.Top+aRect.Bottom-ChkBitmap.Height)/2);
+    Canvas.Draw(XPos, YPos, ChkBitmap);
+  end;
 end;
 
 function TCustomDbGrid.EditorCanAcceptKey(const ch: Char): boolean;
@@ -2024,12 +2280,24 @@ begin
      goSmoothScroll, goColMoving, goTabs, goEditing, goDrawFocusSelected,
      goColSizing ];
 
+  FExtraOptions := [dgeAutoColumns, dgeCheckboxColumn];
   
   // What a dilema!, we need ssAutoHorizontal and ssVertical!!!
   ScrolLBars:=ssBoth;
   DefaultTextStyle.Wordbreak := False;
 
   DefaultRowHeight := 18;
+
+  // Default bitmaps for cbsCheckedColumn
+  FUnCheckedBitmap := TBitmap.Create;
+  FUnCheckedBitmap.Handle := CreatePixmapIndirect(@IMGDBUnCheckedBox[0],
+    GetSysColor(COLOR_BTNFACE));
+  FCheckedBitmap := TBitmap.Create;
+  FCheckedBitmap.Handle := CreatePixmapIndirect(@IMGDBCheckedBox[0],
+    GetSysColor(COLOR_BTNFACE));
+  FGrayedBitmap := TBitmap.Create;
+  FGrayedBitmap.Handle := CreatePixmapIndirect(@IMGDBGrayedBox[0],
+    GetSysColor(COLOR_BTNFACE));
 end;
 
 procedure TCustomDbGrid.InitiateAction;
@@ -2084,16 +2352,32 @@ begin
     end;
   end else begin
     F := GetFieldFromGridColumn(DataCol);
-    if F<>nil then begin
-      if F.dataType <> ftBlob then
-        S := F.DisplayText
-      else
-        S := '(blob)';
-    end else
-      S := '';
-    R := FixRectangle();
-    Canvas.TextRect(R,R.Left,R.Top,S);
+    case ColumnEditorStyle(DataCol, F) of
+      cbsCheckBoxColumn:
+        DrawCheckBoxBitmaps(DataCol, Rect, F);
+      else begin
+        if F<>nil then begin
+          if F.dataType <> ftBlob then
+            S := F.DisplayText
+          else
+            S := '(blob)';
+        end else
+          S := '';
+        FixRectangle();
+        Canvas.TextRect(rect,Rect.Left,Rect.Top, S);
+      end;
+    end;
   end;
+end;
+
+function TCustomDbGrid.EditorByStyle(Style: TColumnButtonStyle): TWinControl;
+begin
+  // we want override the editor style if it is cbsAuto because
+  // field.datatype might be ftBoolean or some other cases
+  if Style=cbsAuto then
+    Style := ColumnEditorStyle(Col, SelectedField);
+    
+  Result:=inherited EditorByStyle(Style);
 end;
 
 procedure TCustomDbGrid.ResetColWidths;
@@ -2106,6 +2390,9 @@ end;
 
 destructor TCustomDbGrid.Destroy;
 begin
+  FUncheckedBitmap.Free;
+  FCheckedBitmap.Free;
+  FGrayedBitmap.Free;
   FDataLink.OnDataSetChanged:=nil;
   FDataLink.OnRecordChanged:=nil;
   FDataLink.Free;
@@ -2307,7 +2594,7 @@ begin
     end;
 end;
 
-procedure TDbGridColumns.RemoveAutomaticColumns;
+procedure TDbGridColumns.RemoveAutoColumns;
 var
   i: Integer;
 begin
@@ -2404,6 +2691,22 @@ begin
   result := (DesignIndex>=0) and (DesignIndex<10000);
 end;
 
+function TColumn.GetValueChecked: string;
+begin
+  if FValueChecked = nil then
+    Result := GetDefaultValueChecked
+  else
+    Result := FValueChecked;
+end;
+
+function TColumn.GetValueUnchecked: string;
+begin
+  if FValueUnChecked = nil then
+    Result := GetDefaultValueUnChecked
+  else
+    Result := FValueUnChecked;
+end;
+
 procedure TColumn.ApplyDisplayFormat;
 begin
   if (FField <> nil) and FDisplayFormatChanged then begin
@@ -2425,6 +2728,16 @@ end;
 function TColumn.IsDisplayFormatStored: boolean;
 begin
   Result := FDisplayFormatChanged;
+end;
+
+function TColumn.IsValueCheckedStored: boolean;
+begin
+  result := ValueChecked <> GetDefaultValueChecked;
+end;
+
+function TColumn.IsValueUncheckedStored: boolean;
+begin
+  Result := ValueUnchecked <> GetDefaultValueUnchecked;
 end;
 
 procedure TColumn.SetDisplayFormat(const AValue: string);
@@ -2465,6 +2778,32 @@ begin
     result :=nil;
 end;
 
+procedure TColumn.SetValueChecked(const AValue: string);
+begin
+  if (FValueChecked=nil)or(CompareText(AValue, FValueChecked)<>0) then begin
+    if FValueChecked<>nil then
+      StrDispose(FValueChecked)
+    else
+      if CompareText(AValue, GetDefaultValueChecked)=0 then
+        exit;
+    FValueChecked := StrNew(PChar(AValue));
+    Changed(False);
+  end;
+end;
+
+procedure TColumn.SetValueUnchecked(const AValue: string);
+begin
+  if (FValueUnchecked=nil)or(CompareText(AValue, FValueUnchecked)<>0) then begin
+    if FValueUnchecked<>nil then
+      StrDispose(FValueUnchecked)
+    else
+      if CompareText(AValue, GetDefaultValueUnchecked)=0 then
+        exit;
+    FValueUnchecked := StrNew(PChar(AValue));
+    Changed(False);
+  end;
+end;
+
 function TColumn.InternalDefaultWidth: Integer;
 var
   AGrid: TCustomDbGrid;
@@ -2495,6 +2834,13 @@ begin
   end;
 end;
 
+destructor TColumn.Destroy;
+begin
+  if FValueChecked<>nil then StrDispose(FValueUnchecked);
+  if FValueUnchecked<>nil then StrDispose(FValueUnchecked);
+  inherited Destroy;
+end;
+
 function TColumn.IsDefault: boolean;
 begin
   result := not FDisplayFormatChanged and (inherited IsDefault());
@@ -2521,6 +2867,22 @@ begin
     else if FField is TDateTimeField then
       Result := TDateTimeField(FField).DisplayFormat
   end;
+end;
+
+function TColumn.GetDefaultValueChecked: string;
+begin
+  if (FField<>nil) and (FField.Datatype=ftBoolean) then
+    Result := BoolToStr(True)
+  else
+    Result := '1';
+end;
+
+function TColumn.GetDefaultValueUnchecked: string;
+begin
+  if (FField<>nil) and (FField.DataType=ftBoolean) then
+    Result := BoolToStr(False)
+  else
+    Result := '0';
 end;
 
 function TColumn.InternalDefaultReadOnly: boolean;
@@ -2574,6 +2936,9 @@ end.
 
 {
   $Log$
+  Revision 1.43  2005/06/11 09:30:24  mattias
+  added checkboxes to TDBGrid  from Sergey Smirnov
+
   Revision 1.42  2005/06/07 19:29:24  vincents
   fixes for bugs 922,924 and updating <10 recs. Automatic Columns, picklist implementation    from Jesus
 

@@ -1276,7 +1276,7 @@ var
   CurDir, CompiledSrcExt: string;
 
   function LoadFile(const AFilename: string;
-    var NewCode: TCodeBuffer): boolean;
+    out NewCode: TCodeBuffer): boolean;
   begin
     {$IFDEF ShowTriedFiles}
     DebugLn('TFindDeclarationTool.FindUnitSource.LoadFile ',AFilename);
