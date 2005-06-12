@@ -133,12 +133,16 @@ end;
 procedure TDBRadioGroup.UpdateRadioButtonStates;
 var
   OldValue: String;
+  SettingValue: boolean;
 begin
   OldValue:=Value;
   inherited UpdateRadioButtonStates;
+  SettingValue := FInSetValue;
   Value := GetButtonValue(ItemIndex);
-  if (Value<>OldValue) then begin
-    if FDataLink.Editing then FDataLink.Modified;
+  if (Value<>OldValue) and FDatalink.CanModify and not SettingValue then
+  begin
+    FDatalink.Edit; // ensure that we are in edit state
+    FDataLink.Modified;
   end;
 end;
 
