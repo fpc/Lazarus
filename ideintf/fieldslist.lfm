@@ -1,0 +1,46 @@
+object FieldsListFrm: TFieldsListFrm
+  Caption = 'FieldsListFrm'
+  ClientHeight = 271
+  ClientWidth = 173
+  PixelsPerInch = 96
+  HorzScrollBar.Page = 172
+  VertScrollBar.Page = 270
+  Left = 358
+  Height = 271
+  Top = 99
+  Width = 173
+  object BitBtnOk: TBitBtn
+    Anchors = [akLeft, akBottom]
+    Caption = '&Create'
+    Default = True
+    Kind = bkOK
+    ModalResult = 1
+    OnClick = BitBtnOkClick
+    TabOrder = 0
+    Left = 9
+    Height = 25
+    Top = 241
+    Width = 75
+  end
+  object BitBtnCancel: TBitBtn
+    Anchors = [akLeft, akBottom]
+    Cancel = True
+    Caption = 'Cancel'
+    Kind = bkCancel
+    ModalResult = 2
+    TabOrder = 1
+    Left = 89
+    Height = 25
+    Top = 241
+    Width = 75
+  end
+  object ListBox1: TListBox
+    Align = alTop
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ExtendedSelect = True
+    MultiSelect = True
+    TabOrder = 2
+    Height = 232
+    Width = 173
+  end
+end

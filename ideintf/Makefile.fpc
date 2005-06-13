@@ -22,6 +22,8 @@ implicitunits=actionseditor \
   componentreg \
   componenttreeview \
   configstorage \
+  fieldseditor \
+  fieldslist \
   formeditingintf \
   graphpropedits \
   helpfpdoc \
@@ -30,6 +32,7 @@ implicitunits=actionseditor \
   idecommands \
   imagelisteditor \
   listviewpropedit \
+  newfield \
   objectinspector \
   objinspstrconsts \
   projectintf \

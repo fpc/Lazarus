@@ -1,6 +1,7 @@
 The following people contributed to Lazarus:
 
 Alexander Shiyan
+Alexandru Alexandrov
 Andreas Hausladen
 Andrew Haines
 Andrew Johnson

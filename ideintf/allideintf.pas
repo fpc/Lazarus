@@ -24,7 +24,8 @@ uses
   ComponentEditors, GraphPropEdits, DBPropEdits, ListViewPropEdit,
   ImageListEditor, ComponentTreeView, ActionsEditor, HelpIntf, TextTools,
   FormEditingIntf, SrcEditorIntf, ComponentReg, PackageIntf, HelpHTML,
-  ConfigStorage, HelpFPDoc, ProjectIntf, LazIDEIntf, NewItemIntf, MacroIntf;
+  FieldsEditor, ConfigStorage, HelpFPDoc, ProjectIntf, LazIDEIntf, NewItemIntf,
+  MacroIntf;
 
 implementation
 

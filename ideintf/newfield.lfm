@@ -1,0 +1,278 @@
+object NewFieldFrm: TNewFieldFrm
+  BorderStyle = bsDialog
+  Caption = 'Dialog'
+  ClientHeight = 376
+  ClientWidth = 262
+  OnCreate = FormCreate
+  ParentFont = True
+  PixelsPerInch = 96
+  Position = poScreenCenter
+  TextHeight = 13
+  HorzScrollBar.Page = 261
+  VertScrollBar.Page = 375
+  Left = 243
+  Height = 376
+  Top = 176
+  Width = 262
+  object Panel2: TPanel
+    Align = alTop
+    ClientHeight = 121
+    ClientWidth = 262
+    FullRepaint = False
+    TabOrder = 0
+    Height = 121
+    Top = 64
+    Width = 262
+    object GroupBox1: TGroupBox
+      Caption = 'Field properties'
+      ClientHeight = 87
+      ClientWidth = 240
+      ParentColor = True
+      TabOrder = 0
+      Left = 8
+      Height = 105
+      Top = 8
+      Width = 244
+      object Label1: TLabel
+        Caption = '&Name:'
+        Color = clNone
+        FocusControl = EditName
+        Left = 15
+        Height = 13
+        Top = 11
+        Width = 31
+      end
+      object Label2: TLabel
+        Caption = '&Type:'
+        Color = clNone
+        FocusControl = SelectType
+        Left = 15
+        Height = 13
+        Top = 35
+        Width = 27
+      end
+      object Label3: TLabel
+        Caption = '&Size:'
+        Color = clNone
+        FocusControl = EditSize
+        Left = 15
+        Height = 13
+        Top = 59
+        Width = 23
+      end
+      object EditName: TEdit
+        OnChange = EditNameChange
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 0
+        Left = 79
+        Height = 21
+        Hint = 'Field name'
+        Top = 8
+        Width = 145
+      end
+      object SelectType: TComboBox
+        ItemHeight = 13
+        Items.Strings = (
+          'String'
+          'Integer'
+          'SmallInt'
+          'Word'
+          'Float'
+          'Currency'
+          'Boolean'
+          'Date'
+          'Time'
+          'DateTime'
+          'Blob'
+          'Memo'
+          'Graphic'
+          'LargeInt'
+        )
+        MaxLength = 0
+        OnChange = SelectTypeChange
+        Style = csDropDownList
+        TabOrder = 1
+        Left = 79
+        Height = 21
+        Hint = 'Field type'
+        Top = 32
+        Width = 145
+      end
+      object EditSize: TEdit
+        Enabled = False
+        TabOrder = 2
+        Left = 79
+        Height = 21
+        Hint = 'Field size'
+        Top = 56
+        Width = 145
+      end
+    end
+  end
+  object Panel3: TPanel
+    Align = alTop
+    ClientHeight = 144
+    ClientWidth = 262
+    FullRepaint = False
+    TabOrder = 1
+    Visible = False
+    Height = 144
+    Top = 185
+    Width = 262
+    object GroupBox2: TGroupBox
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      Caption = 'Lookup definition'
+      ClientHeight = 111
+      ClientWidth = 240
+      ParentColor = True
+      TabOrder = 0
+      Left = 8
+      Height = 129
+      Top = 8
+      Width = 244
+      object Label4: TLabel
+        Caption = '&Key fields'
+        Color = clNone
+        FocusControl = SelectKeyFields
+        Left = 16
+        Height = 13
+        Top = 10
+        Width = 45
+      end
+      object Label5: TLabel
+        Caption = 'L&ookup keys'
+        Color = clNone
+        FocusControl = SelectLookupKeys
+        Left = 16
+        Height = 13
+        Top = 58
+        Width = 61
+      end
+      object Label6: TLabel
+        Caption = '&Result Fields'
+        Color = clNone
+        FocusControl = SelectResultField
+        Left = 16
+        Height = 13
+        Top = 82
+        Width = 60
+      end
+      object Label10: TLabel
+        Caption = 'Dataset'
+        Color = clNone
+        Left = 16
+        Height = 13
+        Top = 34
+        Width = 37
+      end
+      object SelectKeyFields: TComboBox
+        ItemHeight = 13
+        MaxLength = 0
+        OnChange = SelectKeyFieldsChange
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 0
+        Left = 80
+        Height = 21
+        Hint = 'Key fields'
+        Top = 7
+        Width = 145
+      end
+      object SelectLookupKeys: TComboBox
+        Enabled = False
+        ItemHeight = 13
+        MaxLength = 0
+        OnChange = SelectLookupKeysChange
+        TabOrder = 2
+        Left = 80
+        Height = 21
+        Top = 55
+        Width = 145
+      end
+      object SelectResultField: TComboBox
+        Enabled = False
+        ItemHeight = 13
+        MaxLength = 0
+        OnChange = SelectResultFieldChange
+        TabOrder = 3
+        Left = 80
+        Height = 21
+        Top = 79
+        Width = 145
+      end
+      object DataSetsCombo: TComboBox
+        ItemHeight = 13
+        MaxLength = 0
+        OnChange = DataSetsComboChange
+        ParentShowHint = False
+        ShowHint = True
+        Style = csDropDownList
+        TabOrder = 1
+        Left = 80
+        Height = 21
+        Hint = 'Lookup dataset'
+        Top = 31
+        Width = 145
+      end
+    end
+  end
+  object Panel4: TPanel
+    Align = alBottom
+    ClientHeight = 47
+    ClientWidth = 262
+    FullRepaint = False
+    TabOrder = 2
+    Height = 47
+    Top = 329
+    Width = 262
+    object OKBtn: TButton
+      Anchors = [akLeft, akBottom]
+      Caption = 'OK'
+      Default = True
+      Enabled = False
+      ModalResult = 1
+      OnClick = OKBtnClick
+      TabOrder = 0
+      Left = 56
+      Height = 25
+      Top = 11
+      Width = 75
+    end
+    object CancelBtn: TButton
+      Anchors = [akLeft, akBottom]
+      Cancel = True
+      Caption = 'Cancel'
+      ModalResult = 2
+      TabOrder = 1
+      Left = 136
+      Height = 25
+      Top = 11
+      Width = 75
+    end
+  end
+  object Panel1: TPanel
+    Align = alTop
+    ClientHeight = 64
+    ClientWidth = 262
+    FullRepaint = False
+    TabOrder = 3
+    Height = 64
+    Width = 262
+    object RadioGroup1: TRadioGroup
+      Caption = 'Field Type'
+      Columns = 2
+      ItemIndex = 0
+      Items.Strings = (
+        '&Calculated'
+        '&Lookup'
+      )
+      OnClick = RadioGroup1Click
+      ParentColor = True
+      Left = 8
+      Height = 48
+      Top = 8
+      Width = 244
+    end
+  end
+end

@@ -17,6 +17,7 @@ Coding style:
 New files:
 - Every file should start with a header containing the license and a few lines
   describing the content.
+- pascal sources should have lowercase filenames (.pas, .pp, .inc, .lfm, .lrs)
 
 Include files:
 - should start with the {%MainUnit } directive

@@ -894,6 +894,24 @@ procedure Register;
 
 implementation
 
+var
+  FieldClasses: TList;
+
+procedure RegFields(const AFieldClasses: array of TFieldClass);
+var I: Integer;
+    FieldClass: TFieldClass;
+begin
+  if FieldClasses = nil then FieldClasses := TList.Create;
+  for I := Low(AFieldClasses) to High(AFieldClasses) do begin
+    FieldClass := AFieldClasses[I];
+    if (FieldClass <> Nil) And (FieldClasses.IndexOf(FieldClass) = -1) then
+    begin
+      FieldClasses.Add(FieldClass);
+      RegisterNoIcon([FieldClass]);
+      RegisterClass(FieldClass);
+    end;
+  end;
+end;
 
 function ExtractFieldName(const Fields: string; var StartPos: Integer): string;
 var
@@ -945,6 +963,9 @@ begin
   RegisterComponents('Data Controls',[TDBNavigator,TDBText,TDBEdit,TDBMemo,
     TDBImage,TDBListBox,TDBComboBox,TDBCheckBox,TDBRadioGroup,TDBCalendar,
     TDBGroupBox]);
+  {$IFNDEF VER2_0}
+  RegFields(DefaultFieldClasses);
+  {$ENDIF}
 end;
 
 
@@ -1297,11 +1318,17 @@ end;
 {$Include dbcalendar.inc}
 {$Include dbcustomnavigator.inc}
 
+finalization
+  FieldClasses.Free;
+
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.30  2005/06/13 18:34:21  mattias
+  added DB Fields Editor for the IDE  from Alexandrov Alexandru - needs FPC 2.1
+
   Revision 1.29  2005/05/07 13:00:18  mattias
   fixed TDBComboBox update (bug 873)  from Joost van der Sluis
 
