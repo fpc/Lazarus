@@ -2241,7 +2241,7 @@ begin
 
       Msg.KeyData := CommonKeyData or (Flags shl 16) or $0001 {TODO:  repeatcount};
 
-      // send the message directly to the LCL
+      // send the (Sys)KeyDown message directly to the LCL
       NotifyApplicationUserInput(Msg.Msg);
       Result := DeliverMessage(TargetData, Msg) = 0;
 
@@ -2254,7 +2254,33 @@ begin
       if KeyActivatedAccelerator then exit;
       
 
-      if (not EventStopped) and CanSendChar
+      if (not EventStopped) and (not BeforeEvent) then begin
+        // send the UTF8 keypress
+        // try to get the UTF8 representation of the key
+        {$IFDEF GTK1}
+        Character:='';
+        if (Event^.length>0) and (Event^.length<7) then begin
+          SetLength(Character,Event^.length);
+          System.Move(Event^.thestring^,Character[1],length(Character));
+        end;
+        {$ELSE GTK2}
+        Character := UnicodeToUTF8(gdk_keyval_to_unicode(Event^.KeyVal));
+        {$ENDIF GTK2}
+        {$IFDEF VerboseKeyboard}
+        debugln('[HandleGTKKeyUpDown] GDK_KEY_PRESS UTF8="',DbgStr(Character),'"');
+        {$ENDIF}
+        if Character<>'' then begin
+          LCLObject:=GetNearestLCLObject(TargetWidget);
+          if LCLObject is TWinControl then begin
+            Result:=TWinControl(LCLObject).IntfUTF8KeyPress(Character,1);
+            if Result or (Character='') then
+              StopKeyEvent('key_press_event');
+          end;
+        end;
+      end;
+
+
+      if (not EventStopped) and (not BeforeEvent) and CanSendChar
       then begin
         EventTrace('char', data);
 
@@ -2290,9 +2316,9 @@ begin
               Msg.msg := LM_CHAR;
           end;
 
+          // send the (Sys)Char message directly (not queued) to the LCL
           Msg.Result:=0;
           Msg.CharCode:=ord(KeyPressesChar);
-          // send the message directly (not queued) to the LCL
           //debugln('GDK_KEY_PRESS ',DbgSName(TObject(TargetData)),' ',dbgs(Msg.msg));
           Result := DeliverMessage(TargetData, Msg) = 0;
 
@@ -2315,30 +2341,6 @@ begin
         
       end;
 
-      if (not EventStopped) and (not BeforeEvent) then begin
-        // send the UTF8 keypress
-        // try to get the UTF8 representation of the key
-        {$IFDEF GTK1}
-        Character:='';
-        if (Event^.length>0) and (Event^.length<7) then begin
-          SetLength(Character,Event^.length);
-          System.Move(Event^.thestring^,Character[1],length(Character));
-        end;
-        {$ELSE GTK2}
-        Character := UnicodeToUTF8(gdk_keyval_to_unicode(Event^.KeyVal));
-        {$ENDIF GTK2}
-        {$IFDEF VerboseKeyboard}
-        debugln('[HandleGTKKeyUpDown] GDK_KEY_PRESS UTF8="',DbgStr(Character),'"');
-        {$ENDIF}
-        if Character<>'' then begin
-          LCLObject:=GetNearestLCLObject(TargetWidget);
-          if LCLObject is TWinControl then begin
-            Result:=TWinControl(LCLObject).IntfUTF8KeyPress(Character,1);
-            if Result or (Character='') then
-              StopKeyEvent('key_press_event');
-          end;
-        end;
-      end;
     end;
   end;
   
@@ -8211,6 +8213,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.362  2005/06/13 09:38:54  mattias
+  updated COPYING and README for new files
+
   Revision 1.361  2005/06/08 08:02:09  mattias
   added message parts to Help interface
 

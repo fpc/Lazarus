@@ -7,9 +7,9 @@ general, each file contains a header, describing the license of the file.
 
 The license directory tree:
 
-<lazarus>/          (mostly GPL2, but with a few files under LGPL)
+<lazarus>/          (mostly GPL2, but with a few files under modified LGPL)
  |
- +- designer        (mostly GPL2, but with a few files under LGPL)
+ +- designer        (mostly GPL2, but with a few files under modified LGPL)
  |
  +- debugger        (GPL2)
  |
@@ -21,6 +21,8 @@ The license directory tree:
  |
  +- lcl             (modified LGPL, see there)
  |
+ +- ideintf         (modified LGPL)
+ |
  +- components/
     |
     +- synedit      (MPL - Mozilla public license)
@@ -28,15 +30,17 @@ The license directory tree:
     +- codetools    (GPL 2)
     |
     +- gtk
-       |
-       +- gtkglarea (modified LGPL, with one exception: nvgl.pp)
-
+    |  |
+    |  +- gtkglarea (modified LGPL, with one exception: nvgl.pp)
+    |
+    +- xxx There are various packages under various licenses. Mostly the
+           modified LGPL. See the license in the package files for details.
+           
 
 The IDE files are the files in the <lazarus>, designer, packager and debugger
 directory. They are under the GPL 2, with the following exceptions:
-objectinspector.pp, propedits.pp, transfermacros.pp, wordcompletion.pp,
-patheditordlg.pas, outputfilter.pas, inputfiledialog.pas, findreplacedialog.pp,
-findinfilesdlg.pas
+transfermacros.pp, wordcompletion.pp, patheditordlg.pas, outputfilter.pas,
+inputfiledialog.pas, findreplacedialog.pp, findinfilesdlg.pas
 These files are under the modified LGPL as described in COPYING.modifiedLGPL.
 
 

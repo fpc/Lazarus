@@ -7550,6 +7550,7 @@ begin
                 if Len < LogCaretXY.X then
                   Temp := Temp + StringOfChar(' ', LogCaretXY.X - Len);
                 System.Insert(AChar, Temp, LogCaretXY.X);
+                //debugln('ecChar Temp=',DbgStr(Temp),' AChar=',DbgStr(AChar));
                 CaretX := CaretX + 1;
                 {$ENDIF}
                 TrimmedSetLine(CaretY - 1, Temp);
