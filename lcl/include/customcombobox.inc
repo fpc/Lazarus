@@ -375,11 +375,12 @@ end;
 procedure TCustomComboBox.KeyDown(var Key: Word; Shift: TShiftState);
 var
   skip : Boolean;
+  UserDropDown: boolean;
 begin
   Skip := False;
+  UserDropDown := ((Shift *[ssCtrl] = [ssCtrl]) and (Key = VK_DOWN));
 
-  if AutoDropDown or ((Shift *[ssCtrl] = [ssCtrl]) and (Key = VK_DOWN))
-      or FReturnArrowState then
+  if AutoDropDown or UserDropDown or FReturnArrowState then
   begin
     case Key of
       VK_TAB,VK_RETURN:
@@ -403,7 +404,8 @@ begin
         end;
         //AutoDropDown := True;
         DroppedDown := True;
-
+        if UserDropDown then
+          Skip := True;
       end;
     end;
   end;
@@ -773,6 +775,21 @@ begin
   end;
 end;
 
+procedure TCustomComboBox.LMMeasureItem(var TheMessage: TLMMeasureItem);
+var
+  AHeight: Integer;
+begin
+  with TheMessage.MeasureItemStruct^ do begin
+    if Self.ItemHeight <> 0 then
+      AHeight := Self.ItemHeight
+    else
+      Aheight := ItemHeight;
+    MeasureItem(ItemId, AHeight);
+    if AHeight>0 then
+      ItemHeight := AHeight;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   procedure TCustomComboBox.CNCommand(var TheMessage: TLMCommand);
 
@@ -817,6 +834,9 @@ end;
 
 {
   $Log$
+  Revision 1.61  2005/06/13 08:04:38  vincents
+  fixed crashed with csOwnerDrawVariable combobox style (bug 934)    from Jesus
+
   Revision 1.60  2005/03/22 20:55:26  micha
   setting sorted to false should be propagated to internal stringlist (by jesusrmx)
 

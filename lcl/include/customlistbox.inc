@@ -210,6 +210,21 @@ begin
   end;
 end;
 
+procedure TCustomListBox.LMMeasureItem(var TheMessage: TLMMeasureItem);
+var
+  AHeight: Integer;
+begin
+  with TheMessage.MeasureItemStruct^ do begin
+    if Self.ItemHeight <> 0 then
+      AHeight := Self.ItemHeight
+    else
+      Aheight := ItemHeight;
+    MeasureItem(ItemId, AHeight);
+    if AHeight>0 then
+      ItemHeight := AHeight;
+  end;
+end;
+
 procedure TCustomListBox.IntfSelectionChanged;
 begin
   if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then exit;

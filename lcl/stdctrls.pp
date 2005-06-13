@@ -249,6 +249,7 @@ type
     procedure SetItemWidth(const AValue: Integer);
     procedure SetItems(Value: TStrings);
     procedure LMDrawListItem(var TheMessage: TLMDrawListItem); message LM_DrawListItem;
+    procedure LMMeasureItem(var TheMessage: TLMMeasureItem); message LM_MeasureItem;
     procedure CNCommand(var TheMessage: TLMCommand); message CN_Command;
     procedure UpdateSorted;
     procedure SetArrowKeysTraverseList(Value: Boolean);
@@ -384,6 +385,8 @@ type
   TListBoxStyle = (lbStandard, lbOwnerDrawFixed, lbOwnerDrawVariable);
   TSelectionChangeEvent = procedure(Sender: TObject; User: boolean) of object;
 
+  { TCustomListBox }
+
   TCustomListBox = class(TWinControl)
   private
     FCacheValid: Boolean;
@@ -408,6 +411,7 @@ type
     procedure UpdateSelectionMode;
     procedure UpdateSorted;
     procedure LMDrawListItem(var TheMessage: TLMDrawListItem); message LM_DrawListItem;
+    procedure LMMeasureItem(var TheMessage: TLMMeasureItem); message LM_MeasureItem;
     procedure LMSelChange(var TheMessage); message LM_SelChange;
     procedure WMLButtonDown(Var Message: TLMLButtonDown); message LM_LBUTTONDOWN;
     procedure SendItemSelected(Index: integer; IsSelected: boolean);
@@ -1258,6 +1262,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.207  2005/06/13 08:04:38  vincents
+  fixed crashed with csOwnerDrawVariable combobox style (bug 934)    from Jesus
+
   Revision 1.206  2005/05/26 22:15:51  mattias
   fixed triggering TListBox.Click when clicking on selected item
 

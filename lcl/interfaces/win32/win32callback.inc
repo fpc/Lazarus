@@ -751,14 +751,18 @@ Begin
     Begin
       // TODO: this could crash for a MenuItem.
       WindowInfo := GetWindowInfo(PDrawItemStruct(LParam)^.hwndItem);
-      lWinControl := WindowInfo^.WinControl;
+      if WindowInfo^.WinControl<>nil then
+        lWinControl := WindowInfo^.WinControl;
       {$IFDEF MSG_DEBUG|}
       with PDrawItemStruct(LParam)^ do
         writeln(format('Received WM_DRAWITEM type %d handle %x', [ctlType, hwndItem]));
       {$ENDIF}
 
-      if (lWinControl is TCustomListbox) and
-            (TCustomListBox(lWinControl).Style <> lbStandard) then
+      if ((lWinControl is TCustomListbox) and
+            (TCustomListBox(lWinControl).Style <> lbStandard)) or
+         ((lWinControl is TCustomCombobox) and
+            ((TCustomCombobox(lWinControl).Style = csOwnerDrawFixed) or
+            (TCustomCombobox(lWinControl).Style = csOwnerDrawVariable))) then
       begin
         LMessage.Msg := LM_DRAWLISTITEM;
         TLMDrawListItem(LMessage).DrawListItemStruct := @DrawListItemStruct;
@@ -1230,14 +1234,29 @@ Begin
     End;
     WM_MEASUREITEM:
     Begin
-      if TObject(WParam) is TWinControl then
-      begin
-        lWinControl := TWinControl(WParam);
-        LMessage.Msg := LM_MEASUREITEM;
-        LMessage.LParam := LParam;
-        LMessage.WParam := WParam;
-      end else
-        lWinControl := nil;
+      if LWinControl<>nil then begin
+        if LWinControl is TCustomCombobox then begin
+          LMessage.Msg := LM_MEASUREITEM;
+          LMessage.LParam := LParam;
+          LMessage.WParam := WParam;
+          Winprocess := False;
+        end else
+        if WParam=0 then begin
+          // todo: it's a menu
+        end else begin
+          // find child handle based on it's CtlID
+          TargetWindow := GetDlgItem(Window, WParam);
+          if TargetWindow<>0 then begin
+            LWinControl := GetWindowInfo(TargetWindow)^.WinControl;
+            if LWinControl<>nil then begin
+              LMessage.Msg := LM_MEASUREITEM;
+              LMessage.LParam := LParam;
+              LMessage.WParam := WParam;
+              Winprocess := False;
+            end;
+          end;
+        end;
+      end;
     End;
     WM_THEMECHANGED:
     begin
@@ -1582,6 +1601,9 @@ end;
 
 {
   $Log$
+  Revision 1.209  2005/06/13 08:04:38  vincents
+  fixed crashed with csOwnerDrawVariable combobox style (bug 934)    from Jesus
+
   Revision 1.208  2005/06/01 18:55:59  micha
   fix painting of panels on notebooks with themes (fixes bug 915)
 
