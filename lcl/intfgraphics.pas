@@ -141,9 +141,6 @@ type
     procedure FreeAllData; virtual;
     procedure FreePixelData; virtual;
     procedure FreeMaskData; virtual;
-    procedure CreateAllData; virtual;
-    procedure CreatePixelData; virtual;
-    procedure CreateMaskData; virtual;
     procedure CreateDataAndLineStarts(var Data: Pointer; var DataSize: cardinal;
                                       var TheLineStarts: PRawImagePosition;
                                       TheBitsPerPixel: cardinal;
@@ -191,6 +188,9 @@ type
     procedure FillPixels(const Color: TFPColor); virtual;
     procedure GetXYDataPostion(x, y: integer; var Position: TRawImagePosition);
     procedure GetXYMaskPostion(x, y: integer; var Position: TRawImagePosition);
+    procedure CreateAllData; virtual;
+    procedure CreatePixelData; virtual;
+    procedure CreateMaskData; virtual;
   public
     property PixelData: PByte read FPixelData;
     property MaskData: PByte read FMaskData;
