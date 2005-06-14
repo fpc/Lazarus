@@ -1244,16 +1244,12 @@ Begin
         if WParam=0 then begin
           // todo: it's a menu
         end else begin
-          // find child handle based on it's CtlID
-          TargetWindow := GetDlgItem(Window, WParam);
-          if TargetWindow<>0 then begin
-            LWinControl := GetWindowInfo(TargetWindow)^.WinControl;
-            if LWinControl<>nil then begin
-              LMessage.Msg := LM_MEASUREITEM;
-              LMessage.LParam := LParam;
-              LMessage.WParam := WParam;
-              Winprocess := False;
-            end;
+          LWinControl := TWinControl(WParam);
+          if LWinControl<>nil then begin
+            LMessage.Msg := LM_MEASUREITEM;
+            LMessage.LParam := LParam;
+            LMessage.WParam := WParam;
+            Winprocess := False;
           end;
         end;
       end;
@@ -1601,6 +1597,9 @@ end;
 
 {
   $Log$
+  Revision 1.210  2005/06/14 07:30:51  vincents
+  fixed handling WM_MEASUREITEM for OwnerdrawnFixed listbox.
+
   Revision 1.209  2005/06/13 08:04:38  vincents
   fixed crashed with csOwnerDrawVariable combobox style (bug 934)    from Jesus
 
