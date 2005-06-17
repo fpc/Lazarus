@@ -27,59 +27,51 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, Buttons, ComCtrls, FileFind, Menus
+  StdCtrls, Buttons, ComCtrls, Menus
   {$IFDEF TRANSLATESTRING}, DefaultTranslator{$ENDIF};
 
 type
+
+  { TLazConverterForm }
+
   TLazConverterForm = class(TForm)
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
-    Button4: TButton;
-    Button5: TButton;
     CheckBox1: TCheckBox;
     ComboBox1: TComboBox;
     ComboBox2: TComboBox;
     Edit1: TEdit;
-    FileSearch1: TFileSearch;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
-    Label5: TLabel;
     Label6: TLabel;
-    ListView1: TListView;
-    MenuItem1: TMenuItem;
-    MenuItem2: TMenuItem;
-    MenuItem3: TMenuItem;
+    Memo1: TMemo;
     Panel1: TPanel;
-    Panel2: TPanel;
-    PopupMenu1: TPopupMenu;
     ProgressBar1: TProgressBar;
     SelectDirectoryDialog1: TSelectDirectoryDialog;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
-    procedure Button4Click(Sender: TObject);
-    procedure Button5Click(Sender: TObject);
-    procedure CheckBox1Click(Sender: TObject);
-    procedure FileSearch1ChangeFolder(fullpath: string; info: TSearchRec);
-    procedure FileSearch1FileFind(fullpath: string; info: TSearchRec);
-    procedure FileSearch1Finish(Sender: TObject);
     procedure Form1Show(Sender: TObject);
-    procedure LazConverterFormResize(Sender: TObject);
-    procedure ListView1SelectItem(Sender: TObject; Item: TListItem;
-      Selected: Boolean);
   private
     { private declarations }
   public
     { public declarations }
+
   end; 
 
 var
   LazConverterForm: TLazConverterForm;
+  allfiles:tstringlist;
 
-implementation uses viewunit;
+implementation
 
+
+function replace (source: string; src, rep: string):string;
+begin
+  result:=StringReplace(source,src,rep,[rfReplaceAll]);
+end;
 
 function origpath:string;
 var tmp:string;
@@ -91,13 +83,182 @@ begin
   result:=tmp;
 end;
 
-function replace (source: string; src, rep: string):string;
+Function LocWord(StartAT,Wordno:integer;Str:string):integer;
+{local proc used by PosWord and Extract word}
+var
+ W,L: integer;
+ Spacebefore: boolean;
 begin
-  result:=StringReplace(source,src,rep,[rfReplaceAll]);
+   If (Str = '') or (wordno < 1) or (StartAT > length(Str)) then
+   begin
+       LocWord := 0;
+       exit;
+   end;
+   SpaceBefore := true;
+   W := 0;
+   L := length(Str);
+   StartAT := pred(StartAT);
+   While (W < Wordno) and (StartAT <= length(Str)) do
+   begin
+       StartAT := succ(StartAT);
+       If SpaceBefore and (Str[StartAT] <> ' ') then
+       begin
+           W := succ(W);
+           SpaceBefore := false;
+       end
+       else
+           If (SpaceBefore = false) and (Str[StartAT] = ' ') then
+               SpaceBefore := true;
+   end;
+   If W = Wordno then
+      LocWord := StartAT
+   else
+      LocWord := 0;
 end;
 
 
+Function ExtractWords(StartWord,NoWords:integer;Str:string):string;
+var Start, finish : integer;
+begin
+   If Str = '' then
+   begin
+       ExtractWords := '';
+       exit;
+   end;
+   Start := LocWord(1,StartWord,Str);
+   If Start <> 0 then
+      finish := LocWord(Start,succ(NoWords),Str)
+   else
+   begin
+       ExtractWords := '';
+       exit;
+   end;
+   If finish = 0 then {5.02A}
+      finish := succ(length(Str));
+   Repeat
+       finish := pred(finish);
+   Until Str[finish] <> ' ';
+   ExtractWords := copy(Str,Start,succ(finish-Start));
+end;  {Func ExtractWords}
+
+
+Function WordCnt(Str:string):integer;
+var
+ W,I: integer;
+ SpaceBefore: boolean;
+begin
+   If Str = '' then
+   begin
+       WordCnt := 0;
+       exit;
+   end;
+   SpaceBefore := true;
+   W := 0;
+   For  I :=  1 to length(Str) do
+   begin
+       If SpaceBefore and (Str[I] <> ' ') then
+       begin
+           W := succ(W);
+           SpaceBefore := false;
+       end
+       else
+           If (SpaceBefore = false) and (Str[I] = ' ') then
+               SpaceBefore := true;
+   end;
+   WordCnt := W;
+end;
+
+
+
+function IsIn(Iskano:string; baza:string):boolean;
+var
+    index,mindex,counter:integer;
+    tmp1:string;
+    tmp2:string;
+begin
+  result:=false;
+  tmp1:=uppercase(iskano);
+  tmp2:=uppercase(baza);
+  counter:=0;
+  if pos('"',tmp1)<>0 then
+  begin
+    mindex:=1;
+    tmp1:=Replace(tmp1,'"','');
+    if pos(tmp1,tmp2)<>0 then
+    begin
+      counter:=1;
+    end;
+  end else
+  begin
+    mindex:=WordCnt(tmp1);
+    if mindex>0 then
+    begin
+      for index:=1 to mindex do
+      begin
+        if Pos(ExtractWords(index,1,tmp1),tmp2)<>0 then inc(counter);
+      end;
+    end;
+  end;
+  if counter=mindex then
+  begin
+    result:=true;
+  end;
+end;
+
+
+procedure GetAllFiles(mask: string; unignore:string; subdirs:boolean);
+var
+ search: TSearchRec;
+ directory: string;
+ tmp:string;
+
+const
+{$ifdef unix}
+ msk='*';
+ delimeter='/';
+ {$else}
+ msk='*.*';
+ delimeter='\';
+{$endif}
+
+begin
+ directory := ExtractFilePath(mask);
+
+ // find all files
+ if FindFirst(mask, faAnyFile-faDirectory, search) = 0 then
+ begin
+   repeat
+     // add the files to the listbox
+     tmp:=trim(ExtractFileExt(search.Name));
+     if tmp<>'' then
+     begin
+       if pos('.',tmp)=1 then delete(tmp,1,1);
+       if IsIn(tmp,unignore) then
+       begin
+         allfiles.add(directory + search.Name);
+       end;
+     end;
+   until FindNext(search) <> 0;
+ end;
+ if subdirs then
+ begin
+   // Subdirectories/ Unterverzeichnisse
+   if FindFirst(directory + msk, faDirectory, search) = 0 then
+   begin
+     repeat
+       if ((search.Attr and faDirectory) = faDirectory) and (search.Name[1] <> '.') then
+         GetAllFiles(directory + search.Name + delimeter + ExtractFileName(mask),unignore,subdirs);
+     until FindNext(search) <> 0;
+     FindClose(search);
+   end;
+ end;
+end;
+
+
+
 { TLazConverterForm }
+
+
 
 procedure TLazConverterForm.Button1Click(Sender: TObject);
 begin
@@ -109,8 +270,15 @@ end;
 
 procedure TLazConverterForm.Button2Click(Sender: TObject);
 var tmp:string;
+
+const
+{$ifdef unix}
+  msk='*';
+{$else}
+  msk='*.*';
+{$endif}
 begin
-  listview1.items.clear;
+  memo1.text:='';
   tmp:=trim(Edit1.text);
   if tmp='' then
   begin
@@ -119,9 +287,11 @@ begin
   edit1.text:=IncludeTrailingPathDelimiter(tmp);
   if DirectoryExists(tmp) then
   begin
-    tmp:=tmp+'*.pas;*.lfm;*.lrs;*.inc';
-    FileSearch1.SearchFile:=tmp;
-    FileSearch1.Start;
+    AllFiles.Text:='';
+    GetAllFiles(tmp+msk,'pas lfm lrs inc',checkbox1.checked);
+    label6.caption:='Searching done... press CONVERT button! Files: '+inttostr(allfiles.count);
+    memo1.text:=allfiles.text;
+    caption:=allfiles[0];
   end;
 end;
 
@@ -218,31 +388,31 @@ var tmp:tstringlist;
    end;
 
 begin
-  if FileSearch1.filesfound.Count-1=-1 then abort;
+  if allfiles.Count-1=-1 then abort;
   if trim(combobox1.text)='' then abort;
   if trim(combobox2.text)='' then abort;
   tmp:=tstringlist.create;
   try
     ProgressBar1.Min:=0;
-    ProgressBar1.Max:=FileSearch1.filesfound.count;
+    ProgressBar1.Max:=allfiles.count;
     ProgressBar1.StepBy(1);
-    for i:=0 to FileSearch1.filesfound.count-1 do
+    for i:=0 to allfiles.count-1 do
     begin
       ok:=true;
       try
-        tmp.LoadFromFile(filesearch1.filesfound[i]);
+        tmp.LoadFromFile(allfiles[i]);
       except
         ok:=false;
       end;
       if ok then
       begin
-        if pos('.LRS',uppercase(filesearch1.filesfound[i]))<>0 then
+        if pos('.LRS',uppercase(allfiles[i]))<>0 then
         begin
           if ConvertMeLRS(tmp) then
           begin
             ok:=true;
             try
-              tmp.SaveToFile(filesearch1.filesfound[i]);
+              tmp.SaveToFile(allfiles[i]);
             except ok:=false; end;
           end;
         end else
@@ -251,7 +421,7 @@ begin
           begin
             ok:=true;
             try
-              tmp.SaveToFile(filesearch1.filesfound[i]);
+              tmp.SaveToFile(allfiles[i]);
             except ok:=false; end;
           end;
         end;
@@ -263,50 +433,6 @@ begin
     tmp.free;
     label6.caption:='Done!';
   end;
-end;
-
-procedure TLazConverterForm.Button4Click(Sender: TObject);
-begin
-  if listview1.selected<>NIL then
-  begin
-    filesearch1.FilesFound.Delete(filesearch1.filesfound.IndexOf(listview1.selected.caption));
-    listview1.selected.delete;
-    filesearch1finish(sender);
-  end;
-end;
-
-procedure TLazConverterForm.Button5Click(Sender: TObject);
-begin
-  try
-   if listview1.selected<>nil then
-   begin
-     viewform.caption:='VIEW : '+listview1.selected.caption;
-     viewform.SynMemo1.Lines.LoadFromFile(listview1.selected.caption);
-     viewform.showmodal;
-   end;
-  except end;
-end;
-
-procedure TLazConverterForm.CheckBox1Click(Sender: TObject);
-begin
-  FileSearch1.RecurseSubFolders:=CheckBox1.Checked;
-end;
-
-procedure TLazConverterForm.FileSearch1ChangeFolder(fullpath: string; info: TSearchRec);
-begin
-  label6.caption:=fullpath;
-end;
-
-procedure TLazConverterForm.FileSearch1FileFind(fullpath: string; info: TSearchRec);
-begin
-  listview1.items.add;
-  listview1.items[listview1.items.count-1].caption:=fullpath+info.Name;
-  listview1.items[listview1.items.count-1].subitems.add(UpperCase(ExtractFileExt(info.Name)));
-end;
-
-procedure TLazConverterForm.FileSearch1Finish(Sender: TObject);
-begin
-  label6.caption:='Searching done... press CONVERT button! Files: '+inttostr(filesearch1.filesfound.count);
 end;
 
 procedure TLazConverterForm.Form1Show(Sender: TObject);
@@ -322,28 +448,13 @@ begin
   ComboBox2.text:='';
   CheckBox1.Checked:=True;
   Edit1.SetFocus;
-  listview1.Columns[0].Width:=Width-70;
-  button4.enabled:=false;
-  button5.enabled:=false;
-  MenuItem1.Enabled:=false;
-  MenuItem3.Enabled:=false;
-end;
-
-procedure TLazConverterForm.LazConverterFormResize(Sender: TObject);
-begin
-  listview1.Columns[0].Width:=Width-70;
-end;
-
-procedure TLazConverterForm.ListView1SelectItem(Sender: TObject;
-  Item: TListItem; Selected: Boolean);
-begin
-  button4.enabled:=selected;
-  button5.enabled:=selected;
-  MenuItem1.Enabled:=selected;
-  MenuItem3.Enabled:=selected;
 end;
 
 initialization
   {$I mainunit.lrs}
+  allfiles:=tstringlist.create;
+
+finalization
+  allfiles.free;
 end.
 

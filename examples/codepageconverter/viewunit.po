@@ -1,8 +1,0 @@
-#
-msgid  "VIEW"
-msgstr ""
-
-#
-msgid  "Font"
-msgstr ""
-
