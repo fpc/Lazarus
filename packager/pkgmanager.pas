@@ -2751,7 +2751,7 @@ begin
       end else begin
         MessagesView.AddMsg('WARNING: unit name invalid '+CurFile.Filename
            +', package='+APackage.IDAsString,
-           APackage.Directory);
+           APackage.Directory,-1);
       end;
     end;
   end;

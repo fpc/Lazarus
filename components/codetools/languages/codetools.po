@@ -602,6 +602,10 @@ msgstr ""
 msgid "Tools Directory"
 msgstr ""
 
+#: codetoolsstrconsts:ctsinstalldirectory
+msgid "Install Directory"
+msgstr ""
+
 #: codetoolsstrconsts:ctsdesignerdirectory
 msgid "Designer Directory"
 msgstr ""

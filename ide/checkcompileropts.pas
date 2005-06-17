@@ -38,8 +38,9 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function RunTool(ExtTool: TExternalToolOptions): TModalResult;
-    procedure Add(const Msg, CurDir: String; ProgressLine: boolean);
-    procedure AddMsg(const Msg, CurDir: String);
+    procedure Add(const Msg, CurDir: String; ProgressLine: boolean;
+                  OriginalIndex: integer);
+    procedure AddMsg(const Msg, CurDir: String; OriginalIndex: integer);
     procedure AddProgress(const Msg, CurDir: String);
   public
     property Options: TCompilerOptions read FOptions write SetOptions;
@@ -201,7 +202,7 @@ begin
 end;
 
 procedure TCheckCompilerOptsDlg.Add(const Msg, CurDir: String;
-  ProgressLine: boolean);
+  ProgressLine: boolean; OriginalIndex: integer);
 var
   i: Integer;
 Begin
@@ -214,16 +215,18 @@ Begin
   i:=OutputListbox.Items.Count-1;
   SetMsgDirectory(i,CurDir);
   OutputListbox.TopIndex:=OutputListbox.Items.Count-1;
+  if OriginalIndex=0 then ;
 end;
 
-procedure TCheckCompilerOptsDlg.AddMsg(const Msg, CurDir: String);
+procedure TCheckCompilerOptsDlg.AddMsg(const Msg, CurDir: String;
+  OriginalIndex: integer);
 begin
-  Add(Msg,CurDir,false);
+  Add(Msg,CurDir,false,OriginalIndex);
 end;
 
 procedure TCheckCompilerOptsDlg.AddProgress(const Msg, CurDir: String);
 begin
-  Add(Msg,CurDir,false);
+  Add(Msg,CurDir,false,-1);
 end;
 
 initialization

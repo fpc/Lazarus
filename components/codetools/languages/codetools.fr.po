@@ -220,6 +220,10 @@ msgstr ""
 msgid "Include circle detected"
 msgstr "Référence circulaire détectée"
 
+#: codetoolsstrconsts:ctsinstalldirectory
+msgid "Install Directory"
+msgstr ""
+
 #: codetoolsstrconsts:ctsinstallerdirectories
 msgid "Installer directories"
 msgstr "Répertoires de l'installeur"

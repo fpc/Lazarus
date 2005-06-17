@@ -221,6 +221,10 @@ msgstr "If TargetOS<>win32 then"
 msgid "Include circle detected"
 msgstr "Wykryto zapêtlenie Include"
 
+#: codetoolsstrconsts:ctsinstalldirectory
+msgid "Install Directory"
+msgstr ""
+
 #: codetoolsstrconsts:ctsinstallerdirectories
 msgid "Installer directories"
 msgstr ""

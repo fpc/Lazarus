@@ -49,6 +49,7 @@ type
   private
     FDirectory: string;
     FMsg: string;
+    FOriginalIndex: integer;
     FPosition: integer;
     FVisiblePosition: integer;
     procedure SetDirectory(const AValue: string);
@@ -59,6 +60,7 @@ type
     property Directory: string read FDirectory write SetDirectory;
     property Position: integer read FPosition;
     property VisiblePosition: integer read FVisiblePosition;
+    property OriginalIndex: integer read FOriginalIndex;
   end;
   
 
@@ -96,8 +98,8 @@ type
     destructor Destroy; override;
     procedure DeleteLine(Index: integer);
     procedure Add(const Msg, CurDir: String; ProgressLine,
-                  VisibleLine: boolean);
-    procedure AddMsg(const Msg, CurDir: String);
+                  VisibleLine: boolean; OriginalIndex: integer);
+    procedure AddMsg(const Msg, CurDir: String; OriginalIndex: integer);
     procedure AddProgress(const Msg, CurDir: String);
     procedure AddSeparator;
     procedure ClearTillLastSeparator;
@@ -212,7 +214,7 @@ end;
   TMessagesView.Add
 ------------------------------------------------------------------------------}
 Procedure TMessagesView.Add(const Msg, CurDir: String; ProgressLine,
-  VisibleLine: boolean);
+  VisibleLine: boolean; OriginalIndex: integer);
 var
   NewMsg: TMessageLine;
   i: Integer;
@@ -221,6 +223,7 @@ Begin
   NewMsg.Msg:=Msg;
   NewMsg.Directory:=CurDir;
   NewMsg.FPosition:=FItems.Count;
+  NewMsg.FOriginalIndex:=OriginalIndex;
   FItems.Add(NewMsg);
 
   if VisibleLine then begin
@@ -241,19 +244,20 @@ Begin
   end;
 end;
 
-procedure TMessagesView.AddMsg(const Msg, CurDir: String);
+procedure TMessagesView.AddMsg(const Msg, CurDir: String;
+  OriginalIndex: integer);
 begin
-  Add(Msg,CurDir,false,true);
+  Add(Msg,CurDir,false,true,OriginalIndex);
 end;
 
 procedure TMessagesView.AddProgress(const Msg, CurDir: String);
 begin
-  Add(Msg,CurDir,true,true);
+  Add(Msg,CurDir,true,true,-1);
 end;
 
 Procedure TMessagesView.AddSeparator;
 begin
-  Add(SeparatorLine,'',false,true);
+  Add(SeparatorLine,'',false,true,-1);
 end;
 
 procedure TMessagesView.ClearTillLastSeparator;

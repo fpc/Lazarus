@@ -6557,7 +6557,7 @@ begin
         // change tool status
         ToolStatus:=itBuilder;
 
-        TheOutputFilter.OnOutputString:=@MessagesView.AddMsg;
+        TheOutputFilter.OnAddFilteredLine:=@MessagesView.AddMsg;
         TheOutputFilter.OnReadLine:=@MessagesView.AddProgress;
 
         // compile
@@ -6582,7 +6582,7 @@ begin
 
     // add success message
     MessagesView.AddMsg(
-            Format(lisProjectSuccessfullyBuilt, ['"', Project1.Title, '"']),'');
+         Format(lisProjectSuccessfullyBuilt, ['"', Project1.Title, '"']),'',-1);
 
   finally
     // check sources
@@ -9963,9 +9963,9 @@ begin
       +'('+IntToStr(CodeToolBoss.ErrorLine)
       +','+IntToStr(CodeToolBoss.ErrorColumn)
       +') Error: '+CodeToolBoss.ErrorMessage,
-      Project1.ProjectDirectory);
+      Project1.ProjectDirectory,-1);
   end else
-    MessagesView.AddMsg(CodeToolBoss.ErrorMessage,Project1.ProjectDirectory);
+    MessagesView.AddMsg(CodeToolBoss.ErrorMessage,Project1.ProjectDirectory,-1);
   MessagesView.SelectedMessageIndex:=MessagesView.MsgCount-1;
 
   // jump to error in source editor
@@ -11113,13 +11113,13 @@ begin
 
   ToolStatus:=itBuilder;
   if CheckCompilerOptsDlg<>nil then begin
-    TheOutputFilter.OnOutputString:=@CheckCompilerOptsDlg.AddMsg;
+    TheOutputFilter.OnAddFilteredLine:=@CheckCompilerOptsDlg.AddMsg;
     TheOutputFilter.OnReadLine:=@CheckCompilerOptsDlg.AddProgress;
   end else begin
     MessagesView.Clear;
     DoArrangeSourceEditorAndMessageView(false);
 
-    TheOutputFilter.OnOutputString:=@MessagesView.AddMsg;
+    TheOutputFilter.OnAddFilteredLine:=@MessagesView.AddMsg;
     TheOutputFilter.OnReadLine:=@MessagesView.AddProgress;
   end;
 end;
@@ -11714,6 +11714,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.875  2005/06/17 15:57:03  mattias
+  added Cut/Copy/Paste to sourceeditor popupmenu  from George Lober
+
   Revision 1.874  2005/06/17 14:27:23  mattias
   implemented short cut for view units/forms
 

@@ -79,10 +79,10 @@ type
   end;
   
 function CheckLFMBuffer(PascalBuffer, LFMBuffer: TCodeBuffer;
-  const OnOutput: TOnOutputString;
+  const OnOutput: TOnAddFilteredLine;
   RootMustBeClassInIntf, ObjectsMustExists: boolean): TModalResult;
 function CheckLFMText(PascalBuffer: TCodeBuffer; var LFMText: string;
-  const OnOutput: TOnOutputString;
+  const OnOutput: TOnAddFilteredLine;
   RootMustBeClassInIntf, ObjectsMustExists: boolean): TModalResult;
 function ShowRepairLFMWizard(LFMBuffer: TCodeBuffer;
   LFMTree: TLFMTree): TModalResult;
@@ -98,7 +98,7 @@ type
   end;
 
 function CheckLFMBuffer(PascalBuffer, LFMBuffer: TCodeBuffer;
-  const OnOutput: TOnOutputString;
+  const OnOutput: TOnAddFilteredLine;
   RootMustBeClassInIntf, ObjectsMustExists: boolean): TModalResult;
 var
   LFMTree: TLFMTree;
@@ -120,7 +120,7 @@ var
            +' Error: '
            +CurError.ErrorMessage;
       debugln('WriteLFMErrors ',Msg);
-      OnOutput(Msg,Dir);
+      OnOutput(Msg,Dir,-1);
       CurError:=CurError.NextError;
     end;
   end;
@@ -193,7 +193,7 @@ begin
 end;
 
 function CheckLFMText(PascalBuffer: TCodeBuffer; var LFMText: string;
-  const OnOutput: TOnOutputString;
+  const OnOutput: TOnAddFilteredLine;
   RootMustBeClassInIntf, ObjectsMustExists: boolean): TModalResult;
 var
   LFMBuf: TCodeBuffer;

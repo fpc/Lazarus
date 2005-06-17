@@ -15,19 +15,19 @@ msgstr "                    Laat het Splash screen niet zien"
 
 #: lazarusidestrconsts:lisskiploadinglastproject
 msgid "                      Skip loading last project"
-msgstr "	Sla het laden van het laatst geopende project over"
+msgstr " Sla het laden van het laatst geopende project over"
 
 #: lazarusidestrconsts:lisfilewheredebugoutputiswritten
 msgid "                      file, where debug output is written to. If it is not specified, debug output is written to the console."
-msgstr "	Bestand, waar de debug output naar toe wordt geschreven. Als dit niet is gespecificeerd, wordt de data naar de console geschreven."
+msgstr " Bestand, waar de debug output naar toe wordt geschreven. Als dit niet is gespecificeerd, wordt de data naar de console geschreven."
 
 #: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "                      primary config directory, where Lazarus stores its config files. Default is "
-msgstr "		  Primaire config directory, waar Lazarus zijn configuratie bestanden opslaat. Standaard: "
+msgstr "    Primaire config directory, waar Lazarus zijn configuratie bestanden opslaat. Standaard: "
 
 #: lazarusidestrconsts:lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "                      secondary config directory, where Lazarus searches for config template files. Default is "
-msgstr "		 Secundaire config directory, waar Lazarus zoekt naar config 'template' bestanden. Standaard: "
+msgstr "   Secundaire config directory, waar Lazarus zoekt naar config 'template' bestanden. Standaard: "
 
 #: lazarusidestrconsts:srkmcommand1
 msgid "    command1 \""
@@ -4650,7 +4650,7 @@ msgid "Private Method"
 msgstr ""
 
 #: lazarusidestrconsts:lisprobablyyouneedtoinstallsomepackagesforbeforeconti
-msgid "Probably you need to install some packages for before continuing.%s%sWarning:%sThe project depends on some packages, which contain units with the Register procedure. The Register procedure is normally used  to install components in the IDE. But the following units belong  to packages which are not yet installed in the IDE. If you try to open a form in the IDE, that uses such components, you will get errors about missing components and the form loading will probably create very unpleasant results.%s%sThis has no impact on opening the project or any of its sources.%s%sIt only means: It is a bad idea to open the forms for designing, before installing the missing packages.%s%s"
+msgid "Probably you need to install some packages for before continuing.%s%sWarning:%sThe project depends on some packages, which contain units with the Register procedure. The Register procedure is normally used to install components in the IDE. But the following units belong to packages which are not yet installed in the IDE. If you try to open a form in the IDE, that uses such components, you will get errors about missing components and the form loading will probably create very unpleasant results.%s%sThis has no impact on opening the project or any of its sources.%s%sIt only means: It is a bad idea to open the forms for designing, before installing the missing packages.%s%s"
 msgstr ""
 
 #: lazarusidestrconsts:lisprocedure

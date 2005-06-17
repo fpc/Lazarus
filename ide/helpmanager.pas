@@ -681,16 +681,18 @@ procedure THelpManager.ShowHelpForMessage(Line: integer);
 var
   Msg: String;
   MessageParts: TStringList;
+  MsgItem: TMessageLine;
 begin
   debugln('THelpManager.ShowHelpForMessage A Line=',dbgs(Line));
   if MessagesView=nil then exit;
   if Line<0 then
     Line:=MessagesView.SelectedMessageIndex;
   if (Line<0) or (Line>=MessagesView.VisibleItemCount) then exit;
-  Msg:=MessagesView.VisibleItems[Line].Msg;
-  if Msg<>'' then begin
-    MessageParts:=ParseMessage(Msg);
-    ShowHelpOrErrorForMessageLine(Msg,MessageParts);
+  MsgItem:=MessagesView.VisibleItems[Line];
+  if MsgItem=nil then exit;
+  if MsgItem.Msg<>'' then begin
+    MessageParts:=ParseMessage(MsgItem.Msg);
+    ShowHelpOrErrorForMessageLine(MsgItem.Msg,MessageParts);
   end;
 end;
 

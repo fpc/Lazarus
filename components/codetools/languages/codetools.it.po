@@ -220,6 +220,10 @@ msgstr "Se TargetOS<>win32 allora"
 msgid "Include circle detected"
 msgstr "Rilevato include circolare"
 
+#: codetoolsstrconsts:ctsinstalldirectory
+msgid "Install Directory"
+msgstr ""
+
 #: codetoolsstrconsts:ctsinstallerdirectories
 msgid "Installer directories"
 msgstr ""

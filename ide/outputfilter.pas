@@ -33,7 +33,9 @@ uses
   IDEProcs, FileUtil, LclProc, LazConf;
 
 type
-  TOnOutputString = procedure(const Msg, Directory: String) of Object;
+  TOnOutputString = procedure(const Msg, Directory: String) of object;
+  TOnAddFilteredLine = procedure(const Msg, Directory: String;
+                                 OriginalIndex: integer) of object;
   TOnGetIncludePath = function(const Directory: string): string of object;
   
   TOuputFilterOption = (
@@ -52,6 +54,10 @@ type
   { TOutputLine }
 
   TOutputLine = class(TStringList)
+  private
+    FDirectory: string;
+  public
+    property Directory: string read FDirectory write FDirectory;
   end;
   
   { TOutputLines
@@ -125,7 +131,7 @@ type
     fCompilingHistory: TStringList;
     fMakeDirHistory: TStringList;
     fOnGetIncludePath: TOnGetIncludePath;
-    fOnOutputString: TOnOutputString;
+    fOnAddFilteredLine: TOnAddFilteredLine;
     fOptions: TOuputFilterOptions;
     FStopExecute: boolean;
     FLastOutputLine: integer;
@@ -167,8 +173,8 @@ type
     property OnGetIncludePath: TOnGetIncludePath
                                  read fOnGetIncludePath write fOnGetIncludePath;
     property OnReadLine: TOnOutputString read fOnReadLine write fOnReadLine;
-    property OnOutputString: TOnOutputString
-                                     read fOnOutputString write fOnOutputString;
+    property OnAddFilteredLine: TOnAddFilteredLine
+                               read fOnAddFilteredLine write fOnAddFilteredLine;
     property Options: TOuputFilterOptions read fOptions write fOptions;
     property CompilerOptions: TBaseCompilerOptions read FCompilerOptions
                                                write FCompilerOptions;
@@ -771,11 +777,14 @@ begin
 end;
 
 procedure TOutputFilter.DoAddFilteredLine(const s: string);
+var
+  OriginalIndex: Integer;
 begin
+  OriginalIndex:=fOutput.Count-1;
   fFilteredOutput.Add(s);
-  fFilteredOutput.OriginalIndices[fFilteredOutput.Count-1]:=fOutput.Count-1;
-  if Assigned(OnOutputString) then
-    OnOutputString(s,fCurrentDirectory);
+  fFilteredOutput.OriginalIndices[fFilteredOutput.Count-1]:=OriginalIndex;
+  if Assigned(OnAddFilteredLine) then
+    OnAddFilteredLine(s,fCurrentDirectory,OriginalIndex);
 end;
 
 procedure TOutputFilter.DoAddLastLinkerMessages(SkipLastLine: boolean);
@@ -823,6 +832,7 @@ begin
   Result:=TOutputLine(fOutput.Objects[Cnt-1]);
   if Result=nil then begin
     Result:=TOutputLine.Create;
+    Result.Directory:=fCurrentDirectory;
     fOutput.Objects[Cnt-1]:=Result;
   end;
 end;

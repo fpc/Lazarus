@@ -1111,6 +1111,9 @@ resourcestring
   uemFindDeclaration = '&Find Declaration';
   uemOpenFileAtCursor = '&Open file at cursor';
   uemClosePage = '&Close Page';
+  uemCut = 'Cut';
+  uemCopy = 'Copy';
+  uemPaste = 'Paste';
   uemGotoBookmark = '&Goto Bookmark';
   uemBookmarkN = 'Bookmark';
   uemSetBookmark = '&Set Bookmark';

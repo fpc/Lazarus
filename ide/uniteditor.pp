@@ -337,6 +337,9 @@ type
     ExtractProcMenuItem: TMenuItem;
     InvertAssignmentMenuItem: TMenuItem;
     FindDeclarationMenuItem: TMenuItem;
+    CutMenuItem: TMenuItem;
+    CopyMenuItem: TMenuItem;
+    PasteMenuItem: TMenuItem;
     GotoBookmarkMenuItem: TMenuItem;
     MoveEditorLeftMenuItem: TMenuItem;
     MoveEditorRightMenuItem: TMenuItem;
@@ -585,6 +588,10 @@ type
                       FocusIt: boolean);
     Procedure CloseFile(PageIndex:integer);
     procedure FocusEditor;
+
+    procedure CutClicked(Sender: TObject);
+    procedure CopyClicked(Sender: TObject);
+    procedure PasteClicked(Sender: TObject);
 
     Procedure ToggleBookmark(Value: Integer);
     Procedure SetBookmark(Value: Integer);
@@ -2942,6 +2949,32 @@ Begin
     OnClick := @CloseClicked;
   end;
   SrcPopupMenu.Items.Add(ClosePageMenuItem);
+
+  SrcPopupMenu.Items.Add(Seperator);
+
+  CutMenuItem := TMenuItem.Create(Self);
+  with CutMenUItem do begin
+    Name := 'CutMenuItem';
+    Caption := uemCut;
+    onClick := @CutClicked;
+  end;
+  SrcPopupMenu.Items.Add(CutMenuItem);
+  
+  CopyMenuItem := TMenuItem.Create(Self);
+  with CopyMenUItem do begin
+    Name := 'CopyMenuItem';
+    Caption := uemCopy;
+    onClick := @CopyClicked;
+  end;
+  SrcPopupMenu.Items.Add(CopyMenuItem);
+  
+  PasteMenuItem := TMenuItem.Create(Self);
+  with PasteMenUItem do begin
+    Name := 'PasteMenuItem';
+    Caption := uemPaste;
+    onClick := @PasteClicked;
+  end;
+  SrcPopupMenu.Items.Add(PasteMenuItem);
   
   AddFileTypeSpecificMenuItems;
 
@@ -3953,6 +3986,30 @@ Procedure TSourceNotebook.FindDeclarationClicked(Sender: TObject);
 begin
   if Assigned(FOnFindDeclarationClicked) then
     FOnFindDeclarationClicked(Sender);
+end;
+
+Procedure TSourceNoteBook.CutClicked(Sender: TObject);
+var ActSE: TSourceEditor;
+begin
+  ActSE := GetActiveSE;
+  if ActSE <> nil then
+    ActSE.DoEditorExecuteCommand(ecCut);
+end;
+
+Procedure TSourceNoteBook.CopyClicked(Sender: TObject);
+var ActSE: TSourceEditor;
+begin
+  ActSE := GetActiveSE;
+  if ActSE <> nil then
+    ActSE.DoEditorExecuteCommand(ecCopy);
+end;
+
+Procedure TSourceNoteBook.PasteClicked(Sender: TObject);
+var ActSE: TSourceEditor;
+begin
+  ActSE := GetActiveSE;
+  if ActSE <> nil then
+    ActSE.DoEditorExecuteCommand(ecPaste);
 end;
 
 Procedure TSourceNotebook.BookMarkToggle(Value: Integer);
