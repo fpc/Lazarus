@@ -4132,12 +4132,14 @@ end;
 
 function TMainIDE.DoLoadLFM(AnUnitInfo: TUnitInfo;
   Flags: TOpenFlags): TModalResult;
+// if there is a .lfm file, open the resource
 var
   LFMFilename: string;
   LFMBuf: TCodeBuffer;
 begin
   CloseDesignerForm(AnUnitInfo);
 
+  // Note: think about virtual and normal .lfm files.
   LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
   LFMBuf:=nil;
   if not FileExistsInIDE(LFMFilename,[pfsfOnlyEditorFiles]) then begin
@@ -4170,6 +4172,17 @@ var
   APersistentClass: TPersistentClass;
   ACaption, AText: String;
 begin
+  // check installed packages
+  debugln('TMainIDE.DoLoadLFM A ',AnUnitInfo.Filename,' ',dbgs(AnUnitInfo.IsPartOfProject),' ');
+  if (Flags*[ofProjectLoading,ofMultiOpen]=[]) and AnUnitInfo.IsPartOfProject
+  then begin
+    debugln('TMainIDE.DoLoadLFM B ');
+    // opening a single form of the project -> check installed packages
+    Result:=PkgBoss.CheckProjectHasInstalledPackages(Project1);
+    if not (Result in [mrOk,mrIgnore]) then exit;
+  end;
+
+  // close old designer form
   if CloseDsgnForm then
     CloseDesignerForm(AnUnitInfo);
 
@@ -11695,6 +11708,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.873  2005/06/17 13:29:05  mattias
+  implemented check for missing installed packages before openening a designer form
+
   Revision 1.872  2005/06/08 08:02:08  mattias
   added message parts to Help interface
 

@@ -137,7 +137,7 @@ if [ "$PkgType" = "deb" ]; then
 else
   # build fpc rpm
 
-  SpecFile=$TmpDir/install/fpc.spec
+  SpecFile=rpm/fpc.spec
   SrcPatch=fpcsrc-patch
 
   # update smart_strip.sh
@@ -155,16 +155,13 @@ else
   #----------------------------------------------------------------------------
   # compile
   #----------------------------------------------------------------------------
-  cd $TmpDir
-  #make rtl
-  #make compiler
   if [ "$WithDOCS" = "no" ]; then
-    make rpm NODOCS=1
-  else
-    make rpm
+    export NODOCS=1
   fi
+  cd $TmpDir
   cd -
-  
+  rpmbuild --nodeps -ba $SpecFile
+
   #----------------------------------------------------------------------------
   # put rpms to normal places
   #----------------------------------------------------------------------------

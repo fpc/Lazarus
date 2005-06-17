@@ -527,7 +527,9 @@ begin
 
   gtk_window_set_modal(GtkWindow, true);
   gtk_widget_show(PGtkWidget(GtkWindow));
+  {$IFDEF Gtk1}
   GDK_WINDOW_ACTIVATE(PGdkWindowPrivate(PGtkWidget(GtkWindow)^.window));
+  {$ENDIF}
 
   {$IFDEF VerboseTransient}
   DebugLn('TGtkWidgetSet.ShowModal ',Sender.ClassName);
