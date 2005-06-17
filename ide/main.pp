@@ -2243,6 +2243,12 @@ begin
   ecToggleCodeExpl:
     DoShowCodeExplorer;
 
+  ecViewUnits:
+    DoViewUnitsAndForms(false);
+
+  ecViewForms:
+    DoViewUnitsAndForms(true);
+
   ecConfigCustomComps:
     PkgBoss.ShowConfigureCustomComponents;
 
@@ -11708,6 +11714,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.874  2005/06/17 14:27:23  mattias
+  implemented short cut for view units/forms
+
   Revision 1.873  2005/06/17 13:29:05  mattias
   implemented check for missing installed packages before openening a designer form
 
