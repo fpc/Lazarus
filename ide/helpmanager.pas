@@ -679,7 +679,6 @@ procedure THelpManager.ShowHelpForMessage(Line: integer);
   end;
 
 var
-  Msg: String;
   MessageParts: TStringList;
   MsgItem: TMessageLine;
 begin

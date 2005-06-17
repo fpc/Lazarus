@@ -100,7 +100,6 @@ const
     nmiwNone,
     nmiwMainIDEName,
     nmiwSourceNoteBookName,
-    nmiwMessagesViewName,
     nmiwDbgOutput,
     nmiwSearchResultsViewName,
     nmiwAnchorEditor

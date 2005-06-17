@@ -1641,6 +1641,8 @@ begin
       DoShowCodeExplorer;
     nmiwAnchorEditor:
       DoViewAnchorEditor;
+    nmiwMessagesViewName:
+      DoShowMessagesView;
     nmiwBreakPoints:
       ;//itmViewBreakPoints.OnClick(Self);
     nmiwWatches:
@@ -11714,6 +11716,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.876  2005/06/17 16:06:16  mattias
+  added message window to persistent IDE windows
+
   Revision 1.875  2005/06/17 15:57:03  mattias
   added Cut/Copy/Paste to sourceeditor popupmenu  from George Lober
 

@@ -50,17 +50,20 @@ type
     FDirectory: string;
     FMsg: string;
     FOriginalIndex: integer;
+    FParts: TStrings;
     FPosition: integer;
     FVisiblePosition: integer;
     procedure SetDirectory(const AValue: string);
     procedure SetMsg(const AValue: string);
   public
     constructor Create;
+    destructor Destroy; override;
     property Msg: string read FMsg write SetMsg;
     property Directory: string read FDirectory write SetDirectory;
     property Position: integer read FPosition;
     property VisiblePosition: integer read FVisiblePosition;
     property OriginalIndex: integer read FOriginalIndex;
+    property Parts: TStrings read FParts write FParts;
   end;
   
 
@@ -521,6 +524,12 @@ constructor TMessageLine.Create;
 begin
   FPosition:=-1;
   FVisiblePosition:=-1;
+end;
+
+destructor TMessageLine.Destroy;
+begin
+  FParts.Free;
+  inherited Destroy;
 end;
 
 initialization
