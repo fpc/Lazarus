@@ -909,6 +909,7 @@ type
     FOnUserInput: TOnUserInputEvent;
     FReleaseComponents: TList;
     FShowHint: Boolean;
+    FShowMainForm: Boolean;
     procedure DoOnIdleEnd;
     function GetCurrentHelpFile: string;
     function GetExename: String;
@@ -1034,6 +1035,7 @@ type
     property OnUserInput: TOnUserInputEvent read FOnUserInput write FOnUserInput;
     property OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
     property ShowHint: Boolean read FShowHint write SetShowHint;
+    property ShowMainForm: Boolean read FShowMainForm write FShowMainForm;
     property Title: String read GetTitle write SetTitle;
   end;
 

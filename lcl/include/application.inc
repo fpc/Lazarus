@@ -84,6 +84,7 @@ begin
   FHintHidePause := DefHintHidePause;
   FHintHidePausePerChar := DefHintHidePausePerChar;
   FShowHint := true;
+  FShowMainForm := true;
   FFormList := nil;
   FOnIdle := nil;
   FIcon := nil;
@@ -972,7 +973,7 @@ procedure TApplication.Run;
   end;
 
 begin
-  if FMainForm <> nil then FMainForm.Show;
+  if (FMainForm <> nil) and FShowMainForm then FMainForm.Show;
   repeat
     if CaptureExceptions then begin
       // run with try..except
@@ -1484,6 +1485,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.122  2005/06/17 15:49:55  mattias
+  added TApplication.ShowMainForm  from George Lober
+
   Revision 1.121  2005/06/08 08:02:09  mattias
   added message parts to Help interface
 
