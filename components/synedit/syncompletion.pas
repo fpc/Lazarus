@@ -62,6 +62,8 @@ type
   TValidateEvent = procedure(Sender: TObject; Shift: TShiftState) of object;
   TSynBaseCompletionSearchPosition = procedure(var Position :integer) of object;
 
+  { TSynBaseCompletionForm }
+
   TSynBaseCompletionForm = class(TForm)
   protected
     FCurrentString: string;
@@ -83,6 +85,7 @@ type
     FOnKeyCompletePrefix: TNotifyEvent;
     FTextColor: TColor;
     FTextSelectedColor: TColor;
+    procedure UTF8KeyPress(var UTF8Key: TUTF8Char); override;
     {$ENDIF}
     procedure SetCurrentString(const Value: string);
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -558,6 +561,25 @@ begin
   if Position > 0 then
     Position := Position - 1;
 end;
+
+{$IFDEF SYN_LAZARUS}
+procedure TSynBaseCompletionForm.UTF8KeyPress(var UTF8Key: TUTF8Char);
+begin
+  if UTF8Key=#8 then begin
+    if Assigned(OnUTF8KeyPress) then OnUTF8KeyPress(Self, UTF8Key);
+  end else if (length(UTF8Key)>=1) and (not (UTF8Key[1] in [#33..'z'])) then
+  begin
+    if Assigned(OnCancel) then
+      OnCancel(Self);
+  end else begin
+    if Assigned(OnUTF8KeyPress) then
+      OnUTF8KeyPress(Self, UTF8Key);
+    if UTF8Key<>'' then
+      CurrentString := CurrentString + UTF8Key;
+  end;
+  UTF8Key:='';
+end;
+{$ENDIF}
 
 procedure TSynBaseCompletionForm.SetCurrentString(const Value: string);
 var
