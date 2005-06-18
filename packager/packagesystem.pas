@@ -2386,7 +2386,9 @@ procedure TLazPackageGraph.GetAllRequiredPackages(
     RequiredPackage: TLazPackage;
   begin
     while CurDependency<>nil do begin
+      //debugln('TLazPackageGraph.GetAllRequiredPackages A ',CurDependency.AsString,' ',dbgs(ord(CurDependency.LoadPackageResult)),' ',dbgs(ord(lprSuccess)));
       if CurDependency.LoadPackageResult=lprSuccess then begin
+        //debugln('TLazPackageGraph.GetAllRequiredPackages B ',CurDependency.AsString);
         RequiredPackage:=CurDependency.RequiredPackage;
         if (not (lpfVisited in RequiredPackage.Flags)) then begin
           RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];

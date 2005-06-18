@@ -831,6 +831,8 @@ procedure ListPkgIDToDependencyList(ListOfTLazPackageID: TList;
   HoldPackages: boolean);
 procedure FreeDependencyList(var First: TPkgDependency;
   ListType: TPkgDependencyList);
+function DependencyListAsString(First: TPkgDependency;
+  ListType: TPkgDependencyList): string;
 
 function FindDependencyByNameInList(First: TPkgDependency;
   ListType: TPkgDependencyList; const Name: string): TPkgDependency;
@@ -982,6 +984,16 @@ begin
     NextDependency:=First.NextDependency[ListType];
     First.Free;
     First:=NextDependency;
+  end;
+end;
+
+function DependencyListAsString(First: TPkgDependency;
+  ListType: TPkgDependencyList): string;
+begin
+  Result:='';
+  while First<>nil do begin
+    Result:=Result+First.AsString+LineEnding;
+    First:=First.NextDependency[ListType];
   end;
 end;
 

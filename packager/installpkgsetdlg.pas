@@ -125,6 +125,7 @@ begin
     InstallPkgSetDialog.OnCheckInstallPackageList:=CheckInstallPackageList;
     Result:=InstallPkgSetDialog.ShowModal;
     NewInstalledPackages:=InstallPkgSetDialog.GetNewInstalledPackages;
+    RebuildIDE:=InstallPkgSetDialog.RebuildIDE;
   finally
     InstallPkgSetDialog.Free;
   end;

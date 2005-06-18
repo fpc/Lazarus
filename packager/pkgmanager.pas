@@ -142,6 +142,7 @@ type
     procedure GetWritablePkgOutputDirectory(APackage: TLazPackage;
                                             var AnOutDirectory: string);
     procedure OnCheckInstallPackageList(PkgIDList: TList; var Ok: boolean);
+    function LoadDependencyList(FirstDependency: TPkgDependency): TModalResult;
   private
     FirstAutoInstallDependency: TPkgDependency;
     // helper functions
@@ -397,10 +398,15 @@ var
   BuildIDEFlags: TBuildLazarusFlags;
   ok: boolean;
   Report: String;
+  PkgList: TList;
+  RequiredPackage: TLazPackage;
+  i: Integer;
+  CurDependency: TPkgDependency;
 begin
   RebuildIDE:=false;
   PkgIDList:=nil;
   NewFirstAutoInstallDependency:=nil;
+  PkgList:=nil;
   try
     if ShowEditInstallPkgsDialog(FirstAutoInstallDependency,
       @OnCheckInstallPackageList,PkgIDList,RebuildIDE)<>mrOk
@@ -424,15 +430,43 @@ begin
       'This will happen:'#13#13
       +Report+#13'Continue?',mtConfirmation,[mbYes,mbNo],0)<>mrYes then exit;
 
-    // replace install list
-    // TODO
-    exit;
-    
-    FreeDependencyList(FirstAutoInstallDependency,pdlRequires);
-    FirstAutoInstallDependency:=NewFirstAutoInstallDependency;
-    NewFirstAutoInstallDependency:=nil;
+    // try to commit changes -> replace install list
+    PackageGraph.BeginUpdate(true);
+    try
+      // get all required packages
+      debugln('TPkgManager.MainIDEitmPkgEditInstallPkgsClick GetAllRequiredPackages for ',DependencyListAsString(NewFirstAutoInstallDependency,pdlRequires));
+      if LoadDependencyList(NewFirstAutoInstallDependency)<>mrOk then exit;
+      PackageGraph.GetAllRequiredPackages(NewFirstAutoInstallDependency,PkgList);
+      
+      // mark packages for installation
+      debugln('TPkgManager.MainIDEitmPkgEditInstallPkgsClick mark packages for installation');
+      for i:=0 to PkgList.Count-1 do begin
+        RequiredPackage:=TLazPackage(PkgList[i]);
+        if RequiredPackage.AutoInstall=pitNope then begin
+          RequiredPackage.AutoInstall:=pitStatic;
+        end;
+      end;
+
+      // mark packages for uninstall
+      debugln('TPkgManager.MainIDEitmPkgEditInstallPkgsClick mark packages for uninstall');
+      CurDependency:=FirstAutoInstallDependency;
+      while CurDependency<>nil do begin
+        if CurDependency.RequiredPackage<>nil then
+          CurDependency.RequiredPackage.AutoInstall:=pitNope;
+        CurDependency:=CurDependency.NextRequiresDependency;
+      end;
+
+      // replace install list
+      debugln('TPkgManager.MainIDEitmPkgEditInstallPkgsClick replace install list');
+      FreeDependencyList(FirstAutoInstallDependency,pdlRequires);
+      FirstAutoInstallDependency:=NewFirstAutoInstallDependency;
+      NewFirstAutoInstallDependency:=nil;
+    finally
+      PackageGraph.EndUpdate;
+    end;
 
     // save package list
+    debugln('TPkgManager.MainIDEitmPkgEditInstallPkgsClick save package list');
     SortAutoInstallDependencies;
     SaveAutoInstallDependencies(true);
 
@@ -448,6 +482,7 @@ begin
   finally
     if PkgIDList<>nil then FreeListObjects(PkgIDList,true);
     FreeDependencyList(NewFirstAutoInstallDependency,pdlRequires);
+    PkgList.Free;
   end;
 end;
 
@@ -532,8 +567,6 @@ procedure TPkgManager.OnCheckInstallPackageList(PkgIDList: TList;
   var Ok: boolean);
 var
   NewFirstAutoInstallDependency: TPkgDependency;
-  CurDependency: TPkgDependency;
-  OpenResult: TLoadPackageResult;
   PkgList: TList;
   i: Integer;
   APackage: TLazPackage;
@@ -544,20 +577,8 @@ begin
     ListPkgIDToDependencyList(PkgIDList,NewFirstAutoInstallDependency,
       pdlRequires,Self,true);
 
-    // load all packages
-    CurDependency:=NewFirstAutoInstallDependency;
-    while CurDependency<>nil do begin
-      OpenResult:=PackageGraph.OpenDependency(CurDependency);
-      if OpenResult<>lprSuccess then begin
-        MessageDlg('Error',
-          'Unable to load package "'+CurDependency.AsString+'"',
-          mtError,[mbCancel],0);
-        exit;
-      end;
-      CurDependency:=CurDependency.NextRequiresDependency;
-    end;
-
     // get all required packages
+    if LoadDependencyList(NewFirstAutoInstallDependency)<>mrOk then exit;
     PackageGraph.GetAllRequiredPackages(NewFirstAutoInstallDependency,PkgList);
 
     // check if any package is a runtime package
@@ -572,11 +593,45 @@ begin
       end;
     end;
 
+    // get all required packages
+    PackageGraph.GetAllRequiredPackages(NewFirstAutoInstallDependency,PkgList);
+
+    // try save all modified packages
+    for i:=0 to PkgList.Count-1 do begin
+      APackage:=TLazPackage(PkgList[i]);
+      if (not APackage.AutoCreated)
+      and (APackage.IsVirtual or APackage.Modified) then begin
+        if DoSavePackage(APackage,[])<>mrOk then exit;
+      end;
+    end;
+
     Ok:=true;
   finally
     FreeDependencyList(NewFirstAutoInstallDependency,pdlRequires);
     PkgList.Free;
   end;
+end;
+
+function TPkgManager.LoadDependencyList(FirstDependency: TPkgDependency
+  ): TModalResult;
+var
+  CurDependency: TPkgDependency;
+  OpenResult: TLoadPackageResult;
+begin
+  Result:=mrCancel;
+  // load all packages
+  CurDependency:=FirstDependency;
+  while CurDependency<>nil do begin
+    OpenResult:=PackageGraph.OpenDependency(CurDependency);
+    if OpenResult<>lprSuccess then begin
+      MessageDlg('Error',
+        'Unable to load package "'+CurDependency.AsString+'"',
+        mtError,[mbCancel],0);
+      exit;
+    end;
+    CurDependency:=CurDependency.NextRequiresDependency;
+  end;
+  Result:=mrOk;
 end;
 
 procedure TPkgManager.MainIDEitmPkgAddCurUnitToPkgClick(Sender: TObject);
@@ -1187,7 +1242,7 @@ begin
           #13, '"', ConflictPkg.IDAsString, #13, #13]);
       end else
         s:='Internal inconsistency FindAmbiguousUnits: '
-          +'Please report this bug and how you get here.'#13;
+          +'Please report this bug and how you got here.'#13;
       Result:=MessageDlg(lisPkgMangAmbiguousUnitsFound, Format(
         lisPkgMangBothPackagesAreConnectedThisMeansEitherOnePackageU, [s]),
           mtError,[mbCancel,mbAbort],0);
@@ -1206,7 +1261,7 @@ begin
           #13, '"', ConflictPkg.IDAsString, #13, #13]);
       end else
         s:='Internal inconsistency FindFPCConflictUnits: '
-          +'Please report this bug and how you get here.'#13;
+          +'Please report this bug and how you got here.'#13;
       Result:=MessageDlg(lisPkgMangAmbiguousUnitsFound, s,
           mtError,[mbCancel,mbAbort],0);
       exit;
@@ -1917,10 +1972,6 @@ begin
     itmPkgAddCurUnitToPkg.OnClick:=@MainIDEitmPkgAddCurUnitToPkgClick;
     itmPkgPkgGraph.OnClick:=@MainIDEitmPkgPkgGraphClick;
     itmPkgEditInstallPkgs.OnClick:=@MainIDEitmPkgEditInstallPkgsClick;
-    {$IFNDEF EnableInstallPkgDlg}
-    itmPkgEditInstallPkgs.Visible:=false;
-    itmPkgEditInstallPkgs.Enabled:=false;
-    {$ENDIF}
     {$IFDEF CustomIDEComps}
     itmCompsConfigCustomComps.OnClick :=@MainIDEitmConfigCustomCompsClicked;
     {$ENDIF}
