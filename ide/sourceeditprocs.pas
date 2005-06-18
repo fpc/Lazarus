@@ -35,8 +35,9 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, BasicCodeTools, CodeTree, CodeToolManager,
-  PascalParserTool, IdentCompletionTool, GraphType, Graphics, EditorOptions,
-  SynEdit, SynCompletion, MainIntf;
+  PascalParserTool, IdentCompletionTool, GraphType, Graphics,
+  TextTools, EditorOptions,
+  SynEdit, SynRegExpr, SynCompletion, MainIntf;
 
 type
   TCompletionType = (
@@ -52,8 +53,10 @@ function GetIdentCompletionValue(aCompletion : TSynCompletion;
   var ValueType: TIdentComplValue; var CursorToLeft: integer): string;
 function BreakLinesInText(const s: string; MaxLineLength: integer): string;
 
-
 implementation
+
+var
+  SynREEngine: TRegExpr;
 
 procedure PaintCompletionItem(const AKey: string; ACanvas: TCanvas;
   X, Y, MaxX: integer; ItemSelected: boolean; Index: integer;
@@ -349,6 +352,77 @@ function BreakLinesInText(const s: string; MaxLineLength: integer): string;
 begin
   Result:=BreakString(s,MaxLineLength,GetLineIndent(s,1));
 end;
+
+procedure InitSynREEngine;
+begin
+  if SynREEngine=nil then
+    SynREEngine:=TRegExpr.Create;
+end;
+
+function SynREMatches(const TheText, RegExpr, ModifierStr: string): boolean;
+begin
+  InitSynREEngine;
+  SynREEngine.ModifierStr:=ModifierStr;
+  SynREEngine.Expression:=RegExpr;
+  Result:=SynREEngine.Exec(TheText);
+end;
+
+function SynREVar(Index: Integer): string;
+begin
+  if SynREEngine<>nil then
+    Result:=SynREEngine.Match[Index]
+  else
+    Result:='';
+end;
+
+procedure SynREVarPos(Index: Integer; var MatchStart, MatchLength: integer);
+begin
+  if SynREEngine<>nil then begin
+    MatchStart:=SynREEngine.MatchPos[Index];
+    MatchLength:=SynREEngine.MatchLen[Index];
+  end else begin
+    MatchStart:=-1;
+    MatchLength:=-1;
+  end;
+end;
+
+function SynREVarCount: Integer;
+begin
+  if SynREEngine<>nil then
+    Result:=SynREEngine.SubExprMatchCount
+  else
+    Result:=0;
+end;
+
+function SynREReplace(const TheText, FindRegExpr, ReplaceRegExpr: string;
+  UseSubstutition: boolean; const ModifierStr: string): string;
+begin
+  InitSynREEngine;
+  SynREEngine.ModifierStr:=ModifierStr;
+  SynREEngine.Expression:=FindRegExpr;
+  Result:=SynREEngine.Replace(TheText,ReplaceRegExpr,UseSubstutition);
+end;
+
+procedure SynRESplit(const TheText, SeparatorRegExpr: string; Pieces: TStrings;
+  const ModifierStr: string);
+begin
+  InitSynREEngine;
+  SynREEngine.ModifierStr:=ModifierStr;
+  SynREEngine.Expression:=SeparatorRegExpr;
+  SynREEngine.Split(TheText,Pieces);
+end;
+
+initialization
+  REException:=ERegExpr;
+  REMatchesFunction:=@SynREMatches;
+  REVarFunction:=@SynREVar;
+  REVarPosProcedure:=@SynREVarPos;
+  REVarCountFunction:=@SynREVarCount;
+  REReplaceProcedure:=@SynREReplace;
+  RESplitFunction:=@SynRESplit;
+
+finalization
+  FreeAndNil(SynREEngine);
 
 end.
 
