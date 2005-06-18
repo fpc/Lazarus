@@ -1393,6 +1393,10 @@ msgstr "Copier l'erreur"
 msgid "Copy selected components to clipboard"
 msgstr "Copier les composants sélectionnés vers le presse-papiers"
 
+#: lazarusidestrconsts:liscopyselectedmessagestoclipboard
+msgid "Copy selected messages to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:srkmeccopy
 msgid "Copy selection to clipboard"
 msgstr "Copier la sélection vers le presse-papiers"

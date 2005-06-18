@@ -1392,6 +1392,10 @@ msgstr "Errore di copia"
 msgid "Copy selected components to clipboard"
 msgstr "Copia i componenti selezionati negli appunti"
 
+#: lazarusidestrconsts:liscopyselectedmessagestoclipboard
+msgid "Copy selected messages to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:srkmeccopy
 msgid "Copy selection to clipboard"
 msgstr "Copia la selezione negli appunti"

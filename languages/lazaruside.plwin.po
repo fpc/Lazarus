@@ -1393,6 +1393,10 @@ msgstr "B³¹d kopiowania"
 msgid "Copy selected components to clipboard"
 msgstr "Kopiuj wybrane komponenty do schowka"
 
+#: lazarusidestrconsts:liscopyselectedmessagestoclipboard
+msgid "Copy selected messages to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:srkmeccopy
 msgid "Copy selection to clipboard"
 msgstr "Skopiuj zaznaczenie do schowka"

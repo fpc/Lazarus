@@ -1396,6 +1396,10 @@ msgstr "Kopierfehler"
 msgid "Copy selected components to clipboard"
 msgstr "Kopiere die ausgewählten Komponenten in die Zwischenablage"
 
+#: lazarusidestrconsts:liscopyselectedmessagestoclipboard
+msgid "Copy selected messages to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:srkmeccopy
 msgid "Copy selection to clipboard"
 msgstr "Kopiere die Auswahl in die Zwischenablage"

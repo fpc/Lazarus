@@ -514,6 +514,10 @@ msgstr ""
 msgid "Messages"
 msgstr ""
 
+#: lazarusidestrconsts:liscopyselectedmessagestoclipboard
+msgid "Copy selected messages to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:liscopyallmessagestoclipboard
 msgid "Copy all messages to clipboard"
 msgstr ""

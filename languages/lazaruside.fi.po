@@ -1372,7 +1372,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liscopyallmessagestoclipboard
 msgid "Copy all messages to clipboard"
-msgstr ""
+msgstr "Kopio kaikki kääntäjän viestit leikepöydälle"
 
 #: lazarusidestrconsts:liscopyerror2
 msgid "Copy error"
@@ -1380,6 +1380,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts:liscopyselectedmessagestoclipboard
+msgid "Copy selected messages to clipboard"
 msgstr ""
 
 #: lazarusidestrconsts:srkmeccopy
@@ -4692,11 +4696,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuprojectinspector
 msgid "Project Inspector"
-msgstr ""
+msgstr "Projektinhallinta"
 
 #: lazarusidestrconsts:lisprojinspprojectinspector
 msgid "Project Inspector - %s"
-msgstr ""
+msgstr "Projektinhallinta - %s"
 
 #: lazarusidestrconsts:dlgprojectoptions
 msgid "Project Options"
@@ -5252,7 +5256,7 @@ msgstr "Tallenna kaikki"
 
 #: lazarusidestrconsts:lissaveallmessagestofile
 msgid "Save all messages to file"
-msgstr ""
+msgstr "Tallenna kaikki kääntäjän viestit tiedostoon"
 
 #: lazarusidestrconsts:liscodetoolsdefssaveandexit
 msgid "Save and Exit"
@@ -5716,7 +5720,7 @@ msgstr "Näytä rivinumerot"
 
 #: lazarusidestrconsts:dlgshownothing
 msgid "Show nothing (only errors)"
-msgstr ""
+msgstr "Näytä ainoastaan virheet"
 
 #: lazarusidestrconsts:dlgshowscrollhint
 msgid "Show scroll hint"

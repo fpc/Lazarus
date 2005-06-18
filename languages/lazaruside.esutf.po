@@ -1393,6 +1393,10 @@ msgstr ""
 msgid "Copy selected components to clipboard"
 msgstr "Copiar los componentes seleccionados al portapapeles"
 
+#: lazarusidestrconsts:liscopyselectedmessagestoclipboard
+msgid "Copy selected messages to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:srkmeccopy
 msgid "Copy selection to clipboard"
 msgstr "Copiar la selección al portapapeles"
