@@ -39,7 +39,7 @@ uses
   PropEdits, HelpIntf, HelpHTML, HelpFPDoc, MacroIntf,
   LazarusIDEStrConsts, TransferMacros, DialogProcs, IDEOptionDefs,
   EnvironmentOpts, AboutFrm, MsgView, Project, PackageDefs, MainBar,
-  HelpOptions, MainIntf, LazConf;
+  OutputFilter, HelpOptions, MainIntf, LazConf;
 
 type
   { TBaseHelpManager }
@@ -672,15 +672,32 @@ end;
 
 procedure THelpManager.ShowHelpForMessage(Line: integer);
 
-  function ParseMessage(const Msg: string): TStringList;
+  function ParseMessage(MsgItem: TMessageLine): TStringList;
+  var
+    AnOutputFilter: TOutputFilter;
+    CurParts: TOutputLine;
   begin
     Result:=TStringList.Create;
-    Result.Values['Message']:=Msg;
+    Result.Values['Message']:=MsgItem.Msg;
+    AnOutputFilter:=TOutputFilter.Create;
+    try
+      AnOutputFilter.ReadLine(MsgItem.Msg,false);
+      AnOutputFilter.CurrentDirectory:=MsgItem.Directory;
+      CurParts:=AnOutputFilter.CurrentMessageParts;
+      if CurParts<>nil then
+        debugln('THelpManager.ShowHelpForMessage ',CurParts.Text)
+      else
+        debugln('THelpManager.ShowHelpForMessage no parts');
+      if CurParts<>nil then
+        Result.Assign(CurParts);
+    finally
+      AnOutputFilter.Free;
+    end;
   end;
 
 var
-  MessageParts: TStringList;
   MsgItem: TMessageLine;
+  MessageParts: TStringList;
 begin
   debugln('THelpManager.ShowHelpForMessage A Line=',dbgs(Line));
   if MessagesView=nil then exit;
@@ -690,7 +707,7 @@ begin
   MsgItem:=MessagesView.VisibleItems[Line];
   if MsgItem=nil then exit;
   if MsgItem.Msg<>'' then begin
-    MessageParts:=ParseMessage(MsgItem.Msg);
+    MessageParts:=ParseMessage(MsgItem);
     ShowHelpOrErrorForMessageLine(MsgItem.Msg,MessageParts);
   end;
 end;

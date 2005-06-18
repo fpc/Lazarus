@@ -111,17 +111,20 @@ function IDEShortCut(Key1: word; Shift1: TShiftState;
 
 
 type
-  TExecuteIDECommand = procedure(Sender: TObject;
-                                 var Key: word; Shift: TShiftState;
-                                 Areas: TCommandAreas) of object;
+  TExecuteIDEShortCut = procedure(Sender: TObject;
+                                  var Key: word; Shift: TShiftState;
+                                  Areas: TCommandAreas) of object;
+  TExecuteIDECommand = procedure(Sender: TObject; Command: word) of object;
 
 var
   // will be set by the IDE
+  OnExecuteIDEShortCut: TExecuteIDEShortCut;
   OnExecuteIDECommand: TExecuteIDECommand;
 
-procedure ExecuteIDECommand(Sender: TObject; var Key: word; Shift: TShiftState;
-                            Areas: TCommandAreas);
-procedure ExecuteIDECommand(Sender: TObject; var Key: word; Shift: TShiftState);
+procedure ExecuteIDEShortCut(Sender: TObject; var Key: word; Shift: TShiftState;
+                             Areas: TCommandAreas);
+procedure ExecuteIDEShortCut(Sender: TObject; var Key: word; Shift: TShiftState);
+procedure ExecuteIDECommand(Sender: TObject; Command: word);
 
 
 implementation
@@ -136,16 +139,23 @@ begin
   Result.Shift2:=Shift2;
 end;
 
-procedure ExecuteIDECommand(Sender: TObject; var Key: word; Shift: TShiftState;
-                            Areas: TCommandAreas);
+procedure ExecuteIDEShortCut(Sender: TObject; var Key: word; Shift: TShiftState;
+  Areas: TCommandAreas);
 begin
   if (OnExecuteIDECommand<>nil) and (Key<>VK_UNKNOWN) then
-    OnExecuteIDECommand(Sender,Key,Shift,Areas);
+    OnExecuteIDEShortCut(Sender,Key,Shift,Areas);
 end;
 
-procedure ExecuteIDECommand(Sender: TObject; var Key: word; Shift: TShiftState);
+procedure ExecuteIDEShortCut(Sender: TObject; var Key: word;
+  Shift: TShiftState);
 begin
-  OnExecuteIDECommand(Sender,Key,Shift,caMenuOnly);
+  OnExecuteIDEShortCut(Sender,Key,Shift,caMenuOnly);
+end;
+
+procedure ExecuteIDECommand(Sender: TObject; Command: word);
+begin
+  if (OnExecuteIDECommand<>nil) and (Command<>0) then
+    OnExecuteIDECommand(Sender,Command);
 end;
 
 { TIDECommandCategory }

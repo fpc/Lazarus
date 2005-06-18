@@ -556,6 +556,21 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TCustomListBox.GetSelectedText: string;
+
+  Returns Text of all selected items, separated by LineEnding
+------------------------------------------------------------------------------}
+function TCustomListBox.GetSelectedText: string;
+var
+  i: Integer;
+begin
+  Result:='';
+  if ItemIndex<0 then exit;
+  for i:=0 to Items.Count-1 do
+    if Selected[i] then Result:=Result+Items[i]+LineEnding;
+end;
+
+{------------------------------------------------------------------------------
   function TCustomListBox.ItemAtPos(const Pos: TPoint; Existing: Boolean
     ): Integer;
 

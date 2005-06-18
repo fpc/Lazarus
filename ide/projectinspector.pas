@@ -631,7 +631,7 @@ end;
 procedure TProjectInspectorForm.KeyUp(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
-  ExecuteIDECommand(Self,Key,Shift,caMenuOnly);
+  ExecuteIDEShortCut(Self,Key,Shift,caMenuOnly);
 end;
 
 function TProjectInspectorForm.GetSelectedFile: TUnitInfo;

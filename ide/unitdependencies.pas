@@ -419,7 +419,7 @@ end;
 procedure TUnitDependenciesView.KeyUp(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyUp(Key, Shift);
-  ExecuteIDECommand(Self,Key,Shift,caMenuOnly);
+  ExecuteIDEShortCut(Self,Key,Shift,caMenuOnly);
 end;
 
 function TUnitDependenciesView.RootValid: boolean;

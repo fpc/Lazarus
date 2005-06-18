@@ -417,7 +417,7 @@ end;
 procedure TCodeExplorerView.KeyUp(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyUp(Key, Shift);
-  ExecuteIDECommand(Self,Key,Shift,caMenuOnly);
+  ExecuteIDEShortCut(Self,Key,Shift,caMenuOnly);
 end;
 
 procedure TCodeExplorerView.BeginUpdate;

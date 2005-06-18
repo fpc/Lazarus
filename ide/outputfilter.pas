@@ -164,7 +164,8 @@ type
     procedure BeginBufferingOutput;
     procedure EndBufferingOutput;
   public
-    property CurrentDirectory: string read fCurrentDirectory;
+    property CurrentDirectory: string read fCurrentDirectory
+                                      write fCurrentDirectory;
     property FilteredLines: TFilteredOutputLines read fFilteredOutput;
     property StopExecute: boolean read FStopExecute write SetStopExecute;
     property Lines: TOutputLines read fOutput;
@@ -210,6 +211,8 @@ begin
   inherited Create;
   fFilteredOutput:=TFilteredOutputLines.Create;
   fOutput:=TOutputLines.Create;
+  fOptions:=[ofoSearchForFPCMessages,ofoSearchForMakeMessages,
+             ofoMakeFilenamesAbsolute];
   Clear;
 end;
 

@@ -284,9 +284,10 @@ type
   public
     // Global IDE events
     procedure OnProcessIDECommand(Sender: TObject; Command: word;
-      var Handled: boolean);
-    procedure OnExecuteIDECommand(Sender: TObject;
-      var Key: word; Shift: TShiftState; Areas: TCommandAreas);
+                                  var Handled: boolean);
+    procedure OnExecuteIDEShortCut(Sender: TObject;
+                       var Key: word; Shift: TShiftState; Areas: TCommandAreas);
+    procedure OnExecuteIDECommand(Sender: TObject; Command: word);
 
     // Environment options dialog events
     procedure OnLoadEnvironmentSettings(Sender: TObject;
@@ -1132,7 +1133,7 @@ end;
 procedure TMainIDE.OIRemainingKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  OnExecuteIDECommand(Sender,Key,Shift,caDesign);
+  OnExecuteIDEShortCut(Sender,Key,Shift,caDesign);
 end;
 
 procedure TMainIDE.OIOnAddToFavourites(Sender: TObject);
@@ -1508,6 +1509,7 @@ end;
 procedure TMainIDE.SetupIDEInterface;
 begin
   IDECommands.OnExecuteIDECommand:=@OnExecuteIDECommand;
+  IDECommands.OnExecuteIDEShortCut:=@OnExecuteIDEShortCut;
 end;
 
 procedure TMainIDE.SetupStartProject;
@@ -2304,7 +2306,15 @@ begin
   end;
 end;
 
-procedure TMainIDE.OnExecuteIDECommand(Sender: TObject; var Key: word;
+procedure TMainIDE.OnExecuteIDECommand(Sender: TObject; Command: word);
+var
+  Handled: Boolean;
+begin
+  Handled:=false;
+  OnProcessIDECommand(Sender,Command,Handled);
+end;
+
+procedure TMainIDE.OnExecuteIDEShortCut(Sender: TObject; var Key: word;
   Shift: TShiftState; Areas: TCommandAreas);
 var
   CommandRelation: TKeyCommandRelation;
@@ -11716,6 +11726,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.877  2005/06/18 08:49:32  mattias
+  implemented context help system for compiler/make messages
+
   Revision 1.876  2005/06/17 16:06:16  mattias
   added message window to persistent IDE windows
 

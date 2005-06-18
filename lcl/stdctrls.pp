@@ -447,6 +447,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function GetIndexAtY(Y: integer): integer;
+    function GetSelectedText: string;
     function ItemAtPos(const Pos: TPoint; Existing: Boolean): Integer;
     function ItemRect(Index: Integer): TRect;
     function ItemVisible(Index: Integer): boolean;
@@ -1262,6 +1263,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.208  2005/06/18 08:49:32  mattias
+  implemented context help system for compiler/make messages
+
   Revision 1.207  2005/06/13 08:04:38  vincents
   fixed crashed with csOwnerDrawVariable combobox style (bug 934)    from Jesus
 

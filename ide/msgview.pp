@@ -40,7 +40,7 @@ uses
   Classes, SysUtils, LCLProc, Controls, StdCtrls, Forms, Menus, LResources,
   ClipBrd, Dialogs, InputHistory, FileUtil,
   IDEProcs, IDEOptionDefs, DialogProcs, IDECommands, EnvironmentOpts,
-  LazarusIDEStrConsts;
+  LazarusIDEStrConsts, KeyMapping;
 
 type
   { TMessageLine }
@@ -71,12 +71,18 @@ type
   
   TOnFilterLine = procedure(MsgLine: TMessageLine; var Show: boolean) of object;
   
+  { TMessagesView }
+
   TMessagesView = class(TForm)
     MessageView: TListBox;
     MainPopupMenu: TPopupMenu;
+    CopyMenuItem: TMenuItem;
     CopyAllMenuItem: TMenuItem;
+    HelpMenuItem: TMenuItem;
     SaveAllToFileMenuItem: TMenuItem;
     procedure CopyAllMenuItemClick(Sender: TObject);
+    procedure CopyMenuItemClick(Sender: TObject);
+    procedure HelpMenuItemClick(Sender: TObject);
     procedure MessageViewDblClicked(Sender: TObject);
     Procedure MessageViewClicked(sender : TObject);
     procedure MessagesViewKeyDown(Sender: TObject; var Key: Word;
@@ -161,6 +167,22 @@ Begin
   MainPopupMenu:=TPopupMenu.Create(Self);
   MessageView.PopupMenu:=MainPopupMenu;
   
+  HelpMenuItem:=TMenuItem.Create(Self);
+  with HelpMenuItem do begin
+    Name:='HelpMenuItem';
+    Caption:=srVK_HELP;
+    OnClick:=@HelpMenuItemClick;
+  end;
+  MainPopupMenu.Items.Add(HelpMenuItem);
+
+  CopyMenuItem:=TMenuItem.Create(Self);
+  with CopyMenuItem do begin
+    Name:='CopyMenuItem';
+    Caption:=lisCopySelectedMessagesToClipboard;
+    OnClick:=@CopyMenuItemClick;
+  end;
+  MainPopupMenu.Items.Add(CopyMenuItem);
+
   CopyAllMenuItem:=TMenuItem.Create(Self);
   with CopyAllMenuItem do begin
     Name:='CopyAllMenuItem';
@@ -168,7 +190,7 @@ Begin
     OnClick:=@CopyAllMenuItemClick;
   end;
   MainPopupMenu.Items.Add(CopyAllMenuItem);
-  
+
   SaveAllToFileMenuItem:=TMenuItem.Create(Self);
   with SaveAllToFileMenuItem do begin
     Name:='SaveAllToFileMenuItem';
@@ -422,6 +444,17 @@ begin
   Clipboard.AsText:=MessageView.Items.Text;
 end;
 
+procedure TMessagesView.CopyMenuItemClick(Sender: TObject);
+begin
+  if MessageView.ItemIndex<0 then exit;
+  Clipboard.AsText:=MessageView.GetSelectedText;
+end;
+
+procedure TMessagesView.HelpMenuItemClick(Sender: TObject);
+begin
+  ExecuteIDECommand(Self,ecContextHelp);
+end;
+
 Procedure TMessagesView.MessageViewClicked(sender : TObject);
 begin
   if EnvironmentOptions.MsgViewDblClickJumps then exit;
@@ -435,7 +468,7 @@ procedure TMessagesView.MessagesViewKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   //debugln('TMessagesView.MessagesViewKeyDown ',dbgs(Key));
-  ExecuteIDECommand(Self,Key,Shift);
+  ExecuteIDEShortCut(Self,Key,Shift);
 end;
 
 procedure TMessagesView.SaveAllToFileMenuItemClick(Sender: TObject);

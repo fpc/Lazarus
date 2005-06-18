@@ -1020,6 +1020,8 @@ var
   IdentifierStart: PChar;
 begin
   Result:=false;
+  NewTool:=nil;
+  NewNode:=nil;
   SkipChecks:=false;
   ActivateGlobalWriteLock;
   try
@@ -1078,7 +1080,7 @@ begin
                                            NewPos,NewTopLine);
       NewNode:=nil;
       NewTool:=nil;
-      if fsfSearchSourceName in SearchSmartFlags then
+      if Result and (fsfSearchSourceName in SearchSmartFlags) then
         Result:=FindSourceName(NewPos.Code);
       exit;
     end;
@@ -2887,6 +2889,8 @@ begin
   Result:=true;
   ListOfPCodeXYPosition:=nil;
   AddCodePosition(CursorPos);
+  NewTool:=nil;
+  NewNode:=nil;
 
   ActivateGlobalWriteLock;
   try
