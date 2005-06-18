@@ -1124,16 +1124,19 @@ type
   Private
     FAlignment: TAlignment;
     FFocusControl: TWinControl;
+    FOptimalFill: Boolean;
     FShowAccelChar: Boolean;
     FWordWrap: Boolean;
     FLayout: TTextLayout;
     Procedure FontChange(Sender: TObject);
+    procedure SetOptimalFill(const AValue: Boolean);
   protected
     function  CanTab: boolean; override;
     procedure CalcSize(var AWidth, AHeight: integer);
     procedure DoAutoSize; override;
     function  DialogChar(var Message: TLMKey): boolean; override;
     procedure CMTextChanged(var Message: TLMSetText); message CM_TEXTCHANGED;
+    procedure Resize; override;
 
     procedure WMActivate(var Message: TLMActivate); message LM_ACTIVATE;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -1155,8 +1158,13 @@ type
     property ShowAccelChar: Boolean read GetShowAccelChar write SetShowAccelChar default true;
     property Transparent: boolean read GetTransparent write SetTransparent default true;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default false;
+    property OptimalFill: Boolean read FOptimalFill write SetOptimalFill default false;
   public
-    constructor Create(AOwner: TComponent); override;
+    function CalcFittingFontHeight(const TheText: string;
+                                   MaxWidth, MaxHeight: Integer; var FontHeight,
+                                   NeededWidth, NeededHeight: integer): Boolean;
+    function AdjustFontForOptimalFill: Boolean;
+    constructor Create(TheOwner: TComponent); override;
     procedure Paint; override;
     property AutoSize default True;
   end;
@@ -1195,6 +1203,7 @@ type
     property OnMouseLeave;
     property OnChangeBounds;
     property OnResize;
+    property OptimalFill;
   end;
 
 var
@@ -1263,6 +1272,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.209  2005/06/18 16:10:09  mattias
+  implemented TCustomLabel.OptimalFill: boolean
+
   Revision 1.208  2005/06/18 08:49:32  mattias
   implemented context help system for compiler/make messages
 

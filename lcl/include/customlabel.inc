@@ -53,8 +53,13 @@ Procedure TCustomLabel.DoAutoSize;
 var
   NewWidth, NewHeight: integer;
 begin
-  //debugln('TCustomLabel.DoAutoSize ',DbgSName(Self),' AutoSizing=',dbgs(AutoSizing),' AutoSize=',dbgs(AutoSize),' Parent=',DbgSName(Parent),' Parent.HandleAllocated=',dbgs(Parent.HandleAllocated),' csLoading=',dbgs(csLoading in ComponentState));
-  If AutoSizing or not AutoSize then
+  //debugln('TCustomLabel.DoAutoSize ',DbgSName(Self),' AutoSizing=',dbgs(AutoSizing),' AutoSize=',dbgs(AutoSize),' Parent=',DbgSName(Parent),' csLoading=',dbgs(csLoading in ComponentState),' Parnet.HandleAllocated=',dbgs((Parent<>nil) and (Parent.HandleAllocated)));
+  if OptimalFill and (not AutoSize) then begin
+    AdjustFontForOptimalFill;
+    exit;
+  end;
+  
+  if AutoSizing or not AutoSize then
     Exit;
   if ([csLoading,csDestroying]*ComponentState<>[])
   or (Parent = nil) or Parent.AutoSizeDelayed then
@@ -62,7 +67,7 @@ begin
   AutoSizing := True;
   try
     CalcSize(NewWidth, NewHeight);
-    //debugln('TCustomLabel.DoAutoSize R=',dbgs(R));
+    //debugln('TCustomLabel.DoAutoSize ',dbgs(Left),' ',dbgs(Top),' ',dbgs(NewWidth),' ',dbgs(NewHeight));
     SetBounds(Left, Top, NewWidth, NewHeight);
   finally
     AutoSizing := False;
@@ -71,7 +76,8 @@ end;
 
 Procedure TCustomLabel.SetAlignment(Value : TAlignment);
 begin
-  If FAlignment <> Value then begin
+  //debugln('TCustomLabel.SetAlignment Old=',dbgs(ord(Alignment)),' New=',dbgs(ord(Value)),' csLoading=',dbgs(csLoading in ComponentState));
+  if FAlignment <> Value then begin
     FAlignment := Value;
     Invalidate;
   end;
@@ -117,6 +123,13 @@ begin
   AdjustSize;
 end;
 
+procedure TCustomLabel.Resize;
+begin
+  inherited Resize;
+  if OptimalFill and (not AutoSize) then
+    AdjustFontForOptimalFill;
+end;
+
 Function TCustomLabel.GetShowAccelChar : Boolean;
 begin
   Result := FShowAccelChar;
@@ -127,9 +140,9 @@ begin
   Result:=false;
 end;
 
-constructor TCustomLabel.Create(AOwner: TComponent);
+constructor TCustomLabel.Create(TheOwner: TComponent);
 begin
-  inherited Create(AOwner);
+  inherited Create(TheOwner);
   Font.OnChange := @FontChange;
   ControlStyle := [csSetCaption, csOpaque, csClickEvents, csDoubleClicks,
                    csReplicatable];
@@ -199,6 +212,102 @@ begin
   AdjustSize;
 end;
 
+{-------------------------------------------------------------------------------
+  function TCustomLabel.CalcFittingFontHeight(const TheText: string;
+    MaxWidth, MaxHeight: Integer;
+    var FontSize, NeededWidth, NeededHeight: integer): Boolean;
+
+  Calculates the maximum font size for TheText to fit into MaxWidth and
+  MaxHeight.
+-------------------------------------------------------------------------------}
+function TCustomLabel.CalcFittingFontHeight(const TheText: string;
+  MaxWidth, MaxHeight: Integer;
+  var FontHeight, NeededWidth, NeededHeight: integer): Boolean;
+var
+  R : TRect;
+  DC : hDC;
+  Flags: Cardinal;
+  OldFont: HGDIOBJ;
+  MinFontHeight: Integer;
+  MaxFontHeight: Integer;
+  AFont: TFont;
+  CurFontHeight: LongInt;
+begin
+  Result:=false;
+  if (Parent=nil) or (Parent.AutoSizeDelayed) or (TheText='')
+  or (MaxWidth<1) or (MaxHeight<1) then exit;
+  AFont:=TFont.Create;
+  AFont.Assign(Font);
+  CurFontHeight:=AFont.Height;
+  MinFontHeight:=5;
+  MaxFontHeight:=MaxHeight*2;
+  if (CurFontHeight<MinFontHeight) or (CurFontHeight>MaxFontHeight) then
+    CurFontHeight:=(MinFontHeight+MaxFontHeight) div 2;
+  Flags:=DT_CalcRect or DT_NoPrefix;
+  if WordWrap then inc(Flags,DT_WordBreak);
+  
+  // give a clipping rectangle with space, so that the bounds returned by
+  // DrawText can be bigger and we know, the tried font is too big.
+  R := Rect(0,0, MaxWidth, MaxHeight*2);
+  
+  DC := GetDC(Parent.Handle);
+  try
+    while (MinFontHeight<=MaxFontHeight) and (CurFontHeight>=MinFontHeight)
+    and (CurFontHeight<=MaxFontHeight) do begin
+      AFont.Height:=CurFontHeight; // NOTE: some TFont do not allow any integer
+      //debugln('TCustomLabel.CalcFittingFontHeight A ',dbgs(MinFontHeight),'<=',dbgs(AFont.Height),'<=',dbgs(MaxFontHeight));
+      OldFont:=SelectObject(DC, AFont.Handle);
+      DrawText(DC, PChar(TheText), Length(TheText), R, Flags);
+      SelectObject(DC, OldFont);
+      NeededWidth := R.Right - R.Left;
+      NeededHeight := R.Bottom - R.Top;
+      //debugln('TCustomLabel.CalcFittingFontHeight B NeededWidth=',dbgs(NeededWidth),' NeededHeight=',dbgs(NeededHeight),' MaxWidth=',dbgs(MaxWidth),' MaxHeight=',dbgs(MaxHeight));
+      if (NeededWidth>0) and (NeededHeight>0)
+      and (NeededWidth<=MaxWidth) and (NeededHeight<=MaxHeight) then begin
+        // TheText fits into the bounds
+        if (not Result) or (FontHeight<AFont.Height) then
+          FontHeight:=AFont.Height;
+        Result:=true;
+        MinFontHeight:=CurFontHeight;
+        // -> try bigger (binary search)
+        CurFontHeight:=(MaxFontHeight+CurFontHeight+1) div 2; // +1 to round up
+        if CurFontHeight=MinFontHeight then break;
+      end else begin
+        // TheText does not fit into the bounds
+        MaxFontHeight:=CurFontHeight-1;
+        // -> try smaller (binary search)
+        CurFontHeight:=(MinFontHeight+CurFontHeight) div 2;
+      end;
+    end
+  finally
+    ReleaseDC(Parent.Handle, DC);
+    AFont.Free;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  function TCustomLabel.AdjustFontForOptimalFill: Boolean;
+  
+  Maximizes Font.Height
+  Return true if Font.Height changed.
+-------------------------------------------------------------------------------}
+function TCustomLabel.AdjustFontForOptimalFill: Boolean;
+var
+  NeededWidth: Integer;
+  NeededHeight: Integer;
+  NewFontHeight: Integer;
+  OldFontHeight: LongInt;
+begin
+  Result:=false;
+  if not CalcFittingFontHeight(Caption,Width,Height,NeededWidth,NeededHeight,
+                               NewFontHeight) then exit;
+  if Font.Height=NewFontHeight then exit;
+  //debugln('TCustomLabel.AdjustFontForOptimalFill OldFontHeight=',dbgs(Font.Height),' NewFontHeight=',dbgs(NewFontHeight));
+  OldFontHeight:=Font.Height;
+  Font.Height:=NewFontHeight;
+  Result:=OldFontHeight<>Font.Height;
+end;
+
 Procedure TCustomLabel.Paint;
 var
   TR : TTextStyle;
@@ -251,6 +360,7 @@ begin
       tlCenter: TextTop := (R.Bottom - R.Top - lTextHeight) div 2;
       tlBottom: TextTop := R.Bottom - R.Top - lTextHeight;
     end;
+    //debugln('TCustomLabel.Paint ',dbgs(Alignment=tacenter),' ',dbgs(Layout=tlCenter),' ',dbgs(TextLeft),' TextTop=',dbgs(TextTop),' ',dbgs(R));
     TextRect(R, TextLeft, TextTop, Caption, TR);
   end;
 end;
@@ -261,11 +371,23 @@ begin
     Invalidate;
 end;
 
+procedure TCustomLabel.SetOptimalFill(const AValue: Boolean);
+begin
+  if FOptimalFill=AValue then exit;
+  FOptimalFill:=AValue;
+  if OptimalFill and AutoSize then
+    AutoSize:=false;
+  Invalidate;
+end;
+
  // included by stdctrls.pp
 
 
 {
   $Log$
+  Revision 1.32  2005/06/18 16:10:09  mattias
+  implemented TCustomLabel.OptimalFill: boolean
+
   Revision 1.31  2005/04/28 10:05:29  micha
   fix accelerator handling firing too quickly, better WM_CHAR has-been-handled heuristic
   check for focusability of label.focuscontrol
