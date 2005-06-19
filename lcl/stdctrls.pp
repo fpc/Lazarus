@@ -1237,7 +1237,8 @@ type
 procedure Register;
 begin
   RegisterComponents('Standard',[TLabel,TEdit,TMemo,TToggleBox,TCheckBox,
-       TRadioButton,TListBox,TComboBox,TScrollBar,TGroupBox,TStaticText]);
+       TRadioButton,TListBox,TComboBox,TScrollBar,TGroupBox]);
+  RegisterComponents('',[TStaticText]);
 end;
 
 
@@ -1272,6 +1273,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.210  2005/06/19 10:16:27  mattias
+  hid TStaticText - it is obsolete
+
   Revision 1.209  2005/06/18 16:10:09  mattias
   implemented TCustomLabel.OptimalFill: boolean
 

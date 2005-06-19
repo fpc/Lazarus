@@ -63,7 +63,7 @@ var
       if REMatches('Lazarus','aza') then ...
 
       if REMatches('Lazarus','a(.)a') then
-        c:=REVar(1); // this will be the 'z'
+        s:=REVar(1); // this will be the 'z'
   }
   
 var
@@ -77,10 +77,14 @@ function REVarCount: Integer;
 function REReplace(const TheText, FindRegExpr, ReplaceRegExpr: string;
                     UseSubstutition: boolean;
                     const ModifierStr: string = ''): string;
-procedure RESplit(const TheText, SeparatorRegExpr: string; Pieces: TStrings;
-                  const ModifierStr: string = '');
 function RESplit(const TheText, SeparatorRegExpr: string;
                  const ModifierStr: string = ''): TStrings;
+procedure RESplit(const TheText, SeparatorRegExpr: string; Pieces: TStrings;
+                  const ModifierStr: string = '');
+
+
+//------------------------------------------------------------------------------
+// Internal stuff.
 
 type
   TREMatchesFunction = function(const TheText, RegExpr, ModifierStr: string
