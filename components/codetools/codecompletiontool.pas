@@ -2330,7 +2330,8 @@ var CleanCursorPos, Indent, insertPos: integer;
       CurProcNode:=StartProcNode;
       repeat
         ProcCode:=ExtractProcHead(CurProcNode,[phpInUpperCase]);
-        if FindNodeInTree(ProcBodyNodes,ProcCode)<>nil then begin
+        if (FindNodeInTree(ProcBodyNodes,ProcCode)<>nil)
+        or (ProcNodeHasSpecifier(CurProcNode,psEXTERNAL)) then begin
           // node is already completed
           if CurProcNode=ProcNode then begin
             // cursor node is already completed -> stop completion
@@ -2348,7 +2349,8 @@ var CleanCursorPos, Indent, insertPos: integer;
       CurProcNode:=EndProcNode;
       repeat
         ProcCode:=ExtractProcHead(CurProcNode,[phpInUpperCase]);
-        if FindNodeInTree(ProcBodyNodes,ProcCode)<>nil then begin
+        if (FindNodeInTree(ProcBodyNodes,ProcCode)<>nil)
+        or (ProcNodeHasSpecifier(CurProcNode,psEXTERNAL)) then begin
           // node is already completed
           if CurProcNode=ProcNode then begin
             // cursor node is already completed -> stop completion
@@ -2752,7 +2754,6 @@ begin
   if Result then exit;
   
   // test if method body
-  
   ProcNode:=CursorNode.GetNodeOfType(ctnProcedure);
   if (ProcNode=nil) and (CursorNode.Desc=ctnProcedure) then
     ProcNode:=CursorNode;
