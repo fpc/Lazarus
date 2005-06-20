@@ -5789,6 +5789,16 @@ begin
     UpdateStatusBarPanel(StatusBar,i,CurStatusPanelWidget);
     inc(i);
     ListItem:=ListItem^.next;
+    {$IFDEF GTK2}
+    if ListItem <> nil then begin
+      if gtk_statusbar_get_has_resize_grip(PGtkStatusBar(CurStatusPanelWidget)) then
+        gtk_statusbar_set_has_resize_grip(PGtkStatusBar(CurStatusPanelWidget), False);
+    end
+    else begin
+      if not gtk_statusbar_get_has_resize_grip(PGtkStatusBar(CurStatusPanelWidget)) then
+        gtk_statusbar_set_has_resize_grip(PGtkStatusBar(CurStatusPanelWidget), True);
+    end;
+    {$ENDIF}
   end;
 end;
 
@@ -8213,6 +8223,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.363  2005/06/20 09:07:09  mattias
+  gtk2 intf only showing one grip for last statusbar panel  from Andrew Haines
+
   Revision 1.362  2005/06/13 09:38:54  mattias
   updated COPYING and README for new files
 

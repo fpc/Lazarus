@@ -7,8 +7,7 @@ unit Printer4Lazarus;
 interface
 
 uses
-  PrintersDlgs, OSPrinters, uDlgSelectPrinter, cupsdyn, uDlgPropertiesPrinter, 
-    LazarusPackageIntf; 
+  PrintersDlgs, OSPrinters, LazarusPackageIntf; 
 
 implementation
 
