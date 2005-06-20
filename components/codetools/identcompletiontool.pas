@@ -475,11 +475,11 @@ end;
 destructor TIdentifierList.Destroy;
 begin
   Clear;
-  FItems.Free;
-  FIdentView.Free;
-  FFilteredList.Free;
-  FIdentSearchItem.Free;
-  FCreatedIdentifiers.Free;
+  FreeAndNil(FItems);
+  FreeAndNil(FIdentView);
+  FreeAndNil(FFilteredList);
+  FreeAndNil(FIdentSearchItem);
+  FreeAndNil(FCreatedIdentifiers);
   inherited Destroy;
 end;
 

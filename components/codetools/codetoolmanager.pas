@@ -572,29 +572,29 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('[TCodeToolManager.Destroy] A');
   {$ENDIF}
-  GlobalValues.Free;
+  FreeAndNil(GlobalValues);
   {$IFDEF CTDEBUG}
   DebugLn('[TCodeToolManager.Destroy] B');
   {$ENDIF}
-  Positions.Free;
-  IdentifierHistory.Free;
-  IdentifierList.Free;
+  FreeAndNil(Positions);
+  FreeAndNil(IdentifierHistory);
+  FreeAndNil(IdentifierList);
   FSourceTools.FreeAndClear;
-  FSourceTools.Free;
-  FResourceTool.Free;
+  FreeAndNil(FSourceTools);
+  FreeAndNil(FResourceTool);
   {$IFDEF CTDEBUG}
   DebugLn('[TCodeToolManager.Destroy] C');
   {$ENDIF}
-  DefineTree.Free;
-  DefinePool.Free;
+  FreeAndNil(DefineTree);
+  FreeAndNil(DefinePool);
   {$IFDEF CTDEBUG}
   DebugLn('[TCodeToolManager.Destroy] D');
   {$ENDIF}
-  SourceChangeCache.Free;
+  FreeAndNil(SourceChangeCache);
   {$IFDEF CTDEBUG}
   DebugLn('[TCodeToolManager.Destroy] E');
   {$ENDIF}
-  SourceCache.Free;
+  FreeAndNil(SourceCache);
   {$IFDEF CTDEBUG}
   DebugLn('[TCodeToolManager.Destroy] F');
   {$ENDIF}
