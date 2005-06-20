@@ -92,6 +92,7 @@ type
   }
   TOutputLines = class(TStringList)
   public
+    destructor Destroy; override;
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
   end;
@@ -1033,6 +1034,12 @@ begin
 end;
 
 { TOutputLines }
+
+destructor TOutputLines.Destroy;
+begin
+  Clear; // To free the associated objects
+  inherited Destroy;
+end;
 
 procedure TOutputLines.Clear;
 var
