@@ -3316,6 +3316,7 @@ var
   FCLDBDir: TDefineTemplate;
   FCLDBInterbaseDir: TDefineTemplate;
   InstallerDir: TDefineTemplate;
+  RTLWin64Dir: TDefineTemplate;
 begin
   {$IFDEF VerboseFPCSrcScan}
   DebugLn('CreateFPCSrcTemplate ',FPCSrcDir,': length(UnitSearchPath)=',DbgS(length(UnitSearchPath)),' Valid=',DbgS(UnitLinkListValid),' PPUExt=',PPUExt);
@@ -3415,7 +3416,17 @@ begin
   RTLWin32Dir.AddChild(TDefineTemplate.Create('Include Path',
       Format(ctsIncludeDirectoriesPlusDirs,['wininc']),
       ExternalMacroStart+'IncPath',
-      IncPathMacro+';wininc',da_Define));
+      IncPathMacro+';wininc;..'+DS+'win',da_Define));
+
+  AddProcessorTypeDefine(RTLDir);
+  AddSrcOSDefines(RTLDir);
+  // rtl/win64
+  RTLWin64Dir:=TDefineTemplate.Create('Win64','Win64','','win64',da_Directory);
+  RTLDir.AddChild(RTLWin64Dir);
+  RTLWin64Dir.AddChild(TDefineTemplate.Create('Include Path',
+      Format(ctsIncludeDirectoriesPlusDirs,['wininc']),
+      ExternalMacroStart+'IncPath',
+      IncPathMacro+';wininc;..'+DS+'win',da_Define));
 
   AddProcessorTypeDefine(RTLDir);
   AddSrcOSDefines(RTLDir);
