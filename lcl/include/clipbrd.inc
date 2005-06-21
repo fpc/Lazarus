@@ -359,7 +359,7 @@ begin
     s:=Value
   else
     s:=#0;
-  SetBuffer(PredefinedClipboardFormat(pcfText),s[1],length(Value));
+  SetBuffer(PredefinedClipboardFormat(pcfText),s[1],length(Value)+1);
   //DebugLn('[TClipboard.SetAsText] END ',ClipboardTypeName[ClipboardType],' "',Value,'"');
 end;
 
@@ -704,6 +704,9 @@ end;
 
 {
   $Log$
+  Revision 1.22  2005/06/21 11:42:35  vincents
+  copy terminating #0 to clipboard too, windows expects it.
+
   Revision 1.21  2005/03/07 21:59:44  vincents
   changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
 
