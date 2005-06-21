@@ -816,6 +816,20 @@ end;
   Handles all messages first then the Idle
  ------------------------------------------------------------------------------}
 procedure TApplication.HandleException(Sender: TObject);
+
+  procedure DumpStack;
+  var
+    FrameCount: integer;
+    Frames: PPointer;
+    FrameNumber:Integer;
+  begin
+    DebugLn('  Stack trace:');
+    DebugLn(BackTraceStrFunc(ExceptAddr));
+    FrameCount:=ExceptFrameCount;
+    Frames:=ExceptFrames;
+    for FrameNumber := 0 to FrameCount-1 do
+      DebugLn(BackTraceStrFunc(Frames[FrameNumber]));
+  end;
 begin
   if Self=nil then exit;
   if AppHandlingException in FFlags then begin
@@ -831,6 +845,7 @@ begin
   // before we do anything, write it down
   if ExceptObject is Exception then begin
     DebugLn('TApplication.HandleException ',Exception(ExceptObject).Message);
+    DumpStack;
   end else begin
     DebugLn('TApplication.HandleException Strange Exception ');
   end;
@@ -1404,9 +1419,6 @@ var
   Instance: TComponent;
   ok: boolean;
   AForm: TForm;
-  {$IFNDEF RegisterFindGlobalComponent}
-  OldFindGlobalComponent: TFindGlobalComponent;
-  {$ENDIF}
 begin
   // Allocate the instance, without calling the constructor
   Instance := TComponent(InstanceClass.NewInstance);
@@ -1414,12 +1426,7 @@ begin
   // events and constructors can refer to it
   TComponent(Reference) := Instance;
 
-  {$IFDEF RegisterFindGlobalComponent}
   RegisterFindGlobalComponentProc(@FindApplicationComponent);
-  {$ELSE}
-  OldFindGlobalComponent:=FindGlobalComponent;
-  FindGlobalComponent:=@FindApplicationComponent;
-  {$ENDIF}
   ok:=false;
   try
     Instance.Create(Self);
@@ -1427,11 +1434,7 @@ begin
   finally
     if not ok then
       TComponent(Reference) := nil;
-    {$IFDEF RegisterFindGlobalComponent}
     UnregisterFindGlobalComponentProc(@FindApplicationComponent);
-    {$ELSE}
-    FindGlobalComponent:=OldFindGlobalComponent;
-    {$ENDIF}
   end;
 
   if (Instance is TForm) then begin
@@ -1485,6 +1488,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.123  2005/06/21 14:41:16  vincents
+  - removed 1.x specific FindGlobalComponent
+  - added writing stack trace of exception in Application.HandleException
+
   Revision 1.122  2005/06/17 15:49:55  mattias
   added TApplication.ShowMainForm  from George Lober
 

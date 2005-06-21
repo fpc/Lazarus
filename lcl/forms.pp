@@ -34,28 +34,7 @@ interface
   {$ASSERTIONS ON}
 {$endif}
 
-{$IF VER1_0_8 or VER1_0_10}
-// There is a problem with try..except and calling JIT procedures, so we can't
-// use the FCL TDataModule at the moment
-{ $DEFINE UseFCLDataModule}
-{$ENDIF}
-
-{$IFNDEF VER1_0}
-  {$DEFINE HasDefaultValues}
-  {$IFNDEF VER1_9_8}
-    {$DEFINE RegisterFindGlobalComponent}
-  {$ENDIF}
-{$ENDIF}
-
-// FPC 1.9.7 and later have exceptions which contain stack frames
-// If you are using an early version of fpc 1.9.7 you can define
-// ExceptionHasNoFrames to disable using stackframes.
-{$IFDEF VER1_0}
-  {$DEFINE ExceptionHasNoFrames}
-{$ENDIF}
-{$IFDEF VER1_9_6}
-  {$DEFINE ExceptionHasNoFrames}
-{$ENDIF}
+{$DEFINE HasDefaultValues}
 
 uses
   Classes, SysUtils, Math, FPCAdds, LCLStrConsts, LCLType, LCLProc, LCLIntf,
@@ -1264,14 +1243,10 @@ end;
 
 
 //------------------------------------------------------------------------------
-{$IFDEF ExceptionHasNoFrames}
-procedure ExceptionOccurred(Sender: TObject; Addr,Frame: Pointer);
-{$ELSE}
 procedure ExceptionOccurred(Sender: TObject; Addr:Pointer; FrameCount: Longint;
   Frames: PPointer);
 var
   FrameNumber: integer;
-{$ENDIF}
 Begin
   DebugLn('[FORMS.PP] ExceptionOccurred ');
   if HaltingProgram or HandlingException then Halt;
@@ -1280,11 +1255,10 @@ Begin
     DebugLn('  Sender=',Sender.ClassName);
     if Sender is Exception then begin
       DebugLn('  Exception=',Exception(Sender).Message);
-      {$IFNDEF ExceptionHasNoFrames}
       DebugLn('  Stack trace:');
+      DebugLn(BackTraceStrFunc(ExceptAddr));
       for FrameNumber := 0 to FrameCount-1 do
         DebugLn(BackTraceStrFunc(Frames[FrameNumber]));
-      {$ENDIF}
     end;
   end else
     DebugLn('  Sender=nil');

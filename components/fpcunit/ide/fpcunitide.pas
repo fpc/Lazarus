@@ -1,22 +1,21 @@
-{  This file was automatically created by Lazarus. Do not edit!
-  This source is only used to compile and install
-  the package fpcunitide 0.1.
+{ This file was automatically created by Lazarus. Do not edit!
+This source is only used to compile and install the package.
  }
 
-unit fpcunitide; 
+unit fpcunitide;
 
 interface
 
 uses
-  FPCUnitLazIDEIntf, LazarusPackageIntf; 
+  FPCUnitLazIDEIntf, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('FPCUnitLazIDEIntf', @FPCUnitLazIDEIntf.Register); 
-end; 
+  RegisterUnit('FPCUnitLazIDEIntf',@FPCUnitLazIDEIntf.Register);
+end;
 
 initialization
-  RegisterPackage('fpcunitide', @Register); 
+  RegisterPackage('fpcunitide',@Register);
 end.

@@ -33,16 +33,16 @@ type
   TStreamSeekType = int64;
   TMemStreamSeekType = integer;
   TCompareMemSize = integer;
-  
-  {$IFDEF VER1_0}
-  PCardinal = ^Cardinal;
-  PtrInt = Longint;
-  PtrUInt = Cardinal;
-  {$ENDIF}
-  
   PHandle = ^THandle;
   
 function StrToWord(const s: string): word;
+
+{$IFDEF VER2_0_0}
+// These functions were introduced after fpc 2.0.0
+function ExceptFrameCount: Longint;
+function ExceptFrames: PPointer;
+{$ENDIF}
+
 
 implementation
 
@@ -58,6 +58,23 @@ begin
   end;
 end;
 
+{$IFDEF VER2_0_0}
+function ExceptFrameCount: Longint;
+begin
+  If RaiseList=Nil then
+    Result:=0
+  else
+    Result:=RaiseList^.Framecount;
+end;
+
+function ExceptFrames: PPointer;
+begin
+  If RaiseList=Nil then
+    Result:=Nil
+  else
+    Result:=RaiseList^.Frames;
+end;
+{$ENDIF}
 
 end.
 

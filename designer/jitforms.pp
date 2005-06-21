@@ -53,12 +53,6 @@ uses
   Classes, SysUtils, TypInfo, LCLProc, LResources, Forms, Controls, LCLIntf,
   Dialogs, JITForm, ComponentReg, IDEProcs;
 
-{$IFNDEF VER1_0}
-  {$IFNDEF VER1_9_8}
-    {$DEFINE RegisterFindGlobalComponent}
-  {$ENDIF}
-{$ENDIF}
-
 type
   //----------------------------------------------------------------------------
   TJITFormError = (
@@ -694,11 +688,7 @@ begin
       {$ENDIF}
       DoFinishReading;
     finally
-      {$IFDEF RegisterFindGlobalComponent}
       UnregisterFindGlobalComponentProc(@MyFindGlobalComponent);
-      {$ELSE}
-      FindGlobalComponent:=nil;
-      {$ENDIF}
       if DestroyDriver then Reader.Driver.Free;
       Reader.Free;
     end;
@@ -725,11 +715,7 @@ begin
   DestroyDriver:=false;
   Reader:=CreateLRSReader(BinStream,DestroyDriver);
   MyFindGlobalComponentProc:=@OnFindGlobalComponent;
-  {$IFDEF RegisterFindGlobalComponent}
   RegisterFindGlobalComponentProc(@MyFindGlobalComponent);
-  {$ELSE}
-  FindGlobalComponent:=@MyFindGlobalComponent;
-  {$ENDIF}
 
   {$IFDEF VerboseJITForms}
   writeln('[TJITComponentList.InitReading] A');
@@ -901,11 +887,7 @@ begin
       {$ENDIF}
       DoFinishReading;
     finally
-      {$IFDEF RegisterFindGlobalComponent}
       UnregisterFindGlobalComponentProc(@MyFindGlobalComponent);
-      {$ELSE}
-      FindGlobalComponent:=nil;
-      {$ENDIF}
       if DestroyDriver then Reader.Driver.Free;
       Reader.Free;
     end;
