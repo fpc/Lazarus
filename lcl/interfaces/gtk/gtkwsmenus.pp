@@ -196,7 +196,9 @@ begin
 end;
 
 { TGtkWSPopupMenu }
-procedure GtkWS_Popup(menu:  PGtkMenu; X, Y: pgint; Point: PPoint); cdecl;
+procedure GtkWS_Popup(menu:  PGtkMenu; X, Y: pgint;
+   {$IFDEF GTK2} ForceInScreen: pgboolean; {$ENDIF}
+   Point: PPoint); cdecl;
 begin
   X^ := Point^.X;
   Y^ := Point^.Y;

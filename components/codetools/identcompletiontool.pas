@@ -417,7 +417,7 @@ var
 begin
   if not (ilfFilteredListNeedsUpdate in FFlags) then exit;
   if FFilteredList=nil then FFilteredList:=TList.Create;
-  FFilteredList.Clear;
+  FFilteredList.Count:=0;
   FFilteredList.Capacity:=FItems.Count;
   { $IFDEF CTDEBUG}
   DebugLn('TIdentifierList.UpdateFilteredList Prefix="',Prefix,'"');
