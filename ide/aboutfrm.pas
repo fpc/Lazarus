@@ -29,10 +29,13 @@ uses
   StdCtrls, Buttons, LazConf, LazarusIDEStrConsts;
 
 type
+
+  { TAboutForm }
+
   TAboutForm = class(TForm)
+    Button1: TBitBtn;
     Label2: TLABEL;
     Memo1: TMEMO;
-    Button1: TBUTTON;
     Label1: TLABEL;
   private
     FPixmap : TPixmap;

@@ -16,8 +16,10 @@ type
     cotCompileBogusFiles
     );
 
+  { TCheckCompilerOptsDlg }
+
   TCheckCompilerOptsDlg = class(TForm)
-    CloseButton: TBUTTON;
+    CloseButton1: TBitBtn;
     TestMemo: TMEMO;
     TestGroupbox: TGROUPBOX;
     OutputListbox: TLISTBOX;
