@@ -51,11 +51,14 @@ type
     estPascalComment
     );
     
+  { TEncloseSelectionDialog }
+
   TEncloseSelectionDialog = class(TForm)
     OkButton: TBUTTON;
     CancelButton: TBUTTON;
     TypeRadiogroup: TRADIOGROUP;
     procedure EncloseSelectionDialogCREATE(Sender: TObject);
+    procedure EncloseSelectionDialogResize(Sender: TObject);
   private
   public
     function GetEncloseType: TEncloseSelectionType;
@@ -413,6 +416,16 @@ begin
     EndUpdate;
   end;
   TypeRadiogroup.ItemIndex:=0;
+end;
+
+procedure TEncloseSelectionDialog.EncloseSelectionDialogResize(Sender: TObject);
+var
+  c: Integer;
+begin
+  c:=Width div 2;
+  OkButton.Width:=c-OkButton.Left-15;
+  CancelButton.Left:=c+15;
+  CancelButton.Width:=OkButton.Width;
 end;
 
 function TEncloseSelectionDialog.GetEncloseType: TEncloseSelectionType;

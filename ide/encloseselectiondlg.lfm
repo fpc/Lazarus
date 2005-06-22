@@ -3,16 +3,18 @@ object EncloseSelectionDialog: TEncloseSelectionDialog
   ClientHeight = 244
   ClientWidth = 427
   OnCreate = EncloseSelectionDialogCREATE
-  PixelsPerInch = 90
+  OnResize = EncloseSelectionDialogResize
+  PixelsPerInch = 112
   Position = poScreenCenter
-  HorzScrollBar.Page = 428
-  VertScrollBar.Page = 245
+  HorzScrollBar.Page = 426
+  VertScrollBar.Page = 243
   Left = 406
   Height = 244
   Top = 308
   Width = 427
   object OkButton: TButton
     Anchors = [akLeft, akBottom]
+    BorderSpacing.OnChange = nil
     Caption = 'Ok'
     ModalResult = 1
     TabOrder = 0
@@ -23,6 +25,7 @@ object EncloseSelectionDialog: TEncloseSelectionDialog
   end
   object CancelButton: TButton
     Anchors = [akLeft, akBottom]
+    BorderSpacing.OnChange = nil
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
@@ -34,6 +37,7 @@ object EncloseSelectionDialog: TEncloseSelectionDialog
   end
   object TypeRadiogroup: TRadioGroup
     Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.OnChange = nil
     Caption = 'Type'
     ParentColor = True
     Left = 8

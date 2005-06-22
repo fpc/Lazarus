@@ -3,15 +3,17 @@
 LazarusResources.Add('TEncloseSelectionDialog','FORMDATA',[
   'TPF0'#23'TEncloseSelectionDialog'#22'EncloseSelectionDialog'#7'Caption'#6#17
   +'Enclose Selection'#12'ClientHeight'#3#244#0#11'ClientWidth'#3#171#1#8'OnCre'
-  +'ate'#7#28'EncloseSelectionDialogCREATE'#13'PixelsPerInch'#2'Z'#8'Position'#7
-  +#14'poScreenCenter'#18'HorzScrollBar.Page'#3#172#1#18'VertScrollBar.Page'#3
-  +#245#0#4'Left'#3#150#1#6'Height'#3#244#0#3'Top'#3'4'#1#5'Width'#3#171#1#0#7
-  +'TButton'#8'OkButton'#7'Anchors'#11#6'akLeft'#8'akBottom'#0#7'Caption'#6#2'O'
-  +'k'#11'ModalResult'#2#1#8'TabOrder'#2#0#4'Left'#2'X'#6'Height'#2#25#3'Top'#3
-  +#208#0#5'Width'#2'k'#0#0#7'TButton'#12'CancelButton'#7'Anchors'#11#6'akLeft'
-  +#8'akBottom'#0#6'Cancel'#9#7'Caption'#6#6'Cancel'#11'ModalResult'#2#2#8'TabO'
-  +'rder'#2#1#4'Left'#3#224#0#6'Height'#2#25#3'Top'#3#208#0#5'Width'#2'h'#0#0#11
-  +'TRadioGroup'#14'TypeRadiogroup'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'
-  +#8'akBottom'#0#7'Caption'#6#4'Type'#11'ParentColor'#9#4'Left'#2#8#6'Height'#3
-  +#189#0#3'Top'#2#8#5'Width'#3#153#1#0#0#0
+  +'ate'#7#28'EncloseSelectionDialogCREATE'#8'OnResize'#7#28'EncloseSelectionDi'
+  +'alogResize'#13'PixelsPerInch'#2'p'#8'Position'#7#14'poScreenCenter'#18'Horz'
+  +'ScrollBar.Page'#3#170#1#18'VertScrollBar.Page'#3#243#0#4'Left'#3#150#1#6'He'
+  +'ight'#3#244#0#3'Top'#3'4'#1#5'Width'#3#171#1#0#7'TButton'#8'OkButton'#7'Anc'
+  +'hors'#11#6'akLeft'#8'akBottom'#0#22'BorderSpacing.OnChange'#13#7'Caption'#6
+  +#2'Ok'#11'ModalResult'#2#1#8'TabOrder'#2#0#4'Left'#2'X'#6'Height'#2#25#3'Top'
+  +#3#208#0#5'Width'#2'k'#0#0#7'TButton'#12'CancelButton'#7'Anchors'#11#6'akLef'
+  +'t'#8'akBottom'#0#22'BorderSpacing.OnChange'#13#6'Cancel'#9#7'Caption'#6#6'C'
+  +'ancel'#11'ModalResult'#2#2#8'TabOrder'#2#1#4'Left'#3#224#0#6'Height'#2#25#3
+  +'Top'#3#208#0#5'Width'#2'h'#0#0#11'TRadioGroup'#14'TypeRadiogroup'#7'Anchors'
+  +#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#22'BorderSpacing.OnChange'#13
+  +#7'Caption'#6#4'Type'#11'ParentColor'#9#4'Left'#2#8#6'Height'#3#189#0#3'Top'
+  +#2#8#5'Width'#3#153#1#0#0#0
 ]);
