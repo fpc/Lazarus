@@ -29,7 +29,7 @@ unit LCLProc;
 interface
 
 uses
-  Classes, SysUtils, Math, LCLStrConsts, LCLType;
+  Classes, SysUtils, Math, FPCAdds, LCLStrConsts, LCLType;
 
 type
   { TMethodList - array of TMethod }
@@ -109,6 +109,7 @@ function StrToDouble(const s: string): double;
 
 // debugging
 procedure RaiseGDBException(const Msg: string);
+procedure DumpExceptionBackTrace;
 
 procedure DebugLn(const S: String; Args: array of const);
 procedure DebugLn;
@@ -590,6 +591,20 @@ begin
   // creates an exception, that gdb catches:
   debugln(rsCreatingGdbCatchableError);
   if (length(Msg) div (length(Msg) div 10000))=0 then ;
+end;
+
+procedure DumpExceptionBackTrace;
+var
+  FrameCount: integer;
+  Frames: PPointer;
+  FrameNumber:Integer;
+begin
+  DebugLn('  Stack trace:');
+  DebugLn(BackTraceStrFunc(ExceptAddr));
+  FrameCount:=ExceptFrameCount;
+  Frames:=ExceptFrames;
+  for FrameNumber := 0 to FrameCount-1 do
+    DebugLn(BackTraceStrFunc(Frames[FrameNumber]));
 end;
 
 procedure MoveRect(var ARect: TRect; x, y: Integer);

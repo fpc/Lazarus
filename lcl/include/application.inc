@@ -817,19 +817,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TApplication.HandleException(Sender: TObject);
 
-  procedure DumpStack;
-  var
-    FrameCount: integer;
-    Frames: PPointer;
-    FrameNumber:Integer;
-  begin
-    DebugLn('  Stack trace:');
-    DebugLn(BackTraceStrFunc(ExceptAddr));
-    FrameCount:=ExceptFrameCount;
-    Frames:=ExceptFrames;
-    for FrameNumber := 0 to FrameCount-1 do
-      DebugLn(BackTraceStrFunc(Frames[FrameNumber]));
-  end;
 begin
   if Self=nil then exit;
   if AppHandlingException in FFlags then begin
@@ -845,10 +832,10 @@ begin
   // before we do anything, write it down
   if ExceptObject is Exception then begin
     DebugLn('TApplication.HandleException ',Exception(ExceptObject).Message);
-    DumpStack;
   end else begin
     DebugLn('TApplication.HandleException Strange Exception ');
   end;
+  DumpExceptionBackTrace;
   // release capture and hide all forms with stay on top, so that
   // a message can be shown
   if GetCapture <> 0 then SendMessage(GetCapture, LM_CANCELMODE, 0, 0);
@@ -1488,6 +1475,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.124  2005/06/22 09:04:48  vincents
+  added DumpExceptionBackTrace
+
   Revision 1.123  2005/06/21 14:41:16  vincents
   - removed 1.x specific FindGlobalComponent
   - added writing stack trace of exception in Application.HandleException
