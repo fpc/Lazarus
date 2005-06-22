@@ -1121,7 +1121,7 @@ type
     same TBitmapImage }
 
   TBitmapNativeType = (
-    bnNone,
+    bnNone,  // not a TBitmap native type
     bnWinBitmap,
     bnXPixmap,
     bnIcon
@@ -1130,6 +1130,8 @@ type
 
   TBitmapHandleType = (bmDIB, bmDDB);
 
+  { TBitmapImage }
+
   TBitmapImage = class(TSharedImage)
   private
     FHandle: HBITMAP;   // output device dependent handle
@@ -1137,6 +1139,7 @@ type
     FPalette: HPALETTE;
     FDIBHandle: HBITMAP;// output device independent handle
     FSaveStream: TMemoryStream;
+    FSaveStreamClass: TFPCustomImageWriterClass;
     FSaveStreamType: TBitmapNativeType;
   protected
     procedure FreeHandle; override;
@@ -1151,6 +1154,7 @@ type
     function GetHandleType: TBitmapHandleType;
     property SaveStream: TMemoryStream read FSaveStream write FSaveStream;
     property SaveStreamType: TBitmapNativeType read FSaveStreamType write FSaveStreamType;
+    property SaveStreamClass: TFPCustomImageWriterClass read FSaveStreamClass write FSaveStreamClass;
   end;
 
 
@@ -1170,6 +1174,8 @@ type
     );
   TBitmapInternalState = set of TBitmapInternalStateFlag;
 
+  { TBitmap }
+
   TBitmap = class(TGraphic)
   private
     FCanvas: TCanvas;
@@ -1179,11 +1185,7 @@ type
     FTransparentColor: TColor;
     FTransparentMode: TTransparentMode;
     FInternalState: TBitmapInternalState;
-    {$IFDEF DisableFPImage}
-    FWidth: integer;
-    FHeight: integer;
-    {$ENDIF}
-    Procedure FreeCanvasContext;
+    procedure FreeCanvasContext;
     function GetCanvas: TCanvas;
     procedure CreateCanvas;
     function GetMonochrome: Boolean;
@@ -1217,14 +1219,12 @@ type
     procedure SetWidth(NewWidth: Integer); override;
     procedure WriteData(Stream: TStream); override;
     procedure StoreOriginalStream(Stream: TStream; Size: integer); virtual;
-    {$IFNDEF DisableFPImage}
     procedure WriteStreamWithFPImage(Stream: TStream; WriteSize: boolean;
                                WriterClass: TFPCustomImageWriterClass); virtual;
     procedure InitFPImageReader(ImgReader: TFPCustomImageReader); virtual;
     procedure InitFPImageWriter(ImgWriter: TFPCustomImageWriter); virtual;
     procedure FinalizeFPImageReader(ImgReader: TFPCustomImageReader); virtual;
     procedure FinalizeFPImageWriter(ImgWriter: TFPCustomImageWriter); virtual;
-    {$ENDIF}
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -1252,7 +1252,6 @@ type
     procedure WriteStream(Stream: TStream; WriteSize: Boolean); virtual;
     Function ReleaseHandle: HBITMAP;
     function ReleasePalette: HPALETTE;
-    {$IFNDEF DisableFPImage}
     class function GetFPReaderForFileExt(
       const FileExtension: string): TFPCustomImageReaderClass; override;
     class function GetFPWriterForFileExt(
@@ -1265,7 +1264,7 @@ type
     procedure WriteNativeStream(Stream: TStream; WriteSize: Boolean;
       SaveStreamType: TBitmapNativeType); virtual;
     function CreateIntfImage: TLazIntfImage;
-    {$ENDIF}
+    function CanReadGraphicStreams(AClass: TFPCustomImageWriterClass): boolean; virtual;
   public
     property Canvas: TCanvas read GetCanvas write FCanvas;
     property Handle: HBITMAP read GetHandle write SetHandle;
@@ -1287,10 +1286,8 @@ type
   public
     function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
     procedure WriteStream(Stream: TStream; WriteSize: Boolean); override;
-    {$IFNDEF DisableFPImage}
     class function GetDefaultFPReader: TFPCustomImageReaderClass; override;
     class function GetDefaultFPWriter: TFPCustomImageWriterClass; override;
-    {$ENDIF}
   end;
 
 
@@ -1302,14 +1299,12 @@ type
   public
     class function GetFileExtensions: string; override;
     class function IsFileExtensionSupported(const FileExtension: string): boolean;
-    {$IFNDEF DisableFPImage}
     class function GetFPReaderForFileExt(
       const FileExtension: string): TFPCustomImageReaderClass; override;
     class function GetFPWriterForFileExt(
       const FileExtension: string): TFPCustomImageWriterClass; override;
     class function GetDefaultFPReader: TFPCustomImageReaderClass; override;
     class function GetDefaultFPWriter: TFPCustomImageWriterClass; override;
-    {$ENDIF}
     function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
     procedure ReadStream(Stream: TStream; UseSize: boolean; Size: Longint); override;
     procedure WriteStream(Stream: TStream; WriteSize: Boolean); override;
@@ -1322,10 +1317,8 @@ type
   TPortableNetworkGraphic = class(TFPImageBitmap)
   public
     class function GetFileExtensions: string; override;
-    {$IFNDEF DisableFPImage}
     class function GetDefaultFPReader: TFPCustomImageReaderClass; override;
     class function GetDefaultFPWriter: TFPCustomImageWriterClass; override;
-    {$ENDIF}
   end;
 
 
@@ -1339,7 +1332,6 @@ type
     Writing is not (yet) implemented.
   }
   TIcon = class(TBitmap)
-  {$IFNDEF DisableFPImage}
   private
     FBitmaps: TObjectList;
   protected
@@ -1350,7 +1342,6 @@ type
     property Bitmaps: TObjectList read FBitmaps;
     destructor Destroy; override;
     procedure AddBitmap(Bitmap: TBitmap); { Note that Ownership passes to TIcon }
-  {$ENDIF}
   end;
 
 
@@ -1359,12 +1350,10 @@ function GraphicFilter(GraphicClass: TGraphicClass): string;
 function GraphicExtension(GraphicClass: TGraphicClass): string;
 function GraphicFileMask(GraphicClass: TGraphicClass): string;
 function GetGraphicClassForFileExtension(const FileExt: string): TGraphicClass;
-{$IFNDEF DisableFPImage}
 function GetFPImageReaderForFileExtension(const FileExt: string
   ): TFPCustomImageReaderClass;
 function GetFPImageWriterForFileExtension(const FileExt: string
   ): TFPCustomImageWriterClass;
-{$ENDIF}
 
 type
   // Color / Identifier mapping
@@ -1382,10 +1371,8 @@ Function Blue(rgb: TColor): BYTE;
 Function Green(rgb: TColor): BYTE;
 Function Red(rgb: TColor): BYTE;
 procedure RedGreenBlue(rgb: TColor; var Red, Green, Blue: Byte);
-{$IFNDEF DisableFPImage}
 function FPColorToTColor(const FPColor: TFPColor): TColor;
 function TColorToFPColor(const c: TColor): TFPColor;
-{$ENDIF}
 
 // fonts
 procedure GetCharsetValues(Proc: TGetStrProc);
@@ -1786,7 +1773,6 @@ begin
   end;
 end;
 
-{$IFNDEF DisableFPImage}
 function TFPImageBitmap.GetFPReaderForFileExt(const FileExtension: string
   ): TFPCustomImageReaderClass;
 begin
@@ -1814,7 +1800,6 @@ function TFPImageBitmap.GetDefaultFPWriter: TFPCustomImageWriterClass;
 begin
   Result:=nil;
 end;
-{$ENDIF}
 
 function TFPImageBitmap.LazarusResourceTypeValid(const ResourceType: string
   ): boolean;
@@ -1825,20 +1810,12 @@ end;
 procedure TFPImageBitmap.ReadStream(Stream: TStream; UseSize: boolean;
   Size: Longint);
 begin
-{$IFNDEF DisableFPImage}
   ReadStreamWithFPImage(Stream,UseSize,Size,GetDefaultFPReader);
-{$ELSE}
-  RaiseGDBException('TFPImageBitmap.ReadStream needs FPImage');
-{$ENDIF}
 end;
 
 procedure TFPImageBitmap.WriteStream(Stream: TStream; WriteSize: Boolean);
 begin
-{$IFNDEF DisableFPImage}
   WriteStreamWithFPImage(Stream,WriteSize,GetDefaultFPWriter);
-{$ELSE}
-  RaiseGDBException('TFPImageBitmap.WriteStream needs FPImage');
-{$ENDIF}
 end;
 
 function TFPImageBitmap.GetDefaultMimeType: string;
@@ -1951,6 +1928,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.175  2005/06/22 09:45:59  mattias
+  implemented saving alpha bmp and using transparency for IDE glyph editor
+
   Revision 1.174  2005/03/04 13:50:08  mattias
   fixed Arc and changed x,y to Left,Top to make meaning more clear
 

@@ -353,6 +353,7 @@ var
   ABitmap: TBitmap;
   Ext : String;
 begin
+  //debugln('TGraphicPropertyEditor.Edit');
   ABitmap := TBitmap(GetObjectValue(TBitmap));
   TheDialog := TGraphicPropertyEditorForm.Create(nil);
   try
@@ -459,28 +460,31 @@ var
         ABitmap.LoadFromFile(TheDialog.FileName);
     end
     else begin
-      ABitmap.Width := TheDialog.Preview.Picture.Graphic.Width;
+      ABitmap.Assign(TheDialog.Preview.Picture.Graphic);
+      {ABitmap.Width := TheDialog.Preview.Picture.Graphic.Width;
       ABitmap.Height := TheDialog.Preview.Picture.Graphic.Height;
       With ABitmap.Canvas do begin
         Brush.Color := clWhite;
         FillRect(Rect(0, 0, ABitmap.Width, ABitmap.Height));
         Draw(0, 0, TheDialog.Preview.Picture.Graphic);
-      end;
+      end;}
     end;
   end;
   
 begin
+  debugln('TButtonGlyphPropEditor.Edit');
   ABitmap := TBitmap(GetObjectValue(TBitmap));
   TheDialog := TGraphicPropertyEditorForm.Create(nil);
   try
     If not ABitmap.Empty then begin
-      With TheDialog.Preview.Picture.Bitmap do begin
+      TheDialog.Preview.Picture.Assign(ABitmap);
+      {With TheDialog.Preview.Picture.Bitmap do begin
         Width := ABitmap.Width;
         Height := ABitmap.Height;
         Canvas.Brush.Color := clWhite;
         Canvas.FillRect(Rect(0, 0, ABitmap.Width, ABitmap.Height));
         Canvas.Draw(0, 0, ABitmap);
-      end;
+      end;}
     end;
     if (TheDialog.ShowModal = mrOK) then begin
       If TheDialog.Preview.Picture.Graphic <> nil then begin

@@ -67,7 +67,7 @@ begin
     FreeCanvasContext;
     // release old FImage
     FImage.Release;
-    // share FImage with assign graphic
+    // share FImage with assigned graphic
     FImage:=SrcBitmap.FImage;
     FImage.Reference;
     //DebugLn('TBitMap.Assign B ',Width,',',Height,' ',HandleAllocated,' RefCount=',FImage.RefCount);
@@ -457,9 +457,7 @@ procedure TBitmap.UnshareImage(CopyContent: boolean);
 var
   NewImage: TBitmapImage;
   OldImage: TBitmapImage;
-  {$IFNDEF DisableFPImage}
   IntfImage: TLazIntfImage;
-  {$ENDIF}
 begin
   if (FImage.RefCount>1) then begin
     //DebugLn('TBitmap.UnshareImage ',ClassName,' ',Width,',',Height,' ',DbgS(Self));
@@ -470,7 +468,6 @@ begin
       if CopyContent and FImage.HandleAllocated
       and (Width>0) and (Height>0) then begin
         // copy content
-        {$IFNDEF DisableFPImage}
         IntfImage:=TLazIntfImage.Create(0,0);
         try
           IntfImage.LoadFromBitmap(FImage.FHandle,FImage.FMaskHandle);
@@ -481,7 +478,6 @@ begin
         finally
           IntfImage.Free;
         end;
-        {$ENDIF}
       end;
       FreeCanvasContext;
       OldImage:=FImage;
@@ -502,8 +498,10 @@ begin
   if FImage.FSaveStream<>nil then begin
     //DebugLn('TBitmap.FreeSaveStream A ',ClassName,' ',FImage.FSaveStream.Size);
   end;
+  UnshareImage(false);
   FreeAndNil(FImage.FSaveStream);
   FImage.SaveStreamType:=bnNone;
+  FImage.SaveStreamClass:=nil;
 end;
 
 procedure TBitmap.ReadStream(Stream: TStream; UseSize: boolean; Size: Longint);
@@ -525,7 +523,6 @@ procedure TBitmap.ReadStream(Stream: TStream; UseSize: boolean; Size: Longint);
       'TBitmap.ReadStream: Invalid size of bitmap stream (bmp,xpm,ico)');
   end;
 
-{$IFNDEF DisableFPImage}
 var
   CacheStream: TStream;
   StreamType: TBitmapNativeType;
@@ -576,147 +573,6 @@ begin
       CacheStream.Free;
   end;
 end;
-{$ELSE if DisableFPImage}
-var
-  MemStream: TMemoryStream;
-
-  procedure CreateEmptyBitmap;
-  var
-    DIB: TDIBSection;
-  begin
-    FillChar(DIB, sizeof(DIB), 0);
-    //NewImage(0, 0, DIB, False);
-  end;
-
-  procedure ReadBMPStream;
-  type
-    TBitsObj = array[1..1] of byte;
-    PBitsObj = ^TBitsObj;
-  const
-    BI_RGB = 0;
-  var
-    BmpHead: TBitmapFileHeader;
-    ReadSize: integer;
-    BmpInfo: PBitmapInfo;
-    ImgSize: longint;
-    Bits: PBitsObj;
-    InfoSize: integer;
-    BitsPerPixel, ColorsUsed: integer;
-  begin
-    FillChar(BmpHead,SizeOf(BmpHead),0);
-    ReadSize:=MemStream.Read(BmpHead, SizeOf(BmpHead));
-    if (ReadSize<>SizeOf(BmpHead))
-    or (BmpHead.bfType <> Word($4D42))
-    or (BmpHead.bfOffBits<DWORD(ReadSize))
-    then
-      RaiseInvalidBitmapHeader;
-
-    InfoSize:=BmpHead.bfOffBits-SizeOf(BmpHead);
-    GetMem(BmpInfo,InfoSize);
-    try
-      ReadSize:=MemStream.Read(BmpInfo^,InfoSize);
-      if ReadSize<>InfoSize then
-        raise EInOutError.Create(
-          'TBitmap.ReadBMPStream: Invalid windows bitmap (info)');
-      if BmpInfo^.bmiHeader.biSize<>SizeOf(BitmapInfoHeader) then
-        raise EInOutError.Create(
-          'TBitmap.ReadBMPStream: OS2 bitmaps are not supported yet');
-      if BmpInfo^.bmiHeader.biCompression<>bi_RGB then
-        raise EInOutError.Create(
-          'TBitmap.ReadBMPStream: RLE compression is not supported yet');
-
-      // Let's now support only 16/24bit bmps! Then we don't need a palette.
-      BitsPerPixel:=BmpInfo^.bmiHeader.biBitCount;
-      if BitsPerPixel<16 then begin
-        ColorsUsed:=BmpInfo^.bmiHeader.biClrUsed;
-        if ColorsUsed=0 then ColorsUsed:=1 shl ColorsUsed;
-        // s:=SizeOf(TLogPalette)+(ColorsUsed-1)*SizeOf(TPaletteEntry);
-      end;
-      // Palette is fake now. Then it'll be better!
-      // EInOutError.Create('Only truecolor is supported yet.');
-
-      ImgSize:=BmpInfo^.bmiHeader.biSizeImage;
-      GetMem(Bits,ImgSize);
-      try
-        ReadSize:=MemStream.Read(Bits^,ImgSize);
-        if ReadSize<>ImgSize then
-          raise EInOutError.Create(
-            'TBitmap.ReadBMPStream: Invalid windows bitmap (bits)');
-
-        Handle := CreateBitmap(BmpInfo^.bmiHeader.biWidth,
-          BmpInfo^.bmiHeader.biHeight, BmpInfo^.bmiHeader.biPlanes,
-          BitsPerPixel, Bits);
-
-      finally
-        FreeMem(Bits);
-      end;
-    finally
-      FreeMem(BmpInfo);
-    end;
-  end;
-  
-  procedure ReadXPMStream;
-  var
-    XPM: PPChar;
-    NewWidth, NewHeight, NewColorCount: integer;
-  begin
-    XPM:=ReadXPMFromStream(MemStream,Size);
-    try
-      if not ReadXPMSize(XPM,NewWidth,NewHeight,NewColorCount) then
-        raise EInOutError.Create('TBitmap.ReadXPMStream: ERROR: reading xpm');
-
-      // free old pixmap
-      // Create the pixmap
-      if (FTransparentColor = clNone) or (FTransparentColor = clDefault) then
-        // create a transparent pixmap (with mask)
-        Handle := CreatePixmapIndirect(XPM, -1)
-      else
-        // create an opaque pixmap.
-        // Transparent pixels are filled with FTransparentColor
-        Handle := CreatePixmapIndirect(XPM, ColorToRGB(FTransparentColor));
-    finally
-      if XPM<>nil then
-        FreeMem(XPM);
-    end;
-
-    if HandleAllocated then begin
-      FWidth:=NewWidth;
-      FHeight:=NewHeight;
-    end else begin
-      FWidth:=0;
-      FHeight:=0;
-    end;
-  end;
-  
-begin
-  UnshareImage(false);
-
-  if Size = 0 then begin
-    CreateEmptyBitmap;
-    exit;
-  end;
-  
-  // store original stream
-  StoreOriginalStream(Stream,Size);
-  // hide SaveStream (so, that it won't be destroyed due to the change)
-  MemStream:=FImage.SaveStream;
-  try
-    FImage.SaveStream:=nil;
-
-    // determine stream type
-    FImage.SaveStreamType:=TestStreamBitmapNativeType(MemStream);
-    // read stream
-    case FImage.SaveStreamType of
-    bnWinBitmap:  ReadBMPStream;
-    bnXPixmap:    ReadXPMStream;
-    else
-      RaiseInvalidBitmapHeader;
-    end;
-  finally
-    FImage.SaveStream:=MemStream;
-  end;
-end;
-{$ENDIF  if DisableFPImage}
 
 procedure TBitmap.LoadFromMimeStream(Stream: TStream; const MimeType: string);
 begin
@@ -745,163 +601,8 @@ begin
 end;
 
 procedure TBitmap.WriteStream(Stream: TStream; WriteSize: Boolean);
-{$IFDEF DisableFPImage}
-Type
-  TBITMAPHEADER = packed record
-    FileHeader : tagBitmapFileHeader;
-    InfoHeader : tagBitmapInfoHeader;
-  end;
-
-var
-  MemStream: TMemoryStream;
-
-
-  Procedure DoWriteStreamSize(DestStream: TStream; Size: longint);
-  begin
-    if WriteSize then
-      DestStream.WriteBuffer(Size, SizeOf(Size));
-  end;
-
-  procedure DoWriteOriginal;
-  begin
-    DoWriteStreamSize(Stream,longint(FImage.SaveStream.Size));
-    FImage.SaveStream.Position:=0;
-    Stream.CopyFrom(FImage.SaveStream,longint(FImage.SaveStream.Size));
-  end;
-
-  Procedure DoWriteSize(Header: TBitmapHeader);
-  begin
-    DoWriteStreamSize(MemStream,Header.FileHeader.bfSize);
-  end;
-
-  Procedure FillBitmapInfo(Bitmap : hBitmap; var Bits : Pointer;
-    Var Header : TBitmapHeader);
-  var
-    ScreenDC, DC : hDC;
-    DIB : TDIBSection;
-    BitmapHeader : TagBITMAPINFO;
-  begin
-    FillChar(DIB, SizeOf(DIB), 0);
-    GetObject(Bitmap, SizeOf(DIB), @DIB);
-    with DIB.dsbm, DIB.dsbmih do
-    begin
-      biSize := sizeof(DIB.dsbmih);
-      biWidth := bmWidth;
-      biHeight := bmHeight;
-      biPlanes := 1;
-      biBitCount := bmPlanes * bmBitsPixel;
-      if biSizeImage = 0 then  begin
-        biSizeImage := ((bmWidth * biBitCount) + 31) and not 31;
-        biSizeImage := biSizeImage div 8;
-        biSizeImage := Abs(biSizeImage) * Abs(bmHeight);
-      end;
-    end;
-    Bits := AllocMem(Longint(Dib.dsBmih.biSizeImage)*SizeOf(Byte));
-    BitmapHeader.bmiHeader := DIB.dsbmih;
-    ScreenDC := GetDC(0);
-    DC := CreateCompatibleDC(ScreenDC);
-    GetDIBits(DC, Bitmap, 0, Abs(Dib.dsBmih.biHeight), Bits, BitmapHeader, DIB_RGB_COLORS);
-    ReleaseDC(0, ScreenDC);
-    DeleteDC(DC);
-    With Header, Header.FileHeader, Header.InfoHeader do begin
-      InfoHeader := BitmapHeader.bmiHeader;
-      FillChar(FileHeader, sizeof(FileHeader), 0);
-      bfType      := $4D42;
-      bfSize      := SizeOf(Header) + biSizeImage;
-      bfOffBits   := SizeOf(Header);
-    end;
-  end;
-
-  Procedure WriteBitmapHeader(Header : TBitmapHeader);
-  begin
-    MemStream.WriteBuffer(Header, SizeOf(Header));
-  end;
-
-  Procedure WriteTRIColorMap(Color : PLongint; size : Longint); //For OS/2 Bitmaps
-  var
-    I : Longint;
-    TRI : RGBTRIPLE;
-  begin
-    size := size div 3;
-    for i := 0 to size - 1 do
-    begin
-      Tri.rgbtBlue := Blue(Color[i]);
-      Tri.rgbtGreen := Green(Color[i]);
-      Tri.rgbtRed := Red(Color[i]);
-      MemStream.WriteBuffer(Tri, 3);
-    end;
-  end;
-
-  Procedure WriteQUADColorMap(Color : PLongint; size : Longint); //For MS Bitmaps
-  var
-    I : Longint;
-    Quad : RGBQUAD;
-  begin
-    size := size div 4;
-    for i := 0 to size - 1 do
-    begin
-      FillChar(QUAD, SizeOf(RGBQUAD),0);
-      Quad.rgbBlue := Blue(Color[i]);
-      Quad.rgbGreen := Green(Color[i]);
-      Quad.rgbRed := Red(Color[i]);
-      MemStream.WriteBuffer(Quad, 4);
-    end;
-  end;
-
-  Procedure WriteColorMap(Header : TBitmapHeader);
-  begin
-    ///Figure out how to get colors then call Quad/Tri
-  end;
-
-  Procedure WritePixels(Bits : PByte; Header : TBitmapHeader);
-  begin
-    MemStream.WriteBuffer(Bits^, Header.InfoHeader.biSizeImage);
-  end;
-
-var
-  Bits: PByte;
-  Header: TBitmapHeader;
-  StreamSize: TStreamSeekType;
-{$ENDIF}
 begin
-  {$IFNDEF DisableFPImage}
   WriteStreamWithFPImage(Stream,WriteSize,TFPWriterBMP);
-  if (FImage.SaveStream<>nil) and (FImage.SaveStreamType=bnNone) then
-    FImage.SaveStreamType:=bnWinBitmap;
-  {$ELSE}
-  if (FImage.SaveStream<>nil) and (FImage.SaveStream.Size>0)
-  and (FImage.SaveStreamType<>bnNone) then begin
-    DoWriteOriginal;
-    exit;
-  end;
-  DebugLn('TBitmap.WriteStream A Warning: creating BMP does not always work ',
-    dbgs(FImage.SaveStream<>nil),' ',dbgs(ord(FImage.SaveStreamType)),'. Please use FPImage.');
-
-  // write image in BMP format to temporary stream
-  MemStream:=TMemoryStream.Create;
-  try
-    Bits:=nil;
-    FillBitmapInfo(Handle, Bits, Header);
-    WriteBitmapHeader(Header);
-    WriteColorMap(Header);
-    WritePixels(Bits, Header);
-    // save stream, so that further saves will be fast
-    MemStream.Position:=0;
-    FreeSaveStream;
-    FImage.SaveStream:=MemStream;
-    MemStream:=nil;
-    FImage.SaveStreamType:=bnWinBitmap;
-    // copy savestream to destination stream
-    if WriteSize then begin
-      StreamSize:=FImage.SaveStream.Size;
-      Stream.WriteBuffer(StreamSize, SizeOf(StreamSize));
-    end;
-    Stream.CopyFrom(FImage.SaveStream,FImage.SaveStream.Size);
-  finally
-    ReallocMem(Bits, 0);
-    MemStream.Free;
-  end;
-  {$ENDIF}
 end;
 
 procedure TBitmap.StoreOriginalStream(Stream: TStream; Size: integer);
@@ -916,10 +617,18 @@ begin
     FImage.FSaveStream:=MemStream;
   end;
   FImage.SaveStreamType:=bnNone;
+  FImage.SaveStreamClass:=nil;
   FImage.SaveStream.Position:=0;
 end;
 
-{$IFNDEF DisableFPImage}
+function TBitmap.CanReadGraphicStreams(AClass: TFPCustomImageWriterClass
+  ): boolean;
+begin
+  Result:=(AClass=GetDefaultFPWriter)
+    or (((ClassType=TBitmap) or (ClassType=TPixmap))
+        and ((AClass=TFPWriterBMP) or (AClass=TLazWriterXPM)));
+end;
+
 {------------------------------------------------------------------------------
   procedure TBitmap.ReadStreamWithFPImage(Stream: TStream; UseSize: boolean;
     Size: Longint; ReaderClass: TFPCustomImageReaderClass);
@@ -928,7 +637,7 @@ end;
   Stream: source stream. After reading Position will be at end of bitmap.
   UseSize: if True, Size is used. If False then Size is calculated
            automatically.
-  Size: Only used when UseSize=True. This amount of bytes are read.
+  Size: Only used when UseSize=True. This amount of bytes is read.
 ------------------------------------------------------------------------------}
 procedure TBitmap.ReadStreamWithFPImage(Stream: TStream; UseSize: boolean;
   Size: Longint; ReaderClass: TFPCustomImageReaderClass);
@@ -996,6 +705,13 @@ begin
   finally
     // set save stream
     FImage.SaveStream:=NewSaveStream;
+    if ReaderClass=TFPReaderBMP then begin
+      FImage.SaveStreamType:=bnWinBitmap;
+      FImage.SaveStreamClass:=TFPWriterBMP;
+    end else if ReaderClass=TLazReaderXPM then begin
+      FImage.SaveStreamType:=bnXPixmap;
+      FImage.SaveStreamClass:=TLazWriterXPM;
+    end;
     // clean up
     IntfImg.Free;
     ImgReader.Free;
@@ -1025,12 +741,17 @@ var
   ImgWriter: TFPCustomImageWriter;
 begin
   //DebugLn('WriteStreamWithFPImage Self=',DbgS(Self),' ',Width,',',Height,' Using SaveStream=',(FImage.SaveStream<>nil) and (FImage.SaveStream.Size>0));
-  if (FImage.SaveStream<>nil) and (FImage.SaveStream.Size>0) then begin
+  if (FImage.SaveStream<>nil) and (FImage.SaveStream.Size>0)
+  and ((FImage.SaveStreamType<>bnNone)
+    or CanReadGraphicStreams(FImage.SaveStreamClass))
+  then begin
+    // it's a stream format, that this graphic class can read
+    // (important for restore)
     DoWriteOriginal;
     exit;
   end;
   //DebugLn('WriteStreamWithFPImage');
-
+  
   // write image to temporary stream
   MemStream:=TMemoryStream.Create;
   IntfImg:=nil;
@@ -1048,7 +769,13 @@ begin
     MemStream.Position:=0;
     FreeSaveStream;
     FImage.SaveStream:=MemStream;
-    FImage.SaveStreamType:=bnNone;
+    if WriterClass=TLazWriterXPM then
+      FImage.SaveStreamType:=bnXPixmap
+    else if WriterClass=TFPWriterBMP then
+      FImage.SaveStreamType:=bnWinBitmap
+    else
+      FImage.SaveStreamType:=bnNone;
+    FImage.SaveStreamClass:=WriterClass;
     MemStream:=nil;
     // copy savestream to destination stream
     DoWriteOriginal;
@@ -1070,7 +797,8 @@ end;
 
 procedure TBitmap.InitFPImageWriter(ImgWriter: TFPCustomImageWriter);
 begin
-
+  if ImgWriter.ClassType=TFPWriterBMP then
+    TFPWriterBMP(ImgWriter).BytesPerPixel:=4; // allow alpha
 end;
 
 procedure TBitmap.FinalizeFPImageReader(ImgReader: TFPCustomImageReader);
@@ -1082,7 +810,6 @@ procedure TBitmap.FinalizeFPImageWriter(ImgWriter: TFPCustomImageWriter);
 begin
 
 end;
-{$ENDIF}
 
 procedure TBitMap.SaveToStream(Stream: TStream);
 begin
@@ -1148,7 +875,6 @@ begin
   Result := 0;
 end;
 
-{$IFNDEF DisableFPImage}
 function TBitmap.GetFPReaderForFileExt(const FileExtension: string
   ): TFPCustomImageReaderClass;
 begin
@@ -1189,7 +915,7 @@ end;
 
 function TBitmap.GetDefaultFPWriter: TFPCustomImageWriterClass;
 begin
-  if (AnsiCompareText(ClassName,'TBitmap')=0) then
+  if ClassType=TBitmap then
     Result:=TFPWriterBMP
   else
     Result:=nil;
@@ -1207,8 +933,10 @@ begin
     RaiseGDBException('Invalid SaveStreamType');
   end;
   WriteStreamWithFPImage(Stream,WriteSize,Writer);
-  if (FImage.SaveStream<>nil) and (FImage.SaveStreamType=bnNone) then
+  if (FImage.SaveStream<>nil) and (FImage.SaveStreamType=bnNone) then begin
     FImage.SaveStreamType:=SaveStreamType;
+    FImage.SaveStreamClass:=Writer;
+  end;
 end;
 
 function TBitmap.CreateIntfImage: TLazIntfImage;
@@ -1216,7 +944,6 @@ begin
   Result:=TLazIntfImage.Create(0,0);
   Result.LoadFromBitmap(Handle,MaskHandle);
 end;
-{$ENDIF}
 
 function TBitmap.GetEmpty: boolean;
 begin
@@ -1278,6 +1005,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.97  2005/06/22 09:45:59  mattias
+  implemented saving alpha bmp and using transparency for IDE glyph editor
+
   Revision 1.96  2005/03/07 21:59:44  vincents
   changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
 

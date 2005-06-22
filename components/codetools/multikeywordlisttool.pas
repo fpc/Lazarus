@@ -41,7 +41,7 @@ uses
 type
   TMultiKeyWordListCodeTool = class(TCustomCodeTool)
   private
-    FKeyWordLists: TList; // list of TKeyWordFunctionList
+    FKeyWordLists: TFPList; // list of TKeyWordFunctionList
     FCurKeyWordListID: integer;
     procedure SetCurKeyWordFuncList(AKeyWordFuncList: TKeyWordFunctionList);
   protected
@@ -66,7 +66,7 @@ implementation
 constructor TMultiKeyWordListCodeTool.Create;
 begin
   inherited Create;
-  FKeyWordLists:=TList.Create; // list of TKeyWordFunctionList
+  FKeyWordLists:=TFPList.Create; // list of TKeyWordFunctionList
   AddKeyWordFuncList(KeyWordFuncList);
   FCurKeyWordListID:=0;
   DefaultKeyWordFuncList:=KeyWordFuncList;

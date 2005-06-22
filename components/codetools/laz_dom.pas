@@ -300,7 +300,7 @@ type
 //   NamedNodeMap
 // -------------------------------------------------------
 
-  TDOMNamedNodeMap = class(TList)
+  TDOMNamedNodeMap = class(TFPList)
   protected
     OwnerDocument: TDOMDocument;
     function GetItem(index: LongWord): TDOMNode;
@@ -1674,6 +1674,9 @@ end.
 
 {
   $Log$
+  Revision 1.12  2005/06/22 09:45:59  mattias
+  implemented saving alpha bmp and using transparency for IDE glyph editor
+
   Revision 1.11  2005/01/29 17:37:56  mattias
   reduced mem need for xml stuff
 

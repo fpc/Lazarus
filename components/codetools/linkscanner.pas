@@ -169,7 +169,7 @@ type
     FIgnoreErrorAfterCursorPos: integer;
     FInitValues: TExpressionEvaluator;
     FInitValuesChangeStep: integer;
-    FSourceChangeSteps: TList; // list of PSourceChangeStep sorted with Code
+    FSourceChangeSteps: TFPList; // list of PSourceChangeStep sorted with Code
     FChangeStep: integer;
     FMainSourceFilename: string;
     FMainCode: pointer;
@@ -228,7 +228,7 @@ type
     FSkipDirectiveFuncList: TKeyWordFunctionList;
     FMacrosOn: boolean;
     FMissingIncludeFiles: TMissingIncludeFiles;
-    FIncludeStack: TList; // list of TSourceLink
+    FIncludeStack: TFPList; // list of TSourceLink
     FSkippingTillEndif: boolean;
     FSkipIfLevel: integer;
     FCompilerMode: TCompilerMode;
@@ -464,7 +464,9 @@ var
 
 procedure AddCodeToUniqueList(ACode: Pointer; UniqueSortedCodeList: TList);
 function IndexOfCodeInUniqueList(ACode: Pointer;
-  UniqueSortedCodeList: TList): integer;
+                                 UniqueSortedCodeList: TList): integer;
+function IndexOfCodeInUniqueList(ACode: Pointer;
+                                 UniqueSortedCodeList: TFPList): integer;
 
 
 implementation
@@ -474,6 +476,27 @@ implementation
 
 function IndexOfCodeInUniqueList(ACode: Pointer;
   UniqueSortedCodeList: TList): integer;
+var l,m,r: integer;
+begin
+  l:=0;
+  r:=UniqueSortedCodeList.Count-1;
+  m:=0;
+  while r>=l do begin
+    m:=(l+r) shr 1;
+    if ACode<UniqueSortedCodeList[m] then
+      r:=m-1
+    else if ACode>UniqueSortedCodeList[m] then
+      l:=m+1
+    else begin
+      Result:=m;
+      exit;
+    end;
+  end;
+  Result:=-1;
+end;
+
+function IndexOfCodeInUniqueList(ACode: Pointer;
+  UniqueSortedCodeList: TFPList): integer;
 var l,m,r: integer;
 begin
   l:=0;
@@ -604,11 +627,11 @@ begin
   FInitValues:=TExpressionEvaluator.Create;
   Values:=TExpressionEvaluator.Create;
   FChangeStep:=0;
-  FSourceChangeSteps:=TList.Create;
+  FSourceChangeSteps:=TFPList.Create;
   FMainCode:=nil;
   FMainSourceFilename:='';
   BuildDirectiveFuncList;
-  FIncludeStack:=TList.Create;
+  FIncludeStack:=TFPList.Create;
   FNestedComments:=false;
 end;
 

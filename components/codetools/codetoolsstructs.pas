@@ -56,7 +56,7 @@ type
 
   TCodeXYPositions = class
   private
-    FItems: TList; // list of PCodeXYPosition, can be nil
+    FItems: TFPList; // list of PCodeXYPosition, can be nil
     function GetCaretsXY(Index: integer): TPoint;
     function GetCodes(Index: integer): TCodeBuffer;
     function GetItems(Index: integer): PCodeXYPosition;
@@ -172,7 +172,7 @@ var
 begin
   New(NewItem);
   NewItem^:=Position;
-  if FItems=nil then FItems:=TList.Create;
+  if FItems=nil then FItems:=TFPList.Create;
   Result:=FItems.Add(NewItem);
 end;
 

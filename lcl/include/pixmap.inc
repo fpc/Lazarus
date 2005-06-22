@@ -267,12 +267,9 @@ begin
   Result:=(ResourceType='XPM');
 end;
 
-{$IFNDEF DisableFPImage}
 procedure TPixmap.WriteStream(Stream: TStream; WriteSize: Boolean);
 begin
   WriteStreamWithFPImage(Stream,WriteSize,TLazWriterXPM);
-  if (FImage.SaveStream<>nil) and (FImage.SaveStreamType=bnNone) then
-    FImage.SaveStreamType:=bnXPixmap;
 end;
 
 function TPixmap.GetDefaultFPReader: TFPCustomImageReaderClass;
@@ -284,12 +281,6 @@ function TPixmap.GetDefaultFPWriter: TFPCustomImageWriterClass;
 begin
   Result:=TLazWriterXPM;
 end;
-{$ELSE DisableFPImage}
-procedure TPixmap.WriteStream(Stream: TStream; WriteSize: Boolean);
-begin
-  inherited WriteStream(Stream,WriteSize);
-end;
-{$ENDIF}
 
 
 // included by graphics.pp
@@ -297,6 +288,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.31  2005/06/22 09:45:59  mattias
+  implemented saving alpha bmp and using transparency for IDE glyph editor
+
   Revision 1.30  2004/09/14 10:23:44  mattias
   implemented finding DefineProperties in registered TPersistent, implemented auto commenting of missing units for Delphi unit conversion
 

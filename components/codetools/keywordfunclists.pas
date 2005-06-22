@@ -616,7 +616,7 @@ end;
 
 //-----------------------------------------------------------------------------
 
-var KeyWordLists: TList;
+var KeyWordLists: TFPList;
 
 procedure InternalInit;
 var
@@ -635,7 +635,7 @@ begin
   for w:=Low(word) to High(word) do
     UpWords[w]:=ord(UpChars[chr(w and $ff)])+(ord(UpChars[chr(w shr 8)]) shl 8);
 
-  KeyWordLists:=TList.Create;
+  KeyWordLists:=TFPList.Create;
   
   IsKeyWordMethodSpecifier:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(IsKeyWordMethodSpecifier);

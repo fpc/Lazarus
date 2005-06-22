@@ -86,8 +86,8 @@ type
     FLineRanges: {$ifdef fpc}^{$else}array of {$endif}TLineRange;
               // array of TLineRange
     FSrcLen: integer;
-    FLog: TList; // list of TSourceLogEntry
-    FMarkers: TList; // list of TSourceLogMarker;
+    FLog: TFPList; // list of TSourceLogEntry
+    FMarkers: TFPList; // list of TSourceLogMarker;
     FModified: boolean;
     FOnInsert: TOnSourceLogInsert;
     FOnDelete: TOnSourceLogDelete;
@@ -241,8 +241,8 @@ begin
   FModified:=false;
   FSource:=ASource;
   FSrcLen:=length(FSource);
-  FLog:=TList.Create;
-  FMarkers:=TList.Create;
+  FLog:=TFPList.Create;
+  FMarkers:=TFPList.Create;
   FLineRanges:=nil;
   FLineCount:=-1;
   FChangeStep:=0;

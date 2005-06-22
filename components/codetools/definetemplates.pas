@@ -384,7 +384,7 @@ type
   TDefinePool = class
   private
     FEnglishErrorMsgFilename: string;
-    FItems: TList; // list of TDefineTemplate;
+    FItems: TFPList; // list of TDefineTemplate;
     function GetItems(Index: integer): TDefineTemplate;
     procedure SetEnglishErrorMsgFilename(const AValue: string);
   public
@@ -2578,7 +2578,7 @@ end;
 constructor TDefinePool.Create;
 begin
   inherited Create;
-  FItems:=TList.Create;
+  FItems:=TFPList.Create;
 end;
 
 destructor TDefinePool.Destroy;

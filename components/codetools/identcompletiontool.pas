@@ -135,8 +135,8 @@ type
     FStartAtomInFront: TAtomPosition;
     FStartBracketLvl: integer;
     FStartContextPos: TCodeXYPosition;
-    FCreatedIdentifiers: TList; // list of PChar
-    FFilteredList: TList; // list of TIdentifierListItem
+    FCreatedIdentifiers: TFPList; // list of PChar
+    FFilteredList: TFPList; // list of TIdentifierListItem
     FFlags: TIdentifierListFlags;
     FHistory: TIdentifierHistoryList;
     FItems: TAVLTree; // tree of TIdentifierListItem (completely sorted)
@@ -416,7 +416,7 @@ var
   CurItem: TIdentifierListItem;
 begin
   if not (ilfFilteredListNeedsUpdate in FFlags) then exit;
-  if FFilteredList=nil then FFilteredList:=TList.Create;
+  if FFilteredList=nil then FFilteredList:=TFPList.Create;
   FFilteredList.Count:=0;
   FFilteredList.Capacity:=FItems.Count;
   { $IFDEF CTDEBUG}
@@ -469,7 +469,7 @@ begin
   FIdentView:=TAVLTree.Create(@CompareIdentListItemsForIdents);
   FIdentSearchItem:=TIdentifierListItem.Create(icompUnknown,
       false,0,nil,0,nil,nil,ctnNone);
-  FCreatedIdentifiers:=TList.Create;
+  FCreatedIdentifiers:=TFPList.Create;
 end;
 
 destructor TIdentifierList.Destroy;

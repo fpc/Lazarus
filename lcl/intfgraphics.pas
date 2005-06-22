@@ -110,6 +110,8 @@ type
     Prec, Shift: cardinal; Bits: word);
 
 
+  { TLazIntfImage }
+
   TLazIntfImage = class(TFPCustomImage)
   private
     FAutoCreateMask: boolean;
@@ -191,6 +193,7 @@ type
     procedure CreateAllData; virtual;
     procedure CreatePixelData; virtual;
     procedure CreateMaskData; virtual;
+    function HasTransparency: boolean; virtual;
   public
     property PixelData: PByte read FPixelData;
     property MaskData: PByte read FMaskData;
@@ -1535,6 +1538,16 @@ begin
   end;
   if MaskDataExisted xor (FMaskData<>nil) then
     ChooseGetSetColorFunctions;
+end;
+
+function TLazIntfImage.HasTransparency: boolean;
+var
+  RawImage: TRawImage;
+begin
+  Result:=true;
+  GetRawImage(RawImage);
+  if not RawImageMaskIsEmpty(@RawImage,true) then exit;
+  Result:=false;
 end;
 
 procedure TLazIntfImage.CreateDataAndLineStarts(var Data: Pointer;

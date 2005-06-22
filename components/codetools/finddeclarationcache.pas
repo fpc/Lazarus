@@ -245,7 +245,7 @@ type
 
   TCodeTreeNodeStack = record
     Fixedtems: array[0..9] of TCodeTreeNodeStackEntry;
-    DynItems: TList; // list of TCodeTreeNodeStackEntry
+    DynItems: TFPList; // list of TCodeTreeNodeStackEntry
     StackPtr: integer;
   end;
   PCodeTreeNodeStack = ^TCodeTreeNodeStack;
@@ -1028,7 +1028,7 @@ begin
     NodeStack^.Fixedtems[NodeStack^.StackPtr]:=NewNode;
   end else begin
     if NodeStack^.DynItems=nil then begin
-      NodeStack^.DynItems:=TList.Create;
+      NodeStack^.DynItems:=TFPList.Create;
     end;
     NodeStack^.DynItems.Add(NewNode);
   end;

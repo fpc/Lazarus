@@ -20,6 +20,7 @@ destructor TBitmapImage.Destroy;
 begin
   FreeAndNil(FSaveStream);
   FSaveStreamType:=bnNone;
+  FSaveStreamClass:=nil;
   if FDIBHandle <> 0 then
   begin
     DeleteObject(FDIBHandle);
