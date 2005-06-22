@@ -1294,6 +1294,12 @@ begin
   Result := 0;
 end;
 
+function TWidgetSet.SetCursorPos(X, Y: Integer): Boolean;
+begin
+  // Your default here
+  Result := False;
+end;
+
 function TWidgetSet.SetFocus(hWnd: HWND): HWND;
 begin
   Result := 0;
@@ -1426,6 +1432,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.23  2005/06/22 17:37:06  mattias
+  implemented TMouse.SetCursorPos  from Andrew
+
   Revision 1.22  2005/03/07 21:59:44  vincents
   changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
 

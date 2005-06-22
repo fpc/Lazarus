@@ -691,6 +691,11 @@ begin
   Result := InterfaceObject.SetCursor(hCursor);
 end;
 
+function SetCursorPos(X, Y: Integer): Boolean;
+begin
+  Result := InterfaceObject.SetCursorPos(X, Y);
+end;
+
 Function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean;
 Begin
   Result := InterfaceObject.SetProp(Handle,Str,Data);
@@ -1335,6 +1340,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.121  2005/06/22 17:37:06  mattias
+  implemented TMouse.SetCursorPos  from Andrew
+
   Revision 1.120  2005/03/04 13:50:09  mattias
   fixed Arc and changed x,y to Left,Top to make meaning more clear
 

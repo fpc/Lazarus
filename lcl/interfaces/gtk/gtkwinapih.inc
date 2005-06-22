@@ -185,6 +185,7 @@ function SetCapture(AHandle: HWND): HWND; override;
 function SetCaretPos(X, Y: Integer): Boolean; override;
 function SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean; override;
 function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean; override;
+function SetCursorPos(X, Y: Integer): Boolean; override;
 function SetFocus(hWnd: HWND): HWND; override;
 Function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; override;
 function SetROP2(DC: HDC; Mode: Integer): Integer; override;
@@ -216,6 +217,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.98  2005/06/22 17:37:06  mattias
+  implemented TMouse.SetCursorPos  from Andrew
+
   Revision 1.97  2005/05/21 15:58:44  mattias
   implemented right justification for menuitems for winapi intf  from Martin Smat
 

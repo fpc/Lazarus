@@ -7875,6 +7875,68 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: SetCursorPos
+  Params: X:
+          Y:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGtkWidgetSet.SetCursorPos(X, Y: Integer): Boolean;
+{$IFDEF UNIX}
+var
+  dpy: PDisplay;
+  TopList, List: PGList;
+begin
+  Result := False;
+  {$IFDEF DebugGDKTraps}
+  BeginGDKErrorTrap;
+  {$ENDIF}
+  try
+    TopList := gdk_window_get_toplevels;
+    List := TopList;
+    while List <> nil do
+    begin
+      if (List^.Data <> nil)
+      and gdk_window_is_visible(List^.Data)
+      then begin
+        {$IFDEF GTK2}
+        //the pascal Gtk2 bindings don't seem to have gdk_window_xdisplay
+        dpy := XOpenDisplay(nil);
+        if dpy <> nil then begin
+        {$ELSE GTK2}
+        dpy := gdk_window_xdisplay(List^.Data);
+        {$ENDIF GTK2}
+          XWarpPointer(dpy,
+                     0,
+                     RootWindow(dpy, DefaultScreen(dpy)),
+                     0, 0, 0, 0,
+                     X,
+                     Y);
+        {$IFDEF GTK2}
+          XCloseDisplay(dpy);
+        end;
+        {$ENDIF GTK2}
+        Result := True;
+        Break;
+      end;
+      List := g_list_next(List);
+    end;
+
+    if TopList <> nil
+    then g_list_free(TopList);
+
+  finally
+    {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
+  end;
+end;
+{$ELSE UNIX}
+begin
+  DebugLn('TGtkWidgetSet.SetCursorPos not implemented for this platform');
+  // Can this call TWin32WidgetSet.SetCursorPos?
+end;
+{$ENDIF UNIX}
+
+{------------------------------------------------------------------------------
   Function: SetFocus
   Params:  hWnd: Handle of new focus window
   Returns: The old focus window
@@ -9019,6 +9081,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.422  2005/06/22 17:37:06  mattias
+  implemented TMouse.SetCursorPos  from Andrew
+
   Revision 1.421  2005/06/03 20:58:23  mattias
   fixed focussing modal forms on gtk intf
 

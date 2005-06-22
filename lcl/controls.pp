@@ -1871,11 +1871,12 @@ type
     Function GetCapture: HWND;
     Function GetCursorPos: TPoint;
     function GetIsDragging: Boolean;
+    procedure SetCursorPos(AValue : TPoint);
   public
     constructor Create;
     destructor Destroy; override;
     property Capture: HWND read GetCapture write SetCapture;
-    property CursorPos: TPoint read GetCursorPos;
+    property CursorPos: TPoint read GetCursorPos write SetCursorPos;
     property DragImmediate: Boolean read FDragImmediate write FDragImmediate default True;
     property DragThreshold: Integer read FDragThreshold write FDragThreshold default 5;
     property IsDragging: Boolean read GetIsDragging;
@@ -2910,6 +2911,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.299  2005/06/22 17:37:06  mattias
+  implemented TMouse.SetCursorPos  from Andrew
+
   Revision 1.298  2005/06/02 12:11:54  micha
   need to recreate form window when changing border flags
   implement lock-flag when destroying handle, do not focus control that is destroying handles

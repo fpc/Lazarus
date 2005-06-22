@@ -200,6 +200,7 @@ Function SetCapture (AHandle: HWND): HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDI
 function SetCaretPos(X, Y: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetCaretPosEx(handle: HWnd; X, Y: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetCursor(hCursor: HICON): HCURSOR; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function SetCursorPos(X, Y: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetFocus(hWnd: HWND): HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetMapMode(DC: HDC; MapMode: Integer): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -301,6 +302,9 @@ function RGB(R, G, B : Byte) : TColorRef;
 { =============================================================================
 
   $Log$
+  Revision 1.108  2005/06/22 17:37:06  mattias
+  implemented TMouse.SetCursorPos  from Andrew
+
   Revision 1.107  2005/03/04 13:50:09  mattias
   fixed Arc and changed x,y to Left,Top to make meaning more clear
 

@@ -2737,6 +2737,20 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
+  Function: SetCursorPos
+  Params: X:
+          Y:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.SetCursorPos(X, Y: Integer): Boolean;
+begin
+  Result := False;
+  Windows.SetCursorPos(X, Y);
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
   Method:  SetFocus
   Params:  HWnd - Handle of new focus window
   Returns: The old focus window
@@ -3127,6 +3141,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.146  2005/06/22 17:37:06  mattias
+  implemented TMouse.SetCursorPos  from Andrew
+
   Revision 1.145  2005/05/04 12:27:46  vincents
   implented reading non-text formats from the clipboard
 

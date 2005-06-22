@@ -53,6 +53,11 @@ Begin
   Result := P;
 end;
 
+procedure TMouse.SetCursorPos(AValue : TPoint);
+Begin
+  InterfaceObject.SetCursorPos(AValue.X, AValue.Y);
+end;
+
 function TMouse.GetIsDragging: Boolean;
 begin
   Result := ActiveDrag <> dopNone;
