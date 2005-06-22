@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, FPCAdds, Forms, Controls, Graphics, Dialogs, LResources,
-  StdCtrls, Buttons, LazConf, LazarusIDEStrConsts;
+  StdCtrls, Buttons, LazConf, LazarusIDEStrConsts, ExtCtrls, EnvironmentOpts;
 
 type
 
@@ -35,10 +35,16 @@ type
   TAboutForm = class(TForm)
     Button1: TBitBtn;
     Label2: TLABEL;
-    Memo1: TMEMO;
+    AboutMemo: TMEMO;
     Label1: TLABEL;
+    ContributorsMemo:TMemo;
+    Notebook1:TNotebook;
+    AboutPage:TPage;
+    ContributorsPage:TPage;
+    procedure AboutFormCreate(Sender:TObject);
   private
     FPixmap : TPixmap;
+    procedure LoadContributors;
   public
     procedure Paint; override;
     constructor Create(AOwner: TComponent); override;
@@ -64,6 +70,20 @@ end;
 { TAboutForm }
 
 constructor TAboutForm.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+end;
+
+
+destructor TAboutForm.Destroy;
+begin
+  FPixmap.Free;
+  FPixmap:=nil;
+
+  inherited Destroy;
+end;
+
+procedure TAboutForm.AboutFormCreate(Sender:TObject);
   {The compiler generated date string is always of the form y/m/d.
    This function gives it a string respresentation according to the
    shortdateformat}
@@ -83,8 +103,6 @@ constructor TAboutForm.Create(AOwner: TComponent);
     Result := DateTimeToStr(Date);
   end;
 begin
-  inherited Create(AOwner);
-
   FPixmap := TPixmap.Create;
   FPixmap.LoadFromLazarusResource('lazarus_about_logo');
   Caption:=lisAboutLazarus;
@@ -92,22 +110,26 @@ begin
   Label2.Caption := lisDate+': '+GetLocalizedBuildDate;
   Constraints.MinWidth:= 600;
   Constraints.MinHeight:= 300;
-  
-  Memo1.Lines.Text:=Format(lisAboutLazarusMsg,[LineEnding,LineEnding,LineEnding])
+
+  AboutMemo.Lines.Text:=Format(lisAboutLazarusMsg,[LineEnding,LineEnding,LineEnding])
     +LineEnding+LineEnding
     +'Official: http://sourceforge.net/projects/lazarus/'+LineEnding
     +'Tutorials: http://lazarus-ccr.sourceforge.net'+LineEnding
     ;
+  LoadContributors;
   Button1.Caption:=lisClose;
 end;
 
-
-destructor TAboutForm.Destroy;
+procedure TAboutForm.LoadContributors;
+var
+  ContributorsFileName: string;
 begin
-  FPixmap.Free;
-  FPixmap:=nil;
-
-  inherited Destroy;
+  ContributorsFileName:=
+    EnvironmentOptions.LazarusDirectory+'docs'+PathDelim+'contributors.txt';
+  if FileExists(ContributorsFileName) then
+    ContributorsMemo.Lines.LoadFromFile(ContributorsFileName)
+  else
+    ContributorsMemo.Text:=lisAboutNoContributors;
 end;
 
 procedure TAboutForm.Paint;
