@@ -172,16 +172,16 @@ type
     procedure SetValueChecked(const AValue: string);
     procedure SetValueUnchecked(const AValue: string);
   protected
+    procedure Assign(Source: TPersistent); override;
     function  CreateTitle: TGridColumnTitle; override;
-    // FPC 1.0 has TAlignment in the DB unit too
-    function  GetDefaultAlignment: {$IFDEF VER1_0}Classes.{$ENDIF}TAlignment; override;
+    function  GetDefaultAlignment: TAlignment; override;
     function  GetDefaultDisplayFormat: string;
     function  GetDefaultValueChecked: string; virtual;
     function  GetDefaultValueUnchecked: string; virtual;
     function  GetDefaultVisible: boolean; override;
     function  GetDisplayName: string; override;
-    function  InternalDefaultReadOnly: boolean; override;
-    function  InternalDefaultWidth: Integer; override;
+    function  GetDefaultReadOnly: boolean; override;
+    function  GetDefaultWidth: Integer; override;
     property  IsAutomaticColumn: boolean read FIsAutomaticColumn;
     property  IsDesignColumn: boolean read GetIsDesignColumn;
     procedure LinkField;
@@ -304,9 +304,6 @@ type
     procedure SwapCheckBox;
     function ValueMatch(const BaseValue, TestValue: string): Boolean; 
   protected
-  {$ifdef ver1_0}
-    property FixedColor;
-  {$endif}
     procedure AddAutomaticColumns;
     procedure BeforeMoveSelection(const DCol,DRow: Integer); override;
     procedure BeginLayout;
@@ -333,11 +330,10 @@ type
     function  EditorCanAcceptKey(const ch: Char): boolean; override;
     function  EditorIsReadOnly: boolean; override;
     procedure EndLayout;
-    // FPC 1.0 has TAlignment in the DB unit too
-    function  GetDefaultAlignment(Column: Integer): {$IFDEF VER1_0}Classes.{$ENDIF}TAlignment; override;
+    function  GetDefaultColumnAlignment(Column: Integer): TAlignment; override;
     function  GetDefaultColumnWidth(Column: Integer): Integer; override;
-    function  GetDefaultReadOnly(Column: Integer): boolean; override;
-    function  GetDefaultTitle(Column: Integer): string; override;
+    function  GetDefaultColumnReadOnly(Column: Integer): boolean; override;
+    function  GetDefaultColumnTitle(Column: Integer): string; override;
     
     function  GetEditMask(aCol, aRow: Longint): string; override;
     function  GetEditText(aCol, aRow: Longint): string; override;
@@ -1382,20 +1378,7 @@ end;
 
 type
   TProtFields=class(TFields)
-  {$ifdef ver1_0}
-   // workaround to access protected procedure in base class
-   Procedure SetFieldIndex (Field : TField;Value : Integer);
-  {$endif}
   end;
-
-{$ifdef ver1_0}
-{ TProtFields }
-
-procedure TProtFields.SetFieldIndex(Field: TField; Value: Integer);
-begin
-  inherited SetFieldIndex(Field, Value);
-end;
-{$endif}
 
 procedure TCustomDbGrid.ColRowMoved(IsColumn: Boolean; FromIndex,
   ToIndex: Integer);
@@ -1410,9 +1393,7 @@ begin
     else if FDatalink.Active and (FDataLink.DataSet<>nil) then begin
       F := GetDsFieldFromGridColumn(FromIndex);
       if F<>nil then begin
-        {$IFNDEF VER1_0}
         TProtFields(FDatalink.DataSet.Fields).SetFieldIndex( F, ToIndex - FixedCols );
-        {$ENDIF}
       end;
     end;
     ColIndex := GetGridColumnFromField(CurField);
@@ -1514,7 +1495,7 @@ begin
     end else
     if (aRow=0)and(ACol>=FixedCols) then begin
       FixRectangle;
-      Canvas.TextRect(ARect,ARect.Left,ARect.Top,GetGridColumnTitle(aCol));
+      Canvas.TextRect(ARect,ARect.Left,ARect.Top,GetColumnTitle(aCol));
     end;
   end else begin
     F := GetFieldFromGridColumn(aCol);
@@ -1907,15 +1888,15 @@ begin
     DoLayoutChanged;
 end;
 
-function TCustomDbGrid.GetDefaultAlignment(Column: Integer): {$IFDEF VER1_0}Classes.{$ENDIF}TAlignment;
+function TCustomDbGrid.GetDefaultColumnAlignment(Column: Integer): TAlignment;
 var
   F: TField;
 begin
   F := GetDsFieldFromGridColumn(Column);
   if F<>nil then
-    result := {$IFNDEF VER1_0}F.Alignment{$ELSE}Classes.TAlignment(F.Alignment){$ENDIF}
+    result := F.Alignment
   else
-    result := {$IFNDEF VER1_0}taLeftJustify{$ELSE}Classes.TAlignment(taLeftJustify){$ENDIF};
+    result := taLeftJustify;
 end;
 
 function TCustomDbGrid.GetDefaultColumnWidth(Column: Integer): Integer;
@@ -1923,7 +1904,7 @@ begin
   Result := DefaultFieldColWidth(GetDsFieldFromGridColumn(Column));
 end;
 
-function TCustomDbGrid.GetDefaultReadOnly(Column: Integer): boolean;
+function TCustomDbGrid.GetDefaultColumnReadOnly(Column: Integer): boolean;
 var
   F: Tfield;
 begin
@@ -1934,7 +1915,7 @@ begin
   end;
 end;
 
-function TCustomDbGrid.GetDefaultTitle(Column: Integer): string;
+function TCustomDbGrid.GetDefaultColumnTitle(Column: Integer): string;
 var
   F: Tfield;
 begin
@@ -2348,7 +2329,7 @@ begin
     else
     if (DataCol>=FixedCols) then begin
       R := FixRectangle();
-      Canvas.TextRect(R,R.Left,R.Top,GeTGridColumnTitle(DataCol));
+      Canvas.TextRect(R,R.Left,R.Top,GetColumnTitle(DataCol));
     end;
   end else begin
     F := GetFieldFromGridColumn(DataCol);
@@ -2732,12 +2713,12 @@ end;
 
 function TColumn.IsValueCheckedStored: boolean;
 begin
-  result := ValueChecked <> GetDefaultValueChecked;
+  result := FValueChecked <> nil;
 end;
 
 function TColumn.IsValueUncheckedStored: boolean;
 begin
-  Result := ValueUnchecked <> GetDefaultValueUnchecked;
+  Result := FValueUnchecked <> nil;
 end;
 
 procedure TColumn.SetDisplayFormat(const AValue: string);
@@ -2804,7 +2785,25 @@ begin
   end;
 end;
 
-function TColumn.InternalDefaultWidth: Integer;
+procedure TColumn.Assign(Source: TPersistent);
+begin
+  if Source is TColumn then begin
+    //DebugLn('Assigning TColumn[',dbgs(Index),'] a TColumn')
+    Collection.BeginUpdate;
+    try
+      inherited Assign(Source);
+      FieldName := TColumn(Source).FieldName;
+      DisplayFormat := TColumn(Source).FieldName;
+      ValueChecked := TColumn(Source).ValueChecked;
+      ValueUnchecked := TColumn(Source).ValueUnchecked;
+    finally
+      Collection.EndUpdate;
+    end;
+  end else
+    inherited Assign(Source);
+end;
+
+function TColumn.GetDefaultWidth: Integer;
 var
   AGrid: TCustomDbGrid;
 begin
@@ -2885,7 +2884,7 @@ begin
     Result := '0';
 end;
 
-function TColumn.InternalDefaultReadOnly: boolean;
+function TColumn.GetDefaultReadOnly: boolean;
 var
   AGrid: TCustomDBGrid;
 begin
@@ -2909,12 +2908,12 @@ begin
     Result:=FFieldName;
 end;
 
-function TColumn.GetDefaultAlignment: {$IFDEF VER1_0}Classes.{$ENDIF}TAlignment;
+function TColumn.GetDefaultAlignment: TAlignment;
 begin
   if FField<>nil then
-    result := {$IFNDEF VER1_0}FField.Alignment{$ELSE}Classes.TAlignment(FField.Alignment){$ENDIF}
+    result := FField.Alignment
   else
-    Result := {$IFDEF VER1_0}Classes.{$ENDIF}taLeftJustify;
+    Result := taLeftJustify;
 end;
 
 { TColumnTitle }
@@ -2936,6 +2935,9 @@ end.
 
 {
   $Log$
+  Revision 1.44  2005/06/22 21:32:25  jesus
+  implemented columns assign method bug 984
+
   Revision 1.43  2005/06/11 09:30:24  mattias
   added checkboxes to TDBGrid  from Sergey Smirnov
 
