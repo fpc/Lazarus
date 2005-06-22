@@ -1169,7 +1169,7 @@ var
 begin
   i:=FApplicationHandlers[ahtKeyDownBefore].Count;
   while FApplicationHandlers[ahtKeyDownBefore].NextDownIndex(i) do
-    TKeyEvent(FApplicationHandlers[ahtKeyDownBefore][i])(Self,Key,Shift);
+    TKeyEvent(FApplicationHandlers[ahtKeyDownBefore][i])(Sender,Key,Shift);
 end;
 
 procedure TApplication.NotifyKeyDownHandler(Sender: TObject;
@@ -1179,7 +1179,7 @@ var
 begin
   i:=FApplicationHandlers[ahtKeyDownAfter].Count;
   while FApplicationHandlers[ahtKeyDownAfter].NextDownIndex(i) do
-    TKeyEvent(FApplicationHandlers[ahtKeyDownAfter][i])(Self,Key,Shift);
+    TKeyEvent(FApplicationHandlers[ahtKeyDownAfter][i])(Sender,Key,Shift);
 end;
 
 procedure TApplication.ControlKeyDown(Sender: TObject; var Key: Word;
@@ -1475,6 +1475,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.125  2005/06/22 21:09:50  mattias
+  fixed Sender of Application.OnKeyDownHandler bug 947
+
   Revision 1.124  2005/06/22 09:04:48  vincents
   added DumpExceptionBackTrace
 
