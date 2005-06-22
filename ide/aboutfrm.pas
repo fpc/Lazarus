@@ -125,7 +125,7 @@ var
   ContributorsFileName: string;
 begin
   ContributorsFileName:=
-    EnvironmentOptions.LazarusDirectory+'docs'+PathDelim+'contributors.txt';
+    EnvironmentOptions.LazarusDirectory+'docs'+PathDelim+'Contributors.txt';
   if FileExists(ContributorsFileName) then
     ContributorsMemo.Lines.LoadFromFile(ContributorsFileName)
   else
