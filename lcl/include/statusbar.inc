@@ -29,7 +29,7 @@ begin
   Color := clBtnFace;
   Anchors:=[akLeft,akRight,akBottom];
   Align := alBottom;
-  Height:=20;
+  Height:=30;
 end;
 
 
