@@ -50,6 +50,8 @@ type
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure Update(const AStatusBar: TStatusBar); override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+                        var PreferredWidth, PreferredHeight: integer); override;
   end;
 
   { TGtkWSTabSheet }
@@ -418,6 +420,21 @@ procedure TGtkWSStatusBar.Update(const AStatusBar: TStatusBar);
 begin
   //DebugLn('TGtkWidgetSet.StatusBarUpdate ',DbgS(AStatusBar));
   UpdateStatusBarPanels(AStatusBar,PGtkWidget(AStatusBar.Handle));
+end;
+
+procedure TGtkWSStatusBar.GetPreferredSize(const AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer);
+var
+  StatusBarWidget: PGtkWidget;
+  Requisition: TGtkRequisition;
+begin
+  StatusBarWidget:=GetStyleWidget(lgsStatusBar);
+  // set size to default
+  gtk_widget_set_usize(StatusBarWidget,-1,-1);
+  // ask default size
+  gtk_widget_size_request(StatusBarWidget,@Requisition);
+  PreferredHeight:=Requisition.height;
+  //debugln('TGtkWSStatusBar.GetPreferredSize END ',dbgs(PreferredHeight));
 end;
 
 initialization

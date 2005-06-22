@@ -107,6 +107,7 @@ type
     lgsVerticalPaned,
     lgsHorizontalPaned,
     lgsNotebook,
+    lgsStatusBar,
     // user defined
     lgsUserDefined
     );
@@ -128,6 +129,7 @@ const
     'tooltip',
     'vertical paned',
     'horizontal paned',
+    'statusbar',
     'notebook',
     ''
     );

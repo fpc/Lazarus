@@ -128,6 +128,8 @@ type
     procedure DestroyWnd; override;
     procedure Loaded; override;
     procedure UpdateHandleObject(PanelIndex: integer); virtual;
+    procedure CalculatePreferredSize(
+                        var PreferredWidth, PreferredHeight: integer); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -138,6 +140,7 @@ type
     property Canvas: TCanvas read FCanvas;
   published
     property Action;
+    property AutoSize default true;
     property Panels: TStatusPanels read FPanels write SetPanels;
     property SimpleText: String read FSimpleText write SetSimpleText;
     property SimplePanel: Boolean read FSimplePanel write SetSimplePanel default True;
@@ -2411,6 +2414,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.173  2005/06/22 23:04:44  mattias
+  implemented default height for gtk TStatusBar and set TStatusBar.AutoSize to true
+
   Revision 1.172  2005/04/22 08:19:39  mattias
   added TListItems.FindCaption partstart parameter
 

@@ -29,7 +29,7 @@ begin
   Color := clBtnFace;
   Anchors:=[akLeft,akRight,akBottom];
   Align := alBottom;
-  Height:=30;
+  AutoSize:=true;
 end;
 
 
@@ -128,6 +128,14 @@ begin
       FHandlePanelCount:=Panels.Count;
   end;
   FHandleObjectNeedsUpdate:=false;
+end;
+
+procedure TStatusBar.CalculatePreferredSize(var PreferredWidth,
+  PreferredHeight: integer);
+begin
+  inherited CalculatePreferredSize(PreferredWidth, PreferredHeight);
+  PreferredWidth:=0;
+  if PreferredHeight<=0 then PreferredHeight:=25;
 end;
 
 procedure TStatusBar.BeginUpdate;

@@ -6698,17 +6698,17 @@ begin
     Tp:=nil;
     AddToStyleWindow:=true;
     // create a style widget
-    If AnsiCompareText(WName,LazGtkStyleNames[lgsButton])=0 then begin
+    If CompareText(WName,LazGtkStyleNames[lgsButton])=0 then begin
         StyleObject^.Widget := GTK_BUTTON_NEW;
         lgs:=lgsButton;
       end
     else
-      If AnsiCompareText(WName,LazGtkStyleNames[lgsLabel])=0 then begin
+      If CompareText(WName,LazGtkStyleNames[lgsLabel])=0 then begin
         StyleObject^.Widget := GTK_LABEL_NEW('StyleLabel');
         lgs:=lgsLabel;
       end
     else
-      If AnsiCompareText(WName,LazGtkStyleNames[lgsDefault])=0 then begin
+      If CompareText(WName,LazGtkStyleNames[lgsDefault])=0 then begin
         lgs:=lgsDefault;
         AddToStyleWindow:=false;
         NoName:=nil;
@@ -6721,7 +6721,7 @@ begin
             NoName,[]);
       end
     else
-      If AnsiCompareText(WName,LazGtkStyleNames[lgsWindow])=0 then begin
+      If CompareText(WName,LazGtkStyleNames[lgsWindow])=0 then begin
         lgs:=lgsWindow;
         StyleObject^.Widget := GTK_WINDOW_NEW(GTK_WINDOW_TOPLEVEL);
         AddToStyleWindow:=false;
@@ -6739,59 +6739,65 @@ begin
         gtk_widget_realize(StyleObject^.Widget);
       end
     else
-      If AnsiCompareText(WName,LazGtkStyleNames[lgsCheckbox])=0 then begin
+      If CompareText(WName,LazGtkStyleNames[lgsCheckbox])=0 then begin
         lgs:=lgsCheckbox;
         StyleObject^.Widget := GTK_CHECK_BUTTON_NEW;
       end
     else
-      If AnsiCompareText(WName,LazGtkStyleNames[lgsRadiobutton])=0 then begin
+      If CompareText(WName,LazGtkStyleNames[lgsRadiobutton])=0 then begin
         lgs:=lgsRadiobutton;
         StyleObject^.Widget := GTK_RADIO_BUTTON_NEW(nil);
       end
     else
-      If AnsiCompareText(WName,LazGtkStyleNames[lgsMenu])=0 then begin
+      If CompareText(WName,LazGtkStyleNames[lgsMenu])=0 then begin
         lgs:=lgsMenu;
         AddToStyleWindow:=false;
         StyleObject^.Widget := GTK_MENU_NEW;
       end
     else
-      If AnsiCompareText(WName,LazGtkStyleNames[lgsMenuitem])=0 then begin
+      If CompareText(WName,LazGtkStyleNames[lgsMenuitem])=0 then begin
         lgs:=lgsMenuitem;
         AddToStyleWindow:=false;
         StyleObject^.Widget := GTK_MENU_ITEM_NEW;
       end
     else
-      If AnsiCompareText(WName,LazGtkStyleNames[lgsList])=0 then begin
+      If CompareText(WName,LazGtkStyleNames[lgsStatusBar])=0 then begin
+        lgs:=lgsStatusBar;
+        AddToStyleWindow:=true;
+        StyleObject^.Widget := gtk_statusbar_new;
+      end
+    else
+      If CompareText(WName,LazGtkStyleNames[lgsList])=0 then begin
         lgs:=lgsList;
         StyleObject^.Widget := GTK_LIST_NEW;
       end
     else
-      If AnsiCompareText(WName,LazGtkStyleNames[lgsVerticalScrollbar])=0 then begin
+      If CompareText(WName,LazGtkStyleNames[lgsVerticalScrollbar])=0 then begin
         lgs:=lgsVerticalScrollbar;
         StyleObject^.Widget := gtk_vscrollbar_new(nil);
       end
     else
-      If AnsiCompareText(WName,LazGtkStyleNames[lgsHorizontalScrollbar])=0 then begin
+      If CompareText(WName,LazGtkStyleNames[lgsHorizontalScrollbar])=0 then begin
         lgs:=lgsHorizontalScrollbar;
         StyleObject^.Widget := gtk_hscrollbar_new(nil);
       end
     else
-      If AnsiCompareText(WName,LazGtkStyleNames[lgsVerticalPaned])=0 then begin
+      If CompareText(WName,LazGtkStyleNames[lgsVerticalPaned])=0 then begin
         lgs:=lgsVerticalPaned;
         StyleObject^.Widget := gtk_vpaned_new;
       end
     else
-      If AnsiCompareText(WName,LazGtkStyleNames[lgsHorizontalPaned])=0 then begin
+      If CompareText(WName,LazGtkStyleNames[lgsHorizontalPaned])=0 then begin
         lgs:=lgsHorizontalPaned;
         StyleObject^.Widget := gtk_hpaned_new;
       end
     else
-      If AnsiCompareText(WName,LazGtkStyleNames[lgsNotebook])=0 then begin
+      If CompareText(WName,LazGtkStyleNames[lgsNotebook])=0 then begin
         lgs:=lgsNotebook;
         StyleObject^.Widget := CreateStyleNotebook;
       end
     else
-      If AnsiCompareText(WName,LazGtkStyleNames[lgsTooltip])=0 then begin
+      If CompareText(WName,LazGtkStyleNames[lgsTooltip])=0 then begin
         lgs:=lgsTooltip;
         AddToStyleWindow:=false;
         TP := gtk_tooltips_new;
@@ -6801,7 +6807,7 @@ begin
         StyleObject^.Style:=gtk_widget_get_style(PGTKTooltips(TP)^.Tip_Window);
       end
     else
-      If AnsiCompareText(WName,LazGtkStyleNames[lgsGTK_Default])=0 then begin
+      If CompareText(WName,LazGtkStyleNames[lgsGTK_Default])=0 then begin
         lgs:=lgsGTK_Default;
         AddToStyleWindow:=false;
         StyleObject^.Widget := nil;
@@ -8223,6 +8229,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.364  2005/06/22 23:04:45  mattias
+  implemented default height for gtk TStatusBar and set TStatusBar.AutoSize to true
+
   Revision 1.363  2005/06/20 09:07:09  mattias
   gtk2 intf only showing one grip for last statusbar panel  from Andrew Haines
 

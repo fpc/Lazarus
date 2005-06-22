@@ -3418,7 +3418,7 @@ end;
   by the LCL autosizing algorithms as default size. Only positive values are
   valid. Negative or 0 are treated as undefined and the LCL uses other sizes
   instead.
-  If not Raw then then values be be adjusted by the constraints and undefined
+  If not Raw then the values will be adjusted by the constraints and undefined
   values will be replaced by the current width and height.
   TWinControl overrides this and asks the interface for theme dependent values.
   See TWinControl.GetPreferredSize for more information.
@@ -3536,6 +3536,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.259  2005/06/22 23:04:44  mattias
+  implemented default height for gtk TStatusBar and set TStatusBar.AutoSize to true
+
   Revision 1.258  2005/06/02 12:11:54  micha
   need to recreate form window when changing border flags
   implement lock-flag when destroying handle, do not focus control that is destroying handles
