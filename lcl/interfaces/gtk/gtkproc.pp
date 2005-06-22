@@ -1105,7 +1105,7 @@ var
   current_desktop: pguint;
 begin
   Result := -1;
-  xdisplay := XOpenDisplay(nil);
+  xdisplay := gdk_display;
   xscreen := XDefaultScreenOfDisplay(xdisplay);
   xwindow := XRootWindowOfScreen(xscreen);
 
@@ -1119,7 +1119,6 @@ begin
     Result := current_desktop[0];
     XFree (current_desktop);
   end;
-  XCloseDisplay(xdisplay);
 end;
 
 
