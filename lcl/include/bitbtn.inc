@@ -29,7 +29,7 @@ begin
   FButtonGlyph := TButtonGlyph.Create;
   FButtonGlyph.OnChange := @GlyphChanged;
   Align := alNone;
-  SetInitialBounds(0,0,75,25);
+  SetInitialBounds(0,0,75,35);
   RealizeKind;
 end;
 
