@@ -388,7 +388,7 @@ var
 begin
   for i:=0 to Count-1 do begin
     Result:=Items[i];
-    if AnsiCompareText(Result.ComponentClass.ClassName,CompClassName)=0 then
+    if CompareText(Result.ComponentClass.ClassName,CompClassName)=0 then
       exit;
   end;
   Result:=nil;
@@ -581,6 +581,8 @@ begin
     inc(InsertIndex);
   FItems.Insert(InsertIndex,Result);
   Result.FPalette:=Self;
+  if CompareText(NewPageName,'Hidden')=0 then
+    Result.Visible:=false;
 end;
 
 function TBaseComponentPalette.FindComponent(const CompClassName: string

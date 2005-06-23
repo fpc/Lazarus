@@ -1238,7 +1238,7 @@ procedure Register;
 begin
   RegisterComponents('Standard',[TLabel,TEdit,TMemo,TToggleBox,TCheckBox,
        TRadioButton,TListBox,TComboBox,TScrollBar,TGroupBox]);
-  RegisterComponents('',[TStaticText]);
+  RegisterComponents('Hidden',[TStaticText]);
 end;
 
 
@@ -1273,6 +1273,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.211  2005/06/23 18:48:54  mattias
+  fixed registering TStaticText
+
   Revision 1.210  2005/06/19 10:16:27  mattias
   hid TStaticText - it is obsolete
 

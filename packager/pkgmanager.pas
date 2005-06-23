@@ -2163,9 +2163,6 @@ procedure TPkgManager.AddProjectDependency(AProject: TProject;
 var
   NewDependency: TPkgDependency;
 begin
-  {$IFDEF DisablePkgs}
-  exit;
-  {$ENDIF}
   // check if the dependency is already there
   if FindDependencyByNameInList(AProject.FirstRequiredDependency,pdlRequires,
     APackage.Name)<>nil
@@ -2193,9 +2190,6 @@ procedure TPkgManager.AddProjectRegCompDependency(AProject: TProject;
 var
   PkgFile: TPkgFile;
 begin
-  {$IFDEF DisablePkgs}
-  exit;
-  {$ENDIF}
   if not (ARegisteredComponent is TPkgComponent) then exit;
   PkgFile:=TPkgComponent(ARegisteredComponent).PkgFile;
   if (PkgFile=nil) or (PkgFile.LazPackage=nil) then exit;

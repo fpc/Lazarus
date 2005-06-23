@@ -1079,9 +1079,6 @@ begin
     Name:='WithStaticPackagesCheckBox';
     Parent:=Self;
     Caption:=lisLazBuildWithStaticPackages;
-    {$IFDEF DisablePkgs}
-    Visible:=false;
-    {$ENDIF}
   end;
 
   RestartAfterBuildCheckBox:=TCheckBox.Create(Self);

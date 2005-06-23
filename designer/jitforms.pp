@@ -1319,11 +1319,7 @@ begin
   fCurReadChildClass:=ComponentClass;
   FCurUnknownClass:=FindClassName;
   if ComponentClass=nil then begin
-    {$IFDEF DisablePkgs}
-    RegComp:=FRegCompList.FindComponentClassByName(FindClassName);
-    {$ELSE}
     RegComp:=IDEComponentPalette.FindComponent(FindClassName);
-    {$ENDIF}
     if RegComp<>nil then begin
       //writeln('[TJITComponentList.ReaderFindComponentClass] '''+FindClassName
       //   +''' is registered');

@@ -62,11 +62,7 @@ uses
   // IDE
   LazConf, LazarusIDEStrConsts, SrcEditorIntf,
   ProjectDefs, Project, PublishModule, BuildLazDialog, Compiler, LazIDEIntf,
-  {$IFDEF DisablePkgs}
-  CompReg, IDEComp,
-  {$ELSE}
   ComponentReg,
-  {$ENDIF}
   TransferMacros, ObjectInspector, PropEdits, OutputFilter, IDEDefs, MsgView,
   EnvironmentOpts, EditorOptions, CompilerOptions, KeyMapping, IDEProcs,
   Debugger, IDEOptionDefs, CodeToolsDefines, Splash, Designer,

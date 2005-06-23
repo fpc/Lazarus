@@ -815,6 +815,7 @@ begin
     if AbortRegistration then exit;
     NewPkgComponent:=
       FRegistrationPackage.AddComponent(FRegistrationFile,Page,CurComponent);
+    //debugln('TLazPackageGraph.RegisterComponentsHandler Page="',Page,'" CurComponent=',CurComponent.ClassName,' FRegistrationFile=',FRegistrationFile.Filename);
     IDEComponentPalette.AddComponent(NewPkgComponent);
   end;
 end;

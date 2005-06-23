@@ -988,10 +988,7 @@ function RegExprSubExpressions (const ARegExpr : string;
 
 implementation
 
-{$IFDEF SYN_LAZARUS}
-uses
-  LCLIntf;
-{$ELSE}
+{$IFNDEF SYN_LAZARUS}
 {$IFNDEF unix} //js 07-04-2002 only use windows in non-CLX-envirolment -- SYN_CLX doesn't work, why?
 uses
   Windows; // CharUpper/Lower
@@ -1291,9 +1288,9 @@ begin
   {$ENDIF}
    begin
     {$IFDEF SYN_LAZARUS}
-    Result := REChar (CharUpper (Ch));
+    Result := REChar (UpCase (Ch));
     if Result = Ch
-     then Result := REChar (CharLower (Ch));
+     then Result := REChar (UpCase (Ch));
     {$ELSE}
     {$IFNDEF Unix} //js 07-04-2002 no use of windows api in clx-version!
     Result := REChar (CharUpper (pointer (Ch)));

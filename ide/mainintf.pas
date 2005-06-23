@@ -68,11 +68,7 @@ uses
   LazConf, LazarusIDEStrConsts, MacroIntf,
   ProjectIntf, ProjectDefs, Project, PublishModule, BuildLazDialog, Compiler,
   LazIDEIntf,
-  {$IFDEF DisablePkgs}
-  CompReg, IDEComp,
-  {$ELSE}
   ComponentReg,
-  {$ENDIF}
   TransferMacros, PropEdits, OutputFilter, IDEDefs, MsgView,
   EnvironmentOpts, EditorOptions, CompilerOptions, KeyMapping, IDEProcs,
   IDEOptionDefs, CodeToolsDefines, SrcEditorIntf;
