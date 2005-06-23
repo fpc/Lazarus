@@ -2894,7 +2894,7 @@ var
   KeySymCharLen: Integer;
   XKeyEvent: TXKeyEvent;
 begin
-  Display := X11Display;
+  Display := gdk_display;
   if Display = nil then Exit;
   
   // Init dummy XEvent to retrieve the char corresponding to a key
@@ -8108,7 +8108,7 @@ begin
   ScreenFonts.Clear;
   {$IFDEF GTK1}
   {$IFDEF UNIX}
-  theFonts := XListFonts(X11Display,PChar('-*-*-*-*-*-*-*-*-*-*-*-*-*-*'), 10000, @N);
+  theFonts := XListFonts(gdk_display,PChar('-*-*-*-*-*-*-*-*-*-*-*-*-*-*'), 10000, @N);
   debugln('FillScreenFonts N=',dbgs(N));
   for I := 0 to N - 1 do
     if theFonts[I] <> nil then begin
@@ -8229,6 +8229,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.365  2005/06/23 21:24:40  marc
+  + added gdk_display function for gtk2
+  - replaced X11Display with gdk_display
+
   Revision 1.364  2005/06/22 23:04:45  mattias
   implemented default height for gtk TStatusBar and set TStatusBar.AutoSize to true
 

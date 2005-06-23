@@ -41,8 +41,6 @@ uses
       baseunix, unix,
     {$endif}
     {$IFDEF GTK1}
-      // MWE:
-      // TODO: check if the new keyboard routines require X on GTK2
       X, XLib, XUtil, XAtom, //Font retrieval and Keyboard handling
     {$ENDIF not Gtk1}
   {$ENDIF}
@@ -98,6 +96,15 @@ const
   function  GTK_TYPE_VSCROLLBAR: TGTKType; cdecl; external gtkdll name 'gtk_vscrollbar_get_type';
   function  GTK_TYPE_LIST_ITEM: TGTKType; cdecl; external gtkdll name 'gtk_list_item_get_type';
 {$ENDIF}
+
+// missing gtk2 functions/vars
+{$IFDEF GTK2}
+{$IFDEF UNIX}
+var
+  gdk_display: PDisplay; external gdkdll name 'gdk_display';
+{$ENDIF UNIX}
+{$ENDIF GTK2}
+
 
 procedure laz_gdk_gc_set_dashes(gc:PGdkGC; dash_offset:gint;
   dashlist:Pgint8; n:gint); cdecl; external gdkdll name 'gdk_gc_set_dashes';
@@ -485,14 +492,6 @@ procedure CaptureMouseForWidget(Widget: PGtkWidget; Owner: TMouseCaptureType);
 function GetDefaultMouseCaptureWidget(Widget: PGtkWidget): PGtkWidget;
 procedure ReleaseMouseCapture;
 procedure UpdateMouseCaptureControl;
-
-{$IFNDEF GTK2_2}
-{$IFNDEF win32}
-// MWE:
-// TODO: check if the new keyboard routines require X on GTK2
-function X11Display: Pointer;
-{$ENDIF}
-{$ENDIF}
 
 // designing
 type
@@ -936,12 +935,6 @@ var
   LCLHandledKeyEvents: TList; // list of TLCLHandledKeyEvent
   LCLHandledKeyAfterEvents: TList; // list of TLCLHandledKeyEvent
 
-{$IFDEF UNIX}
-{$IFNDEF GTK2_2}
-  MX11Display: Pointer;
-{$ENDIF}
-{$ENDIF}
-
 var
   GdkTrapIsSet: Boolean;
   GdkTrapCalls: Integer;
@@ -974,20 +967,6 @@ begin
     gtk_widget_set_rc_style(AWidget);
   end;
 end;
-
-{$IFDEF UNIX}
-{$IFNDEF GTK2_2}
-// MWE:
-// TODO: check if the new keyboard routines require X on GTK2
-function X11Display: Pointer;
-begin
-  if MX11Display = nil
-  then MX11Display := XOpenDisplay(GDK_GET_DISPLAY);
-  Result := MX11Display;
-end;
-{$ENDIF}
-{$ENDIF}
-
 
 {$I gtkproc.inc}
 {$I gtkcallback.inc}
@@ -1037,11 +1016,6 @@ var
 {$endif}
 {$endif}
 begin
-{$IFDEF UNIX}
-{$IFNDEF GTK2_2}
-  MX11Display := nil;
-{$ENDIF}
-{$ENDIF}
 
   FillChar(MCharToVK, SizeOf(MCharToVK), $FF);
   FillChar(MKeyCodeToVK, SizeOf(MKeyCodeToVK), $FF);
@@ -1072,15 +1046,6 @@ end;
 
 procedure DoneGTKProc;
 begin
-  {$IFDEF UNIX}
-  {$IFNDEF GTK2_2}
-  if MX11Display <> nil
-  then XCloseDisplay(MX11Display);
-
-  MX11Display := nil;
-  {$ENDIF}
-  {$ENDIF}
-
   DoneKeyboardTables;
 
 {$ifdef USE_SYNCHRONIZE}

@@ -5293,6 +5293,7 @@ begin
   csPanel:
     begin
       // create a fixed widget in a horizontal box
+      // a fixed on a fixed has no z-order
       p := gtk_hbox_new(false,0);
       TempWidget := gtk_fixed_new();
       gtk_container_add(GTK_CONTAINER(P), TempWidget);
@@ -5408,12 +5409,18 @@ begin
     begin
       Assert(Sender is TScrollBox);
 
-      P := gtk_frame_new(nil);
-      gtk_frame_set_shadow_type(pGtkFrame(P),GTK_SHADOW_IN);
+      p := gtk_frame_new(nil);
+      gtk_frame_set_shadow_type(pGtkFrame(p),GTK_SHADOW_IN);
 
       TempWidget := gtk_scrolled_window_new(nil,nil);
-      gtk_container_add(PGTKContainer(P), TempWidget);
+      gtk_container_add(PGTKContainer(p), TempWidget);
       gtk_widget_show(TempWidget);
+
+      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(TempWidget)^.hscrollbar, GTK_CAN_FOCUS);
+      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(TempWidget)^.vscrollbar, GTK_CAN_FOCUS);
+      gtk_scrolled_window_set_policy(PGtkScrolledWindow(TempWidget),
+                                     GTK_POLICY_NEVER,
+                                     GTK_POLICY_NEVER);
 
       gtk_object_set_data(P,odnScrollArea, TempWidget);
 
@@ -5423,11 +5430,6 @@ begin
       SetFixedWidget(p, TempWidget2);
       SetMainWidget(p, TempWidget2);
 
-      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(TempWidget)^.hscrollbar, GTK_CAN_FOCUS);
-      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(TempWidget)^.vscrollbar, GTK_CAN_FOCUS);
-      gtk_scrolled_window_set_policy(PGtkScrolledWindow(TempWidget),
-                                     GTK_POLICY_NEVER,
-                                     GTK_POLICY_NEVER);
     end;
 
   end; //end case
@@ -7004,6 +7006,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.647  2005/06/23 21:24:40  marc
+  + added gdk_display function for gtk2
+  - replaced X11Display with gdk_display
+
   Revision 1.646  2005/04/25 07:55:33  mattias
   backtraces for gtk gdi objects  -dTraceGdiCalls  from Jesus
 
