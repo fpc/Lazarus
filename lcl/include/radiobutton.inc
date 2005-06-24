@@ -80,38 +80,14 @@ begin
     Result := inherited;
 end;
 
-{$IFNDEF EnablePreferredSize}
-procedure TRadioButton.DoAutoSize;
-var
-  R : TRect;
-  DC : hDC;
-begin
-  If Autosizing or (not AutoSize) then
-    Exit;
-  if (not HandleAllocated) or ([csLoading,csDestroying]*ComponentState<>[]) then
-    exit;
-  AutoSizing := True;
-  DC := GetDC(Handle);
-  Try
-    R := Rect(0,0, Width, Height);
-    DrawText(DC, PChar(Caption), Length(Caption), R,
-      DT_CalcRect or DT_NOPrefix);
-    If R.Right > 25 then
-      Width := R.Right + 25;
-    If R.Bottom > 25 then
-      Height := R.Bottom + 2;
-  Finally
-    ReleaseDC(Handle, DC);
-    AutoSizing := False;
-  end;
-end;
-{$ENDIF}
-
 // included by stdctrls.pp
 
 
 {
   $Log$
+  Revision 1.23  2005/06/24 14:03:33  mattias
+  added some anchorside autosizing, activated new generic autosizing, removed old special DoAutoSize methods
+
   Revision 1.22  2005/04/27 12:37:28  micha
   implement/fix button/label shortcut accelchar handling
 

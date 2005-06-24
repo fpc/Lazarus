@@ -130,6 +130,7 @@ var
     ChildAroundSpace: TRect;
     AnchorSideCacheValid: array[TAnchorKind] of boolean;
     AnchorSideCache: array[TAnchorKind] of integer;
+    CurAnchors: TAnchors;
 
     function ConstraintWidth(NewWidth: integer): integer;
     begin
@@ -157,6 +158,8 @@ var
     
     function GetAnchorSidePosition(Kind: TAnchorKind;
       DefaultPosition: Integer): integer;
+    // calculates the position in pixels of a side due to anchors
+    // For example: if akLeft is set, it returns the coordinate for the left anchor
     var
       CurAnchorSide: TAnchorSide;
       ReferenceControl: TControl;
@@ -228,6 +231,8 @@ var
     }
     if (AAlign = alNone) or (Control.Anchors <> AnchorAlign[AAlign]) then
     begin
+      // at least one side is anchored
+    
       // Get the base bounds. The base bounds are the user defined bounds
       // without automatic aligning and/or anchoring
 
@@ -256,15 +261,18 @@ var
         '');
       {$ENDIF}
 
-      if akLeft in Control.Anchors then begin
+      CurAnchors:=Control.Anchors+AnchorAlign[AAlign];
+      if akLeft in CurAnchors then begin
         // keep distance to left side of parent or another sibling
         NewLeft:=GetAnchorSidePosition(akLeft,CurBaseBounds.Left);
-        if akRight in Control.Anchors then begin
+        if akRight in CurAnchors then begin
           // keep distance to right side of parent or another sibling
           // -> change the width
           NewRight:=Control.Parent.ClientWidth
                     -(ParentBaseClientSize.X-CurBaseBounds.Right);
-          NewRight:=GetAnchorSidePosition(akRight,NewRight);
+          if (not (akRight in AnchorAlign[AAlign]))
+          and (akRight in Anchors) then
+            NewRight:=GetAnchorSidePosition(akRight,NewRight);
           NewWidth:=ConstraintWidth(NewRight-NewLeft);
         end else begin
           // do not anchor to the right
@@ -272,12 +280,14 @@ var
         end;
       end else begin
         // do not anchor to the left
-        if akRight in Control.Anchors then begin
+        if akRight in CurAnchors then begin
           // keep distance to right side of parent
           // and keep new width
           NewRight:=Control.Parent.ClientWidth
                     -(ParentBaseClientSize.X-CurBaseBounds.Right);
-          NewRight:=GetAnchorSidePosition(akRight,NewRight);
+          if (not (akRight in AnchorAlign[AAlign]))
+          and (akRight in Anchors) then
+            NewRight:=GetAnchorSidePosition(akRight,NewRight);
           NewLeft:=NewRight-NewWidth;
         end else begin
           // do not anchor to the right
@@ -286,15 +296,17 @@ var
         end;
       end;
 
-      if akTop in Control.Anchors then begin
+      if akTop in CurAnchors then begin
         // keep distance to top side of parent
         NewTop:=GetAnchorSidePosition(akTop,CurBaseBounds.Top);
-        if akBottom in Control.Anchors then begin
+        if akBottom in CurAnchors then begin
           // keep distance to bottom side of parent
           // -> change the height
           NewBottom:=Control.Parent.ClientHeight
                     -(ParentBaseClientSize.Y-CurBaseBounds.Bottom);
-          NewBottom:=GetAnchorSidePosition(akBottom,NewBottom);
+          if (not (akBottom in AnchorAlign[AAlign]))
+          and (akBottom in Anchors) then
+            NewBottom:=GetAnchorSidePosition(akBottom,NewBottom);
           NewHeight:=ConstraintHeight(NewBottom-NewTop);
         end else begin
           // do not anchor to the bottom
@@ -302,12 +314,14 @@ var
         end;
       end else begin
         // do not anchor to the top
-        if akBottom in Control.Anchors then begin
+        if akBottom in CurAnchors then begin
           // keep distance to bottom side of parent
           // and keep new height
           NewBottom:=Control.Parent.ClientHeight
                     -(ParentBaseClientSize.Y-CurBaseBounds.Bottom);
-          NewBottom:=GetAnchorSidePosition(akBottom,NewBottom);
+          if (not (akBottom in AnchorAlign[AAlign]))
+          and (akBottom in Anchors) then
+            NewBottom:=GetAnchorSidePosition(akBottom,NewBottom);
           NewTop:=NewBottom-NewHeight;
         end else begin
           // do not anchor to the bottom
@@ -357,7 +371,7 @@ var
                         ChildAroundSpace);
 
       {$IFDEF CHECK_POSITION}
-      if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
+      if CompareText(Control.ClassName,'TScrollBar')=0 then
         DebugLn(' Before aligning  akRight in AnchorAlign[AAlign]=',akRight in AnchorAlign[AAlign],
                 ' akLeft in Control.Anchors=',akLeft in Control.Anchors,
                 ' ARect=',ARect.Left,',',ARect.Top,',',ARect.Right,',',ARect.Bottom,
@@ -661,11 +675,17 @@ begin
   try
     // autosize control to preferred size
     GetPreferredSize(PreferredWidth,PreferredHeight,false);
+    if PreferredWidth<=0 then
+      PreferredWidth:=Constraints.MinMaxWidth(Width);
+    if PreferredHeight<=0 then
+      PreferredHeight:=Constraints.MinMaxHeight(Height);
 
-    // move childs tight to left and top
+    // move childs tight to left and top (so no space left and above childs)
     If ControlCount > 0 then begin
+      // get current bounds of all childs
       GetChildBounds(ChildBounds,true);
       if (ChildBounds.Left<>0) or (ChildBounds.Top<>0) then begin
+        // move all childs to left and top
         For I := 0 to ControlCount - 1 do begin
           AControl:=Controls[I];
           If AControl.Visible then begin
@@ -683,9 +703,7 @@ begin
     {$ENDIF}
     if (PreferredWidth<>Width) or (PreferredHeight<>Height) then begin
       //debugln('DoAutoSize Resize ',DbgSName(Self),' W=',dbgs(PreferredWidth),' H=',dbgs(PreferredHeight));
-      {$IFDEF EnablePreferredSize}
       SetBoundsKeepBase(Left,Top,PreferredWidth,PreferredHeight,true);
-      {$ENDIF}
     end;
   finally
     AutoSizing := False;
@@ -3790,12 +3808,10 @@ begin
   end;
 
   // size this control
-  {$IFDEF EnablePreferredSize}
   AdjustSize;
   if FControls<>nil then
     for i:=0 to FControls.Count-1 do
       TControl(FControls[i]).DoAutoSize;
-  {$ENDIF}
   // realign childs
   ReAlign;
 
@@ -4491,6 +4507,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.326  2005/06/24 14:03:33  mattias
+  added some anchorside autosizing, activated new generic autosizing, removed old special DoAutoSize methods
+
   Revision 1.325  2005/06/02 12:11:54  micha
   need to recreate form window when changing border flags
   implement lock-flag when destroying handle, do not focus control that is destroying handles

@@ -779,9 +779,6 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetFocusControl(Val: TWinControl); virtual;
     procedure SetShowAccelChar(Val: boolean); virtual;
-    {$IFNDEF EnablePreferredSize}
-    procedure DoAutoSize; override;
-    {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
@@ -903,10 +900,6 @@ type
 {$IFNDef NewCheckBox}
   // Normal checkbox
   TCheckBox = class(TCustomCheckBox)
-  protected
-    {$IFNDEF EnablePreferredSize}
-    procedure DoAutoSize; override;
-    {$ENDIF}
   published
     property Action;
     property Align;
@@ -1073,9 +1066,6 @@ type
   protected
     function DialogChar(var Message: TLMKey): boolean; override;
     procedure RealSetText(const Value: TCaption); override;
-    {$IFNDEF EnablePreferredSize}
-    procedure DoAutoSize; override;
-    {$ENDIF}
   public
     constructor Create(TheOwner: TComponent); override;
   published
@@ -1273,6 +1263,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.212  2005/06/24 14:03:33  mattias
+  added some anchorside autosizing, activated new generic autosizing, removed old special DoAutoSize methods
+
   Revision 1.211  2005/06/23 18:48:54  mattias
   fixed registering TStaticText
 

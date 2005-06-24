@@ -16,32 +16,6 @@
 
 {$IFNDef NewCheckBox}
 
-{$IFNDEF EnablePreferredSize}
-procedure TCheckbox.DoAutoSize;
-var
-  R : TRect;
-  DC : hDC;
-begin
-  If AutoSizing or not AutoSize then
-    Exit;
-  if (not HandleAllocated) or ([csLoading,csDestroying]*ComponentState<>[]) then
-    exit;
-  AutoSizing := True;
-  DC := GetDC(Handle);
-  Try
-    R := Rect(0,0, Width, Height);
-    DrawText(DC, PChar(Caption), Length(Caption), R,
-      DT_CalcRect);
-    If R.Right > Width then
-      Width := R.Right + 25;
-    If R.Bottom > Height then
-      Height := R.Bottom + 2;
-  Finally
-    ReleaseDC(0, DC);
-    AutoSizing := False;
-  end;
-end;
-{$ENDIF}
 
 {$ENDIF}
 
@@ -471,6 +445,9 @@ end;
 
 {
   $Log$
+  Revision 1.17  2005/06/24 14:03:33  mattias
+  added some anchorside autosizing, activated new generic autosizing, removed old special DoAutoSize methods
+
   Revision 1.16  2004/11/03 14:18:35  mattias
   implemented preferred size for controls for theme depending AutoSizing
 

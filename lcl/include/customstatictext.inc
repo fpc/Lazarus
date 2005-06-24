@@ -110,35 +110,6 @@ begin
   end;
 end;
 
-{$IFNDEF EnablePreferredSize}
-procedure TCustomStaticText.DoAutoSize;
-var
-  R: TRect;
-  DC: hDC;
-begin
-  If AutoSizing or (not AutoSize) or (Caption='') then
-    Exit;
-  if (not HandleAllocated) or ([csLoading,csDestroying]*ComponentState<>[]) then
-    exit;
-  AutoSizing := True;
-  DC := GetDC(Handle);
-  Try
-    R := Rect(0,0, Width, Height);
-    If BorderStyle <> sbsNone then
-      InflateRect(R, -2, -2);
-    DrawText(DC, PChar(Caption + 'W'), Length(Caption) + 1, R,
-      DT_CalcRect or DT_NoPrefix or DT_Internal);
-    If BorderStyle <> sbsNone then
-      InflateRect(R, 2, 2);
-    Width := R.Right;
-    Height := R.Bottom;
-  Finally
-    ReleaseDC(Handle, DC);
-    AutoSizing := False;
-  end;
-end;
-{$ENDIF}
-
 Procedure TCustomStaticText.SetStaticBorderStyle(Value : TStaticBorderStyle);
 
   procedure RaiseNotImplemented;
@@ -173,6 +144,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.14  2005/06/24 14:03:33  mattias
+  added some anchorside autosizing, activated new generic autosizing, removed old special DoAutoSize methods
+
   Revision 1.13  2005/01/26 17:36:02  mattias
   added error message for TStaticText.BorderStyle not implemented during designing
 

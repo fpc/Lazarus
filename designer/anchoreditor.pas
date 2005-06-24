@@ -492,6 +492,18 @@ var
   Sibling: TControl;
   SelectedControls: TList;
   OldText: String;
+  
+  procedure AddSibling(AControl: TControl);
+  var
+    NewControlStr: String;
+  begin
+    if AControl.Name='' then exit;
+    NewControlStr:=ControlToStr(AControl);
+    if sl.IndexOf(NewControlStr)>=0 then exit;
+    //debugln('TAnchorDesigner.FillComboBoxWithSiblings.AddSibling ',NewControlStr);
+    sl.Add(NewControlStr);
+  end;
+  
 begin
   sl:=TStringList.Create;
   sl.Add(AnchorDesignerNoSiblingText);
@@ -500,18 +512,20 @@ begin
     for i:=0 to SelectedControls.Count-1 do begin
       if TObject(SelectedControls[i]) is TControl then begin
         CurControl:=TControl(SelectedControls[i]);
-        if CurControl.Parent<>nil then begin
-          sl.Add(ControlToStr(CurControl.Parent));
+        if (CurControl.Parent<>nil) then begin
+          AddSibling(CurControl.Parent);
           for j:=0 to CurControl.Parent.ControlCount-1 do begin
             Sibling:=CurControl.Parent.Controls[j];
-            if Sibling<>CurControl then
-              sl.Add(ControlToStr(Sibling));
+            if (Sibling<>CurControl) then
+              AddSibling(Sibling);
           end;
         end;
         break;
       end;
     end;
   end;
+  sl.Sort;
+  //debugln('TAnchorDesigner.FillComboBoxWithSiblings ',sl.Text);
   OldText:=AComboBox.Text;
   AComboBox.Items.Assign(sl);
   AComboBox.Text:=OldText;

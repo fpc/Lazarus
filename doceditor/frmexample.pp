@@ -20,7 +20,7 @@
 
   Author: Michael Van Canneyt
 }
-unit frmExample;
+unit FrmExample;
 
 {$mode objfpc}{$H+}
 

@@ -285,49 +285,49 @@ type
 
   { Editor Options form }
   TEditorOptionsForm = class(TForm)
-    MainNoteBook:TNoteBook;
+    MainNoteBook: TNoteBook;
     ImageList: TImageList;
 
     // general options
-    EditorOptionsGroupBox:TGroupBox;
-    AltSetsColumnModeCheckBox:TCheckBox;
-    AutoIndentCheckBox:TCheckBox;
+    EditorOptionsGroupBox: TGroupBox;
+    AltSetsColumnModeCheckBox: TCheckBox;
+    AutoIndentCheckBox: TCheckBox;
     BracketHighlightCheckBox: TCheckBox;
-    DragDropEditingCheckBox:TCheckBox;
-    DropFilesCheckBox:TCheckBox;
-    HalfPageScrollCheckBox:TCheckBox;
-    KeepCaretXCheckBox:TCheckBox;
-    PersistentCaretCheckBox:TCheckBox;
-    RightMouseMovesCursorCheckBox:TCheckBox;
-    ScrollByOneLessCheckBox:TCheckBox;
-    ScrollPastEofCheckBox:TCheckBox;
-    ScrollPastEolCheckBox:TCheckBox;
-    ShowCloseBtnInNoteBookCheckBox:TCheckBox;
-    ShowScrollHintCheckBox:TCheckBox;
-    SmartTabsCheckBox:TCheckBox;
-    TabsToSpacesCheckBox:TCheckBox;
-    TabIndentCheckBox:TCheckBox;
-    TrimTrailingSpacesCheckBox:TCheckBox;
-    UndoAfterSaveCheckBox:TCheckBox;
-    DoubleClickLineCheckBox:TCheckBox;
-    FindTextAtCursorCheckBox:TCheckBox;
-    UseSyntaxHighlightCheckBox:TCheckBox;
-    CopyWordAtCursorOnCopyNoneCheckBox:TCheckBox;
-    EnhanceHomeKeyCheckBox:TCheckBox;
-    ShowGutterHintsCheckBox:TCheckBox;
+    DragDropEditingCheckBox: TCheckBox;
+    DropFilesCheckBox: TCheckBox;
+    HalfPageScrollCheckBox: TCheckBox;
+    KeepCaretXCheckBox: TCheckBox;
+    PersistentCaretCheckBox: TCheckBox;
+    RightMouseMovesCursorCheckBox: TCheckBox;
+    ScrollByOneLessCheckBox: TCheckBox;
+    ScrollPastEofCheckBox: TCheckBox;
+    ScrollPastEolCheckBox: TCheckBox;
+    ShowCloseBtnInNoteBookCheckBox: TCheckBox;
+    ShowScrollHintCheckBox: TCheckBox;
+    SmartTabsCheckBox: TCheckBox;
+    TabsToSpacesCheckBox: TCheckBox;
+    TabIndentCheckBox: TCheckBox;
+    TrimTrailingSpacesCheckBox: TCheckBox;
+    UndoAfterSaveCheckBox: TCheckBox;
+    DoubleClickLineCheckBox: TCheckBox;
+    FindTextAtCursorCheckBox: TCheckBox;
+    UseSyntaxHighlightCheckBox: TCheckBox;
+    CopyWordAtCursorOnCopyNoneCheckBox: TCheckBox;
+    EnhanceHomeKeyCheckBox: TCheckBox;
+    ShowGutterHintsCheckBox: TCheckBox;
     MouseLinksCheckBox: TCheckBox;
-    BlockIndentComboBox:TComboBox;
-    BlockIndentLabel:TLabel;
-    UndoLimitComboBox:TComboBox;
-    UndoLimitLabel:TLabel;
-    TabWidthsComboBox:TComboBox;
-    TabWidthsLabel:TLabel;
+    BlockIndentComboBox: TComboBox;
+    BlockIndentLabel: TLabel;
+    UndoLimitComboBox: TComboBox;
+    UndoLimitLabel: TLabel;
+    TabWidthsComboBox: TComboBox;
+    TabWidthsLabel: TLabel;
 
     // Display options
     MarginAndGutterGroupBox:TGroupBox;
-    VisibleRightMarginCheckBox:TCheckBox;
-    VisibleGutterCheckBox:TCheckBox;
-    ShowLineNumbersCheckBox:TCheckBox;
+    VisibleRightMarginCheckBox: TCheckBox;
+    VisibleGutterCheckBox: TCheckBox;
+    ShowLineNumbersCheckBox: TCheckBox;
     GutterColorButton:TColorButton;
     GutterColorLabel:TLabel;
     GutterWidthComboBox:TComboBox;
@@ -362,25 +362,25 @@ type
     ColorElementLabel:TLabel;
     ColorElementListBox:TListBox;
     TextAttributesGroupBox:TGroupBox;
-    TextBoldCheckBox:TCheckBox;
-    TextItalicCheckBox:TCheckBox;
-    TextUnderlineCheckBox:TCheckBox;
+    TextBoldCheckBox: TCheckBox;
+    TextItalicCheckBox: TCheckBox;
+    TextUnderlineCheckBox: TCheckBox;
     ForeGroundGroupBox:TGroupBox;
     ForeGroundColorButton:TColorButton;
-    ForeGroundUseDefaultCheckBox:TCheckBox;
+    ForeGroundUseDefaultCheckBox: TCheckBox;
     BackGroundGroupBox:TGroupBox;
     BackGroundColorButton:TColorButton;
-    BackGroundUseDefaultCheckBox:TCheckBox;
+    BackGroundUseDefaultCheckBox: TCheckBox;
     SetAttributeToDefaultButton:TButton;
     SetAllAttributesToDefaultButton:TButton;
     ColorPreview:TPreviewEditor;
 
     // Code Tools options
     AutomaticFeaturesGroupBox:TGroupBox;
-    AutoIdentifierCompletionCheckBox:TCheckBox;
-    AutoCodeParametersCheckBox:TCheckBox;
-    AutoToolTipExprEvalCheckBox:TCheckBox;
-    AutoToolTipSymbToolsCheckBox:TCheckBox;
+    AutoIdentifierCompletionCheckBox: TCheckBox;
+    AutoCodeParametersCheckBox: TCheckBox;
+    AutoToolTipExprEvalCheckBox: TCheckBox;
+    AutoToolTipSymbToolsCheckBox: TCheckBox;
     AutoDelayLabel:TLabel;
     AutoDelayTrackBar:TTrackBar;
     AutoDelayMinLabel:TLabel;
@@ -2392,7 +2392,7 @@ procedure TEditorOptionsForm.GeneralCheckBoxOnClick(Sender: TObject);
 var a:integer;
   NewColor:TColor;
 
-  procedure SetOption(ACheckBox:TCheckBox;AnOption:TSynEditorOption);
+  procedure SetOption(ACheckBox: TCheckBox;AnOption:TSynEditorOption);
   var a:integer;
   begin
     if Sender=ACheckBox then
@@ -3700,9 +3700,6 @@ begin
   with BlockIndentComboBox do begin
     Name:='BlockIndentComboBox';
     Parent:=MainNoteBook.Page[0];
-    Top:=EditorOptionsGroupBox.Top+EditorOptionsGroupBox.Height+8;
-    Left:=120;
-    Width:=70;
     Items.BeginUpdate;
     Items.Add('1');
     Items.Add('2');
@@ -3719,19 +3716,14 @@ begin
   with BlockIndentLabel do begin
     Name:='BlockIndentLabel';
     Parent:=MainNoteBook.Page[0];
-    Top:=BlockIndentComboBox.Top+2;
-    Left:=EditorOptionsGroupBox.Left+2;
-    Width:=BlockIndentComboBox.Left-2-Left;
     Caption:=dlgBlockIndent;
+    AnchorVerticalCenterTo(BlockIndentComboBox);
   end;
 
   UndoLimitComboBox:=TComboBox.Create(Self);
   with UndoLimitComboBox do begin
     Name:='UndoLimitComboBox';
     Parent:=MainNoteBook.Page[0];
-    Top:=BlockIndentComboBox.Top+BlockIndentComboBox.Height+5;
-    Left:=BlockIndentComboBox.Left;
-    Width:=70;
     Items.BeginUpdate;
     Items.Add('32767');
     Items.Add('4096');
@@ -3747,19 +3739,14 @@ begin
   with UndoLimitLabel do begin
     Name:='UndoLimitLabel';
     Parent:=MainNoteBook.Page[0];
-    Top:=UndoLimitComboBox.Top+2;
-    Left:=EditorOptionsGroupBox.Left+2;
-    Width:=UndoLimitComboBox.Left-Left-2;
     Caption:=dlgUndoLimit;
+    AnchorVerticalCenterTo(UndoLimitComboBox);
   end;
 
   TabWidthsComboBox:=TComboBox.Create(Self);
   with TabWidthsComboBox do begin
     Name:='TabWidthsComboBox';
     Parent:=MainNoteBook.Page[0];
-    Top:=UndoLimitComboBox.Top+UndoLimitComboBox.Height+5;
-    Left:=BlockIndentComboBox.Left;
-    Width:=70;
     Items.BeginUpdate;
     Items.Add('1');
     Items.Add('2');
@@ -3776,10 +3763,8 @@ begin
   with TabWidthsLabel do begin
     Name:='TabWidthsLabel';
     Parent:=MainNoteBook.Page[0];
-    Top:=TabWidthsComboBox.Top+2;
-    Left:=EditorOptionsGroupBox.Left+2;
-    Width:=TabWidthsComboBox.Left-Left-2;
     Caption:='Tab widths:';
+    AnchorVerticalCenterTo(TabWidthsComboBox);
   end;
 end;
 
@@ -3948,9 +3933,7 @@ begin
   end;
 
   with BlockIndentLabel do begin
-    Top:=BlockIndentComboBox.Top+2;
     Left:=EditorOptionsGroupBox.Left+2;
-    Width:=BlockIndentComboBox.Left-2-Left;
   end;
 
   with TabWidthsComboBox do begin
@@ -3960,30 +3943,25 @@ begin
   end;
 
   with TabWidthsLabel do begin
-    Top:=TabWidthsComboBox.Top+2;
     Left:=EditorOptionsGroupBox.Left+2;
-    Width:=TabWidthsComboBox.Left-Left-2;
   end;
 
   with UndoLimitComboBox do begin
     Top:=BlockIndentComboBox.Top;
-    Left:=BlockIndentComboBox.Left+BlockIndentComboBox.Width+50+70;
+    Left:=BlockIndentComboBox.Left+BlockIndentComboBox.Width+50+100;
     Width:=70;
   end;
 
   with UndoLimitLabel do begin
-    Top:=UndoLimitComboBox.Top+2;
-    Left:=UndoLimitComboBox.Left-70+2;
-    Width:=UndoLimitComboBox.Left-Left-2;
+    Left:=UndoLimitComboBox.Left-100+2;
   end;
 end;
 
 procedure TEditorOptionsForm.SetupDisplayPage;
-var MaxX,MaxY,ChkBoxW:integer;
+var MaxX,MaxY:integer;
 begin
   MaxX:=Width-5;
   MaxY:=375;
-  ChkBoxW:=140;
 
   MarginAndGutterGroupBox:=TGroupBox.Create(Self);
   with MarginAndGutterGroupBox do begin
@@ -3992,7 +3970,7 @@ begin
     Top:=5;
     Left:=5;
     Width:=MaxX-10;
-    Height:=109;
+    Height:=120;
     Caption:=dlgMarginGutter;
   end;
 
@@ -4002,9 +3980,7 @@ begin
     Parent:=MarginAndGutterGroupBox;
     Top:=5;
     Left:=5;
-    Width:=ChkBoxW;
     Caption:=dlgVisibleRightMargin;
-    Height:=23;
     Checked:=EditorOpts.VisibleRightMargin;
     OnClick:=@GeneralCheckBoxOnClick;
     Enabled:=false;
@@ -4014,34 +3990,37 @@ begin
   with VisibleGutterCheckBox do begin
     Name:='VisibleGutterCheckBox';
     Parent:=MarginAndGutterGroupBox;
-    Top:=VisibleRightMarginCheckBox.Top+VisibleRightMarginCheckBox.Height+7;
     Left:=VisibleRightMarginCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=VisibleRightMarginCheckBox.Height;
     Caption:=dlgVisibleGutter;
     Checked:=EditorOpts.VisibleGutter;
     OnClick:=@GeneralCheckBoxOnClick;
+    AnchorToNeighbour(akTop,3,VisibleRightMarginCheckBox);
   end;
 
   ShowLineNumbersCheckBox:=TCheckBox.Create(Self);
   with ShowLineNumbersCheckBox do begin
     Name:='ShowLineNumbersCheckBox';
     Parent:=MarginAndGutterGroupBox;
-    Top:=VisibleGutterCheckBox.Top+VisibleGutterCheckBox.Height+7;
     Left:=VisibleGutterCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=VisibleRightMarginCheckBox.Height;
     Caption:=dlgShowLineNumbers;
     Checked:=EditorOpts.ShowLineNumbers;
     OnClick:=@GeneralCheckBoxOnClick;
+    AnchorToNeighbour(akTop,3,VisibleGutterCheckBox);
+  end;
+
+  RightMarginLabel:=TLabel.Create(Self);
+  with RightMarginLabel do begin
+    Name:='RightMarginLabel';
+    Parent:=MarginAndGutterGroupBox;
+    Top:=2;
+    Left:=180;
+    Caption:=dlgRightMargin;
   end;
 
   RightMarginComboBox:=TComboBox.Create(Self);
   with RightMarginComboBox do begin
     Name:='RightMarginComboBox';
     Parent:=MarginAndGutterGroupBox;
-    Top:=20;
-    Left:=180;
     Width:=70;
     Items.BeginUpdate;
     Items.Add('80');
@@ -4052,49 +4031,45 @@ begin
     OnChange:=@ComboBoxOnChange;
     OnKeyDown:=@ComboBoxOnKeyDown;
     OnExit:=@ComboBoxOnExit;
-  end;
-
-  RightMarginLabel:=TLabel.Create(Self);
-  with RightMarginLabel do begin
-    Name:='RightMarginLabel';
-    Parent:=MarginAndGutterGroupBox;
-    Top:=2;
-    Left:=RightMarginComboBox.Left+2;
-    Width:=150;
-    Caption:=dlgRightMargin;
-  end;
-
-  RightMarginColorButton:=TColorButton.Create(Self);
-  with RightMarginColorButton do begin
-    Name:='RightMarginColorButton';
-    Parent:=MarginAndGutterGroupBox;
-    Top:=RightMarginComboBox.Top+RightMarginComboBox.Height+20;
-    Left:=RightMarginComboBox.Left;
-    Width:=35;
-    Height:=20;
-    BorderWidth:=2;
-    ButtonColor:=EditorOpts.RightMarginColor;
-    OnColorChanged:=@ColorButtonColorChanged;
+    AnchorToNeighbour(akTop,2,RightMarginLabel);
+    AnchorParallel(akLeft,0,RightMarginLabel);
   end;
 
   RightMarginColorLabel:=TLabel.Create(Self);
   with RightMarginColorLabel do begin
     Name:='RightMarginColorLabel';
     Parent:=MarginAndGutterGroupBox;
-    Top:=RightMarginComboBox.Top+RightMarginComboBox.Height;
-    Left:=RightMarginComboBox.Left+2;
-    Width:=150;
     Caption:=dlgRightMarginColor;
+    AnchorToNeighbour(akTop,8,RightMarginComboBox);
+    AnchorParallel(akLeft,0,RightMarginComboBox);
+  end;
+
+  RightMarginColorButton:=TColorButton.Create(Self);
+  with RightMarginColorButton do begin
+    Name:='RightMarginColorButton';
+    Parent:=MarginAndGutterGroupBox;
+    Width:=35;
+    Height:=20;
+    BorderWidth:=2;
+    ButtonColor:=EditorOpts.RightMarginColor;
+    OnColorChanged:=@ColorButtonColorChanged;
+    AnchorToNeighbour(akTop,2,RightMarginColorLabel);
+    AnchorParallel(akLeft,0,RightMarginColorLabel);
+  end;
+
+  GutterWidthLabel:=TLabel.Create(Self);
+  with GutterWidthLabel do begin
+    Name:='GutterWidthLabel';
+    Parent:=MarginAndGutterGroupBox;
+    Caption:=dlgGutterWidth;
+    AnchorParallel(akTop,0,RightMarginLabel);
+    AnchorToNeighbour(akLeft,100,RightMarginComboBox);
   end;
 
   GutterWidthComboBox:=TComboBox.Create(Self);
   with GutterWidthComboBox do begin
     Name:='GutterWidthComboBox';
     Parent:=MarginAndGutterGroupBox;
-    Top:=RightMarginComboBox.Top;
-    Left:=RightMarginComboBox.Left+RightMarginComboBox.Width+80;
-    Width:=RightMarginComboBox.Width;
-    Height:=RightMarginComboBox.Height;
     Items.BeginUpdate;
     Items.Add('40');
     Items.Add('35');
@@ -4106,39 +4081,30 @@ begin
     OnChange:=@ComboBoxOnChange;
     OnKeyDown:=@ComboBoxOnKeyDown;
     OnExit:=@ComboBoxOnExit;
-  end;
-
-  GutterWidthLabel:=TLabel.Create(Self);
-  with GutterWidthLabel do begin
-    Name:='GutterWidthLabel';
-    Parent:=MarginAndGutterGroupBox;
-    Top:=2;
-    Left:=GutterWidthComboBox.Left+2;
-    Width:=130;
-    Caption:=dlgGutterWidth;
-  end;
-
-  GutterColorButton:=TColorButton.Create(Self);
-  with GutterColorButton do begin
-    Name:='GutterColorButton';
-    Parent:=MarginAndGutterGroupBox;
-    Top:=GutterWidthComboBox.Top+GutterWidthComboBox.Height+20;
-    Left:=GutterWidthComboBox.Left;
-    Width:=35;
-    Height:=20;
-    BorderWidth:=2;
-    ButtonColor:=EditorOpts.GutterColor;
-    OnColorChanged:=@ColorButtonColorChanged;
+    AnchorParallel(akLeft,0,GutterWidthLabel);
+    AnchorToNeighbour(akTop,2,GutterWidthLabel);
   end;
 
   GutterColorLabel:=TLabel.Create(Self);
   with GutterColorLabel do begin
     Name:='GutterColorLabel';
     Parent:=MarginAndGutterGroupBox;
-    Top:=GutterWidthComboBox.Top+GutterWidthComboBox.Height;
-    Left:=GutterWidthComboBox.Left+2;
-    Width:=130;
     Caption:=dlgGutterColor;
+    AnchorParallel(akLeft,0,GutterWidthLabel);
+    AnchorToNeighbour(akTop,8,GutterWidthComboBox);
+  end;
+
+  GutterColorButton:=TColorButton.Create(Self);
+  with GutterColorButton do begin
+    Name:='GutterColorButton';
+    Parent:=MarginAndGutterGroupBox;
+    Width:=35;
+    Height:=20;
+    BorderWidth:=2;
+    ButtonColor:=EditorOpts.GutterColor;
+    OnColorChanged:=@ColorButtonColorChanged;
+    AnchorParallel(akLeft,0,GutterColorLabel);
+    AnchorToNeighbour(akTop,2,GutterColorLabel);
   end;
 
   EditorFontGroupBox:=TGroupBox.Create(Self);
@@ -4266,88 +4232,16 @@ begin
 end;
 
 procedure TEditorOptionsForm.ResizeDisplayPage;
-var MaxX,MaxY,ChkBoxW:integer;
+var MaxX,MaxY:integer;
 begin
   MaxX:=Width-5;
   MaxY:=ClientHeight-80;
-  ChkBoxW:=140;
 
   with MarginAndGutterGroupBox do begin
     Top:=5;
     Left:=5;
     Width:=MaxX-10;
     Height:=109;
-  end;
-
-  with VisibleRightMarginCheckBox do begin
-    Top:=5;
-    Left:=5;
-    Width:=ChkBoxW;
-  end;
-
-  with VisibleGutterCheckBox do begin
-    Top:=VisibleRightMarginCheckBox.Top+VisibleRightMarginCheckBox.Height+7;
-    Left:=VisibleRightMarginCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=VisibleRightMarginCheckBox.Height;
-  end;
-
-  with ShowLineNumbersCheckBox do begin
-    Top:=VisibleGutterCheckBox.Top+VisibleGutterCheckBox.Height+7;
-    Left:=VisibleGutterCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=VisibleRightMarginCheckBox.Height;
-  end;
-
-  with RightMarginComboBox do begin
-    Top:=20;
-    Left:=180;
-    Width:=70;
-  end;
-
-  with RightMarginLabel do begin
-    Top:=2;
-    Left:=RightMarginComboBox.Left+2;
-    Width:=150;
-  end;
-
-  with RightMarginColorButton do begin
-    Top:=RightMarginComboBox.Top+RightMarginComboBox.Height+20;
-    Left:=RightMarginComboBox.Left;
-    Width:=35;
-    Height:=20;
-  end;
-
-  with RightMarginColorLabel do begin
-    Top:=RightMarginComboBox.Top+RightMarginComboBox.Height;
-    Left:=RightMarginComboBox.Left+2;
-    Width:=150;
-  end;
-
-  with GutterWidthComboBox do begin
-    Top:=RightMarginComboBox.Top;
-    Left:=RightMarginComboBox.Left+RightMarginComboBox.Width+80;
-    Width:=RightMarginComboBox.Width;
-    Height:=RightMarginComboBox.Height;
-  end;
-
-  with GutterWidthLabel do begin
-    Top:=2;
-    Left:=GutterWidthComboBox.Left+2;
-    Width:=130;
-  end;
-
-  with GutterColorButton do begin
-    Top:=GutterWidthComboBox.Top+GutterWidthComboBox.Height+20;
-    Left:=GutterWidthComboBox.Left;
-    Width:=35;
-    Height:=20;
-  end;
-
-  with GutterColorLabel do begin
-    Top:=GutterWidthComboBox.Top+GutterWidthComboBox.Height;
-    Left:=GutterWidthComboBox.Left+2;
-    Width:=130;
   end;
 
   with EditorFontGroupBox do begin
@@ -4409,55 +4303,44 @@ begin
 end;
 
 procedure TEditorOptionsForm.SetupKeyMappingsPage;
-var MaxX,MaxY:integer;
 begin
-  MaxX:=Width-9;
-  MaxY:=374;
-
   KeyMappingChooseSchemeButton:=TButton.Create(Self);
   with KeyMappingChooseSchemeButton do begin
     Name:='KeyMappingChooseSchemeButton';
     Parent:=MainNoteBook.Page[2];
-    Top:=5;
+    Top:=2;
     Left:=100;
-    Width:=200;
-    Height:=23;
-    Text:=lisEdOptsChooseScheme;
+    Caption:=lisEdOptsChooseScheme;
     OnClick:=@KeyMappingChooseSchemeButtonClick;
+    AutoSize:=true;
   end;
 
   KeyMappingConsistencyCheckButton:=TButton.Create(Self);
   with KeyMappingConsistencyCheckButton do begin
     Name:='KeyMappingConsistencyCheckButton';
     Parent:=MainNoteBook.Page[2];
-    Top:=5;
-    Left:=Max(KeyMappingChooseSchemeButton.Left+KeyMappingChooseSchemeButton.Width
-              ,MaxX-150);
-    Width:=130;
-    Height:=23;
+    Top:=2;
     Caption:=dlgCheckConsistency;
     OnClick:=@KeyMappingConsistencyCheckButtonClick;
+    AutoSize:=true;
+    AnchorToNeighbour(akLeft,30,KeyMappingChooseSchemeButton);
   end;
 
   KeyMappingHelpLabel:=TLabel.Create(Self);
   with KeyMappingHelpLabel do begin
     Name:='KeyMappingHelpLabel';
     Parent:=MainNoteBook.Page[2];
-    Top:=KeyMappingChooseSchemeButton.Top+KeepCaretXCheckBox.Height+10;
     Left:=5;
-    Width:=MaxX-Left-Left;
-    Height:=16;
     Caption:=dlgEdHintCommand;
+    AnchorToNeighbour(akTop,5,KeyMappingChooseSchemeButton);
   end;
 
   KeyMappingTreeView:=TTreeView.Create(Self);
   with KeyMappingTreeView do begin
     Name:='KeyMappingTreeView';
     Parent:=MainNoteBook.Page[2];
-    Top:=KeyMappingHelpLabel.Top+KeyMappingHelpLabel.Height+2;
-    Left:=0;
-    Width:=MaxX-Left-Left;
-    Height:=MaxY-Top;
+    Align:=alBottom;
+    AnchorToNeighbour(akTop,2,KeyMappingHelpLabel);
     Options:=Options+[tvoReadOnly, tvoShowButtons, tvoShowRoot,
       tvoShowLines, tvoRowSelect, tvoKeepCollapsedNodes, tvoShowSeparators];
     OnMouseUp:=@KeyMappingTreeViewMouseUp;
@@ -4466,55 +4349,30 @@ begin
 end;
 
 procedure TEditorOptionsForm.ResizeKeyMappingsPage;
-var MaxX,MaxY:integer;
 begin
-  MaxX:=Width-9;
-  MaxY:=ClientHeight-82;
-
-  with KeyMappingChooseSchemeButton do begin
-    Top:=5;
-    Left:=170;
-    Width:=100;
-  end;
-
-  with KeyMappingConsistencyCheckButton do begin
-    Top:=5;
-    Left:=Max(KeyMappingChooseSchemeButton.Left+KeyMappingChooseSchemeButton.Width
-            ,MaxX-150);
-    Width:=130;
-    Height:=23;
-  end;
-
-  with KeyMappingHelpLabel do begin
-    Top:=KeyMappingChooseSchemeButton.Top+KeepCaretXCheckBox.Height+10;
-    Left:=5;
-    Width:=MaxX-Left-Left;
-    Height:=16;
-  end;
-
-  with KeyMappingTreeView do begin
-    Top:=KeyMappingHelpLabel.Top+KeyMappingHelpLabel.Height+2;
-    Left:=0;
-    Width:=MaxX-Left-Left;
-    Height:=MaxY-Top;
-  end;
 end;
 
 procedure TEditorOptionsForm.SetupColorPage;
-var a,MaxX,MaxY:integer;
+var a,MaxX:integer;
 begin
   MaxX:=Width-5;
-  MaxY:=377;
+
+  LanguageLabel:=TLabel.Create(Self);
+  with LanguageLabel do
+  begin
+    Name:='LanguageLabel';
+    Parent:=MainNoteBook.Page[3];
+    Left:=5;
+    Caption:=dlgLang;
+  end;
 
   LanguageComboBox:=TComboBox.Create(Self);
   with LanguageComboBox do
   begin
     Name:='LanguageComboBox';
     Parent:=MainNoteBook.Page[3];
-    Top:=5;
-    Left:=75;
+    Top:=2;
     Width:=170;
-    Height:=20;
     with Items do
     begin
       BeginUpdate;
@@ -4528,18 +4386,16 @@ begin
     OnChange:=@ComboBoxOnChange;
     OnKeyDown:=@ComboBoxOnKeyDown;
     OnExit:=@ComboBoxOnExit;
+    AnchorToNeighbour(akLeft,5,LanguageLabel);
   end;
+  LanguageLabel.AnchorVerticalCenterTo(LanguageComboBox);
   
-  LanguageLabel:=TLabel.Create(Self);
-  with LanguageLabel do
-  begin
-    Name:='LanguageLabel';
+  ColorSchemeLabel:=TLabel.Create(Self);
+  with ColorSchemeLabel do begin
+    Name:='ColorSchemeLabel';
     Parent:=MainNoteBook.Page[3];
-    Top:=7;
-    Left:=5;
-    Width:=LanguageComboBox.Left-Left;
-    Height:=16;
-    Caption:=dlgLang;
+    Caption:=dlgClrScheme;
+    AnchorToNeighbour(akLeft,40,LanguageComboBox);
   end;
 
   ColorSchemeComboBox:=TComboBox.Create(Self);
@@ -4547,10 +4403,7 @@ begin
   begin
     Name:='ColorSchemeComboBox';
     Parent:=MainNoteBook.Page[3];
-    Top:=LanguageComboBox.Top;
-    Left:=LanguageComboBox.Left+LanguageComboBox.Width+110;
     Width:=100;
-    Height:=20;
     with Items do begin
       BeginUpdate;
       // ToDo: fill also with custom color schemes
@@ -4565,17 +4418,17 @@ begin
     OnChange:=@ComboBoxOnChange;
     OnKeyDown:=@ComboBoxOnKeyDown;
     OnExit:=@ComboBoxOnExit;
+    AnchorParallel(akTop,0,LanguageComboBox);
+    AnchorToNeighbour(akLeft,5,ColorSchemeLabel);
   end;
+  ColorSchemeLabel.AnchorVerticalCenterTo(ColorSchemeComboBox);
 
-  ColorSchemeLabel:=TLabel.Create(Self);
-  with ColorSchemeLabel do begin
-    Name:='ColorSchemeLabel';
+  FileExtensionsLabel:=TLabel.Create(Self);
+  with FileExtensionsLabel do begin
+    Name:='FileExtensionsLabel';
     Parent:=MainNoteBook.Page[3];
-    Top:=ColorSchemeComboBox.Top+2;
-    Left:=ColorSchemeComboBox.Left-80;
-    Width:=ColorSchemeComboBox.Left-Left;
-    Height:=16;
-    Caption:=dlgClrScheme;
+    Caption:=dlgFileExts;
+    AnchorParallel(akLeft,0,LanguageLabel);
   end;
 
   FileExtensionsComboBox:=TComboBox.Create(Self);
@@ -4583,9 +4436,7 @@ begin
     Name:='FileExtensionsComboBox';
     Parent:=MainNoteBook.Page[3];
     Top:=ColorSchemeComboBox.Top+ColorSchemeComboBox.Height+4;
-    Left:=103;
     Width:=310;
-    Height:=20;
     Items.BeginUpdate;
     Items.Add('pp;pas;inc;lpr;lrs;dpr;dpk');
     Items.Add('pp;pas;inc;lpr;lrs');
@@ -4597,27 +4448,18 @@ begin
     OnChange:=@ComboBoxOnChange;
     OnKeyDown:=@ComboBoxOnKeyDown;
     OnExit:=@ComboBoxOnExit;
+    AnchorToNeighbour(akTop,5,LanguageComboBox);
+    AnchorToNeighbour(akLeft,5,FileExtensionsLabel);
   end;
-
-  FileExtensionsLabel:=TLabel.Create(Self);
-  with FileExtensionsLabel do begin
-    Name:='FileExtensionsLabel';
-    Parent:=MainNoteBook.Page[3];
-    Top:=FileExtensionsComboBox.Top+2;
-    Left:=5;
-    Width:=FileExtensionsComboBox.Left-Left-2;
-    Caption:=dlgFileExts;
-  end;
+  FileExtensionsLabel.AnchorVerticalCenterTo(FileExtensionsComboBox);
 
   ColorElementLabel:=TLabel.Create(Self);
   with ColorElementLabel do begin
     Name:='ColorElementLabel';
     Parent:=MainNoteBook.Page[3];
-    Top:=FileExtensionsComboBox.Top+FileExtensionsComboBox.Height+12;
-    Left:=5;
-    Width:=180;
-    Height:=16;
     Caption:=dlgEdElement;
+    AnchorParallel(akLeft,0,LanguageLabel);
+    AnchorToNeighbour(akTop,8,FileExtensionsComboBox);
   end;
 
   ColorElementListBox:=TListBox.Create(Self);
@@ -4625,12 +4467,12 @@ begin
   begin
     Name:='ColorElementListBox';
     Parent:=MainNoteBook.Page[3];
-    Top:=ColorElementLabel.Top+ColorElementLabel.Height+2;
-    Left:=ColorElementLabel.Left;
-    Width:=ColorElementLabel.Width;
+    Left:=3;
+    Width:=MaxX div 3;
     Height:=170;
     MultiSelect:=false;
     OnSelectionChange := @ColorElementListBoxSelectionChange;
+    AnchorToNeighbour(akTop,2,ColorElementLabel);
   end;
 
   SetAttributeToDefaultButton:=TButton.Create(Self);
@@ -4638,12 +4480,11 @@ begin
   begin
     Name:='SetAttributeToDefaultButton';
     Parent:=MainNoteBook.Page[3];
-    Top:=ColorElementLabel.Top;
-    Left:=ColorElementListBox.Left+ColorElementListBox.Width+12;
-    Width:=MaxX-5-Left;
-    Height:=23;
     Caption:=dlgSetElementDefault;
     OnClick:=@SetAttributeToDefaultButtonClick;
+    AnchorToNeighbour(akTop,5,FileExtensionsComboBox);
+    AnchorToNeighbour(akLeft,10,ColorElementListBox);
+    AutoSize:=true;
   end;
   
   SetAllAttributesToDefaultButton:=TButton.Create(Self);
@@ -4651,12 +4492,11 @@ begin
   begin
     Name:='SetAllAttributesToDefaultButton';
     Parent:=MainNoteBook.Page[3];
-    Top:=SetAttributeToDefaultButton.Top+SetAttributeToDefaultButton.Height+2;
-    Left:=SetAttributeToDefaultButton.Left;
-    Width:=SetAttributeToDefaultButton.Width;
-    Height:=SetAttributeToDefaultButton.Height;
     Caption:=dlgSetAllElementDefault;
     OnClick:=@SetAllAttributesToDefaultButtonClick;
+    AnchorToNeighbour(akTop,3,SetAttributeToDefaultButton);
+    AnchorParallel(akLeft,0,SetAttributeToDefaultButton);
+    AutoSize:=true;
   end;
 
   ForeGroundGroupBox:=TGroupBox.Create(Self);
@@ -4664,12 +4504,11 @@ begin
   begin
     Name:='ForeGroundGroupBox';
     Parent:=MainNoteBook.Page[3];
-    Top:=SetAllAttributesToDefaultButton.Top
-        +SetAllAttributesToDefaultButton.Height+4;
-    Left:=ColorElementListBox.Left+ColorElementListBox.Width+12;
-    Width:=MaxX-5-Left;
     Height:=43;
     Caption:=dlgForecolor;
+    AnchorToNeighbour(akTop,3,SetAllAttributesToDefaultButton);
+    AnchorParallel(akLeft,0,SetAllAttributesToDefaultButton);
+    AnchorParallel(akRight,3,Parent);
   end;
 
   ForeGroundColorButton:=TColorButton.Create(Self);
@@ -4679,7 +4518,7 @@ begin
     Parent:=ForeGroundGroupBox;
     BorderWidth:=2;
     Top:=2;
-    Left:=5;
+    Left:=2;
     Width:=70;
     Height:=20;
     Color:=clRed;
@@ -4693,10 +4532,9 @@ begin
     Parent:=ForeGroundGroupBox;
     Top:=ForeGroundColorButton.Top;
     Left:=ForegroundColorButton.Left+ForegroundColorButton.Width+5;
-    Width:=ForeGroundGroupBox.Width-Left-Left;
-    Height:=16;
     Caption:=dlgEdUseDefColor;
     OnClick:=@GeneralCheckBoxOnClick;
+    AutoSize:=true;
   end;
 
   BackGroundGroupBox:=TGroupBox.Create(Self);
@@ -4704,11 +4542,11 @@ begin
   begin
     Name:='BackGroundGroupBox';
     Parent:=MainNoteBook.Page[3];
-    Top:=ForeGroundGroupBox.Top+ForeGroundGroupBox.Height+5;
-    Left:=ForeGroundGroupBox.Left;
-    Width:=ForeGroundGroupBox.Width;
     Height:=ForeGroundGroupBox.Height;
     Caption:=dlgBackColor;
+    AnchorToNeighbour(akTop,3,ForeGroundGroupBox);
+    AnchorParallel(akLeft,0,SetAttributeToDefaultButton);
+    AnchorParallel(akRight,3,Parent);
   end;
 
   BackGroundColorButton:=TColorButton.Create(Self);
@@ -4718,7 +4556,7 @@ begin
     Parent:=BackGroundGroupBox;
     BorderWidth:=2;
     Top:=2;
-    Left:=5;
+    Left:=2;
     Width:=70;
     Height:=20;
     Color:=clBlue;
@@ -4730,12 +4568,11 @@ begin
   begin
     Name:='BackGroundUseDefaultCheckBox';
     Parent:=BackGroundGroupBox;
-    Top:=BackGroundColorButton.Top;
-    Left:=BackgroundColorButton.Left+BackgroundColorButton.Width+5;
-    Width:=ForeGroundGroupBox.Width-Left-Left;
-    Height:=16;
+    Left:=BackgroundColorButton.Left+BackgroundColorButton.Width+3;
     Caption:=dlgEdUseDefColor;
     OnClick:=@GeneralCheckBoxOnClick;
+    AnchorVerticalCenterTo(BackGroundColorButton);
+    AutoSize:=true;
   end;
 
   TextAttributesGroupBox:=TGroupBox.Create(Self);
@@ -4743,11 +4580,11 @@ begin
   begin
     Name:='TextAttributesGroupBox';
     Parent:=MainNoteBook.Page[3];
-    Top:=BackGroundGroupBox.Top+BackGroundGroupBox.Height+5;
-    Left:=ForeGroundGroupBox.Left;
-    Width:=ForeGroundGroupBox.Width;
     Height:=43;
     Caption:=dlgTextAttributes;
+    AnchorToNeighbour(akTop,3,BackGroundGroupBox);
+    AnchorParallel(akLeft,0,SetAttributeToDefaultButton);
+    AnchorParallel(akRight,3,Parent);
   end;
 
   TextBoldCheckBox:=TCheckBox.Create(Self);
@@ -4756,11 +4593,10 @@ begin
     Name:='TextBoldCheckBox';
     Parent:=TextAttributesGroupBox;
     Top:=0;
-    Left:=5;
-    Width:=50;
-    Height:=16;
+    Left:=2;
     Caption:=dlgEdBold;
     OnClick:=@GeneralCheckBoxOnClick;
+    AutoSize:=true;
   end;
 
   TextItalicCheckBox:=TCheckBox.Create(Self);
@@ -4768,12 +4604,11 @@ begin
   begin
     Name:='TextItalicCheckBox';
     Parent:=TextAttributesGroupBox;
-    Top:=TextBoldCheckBox.Top;
-    Left:=TextBoldCheckBox.Left+TextBoldCheckBox.Width+5;
-    Width:=95;
-    Height:=TextBoldCheckBox.Height;
+    Top:=0;
     Caption:=dlgEdItal;
     OnClick:=@GeneralCheckBoxOnClick;
+    AnchorToNeighbour(akLeft,10,TextBoldCheckBox);
+    AutoSize:=true;
   end;
 
   TextUnderlineCheckBox:=TCheckBox.Create(Self);
@@ -4781,12 +4616,11 @@ begin
   begin
     Name:='TextUnderlineCheckBox';
     Parent:=TextAttributesGroupBox;
-    Top:=TextBoldCheckBox.Top;
-    Left:=TextItalicCheckBox.Left+TextItalicCheckBox.Width+20;
-    Width:=75;
-    Height:=TextItalicCheckBox.Height;
+    Top:=0;
     Caption:=dlgEdUnder;
     OnClick:=@GeneralCheckBoxOnClick;
+    AnchorToNeighbour(akLeft,10,TextItalicCheckBox);
+    AutoSize:=true;
   end;
 
   ColorPreview:=TPreviewEditor.Create(Self);
@@ -4794,170 +4628,17 @@ begin
   begin
     Name:='ColorPreview';
     Parent:=MainNoteBook.Page[3];
-    Left:=5;
-    Top:=TextAttributesGroupBox.Top+TextAttributesGroupBox.Height+7;
-    Width:=MaxX-Left-Left;
-    Height:=MaxY-Top-Left;
     OnSpecialLineColors:=@Self.OnSpecialLineColors;
     OnMouseDown:=@ColorPreviewMouseUp;
     ReadOnly:=true;
+    BorderSpacing.Around:=3;
+    Align:=alBottom;
+    AnchorToNeighbour(akTop,3,ColorElementListBox);
   end;
 end;
 
 procedure TEditorOptionsForm.ResizeColorPage;
-var MaxX,MaxY:integer;
-  w: Integer;
 begin
-  MaxX:=Width-5;
-  MaxY:=ClientHeight-76;
-
-  with LanguageComboBox do begin
-    Top:=5;
-    Left:=75;
-    Width:=170;
-    Height:=20;
-  end;
-
-  with LanguageLabel do begin
-    Top:=7;
-    Left:=5;
-    Width:=LanguageComboBox.Left-Left;
-    Height:=16;
-  end;
-
-  with ColorSchemeComboBox do begin
-    Top:=LanguageComboBox.Top;
-    Left:=LanguageComboBox.Left+LanguageComboBox.Width+110;
-    Width:=100;
-    Height:=20;
-  end;
-
-  with ColorSchemeLabel do begin
-    Top:=ColorSchemeComboBox.Top+2;
-    Left:=ColorSchemeComboBox.Left-90;
-    Width:=ColorSchemeComboBox.Left-Left;
-    Height:=16;
-  end;
-
-  with FileExtensionsComboBox do begin
-    Top:=ColorSchemeComboBox.Top+ColorSchemeComboBox.Height+4;
-    Left:=103;
-    Width:=310;
-    Height:=20;
-  end;
-
-  with FileExtensionsLabel do begin
-    Top:=FileExtensionsComboBox.Top+2;
-    Left:=5;
-    Width:=FileExtensionsComboBox.Left-Left-2;
-  end;
-
-  with ColorElementLabel do begin
-    Top:=FileExtensionsComboBox.Top+FileExtensionsComboBox.Height+12;
-    Left:=5;
-    Width:=180;
-    Height:=16;
-  end;
-
-  with ColorElementListBox do begin
-    Top:=ColorElementLabel.Top+ColorElementLabel.Height+2;
-    Left:=ColorElementLabel.Left;
-    Width:=ColorElementLabel.Width;
-    Height:=170;
-  end;
-
-  with SetAttributeToDefaultButton do begin
-    Top:=ColorElementLabel.Top;
-    Left:=ColorElementListBox.Left+ColorElementListBox.Width+12;
-    Width:=MaxX-5-Left;
-    Height:=23;
-  end;
-
-  with SetAllAttributesToDefaultButton do begin
-    Top:=SetAttributeToDefaultButton.Top+SetAttributeToDefaultButton.Height+2;
-    Left:=SetAttributeToDefaultButton.Left;
-    Width:=SetAttributeToDefaultButton.Width;
-    Height:=SetAttributeToDefaultButton.Height;
-  end;
-
-  with ForeGroundGroupBox do begin
-    Top:=SetAllAttributesToDefaultButton.Top
-        +SetAllAttributesToDefaultButton.Height+4;
-    Left:=ColorElementListBox.Left+ColorElementListBox.Width+12;
-    Width:=MaxX-5-Left;
-    Height:=43;
-  end;
-
-  with ForegroundColorButton do begin
-    Top:=0;
-    Left:=5;
-    Width:=70;
-    Height:=20;
-  end;
-
-  with ForeGroundUseDefaultCheckBox do begin
-    Top:=ForeGroundColorButton.Top;
-    Left:=ForegroundColorButton.Left+ForegroundColorButton.Width+5;
-    Width:=ForeGroundGroupBox.Width-Left-Left;
-    Height:=16;
-  end;
-
-  with BackGroundGroupBox do begin
-    Top:=ForeGroundGroupBox.Top+ForeGroundGroupBox.Height+5;
-    Left:=ForeGroundGroupBox.Left;
-    Width:=ForeGroundGroupBox.Width;
-    Height:=ForeGroundGroupBox.Height;
-  end;
-
-  with BackgroundColorButton do begin
-    Top:=0;
-    Left:=5;
-    Width:=70;
-    Height:=20;
-  end;
-
-  with BackGroundUseDefaultCheckBox do begin
-    Top:=BackGroundColorButton.Top;
-    Left:=BackgroundColorButton.Left+BackgroundColorButton.Width+5;
-    Width:=ForeGroundGroupBox.Width-Left-Left;
-    Height:=16;
-  end;
-
-  with TextAttributesGroupBox do begin
-    Top:=BackGroundGroupBox.Top+BackGroundGroupBox.Height+5;
-    Left:=ForeGroundGroupBox.Left;
-    Width:=ForeGroundGroupBox.Width;
-    Height:=43;
-  end;
-
-  w:=(TextBoldCheckBox.Parent.ClientWidth-20) div 3;
-  with TextBoldCheckBox do begin
-    Top:=0;
-    Left:=5;
-    Width:=w;
-    Height:=16;
-  end;
-
-  with TextItalicCheckBox do begin
-    Top:=TextBoldCheckBox.Top;
-    Left:=TextBoldCheckBox.Left+TextBoldCheckBox.Width+5;
-    Width:=w;
-    Height:=TextBoldCheckBox.Height;
-  end;
-
-  with TextUnderlineCheckBox do begin
-    Top:=TextBoldCheckBox.Top;
-    Left:=TextItalicCheckBox.Left+TextItalicCheckBox.Width+5;
-    Width:=w;
-    Height:=TextItalicCheckBox.Height;
-  end;
-
-  with ColorPreview do begin
-    Left:=5;
-    Top:=TextAttributesGroupBox.Top+TextAttributesGroupBox.Height+7;
-    Width:=MaxX-Left-Left;
-    Height:=MaxY-Top-Left;
-  end;
 end;
 
 procedure TEditorOptionsForm.SetupCodeToolsPage;

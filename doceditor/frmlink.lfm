@@ -1,71 +1,80 @@
 object LinkForm: TLinkForm
   Caption = 'LinkForm'
-  ClientHeight = 74
-  ClientWidth = 396
-  PixelsPerInch = 96
+  ClientHeight = 81
+  ClientWidth = 395
+  PixelsPerInch = 90
   Position = poScreenCenter
-  HorzScrollBar.Page = 397
-  VertScrollBar.Page = 75
+  HorzScrollBar.Page = 394
   Left = 333
-  Height = 74
+  Height = 81
   Top = 149
-  Width = 396
+  Width = 395
+  object LLinkTarget: TLabel
+    BorderSpacing.OnChange = nil
+    Caption = '&Link target'
+    Color = clNone
+    FocusControl = CBTarget
+    Layout = tlCenter
+    AnchorSideTop.Control = CBTarget
+    AnchorSideTop.Side = asrCenter
+    Left = 8
+    Height = 12
+    Top = 13
+    Width = 67
+  end
+  object LELinkText: TLabel
+    BorderSpacing.OnChange = nil
+    Caption = 'LELinkText'
+    Color = clNone
+    Layout = tlCenter
+    AnchorSideTop.Control = ELinkText
+    AnchorSideTop.Side = asrCenter
+    Left = 8
+    Height = 12
+    Top = 45
+    Width = 61
+  end
   object CBTarget: TComboBox
     Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.OnChange = nil
     MaxLength = 0
     TabOrder = 0
     Left = 96
     Height = 23
     Top = 8
-    Width = 184
-  end
-  object LLinkTarget: TLabel
-    Alignment = taRightJustify
-    Caption = '&Link target'
-    FocusControl = CBTarget
-    Layout = tlCenter
-    Left = 8
-    Height = 23
-    Top = 8
-    Width = 80
+    Width = 183
   end
   object BOK: TButton
     Anchors = [akTop, akRight]
+    BorderSpacing.OnChange = nil
     Caption = '&OK'
     Default = True
     ModalResult = 1
-    TabOrder = 2
-    Left = 292
+    TabOrder = 1
+    Left = 291
     Height = 25
     Top = 8
     Width = 96
   end
   object BCancel: TButton
     Anchors = [akTop, akRight]
+    BorderSpacing.OnChange = nil
     Cancel = True
     Caption = '&Cancel'
     ModalResult = 2
     TabOrder = 3
-    Left = 292
+    Left = 291
     Height = 25
     Top = 40
     Width = 96
   end
-  object LELinkText: TLabel
-    Alignment = taRightJustify
-    Caption = 'LELinkText'
-    Layout = tlCenter
-    Left = 8
-    Height = 23
-    Top = 40
-    Width = 80
-  end
   object ELinkText: TEdit
     Anchors = [akTop, akLeft, akRight]
-    TabOrder = 5
+    BorderSpacing.OnChange = nil
+    TabOrder = 2
     Left = 96
     Height = 23
     Top = 40
-    Width = 180
+    Width = 183
   end
 end

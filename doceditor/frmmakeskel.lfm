@@ -1,57 +1,61 @@
 object MakeSkelForm: TMakeSkelForm
   Caption = 'Create new file from pascal source'
-  ClientHeight = 274
-  ClientWidth = 400
+  ClientHeight = 277
+  ClientWidth = 413
   PixelsPerInch = 90
-  HorzScrollBar.Page = 401
-  VertScrollBar.Page = 275
+  HorzScrollBar.Page = 412
+  VertScrollBar.Page = 276
   Left = 392
-  Height = 274
+  Height = 277
   Top = 175
-  Width = 400
+  Width = 413
   object Label1: TLabel
-    Alignment = taRightJustify
     Caption = 'I&nput file'
     FocusControl = FEinputFile
     Layout = tlCenter
     ParentColor = True
+    AnchorSideTop.Control = FEinputFile
+    AnchorSideTop.Side = asrCenter
     Left = 7
-    Height = 23
-    Top = 40
-    Width = 80
+    Height = 12
+    Top = 45
+    Width = 56
   end
   object Label2: TLabel
-    Alignment = taRightJustify
     Caption = 'O&utput file'
     FocusControl = FEoutputFIle
     Layout = tlCenter
     ParentColor = True
+    AnchorSideTop.Control = FEoutputFIle
+    AnchorSideTop.Side = asrCenter
     Left = 7
-    Height = 23
-    Top = 72
-    Width = 81
+    Height = 12
+    Top = 77
+    Width = 66
   end
   object LEPackage: TLabel
-    Alignment = taRightJustify
     Caption = 'Pac&kage name'
     FocusControl = EPackage
     Layout = tlCenter
     ParentColor = True
+    AnchorSideTop.Control = EPackage
+    AnchorSideTop.Side = asrCenter
     Left = 7
-    Height = 23
-    Top = 8
-    Width = 81
+    Height = 12
+    Top = 13
+    Width = 92
   end
   object Label3: TLabel
-    Alignment = taRightJustify
     Caption = 'E&xtra options'
     FocusControl = EAdditionalOptions
     Layout = tlCenter
     ParentColor = True
+    AnchorSideTop.Control = EAdditionalOptions
+    AnchorSideTop.Side = asrCenter
     Left = 8
-    Height = 17
-    Top = 244
-    Width = 65
+    Height = 12
+    Top = 249
+    Width = 81
   end
   object BOK: TButton
     Anchors = [akTop, akRight]
@@ -60,7 +64,7 @@ object MakeSkelForm: TMakeSkelForm
     ModalResult = 1
     TabOrder = 0
     Cursor = crAppStart
-    Left = 320
+    Left = 333
     Height = 25
     Top = 8
     Width = 75
@@ -71,7 +75,7 @@ object MakeSkelForm: TMakeSkelForm
     Caption = '&Cancel'
     ModalResult = 2
     TabOrder = 1
-    Left = 320
+    Left = 333
     Height = 25
     Top = 40
     Width = 75
@@ -137,7 +141,7 @@ object MakeSkelForm: TMakeSkelForm
     Left = 95
     Height = 23
     Top = 40
-    Width = 185
+    Width = 198
   end
   object FEoutputFIle: TFileNameEdit
     DialogKind = dkSave
@@ -154,22 +158,24 @@ object MakeSkelForm: TMakeSkelForm
     Left = 95
     Height = 23
     Top = 72
-    Width = 185
+    Width = 198
   end
   object EPackage: TEdit
     Anchors = [akTop, akLeft, akRight]
     OnChange = CheckEnabled
+    TabOrder = 10
     Text = '<package name>'
     Left = 95
     Height = 23
     Top = 8
-    Width = 201
+    Width = 214
   end
   object EAdditionalOptions: TEdit
     Anchors = [akTop, akLeft, akRight]
+    TabOrder = 11
     Left = 94
     Height = 23
     Top = 244
-    Width = 210
+    Width = 223
   end
 end

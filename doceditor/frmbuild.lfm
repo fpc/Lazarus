@@ -1,49 +1,50 @@
 object BuildForm: TBuildForm
   Caption = 'Build documentation'
-  ClientHeight = 339
-  ClientWidth = 407
+  ClientHeight = 337
+  ClientWidth = 410
   OnCloseQuery = BuildFormCloseQuery
   OnCreate = BuildFormCreate
   PixelsPerInch = 90
-  HorzScrollBar.Page = 406
-  VertScrollBar.Page = 338
+  HorzScrollBar.Page = 409
+  VertScrollBar.Page = 336
   Left = 370
-  Height = 339
+  Height = 337
   Top = 145
-  Width = 407
+  Width = 410
   object LCBPackage: TLabel
-    Alignment = taRightJustify
+    BorderSpacing.OnChange = nil
     Caption = '&Package'
     FocusControl = CBPackage
     Layout = tlCenter
     ParentColor = True
     Left = 7
-    Height = 17
+    Height = 12
     Top = 12
-    Width = 97
+    Width = 58
   end
   object LCBFormat: TLabel
-    Alignment = taRightJustify
+    BorderSpacing.OnChange = nil
     Caption = '&Format'
     FocusControl = CBFormat
     Layout = tlCenter
     ParentColor = True
     Left = 7
-    Height = 20
+    Height = 12
     Top = 40
-    Width = 97
+    Width = 47
   end
   object Label1: TLabel
-    Alignment = taRightJustify
+    BorderSpacing.OnChange = nil
     Caption = '&Output'
     Layout = tlCenter
     ParentColor = True
     Left = 8
-    Height = 17
+    Height = 12
     Top = 75
-    Width = 97
+    Width = 46
   end
   object CBPackage: TComboBox
+    BorderSpacing.OnChange = nil
     MaxLength = 0
     TabOrder = 0
     Left = 112
@@ -53,10 +54,11 @@ object BuildForm: TBuildForm
   end
   object BClose: TButton
     Anchors = [akTop, akRight]
+    BorderSpacing.OnChange = nil
     Caption = '&Close'
     OnClick = BCloseClick
     TabOrder = 1
-    Left = 327
+    Left = 330
     Height = 25
     Top = 104
     Width = 75
@@ -64,8 +66,9 @@ object BuildForm: TBuildForm
   object BBuild: TButton
     Action = ABuild
     Anchors = [akTop, akRight]
+    BorderSpacing.OnChange = nil
     TabOrder = 2
-    Left = 327
+    Left = 330
     Height = 25
     Top = 8
     Width = 75
@@ -73,8 +76,9 @@ object BuildForm: TBuildForm
   object BLoad: TButton
     Action = ALoad
     Anchors = [akTop, akRight]
+    BorderSpacing.OnChange = nil
     TabOrder = 3
-    Left = 327
+    Left = 330
     Height = 25
     Top = 40
     Width = 75
@@ -82,13 +86,15 @@ object BuildForm: TBuildForm
   object BSave: TButton
     Action = ASave
     Anchors = [akTop, akRight]
+    BorderSpacing.OnChange = nil
     TabOrder = 4
-    Left = 327
+    Left = 330
     Height = 25
     Top = 72
     Width = 75
   end
   object CBFormat: TComboBox
+    BorderSpacing.OnChange = nil
     Items.Strings = (
       'html'
       'latex'
@@ -106,33 +112,36 @@ object BuildForm: TBuildForm
     Width = 100
   end
   object PCOptions: TPageControl
-    ActivePage = TSOther
+    ActivePage = TSDescription
     Align = alBottom
-    TabIndex = 2
+    BorderSpacing.OnChange = nil
+    TabIndex = 0
     TabOrder = 6
     Height = 200
-    Top = 139
-    Width = 407
+    Top = 137
+    Width = 410
     object TSDescription: TTabSheet
       Caption = 'Description'
-      ClientHeight = 172
-      ClientWidth = 403
+      ClientHeight = 170
+      ClientWidth = 406
       Left = 2
-      Height = 172
-      Top = 26
-      Width = 403
+      Height = 170
+      Top = 28
+      Width = 406
       object PBDescr: TPanel
         Align = alRight
+        BorderSpacing.OnChange = nil
         BevelOuter = bvNone
-        ClientHeight = 172
+        ClientHeight = 170
         ClientWidth = 92
         FullRepaint = False
         TabOrder = 0
-        Left = 311
-        Height = 172
+        Left = 314
+        Height = 170
         Width = 92
         object BAddDescription: TButton
           Action = ADescrAdd
+          BorderSpacing.OnChange = nil
           TabOrder = 0
           Left = 10
           Height = 25
@@ -141,6 +150,7 @@ object BuildForm: TBuildForm
         end
         object BDeleteDescription: TButton
           Action = ADescrDelete
+          BorderSpacing.OnChange = nil
           TabOrder = 1
           Left = 10
           Height = 25
@@ -149,6 +159,7 @@ object BuildForm: TBuildForm
         end
         object BEditDescription: TButton
           Action = ADescrEdit
+          BorderSpacing.OnChange = nil
           TabOrder = 2
           Left = 10
           Height = 25
@@ -157,7 +168,6 @@ object BuildForm: TBuildForm
         end
         object BAddAll: TButton
           Action = ADescrAddAll
-          BorderSpacing.OnChange = nil
           TabOrder = 3
           Left = 10
           Height = 25
@@ -167,33 +177,36 @@ object BuildForm: TBuildForm
       end
       object LBDescrFiles: TListBox
         Align = alClient
+        BorderSpacing.OnChange = nil
         ClickOnSelChange = False
         TabOrder = 1
         TopIndex = -1
-        Height = 172
-        Width = 311
+        Height = 170
+        Width = 314
       end
     end
     object TSSources: TTabSheet
       Caption = 'Sources'
-      ClientHeight = 172
-      ClientWidth = 403
+      ClientHeight = 170
+      ClientWidth = 406
       Left = 2
-      Height = 172
-      Top = 26
-      Width = 403
+      Height = 170
+      Top = 28
+      Width = 406
       object PSources: TPanel
         Align = alRight
+        BorderSpacing.OnChange = nil
         BevelOuter = bvNone
-        ClientHeight = 172
+        ClientHeight = 170
         ClientWidth = 92
         FullRepaint = False
         TabOrder = 0
-        Left = 311
-        Height = 172
+        Left = 314
+        Height = 170
         Width = 92
         object BSourceAdd: TButton
           Action = ASourceAdd
+          BorderSpacing.OnChange = nil
           TabOrder = 0
           Left = 12
           Height = 25
@@ -202,6 +215,7 @@ object BuildForm: TBuildForm
         end
         object BSourceDelete: TButton
           Action = ASourceDelete
+          BorderSpacing.OnChange = nil
           TabOrder = 1
           Left = 12
           Height = 25
@@ -210,6 +224,7 @@ object BuildForm: TBuildForm
         end
         object BSourceEdit: TButton
           Action = ASourceEdit
+          BorderSpacing.OnChange = nil
           TabOrder = 2
           Left = 12
           Height = 25
@@ -219,9 +234,9 @@ object BuildForm: TBuildForm
       end
       object SGSources: TStringGrid
         Align = alClient
+        BorderSpacing.OnChange = nil
         Color = clWhite
         ColCount = 2
-        Columns = <>
         DefaultColWidth = 150
         DefaultRowHeight = 24
         FixedColor = clBtnFace
@@ -232,8 +247,8 @@ object BuildForm: TBuildForm
         ScrollBars = ssAutoBoth
         VisibleColCount = 2
         VisibleRowCount = 1
-        Height = 172
-        Width = 311
+        Height = 170
+        Width = 314
         Cells = (
           2
           0
@@ -247,14 +262,15 @@ object BuildForm: TBuildForm
     end
     object TSOther: TTabSheet
       Caption = 'Other options'
-      ClientHeight = 172
-      ClientWidth = 403
+      ClientHeight = 170
+      ClientWidth = 406
       Left = 2
-      Height = 172
-      Top = 26
-      Width = 403
+      Height = 170
+      Top = 28
+      Width = 406
       object Label2: TLabel
         Alignment = taRightJustify
+        BorderSpacing.OnChange = nil
         Caption = 'Import content file'
         Color = clNone
         Layout = tlCenter
@@ -265,6 +281,7 @@ object BuildForm: TBuildForm
       end
       object Label3: TLabel
         Alignment = taRightJustify
+        BorderSpacing.OnChange = nil
         Caption = 'Target OS'
         Color = clNone
         Layout = tlCenter
@@ -275,6 +292,7 @@ object BuildForm: TBuildForm
       end
       object LTargetCPU: TLabel
         Alignment = taRightJustify
+        BorderSpacing.OnChange = nil
         Caption = 'CPU'
         Color = clNone
         Layout = tlCenter
@@ -284,7 +302,6 @@ object BuildForm: TBuildForm
         Width = 40
       end
       object CBShowPrivate: TCheckBox
-        BorderSpacing.OnChange = nil
         Caption = 'Show p&rivate methods'
         TabOrder = 0
         Left = 14
@@ -293,7 +310,6 @@ object BuildForm: TBuildForm
         Width = 141
       end
       object CBHideProtected: TCheckBox
-        BorderSpacing.OnChange = nil
         Caption = '&Hide protected methods'
         TabOrder = 1
         Left = 14
@@ -302,24 +318,30 @@ object BuildForm: TBuildForm
         Width = 172
       end
       object CBWarnNoNode: TCheckBox
+        BorderSpacing.OnChange = nil
         Caption = 'Warn if no documentation node found'
         TabOrder = 2
         Left = 14
         Height = 23
         Top = 59
-        Width = 210
+        Width = 232
       end
       object FEImportFIle: TFileNameEdit
         ButtonWidth = 23
         NumGlyphs = 1
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.OnChange = nil
         TabOrder = 3
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.OnChange = nil
         TabOrder = 3
         Left = 118
         Height = 23
         Top = 106
-        Width = 248
+        Width = 251
       end
       object ETargetOS: TEdit
+        BorderSpacing.OnChange = nil
         TabOrder = 4
         Left = 118
         Height = 23
@@ -327,6 +349,7 @@ object BuildForm: TBuildForm
         Width = 80
       end
       object ETargetCPU: TEdit
+        BorderSpacing.OnChange = nil
         TabOrder = 5
         Left = 246
         Height = 23
@@ -336,34 +359,36 @@ object BuildForm: TBuildForm
     end
     object TSBuild: TTabSheet
       Caption = 'Build output'
-      ClientHeight = 172
-      ClientWidth = 403
+      ClientHeight = 170
+      ClientWidth = 406
       Left = 2
-      Height = 172
-      Top = 26
-      Width = 403
+      Height = 170
+      Top = 28
+      Width = 406
       object MLog: TMemo
         Align = alClient
-        BorderSpacing.OnChange = nil
         TabOrder = 0
-        Height = 172
-        Width = 403
+        Height = 170
+        Width = 406
       end
     end
   end
   object EOutput: TEditButton
     Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.OnChange = nil
     ButtonWidth = 23
     OnButtonClick = EOutputButtonClick
     TabOrder = 7
     Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.OnChange = nil
     TabOrder = 7
     Left = 112
     Height = 23
     Top = 72
-    Width = 169
+    Width = 172
   end
   object CBContent: TCheckBox
+    BorderSpacing.OnChange = nil
     Caption = 'Create cont&ent file'
     TabOrder = 8
     Left = 112
@@ -377,6 +402,7 @@ object BuildForm: TBuildForm
     DefaultExt = '.ldp'
     Filter = 'Documentation project files|*.ldp|All files|*.*'
     FilterIndex = 0
+    Title = 'Open existing file'
     left = 8
     top = 286
   end
@@ -386,6 +412,7 @@ object BuildForm: TBuildForm
     DefaultExt = '.ldp'
     Filter = 'Documentation project files|*.ldp|All files|*.*'
     FilterIndex = 0
+    Title = 'Save file as'
     left = 8
     top = 248
   end
@@ -395,6 +422,7 @@ object BuildForm: TBuildForm
     DefaultExt = '.xml'
     Filter = 'XML files|*.xml|All files|*.*'
     FilterIndex = 0
+    Title = 'Open existing file'
     left = 296
     top = 360
   end
