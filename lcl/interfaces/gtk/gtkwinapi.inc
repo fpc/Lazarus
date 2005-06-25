@@ -4233,46 +4233,24 @@ end;
 
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.GetCursorPos(var lpPoint: TPoint ): Boolean;
-{$IFDEF GTK2}
-begin
-  // TODO: GTK2 GetCursorPos
-  DebugLn('TGtkWidgetSet.GetCursorPos ToDo');
-  Result:=false;
-end;
-{$ELSE}
-{$IFDEF UNIX}
+{$IFDEF unix}
 var
+  dpy: PDisplay;
   root, child: pointer;
   winx, winy: Integer;
   xmask: Cardinal;
   TopList, List: PGList;
+
 begin
   Result := False;
-
   {$IFDEF DebugGDKTraps}
   BeginGDKErrorTrap;
   {$ENDIF}
   try
-    TopList := gdk_window_get_toplevels;
-    List := TopList;
-    while List <> nil do
-    begin
-      if (List^.Data <> nil)
-      and gdk_window_is_visible(List^.Data)
-      then begin
-        XQueryPointer(gdk_window_xdisplay(List^.Data),
-                      gdk_window_xwindow(List^.Data),
-                      @root,@child,@lpPoint.X,@lpPoint.Y,@winx,@winy,@xmask);
-
-        Result := True;
-        Break;
-      end;
-      List := g_list_next(List);
-    end;
-
-    if TopList <> nil
-    then g_list_free(TopList);
-
+    dpy := gdk_display;
+    XQueryPointer(dpy, RootWindow(dpy, DefaultScreen(dpy)), @root,@child,
+                                      @lpPoint.X,@lpPoint.Y,@winx,@winy,@xmask);
+    Result := True;
   finally
     {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
   end;
@@ -4283,7 +4261,6 @@ begin
   Result := False;
 end;
 {$ENDIF unix}
-{$ENDIF gkt2}
 
 {------------------------------------------------------------------------------
   Function: GetDC
@@ -7885,46 +7862,16 @@ function TGtkWidgetSet.SetCursorPos(X, Y: Integer): Boolean;
 {$IFDEF UNIX}
 var
   dpy: PDisplay;
-  TopList, List: PGList;
 begin
   Result := False;
   {$IFDEF DebugGDKTraps}
   BeginGDKErrorTrap;
   {$ENDIF}
   try
-    TopList := gdk_window_get_toplevels;
-    List := TopList;
-    while List <> nil do
-    begin
-      if (List^.Data <> nil)
-      and gdk_window_is_visible(List^.Data)
-      then begin
-        {$IFDEF GTK2}
-        //the pascal Gtk2 bindings don't seem to have gdk_window_xdisplay
-        dpy := XOpenDisplay(nil);
-        if dpy <> nil then begin
-        {$ELSE GTK2}
-        dpy := gdk_window_xdisplay(List^.Data);
-        {$ENDIF GTK2}
-          XWarpPointer(dpy,
-                     0,
-                     RootWindow(dpy, DefaultScreen(dpy)),
-                     0, 0, 0, 0,
-                     X,
-                     Y);
-        {$IFDEF GTK2}
-          XCloseDisplay(dpy);
-        end;
-        {$ENDIF GTK2}
-        Result := True;
-        Break;
-      end;
-      List := g_list_next(List);
-    end;
-
-    if TopList <> nil
-    then g_list_free(TopList);
-
+    dpy := gdk_display;
+    XWarpPointer(dpy, 0, RootWindow(dpy, DefaultScreen(dpy)), 0, 0, 0, 0, X, Y);
+    Result := True;
+    XFlush(dpy);
   finally
     {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
   end;
@@ -9081,6 +9028,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.423  2005/06/25 09:46:23  mattias
+  simplifies the gtk 1 and 2 Get/SetMousePos from Andrew Haines
+
   Revision 1.422  2005/06/22 17:37:06  mattias
   implemented TMouse.SetCursorPos  from Andrew
 
