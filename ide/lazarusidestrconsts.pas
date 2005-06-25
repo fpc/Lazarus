@@ -1859,6 +1859,13 @@ resourcestring
     +'sChoose a type.';
   lisNewDlgCreateANewProjectChooseAType = 'Create a new project.%sChoose a '
     +'type.';
+  lisChooseOneOfTheseItemsToCreateANewFile = 'Choose one of these items to '
+    +'create a new File';
+  lisChooseOneOfTheseItemsToCreateANewProject = 'Choose one of these items to '
+    +'create a new Project';
+  lisChooseOneOfTheseItemsToCreateANewPackage = 'Choose one of these items to '
+    +'create a new Package';
+  lisPackage = 'Package';
   lisNewDlgCreateANewPascalUnit = 'Create a new pascal unit.';
   lisNewDlgCreateANewUnitWithALCLForm = 'Create a new unit with a LCL form.';
   lisNewDlgCreateANewUnitWithADataModule = 'Create a new unit with a datamodule.';

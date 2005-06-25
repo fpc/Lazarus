@@ -555,36 +555,36 @@ end;
 
 function TNewLazIDEItemCategoryFile.LocalizedName: string;
 begin
-  Result:='File';
+  Result:=lisToDoLFile;
 end;
 
 function TNewLazIDEItemCategoryFile.Description: string;
 begin
-  Result:='Choose one of these items to create a new File';
+  Result:=lisChooseOneOfTheseItemsToCreateANewFile;
 end;
 
 { TNewLazIDEItemCategoryProject }
 
 function TNewLazIDEItemCategoryProject.LocalizedName: string;
 begin
-  Result:='Project';
+  Result:=dlgEnvProject;
 end;
 
 function TNewLazIDEItemCategoryProject.Description: string;
 begin
-  Result:='Choose one of these items to create a new Project';
+  Result:=lisChooseOneOfTheseItemsToCreateANewProject;
 end;
 
 { TNewLazIDEItemCategoryPackage }
 
 function TNewLazIDEItemCategoryPackage.LocalizedName: string;
 begin
-  Result:='Package';
+  Result:=lisPackage;
 end;
 
 function TNewLazIDEItemCategoryPackage.Description: string;
 begin
-  Result:='Choose one of these items to create a new Package';
+  Result:=lisChooseOneOfTheseItemsToCreateANewPackage;
 end;
 
 end.

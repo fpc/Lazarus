@@ -5766,6 +5766,22 @@ msgstr ""
 msgid "Create a new project.%sChoose a type."
 msgstr ""
 
+#: lazarusidestrconsts:lischooseoneoftheseitemstocreateanewfile
+msgid "Choose one of these items to create a new File"
+msgstr ""
+
+#: lazarusidestrconsts:lischooseoneoftheseitemstocreateanewproject
+msgid "Choose one of these items to create a new Project"
+msgstr ""
+
+#: lazarusidestrconsts:lischooseoneoftheseitemstocreateanewpackage
+msgid "Choose one of these items to create a new Package"
+msgstr ""
+
+#: lazarusidestrconsts:lispackage
+msgid "Package"
+msgstr ""
+
 #: lazarusidestrconsts:lisnewdlgcreateanewpascalunit
 msgid "Create a new pascal unit."
 msgstr ""

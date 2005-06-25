@@ -970,6 +970,18 @@ msgstr "Выбор каталога"
 msgid "Choose make path"
 msgstr "Выберите путь make"
 
+#: lazarusidestrconsts:lischooseoneoftheseitemstocreateanewfile
+msgid "Choose one of these items to create a new File"
+msgstr ""
+
+#: lazarusidestrconsts:lischooseoneoftheseitemstocreateanewpackage
+msgid "Choose one of these items to create a new Package"
+msgstr ""
+
+#: lazarusidestrconsts:lischooseoneoftheseitemstocreateanewproject
+msgid "Choose one of these items to create a new Project"
+msgstr ""
+
 #: lazarusidestrconsts:lischooseprogramsourcepppaslpr
 msgid "Choose program source (*.pp,*.pas,*.lpr)"
 msgstr "Выберите исходник программы (*.pp,*.pas,*.lpr)"
@@ -4389,6 +4401,10 @@ msgstr "Режим замены"
 #: lazarusidestrconsts:lisoverwritefile
 msgid "Overwrite file?"
 msgstr "Переписать файл?"
+
+#: lazarusidestrconsts:lispackage
+msgid "Package"
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditpackage
 msgid "Package %s"

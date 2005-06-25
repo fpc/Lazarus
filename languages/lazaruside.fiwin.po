@@ -970,6 +970,18 @@ msgstr ""
 msgid "Choose make path"
 msgstr ""
 
+#: lazarusidestrconsts:lischooseoneoftheseitemstocreateanewfile
+msgid "Choose one of these items to create a new File"
+msgstr ""
+
+#: lazarusidestrconsts:lischooseoneoftheseitemstocreateanewpackage
+msgid "Choose one of these items to create a new Package"
+msgstr ""
+
+#: lazarusidestrconsts:lischooseoneoftheseitemstocreateanewproject
+msgid "Choose one of these items to create a new Project"
+msgstr ""
+
 #: lazarusidestrconsts:lischooseprogramsourcepppaslpr
 msgid "Choose program source (*.pp,*.pas,*.lpr)"
 msgstr "Valitse ohjelman lähdekoodi (*.pp,*.pas,*.lpr)"
@@ -4389,6 +4401,10 @@ msgstr ""
 #: lazarusidestrconsts:lisoverwritefile
 msgid "Overwrite file?"
 msgstr "Korvataanko tiedosto?"
+
+#: lazarusidestrconsts:lispackage
+msgid "Package"
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditpackage
 msgid "Package %s"

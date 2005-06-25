@@ -981,6 +981,18 @@ msgstr "Wybierz katalog"
 msgid "Choose make path"
 msgstr ""
 
+#: lazarusidestrconsts:lischooseoneoftheseitemstocreateanewfile
+msgid "Choose one of these items to create a new File"
+msgstr ""
+
+#: lazarusidestrconsts:lischooseoneoftheseitemstocreateanewpackage
+msgid "Choose one of these items to create a new Package"
+msgstr ""
+
+#: lazarusidestrconsts:lischooseoneoftheseitemstocreateanewproject
+msgid "Choose one of these items to create a new Project"
+msgstr ""
+
 #: lazarusidestrconsts:lischooseprogramsourcepppaslpr
 msgid "Choose program source (*.pp,*.pas,*.lpr)"
 msgstr "Wybierz Ÿród³o programu (*.pp,*.pas,*.lpr)"
@@ -4400,6 +4412,10 @@ msgstr "Tryb nadpisywania"
 #: lazarusidestrconsts:lisoverwritefile
 msgid "Overwrite file?"
 msgstr "Zast¹piæ plik?"
+
+#: lazarusidestrconsts:lispackage
+msgid "Package"
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditpackage
 msgid "Package %s"

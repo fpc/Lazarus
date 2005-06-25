@@ -970,6 +970,18 @@ msgstr "Tria el directori"
 msgid "Choose make path"
 msgstr "Tria la trajectòria per a crear"
 
+#: lazarusidestrconsts:lischooseoneoftheseitemstocreateanewfile
+msgid "Choose one of these items to create a new File"
+msgstr ""
+
+#: lazarusidestrconsts:lischooseoneoftheseitemstocreateanewpackage
+msgid "Choose one of these items to create a new Package"
+msgstr ""
+
+#: lazarusidestrconsts:lischooseoneoftheseitemstocreateanewproject
+msgid "Choose one of these items to create a new Project"
+msgstr ""
+
 #: lazarusidestrconsts:lischooseprogramsourcepppaslpr
 msgid "Choose program source (*.pp,*.pas,*.lpr)"
 msgstr "Tria el codi font del programa (*.pp, *.pas, *.lpr)"
@@ -4389,6 +4401,10 @@ msgstr "Mode substituir"
 #: lazarusidestrconsts:lisoverwritefile
 msgid "Overwrite file?"
 msgstr "Voleu sobrescriure el fitxer?"
+
+#: lazarusidestrconsts:lispackage
+msgid "Package"
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditpackage
 msgid "Package %s"

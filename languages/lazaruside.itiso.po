@@ -980,6 +980,18 @@ msgstr "Scegliere la directory"
 msgid "Choose make path"
 msgstr "Scegli il percorso make"
 
+#: lazarusidestrconsts:lischooseoneoftheseitemstocreateanewfile
+msgid "Choose one of these items to create a new File"
+msgstr ""
+
+#: lazarusidestrconsts:lischooseoneoftheseitemstocreateanewpackage
+msgid "Choose one of these items to create a new Package"
+msgstr ""
+
+#: lazarusidestrconsts:lischooseoneoftheseitemstocreateanewproject
+msgid "Choose one of these items to create a new Project"
+msgstr ""
+
 #: lazarusidestrconsts:lischooseprogramsourcepppaslpr
 msgid "Choose program source (*.pp,*.pas,*.lpr)"
 msgstr "Scegliere sorgente programma (*.pp,*.pas,*.lpr)"
@@ -4399,6 +4411,10 @@ msgstr "Modalità sovrascrittura"
 #: lazarusidestrconsts:lisoverwritefile
 msgid "Overwrite file?"
 msgstr "Sovrascrivere il file?"
+
+#: lazarusidestrconsts:lispackage
+msgid "Package"
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditpackage
 msgid "Package %s"
