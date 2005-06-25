@@ -217,6 +217,7 @@ type
     property Action;
     property Align;
     property Anchors;
+    property AutoSize;
     property BorderSpacing;
     property Cancel;
     property Caption;
@@ -406,6 +407,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.98  2005/06/25 16:38:47  mattias
+  published TBitBtn.AutoSize
+
   Revision 1.97  2005/05/02 09:17:08  mattias
   started TButtonActionLink
 
