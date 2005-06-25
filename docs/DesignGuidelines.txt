@@ -8,7 +8,10 @@ Coding style:
 - Try to avoid unit circles. This makes it easier to navigate and when unit is
   growing allows to split it.
 - Minimize the number of calls from Interfaces to LCL, when performing an
-  action requested by the LCL.
+  action requested by the LCL. The interfaces only notify the LCL, never forces
+  something. The LCL decides.
+  Naming convention:
+    Notifications for TControl decendants should be named CNxxx.
 - All code must work with all checks (range, io, overflow, stack) on. Beside
   that this helps debugging, some users put these checks into their fpc.cfg, so
   they are applied to whole lazarus. Including packages and examples.

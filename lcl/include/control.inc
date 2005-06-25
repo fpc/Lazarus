@@ -3460,9 +3460,14 @@ begin
   end;
 end;
 
+procedure TControl.CNPreferredSizeChanged;
+begin
+  InvalidatePreferredSize;
+end;
+
 {------------------------------------------------------------------------------
   procedure TControl.InvalidatePreferredSize;
-  
+
   Invalidate the cache of the preferred size of this and all parent controls.
  ------------------------------------------------------------------------------}
 procedure TControl.InvalidatePreferredSize;
@@ -3536,6 +3541,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.260  2005/06/25 14:17:57  mattias
+  added notification method CNPreferredSizeChanged
+
   Revision 1.259  2005/06/22 23:04:44  mattias
   implemented default height for gtk TStatusBar and set TStatusBar.AutoSize to true
 

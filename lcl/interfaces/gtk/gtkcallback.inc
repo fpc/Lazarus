@@ -232,7 +232,7 @@ begin
       end;
 
       if TheWinControl<>nil then begin
-        TheWinControl.InvalidatePreferredSize;
+        TheWinControl.CNPreferredSizeChanged;
         SetCursor(TheWinControl, crDefault);
         ConnectInternalWidgetsSignals(MainWidget,TheWinControl);
         UpdateWidgetStyleOfControl(TheWinControl);
@@ -2986,6 +2986,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.280  2005/06/25 14:17:57  mattias
+  added notification method CNPreferredSizeChanged
+
   Revision 1.279  2005/06/03 20:58:23  mattias
   fixed focussing modal forms on gtk intf
 

@@ -1049,6 +1049,7 @@ type
                                 Lock: boolean); virtual;
     procedure GetPreferredSize(var PreferredWidth, PreferredHeight: integer;
                                Raw: boolean); virtual;
+    procedure CNPreferredSizeChanged;
     procedure InvalidatePreferredSize; virtual;
   public
     constructor Create(TheOwner: TComponent);override;
@@ -2911,6 +2912,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.300  2005/06/25 14:17:57  mattias
+  added notification method CNPreferredSizeChanged
+
   Revision 1.299  2005/06/22 17:37:06  mattias
   implemented TMouse.SetCursorPos  from Andrew
 
