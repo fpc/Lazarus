@@ -451,13 +451,22 @@ var
   Procedure LoadBitmap;
   var
     ext : String;
+    TempBitmap: TBitmap;
   begin
     Ext := ExtractFileExt(TheDialog.FileName);
-    ABitmap := TBitmap.Create;
-    if (AnsiCompareText(Ext, '.xpm') = 0)
-    or (AnsiCompareText(Ext, '.bmp') = 0) then begin
-      If FileExists(TheDialog.FileName) then
-        ABitmap.LoadFromFile(TheDialog.FileName);
+    if (CompareText(Ext, '.xpm') = 0)
+    or (CompareText(Ext, '.bmp') = 0) then begin
+      If FileExists(TheDialog.FileName) then begin
+        TempBitmap := TBitmap.Create;
+        try
+          // try to load
+          TempBitmap.LoadFromFile(TheDialog.FileName);
+          // no exception -> loading ok
+          ABitmap.Assign(TempBitmap);
+        finally
+          TempBitmap.Free;
+        end;
+      end;
     end
     else begin
       ABitmap.Assign(TheDialog.Preview.Picture.Graphic);
@@ -472,7 +481,7 @@ var
   end;
   
 begin
-  debugln('TButtonGlyphPropEditor.Edit');
+  //debugln('TButtonGlyphPropEditor.Edit');
   ABitmap := TBitmap(GetObjectValue(TBitmap));
   TheDialog := TGraphicPropertyEditorForm.Create(nil);
   try
@@ -490,7 +499,6 @@ begin
       If TheDialog.Preview.Picture.Graphic <> nil then begin
         if TheDialog.Modified then begin
           LoadBitmap;
-          SetPtrValue(ABitmap);
         end;
       end
       else begin
