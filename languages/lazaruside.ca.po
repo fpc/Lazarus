@@ -838,6 +838,10 @@ msgstr ""
 msgid "Cancel"
 msgstr "Cancel·la"
 
+#: lazarusidestrconsts:lisaboutnocontributors
+msgid "Cannot find contributors list."
+msgstr ""
+
 #: lazarusidestrconsts:liscannotfindlazarusstarter
 msgid "Cannot find lazarus starter:%s%s"
 msgstr "No es pot trobar l'iniciador del Lazarus:%s%s"

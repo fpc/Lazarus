@@ -838,6 +838,10 @@ msgstr ""
 msgid "Cancel"
 msgstr "Peru"
 
+#: lazarusidestrconsts:lisaboutnocontributors
+msgid "Cannot find contributors list."
+msgstr ""
+
 #: lazarusidestrconsts:liscannotfindlazarusstarter
 msgid "Cannot find lazarus starter:%s%s"
 msgstr ""

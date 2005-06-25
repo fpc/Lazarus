@@ -852,6 +852,10 @@ msgstr ""
 msgid "Cancel"
 msgstr "Abbruch"
 
+#: lazarusidestrconsts:lisaboutnocontributors
+msgid "Cannot find contributors list."
+msgstr ""
+
 #: lazarusidestrconsts:liscannotfindlazarusstarter
 msgid "Cannot find lazarus starter:%s%s"
 msgstr "Kann Lazarus-Startprogramm %s%s nicht finden"

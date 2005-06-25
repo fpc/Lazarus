@@ -838,6 +838,10 @@ msgstr ""
 msgid "Cancel"
 msgstr "Peru"
 
+#: lazarusidestrconsts:lisaboutnocontributors
+msgid "Cannot find contributors list."
+msgstr ""
+
 #: lazarusidestrconsts:liscannotfindlazarusstarter
 msgid "Cannot find lazarus starter:%s%s"
 msgstr ""
@@ -988,7 +992,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisoifclassnotfound
 msgid "Class %s%s%s not found."
-msgstr ""
+msgstr "Luokkaa (Class) %s%s%s ei löydy."
 
 #: lazarusidestrconsts:lisa2pclassnamealreadyexists
 msgid "Class Name already exists"
@@ -1380,7 +1384,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
-msgstr ""
+msgstr "Kopio valitut kääntäjän viestit leikepöydälle"
 
 #: lazarusidestrconsts:liscopyselectedmessagestoclipboard
 msgid "Copy selected messages to clipboard"
@@ -3820,7 +3824,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismissingpackages
 msgid "Missing Packages"
-msgstr ""
+msgstr "Komponenttipaketti puuttuu"
 
 #: lazarusidestrconsts:dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -4288,7 +4292,7 @@ msgstr "Avaa viimeksi käsitelty projekti Lazaruksen käynnistyksen yhteydessä"
 
 #: lazarusidestrconsts:lismenuopenpackage
 msgid "Open loaded package"
-msgstr ""
+msgstr "Avaa komponenttipaketti"
 
 #: lazarusidestrconsts:liscomppalopenpackage
 msgid "Open package"
@@ -4460,7 +4464,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisprojaddpackagenotfound
 msgid "Package not found"
-msgstr ""
+msgstr "Komponenttipakettia ei löytynyt"
 
 #: lazarusidestrconsts:lispkgmangpackage
 msgid "Package: %s"
@@ -4816,7 +4820,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispckeditreadddependency
 msgid "Re-Add dependency"
-msgstr ""
+msgstr "Palauta riippuvuus"
 
 #: lazarusidestrconsts:lispckeditreaddfile
 msgid "Re-Add file"
@@ -4828,7 +4832,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisreaderror
 msgid "Read Error"
-msgstr ""
+msgstr "Lukuvirhe"
 
 #: lazarusidestrconsts:uemreadonly
 msgid "Read Only"
@@ -4984,7 +4988,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisprojinspremovedrequiredpackages
 msgid "Removed required packages"
-msgstr ""
+msgstr "Poistettuja tarvittavia komponenttipaketteja"
 
 #: lazarusidestrconsts:lispckeditremovedrequiredpackagestheseentriesarenotsaved
 msgid "Removed required packages (these entries are not saved to the lpk file)"
@@ -5060,7 +5064,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispckeditrequiredpackages
 msgid "Required Packages"
-msgstr ""
+msgstr "Tarvittavat komponenttipaketit"
 
 #: lazarusidestrconsts:lismenurescanfpcsourcedirectory
 msgid "Rescan FPC source directory"
@@ -6268,7 +6272,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisprojaddthedependencywasnotfound
 msgid "The dependency %s%s%s was not found.%sPlease choose an existing package."
-msgstr ""
+msgstr "Tarvittavaa komponenttipakettia %s%s%s ei löytynyt.%sJos mahdollista niin valitse jokin toinen komponenttipaketti."
 
 #: lazarusidestrconsts:listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
@@ -6352,7 +6356,7 @@ msgstr ""
 
 #: lazarusidestrconsts:listhefollowingpackagesfailedtoload
 msgid "The following package(s) failed to load:%s%s"
-msgstr ""
+msgstr "Seuraavan komponenttipaketin (/seuraavien komponenttipakettien) lataaminen epäonnistui:%s%s"
 
 #: lazarusidestrconsts:listhefollowingunitswerenotfound1eithertheseunitsaren
 msgid "The following units were not found:%s%s%s%s1) Either these units are not in the unit path, then you can abort now, fix the unit path and try again.%s2) Or the units came from a case insensitive file system (windows/Delphi) and are now on a case sensitive filesystem (linux, bsd, macosx). In this case you should abort now, rename the units all lowercase and try again.%s3) Or you can ignore the missing units and continue.%s%sShould the missing units be commented out?"
@@ -6652,7 +6656,7 @@ msgstr "Nimi:"
 
 #: lazarusidestrconsts:listodolistcaption
 msgid "ToDo List"
-msgstr ""
+msgstr "Tehtävälista (ToDo List)"
 
 #: lazarusidestrconsts:listodolistoptions
 msgid "ToDo options..."
@@ -6912,7 +6916,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisunabletoreadfile2
 msgid "Unable to read file %s%s%s!"
-msgstr ""
+msgstr "Ei pystytä lukemaan tiedostoa %s%s%s!"
 
 #: lazarusidestrconsts:lisunabletoreadfileerror
 msgid "Unable to read file %s%s%s%sError: %s"
@@ -7360,7 +7364,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuviewprojecttodos
 msgid "View ToDo List"
-msgstr ""
+msgstr "Näytä tehtävälista (ToDo List)"
 
 #: lazarusidestrconsts:lismenuviewunitdependencies
 msgid "View Unit Dependencies"

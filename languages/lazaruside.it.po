@@ -848,6 +848,10 @@ msgstr "È possibile solo cambiare la classe dei TComponents."
 msgid "Cancel"
 msgstr "Cancella"
 
+#: lazarusidestrconsts:lisaboutnocontributors
+msgid "Cannot find contributors list."
+msgstr ""
+
 #: lazarusidestrconsts:liscannotfindlazarusstarter
 msgid "Cannot find lazarus starter:%s%s"
 msgstr "Impossibile trovare esecutore di Lazarus:%s%s"
