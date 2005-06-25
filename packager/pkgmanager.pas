@@ -2498,7 +2498,11 @@ var
 begin
   Result:=mrOk;
   if (Dependencies=nil) or (Dependencies.Count=0) then exit;
-  Msg:=Format(lisTheFollowingPackageSFailedToLoad, [#13, #13]);
+  if Dependencies.Count=1 then
+    Msg:=lisPkgMangTheFollowingPackageFailedToLoad
+  else
+    Msg:=lisPkgMangTheFollowingPackagesFailedToLoad;
+  Msg:=Msg+#13#13;
   for i:=0 to Dependencies.Count-1 do begin
     ADependency:=TPkgDependency(Dependencies[i]);
     Msg:=Msg+ADependency.AsString+#13;
@@ -3383,6 +3387,7 @@ var
   NeedSaving: Boolean;
   RequiredPackage: TLazPackage;
   BuildIDEFlags: TBuildLazarusFlags;
+  Msg: string;
 begin
   PackageGraph.BeginUpdate(true);
   PkgList:=nil;
@@ -3426,10 +3431,16 @@ begin
         RequiredPackage:=TLazPackage(PkgList[i]);
         s:=s+RequiredPackage.IDAsString+#13;
       end;
+      if PkgList.Count=0 then
+        Msg:=Format(
+          lisPkgMangInstallingThePackageWillAutomaticallyInstallThePac, [
+          APackage.IDAsString])
+      else
+        Msg:=Format(
+          lisPkgMangInstallingThePackageWillAutomaticallyInstallThePac2, [
+          APackage.IDAsString]);
       Result:=MessageDlg(lisPkgMangAutomaticallyInstalledPackages,
-        Format(lisPkgMangInstallingThePackageWillAutomaticallyInstall, [
-          APackage.IDAsString, #13, s]),
-        mtConfirmation,[mbOk,mbCancel,mbAbort],0);
+        Msg+#13+s,mtConfirmation,[mbOk,mbCancel,mbAbort],0);
       if Result<>mrOk then exit;
     end;
 

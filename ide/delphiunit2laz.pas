@@ -253,6 +253,7 @@ var
   MissingUnits: TStrings;
   MissingUnitsText: String;
   i: Integer;
+  Msg: String;
 begin
   Result:=LoadCodeBuffer(LazUnitCode,LazarusUnitFilename,
                          [lbfCheckIfText,lbfUpdateFromDisk]);
@@ -279,7 +280,11 @@ begin
     end;
     DebugLn('FixMissingUnits FindMissingUnits="',MissingUnitsText,'"');
     // ask user if missing units should be commented
-    Result:=MessageDlg(lisUnitsNotFound,
+    if MissingUnits.Count=1 then
+      Msg:=lisUnitNotFound
+    else
+      Msg:=lisUnitsNotFound2;
+    Result:=MessageDlg(Msg,
       Format(lisTheFollowingUnitsWereNotFound1EitherTheseUnitsAreN, [#13,
         MissingUnitsText, #13, #13, #13, #13, #13, #13]),
       mtConfirmation,[mbYes,mbAbort],0);

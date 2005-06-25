@@ -3205,9 +3205,13 @@ msgstr "Zainstalowany"
 msgid "Installed Packages"
 msgstr ""
 
-#: lazarusidestrconsts:lispkgmanginstallingthepackagewillautomaticallyinstall
-msgid "Installing the package %s will automatically install the package(s):%s%s"
-msgstr "Zainstalowanie pakietu %s spowoduje automatyczne doinstalowanie pakietu(ów):%s%s"
+#: lazarusidestrconsts:lispkgmanginstallingthepackagewillautomaticallyinstallthepac
+msgid "Installing the package %s will automatically install the package:"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmanginstallingthepackagewillautomaticallyinstallthepac2
+msgid "Installing the package %s will automatically install the packages:"
+msgstr ""
 
 #: lazarusidestrconsts:dlgintvinsec
 msgid "Interval in secs"
@@ -6381,8 +6385,12 @@ msgstr "Nazwa pliku %s%s%s nie odpowiada nazwie pakietu %s%s%s w tym pliku.%sChc
 msgid "The filename %s%s%s is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
 msgstr ""
 
-#: lazarusidestrconsts:listhefollowingpackagesfailedtoload
-msgid "The following package(s) failed to load:%s%s"
+#: lazarusidestrconsts:lispkgmangthefollowingpackagefailedtoload
+msgid "The following package failed to load:"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthefollowingpackagesfailedtoload
+msgid "The following packages failed to load:"
 msgstr ""
 
 #: lazarusidestrconsts:listhefollowingunitswerenotfound1eithertheseunitsaren
@@ -7185,16 +7193,16 @@ msgstr "Identyfikator modu³u istnieje"
 msgid "Unit name already exists"
 msgstr "Modu³ o tej nazwie ju¿ istnieje"
 
+#: lazarusidestrconsts:lisunitnotfound
+msgid "Unit not found"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgsysunitnotfound
 msgid "Unit not found: %s%s%s"
 msgstr "Nie znalaz³em modu³u: %s%s%s"
 
 #: lazarusidestrconsts:dlgunitoutp
 msgid "Unit output directory (-FE):"
-msgstr ""
-
-#: lazarusidestrconsts:lisunitsnotfound
-msgid "Unit(s) not found"
 msgstr ""
 
 #: lazarusidestrconsts:lisunitlfmfile
@@ -7208,6 +7216,10 @@ msgstr "Modu³ o tej nazwie ju¿ istnieje"
 #: lazarusidestrconsts:lisunitnamealreadyexistscap
 msgid "Unitname already in project"
 msgstr "Modu³ o tej nazwie jest ju¿ w projekcie"
+
+#: lazarusidestrconsts:lisunitsnotfound2
+msgid "Units not found"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewunits
 msgid "Units..."

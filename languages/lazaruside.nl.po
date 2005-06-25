@@ -3205,8 +3205,12 @@ msgstr "Geinstalleerd."
 msgid "Installed Packages"
 msgstr "Geinstalleerde packages"
 
-#: lazarusidestrconsts:lispkgmanginstallingthepackagewillautomaticallyinstall
-msgid "Installing the package %s will automatically install the package(s):%s%s"
+#: lazarusidestrconsts:lispkgmanginstallingthepackagewillautomaticallyinstallthepac
+msgid "Installing the package %s will automatically install the package:"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmanginstallingthepackagewillautomaticallyinstallthepac2
+msgid "Installing the package %s will automatically install the packages:"
 msgstr ""
 
 #: lazarusidestrconsts:dlgintvinsec
@@ -6381,8 +6385,12 @@ msgstr ""
 msgid "The filename %s%s%s is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
 msgstr ""
 
-#: lazarusidestrconsts:listhefollowingpackagesfailedtoload
-msgid "The following package(s) failed to load:%s%s"
+#: lazarusidestrconsts:lispkgmangthefollowingpackagefailedtoload
+msgid "The following package failed to load:"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthefollowingpackagesfailedtoload
+msgid "The following packages failed to load:"
 msgstr ""
 
 #: lazarusidestrconsts:listhefollowingunitswerenotfound1eithertheseunitsaren
@@ -7185,16 +7193,16 @@ msgstr ""
 msgid "Unit name already exists"
 msgstr ""
 
+#: lazarusidestrconsts:lisunitnotfound
+msgid "Unit not found"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgsysunitnotfound
 msgid "Unit not found: %s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts:dlgunitoutp
 msgid "Unit output directory (-FE):"
-msgstr ""
-
-#: lazarusidestrconsts:lisunitsnotfound
-msgid "Unit(s) not found"
 msgstr ""
 
 #: lazarusidestrconsts:lisunitlfmfile
@@ -7208,6 +7216,10 @@ msgstr ""
 #: lazarusidestrconsts:lisunitnamealreadyexistscap
 msgid "Unitname already in project"
 msgstr "Unitname existiert bereits im Projekt"
+
+#: lazarusidestrconsts:lisunitsnotfound2
+msgid "Units not found"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewunits
 msgid "Units..."

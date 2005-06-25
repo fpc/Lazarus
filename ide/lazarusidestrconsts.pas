@@ -294,7 +294,6 @@ resourcestring
   lisUnableToWriteFileError = 'Unable to write file %s%s%s%sError: %s';
   lisErrorCreatingLrs = 'Error creating lrs';
   lisLFMFileNotFound = 'LFM file not found';
-  lisUnitsNotFound = 'Unit(s) not found';
   lisTheFollowingUnitsWereNotFound1EitherTheseUnitsAreN = 'The following '
     +'units were not found:%s%s%s%s1) Either these units are not in the unit '
     +'path, then you can abort now, fix the unit path and try again.%s2) Or '
@@ -303,6 +302,8 @@ resourcestring
     +'case you should abort now, rename the units all lowercase and try '
     +'again.%s3) Or you can ignore the missing units and continue.%s%sShould '
     +'the missing units be commented out?';
+  lisUnitNotFound = 'Unit not found';
+  lisUnitsNotFound2 = 'Units not found';
   lisUnitLFMFile = 'Unit: %s%sLFM file: %s';
   lisUnableToConvertLfmToLrsAndWriteLrsFile = 'Unable to convert lfm to lrs '
     +'and write lrs file.';
@@ -2168,9 +2169,11 @@ resourcestring
   lisPkgMangErrorWritingPackage = 'Error Writing Package';
   lisPkgMangUnableToWritePackageToFileError = 'Unable to write package %s%s%s%'
     +'sto file %s%s%s.%sError: %s';
-  lisTheFollowingPackageSFailedToLoad = 'The following package(s) failed to '
-    +'load:%s%s';
   lisSeeProjectProjectInspector = '%sSee Project -> Project Inspector';
+  lisPkgMangTheFollowingPackageFailedToLoad = 'The following package failed '
+    +'to load:';
+  lisPkgMangTheFollowingPackagesFailedToLoad = 'The following packages failed '
+    +'to load:';
   lisMissingPackages = 'Missing Packages';
   lisPkgManginvalidCompilerFilename = 'invalid Compiler filename';
   lisPkgMangTheCompilerFileForPackageIsNotAValidExecutable = 'The compiler '
@@ -2207,8 +2210,10 @@ resourcestring
     +'s is a runtime only package.%sRuntime only packages can not be '
     +'installed in the IDE.';
   lisPkgMangAutomaticallyInstalledPackages = 'Automatically installed packages';
-  lisPkgMangInstallingThePackageWillAutomaticallyInstall = 'Installing the '
-    +'package %s will automatically install the package(s):%s%s';
+  lisPkgMangInstallingThePackageWillAutomaticallyInstallThePac2 = 'Installing '
+    +'the package %s will automatically install the packages:';
+  lisPkgMangInstallingThePackageWillAutomaticallyInstallThePac = 'Installing '
+    +'the package %s will automatically install the package:';
   lisPkgMangRebuildLazarus = 'Rebuild Lazarus?';
   lisPkgMangThePackageWasMarkedForInstallationCurrentlyLazarus = 'The package %'
     +'s%s%s was marked for installation.%sCurrently lazarus only supports '

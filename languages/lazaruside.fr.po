@@ -3205,9 +3205,13 @@ msgstr "Installé"
 msgid "Installed Packages"
 msgstr "Paquets installés"
 
-#: lazarusidestrconsts:lispkgmanginstallingthepackagewillautomaticallyinstall
-msgid "Installing the package %s will automatically install the package(s):%s%s"
-msgstr "L'installation du paquet %s ajoutera automatiquement le(s) paquet(s) : %s%s"
+#: lazarusidestrconsts:lispkgmanginstallingthepackagewillautomaticallyinstallthepac
+msgid "Installing the package %s will automatically install the package:"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmanginstallingthepackagewillautomaticallyinstallthepac2
+msgid "Installing the package %s will automatically install the packages:"
+msgstr ""
 
 #: lazarusidestrconsts:dlgintvinsec
 msgid "Interval in secs"
@@ -6381,9 +6385,13 @@ msgstr "Le nom de fichier %s%s%s ne correspond pas au paquet nommé %s%s%s dans l
 msgid "The filename %s%s%s is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
 msgstr ""
 
-#: lazarusidestrconsts:listhefollowingpackagesfailedtoload
-msgid "The following package(s) failed to load:%s%s"
-msgstr "Le(s) paquet(s) suivant(s) n'a pas pu être chargé: %s%s"
+#: lazarusidestrconsts:lispkgmangthefollowingpackagefailedtoload
+msgid "The following package failed to load:"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthefollowingpackagesfailedtoload
+msgid "The following packages failed to load:"
+msgstr ""
 
 #: lazarusidestrconsts:listhefollowingunitswerenotfound1eithertheseunitsaren
 msgid "The following units were not found:%s%s%s%s1) Either these units are not in the unit path, then you can abort now, fix the unit path and try again.%s2) Or the units came from a case insensitive file system (windows/Delphi) and are now on a case sensitive filesystem (linux, bsd, macosx). In this case you should abort now, rename the units all lowercase and try again.%s3) Or you can ignore the missing units and continue.%s%sShould the missing units be commented out?"
@@ -7185,6 +7193,10 @@ msgstr "Identificateur d'unité existant"
 msgid "Unit name already exists"
 msgstr "Nom d'unité déjà existant"
 
+#: lazarusidestrconsts:lisunitnotfound
+msgid "Unit not found"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgsysunitnotfound
 msgid "Unit not found: %s%s%s"
 msgstr "Unité introuvable: %s%s%s"
@@ -7192,10 +7204,6 @@ msgstr "Unité introuvable: %s%s%s"
 #: lazarusidestrconsts:dlgunitoutp
 msgid "Unit output directory (-FE):"
 msgstr "Répertoire de sortie de l'unités (-FE):"
-
-#: lazarusidestrconsts:lisunitsnotfound
-msgid "Unit(s) not found"
-msgstr "Unité(s) introuvables"
 
 #: lazarusidestrconsts:lisunitlfmfile
 msgid "Unit: %s%sLFM file: %s"
@@ -7208,6 +7216,10 @@ msgstr "Nom d'unité déjà existant"
 #: lazarusidestrconsts:lisunitnamealreadyexistscap
 msgid "Unitname already in project"
 msgstr "Nom d'unité déjà existant dans le projet"
+
+#: lazarusidestrconsts:lisunitsnotfound2
+msgid "Units not found"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewunits
 msgid "Units..."
