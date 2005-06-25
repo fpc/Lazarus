@@ -3885,8 +3885,10 @@ begin
     EnableWindow(Handle, Enabled);
 
   // Delay the setting of text until it is completely loaded
-  if not (csLoading in ComponentState) 
-  then TWSWinControlClass(WidgetSetClass).SetText(Self, FCaption);
+  if not (csLoading in ComponentState) then begin
+    TWSWinControlClass(WidgetSetClass).SetText(Self, FCaption);
+    InvalidatePreferredSize;
+  end;
 
   // send pending resize event
   Resize;
@@ -3957,7 +3959,8 @@ begin
   then begin              
     // Set cached caption
     TWSWinControlClass(WidgetSetClass).SetText(Self, FCaption);
-  
+    InvalidatePreferredSize;
+
     if [wcfColorChanged,wcfFontChanged]*FWinControlFlags<>[] then
     begin
       TWSWinControlClass(WidgetSetClass).SetColor(Self);
@@ -4390,7 +4393,10 @@ procedure TWinControl.RealSetText(const AValue: TCaption);
 begin
   if HandleAllocated 
   and (not (csLoading in ComponentState))
-  then TWSWinControlClass(WidgetSetClass).SetText(Self, AValue);
+  then begin
+    TWSWinControlClass(WidgetSetClass).SetText(Self, AValue);
+    InvalidatePreferredSize;
+  end;
   inherited RealSetText(AValue);
 end;
 
@@ -4507,6 +4513,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.327  2005/06/25 01:42:38  mattias
+  moved InvalidatePreferredSize from gtk intf to lcl
+
   Revision 1.326  2005/06/24 14:03:33  mattias
   added some anchorside autosizing, activated new generic autosizing, removed old special DoAutoSize methods
 

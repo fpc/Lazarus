@@ -105,8 +105,10 @@ procedure TCustomStaticText.SetShowAccelChar(Val: boolean);
 begin
   if Val <> FShowAccelChar then begin
     FShowAccelChar:= Val;
-    if HandleAllocated then
+    if HandleAllocated then begin
       TWSWinControlClass(WidgetSetClass).SetText(Self,Caption);
+      InvalidatePreferredSize;
+    end;
   end;
 end;
 
@@ -144,6 +146,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.15  2005/06/25 01:42:38  mattias
+  moved InvalidatePreferredSize from gtk intf to lcl
+
   Revision 1.14  2005/06/24 14:03:33  mattias
   added some anchorside autosizing, activated new generic autosizing, removed old special DoAutoSize methods
 

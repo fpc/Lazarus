@@ -178,7 +178,6 @@ var
 begin          
   if not WSCheckHandleAllocated(AWincontrol, 'SetText')
   then Exit;
-  AWinControl.InvalidatePreferredSize;
 
   BtnWidget := PGtkButton(AWinControl.Handle);
   {$IFDEF GTK2}
