@@ -529,6 +529,7 @@ end;
 
 function EditorCommandToCodeString(Cmd: TSynEditorCommand): string;
 begin
+  Result := '';
   if not EditorCommandToIdent(Cmd, Result) then
     Result := IntToStr(Cmd);
 end;

@@ -337,6 +337,7 @@ function TSynEditFileReader.ReadLine: string;
 var
   E, P, S: PChar;
 begin
+  Result := '';
   repeat
     S := PChar(@fBuffer[fBufPtr]);
     if S[0] = #0 then begin

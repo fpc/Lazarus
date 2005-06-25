@@ -306,6 +306,7 @@ function TSynGutter.FormatLineNumber(Line: integer): string;
 var
   i: integer;
 begin
+  Result := '';
   if fZeroStart then Dec(Line);
   Str(Line : fAutoSizeDigitCount, Result);
   if fLeadingZeros then

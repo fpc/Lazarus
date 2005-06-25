@@ -4363,6 +4363,7 @@ end;
  ------------------------------------------------------------------------------}
 function TWinControl.RealGetText: TCaption;
 begin
+  Result := '';
   if not HandleAllocated 
   or (csLoading in ComponentState) 
   or (not TWSWinControlClass(WidgetSetClass).GetText(Self, Result))
@@ -4378,6 +4379,7 @@ end;
  ------------------------------------------------------------------------------}
 function TWinControl.GetTextLen: Integer;
 begin
+  Result := 0;
   if not HandleAllocated 
   or (csLoading in ComponentState) 
   or not TWSWinControlClass(WidgetSetClass).GetTextLen(Self, Result)
@@ -4515,6 +4517,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.329  2005/06/25 15:34:03  mattias
+  fixed a few fpc over warnings  from Andrew Haines
+
   Revision 1.328  2005/06/25 15:30:33  mattias
   fixed changing BorderSpacing at designtime and borderspacing Align=alTop,alLeft
 

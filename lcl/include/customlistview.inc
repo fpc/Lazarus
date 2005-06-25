@@ -332,6 +332,7 @@ var
   Str2: String;
   ListView: TCustomListView;
 begin
+  Result := 0;
   ListView := TListItem(Item1).Owner.Owner;
   if Assigned(ListView.FOnCompare) then begin
     ListView.FOnCompare(ListView, TListItem(Item1), TListItem(Item2),0 ,Result);
@@ -752,6 +753,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.47  2005/06/25 15:34:03  mattias
+  fixed a few fpc over warnings  from Andrew Haines
+
   Revision 1.46  2005/04/22 08:19:39  mattias
   added TListItems.FindCaption partstart parameter
 

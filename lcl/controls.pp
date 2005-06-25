@@ -2325,6 +2325,7 @@ const
 
 function CursorToString(Cursor: TCursor): string;
 begin
+  Result := '';
   if not CursorToIdent(Cursor, Result) then FmtStr(Result, '%d', [Cursor]);
 end;
 
@@ -2913,6 +2914,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.302  2005/06/25 15:34:03  mattias
+  fixed a few fpc over warnings  from Andrew Haines
+
   Revision 1.301  2005/06/25 15:30:33  mattias
   fixed changing BorderSpacing at designtime and borderspacing Align=alTop,alLeft
 

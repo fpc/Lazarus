@@ -1651,12 +1651,14 @@ end;
 
 function ColorToString(Color: TColor): AnsiString;
 begin
+  Result := '';
   if not ColorToIdent(Color, Result) then
     Result:='$'+HexStr(Color,8);
 end;
 
 function StringToColor(const S: shortstring): TColor;
 begin
+  Result := clNone;
   if not IdentToColor(S, Longint(Result)) then
     Result := TColor(StrToInt(S));
 end;
@@ -1928,6 +1930,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.176  2005/06/25 15:34:03  mattias
+  fixed a few fpc over warnings  from Andrew Haines
+
   Revision 1.175  2005/06/22 09:45:59  mattias
   implemented saving alpha bmp and using transparency for IDE glyph editor
 

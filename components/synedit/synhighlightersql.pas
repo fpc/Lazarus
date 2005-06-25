@@ -1450,6 +1450,7 @@ function TSynSQLSyn.GetToken: string;
 var
   Len: LongInt;
 begin
+  Result := '';
   Len := Run - fTokenPos;
   Setstring(Result, (FLine + fTokenPos), Len);
 end;

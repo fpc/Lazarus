@@ -1398,6 +1398,7 @@ function TmwPasLex.GetToken: string;
 var
   Len: Longint;
 begin
+  Result := '';
   Len:=Run-fTokenPos;
   SetString(Result, (FOrigin+fTokenPos), Len);
 end;

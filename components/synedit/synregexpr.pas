@@ -1615,6 +1615,7 @@ function TRegExpr.GetMatchLen (Idx : integer) : integer;
 
 function TRegExpr.GetMatch (Idx : integer) : RegExprString;
  begin
+  Result := '';
   if (Idx >= 0) and (Idx < NSUBEXP) and Assigned (fInputString)
      and Assigned (startp [Idx]) and Assigned (endp [Idx])
    //then Result := copy (fInputString, MatchPos [Idx], MatchLen [Idx]) //###0.929

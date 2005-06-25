@@ -1214,6 +1214,7 @@ end;
 
 function GetDependencyOwnerAsString(Dependency: TPkgDependency): string;
 begin
+  Result := '';
   OnGetDependencyOwnerDescription(Dependency,Result);
 end;
 

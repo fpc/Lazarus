@@ -535,6 +535,7 @@ var
   Len1, Len2: integer;
   DiffOutput: TDiffOutput;
 begin
+  Result := '';
   DiffOutput:=TDiffOutput.Create(OutputType);
   DiffOutput.Text1:=Text1;
   DiffOutput.Text2:=Text2;

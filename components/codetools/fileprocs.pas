@@ -1283,6 +1283,7 @@ function TFileStateCache.FileExistsCached(const Filename: string): boolean;
 var
   AFile: TFileStateCacheItem;
 begin
+  Result := False;
   if Check(Filename,fsciExists,AFile,Result) then exit;
   Result:=FileExists(AFile.Filename);
   SetFlag(AFile,fsciExists,Result);
@@ -1296,6 +1297,7 @@ function TFileStateCache.DirPathExistsCached(const Filename: string): boolean;
 var
   AFile: TFileStateCacheItem;
 begin
+  Result := False;
   if Check(Filename,fsciDirectory,AFile,Result) then exit;
   Result:=DirPathExists(AFile.Filename);
   SetFlag(AFile,fsciDirectory,Result);
@@ -1306,6 +1308,7 @@ function TFileStateCache.DirectoryIsWritableCached(const DirectoryName: string
 var
   AFile: TFileStateCacheItem;
 begin
+  Result := False;
   if Check(DirectoryName,fsciDirectoryWritable,AFile,Result) then exit;
   Result:=DirectoryIsWritable(AFile.Filename);
   SetFlag(AFile,fsciDirectoryWritable,Result);
@@ -1316,6 +1319,7 @@ function TFileStateCache.FileIsExecutableCached(
 var
   AFile: TFileStateCacheItem;
 begin
+  Result := False;
   if Check(AFilename,fsciExecutable,AFile,Result) then exit;
   Result:=FileIsExecutable(AFile.Filename);
   SetFlag(AFile,fsciExecutable,Result);
@@ -1325,6 +1329,7 @@ function TFileStateCache.FileIsReadableCached(const AFilename: string): boolean;
 var
   AFile: TFileStateCacheItem;
 begin
+  Result := False;
   if Check(AFilename,fsciReadable,AFile,Result) then exit;
   Result:=FileIsReadable(AFile.Filename);
   SetFlag(AFile,fsciReadable,Result);
@@ -1334,6 +1339,7 @@ function TFileStateCache.FileIsWritableCached(const AFilename: string): boolean;
 var
   AFile: TFileStateCacheItem;
 begin
+  Result := False;
   if Check(AFilename,fsciWritable,AFile,Result) then exit;
   Result:=FileIsWritable(AFile.Filename);
   SetFlag(AFile,fsciWritable,Result);
@@ -1343,6 +1349,7 @@ function TFileStateCache.FileIsTextCached(const AFilename: string): boolean;
 var
   AFile: TFileStateCacheItem;
 begin
+  Result := False;
   if Check(AFilename,fsciText,AFile,Result) then exit;
   Result:=FileIsText(AFile.Filename);
   SetFlag(AFile,fsciText,Result);

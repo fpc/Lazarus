@@ -110,6 +110,7 @@ var
   SrcLen, SrcPos, DestPos, LineCount, CurLine, LineLen: integer;
   LineStart: PChar;
 begin
+  Result := nil;
   // trim all comments and symbols and extract only the xpm data between ""
   SrcLen:=length(XPM);
   SetLength(TrimmedXPM,SrcLen+1); // +1 because TrimmedXPM should be at least
@@ -288,6 +289,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.32  2005/06/25 15:34:03  mattias
+  fixed a few fpc over warnings  from Andrew Haines
+
   Revision 1.31  2005/06/22 09:45:59  mattias
   implemented saving alpha bmp and using transparency for IDE glyph editor
 

@@ -289,10 +289,9 @@ end;
 
 function ComponentIsInvisible(AComponent: TComponent): boolean;
 begin
+  Result:=false;
   if Assigned(OnComponentIsInvisible) then
-    OnComponentIsInvisible(AComponent,Result)
-  else
-    Result:=false;
+    OnComponentIsInvisible(AComponent,Result);
 end;
 
 function ComponentIsNonVisual(AComponent: TComponent): boolean;

@@ -803,6 +803,7 @@ function TSynXMLSyn.GetToken: string;
 var
   len: Longint;
 begin
+  Result := '';
   Len := (Run - fTokenPos);
   SetString(Result, (FLine + fTokenPos), len);
 end;

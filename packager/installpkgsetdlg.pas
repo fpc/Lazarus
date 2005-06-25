@@ -454,6 +454,7 @@ end;
 
 function TInstallPkgSetDialog.CheckSelection: boolean;
 begin
+  Result := False;
   OnCheckInstallPackageList(FNewInstalledPackages,Result);
 end;
 

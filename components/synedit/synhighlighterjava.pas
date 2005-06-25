@@ -1307,6 +1307,7 @@ function TSynJavaSyn.GetToken: String;
 var
   Len: LongInt;
 begin
+  Result := '';
   Len := Run - fTokenPos;
   SetString(Result, (FLine + fTokenPos), Len);
 end;

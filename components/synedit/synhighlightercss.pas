@@ -1655,6 +1655,7 @@ function TSynCssSyn.GetToken: string;
 var
   Len: LongInt;
 begin
+  Result := '';
   Len := Run - FTokenPos;
   SetString(Result, (FLine + FTokenPos), Len);
 end;

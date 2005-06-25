@@ -288,6 +288,7 @@ function GraphicFilter(GraphicClass: TGraphicClass): string;
 var
   Filters: string;
 begin
+  Result := '';
   GetPicFileFormats.BuildFilterStrings(GraphicClass,Result,Filters);
 end;
 
@@ -309,6 +310,7 @@ function GraphicFileMask(GraphicClass: TGraphicClass): string;
 var
   Descriptions: string;
 begin
+  Result := '';
   GetPicFileFormats.BuildFilterStrings(GraphicClass,Descriptions,Result);
 end;
 
