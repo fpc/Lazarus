@@ -1994,7 +1994,8 @@ procedure AdjustBorderSpace(var RemainingClientRect, CurBorderSpace: TRect;
 // Left, Top, Right, Bottom: apply these borderspaces to CurBorderSpace
 //
 // CurBorderSpace will be set to the maximum of CurBorderSpace and Left, Top,
-// Right, Bottom. RemainingClientRect will shrink.
+// Right, Bottom.
+// RemainingClientRect will shrink.
 // RemainingClientRect will not shrink to negative size.
 var
   NewWidth: Integer;
@@ -2912,6 +2913,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.301  2005/06/25 15:30:33  mattias
+  fixed changing BorderSpacing at designtime and borderspacing Align=alTop,alLeft
+
   Revision 1.300  2005/06/25 14:17:57  mattias
   added notification method CNPreferredSizeChanged
 

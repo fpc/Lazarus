@@ -913,7 +913,7 @@ end;
 
 procedure TControl.DoBorderSpacingChange(Sender: TObject);
 begin
-  AdjustSize;
+  RequestAlign;
 end;
 
 {------------------------------------------------------------------------------
@@ -3541,6 +3541,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.261  2005/06/25 15:30:33  mattias
+  fixed changing BorderSpacing at designtime and borderspacing Align=alTop,alLeft
+
   Revision 1.260  2005/06/25 14:17:57  mattias
   added notification method CNPreferredSizeChanged
 

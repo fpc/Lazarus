@@ -80,6 +80,7 @@ procedure TWinControl.AlignControls(AControl: TControl;
 var
   AlignList: TList;
   RemainingBorderSpace: TRect; // borderspace around RemainingClientRect
+                               // e.g. Right=3 means borderspace of 3
 
   function AlignWork: Boolean;
   var
@@ -126,7 +127,8 @@ var
     MinHeight: Integer;
     MaxHeight: Integer;
     CurRemainingClientRect: TRect;
-    CurRemainingBorderSpace: TRect;
+    CurRemainingBorderSpace: TRect; // borderspace around RemainingClientRect
+                                    // e.g. Right=3 means borderspace of 3
     ChildAroundSpace: TRect;
     AnchorSideCacheValid: array[TAnchorKind] of boolean;
     AnchorSideCache: array[TAnchorKind] of integer;
@@ -384,7 +386,7 @@ var
           NewRight:=NewLeft+ConstraintWidth(NewRight-NewLeft);
         end else begin
           // left align and right border free to move (-> keep width)
-          dec(NewRight,NewLeft-RemainingClientRect.Left);
+          dec(NewRight,NewLeft-CurRemainingClientRect.Left);
           NewLeft:=CurRemainingClientRect.Left;
         end;
       end;
@@ -395,7 +397,7 @@ var
           NewBottom:=NewTop+ConstraintHeight(NewBottom-NewTop);
         end else begin
           // top align and bottom border is free to move (-> keep height)
-          dec(NewBottom,NewTop-RemainingClientRect.Top);
+          dec(NewBottom,NewTop-CurRemainingClientRect.Top);
           NewTop:=CurRemainingClientRect.Top;
         end;
       end;
@@ -4513,6 +4515,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.328  2005/06/25 15:30:33  mattias
+  fixed changing BorderSpacing at designtime and borderspacing Align=alTop,alLeft
+
   Revision 1.327  2005/06/25 01:42:38  mattias
   moved InvalidatePreferredSize from gtk intf to lcl
 
