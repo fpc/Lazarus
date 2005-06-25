@@ -3171,12 +3171,14 @@ begin
     Result:=Result+s;
     if (KeyA.Key1=VK_UNKNOWN) and (KeyB.Key1=VK_UNKNOWN) then
       Result:=Result+'none'
+    else if (KeyA.Key1=VK_UNKNOWN) then
+      Result:=Result+KeyAndShiftStateToEditorKeyString(KeyB)
     else if (KeyB.Key1=VK_UNKNOWN) then
-      Result:=Result+KeyAndShiftStateToEditorKeyString(KeyA.Key1,KeyA.Shift1)
+      Result:=Result+KeyAndShiftStateToEditorKeyString(KeyA)
     else
-      Result:=Result+KeyAndShiftStateToEditorKeyString(KeyA.Key1,KeyA.Shift1)
+      Result:=Result+KeyAndShiftStateToEditorKeyString(KeyA)
            +'  or  '+
-           KeyAndShiftStateToEditorKeyString(KeyB.Key1,KeyB.Shift1);
+           KeyAndShiftStateToEditorKeyString(KeyB);
   end;
 end;
 

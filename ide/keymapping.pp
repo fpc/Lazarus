@@ -43,7 +43,7 @@ const
    These values can change from version to version, so DO NOT save them to file!
   
    To add one static key do the following:
-     1. Add a constant with a unique value in the list below.
+	 1. Add a constant with a unique value in the list below.
      2. Add it to GetDefaultKeyForCommand to define the default keys+shiftstates
      3. Add it to EditorCommandToDescriptionString to define the description
      4. Add it to TKeyCommandRelationList.CreateDefaultMapping to define the
@@ -268,7 +268,7 @@ type
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
     constructor Create(const AName, ADescription: string;
-      TheAreas: TCommandAreas);
+	  TheAreas: TCommandAreas);
   end;
   
   //---------------------------------------------------------------------------
@@ -282,12 +282,14 @@ type
   // class for a list of key - command relations
   TKeyCommandRelationList = class
   private
+    fLastKey: TIDEShortCut; // for multiple key commands
     FCustomKeyCount: integer;
     fRelations: TList; // list of TKeyCommandRelation, sorted with Command
     fCategories: TList;// list of TKeyCommandCategory
     fExtToolCount: integer;
     function GetCategory(Index: integer): TKeyCommandCategory;
     function GetRelation(Index:integer):TKeyCommandRelation;
+    function GetRelationCount:integer;
     function AddCategory(const Name, Description: string;
        TheAreas: TCommandAreas): integer;
     function Add(Category: TKeyCommandCategory; const Name: string;
@@ -303,17 +305,15 @@ type
     procedure Clear;
     function Count: integer;
     function CategoryCount: integer;
-    function Find(AKey:Word; AShiftState:TShiftState;
-                  Areas: TCommandAreas): TKeyCommandRelation;
+    function Find(Key: TIDEShortCut; Areas: TCommandAreas): TKeyCommandRelation;
     function FindByCommand(ACommand:word): TKeyCommandRelation;
     function FindCategoryByName(const CategoryName: string): TKeyCommandCategory;
-    function TranslateKey(AKey:Word; AShiftState:TShiftState;
-                          Areas: TCommandAreas): word;
+    function TranslateKey(Key: word; Shift: TShiftState; Areas: TCommandAreas): word;
     function IndexOf(ARelation: TKeyCommandRelation): integer;
     function CommandToShortCut(ACommand: word): TShortCut;
     function LoadFromXMLConfig(XMLConfig:TXMLConfig; const Prefix: String):boolean;
     function SaveToXMLConfig(XMLConfig:TXMLConfig; const Prefix: String):boolean;
-    procedure AssignTo(ASynEditKeyStrokes:TSynEditKeyStrokes;
+	procedure AssignTo(ASynEditKeyStrokes:TSynEditKeyStrokes;
                        Areas: TCommandAreas);
     procedure Assign(List: TKeyCommandRelationList);
     procedure LoadScheme(const SchemeName: string);
@@ -321,47 +321,63 @@ type
     property ExtToolCount: integer read fExtToolCount write SetExtToolCount;
     property CustomKeyCount: integer read FCustomKeyCount write SetCustomKeyCount;
     property Relations[Index:integer]:TKeyCommandRelation read GetRelation;
+    property RelationCount:integer read GetRelationCount;
     property Categories[Index: integer]: TKeyCommandCategory read GetCategory;
   end;
 
   //---------------------------------------------------------------------------
   // form for editing one command - key relationship
   TKeyMappingEditForm = class(TForm)
+  public
     OkButton: TButton;
     CancelButton: TButton;
     CommandLabel: TLabel;
-    Key1GroupBox: TGroupBox;
-    Key1CtrlCheckBox: TCheckBox;
-    Key1AltCheckBox: TCheckBox;
-    Key1ShiftCheckBox: TCheckBox;
-    Key1KeyComboBox: TComboBox;
-    Key1GrabButton: TButton;
-    Key2GroupBox: TGroupBox;
-    Key2CtrlCheckBox: TCheckBox;
-    Key2AltCheckBox: TCheckBox;
-    Key2ShiftCheckBox: TCheckBox;
-    Key2KeyComboBox: TComboBox;
-    Key2GrabButton: TButton;
+    KeyGroupBox: array[0..1] of TGroupBox;
+    KeyCtrlCheckBox: array[0..3] of TCheckBox;
+    KeyAltCheckBox: array[0..3] of TCheckBox;
+    KeyShiftCheckBox: array[0..3] of TCheckBox;
+    KeyComboBox: array[0..3] of TComboBox;
+    KeyGrabButton: array[0..3] of TButton;
+//    Key1GroupBox: TGroupBox;
+//    Key1aCtrlCheckBox: TCheckBox;
+//    Key1aAltCheckBox: TCheckBox;
+//    Key1aShiftCheckBox: TCheckBox;
+//    Key1aKeyComboBox: TComboBox;
+//    Key1aGrabButton: TButton;
+//    Key1bCtrlCheckBox: TCheckBox;
+//    Key1bAltCheckBox: TCheckBox;
+//    Key1bShiftCheckBox: TCheckBox;
+//    Key1bKeyComboBox: TComboBox;
+//    Key1bGrabButton: TButton;
+//    Key2GroupBox: TGroupBox;
+//    Key2aCtrlCheckBox: TCheckBox;
+//    Key2aAltCheckBox: TCheckBox;
+//    Key2aShiftCheckBox: TCheckBox;
+//    Key2aKeyComboBox: TComboBox;
+//    Key2aGrabButton: TButton;
+//    Key2bCtrlCheckBox: TCheckBox;
+//    Key2bAltCheckBox: TCheckBox;
+//    Key2bShiftCheckBox: TCheckBox;
+//    Key2bKeyComboBox: TComboBox;
+//    Key2bGrabButton: TButton;
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
-    procedure Key1GrabButtonClick(Sender: TObject);
-    procedure Key2GrabButtonClick(Sender: TObject);
+    procedure KeyGrabButtonClick(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift:TShiftState);
   private
     GrabbingKey: integer; // 0=none, 1=Default key, 2=Alternative key
     procedure ActivateGrabbing(AGrabbingKey: integer);
     procedure DeactivateGrabbing;
     procedure SetComboBox(AComboBox: TComboBox; const AValue: string);
-    function ResolveConflicts(AKey: Word; AShiftState: TShiftState;
-                              Areas: TCommandAreas): boolean;
+    function ResolveConflicts(Key: TIDEShortCut; Areas: TCommandAreas): boolean;
   public
     constructor Create(TheOwner: TComponent); override;
     KeyCommandRelationList:TKeyCommandRelationList;
     KeyIndex:integer;
   end;
 
-function KeyAndShiftStateToEditorKeyString(Key:Word;
-   ShiftState:TShiftState):AnsiString;
+function KeyAndShiftStateToEditorKeyString(Key: word; ShiftState: TShiftState):AnsiString;
+function KeyAndShiftStateToEditorKeyString(Key: TIDEShortCut):AnsiString;
 function ShowKeyMappingEditForm(Index:integer;
    AKeyCommandRelationList:TKeyCommandRelationList):TModalResult;
 function KeyStrokesConsistencyErrors(ASynEditKeyStrokes:TSynEditKeyStrokes;
@@ -396,7 +412,7 @@ const
   KeyMappingFormatVersion = 2;
 
   VirtualKeyStrings: TStringHashList = nil;
-  
+
 function EditorCommandLocalizedName(cmd: word;
   const DefaultName: string): string;
 begin
@@ -419,8 +435,7 @@ begin
     if VirtualKeyStrings=nil then begin
       VirtualKeyStrings:=TStringHashList.Create(true);
       for i:=1 to 300 do
-        VirtualKeyStrings.Add(KeyAndShiftStateToEditorKeyString(word(i),[]),
-                              Pointer(i));
+        VirtualKeyStrings.Add(KeyAndShiftStateToEditorKeyString(word(i),[]), Pointer(i));
     end;
   end else
     exit;
@@ -439,10 +454,10 @@ procedure GetDefaultKeyForCommand(Command: word;
     TheKeyB:=IDEShortCut(NewKeyB,NewShiftB,VK_UNKNOWN,[]);
   end;
 
-  procedure SetResult(NewKeyA: word; NewShiftA: TShiftState);
-  begin
-    SetResult(NewKeyA,NewShiftA,VK_UNKNOWN,[]);
-  end;
+//  procedure SetResult(NewKeyA: word; NewShiftA: TShiftState);
+//  begin
+//    SetResult(NewKeyA,NewShiftA,VK_UNKNOWN,[]);
+//  end;
 
 begin
   case Command of
@@ -710,13 +725,23 @@ begin
   ecSelectParentComponent: SetResult(VK_ESCAPE,[],VK_UNKNOWN,[]);
 
   else
-    SetResult(VK_UNKNOWN,[]);
+    SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   end;
 end;
 
 procedure GetDefaultKeyForClassicScheme(Command: word;
   var TheKeyA, TheKeyB: TIDEShortCut);
   
+  procedure SetResult(
+    NewKey1A: word; NewShift1A: TShiftState;
+    NewKey1B: word; NewShift1B: TShiftState;
+    NewKey2A: word; NewShift2A: TShiftState;
+    NewKey2B: word; NewShift2B: TShiftState);
+  begin
+    TheKeyA:=IDEShortCut(NewKey1A,NewShift1A,NewKey1B,NewShift1B);
+    TheKeyB:=IDEShortCut(NewKey2A,NewShift2A,NewKey2B,NewShift2B);
+  end;
+
   procedure SetResult(NewKeyA: word; NewShiftA: TShiftState;
     NewKeyB: word; NewShiftB: TShiftState);
   begin
@@ -733,7 +758,273 @@ begin
   SetResult(VK_UNKNOWN,[]);
 
   case Command of
-//F1                      Topic Search
+  // moving
+  ecWordLeft:SetResult(VK_A, [ssCtrl], VK_UNKNOWN, [], VK_LEFT, [ssCtrl], VK_UNKNOWN,[]);
+  ecWordRight: SetResult(VK_D, [ssCtrl], VK_UNKNOWN, [], VK_RIGHT, [ssCtrl],VK_UNKNOWN,[]);
+  ecLineStart: SetResult(VK_Q, [ssCtrl], VK_S, [], VK_HOME, [],VK_UNKNOWN,[]);
+  ecLineEnd: SetResult(VK_Q, [ssCtrl], VK_D, [], VK_END, [],VK_UNKNOWN,[]);
+  ecPageUp: SetResult(VK_R, [ssCtrl], VK_UNKNOWN, [], VK_PRIOR, [],VK_UNKNOWN,[]);
+  ecPageDown: SetResult(VK_C, [ssCtrl], VK_UNKNOWN, [], VK_NEXT, [],VK_UNKNOWN,[]);
+  ecPageLeft: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecPageRight: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecPageTop: SetResult(VK_Q, [ssCtrl], VK_E, [], VK_HOME, [ssCtrl],VK_UNKNOWN,[]);
+  ecPageBottom: SetResult(VK_Q, [ssCtrl], VK_X, [], VK_END, [ssCtrl],VK_UNKNOWN,[]);
+  ecEditorTop: SetResult(VK_Q, [ssCtrl], VK_R, [], VK_PRIOR,[ssCtrl],VK_UNKNOWN,[]);
+  ecEditorBottom: SetResult(VK_Q, [ssCtrl], VK_C, [], VK_NEXT,[ssCtrl],VK_UNKNOWN,[]);
+  ecScrollUp: SetResult(VK_W, [ssCtrl], VK_UNKNOWN, [], VK_UP, [ssCtrl],VK_UNKNOWN,[]);
+  ecScrollDown: SetResult(VK_Z, [ssCtrl], VK_UNKNOWN, [], VK_DOWN, [ssCtrl],VK_UNKNOWN,[]);
+  ecScrollLeft: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecScrollRight: SetResult(VK_UNKNOWN, [], VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // selection
+  ecCopy: SetResult(VK_Insert,[ssCtrl],VK_UNKNOWN, [],VK_UNKNOWN, [],VK_UNKNOWN, []);
+  ecCut: SetResult(VK_Delete,[ssShift],VK_UNKNOWN, [],VK_UNKNOWN, [],VK_UNKNOWN, []);
+  ecPaste: SetResult(VK_Insert,[ssShift],VK_UNKNOWN, [],VK_UNKNOWN, [],VK_UNKNOWN, []);
+  ecNormalSelect: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN, [],VK_UNKNOWN, []);
+  ecColumnSelect: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN, [],VK_UNKNOWN, []);
+  ecLineSelect: SetResult(VK_K,[ssCtrl],VK_L,[], VK_UNKNOWN, [],VK_UNKNOWN, []);
+  ecSelWordLeft: SetResult(VK_LEFT,[ssCtrl,ssShift],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
+  ecSelWordRight: SetResult(VK_RIGHT,[ssCtrl,ssShift],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
+  ecSelLineStart: SetResult(VK_HOME,[ssShift],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
+  ecSelLineEnd: SetResult(VK_END,[ssShift],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
+  ecSelPageTop: SetResult(VK_HOME, [ssShift,ssCtrl],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
+  ecSelPageBottom: SetResult(VK_END, [ssShift,ssCtrl],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
+  ecSelEditorTop: SetResult(VK_PRIOR, [ssShift,ssCtrl],VK_UNKNOWN,[]);
+  ecSelEditorBottom: SetResult(VK_NEXT, [ssShift,ssCtrl],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
+  ecSelectAll: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
+  ecSelectToBrace: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
+  ecSelectCodeBlock: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
+  ecSelectLine: SetResult(VK_O,[ssCtrl],VK_L,[], VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSelectParagraph: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
+  ecSelectionUpperCase: SetResult(VK_K,[ssCtrl],VK_N,[], VK_UNKNOWN, [],VK_UNKNOWN,[]);
+  ecSelectionLowerCase: SetResult(VK_K,[ssCtrl],VK_O,[], VK_UNKNOWN, [],VK_UNKNOWN,[]);
+  ecSelectionTabs2Spaces: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
+  ecSelectionEnclose: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
+  ecSelectionComment: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
+  ecSelectionUncomment: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
+  ecSelectionConditional: SetResult(VK_D, [ssShift,ssCtrl],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
+  ecSelectionSort: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
+  ecSelectionBreakLines: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
+
+  // editing
+  ecBlockIndent: SetResult(VK_K,[ssCtrl],VK_I,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecBlockUnindent: SetResult(VK_K,[ssCtrl],VK_U,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecDeleteLastChar: SetResult(VK_H,[ssCtrl],VK_UNKNOWN,[],VK_BACK, [],VK_UNKNOWN,[]);
+  ecDeleteChar: SetResult(VK_G,[ssCtrl],VK_UNKNOWN,[],VK_DELETE,[],VK_UNKNOWN,[]);
+  ecDeleteWord: SetResult(VK_T,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecDeleteLastWord: SetResult(VK_BACK,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecDeleteBOL: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecDeleteEOL: SetResult(VK_K,[ssCtrl],VK_Y,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecDeleteLine: SetResult(VK_Y,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecClearAll: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecLineBreak: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_RETURN,[],VK_UNKNOWN,[]);
+  ecInsertLine: SetResult(VK_N,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertCharacter: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertGPLNotice: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertLGPLNotice: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertUserName: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertDateTime: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertChangeLogEntry: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertCVSAuthor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertCVSDate: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertCVSHeader: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertCVSID: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertCVSLog: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertCVSName: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertCVSRevision: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertCVSSource: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // command commands
+  ecUndo: SetResult(VK_BACK,[ssALT],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRedo: SetResult(VK_BACK,[ssALT,ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // search & replace
+  ecMatchBracket: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecFind: SetResult(VK_Q,[SSCtrl],VK_F,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecFindNext: SetResult(VK_L,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecFindPrevious: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecFindInFiles: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecReplace: SetResult(VK_Q,[SSCtrl],VK_A,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecIncrementalFind: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoLineNumber: SetResult(VK_J,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecJumpBack: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecJumpForward: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecAddJumpPoint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecViewJumpHistory: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecJumpToPrevError: SetResult(VK_F7,[ssAlt],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecJumpToNextError: SetResult(VK_F8,[ssAlt],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecOpenFileAtCursor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // marker
+  ecGotoMarker0: SetResult(VK_Q,[ssCtrl],VK_0,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoMarker1: SetResult(VK_Q,[ssCtrl],VK_1,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoMarker2: SetResult(VK_Q,[ssCtrl],VK_2,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoMarker3: SetResult(VK_Q,[ssCtrl],VK_3,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoMarker4: SetResult(VK_Q,[ssCtrl],VK_4,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoMarker5: SetResult(VK_Q,[ssCtrl],VK_5,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoMarker6: SetResult(VK_Q,[ssCtrl],VK_6,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoMarker7: SetResult(VK_Q,[ssCtrl],VK_7,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoMarker8: SetResult(VK_Q,[ssCtrl],VK_8,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoMarker9: SetResult(VK_Q,[ssCtrl],VK_9,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSetMarker0: SetResult(VK_K,[ssCtrl],VK_0,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSetMarker1: SetResult(VK_K,[ssCtrl],VK_1,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSetMarker2: SetResult(VK_K,[ssCtrl],VK_2,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSetMarker3: SetResult(VK_K,[ssCtrl],VK_3,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSetMarker4: SetResult(VK_K,[ssCtrl],VK_4,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSetMarker5: SetResult(VK_K,[ssCtrl],VK_5,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSetMarker6: SetResult(VK_K,[ssCtrl],VK_6,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSetMarker7: SetResult(VK_K,[ssCtrl],VK_7,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSetMarker8: SetResult(VK_K,[ssCtrl],VK_8,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSetMarker9: SetResult(VK_K,[ssCtrl],VK_9,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // codetools
+  ecAutoCompletion: SetResult(VK_J,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecWordCompletion: SetResult(VK_W,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCompleteCode: SetResult(VK_C,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecIdentCompletion: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecExtractProc: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecFindIdentifierRefs: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRenameIdentifier: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInvertAssignment: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSyntaxCheck: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGuessUnclosedBlock: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGuessMisplacedIFDEF: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecConvertDFM2LFM: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCheckLFM: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecConvertDelphiUnit: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecConvertDelphiProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecFindProcedureDefinition: SetResult(VK_UP,[ssShift,SSCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecFindProcedureMethod: SetResult(VK_DOWN,[ssShift,SSCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecFindDeclaration: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecFindBlockOtherEnd: SetResult(VK_Q,[ssCtrl],VK_K,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecFindBlockStart: SetResult(VK_Q,[ssCtrl],VK_B,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoIncludeDirective: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // source notebook
+  ecNextEditor: SetResult(VK_F6,[],VK_UNKNOWN,[],VK_TAB, [ssCtrl], VK_UNKNOWN, []);
+  ecPrevEditor: SetResult(VK_F6,[ssShift],VK_UNKNOWN,[],VK_TAB, [ssShift,ssCtrl], VK_UNKNOWN, []);
+  ecResetDebugger: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecAddBreakPoint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecMoveEditorLeft: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, [],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecMoveEditorRight: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, [],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoEditor1: SetResult(VK_1,[ssAlt],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoEditor2: SetResult(VK_2,[ssAlt],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoEditor3: SetResult(VK_3,[ssAlt],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoEditor4: SetResult(VK_4,[ssAlt],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoEditor5: SetResult(VK_5,[ssAlt],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoEditor6: SetResult(VK_6,[ssAlt],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoEditor7: SetResult(VK_7,[ssAlt],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoEditor8: SetResult(VK_8,[ssAlt],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoEditor9: SetResult(VK_9,[ssAlt],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoEditor0: SetResult(VK_0,[ssAlt],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // file menu
+  ecNew: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecNewUnit: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecNewForm: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecOpen: SetResult(VK_F3,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRevert: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSave: SetResult(VK_F2,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSaveAs: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSaveAll: SetResult(VK_F2,[ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecClose: SetResult(VK_F3,[ssAlt],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCloseAll: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCleanDirectory: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRestart: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecQuit: SetResult(VK_X,[ssAlt],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // view menu
+  ecToggleObjectInsp: SetResult(VK_F11,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleSourceEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleCodeExpl: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleMessages: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleSearchResults: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleWatches: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleBreakPoints: SetResult(VK_F8,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleLocals: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleCallStack: SetResult(VK_F3,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleDebuggerOut: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecViewUnits: SetResult(VK_F12,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecViewForms: SetResult(VK_F12,[ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecViewUnitDependencies: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecViewUnitInfo: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecJumpToEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleFormUnit: SetResult(VK_F12,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecViewAnchorEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // project menu
+  ecNewProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecNewProjectFromFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecOpenProject: SetResult(VK_F11,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSaveProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSaveProjectAs: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecPublishProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecProjectInspector: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecAddCurUnitToProj: SetResult(VK_F11,[ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRemoveFromProj: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecViewProjectSource: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecViewProjectTodos: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecProjectOptions: SetResult(VK_F11,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // run menu
+  ecBuild: SetResult(VK_F9,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecBuildAll: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecAbortBuild: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRun: SetResult(VK_F9,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecPause: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecStepInto: SetResult(VK_F7,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecStepOver: SetResult(VK_F8,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRunToCursor: SetResult(VK_F4,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecStopProgram: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRemoveBreakPoint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCompilerOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRunParameters: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecBuildFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRunFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecConfigBuildFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInspect: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecEvaluate: SetResult(VK_F4,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecAddWatch: SetResult(VK_F7,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // components menu
+  ecOpenPackage: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecOpenPackageFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecOpenPackageOfCurUnit: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecAddCurUnitToPkg: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecPackageGraph: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecEditInstallPkgs: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecConfigCustomComps: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // tools menu
+  ecExtToolSettings: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecBuildLazarus: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecConfigBuildLazarus: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecMakeResourceString: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecDiff: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // environment menu
+  ecEnvironmentOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecEditorOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCodeToolsOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCodeToolsDefinesEd: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRescanFPCSrcDir: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // help menu
+  ecAboutLazarus: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecOnlineHelp: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecConfigureHelp: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecContextHelp: SetResult(VK_F1,[ssCtrl],VK_UNKNOWN,[],VK_F1,[],VK_UNKNOWN,[]);
+
+  // designer
+  ecCopyComponents: SetResult(VK_C,[ssCtrl],VK_UNKNOWN,[],VK_Insert,[ssCtrl],VK_UNKNOWN,[]);
+  ecCutComponents: SetResult(VK_X,[ssCtrl],VK_UNKNOWN,[],VK_Delete,[ssShift],VK_UNKNOWN,[]);
+  ecPasteComponents: SetResult(VK_V,[ssCtrl],VK_UNKNOWN,[],VK_Insert,[ssShift],VK_UNKNOWN,[]);
+  ecSelectParentComponent: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  else
+    SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  end;
+(*//F1                      Topic Search
 //Ctrl+F1                Topic Search
   ecNextEditor: SetResult(VK_F6,[]);
   ecPrevEditor: SetResult(VK_F6,[ssShift]);
@@ -915,6 +1206,7 @@ begin
   else
     GetDefaultKeyForCommand(Command,TheKeyA,TheKeyB);
   end;
+*)
 end;
 
 function KeySchemeNameToSchemeType(const SchemeName: string): TKeyMapScheme;
@@ -939,8 +1231,10 @@ end;
 
 function KeyValuesToStr(const KeyA, KeyB: TIDEShortCut): string;
 begin
-  Result:=IntToStr(KeyA.Key1)+','+ShiftStateToStr(KeyA.Shift1)
-        +','+IntToStr(KeyB.Key1)+','+ShiftStateToStr(KeyB.Shift1);
+  Result:=IntToStr(KeyA.Key1) + ',' + ShiftStateToStr(KeyA.Shift1) + ',' +
+          IntToStr(KeyA.Key2) + ',' + ShiftStateToStr(KeyA.Shift2) + ',' +
+          IntToStr(KeyB.Key1) + ',' + ShiftStateToStr(KeyB.Shift1) + ',' +
+          IntToStr(KeyB.Key2) + ',' + ShiftStateToStr(KeyB.Shift2);
 end;
 
 function EditorKeyStringIsIrregular(const s: string): boolean;
@@ -986,17 +1280,32 @@ begin
         CommandLabel.Caption:=srkmCommand+LocalizedName;
         if (KeyA.Key1<>VK_UNKNOWN) then
         begin
-          Key1CtrlCheckBox.Checked:=ssCtrl in KeyA.Shift1;
-          Key1AltCheckBox.Checked:=ssAlt in KeyA.Shift1;
-          Key1ShiftCheckBox.Checked:=ssShift in KeyA.Shift1;
-          InitComboBox(Key1KeyComboBox,KeyA.Key1);
+          KeyCtrlCheckBox[0].Checked:=ssCtrl in KeyA.Shift1;
+          KeyAltCheckBox[0].Checked:=ssAlt in KeyA.Shift1;
+          KeyShiftCheckBox[0].Checked:=ssShift in KeyA.Shift1;
+          InitComboBox(KeyComboBox[0],KeyA.Key1);
         end;
+        if (KeyA.Key2<>VK_UNKNOWN) then
+        begin
+          KeyCtrlCheckBox[1].Checked:=ssCtrl in KeyA.Shift2;
+          KeyAltCheckBox[1].Checked:=ssAlt in KeyA.Shift2;
+          KeyShiftCheckBox[1].Checked:=ssShift in KeyA.Shift2;
+          InitComboBox(KeyComboBox[1],KeyA.Key2);
+        end;
+
         if (KeyB.Key1<>VK_UNKNOWN) then
         begin
-          Key2CtrlCheckBox.Checked:=ssCtrl in KeyB.Shift1;
-          Key2AltCheckBox.Checked:=ssAlt in KeyB.Shift1;
-          Key2ShiftCheckBox.Checked:=ssShift in KeyB.Shift1;
-          InitComboBox(Key2KeyComboBox,KeyB.Key1);
+          KeyCtrlCheckBox[2].Checked:=ssCtrl in KeyB.Shift1;
+          KeyAltCheckBox[2].Checked:=ssAlt in KeyB.Shift1;
+          KeyShiftCheckBox[2].Checked:=ssShift in KeyB.Shift1;
+          InitComboBox(KeyComboBox[2],KeyB.Key1);
+        end;
+        if (KeyB.Key2<>VK_UNKNOWN) then
+        begin
+          KeyCtrlCheckBox[3].Checked:=ssCtrl in KeyB.Shift2;
+          KeyAltCheckBox[3].Checked:=ssAlt in KeyB.Shift2;
+          KeyShiftCheckBox[3].Checked:=ssShift in KeyB.Shift2;
+          InitComboBox(KeyComboBox[3],KeyB.Key2);
         end;
       end;
       Result:=ShowModal;
@@ -1277,7 +1586,8 @@ function KeyStrokesConsistencyErrors(ASynEditKeyStrokes:TSynEditKeyStrokes;
    Protocol: TStrings; var Index1,Index2:integer):integer;
 // 0 = ok, no errors
 // >0 number of errors found
-var a,b:integer;
+var
+  a,b:integer;
   Key1,Key2:TSynEditKeyStroke;
 begin
   Result:=0;
@@ -1303,11 +1613,11 @@ begin
           Protocol.Add(srkmConflic+IntToStr(Result));
           Protocol.Add(srkmCommand1
             +EditorCommandToDescriptionString(Key1.Command)+'"'
-            +'->'+KeyAndShiftStateToEditorKeyString(Key1.Key,Key1.Shift));
+            +'->'+KeyAndShiftStateToEditorKeyString(Key1.Key, Key1.Shift));
           Protocol.Add(srkmConflicW);
           Protocol.Add(srkmCommand2
             +EditorCommandToDescriptionString(Key2.Command)+'"'
-            +'->'+KeyAndShiftStateToEditorKeyString(Key2.Key,Key2.Shift)
+            +'->'+KeyAndShiftStateToEditorKeyString(Key2.Key, Key2.Shift)
            );
           Protocol.Add('');
         end;
@@ -1316,43 +1626,40 @@ begin
   end;
 end;
 
-function KeyAndShiftStateToEditorKeyString(Key:Word; ShiftState:TShiftState):AnsiString;
+function KeyAndShiftStateToEditorKeyString(Key: word; ShiftState: TShiftState): AnsiString;
 var
-  p, ResultLen: integer;
+  p: integer;
 
   procedure AddStr(const s: string);
-  var
-    OldP: integer;
   begin
-    if s<>'' then begin
-      OldP:=p;
-      inc(p,length(s));
-      if p<=ResultLen then
-        Move(s[1],Result[OldP+1],length(s));
+    if s <> '' then
+    begin
+      inc(p);
+      Result := Result + s;
     end;
   end;
 
   procedure AddAttribute(const s: string);
   begin
-    if p>0 then
+    if p > 0 then
       AddStr('+');
     AddStr(s);
   end;
-  
+
   procedure AddAttributes;
   begin
     if ssCtrl in ShiftState then AddAttribute('Ctrl');
     if ssAlt in ShiftState then AddAttribute('Alt');
     if ssShift in ShiftState then AddAttribute('Shift');
   end;
-  
+
   // Tricky routine. This only works for western languages
   // TODO: This should be replaces by the winapi VKtoChar functions
   //
   procedure AddKey;
   begin
     if p>0 then  AddStr(' ');
-    
+
     case Key of
       VK_UNKNOWN    :AddStr(srVK_UNKNOWN);
       VK_LBUTTON    :AddStr(srVK_LBUTTON);
@@ -1421,7 +1728,7 @@ var
       AddStr(UnknownVKPostfix);
     end;
   end;
-  
+
   procedure AddAttributesAndKey;
   begin
     AddAttributes;
@@ -1429,280 +1736,250 @@ var
   end;
 
 begin
-  ResultLen:=0;
-  p:=0;
+  Result := '';
+  p := 0;
   AddAttributesAndKey;
-  ResultLen:=p;
-  SetLength(Result,ResultLen);
-  p:=0;
-  AddAttributesAndKey;
+end;
+
+function KeyAndShiftStateToEditorKeyString(Key:  TIDEShortCut):AnsiString;
+begin
+  Result := KeyAndShiftStateToEditorKeyString(Key.Key1, Key.Shift1);
+  if (Key.Key2<>VK_UNKNOWN) then
+    Result := Result + ', ' + KeyAndShiftStateToEditorKeyString(Key.Key2, Key.Shift2);
 end;
 
 { TKeyMappingEditForm }
 
 constructor TKeyMappingEditForm.Create(TheOwner:TComponent);
-var a: word;
-  s:AnsiString;
+var
+  a, j, k, n: word;
+  s: AnsiString;
 begin
   inherited Create(TheOwner);
   if LazarusResources.Find(ClassName)=nil then
   begin
-    SetBounds((Screen.Width-200) div 2,(Screen.Height-270) div 2,216,310);
-    Caption:=srkmEditForCmd;
+    SetBounds((Screen.Width-432) div 2, (Screen.Height-310) div 2, 432, 310);
+    Caption := srkmEditForCmd;
     OnKeyUp:=@FormKeyUp;
 
-    OkButton:=TButton.Create(Self);
+    OkButton := TButton.Create(Self);
     with OkButton do begin
-      Name:='OkButton';
-      Parent:=Self;
-      Caption:='Ok';
-      Left:=15;
-      Top:=Self.ClientHeight-Height-15;
-      Width:=80;
-      OnClick:=@OkButtonClick;
+      Name := 'OkButton';
+      Parent := Self;
+      Caption := 'Ok';
+      Left := 15;
+      Top := Self.ClientHeight-Height-15;
+      Width := 80;
+      OnClick := @OkButtonClick;
     end;
 
-    CancelButton:=TButton.Create(Self);
+    CancelButton := TButton.Create(Self);
     with CancelButton do begin
-      Name:='CancelButton';
-      Parent:=Self;
-      Caption:=dlgCancel;
-      Left:=125;
-      Top:=OkButton.Top;
-      Width:=OkButton.Width;
-      OnClick:=@CancelButtonClick;
+      Name := 'CancelButton';
+      Parent := Self;
+      Caption := dlgCancel;
+      Left := 125;
+      Top := OkButton.Top;
+      Width := OkButton.Width;
+      OnClick := @CancelButtonClick;
     end;
 
-    CommandLabel:=TLabel.Create(Self);
+    CommandLabel := TLabel.Create(Self);
     with CommandLabel do begin
-      Name:='CommandLabel';
-      Parent:=Self;
-      Caption:=srkmCommand;
-      Left:=5;
-      Top:=5;
-      Width:=Self.ClientWidth-Left-Left;
-      Height:=20;
+      Name := 'CommandLabel';
+      Parent := Self;
+      Caption := srkmCommand;
+      Left := 5;
+      Top := 5;
+      Width := Self.ClientWidth-Left-Left;
+      Height := 20;
     end;
 
-    Key1GroupBox:=TGroupBox.Create(Self);
-    with Key1GroupBox do begin
-      Name:='Key1GroupBox';
-      Parent:=Self;
-      Caption:=srkmKey;
-      Left:=5;
-      Top:=CommandLabel.Top+CommandLabel.Height+8;
-      Width:=Self.ClientWidth-Left-Left;
-      Height:=110;
-    end;
-
-    Key1CtrlCheckBox:=TCheckBox.Create(Self);
-    with Key1CtrlCheckBox do begin
-      Name:='Key1CtrlCheckBox';
-      Parent:=Key1GroupBox;
-      Caption:='Ctrl';
-      Left:=5;
-      Top:=2;
-      Width:=55;
-      Height:=20;
-    end;
-
-    Key1AltCheckBox:=TCheckBox.Create(Self);
-    with Key1AltCheckBox do begin
-      Name:='Key1AltCheckBox';
-      Parent:=Key1GroupBox;
-      Caption:='Alt';
-      Left:=Key1CtrlCheckBox.Left+Key1CtrlCheckBox.Width+10;
-      Top:=Key1CtrlCheckBox.Top;
-      Height:=20;
-      Width:=Key1CtrlCheckBox.Width;
-    end;
-
-    Key1ShiftCheckBox:=TCheckBox.Create(Self);
-    with Key1ShiftCheckBox do begin
-      Name:='Key1ShiftCheckBox';
-      Parent:=Key1GroupBox;
-      Caption:='Shift';
-      Left:=Key1AltCheckBox.Left+Key1AltCheckBox.Width+10;
-      Top:=Key1CtrlCheckBox.Top;
-      Height:=20;
-      Width:=Key1CtrlCheckBox.Width;
-    end;
-
-    Key1KeyComboBox:=TComboBox.Create(Self);
-    with Key1KeyComboBox do begin
-      Name:='Key1KeyComboBox';
-      Parent:=Key1GroupBox;
-      Left:=5;
-      Top:=Key1CtrlCheckBox.Top+Key1CtrlCheckBox.Height+5;
-      Width:=190;
-      Items.BeginUpdate;
-      Items.Add('none');
-      for a:=1 to 145 do begin
-        s:=KeyAndShiftStateToEditorKeyString(a,[]);
-        if not EditorKeyStringIsIrregular(s) then
-          Items.Add(s);
+    for j := 0 to 1 do // Create the key groups
+    begin
+      KeyGroupBox[j] := TGroupBox.Create(Self);
+      with KeyGroupBox[j] do begin
+        Name := 'KeyGroupBox' + IntToStr(j);
+        Parent := Self;
+        Left := 5;
+        if (j=0) then begin
+          Top := CommandLabel.Top + CommandLabel.Height+8;
+          Caption := srkmKey
+        end else begin
+          Top := KeyGroupBox[0].Top + KeyGroupBox[0].Height+8;
+          Caption := srkmAlternKey;
+        end;
+        Width := Self.ClientWidth-Left-Left;
+        Height := 110;
       end;
-      Items.EndUpdate;
-      ItemIndex:=0;
-    end;
-    
-    Key1GrabButton:=TButton.Create(Self);
-    with Key1GrabButton do begin
-      Parent:=Key1GroupBox;
-      Left:=5;
-      Top:=Key1KeyComboBox.Top+Key1KeyComboBox.Height+5;
-      Width:=Key1KeyComboBox.Width;
-      Height:=25;
-      Caption:=srkmGrabKey;
-      Name:='Key1GrabButton';
-      OnClick:=@Key1GrabButtonClick;
-    end;
 
-    Key2GroupBox:=TGroupBox.Create(Self);
-    with Key2GroupBox do begin
-      Name:='Key2GroupBox';
-      Parent:=Self;
-      Caption:=srkmAlternKey;
-      Left:=5;
-      Top:=Key1GroupBox.Top+Key1GroupBox.Height+8;
-      Width:=Key1GroupBox.Width;
-      Height:=110;
-    end;
+      for k := 0 to 1 do // create the components for each group
+      begin
+        n := j*2+k;
+        KeyCtrlCheckBox[n] := TCheckBox.Create(Self);
+        with KeyCtrlCheckBox[n] do begin
+          Name := 'KeyCtrlCheckBox' + IntToStr(n);
+          Parent := KeyGroupBox[j];
+          Caption := 'Ctrl';
+          Left := 5 + (k * (TGroupBox(Parent).Width div 2));
+          Top := 2;
+          Width := 55;
+          Height := 20;
+        end;
 
-    Key2CtrlCheckBox:=TCheckBox.Create(Self);
-    with Key2CtrlCheckBox do begin
-      Name:='Key2CtrlCheckBox';
-      Parent:=Key2GroupBox;
-      Caption:='Ctrl';
-      Left:=5;
-      Top:=2;
-      Width:=55;
-      Height:=20;
-    end;
+        KeyAltCheckBox[n] := TCheckBox.Create(Self);
+        with KeyAltCheckBox[n] do begin
+          Name := 'KeyAltCheckBox' + IntToStr(n);
+          Parent := KeyGroupBox[j];
+          Caption := 'Alt';
+          Left := KeyCtrlCheckBox[n].Left + KeyCtrlCheckBox[n].Width+10;
+          Top := KeyCtrlCheckBox[n].Top;
+          Height := 20;
+          Width := KeyCtrlCheckBox[n].Width;
+        end;
 
-    Key2AltCheckBox:=TCheckBox.Create(Self);
-    with Key2AltCheckBox do begin
-      Name:='Key2AltCheckBox';
-      Parent:=Key2GroupBox;
-      Caption:='Alt';
-      Left:=Key2CtrlCheckBox.Left+Key2CtrlCheckBox.Width+10;
-      Top:=Key2CtrlCheckBox.Top;
-      Height:=20;
-      Width:=Key2CtrlCheckBox.Width;
-    end;
+        KeyShiftCheckBox[n] := TCheckBox.Create(Self);
+        with KeyShiftCheckBox[n] do begin
+          Name := 'KeyShiftCheckBox' + IntToStr(n);
+          Parent := KeyGroupBox[j];
+          Caption := 'Shift';
+          Left := KeyAltCheckBox[n].Left + KeyAltCheckBox[n].Width+10;
+          Top := KeyCtrlCheckBox[n].Top;
+          Height := 20;
+          Width := KeyCtrlCheckBox[n].Width;
+        end;
 
-    Key2ShiftCheckBox:=TCheckBox.Create(Self);
-    with Key2ShiftCheckBox do begin
-      Name:='Key2ShiftCheckBox';
-      Parent:=Key2GroupBox;
-      Caption:='Shift';
-      Left:=Key2AltCheckBox.Left+Key2AltCheckBox.Width+10;
-      Top:=Key2CtrlCheckBox.Top;
-      Height:=20;
-      Width:=Key2CtrlCheckBox.Width;
-    end;
+        KeyComboBox[n] := TComboBox.Create(Self);
+        with KeyComboBox[n] do begin
+          Name := 'KeyComboBox' + IntToStr(n);
+          Parent := KeyGroupBox[j];
+          Left := KeyCtrlCheckBox[n].Left;
+          Top := KeyCtrlCheckBox[n].Top + KeyCtrlCheckBox[n].Height+5;
+          Width := 190;
+          Items.BeginUpdate;
+          Items.Add('none');
+          for a := 1 to 145 do
+          begin
+            s := KeyAndShiftStateToEditorKeyString(a, []);
+            if not EditorKeyStringIsIrregular(s) then
+              Items.Add(s);
+          end;
+          Items.EndUpdate;
+          ItemIndex := 0;
+        end;
 
-    Key2KeyComboBox:=TComboBox.Create(Self);
-    with Key2KeyComboBox do begin
-      Name:='Key2KeyComboBox';
-      Parent:=Key2GroupBox;
-      Left:=5;
-      Top:=Key2CtrlCheckBox.Top+Key2CtrlCheckBox.Height+5;
-      Width:=190;
-      Items.BeginUpdate;
-      Items.Add('none');
-      for a:=1 to 145 do begin
-        s:=KeyAndShiftStateToEditorKeyString(a,[]);
-        if not EditorKeyStringIsIrregular(s) then
-          Items.Add(s);
-      end;
-      Items.EndUpdate;
-      ItemIndex:=0;
-    end;
-    
-    Key2GrabButton:=TButton.Create(Self);
-    with Key2GrabButton do begin
-      Parent:=Key2GroupBox;
-      Left:=5;
-      Top:=Key2KeyComboBox.Top+Key2KeyComboBox.Height+5;
-      Width:=Key2KeyComboBox.Width;
-      Height:=25;
-      Caption:=srkmGrabKey;
-      Name:='Key2GrabButton';
-      OnClick:=@Key2GrabButtonClick;
-    end;
-
+        KeyGrabButton[n] := TButton.Create(Self);
+        with KeyGrabButton[n] do begin
+          Parent := KeyGroupBox[j];
+          Left := KeyCtrlCheckBox[n].Left;
+          Top := KeyComboBox[n].Top+KeyComboBox[n].Height+5;
+          Width := KeyComboBox[n].Width;
+          Height := 25;
+          Caption := srkmGrabKey;
+          Name := 'KeyGrabButton' + IntToStr(n);
+          Tag := n;
+          OnClick := @KeyGrabButtonClick;
+        end;
+      end; // for k
+    end; // for j
   end;
-  GrabbingKey:=0;
+  GrabbingKey := 0;
 end;
 
 procedure TKeyMappingEditForm.OkButtonClick(Sender:TObject);
 var
-  NewKey1, NewKey2: word;
-  NewShiftState1, NewShiftState2: TShiftState;
+  NewKeyA, NewKeyB: TIDEShortCut;
   CurRelation: TKeyCommandRelation;
 begin
   // set defaults
-  NewKey1:=VK_UNKNOWN;
-  NewShiftState1:=[];
-  NewKey2:=VK_UNKNOWN;
-  NewShiftState2:=[];
-  
-  //debugln('TKeyMappingEditForm.OkButtonClick A KeyA=',KeyAndShiftStateToEditorKeyString(NewKey1,NewShiftState1),' KeyB=',KeyAndShiftStateToEditorKeyString(NewKey2,NewShiftState2));
+  NewKeyA.Key1:=VK_UNKNOWN;
+  NewKeyA.Shift1:=[];
+  NewKeyA.Key2:=VK_UNKNOWN;
+  NewKeyA.Shift2:=[];
+  NewKeyB.Key1:=VK_UNKNOWN;
+  NewKeyB.Shift1:=[];
+  NewKeyB.Key2:=VK_UNKNOWN;
+  NewKeyB.Shift2:=[];
+
+  //debugln('TKeyMappingEditForm.OkButtonClick A KeyA=',KeyAndShiftStateToEditorKeyString(NewKeyA),' KeyB=',KeyAndShiftStateToEditorKeyString(NewKeyB));
 
   // get old relation
   CurRelation:=KeyCommandRelationList.Relations[KeyIndex];
 
   // get settings for key1
-  NewKey1:=EditorKeyStringToVKCode(Key1KeyComboBox.Text);
-  if NewKey1<>VK_UNKNOWN then
+  NewKeyA.Key1:=EditorKeyStringToVKCode(KeyComboBox[0].Text);
+  if NewKeyA.Key1<>VK_UNKNOWN then
   begin
-    if Key1CtrlCheckBox.Checked then include(NewShiftState1,ssCtrl);
-    if Key1AltCheckBox.Checked then include(NewShiftState1,ssAlt);
-    if Key1ShiftCheckBox.Checked then include(NewShiftState1,ssShift);
+    if KeyCtrlCheckBox[0].Checked then include(NewKeyA.Shift1,ssCtrl);
+    if KeyAltCheckBox[0].Checked then include(NewKeyA.Shift1,ssAlt);
+    if KeyShiftCheckBox[0].Checked then include(NewKeyA.Shift1,ssShift);
+
+    NewKeyA.Key2:=EditorKeyStringToVKCode(KeyComboBox[1].Text);
+    if NewKeyA.Key2<>VK_UNKNOWN then
+    begin
+      if KeyCtrlCheckBox[1].Checked then include(NewKeyA.Shift2,ssCtrl);
+      if KeyAltCheckBox[1].Checked then include(NewKeyA.Shift2,ssAlt);
+      if KeyShiftCheckBox[1].Checked then include(NewKeyA.Shift2,ssShift);
+    end;
   end;
 
-  if not ResolveConflicts(NewKey1,NewShiftState1,CurRelation.Category.Areas)
-  then begin
+  if not ResolveConflicts(NewKeyA, CurRelation.Category.Areas) then
+  begin
     debugln('TKeyMappingEditForm.OkButtonClick ResolveConflicts failed for key1');
     exit;
   end;
-  
-  //debugln('TKeyMappingEditForm.OkButtonClick B KeyA=',KeyAndShiftStateToEditorKeyString(NewKey1,NewShiftState1),' KeyB=',KeyAndShiftStateToEditorKeyString(NewKey2,NewShiftState2));
+
+  //debugln('TKeyMappingEditForm.OkButtonClick B KeyA=',KeyAndShiftStateToEditorKeyString(NewKeyA),' KeyB=',KeyAndShiftStateToEditorKeyString(NewKeyB));
 
   // get settings for key2
-  NewKey2:=EditorKeyStringToVKCode(Key2KeyComboBox.Text);
-  //debugln('TKeyMappingEditForm.OkButtonClick B2 KeyA=',KeyAndShiftStateToEditorKeyString(NewKey1,NewShiftState1),' KeyB=',KeyAndShiftStateToEditorKeyString(NewKey2,NewShiftState2),' ',Key2KeyComboBox.Text);
-  if NewKey2<>VK_UNKNOWN then
+  NewKeyB.Key1:=EditorKeyStringToVKCode(KeyComboBox[2].Text);
+  //debugln('TKeyMappingEditForm.OkButtonClick B2 KeyA=',KeyAndShiftStateToEditorKeyString(NewKeyA),' KeyB=',KeyAndShiftStateToEditorKeyString(NewKeyB),' ',Key2KeyComboBox.Text);
+  if NewKeyB.Key1<>VK_UNKNOWN then
   begin
-    if Key2CtrlCheckBox.Checked then include(NewShiftState2,ssCtrl);
-    if Key2AltCheckBox.Checked then include(NewShiftState2,ssAlt);
-    if Key2ShiftCheckBox.Checked then include(NewShiftState2,ssShift);
-  end;
-  if (NewKey1=NewKey2) and (NewShiftState1=NewShiftState2) then
-    NewKey2:=VK_UNKNOWN;
+    if KeyCtrlCheckBox[2].Checked then include(NewKeyB.Shift1,ssCtrl);
+    if KeyAltCheckBox[2].Checked then include(NewKeyB.Shift1,ssAlt);
+    if KeyShiftCheckBox[2].Checked then include(NewKeyB.Shift1,ssShift);
 
-  if not ResolveConflicts(NewKey2,NewShiftState2,CurRelation.Category.Areas)
+    NewKeyB.Key2:=EditorKeyStringToVKCode(KeyComboBox[3].Text);
+    if NewKeyB.Key2<>VK_UNKNOWN then
+    begin
+      if KeyCtrlCheckBox[3].Checked then include(NewKeyB.Shift2,ssCtrl);
+      if KeyAltCheckBox[3].Checked then include(NewKeyB.Shift2,ssAlt);
+      if KeyShiftCheckBox[3].Checked then include(NewKeyB.Shift2,ssShift);
+    end;
+  end;
+
+  if (NewKeyA.Key1=NewKeyB.Key1) and (NewKeyA.Shift1=NewKeyB.Shift1) and
+     (NewKeyA.Key2=NewKeyB.Key2) and (NewKeyA.Shift2=NewKeyB.Shift2) then
+  begin
+    NewKeyB.Key1:=VK_UNKNOWN;
+    NewKeyB.Shift1:=[];
+    NewKeyB.Key2:=VK_UNKNOWN;
+    NewKeyB.Shift2:=[];
+  end
+  else if not ResolveConflicts(NewKeyB, CurRelation.Category.Areas)
   then begin
     debugln('TKeyMappingEditForm.OkButtonClick ResolveConflicts failed for key1');
     exit;
   end;
 
-  //debugln('TKeyMappingEditForm.OkButtonClick C KeyA=',KeyAndShiftStateToEditorKeyString(NewKey1,NewShiftState1),' KeyB=',KeyAndShiftStateToEditorKeyString(NewKey2,NewShiftState2));
+  //debugln('TKeyMappingEditForm.OkButtonClick C KeyA=',KeyAndShiftStateToEditorKeyString(NewKeyA),' KeyB=',KeyAndShiftStateToEditorKeyString(NewKeyB));
 
-  if NewKey1=VK_UNKNOWN then
+  if NewKeyA.Key1=VK_UNKNOWN then
   begin
-    NewKey1:=NewKey2;
-    NewShiftState1:=NewShiftState2;
-    NewKey2:=VK_UNKNOWN;
+    NewKeyA:=NewKeyB;
+    NewKeyB.Key1:=VK_UNKNOWN;
+    NewKeyB.Shift1:=[];
+    NewKeyB.Key2:=VK_UNKNOWN;
+    NewKeyB.Shift2:=[];
   end;
 
-  //debugln('TKeyMappingEditForm.OkButtonClick D KeyA=',KeyAndShiftStateToEditorKeyString(NewKey1,NewShiftState1),' KeyB=',KeyAndShiftStateToEditorKeyString(NewKey2,NewShiftState2));
+  //debugln('TKeyMappingEditForm.OkButtonClick D KeyA=',KeyAndShiftStateToEditorKeyString(NewKeyA),' KeyB=',KeyAndShiftStateToEditorKeyString(NewKeyB));
 
-  CurRelation.KeyA:=IDEShortCut(NewKey1,NewShiftState1,VK_UNKNOWN,[]);
-  CurRelation.KeyB:=IDEShortCut(NewKey2,NewShiftState2,VK_UNKNOWN,[]);
+  CurRelation.KeyA:=NewKeyA;
+  CurRelation.KeyB:=NewKeyB;
 
-  //debugln('TKeyMappingEditForm.OkButtonClick B KeyA=',KeyAndShiftStateToEditorKeyString(NewKey1,NewShiftState1),' KeyB=',KeyAndShiftStateToEditorKeyString(NewKey2,NewShiftState2));
+  //debugln('TKeyMappingEditForm.OkButtonClick B KeyA=',KeyAndShiftStateToEditorKeyString(NewKeyA),' KeyB=',KeyAndShiftStateToEditorKeyString(NewKeyB));
   ModalResult:=mrOk;
 end;
 
@@ -1711,14 +1988,9 @@ begin
   ModalResult:=mrCancel;
 end;
 
-procedure TKeyMappingEditForm.Key1GrabButtonClick(Sender: TObject);
+procedure TKeyMappingEditForm.KeyGrabButtonClick(Sender: TObject);
 begin
-  ActivateGrabbing(1);
-end;
-
-procedure TKeyMappingEditForm.Key2GrabButtonClick(Sender: TObject);
-begin
-  ActivateGrabbing(2);
+  ActivateGrabbing(TButton(Sender).Tag+1);
 end;
 
 procedure TKeyMappingEditForm.DeactivateGrabbing;
@@ -1732,11 +2004,8 @@ begin
     if (Components[i] is TWinControl) then
       TWinControl(Components[i]).Enabled:=true;
   end;
-  
-  if GrabbingKey=1 then
-    Key1GrabButton.Caption:=srkmGrabKey
-  else if GrabbingKey=2 then
-    Key2GrabButton.Caption:=srkmGrabKey;
+
+  KeyGrabButton[GrabbingKey-1].Caption:=srkmGrabKey;
   GrabbingKey:=0;
 end;
 
@@ -1754,43 +2023,110 @@ begin
   end;
 end;
 
-function TKeyMappingEditForm.ResolveConflicts(AKey: Word;
-  AShiftState: TShiftState; Areas: TCommandAreas): boolean;
+function TKeyMappingEditForm.ResolveConflicts(Key: TIDEShortCut;
+  Areas: TCommandAreas): boolean;
 var
   ConflictRelation: TKeyCommandRelation;
   ConflictName: String;
   CurRelation: TKeyCommandRelation;
   CurName: String;
+  j: integer;
+  conflictType: integer;
 begin
   // search for conflict
   CurRelation:=KeyCommandRelationList.Relations[KeyIndex];
-  ConflictRelation:=KeyCommandRelationList.Find(AKey,AShiftState,Areas);
-  if (ConflictRelation<>nil)
-  and (ConflictRelation<>KeyCommandRelationList.Relations[KeyIndex]) then
+  if Key.Key1=VK_UNKNOWN then
+  begin
+    Result:=true;
+    exit;
+  end;
+  //Try to find a relation that conflicts
+  for j:=0 to KeyCommandRelationList.RelationCount-1 do
+    with KeyCommandRelationList.Relations[j] do
+    begin
+      if (j=KeyIndex) or (Category.Areas*Areas=[]) then continue;
+      if (Key.Key1=KeyA.Key1) and (Key.Shift1=KeyA.Shift1) then
+        if (Key.Key2=KeyA.Key2) and (Key.Shift2=KeyA.Shift2) then
+        begin
+          ConflictRelation:=KeyCommandRelationList.Relations[j];
+          conflictType:=1;  // Key = KeyA of this relation
+          break;
+        end
+        else begin
+          if (Key.Key2<>VK_UNKNOWN) and (KeyA.Key2=VK_UNKNOWN) then
+          begin
+            ConflictRelation:=KeyCommandRelationList.Relations[j];
+            conflictType:=3;  // Key is two-key combo, while KeyA is not
+            break;
+          end;
+          if (Key.Key2=VK_UNKNOWN) and (KeyA.Key2<>VK_UNKNOWN) then
+          begin
+            ConflictRelation:=KeyCommandRelationList.Relations[j];
+            conflictType:=3;  // KeyA is two-key combo, while Key is not
+            break;
+          end;
+        end
+      else if (Key.Key1=KeyB.Key1) and (Key.Shift1=KeyB.Shift1) then
+        if (Key.Key2=KeyB.Key2) and (Key.Shift2=KeyB.Shift2) then
+        begin
+          ConflictRelation:=KeyCommandRelationList.Relations[j];
+          conflictType:=2;  // Key = KeyB of this relation
+          break;
+        end
+        else begin
+          if (Key.Key2<>VK_UNKNOWN) and (KeyB.Key2=VK_UNKNOWN) then
+          begin
+            ConflictRelation:=KeyCommandRelationList.Relations[j];
+            conflictType:=4;  // Key is two-key combo, while KeyB is not
+            break;
+          end;
+          if (Key.Key2=VK_UNKNOWN) and (KeyB.Key2<>VK_UNKNOWN) then
+          begin
+            ConflictRelation:=KeyCommandRelationList.Relations[j];
+            conflictType:=4;  // KeyB is two-key combo, while Key is not
+            break;
+          end;
+        end
+      else
+        conflictType:=0;
+    end;
+  if (conflictType<>0) then
   begin
     CurName:=CurRelation.GetCategoryAndName;
     ConflictName:=ConflictRelation.GetCategoryAndName;
-    if MessageDlg('Conflict found',
-      'The key '+KeyAndShiftStateToEditorKeyString(AKey,AShiftState)+#13
-      +'is already assigned to '+ConflictName+'.'#13
-      +#13
-      +'Remove the old assignment and assign the key to the new function'#13
-      +CurName+'?',
-      mtConfirmation,[mbOk,mbCancel],0)
-    <>mrOk then
-    begin
-      Result:=false;
-      exit;
-    end;
-    if (ConflictRelation.KeyA.Key1=AKey)
-    and (ConflictRelation.KeyA.Shift1=AShiftState) then begin
-      ConflictRelation.ClearKeyA;
-    end;
-    if (ConflictRelation.KeyB.Key1=AKey)
-    and (ConflictRelation.KeyB.Shift1=AShiftState) then begin
-      ConflictRelation.ClearKeyB;
-    end;
+    case conflictType of
+      1,2:begin
+        if MessageDlg('Conflict found',
+           'The key '+KeyAndShiftStateToEditorKeyString(Key)+#13+
+           'is already assigned to '+ConflictName+'.'#13+#13+
+           'Remove the old assignment and assign the key to the new function'#13+
+           CurName+'?', mtConfirmation,[mbOk,mbCancel],0) <> mrOk then
+        begin
+          Result:=false;
+          exit;
+        end;
+      end;
+      3,4:begin
+        if (conflictType=1) then
+          ConflictName:=ConflictName+' ('+KeyAndShiftStateToEditorKeyString(ConflictRelation.KeyA)
+        else
+          ConflictName:=ConflictName+' ('+KeyAndShiftStateToEditorKeyString(ConflictRelation.KeyB);
+        if MessageDlg('Conflict found',
+           'The key '+KeyAndShiftStateToEditorKeyString(Key)+#13+
+           'conflicts with '+ConflictName+')'+#13+
+           'Remove the old assignment and assign the key to the new function'#13+
+           CurName+'?', mtConfirmation,[mbOk,mbCancel],0) <> mrOk then
+        begin
+          Result:=false;
+          exit;
+        end;
+      end;
+    end; // case
+    if (conflictType=1) then
+      ConflictRelation.KeyA:=ConflictRelation.KeyB;
+    ConflictRelation.ClearKeyB;
   end;
+
   Result:=true;
 end;
 
@@ -1806,17 +2142,12 @@ begin
   begin
     if (Components[i] is TWinControl) then
     begin
-      if ((GrabbingKey=1) and (Components[i]<>Key1GrabButton)
-         and (Components[i]<>Key1GroupBox))
-         or ((GrabbingKey=2) and (Components[i]<>Key2GrabButton)
-         and (Components[i]<>Key2GroupBox)) then
+      if (Components[i]<>KeyGrabButton[GrabbingKey-1]) and
+         (Components[i]<>KeyGroupBox[(GrabbingKey-1) div 2]) then
                    TWinControl(Components[i]).Enabled:=false;
     end;
   end;
-  if GrabbingKey=1 then
-    Key1GrabButton.Caption:=srkmPressKey
-  else if GrabbingKey=2 then
-    Key2GrabButton.Caption:=srkmPressKey;
+  KeyGrabButton[GrabbingKey-1].Caption:=srkmPressKey;
 end;
 
 procedure TKeyMappingEditForm.FormKeyUp(Sender: TObject; var Key: Word;
@@ -1824,29 +2155,16 @@ procedure TKeyMappingEditForm.FormKeyUp(Sender: TObject; var Key: Word;
 begin
   {writeln('TKeyMappingEditForm.FormKeyUp Sender=',Classname
      ,' Key=',Key,' Ctrl=',ssCtrl in Shift,' Shift=',ssShift in Shift
-     ,' Alt=',ssAlt in Shift,' AsString=',KeyAndShiftStateToEditorKeyString(Key,Shift),
+     ,' Alt=',ssAlt in Shift,' AsString=',KeyAndShiftStateToEditorKeyString(Key),
      '');}
   if Key in [VK_CONTROL, VK_SHIFT, VK_LCONTROL, VK_RCONTROL,
              VK_LSHIFT, VK_RSHIFT] then exit;
-  if (GrabbingKey in [1,2]) then
-  begin
-    if GrabbingKey=1 then
-    begin
-      Key1CtrlCheckBox.Checked:=(ssCtrl in Shift);
-      Key1ShiftCheckBox.Checked:=(ssShift in Shift);
-      Key1AltCheckBox.Checked:=(ssAlt in Shift);
-      SetComboBox(Key1KeyComboBox,KeyAndShiftStateToEditorKeyString(Key,[]));
-    end
-    else if GrabbingKey=2 then
-    begin
-      Key2CtrlCheckBox.Checked:=(ssCtrl in Shift);
-      Key2ShiftCheckBox.Checked:=(ssShift in Shift);
-      Key2AltCheckBox.Checked:=(ssAlt in Shift);
-      SetComboBox(Key2KeyComboBox,KeyAndShiftStateToEditorKeyString(Key,[]));
-    end;
-    Key:=0;
-    DeactivateGrabbing;
-  end;
+  KeyCtrlCheckBox[GrabbingKey-1].Checked:=(ssCtrl in Shift);
+  KeyShiftCheckBox[GrabbingKey-1].Checked:=(ssShift in Shift);
+  KeyAltCheckBox[GrabbingKey-1].Checked:=(ssAlt in Shift);
+  SetComboBox(KeyComboBox[GrabbingKey-1], KeyAndShiftStateToEditorKeyString(Key,Shift));
+  Key:=0;
+  DeactivateGrabbing;
 end;
 
 
@@ -2190,6 +2508,11 @@ begin
   Result:= TKeyCommandRelation(FRelations[Index]);
 end;
 
+function TKeyCommandRelationList.GetRelationCount:integer;
+begin
+  Result:=FRelations.Count;
+end;
+
 function TKeyCommandRelationList.Count:integer;
 begin
   Result:=FRelations.Count;
@@ -2307,9 +2630,9 @@ var a,b,p:integer;
 // LoadFromXMLConfig
 var
   FileVersion: integer;
-  TheKeyA, TheyKeyB: TIDEShortCut;
-  Key: word;
-  Shift: TShiftState;
+  TheKeyA, TheKeyB: TIDEShortCut;
+  Key1, Key2: word;
+  Shift1, Shift2: TShiftState;
 begin
   FileVersion:=XMLConfig.GetValue(Prefix+'Version/Value',0);
   ExtToolCount:=XMLConfig.GetValue(Prefix+'ExternalToolCount/Value',0);
@@ -2318,20 +2641,24 @@ begin
     for b:=1 to length(Name) do
       if not (Name[b] in ['a'..'z','A'..'Z','0'..'9']) then Name[b]:='_';
     with Relations[a] do begin
-      GetDefaultKeyForCommand(Command,TheKeyA,TheyKeyB);
-      DefaultStr:=KeyValuesToStr(TheKeyA, TheyKeyB);
+      GetDefaultKeyForCommand(Command,TheKeyA,TheKeyB);
+      DefaultStr:=KeyValuesToStr(TheKeyA, TheKeyB);
     end;
     if FileVersion<2 then
       NewValue:=XMLConfig.GetValue(Prefix+Name,DefaultStr)
     else
       NewValue:=XMLConfig.GetValue(Prefix+Name+'/Value',DefaultStr);
     p:=1;
-    Key:=word(ReadNextInt);
-    Shift:=IntToShiftState(ReadNextInt);
-    Relations[a].KeyA:=IDEShortCut(Key,Shift,VK_UNKNOWN,[]);
-    Key:=word(ReadNextInt);
-    Shift:=IntToShiftState(ReadNextInt);
-    Relations[a].KeyB:=IDEShortCut(Key,Shift,VK_UNKNOWN,[]);
+    Key1:=word(ReadNextInt);
+    Shift1:=IntToShiftState(ReadNextInt);
+    Key2:=word(ReadNextInt);
+    Shift2:=IntToShiftState(ReadNextInt);
+    Relations[a].KeyA:=IDEShortCut(Key1, Shift1, Key2, Shift2);
+    Key1:=word(ReadNextInt);
+    Shift1:=IntToShiftState(ReadNextInt);
+    Key2:=word(ReadNextInt);
+    Shift2:=IntToShiftState(ReadNextInt);
+    Relations[a].KeyB:=IDEShortCut(Key1, Shift1, Key2, Shift2);
   end;
   Result:=true;
 end;
@@ -2342,7 +2669,7 @@ var a,b: integer;
   Name: String;
   CurKeyStr: String;
   DefaultKeyStr: string;
-  TheKeyA, TheyKeyB: TIDEShortCut;
+  TheKeyA, TheKeyB: TIDEShortCut;
 begin
   XMLConfig.SetValue(Prefix+'Version/Value',KeyMappingFormatVersion);
   XMLConfig.SetDeleteValue(Prefix+'ExternalToolCount/Value',ExtToolCount,0);
@@ -2352,8 +2679,8 @@ begin
       if not (Name[b] in ['a'..'z','A'..'Z','0'..'9']) then Name[b]:='_';
     with Relations[a] do begin
       CurKeyStr:=KeyValuesToStr(KeyA,KeyB);
-      GetDefaultKeyForCommand(Command,TheKeyA,TheyKeyB);
-      DefaultKeyStr:=KeyValuesToStr(TheKeyA, TheyKeyB);
+      GetDefaultKeyForCommand(Command,TheKeyA,TheKeyB);
+      DefaultKeyStr:=KeyValuesToStr(TheKeyA, TheKeyB);
     end;
     //writeln('TKeyCommandRelationList.SaveToXMLConfig A ',Prefix+Name,' ',CurKeyStr=DefaultKeyStr);
     XMLConfig.SetDeleteValue(Prefix+Name+'/Value',CurKeyStr,DefaultKeyStr);
@@ -2361,16 +2688,20 @@ begin
   Result:=true;
 end;
 
-function TKeyCommandRelationList.Find(AKey:Word; AShiftState:TShiftState;
+function TKeyCommandRelationList.Find(Key: TIDEShortCut;
   Areas: TCommandAreas):TKeyCommandRelation;
-var a:integer;
+var
+  a:integer;
 begin
   Result:=nil;
-  if AKey=VK_UNKNOWN then exit;
+  if Key.Key1=VK_UNKNOWN then exit;
   for a:=0 to FRelations.Count-1 do with Relations[a] do begin
     if Category.Areas*Areas=[] then continue;
-    if ((KeyA.Key1=AKey) and (KeyA.Shift1=AShiftState))
-    or ((KeyB.Key1=AKey) and (KeyB.Shift1=AShiftState)) then begin
+    if ((KeyA.Key1=Key.Key1) and (KeyA.Shift1=Key.Shift1) and
+        (KeyA.Key2=Key.Key2) and (KeyA.Shift2=Key.Shift2))
+    or ((KeyB.Key1=Key.Key1) and (KeyB.Shift1=Key.Shift1) and
+        (KeyB.Key2=Key.Key2) and (KeyB.Shift2=Key.Shift2)) then
+    begin
       Result:=Relations[a];
       exit;
     end;
@@ -2528,20 +2859,34 @@ begin
   Result:=nil;
 end;
 
-function TKeyCommandRelationList.TranslateKey(AKey: Word;
-  AShiftState: TShiftState; Areas: TCommandAreas): word;
+function TKeyCommandRelationList.TranslateKey(Key: word; Shift: TShiftState; Areas: TCommandAreas): word;
 var
   ARelation: TKeyCommandRelation;
 begin
-  ARelation:=Find(AKey,AShiftState,Areas);
+  fLastKey.Key2 := Key;
+  fLastKey.Shift2 := Shift;
+  ARelation := Find(fLastKey, Areas);
+  if ARelation = nil then
+  begin
+    fLastKey.Key1 := Key;
+    fLastKey.Shift1 := Shift;
+    fLastKey.Key2 := VK_UNKNOWN;
+    fLastKey.Shift2 := [];
+    ARelation := Find(fLastKey, Areas);
+  end;
   if ARelation<>nil then
+  begin
+    fLastKey.Key1 := VK_UNKNOWN;
+    fLastKey.Shift1 := [];
+    fLastKey.Key2 := VK_UNKNOWN;
+    fLastKey.Shift2 := [];
     Result:=ARelation.Command
+  end
   else
     Result:=ecNone;
 end;
 
-function TKeyCommandRelationList.IndexOf(ARelation: TKeyCommandRelation
-  ): integer;
+function TKeyCommandRelationList.IndexOf(ARelation: TKeyCommandRelation): integer;
 begin
   Result:=fRelations.IndexOf(ARelation);
 end;

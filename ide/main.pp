@@ -2317,14 +2317,23 @@ end;
 procedure TMainIDE.OnExecuteIDEShortCut(Sender: TObject; var Key: word;
   Shift: TShiftState; Areas: TCommandAreas);
 var
-  CommandRelation: TKeyCommandRelation;
+//  CommandRelation: TKeyCommandRelation;
+//  Handled: Boolean;
+  Command: Word;
   Handled: Boolean;
 begin
-  CommandRelation:=EditorOpts.KeyMap.Find(Key,Shift,Areas);
-  if (CommandRelation=nil) or (CommandRelation.Command=ecNone) then exit;
-  Handled:=false;
-  OnProcessIDECommand(Sender,CommandRelation.Command,Handled);
-  if Handled then Key:=VK_UNKNOWN;
+//  CommandRelation:=EditorOpts.KeyMap.Find(Key,Shift,Areas);
+//  if (CommandRelation=nil) or (CommandRelation.Command=ecNone) then exit;
+//  Handled:=false;
+//  OnProcessIDECommand(Sender,CommandRelation.Command,Handled);
+//  if Handled then Key:=VK_UNKNOWN;
+debugln('Key '+IntToStr(Key)+' pressed');
+  Command := EditorOpts.KeyMap.TranslateKey(Key,Shift,Areas);
+  if (Command = ecNone) then exit;
+  Handled := false;
+  OnProcessIDECommand(Sender, Command, Handled);
+  if Handled then
+    Key := VK_UNKNOWN;
 end;
 
 procedure TMainIDE.OnSrcNoteBookCtrlMouseUp(Sender: TObject;
@@ -11726,6 +11735,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.878  2005/06/25 17:10:41  mattias
+  extended IDE frontend for two IDE shortcuts with two key sequences
+
   Revision 1.877  2005/06/18 08:49:32  mattias
   implemented context help system for compiler/make messages
 
