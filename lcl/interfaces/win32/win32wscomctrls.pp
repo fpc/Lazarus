@@ -54,6 +54,8 @@ type
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, 
       AWidth, AHeight: integer); override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+                        var PreferredWidth, PreferredHeight: integer); override;
   end;
 
   { TWin32WSTabSheet }
@@ -321,6 +323,18 @@ procedure TWin32WSStatusBar.SetBounds(const AWinControl: TWinControl;
 begin
   // statusbars do their own resizing, post a size message to it's queue
   Windows.PostMessage(AWinControl.Handle, WM_SIZE, 0, 0);
+end;
+
+procedure TWin32WSStatusBar.GetPreferredSize(const AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer);
+var
+  R: TRect;
+begin
+  // statusbars cannot be resized by the LCL, so actual size is prefered size
+  if Windows.GetWindowRect(AWinControl.Handle, R) then begin
+    PreferredHeight:= R.Bottom - R.Top;
+    PreferredWidth:= R.Right - R.Left;
+  end;
 end;
 
 procedure TWin32WSStatusBar.SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer);
