@@ -665,6 +665,11 @@ var
   PreferredWidth: LongInt;
   PreferredHeight: LongInt;
   ChildBounds: TRect;
+  WidthIsFixed: boolean;
+  HeightIsFixed: boolean;
+  NewLeft: LongInt;
+  NewTop: LongInt;
+  CurAnchors: TAnchors;
 begin
   //debugln('TWinControl.DoAutoSize ',DbgSName(Self));
   If not AutoSizeCanStart then exit;
@@ -675,11 +680,17 @@ begin
 
   AutoSizing := True;
   try
+    // test if resizing is possible
+    CurAnchors:=Anchors+AnchorAlign[Align];
+    WidthIsFixed:=(CurAnchors*[akLeft,akRight]=[akLeft,akRight]);
+    HeightIsFixed:=(CurAnchors*[akTop,akBottom]=[akTop,akBottom]);
+
     // autosize control to preferred size
-    GetPreferredSize(PreferredWidth,PreferredHeight,false);
-    if PreferredWidth<=0 then
+    if (not WidthIsFixed) or (not HeightIsFixed) then
+      GetPreferredSize(PreferredWidth,PreferredHeight,false);
+    if WidthIsFixed or (PreferredWidth<=0) then
       PreferredWidth:=Constraints.MinMaxWidth(Width);
-    if PreferredHeight<=0 then
+    if HeightIsFixed or (PreferredHeight<=0) then
       PreferredHeight:=Constraints.MinMaxHeight(Height);
 
     // move childs tight to left and top (so no space left and above childs)
@@ -704,8 +715,15 @@ begin
     debugln('DoAutoSize A ',DbgSName(Self),' Cur=',dbgs(Width),'x',dbgs(Height),' Prefer=',dbgs(PreferredWidth),'x',dbgs(PreferredHeight),' WidgetClass=',WidgetSetClass.ClassName);
     {$ENDIF}
     if (PreferredWidth<>Width) or (PreferredHeight<>Height) then begin
+      // adjust Left/Top as well to reduce auto sizing overhead
+      NewLeft:=Left;
+      NewTop:=Top;
+      if akRight in CurAnchors then
+        dec(NewLeft,PreferredWidth-Width);
+      if akBottom in CurAnchors then
+        dec(NewTop,PreferredHeight-Height);
       //debugln('DoAutoSize Resize ',DbgSName(Self),' W=',dbgs(PreferredWidth),' H=',dbgs(PreferredHeight));
-      SetBoundsKeepBase(Left,Top,PreferredWidth,PreferredHeight,true);
+      SetBoundsKeepBase(NewLeft,NewTop,PreferredWidth,PreferredHeight,true);
     end;
   finally
     AutoSizing := False;
@@ -4517,6 +4535,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.330  2005/06/28 22:56:32  mattias
+  improved lcl autosizing: reduced overhead by preconsidering anchors
+
   Revision 1.329  2005/06/25 15:34:03  mattias
   fixed a few fpc over warnings  from Andrew Haines
 
