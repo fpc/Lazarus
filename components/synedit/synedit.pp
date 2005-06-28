@@ -6328,12 +6328,28 @@ begin
 end;
 
 procedure TCustomSynEdit.GotoBookMark(BookMark: Integer);
+{$IFDEF SYN_LAZARUS}
+var
+  NewCaret: TPoint;
+  LogCaret: TPoint;
+{$ENDIF}
 begin
   if (BookMark in [0..9]) and assigned(fBookMarks[BookMark])
     and (fBookMarks[BookMark].Line <= fLines.Count)
   then begin
-    CaretXY := Point(fBookMarks[BookMark].Column, fBookMarks[BookMark].Line);
-    EnsureCursorPosVisible;                                                     // djlp 2000-08-29
+    {$IFDEF SYN_LAZARUS}
+    NewCaret:=Point(fBookMarks[BookMark].Column, fBookMarks[BookMark].Line);
+    LogCaret:=PhysicalToLogicalPos(NewCaret);
+    IncPaintLock;
+    SetBlockEnd(LogCaret);
+    SetBlockBegin(LogCaret);
+    CaretXY:=NewCaret;
+    EnsureCursorPosVisible;
+    DecPaintLock;
+    {$ELSE}
+    CaretXY:=Point(fBookMarks[BookMark].Column, fBookMarks[BookMark].Line);     // djlp 2000-08-29
+    EnsureCursorPosVisible;
+    {$ENDIF}
   end;
 end;
 
