@@ -948,7 +948,6 @@ begin
         OnClick:=@RadioButtonClick;
         Caption:=GetRadioBtnCaptions(APlacement);
         Checked:=(APlacement=AnLayout.WindowPlacement);
-        Visible:=true;
       end;
       
       case APlacement of
@@ -976,28 +975,30 @@ begin
           end;
         end;
       end;
-    end else
-        begin
-          if PlacementRadioButtons[APlacement]<>nil then
-          begin
-              PlacementRadioButtons[APlacement].Free;
-              PlacementRadioButtons[APlacement]:=nil;
-          end;
-        end;
+      
+    end else begin
+      // window placement not allowed
+      if PlacementRadioButtons[APlacement]<>nil then
+      begin
+        PlacementRadioButtons[APlacement].Free;
+        PlacementRadioButtons[APlacement]:=nil;
+      end;
     end;
-    
-    inc(CurY,2);
-    if ApplyButton=nil then
-       ApplyButton:=TButton.Create(Self);
-       
-    with ApplyButton do
-    begin
+  end;
+  
+  inc(CurY,2);
+  if ApplyButton=nil then
+    ApplyButton:=TButton.Create(Self);
+     
+  with ApplyButton do
+  begin
     Parent:=Self;
-    SetBounds(5,CurY,70,Height);
+    SetBounds(5,CurY,Width,Height);
     OnClick:=@ApplyButtonClick;
     Caption:=dlgButApply;
-    Visible:=true;
+    AutoSize:=true;
   end;
+
   if iwpCustomPosition in AnLayout.WindowPlacementsAllowed then
   begin
     if GetWindowPositionButton=nil then
@@ -1005,10 +1006,11 @@ begin
     with GetWindowPositionButton do
     begin
       Parent:=Self;
-      SetBounds(85,CurY,110,Height);
       OnClick:=@GetWindowPositionButtonClick;
       Caption:=dlgGetPosition;
-      Visible:=true;
+      AutoSize:=true;
+      AnchorToNeighbour(akLeft,5,ApplyButton);
+      AnchorParallel(akTop,0,ApplyButton);
     end;
   end;
   //inc(CurY,ApplyButton.Height+7);

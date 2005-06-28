@@ -318,7 +318,7 @@ type
     procedure Assign(List: TKeyCommandRelationList);
     procedure LoadScheme(const SchemeName: string);
   public
-    property ExtToolCount: integer read fExtToolCount write SetExtToolCount;
+    property ExtToolCount: integer read fExtToolCount write SetExtToolCount;// in menu
     property CustomKeyCount: integer read FCustomKeyCount write SetCustomKeyCount;
     property Relations[Index:integer]:TKeyCommandRelation read GetRelation;
     property RelationCount:integer read GetRelationCount;
@@ -338,34 +338,16 @@ type
     KeyShiftCheckBox: array[0..3] of TCheckBox;
     KeyComboBox: array[0..3] of TComboBox;
     KeyGrabButton: array[0..3] of TButton;
-//    Key1GroupBox: TGroupBox;
-//    Key1aCtrlCheckBox: TCheckBox;
-//    Key1aAltCheckBox: TCheckBox;
-//    Key1aShiftCheckBox: TCheckBox;
-//    Key1aKeyComboBox: TComboBox;
-//    Key1aGrabButton: TButton;
-//    Key1bCtrlCheckBox: TCheckBox;
-//    Key1bAltCheckBox: TCheckBox;
-//    Key1bShiftCheckBox: TCheckBox;
-//    Key1bKeyComboBox: TComboBox;
-//    Key1bGrabButton: TButton;
-//    Key2GroupBox: TGroupBox;
-//    Key2aCtrlCheckBox: TCheckBox;
-//    Key2aAltCheckBox: TCheckBox;
-//    Key2aShiftCheckBox: TCheckBox;
-//    Key2aKeyComboBox: TComboBox;
-//    Key2aGrabButton: TButton;
-//    Key2bCtrlCheckBox: TCheckBox;
-//    Key2bAltCheckBox: TCheckBox;
-//    Key2bShiftCheckBox: TCheckBox;
-//    Key2bKeyComboBox: TComboBox;
-//    Key2bGrabButton: TButton;
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
     procedure KeyGrabButtonClick(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift:TShiftState);
   private
-    GrabbingKey: integer; // 0=none, 1=Default key, 2=Alternative key
+    GrabbingKey: integer; { 0=none,
+                            1=Default key (1st in sequence),
+                            2=Default key (second in sequence),
+                            3=Alternative key (1st in sequence)
+                            4=Alternative key (second in sequence) }
     procedure ActivateGrabbing(AGrabbingKey: integer);
     procedure DeactivateGrabbing;
     procedure SetComboBox(AComboBox: TComboBox; const AValue: string);
@@ -409,7 +391,7 @@ implementation
 
 
 const
-  KeyMappingFormatVersion = 2;
+  KeyMappingFormatVersion = 3;
 
   VirtualKeyStrings: TStringHashList = nil;
 
@@ -427,6 +409,7 @@ var
   Data: Pointer;
 begin
   Result:=VK_UNKNOWN;
+  //debugln('EditorKeyStringToVKCode A "',s,'"');
   if EditorKeyStringIsIrregular(s) then begin
     Result:=word(StrToIntDef(copy(s,7,length(s)-8),VK_UNKNOWN));
     exit;
@@ -1758,7 +1741,7 @@ begin
   inherited Create(TheOwner);
   if LazarusResources.Find(ClassName)=nil then
   begin
-    SetBounds((Screen.Width-432) div 2, (Screen.Height-310) div 2, 432, 310);
+    SetBounds((Screen.Width-432) div 2, (Screen.Height-310) div 2, 432, 340);
     Caption := srkmEditForCmd;
     OnKeyUp:=@FormKeyUp;
 
@@ -1892,14 +1875,8 @@ var
   CurRelation: TKeyCommandRelation;
 begin
   // set defaults
-  NewKeyA.Key1:=VK_UNKNOWN;
-  NewKeyA.Shift1:=[];
-  NewKeyA.Key2:=VK_UNKNOWN;
-  NewKeyA.Shift2:=[];
-  NewKeyB.Key1:=VK_UNKNOWN;
-  NewKeyB.Shift1:=[];
-  NewKeyB.Key2:=VK_UNKNOWN;
-  NewKeyB.Shift2:=[];
+  NewKeyA:=CleanIDEShortCut;
+  NewKeyB:=CleanIDEShortCut;
 
   //debugln('TKeyMappingEditForm.OkButtonClick A KeyA=',KeyAndShiftStateToEditorKeyString(NewKeyA),' KeyB=',KeyAndShiftStateToEditorKeyString(NewKeyB));
 
@@ -2045,6 +2022,7 @@ begin
     with KeyCommandRelationList.Relations[j] do
     begin
       if (j=KeyIndex) or (Category.Areas*Areas=[]) then continue;
+      
       if (Key.Key1=KeyA.Key1) and (Key.Shift1=KeyA.Shift1) then
         if (Key.Key2=KeyA.Key2) and (Key.Shift2=KeyA.Shift2) then
         begin
@@ -2162,7 +2140,7 @@ begin
   KeyCtrlCheckBox[GrabbingKey-1].Checked:=(ssCtrl in Shift);
   KeyShiftCheckBox[GrabbingKey-1].Checked:=(ssShift in Shift);
   KeyAltCheckBox[GrabbingKey-1].Checked:=(ssAlt in Shift);
-  SetComboBox(KeyComboBox[GrabbingKey-1], KeyAndShiftStateToEditorKeyString(Key,Shift));
+  SetComboBox(KeyComboBox[GrabbingKey-1], KeyAndShiftStateToEditorKeyString(Key,[]));
   Key:=0;
   DeactivateGrabbing;
 end;
@@ -2228,6 +2206,8 @@ begin
   AddDefault(C,'Normal selection mode',ecNormalSelect);
   AddDefault(C,'Column selection mode',ecColumnSelect);
   AddDefault(C,'Line selection mode',ecLineSelect);
+  AddDefault(C,'Indent block',ecBlockIndent);
+  AddDefault(C,'Unindent block',ecBlockUnindent);
   AddDefault(C,'Uppercase selection',ecSelectionUpperCase);
   AddDefault(C,'Lowercase selection',ecSelectionLowerCase);
   AddDefault(C,'Convert tabs to spaces in selection',ecSelectionTabs2Spaces);
@@ -2251,10 +2231,8 @@ begin
   AddDefault(C,'Select line',ecSelectLine);
   AddDefault(C,'Select paragraph',ecSelectParagraph);
 
-  // editing
-  C:=Categories[AddCategory('editing commands',srkmCatEditing,caSrcEdit)];
-  AddDefault(C,'Indent block',ecBlockIndent);
-  AddDefault(C,'Unindent block',ecBlockUnindent);
+  // editing - without menu items in the IDE bar
+  C:=Categories[AddCategory('text editing commands',srkmCatEditing,caSrcEditOnly)];
   AddDefault(C,'Delete last char',ecDeleteLastChar);
   AddDefault(C,'Delete char at cursor',ecDeleteChar);
   AddDefault(C,'Delete to end of word',ecDeleteWord);
@@ -2265,6 +2243,7 @@ begin
   AddDefault(C,'Delete whole text',ecClearAll);
   AddDefault(C,'Break line and move cursor',ecLineBreak);
   AddDefault(C,'Break line, leave cursor',ecInsertLine);
+  // TODO: these commands do have a menu item
   AddDefault(C,'Insert from Character Map',ecInsertCharacter);
   AddDefault(C,'Insert GPL notice',ecInsertGPLNotice);
   AddDefault(C,'Insert LGPL notice',ecInsertLGPLNotice);
@@ -2303,8 +2282,8 @@ begin
   AddDefault(C,'Jump to previous error',ecJumpToPrevError);
   AddDefault(C,'Open file at cursor',ecOpenFileAtCursor);
 
-  // marker
-  C:=Categories[AddCategory('Marker',srkmCatMarker,caSrcEdit)];
+  // marker - without menu items in the IDE bar
+  C:=Categories[AddCategory('Marker',srkmCatMarker,caSrcEditOnly)];
   AddDefault(C,'Go to marker 0',ecGotoMarker0);
   AddDefault(C,'Go to marker 1',ecGotoMarker1);
   AddDefault(C,'Go to marker 2',ecGotoMarker2);
@@ -2346,8 +2325,8 @@ begin
   AddDefault(C,'Find block start',ecFindBlockStart);
   AddDefault(C,'Goto include directive',ecGotoIncludeDirective);
 
-  // source notebook
-  C:=Categories[AddCategory('SourceNotebook',srkmCatSrcNoteBook,caAll)];
+  // source notebook - without menu items in the IDE bar
+  C:=Categories[AddCategory('SourceNotebook',srkmCatSrcNoteBook,caSrcEditOnly)];
   AddDefault(C,'Go to next editor',ecNextEditor);
   AddDefault(C,'Go to prior editor',ecPrevEditor);
   AddDefault(C,'Add break point',ecAddBreakPoint);
@@ -2473,8 +2452,8 @@ begin
   AddDefault(C,'Configure Help',ecConfigureHelp);
   AddDefault(C,'Context sensitive help',ecContextHelp);
 
-  // designer
-  C:=Categories[AddCategory('Designer',lisKeyCatDesigner,caDesign)];
+  // designer  - without menu items in the IDE bar (at least no direct)
+  C:=Categories[AddCategory('Designer',lisKeyCatDesigner,caDesignOnly)];
   AddDefault(C,'Copy selected Components to clipboard',ecCopyComponents);
   AddDefault(C,'Cut selected Components to clipboard',ecCutComponents);
   AddDefault(C,'Paste Components from clipboard',ecPasteComponents);
@@ -2627,6 +2606,12 @@ var a,b,p:integer;
     if (i and 4)>0 then Include(Result,ssAlt);
   end;
 
+  function OldKeyValuesToStr(const KeyA, KeyB: TIDEShortCut): string;
+  begin
+    Result:=IntToStr(KeyA.Key1) + ',' + ShiftStateToStr(KeyA.Shift1) + ',' +
+            IntToStr(KeyB.Key1) + ',' + ShiftStateToStr(KeyB.Shift1);
+  end;
+
 // LoadFromXMLConfig
 var
   FileVersion: integer;
@@ -2634,30 +2619,46 @@ var
   Key1, Key2: word;
   Shift1, Shift2: TShiftState;
 begin
+  //debugln('TKeyCommandRelationList.LoadFromXMLConfig A ');
   FileVersion:=XMLConfig.GetValue(Prefix+'Version/Value',0);
   ExtToolCount:=XMLConfig.GetValue(Prefix+'ExternalToolCount/Value',0);
   for a:=0 to FRelations.Count-1 do begin
     Name:=lowercase(Relations[a].Name);
     for b:=1 to length(Name) do
       if not (Name[b] in ['a'..'z','A'..'Z','0'..'9']) then Name[b]:='_';
-    with Relations[a] do begin
-      GetDefaultKeyForCommand(Command,TheKeyA,TheKeyB);
-      DefaultStr:=KeyValuesToStr(TheKeyA, TheKeyB);
-    end;
+    GetDefaultKeyForCommand(Relations[a].Command,TheKeyA,TheKeyB);
+    if FileVersion>2 then
+      DefaultStr:=KeyValuesToStr(TheKeyA, TheKeyB)
+    else
+      DefaultStr:=OldKeyValuesToStr(TheKeyA, TheKeyB);
+    //if Relations[a].Command=ecCopy then debugln('  DefaultStr=',DefaultStr);
+
     if FileVersion<2 then
       NewValue:=XMLConfig.GetValue(Prefix+Name,DefaultStr)
     else
       NewValue:=XMLConfig.GetValue(Prefix+Name+'/Value',DefaultStr);
+    //if Relations[a].Command=ecCopy then debugln('  NewValue=',NewValue);
+
     p:=1;
     Key1:=word(ReadNextInt);
     Shift1:=IntToShiftState(ReadNextInt);
-    Key2:=word(ReadNextInt);
-    Shift2:=IntToShiftState(ReadNextInt);
+    if FileVersion>2 then begin
+      Key2:=word(ReadNextInt);
+      Shift2:=IntToShiftState(ReadNextInt);
+    end else begin
+      Key2:=0;
+      Shift2:=[];
+    end;
     Relations[a].KeyA:=IDEShortCut(Key1, Shift1, Key2, Shift2);
     Key1:=word(ReadNextInt);
     Shift1:=IntToShiftState(ReadNextInt);
-    Key2:=word(ReadNextInt);
-    Shift2:=IntToShiftState(ReadNextInt);
+    if FileVersion>2 then begin
+      Key2:=word(ReadNextInt);
+      Shift2:=IntToShiftState(ReadNextInt);
+    end else begin
+      Key2:=0;
+      Shift2:=[];
+    end;
     Relations[a].KeyB:=IDEShortCut(Key1, Shift1, Key2, Shift2);
   end;
   Result:=true;

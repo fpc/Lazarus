@@ -38,13 +38,19 @@ uses
   Classes, SysUtils, LCLType;
   
 type
-  TCommandArea = (caMenu, caSourceEditor, caDesigner);
+  TCommandArea = (
+    caMenu,
+    caSourceEditor,
+    caDesigner
+    );
   TCommandAreas = set of TCommandArea;
 const
   caAll = [caMenu, caSourceEditor, caDesigner];
   caMenuOnly = [caMenu];
   caSrcEdit = [caMenu,caSourceEditor];
+  caSrcEditOnly = [caSourceEditor];
   caDesign = [caMenu,caDesigner];
+  caDesignOnly = [caDesigner];
 
 
 type

@@ -1809,12 +1809,18 @@ begin
       EndUpdate;
     end;
     OnMouseUp:=@WindowPositionsListBoxMouseUp;
+    BorderSpacing.Around:=2;
+    Align:=alTop;
+    Height:=100;
   end;
 
   WindowPositionsBox:=TIDEWindowSetupLayoutComponent.Create(Self);
   with WindowPositionsBox do begin
     Name:='WindowPositionsBox';
     Parent:=WindowPositionsGroupBox;
+    BorderSpacing.Around:=2;
+    Align:=alBottom;
+    AnchorToNeighbour(akTop,2,WindowPositionsListBox);
   end;
 end;
 
@@ -2860,10 +2866,12 @@ var
   x: Integer;
   w: Integer;
   y: Integer;
+  h: Integer;
 begin
   x:=10;
   w:=MinimizeAllOnMinimizeMainCheckBox.Parent.ClientWidth-2*x;
   y:=10;
+  h:=MinimizeAllOnMinimizeMainCheckBox.Parent.ClientHeight-y-2;
 
   // window minimizing and hiding
   with MinimizeAllOnMinimizeMainCheckBox do begin
@@ -2878,7 +2886,7 @@ begin
 
   // Window Positions
   with WindowPositionsGroupBox do
-    SetBounds(x,y,Max(10,(w div 2)-5),330);
+    SetBounds(x,y,Max(10,(w div 2)-5),h-y);
 end;
 
 procedure TEnvironmentOptionsDialog.ResizeFormEditorPage;
@@ -3054,16 +3062,6 @@ end;
 procedure TEnvironmentOptionsDialog.WindowPositionsGroupBoxResize(
   Sender: TObject);
 begin
-  with WindowPositionsListBox do begin
-    SetBounds(2,2,Max(Parent.ClientWidth-2*2,100),Max(100,Parent.Height div 4));
-  end;
-
-  with WindowPositionsBox do begin
-    Left:=2;
-    Top:=WindowPositionsListBox.Top+WindowPositionsListBox.Height+5;
-    Width:=WindowPositionsListBox.Width;
-    Height:=Parent.ClientHeight-Top-2;
-  end;
 end;
 
 procedure TEnvironmentOptionsDialog.BakTypeRadioGroupClick(Sender: TObject);

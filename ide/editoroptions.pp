@@ -2157,7 +2157,7 @@ begin
   begin  
     Position:=poScreenCenter;
     Caption:=lismenueditoroptions;
-    IDEDialogLayoutList.ApplyLayout(Self,480,459);
+    IDEDialogLayoutList.ApplyLayout(Self,480,480);
     OnResize:=@EditorOptionsFormResize;
     
     SynAutoComplete:=TSynEditAutoComplete.Create(Self);
