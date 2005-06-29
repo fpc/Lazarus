@@ -646,6 +646,7 @@ resourcestring
   dlgEnvBckup = 'Backup';
   dlgNaming = 'Naming';
   dlgCancel = 'Cancel';
+  lisA2PCreateNewFile = 'Create new file';
   dlgEnvLanguage = 'Language';
   dlgAutoSave = 'Auto save';
   dlgEdFiles = 'Editor files';
@@ -2369,6 +2370,7 @@ resourcestring
     +'Version %s%s%s is invalid.%sPlease use the format major.minor.release.'
     +'build%sFor exmaple: 1.0.20.10';
   lisA2PAddUnit = 'Add Unit';
+  lisA2PNewFile = 'New File';
   lisA2PNewComponent = 'New Component';
   lisA2PAddFile = 'Add File';
   lisA2PAddFiles = 'Add Files';

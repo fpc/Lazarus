@@ -39,8 +39,8 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Buttons, StdCtrls, ExtCtrls,
-  Dialogs, FileUtil, ComCtrls, LazarusIDEStrConsts, IDEOptionDefs, InputHistory,
-  {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF}, CodeToolManager, IDEDefs,
+  Dialogs, FileUtil, ComCtrls, AVL_Tree, LCLProc, NewItemIntf, ProjectIntf,
+  LazarusIDEStrConsts, IDEOptionDefs, InputHistory, CodeToolManager, IDEDefs,
   IDEProcs, EnvironmentOpts, PackageSystem, PackageDefs, ComponentReg;
   
 type
@@ -74,6 +74,8 @@ type
   TOnGetUnitRegisterInfo = procedure(Sender: TObject; const AFilename: string;
     var TheUnitName: string; var HasRegisterProc: boolean) of object;
 
+  { TAddToPackageDlg }
+
   TAddToPackageDlg = class(TForm)
     // notebook
     NoteBook: TNoteBook;
@@ -82,6 +84,7 @@ type
     AddFilesPage: TPage;
     NewComponentPage: TPage;
     NewDependPage: TPage;
+    NewUnitPage: TPage;
     // add unit page
     AddUnitFilenameLabel: TLabel;
     AddUnitFilenameEdit: TEdit;
@@ -95,6 +98,12 @@ type
     AddUnitUpdateButton: TButton;
     AddUnitButton: TButton;
     CancelAddUnitButton: TButton;
+    // new unit page
+    NewUnitTreeView: TTreeView;
+    NewUnitDescriptionGroupBox: TGroupBox;
+    NewUnitHelpLabel: TLabel;
+    NewUnitOkButton: TButton;
+    NewUnitCancelButton: TButton;
     // new component page
     AncestorTypeLabel: TLabel;
     AncestorComboBox: TComboBox;
@@ -163,6 +172,11 @@ type
     procedure NewComponentPageResize(Sender: TObject);
     procedure NewDependButtonClick(Sender: TObject);
     procedure NewDependPageResize(Sender: TObject);
+    procedure NewUnitOkButtonClick(Sender: TObject);
+    procedure NewUnitPageResize(Sender: TObject);
+    procedure NewUnitTreeViewClick(Sender: TObject);
+    procedure NewUnitTreeViewDblClick(Sender: TObject);
+    procedure NewUnitTreeViewSelectionChanged(Sender: TObject);
   private
     fLastNewComponentAncestorType: string;
     fLastNewComponentClassName: string;
@@ -174,6 +188,7 @@ type
     procedure SetLazPackage(const AValue: TLazPackage);
     procedure SetupComponents;
     procedure SetupAddUnitPage;
+    procedure SetupNewUnitPage;
     procedure SetupNewComponentPage;
     procedure SetupAddDependencyPage;
     procedure SetupAddFilePage;
@@ -185,6 +200,7 @@ type
     procedure UpdateAddUnitInfo;
     procedure UpdateAddFileInfo;
     function SwitchRelativeAbsoluteFilename(const Filename: string): string;
+    procedure FillNewUnitTreeView;
   public
     Params: TAddToPkgResult;
     constructor Create(TheOwner: TComponent); override;
@@ -1209,6 +1225,42 @@ begin
     SetBounds(x+NewDependButton.Width+10,y,80,Height);
 end;
 
+procedure TAddToPackageDlg.NewUnitOkButtonClick(Sender: TObject);
+begin
+  // TODO
+end;
+
+procedure TAddToPackageDlg.NewUnitPageResize(Sender: TObject);
+begin
+  NewUnitTreeView.Width:=NewUnitPage.ClientWidth div 2;
+end;
+
+procedure TAddToPackageDlg.NewUnitTreeViewClick(Sender: TObject);
+var
+  Desc: String;
+  ANode: TTreeNode;
+begin
+  ANode:=NewUnitTreeView.Selected;
+  Desc:='';
+  if (ANode<>nil) and (ANode.Data<>nil) then begin
+    if TObject(ANode.Data) is TNewIDEItemTemplate then
+      Desc:=TNewIDEItemTemplate(ANode.Data).Description;
+  end;
+  NewUnitHelpLabel.Caption:=Desc;
+end;
+
+procedure TAddToPackageDlg.NewUnitTreeViewDblClick(Sender: TObject);
+begin
+  NewUnitOkButtonClick(Self);
+end;
+
+procedure TAddToPackageDlg.NewUnitTreeViewSelectionChanged(Sender: TObject);
+begin
+  NewUnitOkButton.Enabled:=false;
+    // TODO and (NewUnitTreeView.Selected<>nil)
+   //         and (TObject(NewUnitTreeView.Selected.Data) is TNewIDEItemTemplate);
+end;
+
 procedure TAddToPackageDlg.SetLazPackage(const AValue: TLazPackage);
 begin
   if FLazPackage=AValue then exit;
@@ -1225,15 +1277,17 @@ begin
     Name:='NoteBook';
     Parent:=Self;
     Pages.Add(lisA2PAddUnit);
-    AddUnitPage:=Page[0];
+    AddUnitPage:=Page[Pages.Count-1];
+    Pages.Add(lisA2PNewFile);
+    NewUnitPage:=Page[Pages.Count-1];
     Pages.Add(lisA2PNewComponent);
-    NewComponentPage:=Page[1];
+    NewComponentPage:=Page[Pages.Count-1];
     Pages.Add(lisProjAddNewRequirement);
-    NewDependPage:=Page[2];
+    NewDependPage:=Page[Pages.Count-1];
     Pages.Add(lisA2PAddFile);
-    AddFilePage:=Page[3];
+    AddFilePage:=Page[Pages.Count-1];
     Pages.Add(lisA2PAddFiles);
-    AddFilesPage:=Page[4];
+    AddFilesPage:=Page[Pages.Count-1];
     PageIndex:=0;
     Align:=alClient;
   end;
@@ -1245,6 +1299,7 @@ begin
   AddFilesPage.OnResize:=@AddFilesPageResize;
 
   SetupAddUnitPage;
+  SetupNewUnitPage;
   SetupNewComponentPage;
   SetupAddDependencyPage;
   SetupAddFilePage;
@@ -1332,7 +1387,7 @@ begin
   with AddUnitButton do begin
     Name:='AddUnitButton';
     Parent:=AddUnitPage;
-    Caption:=lisLazBuildOk;
+    Caption:=lisA2PAddUnit;
     OnClick:=@AddUnitButtonClick;
   end;
 
@@ -1343,6 +1398,68 @@ begin
     Caption:=dlgCancel;
     OnClick:=@CancelAddUnitButtonClick;
   end;
+end;
+
+procedure TAddToPackageDlg.SetupNewUnitPage;
+begin
+  NewUnitPage.OnResize:=@NewUnitPageResize;
+
+  NewUnitTreeView:=TTreeView.Create(Self);
+  with NewUnitTreeView do begin
+    Name:='NewUnitTreeView';
+    Parent:=NewUnitPage;
+    OnClick:=@NewUnitTreeViewClick;
+    OnDblClick:=@NewUnitTreeViewDblClick;
+    OnSelectionChanged:=@NewUnitTreeViewSelectionChanged;
+  end;
+  
+  NewUnitDescriptionGroupBox:=TGroupBox.Create(Self);
+  with NewUnitDescriptionGroupBox do begin
+    Name:='NewUnitDescriptionGroupBox';
+    Caption:=lisToDoLDescription;
+    Parent:=NewUnitPage;
+    AnchorToNeighbour(akLeft,0,NewUnitTreeView);
+    AnchorParallel(akTop,0,NewUnitPage);
+    AnchorParallel(akRight,0,NewUnitPage);
+  end;
+
+  NewUnitHelpLabel:=TLabel.Create(Self);
+  with NewUnitHelpLabel do begin
+    Name:='NewUnitHelpLabel';
+    Caption:='';
+    Align:=alClient;
+    WordWrap:=true;
+    Parent:=NewUnitDescriptionGroupBox;
+  end;
+  
+  NewUnitOkButton:=TButton.Create(Self);
+  with NewUnitOkButton do begin
+    Name:='NewUnitOkButton';
+    Caption:=lisA2PCreateNewFile;
+    Anchors:=[akLeft,akBottom];
+    Left:=5;
+    AutoSize:=true;
+    Parent:=NewUnitPage;
+    AnchorParallel(akBottom,5,NewUnitPage);
+    OnClick:=@NewUnitOkButtonClick;
+    Enabled:=false;
+  end;
+  
+  NewUnitTreeView.AnchorToNeighbour(akBottom,5,NewUnitOkButton);
+  NewUnitDescriptionGroupBox.AnchorToNeighbour(akBottom,5,NewUnitOkButton);
+
+  NewUnitCancelButton:=TButton.Create(Self);
+  with NewUnitCancelButton do begin
+    Name:='NewUnitCancelButton';
+    Caption:=dlgCancel;
+    AutoSize:=true;
+    Parent:=NewUnitPage;
+    AnchorParallel(akTop,0,NewUnitOkButton);
+    AnchorToNeighbour(akLeft,10,NewUnitOkButton);
+    ModalResult:=mrCancel;
+  end;
+  
+  FillNewUnitTreeView;
 end;
 
 procedure TAddToPackageDlg.SetupNewComponentPage;
@@ -1756,6 +1873,25 @@ begin
     Result:=TrimFilename(CreateRelativePath(Filename,LazPackage.Directory))
   else
     Result:=TrimFilename(CreateAbsolutePath(Filename,LazPackage.Directory));
+end;
+
+procedure TAddToPackageDlg.FillNewUnitTreeView;
+var
+  NewParentNode: TTreeNode;
+  Category: TNewIDEItemCategory;
+  TemplateID: Integer;
+  Template: TNewIDEItemTemplate;
+begin
+  NewUnitTreeView.BeginUpdate;
+  NewUnitTreeView.Items.Clear;
+  Category:=NewIDEItems.FindByName(FileDescGroupName);
+  NewParentNode:=NewUnitTreeView.Items.AddObject(nil,Category.Name,Category);
+  for TemplateID:=0 to Category.Count-1 do begin
+    Template:=Category[TemplateID];
+    NewUnitTreeView.Items.AddChildObject(NewParentNode,Template.Name,Template);
+  end;
+  NewParentNode.Expand(true);
+  NewUnitTreeView.EndUpdate;
 end;
 
 constructor TAddToPackageDlg.Create(TheOwner: TComponent);

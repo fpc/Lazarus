@@ -133,6 +133,7 @@ var
     AnchorSideCacheValid: array[TAnchorKind] of boolean;
     AnchorSideCache: array[TAnchorKind] of integer;
     CurAnchors: TAnchors;
+    CurAlignAnchors: TAnchors;
 
     function ConstraintWidth(NewWidth: integer): integer;
     begin
@@ -205,7 +206,13 @@ var
       NewTop:=Top;
       NewWidth:=ConstraintWidth(Width);
       NewHeight:=ConstraintHeight(Height);
+      
+      // get anchors set by Align
+      CurAlignAnchors:=[];
+      if Align in [alLeft,alRight,alBottom,alTop,alClient] then
+        CurAlignAnchors:=AnchorAlign[Align];
     end;
+
     
     InitAnchorSideCache;
     
@@ -231,9 +238,8 @@ var
       2. If AnchorSide[].Control is set, the BorderSpace properties defines the
       distance to another sibling (i.e. AnchorSide[].Control).
     }
-    if (AAlign = alNone) or (Control.Anchors <> AnchorAlign[AAlign]) then
-    begin
-      // at least one side is anchored
+    if (AAlign = alNone) or (Control.Anchors <> CurAlignAnchors) then begin
+      // at least one side is anchored without align
     
       // Get the base bounds. The base bounds are the user defined bounds
       // without automatic aligning and/or anchoring
@@ -263,7 +269,7 @@ var
         '');
       {$ENDIF}
 
-      CurAnchors:=Control.Anchors+AnchorAlign[AAlign];
+      CurAnchors:=Control.Anchors+CurAlignAnchors;
       if akLeft in CurAnchors then begin
         // keep distance to left side of parent or another sibling
         NewLeft:=GetAnchorSidePosition(akLeft,CurBaseBounds.Left);
@@ -272,7 +278,7 @@ var
           // -> change the width
           NewRight:=Control.Parent.ClientWidth
                     -(ParentBaseClientSize.X-CurBaseBounds.Right);
-          if (not (akRight in AnchorAlign[AAlign]))
+          if (not (akRight in CurAlignAnchors))
           and (akRight in Anchors) then
             NewRight:=GetAnchorSidePosition(akRight,NewRight);
           NewWidth:=ConstraintWidth(NewRight-NewLeft);
@@ -287,7 +293,7 @@ var
           // and keep new width
           NewRight:=Control.Parent.ClientWidth
                     -(ParentBaseClientSize.X-CurBaseBounds.Right);
-          if (not (akRight in AnchorAlign[AAlign]))
+          if (not (akRight in CurAlignAnchors))
           and (akRight in Anchors) then
             NewRight:=GetAnchorSidePosition(akRight,NewRight);
           NewLeft:=NewRight-NewWidth;
@@ -306,7 +312,7 @@ var
           // -> change the height
           NewBottom:=Control.Parent.ClientHeight
                     -(ParentBaseClientSize.Y-CurBaseBounds.Bottom);
-          if (not (akBottom in AnchorAlign[AAlign]))
+          if (not (akBottom in CurAlignAnchors))
           and (akBottom in Anchors) then
             NewBottom:=GetAnchorSidePosition(akBottom,NewBottom);
           NewHeight:=ConstraintHeight(NewBottom-NewTop);
@@ -321,7 +327,7 @@ var
           // and keep new height
           NewBottom:=Control.Parent.ClientHeight
                     -(ParentBaseClientSize.Y-CurBaseBounds.Bottom);
-          if (not (akBottom in AnchorAlign[AAlign]))
+          if (not (akBottom in CurAlignAnchors))
           and (akBottom in Anchors) then
             NewBottom:=GetAnchorSidePosition(akBottom,NewBottom);
           NewTop:=NewBottom-NewHeight;
@@ -333,7 +339,7 @@ var
       end;
       {$IFDEF CHECK_POSITION}
       //if csDesigning in ComponentState then
-      if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
+      if CompareText(Control.ClassName,'TScrollBar')=0 then
       with Control do
         DebugLn('[TWinControl.AlignControls.DoPosition] After Anchoring',
           ' ',Name,':',ClassName,
@@ -442,7 +448,7 @@ var
       
       {$IFDEF CHECK_POSITION}
       //if csDesigning in Control.ComponentState then
-      if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
+      if CompareText(Control.ClassName,'TScrollBar')=0 then
       with Control do
         DebugLn('[TWinControl.AlignControls.DoPosition] After Aligning',
           ' ',Name,':',ClassName,
@@ -527,7 +533,7 @@ var
     end;
 
     {$IFDEF CHECK_POSITION}
-    if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
+    if CompareText(Control.ClassName,'TScrollBar')=0 then
     with Control do
       DebugLn('[TWinControl.AlignControls.DoPosition] END Control=',
         Name,':',ClassName,
@@ -681,7 +687,8 @@ begin
   AutoSizing := True;
   try
     // test if resizing is possible
-    CurAnchors:=Anchors+AnchorAlign[Align];
+    CurAnchors:=Anchors;
+    if Align<>alNone then CurAnchors:=CurAnchors+AnchorAlign[Align];
     WidthIsFixed:=(CurAnchors*[akLeft,akRight]=[akLeft,akRight]);
     HeightIsFixed:=(CurAnchors*[akTop,akBottom]=[akTop,akBottom]);
 
@@ -722,7 +729,8 @@ begin
         dec(NewLeft,PreferredWidth-Width);
       if akBottom in CurAnchors then
         dec(NewTop,PreferredHeight-Height);
-      //debugln('DoAutoSize Resize ',DbgSName(Self),' W=',dbgs(PreferredWidth),' H=',dbgs(PreferredHeight));
+      //if CompareText(Name,'NewUnitOkButton')=0 then
+      //  debugln('DoAutoSize Resize ',DbgSName(Self),' W=',dbgs(PreferredWidth),' H=',dbgs(PreferredHeight),' WidthIsFixed=',dbgs(WidthIsFixed),' HeightIsFixed=',dbgs(HeightIsFixed));
       SetBoundsKeepBase(NewLeft,NewTop,PreferredWidth,PreferredHeight,true);
     end;
   finally
@@ -4535,6 +4543,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.331  2005/06/29 22:52:39  mattias
+  started add new unit page for package editor
+
   Revision 1.330  2005/06/28 22:56:32  mattias
   improved lcl autosizing: reduced overhead by preconsidering anchors
 

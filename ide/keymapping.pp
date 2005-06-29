@@ -43,7 +43,7 @@ const
    These values can change from version to version, so DO NOT save them to file!
   
    To add one static key do the following:
-	 1. Add a constant with a unique value in the list below.
+     1. Add a constant with a unique value in the list below.
      2. Add it to GetDefaultKeyForCommand to define the default keys+shiftstates
      3. Add it to EditorCommandToDescriptionString to define the description
      4. Add it to TKeyCommandRelationList.CreateDefaultMapping to define the
@@ -738,7 +738,7 @@ procedure GetDefaultKeyForClassicScheme(Command: word;
   end;
 
 begin
-  SetResult(VK_UNKNOWN,[]);
+  GetDefaultKeyForCommand(Command,TheKeyA,TheKeyB);
 
   case Command of
   // moving
