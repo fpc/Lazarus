@@ -4619,6 +4619,8 @@ Begin
     else
       NoteBook.Options:=NoteBook.Options-[nboShowCloseButtons];
   end;
+  
+  IdentCompletionTimer.Interval:=EditorOpts.AutoDelayInMSec;
 end;
 
 procedure TSourceNotebook.KeyDownBeforeInterface(var Key: Word;
