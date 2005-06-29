@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, TypInfo, LCLProc, Forms, Controls, Menus, ExtCtrls,
-  Graphics, Grids, Buttons, ComCtrls, Dialogs,
+  Graphics, Grids, CheckLst, Buttons, ComCtrls, Dialogs, GraphType,
   PropEdits, ObjInspStrConsts;
 
 type
@@ -258,6 +258,34 @@ type
   protected
     procedure DoShowEditor;
     procedure AssignGrid(dstGrid, srcGrid: TStringGrid; Full: boolean);
+  public
+    procedure ExecuteVerb(Index: Integer); override;
+    function GetVerb(Index: Integer): string; override;
+    function GetVerbCount: Integer; override;
+  end;
+
+
+{ TCheckListBoxComponentEditor
+  The default componenteditor for TCheckListBox }
+
+  TCheckListBoxComponentEditor = class(TDefaultComponentEditor)
+  protected
+    procedure DoShowEditor;
+    procedure AssignCheck(dstCheck, srcCheck: TCheckListBox);
+  public
+    procedure ExecuteVerb(Index: Integer); override;
+    function GetVerb(Index: Integer): string; override;
+    function GetVerbCount: Integer; override;
+  end;
+
+
+{ TCheckGroupComponentEditor
+  The default componenteditor for TCheckGroup }
+
+  TCheckGroupComponentEditor = class(TDefaultComponentEditor)
+  protected
+    procedure DoShowEditor;
+    procedure AssignCheck(dstCheck, srcCheck: TCheckGroup);//; Full: boolean);
   public
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
@@ -928,6 +956,501 @@ begin
   Result:=1;
 end;
 
+{ TCheckListBoxEditorDlg }
+
+Type
+  TCheckListBoxEditorDlg=Class(TForm)
+  private
+    FCheck: TCheckListBox;
+    FBtnAdd,FBtnDelete,FBtnUp,FBtnDown,FBtnModify:TButton;
+    FBtnOK,FBtnCancel:TBitBtn;
+    FPanelButtons:TPanel;
+    FPanelOKCancel:TPanel;
+  protected
+    procedure AddItem(Sender:TObject);
+    procedure DeleteItem(Sender:TObject);
+    procedure MoveUpItem(Sender:TObject);
+    procedure MoveDownItem(Sender:TObject);
+    procedure ModifyItem(Sender:TObject);
+  public
+    constructor create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    property Check: TCheckListBox read FCheck write FCheck;
+  end;
+
+constructor TCheckListBoxEditorDlg.create(AOwner: TComponent);
+begin
+  inherited create(AOwner);
+  BorderStyle:=bsDialog;
+  Position:=poScreenCenter;
+  Caption:=clbCheckListBoxEditor;
+  SetBounds(0,0,200,300);
+
+  FPanelButtons:=TPanel.Create(Self);
+  with FPanelButtons do begin
+    Parent:=Self;
+    Align:=alTop;
+    BevelInner:=bvLowered;
+    BevelOuter:=bvSpace;
+    Height:=25;
+  end;
+
+  //Button Add
+  FBtnAdd:=TButton.Create(self);
+  with FBtnAdd do begin
+    Parent:=FPanelButtons;
+    Align:=alLeft;
+    Width:=43;
+    Caption:=oiscAdd;
+    OnClick:=@AddItem;
+  end;
+
+  //Button Delete
+  FBtnDelete:=TButton.Create(self);
+  with FBtnDelete do begin
+    Parent:=FPanelButtons;
+    Align:=alLeft;
+    Width:=43;
+    Caption:=oiscDelete;
+    OnClick:=@DeleteItem;
+  end;
+
+  //Button Up
+  FBtnUp:=TButton.Create(self);
+  with FBtnUp do begin
+    Parent:=FPanelButtons;
+    Align:=alLeft;
+    Width:=43;
+    Caption:=clbUp;
+    OnClick:=@MoveUpItem;
+  end;
+
+  //Button Down
+  FBtnDown:=TButton.Create(self);
+  with FBtnDown do begin
+    Parent:=FPanelButtons;
+    Align:=alLeft;
+    Width:=43;
+    Caption:=clbDown;
+    OnClick:=@MoveDownItem;
+  end;
+
+  //Button Modify
+  FBtnModify:=TButton.Create(self);
+  with FBtnModify do begin
+    Parent:=FPanelButtons;
+    Align:=alClient;
+    ShowHint:=true;
+    Hint:=clbModify;
+    Caption:='...';
+    OnClick:=@ModifyItem;
+  end;
+
+  FCheck:=TCheckListBox.Create(Self);
+  with FCheck do begin
+    Parent:=Self;
+    Align:=alClient;
+  end;
+
+  FPanelOKCancel:=TPanel.Create(Self);
+  with FPanelOKCancel do begin
+    Parent:=Self;
+    Align:=alBottom;
+    BevelInner:=bvLowered;
+    BevelOuter:=bvSpace;
+    Height:=25;
+  end;
+
+  //Bnt Ok
+  FBtnOK:=TBitBtn.Create(self);
+  with FBtnOK do begin
+    Parent:=FPanelOKCancel;
+    Align:=alLeft;
+    Kind:=bkOk;
+  end;
+
+  //Bnt Cancel
+  FBtnCancel:=TBitBtn.Create(self);
+  with FBtnCancel do begin
+    Parent:=FPanelOKCancel;
+    Align:=alRight;
+    Kind:=bkCancel;
+  end;
+end;
+
+destructor TCheckListBoxEditorDlg.Destroy;
+begin
+  FreeThenNil(FCheck);
+  FreeThenNil(FBtnAdd);
+  FreeThenNil(FBtnDelete);
+  FreeThenNil(FBtnUp);
+  FreeThenNil(FBtnDown);
+  FreeThenNil(FBtnModify);
+  FreeThenNil(FBtnOK);
+  FreeThenNil(FBtnCancel);
+  FreeThenNil(FPanelOKCancel);
+  FreeThenNil(FPanelButtons);
+  inherited Destroy
+end;
+
+procedure TCheckListBoxEditorDlg.AddItem(Sender:TObject);
+var strItem:string;
+begin
+  if InputQuery(clbCheckListBoxEditor, clbAdd, strItem) then
+    FCheck.Items.Add(strItem);
+end;
+
+procedure TCheckListBoxEditorDlg.DeleteItem(Sender:TObject);
+begin
+  if FCheck.ItemIndex=-1 then exit;
+  if MessageDlg(clbCheckListBoxEditor,Format(clbDelete,[FCheck.ItemIndex,FCheck.Items[FCheck.ItemIndex]]),
+    mtConfirmation, mbYesNo, 0)=mrYes then
+    FCheck.Items.Delete(FCheck.ItemIndex);
+end;
+
+procedure TCheckListBoxEditorDlg.MoveUpItem(Sender:TObject);
+var itemtmp:string;
+    checkedtmp:boolean;
+begin
+  if (FCheck.Items.Count<=1)or(FCheck.ItemIndex<1) then exit;
+  itemtmp:=FCheck.Items[FCheck.ItemIndex-1];
+  checkedtmp:=FCheck.Checked[FCheck.ItemIndex-1];
+  FCheck.Items[FCheck.ItemIndex-1]:=FCheck.Items[FCheck.ItemIndex];
+  FCheck.Checked[FCheck.ItemIndex-1]:=FCheck.Checked[FCheck.ItemIndex];
+  FCheck.Items[FCheck.ItemIndex]:=itemtmp;
+  FCheck.Checked[FCheck.ItemIndex]:=checkedtmp;
+  FCheck.ItemIndex:=FCheck.ItemIndex-1
+end;
+
+procedure TCheckListBoxEditorDlg.MoveDownItem(Sender:TObject);
+var itemtmp:string;
+    checkedtmp:boolean;
+begin
+  if (FCheck.Items.Count<=1)or(FCheck.ItemIndex=FCheck.Items.Count-1)or(FCheck.ItemIndex=-1) then exit;
+  itemtmp:=FCheck.Items[FCheck.ItemIndex+1];
+  checkedtmp:=FCheck.Checked[FCheck.ItemIndex+1];
+  FCheck.Items[FCheck.ItemIndex+1]:=FCheck.Items[FCheck.ItemIndex];
+  FCheck.Checked[FCheck.ItemIndex+1]:=FCheck.Checked[FCheck.ItemIndex];
+  FCheck.Items[FCheck.ItemIndex]:=itemtmp;
+  FCheck.Checked[FCheck.ItemIndex]:=checkedtmp;
+  FCheck.ItemIndex:=FCheck.ItemIndex+1
+end;
+
+procedure TCheckListBoxEditorDlg.ModifyItem(Sender:TObject);
+begin
+  if FCheck.ItemIndex=-1 then exit;
+  FCheck.Items[FCheck.ItemIndex]:=InputBox(clbCheckListBoxEditor,clbModify,FCheck.Items[FCheck.ItemIndex]);
+end;
+
+{ TCheckListBoxComponentEditor }
+
+procedure TCheckListBoxComponentEditor.DoShowEditor;
+var Dlg : TCheckListBoxEditorDlg;
+    Hook: TPropertyEditorHook;
+    aCheck: TCheckListBox;
+begin
+  Dlg:=TCheckListBoxEditorDlg.Create(nil);
+  try
+    if GetComponent is TCheckListBox then begin
+      aCheck:=TCheckListBox(GetComponent);
+      GetHook(Hook);
+
+      AssignCheck(Dlg.FCheck, aCheck);
+
+      //ShowEditor
+      if Dlg.ShowModal=mrOK then begin
+        //Apply the modifications
+        AssignCheck(aCheck, Dlg.FCheck);
+        Modified;
+      end;
+    end;
+  finally
+    Dlg.Free;
+  end;
+end;
+
+procedure TCheckListBoxComponentEditor.AssignCheck(dstCheck, srcCheck: TCheckListBox);// Full: boolean);
+var i: integer;
+begin
+  DstCheck.Items.Clear;
+  DstCheck.Items:=srcCheck.Items;
+  DstCheck.ItemHeight:=srcCheck.ItemHeight;
+  for i:=0 to srcCheck.Items.Count-1 do begin
+    if srcCheck.Items[i]<>dstCheck.Items[i] then
+        dstCheck.Items[i]:=srcCheck.Items[i];
+    dstCheck.Checked[i]:=srcCheck.Checked[i]
+  end;
+end;
+
+procedure TCheckListBoxComponentEditor.ExecuteVerb(Index: Integer);
+begin
+  doShowEditor;
+end;
+
+function TCheckListBoxComponentEditor.GetVerb(Index: Integer): string;
+begin
+  Result:=clbCheckListBoxEditor+' ...';
+end;
+
+function TCheckListBoxComponentEditor.GetVerbCount: Integer;
+begin
+  Result:=1;
+end;
+
+{ TCheckGroupEditorDlg }
+
+Type
+  TCheckGroupEditorDlg=Class(TForm)
+  private
+    FCheck: TCheckGroup;
+    FBtnAdd,FBtnDelete,FBtnUp,FBtnDown,FBtnModify:TButton;
+    FBtnOK,FBtnCancel:TBitBtn;
+    FPanelButtons:TPanel;
+    FPanelOKCancel:TPanel;
+    ItemIndex:integer;
+  protected
+    procedure AddItem(Sender:TObject);
+    procedure DeleteItem(Sender:TObject);
+    procedure MoveUpItem(Sender:TObject);
+    procedure MoveDownItem(Sender:TObject);
+    procedure ModifyItem(Sender:TObject);
+    procedure ItemClick(Sender: TObject; Index: integer);
+  public
+    constructor create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    property Check: TCheckGroup read FCheck write FCheck;
+  end;
+
+constructor TCheckGroupEditorDlg.Create(AOwner: TComponent);
+begin
+  inherited create(AOwner);
+  BorderStyle:=bsDialog;
+  Position:=poScreenCenter;
+  Caption:=clbCheckGroupEditor;
+  SetBounds(0,0,200,300);
+  ItemIndex:=-1;
+
+  FPanelButtons:=TPanel.Create(Self);
+  with FPanelButtons do begin
+    Parent:=Self;
+    Align:=alTop;
+    BevelInner:=bvLowered;
+    BevelOuter:=bvSpace;
+    Height:=25;
+  end;
+
+  //Button Add
+  FBtnAdd:=TButton.Create(self);
+  with FBtnAdd do begin
+    Parent:=FPanelButtons;
+    Align:=alLeft;
+    Width:=43;
+    Caption:=oiscAdd;
+    OnClick:=@AddItem;
+  end;
+
+  //Button Delete
+  FBtnDelete:=TButton.Create(self);
+  with FBtnDelete do begin
+    Parent:=FPanelButtons;
+    Align:=alLeft;
+    Width:=43;
+    Caption:=oiscDelete;
+    OnClick:=@DeleteItem;
+  end;
+
+  //Button Up
+  FBtnUp:=TButton.Create(self);
+  with FBtnUp do begin
+    Parent:=FPanelButtons;
+    Align:=alLeft;
+    Width:=43;
+    Caption:=clbUp;
+    OnClick:=@MoveUpItem;
+  end;
+
+  //Button Down
+  FBtnDown:=TButton.Create(self);
+  with FBtnDown do begin
+    Parent:=FPanelButtons;
+    Align:=alLeft;
+    Width:=43;
+    Caption:=clbDown;
+    OnClick:=@MoveDownItem;
+  end;
+
+  //Button Modify
+  FBtnModify:=TButton.Create(self);
+  with FBtnModify do begin
+    Parent:=FPanelButtons;
+    Align:=alClient;
+    ShowHint:=true;
+    Hint:=clbModify;
+    Caption:='...';
+    OnClick:=@ModifyItem;
+  end;
+
+  FCheck:=TCheckGroup.Create(Self);
+  with FCheck do begin
+    Parent:=Self;
+    Align:=alClient;
+    OnItemClick:=@ItemClick;
+  end;
+
+  FPanelOKCancel:=TPanel.Create(Self);
+  with FPanelOKCancel do begin
+    Parent:=Self;
+    Align:=alBottom;
+    BevelInner:=bvLowered;
+    BevelOuter:=bvSpace;
+    Height:=25;
+  end;
+
+  //Bnt Ok
+  FBtnOK:=TBitBtn.Create(self);
+  with FBtnOK do begin
+    Parent:=FPanelOKCancel;
+    Align:=alLeft;
+    Kind:=bkOk;
+  end;
+
+  //Bnt Cancel
+  FBtnCancel:=TBitBtn.Create(self);
+  with FBtnCancel do begin
+    Parent:=FPanelOKCancel;
+    Align:=alRight;
+    Kind:=bkCancel;
+  end;
+
+end;
+
+destructor TCheckGroupEditorDlg.Destroy;
+begin
+  FreeThenNil(FCheck);
+  FreeThenNil(FBtnAdd);
+  FreeThenNil(FBtnDelete);
+  FreeThenNil(FBtnUp);
+  FreeThenNil(FBtnDown);
+  FreeThenNil(FBtnModify);
+  FreeThenNil(FBtnOK);
+  FreeThenNil(FBtnCancel);
+  FreeThenNil(FPanelOKCancel);
+  FreeThenNil(FPanelButtons);
+  inherited Destroy
+end;
+
+procedure TCheckGroupEditorDlg.AddItem(Sender:TObject);
+var strItem:string;
+begin
+  if InputQuery(clbCheckGroupEditor, clbAdd, strItem) then
+    FCheck.Items.Add(strItem);
+end;
+
+procedure TCheckGroupEditorDlg.DeleteItem(Sender:TObject);
+begin
+  if ItemIndex=-1 then exit;
+  if MessageDlg(clbCheckGroupEditor,Format(clbDelete,[ItemIndex, FCheck.Items[ItemIndex]]),
+    mtConfirmation, mbYesNo, 0)=mrYes then begin
+    FCheck.Items.Delete(ItemIndex);
+    if ItemIndex>FCheck.Items.Count-1 then
+      ItemIndex:=FCheck.Items.Count-1;
+  end;
+end;
+
+procedure TCheckGroupEditorDlg.MoveUpItem(Sender:TObject);
+var itemtmp:string;
+    checkedtmp:boolean;
+begin
+  if (FCheck.Items.Count<=1)or(ItemIndex<1) then exit;
+  itemtmp:=FCheck.Items[ItemIndex-1];
+  checkedtmp:=FCheck.Checked[ItemIndex-1];
+  FCheck.Items[ItemIndex-1]:=FCheck.Items[ItemIndex];
+  FCheck.Checked[ItemIndex-1]:=FCheck.Checked[ItemIndex];
+  FCheck.Items[ItemIndex]:=itemtmp;
+  FCheck.Checked[ItemIndex]:=checkedtmp;
+  ItemIndex:=ItemIndex-1
+end;
+
+procedure TCheckGroupEditorDlg.MoveDownItem(Sender:TObject);
+var itemtmp:string;
+    checkedtmp:boolean;
+begin
+  if (FCheck.Items.Count<=1)or(ItemIndex=FCheck.Items.Count-1)or(ItemIndex=-1) then exit;
+  itemtmp:=FCheck.Items[ItemIndex+1];
+  checkedtmp:=FCheck.Checked[ItemIndex+1];
+  FCheck.Items[ItemIndex+1]:=FCheck.Items[ItemIndex];
+  FCheck.Checked[ItemIndex+1]:=FCheck.Checked[ItemIndex];
+  FCheck.Items[ItemIndex]:=itemtmp;
+  FCheck.Checked[ItemIndex]:=checkedtmp;
+  ItemIndex:=ItemIndex+1
+end;
+
+procedure TCheckGroupEditorDlg.ModifyItem(Sender:TObject);
+begin
+  if ItemIndex=-1 then exit;
+  FCheck.Items[ItemIndex]:=InputBox(clbCheckGroupEditor,clbModify,FCheck.Items[ItemIndex]);
+end;
+
+procedure TCheckGroupEditorDlg.ItemClick(Sender: TObject; Index: integer);
+begin
+  ItemIndex:=Index;
+end;
+
+{ TCheckGroupComponentEditor }
+
+procedure TCheckGroupComponentEditor.DoShowEditor;
+var Dlg : TCheckGroupEditorDlg;
+    Hook: TPropertyEditorHook;
+    aCheck: TCheckGroup;
+begin
+  Dlg:=TCheckGroupEditorDlg.Create(nil);
+  try
+    if GetComponent is TCheckGroup then begin
+      aCheck:=TCheckGroup(GetComponent);
+      GetHook(Hook);
+
+      AssignCheck(Dlg.FCheck, aCheck);
+
+      //ShowEditor
+      if Dlg.ShowModal=mrOK then begin
+        //Apply the modifications
+        AssignCheck(aCheck, Dlg.FCheck);
+        Modified;
+      end;
+    end;
+  finally
+    Dlg.Free;
+  end;
+end;
+
+procedure TCheckGroupComponentEditor.AssignCheck(dstCheck, srcCheck: TCheckGroup);
+var i: integer;
+begin
+  DstCheck.Items.Clear;
+  DstCheck.Items:=srcCheck.Items;
+  DstCheck.Caption:=srcCheck.Caption;
+  for i:=0 to srcCheck.Items.Count-1 do begin
+    if srcCheck.Items[i]<>dstCheck.Items[i] then
+        dstCheck.Items[i]:=srcCheck.Items[i];
+    dstCheck.Checked[i]:=srcCheck.Checked[i]
+  end;
+end;
+
+procedure TCheckGroupComponentEditor.ExecuteVerb(Index: Integer);
+begin
+  doShowEditor;
+end;
+
+function TCheckGroupComponentEditor.GetVerb(Index: Integer): string;
+begin
+  Result:=clbCheckGroupEditor+' ...';
+end;
+
+function TCheckGroupComponentEditor.GetVerbCount: Integer;
+begin
+  Result:=1;
+end;
+
 { TToolBarComponentEditor }
 
 procedure TToolBarComponentEditor.ExecuteVerb(Index: Integer);
@@ -1033,6 +1556,8 @@ initialization
   RegisterComponentEditor(TCustomNotebook,TNotebookComponentEditor);
   RegisterComponentEditor(TCustomPage,TPageComponentEditor);
   RegisterComponentEditor(TStringGrid,TStringGridComponentEditor);
+  RegisterComponentEditor(TCheckListBox,TCheckListBoxComponentEditor);
+  RegisterComponentEditor(TCheckGroup,TCheckGroupComponentEditor);
   RegisterComponentEditor(TToolBar,TToolBarComponentEditor);
   RegisterComponentEditor(TFileDialog, TFileDialogComponentEditor);
 

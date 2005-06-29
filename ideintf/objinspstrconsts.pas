@@ -81,6 +81,17 @@ resourcestring
   cesStringGridEditor2 = 'StringGrid Editor';
   oisCreateDefaultEvent = 'Create default event';
 
+  //checklistbox editor
+  clbCheckListBoxEditor = 'CheckListBox Editor';
+  clbUp = '&Up';
+  clbDown = 'Do&wn';
+  clbModify = 'Modify the Item';
+  clbAdd = 'Add new Item';
+  clbDelete = 'Delete the Item %d "%s"?';
+
+  //checkgroup editor
+  clbCheckGroupEditor = 'CheckGroup Editor';
+
   // Actions Editor
   cActionListEditorUnknownCategory = '(Unknown)';
   cActionListEditorAllCategory = '(All)';
