@@ -159,24 +159,23 @@ type
     procedure SetPopupMenu(NewPopupMenu: TPopupMenu);
     function GetFilename: string;
 
-    Function GotoLine(Value: Integer): Integer;
+    function GotoLine(Value: Integer): Integer;
 
-    Procedure CreateEditor(AOwner: TComponent; AParent: TWinControl);
+    procedure CreateEditor(AOwner: TComponent; AParent: TWinControl);
     procedure SetVisible(Value: boolean);
   protected
     ErrorMsgs: TStrings;
-    Procedure ReParent(AParent: TWinControl);
+    procedure ReParent(AParent: TWinControl);
 
-    Procedure ProcessCommand(Sender: TObject;
+    procedure ProcessCommand(Sender: TObject;
        var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
-    Procedure ProcessUserCommand(Sender: TObject;
+    procedure ProcessUserCommand(Sender: TObject;
        var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
-    Procedure UserCommandProcessed(Sender: TObject;
+    procedure UserCommandProcessed(Sender: TObject;
        var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
-    Procedure ccOnTimer(sender: TObject);
-    Procedure ccAddMessage(Texts: String);
+    procedure ccAddMessage(Texts: String);
 
-    Procedure FocusEditor;// called by TSourceNotebook when the Notebook page
+    procedure FocusEditor;// called by TSourceNotebook when the Notebook page
                           // changes so the editor is focused
     procedure OnGutterClick(Sender: TObject; X, Y, Line: integer;
          mark: TSynEditMark);
@@ -189,6 +188,7 @@ type
     procedure SetExecutionLine(NewLine: integer);
     procedure OnCodeBufferChanged(Sender: TSourceLog;
       SrcLogEntry: TSourceLogEntry);
+    procedure StartIdentCompletion;
 
     procedure LinesInserted(sender: TObject; FirstLine,Count: Integer);
     procedure LinesDeleted(sender: TObject; FirstLine,Count: Integer);
@@ -606,6 +606,7 @@ type
                                 AnEditor: TCustomSynEdit; var Index:integer);
     procedure OnWordCompletionGetSource(
        var Source: TStrings; SourceIndex: integer);
+    procedure OnIdentCompletionTimer(Sender: TObject);
 
     procedure FindReplaceDlgKey(Sender: TObject; var Key: Word;
                   Shift:TShiftState; FindDlgComponent: TFindDlgComponent);
@@ -685,7 +686,7 @@ var
   // active
   CurCompletionControl: TSynCompletion;
   CurrentCompletionType: TCompletionType;
-  IdentCompletionTimer: TTimer;
+  IdentCompletionTimer: TIdleTimer;
   AWordCompletion: TWordCompletion;
 
   GotoDialog: TfrmGoto;
@@ -962,6 +963,8 @@ Procedure TSourceEditor.ProcessCommand(Sender: TObject;
 // these are normal commands for synedit, define extra actions here
 // otherwise use ProcessUserCommand
 begin
+  IdentCompletionTimer.AutoEnabled:=false;
+
   if (FSourceNoteBook<>nil)
   and (snIncrementalFind in FSourceNoteBook.States) then begin
     case Command of
@@ -1011,13 +1014,21 @@ begin
         end;
       end;
     end;
+    
+  ecChar:
+    begin
+      //debugln('TSourceEditor.ProcessCommand AChar="',AChar,'" AutoIdentifierCompletion=',dbgs(EditorOpts.AutoIdentifierCompletion),' Interval=',dbgs(IdentCompletionTimer.Interval));
+      if (AChar='.') and EditorOpts.AutoIdentifierCompletion then
+        IdentCompletionTimer.AutoEnabled:=true;
+    end;
 
   end;
+  //debugln('TSourceEditor.ProcessCommand B IdentCompletionTimer.AutoEnabled=',dbgs(IdentCompletionTimer.AutoEnabled));
 end;
 
 Procedure TSourceEditor.ProcessUserCommand(Sender: TObject;
   var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
-// define all extra keys here, that should are not handled by synedit
+// define all extra keys here, that should not be handled by synedit
 var
   I: Integer;
   P: TPoint;
@@ -1035,24 +1046,7 @@ Begin
     FindHelpForSourceAtCursor;
 
   ecIdentCompletion :
-    if not TCustomSynEdit(Sender).ReadOnly then begin
-      CurrentCompletionType:=ctIdentCompletion;
-      TextS := FEditor.LineText;
-      LogCaret:=FEditor.LogicalCaretXY;
-      i := LogCaret.X - 1;
-      if i > length(TextS) then
-        TextS2 := ''
-      else begin
-        while (i > 0) and (TextS[i] in ['a'..'z','A'..'Z','0'..'9','_']) do
-          dec(i);
-        TextS2 := Trim(copy(TextS, i + 1, LogCaret.X - i - 1));
-      end;
-      with TCustomSynEdit(Sender) do
-        P := ClientToScreen(Point(CaretXPix - length(TextS2)*CharWidth
-                ,CaretYPix + LineHeight));
-      aCompletion.Editor:=TCustomSynEdit(Sender);
-      aCompletion.Execute(TextS2,P.X,P.Y);
-    end;
+    StartIdentCompletion;
 
   ecWordCompletion :
     if not TCustomSynEdit(Sender).ReadOnly then begin
@@ -1619,11 +1613,6 @@ Begin
   ErrorMsgs.Add(Texts);
 End;
 
-Procedure TSourceEditor.ccOnTimer(sender: TObject);
-Begin
-  IdentCompletionTimer.Enabled := False;
-End;
-
 Procedure TSourceEditor.CreateEditor(AOwner: TComponent; AParent: TWinControl);
 var
   NewName: string;
@@ -1777,6 +1766,34 @@ writeln('[TSourceEditor.OnCodeBufferChanged] A ',FIgnoreCodeBufferLock,' ',SrcLo
   end else begin
     if Sender.IsEqual(FEditor.Lines) then exit;
     Sender.AssignTo(FEditor.Lines);
+  end;
+end;
+
+procedure TSourceEditor.StartIdentCompletion;
+var
+  I: Integer;
+  P: TPoint;
+  TextS, TextS2: String;
+  LogCaret: TPoint;
+begin
+  debugln('TSourceEditor.StartIdentCompletion');
+  if not FEditor.ReadOnly then begin
+    CurrentCompletionType:=ctIdentCompletion;
+    TextS := FEditor.LineText;
+    LogCaret:=FEditor.LogicalCaretXY;
+    i := LogCaret.X - 1;
+    if i > length(TextS) then
+      TextS2 := ''
+    else begin
+      while (i > 0) and (TextS[i] in ['a'..'z','A'..'Z','0'..'9','_']) do
+        dec(i);
+      TextS2 := Trim(copy(TextS, i + 1, LogCaret.X - i - 1));
+    end;
+    with FEditor do
+      P := ClientToScreen(Point(CaretXPix - length(TextS2)*CharWidth
+              ,CaretYPix + LineHeight));
+    aCompletion.Editor:=FEditor;
+    aCompletion.Execute(TextS2,P.X,P.Y);
   end;
 end;
 
@@ -2194,9 +2211,14 @@ begin
   end;
 
   // identifier completion
-  IdentCompletionTimer := TTimer.Create(self);
-  IdentCompletionTimer.Enabled := False;
-  IdentCompletionTimer.Interval := 500;
+  IdentCompletionTimer := TIdleTimer.Create(Self);
+  with IdentCompletionTimer do begin
+    AutoEnabled := False;
+    Enabled := false;
+    Interval := EditorOpts.AutoDelayInMSec;
+    OnTimer := @OnIdentCompletionTimer;
+  end;
+  
 
   // marks
   SourceEditorMarks:=TSourceMarks.Create(Self);
@@ -2348,11 +2370,22 @@ begin
   end;
 end;
 
+procedure TSourceNotebook.OnIdentCompletionTimer(Sender: TObject);
+var
+  TempEditor: TSourceEditor;
+begin
+  //debugln('TSourceNotebook.OnIdentCompletionTimer');
+  IdentCompletionTimer.Enabled:=false;
+  IdentCompletionTimer.AutoEnabled:=false;
+  TempEditor:=GetActiveSE;
+  if TempEditor<>nil then TempEditor.StartIdentCompletion;
+end;
+
 procedure TSourceNotebook.OnCodeTemplateTokenNotFound(Sender: TObject;
   AToken: string; AnEditor: TCustomSynEdit; var Index:integer);
 var P:TPoint;
 begin
-//writeln('RRRRRRRRRRR ',AToken,',',AnEditor.ReadOnly,',',CurrentCompletionType=ctNone);
+  //writeln('TSourceNotebook.OnCodeTemplateTokenNotFound ',AToken,',',AnEditor.ReadOnly,',',CurrentCompletionType=ctNone);
   if (AnEditor.ReadOnly=false) and (CurrentCompletionType=ctNone) then begin
     CurrentCompletionType:=ctTemplateCompletion;
     with AnEditor do
@@ -2622,6 +2655,7 @@ end;
 
 Procedure TSourceNotebook.ccExecute(Sender: TObject);
 // init completion form
+// called by aCompletion.OnExecute just before showing
 var
   S: TStrings;
   Prefix: String;
@@ -4662,6 +4696,7 @@ end;
 procedure TSourceNotebook.OnApplicationUserInput(Sender: TObject; Msg: Cardinal
   );
 begin
+  //debugln('TSourceNotebook.OnApplicationUserInput');
   HideHint;
 end;
 
@@ -4689,6 +4724,7 @@ var
   CurHint: String;
 begin
   // hide other hints
+  //debugln('TSourceNotebook.ShowSynEditHint A');
   Application.HideHint;
   //
   ASrcEdit:=GetActiveSE;
@@ -4918,13 +4954,13 @@ end;
 procedure TSynEditPlugin1.LinesDeleted(FirstLine, Count: integer);
 begin
   if Assigned(OnLinesDeleted) then
-     OnLinesDeleted(self,Firstline,Count);
+    OnLinesDeleted(self,Firstline,Count);
 end;
 
 procedure TSynEditPlugin1.LinesInserted(FirstLine, Count: integer);
 begin
   if Assigned(OnLinesInserted) then
-     OnLinesInserted(self,Firstline,Count);
+    OnLinesInserted(self,Firstline,Count);
 end;
 
 //-----------------------------------------------------------------------------

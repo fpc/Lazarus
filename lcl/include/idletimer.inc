@@ -67,8 +67,8 @@ end;
 constructor TIdleTimer.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  FAutoEndEvent:=itaOnIdle;
-  FAutoStartEvent:=itaOnUserInput;
+  FAutoStartEvent:=itaOnIdle;
+  FAutoEndEvent:=itaOnUserInput;
 end;
 
 destructor TIdleTimer.Destroy;
@@ -80,7 +80,7 @@ end;
 procedure TIdleTimer.UpdateHandlers;
 begin
   if FAutoEnabled
-  and ([csDesigning,csLoading]*ComponentState=[]) then begin
+  and ([csDesigning,csLoading,csDestroying]*ComponentState=[]) then begin
     // connect handlers
     if FHandlersConnected or (Application=nil) then exit;
     Application.AddOnIdleHandler(@DoOnIdle,true);

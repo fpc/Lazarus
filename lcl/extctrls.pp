@@ -309,10 +309,10 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     property AutoEnabled: boolean read FAutoEnabled write SetAutoEnabled;
-    property AutoEndEvent: TIdleTimerAutoEvent
-      read FAutoEndEvent write SetAutoEndEvent default itaOnIdle;
     property AutoStartEvent: TIdleTimerAutoEvent
-      read FAutoStartEvent write SetAutoStartEvent default itaOnUserInput;
+      read FAutoStartEvent write SetAutoStartEvent default itaOnIdle;
+    property AutoEndEvent: TIdleTimerAutoEvent
+      read FAutoEndEvent write SetAutoEndEvent default itaOnUserInput;
   end;
 
 
@@ -996,6 +996,9 @@ end.
 
  {
   $Log$
+  Revision 1.137  2005/06/29 09:24:14  mattias
+  implemented auto ident completion after point plus idle
+
   Revision 1.136  2005/05/09 14:52:33  vincents
   also invalidate control, if it is only moved, but not resized.
 

@@ -4657,7 +4657,6 @@ begin
     Width:=MaxX-Left-Left;
     Height:=110;
     Caption:='Automatic features';
-    Visible:=true;
   end;
 
   AutoIdentifierCompletionCheckBox:=TCheckBox.Create(Self);
@@ -4670,8 +4669,6 @@ begin
     Height:=20;
     Caption:=dlgEdIdComlet;
     Checked:=EditorOpts.AutoIdentifierCompletion;
-    Enabled:=false;
-    Visible:=true;
   end;
 
   AutoCodeParametersCheckBox:=TCheckBox.Create(Self);
@@ -4686,7 +4683,6 @@ begin
     Caption:=dlgEdCodeParams;
     Checked:=EditorOpts.AutoCodeParameters;
     Enabled:=false;
-    Visible:=true;
   end;
 
   AutoToolTipExprEvalCheckBox:=TCheckBox.Create(Self);
@@ -4700,7 +4696,6 @@ begin
     Caption:=dlgTooltipEval;
     Checked:=EditorOpts.AutoToolTipExprEval;
     Enabled:=false;
-    Visible:=true;
   end;
 
   AutoToolTipSymbToolsCheckBox:=TCheckBox.Create(Self);
@@ -4713,7 +4708,6 @@ begin
     Height:=AutoIdentifierCompletionCheckBox.Height;
     Caption:=dlgTooltipTools;
     Checked:=EditorOpts.AutoToolTipSymbTools;
-    Visible:=true;
   end;
 
   AutoDelayLabel:=TLabel.Create(Self);
@@ -4725,7 +4719,6 @@ begin
           +AutoIdentifierCompletionCheckBox.Width+17;
     Width:=70;
     Caption:=dlgEdDelay;
-    Visible:=true;
   end;
 
   AutoDelayTrackBar:=TTrackBar.Create(Self);
@@ -4741,7 +4734,6 @@ begin
     Height:=10;
     Position:=EditorOpts.AutoDelayInMSec div 250;
     TickMarks:=tmBottomRight;
-    Visible:=true;
   end;
 
   AutoDelayMinLabel:=TLabel.Create(Self);
@@ -4753,7 +4745,6 @@ begin
          +AutoIdentifierCompletionCheckBox.Width+15;
     Width:=70;
     Caption:='0.5 ' + DlgTimeSecondUnit;
-    Visible:=true;
   end;
 
   AutoDelayMaxLabel:=TLabel.Create(Self);
@@ -4764,7 +4755,6 @@ begin
     Left:=AutoDelayTrackBar.Left+AutoDelayTrackBar.Width-30;
     Width:=70;
     Caption:='1.5 '+ dlgTimeSecondUnit;
-    Visible:=true;
   end;
 
   CodeTemplatesGroupBox:=TGroupBox.Create(Self);
@@ -4777,7 +4767,6 @@ begin
     Height:=250;
     Caption:=dlgEdCodeTempl;
     OnResize:=@CodeTemplatesGroupBoxResize;
-    Visible:=true;
   end;
 
   CodeTemplateFileNameLabel:=TLabel.Create(Self);
@@ -4788,7 +4777,6 @@ begin
     Left:=7;
     Width:=110;
     Caption:=dlgTplFName;
-    Visible:=true;
   end;
 
   CodeTemplateFileNameComboBox:=TComboBox.Create(Self);
@@ -4802,7 +4790,6 @@ begin
     OnChange:=@ComboBoxOnChange;
     OnKeyDown:=@ComboBoxOnKeyDown;
     OnExit:=@ComboBoxOnExit;
-    Visible:=true;
   end;
 
   CodeTemplateFileNameButton:=TButton.Create(Self);
@@ -4815,7 +4802,6 @@ begin
     Height:=Width;
     Caption:='...';
     OnClick:=@CodeTemplateFileNameButtonClick;
-    Visible:=true;
   end;
 
   CodeTemplateAddButton:=TButton.Create(Self);
@@ -4828,7 +4814,6 @@ begin
     Height:=23;
     Caption:=dlgEdAdd;
     OnClick:=@CodeTemplateButtonClick;
-    Visible:=true;
   end;
 
   CodeTemplateEditButton:=TButton.Create(Self);
@@ -4841,7 +4826,6 @@ begin
     Height:=CodeTemplateAddButton.Height;
     Caption:=dlgEdEdit;
     OnClick:=@CodeTemplateButtonClick;
-    Visible:=true;
   end;
 
   CodeTemplateDeleteButton:=TButton.Create(Self);
@@ -4854,7 +4838,6 @@ begin
     Height:=CodeTemplateAddButton.Height;
     Caption:=dlgEdDelete;
     OnClick:=@CodeTemplateButtonClick;
-    Visible:=true;
   end;
 
   CodeTemplatesLabel:=TLabel.Create(Self);
@@ -4865,7 +4848,6 @@ begin
     Left:=CodeTemplateAddButton.Left+CodeTemplateAddButton.Width+5;
     Width:=60;
     Caption:='Templates';
-    Visible:=true;
   end;
 
   CodeTemplateListBox:=TListBox.Create(Self);
@@ -4877,7 +4859,6 @@ begin
     Width:=Parent.ClientWidth-8-Left;
     Height:=80;
     OnMouseUp:=@CodeTemplateListBoxMouseUp;
-    Visible:=true;
   end;
 
   CodeTemplateCodeLabel:=TLabel.Create(Self);
@@ -4889,7 +4870,6 @@ begin
     Width:=CodeTemplatesLabel.Width;
     Height:=CodeTemplatesLabel.Height;
     Caption:='Code';
-    Visible:=true;
   end;
 
   CodeTemplateCodePreview:=TPreviewEditor.Create(Self);
@@ -4902,7 +4882,6 @@ begin
     Height:=CodeTemplatesGroupBox.ClientHeight-20-Top;
     Lines.Clear;
     Gutter.Visible:=false;
-    Visible:=true;
   end;
   
   CodeTemplateIndentTypeRadioGroup:=TRadioGroup.Create(Self);
@@ -4920,7 +4899,6 @@ begin
       Add('Line start');
       EndUpdate;
     end;
-    Visible:=true;
   end;
 
   CurCodeTemplate:=-1;
