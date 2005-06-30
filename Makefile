@@ -3777,7 +3777,7 @@ ifeq ($(OS_TARGET), win32)
 	-$(DEL) $(wildcard *.res)
 	-$(DEL) lazarus.owr
 endif
-clean: cleanall cleanide
-purge: cleanall cleanide
+clean: cleanlaz cleanide
+purge: cleanlaz cleanide
 	$(MAKE) -C examples clean
 	$(MAKE) -C tools clean

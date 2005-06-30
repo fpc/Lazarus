@@ -141,9 +141,9 @@ ifeq ($(OS_TARGET), win32)
         -$(DEL) lazarus.owr
 endif
 
-clean: cleanall cleanide
+clean: cleanlaz cleanide
 
-purge: cleanall cleanide
+purge: cleanlaz cleanide
         $(MAKE) -C examples clean
         $(MAKE) -C tools clean
 

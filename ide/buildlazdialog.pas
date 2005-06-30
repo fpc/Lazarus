@@ -317,7 +317,7 @@ begin
       // clean lazarus source directories
       Tool.Title:=lisCleanLazarusSource;
       Tool.WorkingDirectory:='$(LazarusDir)';
-      Tool.CmdLineParams:='cleanall';
+      Tool.CmdLineParams:='cleanlaz';
       // append target OS
       if Options.TargetOS<>'' then
         Tool.CmdLineParams:=Tool.CmdLineParams+' OS_TARGET='+Options.TargetOS;

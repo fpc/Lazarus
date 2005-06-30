@@ -20,4 +20,4 @@ files=$(wildcard ./units/*$(OEXT)) \
 
 [rules]
 
-cleanall: clean
+cleanlaz: clean
