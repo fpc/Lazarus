@@ -93,10 +93,12 @@ includedir=include
 #buildunit=alllclunits
 
 [clean]
+# clear all .ppu/.o/.rst files in all source and output directories
 files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
       $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) \
+      $(wildcard widgetset/*$(OEXT)) $(wildcard widgetset/*$(PPUEXT)) $(wildcard widgetset/*$(RSTEXT))\
       $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 
 
