@@ -106,6 +106,10 @@ msgstr "O&nderwerp Zoeken"
 msgid "&Undo"
 msgstr "&Ongedaan maken"
 
+#: objinspstrconsts:clbup
+msgid "&Up"
+msgstr ""
+
 #: objinspstrconsts:cactionlisteditorallcategory
 msgid "(All)"
 msgstr "(Alles)"
@@ -125,6 +129,10 @@ msgstr "Action List Bewerker"
 #: objinspstrconsts:sccsilbtnadd
 msgid "Add ..."
 msgstr "Toevoegen ..."
+
+#: objinspstrconsts:clbadd
+msgid "Add new Item"
+msgstr ""
 
 #: objinspstrconsts:oisall
 msgid "All"
@@ -169,6 +177,14 @@ msgstr "Categorie"
 #: objinspstrconsts:oischar
 msgid "Char"
 msgstr "Char"
+
+#: objinspstrconsts:clbcheckgroupeditor
+msgid "CheckGroup Editor"
+msgstr ""
+
+#: objinspstrconsts:clbchecklistboxeditor
+msgid "CheckListBox Editor"
+msgstr ""
 
 #: objinspstrconsts:oisclass
 msgid "Class"
@@ -250,9 +266,17 @@ msgstr "Verwijder Action"
 msgid "Delete item %s%s%s?"
 msgstr "Verwijder onderdelen %s%s%s?"
 
+#: objinspstrconsts:clbdelete
+msgid "Delete the Item %d \"%s\"?"
+msgstr ""
+
 #: objinspstrconsts:cactionlisteditordialogcategory
 msgid "Dialog"
 msgstr "Dialoog"
+
+#: objinspstrconsts:clbdown
+msgid "Do&wn"
+msgstr ""
 
 #: objinspstrconsts:oistdactfileexitheadline
 msgid "E&xit"
@@ -397,6 +421,10 @@ msgstr "Laad Plaatjes Dialoog"
 #: objinspstrconsts:oismethod
 msgid "Method"
 msgstr "Method"
+
+#: objinspstrconsts:clbmodify
+msgid "Modify the Item"
+msgstr ""
 
 #: objinspstrconsts:cactionlisteditormovedownaction
 msgid "Move Down"

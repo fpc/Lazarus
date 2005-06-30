@@ -493,7 +493,7 @@ type
 
     // methods for 'new unit'
     function CreateNewCodeBuffer(Descriptor: TProjectFileDescriptor;
-        NewFilename: string; var NewCodeBuffer: TCodeBuffer;
+        NewOwner: TObject; NewFilename: string; var NewCodeBuffer: TCodeBuffer;
         var NewUnitName: string): TModalResult;
     function CreateNewForm(NewUnitInfo: TUnitInfo;
         AncestorType: TPersistentClass; ResourceCode: TCodeBuffer): TModalResult;
@@ -564,9 +564,9 @@ type
     procedure UpdateDefaultPascalFileExtensions;
 
     // files/units
-    function DoNewEditorFile(NewFileDescriptor: TProjectFileDescriptor;
-        NewFilename: string; const NewSource: string;
-        NewFlags: TNewFlags): TModalResult; override;
+    function DoNewFile(NewFileDescriptor: TProjectFileDescriptor;
+        var NewFilename: string; const NewSource: string;
+        NewFlags: TNewFlags; NewOwner: TObject): TModalResult; override;
     function DoNewOther: TModalResult;
     function DoSaveEditorFile(PageIndex:integer;
         Flags: TSaveFlags): TModalResult;
@@ -587,6 +587,9 @@ type
     procedure DoViewUnitDependencies;
     procedure DoViewUnitInfo;
     procedure DoShowCodeExplorer;
+    function CreateNewUniqueFilename(const Prefix, Ext: string;
+       NewOwner: TObject; Flags: TSearchIDEFileFlags; TryWithoutNumber: boolean
+       ): string; override;
 
     // project(s)
     function DoNewProject(ProjectDesc: TProjectDescriptor): TModalResult; override;
@@ -3261,22 +3264,40 @@ end;
 //==============================================================================
 
 function TMainIDE.CreateNewCodeBuffer(Descriptor: TProjectFileDescriptor;
-  NewFilename: string;
+  NewOwner: TObject; NewFilename: string;
   var NewCodeBuffer: TCodeBuffer; var NewUnitName: string): TModalResult;
+var
+  NewShortFilename: String;
+  NewFileExt: String;
+  SearchFlags: TSearchIDEFileFlags;
 begin
   //debugln('TMainIDE.CreateNewCodeBuffer START NewFilename=',NewFilename,' ',Descriptor.DefaultFilename,' ',Descriptor.ClassName);
   NewUnitName:='';
   if NewFilename='' then begin
-  
+    // create a new unique filename
+    SearchFlags:=[siffCheckAllProjects];
     if Descriptor.IsPascalUnit then begin
-      NewUnitName:=Project1.NewUniqueUnitName(Descriptor.DefaultSourceName);
-      NewFilename:=lowercase(NewUnitName)+Descriptor.DefaultFileExt;
+      if NewUnitName='' then
+        NewUnitName:=Descriptor.DefaultSourceName;
+      NewShortFilename:=lowercase(NewUnitName);
+      NewFileExt:=Descriptor.DefaultFileExt;
+      SearchFlags:=SearchFlags+[siffIgnoreExtension];
     end else begin
-      NewFilename:=Project1.NewUniqueFilename(
-                                   ExtractFilename(Descriptor.DefaultFilename));
+      NewFilename:=ExtractFilename(Descriptor.DefaultFilename);
+      NewShortFilename:=ExtractFilenameOnly(NewFilename);
+      NewFileExt:=ExtractFileExt(NewFilename);
+      SearchFlags:=[];
     end;
+    NewFilename:=CreateNewUniqueFilename(NewShortFilename,NewFileExt,NewOwner,
+                                         SearchFlags,true);
     if NewFilename='' then
       RaiseException('');
+    NewShortFilename:=ExtractFilenameOnly(NewFilename);
+    // use as unitname the NewShortFilename, but with the case of the
+    // original unitname. e.g. 'unit12.pas' becomes 'Unit12.pas'
+    NewUnitName:=ChompEndNumber(NewUnitName);
+    NewUnitName:=NewUnitName+copy(NewShortFilename,length(NewUnitName)+1,
+                                  length(NewShortFilename));
   end;
   //debugln('TMainIDE.CreateNewCodeBuffer NewFilename=',NewFilename,' NewUnitName=',NewUnitName);
 
@@ -4767,9 +4788,9 @@ begin
   Result:=mrOk;
 end;
 
-function TMainIDE.DoNewEditorFile(NewFileDescriptor: TProjectFileDescriptor;
-  NewFilename: string; const NewSource: string;
-  NewFlags: TNewFlags): TModalResult;
+function TMainIDE.DoNewFile(NewFileDescriptor: TProjectFileDescriptor;
+  var NewFilename: string; const NewSource: string;
+  NewFlags: TNewFlags; NewOwner: TObject): TModalResult;
 
   function BeautifySrc(const s: string): string;
   begin
@@ -4788,6 +4809,7 @@ var
   SearchFlags: TProjectFileSearchFlags;
   LFMSourceText: String;
   LFMCode: TCodeBuffer;
+  AProject: TProject;
 begin
   debugln('TMainIDE.DoNewEditorFile A NewFilename=',NewFilename);
   SaveSourceEditorChangesToCodeCache(-1);
@@ -4799,17 +4821,22 @@ begin
       exit;
     end;
   end;
+  
+  if NewOwner is TProject then
+    AProject:=TProject(NewOwner)
+  else
+    AProject:=Project1;
 
   // create new codebuffer and apply naming conventions
-  Result:=CreateNewCodeBuffer(NewFileDescriptor,NewFilename,NewBuffer,
+  Result:=CreateNewCodeBuffer(NewFileDescriptor,NewOwner,NewFilename,NewBuffer,
                               NewUnitName);
   if Result<>mrOk then exit;
 
   NewFilename:=NewBuffer.Filename;
-  OldUnitIndex:=Project1.IndexOfFilename(NewFilename);
+  OldUnitIndex:=AProject.IndexOfFilename(NewFilename);
   if OldUnitIndex>=0 then begin
     // the file is not really new
-    NewUnitInfo:=Project1.Units[OldUnitIndex];
+    NewUnitInfo:=AProject.Units[OldUnitIndex];
     // close form
     CloseDesignerForm(NewUnitInfo);
     // assign source
@@ -4823,7 +4850,7 @@ begin
   if nfCreateDefaultSrc in NewFlags then begin
     if (NewFileDescriptor.ResourceClass<>nil) then begin
       NewUnitInfo.ComponentName:=
-        Project1.NewUniqueComponentName(NewFileDescriptor.DefaultResourceName);
+        AProject.NewUniqueComponentName(NewFileDescriptor.DefaultResourceName);
       NewUnitInfo.ComponentResourceName:='';
     end;
     NewUnitInfo.CreateStartCode(NewFileDescriptor,NewUnitName);
@@ -4839,7 +4866,8 @@ begin
   with NewUnitInfo do begin
     Loaded:=true;
     IsPartOfProject:=(nfIsPartOfProject in NewFlags)
-                     or (Project1.FileIsInProjectDir(NewFilename)
+                     or (NewOwner is TProject)
+                     or (AProject.FileIsInProjectDir(NewFilename)
                          and (not (nfIsNotPartOfProject in NewFlags)));
   end;
   if OldUnitIndex<0 then begin
@@ -4898,7 +4926,6 @@ begin
     end;
   end else begin
     // do not open in editor
-
     if nfSave in NewFlags then begin
       NewBuffer.Save;
     end;
@@ -4914,7 +4941,7 @@ begin
       Include(SearchFlags,pfsfOnlyProjectFiles);
     if NewUnitInfo.IsVirtual then
       Include(SearchFlags,pfsfOnlyVirtualFiles);
-    if (Project1.UnitInfoWithFilename(LFMFilename,SearchFlags)<>nil) then begin
+    if (AProject.UnitInfoWithFilename(LFMFilename,SearchFlags)<>nil) then begin
       //debugln('TMainIDE.DoNewEditorFile no HasResources ',NewUnitInfo.Filename,' ResourceFile exists');
       NewUnitInfo.ResourceFileName:=ChangeFileExt(NewUnitInfo.Filename,'.lrs');
       NewUnitInfo.HasResources:=true;
@@ -5548,6 +5575,51 @@ begin
   EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(nmiwCodeExplorerName).Apply;
   CodeExplorerView.ShowOnTop;
   CodeExplorerView.Refresh;
+end;
+
+function TMainIDE.CreateNewUniqueFilename(const Prefix, Ext: string;
+  NewOwner: TObject; Flags: TSearchIDEFileFlags; TryWithoutNumber: boolean): string;
+  
+  function FileIsUnique(const ShortFilename: string): boolean;
+  begin
+    Result:=false;
+
+    // search in NewOwner
+    if NewOwner<>nil then begin
+      if (NewOwner is TProject) then begin
+        if TProject(NewOwner).SearchFile(ShortFilename,Flags)<>nil then exit;
+      end;
+    end;
+    
+    // search in all packages
+    if PkgBoss.SearchFile(ShortFilename,Flags,NewOwner)<>nil then exit;
+    
+    // search in current project
+    if (NewOwner<>Project1)
+    and (Project1.SearchFile(ShortFilename,Flags)<>nil) then exit;
+
+    // search file in all loaded projects
+    if (siffCheckAllProjects in Flags) then begin
+    end;
+
+    Result:=true;
+  end;
+  
+var
+  i: Integer;
+  WorkingPrefix: String;
+begin
+  if TryWithoutNumber then begin
+    Result:=Prefix+Ext;
+    if FileIsUnique(Result) then exit;
+  end;
+  // remove number at end of Prefix
+  WorkingPrefix:=ChompEndNumber(Prefix);
+  i:=0;
+  repeat
+    inc(i);
+    Result:=WorkingPrefix+IntToStr(i)+Ext;
+  until FileIsUnique(Result);
 end;
 
 function TMainIDE.DoSaveStringToFile(const Filename, Src,
@@ -11736,6 +11808,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.881  2005/06/30 18:15:54  mattias
+  implemented adding a new file from registered file types to package
+
   Revision 1.880  2005/06/30 11:29:16  mattias
   fixed compilation
 

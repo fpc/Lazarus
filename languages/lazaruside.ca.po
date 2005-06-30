@@ -1514,6 +1514,10 @@ msgstr "Crea una nova unitat amb un mòdul de dades."
 msgid "Create a project first!"
 msgstr "Creeu primer un projecte!"
 
+#: lazarusidestrconsts:lisa2pcreatenewfile
+msgid "Create new file"
+msgstr ""
+
 #: lazarusidestrconsts:dlgruberbandcreationcolor
 msgid "Creation"
 msgstr "Creació"
@@ -4049,6 +4053,10 @@ msgstr ""
 #: lazarusidestrconsts:lisa2pnewcomponent
 msgid "New Component"
 msgstr "Nou component"
+
+#: lazarusidestrconsts:lisa2pnewfile
+msgid "New File"
+msgstr ""
 
 #: lazarusidestrconsts:lismenunewform
 msgid "New Form"

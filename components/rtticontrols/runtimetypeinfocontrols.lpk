@@ -4,7 +4,7 @@
     <Name Value="RunTimeTypeInfoControls"/>
     <Author Value="Mattias Gaertner"/>
     <CompilerOptions>
-      <Version Value="3"/>
+      <Version Value="5"/>
       <SearchPaths>
         <OtherUnitFiles Value="$(LazarusDir)/components/units/$(TargetCPU)/$(TargetOS)/"/>
         <UnitOutputDirectory Value="lib/"/>

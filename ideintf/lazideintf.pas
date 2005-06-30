@@ -65,7 +65,16 @@ type
     sfCheckAmbiguousFiles
     );
   TSaveFlags = set of TSaveFlag;
-
+  
+  // new filename flags
+  TSearchIDEFileFlag = (
+    siffDoNotCheckAllPackages, // do not search filename in loaded packages
+    siffCheckAllProjects, // do not search filename in loaded projects
+    siffCaseSensitive,  // check case sensitive
+    siffDoNotCheckOpenFiles,  // do not search in files opened in source editor
+    siffIgnoreExtension  // compare only filename, ignore file extension
+    );
+  TSearchIDEFileFlags = set of TSearchIDEFileFlag;
 
   { TLazIDEInterface }
 
@@ -78,7 +87,10 @@ type
     
     function DoNewEditorFile(NewFileDescriptor: TProjectFileDescriptor;
         NewFilename: string; const NewSource: string;
-        NewFlags: TNewFlags): TModalResult; virtual; abstract;
+        NewFlags: TNewFlags): TModalResult;
+    function DoNewFile(NewFileDescriptor: TProjectFileDescriptor;
+        var NewFilename: string; const NewSource: string;
+        NewFlags: TNewFlags; NewOwner: TObject): TModalResult; virtual; abstract;
     function DoOpenEditorFile(AFileName:string; PageIndex: integer;
         Flags: TOpenFlags): TModalResult; virtual; abstract;
     function DoOpenFileAndJumpToIdentifier(const AFilename, AnIdentifier: string;
@@ -95,6 +107,10 @@ type
     function GetPrimaryConfigPath: String; virtual; abstract;
     function GetSecondaryConfigPath: String; virtual; abstract;
     procedure CopySecondaryConfigFile(const AFilename: String); virtual; abstract;
+
+    function CreateNewUniqueFilename(const Prefix, Ext: string;
+       NewOwner: TObject; Flags: TSearchIDEFileFlags;
+       TryWithoutNumber: boolean): string; virtual; abstract;
   public
     property ActiveProject: TLazProject read GetActiveProject;
 
@@ -117,6 +133,13 @@ destructor TLazIDEInterface.Destroy;
 begin
   inherited Destroy;
   LazarusIDE:=nil;
+end;
+
+function TLazIDEInterface.DoNewEditorFile(
+  NewFileDescriptor: TProjectFileDescriptor; NewFilename: string;
+  const NewSource: string; NewFlags: TNewFlags): TModalResult;
+begin
+  Result:=DoNewFile(NewFileDescriptor,NewFilename,NewSource,NewFlags,nil);
 end;
 
 end.

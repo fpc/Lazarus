@@ -357,6 +357,8 @@ type
   TEndUpdateProjectEvent =
     procedure(Sender: TObject; ProjectChanged: boolean) of object;
     
+  { TProject }
+
   TProject = class(TLazProject)
   private
     fActiveEditorIndexAtStart: integer;
@@ -486,6 +488,8 @@ type
     function UnitInfoWithFilename(const AFilename: string;
                     SearchFlags: TProjectFileSearchFlags): TUnitInfo;
     function UnitWithUnitname(const AnUnitname: string): TUnitInfo;
+    function SearchFile(const ShortFilename: string;
+                        SearchFlags: TSearchIDEFileFlags): TUnitInfo;
 
     // units in editor
     procedure CloseEditorIndex(EditorIndex:integer);
@@ -2651,6 +2655,44 @@ begin
     Result:=nil;
 end;
 
+function TProject.SearchFile(const ShortFilename: string;
+  SearchFlags: TSearchIDEFileFlags): TUnitInfo;
+var
+  SearchedFilename: String;
+
+  function FilenameFits(AFilename: string): boolean;
+  begin
+    if siffIgnoreExtension in SearchFlags then
+      AFileName:=ExtractFilenameOnly(AFileName);
+    if FilenameIsAbsolute(AFileName) then
+      AFileName:=ExtractFilename(AFileName);
+    if siffCaseSensitive in SearchFlags then
+      Result:=SearchedFilename=AFilename
+    else
+      Result:=AnsiCompareText(SearchedFilename,AFilename)=0;
+  end;
+  
+begin
+  SearchedFilename:=ShortFilename;
+  if siffIgnoreExtension in SearchFlags then
+    SearchedFilename:=ExtractFilenameOnly(SearchedFilename);
+
+  // search in files which are part of the project
+  Result:=FirstPartOfProject;
+  while Result<>nil do begin
+    if FilenameFits(Result.Filename) then exit;
+    Result:=Result.NextPartOfProject;
+  end;
+  // search in files opened in editor
+  if not (siffDoNotCheckOpenFiles in SearchFlags) then begin
+    Result:=FirstUnitWithEditorIndex;
+    while Result<>nil do begin
+      if FilenameFits(Result.Filename) then exit;
+      Result:=Result.NextUnitWithEditorIndex;
+    end;
+  end;
+end;
+
 function TProject.IndexOfFilename(const AFilename: string): integer;
 begin
   Result:=UnitCount-1;
@@ -3215,6 +3257,9 @@ end.
 
 {
   $Log$
+  Revision 1.188  2005/06/30 18:15:54  mattias
+  implemented adding a new file from registered file types to package
+
   Revision 1.187  2005/06/05 19:44:20  vincents
   fixed UnitInfoWithFilename (bug 937)
 

@@ -106,6 +106,10 @@ msgstr ""
 msgid "&Undo"
 msgstr ""
 
+#: objinspstrconsts:clbup
+msgid "&Up"
+msgstr ""
+
 #: objinspstrconsts:cactionlisteditorallcategory
 msgid "(All)"
 msgstr "(Tous)"
@@ -125,6 +129,10 @@ msgstr "Editeur de listes d'actions"
 #: objinspstrconsts:sccsilbtnadd
 msgid "Add ..."
 msgstr "Ajouter ..."
+
+#: objinspstrconsts:clbadd
+msgid "Add new Item"
+msgstr ""
 
 #: objinspstrconsts:oisall
 msgid "All"
@@ -169,6 +177,14 @@ msgstr "Catégorie"
 #: objinspstrconsts:oischar
 msgid "Char"
 msgstr "Caractère"
+
+#: objinspstrconsts:clbcheckgroupeditor
+msgid "CheckGroup Editor"
+msgstr ""
+
+#: objinspstrconsts:clbchecklistboxeditor
+msgid "CheckListBox Editor"
+msgstr ""
 
 #: objinspstrconsts:oisclass
 msgid "Class"
@@ -250,8 +266,16 @@ msgstr ""
 msgid "Delete item %s%s%s?"
 msgstr "Supprimer l'élément %s%s%s ?"
 
+#: objinspstrconsts:clbdelete
+msgid "Delete the Item %d \"%s\"?"
+msgstr ""
+
 #: objinspstrconsts:cactionlisteditordialogcategory
 msgid "Dialog"
+msgstr ""
+
+#: objinspstrconsts:clbdown
+msgid "Do&wn"
 msgstr ""
 
 #: objinspstrconsts:oistdactfileexitheadline
@@ -397,6 +421,10 @@ msgstr "Chargement d'une image"
 #: objinspstrconsts:oismethod
 msgid "Method"
 msgstr "Méthode"
+
+#: objinspstrconsts:clbmodify
+msgid "Modify the Item"
+msgstr ""
 
 #: objinspstrconsts:cactionlisteditormovedownaction
 msgid "Move Down"

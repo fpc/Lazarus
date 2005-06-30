@@ -40,7 +40,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, StdCtrls, ComCtrls, Buttons, LResources,
   Graphics, LCLType, LCLProc, Menus, Dialogs, FileUtil,
-  {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF}, Laz_XMLCfg,
+  AVL_Tree, Laz_XMLCfg, LazIDEIntf, ProjectIntf,
   IDEProcs, LazConf, LazarusIDEStrConsts, IDEOptionDefs, IDEDefs,
   CompilerOptions, CompilerOptionsDlg, ComponentReg, PackageDefs, PkgOptionsDlg,
   AddToPackageDlg, PkgVirtualUnitEditor, PackageSystem;
@@ -970,9 +970,44 @@ procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
   end;
   
   procedure AddNewFile(AddParams: TAddToPkgResult);
+  var
+    NewFilename: String;
+    DummyResult: TModalResult;
+    NewFileType: TPkgFileType;
+    NewPkgFileFlags: TPkgFileFlags;
+    Desc: TProjectFileDescriptor;
+    NewUnitName: String;
+    HasRegisterProc: Boolean;
   begin
     // create new file
-    // TODO
+    if AddParams.NewItem is TNewItemProjectFile then begin
+      // create new file
+      Desc:=TNewItemProjectFile(AddParams.NewItem).Descriptor;
+      NewFilename:='';
+      DummyResult:=LazarusIDE.DoNewFile(Desc,NewFilename,'',
+        [nfOpenInEditor,nfCreateDefaultSrc,nfIsNotPartOfProject],LazPackage);
+      if DummyResult=mrOk then begin
+        // success
+        // -> now add it to package
+        NewUnitName:='';
+        NewFileType:=FileNameToPkgFileType(NewFilename);
+        NewPkgFileFlags:=[];
+        if (NewFileType in PkgFileUnitTypes) then begin
+          Include(NewPkgFileFlags,pffAddToPkgUsesSection);
+          NewUnitName:=ExtractFilenameOnly(NewFilename);
+          if Assigned(PackageEditors.OnGetUnitRegisterInfo) then begin
+            HasRegisterProc:=false;
+            PackageEditors.OnGetUnitRegisterInfo(Self,NewFilename,
+              NewUnitName,HasRegisterProc);
+            if HasRegisterProc then
+              Include(NewPkgFileFlags,pffHasRegisterProc);
+          end;
+        end;
+        LazPackage.AddFile(NewFilename,NewUnitName,NewFileType,NewPkgFileFlags,
+                           cpNormal);
+        UpdateAll;
+      end;
+    end;
   end;
 
 var

@@ -116,6 +116,10 @@ msgstr ""
 msgid "&Undo"
 msgstr ""
 
+#: objinspstrconsts:clbup
+msgid "&Up"
+msgstr ""
+
 #: objinspstrconsts:cactionlisteditorallcategory
 msgid "(All)"
 msgstr "(Все)"
@@ -135,6 +139,10 @@ msgstr "Редактор списка действий"
 #: objinspstrconsts:sccsilbtnadd
 msgid "Add ..."
 msgstr "Добавить..."
+
+#: objinspstrconsts:clbadd
+msgid "Add new Item"
+msgstr ""
 
 #: objinspstrconsts:oisall
 msgid "All"
@@ -178,6 +186,14 @@ msgstr "Категория"
 
 #: objinspstrconsts:oischar
 msgid "Char"
+msgstr ""
+
+#: objinspstrconsts:clbcheckgroupeditor
+msgid "CheckGroup Editor"
+msgstr ""
+
+#: objinspstrconsts:clbchecklistboxeditor
+msgid "CheckListBox Editor"
 msgstr ""
 
 #: objinspstrconsts:oisclass
@@ -260,8 +276,16 @@ msgstr ""
 msgid "Delete item %s%s%s?"
 msgstr "Удалить элемент %s%s%s?"
 
+#: objinspstrconsts:clbdelete
+msgid "Delete the Item %d \"%s\"?"
+msgstr ""
+
 #: objinspstrconsts:cactionlisteditordialogcategory
 msgid "Dialog"
+msgstr ""
+
+#: objinspstrconsts:clbdown
+msgid "Do&wn"
 msgstr ""
 
 #: objinspstrconsts:oistdactfileexitheadline
@@ -407,6 +431,10 @@ msgstr "Диалог загрузки изображения"
 #: objinspstrconsts:oismethod
 msgid "Method"
 msgstr "Метод"
+
+#: objinspstrconsts:clbmodify
+msgid "Modify the Item"
+msgstr ""
 
 #: objinspstrconsts:cactionlisteditormovedownaction
 msgid "Move Down"

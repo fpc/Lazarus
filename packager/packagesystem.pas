@@ -77,6 +77,8 @@ type
   TFindFPCUnitEvent = procedure(const UnitName, Directory: string;
                                 var Filename: string) of object;
 
+  { TLazPackageGraph }
+
   TLazPackageGraph = class
   private
     FAbortRegistration: boolean;
@@ -105,6 +107,7 @@ type
     function CreateSynEditPackage: TLazPackage;
     function CreateIDEIntfPackage: TLazPackage;
     function CreateDefaultPackage: TLazPackage;
+    function GetCount: Integer;
     function GetPackages(Index: integer): TLazPackage;
     procedure DoDependencyChanged(Dependency: TPkgDependency);
     procedure SetAbortRegistration(const AValue: boolean);
@@ -1107,6 +1110,11 @@ begin
 
     Modified:=false;
   end;
+end;
+
+function TLazPackageGraph.GetCount: Integer;
+begin
+  Result:=FItems.Count;
 end;
 
 procedure TLazPackageGraph.AddPackage(APackage: TLazPackage);

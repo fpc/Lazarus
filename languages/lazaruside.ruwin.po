@@ -1514,6 +1514,10 @@ msgstr "Создать модуль с модулем данных."
 msgid "Create a project first!"
 msgstr "Создайте сперва проект!"
 
+#: lazarusidestrconsts:lisa2pcreatenewfile
+msgid "Create new file"
+msgstr ""
+
 #: lazarusidestrconsts:dlgruberbandcreationcolor
 msgid "Creation"
 msgstr "Создание"
@@ -4049,6 +4053,10 @@ msgstr ""
 #: lazarusidestrconsts:lisa2pnewcomponent
 msgid "New Component"
 msgstr "Новый компонент"
+
+#: lazarusidestrconsts:lisa2pnewfile
+msgid "New File"
+msgstr ""
 
 #: lazarusidestrconsts:lismenunewform
 msgid "New Form"

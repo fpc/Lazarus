@@ -198,6 +198,34 @@ msgstr ""
 msgid "Create default event"
 msgstr ""
 
+#: objinspstrconsts:clbchecklistboxeditor
+msgid "CheckListBox Editor"
+msgstr ""
+
+#: objinspstrconsts:clbup
+msgid "&Up"
+msgstr ""
+
+#: objinspstrconsts:clbdown
+msgid "Do&wn"
+msgstr ""
+
+#: objinspstrconsts:clbmodify
+msgid "Modify the Item"
+msgstr ""
+
+#: objinspstrconsts:clbadd
+msgid "Add new Item"
+msgstr ""
+
+#: objinspstrconsts:clbdelete
+msgid "Delete the Item %d \"%s\"?"
+msgstr ""
+
+#: objinspstrconsts:clbcheckgroupeditor
+msgid "CheckGroup Editor"
+msgstr ""
+
 #: objinspstrconsts:cactionlisteditorunknowncategory
 msgid "(Unknown)"
 msgstr ""

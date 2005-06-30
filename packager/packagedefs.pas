@@ -48,7 +48,7 @@ uses
   Classes, SysUtils, LCLProc, LResources, Graphics,
   {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF}, Laz_XMLCfg,
   DefineTemplates, CodeToolManager, EditDefineTree, CompilerOptions, Forms,
-  FileUtil, PropEdits,
+  FileUtil, PropEdits, LazIDEIntf,
   LazarusIDEStrConsts, IDEProcs, ComponentReg,
   TransferMacros, FileReferenceList, PublishModule;
 
@@ -646,6 +646,8 @@ type
     function NeedsDefineTemplates: boolean;
     // files
     function IndexOfPkgFile(PkgFile: TPkgFile): integer;
+    function SearchFile(const ShortFilename: string;
+                        SearchFlags: TSearchIDEFileFlags): TPkgFile;
     procedure ShortenFilename(var ExpandedFilename: string; UseUp: boolean);
     procedure LongenFilename(var AFilename: string);
     function FindPkgFile(const AFilename: string;
@@ -2976,6 +2978,37 @@ function TLazPackage.IndexOfPkgFile(PkgFile: TPkgFile): integer;
 begin
   Result:=FileCount-1;
   while (Files[Result]<>PkgFile) do dec(Result);
+end;
+
+function TLazPackage.SearchFile(const ShortFilename: string;
+  SearchFlags: TSearchIDEFileFlags): TPkgFile;
+var
+  SearchedFilename: String;
+  i: Integer;
+
+  function FilenameFits(AFilename: string): boolean;
+  begin
+    if siffIgnoreExtension in SearchFlags then
+      AFileName:=ExtractFilenameOnly(AFileName);
+    if FilenameIsAbsolute(AFileName) then
+      AFileName:=ExtractFilename(AFileName);
+    if siffCaseSensitive in SearchFlags then
+      Result:=SearchedFilename=AFilename
+    else
+      Result:=AnsiCompareText(SearchedFilename,AFilename)=0;
+  end;
+
+begin
+  SearchedFilename:=ShortFilename;
+  if siffIgnoreExtension in SearchFlags then
+    SearchedFilename:=ExtractFilenameOnly(SearchedFilename);
+
+  // search in files
+  for i:=0 to FileCount-1 do begin
+    Result:=Files[i];
+    if FilenameFits(Result.Filename) then exit;
+  end;
+  Result:=nil;
 end;
 
 { TPkgComponent }

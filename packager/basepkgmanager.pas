@@ -44,8 +44,8 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Forms, PackageDefs, ComponentReg, CompilerOptions, Project,
-  PackageIntf;
+  Classes, SysUtils, Forms, LazIDEIntf,
+  PackageDefs, ComponentReg, CompilerOptions, Project, PackageIntf;
 
 type
   TPkgSaveFlag = (
@@ -69,6 +69,8 @@ type
     );
   TPkgCompileFlags = set of TPkgCompileFlag;
 
+  { TBasePkgManager }
+
   TBasePkgManager = class(TPackageEditingInterface)
   public
     // initialization and menu
@@ -88,6 +90,9 @@ type
                           NewFilename: string): TModalResult; virtual; abstract;
     function FindIncludeFileInProjectDependencies(Project1: TProject;
                           const Filename: string): string; virtual; abstract;
+    function SearchFile(const ShortFilename: string;
+                        SearchFlags: TSearchIDEFileFlags;
+                        InObject: TObject): TPkgFile; virtual; abstract;
 
     // project
     function OpenProjectDependencies(AProject: TProject;

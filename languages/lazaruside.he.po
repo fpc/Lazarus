@@ -1525,6 +1525,10 @@ msgstr ""
 msgid "Create a project first!"
 msgstr ""
 
+#: lazarusidestrconsts:lisa2pcreatenewfile
+msgid "Create new file"
+msgstr ""
+
 #: lazarusidestrconsts:dlgruberbandcreationcolor
 msgid "Creation"
 msgstr ""
@@ -4059,6 +4063,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisa2pnewcomponent
 msgid "New Component"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pnewfile
+msgid "New File"
 msgstr ""
 
 #: lazarusidestrconsts:lismenunewform

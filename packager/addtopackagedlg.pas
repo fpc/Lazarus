@@ -1273,12 +1273,8 @@ end;
 
 procedure TAddToPackageDlg.NewFileTreeViewSelectionChanged(Sender: TObject);
 begin
-  {$IFDEF EnableA2PNewUnit}
   NewFileOkButton.Enabled:=(NewFileTreeView.Selected<>nil)
             and (TObject(NewFileTreeView.Selected.Data) is TNewIDEItemTemplate);
-  {$ELSE}
-  NewFileOkButton.Enabled:=false;
-  {$ENDIF}
 end;
 
 procedure TAddToPackageDlg.SetLazPackage(const AValue: TLazPackage);

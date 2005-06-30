@@ -90,6 +90,7 @@ function FilenameIsFormText(const Filename: string): boolean;
 function CreateRelativePath(const Filename, BaseDirectory: string): string;
 function CreateAbsolutePath(const SearchPath, BaseDirectory: string): string;
 function SwitchPathDelims(const Filename: string; Switch: boolean): string;
+function ChompEndNumber(const s: string): string;
 
 // file stats
 procedure InvalidateFileStateCache;
@@ -729,6 +730,17 @@ begin
   Result:=Filename;
   if Switch then
     DoDirSeparators(Result);
+end;
+
+function ChompEndNumber(const s: string): string;
+var
+  NewLen: Integer;
+begin
+  Result:=s;
+  NewLen:=length(Result);
+  while (NewLen>0) and (Result[NewLen] in ['0'..'9']) do
+    dec(NewLen);
+  Result:=copy(Result,1,NewLen);
 end;
 
 function FindFirstFileWithExt(const Directory, Ext: string): string;

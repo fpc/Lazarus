@@ -1706,6 +1706,10 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+#: lazarusidestrconsts:lisa2pcreatenewfile
+msgid "Create new file"
+msgstr ""
+
 #: lazarusidestrconsts:dlgenvlanguage
 msgid "Language"
 msgstr ""
@@ -7040,6 +7044,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisa2paddunit
 msgid "Add Unit"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pnewfile
+msgid "New File"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pnewcomponent

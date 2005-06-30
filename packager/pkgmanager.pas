@@ -209,6 +209,9 @@ type
     function GetSourceFilesOfOwners(OwnerList: TList): TStrings; override;
     function DoOpenPkgFile(PkgFile: TPkgFile): TModalResult;
     function FindVirtualUnitSource(PkgFile: TPkgFile): string;
+    function SearchFile(const ShortFilename: string;
+                        SearchFlags: TSearchIDEFileFlags;
+                        InObject: TObject): TPkgFile; override;
 
     // package graph
     function AddPackageToGraph(APackage: TLazPackage; Replace: boolean): TModalResult;
@@ -3316,6 +3319,24 @@ begin
     Result:=MainIDE.FindSourceFile(PkgFile.GetShortFilename(false),
                                      PkgFile.LazPackage.Directory,[]);
   end;
+end;
+
+function TPkgManager.SearchFile(const ShortFilename: string;
+  SearchFlags: TSearchIDEFileFlags; InObject: TObject): TPkgFile;
+var
+  i: Integer;
+begin
+  if InObject is TLazPackage then begin
+    Result:=TLazPackage(InObject).SearchFile(ShortFilename,SearchFlags);
+    if Result<>nil then exit;
+  end;
+  if siffDoNotCheckAllPackages in SearchFlags then begin
+    for i:=0 to PackageGraph.Count-1 do begin
+      Result:=PackageGraph[i].SearchFile(ShortFilename,SearchFlags);
+      if Result<>nil then exit;
+    end;
+  end;
+  Result:=nil;
 end;
 
 function TPkgManager.DoAddActiveUnitToAPackage: TModalResult;

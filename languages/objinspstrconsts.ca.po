@@ -106,6 +106,10 @@ msgstr "Cerca el con&tingut"
 msgid "&Undo"
 msgstr "De&sfés"
 
+#: objinspstrconsts:clbup
+msgid "&Up"
+msgstr ""
+
 #: objinspstrconsts:cactionlisteditorallcategory
 msgid "(All)"
 msgstr "(Tot)"
@@ -125,6 +129,10 @@ msgstr "Editor de la llista d'accions"
 #: objinspstrconsts:sccsilbtnadd
 msgid "Add ..."
 msgstr "Afegeix ..."
+
+#: objinspstrconsts:clbadd
+msgid "Add new Item"
+msgstr ""
 
 #: objinspstrconsts:oisall
 msgid "All"
@@ -169,6 +177,14 @@ msgstr "Categoria"
 #: objinspstrconsts:oischar
 msgid "Char"
 msgstr "Caràcter"
+
+#: objinspstrconsts:clbcheckgroupeditor
+msgid "CheckGroup Editor"
+msgstr ""
+
+#: objinspstrconsts:clbchecklistboxeditor
+msgid "CheckListBox Editor"
+msgstr ""
 
 #: objinspstrconsts:oisclass
 msgid "Class"
@@ -250,9 +266,17 @@ msgstr "Elimina l'acció"
 msgid "Delete item %s%s%s?"
 msgstr "Voleu eliminar l'element %s%s%s?"
 
+#: objinspstrconsts:clbdelete
+msgid "Delete the Item %d \"%s\"?"
+msgstr ""
+
 #: objinspstrconsts:cactionlisteditordialogcategory
 msgid "Dialog"
 msgstr "Diàleg"
+
+#: objinspstrconsts:clbdown
+msgid "Do&wn"
+msgstr ""
 
 #: objinspstrconsts:oistdactfileexitheadline
 msgid "E&xit"
@@ -397,6 +421,10 @@ msgstr "Carrega el diàleg de l'imatge"
 #: objinspstrconsts:oismethod
 msgid "Method"
 msgstr "Mètode"
+
+#: objinspstrconsts:clbmodify
+msgid "Modify the Item"
+msgstr ""
 
 #: objinspstrconsts:cactionlisteditormovedownaction
 msgid "Move Down"
