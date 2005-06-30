@@ -3407,3 +3407,11 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/alllclunits$(PPUEXT)
 all: cleartarget alllclunits$(PPUEXT) $(TARGET_DIRS)
+cleanlaz: clean
+	$(MAKE) -C interfaces clean
+	$(MAKE) -C interfaces/carbon clean
+	$(MAKE) -C interfaces/gtk clean
+	$(MAKE) -C interfaces/gtk2 clean
+	$(MAKE) -C interfaces/gnome clean
+	$(MAKE) -C interfaces/win32 clean
+	$(MAKE) -C interfaces/qt clean

@@ -141,10 +141,20 @@ ifeq ($(OS_TARGET), win32)
         -$(DEL) lazarus.owr
 endif
 
+cleanlaz:
+        $(MAKE) -C lcl clean
+        $(MAKE) -C components clean
+        $(MAKE) -C packager clean
+        $(MAKE) -C designer clean
+        $(MAKE) -C ideintf clean
+        $(MAKE) -C tools clean
+
 clean: cleanlaz cleanide
 
 purge: cleanlaz cleanide
         $(MAKE) -C examples clean
+        $(MAKE) -C tools clean
+        $(MAKE) -C doceditor clean
         $(MAKE) -C tools clean
 
 #install: $(INSTALLTARGET) $(addsuffix _install,$(TARGET_DIRS))
