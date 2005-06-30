@@ -331,7 +331,7 @@ type
     property UseCreateFormStatements: boolean read FUseCreateFormStatements write FUseCreateFormStatements;
     property VisibleInNewDialog: boolean read FVisibleInNewDialog write FVisibleInNewDialog;
     property IsPascalUnit: boolean read FIsPascalUnit write FIsPascalUnit;
-    property AddToProject: boolean read FAddToProject write FAddToProject;
+    property AddToProject: boolean read FAddToProject write FAddToProject;// only if there is choice
   end;
   TProjectFileDescriptorClass = class of TProjectFileDescriptor;
   

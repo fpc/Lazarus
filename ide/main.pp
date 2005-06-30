@@ -493,7 +493,7 @@ type
 
     // methods for 'new unit'
     function CreateNewCodeBuffer(Descriptor: TProjectFileDescriptor;
-        NewFilename: string; var NewCodeBuffer: TCodeBuffer;
+        NewOwner: TObject; NewFilename: string; var NewCodeBuffer: TCodeBuffer;
         var NewUnitName: string): TModalResult;
     function CreateNewForm(NewUnitInfo: TUnitInfo;
         AncestorType: TPersistentClass; ResourceCode: TCodeBuffer): TModalResult;
@@ -3261,12 +3261,13 @@ end;
 //==============================================================================
 
 function TMainIDE.CreateNewCodeBuffer(Descriptor: TProjectFileDescriptor;
-  NewFilename: string;
+  NewOwner: TObject; NewFilename: string;
   var NewCodeBuffer: TCodeBuffer; var NewUnitName: string): TModalResult;
 begin
   //debugln('TMainIDE.CreateNewCodeBuffer START NewFilename=',NewFilename,' ',Descriptor.DefaultFilename,' ',Descriptor.ClassName);
   NewUnitName:='';
   if NewFilename='' then begin
+  
     if Descriptor.IsPascalUnit then begin
       NewUnitName:=Project1.NewUniqueUnitName(Descriptor.DefaultSourceName);
       NewFilename:=lowercase(NewUnitName)+Descriptor.DefaultFileExt;
@@ -11735,6 +11736,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.879  2005/06/30 10:46:13  mattias
+  added new file page to add to package dialog
+
   Revision 1.878  2005/06/25 17:10:41  mattias
   extended IDE frontend for two IDE shortcuts with two key sequences
 

@@ -89,6 +89,7 @@ type
   TNewIDEItemTemplate = class(TPersistent)
   private
     fCategory: TNewIDEItemCategory;
+    FVisibleInNewDialog: boolean;
   protected
     FAllowedFlags: TNewIDEItemFlags;
     FDefaultFlag: TNewIDEItemFlag;
@@ -105,6 +106,7 @@ type
     property AllowedFlags: TNewIDEItemFlags read FAllowedFlags;
     property Name: string read FName;
     property Category: TNewIDEItemCategory read fCategory write fCategory; // main category
+    property VisibleInNewDialog: boolean read FVisibleInNewDialog write FVisibleInNewDialog;
   end;
   TNewIDEItemTemplateClass = class of TNewIDEItemTemplate;
   
@@ -147,6 +149,7 @@ begin
   FName:=AName;
   FDefaultFlag:=ADefaultFlag;
   FAllowedFlags:=TheAllowedFlags;
+  FVisibleInNewDialog:=true;
   Include(FAllowedFlags,FDefaultFlag);
 end;
 
