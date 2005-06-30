@@ -1348,7 +1348,6 @@ type
     FClientHeight: Integer;
     FDockManager: TDockManager;
     FDockSite: Boolean;
-    FWinControlFlags: TWinControlFlags;
     FOnDockDrop: TDockDropEvent;
     FOnDockOver: TDockOverEvent;
     FOnGetSiteInfo: TGetSiteInfoEvent;
@@ -1393,6 +1392,7 @@ type
     procedure UpdateTabOrder(NewTabOrder: TTabOrder);
     function  WantsKeyBeforeInterface(Key: word; Shift: TShiftState): boolean;
   protected
+    FWinControlFlags: TWinControlFlags;
     procedure AssignTo(Dest: TPersistent); override;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     function GetActionLinkClass: TControlActionLinkClass; override;
@@ -2914,6 +2914,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.303  2005/06/30 19:39:03  mattias
+  added AutoSizeDelayed check for controls without form parents
+
   Revision 1.302  2005/06/25 15:34:03  mattias
   fixed a few fpc over warnings  from Andrew Haines
 

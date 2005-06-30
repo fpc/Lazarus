@@ -15,9 +15,9 @@
  *****************************************************************************
 }
 
-{------------------------------------------------------------------------------}
-{       TCustomBitBtn Constructor                                                    }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TCustomBitBtn Constructor
+------------------------------------------------------------------------------}
 constructor TCustomBitBtn.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -29,13 +29,13 @@ begin
   FButtonGlyph := TButtonGlyph.Create;
   FButtonGlyph.OnChange := @GlyphChanged;
   Align := alNone;
-  SetInitialBounds(0,0,75,35);
+  SetInitialBounds(0,0,75,30);
   RealizeKind;
 end;
 
-{------------------------------------------------------------------------------}
-{       TCustomBitBtn destructor                                                     }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TCustomBitBtn destructor
+------------------------------------------------------------------------------}
 destructor TCustomBitBtn.Destroy;
 Begin
   FreeThenNil(FButtonGlyph);

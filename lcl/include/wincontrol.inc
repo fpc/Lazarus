@@ -55,7 +55,9 @@ end;
 ------------------------------------------------------------------------------}
 function TWinControl.AutoSizeDelayed: boolean;
 begin
-  Result:=(not HandleAllocated)
+  Result:=// no handle means not visible
+          (not HandleAllocated)
+          // during handle creation no autosize
           or (wcfCreatingChildHandles in FWinControlFlags)
           or (inherited AutoSizeDelayed);
   //if Result then debugln('TWinControl.AutoSizeDelayed A ',DbgSName(Self),' wcfCreatingChildHandles=',dbgs(wcfCreatingChildHandles in FWinControlFlags),' csLoading=',dbgs(csLoading in ComponentState));
@@ -4543,6 +4545,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.332  2005/06/30 19:39:04  mattias
+  added AutoSizeDelayed check for controls without form parents
+
   Revision 1.331  2005/06/29 22:52:39  mattias
   started add new unit page for package editor
 

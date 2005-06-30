@@ -1918,7 +1918,14 @@ end;
 ------------------------------------------------------------------------------}
 function TControl.AutoSizeDelayed: boolean;
 begin
-  Result:=(csLoading in ComponentState)
+  Result:=// no autosize during loading or destruction
+          ([csLoading,csDestroying]*ComponentState<>[])
+          // no autosize for invisible controls
+          or (not Visible)
+          // if there is no parent, then this control is not visible
+          //  (TCustomForm will override this)
+          or (Parent=nil)
+          // if there is a parent, ask it
           or ((Parent<>nil) and Parent.AutoSizeDelayed);
 end;
 
@@ -3541,6 +3548,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.262  2005/06/30 19:39:04  mattias
+  added AutoSizeDelayed check for controls without form parents
+
   Revision 1.261  2005/06/25 15:30:33  mattias
   fixed changing BorderSpacing at designtime and borderspacing Align=alTop,alLeft
 

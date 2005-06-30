@@ -1416,6 +1416,20 @@ begin
   //DebugLn('TCustomForm.ShowOnTop ',Name,':',ClassName,' ',Visible,' ',HandleAllocated,' ',csDesigning in ComponentState);
 end;
 
+function TCustomForm.AutoSizeDelayed: boolean;
+begin
+  Result:=// no autosize during loading or destruction
+          ([csLoading,csDestroying]*ComponentState<>[])
+          // no handle means not visible
+          or (not HandleAllocated)
+          // during handle creation no autosize
+          or (wcfCreatingChildHandles in FWinControlFlags)
+          // no autosize for invisible forms
+          or (not Visible)
+          // if there is a parent, ask it
+          or ((Parent<>nil) and Parent.AutoSizeDelayed);
+end;
+
 {------------------------------------------------------------------------------
        TCustomForm Method IsForm
 ------------------------------------------------------------------------------}
@@ -1934,6 +1948,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.187  2005/06/30 19:39:04  mattias
+  added AutoSizeDelayed check for controls without form parents
+
   Revision 1.186  2005/06/02 20:31:19  micha
   fix lm_showwindow handling to not fire onshow event in case of restore and unzoom (fixes bug 928)
 
