@@ -17,6 +17,7 @@ exampledirs=examples
 
 [compiler]
 options=-gl
+unittargetdir=.
 unitdir=lcl/units/$(CPU_TARGET)/$(OS_TARGET) \
         lcl/units/$(CPU_TARGET)/$(OS_TARGET)/$(LCL_PLATFORM) \
         components/units/$(CPU_TARGET)/$(OS_TARGET) \

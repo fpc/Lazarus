@@ -898,10 +898,85 @@ begin
 end;
 
 procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
+
+  procedure AddUnit(AddParams: TAddToPkgResult);
+  var
+    NewLFMFilename: String;
+    NewLRSFilename: String;
+  begin
+    NewLFMFilename:='';
+    NewLRSFilename:='';
+    // add lfm file
+    if AddParams.AutoAddLFMFile then begin
+      NewLFMFilename:=ChangeFileExt(AddParams.UnitFilename,'.lfm');
+      if FileExists(NewLFMFilename)
+      and (LazPackage.FindPkgFile(NewLFMFilename,false,true)=nil) then
+        LazPackage.AddFile(NewLFMFilename,'',pftLFM,[],cpNormal)
+      else
+        NewLFMFilename:='';
+    end;
+    // add lrs file
+    if AddParams.AutoAddLRSFile then begin
+      NewLRSFilename:=ChangeFileExt(AddParams.UnitFilename,'.lrs');
+      if FileExists(NewLRSFilename)
+      and (LazPackage.FindPkgFile(NewLRSFilename,false,true)=nil) then
+        LazPackage.AddFile(NewLRSFilename,'',pftLRS,[],cpNormal)
+      else
+        NewLRSFilename:='';
+    end;
+    ExtendUnitIncPathForNewUnit(AddParams.UnitFilename,NewLRSFilename);
+    // add unit file
+    with AddParams do
+      LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
+    PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
+    UpdateAll;
+  end;
+  
+  procedure AddVirtualUnit(AddParams: TAddToPkgResult);
+  begin
+    with AddParams do
+      LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
+    PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
+    UpdateAll;
+  end;
+  
+  procedure AddNewComponent(AddParams: TAddToPkgResult);
+  begin
+    ExtendUnitIncPathForNewUnit(AddParams.UnitFilename,'');
+    // add file
+    with AddParams do
+      LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
+    // add dependency
+    if AddParams.Dependency<>nil then begin
+      PackageGraph.AddDependencyToPackage(LazPackage,AddParams.Dependency);
+    end;
+    // open file in editor
+    PackageEditors.CreateNewFile(Self,AddParams);
+    UpdateAll;
+  end;
+  
+  procedure AddRequiredPkg(AddParams: TAddToPkgResult);
+  begin
+    // add dependency
+    PackageGraph.AddDependencyToPackage(LazPackage,AddParams.Dependency);
+  end;
+  
+  procedure AddFile(AddParams: TAddToPkgResult);
+  begin
+    // add file
+    with AddParams do
+      LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
+    UpdateAll;
+  end;
+  
+  procedure AddNewFile(AddParams: TAddToPkgResult);
+  begin
+    // create new file
+    // TODO
+  end;
+
 var
   AddParams: TAddToPkgResult;
-  NewLFMFilename: String;
-  NewLRSFilename: String;
   OldParams: TAddToPkgResult;
 begin
   if LazPackage.ReadOnly then begin
@@ -920,72 +995,22 @@ begin
     case AddParams.AddType of
 
     d2ptUnit:
-      begin
-        NewLFMFilename:='';
-        NewLRSFilename:='';
-        // add lfm file
-        if AddParams.AutoAddLFMFile then begin
-          NewLFMFilename:=ChangeFileExt(AddParams.UnitFilename,'.lfm');
-          if FileExists(NewLFMFilename)
-          and (LazPackage.FindPkgFile(NewLFMFilename,false,true)=nil) then
-            LazPackage.AddFile(NewLFMFilename,'',pftLFM,[],cpNormal)
-          else
-            NewLFMFilename:='';
-        end;
-        // add lrs file
-        if AddParams.AutoAddLRSFile then begin
-          NewLRSFilename:=ChangeFileExt(AddParams.UnitFilename,'.lrs');
-          if FileExists(NewLRSFilename)
-          and (LazPackage.FindPkgFile(NewLRSFilename,false,true)=nil) then
-            LazPackage.AddFile(NewLRSFilename,'',pftLRS,[],cpNormal)
-          else
-            NewLRSFilename:='';
-        end;
-        ExtendUnitIncPathForNewUnit(AddParams.UnitFilename,NewLRSFilename);
-        // add unit file
-        with AddParams do
-          LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
-        PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
-        UpdateAll;
-      end;
+      AddUnit(AddParams);
 
     d2ptVirtualUnit:
-      begin
-        // add virtual unit file
-        with AddParams do
-          LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
-        PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
-        UpdateAll;
-      end;
+      AddVirtualUnit(AddParams);
 
     d2ptNewComponent:
-      begin
-        ExtendUnitIncPathForNewUnit(AddParams.UnitFilename,'');
-        // add file
-        with AddParams do
-          LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
-        // add dependency
-        if AddParams.Dependency<>nil then begin
-          PackageGraph.AddDependencyToPackage(LazPackage,AddParams.Dependency);
-        end;
-        // open file in editor
-        PackageEditors.CreateNewFile(Self,AddParams);
-        UpdateAll;
-      end;
+      AddNewComponent(AddParams);
 
     d2ptRequiredPkg:
-      begin
-        // add dependency
-        PackageGraph.AddDependencyToPackage(LazPackage,AddParams.Dependency);
-      end;
+      AddRequiredPkg(AddParams);
 
     d2ptFile:
-      begin
-        // add file
-        with AddParams do
-          LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
-        UpdateAll;
-      end;
+      AddFile(AddParams);
+      
+    d2ptNewFile:
+      AddNewFile(AddParams);
 
     end;
     OldParams:=AddParams;

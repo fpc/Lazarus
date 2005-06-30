@@ -1052,6 +1052,105 @@ endif
 ifeq ($(FULL_TARGET),arm-linux)
 override COMPILER_TARGETDIR+=.
 endif
+ifeq ($(FULL_TARGET),i386-linux)
+override COMPILER_UNITTARGETDIR+=.
+endif
+ifeq ($(FULL_TARGET),i386-go32v2)
+override COMPILER_UNITTARGETDIR+=.
+endif
+ifeq ($(FULL_TARGET),i386-win32)
+override COMPILER_UNITTARGETDIR+=.
+endif
+ifeq ($(FULL_TARGET),i386-os2)
+override COMPILER_UNITTARGETDIR+=.
+endif
+ifeq ($(FULL_TARGET),i386-freebsd)
+override COMPILER_UNITTARGETDIR+=.
+endif
+ifeq ($(FULL_TARGET),i386-beos)
+override COMPILER_UNITTARGETDIR+=.
+endif
+ifeq ($(FULL_TARGET),i386-netbsd)
+override COMPILER_UNITTARGETDIR+=.
+endif
+ifeq ($(FULL_TARGET),i386-solaris)
+override COMPILER_UNITTARGETDIR+=.
+endif
+ifeq ($(FULL_TARGET),i386-qnx)
+override COMPILER_UNITTARGETDIR+=.
+endif
+ifeq ($(FULL_TARGET),i386-netware)
+override COMPILER_UNITTARGETDIR+=.
+endif
+ifeq ($(FULL_TARGET),i386-openbsd)
+override COMPILER_UNITTARGETDIR+=.
+endif
+ifeq ($(FULL_TARGET),i386-wdosx)
+override COMPILER_UNITTARGETDIR+=.
+endif
+ifeq ($(FULL_TARGET),i386-emx)
+override COMPILER_UNITTARGETDIR+=.
+endif
+ifeq ($(FULL_TARGET),i386-watcom)
+override COMPILER_UNITTARGETDIR+=.
+endif
+ifeq ($(FULL_TARGET),i386-netwlibc)
+override COMPILER_UNITTARGETDIR+=.
+endif
+ifeq ($(FULL_TARGET),m68k-linux)
+override COMPILER_UNITTARGETDIR+=.
+endif
+ifeq ($(FULL_TARGET),m68k-freebsd)
+override COMPILER_UNITTARGETDIR+=.
+endif
+ifeq ($(FULL_TARGET),m68k-netbsd)
+override COMPILER_UNITTARGETDIR+=.
+endif
+ifeq ($(FULL_TARGET),m68k-amiga)
+override COMPILER_UNITTARGETDIR+=.
+endif
+ifeq ($(FULL_TARGET),m68k-atari)
+override COMPILER_UNITTARGETDIR+=.
+endif
+ifeq ($(FULL_TARGET),m68k-openbsd)
+override COMPILER_UNITTARGETDIR+=.
+endif
+ifeq ($(FULL_TARGET),m68k-palmos)
+override COMPILER_UNITTARGETDIR+=.
+endif
+ifeq ($(FULL_TARGET),powerpc-linux)
+override COMPILER_UNITTARGETDIR+=.
+endif
+ifeq ($(FULL_TARGET),powerpc-netbsd)
+override COMPILER_UNITTARGETDIR+=.
+endif
+ifeq ($(FULL_TARGET),powerpc-macos)
+override COMPILER_UNITTARGETDIR+=.
+endif
+ifeq ($(FULL_TARGET),powerpc-darwin)
+override COMPILER_UNITTARGETDIR+=.
+endif
+ifeq ($(FULL_TARGET),powerpc-morphos)
+override COMPILER_UNITTARGETDIR+=.
+endif
+ifeq ($(FULL_TARGET),sparc-linux)
+override COMPILER_UNITTARGETDIR+=.
+endif
+ifeq ($(FULL_TARGET),sparc-netbsd)
+override COMPILER_UNITTARGETDIR+=.
+endif
+ifeq ($(FULL_TARGET),sparc-solaris)
+override COMPILER_UNITTARGETDIR+=.
+endif
+ifeq ($(FULL_TARGET),x86_64-linux)
+override COMPILER_UNITTARGETDIR+=.
+endif
+ifeq ($(FULL_TARGET),x86_64-freebsd)
+override COMPILER_UNITTARGETDIR+=.
+endif
+ifeq ($(FULL_TARGET),arm-linux)
+override COMPILER_UNITTARGETDIR+=.
+endif
 ifdef REQUIRE_UNITSDIR
 override UNITSDIR+=$(REQUIRE_UNITSDIR)
 endif
@@ -3783,8 +3882,10 @@ cleanlaz:
 	$(MAKE) -C packager clean
 	$(MAKE) -C designer clean
 	$(MAKE) -C ideintf clean
+	$(MAKE) -C tools clean
 clean: cleanlaz cleanide
 purge: cleanlaz cleanide
 	$(MAKE) -C examples clean
 	$(MAKE) -C tools clean
 	$(MAKE) -C doceditor clean
+	$(MAKE) -C tools clean
