@@ -972,15 +972,15 @@ msgstr ""
 
 #: lazarusidestrconsts:lischooseoneoftheseitemstocreateanewfile
 msgid "Choose one of these items to create a new File"
-msgstr ""
+msgstr "Valitse jokin alla olevista kohteista saadaksesi aikaan uuden tiedoston"
 
 #: lazarusidestrconsts:lischooseoneoftheseitemstocreateanewpackage
 msgid "Choose one of these items to create a new Package"
-msgstr ""
+msgstr "Valitse jokin alla olevista kohteista saadaksesi aikaan uuden komponenttipaketin"
 
 #: lazarusidestrconsts:lischooseoneoftheseitemstocreateanewproject
 msgid "Choose one of these items to create a new Project"
-msgstr ""
+msgstr "Valitse jokin alla olevista kohteista saadaksesi aikaan uuden ohjelmointiprojektin"
 
 #: lazarusidestrconsts:lischooseprogramsourcepppaslpr
 msgid "Choose program source (*.pp,*.pas,*.lpr)"
@@ -3956,11 +3956,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lispckeditmovedependencydown
 msgid "Move dependency down"
-msgstr ""
+msgstr "Siirrä riippuvuutta alaspäin"
 
 #: lazarusidestrconsts:lispckeditmovedependencyup
 msgid "Move dependency up"
-msgstr ""
+msgstr "Siirrä riippuvuutta ylöspäin"
 
 #: lazarusidestrconsts:srkmecmoveeditorleft
 msgid "Move editor left"
@@ -6384,7 +6384,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthefollowingpackagefailedtoload
 msgid "The following package failed to load:"
-msgstr ""
+msgstr "Seuraavan komponenttipaketin lataaminen epäonnistui:"
 
 #: lazarusidestrconsts:lispkgmangthefollowingpackagesfailedtoload
 msgid "The following packages failed to load:"
