@@ -225,7 +225,9 @@ begin
     NewParentNode:=ItemsTreeView.Items.AddObject(nil,Category.Name,Category);
     for TemplateID:=0 to Category.Count-1 do begin
       Template:=Category[TemplateID];
-      ItemsTreeView.Items.AddChildObject(NewParentNode,Template.Name,Template);
+      if Template.VisibleInNewDialog then
+        ItemsTreeView.Items.AddChildObject(NewParentNode,Template.Name,
+                                           Template);
     end;
     NewParentNode.Expand(true);
   end;
