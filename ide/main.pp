@@ -2773,6 +2773,7 @@ begin
 
   end;
 end;
+
 {$IFDEF TRANSLATESTRING}
 procedure TMainIDE.mnuProjectCreatePoFilesClicked(Sender: TObject);
 var
@@ -11808,6 +11809,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.882  2005/07/01 11:19:24  mattias
+  converting lfm to bin stream: added END check for Delphi bug: it writes empty values
+
   Revision 1.881  2005/06/30 18:15:54  mattias
   implemented adding a new file from registered file types to package
 

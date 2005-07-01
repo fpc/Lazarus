@@ -1656,6 +1656,12 @@ var
   procedure ProcessProperty; forward;
 
   procedure ProcessValue;
+  
+    procedure RaiseValueExpected;
+    begin
+      parser.Error('Value expected, but '+parser.TokenString+' found');
+    end;
+  
   var
     flt: Extended;
     {$IFDEF HASWIDESTRING}
@@ -1667,6 +1673,9 @@ var
     BinDataSize: LongInt;
     i: Integer;
   begin
+    if parser.TokenSymbolIs('END') then exit;
+    if parser.TokenSymbolIs('OBJECT') then
+      RaiseValueExpected;
     case parser.Token of
       toInteger:
         begin
