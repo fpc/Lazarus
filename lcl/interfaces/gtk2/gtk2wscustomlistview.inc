@@ -642,7 +642,7 @@ end;
 
 function TGtk2WSCustomListView.ItemGetState(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
-  var AIsSet: Boolean): Boolean;
+  out AIsSet: Boolean): Boolean;
 var
   Widgets: PTVWidgets;
   Iter: TGtkTreeIter;

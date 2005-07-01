@@ -174,9 +174,10 @@ end;
 
 function TTreeNode.DefaultTreeViewSort(Node1, Node2: TTreeNode): Integer;
 begin
-  if (Node1.TreeView<>nil) and  Assigned(Node1.TreeView.OnCompare) then
-    Node1.TreeView.OnCompare(Node1.TreeView,Node1, Node2, Result)
-  else
+  if (Node1.TreeView<>nil) and  Assigned(Node1.TreeView.OnCompare) then begin
+    Result:=0;
+    Node1.TreeView.OnCompare(Node1.TreeView,Node1, Node2, Result);
+  end else
     Result := AnsiCompareStr(Node1.Text,Node2.Text);
 end;
 

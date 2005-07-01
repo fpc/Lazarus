@@ -92,7 +92,7 @@ type
               
     // Item          
     class procedure ItemDelete(const ALV: TCustomListView; const AIndex: Integer); virtual;
-    class function  ItemGetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; var AIsSet: Boolean): Boolean; virtual; // returns True if supported
+    class function  ItemGetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; out AIsSet: Boolean): Boolean; virtual; // returns True if supported
     class procedure ItemInsert(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem); virtual;
     class procedure ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex, AImageIndex: Integer); virtual;
     class procedure ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean); virtual;
@@ -205,82 +205,107 @@ end;
     
 { TWSCustomListView }
 
-procedure TWSCustomListView.ColumnDelete(const ALV: TCustomListView; const AIndex: Integer); 
+procedure TWSCustomListView.ColumnDelete(const ALV: TCustomListView;
+  const AIndex: Integer);
 begin
 end;
 
-function TWSCustomListView.ColumnGetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn): Integer; 
+function TWSCustomListView.ColumnGetWidth(const ALV: TCustomListView;
+  const AIndex: Integer; const AColumn: TListColumn): Integer;
 begin
   Result := -1;
 end;
 
-procedure TWSCustomListView.ColumnInsert(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn); 
+procedure TWSCustomListView.ColumnInsert(const ALV: TCustomListView;
+  const AIndex: Integer; const AColumn: TListColumn);
 begin
 end;
 
-procedure TWSCustomListView.ColumnMove(const ALV: TCustomListView; const AOldIndex, ANewIndex: Integer; const AColumn: TListColumn); 
+procedure TWSCustomListView.ColumnMove(const ALV: TCustomListView;
+  const AOldIndex, ANewIndex: Integer; const AColumn: TListColumn);
 begin
 end;
 
-procedure TWSCustomListView.ColumnSetAlignment(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AAlignment: TAlignment); 
+procedure TWSCustomListView.ColumnSetAlignment(const ALV: TCustomListView;
+  const AIndex: Integer; const AColumn: TListColumn;
+  const AAlignment: TAlignment);
 begin
 end;
 
-procedure TWSCustomListView.ColumnSetAutoSize(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AAutoSize: Boolean); 
+procedure TWSCustomListView.ColumnSetAutoSize(const ALV: TCustomListView;
+  const AIndex: Integer; const AColumn: TListColumn; const AAutoSize: Boolean);
 begin
 end;
 
-procedure TWSCustomListView.ColumnSetCaption(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const ACaption: String); 
+procedure TWSCustomListView.ColumnSetCaption(const ALV: TCustomListView;
+  const AIndex: Integer; const AColumn: TListColumn; const ACaption: String);
 begin
 end;
 
-procedure TWSCustomListView.ColumnSetImage(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AImageIndex: Integer);
+procedure TWSCustomListView.ColumnSetImage(const ALV: TCustomListView;
+  const AIndex: Integer; const AColumn: TListColumn; const AImageIndex: Integer);
 begin
 end;
 
-procedure TWSCustomListView.ColumnSetMaxWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AMaxWidth: Integer);
+procedure TWSCustomListView.ColumnSetMaxWidth(const ALV: TCustomListView;
+  const AIndex: Integer; const AColumn: TListColumn; const AMaxWidth: Integer);
 begin
 end;
 
-procedure TWSCustomListView.ColumnSetMinWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AMinWidth: integer);
+procedure TWSCustomListView.ColumnSetMinWidth(const ALV: TCustomListView;
+  const AIndex: Integer; const AColumn: TListColumn; const AMinWidth: integer);
 begin
 end;
 
-procedure TWSCustomListView.ColumnSetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AWidth: Integer);
+procedure TWSCustomListView.ColumnSetWidth(const ALV: TCustomListView;
+  const AIndex: Integer; const AColumn: TListColumn; const AWidth: Integer);
 begin
 end;
 
-procedure TWSCustomListView.ColumnSetVisible(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AVisible: Boolean);
+procedure TWSCustomListView.ColumnSetVisible(const ALV: TCustomListView;
+  const AIndex: Integer; const AColumn: TListColumn; const AVisible: Boolean);
 begin
 end;
 
-procedure TWSCustomListView.ItemDelete(const ALV: TCustomListView; const AIndex: Integer); 
+procedure TWSCustomListView.ItemDelete(const ALV: TCustomListView;
+  const AIndex: Integer);
 begin
 end;
 
-function TWSCustomListView.ItemGetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; var AIsSet: Boolean): Boolean; 
+function TWSCustomListView.ItemGetState(const ALV: TCustomListView;
+  const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
+  out AIsSet: Boolean): Boolean;
 begin
   // returns True if supported
   Result := False;
+  AIsSet:=false;
 end;
 
-procedure TWSCustomListView.ItemInsert(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem); 
+procedure TWSCustomListView.ItemInsert(const ALV: TCustomListView;
+  const AIndex: Integer; const AItem: TListItem);
 begin
 end;
 
-procedure TWSCustomListView.ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex, AImageIndex: Integer); 
+procedure TWSCustomListView.ItemSetImage(const ALV: TCustomListView;
+  const AIndex: Integer; const AItem: TListItem;
+  const ASubIndex, AImageIndex: Integer);
 begin
 end;
 
-procedure TWSCustomListView.ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean); 
+procedure TWSCustomListView.ItemSetState(const ALV: TCustomListView;
+  const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
+  const AIsSet: Boolean);
 begin
 end;
 
-procedure TWSCustomListView.ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer; const AText: String); 
+procedure TWSCustomListView.ItemSetText(const ALV: TCustomListView;
+  const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer;
+  const AText: String);
 begin
 end;
 
-procedure TWSCustomListView.ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean);
+procedure TWSCustomListView.ItemShow(const ALV: TCustomListView;
+  const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean);
 begin
 end;
 

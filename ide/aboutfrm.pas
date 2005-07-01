@@ -108,6 +108,8 @@ begin
   Caption:=lisAboutLazarus;
   Label1.Caption := lisVersion+' #: '+lisLazarusVersionString;
   Label2.Caption := lisDate+': '+GetLocalizedBuildDate;
+  AboutPage.Caption:=lisMenuTemplateAbout;
+  ContributorsPage.Caption:=lisContributors;
   Constraints.MinWidth:= 600;
   Constraints.MinHeight:= 300;
 

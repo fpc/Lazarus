@@ -1762,6 +1762,7 @@ lcl/lclproc.pas svneol=native#text/pascal
 lcl/lclrescache.pas svneol=native#text/pascal
 lcl/lclstrconsts.pas svneol=native#text/pascal
 lcl/lcltype.pp svneol=native#text/pascal
+lcl/ldocktree.pas svneol=native#text/pascal
 lcl/lmessages.pp svneol=native#text/pascal
 lcl/lresources.pp svneol=native#text/pascal
 lcl/maskedit.pp svneol=native#text/pascal

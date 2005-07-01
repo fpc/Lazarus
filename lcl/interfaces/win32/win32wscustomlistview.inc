@@ -272,7 +272,9 @@ begin
   ListView_DeleteItem(ALV.Handle, AIndex);
 end;
 
-function TWin32WSCustomListView.ItemGetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; var AIsSet: Boolean): Boolean;
+function TWin32WSCustomListView.ItemGetState(const ALV: TCustomListView;
+  const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
+  out AIsSet: Boolean): Boolean;
 const
   // lisCut, lisDropTarget, lisFocused, lisSelected
   FLAGS: array[TListItemState] of Integer = (LVIS_CUT, LVIS_DROPHILITED, LVIS_FOCUSED, LVIS_SELECTED);

@@ -2592,6 +2592,7 @@ resourcestring
   lisMenuTemplateContents = 'Contents';
   lisMenuTemplateTutorial = 'Tutorial';
   lisMenuTemplateAbout = 'About';
+  lisContributors = 'Contributors';
 
   // character map
   lisCharacterMap = 'Character Map';

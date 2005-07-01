@@ -533,7 +533,8 @@ begin
     gtk_clist_set_text(ACListWidget, AIndex, n, #0);
 end;
 
-procedure TGtkWSCustomListView.ItemDelete(const ALV: TCustomListView; const AIndex: Integer);
+procedure TGtkWSCustomListView.ItemDelete(const ALV: TCustomListView;
+  const AIndex: Integer);
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -547,7 +548,9 @@ begin
   gtk_clist_remove(CListWidget, AIndex);
 end;
 
-function TGtkWSCustomListView.ItemGetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; var AIsSet: Boolean): Boolean; 
+function TGtkWSCustomListView.ItemGetState(const ALV: TCustomListView;
+  const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
+  out AIsSet: Boolean): Boolean;
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;

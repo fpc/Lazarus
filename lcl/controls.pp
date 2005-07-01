@@ -393,7 +393,8 @@ type
   TDockOrientation = (
     doNoOrient,   // zone contains a TControl and no child zones.
     doHorizontal, // zone's children are stacked top-to-bottom.
-    doVertical    // zone's children are arranged left-to-right.
+    doVertical,   // zone's children are arranged left-to-right.
+    doPages       // zone's children are pages arranged left-to-right.
     );
   TDockDropEvent = procedure(Sender: TObject; Source: TDragDockObject;
                              X, Y: Integer) of object;
@@ -436,18 +437,22 @@ type
 
 
   { TDockManager is an abstract class for managing a dock site's docked
-    controls. See TDockTree for the default dock manager }
+    controls. See TDockTree below for the more info.
+    
+    This class exists for Delphi compatibility.
+    }
   TDockManager = class
+  public
     procedure BeginUpdate; virtual; abstract;
     procedure EndUpdate; virtual; abstract;
     procedure GetControlBounds(Control: TControl;
-      var AControlBounds: TRect); virtual; abstract;
+                               out AControlBounds: TRect); virtual; abstract;
     procedure InsertControl(Control: TControl; InsertAt: TAlign;
-      DropCtl: TControl); virtual; abstract;
+                            DropCtl: TControl); virtual; abstract;
     procedure LoadFromStream(Stream: TStream); virtual; abstract;
     procedure PaintSite(DC: HDC); virtual; abstract;
     procedure PositionDockRect(Client, DropCtl: TControl; DropAlign: TAlign;
-      var DockRect: TRect); virtual; abstract;
+                               var DockRect: TRect); virtual; abstract;
     procedure RemoveControl(Control: TControl); virtual; abstract;
     procedure ResetBounds(Force: Boolean); virtual; abstract;
     procedure SaveToStream(Stream: TStream); virtual; abstract;
@@ -1027,8 +1032,8 @@ type
     Procedure DragDrop(Source: TObject; X,Y: Integer); Dynamic;
     procedure Dock(NewDockSite: TWinControl; ARect: TRect); dynamic;
     function ManualDock(NewDockSite: TWinControl;
-      DropControl: TControl {$IFNDEF VER1_0}= nil{$ENDIF};
-      ControlSide: TAlign {$IFNDEF VER1_0}= alNone{$ENDIF}): Boolean;
+      DropControl: TControl = nil;
+      ControlSide: TAlign = alNone): Boolean;
     function ManualFloat(TheScreenRect: TRect): Boolean;
     function ReplaceDockedControl(Control: TControl; NewDockSite: TWinControl;
       DropControl: TControl; ControlSide: TAlign): Boolean;
@@ -1708,51 +1713,51 @@ type
     FChildControl: TControl;
     FChildCount: integer;
     FFirstChildZone: TDockZone;
+    FHostDockSite: TWinControl;
     FTree: TDockTree;
-    FZoneLimit: integer;
     FParentZone: TDockZone;
     FOrientation: TDockOrientation;
     FNextSibling: TDockZone;
     FPrevSibling: TDockZone;
-    function GetHeight: Integer;
-    function GetLeft: Integer;
-    function GetLimitBegin: Integer;
-    function GetLimitSize: Integer;
-    function GetTop: Integer;
-    function GetVisible: Boolean;
-    function GetVisibleChildCount: Integer;
-    function GetWidth: Integer;
-    function GetZoneLimit: Integer;
-    procedure SetZoneLimit(const AValue: Integer);
-    function IsOrientationValid: boolean;
-    function GetNextVisibleZone: TDockZone;
+  protected
+    function GetHeight: Integer; virtual;
+    function GetLeft: Integer; virtual;
+    function GetLimitBegin: Integer; virtual;
+    function GetLimitSize: Integer; virtual;
+    function GetTop: Integer; virtual;
+    function GetVisible: Boolean; virtual;
+    function GetVisibleChildCount: Integer; virtual;
+    function GetWidth: Integer; virtual;
   public
-    constructor Create(TheTree: TDockTree);
-    procedure ExpandZoneLimit(NewLimit: Integer);
+    constructor Create(TheTree: TDockTree; TheChildControl: TControl);
+    //procedure ExpandZoneLimit(NewLimit: Integer); Needed?
     function FirstVisibleChild: TDockZone;
+    function GetNextVisibleZone: TDockZone;
     function NextVisible: TDockZone;
     function PrevVisible: TDockZone;
-    procedure ResetChildren;
-    procedure ResetZoneLimits;
-    procedure Update;
+    //procedure ResetChildren; Needed?
+    //procedure ResetZoneLimits; Needed?
+    //procedure Update; Needed?
     property Tree: TDockTree read FTree;
     property ChildCount: Integer read FChildCount;
     property Height: Integer read GetHeight;
     property Left: Integer read GetLeft;
-    property LimitBegin: Integer read GetLimitBegin;
-    property LimitSize: Integer read GetLimitSize;
+    property LimitBegin: Integer read GetLimitBegin; // returns Left or Top
+    property LimitSize: Integer read GetLimitSize;   // returns Width or Height
     property Top: Integer read GetTop;
     property Visible: Boolean read GetVisible;
     property VisibleChildCount: Integer read GetVisibleChildCount;
     property Width: Integer read GetWidth;
-    property ZoneLimit: Integer read GetZoneLimit write SetZoneLimit;
+    property ChildControl: TControl read FChildControl;
+    property Orientation: TDockOrientation read FOrientation;
+    property HostDockSite: TWinControl read FHostDockSite;
   end;
   TDockZoneClass = class of TDockZone;
 
 
   { TDockTree - a tree of TDockZones - Every docked window has one tree
   
-    This is an abstract class. The real implementation is in ldocktree.pas
+    This is an abstract class. The real implementation is in ldocktree.pas.
 
     Docking means here: Combining several windows to one. A window can here be
     a TCustomForm or a floating control (undocked) or a TDockForm.
@@ -1760,7 +1765,7 @@ type
     The docking source window will be resized, to fit to the docking target
     window.
 
-    Example1: Docking "A" left to "B"
+    Example1: Docking "A" (source window) left to "B" (target window)
     
        +---+    +----+
        | A | -> | B  |
@@ -1769,7 +1774,7 @@ type
       Result: A new docktree will be created. Height of "A" will be resized to
               the height of "B".
               A splitter will be inserted between "A" and "B".
-              And all three are childs of the newly created TDockForm of the
+              And all three are childs of the newly created TLazDockForm of the
               newly created TDockTree.
       
        +------------+
@@ -1783,8 +1788,16 @@ type
       If "A" or "B" were forms, their decorations (title bars and borders) are
       replaced by docked decorations.
       If "A" had a TDockTree, it is freed and its child dockzones are merged to
-      the docktree of "B".
+      the docktree of "B". Analog for docking "C" left to "A":
       
+       +------------------+
+       |+---+|+---+|+----+|
+       || C ||| A ||| B  ||
+       ||   |||   |||    ||
+       |+---+|+---+|+----+|
+       +------------------+
+       
+
       
     Example2: Docking A into B
                 +-----+
@@ -1794,7 +1807,7 @@ type
                 +-----+
 
       Result: A new docktree will be created. "A" will be resized to the size
-              of "B". Both will be put into a TDockPages control which is the
+              of "B". Both will be put into a TLazDockPages control which is the
               child of the newly created TDockTree.
               
        +-------+
@@ -1810,6 +1823,20 @@ type
     - horizontally (left to right, splitter),
     - vertically (top to bottom, splitter)
     - or upon each other (as pages, left to right).
+
+
+    InsertControl - undock control and dock it into the manager. For example
+                    dock Form1 left to a Form2:
+                    InsertControl(Form1,alLeft,Form2);
+                    To dock "into", into a TDockPage, use Align=alNone.
+    PositionDockRect - calculates where a control would be placed, if it would
+                       be docked via InsertControl.
+    RemoveControl - removes a control from the dock manager.
+
+    GetControlBounds - TODO for Delphi compatibility
+    ResetBounds - TODO for Delphi compatibility
+    SetReplacingControl - TODO for Delphi compatibility
+    PaintSite - TODO for Delphi compatibility
   }
 
   TForEachZoneProc = procedure(Zone: TDockZone) of object;
@@ -1821,43 +1848,43 @@ type
     );
   TDockTreeFlags = set of TDockTreeFlag;
 
-  { TDockTree }
+  { TDockTree - see comment above }
 
   TDockTree = class(TDockManager)
   private
-    FBorderWidth: Integer;
-    FDockSite: TWinControl;
+    FBorderWidth: Integer; // width of the border of the preview rectangle
     FDockZoneClass: TDockZoneClass;
-    FGrabberSize: Integer;
-    FGrabbersOnTop: Boolean;
+    //FGrabberSize: Integer;
+    //FGrabbersOnTop: Boolean;
     FFlags: TDockTreeFlags;
     FTopZone: TDockZone;
-    FTopXYLimit: Integer;
+    //FTopXYLimit: Integer;
     FUpdateCount: Integer;
     procedure DeleteZone(Zone: TDockZone);
   protected
     procedure AdjustDockRect(AControl: TControl; var ARect: TRect); virtual;
+    function HitTest(const MousePos: TPoint; var HTFlag: Integer): TControl; virtual;
+    procedure PaintDockFrame(ACanvas: TCanvas; AControl: TControl;
+                             const ARect: TRect); virtual;
+    procedure UpdateAll;
+  public
+    constructor Create(TheDockSite: TWinControl); virtual;
+    destructor Destroy; override;
     procedure BeginUpdate; override;
     procedure EndUpdate; override;
-    procedure GetControlBounds(AControl: TControl; var ControlBounds: TRect); override;
-    function HitTest(const MousePos: TPoint; var HTFlag: Integer): TControl; virtual;
+    procedure GetControlBounds(AControl: TControl;
+                               out ControlBounds: TRect); override;
     procedure InsertControl(AControl: TControl; InsertAt: TAlign;
                             DropControl: TControl); override;
     procedure LoadFromStream(SrcStream: TStream); override;
-    procedure PaintDockFrame(ACanvas: TCanvas; AControl: TControl;
-                             const ARect: TRect); virtual;
     procedure PositionDockRect(AClient, DropCtl: TControl; DropAlign: TAlign;
                                var DockRect: TRect); override;
     procedure RemoveControl(AControl: TControl); override;
     procedure SaveToStream(DestStream: TStream); override;
     procedure SetReplacingControl(AControl: TControl); override;
     procedure ResetBounds(Force: Boolean); override;
-    procedure UpdateAll;
-    property DockSite: TWinControl read FDockSite write FDockSite;
-  public
-    constructor Create(TheDockSite: TWinControl); virtual;
-    destructor Destroy; override;
     procedure PaintSite(DC: HDC); override;
+  public
     property DockZoneClass: TDockZoneClass read FDockZoneClass;
   end;
 
@@ -2914,6 +2941,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.304  2005/07/01 18:20:41  mattias
+  added ldocktree.pas
+
   Revision 1.303  2005/06/30 19:39:03  mattias
   added AutoSizeDelayed check for controls without form parents
 

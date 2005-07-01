@@ -28,11 +28,7 @@ end;
 
 procedure TDockTree.AdjustDockRect(AControl: TControl; var ARect: TRect);
 begin
-  // Allocate room for the caption on the left or top
-  if FDockSite.Align in [alTop, alBottom] then
-    Inc(ARect.Left,FGrabberSize)
-  else
-    Inc(ARect.Top,FGrabberSize);
+
 end;
 
 procedure TDockTree.BeginUpdate;
@@ -51,7 +47,7 @@ begin
 end;
 
 procedure TDockTree.GetControlBounds(AControl: TControl;
-  var ControlBounds: TRect);
+  out ControlBounds: TRect);
 begin
   // ToDo
 end;
@@ -117,25 +113,13 @@ begin
 end;
 
 constructor TDockTree.Create(TheDockSite: TWinControl);
-var
-  i: Integer;
 begin
   FDockZoneClass:=TDockZone;
   inherited Create;
   FBorderWidth:=4;
-  FDockSite:=TheDockSite;
-  FGrabberSize:=DefaultDockGrabberSize;
-  FGrabbersOnTop:=(FDockSite.Align <> alTop) and (FDockSite.Align <> alBottom);
-  FTopZone:=FDockZoneClass.Create(Self);
-  // insert existing controls into tree
-  BeginUpdate;
-  try
-    for i:=0 to FDockSite.ControlCount-1 do
-      InsertControl(FDockSite.Controls[i],alLeft,nil);
-    FTopZone.ResetChildren;
-  finally
-    EndUpdate;
-  end;
+  //FGrabberSize:=DefaultDockGrabberSize;
+  //FGrabbersOnTop:=(FDockSite.Align <> alTop) and (FDockSite.Align <> alBottom);
+  FTopZone:=FDockZoneClass.Create(Self,TheDockSite);
 end;
 
 destructor TDockTree.Destroy;

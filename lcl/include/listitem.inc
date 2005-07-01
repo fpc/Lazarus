@@ -452,7 +452,8 @@ begin
   AState := TListItemState(ALisOrd);
 
   if IntfUpdateAllowed 
-  and TWSCustomListViewClass(FOwner.FOwner.WidgetSetClass).ItemGetState(FOwner.FOwner, GetIndex, Self, AState, Result)
+  and TWSCustomListViewClass(FOwner.FOwner.WidgetSetClass)
+    .ItemGetState(FOwner.FOwner, GetIndex, Self, AState, Result)
   then begin
     // update FStates
     if Result 
@@ -564,6 +565,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.22  2005/07/01 18:20:41  mattias
+  added ldocktree.pas
+
   Revision 1.21  2005/02/26 17:08:41  marc
   * Reworked listviews to match new interface
 
