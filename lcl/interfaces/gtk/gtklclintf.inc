@@ -355,79 +355,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: MenuItemSetCheck
-  Params:  BaseMenuItem
-  Returns: Nothing
-  
-  Checks or unchecks the specified menu item.
- ------------------------------------------------------------------------------}
-function TGtkWidgetSet.MenuItemSetCheck(BaseMenuItem: TComponent): Boolean;
-var
-  IsRadio: Boolean;
-  Group: PGSList;
-  Item: Pointer;
-  AMenuItem: TMenuItem;
-begin
-  AMenuItem:=BaseMenuItem as TMenuItem;
-  Item := Pointer(AMenuItem.Handle);
-  IsRadio := gtk_is_radio_menu_item(Item);
-  if IsRadio or gtk_is_check_menu_item(Item)
-  then begin
-    if IsRadio
-    then begin
-      Group := gtk_radio_menu_item_group(Item);
-      LockRadioGroupOnChange(Group, +1);
-    end
-    else LockOnChange(Item, +1);
-    gtk_check_menu_item_set_active(Item, AMenuItem.Checked);
-    if IsRadio
-    then LockRadioGroupOnChange(Group, -1)
-    else LockOnChange(Item, -1);
-    Result := True;
-  end 
-  else begin
-    AMenuItem.RecreateHandle;
-    Result := True;
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Function: MenuItemSetEnable
-  Params: BaseMenuItem:
-  Returns:
-
-  Enables, disables, or grays the specified menu item.
- ------------------------------------------------------------------------------}
-function TGtkWidgetSet.MenuItemSetEnable(BaseMenuItem: TComponent): Boolean;
-var
-  AMenuItem: TMenuItem;
-begin
-  AMenuItem:=BaseMenuItem as TMenuItem;
-  gtk_widget_set_sensitive(pgtkwidget(AMenuItem.Handle),
-                           AMenuItem.Enabled and (AMenuItem.Caption<>'-'));
-  Result := True;
-end;
-
-{------------------------------------------------------------------------------
-  Function: RightJustifyMenuItem
-  Params:  HndMenu: HMenu; bRightJustify: boolean
-  Returns: true on success
-
-  Sets left or right justification of a menuitem
--------------------------------------------------------------------------------}
-function TGtkWidgetSet.RightJustifyMenuItem(BaseMenuItem: TComponent): Boolean;
-var
-  AMenuItem: TMenuItem;
-  MenuItemWidget: PGtkMenuItem;
-begin
-  AMenuItem:=BaseMenuItem as TMenuItem;
-  MenuItemWidget:=PGtkMenuItem(AMenuItem.Handle);
-  gtk_menu_item_set_right_justified(MenuItemWidget, AMenuItem.RightJustify);
-  gtk_widget_queue_resize(GTK_WIDGET(MenuItemWidget));
-  Result:=false;
-end;
-
-{------------------------------------------------------------------------------
   Procedure: ReplaceBitmapMask
   Params: Image    The HBitmap of the image
           Mask     The HBitmap of the mask (will be freed)
@@ -487,6 +414,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.39  2005/07/01 12:07:50  mattias
+  moved some menu intf methods to the TXXXWSMenuItem class  from Martin Smat
+
   Revision 1.38  2005/05/21 15:58:44  mattias
   implemented right justification for menuitems for winapi intf  from Martin Smat
 

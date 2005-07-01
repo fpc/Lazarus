@@ -4239,7 +4239,6 @@ var
   root, child: pointer;
   winx, winy: Integer;
   xmask: Cardinal;
-  TopList, List: PGList;
 
 begin
   Result := False;
@@ -9028,6 +9027,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.424  2005/07/01 12:07:50  mattias
+  moved some menu intf methods to the TXXXWSMenuItem class  from Martin Smat
+
   Revision 1.423  2005/06/25 09:46:23  mattias
   simplifies the gtk 1 and 2 Get/SetMousePos from Andrew Haines
 

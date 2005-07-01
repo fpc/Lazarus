@@ -849,7 +849,7 @@ begin
     if (FParent <> nil)
     and not (csReading in ComponentState)
     and HandleAllocated
-    then MenuItemSetCheck(Self);
+    then TWSMenuItemClass(WidgetSetClass).SetCheck(Self, AValue);
     OwnerFormDesignerModified(Self);
   end;
 end;
@@ -879,7 +879,7 @@ begin
   if FEnabled <> AValue then begin
     FEnabled := AValue;
     if HandleAllocated and (Parent <> nil)
-    then MenuItemSetEnable(Self);
+    then TWSMenuItemClass(WidgetSetClass).SetEnable(Self, AValue);
     MenuChanged(False);
   end;
 end;
@@ -967,7 +967,7 @@ begin
   if FRightJustify=AValue then exit;
   FRightJustify:=AValue;
   if HandleAllocated then
-    RightJustifyMenuItem(Self);
+    TWSMenuItemClass(WidgetSetClass).SetRightJustify(Self, AValue);
 end;
 
 {------------------------------------------------------------------------------
@@ -1212,6 +1212,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.69  2005/07/01 12:07:49  mattias
+  moved some menu intf methods to the TXXXWSMenuItem class  from Martin Smat
+
   Revision 1.68  2005/06/08 08:02:09  mattias
   added message parts to Help interface
 
@@ -1446,6 +1449,9 @@ end;
 
 
   $Log$
+  Revision 1.69  2005/07/01 12:07:49  mattias
+  moved some menu intf methods to the TXXXWSMenuItem class  from Martin Smat
+
   Revision 1.68  2005/06/08 08:02:09  mattias
   added message parts to Help interface
 

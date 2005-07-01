@@ -128,99 +128,14 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  Function: MenuItemSetCheck
-  Params:  BaseMenuItem
-  Returns: Nothing
-
-  Checks or unchecks the specified menu item.
- ------------------------------------------------------------------------------}
-Function TWin32WidgetSet.MenuItemSetCheck(BaseMenuItem: TComponent): Boolean;
-
-  function doCheckMenuItem(aMI: TMenuItem; CF: Integer): boolean;
-  begin
-    Result := Windows.CheckMenuItem(aMI.Parent.Handle, aMI.Command, CF) <> DWORD($FFFFFFFF);
-  end;
-  
-  procedure InterfaceTurnSiblingsOff(aMI: TMenuItem);
-  var
-    aParent, aSibling: TMenuItem;
-    i: integer;
-  begin
-    // Just check all siblings that are in the same group
-    // TMenuItem.TurnSiblingsOff should have modified internal flags
-    aParent := aMI.Parent;
-    if aParent <> nil then
-      for i := 0 to aParent.Count-1 do 
-      begin
-        aSibling := aParent.Items[i];
-        if (aSibling <> aMI) and aSibling.RadioItem and (aSibling.GroupIndex=aMI.GroupIndex) then
-          doCheckMenuItem(aParent[i], MF_UNCHECKED or MF_BYCOMMAND);
-      end;
-  end;
-var
-  CheckFlag: Integer;
-  AMenuItem: TMenuItem;
-Begin
-  AMenuItem:=BaseMenuItem as TMenuItem;
-  if AMenuItem.Checked then CheckFlag := MF_CHECKED
-  else CheckFlag := MF_UNCHECKED;
-  CheckFlag := CheckFlag or MF_BYCOMMAND;
-  if (CheckFlag and MF_CHECKED <> 0) and
-    (AMenuItem.GroupIndex <> 0) and AMenuItem.RadioItem
-  then
-    InterfaceTurnSiblingsOff(aMenuItem);
-  Result := doCheckMenuItem(aMenuItem, CheckFlag);
-End;
-
-{------------------------------------------------------------------------------
-  Function: MenuItemSetEnable
-  Params: BaseMenuItem:
-  Returns:
-
-  Enables, disables, or grays the specified menu item.
- ------------------------------------------------------------------------------}
-Function TWin32WidgetSet.MenuItemSetEnable(BaseMenuItem: TComponent): Boolean;
-Var
-  EnableFlag: Integer;
-  AMenuItem: TMenuItem;
-Begin
-  AMenuItem:=BaseMenuItem as TMenuItem;
-  if AMenuItem.Enabled then EnableFlag := MF_ENABLED
-  else EnableFlag := MF_GRAYED;
-  EnableFlag := EnableFlag or MF_BYCOMMAND;
-  Result := Boolean(Windows.EnableMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command, EnableFlag));
-End;
-
-{------------------------------------------------------------------------------
-  Function: RightJustifyMenuItem
-  Params: BaseMenuItem:
-  Returns:
-
-  Sets left or right justification of a menuitem
- ------------------------------------------------------------------------------}
-function TWin32WidgetSet.RightJustifyMenuItem(BaseMenuItem: TComponent): Boolean;
-var
-  AMenuItem: TMenuItem;
-  MenuInfo: MENUITEMINFO;
-begin
-  AMenuItem:=BaseMenuItem as TMenuItem;
-  MenuInfo.cbSize := sizeof(MenuInfo);
-  MenuInfo.fMask := MIIM_TYPE;
-  GetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
-  if AMenuItem.RightJustify then MenuInfo.fType := MenuInfo.fType or MFT_RIGHTJUSTIFY
-  else MenuInfo.fType := MenuInfo.fType and (not MFT_RIGHTJUSTIFY);
-  MenuInfo.dwTypeData := LPSTR(AMenuItem.Caption);
-  Result := SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
-  DrawMenuBar(TWinControl(AMenuItem.Owner).Handle);
-end;
-
-
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
 { =============================================================================
 
   $Log$
+  Revision 1.25  2005/07/01 12:07:50  mattias
+  moved some menu intf methods to the TXXXWSMenuItem class  from Martin Smat
+
   Revision 1.24  2005/05/21 15:58:44  mattias
   implemented right justification for menuitems for winapi intf  from Martin Smat
 

@@ -396,16 +396,6 @@ begin
   Result:=true;
 end;
 
-function TWidgetSet.MenuItemSetCheck(AMenuItem: TComponent): Boolean;
-begin
-  Result := False;
-end;
-
-function TWidgetSet.MenuItemSetEnable(AMenuItem: TComponent): Boolean;
-begin
-  Result := False;
-end;
-
 Function TWidgetSet.LoadStockPixmap(StockID: longint) : HBitmap;
 begin
   Case StockID of
@@ -584,11 +574,6 @@ begin
     Result := false;
 end;
 
-function TWidgetSet.RightJustifyMenuItem(AMenuItem: TComponent): Boolean;
-begin
-  Result := False;
-end;
-
 procedure TWidgetSet.SendCachedLCLMessages;
 begin
 end;
@@ -626,6 +611,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.36  2005/07/01 12:07:49  mattias
+  moved some menu intf methods to the TXXXWSMenuItem class  from Martin Smat
+
   Revision 1.35  2005/05/21 15:58:44  mattias
   implemented right justification for menuitems for winapi intf  from Martin Smat
 

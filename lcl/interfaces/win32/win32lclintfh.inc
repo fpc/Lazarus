@@ -35,15 +35,14 @@ function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState)
 function GetControlConstraints(Constraints: TObject): boolean; override;
 function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer; override;
 
-function MenuItemSetCheck(BaseMenuItem: TComponent): Boolean; override;
-function MenuItemSetEnable(BaseMenuItem: TComponent): Boolean; override;
-function RightJustifyMenuItem(BaseMenuItem: TComponent): Boolean; override;
-
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
 { =============================================================================
 
   $Log$
+  Revision 1.18  2005/07/01 12:07:50  mattias
+  moved some menu intf methods to the TXXXWSMenuItem class  from Martin Smat
+
   Revision 1.17  2005/05/21 15:58:44  mattias
   implemented right justification for menuitems for winapi intf  from Martin Smat
 

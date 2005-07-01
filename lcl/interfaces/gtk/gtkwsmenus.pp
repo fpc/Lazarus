@@ -48,6 +48,9 @@ type
     class procedure SetCaption(const AMenuItem: TMenuItem; const ACaption: string); override;
     class procedure SetShortCut(const AMenuItem: TMenuItem; const OldShortCut, NewShortCut: TShortCut); override;
     class procedure SetVisible(const AMenuItem: TMenuItem; const Visible: boolean); override;
+    class function SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean; override;
+    class function SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean; override;
+    class function SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean; override;
   end;
 
   { TGtkWSMenu }
@@ -185,6 +188,51 @@ begin
     gtk_widget_show(MenuItemWidget)
   else
     gtk_widget_hide(MenuItemWidget);
+end;
+
+function TGtkWSMenuItem.SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean;
+var
+  IsRadio: Boolean;
+  Group: PGSList;
+  Item: Pointer;
+begin
+  Item := Pointer(AMenuItem.Handle);
+  IsRadio := gtk_is_radio_menu_item(Item);
+  if IsRadio or gtk_is_check_menu_item(Item)
+  then begin
+    if IsRadio
+    then begin
+      Group := gtk_radio_menu_item_group(Item);
+      LockRadioGroupOnChange(Group, +1);
+    end
+    else LockOnChange(Item, +1);
+    gtk_check_menu_item_set_active(Item, Checked);
+    if IsRadio
+    then LockRadioGroupOnChange(Group, -1)
+    else LockOnChange(Item, -1);
+    Result := True;
+  end 
+  else begin
+    AMenuItem.RecreateHandle;
+    Result := True;
+  end;
+end;
+
+function TGtkWSMenuItem.SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean;
+begin
+  gtk_widget_set_sensitive(pgtkwidget(AMenuItem.Handle),
+                           Enabled and (AMenuItem.Caption<>'-'));
+  Result := True;
+end;
+
+function TGtkWSMenuItem.SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean;
+var
+  MenuItemWidget: PGtkMenuItem;
+begin
+  MenuItemWidget:=PGtkMenuItem(AMenuItem.Handle);
+  gtk_menu_item_set_right_justified(MenuItemWidget, Justified);
+  gtk_widget_queue_resize(GTK_WIDGET(MenuItemWidget));
+  Result:=false;
 end;
 
 { TGtkWSMenu }

@@ -294,16 +294,6 @@ begin
   Result := InterfaceObject.LoadStockPixmap(StockID);
 end;
 
-function MenuItemSetCheck(AMenuItem: TComponent): Boolean;
-begin
-  Result := InterfaceObject.MenuItemSetCheck(AMenuItem);
-end;
-
-function MenuItemSetEnable(AMenuItem: TComponent): Boolean;
-begin
-  Result := InterfaceObject.MenuItemSetEnable(AMenuItem);
-end;
-
 function MoveWindowOrgEx(dc : hdc; dX,dY : Integer): boolean;
 begin
   Result := InterfaceObject.MoveWindowOrgEx(DC, dX, dY);
@@ -402,11 +392,6 @@ end;
 function RequestInput(const InputCaption, InputPrompt : String; MaskInput : Boolean; var Value : String) : Boolean;
 begin
   Result := InterfaceObject.RequestInput(InputCaption, InputPrompt, MaskInput, Value);
-end;
-
-function RightJustifyMenuItem(AMenuItem: TComponent): boolean;
-begin
-  Result := InterfaceObject.RightJustifyMenuItem(AMenuItem);
 end;
 
 procedure SendCachedLCLMessages;
@@ -525,6 +510,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.31  2005/07/01 12:07:49  mattias
+  moved some menu intf methods to the TXXXWSMenuItem class  from Martin Smat
+
   Revision 1.30  2005/05/21 15:58:44  mattias
   implemented right justification for menuitems for winapi intf  from Martin Smat
 

@@ -58,6 +58,9 @@ type
     class procedure SetCaption(const AMenuItem: TMenuItem; const ACaption: string); virtual;
     class procedure SetShortCut(const AMenuItem: TMenuItem; const OldShortCut, NewShortCut: TShortCut); virtual;
     class procedure SetVisible(const AMenuItem: TMenuItem; const Visible: boolean); virtual;
+    class function SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean; virtual;
+    class function SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean; virtual;
+    class function SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean; virtual; 
   end;
   TWSMenuItemClass = class of TWSMenuItem;
 
@@ -110,8 +113,24 @@ end;
 procedure TWSMenuItem.SetVisible(const AMenuItem: TMenuItem;
   const Visible: boolean);
 begin
-
 end;
+
+function TWSMenuItem.SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean;
+begin
+  Result := false;
+end;
+
+function TWSMenuItem.SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean;
+begin
+  Result := false;
+end;
+
+function TWSMenuItem.SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean; 
+begin
+  Result := false;
+end;
+
+
           
 { TWSMenu }
 

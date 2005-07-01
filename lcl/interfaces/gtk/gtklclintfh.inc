@@ -44,10 +44,6 @@ function GetListBoxItemRect(ListBox: TComponent; Index: integer; var ARect: TRec
 
 function IntfSendsUTF8KeyPress: boolean; override;
 
-function MenuItemSetCheck(BaseMenuItem: TComponent): Boolean; override;
-function MenuItemSetEnable(BaseMenuItem: TComponent): Boolean; override;
-function RightJustifyMenuItem(BaseMenuItem: TComponent): Boolean; override;
-
 function ReplaceBitmapMask(var Image, Mask: HBitmap; NewMask: HBitmap): boolean; override;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
@@ -55,6 +51,9 @@ function ReplaceBitmapMask(var Image, Mask: HBitmap; NewMask: HBitmap): boolean;
 { =============================================================================
 
   $Log$
+  Revision 1.25  2005/07/01 12:07:50  mattias
+  moved some menu intf methods to the TXXXWSMenuItem class  from Martin Smat
+
   Revision 1.24  2005/05/21 15:58:44  mattias
   implemented right justification for menuitems for winapi intf  from Martin Smat
 

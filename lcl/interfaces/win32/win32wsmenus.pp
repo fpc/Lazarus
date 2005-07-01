@@ -51,6 +51,10 @@ type
     class procedure DestroyHandle(const AMenuItem: TMenuItem); override;
     class procedure SetCaption(const AMenuItem: TMenuItem; const ACaption: string); override;
     class procedure SetShortCut(const AMenuItem: TMenuItem; const OldShortCut, NewShortCut: TShortCut); override;
+    class function SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean; override;
+    class function SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean; override;
+    class function SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean; override; 
+    
   end;
 
   { TWin32WSMenu }
@@ -304,6 +308,67 @@ begin
     DebugLn('TWin32WSMenuItem.SetShortCut: unable to set shortcut, menu has no window handle');
   end;
 end;
+
+function TWin32WSMenuItem.SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean;
+
+  function doCheckMenuItem(aMI: TMenuItem; CF: Integer): boolean;
+  begin
+    Result := Windows.CheckMenuItem(aMI.Parent.Handle, aMI.Command, CF) <> DWORD($FFFFFFFF);
+  end;
+  
+  procedure InterfaceTurnSiblingsOff(aMI: TMenuItem);
+  var
+    aParent, aSibling: TMenuItem;
+    i: integer;
+  begin
+    // Just check all siblings that are in the same group
+    // TMenuItem.TurnSiblingsOff should have modified internal flags
+    aParent := aMI.Parent;
+    if aParent <> nil then
+      for i := 0 to aParent.Count-1 do 
+      begin
+        aSibling := aParent.Items[i];
+        if (aSibling <> aMI) and aSibling.RadioItem and (aSibling.GroupIndex=aMI.GroupIndex) then
+          doCheckMenuItem(aParent[i], MF_UNCHECKED or MF_BYCOMMAND);
+      end;
+  end;
+var
+  CheckFlag: Integer;
+begin
+  if Checked then CheckFlag := MF_CHECKED
+  else CheckFlag := MF_UNCHECKED;
+  CheckFlag := CheckFlag or MF_BYCOMMAND;
+  if (CheckFlag and MF_CHECKED <> 0) and
+    (AMenuItem.GroupIndex <> 0) and AMenuItem.RadioItem
+  then
+    InterfaceTurnSiblingsOff(aMenuItem);
+  Result := doCheckMenuItem(aMenuItem, CheckFlag);
+end;
+
+function TWin32WSMenuItem.SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean;
+var
+  EnableFlag: Integer;
+begin
+  if Enabled then EnableFlag := MF_ENABLED
+  else EnableFlag := MF_GRAYED;
+  EnableFlag := EnableFlag or MF_BYCOMMAND;
+  Result := Boolean(Windows.EnableMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command, EnableFlag));
+end;
+
+function TWin32WSMenuItem.SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean;
+var
+  MenuInfo: MENUITEMINFO;
+begin
+  MenuInfo.cbSize := sizeof(MenuInfo);
+  MenuInfo.fMask := MIIM_TYPE;
+  GetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
+  if Justified then MenuInfo.fType := MenuInfo.fType or MFT_RIGHTJUSTIFY
+  else MenuInfo.fType := MenuInfo.fType and (not MFT_RIGHTJUSTIFY);
+  MenuInfo.dwTypeData := LPSTR(AMenuItem.Caption);
+  Result := SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
+  DrawMenuBar(TWinControl(AMenuItem.Owner).Handle);
+end;
+
 
 { TWin32WSMenu }
 
