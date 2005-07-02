@@ -420,7 +420,7 @@ begin
   case key of //
     #33..'z': begin
         if Assigned(OnKeyPress) then
-          OnKeyPress(self, Key);
+          OnKeyPress(Self, Key);
         {$ifdef SYN_LAZARUS}
         if Key<>#0 then
         {$ENDIF}
@@ -432,6 +432,7 @@ begin
     OnCancel(Self);
   end; // case
   {$ifdef SYN_LAZARUS}
+  Key:=#0;
   Invalidate;
   {$ENDIF}
 end;

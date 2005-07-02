@@ -36,7 +36,7 @@ cat lazarus.spec | \
   sed -e "s/LAZVERSION/$LazVersion/g" \
       -e "s/LAZRELEASE/$LazRelease/" \
       -e "s/LAZSOURCE/$SrcTGZ/" \
-      -e "s/FPCBUILDVERSION/1.0.10/" \
+      -e "s/FPCBUILDVERSION/2.0.0/" \
       -e "s/FPCSRCVERSION/$FPCRPMVersion/" \
   > $SpecFile
 
