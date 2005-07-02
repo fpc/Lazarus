@@ -208,7 +208,7 @@ end;
 procedure TCustomCheckGroup.DefineProperties(Filer: TFiler);
 begin
   inherited DefineProperties(Filer);
-  Filer.DefineBinaryProperty('Data', @ReadData, @WriteData,true);
+  Filer.DefineBinaryProperty('Data', @ReadData, @WriteData,FItems.Count>0);
 end;
 
 procedure TCustomCheckGroup.ReadData(Stream: TStream);
@@ -275,6 +275,9 @@ end;
 
 {
   $Log$
+  Revision 1.12  2005/07/02 09:17:20  mattias
+  implemented streaming TCheckListBox checked states  from Salvatore
+
   Revision 1.11  2005/02/26 17:08:41  marc
   * Reworked listviews to match new interface
 

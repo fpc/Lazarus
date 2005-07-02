@@ -264,7 +264,6 @@ type
     function GetVerbCount: Integer; override;
   end;
 
-
 { TCheckListBoxComponentEditor
   The default componenteditor for TCheckListBox }
 
@@ -285,7 +284,7 @@ type
   TCheckGroupComponentEditor = class(TDefaultComponentEditor)
   protected
     procedure DoShowEditor;
-    procedure AssignCheck(dstCheck, srcCheck: TCheckGroup);//; Full: boolean);
+    procedure AssignCheck(dstCheck, srcCheck: TCheckGroup);
   public
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
@@ -1169,7 +1168,7 @@ begin
   end;
 end;
 
-procedure TCheckListBoxComponentEditor.AssignCheck(dstCheck, srcCheck: TCheckListBox);// Full: boolean);
+procedure TCheckListBoxComponentEditor.AssignCheck(dstCheck, srcCheck: TCheckListBox);
 var i: integer;
 begin
   DstCheck.Items.Clear;
@@ -1207,6 +1206,7 @@ Type
     FBtnOK,FBtnCancel:TBitBtn;
     FPanelButtons:TPanel;
     FPanelOKCancel:TPanel;
+    FPopupMenu:TPopupMenu;
     ItemIndex:integer;
   protected
     procedure AddItem(Sender:TObject);
@@ -1215,6 +1215,8 @@ Type
     procedure MoveDownItem(Sender:TObject);
     procedure ModifyItem(Sender:TObject);
     procedure ItemClick(Sender: TObject; Index: integer);
+    procedure EnableDisable(Sender:TObject);
+    procedure CreateItems(Sender:TObject);
   public
     constructor create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1306,6 +1308,10 @@ begin
     Height:=25;
   end;
 
+  FPopupMenu:=TPopupMenu.Create(Self);
+  FPopupMenu.OnPopup:=@CreateItems;
+  FCheck.PopupMenu:=FPopupMenu;
+
   //Bnt Ok
   FBtnOK:=TBitBtn.Create(self);
   with FBtnOK do begin
@@ -1336,6 +1342,7 @@ begin
   FreeThenNil(FBtnCancel);
   FreeThenNil(FPanelOKCancel);
   FreeThenNil(FPanelButtons);
+  FreeThenNil(FPopupMenu);
   inherited Destroy
 end;
 
@@ -1362,12 +1369,18 @@ var itemtmp:string;
     checkedtmp:boolean;
 begin
   if (FCheck.Items.Count<=1)or(ItemIndex<1) then exit;
+   //swap the caption and the checked states
   itemtmp:=FCheck.Items[ItemIndex-1];
   checkedtmp:=FCheck.Checked[ItemIndex-1];
   FCheck.Items[ItemIndex-1]:=FCheck.Items[ItemIndex];
   FCheck.Checked[ItemIndex-1]:=FCheck.Checked[ItemIndex];
   FCheck.Items[ItemIndex]:=itemtmp;
   FCheck.Checked[ItemIndex]:=checkedtmp;
+  //swap the states enabled
+  checkedtmp:=FCheck.CheckEnabled[ItemIndex-1];
+  FCheck.CheckEnabled[ItemIndex-1]:=FCheck.CheckEnabled[ItemIndex];
+  FCheck.CheckEnabled[ItemIndex]:=checkedtmp;
+
   ItemIndex:=ItemIndex-1
 end;
 
@@ -1376,12 +1389,18 @@ var itemtmp:string;
     checkedtmp:boolean;
 begin
   if (FCheck.Items.Count<=1)or(ItemIndex=FCheck.Items.Count-1)or(ItemIndex=-1) then exit;
+   //swap the caption and the checked states
   itemtmp:=FCheck.Items[ItemIndex+1];
   checkedtmp:=FCheck.Checked[ItemIndex+1];
   FCheck.Items[ItemIndex+1]:=FCheck.Items[ItemIndex];
   FCheck.Checked[ItemIndex+1]:=FCheck.Checked[ItemIndex];
   FCheck.Items[ItemIndex]:=itemtmp;
   FCheck.Checked[ItemIndex]:=checkedtmp;
+  //swap the states enabled
+  checkedtmp:=FCheck.CheckEnabled[ItemIndex+1];
+  FCheck.CheckEnabled[ItemIndex+1]:=FCheck.CheckEnabled[ItemIndex];
+  FCheck.CheckEnabled[ItemIndex]:=checkedtmp;
+
   ItemIndex:=ItemIndex+1
 end;
 
@@ -1396,7 +1415,26 @@ begin
   ItemIndex:=Index;
 end;
 
-{ TCheckGroupComponentEditor }
+procedure TCheckGroupEditorDlg.EnableDisable(Sender:TObject);
+var i:integer;
+begin
+  for i:=0 to FCheck.Items.Count-1 do begin
+    if (Sender=FPopupMenu.Items[i]) then
+      FCheck.CheckEnabled[i]:=not FCheck.CheckEnabled[i]
+  end;
+end;
+
+procedure TCheckGroupEditorDlg.CreateItems(Sender:TObject);
+var i:integer;
+begin
+  FPopupMenu.Items.Clear;
+  for i:=0 to FCheck.Items.Count-1 do begin
+    FPopupMenu.Items.Add(TMenuItem.Create(self));
+    FPopupMenu.Items[i].Caption:=FCheck.Items[i];
+    FPopupMenu.Items[i].Checked:=FCheck.CheckEnabled[i];
+    FPopupMenu.Items[i].OnClick:=@EnableDisable;
+  end;;
+end;
 
 procedure TCheckGroupComponentEditor.DoShowEditor;
 var Dlg : TCheckGroupEditorDlg;
@@ -1430,9 +1468,8 @@ begin
   DstCheck.Items:=srcCheck.Items;
   DstCheck.Caption:=srcCheck.Caption;
   for i:=0 to srcCheck.Items.Count-1 do begin
-    if srcCheck.Items[i]<>dstCheck.Items[i] then
-        dstCheck.Items[i]:=srcCheck.Items[i];
-    dstCheck.Checked[i]:=srcCheck.Checked[i]
+    dstCheck.Checked[i]:=srcCheck.Checked[i];
+    dstCheck.CheckEnabled[i]:=srcCheck.CheckEnabled[i]
   end;
 end;
 

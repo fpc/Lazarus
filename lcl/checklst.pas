@@ -28,8 +28,8 @@ unit CheckLst;
 interface
 
 uses
-  Classes, SysUtils, LCLType, GraphType, Graphics, LMessages, Controls,
-  StdCtrls;
+  Classes, SysUtils, LCLType, GraphType, Graphics, LMessages, LResources,
+  Controls, StdCtrls;
   
 
 type
@@ -45,6 +45,9 @@ type
     procedure AssignItemDataToCache(const AIndex: Integer; const AData: Pointer); override;
     procedure AssignCacheToItemData(const AIndex: Integer; const AData: Pointer); override;
     function  GetCachedDataSize: Integer; override;
+    procedure DefineProperties(Filer: TFiler); override;
+    procedure ReadData(Stream: TStream);
+    procedure WriteData(Stream: TStream);
   public
     constructor Create(AOwner: TComponent); override;
     property Checked[const AIndex: Integer]: Boolean read GetChecked write SetChecked;
@@ -155,11 +158,59 @@ begin
   else PCachedItemData(GetCachedData(AIndex) + FItemDataOffset)^ := AValue;
 end;
 
+procedure TCustomCheckListBox.DefineProperties(Filer: TFiler);
+begin
+  inherited DefineProperties(Filer);
+  Filer.DefineBinaryProperty('Data', @ReadData, @WriteData,Items.Count>0);
+end;
+
+procedure TCustomCheckListBox.ReadData(Stream: TStream);
+var
+  ChecksCount: integer;
+  Checks: string;
+  i: Integer;
+  v: Integer;
+begin
+  ChecksCount:=ReadLRSInteger(Stream);
+  if ChecksCount>0 then begin
+    SetLength(Checks,ChecksCount);
+    Stream.ReadBuffer(Checks[1], ChecksCount);
+    for i:=0 to ChecksCount-1 do begin
+      v:=ord(Checks[i+1]);
+      Checked[i]:=((v and 1)>0);
+    end;
+  end;
+end;
+
+
+procedure TCustomCheckListBox.WriteData(Stream: TStream);
+var
+  ChecksCount: integer;
+  Checks: string;
+  i: Integer;
+  v: Integer;
+begin
+  ChecksCount:=Items.Count;
+  WriteLRSInteger(Stream,ChecksCount);
+  if ChecksCount>0 then begin
+    SetLength(Checks,ChecksCount);
+    for i:=0 to ChecksCount-1 do begin
+      v:=0;
+      if Checked[i] then inc(v,1);
+      Checks[i+1]:=chr(v);
+    end;
+    Stream.WriteBuffer(Checks[1], ChecksCount);
+  end;
+end;
+
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.10  2005/07/02 09:17:20  mattias
+  implemented streaming TCheckListBox checked states  from Salvatore
+
   Revision 1.9  2004/12/27 19:40:59  mattias
   published BorderSpacing for many controls
 
