@@ -43,9 +43,22 @@ resourcestring
 
   oisProperties='Properties';
   oisEvents='Events';
-  oisFavourites = 'Favourites';
+  oisFavorites = 'Favorites';
+
+  //Object Inspector Popup Menu
   oisSetToDefault = 'Set to default: %s';
   oisSetToDefaultValue = 'Set to default value';
+  oisAddToFavorites = 'Add to Favorites';
+  oisRemoveFromFavorites = 'Remove from Favorites';
+  oisUndo = 'Undo';
+  oisCut = 'Cut';
+  oisCopy = 'Copy';
+  oisPaste = 'Paste';
+  oisDelete = 'Delete';
+  oisShowHints = 'Show Hints';
+  oisShowComponentTree = 'Show Component Tree';
+  oisOptions = 'Options';
+
   
   // typeinfo
   oisValue = 'Value:';

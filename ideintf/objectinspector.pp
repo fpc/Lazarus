@@ -41,7 +41,7 @@ uses
   LCLIntf, LCLProc, Controls, ComCtrls, ExtCtrls, TypInfo, Messages,
   LResources, PairSplitter, ConfigStorage, Menus, Dialogs, ObjInspStrConsts,
   PropEdits, GraphPropEdits, ListViewPropEdit, ImageListEditor,
-  ComponentTreeView;
+  ComponentTreeView, ComponentEditors;
 
 const
   OIOptionsFileVersion = 2;
@@ -502,9 +502,14 @@ type
     StatusBar: TStatusBar;
     MainPopupMenu: TPopupMenu;
     SetDefaultPopupMenuItem: TMenuItem;
-    AddToFavouritesPopupMenuItem: TMenuItem;
-    RemoveFromFavouritesPopupMenuItem: TMenuItem;
+    AddToFavoritesPopupMenuItem: TMenuItem;
+    RemoveFromFavoritesPopupMenuItem: TMenuItem;
     UndoPropertyPopupMenuItem: TMenuItem;
+    CutPopupmenuItem: TMenuItem;
+    CopyPopupmenuItem: TMenuItem;
+    PastePopupmenuItem: TMenuItem;
+    DeletePopupmenuItem: TMenuItem;
+    OptionsSeparatorMenuItem2: TMenuItem;
     ShowHintsPopupMenuItem: TMenuItem;
     ShowComponentTreePopupMenuItem: TMenuItem;
     ShowOptionsPopupMenuItem: TMenuItem;
@@ -513,9 +518,13 @@ type
     procedure ObjectInspectorResize(Sender: TObject);
     procedure OnGriddKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure OnSetDefaultPopupmenuItemClick(Sender: TObject);
-    procedure OnAddToFavouritesPopupmenuItemClick(Sender: TObject);
-    procedure OnRemoveFromFavouritesPopupmenuItemClick(Sender: TObject);
+    procedure OnAddToFavoritesPopupmenuItemClick(Sender: TObject);
+    procedure OnRemoveFromFavoritesPopupmenuItemClick(Sender: TObject);
     procedure OnUndoPopupmenuItemClick(Sender: TObject);
+    procedure OnCutPopupmenuItemClick(Sender: TObject);
+    procedure OnCopyPopupmenuItemClick(Sender: TObject);
+    procedure OnPastePopupmenuItemClick(Sender: TObject);
+    procedure OnDeletePopupmenuItemClick(Sender: TObject);
     procedure OnShowHintPopupMenuItemClick(Sender: TObject);
     procedure OnShowOptionsPopupMenuItemClick(Sender: TObject);
     procedure OnShowComponentTreePopupMenuItemClick(Sender: TObject);
@@ -2731,27 +2740,41 @@ begin
   AddPopupMenuItem(SetDefaultPopupmenuItem,nil,'SetDefaultPopupMenuItem',
      'Set to Default value','Set property value to Default',
      @OnSetDefaultPopupmenuItemClick,false,true,true);
-  AddPopupMenuItem(AddToFavouritesPopupMenuItem,nil,'AddToFavouritePopupMenuItem',
-     'Add to favourites','Add property to favourites properties',
-     @OnAddToFavouritesPopupmenuItemClick,false,true,true);
-  AddPopupMenuItem(RemoveFromFavouritesPopupMenuItem,nil,
-     'RemoveFromFavouritesPopupMenuItem',
-     'Remove from favourites','Remove property from favourites properties',
-     @OnRemoveFromFavouritesPopupmenuItemClick,false,true,true);
+  AddPopupMenuItem(AddToFavoritesPopupMenuItem,nil,'AddToFavoritePopupMenuItem',
+     oisAddtofavorites,'Add property to favorites properties',
+     @OnAddToFavoritesPopupmenuItemClick,false,true,true);
+  AddPopupMenuItem(RemoveFromFavoritesPopupMenuItem,nil,
+     'RemoveFromFavoritesPopupMenuItem',
+     oisRemovefromfavorites,'Remove property from favorites properties',
+     @OnRemoveFromFavoritesPopupmenuItemClick,false,true,true);
   AddPopupMenuItem(UndoPropertyPopupMenuItem,nil,'UndoPropertyPopupMenuItem',
-     'Undo','Set property value to last valid value',
+     oisUndo,'Set property value to last valid value',
      @OnUndoPopupmenuItemClick,false,true,true);
   AddSeparatorMenuItem(nil,'OptionsSeparatorMenuItem',true);
+  AddPopupMenuItem(CutPopupMenuItem,nil,'CutPopupMenuItem',
+     oisCut,'Cut selected item',
+     @OnCutPopupmenuItemClick,false,true,true);
+  AddPopupMenuItem(CopyPopupMenuItem,nil,'CopyPopupMenuItem',
+     oisCopy,'Copy selected item',
+     @OnCopyPopupmenuItemClick,false,true,true);
+  AddPopupMenuItem(PastePopupMenuItem,nil,'PastePopupMenuItem',
+     oisPaste,'Paste selected item',
+     @OnPastePopupmenuItemClick,false,true,true);
+  AddPopupMenuItem(DeletePopupMenuItem,nil,'DeletePopupMenuItem',
+     oisDelete,'Delete selected item',
+     @OnDeletePopupmenuItemClick,false,true,true);
+  AddPopupMenuItem(OptionsSeparatorMenuItem2,nil,'',
+     '-','',nil,false,true,true);
   AddPopupMenuItem(ShowHintsPopupMenuItem,nil
-     ,'ShowHintPopupMenuItem','Show Hints','Grid hints'
+     ,'ShowHintPopupMenuItem',oisShowHints,'Grid hints'
      ,@OnShowHintPopupMenuItemClick,false,true,true);
   ShowHintsPopupMenuItem.ShowAlwaysCheckable:=true;
   AddPopupMenuItem(ShowComponentTreePopupMenuItem,nil
-     ,'ShowComponentTreePopupMenuItem','Show Component Tree',''
+     ,'ShowComponentTreePopupMenuItem',oisShowComponentTree,''
      ,@OnShowComponentTreePopupMenuItemClick,FShowComponentTree,true,true);
   ShowComponentTreePopupMenuItem.ShowAlwaysCheckable:=true;
   AddPopupMenuItem(ShowOptionsPopupMenuItem,nil
-     ,'ShowOptionsPopupMenuItem','Options',''
+     ,'ShowOptionsPopupMenuItem',oisOptions,''
      ,@OnShowOptionsPopupMenuItemClick,false,true,FOnShowOptions<>nil);
 
   PopupMenu:=MainPopupMenu;
@@ -3119,13 +3142,13 @@ begin
   RefreshPropertyValues;
 end;
 
-procedure TObjectInspector.OnAddToFavouritesPopupmenuItemClick(Sender: TObject);
+procedure TObjectInspector.OnAddToFavoritesPopupmenuItemClick(Sender: TObject);
 begin
   //debugln('TObjectInspector.OnAddToFavouritePopupmenuItemClick');
   if Assigned(OnAddToFavourites) then OnAddToFavourites(Self);
 end;
 
-procedure TObjectInspector.OnRemoveFromFavouritesPopupmenuItemClick(
+procedure TObjectInspector.OnRemoveFromFavoritesPopupmenuItemClick(
   Sender: TObject);
 begin
   if Assigned(OnRemoveFromFavourites) then OnRemoveFromFavourites(Self);
@@ -3140,6 +3163,56 @@ begin
   CurRow:=GetActivePropertyRow;
   if CurRow=nil then exit;
   CurGrid.CurrentEditValue:=CurRow.Editor.GetVisualValue;
+end;
+
+procedure TObjectInspector.OnCutPopupmenuItemClick(Sender: TObject);
+var
+  ADesigner: TIDesigner;
+begin
+  if (ComponentTree.Selection.Count > 0) and (Selection[0] is TComponent) then begin
+    ADesigner:=FindRootDesigner(TComponent(Selection[0]));
+    if ADesigner is TComponentEditorDesigner then begin
+      TComponentEditorDesigner(ADesigner).CutSelection;
+    end;
+  end;
+end;
+
+procedure TObjectInspector.OnCopyPopupmenuItemClick(Sender: TObject);
+var
+  ADesigner: TIDesigner;
+begin
+  if (ComponentTree.Selection.Count > 0) and (Selection[0] is TComponent) then
+  begin
+    ADesigner:=FindRootDesigner(TComponent(Selection[0]));
+    if ADesigner is TComponentEditorDesigner then begin
+      TComponentEditorDesigner(ADesigner).CopySelection;
+    end;
+  end;
+end;
+
+procedure TObjectInspector.OnPastePopupmenuItemClick(Sender: TObject);
+var
+  ADesigner: TIDesigner;
+begin
+  if ComponentTree.Selection.Count > 0 then begin
+    ADesigner:=FindRootDesigner(TComponent(Selection[0]));
+    if ADesigner is TComponentEditorDesigner then begin
+      TComponentEditorDesigner(ADesigner).PasteSelection([cpsfReplace]);
+    end;
+  end;
+end;
+
+procedure TObjectInspector.OnDeletePopupmenuItemClick(Sender: TObject);
+var
+  ADesigner: TIDesigner;
+begin
+  if (ComponentTree.Selection.Count > 0) and (Selection[0] is TComponent) then
+  begin
+    ADesigner:=FindRootDesigner(TComponent(Selection[0]));
+    if ADesigner is TComponentEditorDesigner then begin
+      TComponentEditorDesigner(ADesigner).DeleteSelection;
+    end;
+  end;
 end;
 
 procedure TObjectInspector.OnGridModified(Sender: TObject);
@@ -3306,7 +3379,7 @@ begin
   if FShowFavouritePage then begin
     if FavouriteGrid=nil then begin
       // create favourite page
-      NoteBook.Pages.Add(oisFavourites);
+      NoteBook.Pages.Add(oisFavorites);
       NewPage:=NoteBook.Page[NoteBook.PageCount-1];
       NewPage.Name:=DefaultOIPageNames[oipgpFavourite];
 
@@ -3390,11 +3463,11 @@ begin
   else
     SetDefaultPopupMenuItem.Caption:=oisSetToDefaultValue;
     
-  AddToFavouritesPopupMenuItem.Visible:=(Favourites<>nil)
+  AddToFavoritesPopupMenuItem.Visible:=(Favourites<>nil)
                 and ShowFavouritePage
                 and (GetActivePropertyGrid<>FavouriteGrid)
                 and Assigned(OnAddToFavourites) and (GetActivePropertyRow<>nil);
-  RemoveFromFavouritesPopupMenuItem.Visible:=(Favourites<>nil)
+  RemoveFromFavoritesPopupMenuItem.Visible:=(Favourites<>nil)
            and ShowFavouritePage
            and (GetActivePropertyGrid=FavouriteGrid)
            and Assigned(OnRemoveFromFavourites) and (GetActivePropertyRow<>nil);
@@ -3407,6 +3480,19 @@ begin
   else
     UndoPropertyPopupMenuItem.Enabled:=false;
   ShowHintsPopupMenuItem.Checked:=PropertyGrid.ShowHint;
+  if (ComponentTree.Selection.Count > 0) and FShowComponentTree then begin
+    CutPopupMenuItem.Visible := true;
+    CopyPopupMenuItem.Visible := true;
+    PastePopupMenuItem.Visible := true;
+    DeletePopupMenuItem.visible := true;
+    OptionsSeparatorMenuItem2.visible := true;
+  end else begin
+    CutPopupMenuItem.Visible := false;
+    CopyPopupMenuItem.Visible := false;
+    PastePopupMenuItem.Visible := false;
+    DeletePopupMenuItem.visible := false;
+    OptionsSeparatorMenuItem2.visible := false;
+  end;
 end;
 
 procedure TObjectInspector.HookRefreshPropertyValues;

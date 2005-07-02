@@ -182,7 +182,6 @@ begin
   end;
 end;
 
-
 procedure TCustomCheckListBox.WriteData(Stream: TStream);
 var
   ChecksCount: integer;
@@ -208,6 +207,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.11  2005/07/02 09:24:51  mattias
+  replaced some strings with resource strings  from George Lober
+
   Revision 1.10  2005/07/02 09:17:20  mattias
   implemented streaming TCheckListBox checked states  from Salvatore
 
