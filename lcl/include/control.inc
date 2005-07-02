@@ -2942,7 +2942,12 @@ end;
   function TControl.ManualDock(NewDockSite: TWinControl; DropControl: TControl;
     ControlSide: TAlign): Boolean;
 
-
+  Docks this control to DropControl or on NewDockSite.
+  If DropControl is not nil, ControlSide defines on which side of DropControl
+  this control is docked. (alNone for stacked in pages). DropControl will
+  become part of a TDockManager.
+  If DropControl is nil, then DropControl becomes a normal child of NewDockSite
+  and ControlSide is ignored.
 ------------------------------------------------------------------------------}
 function TControl.ManualDock(NewDockSite: TWinControl; DropControl: TControl;
   ControlSide: TAlign): Boolean;
@@ -3548,6 +3553,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.263  2005/07/02 09:12:38  mattias
+  added comments for docking
+
   Revision 1.262  2005/06/30 19:39:04  mattias
   added AutoSizeDelayed check for controls without form parents
 
