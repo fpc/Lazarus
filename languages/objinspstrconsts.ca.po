@@ -134,6 +134,10 @@ msgstr "Afegeix ..."
 msgid "Add new Item"
 msgstr ""
 
+#: objinspstrconsts:oisaddtofavorites
+msgid "Add to Favorites"
+msgstr ""
+
 #: objinspstrconsts:oisall
 msgid "All"
 msgstr "Tot"
@@ -206,7 +210,7 @@ msgstr "Confirma l'eliminació"
 msgid "Confirme clear all images ?"
 msgstr "Voleu confirmar la neteja de totes les imatges ?"
 
-#: objinspstrconsts:oistdacteditcopyshorthint
+#: objinspstrconsts:oiscopy
 msgid "Copy"
 msgstr "Copia"
 
@@ -242,7 +246,7 @@ msgstr "Ctrl+Z"
 msgid "Cu&t"
 msgstr "&Talla"
 
-#: objinspstrconsts:oistdacteditcutshorthint
+#: objinspstrconsts:oiscut
 msgid "Cut"
 msgstr "Talla"
 
@@ -254,7 +258,7 @@ msgstr "Base de dades"
 msgid "Del"
 msgstr "Del"
 
-#: objinspstrconsts:sccslvedtbtndel
+#: objinspstrconsts:oisdelete
 msgid "Delete"
 msgstr "Elimina"
 
@@ -318,9 +322,9 @@ msgstr "Esdeveniments"
 msgid "Exit"
 msgstr "Surt"
 
-#: objinspstrconsts:oisfavourites
-msgid "Favourites"
-msgstr "Favorits"
+#: objinspstrconsts:oisfavorites
+msgid "Favorites"
+msgstr ""
 
 #: objinspstrconsts:cactionlisteditorfilecategory
 msgid "File"
@@ -470,6 +474,10 @@ msgstr "Inspector dels objectes"
 msgid "Open"
 msgstr "Obre"
 
+#: objinspstrconsts:oisoptions
+msgid "Options"
+msgstr ""
+
 #: objinspstrconsts:oistdactdatasetpostheadline
 msgid "P&ost"
 msgstr "Envi&a"
@@ -478,7 +486,7 @@ msgstr "Envi&a"
 msgid "Panel Descriptions"
 msgstr "Descipcions del tauler"
 
-#: objinspstrconsts:oistdacteditpasteshorthint
+#: objinspstrconsts:oispaste
 msgid "Paste"
 msgstr "Enganxa"
 
@@ -501,6 +509,10 @@ msgstr "Registre"
 #: objinspstrconsts:oistdactdatasetrefreshhint
 msgid "Refresh"
 msgstr "Refresca"
+
+#: objinspstrconsts:oisremovefromfavorites
+msgid "Remove from Favorites"
+msgstr ""
 
 #: objinspstrconsts:oistdactfilesaveasheadline
 msgid "Save &As..."
@@ -541,6 +553,14 @@ msgstr "Fica a valor predeterminat"
 #: objinspstrconsts:oissettodefault
 msgid "Set to default: %s"
 msgstr "Fica a predeterminat: %s"
+
+#: objinspstrconsts:oisshowcomponenttree
+msgid "Show Component Tree"
+msgstr ""
+
+#: objinspstrconsts:oisshowhints
+msgid "Show Hints"
+msgstr ""
 
 #: objinspstrconsts:oissort
 msgid "Sort"
@@ -586,7 +606,7 @@ msgstr "Barra d'eines"
 msgid "Topic Search"
 msgstr "Cerca el contingut"
 
-#: objinspstrconsts:oistdacteditundoshorthint
+#: objinspstrconsts:oisundo
 msgid "Undo"
 msgstr "Desfés"
 

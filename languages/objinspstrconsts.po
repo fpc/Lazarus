@@ -86,8 +86,8 @@ msgstr ""
 msgid "Events"
 msgstr ""
 
-#: objinspstrconsts:oisfavourites
-msgid "Favourites"
+#: objinspstrconsts:oisfavorites
+msgid "Favorites"
 msgstr ""
 
 #: objinspstrconsts:oissettodefault
@@ -96,6 +96,46 @@ msgstr ""
 
 #: objinspstrconsts:oissettodefaultvalue
 msgid "Set to default value"
+msgstr ""
+
+#: objinspstrconsts:oisaddtofavorites
+msgid "Add to Favorites"
+msgstr ""
+
+#: objinspstrconsts:oisremovefromfavorites
+msgid "Remove from Favorites"
+msgstr ""
+
+#: objinspstrconsts:oisundo
+msgid "Undo"
+msgstr ""
+
+#: objinspstrconsts:oiscut
+msgid "Cut"
+msgstr ""
+
+#: objinspstrconsts:oiscopy
+msgid "Copy"
+msgstr ""
+
+#: objinspstrconsts:oispaste
+msgid "Paste"
+msgstr ""
+
+#: objinspstrconsts:oisdelete
+msgid "Delete"
+msgstr ""
+
+#: objinspstrconsts:oisshowhints
+msgid "Show Hints"
+msgstr ""
+
+#: objinspstrconsts:oisshowcomponenttree
+msgid "Show Component Tree"
+msgstr ""
+
+#: objinspstrconsts:oisoptions
+msgid "Options"
 msgstr ""
 
 #: objinspstrconsts:oisvalue

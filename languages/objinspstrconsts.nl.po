@@ -134,6 +134,10 @@ msgstr "Toevoegen ..."
 msgid "Add new Item"
 msgstr ""
 
+#: objinspstrconsts:oisaddtofavorites
+msgid "Add to Favorites"
+msgstr ""
+
 #: objinspstrconsts:oisall
 msgid "All"
 msgstr "Alles"
@@ -206,7 +210,7 @@ msgstr "Bevestigen verwijderen"
 msgid "Confirme clear all images ?"
 msgstr "Bevestig opschonen alle plaatjes"
 
-#: objinspstrconsts:oistdacteditcopyshorthint
+#: objinspstrconsts:oiscopy
 msgid "Copy"
 msgstr "Copieëer"
 
@@ -242,7 +246,7 @@ msgstr "Ctrl+Z"
 msgid "Cu&t"
 msgstr "Kn&ip"
 
-#: objinspstrconsts:oistdacteditcutshorthint
+#: objinspstrconsts:oiscut
 msgid "Cut"
 msgstr "Knip"
 
@@ -254,7 +258,7 @@ msgstr "Database"
 msgid "Del"
 msgstr "Del"
 
-#: objinspstrconsts:sccslvedtbtndel
+#: objinspstrconsts:oisdelete
 msgid "Delete"
 msgstr "Verwijderen"
 
@@ -318,9 +322,9 @@ msgstr "Gebeurtenissen"
 msgid "Exit"
 msgstr "Eruit"
 
-#: objinspstrconsts:oisfavourites
-msgid "Favourites"
-msgstr "Favorieten"
+#: objinspstrconsts:oisfavorites
+msgid "Favorites"
+msgstr ""
 
 #: objinspstrconsts:cactionlisteditorfilecategory
 msgid "File"
@@ -470,6 +474,10 @@ msgstr "Object Inspector"
 msgid "Open"
 msgstr "Open"
 
+#: objinspstrconsts:oisoptions
+msgid "Options"
+msgstr ""
+
 #: objinspstrconsts:oistdactdatasetpostheadline
 msgid "P&ost"
 msgstr "&Bewaren"
@@ -478,7 +486,7 @@ msgstr "&Bewaren"
 msgid "Panel Descriptions"
 msgstr " Panel Beschrijvingen "
 
-#: objinspstrconsts:oistdacteditpasteshorthint
+#: objinspstrconsts:oispaste
 msgid "Paste"
 msgstr "Plakken"
 
@@ -501,6 +509,10 @@ msgstr "Record"
 #: objinspstrconsts:oistdactdatasetrefreshhint
 msgid "Refresh"
 msgstr "Verversen"
+
+#: objinspstrconsts:oisremovefromfavorites
+msgid "Remove from Favorites"
+msgstr ""
 
 #: objinspstrconsts:oistdactfilesaveasheadline
 msgid "Save &As..."
@@ -541,6 +553,14 @@ msgstr "Zet naar standaardwaarde"
 #: objinspstrconsts:oissettodefault
 msgid "Set to default: %s"
 msgstr "Zet naar standaardinstelling: %s"
+
+#: objinspstrconsts:oisshowcomponenttree
+msgid "Show Component Tree"
+msgstr ""
+
+#: objinspstrconsts:oisshowhints
+msgid "Show Hints"
+msgstr ""
 
 #: objinspstrconsts:oissort
 msgid "Sort"
@@ -586,7 +606,7 @@ msgstr "Gereedschapsbalk"
 msgid "Topic Search"
 msgstr "Onderwerp zoeken"
 
-#: objinspstrconsts:oistdacteditundoshorthint
+#: objinspstrconsts:oisundo
 msgid "Undo"
 msgstr "Ongedaan maken"
 

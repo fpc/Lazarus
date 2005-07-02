@@ -1338,6 +1338,10 @@ msgstr "Содержание"
 msgid "Context sensitive Help"
 msgstr "Справка, зависимая от контекста"
 
+#: lazarusidestrconsts:liscontributors
+msgid "Contributors"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_control
 msgid "Control"
 msgstr "Элемент управления"

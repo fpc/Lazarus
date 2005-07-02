@@ -1348,6 +1348,10 @@ msgstr "Contenuti"
 msgid "Context sensitive Help"
 msgstr "Aiuto sensibile al contesto"
 
+#: lazarusidestrconsts:liscontributors
+msgid "Contributors"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_control
 msgid "Control"
 msgstr "Control"

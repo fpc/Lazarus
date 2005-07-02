@@ -144,6 +144,10 @@ msgstr "Aggiungi..."
 msgid "Add new Item"
 msgstr ""
 
+#: objinspstrconsts:oisaddtofavorites
+msgid "Add to Favorites"
+msgstr ""
+
 #: objinspstrconsts:oisall
 msgid "All"
 msgstr "Tutto"
@@ -216,7 +220,7 @@ msgstr "Conferma l'eliminazione"
 msgid "Confirme clear all images ?"
 msgstr "Conferma la cancellazione di tutte le immagini?"
 
-#: objinspstrconsts:oistdacteditcopyshorthint
+#: objinspstrconsts:oiscopy
 msgid "Copy"
 msgstr "Copia"
 
@@ -252,7 +256,7 @@ msgstr "Ctrl+Z"
 msgid "Cu&t"
 msgstr "&Taglia"
 
-#: objinspstrconsts:oistdacteditcutshorthint
+#: objinspstrconsts:oiscut
 msgid "Cut"
 msgstr "Taglia"
 
@@ -264,7 +268,7 @@ msgstr "Database"
 msgid "Del"
 msgstr "Canc"
 
-#: objinspstrconsts:sccslvedtbtndel
+#: objinspstrconsts:oisdelete
 msgid "Delete"
 msgstr "Cancella"
 
@@ -328,9 +332,9 @@ msgstr "Eventi"
 msgid "Exit"
 msgstr "Uscita"
 
-#: objinspstrconsts:oisfavourites
-msgid "Favourites"
-msgstr "Preferiti"
+#: objinspstrconsts:oisfavorites
+msgid "Favorites"
+msgstr ""
 
 #: objinspstrconsts:cactionlisteditorfilecategory
 msgid "File"
@@ -480,6 +484,10 @@ msgstr "Ispettore oggetti"
 msgid "Open"
 msgstr "Apri"
 
+#: objinspstrconsts:oisoptions
+msgid "Options"
+msgstr ""
+
 #: objinspstrconsts:oistdactdatasetpostheadline
 msgid "P&ost"
 msgstr "&Spedisci"
@@ -488,7 +496,7 @@ msgstr "&Spedisci"
 msgid "Panel Descriptions"
 msgstr "Descrizioni pannello"
 
-#: objinspstrconsts:oistdacteditpasteshorthint
+#: objinspstrconsts:oispaste
 msgid "Paste"
 msgstr "Incolla"
 
@@ -511,6 +519,10 @@ msgstr "Record"
 #: objinspstrconsts:oistdactdatasetrefreshhint
 msgid "Refresh"
 msgstr "Aggiorna"
+
+#: objinspstrconsts:oisremovefromfavorites
+msgid "Remove from Favorites"
+msgstr ""
 
 #: objinspstrconsts:oistdactfilesaveasheadline
 msgid "Save &As..."
@@ -551,6 +563,14 @@ msgstr "Imposta al valore predefinito"
 #: objinspstrconsts:oissettodefault
 msgid "Set to default: %s"
 msgstr "Imposta al valore predefinito: %s"
+
+#: objinspstrconsts:oisshowcomponenttree
+msgid "Show Component Tree"
+msgstr ""
+
+#: objinspstrconsts:oisshowhints
+msgid "Show Hints"
+msgstr ""
 
 #: objinspstrconsts:oissort
 msgid "Sort"
@@ -596,7 +616,7 @@ msgstr "Barra degli strumenti"
 msgid "Topic Search"
 msgstr "Ricerca argomento"
 
-#: objinspstrconsts:oistdacteditundoshorthint
+#: objinspstrconsts:oisundo
 msgid "Undo"
 msgstr "Annulla"
 

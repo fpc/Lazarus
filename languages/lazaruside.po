@@ -7750,6 +7750,10 @@ msgstr ""
 msgid "About"
 msgstr ""
 
+#: lazarusidestrconsts:liscontributors
+msgid "Contributors"
+msgstr ""
+
 #: lazarusidestrconsts:lischaractermap
 msgid "Character Map"
 msgstr ""

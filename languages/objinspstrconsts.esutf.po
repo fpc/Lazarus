@@ -144,6 +144,10 @@ msgstr "Añadir ..."
 msgid "Add new Item"
 msgstr ""
 
+#: objinspstrconsts:oisaddtofavorites
+msgid "Add to Favorites"
+msgstr ""
+
 #: objinspstrconsts:oisall
 msgid "All"
 msgstr "Todo"
@@ -216,7 +220,7 @@ msgstr ""
 msgid "Confirme clear all images ?"
 msgstr "¿Confirme limpiar todas las imágenes?"
 
-#: objinspstrconsts:oistdacteditcopyshorthint
+#: objinspstrconsts:oiscopy
 msgid "Copy"
 msgstr ""
 
@@ -252,7 +256,7 @@ msgstr ""
 msgid "Cu&t"
 msgstr ""
 
-#: objinspstrconsts:oistdacteditcutshorthint
+#: objinspstrconsts:oiscut
 msgid "Cut"
 msgstr ""
 
@@ -264,7 +268,7 @@ msgstr ""
 msgid "Del"
 msgstr ""
 
-#: objinspstrconsts:sccslvedtbtndel
+#: objinspstrconsts:oisdelete
 msgid "Delete"
 msgstr "Suprimir"
 
@@ -328,8 +332,8 @@ msgstr "Eventos"
 msgid "Exit"
 msgstr ""
 
-#: objinspstrconsts:oisfavourites
-msgid "Favourites"
+#: objinspstrconsts:oisfavorites
+msgid "Favorites"
 msgstr ""
 
 #: objinspstrconsts:cactionlisteditorfilecategory
@@ -480,6 +484,10 @@ msgstr "Inspector de Objetos"
 msgid "Open"
 msgstr ""
 
+#: objinspstrconsts:oisoptions
+msgid "Options"
+msgstr ""
+
 #: objinspstrconsts:oistdactdatasetpostheadline
 msgid "P&ost"
 msgstr ""
@@ -488,7 +496,7 @@ msgstr ""
 msgid "Panel Descriptions"
 msgstr ""
 
-#: objinspstrconsts:oistdacteditpasteshorthint
+#: objinspstrconsts:oispaste
 msgid "Paste"
 msgstr ""
 
@@ -510,6 +518,10 @@ msgstr ""
 
 #: objinspstrconsts:oistdactdatasetrefreshhint
 msgid "Refresh"
+msgstr ""
+
+#: objinspstrconsts:oisremovefromfavorites
+msgid "Remove from Favorites"
 msgstr ""
 
 #: objinspstrconsts:oistdactfilesaveasheadline
@@ -551,6 +563,14 @@ msgstr "Establecer valor por defecto"
 #: objinspstrconsts:oissettodefault
 msgid "Set to default: %s"
 msgstr "Establecer por defecto: %s"
+
+#: objinspstrconsts:oisshowcomponenttree
+msgid "Show Component Tree"
+msgstr ""
+
+#: objinspstrconsts:oisshowhints
+msgid "Show Hints"
+msgstr ""
 
 #: objinspstrconsts:oissort
 msgid "Sort"
@@ -596,7 +616,7 @@ msgstr ""
 msgid "Topic Search"
 msgstr ""
 
-#: objinspstrconsts:oistdacteditundoshorthint
+#: objinspstrconsts:oisundo
 msgid "Undo"
 msgstr ""
 
