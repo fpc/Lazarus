@@ -1927,7 +1927,7 @@ end;
     RepeatCount: integer): boolean;
 
   Called by the interface after the navigation and specials keys are handled
-  (e.g. after KeyDown).
+  (e.g. after KeyDown but before KeyPress).
 ------------------------------------------------------------------------------}
 function TWinControl.IntfUTF8KeyPress(var UTF8Key: TUTF8Char;
   RepeatCount: integer): boolean;
@@ -2419,7 +2419,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TWinControl KeyPress
+  TWinControl UTF8KeyPress
+  
+  Called before KeyPress.
 ------------------------------------------------------------------------------}
 procedure TWinControl.UTF8KeyPress(var UTF8Key: TUTF8Char);
 begin
@@ -3579,10 +3581,6 @@ procedure TWinControl.CNChar(var Message: TLMKeyUp);
 var
   c: TUTF8Char;
 begin
-  //debugln('TWinControl.CNChar A ',DbgSName(Self),' ',dbgs(Message.CharCode),' ',dbgs(IntfSendsUTF8KeyPress));
-  if not DoKeyPress(Message) then {inherited}; // there is nothing to inherit
-  if Message.CharCode=0 then exit;
-
   //debugln('TWinControl.CNChar B ',DbgSName(Self),' ',dbgs(Message.CharCode),' ',dbgs(IntfSendsUTF8KeyPress));
   if not IntfSendsUTF8KeyPress then begin
     // current interface does not (yet) send UTF8 key press notifications
@@ -3598,7 +3596,11 @@ begin
           Message.CharCode:=0;
       end;
     end;
+    if Message.CharCode=0 then exit;
   end;
+
+  //debugln('TWinControl.CNChar A ',DbgSName(Self),' ',dbgs(Message.CharCode),' ',dbgs(IntfSendsUTF8KeyPress));
+  if not DoKeyPress(Message) then {inherited}; // there is nothing to inherit
 end;
 
 procedure TWinControl.CNSysChar(var Message: TLMKeyUp);
@@ -4575,6 +4577,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.334  2005/07/03 10:21:46  mattias
+  emulating UTF8 keypress before keypress
+
   Revision 1.333  2005/06/30 20:21:10  mattias
   improved considering constraints in autosizing
 
