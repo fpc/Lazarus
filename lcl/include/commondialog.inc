@@ -82,14 +82,18 @@ begin
   if Assigned(FOnShow) then FOnShow(Self);
   TWSCommonDialogClass(WidgetSetClass).ShowModal(Self);
   repeat
-    Application.HandleMessage;
     if (FUserChoice <> mrNone) and (Handle<>0)
     and (OnCanClose<>nil) then begin
       CanClose:=true;
       OnCanClose(Self,CanClose);
       if not CanClose then FUserChoice:=mrNone;
     end;
-  until FUserChoice <> mrNone;
+    if FUserChoice <> mrNone then
+      break;
+    { win32 widgetset dialogs use their own message loop,
+      so only FUserChoice may have been set already }
+    Application.HandleMessage;
+  until false;
   Result := (FUserChoice = mrOk);
   if Assigned(FOnClose) then FOnClose(Self);
 end;
@@ -97,6 +101,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.20  2005/07/04 13:49:18  micha
+  fix bug 936: waits for event after dialog
+
   Revision 1.19  2005/02/05 16:09:52  marc
   * first 64bit changes
 
