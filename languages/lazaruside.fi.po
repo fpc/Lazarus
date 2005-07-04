@@ -820,7 +820,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liscannotcopytoplevelcomponent
 msgid "Can not copy top level component."
-msgstr ""
+msgstr "Päätason komponenttia ei voida kopioida"
 
 #: lazarusidestrconsts:liscannotcreatefile
 msgid "Can not create file %s%s%s"
@@ -1340,7 +1340,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liscontributors
 msgid "Contributors"
-msgstr ""
+msgstr "Tekijät"
 
 #: lazarusidestrconsts:srvk_control
 msgid "Control"
@@ -1416,7 +1416,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liscopyingawholeformisnotimplemented
 msgid "Copying a whole form is not implemented."
-msgstr ""
+msgstr "Kokonaisen lomakkeen (form) kopioiti ei ole tuettuna."
 
 #: lazarusidestrconsts:lislgplnotice
 msgid "Copyright (C) <year> <name of author>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -1924,7 +1924,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgdownword
 msgid "Down"
-msgstr ""
+msgstr "Alas"
 
 #: lazarusidestrconsts:dlgdragdroped
 msgid "Drag Drop editing"
@@ -3420,7 +3420,7 @@ msgstr "Kursivoitu"
 
 #: lazarusidestrconsts:dlgoiitemheight
 msgid "Item height"
-msgstr ""
+msgstr "Rivin korkeus"
 
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
@@ -5748,7 +5748,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisshowhintsinobjectinspector
 msgid "Show hints in Object Inspector"
-msgstr ""
+msgstr "Näytä komponenttimuokkaimessa vihjeet"
 
 #: lazarusidestrconsts:dlgshowlinenumbers
 msgid "Show line numbers"
@@ -7240,7 +7240,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgupword
 msgid "Up"
-msgstr ""
+msgstr "Ylös"
 
 #: lazarusidestrconsts:lispckoptsupdaterebuild
 msgid "Update/Rebuild"

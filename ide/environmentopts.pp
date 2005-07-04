@@ -3605,8 +3605,7 @@ begin
 
     OIDefaultItemHeightSpinEdit.Value:=
        ObjectInspectorOptions.DefaultItemHeight;
-    OIShowHintCheckBox.Checked :=
-       ObjectInspectorOptions.ShowHints;
+    OIShowHintCheckBox.Checked := ObjectInspectorOptions.ShowHints;
        
     // window minimizing and hiding
     MinimizeAllOnMinimizeMainCheckBox.Checked:=MinimizeAllOnMinimizeMain;
@@ -3751,8 +3750,7 @@ begin
 
     ObjectInspectorOptions.DefaultItemHeight:=
       RoundToInt(OIDefaultItemHeightSpinEdit.Value);
-    ObjectInspectorOptions.ShowHints :=
-      OIShowHintCheckBox.Checked;
+    ObjectInspectorOptions.ShowHints := OIShowHintCheckBox.Checked;
 
     // window minimizing
     MinimizeAllOnMinimizeMain:=MinimizeAllOnMinimizeMainCheckBox.Checked;

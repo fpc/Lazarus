@@ -212,7 +212,7 @@ msgstr ""
 
 #: objinspstrconsts:oiscopy
 msgid "Copy"
-msgstr ""
+msgstr "Kopioi"
 
 #: objinspstrconsts:oiscreatedefaultevent
 msgid "Create default event"
@@ -248,7 +248,7 @@ msgstr ""
 
 #: objinspstrconsts:oiscut
 msgid "Cut"
-msgstr ""
+msgstr "Leikkaa"
 
 #: objinspstrconsts:cactionlisteditordatabasecategory
 msgid "Database"
@@ -260,7 +260,7 @@ msgstr ""
 
 #: objinspstrconsts:oisdelete
 msgid "Delete"
-msgstr ""
+msgstr "Poista"
 
 #: objinspstrconsts:cactionlisteditordeleteactionhint
 msgid "Delete Action"
@@ -476,7 +476,7 @@ msgstr ""
 
 #: objinspstrconsts:oisoptions
 msgid "Options"
-msgstr ""
+msgstr "Optiot"
 
 #: objinspstrconsts:oistdactdatasetpostheadline
 msgid "P&ost"
@@ -488,7 +488,7 @@ msgstr ""
 
 #: objinspstrconsts:oispaste
 msgid "Paste"
-msgstr ""
+msgstr "Liitä"
 
 #: objinspstrconsts:oistdactdatasetposthint
 msgid "Post"
@@ -556,11 +556,11 @@ msgstr ""
 
 #: objinspstrconsts:oisshowcomponenttree
 msgid "Show Component Tree"
-msgstr ""
+msgstr "Näytä komponenttipuu"
 
 #: objinspstrconsts:oisshowhints
 msgid "Show Hints"
-msgstr ""
+msgstr "Näytä vihjeet"
 
 #: objinspstrconsts:oissort
 msgid "Sort"
