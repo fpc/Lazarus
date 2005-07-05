@@ -2733,8 +2733,8 @@ begin
     end;
     
     if ReferenceControl.Visible
-    or ([csDesigning,csNoDesignVisible]*ReferenceControl.ComponentState
-        =[csDesigning])
+    or ((csDesigning in ReferenceControl.ComponentState)
+        and not (csNoDesignVisible in ReferenceControl.ControlStyle))
     then begin
       // ReferenceControl is visible
       // -> calculate Position
@@ -2941,6 +2941,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.306  2005/07/05 20:42:50  vincents
+  csNoDesignVisible is not a ComponentState
+
   Revision 1.305  2005/07/05 10:50:22  micha
   mousecapture debug compilation fixes
 
