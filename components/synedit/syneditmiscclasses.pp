@@ -50,6 +50,9 @@ uses
   Classes, Graphics, Controls, SysUtils, SynEditTypes;
 
 type
+
+  { TSynSelectedColor }
+
   TSynSelectedColor = class(TPersistent)
   private
     fBG: TColor;
@@ -65,11 +68,17 @@ type
     property OnChange: TNotifyEvent read fOnChange write fOnChange;
   end;
 
+  { TSynGutter }
+
   TSynGutter = class(TPersistent)
   private
+    {$IFDEF SYN_LAZARUS}
+    FCodeFoldingWidth: integer;
+    {$ENDIF}
     fColor: TColor;
     fWidth: integer;
     fShowLineNumbers: boolean;
+    fShowCodeFolding: boolean;
     fDigitCount: integer;
     fLeadingZeros: boolean;
     fZeroStart: boolean;
@@ -82,12 +91,16 @@ type
     fAutoSize: boolean;
     fAutoSizeDigitCount: integer;
     procedure SetAutoSize(const Value: boolean);
+    {$IFDEF SYN_LAZARUS}
+    procedure SetCodeFoldingWidth(const AValue: integer);
+    {$ENDIF}
     procedure SetColor(const Value: TColor);
     procedure SetDigitCount(Value: integer);
     procedure SetLeadingZeros(const Value: boolean);
     procedure SetLeftOffset(Value: integer);
     procedure SetRightOffset(Value: integer);
     procedure SetShowLineNumbers(const Value: boolean);
+    procedure SetShowCodeFolding(const Value: boolean);
     procedure SetUseFontStyle(Value: boolean);
     procedure SetVisible(Value: boolean);
     procedure SetWidth(Value: integer);
@@ -112,13 +125,20 @@ type
       default 2;
     property ShowLineNumbers: boolean read fShowLineNumbers
       write SetShowLineNumbers default FALSE;
+    property ShowCodeFolding: boolean read fShowCodeFolding
+      write SetShowCodeFolding default FALSE;
     property UseFontStyle: boolean read fUseFontStyle write SetUseFontStyle
       default FALSE;
     property Visible: boolean read fVisible write SetVisible default TRUE;
     property Width: integer read fWidth write SetWidth default 30;
     property ZeroStart: boolean read fZeroStart write SetZeroStart default FALSE;
     property OnChange: TNotifyEvent read fOnChange write fOnChange;
+    {$IFDEF SYN_LAZARUS}
+    property CodeFoldingWidth: integer read FCodeFoldingWidth write SetCodeFoldingWidth;
+    {$ENDIF}
   end;
+
+  { TSynBookMarkOpt }
 
   TSynBookMarkOpt = class(TPersistent)
   private
@@ -263,6 +283,7 @@ begin
   fDigitCount := 4;
   fAutoSizeDigitCount := fDigitCount;
   fRightOffset := 2;
+  CodeFoldingWidth := 14;
 end;
 
 procedure TSynGutter.Assign(Source: TPersistent);
@@ -275,6 +296,7 @@ begin
     fVisible := Src.fVisible;
     fWidth := Src.fWidth;
     fShowLineNumbers := Src.fShowLineNumbers;
+    fShowCodeFolding := Src.fShowCodeFolding;
     fLeadingZeros := Src.fLeadingZeros;
     fZeroStart := Src.fZeroStart;
     fLeftOffset := Src.fLeftOffset;
@@ -319,11 +341,17 @@ end;
 function TSynGutter.RealGutterWidth(CharWidth: integer): integer;
 begin
   if not fVisible then
-    Result := 0
-  else if fShowLineNumbers then
+  begin
+    Result := 0;
+    Exit;
+  end;
+  
+  if fShowLineNumbers then
     Result := fLeftOffset + fRightOffset + fAutoSizeDigitCount * CharWidth + 2
   else
     Result := fWidth;
+
+  if fShowCodeFolding then Result := Result + CodeFoldingWidth;
 end;
 
 procedure TSynGutter.SetAutoSize(const Value: boolean);
@@ -333,6 +361,15 @@ begin
     if Assigned(fOnChange) then fOnChange(Self);
   end;
 end;
+
+{$IFDEF SYN_LAZARUS}
+procedure TSynGutter.SetCodeFoldingWidth(const AValue: integer);
+begin
+  if FCodeFoldingWidth=AValue then exit;
+  FCodeFoldingWidth:=AValue;
+  if Assigned(fOnChange) then fOnChange(Self);
+end;
+{$ENDIF}
 
 procedure TSynGutter.SetColor(const Value: TColor);
 begin
@@ -382,6 +419,14 @@ procedure TSynGutter.SetShowLineNumbers(const Value: boolean);
 begin
   if fShowLineNumbers <> Value then begin
     fShowLineNumbers := Value;
+    if Assigned(fOnChange) then fOnChange(Self);
+  end;
+end;
+
+procedure TSynGutter.SetShowCodeFolding(const Value: boolean);
+begin
+  if fShowCodeFolding <> Value then begin
+    fShowCodeFolding := Value;
     if Assigned(fOnChange) then fOnChange(Self);
   end;
 end;

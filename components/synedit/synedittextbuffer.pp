@@ -57,6 +57,9 @@ type
 {begin}                                                                         //mh 2000-10-19
   TSynEditStringFlag = (sfHasTabs, sfHasNoTabs, sfExpandedLengthUnknown);
   TSynEditStringFlags = set of TSynEditStringFlag;
+  {$IFDEF SYN_LAZARUS}
+  TSynEditCodeFoldType = (cfNone, cfCollapsed, cfExpanded, cfContinue, cfEnd);
+  {$ENDIF}
 {end}                                                                           //mh 2000-10-19
 
   PSynEditStringRec = ^TSynEditStringRec;
@@ -67,6 +70,11 @@ type
 {begin}                                                                         //mh 2000-10-19
     fExpandedLength: integer;
     fFlags: TSynEditStringFlags;
+    {$IFDEF SYN_LAZARUS}
+    fFolded: boolean;
+    fFoldIndex: LongInt;
+    fFoldType: TSynEditCodeFoldType;
+    {$ENDIF}
 {end}                                                                           //mh 2000-10-19
   end;
 
@@ -81,6 +89,8 @@ type
   TSynEditStringRecList = array[0..MaxSynEditStrings - 1] of TSynEditStringRec;
 
   TStringListIndexEvent = procedure(Index: Integer) of object;        
+
+  { TSynEditStringList }
 
   TSynEditStringList = class(TStrings)
   private
@@ -102,6 +112,12 @@ type
     function ExpandedString(Index: integer): string;
     {$IFDEF SYN_LAZARUS}
     function ExpandedStringLength(Index: integer): integer;
+    function GetFoldIndex(Index: integer): integer;
+    function GetFoldType(Index: integer): TSynEditCodeFoldType;
+    function GetFolded(Index: integer): boolean;
+    procedure SetFoldIndex(Index: integer; const AValue: integer);
+    procedure SetFoldType(Index: integer; const AValue: TSynEditCodeFoldType);
+    procedure SetFolded(Index: integer; const AValue: boolean);
     {$ENDIF}
     function GetExpandedString(Index: integer): string;
     function GetLengthOfLongestLine: integer;
@@ -158,6 +174,13 @@ type
     property OnInserted: TStringListIndexEvent read fOnInserted
       write fOnInserted;
     property OnPutted: TStringListIndexEvent read fOnPutted write fOnPutted;
+    {$IFDEF SYN_LAZARUS}
+    property Folded[Index: integer]: boolean read GetFolded write SetFolded;
+    property FoldIndex[Index: integer]: integer read GetFoldIndex
+                                                write SetFoldIndex;
+    property FoldType[Index: integer]: TSynEditCodeFoldType read GetFoldType
+                                                            write SetFoldType;
+    {$ENDIF}
   end;
 
   ESynEditStringList = class(Exception);
@@ -650,6 +673,50 @@ begin
         Include(fFlags, sfHasNoTabs);
     end;
 end;
+
+function TSynEditStringList.GetFoldIndex(Index: integer): integer;
+begin
+  if (Index >= 0) and (Index < fCount) then
+    Result := fList^[Index].fFoldIndex
+  else
+    Result := 0;
+end;
+
+function TSynEditStringList.GetFoldType(Index: integer): TSynEditCodeFoldType;
+begin
+  if (Index >= 0) and (Index < fCount) then
+    Result := fList^[Index].fFoldType
+  else
+    Result := cfNone;
+end;
+
+function TSynEditStringList.GetFolded(Index: integer): boolean;
+begin
+  if (Index >= 0) and (Index < fCount) then
+    Result := fList^[Index].fFolded
+  else
+    Result := false;
+end;
+
+procedure TSynEditStringList.SetFoldIndex(Index: integer; const AValue: integer
+  );
+begin
+  if (Index >= 0) and (Index < fCount) then
+    fList^[Index].fFoldIndex := AValue;
+end;
+
+procedure TSynEditStringList.SetFoldType(Index: integer;
+  const AValue: TSynEditCodeFoldType);
+begin
+  if (Index >= 0) and (Index < fCount) then
+    fList^[Index].fFoldType := AValue;
+end;
+
+procedure TSynEditStringList.SetFolded(Index: integer; const AValue: boolean);
+begin
+  if (Index >= 0) and (Index < fCount) then
+    fList^[Index].fFolded := AValue;
+end;
 {$ENDIF}
 
 function TSynEditStringList.Get(Index: integer): string;
@@ -769,6 +836,11 @@ begin
 {begin}                                                                         //mh 2000-10-19
     fExpandedLength := -1;
     fFlags := [sfExpandedLengthUnknown];
+    {$IFDEF SYN_LAZARUS}
+    fFolded:=false;
+    fFoldIndex:=0;
+    fFoldType:=cfNone;
+    {$ENDIF}
 {end}                                                                           //mh 2000-10-19
   end;
   Inc(fCount);

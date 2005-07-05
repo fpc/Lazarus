@@ -57,7 +57,7 @@ interface
 uses
 {$IFDEF SYN_LAZARUS}
   {$IFDEF USE_UTF8BIDI_LCL}
-  FreeBIDI,utf8bidi,
+  FreeBIDI, utf8bidi,
   {$ENDIF}
   FPCAdds, LCLIntf, LCLType, LMessages, LCLProc,
 {$ELSE}
@@ -670,6 +670,12 @@ type
     property LastMouseCaret: TPoint read FLastMouseCaret write SetLastMouseCaret;
     {$ENDIF}
   public
+      //code fold
+    procedure CodeFoldAction(Y: integer);
+    procedure InitCodeFold;
+    procedure SetCodeFoldItem(Line : integer; Folded: boolean;
+                             FoldIndex: integer; FoldType: TSynEditCodeFoldType);
+
     procedure AddKey(Command: TSynEditorCommand; Key1: word; SS1: TShiftState;
       Key2: word; SS2: TShiftState);
     procedure BeginUndoBlock;                                                   //sbs 2000-11-19
@@ -2488,6 +2494,209 @@ begin
   end;
 end;
 
+procedure TCustomSynEdit.CodeFoldAction(Y: integer);
+var
+  iLine: integer;
+begin
+  iLine := PixelsToRowColumn(Point(0, Y)).Y;
+  
+  case TSynEditStringList(fLines).FoldType[iLine] of
+  cfExpanded:
+    begin
+      //collapse the branch
+      debugln('collapsing node: ',dbgs(iLine));
+      TSynEditStringList(fLines).FoldType[iLine] := cfCollapsed;
+      Inc(iLine);
+      repeat
+        TSynEditStringList(fLines).Folded[iLine] := False;
+        Inc(iLine);
+      until (TSynEditStringList(fLines).FoldType[iLine]
+             in [cfExpanded,cfCollapsed,cfEnd]);
+      Invalidate;
+    end;
+
+  cfCollapsed:
+    begin
+      //expand the branch
+      debugln('expanding node: ',dbgs(iLine));
+      TSynEditStringList(fLines).FoldType[iLine] := cfExpanded;
+      Inc(iLine);
+      repeat
+        TSynEditStringList(fLines).Folded[iLine] := True;
+        Inc(iLine);
+      until (TSynEditStringList(fLines).FoldType[iLine]
+             in [cfExpanded,cfCollapsed,cfEnd]);
+      Invalidate;
+    end;
+  end;
+end;
+
+{
+  procedure TCustomSynEdit.InitCodeFold;
+
+  A simple heuristic to create codefolds for text with same space indent
+ }
+procedure TCustomSynEdit.InitCodeFold;
+type
+  TIndentStackItem = record
+    Indent: integer;
+    Line: integer;
+  end;
+
+var
+  iLine: Integer;
+  CurLine: string;
+  CurIndent: Integer;
+  Stack: array of TIndentStackItem;
+  StackPtr: Integer;
+  BlockStart: LongInt;
+  BlockIndex: Integer;
+  i: Integer;
+  
+  procedure PushIndent(ALine, AnIndent: integer);
+  begin
+    inc(StackPtr);
+    if length(Stack)=StackPtr then
+      SetLength(Stack,StackPtr+1);
+    Stack[StackPtr].Line:=ALine;
+    Stack[StackPtr].Indent:=AnIndent;
+  end;
+  
+begin
+  StackPtr:=-1;
+  BlockIndex:=0;
+  for iLine:=0 to Lines.Count-1 do begin
+    // set defaults
+    if StackPtr>0 then
+      SetCodeFoldItem(iLine,false,0,cfContinue)
+    else
+      SetCodeFoldItem(iLine,false,0,cfNone);
+
+    // get current line, with tabs expanded
+    CurLine:=TSynEditStringList(fLines).ExpandedStrings[iLine];
+    // count indenting
+    CurIndent:=0;
+    while (CurIndent<length(CurLine)) and (CurLine[CurIndent+1]=' ') do
+      inc(CurIndent);
+      
+    if CurIndent>=length(CurLine) then begin
+      //debugln('TCustomSynEdit.InitCodeFold iLine=',dbgs(iLine+1),' skipping empty line');
+      // empty line -> skip
+    end else if StackPtr<0 then begin
+      // first line with content
+      //debugln('TCustomSynEdit.InitCodeFold iLine=',dbgs(iLine+1),' Indent=',dbgs(CurIndent),' first line with content');
+      PushIndent(iLine,CurIndent);
+    end else if Stack[StackPtr].Indent<CurIndent then begin
+      // more indenting -> block start
+      BlockStart:=Stack[StackPtr].Line;
+      //debugln('TCustomSynEdit.InitCodeFold iLine=',dbgs(iLine+1),' Indent=',dbgs(CurIndent),' more indenting -> block start BlockStart=',dbgs(BlockStart+1));
+      inc(BlockIndex);
+      SetCodeFoldItem(BlockStart,false,BlockIndex,cfExpanded);
+      SetCodeFoldItem(iLine,false,0,cfContinue);
+      if StackPtr=0 then
+        for i:=BlockStart+1 to iLine-1 do
+          SetCodeFoldItem(i,false,0,cfContinue);
+      PushIndent(iLine,CurIndent);
+    end else if Stack[StackPtr].Indent>CurIndent then begin
+      // less indenting -> one or more blocks end
+      //debugln('TCustomSynEdit.InitCodeFold iLine=',dbgs(iLine+1),' Indent=',dbgs(CurIndent),' less indenting -> one or more blocks end');
+      SetCodeFoldItem(iLine,false,0,cfEnd);
+      while (StackPtr>=0) and (Stack[StackPtr].Indent>=CurIndent) do
+        dec(StackPtr);
+      //debugln('TCustomSynEdit.InitCodeFold iLine=',dbgs(iLine+1),' Indent=',dbgs(CurIndent),' first line with content');
+      PushIndent(iLine,CurIndent);
+    end else begin
+      // same indenting
+      Stack[StackPtr].Line:=iLine;
+    end;
+  end;
+
+  //for iLine:=0 to Lines.Count-1 do begin
+  //  debugln('  ',dbgs(iLine+1),' ',dbgs(ord(TSynEditStringList(fLines).FoldType[iLine])));
+  //end;
+
+{  Index := 0;
+
+  i := 1;
+  //until interface
+  SetCodeFoldItem(i, False, Index, cfExpanded);
+  repeat
+    Inc(i);
+    SetCodeFoldItem(i, False, Index, cfContinue);
+  until (i = Lines.Count) or (Pos('interface', Trim(Lines[i])) = 1);
+  SetCodeFoldItem(i-1, False, Index, cfEnd);
+
+  Inc(Index);
+  Inc(i);
+
+  //until implementation
+  SetCodeFoldItem(i, False, Index, cfExpanded);
+  repeat
+    Inc(i);
+    SetCodeFoldItem(i, False, Index, cfContinue);
+  until (i = Lines.Count) or (Pos('implementation', Trim(Lines[i])) = 1);
+  SetCodeFoldItem(i-1, False, Index, cfEnd);
+
+  Inc(Index);
+
+  //until start procedure / function declaration
+  SetCodeFoldItem(i, False, Index, cfExpanded);
+  repeat
+    Inc(i);
+    SetCodeFoldItem(i, False, Index, cfContinue);
+  until (i = Lines.Count) or
+        (Pos('procedure', Trim(Lines[i])) = 1) or
+        (Pos('function', Trim(Lines[i])) = 1);
+  SetCodeFoldItem(i-1, False, Index, cfEnd);
+
+  Inc(Index);
+
+  //each procedure / function
+  //search until procedure / function declaration is found
+  while i < Lines.Count do
+  begin
+    //start procedure / function
+    SetCodeFoldItem(i, False, Index, cfExpanded);
+
+    //search until end procedure / function is found
+      while (i < Lines.Count) and (Pos('begin', Trim(Lines[i])) <> 0) do
+      begin
+        Inc(i);
+        SetCodeFoldItem(i, False, Index, cfContinue);
+      end;
+
+    EndIndex := 1;
+    Inc(i);
+    while (i < Lines.Count) and (EndIndex <> 0) do
+    begin
+      Inc(i);
+
+      if Pos('begin', Trim(Lines[i])) <> 0 then Inc(EndIndex);
+      if Pos('end;', Trim(Lines[i])) <> 0 then Dec(EndIndex);
+
+      SetCodeFoldItem(i, False, Index, cfContinue);
+    end;
+    Inc(i);
+    SetCodeFoldItem(i, False, Index, cfEnd);
+
+    while (i < Lines.Count) and
+          (Pos('procedure', Trim(Lines[i])) <> 1) and
+          (Pos('function', Trim(Lines[i])) <> 1) do
+    begin
+      Inc(i);
+      SetCodeFoldItem(i, False, Index, cfNone);
+    end;
+  end;}
+end;
+
+procedure TCustomSynEdit.SetCodeFoldItem(Line: integer; Folded: boolean;
+  FoldIndex: integer; FoldType: TSynEditCodeFoldType);
+begin
+  TSynEditStringList(fLines).Folded[Line]:=Folded;
+  TSynEditStringList(fLines).FoldIndex[Line]:=FoldIndex;
+  TSynEditStringList(fLines).FoldType[Line]:=FoldType;
+end;
+
 procedure TCustomSynEdit.PaintGutter(AClip: TRect; FirstLine, LastLine: integer);
 var
   i, iLine: integer;
@@ -2496,6 +2705,8 @@ var
   aGutterOffs: PIntArray;
   s: string;
   dc: HDC;
+  rcCodeFold: TRect;
+  tmp: TSynEditCodeFoldType;
 
   procedure DrawMark(iMark: integer);
   var
@@ -2533,6 +2744,69 @@ var
         Inc(aGutterOffs^[iLine], fBookMarkOpt.XOffset);
       end;
     end;
+  end;
+
+  procedure DrawNodeBox(rcCodeFold: TRect; Collapsed: boolean);
+  const cNodeOffset = 3;
+  var
+    rcNode: TRect;
+    ptCenter : TPoint;
+    iSquare: integer;
+  begin
+    //center of the draw area
+    ptCenter.X := (rcCodeFold.Left + rcCodeFold.Right) div 2;
+    ptCenter.Y := (rcCodeFold.Top + rcCodeFold.Bottom) div 2;
+
+    //make node rect square
+    iSquare := Max(0, rcCodeFold.Bottom - rcCodeFold.Top - 14) div 2;
+
+    //area of drawbox
+    rcNode.Right := rcCodeFold.Right - cNodeOffset;
+    rcNode.Left := rcCodeFold.Left + cNodeOffset;
+    rcNode.Top := rcCodeFold.Top + cNodeOffset + iSquare;
+    rcNode.Bottom := rcCodeFold.Bottom - cNodeOffset - iSquare;
+
+    Canvas.Brush.Color:=clWhite;
+    Canvas.Rectangle(rcNode);
+    
+    //draw bottom handle to paragraph line
+    Canvas.MoveTo((rcNode.Left + rcNode.Right) div 2, rcNode.Bottom);
+    Canvas.LineTo((rcNode.Left + rcNode.Right) div 2, rcCodeFold.Bottom);
+
+    //draw unfolded sign in node box
+    Canvas.MoveTo(ptCenter.X - 2, ptCenter.Y);
+    Canvas.LineTo(ptCenter.X + 3, ptCenter.Y);
+
+    //draw folded sign
+    if Collapsed then
+    begin
+      Canvas.MoveTo(ptCenter.X, ptCenter.Y - 2);
+      Canvas.LineTo(ptCenter.X, ptCenter.Y + 3);
+    end;
+  end;
+
+  procedure DrawParagraphContinue(rcCodeFold: TRect);
+  var
+    iCenter : integer;
+  begin
+    //center of the draw area
+    iCenter := (rcCodeFold.Left + rcCodeFold.Right) div 2;
+
+    Canvas.MoveTo(iCenter, rcCodeFold.Top);
+    Canvas.LineTo(iCenter, rcCodeFold.Bottom);
+  end;
+
+  procedure DrawParagraphEnd(rcCodeFold: TRect);
+  var
+    ptCenter : TPoint;
+  begin
+    //center of the draw area
+    ptCenter.X := (rcCodeFold.Left + rcCodeFold.Right) div 2;
+    ptCenter.Y := (rcCodeFold.Top + rcCodeFold.Bottom) div 2;
+
+    Canvas.MoveTo(ptCenter.X, rcCodeFold.Top);
+    Canvas.LineTo(ptCenter.X, ptCenter.Y);
+    Canvas.LineTo(rcCodeFold.Right, ptCenter.Y);
   end;
 
 begin
@@ -2595,6 +2869,44 @@ begin
   end else begin
     InternalFillRect(dc, AClip);
   end;
+  
+  //draw the code folding marks
+  if fGutter.ShowCodeFolding then
+  begin
+    with Canvas do
+    begin
+      Pen.Color := clDkGray;
+      Pen.Width := 1;
+      
+      rcLine.Bottom := (FirstLine - TopLine) * fTextHeight;
+      for iLine := FirstLine to LastLine do
+      begin
+        //only draw visible items
+        if not TSynEditStringList(fLines).Folded[iLine-1] then
+        begin
+          // next line rect
+          rcLine.Top := rcLine.Bottom;
+        
+          Inc(rcLine.Bottom, fTextHeight);
+
+          rcCodeFold.Left := 0;
+          rcCodeFold.Right := 14;
+          rcCodeFold.Top := rcLine.Top;
+          rcCodeFold.Bottom := rcLine.Bottom;
+
+          tmp := TSynEditStringList(fLines).FoldType[iLine-1];
+
+          case tmp of
+            cfCollapsed: DrawNodeBox(rcCodeFold, True);
+            cfExpanded: DrawNodeBox(rcCodeFold, False);
+            cfContinue: DrawParagraphContinue(rcCodeFold);
+            cfEnd: DrawParagraphEnd(rcCodeFold);
+          end;
+        end;
+      end;
+    end;
+  end;
+  
   // the gutter separator if visible
   if AClip.Right >= fGutterWidth - 2 then
     with Canvas do begin
@@ -3243,6 +3555,13 @@ var
     end;
     // Now loop through all the lines. The indices are valid for Lines.
     for nLine := FirstLine to LastLine do begin
+
+      if TSynEditStringList(fLines).Folded[nLine] then begin
+        // this line is folded -> skip
+        //debugln('line folded ',dbgs(nLine));
+        continue;
+      end;
+
       // Get the line.
       sLine := Lines[nLine - 1];
       // Get the information about the line selection. Three different parts
