@@ -2044,7 +2044,7 @@ begin
   if MouseCapture <> Value
   then begin
     {$IFDEF VerboseMouseCapture}
-    DebugLn('TControl.SetMouseCapture ',Name,':',ClassName,' NewValue=',Value);
+    DebugLn('TControl.SetMouseCapture ',Name,':',ClassName,' NewValue=',DbgS(Value));
     {$ENDIF}
     if Value
     then SetCaptureControl(Self)
@@ -3553,6 +3553,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.264  2005/07/05 10:50:23  micha
+  mousecapture debug compilation fixes
+
   Revision 1.263  2005/07/02 09:12:38  mattias
   added comments for docking
 

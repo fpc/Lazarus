@@ -2278,7 +2278,7 @@ begin
   if CaptureControl=Control then exit;
   if Control=nil then begin
     {$IFDEF VerboseMouseCapture}
-    write('SetCaptureControl Only ReleaseCapture');
+    DebugLn('SetCaptureControl Only ReleaseCapture');
     {$ENDIF}
     // just unset the capturing, intf call not needed
     CaptureControl:=nil;
@@ -2941,6 +2941,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.305  2005/07/05 10:50:22  micha
+  mousecapture debug compilation fixes
+
   Revision 1.304  2005/07/01 18:20:41  mattias
   added ldocktree.pas
 
