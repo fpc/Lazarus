@@ -764,13 +764,17 @@ Begin
             ((TCustomCombobox(lWinControl).Style = csOwnerDrawFixed) or
             (TCustomCombobox(lWinControl).Style = csOwnerDrawVariable))) then
       begin
-        LMessage.Msg := LM_DRAWLISTITEM;
-        TLMDrawListItem(LMessage).DrawListItemStruct := @DrawListItemStruct;
-        with DrawListItemStruct do begin
-          ItemID := PDrawItemStruct(LParam)^.itemID;
-          Area := PDrawItemStruct(LParam)^.rcItem;
-          ItemState := TOwnerDrawState(PDrawItemStruct(LParam)^.itemState);
-          DC := PDrawItemStruct(LParam)^._hDC;
+        if PDrawItemStruct(LParam)^.itemID <> dword(-1) then
+        begin
+          LMessage.Msg := LM_DRAWLISTITEM;
+          TLMDrawListItem(LMessage).DrawListItemStruct := @DrawListItemStruct;
+          with DrawListItemStruct do begin
+            ItemID := PDrawItemStruct(LParam)^.itemID;
+            Area := PDrawItemStruct(LParam)^.rcItem;
+            ItemState := TOwnerDrawState(PDrawItemStruct(LParam)^.itemState);
+            DC := PDrawItemStruct(LParam)^._hDC;
+          end;
+          WinProcess := false;
         end;
       end else begin
         with TLMDrawItems(LMessage) do
@@ -1597,6 +1601,9 @@ end;
 
 {
   $Log$
+  Revision 1.211  2005/07/05 10:49:12  micha
+  fix bug 917: itemid -1 is for focus rectangle, let widgetset draw that
+
   Revision 1.210  2005/06/14 07:30:51  vincents
   fixed handling WM_MEASUREITEM for OwnerdrawnFixed listbox.
 
