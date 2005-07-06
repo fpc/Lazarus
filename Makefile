@@ -3882,7 +3882,6 @@ cleanlaz:
 	$(MAKE) -C packager clean
 	$(MAKE) -C designer clean
 	$(MAKE) -C ideintf clean
-	$(MAKE) -C tools clean
 clean: cleanlaz cleanide
 purge: cleanlaz cleanide
 	$(MAKE) -C examples clean
