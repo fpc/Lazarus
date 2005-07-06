@@ -99,6 +99,7 @@ Type
     Procedure NewTopic(ATopicName : String);
     Procedure NewElement(AElementName : String);
     Procedure GetElementList(List : TStrings);
+    function  GetInitialDir: String;
     Procedure ClearDocument;
     Function CanInsertTag(TagType : TTagType) : Boolean;
     Property FileName : String Read FFileName;
@@ -137,6 +138,7 @@ begin
   FElement.Parent:=Self;
   Felement.Align:=AlClient;
   FElement.OnGetElementList:=@GetELementList;
+  FElement.OnGetInitialDir:=@GetInitialDir;
 end;
 
 
@@ -206,15 +208,19 @@ end;
 Procedure TEditorPage.SaveToFile(FN : String);
 
 begin
-  If FElement.Modified then
-    FElement.Save;
   If (not FileExists(FN)) or MakeBackup(FN) then
     begin
-    WriteXMLFile(FDocument,FN);
-    Modified:=False;
+    
     if (FN<>FFileName) then
       SetFileName(FN);
-    end;  
+
+    If FElement.Modified then
+      FElement.Save;
+
+    WriteXMLFile(FDocument,FN);
+    Modified:=False;
+
+    end;
 end;
 
 Procedure TEditorPage.DisplayDocument;
@@ -492,6 +498,13 @@ begin
        end;
      end;  
    end;
+end;
+
+function TEditorPage.GetInitialDir: String;
+begin
+  result := '';
+  if FileExists(FFileName) then
+    Result := ExtractFilePath(FFileName);
 end;
 
 end.

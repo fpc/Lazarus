@@ -39,13 +39,18 @@ type
     BCancel: TButton;
     EFileName: TFileNameEdit;
     LEFileName: TLabel;
+    procedure ExampleFormCloseQuery(Sender: TObject; var CanClose: boolean);
   private
+    function GetExampleDir: String;
     function GetExampleName: String;
+    procedure SetExampleDir(const AValue: String);
     procedure SetExampleName(const AValue: String);
+    function CheckFilePath(const AValue: String): boolean;
     { private declarations }
   public
     { public declarations }
     Property ExampleName : String Read GetExampleName Write SetExampleName;
+    Property ExampleDir: String read GetExampleDir write SetExampleDir;
   end; 
 
 var
@@ -58,14 +63,57 @@ implementation
 
 { TExampleForm }
 
+procedure TExampleForm.ExampleFormCloseQuery(Sender: TObject;
+  var CanClose: boolean);
+var
+  S: String;
+begin
+  if ModalResult = mrOk then begin
+    S := ExtractFilePath(EFilename.Text);
+    CanClose := CheckFilePath(S);
+  end;
+end;
+
+function TExampleForm.GetExampleDir: String;
+begin
+  Result := EFileName.InitialDir;
+end;
+
 function TExampleForm.GetExampleName: String;
 begin
-  Result:=EFileName.FileName
+  Result:=EFilename.Text; //EFileName.FileName;
+  if ExampleDir<>'' then
+    Result := ExtractRelativePath(ExampleDir, Result);
+end;
+
+procedure TExampleForm.SetExampleDir(const AValue: String);
+begin
+  EFileName.InitialDir := AValue;
 end;
 
 procedure TExampleForm.SetExampleName(const AValue: String);
 begin
   EFileName.FileName:=AValue;
+end;
+
+function TExampleForm.CheckFilePath(const AValue: String): boolean;
+begin
+  Result := True;
+  
+  // Check Empty Path and filename
+  if (Length(ExtractFilePath(AValue))=0) and FileExists(ExampleDir+AValue) then
+    exit;
+  
+  // Check partial file path within ExampleDir
+  if FileExists(ExampleDir + AValue) then
+    exit;
+  
+  // it might be a full path
+  if FileExists(AValue) and (Pos(ExampleDir, AValue)<>0) then
+    exit;
+
+  Result := false;
+  ShowMessage('Invalid file or path');
 end;
 
 initialization

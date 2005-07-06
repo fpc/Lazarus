@@ -2,14 +2,16 @@ object ExampleForm: TExampleForm
   Caption = 'Example file'
   ClientHeight = 85
   ClientWidth = 404
-  PixelsPerInch = 90
+  OnCloseQuery = ExampleFormCloseQuery
+  PixelsPerInch = 75
   HorzScrollBar.Page = 403
   VertScrollBar.Page = 84
-  Left = 437
+  Left = 387
   Height = 85
   Top = 311
   Width = 404
   object LEFileName: TLabel
+    BorderSpacing.OnChange = nil
     Caption = '&Filename'
     FocusControl = EFileName
     Layout = tlCenter
@@ -23,6 +25,7 @@ object ExampleForm: TExampleForm
   end
   object BOK: TButton
     Anchors = [akTop, akRight]
+    BorderSpacing.OnChange = nil
     Caption = '&OK'
     Default = True
     ModalResult = 1
@@ -34,6 +37,7 @@ object ExampleForm: TExampleForm
   end
   object BCancel: TButton
     Anchors = [akTop, akRight]
+    BorderSpacing.OnChange = nil
     Cancel = True
     Caption = '&Cancel'
     ModalResult = 2
@@ -45,12 +49,14 @@ object ExampleForm: TExampleForm
   end
   object EFileName: TFileNameEdit
     DialogTitle = 'Select an example file'
-    Filter = 'Pascal files |*.pp|Pascal files|*.pas'
+    Filter = 'Pascal files|*.pp;*.pas|All files|*.*'
     ButtonWidth = 23
     NumGlyphs = 1
     Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.OnChange = nil
     TabOrder = 2
     Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.OnChange = nil
     TabOrder = 2
     Left = 80
     Height = 23

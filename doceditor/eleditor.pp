@@ -34,6 +34,7 @@ Type
 
   { TCustomElementEditor }
   TGetElementListEvent = Procedure (List : TStrings) of Object;
+  TGetInitialDirEvent = function: string of object;
 
   { TCustomElementEditor }
 
@@ -43,9 +44,12 @@ Type
     FGetElementList: TGetElementListEvent;
     FSavedNode,
     FModified : Boolean;
+    FTargetFileName: string;
+    FGetInitialDir: TGetInitialDirEvent;
   Protected
     Function GetCurrentSelection : String; virtual; abstract;
     Procedure SetElement (Value : TDomElement); virtual;
+    Function GetInitialDir: String;
   Public
     Procedure Refresh; virtual; abstract;
     Function  TestSave(S : String) : Boolean; virtual; abstract;
@@ -61,7 +65,9 @@ Type
     Property  CurrentSelection : String Read GetCurrentSelection;
     Property  Modified : Boolean Read FModified Write FModified;
     Property  SavedNode : Boolean Read FSavedNode Write FSavedNode;
+    Property  TargetFileName: String read FTargetFileName write FTargetFileName;
     Property  OnGetElementList : TGetElementListEvent Read FGetElementList Write FGetElementList;
+    Property  OnGetInitialDir: TGetInitialDirEvent read FGetInitialdir write FGetInitialDir;
   end;
   
   { TElementEditor }
@@ -131,6 +137,13 @@ procedure TCustomElementEditor.SetElement(Value: TDomElement);
 
 begin
   FElement:=Value;
+end;
+
+function TCustomElementEditor.GetInitialDir: String;
+begin
+  result := '';
+  if Assigned(FGetInitialDir) then
+    result := FGetInitialdir();
 end;
 
 { ---------------------------------------------------------------------
@@ -517,18 +530,17 @@ begin
   Result:=GetNodeString('short',Trim(FShortEntry.Text));
   Result:=Result+GetNodeString('descr',trim(FDescrMemo.Text));
   Result:=Result+GetNodeString('errors',trim(FErrorsMemo.Text));
-  For I:=1 to FSeeAlso.Items.Count-1 do
-    begin
-    S:=Trim(FExamples.Items[i]);
-    If (S<>'') then
-      Result:=Result+'<link id="'+S+'"/>';
-    end;
-  For I:=1 to FExamples.Items.Count-1 do
-    begin
-    S:=Trim(FExamples.Items[i]);
-    If (S<>'') then
-      Result:=Result+'<example file="'+S+'"/>';
-    end;
+  S:='';
+  for I:=0 to FSeeAlso.Items.Count-1 do
+    if Trim(FSeeAlso.Items[i])<>'' then
+      S:=S+'<link id="'+Trim(FSeeAlso.Items[i])+'"/>';
+  Result:=Result+GetNodeString('seealso',S);
+  S:='';
+  for I:=0 to FExamples.Items.Count-1 do
+    if Trim(FExamples.Items[i])<>'' then
+      S:=S+'<example file="'+Trim(FExamples.Items[i])+'"/>';
+  Result:=Result+S;
+  //Result:=Result+GetNodeString('example',S);
 end;
 
 Function TElementEditor.Save : Boolean;
@@ -709,10 +721,14 @@ begin
   With TExampleForm.Create(Self) do
     Try
       ExampleName:='example.pp';
+      ExampleDir:= GetInitialDir;
       If ShowModal=mrOK then
         begin
-        FExamples.Items.Add(ExampleName);
-        Modified:=True;
+          if FExamples.Items.IndexOf(ExampleName)<0 then
+          begin
+            FExamples.Items.Add(ExampleName);
+            Modified:=True;
+          end;
         end;
     Finally
       Free;
@@ -787,8 +803,11 @@ begin
   S:='';
   If EditLink(S) then
     begin
-    FSeeAlso.Items.Add(S);
-    Modified:=True;
+      if FSeeAlso.Items.IndexOf(S)<0 then
+        begin
+          FSeeAlso.Items.Add(S);
+          Modified:=True;
+        end;
     end;
 end;
 
