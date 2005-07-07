@@ -2499,7 +2499,7 @@ var
   iLine: integer;
 begin
   iLine := PixelsToRowColumn(Point(0, Y)).Y;
-  
+
   case TSynEditStringList(fLines).FoldType[iLine] of
   cfExpanded:
     begin

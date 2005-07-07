@@ -68,6 +68,7 @@ procedure TExampleForm.ExampleFormCloseQuery(Sender: TObject;
 var
   S: String;
 begin
+  if Sender = nil then exit;
   if ModalResult = mrOk then begin
     S := ExtractFilePath(EFilename.Text);
     CanClose := CheckFilePath(S);

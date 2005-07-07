@@ -8,7 +8,7 @@
         <SaveOnlyProjectUnits Value="True"/>
       </Flags>
       <MainUnit Value="0"/>
-      <ActiveEditorIndexAtStart Value="12"/>
+      <ActiveEditorIndexAtStart Value="10"/>
       <AutoCreateForms Value="False"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
@@ -108,8 +108,8 @@
         <UsageCount Value="52"/>
       </Unit7>
       <Unit8>
-        <CursorPos X="28" Y="29"/>
-        <EditorIndex Value="17"/>
+        <CursorPos X="16" Y="26"/>
+        <EditorIndex Value="12"/>
         <Filename Value="pkeditor.pp"/>
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
@@ -118,18 +118,18 @@
         <UsageCount Value="46"/>
       </Unit8>
       <Unit9>
-        <CursorPos X="21" Y="24"/>
+        <CursorPos X="16" Y="497"/>
         <EditorIndex Value="7"/>
         <Filename Value="eleditor.pp"/>
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
-        <TopLine Value="1"/>
+        <TopLine Value="473"/>
         <UnitName Value="ElEditor"/>
         <UsageCount Value="46"/>
       </Unit9>
       <Unit10>
         <CursorPos X="34" Y="28"/>
-        <EditorIndex Value="16"/>
+        <EditorIndex Value="11"/>
         <Filename Value="fpdeutil.pp"/>
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
@@ -138,26 +138,26 @@
         <UsageCount Value="46"/>
       </Unit10>
       <Unit11>
-        <CursorPos X="30" Y="9"/>
-        <EditorIndex Value="8"/>
+        <CursorPos X="15" Y="71"/>
+        <EditorIndex Value="9"/>
         <Filename Value="frmexample.pp"/>
         <ComponentName Value="ExampleForm"/>
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
         <ResourceFilename Value="frmexample.lrs"/>
-        <TopLine Value="1"/>
+        <TopLine Value="66"/>
         <UnitName Value="FrmExample"/>
         <UsageCount Value="37"/>
       </Unit11>
       <Unit12>
-        <CursorPos X="14" Y="665"/>
-        <EditorIndex Value="9"/>
+        <CursorPos X="3" Y="570"/>
+        <EditorIndex Value="10"/>
         <Filename Value="frmbuild.pp"/>
         <ComponentName Value="BuildForm"/>
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
         <ResourceFilename Value="frmbuild.lrs"/>
-        <TopLine Value="655"/>
+        <TopLine Value="545"/>
         <UnitName Value="frmBuild"/>
         <UsageCount Value="32"/>
       </Unit12>

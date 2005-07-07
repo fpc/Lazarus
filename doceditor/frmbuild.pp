@@ -137,7 +137,7 @@ type
     // Sources methods
     Function SourceFileCount : Integer;
     Function AddSource(Const ASource,AOptions : String) : Integer;
-    Procedure GetSourceOptions(Index : Integer; Var ASource, AOptions: String);
+    Procedure GetSourceOptions(Index : Integer; Out ASource, AOptions: String);
     Procedure SetSourceOptions(Index : Integer; Const ASource, AOptions: String);
     Procedure ClearSources;
     procedure DisplaySources;
@@ -566,7 +566,8 @@ begin
   FOptions[Index]:=ASource+'='+AOptions;
 end;
 
-Procedure TBuildForm.GetSourceOptions(Index : Integer; Var ASource, AOptions: String);
+Procedure TBuildForm.GetSourceOptions(Index : Integer;
+  Out ASource, AOptions: String);
 
 Var
   N : Integer;
