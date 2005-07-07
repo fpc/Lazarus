@@ -134,6 +134,7 @@ type
   private
     { private declarations }
     FRecent : TStringList;
+    FRecentBuildSettingsFile: String;
     // Editor functions.
     procedure BuildReopenList;
     Procedure AddTorecent(FN : String);
@@ -155,6 +156,7 @@ type
     Procedure InsertTable;
     Procedure ShowAbout;
     Procedure GetCurrentFiles(List : TStrings);
+    Procedure ApplyOptions;
   public
     { public declarations }
   end; 
@@ -217,6 +219,7 @@ begin
   LoadCommandLine;
   LoadOptions;
   LoadRecent;
+  ApplyOptions;
 end;
 
 procedure TMainForm.AOpenExecute(Sender: TObject);
@@ -238,8 +241,10 @@ begin
   if Sender=nil then ;
   With TBuildForm.Create(Self) do
     Try
+      FileName := FRecentBuildSettingsFile;
       OnGetList:=@Self.GetCurrentFiles;
       ShowModal;
+      FRecentBuildSettingsFile := FileName;
     Finally
       Free;
     end;
@@ -256,7 +261,8 @@ begin
   if Sender=nil then ;
   With TOptionsForm.Create(Self) do
     Try
-      ShowModal;
+      if ShowModal=mrOk then
+        ApplyOptions;
     finally
       Free;
     end;
@@ -812,6 +818,11 @@ Var
 begin
   For I:=0 to PCFiles.PageCount-1 do
     List.Add(TEditorPage(PCFiles.Pages[i]).FileName);
+end;
+
+procedure TMainForm.ApplyOptions;
+begin
+  ShowHint := ShowHelpHints;
 end;
 
 

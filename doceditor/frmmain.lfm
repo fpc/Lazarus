@@ -1,20 +1,18 @@
 object MainForm: TMainForm
   Caption = 'MainForm'
-  ClientHeight = 521
+  ClientHeight = 518
   ClientWidth = 602
   Menu = MMain
   OnCloseQuery = MainFormCloseQuery
   OnCreate = MainFormCreate
   OnDestroy = MainFormDestroy
-  PixelsPerInch = 90
+  PixelsPerInch = 75
   HorzScrollBar.Page = 601
-  VertScrollBar.Page = 520
-  Left = 529
-  Height = 545
-  Top = 127
+  VertScrollBar.Page = 517
+  Left = 189
+  Height = 544
   Width = 602
   object TBMain: TToolBar
-    BorderSpacing.OnChange = nil
     ButtonHeight = 28
     ButtonWidth = 28
     Caption = 'TBMain'
@@ -176,23 +174,22 @@ object MainForm: TMainForm
   object StatusBar1: TStatusBar
     Panels = <>
     Height = 20
-    Top = 501
+    Top = 498
     Width = 602
   end
   object Splitter1: TSplitter
-    Height = 471
+    Height = 468
     ParentColor = True
     Cursor = crHSplit
-    Height = 471
+    Height = 468
     Top = 30
     Width = 5
   end
   object PCFiles: TPageControl
     Align = alClient
-    BorderSpacing.OnChange = nil
     TabOrder = 1
     Left = 5
-    Height = 471
+    Height = 468
     Top = 30
     Width = 597
   end
@@ -491,6 +488,7 @@ object MainForm: TMainForm
     DefaultExt = '.xml'
     Filter = 'XML files|*.xml|All files|*.*'
     FilterIndex = 0
+    Title = 'Save file as'
     left = 80
     top = 64
   end
@@ -500,6 +498,7 @@ object MainForm: TMainForm
     DefaultExt = '.xml'
     Filter = 'XML files|*.xml|All files|*.*'
     FilterIndex = 0
+    Title = 'Open existing file'
     left = 80
     top = 101
   end

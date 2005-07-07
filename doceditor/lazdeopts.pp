@@ -32,6 +32,7 @@ Var
   SkipEmptyNodes   : Boolean;  
   ConfirmDelete    : Boolean;
   CreateBackup     : Boolean;
+  ShowHelpHints    : Boolean;
   MaxRecentUsed    : Integer;
   BackupExtension  : String;  
   DefaultExtension : String;
@@ -55,6 +56,7 @@ Const
   //KeyMaxRecentUsed    = 'MaxMRUitems';
   KeyCmdMakeSkel      = 'makeskel';
   KeyCmdFpdoc         = 'fpdoc';
+  KeyShowHints        = 'ShowHints';
 
 {$ifndef win32}
 Function GetOptionFileName : String;
@@ -96,6 +98,7 @@ begin
       SkipEmptyNodes:=ReadBool(SecPrefs,KeySkipEmptyNodes,SkipEmptyNodes);
       ConfirmDelete:=ReadBool(SecPrefs,KeyConfirmDelete,ConfirmDelete);
       CreateBackup:=ReadBool(SecPrefs,KeyCreateBackup,CreateBackup);
+      ShowHelpHints:=ReadBool(SecPrefs,KeyShowHints,ShowHelpHints);
       BackupExtension:=ReadString(SecPrefs,KeyBackupExtension,BackupExtension);
       DefaultExtension:=ReadString(SecPrefs,KeyDefaultExtension,DefaultExtension);
       CmdMakeSkel:=ReadString(SecPrefs,KeyCmdMakeSkel,cmdMakeSkel);
@@ -113,6 +116,7 @@ begin
       WriteBool(SecPrefs,KeySkipEmptyNodes,SkipEmptyNodes);
       WriteBool(SecPrefs,KeyConfirmDelete,ConfirmDelete);
       WriteBool(SecPrefs,KeyCreateBackup,CreateBackup);
+      WriteBool(SecPrefs,KeyShowHints,ShowHelpHints);
       WriteString(SecPrefs,KeyBackupExtension,BackupExtension);
       WriteString(SecPrefs,KeyDefaultExtension,DefaultExtension);
       WriteString(SecPrefs,KeyCmdMakeSkel,cmdMakeSkel);
@@ -132,4 +136,5 @@ Initialization
   MaxRecentUSed    := 10;
   CmdMakeSkel      := 'makeskel';
   cmdfpdoc         := 'fpdoc';
+  ShowHelpHints    := true;
 end.

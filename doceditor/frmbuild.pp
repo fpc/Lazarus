@@ -274,7 +274,10 @@ begin
   if Sender=nil then ;
   With ODSettings do
     If Execute then
+      begin
       LoadOptions(FileName);
+      FFileName := FileName;
+      end;
 end;
 
 procedure TBuildForm.ASaveExecute(Sender: TObject);

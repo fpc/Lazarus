@@ -28,7 +28,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, Spin, EditBtn;
+  Buttons, Spin, EditBtn, ExtCtrls, ComCtrls;
 
 type
 
@@ -40,6 +40,7 @@ type
     CBConfirmDelete: TCheckBox;
     CBCreateBackup: TCheckBox;
     CBSkipEmptyNodes: TCheckBox;
+    CBShowHints: TCheckBox;
     EBackupExtension: TEdit;
     EDefaultExtension: TEdit;
     FEMakeSkel: TFileNameEdit;
@@ -49,7 +50,11 @@ type
     LEDefaultExtension: TLabel;
     LEBackupExtension: TLabel;
     LEMaxMRU: TLabel;
+    PageControl1: TPageControl;
+    Panel1: TPanel;
     SEMaxRecentUsed: TSpinEdit;
+    tabGeneral: TTabSheet;
+    tabDesktop: TTabSheet;
     procedure BOKClick(Sender: TObject);
     procedure OptionsFormShow(Sender: TObject);
   private
@@ -91,6 +96,7 @@ begin
   SEMaxRecentUsed.Text:=IntToStr(MaxRecentUsed);
   FEMakeskel.Text:=cmdMakeSkel;
   FEFPDoc.Text:=cmdfpdoc;
+  CBShowHints.Checked:=ShowHelpHints;
 end;
 
 procedure TOptionsForm.FormToOptions;
@@ -103,6 +109,7 @@ begin
   MaxRecentUsed:=StrToIntDef(SEMaxRecentUsed.Text,0);
   cmdMakeSkel:=FEMakeskel.Text;
   cmdfpdoc:=FEFPDoc.Text;
+  ShowHelpHints:=CBShowHints.Checked;
   SaveOptions;
 end;
 
