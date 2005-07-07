@@ -1162,7 +1162,7 @@ begin
   {$IFDEF VerboseMouseBugfix}
   DebugLn('');
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMousePress);
-  WriteLn('[gtkMouseBtnPress] ',
+  DebugLn('[gtkMouseBtnPress] ',
     DbgSName(TObject(Data)),
     ' Widget=',DbgS(Widget),
     ' ControlWidget=',DbgS(TWinControl(Data).Handle),
@@ -2986,6 +2986,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.281  2005/07/07 20:56:29  mattias
+  clean up
+
   Revision 1.280  2005/06/25 14:17:57  mattias
   added notification method CNPreferredSizeChanged
 

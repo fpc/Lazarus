@@ -2367,7 +2367,7 @@ begin
   {$ELSE}
   Result:=EventStopped;
   {$ENDIF}
-  //DebugLn('[HandleGTKKeyUpDown] ',DbgSName(TObject(Data)),' Result=',dbgs(Result));
+  DebugLn('[HandleGTKKeyUpDown] ',DbgSName(TObject(Data)),' Result=',dbgs(Result),' EventStopped=',dbgs(EventStopped));
 end;
 
 {------------------------------------------------------------------------------
@@ -3039,7 +3039,6 @@ begin
     if VKey <> $FF
     then MVKeyInfo[VKey].KeyCode := Byte(n);
   end;
-  WriteLN;
 end;
 {$ENDIF}
 
@@ -4857,7 +4856,7 @@ begin
   Result := PGTKAccelGroup(gtk_object_get_data(PGtkObject(Widget),'AccelGroup'));
   if (Result=nil) and CreateIfNotExists then begin
     {$IFDEF VerboseAccelerator}
-    DebugLn('GetAccelGroup CREATING  Widget=',DbgS(Widget),' CreateIfNotExists=',CreateIfNotExists);
+    DebugLn('GetAccelGroup CREATING  Widget=',DbgS(Widget),' CreateIfNotExists=',dbgs(CreateIfNotExists));
     {$ENDIF}
     Result:=gtk_accel_group_new;
     SetAccelGroup(Widget,Result);
@@ -4874,7 +4873,7 @@ begin
   if AnAccelGroup<>nil then begin
     // attach group to widget
     {$IFDEF VerboseAccelerator}
-    DebugLn('SetAccelGroup AnAccelGroup=',DbgS(AnAccelGroup),' IsMenu=',GtkWidgetIsA(Widget,GTK_MENU_TYPE));
+    DebugLn('SetAccelGroup AnAccelGroup=',DbgS(AnAccelGroup),' IsMenu=',dbgs(GtkWidgetIsA(Widget,GTK_MENU_TYPE)));
     {$ENDIF}
     if GtkWidgetIsA(Widget,GTK_TYPE_MENU) then
       gtk_menu_set_accel_group(PGtkMenu(Widget), AnAccelGroup)
@@ -4910,8 +4909,9 @@ procedure ShareWindowAccelGroups(AWindow: PGtkWidget);
     {$IfDef GTK2}
     if (TheWindow=nil) or (TheAccelGroup=nil)
       or (TheAccelGroup^.acceleratables=nil)
-      or (g_slist_find(TheAccelGroup^.acceleratables, TheWindow)=nil) then
-    exit;
+      or (g_slist_find(TheAccelGroup^.acceleratables, TheWindow)=nil)
+    then
+      exit;
     gtk_window_add_accel_group(GTK_WINDOW(TheWindow), TheAccelGroup);
     {$else}
     if (TheAccelGroup=nil)
@@ -4979,13 +4979,15 @@ procedure UnshareWindowAccelGroups(AWindow: PGtkWidget);
     {$IfDef GTK2}
     if (TheWindow=nil) or (TheAccelGroup=nil)
       or (TheAccelGroup^.acceleratables=nil)
-      or (g_slist_find(TheAccelGroup^.acceleratables, TheWindow)=nil) then
-    exit;
+      or (g_slist_find(TheAccelGroup^.acceleratables, TheWindow)=nil)
+    then
+      exit;
     gtk_window_remove_accel_group(GTK_WINDOW(TheWindow), TheAccelGroup);
     {$else}
     if (TheAccelGroup=nil)
     or (TheAccelGroup^.attach_objects=nil)
-    or (g_slist_find(TheAccelGroup^.attach_objects, TheWindow)=nil) then
+    or (g_slist_find(TheAccelGroup^.attach_objects, TheWindow)=nil)
+    then
       exit;
     gtk_accel_group_detach(TheAccelGroup, PGtkObject(TheWindow));
     {$endif}
@@ -5091,7 +5093,7 @@ begin
   end;
   {$IFDEF VerboseAccelerator}
   DebugLn('SetAccelKey Widget=',DbgS(Widget),
-    ' Key=',Key,' Mods=',DbgS(Mods),
+    ' Key=',dbgs(Key),' Mods=',DbgS(Mods),
     ' Signal="',Signal,'" Result=',DbgS(Result));
   {$ENDIF}
   gtk_object_set_data(PGtkObject(Widget), 'AccelKey', Result);
@@ -5122,7 +5124,7 @@ begin
         Component.Name,':',Component.ClassName,
         ' Widget=',DbgS(Widget),
         ' Signal=',AccelKey^.Signal,
-        ' Key=',AccelKey^.Key,' Mods=',AccelKey^.Mods,
+        ' Key=',dbgs(AccelKey^.Key),' Mods=',dbgs(AccelKey^.Mods),
         '');
       {$ENDIF}
       gtk_widget_add_accelerator(Widget, PChar(AccelKey^.Signal),
@@ -5151,7 +5153,7 @@ begin
     DebugLn('UnrealizeAccelerator  ',
       ' Widget=',DbgS(Widget),
       ' Signal=',AccelKey^.Signal,
-      ' Key=',AccelKey^.Key,' Mods=',AccelKey^.Mods,
+      ' Key=',dbgs(AccelKey^.Key),' Mods=',dbgs(AccelKey^.Mods),
       '');
     {$ENDIF}
     {$Ifdef GTK2}
@@ -5177,7 +5179,7 @@ begin
   if (Component=nil) or (Widget=nil) or (Signal='') then
     RaiseException('Accelerate: invalid input');
   {$IFDEF VerboseAccelerator}
-  DebugLn('Accelerate ',Component.Name,':',Component.ClassName,' Key=',Key,' Mods=',DbgS(Mods),' Signal=',Signal);
+  DebugLn('Accelerate ',DbgSName(Component),' Key=',dbgs(Key),' Mods=',DbgS(Mods),' Signal=',Signal);
   {$ENDIF}
   
   // delete old accelerator key
@@ -5597,8 +5599,9 @@ var
         // simply delete all ampersands and don't set the letter shortcut.
         DeleteAmpersands(s);
         gtk_label_set_text(LabelWidget,PChar(s));
-        {Accelerate(LCLMenuItem,MenuItemWidget,
-          gtk_label_parse_uline(LabelWidget,PChar(s)),0,'activate_item');}
+        Accelerate(LCLMenuItem,MenuItemWidget,
+          gtk_label_parse_uline(LabelWidget,PChar(s)),
+          0,{$Ifdef GTK2}'activate'{$Else}'activate_item'{$EndIF});
       end;
     end
     else begin
@@ -8247,6 +8250,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.367  2005/07/07 20:56:29  mattias
+  clean up
+
   Revision 1.366  2005/07/07 20:20:45  mattias
   fixed clean all in IDE, added SystemKey parameter to IntfUTF8KeyPress
 

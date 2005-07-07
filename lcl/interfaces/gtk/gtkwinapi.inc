@@ -7906,7 +7906,7 @@ begin
   Widget:=PGtkWidget(hWnd);
   {$IfDef VerboseFocus}
   DebugLn('');
-  writeln('[TGtkWidgetSet.SetFocus] A hWnd=',GetWidgetDebugReport(Widget));
+  debugln('[TGtkWidgetSet.SetFocus] A hWnd=',GetWidgetDebugReport(Widget));
   LCLObject:=TWinControl(GetLCLObject(Widget));
   {$EndIf}
   if hwnd = 0 then begin
@@ -9027,6 +9027,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.425  2005/07/07 20:56:29  mattias
+  clean up
+
   Revision 1.424  2005/07/01 12:07:50  mattias
   moved some menu intf methods to the TXXXWSMenuItem class  from Martin Smat
 
