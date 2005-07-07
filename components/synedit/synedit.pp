@@ -1954,8 +1954,7 @@ var
   Cmd: TSynEditorCommand;
 begin
   {$IFDEF VerboseKeys}
-  DebugLn('[TCustomSynEdit.KeyDown] ',Key
-    ,' Shift=',ssShift in Shift,' Ctrl=',ssCtrl in Shift,' Alt=',ssAlt in Shift);
+  DebugLn('[TCustomSynEdit.KeyDown] ',dbgs(Key),' ',dbgs(Shift));
   {$ENDIF}
   inherited;
   {$IFDEF SYN_LAZARUS}
@@ -1980,6 +1979,7 @@ begin
     if Data <> nil then
       FreeMem(Data);
   end;
+  //DebugLn('[TCustomSynEdit.KeyDown] END ',dbgs(Key),' ',dbgs(Shift));
 end;
 
 {$IFDEF SYN_LAZARUS}

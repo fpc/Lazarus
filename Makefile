@@ -555,103 +555,103 @@ ifeq ($(FULL_TARGET),arm-linux)
 override TARGET_EXAMPLEDIRS+=examples
 endif
 ifeq ($(FULL_TARGET),i386-linux)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),i386-go32v2)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),i386-win32)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),i386-os2)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),i386-freebsd)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),i386-beos)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),i386-netbsd)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),i386-solaris)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),i386-qnx)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),i386-netware)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),i386-openbsd)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),i386-wdosx)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),i386-emx)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),i386-watcom)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),i386-netwlibc)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),m68k-linux)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),m68k-freebsd)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),m68k-netbsd)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),m68k-amiga)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),m68k-atari)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),m68k-openbsd)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),m68k-palmos)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),powerpc-linux)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),powerpc-netbsd)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),powerpc-macos)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),powerpc-darwin)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),powerpc-morphos)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),sparc-linux)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),sparc-netbsd)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),sparc-solaris)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),x86_64-linux)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),x86_64-freebsd)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),arm-linux)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 override INSTALL_BASEDIR=share/lazarus
 override INSTALL_FPCPACKAGE=n
@@ -3825,11 +3825,12 @@ zipinstall: fpc_zipinstall
 zipsourceinstall: fpc_zipsourceinstall
 zipexampleinstall: fpc_zipexampleinstall $(addsuffix _zipexampleinstall,$(TARGET_DIRS))
 zipdistinstall: fpc_zipdistinstall
+clean: fpc_clean $(addsuffix _clean,$(TARGET_DIRS)) $(addsuffix _clean,$(TARGET_EXAMPLEDIRS))
 distclean: fpc_distclean $(addsuffix _distclean,$(TARGET_DIRS))
 cleanall: fpc_cleanall $(addsuffix _cleanall,$(TARGET_DIRS))
 info: fpc_info
 makefiles: fpc_makefiles
-.PHONY: debug smart release units examples shared install sourceinstall exampleinstall distinstall zipinstall zipsourceinstall zipexampleinstall zipdistinstall distclean cleanall info makefiles
+.PHONY: debug smart release units examples shared install sourceinstall exampleinstall distinstall zipinstall zipsourceinstall zipexampleinstall zipdistinstall clean distclean cleanall info makefiles
 ifneq ($(wildcard fpcmake.loc),)
 include fpcmake.loc
 endif
@@ -3876,14 +3877,13 @@ ifeq ($(OS_TARGET), win32)
 	-$(DEL) $(wildcard *.res)
 	-$(DEL) lazarus.owr
 endif
-cleanlaz:
+cleanlaz: clean cleanide
 	$(MAKE) -C lcl clean
 	$(MAKE) -C components clean
 	$(MAKE) -C packager clean
 	$(MAKE) -C designer clean
 	$(MAKE) -C ideintf clean
-clean: cleanlaz cleanide
-purge: cleanlaz cleanide
+purge: cleanlaz
 	$(MAKE) -C examples clean
 	$(MAKE) -C tools clean
 	$(MAKE) -C doceditor clean

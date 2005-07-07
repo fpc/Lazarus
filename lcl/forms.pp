@@ -1328,12 +1328,23 @@ function IsAccel(VK: word; const Str: string): Boolean;
 var
   lPos: integer;
 begin
-  { TODO: MBCS/UTF-8 }
-  lPos := Pos('&', Str);
+  // TODO: MBCS/UTF-8
+  lPos:=1;
+  while (lPos<length(Str)) do begin
+    if Str[lPos]<>'&' then begin
+      inc(lPos);
+    end else begin
+      inc(lPos);
+      if (Str[lPos]<>'&') then begin
+        Result := UpCase(Str[lPos]) = UpCase(char(VK));
+        exit;
+      end else begin
+        // skip double &&
+        inc(lPos);
+      end;
+    end;
+  end;
   Result := false;
-  if (0 < lPos) and (lPos < Length(Str)) then
-    if UpCase(Str[lPos+1]) = UpCase(char(VK)) then
-      Result := true;
 end;
 
 //==============================================================================

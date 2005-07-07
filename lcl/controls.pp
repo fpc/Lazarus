@@ -1637,7 +1637,7 @@ type
     function BrushCreated: Boolean;
     procedure EraseBackground(DC: HDC); virtual;
     function IntfUTF8KeyPress(var UTF8Key: TUTF8Char;
-                              RepeatCount: integer): boolean; dynamic;
+                              RepeatCount: integer; SystemKey: boolean): boolean; dynamic;
   end;
 
 
@@ -2941,6 +2941,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.307  2005/07/07 20:20:45  mattias
+  fixed clean all in IDE, added SystemKey parameter to IntfUTF8KeyPress
+
   Revision 1.306  2005/07/05 20:42:50  vincents
   csNoDesignVisible is not a ComponentState
 

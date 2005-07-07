@@ -1924,15 +1924,15 @@ end;
 
 {------------------------------------------------------------------------------
   function TWinControl.IntfUTF8KeyPress(var UTF8Key: TUTF8Char;
-    RepeatCount: integer): boolean;
+    RepeatCount: integer; SystemKey: boolean): boolean;
 
   Called by the interface after the navigation and specials keys are handled
   (e.g. after KeyDown but before KeyPress).
 ------------------------------------------------------------------------------}
 function TWinControl.IntfUTF8KeyPress(var UTF8Key: TUTF8Char;
-  RepeatCount: integer): boolean;
+  RepeatCount: integer; SystemKey: boolean): boolean;
 begin
-  Result:=(RepeatCount>0) and DoUTF8KeyPress(UTF8Key)
+  Result:=(RepeatCount>0) and (not SystemKey) and DoUTF8KeyPress(UTF8Key);
 end;
 
 {------------------------------------------------------------------------------
@@ -3587,7 +3587,7 @@ begin
     // -> emulate
     if (Message.CharCode < %11000000) then begin
       c:=chr(Message.CharCode);
-      IntfUTF8KeyPress(c,1);
+      IntfUTF8KeyPress(c,1,false);
       if (length(c)<>1) or (c[1]<>chr(Message.CharCode)) then begin
         // character changed
         if length(c)=1 then
@@ -3704,6 +3704,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMChar(var Message: TLMChar);
 begin
+  debugln('TWinControl.WMChar ',DbgSName(Self),' ',dbgs(Message.CharCode));
   if DoRemainingKeyPress(Message) then
     Message.Result := 1;
   Assert(False, Format('Trace:[TWinControl.WMChar] %s', [ClassName]));
@@ -3711,6 +3712,7 @@ end;
 
 procedure TWinControl.WMSysChar(var Message: TLMChar);
 begin
+  //debugln('TWinControl.WMSysChar ',DbgSName(Self),' ',dbgs(Message.CharCode));
   if DoRemainingKeyPress(Message) then
     Message.Result := 1;
 end;
@@ -4577,6 +4579,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.335  2005/07/07 20:20:45  mattias
+  fixed clean all in IDE, added SystemKey parameter to IntfUTF8KeyPress
+
   Revision 1.334  2005/07/03 10:21:46  mattias
   emulating UTF8 keypress before keypress
 

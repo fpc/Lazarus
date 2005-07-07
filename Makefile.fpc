@@ -32,7 +32,7 @@ targetdir=.
 files=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) \
       $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) \
       $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) \
-      $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
+      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 
 [install]
 fpcpackage=n
@@ -142,16 +142,14 @@ ifeq ($(OS_TARGET), win32)
         -$(DEL) lazarus.owr
 endif
 
-cleanlaz:
+cleanlaz: clean cleanide
         $(MAKE) -C lcl clean
         $(MAKE) -C components clean
         $(MAKE) -C packager clean
         $(MAKE) -C designer clean
         $(MAKE) -C ideintf clean
 
-clean: cleanlaz cleanide
-
-purge: cleanlaz cleanide
+purge: cleanlaz
         $(MAKE) -C examples clean
         $(MAKE) -C tools clean
         $(MAKE) -C doceditor clean

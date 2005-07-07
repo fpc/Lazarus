@@ -1979,6 +1979,17 @@ var
   Character: TUTF8Char;
   SysKey: Boolean;
 
+  VKey: TVKeyRecord;
+  CommonKeyData: Integer;
+  Flags: Integer;
+  FocusedWidget: PGtkWidget;
+  LCLObject: TObject;
+  FocusedWinControl: TWinControl;
+  HandledByLCL: Boolean;
+  TargetWidget: PGtkWidget;
+  TargetData: gPointer;
+  KeyPressesChar: char;
+
   procedure StopKeyEvent(const AnEventName: PChar);
   begin
     {$IFDEF VerboseKeyboard}
@@ -2083,24 +2094,27 @@ var
   end;
   
   function KeyActivatedAccelerator: boolean;
+  //var
+  //  AComponent: TComponent;
   begin
     Result:=false;
+    //debugln('KeyActivatedAccelerator A');
     if not SysKey then exit;
     // it is a system key -> try menus
-    
+    if (Msg.CharCode in [VK_A..VK_Z])
+    and (TObject(TargetData) is TComponent) then begin
+      {AComponent:=TComponent(TargetData);
+      if AComponent is TControl then begin
+        debugln('KeyActivatedAccelerator call TControl.DialogChar');
+        if TControl(AComponent).DialogChar(Msg.CharCode) then begin
+          debugln('KeyActivatedAccelerator C handled by LCL');
+          StopKeyEvent('key_press_event');
+          Result:=true;
+        end;
+      end;}
+    end;
   end;
 
-var
-  VKey: TVKeyRecord;
-  CommonKeyData: Integer;
-  Flags: Integer;
-  FocusedWidget: PGtkWidget;
-  LCLObject: TObject;
-  FocusedWinControl: TWinControl;
-  HandledByLCL: Boolean;
-  TargetWidget: PGtkWidget;
-  TargetData: gPointer;
-  KeyPressesChar: char;
 begin
   Result := CallBackDefaultReturn;
 
@@ -2244,6 +2258,7 @@ begin
       // send the (Sys)KeyDown message directly to the LCL
       NotifyApplicationUserInput(Msg.Msg);
       Result := DeliverMessage(TargetData, Msg) = 0;
+      //debugln('[HandleGTKKeyUpDown] GDK_KEY_PRESS After KeyDown message CharCode=',dbgs(Msg.CharCode));
 
       if Msg.CharCode <> Vkey.Vkey
       then begin
@@ -2251,8 +2266,9 @@ begin
         StopKeyEvent('key_press_event');
       end;
       
-      if KeyActivatedAccelerator then exit;
-      
+      if (not EventStopped) and BeforeEvent then begin
+        if KeyActivatedAccelerator then exit;
+      end;
 
       if (not EventStopped) and (not BeforeEvent) then begin
         // send the UTF8 keypress
@@ -2272,7 +2288,9 @@ begin
         if Character<>'' then begin
           LCLObject:=GetNearestLCLObject(TargetWidget);
           if LCLObject is TWinControl then begin
-            Result:=TWinControl(LCLObject).IntfUTF8KeyPress(Character,1);
+            //debugln('[HandleGTKKeyUpDown] GDK_KEY_PRESS before IntfUTF8KeyPress UTF8="',DbgStr(Character),'"');
+            Result:=TWinControl(LCLObject).IntfUTF8KeyPress(Character,1,SysKey);
+            //debugln('[HandleGTKKeyUpDown] GDK_KEY_PRESS after IntfUTF8KeyPress UTF8="',DbgStr(Character),'"');
             if Result or (Character='') then
               StopKeyEvent('key_press_event');
           end;
@@ -8229,6 +8247,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.366  2005/07/07 20:20:45  mattias
+  fixed clean all in IDE, added SystemKey parameter to IntfUTF8KeyPress
+
   Revision 1.365  2005/06/23 21:24:40  marc
   + added gdk_display function for gtk2
   - replaced X11Display with gdk_display
