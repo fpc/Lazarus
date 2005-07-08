@@ -2024,8 +2024,12 @@ var
   LeftTop:TPoint;
   R: TRect;
   ParentHandle: THandle;
+  WindowInfo: PWindowInfo;
 begin
   Result:=false;
+  WindowInfo := GetWindowInfo(Handle);
+  if (WindowInfo^.WinControl is TCustomSpinEdit) then
+    Handle := Windows.SendMessage(Handle, UDM_GETBUDDY, 0, 0);
   if not Windows.GetWindowRect(Handle,@R) then exit;
   LeftTop.X:=R.Left;
   LeftTop.Y:=R.Top;
@@ -2056,6 +2060,16 @@ var
   WP: WINDOWPLACEMENT;
   R: TRect;
   Style, ExStyle: LongInt;
+  WindowInfo: PWindowInfo;
+
+    procedure AdjustForBuddySize;
+    var
+      BuddyWidth, BuddyHeight: integer;
+    begin
+      GetWindowSize(Windows.SendMessage(Handle, UDM_GETBUDDY, 0, 0), BuddyWidth, BuddyHeight);
+      Inc(Width, BuddyWidth);
+    end;
+
 begin
   WP.length := SizeOf(WP);
   Result := Boolean(Windows.GetWindowPlacement(Handle, WP));
@@ -2096,6 +2110,10 @@ begin
       Dec(Height, Windows.GetSystemMetrics(SM_CYSMCAPTION))
     else
       Dec(Height, Windows.GetSystemMetrics(SM_CYCAPTION));
+
+  WindowInfo := GetWindowInfo(Handle);
+  if (WindowInfo^.WinControl is TCustomSpinEdit) then
+    AdjustForBuddySize;
 end;
 
 {------------------------------------------------------------------------------
@@ -3141,6 +3159,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.147  2005/07/08 17:58:02  micha
+  fix 798, spinedit control needs coordinates of buddy
+
   Revision 1.146  2005/06/22 17:37:06  mattias
   implemented TMouse.SetCursorPos  from Andrew
 
