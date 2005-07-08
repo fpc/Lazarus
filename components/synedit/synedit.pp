@@ -3,7 +3,7 @@ The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
 http://www.mozilla.org/MPL/
-
+                                                       F
 Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
 the specific language governing rights and limitations under the License.
@@ -63,7 +63,7 @@ uses
 {$ELSE}
   Windows,
 {$ENDIF}
-  SysUtils, Classes, Messages, Controls, Graphics, Forms, StdCtrls, ExtCtrls,
+  Dialogs, SysUtils, Classes, Messages, Controls, Graphics, Forms, StdCtrls, ExtCtrls,
 {$IFDEF SYN_MBCSSUPPORT}
   Imm,
 {$ENDIF}
@@ -343,6 +343,7 @@ type
     procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
     procedure WMVScroll(var Msg: TWMScroll); message WM_VSCROLL;
   private
+    fFirstLine: integer;
     fBlockBegin: TPoint;   // logical position (byte)
     fBlockEnd: TPoint;     // logical position (byte)
     fBlockIndent: integer;
@@ -673,8 +674,6 @@ type
       //code fold
     procedure CodeFoldAction(Y: integer);
     procedure InitCodeFold;
-    procedure SetCodeFoldItem(Line : integer; Folded: boolean;
-                             FoldIndex: integer; FoldType: TSynEditCodeFoldType);
 
     procedure AddKey(Command: TSynEditorCommand; Key1: word; SS1: TShiftState;
       Key2: word; SS2: TShiftState);
@@ -1356,6 +1355,7 @@ begin
   fScrollTimer.Enabled := False;
   fScrollTimer.Interval := 100;
   fScrollTimer.OnTimer := {$IFDEF FPC}@{$ENDIF}ScrollTimerHandler;
+  fFirstLine := 1;
 end;
 
 procedure TCustomSynEdit.CreateParams(var Params: TCreateParams);
@@ -2498,7 +2498,8 @@ procedure TCustomSynEdit.CodeFoldAction(Y: integer);
 var
   iLine: integer;
 begin
-  iLine := PixelsToRowColumn(Point(0, Y)).Y;
+  iLine := PixelsToRowColumn(Point(0, Y)).Y {+ TopLine - 2} - 1;
+  showmessage(IntToStr(iLine));
 
   case TSynEditStringList(fLines).FoldType[iLine] of
   cfExpanded:
@@ -2506,10 +2507,10 @@ begin
       //collapse the branch
       debugln('collapsing node: ',dbgs(iLine));
       TSynEditStringList(fLines).FoldType[iLine] := cfCollapsed;
-      Inc(iLine);
       repeat
+      Inc(iLine);
         TSynEditStringList(fLines).Folded[iLine] := False;
-        Inc(iLine);
+        //Inc(iLine);
       until (TSynEditStringList(fLines).FoldType[iLine]
              in [cfExpanded,cfCollapsed,cfEnd]);
       Invalidate;
@@ -2520,10 +2521,11 @@ begin
       //expand the branch
       debugln('expanding node: ',dbgs(iLine));
       TSynEditStringList(fLines).FoldType[iLine] := cfExpanded;
-      Inc(iLine);
+      //Inc(iLine);
       repeat
+      Inc(iLine);
         TSynEditStringList(fLines).Folded[iLine] := True;
-        Inc(iLine);
+        //Inc(iLine);
       until (TSynEditStringList(fLines).FoldType[iLine]
              in [cfExpanded,cfCollapsed,cfEnd]);
       Invalidate;
@@ -2537,164 +2539,11 @@ end;
   A simple heuristic to create codefolds for text with same space indent
  }
 procedure TCustomSynEdit.InitCodeFold;
-type
-  TIndentStackItem = record
-    Indent: integer;
-    Line: integer;
-  end;
-
-var
-  iLine: Integer;
-  CurLine: string;
-  CurIndent: Integer;
-  Stack: array of TIndentStackItem;
-  StackPtr: Integer;
-  BlockStart: LongInt;
-  BlockIndex: Integer;
-  i: Integer;
-  
-  procedure PushIndent(ALine, AnIndent: integer);
-  begin
-    inc(StackPtr);
-    if length(Stack)=StackPtr then
-      SetLength(Stack,StackPtr+1);
-    Stack[StackPtr].Line:=ALine;
-    Stack[StackPtr].Indent:=AnIndent;
-  end;
-  
 begin
-  StackPtr:=-1;
-  BlockIndex:=0;
-  for iLine:=0 to Lines.Count-1 do begin
-    // set defaults
-    if StackPtr>0 then
-      SetCodeFoldItem(iLine,false,0,cfContinue)
-    else
-      SetCodeFoldItem(iLine,false,0,cfNone);
-
-    // get current line, with tabs expanded
-    CurLine:=TSynEditStringList(fLines).ExpandedStrings[iLine];
-    // count indenting
-    CurIndent:=0;
-    while (CurIndent<length(CurLine)) and (CurLine[CurIndent+1]=' ') do
-      inc(CurIndent);
-      
-    if CurIndent>=length(CurLine) then begin
-      //debugln('TCustomSynEdit.InitCodeFold iLine=',dbgs(iLine+1),' skipping empty line');
-      // empty line -> skip
-    end else if StackPtr<0 then begin
-      // first line with content
-      //debugln('TCustomSynEdit.InitCodeFold iLine=',dbgs(iLine+1),' Indent=',dbgs(CurIndent),' first line with content');
-      PushIndent(iLine,CurIndent);
-    end else if Stack[StackPtr].Indent<CurIndent then begin
-      // more indenting -> block start
-      BlockStart:=Stack[StackPtr].Line;
-      //debugln('TCustomSynEdit.InitCodeFold iLine=',dbgs(iLine+1),' Indent=',dbgs(CurIndent),' more indenting -> block start BlockStart=',dbgs(BlockStart+1));
-      inc(BlockIndex);
-      SetCodeFoldItem(BlockStart,false,BlockIndex,cfExpanded);
-      SetCodeFoldItem(iLine,false,0,cfContinue);
-      if StackPtr=0 then
-        for i:=BlockStart+1 to iLine-1 do
-          SetCodeFoldItem(i,false,0,cfContinue);
-      PushIndent(iLine,CurIndent);
-    end else if Stack[StackPtr].Indent>CurIndent then begin
-      // less indenting -> one or more blocks end
-      //debugln('TCustomSynEdit.InitCodeFold iLine=',dbgs(iLine+1),' Indent=',dbgs(CurIndent),' less indenting -> one or more blocks end');
-      SetCodeFoldItem(iLine,false,0,cfEnd);
-      while (StackPtr>=0) and (Stack[StackPtr].Indent>=CurIndent) do
-        dec(StackPtr);
-      //debugln('TCustomSynEdit.InitCodeFold iLine=',dbgs(iLine+1),' Indent=',dbgs(CurIndent),' first line with content');
-      PushIndent(iLine,CurIndent);
-    end else begin
-      // same indenting
-      Stack[StackPtr].Line:=iLine;
-    end;
-  end;
-
-  //for iLine:=0 to Lines.Count-1 do begin
-  //  debugln('  ',dbgs(iLine+1),' ',dbgs(ord(TSynEditStringList(fLines).FoldType[iLine])));
-  //end;
-
-{  Index := 0;
-
-  i := 1;
-  //until interface
-  SetCodeFoldItem(i, False, Index, cfExpanded);
-  repeat
-    Inc(i);
-    SetCodeFoldItem(i, False, Index, cfContinue);
-  until (i = Lines.Count) or (Pos('interface', Trim(Lines[i])) = 1);
-  SetCodeFoldItem(i-1, False, Index, cfEnd);
-
-  Inc(Index);
-  Inc(i);
-
-  //until implementation
-  SetCodeFoldItem(i, False, Index, cfExpanded);
-  repeat
-    Inc(i);
-    SetCodeFoldItem(i, False, Index, cfContinue);
-  until (i = Lines.Count) or (Pos('implementation', Trim(Lines[i])) = 1);
-  SetCodeFoldItem(i-1, False, Index, cfEnd);
-
-  Inc(Index);
-
-  //until start procedure / function declaration
-  SetCodeFoldItem(i, False, Index, cfExpanded);
-  repeat
-    Inc(i);
-    SetCodeFoldItem(i, False, Index, cfContinue);
-  until (i = Lines.Count) or
-        (Pos('procedure', Trim(Lines[i])) = 1) or
-        (Pos('function', Trim(Lines[i])) = 1);
-  SetCodeFoldItem(i-1, False, Index, cfEnd);
-
-  Inc(Index);
-
-  //each procedure / function
-  //search until procedure / function declaration is found
-  while i < Lines.Count do
+  if Assigned(fHighLighter) then
   begin
-    //start procedure / function
-    SetCodeFoldItem(i, False, Index, cfExpanded);
-
-    //search until end procedure / function is found
-      while (i < Lines.Count) and (Pos('begin', Trim(Lines[i])) <> 0) do
-      begin
-        Inc(i);
-        SetCodeFoldItem(i, False, Index, cfContinue);
-      end;
-
-    EndIndex := 1;
-    Inc(i);
-    while (i < Lines.Count) and (EndIndex <> 0) do
-    begin
-      Inc(i);
-
-      if Pos('begin', Trim(Lines[i])) <> 0 then Inc(EndIndex);
-      if Pos('end;', Trim(Lines[i])) <> 0 then Dec(EndIndex);
-
-      SetCodeFoldItem(i, False, Index, cfContinue);
-    end;
-    Inc(i);
-    SetCodeFoldItem(i, False, Index, cfEnd);
-
-    while (i < Lines.Count) and
-          (Pos('procedure', Trim(Lines[i])) <> 1) and
-          (Pos('function', Trim(Lines[i])) <> 1) do
-    begin
-      Inc(i);
-      SetCodeFoldItem(i, False, Index, cfNone);
-    end;
-  end;}
-end;
-
-procedure TCustomSynEdit.SetCodeFoldItem(Line: integer; Folded: boolean;
-  FoldIndex: integer; FoldType: TSynEditCodeFoldType);
-begin
-  TSynEditStringList(fLines).Folded[Line]:=Folded;
-  TSynEditStringList(fLines).FoldIndex[Line]:=FoldIndex;
-  TSynEditStringList(fLines).FoldType[Line]:=FoldType;
+    fHighLighter.InitCodeFold(Lines);
+  end;
 end;
 
 procedure TCustomSynEdit.PaintGutter(AClip: TRect; FirstLine, LastLine: integer);
@@ -2726,8 +2575,12 @@ var
         If fTextHeight > fBookMarkOpt.BookmarkImages.Height then
           iTop := (fTextHeight - fBookMarkOpt.BookmarkImages.Height) div 2;
         with fBookMarkOpt do
-          BookmarkImages.Draw(Canvas, LeftMargin + aGutterOffs^[iLine],
-            iTop + iLine * fTextHeight, Marks[iMark].ImageIndex,true);
+          if not TSynEditStringList(fLines).Folded[iLine] then
+            if fGutter.ShowCodeFolding then
+              BookmarkImages.Draw(Canvas, LeftMargin + aGutterOffs^[iLine] + fGutter.CodeFoldingWidth, iTop + iLine * fTextHeight, Marks[iMark].ImageIndex,true)
+            else
+              BookmarkImages.Draw(Canvas, LeftMargin + aGutterOffs^[iLine], iTop + iLine * fTextHeight, Marks[iMark].ImageIndex,true);
+          
         Inc(aGutterOffs^[iLine], fBookMarkOpt.XOffset);
       end;
     end else
@@ -2738,9 +2591,12 @@ var
           fInternalImage := TSynInternalImage.Create('SynEditInternalImages',
             10);
         end;
-        fInternalImage.DrawMark(Canvas, Marks[iMark].ImageIndex,
-          fBookMarkOpt.LeftMargin + aGutterOffs^[iLine],
-          iLine * fTextHeight, fTextHeight);
+        if not TSynEditStringList(fLines).Folded[iLine] then
+          if fGutter.ShowCodeFolding then
+            fInternalImage.DrawMark(Canvas, Marks[iMark].ImageIndex, fBookMarkOpt.LeftMargin + aGutterOffs^[iLine] + fGutter.CodeFoldingWidth, iLine * fTextHeight, fTextHeight)
+          else
+            fInternalImage.DrawMark(Canvas, Marks[iMark].ImageIndex, fBookMarkOpt.LeftMargin + aGutterOffs^[iLine], iLine * fTextHeight, fTextHeight);
+
         Inc(aGutterOffs^[iLine], fBookMarkOpt.XOffset);
       end;
     end;
@@ -2845,8 +2701,13 @@ begin
         s := fGutter.FormatLineNumber(iLine);
         {$IFDEF SYN_LAZARUS}
         //InternalFillRect(DC, rcLine);
-        fTextDrawer.ExtTextOut(fGutter.LeftOffset, rcLine.Top, ETO_OPAQUE,
-          rcLine,PChar(S),Length(S));
+        
+        if not TSynEditStringList(fLines).Folded[iLine] then
+          if fGutter.ShowCodeFolding then
+            fTextDrawer.ExtTextOut(fGutter.LeftOffset + fGutter.CodeFoldingWidth, rcLine.Top, ETO_OPAQUE,rcLine,PChar(S),Length(S))
+          else
+            fTextDrawer.ExtTextOut(fGutter.LeftOffset, rcLine.Top, ETO_OPAQUE,rcLine,PChar(S),Length(S));
+
         //LCLIntf.DrawText(DC, PChar(S), Length(S), rcLine,
         //  DT_RIGHT or DT_Center or DT_SINGLELINE or DT_NOPREFIX);
         //LCLIntf.ExtTextOut(DC, fGutter.LeftOffset, rcLine.Top, ETO_OPAQUE,
@@ -3000,6 +2861,9 @@ var
   nAntiBracketY: integer; // one based
 
   LinkFGCol: TColor;
+
+    nLine : integer;
+    ypos : integer;
 
 { local procedures }
 
@@ -3161,6 +3025,8 @@ var
     pszText: PChar;
     nCharsToPaint: integer;
     nX: integer;
+    nLine: integer;
+    ypos: integer;
   const
     ETOOptions = ETO_OPAQUE; // Note: clipping is slow and not needed
   begin
@@ -3191,6 +3057,16 @@ var
       // draw edge
       LCLIntf.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
       LCLIntf.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
+
+      //codefold draw splitter line
+      ypos := rcToken.Bottom - 1;
+      nLine := PixelsToRowColumn(Point(0, ypos)).Y;
+      if TSynEditStringList(Lines).FoldType[nLine] in [cfEnd] then
+      begin
+        LCLIntf.MoveToEx(dc, nRightEdge, ypos, nil);
+        LCLIntf.LineTo(dc, fGutterWidth, ypos);
+      end;
+
       // draw text
       fTextDrawer.ExtTextOut(nX, rcToken.Top, ETOOptions-ETO_OPAQUE, rcToken,
         pszText, nCharsToPaint);
@@ -3213,6 +3089,8 @@ var
     C1SelPhys: integer;
     C2Phys: integer;
     C2SelPhys: LongInt;
+    nLine : integer;
+    ypos : integer;
   begin
     // Compute some helper variables.
     nC1 := Max(FirstColLogical, TokenAccu.CharsBefore + 1);
@@ -3311,6 +3189,16 @@ var
       and (nRightEdge>=rcToken.Left) then begin
         LCLIntf.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
         LCLIntf.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
+
+      //codefold draw splitter line
+      ypos := rcToken.Bottom - 1;
+      nLine := PixelsToRowColumn(Point(0, ypos)).Y;
+      if TSynEditStringList(Lines).FoldType[nLine] in [cfEnd] then
+      begin
+        LCLIntf.MoveToEx(dc, nRightEdge, ypos, nil);
+        LCLIntf.LineTo(dc, fGutterWidth, ypos);
+      end;
+      
       end;
     end;
   end;
@@ -3918,6 +3806,15 @@ begin
     if bDoRightEdge and (not (eoHideRightMargin in Options)) then begin
       LCLIntf.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
       LCLIntf.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
+
+      //codefold draw splitter line
+      ypos := rcToken.Bottom - 1;
+      nLine := PixelsToRowColumn(Point(0, ypos)).Y;
+      if TSynEditStringList(Lines).FoldType[nLine] in [cfEnd] then
+      begin
+        LCLIntf.MoveToEx(dc, nRightEdge, ypos, nil);
+        LCLIntf.LineTo(dc, fGutterWidth, ypos);
+      end;
     end;
   end;
 
@@ -4369,6 +4266,15 @@ var
       if bDoRightEdge then begin
         Windows.MoveToEx(dc, nRightEdge, rcLine.Top, nil);
         Windows.LineTo(dc, nRightEdge, rcLine.Bottom + 1);
+
+      //codefold draw splitter line
+      ypos := rcToken.Bottom - 1;
+      nLine := PixelsToRowColumn(Point(0, ypos)).Y;
+      if TSynEditStringList(Lines).FoldType[nLine] in [cfEnd] then
+      begin
+        Windows.MoveToEx(dc, nRightEdge, ypos, nil);
+        Windows.LineTo(dc, fGutterWidth, ypos);
+      end;
       end;
     end;
   end;
@@ -4434,6 +4340,15 @@ begin
     if bDoRightEdge and (not (eoHideRightMargin in Options)) then begin
       Windows.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
       Windows.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
+
+      //codefold draw splitter line
+      ypos := rcToken.Bottom - 1;
+      nLine := PixelsToRowColumn(Point(0, ypos)).Y;
+      if TSynEditStringList(Lines).FoldType[nLine] in [cfEnd] then
+      begin
+        Windows.MoveToEx(dc, nRightEdge, ypos, nil);
+        Windows.LineTo(dc, fGutterWidth, ypos);
+      end;
     end;
   end;
 end;

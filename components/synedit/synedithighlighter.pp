@@ -48,7 +48,8 @@ uses
   IniFiles,
 {$ENDIF}
   SynEditTypes,
-  SynEditMiscClasses;
+  SynEditMiscClasses,
+  SynEditTextBuffer;
 
 {$DEFINE _Gp_MustEnhanceRegistry}
 {$IFDEF SYN_COMPILER_4_UP}
@@ -187,6 +188,11 @@ type
     property IdentChars: TSynIdentChars read GetIdentChars;
     property WordBreakChars: TSynIdentChars read fWordBreakChars write SetWordBreakChars;
     property LanguageName: string read GetLanguageName;
+
+    //code fold
+    procedure SetCodeFoldItem(Lines: TStrings; Line : integer; Folded: boolean;
+                             FoldIndex: integer; FoldType: TSynEditCodeFoldType); virtual;
+    procedure InitCodeFold(Lines: TStrings); virtual;
   public
     property AttrCount: integer read GetAttribCount;
     property Attribute[idx: integer]: TSynHighlighterAttributes
@@ -980,6 +986,15 @@ begin
     //Until this is resolved, you will have to manually call repaint
     //on the editor in question.
   end;
+end;
+
+procedure TSynCustomHighlighter.SetCodeFoldItem(Lines: TStrings; Line : integer; Folded: boolean;
+  FoldIndex: integer; FoldType: TSynEditCodeFoldType);
+begin
+end;
+
+procedure TSynCustomHighlighter.InitCodeFold(Lines: TStrings);
+begin
 end;
 
 {$IFNDEF SYN_CPPB_1}

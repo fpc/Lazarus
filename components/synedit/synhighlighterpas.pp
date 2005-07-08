@@ -58,7 +58,7 @@ uses
   Windows, Messages, Registry,
   {$ENDIF}
   Classes, Controls, Graphics,
-  SynEditTypes, SynEditHighlighter;
+  SynEditTypes, SynEditHighlighter, SynEditTextBuffer;
 
 type
   TtkTokenKind = (tkAsm, tkComment, tkIdentifier, tkKey, tkNull, tkNumber,
@@ -250,6 +250,12 @@ type
     procedure SetRange(Value: Pointer); override;
     function UseUserSettings(settingIndex: integer): boolean; override;
     procedure EnumUserSettings(settings: TStrings); override;
+
+    //code fold
+    procedure SetCodeFoldItem(Lines: TStrings; Line : integer; Folded: boolean;
+                             FoldIndex: integer; FoldType: TSynEditCodeFoldType); override;
+    procedure InitCodeFold(Lines: TStrings); override;
+
   published
     property AsmAttri: TSynHighlighterAttributes read fAsmAttri write fAsmAttri;
     property CommentAttri: TSynHighlighterAttributes read fCommentAttri
@@ -1750,6 +1756,168 @@ procedure TSynPasSyn.SetD4syntax(const Value: boolean);
 begin
   FD4syntax := Value;
 end;
+
+procedure TSynPasSyn.SetCodeFoldItem(Lines: TStrings; Line : integer; Folded: boolean;
+  FoldIndex: integer; FoldType: TSynEditCodeFoldType);
+begin
+  TSynEditStringList(Lines).Folded[Line]:=Folded;
+  TSynEditStringList(Lines).FoldIndex[Line]:=FoldIndex;
+  TSynEditStringList(Lines).FoldType[Line]:=FoldType;
+end;
+
+procedure TSynPasSyn.InitCodeFold(Lines: TStrings);
+type
+  TIndentStackItem = record
+    Indent: integer;
+    Line: integer;
+  end;
+
+var
+  iLine: Integer;
+  CurLine: string;
+  CurIndent: Integer;
+  Stack: array of TIndentStackItem;
+  StackPtr: Integer;
+  BlockStart: LongInt;
+  BlockIndex: Integer;
+  i: Integer;
+
+  procedure PushIndent(ALine, AnIndent: integer);
+  begin
+    inc(StackPtr);
+    if length(Stack)=StackPtr then
+      SetLength(Stack,StackPtr+1);
+    Stack[StackPtr].Line:=ALine;
+    Stack[StackPtr].Indent:=AnIndent;
+  end;
+
+begin
+  StackPtr:=-1;
+  BlockIndex:=0;
+  for iLine:=0 to Lines.Count-1 do begin
+    // set defaults
+    if StackPtr>0 then
+      SetCodeFoldItem(Lines, iLine, false,0,cfContinue)
+    else
+      SetCodeFoldItem(Lines, iLine,false,0,cfNone);
+
+    // get current line, with tabs expanded
+    CurLine:=TSynEditStringList(Lines).ExpandedStrings[iLine];
+    // count indenting
+    CurIndent:=0;
+    while (CurIndent<length(CurLine)) and (CurLine[CurIndent+1]=' ') do
+      inc(CurIndent);
+
+    if CurIndent>=length(CurLine) then begin
+      //debugln('TCustomSynEdit.InitCodeFold iLine=',dbgs(iLine+1),' skipping empty line');
+      // empty line -> skip
+    end else if StackPtr<0 then begin
+      // first line with content
+      //debugln('TCustomSynEdit.InitCodeFold iLine=',dbgs(iLine+1),' Indent=',dbgs(CurIndent),' first line with content');
+      PushIndent(iLine,CurIndent);
+    end else if Stack[StackPtr].Indent<CurIndent then begin
+      // more indenting -> block start
+      BlockStart:=Stack[StackPtr].Line;
+      //debugln('TCustomSynEdit.InitCodeFold iLine=',dbgs(iLine+1),' Indent=',dbgs(CurIndent),' more indenting -> block start BlockStart=',dbgs(BlockStart+1));
+      inc(BlockIndex);
+      SetCodeFoldItem(Lines,BlockStart,false,BlockIndex,cfExpanded);
+      SetCodeFoldItem(Lines,iLine,false,0,cfContinue);
+      if StackPtr=0 then
+        for i:=BlockStart+1 to iLine-1 do
+          SetCodeFoldItem(Lines,i,false,0,cfContinue);
+      PushIndent(iLine,CurIndent);
+    end else if Stack[StackPtr].Indent>CurIndent then begin
+      // less indenting -> one or more blocks end
+      //debugln('TCustomSynEdit.InitCodeFold iLine=',dbgs(iLine+1),' Indent=',dbgs(CurIndent),' less indenting -> one or more blocks end');
+      SetCodeFoldItem(Lines,Pred(iLine),false,0,cfEnd);
+      while (StackPtr>=0) and (Stack[StackPtr].Indent>=CurIndent) do
+        dec(StackPtr);
+      //debugln('TCustomSynEdit.InitCodeFold iLine=',dbgs(iLine+1),' Indent=',dbgs(CurIndent),' first line with content');
+      PushIndent(iLine,CurIndent);
+    end else begin
+      // same indenting
+      Stack[StackPtr].Line:=iLine;
+    end;
+  end;
+
+  //for iLine:=0 to Lines.Count-1 do begin
+  //  debugln('  ',dbgs(iLine+1),' ',dbgs(ord(TSynEditStringList(Lines).FoldType[iLine])));
+  //end;
+
+{  Index := 0;
+
+  i := 1;
+  //until interface
+  SetCodeFoldItem(i, False, Index, cfExpanded);
+  repeat
+    Inc(i);
+    SetCodeFoldItem(i, False, Index, cfContinue);
+  until (i = Lines.Count) or (Pos('interface', Trim(Lines[i])) = 1);
+  SetCodeFoldItem(i-1, False, Index, cfEnd);
+
+  Inc(Index);
+  Inc(i);
+
+  //until implementation
+  SetCodeFoldItem(i, False, Index, cfExpanded);
+  repeat
+    Inc(i);
+    SetCodeFoldItem(i, False, Index, cfContinue);
+  until (i = Lines.Count) or (Pos('implementation', Trim(Lines[i])) = 1);
+  SetCodeFoldItem(i-1, False, Index, cfEnd);
+
+  Inc(Index);
+
+  //until start procedure / function declaration
+  SetCodeFoldItem(i, False, Index, cfExpanded);
+  repeat
+    Inc(i);
+    SetCodeFoldItem(i, False, Index, cfContinue);
+  until (i = Lines.Count) or
+        (Pos('procedure', Trim(Lines[i])) = 1) or
+        (Pos('function', Trim(Lines[i])) = 1);
+  SetCodeFoldItem(i-1, False, Index, cfEnd);
+
+  Inc(Index);
+
+  //each procedure / function
+  //search until procedure / function declaration is found
+  while i < Lines.Count do
+  begin
+    //start procedure / function
+    SetCodeFoldItem(i, False, Index, cfExpanded);
+
+    //search until end procedure / function is found
+      while (i < Lines.Count) and (Pos('begin', Trim(Lines[i])) <> 0) do
+      begin
+        Inc(i);
+        SetCodeFoldItem(i, False, Index, cfContinue);
+      end;
+
+    EndIndex := 1;
+    Inc(i);
+    while (i < Lines.Count) and (EndIndex <> 0) do
+    begin
+      Inc(i);
+
+      if Pos('begin', Trim(Lines[i])) <> 0 then Inc(EndIndex);
+      if Pos('end;', Trim(Lines[i])) <> 0 then Dec(EndIndex);
+
+      SetCodeFoldItem(i, False, Index, cfContinue);
+    end;
+    Inc(i);
+    SetCodeFoldItem(i, False, Index, cfEnd);
+
+    while (i < Lines.Count) and
+          (Pos('procedure', Trim(Lines[i])) <> 1) and
+          (Pos('function', Trim(Lines[i])) <> 1) do
+    begin
+      Inc(i);
+      SetCodeFoldItem(i, False, Index, cfNone);
+    end;
+  end;}
+end;
+
 
 initialization
   MakeIdentTable;
