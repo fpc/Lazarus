@@ -63,7 +63,10 @@ uses
 {$ELSE}
   Windows,
 {$ENDIF}
-  Dialogs, SysUtils, Classes, Messages, Controls, Graphics, Forms, StdCtrls, ExtCtrls,
+  {$IFDEF DebugCodeFolding}
+  Dialogs,
+  {$ENDIF}
+  SysUtils, Classes, Messages, Controls, Graphics, Forms, StdCtrls, ExtCtrls,
 {$IFDEF SYN_MBCSSUPPORT}
   Imm,
 {$ENDIF}
@@ -2499,7 +2502,9 @@ var
   iLine: integer;
 begin
   iLine := PixelsToRowColumn(Point(0, Y)).Y {+ TopLine - 2} - 1;
+  {$IFDEF DebugCodeFolding}
   showmessage(IntToStr(iLine));
+  {$ENDIF}
 
   case TSynEditStringList(fLines).FoldType[iLine] of
   cfExpanded:
