@@ -500,6 +500,7 @@ begin
   FItemIndex:=Val;
   if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
     SendItemIndex;
+  DoSelectionChange(false);
 //DebugLn('[TCustomListBox.SetItemIndex] END ',FItems.ClassName);
 end;
 
