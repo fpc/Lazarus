@@ -25,8 +25,6 @@ function TDockZone.GetHeight: Integer;
 begin
   if not Visible then
     Result:=0
-  else if FHostDockSite<>nil then
-    Result:=FChildControl.HostDockSite.ClientHeight
   else if (FChildControl<>nil) then
     Result:=FChildControl.Height
   else if FParentZone<>nil then
@@ -146,8 +144,6 @@ function TDockZone.GetWidth: Integer;
 begin
   if not Visible then
     Result:=0
-  else if FHostDockSite<>nil then
-    Result:=FChildControl.HostDockSite.ClientWidth
   else if (FChildControl<>nil) then
     Result:=FChildControl.Width
   else if FParentZone<>nil then
@@ -167,6 +163,20 @@ constructor TDockZone.Create(TheTree: TDockTree; TheChildControl: TControl);
 begin
   FTree:=TheTree;
   FChildControl:=TheChildControl;
+end;
+
+function TDockZone.FindZone(AControl: TControl): TDockZone;
+begin
+  if AControl=ChildControl then begin
+    Result:=Self;
+    exit;
+  end;
+  if FFirstChildZone<>nil then begin
+    Result:=FFirstChildZone.FindZone(AControl);
+    if Result<>nil then exit;
+  end;
+  if FNextSibling<>nil then
+    Result:=FNextSibling.FindZone(AControl);
 end;
 
 function TDockZone.FirstVisibleChild: TDockZone;
@@ -191,6 +201,37 @@ function TDockZone.PrevVisible: TDockZone;
 begin
   Result:=FPrevSibling;
   while (Result<>nil) and (not Result.Visible) do Result:=Result.FPrevSibling;
+end;
+
+procedure TDockZone.AddAsFirstChild(NewChildZone: TDockZone);
+begin
+  NewChildZone.FParentZone:=Self;
+  NewChildZone.FNextSibling:=FFirstChildZone;
+  if FFirstChildZone<>nil then
+    FFirstChildZone.FPrevSibling:=NewChildZone;
+  FFirstChildZone:=NewChildZone;
+  inc(FChildCount);
+end;
+
+procedure TDockZone.AddAsLastChild(NewChildZone: TDockZone);
+var
+  LastChild: TDockZone;
+begin
+  NewChildZone.FParentZone:=Self;
+  LastChild:=GetLastChild;
+  NewChildZone.FPrevSibling:=LastChild;
+  if LastChild<>nil then
+    LastChild.FNextSibling:=NewChildZone
+  else
+    FFirstChildZone:=NewChildZone;
+  inc(FChildCount);
+end;
+
+function TDockZone.GetLastChild: TDockZone;
+begin
+  Result:=FFirstChildZone;
+  if Result=nil then exit;
+  while (Result.FNextSibling<>nil) do Result:=Result.FNextSibling;
 end;
 
 // included by control.pp

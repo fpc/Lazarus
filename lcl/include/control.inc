@@ -2944,8 +2944,8 @@ end;
 
   Docks this control to DropControl or on NewDockSite.
   If DropControl is not nil, ControlSide defines on which side of DropControl
-  this control is docked. (alNone for stacked in pages). DropControl will
-  become part of a TDockManager.
+  this control is docked. (alNone,alClient for stacked in pages). DropControl
+  will become part of a TDockManager.
   If DropControl is nil, then DropControl becomes a normal child of NewDockSite
   and ControlSide is ignored.
 ------------------------------------------------------------------------------}
@@ -3553,6 +3553,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.265  2005/07/09 16:20:50  mattias
+  TSplitter can now also work with Align=alNone and AnchorSide
+
   Revision 1.264  2005/07/05 10:50:23  micha
   mousecapture debug compilation fixes
 

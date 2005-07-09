@@ -441,7 +441,7 @@ type
     
     This class exists for Delphi compatibility.
     }
-  TDockManager = class
+  TDockManager = class(TPersistent)
   public
     procedure BeginUpdate; virtual; abstract;
     procedure EndUpdate; virtual; abstract;
@@ -1713,7 +1713,6 @@ type
     FChildControl: TControl;
     FChildCount: integer;
     FFirstChildZone: TDockZone;
-    FHostDockSite: TWinControl;
     FTree: TDockTree;
     FParentZone: TDockZone;
     FOrientation: TDockOrientation;
@@ -1730,27 +1729,29 @@ type
     function GetWidth: Integer; virtual;
   public
     constructor Create(TheTree: TDockTree; TheChildControl: TControl);
-    //procedure ExpandZoneLimit(NewLimit: Integer); Needed?
+    function FindZone(AControl: TControl): TDockZone;
     function FirstVisibleChild: TDockZone;
     function GetNextVisibleZone: TDockZone;
     function NextVisible: TDockZone;
     function PrevVisible: TDockZone;
-    //procedure ResetChildren; Needed?
-    //procedure ResetZoneLimits; Needed?
-    //procedure Update; Needed?
-    property Tree: TDockTree read FTree;
+    procedure AddAsFirstChild(NewChildZone: TDockZone);
+    procedure AddAsLastChild(NewChildZone: TDockZone);
+    function GetLastChild: TDockZone;
+  public
+    property ChildControl: TControl read FChildControl;
     property ChildCount: Integer read FChildCount;
+    property FirstChild: TDockZone read FFirstChildZone;
     property Height: Integer read GetHeight;
     property Left: Integer read GetLeft;
     property LimitBegin: Integer read GetLimitBegin; // returns Left or Top
     property LimitSize: Integer read GetLimitSize;   // returns Width or Height
+    property Orientation: TDockOrientation read FOrientation write FOrientation;
+    property Parent: TDockZone read FParentZone;
     property Top: Integer read GetTop;
+    property Tree: TDockTree read FTree;
     property Visible: Boolean read GetVisible;
     property VisibleChildCount: Integer read GetVisibleChildCount;
     property Width: Integer read GetWidth;
-    property ChildControl: TControl read FChildControl;
-    property Orientation: TDockOrientation read FOrientation;
-    property HostDockSite: TWinControl read FHostDockSite;
   end;
   TDockZoneClass = class of TDockZone;
 
@@ -1853,11 +1854,12 @@ type
   TDockTree = class(TDockManager)
   private
     FBorderWidth: Integer; // width of the border of the preview rectangle
+    FDockSite: TWinControl;
     FDockZoneClass: TDockZoneClass;
     //FGrabberSize: Integer;
     //FGrabbersOnTop: Boolean;
     FFlags: TDockTreeFlags;
-    FTopZone: TDockZone;
+    FRootZone: TDockZone;
     //FTopXYLimit: Integer;
     FUpdateCount: Integer;
     procedure DeleteZone(Zone: TDockZone);
@@ -1886,6 +1888,8 @@ type
     procedure PaintSite(DC: HDC); override;
   public
     property DockZoneClass: TDockZoneClass read FDockZoneClass;
+    property DockSite: TWinControl read FDockSite write FDockSite;
+    property RootZone: TDockZone read FRootZone;
   end;
 
 
@@ -1927,6 +1931,12 @@ const
     [akLeft, akTop, akRight, akBottom],
     { alCustom }
     [akLeft, akTop]
+    );
+  OppositeAnchor: array[TAnchorKind] of TAnchorKind = (
+    akBottom, // akTop,
+    akRight,  // akLeft,
+    akLeft,   // akRight,
+    akTop     // akBottom
     );
   DefaultSideForAnchorKind: array[TAnchorKind] of TAnchorSideReference = (
     // akTop
@@ -2941,6 +2951,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.308  2005/07/09 16:20:50  mattias
+  TSplitter can now also work with Align=alNone and AnchorSide
+
   Revision 1.307  2005/07/07 20:20:45  mattias
   fixed clean all in IDE, added SystemKey parameter to IntfUTF8KeyPress
 

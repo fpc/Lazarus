@@ -2367,7 +2367,7 @@ begin
   {$ELSE}
   Result:=EventStopped;
   {$ENDIF}
-  DebugLn('[HandleGTKKeyUpDown] ',DbgSName(TObject(Data)),' Result=',dbgs(Result),' EventStopped=',dbgs(EventStopped));
+  //DebugLn('[HandleGTKKeyUpDown] ',DbgSName(TObject(Data)),' Result=',dbgs(Result),' EventStopped=',dbgs(EventStopped));
 end;
 
 {------------------------------------------------------------------------------
@@ -8250,6 +8250,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.368  2005/07/09 16:20:50  mattias
+  TSplitter can now also work with Align=alNone and AnchorSide
+
   Revision 1.367  2005/07/07 20:56:29  mattias
   clean up
 

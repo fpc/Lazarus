@@ -203,11 +203,11 @@ var
       end;
       Result:=DefaultPosition;
       CurAnchorSide:=Control.AnchorSide[Kind];
-      //debugln('GetAnchorSidePosition A Self=',DbgSName(Self),' Control=',DbgSName(Control),' ',DbgSName(CurAnchorSide.Control));
+      //debugln('GetAnchorSidePosition A Self=',DbgSName(Self),' Control=',DbgSName(Control),' CurAnchorSide.Control=',DbgSName(CurAnchorSide.Control));
       CurAnchorSide.GetSidePosition(ReferenceControl,ReferenceSide,Position);
       if ReferenceControl<>nil then
         Result:=Position;
-      //debugln('GetAnchorSidePosition B Self=',DbgSName(Self),' Control=',DbgSName(Control),' ',dbgs(Result));
+      //debugln('GetAnchorSidePosition B Self=',DbgSName(Self),' Control=',DbgSName(Control),' Result=',dbgs(Result));
       AnchorSideCacheValid[Kind]:=true;
       AnchorSideCache[Kind]:=Result;
     end;
@@ -311,7 +311,7 @@ var
           NewRight:=Control.Parent.ClientWidth
                     -(ParentBaseClientSize.X-CurBaseBounds.Right);
           if (not (akRight in CurAlignAnchors))
-          and (akRight in Anchors) then
+          and (akRight in Control.Anchors) then
             NewRight:=GetAnchorSidePosition(akRight,NewRight);
           NewWidth:=ConstraintWidth(NewRight-NewLeft);
         end else begin
@@ -326,7 +326,7 @@ var
           NewRight:=Control.Parent.ClientWidth
                     -(ParentBaseClientSize.X-CurBaseBounds.Right);
           if (not (akRight in CurAlignAnchors))
-          and (akRight in Anchors) then
+          and (akRight in Control.Anchors) then
             NewRight:=GetAnchorSidePosition(akRight,NewRight);
           NewLeft:=NewRight-NewWidth;
         end else begin
@@ -345,7 +345,7 @@ var
           NewBottom:=Control.Parent.ClientHeight
                     -(ParentBaseClientSize.Y-CurBaseBounds.Bottom);
           if (not (akBottom in CurAlignAnchors))
-          and (akBottom in Anchors) then
+          and (akBottom in Control.Anchors) then
             NewBottom:=GetAnchorSidePosition(akBottom,NewBottom);
           NewHeight:=ConstraintHeight(NewBottom-NewTop);
         end else begin
@@ -360,7 +360,7 @@ var
           NewBottom:=Control.Parent.ClientHeight
                     -(ParentBaseClientSize.Y-CurBaseBounds.Bottom);
           if (not (akBottom in CurAlignAnchors))
-          and (akBottom in Anchors) then
+          and (akBottom in Control.Anchors) then
             NewBottom:=GetAnchorSidePosition(akBottom,NewBottom);
           NewTop:=NewBottom-NewHeight;
         end else begin
@@ -4579,6 +4579,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.336  2005/07/09 16:20:50  mattias
+  TSplitter can now also work with Align=alNone and AnchorSide
+
   Revision 1.335  2005/07/07 20:20:45  mattias
   fixed clean all in IDE, added SystemKey parameter to IntfUTF8KeyPress
 

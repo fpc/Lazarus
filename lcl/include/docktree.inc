@@ -114,17 +114,18 @@ end;
 
 constructor TDockTree.Create(TheDockSite: TWinControl);
 begin
-  FDockZoneClass:=TDockZone;
+  if FDockZoneClass=nil then FDockZoneClass:=TDockZone;
+  FDockSite:=TheDockSite;
   inherited Create;
   FBorderWidth:=4;
   //FGrabberSize:=DefaultDockGrabberSize;
   //FGrabbersOnTop:=(FDockSite.Align <> alTop) and (FDockSite.Align <> alBottom);
-  FTopZone:=FDockZoneClass.Create(Self,TheDockSite);
+  FRootZone:=FDockZoneClass.Create(Self,TheDockSite);
 end;
 
 destructor TDockTree.Destroy;
 begin
-  DeleteZone(FTopZone);
+  DeleteZone(FRootZone);
   inherited Destroy;
 end;
 

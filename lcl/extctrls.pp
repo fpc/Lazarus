@@ -369,7 +369,15 @@ type
 
   TCanResizeEvent = procedure(Sender: TObject; var NewSize: Integer;
     var Accept: Boolean) of object;
-
+  { TCustomSplitter is a control to interactively resize another control.
+    It is a vertical or horizontal bar anchored to a side of a control.
+    You can either set the Align property to alLeft (alRight,alTop,alBottom),
+    then it will become a vertical bar, aligned to the left and when the user
+    moves it with the mouse, the control to the left with the same Align=alLeft
+    will be resized.
+    The second more flexible possibility is to set the properties Align=alNone,
+    AnchorSides and Orientation.
+    }
   TCustomSplitter = class(TCustomControl)
   private
     FAutoSnap: boolean;
@@ -377,13 +385,17 @@ type
     FMinSize: integer;
     FOnCanResize: TCanResizeEvent;
     FOnMoved: TNotifyEvent;
+    FResizeAnchor: TAnchorKind;
     FResizeStyle: TResizeStyle;
     FSplitDragging: Boolean;
     fSplitterStartMouseXY: TPoint; // in screen coordinates
     fSplitterStartLeftTop: TPoint; // in screen coordinates
+    function GetResizeControl: TControl;
     procedure SetAutoSnap(const AValue: boolean);
     procedure SetBeveled(const AValue: boolean);
     procedure SetMinSize(const AValue: integer);
+    procedure SetResizeAnchor(const AValue: TAnchorKind);
+    procedure SetResizeControl(const AValue: TControl);
     procedure SetResizeStyle(const AValue: TResizeStyle);
   protected
     procedure StartSplitterMove(Restart: boolean; const MouseXY: TPoint);
@@ -391,6 +403,7 @@ type
     procedure MouseMove(Shift: TShiftState; X,Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     function FindAlignControl: TControl;
+    function FindAlignOtherControl: TControl;
     procedure SetAlign(Value: TAlign); override;
     procedure SetAnchors(const AValue: TAnchors); override;
     procedure CheckAlignment;
@@ -398,6 +411,9 @@ type
     procedure Paint; override;
   public
     constructor Create(TheOwner: TComponent); override;
+    procedure AnchorSplitter(Kind: TAnchorKind; AControl: TControl);
+    property ResizeControl: TControl read GetResizeControl write SetResizeControl;
+    function GetOtherResizeControl: TControl;
   public
     property Align default alLeft;
     property ResizeStyle: TResizeStyle read FResizeStyle write SetResizeStyle default rsUpdate;
@@ -408,6 +424,7 @@ type
     property OnMoved: TNotifyEvent read FOnMoved write FOnMoved;
     property Width default 5;
     property Cursor default crHSplit;
+    property ResizeAnchor: TAnchorKind read FResizeAnchor write SetResizeAnchor default akLeft;
   end;
 
 
@@ -996,6 +1013,9 @@ end.
 
  {
   $Log$
+  Revision 1.138  2005/07/09 16:20:50  mattias
+  TSplitter can now also work with Align=alNone and AnchorSide
+
   Revision 1.137  2005/06/29 09:24:14  mattias
   implemented auto ident completion after point plus idle
 
