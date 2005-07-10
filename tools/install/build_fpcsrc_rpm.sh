@@ -39,9 +39,7 @@ CompilerVersion=`cat $VersionFile | grep ' *version_nr *=.*;' | sed -e 's/[^0-9]
 CompilerRelease=`cat $VersionFile | grep ' *release_nr *=.*;' | sed -e 's/[^0-9]//g'`
 CompilerPatch=`cat $VersionFile | grep ' *patch_nr *=.*;' | sed -e 's/[^0-9]//g'`
 LazVersion="$CompilerVersion.$CompilerRelease"
-if [ "$CompilerPatch" != "0" ]; then
-  LazVersion="$LazVersion.$CompilerPatch"
-fi
+LazVersion="$LazVersion.$CompilerPatch"
 
 FPCTGZ=fpcsrc-$LazVersion-$LazRelease.tgz
 CurDir=`pwd`

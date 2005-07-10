@@ -233,6 +233,7 @@ procedure TLazDockTree.InsertControl(AControl: TControl; InsertAt: TAlign;
 var
   DropZone: TDockZone;
   NewZone: TDockZone;
+  NewSplitter: TSplitter;
 begin
   if DropControl=nil then
     DropControl:=DockSite;
@@ -267,24 +268,27 @@ begin
       // insert as child of RootZone
       // TODO
       RaiseGDBException('TLazDockTree.InsertControl TODO: DropZone.Parent=nil');
-    end else begin
-      if (DropZone.Parent.Orientation=NewOrientation)
-      or (DropZone.Parent.Orientation=doNoOrient)
-      or (DropZone.Parent.ChildCount<=1) then begin
-        // insert as first or last child
-        DropZone.Parent.Orientation:=NewOrientation;
-        if InsertAt in [alLeft,alTop] then
-          DropZone.Parent.AddAsFirstChild(NewZone)
-        else
-          DropZone.Parent.AddAsLastChild(NewZone);
-        // resize DockSite
-        
-        // add splitter control
+    end else if DropZone.Parent.ChildCount=1 then begin
+      // insert as second child
+      DropZone.Parent.Orientation:=NewOrientation;
+      if InsertAt in [alLeft,alTop] then
+        DropZone.Parent.AddAsFirstChild(NewZone)
+      else
+        DropZone.Parent.AddAsLastChild(NewZone);
+      // add splitter control
+      NewSplitter:=TSplitter.Create(DockSite);
+      NewSplitter
+      // resize DockSite
+      if InsertAt in [alLeft,alRight] then
+        DockSite.Width:=DockSite.Width+NewSplitter.Width+AControl.Width
+      else if InsertAt in [alTop,alBottom] then
+        DockSite.Width:=DockSite.Height+NewSplitter.Height+AControl.Width
 
-        // add control to DockSite
-        // TODO
-        RaiseGDBException('TLazDockTree.InsertControl TODO: DropZone.Parent<>nil');
-      end;
+      // add control to DockSite
+      // TODO
+      RaiseGDBException('TLazDockTree.InsertControl TODO: DropZone.Parent<>nil');
+    else
+      RaiseGDBException('TLazDockTree.InsertControl TODO: DropZone.Parent<>nil DropZone.Parent.ChildCount>1');
     end;
   end;
 end;

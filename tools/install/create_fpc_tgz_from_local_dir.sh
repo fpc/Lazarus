@@ -35,10 +35,15 @@ fi
 TmpBaseDir=/tmp
 TmpDir=$TmpBaseDir/fpc
 
-ppc386 -Fu../../lcl/units/i386/linux cvsexportlocal.pas
-echo "extracting FPC from local cvs ..."
-rm -rf $TmpDir
-./cvsexportlocal $FPCSrcDir $TmpDir
+if [ -d $FPCSrcDir/CVS ]; then
+  ppc386 -Fu../../lcl/units/i386/linux cvsexportlocal.pas
+  echo "extracting FPC from local cvs ..."
+  rm -rf $TmpDir
+  ./cvsexportlocal $FPCSrcDir $TmpDir
+else
+  rm -rf $TmpDir
+  cp -a $FPCSrcDir $TmpDir
+fi
 
 if [ $RenameSmart = "yes" ]; then
   for Ext in pm pl; do
