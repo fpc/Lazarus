@@ -660,7 +660,7 @@ begin
       end;
   end;
   // Set some common things.
-  O.Title:=DialogTitle;
+  Result.Title:=DialogTitle;
 end;
 
 procedure TFileNameEdit.SaveDialogResult(AKind: TDialogKind; D: TCommonDialog);
