@@ -2148,15 +2148,15 @@ begin
 
   Position := Mouse.CursorPos;
 
-  Position := ScreenToClient(Position);
-  if ((Position.X <=0) or (Position.X >= Width) or (Position.Y <= 0)
-  or (Position.Y >= Height)) then
-    Exit;
-
   Window := FindLCLWindow(Position);
   if not(Assigned(Window)) then Exit;
   If (Window<>Self) and (not IsParentOf(Window)) then exit;
 
+  Position := ScreenToClient(Position);
+  if ((Position.X <=0) or (Position.X >= Width) or (Position.Y <= 0)
+  or (Position.Y >= Height)) then
+    Exit;
+  
   AHint := '';
   Index:=MouseToIndex(Position.Y,false);
   if (Index>=0) and (Index<FRows.Count) then
