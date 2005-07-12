@@ -62,21 +62,12 @@ const
   GM_SETMASK    = LM_USER + 105;
 
 const
-  CA_LEFT     =   $1;
-  CA_CENTER   =   $2;
-  CA_RIGHT    =   $4;
-  CL_TOP      =   $8;
-  CL_CENTER   =   $10;
-  CL_BOTTOM   =   $20;
-
-const
   EO_AUTOSIZE     =   $1;
   EO_HOOKKEYDOWN  =   $2;
   EO_HOOKKEYPRESS =   $4;
   EO_HOOKKEYUP    =   $8;
   EO_HOOKEXIT     =   $10;
   EO_SELECTALL    =   $20;
-  EO_WANTCHAR     =   $40;
 
 type
   EGridException = class(Exception);
@@ -589,7 +580,6 @@ type
     procedure InternalSetFixedCols(const AValue: Integer);
     procedure InternalUpdateColumnWidths;
     function  IsColumnsStored: boolean;
-    procedure MyTextRect(R: TRect; Offx,Offy:Integer; S:string; Clipping: boolean);
     procedure OnTitleFontChanged(Sender: TObject);
     procedure ReadColumns(Reader: TReader);
     procedure ReadColWidths(Reader: TReader);
@@ -670,7 +660,6 @@ type
     procedure DoOPMoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
     procedure DoPasteFromClipboard; virtual;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
-    procedure DrawBackGround; virtual;
     procedure DrawBorder;
     procedure DrawByRows; virtual;
     procedure DrawCell(aCol,aRow:Integer; aRect:TRect; aState:TGridDrawState); virtual;
@@ -1252,8 +1241,6 @@ type
   end;
 
 
-  procedure DebugRect(S:string; R:TRect);
-  procedure DebugPoint(S:string; P:TPoint);
   procedure DrawRubberRect(Canvas: TCanvas; aRect: TRect; Color: TColor);
 
 
@@ -2091,7 +2078,7 @@ begin
   DebugLn(' HSb=',IntToStr(HsbVisible));
   DbgOut('ClientWidth=', IntToStr(FGCAche.ClientWidth));
   DebugLn(' ClientHeight=', IntToStr(FGCache.ClientHeight));
-  DebugPoint('MaxTopLeft',FGCache.MaxTopLeft);
+  DebugLn('MaxTopLeft',Dbgs(FGCache.MaxTopLeft));
   {$Endif}
   
   CacheVisibleGrid;
@@ -2372,8 +2359,8 @@ begin
   Inherited Paint;
   if FUpdateCount=0 then begin
     //DebugLn('Paint: FGCache.ValidGrid=',FGCache.ValidGrid );
-    //DebugRect('Paint.ClipRect=',Canvas.ClipRect);
-    DrawBackGround;
+    //DebugLn('Paint.ClipRect=',dbgs(Canvas.ClipRect));
+    DrawEdges;
     if FGCache.ValidGrid then begin
       {
       DrawFixedCells;
@@ -2383,7 +2370,6 @@ begin
       DrawByRows;
       DrawColRowMoving;
     end;
-    DrawEdges;
     DrawBorder;
   end;
 end;
@@ -2505,16 +2491,6 @@ begin
   end;
 end;
 
-
-procedure TCustomGrid.DrawBackGround;
-begin
-  {
-    The user can draw a something here :)
-
-  Canvas.Brush.Color:=Color;
-  Canvas.FillRect(Parent.ClientRect);
-  }
-end;
 
 procedure TCustomGrid.DrawBorder;
 var
@@ -2800,16 +2776,6 @@ begin
 end;
 }
 
-procedure DebugRect(S:string; R:TRect);
-begin
-  DebugLn(S,dbgs(r));
-end;
-
-procedure DebugPoint(S:string; P:TPoint);
-begin
-  DebugLn(S,dbgs(p));
-end;
-
 procedure TCustomGrid.DrawCellGrid(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState);
 var
   dv,dh: Boolean;
@@ -2855,36 +2821,6 @@ begin
        MoveTo(Right - 1, Top);
        LineTo(Right - 1, Bottom);
     end;
-  end;
-end;
-
-procedure TCustomGrid.MyTextRect(R: TRect; Offx, Offy: Integer; S: string;
-  Clipping: boolean);
-var
-  Rorg: TRect;
-  tmpRgn: HRGN;
-begin
-  if Clipping then begin
-    //IntersectClipRect(Canvas.handle, R.Left,R.Top,R.Right,R.Bottom);
-
-    GetClipBox(Canvas.Handle, @ROrg);
-    //DebugRect('Ini Rect = ', ROrg);
-    tmpRGN:=CreateRectRgn(R.Left, R.Top, R.Right, R.Bottom);
-    SelectClipRgn(Canvas.Handle, tmpRGN);
-    //GetClipBox(Canvas.Handle, @Rtmp);
-    //DebugRect('Set Rect = ', Rtmp);
-    DeleteObject(tmpRGN);
-  end;
-
-  //if Ts.Opaque then Canvas.FillRect(R);
-  Canvas.TextOut(R.Left+Offx, R.Top+Offy,  S);
-
-  if Clipping then begin
-    tmpRGN:=CreateRectRgn(Rorg.Left, Rorg.Top, Rorg.Right, Rorg.Bottom);
-    SelectClipRgn(Canvas.Handle, tmpRGN);
-    //GetClipBox(Canvas.Handle, @Rtmp);
-    //DebugRect('end Rect = ', Rtmp);
-    DeleteObject(tmpRGN);
   end;
 end;
 
@@ -3365,7 +3301,6 @@ begin
     if FEditorOptions and EO_HOOKKEYUP = EO_HOOKKEYUP then DBGOut('EO_HOOKKEYUP ');
     if FEditorOptions and EO_HOOKEXIT = EO_HOOKEXIT then DBGOut('EO_HOOKEXIT ');
     if FEditorOptions and EO_SELECTALL= EO_SELECTALL then DBGOut('EO_SELECTALL ');
-    if FEditorOptions and EO_WANTCHAR = EO_WANTCHAR then DBGOut('EO_WANTCHAR ');
     DebugLn;
     {$Endif}
   end;
@@ -6534,7 +6469,6 @@ begin
       tlBottom: Dec(aRect.Bottom, 3);
     end;
     Canvas.TextRect(aRect,ARect.Left,ARect.Top, Cells[aCol,aRow]);
-    //MyTExtRect(aRect, 3, 0, Cells[aCol,aRow], Canvas.Textstyle.Clipping);
   end;
 end;
 

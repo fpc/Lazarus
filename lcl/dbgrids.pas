@@ -27,8 +27,8 @@ TDBGrid and TComponentDataLink for Lazarus
 Copyright (C) 2003  Jesus Reyes Aguilar.
 email: jesusrmx@yahoo.com.mx
 
-todo: credit who created the TComponentDatalink idea (Johana ...)
-
+TComponentDatalink idea was taken from Joanna Carter's article
+"The Ultimate Datalink?" Delphi Magazine Issue #30 February 1998
 }
 unit DBGrids;
 
@@ -2189,25 +2189,28 @@ begin
   // find out the column count, if result=0 then
   // there are no visible columns defined or dataset is inactive
   // or there are no visible fields, ie the grid is blank
-  Result := GetColumnCount;
-  if Result > 0 then begin
-    BeginVisualChange;
-    if dgTitles in Options then FRCount := 1 else FRCount := 0;
-    if dgIndicator in Options then FCCount := 1 else FCCount := 0;
-    
-    InternalSetColCount(Result + FCCount);
-    //ColCount := Result + FCCount;
-    if FDataLink.Active then begin
-      UpdateBufferCount;
-      RecCount := FDataLink.RecordCount + FRCount;
-      if RecCount<2 then RecCount:=2;
-    end else
-      RecCount := 2;
+  BeginVisualChange;
+  try
+    Result := GetColumnCount;
+    if Result > 0 then begin
+      if dgTitles in Options then FRCount := 1 else FRCount := 0;
+      if dgIndicator in Options then FCCount := 1 else FCCount := 0;
 
-    RowCount := RecCount;
-    FixedRows := FRCount;
-    FixedCols := FCCount;
-    UpdateGridColumnSizes;
+      InternalSetColCount(Result + FCCount);
+      //ColCount := Result + FCCount;
+      if FDataLink.Active then begin
+        UpdateBufferCount;
+        RecCount := FDataLink.RecordCount + FRCount;
+        if RecCount<2 then RecCount:=2;
+      end else
+        RecCount := 2;
+        
+      RowCount := RecCount;
+      FixedRows := FRCount;
+      FixedCols := FCCount;
+      UpdateGridColumnSizes;
+    end;
+  finally
     EndVisualChange;
   end;
 end;
@@ -2579,9 +2582,16 @@ procedure TDbGridColumns.RemoveAutoColumns;
 var
   i: Integer;
 begin
-  for i:=Count-1 downto 0 do
-    if Items[i].IsAutomaticColumn then
-      Delete(i);
+  if HasAutomaticColumns then begin
+    BeginUpdate;
+    try
+      for i:=Count-1 downto 0 do
+        if Items[i].IsAutomaticColumn then
+          Delete(i);
+    finally
+      EndUpdate;
+    end;
+  end;
 end;
 
 function CompareFieldIndex(P1,P2:Pointer): integer;
@@ -2935,6 +2945,10 @@ end.
 
 {
   $Log$
+  Revision 1.45  2005/07/12 21:05:51  jesus
+  removed some unused objects
+  fixed redrawing issues after closing dataset or removing columns
+
   Revision 1.44  2005/06/22 21:32:25  jesus
   implemented columns assign method bug 984
 
