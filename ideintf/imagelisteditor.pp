@@ -392,7 +392,7 @@ begin
     //Enabled :=False;
     Enabled :=True;
     //Caption :=sccsILBtnClear;
-    Caption := 'Move Up';
+    Caption := cActionListEditorMoveUpAction;
     OnClick := @OnClickMoveUp;
   end;
 
@@ -407,42 +407,42 @@ begin
     //Enabled :=False;
     Enabled :=True;
     //Caption :=sccsILBtnClear;
-    Caption := 'Move Down';
+    Caption := cActionListEditorMoveDownAction;
     OnClick := @OnClickMoveDown;
   end;
 
   FmnuLVPopupAdd := TMenuItem.Create(Self);
   With FmnuLVPopupAdd do
   begin
-    Caption := 'Add';
+    Caption := ilesAdd;
     OnClick := @OnClickAdd;
   end;
   
   FmnuLVPopupDelete := TMenuItem.Create(Self);
   With FmnuLVPopupDelete do
   begin
-    Caption := 'Delete';
+    Caption := oisDelete;
     OnClick := @OnClickDel;
   end;
 
   FmnuLVPopupClear := TMenuItem.Create(Self);
   With FmnuLVPopupClear do
   begin
-    Caption := 'Clear';
+    Caption := sccsILBtnClear;
     OnClick := @OnClickClear;
   end;
 
   FmnuLVPopupMoveUp := TMenuItem.Create(Self);
   With FmnuLVPopupMoveUp do
   begin
-    Caption := 'Move Up';
+    Caption := cActionListEditorMoveUpAction;
     OnClick := @OnClickMoveUp;
   end;
 
   FmnuLVPopupMoveDown := TMenuItem.Create(Self);
   With FmnuLVPopupMoveDown do
   begin
-    Caption := 'Move Down';
+    Caption := cActionListEditorMoveDownAction;
     OnClick := @OnClickMoveDown;
   end;
 

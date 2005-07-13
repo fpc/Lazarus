@@ -125,6 +125,7 @@ resourcestring
   cActionListEditorNewAction = 'New Action';
   cActionListEditorNewStdAction = 'New Standard Action';
   cActionListEditorMoveDownAction = 'Move Down';
+  ilesAdd = 'Add';
   cActionListEditorMoveUpAction = 'Move Up';
   cActionListEditorDeleteActionHint = 'Delete Action';
   cActionListEditorDeleteAction = 'Delete';
