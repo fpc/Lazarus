@@ -258,9 +258,10 @@ begin
         else
           FHiddenButton.Checked:=true;
         // uncheck old radiobutton
-        if OldItemIndex <> -1 then
-          TRadioButton(FButtonList[FItemIndex]).Checked := false
-        else
+        if (OldItemIndex <> -1) then begin
+          if (OldItemIndex>=0) and (OldItemIndex<FButtonList.Count) then
+            TRadioButton(FButtonList[OldItemIndex]).Checked := false
+        end else
           FHiddenButton.Checked:=false;
       finally
         fIgnoreClicks:=OldIgnoreClicks;
@@ -441,6 +442,9 @@ end;
 
 {
   $Log$
+  Revision 1.10  2005/07/13 17:54:24  mattias
+  fixed mechanism in TRadioGroup.SetItemIndex for lazy interfaces
+
   Revision 1.9  2005/07/13 17:48:57  mattias
   added robust mechanism to TRadioGroup.SetItemIndex for lazy interfaces
 
