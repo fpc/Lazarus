@@ -129,10 +129,10 @@ var
   BevelSize: Integer;
 begin
   inherited AdjustClientRect(Rect);
-  InflateRect(Rect, -BorderWidth, -BorderWidth);
-  BevelSize := 0;
+  BevelSize := BorderWidth;
   if BevelOuter <> bvNone then Inc(BevelSize, BevelWidth);
   if BevelInner <> bvNone then Inc(BevelSize, BevelWidth);
+  //debugln('TCustomPanel.AdjustClientRect ',DbgSName(Self),' BorderWidth=',dbgs(BorderWidth),' BevelWidth=',dbgs(BevelWidth),' BevelSize=',dbgs(BevelSize));
   InflateRect(Rect, -BevelSize, -BevelSize);
 end;
 

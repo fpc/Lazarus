@@ -3401,6 +3401,40 @@ begin
   Anchors:=Anchors+[akTop]-[akBottom];
 end;
 
+procedure TControl.AnchorToCompanion(Side: TAnchorKind; Space: integer;
+  Sibling: TControl; FreeCompositeSide: boolean);
+
+  procedure AnchorCompanionSides(
+    ResizeSide,// the side of this control, where Sibling is touched and moved
+    OppositeResizeSide, // opposite of ResizeSide
+    FixedSide1,// the first non moving side
+    FixedSide2:// the second non moving side
+      TAnchorKind);
+  begin
+    if not (OppositeAnchor[Side] in Anchors) then
+      AnchorSide[OppositeResizeSide].Control:=nil;
+    AnchorToNeighbour(ResizeSide,0,Sibling);
+    AnchorParallel(FixedSide1,0,Sibling);
+    AnchorParallel(FixedSide2,0,Sibling);
+  end;
+
+var
+  NewAnchors: TAnchors;
+begin
+  // anchor all. Except for the opposite side.
+  NewAnchors:=[akLeft,akTop,akRight,akBottom];
+  if FreeCompositeSide or (not (OppositeAnchor[Side] in Anchors)) then
+    Exclude(NewAnchors,OppositeAnchor[Side]);
+  Anchors:=NewAnchors;
+
+  case Side of
+  akLeft:   AnchorCompanionSides(akLeft,akRight,akTop,akBottom);
+  akRight:  AnchorCompanionSides(akRight,akLeft,akTop,akBottom);
+  akTop:    AnchorCompanionSides(akTop,akBottom,akLeft,akRight);
+  akBottom: AnchorCompanionSides(akBottom,akTop,akLeft,akRight);
+  end;
+end;
+
 procedure TControl.SetInitialBounds(aLeft, aTop, aWidth, aHeight: integer);
 begin
   //DebugLn('TControl.SetInitialBounds A ',Name,':',ClassName,' ',aLeft,',',aTop,',',aWidth,',',aHeight);
@@ -3553,6 +3587,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.266  2005/07/13 17:25:06  mattias
+  added some resourcestrings and autosizing for checklistbox editor
+
   Revision 1.265  2005/07/09 16:20:50  mattias
   TSplitter can now also work with Align=alNone and AnchorSide
 

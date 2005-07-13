@@ -708,6 +708,9 @@ var
   NewLeft: LongInt;
   NewTop: LongInt;
   CurAnchors: TAnchors;
+  CurClientRect: TRect;
+  dx: Integer;
+  dy: Integer;
 begin
   //debugln('TWinControl.DoAutoSize ',DbgSName(Self));
   If not AutoSizeCanStart then exit;
@@ -718,6 +721,28 @@ begin
 
   AutoSizing := True;
   try
+    // move childs tight to left and top (so no space left and above childs)
+    If ControlCount > 0 then begin
+      // get current bounds of all childs
+      GetChildBounds(ChildBounds,true);
+      CurClientRect:=ClientRect;
+      AdjustClientRect(CurClientRect);
+      
+      if (ChildBounds.Left<>CurClientRect.Left)
+      or (ChildBounds.Top<>CurClientRect.Top) then begin
+        // move all childs to left and top of client area
+        dx:=CurClientRect.Left-ChildBounds.Left;
+        dy:=CurClientRect.Top-ChildBounds.Top;
+        For I := 0 to ControlCount - 1 do begin
+          AControl:=Controls[I];
+          If AControl.Visible then begin
+            AControl.SetBoundsKeepBase(AControl.Left + dx, AControl.Top + dy,
+                                       AControl.Width,AControl.Height,true);
+          end;
+        end;
+      end;
+    end;
+
     // test if resizing is possible
     CurAnchors:=Anchors;
     if Align<>alNone then CurAnchors:=CurAnchors+AnchorAlign[Align];
@@ -731,23 +756,6 @@ begin
       PreferredWidth:=Constraints.MinMaxWidth(Width);
     if HeightIsFixed or (PreferredHeight<=0) then
       PreferredHeight:=Constraints.MinMaxHeight(Height);
-
-    // move childs tight to left and top (so no space left and above childs)
-    If ControlCount > 0 then begin
-      // get current bounds of all childs
-      GetChildBounds(ChildBounds,true);
-      if (ChildBounds.Left<>0) or (ChildBounds.Top<>0) then begin
-        // move all childs to left and top
-        For I := 0 to ControlCount - 1 do begin
-          AControl:=Controls[I];
-          If AControl.Visible then begin
-            AControl.SetBoundsKeepBase(AControl.Left - ChildBounds.Left,
-                                       AControl.Top - ChildBounds.Top,
-                                       AControl.Width,AControl.Height,true);
-          end;
-        end;
-      end;
-    end;
 
     // set new size
     {$IFDEF VerboseAutoSize}
@@ -4338,26 +4346,44 @@ var
   NewClientWidth: Integer;
   NewClientHeight: Integer;
   OldClientRect: TRect;
+  OldAdjustedClientRect: TRect;
+  NewWidth: Integer;
+  NewHeight: Integer;
 begin
   inherited CalculatePreferredSize(PreferredWidth, PreferredHeight);
   if HandleAllocated then
     TWSWinControlClass(WidgetSetClass).GetPreferredSize(Self,
                                                PreferredWidth, PreferredHeight);
   if ControlCount>0 then begin
+
+    // get the size requirements for the child controls
     GetChildBounds(ChildBounds,true);
     NewClientWidth := ChildBounds.Right - ChildBounds.Left;
     NewClientHeight := ChildBounds.Bottom - ChildBounds.Top;
+    
+    // add the adjusted client area border
     OldClientRect := GetClientRect;
+    OldAdjustedClientRect := OldClientRect;
+    AdjustClientRect(OldAdjustedClientRect);
+    inc(NewClientWidth,OldAdjustedClientRect.Left
+                       +OldClientRect.Right-OldAdjustedClientRect.Right);
+    inc(NewClientHeight,OldAdjustedClientRect.Top
+                       +OldClientRect.Bottom-OldAdjustedClientRect.Bottom);
+
+    // add the control border around the client area
+    NewWidth:=Width-OldClientRect.Right+NewClientWidth;
+    NewHeight:=Height-OldClientRect.Bottom+NewClientHeight;
+
     {$IFDEF VerboseAutoSize}
     debugln('TWinControl.CalculatePreferredSize ',DbgSName(Self),
       ' HandleAllocated=',dbgs(HandleAllocated)+' ChildBounds='+dbgs(ChildBounds),
       ' Cur='+dbgs(Width)+'x'+dbgs(Height)+
-      ' Client='+dbgs(OldClientRect.Right)+'x'+dbgs(OldClientRect.Bottom));
+      ' Client='+dbgs(OldClientRect.Right)+'x'+dbgs(OldClientRect.Bottom),
+      ' Adjusted='+dbgs(OldAdjustedClientRect),
+      ' NewWidth='+dbgs(NewWidth)+' NewHeight=',+dbgs(NewHeight));
     {$ENDIF}
-    PreferredWidth:=
-                   Max(PreferredWidth,Width-OldClientRect.Right+NewClientWidth);
-    PreferredHeight:=
-               Max(PreferredHeight,Height-OldClientRect.Bottom+NewClientHeight);
+    PreferredWidth:=Max(PreferredWidth,NewWidth);
+    PreferredHeight:=Max(PreferredHeight,NewHeight);
   end;
   {$IFDEF VerboseAutoSize}
   debugln('TWinControl.CalculatePreferredSize ',DbgSName(Self),
@@ -4579,6 +4605,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.338  2005/07/13 17:25:06  mattias
+  added some resourcestrings and autosizing for checklistbox editor
+
   Revision 1.337  2005/07/13 07:41:05  mattias
   improved autosizing of project inspector
 

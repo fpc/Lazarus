@@ -723,12 +723,12 @@ end;
 function TNotebookComponentEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    nbvAddPage:       Result:='Add page';
-    nbvInsertPage:    Result:='Insert page';
-    nbvDeletePage:    Result:='Delete page';
-    nbvMovePageLeft:  Result:='Move page left';
-    nbvMovePageRight: Result:='Move page right';
-    nbvShowPage:      Result:='Show page ...';
+    nbvAddPage:       Result:=nbcesAddPage;
+    nbvInsertPage:    Result:=nbcesInsertPage;
+    nbvDeletePage:    Result:=nbcesDeletePage;
+    nbvMovePageLeft:  Result:=nbcesMovePageLeft;
+    nbvMovePageRight: Result:=nbcesMovePageRight;
+    nbvShowPage:      Result:=nbcesShowPage;
   else
     Result:='';
   end;
@@ -991,58 +991,59 @@ begin
     Align:=alTop;
     BevelInner:=bvLowered;
     BevelOuter:=bvSpace;
-    Height:=25;
+    AutoSize:=true;
   end;
 
   //Button Add
   FBtnAdd:=TButton.Create(self);
   with FBtnAdd do begin
-    Parent:=FPanelButtons;
-    Align:=alLeft;
-    Width:=43;
     Caption:=oiscAdd;
+    Parent:=FPanelButtons;
     OnClick:=@AddItem;
+    AutoSize:=true;
+    Top:=0;
   end;
 
   //Button Delete
   FBtnDelete:=TButton.Create(self);
   with FBtnDelete do begin
-    Parent:=FPanelButtons;
-    Align:=alLeft;
-    Width:=43;
     Caption:=oiscDelete;
+    Parent:=FPanelButtons;
     OnClick:=@DeleteItem;
+    AutoSize:=true;
+    AnchorToCompanion(akLeft,0,FBtnAdd);
   end;
 
   //Button Up
   FBtnUp:=TButton.Create(self);
   with FBtnUp do begin
-    Parent:=FPanelButtons;
-    Align:=alLeft;
-    Width:=43;
     Caption:=clbUp;
+    Parent:=FPanelButtons;
     OnClick:=@MoveUpItem;
+    AutoSize:=true;
+    AnchorToCompanion(akLeft,0,FBtnDelete);
   end;
 
   //Button Down
   FBtnDown:=TButton.Create(self);
   with FBtnDown do begin
-    Parent:=FPanelButtons;
-    Align:=alLeft;
-    Width:=43;
     Caption:=clbDown;
+    Parent:=FPanelButtons;
     OnClick:=@MoveDownItem;
+    AutoSize:=true;
+    AnchorToCompanion(akLeft,0,FBtnUp);
   end;
 
   //Button Modify
   FBtnModify:=TButton.Create(self);
   with FBtnModify do begin
+    Caption:='...';
     Parent:=FPanelButtons;
-    Align:=alClient;
     ShowHint:=true;
     Hint:=clbModify;
-    Caption:='...';
     OnClick:=@ModifyItem;
+    AutoSize:=true;
+    AnchorToCompanion(akLeft,0,FBtnDown);
   end;
 
   FCheck:=TCheckListBox.Create(Self);
@@ -1057,23 +1058,24 @@ begin
     Align:=alBottom;
     BevelInner:=bvLowered;
     BevelOuter:=bvSpace;
-    Height:=25;
+    AutoSize:=true;
   end;
 
-  //Bnt Ok
+  //Btn Ok
   FBtnOK:=TBitBtn.Create(self);
   with FBtnOK do begin
     Parent:=FPanelOKCancel;
-    Align:=alLeft;
     Kind:=bkOk;
+    AutoSize:=true;
   end;
 
-  //Bnt Cancel
+  //Btn Cancel
   FBtnCancel:=TBitBtn.Create(self);
   with FBtnCancel do begin
     Parent:=FPanelOKCancel;
-    Align:=alRight;
     Kind:=bkCancel;
+    AutoSize:=true;
+    AnchorToCompanion(akLeft,0,FBtnOK);
   end;
 end;
 

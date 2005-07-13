@@ -286,10 +286,12 @@ begin
   if (not Macros.SubstituteStr(Params)) then exit;
   if not FilenameIsAbsolute(Filename) then
     Filename:=FindProgram(Filename,GetCurrentDir,false);
+  WorkingDir:=TrimFilename(WorkingDir);
+  Filename:=TrimFilename(Filename);
   CmdLine:=Filename;
   if Params<>'' then
     CmdLine:=CmdLine+' '+Params;
-  DebugLn('[TExternalToolList.Run] ',CmdLine);
+  DebugLn('[TExternalToolList.Run] CmdLine="',CmdLine,'" WorkDir="',WorkingDir,'"');
   try
     CheckIfFileIsExecutable(Filename);
     TheProcess := TProcess.Create(nil);

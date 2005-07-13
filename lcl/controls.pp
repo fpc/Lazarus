@@ -1048,6 +1048,9 @@ type
                              Sibling: TControl);
     procedure AnchorHorizontalCenterTo(Sibling: TControl);
     procedure AnchorVerticalCenterTo(Sibling: TControl);
+    procedure AnchorToCompanion(Side: TAnchorKind; Space: integer;
+                                Sibling: TControl;
+                                FreeCompositeSide: boolean = true);
     procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
     procedure SetInitialBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
     procedure SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight: integer;
@@ -2953,6 +2956,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.310  2005/07/13 17:25:06  mattias
+  added some resourcestrings and autosizing for checklistbox editor
+
   Revision 1.309  2005/07/13 07:33:14  mattias
   implemented renaming of new package files
 

@@ -243,7 +243,7 @@ begin
   LoadBTN := TBUTTON.Create(Self);
   With LoadBTN do begin
     Parent := Self;
-    CAPTION := oisLoad;
+    CAPTION := oisLoadPicture;
     ONCLICK := @LoadBTNCLICK;
   end;
 
@@ -251,14 +251,14 @@ begin
   With SaveBTN do begin
     Parent := Self;
     ENABLED := False;
-    CAPTION := oisSave;
+    CAPTION := oisSavePicture;
     ONCLICK := @SaveBTNCLICK;
   end;
 
   ClearBTN := TBUTTON.Create(Self);
   With ClearBTN do begin
     Parent := Self;
-    CAPTION := oisCLear;
+    CAPTION := oisClearPicture;
     ONCLICK := @ClearBTNCLICK;
   end;
   

@@ -26,8 +26,6 @@ unit OutputFilter;
 
 interface
 
-{$DEFINE ShowTriedFiles}
-
 uses
   Classes, SysUtils, Forms, Controls, CompilerOptions, Project, Process,
   IDEProcs, FileUtil, LclProc, LazConf;
@@ -238,6 +236,7 @@ var
 begin
   Result:=true;
   Clear;
+  //debugln('TOutputFilter.Execute A CurrentDirectory="',TheProcess.CurrentDirectory,'"');
   TheProcess.Execute;
   fCurrentDirectory:=TrimFilename(TheProcess.CurrentDirectory);
   if fCurrentDirectory='' then fCurrentDirectory:=GetCurrentDir;
@@ -296,7 +295,7 @@ procedure TOutputFilter.ReadLine(const s: string; DontFilterLine: boolean);
 // this is called for every line written by the external tool (=Output)
 // it parses the output
 begin
-  //writeln('TOutputFilter: "',s,'"');
+  //debugln('TOutputFilter: "',s,'"');
   fLastMessageType:=omtNone;
   fLastErrorType:=etNone;
   fOutput.Add(s);

@@ -92,6 +92,12 @@ resourcestring
   // component editors
   cesStringGridEditor = 'StringGrid Editor ...';
   cesStringGridEditor2 = 'StringGrid Editor';
+  nbcesAddPage = 'Add page';
+  nbcesInsertPage = 'Insert page';
+  nbcesDeletePage = 'Delete page';
+  nbcesMovePageLeft = 'Move page left';
+  nbcesMovePageRight = 'Move page right';
+  nbcesShowPage = 'Show page ...';
   oisCreateDefaultEvent = 'Create default event';
 
   //checklistbox editor
@@ -219,6 +225,9 @@ resourcestring
   oisLoadImageDialog = 'Load Image Dialog';
   oisOK = '&OK';
   oisCancel = '&Cancel';
+  oisLoadPicture = 'Load picture';
+  oisSavePicture = 'Save picture';
+  oisClearPicture = 'Clear picture';
   oisLoad = '&Load';
   oisSave = '&Save';
   oisCLear = 'C&lear';
