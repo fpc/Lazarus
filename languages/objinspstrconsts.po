@@ -234,6 +234,30 @@ msgstr ""
 msgid "StringGrid Editor"
 msgstr ""
 
+#: objinspstrconsts:nbcesaddpage
+msgid "Add page"
+msgstr ""
+
+#: objinspstrconsts:nbcesinsertpage
+msgid "Insert page"
+msgstr ""
+
+#: objinspstrconsts:nbcesdeletepage
+msgid "Delete page"
+msgstr ""
+
+#: objinspstrconsts:nbcesmovepageleft
+msgid "Move page left"
+msgstr ""
+
+#: objinspstrconsts:nbcesmovepageright
+msgid "Move page right"
+msgstr ""
+
+#: objinspstrconsts:nbcesshowpage
+msgid "Show page ..."
+msgstr ""
+
 #: objinspstrconsts:oiscreatedefaultevent
 msgid "Create default event"
 msgstr ""
@@ -312,6 +336,10 @@ msgstr ""
 
 #: objinspstrconsts:cactionlisteditormovedownaction
 msgid "Move Down"
+msgstr ""
+
+#: objinspstrconsts:ilesadd
+msgid "Add"
 msgstr ""
 
 #: objinspstrconsts:cactionlisteditormoveupaction
@@ -652,6 +680,18 @@ msgstr ""
 
 #: objinspstrconsts:oiscancel
 msgid "&Cancel"
+msgstr ""
+
+#: objinspstrconsts:oisloadpicture
+msgid "Load picture"
+msgstr ""
+
+#: objinspstrconsts:oissavepicture
+msgid "Save picture"
+msgstr ""
+
+#: objinspstrconsts:oisclearpicture
+msgid "Clear picture"
 msgstr ""
 
 #: objinspstrconsts:oisload

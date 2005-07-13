@@ -137,12 +137,20 @@ msgstr ""
 msgid "Action List Editor"
 msgstr ""
 
+#: objinspstrconsts:ilesadd
+msgid "Add"
+msgstr ""
+
 #: objinspstrconsts:sccsilbtnadd
 msgid "Add ..."
 msgstr "Dodaj ..."
 
 #: objinspstrconsts:clbadd
 msgid "Add new Item"
+msgstr ""
+
+#: objinspstrconsts:nbcesaddpage
+msgid "Add page"
 msgstr ""
 
 #: objinspstrconsts:oisaddtofavorites
@@ -208,6 +216,10 @@ msgstr ""
 #: objinspstrconsts:sccsilbtnclear
 msgid "Clear"
 msgstr "Wyczyść"
+
+#: objinspstrconsts:oisclearpicture
+msgid "Clear picture"
+msgstr ""
 
 #: objinspstrconsts:oistdactcolorselecthint
 msgid "Color Select"
@@ -279,6 +291,10 @@ msgstr ""
 
 #: objinspstrconsts:oisdeleteitem
 msgid "Delete item %s%s%s?"
+msgstr ""
+
+#: objinspstrconsts:nbcesdeletepage
+msgid "Delete page"
 msgstr ""
 
 #: objinspstrconsts:clbdelete
@@ -405,6 +421,10 @@ msgstr "Edytor listy obrazków"
 msgid "Insert"
 msgstr ""
 
+#: objinspstrconsts:nbcesinsertpage
+msgid "Insert page"
+msgstr ""
+
 #: objinspstrconsts:oisint64
 msgid "Int64"
 msgstr ""
@@ -433,6 +453,10 @@ msgstr "Edytor ListView"
 msgid "Load Image Dialog"
 msgstr ""
 
+#: objinspstrconsts:oisloadpicture
+msgid "Load picture"
+msgstr ""
+
 #: objinspstrconsts:oismethod
 msgid "Method"
 msgstr ""
@@ -447,6 +471,14 @@ msgstr ""
 
 #: objinspstrconsts:cactionlisteditormoveupaction
 msgid "Move Up"
+msgstr ""
+
+#: objinspstrconsts:nbcesmovepageleft
+msgid "Move page left"
+msgstr ""
+
+#: objinspstrconsts:nbcesmovepageright
+msgid "Move page right"
 msgstr ""
 
 #: objinspstrconsts:sccslvedtbtnadd
@@ -533,6 +565,10 @@ msgstr ""
 msgid "Save As"
 msgstr ""
 
+#: objinspstrconsts:oissavepicture
+msgid "Save picture"
+msgstr ""
+
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"
 msgstr ""
@@ -571,6 +607,10 @@ msgstr ""
 
 #: objinspstrconsts:oisshowhints
 msgid "Show Hints"
+msgstr ""
+
+#: objinspstrconsts:nbcesshowpage
+msgid "Show page ..."
 msgstr ""
 
 #: objinspstrconsts:oissort

@@ -126,12 +126,20 @@ msgstr "Acció"
 msgid "Action List Editor"
 msgstr "Editor de la llista d'accions"
 
+#: objinspstrconsts:ilesadd
+msgid "Add"
+msgstr ""
+
 #: objinspstrconsts:sccsilbtnadd
 msgid "Add ..."
 msgstr "Afegeix ..."
 
 #: objinspstrconsts:clbadd
 msgid "Add new Item"
+msgstr ""
+
+#: objinspstrconsts:nbcesaddpage
+msgid "Add page"
 msgstr ""
 
 #: objinspstrconsts:oisaddtofavorites
@@ -197,6 +205,10 @@ msgstr "Classe"
 #: objinspstrconsts:sccsilbtnclear
 msgid "Clear"
 msgstr "Neteja"
+
+#: objinspstrconsts:oisclearpicture
+msgid "Clear picture"
+msgstr ""
 
 #: objinspstrconsts:oistdactcolorselecthint
 msgid "Color Select"
@@ -269,6 +281,10 @@ msgstr "Elimina l'acció"
 #: objinspstrconsts:oisdeleteitem
 msgid "Delete item %s%s%s?"
 msgstr "Voleu eliminar l'element %s%s%s?"
+
+#: objinspstrconsts:nbcesdeletepage
+msgid "Delete page"
+msgstr ""
 
 #: objinspstrconsts:clbdelete
 msgid "Delete the Item %d \"%s\"?"
@@ -394,6 +410,10 @@ msgstr "Editor de la llista de les imatges"
 msgid "Insert"
 msgstr "Insereix"
 
+#: objinspstrconsts:nbcesinsertpage
+msgid "Insert page"
+msgstr ""
+
 #: objinspstrconsts:oisint64
 msgid "Int64"
 msgstr "Int64"
@@ -422,6 +442,10 @@ msgstr "Editor de ListView"
 msgid "Load Image Dialog"
 msgstr "Carrega el diàleg de l'imatge"
 
+#: objinspstrconsts:oisloadpicture
+msgid "Load picture"
+msgstr ""
+
 #: objinspstrconsts:oismethod
 msgid "Method"
 msgstr "Mètode"
@@ -437,6 +461,14 @@ msgstr "Mou avall"
 #: objinspstrconsts:cactionlisteditormoveupaction
 msgid "Move Up"
 msgstr "Mou amunt"
+
+#: objinspstrconsts:nbcesmovepageleft
+msgid "Move page left"
+msgstr ""
+
+#: objinspstrconsts:nbcesmovepageright
+msgid "Move page right"
+msgstr ""
 
 #: objinspstrconsts:sccslvedtbtnadd
 msgid "New"
@@ -522,6 +554,10 @@ msgstr "&Anomena i desa.."
 msgid "Save As"
 msgstr "Anomena i desa"
 
+#: objinspstrconsts:oissavepicture
+msgid "Save picture"
+msgstr ""
+
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"
 msgstr "Seleccion&a-ho tot"
@@ -560,6 +596,10 @@ msgstr ""
 
 #: objinspstrconsts:oisshowhints
 msgid "Show Hints"
+msgstr ""
+
+#: objinspstrconsts:nbcesshowpage
+msgid "Show page ..."
 msgstr ""
 
 #: objinspstrconsts:oissort

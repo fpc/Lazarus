@@ -68,7 +68,7 @@ msgstr ""
 
 #: objinspstrconsts:oisload
 msgid "&Load"
-msgstr ""
+msgstr "Tuo"
 
 #: objinspstrconsts:oistdactdatasetnextheadline
 msgid "&Next"
@@ -108,7 +108,7 @@ msgstr ""
 
 #: objinspstrconsts:clbup
 msgid "&Up"
-msgstr ""
+msgstr "Ylös"
 
 #: objinspstrconsts:cactionlisteditorallcategory
 msgid "(All)"
@@ -126,17 +126,25 @@ msgstr ""
 msgid "Action List Editor"
 msgstr ""
 
+#: objinspstrconsts:ilesadd
+msgid "Add"
+msgstr ""
+
 #: objinspstrconsts:sccsilbtnadd
 msgid "Add ..."
 msgstr ""
 
 #: objinspstrconsts:clbadd
 msgid "Add new Item"
+msgstr "Lisää uusi kohta"
+
+#: objinspstrconsts:nbcesaddpage
+msgid "Add page"
 msgstr ""
 
 #: objinspstrconsts:oisaddtofavorites
 msgid "Add to Favorites"
-msgstr ""
+msgstr "Lisää suosituimpiin"
 
 #: objinspstrconsts:oisall
 msgid "All"
@@ -168,7 +176,7 @@ msgstr ""
 
 #: objinspstrconsts:oisclear
 msgid "C&lear"
-msgstr ""
+msgstr "Tyhjennä"
 
 #: objinspstrconsts:oistdactdatasetcancel1hint
 msgid "Cancel"
@@ -184,7 +192,7 @@ msgstr ""
 
 #: objinspstrconsts:clbcheckgroupeditor
 msgid "CheckGroup Editor"
-msgstr ""
+msgstr "CheckGroup:n muokkain"
 
 #: objinspstrconsts:clbchecklistboxeditor
 msgid "CheckListBox Editor"
@@ -197,6 +205,10 @@ msgstr "Luokka"
 #: objinspstrconsts:sccsilbtnclear
 msgid "Clear"
 msgstr "Tyhjennä"
+
+#: objinspstrconsts:oisclearpicture
+msgid "Clear picture"
+msgstr ""
 
 #: objinspstrconsts:oistdactcolorselecthint
 msgid "Color Select"
@@ -270,6 +282,10 @@ msgstr ""
 msgid "Delete item %s%s%s?"
 msgstr ""
 
+#: objinspstrconsts:nbcesdeletepage
+msgid "Delete page"
+msgstr ""
+
 #: objinspstrconsts:clbdelete
 msgid "Delete the Item %d \"%s\"?"
 msgstr ""
@@ -280,7 +296,7 @@ msgstr ""
 
 #: objinspstrconsts:clbdown
 msgid "Do&wn"
-msgstr ""
+msgstr "Alas"
 
 #: objinspstrconsts:oistdactfileexitheadline
 msgid "E&xit"
@@ -324,7 +340,7 @@ msgstr ""
 
 #: objinspstrconsts:oisfavorites
 msgid "Favorites"
-msgstr ""
+msgstr "Suosituimmat"
 
 #: objinspstrconsts:cactionlisteditorfilecategory
 msgid "File"
@@ -394,6 +410,10 @@ msgstr ""
 msgid "Insert"
 msgstr ""
 
+#: objinspstrconsts:nbcesinsertpage
+msgid "Insert page"
+msgstr ""
+
 #: objinspstrconsts:oisint64
 msgid "Int64"
 msgstr ""
@@ -422,13 +442,17 @@ msgstr ""
 msgid "Load Image Dialog"
 msgstr "Tuo kuva"
 
+#: objinspstrconsts:oisloadpicture
+msgid "Load picture"
+msgstr ""
+
 #: objinspstrconsts:oismethod
 msgid "Method"
 msgstr "Metodi"
 
 #: objinspstrconsts:clbmodify
 msgid "Modify the Item"
-msgstr ""
+msgstr "Muokkaa kohtaa"
 
 #: objinspstrconsts:cactionlisteditormovedownaction
 msgid "Move Down"
@@ -436,6 +460,14 @@ msgstr ""
 
 #: objinspstrconsts:cactionlisteditormoveupaction
 msgid "Move Up"
+msgstr ""
+
+#: objinspstrconsts:nbcesmovepageleft
+msgid "Move page left"
+msgstr ""
+
+#: objinspstrconsts:nbcesmovepageright
+msgid "Move page right"
 msgstr ""
 
 #: objinspstrconsts:sccslvedtbtnadd
@@ -512,7 +544,7 @@ msgstr ""
 
 #: objinspstrconsts:oisremovefromfavorites
 msgid "Remove from Favorites"
-msgstr ""
+msgstr "Poista suositummista"
 
 #: objinspstrconsts:oistdactfilesaveasheadline
 msgid "Save &As..."
@@ -520,6 +552,10 @@ msgstr ""
 
 #: objinspstrconsts:oistdactfilesaveashint
 msgid "Save As"
+msgstr ""
+
+#: objinspstrconsts:oissavepicture
+msgid "Save picture"
 msgstr ""
 
 #: objinspstrconsts:oistdacteditselectallheadline
@@ -548,11 +584,11 @@ msgstr ""
 
 #: objinspstrconsts:oissettodefaultvalue
 msgid "Set to default value"
-msgstr ""
+msgstr "Aseta oletusarvo"
 
 #: objinspstrconsts:oissettodefault
 msgid "Set to default: %s"
-msgstr ""
+msgstr "Aseta oletusarvo joka on %s"
 
 #: objinspstrconsts:oisshowcomponenttree
 msgid "Show Component Tree"
@@ -561,6 +597,10 @@ msgstr "Näytä komponenttipuu"
 #: objinspstrconsts:oisshowhints
 msgid "Show Hints"
 msgstr "Näytä vihjeet"
+
+#: objinspstrconsts:nbcesshowpage
+msgid "Show page ..."
+msgstr ""
 
 #: objinspstrconsts:oissort
 msgid "Sort"

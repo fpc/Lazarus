@@ -126,12 +126,20 @@ msgstr ""
 msgid "Action List Editor"
 msgstr "Editeur de listes d'actions"
 
+#: objinspstrconsts:ilesadd
+msgid "Add"
+msgstr ""
+
 #: objinspstrconsts:sccsilbtnadd
 msgid "Add ..."
 msgstr "Ajouter ..."
 
 #: objinspstrconsts:clbadd
 msgid "Add new Item"
+msgstr ""
+
+#: objinspstrconsts:nbcesaddpage
+msgid "Add page"
 msgstr ""
 
 #: objinspstrconsts:oisaddtofavorites
@@ -197,6 +205,10 @@ msgstr "Classe"
 #: objinspstrconsts:sccsilbtnclear
 msgid "Clear"
 msgstr "Effacer"
+
+#: objinspstrconsts:oisclearpicture
+msgid "Clear picture"
+msgstr ""
 
 #: objinspstrconsts:oistdactcolorselecthint
 msgid "Color Select"
@@ -269,6 +281,10 @@ msgstr ""
 #: objinspstrconsts:oisdeleteitem
 msgid "Delete item %s%s%s?"
 msgstr "Supprimer l'élément %s%s%s ?"
+
+#: objinspstrconsts:nbcesdeletepage
+msgid "Delete page"
+msgstr ""
 
 #: objinspstrconsts:clbdelete
 msgid "Delete the Item %d \"%s\"?"
@@ -394,6 +410,10 @@ msgstr "Editeur de liste d'images"
 msgid "Insert"
 msgstr ""
 
+#: objinspstrconsts:nbcesinsertpage
+msgid "Insert page"
+msgstr ""
+
 #: objinspstrconsts:oisint64
 msgid "Int64"
 msgstr ""
@@ -422,6 +442,10 @@ msgstr "Editeur d'élements"
 msgid "Load Image Dialog"
 msgstr "Chargement d'une image"
 
+#: objinspstrconsts:oisloadpicture
+msgid "Load picture"
+msgstr ""
+
 #: objinspstrconsts:oismethod
 msgid "Method"
 msgstr "Méthode"
@@ -436,6 +460,14 @@ msgstr ""
 
 #: objinspstrconsts:cactionlisteditormoveupaction
 msgid "Move Up"
+msgstr ""
+
+#: objinspstrconsts:nbcesmovepageleft
+msgid "Move page left"
+msgstr ""
+
+#: objinspstrconsts:nbcesmovepageright
+msgid "Move page right"
 msgstr ""
 
 #: objinspstrconsts:sccslvedtbtnadd
@@ -522,6 +554,10 @@ msgstr ""
 msgid "Save As"
 msgstr ""
 
+#: objinspstrconsts:oissavepicture
+msgid "Save picture"
+msgstr ""
+
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"
 msgstr ""
@@ -560,6 +596,10 @@ msgstr ""
 
 #: objinspstrconsts:oisshowhints
 msgid "Show Hints"
+msgstr ""
+
+#: objinspstrconsts:nbcesshowpage
+msgid "Show page ..."
 msgstr ""
 
 #: objinspstrconsts:oissort
