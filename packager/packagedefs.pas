@@ -135,7 +135,7 @@ const
 type
   TPkgFileFlag = (
     pffHasRegisterProc,  // file is unit and has a 'register' procedure
-    pffAddToPkgUsesSection,// unit is added to uses section if package source
+    pffAddToPkgUsesSection,// unit is added to uses section
     pffReportedAsRemoved // file has been reported as removed
     );
   TPkgFileFlags = set of TPkgFileFlag;
@@ -651,7 +651,8 @@ type
     procedure ShortenFilename(var ExpandedFilename: string; UseUp: boolean);
     procedure LongenFilename(var AFilename: string);
     function FindPkgFile(const AFilename: string;
-                         ResolveLinks, IgnoreRemoved: boolean): TPkgFile;
+                         ResolveLinks, IgnoreRemoved, FindNewFile: boolean
+                         ): TPkgFile;
     function FindUnit(const TheUnitName: string): TPkgFile;
     function FindUnit(const TheUnitName: string; IgnoreRemoved: boolean): TPkgFile;
     function FindUnit(const TheUnitName: string; IgnoreRemoved: boolean;
@@ -2506,15 +2507,28 @@ begin
 end;
 
 function TLazPackage.FindPkgFile(const AFilename: string;
-  ResolveLinks, IgnoreRemoved: boolean): TPkgFile;
+  ResolveLinks, IgnoreRemoved, FindNewFile: boolean): TPkgFile;
 var
   TheFilename: String;
   Cnt: Integer;
   i: Integer;
 begin
   Result:=nil;
+  
   TheFilename:=AFilename;
-  if ResolveLinks then begin
+  
+  if FindNewFile and (not FilenameIsAbsolute(TheFilename)) then begin
+    // this is a virtual file, not yet saved
+    // -> prepend Package Directory and check if it does not exists yet in
+    // the package directory
+    LongenFilename(TheFilename);
+    if FileExists(TheFilename) then begin
+      // the file exists -> this virtual file does not belong to the package
+      exit;
+    end;
+  end;
+  
+  if ResolveLinks and FilenameIsAbsolute(TheFilename) then begin
     TheFilename:=ReadAllLinks(TheFilename,false);
     if TheFilename='' then TheFilename:=AFilename;
   end;

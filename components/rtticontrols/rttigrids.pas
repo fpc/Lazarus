@@ -216,15 +216,15 @@ type
     procedure DrawObjectName(Index: integer; const aRect: TRect;
                              aState: TGridDrawState);
     procedure GetCellEditor(aCol, aRow: integer;
-                            var PropEditor: TPropertyEditor;
-                            var IndependentEditor: boolean);
+                            out PropEditor: TPropertyEditor;
+                            out IndependentEditor: boolean);
     procedure FreeCellEditor(PropEditor: TPropertyEditor);
     function GridStateToPropEditState(GridState: TGridDrawState
                                       ): TPropEditDrawState;
     function GetTIObject(Index: integer): TPersistent;
     procedure MapCell(aCol, aRow: integer;
-                      var ObjectIndex, PropertyIndex: integer;
-                      var CellType: TTIGridCellType);
+                      out ObjectIndex, PropertyIndex: integer;
+                      out CellType: TTIGridCellType);
     function GetCurrentGridProperty: TTIGridProperty;
     function IndexOfGridProperty(const PropName: string): integer;
     function FindGridProperty(const PropName: string): TTIGridProperty;
@@ -954,7 +954,7 @@ begin
 end;
 
 procedure TTICustomGrid.GetCellEditor(aCol, aRow: integer;
-  var PropEditor: TPropertyEditor; var IndependentEditor: boolean);
+  out PropEditor: TPropertyEditor; out IndependentEditor: boolean);
 var
   ObjectIndex: Integer;
   PropertyIndex: Integer;
@@ -1070,8 +1070,8 @@ begin
   end;
 end;
 
-procedure TTICustomGrid.MapCell(aCol, aRow: integer; var ObjectIndex,
-  PropertyIndex: integer; var CellType: TTIGridCellType);
+procedure TTICustomGrid.MapCell(aCol, aRow: integer; out ObjectIndex,
+  PropertyIndex: integer; out CellType: TTIGridCellType);
 var
   PropHeaderLines: LongInt;
   ObjectHeaderLines: LongInt;

@@ -45,7 +45,7 @@ type
   private
     FAutoFreeDockSite: boolean;
   protected
-    procedure UndockControlForDocking(TheControl: TControl);
+    procedure UndockControlForDocking(AControl: TControl);
   public
     constructor Create(TheDockSite: TWinControl); override;
     destructor Destroy; override;
@@ -128,13 +128,13 @@ end;
 
 function TLazDockPages.GetNoteBookPage(Index: Integer): TLazDockPage;
 begin
-  Result:=TLazDockPage(GeTLazDockPage(Index));
+  Result:=TLazDockPage(inherited ActivePageComponent);
 end;
 
 procedure TLazDockPages.SetActiveNotebookPageComponent(
   const AValue: TLazDockPage);
 begin
-  SetActivePageComponent(AValue);
+  ActivePageComponent:=AValue;
 end;
 
 constructor TLazDockPages.Create(TheOwner: TComponent);
@@ -155,9 +155,6 @@ begin
     if AWinControl.DockManager<>nil then begin
       // TODO
     end;
-    if AWinControl.DockSite<>nil then begin
-      // TODO
-    end;
   end;
   if AControl.Parent<>nil then begin
     AControl.Parent:=nil;
@@ -166,7 +163,7 @@ end;
 
 constructor TLazDockTree.Create(TheDockSite: TWinControl);
 begin
-  DockZoneClass:=TLazDockZone;
+  SetDockZoneClass(TLazDockZone);
   if TheDockSite=nil then begin
     TheDockSite:=TLazDockForm.Create(nil);
     TheDockSite.DockManager:=Self;
@@ -178,10 +175,10 @@ end;
 destructor TLazDockTree.Destroy;
 begin
   if FAutoFreeDockSite then begin
-    if FDockSite.DockManager=Self then
-      FDockSite.DockManager:=nil;
-    FDockSite.Free;
-    FDockSite:=nil;
+    if DockSite.DockManager=Self then
+      DockSite.DockManager:=nil;
+    DockSite.Free;
+    DockSite:=nil;
   end;
   inherited Destroy;
 end;
@@ -233,7 +230,10 @@ procedure TLazDockTree.InsertControl(AControl: TControl; InsertAt: TAlign;
 var
   DropZone: TDockZone;
   NewZone: TDockZone;
-  NewSplitter: TSplitter;
+  NewOrientation: TDockOrientation;
+  NeedNewParentZone: Boolean;
+  NewParentZone: TDockZone;
+  OldParentZone: TDockZone;
 begin
   if DropControl=nil then
     DropControl:=DockSite;
@@ -250,6 +250,7 @@ begin
   // dock
   // create a new zone for AControl
   NewZone:=DockZoneClass.Create(Self,AControl);
+  
   // insert new zone into tree
   if (DropZone=RootZone) and (RootZone.FirstChild=nil) then begin
     // this is the first child
@@ -264,32 +265,68 @@ begin
       DockSite.Visible:=true;
   end else begin
     // there are already other childs
-    if DropZone.Parent=nil then begin
-      // insert as child of RootZone
-      // TODO
-      RaiseGDBException('TLazDockTree.InsertControl TODO: DropZone.Parent=nil');
-    end else if DropZone.Parent.ChildCount=1 then begin
-      // insert as second child
-      DropZone.Parent.Orientation:=NewOrientation;
-      if InsertAt in [alLeft,alTop] then
-        DropZone.Parent.AddAsFirstChild(NewZone)
-      else
-        DropZone.Parent.AddAsLastChild(NewZone);
-      // add splitter control
-      NewSplitter:=TSplitter.Create(DockSite);
-      NewSplitter
-      // resize DockSite
-      if InsertAt in [alLeft,alRight] then
-        DockSite.Width:=DockSite.Width+NewSplitter.Width+AControl.Width
-      else if InsertAt in [alTop,alBottom] then
-        DockSite.Width:=DockSite.Height+NewSplitter.Height+AControl.Width
 
-      // add control to DockSite
-      // TODO
-      RaiseGDBException('TLazDockTree.InsertControl TODO: DropZone.Parent<>nil');
-    else
-      RaiseGDBException('TLazDockTree.InsertControl TODO: DropZone.Parent<>nil DropZone.Parent.ChildCount>1');
+    // optimize DropZone
+    if (DropZone.ChildCount>0)
+    and (NewOrientation in [doHorizontal,doVertical])
+    and ((DropZone.Orientation=NewOrientation)
+         or (DropZone.Orientation=doNoOrient))
+    then begin
+      // docking on a side of an inner node is the same as docking to a side of
+      // a child
+      if InsertAt in [alLeft,alTop] then
+        DropZone:=DropZone.FirstChild
+      else
+        DropZone:=DropZone.GetLastChild;
     end;
+    
+    // insert a new Parent Zone if needed
+    NeedNewParentZone:=true;
+    if (DropZone.Parent<>nil) then begin
+      if (DropZone.Orientation=doNoOrient) then
+        NeedNewParentZone:=false;
+      if (DropZone.Orientation=NewOrientation) then
+        NeedNewParentZone:=false;
+    end;
+    if NeedNewParentZone then begin
+      // insert a new zone between current DropZone.Parent and DropZone
+      // this new zone will become the new DropZone.Parent
+      OldParentZone:=DropZone.Parent;
+      NewParentZone:=DockZoneClass.Create(Self,nil);
+      if OldParentZone<>nil then
+        OldParentZone.ReplaceChild(DropZone,NewParentZone);
+      NewParentZone.AddAsFirstChild(DropZone);
+    end;
+    
+    // adjust Orientation in tree
+    if DropZone.Parent.Orientation=doNoOrient then
+      DropZone.Parent.Orientation:=NewOrientation;
+    if DropZone.Parent.Orientation<>NewOrientation then
+      RaiseGDBException('TLazDockTree.InsertControl Inconsistency DropZone.Orientation<>NewOrientation');
+
+    // insert new node
+    if DropZone.Parent=nil then
+      RaiseGDBException('TLazDockTree.InsertControl Inconsistency DropZone.Parent=nil');
+
+    if InsertAt in [alLeft,alTop] then
+      DropZone.Parent.AddAsFirstChild(NewZone)
+    else
+      DropZone.Parent.AddAsLastChild(NewZone);
+
+    // add splitter control
+    //NewSplitter:=TSplitter.Create(DockSite);
+
+    // add control to DockSite
+
+    // resize DockSite
+    {if InsertAt in [alLeft,alRight] then
+      DockSite.Width:=DockSite.Width+NewSplitter.Width+AControl.Width
+    else if InsertAt in [alTop,alBottom] then
+      DockSite.Width:=DockSite.Height+NewSplitter.Height+AControl.Width
+    else if InsertAt in [alNone,alClient] then begin
+      // TODO
+      RaiseGDBException('TLazDockTree.InsertControl TODO: InsertAt in [alNone,alClient]');
+    end;}
   end;
 end;
 

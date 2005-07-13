@@ -339,7 +339,7 @@ begin
 
   // check if file already exists in package
   if FilenameIsAbsolute(AFilename) then begin
-    PkgFile:=LazPackage.FindPkgFile(AFilename,true,true);
+    PkgFile:=LazPackage.FindPkgFile(AFilename,true,true,false);
     if PkgFile<>nil then begin
       Msg:=Format(lisA2PFileAlreadyExistsInTheProject, ['"', AFilename, '"']);
       if PkgFile.Filename<>AFilename then
@@ -433,7 +433,7 @@ begin
     Params.UnitFilename:=AddUnitFilenameEdit.Text;
     Params.UnitName:=AddUnitSrcNameEdit.Text;
     Params.FileType:=pftUnit;
-    Params.PkgFileFlags:=[];
+    Params.PkgFileFlags:=[pffAddToPkgUsesSection];
     Params.AutoAddLFMFile:=AddSecondaryFilesCheckBox.Checked;
     Params.AutoAddLRSFile:=AddSecondaryFilesCheckBox.Checked;
     if AddUnitHasRegisterCheckBox.Checked then
@@ -520,36 +520,7 @@ begin
 end;
 
 procedure TAddToPackageDlg.AddFilesPageResize(Sender: TObject);
-var
-  x: Integer;
-  y: Integer;
-  w: Integer;
-  h: Integer;
 begin
-  with FilesListView do
-    SetBounds(0,0,Parent.ClientWidth,Parent.ClientHeight-45);
-
-  x:=5;
-  y:=FilesListView.Height+10;
-  w:=100;
-  h:=25;
-  
-  with FilesBrowseButton do
-    SetBounds(x,y,w,h);
-  inc(x,w+3);
-
-  with FilesShortenButton do
-    SetBounds(x,y,w,h);
-  inc(x,w+3);
-
-  with FilesDeleteButton do
-    SetBounds(x,y,w,h);
-  inc(x,w+3);
-
-  w:=FilesAddButton.Parent.ClientWidth-x-5;
-  if w<20 then w:=20;
-  with FilesAddButton do
-    SetBounds(x,y,w,h);
 end;
 
 procedure TAddToPackageDlg.AddFileBrowseButtonClick(Sender: TObject);
@@ -606,7 +577,7 @@ begin
       mtError,[mbCancel],0);
     exit;
   end;
-  if LazPackage.FindPkgFile(Params.UnitFilename,true,true)<>nil then begin
+  if LazPackage.FindPkgFile(Params.UnitFilename,true,true,false)<>nil then begin
     MessageDlg(lisA2PFileAlreadyInPackage,
       Format(lisA2PTheFileIsAlreadyInThePackage, ['"', Params.UnitFilename, '"']
         ),
@@ -622,6 +593,8 @@ begin
     end;
     inc(i);
   end;
+  if Params.FileType in PkgFileUnitTypes then
+    Include(Params.PkgFileFlags,pffAddToPkgUsesSection);
 
   ModalResult:=mrOk;
 end;
@@ -712,25 +685,6 @@ begin
   with AddUnitHasRegisterCheckBox do
     SetBounds(x,y,Parent.ClientWidth-2*x,Height);
   inc(y,AddUnitHasRegisterCheckBox.Height+5);
-
-  with AddUnitIsVirtualCheckBox do
-    SetBounds(x,y,Parent.ClientWidth-2*x,Height);
-  inc(y,AddUnitIsVirtualCheckBox.Height+5);
-
-  with AddSecondaryFilesCheckBox do
-    SetBounds(x,y,Parent.ClientWidth-2*x,Height);
-  inc(y,AddSecondaryFilesCheckBox.Height+5);
-
-  with AddUnitUpdateButton do
-    SetBounds(x,y,300,Height);
-  inc(y,AddUnitUpdateButton.Height+25);
-
-  with AddUnitButton do
-    SetBounds(x,y,80,Height);
-  inc(x,AddUnitButton.Width+10);
-
-  with CancelAddUnitButton do
-    SetBounds(x,y,80,Height);
 end;
 
 procedure TAddToPackageDlg.AddUnitUpdateButtonClick(Sender: TObject);
@@ -833,12 +787,9 @@ begin
           mtError,[mbCancel],0);
         exit;
       end;
-      if LazPackage.FindPkgFile(Filename,true,true)<>nil then begin
-        MessageDlg(lisA2PFileAlreadyInPackage,
-          Format(lisA2PTheFileIsAlreadyInThePackage, ['"', Filename, '"']
-            ),
-          mtError,[mbCancel],0);
-        exit;
+      if LazPackage.FindPkgFile(Filename,true,true,false)<>nil then begin
+        // file already in package
+        continue;
       end;
 
       if LastParams<>nil then begin
@@ -854,6 +805,7 @@ begin
 
       if NewFileType=pftUnit then begin
         CurParams.AddType:=d2ptUnit;
+        Include(CurParams.PkgFileFlags,pffAddToPkgUsesSection);
 
         // check filename
         if not CheckAddingUnitFilename(LazPackage,CurParams.AddType,
@@ -961,7 +913,7 @@ begin
   Params.Clear;
   Params.AddType:=d2ptNewComponent;
   Params.FileType:=pftUnit;
-  Params.PkgFileFlags:=[pffHasRegisterProc];
+  Params.PkgFileFlags:=[pffHasRegisterProc,pffAddToPkgUsesSection];
   Params.AncestorType:=AncestorComboBox.Text;
   Params.NewClassName:=ClassNameEdit.Text;
   Params.PageName:=PalettePageCombobox.Text;
@@ -1381,6 +1333,8 @@ begin
     Parent:=AddUnitPage;
     Caption:=lisAF2PIsVirtualUnit;
     OnClick:=@AddUnitIsVirtualCheckBoxClick;
+    AnchorParallel(akLeft,0,AddUnitHasRegisterCheckBox);
+    AnchorToNeighbour(akTop,5,AddUnitHasRegisterCheckBox);
   end;
 
   AddSecondaryFilesCheckBox:=TCheckBox.Create(Self);
@@ -1389,6 +1343,8 @@ begin
     Parent:=AddUnitPage;
     Caption:=lisA2PAddLFMLRSFilesIfTheyExist;
     Checked:=true;
+    AnchorParallel(akLeft,0,AddUnitHasRegisterCheckBox);
+    AnchorToNeighbour(akTop,5,AddUnitIsVirtualCheckBox);
   end;
 
   AddUnitUpdateButton:=TButton.Create(Self);
@@ -1397,6 +1353,9 @@ begin
     Parent:=AddUnitPage;
     Caption:=lisA2PUpdateUnitNameAndHasRegisterProcedure;
     OnClick:=@AddUnitUpdateButtonClick;
+    AutoSize:=true;
+    AnchorParallel(akLeft,0,AddUnitHasRegisterCheckBox);
+    AnchorToNeighbour(akTop,5,AddSecondaryFilesCheckBox);
   end;
 
   AddUnitButton:=TButton.Create(Self);
@@ -1405,6 +1364,9 @@ begin
     Parent:=AddUnitPage;
     Caption:=lisA2PAddUnit;
     OnClick:=@AddUnitButtonClick;
+    AutoSize:=true;
+    AnchorParallel(akLeft,0,AddUnitHasRegisterCheckBox);
+    AnchorToNeighbour(akTop,25,AddUnitUpdateButton);
   end;
 
   CancelAddUnitButton:=TButton.Create(Self);
@@ -1413,6 +1375,9 @@ begin
     Parent:=AddUnitPage;
     Caption:=dlgCancel;
     OnClick:=@CancelAddUnitButtonClick;
+    AutoSize:=true;
+    AnchorToNeighbour(akLeft,10,AddUnitButton);
+    AnchorParallel(akTop,0,AddUnitButton);
   end;
 end;
 
@@ -1740,6 +1705,7 @@ begin
     CurColumn.Caption:=lisA2PFilename2;
     CurColumn:=Columns.Add;
     CurColumn.Caption:=dlgEnvType;
+    Align:=alTop;
   end;
   
   FilesBrowseButton:=TButton.Create(Self);
@@ -1748,6 +1714,10 @@ begin
     Parent:=AddFilesPage;
     Caption:=lisPathEditBrowse;
     OnClick:=@FilesBrowseButtonClick;
+    Left:=5;
+    AutoSize:=true;
+    Anchors:=Anchors-[akTop]+[akBottom];
+    AnchorParallel(akBottom,5,Parent);
   end;
   
   FilesShortenButton:=TButton.Create(Self);
@@ -1756,6 +1726,9 @@ begin
     Parent:=AddFilesPage;
     Caption:=lisA2PSwitchPaths;
     OnClick:=@FilesShortenButtonClick;
+    AutoSize:=true;
+    AnchorToNeighbour(akLeft,5,FilesBrowseButton);
+    AnchorParallel(akTop,0,FilesBrowseButton);
   end;
 
   FilesDeleteButton:=TButton.Create(Self);
@@ -1764,6 +1737,9 @@ begin
     Parent:=AddFilesPage;
     Caption:=dlgEdDelete;
     OnClick:=@FilesDeleteButtonClick;
+    AutoSize:=true;
+    AnchorToNeighbour(akLeft,5,FilesShortenButton);
+    AnchorParallel(akTop,0,FilesBrowseButton);
   end;
   
   FilesAddButton:=TButton.Create(Self);
@@ -1772,7 +1748,12 @@ begin
     Parent:=AddFilesPage;
     Caption:=lisA2PAddFilesToPackage;
     OnClick:=@FilesAddButtonClick;
+    AutoSize:=true;
+    AnchorToNeighbour(akLeft,5,FilesDeleteButton);
+    AnchorParallel(akTop,0,FilesBrowseButton);
   end;
+  
+  FilesListView.AnchorToNeighbour(akBottom,5,FilesBrowseButton);
 end;
 
 procedure TAddToPackageDlg.OnIterateComponentClasses(PkgComponent: TPkgComponent

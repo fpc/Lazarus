@@ -46,7 +46,7 @@ uses
   Dialogs, Messages, Clistbox, ActnList, Grids, MaskEdit,
   Printers, PostScriptPrinter, PostScriptCanvas, CheckLst, PairSplitter,
   ExtDlgs, DBCtrls, DBGrids, DBActns, EditBtn, ExtGraphics,
-  PropertyStorage, IniPropStorage, XMLPropStorage, Chart,
+  PropertyStorage, IniPropStorage, XMLPropStorage, Chart, LDockTree,
   // widgetset skeleton
   WSActnList, WSArrow, WSButtons, WSCalendar,
   WSCheckLst, WSCListBox, WSComCtrls, WSControls,
@@ -67,6 +67,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.26  2005/07/13 07:33:14  mattias
+  implemented renaming of new package files
+
   Revision 1.25  2005/03/23 10:45:06  mattias
   fixed ambigious with ambiguous
 

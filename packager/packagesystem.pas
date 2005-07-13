@@ -156,7 +156,8 @@ type
                                 var File1: TPkgFile;
                                 var ConflictPkg: TLazPackage): boolean;
     function FindFileInAllPackages(const TheFilename: string;
-                                ResolveLinks, IgnoreDeleted: boolean): TPkgFile;
+                                ResolveLinks, IgnoreDeleted,
+                                FindNewFile: boolean): TPkgFile;
     function FindLowestPkgNodeByName(const PkgName: string): TAVLTreeNode;
     function FindNextSameName(ANode: TAVLTreeNode): TAVLTreeNode;
     function FindNodeOfDependency(Dependency: TPkgDependency;
@@ -601,14 +602,15 @@ begin
 end;
 
 function TLazPackageGraph.FindFileInAllPackages(const TheFilename: string;
-  ResolveLinks, IgnoreDeleted: boolean): TPkgFile;
+  ResolveLinks, IgnoreDeleted, FindNewFile: boolean): TPkgFile;
 var
   Cnt: Integer;
   i: Integer;
 begin
   Cnt:=Count;
   for i:=0 to Cnt-1 do begin
-    Result:=Packages[i].FindPkgFile(TheFilename,ResolveLinks,IgnoreDeleted);
+    Result:=Packages[i].FindPkgFile(TheFilename,ResolveLinks,IgnoreDeleted,
+                                    FindNewFile);
     if Result<>nil then exit;
   end;
   Result:=nil;

@@ -26,6 +26,11 @@ begin
   // ToDo
 end;
 
+procedure TDockTree.SetDockZoneClass(const AValue: TDockZoneClass);
+begin
+  FDockZoneClass:=AValue;
+end;
+
 procedure TDockTree.AdjustDockRect(AControl: TControl; var ARect: TRect);
 begin
 

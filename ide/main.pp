@@ -4002,7 +4002,8 @@ begin
   if Result<>mrOk then exit;
 
   // change packages containing the file
-  Result:=PkgBoss.OnRenameFile(OldFilename,AnUnitInfo.Filename);
+  Result:=PkgBoss.OnRenameFile(OldFilename,AnUnitInfo.Filename,
+                               AnUnitInfo.IsPartOfProject);
   if Result=mrAbort then exit;
 
   // delete ambiguous files
@@ -11809,6 +11810,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.883  2005/07/13 07:33:14  mattias
+  implemented renaming of new package files
+
   Revision 1.882  2005/07/01 11:19:24  mattias
   converting lfm to bin stream: added END check for Delphi bug: it writes empty values
 

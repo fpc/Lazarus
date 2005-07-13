@@ -159,8 +159,8 @@ Type
     function GetSetElementValue(const AliasName: string): boolean;
     procedure SetSetElementValue(const AliasName: string; NewValue: boolean);
     function GetIndexOfSetElement(const AliasName: string): integer;
-    function GetSetTypeData(var CompData: PTypeInfo;
-                            var TypeData: PTypeData): boolean;
+    function GetSetTypeData(out CompData: PTypeInfo;
+                            out TypeData: PTypeData): boolean;
   public
     property AliasValues: TAliasStrings read FAliasValues;
     property CanModify: boolean read GetCanModify;
@@ -1931,8 +1931,8 @@ begin
   Result:=-1;
 end;
 
-function TCustomPropertyLink.GetSetTypeData(var CompData: PTypeInfo;
-  var TypeData: PTypeData): boolean;
+function TCustomPropertyLink.GetSetTypeData(out CompData: PTypeInfo;
+  out TypeData: PTypeData): boolean;
 begin
   Result:=false;
   CompData:=nil;

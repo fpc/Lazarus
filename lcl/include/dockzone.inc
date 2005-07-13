@@ -227,6 +227,20 @@ begin
   inc(FChildCount);
 end;
 
+procedure TDockZone.ReplaceChild(OldChild, NewChild: TDockZone);
+begin
+  NewChild.FParentZone:=Self;
+  NewChild.FNextSibling:=OldChild.FNextSibling;
+  NewChild.FPrevSibling:=OldChild.FPrevSibling;
+  if NewChild.FNextSibling<>nil then
+    NewChild.FNextSibling.FPrevSibling:=NewChild;
+  if NewChild.FPrevSibling<>nil then
+    NewChild.FPrevSibling.FNextSibling:=NewChild;
+  OldChild.FNextSibling:=nil;
+  OldChild.FPrevSibling:=nil;
+  OldChild.FParentZone:=nil;
+end;
+
 function TDockZone.GetLastChild: TDockZone;
 begin
   Result:=FFirstChildZone;

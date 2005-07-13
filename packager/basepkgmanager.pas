@@ -86,8 +86,8 @@ type
 
     // files
     function GetDefaultSaveDirectoryForFile(const Filename: string): string; virtual; abstract;
-    function OnRenameFile(const OldFilename,
-                          NewFilename: string): TModalResult; virtual; abstract;
+    function OnRenameFile(const OldFilename, NewFilename: string;
+                          IsPartOfProject: boolean): TModalResult; virtual; abstract;
     function FindIncludeFileInProjectDependencies(Project1: TProject;
                           const Filename: string): string; virtual; abstract;
     function SearchFile(const ShortFilename: string;

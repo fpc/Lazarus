@@ -1736,6 +1736,7 @@ type
     function PrevVisible: TDockZone;
     procedure AddAsFirstChild(NewChildZone: TDockZone);
     procedure AddAsLastChild(NewChildZone: TDockZone);
+    procedure ReplaceChild(OldChild, NewChild: TDockZone);
     function GetLastChild: TDockZone;
   public
     property ChildControl: TControl read FChildControl;
@@ -1869,6 +1870,7 @@ type
     procedure PaintDockFrame(ACanvas: TCanvas; AControl: TControl;
                              const ARect: TRect); virtual;
     procedure UpdateAll;
+    procedure SetDockZoneClass(const AValue: TDockZoneClass);
   public
     constructor Create(TheDockSite: TWinControl); virtual;
     destructor Destroy; override;
@@ -2951,6 +2953,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.309  2005/07/13 07:33:14  mattias
+  implemented renaming of new package files
+
   Revision 1.308  2005/07/09 16:20:50  mattias
   TSplitter can now also work with Align=alNone and AnchorSide
 

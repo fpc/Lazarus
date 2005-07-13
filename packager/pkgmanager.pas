@@ -195,8 +195,8 @@ type
     // files
     function GetDefaultSaveDirectoryForFile(const Filename: string): string; override;
     function GetPublishPackageDir(APackage: TLazPackage): string;
-    function OnRenameFile(const OldFilename,
-                          NewFilename: string): TModalResult; override;
+    function OnRenameFile(const OldFilename, NewFilename: string;
+                          IsPartOfProject: boolean): TModalResult; override;
     function FindIncludeFileInProjectDependencies(Project1: TProject;
                           const Filename: string): string; override;
     function AddUnitDependenciesForComponentClasses(const UnitFilename: string;
@@ -654,7 +654,8 @@ begin
 
   Filename:=ActiveUnitInfo.Filename;
 
-  PkgFile:=PackageGraph.FindFileInAllPackages(Filename,false,true);
+  PkgFile:=PackageGraph.FindFileInAllPackages(Filename,false,true,
+                                            not ActiveUnitInfo.IsPartOfProject);
   if PkgFile=nil then begin
     MessageDlg(lisProjAddPackageNotFound,
       lisPkgThisFileIsNotInAnyLoadedPackage, mtInformation,
@@ -1062,7 +1063,7 @@ begin
       end;
       
       // check file name conflicts with files in other packages
-      PkgFile:=PackageGraph.FindFileInAllPackages(NewFilename,true,true);
+      PkgFile:=PackageGraph.FindFileInAllPackages(NewFilename,true,true,false);
       if PkgFile<>nil then begin
         Result:=MessageDlg(lisPkgMangFilenameIsUsedByOtherPackage,
           Format(lisPkgMangTheFileNameIsUsedByThePackageInFile, ['"',
@@ -2019,7 +2020,7 @@ var
   PkgFile: TPkgFile;
 begin
   Result:='';
-  PkgFile:=PackageGraph.FindFileInAllPackages(Filename,false,true);
+  PkgFile:=PackageGraph.FindFileInAllPackages(Filename,false,true,true);
   if PkgFile=nil then exit;
   APackage:=PkgFile.LazPackage;
   if APackage.AutoCreated or (not APackage.HasDirectory) then exit;
@@ -2870,21 +2871,24 @@ begin
   Result:=mrOk;
 end;
 
-function TPkgManager.OnRenameFile(const OldFilename, NewFilename: string
-  ): TModalResult;
+function TPkgManager.OnRenameFile(const OldFilename, NewFilename: string;
+  IsPartOfProject: boolean): TModalResult;
 var
   OldPackage: TLazPackage;
   OldPkgFile: TPkgFile;
   NewPkgFile: TPkgFile;
 begin
   Result:=mrOk;
-  if (OldFilename=NewFilename) or (not FilenameIsPascalUnit(NewFilename)) then
+  if (OldFilename=NewFilename) then
     exit;
-  OldPkgFile:=PackageGraph.FindFileInAllPackages(OldFilename,false,true);
+  debugln('TPkgManager.OnRenameFile A OldFilename="',OldFilename,'" New="',NewFilename,'"');
+  OldPkgFile:=PackageGraph.FindFileInAllPackages(OldFilename,false,true,
+                                                 not IsPartOfProject);
   if (OldPkgFile=nil) or (OldPkgFile.LazPackage.ReadOnly) then
     exit;
   OldPackage:=OldPkgFile.LazPackage;
-  NewPkgFile:=PackageGraph.FindFileInAllPackages(NewFilename,false,true);
+  debugln('TPkgManager.OnRenameFile A OldPackage="',OldPackage.Name);
+  NewPkgFile:=PackageGraph.FindFileInAllPackages(NewFilename,false,true,false);
   if (NewPkgFile<>nil) and (OldPackage<>NewPkgFile.LazPackage) then exit;
 
   Result:=MessageDlg(lisPkgMangRenameFileInPackage,
@@ -3203,7 +3207,7 @@ begin
       Result.Add(Project1);
   end;
   // find all packages owning file
-  PkgFile:=PackageGraph.FindFileInAllPackages(UnitFilename,false,true);
+  PkgFile:=PackageGraph.FindFileInAllPackages(UnitFilename,false,true,true);
   if (PkgFile<>nil) and (PkgFile.LazPackage<>nil) then
     Result.Add(PkgFile.LazPackage);
   if Result.Count=0 then
@@ -3371,7 +3375,7 @@ begin
   end;
   
   // check if file is already in a package
-  PkgFile:=PackageGraph.FindFileInAllPackages(Filename,false,true);
+  PkgFile:=PackageGraph.FindFileInAllPackages(Filename,false,true,true);
   if PkgFile<>nil then begin
     Result:=MessageDlg(lisPkgMangFileIsAlreadyInPackage,
       Format(lisPkgMangTheFileIsAlreadyInThePackage, ['"', Filename, '"', #13,

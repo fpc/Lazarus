@@ -910,7 +910,7 @@ procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
     if AddParams.AutoAddLFMFile then begin
       NewLFMFilename:=ChangeFileExt(AddParams.UnitFilename,'.lfm');
       if FileExists(NewLFMFilename)
-      and (LazPackage.FindPkgFile(NewLFMFilename,false,true)=nil) then
+      and (LazPackage.FindPkgFile(NewLFMFilename,false,true,false)=nil) then
         LazPackage.AddFile(NewLFMFilename,'',pftLFM,[],cpNormal)
       else
         NewLFMFilename:='';
@@ -919,7 +919,7 @@ procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
     if AddParams.AutoAddLRSFile then begin
       NewLRSFilename:=ChangeFileExt(AddParams.UnitFilename,'.lrs');
       if FileExists(NewLRSFilename)
-      and (LazPackage.FindPkgFile(NewLRSFilename,false,true)=nil) then
+      and (LazPackage.FindPkgFile(NewLRSFilename,false,true,false)=nil) then
         LazPackage.AddFile(NewLRSFilename,'',pftLRS,[],cpNormal)
       else
         NewLRSFilename:='';
