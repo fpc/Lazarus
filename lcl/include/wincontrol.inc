@@ -3704,7 +3704,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMChar(var Message: TLMChar);
 begin
-  debugln('TWinControl.WMChar ',DbgSName(Self),' ',dbgs(Message.CharCode));
+  //debugln('TWinControl.WMChar ',DbgSName(Self),' ',dbgs(Message.CharCode));
   if DoRemainingKeyPress(Message) then
     Message.Result := 1;
   Assert(False, Format('Trace:[TWinControl.WMChar] %s', [ClassName]));
@@ -4579,6 +4579,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.337  2005/07/13 07:41:05  mattias
+  improved autosizing of project inspector
+
   Revision 1.336  2005/07/09 16:20:50  mattias
   TSplitter can now also work with Align=alNone and AnchorSide
 

@@ -155,37 +155,7 @@ implementation
 { TProjectInspectorForm }
 
 procedure TProjectInspectorForm.ProjectInspectorFormResize(Sender: TObject);
-var
-  x: Integer;
-  y: Integer;
-  w: Integer;
-  h: Integer;
 begin
-  x:=0;
-  y:=0;
-  w:=(ClientWidth div 4);
-  h:=25;
-  with OptionsBitBtn do
-    SetBounds(x,y,w,h);
-  inc(x,w);
-  
-  with OpenBitBtn do
-    SetBounds(x,y,w,h);
-  inc(x,w);
-
-  with AddBitBtn do
-    SetBounds(x,y,w,h);
-  inc(x,w);
-
-  w:=ClientWidth-x;
-  with RemoveBitBtn do
-    SetBounds(x,y,w,h);
-  inc(x,w);
-
-  x:=0;
-  inc(y,h);
-  with ItemsTreeView do
-    SetBounds(x,y,Parent.ClientWidth,Parent.ClientHeight-y);
 end;
 
 procedure TProjectInspectorForm.ItemsTreeViewDblClick(Sender: TObject);
@@ -445,6 +415,8 @@ begin
     Parent:=Self;
     Caption:=lisMenuOpen;
     OnClick:=@OpenBitBtnClick;
+    AutoSize:=true;
+    SetBounds(0,0,Width,Height);
   end;
 
   AddBitBtn:=TBitBtn.Create(Self);
@@ -453,14 +425,9 @@ begin
     Parent:=Self;
     Caption:=lisCodeTemplAdd;
     OnClick:=@AddBitBtnClick;
-  end;
-
-  OptionsBitBtn:=TBitBtn.Create(Self);
-  with OptionsBitBtn do begin
-    Name:='OptionsBitBtn';
-    Parent:=Self;
-    Caption:=dlgFROpts;
-    OnClick:=@OptionsBitBtnClick;
+    AutoSize:=true;
+    AnchorToNeighbour(akLeft,0,OpenBitBtn);
+    Top:=0;
   end;
 
   RemoveBitBtn:=TBitBtn.Create(Self);
@@ -469,6 +436,21 @@ begin
     Parent:=Self;
     Caption:=lisExtToolRemove;
     OnClick:=@RemoveBitBtnClick;
+    AutoSize:=true;
+    AnchorToNeighbour(akLeft,0,AddBitBtn);
+    Top:=0;
+  end;
+
+  OptionsBitBtn:=TBitBtn.Create(Self);
+  with OptionsBitBtn do begin
+    Name:='OptionsBitBtn';
+    Parent:=Self;
+    Caption:=dlgFROpts;
+    OnClick:=@OptionsBitBtnClick;
+    AutoSize:=true;
+    AnchorToNeighbour(akLeft,0,RemoveBitBtn);
+    AnchorParallel(akRight,0,Parent);
+    Top:=0;
   end;
 
   ItemsTreeView:=TTreeView.Create(Self);
@@ -486,6 +468,8 @@ begin
     DependenciesNode.ImageIndex:=ImageIndexRequired;
     DependenciesNode.SelectedIndex:=DependenciesNode.ImageIndex;
     PopupMenu:=ItemsPopupMenu;
+    Align:=alBottom;
+    AnchorToNeighbour(akTop,0,OptionsBitBtn);
   end;
 end;
 
