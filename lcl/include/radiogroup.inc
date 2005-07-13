@@ -232,6 +232,9 @@ end;
   Select one of the radiobuttons
  ------------------------------------------------------------------------------}
 procedure TCustomRadioGroup.SetItemIndex(Value : integer);
+var
+  OldItemIndex: LongInt;
+  OldIgnoreClicks: Boolean;
 begin
   if Value = FItemIndex then exit;
   if FReading then
@@ -245,14 +248,26 @@ begin
       // the radiobuttons are grouped by the widget interface
       // and some does not allow to uncheck all buttons in a group
       // Therefore there is a hidden button
+      OldItemIndex:=FItemIndex;
       FItemIndex:=Value;
-      if (FItemIndex <> -1) then
-        TRadioButton(FButtonList[FitemIndex]).Checked := true
-      else
-        FHiddenButton.Checked:=true;
+      OldIgnoreClicks:=fIgnoreClicks;
+      fIgnoreClicks:=true;
+      try
+        if (FItemIndex <> -1) then
+          TRadioButton(FButtonList[FItemIndex]).Checked := true
+        else
+          FHiddenButton.Checked:=true;
+        // uncheck old radiobutton
+        if OldItemIndex <> -1 then
+          TRadioButton(FButtonList[FItemIndex]).Checked := false
+        else
+          FHiddenButton.Checked:=false;
+      finally
+        fIgnoreClicks:=OldIgnoreClicks;
+      end;
       // this has automatically unset the old button. But they do not recognize
       // it. Update the states.
-      UpdateRadioButtonStates;
+      CheckItemIndexChanged;
 
       OwnerFormDesignerModified(Self);
     end
@@ -336,6 +351,7 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TCustomRadioGroup.Clicked(Sender : TObject);
 Begin
+  if fIgnoreClicks then exit;
   CheckItemIndexChanged;
 end;
 
@@ -425,6 +441,9 @@ end;
 
 {
   $Log$
+  Revision 1.9  2005/07/13 17:48:57  mattias
+  added robust mechanism to TRadioGroup.SetItemIndex for lazy interfaces
+
   Revision 1.8  2005/03/25 17:47:55  mattias
   implemented TMemo text for gtk2, TRadioGroup.OnClick is now called whenever ItemIndex changed, so it works now also under gtk2 Delphi compatible  from Andrew Haines
 

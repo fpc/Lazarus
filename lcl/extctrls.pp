@@ -625,17 +625,18 @@ type
   private
     FButtonList: TList; // list of TRadioButton
     FColumnLayout: TColumnLayout;
-    FHiddenButton: TRadioButton;
-    FCreatingWnd: boolean;
-    FItems: TStrings;
-    FItemIndex: integer;
     FColumns: integer;
-    FReading: boolean;
-    FOnClick: TNotifyEvent;
+    FCreatingWnd: boolean;
+    FHiddenButton: TRadioButton;
+    FItemIndex: integer;
+    FItems: TStrings;
     FLastClickedItemIndex: integer;
+    FOnClick: TNotifyEvent;
+    FReading: boolean;
+    fIgnoreClicks: boolean;
     procedure ItemsChanged(Sender: TObject);
-    procedure Clicked(Sender: TObject); virtual;
-    procedure Changed(Sender: TObject); virtual;
+    procedure Clicked(Sender: TObject);
+    procedure Changed(Sender: TObject);
     procedure DoPositionButtons;
     procedure SetColumnLayout(const AValue: TColumnLayout);
   protected
@@ -1013,6 +1014,9 @@ end.
 
  {
   $Log$
+  Revision 1.139  2005/07/13 17:48:57  mattias
+  added robust mechanism to TRadioGroup.SetItemIndex for lazy interfaces
+
   Revision 1.138  2005/07/09 16:20:50  mattias
   TSplitter can now also work with Align=alNone and AnchorSide
 
