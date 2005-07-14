@@ -2084,30 +2084,15 @@ begin
 end;
 
 procedure TEnvironmentOptionsDialog.SetupFilesPage(Page: integer);
-var MaxX:integer;
 begin
   NoteBook.Page[Page].OnResize:=@OnFilesPageResize;
-
-  MaxX:=ClientWidth-5;
-
-  MaxRecentOpenFilesLabel:=TLabel.Create(Self);
-  with MaxRecentOpenFilesLabel do begin
-    Name:='MaxRecentOpenFilesLabel';
-    Left:=4;
-    Top:=4;
-    Width:=170;
-    Height:=23;
-    Parent:=NoteBook.Page[Page];
-    Caption:=dlgMaxRecentFiles;
-  end;
 
   MaxRecentOpenFilesComboBox:=TComboBox.Create(Self);
   with MaxRecentOpenFilesComboBox do begin
     Name:='MaxRecentOpenFilesComboBox';
-    Left:=MaxRecentOpenFilesLabel.Left+MaxRecentOpenFilesLabel.Width+2;
-    Top:=MaxRecentOpenFilesLabel.Top;
+    Left:=4;
+    Top:=4;
     Width:=60;
-    Parent:=NoteBook.Page[Page];
     with Items do begin
       BeginUpdate;
       Add('5');
@@ -2118,26 +2103,25 @@ begin
       Add('30');
       EndUpdate;
     end;
+    AutoSize:=true;
+    Parent:=NoteBook.Page[Page];
   end;
 
-  MaxRecentProjectFilesLabel:=TLabel.Create(Self);
-  with MaxRecentProjectFilesLabel do begin
-    Name:='MaxRecentProjectFilesLabel';
-    Left:=MaxRecentOpenFilesLabel.Left;
-    Top:=MaxRecentOpenFilesComboBox.Top+MaxRecentOpenFilesComboBox.Height+3;
-    Width:=MaxRecentOpenFilesLabel.Width;
-    Height:=MaxRecentOpenFilesLabel.Height;
+  MaxRecentOpenFilesLabel:=TLabel.Create(Self);
+  with MaxRecentOpenFilesLabel do begin
+    Name:='MaxRecentOpenFilesLabel';
+    AutoSize:=true;
+    Caption:=dlgMaxRecentFiles;
     Parent:=NoteBook.Page[Page];
-    Caption:=dlgMaxRecentProjs;
+    AnchorVerticalCenterTo(MaxRecentOpenFilesComboBox);
+    AnchorToNeighbour(akLeft,5,MaxRecentOpenFilesComboBox);
   end;
 
   MaxRecentProjectFilesComboBox:=TComboBox.Create(Self);
   with MaxRecentProjectFilesComboBox do begin
     Name:='MaxRecentProjectFilesComboBox';
-    Left:=MaxRecentProjectFilesLabel.Left+MaxRecentProjectFilesLabel.Width+2;
-    Top:=MaxRecentProjectFilesLabel.Top;
+    Left:=4;
     Width:=60;
-    Parent:=NoteBook.Page[Page];
     with Items do begin
       BeginUpdate;
       Add('5');
@@ -2148,25 +2132,36 @@ begin
       Add('30');
       EndUpdate;
     end;
+    AutoSize:=true;
+    Parent:=NoteBook.Page[Page];
+    AnchorToNeighbour(akTop,2,MaxRecentOpenFilesComboBox);
   end;
-  
+
+  MaxRecentProjectFilesLabel:=TLabel.Create(Self);
+  with MaxRecentProjectFilesLabel do begin
+    Name:='MaxRecentProjectFilesLabel';
+    AutoSize:=true;
+    Caption:=dlgMaxRecentProjs;
+    Parent:=NoteBook.Page[Page];
+    AnchorVerticalCenterTo(MaxRecentProjectFilesComboBox);
+    AnchorToNeighbour(akLeft,5,MaxRecentProjectFilesComboBox);
+  end;
+
   OpenLastProjectAtStartCheckBox:=TCheckBox.Create(Self);
   with OpenLastProjectAtStartCheckBox do begin
     Name:='OpenLastProjectAtStartCheckBox';
-    Left:=4;
-    Top:=MaxRecentProjectFilesLabel.Top+MaxRecentProjectFilesLabel.Height+5;
-    Width:=MaxX-10;
-    Height:=23;
-    Parent:=NoteBook.Page[Page];
+    AutoSize:=true;
     Caption:=dlgQOpenLastPrj;
+    Parent:=NoteBook.Page[Page];
+    AnchorToNeighbour(akTop,5,MaxRecentProjectFilesComboBox);
   end;
 
   LazarusDirGroupBox:=TGroupBox.Create(Self);
   with LazarusDirGroupBox do begin
     Name:='LazarusDirGroupBox';
-    Parent:=NoteBook.Page[Page];
     Caption:=dlgLazarusDir;
     OnResize:=@LazarusDirGroupBoxResize;
+    Parent:=NoteBook.Page[Page];
   end;
 
   LazarusDirComboBox:=TComboBox.Create(Self);
@@ -2938,45 +2933,12 @@ end;
 
 procedure TEnvironmentOptionsDialog.ResizeFilesPage;
 var
-  MaxX:integer;
   y: Integer;
   SpaceH: Integer;
   x: Integer;
   w: Integer;
   h: Integer;
 begin
-  MaxX:=MaxRecentOpenFilesLabel.Parent.ClientWidth;
-
-  with MaxRecentOpenFilesLabel do begin
-    Left:=4;
-    Top:=4;
-    Width:=170;
-  end;
-
-  with MaxRecentOpenFilesComboBox do begin
-    Left:=MaxRecentOpenFilesLabel.Left+MaxRecentOpenFilesLabel.Width+2;
-    Top:=MaxRecentOpenFilesLabel.Top;
-    Width:=60;
-  end;
-
-  with MaxRecentProjectFilesLabel do begin
-    Left:=MaxRecentOpenFilesLabel.Left;
-    Top:=MaxRecentOpenFilesComboBox.Top+MaxRecentOpenFilesComboBox.Height+3;
-    Width:=MaxRecentOpenFilesLabel.Width;
-  end;
-
-  with MaxRecentProjectFilesComboBox do begin
-    Left:=MaxRecentProjectFilesLabel.Left+MaxRecentProjectFilesLabel.Width+2;
-    Top:=MaxRecentProjectFilesLabel.Top;
-    Width:=60;
-  end;
-
-  with OpenLastProjectAtStartCheckBox do begin
-    Left:=4;
-    Top:=MaxRecentProjectFilesLabel.Top+MaxRecentProjectFilesLabel.Height+5;
-    Width:=MaxX-2*Left;
-  end;
-
   y:=OpenLastProjectAtStartCheckBox.Top
         +OpenLastProjectAtStartCheckBox.Height+8;
   SpaceH:=10;
