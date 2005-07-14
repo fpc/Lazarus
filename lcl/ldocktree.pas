@@ -46,6 +46,7 @@ type
     FAutoFreeDockSite: boolean;
   protected
     procedure UndockControlForDocking(AControl: TControl);
+    procedure BreakParentAnchors(Zone: TDockZone);
   public
     constructor Create(TheDockSite: TWinControl); override;
     destructor Destroy; override;
@@ -159,6 +160,11 @@ begin
   if AControl.Parent<>nil then begin
     AControl.Parent:=nil;
   end;
+end;
+
+procedure TLazDockTree.BreakParentAnchors(Zone: TDockZone);
+begin
+
 end;
 
 constructor TLazDockTree.Create(TheDockSite: TWinControl);
@@ -313,11 +319,13 @@ begin
     else
       DropZone.Parent.AddAsLastChild(NewZone);
 
-    // add splitter control
-    //NewSplitter:=TSplitter.Create(DockSite);
+    // break anchors to parent
+    BreakParentAnchors(RootZone);
 
-    // add control to DockSite
+    // break anchors at insert position
 
+    
+    
     // resize DockSite
     {if InsertAt in [alLeft,alRight] then
       DockSite.Width:=DockSite.Width+NewSplitter.Width+AControl.Width
@@ -327,6 +335,13 @@ begin
       // TODO
       RaiseGDBException('TLazDockTree.InsertControl TODO: InsertAt in [alNone,alClient]');
     end;}
+
+    // add splitter or page control
+    //NewSplitter:=TSplitter.Create(DockSite);
+
+    // add control to DockSite
+    
+    // anchor
   end;
 end;
 

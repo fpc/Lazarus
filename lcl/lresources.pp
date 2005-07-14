@@ -1504,11 +1504,23 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
     OutLn(indent + 'end');
   end;
 
+var
+  OldDecimalSeparator: Char;
+  OldThousandSeparator: Char;
 begin
   // Endian note: comparing 2 cardinals is endian independent
   if Input.ReadDWord <> PCardinal(@FilerSignature[1])^ then
     raise EReadError.Create('Illegal stream image' {###SInvalidImage});
-  ReadObject('');
+  OldDecimalSeparator:=DecimalSeparator;
+  DecimalSeparator:='.';
+  OldThousandSeparator:=ThousandSeparator;
+  ThousandSeparator:=',';
+  try
+    ReadObject('');
+  finally
+    DecimalSeparator:=OldDecimalSeparator;
+    ThousandSeparator:=OldThousandSeparator;
+  end;
 end;
 
 function TestFormStreamFormat(Stream: TStream): TLRSStreamOriginalFormat;
@@ -1582,6 +1594,8 @@ end;
 procedure LRSObjectTextToBinary(Input, Output: TStream);
 var
   parser: TParser;
+  OldDecimalSeparator: Char;
+  OldThousandSeparator: Char;
 
   procedure WriteShortString(const s: String);
   var
@@ -1871,11 +1885,17 @@ var
 
 begin
   parser := TParser.Create(Input);
+  OldDecimalSeparator:=DecimalSeparator;
+  DecimalSeparator:='.';
+  OldThousandSeparator:=ThousandSeparator;
+  ThousandSeparator:=',';
   try
     Output.Write(FilerSignature, SizeOf(FilerSignature));
     ProcessObject;
   finally
     parser.Free;
+    DecimalSeparator:=OldDecimalSeparator;
+    ThousandSeparator:=OldThousandSeparator;
   end;
 end;
 
