@@ -1400,11 +1400,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
-msgstr "Kopio valitut kääntäjän viestit leikepöydälle"
+msgstr ""
 
 #: lazarusidestrconsts:liscopyselectedmessagestoclipboard
 msgid "Copy selected messages to clipboard"
-msgstr ""
+msgstr "Kopio valitut kääntäjän viestit leikepöydälle"
 
 #: lazarusidestrconsts:srkmeccopy
 msgid "Copy selection to clipboard"
@@ -1432,7 +1432,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisnpcreate
 msgid "Create"
-msgstr ""
+msgstr "Luo"
 
 #: lazarusidestrconsts:lismenucreatepofile
 msgid "Create .po files"
@@ -1612,7 +1612,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdate
 msgid "Date"
-msgstr ""
+msgstr "Olla peräisin"
 
 #: lazarusidestrconsts:uemdebugword
 msgid "Debug"
@@ -4916,7 +4916,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgunitdeprefresh
 msgid "Refresh"
-msgstr ""
+msgstr "Päivitä"
 
 #: lazarusidestrconsts:listodolistrefresh
 msgid "Refresh todo items"
@@ -5432,7 +5432,7 @@ msgstr "Etsittyä merkkijonoa '%s' ei löydetty!"
 
 #: lazarusidestrconsts:dlgsearchabort
 msgid "Search terminated by user."
-msgstr ""
+msgstr "Käyttäjä keskeytti hakemisen"
 
 #: lazarusidestrconsts:lisfrisearchwhere
 msgid "Search where"
@@ -7180,7 +7180,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgunitdepcaption
 msgid "Unit dependencies"
-msgstr ""
+msgstr "käännösyksikön (Unit) riippuvuudet"
 
 #: lazarusidestrconsts:lisa2punitfilename
 msgid "Unit file name:"
@@ -7408,7 +7408,7 @@ msgstr "Näytä tehtävälista (ToDo List)"
 
 #: lazarusidestrconsts:lismenuviewunitdependencies
 msgid "View Unit Dependencies"
-msgstr ""
+msgstr "Näytä käännösyksikön (Unit) riippuvuudet"
 
 #: lazarusidestrconsts:lismenuviewunitinfo
 msgid "View Unit Information"
