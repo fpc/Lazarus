@@ -172,6 +172,14 @@ end;
 
 { TWin32WSCustomForm }
 
+function GetDesigningBorderStyle(const AForm: TCustomForm): TFormBorderStyle;
+begin
+  if csDesigning in AForm.ComponentState then
+    Result := bsSizeable
+  else
+    Result := AForm.BorderStyle;
+end;
+
 function CalcBorderIconsFlags(const AForm: TCustomForm): dword;
 var
   BorderIcons: TBorderIcons;
@@ -180,7 +188,7 @@ begin
   BorderIcons := AForm.BorderIcons;
   if biSystemMenu in BorderIcons then
     Result := Result or WS_SYSMENU;
-  if AForm.BorderStyle in [bsNone, bsSingle, bsSizeable] then
+  if GetDesigningBorderStyle(AForm) in [bsNone, bsSingle, bsSizeable] then
   begin
     if biMinimize in BorderIcons then
       Result := Result or WS_MINIMIZEBOX;
@@ -193,7 +201,7 @@ procedure CalcFormWindowFlags(const AForm: TCustomForm; var Flags, FlagsEx: dwor
 var
   BorderStyle: TFormBorderStyle;
 begin
-  BorderStyle := AForm.BorderStyle;
+  BorderStyle := GetDesigningBorderStyle(AForm);
   Flags := BorderStyleToWin32Flags(BorderStyle);
   FlagsEx := BorderStyleToWin32FlagsEx(BorderStyle);
   if (AForm.FormStyle in fsAllStayOnTop) and 
@@ -246,9 +254,6 @@ end;
 
 procedure TWin32WSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
           const AFormBorderStyle: TFormBorderStyle);
-var
-  Flags, FlagsEx: dword;
-  winHandle: HWND;
 begin
   RecreateWnd(AForm);
 end;
@@ -257,6 +262,7 @@ procedure TWin32WSCustomForm.SetBounds(const AWinControl: TWinControl;
     const ALeft, ATop, AWidth, AHeight: Integer);
 var
   SizeRect: Windows.RECT;
+  BorderStyle: TFormBorderStyle;
 begin
   // the LCL defines the size of a form without border, win32 with.
   // -> adjust size according to BorderStyle
@@ -267,9 +273,9 @@ begin
     Right := ALeft + AWidth;
     Bottom := ATop + AHeight;
   end;
+  BorderStyle := GetDesigningBorderStyle(TCustomForm(AWinControl));
   Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWin32Flags(
-      TCustomForm(AWinControl).BorderStyle), false,
-      BorderStyleToWin32FlagsEx(TCustomForm(AWinControl).BorderStyle));
+      BorderStyle), false, BorderStyleToWin32FlagsEx(BorderStyle));
       
   // rect adjusted, pass to inherited to do real work
   TWin32WSWinControl.SetBounds(AWinControl, ALeft, ATop, SizeRect.Right - SizeRect.Left, 
@@ -282,7 +288,7 @@ var
   iconHandle: HICON;
 begin
   winHandle := AForm.Handle;
-  if AForm.BorderStyle = bsDialog then
+  if GetDesigningBorderStyle(AForm) = bsDialog then
     iconHandle := 0
 { TODO: fix icon handling
   else
@@ -323,7 +329,7 @@ begin
   begin
     pClassName := @ClsName;
     WindowTitle := StrCaption;
-    Flags := WS_POPUP;
+    Flags := dword(WS_POPUP);
     FlagsEx := FlagsEx or WS_EX_TOOLWINDOW;
     Left := LongInt(CW_USEDEFAULT);
     Top := LongInt(CW_USEDEFAULT);
