@@ -576,7 +576,8 @@ type
     FOldFPCSourceDir: string;
     FOldMakeFilename: string;
     FOldTestDir: string;
-    function CreateColorItem(ATop:Integer; AParent:TWinControl;ACaption:String):TColorButton;
+    function CreateColorItem(ATop: Integer; AParent: TWinControl;
+                             const ACaption: String): TColorButton;
 
     procedure SetCategoryPage(const AValue: TEnvOptsDialogPage);
     procedure SetupFilesPage(Page: integer);
@@ -2920,20 +2921,18 @@ procedure TEnvironmentOptionsDialog.ResizeObjectInspectorPage;
 var
   HalfWidth:integer;
 begin
-  HalfWidth:=ClientWidth div 2;
+  HalfWidth:=ObjectInspectorColorsGroupBox.Parent.ClientWidth div 2;
   // object inspector
   with ObjectInspectorColorsGroupBox do begin
     Left:=5;
     Top:=2;
-    Width:= HalfWidth-15;
-    Height:=200;
+    Width:=HalfWidth-15;
   end;
 
   with OIMiscGroupBox do begin
     Left:=HalfWidth+5;
     Top:=ObjectInspectorColorsGroupBox.Top;
     Width:=HalfWidth-15;
-    Height:=77;
   end;
 end;
 
@@ -3856,7 +3855,7 @@ begin
 end;
 
 function TEnvironmentOptionsDialog.CreateColorItem(
-  ATop:Integer; AParent:TWinControl;ACaption:String):TColorButton;
+  ATop: Integer; AParent: TWinControl; const ACaption: String): TColorButton;
 var
   ColorButton:TColorButton;
   ColorLabel:TLabel;
@@ -3876,10 +3875,11 @@ begin
     Name:='ColorLabel'+IntToStr(ATop);
     Left:=ColorButton.Left+ColorButton.Width+5;
     Top:=ColorButton.Top+2;
-    Width:=AParent.ClientWidth-Left-5;
-    Height:=23;
+    Caption:=ACaption;
+    Left:=ColorButton.Left+ColorButton.Width+5;
+    AutoSize:=true;
     Parent:=AParent;
-    Caption:=ACaption;//dlgBackColor;
+    AnchorVerticalCenterTo(ColorButton);
   end;
   Result:=ColorButton;
 end;
@@ -3916,9 +3916,9 @@ begin
     Left:=HalfWidth+5;
     Top:=ObjectInspectorColorsGroupBox.Top;
     Width:=HalfWidth-15;
-    Height:=77;
-    Parent:=NoteBook.Page[Page];
+    Height:=120;
     Caption:=dlgOIMiscellaneous;
+    Parent:=NoteBook.Page[Page];
   end;
   
   OIDefaultItemHeightSpinEdit:=TSpinEdit.Create(Self);
@@ -3927,30 +3927,31 @@ begin
     Left:=6;
     Top:=4;
     Width:=50;
-    Height:=25;
-    Parent:=OIMiscGroupBox;
     Decimal_Places:=0;
     MinValue:=0;
     MaxValue:=100;
+    Parent:=OIMiscGroupBox;
   end;
   
-  OIShowHintCheckBox:=TCheckBox.Create(Self);
-  with OIShowHintCheckBox do begin
-    Name := 'OIShowHintCheckBox';
-    Parent := OIMiscGroupBox;
-    Left := 6;
-    Top := 33;
-    Caption := lisShowHintsInObjectInspector;
-  end;
-
   OIDefaultItemHeightLabel:=TLabel.Create(Self);
   with OIDefaultItemHeightLabel do begin
     Name:='OIDefaultItemHeightLabel';
     Left:=OIDefaultItemHeightSpinEdit.Left+OIDefaultItemHeightSpinEdit.Width+5;
     Top:=OIDefaultItemHeightSpinEdit.Top+2;
-    Width:=OIMiscGroupBox.ClientWidth-Left-5;
-    Parent:=OIMiscGroupBox;
     Caption:=dlgOIItemHeight;
+    AutoSize:=true;
+    Parent:=OIMiscGroupBox;
+    AnchorVerticalCenterTo(OIDefaultItemHeightSpinEdit);
+  end;
+
+  OIShowHintCheckBox:=TCheckBox.Create(Self);
+  with OIShowHintCheckBox do begin
+    Name := 'OIShowHintCheckBox';
+    Left := 6;
+    Top := 33;
+    Caption := lisShowHintsInObjectInspector;
+    Parent := OIMiscGroupBox;
+    AnchorToNeighbour(akTop,8,OIDefaultItemHeightSpinEdit);
   end;
 end;
 
