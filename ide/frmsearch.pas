@@ -41,15 +41,19 @@ uses
 
 
 type
+
+  { TSearchForm }
+
   TSearchForm = class(TForm)
     btnCancel: TBUTTON;
-    Label1: TLABEL;
-    Label2: TLABEL;
-    Label4: TLABEL;
+    MatchesLabel: TLABEL;
+    SearchingLabel: TLABEL;
+    SearchTextLabel: TLABEL;
     lblMatches: TLABEL;
     lblProgress: TLABEL;
     lblSearchText: TLABEL;
     Panel2: TPANEL;
+    procedure Panel2Click(Sender: TObject);
     procedure SearchFormCREATE(Sender: TObject);
     procedure SearchFormDESTROY(Sender: TObject);
     procedure btnAbortCLICK(Sender: TObject);
@@ -117,6 +121,12 @@ var
   DC: HDC;
 begin
   //Set Defaults
+  MatchesLabel.Caption:=lissMatches;
+  SearchingLabel.Caption:=lissSearching;
+  SearchTextLabel.Caption:=lissSearchText;
+  btnCancel.Caption:=dlgCancel;
+  Caption:=dlgSearchCaption;
+
   fWholeWord:= false;
   fCaseSensitive:= false;
   fRecursive:= True;
@@ -139,6 +149,11 @@ begin
     ReleaseDC(0, DC);
   end;//finally
 end;//SearchFormCreate
+
+procedure TSearchForm.Panel2Click(Sender: TObject);
+begin
+
+end;
 
 procedure TSearchForm.SearchFormDESTROY(Sender: TObject);
 begin

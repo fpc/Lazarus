@@ -2330,7 +2330,7 @@ begin
 //  Handled:=false;
 //  OnProcessIDECommand(Sender,CommandRelation.Command,Handled);
 //  if Handled then Key:=VK_UNKNOWN;
-debugln('Key '+IntToStr(Key)+' pressed');
+  //debugln('TMainIDE.OnExecuteIDEShortCut Key '+dbgs(Key)+' pressed');
   Command := EditorOpts.KeyMap.TranslateKey(Key,Shift,Areas);
   if (Command = ecNone) then exit;
   Handled := false;
@@ -11810,6 +11810,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.884  2005/07/15 15:00:01  mattias
+  added resourcestrings for search progress form
+
   Revision 1.883  2005/07/13 07:33:14  mattias
   implemented renaming of new package files
 

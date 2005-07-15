@@ -6,7 +6,7 @@ object SearchForm: TSearchForm
   OnCreate = SearchFormCREATE
   OnDestroy = SearchFormDESTROY
   ParentFont = True
-  PixelsPerInch = 96
+  PixelsPerInch = 112
   Position = poOwnerFormCenter
   HorzScrollBar.Page = 427
   VertScrollBar.Page = 148
@@ -16,7 +16,6 @@ object SearchForm: TSearchForm
   Width = 428
   object Panel2: TPanel
     Align = alClient
-    BorderSpacing.OnChange = nil
     BevelInner = bvLowered
     ClientHeight = 149
     ClientWidth = 428
@@ -24,18 +23,17 @@ object SearchForm: TSearchForm
     ParentFont = True
     TabOrder = 0
     TabStop = True
+    OnClick = Panel2Click
     Height = 149
     Width = 428
     object lblMatches: TLabel
-      BorderSpacing.OnChange = nil
       Color = clNone
       Left = 96
       Height = 17
       Top = 80
       Width = 321
     end
-    object Label1: TLabel
-      BorderSpacing.OnChange = nil
+    object MatchesLabel: TLabel
       Caption = 'Matches'
       Color = clNone
       Left = 16
@@ -45,15 +43,13 @@ object SearchForm: TSearchForm
     end
     object lblProgress: TLabel
       AutoSize = False
-      BorderSpacing.OnChange = nil
       Color = clNone
       Left = 96
       Height = 17
       Top = 48
       Width = 320
     end
-    object Label2: TLabel
-      BorderSpacing.OnChange = nil
+    object SearchingLabel: TLabel
       Caption = 'Searching:'
       Color = clNone
       Left = 16
@@ -61,8 +57,7 @@ object SearchForm: TSearchForm
       Top = 48
       Width = 64
     end
-    object Label4: TLabel
-      BorderSpacing.OnChange = nil
+    object SearchTextLabel: TLabel
       Caption = 'Search Text:'
       Color = clNone
       Left = 16
@@ -71,7 +66,6 @@ object SearchForm: TSearchForm
       Width = 80
     end
     object lblSearchText: TLabel
-      BorderSpacing.OnChange = nil
       Color = clNone
       Left = 96
       Height = 17
@@ -79,7 +73,7 @@ object SearchForm: TSearchForm
       Width = 320
     end
     object btnCancel: TButton
-      BorderSpacing.OnChange = nil
+      AutoSize = True
       Caption = 'Cancel'
       Default = True
       OnClick = btnAbortCLICK

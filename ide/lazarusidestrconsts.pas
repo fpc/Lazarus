@@ -637,6 +637,9 @@ resourcestring
   // Search dialog
   dlgSearchCaption = 'Searching...';
   dlgSearchAbort = 'Search terminated by user.';
+  lissMatches = 'Matches';
+  lissSearching = 'Searching';
+  lissSearchText = 'Search text';
   
   dlgDesktop = 'Desktop';
   dlgWindows = 'Windows';
