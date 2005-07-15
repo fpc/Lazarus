@@ -584,15 +584,18 @@ begin
     if LoadDependencyList(NewFirstAutoInstallDependency)<>mrOk then exit;
     PackageGraph.GetAllRequiredPackages(NewFirstAutoInstallDependency,PkgList);
 
-    // check if any package is a runtime package
+    // check if any package is a runtime package, that is not needed
     for i:=0 to PkgList.Count-1 do begin
       APackage:=TLazPackage(PkgList[i]);
-      if APackage.PackageType=lptRunTime then begin
-        MessageDlg(lisPkgMangPackageIsNoDesigntimePackage,
+      if (APackage.PackageType=lptRunTime)
+      and (APackage.FirstUsedByDependency=nil) then begin
+        // this is a runtime only package, not needed by any other package
+        if MessageDlg(lisPkgMangPackageIsNoDesigntimePackage,
           Format(lisPkgMangThePackageIsARuntimeOnlyPackageRuntimeOnlyPackages, [
             APackage.IDAsString, #13]),
-          mtError,[mbCancel],0);
-        exit;
+          mtWarning,[mbIgnore,mbCancel],0)<>mrIgnore
+        then
+          exit;
       end;
     end;
 
@@ -958,7 +961,6 @@ var
   begin
     AProject:=Project1;
     if (pfMainUnitHasUsesSectionForAllUnits in AProject.Flags)
-    and (APackage.PackageType in [lptRunTime,lptRunAndDesignTime])
     and (AProject.MainUnitInfo<>nil) then begin
       OldUnitName:=OldPkgName;
       NewUnitName:=APackage.Name;
@@ -3422,8 +3424,8 @@ begin
       Result:=MessageDlg(lisPkgMangPackageIsNoDesigntimePackage,
         Format(lisPkgMangThePackageIsARuntimeOnlyPackageRuntimeOnlyPackages, [
           APackage.IDAsString, #13]),
-        mtError,[mbCancel,mbAbort],0);
-      exit;
+        mtError,[mbIgnore,mbAbort],0);
+      if Result<>mrIgnore then exit;
     end;
   
     // save package

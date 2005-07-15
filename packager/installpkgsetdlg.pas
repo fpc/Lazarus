@@ -388,7 +388,7 @@ var
   ANode: TAVLTreeNode;
   sl: TStringList;
   PkgName: String;
-  Pkg: TLazPackageID;
+  Pkg: TLazPackage;
 begin
   fPackages.Clear;
   // TODO: only distinct files
@@ -396,10 +396,12 @@ begin
   sl:=TStringList.Create;
   ANode:=fPackages.FindLowest;
   while ANode<>nil do begin
-    Pkg:=TLazPackageID(ANode.Data);
-    PkgName:=Pkg.IDAsString;
-    if (sl.IndexOf(PkgName)<0) then
-      sl.Add(PkgName);
+    Pkg:=TLazPackage(ANode.Data);
+    if Pkg.PackageType in [lptDesignTime,lptRunAndDesignTime] then begin
+      PkgName:=Pkg.IDAsString;
+      if (sl.IndexOf(PkgName)<0) then
+        sl.Add(PkgName);
+    end;
     ANode:=fPackages.FindSuccessor(ANode);
   end;
   AvailableListBox.Items.Assign(sl);

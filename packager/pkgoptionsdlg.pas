@@ -114,7 +114,7 @@ type
     procedure ReadOptionsFromPackage;
     procedure ReadPkgTypeFromPackage;
     function GetEditForPathButton(AButton: TPathEditorButton): TEdit;
-    procedure ShowMsgPackageTypeMustBeDesign;
+    function ShowMsgPackageTypeMustBeDesign: Boolean;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -343,8 +343,7 @@ begin
   if NewPackageType<>LazPackage.PackageType then begin
     if (NewPackageType=lptRunTime) and (LazPackage.AutoInstall<>pitNope) then
     begin
-      ShowMsgPackageTypeMustBeDesign;
-      exit;
+      if ShowMsgPackageTypeMustBeDesign then exit;
     end;
   end;
 
@@ -888,13 +887,17 @@ begin
     Result:=nil;
 end;
 
-procedure TPackageOptionsDialog.ShowMsgPackageTypeMustBeDesign;
+function TPackageOptionsDialog.ShowMsgPackageTypeMustBeDesign: Boolean;
 begin
-  MessageDlg(lisPckOptsInvalidPackageType,
+  if MessageDlg(lisPckOptsInvalidPackageType,
     Format(lisPckOptsThePackageHasTheAutoInstallFlagThisMeans, ['"',
       LazPackage.IDAsString, '"', #13, #13]),
-    mtError,[mbCancel],0);
-  ReadPkgTypeFromPackage;
+    mtWarning,[mbIgnore,mbCancel],0) <>mrIgnore
+  then begin
+    Result:=true;
+    ReadPkgTypeFromPackage;
+  end else
+    Result:=false;
 end;
 
 constructor TPackageOptionsDialog.Create(TheOwner: TComponent);
