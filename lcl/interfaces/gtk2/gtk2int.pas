@@ -74,6 +74,8 @@ type
     function PangoDrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; //override;
   end;
 
+  { TGtkListStoreStringList }
+
   TGtkListStoreStringList = class(TStrings)
   private
     FColumnIndex : Integer;
@@ -88,6 +90,7 @@ type
     function GetCount : integer; override;
     function Get(Index : Integer) : string; override;
     function GetObject(Index: Integer): TObject; override;
+    procedure Put(Index: Integer; const S: string); override;
     procedure PutObject(Index: Integer; AnObject: TObject); override;
     procedure SetSorted(Val : boolean); virtual;
     procedure UpdateItemCache;
@@ -398,6 +401,19 @@ begin
   end;
 end;
 
+procedure TGtkListStoreStringList.Put(Index: Integer; const S: string);
+var
+  ListItem : TGtkTreeIter;
+begin
+  if (Index < 0) or (Index >= Count) then
+    RaiseException('TGtkListStoreStringList.Put Out of bounds.')
+  else if FGtkListStore<>nil then begin
+    UpdateItemCache;
+    ListItem:=FCachedItems[Index];
+    gtk_list_store_set(FGtkListStore, @ListItem, [FColumnIndex, PChar(S), -1]);
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method: TGtkListStoreStringList.GetCount
   Params:
@@ -521,6 +537,9 @@ end.
 
 {
   $Log$
+  Revision 1.45  2005/07/15 12:44:18  mattias
+  fixed gtk2 intf setting ListBox.Items[i]:=  from Andrew Haines
+
   Revision 1.44  2005/04/07 22:04:02  marc
   * gtk2 patch from Andrew
 
