@@ -42,7 +42,10 @@ uses
   Buttons, Menus, ComCtrls, Debugger, DebuggerDlg, BaseDebugManager;
 
 type
-  TWatchesDlg = class(TDebuggerDlg)
+
+{ TWatchesDlg }
+
+TWatchesDlg = class(TDebuggerDlg)
     lvWatches: TListView;
     mnuPopup: TPopupMenu;
     popAdd: TMenuItem;
@@ -54,7 +57,9 @@ type
     popDisableAll: TMenuItem;
     popEnableAll: TMenuItem;
     popDeleteAll: TMenuItem;
-    procedure lvWatchesClick(Sender: TObject);
+    procedure lvWatchesDblClick(Sender: TObject);
+    procedure lvWatchesMouseDown(Sender: TOBject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure lvWatchesSelectItem(Sender: TObject; AItem: TListItem; Selected: Boolean);
     procedure popAddClick(Sender: TObject);
     procedure popPropertiesClick(Sender: TObject);
@@ -96,7 +101,13 @@ begin
   FWatchesNotification.OnAdd := @WatchAdd;
   FWatchesNotification.OnUpdate := @WatchUpdate;
   FWatchesNotification.OnRemove := @WatchRemove;
-end;       
+  
+{$IFDEF WIN32}
+  {$NOTE TODO repair TListView column widths and remove this hack}
+  lvWatches.Column[0].Width := 100;
+  lvWatches.Column[1].Width := 200;
+{$ENDIF WIN32}
+end;
 
 destructor TWatchesDlg.Destroy;
 begin
@@ -148,10 +159,6 @@ begin
   end;
 end;
 
-procedure TWatchesDlg.lvWatchesClick(Sender: TObject);
-begin
-end;
-
 procedure TWatchesDlg.lvWatchesSelectItem(Sender: TObject; AItem: TListItem; Selected: Boolean);
 var
   Enable: Boolean;
@@ -163,6 +170,20 @@ begin
   popEnabled.Enabled := Enable;
   popDelete.Enabled := Enable;   
   popEnabled.Checked := Enable and Watch.Enabled;
+end;
+
+procedure TWatchesDlg.lvWatchesMouseDown(Sender: TOBject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if Button in [mbRight] then mnuPopup.PopUp(X + lvWatches.Left + Left, Y + lvWatches.Top + Top);
+end;
+
+procedure TWatchesDlg.lvWatchesDblClick(Sender: TObject);
+begin
+  if lvWatches.SelCount >= 0 then
+    popPropertiesClick(Sender)
+  else
+    popAddClick(Sender);
 end;
 
 procedure TWatchesDlg.popAddClick(Sender: TObject);
@@ -271,6 +292,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.10  2005/07/15 17:59:47  mattias
+  improved watches: popup on rightclick, listview widths manually override under win32, double click shows adds/change  from Darius Blaszijk
+
   Revision 1.9  2004/11/23 00:54:55  marc
   + Added Evaluate/Modify dialog
 

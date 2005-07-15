@@ -1,11 +1,10 @@
 object WatchesDlg: TWatchesDlg
-  ActiveControl = lvWatches
   Caption = 'Watch list'
   ClientHeight = 200
   ClientWidth = 500
-  PixelsPerInch = 90
-  HorzScrollBar.Page = 501
-  VertScrollBar.Page = 201
+  PixelsPerInch = 96
+  HorzScrollBar.Page = 499
+  VertScrollBar.Page = 199
   Left = 359
   Height = 200
   Top = 126
@@ -15,16 +14,17 @@ object WatchesDlg: TWatchesDlg
     Columns = <    
       item
         Caption = 'Expression'
-        Width = 150
+        Width = 10
       end    
       item
         Caption = 'Value'
-        Width = 0
+        Width = 10
       end>
     MultiSelect = True
     PopupMenu = mnuPopup
     ViewStyle = vsReport
-    OnClick = lvWatchesClick
+    OnDblClick = lvWatchesDblClick
+    OnMouseDown = lvWatchesMouseDown
     OnSelectItem = lvWatchesSelectItem
     Height = 200
     Width = 500
