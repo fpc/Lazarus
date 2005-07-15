@@ -2538,9 +2538,7 @@ begin
   AComponent:=NonVisualComponentAtPos(ClientPos.X,ClientPos.Y);
   if AComponent=nil then begin
     // then search a control at the position
-    ClientPos := AWinControl.ScreenToClient(Position);
-
-    AComponent := AWinControl.ControlAtPos(ClientPos,true,true);
+    AComponent := ControlAtPos(ClientPos.X,ClientPos.Y,true,true);
     if not Assigned(AComponent) then
       AComponent := AWinControl;
   end;
