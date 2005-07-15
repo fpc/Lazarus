@@ -3774,6 +3774,10 @@ msgstr "Oikea marginaali ja vasen reunus"
 msgid "Marker color"
 msgstr ""
 
+#: lazarusidestrconsts:lissmatches
+msgid "Matches"
+msgstr ""
+
 #: lazarusidestrconsts:dlgmaxlinelength
 msgid "Max line length:"
 msgstr ""
@@ -5434,9 +5438,17 @@ msgstr "Etsittyä merkkijonoa '%s' ei löydetty!"
 msgid "Search terminated by user."
 msgstr ""
 
+#: lazarusidestrconsts:lisssearchtext
+msgid "Search text"
+msgstr ""
+
 #: lazarusidestrconsts:lisfrisearchwhere
 msgid "Search where"
 msgstr "Mistä etsitään"
+
+#: lazarusidestrconsts:lisssearching
+msgid "Searching"
+msgstr ""
 
 #: lazarusidestrconsts:dlgsearchcaption
 msgid "Searching..."

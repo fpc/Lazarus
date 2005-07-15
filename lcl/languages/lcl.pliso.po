@@ -149,6 +149,10 @@ msgstr ""
 msgid "Backspace"
 msgstr ""
 
+#: lclstrconsts:rsbitmaps
+msgid "Bitmaps"
+msgstr ""
+
 #: lclstrconsts:rsblank
 msgid "Blank"
 msgstr "Pusty"
@@ -313,6 +317,10 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
+#: lclstrconsts:rsicon
+msgid "Icon"
+msgstr ""
+
 #: lclstrconsts:rsindexoutofrange
 msgid "Index Out of range Cell[Col=%d Row=%d]"
 msgstr "Indeks poza zakresem Cell[Col=%d Row=%d]"
@@ -463,6 +471,14 @@ msgstr "¦cie¿ka musi istnieæ"
 
 #: lclstrconsts:ifsvk_pause
 msgid "Pause key"
+msgstr ""
+
+#: lclstrconsts:rspixmap
+msgid "Pixmap"
+msgstr ""
+
+#: lclstrconsts:rsportablenetworkgraphic
+msgid "Portable Network Graphic"
 msgstr ""
 
 #: lclstrconsts:ifsvk_print

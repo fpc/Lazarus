@@ -1674,6 +1674,18 @@ msgstr ""
 msgid "Search terminated by user."
 msgstr ""
 
+#: lazarusidestrconsts:lissmatches
+msgid "Matches"
+msgstr ""
+
+#: lazarusidestrconsts:lisssearching
+msgid "Searching"
+msgstr ""
+
+#: lazarusidestrconsts:lisssearchtext
+msgid "Search text"
+msgstr ""
+
 #: lazarusidestrconsts:dlgdesktop
 msgid "Desktop"
 msgstr ""

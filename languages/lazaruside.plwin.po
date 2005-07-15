@@ -3785,6 +3785,10 @@ msgstr "Margines i pasek ikon"
 msgid "Marker color"
 msgstr "Kolor zaznaczenia"
 
+#: lazarusidestrconsts:lissmatches
+msgid "Matches"
+msgstr ""
+
 #: lazarusidestrconsts:dlgmaxlinelength
 msgid "Max line length:"
 msgstr "Maks. d³ugoœæ wiersza:"
@@ -5445,8 +5449,16 @@ msgstr "Nie znalaz³em wyra¿enia '%s' !"
 msgid "Search terminated by user."
 msgstr "Wyszukiwane przerwane przez u¿ytkownika"
 
+#: lazarusidestrconsts:lisssearchtext
+msgid "Search text"
+msgstr ""
+
 #: lazarusidestrconsts:lisfrisearchwhere
 msgid "Search where"
+msgstr ""
+
+#: lazarusidestrconsts:lisssearching
+msgid "Searching"
 msgstr ""
 
 #: lazarusidestrconsts:dlgsearchcaption

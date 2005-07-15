@@ -149,6 +149,10 @@ msgstr "Alle Dateien (%s)|%s|%s"
 msgid "Backspace"
 msgstr "Rückschritt"
 
+#: lclstrconsts:rsbitmaps
+msgid "Bitmaps"
+msgstr ""
+
 #: lclstrconsts:rsblank
 msgid "Blank"
 msgstr "Leer"
@@ -313,6 +317,10 @@ msgstr "Verlauf:"
 msgid "Home"
 msgstr "Pos1"
 
+#: lclstrconsts:rsicon
+msgid "Icon"
+msgstr ""
+
 #: lclstrconsts:rsindexoutofrange
 msgid "Index Out of range Cell[Col=%d Row=%d]"
 msgstr "Index außerhalb des Bereichs Zelle[Spalte=%s Reihe=%d]"
@@ -464,6 +472,14 @@ msgstr "Pfad muß angelegt sein"
 #: lclstrconsts:ifsvk_pause
 msgid "Pause key"
 msgstr "Pause-Taste"
+
+#: lclstrconsts:rspixmap
+msgid "Pixmap"
+msgstr ""
+
+#: lclstrconsts:rsportablenetworkgraphic
+msgid "Portable Network Graphic"
+msgstr ""
 
 #: lclstrconsts:ifsvk_print
 msgid "Print"

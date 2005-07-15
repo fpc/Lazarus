@@ -138,6 +138,10 @@ msgstr ""
 msgid "Backspace"
 msgstr ""
 
+#: lclstrconsts:rsbitmaps
+msgid "Bitmaps"
+msgstr ""
+
 #: lclstrconsts:rsblank
 msgid "Blank"
 msgstr "Пустой"
@@ -302,6 +306,10 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
+#: lclstrconsts:rsicon
+msgid "Icon"
+msgstr ""
+
 #: lclstrconsts:rsindexoutofrange
 msgid "Index Out of range Cell[Col=%d Row=%d]"
 msgstr "Индекс вне диапазона Cell[Col=%d Row=%d]"
@@ -452,6 +460,14 @@ msgstr "Путь должен существовать"
 
 #: lclstrconsts:ifsvk_pause
 msgid "Pause key"
+msgstr ""
+
+#: lclstrconsts:rspixmap
+msgid "Pixmap"
+msgstr ""
+
+#: lclstrconsts:rsportablenetworkgraphic
+msgid "Portable Network Graphic"
 msgstr ""
 
 #: lclstrconsts:ifsvk_print

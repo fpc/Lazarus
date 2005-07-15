@@ -3774,6 +3774,10 @@ msgstr "Marge i canal"
 msgid "Marker color"
 msgstr "Color del marcador"
 
+#: lazarusidestrconsts:lissmatches
+msgid "Matches"
+msgstr ""
+
 #: lazarusidestrconsts:dlgmaxlinelength
 msgid "Max line length:"
 msgstr "Longitud màxima de la línia"
@@ -5434,9 +5438,17 @@ msgstr "No s'ha trobat la cadena '%s'"
 msgid "Search terminated by user."
 msgstr "L'usuari ha finalitzat la recerca."
 
+#: lazarusidestrconsts:lisssearchtext
+msgid "Search text"
+msgstr ""
+
 #: lazarusidestrconsts:lisfrisearchwhere
 msgid "Search where"
 msgstr "On cercar"
+
+#: lazarusidestrconsts:lisssearching
+msgid "Searching"
+msgstr ""
 
 #: lazarusidestrconsts:dlgsearchcaption
 msgid "Searching..."

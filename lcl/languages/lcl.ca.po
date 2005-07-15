@@ -138,6 +138,10 @@ msgstr "Tots els fitxers (%s)|%s|%s"
 msgid "Backspace"
 msgstr "Retrocés"
 
+#: lclstrconsts:rsbitmaps
+msgid "Bitmaps"
+msgstr ""
+
 #: lclstrconsts:rsblank
 msgid "Blank"
 msgstr "Blanc"
@@ -302,6 +306,10 @@ msgstr "Història:"
 msgid "Home"
 msgstr "Inici"
 
+#: lclstrconsts:rsicon
+msgid "Icon"
+msgstr ""
+
 #: lclstrconsts:rsindexoutofrange
 msgid "Index Out of range Cell[Col=%d Row=%d]"
 msgstr "Índex fora de l'abast Cell[Col=%d Row=%d]"
@@ -453,6 +461,14 @@ msgstr "La trajectòria ha d'existir"
 #: lclstrconsts:ifsvk_pause
 msgid "Pause key"
 msgstr "Tecla de pausa"
+
+#: lclstrconsts:rspixmap
+msgid "Pixmap"
+msgstr ""
+
+#: lclstrconsts:rsportablenetworkgraphic
+msgid "Portable Network Graphic"
+msgstr ""
 
 #: lclstrconsts:ifsvk_print
 msgid "Print"

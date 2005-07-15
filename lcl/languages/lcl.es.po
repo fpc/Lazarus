@@ -148,6 +148,10 @@ msgstr "Todos los archivos (%s)|%s|%s"
 msgid "Backspace"
 msgstr "Retroceso"
 
+#: lclstrconsts:rsbitmaps
+msgid "Bitmaps"
+msgstr ""
+
 #: lclstrconsts:rsblank
 msgid "Blank"
 msgstr "Vacío"
@@ -312,6 +316,10 @@ msgstr ""
 msgid "Home"
 msgstr "Inicio"
 
+#: lclstrconsts:rsicon
+msgid "Icon"
+msgstr ""
+
 #: lclstrconsts:rsindexoutofrange
 msgid "Index Out of range Cell[Col=%d Row=%d]"
 msgstr "Índice fuera de rango Celda[Col=%s Línea=%d]"
@@ -463,6 +471,14 @@ msgstr "La ruta debe existir"
 #: lclstrconsts:ifsvk_pause
 msgid "Pause key"
 msgstr "Tecla Pausa"
+
+#: lclstrconsts:rspixmap
+msgid "Pixmap"
+msgstr ""
+
+#: lclstrconsts:rsportablenetworkgraphic
+msgid "Portable Network Graphic"
+msgstr ""
 
 #: lclstrconsts:ifsvk_print
 msgid "Print"

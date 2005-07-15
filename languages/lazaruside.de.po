@@ -3788,6 +3788,10 @@ msgstr "Rand und Leiste"
 msgid "Marker color"
 msgstr "Markierungsfarbe"
 
+#: lazarusidestrconsts:lissmatches
+msgid "Matches"
+msgstr ""
+
 #: lazarusidestrconsts:dlgmaxlinelength
 msgid "Max line length:"
 msgstr "Maximale Zeilenlänge"
@@ -5448,9 +5452,17 @@ msgstr "Suchstring '%s' nicht gefunden!"
 msgid "Search terminated by user."
 msgstr "Suche vom Benutzer abgebrochen"
 
+#: lazarusidestrconsts:lisssearchtext
+msgid "Search text"
+msgstr ""
+
 #: lazarusidestrconsts:lisfrisearchwhere
 msgid "Search where"
 msgstr "Wo suchen"
+
+#: lazarusidestrconsts:lisssearching
+msgid "Searching"
+msgstr ""
 
 #: lazarusidestrconsts:dlgsearchcaption
 msgid "Searching..."

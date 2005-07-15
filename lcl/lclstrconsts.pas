@@ -174,6 +174,10 @@ ResourceString
   rsErrorCreatingDeviceContext = 'Error creating device context for %s.%s';
   rsIndexOutOfBounds = '%s Index %d out of bounds 0-%d';
   rsUnknownPictureExtension = 'Unknown picture extension';
+  rsBitmaps = 'Bitmaps';
+  rsPixmap = 'Pixmap';
+  rsPortableNetworkGraphic = 'Portable Network Graphic';
+  rsIcon = 'Icon';
   rsUnsupportedClipboardFormat = 'Unsupported clipboard format: %s';
   rsGroupIndexCannotBeLessThanPrevious = 'GroupIndex cannot be less than a '
     +'previous menu item''s GroupIndex';

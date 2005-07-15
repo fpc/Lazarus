@@ -45,12 +45,10 @@ type
 constructor TPicFileFormatsList.Create;
 begin
   inherited Create;
-  Add('bmp', 'Bitmaps', TBitmap);
-  Add('xpm', 'Pixmap', TPixmap);
-  {$IFNDEF DisableFPImage}
-  Add('png', 'Portable Network Graphic', TPortableNetworkGraphic);
-  {$ENDIF}
-  Add('ico', 'Icon', TIcon);
+  Add('bmp', rsBitmaps, TBitmap);
+  Add('xpm', rsPixmap, TPixmap);
+  Add('png', rsPortableNetworkGraphic, TPortableNetworkGraphic);
+  Add('ico', rsIcon, TIcon);
   {$IFDEF UseSimpleJpeg}
   Add('jpg', 'Joint Picture Expert Group',TJpegImage);
   {$ENDIF}

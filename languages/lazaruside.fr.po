@@ -3785,6 +3785,10 @@ msgstr "Marge et gouttière"
 msgid "Marker color"
 msgstr "Couleur de signet"
 
+#: lazarusidestrconsts:lissmatches
+msgid "Matches"
+msgstr ""
+
 #: lazarusidestrconsts:dlgmaxlinelength
 msgid "Max line length:"
 msgstr "Longueur maxi d'une ligne:"
@@ -5445,9 +5449,17 @@ msgstr "Chaîne recherchée '%s' non trouvée !"
 msgid "Search terminated by user."
 msgstr "Recherche interrompue par l'utilisateur."
 
+#: lazarusidestrconsts:lisssearchtext
+msgid "Search text"
+msgstr ""
+
 #: lazarusidestrconsts:lisfrisearchwhere
 msgid "Search where"
 msgstr "Chercher où"
+
+#: lazarusidestrconsts:lisssearching
+msgid "Searching"
+msgstr ""
 
 #: lazarusidestrconsts:dlgsearchcaption
 msgid "Searching..."

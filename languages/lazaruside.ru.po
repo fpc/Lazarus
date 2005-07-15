@@ -3774,6 +3774,10 @@ msgstr "Границы"
 msgid "Marker color"
 msgstr "Цвет маркера"
 
+#: lazarusidestrconsts:lissmatches
+msgid "Matches"
+msgstr ""
+
 #: lazarusidestrconsts:dlgmaxlinelength
 msgid "Max line length:"
 msgstr "max длина строки:"
@@ -5434,9 +5438,17 @@ msgstr "Строка поиска '%s' не найдена!"
 msgid "Search terminated by user."
 msgstr "Поиск прерван пользователем."
 
+#: lazarusidestrconsts:lisssearchtext
+msgid "Search text"
+msgstr ""
+
 #: lazarusidestrconsts:lisfrisearchwhere
 msgid "Search where"
 msgstr "Искать где"
+
+#: lazarusidestrconsts:lisssearching
+msgid "Searching"
+msgstr ""
 
 #: lazarusidestrconsts:dlgsearchcaption
 msgid "Searching..."
