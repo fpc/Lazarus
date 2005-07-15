@@ -57,7 +57,7 @@ type
     function ExtractCode(StartPos, EndPos: integer;
         Attr: TProcHeadAttributes): string;
     function ExtractIdentCharsFromStringConstant(
-        StartPos, MaxLen: integer): string;
+        StartPos, MinPos, MaxPos, MaxLen: integer): string;
     function ReadStringConstantValue(StartPos: integer): string;
 
     // properties
@@ -864,11 +864,12 @@ begin
 end;
 
 function TPascalReaderTool.ExtractIdentCharsFromStringConstant(StartPos,
-  MaxLen: integer): string;
+  MinPos, MaxPos, MaxLen: integer): string;
 var
   APos: Integer;
   IdentStartPos: Integer;
   IdentStr: String;
+  IdentEndPos: LongInt;
 begin
   Result:='';
   APos:=StartPos;
@@ -888,17 +889,20 @@ begin
       repeat
         // read identifier chars
         IdentStartPos:=APos;
-        while (IdentStartPos<SrcLen) and (IsIdentChar[Src[IdentStartPos]]) do
-          inc(IdentStartPos);
-        if IdentStartPos>APos then begin
-          if IdentStartPos-APos+length(Result)>MaxLen then
-            IdentStartPos:=APos+MaxLen-length(Result);
-          IdentStr:=copy(Src,APos,IdentStartPos-APos);
-          if (Result<>'') and (IdentStr<>'') then
+        while (APos<SrcLen) and (IsIdentChar[Src[APos]]) do
+          inc(APos);
+        IdentEndPos:=APos;
+        if IdentStartPos<MinPos then IdentStartPos:=MinPos;
+        if IdentEndPos>MaxPos then IdentEndPos:=MaxPos;
+        if (IdentEndPos>IdentStartPos) then begin
+          if IdentEndPos-IdentStartPos+length(Result)>MaxLen then
+            IdentEndPos:=IdentStartPos+MaxLen-length(Result);
+          IdentStr:=copy(Src,IdentStartPos,IdentEndPos-IdentStartPos);
+          if (IdentStr<>'') then begin
             IdentStr[1]:=UpChars[IdentStr[1]];
-          Result:=Result+IdentStr;
+            Result:=Result+IdentStr;
+          end;
         end;
-        APos:=IdentStartPos;
         // skip non identifier chars
         while (APos<SrcLen) and (Src[APos]<>'''')
         and (not IsIdentChar[Src[APos]])

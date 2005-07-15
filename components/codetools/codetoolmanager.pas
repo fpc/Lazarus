@@ -324,11 +324,12 @@ type
     function CreateIdentifierFromStringConst(
           StartCode: TCodeBuffer; StartX, StartY: integer;
           EndCode: TCodeBuffer;   EndX, EndY: integer;
-          var Identifier: string; MaxLen: integer): boolean;
+          out Identifier: string; MaxLen: integer): boolean;
     function StringConstToFormatString(
           StartCode: TCodeBuffer; StartX, StartY: integer;
           EndCode: TCodeBuffer;   EndX, EndY: integer;
-          var FormatStringConstant, FormatParameters: string): boolean;
+          out FormatStringConstant, FormatParameters: string;
+          out StartInStringConst, EndInStringConst: boolean): boolean;
     function GatherResourceStringsWithValue(SectionCode: TCodeBuffer;
           SectionX, SectionY: integer; const StringValue: string;
           CodePositions: TCodeXYPositions): boolean;
@@ -1630,7 +1631,7 @@ end;
 function TCodeToolManager.CreateIdentifierFromStringConst(
   StartCode: TCodeBuffer; StartX, StartY: integer;
   EndCode: TCodeBuffer; EndX, EndY: integer;
-  var Identifier: string; MaxLen: integer): boolean;
+  out Identifier: string; MaxLen: integer): boolean;
 var
   StartCursorPos, EndCursorPos: TCodeXYPosition;
 begin
@@ -1657,7 +1658,8 @@ end;
 function TCodeToolManager.StringConstToFormatString(
   StartCode: TCodeBuffer; StartX, StartY: integer;
   EndCode: TCodeBuffer; EndX, EndY: integer;
-  var FormatStringConstant, FormatParameters: string): boolean;
+  out FormatStringConstant, FormatParameters: string;
+  out StartInStringConst, EndInStringConst: boolean): boolean;
 var
   StartCursorPos, EndCursorPos: TCodeXYPosition;
 begin
@@ -1674,7 +1676,8 @@ begin
   EndCursorPos.Code:=EndCode;
   try
     Result:=FCurCodeTool.StringConstToFormatString(
-             StartCursorPos,EndCursorPos,FormatStringConstant,FormatParameters);
+             StartCursorPos,EndCursorPos,FormatStringConstant,FormatParameters,
+             StartInStringConst,EndInStringConst);
   except
     on e: Exception do HandleException(e);
   end;

@@ -10460,60 +10460,63 @@ begin
     Result:=mrCancel;
     if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
     {$IFDEF IDE_DEBUG}
-    writeln('');
-    writeln('[TMainIDE.DoMakeResourceString] ************');
+    debugln('');
+    debugln('[TMainIDE.DoMakeResourceString] ************');
     {$ENDIF}
     // calculate start and end of expression in source
     CursorCode:=ActiveUnitInfo.Source;
     CursorXY:=ActiveSrcEdit.EditorComponent.LogicalCaretXY;
-    if CodeToolBoss.GetStringConstBounds(
+    if not CodeToolBoss.GetStringConstBounds(
       CursorCode,CursorXY.X,CursorXY.Y,
       StartCode,StartPos.X,StartPos.Y,
       EndCode,EndPos.X,EndPos.Y,
       true) then
     begin
-      // the codetools have calculated the maximum bounds
-      if (StartCode=EndCode) and (CompareCaret(StartPos,EndPos)=0) then begin
-        MessageDlg(lisNoStringConstantFound,
-        Format(lisHintTheMakeResourcestringFunctionExpectsAStringCon, [#13]),
-        mtError,[mbCancel],0);
-        exit;
-      end;
-      // the user can shorten this range by selecting text
-      if (Trim(ActiveSrcEdit.EditorComponent.SelText)='') then begin
-        // the user has not selected text
-        // -> check if the string constant is in single file
-        // (replacing code that contains an $include directive is ambiguous)
-        if (StartCode<>ActiveUnitInfo.Source)
-        or (EndCode<>ActiveUnitInfo.Source)
-        then begin
-          MessageDlg(lisNoStringConstantFound, Format(
-            lisInvalidExpressionHintTheMakeResourcestringFunction, [#13]),
-          mtError,[mbCancel],0);
-          exit;
-        end;
-      end else begin
-        // the user has selected text
-        // -> check if the selection is only part of the maximum bounds
-        SelectedStartPos:=ActiveSrcEdit.EditorComponent.BlockBegin;
-        SelectedEndPos:=ActiveSrcEdit.EditorComponent.BlockEnd;
-        if (CompareCaret(SelectedStartPos,StartPos)>0)
-        or (CompareCaret(SelectedEndPos,EndPos)<0)
-        then begin
-          MessageDlg(lisSelectionExceedsStringConstant,
-          Format(lisHintTheMakeResourcestringFunctionExpectsAStringCon2, [#13]),
-          mtError,[mbCancel],0);
-          exit;
-        end;
-        StartPos:=SelectedStartPos;
-        EndPos:=SelectedEndPos;
-      end;
-    end else begin
       DoJumpToCodeToolBossError;
       exit;
     end;
 
+    // the codetools have calculated the maximum bounds
+    if (StartCode=EndCode) and (CompareCaret(StartPos,EndPos)=0) then begin
+      MessageDlg(lisNoStringConstantFound,
+      Format(lisHintTheMakeResourcestringFunctionExpectsAStringCon, [#13]),
+      mtError,[mbCancel],0);
+      exit;
+    end;
+    // the user can shorten this range by selecting text
+    if (ActiveSrcEdit.EditorComponent.SelText='') then begin
+      // the user has not selected text
+      // -> check if the string constant is in single file
+      // (replacing code that contains an $include directive is ambiguous)
+      //debugln('TMainIDE.DoMakeResourceString user has not selected text');
+      if (StartCode<>ActiveUnitInfo.Source)
+      or (EndCode<>ActiveUnitInfo.Source)
+      then begin
+        MessageDlg(lisNoStringConstantFound, Format(
+          lisInvalidExpressionHintTheMakeResourcestringFunction, [#13]),
+        mtError,[mbCancel],0);
+        exit;
+      end;
+    end else begin
+      // the user has selected text
+      // -> check if the selection is only part of the maximum bounds
+      SelectedStartPos:=ActiveSrcEdit.EditorComponent.BlockBegin;
+      SelectedEndPos:=ActiveSrcEdit.EditorComponent.BlockEnd;
+      //debugln('TMainIDE.DoMakeResourceString user has selected text: Selected=',dbgs(SelectedStartPos),'-',dbgs(SelectedEndPos),' Maximum=',dbgs(StartPos),'-',dbgs(EndPos));
+      if (CompareCaret(SelectedStartPos,StartPos)>0)
+      or (CompareCaret(SelectedEndPos,EndPos)<0)
+      then begin
+        MessageDlg(lisSelectionExceedsStringConstant,
+        Format(lisHintTheMakeResourcestringFunctionExpectsAStringCon2, [#13]),
+        mtError,[mbCancel],0);
+        exit;
+      end;
+      StartPos:=SelectedStartPos;
+      EndPos:=SelectedEndPos;
+    end;
+
     // gather all reachable resourcestring sections
+    //debugln('TMainIDE.DoMakeResourceString gather all reachable resourcestring sections ...');
     if not CodeToolBoss.GatherResourceStringSections(
       CursorCode,CursorXY.X,CursorXY.Y,nil)
     then begin
@@ -11810,6 +11813,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.885  2005/07/15 16:25:39  mattias
+  extended MakeResourceString function to convert parts of string constants
+
   Revision 1.884  2005/07/15 15:00:01  mattias
   added resourcestrings for search progress form
 

@@ -40,8 +40,8 @@ unit MakeResStrDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Buttons, ComCtrls, StdCtrls, Dialogs,
-  LResources, LazarusIDEStrConsts, IDEOptionDefs, CodeToolManager,
+  Classes, SysUtils, LCLProc, Forms, Controls, Buttons, ComCtrls, StdCtrls,
+  Dialogs, LResources, LazarusIDEStrConsts, IDEOptionDefs, CodeToolManager,
   CodeAtom, CodeToolsStructs, CodeCache, SynHighlighterPas, SynEdit,
   EditorOptions, InputHistory, MiscOptions;
   
@@ -152,6 +152,7 @@ var
   Section: PCodeXYPosition;
   ResourcestringSectionID: Integer;
 begin
+  //debugln('ShowMakeResStrDialog StartPos=',dbgs(StartPos),' EndPos=',dbgs(EndPos),' ');
   MakeResStrDialog:=TMakeResStrDialog.Create(nil);
   MakeResStrDialog.Positions:=CodeToolBoss.Positions.CreateCopy;
   MakeResStrDialog.SetSource(Code,StartPos,EndPos);
@@ -601,7 +602,7 @@ var
 begin
   // get the Prefixes history list
   HistoryList:=
-    InputHistories.HistoryLists.GetList(hlMakeResourceStringPrefixes,true);
+         InputHistories.HistoryLists.GetList(hlMakeResourceStringPrefixes,true);
   IdentPrefixComboBox.Items.Assign(HistoryList);
   if IdentPrefixComboBox.Items.Count>0 then
     IdentPrefixComboBox.Text:=IdentPrefixComboBox.Items[0]
@@ -786,9 +787,11 @@ var
   LastLine: string;
   NewString: String;
   RightSide: String;
+  StartInStringConst, EndInStringConst: boolean;
 begin
   if not CodeToolBoss.StringConstToFormatString(Code,StartPos.X,StartPos.Y,
-     Code,EndPos.X,EndPos.Y,FormatStringConstant,FormatParameters)
+     Code,EndPos.X,EndPos.Y,FormatStringConstant,FormatParameters,
+     StartInStringConst,EndInStringConst)
   then begin
     SrcPreviewSynEdit.Text:='Error:'#13+CodeToolBoss.ErrorMessage;
     exit;
@@ -797,6 +800,10 @@ begin
     NewString:=GetIdentifier
   else
     NewString:='Format('+GetIdentifier+',['+FormatParameters+'])';
+  if StartInStringConst then
+    NewString:='''+'+NewString;
+  if EndInStringConst then
+    NewString:=NewString+'+''';
   LeftSide:=copy(StringConstSynEdit.Lines[0],1,StartPos.X-1);
   LastLine:=StringConstSynEdit.Lines[EndPos.Y-StartPos.Y];
   RightSide:=copy(LastLine,EndPos.X,length(LastLine)-EndPos.X+1);
