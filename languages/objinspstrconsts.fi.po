@@ -140,7 +140,7 @@ msgstr "Lisää uusi kohta"
 
 #: objinspstrconsts:nbcesaddpage
 msgid "Add page"
-msgstr ""
+msgstr "Lisää välilehti"
 
 #: objinspstrconsts:oisaddtofavorites
 msgid "Add to Favorites"
@@ -208,7 +208,7 @@ msgstr "Tyhjennä"
 
 #: objinspstrconsts:oisclearpicture
 msgid "Clear picture"
-msgstr ""
+msgstr "Tyhjennä kuva"
 
 #: objinspstrconsts:oistdactcolorselecthint
 msgid "Color Select"
@@ -284,7 +284,7 @@ msgstr ""
 
 #: objinspstrconsts:nbcesdeletepage
 msgid "Delete page"
-msgstr ""
+msgstr "Poista välilehti"
 
 #: objinspstrconsts:clbdelete
 msgid "Delete the Item %d \"%s\"?"
@@ -412,7 +412,7 @@ msgstr ""
 
 #: objinspstrconsts:nbcesinsertpage
 msgid "Insert page"
-msgstr ""
+msgstr "Lisää välilehti eteen"
 
 #: objinspstrconsts:oisint64
 msgid "Int64"
@@ -444,7 +444,7 @@ msgstr "Tuo kuva"
 
 #: objinspstrconsts:oisloadpicture
 msgid "Load picture"
-msgstr ""
+msgstr "Tuo kuva"
 
 #: objinspstrconsts:oismethod
 msgid "Method"
@@ -464,11 +464,11 @@ msgstr ""
 
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
-msgstr ""
+msgstr "Siirrä välilehteä vasemmalle"
 
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
-msgstr ""
+msgstr "Siirrä välilehteä oikealle"
 
 #: objinspstrconsts:sccslvedtbtnadd
 msgid "New"
@@ -556,7 +556,7 @@ msgstr ""
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
-msgstr ""
+msgstr "Tallenna kuva"
 
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"
@@ -600,7 +600,7 @@ msgstr "Näytä vihjeet"
 
 #: objinspstrconsts:nbcesshowpage
 msgid "Show page ..."
-msgstr ""
+msgstr "Näytä välilehti ..."
 
 #: objinspstrconsts:oissort
 msgid "Sort"
