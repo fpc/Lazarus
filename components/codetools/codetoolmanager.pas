@@ -337,6 +337,10 @@ type
           SectionCode: TCodeBuffer; SectionX, SectionY: integer;
           const NewIdentifier, NewValue: string;
           InsertPolicy: TResourcestringInsertPolicy): boolean;
+    procedure ImproveStringConstantStart(const ACode: string;
+                                         var StartPos: integer);
+    procedure ImproveStringConstantEnd(const ACode: string;
+                                       var EndPos: integer);
 
     // expressions
     function GetStringConstBounds(Code: TCodeBuffer; X,Y: integer;
@@ -1740,6 +1744,18 @@ begin
   except
     on e: Exception do HandleException(e);
   end;
+end;
+
+procedure TCodeToolManager.ImproveStringConstantStart(const ACode: string;
+  var StartPos: integer);
+begin
+  BasicCodeTools.ImproveStringConstantStart(ACode,StartPos);
+end;
+
+procedure TCodeToolManager.ImproveStringConstantEnd(const ACode: string;
+  var EndPos: integer);
+begin
+  BasicCodeTools.ImproveStringConstantEnd(ACode,EndPos);
 end;
 
 function TCodeToolManager.GetStringConstBounds(Code: TCodeBuffer; X, Y: integer;

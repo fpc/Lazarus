@@ -329,8 +329,8 @@ begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisOpenPackageFile;
     OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
-    OpenDialog.Filter:='Lazarus package (*.lpk)|*.lpk'
-                      +'|All files ('+GetAllFilesMask+')|'+GetAllFilesMask;
+    OpenDialog.Filter:=lisLazarusPackage+' (*.lpk)|*.lpk'
+                     +'|'+dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask;
     if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
       OpenFlags:=[pofAddToRecent];
       For I := 0 to OpenDialog.Files.Count-1 do

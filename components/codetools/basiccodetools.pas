@@ -133,6 +133,8 @@ function StringToPascalConst(const s: string): string;
 function SplitStringConstant(const StringConstant: string;
     FirstLineLength, OtherLineLengths, Indent: integer;
     const NewLine: string): string;
+procedure ImproveStringConstantStart(const ACode: string; var StartPos: integer);
+procedure ImproveStringConstantEnd(const ACode: string; var EndPos: integer);
 
 // other useful stuff
 procedure RaiseCatchableException(const Msg: string);
@@ -224,7 +226,7 @@ function SearchCodeInSource(const Source, Find: string; StartPos:integer;
 function ReadNextPascalAtom(const Source: string;
    var Position, AtomStart: integer): string;
 procedure ReadRawNextPascalAtom(const Source: string;
-   var Position, AtomStart: integer);
+   var Position: integer; out AtomStart: integer);
 
 
 //-----------------------------------------------------------------------------
@@ -1391,8 +1393,8 @@ begin
   until false;
 end;
 
-procedure ReadRawNextPascalAtom(const Source:string;
-  var Position,AtomStart:integer);
+procedure ReadRawNextPascalAtom(const Source: string;
+  var Position: integer; out AtomStart: integer);
 var Len:integer;
   c1,c2:char;
 begin
@@ -3005,6 +3007,119 @@ begin
   until false;
   //DebugLn('END Result="',Result,'"');
   //DebugLn('SplitStringConstant END---------------------------------');
+end;
+
+procedure ImproveStringConstantStart(const ACode: string; var StartPos: integer
+  );
+// if StartPos is on the first character of a string constant it will be moved
+// one in front, that means on the start of the string constant.
+// Example:  'A' StartPos=2 -> StartPos:=1
+var
+  AtomStartPos, AtomEndPos: Integer;
+  Len: Integer;
+  SubTokenStart: LongInt;
+begin
+  AtomEndPos:=1;
+  repeat
+    AtomStartPos:=AtomEndPos;
+    ReadRawNextPascalAtom(ACode,AtomEndPos,AtomStartPos);
+    if (AtomEndPos>StartPos) then begin
+      // token found
+      Len:=length(ACode);
+      while (AtomStartPos<=Len) do begin
+        case (ACode[AtomStartPos]) of
+        '#':
+          begin
+            SubTokenStart:=AtomStartPos;
+            inc(AtomStartPos);
+            while (AtomStartPos<=Len)
+            and (ACode[AtomStartPos] in ['0'..'9']) do
+              inc(AtomStartPos);
+            if StartPos<AtomStartPos then begin
+              StartPos:=SubTokenStart;
+              exit;
+            end;
+          end;
+        '''':
+          begin
+            inc(AtomStartPos);
+            if StartPos=AtomStartPos then begin
+              StartPos:=AtomStartPos-1;
+              exit;
+            end;
+            while (AtomStartPos<=Len) do begin
+              if (ACode[AtomStartPos]<>'''') then
+                inc(AtomStartPos)
+              else begin
+                if (AtomStartPos<Len) and (ACode[AtomStartPos+1]='''') then
+                  inc(AtomStartPos)
+                else
+                  break;
+              end;
+            end;
+            inc(AtomStartPos);
+          end;
+        else
+          break;
+        end;
+      end;
+    end;
+  until AtomEndPos>StartPos;
+end;
+
+procedure ImproveStringConstantEnd(const ACode: string; var EndPos: integer);
+// if EndPos is on the last character of a string constant it will be moved
+// to the end, that means on the end of the string constant.
+// Example:  'A' EndPos=3 -> EndPos:=4
+var
+  AtomStartPos, AtomEndPos: Integer;
+  Len: Integer;
+begin
+  AtomEndPos:=1;
+  repeat
+    AtomStartPos:=AtomEndPos;
+    ReadRawNextPascalAtom(ACode,AtomEndPos,AtomStartPos);
+    if (AtomEndPos>=EndPos) then begin
+      // token found
+      Len:=length(ACode);
+      while (AtomStartPos<=Len) do begin
+        case (ACode[AtomStartPos]) of
+        '#':
+          begin
+            inc(AtomStartPos);
+            while (AtomStartPos<=Len)
+            and (ACode[AtomStartPos] in ['0'..'9']) do
+              inc(AtomStartPos);
+            if EndPos<AtomStartPos then begin
+              EndPos:=AtomStartPos;
+              exit;
+            end;
+          end;
+        '''':
+          begin
+            inc(AtomStartPos);
+            while (AtomStartPos<=Len) do begin
+              if (ACode[AtomStartPos]<>'''') then
+                inc(AtomStartPos)
+              else begin
+                if (AtomStartPos<Len) and (ACode[AtomStartPos+1]='''') then
+                  inc(AtomStartPos)
+                else
+                  break;
+              end;
+            end;
+            inc(AtomStartPos);
+            if EndPos=AtomStartPos-1 then begin
+              EndPos:=AtomStartPos;
+              exit;
+            end;
+          end;
+        else
+          break;
+        end;
+      end;
+    end;
+  until AtomEndPos>=EndPos;
 end;
 
 procedure RaiseCatchableException(const Msg: string);

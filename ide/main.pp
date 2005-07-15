@@ -1974,12 +1974,12 @@ begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisOpenFile;
     OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
-    OpenDialog.Filter:='All files ('+GetAllFilesMask+')|'+GetAllFilesMask
-                 +'|Lazarus unit (*.pas;*.pp)|*.pas;*.pp'
-                 +'|Lazarus project (*.lpi)|*.lpi'
-                 +'|Lazarus form (*.lfm)|*.lfm'
-                 +'|Lazarus package (*.lpk)|*.lpk'
-                 +'|Lazarus project source (*.lpr)|*.lpr';
+    OpenDialog.Filter:=dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask
+                 +'|'+lisLazarusUnit+' (*.pas;*.pp)|*.pas;*.pp'
+                 +'|'+lisLazarusProject+' (*.lpi)|*.lpi'
+                 +'|'+lisLazarusForm+' (*.lfm)|*.lfm'
+                 +'|'+lisLazarusPackage+' (*.lpk)|*.lpk'
+                 +'|'+lisLazarusProjectSource+' (*.lpr)|*.lpr';
     if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
       OpenFlags:=[ofAddToRecent];
       //debugln('TMainIDE.mnuOpenClicked OpenDialog.Files.Count=',dbgs(OpenDialog.Files.Count));
@@ -2699,8 +2699,8 @@ begin
     try
       InputHistories.ApplyFileDialogSettings(OpenDialog);
       OpenDialog.Title:=lisOpenProjectFile+' (*.lpi)';
-      OpenDialog.Filter := 'Lazarus Project Info (*.lpi)|*.lpi|'
-                          +'All Files|'+GetAllFilesMask;
+      OpenDialog.Filter := lisLazarusProjectInfoFile+' (*.lpi)|*.lpi|'
+                          +lisAllFiles+'|'+GetAllFilesMask;
       if OpenDialog.Execute then begin
         AFilename:=ExpandFilename(OpenDialog.Filename);
         DoOpenProjectFile(AFilename,[ofAddToRecent]);
@@ -3013,7 +3013,8 @@ begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisChooseDelphiProject;
     OpenDialog.Options:=OpenDialog.Options;
-    OpenDialog.Filter:='Delphi project (*.dpr)|*.dpr|All files (*.*)|*.*';
+    OpenDialog.Filter:=lisDelphiProject+' (*.dpr)|*.dpr|'+dlgAllFiles+' (*.*)|*'
+      +'.*';
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
       //debugln('TMainIDE.mnuToolConvertDelphiProjectClicked A ',AFilename);
@@ -10502,6 +10503,12 @@ begin
       // -> check if the selection is only part of the maximum bounds
       SelectedStartPos:=ActiveSrcEdit.EditorComponent.BlockBegin;
       SelectedEndPos:=ActiveSrcEdit.EditorComponent.BlockEnd;
+      CodeToolBoss.ImproveStringConstantStart(
+                      ActiveSrcEdit.EditorComponent.Lines[SelectedStartPos.Y-1],
+                      SelectedStartPos.X);
+      CodeToolBoss.ImproveStringConstantEnd(
+                        ActiveSrcEdit.EditorComponent.Lines[SelectedEndPos.Y-1],
+                        SelectedEndPos.X);
       //debugln('TMainIDE.DoMakeResourceString user has selected text: Selected=',dbgs(SelectedStartPos),'-',dbgs(SelectedEndPos),' Maximum=',dbgs(StartPos),'-',dbgs(EndPos));
       if (CompareCaret(SelectedStartPos,StartPos)>0)
       or (CompareCaret(SelectedEndPos,EndPos)<0)
@@ -11813,6 +11820,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.886  2005/07/15 17:42:45  mattias
+  extended MakeResourceString function to auto adjust at string constants boundaries
+
   Revision 1.885  2005/07/15 16:25:39  mattias
   extended MakeResourceString function to convert parts of string constants
 

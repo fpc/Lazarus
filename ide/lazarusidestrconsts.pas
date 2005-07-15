@@ -285,6 +285,7 @@ resourcestring
   lisCompilerOptionsForProject = 'Compiler Options for Project: %s';
   lisChooseDelphiUnit = 'Choose Delphi unit (*.pas)';
   lisChooseDelphiProject = 'Choose Delphi project (*.dpr)';
+  lisDelphiProject = 'Delphi project';
   lisUnableToReadFileError = 'Unable to read file %s%s%s%sError: %s';
   lisFormatError = 'Format error';
   lisLFMFileCorrupt = 'LFM file corrupt';
@@ -531,9 +532,15 @@ resourcestring
 
   // file dialogs
   lisOpenFile = 'Open file';
+  lisLazarusFile = 'Lazarus File';
+  lisPascalUnit = 'Pascal unit';
+  lisPascalSourceFile = 'Pascal source file';
+  lisFreePascalSourceFile = 'FreePascal source file';
   lisDebugUnableToLoadFile = 'Unable to load file';
   lisDebugUnableToLoadFile2 = 'Unable to load file %s%s%s.';
   lisOpenProjectFile = 'Open Project File';
+  lisLazarusProjectInfoFile = 'Lazarus Project Info file';
+  lisAllFiles = 'All Files';
   lisOpenPackageFile = 'Open Package File';
   lisSaveSpace = 'Save ';
   lisSelectDFMFiles = 'Select Delphi form files (*.dfm)';
@@ -544,6 +551,8 @@ resourcestring
   lisChooseMakePath = 'Choose make path';
   lisChooseDebuggerPath = 'Choose debugger filename';
   lisChooseTestBuildDir = 'Choose the directory for tests';
+  lisLazarusDesktopSettings = 'Lazarus Desktop Settings';
+  lisXMLFiles = 'XML files';
 
   // dialogs
   lisSaveChangesToProject = 'Save changes to project %s?';
@@ -768,6 +777,11 @@ resourcestring
   dlgDelTemplate = 'Delete template ';
   dlgChsCodeTempl = 'Choose code template file (*.dci)';
   dlgAllFiles = 'All files';
+  lisLazarusUnit = 'Lazarus unit';
+  lisLazarusProject = 'Lazarus project';
+  lisLazarusForm = 'Lazarus form';
+  lisLazarusPackage = 'Lazarus package';
+  lisLazarusProjectSource = 'Lazarus project source';
   dlgAltSetClMode = 'Alt-Key sets column mode';
   dlgAutoIdent = 'Auto indent';
   dlgBracHighlight = 'Bracket highlighting';
