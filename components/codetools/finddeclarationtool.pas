@@ -1337,6 +1337,47 @@ var
     Result:=nil;
   end;
 
+  function SearchUnitFileInCompiledSrcPaths(const APath, TheUnitName: string
+    ): TCodeBuffer;
+  var PathStart, PathEnd: integer;
+    ADir: string;
+    CurCompiledSrcPath: string;
+  begin
+    {$IFDEF ShowTriedFiles}
+    DebugLn('TFindDeclarationTool..SearchUnitFileInCompiledSrcPaths START APath="',APath,'" TheUnitName="',TheUnitName,'"');
+    {$ENDIF}
+    if not Assigned(OnGetSrcPathForCompiledUnit) then begin
+      Result:=nil;
+      exit;
+    end;
+
+    PathStart:=1;
+    while PathStart<=length(APath) do begin
+      PathEnd:=PathStart;
+      while (PathEnd<=length(APath)) and (APath[PathEnd]<>';') do inc(PathEnd);
+      if PathEnd>PathStart then begin
+        // extract and expand current search directory
+        ADir:=copy(APath,PathStart,PathEnd-PathStart);
+        if (ADir<>'') and (ADir[length(ADir)]<>PathDelim) then
+          ADir:=ADir+PathDelim;
+        if not FilenameIsAbsolute(ADir) then ADir:=CurDir+ADir;
+        // get CompiledSrcPath for current search directory
+        CurCompiledSrcPath:=OnGetSrcPathForCompiledUnit(Self,ADir);
+        if CurCompiledSrcPath<>'' then begin
+          // this directory is an unit output directory
+          // -> search the source in the current CompiledSrcPath
+          {$IFDEF ShowTriedFiles}
+          DebugLn('TFindDeclarationTool..SearchUnitFileInCompiledSrcPaths CurCompiledSrcPath="',CurCompiledSrcPath,'"');
+          {$ENDIF}
+          Result:=SearchUnitFileInPath(CurCompiledSrcPath,TheUnitName,true);
+          if Result<>nil then exit;
+        end;
+      end;
+      PathStart:=PathEnd+1;
+    end;
+    Result:=nil;
+  end;
+
   function SearchFileInPath(const APath, RelativeFilename: string): TCodeBuffer;
   var PathStart, PathEnd: integer;
     ADir: string;
@@ -1420,6 +1461,7 @@ var UnitSrcSearchPath: string;
   CompiledResult: TCodeBuffer;
   UnitSearchPath: string;
   SrcPathInitialized: boolean;
+  WorkingUnitInFilename: String;
 
   procedure InitSrcPath;
   begin
@@ -1466,17 +1508,18 @@ begin
 
   // search as the compiler would search
   if AnUnitInFilename<>'' then begin
+    WorkingUnitInFilename:=SetDirSeparators(AnUnitInFilename);
     // uses IN parameter
-    if FilenameIsAbsolute(AnUnitInFilename) then begin
-      Result:=TCodeBuffer(Scanner.OnLoadSource(Self,AnUnitInFilename,true));
+    if FilenameIsAbsolute(WorkingUnitInFilename) then begin
+      Result:=TCodeBuffer(Scanner.OnLoadSource(Self,WorkingUnitInFilename,true));
     end else begin
       // file is relative to current unit directory
       // -> search file in current directory
       CurDir:=AppendPathDelim(CurDir);
-      if not LoadFile(CurDir+AnUnitInFilename,Result) then begin
+      if not LoadFile(CurDir+WorkingUnitInFilename,Result) then begin
         // search AnUnitInFilename in searchpath
         InitSrcPath;
-        Result:=SearchFileInPath(UnitSrcSearchPath,AnUnitInFilename);
+        Result:=SearchFileInPath(UnitSrcSearchPath,WorkingUnitInFilename);
       end;
     end;
   end else begin
@@ -1495,24 +1538,16 @@ begin
       Result:=SearchUnitFileInPath(UnitSrcSearchPath,AnUnitName,true);
     end;
     if Result=nil then begin
+      // search for compiled unit
+    
+      // search compiled unit in current directory
       {$IFDEF ShowTriedFiles}
       DebugLn('TFindDeclarationTool.FindUnitSource Search Compiled unit in current dir=',CurDir);
       {$ENDIF}
-
-      // search compiled unit in current directory
       if Scanner.InitialValues.IsDefined('WIN32')
       and Scanner.InitialValues.IsDefined('VER1_0') then
         CompiledSrcExt:='.ppw';
       CompiledResult:=SearchUnitFileInDir(CurDir,AnUnitName,false);
-
-      // search compiled unit in src path
-      if CompiledResult=nil then begin
-        {$IFDEF ShowTriedFiles}
-        DebugLn('TFindDeclarationTool.FindUnitSource Search Compiled unit in src path=',UnitSrcSearchPath);
-        {$ENDIF}
-        InitSrcPath;
-        CompiledResult:=SearchUnitFileInPath(UnitSrcSearchPath,AnUnitName,false);
-      end;
 
       // search compiled unit in unit path
       if CompiledResult=nil then begin
@@ -1538,6 +1573,16 @@ begin
         end;
       end;
     end;
+    if Result=nil then begin
+      // search in every unit path for a CompiledSrcPath and search there
+      
+      {$IFDEF ShowTriedFiles}
+      DebugLn('TFindDeclarationTool.FindUnitSource Search Compiled unit in current dir=',CurDir);
+      {$ENDIF}
+      UnitSearchPath:=Scanner.Values[ExternalMacroStart+'UnitPath'];
+      Result:=SearchUnitFileInCompiledSrcPaths(UnitSearchPath,AnUnitName);
+    end;
+    
     if Result=nil then begin
       // search in FPC source directory
       Result:=SearchUnitInUnitLinks(AnUnitName);
