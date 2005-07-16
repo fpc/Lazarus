@@ -42,13 +42,24 @@ interface
 //    the uses clause of the XXXintf.pp
 ////////////////////////////////////////////////////
 uses
-  Classes, LCLType, LCLProc, InterfaceBase;
+  Classes, LCLProc; //, LCLType; //, InterfaceBase;
 
 type
-  { TWSLCLComponent } 
+  { TWSPrivate }
+
+  {
+    Internal WidgetSet specific object tree
+  }
+  TWSPrivate = class(TObject)
+  end;
+  TWSPrivateClass = class of TWSPrivate;
   
+  { TWSLCLComponent }
+
 {$M+}
   TWSLCLComponent = class(TObject) 
+  protected
+    class function WSPrivate: TWSPrivateClass; //inline;
   end;
 {$M-}
 
@@ -57,7 +68,8 @@ type
 
 function FindWSComponentClass(const AComponent: TComponentClass): TWSLCLComponentClass;
 procedure RegisterWSComponent(const AComponent: TComponentClass;
-                              const AWSComponent: TWSLCLComponentClass);
+                              const AWSComponent: TWSLCLComponentClass;
+                              const AWSPrivate: TWSPrivateClass = nil);
 
 implementation
 
@@ -85,6 +97,10 @@ const
   // Assume we have no more than 100 virtual entries
   VIRTUAL_VMT_COUNT = 100;
   VIRTUAL_VMT_SIZE = vmtMethodStart + VIRTUAL_VMT_COUNT * SizeOf(Pointer);
+
+const
+  // vmtAutoTable is something Delphi 2 and not used, we 'borrow' the vmt entry
+  vmtWSPrivate = vmtAutoTable;
 
 var
   MComponentIndex: TStringList;
@@ -128,7 +144,8 @@ type
   PPointerArray = ^TPointerArray;
 
 procedure RegisterWSComponent(const AComponent: TComponentClass;
-  const AWSComponent: TWSLCLComponentClass);
+  const AWSComponent: TWSLCLComponentClass;
+  const AWSPrivate: TWSPrivateClass = nil);
   
   function GetNode(const AClass: TClass): PClassNode;
   var
@@ -204,24 +221,60 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
     Cmnt: PMethodNameTable;
     SearchAddr: Pointer;
     n, idx: Integer;    
+    WSPrivate: TClass;
     Processed: array[0..VIRTUAL_VMT_COUNT-1] of Boolean; 
     {$IFDEF VerboseWSRegistration}
     Indent: String;
     {$ENDIF}
   begin
+    if AWSPrivate = nil
+    then WSPrivate := TWSPrivate
+    else WSPrivate := AWSPrivate;
+
     if ANode^.VClass = nil
-    then ANode^.VClass := GetMem(VIRTUAL_VMT_SIZE);
-    
+    then begin
+      ANode^.VClass := GetMem(VIRTUAL_VMT_SIZE)
+    end
+    else begin
+      // keep original WSPrivate (only when different than default class)
+      if  (PClass(ANode^.VClass + vmtWSPrivate)^ <> nil)
+      and (PClass(ANode^.VClass + vmtWSPrivate)^ <> TWSPrivate)
+      then WSPrivate := PClass(ANode^.VClass + vmtWSPrivate)^;
+    end;
+
     // Initially copy the WSClass
     // Tricky part, the source may get beyond read mem limit
     Move(Pointer(ANode^.WSClass)^, ANode^.VClass^, VIRTUAL_VMT_SIZE);
     
-    // Try to find the common ancestor
+    // Set WSPrivate class
     ParentWSNode := FindParentWSClassNode(ANode);
-    if ParentWSNode = nil then Exit; // nothing to do
+    if ParentWSNode = nil
+    then begin
+      // nothing to do
+      PClass(ANode^.VClass + vmtWSPrivate)^ := WSPrivate;
+      {$IFDEF VerboseWSRegistration}
+      DebugLn('Virtual parent: nil, WSPrivate: ', PClass(ANode^.VClass + vmtWSPrivate)^.ClassName);
+      {$ENDIF}
+      Exit;
+    end;
+    
+    if WSPrivate = TWSPrivate
+    then begin
+      if ParentWSNode^.VClass = nil
+      then begin
+        DebugLN('[WARNING] Missing VClass for: ', ParentWSNode^.WSClass.ClassName);
+        PClass(ANode^.VClass + vmtWSPrivate)^ := TWSPrivate;
+      end
+      else PClass(ANode^.VClass + vmtWSPrivate)^ := PClass(ParentWSNode^.VClass + vmtWSPrivate)^;
+    end
+    else PClass(ANode^.VClass + vmtWSPrivate)^ := WSPrivate;
+
     {$IFDEF VerboseWSRegistration}
-    DebugLn('Virtual parent: ', ParentWSNode^.WSClass.ClassName);
+    DebugLn('Virtual parent: ', ParentWSNode^.WSClass.ClassName, ', WSPrivate: ', PClass(ANode^.VClass + vmtWSPrivate)^.ClassName);
     {$ENDIF}
+
+
+    // Try to find the common ancestor
     CommonClass := FindCommonAncestor(ANode^.WSClass, ParentWSNode^.WSClass);
     {$IFDEF VerboseWSRegistration}
     DebugLn('Common: ', CommonClass.ClassName);
@@ -299,7 +352,6 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
     PPointer(ANode^.VClass + vmtParent)^ := PPointer(Pointer(ParentWSNode^.WSClass) + vmtParent)^;
     // Delete methodtable entry         
     PPointer(ANode^.VClass + vmtMethodTable)^ := nil;
-    
   end;
   
   procedure UpdateChildren(const ANode: PClassNode);
@@ -325,7 +377,6 @@ var
   Node: PClassNode;
 begin          
   Node := GetNode(AComponent);
-  //writeln('RegisterWSComponent ',AComponent.ClassName,' ',Node<>nil);
   if Node = nil then Exit;
   
   if Node^.WSClass = nil
@@ -366,6 +417,13 @@ begin
   end;
   FreeAndNil(MComponentIndex);
   FreeAndNil(MWSRegisterIndex);
+end;
+
+{ TWSLCLComponent }
+
+function TWSLCLComponent.WSPrivate: TWSPrivateClass; //inline;
+begin
+  Result := TWSPrivateClass(PClass(Pointer(Self) + vmtWSPrivate)^);
 end;
 
 initialization

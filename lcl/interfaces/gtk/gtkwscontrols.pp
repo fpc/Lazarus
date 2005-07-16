@@ -35,8 +35,8 @@ uses
   Gtk, Glib, Gdk,
   {$ENDIF}
   SysUtils, Classes, Controls, LMessages, InterfaceBase,
-  WSControls, WSLCLClasses, Graphics, ComCtrls, GtkDef,
-  LCLType;
+  WSControls, WSLCLClasses, WSProc,
+  Graphics, ComCtrls, GtkDef, LCLType;
 
 type
 
@@ -56,6 +56,17 @@ type
   public
   end;
 
+  { TGtkWSWinControlPrivate }
+
+  TGtkWSWinControlPrivate = class(TWSPrivate)
+  private
+  protected
+  public
+    class procedure SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition); virtual;
+  end;
+  TGtkWSWinControlPrivateClass = class of TGtkWSWinControlPrivate;
+  
+
   { TGtkWSWinControl }
 
   TGtkWSWinControl = class(TWSWinControl)
@@ -68,18 +79,21 @@ type
     class procedure AddControl(const AControl: TControl); override;
 
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
-    class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
-    class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
-    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
-    class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); override;
-    class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); override;
-    class procedure SetCursor(const AControl: TControl; const ACursor: TCursor); override;
-    class procedure SetColor(const AWinControl: TWinControl); override;
-    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
 
     class procedure ConstraintsChange(const AWinControl: TWinControl); override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure Invalidate(const AWinControl: TWinControl); override;
+
+    class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
+    class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
+    class procedure SetChildZPosition(const AWinControl, AChild: TWinControl; const AOldPos, ANewPos: Integer; const AChildren: TList); override;
+    class procedure SetColor(const AWinControl: TWinControl); override;
+    class procedure SetCursor(const AControl: TControl; const ACursor: TCursor); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
+    class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); override;
+    class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
+
     class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
@@ -122,6 +136,8 @@ type
     VScroll: PGTKWidget;
   end;
 
+  { TGtkWSBaseScrollingWinControl }
+
   TGtkWSBaseScrollingWinControl = class(TWSWinControl)
   private
   protected
@@ -130,6 +146,14 @@ type
     class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   end;
 
+  { TGtkWSScrollingPrivate }
+
+  TGtkWSScrollingPrivate = class(TGtkWSWinControlPrivate)
+  private
+  protected
+  public
+    class procedure SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition); override;
+  end;
 
 
 procedure GtkWindowShowModal(GtkWindow: PGtkWindow);
@@ -139,8 +163,30 @@ implementation
 uses
   GtkInt, gtkglobals, gtkproc, GTKWinApiWindow,
   StdCtrls, LCLProc, LCLIntf;
+  
+
+// Helper functions
+
+function GetWidgetWithWindow(const AHandle: THandle): PGtkWidget;
+var
+  Children: PGList;
+begin
+  Result := PGTKWidget(AHandle);
+  while (Result <> nil) and GTK_WIDGET_NO_WINDOW(Result) do
+  begin
+    Children := gtk_container_children(PGtkContainer(Result));
+    if Children = nil
+    then Result := nil
+    else Result := Children^.Data;
+  end;
+end;
+
 
 { TGtkWSWinControl }
+
+type
+  TWinControlHack = class(TWinControl)
+  end;
   
 procedure TGtkWSWinControl.AddControl(const AControl: TControl);
 var
@@ -171,6 +217,40 @@ begin
   end;
 end;
 
+procedure TGtkWSWinControl.ConstraintsChange(const AWinControl: TWinControl);
+var
+  Widget: PGtkWidget;
+  Geometry: TGdkGeometry;
+begin
+  Widget := PGtkWidget(AWinControl.Handle);
+  if (Widget <> nil) and (GtkWidgetIsA(Widget,gtk_window_get_type)) then begin
+    with Geometry, AWinControl do begin
+      if Constraints.MinWidth > 0 then
+        min_width:= Constraints.MinWidth else min_width:= 1;
+      if Constraints.MaxWidth > 0 then
+        max_width:= Constraints.MaxWidth else max_width:= 32767;
+      if Constraints.MinHeight > 0 then
+        min_height:= Constraints.MinHeight else min_height:= 1;
+      if Constraints.MaxHeight > 0 then
+        max_height:= Constraints.MaxHeight else max_height:= 32767;
+      base_width:= Width;
+      base_height:= Height;
+      width_inc:= 1;
+      height_inc:= 1;
+      min_aspect:= 0;
+      max_aspect:= 1;
+    end;
+    //debugln('TGtkWSWinControl.ConstraintsChange A ',GetWidgetDebugReport(Widget),' max=',dbgs(Geometry.max_width),'x',dbgs(Geometry.max_height));
+    gtk_window_set_geometry_hints(PGtkWindow(Widget), nil, @Geometry,
+                                GDK_HINT_MIN_SIZE or GDK_HINT_MAX_SIZE);
+  end;
+end;
+
+procedure TGtkWSWinControl.DestroyHandle(const AWinControl: TWinControl);
+begin
+  TGtkWidgetSet(InterfaceObject).DestroyLCLComponent(AWinControl);
+end;
+
 function TGtkWSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
 var
   CS: PChar;
@@ -198,10 +278,52 @@ begin
   end;
 end;
 
-procedure TGtkWSWinControl.SetBounds(const AWinControl: TWinControl;
-  const ALeft, ATop, AWidth, AHeight: Integer);
+procedure TGtkWSWinControl.Invalidate(const AWinControl: TWinControl);
+begin
+  Assert(false, 'Trace:Trying to invalidate window... !!!');
+  //THIS DOESN'T WORK YET....
+  {
+         Event.thetype := GDK_EXPOSE;
+     Event.window := PgtkWidget(Handle)^.Window;
+     Event.Send_Event := 0;
+     Event.X := 0;
+     Event.Y := 0;
+     Event.Width := PgtkWidget((Handle)^.Allocation.Width;
+     Event.Height := PgtkWidget(Handle)^.Allocation.Height;
+         gtk_Signal_Emit_By_Name(PgtkObject(Handle),'expose_event',[(Sender as TWinControl).Handle,Sender,@Event]);
+     Assert(False, 'Trace:Signal Emitted - invalidate window');
+  }
+  gtk_widget_queue_draw(PGtkWidget(AWinControl.Handle));
+end;
+
+procedure TGtkWSWinControl.ShowHide(const AWinControl: TWinControl);
+begin
+  // other methods use ShowHide also, can't move code
+  TGtkWidgetSet(InterfaceObject).ShowHide(AWinControl);
+end;
+
+procedure TGtkWSWinControl.SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer);
 begin                
   TGtkWidgetSet(InterfaceObject).SetResizeRequest(PGtkWidget(AWinControl.Handle));
+end;
+
+procedure TGtkWSWinControl.SetBorderStyle(const AWinControl: TWinControl;
+  const ABorderStyle: TBorderStyle);
+var
+  Widget: PGtkWidget;
+  APIWidget: PGTKAPIWidget;
+begin
+  Widget := PGtkWidget(AWinControl.Handle);
+  if GtkWidgetIsA(Widget,GTKAPIWidget_GetType) then begin
+    //DebugLn('TGtkWSWinControl.SetBorderStyle ',AWinControl.Name,':',AWinControl.ClassName,' ',ord(ABorderStyle));
+    APIWidget := PGTKAPIWidget(Widget);
+    if (APIWidget^.Frame<>nil) then begin
+      case ABorderStyle of
+      bsNone: gtk_frame_set_shadow_type(APIWidget^.Frame,GTK_SHADOW_NONE);
+      bsSingle: gtk_frame_set_shadow_type(APIWidget^.Frame,GTK_SHADOW_ETCHED_IN);
+      end;
+    end;
+  end;
 end;
 
 procedure TGtkWSWinControl.SetCallbacks(const AGTKObject: PGTKObject; const AComponent: TComponent);
@@ -226,21 +348,31 @@ begin
   GtkWidgetSet.SetCallback(LM_MOUSEWHEEL, AGTKObject, AComponent);
 end;
 
-procedure TGtkWSWinControl.SetBorderStyle(const AWinControl: TWinControl;
-  const ABorderStyle: TBorderStyle);
+procedure TGtkWSWinControl.SetChildZPosition(const AWinControl, AChild: TWinControl; const AOldPos, ANewPos: Integer; const AChildren: TList);
 var
-  Widget: PGtkWidget;
-  APIWidget: PGTKAPIWidget;
+  n: Integer;
+  child: TWinControlHack;
 begin
-  Widget := PGtkWidget(AWinControl.Handle);
-  if GtkWidgetIsA(Widget,GTKAPIWidget_GetType) then begin
-    //DebugLn('TGtkWSWinControl.SetBorderStyle ',AWinControl.Name,':',AWinControl.ClassName,' ',ord(ABorderStyle));
-    APIWidget := PGTKAPIWidget(Widget);
-    if (APIWidget^.Frame<>nil) then begin
-      case ABorderStyle of
-      bsNone: gtk_frame_set_shadow_type(APIWidget^.Frame,GTK_SHADOW_NONE);
-      bsSingle: gtk_frame_set_shadow_type(APIWidget^.Frame,GTK_SHADOW_ETCHED_IN);
-      end;
+  if not WSCheckHandleAllocated(AWincontrol, 'SetChildZPosition')
+  then Exit;
+
+  if ANewPos < AChildren.Count div 2
+  then begin
+    // move down (and others below us)
+    for n := ANewPos downto 0 do
+    begin
+      child := TWinControlHack(AChildren[n]);
+      if child.HandleAllocated
+      then TGtkWSWinControlPrivateClass(child.WidgetSetClass.WSPrivate).SetZPosition(child, wszpBack);
+    end;
+  end
+  else begin
+    // move up (and others above us)
+    for n := ANewPos to AChildren.Count - 1 do
+    begin
+      child := TWinControlHack(AChildren[n]);
+      if child.HandleAllocated
+      then TGtkWSWinControlPrivateClass(child.WidgetSetClass.WSPrivate).SetZPosition(child, wszpFront);
     end;
   end;
 end;
@@ -253,6 +385,7 @@ end;
 procedure TGtkWSWinControl.SetFont(const AWinControl: TWinControl; const AFont: TFont);
 begin
   DebugLn('TGtkWSWinControl.SetFont: implement me!');
+  {$NOTE TGtkWSWinControl.SetFont: implement me!'}
   // TODO: implement me!
 end;
 
@@ -330,6 +463,8 @@ var
   aLabel, pLabel: pchar;
   AccelKey : integer;
 begin
+  //TODO: create classprocedures for this in the corresponding classes
+
   P := Pointer(AWinControl.Handle);
   Assert(p = nil, 'Trace:WARNING: [TGtkWidgetSet.SetLabel] --> got nil pointer');
   Assert(False, 'Trace:Setting Str1 in SetLabel');
@@ -457,63 +592,29 @@ begin
   Assert(False, Format('trace:  [TGtkWidgetSet.SetLabel] %s --> END', [AWinControl.ClassName]));
 end;
 
-procedure TGtkWSWinControl.ConstraintsChange(const AWinControl: TWinControl);
+{ TGtkWSWinControlPrivate }
+
+procedure TGtkWSWinControlPrivate.SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition);
 var
   Widget: PGtkWidget;
-  Geometry: TGdkGeometry;
 begin
-  Widget := PGtkWidget(AWinControl.Handle);
-  if (Widget <> nil) and (GtkWidgetIsA(Widget,gtk_window_get_type)) then begin
-    with Geometry, AWinControl do begin
-      if Constraints.MinWidth > 0 then
-        min_width:= Constraints.MinWidth else min_width:= 1;
-      if Constraints.MaxWidth > 0 then
-        max_width:= Constraints.MaxWidth else max_width:= 32767;
-      if Constraints.MinHeight > 0 then
-        min_height:= Constraints.MinHeight else min_height:= 1;
-      if Constraints.MaxHeight > 0 then
-        max_height:= Constraints.MaxHeight else max_height:= 32767;
-      base_width:= Width;
-      base_height:= Height;
-      width_inc:= 1;
-      height_inc:= 1;
-      min_aspect:= 0;
-      max_aspect:= 1;
+  if not WSCheckHandleAllocated(AWincontrol, 'SetZPosition')
+  then Exit;
+
+  Widget := GetWidgetWithWindow(AWincontrol.Handle);
+  if Widget = nil then Exit;
+
+  case APosition of
+    wszpBack:  begin
+      gdk_window_lower(Widget^.Window);
     end;
-    //debugln('TGtkWSWinControl.ConstraintsChange A ',GetWidgetDebugReport(Widget),' max=',dbgs(Geometry.max_width),'x',dbgs(Geometry.max_height));
-    gtk_window_set_geometry_hints(PGtkWindow(Widget), nil, @Geometry,
-                                GDK_HINT_MIN_SIZE or GDK_HINT_MAX_SIZE);
+    wszpFront: begin
+      gdk_window_raise(Widget^.Window);
+    end;
   end;
 end;
 
-procedure TGtkWSWinControl.DestroyHandle(const AWinControl: TWinControl);
-begin
-  TGtkWidgetSet(InterfaceObject).DestroyLCLComponent(AWinControl);
-end;
 
-procedure TGtkWSWinControl.Invalidate(const AWinControl: TWinControl);
-begin
-  Assert(false, 'Trace:Trying to invalidate window... !!!');
-  //THIS DOESN'T WORK YET....
-  {
-         Event.thetype := GDK_EXPOSE;
-     Event.window := PgtkWidget(Handle)^.Window;
-     Event.Send_Event := 0;
-     Event.X := 0;
-     Event.Y := 0;
-     Event.Width := PgtkWidget((Handle)^.Allocation.Width;
-     Event.Height := PgtkWidget(Handle)^.Allocation.Height;
-         gtk_Signal_Emit_By_Name(PgtkObject(Handle),'expose_event',[(Sender as TWinControl).Handle,Sender,@Event]);
-     Assert(False, 'Trace:Signal Emitted - invalidate window'); 
-  }
-  gtk_widget_queue_draw(PGtkWidget(AWinControl.Handle));
-end;
-
-procedure TGtkWSWinControl.ShowHide(const AWinControl: TWinControl);
-begin
-  // other methods use ShowHide also, can't move code
-  TGtkWidgetSet(InterfaceObject).ShowHide(AWinControl);
-end;
 
 { helper/common routines }
 
@@ -701,6 +802,42 @@ begin
   );
 end;
 
+{ TGtkWSScrollingPrivate }
+
+procedure TGtkWSScrollingPrivate.SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition);
+var
+  ScrollWidget: PGtkScrolledWindow;
+//  WidgetInfo: PWidgetInfo;
+  Widget: PGtkWidget;
+begin
+  if not WSCheckHandleAllocated(AWincontrol, 'SetZPosition')
+  then Exit;
+
+  ScrollWidget := Pointer(AWinControl.Handle);
+//  WidgetInfo := GetWidgetInfo(ScrollWidget);
+  // Some controls have viewports, so we get the first window.
+  Widget := GetWidgetWithWindow(AWinControl.Handle);
+
+  case APosition of
+    wszpBack:  begin
+      //gdk_window_lower(WidgetInfo^.CoreWidget^.Window);
+      gdk_window_lower(Widget^.Window);
+      if ScrollWidget^.hscrollbar <> nil
+      then gdk_window_lower(ScrollWidget^.hscrollbar^.Window);
+      if ScrollWidget^.vscrollbar <> nil
+      then gdk_window_lower(ScrollWidget^.vscrollbar^.Window);
+    end;
+    wszpFront: begin
+      //gdk_window_raise(WidgetInfo^.CoreWidget^.Window);
+      gdk_window_raise(Widget^.Window);
+      if ScrollWidget^.hscrollbar <> nil
+      then gdk_window_raise(ScrollWidget^.hscrollbar^.Window);
+      if ScrollWidget^.vscrollbar <> nil
+      then gdk_window_raise(ScrollWidget^.vscrollbar^.Window);
+    end;
+  end;
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -711,7 +848,7 @@ initialization
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TDragImageList, TGtkWSDragImageList);
 //  RegisterWSComponent(TControl, TGtkWSControl);
-  RegisterWSComponent(TWinControl, TGtkWSWinControl);
+  RegisterWSComponent(TWinControl, TGtkWSWinControl, TGtkWSWinControlPrivate);
 //  RegisterWSComponent(TGraphicControl, TGtkWSGraphicControl);
 //  RegisterWSComponent(TCustomControl, TGtkWSCustomControl);
 //  RegisterWSComponent(TImageList, TGtkWSImageList);

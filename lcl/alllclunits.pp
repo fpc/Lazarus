@@ -41,6 +41,7 @@ uses
   InterfaceBase,
   {$IFNDEF DisableFPImage}IntfGraphics,{$ENDIF}
   // components and functions
+  LCLClasses,
   StdActns, Buttons, Extctrls, Calendar, Clipbrd, Forms, LCLIntf, Spin,
   Comctrls, Graphics, StdCtrls, Arrow, Controls, ImgList, Menus, Toolwin,
   Dialogs, Messages, Clistbox, ActnList, Grids, MaskEdit,
@@ -67,6 +68,13 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.27  2005/07/16 00:08:26  marc
+  * Reimplemented ZOrder
+  + Added IDE option to move a control one forward/back
+  * Fixed IDE control selection
+  - Removed some IFDEF VER 1_0
+  + Added some inline
+
   Revision 1.26  2005/07/13 07:33:14  mattias
   implemented renaming of new package files
 

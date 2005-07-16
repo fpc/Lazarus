@@ -33,11 +33,12 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Controls, Graphics,
+  Classes, Controls, Graphics,
 ////////////////////////////////////////////////////
-  WSControls, WSLCLClasses, SysUtils, Win32Proc,
+  WSControls, WSLCLClasses, SysUtils, Win32Proc, WSProc,
   { TODO: needs to move }
-  Forms, ComCtrls, Buttons, StdCtrls, ExtCtrls, GraphMath, GraphType, InterfaceBase, LCLIntf, LCLType;
+  Forms, ComCtrls, Buttons, StdCtrls, ExtCtrls, GraphMath, GraphType,
+  InterfaceBase, LCLIntf, LCLType;
 
 type
 
@@ -69,6 +70,7 @@ type
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
+    class procedure SetChildZPosition(const AWinControl, AChild: TWinControl; const AOldPos, ANewPos: Integer; const AChildren: TList); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
@@ -321,6 +323,49 @@ begin
   TWin32WidgetSet(InterfaceObject).RecreateWnd(AWinControl);
 end;
 
+procedure TWin32WSWinControl.SetChildZPosition(const AWinControl, AChild: TWinControl; const AOldPos, ANewPos: Integer; const AChildren: TList);
+var
+  AfterWnd: hWnd;
+  n, StopPos: Integer;
+  Child: TWinControl;
+begin
+  if not WSCheckHandleAllocated(AWincontrol, 'SetChildZPosition')
+  then Exit;
+  if not WSCheckHandleAllocated(AChild, 'SetChildZPosition (child)')
+  then Exit;
+
+  if ANewPos = 0 // bottom
+  then AfterWnd := HWND_BOTTOM
+  else if ANewPos >= AChildren.Count - 1
+  then AfterWnd := HWND_TOP
+  else begin
+    // Search for the first child above us with a handle
+    // the child list is reversed form the windows order.
+    // So the first window is the top window and is the last child
+    // if we don't find a allocated handle then we are effectively not moved
+    AfterWnd := 0;
+    if AOldPos > ANewPos
+    then StopPos := AOldPos              // The child is moved to the bottom, oldpos is on top of it
+    else StopPos := AChildren.Count - 1; // the child is moved to the top
+
+    for n := ANewPos + 1 to StopPos do
+    begin
+      Child := TWinControl(AChildren[n]);
+      if Child.HandleAllocated
+      then begin
+        AfterWnd := Child.Handle;
+        Break;
+      end;
+    end;
+    
+    if AfterWnd = 0 then Exit; // nothing to do
+  end;
+  
+  Windows.SetWindowPos(AChild.Handle, AfterWnd, 0, 0, 0, 0,
+    SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOOWNERZORDER or
+    SWP_NOSIZE or SWP_NOSENDCHANGING);
+end;
+
 procedure TWin32WSWinControl.SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer);
 begin
   TWin32WidgetSet(InterfaceObject).ResizeChild(AWinControl, ALeft, ATop, AWidth, AHeight);
@@ -337,12 +382,10 @@ begin
 end;
 
 procedure TWin32WSWinControl.SetText(const AWinControl: TWinControl; const AText: string);
-Var
-  Handle: HWnd;
 Begin
-  Handle := AWinControl.Handle;
-  Assert(Handle<>0,'Trace:WARNING: [TWin32WSWinControl.SetText] --> Got NULL handle');
-  Windows.SetWindowText(Handle, PChar(AText));
+  if not WSCheckHandleAllocated(AWincontrol, 'SetText')
+  then Exit;
+  Windows.SetWindowText(AWinControl.Handle, PChar(AText));
 End;
 
 procedure TWin32WSWinControl.ConstraintsChange(const AWinControl: TWinControl);

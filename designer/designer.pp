@@ -41,7 +41,7 @@ uses
   LazarusIDEStrConsts, EnvironmentOpts, KeyMapping, ComponentReg,
   NonControlForms, AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, TabOrderDlg,
   DesignerProcs, PropEdits, ComponentEditors, CustomFormEditor,
-  ControlSelection, ChangeClassDialog;
+  ControlSelection, ChangeClassDialog, EditorOptions;
 
 type
   TDesigner = class;
@@ -77,10 +77,11 @@ type
     );
   TDesignerFlags = set of TDesignerFlag;
 
+  { TDesigner }
+
   TDesigner = class(TComponentEditorDesigner)
   private
     FAlignMenuItem: TMenuItem;
-    FBringToFrontMenuItem: TMenuItem;
     fChangeClassMenuItem: TMenuItem;
     FCopyMenuItem: TMenuItem;
     FCutMenuItem: TMenuItem;
@@ -105,10 +106,14 @@ type
     FOnSetDesigning: TOnSetDesigning;
     FOnShowOptions: TNotifyEvent;
     FOnUnselectComponentClass: TNotifyEvent;
+    FOrderSubMenu: TMenuItem;
+    FOrderMoveToFrontMenuItem: TMenuItem;
+    FOrderMoveToBackMenuItem: TMenuItem;
+    FOrderForwardOneMenuItem: TMenuItem;
+    FOrderBackOneMenuItem: TMenuItem;
     FPasteMenuItem: TMenuItem;
     FPopupMenu: TPopupMenu;
     FScaleMenuItem: TMenuItem;
-    FSendToBackMenuItem: TMenuItem;
     FShiftState: TShiftState;
     FShowOptionsMenuItem: TMenuItem;
     FSizeMenuItem: TMenuItem;
@@ -181,8 +186,15 @@ type
                                 PasteFlags: TComponentPasteSelectionFlags): Boolean;
     procedure DoShowTabOrderEditor;
     procedure DoShowChangeClassDialog;
+    procedure DoOrderMoveSelectionToFront;
+    procedure DoOrderMoveSelectionToBack;
+    procedure DoOrderForwardSelectionOne;
+    procedure DoOrderBackSelectionOne;
+
     procedure GiveComponentsNames;
     procedure NotifyPersistentAdded(APersistent: TPersistent);
+    function  ControlClassAtPos(const AClass: TControlClass; const APos: TPoint;
+                         const UseFormAsDefault, IgnoreHidden: boolean): TControl;
 
     // popup menu
     procedure BuildPopupMenu;
@@ -193,8 +205,10 @@ type
     procedure OnScalePopupMenuClick(Sender: TObject);
     procedure OnSizePopupMenuClick(Sender: TObject);
     procedure OnTabOrderMenuClick(Sender: TObject);
-    procedure OnBringToFrontMenuClick(Sender: TObject);
-    procedure OnSendToBackMenuClick(Sender: TObject);
+    procedure OnOrderMoveToFrontMenuClick(Sender: TObject);
+    procedure OnOrderMoveToBackMenuClick(Sender: TObject);
+    procedure OnOrderForwardOneMenuClick(Sender: TObject);
+    procedure OnOrderBackOneMenuClick(Sender: TObject);
     procedure OnCopyMenuClick(Sender: TObject);
     procedure OnCutMenuClick(Sender: TObject);
     procedure OnPasteMenuClick(Sender: TObject);
@@ -409,6 +423,8 @@ procedure TDesigner.SelectParentOfSelection;
 var
   i: Integer;
 begin
+  if ControlSelection.OnlyInvisiblePersistensSelected then exit;
+
   if ControlSelection.LookupRootSelected then begin
     SelectOnlyThisComponent(FLookupRoot);
     exit;
@@ -540,8 +556,9 @@ var
   AllComponentsStream: TMemoryStream;
   AllComponentText: string;
 begin
-  Result:=false;
-  if (ControlSelection.Count=0) then exit;
+  Result := false;
+  if ControlSelection.Count = 0 then exit;
+  if ControlSelection.OnlyInvisiblePersistensSelected then exit;
 
   AllComponentsStream:=TMemoryStream.Create;
   try
@@ -779,6 +796,58 @@ begin
     ShowChangeClassDialog(Self,ControlSelection[0].Persistent);
 end;
 
+procedure TDesigner.DoOrderMoveSelectionToFront;
+begin
+  if ControlSelection.Count <> 1 then Exit;
+  if not ControlSelection[0].IsTControl then Exit;
+
+  TControl(ControlSelection[0].Persistent).BringToFront;
+  Modified;
+end;
+
+procedure TDesigner.DoOrderMoveSelectionToBack;
+begin
+  if ControlSelection.Count <> 1 then Exit;
+  if not ControlSelection[0].IsTControl then Exit;
+
+  TControl(ControlSelection[0].Persistent).SendToBack;
+  Modified;
+end;
+
+procedure TDesigner.DoOrderForwardSelectionOne;
+var
+  Control: TControl;
+  Parent: TWinControl;
+begin
+  if ControlSelection.Count <> 1 then Exit;
+  if not ControlSelection[0].IsTControl then Exit;
+
+  Control := TControl(ControlSelection[0].Persistent);
+  Parent := Control.Parent;
+  if Parent = nil then Exit;
+
+  Parent.SetControlIndex(Control, Parent.GetControlIndex(Control) + 1);
+
+  Modified;
+end;
+
+procedure TDesigner.DoOrderBackSelectionOne;
+var
+  Control: TControl;
+  Parent: TWinControl;
+begin
+  if ControlSelection.Count <> 1 then Exit;
+  if not ControlSelection[0].IsTControl then Exit;
+
+  Control := TControl(ControlSelection[0].Persistent);
+  Parent := Control.Parent;
+  if Parent = nil then Exit;
+
+  Parent.SetControlIndex(Control, Parent.GetControlIndex(Control) - 1);
+
+  Modified;
+end;
+
 procedure TDesigner.GiveComponentsNames;
 var
   i: Integer;
@@ -811,14 +880,12 @@ end;
 
 function TDesigner.CopySelection: boolean;
 begin
-  Result:=DoCopySelectionToClipboard;
+  Result := DoCopySelectionToClipboard;
 end;
 
 function TDesigner.CutSelection: boolean;
 begin
-  Result:=DoCopySelectionToClipboard;
-  if Result then
-    Result:=DoDeleteSelectedPersistents;
+  Result := DoCopySelectionToClipboard and DoDeleteSelectedPersistents;
 end;
 
 function TDesigner.CanPaste: Boolean;
@@ -871,34 +938,28 @@ end;
 procedure TDesigner.DoProcessCommand(Sender: TObject; var Command: word;
   var Handled: boolean);
 begin
-  if Assigned(OnProcessCommand) and (Command<>ecNone) then begin
+  if Assigned(OnProcessCommand) and (Command <> ecNone)
+  then begin
     OnProcessCommand(Self,Command,Handled);
-    Handled:=Handled or (Command=ecNone);
+    Handled := Handled or (Command = ecNone);
   end;
 
-  if not Handled then begin
-    Handled:=true;
-    case Command of
+  if Handled then Exit;
 
-    ecSelectParentComponent:
-      if not ControlSelection.OnlyInvisiblePersistensSelected then
-        SelectParentOfSelection;
-
-    ecCopyComponents:
-      if not ControlSelection.OnlyInvisiblePersistensSelected then
-        CopySelection;
-
-    ecCutComponents:
-      if not ControlSelection.OnlyInvisiblePersistensSelected then
-        CutSelection;
-
-    ecPasteComponents:
-      PasteSelection([cpsfFindUniquePositions]);
-
-    else
-      Handled:=false;
-    end;
+  case Command of
+    ecDesignerSelectParent : SelectParentOfSelection;
+    ecDesignerCopy         : CopySelection;
+    ecDesignerCut          : CutSelection;
+    ecDesignerPaste        : PasteSelection([cpsfFindUniquePositions]);
+    ecDesignerMoveToFront  : DoOrderMoveSelectionToFront;
+    ecDesignerMoveToBack   : DoOrderMoveSelectionToBack;
+    ecDesignerForwardOne   : DoOrderForwardSelectionOne;
+    ecDesignerBackOne      : DoOrderBackSelectionOne;
+  else
+    Exit;
   end;
+  
+  Handled := True;
 end;
 
 function TDesigner.NonVisualComponentLeftTop(AComponent: TComponent): TPoint;
@@ -2198,48 +2259,77 @@ begin
   Result:=nil;
 end;
 
-function TDesigner.WinControlAtPos(x, y: integer; UseFormAsDefault,
-  IgnoreHidden: boolean): TWinControl;
-var i: integer;
-  WinControlBounds: TRect;
-begin
-  for i:=FLookupRoot.ComponentCount-1 downto 0 do begin
-    Result:=TWinControl(FLookupRoot.Components[i]);
-    if (Result is TWinControl) then begin
-      with Result do begin
-        if (not IgnoreHidden) or ControlIsInDesignerVisible(Result) then begin
-          WinControlBounds:=GetParentFormRelativeBounds(Result);
-          if (WinControlBounds.Left<=x) and (WinControlBounds.Top<=y)
-          and (WinControlBounds.Right>x)
-          and (WinControlBounds.Bottom>y) then
-            exit;
-         end;
+function TDesigner.ControlClassAtPos(const AClass: TControlClass; const APos: TPoint; const UseFormAsDefault, IgnoreHidden: boolean): TControl;
+  function DoComponent: TControl;
+  var
+    i: integer;
+    Bounds: TRect;
+  begin
+    for i := FLookupRoot.ComponentCount - 1 downto 0 do
+    begin
+      Result := TControl(FLookupRoot.Components[i]); // bit tricky, but we set it to nil anyhow
+      if not Result.InheritsFrom(AClass) then Continue;
+      if IgnoreHidden and not ControlIsInDesignerVisible(TControl(Result)) then Continue;
+
+      Bounds := GetParentFormRelativeBounds(Result);
+      if PtInRect(Bounds, APos) then Exit;
+    end;
+    Result := nil;
+  end;
+
+  function DoWinControl: TControl;
+  var
+    i: integer;
+    Bounds: TRect;
+    Control: TControl;
+    WinControl: TWinControl;
+  begin
+    Result := nil;
+    WinControl := TWinControl(FLookupRoot);
+    i := WinControl.ControlCount;
+    while i > 0 do
+    begin
+      Dec(i);
+      Control := WinControl.Controls[i];
+      if IgnoreHidden and (csNoDesignVisible in Control.ControlStyle) then Continue;
+      Bounds := GetParentFormRelativeBounds(Control);
+      if not PtInRect(Bounds, APos) then Continue;
+
+      if Control.InheritsFrom(AClass)
+      then Result := Control; // at least this is a match, now look if a child matches
+
+      if Control is TWinControl
+      then begin
+        Wincontrol := TWinControl(Control);
+        i := WinControl.ControlCount;
+        Continue; // next loop
       end;
+      
+      // Control has no children and a result found, no need to look further
+      if Result <> nil then Exit;
     end;
   end;
-  Result:=Form;
+
+begin
+  // If LookupRoot is TWincontol, use the control list. It is ordered by zorder
+  // We cannot use the components in that case since they are at place order
+
+  if FLookupRoot is TWinControl
+  then Result := DoWinControl
+  else Result := DoComponent;
+  
+  if (Result = nil) and UseFormAsDefault
+  then Result := Form;
 end;
 
-function TDesigner.ControlAtPos(x, y: integer; UseFormAsDefault,
-  IgnoreHidden: boolean): TControl;
-var i: integer;
-  ControlBounds: TRect;
+function TDesigner.WinControlAtPos(x, y: integer; UseFormAsDefault, IgnoreHidden: boolean): TWinControl;
 begin
-  for i:=FLookupRoot.ComponentCount-1 downto 0 do begin
-    Result:=TControl(FLookupRoot.Components[i]);
-    if (Result is TControl) then begin
-      with Result do begin
-        if (not IgnoreHidden) or ControlIsInDesignerVisible(Result) then begin
-          ControlBounds:=GetParentFormRelativeBounds(Result);
-          if (ControlBounds.Left<=x) and (ControlBounds.Top<=y)
-          and (ControlBounds.Right>x)
-          and (ControlBounds.Bottom>y) then
-            exit;
-        end;
-      end;
-    end;
-  end;
-  Result:=Form;
+  Result := TWinControl(ControlClassAtPos(TWinControl, Point(x,y), UseFormAsDefault, IgnoreHidden));
+end;
+
+function TDesigner.ControlAtPos(x, y: integer; UseFormAsDefault, IgnoreHidden: boolean): TControl;
+begin
+  Result := ControlClassAtPos(TControl, Point(x,y), UseFormAsDefault, IgnoreHidden);
 end;
 
 procedure TDesigner.BuildPopupMenu;
@@ -2260,6 +2350,7 @@ var
   LookupRootIsSelected,
   OnlyNonVisualsAreSelected,
   CompsAreSelected: boolean;
+  OneControlSelected: Boolean;
   SelectionVisible: Boolean;
 begin
   if FPopupMenu<>nil then FPopupMenu.Free;
@@ -2267,11 +2358,11 @@ begin
   ControlSelIsNotEmpty:=(ControlSelection.Count>0)
                         and (ControlSelection.SelectionForm=Form);
   LookupRootIsSelected:=ControlSelection.LookupRootSelected;
-  OnlyNonVisualsAreSelected:=
-                              ControlSelection.OnlyNonVisualPersistentsSelected;
+  OnlyNonVisualsAreSelected := ControlSelection.OnlyNonVisualPersistentsSelected;
   SelectionVisible:=not ControlSelection.OnlyInvisiblePersistensSelected;
   CompsAreSelected:=ControlSelIsNotEmpty and SelectionVisible
                     and not LookupRootIsSelected;
+  OneControlSelected := ControlSelIsNotEmpty and ControlSelection[0].IsTControl;
 
   FPopupMenu:=TPopupMenu.Create(nil);
 
@@ -2323,28 +2414,60 @@ begin
   // menuitems: TabOrder, BringToFront, SendToBack
   FTabOrderMenuItem := TMenuItem.Create(FPopupMenu);
   with FTabOrderMenuItem do begin
-    Caption:= 'Tab Order';
+    Caption:= fdmTabOrder;
     OnClick:=@OnTabOrderMenuClick;
     Enabled:= (FLookupRoot is TWinControl)
               and (TWinControl(FLookupRoot).ControlCount>0);
   end;
   FPopupMenu.Items.Add(FTabOrderMenuItem);
-
-  FBringToFrontMenuItem := TMenuItem.Create(FPopupMenu);
-  with FBringToFrontMenuItem do begin
-    Caption:= fdmBringTofront;
-    OnClick:= @OnBringToFrontMenuClick;
-    Enabled:= CompsAreSelected;
+  
+  // order submenu
+  FOrderSubMenu := TMenuItem.Create(FPopupMenu);
+  with FOrderSubMenu do begin
+    Caption := fdmOrder;
+    Enabled := CompsAreSelected;
   end;
-  FPopupMenu.Items.Add(FBringToFrontMenuItem);
+  FPopupMenu.Items.Add(FOrderSubMenu);
 
-  FSendToBackMenuItem:= TMenuItem.Create(FPopupMenu);
-  with FSendToBackMenuItem do begin
-    Caption:= fdmSendtoback;
-    OnClick:= @OnSendToBackMenuClick;
-    Enabled:= CompsAreSelected;
+  FOrderMoveToFrontMenuItem := TMenuItem.Create(FPopupMenu);
+  with FOrderMoveToFrontMenuItem do begin
+    Caption := fdmOrderMoveTofront;
+    OnClick := @OnOrderMoveToFrontMenuClick;
+    Enabled := OneControlSelected;
+    ShortCut := EditorOpts.KeyMap.CommandToShortCut(ecDesignerMoveToFront);
   end;
-  FPopupMenu.Items.Add(FSendToBackMenuItem);
+  FOrderSubMenu.Add(FOrderMoveToFrontMenuItem);
+
+  FOrderMoveToBackMenuItem := TMenuItem.Create(FPopupMenu);
+  with FOrderMoveToBackMenuItem do begin
+    Caption := fdmOrderMoveToBack;
+    OnClick := @OnOrderMoveToBackMenuClick;
+    Enabled := OneControlSelected;
+    ShortCut := EditorOpts.KeyMap.CommandToShortCut(ecDesignerMoveToBack);
+  end;
+  FOrderSubMenu.Add(FOrderMoveToBackMenuItem);
+  
+  FOrderForwardOneMenuItem := TMenuItem.Create(FPopupMenu);
+  with FOrderForwardOneMenuItem do begin
+    Caption := fdmOrderForwardOne;
+    OnClick := @OnOrderForwardOneMenuClick;
+    Enabled := OneControlSelected;
+    ShortCut := EditorOpts.KeyMap.CommandToShortCut(ecDesignerForwardOne);
+    // MWE: maybe we can move more than one, but I don't want to think about
+    //      it now
+  end;
+  FOrderSubMenu.Add(FOrderForwardOneMenuItem);
+
+  FOrderBackOneMenuItem := TMenuItem.Create(FPopupMenu);
+  with FOrderBackOneMenuItem do begin
+    Caption := fdmOrderBackOne;
+    OnClick := @OnOrderBackOneMenuClick;
+    Enabled := OneControlSelected;
+    ShortCut := EditorOpts.KeyMap.CommandToShortCut(ecDesignerBackOne);
+    // MWE: maybe we can move more than one, but I don't want to think about
+    //      it now
+  end;
+  FOrderSubMenu.Add(FOrderBackOneMenuItem);
 
   AddSeparator;
 
@@ -2500,20 +2623,24 @@ begin
   ControlSelection.SaveBounds;
 end;
 
-procedure TDesigner.OnBringToFrontMenuClick(Sender: TObject);
+procedure TDesigner.OnOrderMoveToFrontMenuClick(Sender: TObject);
 begin
-  if (ControlSelection.Count = 1)
-  and (ControlSelection[0].IsTControl) then begin
-    TControl(ControlSelection[0].Persistent).BringToFront;
-  end;
+  DoOrderMoveSelectionToFront;
 end;
 
-procedure TDesigner.OnSendToBackMenuClick(Sender: TObject);
+procedure TDesigner.OnOrderMoveToBackMenuClick(Sender: TObject);
 begin
-  if (ControlSelection.Count = 1)
-  and (ControlSelection[0].IsTControl) then begin
-    TControl(ControlSelection[0].Persistent).SendToBack;
-  end;
+  DoOrderMoveSelectionToBack;
+end;
+
+procedure TDesigner.OnOrderForwardOneMenuClick(Sender: TObject);
+begin
+  DoOrderForwardSelectionOne;
+end;
+
+procedure TDesigner.OnOrderBackOneMenuClick(Sender: TObject);
+begin
+  DoOrderBackSelectionOne;
 end;
 
 Procedure TDesigner.HintTimer(Sender: TObject);

@@ -82,6 +82,7 @@ type
                              const AFormBorderStyle: TFormBorderStyle); virtual;
     class procedure SetIcon(const AForm: TCustomForm; const AIcon: HICON); virtual;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: Boolean); virtual;
+    class procedure SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition); virtual;
     class procedure ShowModal(const ACustomForm: TCustomForm); virtual;
   end;
   TWSCustomFormClass = class of TWSCustomForm;
@@ -139,6 +140,10 @@ end;
 
 procedure TWSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;
   const AValue: Boolean);
+begin
+end;
+
+procedure TWSCustomForm.SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition);
 begin
 end;
    

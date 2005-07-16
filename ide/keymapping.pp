@@ -244,11 +244,15 @@ const
   ecContextHelp          = ecUserFirst + 903;
 
   // designer
-  ecCopyComponents       = ecUserFirst + 1000;
-  ecCutComponents        = ecUserFirst + 1001;
-  ecPasteComponents      = ecUserFirst + 1002;
-  ecSelectParentComponent= ecUserFirst + 1003;
-  
+  ecDesignerCopy         = ecUserFirst + 1000;
+  ecDesignerCut          = ecUserFirst + 1001;
+  ecDesignerPaste        = ecUserFirst + 1002;
+  ecDesignerSelectParent = ecUserFirst + 1003;
+  ecDesignerMoveToFront  = ecUserFirst + 1004;
+  ecDesignerMoveToBack   = ecUserFirst + 1005;
+  ecDesignerForwardOne   = ecUserFirst + 1006;
+  ecDesignerBackOne      = ecUserFirst + 1007;
+
   // custom tools
   ecCustomToolFirst      = ecUserFirst + 2000;
   ecCustomToolLast       = ecUserFirst + 2999;
@@ -537,7 +541,7 @@ begin
   ecJumpForward: SetResult(VK_H,[ssCtrl,ssShift],VK_UNKNOWN,[]);
   ecAddJumpPoint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecViewJumpHistory: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecJumpToPrevError: SetResult(VK_F7,[ssCtrl],VK_UNKNOWN,[]);
+  ecJumpToPrevError: SetResult(VK_F8,[ssCtrl, ssShift],VK_UNKNOWN,[]);
   ecJumpToNextError: SetResult(VK_F8,[ssCtrl],VK_UNKNOWN,[]);
   ecOpenFileAtCursor: SetResult(VK_RETURN,[ssCtrl],VK_UNKNOWN,[]);
 
@@ -702,10 +706,14 @@ begin
   ecContextHelp: SetResult(VK_F1,[],VK_UNKNOWN,[]);
 
   // designer
-  ecCopyComponents: SetResult(VK_C,[ssCtrl],VK_Insert,[ssCtrl]);
-  ecCutComponents: SetResult(VK_X,[ssCtrl],VK_Delete,[ssShift]);
-  ecPasteComponents: SetResult(VK_V,[ssCtrl],VK_Insert,[ssShift]);
-  ecSelectParentComponent: SetResult(VK_ESCAPE,[],VK_UNKNOWN,[]);
+  ecDesignerCopy        : SetResult(VK_C,[ssCtrl],VK_Insert,[ssCtrl]);
+  ecDesignerCut         : SetResult(VK_X,[ssCtrl],VK_Delete,[ssShift]);
+  ecDesignerPaste       : SetResult(VK_V,[ssCtrl],VK_Insert,[ssShift]);
+  ecDesignerSelectParent: SetResult(VK_ESCAPE,[],VK_UNKNOWN,[]);
+  ecDesignerMoveToFront : SetResult(VK_PRIOR,[ssShift],VK_UNKNOWN,[]);
+  ecDesignerMoveToBack  : SetResult(VK_NEXT,[ssShift],VK_UNKNOWN,[]);
+  ecDesignerForwardOne  : SetResult(VK_PRIOR,[ssCtrl],VK_UNKNOWN,[]);
+  ecDesignerBackOne     : SetResult(VK_NEXT,[ssCtrl],VK_UNKNOWN,[]);
 
   else
     SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -999,10 +1007,15 @@ begin
   ecContextHelp: SetResult(VK_F1,[ssCtrl],VK_UNKNOWN,[],VK_F1,[],VK_UNKNOWN,[]);
 
   // designer
-  ecCopyComponents: SetResult(VK_C,[ssCtrl],VK_UNKNOWN,[],VK_Insert,[ssCtrl],VK_UNKNOWN,[]);
-  ecCutComponents: SetResult(VK_X,[ssCtrl],VK_UNKNOWN,[],VK_Delete,[ssShift],VK_UNKNOWN,[]);
-  ecPasteComponents: SetResult(VK_V,[ssCtrl],VK_UNKNOWN,[],VK_Insert,[ssShift],VK_UNKNOWN,[]);
-  ecSelectParentComponent: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecDesignerCopy        : SetResult(VK_C,[ssCtrl],VK_UNKNOWN,[],VK_Insert,[ssCtrl],VK_UNKNOWN,[]);
+  ecDesignerCut         : SetResult(VK_X,[ssCtrl],VK_UNKNOWN,[],VK_Delete,[ssShift],VK_UNKNOWN,[]);
+  ecDesignerPaste       : SetResult(VK_V,[ssCtrl],VK_UNKNOWN,[],VK_Insert,[ssShift],VK_UNKNOWN,[]);
+  ecDesignerSelectParent: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecDesignerMoveToFront : SetResult(VK_PRIOR,[ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecDesignerMoveToBack  : SetResult(VK_NEXT,[ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecDesignerForwardOne  : SetResult(VK_PRIOR,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecDesignerBackOne     : SetResult(VK_NEXT,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
 
   else
     SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1555,10 +1568,14 @@ begin
     ecContextHelp           : Result:= lisMenuContextHelp;
 
     // desginer
-    ecCopyComponents        : Result:= lisDsgCopyComponents;
-    ecCutComponents         : Result:= lisDsgCutComponents;
-    ecPasteComponents       : Result:= lisDsgPasteComponents;
-    ecSelectParentComponent : Result:= lisDsgSelectParentComponent;
+    ecDesignerCopy          : Result:= lisDsgCopyComponents;
+    ecDesignerCut           : Result:= lisDsgCutComponents;
+    ecDesignerPaste         : Result:= lisDsgPasteComponents;
+    ecDesignerSelectParent  : Result:= lisDsgSelectParentComponent;
+    ecDesignerMoveToFront   : Result:= lisDsgOrderMoveToFront;
+    ecDesignerMoveToBack    : Result:= lisDsgOrderMoveToBack;
+    ecDesignerForwardOne    : Result:= lisDsgOrderForwardOne;
+    ecDesignerBackOne       : Result:= lisDsgOrderBackOne;
 
     else
       Result:= srkmecunknown;
@@ -2454,11 +2471,16 @@ begin
 
   // designer  - without menu items in the IDE bar (at least no direct)
   C:=Categories[AddCategory('Designer',lisKeyCatDesigner,caDesignOnly)];
-  AddDefault(C,'Copy selected Components to clipboard',ecCopyComponents);
-  AddDefault(C,'Cut selected Components to clipboard',ecCutComponents);
-  AddDefault(C,'Paste Components from clipboard',ecPasteComponents);
-  AddDefault(C,'Select parent component',ecSelectParentComponent);
-  
+  AddDefault(C,'Copy selected Components to clipboard',ecDesignerCopy);
+  AddDefault(C,'Cut selected Components to clipboard' ,ecDesignerCut);
+  AddDefault(C,'Paste Components from clipboard'      ,ecDesignerPaste);
+  AddDefault(C,'Select parent component'              ,ecDesignerSelectParent);
+  // MWE: todo: implement the next also as menu on ide bar ?
+  AddDefault(C,'Move component to front'              ,ecDesignerMoveToFront);
+  AddDefault(C,'Move component to back'               ,ecDesignerMoveToBack);
+  AddDefault(C,'Move component one forward'           ,ecDesignerForwardOne);
+  AddDefault(C,'Move component one back'              ,ecDesignerBackOne);
+
   // custom keys (for experts, task groups, dynamic menu items, etc)
   C:=Categories[AddCategory(KeyCategoryCustomName,lisKeyCatCustom,caAll)];
 end;

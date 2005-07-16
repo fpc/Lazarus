@@ -988,6 +988,7 @@ type
     procedure RemoveHandler(HandlerType: TControlHandlerType;
                             const AMethod: TMethod);
     procedure DoContextPopup(const MousePos: TPoint; var Handled: Boolean); virtual;
+    procedure SetZOrder(TopMost: Boolean); virtual;
   protected
     // actions
     function GetActionLinkClass: TControlActionLinkClass; dynamic;
@@ -996,6 +997,7 @@ type
     // optional properties (not every descendent supports them)
     property ActionLink: TControlActionLink read FActionLink write FActionLink;
     property Ctl3D: Boolean read FCtl3D write FCtl3D;//Is this needed for anything other than compatability?
+                                                     // MWE: no and even on delphi it is depreciated. IMO we remove this
     property DragCursor: TCursor read FDragCursor write SetDragCursor default crDrag;
     property DragKind: TDragKind read FDragKind write FDragKind default dkDrag;
     property DragMode: TDragMode read fDragMode write SetDragMode default dmManual;
@@ -1094,8 +1096,6 @@ type
     Function  ControlToScreen(const APoint: TPoint): TPoint;
     procedure Show;
     procedure Update; virtual;
-    procedure SetZOrderPosition(NewPosition: Integer); virtual;
-    Procedure SetZOrder(TopMost: Boolean); virtual;
     function HandleObjectShouldBeVisible: boolean; virtual;
     function ParentDestroyingHandle: boolean;
     function ParentHandlesAllocated: boolean; virtual;
@@ -1347,7 +1347,8 @@ type
     FBrush: TBrush;
     FAdjustClientRectRealized: TRect;
     FChildSizing: TControlChildSizing;
-    FControls: TList; // the child controls (only TControl, no TWinControl)
+    FControls: TList;    // the child controls (only TControl, no TWinControl)
+    FWinControls: TList; // the child controls (only TWinControl, no TControl)
     FDefWndProc: Pointer;
     FDockClients: TList;
     //FDockSite: Boolean;
@@ -1378,7 +1379,6 @@ type
     FTabStop: Boolean;
     FTabList: TList;
     FUseDockManager: Boolean;
-    FWinControls: TList; // the child controls (only TWinControl, no TControl)
     procedure AlignControl(AControl: TControl);
     function GetBrush: TBrush;
     function GetControl(const Index: Integer): TControl;
@@ -1533,8 +1533,7 @@ type
     procedure SendMoveSizeMessages(SizeChanged, PosChanged: boolean); override;
     procedure SetBorderStyle(NewStyle: TBorderStyle); virtual;
     procedure SetColor(Value: TColor); override;
-    procedure SetZOrder(Topmost: Boolean); override;
-    procedure SetZOrderPosition(NewPosition: Integer); override;
+    procedure SetChildZPosition(const AChild: TControl; const APosition: Integer);
     procedure ShowControl(AControl: TControl); virtual;
     procedure Update; override;
     procedure UpdateControlState;
@@ -1544,11 +1543,6 @@ type
     // properties which are not supported by all descendents
     property BorderStyle: TBorderStyle read GetBorderStyle write SetBorderStyle default bsNone;
     property OnGetSiteInfo: TGetSiteInfoEvent read FOnGetSiteInfo write FOnGetSiteInfo;
-    {$ifdef ver1_0}
-    // repeated as workaround for fpc 1.0.x bug,
-    // which can't access a protected property defined in another unit.
-    property WidgetSetClass;
-    {$endif}
   public
     // properties which are supported by all descendents
     property BorderWidth: TBorderWidth read FBorderWidth write SetBorderWidth default 0;
@@ -2956,6 +2950,13 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.311  2005/07/16 00:08:26  marc
+  * Reimplemented ZOrder
+  + Added IDE option to move a control one forward/back
+  * Fixed IDE control selection
+  - Removed some IFDEF VER 1_0
+  + Added some inline
+
   Revision 1.310  2005/07/13 17:25:06  mattias
   added some resourcestrings and autosizing for checklistbox editor
 

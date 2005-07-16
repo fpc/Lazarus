@@ -37,7 +37,7 @@ uses
   ComCtrls, Classes, FPCAdds, LCLType, LMessages, Controls, Graphics, CommCtrl,
   StdCtrls, LCLProc, ImgList, Math,
   // widgetset
-  WSComCtrls, WSLCLClasses, WSProc,
+  WSComCtrls, WSLCLClasses, WSProc, WSControls,
   // interface
   GtkDef;
 
@@ -448,7 +448,7 @@ initialization
   RegisterWSComponent(TStatusBar, TGtkWSStatusBar);
 //  RegisterWSComponent(TCustomTabSheet, TGtkWSTabSheet);
 //  RegisterWSComponent(TCustomPageControl, TGtkWSPageControl);
-  RegisterWSComponent(TCustomListView, TGtkWSCustomListView);
+  RegisterWSComponent(TCustomListView, TGtkWSCustomListView, TGtkWSScrollingPrivate);
 //  RegisterWSComponent(TCustomListView, TGtkWSListView);
   RegisterWSComponent(TCustomProgressBar, TGtkWSProgressBar);
 //  RegisterWSComponent(TCustomUpDown, TGtkWSCustomUpDown);

@@ -1215,29 +1215,69 @@ Begin
   InvalidatePreferredSize;
 end;
 
-Procedure TWinControl.SetZOrder(Topmost: Boolean);
-const
-  WindowPos: array[Boolean] of Word = (HWND_BOTTOM, HWND_TOP);
+{------------------------------------------------------------------------------
+  TWinControl.SetChildZPosition
+
+  Set the position of the child control in the FControls (in case of a TControl)
+  or in the FWinControls (in all other cases) list.
+
+  Notes:
+  * The FControls are always below the FWinControls.
+  * FControls and FWinControls can be nil
+------------------------------------------------------------------------------}
+procedure TWinControl.SetChildZPosition(const AChild: TControl; const APosition: Integer);
 var
-  i: integer;
+  list: TList;
+  idx, NewPos: Integer;
+  IsWinControl: boolean;
 begin
-  if FParent <> nil then begin
-    if TopMost then
-      i := FParent.FWinControls.Count - 1
-    else
-      i := 0;
-    if FParent.FControls <> nil then
-      inc(i, FParent.FControls.Count);
-    SetZOrderPosition(i);
+  if AChild = nil
+  then begin
+    DebugLn('WARNING: TWinControl.SetChildZPosition: Child = nil');
+    Exit;
+  end;
+
+  IsWinControl :=  AChild is TWincontrol;
+  
+  if IsWinControl
+  then list := FWinControls
+  else list := FControls;
+  
+  if list = nil
+  then idx := -1
+  else idx := list.IndexOf(AChild);
+
+  if idx = -1
+  then begin
+    DebugLn('WARNING: TWinControl.SetChildZPosition: Unknown child');
+    Exit;
+  end;
+  
+  if IsWinControl and (FControls <> nil)
+  then NewPos := APosition - FControls.Count
+  else NewPos := APosition;
+  
+  if NewPos < 0
+  then NewPos := 0
+  else if NewPos >= list.Count
+  then NewPos := list.Count - 1;
+  
+  if NewPos = idx then Exit;
+  
+  list.Move(idx, NewPos);
+  
+  if IsWinControl
+  then begin
+    if HandleAllocated and TWinControl(AChild).HandleAllocated
+    then TWSWinControlClass(WidgetSetClass).SetChildZPosition(Self, TWinControl(AChild), idx, NewPos, list);
   end
-  else if HandleAllocated then begin
-    SetWindowPos(Handle, WindowPos[TopMost], 0, 0, 0, 0,
-      SWP_NOMOVE + SWP_NOSIZE);
+  else begin
+    AChild.InvalidateControl(AChild.Visible, True, True);
   end;
 end;
 
 {------------------------------------------------------------------------------
-       TControl SetTabOrder
+       TWinControl.SetTabOrder
 ------------------------------------------------------------------------------}
 procedure TWinControl.SetTabOrder(NewTabOrder: TTabOrder);
 begin
@@ -1369,50 +1409,6 @@ end;
 procedure TWinControl.Update;
 begin
   if HandleAllocated then UpdateWindow(Handle);
-end;
-
-{-------------------------------------------------------------------------------
-  procedure TWinControl.SetZOrderPosition(NewPosition: Integer);
-
--------------------------------------------------------------------------------}
-procedure TWinControl.SetZOrderPosition(NewPosition: Integer);
-var
-  OldPosition, Count: Integer;
-  Pos: HWND;
-begin
-  if FParent <> nil then
-  begin
-    if FParent.FControls <> nil then
-      Dec(NewPosition, FParent.FControls.Count);
-    OldPosition := FParent.FWinControls.IndexOf(Self);
-    if OldPosition >= 0 then
-    begin
-      Count := FParent.FWinControls.Count;
-      if NewPosition < 0 then NewPosition := 0;
-      if NewPosition >= Count then NewPosition := Count - 1;
-      if NewPosition = OldPosition then exit;
-      FParent.FWinControls.Move(OldPosition,NewPosition);
-    end else begin
-      // MG: What if OldPosition<0 ?
-      debugln('WARNING: TWinControl.SetZOrderPosition OldPosition<0');
-    end;
-    if HandleAllocated then
-    begin
-      // In LCL, position 0 is "at the back" and position
-      // Count - 1 is "in front", so the order is reversed from win32 api POV.
-      // In SetWindowPos, you should give the handle of the window
-      // (hWndInsertAfter) of which you want to become just in front of your
-      // window (hWnd).
-      // Keep in mind, that FWinControls is already reordered.
-      if NewPosition <= 0 then
-        Pos := HWND_BOTTOM
-      else if NewPosition >= FParent.FWinControls.Count - 1 then
-        Pos := HWND_TOP
-      else
-        Pos := TWinControl(FParent.FWinControls[NewPosition + 1]).Handle;
-      SetWindowPos(Handle, Pos, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE);
-    end;
-  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -2079,15 +2075,23 @@ end;
 -------------------------------------------------------------------------------}
 function TWinControl.GetControlIndex(AControl: TControl): integer;
 begin
-  if FControls<>nil then
-    Result:=FControls.IndexOf(AControl)
-  else
-    Result:=-1;
-  if (Result<0) and (FWinControls<>nil) then begin
-    Result:=FWinControls.IndexOf(AControl);
-    if (Result>=0) and (FControls<>nil) then
-      inc(Result,FControls.Count);
+  if FControls <> nil
+  then begin
+    Result := FControls.IndexOf(AControl);
+    if Result >= 0 then Exit;
   end;
+  
+  if FWinControls = nil
+  then begin
+    Result:=-1;
+    Exit;
+  end;
+  
+  Result := FWinControls.IndexOf(AControl);
+  if Result = -1 then Exit;
+  if FControls = nil then Exit;
+
+  Inc(Result, FControls.Count);
 end;
 
 {-------------------------------------------------------------------------------
@@ -2097,8 +2101,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TWinControl.SetControlIndex(AControl: TControl; NewIndex: integer);
 begin
-  if AControl=nil then exit;
-  AControl.SetZOrderPosition(NewIndex);
+  SetChildZPosition(AControl, NewIndex);
 end;
 
 function TWinControl.ControlByName(const ControlName: string): TControl;
@@ -4605,6 +4608,13 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.339  2005/07/16 00:08:26  marc
+  * Reimplemented ZOrder
+  + Added IDE option to move a control one forward/back
+  * Fixed IDE control selection
+  - Removed some IFDEF VER 1_0
+  + Added some inline
+
   Revision 1.338  2005/07/13 17:25:06  mattias
   added some resourcestrings and autosizing for checklistbox editor
 

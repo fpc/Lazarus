@@ -167,6 +167,9 @@ end;
 
 procedure TGtkWSButton.SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut);
 begin
+  if not WSCheckHandleAllocated(AButton, 'SetShortcut')
+  then Exit;
+
   // ToDo: use accelerator group of Form
   Accelerate(AButton, PGtkWidget(AButton.Handle), NewShortcut, 'clicked');
 end;

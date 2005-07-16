@@ -277,6 +277,10 @@ resourcestring
   lisDsgCutComponents = 'Cut selected components to clipboard';
   lisDsgPasteComponents = 'Paste selected components from clipboard';
   lisDsgSelectParentComponent = 'Select parent component';
+  lisDsgOrderMoveToFront = 'Move component to front';
+  lisDsgOrderMoveToBack = 'Move component to back';
+  lisDsgOrderForwardOne = 'Move component one forward';
+  lisDsgOrderBackOne = 'Move component one back';
 
   // main
   lisChooseProgramSourcePpPasLpr = 'Choose program source (*.pp,*.pas,*.lpr)';
@@ -1194,8 +1198,12 @@ resourcestring
   fdmMirrorVertical='Mirror vertical';
   fdmScaleWord='Scale';
   fdmSizeWord='Size';
-  fdmBringTofront='Bring to front';
-  fdmSendtoback='Send to back';
+  fdmTabOrder='Tab order...';
+  fdmOrder='Order';
+  fdmOrderMoveTofront='Move to front';
+  fdmOrderMoveToback='Move to back';
+  fdmOrderForwardOne='Forward one';
+  fdmOrderBackOne='Back one';
   fdmDeleteSelection='Delete selection';
   lisChangeClass = 'Change Class';
   fdmSnapToGridOption='Option: Snap to grid';

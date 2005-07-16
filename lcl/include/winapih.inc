@@ -268,16 +268,16 @@ function IntersectRect(var DestRect: TRect; const SrcRect1, SrcRect2: TRect): Bo
 Function IsCharAlphaNumeric(c : Char) : Boolean;
 function IsRectEmpty(const ARect: TRect): Boolean;
 
-function MakeWParam(l, h: Word): WPARAM;
-function MakeLParam(l, h: Word): LPARAM;
-function MakeLResult(l, h: Word): LRESULT;
+function MakeWParam(l, h: Word): WPARAM; inline;
+function MakeLParam(l, h: Word): LPARAM; inline;
+function MakeLResult(l, h: Word): LRESULT; inline;
 
-function OffSetRect(var Rect: TRect; dx,dy: Integer): Boolean;
+function OffSetRect(var Rect: TRect; dx,dy: Integer): Boolean; inline;
 
-function PtInRect(Rect : TRect; Point : TPoint) : Boolean;
-function PointToSmallPoint(const P : TPoint) : TSmallPoint;
+function PtInRect(Rect : TRect; Point : TPoint) : Boolean; inline;
+function PointToSmallPoint(const P : TPoint) : TSmallPoint; inline;
 
-function ScrollWindow(hWnd: HWND; XAmount, YAmount: Integer; Rect, ClipRect: PRect): Boolean;
+function ScrollWindow(hWnd: HWND; XAmount, YAmount: Integer; Rect, ClipRect: PRect): Boolean; inline;
 function SetRect(Var ARect : TRect; xLeft,yTop,xRight,yBottom : Integer) : Boolean;
 function SetRectEmpty(var ARect: TRect): Boolean;
 function SetScrollPos(Handle: HWND; nBar, nPos: Integer; bRedraw: Boolean): Integer;
@@ -286,13 +286,13 @@ Function SmallPointToPoint(const P : TSmallPoint) : Tpoint;
 
 function UnionRect(var DestRect: TRect; const SrcRect1, SrcRect2: TRect): Boolean; //pbd
 
-function GetRValue(RGB : DWORD) : BYTE;
-function GetGValue(RGB : DWORD) : BYTE;
-function GetBValue(RGB : DWORD) : BYTE;
-procedure GetRGBValues(RGB : DWORD; var R, G, B: Byte);
-procedure GetRGBIntValues(RGB : DWORD; var R, G, B: integer);
+function GetRValue(RGB : DWORD) : BYTE; inline;
+function GetGValue(RGB : DWORD) : BYTE; inline;
+function GetBValue(RGB : DWORD) : BYTE; inline;
+procedure GetRGBValues(RGB : DWORD; var R, G, B: Byte); inline;
+procedure GetRGBIntValues(RGB : DWORD; var R, G, B: integer); inline;
 
-function RGB(R, G, B : Byte) : TColorRef;
+function RGB(R, G, B : Byte) : TColorRef; inline;
 
 //##apiwiz##epi##    // Do not remove
 
@@ -302,6 +302,13 @@ function RGB(R, G, B : Byte) : TColorRef;
 { =============================================================================
 
   $Log$
+  Revision 1.109  2005/07/16 00:08:26  marc
+  * Reimplemented ZOrder
+  + Added IDE option to move a control one forward/back
+  * Fixed IDE control selection
+  - Removed some IFDEF VER 1_0
+  + Added some inline
+
   Revision 1.108  2005/06/22 17:37:06  mattias
   implemented TMouse.SetCursorPos  from Andrew
 

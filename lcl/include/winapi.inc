@@ -994,29 +994,29 @@ begin
   Result := Info.nPos;
 end;
 
-function GetRValue(RGB : DWORD) : BYTE;
+function GetRValue(RGB : DWORD) : BYTE; inline;
 begin
   Result := RGB and $ff;
 end;
 
-function GetGValue(RGB : DWORD) : BYTE;
+function GetGValue(RGB : DWORD) : BYTE; inline;
 begin
   Result := (RGB shr 8) and $ff;
 end;
 
-function GetBValue(RGB : DWORD) : BYTE;
+function GetBValue(RGB : DWORD) : BYTE; inline;
 begin
   Result := (RGB shr 16) and $ff;
 end;
 
-procedure GetRGBValues(RGB : DWORD; var R, G, B: Byte);
+procedure GetRGBValues(RGB : DWORD; var R, G, B: Byte); inline;
 begin
   R := RGB and $ff;
   G := (RGB shr 8) and $ff;
   B := (RGB shr 16) and $ff;
 end;
 
-procedure GetRGBIntValues(RGB : DWORD; var R, G, B: integer);
+procedure GetRGBIntValues(RGB : DWORD; var R, G, B: integer); inline;
 begin
   R := RGB and $ff;
   G := (RGB shr 8) and $ff;
@@ -1135,7 +1135,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function MakeLParam(l, h: Word): LPARAM;
+function MakeLParam(l, h: Word): LPARAM; inline;
 begin
   Result := MakeLong(l, h);
 end;
@@ -1146,7 +1146,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function MakeLResult(l, h: Word): LRESULT;
+function MakeLResult(l, h: Word): LRESULT; inline;
 begin
   Result := MakeLong(l, h);
 end;
@@ -1157,7 +1157,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function MakeWParam(l, h: Word): WPARAM;
+function MakeWParam(l, h: Word): WPARAM; inline;
 begin
   Result := MakeLong(l, h);
 end;
@@ -1171,7 +1171,7 @@ end;
 
   Moves the rectangle up or down, left or right.
  ------------------------------------------------------------------------------}
-function OffSetRect(var Rect: TRect; dx,dy: Integer): Boolean;
+function OffSetRect(var Rect: TRect; dx,dy: Integer): Boolean; inline;
 Begin
   Result:=LCLProc.OffsetRect(Rect,dx,dy);
 end;
@@ -1182,7 +1182,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-Function PointtoSmallPoint(const P : TPoint) : TSmallPoint;
+Function PointtoSmallPoint(const P : TPoint) : TSmallPoint; inline;
 Begin
   Result.X := P.X;
   Result.Y := P.Y;
@@ -1198,7 +1198,7 @@ end;
   It is considered inside if it lies on the left top, or within the rectangle.
   It is outside ther rect if it's on the bottom or right.
  ------------------------------------------------------------------------------}
-Function PtInRect(Rect : TRect; Point : TPoint) : Boolean;
+Function PtInRect(Rect : TRect; Point : TPoint) : Boolean; inline;
 Begin
   Result := ((Point.X >= Rect.Left) and
              (Point.X < Rect.Right) and
@@ -1218,7 +1218,7 @@ end;
   supplied and the color capabilities of the output device.
  ------------------------------------------------------------------------------}
 
-function RGB(R, G, B : Byte) : TColorRef;
+function RGB(R, G, B : Byte) : TColorRef; inline;
 begin
   Result := R or (G shl 8) or (B Shl 16);
 end;
@@ -1234,7 +1234,7 @@ end;
   scrolls a window or portion of a window
  ------------------------------------------------------------------------------}
 function ScrollWindow(hWnd: HWND; XAmount, YAmount: Integer;
-  Rect, ClipRect: PRect): Boolean;
+  Rect, ClipRect: PRect): Boolean; inline;
 begin
   Result := ScrollWindowEx(hWnd, XAmount, YAmount, Rect, ClipRect, 0, nil, 0);
 end;
@@ -1340,6 +1340,13 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.122  2005/07/16 00:08:26  marc
+  * Reimplemented ZOrder
+  + Added IDE option to move a control one forward/back
+  * Fixed IDE control selection
+  - Removed some IFDEF VER 1_0
+  + Added some inline
+
   Revision 1.121  2005/06/22 17:37:06  mattias
   implemented TMouse.SetCursorPos  from Andrew
 

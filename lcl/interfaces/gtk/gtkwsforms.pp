@@ -27,22 +27,32 @@ unit GtkWSForms;
 interface
 
 uses
-  {$IFDEF GTK2} Gtk2, Glib2, gdk2, {$ELSE} Gtk, gdk, Glib, {$ENDIF}
+  {$IFDEF GTK2}
+  Gtk2, Glib2, gdk2,
+  {$ELSE}
+  Gtk, gdk, Glib,
+  {$ENDIF}
   SysUtils, Classes, Controls, LMessages, InterfaceBase, graphics,
-  Dialogs, WSDialogs, WSLCLClasses, gtkint, gtkproc, gtkwscontrols,
-  Forms, WSForms, Math, lcltype, gtkdef;
+  Dialogs,Forms, Math, lcltype,
+  WSDialogs, WSLCLClasses, WSControls, WSForms, WSProc,
+  gtkint, gtkproc, gtkwscontrols, gtkdef;
 
 type
 
   { TGtkWSScrollingWinControl }
 
-  // see also GtkWSControls.TGtkWSBaseScrollingWinControl
   TGtkWSScrollingWinControl = class(TWSScrollingWinControl)
   private
   protected
   public
-    class procedure ScrollBy(const AWinControl: TScrollingWinControl;
-      const DeltaX, DeltaY: integer); override;
+    class procedure ScrollBy(const AWinControl: TScrollingWinControl; const DeltaX, DeltaY: integer); override;
+  end;
+
+  TGtkWSScrollingWinControlPrivate = class(TGtkWSScrollingPrivate)
+  private
+  protected
+  public
+    class procedure SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition); override;
   end;
 
   { TGtkWSScrollBox }
@@ -124,6 +134,47 @@ implementation
 procedure TGtkWSScrollingWinControl.ScrollBy(const AWinControl: TScrollingWinControl;
   const DeltaX, DeltaY: integer);
 begin
+end;
+
+{ TGtkWSScrollingWinControlPrivate }
+
+procedure TGtkWSScrollingWinControlPrivate.SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition);
+var
+  Widget: PGtkWidget;
+  ScrollWidget: PGtkScrolledWindow;
+//  WidgetInfo: PWidgetInfo;
+begin
+  if not WSCheckHandleAllocated(AWincontrol, 'SetZPosition')
+  then Exit;
+  
+  //TODO: when all scrolling controls are "derived" from TGtkWSBaseScrollingWinControl
+  //      retrieve scrollbars from WidgetInfo^.Userdata. In that case, the following
+  //      code can be removed and a call to TGtkWSBaseScrollingWinControl.SetZPosition
+  //      can be made. This is not possible now since we have a frame around us
+
+  Widget := Pointer(AWinControl.Handle);
+//  WidgetInfo := GetWidgetInfo(Widget);
+  ScrollWidget := PGtkScrolledWindow(PGtkFrame(Widget)^.Bin.Child);
+  
+  // Only do the scrollbars, leave the core to the default (we might have a viewport)
+  TGtkWSWinControlPrivate.SetZPosition(AWinControl, APosition);
+
+  case APosition of
+    wszpBack:  begin
+//      gdk_window_lower(WidgetInfo^.CoreWidget^.Window);
+      if ScrollWidget^.hscrollbar <> nil
+      then gdk_window_lower(ScrollWidget^.hscrollbar^.Window);
+      if ScrollWidget^.vscrollbar <> nil
+      then gdk_window_lower(ScrollWidget^.vscrollbar^.Window);
+    end;
+    wszpFront: begin
+//      gdk_window_raise(WidgetInfo^.CoreWidget^.Window);
+      if ScrollWidget^.hscrollbar <> nil
+      then gdk_window_raise(ScrollWidget^.hscrollbar^.Window);
+      if ScrollWidget^.vscrollbar <> nil
+      then gdk_window_raise(ScrollWidget^.vscrollbar^.Window);
+    end;
+  end;
 end;
           
 { TGtkWSCustomForm }
@@ -215,7 +266,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-  RegisterWSComponent(TScrollingWinControl, TGtkWSScrollingWinControl);
+  RegisterWSComponent(TScrollingWinControl, TGtkWSScrollingWinControl, TGtkWSScrollingWinControlPrivate);
 //  RegisterWSComponent(TScrollBox, TGtkWSScrollBox);
 //  RegisterWSComponent(TCustomFrame, TGtkWSCustomFrame);
 //  RegisterWSComponent(TFrame, TGtkWSFrame);

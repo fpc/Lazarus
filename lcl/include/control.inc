@@ -2808,35 +2808,14 @@ end;
 {       TControl.SetZOrder
 }
 {------------------------------------------------------------------------------}
-Procedure TControl.SetZOrder(Topmost: Boolean);
+procedure TControl.SetZOrder(Topmost: Boolean);
+const
+  POSITION: array[Boolean] of Integer = (0, MaxInt);
 begin
   if FParent = nil then exit;
-  if Topmost then
-    SetZOrderPosition(Parent.ControlCount-1)
-  else
-    SetZOrderPosition(0);
-  {if Parent <> nil then begin
-    AParent:= Parent;
-     Just reinsert the control on top. Don't if it already is
-    if Topmost then begin
-      if (AParent.Controls[AParent.ControlCount - 1] <> Self) then begin
-        AParent.RemoveControl(Self);
-        AParent.InsertControl(Self);
-      end;
-    end else begin
-      // Move all other controls over this one
-      if (AParent.Controls[0] <> Self) then begin
-        AParent.RemoveControl(Self);
-        AParent.InsertControl(Self);
-        while AParent.Controls[0] <> Self do begin
-          AControl:= AParent.Controls[0];
-      	  AParent.RemoveControl(AControl);
-      	  AParent.InsertControl(AControl);
-      	end;
-      end;
-    end;
-  end;  }
+  FParent.SetChildZPosition(Self, POSITION[TopMost]);
 end;
+
 
 {------------------------------------------------------------------------------
   function TControl.HandleObjectShouldBeVisible
@@ -3093,37 +3072,6 @@ begin
   inherited RemoveAllHandlersOfObject(AnObject);
   for HandlerType:=Low(TControlHandlerType) to High(TControlHandlerType) do
     FControlHandlers[HandlerType].RemoveAllMethodsOfObject(AnObject);
-end;
-
-{------------------------------------------------------------------------------
-  TControl.SetZOrderPosition
-  
-  Set the position of the child control in the Controls list of its parent.
-  TWinControl overrides this and will position itself in the FWinControls
-  while this function position itself in the FControls list.
-
-  Notes:
-    The FControls are always below the FWinControls.
-    TWinControl overrides this and will position itself in the FWinControls
-    list.
-------------------------------------------------------------------------------}
-Procedure TControl.SetZOrderPosition(NewPosition: Integer);
-Var
-  OldPosition: Integer;
-  Count: Integer;
-begin
-  if Parent = nil then exit;
-  OldPosition := FParent.FControls.IndexOf(self);
-  if (OldPosition >= 0) then
-  begin
-    Count := FParent.FControls.Count;
-    if NewPosition < 0 then NewPosition := 0;
-    if NewPosition >= Count then NewPosition := Count-1;
-    if NewPosition <> OldPosition then begin
-      FParent.FControls.Move(OldPosition,NewPosition);
-      InvalidateControl(Visible,True,True);
-    end;
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -3587,6 +3535,13 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.267  2005/07/16 00:08:26  marc
+  * Reimplemented ZOrder
+  + Added IDE option to move a control one forward/back
+  * Fixed IDE control selection
+  - Removed some IFDEF VER 1_0
+  + Added some inline
+
   Revision 1.266  2005/07/13 17:25:06  mattias
   added some resourcestrings and autosizing for checklistbox editor
 

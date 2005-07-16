@@ -40,6 +40,7 @@ interface
 //    the uses clause of the XXXintf.pp
 ////////////////////////////////////////////////////
 uses
+  Classes,
 ////////////////////////////////////////////////////
 // To get as little as posible circles,
 // uncomment only when needed for registration
@@ -67,26 +68,30 @@ type
 
   { TWSWinControl }
 
+  TWSZPosition = (wszpBack, wszpFront);
+  
+  { TWSWinControl }
+
   TWSWinControl = class(TWSControl)
+    class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer); virtual;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; virtual;
     class function  GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; virtual;
 
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); virtual;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); virtual;
+    class procedure SetColor(const AWinControl: TWinControl); virtual;
+    class procedure SetChildZPosition(const AWinControl, AChild: TWinControl; const AOldPos, ANewPos: Integer; const AChildren: TList); virtual;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); virtual;
     class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); virtual;
     class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); virtual;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); virtual;
-    class procedure SetColor(const AWinControl: TWinControl); virtual;
 
     class procedure ConstraintsChange(const AWinControl: TWinControl); virtual;
-    class procedure GetPreferredSize(const AWinControl: TWinControl;
-                         var PreferredWidth, PreferredHeight: integer); virtual;
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; virtual;
     class procedure DestroyHandle(const AWinControl: TWinControl); virtual;
     class procedure Invalidate(const AWinControl: TWinControl); virtual;
-    class procedure ShowHide(const AWinControl: TWinControl); virtual;
+    class procedure ShowHide(const AWinControl: TWinControl); virtual; //TODO: rename to SetVisible(control, visible)
   end;
   TWSWinControlClass = class of TWSWinControl;
 
@@ -121,7 +126,18 @@ end;
 
 { TWSWinControl }
 
-procedure TWSWinControl.SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
+procedure TWSWinControl.ConstraintsChange(const AWinControl: TWinControl);
+begin
+end;
+
+function TWSWinControl.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+begin
+  // For now default to the old creation routines
+  Result := InterfaceObject.CreateComponent(AWinControl);
+end;
+
+procedure TWSWinControl.DestroyHandle(const AWinControl: TWinControl);
 begin
 end;
 
@@ -146,10 +162,31 @@ begin
   then ALength := Length(S);
 end;
   
-procedure TWSWinControl.SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); 
+procedure TWSWinControl.GetPreferredSize(const AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer);
+begin
+end;
+
+procedure TWSWinControl.Invalidate(const AWinControl: TWinControl);
+begin
+end;
+
+procedure TWSWinControl.SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer);
 begin
 end;
     
+procedure TWSWinControl.SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
+begin
+end;
+
+procedure TWSWinControl.SetChildZPosition(const AWinControl, AChild: TWinControl; const AOldPos, ANewPos: Integer; const AChildren: TList);
+begin
+end;
+
+procedure TWSWinControl.SetColor(const AWinControl: TWinControl);
+begin
+end;
+
 procedure TWSWinControl.SetFont(const AWinControl: TWinControl; const AFont: TFont);
 begin
 end;
@@ -171,34 +208,6 @@ end;
   Sets the label text on a widget
  ------------------------------------------------------------------------------}
 procedure TWSWinControl.SetText(const AWinControl: TWinControl; const AText: String); 
-begin
-end;
-
-procedure TWSWinControl.SetColor(const AWinControl: TWinControl);
-begin
-end;
-
-procedure TWSWinControl.ConstraintsChange(const AWinControl: TWinControl);
-begin
-end;
-
-procedure TWSWinControl.GetPreferredSize(const AWinControl: TWinControl;
-  var PreferredWidth, PreferredHeight: integer);
-begin
-end;
-
-function TWSWinControl.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): HWND;
-begin
-  // For now default to the old creation routines
-  Result := InterfaceObject.CreateComponent(AWinControl);
-end;
-
-procedure TWSWinControl.DestroyHandle(const AWinControl: TWinControl);
-begin
-end;
-
-procedure TWSWinControl.Invalidate(const AWinControl: TWinControl);
 begin
 end;
 

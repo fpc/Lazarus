@@ -55,14 +55,14 @@ uses
 {$I lclintfh.inc}
 
 
-function MakeLong(A,B : Word) : LongInt;
-function MakeWord(A,B : Byte) : Word;
+function MakeLong(A,B : Word) : LongInt; inline;
+function MakeWord(A,B : Byte) : Word; inline;
 
 function PredefinedClipboardFormat(
   AFormat: TPredefinedClipboardFormat): TClipboardFormat;
 
-function CharLower(c: char): char;
-function CharUpper(c: char): char;
+function CharLower(c: char): char; inline;
+function CharUpper(c: char): char; inline;
 
 function MsgKeyDataToShiftState(KeyData: Longint): TShiftState;
 
@@ -123,12 +123,12 @@ begin
 end;
 {$ENDIF}
 
-function MakeLong(A,B : Word) : LongInt;
+function MakeLong(A,B : Word) : LongInt; inline;
 begin
   Result := A or B shl 16;
 end;
 
-function MakeWord(A,B : Byte) : Word;
+function MakeWord(A,B : Byte) : Word; inline;
 Begin
   Result := A or B shl 8;
 end;
@@ -142,12 +142,12 @@ begin
   Result:=FPredefinedClipboardFormats[AFormat];
 end;
 
-function CharLower(c: char): char;
+function CharLower(c: char): char; inline;
 begin
   Result:=LowerCaseChars[c];
 end;
 
-function CharUpper(c: char): char;
+function CharUpper(c: char): char; inline;
 begin
   Result:=UpperCaseChars[c];
 end;
@@ -191,6 +191,13 @@ end.
 
 {
   $Log$
+  Revision 1.20  2005/07/16 00:08:26  marc
+  * Reimplemented ZOrder
+  + Added IDE option to move a control one forward/back
+  * Fixed IDE control selection
+  - Removed some IFDEF VER 1_0
+  + Added some inline
+
   Revision 1.19  2005/03/11 14:40:37  mattias
   moved CM_ message constants from crontrols.pp to lmessages.pp to break circles and clean up controls.pp
 

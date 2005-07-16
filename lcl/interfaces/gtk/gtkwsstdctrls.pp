@@ -33,7 +33,7 @@ uses
   {$ELSE}
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} GtkFontCache,
   {$ENDIF}
-  WSStdCtrls, WSLCLClasses, WSProc, GtkInt, LCLType, GtkDef, LCLProc,
+  WSStdCtrls, WSLCLClasses, WSProc, WSControls, GtkInt, LCLType, GtkDef, LCLProc,
   GTKWinApiWindow, gtkglobals, gtkproc, InterfaceBase;
 
 
@@ -108,11 +108,11 @@ type
     class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
     class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class function  GetTopIndex(const ACustomListBox: TCustomListBox): integer; override;
+
     class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); override;
     class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
-    class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect,
-      AMultiSelect: boolean); override;
+    class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect, AMultiSelect: boolean); override;
     class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
     class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); override;
   end;
@@ -262,6 +262,9 @@ procedure WidgetSetSelLength(const Widget: PGtkWidget; NewLength: integer);
 {$UNDEF MEMOHEADER}
 
 implementation
+
+uses
+  GtkWSControls;
 
 {$I gtkmemostrings.inc}
 
@@ -579,6 +582,7 @@ begin
   if AdjValue>MaxAdjValue then AdjValue:=MaxAdjValue;
   gtk_adjustment_set_value(VertAdj,AdjValue);
 end;
+
 {$EndIf}
 
 { TGtkWSCustomComboBox }
@@ -865,7 +869,6 @@ begin
   gtk_text_thaw(PGtkText(Widget));
 end;
 
-
 {$ifdef GTK1}
 
 function TGtkWSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo): TStrings;
@@ -1003,10 +1006,10 @@ initialization
 //  RegisterWSComponent(TGroupBox, TGtkWSGroupBox);
   RegisterWSComponent(TCustomComboBox, TGtkWSCustomComboBox);
 //  RegisterWSComponent(TComboBox, TGtkWSComboBox);
-  RegisterWSComponent(TCustomListBox, TGtkWSCustomListBox);
+  RegisterWSComponent(TCustomListBox, TGtkWSCustomListBox, TGtkWSScrollingPrivate);
 //  RegisterWSComponent(TListBox, TGtkWSListBox);
   RegisterWSComponent(TCustomEdit, TGtkWSCustomEdit);
-  RegisterWSComponent(TCustomMemo, TGtkWSCustomMemo);
+  RegisterWSComponent(TCustomMemo, TGtkWSCustomMemo, TGtkWSScrollingPrivate);
 //  RegisterWSComponent(TButtonControl, TGtkWSButtonControl);
   RegisterWSComponent(TCustomCheckBox, TGtkWSCustomCheckBox);
 //  RegisterWSComponent(TCheckBox, TGtkWSCheckBox);

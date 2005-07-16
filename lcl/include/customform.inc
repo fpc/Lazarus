@@ -785,6 +785,7 @@ procedure TCustomForm.SetZOrder(Topmost: Boolean);
 begin
   if Parent=nil then begin
     if TopMost and HandleAllocated then begin
+      //TODO: call TWSCustomFormClass(Widgetset).SetZORder.
       BringWindowToTop(Handle);
     end;
     exit;
@@ -1948,6 +1949,13 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.188  2005/07/16 00:08:26  marc
+  * Reimplemented ZOrder
+  + Added IDE option to move a control one forward/back
+  * Fixed IDE control selection
+  - Removed some IFDEF VER 1_0
+  + Added some inline
+
   Revision 1.187  2005/06/30 19:39:04  mattias
   added AutoSizeDelayed check for controls without form parents
 
