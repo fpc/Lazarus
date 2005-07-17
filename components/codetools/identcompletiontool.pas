@@ -325,7 +325,7 @@ begin
   Result:=CompareIdentifiers(PChar(HistItem.Identifier),IdentItem.Identifier);
   if Result<>0 then exit;
 
-  debugln('CompareIdentItemWithHistListItem ',HistItem.Identifier,'=',GetIdentifier(IdentItem.Identifier));
+  //debugln('CompareIdentItemWithHistListItem ',HistItem.Identifier,'=',GetIdentifier(IdentItem.Identifier));
   Result:=SysUtils.CompareText(HistItem.ParamList,IdentItem.ParamList);
 end;
 

@@ -1735,6 +1735,7 @@ type
     procedure AddAsLastChild(NewChildZone: TDockZone);
     procedure ReplaceChild(OldChild, NewChild: TDockZone);
     function GetLastChild: TDockZone;
+    function GetIndex: Integer;
   public
     property ChildControl: TControl read FChildControl;
     property ChildCount: Integer read FChildCount;
@@ -2952,6 +2953,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.313  2005/07/17 02:24:41  mattias
+  started creating TLazDockPage helper controls
+
   Revision 1.312  2005/07/17 01:05:04  mattias
   started basic docking anchoring and made Contributors.txt ASCII to show everywhere
 

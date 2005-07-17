@@ -248,5 +248,17 @@ begin
   while (Result.FNextSibling<>nil) do Result:=Result.FNextSibling;
 end;
 
+function TDockZone.GetIndex: Integer;
+var
+  Zone: TDockZone;
+begin
+  Result:=0;
+  Zone:=PrevSibling;
+  while Zone<>nil do begin
+    inc(Result);
+    Zone:=Zone.PrevSibling;
+  end;
+end;
+
 // included by control.pp
 
