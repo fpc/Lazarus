@@ -1,4 +1,5 @@
-{%MainUnit ../interfacebase.pp}
+// This include file is used by two units: interfacebase.pp and lclintf.pas
+// Do not add a %MainUnit directive here.
 (******************************************************************************
   All interface communication related stuff goes here.
   This file is used by both LCLLinux and InterfaceBase
@@ -147,6 +148,9 @@ procedure RaiseLastOSError;
 { =============================================================================
 
   $Log$
+  Revision 1.32  2005/07/17 01:27:22  mattias
+  removed %MainUnit directive
+
   Revision 1.31  2005/07/01 12:07:49  mattias
   moved some menu intf methods to the TXXXWSMenuItem class  from Martin Smat
 
