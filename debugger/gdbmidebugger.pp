@@ -1130,6 +1130,7 @@ begin
 
     // Scan the string
     len := Length(S);
+    // Set the resultstring initially to the same size
     SetLength(Result, len);
     n := 0;
     idx := 1;
@@ -1164,8 +1165,32 @@ begin
           Inc(n);
           Result[n] := Chr(v and $FF);
         end;
+        ',', ' ': begin
+          Inc(idx); //ignore them;
+        end;
+        '<': begin
+          // Debugger has returned something like <repeats 10 times>
+          v := StrToIntDef(GetPart(['<repeats '], [' times>'], S), 0);
+          // Since we deleted the first part of S, reset idx
+          idx := 8; // the char after ' times>'
+          len := Length(S);
+          if v <= 1 then Continue;
+          
+          // make sure result has some room
+          SetLength(Result, Length(Result) + v - 1);
+          while v > 1 do begin
+            Inc(n);
+            Result[n] := Result[n - 1];
+            Dec(v);
+          end;
+        end;
       else
-        Break; //??
+        // Debugger has returned something we don't know of
+        // Append the remainder to our parsed result
+        SetLength(Result, n);
+        Delete(S, 1, idx - 1);
+        Result := Result + '###(gdb unparsed remainder:' + S + ')###';
+        Exit;
       end;
     end;
     SetLength(Result, n);
@@ -2761,6 +2786,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.65  2005/07/17 20:08:35  marc
+  * GDB repeated values are expanded
+
   Revision 1.64  2005/05/17 00:02:44  marc
   * fixed exception handling for ppc (and maybe ia64 and sparc)
 
