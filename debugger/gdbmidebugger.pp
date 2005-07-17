@@ -1113,7 +1113,7 @@ end;
 function TGDBMIDebugger.GetText(const AExpression: String;
   const AValues: array of const): String;
 var
-  S: String;
+  S, Trailor: String;
   R: TGDBMIExecResult;
   n, len, idx: Integer;
   v: Integer;
@@ -1121,80 +1121,87 @@ begin
   if not ExecuteCommand('x/s ' + AExpression, AValues, [cfNoMICommand, cfIgnoreError], R)
   then begin
     Result := '';
-  end
-  else begin
-    S := StripLN(R.Values);
-    // don't use ' as end terminator, there might be one as part of the text
-    // since ' will be the last char, simply strip it.
-    S := GetPart(['\t '], [], S);
+    Exit;
+  end;
 
-    // Scan the string
-    len := Length(S);
-    // Set the resultstring initially to the same size
-    SetLength(Result, len);
-    n := 0;
-    idx := 1;
-    while idx <= len do
-    begin
-      case S[idx] of
-        '''': begin
-          Inc(idx);
-          // scan till end
-          while idx <= len do
-          begin
-            if S[idx] = ''''
-            then begin
-              Inc(idx);
-              if idx > len then Break;
-              if S[idx] <> '''' then Break;
-            end;
-            Inc(n);
-            Result[n] := S[idx];
+  S := StripLN(R.Values);
+  // don't use ' as end terminator, there might be one as part of the text
+  // since ' will be the last char, simply strip it.
+  S := GetPart(['\t '], [], S);
+
+  // Scan the string
+  len := Length(S);
+  // Set the resultstring initially to the same size
+  SetLength(Result, len);
+  n := 0;
+  idx := 1;
+  while idx <= len do
+  begin
+    case S[idx] of
+      '''': begin
+        Inc(idx);
+        // scan till end
+        while idx <= len do
+        begin
+          if S[idx] = ''''
+          then begin
             Inc(idx);
-          end;
-        end;
-        '#': begin
-          Inc(idx);
-          v := 0;
-          // scan till non number (correct input is assumed)
-          while (idx <= len) and (S[idx] >= '0') and (S[idx] <= '9') do
-          begin
-            v := v * 10 + Ord(S[idx]) - Ord('0');
-            Inc(idx)
+            if idx > len then Break;
+            if S[idx] <> '''' then Break;
           end;
           Inc(n);
-          Result[n] := Chr(v and $FF);
+          Result[n] := S[idx];
+          Inc(idx);
         end;
-        ',', ' ': begin
-          Inc(idx); //ignore them;
-        end;
-        '<': begin
-          // Debugger has returned something like <repeats 10 times>
-          v := StrToIntDef(GetPart(['<repeats '], [' times>'], S), 0);
-          // Since we deleted the first part of S, reset idx
-          idx := 8; // the char after ' times>'
-          len := Length(S);
-          if v <= 1 then Continue;
-          
-          // make sure result has some room
-          SetLength(Result, Length(Result) + v - 1);
-          while v > 1 do begin
-            Inc(n);
-            Result[n] := Result[n - 1];
-            Dec(v);
-          end;
-        end;
-      else
-        // Debugger has returned something we don't know of
-        // Append the remainder to our parsed result
-        SetLength(Result, n);
-        Delete(S, 1, idx - 1);
-        Result := Result + '###(gdb unparsed remainder:' + S + ')###';
-        Exit;
       end;
+      '#': begin
+        Inc(idx);
+        v := 0;
+        // scan till non number (correct input is assumed)
+        while (idx <= len) and (S[idx] >= '0') and (S[idx] <= '9') do
+        begin
+          v := v * 10 + Ord(S[idx]) - Ord('0');
+          Inc(idx)
+        end;
+        Inc(n);
+        Result[n] := Chr(v and $FF);
+      end;
+      ',', ' ': begin
+        Inc(idx); //ignore them;
+      end;
+      '<': begin
+        // Debugger has returned something like <repeats 10 times>
+        v := StrToIntDef(GetPart(['<repeats '], [' times>'], S), 0);
+        // Since we deleted the first part of S, reset idx
+        idx := 8; // the char after ' times>'
+        len := Length(S);
+        if v <= 1 then Continue;
+        
+        // limit the amount of repeats
+        if v > 1000
+        then begin
+          Trailor := Trailor + Format('###(repeat truncated: %u -> 1000)###', [v]);
+          v := 1000;
+        end;
+        
+        // make sure result has some room
+        SetLength(Result, Length(Result) + v - 1);
+        while v > 1 do begin
+          Inc(n);
+          Result[n] := Result[n - 1];
+          Dec(v);
+        end;
+      end;
+    else
+      // Debugger has returned something we don't know of
+      // Append the remainder to our parsed result
+      Delete(S, 1, idx - 1);
+      Trailor := Trailor + '###(gdb unparsed remainder:' + S + ')###';
+      Break;
     end;
-    SetLength(Result, n);
   end;
+  SetLength(Result, n);
+  Result := Result + Trailor;
 end;
 
 function TGDBMIDebugger.GetSupportedCommands: TDBGCommands;
@@ -2461,7 +2468,9 @@ begin
 
   Arguments := TStringList.Create;
   TGDBMIDebugger(Debugger).ExecuteCommand('-stack-list-arguments 1 %d %d',
-                                          [AIndex, AIndex], [], R);
+                                          [AIndex, AIndex], [cfIgnoreError], R);
+  // TODO: check what to display on error
+
   List := CreateMIValueList(R);
   S := List.Values['stack-args'];
   FreeAndNil(List);
@@ -2786,6 +2795,10 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.66  2005/07/17 22:22:00  marc
+  * Patch from Colin Western
+  + added a check for long repeats
+
   Revision 1.65  2005/07/17 20:08:35  marc
   * GDB repeated values are expanded
 
