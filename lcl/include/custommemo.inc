@@ -104,7 +104,7 @@ var
 begin
   //DebugLn('[TCustomMemo.CreateHandle] A ',FLines.ClassName);
   inherited CreateHandle;
-  //DebugLn('[TCustomMemo.CreateHandle] B ',FLines.ClassName);
+  //DebugLn('[TCustomMemo.CreateHandle] B ',DbgSName(Self),' ',FLines.ClassName,' FLines.Count=',dbgs(FLines.Count));
   
   // fetch/create the interface item list
   NewStrings := TWSCustomMemoClass(WidgetSetClass).GetStrings(Self);
@@ -117,7 +117,7 @@ begin
   // new item list is the interface item list
   FLines:= NewStrings;
 
-  //DebugLn('[TCustomMemo.CreateHandle] END ',FLines.ClassName);
+  //DebugLn('[TCustomMemo.CreateHandle] END ',DbgSName(Self),' ',FLines.ClassName,' FLines.Count=',dbgs(FLines.Count));
 end;
 
 procedure TCustomMemo.DestroyHandle;
@@ -142,10 +142,12 @@ end;
 function TCustomMemo.RealGetText: TCaption;
 begin
   Result := Lines.Text;
+  //debugln('TCustomMemo.RealGetText "',Result,'"');
 end;
 
 procedure TCustomMemo.RealSetText(const Value: TCaption);
 begin
+  //debugln('TCustomMemo.RealSetText "',Value,'"');
   Lines.Text := Value;
 end;
 
@@ -232,6 +234,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.35  2005/07/17 01:05:04  mattias
+  started basic docking anchoring and made Contributors.txt ASCII to show everywhere
+
   Revision 1.34  2005/04/05 19:41:19  mattias
   accelerated TMemo on gtk, gtk2 and win32 interface  from Andrew Haines
 

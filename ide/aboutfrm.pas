@@ -26,7 +26,8 @@ interface
 
 uses
   Classes, SysUtils, FPCAdds, Forms, Controls, Graphics, Dialogs, LResources,
-  StdCtrls, Buttons, LazConf, LazarusIDEStrConsts, ExtCtrls, EnvironmentOpts;
+  StdCtrls, Buttons, LazConf, LazarusIDEStrConsts, ExtCtrls, EnvironmentOpts,
+  FileUtil;
 
 type
 
@@ -127,7 +128,9 @@ var
   ContributorsFileName: string;
 begin
   ContributorsFileName:=
-    EnvironmentOptions.LazarusDirectory+'docs'+PathDelim+'Contributors.txt';
+    AppendPathDelim(EnvironmentOptions.LazarusDirectory)
+    +'docs'+PathDelim+'Contributors.txt';
+  //writeln('TAboutForm.LoadContributors ',FileExists(ContributorsFileName),' ',ContributorsFileName);
   if FileExists(ContributorsFileName) then
     ContributorsMemo.Lines.LoadFromFile(ContributorsFileName)
   else

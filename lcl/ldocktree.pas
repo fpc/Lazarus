@@ -35,8 +35,18 @@ uses
   
 type
   TLazDockPages = class;
-  
+  TLazDockSplitter = class;
+
+  { TLazDockZone }
+
   TLazDockZone = class(TDockZone)
+  private
+    FPages: TLazDockPages;
+    FSplitter: TLazDockSplitter;
+  public
+    destructor Destroy; override;
+    property Splitter: TLazDockSplitter read FSplitter write FSplitter;
+    property Pages: TLazDockPages read FPages write FPages;
   end;
 
   { TLazDockTree }
@@ -46,12 +56,17 @@ type
     FAutoFreeDockSite: boolean;
   protected
     procedure UndockControlForDocking(AControl: TControl);
-    procedure BreakParentAnchors(Zone: TDockZone);
+    procedure BreakAnchors(Zone: TDockZone);
   public
     constructor Create(TheDockSite: TWinControl); override;
     destructor Destroy; override;
     procedure InsertControl(AControl: TControl; InsertAt: TAlign;
                             DropControl: TControl); override;
+    procedure BuildDockLayout(Zone: TLazDockZone);
+    procedure FindBorderControls(Zone: TLazDockZone; Side: TAnchorKind;
+                                 var List: TFPList);
+    function FindBorderControl(Zone: TLazDockZone; Side: TAnchorKind): TControl;
+    function GetAnchorControl(Zone: TDockZone; Side: TAnchorKind): TControl;
   public
     property AutoFreeDockSite: boolean read FAutoFreeDockSite write FAutoFreeDockSite;
   end;
@@ -162,9 +177,16 @@ begin
   end;
 end;
 
-procedure TLazDockTree.BreakParentAnchors(Zone: TDockZone);
+procedure TLazDockTree.BreakAnchors(Zone: TDockZone);
 begin
-
+  if Zone=nil then exit;
+  if Zone.ChildControl<>nil then begin
+    Zone.ChildControl.AnchorSide[akLeft].Control:=nil;
+    Zone.ChildControl.AnchorSide[akTop].Control:=nil;
+    Zone.ChildControl.Anchors:=[akLeft,akTop];
+  end;
+  BreakAnchors(Zone.FirstChild);
+  BreakAnchors(Zone.NextSibling);
 end;
 
 constructor TLazDockTree.Create(TheDockSite: TWinControl);
@@ -233,13 +255,17 @@ procedure TLazDockTree.InsertControl(AControl: TControl; InsertAt: TAlign;
        +-Zone2 (Form1,doNoOrient)
        +-Zone3 (Form2,doNoOrient)
 }
+const
+  SplitterWidth = 5;
+  SplitterHeight = 5;
 var
   DropZone: TDockZone;
-  NewZone: TDockZone;
+  NewZone: TLazDockZone;
   NewOrientation: TDockOrientation;
   NeedNewParentZone: Boolean;
   NewParentZone: TDockZone;
   OldParentZone: TDockZone;
+  NewBounds: TRect;
 begin
   if DropControl=nil then
     DropControl:=DockSite;
@@ -255,7 +281,7 @@ begin
   
   // dock
   // create a new zone for AControl
-  NewZone:=DockZoneClass.Create(Self,AControl);
+  NewZone:=DockZoneClass.Create(Self,AControl) as TLazDockZone;
   
   // insert new zone into tree
   if (DropZone=RootZone) and (RootZone.FirstChild=nil) then begin
@@ -319,30 +345,209 @@ begin
     else
       DropZone.Parent.AddAsLastChild(NewZone);
 
-    // break anchors to parent
-    BreakParentAnchors(RootZone);
-
-    // break anchors at insert position
-
+    // break anchors and resize DockSite
+    BreakAnchors(RootZone);
+    NewBounds:=DockSite.BoundsRect;
+    case InsertAt of
+    alLeft:  dec(NewBounds.Left,SplitterWidth+AControl.Width);
+    alRight: inc(NewBounds.Right,SplitterWidth+AControl.Width);
+    alTop:   dec(NewBounds.Top,SplitterHeight+AControl.Height);
+    alBottom:inc(NewBounds.Bottom,SplitterHeight+AControl.Height);
+    else     // no change
+    end;
+    DockSite.BoundsRect:=NewBounds;
     
-    
-    // resize DockSite
-    {if InsertAt in [alLeft,alRight] then
-      DockSite.Width:=DockSite.Width+NewSplitter.Width+AControl.Width
-    else if InsertAt in [alTop,alBottom] then
-      DockSite.Width:=DockSite.Height+NewSplitter.Height+AControl.Width
-    else if InsertAt in [alNone,alClient] then begin
-      // TODO
-      RaiseGDBException('TLazDockTree.InsertControl TODO: InsertAt in [alNone,alClient]');
-    end;}
+    // add AControl to DockSite
+    AControl.Visible:=false;
+    AControl.Parent:=nil;
+    AControl.Align:=alNone;
+    AControl.Anchors:=[akLeft,akTop];
+    AControl.AnchorSide[akLeft].Control:=nil;
+    AControl.AnchorSide[akTop].Control:=nil;
+    AControl.AutoSize:=false;
+    AControl.Parent:=DockSite;
 
-    // add splitter or page control
-    //NewSplitter:=TSplitter.Create(DockSite);
-
-    // add control to DockSite
-    
-    // anchor
+    // Build dock layout (anchors, splitters, pages)
+    BuildDockLayout(RootZone as TLazDockZone);
   end;
+end;
+
+procedure TLazDockTree.BuildDockLayout(Zone: TLazDockZone);
+var
+  ASide: TAnchorKind;
+  FixedSide1: TAnchorKind;
+  FixedSide2: TAnchorKind;
+  CurControl: TControl;
+  CurSplitter: TLazDockSplitter;
+  SideAnchorControl: TControl;
+  FixedSide1AnchorControl: TControl;
+  FixedSide2AnchorControl: TControl;
+begin
+  // reset anchors
+  BreakAnchors(RootZone);
+
+  // create needed TLazDockPages
+  if (Zone.Orientation=doPages) then begin
+    // a zone of pages -> needs a TLazDockPages
+    if (Zone.Pages=nil) then begin
+      Zone.Pages:=TLazDockPages.Create(nil);
+    end;
+  end else if Zone.Pages<>nil then begin
+    // zone no longer needs the pages
+    Zone.Pages.Free;
+    Zone.Pages:=nil;
+  end;
+  
+  // create needed TLazDockPage
+  RaiseGDBException('TODO create needed TLazDockPage');
+
+  // create needed TLazDockSplitter
+  if (Zone.Parent<>nil)
+  and (Zone.Parent.Orientation in [doVertical,doHorizontal])
+  and (Zone.PrevSibling<>nil) then begin
+    // a zone with a side sibling -> needs a TLazDockSplitter
+    if Zone.Splitter=nil then begin
+      Zone.Splitter:=TLazDockSplitter.Create(nil);
+    end;
+    CurSplitter:=Zone.Splitter;
+    if Zone.Parent.Orientation=doVertical then begin
+      ASide:=akLeft;
+      FixedSide1:=akTop;
+      FixedSide2:=akBottom;
+    end else begin
+      ASide:=akTop;
+      FixedSide1:=akLeft;
+      FixedSide2:=akRight;
+    end;
+    // anchor splitter
+    CurSplitter.Align:=alNone;
+    CurSplitter.ResizeAnchor:=ASide;
+    SideAnchorControl:=GetAnchorControl(Zone,ASide);
+    FixedSide1AnchorControl:=GetAnchorControl(Zone,FixedSide1);
+    FixedSide2AnchorControl:=GetAnchorControl(Zone,FixedSide2);
+    CurSplitter.Anchors:=[ASide,FixedSide1,FixedSide2];
+    CurSplitter.AnchorSide[ASide].Control:=SideAnchorControl;
+    CurSplitter.AnchorSide[FixedSide1].Control:=FixedSide1AnchorControl;
+    CurSplitter.AnchorSide[FixedSide2].Control:=FixedSide2AnchorControl;
+    // anchor control
+    CurControl:=Zone.ChildControl;
+    if CurControl<>nil then begin
+      CurControl.Anchors:=[akLeft,akTop,akRight,akBottom];
+      CurControl.AnchorSide[ASide].Control:=CurSplitter;
+      CurControl.AnchorSide[FixedSide1].Control:=FixedSide1AnchorControl;
+      CurControl.AnchorSide[FixedSide2].Control:=FixedSide2AnchorControl;
+      CurControl.AnchorSide[OppositeAnchor[ASide]].Control:=
+                                   GetAnchorControl(Zone,OppositeAnchor[ASide]);
+    end;
+    
+    RaiseGDBException('TODO');
+  end else if Zone.Splitter<>nil then begin
+    // zone no longer needs the splitter
+    Zone.Splitter.Free;
+    Zone.Splitter:=nil;
+  end;
+
+  RaiseGDBException('TODO');
+
+end;
+
+procedure TLazDockTree.FindBorderControls(Zone: TLazDockZone; Side: TAnchorKind;
+  var List: TFPList);
+begin
+  if List=nil then List:=TFPList.Create;
+  if Zone=nil then exit;
+  
+  if (Zone.Splitter<>nil) and (Zone.Parent<>nil)
+  and (Zone.Orientation=doVertical) then begin
+    // this splitter is leftmost, topmost, bottommost
+    if Side in [akLeft,akTop,akBottom] then
+      List.Add(Zone.Splitter);
+    if Side=akLeft then begin
+      // the splitter fills the whole left side => no more controls
+      exit;
+    end;
+  end;
+  if (Zone.Splitter<>nil) and (Zone.Parent<>nil)
+  and (Zone.Orientation=doHorizontal) then begin
+    // this splitter is topmost, leftmost, rightmost
+    if Side in [akTop,akLeft,akRight] then
+      List.Add(Zone.Splitter);
+    if Side=akTop then begin
+      // the splitter fills the whole top side => no more controls
+      exit;
+    end;
+  end;
+  if Zone.ChildControl<>nil then begin
+    // the ChildControl fills the whole zone (except for the splitter)
+    List.Add(Zone.ChildControl);
+    exit;
+  end;
+  if Zone.Pages<>nil then begin
+    // the pages fills the whole zone (except for the splitter)
+    List.Add(Zone.Pages);
+    exit;
+  end;
+
+  // go recursively through all child zones
+  if (Zone.Parent<>nil) and (Zone.Orientation in [doVertical,doHorizontal])
+  and (Zone.FirstChild<>nil) then
+  begin
+    if Side in [akLeft,akTop] then
+      FindBorderControls(Zone.FirstChild as TLazDockZone,Side,List)
+    else
+      FindBorderControls(Zone.GetLastChild as TLazDockZone,Side,List);
+  end;
+end;
+
+function TLazDockTree.FindBorderControl(Zone: TLazDockZone; Side: TAnchorKind
+  ): TControl;
+var
+  List: TFPList;
+begin
+  Result:=nil;
+  if Zone=nil then exit;
+  List:=nil;
+  FindBorderControls(Zone,Side,List);
+  if (List=nil) or (List.Count=0) then
+    Result:=DockSite
+  else
+    Result:=TControl(List[0]);
+  List.Free;
+end;
+
+function TLazDockTree.GetAnchorControl(Zone: TDockZone; Side: TAnchorKind
+  ): TControl;
+// find a control to anchor the Zone's Side
+begin
+  Result:=DockSite;
+  if (Zone=nil) or (Zone.Parent=nil) then exit;
+  case Zone.Parent.Orientation of
+  doHorizontal:
+    if (Side=akLeft) and (Zone.PrevSibling<>nil) then
+      Result:=FindBorderControl(Zone.PrevSibling as TLazDockZone,akRight)
+    else if (Side=akRight) and (Zone.NextSibling<>nil) then
+      Result:=FindBorderControl(Zone.NextSibling as TLazDockZone,akLeft)
+    else
+      Result:=GetAnchorControl(Zone.Parent,Side);
+  doVertical:
+    if (Side=akTop) and (Zone.PrevSibling<>nil) then
+      Result:=FindBorderControl(Zone.PrevSibling as TLazDockZone,akBottom)
+    else if (Side=akBottom) and (Zone.NextSibling<>nil) then
+      Result:=FindBorderControl(Zone.NextSibling as TLazDockZone,akTop)
+    else
+      Result:=GetAnchorControl(Zone.Parent,Side);
+  doPages:
+    Result:=GetAnchorControl(Zone.Parent,Side);
+  end;
+end;
+
+{ TLazDockZone }
+
+destructor TLazDockZone.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FSplitter);
+  FreeAndNil(FPages);
 end;
 
 end.

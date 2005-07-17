@@ -1750,6 +1750,8 @@ type
     property Visible: Boolean read GetVisible;
     property VisibleChildCount: Integer read GetVisibleChildCount;
     property Width: Integer read GetWidth;
+    property NextSibling: TDockZone read FNextSibling;
+    property PrevSibling: TDockZone read FPrevSibling;
   end;
   TDockZoneClass = class of TDockZone;
 
@@ -2950,6 +2952,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.312  2005/07/17 01:05:04  mattias
+  started basic docking anchoring and made Contributors.txt ASCII to show everywhere
+
   Revision 1.311  2005/07/16 00:08:26  marc
   * Reimplemented ZOrder
   + Added IDE option to move a control one forward/back

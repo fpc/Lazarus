@@ -175,7 +175,10 @@ end;
 procedure TWatchesDlg.lvWatchesMouseDown(Sender: TOBject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
+  {$IFDEF WIN32}
+  {$NOTE TODO repair TListView.PopupMenu and remove this hack}
   if Button in [mbRight] then mnuPopup.PopUp(X + lvWatches.Left + Left, Y + lvWatches.Top + Top);
+  {$ENDIF}
 end;
 
 procedure TWatchesDlg.lvWatchesDblClick(Sender: TObject);
@@ -292,6 +295,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.11  2005/07/17 01:05:04  mattias
+  started basic docking anchoring and made Contributors.txt ASCII to show everywhere
+
   Revision 1.10  2005/07/15 17:59:47  mattias
   improved watches: popup on rightclick, listview widths manually override under win32, double click shows adds/change  from Darius Blaszijk
 

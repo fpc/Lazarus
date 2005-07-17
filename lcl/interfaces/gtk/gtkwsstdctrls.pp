@@ -154,7 +154,7 @@ type
   public
     class procedure AppendText(const ACustomMemo: TCustomMemo;
                                const AText: string); override;
-{$ifdef GTK1}
+    {$ifdef GTK1}
     class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit;
                                 NewMode: TEchoMode); override;
@@ -168,7 +168,7 @@ type
                                   const NewScrollbars: TScrollStyle); override;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo;
                                 const NewWordWrap: boolean); override;
-{$endif}
+    {$endif}
   end;
 
   { TGtkWSEdit }
@@ -892,6 +892,7 @@ var
   i: integer;
 begin
   if (ACustomEdit.MaxLength >= 0) then begin
+    //debugln('TGtkWSCustomMemo.SetMaxLength ',DbgSName(ACustomEdit));
     ImplWidget:= GetWidgetInfo(PGtkWidget(ACustomEdit.Handle), true)^.CoreWidget;
     i:= gtk_text_get_length(GTK_TEXT(ImplWidget));
     if i > ACustomEdit.MaxLength then begin

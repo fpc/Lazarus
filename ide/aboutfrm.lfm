@@ -13,6 +13,7 @@ object AboutForm: TAboutForm
   Width = 577
   object Label1: TLabel
     Alignment = taCenter
+    BorderSpacing.OnChange = nil
     Caption = 'Version #:'
     ParentColor = True
     Left = 14
@@ -22,6 +23,7 @@ object AboutForm: TAboutForm
   end
   object Label2: TLabel
     Alignment = taCenter
+    BorderSpacing.OnChange = nil
     Caption = 'Date:'
     ParentColor = True
     Left = 14
@@ -30,6 +32,7 @@ object AboutForm: TAboutForm
     Width = 27
   end
   object Button1: TBitBtn
+    BorderSpacing.OnChange = nil
     Caption = 'Close'
     Glyph.Data = {
       F70200002F2A2058504D202A2F0A7374617469632063686172202A20626F7461
@@ -65,6 +68,7 @@ object AboutForm: TAboutForm
     Width = 75
   end
   object Notebook1: TNotebook
+    BorderSpacing.OnChange = nil
     PageIndex = 0
     Left = 215
     Height = 232
@@ -80,6 +84,7 @@ object AboutForm: TAboutForm
       Width = 349
       object AboutMemo: TMemo
         Align = alClient
+        BorderSpacing.OnChange = nil
         ReadOnly = True
         ScrollBars = ssAutoBoth
         TabOrder = 0
@@ -97,8 +102,9 @@ object AboutForm: TAboutForm
       Width = 349
       object ContributorsMemo: TMemo
         Align = alClient
+        BorderSpacing.OnChange = nil
         ReadOnly = True
-        ScrollBars = ssBoth
+        ScrollBars = ssAutoBoth
         TabOrder = 0
         Height = 202
         Width = 349
