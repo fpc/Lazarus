@@ -261,8 +261,6 @@ var
   CurControl: TControl;
   NewAnchors: TAnchors;
 begin
-  RaiseGDBException('TODO first position then anchor');
-
   if Zone=nil then exit;
   
   // get outside anchor controls
@@ -451,11 +449,17 @@ begin
     // insert new node
     if DropZone.Parent=nil then
       RaiseGDBException('TLazDockTree.InsertControl Inconsistency DropZone.Parent=nil');
-
     if InsertAt in [alLeft,alTop] then
       DropZone.Parent.AddAsFirstChild(NewZone)
     else
       DropZone.Parent.AddAsLastChild(NewZone);
+      
+    // resize control
+    if InsertAt in [alLeft,alRight] then begin
+
+    end else begin
+
+    end;
 
     // break anchors and resize DockSite
     BreakAnchors(RootZone);

@@ -114,6 +114,8 @@ begin
 end;
 
 function TOpenDialog.CheckFile(var AFilename: string): boolean;
+var
+  Dir: string;
 begin
   Result:=true;
   if (DefaultExt<>'') and (ExtractFileExt(AFilename)='')
@@ -137,13 +139,21 @@ begin
                [mbCancel],0);
     exit;
   end;
-  if (ofNoReadOnlyReturn in Options)
-  and (not FileIsWritable(AFilename)) then begin
-    Result:=false;
-    MessageDlg(rsfdFileReadOnlyTitle,
-               Format(rsfdFileReadOnly,[AFileName]),
-               mtError,[mbCancel],0);
-    exit;
+  if ofNoReadOnlyReturn in Options then begin
+    if FileExists(AFilename) then
+      Result := FileIsWritable(AFilename)
+    else begin { File does not exist - check directory }
+      Dir := ExtractFileDir(AFilename);
+      if Dir = '' then
+        Dir := '.';
+      Result := FileIsWritable(Dir);
+    end;
+    if not Result then begin
+        MessageDlg(rsfdFileReadOnlyTitle,
+                   Format(rsfdFileReadOnly,[AFileName]),
+                   mtError,[mbCancel],0);
+        exit;
+    end;
   end;
 end;
 
@@ -272,6 +282,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.23  2005/07/18 21:23:06  mattias
+  fixed TSaveDialog.Options ofNoReadOnlyReturn  fr omColin Western
+
   Revision 1.22  2005/01/05 14:46:35  mattias
   started anchor editor and moved OverWritePromp from lcl to gtk intf
 
