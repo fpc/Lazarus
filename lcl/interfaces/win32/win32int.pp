@@ -242,15 +242,6 @@ Uses
 ////////////////////////////////////////////////////
  Arrow, Calendar, CListBox, Spin, CheckLst, WinExt, LclProc;
 
-type
-  { Linked list of objects for events }
-  PLazObject = ^TLazObject;
-  TLazObject = Record
-    Parent: TObject;
-    Messages: TList;
-    Next: PLazObject;
-  End;
-
 const
   // needs to move
   MCM_FIRST             = $1000;
@@ -300,6 +291,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.141  2005/07/18 12:44:15  micha
+  remove unused TLazObject
+
   Revision 1.140  2005/07/18 12:37:58  micha
   remove TWin32WidgetSet.RecreateWnd, use the one from Controls unit
 
