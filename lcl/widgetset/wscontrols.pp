@@ -86,6 +86,9 @@ type
     class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); virtual;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); virtual;
 
+    { TODO: this procedure is only used in win32 interface }
+    class procedure AdaptBounds(const AWinControl: TWinControl;
+          var Left, Top, Width, Height: integer; var SuppressMove: boolean); virtual;
     class procedure ConstraintsChange(const AWinControl: TWinControl); virtual;
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; virtual;
@@ -125,6 +128,11 @@ begin
 end;
 
 { TWSWinControl }
+
+procedure TWSWinControl.AdaptBounds(const AWinControl: TWinControl;
+  var Left, Top, Width, Height: integer; var SuppressMove: boolean);
+begin
+end;
 
 procedure TWSWinControl.ConstraintsChange(const AWinControl: TWinControl);
 begin

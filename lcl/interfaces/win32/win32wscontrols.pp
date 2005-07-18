@@ -66,8 +66,6 @@ type
   protected
   public
     class procedure AddControl(const AControl: TControl); override;
-    class procedure AdaptBounds(const AWinControl: TWinControl;
-          var Left, Top, Width, Height: integer; var SuppressMove: boolean); virtual;
   
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
@@ -312,11 +310,6 @@ begin
   if ParentPanelHandle <> 0 then
     ChildHandle := ParentPanelHandle;
   SetParent(ChildHandle, ParentHandle);
-end;
-
-procedure TWin32WSWinControl.AdaptBounds(const AWinControl: TWinControl;
-  var Left, Top, Width, Height: integer; var SuppressMove: boolean);
-begin
 end;
 
 function  TWin32WSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
