@@ -345,31 +345,6 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.RecreateWnd
-  Params: Sender - The sending object
-  Returns: 0
-
-  Creates a window again
- ------------------------------------------------------------------------------}
-
-Function TWin32WidgetSet.RecreateWnd(Sender: TWinControl): Integer;
-Var
-  AParent : TWinControl;
-Begin
-  With Sender do
-  Begin
-    AParent := Parent;
-    // Destroy the window
-    Parent := Nil;
-    // Recreate the window
-    Parent := AParent;
-    Result:= Integer(Sender.Handle <> 0);
-    ResizeChild(Sender,Left,Top,Width,Height);
-    ShowHide(Sender);
-  End;
-End;
-
-{------------------------------------------------------------------------------
   Function: CreateTimer
   Params: Interval:
           TimerFunc: Callback
@@ -741,6 +716,9 @@ end;
 
 {
   $Log$
+  Revision 1.311  2005/07/18 12:37:58  micha
+  remove TWin32WidgetSet.RecreateWnd, use the one from Controls unit
+
   Revision 1.310  2005/05/03 14:56:33  vincents
   fixed getting the size of a minimized window (bug 886)
 

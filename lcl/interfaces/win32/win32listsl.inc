@@ -122,7 +122,7 @@ Procedure TWin32ListStringList.Sort;
 Begin
   // The win api doesn't allow to change the sort on the fly,
   // so is needed to recreate the window
-  TWin32WidgetSet(InterfaceObject).RecreateWnd(FSender);
+  RecreateWnd(FSender);
 End;
 
 {------------------------------------------------------------------------------
@@ -508,7 +508,7 @@ Procedure TWin32CListStringList.Sort;
 Begin
   // The win api doesn't allow to change the sort on the fly,
   // so is needed to recreate the window
-  TWin32WidgetSet(InterfaceObject).RecreateWnd(FSender);
+  RecreateWnd(FSender);
 End;
 
 {------------------------------------------------------------------------------
@@ -631,6 +631,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.41  2005/07/18 12:37:58  micha
+  remove TWin32WidgetSet.RecreateWnd, use the one from Controls unit
+
   Revision 1.40  2005/06/10 18:57:12  vincents
   fixed objects with a sorted listbox   from Jesus
 

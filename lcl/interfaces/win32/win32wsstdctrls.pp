@@ -516,13 +516,13 @@ end;
 procedure TWin32WSCustomListBox.SetSelectionMode(const ACustomListBox: TCustomListBox;
   const AExtendedSelect, AMultiSelect: boolean);
 begin
-  TWin32WidgetSet(InterfaceObject).RecreateWnd(ACustomListBox);
+  RecreateWnd(ACustomListBox);
 end;
 
 procedure TWin32WSCustomListBox.SetStyle(const ACustomListBox: TCustomListBox);
 begin
   // The listbox styles can't be updated, so recreate the listbox
-  TWin32WidgetSet(InterfaceObject).RecreateWnd(ACustomListBox);
+  RecreateWnd(ACustomListBox);
 end;
 
 procedure TWin32WSCustomListBox.SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean);
@@ -604,7 +604,7 @@ begin
   if (CurrentStyle and ComboBoxStylesMask)=
     ComboBoxStyles[TCustomComboBox(ACustomComboBox).Style] then exit;
 
-  TWin32WidgetSet(InterfaceObject).RecreateWnd(ACustomComboBox);
+  RecreateWnd(ACustomComboBox);
 end;
 
 function  TWin32WSCustomComboBox.GetItemIndex(const ACustomComboBox: TCustomComboBox): integer;
@@ -896,7 +896,7 @@ end;
 procedure TWin32WSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle);
 begin
   // TODO: check if can be done without recreation
-  TWin32WidgetSet(InterfaceObject).RecreateWnd(ACustomMemo);
+  RecreateWnd(ACustomMemo);
 end;
 
 procedure TWin32WSCustomMemo.SetText(const AWinControl: TWinControl; const AText: string);
@@ -907,7 +907,7 @@ end;
 procedure TWin32WSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean);
 begin
   // TODO: check if can be done without recreation
-  TWin32WidgetSet(InterfaceObject).RecreateWnd(ACustomMemo);
+  RecreateWnd(ACustomMemo);
 end;
 
 { TWin32WSCustomStaticText }
@@ -942,7 +942,7 @@ end;
 procedure TWin32WSCustomStaticText.SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment);
 begin
   // can not apply on the fly: needs window recreate
-  TWin32WidgetSet(InterfaceObject).RecreateWnd(ACustomStaticText);
+  RecreateWnd(ACustomStaticText);
 end;
 
 { TWin32WSCustomCheckBox }

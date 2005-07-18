@@ -320,7 +320,7 @@ end;
 
 procedure TWin32WSWinControl.SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
 begin
-  TWin32WidgetSet(InterfaceObject).RecreateWnd(AWinControl);
+  RecreateWnd(AWinControl);
 end;
 
 procedure TWin32WSWinControl.SetChildZPosition(const AWinControl, AChild: TWinControl; const AOldPos, ANewPos: Integer; const AChildren: TList);

@@ -401,7 +401,7 @@ begin
          Integer(Smooth) * PBS_SMOOTH) or
        ((GetWindowLong(Handle, GWL_STYLE) and PBS_VERTICAL) <>
          Integer((Orientation = pbVertical) or (Orientation = pbTopDown)) * PBS_VERTICAL) then
-      TWin32WidgetSet(InterfaceObject).RecreateWnd(AProgressBar);
+      RecreateWnd(AProgressBar);
 
     SendMessage(Handle, PBM_SETRANGE, 0, MakeLParam(Min, Max));
     SendMessage(Handle, PBM_SETPOS, Position, 0);

@@ -163,7 +163,6 @@ Type
     Procedure AppTerminate; Override;
     procedure ShowHide(Sender: TObject);
     Function  InitHintFont(HintFont: TObject): Boolean; Override;
-    Function  RecreateWnd(Sender: TWinControl): Integer; virtual;
     Procedure AttachMenuToWindow(AMenuObject: TComponent); Override;
     procedure UpdateThemesActive;
 
@@ -301,6 +300,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.140  2005/07/18 12:37:58  micha
+  remove TWin32WidgetSet.RecreateWnd, use the one from Controls unit
+
   Revision 1.139  2005/05/05 14:51:05  micha
   better looking arrow, not ideal, but better anyway (fixes 760)
 
