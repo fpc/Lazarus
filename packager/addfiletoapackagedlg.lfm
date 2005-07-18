@@ -1,0 +1,116 @@
+object AddFileToAPackageDialog: TAddFileToAPackageDialog
+  Caption = 'AddFileToAPackageDialog'
+  ClientHeight = 362
+  ClientWidth = 448
+  OnClose = AddFileToAPackageDlgClose
+  PixelsPerInch = 112
+  Position = poScreenCenter
+  ShowHint = True
+  HorzScrollBar.Page = 447
+  VertScrollBar.Page = 361
+  Left = 573
+  Height = 362
+  Top = 331
+  Width = 448
+  object FileGroupBox: TGroupBox
+    BorderSpacing.OnChange = nil
+    Caption = 'FileGroupBox'
+    ClientHeight = 191
+    ClientWidth = 429
+    ParentColor = True
+    TabOrder = 0
+    Left = 8
+    Height = 208
+    Top = 8
+    Width = 433
+    object UnitNameLabel: TLabel
+      Caption = 'UnitNameLabel'
+      Color = clNone
+      Left = 12
+      Height = 17
+      Top = 40
+      Width = 404
+    end
+    object FileNameEdit: TEdit
+      ReadOnly = True
+      TabOrder = 0
+      Text = 'FileNameEdit'
+      Left = 12
+      Height = 23
+      Top = 8
+      Width = 404
+    end
+    object UnitNameEdit: TEdit
+      TabOrder = 1
+      Text = 'UnitNameEdit'
+      Left = 12
+      Height = 23
+      Top = 56
+      Width = 404
+    end
+    object HasRegisterProcCheckBox: TCheckBox
+      Caption = 'HasRegisterProcCheckBox'
+      TabOrder = 2
+      Left = 14
+      Height = 23
+      Top = 88
+      Width = 404
+    end
+    object FileTypeRadioGroup: TRadioGroup
+      Caption = 'FileTypeRadioGroup'
+      ParentColor = True
+      Left = 12
+      Height = 72
+      Top = 112
+      Width = 404
+    end
+  end
+  object PackagesGroupBox: TGroupBox
+    Caption = 'PackagesGroupBox'
+    ClientHeight = 71
+    ClientWidth = 429
+    ParentColor = True
+    TabOrder = 1
+    Left = 8
+    Height = 88
+    Top = 232
+    Width = 433
+    object PackagesComboBox: TComboBox
+      MaxLength = 0
+      TabOrder = 0
+      Text = 'PackagesComboBox'
+      Left = 12
+      Height = 21
+      Top = 8
+      Width = 404
+    end
+    object ShowAllCheckBox: TCheckBox
+      Caption = 'ShowAllCheckBox'
+      OnClick = ShowAllCheckBoxClick
+      TabOrder = 1
+      Left = 12
+      Height = 23
+      Top = 40
+      Width = 404
+    end
+  end
+  object CancelButton: TButton
+    Caption = 'CancelButton'
+    ModalResult = 2
+    TabOrder = 2
+    Left = 366
+    Height = 25
+    Top = 328
+    Width = 75
+  end
+  object OkButton: TButton
+    BorderSpacing.OnChange = nil
+    Caption = 'OkButton'
+    OnClick = OkButtonClick
+    TabOrder = 3
+    Left = 280
+    Height = 25
+    Top = 328
+    Width = 75
+  end
+end

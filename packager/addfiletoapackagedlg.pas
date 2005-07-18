@@ -31,6 +31,7 @@
   Abstract:
     The dialog for selecting the package to add a file to.
 }
+
 unit AddFileToAPackageDlg;
 
 {$mode objfpc}{$H+}
@@ -38,27 +39,29 @@ unit AddFileToAPackageDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Buttons, ExtCtrls, StdCtrls,
+  Classes, SysUtils, LResources, Forms, Controls, Buttons, ExtCtrls, StdCtrls,
   LazarusIDEStrConsts, Dialogs, {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF},
-  FileUtil, IDEProcs, IDEOptionDefs, ComponentReg, PackageDefs, PackageSystem;
-  
+  FileUtil, IDEProcs, IDEOptionDefs, ComponentReg, PackageDefs, PackageSystem,
+  Arrow;
+
 type
-  TAddFileToAPackageDlg = class(TForm)
-    FileGroupBox: TGroupBox;
-    FileNameEdit: TEdit;
-    UnitNameLabel: TLabel;
-    UnitNameEdit: TEdit;
+
+  { TAddFileToAPackageDialog }
+
+  TAddFileToAPackageDialog = class(TForm)
+    CancelButton: TButton;
+    OkButton: TButton;
     HasRegisterProcCheckBox: TCheckBox;
     FileTypeRadioGroup: TRadioGroup;
+    UnitNameEdit: TEdit;
+    FileNameEdit: TEdit;
+    FileGroupBox: TGroupBox;
     PackagesGroupBox: TGroupBox;
+    UnitNameLabel: TLabel;
     PackagesComboBox: TComboBox;
     ShowAllCheckBox: TCheckBox;
-    OkButton: TButton;
-    CancelButton: TButton;
     procedure AddFileToAPackageDlgClose(Sender: TObject;
       var CloseAction: TCloseAction);
-    procedure AddFileToAPackageDlgResize(Sender: TObject);
-    procedure FileGroupBoxResize(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure PackagesGroupBoxResize(Sender: TObject);
     procedure ShowAllCheckBoxClick(Sender: TObject);
@@ -82,63 +85,41 @@ type
     property FileType: TPkgFileType read GetFileType write SetFileType;
     property HasRegisterProc: boolean read GetHasRegisterProc write SetHasRegisterProc;
   end;
-  
+
+
 function ShowAddFileToAPackageDlg(const Filename, UnitName: string;
   HasRegisterProc: boolean): TModalResult;
 
+
+var
+  AddFileToAPackageDialog: TAddFileToAPackageDialog;
+
 implementation
+
 
 function ShowAddFileToAPackageDlg(const Filename, UnitName: string;
   HasRegisterProc: boolean): TModalResult;
 var
-  Dialog: TAddFileToAPackageDlg;
+  AddFileToAPackageDialog: TAddFileToAPackageDialog;
 begin
-  Dialog:=TAddFileToAPackageDlg.Create(nil);
-  Dialog.Filename:=Filename;
-  Dialog.UnitName:=UnitName;
-  Dialog.HasRegisterProc:=HasRegisterProc;
-  Dialog.UpdateAvailablePackages;
-  Result:=Dialog.ShowModal;
-  Dialog.Free;
+  AddFileToAPackageDialog:=TAddFileToAPackageDialog.Create(nil);
+  AddFileToAPackageDialog.Filename:=Filename;
+  AddFileToAPackageDialog.UnitName:=UnitName;
+  AddFileToAPackageDialog.HasRegisterProc:=HasRegisterProc;
+  AddFileToAPackageDialog.UpdateAvailablePackages;
+  Result:=AddFileToAPackageDialog.ShowModal;
+  AddFileToAPackageDialog.Free;
 end;
 
-{ TAddFileToAPackageDlg }
+{ TAddFileToAPackageDialog }
 
-procedure TAddFileToAPackageDlg.AddFileToAPackageDlgClose(Sender: TObject;
+procedure TAddFileToAPackageDialog.AddFileToAPackageDlgClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
 end;
 
-procedure TAddFileToAPackageDlg.AddFileToAPackageDlgResize(Sender: TObject);
-begin
-  with FileGroupBox do
-    SetBounds(10,10,Parent.ClientWidth-20,120);
-
-  with PackagesGroupBox do
-    SetBounds(10,FileGroupBox.Top+FileGroupBox.Height+5,Parent.ClientWidth-20,75);
-
-  with OkButton do
-    SetBounds(Parent.ClientWidth-200,Parent.ClientHeight-30,80,Height);
-
-  with CancelButton do
-    SetBounds(Parent.ClientWidth-100,Parent.ClientHeight-30,80,Height);
-end;
-
-procedure TAddFileToAPackageDlg.FileGroupBoxResize(Sender: TObject);
-begin
-  with UnitNameLabel do
-    SetBounds(5,33,90,Height);
-  with UnitNameEdit do
-    SetBounds(UnitNameLabel.Left+UnitNameLabel.Width+3,30,250,Height);
-  with HasRegisterProcCheckBox do
-    SetBounds(5,60,200,Height);
-    
-  with FileTypeRadioGroup do
-    SetBounds(0,30,Parent.ClientWidth,Parent.ClientHeight-30);
-end;
-
-procedure TAddFileToAPackageDlg.OkButtonClick(Sender: TObject);
+procedure TAddFileToAPackageDialog.OkButtonClick(Sender: TObject);
 var
   PkgID: TLazPackageID;
   APackage: TLazPackage;
@@ -161,7 +142,7 @@ begin
         mtError,[mbCancel],0);
       exit;
     end;
-    
+
     // check if package is readonly
     if APackage.ReadOnly then begin
       MessageDlg(lisAF2PPackageIsReadOnly,
@@ -185,70 +166,39 @@ begin
     APackage.AddFile(Filename,UnitName,FileType,[],cpNormal);
     if APackage.Editor<>nil then APackage.Editor.UpdateAll;
     APackage.EndUpdate;
-    
+
     ModalResult:=mrOk;
   finally
     PkgID.Free;
   end;
 end;
 
-procedure TAddFileToAPackageDlg.PackagesGroupBoxResize(Sender: TObject);
+procedure TAddFileToAPackageDialog.PackagesGroupBoxResize(Sender: TObject);
 begin
   with ShowAllCheckBox do
     SetBounds(10,30,200,Height);
 end;
 
-procedure TAddFileToAPackageDlg.ShowAllCheckBoxClick(Sender: TObject);
+procedure TAddFileToAPackageDialog.ShowAllCheckBoxClick(Sender: TObject);
 begin
   UpdateAvailablePackages;
 end;
 
-procedure TAddFileToAPackageDlg.SetupComponents;
+procedure TAddFileToAPackageDialog.SetupComponents;
 var
   pft: TPkgFileType;
 begin
-  FileGroupBox:=TGroupBox.Create(Self);
-  with FileGroupBox do begin
-    Name:='FileGroupBox';
-    Parent:=Self;
-    Caption:=lisToDoLFile;
-    OnResize:=@FileGroupBoxResize;
-  end;
+  FileGroupBox.Caption:=lisToDoLFile;
+  FileNameEdit.Text:='';
+  UnitNameLabel.Caption:=lisAF2PUnitName;
+  UnitNameEdit.Text:='';
+  HasRegisterProcCheckBox.Caption:=lisAF2PHasRegisterProcedure;
+  PackagesGroupBox.Caption:=lisAF2PDestinationPackage;
+  ShowAllCheckBox.Caption:=lisAF2PShowAll;
+  OkButton.Caption:=lisLazBuildOk;
+  CancelButton.Caption:=dlgCancel;
 
-  FileNameEdit:=TEdit.Create(Self);
-  with FileNameEdit do begin
-    Name:='FileNameEdit';
-    Parent:=FileGroupBox;
-    Text:='';
-    Align:=alTop;
-    ReadOnly:=true;
-  end;
-  
-  UnitNameLabel:=TLabel.Create(Self);
-  with UnitNameLabel do begin
-    Name:='UnitNameLabel';
-    Parent:=FileGroupBox;
-    Caption:=lisAF2PUnitName;
-  end;
-  
-  UnitNameEdit:=TEdit.Create(Self);
-  with UnitNameEdit do begin
-    Name:='UnitNameEdit';
-    Parent:=FileGroupBox;
-    Text:='';
-  end;
-  
-  HasRegisterProcCheckBox:=TCheckBox.Create(Self);
-  with HasRegisterProcCheckBox do begin
-    Name:='HasRegisterProcCheckBox';
-    Parent:=FileGroupBox;
-    Caption:=lisAF2PHasRegisterProcedure;
-  end;
-  
-  FileTypeRadioGroup:=TRadioGroup.Create(Self);
   with FileTypeRadioGroup do begin
-    Name:='FileTypeRadioGroup';
-    Parent:=FileGroupBox;
     Caption:=lisAF2PFileType;
     with Items do begin
       BeginUpdate;
@@ -261,49 +211,9 @@ begin
     ItemIndex:=0;
     Columns:=2;
   end;
-
-  PackagesGroupBox:=TGroupBox.Create(Self);
-  with PackagesGroupBox do begin
-    Name:='PackagesGroupBox';
-    Parent:=Self;
-    Caption:=lisAF2PDestinationPackage;
-    OnResize:=@PackagesGroupBoxResize;
-  end;
-  
-  PackagesComboBox:=TComboBox.Create(Self);
-  with PackagesComboBox do begin
-    Name:='PackagesComboBox';
-    Parent:=PackagesGroupBox;
-    Align:=alTop;
-  end;
-  
-  ShowAllCheckBox:=TCheckBox.Create(Self);
-  with ShowAllCheckBox do begin
-    Name:='ShowAllCheckBox';
-    Parent:=PackagesGroupBox;
-    Caption:=lisAF2PShowAll;
-    Checked:=false;
-    OnClick:=@ShowAllCheckBoxClick;
-  end;
-  
-  OkButton:=TButton.Create(Self);
-  with OkButton do begin
-    Name:='OkButton';
-    Parent:=Self;
-    Caption:=lisLazBuildOk;
-    OnClick:=@OkButtonClick;
-  end;
-  
-  CancelButton:=TButton.Create(Self);
-  with CancelButton do begin
-    Name:='CancelButton';
-    Parent:=Self;
-    Caption:=dlgCancel;
-    ModalResult:=mrCancel;
-  end;
 end;
 
-procedure TAddFileToAPackageDlg.SetFilename(const AValue: string);
+procedure TAddFileToAPackageDialog.SetFilename(const AValue: string);
 var
   NewPFT: TPkgFileType;
 begin
@@ -324,24 +234,24 @@ begin
   FileType:=NewPFT;
 end;
 
-procedure TAddFileToAPackageDlg.SetHasRegisterProc(const AValue: boolean);
+procedure TAddFileToAPackageDialog.SetHasRegisterProc(const AValue: boolean);
 begin
   if HasRegisterProc=AValue then exit;
   HasRegisterProcCheckBox.Checked:=AValue;
 end;
 
-procedure TAddFileToAPackageDlg.SetUnitName(const AValue: string);
+procedure TAddFileToAPackageDialog.SetUnitName(const AValue: string);
 begin
   if UnitName=AValue then exit;
   UnitNameEdit.Text:=AValue;
 end;
 
-function TAddFileToAPackageDlg.GetFilename: string;
+function TAddFileToAPackageDialog.GetFilename: string;
 begin
   Result:=FileNameEdit.Text;
 end;
 
-function TAddFileToAPackageDlg.GetFileType: TPkgFileType;
+function TAddFileToAPackageDialog.GetFileType: TPkgFileType;
 var
   i: Integer;
   CurPFT: TPkgFileType;
@@ -362,17 +272,17 @@ begin
   end;
 end;
 
-function TAddFileToAPackageDlg.GetHasRegisterProc: boolean;
+function TAddFileToAPackageDialog.GetHasRegisterProc: boolean;
 begin
   Result:=HasRegisterProcCheckBox.Checked;
 end;
 
-function TAddFileToAPackageDlg.GetUnitName: string;
+function TAddFileToAPackageDialog.GetUnitName: string;
 begin
   Result:=UnitNameEdit.Text;
 end;
 
-procedure TAddFileToAPackageDlg.SetFileType(const AValue: TPkgFileType);
+procedure TAddFileToAPackageDialog.SetFileType(const AValue: TPkgFileType);
 var
   ShowUnitProps: Boolean;
   i: Integer;
@@ -397,27 +307,22 @@ begin
   FileTypeRadioGroup.Visible:=not ShowUnitProps;
 end;
 
-constructor TAddFileToAPackageDlg.Create(TheOwner: TComponent);
+constructor TAddFileToAPackageDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  Name:='AddFileToAPackageDlg';
   Caption:=lisAF2PAddFileToAPackage;
   fPackages:=TAVLTree.Create(@CompareLazPackageID);
-  Position:=poScreenCenter;
-  IDEDialogLayoutList.ApplyLayout(Self,320,170);
+  IDEDialogLayoutList.ApplyLayout(Self,448,362);
   SetupComponents;
-  OnClose:=@AddFileToAPackageDlgClose;
-  OnResize:=@AddFileToAPackageDlgResize;
-  OnResize(Self);
 end;
 
-destructor TAddFileToAPackageDlg.Destroy;
+destructor TAddFileToAPackageDialog.Destroy;
 begin
   fPackages.Free;
   inherited Destroy;
 end;
 
-procedure TAddFileToAPackageDlg.UpdateAvailablePackages;
+procedure TAddFileToAPackageDialog.UpdateAvailablePackages;
 var
   i: Integer;
   APackage: TLazPackage;
@@ -458,5 +363,7 @@ begin
   sl.Free;
 end;
 
-end.
+initialization
+  {$I addfiletoapackagedlg.lrs}
 
+end.
