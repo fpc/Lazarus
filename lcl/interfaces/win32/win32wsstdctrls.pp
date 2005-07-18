@@ -59,6 +59,8 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
+    class procedure AdaptBounds(const AWinControl: TWinControl;
+          var Left, Top, Width, Height: integer; var SuppressMove: boolean);
   end;
 
   { TWin32WSGroupBox }
@@ -77,6 +79,8 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
+    class procedure AdaptBounds(const AWinControl: TWinControl;
+          var Left, Top, Width, Height: integer; var SuppressMove: boolean);
     class function  GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
     class function  GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;
     class function  GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
@@ -388,6 +392,22 @@ begin
   Result := Params.Window;
 end;
 
+procedure TWin32WSCustomGroupBox.AdaptBounds(const AWinControl: TWinControl;
+  var Left, Top, Width, Height: integer; var SuppressMove: boolean);
+var
+  WinHandle, BuddyHandle: HWND;
+begin
+  WinHandle := AWinControl.Handle;
+  // check if we have a ``container'', if so, move that
+  BuddyHandle := GetWindowInfo(WinHandle)^.ParentPanel;
+  if BuddyHandle <> 0 then
+  begin
+    MoveWindow(BuddyHandle, Left, Top, Width, Height, false);
+    Left := 0;
+    Top := 0;
+  end;
+end;
+  
 { TWin32WSCustomListBox }
 
 function TWin32WSCustomListBox.CreateHandle(const AWinControl: TWinControl;
@@ -581,6 +601,18 @@ begin
     end else BuddyWindowInfo:=nil;
   end;
   Result := Params.Window;
+end;
+
+procedure TWin32WSCustomComboBox.AdaptBounds(const AWinControl: TWinControl;
+  var Left, Top, Width, Height: integer; var SuppressMove: boolean);
+var
+  WinHandle: HWND;
+  StringList: TWin32ComboBoxStringList;
+begin
+  WinHandle := AWinControl.Handle;
+  StringList := TWin32ComboBoxStringList(GetWindowInfo(WinHandle)^.List);
+  if StringList <> nil then
+    Height := StringList.ComboHeight;
 end;
 
 function  TWin32WSCustomComboBox.GetSelStart(const ACustomComboBox: TCustomComboBox): integer;

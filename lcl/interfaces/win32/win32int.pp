@@ -166,9 +166,6 @@ Type
     Procedure AttachMenuToWindow(AMenuObject: TComponent); Override;
     procedure UpdateThemesActive;
 
-    // procedures needed by interface methods
-    procedure ResizeChild(Sender: TWinControl; Left, Top, Width, Height: Integer);
-    
     // create and destroy
     function CreateComponent(Sender : TObject): THandle; override;
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer; override;
@@ -242,11 +239,6 @@ Uses
 ////////////////////////////////////////////////////
  Arrow, Calendar, CListBox, Spin, CheckLst, WinExt, LclProc;
 
-const
-  // needs to move
-  MCM_FIRST             = $1000;
-  MCM_GETMINREQRECT     = MCM_FIRST + 9;
-      
 type
   TMouseDownFocusStatus = (mfNone, mfFocusSense, mfFocusChanged);
 
@@ -291,6 +283,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.142  2005/07/18 13:49:54  micha
+  split up implementation of ResizeChild
+
   Revision 1.141  2005/07/18 12:44:15  micha
   remove unused TLazObject
 

@@ -47,6 +47,8 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
+    class procedure AdaptBounds(const AWinControl: TWinControl;
+          var Left, Top, Width, Height: integer; var SuppressMove: boolean);
     class function  GetDateTime(const ACalendar: TCustomCalendar): TDateTime; override;
     class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); override;
     class procedure SetDisplaySettings(const ACalendar: TCustomCalendar; const ASettings: TDisplaySettings); override;
@@ -80,7 +82,24 @@ begin
   FinishCreateWindow(AWinControl, Params, false);
   Result := Params.Window;
   // resize to proper size
-  TWin32WidgetSet(InterfaceObject).ResizeChild(AWinControl, Params.Left, Params.Top, 0, 0);
+  SetBounds(AWinControl, Params.Left, Params.Top, 0, 0);
+end;
+
+const
+  // TODO: needs to move
+  MCM_FIRST             = $1000;
+  MCM_GETMINREQRECT     = MCM_FIRST + 9;
+      
+procedure TWin32WSCalendar.AdaptBounds(const AWinControl: TWinControl;
+  var Left, Top, Width, Height: integer; var SuppressMove: boolean);
+var
+  WinHandle: HWND;
+  lRect: TRect;
+begin
+  WinHandle := AWinControl.Handle;
+  Windows.SendMessage(WinHandle, MCM_GETMINREQRECT, 0, LPARAM(@lRect));
+  Width := lRect.Right;
+  Height := lRect.Bottom;
 end;
 
 function  TWin32WSCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;

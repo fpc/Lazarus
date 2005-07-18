@@ -46,6 +46,8 @@ type
   private
   protected
   public
+    class function  AdaptBounds(const AWinControl: TWinControl;
+          var Left, Top, Width, Height: integer): boolean;
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class function  GetSelStart(const ACustomSpinEdit: TCustomSpinEdit): integer; override;
@@ -113,6 +115,20 @@ begin
   WindowCreateInitBuddy(AWinControl, Params);
   Params.BuddyWindowInfo^.isChildEdit := true;
   Result := Params.Window;
+end;
+
+function  TWin32WSCustomSpinEdit.AdaptBounds(const AWinControl: TWinControl;
+  var Left, Top, Width, Height: integer): boolean;
+var
+  WinHandle, BuddyHandle: HWND;
+begin
+  WinHandle := AWinControl.Handle;
+  // detach from buddy first
+  BuddyHandle := Windows.SendMessage(WinHandle, UDM_SETBUDDY, 0, 0);
+  MoveWindow(BuddyHandle, Left, Top, Width, Height, True);
+  // reattach
+  Windows.SendMessage(WinHandle, UDM_SETBUDDY, BuddyHandle, 0);
+  Result := true;
 end;
 
 function  TWin32WSCustomSpinEdit.GetSelStart(const ACustomSpinEdit: TCustomSpinEdit): integer;

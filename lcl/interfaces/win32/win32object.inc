@@ -515,84 +515,6 @@ Begin
   IconName := StrToPChar(Str);
 End;
 
-{------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.ResizeChild
-  Params:  Sender                   - the object which invoked this function
-           Left, Top, Width ,Height - new dimensions for the control
-  Returns: Nothing
-
-  Resize a window
- ------------------------------------------------------------------------------}
-Procedure TWin32WidgetSet.ResizeChild(Sender: TWinControl;
-  Left, Top, Width, Height: Integer);
-
-Var
-{$IFDEF VerboseSizeMsg}
-  OldLeft: Integer;
-  OldTop: Integer;
-{$ENDIF}
-  lRect: TRect;
-  WinHandle, BuddyHandle: HWND;
-  StringList: TWin32ComboBoxStringList;
-  suppressMove: boolean;
-Begin
-  // if not Sender.HandleAllocated then exit; --> Already checked (LM_SETSIZE and LM_RECREATEWND)
-  {$IFDEF VerboseSizeMsg}
-  OldLeft:=Left;
-  OldTop:=Top;
-  {$ENDIF}
-  LCLBoundsToWin32Bounds(Sender, Left, Top, Width, Height);
-  {$IFDEF VerboseSizeMsg}
-  writeln('TWin32WidgetSet.ResizeChild A ',Sender.Name,':',Sender.ClassName,
-    ' LCL=',OldLeft,',',OldTop,',',Width,',',Height,
-    ' Win32=',Left,',',Top,',',Width,',',Height,
-    '');
-  {$ENDIF}
-  WinHandle := Sender.Handle;
-  suppressMove := false;
-  case Sender.FCompStyle of
-  csSpinEdit:
-  begin
-    // detach from buddy first
-    BuddyHandle := Windows.SendMessage(WinHandle, UDM_SETBUDDY, 0, 0);
-    MoveWindow(BuddyHandle, Left, Top, Width, Height, True);
-    // reattach
-    Windows.SendMessage(WinHandle, UDM_SETBUDDY, BuddyHandle, 0);
-    suppressMove := true;
-  end;
-  
-  csGroupBox:
-  begin
-    // check if we have a ``container'', if so, move that
-    BuddyHandle := GetWindowInfo(WinHandle)^.ParentPanel;
-    if BuddyHandle <> 0 then
-    begin
-      MoveWindow(BuddyHandle, Left, Top, Width, Height, false);
-      Left := 0;
-      Top := 0;
-    end;
-  end;
-  
-  else
-    if Sender is TCustomComboBox then
-    begin
-      StringList := TWin32ComboBoxStringList(GetWindowInfo(WinHandle)^.List);
-      if StringList <> nil then
-        Height := StringList.ComboHeight;
-    end else
-    if Sender is TCustomCalendar then
-    begin
-      Windows.SendMessage(WinHandle, MCM_GETMINREQRECT, 0, LPARAM(@lRect));
-      Width := lRect.Right;
-      Height := lRect.Bottom;
-    end;
-  end;
-  
-  if not suppressMove then
-    MoveWindow(WinHandle, Left, Top, Width, Height, True);
-  LCLControlSizeNeedsUpdate(Sender,False);
-End;
-
  {------------------------------------------------------------------------------
   Function: TWin32WidgetSet.CreateComponent
   Params:   Sender - object for which to create visual representation
@@ -716,6 +638,9 @@ end;
 
 {
   $Log$
+  Revision 1.312  2005/07/18 13:49:54  micha
+  split up implementation of ResizeChild
+
   Revision 1.311  2005/07/18 12:37:58  micha
   remove TWin32WidgetSet.RecreateWnd, use the one from Controls unit
 

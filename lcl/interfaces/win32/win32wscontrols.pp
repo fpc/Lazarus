@@ -66,6 +66,8 @@ type
   protected
   public
     class procedure AddControl(const AControl: TControl); override;
+    class procedure AdaptBounds(const AWinControl: TWinControl;
+          var Left, Top, Width, Height: integer; var SuppressMove: boolean); virtual;
   
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
@@ -312,6 +314,11 @@ begin
   SetParent(ChildHandle, ParentHandle);
 end;
 
+procedure TWin32WSWinControl.AdaptBounds(const AWinControl: TWinControl;
+  var Left, Top, Width, Height: integer; var SuppressMove: boolean);
+begin
+end;
+
 function  TWin32WSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
 begin
   AText := '';
@@ -366,9 +373,35 @@ begin
     SWP_NOSIZE or SWP_NOSENDCHANGING);
 end;
 
-procedure TWin32WSWinControl.SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer);
+{------------------------------------------------------------------------------
+  Method:  SetBounds
+  Params:  AWinControl                  - the object which invoked this function
+           ALeft, ATop, AWidth, AHeight - new dimensions for the control
+  Pre:     AWinControl.HandleAllocated
+  Returns: Nothing
+
+  Resize a window
+ ------------------------------------------------------------------------------}
+procedure TWin32WSWinControl.SetBounds(const AWinControl: TWinControl; 
+  const ALeft, ATop, AWidth, AHeight: Integer);
+var
+  IntfLeft, IntfTop, IntfWidth, IntfHeight: integer;
+  suppressMove: boolean;
 begin
-  TWin32WidgetSet(InterfaceObject).ResizeChild(AWinControl, ALeft, ATop, AWidth, AHeight);
+  IntfLeft := ALeft; IntfTop := ATop;
+  IntfWidth := AWidth; IntfHeight := AHeight;
+  LCLBoundsToWin32Bounds(AWinControl, IntfLeft, IntfTop, IntfWidth, IntfHeight);
+  {$IFDEF VerboseSizeMsg}
+  writeln('TWin32WSWinControl.ResizeWindow A ',AWinControl.Name,':',AWinControl.ClassName,
+    ' LCL=',ALeft,',',ATop,',',AWidth,',',AHeight,
+    ' Win32=',IntfLeft,',',IntfTop,',',IntfWidth,',',IntfHeight,
+    '');
+  {$ENDIF}
+  suppressMove := false;
+  AdaptBounds(AWinControl, IntfLeft, IntfTop, IntfWidth, IntfHeight, suppressMove);
+  if not suppressMove then
+    MoveWindow(AWinControl.Handle, IntfLeft, IntfTop, IntfWidth, IntfHeight, true);
+  LCLControlSizeNeedsUpdate(AWinControl, false);
 end;
 
 procedure TWin32WSWinControl.SetColor(const AWinControl: TWinControl);
