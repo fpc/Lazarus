@@ -627,6 +627,8 @@ type
     procedure BeforeMoveSelection(const DCol,DRow: Integer); virtual;
     procedure CalcAutoSizeColumn(const Index: Integer; var AMin,AMax,APriority: Integer); dynamic;
     procedure CalcFocusRect(var ARect: TRect);
+    function  CanEditShow: Boolean; virtual;
+    function  CanGridAcceptKey(Key: Word; Shift: TShiftState): Boolean; dynamic;
     procedure CellClick(const aCol,aRow: Integer); virtual;
     procedure CheckLimits(var aCol,aRow: Integer);
     procedure ColRowDeleted(IsColumn: Boolean; index: Integer); dynamic;
@@ -792,6 +794,7 @@ type
     property GridLineStyle: TPenStyle read FGridLineStyle write SetGridLineStyle;
     property GridLineWidth: Integer read FGridLineWidth write SetGridLineWidth default 1;
     property GridWidth: Integer read FGCache.GridWidth;
+    property InplaceEditor: TWinControl read FEditor;
     property LeftCol:Integer read GetLeftCol write SetLeftCol;
     property Options: TGridOptions read FOptions write SetOptions;
     property Row: Integer read FRow write SetRow;
@@ -843,6 +846,7 @@ type
     function  IscellSelected(aCol,aRow: Integer): Boolean;
     function  IscellVisible(aCol, aRow: Integer): Boolean;
     procedure LoadFromFile(FileName: string);
+    function  MouseCoord(X,Y: Integer): TGridCoord;
     function  MouseToCell(Mouse: TPoint): TPoint; overload;
     procedure MouseToCell(X,Y: Integer; var ACol,ARow: Longint); overload;
     function  MouseToLogcell(Mouse: TPoint): TPoint;
@@ -2352,6 +2356,11 @@ begin
 end;
 procedure TCustomGrid.ColRowDeleted(IsColumn: Boolean; index: Integer);
 begin
+end;
+
+function TCustomGrid.CanEditShow: Boolean;
+begin
+  Result := (goEditing in Options) and not (csDesigning in ComponentState);
 end;
 
 procedure TCustomGrid.Paint;
@@ -4286,6 +4295,8 @@ begin
   {$ifdef dbgGrid}DebugLn('Grid.KeyDown INIT Key=',IntToStr(Key));{$endif}
   inherited KeyDown(Key, Shift);
   if not FGCache.ValidGrid then Exit;
+  if not CanGridAcceptKey(Key, Shift) then
+    Key:=0;  // Allow CanGridAcceptKey to override Key behaviour
   Sh:=(ssShift in Shift);
   Relaxed:=not (goRowSelect in Options) or (goRelaxedRowSelect in Options);
 
@@ -4446,6 +4457,11 @@ begin
       if Result.y<fFixedRows then Result.y:=FFixedRows;
     end;
   end;
+end;
+
+function TCustomGrid.MouseCoord(X, Y: Integer): TGridCoord;
+begin
+  Result := MouseToCell(Point(X,Y));
 end;
 
 function TCustomGrid.ISCellVisible(aCol, aRow: Integer): Boolean;
@@ -4754,6 +4770,7 @@ begin
     DebugLn('InvalidateCell  Col=',IntToStr(aCol),
       ' Row=',IntToStr(aRow),' Redraw=', BoolToStr(Redraw));
   {$Endif}
+  if not HandleAllocated then Exit;
   R:=CellRect(aCol, aRow);
   InvalidateRect(Handle, @R, Redraw);
 end;
@@ -4773,7 +4790,7 @@ end;
 
 procedure TCustomGrid.EditorGetValue;
 begin
-  if not (csDesigning in ComponentState) then begin
+  if not (csDesigning in ComponentState) and (Editor<>nil) and Editor.Visible then begin
     EditorDoGetValue;
     EditorHide;
   end;
@@ -4815,7 +4832,7 @@ begin
   if not HandleAllocated then
     Exit;
 
-  if (goEditing in Options) and
+  if (goEditing in Options) and CanEditShow and
      not FEditorShowing and (Editor<>nil) and not Editor.Visible then
   begin
     {$ifdef dbgGrid} DebugLn('EditorShow [',Editor.ClassName,']INIT FCol=',IntToStr(FCol),' FRow=',IntToStr(FRow));{$endif}
@@ -5262,6 +5279,11 @@ end;
 
 procedure TCustomGrid.SetEditText(ACol, ARow: Longint; const Value: string);
 begin
+end;
+
+function TCustomGrid.CanGridAcceptKey(Key: Word; Shift: TShiftState): Boolean;
+begin
+  Result := True;
 end;
 
 procedure TCustomGrid.SetSelectedColor(const AValue: TColor);
