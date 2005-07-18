@@ -3474,8 +3474,12 @@ begin
     Stream.Read(IconDir^, FnIcons*Sizeof(TIconDirEntry));
     BestDirEntry := IconDir;
     CurrentDirEntry := IconDir+1;
+    IconDir^.dwBytesInRes := LEtoN(IconDir^.dwBytesInRes);
+    IconDir^.dwImageOffset := LEtoN(IconDir^.dwImageOffset);
     { First locate largest and/or most colourful icon as the default image }
     for i := 2 to FnIcons do begin
+      CurrentDirEntry^.dwBytesInRes := LEtoN(CurrentDirEntry^.dwBytesInRes);
+      CurrentDirEntry^.dwImageOffset := LEtoN(CurrentDirEntry^.dwImageOffset);
       if ((CurrentDirEntry^.bWidth > BestDirEntry^.bWidth)
            and (CurrentDirEntry^.bHeight > BestDirEntry^.bHeight))
          or ((CurrentDirEntry^.bWidth = BestDirEntry^.bWidth)

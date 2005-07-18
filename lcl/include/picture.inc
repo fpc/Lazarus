@@ -48,6 +48,9 @@ begin
   Add('bmp', rsBitmaps, TBitmap);
   Add('xpm', rsPixmap, TPixmap);
   Add('png', rsPortableNetworkGraphic, TPortableNetworkGraphic);
+  Add('pbm', 'Portable BitMap', TPortableAnyMapGraphic);
+  Add('pgm', 'Portable GrayMap', TPortableAnyMapGraphic);
+  Add('ppm', 'Portable PixMap', TPortableAnyMapGraphic);
   Add('ico', rsIcon, TIcon);
   {$IFDEF UseSimpleJpeg}
   Add('jpg', 'Joint Picture Expert Group',TJpegImage);
@@ -392,6 +395,12 @@ begin
   Result := TPortableNetworkGraphic(Graphic);
 end;
 
+function TPicture.GetPNM: TPortableAnyMapGraphic;
+begin
+  ForceType(TPixmap);
+  Result := TPortableAnyMapGraphic(Graphic);
+end;
+
 function TPicture.GetPixmap: TPixmap;
 begin
   ForceType(TPixmap);
@@ -410,6 +419,11 @@ begin
 end;
 
 procedure TPicture.SetPNG(const AValue: TPortableNetworkGraphic);
+begin
+  SetGraphic(AValue);
+end;
+
+procedure TPicture.SetPNM(const AValue: TPortableAnyMapGraphic);
 begin
   SetGraphic(AValue);
 end;

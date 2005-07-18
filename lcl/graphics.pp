@@ -43,7 +43,7 @@ interface
 uses
   SysUtils, Classes, Contnrs, FPCAdds,
   {$IFNDEF DisableFPImage}
-  FPImage, FPReadPNG, FPWritePNG, FPReadBMP, FPWriteBMP, IntfGraphics,
+  FPImage, FPReadPNG, FPWritePNG, FPReadBMP, FPWriteBMP, FPReadPNM, FPWritePNM, IntfGraphics,
   {$IFDEF UseFPCanvas}
   FPCanvas,
   {$ENDIF}
@@ -412,6 +412,7 @@ type
   TPixmap = class;                  // xpm
   TIcon = class;                    // ico
   TPortableNetworkGraphic = class;  // png
+  TPortableAnyMapGraphic = class;   // pnm formats: pbm, pgm and ppm
   {$IFDEF UseSimpleJpeg}
   {$error will be added to the LCL, when fpc 2.0 is released. Use the jpeg package in the components/jpeg directory instead. }
   // MG: will be added to the LCL, when fpc 2.0 is released
@@ -843,6 +844,9 @@ type
       PNG - Returns a png.  If the contents is not already a png, the
         contents are thrown away and a blank png (TPortableNetworkGraphic) is
         returned.
+      PNM - Returns a pnm.  If the contents is not already a pnm, the
+        contents are thrown away and a blank pnm (TPortableAnyMapGraphic) is
+        returned.
       }
 
   TPicture = class(TPersistent)
@@ -854,6 +858,7 @@ type
     procedure ForceType(GraphicType: TGraphicClass);
     function GetBitmap: TBitmap;
     function GetPNG: TPortableNetworkGraphic;
+    function GetPNM: TPortableAnyMapGraphic;
     function GetPixmap: TPixmap;
     function GetIcon: TIcon;
     function GetHeight: Integer;
@@ -861,6 +866,7 @@ type
     procedure ReadData(Stream: TStream);
     procedure SetBitmap(Value: TBitmap);
     procedure SetPNG(const AValue: TPortableNetworkGraphic);
+    procedure SetPNM(const AValue: TPortableAnyMapGraphic);
     procedure SetPixmap(Value: TPixmap);
     procedure SetIcon(Value: TIcon);
     procedure SetGraphic(Value: TGraphic);
@@ -893,6 +899,7 @@ type
     property Bitmap: TBitmap read GetBitmap write SetBitmap;
     property Pixmap: TPixmap read GetPixmap write SetPixmap;
     property PNG: TPortableNetworkGraphic read GetPNG write SetPNG;
+    property PNM: TPortableAnyMapGraphic read GetPNM write SetPNM;
     property Icon: TIcon read GetIcon write SetIcon;
     property Graphic: TGraphic read FGraphic write SetGraphic;
     //property PictureAdapter: IChangeNotifier read FNotify write FNotify;
@@ -1322,6 +1329,16 @@ type
   end;
 
 
+  { TPortableAnyMapGraphic }
+
+  TPortableAnyMapGraphic = class(TFPImageBitmap)
+  public
+    class function GetFileExtensions: string; override;
+    class function GetDefaultFPReader: TFPCustomImageReaderClass; override;
+    class function GetDefaultFPWriter: TFPCustomImageWriterClass; override;
+  end;
+
+  
   { TIcon }
   {
     TIcon reads and writes .ICO file format.
@@ -1455,7 +1472,7 @@ implementation
 
 procedure Register;
 begin
-  RegisterClasses([TBitmap,TPixmap,TPortableNetworkGraphic,TPicture,
+  RegisterClasses([TBitmap,TPixmap,TPortableNetworkGraphic,TPortableAnyMapGraphic,TPicture,
                    TFont,TPen,TBrush,TRegion]);
 end;
 
@@ -1726,6 +1743,7 @@ end;
 {$I canvas.inc}
 {$I pixmap.inc}
 {$I png.inc}
+{$I pnm.inc}
 
 
 { TFPImageBitmap }
@@ -1859,6 +1877,9 @@ var
 begin
   Position := Stream.Position;
   Stream.Read(Size, 4); // Beware BigEndian and LowEndian sytems
+  {$IFDEF FPC_BIG_ENDIAN}
+  Size := LEtoN(Size);
+  {$ENDIF}
   if CompareMem(@Size,@IconSignature,4) then begin
     // Assume Icon - stream without explicit size
     Stream.Position := Position;
@@ -1930,6 +1951,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.177  2005/07/18 09:29:11  mattias
+  Added TProtableAnyMapGraphic and fixed loading .ico on BIG_ENDIAN systems  from Colin Western
+
   Revision 1.176  2005/06/25 15:34:03  mattias
   fixed a few fpc over warnings  from Andrew Haines
 

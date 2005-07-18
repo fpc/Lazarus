@@ -1,7 +1,7 @@
 {%MainUnit ../graphics.pp}
 
 {******************************************************************************
-                         TPortableNetworkGraphic
+                         TPortableAnyMapGraphic
  ******************************************************************************
 
  *****************************************************************************
@@ -18,22 +18,25 @@
  *****************************************************************************
 }
 
-{ TPortableNetworkGraphic }
+{ TPortableAnyMapGraphic }
 
-function TPortableNetworkGraphic.GetFileExtensions: string;
+function TPortableAnyMapGraphic.GetFileExtensions: string;
 begin
-  Result:='png';
+  Result:='pbm;pgm;ppm';
 end;
 
-function TPortableNetworkGraphic.GetDefaultFPReader: TFPCustomImageReaderClass;
+{$IFNDEF DisableFPImage}
+function TPortableAnyMapGraphic.GetDefaultFPReader: TFPCustomImageReaderClass;
 begin
-  Result:=TFPReaderPNG;
+  Result:=TFPReaderPNM;
 end;
 
-function TPortableNetworkGraphic.GetDefaultFPWriter: TFPCustomImageWriterClass;
+function TPortableAnyMapGraphic.GetDefaultFPWriter: TFPCustomImageWriterClass;
 begin
-  Result:=TFPWriterPNG;
+  Result:=TFPWriterPNM;
 end;
+{$ENDIF}
+
 
 // included by graphics.pp
 

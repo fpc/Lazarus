@@ -98,8 +98,8 @@ end;
 procedure TBitmap.Draw(DestCanvas: TCanvas; const DestRect: TRect);
 var
   UseMaskHandle: HBitmap;
-  SrcDC: LongWord;
-  DestDC: LongWord;
+  SrcDC: hDC;
+  DestDC: hDC;
 begin
   if (DestRect.Right<=DestRect.Left) or (DestRect.Bottom<=DestRect.Top)
   or (Width=0) or (Height=0) then exit;
@@ -970,6 +970,7 @@ var
   Size: Longint;
 begin
   Stream.Read(Size, SizeOf(Size));
+  Size := LEtoN(Size);
   ReadStream(Stream, true, Size);
 end;
 
@@ -1005,6 +1006,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.98  2005/07/18 09:29:11  mattias
+  Added TProtableAnyMapGraphic and fixed loading .ico on BIG_ENDIAN systems  from Colin Western
+
   Revision 1.97  2005/06/22 09:45:59  mattias
   implemented saving alpha bmp and using transparency for IDE glyph editor
 

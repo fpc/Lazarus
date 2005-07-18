@@ -1488,6 +1488,7 @@ lcl/include/pen.inc svneol=native#text/pascal
 lcl/include/picture.inc svneol=native#text/pascal
 lcl/include/pixmap.inc svneol=native#text/pascal
 lcl/include/png.inc svneol=native#text/pascal
+lcl/include/pnm.inc svneol=native#text/pascal
 lcl/include/popupmenu.inc svneol=native#text/pascal
 lcl/include/progressbar.inc svneol=native#text/pascal
 lcl/include/promptdialog.inc svneol=native#text/pascal

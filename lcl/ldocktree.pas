@@ -259,7 +259,10 @@ var
   a: TAnchorKind;
   SplitterSide: TAnchorKind;
   CurControl: TControl;
+  NewAnchors: TAnchors;
 begin
+  RaiseGDBException('TODO first position then anchor');
+
   if Zone=nil then exit;
   
   // get outside anchor controls
@@ -273,10 +276,11 @@ begin
     else
       SplitterSide:=akTop;
     // IMPORTANT: first set the AnchorSide, then set the Anchors
+    NewAnchors:=[akLeft,akRight,akTop,akBottom]-[SplitterSide];
     for a:=Low(TAnchorKind) to High(TAnchorKind) do
-      if a in Zone.Splitter.Anchors then
+      if a in NewAnchors then
         Zone.Splitter.AnchorSide[a].Control:=AnchorControls[a];
-    Zone.Splitter.Anchors:=[akLeft,akRight,akTop,akBottom]-[SplitterSide];
+    Zone.Splitter.Anchors:=NewAnchors;
     AnchorControls[SplitterSide]:=Zone.Splitter;
   end;
   
