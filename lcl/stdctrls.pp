@@ -469,7 +469,7 @@ type
     property ClickOnSelChange: boolean read FClickOnSelChange
                write FClickOnSelChange default true; // true is Delphi behaviour
     property Constraints;
-    property ExtendedSelect: boolean read FExtendedSelect write SetExtendedSelect;
+    property ExtendedSelect: boolean read FExtendedSelect write SetExtendedSelect default true;
     property Font;
     property IntegralHeight: boolean read FIntegralHeight write FIntegralHeight; // not implemented
     property ItemHeight: Integer read GetItemHeight write SetItemHeight;
@@ -1263,6 +1263,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.213  2005/07/19 14:18:44  micha
+  fix bug 741: fix setting multiselect to not select all items; default extendedselect is true
+
   Revision 1.212  2005/06/24 14:03:33  mattias
   added some anchorside autosizing, activated new generic autosizing, removed old special DoAutoSize methods
 

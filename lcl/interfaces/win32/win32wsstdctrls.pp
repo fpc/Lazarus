@@ -525,7 +525,8 @@ begin
   begin
     // deselect all items first
     Windows.SendMessage(Handle, LB_SETSEL, Windows.WParam(false), -1);
-    Windows.SendMessage(Handle, LB_SETSEL, Windows.WParam(true), Windows.LParam(AIndex));
+    if AIndex >= 0 then
+      Windows.SendMessage(Handle, LB_SETSEL, Windows.WParam(true), Windows.LParam(AIndex));
   end else
     Windows.SendMessage(Handle, LB_SETCURSEL, Windows.WParam(AIndex), 0);
 

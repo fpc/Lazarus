@@ -459,6 +459,7 @@ begin
   FCacheValid := True;
   FClickOnSelChange:= True;
   FItemIndex:=-1;
+  FExtendedSelect := true;
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
   ParentColor := false;
