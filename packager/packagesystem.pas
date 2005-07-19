@@ -954,6 +954,7 @@ begin
     AddFile('xmlpropstorage.pas','XMLPropStorage',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('inipropstorage.pas','IniPropStorage',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('chart.pp','Chart',pftUnit,[pffHasRegisterProc],cpBase);
+    AddFile('colorbox.pas','ColorBox',pftUnit,[pffHasRegisterProc],cpBase);
     // increase priority by one, so that the LCL components are inserted to the
     // left in the palette
     for i:=0 to FileCount-1 do

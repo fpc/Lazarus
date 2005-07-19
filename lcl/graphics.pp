@@ -1376,6 +1376,7 @@ type
   // Color / Identifier mapping
   TGetColorStringProc = procedure(const s:ansistring) of object;
 
+function IdentEntry(Entry: Longint; var MapEntry: TIdentMapEntry): boolean;
 function ColorToIdent(Color: Longint; var Ident: String): Boolean;
 function IdentToColor(const Ident: string; var Color: Longint): Boolean;
 function SysColorToSysColorIndex(Color: TColor): integer;
@@ -1627,6 +1628,16 @@ const
     (Value: clActiveHighlight; Name: 'clActiveHighlight'),
     (Value: clActiveHighlightedText; Name: 'clActiveHighlightedText')
     );
+
+function IdentEntry(Entry: Longint; var MapEntry: TIdentMapEntry): boolean;
+begin
+  Result := False;
+  if (Entry >= 0) and (Entry <= High(Colors)) then
+  begin
+    MapEntry := Colors[Entry];
+    Result := True;
+  end;
+end;
 
 function ColorToIdent(Color: Longint; var Ident: String): Boolean;
 begin
@@ -1951,6 +1962,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.178  2005/07/19 08:31:21  vincents
+  added ColorBox (from Darius) to LCL
+
   Revision 1.177  2005/07/18 09:29:11  mattias
   Added TProtableAnyMapGraphic and fixed loading .ico on BIG_ENDIAN systems  from Colin Western
 

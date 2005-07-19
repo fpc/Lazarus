@@ -46,7 +46,7 @@ uses
   Comctrls, Graphics, StdCtrls, Arrow, Controls, ImgList, Menus, Toolwin,
   Dialogs, Messages, Clistbox, ActnList, Grids, MaskEdit,
   Printers, PostScriptPrinter, PostScriptCanvas, CheckLst, PairSplitter,
-  ExtDlgs, DBCtrls, DBGrids, DBActns, EditBtn, ExtGraphics,
+  ExtDlgs, DBCtrls, DBGrids, DBActns, EditBtn, ExtGraphics, ColorBox,
   PropertyStorage, IniPropStorage, XMLPropStorage, Chart, LDockTree,
   // widgetset skeleton
   WSActnList, WSArrow, WSButtons, WSCalendar,
@@ -68,6 +68,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.28  2005/07/19 08:31:21  vincents
+  added ColorBox (from Darius) to LCL
+
   Revision 1.27  2005/07/16 00:08:26  marc
   * Reimplemented ZOrder
   + Added IDE option to move a control one forward/back

@@ -1331,6 +1331,7 @@ lcl/chart.pp svneol=native#text/pascal
 lcl/checklst.pas svneol=native#text/pascal
 lcl/clipbrd.pp svneol=native#text/pascal
 lcl/clistbox.pp svneol=native#text/pascal
+lcl/colorbox.pas svneol=native#text/pascal
 lcl/comctrls.pp svneol=native#text/pascal
 lcl/commctrl.pp svneol=native#text/pascal
 lcl/controls.pp svneol=native#text/pascal
