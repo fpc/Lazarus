@@ -428,7 +428,7 @@ type
     destructor Destroy; override;
     procedure Assign(Source: TDragObject); override;
     property Brush: TBrush read FBrush write SetBrush;
-    property DockRect: TRect read FDockRect write FDockRect;
+    property DockRect: TRect read FDockRect write FDockRect;// screen coordinates
     property DropAlign: TAlign read FDropAlign;
     property DropOnControl: TControl read FDropOnControl;
     property Floating: Boolean read FFloating write FFloating;
@@ -1149,8 +1149,8 @@ type
     property HostDockSite: TWinControl read FHostDockSite write SetHostDockSite;
     property LRDockWidth: Integer read GetLRDockWidth write FLRDockWidth;
     property TBDockHeight: Integer read GetTBDockHeight write FTBDockHeight;
-    property UndockHeight: Integer read GetUndockHeight write FUndockHeight;
-    property UndockWidth: Integer read GetUndockWidth write FUndockWidth;
+    property UndockHeight: Integer read GetUndockHeight write FUndockHeight;// Height used when undocked
+    property UndockWidth: Integer read GetUndockWidth write FUndockWidth;// Width used when undocked
   published
     property AnchorSideLeft: TAnchorSide index 0 read GetAnchorSideIndex write SetAnchorSideIndex;
     property AnchorSideTop: TAnchorSide index 1 read GetAnchorSideIndex write SetAnchorSideIndex;
@@ -2953,6 +2953,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.314  2005/07/19 20:58:14  mattias
+  fixed reading vaInt16
+
   Revision 1.313  2005/07/17 02:24:41  mattias
   started creating TLazDockPage helper controls
 

@@ -4163,11 +4163,15 @@ end;
 
 {------------------------------------------------------------------------------
   procedure TWinControl.DockDrop(DockObject: TDragDockObject; X, Y: Integer);
+  
+  Docks the DockObject.Control onto this control.
+  X, Y are only default values. More important is the DockObject.DropAlign
+  property, which defines how to align DockObject.Control.
  ------------------------------------------------------------------------------}
 procedure TWinControl.DockDrop(DockObject: TDragDockObject; X, Y: Integer);
 var
   DestRect: TRect;
-  ParentForm: TCustomForm;
+  //ParentForm: TCustomForm;
   MappedLeftTop: TPoint;
 begin
   // get dock destination rectangle and map it to the client area
@@ -4190,8 +4194,8 @@ begin
   finally
     EnableAlign;
   end;
-  ParentForm := GetParentForm(Self);
-  if ParentForm<>nil then ParentForm.BringToFront;
+  //ParentForm := GetParentForm(Self);
+  //if ParentForm<>nil then ParentForm.BringToFront;
 
   if Assigned(FOnDockDrop) then
     FOnDockDrop(Self, DockObject, X, Y);
@@ -4608,6 +4612,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.340  2005/07/19 20:58:15  mattias
+  fixed reading vaInt16
+
   Revision 1.339  2005/07/16 00:08:26  marc
   * Reimplemented ZOrder
   + Added IDE option to move a control one forward/back

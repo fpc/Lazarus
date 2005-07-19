@@ -2956,6 +2956,8 @@ begin
     Result := (HostDockSite=nil);
     if not Result then begin
       // undock from old HostSite
+      // - this only undocks from the DockManager
+      // - this control still uses the DockSite as parent control
       DebugLn('TControl.ManualDock UNDOCKING ',Name);
       Result:=HostDockSite.DoUndock(NewDockSite,Self);
     end;
@@ -2966,10 +2968,7 @@ begin
       DockObject := TDragDockObject.Create(Self);
       try
         // get current screen coordinates
-        if HostDockSite<>nil then
-          NewPosition:=HostDockSite.ClientToScreen(Point(Left,Top))
-        else
-          NewPosition:=ControlOrigin;
+        NewPosition:=ControlOrigin;
         // initialize DockObject
         with DockObject do begin
           FDragTarget := NewDockSite;
@@ -3535,6 +3534,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.269  2005/07/19 20:58:15  mattias
+  fixed reading vaInt16
+
   Revision 1.268  2005/07/19 10:44:47  micha
   fix ParentDestroyingHandle to return true if destroying; was wrong way around
 

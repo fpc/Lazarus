@@ -386,8 +386,7 @@ begin
     raise Exception.Create('TLazDockTree.InsertControl DropControl is not part of this TDockTree');
 
   NewOrientation:=DockAlignOrientations[InsertAt];
-  // TODO: check what needs to be done
-  
+
   // undock
   UndockControlForDocking(AControl);
   

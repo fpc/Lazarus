@@ -1234,7 +1234,7 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
       vaInt16: begin
           w:=ReadLRSWord(Input);
           //DebugLn('ReadInt vaInt16 w=',IntToStr(w));
-          Result := SmallInt(ReadLRSWord(Input));
+          Result := SmallInt(w);
         end;
       vaInt32: Result := ReadLRSInteger(Input);
     end;
@@ -1685,7 +1685,6 @@ var
     {$ENDIF}
     stream: TMemoryStream;
     BinDataSize: LongInt;
-    i: Integer;
   begin
     if parser.TokenSymbolIs('END') then exit;
     if parser.TokenSymbolIs('OBJECT') then
