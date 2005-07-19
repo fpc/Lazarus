@@ -43,7 +43,7 @@ uses
 resourcestring
   lisEnterTransla = 'Enter translation language';
   // version
-  lisLazarusVersionString = '0.9.8 beta';
+  lisLazarusVersionString = '0.9.9 beta';
   lisLeaveEmptyFo = 'Leave empty for default .po file';
   lisMenuCollectPoFil = 'Collect .po files';
   lisMenuCreatePoFile = 'Create .po files';
