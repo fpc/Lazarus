@@ -235,7 +235,7 @@ msgid "(unknown macro: %s)"
 msgstr ""
 
 #: lazarusidestrconsts:lislazarusversionstring
-msgid "0.9.7 beta"
+msgid "0.9.8 beta"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pchooseanexistingfile
@@ -421,6 +421,10 @@ msgstr "Sijoittele"
 #: lazarusidestrconsts:lisalignment
 msgid "Alignment"
 msgstr "Sijoita"
+
+#: lazarusidestrconsts:lisallfiles
+msgid "All Files"
+msgstr ""
 
 #: lazarusidestrconsts:dlgallfiles
 msgid "All files"
@@ -618,6 +622,10 @@ msgstr ""
 msgid "Back"
 msgstr ""
 
+#: lazarusidestrconsts:fdmorderbackone
+msgid "Back one"
+msgstr ""
+
 #: lazarusidestrconsts:dlgbackcolor
 msgid "Background"
 msgstr "Taustaväri"
@@ -689,10 +697,6 @@ msgstr ""
 #: lazarusidestrconsts:lismenuviewbreakpoints
 msgid "BreakPoints"
 msgstr ""
-
-#: lazarusidestrconsts:fdmbringtofront
-msgid "Bring to front"
-msgstr "Tuo eteen"
 
 #: lazarusidestrconsts:lisa2pbrokendependencies
 msgid "Broken Dependencies"
@@ -1778,6 +1782,10 @@ msgstr ""
 msgid "Delphi Compatible"
 msgstr ""
 
+#: lazarusidestrconsts:lisdelphiproject
+msgid "Delphi project"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pdependency
 msgid "Dependency"
 msgstr ""
@@ -2526,6 +2534,10 @@ msgstr "Lomakkeet"
 msgid "Forms..."
 msgstr "Lomakkeet..."
 
+#: lazarusidestrconsts:fdmorderforwardone
+msgid "Forward one"
+msgstr ""
+
 #: lazarusidestrconsts:lisfrforwardsearch
 msgid "Forward search"
 msgstr "Eteenpäin"
@@ -2536,6 +2548,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfreepascalsourcesnotfound
 msgid "Free Pascal Sources not found"
+msgstr ""
+
+#: lazarusidestrconsts:lisfreepascalsourcefile
+msgid "FreePascal source file"
 msgstr ""
 
 #: lazarusidestrconsts:lisfreepascalsourcedirectory
@@ -3562,12 +3578,24 @@ msgstr ""
 msgid "Lazarus"
 msgstr ""
 
+#: lazarusidestrconsts:lislazarusdesktopsettings
+msgid "Lazarus Desktop Settings"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefslazarusdirectory
 msgid "Lazarus Directory"
 msgstr ""
 
 #: lazarusidestrconsts:lislazaruseditorv
 msgid "Lazarus Editor v%s"
+msgstr ""
+
+#: lazarusidestrconsts:lislazarusfile
+msgid "Lazarus File"
+msgstr ""
+
+#: lazarusidestrconsts:lislazarusprojectinfofile
+msgid "Lazarus Project Info file"
 msgstr ""
 
 #: lazarusidestrconsts:locwndsrceditor
@@ -3592,6 +3620,26 @@ msgstr ""
 
 #: lazarusidestrconsts:lislazarusdirectorynotfound
 msgid "Lazarus directory not found"
+msgstr ""
+
+#: lazarusidestrconsts:lislazarusform
+msgid "Lazarus form"
+msgstr ""
+
+#: lazarusidestrconsts:lislazaruspackage
+msgid "Lazarus package"
+msgstr ""
+
+#: lazarusidestrconsts:lislazarusproject
+msgid "Lazarus project"
+msgstr ""
+
+#: lazarusidestrconsts:lislazarusprojectsource
+msgid "Lazarus project source"
+msgstr ""
+
+#: lazarusidestrconsts:lislazarusunit
+msgid "Lazarus unit"
 msgstr ""
 
 #: lazarusidestrconsts:lisleaveemptyfo
@@ -3914,6 +3962,22 @@ msgstr ""
 msgid "Move Up (or left)"
 msgstr ""
 
+#: lazarusidestrconsts:lisdsgorderbackone
+msgid "Move component one back"
+msgstr ""
+
+#: lazarusidestrconsts:lisdsgorderforwardone
+msgid "Move component one forward"
+msgstr ""
+
+#: lazarusidestrconsts:lisdsgordermovetoback
+msgid "Move component to back"
+msgstr ""
+
+#: lazarusidestrconsts:lisdsgordermovetofront
+msgid "Move component to front"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecpagedown
 msgid "Move cursor down one page"
 msgstr ""
@@ -4000,6 +4064,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lispatheditmovepathup
 msgid "Move path up"
+msgstr ""
+
+#: lazarusidestrconsts:fdmordermovetoback
+msgid "Move to back"
+msgstr ""
+
+#: lazarusidestrconsts:fdmordermovetofront
+msgid "Move to front"
 msgstr ""
 
 #: lazarusidestrconsts:dlgmulti
@@ -4378,6 +4450,10 @@ msgstr ""
 msgid "Options: "
 msgstr ""
 
+#: lazarusidestrconsts:fdmorder
+msgid "Order"
+msgstr ""
+
 #: lazarusidestrconsts:dlgsrorigin
 msgid "Origin"
 msgstr "Lähtökohta"
@@ -4544,6 +4620,14 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgcoparsing
 msgid "Parsing"
+msgstr ""
+
+#: lazarusidestrconsts:lispascalsourcefile
+msgid "Pascal source file"
+msgstr ""
+
+#: lazarusidestrconsts:lispascalunit
+msgid "Pascal unit"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2ppascalunitsmusthavetheextensionpporpas
@@ -5622,10 +5706,6 @@ msgstr ""
 msgid "Semicolon"
 msgstr ""
 
-#: lazarusidestrconsts:fdmsendtoback
-msgid "Send to back"
-msgstr "Vie taka-alalle"
-
 #: lazarusidestrconsts:srkmecsetmarker
 msgid "Set Marker %d"
 msgstr ""
@@ -6040,6 +6120,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgtabindent
 msgid "Tab indents blocks"
+msgstr ""
+
+#: lazarusidestrconsts:fdmtaborder
+msgid "Tab order..."
 msgstr ""
 
 #: lazarusidestrconsts:dlgtabwidths
@@ -7592,6 +7676,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgcdtwriteprefix
 msgid "Write prefix"
+msgstr ""
+
+#: lazarusidestrconsts:lisxmlfiles
+msgid "XML files"
 msgstr ""
 
 #: lazarusidestrconsts:lisyoucannotbuildlazaruswhiledebuggingorcompiling

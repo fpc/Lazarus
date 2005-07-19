@@ -235,8 +235,8 @@ msgid "(unknown macro: %s)"
 msgstr "(macroinstrucció desconeguda: %s)"
 
 #: lazarusidestrconsts:lislazarusversionstring
-msgid "0.9.7 beta"
-msgstr "0.9.7 beta"
+msgid "0.9.8 beta"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pchooseanexistingfile
 msgid "<choose an existing file>"
@@ -421,6 +421,10 @@ msgstr "Alinea"
 #: lazarusidestrconsts:lisalignment
 msgid "Alignment"
 msgstr "Alineació"
+
+#: lazarusidestrconsts:lisallfiles
+msgid "All Files"
+msgstr ""
 
 #: lazarusidestrconsts:dlgallfiles
 msgid "All files"
@@ -618,6 +622,10 @@ msgstr "Paquets disponibles"
 msgid "Back"
 msgstr "Torna"
 
+#: lazarusidestrconsts:fdmorderbackone
+msgid "Back one"
+msgstr ""
+
 #: lazarusidestrconsts:dlgbackcolor
 msgid "Background"
 msgstr ""
@@ -689,10 +697,6 @@ msgstr "Interromp la línia, deixa el cursor"
 #: lazarusidestrconsts:lismenuviewbreakpoints
 msgid "BreakPoints"
 msgstr "Punts de ruptura"
-
-#: lazarusidestrconsts:fdmbringtofront
-msgid "Bring to front"
-msgstr "Porta a primer pla"
 
 #: lazarusidestrconsts:lisa2pbrokendependencies
 msgid "Broken Dependencies"
@@ -1778,6 +1782,10 @@ msgstr "Extensions de Delphi 2"
 msgid "Delphi Compatible"
 msgstr "Compatible amb Delphi"
 
+#: lazarusidestrconsts:lisdelphiproject
+msgid "Delphi project"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pdependency
 msgid "Dependency"
 msgstr "Dependència"
@@ -2526,6 +2534,10 @@ msgstr "Formes"
 msgid "Forms..."
 msgstr "Formes..."
 
+#: lazarusidestrconsts:fdmorderforwardone
+msgid "Forward one"
+msgstr ""
+
 #: lazarusidestrconsts:lisfrforwardsearch
 msgid "Forward search"
 msgstr "Recerca cap endavant"
@@ -2537,6 +2549,10 @@ msgstr "No s'ha trobat el compilador Free Pascal"
 #: lazarusidestrconsts:lisfreepascalsourcesnotfound
 msgid "Free Pascal Sources not found"
 msgstr "No s'ha trobat el codi font del Free Pascal"
+
+#: lazarusidestrconsts:lisfreepascalsourcefile
+msgid "FreePascal source file"
+msgstr ""
 
 #: lazarusidestrconsts:lisfreepascalsourcedirectory
 msgid "Freepascal source directory"
@@ -3562,6 +3578,10 @@ msgstr "Executant línia d'ordres de destinació"
 msgid "Lazarus"
 msgstr "Lazarus"
 
+#: lazarusidestrconsts:lislazarusdesktopsettings
+msgid "Lazarus Desktop Settings"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefslazarusdirectory
 msgid "Lazarus Directory"
 msgstr "Directori del Lazarus"
@@ -3569,6 +3589,14 @@ msgstr "Directori del Lazarus"
 #: lazarusidestrconsts:lislazaruseditorv
 msgid "Lazarus Editor v%s"
 msgstr "Editor Lazarus v%s"
+
+#: lazarusidestrconsts:lislazarusfile
+msgid "Lazarus File"
+msgstr ""
+
+#: lazarusidestrconsts:lislazarusprojectinfofile
+msgid "Lazarus Project Info file"
+msgstr ""
 
 #: lazarusidestrconsts:locwndsrceditor
 msgid "Lazarus Source Editor"
@@ -3593,6 +3621,26 @@ msgstr "No s'ha trobat el directori del Lazarus \"%s\""
 #: lazarusidestrconsts:lislazarusdirectorynotfound
 msgid "Lazarus directory not found"
 msgstr "No s'ha trobat el directori del Lazarus"
+
+#: lazarusidestrconsts:lislazarusform
+msgid "Lazarus form"
+msgstr ""
+
+#: lazarusidestrconsts:lislazaruspackage
+msgid "Lazarus package"
+msgstr ""
+
+#: lazarusidestrconsts:lislazarusproject
+msgid "Lazarus project"
+msgstr ""
+
+#: lazarusidestrconsts:lislazarusprojectsource
+msgid "Lazarus project source"
+msgstr ""
+
+#: lazarusidestrconsts:lislazarusunit
+msgid "Lazarus unit"
+msgstr ""
 
 #: lazarusidestrconsts:lisleaveemptyfo
 msgid "Leave empty for default .po file"
@@ -3914,6 +3962,22 @@ msgstr "Mou amunt"
 msgid "Move Up (or left)"
 msgstr ""
 
+#: lazarusidestrconsts:lisdsgorderbackone
+msgid "Move component one back"
+msgstr ""
+
+#: lazarusidestrconsts:lisdsgorderforwardone
+msgid "Move component one forward"
+msgstr ""
+
+#: lazarusidestrconsts:lisdsgordermovetoback
+msgid "Move component to back"
+msgstr ""
+
+#: lazarusidestrconsts:lisdsgordermovetofront
+msgid "Move component to front"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecpagedown
 msgid "Move cursor down one page"
 msgstr "Mou el cursor una pàgina avall"
@@ -4001,6 +4065,14 @@ msgstr "Mou la trajectòria avall"
 #: lazarusidestrconsts:lispatheditmovepathup
 msgid "Move path up"
 msgstr "Mou la trajectòria amunt"
+
+#: lazarusidestrconsts:fdmordermovetoback
+msgid "Move to back"
+msgstr ""
+
+#: lazarusidestrconsts:fdmordermovetofront
+msgid "Move to front"
+msgstr ""
 
 #: lazarusidestrconsts:dlgmulti
 msgid "Multi"
@@ -4378,6 +4450,10 @@ msgstr "Opcions:"
 msgid "Options: "
 msgstr "Opcions: "
 
+#: lazarusidestrconsts:fdmorder
+msgid "Order"
+msgstr ""
+
 #: lazarusidestrconsts:dlgsrorigin
 msgid "Origin"
 msgstr "Origen"
@@ -4545,6 +4621,14 @@ msgstr "El node pare no pot contenir nodes fills"
 #: lazarusidestrconsts:dlgcoparsing
 msgid "Parsing"
 msgstr "Analització"
+
+#: lazarusidestrconsts:lispascalsourcefile
+msgid "Pascal source file"
+msgstr ""
+
+#: lazarusidestrconsts:lispascalunit
+msgid "Pascal unit"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2ppascalunitsmusthavetheextensionpporpas
 msgid "Pascal units must have the extension .pp or .pas"
@@ -5622,10 +5706,6 @@ msgstr "Eina de selecció"
 msgid "Semicolon"
 msgstr "Punt i coma"
 
-#: lazarusidestrconsts:fdmsendtoback
-msgid "Send to back"
-msgstr "Envia al darrera"
-
 #: lazarusidestrconsts:srkmecsetmarker
 msgid "Set Marker %d"
 msgstr "Posiciona el marcador %d"
@@ -6041,6 +6121,10 @@ msgstr "Tabulador"
 #: lazarusidestrconsts:dlgtabindent
 msgid "Tab indents blocks"
 msgstr "El tabulador sagna blocs"
+
+#: lazarusidestrconsts:fdmtaborder
+msgid "Tab order..."
+msgstr ""
 
 #: lazarusidestrconsts:dlgtabwidths
 msgid "Tab widths:"
@@ -7593,6 +7677,10 @@ msgstr "S'ha produït un error d'escriptura"
 #: lazarusidestrconsts:dlgcdtwriteprefix
 msgid "Write prefix"
 msgstr "Prefix d'escriure"
+
+#: lazarusidestrconsts:lisxmlfiles
+msgid "XML files"
+msgstr ""
 
 #: lazarusidestrconsts:lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."
