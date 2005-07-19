@@ -325,6 +325,8 @@ const
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemSetState')
   then Exit;
+  {Don't change the state if it already has needed value}
+  if ((ListView_GetItemState(ALV.Handle, AIndex, FLAGS[AState]) and FLAGS[AState]) = FLAGS[AState]) = AIsSet then exit;
 
   if AIsSet
   then ListView_SetItemState(ALV.Handle, AIndex, FLAGS[AState], FLAGS[AState])
