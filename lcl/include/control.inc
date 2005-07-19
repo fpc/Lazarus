@@ -2845,14 +2845,14 @@ function TControl.ParentDestroyingHandle: boolean;
 var
   CurControl: TControl;
 begin
-  Result:=false;
+  Result:=true;
   CurControl:=Self;
   while CurControl<>nil do begin
     if csDestroyingHandle in CurControl.ControlState then
       exit;
     CurControl:=CurControl.Parent;
   end;
-  Result:=true;
+  Result:=false;
 end;
 
 {------------------------------------------------------------------------------
@@ -3535,6 +3535,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.268  2005/07/19 10:44:47  micha
+  fix ParentDestroyingHandle to return true if destroying; was wrong way around
+
   Revision 1.267  2005/07/16 00:08:26  marc
   * Reimplemented ZOrder
   + Added IDE option to move a control one forward/back
