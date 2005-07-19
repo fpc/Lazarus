@@ -1035,6 +1035,7 @@ images/components/tcheckbox.xpm -text svneol=native#image/x-xpixmap
 images/components/tcheckgroup.xpm -text svneol=native#image/x-xpixmap
 images/components/tchecklistbox.ico -text svneol=unset#image/x-icon
 images/components/tchecklistbox.xpm -text svneol=native#image/x-xpixmap
+images/components/tcolorbox.xpm -text svneol=native#image/x-xpixmap
 images/components/tcolorbutton.xpm -text svneol=native#image/x-xpixmap
 images/components/tcolordialog.ico -text svneol=unset#image/x-icon
 images/components/tcolordialog.xpm -text svneol=native#image/x-xpixmap
