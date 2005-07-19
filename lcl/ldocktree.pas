@@ -48,6 +48,7 @@ type
   public
     destructor Destroy; override;
     function GetCaption: string;
+    function GetParentControl: TWinControl;
     property Splitter: TLazDockSplitter read FSplitter write FSplitter;
     property Pages: TLazDockPages read FPages write FPages;
     property Page: TLazDockPage read FPage write FPage;
@@ -376,6 +377,7 @@ var
   NewParentZone: TDockZone;
   OldParentZone: TDockZone;
   NewBounds: TRect;
+  ASibling: TDockZone;
 begin
   if DropControl=nil then
     DropControl:=DockSite;
@@ -454,13 +456,6 @@ begin
     else
       DropZone.Parent.AddAsLastChild(NewZone);
       
-    // resize control
-    if InsertAt in [alLeft,alRight] then begin
-
-    end else begin
-
-    end;
-
     // break anchors and resize DockSite
     BreakAnchors(RootZone);
     NewBounds:=DockSite.BoundsRect;
@@ -481,7 +476,19 @@ begin
     AControl.AnchorSide[akLeft].Control:=nil;
     AControl.AnchorSide[akTop].Control:=nil;
     AControl.AutoSize:=false;
-    AControl.Parent:=DockSite;
+    // resize control
+    RaiseGDBException('TLazDockTree.InsertControl TODO resize control');
+    if NewOrientation in [doHorizontal,doVertical] then begin
+      ASibling:=NewZone.PrevSibling;
+      if ASibling=nil then ASibling:=NewZone.NextSibling;
+      if ASibling<>nil then begin
+        if NewOrientation=doHorizontal then
+          AControl.Height:=ASibling.Height
+        else
+          AControl.Width:=ASibling.Width;
+      end;
+    end;
+    AControl.Parent:=NewZone.GetParentControl;
 
     // Build dock layout (anchors, splitters, pages)
     BuildDockLayout(RootZone as TLazDockZone);
@@ -627,6 +634,26 @@ begin
     Result:=ChildControl.Caption
   else
     Result:=IntToStr(GetIndex);
+end;
+
+function TLazDockZone.GetParentControl: TWinControl;
+var
+  Zone: TDockZone;
+begin
+  Result:=nil;
+  Zone:=Parent;
+  while Zone<>nil do begin
+    if Zone.Orientation=doPages then begin
+      Result:=(Zone as TLazDockZone).Pages;
+      exit;
+    end;
+    if (Zone.Parent=nil) then begin
+      if Zone.ChildControl is TWinControl then
+        Result:=TWinControl(Zone.ChildControl);
+      exit;
+    end;
+    Zone:=Zone.Parent;
+  end;
 end;
 
 end.

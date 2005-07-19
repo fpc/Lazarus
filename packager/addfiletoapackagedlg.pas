@@ -40,9 +40,8 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Buttons, ExtCtrls, StdCtrls,
-  LazarusIDEStrConsts, Dialogs, {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF},
-  FileUtil, IDEProcs, IDEOptionDefs, ComponentReg, PackageDefs, PackageSystem,
-  Arrow;
+  LazarusIDEStrConsts, Dialogs, AVL_Tree, FileUtil, IDEProcs, IDEOptionDefs,
+  ComponentReg, PackageDefs, PackageSystem;
 
 type
 
@@ -90,9 +89,6 @@ type
 function ShowAddFileToAPackageDlg(const Filename, UnitName: string;
   HasRegisterProc: boolean): TModalResult;
 
-
-var
-  AddFileToAPackageDialog: TAddFileToAPackageDialog;
 
 implementation
 
@@ -312,7 +308,7 @@ begin
   inherited Create(TheOwner);
   Caption:=lisAF2PAddFileToAPackage;
   fPackages:=TAVLTree.Create(@CompareLazPackageID);
-  IDEDialogLayoutList.ApplyLayout(Self,448,362);
+  IDEDialogLayoutList.ApplyLayout(Self,448,280);
   SetupComponents;
 end;
 

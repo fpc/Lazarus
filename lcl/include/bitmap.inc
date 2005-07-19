@@ -673,9 +673,11 @@ begin
   ImgReader:=nil;
   NewSaveStream:=nil;
   if UseSize then begin
+    // Use the given 'Size' parameter
     StoreOriginal(Stream,Size);
     SrcStream:=NewSaveStream;
   end else begin
+  
     FreeSaveStream;
     SrcStream:=Stream;
   end;
@@ -1006,6 +1008,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.99  2005/07/19 19:18:17  mattias
+  made addfiletoapackage dialog more compact
+
   Revision 1.98  2005/07/18 09:29:11  mattias
   Added TProtableAnyMapGraphic and fixed loading .ico on BIG_ENDIAN systems  from Colin Western
 

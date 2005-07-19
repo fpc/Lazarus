@@ -13,6 +13,7 @@ object AddFileToAPackageDialog: TAddFileToAPackageDialog
   Top = 331
   Width = 448
   object FileGroupBox: TGroupBox
+    Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.OnChange = nil
     Caption = 'FileGroupBox'
     ClientHeight = 191
@@ -29,6 +30,15 @@ object AddFileToAPackageDialog: TAddFileToAPackageDialog
       Left = 12
       Height = 17
       Top = 40
+      Width = 404
+    end
+    object FileTypeRadioGroup: TRadioGroup
+      Anchors = [akLeft, akRight, akBottom]
+      Caption = 'FileTypeRadioGroup'
+      ParentColor = True
+      Left = 12
+      Height = 72
+      Top = 113
       Width = 404
     end
     object FileNameEdit: TEdit
@@ -56,16 +66,9 @@ object AddFileToAPackageDialog: TAddFileToAPackageDialog
       Top = 88
       Width = 404
     end
-    object FileTypeRadioGroup: TRadioGroup
-      Caption = 'FileTypeRadioGroup'
-      ParentColor = True
-      Left = 12
-      Height = 72
-      Top = 112
-      Width = 404
-    end
   end
   object PackagesGroupBox: TGroupBox
+    Anchors = [akLeft, akRight, akBottom]
     Caption = 'PackagesGroupBox'
     ClientHeight = 71
     ClientWidth = 429
@@ -95,6 +98,8 @@ object AddFileToAPackageDialog: TAddFileToAPackageDialog
     end
   end
   object CancelButton: TButton
+    Anchors = [akRight, akBottom]
+    AutoSize = True
     Caption = 'CancelButton'
     ModalResult = 2
     TabOrder = 2
@@ -104,11 +109,17 @@ object AddFileToAPackageDialog: TAddFileToAPackageDialog
     Width = 75
   end
   object OkButton: TButton
+    Anchors = [akTop, akRight]
+    AutoSize = True
     BorderSpacing.OnChange = nil
+    BorderSpacing.Right = 10
     Caption = 'OkButton'
     OnClick = OkButtonClick
     TabOrder = 3
-    Left = 280
+    AnchorSideTop.Control = CancelButton
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = CancelButton
+    Left = 281
     Height = 25
     Top = 328
     Width = 75
