@@ -152,7 +152,7 @@ end;
 
 Procedure TCustomBitBtn.SetSpacing(AValue: Integer);
 Begin
-  if (FSpacing = AValue) or (AValue < 0) then Exit;
+  if (FSpacing = AValue) or (AValue < -1) then Exit;
   FSpacing := AValue;
   if HandleAllocated 
   then TWSBitBtnClass(WidgetSetClass).SetSpacing(Self, FSpacing);
