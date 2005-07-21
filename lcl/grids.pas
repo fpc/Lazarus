@@ -1631,6 +1631,7 @@ begin
     Msg.Options:=0;
     FEditor.Dispatch(Msg);
     
+    FEditorOptions := Msg.Options + 1; // force new editor setup
     SetEditorOptions(Msg.Options);
   end;
 end;
