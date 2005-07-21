@@ -801,14 +801,14 @@ begin
   ecBlockIndent: SetResult(VK_K,[ssCtrl],VK_I,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecBlockUnindent: SetResult(VK_K,[ssCtrl],VK_U,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecDeleteLastChar: SetResult(VK_H,[ssCtrl],VK_UNKNOWN,[],VK_BACK, [],VK_UNKNOWN,[]);
-  ecDeleteChar: SetResult(VK_G,[ssCtrl],VK_UNKNOWN,[],VK_DELETE,[],VK_UNKNOWN,[]);
+  ecDeleteChar: SetResult(VK_DELETE,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecDeleteWord: SetResult(VK_T,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecDeleteLastWord: SetResult(VK_BACK,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecDeleteBOL: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecDeleteEOL: SetResult(VK_K,[ssCtrl],VK_Y,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecDeleteLine: SetResult(VK_Y,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecClearAll: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecLineBreak: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_RETURN,[],VK_UNKNOWN,[]);
+  ecLineBreak: SetResult(VK_RETURN,[],VK_UNKNOWN,[],VK_M,[ssCtrl],VK_UNKNOWN,[]);
   ecInsertLine: SetResult(VK_N,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecInsertCharacter: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecInsertGPLNotice: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -832,12 +832,12 @@ begin
   // search & replace
   ecMatchBracket: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecFind: SetResult(VK_Q,[SSCtrl],VK_F,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecFindNext: SetResult(VK_L,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecFindNext: SetResult(VK_L,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecFindPrevious: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecFindInFiles: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecReplace: SetResult(VK_Q,[SSCtrl],VK_A,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecIncrementalFind: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecGotoLineNumber: SetResult(VK_J,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoLineNumber: SetResult(VK_G,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecJumpBack: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecJumpForward: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecAddJumpPoint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -869,7 +869,7 @@ begin
   ecSetMarker9: SetResult(VK_K,[ssCtrl],VK_9,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // codetools
-  ecAutoCompletion: SetResult(VK_J,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecAutoCompletion: SetResult(VK_J,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecWordCompletion: SetResult(VK_W,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecCompleteCode: SetResult(VK_C,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecIdentCompletion: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
