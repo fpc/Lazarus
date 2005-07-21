@@ -244,6 +244,7 @@ type
 
 var
   MouseDownTime: dword;
+  MouseDownPos: TPoint;
   MouseDownWindow: HWND;
   MouseDownFocusWindow: HWND;
   MouseDownFocusStatus: TMouseDownFocusStatus;
@@ -283,6 +284,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.143  2005/07/21 17:37:40  micha
+  fix double click heuristic to take into account cursor movement, if moved too much do not send double click
+
   Revision 1.142  2005/07/18 13:49:54  micha
   split up implementation of ResizeChild
 

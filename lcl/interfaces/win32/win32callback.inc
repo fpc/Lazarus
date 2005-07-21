@@ -94,6 +94,17 @@ begin
   EraseBkgndStack := (EraseBkgndStack shl EraseBkgndStackShift) or dword(Ord(Command));
 end;
 
+function CheckMouseMovement: boolean;
+  // returns true if mouse did not move between lmousebutton down
+var
+  lCursorPos: TPoint;
+  moveX, moveY: integer;
+begin
+  GetCursorPos(lCursorPos);
+  moveX := lCursorPos.X - MouseDownPos.X;
+  moveY := lCursorPos.Y - MouseDownPos.Y;
+  Result := (-3 <= moveX) and (moveX <= 3) and (-3 <= moveY) and (moveY <= 3);
+end;
 
 //TODO: added temporarily to fix compilation,
 //should probably removed soon, as the LCL does not listen to it.
@@ -892,10 +903,11 @@ Begin
     End;
     WM_LBUTTONDOWN:
     Begin
-      // if mouse-click, focus-change, mouse-click, simulate double click
-      // assume focus change due to first mouse-click
+      // if mouse-click, focus-change, mouse-click, cursor hasn't moved: 
+      // simulate double click, assume focus change due to first mouse-click
       if (MouseDownFocusStatus = mfFocusChanged) and (MouseDownFocusWindow = Window)
-          and (GetTickCount - MouseDownTime <= GetDoubleClickTime) then
+          and (GetTickCount - MouseDownTime <= GetDoubleClickTime) 
+          and CheckMouseMovement then
       begin
         PostMessage(Window, WM_LBUTTONDBLCLK, WParam, LParam);
       end;
@@ -904,6 +916,7 @@ Begin
       MouseDownWindow := Window;
       MouseDownFocusWindow := 0;
       MouseDownFocusStatus := mfFocusSense;
+      GetCursorPos(MouseDownPos);
       NotifyUserInput := True;
       PLMsg:=@LMMouse;
       With LMMouse Do
@@ -1601,6 +1614,9 @@ end;
 
 {
   $Log$
+  Revision 1.212  2005/07/21 17:37:40  micha
+  fix double click heuristic to take into account cursor movement, if moved too much do not send double click
+
   Revision 1.211  2005/07/05 10:49:12  micha
   fix bug 917: itemid -1 is for focus rectangle, let widgetset draw that
 
