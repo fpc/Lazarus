@@ -577,20 +577,26 @@ var
   {$ENDIF}
 begin
   if NumLines > 0 then begin
-    if (Index < 0) or (Index > fCount) then
+    if (Index < 0) or (Index >= fCount) then
       ListIndexOutOfBounds(Index);
-    LinesAfter := fCount - (Index + NumLines - 1);
+    LinesAfter := fCount - (Index + NumLines);
     if LinesAfter < 0 then
-      NumLines := fCount - Index - 1;
+      NumLines := fCount - Index;
     {$IFDEF FPC}
+    // free the strings
     for i:=Index to Index+NumLines-1 do
       fList^[i].fString:='';
     {$ENDIF}
     if LinesAfter > 0 then begin
       BeginUpdate;
       try
+        // move
         System.Move(fList^[Index + NumLines], fList^[Index],
           LinesAfter * SynEditStringRecSize);
+        {$IFDEF FPC}
+        // clear unused references
+        FillChar(fList^[Index + LinesAfter], NumLines * SynEditStringRecSize,0);
+        {$ENDIF}
       finally
         EndUpdate;
       end;

@@ -4897,7 +4897,7 @@ var
               Copy(Lines[BE.Y - 1], BE.X, MaxInt);
             // Delete all lines in the selection range.
 {begin}                                                                         // djlp 2000-09-13
-            TSynEditStringList(Lines).DeleteLines(BB.Y, BE.Y - BB.Y);
+            TSynEditStringList(Lines).DeleteLines(BB.Y-1, BE.Y - BB.Y);
 //            for x := BE.Y - 1 downto BB.Y do
 //              Lines.Delete(x);
 {end}                                                                           // djlp 2000-09-13
