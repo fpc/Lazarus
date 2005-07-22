@@ -50,6 +50,7 @@ Radek Cervinka
 Raul Moratalla
 Razvan Adrian Bogdan
 Reimar Grabowski
+Rostislav Okulov
 Salvatore Coppola
 Samuel Liddicott
 Seppo Suutarla - finnish translation

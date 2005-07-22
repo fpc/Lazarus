@@ -1039,7 +1039,7 @@ type
     function ManualFloat(TheScreenRect: TRect): Boolean;
     function ReplaceDockedControl(Control: TControl; NewDockSite: TWinControl;
       DropControl: TControl; ControlSide: TAlign): Boolean;
-    Function  Dragging: Boolean;
+    function Dragging: Boolean;
   public
     // size
     procedure AdjustSize; virtual;
@@ -1696,8 +1696,8 @@ type
     procedure GetPropertyList(List: TStrings); override;
   end;
   {$ENDIF not VER1_0}
-
-
+  
+  
   { TDockZone }
 
   TDockTree = class;
@@ -1980,7 +1980,6 @@ procedure RecreateWnd(const AWinControl:TWinControl);
 
 
 // drag and drop
-
 var
   DefaultDockTreeClass: TDockTreeClass;
 
@@ -2953,6 +2952,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.315  2005/07/22 11:15:56  mattias
+  updated russian translation for windows  from Rostislav Okulov
+
   Revision 1.314  2005/07/19 20:58:14  mattias
   fixed reading vaInt16
 

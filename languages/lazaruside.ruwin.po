@@ -1672,7 +1672,7 @@ msgstr "Стандартное расширение паскаля"
 
 #: lazarusidestrconsts:dlgdefvaluecolor
 msgid "Default value"
-msgstr ""
+msgstr "Значение по умолчанию"
 
 #: lazarusidestrconsts:liscodetoolsdefsdefine
 msgid "Define"
@@ -1784,7 +1784,7 @@ msgstr "Совместимость с Delphi"
 
 #: lazarusidestrconsts:lisdelphiproject
 msgid "Delphi project"
-msgstr ""
+msgstr "Проект Delphi"
 
 #: lazarusidestrconsts:lisa2pdependency
 msgid "Dependency"
@@ -5840,7 +5840,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisshowhintsinobjectinspector
 msgid "Show hints in Object Inspector"
-msgstr ""
+msgstr "Показывать подсказки в Инспекторе объектов"
 
 #: lazarusidestrconsts:dlgshowlinenumbers
 msgid "Show line numbers"
@@ -5884,7 +5884,7 @@ msgstr "Меньший код"
 
 #: lazarusidestrconsts:dlgcosmartlinkable
 msgid "Smart Linkable"
-msgstr ""
+msgstr "Умная линковка"
 
 #: lazarusidestrconsts:dlgsmarttabs
 msgid "Smart tabs"
@@ -6104,7 +6104,7 @@ msgstr "Проверка синтаксиса"
 
 #: lazarusidestrconsts:dlgsyntaxoptions
 msgid "Syntax options"
-msgstr ""
+msgstr "Опции синтаксиса"
 
 #: lazarusidestrconsts:dlgrunosystemvariables
 msgid "System variables"
