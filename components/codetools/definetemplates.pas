@@ -3530,7 +3530,7 @@ var
   MainDir, DirTempl, SubDirTempl, IntfDirTemplate, IfTemplate,
   LCLUnitsDir, LCLUnitsCPUOSDir, LCLUnitsCPUOSWidgetSetDir,
   SubTempl: TDefineTemplate;
-  TargetOS, SrcOS, SrcPath, TargetCPU: string;
+  TargetOS, SrcOS, SrcPath: string;
   i: Integer;
   CurCPU, CurOS, CurWidgetSet, ExtraSrcPath: string;
   ElseTemplate: TDefineTemplate;
@@ -3545,7 +3545,7 @@ var
 begin
   Result:=nil;
   if (LazarusSrcDir='') or (WidgetType='') then exit;
-  TargetCPU:='$('+ExternalMacroStart+'TargetCPU)';
+  //TargetCPU:='$('+ExternalMacroStart+'TargetCPU)';
   TargetOS:='$('+ExternalMacroStart+'TargetOS)';
   SrcOS:='$('+ExternalMacroStart+'SrcOS)';
   SrcPath:='$('+ExternalMacroStart+'SrcPath)';
