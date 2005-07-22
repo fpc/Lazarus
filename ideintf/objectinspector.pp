@@ -2004,7 +2004,8 @@ procedure TOICustomPropertyGrid.ClearRows;
 var a:integer;
 begin
   IncreaseChangeStep;
-  for a:=0 to FRows.Count-1 do begin
+  // reverse order to make sure child rows are freed before parent rows
+  for a:=FRows.Count-1 downto 0 do begin
     Rows[a].Free;
   end;
   FRows.Clear;
