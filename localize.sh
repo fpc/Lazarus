@@ -38,7 +38,7 @@ for lang in ca de es fi fiwin fr it itiso pl pliso plwin ru ruwin ruutf ; do
 done
 
 # CodeTools
-CodeTools_RST=`find components/units -name codetoolsstrconsts.rst | xargs ls -1t | head -1`;
+CodeTools_RST=`find components/codetools/units -name codetoolsstrconsts.rst | xargs ls -1t | head -1`;
 rstconv -i $CodeTools_RST \
   -o components/codetools/languages/codetools.po
 ./tools/updatepofiles components/codetools/languages/codetools.po
@@ -48,7 +48,7 @@ for lang in ca de es fi fr it itiso pl pliso plwin ru ruwin ruutf; do
 done
 
 # SynEdit
-SynEdit_RST=`find components/units -name syneditstrconst.rst | xargs ls -1t | head -1`;
+SynEdit_RST=`find components/synedit/units -name syneditstrconst.rst | xargs ls -1t | head -1`;
 rstconv -i $SynEdit_RST \
   -o components/synedit/languages/synedit.po
 ./tools/updatepofiles components/synedit/languages/synedit.po

@@ -5689,6 +5689,10 @@ msgstr "Sélectioner jusqu'à la fin absolue"
 msgid "Select to brace"
 msgstr "Ancrer la sélection"
 
+#: lazarusidestrconsts:lismenuselectword
+msgid "Select word"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsselectednode
 msgid "Selected Node:"
 msgstr "Noeud sélectionné:"

@@ -5678,6 +5678,10 @@ msgstr "Выделить до самого конца"
 msgid "Select to brace"
 msgstr "Выделить до скобки"
 
+#: lazarusidestrconsts:lismenuselectword
+msgid "Select word"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsselectednode
 msgid "Selected Node:"
 msgstr "Выделить элемент:"

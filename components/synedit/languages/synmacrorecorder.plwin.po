@@ -9,19 +9,3 @@ msgstr ""
 "X-Generator: KBabel 1.3\n"
 "Plural-Forms:  nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: synmacrorecorder:scannotpause
-msgid "Can only pause when recording"
-msgstr "Makro nie jest nagrywane - nie mo¿na wstrzymaæ"
-
-#: synmacrorecorder:scannotresume
-msgid "Can only resume when paused"
-msgstr "Mo¿na wznowiæ tylko po wstrzymaniu"
-
-#: synmacrorecorder:scannotplay
-msgid "Cannot playback macro when recording"
-msgstr "Nie mo¿na odtwarzaæ makra podczas nagrywania"
-
-#: synmacrorecorder:scannotrecord
-msgid "Cannot record macro when recording"
-msgstr "Nie mo¿na nagrywaæ dwóch makr naraz"
-

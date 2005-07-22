@@ -1,16 +1,200 @@
-#: synmacrorecorder:scannotrecord
-msgid "Cannot record macro when recording"
+#: :
+msgid ""
 msgstr ""
 
-#: synmacrorecorder:scannotplay
-msgid "Cannot playback macro when recording"
+#: :
+msgid ""
 msgstr ""
 
-#: synmacrorecorder:scannotpause
-msgid "Can only pause when recording"
+#: :
+msgid ""
 msgstr ""
 
-#: synmacrorecorder:scannotresume
-msgid "Can only resume when paused"
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :IDE_RST
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :ObjInsp_RST
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :CodeTools_RST
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :SynEdit_RST
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :SynMacroRec_RST
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :LCL_RST
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
+msgstr ""
+
+#: :
+msgid ""
 msgstr ""
 

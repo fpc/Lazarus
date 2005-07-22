@@ -5692,6 +5692,10 @@ msgstr "Auswahl bis zum absoluten Ende"
 msgid "Select to brace"
 msgstr "Bis zu Klammer"
 
+#: lazarusidestrconsts:lismenuselectword
+msgid "Select word"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsselectednode
 msgid "Selected Node:"
 msgstr "Gewählter Knoten:"

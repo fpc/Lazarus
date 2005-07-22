@@ -346,6 +346,10 @@ msgstr ""
 msgid "Select code block"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuselectword
+msgid "Select word"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuselectline
 msgid "Select line"
 msgstr ""

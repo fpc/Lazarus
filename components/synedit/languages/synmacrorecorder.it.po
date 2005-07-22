@@ -8,19 +8,3 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: synmacrorecorder:scannotpause
-msgid "Can only pause when recording"
-msgstr "Durante la registrazione è possibile solo mettere in pausa"
-
-#: synmacrorecorder:scannotresume
-msgid "Can only resume when paused"
-msgstr "Quando si è in pausa è possibile solo ripartire"
-
-#: synmacrorecorder:scannotplay
-msgid "Cannot playback macro when recording"
-msgstr "Impossibile eseguire una macro durante la registrazione"
-
-#: synmacrorecorder:scannotrecord
-msgid "Cannot record macro when recording"
-msgstr "Impossibile registrare macro durante la registrazione"
-

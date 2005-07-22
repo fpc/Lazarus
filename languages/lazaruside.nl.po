@@ -5689,6 +5689,10 @@ msgstr "Selecteer tot eind"
 msgid "Select to brace"
 msgstr "Selecteer tot accolade"
 
+#: lazarusidestrconsts:lismenuselectword
+msgid "Select word"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsselectednode
 msgid "Selected Node:"
 msgstr "Geselecteerde node:"

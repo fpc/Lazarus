@@ -5688,6 +5688,10 @@ msgstr "Seleziona fino alla fine"
 msgid "Select to brace"
 msgstr "Seleziona in graffe"
 
+#: lazarusidestrconsts:lismenuselectword
+msgid "Select word"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsselectednode
 msgid "Selected Node:"
 msgstr "Seleziona nodo"

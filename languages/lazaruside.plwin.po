@@ -5689,6 +5689,10 @@ msgstr "Wybierz do koñca"
 msgid "Select to brace"
 msgstr "Zaznacz do nawiasu"
 
+#: lazarusidestrconsts:lismenuselectword
+msgid "Select word"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsselectednode
 msgid "Selected Node:"
 msgstr "Wybrany element:"

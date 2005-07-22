@@ -5678,6 +5678,10 @@ msgstr ""
 msgid "Select to brace"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuselectword
+msgid "Select word"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsselectednode
 msgid "Selected Node:"
 msgstr ""
