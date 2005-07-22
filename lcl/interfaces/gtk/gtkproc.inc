@@ -2243,10 +2243,9 @@ begin
           Msg.msg := LM_SYSKEYDOWN
         else begin
           Msg.msg := LM_KEYDOWN;
-          
           // some widgets handle keys, but do not eat it.
           // To avoid, that the LCL also reacts stop here
-          if KeyAlreadyHandledByGtk then exit;
+          //if KeyAlreadyHandledByGtk then exit;
         end;
       end;
 
@@ -2255,10 +2254,12 @@ begin
 
       Msg.KeyData := CommonKeyData or (Flags shl 16) or $0001 {TODO:  repeatcount};
 
-      // send the (Sys)KeyDown message directly to the LCL
-      NotifyApplicationUserInput(Msg.Msg);
-      Result := DeliverMessage(TargetData, Msg) = 0;
-      //debugln('[HandleGTKKeyUpDown] GDK_KEY_PRESS After KeyDown message CharCode=',dbgs(Msg.CharCode));
+      if not KeyAlreadyHandledByGtk then begin
+        // send the (Sys)KeyDown message directly to the LCL
+        NotifyApplicationUserInput(Msg.Msg);
+        Result := DeliverMessage(TargetData, Msg) = 0;
+        //debugln('[HandleGTKKeyUpDown] GDK_KEY_PRESS After KeyDown message CharCode=',dbgs(Msg.CharCode));
+      end;
 
       if Msg.CharCode <> Vkey.Vkey
       then begin
@@ -2298,7 +2299,7 @@ begin
       end;
 
 
-      if (not EventStopped) and (not BeforeEvent) and CanSendChar
+      if (not EventStopped) {and (not BeforeEvent)} and CanSendChar
       then begin
         EventTrace('char', data);
 
@@ -8250,6 +8251,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.369  2005/07/22 11:37:26  mattias
+  fixed gtk not container warnings and let a few gtk handled key messages pass
+
   Revision 1.368  2005/07/09 16:20:50  mattias
   TSplitter can now also work with Align=alNone and AnchorSide
 

@@ -172,7 +172,8 @@ var
   Children: PGList;
 begin
   Result := PGTKWidget(AHandle);
-  while (Result <> nil) and GTK_WIDGET_NO_WINDOW(Result) do
+  while (Result <> nil) and GTK_WIDGET_NO_WINDOW(Result)
+  and GtkWidgetIsA(Result,GTK_CONTAINER_TYPE) do
   begin
     Children := gtk_container_children(PGtkContainer(Result));
     if Children = nil
