@@ -63,10 +63,11 @@ files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) \
             
 [compiler]
 options=-gl  
-unitdir=../lcl/units/$(CPU_TARGET)/$(OS_TARGET) \
-        ../lcl/units/$(CPU_TARGET)/$(OS_TARGET)/$(LCL_PLATFORM) \
-        ../components/units/$(CPU_TARGET)/$(OS_TARGET) \
-        .. .
+unitdir=../lcl/units/$(CPU_TARGET)-$(OS_TARGET) \
+        ../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+        ../components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) \
+        ../components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) \
+        .
 units=allexamples
 
 

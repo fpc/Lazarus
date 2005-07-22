@@ -15,8 +15,8 @@ implicitunits=gnomeint
 
 [compiler]
 options=-gl -dgtk1 -dgnome1
-unitdir=../../units/$(CPU_TARGET)/$(OS_TARGET) ../gtk .
-unittargetdir=../../units/$(CPU_TARGET)/$(OS_TARGET)/gnome
+unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) ../gtk .
+unittargetdir=../../units/$(CPU_TARGET)-$(OS_TARGET)/gnome
 
 [clean]
 files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
@@ -32,4 +32,4 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/interfaces$(PPUEXT) \
                 $(COMPILER_UNITTARGETDIR)/interfaces$(OEXT)
 
-all: cleartarget interfaces$(PPUEXT)
+all: cleartarget $(COMPILER_UNITTARGETDIR) interfaces$(PPUEXT)

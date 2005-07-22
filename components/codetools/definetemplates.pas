@@ -3528,7 +3528,7 @@ const
     
 var
   MainDir, DirTempl, SubDirTempl, IntfDirTemplate, IfTemplate,
-  LCLUnitsDir, LCLUnitsCPUDir, LCLUnitsCPUOSDir, LCLUnitsCPUOSWidgetSetDir,
+  LCLUnitsDir, LCLUnitsCPUOSDir, LCLUnitsCPUOSWidgetSetDir,
   SubTempl: TDefineTemplate;
   TargetOS, SrcOS, SrcPath, TargetCPU: string;
   i: Integer;
@@ -3537,6 +3537,11 @@ var
   LCLWidgetSetDir: TDefineTemplate;
   IDEIntfDir: TDefineTemplate;
   ToolsInstallDirTempl: TDefineTemplate;
+  CurCPUOS: String;
+  SynEditDirTempl: TDefineTemplate;
+  SynEditUnitsDirTempl: TDefineTemplate;
+  CodeToolsDirTempl: TDefineTemplate;
+  CodeToolsUnitsDirTempl: TDefineTemplate;
 begin
   Result:=nil;
   if (LazarusSrcDir='') or (WidgetType='') then exit;
@@ -3752,12 +3757,6 @@ begin
   DirTempl:=TDefineTemplate.Create('Examples',
     Format(ctsNamedDirectory,['Examples']),
     '','examples',da_Directory);
-  DirTempl.AddChild(TDefineTemplate.Create('Unit path addition',
-    Format(ctsAddsDirToSourcePath,['components']),
-    ExternalMacroStart+'SrcPath',
-    d('..;../components/units/'+TargetCPU+'/'+TargetOS
-    +';'+SrcPath)
-    ,da_Define));
   DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
     Format(ctsAddsDirToSourcePath,['lcl']),
     ExternalMacroStart+'SrcPath',
@@ -3795,31 +3794,24 @@ begin
   begin
     SplitLazarusCPUOSWidgetCombo(Lazarus_CPU_OS_Widget_Combinations[i],
                                  CurCPU,CurOS,CurWidgetSet);
-    // <LazarusSrcDir>/lcl/units/<TargetCPU>
-    LCLUnitsCPUDir:=LCLUnitsDir.FindChildByName(CurCPU);
-    if LCLUnitsCPUDir=nil then begin
-      LCLUnitsCPUDir:=TDefineTemplate.Create(CurCPU,
-        Format(ctsNamedDirectory,[CurCPU]),
-        '',CurCPU,da_Directory);
-      LCLUnitsDir.AddChild(LCLUnitsCPUDir);
-    end;
-    // <LazarusSrcDir>/lcl/units/<TargetCPU>/<TargetOS>
+    // <LazarusSrcDir>/lcl/units/<TargetCPU>-<TargetOS>
     // these directories contain the output of the LCL (excluding the interfaces)
-    LCLUnitsCPUOSDir:=LCLUnitsCPUDir.FindChildByName(CurOS);
+    CurCPUOS:=CurCPU+'-'+CurOS;
+    LCLUnitsCPUOSDir:=LCLUnitsDir.FindChildByName(CurCPUOS);
     if LCLUnitsCPUOSDir=nil then begin
-      LCLUnitsCPUOSDir:=TDefineTemplate.Create(CurOS,
-        Format(ctsNamedDirectory,[CurOS]),
-        '',CurOS,da_Directory);
-      LCLUnitsCPUDir.AddChild(LCLUnitsCPUOSDir);
-      
-      ExtraSrcPath:='../../..;../../../widgetset';
+      LCLUnitsCPUOSDir:=TDefineTemplate.Create(CurCPUOS,
+        Format(ctsNamedDirectory,[CurCPUOS]),
+        '',CurCPUOS,da_Directory);
+      LCLUnitsDir.AddChild(LCLUnitsCPUOSDir);
+
+      ExtraSrcPath:='../..;../../widgetset';
       if CurOS<>'win32' then
         ExtraSrcPath:=ExtraSrcPath+';../../../nonwin32';
       LCLUnitsCPUOSDir.AddChild(TDefineTemplate.Create('CompiledSrcPath',
          ctsSrcPathForCompiledUnits,CompiledSrcPathMacroName,
          d(ExtraSrcPath),da_Define));
     end;
-    // <LazarusSrcDir>/lcl/units/<TargetCPU>/<TargetOS>/<WidgetSet>
+    // <LazarusSrcDir>/lcl/units/<TargetCPU>-<TargetOS>/<WidgetSet>
     // these directories contain the output of the LCL interfaces
     LCLUnitsCPUOSWidgetSetDir:=LCLUnitsCPUOSDir.FindChildByName(CurWidgetSet);
     if LCLUnitsCPUOSWidgetSetDir=nil then begin
@@ -3827,9 +3819,9 @@ begin
         Format(ctsNamedDirectory,[CurWidgetSet]),
         '',CurWidgetSet,da_Directory);
       LCLUnitsCPUOSDir.AddChild(LCLUnitsCPUOSWidgetSetDir);
-      ExtraSrcPath:='../../../../interfaces/'+CurWidgetSet;
+      ExtraSrcPath:='../../../interfaces/'+CurWidgetSet;
       if (CurWidgetSet='gnome') or (CurWidgetSet='gtk2') then
-        ExtraSrcPath:=ExtraSrcPath+';../../../../interfaces/gtk';
+        ExtraSrcPath:=ExtraSrcPath+';../../../interfaces/gtk';
       LCLUnitsCPUOSWidgetSetDir.AddChild(
         TDefineTemplate.Create('CompiledSrcPath',
           ctsSrcPathForCompiledUnits,CompiledSrcPathMacroName,
@@ -3914,17 +3906,31 @@ begin
     ,da_DefineRecurse));
   MainDir.AddChild(DirTempl);
   
-  // <LazarusSrcDir>/components/units
-  SubDirTempl:=TDefineTemplate.Create('units',
-    'compiled components for the IDE',
-    '','units',da_Directory);
-  SubDirTempl.AddChild(TDefineTemplate.Create('CompiledSrcPath',
+  // <LazarusSrcDir>/components/synedit/units
+  SynEditDirTempl:=TDefineTemplate.Create('synedit',
+    'SynEdit','','synedit',da_Directory);
+  SynEditUnitsDirTempl:=TDefineTemplate.Create('synedit output directory',
+    'units','','units',da_Directory);
+  SynEditDirTempl.AddChild(SynEditUnitsDirTempl);
+  SynEditUnitsDirTempl.AddChild(TDefineTemplate.Create('CompiledSrcPath',
      ctsSrcPathForCompiledUnits,
      ExternalMacroStart+'CompiledSrcPath',
-     d(LazarusSrcDir+'components/synedit;'
-      +LazarusSrcDir+'components/codetools')
+     d(LazarusSrcDir+'components/synedit')
      ,da_DefineRecurse));
-  DirTempl.AddChild(SubDirTempl);
+  DirTempl.AddChild(SynEditDirTempl);
+
+  // <LazarusSrcDir>/components/codetools/units
+  CodeToolsDirTempl:=TDefineTemplate.Create('codetools',
+    'CodeTools','','codetools',da_Directory);
+  CodeToolsUnitsDirTempl:=TDefineTemplate.Create('codetools output directory',
+    'units','','units',da_Directory);
+  CodeToolsDirTempl.AddChild(CodeToolsUnitsDirTempl);
+  CodeToolsUnitsDirTempl.AddChild(TDefineTemplate.Create('CompiledSrcPath',
+     ctsSrcPathForCompiledUnits,
+     ExternalMacroStart+'CompiledSrcPath',
+     d(LazarusSrcDir+'components/codetools')
+     ,da_DefineRecurse));
+  DirTempl.AddChild(CodeToolsDirTempl);
 
   // <LazarusSrcDir>/components/custom
   SubDirTempl:=TDefineTemplate.Create('Custom Components',

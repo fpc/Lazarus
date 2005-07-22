@@ -8,8 +8,8 @@ name=synedit
 version=1.0.3
 
 [compiler]
-unittargetdir=../units/$(CPU_TARGET)/$(OS_TARGET)
-unitdir=../../lcl/units/$(CPU_TARGET)/$(OS_TARGET) .
+unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
+unitdir=../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) .
 options=-gl
 
 [target]
@@ -31,7 +31,10 @@ packages=fcl regexpr
 #lcldir=../../lcl
 
 [clean]
-files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
+      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 
 [rules]
 .PHONY: cleartarget all
@@ -39,4 +42,4 @@ files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/allsyneditunits$(PPUEXT)
 
-all: cleartarget allsyneditunits$(PPUEXT)
+all: cleartarget $(COMPILER_UNITTARGETDIR) allsyneditunits$(PPUEXT)

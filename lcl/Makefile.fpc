@@ -85,7 +85,7 @@ endif
 
 [compiler]
 options=-gl
-unittargetdir=units/$(CPU_TARGET)/$(OS_TARGET)
+unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
 unitdir=. $(NONWIN32) widgetset
 includedir=include
 
@@ -111,7 +111,7 @@ lcldir=.
 cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/alllclunits$(PPUEXT)
 
-all: cleartarget alllclunits$(PPUEXT) $(TARGET_DIRS)
+all: cleartarget $(COMPILER_UNITTARGETDIR) alllclunits$(PPUEXT) $(TARGET_DIRS)
 
 cleanlaz: clean
         $(MAKE) -C interfaces clean

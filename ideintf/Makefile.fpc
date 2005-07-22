@@ -8,10 +8,10 @@ name=ideintf
 version=0.9b
 
 [compiler]
-unitdir=../lcl/units/$(CPU_TARGET)/$(OS_TARGET) \
-        ../components/units/$(CPU_TARGET)/$(OS_TARGET) \
-        ../packager/units/$(CPU_TARGET)/$(OS_TARGET) .
-unittargetdir=units/$(CPU_TARGET)/$(OS_TARGET)
+unitdir=../lcl/units/$(CPU_TARGET)-$(OS_TARGET) \
+        ../components/codetools/$(CPU_TARGET)-$(OS_TARGET) \
+        ../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
 options=-gl
 
 [target]
@@ -58,7 +58,7 @@ lcldir=../lcl
 cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/allideintf$(PPUEXT)
 
-all: cleartarget allideintf$(PPUEXT)
+all: cleartarget $(COMPILER_UNITTARGETDIR) allideintf$(PPUEXT)
 
 # end.
 

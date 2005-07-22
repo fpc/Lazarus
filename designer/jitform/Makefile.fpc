@@ -8,7 +8,7 @@ name=jitform
 version=0.9b
 
 [compiler]
-unitdir=../../lcl/units/$(CPU_TARGET)/$(OS_TARGET) .
+unitdir=../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) .
 unittargetdir=../units
 options=-gl
 
@@ -30,7 +30,7 @@ lcldir=../../lcl
 cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/jitform$(PPUEXT)
 
-all: cleartarget jitform$(PPUEXT)
+all: cleartarget $(COMPILER_UNITTARGETDIR) jitform$(PPUEXT)
 
 # end.
 

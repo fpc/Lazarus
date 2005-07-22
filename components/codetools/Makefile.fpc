@@ -11,7 +11,7 @@ version=1.0
 packages=fcl
 
 [compiler]
-unittargetdir=../units/$(CPU_TARGET)/$(OS_TARGET)
+unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
 unitdir=.
 options=-gl
 
@@ -27,7 +27,10 @@ implicitunits=codetoolsstrconsts avl_tree basiccodetools codecache sourcelog \
    laz_dom laz_xmlcfg laz_xmlread laz_xmlwrite
 
 [clean]
-files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
+      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 
 [rules]
 .PHONY: cleartarget all
@@ -35,7 +38,7 @@ files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/allcodetoolunits$(PPUEXT)
 
-all: cleartarget allcodetoolunits$(PPUEXT)
+all: cleartarget $(COMPILER_UNITTARGETDIR) allcodetoolunits$(PPUEXT)
 
 # end.
 

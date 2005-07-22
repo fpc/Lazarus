@@ -2,8 +2,7 @@
 #
 #   Makefile.fpc for Lazarus for Free Pascal
 #   
-# test
-     
+
 [package]
 main=lcl
 
@@ -15,23 +14,21 @@ units=interfaces
 
 [compiler]
 options=-gl -dqt
-unitdir=../../units .
-unittargetdir=../../units/qt
+unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+unittargetdir=../../units/$(CPU_TARGET)-$(OS_TARGET)/qt
 
 [clean]
-files=$(wildcard ../../units/qt/*$(OEXT)) \
-      $(wildcard ../../units/qt/*$(PPUEXT)) \
-      $(wildcard ../../units/qt/*$(RSTEXT)) \
+files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
       $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
-
-[prerules]
-DIST_DESTDIR=$(BASEDIR)/../../../dist
 
 [rules]
 .PHONY: cleartarget all
 
 cleartarget:
-        -$(DEL) ../../units/qt/interfaces$(PPUEXT) ../../units/interfaces$(PPUEXT)
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/interfaces$(PPUEXT) \
+                $(COMPILER_UNITTARGETDIR)/interfaces$(OEXT)
 
-all: cleartarget interfaces$(PPUEXT)
+all: cleartarget $(COMPILER_UNITTARGETDIR) interfaces$(PPUEXT)
 

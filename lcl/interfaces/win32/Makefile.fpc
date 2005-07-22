@@ -15,8 +15,8 @@ implicitunits=winext win32def win32proc win32int
 
 [compiler]
 options=-gl
-unitdir=../../units/$(CPU_TARGET)/$(OS_TARGET) .
-unittargetdir=../../units/$(CPU_TARGET)/$(OS_TARGET)/win32
+unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+unittargetdir=../../units/$(CPU_TARGET)-$(OS_TARGET)/win32
 
 [clean]
 files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
@@ -30,5 +30,5 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/interfaces$(PPUEXT) \
                 $(COMPILER_UNITTARGETDIR)/interfaces$(OEXT)
 
-all: cleartarget interfaces$(PPUEXT)
+all: cleartarget $(COMPILER_UNITTARGETDIR) interfaces$(PPUEXT)
 

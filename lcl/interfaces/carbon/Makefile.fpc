@@ -15,8 +15,8 @@ implicitunits=carbonint
 
 [compiler]
 options=-gl -dcarbon1
-unitdir=../../units/$(CPU_TARGET)/$(OS_TARGET) .
-unittargetdir=../../units/$(CPU_TARGET)/$(OS_TARGET)/carbon
+unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+unittargetdir=../../units/$(CPU_TARGET)-$(OS_TARGET)/carbon
 
 [clean]
 files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
@@ -32,4 +32,4 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/interfaces$(PPUEXT) \
                 $(COMPILER_UNITTARGETDIR)/interfaces$(OEXT)
 
-all: cleartarget interfaces$(PPUEXT)
+all: cleartarget $(COMPILER_UNITTARGETDIR) interfaces$(PPUEXT)

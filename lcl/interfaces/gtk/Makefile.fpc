@@ -15,8 +15,8 @@ implicitunits=gtkdef gtkglobals gtkint gtkmsgqueue gtkproc gtkwinapiwindow
 
 [compiler]
 options=-gl -dgtk1
-unitdir=../../units/$(CPU_TARGET)/$(OS_TARGET) .
-unittargetdir=../../units/$(CPU_TARGET)/$(OS_TARGET)/gtk
+unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+unittargetdir=../../units/$(CPU_TARGET)-$(OS_TARGET)/gtk
 
 [clean]
 files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
@@ -31,5 +31,5 @@ files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
 cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/interfaces$(PPUEXT) \
                 $(COMPILER_UNITTARGETDIR)/interfaces$(OEXT)
-
-all: cleartarget interfaces$(PPUEXT)
+                
+all: cleartarget $(COMPILER_UNITTARGETDIR) interfaces$(PPUEXT)

@@ -9,7 +9,7 @@ version=0.9b
 
 [compiler]
 unitdir=.
-unittargetdir=../units/$(CPU_TARGET)/$(OS_TARGET)
+unittargetdir=../units/$(CPU_TARGET)-$(OS_TARGET)
 options=-gl
 
 [target]
@@ -33,7 +33,7 @@ cleanlaz: clean
 cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/lazaruspackageintf$(PPUEXT)
 
-all: cleartarget lazaruspackageintf$(PPUEXT)
+all: cleartarget $(COMPILER_UNITTARGETDIR) lazaruspackageintf$(PPUEXT)
 
 # end.
 

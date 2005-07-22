@@ -1,3 +1,0 @@
-This is an output directory, so it is empty at start or after clean up.
-But CVS does not always create empty directories.
-This file makes sure the directory is created.

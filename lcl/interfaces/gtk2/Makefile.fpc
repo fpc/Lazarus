@@ -15,8 +15,8 @@ implicitunits=gtk2int
 
 [compiler]
 options=-gl -dgtk2
-unitdir=../../units/$(CPU_TARGET)/$(OS_TARGET) ../gtk .
-unittargetdir=../../units/$(CPU_TARGET)/$(OS_TARGET)/gtk2
+unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) ../gtk .
+unittargetdir=../../units/$(CPU_TARGET)-$(OS_TARGET)/gtk2
 
 [clean]
 files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
@@ -32,4 +32,4 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/interfaces$(PPUEXT) \
                 $(COMPILER_UNITTARGETDIR)/interfaces$(OEXT)
 
-all: cleartarget interfaces$(PPUEXT)
+all: cleartarget $(COMPILER_UNITTARGETDIR) interfaces$(PPUEXT)

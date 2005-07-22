@@ -874,7 +874,7 @@ begin
     
     // add lazarus registration unit path
     UsageOptions.UnitPath:=SetDirSeparators(
-      '$(LazarusDir)/packager/units/$(TargetCPU)/$(TargetOS)');
+      '$(LazarusDir)/packager/units/$(TargetCPU)-$(TargetOS)');
 
     // add registering units
     AddFile(SetDirSeparators('db/db.pp'),'DB',pftUnit,
@@ -885,7 +885,7 @@ begin
     // use the packager/units/lazaruspackageintf.o file as indicator,
     // if FCL has been recompiled
     OutputStateFile:=SetDirSeparators(
-      '$(LazarusDir)/packager/units/$(TargetCPU)/$(TargetOS)/lazaruspackageintf.o');
+      '$(LazarusDir)/packager/units/$(TargetCPU)-$(TargetOS)/lazaruspackageintf.o');
 
     Modified:=false;
   end;
@@ -921,7 +921,7 @@ begin
     Description:=lisPkgSysTheLCLLazarusComponentLibraryContainsAllBase;
     PackageType:=lptDesignTime;
     Installed:=pitStatic;
-    CompilerOptions.UnitOutputDirectory:='';
+    CompilerOptions.UnitOutputDirectory:='$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/';
 
     // add requirements
     AddRequiredDependency(FCLPackage.CreateDependencyForThisPkg(Result));
@@ -962,8 +962,8 @@ begin
 
     // add unit paths
     UsageOptions.UnitPath:=SetDirSeparators(
-       '$(LazarusDir)/lcl/units/$(TargetCPU)/$(TargetOS);'
-      +'$(LazarusDir)/lcl/units/$(TargetCPU)/$(TargetOS)/$(LCLWidgetType)');
+       '$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS);'
+      +'$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)');
     UsageOptions.CustomOptions:='-dLCL';
     // add include path
     CompilerOptions.IncludeFiles:=SetDirSeparators(
@@ -973,7 +973,7 @@ begin
     // use the lcl/units/$(TargetCPU)/$(TargetOS)/alllclunits.o
     // file as indicator, if LCL has been recompiled
     OutputStateFile:=SetDirSeparators(
-      '$(LazarusDir)/lcl/units/$(TargetCPU)/$(TargetOS)/alllclunits.o');
+      '$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/alllclunits.o');
 
     Modified:=false;
   end;
@@ -1024,12 +1024,12 @@ begin
 
     // add unit paths
     UsageOptions.UnitPath:=SetDirSeparators(
-                     '$(LazarusDir)/components/units/$(TargetCPU)/$(TargetOS)');
+                     '$(LazarusDir)/components/synedit/units/$(TargetCPU)-$(TargetOS)');
 
     // use the components/units/..../allsyneditunits.o file as indicator,
     // if synedit has been recompiled
     OutputStateFile:=SetDirSeparators(
-      '$(LazarusDir)/components/units/$(TargetCPU)/$(TargetOS)/allsyneditunits.o');
+      '$(LazarusDir)/components/synedit/units/$(TargetCPU)-$(TargetOS)/allsyneditunits.o');
 
     Modified:=false;
   end;
@@ -1077,12 +1077,12 @@ begin
 
     // add unit paths
     UsageOptions.UnitPath:=SetDirSeparators(
-      '$(LazarusDir)/ideintf/units/$(TargetCPU)/$(TargetOS)');
+      '$(LazarusDir)/ideintf/units/$(TargetCPU)-$(TargetOS)');
 
     // use the ideintf/units/$(TargetCPU)/$(TargetOS)/allideintf.o file
     // as indicator, if ideintf has been recompiled
     OutputStateFile:=SetDirSeparators(
-      '$(LazarusDir)/ideintf/units/$(TargetCPU)/$(TargetOS)/allideintf.o');
+      '$(LazarusDir)/ideintf/units/$(TargetCPU)-$(TargetOS)/allideintf.o');
 
     Modified:=false;
   end;

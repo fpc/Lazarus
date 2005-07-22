@@ -17,14 +17,17 @@ exampledirs=examples
 
 [compiler]
 options=-gl
-unittargetdir=.
-unitdir=lcl/units/$(CPU_TARGET)/$(OS_TARGET) \
-        lcl/units/$(CPU_TARGET)/$(OS_TARGET)/$(LCL_PLATFORM) \
-        components/units/$(CPU_TARGET)/$(OS_TARGET) \
-        components/custom components/mpaslex \
+unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
+unitdir=lcl/units/$(CPU_TARGET)-$(OS_TARGET) \
+        lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+        components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) \
+        components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) \
+        components/custom \
+        components/mpaslex \
         ideintf/units/$(CPU_TARGET)/$(OS_TARGET) \
         designer designer/units debugger \
-        packager packager/units/$(CPU_TARGET)/$(OS_TARGET) .
+        packager \
+        packager/units/$(CPU_TARGET)/$(OS_TARGET) .
 includedir=debugger designer packager include include/$(OS_TARGET)
 targetdir=.
 
@@ -92,7 +95,7 @@ endif
         windres -i $< -o $@ --preprocessor $(RCPP)
 
 #-----------------------------------------------------------------------------
-ide:
+ide: $(COMPILER_UNITTARGETDIR)
 ifeq ($(OS_TARGET), win32)
         $(MAKE) lazarus.res
 endif
@@ -103,11 +106,11 @@ else
 endif
 
 #-----------------------------------------------------------------------------
-idepkg:
+idepkg: $(COMPILER_UNITTARGETDIR)
         $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT) @$(LAZARUS_IDE_CONFIG)'
 
 #-----------------------------------------------------------------------------
-starter:
+starter: $(COMPILER_UNITTARGETDIR)
 ifeq ($(OS_TARGET), win32)
         $(MAKE) startlazarus.res
 endif
@@ -129,6 +132,9 @@ cleanide:
         -$(DEL) $(wildcard *$(OEXT))
         -$(DEL) $(wildcard *$(PPUEXT))
         -$(DEL) $(wildcard *$(RSTEXT))
+        -$(DEL) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT))
+        -$(DEL) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT))
+        -$(DEL) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT))
         -$(DEL) $(wildcard ./designer/*$(OEXT))
         -$(DEL) $(wildcard ./designer/*$(PPUEXT))
         -$(DEL) $(wildcard ./debugger/*$(OEXT))
