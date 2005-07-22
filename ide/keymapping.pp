@@ -90,9 +90,10 @@ const
   ecSelectionBreakLines  = ecUserFirst + 57;
   ecSelectToBrace        = ecUserFirst + 58;
   ecSelectCodeBlock      = ecUserFirst + 59;
-  ecSelectLine           = ecUserFirst + 60;
-  ecSelectParagraph      = ecUserFirst + 61;
-  ecSelectionConditional = ecUserFirst + 65;
+  ecSelectWord           = ecUserFirst + 60;
+  ecSelectLine           = ecUserFirst + 61;
+  ecSelectParagraph      = ecUserFirst + 62;
+  ecSelectionConditional = ecUserFirst + 63;
 
   // insert text
   ecInsertCharacter      = ecUserFirst + 80;
@@ -484,6 +485,7 @@ begin
   ecSelectAll: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecSelectToBrace: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecSelectCodeBlock: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSelectWord: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecSelectLine: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecSelectParagraph: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecSelectionUpperCase: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
@@ -785,6 +787,7 @@ begin
   ecSelectAll: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
   ecSelectToBrace: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
   ecSelectCodeBlock: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
+  ecSelectWord: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[], VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecSelectLine: SetResult(VK_O,[ssCtrl],VK_L,[], VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecSelectParagraph: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
   ecSelectionUpperCase: SetResult(VK_K,[ssCtrl],VK_N,[], VK_UNKNOWN, [],VK_UNKNOWN,[]);
@@ -1427,8 +1430,9 @@ begin
     ecSelectionBreakLines   : Result:= lisMenuBeakLinesInSelection;
     ecSelectToBrace         : Result:= lismenuselecttobrace;
     ecSelectCodeBlock       : Result:= lismenuselectcodeblock;
-    ecSelectLine            : Result:= lismenuselectline;
-    ecSelectParagraph       : Result:= lismenuselectparagraph;
+    ecSelectWord            : Result:= lisMenuSelectWord;
+    ecSelectLine            : Result:= lisMenuSelectLine;
+    ecSelectParagraph       : Result:= lisMenuSelectParagraph;
     ecInsertCharacter       : Result:= srkmecInsertCharacter;
     ecInsertGPLNotice       : Result:= srkmecInsertGPLNotice;
     ecInsertLGPLNotice      : Result:= srkmecInsertLGPLNotice;
@@ -2245,6 +2249,7 @@ begin
   AddDefault(C,'Select all',ecSelectAll);
   AddDefault(C,'Select to brace',ecSelectToBrace);
   AddDefault(C,'Select code block',ecSelectCodeBlock);
+  AddDefault(C,'Select word',ecSelectWord);
   AddDefault(C,'Select line',ecSelectLine);
   AddDefault(C,'Select paragraph',ecSelectParagraph);
 

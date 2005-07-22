@@ -232,6 +232,7 @@ type
     procedure InvertAssignment;
     procedure SelectToBrace;
     procedure SelectCodeBlock;
+    procedure SelectWord;
     procedure SelectLine;
     procedure SelectParagraph;
     function CommentText(const Txt: string; CommentType: TCommentType): string;
@@ -1129,6 +1130,9 @@ Begin
   ecSelectLine:
     SelectLine;
 
+  ecSelectWord:
+    SelectWord;
+
   ecSelectParagraph:
     SelectParagraph;
 
@@ -1411,6 +1415,11 @@ procedure TSourceEditor.SelectCodeBlock;
 begin
   // ToDo:
   DebugLn('TSourceEditor.SelectCodeBlock: not implemented yet');
+end;
+
+procedure TSourceEditor.SelectWord;
+begin
+  EditorComponent.SetSelWord;
 end;
 
 procedure TSourceEditor.SelectLine;

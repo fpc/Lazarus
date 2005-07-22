@@ -146,6 +146,7 @@ resourcestring
   lisMenuSelectAll = 'Select all';
   lisMenuSelectToBrace = 'Select to brace';
   lisMenuSelectCodeBlock = 'Select code block';
+  lisMenuSelectWord = 'Select word';
   lisMenuSelectLine = 'Select line';
   lisMenuSelectParagraph = 'Select paragraph';
   lisMenuInsertCharacter = 'Insert from Character Map';
