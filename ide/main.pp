@@ -4297,6 +4297,7 @@ begin
         Result:=mrOk;
       except
         on E: Exception do begin
+          DumpExceptionBackTrace;
           ACaption:=lisFormatError;
           AText:=Format(lisUnableToConvertTextFormDataOfFileIntoBinaryStream,
             [#13, '"', LFMBuf.Filename, '"', #13, E.Message]);
@@ -11820,6 +11821,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.887  2005/07/22 07:55:30  vincents
+  added DumpExceptionBackTrace in case of error when loading an lfm.
+
   Revision 1.886  2005/07/15 17:42:45  mattias
   extended MakeResourceString function to auto adjust at string constants boundaries
 
