@@ -1009,6 +1009,7 @@ function TApplication.DispatchAction(Msg: Longint; Action: TBasicAction
 var
   Form: TCustomForm;
 begin
+  Result:=false;
   Form := Screen.ActiveForm;
   if (Form<>nil) and (Form.Perform(Msg, 0, PtrInt(Action)) = 1) then
     Result:=true
@@ -1475,6 +1476,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.126  2005/07/22 12:44:04  vincents
+  initiliased Result of DispatchAction
+
   Revision 1.125  2005/06/22 21:09:50  mattias
   fixed Sender of Application.OnKeyDownHandler bug 947
 
