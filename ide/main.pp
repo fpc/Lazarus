@@ -831,6 +831,7 @@ const
   StartedByStartLazarusOpt='--started-by-startlazarus';
   SkipLastProjectOpt='--skip-last-project';
   DebugLogOpt='--debug-log=';
+  LanguageOpt='--language=';
 
   function ParamIsOption(ParamIndex: integer;
     const Option: string): boolean;
@@ -851,6 +852,8 @@ const
       AValue:='';
   end;
 
+const
+  space = '                      ';
 var
   i: integer;
   AValue: string;
@@ -872,23 +875,26 @@ begin
     writeln('');
     writeln(PrimaryConfPathOptLong,' <path>');
     writeln('or ',PrimaryConfPathOptShort,' <path>');
-    writeln(BreakString(lisprimaryConfigDirectoryWhereLazarusStoresItsConfig,
+    writeln(BreakString(space+lisprimaryConfigDirectoryWhereLazarusStoresItsConfig,
                         75, 22), LazConf.GetPrimaryConfigPath);
     writeln('');
     writeln(SecondaryConfPathOptLong,' <path>');
     writeln('or ',SecondaryConfPathOptShort,' <path>');
-    writeln(BreakString(lissecondaryConfigDirectoryWhereLazarusSearchesFor,
+    writeln(BreakString(space+lissecondaryConfigDirectoryWhereLazarusSearchesFor,
                         75, 22), LazConf.GetSecondaryConfigPath);
     writeln('');
     writeln(DebugLogOpt,' <file>');
-    writeln(BreakString(lisFileWhereDebugOutputIsWritten, 75, 22));
+    writeln(BreakString(space+lisFileWhereDebugOutputIsWritten, 75, 22));
     writeln('');
     writeln(NoSplashScreenOptLong);
     writeln('or ',NoSplashScreenOptShort);
-    writeln(BreakString(lisDoNotShowSplashScreen,75, 22));
+    writeln(BreakString(space+lisDoNotShowSplashScreen,75, 22));
     writeln('');
     writeln(SkipLastProjectOpt);
-    writeln(BreakString(lisSkipLoadingLastProject, 75, 22));
+    writeln(BreakString(space+lisSkipLoadingLastProject, 75, 22));
+    writeln('');
+    writeln(LanguageOpt);
+    writeln(BreakString(space+lisOverrideLanguage,75, 22));
     writeln('');
     writeln('');
     writeln('');
@@ -933,6 +939,11 @@ begin
   with EnvironmentOptions do begin
     SetLazarusDefaultFilename;
     Load(false);
+    if Application.HasOption('language') then begin
+      debugln('TMainIDE.LoadGlobalOptions overriding language from command line: ',
+        Application.GetOptionValue('language'));
+      EnvironmentOptions.LanguageID:=Application.GetOptionValue('language');
+    end;
     TranslateResourceStrings(EnvironmentOptions.LazarusDirectory,
                              EnvironmentOptions.LanguageID);
 
@@ -11821,6 +11832,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.888  2005/07/22 19:51:41  mattias
+  translation now directly uses the .po files, .mo files removed
+
   Revision 1.887  2005/07/22 07:55:30  vincents
   added DumpExceptionBackTrace in case of error when loading an lfm.
 

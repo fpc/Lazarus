@@ -38,18 +38,6 @@ msgstr ""
 msgid ""
 msgstr ""
 
-#: :
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
 #: :ObjInsp_RST
 msgid ""
 msgstr ""
@@ -62,39 +50,7 @@ msgstr ""
 msgid ""
 msgstr ""
 
-#: :
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
 #: :CodeTools_RST
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
-#: :
 msgid ""
 msgstr ""
 
@@ -126,22 +82,6 @@ msgstr ""
 msgid ""
 msgstr ""
 
-#: :
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
 #: :SynMacroRec_RST
 msgid ""
 msgstr ""
@@ -158,35 +98,7 @@ msgstr ""
 msgid ""
 msgstr ""
 
-#: :
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
 #: :LCL_RST
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
-#: :
 msgid ""
 msgstr ""
 

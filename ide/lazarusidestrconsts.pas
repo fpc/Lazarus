@@ -51,19 +51,21 @@ resourcestring
   // command line help
   listhisHelpMessage = 'this help message';
   lisprimaryConfigDirectoryWhereLazarusStoresItsConfig =
-    '                      primary config '+
+    'primary config '+
     'directory, where Lazarus stores its config files. Default is ';
   lislazarusOptionsProjectFilename = 'lazarus [options] <project-filename>';
   lisIDEOptions = 'IDE Options:';
   lisCmdLineLCLInterfaceSpecificOptions =
     'LCL Interface specific options:';
-  lisDoNotShowSplashScreen = '                      Do not show splash screen';
-  lisSkipLoadingLastProject = '                      Skip loading last project';
+  lisDoNotShowSplashScreen = 'Do not show splash screen';
+  lisSkipLoadingLastProject = 'Skip loading last project';
+  lisOverrideLanguage = 'Override language. For example --language=de.'+
+    ' For possible values see files in the languages directory.';
   lissecondaryConfigDirectoryWhereLazarusSearchesFor =
-    '                      secondary config '+
+    'secondary config '+
     'directory, where Lazarus searches for config template files. Default is ';
   lisFileWhereDebugOutputIsWritten =
-    '                      file, where debug output is written to. If it is '+
+    'file, where debug output is written to. If it is '+
     'not specified, debug output is written to the console.';
 
   // component palette

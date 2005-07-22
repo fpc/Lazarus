@@ -1,23 +1,3 @@
-#: lazarusidestrconsts:lisdonotshowsplashscreen
-msgid "                      Do not show splash screen"
-msgstr "                     No mostris la pantalla flaix"
-
-#: lazarusidestrconsts:lisskiploadinglastproject
-msgid "                      Skip loading last project"
-msgstr "                     No carreguis l'últim projecte"
-
-#: lazarusidestrconsts:lisfilewheredebugoutputiswritten
-msgid "                      file, where debug output is written to. If it is not specified, debug output is written to the console."
-msgstr "                     el fitxer on s'escriu la sortida de depuració. Si no s'especifica, la sortida de depuració s'escriu a la consola"
-
-#: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
-msgid "                      primary config directory, where Lazarus stores its config files. Default is "
-msgstr "                     el directori de configuració principal, on el Lazarus guarda els fitxers de configuració. El predeterminat és "
-
-#: lazarusidestrconsts:lissecondaryconfigdirectorywherelazarussearchesfor
-msgid "                      secondary config directory, where Lazarus searches for config template files. Default is "
-msgstr "                     el directori de configuració secundari, on el Lazarus cerca els fitxers on hi ha les plantilles de configuració. El predeterminat és "
-
 #: lazarusidestrconsts:srkmcommand1
 msgid "    command1 \""
 msgstr "    ordre1 \""
@@ -1897,6 +1877,10 @@ msgstr "Mostra els números de línia en errors en temps d'execució en seguiments 
 #: lazarusidestrconsts:lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Distingeix entre lletres grans i petites p.ex. A i a"
+
+#: lazarusidestrconsts:lisdonotshowsplashscreen
+msgid "Do not show splash screen"
+msgstr ""
 
 #: lazarusidestrconsts:dlgnotsplitlinefront
 msgid "Do not split line In front of:"
@@ -4486,6 +4470,10 @@ msgstr "Directori de la sortida"
 msgid "Overflow"
 msgstr "Sobreeiximent"
 
+#: lazarusidestrconsts:lisoverridelanguage
+msgid "Override language. For example --language=de. For possible values see files in the languages directory."
+msgstr ""
+
 #: lazarusidestrconsts:lissvuooverridesystemvariable
 msgid "Override system variable"
 msgstr "Substitueix la variable del sistema"
@@ -5881,6 +5869,10 @@ msgstr "Tamany"
 #: lazarusidestrconsts:liscoskipcallingcompiler
 msgid "Skip calling Compiler"
 msgstr "No cridis el compilador"
+
+#: lazarusidestrconsts:lisskiploadinglastproject
+msgid "Skip loading last project"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcosmaller
 msgid "Smaller Code"
@@ -7766,6 +7758,10 @@ msgstr "pred. (%s)"
 msgid "evaluate/modify"
 msgstr "avalua/modifica"
 
+#: lazarusidestrconsts:lisfilewheredebugoutputiswritten
+msgid "file, where debug output is written to. If it is not specified, debug output is written to the console."
+msgstr ""
+
 #: lazarusidestrconsts:lisuidinproject
 msgid "in Project:"
 msgstr "en el projecte:"
@@ -7866,6 +7862,10 @@ msgstr "fitxer del codi font principal del paquet"
 msgid "pause program"
 msgstr "pausa el programa"
 
+#: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
+msgid "primary config directory, where Lazarus stores its config files. Default is "
+msgstr ""
+
 #: lazarusidestrconsts:lisoipreadonly
 msgid "readonly"
 msgstr "només de lectura"
@@ -7917,6 +7917,10 @@ msgstr "cerca en els directoris"
 #: lazarusidestrconsts:dlgtimesecondunit
 msgid "sec"
 msgstr "segons"
+
+#: lazarusidestrconsts:lissecondaryconfigdirectorywherelazarussearchesfor
+msgid "secondary config directory, where Lazarus searches for config template files. Default is "
+msgstr ""
 
 #: lazarusidestrconsts:lisedtdefsetfpcmodetodelphi
 msgid "set FPC mode to DELPHI"

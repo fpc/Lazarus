@@ -9,26 +9,6 @@ msgstr ""
 "Project-Id-Version: lazaruside.nl\n"
 "MIME-Version: 1"
 
-#: lazarusidestrconsts:lisdonotshowsplashscreen
-msgid "                      Do not show splash screen"
-msgstr "                    Laat het Splash screen niet zien"
-
-#: lazarusidestrconsts:lisskiploadinglastproject
-msgid "                      Skip loading last project"
-msgstr " Sla het laden van het laatst geopende project over"
-
-#: lazarusidestrconsts:lisfilewheredebugoutputiswritten
-msgid "                      file, where debug output is written to. If it is not specified, debug output is written to the console."
-msgstr " Bestand, waar de debug output naar toe wordt geschreven. Als dit niet is gespecificeerd, wordt de data naar de console geschreven."
-
-#: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
-msgid "                      primary config directory, where Lazarus stores its config files. Default is "
-msgstr "    Primaire config directory, waar Lazarus zijn configuratie bestanden opslaat. Standaard: "
-
-#: lazarusidestrconsts:lissecondaryconfigdirectorywherelazarussearchesfor
-msgid "                      secondary config directory, where Lazarus searches for config template files. Default is "
-msgstr "   Secundaire config directory, waar Lazarus zoekt naar config 'template' bestanden. Standaard: "
-
 #: lazarusidestrconsts:srkmcommand1
 msgid "    command1 \""
 msgstr ""
@@ -1908,6 +1888,10 @@ msgstr "Toon regelnummers in Run-time Error Backtraces"
 #: lazarusidestrconsts:lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Maak onderscheid in hoofd en kleine letters. Bijv. A en a"
+
+#: lazarusidestrconsts:lisdonotshowsplashscreen
+msgid "Do not show splash screen"
+msgstr ""
 
 #: lazarusidestrconsts:dlgnotsplitlinefront
 msgid "Do not split line In front of:"
@@ -4497,6 +4481,10 @@ msgstr ""
 msgid "Overflow"
 msgstr ""
 
+#: lazarusidestrconsts:lisoverridelanguage
+msgid "Override language. For example --language=de. For possible values see files in the languages directory."
+msgstr ""
+
 #: lazarusidestrconsts:lissvuooverridesystemvariable
 msgid "Override system variable"
 msgstr ""
@@ -5891,6 +5879,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscoskipcallingcompiler
 msgid "Skip calling Compiler"
+msgstr ""
+
+#: lazarusidestrconsts:lisskiploadinglastproject
+msgid "Skip loading last project"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcosmaller
@@ -7777,6 +7769,10 @@ msgstr ""
 msgid "evaluate/modify"
 msgstr ""
 
+#: lazarusidestrconsts:lisfilewheredebugoutputiswritten
+msgid "file, where debug output is written to. If it is not specified, debug output is written to the console."
+msgstr ""
+
 #: lazarusidestrconsts:lisuidinproject
 msgid "in Project:"
 msgstr ""
@@ -7877,6 +7873,10 @@ msgstr ""
 msgid "pause program"
 msgstr ""
 
+#: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
+msgid "primary config directory, where Lazarus stores its config files. Default is "
+msgstr ""
+
 #: lazarusidestrconsts:lisoipreadonly
 msgid "readonly"
 msgstr ""
@@ -7927,6 +7927,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgtimesecondunit
 msgid "sec"
+msgstr ""
+
+#: lazarusidestrconsts:lissecondaryconfigdirectorywherelazarussearchesfor
+msgid "secondary config directory, where Lazarus searches for config template files. Default is "
 msgstr ""
 
 #: lazarusidestrconsts:lisedtdefsetfpcmodetodelphi
