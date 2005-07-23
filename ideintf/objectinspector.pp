@@ -1365,7 +1365,11 @@ begin
     ARow:=ARow.Parent;
   end;
   if (FItemIndex>=StartIndex) and (FItemIndex<=EndIndex) then
-    ItemIndex:=0;
+    // current row delete, set new current row
+    ItemIndex:=0
+  else if FItemIndex>EndIndex then
+    // adjust current index for deleted rows
+    FItemIndex := FItemIndex - (EndIndex - StartIndex + 1);
   for a:=EndIndex downto StartIndex do begin
     Rows[a].Free;
     FRows.Delete(a);
@@ -1393,6 +1397,8 @@ begin
   NewRow:=TOIPropertyGridRow.Create(Self,PropEditor,FExpandingRow);
   NewIndex:=FExpandingRow.Index+1+FExpandingRow.ChildCount;
   FRows.Insert(NewIndex,NewRow);
+  if NewIndex<FItemIndex
+    then inc(FItemIndex);
   if FExpandingRow.FFirstChild=nil then
     FExpandingRow.FFirstChild:=NewRow;
   NewRow.FPriorBrother:=FExpandingRow.FLastChild;
