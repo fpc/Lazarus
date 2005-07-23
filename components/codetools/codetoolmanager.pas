@@ -172,7 +172,7 @@ type
     function GetMainCode(Code: TCodeBuffer): TCodeBuffer;
     function GetIncludeCodeChain(Code: TCodeBuffer;
                                  RemoveFirstCodesWithoutTool: boolean;
-                                 var ListOfCodeBuffer: TList): boolean;
+                                 var ListOfCodeBuffer: TFPList): boolean;
     function FindCodeToolForSource(Code: TCodeBuffer): TCustomCodeTool;
     property OnSearchUsedUnit: TOnSearchUsedUnit
                                  read FOnSearchUsedUnit write FOnSearchUsedUnit;
@@ -244,11 +244,11 @@ type
                                  var FPCVersion, FPCRelease, FPCPatch: integer);
 
     // data function
-    procedure FreeListOfPCodeXYPosition(var List: TList);
+    procedure FreeListOfPCodeXYPosition(var List: TFPList);
     procedure FreeTreeOfPCodeXYPosition(var Tree: TAVLTree);
     function CreateTreeOfPCodeXYPosition: TAVLTree;
-    procedure AddListToTreeOfPCodeXYPosition(SrcList: TList; DestTree: TAVLTree;
-          ClearList, CreateCopies: boolean);
+    procedure AddListToTreeOfPCodeXYPosition(SrcList: TFPList;
+          DestTree: TAVLTree; ClearList, CreateCopies: boolean);
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     
@@ -297,7 +297,7 @@ type
           const Identifier: string; var NewCode: TCodeBuffer;
           var NewX, NewY, NewTopLine: integer): boolean;
     function FindDeclarationsAndAncestors(Code: TCodeBuffer; X,Y: integer;
-          var ListOfPCodeXYPosition: TList): boolean;
+          var ListOfPCodeXYPosition: TFPList): boolean;
     function FindMainDeclaration(Code: TCodeBuffer; X,Y: integer;
           var NewCode: TCodeBuffer;
           var NewX, NewY, NewTopLine: integer): boolean;
@@ -311,7 +311,7 @@ type
     // rename identifier
     function FindReferences(IdentifierCode: TCodeBuffer;
           X, Y: integer; TargetCode: TCodeBuffer; SkipComments: boolean;
-          var ListOfPCodeXYPosition: TList): boolean;
+          var ListOfPCodeXYPosition: TFPList): boolean;
     function RenameIdentifier(TreeOfPCodeXYPosition: TAVLTree;
           const OldIdentifier, NewIdentifier: string): boolean;
 
@@ -745,7 +745,7 @@ begin
 end;
 
 function TCodeToolManager.GetIncludeCodeChain(Code: TCodeBuffer;
-  RemoveFirstCodesWithoutTool: boolean; var ListOfCodeBuffer: TList): boolean;
+  RemoveFirstCodesWithoutTool: boolean; var ListOfCodeBuffer: TFPList): boolean;
 var
   OldCode: TCodeBuffer;
 begin
@@ -755,7 +755,7 @@ begin
   if Code=nil then exit;
   
   Result:=true;
-  ListOfCodeBuffer:=TList.Create;
+  ListOfCodeBuffer:=TFPList.Create;
   ListOfCodeBuffer.Add(Code);
   
   // if this is an include file, find the top level source
@@ -1023,7 +1023,7 @@ begin
   end;
 end;
 
-procedure TCodeToolManager.FreeListOfPCodeXYPosition(var List: TList);
+procedure TCodeToolManager.FreeListOfPCodeXYPosition(var List: TFPList);
 var
   i: Integer;
   CursorPos: PCodeXYPosition;
@@ -1060,7 +1060,7 @@ begin
   Result:=TAVLTree.Create(TListSortCompare(@CompareCodeXYPositions));
 end;
 
-procedure TCodeToolManager.AddListToTreeOfPCodeXYPosition(SrcList: TList;
+procedure TCodeToolManager.AddListToTreeOfPCodeXYPosition(SrcList: TFPList;
   DestTree: TAVLTree; ClearList, CreateCopies: boolean);
 var
   i: Integer;
@@ -1368,7 +1368,7 @@ begin
 end;
 
 function TCodeToolManager.FindDeclarationsAndAncestors(Code: TCodeBuffer; X,
-  Y: integer; var ListOfPCodeXYPosition: TList): boolean;
+  Y: integer; var ListOfPCodeXYPosition: TFPList): boolean;
 var
   CursorPos: TCodeXYPosition;
 begin
@@ -1486,7 +1486,7 @@ end;
 
 function TCodeToolManager.FindReferences(IdentifierCode: TCodeBuffer;
   X, Y: integer; TargetCode: TCodeBuffer; SkipComments: boolean;
-  var ListOfPCodeXYPosition: TList): boolean;
+  var ListOfPCodeXYPosition: TFPList): boolean;
 var
   CursorPos: TCodeXYPosition;
   NewCode: TCodeBuffer;

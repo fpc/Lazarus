@@ -105,16 +105,16 @@ procedure RememberKeyEventWasHandledByLCL(Event: PGdkEventKey;
   BeforeEvent: boolean);
 var
   HandledEvent: TLCLHandledKeyEvent;
-  EventList: TList;
+  EventList: TFPList;
 begin
   if KeyEventWasHandledByLCL(Event,BeforeEvent) then exit;
   if BeforeEvent then begin
     if LCLHandledKeyEvents=nil then
-      LCLHandledKeyEvents:=TList.Create;
+      LCLHandledKeyEvents:=TFPList.Create;
     EventList:=LCLHandledKeyEvents;
   end else begin
     if LCLHandledKeyAfterEvents=nil then
-      LCLHandledKeyAfterEvents:=TList.Create;
+      LCLHandledKeyAfterEvents:=TFPList.Create;
     EventList:=LCLHandledKeyAfterEvents;
   end;
   HandledEvent:=TLCLHandledKeyEvent.Create(Event);
@@ -131,7 +131,7 @@ function KeyEventWasHandledByLCL(Event: PGdkEventKey; BeforeEvent: boolean
 var
   i: Integer;
   HandledEvent: TLCLHandledKeyEvent;
-  EventList: TList;
+  EventList: TFPList;
 begin
   Result:=false;
   if BeforeEvent then
@@ -3209,8 +3209,8 @@ end;
 procedure DestroyCommonDialogAddOns(ADialog: TCommonDialog);
 var
   DlgWindow: PGtkWidget;
-  HistoryList: TList; // list of TFileSelHistoryListEntry
-  FilterList: TList; // list of TFileSelFilterListEntry
+  HistoryList: TFPList; // list of TFileSelHistoryListEntry
+  FilterList: TFPList; // list of TFileSelFilterListEntry
   AHistoryEntry: PFileSelHistoryEntry;
   AFilterEntry: PFileSelFilterEntry;
   i: integer;
@@ -3237,8 +3237,8 @@ begin
     if LCLHistoryMenu<>nil then FreeWidgetInfo(LCLHistoryMenu);
 
     // free history
-    HistoryList:=TList(gtk_object_get_data(PGtkObject(DlgWindow),
-                                           'LCLHistoryList'));
+    HistoryList:=TFPList(gtk_object_get_data(PGtkObject(DlgWindow),
+                                             'LCLHistoryList'));
     if HistoryList<>nil then begin
       for i:=0 to HistoryList.Count-1 do begin
         AHistoryEntry:=PFileSelHistoryEntry(HistoryList[i]);
@@ -3251,8 +3251,8 @@ begin
     end;
 
     // free filter
-    FilterList:=TList(gtk_object_get_data(PGtkObject(DlgWindow),
-                                          'LCLFilterList'));
+    FilterList:=TFPList(gtk_object_get_data(PGtkObject(DlgWindow),
+                                            'LCLFilterList'));
     if FilterList<>nil then begin
       for i:=0 to FilterList.Count-1 do begin
         AFilterEntry:=PFileSelFilterEntry(FilterList[i]);
@@ -5984,9 +5984,9 @@ end;
   CreateTopologicalSortedWidgets
   Params: HashArray: TDynHashArray  of PGtkWidget
   
-  Creates a topologically sorted TList of PGtkWidget.
+  Creates a topologically sorted TFPList of PGtkWidget.
 -------------------------------------------------------------------------------}
-function CreateTopologicalSortedWidgets(HashArray: TDynHashArray): TList;
+function CreateTopologicalSortedWidgets(HashArray: TDynHashArray): TFPList;
 type
   PTopologicalEntry = ^TTopologicalEntry;
   TTopologicalEntry = record
@@ -6013,7 +6013,7 @@ var
   LevelCounts: PInteger;
 begin
   //DebugLn(' KKK0');
-  Result:=TList.Create;
+  Result:=TFPList.Create;
   if HashArray.Count=0 then exit;
   
   // put all widgets into an array and calculate their parent levels
@@ -8251,6 +8251,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.370  2005/07/23 09:27:30  mattias
+  replaced codetools+gtk intf TList with faster TFPList
+
   Revision 1.369  2005/07/22 11:37:26  mattias
   fixed gtk not container warnings and let a few gtk handled key messages pass
 

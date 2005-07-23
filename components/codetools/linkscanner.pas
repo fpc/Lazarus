@@ -324,7 +324,7 @@ type
     function WholeRangeIsWritable(CleanStartPos, CleanEndPos: integer;
                                   ErrorOnFail: boolean): boolean;
     procedure FindCodeInRange(CleanStartPos, CleanEndPos: integer;
-                              UniqueSortedCodeList: TList);
+                              UniqueSortedCodeList: TFPList);
     procedure DeleteRange(CleanStartPos,CleanEndPos: integer);
 
     // scanning
@@ -462,7 +462,7 @@ var
   PSourceChangeStepMemManager: TPSourceChangeStepMemManager;
 
 
-procedure AddCodeToUniqueList(ACode: Pointer; UniqueSortedCodeList: TList);
+procedure AddCodeToUniqueList(ACode: Pointer; UniqueSortedCodeList: TFPList);
 function IndexOfCodeInUniqueList(ACode: Pointer;
                                  UniqueSortedCodeList: TList): integer;
 function IndexOfCodeInUniqueList(ACode: Pointer;
@@ -516,7 +516,7 @@ begin
   Result:=-1;
 end;
 
-procedure AddCodeToUniqueList(ACode: Pointer; UniqueSortedCodeList: TList);
+procedure AddCodeToUniqueList(ACode: Pointer; UniqueSortedCodeList: TFPList);
 var l,m,r: integer;
 begin
   l:=0;
@@ -1742,7 +1742,7 @@ function TLinkScanner.GuessMisplacedIfdefEndif(StartCursorPos: integer;
     Result:=false;
   end;
 
-  procedure FreeIfStack(var IfStack: TList);
+  procedure FreeIfStack(var IfStack: TFPList);
   var
     i: integer;
     AnIf: PIf;
@@ -1810,7 +1810,7 @@ function TLinkScanner.GuessMisplacedIfdefEndif(StartCursorPos: integer;
     end;
   end;
   
-  procedure PushIfOnStack(const ASrc: string; AToken: TToken; IfStack: TList);
+  procedure PushIfOnStack(const ASrc: string; AToken: TToken; IfStack: TFPList);
   var
     NewIf: PIf;
   begin
@@ -1825,7 +1825,7 @@ function TLinkScanner.GuessMisplacedIfdefEndif(StartCursorPos: integer;
     IfStack.Add(NewIf);
   end;
   
-  procedure PopIfFromStack(IfStack: TList);
+  procedure PopIfFromStack(IfStack: TFPList);
   var Topif: PIf;
   begin
     TopIf:=PIf(IfStack[IfStack.Count-1]);
@@ -1840,13 +1840,13 @@ function TLinkScanner.GuessMisplacedIfdefEndif(StartCursorPos: integer;
     ASrc: string;
     ASrcLen: integer;
     CurToken: TToken;
-    IfStack: TList;
+    IfStack: TFPList;
     DirectiveType: TDirectiveType;
   begin
     Result:=false;
     if not InitGuessMisplaced(CurToken,ACode,ASrc,ASrcLen) then exit;
 
-    IfStack:=TList.Create;
+    IfStack:=TFPList.Create;
     try
       repeat
         if (not FindNextToken(ASrc,CurToken)) then begin
@@ -1909,7 +1909,7 @@ function TLinkScanner.GuessMisplacedIfdefEndif(StartCursorPos: integer;
 var
   LinkID, i, BestSrcPos: integer;
   LastCode: Pointer;
-  SearchedCodes: TList;
+  SearchedCodes: TFPList;
 begin
   Result:=false;
   
@@ -1927,7 +1927,7 @@ begin
   if LinkID<0 then exit;
   
   // go through all following sources and guess misplaced ifdef/endif
-  SearchedCodes:=TList.Create;
+  SearchedCodes:=TFPList.Create;
   try
     while LinkId<LinkCount do begin
       Result:=GuessMisplacedIfdefEndifInCode(FLinks[LinkID].Code,
@@ -2887,7 +2887,7 @@ begin
 end;
 
 procedure TLinkScanner.FindCodeInRange(CleanStartPos, CleanEndPos: integer;
-  UniqueSortedCodeList: TList);
+  UniqueSortedCodeList: TFPList);
 var ACode: Pointer;
   LinkIndex: integer;
 begin

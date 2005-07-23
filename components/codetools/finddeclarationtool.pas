@@ -663,9 +663,9 @@ type
     function FindBaseTypeOfNode(Params: TFindDeclarationParams;
       Node: TCodeTreeNode): TFindContext;
     function FindDeclarationsAndAncestors(const CursorPos: TCodeXYPosition;
-      var ListOfPCodeXYPosition: TList): boolean;
+      var ListOfPCodeXYPosition: TFPList): boolean;
     function FindReferences(const CursorPos: TCodeXYPosition;
-      SkipComments: boolean; var ListOfPCodeXYPosition: TList): boolean;
+      SkipComments: boolean; var ListOfPCodeXYPosition: TFPList): boolean;
     function CleanPosIsDeclarationIdentifier(CleanPos: integer;
                                  Node: TCodeTreeNode): boolean;
 
@@ -2897,13 +2897,14 @@ begin
 end;
 
 function TFindDeclarationTool.FindDeclarationsAndAncestors(
-  const CursorPos: TCodeXYPosition; var ListOfPCodeXYPosition: TList): boolean;
+  const CursorPos: TCodeXYPosition; var ListOfPCodeXYPosition: TFPList
+  ): boolean;
   
   procedure AddCodePosition(const NewCodePos: TCodeXYPosition);
   var
     AddCodePos: PCodeXYPosition;
   begin
-    if ListOfPCodeXYPosition=nil then ListOfPCodeXYPosition:=TList.Create;
+    if ListOfPCodeXYPosition=nil then ListOfPCodeXYPosition:=TFPList.Create;
     New(AddCodePos);
     AddCodePos^:=NewCodePos;
     ListOfPCodeXYPosition.Add(AddCodePos);
@@ -2972,13 +2973,13 @@ end;
 
 {-------------------------------------------------------------------------------
   function TFindDeclarationTool.FindReferences(const CursorPos: TCodeXYPosition;
-    SkipComments: boolean; var ListOfPCodeXYPosition: TList): boolean;
+    SkipComments: boolean; var ListOfPCodeXYPosition: TFPList): boolean;
 
   Search for all identifiers in current unit, referring to the declaration
   at CursorPos.
 -------------------------------------------------------------------------------}
 function TFindDeclarationTool.FindReferences(const CursorPos: TCodeXYPosition;
-  SkipComments: boolean; var ListOfPCodeXYPosition: TList): boolean;
+  SkipComments: boolean; var ListOfPCodeXYPosition: TFPList): boolean;
 var
   Identifier: string;
   DeclarationTool: TFindDeclarationTool;
@@ -3010,7 +3011,7 @@ var
   var
     AddCodePos: PCodeXYPosition;
   begin
-    if ListOfPCodeXYPosition=nil then ListOfPCodeXYPosition:=TList.Create;
+    if ListOfPCodeXYPosition=nil then ListOfPCodeXYPosition:=TFPList.Create;
     New(AddCodePos);
     AddCodePos^:=NewCodePos;
     ListOfPCodeXYPosition.Add(AddCodePos);

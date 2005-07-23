@@ -624,7 +624,7 @@ begin
   if (GtkWindow=nil) then exit;
   TGtkWidgetSet(InterfaceObject).UnsetResizeRequest(PgtkWidget(GtkWindow));
 
-  if ModalWindows=nil then ModalWindows:=TList.Create;
+  if ModalWindows=nil then ModalWindows:=TFPList.Create;
   ModalWindows.Add(GtkWindow);
 
   gtk_window_set_modal(GtkWindow, true);

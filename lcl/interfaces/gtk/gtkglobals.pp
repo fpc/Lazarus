@@ -299,7 +299,7 @@ type
 
 var
   // FTimerData contains the currently running timers
-  FTimerData : TList;   // list of PGtkITimerinfo
+  FTimerData : TFPList;   // list of PGtkITimerinfo
 
 var
   gtk_handler_quark: TGQuark;
@@ -343,7 +343,7 @@ var
   // each selection has an gtk identifier (an atom)
   ClipboardTypeAtoms: array[TClipboardType] of cardinal;
   // each active request will procduce an TClipboardEventData stored in this list
-  ClipboardSelectionData: TList; // list of PClipboardEventData
+  ClipboardSelectionData: TFPList; // list of PClipboardEventData
   // each selection can have an user defined handler (normally set by the lcl)
   ClipboardHandler: array[TClipboardType] of TClipboardRequestEvent;
   // boolean array, telling what gtk format is automatically supported by
@@ -411,7 +411,7 @@ type
   
   // modal windows
 var
-  ModalWindows: TList; // list of PGtkWindow
+  ModalWindows: TFPList; // list of PGtkWindow
 
 
 // gtk object data names

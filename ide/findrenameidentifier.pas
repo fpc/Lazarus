@@ -123,7 +123,7 @@ var
   i: Integer;
   LoadResult: TModalResult;
   Code: TCodeBuffer;
-  ListOfPCodeXYPosition: TList;
+  ListOfPCodeXYPosition: TFPList;
 begin
   Result:=mrCancel;
   ListOfPCodeXYPosition:=nil;
@@ -368,7 +368,7 @@ procedure TFindRenameIdentifierDialog.SetIdentifier(
 var
   s: String;
   ACodeBuffer: TCodeBuffer;
-  ListOfCodeBuffer: TList;
+  ListOfCodeBuffer: TFPList;
   i: Integer;
   CurCode: TCodeBuffer;
   NewIdentifier: String;

@@ -2304,7 +2304,7 @@ function TStandardCodeTool.ReplaceIdentifiers(IdentList: TStrings;
   end;
   
 var
-  SourceList: TList;
+  SourceList: TFPList;
   i: integer;
 begin
   Result:=false;
@@ -2313,7 +2313,7 @@ begin
   BuildTree(false);
   if Scanner=nil then exit;
   SourceChangeCache.MainScanner:=Scanner;
-  SourceList:=TList.Create;
+  SourceList:=TFPList.Create;
   try
     Scanner.FindCodeInRange(1,SrcLen,SourceList);
     for i:=0 to SourceList.Count-1 do begin

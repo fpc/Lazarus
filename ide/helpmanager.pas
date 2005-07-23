@@ -562,7 +562,7 @@ function THelpManager.ShowHelpForSourcePosition(const Filename: string;
     CleanPos: integer;
     i: Integer;
     Node: TCodeTreeNode;
-    IncludeChain: TList;
+    IncludeChain: TFPList;
     ConversionResult: LongInt;
   begin
     Result:=nil;
@@ -613,7 +613,7 @@ var
   CodeBuffer: TCodeBuffer;
   i: Integer;
   CurCodePos: PCodeXYPosition;
-  ListOfPCodeXYPosition: TList;
+  ListOfPCodeXYPosition: TFPList;
   PascalHelpContextLists: TList;
   NewList: TPascalHelpContextList;
 begin

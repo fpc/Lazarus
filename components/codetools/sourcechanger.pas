@@ -170,7 +170,7 @@ type
   private
     FMainScanner: TLinkScanner;
     FEntries: TAVLTree;
-    FBuffersToModify: TList; // sorted list of TCodeBuffer
+    FBuffersToModify: TFPList; // sorted list of TCodeBuffer
     FBuffersToModifyNeedsUpdate: boolean;
     FMainScannerNeeded: boolean;
     FOnBeforeApplyChanges: TOnBeforeApplyChanges;
@@ -379,7 +379,7 @@ begin
   inherited Create;
   FEntries:=TAVLTree.Create(@CompareSourceChangeCacheEntry);
   MainScanner:=nil;
-  FBuffersToModify:=TList.Create;
+  FBuffersToModify:=TFPList.Create;
   FBuffersToModifyNeedsUpdate:=false;
   BeautifyCodeOptions:=TBeautifyCodeOptions.Create;
 end;

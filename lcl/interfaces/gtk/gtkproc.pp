@@ -684,7 +684,7 @@ procedure UpdateStatusBarPanel(StatusBar: TObject; Index: integer;
 // sizing
 procedure SaveSizeNotification(Widget: PGtkWidget);
 procedure SaveClientSizeNotification(FixWidget: PGtkWidget);
-function CreateTopologicalSortedWidgets(HashArray: TDynHashArray): TList;
+function CreateTopologicalSortedWidgets(HashArray: TDynHashArray): TFPList;
 procedure GetGTKDefaultWidgetSize(AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer);
 
@@ -932,8 +932,8 @@ var
   // LCLHandledKeyEvents stores the last handled key event (handled by the LCL)
   // Reason: The gtk sends the same key event to several widgets. The gtk intf
   // only wants to send them once to the LCL.
-  LCLHandledKeyEvents: TList; // list of TLCLHandledKeyEvent
-  LCLHandledKeyAfterEvents: TList; // list of TLCLHandledKeyEvent
+  LCLHandledKeyEvents: TFPList; // list of TLCLHandledKeyEvent
+  LCLHandledKeyAfterEvents: TFPList; // list of TLCLHandledKeyEvent
 
 var
   GdkTrapIsSet: Boolean;

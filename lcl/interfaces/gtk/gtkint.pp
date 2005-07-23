@@ -88,7 +88,7 @@ uses
 type
   TGTKWidgetSet = class(TWidgetSet)
   protected
-    FKeyStateList_: TList; // Keeps track of which keys are pressed
+    FKeyStateList_: TFPList; // Keeps track of which keys are pressed
     FDeviceContexts: TDynHashArray;// hasharray of HDC
     FGDIObjects: TDynHashArray;    // hasharray of PGdiObject
     FMessageQueue: TGtkMessageQueue;      // queue of PMsg
@@ -362,7 +362,7 @@ begin
   LastRight:=EmptyLastMouseClick;
 
   // clipboard
-  ClipboardSelectionData:=TList.Create;
+  ClipboardSelectionData:=TFPList.Create;
   for c:=Low(TClipboardType) to High(TClipboardType) do begin
     ClipboardTypeAtoms[c]:=0;
     ClipboardHandler[c]:=nil;
@@ -441,6 +441,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.225  2005/07/23 09:27:30  mattias
+  replaced codetools+gtk intf TList with faster TFPList
+
   Revision 1.224  2005/04/25 07:55:33  mattias
   backtraces for gtk gdi objects  -dTraceGdiCalls  from Jesus
 

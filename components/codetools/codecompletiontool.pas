@@ -35,7 +35,7 @@
       - insert header comment for classes
 
   ToDo:
-    -add code for index properties (TList, array of, Pointer array)
+    -add code for index properties (TList, TFPList, array of, Pointer array)
       TList:
         property Items[Index: integer]: AType accesstlist;
         -> creates

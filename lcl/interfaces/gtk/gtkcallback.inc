@@ -2615,7 +2615,7 @@ end;
 function GTKKeySnooper(Widget: PGtkWidget; Event: PGdkEventKey;
   FuncData: gPointer): gInt; cdecl;
 var
-  KeyStateList: TList;
+  KeyStateList: TFPList;
 
   procedure UpdateToggleList(const AVKeyCode: Integer);
   begin
@@ -2682,7 +2682,7 @@ begin
     Exit;
   end;
 
-  KeyStateList := TList(FuncData);
+  KeyStateList := TFPList(FuncData);
   if KeyStateList = nil then Exit;
 
   UpdateList(Vkey.VKey, Pressed);
@@ -2986,6 +2986,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.282  2005/07/23 09:27:30  mattias
+  replaced codetools+gtk intf TList with faster TFPList
+
   Revision 1.281  2005/07/07 20:56:29  mattias
   clean up
 

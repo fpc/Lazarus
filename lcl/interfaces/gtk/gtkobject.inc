@@ -162,9 +162,9 @@ begin
   FWidgetsResized.Options:=FWidgetsResized.Options+[dhaoCacheContains];
   FFixWidgetsResized := TDynHashArray.Create(-1);
 
-  FTimerData  := TList.Create;
+  FTimerData  := TFPList.Create;
   {$IFDEF Use_KeyStateList}
-  FKeyStateList_ := TList.Create;
+  FKeyStateList_ := TFPList.Create;
   {$ENDIF}
   
   DestroyConnectedWidgetCB:=@DestroyConnectedWidget;
@@ -550,7 +550,7 @@ type
   end;
 
 var
-  AllWindows: TList;
+  AllWindows: TFPList;
   List: PGList;
   Window: PGTKWindow;
   ATransientWindow: PTransientWindow;
@@ -606,7 +606,7 @@ begin
               ATransientWindow^.SortIndex:=
                 Screen.CustomFormIndex(TCustomForm(LCLObject));
           end;
-          if AllWindows=nil then AllWindows:=TList.Create;
+          if AllWindows=nil then AllWindows:=TFPList.Create;
           AllWindows.Add(ATransientWindow);
         end;
       end;
@@ -791,7 +791,7 @@ procedure TGtkWidgetSet.SendCachedLCLMessages;
     Widget, ParentFixed, ParentWidget: PGtkWidget;
     LCLControl: TControl;
     IsTopLevelWidget: boolean;
-    TopologicalList: TList; // list of PGtkWidget;
+    TopologicalList: TFPList; // list of PGtkWidget;
     i, LCLWidth, LCLHeight: integer;
     WinWidgetInfo: PWinWidgetInfo;
 
@@ -1073,7 +1073,7 @@ procedure TGtkWidgetSet.SendCachedGtkMessages;
   var
     FixWidget, MainWidget: PGtkWidget;
     LCLControl: TWinControl;
-    List: TList;
+    List: TFPList;
     i: integer;
 
     procedure RaiseInvalidLCLControl;
@@ -1085,7 +1085,7 @@ procedure TGtkWidgetSet.SendCachedGtkMessages;
   begin
     if (FFixWidgetsResized.Count=0) and (FWidgetsResized.Count=0) then exit;
 
-    List:=TList.Create;
+    List:=TFPList.Create;
 
     { if any fixed widget was resized then a client area of a LCL control was
       resized
@@ -1263,7 +1263,7 @@ type
     ClientWidget: PGtkWidget;
     MainWindow: PGdkWindow;
     ClientWindow: PGdkWindow;
-    WindowList: TList;
+    WindowList: TFPList;
   end;
 
 var
@@ -1289,7 +1289,7 @@ var
     then exit;
 
     if Context.WindowList=nil then
-      Context.WindowList:=TList.Create;
+      Context.WindowList:=TFPList.Create;
     Context.WindowList.Add(PaintWindow);
     {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
 
@@ -4046,7 +4046,7 @@ end;
 procedure CreateOpenDialogHistory(OpenDialog: TOpenDialog;
   SelWidget: PGtkWidget);
 var
-  HistoryList: TList; // list of THistoryListEntry
+  HistoryList: TFPList; // list of THistoryListEntry
   AHistoryEntry: PFileSelHistoryEntry;
   i: integer;
   s: string;
@@ -4056,7 +4056,7 @@ begin
   if OpenDialog.HistoryList.Count>0 then begin
 
     // create the HistoryList where the current state of the history is stored
-    HistoryList:=TList.Create;
+    HistoryList:=TFPList.Create;
     for i:=0 to OpenDialog.HistoryList.Count-1 do begin
       s:=OpenDialog.HistoryList[i];
       if s<>'' then begin
@@ -4124,7 +4124,7 @@ end;
 
   Converts a Delphi file filter of the form
   'description1|mask1|description2|mask2|...'
-  into a TList of PFileSelFilterEntry(s).
+  into a TFPList of PFileSelFilterEntry(s).
   Multi masks:
     - multi masks like '*.pas;*.pp' are converted into multiple entries.
     - if the masks are found in the description they are adjusted
@@ -4136,7 +4136,7 @@ end;
         'Pascal files (*.pp)'  + '*.pp'
         'Pascal files (*.lpr)' + '*.lpr'
  ------------------------------------------------------------------------------}
-procedure ExtractFilterList(const Filter: string; var FilterList: TList;
+procedure ExtractFilterList(const Filter: string; out FilterList: TFPList;
   SplitMultiMask: boolean);
 var
   Masks: TStringList;
@@ -4227,7 +4227,7 @@ var
   CurDescStart, CurDescEnd, CurMultiMaskStart, CurMultiMaskEnd: integer;
   CurDesc, CurMultiMask: string;
 begin
-  FilterList:=TList.Create;
+  FilterList:=TFPList.Create;
   Masks:=nil;
   CurFilterIndex:=0;
   CurDescStart:=1;
@@ -4264,7 +4264,7 @@ end;
 function TGtkWidgetSet.CreateOpenDialogFilter(OpenDialog: TOpenDialog;
   SelWidget: PGtkWidget): string;
 var
-  FilterList: TList;
+  FilterList: TFPList;
   HBox, LabelWidget, FilterPullDownWidget,
   MenuWidget, MenuItemWidget: PGtkWidget;
   i, j, CurMask: integer;
@@ -6836,7 +6836,7 @@ var
   end;
 
 var
-  LinesList: TList;
+  LinesList: TFPList;
   LineStart, LineEnd, LineLen: integer;
   ArraySize, TotalSize: integer;
   i: integer;
@@ -6845,7 +6845,7 @@ var
 begin
   if IsEmptyText then exit;
   InitFont;
-  LinesList:=TList.Create;
+  LinesList:=TFPList.Create;
   LineStart:=0;
 
   // find all line starts and line ends
@@ -7006,6 +7006,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.648  2005/07/23 09:27:30  mattias
+  replaced codetools+gtk intf TList with faster TFPList
+
   Revision 1.647  2005/06/23 21:24:40  marc
   + added gdk_display function for gtk2
   - replaced X11Display with gdk_display

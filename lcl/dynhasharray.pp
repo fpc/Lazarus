@@ -67,6 +67,8 @@ type
   TDynHashArrayOption = (dhaoCachingEnabled, dhaoCacheContains);
   TDynHashArrayOptions = set of TDynHashArrayOption;
   
+  { TDynHashArray }
+
   TDynHashArray = class
   private
     FItems: ^PDynHashArrayItem;
@@ -115,6 +117,7 @@ type
     function GetHashItem(HashIndex: integer): PDynHashArrayItem;
     procedure Delete(ADynHashArrayItem: PDynHashArrayItem);
     procedure AssignTo(List: TList);
+    procedure AssignTo(List: TFPList);
 
     function SlowAlternativeHashMethod(Sender: TDynHashArray;
        Item: Pointer): integer;
@@ -558,7 +561,23 @@ begin
 end;
 
 procedure TDynHashArray.AssignTo(List: TList);
-var i: integer;
+var
+  i: integer;
+  HashItem: PDynHashArrayItem;
+begin
+  List.Count:=Count;
+  HashItem:=FirstHashItem;
+  i:=0;
+  while HashItem<>nil do begin
+    List[i]:=HashItem^.Item;
+    inc(i);
+    HashItem:=HashItem^.Next;
+  end;
+end;
+
+procedure TDynHashArray.AssignTo(List: TFPList);
+var
+  i: integer;
   HashItem: PDynHashArrayItem;
 begin
   List.Count:=Count;
