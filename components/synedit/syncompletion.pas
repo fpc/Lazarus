@@ -566,6 +566,7 @@ end;
 {$IFDEF SYN_LAZARUS}
 procedure TSynBaseCompletionForm.UTF8KeyPress(var UTF8Key: TUTF8Char);
 begin
+  //debugln('TSynBaseCompletionForm.UTF8KeyPress UTF8Key="',DbgStr(UTF8Key),'"');
   if UTF8Key=#8 then begin
     if Assigned(OnUTF8KeyPress) then OnUTF8KeyPress(Self, UTF8Key);
   end else if (length(UTF8Key)>=1) and (not (UTF8Key[1] in [#33..'z'])) then
@@ -1074,6 +1075,7 @@ procedure TSynCompletion.KeyPress(Sender: TObject; var Key: char);
 var
   F: TSynBaseCompletionForm;
 begin
+  //debugln('TSynCompletion.UTF8KeyPress Key="',DbgStr(Key),'"');
   F := Sender as TSynBaseCompletionForm;
   if F.CurrentEditor <> nil then begin
     with F.CurrentEditor as TCustomSynEdit do begin

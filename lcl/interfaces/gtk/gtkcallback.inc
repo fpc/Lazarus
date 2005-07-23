@@ -2682,8 +2682,8 @@ begin
     Exit;
   end;
 
-  KeyStateList := TFPList(FuncData);
-  if KeyStateList = nil then Exit;
+  if FuncData=nil then exit;
+  KeyStateList := TObject(FuncData) as TFPList;
 
   UpdateList(Vkey.VKey, Pressed);
   if IsToggleKey(Vkey.VKey)
@@ -2986,6 +2986,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.283  2005/07/23 23:15:19  mattias
+  fixed sending UTF8 key presses in gtk intf
+
   Revision 1.282  2005/07/23 09:27:30  mattias
   replaced codetools+gtk intf TList with faster TFPList
 

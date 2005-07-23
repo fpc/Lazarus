@@ -2271,7 +2271,7 @@ begin
         if KeyActivatedAccelerator then exit;
       end;
 
-      if (not EventStopped) and (not BeforeEvent) then begin
+      if (not EventStopped) {and (not BeforeEvent)} then begin
         // send the UTF8 keypress
         // try to get the UTF8 representation of the key
         {$IFDEF GTK1}
@@ -8251,6 +8251,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.371  2005/07/23 23:15:19  mattias
+  fixed sending UTF8 key presses in gtk intf
+
   Revision 1.370  2005/07/23 09:27:30  mattias
   replaced codetools+gtk intf TList with faster TFPList
 

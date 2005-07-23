@@ -364,7 +364,8 @@ begin
     begin
       child := TWinControlHack(AChildren[n]);
       if child.HandleAllocated
-      then TGtkWSWinControlPrivateClass(child.WidgetSetClass.WSPrivate).SetZPosition(child, wszpBack);
+      then TGtkWSWinControlPrivateClass(child.WidgetSetClass.WSPrivate).
+                  SetZPosition(child, wszpBack);
     end;
   end
   else begin
@@ -378,19 +379,22 @@ begin
   end;
 end;
 
-procedure TGtkWSWinControl.SetCursor(const AControl: TControl; const ACursor: TCursor);
+procedure TGtkWSWinControl.SetCursor(const AControl: TControl;
+  const ACursor: TCursor);
 begin
   GtkProc.SetCursor(AControl as TWinControl, ACursor); 
 end;
 
-procedure TGtkWSWinControl.SetFont(const AWinControl: TWinControl; const AFont: TFont);
+procedure TGtkWSWinControl.SetFont(const AWinControl: TWinControl;
+  const AFont: TFont);
 begin
   DebugLn('TGtkWSWinControl.SetFont: implement me!');
   {$NOTE TGtkWSWinControl.SetFont: implement me!'}
   // TODO: implement me!
 end;
 
-procedure TGtkWSWinControl.SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); 
+procedure TGtkWSWinControl.SetPos(const AWinControl: TWinControl;
+  const ALeft, ATop: Integer);
 var
   Widget: PGtkWidget;
   Allocation: TGTKAllocation;
@@ -403,7 +407,8 @@ begin
   gtk_widget_size_allocate(Widget, @Allocation);
 end;
 
-procedure TGtkWSWinControl.SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); 
+procedure TGtkWSWinControl.SetSize(const AWinControl: TWinControl;
+  const AWidth, AHeight: Integer);
 var
   Widget: PGtkWidget;
   Allocation: TGTKAllocation;

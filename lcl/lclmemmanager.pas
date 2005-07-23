@@ -79,7 +79,7 @@ type
   TLCLNonFreeMemManager = class
   private
     FItemSize: integer;
-    FItems: TList;
+    FItems: TFPList;
     FCurItem: Pointer;
     FEndItem: Pointer;
     FCurSize: integer;
@@ -236,7 +236,7 @@ begin
     GetMem(FCurItem,FCurSize);
     if ClearOnCreate then
       FillChar(FCurItem^,FCurSize,0);
-    if FItems=nil then FItems:=TList.Create;
+    if FItems=nil then FItems:=TFPList.Create;
     FItems.Add(FCurItem);
     FEndItem := FCurItem;
     Inc(FEndItem, FCurSize);

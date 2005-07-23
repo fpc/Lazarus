@@ -132,10 +132,10 @@ type
     fMouseOverIndex: integer;
   public
     function AddResult(const ResultsName: string;
-                        const SearchText: string;
-                        const ADirectory: string;
-                        const AMask: string;
-                        const TheOptions: TLazFindInFileSearchOptions): integer;
+                       const SearchText: string;
+                       const ADirectory: string;
+                       const AMask: string;
+                       const TheOptions: TLazFindInFileSearchOptions): integer;
     function GetSourcePositon: TPoint;
     function GetSourceFileName: string;
     function GetSelectedText: string;
