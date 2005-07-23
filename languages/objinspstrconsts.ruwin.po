@@ -1,166 +1,166 @@
 #: objinspstrconsts:sccsilcmbimglist
 msgid " Images "
-msgstr ""
+msgstr "Картинки"
 
 #: objinspstrconsts:sccslvedtgrprcaption
 msgid " Item property "
-msgstr ""
+msgstr "Свойства элемента"
 
 #: objinspstrconsts:sccslvedtgrplcaption
 msgid " Items "
-msgstr ""
+msgstr "Элементы"
 
 #: objinspstrconsts:sccsilcmbimgsel
 msgid " Selected image "
-msgstr ""
+msgstr "Выбранная картинка"
 
 #: objinspstrconsts:oishelpalreadyregistered
 msgid "%s: Already registered"
-msgstr ""
+msgstr "%s: уже зарегистрирован"
 
 #: objinspstrconsts:oishelpnotregistered
 msgid "%s: Not registered"
-msgstr ""
+msgstr "%s: не зарегистрирован"
 
 #: objinspstrconsts:oisitemsselected
 msgid "%u items selected"
-msgstr ""
+msgstr "%u элементов выбрано"
 
 #: objinspstrconsts:oiscadd
 msgid "&Add"
-msgstr ""
+msgstr "Добавить"
 
 #: objinspstrconsts:oistdactdatasetcancelheadline
 msgid "&Cancel"
-msgstr ""
+msgstr "Отмена"
 
 #: objinspstrconsts:oistdacthelpcontentsheadline
 msgid "&Contents"
-msgstr ""
+msgstr "Содержание"
 
 #: objinspstrconsts:oistdacteditcopyheadline
 msgid "&Copy"
-msgstr ""
+msgstr "Копировать"
 
 #: objinspstrconsts:oiscdelete
 msgid "&Delete"
-msgstr ""
+msgstr "удалить"
 
 #: objinspstrconsts:oistdactdataseteditheadline
 msgid "&Edit"
-msgstr ""
+msgstr "Правка"
 
 #: objinspstrconsts:oistdactdatasetfirstheadline
 msgid "&First"
-msgstr ""
+msgstr "первый"
 
 #: objinspstrconsts:oistdacthelphelphelpheadline
 msgid "&Help on Help"
-msgstr ""
+msgstr "Справка о справке"
 
 #: objinspstrconsts:oistdactdatasetinsertheadline
 msgid "&Insert"
-msgstr ""
+msgstr "Вставить"
 
 #: objinspstrconsts:oistdactdatasetlastheadline
 msgid "&Last"
-msgstr ""
+msgstr "Последний"
 
 #: objinspstrconsts:oisload
 msgid "&Load"
-msgstr ""
+msgstr "Загрузка"
 
 #: objinspstrconsts:oistdactdatasetnextheadline
 msgid "&Next"
-msgstr ""
+msgstr "Следующий"
 
 #: objinspstrconsts:oisok
 msgid "&OK"
-msgstr ""
+msgstr "OK"
 
 #: objinspstrconsts:oistdactfileopenheadline
 msgid "&Open..."
-msgstr ""
+msgstr "Открыть..."
 
 #: objinspstrconsts:oistdacteditpasteheadline
 msgid "&Paste"
-msgstr ""
+msgstr "Вставить"
 
 #: objinspstrconsts:oistdactdatasetpriorheadline
 msgid "&Prior"
-msgstr ""
+msgstr "Перед"
 
 #: objinspstrconsts:oistdactdatasetrefreshheadline
 msgid "&Refresh"
-msgstr ""
+msgstr "Обновить"
 
 #: objinspstrconsts:oissave
 msgid "&Save"
-msgstr ""
+msgstr "Сохранить"
 
 #: objinspstrconsts:oistdacthelptopicsearchheadline
 msgid "&Topic Search"
-msgstr ""
+msgstr "Поск по топикам"
 
 #: objinspstrconsts:oistdacteditundoheadline
 msgid "&Undo"
-msgstr ""
+msgstr "Отменить"
 
 #: objinspstrconsts:clbup
 msgid "&Up"
-msgstr ""
+msgstr "Вверх"
 
 #: objinspstrconsts:cactionlisteditorallcategory
 msgid "(All)"
-msgstr ""
+msgstr "(Все)"
 
 #: objinspstrconsts:cactionlisteditorunknowncategory
 msgid "(Unknown)"
-msgstr ""
+msgstr "(Неизвестный)"
 
 #: objinspstrconsts:oisaction
 msgid "Action"
-msgstr ""
+msgstr "Действие"
 
 #: objinspstrconsts:oisactionlisteditor
 msgid "Action List Editor"
-msgstr ""
+msgstr "Редактор списка действий"
 
 #: objinspstrconsts:ilesadd
 msgid "Add"
-msgstr ""
+msgstr "Добавить"
 
 #: objinspstrconsts:sccsilbtnadd
 msgid "Add ..."
-msgstr ""
+msgstr "Добавить ..."
 
 #: objinspstrconsts:clbadd
 msgid "Add new Item"
-msgstr ""
+msgstr "Добавить новый элемент"
 
 #: objinspstrconsts:nbcesaddpage
 msgid "Add page"
-msgstr ""
+msgstr "Добавить страницу"
 
 #: objinspstrconsts:oisaddtofavorites
 msgid "Add to Favorites"
-msgstr ""
+msgstr "Добавить в избранное"
 
 #: objinspstrconsts:oisall
 msgid "All"
-msgstr ""
+msgstr "Все"
 
 #: objinspstrconsts:oisallfiles
 msgid "All files (*.*)|*.*"
-msgstr ""
+msgstr "Все файлы (*.*)|*.*"
 
 #: objinspstrconsts:oisarray
 msgid "Array"
-msgstr ""
+msgstr "Массив"
 
 #: objinspstrconsts:oisstdactionlisteditorclass
 msgid "Available Action Classes:"
-msgstr ""
+msgstr "Доступные классы действий"
 
 #: objinspstrconsts:oisboolean
 msgid "Boolean"
@@ -168,67 +168,67 @@ msgstr ""
 
 #: objinspstrconsts:oishelpbrowsernotexecutable
 msgid "Browser %s%s%s not executable."
-msgstr ""
+msgstr "Обозреватель %s%s%s не исполняемый файл"
 
 #: objinspstrconsts:oishelpbrowsernotfound
 msgid "Browser %s%s%s not found."
-msgstr ""
+msgstr "Обозреватель %s%s%s не найден"
 
 #: objinspstrconsts:oisclear
 msgid "C&lear"
-msgstr ""
+msgstr "Очистить"
 
 #: objinspstrconsts:oistdactdatasetcancel1hint
 msgid "Cancel"
-msgstr ""
+msgstr "Отмена"
 
 #: objinspstrconsts:oiscategory
 msgid "Category"
-msgstr ""
+msgstr "Категория"
 
 #: objinspstrconsts:oischar
 msgid "Char"
-msgstr ""
+msgstr "Символ"
 
 #: objinspstrconsts:clbcheckgroupeditor
 msgid "CheckGroup Editor"
-msgstr ""
+msgstr "Редактор CheckGroup"
 
 #: objinspstrconsts:clbchecklistboxeditor
 msgid "CheckListBox Editor"
-msgstr ""
+msgstr "Редактор CheckListBox"
 
 #: objinspstrconsts:oisclass
 msgid "Class"
-msgstr ""
+msgstr "Класс"
 
 #: objinspstrconsts:sccsilbtnclear
 msgid "Clear"
-msgstr ""
+msgstr "Очистить"
 
 #: objinspstrconsts:oisclearpicture
 msgid "Clear picture"
-msgstr ""
+msgstr "Очистить картинку"
 
 #: objinspstrconsts:oistdactcolorselecthint
 msgid "Color Select"
-msgstr ""
+msgstr "Выбор цвета"
 
 #: objinspstrconsts:oisconfirmdelete
 msgid "Confirm delete"
-msgstr ""
+msgstr "Подтвердить удаление"
 
 #: objinspstrconsts:sccsilconfirme
-msgid "Confirme clear all images ?"
-msgstr ""
+msgid "Confirm clear all images ?"
+msgstr "Подтверждаете очистку всех картинок?"
 
 #: objinspstrconsts:oiscopy
 msgid "Copy"
-msgstr ""
+msgstr "Копировать"
 
 #: objinspstrconsts:oiscreatedefaultevent
 msgid "Create default event"
-msgstr ""
+msgstr "Создать событие по умолчанию"
 
 #: objinspstrconsts:oistdacteditselectallshortcut
 msgid "Ctrl+A"
@@ -256,99 +256,99 @@ msgstr ""
 
 #: objinspstrconsts:oistdacteditcutheadline
 msgid "Cu&t"
-msgstr ""
+msgstr "Вырезать"
 
 #: objinspstrconsts:oiscut
 msgid "Cut"
-msgstr ""
+msgstr "Вырезать"
 
 #: objinspstrconsts:cactionlisteditordatabasecategory
 msgid "Database"
-msgstr ""
+msgstr "База данных"
 
 #: objinspstrconsts:oistdacteditdeleteshortcut
 msgid "Del"
-msgstr ""
+msgstr "Удалить"
 
 #: objinspstrconsts:oisdelete
 msgid "Delete"
-msgstr ""
+msgstr "Удалить"
 
 #: objinspstrconsts:cactionlisteditordeleteactionhint
 msgid "Delete Action"
-msgstr ""
+msgstr "Удалить действие"
 
 #: objinspstrconsts:oisdeleteitem
 msgid "Delete item %s%s%s?"
-msgstr ""
+msgstr "Удалить элемент %s%s%s?"
 
 #: objinspstrconsts:nbcesdeletepage
 msgid "Delete page"
-msgstr ""
+msgstr "Удалить страницу"
 
 #: objinspstrconsts:clbdelete
 msgid "Delete the Item %d \"%s\"?"
-msgstr ""
+msgstr "Удалить элемент %d \"%s\"?"
 
 #: objinspstrconsts:cactionlisteditordialogcategory
 msgid "Dialog"
-msgstr ""
+msgstr "Диалог"
 
 #: objinspstrconsts:clbdown
 msgid "Do&wn"
-msgstr ""
+msgstr "Вниз"
 
 #: objinspstrconsts:oistdactfileexitheadline
 msgid "E&xit"
-msgstr ""
+msgstr "Выход"
 
 #: objinspstrconsts:cactionlisteditoreditcategory
 msgid "Edit"
-msgstr ""
+msgstr "Правка"
 
 #: objinspstrconsts:oiseditactionlist
 msgid "Edit action list..."
-msgstr ""
+msgstr "Правка списка действий..."
 
 #: objinspstrconsts:oisenumeration
 msgid "Enumeration"
-msgstr ""
+msgstr "Порядковый"
 
 #: objinspstrconsts:oiserror
 msgid "Error"
-msgstr ""
+msgstr "Ошибка"
 
 #: objinspstrconsts:oiserrorloadingimage
 msgid "Error loading image"
-msgstr ""
+msgstr "Ошибка загрузки картинки"
 
 #: objinspstrconsts:oiserrorloadingimage2
 msgid "Error loading image %s%s%s:%s%s"
-msgstr ""
+msgstr "Ошибка загрузки картинки %s%s%s:%s%s"
 
 #: objinspstrconsts:oishelperrorwhileexecuting
 msgid "Error while executing %s%s%s:%s%s"
-msgstr ""
+msgstr "Ошибка загрузки %s%s%s:%s%s"
 
 #: objinspstrconsts:oisevents
 msgid "Events"
-msgstr ""
+msgstr "События"
 
 #: objinspstrconsts:oistdactfileexithint
 msgid "Exit"
-msgstr ""
+msgstr "Выход"
 
 #: objinspstrconsts:oisfavorites
 msgid "Favorites"
-msgstr ""
+msgstr "Избранное"
 
 #: objinspstrconsts:cactionlisteditorfilecategory
 msgid "File"
-msgstr ""
+msgstr "Файл"
 
 #: objinspstrconsts:oistdactdatasetfirsthint
 msgid "First"
-msgstr ""
+msgstr "Первый"
 
 #: objinspstrconsts:oisfloat
 msgid "Float"
@@ -356,39 +356,39 @@ msgstr ""
 
 #: objinspstrconsts:oistdactfontedithint
 msgid "Font Select"
-msgstr ""
+msgstr "Выбор шрифта"
 
 #: objinspstrconsts:cactionlisteditorhelpcategory
 msgid "Help"
-msgstr ""
+msgstr "Помощь"
 
 #: objinspstrconsts:oistdacthelpcontentshint
 msgid "Help Contents"
-msgstr ""
+msgstr "Содержание справки"
 
 #: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
 msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
-msgstr ""
+msgstr "База данных %s%s%s не нашла просмотрщик для просмотра справочной страницы типа %s"
 
 #: objinspstrconsts:oishelphelpdatabasenotfound
 msgid "Help Database %s%s%s not found"
-msgstr ""
+msgstr "База данных %s%s%s не найдена"
 
 #: objinspstrconsts:oishelphelpcontextnotfoundindatabase
 msgid "Help context %s not found in Database %s%s%s."
-msgstr ""
+msgstr "Содержание %s не найдено в базе данных %s%s%s"
 
 #: objinspstrconsts:oishelphelpcontextnotfound
 msgid "Help context %s not found."
-msgstr ""
+msgstr "Содержание %s не найдено"
 
 #: objinspstrconsts:oishelphelpkeywordnotfoundindatabase
 msgid "Help keyword %s%s%s not found in Database %s%s%s."
-msgstr ""
+msgstr "Слово %s%s%s не найдено в базе данных"
 
 #: objinspstrconsts:oishelphelpkeywordnotfound
 msgid "Help keyword %s%s%s not found."
-msgstr ""
+msgstr "Слово %s%s%s не найдено."
 
 #: objinspstrconsts:oishelphelpnodehasnohelpdatabase
 msgid "Help node %s%s%s has no Help Database"
@@ -396,23 +396,23 @@ msgstr ""
 
 #: objinspstrconsts:oistdacthelphelphelphint
 msgid "Help on help"
-msgstr ""
+msgstr "Справка осправке"
 
 #: objinspstrconsts:sccslvedtimgindexcaption
 msgid "Image index"
-msgstr ""
+msgstr "Индекс картинки"
 
 #: objinspstrconsts:sccsiledtcaption
 msgid "Image list editor"
-msgstr ""
+msgstr "Редактор списка картинок"
 
 #: objinspstrconsts:oistdactdatasetinserthint
 msgid "Insert"
-msgstr ""
+msgstr "Вставить"
 
 #: objinspstrconsts:nbcesinsertpage
 msgid "Insert page"
-msgstr ""
+msgstr "Вставить страницу"
 
 #: objinspstrconsts:oisint64
 msgid "Int64"
@@ -424,239 +424,239 @@ msgstr ""
 
 #: objinspstrconsts:oisinterface
 msgid "Interface"
-msgstr ""
+msgstr "Интерфейс"
 
 #: objinspstrconsts:sccslvedtlabcaption
 msgid "Label"
-msgstr ""
+msgstr "Метка"
 
 #: objinspstrconsts:oistdactdatasetlasthint
 msgid "Last"
-msgstr ""
+msgstr "Последний"
 
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView editor"
-msgstr ""
+msgstr "Редактор ListView"
 
 #: objinspstrconsts:oisloadimagedialog
 msgid "Load Image Dialog"
-msgstr ""
+msgstr "Диалог загрузки картинки"
 
 #: objinspstrconsts:oisloadpicture
 msgid "Load picture"
-msgstr ""
+msgstr "Загрузить картинку"
 
 #: objinspstrconsts:oismethod
 msgid "Method"
-msgstr ""
+msgstr "Метод"
 
 #: objinspstrconsts:clbmodify
 msgid "Modify the Item"
-msgstr ""
+msgstr "Изменть элемент"
 
 #: objinspstrconsts:cactionlisteditormovedownaction
 msgid "Move Down"
-msgstr ""
+msgstr "Переместить вниз"
 
 #: objinspstrconsts:cactionlisteditormoveupaction
 msgid "Move Up"
-msgstr ""
+msgstr "Переместить вверх"
 
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
-msgstr ""
+msgstr "Переместить страниуцу влево"
 
 #: objinspstrconsts:nbcesmovepageright
 msgid "Move page right"
-msgstr ""
+msgstr "Переместить страницу вправо"
 
 #: objinspstrconsts:sccslvedtbtnadd
 msgid "New"
-msgstr ""
+msgstr "Новый"
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
-msgstr ""
+msgstr "Новое действие"
 
 #: objinspstrconsts:cactionlisteditornewstdaction
 msgid "New Standard Action"
-msgstr ""
+msgstr "Новое стандартное действие"
 
 #: objinspstrconsts:oistdactdatasetnexthint
 msgid "Next"
-msgstr ""
+msgstr "Следующий"
 
 #: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
 msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
-msgstr ""
+msgstr "HTML броузер не найден. %sПожалуйста определите его в Справка-> Конфигурация справки -> Просмотрщики"
 
 #: objinspstrconsts:oishelpnohelpfoundforsource
 msgid "No help found for line %d, column %d of %s."
-msgstr ""
+msgstr "Справка не найдена для линии %d, колонки %d %s"
 
 #: objinspstrconsts:oisobject
 msgid "Object"
-msgstr ""
+msgstr "Объект"
 
 #: objinspstrconsts:oisobjectinspector
 msgid "Object Inspector"
-msgstr ""
+msgstr "Инспектор объектов"
 
 #: objinspstrconsts:oistdactfileopenhint
 msgid "Open"
-msgstr ""
+msgstr "Открыть"
 
 #: objinspstrconsts:oisoptions
 msgid "Options"
-msgstr ""
+msgstr "Опции"
 
 #: objinspstrconsts:oistdactdatasetpostheadline
 msgid "P&ost"
-msgstr ""
+msgstr "Отправить"
 
 #: objinspstrconsts:cactionlisteditorpaneldescrriptions
 msgid "Panel Descriptions"
-msgstr ""
+msgstr "Описание панели"
 
 #: objinspstrconsts:oispaste
 msgid "Paste"
-msgstr ""
+msgstr "Вставить"
 
 #: objinspstrconsts:oistdactdatasetposthint
 msgid "Post"
-msgstr ""
+msgstr "Отправить"
 
 #: objinspstrconsts:oistdactdatasetpriorhint
 msgid "Prior"
-msgstr ""
+msgstr "Превый"
 
 #: objinspstrconsts:oisproperties
 msgid "Properties"
-msgstr ""
+msgstr "Свойства"
 
 #: objinspstrconsts:oisrecord
 msgid "Record"
-msgstr ""
+msgstr "Записать"
 
 #: objinspstrconsts:oistdactdatasetrefreshhint
 msgid "Refresh"
-msgstr ""
+msgstr "Обновить"
 
 #: objinspstrconsts:oisremovefromfavorites
 msgid "Remove from Favorites"
-msgstr ""
+msgstr "Удалить из избранного"
 
 #: objinspstrconsts:oistdactfilesaveasheadline
 msgid "Save &As..."
-msgstr ""
+msgstr "Сохранить как..."
 
 #: objinspstrconsts:oistdactfilesaveashint
 msgid "Save As"
-msgstr ""
+msgstr "Сохранить как"
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
-msgstr ""
+msgstr "Сохранить картинку"
 
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"
-msgstr ""
+msgstr "Выбрать всё"
 
 #: objinspstrconsts:oistdactcolorselect1headline
 msgid "Select &Color..."
-msgstr ""
+msgstr "Выбрать цвет..."
 
 #: objinspstrconsts:oistdactfonteditheadline
 msgid "Select &Font..."
-msgstr ""
+msgstr "Выбрать шрифт"
 
 #: objinspstrconsts:oistdacteditselectallshorthint
 msgid "Select All"
-msgstr ""
+msgstr "Выбрать всё"
 
 #: objinspstrconsts:oisselectafile
 msgid "Select a file"
-msgstr ""
+msgstr "Выбрать файл"
 
 #: objinspstrconsts:oisset
 msgid "Set"
-msgstr ""
+msgstr "Множество"
 
 #: objinspstrconsts:oissettodefaultvalue
 msgid "Set to default value"
-msgstr ""
+msgstr "Установить значение по умолчанию"
 
 #: objinspstrconsts:oissettodefault
 msgid "Set to default: %s"
-msgstr ""
+msgstr "Установить по умолчанию: %s"
 
 #: objinspstrconsts:oisshowcomponenttree
 msgid "Show Component Tree"
-msgstr ""
+msgstr "Показать дерево компонентов"
 
 #: objinspstrconsts:oisshowhints
 msgid "Show Hints"
-msgstr ""
+msgstr "Показать подсказку"
 
 #: objinspstrconsts:nbcesshowpage
 msgid "Show page ..."
-msgstr ""
+msgstr "Показать страницу ..."
 
 #: objinspstrconsts:oissort
 msgid "Sort"
-msgstr ""
+msgstr "Сортировка"
 
 #: objinspstrconsts:oisstdactionlisteditor
 msgid "Standard Action Classes"
-msgstr ""
+msgstr "Стандартые классы действий"
 
 #: objinspstrconsts:oisstring
 msgid "String"
-msgstr ""
+msgstr "Строка"
 
 #: objinspstrconsts:cesstringgrideditor2
 msgid "StringGrid Editor"
-msgstr ""
+msgstr "Редактор StringGrid"
 
 #: objinspstrconsts:cesstringgrideditor
 msgid "StringGrid Editor ..."
-msgstr ""
+msgstr "Редактор StringGrid ..."
 
 #: objinspstrconsts:oisstringseditordialog
 msgid "Strings Editor Dialog"
-msgstr ""
+msgstr "Диалог редактора строк"
 
 #: objinspstrconsts:sccslvedtbtnaddsub
 msgid "Sub item"
-msgstr ""
+msgstr "Под пункт"
 
 #: objinspstrconsts:oishelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."
-msgstr ""
+msgstr "Вспомогательная база данных %s%s%s не может найти файл %s%s%s."
 
 #: objinspstrconsts:oishelpthemacrosinbrowserparamswillbereplacedbytheurl
 msgid "The macro %s in BrowserParams will be replaced by the URL."
-msgstr ""
+msgstr "Макрос %s в BrowserParams будет заменём на URL"
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar
 msgid "Toolbar"
-msgstr ""
+msgstr "Панель инструментов"
 
 #: objinspstrconsts:oistdacthelptopicsearchhint
 msgid "Topic Search"
-msgstr ""
+msgstr "Поиск по топикам"
 
 #: objinspstrconsts:oisundo
 msgid "Undo"
-msgstr ""
+msgstr "Отмена"
 
 #: objinspstrconsts:oisunknown
 msgid "Unknown"
-msgstr ""
+msgstr "Не известно"
 
 #: objinspstrconsts:oisvalue
 msgid "Value:"
-msgstr ""
+msgstr "Значение:"
 
 #: objinspstrconsts:oisvariant
 msgid "Variant"
@@ -664,5 +664,5 @@ msgstr ""
 
 #: objinspstrconsts:oisword
 msgid "Word"
-msgstr ""
+msgstr "Слово"
 
