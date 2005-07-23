@@ -17431,6 +17431,7 @@ var
   Tmp: PInternalIntArr;
   {$ENDIF}
   NewSize: Integer;
+  p: ^Integer;
 begin
   if Index >= 0 then begin
     if Index >= IntArrSize then begin
@@ -17440,6 +17441,9 @@ begin
       until Index < NewSize;
       {$IFDEF IP_LAZARUS code below does not check if InternalIntArr<>nil}
       ReallocMem(InternalIntArr,NewSize * sizeof(Integer));
+      p := pointer(InternalIntArr);
+      inc(p, IntArrSize);
+      fillchar(p^, (NewSize - IntArrSize)*sizeOf(integer), 0);
       IntArrSize := NewSize;
       {$ELSE}
       Tmp := AllocMem(NewSize * sizeof(Integer));
@@ -17489,6 +17493,8 @@ procedure TRectArr.SetValue(Index: Integer; Value: PRect);
 var
   {$IFNDEF IP_LAZARUS}
   Tmp: PInternalRectArr;
+  {$ELSE}
+  P: Pointer;
   {$ENDIF}
   NewSize: Integer;
 begin
@@ -17500,7 +17506,10 @@ begin
         inc(NewSize, TINTARRGROWFACTOR);
       until Index < NewSize;
       {$IFDEF IP_LAZARUS code below does not check if InternalIntArr<>nil and set buggy IntArrSize}
-      ReallocMem(InternalRectArr,NewSize * sizeof(Integer));
+      ReallocMem(InternalRectArr,NewSize * sizeof(integer));
+      P := pointer(InternalRectArr);
+      inc(P, IntArrSize);
+      fillchar(p^, (NewSize - IntArrSize)*sizeOf(integer), 0);
       IntArrSize:=NewSize;
       {$ELSE}
       Tmp := AllocMem(NewSize * sizeof(Integer));
@@ -17543,6 +17552,8 @@ function TRectRectArr.GetValue(Index: Integer): TRectArr;
 var
   {$IFNDEF IP_LAZARUS}
   Tmp: PInternalRectRectArr;
+  {$ELSE}
+  P: ^Pointer;
   {$ENDIF}
   NewSize: Integer;
 begin
@@ -17554,6 +17565,9 @@ begin
       until Index < NewSize;
       {$IFDEF IP_LAZARUS code below does not check if InternalIntArr<>nil and set buggy IntArrSize}
       ReallocMem(InternalRectRectArr,NewSize * sizeof(Integer));
+      p := pointer(InternalRectRectArr);
+      inc(p, IntArrSize);
+      fillchar(p^, (NewSize - IntArrSize)*sizeOf(integer), 0);
       IntArrSize:=NewSize;
       {$ELSE}
       Tmp := AllocMem(NewSize * sizeof(Integer));
@@ -17595,6 +17609,9 @@ initialization
   InitScrollProcs;
 {
   $Log$
+  Revision 1.18  2005/07/23 20:20:17  jesus
+  fix crash when loading loading tables
+
   Revision 1.17  2004/11/10 15:25:32  mattias
   updated memcheck.pas from heaptrc.pp
 
