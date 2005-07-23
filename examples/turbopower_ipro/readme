@@ -1,0 +1,26 @@
+This directory contains a program to test package 
+TurboPower Internet Professional, in order to run 
+this test follow this steps:
+
+1. Install package turbopoweripro.lpk
+   located in directory $LazarusDir/components/turbopower_ipro.
+   
+2. [OPTIONAL RECOMMENDED] To add jpeg picture format support,
+   Install package JpegForLazarus.lpk
+   located in directory $LazarusDir/components/jpeg.
+
+3. Open test project tpiproexample.lpi
+
+4. [OPTIONAL] if step 2 is done:
+
+   4a.	Add JpegForLazarus package requeriment to the sample
+        [menu]->Project->Project Inspector->Add->New Requirement
+
+	and then select from the Package name list JPEGForLazarus
+   
+   4b.  Uncomment the line LazJpeg, in the uses clause of the
+        main unit
+
+5. Run
+   
+
