@@ -6,6 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
+  //LazJpeg,
   IpHtml;
 
 type
@@ -18,12 +19,16 @@ type
 
   TMainForm = class(TForm)
     IpHtmlPanel1: TIpHtmlPanel;
+    OpenDialog1: TOpenDialog;
     OpenHTMLFileButton: TButton;
     procedure HTMLGetImageX(Sender: TIpHtmlNode; const URL: string;
       var Picture: TPicture);
     procedure IpHtmlPanel1HotClick(Sender: TObject);
     procedure MainFormCreate(Sender: TObject);
+    procedure MainFormDestroy(Sender: TObject);
+    procedure OpenHTMLFileButtonClick(Sender: TObject);
   public
+    FDefaultImage: TBitmap;
     procedure OpenHTMLFile(const Filename: string);
   end; 
 
@@ -36,7 +41,23 @@ implementation
 
 procedure TMainForm.MainFormCreate(Sender: TObject);
 begin
+
+  FDefaultImage := TBitmap.Create;
+  FDefaultImage.LoadFromFile('imagebroken.xpm');
+
   OpenHTMLFile('index.html');
+end;
+
+procedure TMainForm.MainFormDestroy(Sender: TObject);
+begin
+  FDefaultImage.Free;
+end;
+
+procedure TMainForm.OpenHTMLFileButtonClick(Sender: TObject);
+begin
+  if OpenDialog1.Execute then begin
+    OpenHtmlFile(OpenDialog1.FileName);
+  end;
 end;
 
 procedure TMainForm.IpHtmlPanel1HotClick(Sender: TObject);
@@ -59,11 +80,14 @@ begin
       Picture:=TPicture.Create;
     Picture.LoadFromFile(URL);
   except
+    Picture.Assign(FDefaultImage);
+    {
     on E: Exception do begin
       MessageDlg('Unable to open image file',
         'Image file: '+URL+#13
         +'Error: '+E.Message,mtError,[mbCancel],0);
     end;
+    }
   end;
 end;
 

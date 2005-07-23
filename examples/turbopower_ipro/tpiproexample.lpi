@@ -1,92 +1,36 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
+    <PathDelim Value="/"/>
     <Version Value="5"/>
     <General>
       <MainUnit Value="0"/>
-      <ActiveEditorIndexAtStart Value="3"/>
+      <ActiveEditorIndexAtStart Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="tpiproexample"/>
     </General>
-    <JumpHistory Count="14" HistoryIndex="9">
-      <Position1>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/turbopower_ipro/iputils.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position1>
-      <Position2>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/turbopower_ipro/iputils.pas"/>
-        <Caret Line="2672" Column="11" TopLine="2648"/>
-      </Position2>
-      <Position3>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/turbopower_ipro/iputils.pas"/>
-        <Caret Line="44" Column="11" TopLine="1"/>
-      </Position3>
-      <Position4>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/turbopower_ipro/iphtml.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position4>
-      <Position5>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/turbopower_ipro/iputils.pas"/>
-        <Caret Line="2689" Column="19" TopLine="2667"/>
-      </Position5>
-      <Position6>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/turbopower_ipro/ipstrms.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position6>
-      <Position7>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/turbopower_ipro/ipstrms.pas"/>
-        <Caret Line="428" Column="1" TopLine="390"/>
-      </Position7>
-      <Position8>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/turbopower_ipro/ipstrms.pas"/>
-        <Caret Line="387" Column="3" TopLine="365"/>
-      </Position8>
-      <Position9>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/turbopower_ipro/ipstrms.pas"/>
-        <Caret Line="481" Column="1" TopLine="438"/>
-      </Position9>
-      <Position10>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/turbopower_ipro/ipstrms.pas"/>
-        <Caret Line="433" Column="3" TopLine="411"/>
-      </Position10>
-      <Position11>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/turbopower_ipro/iphtml.pas"/>
-        <Caret Line="2944" Column="3" TopLine="2920"/>
-      </Position11>
-      <Position12>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/turbopower_ipro/iphtml.pas"/>
-        <Caret Line="17646" Column="33" TopLine="17607"/>
-      </Position12>
-      <Position13>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/turbopower_ipro/ipstrms.pas"/>
-        <Caret Line="434" Column="3" TopLine="412"/>
-      </Position13>
-      <Position14>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/turbopower_ipro/iphtml.pas"/>
-        <Caret Line="16503" Column="1" TopLine="16503"/>
-      </Position14>
-    </JumpHistory>
-    <Units Count="9">
+    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <Units Count="17">
       <Unit0>
-        <CursorPos X="5" Y="6"/>
+        <CursorPos X="1" Y="1"/>
         <Filename Value="tpiproexample.lpr"/>
         <IsPartOfProject Value="True"/>
         <TopLine Value="1"/>
         <UnitName Value="TPIProExample"/>
-        <UsageCount Value="25"/>
+        <UsageCount Value="33"/>
       </Unit0>
       <Unit1>
-        <CursorPos X="11" Y="72"/>
+        <CursorPos X="33" Y="12"/>
         <EditorIndex Value="0"/>
         <Filename Value="mainunit.pas"/>
         <ComponentName Value="MainForm"/>
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
         <ResourceFilename Value="mainunit.lrs"/>
-        <TopLine Value="51"/>
+        <TopLine Value="6"/>
         <UnitName Value="MainUnit"/>
-        <UsageCount Value="25"/>
+        <UsageCount Value="33"/>
       </Unit1>
       <Unit2>
         <CursorPos X="1" Y="1"/>
@@ -94,61 +38,107 @@
         <IsPartOfProject Value="True"/>
         <SyntaxHighlighter Value="HTML"/>
         <TopLine Value="1"/>
-        <UsageCount Value="25"/>
+        <UsageCount Value="33"/>
       </Unit2>
       <Unit3>
         <CursorPos X="28" Y="519"/>
-        <EditorIndex Value="1"/>
         <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/turbopower_ipro/iputils.pas"/>
-        <Loaded Value="True"/>
         <TopLine Value="485"/>
         <UnitName Value="IpUtils"/>
         <UsageCount Value="10"/>
       </Unit3>
       <Unit4>
         <CursorPos X="1" Y="29"/>
-        <EditorIndex Value="6"/>
         <Filename Value="/home/mattias/pascal/wichtig/lazarus/lcl/fileutil.pas"/>
-        <Loaded Value="True"/>
         <TopLine Value="1"/>
         <UnitName Value="FileUtil"/>
         <UsageCount Value="10"/>
       </Unit4>
       <Unit5>
         <CursorPos X="1" Y="2991"/>
-        <EditorIndex Value="3"/>
         <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/turbopower_ipro/iphtml.pas"/>
-        <Loaded Value="True"/>
         <TopLine Value="2964"/>
         <UnitName Value="IpHtml"/>
         <UsageCount Value="10"/>
       </Unit5>
       <Unit6>
         <CursorPos X="3" Y="434"/>
-        <EditorIndex Value="2"/>
         <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/turbopower_ipro/ipstrms.pas"/>
-        <Loaded Value="True"/>
         <TopLine Value="412"/>
         <UnitName Value="IpStrms"/>
         <UsageCount Value="10"/>
       </Unit6>
       <Unit7>
         <CursorPos X="15" Y="820"/>
-        <EditorIndex Value="4"/>
         <Filename Value="/home/mattias/pascal/wichtig/lazarus/lcl/stdctrls.pp"/>
-        <Loaded Value="True"/>
         <TopLine Value="798"/>
         <UnitName Value="StdCtrls"/>
         <UsageCount Value="10"/>
       </Unit7>
       <Unit8>
         <CursorPos X="3" Y="142"/>
-        <EditorIndex Value="5"/>
         <Filename Value="/home/mattias/pascal/wichtig/lazarus/lcl/include/customcheckbox.inc"/>
-        <Loaded Value="True"/>
         <TopLine Value="131"/>
         <UsageCount Value="10"/>
       </Unit8>
+      <Unit9>
+        <CursorPos X="42" Y="491"/>
+        <Filename Value="/home/prog/lazarus/lcl/include/picture.inc"/>
+        <TopLine Value="471"/>
+        <UsageCount Value="11"/>
+      </Unit9>
+      <Unit10>
+        <CursorPos X="27" Y="17571"/>
+        <Filename Value="/home/prog/lazarus/components/turbopower_ipro/iphtml.pas"/>
+        <TopLine Value="17548"/>
+        <UnitName Value="IpHtml"/>
+        <UsageCount Value="13"/>
+        <Bookmarks Count="3">
+          <Item0 X="19" Y="17560" ID="0"/>
+          <Item1 X="13" Y="17511" ID="7"/>
+          <Item2 X="19" Y="17445" ID="9"/>
+        </Bookmarks>
+      </Unit10>
+      <Unit11>
+        <CursorPos X="24" Y="884"/>
+        <Filename Value="/home/prog/lazarus/lcl/graphics.pp"/>
+        <TopLine Value="871"/>
+        <UnitName Value="Graphics"/>
+        <UsageCount Value="11"/>
+      </Unit11>
+      <Unit12>
+        <CursorPos X="15" Y="472"/>
+        <Filename Value="/home/prog/lazarus/lcl/dbgrids.pas"/>
+        <TopLine Value="462"/>
+        <UnitName Value="DBGrids"/>
+        <UsageCount Value="10"/>
+      </Unit12>
+      <Unit13>
+        <CursorPos X="10" Y="56"/>
+        <Filename Value="/home/prog/lazarus/lcl/include/lclintfh.inc"/>
+        <TopLine Value="38"/>
+        <UsageCount Value="11"/>
+      </Unit13>
+      <Unit14>
+        <CursorPos X="3" Y="93"/>
+        <Filename Value="/home/prog/lazarus/lcl/include/intfbaselcl.inc"/>
+        <TopLine Value="91"/>
+        <UsageCount Value="11"/>
+      </Unit14>
+      <Unit15>
+        <CursorPos X="44" Y="2787"/>
+        <Filename Value="/home/prog/lazarus/components/turbopower_ipro/iputils.pas"/>
+        <TopLine Value="2752"/>
+        <UnitName Value="IpUtils"/>
+        <UsageCount Value="12"/>
+      </Unit15>
+      <Unit16>
+        <CursorPos X="55" Y="44"/>
+        <Filename Value="/home/prog/lazarus/components/jpeg/lazjpeg.pas"/>
+        <TopLine Value="27"/>
+        <UnitName Value="LazJPEG"/>
+        <UsageCount Value="10"/>
+      </Unit16>
     </Units>
     <PublishOptions>
       <Version Value="2"/>
@@ -174,7 +164,7 @@
     </RequiredPackages>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="2"/>
+    <Version Value="5"/>
     <SearchPaths>
       <OtherUnitFiles Value="$(LazarusDir)/components/units/$(TargetCPU)/$(TargetOS)/"/>
       <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
