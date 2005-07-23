@@ -159,7 +159,6 @@ function TGtk2WSCustomCheckListBox.CreateHandle(const AWinControl: TWinControl;
 var
   TempWidget: PGtkWidget;
   p: PGtkWidget;                 // ptr to the newly created GtkWidget
-  SetupProps : boolean;
   liststore : PGtkListStore;
   Selection: PGtkTreeSelection;
   renderer : PGtkCellRenderer;

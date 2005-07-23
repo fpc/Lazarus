@@ -62,7 +62,6 @@ procedure Gtk2_ItemDeleted(model: PGtkTreeModel; path: PGtkTreePath; WidgetInfo:
 var
   msg: TLMNotify;
   NM: TNMListView;
-  r: Boolean;
   ALV: TLVHack;
   Widgets: PTVWidgets;
 begin
@@ -89,7 +88,6 @@ procedure Gtk2_ItemInserted(model: PGtkTreeModel; path: PGtkTreePAth; Iter: PGtk
 var
   msg: TLMNotify;
   NM: TNMListView;
-  r: Boolean;
 begin
   //DebugLn('Gtk2_ItemInserted');
   msg.Msg := CN_NOTIFY;
@@ -1222,8 +1220,7 @@ procedure TGtk2WSCustomListView.SetViewStyle(const ALV: TCustomListView;
 
       end;
 var
-Widgets: PTVWidgets;
-i: Integer;
+  Widgets: PTVWidgets;
 begin
   if not WSCheckHandleAllocated(ALV, 'SetViewStyle')
   then Exit;

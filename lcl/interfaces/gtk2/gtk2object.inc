@@ -222,14 +222,9 @@ function TGtk2WidgetSet.CreateComponent(Sender : TObject): THandle;
 var
   Caption : ansistring;          // the caption of "Sender"
   StrTemp : PChar;               // same as "caption" but as PChar
-  TempWidget: PGtkWidget;
   p: PGtkWidget;                 // ptr to the newly created GtkWidget
-  CompStyle,                     // componentstyle (type) of GtkWidget which will be created
-  TempInt   : Integer;           // local use when neccessary
+  CompStyle: integer;            // componentstyle (type) of GtkWidget which will be created
   SetupProps : boolean;
-  liststore : PGtkListStore;
-  renderer : PGtkCellRenderer;
-  column : PGtkTreeViewColumn;
 begin
   p := nil;
   SetupProps:= false;
@@ -1467,6 +1462,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.33  2005/07/23 09:35:00  mattias
+  fixed gtk2 intf compilation
+
   Revision 1.32  2005/04/07 22:04:02  marc
   * gtk2 patch from Andrew
 

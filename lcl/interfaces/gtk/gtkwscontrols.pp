@@ -173,7 +173,7 @@ var
 begin
   Result := PGTKWidget(AHandle);
   while (Result <> nil) and GTK_WIDGET_NO_WINDOW(Result)
-  and GtkWidgetIsA(Result,GTK_CONTAINER_TYPE) do
+  and GtkWidgetIsA(Result,gtk_container_get_type) do
   begin
     Children := gtk_container_children(PGtkContainer(Result));
     if Children = nil

@@ -609,8 +609,10 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TGtkListStringList.Delete(Index: integer);
+{$IFDEF Gtk1}
 var
   Next: PGList;
+{$ENDIF}
 begin
   UpdateItemCache;
   RemoveItemCallbacks(Index);
@@ -997,6 +999,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.33  2005/07/23 09:35:00  mattias
+  fixed gtk2 intf compilation
+
   Revision 1.32  2005/06/10 18:57:12  vincents
   fixed objects with a sorted listbox   from Jesus
 

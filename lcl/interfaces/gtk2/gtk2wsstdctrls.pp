@@ -394,7 +394,6 @@ function TGtk2WSCustomListBox.CreateHandle(const AWinControl: TWinControl;
 var
   TempWidget: PGtkWidget;
   p: PGtkWidget;                 // ptr to the newly created GtkWidget
-  SetupProps : boolean;
   liststore : PGtkListStore;
   Selection: PGtkTreeSelection;
   renderer : PGtkCellRenderer;
