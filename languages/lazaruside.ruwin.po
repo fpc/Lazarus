@@ -1324,7 +1324,7 @@ msgstr "Справка, зависимая от контекста"
 
 #: lazarusidestrconsts:liscontributors
 msgid "Contributors"
-msgstr "Контрибуторы"
+msgstr "Благодарности"
 
 #: lazarusidestrconsts:srvk_control
 msgid "Control"
@@ -4988,7 +4988,7 @@ msgstr "Переработка кода"
 
 #: lazarusidestrconsts:dlgreferencecolor
 msgid "Reference"
-msgstr ""
+msgstr "Ссылки на объекты"
 
 #: lazarusidestrconsts:dlgunitdeprefresh
 msgid "Refresh"
@@ -5164,7 +5164,7 @@ msgstr "Заменить %s%s%s%s на %s%s%s в этом месте?"
 
 #: lazarusidestrconsts:lisreplacingselectionfailed
 msgid "Replacing selection failed."
-msgstr ""
+msgstr "Перестановка выбранного текста провалилась."
 
 #: lazarusidestrconsts:dlgreport
 msgid "Report"
@@ -5668,7 +5668,7 @@ msgstr "Выделить до скобки"
 
 #: lazarusidestrconsts:lismenuselectword
 msgid "Select word"
-msgstr ""
+msgstr "Выбрать слово"
 
 #: lazarusidestrconsts:liscodetoolsdefsselectednode
 msgid "Selected Node:"
@@ -5828,7 +5828,7 @@ msgstr "Показать сетку"
 
 #: lazarusidestrconsts:dlgshowgutterhints
 msgid "Show gutter hints"
-msgstr ""
+msgstr "Показать подсказки"
 
 #: lazarusidestrconsts:lisshowhintsinobjectinspector
 msgid "Show hints in Object Inspector"
@@ -5872,7 +5872,7 @@ msgstr "Пропуск вызова компилятора"
 
 #: lazarusidestrconsts:lisskiploadinglastproject
 msgid "Skip loading last project"
-msgstr ""
+msgstr "Пропустить загрузку последнего проекта"
 
 #: lazarusidestrconsts:dlgcosmaller
 msgid "Smaller Code"
@@ -6068,7 +6068,7 @@ msgstr "Подкаталог"
 
 #: lazarusidestrconsts:dlgsubpropkcolor
 msgid "Subpropertes"
-msgstr ""
+msgstr "Подсвойства"
 
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"
@@ -6476,7 +6476,7 @@ msgstr "Имя файла %s%s%s не соответствует имени пакета %s%s%s в файле.%sСменить 
 
 #: lazarusidestrconsts:lisa2pthefilenameisambiguouspleasespecifiyafilename
 msgid "The filename %s%s%s is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
-msgstr ""
+msgstr "Этот файл %s%s%s не однозначный, потому что пакет не имеет директории по-умолчанию.%sПожалуйста определите имя файла и полный путь."
 
 #: lazarusidestrconsts:lispkgmangthefollowingpackagefailedtoload
 msgid "The following package failed to load:"
@@ -6748,7 +6748,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthisisavirtualpackageithasnosourceyetpleasesavethe
 msgid "This is a virtual package. It has no source yet. Please save the package first."
-msgstr ""
+msgstr "Это виртуальный пакет. Он не имеет исходных кодов. Пожалуйста сохраните сначала пакет."
 
 #: lazarusidestrconsts:lisresourcefilecomment
 msgid "This is an automatically generated lazarus resource file"
@@ -6804,7 +6804,7 @@ msgstr "Переключить форму/модуль"
 
 #: lazarusidestrconsts:liscodetempltoken
 msgid "Token:"
-msgstr ""
+msgstr "Символ:"
 
 #: lazarusidestrconsts:lisctdefstools
 msgid "Tools"
@@ -7676,7 +7676,7 @@ msgstr "Префикс WRITE"
 
 #: lazarusidestrconsts:lisxmlfiles
 msgid "XML files"
-msgstr ""
+msgstr "XML файлы"
 
 #: lazarusidestrconsts:lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."
@@ -7760,7 +7760,7 @@ msgstr "рассчитать/изменить"
 
 #: lazarusidestrconsts:lisfilewheredebugoutputiswritten
 msgid "file, where debug output is written to. If it is not specified, debug output is written to the console."
-msgstr ""
+msgstr "файл в который записывается отладочная инф-ция. Если он не определён, то отладочная инф-ция записывается в консоль."
 
 #: lazarusidestrconsts:lisuidinproject
 msgid "in Project:"
@@ -7864,7 +7864,7 @@ msgstr "приостановить программу"
 
 #: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "primary config directory, where Lazarus stores its config files. Default is "
-msgstr ""
+msgstr "первая директория конфигураций, где Lazarus хранит свой конфигурационные файлы. По-умолчанию это "
 
 #: lazarusidestrconsts:lisoipreadonly
 msgid "readonly"

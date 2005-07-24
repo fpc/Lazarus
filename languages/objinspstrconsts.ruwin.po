@@ -219,8 +219,8 @@ msgid "Confirm delete"
 msgstr "Подтвердить удаление"
 
 #: objinspstrconsts:sccsilconfirme
-msgid "Confirm clear all images ?"
-msgstr "Подтверждаете очистку всех картинок?"
+msgid "Confirme clear all images ?"
+msgstr ""
 
 #: objinspstrconsts:oiscopy
 msgid "Copy"

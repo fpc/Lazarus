@@ -8,3 +8,19 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: synmacrorecorder:scannotpause
+msgid "Can only pause when recording"
+msgstr ""
+
+#: synmacrorecorder:scannotresume
+msgid "Can only resume when paused"
+msgstr ""
+
+#: synmacrorecorder:scannotplay
+msgid "Cannot playback macro when recording"
+msgstr ""
+
+#: synmacrorecorder:scannotrecord
+msgid "Cannot record macro when recording"
+msgstr ""
+

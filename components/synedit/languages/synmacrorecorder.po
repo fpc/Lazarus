@@ -1,112 +1,16 @@
-#: :
-msgid ""
+#: synmacrorecorder:scannotrecord
+msgid "Cannot record macro when recording"
 msgstr ""
 
-#: :
-msgid ""
+#: synmacrorecorder:scannotplay
+msgid "Cannot playback macro when recording"
 msgstr ""
 
-#: :
-msgid ""
+#: synmacrorecorder:scannotpause
+msgid "Can only pause when recording"
 msgstr ""
 
-#: :
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
-#: :IDE_RST
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
-#: :ObjInsp_RST
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
-#: :CodeTools_RST
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
-#: :SynEdit_RST
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
-#: :SynMacroRec_RST
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
-#: :LCL_RST
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
-msgstr ""
-
-#: :
-msgid ""
+#: synmacrorecorder:scannotresume
+msgid "Can only resume when paused"
 msgstr ""
 

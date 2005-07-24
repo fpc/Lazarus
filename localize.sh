@@ -42,7 +42,7 @@ rstconv -i $SynEdit_RST \
 ./tools/updatepofiles components/synedit/languages/synedit.po
 
 # SynMacroRecorder
-SynMacroRec_RST=`find components/units -name synmacrorecorder.rst | xargs ls -1t | head -1`;
+SynMacroRec_RST=`find components/synedit/units -name synmacrorecorder.rst | xargs ls -1t | head -1`;
 rstconv -i $SynMacroRec_RST \
   -o components/synedit/languages/synmacrorecorder.po
 ./tools/updatepofiles components/synedit/languages/synmacrorecorder.po
