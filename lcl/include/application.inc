@@ -1314,7 +1314,7 @@ begin
   // next: if there is a modal form, let it handle the short cut
   ModalForm:=Screen.GetCurrentModalForm;
   if ModalForm<>nil then begin
-    Result := FMainForm.IsShortcut(Message);
+    Result := ModalForm.IsShortcut(Message);
   end else begin
     // there is no modal form
 
@@ -1476,6 +1476,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.127  2005/07/24 08:01:57  mattias
+  fixed application modal for shortcut delegation  from Martin Smat
+
   Revision 1.126  2005/07/22 12:44:04  vincents
   initiliased Result of DispatchAction
 
