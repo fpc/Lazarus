@@ -136,8 +136,6 @@ type
     procedure SetShareImages(const AValue: Boolean);
     procedure SetWidth(const Value: Integer);
 
-    Function GetCount: Integer;
-
     procedure ShiftImages(const Source: TCanvas; Start, Shift: Integer);
   protected
     FUpdateCount: integer;
@@ -187,7 +185,7 @@ type
     property AllocBy: Integer read FAllocBy write FAllocBy default 4;
     property BlendColor: TColor read FBlendColor write FBlendColor default clNone;
     property BkColor: TColor read FBkColor write SetBkColor default clNone;
-    property Count: Integer read GetCount;
+    property Count: Integer read FCount;
     property DrawingStyle: TDrawingStyle read FDrawingStyle write SetDrawingStyle default dsNormal;
     property Handle: THandle read FHandle;
     property Height: Integer read FHeight write SetHeight default 16;
@@ -219,6 +217,9 @@ end.
 
 {
   $Log$
+  Revision 1.27  2005/07/24 10:56:27  mattias
+  removed unneeded TCustomImageList.GetCount
+
   Revision 1.26  2005/07/24 08:08:58  mattias
   fixed updating FCount in TCustomImageList.Insert/Delete
 

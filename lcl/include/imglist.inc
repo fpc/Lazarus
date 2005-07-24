@@ -410,8 +410,8 @@ begin
   FMaskBitmap:=nil;
   for i:=0 to FImageList.Count-1 do TObject(FImageList[i]).Free;
   for i:=0 to FMaskList.Count-1 do TObject(FMaskList[i]).Free;
-  FreeThenNil(FImageList);  //shane
-  FreeThenNil(FMaskList);  //shane
+  FreeThenNil(FImageList);
+  FreeThenNil(FMaskList);
   inherited Destroy;
   FChangeLinkList.Free;
   FChangeLinkList:=nil;
@@ -486,20 +486,6 @@ begin
   Mask:=TBitmap(FMaskList[Index]);
   ImageRect:=Rect(0,0,Image.Width,Image.Height);
 end;
-
-{------------------------------------------------------------------------------
-  Method:  TCustomImageList.GetCount
-  Params:
-  Returns: Count
-
-  Returns the number of images.
- ------------------------------------------------------------------------------}
-Function TCustomImageList.GetCount : Integer;
-begin
-  Result := FImageList.Count;
-  FCount := Result;
-end;
-
 
 {------------------------------------------------------------------------------
   Function: TCustomImageList.GetHotspot
@@ -1203,6 +1189,9 @@ end;
 {
 
   $Log$
+  Revision 1.44  2005/07/24 10:56:27  mattias
+  removed unneeded TCustomImageList.GetCount
+
   Revision 1.43  2005/07/24 08:08:58  mattias
   fixed updating FCount in TCustomImageList.Insert/Delete
 
