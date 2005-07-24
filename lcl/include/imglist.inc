@@ -388,6 +388,7 @@ begin
     fMaskList.Delete(Index);
 //    ShiftImages(FBitmap.Canvas, Index, 1);
 //    ShiftImages(FMaskBitmap.Canvas, Index, 1);
+    FCount := fImageList.Count;
     Change;
   end;
 end;
@@ -618,10 +619,6 @@ end;
   at the index'th position.  If Mask is nil, the image has no transparent parts.
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.Insert(Index: Integer; Image, Mask: TBitmap);
-//var
-//  n, nCount: Integer;
-//  I, M: TBitmap;
-//  DR, SR: TRect;
 begin
   if (Index > Count)
   then raise EInvalidOperation.Create(SInvalidIndex);
@@ -632,61 +629,8 @@ begin
   then begin
     FImageList.Insert(Index,Image);
     FMaskList.Insert(Index,Mask);
+    FCount := FImageList.Count;
     Change;
- {   nCount := Image.Width div FWidth;
-    if nCount > 0
-    then begin
-      AllocBitmap(nCount);
-
-      if Index <> FCount
-      then begin
-        ShiftImages(FBitmap.Canvas, Index, nCount);
-        ShiftImages(FMaskBitmap.Canvas, Index, nCount);
-      end;
-      Inc(FCount, nCount);
-
-      I := TBitmap.Create;
-      try
-        with I do
-        begin
-          Height := FHeight;
-          Width := FWidth;
-        end;
-        M := TBitmap.Create;
-        try
-          with M do
-          begin
-            Height := FHeight;
-            Width := FWidth;
-          end;
-
-          // insert the new images one by one
-          DR := Rect(0, 0, FWidth, FHeight);
-          SR := DR;
-          for n := Index to Index + nCount - 1 do
-          begin
-            CopyImage(I.Canvas, Image.Canvas, DR, SR);
-            if Mask = nil
-            then begin
-              Replace(n, I, nil);
-            end
-            else begin
-              CopyImage(M.Canvas, Mask.Canvas, DR, SR);
-              Replace(n, I, M);
-            end;
-            Inc(SR.Left, FWidth);
-            Inc(SR.Right, FWidth);
-          end;
-
-        finally
-          M.Free;
-        end;
-      finally
-        I.Free;
-      end;
-    end;
-}
-
   end;
 end;
 
@@ -719,7 +663,8 @@ end;
   Adds one or more (bitmap width / imagelist width) bitmaps to the list. 
   Every occurance of MaskColor will be converted to transparent.
  ------------------------------------------------------------------------------}
-procedure TCustomImageList.InsertMasked(Index: Integer; Image: TBitmap; MaskColor: TColor);
+procedure TCustomImageList.InsertMasked(Index: Integer; Image: TBitmap;
+  MaskColor: TColor);
 var
   Mask: TBitmap;
 begin
@@ -1258,6 +1203,9 @@ end;
 {
 
   $Log$
+  Revision 1.43  2005/07/24 08:08:58  mattias
+  fixed updating FCount in TCustomImageList.Insert/Delete
+
   Revision 1.42  2005/05/09 10:41:56  vincents
   don't free maskimage, that is created to add to the imagelist.
 

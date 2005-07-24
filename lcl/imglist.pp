@@ -109,7 +109,7 @@ type
   TCustomImageList = Class(TLCLComponent)
   private
     FDrawingStyle: TDrawingStyle;
-    FImageList: TList;  //shane
+    FImageList: TList;
     FMaskList: TList;
     FBitmap: TBitmap;
     FImageType: TImageType;
@@ -219,6 +219,9 @@ end.
 
 {
   $Log$
+  Revision 1.26  2005/07/24 08:08:58  mattias
+  fixed updating FCount in TCustomImageList.Insert/Delete
+
   Revision 1.25  2004/09/10 16:28:50  mattias
   implemented very rudimentary TTabControl
 
