@@ -504,6 +504,7 @@ docs/xml/lcl/chart.xml svneol=native#text/xml
 docs/xml/lcl/checklst.xml svneol=native#text/xml
 docs/xml/lcl/clipbrd.xml svneol=native#text/xml
 docs/xml/lcl/clistbox.xml svneol=native#text/xml
+docs/xml/lcl/colorbox.xml svneol=native#text/xml
 docs/xml/lcl/comctrls.xml svneol=native#text/xml
 docs/xml/lcl/commctrl.xml svneol=native#text/xml
 docs/xml/lcl/controls.xml svneol=native#text/xml
