@@ -67,7 +67,6 @@ begin
   try
     Result := Count;
     Insert(Result, Image, Mask);
-    Change;
   except
     on E: Exception do begin
       DebugLn('TCustomImageList.Add ',E.Message);
@@ -132,6 +131,7 @@ var
   NewMask: TBitmap;
 begin
   if (Value = nil) or (Value=Self) then exit;
+  BeginUpdate;
   for n := 0 to Value.Count - 1 do begin
     SrcImage:=TBitmap(Value.FImageList[n]);
     if SrcImage<>nil then begin
@@ -146,7 +146,7 @@ begin
       AddDirect(NewImage,NewMask);
     end;
   end;
-  Change;
+  EndUpdate;
 end;
 
 {------------------------------------------------------------------------------
@@ -163,7 +163,6 @@ begin
   try
     Result := Count;
     InsertMasked(Result, Image, MaskColor);
-    Change;
   except
     on E: Exception do begin
       DebugLn('TCustomImageList.AddMasked ',E.Message);
@@ -276,10 +275,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.Change;
 begin
-  FChanged := true;
-  if FUpdateCount > 0 then exit;
+  if (not FChanged) or (FUpdateCount > 0) then exit;
   NotifyChangeLink;
   if Assigned(FOnChange) then FOnChange(Self);
+  FChanged := false;
 end;
 
 {------------------------------------------------------------------------------
@@ -389,6 +388,7 @@ begin
 //    ShiftImages(FBitmap.Canvas, Index, 1);
 //    ShiftImages(FMaskBitmap.Canvas, Index, 1);
     FCount := fImageList.Count;
+    FChanged := true;
     Change;
   end;
 end;
@@ -450,10 +450,7 @@ begin
   if FUpdateCount<=0 then
     RaiseGDBException('');
   dec(FUpdateCount);
-  if FChanged then begin
-    FChanged := False;
-    Change;
-  end;
+  Change;
 end;
 
 {------------------------------------------------------------------------------
@@ -616,6 +613,7 @@ begin
     FImageList.Insert(Index,Image);
     FMaskList.Insert(Index,Mask);
     FCount := FImageList.Count;
+    FChanged := true;
     Change;
   end;
 end;
@@ -663,7 +661,6 @@ begin
     Mask(MaskColor);
   end;
   Insert(Index, Image, Mask);
-  Change;
 end;
 
 {------------------------------------------------------------------------------
@@ -679,6 +676,7 @@ begin
   if CurIndex <> NewIndex then begin
     FImageList.Move(CurIndex,NewIndex);
     FMaskList.Move(CurIndex,NewIndex);
+    FChanged := true;
     Change;
   end;
 end;
@@ -1004,6 +1002,7 @@ begin
   then CopyImage(FMaskBitmap.Canvas, Mask.Canvas, DestinationRect, SourceRect)
   else FMaskBitmap.Canvas.FillRect(DestinationRect);
 
+  FChanged := true;
   Change;
 end;
 
@@ -1056,6 +1055,7 @@ begin
   if FBkColor <> Value
   then begin
     FBkColor := Value;
+    FChanged := true;
     Change;
   end;
 end;
@@ -1189,6 +1189,9 @@ end;
 {
 
   $Log$
+  Revision 1.45  2005/07/25 09:15:03  mattias
+  reduced firing CHange events for TCustomImageList  from Martin Smat
+
   Revision 1.44  2005/07/24 10:56:27  mattias
   removed unneeded TCustomImageList.GetCount
 
