@@ -560,12 +560,20 @@ function ProjectFlagsToStr(Flags: TProjectFlags): string;
 
 procedure RegisterProjectFileDescriptor(FileDesc: TProjectFileDescriptor);
 procedure RegisterProjectDescriptor(ProjDesc: TProjectDescriptor);
+procedure RegisterProjectFileDescriptor(FileDesc: TProjectFileDescriptor; ACategory : String);
+procedure RegisterProjectDescriptor(ProjDesc: TProjectDescriptor; ACategory : String);
 
 
 implementation
 
 
 procedure RegisterProjectFileDescriptor(FileDesc: TProjectFileDescriptor);
+
+begin
+  RegisterProjectFileDescriptor(FileDesc,FileDescGroupName);
+end;
+
+procedure RegisterProjectFileDescriptor(FileDesc: TProjectFileDescriptor; ACategory : String);
 var
   NewItemFile: TNewItemProjectFile;
 begin
@@ -573,11 +581,17 @@ begin
   if FileDesc.VisibleInNewDialog then begin
     NewItemFile:=TNewItemProjectFile.Create(FileDesc.Name,niifCopy,[niifCopy]);
     NewItemFile.Descriptor:=FileDesc;
-    RegisterNewDialogItem(FileDescGroupName,NewItemFile);
+    RegisterNewDialogItem(ACategory,NewItemFile);
   end;
 end;
 
 procedure RegisterProjectDescriptor(ProjDesc: TProjectDescriptor);
+
+begin
+  RegisterProjectDescriptor(ProjDesc,ProjDescGroupName);
+end;
+
+procedure RegisterProjectDescriptor(ProjDesc: TProjectDescriptor; ACategory : String);
 var
   NewItemProject: TNewItemProject;
 begin
@@ -585,7 +599,7 @@ begin
   if ProjDesc.VisibleInNewDialog then begin
     NewItemProject:=TNewItemProject.Create(ProjDesc.Name,niifCopy,[niifCopy]);
     NewItemProject.Descriptor:=ProjDesc;
-    RegisterNewDialogItem(ProjDescGroupName,NewItemProject);
+    RegisterNewDialogItem(ACategory,NewItemProject);
   end;
 end;
 

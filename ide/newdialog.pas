@@ -83,6 +83,7 @@ type
     destructor Destroy; override;
     procedure Clear; override;
     procedure Add(ACategory: TNewIDEItemCategory); override;
+    Procedure Add(ACategoryName : String); override; 
     function Count: integer; override;
     function IndexOf(const CategoryName: string): integer; override;
     function FindByName(const CategoryName: string): TNewIDEItemCategory; override;
@@ -457,6 +458,21 @@ end;
 procedure TNewLazIDEItemCategories.Add(ACategory: TNewIDEItemCategory);
 begin
   FItems.Add(ACategory);
+end;
+
+procedure TNewLazIDEItemCategories.Add(ACategoryName : String);
+
+Var
+  I : integer;
+
+begin
+  I:=IndexOf(ACategoryName);
+  If I<>-1 then
+    begin
+    Items[I].Free;
+    FItems.Delete(I);
+    end;
+  Add(TNewLazIDEItemCategoryFile.Create(ACategoryName));
 end;
 
 function TNewLazIDEItemCategories.Count: integer;

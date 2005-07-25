@@ -67,6 +67,7 @@ type
   public
     procedure Clear; virtual; abstract;
     procedure Add(ACategory: TNewIDEItemCategory); virtual; abstract;
+    Procedure Add(ACategoryName : String); virtual; abstract; 
     function Count: integer; virtual; abstract;
     function IndexOf(const CategoryName: string): integer; virtual; abstract;
     function FindByName(const CategoryName: string): TNewIDEItemCategory; virtual; abstract;
@@ -115,8 +116,16 @@ procedure RegisterNewDialogItem(const Paths: string;
   NewItem: TNewIDEItemTemplate);
 procedure UnregisterNewDialogItem(NewItem: TNewIDEItemTemplate);
 
+procedure RegisterNewItemCategory(const ACategory: String);
+
 
 implementation
+
+
+procedure RegisterNewItemCategory(const ACategory: String);
+begin
+  NewIdeItems.Add(ACategory);
+end;
 
 procedure RegisterNewDialogItem(const Paths: string;
   NewItem: TNewIDEItemTemplate);
