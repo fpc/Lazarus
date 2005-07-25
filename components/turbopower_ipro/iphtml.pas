@@ -4409,6 +4409,9 @@ end;
 
 function TIpHtml.NextChar : AnsiChar;
 begin
+  {$IFDEF IP_LAZARUS}
+  Result:=#0;
+  {$ENDIF}
   if CharStream.Read(Result, 1) = 0 then
     Result := #0
   else begin
@@ -8402,6 +8405,9 @@ begin
     P := CharPos('#', URL);
     if P <> 0 then
       SetLength(URL, P - 1);
+    {$IFDEF IP_LAZARUS}
+    Result:=true;
+    {$ENDIF}
     FOnURLCheck(Self, URL, Result);
   end;
 end;
@@ -17609,6 +17615,9 @@ initialization
   InitScrollProcs;
 {
   $Log$
+  Revision 1.19  2005/07/25 09:12:19  mattias
+  added to Contributors.txt Christopher Kirkpatrick
+
   Revision 1.18  2005/07/23 20:20:17  jesus
   fix crash when loading loading tables
 

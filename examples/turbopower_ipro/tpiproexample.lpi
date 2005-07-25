@@ -5,12 +5,25 @@
     <Version Value="5"/>
     <General>
       <MainUnit Value="0"/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <ActiveEditorIndexAtStart Value="1"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="tpiproexample"/>
     </General>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="3" HistoryIndex="2">
+      <Position1>
+        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/turbopower_ipro/iphtml.pas"/>
+        <Caret Line="2991" Column="1" TopLine="2964"/>
+      </Position1>
+      <Position2>
+        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/turbopower_ipro/iphtml.pas"/>
+        <Caret Line="8408" Column="1" TopLine="8380"/>
+      </Position2>
+      <Position3>
+        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/turbopower_ipro/iphtml.pas"/>
+        <Caret Line="4413" Column="13" TopLine="4388"/>
+      </Position3>
+    </JumpHistory>
     <Units Count="17">
       <Unit0>
         <CursorPos X="1" Y="1"/>
@@ -21,7 +34,7 @@
         <UsageCount Value="33"/>
       </Unit0>
       <Unit1>
-        <CursorPos X="33" Y="12"/>
+        <CursorPos X="17" Y="32"/>
         <EditorIndex Value="0"/>
         <Filename Value="mainunit.pas"/>
         <ComponentName Value="MainForm"/>
@@ -55,9 +68,11 @@
         <UsageCount Value="10"/>
       </Unit4>
       <Unit5>
-        <CursorPos X="1" Y="2991"/>
+        <CursorPos X="6" Y="10300"/>
+        <EditorIndex Value="1"/>
         <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/turbopower_ipro/iphtml.pas"/>
-        <TopLine Value="2964"/>
+        <Loaded Value="True"/>
+        <TopLine Value="10277"/>
         <UnitName Value="IpHtml"/>
         <UsageCount Value="10"/>
       </Unit5>
