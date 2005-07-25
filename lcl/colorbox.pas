@@ -45,7 +45,6 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure SetColorList;
     property Selection: TColor read GetSelection write SetSelection;
-    property Palette: TColorPalette read FPalette write SetPalette;
   published
     property Color;
     property Ctl3D;
@@ -57,6 +56,7 @@ type
     property ItemHeight;
     property Items;
     property MaxLength;
+    property Palette: TColorPalette read FPalette write SetPalette;
     property ParentColor;
     property ParentCtl3D;
     property ParentFont;
@@ -103,7 +103,7 @@ begin
   RegisterComponents('Additional', [TColorBox]);
 end;
 {------------------------------------------------------------------------------
-  Method:   TCanvas.Create
+  Method:   TColorBox.Create
   Params:   AOwner
   Returns:  Nothing
 
@@ -122,11 +122,11 @@ begin
   Style := csOwnerDrawFixed;
 end;
 {------------------------------------------------------------------------------
-  Method:   TCanvas.GetSelection
+  Method:   TColorBox.GetSelection
   Params:   None
   Returns:  TColor
 
-  Use GetSelection to convert the item selcted into a system color.
+  Use GetSelection to convert the item selected into a system color.
 
  ------------------------------------------------------------------------------}
 function TColorBox.GetSelection: TColor;
@@ -137,7 +137,7 @@ begin
       Result := 0;
 end;
 {------------------------------------------------------------------------------
-  Method:   TCanvas.SetSelection
+  Method:   TColorBox.SetSelection
   Params:   Value
   Returns:  Nothing
 
@@ -158,7 +158,7 @@ begin
         ItemIndex := c;
 end;
 {------------------------------------------------------------------------------
-  Method:   TCanvas.SetPalette
+  Method:   TColorBox.SetPalette
   Params:   Value
   Returns:  Nothing
 
@@ -175,7 +175,7 @@ begin
   end;
 end;
 {------------------------------------------------------------------------------
-  Method:   TCanvas.SetStyle
+  Method:   TColorBox.SetStyle
   Params:   Value
   Returns:  Nothing
 
@@ -188,14 +188,14 @@ begin
   inherited SetStyle(csOwnerDrawFixed);
 end;
 {------------------------------------------------------------------------------
-  Method:   TCanvas.DrawItem
+  Method:   TColorBox.DrawItem
   Params:   Index, Rect, State
   Returns:  Nothing
 
   Use DrawItem to customdraw an item in the ColorBox. A color preview is drawn
   and the item rectangle is made smaller and given to the inherited method to
   draw the corresponding text. The Brush color and Pen color where changed and
-  reset to theire original values.
+  reset to their original values.
 
  ------------------------------------------------------------------------------}
 procedure TColorBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState);
@@ -233,7 +233,7 @@ begin
   inherited DrawItem(Index, r, State);
 end;
 {------------------------------------------------------------------------------
-  Method:   TCanvas.SetColorList
+  Method:   TColorBox.SetColorList
   Params:   None
   Returns:  Nothing
 
