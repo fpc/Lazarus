@@ -575,6 +575,7 @@ docs/xml/lcl/lclproc.xml svneol=native#text/xml
 docs/xml/lcl/lclrescache.xml svneol=native#text/xml
 docs/xml/lcl/lclstrconsts.xml svneol=native#text/xml
 docs/xml/lcl/lcltype.xml svneol=native#text/xml
+docs/xml/lcl/ldocktree.xml svneol=native#text/xml
 docs/xml/lcl/lmessages.xml svneol=native#text/xml
 docs/xml/lcl/lresources.xml svneol=native#text/xml
 docs/xml/lcl/maskedit.xml svneol=native#text/xml
