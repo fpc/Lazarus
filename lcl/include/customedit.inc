@@ -326,6 +326,17 @@ begin
   if Key=VK_RETURN then EditingDone;
 end;
 
+procedure TCustomEdit.WMChar(var Message: TLMChar);
+begin
+  // all normal characters are handled by the memo
+  //debugln('TCustomEdit.WMChar ',DbgSName(Self),' ',dbgs(Message.CharCode));
+  if Message.CharCode in [ord('A')..ord('Z'),ord('a')..ord('z')] then
+    // eat normal keys, so they don't trigger accelerators
+    Message.Result := 1
+  else
+    inherited WMChar(Message);
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCustomEdit.SetModified
   Params:  Value to set FModified to
@@ -375,6 +386,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.40  2005/07/25 23:11:48  mattias
+  fixed TEdit to eat normal keys and avoid triggering accelerators
+
   Revision 1.39  2005/03/10 09:02:11  mattias
   handle tab key in ControlKeyDown in TCustomEdit and TCustomComboBox
 

@@ -213,6 +213,12 @@ begin
   inherited ControlKeyDown(Key, Shift);
 end;
 
+procedure TCustomMemo.WMChar(var Message: TLMChar);
+begin
+  // all normal characters are handled by the memo
+  Message.Result := 1;
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomMemo.SetWordWrap
   Params: 
@@ -234,6 +240,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.36  2005/07/25 23:11:48  mattias
+  fixed TEdit to eat normal keys and avoid triggering accelerators
+
   Revision 1.35  2005/07/17 01:05:04  mattias
   started basic docking anchoring and made Contributors.txt ASCII to show everywhere
 

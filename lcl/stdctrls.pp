@@ -583,7 +583,7 @@ type
     procedure SetModified(Value: Boolean);
     procedure SetPasswordChar(const AValue: Char);
     procedure SetReadOnly(Value: Boolean);
-  Protected
+  protected
     procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer); override;
     procedure CreateWnd; override;
     procedure CMTextChanged(Var Message: TLMessage); message CM_TextChanged;
@@ -600,6 +600,7 @@ type
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
     procedure ControlKeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
+    procedure WMChar(var Message: TLMChar); message LM_CHAR;
   public
     constructor Create(AOwner: TComponent); override;
     procedure SelectAll;
@@ -667,6 +668,7 @@ type
     procedure Loaded; override;
     function WordWrapIsStored: boolean; virtual;
     procedure ControlKeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure WMChar(var Message: TLMChar); message LM_CHAR;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1263,6 +1265,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.214  2005/07/25 23:11:48  mattias
+  fixed TEdit to eat normal keys and avoid triggering accelerators
+
   Revision 1.213  2005/07/19 14:18:44  micha
   fix bug 741: fix setting multiselect to not select all items; default extendedselect is true
 
