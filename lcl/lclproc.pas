@@ -72,8 +72,8 @@ type
              
 
 var
-  SendApplicationMessageFunction: TSendApplicationMessageFunction;
-  OwnerFormDesignerModifiedProc: TOwnerFormDesignerModifiedProc;
+  SendApplicationMessageFunction: TSendApplicationMessageFunction=nil;
+  OwnerFormDesignerModifiedProc: TOwnerFormDesignerModifiedProc=nil;
 
 function SendApplicationMessage(Msg: Cardinal; WParam: WParam; LParam: LParam):Longint;
 procedure OwnerFormDesignerModified(AComponent: TComponent);
@@ -1942,8 +1942,6 @@ end;
 
 initialization
   InitializeDebugOutput;
-  SendApplicationMessageFunction:=nil;
-  OwnerFormDesignerModifiedProc:=nil;
   InterfaceFinalizationHandlers:=TList.Create;
 finalization
   InterfaceFinalizationHandlers.Free;

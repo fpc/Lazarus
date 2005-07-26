@@ -83,7 +83,7 @@ type
   TInputDialogFunction = Function (const InputCaption, InputPrompt : String;
                              MaskInput : Boolean; var Value : String) : Boolean;
 var
-  InputDialogFunction: TInputDialogFunction;
+  InputDialogFunction: TInputDialogFunction=nil;
 
 type
   TPromptDialogFunction = Function(const DialogCaption, DialogMessage : String;
@@ -95,7 +95,7 @@ var
   PromptDialogFunction: TPromptDialogFunction;
 
 var
-  InterfaceObject: TWidgetSet;
+  InterfaceObject: TWidgetSet=nil;
 
 implementation
 
@@ -107,9 +107,6 @@ const
 {$I intfbasewinapi.inc}
 {$I intfbaselcl.inc}
 
-initialization
-  InputDialogFunction:=nil;
-  InterfaceObject:=nil;
 
 finalization
   InputDialogFunction:=nil;
@@ -118,6 +115,9 @@ end.
 
 {
   $Log$
+  Revision 1.56  2005/07/26 08:45:15  vincents
+  initialize variables at declaration instead in the unit initialization   from Florian Köberle
+
   Revision 1.55  2004/09/24 21:34:14  micha
   convert LM_CREATE message to interface methods
   remove SendMsgToInterface, CNSendMessage and related methods

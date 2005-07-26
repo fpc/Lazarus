@@ -187,8 +187,8 @@ type
 var
   LazarusResources: TLResourceList;
 
-  LRSObjectReaderClass: TLRSObjectReaderClass;
-  LRSObjectWriterClass: TLRSObjectWriterClass;
+  LRSObjectReaderClass: TLRSObjectReaderClass=TLRSObjectReader;
+  LRSObjectWriterClass: TLRSObjectWriterClass=TLRSObjectWriter;
 
 function InitLazResourceComponent(Instance: TComponent;
                                   RootAncestor: TClass): Boolean;
@@ -276,7 +276,7 @@ const
 
 var
   ByteToStr: array[char] of shortstring;
-  ByteToStrValid: boolean;
+  ByteToStrValid: boolean=false;
   
 procedure InitByteToStr;
 var
@@ -3155,9 +3155,6 @@ end;
 procedure InternalInit;
 begin
   LazarusResources:=TLResourceList.Create;
-  ByteToStrValid:=false;
-  LRSObjectReaderClass:=TLRSObjectReader;
-  LRSObjectWriterClass:=TLRSObjectWriter;
 end;
 
 initialization

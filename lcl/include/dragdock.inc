@@ -15,7 +15,7 @@
 }
 
 var
-  DragControl: TControl; // control, that started the drag
+  DragControl: TControl=nil; // control, that started the drag
   DragObject: TDragObject; // the drag information object
   DragObjectAutoFree: Boolean; // True, if DragObject was auto created
   DragStartPos: TPoint;  // mouse position at start of drag
@@ -362,6 +362,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.9  2005/07/26 08:45:15  vincents
+  initialize variables at declaration instead in the unit initialization   from Florian Köberle
+
   Revision 1.8  2005/02/05 16:09:52  marc
   * first 64bit changes
 

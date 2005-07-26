@@ -268,8 +268,8 @@ end;
 //------------------------------------------------------------------------------
 
 var
-  PicClipboardFormats: TPicClipboardFormats;
-  PicFileFormats: TPicFileFormatsList;
+  PicClipboardFormats: TPicClipboardFormats=nil;
+  PicFileFormats: TPicFileFormatsList=nil;
 
 function GetPicFileFormats: TPicFileFormatsList;
 begin

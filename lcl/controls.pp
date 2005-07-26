@@ -2022,8 +2022,8 @@ uses
 var
   // The interface knows, which TWinControl has the capture. This stores
   // what child control of this TWinControl has actually the capture.
-  CaptureControl: TControl;
-  DockSiteHash: TDynHashArray;
+  CaptureControl: TControl=nil;
+  DockSiteHash: TDynHashArray=nil;
 
 procedure AdjustBorderSpace(var RemainingClientRect, CurBorderSpace: TRect;
   Left, Top, Right, Bottom: integer);
@@ -2933,13 +2933,9 @@ end;
 {$ENDIF not VER1_0}
 
 initialization
-
   //DebugLn('controls.pp - initialization');
   Mouse := TMouse.Create;
-  DragControl := nil;
-  CaptureControl := nil;
   DefaultDockTreeClass := TDockTree;
-  DockSiteHash := nil;
 
   RegisterIntegerConsts(TypeInfo(TCursor), @IdentToCursor, @CursorToIdent);
 
@@ -2952,6 +2948,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.316  2005/07/26 08:45:15  vincents
+  initialize variables at declaration instead in the unit initialization   from Florian Köberle
+
   Revision 1.315  2005/07/22 11:15:56  mattias
   updated russian translation for windows  from Rostislav Okulov
 

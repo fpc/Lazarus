@@ -1202,7 +1202,7 @@ var
   Application: TApplication;
   Screen: TScreen;
   ExceptionObject: TExceptObject;
-  HintWindowClass: THintWindowClass;
+  HintWindowClass: THintWindowClass=THintWindow;
 
 type
   TMessageBoxFunction =
@@ -1222,10 +1222,10 @@ uses
   WSForms; // Widgetset uses circle is allowed
 
 var
-  FocusMessages: Boolean;
-  FocusCount: Integer;
-  HandlingException: boolean;
-  HaltingProgram: boolean;
+  FocusMessages: Boolean=True;
+  FocusCount: Integer=0;
+  HandlingException: boolean=False;
+  HaltingProgram: boolean=False;
 
 procedure Register;
 begin
@@ -1669,11 +1669,6 @@ end;
 //==============================================================================
 
 initialization
-  FocusCount := 0;
-  Focusmessages := True;
-  HandlingException := false;
-  HaltingProgram := false;
-  HintWindowClass := THintWindow;
   LCLProc.OwnerFormDesignerModifiedProc:=@IfOwnerIsFormThenDesignerModified;
   Screen:= TScreen.Create(nil);
   Application:= TApplication.Create(nil);

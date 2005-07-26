@@ -1418,8 +1418,8 @@ type
               FormatID: TClipboardFormat);
 
 var
-  OnLoadGraphicFromClipboardFormat: TOnLoadGraphicFromClipboardFormat;
-  OnSaveGraphicToClipboardFormat: TOnSaveGraphicToClipboardFormat;
+  OnLoadGraphicFromClipboardFormat: TOnLoadGraphicFromClipboardFormat=nil;
+  OnSaveGraphicToClipboardFormat: TOnSaveGraphicToClipboardFormat=nil;
 
 function TestStreamBitmapNativeType(const AStream: TStream): TBitmapNativeType;
 function TestStreamIsBMP(const AStream: TStream): boolean;
@@ -1435,7 +1435,8 @@ function ReadXPMSize(XPM: PPChar; var Width, Height, ColorCount: integer
 var
   { Stores information about the current screen
     - initialized on Interface startup }
-  ScreenInfo: TScreenInfo;
+  ScreenInfo: TScreenInfo=(PixelsPerInchX:72;PixelsPerInchY:72;
+                           ColorDepth:24;Initialized:false;);
   
   FontResourceCache: TFontHandleCache;
   PenResourceCache: TPenHandleCache;
@@ -1934,14 +1935,6 @@ begin
 end;
 
 initialization
-  ScreenInfo.Initialized:=false;
-  ScreenInfo.ColorDepth:=24;
-  ScreenInfo.PixelsPerInchX:=72;
-  ScreenInfo.PixelsPerInchY:=72;
-  PicClipboardFormats:=nil;
-  PicFileFormats:=nil;
-  OnLoadGraphicFromClipboardFormat:=nil;
-  OnSaveGraphicToClipboardFormat:=nil;
   FontResourceCache:=TFontHandleCache.Create;
   PenResourceCache:=TPenHandleCache.Create;
   BrushResourceCache:=TBrushHandleCache.Create;
@@ -1962,6 +1955,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.179  2005/07/26 08:45:15  vincents
+  initialize variables at declaration instead in the unit initialization   from Florian Köberle
+
   Revision 1.178  2005/07/19 08:31:21  vincents
   added ColorBox (from Darius) to LCL
 
