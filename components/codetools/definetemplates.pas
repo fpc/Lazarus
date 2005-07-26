@@ -3582,6 +3582,7 @@ begin
        +'packager;'
        +'packager/registration;'
        +'ideintf;'
+       +'ide;'
        +'components/synedit;'
        +'components/codetools;'
        +'components/custom;'
@@ -3590,9 +3591,9 @@ begin
     ,da_Define));
   // include path addition
   MainDir.AddChild(TDefineTemplate.Create('includepath addition',
-    Format(ctsSetsIncPathTo,['include, include/TargetOS, include/SrcOS']),
+    Format(ctsSetsIncPathTo,['ide/include, ide/include/TargetOS, ide/include/SrcOS']),
     ExternalMacroStart+'IncPath',
-    d('include;include/'+TargetOS+';include/'+SrcOS),
+    d('ide/include;ide/include/'+TargetOS+';ide/include/'+SrcOS),
     da_Define));
   // turn Nested comments on
   MainDir.AddChild(TDefineTemplate.Create('Nested Comments',
@@ -3602,6 +3603,33 @@ begin
   // <LazarusSrcDir>/include
   // (does not need special setup)
 
+  // <LazarusSrcDir>/ide
+  DirTempl:=TDefineTemplate.Create('ide',ctsIDEDirectory,
+    '','ide',da_Directory);
+  DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
+    Format(ctsAddsDirToSourcePath,['lcl, components']),
+    ExternalMacroStart+'SrcPath',
+      d('..;'
+       +'../designer;'
+       +'../designer/jitform;'
+       +'../debugger;'
+       +'../packager;'
+       +'../packager/registration;'
+       +'../ideintf;'
+       +'../lcl;'
+       +'../lcl/interfaces/'+WidgetType+';'
+       +'../components/synedit;'
+       +'../components/codetools;'
+       +'../components/custom;'
+       +'../components/mpaslex;')
+    ,da_DefineRecurse));
+  // include path addition
+  DirTempl.AddChild(TDefineTemplate.Create('includepath addition',
+    Format(ctsSetsIncPathTo,['include, include/TargetOS, include/SrcOS']),
+    ExternalMacroStart+'IncPath',
+    d('include;include/'+TargetOS+';include/'+SrcOS),
+    da_Define));
+  MainDir.AddChild(DirTempl);
 
   // <LazarusSrcDir>/designer
   DirTempl:=TDefineTemplate.Create('Designer',ctsDesignerDirectory,
@@ -3631,7 +3659,7 @@ begin
   DirTempl.AddChild(TDefineTemplate.Create('includepath addition',
     Format(ctsIncludeDirectoriesPlusDirs,['include']),
     ExternalMacroStart+'IncPath',
-    d('../include;../include/'+TargetOS),
+    d('../ide/include;../ide/include/'+TargetOS),
     da_Define));
   // <LazarusSrcDir>/designer/jitform
   SubDirTempl:=TDefineTemplate.Create('JITForm',ctsJITFormDirectory,
@@ -3718,7 +3746,7 @@ begin
   DirTempl.AddChild(TDefineTemplate.Create('includepath addition',
     Format(ctsIncludeDirectoriesPlusDirs,['include']),
     ExternalMacroStart+'IncPath',
-    d('../include;../include/'+TargetOS),
+    d('../ide/include;../ide/include/'+TargetOS),
     da_Define));
   // <LazarusSrcDir>/packager/registration
   SubDirTempl:=TDefineTemplate.Create('Registration',
