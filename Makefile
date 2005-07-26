@@ -555,103 +555,103 @@ ifeq ($(FULL_TARGET),arm-linux)
 override TARGET_EXAMPLEDIRS+=examples
 endif
 ifeq ($(FULL_TARGET),i386-linux)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),i386-go32v2)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),i386-win32)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),i386-os2)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),i386-freebsd)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),i386-beos)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),i386-netbsd)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),i386-solaris)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),i386-qnx)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),i386-netware)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),i386-openbsd)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),i386-wdosx)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),i386-emx)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),i386-watcom)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),i386-netwlibc)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),m68k-linux)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),m68k-freebsd)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),m68k-netbsd)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),m68k-amiga)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),m68k-atari)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),m68k-openbsd)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),m68k-palmos)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),powerpc-linux)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),powerpc-netbsd)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),powerpc-macos)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),powerpc-darwin)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),powerpc-morphos)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),sparc-linux)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),sparc-netbsd)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),sparc-solaris)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),x86_64-linux)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),x86_64-freebsd)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 ifeq ($(FULL_TARGET),arm-linux)
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 endif
 override INSTALL_BASEDIR=share/lazarus
 override INSTALL_FPCPACKAGE=n
@@ -756,202 +756,202 @@ ifeq ($(FULL_TARGET),arm-linux)
 override COMPILER_OPTIONS+=-gl
 endif
 ifeq ($(FULL_TARGET),i386-linux)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-go32v2)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-win32)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-os2)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-freebsd)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-beos)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-netbsd)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-solaris)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-qnx)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-netware)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-openbsd)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-wdosx)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-emx)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-watcom)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-netwlibc)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),m68k-linux)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),m68k-freebsd)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),m68k-netbsd)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),m68k-amiga)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),m68k-atari)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),m68k-openbsd)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),m68k-palmos)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),powerpc-linux)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),powerpc-netbsd)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),powerpc-macos)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),powerpc-darwin)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),powerpc-morphos)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),sparc-linux)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),sparc-netbsd)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),sparc-solaris)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),x86_64-linux)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),x86_64-freebsd)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),arm-linux)
-override COMPILER_INCLUDEDIR+=debugger designer packager include include/$(OS_TARGET)
+override COMPILER_INCLUDEDIR+=debugger designer packager ide/include ide/include/$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-linux)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),i386-go32v2)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),i386-win32)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),i386-os2)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),i386-freebsd)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),i386-beos)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),i386-netbsd)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),i386-solaris)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),i386-qnx)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),i386-netware)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),i386-openbsd)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),i386-wdosx)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),i386-emx)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),i386-watcom)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),i386-netwlibc)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),m68k-linux)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),m68k-freebsd)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),m68k-netbsd)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),m68k-amiga)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),m68k-atari)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),m68k-openbsd)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),m68k-palmos)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),powerpc-linux)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),powerpc-netbsd)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),powerpc-macos)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),powerpc-darwin)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),powerpc-morphos)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),sparc-linux)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),sparc-netbsd)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),sparc-solaris)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),x86_64-linux)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),x86_64-freebsd)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),arm-linux)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)-$(OS_TARGET) lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) components/custom components/mpaslex ideintf/units/$(CPU_TARGET)-$(OS_TARGET) designer designer/units debugger packager packager/units/$(CPU_TARGET)-$(OS_TARGET) ide .
 endif
 ifeq ($(FULL_TARGET),i386-linux)
 override COMPILER_TARGETDIR+=.
@@ -3843,20 +3843,20 @@ ifeq ($(OS_TARGET), win32)
 	$(MAKE) lazarus.res
 endif
 ifeq ($(LAZARUS_OPT),)
-	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT)
+	$(MAKE) --assume-new=ide/lazarus.pp ide/lazarus$(EXEEXT)
 else
-	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT)'
+	$(MAKE) --assume-new=ide/lazarus.pp ide/lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT)'
 endif
 idepkg: $(COMPILER_UNITTARGETDIR)
-	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT) @$(LAZARUS_IDE_CONFIG)'
+	$(MAKE) --assume-new=ide/lazarus.pp ide/lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT) @$(LAZARUS_IDE_CONFIG)'
 starter: $(COMPILER_UNITTARGETDIR)
 ifeq ($(OS_TARGET), win32)
 	$(MAKE) startlazarus.res
 endif
 ifeq ($(LAZARUS_OPT),)
-	$(MAKE) --assume-new=startlazarus.lpr startlazarus$(EXEEXT)
+	$(MAKE) --assume-new=ide/startlazarus.lpr ide/startlazarus$(EXEEXT)
 else
-	$(MAKE) --assume-new=startlazarus.lpr startlazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT)'
+	$(MAKE) --assume-new=ide/startlazarus.lpr ide/startlazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT)'
 endif
 tools: lcl components
 	$(MAKE) -C tools
@@ -3868,6 +3868,8 @@ cleanide:
 	-$(DEL) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT))
 	-$(DEL) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT))
 	-$(DEL) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT))
+	-$(DEL) $(wildcard ./ide/*$(OEXT))
+	-$(DEL) $(wildcard ./ide/*$(PPUEXT))
 	-$(DEL) $(wildcard ./designer/*$(OEXT))
 	-$(DEL) $(wildcard ./designer/*$(PPUEXT))
 	-$(DEL) $(wildcard ./debugger/*$(OEXT))

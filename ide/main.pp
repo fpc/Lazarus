@@ -11823,8 +11823,8 @@ end;
 //-----------------------------------------------------------------------------
 
 initialization
-  {$I images/laz_images.lrs}
-  {$I images/mainicon.lrs}
+  {$I ../images/laz_images.lrs}
+  {$I ../images/mainicon.lrs}
   ShowSplashScreen:=true;
 
 end.

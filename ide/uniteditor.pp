@@ -5000,7 +5000,7 @@ end;
 initialization
   InternalInit;
 
-{$I images/bookmark.lrs}
+{$I ../images/bookmark.lrs}
 
 finalization
   InternalFinal;

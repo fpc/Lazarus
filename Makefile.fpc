@@ -27,14 +27,16 @@ unitdir=lcl/units/$(CPU_TARGET)-$(OS_TARGET) \
         ideintf/units/$(CPU_TARGET)-$(OS_TARGET) \
         designer designer/units debugger \
         packager \
-        packager/units/$(CPU_TARGET)-$(OS_TARGET) .
-includedir=debugger designer packager include include/$(OS_TARGET)
+        packager/units/$(CPU_TARGET)-$(OS_TARGET) \
+        ide .
+includedir=debugger designer packager ide/include ide/include/$(OS_TARGET)
 targetdir=.
 
 [clean]
 files=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) \
       $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) \
       $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) \
+      $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) \
       $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 
 [install]
@@ -100,14 +102,14 @@ ifeq ($(OS_TARGET), win32)
         $(MAKE) lazarus.res
 endif
 ifeq ($(LAZARUS_OPT),)
-        $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT)
+        $(MAKE) --assume-new=ide/lazarus.pp ide/lazarus$(EXEEXT)
 else
-        $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT)'
+        $(MAKE) --assume-new=ide/lazarus.pp ide/lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT)'
 endif
 
 #-----------------------------------------------------------------------------
 idepkg: $(COMPILER_UNITTARGETDIR)
-        $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT) @$(LAZARUS_IDE_CONFIG)'
+        $(MAKE) --assume-new=ide/lazarus.pp ide/lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT) @$(LAZARUS_IDE_CONFIG)'
 
 #-----------------------------------------------------------------------------
 starter: $(COMPILER_UNITTARGETDIR)
@@ -115,9 +117,9 @@ ifeq ($(OS_TARGET), win32)
         $(MAKE) startlazarus.res
 endif
 ifeq ($(LAZARUS_OPT),)
-        $(MAKE) --assume-new=startlazarus.lpr startlazarus$(EXEEXT)
+        $(MAKE) --assume-new=ide/startlazarus.lpr ide/startlazarus$(EXEEXT)
 else
-        $(MAKE) --assume-new=startlazarus.lpr startlazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT)'
+        $(MAKE) --assume-new=ide/startlazarus.lpr ide/startlazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT)'
 endif
 
 #-----------------------------------------------------------------------------
@@ -135,6 +137,8 @@ cleanide:
         -$(DEL) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT))
         -$(DEL) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT))
         -$(DEL) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT))
+        -$(DEL) $(wildcard ./ide/*$(OEXT))
+        -$(DEL) $(wildcard ./ide/*$(PPUEXT))
         -$(DEL) $(wildcard ./designer/*$(OEXT))
         -$(DEL) $(wildcard ./designer/*$(PPUEXT))
         -$(DEL) $(wildcard ./debugger/*$(OEXT))

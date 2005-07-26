@@ -555,7 +555,7 @@ end;
 
 initialization
 
-{$I images/components_images.lrs}
+{$I ../images/components_images.lrs}
 
 end.
 
