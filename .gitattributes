@@ -939,6 +939,7 @@ ideintf/imagelisteditor.pp svneol=native#text/pascal
 ideintf/lazideintf.pas svneol=native#text/pascal
 ideintf/listviewpropedit.pp svneol=native#text/pascal
 ideintf/macrointf.pas svneol=native#text/pascal
+ideintf/menuintf.pas svneol=native#text/plain
 ideintf/newfield.lfm svneol=native#text/plain
 ideintf/newfield.lrs svneol=native#text/pascal
 ideintf/newfield.pas svneol=native#text/pascal

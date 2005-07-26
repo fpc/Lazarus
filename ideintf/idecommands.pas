@@ -35,7 +35,7 @@ unit IDECommands;
 interface
 
 uses
-  Classes, SysUtils, LCLType;
+  Classes, SysUtils, LCLType, Menus;
   
 type
   TCommandArea = (
@@ -44,6 +44,7 @@ type
     caDesigner
     );
   TCommandAreas = set of TCommandArea;
+
 const
   caAll = [caMenu, caSourceEditor, caDesigner];
   caMenuOnly = [caMenu];
@@ -132,6 +133,7 @@ procedure ExecuteIDEShortCut(Sender: TObject; var Key: word; Shift: TShiftState;
 procedure ExecuteIDEShortCut(Sender: TObject; var Key: word; Shift: TShiftState);
 procedure ExecuteIDECommand(Sender: TObject; Command: word);
 
+function IDEShortCutToMenuShortCut(const IDEShortCut: TIDEShortCut): TShortCut;
 
 implementation
 
@@ -162,6 +164,14 @@ procedure ExecuteIDECommand(Sender: TObject; Command: word);
 begin
   if (OnExecuteIDECommand<>nil) and (Command<>0) then
     OnExecuteIDECommand(Sender,Command);
+end;
+
+function IDEShortCutToMenuShortCut(const IDEShortCut: TIDEShortCut): TShortCut;
+begin
+  if IDEShortCut.Key2=VK_UNKNOWN then
+    Result:=ShortCut(IDEShortCut.Key1,IDEShortCut.Shift1)
+  else
+    Result:=ShortCut(VK_UNKNOWN,[]);
 end;
 
 { TIDECommandCategory }
