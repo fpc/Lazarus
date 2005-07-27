@@ -2801,7 +2801,7 @@ $(COMPILER_TARGETDIR):
 	$(COMPILER) $<
 	$(EXECPPAS)
 %.res: %.rc
-	windres -i $< -o $@
+	windres -I ide -i $< -o $@
 vpath %.pp $(COMPILER_SOURCEDIR) $(COMPILER_INCLUDEDIR)
 vpath %.pas $(COMPILER_SOURCEDIR) $(COMPILER_INCLUDEDIR)
 vpath %.lpr $(COMPILER_SOURCEDIR) $(COMPILER_INCLUDEDIR)
@@ -3837,10 +3837,10 @@ endif
 .PHONY: lcl components packager/registration ideintf packager ide idepkg starter tools all clean cleanide purge
 .SUFFIXES: .rc .res
 %.res: %.rc
-	windres -i $< -o $@ --preprocessor $(RCPP)
+	windres -I ide -i $< -o $@ --preprocessor $(RCPP)
 ide: $(COMPILER_UNITTARGETDIR)
 ifeq ($(OS_TARGET), win32)
-	$(MAKE) lazarus.res
+	$(MAKE) ide/lazarus.res
 endif
 ifeq ($(LAZARUS_OPT),)
 	$(MAKE) --assume-new=ide/lazarus.pp ide/lazarus$(EXEEXT)
@@ -3851,7 +3851,7 @@ idepkg: $(COMPILER_UNITTARGETDIR)
 	$(MAKE) --assume-new=ide/lazarus.pp ide/lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT) @$(LAZARUS_IDE_CONFIG)'
 starter: $(COMPILER_UNITTARGETDIR)
 ifeq ($(OS_TARGET), win32)
-	$(MAKE) startlazarus.res
+	$(MAKE) ide/startlazarus.res
 endif
 ifeq ($(LAZARUS_OPT),)
 	$(MAKE) --assume-new=ide/startlazarus.lpr ide/startlazarus$(EXEEXT)
