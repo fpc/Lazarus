@@ -225,15 +225,9 @@ lazarus gives: Fatal: Can't find unit CONTROLS
 Probably you are using a newer fpc package, than that used for building the
 lazarus binaries. The best solution is to download the sources and compile
 lazarus manually. You can download the source snapshot or get the source
-via cvs:
+via svn:
 
-$ bash
-$ export CVSROOT=:pserver:cvs@cvs.freepascal.org:/FPC/CVS
-$ cvs login
-
-the password is 'cvs'
-
-$ cvs -z3 checkout lazarus
+$ svn checkout http://svn.freepascal.org/svn/lazarus/trunk lazarus
 $ cd lazarus
 $ make
 
@@ -293,10 +287,10 @@ You need to upgrade your make.
 
 
 --------------------------------------------------------------------------------
-When I try to login at CVS I get:
-CVS.EXE [login aborted]: could not find out home directory
+When I try to login at SVN I get:
+SVN.EXE [login aborted]: could not find out home directory
 On a windows platform the HOME environment variable is required to store
-your (CVS) username and password. From the command prompt issue:
+your (SVN) username and password. From the command prompt issue:
 
 SET HOME=C:MyHome
 or

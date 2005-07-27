@@ -21,19 +21,15 @@ if [ "x$Download" = "xyes" ]; then
   echo "downloading lazarus cvs ..."
   cd /tmp
   rm -rf /tmp/lazarus
-  export CVSROOT=:pserver:cvs@cvs.freepascal.org:/FPC/CVS
-  cvs login
-  cvs -z3 export -r HEAD lazarus
+  svn export http://svn.freepascal.org/svn/lazarus/trunk lazarus
   cd -
 else
-  echo "building cvsexportlocal ..."
-  ppc386 -Fu../../lcl/units/i386/linux cvsexportlocal.pas
-  echo "extracting lazarus from local cvs ..."
+  echo "extracting lazarus from local svn ..."
   cd ../..
   SourceDir=`pwd`
   cd -
   rm -rf /tmp/lazarus
-  ./cvsexportlocal $SourceDir /tmp/lazarus
+  svn export file://$SourceDir lazarus
 fi
 
 cd /tmp

@@ -115,7 +115,7 @@ Contents:
     State: working
 
   TListBox
-    State: working, Bug: Scrollbars do not always correspond to items
+    State: working, Bug: clicking on selected doe not always trigger a click
 
   TListView
     State: working
@@ -136,7 +136,7 @@ Contents:
     State: working
 
   TOpenDialog
-    State: working, Filter does not work in gtk-interface, see there
+    State: working
 
   TPage
     State: working
@@ -181,9 +181,7 @@ Contents:
     State: working
 
   TSpeedButton
-    State: working,
-           Bug: mouse down, mouse move out of button, mouse up
-           does not react properly
+    State: working
 
   TSpinEdit
     State: working
@@ -231,11 +229,6 @@ Contents:
 -------------------------------------------------------------------------------
 1.3 gtk interface
 
-  FileDialog
-    State: Filter does not work
-    Skills: gtk
-    Difficulty: medium
-    
   Special keys - for example Ctrl-Shift-1
     State: not implemented
     Skills: gtk, X
@@ -244,17 +237,16 @@ Contents:
   Graphics
     working, see LCL - Graphics
     
-  Focus
-    State: switching focus between windows. Might be impossible due to
-           windowmanagers and limitations of gtk1
-    Skills: gtk, X
-    Difficulty: medium
-    
   Minimizing windows
     State: not implemented
     Skills: gtk, X
     Difficulty: medium
     
+  WindowState
+    State: not implemented
+    Skills: gtk, X
+    Difficulty: medium
+
   Doublebuffering
     State: not implemented in gtk1. This is a feature for the gtk2 interface
     

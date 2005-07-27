@@ -96,25 +96,18 @@ properly:
   If you want to compile the binaries for yourself see the BSD section.
 
   The fpc sources:
-  The easiest way to get the freepascal sources is via cvs. Of course you can
+  The easiest way to get the freepascal sources is via svn. Of course you can
   also download it as whole, see http://www.freepascal.org/develop.html
-  for the daily snapshot of the release tree (1.0.x).
+  for the daily snapshot of the release tree (2.0.x).
 
-  The fpc sources via cvs:
+  The fpc sources via svn:
   Create a directory, where you would like to put the sources. You don't need
   to be root to do this. Any normal user can do this.
   First create a directory for fpc (e.g. /home/username/freepascal) then do
   the following:
 
   []$ bash
-  []$ export CVSROOT=:pserver:cvs@cvs.freepascal.org:/FPC/CVS
-  []$ cvs login
-
-  password is 'cvs' without the ''
-
-  []$ cvs -z3 co -r FIXES_1_0_0 fpc
-  []$ cd fpc/fcl
-  []$ cvs -z3 update -dP -r HEAD
+  []$ svn checkout http://svn.freepascal.org/svn/fpc/trunk fpc
 
   This will create a directory fpc, which can be later used in the IDE.
 
@@ -122,7 +115,7 @@ properly:
   To download/update the latest changes you can simply do
 
   []$ cd /home/username/freepascal/fpc
-  []$ cvs -z3 update -dP
+  []$ svn up
 
 
 
@@ -150,7 +143,7 @@ properly:
 
  - a file with all sources, or two (fpc and lazarus)
     (1) e.g. for fpc  ftp://ftp.freepascal.org/fpc/dist/Linux/separate/sources.tar
-     preferably an export (no CVS/ dirs). The above file misses this
+     preferably an export (no SVN/ dirs). The above file misses this
     (2) Lazarus source snapshot.
   - _any_ starting compiler from the 1.0 branch) You can do a check by parsing
 	the output of ppc386 -i   if it is 1.0.6 .. 1.0.8 it is ok.
@@ -208,17 +201,11 @@ properly:
 
   Download the latest Mac OS X dmg package.
   Since fpc for Mac OS X is under heavy development, it s recommended to use
-  the latest fpc from cvs.
+  the latest fpc from svn.
 
   Open a terminal and type (without the []$)
   
-  []$ bash
-  []$ export CVSROOT=:pserver:cvs@cvs.freepascal.org:/FPC/CVS
-  []$ cvs login
-
-  password is 'cvs' without the ''
-
-  []$ cvs -z3 co fpc
+  []$ svn checkout http://svn.freepascal.org/svn/fpc/trunk fpc
 
   This will create a directory fpc, which can also be later used by the IDE.
   
@@ -238,7 +225,7 @@ properly:
   To download/update the latest changes you can simply do
 
   []$ cd /Users/username/fpc
-  []$ cvs -z3 update -dP
+  []$ svn up
 
 
 ================================================================================
@@ -250,11 +237,11 @@ properly:
   Because the whole lazarus stuff is installed into one directory, uninstall
   is very easy and you don't need to be root to install lazarus.
   You can get tgz/zip files from the downloads section or you can download it
-  directly via cvs.
+  directly via svn.
   
   ToDo: more details about the tars.
   
-  Downloading lazarus cvs: cvs provides an easy way to update your sources by
+  Downloading lazarus svn: svn provides an easy way to update your sources by
   only downloading the changes. This is the recommended way and saves you a lot
   of time. A connection to the internet is needed for this:
   You don't to be root. Lazarus does not need any special permissions, neither
@@ -262,16 +249,9 @@ properly:
   First create a directory for lazarus (e.g. /home/username/freepascal) then do
   the following:
   
-  connect to the cvs server (note: lazarus and freepascal use the same server)
+  connect to the svn server (note: lazarus and freepascal use the same server)
   
-  []$ export CVSROOT=:pserver:cvs@cvs.freepascal.org:/FPC/CVS
-  []$ cvs login
-
-  password is 'cvs' without the ''
-
-  download the lazarus sources:
-
-  []$ cvs -z3 co lazarus
+  []$ svn checkout http://svn.freepascal.org/svn/lazarus/trunk lazarus
 
   compile lazarus:
 
@@ -304,7 +284,7 @@ properly:
   To update lazarus you can use
 
   []$ cd /home/username/freepascal/lazarus
-  []$ cvs -z3 update -dP
+  []$ svn up
   []$ make clean all   (gmake on BSD)
   
   This will rebuild lazarus and create an IDE without lazarus packages. To
