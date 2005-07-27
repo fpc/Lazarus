@@ -197,6 +197,17 @@ procedure TNewFieldFrm.OKBtnClick(Sender: TObject);
       end else Inc(i);
     end;
   end;
+  
+  function GetFieldDef(ADataset: TDataset; Name: string): TFieldDef;
+  var i: integer;
+  begin
+    Result := Nil;
+    for i := 0 to ADataset.FieldDefs.Count - 1 do
+      if AnsiCompareText(ADataset.FieldDefs[i].Name, Name) = 0 then begin
+        Result := ADataset.FieldDefs[i];
+        break;
+      end;
+  end;
 
 var NewField: TField;
     i: integer;
@@ -225,10 +236,10 @@ begin
           ADataset := GetLookupDataset;
           SplitFieldsList(SelectResultField.Text, L);
           for i := 0 to L.Count - 1 do begin
-            NewField := CreateField(ADataset.FieldByName(L[i]).DataType, CheckName(L[i]));
+            NewField := CreateField(GetFieldDef(ADataset, L[i]).DataType, CheckName(L[i]));
             if NewField <> Nil then begin
-              if ADataset.FieldByName(L[i]).DataType = ftString then
-                NewField.Size := ADataset.FieldByName(L[i]).Size;
+              if GetFieldDef(ADataset, L[i]).DataType = ftString then
+                NewField.Size := GetFieldDef(ADataset, L[i]).Size;
               NewField.FieldKind := fkLookup;
               NewField.KeyFields := SelectKeyFields.Text;
               NewField.LookupDataSet := ADataset;
