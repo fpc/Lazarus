@@ -249,6 +249,14 @@ begin
     // notify new control
     if FDefaultControl<>nil then
       FDefaultControl.UpdateRolesForForm;
+    // maybe active default control changed
+    if FActiveDefaultControl = nil then
+    begin
+      if OldDefaultControl <> nil then
+        OldDefaultControl.ActiveDefaultControlChanged(nil);
+      if FDefaultControl <> nil then
+        FDefaultControl.ActiveDefaultControlChanged(nil);
+    end;
   end;
 end;
 
@@ -1179,8 +1187,11 @@ begin
   lPrevControl := FActiveDefaultControl;
   FActiveDefaultControl := AControl;
 
-  if ((lPrevControl = nil) <> (AControl = nil))
-    and (FDefaultControl <> nil) then
+  // notify previous active default control that he has lost "default-ness"
+  if lPrevControl <> nil then
+    lPrevControl.ActiveDefaultControlChanged(AControl);
+  // notify default control that it may become/lost active default again
+  if (FDefaultControl <> nil) and (FDefaultControl <> lPrevControl) then
     FDefaultControl.ActiveDefaultControlChanged(AControl);
 end;
 
