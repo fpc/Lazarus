@@ -94,12 +94,12 @@ endif
 .SUFFIXES: .rc .res
 
 %.res: %.rc
-        windres -i $< -o $@ --preprocessor $(RCPP)
+        windres --include-dir ide -i $< -o $@ --preprocessor $(RCPP)
 
 #-----------------------------------------------------------------------------
 ide: $(COMPILER_UNITTARGETDIR)
 ifeq ($(OS_TARGET), win32)
-        $(MAKE) lazarus.res
+        $(MAKE) ide/lazarus.res
 endif
 ifeq ($(LAZARUS_OPT),)
         $(MAKE) --assume-new=ide/lazarus.pp ide/lazarus$(EXEEXT)
@@ -114,7 +114,7 @@ idepkg: $(COMPILER_UNITTARGETDIR)
 #-----------------------------------------------------------------------------
 starter: $(COMPILER_UNITTARGETDIR)
 ifeq ($(OS_TARGET), win32)
-        $(MAKE) startlazarus.res
+        $(MAKE) ide/startlazarus.res
 endif
 ifeq ($(LAZARUS_OPT),)
         $(MAKE) --assume-new=ide/startlazarus.lpr ide/startlazarus$(EXEEXT)
