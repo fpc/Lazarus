@@ -242,6 +242,7 @@ type
     property OnClick: TNotifyEvent read FOnClick write FOnClick
                                                          stored IsOnClickStored;
   end;
+  TMenuItemClass = class of TMenuItem;
 
 
   { TMenu }

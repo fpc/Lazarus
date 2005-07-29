@@ -38,6 +38,7 @@ type
     FEnabled: Boolean;
     FImageIndex: Integer;
     FMenuItem: TMenuItem;
+    FMenuItemClass: TMenuItemClass;
     FName: string;
     FOnClick: TNotifyEvent;
     FSection: TIDEMenuSection;
@@ -60,6 +61,8 @@ type
     constructor Create(const TheName: string); virtual;
     destructor Destroy; override;
     function HasBitmap: Boolean;
+    procedure CreateMenuItem; virtual;
+    function Size: Integer; virtual;
   public
     property Name: string read FName write SetName;
     property Bitmap: TBitmap read GetBitmap write SetBitmap;
@@ -71,26 +74,45 @@ type
     property Section: TIDEMenuSection read FSection write SetSection;
     property Enabled: Boolean read FEnabled write SetEnabled;
     property MenuItem: TMenuItem read FMenuItem write SetMenuItem;
+    property MenuItemClass: TMenuItemClass read FMenuItemClass write FMenuItemClass;
   end;
   TIDEMenuItemClass = class of TIDEMenuItem;
   
   { TIDEMenuSection
-     }
+    An TIDEMenuItem with childs, either in a sub menu or separated with
+    separators. }
   
   TIDEMenuSection = class(TIDEMenuItem)
   private
+    FBottomSeparator: TMenuItem;
     FChildsAsSubMenu: boolean;
     FSubMenuImages: TCustomImageList;
+    FItems: TFPList;
+    FTopSeparator: TMenuItem;
+    function GetItems(Index: Integer): TIDEMenuItem;
   protected
     procedure SetChildsAsSubMenu(const AValue: boolean); virtual;
     procedure SetSubMenuImages(const AValue: TCustomImageList); virtual;
   public
     constructor Create(const TheName: string); override;
+    destructor Destroy; override;
+    procedure Clear;
+    function Count: Integer;
+    procedure AddFirst(AnItem: TIDEMenuItem);
+    procedure AddLast(AnItem: TIDEMenuItem);
+    procedure Insert(Index: Integer; AnItem: TIDEMenuItem);
+    procedure CreateChildMenuItem(Index: Integer); virtual;
+    function GetChildsStartIndex: Integer;
+    function Size: Integer; override;
+    function IndexOf(AnItem: TIDEMenuItem): Integer;
   public
     property ChildsAsSubMenu: boolean read FChildsAsSubMenu
                                           write SetChildsAsSubMenu default true;
     property SubMenuImages: TCustomImageList read FSubMenuImages
                                              write SetSubMenuImages;
+    property Items[Index: Integer]: TIDEMenuItem read GetItems; default;
+    property TopSeparator: TMenuItem read FTopSeparator;
+    property BottomSeparator: TMenuItem read FBottomSeparator;
   end;
   TIDEMenuSectionClass = class of TIDEMenuSection;
 
@@ -131,6 +153,24 @@ type
                                           write SetShowAlwaysCheckable;
   end;
   TIDEMenuCommandClass = class of TIDEMenuCommand;
+  
+  { TIDEMenuRoots }
+
+  TIDEMenuRoots = class(TPersistent)
+  private
+    FItems: TFPList;
+    function GetItems(Index: integer): TIDEMenuItem;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure RegisterMenuRoot(Section: TIDEMenuItem);
+    procedure UnregisterMenuRoot(Section: TIDEMenuItem);
+    function Count: Integer;
+    procedure Clear;
+    procedure Delete(Index: Integer);
+  public
+    property Items[Index: integer]: TIDEMenuItem read GetItems; default;
+  end;
 
 implementation
 
@@ -234,17 +274,30 @@ begin
   inherited Create;
   FName:=TheName;
   FEnabled:=true;
+  FMenuItemClass:=TMenuItem;
 end;
 
 destructor TIDEMenuItem.Destroy;
 begin
   FreeAndNil(FBitmap);
+  FreeAndNil(FMenuItem);
   inherited Destroy;
 end;
 
 function TIDEMenuItem.HasBitmap: Boolean;
 begin
   Result:=FBitmap<>nil;
+end;
+
+procedure TIDEMenuItem.CreateMenuItem;
+begin
+  if FMenuItem<>nil then exit;
+  MenuItem:=MenuItemClass.Create(nil);
+end;
+
+function TIDEMenuItem.Size: Integer;
+begin
+  Result:=1;
 end;
 
 { TIDEMenuSection }
@@ -259,6 +312,111 @@ constructor TIDEMenuSection.Create(const TheName: string);
 begin
   inherited Create(TheName);
   FChildsAsSubMenu:=true;
+  FItems:=TFPList.Create;
+end;
+
+destructor TIDEMenuSection.Destroy;
+begin
+  Clear;
+  FItems.Free;
+  inherited Destroy;
+end;
+
+procedure TIDEMenuSection.Clear;
+var
+  i: Integer;
+begin
+  for i:=FItems.Count-1 downto 0 do TObject(FItems[i]).Free;
+  FItems.Clear;
+end;
+
+function TIDEMenuSection.Count: Integer;
+begin
+  Result:=FItems.Count;
+end;
+
+procedure TIDEMenuSection.AddFirst(AnItem: TIDEMenuItem);
+begin
+  Insert(0,AnItem);
+end;
+
+procedure TIDEMenuSection.AddLast(AnItem: TIDEMenuItem);
+begin
+  Insert(Count,AnItem);
+end;
+
+procedure TIDEMenuSection.Insert(Index: Integer; AnItem: TIDEMenuItem);
+begin
+  FItems.Insert(Index,AnItem);
+  AnItem.FSection:=Self;
+  CreateChildMenuItem(Index);
+end;
+
+procedure TIDEMenuSection.CreateChildMenuItem(Index: Integer);
+var
+  Item: TIDEMenuItem;
+  SubSection: TIDEMenuSection;
+  i: Integer;
+begin
+  if MenuItem=nil then exit;
+  Item:=Items[Index];
+  // create the child TMenuItem
+  Item.CreateMenuItem;
+  MenuItem.Insert(Index+GetChildsStartIndex,Item.MenuItem);
+  // create the subsections
+  if Item is TIDEMenuSection then begin
+    SubSection:=TIDEMenuSection(Item);
+    for i:=0 to SubSection.Count-1 do
+      SubSection.CreateChildMenuItem(i);
+  end;
+end;
+
+function TIDEMenuSection.GetChildsStartIndex: Integer;
+var
+  SiblingIndex: Integer;
+begin
+  Result:=0;
+  if ChildsAsSubMenu or (Section=nil) then exit;
+  SiblingIndex:=0;
+  while (Section[SiblingIndex]<>Self) do begin
+    inc(Result,Section[SiblingIndex].Size);
+    inc(SiblingIndex);
+  end;
+end;
+
+function TIDEMenuSection.Size: Integer;
+var
+  SelfIndex: LongInt;
+  NextSibling: TIDEMenuItem;
+begin
+  Result:=1;
+  if (Section<>nil) and (not ChildsAsSubMenu) then begin
+    // childs are not in a submenu but directly added to parents menuitem
+    Result:=Count;
+    SelfIndex:=Section.IndexOf(Self);
+    if (SelfIndex>0) then begin
+      // a top separator is needed
+      inc(Result);
+    end;
+    if (SelfIndex<Section.Count-1) then begin
+      NextSibling:=Section[SelfIndex-1];
+      if (not (NextSibling is TIDEMenuSection))
+      or (not TIDEMenuSection(NextSibling).ChildsAsSubMenu) then begin
+        // a bottom separator is needed
+        inc(Result);
+      end;
+    end;
+  end;
+end;
+
+function TIDEMenuSection.IndexOf(AnItem: TIDEMenuItem): Integer;
+begin
+  Result:=FItems.IndexOf(AnItem);
+end;
+
+function TIDEMenuSection.GetItems(Index: Integer): TIDEMenuItem;
+begin
+  Result:=TIDEMenuItem(FItems[Index]);
 end;
 
 procedure TIDEMenuSection.SetChildsAsSubMenu(const AValue: boolean);
@@ -346,6 +504,56 @@ begin
       MenuItem.ShortCut:=ShortCut(0,[]);
     MenuItem.GroupIndex:=GroupIndex;
   end;
+end;
+
+{ TIDEMenuRoots }
+
+function TIDEMenuRoots.GetItems(Index: integer): TIDEMenuItem;
+begin
+  Result:=TIDEMenuSection(FItems[Index]);
+end;
+
+constructor TIDEMenuRoots.Create;
+begin
+  FItems:=TFPList.Create;
+end;
+
+destructor TIDEMenuRoots.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TIDEMenuRoots.RegisterMenuRoot(Section: TIDEMenuItem);
+begin
+  FItems.Add(Section);
+end;
+
+procedure TIDEMenuRoots.UnregisterMenuRoot(Section: TIDEMenuItem);
+begin
+  FItems.Remove(Section);
+end;
+
+function TIDEMenuRoots.Count: Integer;
+begin
+  Result:=FItems.Count;
+end;
+
+procedure TIDEMenuRoots.Clear;
+var
+  i: Integer;
+begin
+  for i:=FItems.Count-1 downto 0 do TObject(FItems[i]).Free;
+  FItems.Clear;
+end;
+
+procedure TIDEMenuRoots.Delete(Index: Integer);
+var
+  OldItem: TIDEMenuItem;
+begin
+  OldItem:=Items[Index];
+  UnregisterMenuRoot(OldItem);
+  OldItem.Free;
 end;
 
 end.
