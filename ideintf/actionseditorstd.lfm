@@ -42,7 +42,7 @@ object FormActStandard: TFormActStandard
   end
   object btnCancel: TBitBtn
     Anchors = [akRight, akBottom]
-    Caption = 'Anuluj'
+    Caption = 'Cancel'
     Kind = bkCancel
     ModalResult = 2
     TabOrder = 2

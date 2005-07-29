@@ -19,7 +19,7 @@
      
   version:
     0.1 - 10.03.2005 - added to ActionList Editor
-    0.2 - 14.03.2005 - hedadline, hint and shortcut descriptions
+    0.2 - 14.03.2005 - headline, hint and shortcut descriptions
     
   ToDo: - multiselect for actions
         - standard icon
