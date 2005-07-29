@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources, StdCtrls,
-  Buttons, Menus, ComCtrls, Debugger, DebuggerDlg, BaseDebugManager;
+  Buttons, Menus, ComCtrls, Debugger, DebuggerDlg, BaseDebugManager, LCLtype;
 
 type
 
@@ -58,6 +58,8 @@ TWatchesDlg = class(TDebuggerDlg)
     popEnableAll: TMenuItem;
     popDeleteAll: TMenuItem;
     procedure lvWatchesDblClick(Sender: TObject);
+    procedure lvWatchesKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure lvWatchesMouseDown(Sender: TOBject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure lvWatchesSelectItem(Sender: TObject; AItem: TListItem; Selected: Boolean);
@@ -187,6 +189,18 @@ begin
     popPropertiesClick(Sender)
   else
     popAddClick(Sender);
+end;
+
+procedure TWatchesDlg.lvWatchesKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  case Key of
+    //delete key pressed: delete selected item
+    VK_DELETE: popDeleteClick(Sender);
+
+    //insert key pressed: add new item
+    VK_INSERT: popAddClick(Sender);
+  end;
 end;
 
 procedure TWatchesDlg.popAddClick(Sender: TObject);

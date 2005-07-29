@@ -5,12 +5,13 @@ object WatchesDlg: TWatchesDlg
   PixelsPerInch = 96
   HorzScrollBar.Page = 499
   VertScrollBar.Page = 199
-  Left = 359
+  Left = 314
   Height = 200
-  Top = 126
+  Top = 438
   Width = 500
   object lvWatches: TListView
     Align = alClient
+    BorderSpacing.OnChange = nil
     Columns = <    
       item
         Caption = 'Expression'
@@ -25,6 +26,7 @@ object WatchesDlg: TWatchesDlg
     ViewStyle = vsReport
     OnDblClick = lvWatchesDblClick
     OnMouseDown = lvWatchesMouseDown
+    OnKeyDown = lvWatchesKeyDown
     OnSelectItem = lvWatchesSelectItem
     Height = 200
     Width = 500
