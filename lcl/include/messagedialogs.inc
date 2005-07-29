@@ -225,7 +225,7 @@ begin
 end;
 
 function SelectDirectory(const Caption, InitialDirectory: string;
-  var Directory: string; ShowHidden: boolean): boolean;
+  var Directory: string; ShowHidden: boolean; HelpCtx: Longint): boolean;
 var
   SelectDirectoryDialog: TSelectDirectoryDialog;
 begin
@@ -235,10 +235,29 @@ begin
                                    +[ofForceShowHidden];
   SelectDirectoryDialog.InitialDir:=InitialDirectory;
   SelectDirectoryDialog.Title:=Caption;
+  SelectDirectoryDialog.HelpContext:=HelpCtx;
   Result:=SelectDirectoryDialog.Execute;
   if Result then
     Directory:=SelectDirectoryDialog.Filename
   else
+    Directory:='';
+end;
+
+function SelectDirectory(var Directory: string;
+  Options: TSelectDirOpts; HelpCtx: Longint): Boolean;
+var
+  SelectDirectoryDialog: TSelectDirectoryDialog;
+begin
+  SelectDirectoryDialog:=TSelectDirectoryDialog.Create(nil);
+  // TODO: sdAllowCreate,
+  // TODO: sdPrompt
+  SelectDirectoryDialog.HelpContext:=HelpCtx;
+  Result:=SelectDirectoryDialog.Execute;
+  if Result then begin
+    Directory:=SelectDirectoryDialog.Filename;
+    if (sdPerformCreate in Options) and (not DirPathExists(Directory)) then
+      ForceDirectories(Directory);
+  end else
     Directory:='';
 end;
 

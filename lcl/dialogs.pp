@@ -335,10 +335,16 @@ Function InputQuery(const ACaption, APrompt : String; var Value : String) : Bool
 Function InputBox(const ACaption, APrompt, ADefault : String) : String;
 Function PasswordBox(const ACaption, APrompt : String) : String;
   
+type
+  TSelectDirOpt = (sdAllowCreate, sdPerformCreate, sdPrompt);
+  TSelectDirOpts = set of TSelectDirOpt;
+
 function SelectDirectory(const Caption, InitialDirectory: string;
   var Directory: string): boolean;
 function SelectDirectory(const Caption, InitialDirectory: string;
-  var Directory: string; ShowHidden: boolean): boolean;
+  var Directory: string; ShowHidden: boolean; HelpCtx: Longint = 0): boolean;
+function SelectDirectory(var Directory: string;
+  Options: TSelectDirOpts; HelpCtx: Longint): Boolean;
 
 
 procedure Register;
