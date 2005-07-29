@@ -273,7 +273,7 @@ type
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
     constructor Create(const AName, ADescription: string;
-	  TheAreas: TCommandAreas);
+    TheAreas: TCommandAreas);
   end;
   
   //---------------------------------------------------------------------------

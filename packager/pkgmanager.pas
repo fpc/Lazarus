@@ -50,7 +50,7 @@ uses
   CodeToolManager, CodeCache, BasicCodeTools,
   {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF}, Laz_XMLCfg,
   // IDE Interface
-  NewItemIntf, ProjectIntf, PackageIntf, LazIDEIntf,
+  NewItemIntf, ProjectIntf, PackageIntf, MenuIntf, LazIDEIntf,
   // IDE
   LazConf, LazarusIDEStrConsts, IDEProcs, ObjectLists, DialogProcs, KeyMapping,
   EnvironmentOpts, MiscOptions, InputHistory, ProjectDefs, Project,
@@ -143,6 +143,7 @@ type
                                             var AnOutDirectory: string);
     procedure OnCheckInstallPackageList(PkgIDList: TList; var Ok: boolean);
     function LoadDependencyList(FirstDependency: TPkgDependency): TModalResult;
+    procedure OnOpenPackageForCurrentSrcEditFile(Sender: TObject);
   private
     FirstAutoInstallDependency: TPkgDependency;
     // helper functions
@@ -191,6 +192,7 @@ type
     procedure SaveSettings; override;
     procedure UpdateVisibleComponentPalette; override;
     procedure ProcessCommand(Command: word; var Handled: boolean); override;
+    procedure OnSourceEditorPopupMenu(AddMenuItemProc: TAddMenuItemProc); override;
 
     // files
     function GetDefaultSaveDirectoryForFile(const Filename: string): string; override;
@@ -207,9 +209,10 @@ type
     function GetOwnersOfUnit(const UnitFilename: string): TList; override;
     procedure ExtendOwnerListWithUsedByOwners(OwnerList: TList); override;
     function GetSourceFilesOfOwners(OwnerList: TList): TStrings; override;
+    function GetPackageOfCurrentSourceEditor: TPkgFile;
     function DoOpenPkgFile(PkgFile: TPkgFile): TModalResult;
     function FindVirtualUnitSource(PkgFile: TPkgFile): string;
-    function SearchFile(const ShortFilename: string;
+    function SearchFile(const AFilename: string;
                         SearchFlags: TSearchIDEFileFlags;
                         InObject: TObject): TPkgFile; override;
 
@@ -638,6 +641,15 @@ begin
     CurDependency:=CurDependency.NextRequiresDependency;
   end;
   Result:=mrOk;
+end;
+
+procedure TPkgManager.OnOpenPackageForCurrentSrcEditFile(Sender: TObject);
+var
+  PkgFile: TPkgFile;
+begin
+  PkgFile:=GetPackageOfCurrentSourceEditor;
+  if PkgFile<>nil then
+    DoOpenPackage(PkgFile.LazPackage);
 end;
 
 procedure TPkgManager.MainIDEitmPkgAddCurUnitToPkgClick(Sender: TObject);
@@ -2090,6 +2102,18 @@ begin
   end;
 end;
 
+procedure TPkgManager.OnSourceEditorPopupMenu(AddMenuItemProc: TAddMenuItemProc
+  );
+var
+  PkgFile: TPkgFile;
+begin
+  PkgFile:=GetPackageOfCurrentSourceEditor;
+  //debugln('TPkgManager.OnSourceEditorPopupMenu ',dbgsName(PkgFile));
+  if PkgFile<>nil then
+    AddMenuItemProc('Open package '+PkgFile.LazPackage.Name,true,
+                    @OnOpenPackageForCurrentSrcEditFile);
+end;
+
 function TPkgManager.AddPackageToGraph(APackage: TLazPackage;
   Replace: boolean): TModalResult;
 var
@@ -3301,6 +3325,18 @@ begin
   end;
 end;
 
+function TPkgManager.GetPackageOfCurrentSourceEditor: TPkgFile;
+var
+  SrcEdit: TSourceEditor;
+begin
+  SrcEdit:=SourceNotebook.GetActiveSE;
+  debugln('TPkgManager.GetPackageOfCurrentSourceEditor ',SrcEdit.Filename);
+  if SrcEdit<>nil then
+    Result:=SearchFile(SrcEdit.Filename,[],nil)
+  else
+    SrcEdit:=nil;
+end;
+
 function TPkgManager.DoOpenPkgFile(PkgFile: TPkgFile): TModalResult;
 var
   Filename: String;
@@ -3327,18 +3363,22 @@ begin
   end;
 end;
 
-function TPkgManager.SearchFile(const ShortFilename: string;
+function TPkgManager.SearchFile(const AFilename: string;
   SearchFlags: TSearchIDEFileFlags; InObject: TObject): TPkgFile;
 var
   i: Integer;
+  APackage: TLazPackage;
 begin
   if InObject is TLazPackage then begin
-    Result:=TLazPackage(InObject).SearchFile(ShortFilename,SearchFlags);
+    APackage:=TLazPackage(InObject);
+    Result:=APackage.SearchFile(AFilename,SearchFlags);
     if Result<>nil then exit;
   end;
-  if siffDoNotCheckAllPackages in SearchFlags then begin
+  if not (siffDoNotCheckAllPackages in SearchFlags) then begin
     for i:=0 to PackageGraph.Count-1 do begin
-      Result:=PackageGraph[i].SearchFile(ShortFilename,SearchFlags);
+      APackage:=PackageGraph[i];
+      Result:=APackage.SearchFile(AFilename,SearchFlags);
+      debugln('TPkgManager.SearchFile ',APackage.Files[0].Filename);
       if Result<>nil then exit;
     end;
   end;

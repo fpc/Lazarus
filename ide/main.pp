@@ -70,7 +70,7 @@ uses
   CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
   // IDE interface
   AllIDEIntf, ObjectInspector, PropEdits, MacroIntf, IDECommands, SrcEditorIntf,
-  NewItemIntf, PackageIntf, ProjectIntf, LazIDEIntf,
+  NewItemIntf, PackageIntf, ProjectIntf, MenuIntf, LazIDEIntf,
   // synedit
   SynEditKeyCmds,
   // protocol
@@ -328,6 +328,7 @@ type
     procedure OnSrcNotebookToggleObjectInsp(Sender: TObject);
     procedure OnSrcNotebookViewJumpHistory(Sender: TObject);
     procedure OnSrcNotebookShowSearchResultsView(Sender: TObject);
+    procedure OnSrcNoteBookPopupMenu(AddMenuItemProc: TAddMenuItemProc);
 
     // ObjectInspector + PropertyEditorHook events
     procedure OIOnSelectPersistents(Sender: TObject);
@@ -1430,6 +1431,7 @@ begin
   SourceNotebook.OnToggleObjectInspClicked:= @OnSrcNotebookToggleObjectInsp;
   SourceNotebook.OnViewJumpHistory := @OnSrcNotebookViewJumpHistory;
   SourceNotebook.OnShowSearchResultsView := @OnSrcNotebookShowSearchResultsView;
+  SourceNotebook.OnPopupMenu := @OnSrcNoteBookPopupMenu;
   DebugBoss.ConnectSourceNotebookEvents;
 
   // connect search menu to sourcenotebook
@@ -11094,6 +11096,11 @@ end;
 procedure TMainIDE.OnSrcNotebookShowSearchResultsView(Sender: TObject);
 begin
   CreateSearchResultWindow;
+end;
+
+procedure TMainIDE.OnSrcNoteBookPopupMenu(AddMenuItemProc: TAddMenuItemProc);
+begin
+  PkgBoss.OnSourceEditorPopupMenu(AddMenuItemProc);
 end;
 
 procedure TMainIDE.OnApplicationUserInput(Sender: TObject; Msg: Cardinal);

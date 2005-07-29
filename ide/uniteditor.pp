@@ -50,7 +50,7 @@ uses
   SynEditTypes, SynEdit, SynRegExpr, SynEditHighlighter, SynEditAutoComplete,
   SynEditKeyCmds, SynCompletion,
   // IDE interface
-  HelpIntf, SrcEditorIntf, LazIDEIntf,
+  HelpIntf, SrcEditorIntf, MenuIntf, LazIDEIntf,
   // IDE units
   LazarusIDEStrConsts, LazConf, IDECommands, EditorOptions, KeyMapping, Project,
   WordCompletion, FindReplaceDialog, FindInFilesDlg, IDEProcs, IDEOptionDefs,
@@ -312,15 +312,18 @@ type
   TJumpHistoryAction = (jhaBack, jhaForward);
 
   TOnJumpToHistoryPoint = procedure(var NewCaretXY: TPoint;
-    var NewTopLine, NewPageIndex: integer; Action: TJumpHistoryAction) of object;
+                                    var NewTopLine, NewPageIndex: integer;
+                                    Action: TJumpHistoryAction) of object;
   TOnAddJumpPoint = procedure(ACaretXY: TPoint; ATopLine: integer;
-    APageIndex: integer; DeleteForwardHistory: boolean) of object;
+                  APageIndex: integer; DeleteForwardHistory: boolean) of object;
   TOnMovingPage = procedure(Sender: TObject;
-    OldPageIndex, NewPageIndex: integer) of object;
+                            OldPageIndex, NewPageIndex: integer) of object;
   TOnShowHintForSource = procedure(SrcEdit: TSourceEditor; ClientPos: TPoint;
-    CaretPos: TPoint) of object;
+                                   CaretPos: TPoint) of object;
   TOnInitIdentCompletion = procedure(Sender: TObject;
-    var Handled, Abort: boolean) of object;
+                                     var Handled, Abort: boolean) of object;
+  TSrcEditPopupMenuEvent = procedure(AddMenuItemProc: TAddMenuItemProc
+                                     ) of object;
 
   TSourceNotebookState = (snIncrementalFind, snIncrementalSearching);
   TSourceNotebookStates = set of TSourceNotebookState;
@@ -425,6 +428,7 @@ type
     FProcessingCommand: boolean;
     FSourceEditorList: TList; // list of TSourceEditor
     FUnUsedEditorComponents: TList; // list of TSynEdit
+    FOnPopupMenu: TSrcEditPopupMenuEvent;
   private
     // colors for the completion form (popup form, e.g. word completion)
     FActiveEditDefaultFGColor: TColor;
@@ -657,6 +661,7 @@ type
                              read FOnAddWatchAtCursor write FOnAddWatchAtCursor;
     property OnShowSearchResultsView: TNotifyEvent
                    read FOnShowSearchResultsView write FOnShowSearchResultsView;
+    property OnPopupMenu: TSrcEditPopupMenuEvent read FOnPopupMenu write FOnPopupMenu;
   end;
 
   //=============================================================================
@@ -2913,6 +2918,7 @@ begin
         'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.pp'),
         true,@OnPopupMenuOpenPPFile);
   end;
+  if Assigned(OnPopupMenu) then OnPopupMenu(@AddUserDefinedPopupMenuItem);
 end;
 
 procedure TSourceNotebook.NotebookShowTabHint(Sender: TObject;

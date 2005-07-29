@@ -45,7 +45,7 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, Forms, LazIDEIntf,
-  PackageDefs, ComponentReg, CompilerOptions, Project, PackageIntf;
+  PackageDefs, ComponentReg, CompilerOptions, Project, PackageIntf, MenuIntf;
 
 type
   TPkgSaveFlag = (
@@ -83,6 +83,7 @@ type
     procedure SaveSettings; virtual; abstract;
     procedure UpdateVisibleComponentPalette; virtual; abstract;
     procedure ProcessCommand(Command: word; var Handled: boolean); virtual; abstract;
+    procedure OnSourceEditorPopupMenu(AddMenuItemProc: TAddMenuItemProc); virtual; abstract;
 
     // files
     function GetDefaultSaveDirectoryForFile(const Filename: string): string; virtual; abstract;
@@ -90,7 +91,7 @@ type
                           IsPartOfProject: boolean): TModalResult; virtual; abstract;
     function FindIncludeFileInProjectDependencies(Project1: TProject;
                           const Filename: string): string; virtual; abstract;
-    function SearchFile(const ShortFilename: string;
+    function SearchFile(const AFilename: string;
                         SearchFlags: TSearchIDEFileFlags;
                         InObject: TObject): TPkgFile; virtual; abstract;
 

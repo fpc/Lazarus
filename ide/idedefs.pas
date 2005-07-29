@@ -38,7 +38,7 @@ unit IDEDefs;
 interface
 
 uses
-  Classes, SysUtils; 
+  Classes, SysUtils, Menus;
 
 type
   TIDEFileStateFlag = (
@@ -56,7 +56,6 @@ type
     NeededFlags: TIDEFileStateFlags; var ResultFlags: TIDEFileStateFlags)
     of object;
     
-
 implementation
 
 end.

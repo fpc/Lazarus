@@ -185,6 +185,7 @@ type
     function HasRegisteredPlugins: boolean;
     function MakeSense: boolean;
     procedure UpdateSourceDirectoryReference;
+    function GetFullFilename: string;
   public
     property Removed: boolean read FRemoved write SetRemoved;
     property Directory: string read FDirectory;
@@ -646,7 +647,7 @@ type
     function NeedsDefineTemplates: boolean;
     // files
     function IndexOfPkgFile(PkgFile: TPkgFile): integer;
-    function SearchFile(const ShortFilename: string;
+    function SearchFile(const AFilename: string;
                         SearchFlags: TSearchIDEFileFlags): TPkgFile;
     procedure ShortenFilename(var ExpandedFilename: string; UseUp: boolean);
     procedure LongenFilename(var AFilename: string);
@@ -1386,6 +1387,11 @@ begin
       FSourceDirectoryReferenced:=false;
     end;
   end;
+end;
+
+function TPkgFile.GetFullFilename: string;
+begin
+  Result:=Filename;
 end;
 
 constructor TPkgFile.Create(ThePackage: TLazPackage);
@@ -2994,26 +3000,27 @@ begin
   while (Files[Result]<>PkgFile) do dec(Result);
 end;
 
-function TLazPackage.SearchFile(const ShortFilename: string;
+function TLazPackage.SearchFile(const AFilename: string;
   SearchFlags: TSearchIDEFileFlags): TPkgFile;
 var
   SearchedFilename: String;
   i: Integer;
 
-  function FilenameFits(AFilename: string): boolean;
+  function FilenameFits(TheFilename: string): boolean;
   begin
     if siffIgnoreExtension in SearchFlags then
-      AFileName:=ExtractFilenameOnly(AFileName);
-    if FilenameIsAbsolute(AFileName) then
-      AFileName:=ExtractFilename(AFileName);
+      TheFileName:=ExtractFilenameOnly(TheFileName);
+    if FilenameIsAbsolute(TheFileName) then
+      TheFileName:=ExtractFilename(TheFileName);
+    debugln('TLazPackage.SearchFile A ',SearchedFilename,' ',TheFilename);
     if siffCaseSensitive in SearchFlags then
-      Result:=SearchedFilename=AFilename
+      Result:=SearchedFilename=TheFilename
     else
-      Result:=AnsiCompareText(SearchedFilename,AFilename)=0;
+      Result:=AnsiCompareText(SearchedFilename,TheFilename)=0;
   end;
 
 begin
-  SearchedFilename:=ShortFilename;
+  SearchedFilename:=AFilename;
   if siffIgnoreExtension in SearchFlags then
     SearchedFilename:=ExtractFilenameOnly(SearchedFilename);
 

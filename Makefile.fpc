@@ -8,7 +8,6 @@ version=0.9b
 
 [require]
 packages=fcl regexpr
-# Adding lcl codetools synedit, adds the source paths.
 
 [target]
 programs=lazarus startlazarus
@@ -16,28 +15,9 @@ dirs=lcl components packager/registration ideintf designer packager
 exampledirs=examples
 
 [compiler]
-options=-gl
-unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
-unitdir=lcl/units/$(CPU_TARGET)-$(OS_TARGET) \
-        lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
-        components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) \
-        components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) \
-        components/custom \
-        components/mpaslex \
-        ideintf/units/$(CPU_TARGET)-$(OS_TARGET) \
-        designer designer/units debugger \
-        packager \
-        packager/units/$(CPU_TARGET)-$(OS_TARGET) \
-        ide .
-includedir=debugger designer packager ide/include ide/include/$(OS_TARGET)
-targetdir=.
 
 [clean]
-files=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) \
-      $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) \
-      $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) \
-      $(wildcard ./ide/*$(OEXT)) $(wildcard ./ide/*$(PPUEXT)) \
-      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 
 [install]
 fpcpackage=n
@@ -47,80 +27,24 @@ basedir=share/lazarus
 destdir=$(BASEDIR)/dist
 
 [prerules]
-# old RCPP
-# RCPP?=$(strip $(firstword $(wildcard $(addsuffix /cpp$(SRCEXEEXT), $(SEARCHPATH)))))
-# new RCPP, hint from bug 652
 RCPP?=$(strip $(firstword cpp$(SRCEXEEXT)))
 #
-# LCL Platform
-ifndef LCL_PLATFORM
-ifeq ($(OS_TARGET),win32)
-LCL_PLATFORM=win32
-else
-LCL_PLATFORM=gtk
-override COMPILER_UNITDIR+=lcl/nonwin32
-endif
-endif
-export LCL_PLATFORM
-#
-# LibPaths
-ifeq ($(OS_TARGET),darwin)
-LAZARUS_LIBPATHS=-Fl/usr/X11R6/lib -Fl/sw/lib
-endif
-#
-# user config
-ifndef LAZARUS_CONFIG_DIR
-ifeq ($(OS_TARGET),win32)
-LAZARUS_CONFIG_DIR=.
-else
-LAZARUS_CONFIG_DIR=$(HOME)/.lazarus
-endif
-endif
-export LAZARUS_CONFIG_DIR
-#
-# idemake.cfg
-LAZARUS_IDE_CONFIG=$(LAZARUS_CONFIG_DIR)/idemake.cfg
-LAZARUS_OPT=$(LAZARUS_LIBPATHS)
-
-#
-# apptype gui
-ifeq ($(OS_TARGET),win32)
-LAZARUS_OPT+= -WG
-endif
 
 #-----------------------------------------------------------------------------
 [rules]
 .PHONY: lcl components packager/registration ideintf packager ide idepkg starter tools all clean cleanide purge
-.SUFFIXES: .rc .res
-
-%.res: %.rc
-        windres --include-dir ide -i $< -o $@ --preprocessor $(RCPP)
 
 #-----------------------------------------------------------------------------
-ide: $(COMPILER_UNITTARGETDIR)
-ifeq ($(OS_TARGET), win32)
-        $(MAKE) ide/lazarus.res
-endif
-ifeq ($(LAZARUS_OPT),)
-        $(MAKE) --assume-new=ide/lazarus.pp ide/lazarus$(EXEEXT)
-else
-        $(MAKE) --assume-new=ide/lazarus.pp ide/lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT)'
-endif
+ide:
+        $(MAKE) -C ide ide
 
 #-----------------------------------------------------------------------------
-idepkg: $(COMPILER_UNITTARGETDIR)
-        $(MAKE) --assume-new=ide/lazarus.pp ide/lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT) @$(LAZARUS_IDE_CONFIG)'
+idepkg:
+        $(MAKE) -C ide idepkg
 
 #-----------------------------------------------------------------------------
-starter: $(COMPILER_UNITTARGETDIR)
-ifeq ($(OS_TARGET), win32)
-        $(MAKE) ide/startlazarus.res
-endif
-ifeq ($(LAZARUS_OPT),)
-        $(MAKE) --assume-new=ide/startlazarus.lpr ide/startlazarus$(EXEEXT)
-else
-        $(MAKE) --assume-new=ide/startlazarus.lpr ide/startlazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT)'
-endif
+starter:
+        $(MAKE) -C ide starter
 
 #-----------------------------------------------------------------------------
 tools: lcl components
@@ -131,26 +55,7 @@ all: lcl components packager/registration ideintf designer packager ide starter
 
 #-----------------------------------------------------------------------------
 cleanide:
-        -$(DEL) $(wildcard *$(OEXT))
-        -$(DEL) $(wildcard *$(PPUEXT))
-        -$(DEL) $(wildcard *$(RSTEXT))
-        -$(DEL) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT))
-        -$(DEL) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT))
-        -$(DEL) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT))
-        -$(DEL) $(wildcard ./ide/*$(OEXT))
-        -$(DEL) $(wildcard ./ide/*$(PPUEXT))
-        -$(DEL) $(wildcard ./designer/*$(OEXT))
-        -$(DEL) $(wildcard ./designer/*$(PPUEXT))
-        -$(DEL) $(wildcard ./debugger/*$(OEXT))
-        -$(DEL) $(wildcard ./debugger/*$(PPUEXT))
-        -$(DEL) $(wildcard ./packager/*$(OEXT))
-        -$(DEL) $(wildcard ./packager/*$(PPUEXT))
-        -$(DEL) $(wildcard ./doceditor/*$(OEXT))
-        -$(DEL) $(wildcard ./doceditor/*$(PPUEXT))
-ifeq ($(OS_TARGET), win32)
-        -$(DEL) $(wildcard *.res)
-        -$(DEL) lazarus.owr
-endif
+        $(MAKE) -C ide cleanide
 
 cleanlaz: clean cleanide
         $(MAKE) -C lcl clean
@@ -164,6 +69,8 @@ purge: cleanlaz
         $(MAKE) -C tools clean
         $(MAKE) -C doceditor clean
         $(MAKE) -C tools clean
+
+clean: cleanlaz
 
 #install: $(INSTALLTARGET) $(addsuffix _install,$(TARGET_DIRS))
 # end.

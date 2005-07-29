@@ -14,6 +14,11 @@
 
   Abstract:
     Interface to the IDE menus.
+    
+  ToDo:
+    - implement creating Top and Bottom separator
+    - Root items
+    - OnPopup
 }
 unit MenuIntf;
 
@@ -25,6 +30,10 @@ uses
   Classes, SysUtils, Menus, ImgList, Graphics, IDECommands;
   
 type
+  TAddMenuItemProc =
+    function (const NewCaption: string; const NewEnabled: boolean;
+              const NewOnClick: TNotifyEvent): TMenuItem of object;
+
   TIDEMenuSection = class;
 
   { TIDEMenuItem
@@ -105,6 +114,8 @@ type
     function GetChildsStartIndex: Integer;
     function Size: Integer; override;
     function IndexOf(AnItem: TIDEMenuItem): Integer;
+    function NeedTopSeparator: Boolean;
+    function NeedBottomSeparator: Boolean;
   public
     property ChildsAsSubMenu: boolean read FChildsAsSubMenu
                                           write SetChildsAsSubMenu default true;
@@ -359,6 +370,9 @@ var
   i: Integer;
 begin
   if MenuItem=nil then exit;
+  
+  
+  
   Item:=Items[Index];
   // create the child TMenuItem
   Item.CreateMenuItem;
@@ -412,6 +426,32 @@ end;
 function TIDEMenuSection.IndexOf(AnItem: TIDEMenuItem): Integer;
 begin
   Result:=FItems.IndexOf(AnItem);
+end;
+
+function TIDEMenuSection.NeedTopSeparator: Boolean;
+begin
+  if (not ChildsAsSubMenu) and (Section<>nil) and (Section.Items[0]<>Self) then
+    Result:=true
+  else
+    Result:=false;
+end;
+
+function TIDEMenuSection.NeedBottomSeparator: Boolean;
+var
+  SelfIndex: LongInt;
+  NextSibling: TIDEMenuItem;
+begin
+  Result:=false;
+  if (not ChildsAsSubMenu) and (Section<>nil)
+  and (Section.Items[Section.Count-1]<>Self) then begin
+    SelfIndex:=Section.IndexOf(Self);
+    NextSibling:=Section[SelfIndex-1];
+    if (not (NextSibling is TIDEMenuSection))
+    or (not TIDEMenuSection(NextSibling).ChildsAsSubMenu) then begin
+      // a bottom separator is needed
+      Result:=true;
+    end;
+  end;
 end;
 
 function TIDEMenuSection.GetItems(Index: Integer): TIDEMenuItem;
