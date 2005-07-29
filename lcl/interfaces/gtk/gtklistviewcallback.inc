@@ -51,7 +51,7 @@ begin
   msg.Msg := CN_NOTIFY;
 
   FillChar(NM, SizeOf(NM), 0);
-  NM.hdr.hwndfrom := longint(AList);
+  NM.hdr.hwndfrom := PtrInt(AList);
   NM.hdr.code := LVN_COLUMNCLICK;
   NM.iItem := -1;
   NM.iSubItem := AColumn;

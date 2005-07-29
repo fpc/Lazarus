@@ -3120,7 +3120,7 @@ procedure TGtkWidgetSet.SetDesigning(AComponent: TComponent);
 begin
   // change cursor
   if AComponent is TWinControl then
-    gtkproc.SetCursor(TWinControl(AComponent), TCursor(cardinal(nil)));
+    gtkproc.SetCursor(TWinControl(AComponent), TCursor(PtrUInt(nil)));
 end;
 
 {------------------------------------------------------------------------------
@@ -6876,7 +6876,7 @@ begin
   i:=0;
   while i<LinesList.Count do begin
     // add  LineEnd - LineStart + 1 for the #0
-    LineLen:=Cardinal(LinesList[i+1])-Cardinal(LinesList[i])+1;
+    LineLen:=PtrUInt(LinesList[i+1])-PtrUInt(LinesList[i])+1;
     inc(TotalSize,LineLen);
     inc(i,2);
   end;
@@ -6891,8 +6891,8 @@ begin
     // set the pointer to the start of the current line
     CurLineEntry[i shr 1]:=CurLineStart;
     // copy the line
-    LineStart:=Integer(LinesList[i]);
-    LineEnd:=Integer(LinesList[i+1]);
+    LineStart:=PtrInt(LinesList[i]);
+    LineEnd:=PtrInt(LinesList[i+1]);
     LineLen:=LineEnd-LineStart;
     if LineLen>0 then
       Move(AText[LineStart],CurLineStart^,LineLen);
@@ -6903,7 +6903,7 @@ begin
     // next line
     inc(i,2);
   end;
-  if Integer(Lines)+TotalSize<>Integer(CurLineStart) then
+  if PtrInt(Lines)+TotalSize<>PtrInt(CurLineStart) then
     RaiseException('TGtkWidgetSet.WordWrap Consistency Error:'
       +' Lines+TotalSize<>CurLineStart');
   CurLineEntry[i shr 1]:=nil;

@@ -519,7 +519,7 @@ begin
   Result:=inherited GetTextMetrics(DC, TM);
 end;
 
-function TCarbonWidgetSet.GetWindowLong(Handle: hwnd; int: Integer): Longint;
+function TCarbonWidgetSet.GetWindowLong(Handle: hwnd; int: Integer): PtrInt;
 begin
   Result:=inherited GetWindowLong(Handle, int);
 end;
@@ -849,7 +849,7 @@ begin
 end;
 
 function TCarbonWidgetSet.SetWindowLong(Handle: HWND; Idx: Integer;
-  NewLong: Longint): LongInt;
+  NewLong: PtrInt): PtrInt;
 begin
   Result:=inherited SetWindowLong(Handle, Idx, NewLong);
 end;

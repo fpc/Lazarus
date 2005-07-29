@@ -435,7 +435,7 @@ begin
   Result := InterfaceObject.GetTextMetrics(DC, TM);
 end;
 
-function GetWindowLong(Handle : hwnd; int : Integer): Longint;
+function GetWindowLong(Handle : hwnd; int : Integer): PtrInt;
 begin
   Result := InterfaceObject.GetWindowLong(Handle, int);
 end;
@@ -764,7 +764,7 @@ begin
   Result := InterfaceObject.SetTextColor(DC, Color);
 end;
 
-function SetWindowLong(Handle: HWND; Idx: Integer; NewLong : Longint): LongInt;
+function SetWindowLong(Handle: HWND; Idx: Integer; NewLong : PtrInt): PtrInt;
 begin
   Result := InterfaceObject.SetWindowLong(handle, Idx, NewLong);
 end;

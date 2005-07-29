@@ -1973,7 +1973,7 @@ End;
 
   Retrieves information about the specified window.
  ------------------------------------------------------------------------------}
-Function TWin32WidgetSet.GetWindowLong(Handle: HWND; Int: Integer): LongInt;
+Function TWin32WidgetSet.GetWindowLong(Handle: HWND; Int: Integer): PtrInt;
 Begin
   //TODO:Started but not finished
   Assert(False, Format('Trace:> [TWin32WidgetSet.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d)', [Handle, int, int]));
@@ -2889,7 +2889,7 @@ End;
 
   Changes an attribute of the specified window.
  ------------------------------------------------------------------------------}
-Function TWin32WidgetSet.SetWindowLong(Handle: HWND; Idx: Integer; NewLong: LongInt): LongInt;
+Function TWin32WidgetSet.SetWindowLong(Handle: HWND; Idx: Integer; NewLong: PtrInt): PtrInt;
 Begin
   //TODO: Finish this;
   Assert(False, Format('Trace:> [TWin32WidgetSet.SETWINDOWLONG] HWND: 0x%x, Idx: 0x%x(%d), Value: 0x%x(%d)', [Handle, Idx, Idx, NewLong, NewLong]));

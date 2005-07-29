@@ -2100,7 +2100,7 @@ begin
   Mess.Msg := LM_NOTIFY;
   FillChar(NMHdr,SizeOf(NMHdr),0);
   NMHdr.code := TCN_SELCHANGE;
-  NMHdr.hwndfrom := longint(widget);
+  NMHdr.hwndfrom := ptrint(widget);
   NMHdr.idfrom := pagenum;  //use this to set pageindex to the correct page.
   Mess.NMHdr := @NMHdr;
   DeliverMessage(Data, Mess);

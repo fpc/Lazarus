@@ -913,7 +913,7 @@ begin
   Result := False;
 end;
 
-function TWidgetSet.GetWindowLong(Handle : hwnd; int : Integer): Longint;
+function TWidgetSet.GetWindowLong(Handle : hwnd; int : Integer): PtrInt;
 begin
   Result := 0;
 end;
@@ -1356,7 +1356,7 @@ begin
 end;
 
 function TWidgetSet.SetWindowLong(Handle: HWND;
-  Idx: Integer; NewLong : Longint): LongInt;
+  Idx: Integer; NewLong : PtrInt): PtrInt;
 begin
   Result := -1;
 end;

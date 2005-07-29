@@ -830,7 +830,7 @@ var
   GdiObject: PGdiObject;
   DefGdkWindow: PGdkWindow;
 begin
-  Assert(False, Format('Trace:> [TGtkWidgetSet.CreateBitmap] Width: %d, Height: %d, Planes: %d, BitCount: %d, BitmapBits: 0x%x', [Width, Height, Planes, BitCount, Longint(BitmapBits)]));
+  Assert(False, Format('Trace:> [TGtkWidgetSet.CreateBitmap] Width: %d, Height: %d, Planes: %d, BitCount: %d, BitmapBits: 0x%x', [Width, Height, Planes, BitCount, PtrInt(BitmapBits)]));
 
   if (BitCount < 1) or (Bitcount > 32)
   then begin
@@ -5558,7 +5558,7 @@ end;
   Params:  none
   Returns: Nothing
  ------------------------------------------------------------------------------}
-Function TGtkWidgetSet.GetWindowLong(Handle : hwnd; int : Integer): Longint;
+Function TGtkWidgetSet.GetWindowLong(Handle : hwnd; int : Integer): PtrInt;
 var
   //Data : Tobject;
   P : Pointer;
@@ -5569,23 +5569,23 @@ begin
   case int of
     GWL_WNDPROC :
       begin
-        Result := Longint(gtk_object_get_data(pgtkobject(Handle),'WNDPROC'));
+        Result := PtrInt(gtk_object_get_data(pgtkobject(Handle),'WNDPROC'));
       end;
     GWL_HINSTANCE :
       begin
-        Result := Longint(gtk_object_get_data(pgtkobject(Handle),'HINSTANCE'));
+        Result := PtrInt(gtk_object_get_data(pgtkobject(Handle),'HINSTANCE'));
       end;
     GWL_HWNDPARENT :
       begin
         P := gtk_object_get_data(pgtkobject(Handle),'HWNDPARENT');
-        if P = nil then Result := 0 else Result := LongInt(p);
+        if P = nil then Result := 0 else Result := PtrInt(p);
       end;
 
 {    GWL_WNDPROC :
       begin
         Data := GetLCLObject(Pointer(Handle));
         if Data is TControl
-        then Result := Longint(@(TControl(Data).WindowProc));
+        then Result := PtrInt(@(TControl(Data).WindowProc));
         // TODO fix this, a method pointer (2 pointers) cant be casted to a longint
       end;
 }
@@ -5593,25 +5593,25 @@ begin
       begin
         Data := GetLCLObject(Pointer(Handle));
         if (Data is TWinControl)
-        then Result := Longint(TWincontrol(Data).Handle)
+        then Result := PtrInt(TWincontrol(Data).Handle)
         else Result := 0;
       end;
  }
     GWL_STYLE :
       begin
-        Result := Longint(gtk_object_get_data(pgtkobject(Handle),'Style'));
+        Result := PtrInt(gtk_object_get_data(pgtkobject(Handle),'Style'));
       end;
     GWL_EXSTYLE :
       begin
-        Result := Longint(gtk_object_get_data(pgtkobject(Handle),'ExStyle'));
+        Result := PtrInt(gtk_object_get_data(pgtkobject(Handle),'ExStyle'));
       end;
     GWL_USERDATA :
       begin
-        Result := Longint(gtk_object_get_data(pgtkobject(Handle),'Userdata'));
+        Result := PtrInt(gtk_object_get_data(pgtkobject(Handle),'Userdata'));
       end;
     GWL_ID :
       begin
-        Result := Longint(gtk_object_get_data(pgtkobject(Handle),'ID'));
+        Result := PtrInt(gtk_object_get_data(pgtkobject(Handle),'ID'));
       end;
     else Result := 0;
   end; //case
@@ -6833,7 +6833,7 @@ const
     begin
       if (Item^.Data <> Pointer(hndMenu)) // exclude ourself
       and gtk_is_radio_menu_item(Item^.Data)
-      and (GroupIndex = Integer(gtk_object_get_data(Item^.Data, GROUPIDX_DATANAME)))
+      and (GroupIndex = PtrInt(gtk_object_get_data(Item^.Data, GROUPIDX_DATANAME)))
       then begin
         Result := gtk_radio_menu_item_group(PGtkRadioMenuItem(Item^.Data));
         Exit;
@@ -6876,7 +6876,7 @@ begin
     Exit;
   end;
 
-  CurrentGroupIndex := Integer(gtk_object_get_data(Pointer(hndMenu), GROUPIDX_DATANAME));
+  CurrentGroupIndex := PtrInt(gtk_object_get_data(Pointer(hndMenu), GROUPIDX_DATANAME));
 
   // Update needed ?
   if GroupIndex = CurrentGroupIndex
@@ -7798,7 +7798,7 @@ var
   FocusObject: PGTKObject;
 begin
   FocusObject := PGTKObject(GetFocus);
-  Result:=SetCaretPosEx(LongInt(FocusObject),X,Y);
+  Result:=SetCaretPosEx(PtrInt(FocusObject),X,Y);
 end;
 
 {------------------------------------------------------------------------------
@@ -8336,14 +8336,14 @@ end;
 
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.SetWindowLong(Handle: HWND; Idx: Integer;
-  NewLong: Longint): LongInt;
+  NewLong: PtrInt): PtrInt;
 var
   Data: Pointer;
 begin
   //TODO: Finish this;
   Assert(False, Format('Trace:> [TGtkWidgetSet.SETWINDOWLONG] HWND: 0x%x, idx: 0x%x(%d), Value: 0x%x(%d)', [Handle, idx, idx, newlong, newlong]));
   Result:=0;
-  Data := Pointer(PtrInt(NewLong));
+  Data := Pointer(NewLong);
 
   case idx of
     GWL_WNDPROC :
@@ -8866,7 +8866,7 @@ begin
     FillChar(ev,SizeOf(ev),0);
     ev.any.window := Window;
     Widget := gtk_get_event_widget(@ev);
-    Result := Longint(widget);
+    Result := PtrInt(widget);
   end;
 end;
 
