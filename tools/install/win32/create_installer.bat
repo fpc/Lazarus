@@ -6,7 +6,7 @@ SET LAZVERSION=0.9.8
 SET ISCC="C:\Program Files\Inno Setup 5\iscc.exe"
 
 :: Path to the fpc sources checked out of cvs
-SET FPCCVSDIR=c:\lazarus\source\fpc-2.0.0
+SET FPCSVNDIR=c:\lazarus\source\fpc-2.0.0
 
 :: Path to the lazarus sources checked out of cvs
 SET LAZCVSDIR=c:\lazarus\source\lazsource
@@ -57,9 +57,9 @@ SET PATH=%FPCBINDIR%
 %EXPORTCVS% %LAZCVSDIR% %BUILDDIR% >> %LOGFILE%
 
 :: copy fpc source
-%EXPORTCVS% %FPCCVSDIR%\rtl %BUILDDIR%\fpcsrc\rtl >> %LOGFILE%
-%EXPORTCVS% %FPCCVSDIR%\fcl %BUILDDIR%\fpcsrc\fcl >> %LOGFILE%
-%EXPORTCVS% %FPCCVSDIR%\packages %BUILDDIR%\fpcsrc\packages >> %LOGFILE%
+%EXPORTCVS% %FPCSVNDIR%\rtl %BUILDDIR%\fpcsrc\rtl >> %LOGFILE%
+%EXPORTCVS% %FPCSVNDIR%\fcl %BUILDDIR%\fpcsrc\fcl >> %LOGFILE%
+%EXPORTCVS% %FPCSVNDIR%\packages %BUILDDIR%\fpcsrc\packages >> %LOGFILE%
 
 call build-fpc.bat
 
