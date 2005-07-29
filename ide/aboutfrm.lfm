@@ -1,4 +1,5 @@
 object AboutForm: TAboutForm
+  ActiveControl = AboutPage
   Caption = 'About Lazarus'
   ClientHeight = 245
   ClientWidth = 577
@@ -68,38 +69,36 @@ object AboutForm: TAboutForm
     Width = 75
   end
   object Notebook1: TNotebook
+    Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.OnChange = nil
     PageIndex = 0
     Left = 215
-    Height = 232
-    Top = 10
-    Width = 353
+    Height = 236
+    Top = 6
+    Width = 358
     object AboutPage: TPage
       Caption = 'About'
-      ClientWidth = 349
-      ClientHeight = 202
-      Left = 2
-      Height = 202
-      Top = 28
-      Width = 349
+      ClientWidth = 350
+      ClientHeight = 210
+      Height = 210
+      Width = 350
       object AboutMemo: TMemo
         Align = alClient
         BorderSpacing.OnChange = nil
         ReadOnly = True
         ScrollBars = ssAutoBoth
         TabOrder = 0
-        Height = 202
-        Width = 349
+        Height = 210
+        Width = 350
       end
     end
     object ContributorsPage: TPage
       Caption = 'Contributors'
-      ClientWidth = 349
-      ClientHeight = 202
-      Left = 2
-      Height = 202
-      Top = 28
-      Width = 349
+      ClientWidth = 350
+      ClientHeight = 210
+      Visible = False
+      Height = 210
+      Width = 350
       object ContributorsMemo: TMemo
         Align = alClient
         BorderSpacing.OnChange = nil
