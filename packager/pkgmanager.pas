@@ -3330,7 +3330,7 @@ var
   SrcEdit: TSourceEditor;
 begin
   SrcEdit:=SourceNotebook.GetActiveSE;
-  debugln('TPkgManager.GetPackageOfCurrentSourceEditor ',SrcEdit.Filename);
+  //debugln('TPkgManager.GetPackageOfCurrentSourceEditor ',SrcEdit.Filename);
   if SrcEdit<>nil then
     Result:=SearchFile(SrcEdit.Filename,[],nil)
   else
@@ -3368,17 +3368,22 @@ function TPkgManager.SearchFile(const AFilename: string;
 var
   i: Integer;
   APackage: TLazPackage;
+  CurFilename: String;
 begin
   if InObject is TLazPackage then begin
     APackage:=TLazPackage(InObject);
-    Result:=APackage.SearchFile(AFilename,SearchFlags);
+    CurFilename:=AFilename;
+    APackage.ShortenFilename(CurFilename,true);
+    Result:=APackage.SearchFile(CurFilename,SearchFlags);
     if Result<>nil then exit;
   end;
   if not (siffDoNotCheckAllPackages in SearchFlags) then begin
     for i:=0 to PackageGraph.Count-1 do begin
       APackage:=PackageGraph[i];
-      Result:=APackage.SearchFile(AFilename,SearchFlags);
-      debugln('TPkgManager.SearchFile ',APackage.Files[0].Filename);
+      CurFilename:=AFilename;
+      APackage.ShortenFilename(CurFilename,true);
+      Result:=APackage.SearchFile(CurFilename,SearchFlags);
+      //debugln('TPkgManager.SearchFile ',APackage.Files[0].Filename);
       if Result<>nil then exit;
     end;
   end;

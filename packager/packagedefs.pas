@@ -647,7 +647,7 @@ type
     function NeedsDefineTemplates: boolean;
     // files
     function IndexOfPkgFile(PkgFile: TPkgFile): integer;
-    function SearchFile(const AFilename: string;
+    function SearchFile(const ShortFilename: string;
                         SearchFlags: TSearchIDEFileFlags): TPkgFile;
     procedure ShortenFilename(var ExpandedFilename: string; UseUp: boolean);
     procedure LongenFilename(var AFilename: string);
@@ -3000,7 +3000,7 @@ begin
   while (Files[Result]<>PkgFile) do dec(Result);
 end;
 
-function TLazPackage.SearchFile(const AFilename: string;
+function TLazPackage.SearchFile(const ShortFilename: string;
   SearchFlags: TSearchIDEFileFlags): TPkgFile;
 var
   SearchedFilename: String;
@@ -3012,7 +3012,7 @@ var
       TheFileName:=ExtractFilenameOnly(TheFileName);
     if FilenameIsAbsolute(TheFileName) then
       TheFileName:=ExtractFilename(TheFileName);
-    debugln('TLazPackage.SearchFile A ',SearchedFilename,' ',TheFilename);
+    //debugln('TLazPackage.SearchFile A ',SearchedFilename,' ',TheFilename);
     if siffCaseSensitive in SearchFlags then
       Result:=SearchedFilename=TheFilename
     else
@@ -3020,7 +3020,7 @@ var
   end;
 
 begin
-  SearchedFilename:=AFilename;
+  SearchedFilename:=ShortFilename;
   if siffIgnoreExtension in SearchFlags then
     SearchedFilename:=ExtractFilenameOnly(SearchedFilename);
 

@@ -2893,7 +2893,7 @@ begin
       FreeMem(Marks);
     end;
   end;
-  
+
   // add context specific menu items
   CurFilename:=ASrcEdit.FileName;
   if FilenameIsPascalUnit(CurFilename)
@@ -2918,7 +2918,8 @@ begin
         'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.pp'),
         true,@OnPopupMenuOpenPPFile);
   end;
-  if Assigned(OnPopupMenu) then OnPopupMenu(@AddUserDefinedPopupMenuItem);
+
+  if Assigned(OnPopupMenu) then OnPopupMenu(@AddContextPopupMenuItem);
 end;
 
 procedure TSourceNotebook.NotebookShowTabHint(Sender: TObject;
