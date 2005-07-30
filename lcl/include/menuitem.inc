@@ -85,7 +85,7 @@ end;
 constructor TMenuItem.Create(TheOwner: TComponent);
 begin
   //DebugLn('TMenuItem.Create START TheOwner=',TheOwner.Name,':',TheOwner.ClassName);
-  if not assigned (TheOwner) then writeln ('**SH: Warn: creating MenuItem with Owner = nil');
+  //if not assigned (TheOwner) then writeln ('**SH: Warn: creating MenuItem with Owner = nil');
 
   Inherited Create(TheOwner);
 
@@ -803,6 +803,21 @@ begin
     Result:=-1
   else
     Result:=Parent.VisibleIndexOf(Self);
+end;
+
+procedure TMenuItem.WriteDebugReport(const Prefix: string);
+var
+  Flags: String;
+  i: Integer;
+begin
+  Flags:='';
+  if Visible then Flags:=Flags+'V';
+  if Enabled then Flags:=Flags+'E';
+  if RadioItem then Flags:=Flags+'R';
+  if Checked then Flags:=Flags+'C';
+  debugln(Prefix,' Name="',Name,'" Caption="',DbgStr(Caption),'" Flags=',Flags);
+  for i:=0 to Count-1 do
+    Items[i].WriteDebugReport(Prefix+'  ');
 end;
 
 {------------------------------------------------------------------------------

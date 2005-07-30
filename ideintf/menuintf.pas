@@ -16,9 +16,6 @@
     Interface to the IDE menus.
     
   ToDo:
-    - implement creating Top and Bottom separator
-    - Root items
-    - OnPopup
     - Create MainBar menu with the menu interface
     - Create Source Editor Popupmenu with the menu interface
     - Create CodeExplorer Popupmenu with the menu interface
@@ -32,7 +29,8 @@ unit MenuIntf;
 interface
 
 uses
-  Classes, SysUtils, Menus, ImgList, Graphics, TextTools, IDECommands;
+  Classes, SysUtils, LCLProc, Menus, ImgList, Graphics, TextTools, HelpIntf,
+  IDECommands;
   
 type
   TAddMenuItemProc =
@@ -40,7 +38,7 @@ type
               const NewOnClick: TNotifyEvent): TMenuItem of object;
 
   TIDEMenuSection = class;
-
+  TNotifyProcedure = procedure(Sender: TObject);
 
   { TIDEMenuItem
     A menu item in one of the IDE's menus.
@@ -55,23 +53,26 @@ type
     FMenuItem: TMenuItem;
     FMenuItemClass: TMenuItemClass;
     FName: string;
-    FOnClick: TNotifyEvent;
+    FOnClickMethod: TNotifyEvent;
+    FOnClickProc: TNotifyProcedure;
     FSection: TIDEMenuSection;
     FVisible: Boolean;
     FHint: string;
-    procedure SetEnabled(const AValue: Boolean);
+    procedure MenuItemClick(Sender: TObject);
   protected
     function GetBitmap: TBitmap; virtual;
     function GetCaption: string; virtual;
     function GetHint: String; virtual;
     procedure SetBitmap(const AValue: TBitmap); virtual;
     procedure SetCaption(const AValue: string); virtual;
+    procedure SetEnabled(const AValue: Boolean); virtual;
     procedure SetHint(const AValue: String); virtual;
     procedure SetImageIndex(const AValue: Integer); virtual;
     procedure SetMenuItem(const AValue: TMenuItem); virtual;
     procedure SetName(const AValue: string); virtual;
     procedure SetSection(const AValue: TIDEMenuSection); virtual;
     procedure SetVisible(const AValue: Boolean); virtual;
+    procedure ClearMenuItems; virtual;
   public
     constructor Create(const TheName: string); virtual;
     destructor Destroy; override;
@@ -84,7 +85,8 @@ type
     property Hint: String read GetHint write SetHint;
     property ImageIndex: Integer read FImageIndex write SetImageIndex;
     property Visible: Boolean read FVisible write SetVisible;
-    property OnClick: TNotifyEvent read FOnClick write FOnClick;
+    property OnClickMethod: TNotifyEvent read FOnClickMethod write FOnClickMethod;
+    property OnClickProc: TNotifyProcedure read FOnClickProc write FOnClickProc;
     property Caption: string read GetCaption write SetCaption;
     property Section: TIDEMenuSection read FSection write SetSection;
     property Enabled: Boolean read FEnabled write SetEnabled;
@@ -107,8 +109,10 @@ type
     FTopSeparator: TMenuItem;
     function GetItems(Index: Integer): TIDEMenuItem;
   protected
+    procedure SetMenuItem(const AValue: TMenuItem); override;
     procedure SetChildsAsSubMenu(const AValue: boolean); virtual;
     procedure SetSubMenuImages(const AValue: TCustomImageList); virtual;
+    procedure ClearMenuItems; override;
   public
     constructor Create(const TheName: string); override;
     destructor Destroy; override;
@@ -203,21 +207,29 @@ type
 
 var
   IDEMenuRoots: TIDEMenuRoots = nil;// created by the IDE
+  MessagesMenuRoot: TIDEMenuSection;
   
-function RegisterIDEMenuRoot(const Name: string; MenuItem: TMenuItem
+function RegisterIDEMenuRoot(const Name: string; MenuItem: TMenuItem = nil
                              ): TIDEMenuSection;
 function RegisterIDEMenuSection(const Path, Name: string): TIDEMenuSection;
 function RegisterIDESubMenu(const Path, Name, Caption: string;
-                            const OnClick: TNotifyEvent): TIDEMenuSection;
-function RegisterIDEMenuItem(const Path, Name, Caption: string;
-                             const OnClick: TNotifyEvent;
-                             const Command: TIDECommandKeys): TIDEMenuCommand;
+                            const OnClickMethod: TNotifyEvent = nil;
+                            const OnClickProc: TNotifyProcedure = nil
+                            ): TIDEMenuSection;
+function RegisterIDEMenuCommand(const Path, Name, Caption: string;
+                                const OnClickMethod: TNotifyEvent = nil;
+                                const OnClickProc: TNotifyProcedure = nil;
+                                const Command: TIDECommandKeys = nil
+                                ): TIDEMenuCommand;
 
 implementation
 
 function RegisterIDEMenuRoot(const Name: string; MenuItem: TMenuItem
   ): TIDEMenuSection;
 begin
+  {$IFDEF VerboseMenuIntf}
+  debugln('RegisterIDEMenuRoot Name="',Name,'"');
+  {$ENDIF}
   Result:=TIDEMenuSection.Create(Name);
   IDEMenuRoots.RegisterMenuRoot(Result);
   Result.MenuItem:=MenuItem;
@@ -227,6 +239,9 @@ function RegisterIDEMenuSection(const Path, Name: string): TIDEMenuSection;
 var
   Parent: TIDEMenuSection;
 begin
+  {$IFDEF VerboseMenuIntf}
+  debugln('RegisterIDEMenuSection Path="',Path,'" Name="',Name,'"');
+  {$ENDIF}
   Parent:=IDEMenuRoots.FindByPath(Path,true) as TIDEMenuSection;
   Result:=TIDEMenuSection.Create(Name);
   Result.ChildsAsSubMenu:=false;
@@ -234,32 +249,48 @@ begin
 end;
 
 function RegisterIDESubMenu(const Path, Name, Caption: string;
-  const OnClick: TNotifyEvent): TIDEMenuSection;
+  const OnClickMethod: TNotifyEvent; const OnClickProc: TNotifyProcedure
+  ): TIDEMenuSection;
 var
   Parent: TIDEMenuSection;
 begin
+  {$IFDEF VerboseMenuIntf}
+  debugln('RegisterIDESubMenu Path="',Path,'" Name="',Name,'"');
+  {$ENDIF}
   Parent:=IDEMenuRoots.FindByPath(Path,true) as TIDEMenuSection;
   Result:=TIDEMenuSection.Create(Name);
   Result.ChildsAsSubMenu:=true;
   Result.Caption:=Caption;
-  Result.OnClick:=OnClick;
+  Result.OnClickMethod:=OnClickMethod;
+  Result.OnClickProc:=OnClickProc;
   Parent.AddLast(Result);
 end;
 
-function RegisterIDEMenuItem(const Path, Name, Caption: string;
-  const OnClick: TNotifyEvent; const Command: TIDECommandKeys): TIDEMenuCommand;
+function RegisterIDEMenuCommand(const Path, Name, Caption: string;
+  const OnClickMethod: TNotifyEvent; const OnClickProc: TNotifyProcedure;
+  const Command: TIDECommandKeys): TIDEMenuCommand;
 var
   Parent: TIDEMenuSection;
 begin
+  {$IFDEF VerboseMenuIntf}
+  debugln('RegisterIDEMenuCommand Path="',Path,'" Name="',Name,'"');
+  {$ENDIF}
   Parent:=IDEMenuRoots.FindByPath(Path,true) as TIDEMenuSection;
   Result:=TIDEMenuCommand.Create(Name);
   Result.Caption:=Caption;
-  Result.OnClick:=OnClick;
+  Result.OnClickMethod:=OnClickMethod;
+  Result.OnClickProc:=OnClickProc;
   Result.Command:=Command;
   Parent.AddLast(Result);
 end;
 
 { TIDEMenuItem }
+
+procedure TIDEMenuItem.MenuItemClick(Sender: TObject);
+begin
+  if Assigned(OnClickMethod) then OnClickMethod(Sender);
+  if Assigned(OnClickProc) then OnClickProc(Sender);
+end;
 
 procedure TIDEMenuItem.SetEnabled(const AValue: Boolean);
 begin
@@ -324,6 +355,7 @@ end;
 procedure TIDEMenuItem.SetMenuItem(const AValue: TMenuItem);
 begin
   if FMenuItem=AValue then exit;
+  if FMenuItem<>nil then ClearMenuItems;
   FMenuItem:=AValue;
   if MenuItem<>nil then begin
     MenuItem.Caption:=Caption;
@@ -331,6 +363,7 @@ begin
     MenuItem.Hint:=Hint;
     MenuItem.ImageIndex:=ImageIndex;
     MenuItem.Visible:=Visible;
+    MenuItem.OnClick:=@MenuItemClick;
   end;
 end;
 
@@ -343,6 +376,7 @@ end;
 procedure TIDEMenuItem.SetSection(const AValue: TIDEMenuSection);
 begin
   if FSection=AValue then exit;
+  ClearMenuItems;
   FSection:=AValue;
 end;
 
@@ -354,12 +388,21 @@ begin
     MenuItem.Visible:=Visible;
 end;
 
+procedure TIDEMenuItem.ClearMenuItems;
+begin
+  FMenuItem:=nil;
+end;
+
 constructor TIDEMenuItem.Create(const TheName: string);
 begin
   inherited Create;
   FName:=TheName;
   FEnabled:=true;
+  FVisible:=true;
   FMenuItemClass:=TMenuItem;
+  {$IFDEF VerboseMenuIntf}
+  debugln('TIDEMenuItem.Create ',dbgsName(Self),' Name="',Name,'"');
+  {$ENDIF}
 end;
 
 destructor TIDEMenuItem.Destroy;
@@ -394,6 +437,14 @@ procedure TIDEMenuSection.SetSubMenuImages(const AValue: TCustomImageList);
 begin
   if FSubMenuImages=AValue then exit;
   FSubMenuImages:=AValue;
+end;
+
+procedure TIDEMenuSection.ClearMenuItems;
+var
+  i: Integer;
+begin
+  inherited ClearMenuItems;
+  for i:=0 to Count-1 do Items[i].MenuItem:=nil;
 end;
 
 constructor TIDEMenuSection.Create(const TheName: string);
@@ -451,7 +502,12 @@ var
 begin
   ContainerMenuItem:=GetContainerMenuItem;
   if (ContainerMenuItem=nil) then exit;
-  
+
+  Item:=Items[Index];
+  {$IFDEF VerboseMenuIntf}
+  debugln('TIDEMenuSection.CreateChildMenuItem ',dbgsName(Self),' Name=',Name,' Index=',dbgs(Index),' Item=',Item.Name,' Container=',ContainerMenuItem.Name);
+  {$ENDIF}
+
   MenuIndex:=GetChildsStartIndex+Index;
 
   if NeedTopSeparator then begin
@@ -464,7 +520,6 @@ begin
     inc(MenuIndex);
   end;
   
-  Item:=Items[Index];
   // create the child TMenuItem
   Item.CreateMenuItem;
   MenuItem.Insert(MenuIndex,Item.MenuItem);
@@ -577,7 +632,7 @@ end;
 function TIDEMenuSection.CreateUniqueName(const AName: string): string;
 begin
   Result:=AName;
-  if IndexByName(Result)=0 then exit;
+  if IndexByName(Result)<0 then exit;
   Result:=CreateFirstIdentifier(Result);
   while IndexByName(Result)>=0 do
     Result:=CreateNextIdentifier(Result);
@@ -586,6 +641,17 @@ end;
 function TIDEMenuSection.GetItems(Index: Integer): TIDEMenuItem;
 begin
   Result:=TIDEMenuItem(FItems[Index]);
+end;
+
+procedure TIDEMenuSection.SetMenuItem(const AValue: TMenuItem);
+var
+  i: Integer;
+begin
+  if MenuItem=AValue then exit;
+  inherited SetMenuItem(AValue);
+  if MenuItem<>nil then begin
+    for i:=0 to Count-1 do CreateChildMenuItem(i);
+  end;
 end;
 
 procedure TIDEMenuSection.SetChildsAsSubMenu(const AValue: boolean);
@@ -690,6 +756,7 @@ end;
 destructor TIDEMenuRoots.Destroy;
 begin
   Clear;
+  FItems.Free;
   inherited Destroy;
 end;
 
@@ -747,7 +814,7 @@ end;
 function TIDEMenuRoots.CreateUniqueName(const Name: string): string;
 begin
   Result:=Name;
-  if IndexByName(Result)=0 then exit;
+  if IndexByName(Result)<0 then exit;
   Result:=CreateFirstIdentifier(Result);
   while IndexByName(Result)>=0 do
     Result:=CreateNextIdentifier(Result);

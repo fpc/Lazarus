@@ -82,13 +82,13 @@ type
 
     function CreateMenuSeparator : TMenuItem;
     procedure CreateMenuItem(MenuItemParent, MenuItem: TMenuItem;
-                             MenuItemName, MenuItemCaption: String);
+                             const MenuItemName, MenuItemCaption: String);
     procedure CreateMenuItem(MenuItemParent, MenuItem: TMenuItem;
-                             MenuItemName, MenuItemCaption: String;
-                             bmpName: String);
+                             const MenuItemName, MenuItemCaption: String;
+                             const bmpName: String);
     procedure CreateMenuItem(MenuItemParent, MenuItem: TMenuItem;
-                             MenuItemName, MenuItemCaption: String;
-                             bmpName: String; mnuEnabled: Boolean);
+                             const MenuItemName, MenuItemCaption: String;
+                             const bmpName: String; mnuEnabled: Boolean);
     procedure CreateMainMenuItem(MainMenu: TMainMenu; var MenuItem: TMenuItem;
                                  const MenuItemName, MenuItemCaption: String);
     procedure SetupMainMenu; virtual;
@@ -273,20 +273,21 @@ begin
 end;
 
 procedure TMainIDEBase.CreateMenuItem(MenuItemParent, MenuItem: TMenuItem;
-  MenuItemName, MenuItemCaption: String);
+  const MenuItemName, MenuItemCaption: String);
 begin
   CreateMenuItem(MenuItemParent,MenuItem,MenuItemName,MenuItemCaption,'');
 end;
 
 procedure TMainIDEBase.CreateMenuItem(MenuItemParent, MenuItem: TMenuItem;
-  MenuItemName, MenuItemCaption: String; bmpName: String);
+  const MenuItemName, MenuItemCaption: String; const bmpName: String);
 begin
   CreateMenuItem(MenuItemParent,MenuItem,MenuItemName,MenuItemCaption,bmpName,
                  true);
 end;
 
 procedure TMainIDEBase.CreateMenuItem(MenuItemParent, MenuItem: TMenuItem;
-  MenuItemName, MenuItemCaption: String; bmpName: String; mnuEnabled: Boolean);
+  const MenuItemName, MenuItemCaption: String; const bmpName: String;
+  mnuEnabled: Boolean);
 begin
   MenuItem:=TMenuItem.Create(MainIDEBar);
   MenuItem.Name:=MenuItemName;

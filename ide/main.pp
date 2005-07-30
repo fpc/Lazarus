@@ -462,6 +462,7 @@ type
     procedure StartProtocol;
     procedure LoadGlobalOptions;
     procedure SetupMainMenu; override;
+    procedure SetupStandardIDEMenuItems;
     procedure SetupStandardProjectTypes;
     procedure SetRecentFilesMenu;
     procedure SetRecentProjectFilesMenu;
@@ -1005,6 +1006,8 @@ begin
   EnvironmentOptions.IDEWindowLayoutList.Apply(MainIDEBar,MainIDEBar.Name);
   HiddenWindowsOnRun:=TList.Create;
 
+  // menu
+  SetupStandardIDEMenuItems;
   SetupMainMenu;
   SetupSpeedButtons;
   SetupComponentNoteBook;
@@ -1102,6 +1105,7 @@ begin
   FreeThenNil(LazProjectFileDescriptors);
   FreeThenNil(LazProjectDescriptors);
   FreeThenNil(NewIDEItems);
+  FreeThenNil(IDEMenuRoots);
   // IDE options objects
   FreeThenNil(CodeToolsOpts);
   FreeThenNil(MiscellaneousOptions);
@@ -1688,6 +1692,12 @@ begin
   SetupEnvironmentMenu;
   SetupWindowsMenu;
   SetupHelpMenu;
+end;
+
+procedure TMainIDE.SetupStandardIDEMenuItems;
+begin
+  IDEMenuRoots:=TIDEMenuRoots.Create;
+  RegisterStandardMessagesViewMenuItems;
 end;
 
 procedure TMainIDE.SetupStandardProjectTypes;

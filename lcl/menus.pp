@@ -211,6 +211,7 @@ type
     property Parent: TMenuItem read GetParent;
     property Command: integer read FCommand;
     function MenuVisibleIndex: integer;
+    procedure WriteDebugReport(const Prefix: string);
   published
     property Action: TBasicAction read GetAction write SetAction;
     property AutoCheck: boolean read FAutoCheck write SetAutoCheck default False;

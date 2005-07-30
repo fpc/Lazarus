@@ -39,6 +39,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, Controls, StdCtrls, Forms, Menus, LResources,
   ClipBrd, Dialogs, InputHistory, FileUtil,
+  MenuIntf,
   IDEProcs, IDEOptionDefs, DialogProcs, IDECommands, EnvironmentOpts,
   LazarusIDEStrConsts, KeyMapping;
 
@@ -76,17 +77,13 @@ type
   TMessagesView = class(TForm)
     MessageView: TListBox;
     MainPopupMenu: TPopupMenu;
-    CopyMenuItem: TMenuItem;
-    CopyAllMenuItem: TMenuItem;
-    HelpMenuItem: TMenuItem;
-    SaveAllToFileMenuItem: TMenuItem;
     procedure CopyAllMenuItemClick(Sender: TObject);
     procedure CopyMenuItemClick(Sender: TObject);
     procedure HelpMenuItemClick(Sender: TObject);
     procedure MessageViewDblClicked(Sender: TObject);
     Procedure MessageViewClicked(sender : TObject);
     procedure MessagesViewKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+                                  Shift: TShiftState);
     procedure SaveAllToFileMenuItemClick(Sender: TObject);
   private
     FItems: TList; // list of TMessageLine
@@ -138,11 +135,35 @@ type
 
 var
   MessagesView: TMessagesView;
+  MsgCopyIDEMenuCommand: TIDEMenuCommand;
+  MsgCopyAllIDEMenuCommand: TIDEMenuCommand;
+  MsgHelpIDEMenuCommand: TIDEMenuCommand;
+  MsgSaveAllToFileIDEMenuCommand: TIDEMenuCommand;
 
+const
+  MessagesMenuRootName = 'Messages';
+
+procedure RegisterStandardMessagesViewMenuItems;
 
 implementation
 
 const SeparatorLine = '---------------------------------------------';
+
+procedure RegisterStandardMessagesViewMenuItems;
+var
+  Path: String;
+begin
+  MessagesMenuRoot:=RegisterIDEMenuRoot(MessagesMenuRootName);
+  Path:=MessagesMenuRoot.Name;
+  MsgCopyIDEMenuCommand:=RegisterIDEMenuCommand(Path,'Copy selected',
+                                            lisCopySelectedMessagesToClipboard);
+  MsgCopyAllIDEMenuCommand:=RegisterIDEMenuCommand(Path,'Copy all',
+                                                 lisCopyAllMessagesToClipboard);
+  MsgHelpIDEMenuCommand:=RegisterIDEMenuCommand(Path,'Help',
+                                            srVK_HELP);
+  MsgSaveAllToFileIDEMenuCommand:=RegisterIDEMenuCommand(Path,'Copy selected',
+                                                      lisSaveAllMessagesToFile);
+end;
 
 { TMessagesView }
 
@@ -166,38 +187,16 @@ Begin
   
   MainPopupMenu:=TPopupMenu.Create(Self);
   MessageView.PopupMenu:=MainPopupMenu;
+
+  // assign the root TMenuItem to the registered menu root.
+  // This will automatically create all registered items
+  MessagesMenuRoot.MenuItem:=MainPopupMenu.Items;
+  //MainPopupMenu.Items.WriteDebugReport('TMessagesView.Create ');
   
-  HelpMenuItem:=TMenuItem.Create(Self);
-  with HelpMenuItem do begin
-    Name:='HelpMenuItem';
-    Caption:=srVK_HELP;
-    OnClick:=@HelpMenuItemClick;
-  end;
-  MainPopupMenu.Items.Add(HelpMenuItem);
-
-  CopyMenuItem:=TMenuItem.Create(Self);
-  with CopyMenuItem do begin
-    Name:='CopyMenuItem';
-    Caption:=lisCopySelectedMessagesToClipboard;
-    OnClick:=@CopyMenuItemClick;
-  end;
-  MainPopupMenu.Items.Add(CopyMenuItem);
-
-  CopyAllMenuItem:=TMenuItem.Create(Self);
-  with CopyAllMenuItem do begin
-    Name:='CopyAllMenuItem';
-    Caption:=lisCopyAllMessagesToClipboard;
-    OnClick:=@CopyAllMenuItemClick;
-  end;
-  MainPopupMenu.Items.Add(CopyAllMenuItem);
-
-  SaveAllToFileMenuItem:=TMenuItem.Create(Self);
-  with SaveAllToFileMenuItem do begin
-    Name:='SaveAllToFileMenuItem';
-    Caption:=lisSaveAllMessagesToFile;
-    OnClick:=@SaveAllToFileMenuItemClick;
-  end;
-  MainPopupMenu.Items.Add(SaveAllToFileMenuItem);
+  MsgHelpIDEMenuCommand.OnClickMethod:=@HelpMenuItemClick;
+  MsgCopyIDEMenuCommand.OnClickMethod:=@CopyMenuItemClick;
+  MsgCopyAllIDEMenuCommand.OnClickMethod:=@CopyAllMenuItemClick;
+  MsgSaveAllToFileIDEMenuCommand.OnClickMethod:=@SaveAllToFileMenuItemClick;
 
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self,Name);
   KeyPreview:=true;
@@ -209,6 +208,7 @@ begin
   ClearItems;
   FreeThenNil(FItems);
   FreeThenNil(FVisibleItems);
+  MessagesMenuRoot.MenuItem:=nil;
   inherited Destroy;
 end;
 
