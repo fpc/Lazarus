@@ -19,6 +19,11 @@
     - implement creating Top and Bottom separator
     - Root items
     - OnPopup
+    - Create MainBar menu with the menu interface
+    - Create Source Editor Popupmenu with the menu interface
+    - Create CodeExplorer Popupmenu with the menu interface
+    - Create Project Inspector Popupmenu with the menu interface
+    - Create Messages Popupmenu with the menu interface
 }
 unit MenuIntf;
 
@@ -27,7 +32,7 @@ unit MenuIntf;
 interface
 
 uses
-  Classes, SysUtils, Menus, ImgList, Graphics, IDECommands;
+  Classes, SysUtils, Menus, ImgList, Graphics, TextTools, IDECommands;
   
 type
   TAddMenuItemProc =
@@ -35,6 +40,7 @@ type
               const NewOnClick: TNotifyEvent): TMenuItem of object;
 
   TIDEMenuSection = class;
+
 
   { TIDEMenuItem
     A menu item in one of the IDE's menus.
@@ -87,10 +93,11 @@ type
   end;
   TIDEMenuItemClass = class of TIDEMenuItem;
   
+  
   { TIDEMenuSection
     An TIDEMenuItem with childs, either in a sub menu or separated with
     separators. }
-  
+    
   TIDEMenuSection = class(TIDEMenuItem)
   private
     FBottomSeparator: TMenuItem;
@@ -116,6 +123,10 @@ type
     function IndexOf(AnItem: TIDEMenuItem): Integer;
     function NeedTopSeparator: Boolean;
     function NeedBottomSeparator: Boolean;
+    function GetContainerMenuItem: TMenuItem;
+    function IndexByName(const AName: string): Integer;
+    function FindByName(const AName: string): TIDEMenuItem;
+    function CreateUniqueName(const AName: string): string;
   public
     property ChildsAsSubMenu: boolean read FChildsAsSubMenu
                                           write SetChildsAsSubMenu default true;
@@ -127,11 +138,11 @@ type
   end;
   TIDEMenuSectionClass = class of TIDEMenuSection;
 
+
   { TIDEMenuCommand
     A leaf menu item. No childs.
-    An IDE command can be assigned, which defines the shortcut.
+    Hint: The shortcut is defined via the Command property.
   }
-
   TIDEMenuCommand = class(TIDEMenuItem)
   private
     FAutoCheck: boolean;
@@ -165,25 +176,88 @@ type
   end;
   TIDEMenuCommandClass = class of TIDEMenuCommand;
   
-  { TIDEMenuRoots }
+  
+  { TIDEMenuRoots
+    These are the top level menu items of the IDE. }
 
   TIDEMenuRoots = class(TPersistent)
   private
-    FItems: TFPList;
-    function GetItems(Index: integer): TIDEMenuItem;
+    FItems: TFPList;// list of TIDEMenuSection
+    function GetItems(Index: integer): TIDEMenuSection;
   public
     constructor Create;
     destructor Destroy; override;
-    procedure RegisterMenuRoot(Section: TIDEMenuItem);
-    procedure UnregisterMenuRoot(Section: TIDEMenuItem);
+    procedure RegisterMenuRoot(Section: TIDEMenuSection);
+    procedure UnregisterMenuRoot(Section: TIDEMenuSection);
     function Count: Integer;
     procedure Clear;
     procedure Delete(Index: Integer);
+    function IndexByName(const Name: string): Integer;
+    function FindByName(const Name: string): TIDEMenuSection;
+    function CreateUniqueName(const Name: string): string;
+    function FindByPath(const Path: string;
+                        ErrorOnNotFound: boolean): TIDEMenuItem;
   public
-    property Items[Index: integer]: TIDEMenuItem read GetItems; default;
+    property Items[Index: integer]: TIDEMenuSection read GetItems; default;
   end;
 
+var
+  IDEMenuRoots: TIDEMenuRoots = nil;// created by the IDE
+  
+function RegisterIDEMenuRoot(const Name: string; MenuItem: TMenuItem
+                             ): TIDEMenuSection;
+function RegisterIDEMenuSection(const Path, Name: string): TIDEMenuSection;
+function RegisterIDESubMenu(const Path, Name, Caption: string;
+                            const OnClick: TNotifyEvent): TIDEMenuSection;
+function RegisterIDEMenuItem(const Path, Name, Caption: string;
+                             const OnClick: TNotifyEvent;
+                             const Command: TIDECommandKeys): TIDEMenuCommand;
+
 implementation
+
+function RegisterIDEMenuRoot(const Name: string; MenuItem: TMenuItem
+  ): TIDEMenuSection;
+begin
+  Result:=TIDEMenuSection.Create(Name);
+  IDEMenuRoots.RegisterMenuRoot(Result);
+  Result.MenuItem:=MenuItem;
+end;
+
+function RegisterIDEMenuSection(const Path, Name: string): TIDEMenuSection;
+var
+  Parent: TIDEMenuSection;
+begin
+  Parent:=IDEMenuRoots.FindByPath(Path,true) as TIDEMenuSection;
+  Result:=TIDEMenuSection.Create(Name);
+  Result.ChildsAsSubMenu:=false;
+  Parent.AddLast(Result);
+end;
+
+function RegisterIDESubMenu(const Path, Name, Caption: string;
+  const OnClick: TNotifyEvent): TIDEMenuSection;
+var
+  Parent: TIDEMenuSection;
+begin
+  Parent:=IDEMenuRoots.FindByPath(Path,true) as TIDEMenuSection;
+  Result:=TIDEMenuSection.Create(Name);
+  Result.ChildsAsSubMenu:=true;
+  Result.Caption:=Caption;
+  Result.OnClick:=OnClick;
+  Parent.AddLast(Result);
+end;
+
+function RegisterIDEMenuItem(const Path, Name, Caption: string;
+  const OnClick: TNotifyEvent; const Command: TIDECommandKeys): TIDEMenuCommand;
+var
+  Parent: TIDEMenuSection;
+begin
+  Parent:=IDEMenuRoots.FindByPath(Path,true) as TIDEMenuSection;
+  Result:=TIDEMenuCommand.Create(Name);
+  Result.Caption:=Caption;
+  Result.OnClick:=OnClick;
+  Result.Command:=Command;
+  Parent.AddLast(Result);
+end;
 
 { TIDEMenuItem }
 
@@ -308,7 +382,10 @@ end;
 
 function TIDEMenuItem.Size: Integer;
 begin
-  Result:=1;
+  if Visible then
+    Result:=1
+  else
+    Result:=0;
 end;
 
 { TIDEMenuSection }
@@ -358,6 +435,7 @@ end;
 
 procedure TIDEMenuSection.Insert(Index: Integer; AnItem: TIDEMenuItem);
 begin
+  AnItem.fName:=CreateUniqueName(AnItem.Name);
   FItems.Insert(Index,AnItem);
   AnItem.FSection:=Self;
   CreateChildMenuItem(Index);
@@ -368,20 +446,41 @@ var
   Item: TIDEMenuItem;
   SubSection: TIDEMenuSection;
   i: Integer;
+  ContainerMenuItem: TMenuItem;
+  MenuIndex: Integer;
 begin
-  if MenuItem=nil then exit;
+  ContainerMenuItem:=GetContainerMenuItem;
+  if (ContainerMenuItem=nil) then exit;
   
-  
+  MenuIndex:=GetChildsStartIndex+Index;
+
+  if NeedTopSeparator then begin
+    if (TopSeparator=nil) then begin
+      // create TopSeparator
+      FTopSeparator:=MenuItemClass.Create(nil);
+      FTopSeparator.Caption:='-';
+      MenuItem.Insert(GetChildsStartIndex,FTopSeparator);
+    end;
+    inc(MenuIndex);
+  end;
   
   Item:=Items[Index];
   // create the child TMenuItem
   Item.CreateMenuItem;
-  MenuItem.Insert(Index+GetChildsStartIndex,Item.MenuItem);
+  MenuItem.Insert(MenuIndex,Item.MenuItem);
   // create the subsections
   if Item is TIDEMenuSection then begin
     SubSection:=TIDEMenuSection(Item);
     for i:=0 to SubSection.Count-1 do
       SubSection.CreateChildMenuItem(i);
+  end;
+  
+  if (Index=Count-1) and NeedBottomSeparator and (BottomSeparator=nil) then
+  begin
+    // create bottom separator
+    FBottomSeparator:=MenuItemClass.Create(nil);
+    FBottomSeparator.Caption:='-';
+    MenuItem.Insert(MenuIndex+1,FBottomSeparator);
   end;
 end;
 
@@ -396,30 +495,22 @@ begin
     inc(Result,Section[SiblingIndex].Size);
     inc(SiblingIndex);
   end;
+  if not Section.ChildsAsSubMenu then
+    inc(Result,Section.GetChildsStartIndex);
 end;
 
 function TIDEMenuSection.Size: Integer;
-var
-  SelfIndex: LongInt;
-  NextSibling: TIDEMenuItem;
 begin
-  Result:=1;
-  if (Section<>nil) and (not ChildsAsSubMenu) then begin
-    // childs are not in a submenu but directly added to parents menuitem
-    Result:=Count;
-    SelfIndex:=Section.IndexOf(Self);
-    if (SelfIndex>0) then begin
-      // a top separator is needed
-      inc(Result);
+  if Visible then begin
+    Result:=1;
+    if (Section<>nil) and (not ChildsAsSubMenu) then begin
+      // childs are not in a submenu but directly added to parents menuitem
+      Result:=Count;
+      if NeedTopSeparator then inc(Result);
+      if NeedBottomSeparator then inc(Result);
     end;
-    if (SelfIndex<Section.Count-1) then begin
-      NextSibling:=Section[SelfIndex-1];
-      if (not (NextSibling is TIDEMenuSection))
-      or (not TIDEMenuSection(NextSibling).ChildsAsSubMenu) then begin
-        // a bottom separator is needed
-        inc(Result);
-      end;
-    end;
+  end else begin
+    Result:=0;
   end;
 end;
 
@@ -452,6 +543,44 @@ begin
       Result:=true;
     end;
   end;
+end;
+
+function TIDEMenuSection.GetContainerMenuItem: TMenuItem;
+var
+  IDEMenuItem: TIDEMenuSection;
+begin
+  IDEMenuItem:=Self;
+  while (IDEMenuItem<>nil) and (not IDEMenuItem.ChildsAsSubMenu) do
+    IDEMenuItem:=IDEMenuItem.Section;
+  if (IDEMenuItem<>nil) then
+    Result:=IDEMenuItem.MenuItem;
+end;
+
+function TIDEMenuSection.IndexByName(const AName: string): Integer;
+begin
+  Result:=Count-1;
+  while (Result>=0) and (CompareText(AName,Items[Result].Name)<>0) do
+    dec(Result);
+end;
+
+function TIDEMenuSection.FindByName(const AName: string): TIDEMenuItem;
+var
+  i: LongInt;
+begin
+  i:=IndexByName(AName);
+  if i>=0 then
+    Result:=Items[i]
+  else
+    Result:=nil;
+end;
+
+function TIDEMenuSection.CreateUniqueName(const AName: string): string;
+begin
+  Result:=AName;
+  if IndexByName(Result)=0 then exit;
+  Result:=CreateFirstIdentifier(Result);
+  while IndexByName(Result)>=0 do
+    Result:=CreateNextIdentifier(Result);
 end;
 
 function TIDEMenuSection.GetItems(Index: Integer): TIDEMenuItem;
@@ -548,7 +677,7 @@ end;
 
 { TIDEMenuRoots }
 
-function TIDEMenuRoots.GetItems(Index: integer): TIDEMenuItem;
+function TIDEMenuRoots.GetItems(Index: integer): TIDEMenuSection;
 begin
   Result:=TIDEMenuSection(FItems[Index]);
 end;
@@ -564,12 +693,13 @@ begin
   inherited Destroy;
 end;
 
-procedure TIDEMenuRoots.RegisterMenuRoot(Section: TIDEMenuItem);
+procedure TIDEMenuRoots.RegisterMenuRoot(Section: TIDEMenuSection);
 begin
+  Section.FName:=CreateUniqueName(Section.Name);
   FItems.Add(Section);
 end;
 
-procedure TIDEMenuRoots.UnregisterMenuRoot(Section: TIDEMenuItem);
+procedure TIDEMenuRoots.UnregisterMenuRoot(Section: TIDEMenuSection);
 begin
   FItems.Remove(Section);
 end;
@@ -589,11 +719,72 @@ end;
 
 procedure TIDEMenuRoots.Delete(Index: Integer);
 var
-  OldItem: TIDEMenuItem;
+  OldItem: TIDEMenuSection;
 begin
   OldItem:=Items[Index];
   UnregisterMenuRoot(OldItem);
   OldItem.Free;
+end;
+
+function TIDEMenuRoots.IndexByName(const Name: string): Integer;
+begin
+  Result:=Count-1;
+  while (Result>=0) and (CompareText(Name,Items[Result].Name)<>0) do
+    dec(Result);
+end;
+
+function TIDEMenuRoots.FindByName(const Name: string): TIDEMenuSection;
+var
+  i: LongInt;
+begin
+  i:=IndexByName(Name);
+  if i>=0 then
+    Result:=Items[i]
+  else
+    Result:=nil;
+end;
+
+function TIDEMenuRoots.CreateUniqueName(const Name: string): string;
+begin
+  Result:=Name;
+  if IndexByName(Result)=0 then exit;
+  Result:=CreateFirstIdentifier(Result);
+  while IndexByName(Result)>=0 do
+    Result:=CreateNextIdentifier(Result);
+end;
+
+function TIDEMenuRoots.FindByPath(const Path: string;
+  ErrorOnNotFound: boolean): TIDEMenuItem;
+var
+  StartPos: Integer;
+  EndPos: LongInt;
+  Name: String;
+begin
+  Result:=nil;
+  StartPos:=1;
+  while StartPos<=length(Path) do begin
+    EndPos:=StartPos;
+    while (EndPos<=length(Path)) and (Path[EndPos]<>'/') do inc(EndPos);
+    if EndPos>StartPos then begin
+      Name:=copy(Path,StartPos,EndPos-StartPos);
+      if Result=nil then
+        // search root
+        Result:=FindByName(Name)
+      else if Result is TIDEMenuSection then
+        // search child
+        Result:=TIDEMenuSection(Result).FindByName(Name)
+      else
+        // path too long -> we are already at a leaf
+        Result:=nil;
+      if Result=nil then break;
+    end;
+    StartPos:=EndPos+1;
+  end;
+  if Result=nil then begin
+    if ErrorOnNotFound then begin
+      raise Exception.Create('IDE Menu path not found: '+Path);
+    end;
+  end;
 end;
 
 end.
