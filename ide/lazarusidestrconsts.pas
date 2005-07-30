@@ -188,6 +188,7 @@ resourcestring
   lisMenuViewObjectInspector = 'Object Inspector';
   lisMenuViewSourceEditor = 'Source Editor';
   lisMenuViewCodeExplorer = 'Code Explorer';
+  lisMenuJumpTo = 'Jump to';
   lisMenuViewUnits = 'Units...';
   lisMenuViewForms = 'Forms...';
   lisMenuViewUnitDependencies = 'View Unit Dependencies';

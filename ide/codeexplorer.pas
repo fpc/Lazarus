@@ -32,10 +32,14 @@ unit CodeExplorer;
 interface
 
 uses
+  // FCL+LCL
   Classes, SysUtils, LCLProc, LCLType, LResources, Forms, Controls, Graphics,
   Dialogs, Buttons, ComCtrls, Menus,
+  // CodeTools
   CodeToolManager, CodeAtom, CodeCache, CodeTree, PascalParserTool,
-  IDECommands,
+  // IDE Intf
+  IDECommands, MenuIntf,
+  // IDE
   LazarusIDEStrConsts, EnvironmentOpts, IDEOptionDefs, InputHistory, IDEProcs,
   CodeExplOpts;
 
@@ -56,24 +60,24 @@ type
   { TCodeExplorerView }
 
   TCodeExplorerView = class(TForm)
-    Imagelist1: TIMAGELIST;
-    JumpToMenuitem: TMENUITEM;
-    RefreshMenuitem: TMENUITEM;
-    TreePopupmenu: TPOPUPMENU;
-    RefreshButton: TBUTTON;
-    OptionsButton: TBUTTON;
-    CodeTreeview: TTREEVIEW;
-    procedure CodeExplorerViewCLOSE(Sender: TObject; var CloseAction: TCloseAction);
-    procedure CodeExplorerViewCREATE(Sender: TObject);
-    procedure CodeExplorerViewRESIZE(Sender: TObject);
-    procedure CodeTreeviewDBLCLICK(Sender: TObject);
-    procedure CodeTreeviewDELETION(Sender: TObject; Node: TTreeNode);
+    Imagelist1: TImageList;
+    TreePopupmenu: TPopupMenu;
+    RefreshButton: TButton;
+    OptionsButton: TButton;
+    CodeTreeview: TTreeView;
+    procedure CodeExplorerViewClose(Sender: TObject;
+                                    var CloseAction: TCloseAction);
+    procedure CodeExplorerViewCreate(Sender: TObject);
+    procedure CodeExplorerViewDestroy(Sender: TObject);
+    procedure CodeExplorerViewResize(Sender: TObject);
+    procedure CodeTreeviewDblClick(Sender: TObject);
+    procedure CodeTreeviewDeletion(Sender: TObject; Node: TTreeNode);
     procedure CodeTreeviewKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure JumpToMenuitemCLICK(Sender: TObject);
+    procedure JumpToMenuitemClick(Sender: TObject);
     procedure OptionsButtonClick(Sender: TObject);
-    procedure RefreshButtonCLICK(Sender: TObject);
-    procedure RefreshMenuitemCLICK(Sender: TObject);
+    procedure RefreshButtonClick(Sender: TObject);
+    procedure RefreshMenuitemClick(Sender: TObject);
   private
     FMainFilename: string;
     FFlags: TCodeExplorerViewFlags;
@@ -116,12 +120,19 @@ type
     property MainFilename: string read FMainFilename;
   end;
 
+const
+  CodeExplorerMenuRootName = 'Code Explorer';
+
 var
   CodeExplorerView: TCodeExplorerView;
-  
+  CEJumpToIDEMenuCommand: TIDEMenuCommand;
+  CERefreshIDEMenuCommand: TIDEMenuCommand;
+
 procedure InitCodeExplorerOptions;
 procedure LoadCodeExplorerOptions;
 procedure SaveCodeExplorerOptions;
+
+procedure RegisterStandardCodeExplorerMenuItems;
 
 
 implementation
@@ -151,6 +162,18 @@ end;
 procedure SaveCodeExplorerOptions;
 begin
   CodeExplorerOptions.Save;
+end;
+
+procedure RegisterStandardCodeExplorerMenuItems;
+var
+  Path: String;
+begin
+  CodeExplorerMenuRoot:=RegisterIDEMenuRoot(CodeExplorerMenuRootName);
+  Path:=CodeExplorerMenuRoot.Name;
+  CEJumpToIDEMenuCommand:=RegisterIDEMenuCommand(Path, 'Jump to', lisMenuJumpTo
+    );
+  CERefreshIDEMenuCommand:=RegisterIDEMenuCommand(Path, 'Refresh',
+    dlgUnitDepRefresh);
 end;
 
 { TViewNodeData }
@@ -220,6 +243,20 @@ begin
   AddResImg(Imagelist1,'ce_procedure');
   ImgIDProperty:=Imagelist1.Count;
   AddResImg(Imagelist1,'ce_property');
+  
+  // assign the root TMenuItem to the registered menu root.
+  // This will automatically create all registered items
+  CodeExplorerMenuRoot.MenuItem:=TreePopupMenu.Items;
+  //CodeExplorerMenuRoot.Items.WriteDebugReport(' ');
+
+  CEJumpToIDEMenuCommand.OnClickMethod:=@JumpToMenuitemCLICK;
+  CERefreshIDEMenuCommand.OnClickMethod:=@RefreshMenuitemCLICK;
+end;
+
+procedure TCodeExplorerView.CodeExplorerViewDestroy(Sender: TObject);
+begin
+  debugln('TCodeExplorerView.CodeExplorerViewDestroy');
+  CodeExplorerMenuRoot.MenuItem:=nil;
 end;
 
 procedure TCodeExplorerView.CodeExplorerViewRESIZE(Sender: TObject);

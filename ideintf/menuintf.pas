@@ -208,7 +208,8 @@ type
 var
   IDEMenuRoots: TIDEMenuRoots = nil;// created by the IDE
   MessagesMenuRoot: TIDEMenuSection;
-  
+  CodeExplorerMenuRoot: TIDEMenuSection;
+
 function RegisterIDEMenuRoot(const Name: string; MenuItem: TMenuItem = nil
                              ): TIDEMenuSection;
 function RegisterIDEMenuSection(const Path, Name: string): TIDEMenuSection;
@@ -780,7 +781,10 @@ procedure TIDEMenuRoots.Clear;
 var
   i: Integer;
 begin
-  for i:=FItems.Count-1 downto 0 do TObject(FItems[i]).Free;
+  for i:=FItems.Count-1 downto 0 do begin
+    Items[i].ClearMenuItems;
+    Items[i].Free;
+  end;
   FItems.Clear;
 end;
 
