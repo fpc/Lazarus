@@ -93,6 +93,10 @@ begin
   Add(TCustomCheckBox,'Checked');
   Add(TCustomRadioGroup,'Items');
   Add(TCustomRadioGroup,'ItemIndex');
+  Add(TCustomForm,'OnCreate');
+  Add(TCustomForm,'OnDestroy');
+  Add(TCustomForm,'OnResize');
+  Add(TCustomListBox,'Items');
   Result.DeleteDoubles;
 end;
 

@@ -1,0 +1,187 @@
+object SelectPropertiesForm: TSelectPropertiesForm
+  Caption = 'Select properties'
+  ClientHeight = 462
+  ClientWidth = 485
+  OnCreate = SelectPropertiesFormCreate
+  PixelsPerInch = 112
+  Position = poDesktopCenter
+  HorzScrollBar.Page = 484
+  VertScrollBar.Page = 461
+  Left = 411
+  Height = 462
+  Top = 175
+  Width = 485
+  object PTop: TPanel
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 248
+    ClientWidth = 485
+    FullRepaint = False
+    TabOrder = 0
+    OnResize = PTopResize
+    Height = 248
+    Width = 485
+    object PProperties: TPanel
+      Align = alRight
+      BevelOuter = bvNone
+      ClientHeight = 248
+      ClientWidth = 221
+      FullRepaint = False
+      TabOrder = 0
+      Left = 264
+      Height = 248
+      Width = 221
+      object LProperties: TLabel
+        Align = alTop
+        BorderSpacing.OnChange = nil
+        BorderSpacing.Around = 3
+        Caption = '&Properties'
+        Color = clNone
+        Layout = tlCenter
+        Left = 3
+        Height = 25
+        Top = 3
+        Width = 215
+      end
+      object LBProperties: TListBox
+        Align = alClient
+        BorderSpacing.OnChange = nil
+        MultiSelect = True
+        Sorted = True
+        TabOrder = 0
+        TopIndex = -1
+        Height = 217
+        Top = 31
+        Width = 221
+      end
+    end
+    object PComponents: TPanel
+      Align = alLeft
+      BevelOuter = bvNone
+      Caption = 'PComponents'
+      ClientHeight = 248
+      ClientWidth = 200
+      FullRepaint = False
+      TabOrder = 1
+      Height = 248
+      Width = 200
+      object LComponents: TLabel
+        Align = alTop
+        Anchors = [akTop, akLeft]
+        BorderSpacing.Around = 3
+        Caption = 'Co&mponents'
+        Color = clNone
+        Layout = tlCenter
+        Left = 3
+        Height = 23
+        Top = 3
+        Width = 194
+      end
+      object LBComponents: TListBox
+        Align = alClient
+        OnSelectionChange = LBComponentsSelectionChange
+        Sorted = True
+        TabOrder = 0
+        TopIndex = -1
+        Height = 219
+        Top = 29
+        Width = 200
+      end
+    end
+  end
+  object VSplitter: TSplitter
+    Align = alTop
+    Beveled = True
+    Cursor = crVSplit
+    Height = 8
+    ParentColor = True
+    Width = 485
+    Cursor = crVSplit
+    Height = 8
+    Top = 248
+    Width = 485
+  end
+  object PBottom: TPanel
+    Align = alClient
+    BevelOuter = bvNone
+    ClientHeight = 206
+    ClientWidth = 485
+    Constraints.MinHeight = 190
+    FullRepaint = False
+    TabOrder = 1
+    Height = 206
+    Top = 256
+    Width = 485
+    object LLBSelected: TLabel
+      BorderSpacing.Around = 3
+      Caption = '&Selected Properties'
+      Color = clNone
+      Left = 10
+      Height = 17
+      Top = 3
+      Width = 286
+    end
+    object LBSelected: TListBox
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      MultiSelect = True
+      TabOrder = 0
+      TopIndex = -1
+      Left = 8
+      Height = 177
+      Top = 24
+      Width = 375
+    end
+    object BAdd: TButton
+      Anchors = [akTop, akRight]
+      Caption = '&Add'
+      OnClick = BAddClick
+      TabOrder = 1
+      Left = 399
+      Height = 25
+      Top = 24
+      Width = 75
+    end
+    object BDelete: TButton
+      Anchors = [akTop, akRight]
+      Caption = '&Delete'
+      OnClick = BDeleteClick
+      TabOrder = 2
+      Left = 399
+      Height = 25
+      Top = 56
+      Width = 75
+    end
+    object BClear: TButton
+      Anchors = [akTop, akRight]
+      Caption = 'C&lear'
+      OnClick = BClearClick
+      TabOrder = 3
+      Left = 399
+      Height = 25
+      Top = 88
+      Width = 75
+    end
+    object BOK: TButton
+      Anchors = [akRight, akBottom]
+      Caption = '&OK'
+      Default = True
+      ModalResult = 1
+      TabOrder = 4
+      Left = 399
+      Height = 25
+      Top = 169
+      Width = 75
+    end
+    object BCancel: TButton
+      Anchors = [akRight, akBottom]
+      Cancel = True
+      Caption = '&Cancel'
+      ModalResult = 2
+      TabOrder = 5
+      Left = 399
+      Height = 25
+      Top = 137
+      Width = 75
+    end
+  end
+end

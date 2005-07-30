@@ -19,12 +19,7 @@
     For more information see the big comment part below.
 
   ToDo:
-    -digits for floattypes -> I hope, I guessed right
     -TIntegerSet missing -> taking my own
-    -Save ColorDialog settings
-    -System.TypeInfo(Type) missing -> exists already in the fpc 1.1 version
-         but because I want it now with the stable version I will use my
-         workaround
     -StrToInt64 has a bug. It prints infinitly "something happened"
        -> taking my own
 
@@ -39,19 +34,13 @@ unit PropEdits;
 
 interface
 
-{$IFNDEF VER1_0}
-  {$DEFINE EnableSessionProps}
-{$ENDIF}
 {$DEFINE NewListPropEdit}
 
 uses
   Classes, TypInfo, SysUtils, LCLProc, Forms, Controls, GraphType, Graphics,
   StdCtrls, Buttons, ComCtrls, Menus, LCLType, ExtCtrls, LCLIntf, Dialogs,
-  Grids, EditBtn,
-  {$IFDEF EnableSessionProps}
-  PropertyStorage,
-  {$ENDIF}
-  TextTools, ColumnDlg, ObjInspStrConsts;
+  Grids, EditBtn, PropertyStorage, TextTools, FrmSelectProps, ColumnDlg,
+  ObjInspStrConsts;
 
 const
   MaxIdentLength: Byte = 63;
@@ -2085,199 +2074,6 @@ begin
     IValue:=0;
 end;
 
-{$IFDEF VER1_0  workaround}
-Function CallSingleFunc(s : Pointer; Address : Pointer;
-  Index, IValue : Longint) : Single; assembler;
-{$asmmode att}
-  var
-     saveedi,saveesi : dword;
-  asm
-     movl %edi,saveedi
-     movl %esi,saveesi
-     movl S,%esi
-     movl Address,%edi
-     // ? Indexed Function
-     movl Index,%eax
-     testl %eax,%eax
-     je .LINoPush
-     movl IValue,%eax
-     pushl %eax
-  .LINoPush:
-     push %esi
-     call %edi
-     //
-     movl saveedi,%edi
-     movl saveesi,%esi
-  end;
-
-Function CallDoubleFunc(s : Pointer; Address : Pointer;
-  Index, IValue : Longint) : Double; assembler;
-  var
-     saveedi,saveesi : dword;
-  asm
-     movl %edi,saveedi
-     movl %esi,saveesi
-     movl S,%esi
-     movl Address,%edi
-     // ? Indexed Function
-     movl Index,%eax
-     testl %eax,%eax
-     je .LINoPush
-     movl IValue,%eax
-     pushl %eax
-  .LINoPush:
-     push %esi
-     call %edi
-     //
-     movl saveedi,%edi
-     movl saveesi,%esi
-  end;
-
-Function CallExtendedFunc(s : Pointer; Address : Pointer;
-  Index, IValue : Longint) : Extended; assembler;
-  var
-     saveedi,saveesi : dword;
-  asm
-     movl %edi,saveedi
-     movl %esi,saveesi
-     movl S,%esi
-     movl Address,%edi
-     // ? Indexed Function
-     movl Index,%eax
-     testl %eax,%eax
-     je .LINoPush
-     movl IValue,%eax
-     pushl %eax
-  .LINoPush:
-     push %esi
-     call %edi
-     //
-     movl saveedi,%edi
-     movl saveesi,%esi
-  end;
-
-Function GetFloatProp(Instance : TObject;PropInfo : PPropInfo) : Extended;
-
-var
-  Index,Ivalue : longint;
-  Value : Extended;
-
-begin
-  SetIndexValues(PropInfo,Index,Ivalue);
-  case (PropInfo^.PropProcs) and 3 of
-    ptField:
-      Case GetTypeData(PropInfo^.PropType)^.FloatType of
-       ftSingle:
-         Value:=PSingle(Pointer(Instance)+Longint(PropInfo^.GetProc))^;
-       ftDouble:
-         Value:=PDouble(Pointer(Instance)+Longint(PropInfo^.GetProc))^;
-       ftExtended:
-         Value:=PExtended(Pointer(Instance)+Longint(PropInfo^.GetProc))^;
-{$ifndef m68k}
-       ftcomp:
-         Value:=PComp(Pointer(Instance)+Longint(PropInfo^.GetProc))^;
-{$endif m68k}
-       end;
-
-    ptStatic:
-      Case GetTypeData(PropInfo^.PropType)^.FloatType of
-       ftSingle:
-         Value:=CallSingleFunc(Instance,PropInfo^.GetProc,Index,IValue);
-       ftDouble:
-         Value:=CallDoubleFunc(Instance,PropInfo^.GetProc,Index,IValue);
-       ftExtended:
-         Value:=CallExtendedFunc(Instance,PropInfo^.GetProc,Index,IValue);
-      end;
-
-    ptVirtual:
-      Case GetTypeData(PropInfo^.PropType)^.FloatType of
-       ftSingle:
-         Value:=CallSingleFunc(Instance,
-              PPointer(Pointer(Instance.ClassType)+Longint(PropInfo^.GetProc))^,
-              Index,IValue);
-       ftDouble:
-         Value:=CallDoubleFunc(Instance,
-              PPointer(Pointer(Instance.ClassType)+Longint(PropInfo^.GetProc))^,
-              Index,IValue);
-       ftExtended:
-         Value:=CallExtendedFunc(Instance,
-              PPointer(Pointer(Instance.ClassType)+Longint(PropInfo^.GetProc))^,
-              Index,IValue);
-      end;
-  end;
-  Result:=Value;
-end;
-
-Procedure SetFloatProp(Instance : TObject;PropInfo : PPropInfo;
-  Value : Extended);
-
-type
-  TMySetExtendedProc = procedure(const AValue: Extended) of object;
-  TMySetExtendedProcIndex = procedure(Index: integer; const AValue: Extended) of object;
-  TMySetDoubleProc = procedure(const AValue: Double) of object;
-  TMySetDoubleProcIndex = procedure(Index: integer; const AValue: Double) of object;
-  TMySetSingleProc = procedure(const AValue: Single) of object;
-  TMySetSingleProcIndex = procedure(Index: integer; const AValue: Single) of object;
-
-Var IValue,Index : longint;
-  AMethod: TMethod;
-
-begin
-  SetIndexValues(PropInfo,Index,Ivalue);
-  case (PropInfo^.PropProcs shr 2) and 3 of
-
-    ptfield:
-      Case GetTypeData(PropInfo^.PropType)^.FloatType of
-        ftSingle:
-          PSingle(Pointer(Instance)+Longint(PropInfo^.SetProc))^:=Single(Value);
-        ftDouble:
-          PDouble(Pointer(Instance)+Longint(PropInfo^.SetProc))^:=Double(Value);
-        ftExtended:
-          PExtended(Pointer(Instance)+Longint(PropInfo^.SetProc))^:=Value;
-{$ifndef m68k}
-       ftcomp:
-          PComp(Pointer(Instance)+Longint(PropInfo^.SetProc))^:=Comp(Value);
-{$endif m68k}
-        { Uncommenting this code results in an internal error!!
-       ftFixed16:
-         PFixed16(Pointer(Instance)+Longint(PropInfo^.SetProc))^:=Value;
-       ftfixed32:
-         PFixed32(Pointer(Instance)+Longint(PropInfo^.SetProc))^:=Value;
-       }
-       end;
-
-    ptStatic, ptVirtual:
-      begin
-        if ((PropInfo^.PropProcs shr 2) and 3)=ptStatic then
-          AMethod.Code:=PropInfo^.SetProc
-        else
-          AMethod.Code:=
-            PPointer(Pointer(Instance.ClassType)+Longint(PropInfo^.SetProc))^;
-        AMethod.Data:=Instance;
-        Case GetTypeData(PropInfo^.PropType)^.FloatType of
-          ftSingle:
-            if Index=0 then
-              TMySetSingleProc(AMethod)(Single(Value))
-            else
-              TMySetSingleProcIndex(AMethod)(IValue,Single(Value));
-
-          ftDouble:
-            if Index=0 then
-              TMySetDoubleProc(AMethod)(Double(Value))
-            else
-              TMySetDoubleProcIndex(AMethod)(IValue,Double(Value));
-
-          ftExtended:
-            if Index=0 then
-              TMySetExtendedProc(AMethod)(Value)
-            else
-              TMySetExtendedProcIndex(AMethod)(IValue,Value);
-        end;
-      end;
-  end;
-end;
-{$ENDIF VER1_0}
-
 function TPropertyEditor.GetFloatValueAt(Index:Integer):Extended;
 begin
   with FPropList^[Index] do Result:=GetFloatProp(Instance,PropInfo);
@@ -2336,15 +2132,6 @@ end;
 function TPropertyEditor.GetName:shortstring;
 begin
   Result:=FPropList^[0].PropInfo^.Name;
-  {$IFDEF Ver1_0}
-  // the 1.0.x fpc has only uppercase RTTI
-  // -> make it a little bit nicer
-  Result:=lowercase(Result);
-  if length(Result)>0 then
-    Result[1]:=upcase(Result[1]);
-  if (length(Result)>2) and (Result[1]='O') and (Result[2]='n') then
-    Result[3]:=upcase(Result[3]);
-  {$ENDIF}
 end;
 
 function TPropertyEditor.GetOrdValue:Longint;
@@ -3063,11 +2850,7 @@ end;
 
 function TFloatPropertyEditor.GetValue: ansistring;
 const
-  Precisions: array[TFloatType] of Integer = (7, 15, 19, 19, 19
-{$ifdef VER1_0}
-  , 15, 31
-{$endif VER1_0}
-  );
+  Precisions: array[TFloatType] of Integer = (7, 15, 19, 19, 19);
 begin
   Result := FloatToStrF(GetFloatValue, ffGeneral,
     Precisions[GetTypeData(GetPropType)^.FloatType], 0);
@@ -4037,11 +3820,6 @@ begin
   and (Result[1] in ['O','o']) and (Result[2] in ['N','n'])
   then
     System.Delete(Result,1,2);
-  {$IFDEF Ver1_0}
-  // the 1.0.x compilers have only uppercase RTTI. Make the names a little more
-  // nicer
-  Result := copy(Result,1,1)+lowercase(copy(Result,2,length(Result)-1));
-  {$ENDIF}
 end;
 
 function TMethodPropertyEditor.GetValue: ansistring;
@@ -4051,37 +3829,12 @@ end;
 
 procedure TMethodPropertyEditor.GetValues(Proc: TGetStringProc);
 begin
-DebugLn('### TMethodPropertyEditor.GetValues');
-  Proc('(None)');
+  //DebugLn('### TMethodPropertyEditor.GetValues');
+  Proc(oisNone);
   PropertyHook.GetMethods(GetTypeData(GetPropType), Proc);
 end;
 
 procedure TMethodPropertyEditor.SetValue(const NewValue: ansistring);
-  {
-  procedure CheckChainCall(const MethodName: shortstring; Method: TMethod);
-  var
-    Persistent: TPersistent;
-    Component: TComponent;
-    InstanceMethod: shortstring;
-    Instance: TComponent;
-  begin
-    Persistent := GetComponent(0);
-    if Persistent is TComponent then begin
-      Component := TComponent(Persistent);
-      if (Component.Name <> '')
-      and (TObject(Method.Data) <> PropertyHook.LookupRoot)
-      and (TObject(Method.Data) is TComponent) then
-      begin
-        Instance := TComponent(Method.Data);
-        InstanceMethod := Instance.MethodName(Method.Code);
-        if InstanceMethod <> '' then begin
-          PropertyHook.ChainCall(MethodName, Instance.Name, InstanceMethod,
-            GetTypeData(GetPropType));
-        end;
-      end;
-    end;
-  end;
-  }
 var
   CreateNewMethod: Boolean;
   CurValue: ansistring;
@@ -4091,7 +3844,7 @@ var
 begin
   CurValue:=GetValue;
   if CurValue=NewValue then exit;
-  DebugLn('### TMethodPropertyEditor.SetValue A OldValue="',CurValue,'" NewValue=',NewValue);
+  //DebugLn('### TMethodPropertyEditor.SetValue A OldValue="',CurValue,'" NewValue=',NewValue);
   NewMethodExists:=IsValidIdent(NewValue)
                and PropertyHook.MethodExists(NewValue,GetTypeData(GetPropType),
                    NewMethodIsCompatible,NewMethodIsPublished,NewIdentIsMethod);
@@ -4148,13 +3901,13 @@ begin
       PropertyHook.ShowMethod(NewValue);
     end;
   end;
-DebugLn('### TMethodPropertyEditor.SetValue END  NewValue=',GetValue);
+  //DebugLn('### TMethodPropertyEditor.SetValue END  NewValue=',GetValue);
 end;
 
 { TPersistentPropertyEditor }
 
 function TPersistentPropertyEditor.FilterFunc(
-  const ATestEditor: TPropertyEditor{IProperty}): Boolean;
+  const ATestEditor: TPropertyEditor): Boolean;
 begin
   Result := not (paNotNestable in ATestEditor.GetAttributes);
 end;
@@ -4165,7 +3918,7 @@ begin
 end;
 
 function TPersistentPropertyEditor.GetSelections:
-  TPersistentSelectionList{IDesignerSelections};
+  TPersistentSelectionList;
 var
   I: Integer;
 begin
@@ -4224,13 +3977,10 @@ end;
 procedure TPersistentPropertyEditor.GetProperties(Proc:TGetPropEditProc);
 var
   LPersistents: TPersistentSelectionList;
-  //LDesigner: TIDesigner;
 begin
   LPersistents := GetSelections;
   if LPersistents <> nil then
   begin
-    //if not Supports(FindRootDesigner(LPersistents[0]), IDesigner, LDesigner) then
-    //  LDesigner := Designer;
     GetPersistentProperties(LPersistents, tkAny, PropertyHook, Proc, nil);
   end;
 end;
@@ -4262,7 +4012,7 @@ end;
 
 procedure TPersistentPropertyEditor.GetValues(Proc: TGetStringProc);
 begin
-  Proc('(none)');
+  Proc(oisNone);
   if Assigned(PropertyHook) then
     PropertyHook.GetComponentNames(GetTypeData(GetPropType), Proc);
 end;
@@ -4271,13 +4021,13 @@ procedure TPersistentPropertyEditor.SetValue(const NewValue: ansistring);
 var Component: TComponent;
 begin
   if NewValue=GetValue then exit;
-  if (NewValue = '') or (NewValue='(none)') then
+  if (NewValue = '') or (NewValue=oisNone) then
     Component := nil
   else begin
     if Assigned(PropertyHook) then begin
       Component := PropertyHook.GetComponent(NewValue);
       if not (Component is GetTypeData(GetPropType)^.ClassType) then begin
-        raise EPropertyError.Create('Invalid property value'{@SInvalidPropertyValue});
+        raise EPropertyError.Create(oisInvalidPropertyValue);
       end;
     end;
   end;
@@ -4404,7 +4154,8 @@ end;
 procedure TComponentNamePropertyEditor.SetValue(const NewValue: ansistring);
 begin
   if (not IsValidIdent(NewValue)) or (NewValue='') then
-    raise Exception.Create('Component name "'+NewValue+'" is not a valid identifier');
+    raise Exception.Create(Format(oisComponentNameIsNotAValidIdentifier, ['"',
+      NewValue, '"']));
   inherited SetValue(NewValue);
   PropertyHook.ComponentRenamed(TComponent(GetComponent(0)));
 end;
@@ -4748,7 +4499,7 @@ var
 begin
   CurValue := TShortCut(OrdValue);
   if CurValue = scNone then
-    Result := '(None)'//srNone
+    Result := oisNone
   else
     Result := ShortCutToText(CurValue);
 end;
@@ -4757,7 +4508,7 @@ procedure TShortCutPropertyEditor.GetValues(Proc: TGetStrProc);
 var
   I: Integer;
 begin
-  Proc('(none)'{srNone});
+  Proc(oisNone);
   for I := 1 to High(ShortCuts) do Proc(ShortCutToText(ShortCuts[I]));
 end;
 
@@ -4766,11 +4517,11 @@ var
   NewValue: TShortCut;
 begin
   NewValue := 0;
-  if (Value <> '') and (AnsiCompareText(Value, '(none)'{srNone}) <> 0) then
+  if (Value <> '') and (AnsiCompareText(Value, oisNone) <> 0) then
   begin
     NewValue := TextToShortCut(Value);
     if NewValue = 0 then
-      raise EPropertyError.Create('Invalid Property Value'{@SInvalidPropertyValue});
+      raise EPropertyError.Create(oisInvalidPropertyValue);
   end;
   SetOrdValue(NewValue);
 end;
@@ -4824,7 +4575,7 @@ begin
     Parent:= Self;
     SetBounds(x,y,MaxX-2*x, Height);
     Anchors:= [akLeft, akTop, akRight];
-    Caption:= '0 lines, 0 chars';
+    Caption:= ois0Lines0Chars;
   end;
 
   Memo := TMemo.Create(self);
@@ -4899,7 +4650,7 @@ end;
 
 procedure TStringsPropEditorDlg.MemoChanged(Sender : TObject);
 begin
-  StatusLabel.Text:= Format('%d lines, %d chars', [Memo.Lines.Count,
+  StatusLabel.Text:= Format(oisDLinesDChars, [Memo.Lines.Count,
     (Length(Memo.Lines.Text) - Memo.Lines.Count * Length(LineEnding))]);
 end;
 
@@ -5246,36 +4997,17 @@ begin
 end;
 
 procedure TSessionPropertiesPropertyEditor.Edit;
-var
-  Dialog: TStringsPropEditorDlg;
-  s: String;
-  i: Integer;
-  c: Char;
 begin
-  Dialog:=TStringsPropEditorDlg.Create(nil);
-  try
-    Dialog.Editor:=Self;
-    s:=GetStrValue;
-    for i:=1 to length(s) do if s[i]=';' then s[i]:=#10;
-    Dialog.Memo.Text:=s;
-    if Dialog.ShowModal=mrOk then begin
-      s:=Dialog.Memo.Text;
-      i:=1;
-      while i<=length(s) do begin
-        c:=s[i];
-        if c in [#13,#10] then begin
-          s[i]:=';';
-          inc(i);
-          if (i<=length(s)) and (s[i] in [#10,#13]) and (c<>s[i]) then
-            System.Delete(s,i,1);
-        end else
-          inc(i);
-      end;
-      SetStrValue(s);
+  With TSelectPropertiesForm.Create(Application) do
+    Try
+      PropertyComponent:=GetComponent(0) as TComponent;
+      SelectedProperties:=GetStrValue;
+      Caption:=Format(oisPropertiesOf, [TComponent(GetComponent(0)).Name]);
+      If (ShowModal=mrOK) then
+        SetStrValue(SelectedProperties);
+    Finally
+      Free;
     end;
-  finally
-    Dialog.Free;
-  end;
 end;
 
 //==============================================================================
@@ -6404,10 +6136,8 @@ begin
     nil, 'AnchorSideRight', THiddenPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TAnchorSide'),
     nil, 'AnchorSideBottom', THiddenPropertyEditor);
-  {$IFDEF EnableSessionProps}
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
     TCustomPropertyStorage, 'Filename', TFileNamePropertyEditor);
-  {$ENDIF}
 end;
 
 procedure FinalPropEdits;

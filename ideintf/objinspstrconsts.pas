@@ -189,6 +189,7 @@ resourcestring
   oiStdActDataSetEditHint = 'Edit';
   oiStdActDataSetPostHint = 'Post';
   oiStdActDataSetCancel1Hint = 'Cancel';
+  oisComponents = 'Components';
   oiStdActDataSetRefreshHint = 'Refresh';
   
   oisStdActionListEditor = 'Standard Action Classes';
@@ -196,11 +197,18 @@ resourcestring
 
   // TFileNamePropertyEditor
   oisSelectAFile = 'Select a file';
+  oisPropertiesOf = 'Properties of %s';
   oisAllFiles = 'All files (*.*)|*.*';
 
   // property editors
   oisSort = 'Sort';
+  oisDLinesDChars = '%d lines, %d chars';
   oisStringsEditorDialog = 'Strings Editor Dialog';
+  ois0Lines0Chars = '0 lines, 0 chars';
+  oisInvalidPropertyValue = 'Invalid property value';
+  oisNone = '(none)';
+  oisComponentNameIsNotAValidIdentifier = 'Component name %s%s%s is not a '
+    +'valid identifier';
   oisHelpTheHelpDatabaseWasUnableToFindFile = 'The help database %s%s%s was '
     +'unable to find file %s%s%s.';
   oisHelpTheMacroSInBrowserParamsWillBeReplacedByTheURL = 'The macro %s in '
@@ -231,7 +239,7 @@ resourcestring
   oisClearPicture = 'Clear picture';
   oisLoad = '&Load';
   oisSave = '&Save';
-  oisCLear = 'C&lear';
+  oisClear = 'C&lear';
   oisErrorLoadingImage = 'Error loading image';
   oisErrorLoadingImage2 = 'Error loading image %s%s%s:%s%s';
 
