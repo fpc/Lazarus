@@ -153,6 +153,8 @@ begin
     Result:=rsLanguageHebrew
   else if CompareText(ID,'ar')=0 then
     Result:=rsLanguageArabic
+  else if CompareText(ID,'pb')=0 then
+    Result:=rsLanguagePortugues
   else
     Result:=ID;
 end;

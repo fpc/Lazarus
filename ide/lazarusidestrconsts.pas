@@ -1497,6 +1497,7 @@ resourcestring
   rsLanguageFinnishWin  = 'Finnish for MS Windows';
   rsLanguageHebrew      = 'Hebrew';
   rsLanguageArabic      = 'Arabic';
+  rsLanguagePortugues   = 'Portuguese';
 
   // Unit dependencies
   dlgUnitDepCaption     = 'Unit dependencies';
