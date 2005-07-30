@@ -1102,7 +1102,7 @@ end;
 function TWidgetSet.RectVisible(dc : hdc; const ARect: TRect) : Boolean;
 var
   ClipRGN, RectRgn: hRGN;
-  Intersection: Cardinal;
+  Intersection: hRGN;
   CombineResult: Integer;
 begin
   Result:=false;
