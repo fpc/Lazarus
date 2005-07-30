@@ -1,0 +1,129 @@
+object ProjectVariablesForm: TProjectVariablesForm
+  Caption = 'New project from template'
+  ClientHeight = 328
+  ClientWidth = 499
+  OnShow = ProjectVariablesFormShow
+  PixelsPerInch = 90
+  Position = poDesktopCenter
+  HorzScrollBar.Page = 498
+  VertScrollBar.Page = 327
+  Left = 431
+  Height = 328
+  Top = 501
+  Width = 499
+  object Label1: TLabel
+    Alignment = taRightJustify
+    AutoSize = False
+    BorderSpacing.OnChange = nil
+    Caption = '&Name for new project:'
+    Color = clNone
+    Layout = tlCenter
+    Left = 8
+    Height = 23
+    Top = 16
+    Width = 131
+  end
+  object Label2: TLabel
+    Alignment = taRightJustify
+    AutoSize = False
+    BorderSpacing.OnChange = nil
+    Caption = 'Create in &directory:'
+    Color = clNone
+    Layout = tlCenter
+    Left = 8
+    Height = 22
+    Top = 48
+    Width = 131
+  end
+  object PDescription: TPanel
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.OnChange = nil
+    BevelInner = bvRaised
+    BevelOuter = bvLowered
+    Caption = 'This project contains some additional variables. Please provide values for these variables'
+    ClientHeight = 58
+    ClientWidth = 485
+    FullRepaint = False
+    TabOrder = 0
+    Left = 8
+    Height = 58
+    Top = 80
+    Width = 485
+  end
+  object SGVariables: TStringGrid
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoFillColumns = True
+    BorderSpacing.OnChange = nil
+    ColCount = 3
+    DefaultColWidth = 120
+    FixedColor = clBtnFace
+    GridLineWidth = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing, goAlwaysShowEditor, goDblClickAutoSize, goSmoothScroll]
+    RowCount = 5
+    ScrollBars = ssAutoBoth
+    VisibleColCount = 2
+    VisibleRowCount = 4
+    Left = 10
+    Height = 140
+    Top = 144
+    Width = 483
+  end
+  object BOK: TButton
+    Anchors = [akRight, akBottom]
+    BorderSpacing.OnChange = nil
+    Caption = '&OK'
+    Default = True
+    ModalResult = 1
+    OnClick = BOKClick
+    TabOrder = 1
+    Left = 411
+    Height = 25
+    Top = 292
+    Width = 75
+  end
+  object BCancel: TButton
+    Anchors = [akRight, akBottom]
+    BorderSpacing.OnChange = nil
+    Cancel = True
+    Caption = '&Cancel'
+    ModalResult = 2
+    TabOrder = 2
+    Left = 323
+    Height = 25
+    Top = 292
+    Width = 75
+  end
+  object EProjectName: TEdit
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.OnChange = nil
+    TabOrder = 3
+    Left = 152
+    Height = 23
+    Top = 16
+    Width = 237
+  end
+  object DEProject: TDirectoryEdit
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.OnChange = nil
+    TabOrder = 4
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.OnChange = nil
+    TabOrder = 4
+    Left = 152
+    Height = 23
+    Top = 48
+    Width = 317
+  end
+  object BConfig1: TButton
+    BorderSpacing.OnChange = nil
+    Caption = 'C&onfigure...'
+    OnClick = BConfig1Click
+    TabOrder = 5
+    Left = 10
+    Height = 25
+    Top = 292
+    Width = 94
+  end
+end

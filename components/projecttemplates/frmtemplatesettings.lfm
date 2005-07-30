@@ -1,0 +1,59 @@
+object TemplateSettingsForm: TTemplateSettingsForm
+  Caption = 'Project templates settings'
+  ClientHeight = 127
+  ClientWidth = 400
+  PixelsPerInch = 90
+  Position = poDesktopCenter
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 126
+  Left = 470
+  Height = 127
+  Top = 175
+  Width = 400
+  object Label1: TLabel
+    AutoSize = False
+    BorderSpacing.OnChange = nil
+    Caption = '&Directory with templates:'
+    Color = clNone
+    FocusControl = DETemplates
+    Layout = tlCenter
+    Left = 8
+    Height = 24
+    Top = 16
+    Width = 160
+  end
+  object BOK: TButton
+    BorderSpacing.OnChange = nil
+    Caption = '&OK'
+    Default = True
+    ModalResult = 1
+    OnClick = BOKClick
+    TabOrder = 0
+    Left = 296
+    Height = 25
+    Top = 96
+    Width = 91
+  end
+  object BCancel: TButton
+    BorderSpacing.OnChange = nil
+    Cancel = True
+    Caption = '&Cancel'
+    TabOrder = 1
+    Left = 192
+    Height = 25
+    Top = 96
+    Width = 96
+  end
+  object DETemplates: TDirectoryEdit
+    ButtonWidth = 23
+    NumGlyphs = 1
+    BorderSpacing.OnChange = nil
+    TabOrder = 2
+    BorderSpacing.OnChange = nil
+    TabOrder = 2
+    Left = 8
+    Height = 23
+    Top = 41
+    Width = 360
+  end
+end
