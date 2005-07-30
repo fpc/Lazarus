@@ -79,6 +79,7 @@ type
     function HasBitmap: Boolean;
     procedure CreateMenuItem; virtual;
     function Size: Integer; virtual;
+    function GetPath: string;
   public
     property Name: string read FName write SetName;
     property Bitmap: TBitmap read GetBitmap write SetBitmap;
@@ -207,6 +208,23 @@ type
 
 var
   IDEMenuRoots: TIDEMenuRoots = nil;// created by the IDE
+  // Popupmenu of the SourceEditor:
+  SourceEditorMenuRoot: TIDEMenuSection;
+  // Source Editor: First dynamic section for often used context sensitive stuff
+  SrcEditMenuSectionFirstDynamic: TIDEMenuSection;
+  // Source Editor: First static section (e.g. Find Declaration)
+  SrcEditMenuSectionFirstStatic: TIDEMenuSection;
+  // Source Editor: Clipboard section (e.g. cut, copy, paste)
+  SrcEditMenuSectionClipboard: TIDEMenuSection;
+  // Source Editor: register the File Specific dynamic section
+  SrcEditMenuSectionFileDynamic: TIDEMenuSection;
+  // Source Editor: register the marks section
+  SrcEditMenuSectionMarks: TIDEMenuSection;
+  // Source Editor: register the Goto Bookmarks Submenu
+  SrcEditSubMenuGotoBookmarks: TIDEMenuSection;
+  // Source Editor: register the Set Bookmarks Submenu
+  SrcEditSubMenuSetBookmarks: TIDEMenuSection;
+
   MessagesMenuRoot: TIDEMenuSection;
   CodeExplorerMenuRoot: TIDEMenuSection;
 
@@ -430,6 +448,18 @@ begin
     Result:=1
   else
     Result:=0;
+end;
+
+function TIDEMenuItem.GetPath: string;
+var
+  Item: TIDEMenuItem;
+begin
+  Result:=Name;
+  Item:=Section;
+  while Item<>nil do begin
+    Result:=Item.Name+'/'+Result;
+    Item:=Item.Section;
+  end;
 end;
 
 { TIDEMenuSection }
