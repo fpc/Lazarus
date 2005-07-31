@@ -38,7 +38,8 @@ interface
 uses
   Classes, LCLIntf, SysUtils, Forms, Controls, Graphics, StdCtrls, ExtCtrls,
   LResources, Buttons, Dialogs, CodeToolManager,
-  LazarusIDEStrConsts, IDEOptionDefs, ProjectIntf, Project;
+  ProjectIntf, IDEWindowIntf,
+  LazarusIDEStrConsts, IDEOptionDefs, Project;
 
 type
   TProjectOptionsDialog = class(TForm)

@@ -50,7 +50,7 @@ type
     procedure DoResizeRecord(Index, OldSize, NewSize: integer);
   protected
     procedure ResizeRecord(var ARecord: Pointer;
-        Index, OldSize, NewSize: integer); virtual;
+                           Index, OldSize, NewSize: integer); virtual;
     function GetObject(Index: Integer): TObject; override;
     procedure PutObject(Index: Integer; AnObject: TObject); override;
   public

@@ -316,6 +316,7 @@ begin
     Result:= TWSCustomListBoxClass(WidgetSetClass).GetSelected(Self, Index)
   else
     Result:= PCustomListBoxItemRecord(GetCachedData(Index))^.Selected;
+  //debugln('TCustomListBox.GetSelected A ',DbgSName(Self),' Index=',dbgs(Index),' Selected=',dbgs(Result));
 end;
 
 {------------------------------------------------------------------------------}

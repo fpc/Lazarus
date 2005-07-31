@@ -19,8 +19,8 @@ unit frmSelectProps;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ObjInspStrConsts, Buttons, ExtCtrls;
+  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
+  StdCtrls, ObjInspStrConsts, IDEWindowIntf, Buttons, ExtCtrls;
 
 type
 
@@ -47,7 +47,11 @@ type
     procedure BClearClick(Sender: TObject);
     procedure BDeleteClick(Sender: TObject);
     procedure LBComponentsSelectionChange(Sender: TObject; User: boolean);
+    procedure LBPropertiesClick(Sender: TObject);
+    procedure LBPropertiesDblClick(Sender: TObject);
     procedure PTopResize(Sender: TObject);
+    procedure SelectPropertiesFormClose(Sender: TObject;
+      var CloseAction: TCloseAction);
     procedure SelectPropertiesFormCreate(Sender: TObject);
   private
     FSelectedComponent : TComponent;
@@ -89,12 +93,34 @@ Var
   C : TComponent;
   
 begin
+  //debugln('TSelectPropertiesForm.LBComponentsSelectionChange');
   With Sender as TListBox do
     if ItemIndex=-1 then
       C:=Nil
     else
       C:=Items.Objects[ItemIndex] as TComponent;
   ShowProperties(C);
+end;
+
+procedure TSelectPropertiesForm.LBPropertiesClick(Sender: TObject);
+//var
+  //I: Integer;
+begin
+  //writeln('TSelectPropertiesForm.LBPropertiesClick START ');
+  //For I:=LBProperties.Items.Count-1 downto 0 do if LBProperties.Selected[i] then writeln(i);
+  //writeln('');
+  //writeln('TSelectPropertiesForm.LBPropertiesClick END ');
+end;
+
+procedure TSelectPropertiesForm.LBPropertiesDblClick(Sender: TObject);
+//var
+  //I: Integer;
+begin
+  //writeln('TSelectPropertiesForm.LBPropertiesDblClick START ');
+  //For I:=LBProperties.Items.Count-1 downto 0 do if LBProperties.Selected[i] then writeln(i);
+  //writeln('');
+  //writeln('TSelectPropertiesForm.LBPropertiesDblClick END ');
+  AddSelectedProperties;
 end;
 
 procedure TSelectPropertiesForm.PTopResize(Sender: TObject);
@@ -108,6 +134,12 @@ begin
   PComponents.Width:=W;
 end;
 
+procedure TSelectPropertiesForm.SelectPropertiesFormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
+end;
+
 procedure TSelectPropertiesForm.SelectPropertiesFormCreate(Sender: TObject);
 begin
   BAdd.Caption:=ilesAdd;
@@ -117,6 +149,7 @@ begin
   BCancel.Caption:=oiStdActDataSetCancel1Hint;
   LComponents.Caption:=oisComponents;
   LProperties.Caption:=oisProperties;
+  IDEDialogLayoutList.ApplyLayout(Self,485,460);
 end;
 
 procedure TSelectPropertiesForm.BAddClick(Sender: TObject);
@@ -137,6 +170,7 @@ end;
 
 function TSelectPropertiesForm.GetSelectedProps: String;
 begin
+  //debugln('TSelectPropertiesForm.GetSelectedProps');
   LBSelected.Items.Delimiter:=';';
   Result:=LBSelected.Items.DelimitedText;
 end;
@@ -148,6 +182,7 @@ Var
   I : Integer;
   
 begin
+  //debugln('TSelectPropertiesForm.SetSelectedProps');
   L:=TStringList.Create;
   Try
     L.Delimiter:=';';
@@ -168,6 +203,7 @@ Var
   I : Integer;
 
 begin
+  //debugln('TSelectPropertiesForm.ShowComponents');
   With LBComponents.Items do
     try
       BeginUpdate;
@@ -195,8 +231,9 @@ Var
   I : Integer;
   N,S : String;
   P : PPropInfo;
-  
+
 begin
+  //debugln('TSelectPropertiesForm.ShowProperties ',dbgsName(C));
   With LBProperties do
     try
       Items.BeginUpdate;
@@ -231,14 +268,19 @@ Var
   N : String;
 
 begin
+  //write('TSelectPropertiesForm.AddSelectedProperties A ');
+  //For I:=LBProperties.Items.Count-1 downto 0 do if LBProperties.Selected[i] then write(i);
+  //writeln('');
   If Assigned(FSelectedComponent) then
     With LBProperties do
       try
         Items.BeginUpdate;
         LBSelected.Items.BeginUpdate;
+        //writeln('TSelectPropertiesForm.AddSelectedProperties B');
         For I:=Items.Count-1 downto 0 do
           If Selected[i] then
             begin
+            //writeln('TSelectPropertiesForm.AddSelectedProperties C ',i);
             N:=Items[i];
             If (FSelectedComponent<>FPropComponent) then
               N:=FSelectedComponent.Name+'.'+N;
@@ -257,6 +299,7 @@ Var
   I : Integer;
 
 begin
+  //debugln('TSelectPropertiesForm.DeleteSelectedProperties');
   With LBSelected do
     try
       Items.BeginUpdate;

@@ -38,6 +38,7 @@ uses
   Classes, SysUtils, LazConf, Laz_XMLCfg,
   LResources, Forms, Controls, Buttons, LclProc, ExtCtrls, StdCtrls, ComCtrls,
   Dialogs, CodeToolManager, DefineTemplates, SourceChanger, SynEdit,
+  IDEWindowIntf,
   IDEOptionDefs, EditDefineTree, LazarusIDEStrConsts, IDEProcs;
 
 type

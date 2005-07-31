@@ -25,7 +25,7 @@ uses
   ImageListEditor, ComponentTreeView, ActionsEditor, HelpIntf, TextTools,
   FormEditingIntf, SrcEditorIntf, ComponentReg, PackageIntf, HelpHTML,
   FieldsEditor, ConfigStorage, HelpFPDoc, ProjectIntf, LazIDEIntf, NewItemIntf,
-  MacroIntf, MenuIntf, FrmSelectProps;
+  MacroIntf, MenuIntf, FrmSelectProps, IDEWindowIntf;
 
 implementation
 

@@ -39,7 +39,7 @@ uses
   SynHighlighterLFM, SynEdit, BasicCodeTools, CodeCache, CodeToolManager,
   LFMTrees,
   // IDE
-  ComponentReg, PackageIntf,
+  ComponentReg, PackageIntf, IDEWindowIntf,
   LazarusIDEStrConsts, OutputFilter, IDEProcs, IDEOptionDefs, EditorOptions;
 
 type

@@ -412,6 +412,8 @@ begin
         end;
       end;
   end;
+  //if CompareText(ACustomListBox.Name,'LBProperties')=0 then
+  //  debugln('TGtkWSCustomListBox.GetSelected ',DbgSName(ACustomListBox),' Index=',dbgs(AIndex),' Selected=',dbgs(Result));
 end;
 
 function  TGtkWSCustomListBox.GetStrings(const ACustomListBox: TCustomListBox
@@ -457,6 +459,8 @@ var
   Widget: PGtkWidget;// pointer to gtk-widget (local use when neccessary)
   Handle: HWND;
 begin
+  //if CompareText(ACustomListBox.Name,'LBProperties')=0 then
+  //  debugln('TGtkWSCustomListBox.SelectItem ',DbgSName(ACustomListBox),' Index=',dbgs(AIndex),' Selected=',dbgs(ASelected));
   Handle := ACustomListBox.Handle;
   case ACustomListBox.fCompStyle of
     csListBox, csCheckListBox:
@@ -510,6 +514,8 @@ var
   Handle: HWND;
   Widget: PGtkWidget;
 begin
+  //if CompareText(ACustomListBox.Name,'LBProperties')=0 then
+  //  debugln('TGtkWSCustomListBox.SetItemIndex ',DbgSName(ACustomListBox),' Index=',dbgs(AIndex));
   Handle := ACustomListBox.Handle;
   if Handle<>0 then 
   begin
@@ -531,13 +537,17 @@ procedure TGtkWSCustomListBox.SetSelectionMode(
   const ACustomListBox: TCustomListBox;
   const AExtendedSelect, AMultiSelect: boolean);
 begin
-  TGtkWidgetSet(InterfaceObject).SetSelectionMode(ACustomListBox, 
+  //if CompareText(ACustomListBox.Name,'LBProperties')=0 then
+  //  debugln('TGtkWSCustomListBox.SetSelectionMode ',DbgSName(ACustomListBox));
+  TGtkWidgetSet(InterfaceObject).SetSelectionMode(ACustomListBox,
     PGtkWidget(ACustomListBox.Handle), AMultiSelect, AExtendedSelect);
 end;
 
 procedure TGtkWSCustomListBox.SetSorted(const ACustomListBox: TCustomListBox;
   AList: TStrings; ASorted: boolean);
 begin
+  //if CompareText(ACustomListBox.Name,'LBProperties')=0 then
+  //  debugln('TGtkWSCustomListBox.SetSorted ',DbgSName(ACustomListBox));
   if AList is TGtkListStringList then
     TGtkListStringList(AList).Sorted := ASorted
   else if AList is TGtkCListStringList then
@@ -564,6 +574,8 @@ var
   ListItemWidget: PGtkWidget;
   i: Integer;
 begin
+  //if CompareText(ACustomListBox.Name,'LBProperties')=0 then
+  //  debugln('TGtkWSCustomListBox.SetTopIndex ',DbgSName(ACustomListBox));
   AWidget:=PGtkWidget(ACustomListBox.Handle);
   ListWidget:=PGtkList(GetWidgetInfo(AWidget, True)^.CoreWidget);
   ScrolledWindow:=PGtkScrolledWindow(AWidget);
@@ -582,7 +594,6 @@ begin
   if AdjValue>MaxAdjValue then AdjValue:=MaxAdjValue;
   gtk_adjustment_set_value(VertAdj,AdjValue);
 end;
-
 {$EndIf}
 
 { TGtkWSCustomComboBox }

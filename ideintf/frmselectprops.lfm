@@ -2,6 +2,7 @@ object SelectPropertiesForm: TSelectPropertiesForm
   Caption = 'Select properties'
   ClientHeight = 462
   ClientWidth = 485
+  OnClose = SelectPropertiesFormClose
   OnCreate = SelectPropertiesFormCreate
   PixelsPerInch = 112
   Position = poDesktopCenter
@@ -47,6 +48,8 @@ object SelectPropertiesForm: TSelectPropertiesForm
         Align = alClient
         BorderSpacing.OnChange = nil
         MultiSelect = True
+        OnClick = LBPropertiesClick
+        OnDblClick = LBPropertiesDblClick
         Sorted = True
         TabOrder = 0
         TopIndex = -1

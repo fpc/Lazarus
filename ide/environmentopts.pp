@@ -37,7 +37,7 @@ uses
 {$ENDIF}
   Classes, SysUtils, FPCAdds, LCLProc, Forms, Controls, Buttons, GraphType,
   Graphics, ExtCtrls, StdCtrls, Spin, FileUtil, LResources, Dialogs,
-  Laz_XMLCfg, ObjectInspector,
+  Laz_XMLCfg, ObjectInspector, IDEWindowIntf,
   LazarusIDEStrConsts, LazConf, ExtToolDialog, IDEProcs, IDEOptionDefs,
   InputHistory, EditorOptions, Translations;
 
@@ -790,8 +790,8 @@ begin
   // windows
   InitLayoutList;
   FIDEDialogLayoutList:=TIDEDialogLayoutList.Create;
-  if IDEOptionDefs.IDEDialogLayoutList=nil then
-    IDEOptionDefs.IDEDialogLayoutList:=FIDEDialogLayoutList;
+  if IDEWindowIntf.IDEDialogLayoutList=nil then
+    IDEWindowIntf.IDEDialogLayoutList:=FIDEDialogLayoutList;
   FMinimizeAllOnMinimizeMain:=false;
   FHideIDEOnRun:=false;
 
@@ -885,8 +885,8 @@ begin
   FMakeFileHistory.Free;
   FDebuggerFileHistory.Free;
   FTestBuildDirHistory.Free;
-  if IDEOptionDefs.IDEDialogLayoutList=FIDEDialogLayoutList then
-    IDEOptionDefs.IDEDialogLayoutList:=nil;
+  if IDEWindowIntf.IDEDialogLayoutList=FIDEDialogLayoutList then
+    IDEWindowIntf.IDEDialogLayoutList:=nil;
   FIDEDialogLayoutList.Free;
   fIDEWindowLayoutList.Free;
   FConfigStore.Free;
@@ -994,8 +994,8 @@ begin
     // windows
     FIDEWindowLayoutList.LoadFromXMLConfig(XMLConfig,
       Path+'Desktop/');
-    FIDEDialogLayoutList.LoadFromXMLConfig(XMLConfig,
-      Path+'Desktop/Dialogs');
+    FIDEDialogLayoutList.LoadFromConfig(FConfigStore,
+      Path+'Desktop/Dialogs/');
     FMinimizeAllOnMinimizeMain:=XMLConfig.GetValue(
       Path+'Desktop/MinimizeAllOnMinimizeMain/Value',true);
     FHideIDEOnRun:=XMLConfig.GetValue(
@@ -1229,7 +1229,7 @@ begin
 
     // windows
     FIDEWindowLayoutList.SaveToXMLConfig(XMLConfig,Path+'Desktop/');
-    FIDEDialogLayoutList.SaveToXMLConfig(XMLConfig,Path+'Desktop/Dialogs');
+    FIDEDialogLayoutList.SaveToConfig(FConfigStore,Path+'Desktop/Dialogs/');
     XMLConfig.SetDeleteValue(Path+'Desktop/MinimizeAllOnMinimizeMain/Value',
       FMinimizeAllOnMinimizeMain,true);
     XMLConfig.SetDeleteValue(Path+'Desktop/HideIDEOnRun/Value',FHideIDEOnRun,

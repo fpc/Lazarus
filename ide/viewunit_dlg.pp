@@ -38,7 +38,7 @@ interface
 
 uses
   SysUtils, Classes, Controls, Forms, Dialogs, LResources, Buttons, StdCtrls,
-  LazarusIdeStrConsts, IDEOptionDefs;
+  LazarusIdeStrConsts, IDEWindowIntf;
 
 type
   TViewUnitsEntry = class

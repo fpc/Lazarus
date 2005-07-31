@@ -37,8 +37,8 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, ExtCtrls,
-  HelpIntf, Laz_XMLCfg,
-  ObjectInspector, LazConf, LazarusIDEStrConsts, IDEProcs, IDEOptionDefs;
+  ObjectInspector, HelpIntf, IDEWindowIntf, Laz_XMLCfg,
+  LazConf, LazarusIDEStrConsts, IDEProcs, IDEOptionDefs;
 
 type
   { THelpOptions }

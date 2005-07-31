@@ -42,7 +42,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, SynEdit, Buttons, StdCtrls,
   ExtCtrls, IDEOptionDefs, Dialogs, BasicCodeTools,
-  {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF}, TextTools,
+  AVL_Tree, TextTools, IDEWindowIntf,
   LazarusIDEStrConsts, EditorOptions, MiscOptions, SynEditHighlighter;
   
 type

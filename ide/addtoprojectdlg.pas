@@ -36,8 +36,8 @@ interface
 
 uses
   Classes, SysUtils, Math, LCLProc, LResources, Forms, Controls, Buttons,
-  ComCtrls, StdCtrls, ExtCtrls, Menus, Dialogs, Graphics, FileUtil,
-  {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF},
+  ComCtrls, StdCtrls, ExtCtrls, Menus, Dialogs, Graphics, FileUtil, AVL_Tree,
+  IDEWindowIntf,
   LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, EnvironmentOpts,
   Project, PackageDefs, PackageSystem, InputHistory;
   

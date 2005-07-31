@@ -41,7 +41,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Buttons, ComCtrls, StdCtrls,
   FileCtrl, LResources, Dialogs, LCLProc,
-  PackageDefs, LazarusIDEStrConsts, IDEOptionDefs, PackageSystem;
+  PackageDefs, LazarusIDEStrConsts, IDEWindowIntf, PackageSystem;
 
 type
   TOpenInstalledPackagesDlg = class(TCustomForm)

@@ -35,6 +35,9 @@ uses
   SynRegExpr, LazarusIDEStrConsts, LazConf, IDEProcs, TransferMacros;
 
 type
+
+  { TCleanDirectoryDialog }
+
   TCleanDirectoryDialog = class(TForm)
     KeepTextFilesCheckbox: TCHECKBOX;
     SubDirsCheckbox: TCHECKBOX;
@@ -63,6 +66,8 @@ type
     property Macros: TTransferMacroList read FMacros write SetMacros;
   end;
   
+  { TShowDeletingFilesDialog }
+
   TShowDeletingFilesDialog = class(TForm)
     FilesListBox: TListBox;
     OkButton: TBUTTON;

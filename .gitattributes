@@ -959,6 +959,7 @@ ideintf/helpfpdoc.pas svneol=native#text/pascal
 ideintf/helphtml.pas svneol=native#text/pascal
 ideintf/helpintf.pas svneol=native#text/pascal
 ideintf/idecommands.pas svneol=native#text/pascal
+ideintf/idewindowintf.pas svneol=native#text/plain
 ideintf/imagelisteditor.pp svneol=native#text/pascal
 ideintf/lazideintf.pas svneol=native#text/pascal
 ideintf/listviewpropedit.pp svneol=native#text/pascal

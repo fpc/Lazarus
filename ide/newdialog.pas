@@ -42,7 +42,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, StdCtrls, Buttons, ComCtrls,
   Dialogs, LResources, ProjectIntf, PackageIntf, NewItemIntf,
-  IDEOptionDefs, LazarusIDEStrConsts;
+  IDEWindowIntf, LazarusIDEStrConsts;
   
 type
   { TNewLazIDEItemCategory }

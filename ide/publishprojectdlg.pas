@@ -38,7 +38,9 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, LResources, Buttons, StdCtrls,
-  ProjectDefs, PackageDefs, PublishModule, IDEOptionDefs, InputHistory, Dialogs,
+  Dialogs,
+  IDEWindowIntf,
+  ProjectDefs, PackageDefs, PublishModule, IDEOptionDefs, InputHistory,
   LazarusIDEStrConsts;
 
 type

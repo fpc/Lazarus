@@ -40,7 +40,7 @@ interface
 
 uses
   Classes, SysUtils, Math, Forms, Controls, Buttons, StdCtrls,
-  SynEdit, LResources, LazarusIDEStrConsts, EditorOptions, IDEOptionDefs,
+  SynEdit, LResources, LazarusIDEStrConsts, EditorOptions, IDEWindowIntf,
   InputHistory, DiffPatch;
 
 type
