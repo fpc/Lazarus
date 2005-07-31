@@ -1698,6 +1698,7 @@ end;
 procedure TMainIDE.SetupStandardIDEMenuItems;
 begin
   IDEMenuRoots:=TIDEMenuRoots.Create;
+  RegisterStandardSourceEditorMenuItems;
   RegisterStandardMessagesViewMenuItems;
   RegisterStandardCodeExplorerMenuItems;
 end;

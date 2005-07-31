@@ -372,6 +372,17 @@ begin
    end;
 end;
 
+procedure TCustomComboBox.WMChar(var Message: TLMChar);
+begin
+  // all normal characters are handled by the ComboBox
+  //debugln('TCustomEdit.WMChar ',DbgSName(Self),' ',dbgs(Message.CharCode));
+  if Message.CharCode in [ord('A')..ord('Z'),ord('a')..ord('z')] then
+    // eat normal keys, so they don't trigger accelerators
+    Message.Result := 1
+  else
+    inherited WMChar(Message);
+end;
+
 procedure TCustomComboBox.KeyDown(var Key: Word; Shift: TShiftState);
 var
   skip : Boolean;

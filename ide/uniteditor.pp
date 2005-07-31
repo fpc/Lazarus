@@ -690,6 +690,22 @@ var
   SrcEditMenuCut: TIDEMenuCommand;
   SrcEditMenuCopy: TIDEMenuCommand;
   SrcEditMenuPaste: TIDEMenuCommand;
+  SrcEditMenuAddBreakpoint: TIDEMenuCommand;
+  SrcEditMenuRunToCursor: TIDEMenuCommand;
+  SrcEditMenuAddWatchAtCursor: TIDEMenuCommand;
+  SrcEditMenuViewCallStack: TIDEMenuCommand;
+  SrcEditMenuCompleteCode: TIDEMenuCommand;
+  SrcEditMenuEncloseSelection: TIDEMenuCommand;
+  SrcEditMenuExtractProc: TIDEMenuCommand;
+  SrcEditMenuInvertAssignment: TIDEMenuCommand;
+  SrcEditMenuFindIdentifierReferences: TIDEMenuCommand;
+  SrcEditMenuRenameIdentifier: TIDEMenuCommand;
+  SrcEditMenuMoveEditorLeft: TIDEMenuCommand;
+  SrcEditMenuMoveEditorRight: TIDEMenuCommand;
+  SrcEditMenuReadOnly: TIDEMenuCommand;
+  SrcEditMenuShowLineNumbers: TIDEMenuCommand;
+  SrcEditMenuShowUnitInfo: TIDEMenuCommand;
+  SrcEditMenuEditorProperties: TIDEMenuCommand;
 
 procedure RegisterStandardSourceEditorMenuItems;
 
@@ -765,174 +781,63 @@ begin
     RegisterIDEMenuCommand(SubSubPath,'SetBookmark'+IntToStr(I),
                            uemBookmarkN+IntToStr(i));
 
-  { TODO
-  ReadOnlyMenuItem := TMenuItem.Create(Self);
-  with ReadOnlyMenuItem do begin
-    Name:='ReadOnlyMenuItem';
-    Caption := uemReadOnly;
-    OnClick := @ReadOnlyClicked;
-    ShowAlwaysCheckable:=true;
-  end;
-  SrcPopupMenu.Items.Add(ReadOnlyMenuItem);
+  // register the Debug submenu
+  SrcEditSubMenuDebug:=RegisterIDESubMenu(Path,'Debug',uemDebugWord);
+  SubSubPath:=SrcEditSubMenuDebug.GetPath;
+  SrcEditMenuAddBreakpoint:=RegisterIDEMenuCommand(SubSubPath,'Add Breakpoint',
+                                                   uemAddBreakpoint);
+  SrcEditMenuAddWatchAtCursor:=RegisterIDEMenuCommand(SubSubPath,
+                                     'Add Watch at Cursor',uemAddWatchAtCursor);
+  SrcEditMenuRunToCursor:=RegisterIDEMenuCommand(SubSubPath,
+                                                'Run to cursor',uemRunToCursor);
+  SrcEditMenuViewCallStack:=RegisterIDEMenuCommand(SubSubPath,
+                                        'View Call Stack',uemViewCallStack);
 
-  ShowLineNumbersMenuItem := TMenuItem.Create(Self);
-  with ShowLineNumbersMenuItem do begin
-    Name := 'ShowLineNumbersMenuItem';
-    Caption := dlgShowLineNumbers;
-    OnClick := @ToggleLineNumbersClicked;
-    ShowAlwaysCheckable:=true;
-  end;
-  SrcPopupMenu.Items.Add(ShowLineNumbersMenuItem);
+  // register the Move Page section
+  SrcEditMenuSectionMovePage:=RegisterIDEMenuSection(Path,'Move Page section');
+  SubPath:=SrcEditMenuSectionMovePage.GetPath;
+  SrcEditMenuMoveEditorLeft:=RegisterIDEMenuCommand(SubPath,'MoveEditorLeft',
+                                                    uemMoveEditorLeft);
+  SrcEditMenuMoveEditorRight:=RegisterIDEMenuCommand(SubPath,'MoveEditorRight',
+                                                    uemMoveEditorRight);
 
-  SrcPopupMenu.Items.Add(Seperator);
+  // register the Refactor submenu
+  SrcEditSubMenuRefactor:=RegisterIDESubMenu(Path,'Refactor',uemRefactor);
+  SubSubPath:=SrcEditSubMenuRefactor.GetPath;
+  SrcEditMenuCompleteCode:=RegisterIDEMenuCommand(SubSubPath,'CompleteCode',
+                                                  uemCompleteCode);
+  SrcEditMenuEncloseSelection:=RegisterIDEMenuCommand(SubSubPath,
+                                        'EncloseSelection',uemEncloseSelection);
+  SrcEditMenuExtractProc:=RegisterIDEMenuCommand(SubSubPath,
+                                                 'ExtractProc',uemExtractProc);
+  SrcEditMenuInvertAssignment:=RegisterIDEMenuCommand(SubSubPath,
+                                        'InvertAssignment',uemInvertAssignment);
+  SrcEditMenuFindIdentifierReferences:=RegisterIDEMenuCommand(SubSubPath,
+                        'FindIdentifierReferences',uemFindIdentifierReferences);
+  SrcEditMenuRenameIdentifier:=RegisterIDEMenuCommand(SubSubPath,
+                                        'RenameIdentifier',uemRenameIdentifier);
 
-  ShowUnitInfoMenuItem := TMenuItem.Create(Self);
-  with ShowUnitInfoMenuItem do begin
-    Name:='ShowUnitInfoMenuItem';
-    Caption := uemUnitInfo;
-    OnClick:=@ShowUnitInfo;
-  end;
-  SrcPopupMenu.Items.Add(ShowUnitInfoMenuItem);
-
-  SrcPopupMenu.Items.Add(Seperator);
-
-  DebugMenuItem := TMenuItem.Create(Self);
-  with DebugMenuItem do begin
-    Name:='DebugMenuItem';
-    Caption := uemDebugWord;
-  end;
-  SrcPopupMenu.Items.Add(DebugMenuItem);
-
-      AddBreakpointMenuItem := TMenuItem.Create(Self);
-      with AddBreakpointMenuItem do begin
-        Name := 'AddBreakpointMenuItem';
-        Caption := uemAddBreakpoint;
-        OnClick := @AddBreakpointClicked;
-      end;
-      DebugMenuItem.Add(AddBreakpointMenuItem);
-
-      AddWatchAtCursorMenuItem := TMenuItem.Create(Self);
-      with AddWatchAtCursorMenuItem do begin
-        Name := 'AddWatchAtCursorMenuItem';
-        Caption := uemAddWatchAtCursor;
-        OnClick := @AddWatchAtCursor;
-      end;
-      DebugMenuItem.Add(AddWatchAtCursorMenuItem);
-
-      RunToCursorMenuItem := TMenuItem.Create(Self);
-      with RunToCursorMenuItem do begin
-        Name := 'RunToCursorMenuItem';
-        Caption := uemRunToCursor;
-        OnClick := @RunToClicked;
-      end;
-      DebugMenuItem.Add(RunToCursorMenuItem);
-
-      ViewCallStackMenuItem := TMenuItem.Create(Self);
-      with ViewCallStackMenuItem do begin
-        Name := 'ViewCallStackMenuItem';
-        Caption := uemViewCallStackCursor;
-        OnClick := @ViewCallStackClick;
-      end;
-      DebugMenuItem.Add(ViewCallStackMenuItem);
-
-
-  SrcPopupMenu.Items.Add(Seperator);
-
-  MoveEditorLeftMenuItem := TMenuItem.Create(Self);
-  with MoveEditorLeftMenuItem do begin
-    Name := 'MoveEditorLeftMenuItem';
-    Caption := uemMoveEditorLeft;
-    OnClick :=@MoveEditorLeftClicked;
-  end;
-  SrcPopupMenu.Items.Add(MoveEditorLeftMenuItem);
-
-  MoveEditorRightMenuItem := TMenuItem.Create(Self);
-  with MoveEditorRightMenuItem do begin
-    Name := 'MoveEditorRightMenuItem';
-    Caption := uemMoveEditorRight;
-    OnClick :=@MoveEditorRightClicked;
-  end;
-  SrcPopupMenu.Items.Add(MoveEditorRightMenuItem);
-
-  SrcPopupMenu.Items.Add(Seperator);
-
-  RefactorMenuItem := TMenuItem.Create(Self);
-  with RefactorMenuItem do begin
-    Name:='RefactorMenuItem';
-    Caption := uemRefactor;
-  end;
-  SrcPopupMenu.Items.Add(RefactorMenuItem);
-
-      CompleteCodeMenuItem := TMenuItem.Create(Self);
-      with CompleteCodeMenuItem do begin
-        Name := 'CompleteCodeMenuItem';
-        Caption := uemCompleteCode;
-        OnClick :=@CompleteCodeMenuItemClick;
-      end;
-      RefactorMenuItem.Add(CompleteCodeMenuItem);
-
-      EncloseSelectionMenuItem := TMenuItem.Create(Self);
-      with EncloseSelectionMenuItem do begin
-        Name := 'EncloseSelectionMenuItem';
-        Caption := uemEncloseSelection;
-        OnClick :=@EncloseSelectionMenuItemClick;
-      end;
-      RefactorMenuItem.Add(EncloseSelectionMenuItem);
-
-      ExtractProcMenuItem := TMenuItem.Create(Self);
-      with ExtractProcMenuItem do begin
-        Name := 'ExtractProcMenuItem';
-        Caption := uemExtractProc;
-        OnClick :=@ExtractProcMenuItemClick;
-      end;
-      RefactorMenuItem.Add(ExtractProcMenuItem);
-
-      InvertAssignmentMenuItem := TMenuItem.Create(Self);
-      with InvertAssignmentMenuItem do begin
-        Name := 'InvertAssignment';
-        Caption := uemInvertAssignment;
-        OnClick :=@InvertAssignmentMenuItemClick;
-      end;
-      RefactorMenuItem.Add(InvertAssignmentMenuItem);
-
-      FindIdentifierReferencesMenuItem := TMenuItem.Create(Self);
-      with FindIdentifierReferencesMenuItem do begin
-        Name := 'FindIdentifierReferencesMenuItem';
-        Caption := lisMenuFindIdentifierRefs;
-        OnClick :=@FindIdentifierReferencesMenuItemClick;
-      end;
-      RefactorMenuItem.Add(FindIdentifierReferencesMenuItem);
-
-      RenameIdentifierMenuItem := TMenuItem.Create(Self);
-      with RenameIdentifierMenuItem do begin
-        Name := 'RenameIdentifierMenuItem';
-        Caption := lisMenuRenameIdentifier;
-        OnClick :=@RenameIdentifierMenuItemClick;
-      end;
-      RefactorMenuItem.Add(RenameIdentifierMenuItem);
-
-  SrcPopupMenu.Items.Add(Seperator);
-
-  EditorPropertiesMenuItem := TMenuItem.Create(Self);
-  with EditorPropertiesMenuItem do begin
-    Name := 'EditorPropertiesMenuItem';
-    Caption := uemEditorproperties;
-    OnClick :=@EditorPropertiesClicked;
-  end;
-  SrcPopupMenu.Items.Add(EditorPropertiesMenuItem);
-  }
+  // register the Flags section
+  SrcEditMenuSectionFlags:=RegisterIDEMenuSection(Path,'Flags section');
+  SubPath:=SrcEditMenuSectionFlags.GetPath;
+  SrcEditMenuReadOnly:=RegisterIDEMenuCommand(SubPath,'ReadOnly',uemReadOnly);
+  SrcEditMenuReadOnly.ShowAlwaysCheckable:=true;
+  SrcEditMenuShowLineNumbers:=RegisterIDEMenuCommand(SubPath,'ShowLineNumbers',
+                                                     uemShowLineNumbers);
+  SrcEditMenuShowLineNumbers.ShowAlwaysCheckable:=true;
+  SrcEditMenuShowUnitInfo:=RegisterIDEMenuCommand(SubPath,'ShowUnitInfo',
+                                                  uemShowUnitInfo);
+  SrcEditMenuEditorProperties:=RegisterIDEMenuCommand(SubPath,
+                                        'EditorProperties',uemEditorProperties);
 end;
-
 
 { TSourceEditor }
 
-{The constructor for @link(TSourceEditor).  AOwner is the @link(TSOurceNotebook)
- and the AParent is usually a page of a @link(TNotebook)
-}
-
+{ The constructor for @link(TSourceEditor).
+  AOwner is the @link(TSourceNotebook)
+  and the AParent is usually a page of a @link(TNotebook) }
 constructor TSourceEditor.Create(AOwner: TComponent; AParent: TWinControl);
 Begin
-//writeln('TSourceEditor.Create A ',AOwner.ClassName);
   inherited Create;
   FAOwner := AOwner;
   if (FAOwner<>nil) and (FAOwner is TSourceNotebook) then
@@ -945,14 +850,11 @@ Begin
   FErrorColumn:=-1;
   FExecutionLine:=-1;
 
-//  FControl := nil; //commented out on 11-14-2001
-//writeln('TSourceEditor.Create B ');
   CreateEditor(AOwner,AParent);
 
   FEditPlugin := TSynEditPlugin1.Create(FEditor);
   FEditPlugin.OnLinesInserted := @LinesInserted;
   FEditPlugin.OnLinesDeleted := @LinesDeleted;
-//writeln('TSourceEditor.Create END ');
 end;
 
 destructor TSourceEditor.Destroy;
@@ -2539,8 +2441,13 @@ begin
 end;
 
 destructor TSourceNotebook.Destroy;
-var i: integer;
+var
+  i: integer;
 begin
+  {$IFDEF UseMenuIntf}
+  SourceEditorMenuRoot.MenuItem:=nil;
+  {$ENDIF}
+
   FProcessingCommand:=false;
   for i:=FSourceEditorList.Count-1 downto 0 do
     Editors[i].Free;
@@ -3038,6 +2945,117 @@ begin
 end;
 
 procedure TSourceNotebook.SrcPopUpMenuPopup(Sender: TObject);
+{$IFDEF UseMenuIntf}
+var
+  ASrcEdit: TSourceEditor;
+  BookMarkID, BookMarkX, BookMarkY: integer;
+  MarkSrcEdit: TSourceEditor;
+  MarkDesc: String;
+  MarkEditorIndex: Integer;
+  MarkMenuItem: TMenuItem;
+  EditorComp: TSynEdit;
+  Marks: PSourceMark;
+  MarkCount: integer;
+  i: Integer;
+  CurMark: TSourceMark;
+  EditorPopupPoint: TPoint;
+  SelAvail: Boolean;
+  SelAvailAndWritable: Boolean;
+  CurFilename: String;
+begin
+  //RemoveUserDefinedMenuItems;
+  //RemoveContextMenuItems;
+
+  ASrcEdit:=
+         FindSourceEditorWithEditorComponent(TPopupMenu(Sender).PopupComponent);
+  if ASrcEdit=nil then exit;
+  EditorComp:=ASrcEdit.EditorComponent;
+
+  // readonly
+  SrcEditMenuReadOnly.MenuItem.Checked:=ASrcEdit.ReadOnly;
+  SrcEditMenuShowLineNumbers.MenuItem.Checked:=EditorComp.Gutter.ShowLineNumbers;
+
+  // bookmarks
+  for BookMarkID:=0 to 9 do begin
+    MarkDesc:=' '+IntToStr(BookMarkID);
+    MarkSrcEdit:=FindBookmark(BookMarkID);
+    if (MarkSrcEdit<>nil)
+    and MarkSrcEdit.EditorComponent.GetBookMark(BookMarkID,BookMarkX,BookMarkY)
+    then begin
+      MarkEditorIndex:=FindPageWithEditor(MarkSrcEdit);
+      MarkDesc:=MarkDesc+': '+Notebook.Pages[MarkEditorIndex]
+        +' ('+IntToStr(BookMarkY)+','+IntToStr(BookMarkX)+')';
+    end;
+    // goto book mark item
+    MarkMenuItem:=SrcEditSubMenuGotoBookmarks.MenuItem[BookMarkID];
+    MarkMenuItem.Checked:=(MarkSrcEdit<>nil);
+    MarkMenuItem.Caption:=uemBookmarkN+MarkDesc;
+    // set book mark item
+    MarkMenuItem:=SrcEditSubMenuSetBookmarks.MenuItem[BookMarkID];
+    MarkMenuItem.Checked:=(MarkSrcEdit<>nil);
+    MarkMenuItem.Caption:=uemSetBookmark+MarkDesc;
+  end;
+
+  // editor layout
+  SrcEditMenuMoveEditorLeft.MenuItem.Enabled:=
+                                     (NoteBook<>nil) and (NoteBook.PageCount>1);
+  SrcEditMenuMoveEditorRight.MenuItem.Enabled:=
+                                     (NoteBook<>nil) and (NoteBook.PageCount>1);
+
+  EditorPopupPoint:=EditorComp.ScreenToClient(SrcPopUpMenu.PopupPoint);
+  if EditorPopupPoint.X>EditorComp.Gutter.Width then begin
+    // user clicked on text
+    SelAvail:=ASrcEdit.EditorComponent.SelAvail;
+    SelAvailAndWritable:=SelAvail and (not ASrcEdit.ReadOnly);
+    SrcEditMenuEncloseSelection.MenuItem.Enabled := SelAvailAndWritable;
+    SrcEditMenuExtractProc.MenuItem.Enabled := SelAvailAndWritable;
+    SrcEditMenuInvertAssignment.MenuItem.Enabled := SelAvailAndWritable;
+    SrcEditMenuFindIdentifierReferences.MenuItem.Enabled:=
+                                   IsValidIdent(ASrcEdit.GetWordAtCurrentCaret);
+    SrcEditMenuRenameIdentifier.MenuItem.Enabled:=
+                                   IsValidIdent(ASrcEdit.GetWordAtCurrentCaret)
+                                   and (not ASrcEdit.ReadOnly);
+  end else begin
+    // user clicked on gutter
+    SourceEditorMarks.GetMarksForLine(EditorComp,EditorComp.CaretY,
+                                      Marks,MarkCount);
+    if Marks<>nil then begin
+      for i:=0 to MarkCount-1 do begin
+        CurMark:=Marks[i];
+        //CurMark.CreatePopupMenuItems(@AddUserDefinedPopupMenuItem);
+      end;
+      FreeMem(Marks);
+    end;
+  end;
+
+  // add context specific menu items
+  {CurFilename:=ASrcEdit.FileName;
+  if FilenameIsPascalUnit(CurFilename)
+  and (FilenameIsAbsolute(CurFilename)) then begin
+    if FileExists(ChangeFileExt(CurFilename,'.lfm')) then
+      AddContextPopupMenuItem(
+        'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.lfm'),
+        true,@OnPopupMenuOpenLFMFile);
+    if FileExists(ChangeFileExt(CurFilename,'.lrs')) then
+      AddContextPopupMenuItem(
+        'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.lrs'),
+        true,@OnPopupMenuOpenLRSFile);
+  end;
+  if (CompareFileExt(CurFilename,'.lfm',true)=0)
+  and (FilenameIsAbsolute(CurFilename)) then begin
+    if FileExists(ChangeFileExt(CurFilename,'.pas')) then
+      AddContextPopupMenuItem(
+        'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.pas'),
+        true,@OnPopupMenuOpenPasFile);
+    if FileExists(ChangeFileExt(CurFilename,'.pp')) then
+      AddContextPopupMenuItem(
+        'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.pp'),
+        true,@OnPopupMenuOpenPPFile);
+  end;}
+
+  //if Assigned(OnPopupMenu) then OnPopupMenu(@AddContextPopupMenuItem);
+end;
+{$ELSE}
 var
   ASrcEdit: TSourceEditor;
   BookMarkID, BookMarkX, BookMarkY: integer;
@@ -3147,6 +3165,7 @@ begin
 
   if Assigned(OnPopupMenu) then OnPopupMenu(@AddContextPopupMenuItem);
 end;
+{$ENDIF}
 
 procedure TSourceNotebook.NotebookShowTabHint(Sender: TObject;
   HintInfo: PHintInfo);
@@ -3180,7 +3199,59 @@ begin
 end;
 
 Procedure TSourceNotebook.BuildPopupMenu;
+{$IFDEF UseMenuIntf}
+var
+  i: Integer;
+begin
+  debugln('TSourceNotebook.BuildPopupMenu');
+  
+  SrcPopupMenu := TPopupMenu.Create(Self);
+  with SrcPopupMenu do begin
+    AutoPopup := True;
+    OnPopup :=@SrcPopUpMenuPopup;
+  end;
+  
+  // assign the root TMenuItem to the registered menu root.
+  // This will automatically create all registered items
+  SourceEditorMenuRoot.MenuItem:=SrcPopupMenu.Items;
+  SrcPopupMenu.Items.WriteDebugReport('TSourceNotebook.BuildPopupMenu ');
 
+  SrcEditMenuFindDeclaration.OnClickMethod:=@FindDeclarationClicked;
+  SrcEditMenuOpenFileAtCursor.OnClickMethod:=@OpenAtCursorClicked;
+
+  SrcEditMenuClosePage.OnClickMethod:=@CloseClicked;
+  SrcEditMenuCut.OnClickMethod:=@CutClicked;
+  SrcEditMenuCopy.OnClickMethod:=@CopyClicked;
+  SrcEditMenuPaste.OnClickMethod:=@PasteClicked;
+  for i:=0 to 9 do begin
+    SrcEditSubMenuGotoBookmarks.FindByName('GotoBookmark'+IntToStr(i))
+                                           .OnClickMethod:=@BookmarkGotoClicked;
+    SrcEditSubMenuSetBookmarks.FindByName('SetBookmark'+IntToStr(i))
+                                            .OnClickMethod:=@BookMarkSetClicked;
+  end;
+
+  SrcEditMenuAddBreakpoint.OnClickMethod:=@AddBreakpointClicked;
+  SrcEditMenuAddWatchAtCursor.OnClickMethod:=@AddWatchAtCursor;
+  SrcEditMenuRunToCursor.OnClickMethod:=@RunToClicked;
+  SrcEditMenuViewCallStack.OnClickMethod:=@ViewCallStackClick;
+
+  SrcEditMenuMoveEditorLeft.OnClickMethod:=@MoveEditorLeftClicked;
+  SrcEditMenuMoveEditorRight.OnClickMethod:=@MoveEditorRightClicked;
+
+  SrcEditMenuCompleteCode.OnClickMethod:=@CompleteCodeMenuItemClick;
+  SrcEditMenuEncloseSelection.OnClickMethod:=@EncloseSelectionMenuItemClick;
+  SrcEditMenuExtractProc.OnClickMethod:=@ExtractProcMenuItemClick;
+  SrcEditMenuInvertAssignment.OnClickMethod:=@InvertAssignmentMenuItemClick;
+  SrcEditMenuFindIdentifierReferences.OnClickMethod:=
+                                         @FindIdentifierReferencesMenuItemClick;
+  SrcEditMenuRenameIdentifier.OnClickMethod:=@RenameIdentifierMenuItemClick;
+
+  SrcEditMenuReadOnly.OnClickMethod:=@ReadOnlyClicked;
+  SrcEditMenuShowLineNumbers.OnClickMethod:=@ToggleLineNumbersClicked;
+  SrcEditMenuShowUnitInfo.OnClickMethod:=@ShowUnitInfo;
+  SrcEditMenuEditorProperties.OnClickMethod:=@EditorPropertiesClicked;
+end;
+{$ELSE}
   Function Seperator: TMenuItem;
   Begin
     Result := TMenuItem.Create(Self);
@@ -3317,7 +3388,7 @@ Begin
   ShowUnitInfoMenuItem := TMenuItem.Create(Self);
   with ShowUnitInfoMenuItem do begin
     Name:='ShowUnitInfoMenuItem';
-    Caption := uemUnitInfo;
+    Caption := uemShowUnitInfo;
     OnClick:=@ShowUnitInfo;
   end;
   SrcPopupMenu.Items.Add(ShowUnitInfoMenuItem);
@@ -3358,7 +3429,7 @@ Begin
       ViewCallStackMenuItem := TMenuItem.Create(Self);
       with ViewCallStackMenuItem do begin
         Name := 'ViewCallStackMenuItem';
-        Caption := uemViewCallStackCursor;
+        Caption := uemViewCallStack;
         OnClick := @ViewCallStackClick;
       end;
       DebugMenuItem.Add(ViewCallStackMenuItem);
@@ -3449,6 +3520,7 @@ Begin
   end;
   SrcPopupMenu.Items.Add(EditorPropertiesMenuItem);
 end;
+{$ENDIF}
 
 procedure TSourceNotebook.RemoveUserDefinedMenuItems;
 var

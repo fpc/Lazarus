@@ -224,6 +224,14 @@ var
   SrcEditSubMenuGotoBookmarks: TIDEMenuSection;
   // Source Editor: register the Set Bookmarks Submenu
   SrcEditSubMenuSetBookmarks: TIDEMenuSection;
+  // Source Editor: register the Flags section
+  SrcEditMenuSectionFlags: TIDEMenuSection;
+  // register the Debug submenu
+  SrcEditSubMenuDebug: TIDEMenuSection;
+  // register the Move Page section
+  SrcEditMenuSectionMovePage: TIDEMenuSection;
+  // register the Refactor submenu
+  SrcEditSubMenuRefactor: TIDEMenuSection;
 
   MessagesMenuRoot: TIDEMenuSection;
   CodeExplorerMenuRoot: TIDEMenuSection;

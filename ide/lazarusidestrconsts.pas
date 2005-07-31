@@ -1147,12 +1147,13 @@ resourcestring
   uemBookmarkN = 'Bookmark';
   uemSetBookmark = '&Set Bookmark';
   uemReadOnly = 'Read Only';
-  uemUnitInfo = 'Unit Info';
+  uemShowLineNumbers = 'Show Line Numbers';
+  uemShowUnitInfo = 'Unit Info';
   uemDebugWord = 'Debug';
   uemAddBreakpoint = '&Add Breakpoint';
   uemAddWatchAtCursor = 'Add &Watch At Cursor';
   uemRunToCursor='&Run to Cursor';
-  uemViewCallStackCursor = 'View Call Stack';
+  uemViewCallStack = 'View Call Stack';
   uemMoveEditorLeft='Move Editor Left';
   uemMoveEditorRight='Move Editor Right';
   uemRefactor = 'Refactoring';
@@ -1160,6 +1161,8 @@ resourcestring
   uemEncloseSelection = 'Enclose Selection';
   uemExtractProc = 'Extract Procedure';
   uemInvertAssignment = 'Invert Assignment';
+  uemFindIdentifierReferences = 'Find Identifier References';
+  uemRenameIdentifier = 'Rename Identifier';
   uemEditorproperties='Editor properties';
   ueNotImplCap='Not implemented yet';
   ueNotImplText='If You can help us to implement this feature, mail to '

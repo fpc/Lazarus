@@ -264,7 +264,7 @@ begin
   for i:=0 to NewCount-1 do begin
     NewDialogLayout:=FItemClass.Create('',Self);
     FItems.Add(NewDialogLayout);
-    NewDialogLayout.LoadFromConfig(Config,Path+'Dialog/'+IntToStr(i+1));
+    NewDialogLayout.LoadFromConfig(Config,Path+'Dialog'+IntToStr(i+1)+'/');
   end;
   Modified:=false;
 end;
@@ -275,7 +275,7 @@ var i: integer;
 begin
   Config.SetDeleteValue(Path+'Count',Count,0);
   for i:=0 to Count-1 do
-    Items[i].SaveToConfig(Config,Path+'Dialog/'+IntToStr(i+1));
+    Items[i].SaveToConfig(Config,Path+'Dialog'+IntToStr(i+1)+'/');
   Modified:=false;
 end;
 

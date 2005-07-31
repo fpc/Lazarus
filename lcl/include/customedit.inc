@@ -328,7 +328,7 @@ end;
 
 procedure TCustomEdit.WMChar(var Message: TLMChar);
 begin
-  // all normal characters are handled by the memo
+  // all normal characters are handled by the Edit
   //debugln('TCustomEdit.WMChar ',DbgSName(Self),' ',dbgs(Message.CharCode));
   if Message.CharCode in [ord('A')..ord('Z'),ord('a')..ord('z')] then
     // eat normal keys, so they don't trigger accelerators

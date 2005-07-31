@@ -253,6 +253,7 @@ type
     procedure CNCommand(var TheMessage: TLMCommand); message CN_Command;
     procedure UpdateSorted;
     procedure SetArrowKeysTraverseList(Value: Boolean);
+    procedure WMChar(var Message: TLMChar); message LM_CHAR;
   protected
     procedure CreateWnd; override;
     procedure DestroyWnd; override;

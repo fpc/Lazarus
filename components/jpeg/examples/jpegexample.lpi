@@ -1,17 +1,19 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="3"/>
+    <PathDelim Value="/"/>
+    <Version Value="5"/>
     <General>
-      <ProjectType Value="Application"/>
+      <Flags>
+        <SaveOnlyProjectUnits Value="True"/>
+      </Flags>
       <MainUnit Value="0"/>
       <ActiveEditorIndexAtStart Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="jpegexample"/>
     </General>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
-    <Units Count="23">
+    <Units Count="3">
       <Unit0>
         <CursorPos X="10" Y="14"/>
         <EditorIndex Value="2"/>
@@ -23,7 +25,7 @@
         <UsageCount Value="33"/>
       </Unit0>
       <Unit1>
-        <CursorPos X="21" Y="17"/>
+        <CursorPos X="21" Y="24"/>
         <EditorIndex Value="0"/>
         <Filename Value="mainform.pas"/>
         <ComponentName Value="JPEGExampleForm"/>
@@ -35,140 +37,6 @@
         <UsageCount Value="33"/>
       </Unit1>
       <Unit2>
-        <CursorPos X="20" Y="156"/>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/lcl/dialogs.pp"/>
-        <TopLine Value="134"/>
-        <UnitName Value="Dialogs"/>
-        <UsageCount Value="10"/>
-      </Unit2>
-      <Unit3>
-        <CursorPos X="7" Y="48"/>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/jpeg/lazjpeg.pas"/>
-        <TopLine Value="21"/>
-        <UnitName Value="LazJPEG"/>
-        <UsageCount Value="15"/>
-      </Unit3>
-      <Unit4>
-        <CursorPos X="9" Y="167"/>
-        <Filename Value="/home/mattias/pascal/fpc_sources/19/fpc/fcl/image/fpreadjpeg.pas"/>
-        <TopLine Value="141"/>
-        <UnitName Value="FPReadJPEG"/>
-        <UsageCount Value="14"/>
-      </Unit4>
-      <Unit5>
-        <CursorPos X="17" Y="171"/>
-        <Filename Value="/home/mattias/pascal/fpc_sources/19/fpc/packages/base/pasjpeg/jdapimin.pas"/>
-        <TopLine Value="139"/>
-        <UnitName Value="JdAPImin"/>
-        <UsageCount Value="10"/>
-      </Unit5>
-      <Unit6>
-        <CursorPos X="3" Y="2543"/>
-        <Filename Value="/home/mattias/pascal/fpc_sources/19/fpc/packages/base/pasjpeg/jdmarker.pas"/>
-        <TopLine Value="2529"/>
-        <UnitName Value="JdMarker"/>
-        <UsageCount Value="10"/>
-      </Unit6>
-      <Unit7>
-        <CursorPos X="1" Y="116"/>
-        <Filename Value="/home/mattias/pascal/fpc_sources/19/fpc/packages/base/pasjpeg/jconfig.inc"/>
-        <TopLine Value="74"/>
-        <UsageCount Value="14"/>
-      </Unit7>
-      <Unit8>
-        <CursorPos X="5" Y="1137"/>
-        <Filename Value="/home/mattias/pascal/fpc_sources/19/fpc/packages/base/pasjpeg/jpeglib.pas"/>
-        <TopLine Value="1096"/>
-        <UnitName Value="JPEGLib"/>
-        <UsageCount Value="10"/>
-      </Unit8>
-      <Unit9>
-        <CursorPos X="1" Y="43"/>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/codetools/memcheck.pas"/>
-        <TopLine Value="20"/>
-        <UnitName Value="MemCheck"/>
-        <UsageCount Value="16"/>
-      </Unit9>
-      <Unit10>
-        <CursorPos X="25" Y="34"/>
-        <Filename Value="/home/mattias/pascal/fpc_sources/19/fpc/packages/base/pasjpeg/jdatasrc.pas"/>
-        <TopLine Value="11"/>
-        <UnitName Value="JDataSrc"/>
-        <UsageCount Value="13"/>
-      </Unit10>
-      <Unit11>
-        <CursorPos X="1" Y="37"/>
-        <Filename Value="/home/mattias/pascal/fpc_sources/19/fpc/packages/base/pasjpeg/jinclude.pas"/>
-        <TopLine Value="17"/>
-        <UnitName Value="jinclude"/>
-        <UsageCount Value="13"/>
-      </Unit11>
-      <Unit12>
-        <CursorPos X="6" Y="14"/>
-        <Filename Value="/home/mattias/pascal/sf_lazarus/jpeg/jerror.pas"/>
-        <TopLine Value="1"/>
-        <UnitName Value="Jerror"/>
-        <UsageCount Value="10"/>
-      </Unit12>
-      <Unit13>
-        <CursorPos X="12" Y="113"/>
-        <Filename Value="/home/mattias/pascal/sf_lazarus/jpeg/jconfig.inc"/>
-        <TopLine Value="74"/>
-        <UsageCount Value="10"/>
-      </Unit13>
-      <Unit14>
-        <CursorPos X="13" Y="134"/>
-        <Filename Value="/home/mattias/pascal/sf_lazarus/jpeg/lazjpeg.pas"/>
-        <TopLine Value="109"/>
-        <UnitName Value="LazJPEG"/>
-        <UsageCount Value="10"/>
-      </Unit14>
-      <Unit15>
-        <CursorPos X="37" Y="728"/>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/lcl/graphics.pp"/>
-        <TopLine Value="707"/>
-        <UnitName Value="Graphics"/>
-        <UsageCount Value="11"/>
-      </Unit15>
-      <Unit16>
-        <CursorPos X="1" Y="217"/>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/lcl/include/graphic.inc"/>
-        <TopLine Value="191"/>
-        <UsageCount Value="11"/>
-      </Unit16>
-      <Unit17>
-        <CursorPos X="1" Y="1064"/>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/lcl/include/bitmap.inc"/>
-        <TopLine Value="1041"/>
-        <UsageCount Value="11"/>
-      </Unit17>
-      <Unit18>
-        <CursorPos X="16" Y="306"/>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/lcl/intfgraphics.pas"/>
-        <TopLine Value="287"/>
-        <UnitName Value="IntfGraphics"/>
-        <UsageCount Value="10"/>
-      </Unit18>
-      <Unit19>
-        <CursorPos X="1" Y="284"/>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/lcl/include/pixmap.inc"/>
-        <TopLine Value="262"/>
-        <UsageCount Value="11"/>
-      </Unit19>
-      <Unit20>
-        <CursorPos X="74" Y="34"/>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/lcl/include/png.inc"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="11"/>
-      </Unit20>
-      <Unit21>
-        <CursorPos X="13" Y="1932"/>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/lcl/lcltype.pp"/>
-        <TopLine Value="1909"/>
-        <UnitName Value="LCLType"/>
-        <UsageCount Value="11"/>
-      </Unit21>
-      <Unit22>
         <CursorPos X="2" Y="4"/>
         <EditorIndex Value="1"/>
         <Filename Value="README.txt"/>
@@ -177,7 +45,7 @@
         <SyntaxHighlighter Value="None"/>
         <TopLine Value="1"/>
         <UsageCount Value="21"/>
-      </Unit22>
+      </Unit2>
     </Units>
     <PublishOptions>
       <Version Value="2"/>
@@ -202,10 +70,14 @@
     </RequiredPackages>
   </ProjectOptions>
   <CompilerOptions>
+    <Version Value="5"/>
     <SearchPaths>
       <OtherUnitFiles Value="$(LazarusDir)/components/units/$(TargetCPU)/$(TargetOS)/"/>
       <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
     </SearchPaths>
+    <CodeGeneration>
+      <Generate Value="Faster"/>
+    </CodeGeneration>
     <Other>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
