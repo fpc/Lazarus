@@ -498,6 +498,10 @@ msgstr ""
 msgid "Code Explorer"
 msgstr ""
 
+#: lazarusidestrconsts:lismenujumpto
+msgid "Jump to"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewunits
 msgid "Units..."
 msgstr ""
@@ -3530,7 +3534,11 @@ msgstr ""
 msgid "Read Only"
 msgstr ""
 
-#: lazarusidestrconsts:uemunitinfo
+#: lazarusidestrconsts:uemshowlinenumbers
+msgid "Show Line Numbers"
+msgstr ""
+
+#: lazarusidestrconsts:uemshowunitinfo
 msgid "Unit Info"
 msgstr ""
 
@@ -3550,7 +3558,7 @@ msgstr ""
 msgid "&Run to Cursor"
 msgstr ""
 
-#: lazarusidestrconsts:uemviewcallstackcursor
+#: lazarusidestrconsts:uemviewcallstack
 msgid "View Call Stack"
 msgstr ""
 
@@ -3580,6 +3588,14 @@ msgstr ""
 
 #: lazarusidestrconsts:ueminvertassignment
 msgid "Invert Assignment"
+msgstr ""
+
+#: lazarusidestrconsts:uemfindidentifierreferences
+msgid "Find Identifier References"
+msgstr ""
+
+#: lazarusidestrconsts:uemrenameidentifier
+msgid "Rename Identifier"
 msgstr ""
 
 #: lazarusidestrconsts:uemeditorproperties
@@ -4744,6 +4760,10 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguagearabic
 msgid "Arabic"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguageportugues
+msgid "Portuguese"
 msgstr ""
 
 #: lazarusidestrconsts:dlgunitdepcaption

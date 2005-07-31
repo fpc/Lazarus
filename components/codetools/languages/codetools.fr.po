@@ -188,6 +188,10 @@ msgstr "Répertoire source de Free Pascal"
 msgid "Free Pascal Sources, %s"
 msgstr "Sources de Free Pascal, %s"
 
+#: codetoolsstrconsts:ctsidedirectory
+msgid "IDE Directory"
+msgstr ""
+
 #: codetoolsstrconsts:ctsideintfdirectory
 msgid "IDEIntf Directory"
 msgstr "Répertoire IDEIntf"

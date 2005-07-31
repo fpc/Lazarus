@@ -3444,6 +3444,10 @@ msgstr "Zurückspringen"
 msgid "Jump forward"
 msgstr "Vorwärtsspringen"
 
+#: lazarusidestrconsts:lismenujumpto
+msgid "Jump to"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumptonexterror
 msgid "Jump to next error"
 msgstr "Zum nächsten Fehler springen"
@@ -4740,6 +4744,10 @@ msgstr "Polnisch (CP1250)"
 msgid "Polish(ISO 8859-2)"
 msgstr "Polnisch (ISO 8859-2)"
 
+#: lazarusidestrconsts:rslanguageportugues
+msgid "Portuguese"
+msgstr ""
+
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"
 msgstr "Vorschau"
@@ -5767,6 +5775,10 @@ msgstr "Hinweise zeigen"
 #: lazarusidestrconsts:dlghintsunused
 msgid "Show Hints for unused units in main source"
 msgstr "Zeige Hinweise auf nicht verwendete Units im Hauptquelltext"
+
+#: lazarusidestrconsts:uemshowlinenumbers
+msgid "Show Line Numbers"
+msgstr ""
 
 #: lazarusidestrconsts:dlgshownotes
 msgid "Show Notes"
@@ -7256,7 +7268,7 @@ msgstr "Unit %s%s%s wurde aus dem Paket entfernt"
 msgid "Unit File Name:"
 msgstr "Unitdateiname:"
 
-#: lazarusidestrconsts:uemunitinfo
+#: lazarusidestrconsts:uemshowunitinfo
 msgid "Unit Info"
 msgstr "Unitinformation"
 
@@ -7468,7 +7480,7 @@ msgstr "Vertikale Rasterschrittweite"
 msgid "View Anchor Editor"
 msgstr "Ankereditor anzeigen"
 
-#: lazarusidestrconsts:uemviewcallstackcursor
+#: lazarusidestrconsts:uemviewcallstack
 msgid "View Call Stack"
 msgstr "Aufrufstack anzeigen"
 

@@ -3441,6 +3441,10 @@ msgstr "Saltar atrás"
 msgid "Jump forward"
 msgstr "Saltar adelante"
 
+#: lazarusidestrconsts:lismenujumpto
+msgid "Jump to"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumptonexterror
 msgid "Jump to next error"
 msgstr ""
@@ -4737,6 +4741,10 @@ msgstr ""
 msgid "Polish(ISO 8859-2)"
 msgstr ""
 
+#: lazarusidestrconsts:rslanguageportugues
+msgid "Portuguese"
+msgstr ""
+
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"
 msgstr "Vista previa"
@@ -5764,6 +5772,10 @@ msgstr "Mostrar sugerencias"
 #: lazarusidestrconsts:dlghintsunused
 msgid "Show Hints for unused units in main source"
 msgstr "Ver sugerencias para unidades sin uso en el código fuente principal"
+
+#: lazarusidestrconsts:uemshowlinenumbers
+msgid "Show Line Numbers"
+msgstr ""
 
 #: lazarusidestrconsts:dlgshownotes
 msgid "Show Notes"
@@ -7253,7 +7265,7 @@ msgstr "La unidad %s%s%s ha sido eliminada del paquete"
 msgid "Unit File Name:"
 msgstr ""
 
-#: lazarusidestrconsts:uemunitinfo
+#: lazarusidestrconsts:uemshowunitinfo
 msgid "Unit Info"
 msgstr "Información de la unidad"
 
@@ -7465,7 +7477,7 @@ msgstr "Tamaño de paso de la rejilla Vertical"
 msgid "View Anchor Editor"
 msgstr ""
 
-#: lazarusidestrconsts:uemviewcallstackcursor
+#: lazarusidestrconsts:uemviewcallstack
 msgid "View Call Stack"
 msgstr ""
 

@@ -3441,6 +3441,10 @@ msgstr ""
 msgid "Jump forward"
 msgstr ""
 
+#: lazarusidestrconsts:lismenujumpto
+msgid "Jump to"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumptonexterror
 msgid "Jump to next error"
 msgstr ""
@@ -4737,6 +4741,10 @@ msgstr "(CP1250) פולנית"
 msgid "Polish(ISO 8859-2)"
 msgstr "(ISO 8859-2) פולנית"
 
+#: lazarusidestrconsts:rslanguageportugues
+msgid "Portuguese"
+msgstr ""
+
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"
 msgstr ""
@@ -5763,6 +5771,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlghintsunused
 msgid "Show Hints for unused units in main source"
+msgstr ""
+
+#: lazarusidestrconsts:uemshowlinenumbers
+msgid "Show Line Numbers"
 msgstr ""
 
 #: lazarusidestrconsts:dlgshownotes
@@ -7253,7 +7265,7 @@ msgstr ""
 msgid "Unit File Name:"
 msgstr ""
 
-#: lazarusidestrconsts:uemunitinfo
+#: lazarusidestrconsts:uemshowunitinfo
 msgid "Unit Info"
 msgstr ""
 
@@ -7465,7 +7477,7 @@ msgstr ""
 msgid "View Anchor Editor"
 msgstr ""
 
-#: lazarusidestrconsts:uemviewcallstackcursor
+#: lazarusidestrconsts:uemviewcallstack
 msgid "View Call Stack"
 msgstr ""
 

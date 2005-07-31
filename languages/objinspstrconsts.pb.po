@@ -14,6 +14,10 @@ msgstr "Ítens"
 msgid " Selected image "
 msgstr "Imagem selecionada"
 
+#: objinspstrconsts:oisdlinesdchars
+msgid "%d lines, %d chars"
+msgstr ""
+
 #: objinspstrconsts:oishelpalreadyregistered
 msgid "%s: Already registered"
 msgstr "%s: Já foi registrado"
@@ -63,8 +67,8 @@ msgid "&Insert"
 msgstr "&Inserir"
 
 #: objinspstrconsts:oistdactdatasetlastheadline
-msgid "$Last"
-msgstr "Ú&ltimo"
+msgid "&Last"
+msgstr ""
 
 #: objinspstrconsts:oisload
 msgid "&Load"
@@ -117,6 +121,14 @@ msgstr "(Todos)"
 #: objinspstrconsts:cactionlisteditorunknowncategory
 msgid "(Unknown)"
 msgstr "(Desconhecido)"
+
+#: objinspstrconsts:oisnone
+msgid "(none)"
+msgstr ""
+
+#: objinspstrconsts:ois0lines0chars
+msgid "0 lines, 0 chars"
+msgstr ""
 
 #: objinspstrconsts:oisaction
 msgid "Action"
@@ -213,6 +225,14 @@ msgstr "Limpar figura"
 #: objinspstrconsts:oistdactcolorselecthint
 msgid "Color Select"
 msgstr "Selecionar Cor"
+
+#: objinspstrconsts:oiscomponentnameisnotavalididentifier
+msgid "Component name %s%s%s is not a valid identifier"
+msgstr ""
+
+#: objinspstrconsts:oiscomponents
+msgid "Components"
+msgstr ""
 
 #: objinspstrconsts:oisconfirmdelete
 msgid "Confirm delete"
@@ -368,8 +388,7 @@ msgstr "Conteúdo da ajuda"
 
 #: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
 msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
-msgstr "A base de dados de ajuda %s%s%s não encontrou uma página de ajuda para o 
-tipo %s"
+msgstr "A base de dados de ajuda %s%s%s não encontrou uma página de ajuda para o"
 
 #: objinspstrconsts:oishelphelpdatabasenotfound
 msgid "Help Database %s%s%s not found"
@@ -426,6 +445,10 @@ msgstr ""
 #: objinspstrconsts:oisinterface
 msgid "Interface"
 msgstr "Interface"
+
+#: objinspstrconsts:oisinvalidpropertyvalue
+msgid "Invalid property value"
+msgstr ""
 
 #: objinspstrconsts:sccslvedtlabcaption
 msgid "Label"
@@ -489,8 +512,7 @@ msgstr "Próximo"
 
 #: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
 msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
-msgstr "Não foi encontrado um navegador HTM padrão.%sPor Favor configure um no menu Ajuda -> 
-Visualizadores"
+msgstr "Não foi encontrado um navegador HTM padrão.%sPor Favor configure um no menu Ajuda ->"
 
 #: objinspstrconsts:oishelpnohelpfoundforsource
 msgid "No help found for line %d, column %d of %s."
@@ -535,6 +557,10 @@ msgstr "Próximo"
 #: objinspstrconsts:oisproperties
 msgid "Properties"
 msgstr "Propriedades"
+
+#: objinspstrconsts:oispropertiesof
+msgid "Properties of %s"
+msgstr ""
 
 #: objinspstrconsts:oisrecord
 msgid "Record"

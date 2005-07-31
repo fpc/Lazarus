@@ -25,6 +25,10 @@ msgstr " Elementy "
 msgid " Selected image "
 msgstr " Wybrany obrazek "
 
+#: objinspstrconsts:oisdlinesdchars
+msgid "%d lines, %d chars"
+msgstr ""
+
 #: objinspstrconsts:oishelpalreadyregistered
 msgid "%s: Already registered"
 msgstr ""
@@ -129,6 +133,14 @@ msgstr ""
 msgid "(Unknown)"
 msgstr ""
 
+#: objinspstrconsts:oisnone
+msgid "(none)"
+msgstr ""
+
+#: objinspstrconsts:ois0lines0chars
+msgid "0 lines, 0 chars"
+msgstr ""
+
 #: objinspstrconsts:oisaction
 msgid "Action"
 msgstr ""
@@ -223,6 +235,14 @@ msgstr ""
 
 #: objinspstrconsts:oistdactcolorselecthint
 msgid "Color Select"
+msgstr ""
+
+#: objinspstrconsts:oiscomponentnameisnotavalididentifier
+msgid "Component name %s%s%s is not a valid identifier"
+msgstr ""
+
+#: objinspstrconsts:oiscomponents
+msgid "Components"
 msgstr ""
 
 #: objinspstrconsts:oisconfirmdelete
@@ -437,6 +457,10 @@ msgstr ""
 msgid "Interface"
 msgstr ""
 
+#: objinspstrconsts:oisinvalidpropertyvalue
+msgid "Invalid property value"
+msgstr ""
+
 #: objinspstrconsts:sccslvedtlabcaption
 msgid "Label"
 msgstr "Napis"
@@ -544,6 +568,10 @@ msgstr ""
 #: objinspstrconsts:oisproperties
 msgid "Properties"
 msgstr "W³a¶ciwo¶ci"
+
+#: objinspstrconsts:oispropertiesof
+msgid "Properties of %s"
+msgstr ""
 
 #: objinspstrconsts:oisrecord
 msgid "Record"

@@ -3440,6 +3440,10 @@ msgstr "Salta indietro"
 msgid "Jump forward"
 msgstr "Salta avanti"
 
+#: lazarusidestrconsts:lismenujumpto
+msgid "Jump to"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumptonexterror
 msgid "Jump to next error"
 msgstr "Salta al prossimo errore"
@@ -4736,6 +4740,10 @@ msgstr "Polacco(CP1250)"
 msgid "Polish(ISO 8859-2)"
 msgstr "Polacco(ISO 8859-2)"
 
+#: lazarusidestrconsts:rslanguageportugues
+msgid "Portuguese"
+msgstr ""
+
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"
 msgstr "Anteprima"
@@ -5763,6 +5771,10 @@ msgstr "Mostra i suggerimenti"
 #: lazarusidestrconsts:dlghintsunused
 msgid "Show Hints for unused units in main source"
 msgstr "Mostra suggerimenti per le unit non usate nel sorgente principale"
+
+#: lazarusidestrconsts:uemshowlinenumbers
+msgid "Show Line Numbers"
+msgstr ""
 
 #: lazarusidestrconsts:dlgshownotes
 msgid "Show Notes"
@@ -7252,7 +7264,7 @@ msgstr "La unit %s%s%s è stata rimossa dal pacchetto"
 msgid "Unit File Name:"
 msgstr "Nome file unit:"
 
-#: lazarusidestrconsts:uemunitinfo
+#: lazarusidestrconsts:uemshowunitinfo
 msgid "Unit Info"
 msgstr "Informazioni unit"
 
@@ -7464,7 +7476,7 @@ msgstr "Ampiezza passo verticale della griglia"
 msgid "View Anchor Editor"
 msgstr "mostra editor àncore"
 
-#: lazarusidestrconsts:uemviewcallstackcursor
+#: lazarusidestrconsts:uemviewcallstack
 msgid "View Call Stack"
 msgstr "Mostra lo stack delle chiamate"
 

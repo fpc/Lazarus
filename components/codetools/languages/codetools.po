@@ -650,6 +650,10 @@ msgstr ""
 msgid "Debugger Directory"
 msgstr ""
 
+#: codetoolsstrconsts:ctsidedirectory
+msgid "IDE Directory"
+msgstr ""
+
 #: codetoolsstrconsts:ctsdoceditordirectory
 msgid "Doc Editor Directory"
 msgstr ""

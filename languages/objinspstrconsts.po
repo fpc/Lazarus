@@ -578,6 +578,10 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+#: objinspstrconsts:oiscomponents
+msgid "Components"
+msgstr ""
+
 #: objinspstrconsts:oistdactdatasetrefreshhint
 msgid "Refresh"
 msgstr ""
@@ -594,6 +598,10 @@ msgstr ""
 msgid "Select a file"
 msgstr ""
 
+#: objinspstrconsts:oispropertiesof
+msgid "Properties of %s"
+msgstr ""
+
 #: objinspstrconsts:oisallfiles
 msgid "All files (*.*)|*.*"
 msgstr ""
@@ -602,8 +610,28 @@ msgstr ""
 msgid "Sort"
 msgstr ""
 
+#: objinspstrconsts:oisdlinesdchars
+msgid "%d lines, %d chars"
+msgstr ""
+
 #: objinspstrconsts:oisstringseditordialog
 msgid "Strings Editor Dialog"
+msgstr ""
+
+#: objinspstrconsts:ois0lines0chars
+msgid "0 lines, 0 chars"
+msgstr ""
+
+#: objinspstrconsts:oisinvalidpropertyvalue
+msgid "Invalid property value"
+msgstr ""
+
+#: objinspstrconsts:oisnone
+msgid "(none)"
+msgstr ""
+
+#: objinspstrconsts:oiscomponentnameisnotavalididentifier
+msgid "Component name %s%s%s is not a valid identifier"
 msgstr ""
 
 #: objinspstrconsts:oishelpthehelpdatabasewasunabletofindfile

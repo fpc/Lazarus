@@ -14,6 +14,10 @@ msgstr " Elements "
 msgid " Selected image "
 msgstr " Imatge seleccionada "
 
+#: objinspstrconsts:oisdlinesdchars
+msgid "%d lines, %d chars"
+msgstr ""
+
 #: objinspstrconsts:oishelpalreadyregistered
 msgid "%s: Already registered"
 msgstr "%s: Ja està registrat"
@@ -118,6 +122,14 @@ msgstr "(Tot)"
 msgid "(Unknown)"
 msgstr "(Desconegut)"
 
+#: objinspstrconsts:oisnone
+msgid "(none)"
+msgstr ""
+
+#: objinspstrconsts:ois0lines0chars
+msgid "0 lines, 0 chars"
+msgstr ""
+
 #: objinspstrconsts:oisaction
 msgid "Action"
 msgstr "Acció"
@@ -213,6 +225,14 @@ msgstr ""
 #: objinspstrconsts:oistdactcolorselecthint
 msgid "Color Select"
 msgstr "Selecciona el color"
+
+#: objinspstrconsts:oiscomponentnameisnotavalididentifier
+msgid "Component name %s%s%s is not a valid identifier"
+msgstr ""
+
+#: objinspstrconsts:oiscomponents
+msgid "Components"
+msgstr ""
 
 #: objinspstrconsts:oisconfirmdelete
 msgid "Confirm delete"
@@ -426,6 +446,10 @@ msgstr "Integer"
 msgid "Interface"
 msgstr "Interface"
 
+#: objinspstrconsts:oisinvalidpropertyvalue
+msgid "Invalid property value"
+msgstr ""
+
 #: objinspstrconsts:sccslvedtlabcaption
 msgid "Label"
 msgstr "Label"
@@ -533,6 +557,10 @@ msgstr "Passat"
 #: objinspstrconsts:oisproperties
 msgid "Properties"
 msgstr "Propietats"
+
+#: objinspstrconsts:oispropertiesof
+msgid "Properties of %s"
+msgstr ""
 
 #: objinspstrconsts:oisrecord
 msgid "Record"

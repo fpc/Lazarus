@@ -3430,6 +3430,10 @@ msgstr "Hyppää takaisin"
 msgid "Jump forward"
 msgstr "Hyppää eteenpäin"
 
+#: lazarusidestrconsts:lismenujumpto
+msgid "Jump to"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumptonexterror
 msgid "Jump to next error"
 msgstr ""
@@ -4726,6 +4730,10 @@ msgstr "puola (CP1250)"
 msgid "Polish(ISO 8859-2)"
 msgstr "puola (ISO 8859-2)"
 
+#: lazarusidestrconsts:rslanguageportugues
+msgid "Portuguese"
+msgstr ""
+
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"
 msgstr "Esikatselu"
@@ -5752,6 +5760,10 @@ msgstr "Näytä vihjeet"
 
 #: lazarusidestrconsts:dlghintsunused
 msgid "Show Hints for unused units in main source"
+msgstr ""
+
+#: lazarusidestrconsts:uemshowlinenumbers
+msgid "Show Line Numbers"
 msgstr ""
 
 #: lazarusidestrconsts:dlgshownotes
@@ -7242,7 +7254,7 @@ msgstr ""
 msgid "Unit File Name:"
 msgstr ""
 
-#: lazarusidestrconsts:uemunitinfo
+#: lazarusidestrconsts:uemshowunitinfo
 msgid "Unit Info"
 msgstr "Käännösyksikön tiedot"
 
@@ -7454,7 +7466,7 @@ msgstr "Apupisteiden välinen etäisyys pystysuunnassa"
 msgid "View Anchor Editor"
 msgstr ""
 
-#: lazarusidestrconsts:uemviewcallstackcursor
+#: lazarusidestrconsts:uemviewcallstack
 msgid "View Call Stack"
 msgstr ""
 

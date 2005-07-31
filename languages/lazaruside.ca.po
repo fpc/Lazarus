@@ -3430,6 +3430,10 @@ msgstr "Salta enrera"
 msgid "Jump forward"
 msgstr "Salta endavant"
 
+#: lazarusidestrconsts:lismenujumpto
+msgid "Jump to"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumptonexterror
 msgid "Jump to next error"
 msgstr "Salta al següent error"
@@ -4726,6 +4730,10 @@ msgstr "Polonès(CP1250)"
 msgid "Polish(ISO 8859-2)"
 msgstr "Polonès(ISO 8859-2)"
 
+#: lazarusidestrconsts:rslanguageportugues
+msgid "Portuguese"
+msgstr ""
+
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"
 msgstr "Visualització prèvia"
@@ -5753,6 +5761,10 @@ msgstr "Mostra les indicacions"
 #: lazarusidestrconsts:dlghintsunused
 msgid "Show Hints for unused units in main source"
 msgstr "Mostra els suggeriments per les unitats no utilitzades en la font principal"
+
+#: lazarusidestrconsts:uemshowlinenumbers
+msgid "Show Line Numbers"
+msgstr ""
 
 #: lazarusidestrconsts:dlgshownotes
 msgid "Show Notes"
@@ -7242,7 +7254,7 @@ msgstr "S'ha eliminat la unitat %s%s%s del paquet"
 msgid "Unit File Name:"
 msgstr "Nom de fitxer de la unitat:"
 
-#: lazarusidestrconsts:uemunitinfo
+#: lazarusidestrconsts:uemshowunitinfo
 msgid "Unit Info"
 msgstr "Informació de la unitat"
 
@@ -7454,7 +7466,7 @@ msgstr "Tamany vertical del pas de la graella"
 msgid "View Anchor Editor"
 msgstr "Mostra l'editor de les àncores"
 
-#: lazarusidestrconsts:uemviewcallstackcursor
+#: lazarusidestrconsts:uemviewcallstack
 msgid "View Call Stack"
 msgstr "Mostra la pila de les crides"
 

@@ -3441,6 +3441,10 @@ msgstr "Przeskocz do ty³u"
 msgid "Jump forward"
 msgstr "Przeskocz do przodu"
 
+#: lazarusidestrconsts:lismenujumpto
+msgid "Jump to"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumptonexterror
 msgid "Jump to next error"
 msgstr ""
@@ -4737,6 +4741,10 @@ msgstr ""
 msgid "Polish(ISO 8859-2)"
 msgstr ""
 
+#: lazarusidestrconsts:rslanguageportugues
+msgid "Portuguese"
+msgstr ""
+
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"
 msgstr "Podgl¹d"
@@ -5764,6 +5772,10 @@ msgstr "Wskazówki"
 #: lazarusidestrconsts:dlghintsunused
 msgid "Show Hints for unused units in main source"
 msgstr "Pokazuj wskazówki przy nieu¿ywanych modu³ach w g³ównym Ÿródle"
+
+#: lazarusidestrconsts:uemshowlinenumbers
+msgid "Show Line Numbers"
+msgstr ""
 
 #: lazarusidestrconsts:dlgshownotes
 msgid "Show Notes"
@@ -7253,7 +7265,7 @@ msgstr "Modu³ %s%s%s zosta³ usuniêty z pakietu"
 msgid "Unit File Name:"
 msgstr ""
 
-#: lazarusidestrconsts:uemunitinfo
+#: lazarusidestrconsts:uemshowunitinfo
 msgid "Unit Info"
 msgstr "Informacja o module"
 
@@ -7465,7 +7477,7 @@ msgstr "Odstêpy pionowe siatki"
 msgid "View Anchor Editor"
 msgstr ""
 
-#: lazarusidestrconsts:uemviewcallstackcursor
+#: lazarusidestrconsts:uemviewcallstack
 msgid "View Call Stack"
 msgstr "Poka¿ stos wywo³añ"
 

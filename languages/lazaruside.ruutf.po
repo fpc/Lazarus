@@ -3430,6 +3430,10 @@ msgstr "Переход назад"
 msgid "Jump forward"
 msgstr "Переход вперед"
 
+#: lazarusidestrconsts:lismenujumpto
+msgid "Jump to"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumptonexterror
 msgid "Jump to next error"
 msgstr "Переход к след. ошибке"
@@ -4726,6 +4730,10 @@ msgstr "Польский(CP1250)"
 msgid "Polish(ISO 8859-2)"
 msgstr "Польский(ISO 8859-2)"
 
+#: lazarusidestrconsts:rslanguageportugues
+msgid "Portuguese"
+msgstr ""
+
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"
 msgstr "Предпросмотр"
@@ -5753,6 +5761,10 @@ msgstr "Показать подсказки"
 #: lazarusidestrconsts:dlghintsunused
 msgid "Show Hints for unused units in main source"
 msgstr "Подсказки для ненужных модулей в главном исходнике"
+
+#: lazarusidestrconsts:uemshowlinenumbers
+msgid "Show Line Numbers"
+msgstr ""
 
 #: lazarusidestrconsts:dlgshownotes
 msgid "Show Notes"
@@ -7242,7 +7254,7 @@ msgstr "Модуль %s%s%s был удалён из пакета"
 msgid "Unit File Name:"
 msgstr "Имя файла модуля:"
 
-#: lazarusidestrconsts:uemunitinfo
+#: lazarusidestrconsts:uemshowunitinfo
 msgid "Unit Info"
 msgstr "Сведения о модуле"
 
@@ -7454,7 +7466,7 @@ msgstr "Вертикальный шаг сетки"
 msgid "View Anchor Editor"
 msgstr "Показать редактор привязок"
 
-#: lazarusidestrconsts:uemviewcallstackcursor
+#: lazarusidestrconsts:uemviewcallstack
 msgid "View Call Stack"
 msgstr "Показать стек вызовов"
 
