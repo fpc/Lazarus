@@ -1104,6 +1104,7 @@ images/components/tfontdialog.ico -text svneol=unset#image/x-icon
 images/components/tfontdialog.xpm -text svneol=native#image/x-xpixmap
 images/components/tgroupbox.ico -text svneol=unset#image/x-icon
 images/components/tgroupbox.xpm -text svneol=native#image/x-xpixmap
+images/components/tidedialoglayoutstorage.xpm -text svneol=unset#image/xpm
 images/components/tidletimer.xpm -text svneol=native#image/x-xpixmap
 images/components/timage.ico -text svneol=unset#image/x-icon
 images/components/timage.xpm -text svneol=native#image/x-xpixmap

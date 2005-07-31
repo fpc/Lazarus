@@ -20,12 +20,35 @@ unit AllIDEIntf;
 interface
 
 uses
-  IDECommands, PropEdits, ObjInspStrConsts, ObjectInspector, ColumnDlg,
-  ComponentEditors, GraphPropEdits, DBPropEdits, ListViewPropEdit,
-  ImageListEditor, ComponentTreeView, ActionsEditor, HelpIntf, TextTools,
-  FormEditingIntf, SrcEditorIntf, ComponentReg, PackageIntf, HelpHTML,
-  FieldsEditor, ConfigStorage, HelpFPDoc, ProjectIntf, LazIDEIntf, NewItemIntf,
-  MacroIntf, MenuIntf, FrmSelectProps, IDEWindowIntf;
+  ActionsEditor,
+  ColumnDlg,
+  ComponentEditors,
+  ComponentReg,
+  ComponentTreeView,
+  ConfigStorage,
+  DBPropEdits,
+  FieldsEditor,
+  FormEditingIntf,
+  FrmSelectProps,
+  GraphPropEdits,
+  HelpFPDoc,
+  HelpHTML,
+  HelpIntf,
+  IDECommands,
+  IDEWindowIntf,
+  ImageListEditor,
+  LazIDEIntf,
+  ListViewPropEdit,
+  MacroIntf,
+  MenuIntf,
+  NewItemIntf,
+  ObjectInspector,
+  ObjInspStrConsts,
+  PackageIntf,
+  ProjectIntf,
+  PropEdits,
+  SrcEditorIntf,
+  TextTools;
 
 implementation
 

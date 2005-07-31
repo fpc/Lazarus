@@ -341,7 +341,8 @@ type
   
   TFormHandlerType = (
     fhtFirstShow,
-    fhtClose
+    fhtClose,
+    fhtCreate
     );
 
   { TCustomForm }
@@ -488,10 +489,12 @@ type
     function GetRolesForControl(AControl: TControl): TControlRolesForForm;
     procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
     procedure AddHandlerFirstShow(OnFirstShowHandler: TNotifyEvent;
-                                  AsLast: Boolean);
+                                  AsLast: Boolean=true);
     procedure RemoveHandlerFirstShow(OnFirstShowHandler: TNotifyEvent);
-    procedure AddHandlerClose(OnCloseHandler: TCloseEvent; AsLast: Boolean);
+    procedure AddHandlerClose(OnCloseHandler: TCloseEvent; AsLast: Boolean=true);
     procedure RemoveHandlerClose(OnCloseHandler: TCloseEvent);
+    procedure AddHandlerCreate(OnCreateHandler: TNotifyEvent; AsLast: Boolean=true);
+    procedure RemoveHandlerCreate(OnCreateHandler: TNotifyEvent);
     function  IsShortcut(var Message: TLMKey): boolean;
   public
     // drag and dock

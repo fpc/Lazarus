@@ -38,7 +38,7 @@ unit RegisterIDEIntf;
 interface
 
 uses
-  Classes, SysUtils;
+  LazarusPackageIntf, IDEWindowIntf;
 
 procedure Register;
 
@@ -46,7 +46,7 @@ implementation
 
 procedure Register;
 begin
-
+  RegisterUnit('IDEWindowIntf',@IDEWindowIntf.Register);
 end;
 
 end.

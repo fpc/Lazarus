@@ -72,6 +72,7 @@ type
     destructor Destroy; override;
     procedure ApplyLayout(ADialog: TControl;
                           DefaultWidth, DefaultHeight: integer);
+    procedure ApplyLayout(ADialog: TControl);
     procedure SaveLayout(ADialog: TControl);
     procedure Clear;
     function Count: integer;
@@ -86,11 +87,29 @@ type
     property Modified: boolean read FModified write SetModified;
     property ItemClass: TIDEDialogLayoutClass read FItemClass write FItemClass;
   end;
+  
+  { TIDEDialogLayoutStorage }
+
+  TIDEDialogLayoutStorage = class(TComponent)
+  protected
+    procedure OnCreateForm(Sender: TObject);
+    procedure OnCloseForm(Sender: TObject; var CloseAction: TCloseAction);
+  public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+  end;
 
 var
   IDEDialogLayoutList: TIDEDialogLayoutList = nil;// set by the IDE
+  
+procedure Register;
 
 implementation
+
+procedure Register;
+begin
+  RegisterComponents('Misc',[TIDEDialogLayoutStorage]);
+end;
 
 { TIDEDialogLayout }
 
@@ -196,6 +215,11 @@ begin
   ADialog.SetBounds(ADialog.Left,ADialog.Top,NewWidth,NewHeight);
 end;
 
+procedure TIDEDialogLayoutList.ApplyLayout(ADialog: TControl);
+begin
+  ApplyLayout(ADialog,ADialog.Width,ADialog.Height);
+end;
+
 procedure TIDEDialogLayoutList.SaveLayout(ADialog: TControl);
 var
   ALayout: TIDEDialogLayout;
@@ -277,6 +301,44 @@ begin
   for i:=0 to Count-1 do
     Items[i].SaveToConfig(Config,Path+'Dialog'+IntToStr(i+1)+'/');
   Modified:=false;
+end;
+
+{ TIDEDialogLayoutStorage }
+
+procedure TIDEDialogLayoutStorage.OnCreateForm(Sender: TObject);
+begin
+  if Sender=nil then ;
+  IDEDialogLayoutList.ApplyLayout(Sender as TControl);
+end;
+
+procedure TIDEDialogLayoutStorage.OnCloseForm(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  if Sender=nil then ;
+  IDEDialogLayoutList.SaveLayout(Sender as TControl);
+end;
+
+constructor TIDEDialogLayoutStorage.Create(TheOwner: TComponent);
+var
+  Form: TCustomForm;
+begin
+  inherited Create(TheOwner);
+  if Owner is TCustomForm then begin
+    Form:=TCustomForm(Owner);
+    Form.AddHandlerCreate(@OnCreateForm);
+    Form.AddHandlerClose(@OnCloseForm);
+  end;
+end;
+
+destructor TIDEDialogLayoutStorage.Destroy;
+var
+  Form: TCustomForm;
+begin
+  if Owner is TCustomForm then begin
+    Form:=TCustomForm(Owner);
+    Form.RemoveAllHandlersOfObject(Self);
+  end;
+  inherited Destroy;
 end;
 
 end.

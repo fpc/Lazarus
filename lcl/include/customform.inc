@@ -620,9 +620,14 @@ end;
   Calls user handler
  ------------------------------------------------------------------------------}
 procedure TCustomForm.DoCreate;
+var
+  i: LongInt;
 begin
   LockRealizeBounds;
   if Assigned(FOnCreate) then FOnCreate(Self);
+  i:=FFormHandlers[fhtCreate].Count;
+  while FFormHandlers[fhtCreate].NextDownIndex(i) do
+    TNotifyEvent(FFormHandlers[fhtCreate][i])(Self);
   UnlockRealizeBounds;
 end;
 
@@ -1287,7 +1292,7 @@ Begin
   Visible := False;
   fCompStyle:= csForm;
 
-  FMenu	:= nil;
+  FMenu:= nil;
 
   ControlStyle := ControlStyle + [csAcceptsControls, csCaptureMouse,
                                   csClickEvents, csSetCaption, csDoubleClicks];
@@ -1912,6 +1917,17 @@ end;
 procedure TCustomForm.RemoveHandlerClose(OnCloseHandler: TCloseEvent);
 begin
   RemoveHandler(fhtClose,TMethod(OnCloseHandler));
+end;
+
+procedure TCustomForm.AddHandlerCreate(OnCreateHandler: TNotifyEvent;
+  AsLast: Boolean);
+begin
+  AddHandler(fhtCreate,TMethod(OnCreateHandler),AsLast);
+end;
+
+procedure TCustomForm.RemoveHandlerCreate(OnCreateHandler: TNotifyEvent);
+begin
+  RemoveHandler(fhtCreate,TMethod(OnCreateHandler));
 end;
 
 procedure TCustomForm.Dock(NewDockSite: TWinControl; ARect: TRect);
