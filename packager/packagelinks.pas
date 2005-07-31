@@ -38,8 +38,7 @@ unit PackageLinks;
 interface
 
 uses
-  Classes, SysUtils,
-  {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF}, Laz_XMLCfg,
+  Classes, SysUtils, AVL_Tree, Laz_XMLCfg,
   LCLProc, FileUtil, IDEProcs, MacroIntf, EnvironmentOpts, PackageDefs, LazConf;
   
 type
@@ -389,10 +388,12 @@ begin
   FGlobalLinks.FreeAndClear;
   GlobalLinksDir:=AppendPathDelim(EnvironmentOptions.LazarusDirectory)
                                   +'packager'+PathDelim+'globallinks'+PathDelim;
+  //debugln('UpdateGlobalLinks A ',GlobalLinksDir);
   if FindFirst(GlobalLinksDir+'*.lpl', faAnyFile, FileInfo)=0 then begin
     PkgVersion:=TPkgVersion.Create;
     repeat
       CurFilename:=GlobalLinksDir+FileInfo.Name;
+      //debugln('UpdateGlobalLinks B CurFilename=',CurFilename);
       if ((FileInfo.Attr and faDirectory)<>0)
       or (not ParseFilename(FileInfo.Name,NewPkgName,PkgVersion))
       then begin
@@ -694,6 +695,7 @@ begin
   ANode:=LinkTree.FindLowest;
   while ANode<>nil do begin
     PkgLink:=TPackageLink(ANode.Data);
+    //debugln('TPackageLinks.IteratePackagesInTree PkgLink.Filename=',PkgLink.Filename);
     if (not MustExist) or FileExists(PkgLink.Filename) then
       Event(PkgLink);
     ANode:=LinkTree.FindSuccessor(ANode);
@@ -740,6 +742,7 @@ end;
 procedure TPackageLinks.IteratePackages(MustExist: boolean;
   Event: TIteratePackagesEvent);
 begin
+  //debugln('TPackageLinks.IteratePackages');
   IteratePackagesInTree(MustExist,FUserLinksSortID,Event);
   IteratePackagesInTree(MustExist,FGlobalLinks,Event);
 end;

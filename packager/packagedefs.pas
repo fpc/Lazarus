@@ -869,7 +869,7 @@ end;
 function LazPackageTypeIdentToType(const s: string): TLazPackageType;
 begin
   for Result:=Low(TLazPackageType) to High(TLazPackageType) do
-    if AnsiCompareText(s,LazPackageTypeIdents[Result])=0 then exit;
+    if CompareText(s,LazPackageTypeIdents[Result])=0 then exit;
   Result:=lptRunTime;
 end;
 

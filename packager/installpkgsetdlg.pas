@@ -40,7 +40,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, FileUtil,
-  {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF}, Laz_XMLCfg,
+  AVL_Tree, Laz_XMLCfg,
   LazarusIDEStrConsts, EnvironmentOpts, InputHistory, LazConf, IDEProcs,
   PackageDefs, PackageSystem;
 
@@ -388,7 +388,7 @@ var
   ANode: TAVLTreeNode;
   sl: TStringList;
   PkgName: String;
-  Pkg: TLazPackage;
+  Pkg: TLazPackageID;
 begin
   fPackages.Clear;
   // TODO: only distinct files
@@ -396,8 +396,11 @@ begin
   sl:=TStringList.Create;
   ANode:=fPackages.FindLowest;
   while ANode<>nil do begin
-    Pkg:=TLazPackage(ANode.Data);
-    if Pkg.PackageType in [lptDesignTime,lptRunAndDesignTime] then begin
+    Pkg:=TLazPackageID(ANode.Data);
+    //debugln('TInstallPkgSetDialog.UpdateAvailablePackages ',Pkg.IDAsString,' Pkg.PackageType=',dbgs(ord(Pkg.PackageType)));
+    if (not (Pkg is TLazPackage))
+    or (TLazPackage(Pkg).PackageType in [lptDesignTime,lptRunAndDesignTime])
+    then begin
       PkgName:=Pkg.IDAsString;
       if (sl.IndexOf(PkgName)<0) then
         sl.Add(PkgName);
@@ -430,6 +433,7 @@ end;
 
 procedure TInstallPkgSetDialog.OnIteratePackages(APackageID: TLazPackageID);
 begin
+  //debugln('TInstallPkgSetDialog.OnIteratePackages ',APackageID.IDAsString);
   if (fPackages.Find(APackageID)=nil) then
     fPackages.Add(APackageID);
 end;
