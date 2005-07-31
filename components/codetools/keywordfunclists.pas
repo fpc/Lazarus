@@ -323,7 +323,7 @@ begin
   i:=KeyWordToHashIndex(Identifier);
   IdentifierEnd:=Identifier;
   while IsIdentChar[IdentifierEnd[0]] do inc(IdentifierEnd);
-  KeyWordLen:=(Integer(IdentifierEnd)-Integer(Identifier));
+  KeyWordLen:=(PtrInt(IdentifierEnd)-PtrInt(Identifier));
   dec(IdentifierEnd);
   if i>=0 then begin
     i:=FBucketStart[i];

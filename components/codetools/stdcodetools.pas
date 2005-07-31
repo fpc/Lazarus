@@ -3267,7 +3267,7 @@ begin
     NearestNode:=CursorTool.FindNearestIdentifierNode(CursorPos,IdentTree);
     if NearestNode=nil then exit;
     // convert node to cleanpos
-    NearestCleanPos:=Integer(NearestNode.Data)-Integer(@SectionTool.Src[1])+1;
+    NearestCleanPos:=PtrInt(NearestNode.Data)-PtrInt(@SectionTool.Src[1])+1;
     // convert cleanpos to caret
     CleanPosToCaret(NearestCleanPos,NearestPos);
   finally

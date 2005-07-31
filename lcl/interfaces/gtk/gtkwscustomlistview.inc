@@ -72,7 +72,7 @@ begin
   msg.Msg := CN_NOTIFY;
 
   FillChar(NM, SizeOf(NM), 0);
-  NM.hdr.hwndfrom := longint(AList);
+  NM.hdr.hwndfrom := PtrInt(AList);
   NM.hdr.code := LVN_COLUMNCLICK;
   NM.iItem := -1;
   NM.iSubItem := AColumn;
@@ -93,7 +93,7 @@ begin
   msg.Msg := CN_NOTIFY;
 
   FillChar(NM, SizeOf(NM), 0);
-  NM.hdr.hwndfrom := longint(AList);
+  NM.hdr.hwndfrom := PtrInt(AList);
   NM.hdr.code := LVN_DELETEITEM;
   NM.iItem := AnOldIdx;
   msg.NMHdr := @NM;
@@ -115,7 +115,7 @@ begin
   msg.Msg := CN_NOTIFY;
 
   FillChar(NM, SizeOf(NM), 0);
-  NM.hdr.hwndfrom := longint(AList);
+  NM.hdr.hwndfrom := PtrInt(AList);
   NM.hdr.code := LVN_ITEMCHANGED;
   NM.iItem := ARow;
   NM.iSubItem := AColumn;
@@ -133,7 +133,7 @@ begin
   msg.Msg := CN_NOTIFY;
 
   FillChar(NM, SizeOf(NM), 0);
-  NM.hdr.hwndfrom := longint(AList);
+  NM.hdr.hwndfrom := PtrInt(AList);
   NM.hdr.code := LVN_ITEMCHANGED;
   NM.iItem := ARow;
   NM.iSubItem := AColumn;
@@ -153,7 +153,7 @@ begin
   msg.Msg := CN_NOTIFY;
 
   FillChar(NM, SizeOf(NM), 0);
-  NM.hdr.hwndfrom := longint(AList);
+  NM.hdr.hwndfrom := PtrInt(AList);
   NM.hdr.code := LVN_ITEMCHANGED;
   NM.iItem := AList^.focus_row;
   NM.iSubItem := 0;
@@ -175,7 +175,7 @@ begin
   ListView := AInfo^.LCLObject as TListView;
 
   FillChar(NM, SizeOf(NM), 0);
-  NM.hdr.hwndfrom := longint(AList);
+  NM.hdr.hwndfrom := PtrInt(AList);
   NM.hdr.code := LVN_ITEMCHANGED;
   for n := 0 to Listview.Items.Count - 1 do
   begin
@@ -202,7 +202,7 @@ begin
   ListView := AInfo^.LCLObject as TListView;
 
   FillChar(NM, SizeOf(NM), 0);
-  NM.hdr.hwndfrom := longint(AList);
+  NM.hdr.hwndfrom := PtrInt(AList);
   NM.hdr.code := LVN_ITEMCHANGED;
   for n := 0 to Listview.Items.Count - 1 do
   begin

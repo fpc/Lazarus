@@ -1749,7 +1749,7 @@ var NewPos: integer;
 begin
   if Src='' then
     RaiseSrcEmpty;
-  NewPos:=Integer(ACleanPos)-Integer(@Src[1])+1;
+  NewPos:=PtrInt(ACleanPos)-PtrInt(@Src[1])+1;
   if (NewPos<1) or (NewPos>SrcLen) then
     RaiseNotInSrc;
   MoveCursorToCleanPos(NewPos);
@@ -1783,7 +1783,7 @@ var NewPos: integer;
 begin
   Result:=false;
   if Src='' then exit;
-  NewPos:=Integer(ACleanPos)-Integer(@Src[1])+1;
+  NewPos:=PtrInt(ACleanPos)-PtrInt(@Src[1])+1;
   if (NewPos<1) or (NewPos>SrcLen) then exit;
   Result:=true;
 end;
@@ -2446,7 +2446,7 @@ var NewPos: integer;
 begin
   Result:=false;
   if Src='' then exit;
-  NewPos:=Integer(p)-Integer(@Src[1])+1;
+  NewPos:=PtrInt(p)-PtrInt(@Src[1])+1;
   if (NewPos<1) or (NewPos>length(Src)) then exit;
   Result:=true;
 end;
@@ -2474,7 +2474,7 @@ var NewPos: integer;
 begin
   if Src='' then
     RaiseSrcEmpty;
-  NewPos:=Integer(APos)-Integer(@Src[1])+1;
+  NewPos:=PtrInt(APos)-PtrInt(@Src[1])+1;
   if (NewPos<1) or (NewPos>length(Src)) then
     RaiseNotInSrc;
   MoveCursorToPos(NewPos);
