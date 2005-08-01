@@ -322,7 +322,7 @@ begin
       SB_PAGEDOWN:
         Inc(NewPos, FPage);
       SB_THUMBPOSITION, SB_THUMBTRACK:
-        NewPos := Pos;
+        NewPos := GetPosition; { Read scroll bar as TLMScroll message does not provide full range }
       SB_TOP:
         NewPos := 0;
       SB_BOTTOM:

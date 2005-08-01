@@ -698,6 +698,7 @@ type
     function  GetDefaultColumnReadOnly(Column: Integer): boolean; virtual;
     function  GetDefaultColumnTitle(Column: Integer): string; virtual;
     function  GetDefaultEditor(Column: Integer): TWinControl;
+    function  GetScrollBarPosition(Which: integer): Integer;
     function  GetEditMask(ACol, ARow: Longint): string; dynamic;
     function  GetEditText(ACol, ARow: Longint): string; dynamic;
     function  GetFixedcolor: TColor; virtual;
@@ -2919,10 +2920,10 @@ begin
     SB_PAGEUP:     C := CTL - FGCache.ClientWidth;
       // Scrolls to the current scroll bar position
     SB_THUMBPOSITION:
-      C := Message.Pos;
+      C := GetScrollBarPosition(SBS_HORZ);
     SB_THUMBTRACK:
       if goThumbTracking in Options then
-        C := message.Pos
+        C := GetScrollBarPosition(SBS_HORZ)
       else
         Exit;
       // Ends scrolling
@@ -2997,10 +2998,10 @@ begin
     SB_PAGEUP:     C := CTL - FGCache.ClientHeight;
       // Scrolls to the current scroll bar position
   SB_THUMBPOSITION:
-    C := message.Pos;
+    C := GetScrollBarPosition(SBS_VERT);
   SB_THUMBTRACK:
     if goThumbTracking in Options then
-      C := message.Pos
+      C := GetScrollBarPosition(SBS_VERT)
     else
       Exit;
       // Ends scrolling
@@ -5255,6 +5256,18 @@ begin
       FPickListEditor.DropDownCount := C.DropDownRows;
     end
 
+  end;
+end;
+
+function TCustomGrid.GetScrollBarPosition(Which: integer): Integer;
+var
+  ScrollInfo: TScrollInfo;
+begin
+  if HandleAllocated then begin
+    ScrollInfo.cbSize := SizeOf(ScrollInfo);
+    ScrollInfo.fMask := SIF_POS;
+    GetScrollInfo(Handle, Which, ScrollInfo);
+    Result:=ScrollInfo.nPos;
   end;
 end;
 

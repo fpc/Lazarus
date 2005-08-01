@@ -2535,7 +2535,10 @@ begin
   Result := CallBackDefaultReturn;
   Msg.Msg := LM_HSCROLL;
   with Msg do begin
-    pos := Round(Range^.Adjustment^.Value);
+    if Range^.Adjustment^.value <= High(pos) then
+      pos := Round(Range^.Adjustment^.Value)
+    else
+      pos := High(pos); { Out of simple range }
     ScrollBar := HWND(Range);
     ScrollCode := ScrollTypeToSbCode(False, Scroll,
       gtk_range_get_update_policy(Range));
@@ -2551,7 +2554,10 @@ begin
   Result := CallBackDefaultReturn;
   Msg.Msg := LM_VSCROLL;
   with Msg do begin
-    pos := Round(Range^.Adjustment^.Value);
+    if Range^.Adjustment^.value <= High(pos) then
+      pos := Round(Range^.Adjustment^.Value)
+    else
+      pos := High(pos); { Out of simple range }
     ScrollBar := HWND(Range);
     ScrollCode := ScrollTypeToSbCode(True, Scroll,
       gtk_range_get_update_policy(Range));
@@ -2571,7 +2577,10 @@ begin
   if Scroll<>nil then begin
     Msg.Msg := LM_HSCROLL;
     with Msg do begin
-      pos := Round(Adjustment^.Value);
+      if Adjustment^.value <= High(pos) then
+        pos := Round(Adjustment^.Value)
+      else
+        pos := High(pos); { Out of simple range }
       ScrollBar := HWND(Scroll);
       ScrollType := get_gtk_scroll_type(Scroll);
       ScrollCode := ScrollTypeToSbCode(False, ScrollType,
@@ -2593,7 +2602,10 @@ begin
   if Scroll<>nil then begin
     Msg.Msg := LM_VSCROLL;
     with Msg do begin
-      pos := Round(Adjustment^.Value);
+      if Adjustment^.value <= High(pos) then
+        pos := Round(Adjustment^.Value)
+      else
+        pos := High(pos); { Out of simple range }
       ScrollBar := HWND(Scroll);
       ScrollType := get_gtk_scroll_type(Scroll);
       ScrollCode := ScrollTypeToSbCode(True, ScrollType,
