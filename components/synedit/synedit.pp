@@ -3,7 +3,7 @@ The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
 http://www.mozilla.org/MPL/
-                                                       F
+
 Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
 the specific language governing rights and limitations under the License.
@@ -672,9 +672,13 @@ type
     procedure DoOnStatusChange(Changes: TSynStatusChanges); virtual;
     {$IFDEF SYN_LAZARUS}
     property LastMouseCaret: TPoint read FLastMouseCaret write SetLastMouseCaret;
+    function GetSelEnd: integer;                                                 //L505
+    function GetSelStart: integer;
+    procedure SetSelEnd(const Value: integer);
+    procedure SetSelStart(const Value: integer);
     {$ENDIF}
   public
-      //code fold
+    //code fold
     procedure CodeFoldAction(Y: integer);
     procedure InitCodeFold;
 
@@ -784,6 +788,8 @@ type
     property LogicalCaretXY: TPoint read GetLogicalCaretXY write SetLogicalCaretXY;
     property LineIndenter: TSynCustomLineIndenter read fLineIndenter
                                                   write SetLineIndenter;
+    property SelStart: Integer read GetSelStart write SetSelStart;
+    property SelEnd: Integer read GetSelEnd write SetSelEnd;
     {$ENDIF}
     property Font: TFont read GetFont write SetFont;
     property Highlighter: TSynCustomHighlighter
@@ -2512,8 +2518,9 @@ begin
       //collapse the branch
       debugln('collapsing node: ',dbgs(iLine));
       TSynEditStringList(fLines).FoldType[iLine] := cfCollapsed;
+
       repeat
-      Inc(iLine);
+        Inc(iLine);
         TSynEditStringList(fLines).Folded[iLine] := False;
         //Inc(iLine);
       until (TSynEditStringList(fLines).FoldType[iLine]
@@ -2528,7 +2535,7 @@ begin
       TSynEditStringList(fLines).FoldType[iLine] := cfExpanded;
       //Inc(iLine);
       repeat
-      Inc(iLine);
+        Inc(iLine);
         TSynEditStringList(fLines).Folded[iLine] := True;
         //Inc(iLine);
       until (TSynEditStringList(fLines).FoldType[iLine]
@@ -2601,7 +2608,6 @@ var
             fInternalImage.DrawMark(Canvas, Marks[iMark].ImageIndex, fBookMarkOpt.LeftMargin + aGutterOffs^[iLine] + fGutter.CodeFoldingWidth, iLine * fTextHeight, fTextHeight)
           else
             fInternalImage.DrawMark(Canvas, Marks[iMark].ImageIndex, fBookMarkOpt.LeftMargin + aGutterOffs^[iLine], iLine * fTextHeight, fTextHeight);
-
         Inc(aGutterOffs^[iLine], fBookMarkOpt.XOffset);
       end;
     end;
@@ -3062,7 +3068,6 @@ var
       // draw edge
       LCLIntf.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
       LCLIntf.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
-
       //codefold draw splitter line
       ypos := rcToken.Bottom - 1;
       nLine := PixelsToRowColumn(Point(0, ypos)).Y;
@@ -3071,7 +3076,6 @@ var
         LCLIntf.MoveToEx(dc, nRightEdge, ypos, nil);
         LCLIntf.LineTo(dc, fGutterWidth, ypos);
       end;
-
       // draw text
       fTextDrawer.ExtTextOut(nX, rcToken.Top, ETOOptions-ETO_OPAQUE, rcToken,
         pszText, nCharsToPaint);
@@ -3203,7 +3207,6 @@ var
         LCLIntf.MoveToEx(dc, nRightEdge, ypos, nil);
         LCLIntf.LineTo(dc, fGutterWidth, ypos);
       end;
-      
       end;
     end;
   end;
@@ -4271,7 +4274,6 @@ var
       if bDoRightEdge then begin
         Windows.MoveToEx(dc, nRightEdge, rcLine.Top, nil);
         Windows.LineTo(dc, nRightEdge, rcLine.Bottom + 1);
-
       //codefold draw splitter line
       ypos := rcToken.Bottom - 1;
       nLine := PixelsToRowColumn(Point(0, ypos)).Y;
@@ -8292,6 +8294,118 @@ begin
   InvalidateGutter;
   {$ENDIF}
 end;
+
+{$IFDEF SYN_LAZARUS}
+function TCustomSynEdit.GetSelStart: integer;                                   //L505 begin
+
+  function llen(const data: string): integer;
+  begin
+    result := length(Data) + length(LineEnding);
+  end;
+
+var
+  loop: integer;
+  p: TPoint;
+begin
+  if SelAvail then
+  begin
+    p:=BlockBegin;
+  end
+  else
+  begin
+    p:=LogicalCaretXY;
+  end;
+
+  result := 0;
+  loop := 0;
+  while (loop < (p.Y - 1)) and (loop < Lines.Count) do
+  begin
+    result := result + llen(lines[loop]);
+    inc(loop);
+  end;
+  if loop < Lines.Count then
+    result := result + Min(p.X, length(lines[loop]) + 1);
+end;
+
+procedure TCustomSynEdit.SetSelStart(const Value: integer);
+
+  function llen(const data: string): integer;
+  begin
+    result := length(Data) + length(LineEnding);
+  end;
+  
+var
+  loop: integer;
+  count: integer;
+begin
+  loop := 0;
+  count := 0;
+  while (loop < Lines.Count) and (count + llen(lines[loop]) < value) do begin
+    count := count + llen(lines[loop]);
+    inc(loop);
+  end;
+{  CaretX := value - count;
+  CaretY := loop + 1;
+
+  fBlockBegin.X := CaretX;
+  fBlockBegin.Y := CaretY;}
+
+  //This seems the same as above, but uses the other fixes inside of SetCaretXY
+  //to adjust the cursor pos correctly.
+  BlockBegin := Point(value - count, loop + 1);
+  CaretXY := LogicalToPhysicalPos(BlockBegin);
+end;
+
+function TCustomSynEdit.GetSelEnd: integer;
+
+  function llen(const data: string): integer;
+  begin
+    result := length(Data) + length(LineEnding);
+  end;
+
+var
+  loop: integer;
+  p: TPoint;
+begin
+  if SelAvail then
+  begin
+    p := BlockEnd;
+  end else begin
+    p := LogicalCaretXY;
+  end;
+
+  result := 0;
+  loop := 0;
+  while (loop < (p.y - 1)) and (loop < Lines.Count) do begin
+    Result := result + llen(lines[loop]);
+    inc(loop);
+  end;
+  if loop<Lines.Count then
+    result := result + p.x;
+end;
+
+procedure TCustomSynEdit.SetSelEnd(const Value: integer);
+
+  function llen(const data: string): integer;
+  begin
+    result := length(Data) + length(LineEnding);
+  end;
+
+var
+  p: TPoint;
+  loop: integer;
+  count: integer;
+begin
+  loop := 0;
+  count := 0;
+  while (loop < Lines.Count) and (count + llen(lines[loop]) < value) do begin
+    count := count + llen(lines.strings[loop]);
+    inc(loop);
+  end;
+  p.x := value - count; p.y := loop + 1;
+  BlockEnd := p;
+end;
+{$ENDIF}
 
 procedure TCustomSynEdit.SetSelWord;
 begin
