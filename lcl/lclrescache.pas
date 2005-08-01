@@ -25,7 +25,7 @@ unit LCLResCache;
 interface
 
 uses
-  Classes, SysUtils, FPCAdds, LCLProc, AvgLvlTree;
+  Classes, SysUtils, FPCAdds, LCLType, LCLProc, AvgLvlTree;
   
 {off $DEFINE CheckResCacheConsistency}
 

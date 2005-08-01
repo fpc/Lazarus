@@ -83,6 +83,7 @@ type
   // temp solution for 32bit system.Thandle
   THandle = type PtrInt;
   HANDLE = THandle;
+  PHandle = ^THandle;
   {$ENDIF}
 
   { Provided for compatibility with Windows registry ONLY }
