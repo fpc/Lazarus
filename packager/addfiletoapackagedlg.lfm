@@ -1,117 +1,130 @@
 object AddFileToAPackageDialog: TAddFileToAPackageDialog
   Caption = 'AddFileToAPackageDialog'
-  ClientHeight = 362
-  ClientWidth = 448
+  ClientHeight = 363
+  ClientWidth = 469
   OnClose = AddFileToAPackageDlgClose
-  PixelsPerInch = 112
+  PixelsPerInch = 96
   Position = poScreenCenter
   ShowHint = True
-  HorzScrollBar.Page = 447
-  VertScrollBar.Page = 361
-  Left = 573
-  Height = 362
-  Top = 331
-  Width = 448
+  HorzScrollBar.Page = 468
+  VertScrollBar.Page = 362
+  Left = 347
+  Height = 363
+  Top = 221
+  Width = 469
   object FileGroupBox: TGroupBox
     Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.OnChange = nil
     Caption = 'FileGroupBox'
-    ClientHeight = 191
-    ClientWidth = 429
+    ClientHeight = 199
+    ClientWidth = 450
     ParentColor = True
     TabOrder = 0
     Left = 8
-    Height = 208
+    Height = 217
     Top = 8
-    Width = 433
+    Width = 454
     object UnitNameLabel: TLabel
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.OnChange = nil
       Caption = 'UnitNameLabel'
       Color = clNone
       Left = 12
       Height = 17
       Top = 40
-      Width = 404
+      Width = 430
     end
     object FileTypeRadioGroup: TRadioGroup
       Anchors = [akLeft, akRight, akBottom]
+      BorderSpacing.OnChange = nil
       Caption = 'FileTypeRadioGroup'
       ParentColor = True
       Left = 12
       Height = 72
       Top = 113
-      Width = 404
+      Width = 430
     end
     object FileNameEdit: TEdit
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.OnChange = nil
       ReadOnly = True
       TabOrder = 0
       Text = 'FileNameEdit'
       Left = 12
       Height = 23
       Top = 8
-      Width = 404
+      Width = 430
     end
     object UnitNameEdit: TEdit
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.OnChange = nil
       TabOrder = 1
       Text = 'UnitNameEdit'
       Left = 12
       Height = 23
       Top = 56
-      Width = 404
+      Width = 430
     end
     object HasRegisterProcCheckBox: TCheckBox
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.OnChange = nil
       Caption = 'HasRegisterProcCheckBox'
       TabOrder = 2
-      Left = 14
+      Left = 12
       Height = 23
       Top = 88
-      Width = 404
+      Width = 430
     end
   end
   object PackagesGroupBox: TGroupBox
     Anchors = [akLeft, akRight, akBottom]
+    BorderSpacing.OnChange = nil
     Caption = 'PackagesGroupBox'
-    ClientHeight = 71
-    ClientWidth = 429
+    ClientHeight = 70
+    ClientWidth = 450
     ParentColor = True
     TabOrder = 1
     Left = 8
     Height = 88
-    Top = 232
-    Width = 433
+    Top = 233
+    Width = 454
     object PackagesComboBox: TComboBox
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.OnChange = nil
       MaxLength = 0
       TabOrder = 0
       Text = 'PackagesComboBox'
       Left = 12
       Height = 21
       Top = 8
-      Width = 404
+      Width = 430
     end
     object ShowAllCheckBox: TCheckBox
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.OnChange = nil
       Caption = 'ShowAllCheckBox'
       OnClick = ShowAllCheckBoxClick
       TabOrder = 1
       Left = 12
       Height = 23
       Top = 40
-      Width = 404
+      Width = 430
     end
   end
   object CancelButton: TButton
     Anchors = [akRight, akBottom]
     AutoSize = True
+    BorderSpacing.OnChange = nil
     Caption = 'CancelButton'
     ModalResult = 2
     TabOrder = 2
-    Left = 366
+    Left = 387
     Height = 25
-    Top = 328
+    Top = 329
     Width = 75
   end
   object OkButton: TButton
     Anchors = [akTop, akRight]
     AutoSize = True
-    BorderSpacing.OnChange = nil
     BorderSpacing.Right = 10
     Caption = 'OkButton'
     OnClick = OkButtonClick
@@ -119,9 +132,9 @@ object AddFileToAPackageDialog: TAddFileToAPackageDialog
     AnchorSideTop.Control = CancelButton
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = CancelButton
-    Left = 281
+    Left = 302
     Height = 25
-    Top = 328
+    Top = 329
     Width = 75
   end
 end

@@ -1,17 +1,18 @@
-object VIEWUNITS: TVIEWUNITS
+object ViewUnitDialog: TViewUnitDialog
   Caption = 'View Project Units'
   ClientHeight = 204
   ClientWidth = 416
-  PixelsPerInch = 90
+  PixelsPerInch = 96
   Position = poScreenCenter
-  HorzScrollBar.Page = 417
-  VertScrollBar.Page = 205
+  HorzScrollBar.Page = 415
+  VertScrollBar.Page = 203
   Left = 477
   Height = 204
   Top = 412
   Width = 416
   object btnOK: TButton
     Anchors = [akTop, akRight]
+    BorderSpacing.OnChange = nil
     Caption = 'OK'
     OnClick = BTNOKCLICK
     TabOrder = 0
@@ -22,6 +23,7 @@ object VIEWUNITS: TVIEWUNITS
   end
   object btnCancel: TButton
     Anchors = [akTop, akRight]
+    BorderSpacing.OnChange = nil
     Caption = 'Cancel'
     OnClick = BTNCANCELCLICK
     TabOrder = 1
@@ -32,6 +34,7 @@ object VIEWUNITS: TVIEWUNITS
   end
   object Edit: TEdit
     Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.OnChange = nil
     Enabled = False
     TabOrder = 2
     Left = 10
@@ -41,9 +44,10 @@ object VIEWUNITS: TVIEWUNITS
   end
   object Listbox: TListBox
     Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.OnChange = nil
     ClickOnSelChange = False
+    OnDblClick = BTNOKCLICK
     TabOrder = 3
-    TopIndex = -1
     Left = 10
     Height = 147
     Top = 45
@@ -52,6 +56,7 @@ object VIEWUNITS: TVIEWUNITS
   object MultiSelectCheckBox: TCheckBox
     AllowGrayed = True
     Anchors = [akTop, akRight]
+    BorderSpacing.OnChange = nil
     Caption = 'Multi Select'
     OnClick = MultiselectCheckBoxClick
     TabOrder = 4
