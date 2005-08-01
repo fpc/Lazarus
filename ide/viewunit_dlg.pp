@@ -49,7 +49,9 @@ type
     constructor Create(const AName: string; AnID: integer; ASelected: boolean);
   end;
 
-  TViewUnits = class(TForm)
+  { TViewUnitDialog }
+
+  TViewUnitDialog = class(TForm)
     Edit: TEdit;
     ListBox: TListBox;
     btnOK: TButton;
@@ -73,16 +75,16 @@ implementation
 
 function ShowViewUnitsDlg(Entries: TList;
   MultiSelect: boolean; const Caption: string): TModalResult;
-var ViewUnits: TViewUnits;
+var ViewUnitDialog: TViewUnitDialog;
   i: integer;
 begin
-  ViewUnits:=TViewUnits.Create(nil);
+  ViewUnitDialog:=TViewUnitDialog.Create(nil);
   try
-    ViewUnits.Caption:=Caption;
-    ViewUnits.MultiselectCheckBox.Enabled:=MultiSelect;
-    ViewUnits.MultiselectCheckBox.Checked:=MultiSelect;
-    ViewUnits.ListBox.Multiselect:=ViewUnits.MultiselectCheckBox.Checked;
-    with ViewUnits.ListBox.Items do begin
+    ViewUnitDialog.Caption:=Caption;
+    ViewUnitDialog.MultiselectCheckBox.Enabled:=MultiSelect;
+    ViewUnitDialog.MultiselectCheckBox.Checked:=MultiSelect;
+    ViewUnitDialog.ListBox.Multiselect:=ViewUnitDialog.MultiselectCheckBox.Checked;
+    with ViewUnitDialog.ListBox.Items do begin
       BeginUpdate;
       Clear;
       for i:=0 to Entries.Count-1 do
@@ -90,15 +92,15 @@ begin
       EndUpdate;
     end;
     for i:=0 to Entries.Count-1 do
-      ViewUnits.ListBox.Selected[i]:=TViewUnitsEntry(Entries[i]).Selected;
-    Result:=ViewUnits.ShowModal;
+      ViewUnitDialog.ListBox.Selected[i]:=TViewUnitsEntry(Entries[i]).Selected;
+    Result:=ViewUnitDialog.ShowModal;
     if Result=mrOk then begin
       for i:=0 to Entries.Count-1 do begin
-        TViewUnitsEntry(Entries[i]).Selected:=ViewUnits.ListBox.Selected[i];
+        TViewUnitsEntry(Entries[i]).Selected:=ViewUnitDialog.ListBox.Selected[i];
       end;
     end;
   finally
-    ViewUnits.Free;
+    ViewUnitDialog.Free;
   end;
 end;
 
@@ -113,9 +115,9 @@ begin
   Selected:=ASelected;
 end;
 
-{ TViewUnits }
+{ TViewUnitDialog }
 
-constructor TViewUnits.Create(TheOwner: TComponent);
+constructor TViewUnitDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   IDEDialogLayoutList.ApplyLayout(Self,450,300);
@@ -128,26 +130,26 @@ begin
   MultiSelectCheckBox.Left:=btnOk.Left;
 end;
 
-Procedure TViewUnits.btnOKClick(Sender : TOBject);
+Procedure TViewUnitDialog.btnOKClick(Sender : TOBject);
 Begin
   IDEDialogLayoutList.SaveLayout(Self);
   ModalResult := mrOK;
 End;
 
-Procedure TViewUnits.btnCancelClick(Sender : TOBject);
+Procedure TViewUnitDialog.btnCancelClick(Sender : TOBject);
 Begin
   IDEDialogLayoutList.SaveLayout(Self);
   ModalResult := mrCancel;
 end;
 
-procedure TViewUnits.MultiselectCheckBoxClick(Sender :TObject);
+procedure TViewUnitDialog.MultiselectCheckBoxClick(Sender :TObject);
 begin
   ListBox.Multiselect:=MultiselectCheckBox.Checked;
 end;
 
 
 initialization
- {$I viewunits1.lrs}
+ {$I viewunit_dlg.lrs}
 
 
 end.
