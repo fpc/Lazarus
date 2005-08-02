@@ -6082,6 +6082,18 @@ var Ext,AText,ACaption: string;
   LastDesigner: TDesigner;
   AnUnitInfo: TUnitInfo;
 begin
+  // close the old project
+  if SomethingOfProjectIsModified then begin
+    case MessageDlg(lisProjectChanged, Format(lisSaveChangesToProject, [Project1.Title]),
+      mtconfirmation,[mbYes, mbNo, mbCancel],0) of
+      mrYes: if DoSaveProject([])=mrAbort then begin
+          Result:=mrAbort;
+          exit;
+        end;
+      mrNo:;//nothing;
+      mrCancel:exit;
+    end;
+  end;
   {$IFDEF IDE_VERBOSE}
   writeln('TMainIDE.DoOpenProjectFile A "'+AFileName+'"');
   {$ENDIF}
@@ -6118,18 +6130,6 @@ begin
   if ofAddToRecent in Flags then
     AddRecentProjectFileToEnvironment(AFileName);
 
-  // close the old project
-  if SomethingOfProjectIsModified then begin
-    if MessageDlg(lisProjectChanged,
-      Format(lisSaveChangesToProject, [Project1.Title]),
-      mtconfirmation,[mbYes, mbNo, mbCancel],0) = mrYes then
-    begin
-      if DoSaveProject([])=mrAbort then begin
-        Result:=mrAbort;
-        exit;
-      end;
-    end;
-  end;
   Result:=DoCloseProject;
   if Result=mrAbort then exit;
 
