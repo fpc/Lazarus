@@ -25,7 +25,6 @@ begin
   Result:='pbm;pgm;ppm';
 end;
 
-{$IFNDEF DisableFPImage}
 function TPortableAnyMapGraphic.GetDefaultFPReader: TFPCustomImageReaderClass;
 begin
   Result:=TFPReaderPNM;
@@ -35,7 +34,6 @@ function TPortableAnyMapGraphic.GetDefaultFPWriter: TFPCustomImageWriterClass;
 begin
   Result:=TFPWriterPNM;
 end;
-{$ENDIF}
 
 
 // included by graphics.pp

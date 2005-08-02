@@ -46,12 +46,7 @@ begin
   if FColor <> value
   then begin
     FreeHandle;
-    {$IFDEF UseFPCanvas}
     SetColor(Value,TColorToFPColor(Value));
-    {$ELSE}
-    FColor := Value;
-    Changed;
-    {$ENDIF}
   end;
 end;
 
@@ -67,11 +62,7 @@ begin
   if Style <> Value
   then begin
     FreeHandle;
-    {$IFDEF UseFPCanvas}
     inherited SetStyle(Value);
-    {$ELSE}
-    FStyle:=Value;
-    {$ENDIF}
     Changed;
   end;
 end;
@@ -88,11 +79,7 @@ begin
   if Mode <> Value
   then begin
     FreeHandle;
-    {$IFDEF UseFPCanvas}
     inherited SetMode(Value);
-    {$ELSE}
-    FMode:=Value;
-    {$ENDIF}
     Changed;
   end;
 end;
@@ -109,11 +96,7 @@ begin
   if Width <> Value
   then begin
     FreeHandle;
-    {$IFDEF UseFPCanvas}
     inherited SetWidth(Value);
-    {$ELSE}
-    FWidth:=Value;
-    {$ENDIF}
     Changed;
   end;
 end;
@@ -129,17 +112,11 @@ constructor TPen.Create;
 begin
   inherited Create;
   FHandle := 0;
-  {$IFDEF UseFPCanvas}
   DelayAllocate:=true;
   inherited SetWidth(1);
   inherited SetStyle(psSolid);
   inherited SetMode(pmCopy);
   inherited SetFPColor(colBlack);
-  {$ELSE}
-  FWidth := 1;
-  FStyle := psSolid;
-  FMode := pmCopy;
-  {$ENDIF}
   Color := clBlack;
 end;
 
@@ -168,11 +145,7 @@ begin
   if Source is TPen
   then begin
     Width := TPen(Source).Width;
-    {$IFDEF UseFPCanvas}
     SetColor(TPen(Source).Color,TFPCanvasHelper(Source).FPColor);
-    {$ELSE}
-    Color := TPen(Source).Color;
-    {$ENDIF}
     Style := TPen(Source).Style;
   end
   else
@@ -207,13 +180,9 @@ end;
 function TPen.GetHandle: HPEN;
 const
   PEN_STYLES: array[TPenStyle] of Word = (
-    {$IFDEF UseFPCanvas}
     ps_Solid, ps_Dash, ps_Dot, ps_DashDot, ps_DashDotDot, ps_insideFrame,
     ps_Solid,{ ToDo ps_Pattern,}
     ps_NULL
-    {$ELSE}
-    PS_SOLID,PS_DASH,PS_DOT,PS_DASHDOT,PS_DASHDOTDOT,PS_NULL,PS_INSIDEFRAME
-    {$ENDIF}
     );
 var
   LogPen: TLogPen;
@@ -264,7 +233,6 @@ begin
   end;
 end;
 
-{$IFDEF UseFPCanvas}
 procedure TPen.DoAllocateResources;
 begin
   inherited DoAllocateResources;
@@ -303,7 +271,6 @@ begin
   SetColor(FPColorToTColor(AValue),AValue);
 end;
 
-{$ENDIF}
 
 { =============================================================================
 

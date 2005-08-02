@@ -525,13 +525,9 @@ begin
   FPixelsPerInch:=ScreenInfo.PixelsPerInchX;
   FPitch:=DefFontData.Pitch;
   FCharSet:=DefFontData.CharSet;
-  {$IFDEF UseFPCanvas}
   DelayAllocate:=true;
   inherited SetName(DefFontData.Name);
   inherited SetFPColor(colBlack);
-  {$ELSE}
-  FFontName:=DefFontData.Name;
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -551,11 +547,7 @@ begin
         BeginUpdate;
         try
           CharSet:= TFont(Source).CharSet;
-          {$IFDEF UseFPCanvas}
           SetColor(TFont(Source).Color,TFPCanvasHelper(Source).FPColor);
-          {$ELSE}
-          Color := TFont(Source).Color;
-          {$ENDIF}
           Height := TFont(Source).Height;
           Name := TFont(Source).Name;
           Pitch := TFont(Source).Pitch;
@@ -664,11 +656,7 @@ begin
     BeginUpdate;
     try
       FreeHandle;
-      {$IFDEF UseFPCanvas}
       inherited SetSize(AValue);
-      {$ELSE}
-      FSize:=AValue;
-      {$ENDIF}
       FHeight := - (AValue * FPixelsPerInch) div 72;
       if IsFontNameXLogicalFontDesc(Name) then
         Name:=ClearXLFDHeight(Name);
@@ -688,11 +676,7 @@ end;
  ------------------------------------------------------------------------------}
 function TFont.GetSize: Integer;
 begin
-  {$IFDEF UseFPCanvas}
   Result := inherited Size;
-  {$ELSE}
-  Result := FSize;
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -760,14 +744,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TFont.SetColor(Value : TColor);
 begin
-  if FColor <> Value then begin
-    {$IFDEF UseFPCanvas}
-    SetColor(Value,TColorToFPColor(Value));
-    {$ELSE}
-    FColor := Value;
-    Changed;
-    {$ENDIF}
-  end;
+  if FColor <> Value then SetColor(Value,TColorToFPColor(Value));
 end;
 
 {------------------------------------------------------------------------------
@@ -779,11 +756,7 @@ end;
  ------------------------------------------------------------------------------}
 function TFont.GetName: string;
 begin
-  {$IFDEF UseFPCanvas}
   Result:=inherited Name;
-  {$ELSE}
-  Result:=FFontName;
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -793,20 +766,15 @@ end;
 
   Sets the name of a font
  ------------------------------------------------------------------------------}
-procedure TFont.SetName({$IFNDEF UseFPCanvas}const{$ENDIF}AValue: string);
+procedure TFont.SetName(AValue: string);
 begin
   if Name <> AValue then begin
     FreeHandle;
-    {$IFDEF UseFPCanvas}
     inherited SetName(AValue);
-    {$ELSE}
-    FFontName:=AValue;
-    {$ENDIF}
     Changed;
   end;
 end;
 
-{$IFDEF UseFPCanvas}
 procedure TFont.DoAllocateResources;
 begin
   inherited DoAllocateResources;
@@ -879,7 +847,6 @@ begin
   inherited SetFPColor(NewFPColor);
   Changed;
 end;
-{$ENDIF}
 
 {------------------------------------------------------------------------------
   Method: TFont.Destroy
@@ -1028,27 +995,18 @@ begin
 end;
 
 procedure TFont.SetData(const FontData: TFontData);
-{$IFDEF UseFPCanvas}
 var
   OldStyle: TFontStylesbase;
-{$ENDIF}
 begin
   if (FHandle <> FontData.Handle) or (FHandle=0) then begin
-    {$IFDEF UseFPCanvas}
     OldStyle:=FStyle;
-    {$ENDIF}
     FreeHandle;
     FHandle := FontData.Handle;
-    {$IFDEF UseFPCanvas}
     inherited SetSize(-(FontData.Height * 72) div FPixelsPerInch);
-    {$ELSE}
-    FSize := -(FontData.Height * 72) div FPixelsPerInch;
-    {$ENDIF}
     FHeight := FontData.Height;
     FPitch:=FontData.Pitch;
     FStyle:=FontData.Style;
     FCharSet:=FontData.CharSet;
-    {$IFDEF UseFPCanvas}
     inherited SetName(FontData.Name);
     bold;
     if (fsBold in OldStyle)<>(fsBold in FStyle) then
@@ -1059,9 +1017,6 @@ begin
       inherited SetFlags(7,fsUnderline in FStyle);
     if (fsStrikeOut in OldStyle)<>(fsStrikeOut in FStyle) then
       inherited SetFlags(8,fsStrikeOut in FStyle);
-    {$ELSE}
-    FFontName:=FontData.Name;
-    {$ENDIF}
     Changed;
   end;
 end;

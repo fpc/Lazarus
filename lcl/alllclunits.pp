@@ -22,10 +22,6 @@ unit AllLCLUnits;
 
 {$mode objfpc}{$H+}
 
-{$IFDEF VER1_0_10}
-  {$DEFINE DisableFPImage}
-{$ENDIF}
-
 interface
 
 uses
@@ -39,7 +35,7 @@ uses
   FileUtil,
   // the interface base
   InterfaceBase,
-  {$IFNDEF DisableFPImage}IntfGraphics,{$ENDIF}
+  IntfGraphics,
   // components and functions
   LCLClasses,
   StdActns, Buttons, Extctrls, Calendar, Clipbrd, Forms, LCLIntf, Spin,

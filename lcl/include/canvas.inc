@@ -210,11 +210,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.SetInternalPenPos(const Value: TPoint);
 begin
-  {$IFDEF UseFPCanvas}
   inherited SetPenPos(Value);
-  {$ELSE}
-  FPenPos:=Value;
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -267,7 +263,6 @@ begin
   FRegion.Assign(Value);
 end;
 
-{$IFDEF UseFPCanvas}
 function TCanvas.DoCreateDefaultFont: TFPCustomFont;
 begin
   Result:=TFont.Create;
@@ -499,7 +494,6 @@ procedure TCanvas.CheckHelper(AHelper: TFPCanvasHelper);
 begin
   debugln('TCanvas.CheckHelper ignored for ',DbgSName(AHelper));
 end;
-{$ENDIF}
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.Arc
@@ -621,8 +615,8 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TCanvas.PolyBezier(const Points: array of TPoint;
-  Filled: boolean{$IFNDEF VER1_0} = False{$ENDIF};
-  Continuous: boolean{$IFNDEF VER1_0} = False{$ENDIF});
+  Filled: boolean = False;
+  Continuous: boolean = False);
 var NPoints, i: integer;
   PointArray: ^TPoint;
 begin
@@ -636,8 +630,8 @@ begin
 end;
 
 procedure TCanvas.PolyBezier(Points: PPoint; NumPts: Integer;
-  Filled: boolean{$IFNDEF VER1_0} = False{$ENDIF};
-  Continuous: boolean{$IFNDEF VER1_0} = False{$ENDIF});
+  Filled: boolean = False;
+  Continuous: boolean = False);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
@@ -645,18 +639,6 @@ begin
   Changed;
 end;
 
-{------------------------------------------------------------------------------
-  Method:   TCanvas.PolyBezier
-  Params:   Points
-  Returns:  Nothing
-
- ------------------------------------------------------------------------------}
-{$ifdef VER1_0} 
-procedure TCanvas.PolyBezier(const Points: array of TPoint);
-begin
-  PolyBezier(Points, False, True);
-end;
-{$endif}
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.Polygon
@@ -695,7 +677,7 @@ begin
 end;
 
 procedure TCanvas.Polygon(Points: PPoint; NumPts: Integer;
-  Winding: boolean{$IFNDEF VER1_0} = False{$ENDIF});
+  Winding: boolean = False);
 begin
   if NumPts<=0 then exit;
   Changing;
@@ -1233,21 +1215,11 @@ end;
 constructor TCanvas.Create;
 begin
   FHandle := 0;
-  {$IFDEF UseFPCanvas}
   ManageResources := true;
-  {$ENDIF}
   inherited Create;
-  {$IFDEF UseFPCanvas}
   FFont := TFont(inherited Font);
   FPen := TPen(inherited Pen);
   FBrush := TBrush(inherited Brush);
-  {$ELSE}
-  FFont := TFont.Create;
-  FPen := TPen.Create;
-  FBrush := TBrush.Create;
-  FPenPos := Point(0, 0);
-  FLockCount := 0;
-  {$ENDIF}
   FFont.OnChange := @FontChanged;
   FSavedFontHandle := 0;
   FPen.OnChanging := @PenChanging;
@@ -1320,21 +1292,14 @@ destructor TCanvas.Destroy;
 begin
 //DebugLn('[TCanvas.Destroy] ',ClassName,'  Self=',DbgS(Self));
   Handle := 0;
-  {$IFNDEF UseFPCanvas}
-  FreeThenNil(FFont);
-  FreeThenNil(FPen);
-  FreeThenNil(FBrush);
-  {$ENDIF}
   FreeThenNil(FRegion);
   if FLock <> 0 then
     DeleteCriticalSection(FLock);
   inherited Destroy;
-  {$IFDEF UseFPCanvas}
   // set resources to nil, so that dangling pointers are spotted early
   FFont:=nil;
   FPen:=nil;
   FBrush:=nil;
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -1508,15 +1473,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.Lock;
 begin
-  {$IFDEF UseFPCanvas}
   LockCanvas;
-  {$ELSE}
-  if FLockCount=0 then begin
-    if FLock=0 then InitializeCriticalSection(FLock);
-    EnterCriticalSection(FLock);
-  end;
-  Inc(FLockCount);
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -1533,15 +1490,7 @@ procedure TCanvas.Unlock;
   end;
 
 begin
-  {$IFDEF UseFPCanvas}
   UnlockCanvas;
-  {$ELSE}
-  Dec(FLockCount);
-  if FLockCount=0 then begin
-    LeaveCriticalSection(FLock);
-  end else if FLockCount<0 then
-    RaiseTooManyUnlock;
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------

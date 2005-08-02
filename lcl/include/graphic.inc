@@ -200,7 +200,6 @@ begin
     FModified := False;
 end;
 
-{$IFNDEF DisableFPImage}
 function TGraphic.GetFPReaderForFileExt(const FileExtension: string
   ): TFPCustomImageReaderClass;
 begin
@@ -222,7 +221,6 @@ function TGraphic.GetDefaultFPWriter: TFPCustomImageWriterClass;
 begin
   Result:=nil;
 end;
-{$ENDIF}
 
 procedure TGraphic.SetTransparent(Value: Boolean);
 begin

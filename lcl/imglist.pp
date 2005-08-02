@@ -43,10 +43,6 @@ unit ImgList;
 
 {$mode objfpc}{$H+}
 
-{$IFDEF VER1_0_10}
-  {$DEFINE DisableFPImage}
-{$ENDIF}
-
 interface
 
 {$ifdef Trace}
@@ -55,11 +51,7 @@ interface
 
 uses
   SysUtils, Classes, FPCAdds, LCLStrConsts, LCLIntf, LResources, LCLType,
-  LCLProc, Graphics, GraphType, LCLClasses
-  {$IFNDEF DisableFPImage}
-  ,IntfGraphics, FPReadBMP
-  {$ENDIF}
-  ;
+  LCLProc, Graphics, GraphType, LCLClasses, IntfGraphics, FPReadBMP;
 
 type
   TImageIndex = type integer;
@@ -165,7 +157,7 @@ type
     constructor CreateSize(AWidth, AHeight: Integer);
     procedure Delete(Index: Integer);
     destructor Destroy; override;
-    procedure Draw(Canvas: TCanvas; X, Y, Index: Integer; Enabled: Boolean{$IFNDEF VER1_0}=True{$ENDIF});
+    procedure Draw(Canvas: TCanvas; X, Y, Index: Integer; Enabled: Boolean = True);
     procedure GetBitmap(Index: Integer; Image: TBitmap);
     procedure GetInternalImage(Index: integer; var Image, Mask: TBitmap;
                                var ImageRect: TRect);

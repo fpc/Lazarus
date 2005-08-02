@@ -37,21 +37,12 @@
 unit PostscriptCanvas;
 
 {$mode objfpc}{$H+}
-{$IFDEF VER1_0_10}
-  {$DEFINE DisableFPImage}
-{$ENDIF}
-{$IFNDEF VER1_0}
-  {$DEFINE UseFPCanvas}
-{$ENDIF}
 
 interface
 
 uses
   Classes, SysUtils, Math, Graphics, Forms, GraphMath, GraphType,
-  {$IFNDEF DisableFPImage}
-  FPImage, IntfGraphics,
-  {$ENDIF}
-  Printers, LCLType, LCLIntf;
+  FPImage, IntfGraphics, Printers, LCLType, LCLIntf;
   
 Type
   TPostscriptPrinterCanvas = Class(TPrinterCanvas)
@@ -74,10 +65,7 @@ Type
     FirstUpdatefont: Boolean;
     
     procedure WriteHeader(St : String);
-    procedure Write(const St : String; Lst : TstringList{$IFNDEF VER1_0}=nil{$ENDIF}); overload;
-    {$IFDEF VER1_0} //added because fpc 1.0 doesn't have default parameters
-    procedure Write(const St : String); overload;
-    {$ENDIF}
+    procedure Write(const St : String; Lst : TstringList = nil); overload;
     procedure WriteB(const St : string);
     procedure ClearBuffer;
     procedure Write(Lst : TStringList); overload;
@@ -87,7 +75,7 @@ Type
     procedure SetPosition(X,Y : Integer);
     
     procedure UpdateLineWidth;
-    procedure UpdateLineColor(aColor : TColor{$IFNDEF VER1_0}=clNone{$ENDIF});
+    procedure UpdateLineColor(aColor : TColor = clNone);
     procedure UpdateLineStyle;
     procedure UpdateFillColor;
     procedure UpdateFont;
@@ -116,8 +104,8 @@ Type
     Procedure LineTo(X1,Y1: Integer); override;
     procedure Polyline(Points: PPoint; NumPts: Integer); override;
     procedure PolyBezier(Points: PPoint; NumPts: Integer;
-                         Filled: boolean{$IFNDEF VER1_0} = False{$ENDIF};
-                         Continuous: boolean{$IFNDEF VER1_0} = False{$ENDIF}); override;
+                         Filled: boolean = False;
+                         Continuous: boolean = False); override;
 
     Procedure Rectangle(X1,Y1,X2,Y2: Integer); override;
     procedure Frame(const ARect: TRect); override; // border using pen
@@ -126,7 +114,7 @@ Type
     Procedure FillRect(const ARect: TRect); override;
     Procedure RoundRect(X1, Y1, X2, Y2: Integer; RX,RY: Integer); override;
     procedure Polygon(Points: PPoint; NumPts: Integer;
-                      Winding: boolean{$IFNDEF VER1_0}=False{$ENDIF}); override;
+                      Winding: boolean = False); override;
 
     procedure Ellipse(x1, y1, x2, y2: Integer); override;
     procedure Arc(Left,Top,AWidth,AHeight,angle1,angle2: Integer); override;
@@ -180,15 +168,9 @@ Type
 
 Const
   cBrushStyle : Array[TBrushStyle] of String =
-     {$IFDEF UseFPCanvas}
      ('bsClear', 'bsSolid', 'bsBDiagonal',
       'bsFDiagonal', 'bsCross', 'bsDiagCross',
       'bsHorizontal', 'bsVertical', 'bsImage', 'bsPattern');
-     {$ELSE}
-     ('bsSolid','bsClear','bsHorizontal',
-      'bsVertical','bsFDiagonal',
-      'bsBDiagonal','bsCross','bsDiagCross');
-     {$ENDIF}
 
 
   cFontPSMetrics : Array[0..12] of TFontPSMetrics =(
@@ -528,20 +510,13 @@ begin
 end;
 
 //Write an instruction in the document
-procedure TPostscriptPrinterCanvas.Write(const St: String; Lst : TStringList{$IFNDEF VER1_0}=Nil{$ENDIF});
+procedure TPostscriptPrinterCanvas.Write(const St: String; Lst : TStringList = Nil);
 begin
   If not Assigned(Lst) then
     Lst:=fDocument;
     
   Lst.Add(St);
 end;
-
-{$IFDEF VER1_0}
-procedure TPostscriptPrinterCanvas.Write(const St: String);
-begin
-  Write(St, nil);
-end;
-{$ENDIF}
 
 //Write data in fBuffer
 procedure TPostscriptPrinterCanvas.WriteB(const St: string);
@@ -594,7 +569,7 @@ begin
 end;
 
 //Init the color of line (pen)
-procedure TPostscriptPrinterCanvas.UpdateLineColor(aColor : TColor{$IFNDEF VER1_0}=clNone{$ENDIF});
+procedure TPostscriptPrinterCanvas.UpdateLineColor(aColor : TColor = clNone);
 Var R,G,B    : Real;
     RGBColor : TColor;
 begin
@@ -765,7 +740,7 @@ begin
   
   if SetBorder and ((Pen.Color<>clNone) and ((Pen.Color<>Brush.Color) or (Brush.Style<>bsSolid))) then
   begin
-    UpdateLineColor{$IFDEF VER1_0}(clNone){$ENDIF};
+    UpdateLineColor(clNone);
     UpdateLineWidth;
     UpdateLineStyle;
     Write(Lst);
@@ -781,10 +756,6 @@ end;
 //Add in Lst, all RGB pixels of SrcGraph picture
 procedure TPostscriptPrinterCanvas.GetRGBImage(SrcGraph: TGraphic;
   Lst: TStringList);
-{$IFDEF DisableFPImage}
-begin
-end;
-{$ELSE}
 var
   SrcIntfImg : TLazIntfImage;
   px, py     : Integer;
@@ -822,7 +793,6 @@ begin
     end;
   end;
 end;
-{$ENDIF}
 
 procedure TPostscriptPrinterCanvas.CreateHandle;
 begin
@@ -1287,7 +1257,7 @@ begin
   WriteComment(Format('LineTo(%d,%d)',[x1,y1]));
   SetPosition(X1,Y1);
   TranslateCoord(X1,Y1);
-  UpdateLineColor{$IFDEF VER1_0}(clNone){$ENDIF};
+  UpdateLineColor(clNone);
   UpdateLineWidth;
   UpdateLineStyle;
   write(Format('%d %d lineto stroke',[X1,Y1]));
@@ -1319,7 +1289,7 @@ begin
 
     if (Pen.Color<>clNone) and ((Pen.Color<>Brush.Color) or (Brush.Style<>bsSolid)) then
     begin
-      UpdateLineColor{$IFDEF VER1_0}(clNone){$ENDIF};
+      UpdateLineColor(clNone);
       UpdateLineWidth;
       UpdateLineStyle;
       Write(Lst);
@@ -1629,7 +1599,7 @@ begin
 
   if (Pen.Color<>clNone) and ((Pen.Color<>Brush.Color) or (Brush.Style<>bsSolid)) then
   begin
-    UpdateLineColor{$IFDEF VER1_0}(clNone){$ENDIF};
+    UpdateLineColor(clNone);
     UpdateLineWidth;
     UpdateLineStyle;
 
@@ -1794,7 +1764,6 @@ begin
 
   //if not FPImage then draw ab Rectangle because other wise PostScript
   //interpreter wait infinite some RGB datas
-  {$ifndef DisableFPImage}
   DrawWidth:=X2-X1;
   DrawHeight:=Y1-Y2;
   ClearBuffer;
@@ -1812,15 +1781,6 @@ begin
   WriteB('% end of image data');
   WriteB('grestore');
   
-  {$else}
-  WriteB('newpath');
-  writeB(Format('    %d %d moveto',[X1,Y1]));
-  writeB(Format('    %d %d lineto',[X2,Y1]));
-  writeB(Format('    %d %d lineto',[X2,Y2]));
-  writeB(Format('    %d %d lineto',[X1,Y2]));
-  writeB('closepath');
-  {$endif}
-
   Write(fBuffer);
 
   Changed;

@@ -32,22 +32,9 @@ interface
 {$endif}
 
 
-{$IFDEF VER1_0_10}
-  {$DEFINE DisableFPImage}
-{$ENDIF}
-{$IFNDEF VER1_0}
-  {$DEFINE UseFPCanvas}
-{$ENDIF}
-
-
 uses
   SysUtils, Classes, Contnrs, FPCAdds,
-  {$IFNDEF DisableFPImage}
-  FPImage, FPReadPNG, FPWritePNG, FPReadBMP, FPWriteBMP, FPReadPNM, FPWritePNM, IntfGraphics,
-  {$IFDEF UseFPCanvas}
-  FPCanvas,
-  {$ENDIF}
-  {$ENDIF}
+  FPImage, FPReadPNG, FPWritePNG, FPReadBMP, FPWriteBMP, FPReadPNM, FPWritePNM, IntfGraphics, FPCanvas,
   AvgLvlTree,
   LCLStrConsts, LCLType, LCLProc, LMessages, LCLIntf, LResources, LCLResCache,
   GraphType, GraphMath, InterfaceBase;
@@ -118,7 +105,6 @@ type
     SystemFont: Boolean;     // Use the system font instead of Canvas Font
   end;
 
-  {$IFDEF UseFPCanvas}
 type
   TPenStyle = TFPPenStyle;
   TPenMode = TFPPenMode;
@@ -158,18 +144,7 @@ const
   bsBDiagonal = FPCanvas.bsBDiagonal;
   bsCross = FPCanvas.bsCross;
   bsDiagCross = FPCanvas.bsDiagCross;
-  {$ELSE}
-type
-  TPenStyle = (psSolid, psDash, psDot, psDashDot, psDashDotDot, psClear,
-               psInsideframe);
-  TPenMode = (pmBlack, pmWhite, pmNop, pmNot, pmCopy, pmNotCopy, pmMergePenNot,
-              pmMaskPenNot, pmMergeNotPen, pmMaskNotPen, pmMerge,pmNotMerge,
-              pmMask, pmNotMask, pmXor, pmNotXor
-             );
-  TBrushStyle = (bsSolid, bsClear, bsHorizontal, bsVertical, bsFDiagonal,
-                 bsBDiagonal, bsCross, bsDiagCross);
-
-  {$ENDIF}
+  
 type
   TFillStyle = TGraphicsFillStyle;
   TFillMode = (fmAlternate, fmWinding);
@@ -466,11 +441,7 @@ type
 
   { TFont }
 
-  {$IFDEF UseFPCanvas}
   TFont = class(TFPCustomFont)
-  {$ELSE}
-  TFont = class(TGraphicsObject)
-  {$ENDIF}
   private
     FCanUTF8: boolean;
     FHandle: HFont;
@@ -482,20 +453,12 @@ type
     FChanged: boolean;
     FFontHandleCached: boolean;
     FColor: TColor;
-    {$IFDEF UseFPCanvas}
-    {$ELSE}
-    FFontName: string;
-    FSize: Integer;   // Important: because of rounding errors both Size and
-                      // Height are stored. This way setting Height and reading
-                      // it again will result in the same value
-    {$ENDIF}
     FHeight: integer; // FHeight = -(FSize * FPixelsPerInch) div 72
     procedure FreeHandle;
     procedure GetData(var FontData: TFontData);
     function IsNameStored: boolean;
     procedure SetData(const FontData: TFontData);
   protected
-    {$IFDEF UseFPCanvas}
     procedure DoAllocateResources; override;
     procedure DoDeAllocateResources; override;
     procedure DoCopyProps(From: TFPCanvasHelper); override;
@@ -504,10 +467,6 @@ type
     procedure SetSize(AValue: integer); override;
     procedure SetColor(const NewColor: TColor; const NewFPColor: TFPColor); virtual;
     procedure SetFPColor(const AValue: TFPColor); override;
-    {$ELSE}
-    procedure SetName(const AValue: string);
-    procedure SetSize(AValue: Integer);
-    {$ENDIF}
     procedure Changed; override;
     function  GetCharSet: TFontCharSet;
     function  GetHandle: HFONT;
@@ -523,7 +482,7 @@ type
     procedure SetPitch(Value: TFontPitch);
     procedure SetStyle(Value: TFontStyles);
   public
-    constructor Create; {$IFDEF UseFPCanvas}override;{$ENDIF}
+    constructor Create; override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure Assign(const ALogFont: TLogFont);
@@ -567,52 +526,34 @@ type
     constructor Create;
   end;
 
-  {$IFDEF UseFPCanvas}
   TPen = class(TFPCustomPen)
-  {$ELSE}
-  TPen = class(TGraphicsObject)
-  {$ENDIF}
   private
     FHandle: HPen;
     FColor: TColor;
     FPenHandleCached: boolean;
-    {$IFDEF UseFPCanvas}
-    {$ELSE}
-    FWidth: Integer;
-    FStyle: TPenStyle;
-    FMode: TPenMode;
-    {$ENDIF}
     procedure FreeHandle;
   protected
-    {$IFDEF UseFPCanvas}
     procedure DoAllocateResources; override;
     procedure DoDeAllocateResources; override;
     procedure DoCopyProps(From: TFPCanvasHelper); override;
     procedure SetColor(const NewColor: TColor; const NewFPColor: TFPColor); virtual;
     procedure SetFPColor(const AValue: TFPColor); override;
-    {$ENDIF}
     function GetHandle: HPEN;
     procedure SetHandle(const Value: HPEN);
     procedure SetColor(Value: TColor);
-    procedure SetMode(Value: TPenMode); {$IFDEF UseFPCanvas}override;{$ENDIF}
-    procedure SetStyle(Value: TPenStyle); {$IFDEF UseFPCanvas}override;{$ENDIF}
-    procedure SetWidth(value: Integer); {$IFDEF UseFPCanvas}override;{$ENDIF}
+    procedure SetMode(Value: TPenMode); override;
+    procedure SetStyle(Value: TPenStyle); override;
+    procedure SetWidth(value: Integer); override;
   public
-    constructor Create; {$IFDEF UseFPCanvas}override;{$ENDIF}
+    constructor Create; override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     property Handle: HPEN read GetHandle write SetHandle;
   published
     property Color: TColor read FColor write SetColor default clBlack;
-    {$IFDEF UseFPCanvas}
     property Mode default pmCopy;
     property Style default psSolid;
     property Width default 1;
-    {$ELSE}
-    property Mode: TPenMode read FMode write SetMode default pmCopy;
-    property Style: TPenStyle read FStyle write SetStyle default psSolid;
-    property Width: Integer read FWidth write SetWidth default 1;
-    {$ENDIF}
   end;
 
 
@@ -632,48 +573,34 @@ type
     constructor Create;
   end;
 
-  {$IFDEF UseFPCanvas}
   TBrush = class(TFPCustomBrush)
-  {$ELSE}
-  TBrush = class(TGraphicsObject)
-  {$ENDIF}
   private
     FHandle: HBrush;
     FBrushHandleCached: boolean;
     FColor: TColor;
     FBitmap: TBitmap;
-    {$IFDEF UseFPCanvas}
-    {$ELSE}
-    FStyle: TBrushStyle;
-    {$ENDIF}
     procedure FreeHandle;
     procedure DoChange(var Msg); message LM_CHANGED;
   protected
-    {$IFDEF UseFPCanvas}
     procedure DoAllocateResources; override;
     procedure DoDeAllocateResources; override;
     procedure DoCopyProps(From: TFPCanvasHelper); override;
     procedure SetColor(const NewColor: TColor; const NewFPColor: TFPColor); virtual;
     procedure SetFPColor(const AValue: TFPColor); override;
-    {$ENDIF}
     function GetHandle: HBRUSH;
     procedure SetBitmap(Value: TBitmap);
     procedure SetColor(Value: TColor);
     procedure SetHandle(const Value: HBRUSH);
-    Procedure SetStyle(Value: TBrushStyle); {$IFDEF UseFPCanvas}override;{$ENDIF}
+    Procedure SetStyle(Value: TBrushStyle); override;
   public
     procedure Assign(Source: TPersistent); override;
-    constructor Create; {$IFDEF UseFPCanvas}override;{$ENDIF}
+    constructor Create; override;
     destructor Destroy; override;
     property Bitmap: TBitmap read FBitmap write SetBitmap;
     property Handle: HBRUSH read GetHandle write SetHandle;
   published
     property Color: TColor read FColor write SetColor default clWhite;
-    {$IFDEF UseFPCanvas}
     property Style default bsSolid;
-    {$ELSE}
-    property Style: TBrushStyle read FStyle write SetStyle default bsSolid;
-    {$ENDIF}
   end;
 
 
@@ -779,14 +706,12 @@ type
     procedure GetSupportedSourceMimeTypes(List: TStrings); virtual;
     function GetDefaultMimeType: string; virtual;
     class function GetFileExtensions: string; virtual;
-    {$IFNDEF DisableFPImage}
     class function GetFPReaderForFileExt(
       const FileExtension: string): TFPCustomImageReaderClass; virtual;
     class function GetFPWriterForFileExt(
       const FileExtension: string): TFPCustomImageWriterClass; virtual;
     class function GetDefaultFPReader: TFPCustomImageReaderClass; virtual;
     class function GetDefaultFPWriter: TFPCustomImageWriterClass; virtual;
-    {$ENDIF}
   public
     property Empty: Boolean read GetEmpty;
     property Height: Integer read GetHeight write SetHeight;
@@ -916,11 +841,7 @@ type
 
   { TCanvas }
 
-  {$IFDEF UseFPCanvas}
   TCanvas = class(TFPCustomCanvas)
-  {$ELSE}
-  TCanvas = class(TPersistent)
-  {$ENDIF}
   private
     FAutoRedraw: Boolean;
     FState: TCanvasState;
@@ -938,10 +859,6 @@ type
     FPen: TPen;
     FFont: TFont;
     FBrush: TBrush;
-    {$IFNDEF UseFPCanvas}
-    FLockCount: Integer;
-    FPenPos: TPoint;
-    {$ENDIF}
     procedure BrushChanged(ABrush: TObject);
     procedure FontChanged(AFont: TObject);
     procedure PenChanged(APen: TObject);
@@ -953,11 +870,7 @@ type
     procedure SetLazFont(value: TFont);
     procedure SetLazPen(value: TPen);
     procedure SetLazBrush(value: TBrush);
-    {$IFNDEF UseFPCanvas}
-    procedure SetPenPos(const AValue: TPoint);
-    {$ENDIF}
     procedure SetRegion(Value: TRegion);
-    {$IFDEF UseFPCanvas}
   protected
     function DoCreateDefaultFont: TFPCustomFont; override;
     function DoCreateDefaultPen: TFPCustomPen; override;
@@ -993,10 +906,8 @@ type
                          const SourceRect: TRect); override;
     procedure DoDraw(x, y: integer; const Image: TFPCustomImage); override;
     procedure CheckHelper(AHelper: TFPCanvasHelper); override;
-    {$ELSE}
-    {$ENDIF}
   protected
-    function GetClipRect: TRect; {$IFDEF UseFPCanvas}override;{$ELSE}virtual;{$ENDIF}
+    function GetClipRect: TRect; override;
     Function GetPixel(X,Y: Integer): TColor; virtual;
     procedure CreateBrush; virtual;
     procedure CreateFont; virtual;
@@ -1052,24 +963,21 @@ type
     procedure Pie(EllipseX1,EllipseY1,EllipseX2,EllipseY2,
                   StartX,StartY,EndX,EndY: Integer); virtual;
     procedure PolyBezier(Points: PPoint; NumPts: Integer;
-                         Filled: boolean{$IFNDEF VER1_0} = False{$ENDIF};
-                         Continuous: boolean{$IFNDEF VER1_0} = False{$ENDIF}); virtual;
+                         Filled: boolean = False;
+                         Continuous: boolean = False); virtual;
     procedure PolyBezier(const Points: array of TPoint;
-                         Filled: boolean{$IFNDEF VER1_0} = False{$ENDIF};
-                         Continuous: boolean{$IFNDEF VER1_0} = False{$ENDIF});
-    {$ifdef VER1_0}
-    procedure PolyBezier(const Points: array of TPoint);
-    {$endif}
+                         Filled: boolean = False;
+                         Continuous: boolean = False);
     procedure Polygon(const Points: array of TPoint;
                       Winding: Boolean;
-                      StartIndex: Integer{$IFNDEF VER1_0} = 0{$ENDIF};
-                      NumPts: Integer {$IFNDEF VER1_0} = -1{$ENDIF});
+                      StartIndex: Integer = 0;
+                      NumPts: Integer = -1);
     procedure Polygon(Points: PPoint; NumPts: Integer;
-                      Winding: boolean{$IFNDEF VER1_0} = False{$ENDIF}); virtual;
+                      Winding: boolean = False); virtual;
     Procedure Polygon(const Points: array of TPoint); // already in fpcanvas
     procedure Polyline(const Points: array of TPoint;
                        StartIndex: Integer;
-                       NumPts: Integer {$IFNDEF VER1_0} = -1{$ENDIF});
+                       NumPts: Integer = -1);
     procedure Polyline(Points: PPoint; NumPts: Integer); virtual;
     procedure Polyline(const Points: array of TPoint); // already in fpcanvas
     Procedure Rectangle(X1,Y1,X2,Y2: Integer); virtual; // already in fpcanvas
@@ -1086,10 +994,6 @@ type
     function HandleAllocated: boolean; virtual;
     function GetUpdatedHandle(ReqState: TCanvasState): HDC; virtual;
   public
-    {$IFNDEF UseFPCanvas}
-    property ClipRect: TRect read GetClipRect;
-    property PenPos: TPoint read FPenPos write SetPenPos;
-    {$ENDIF}
     property Pixels[X, Y: Integer]: TColor read GetPixel write SetPixel;
     property Handle: HDC read GetHandle write SetHandle;
     property TextStyle: TTextStyle read FTextStyle write FTextStyle;
@@ -1721,7 +1625,6 @@ begin
   Blue := (rgb shr 16) and $000000ff;
 end;
 
-{$IFNDEF DisableFPImage}
 function FPColorToTColor(const FPColor: TFPColor): TColor;
 begin
   Result:=((FPColor.Red shr 8) and $ff)
@@ -1739,7 +1642,6 @@ begin
   Result.Blue:=Result.Blue+(Result.Blue shr 8);
   Result.Alpha:=FPImage.alphaOpaque;
 end;
-{$ENDIF}
 
 {$I graphicsobject.inc}
 {$I graphic.inc}
@@ -1881,7 +1783,6 @@ begin
   AStream.Position:=OldPosition;
 end;
 
-{$IFNDEF DisableFPImage}
 procedure TIcon.ReadData(Stream: TStream);
 var
   Size: longint;
@@ -1924,7 +1825,6 @@ begin
     FBitmaps := TObjectList.create(True);
   FBitmaps.Add(Bitmap);
 end;
-{$ENDIF}
 
 procedure InterfaceFinal;
 begin

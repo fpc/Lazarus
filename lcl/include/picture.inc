@@ -320,7 +320,6 @@ begin
   Result:=GetPicFileFormats.FindExt(FileExt);
 end;
 
-{$IFNDEF DisableFPImage}
 function GetFPImageReaderForFileExtension(const FileExt: string
   ): TFPCustomImageReaderClass;
 var
@@ -344,7 +343,6 @@ begin
   else
     Result:=nil;
 end;
-{$ENDIF}
 
 //--TPicture--------------------------------------------------------------------
 
@@ -554,10 +552,8 @@ begin
     SetGraphic(TPicture(Source).Graphic)
   else if Source is TGraphic then
     SetGraphic(TGraphic(Source))
-  {$IFNDEF DisableFPImage}
   else if Source is TFPCustomImage then
     Bitmap.Assign(Source)
-  {$ENDIF}
   else
     inherited Assign(Source);
 end;

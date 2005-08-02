@@ -42,16 +42,7 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TBrush.SetColor(Value : TColor);
 begin
-  if FColor <> Value
-  then begin
-    {$IFDEF UseFPCanvas}
-    SetColor(Value,TColorToFPColor(Value));
-    {$ELSE}
-    FreeHandle;
-    FColor := Value;
-    Changed;
-    {$ENDIF}
-  end;
+  if FColor <> Value then SetColor(Value,TColorToFPColor(Value));
 end;
 
 {------------------------------------------------------------------------------
@@ -65,11 +56,7 @@ Procedure TBrush.SetStyle(Value : TBrushStyle);
 begin
   if Style <> Value then begin
     FreeHandle;
-    {$IFDEF UseFPCanvas}
     inherited SetStyle(Value);
-    {$ELSE}
-    FStyle := Value;
-    {$ENDIF}
     Changed;
   end;
 end;
@@ -104,12 +91,8 @@ begin
   FBitmap := nil;
   FHandle := 0;
   FColor := clWhite;
-  {$IFDEF UseFPCanvas}
   DelayAllocate:=true;
   inherited SetStyle(bsSolid);
-  {$ELSE}
-  FStyle := bsSolid;
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -137,11 +120,7 @@ begin
   if Source is TBrush
   then begin
     Bitmap := TBrush(Source).Bitmap;
-    {$IFDEF UseFPCanvas}
     SetColor(TBrush(Source).Color,TFPCanvasHelper(Source).FPColor);
-    {$ELSE}
-    Color := TBrush(Source).Color;
-    {$ENDIF}
     Style := TBrush(Source).Style;
   end
   else
@@ -240,7 +219,6 @@ begin
   Changed;
 end;
 
-{$IFDEF UseFPCanvas}
 procedure TBrush.DoAllocateResources;
 begin
   inherited DoAllocateResources;
@@ -278,7 +256,6 @@ begin
   if FPColor=AValue then exit;
   SetColor(FPColorToTColor(AValue),AValue);
 end;
-{$ENDIF}
 
 { =============================================================================
 

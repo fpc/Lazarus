@@ -711,20 +711,6 @@ var
   i: Integer;
   Signature: TImageListSignature;
 begin
-  {$IFDEF DisableFPImage}
-  //Write signature
-  Signature:=SIG_LAZ1;
-  AStream.Write(Signature,SizeOf(Signature));
-
-  //Count of image
-  WriteLRSWord(AStream,Count);
-
-  for i:=0 to Count-1 do
-  begin
-    CurImage:=TBitmap(FImageList[i]);
-    CurImage.WriteStream(AStream,true);
-  end;
-  {$ELSE}
   //Write signature
   Signature:=SIG_LAZ2;
   AStream.Write(Signature,SizeOf(Signature));
@@ -740,7 +726,6 @@ begin
     //DebugLn('TCustomImageList.WriteData Position=',AStream.Position,' ',CurImage.Width,',',CurImage.Height);
     CurImage.WriteNativeStream(AStream,true,bnXPixmap);
   end;
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -795,7 +780,6 @@ var
     end;
   end;
 
-  {$IFNDEF DisableFPImage}
   procedure CreateImagesFromRawImage(IntfImage: TLazIntfImage;
     NewCount: integer);
   var
@@ -871,7 +855,6 @@ var
       MaskIntfImage.Free;
     end;
   end;
-  {$ENDIF}
   
   {$IFDEF SaveDelphiImgListStream}
   procedure SaveImgListStreamToFile;
@@ -897,9 +880,7 @@ var
   {$ENDIF}
   
 var
-  {$IFNDEF DisableFPImage}
   HasMask: Boolean;
-  {$ENDIF}
   NewCount: Integer;
   Size: integer;
 begin
@@ -938,13 +919,11 @@ begin
     FHeight := ReadLRSWord(AStream);
     //DebugLn('NewHeight=',FHeight);
     FBKColor := TColor(ReadLRSInteger(AStream));
-    {$IFNDEF DisableFPImage}
     HasMask := (ReadLRSWord(AStream) and 1) = 1;
     AStream.ReadDWord; //Skip ?
     AStream.ReadDWord; //Skip ?
 
     ReadDelphiImageAndMask(HasMask,NewCount);
-    {$ENDIF}
   end
   else begin
     // D2 has no signature, so restore original position
@@ -952,9 +931,7 @@ begin
     Size:=ReadLRSInteger(AStream);
     NewCount:=ReadLRSInteger(AStream);
 
-    {$IFNDEF DisableFPImage}
     ReadDelphiImageAndMask(false,NewCount);
-    {$ENDIF}
     AStream.Position := StreamPos+Size;
   end;
 end;

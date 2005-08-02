@@ -46,11 +46,9 @@ end;
 procedure TBitMap.Assign(Source: TPersistent);
 var
   SrcBitmap: TBitmap;
-  {$IFNDEF DisableFPImage}
   SrcFPImage: TFPCustomImage;
   IntfImage: TLazIntfImage;
   ImgHandle,ImgMaskHandle: HBitmap;
-  {$ENDIF}
 begin
   if Source=Self then exit;
   if Source is TBitmap then begin
@@ -72,7 +70,6 @@ begin
     FImage.Reference;
     //DebugLn('TBitMap.Assign B ',Width,',',Height,' ',HandleAllocated,' RefCount=',FImage.RefCount);
     Changed(Self);
-  {$IFNDEF DisableFPImage}
   end else if Source is TFPCustomImage then begin
     Changing(Self);
     SrcFPImage:=TFPCustomImage(Source);
@@ -90,7 +87,6 @@ begin
       IntfImage.Free;
     end;
     Changed(Self);
-  {$ENDIF}
   end else
     inherited Assign(Source);
 end;
@@ -214,11 +210,6 @@ begin
 end;
 
 procedure TBitmap.LoadFromDevice(DC: HDC);
-{$IFDEF DisableFPImage}
-begin
-  debugln('TBitmap.LoadFromDevice needs FPImage');
-end;
-{$ELSE}
 var
   IntfImg: TLazIntfImage;
   ImgHandle, ImgMaskHandle: HBitmap;
@@ -244,7 +235,6 @@ begin
     if ImgMaskHandle<>0 then DeleteObject(ImgMaskHandle);
   end;
 end;
-{$ENDIF}
 
 function TBitmap.LazarusResourceTypeValid(const ResourceType: string): boolean;
 begin
