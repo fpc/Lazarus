@@ -111,7 +111,7 @@ type
   TGridZone = (gzNormal, gzFixedCols, gzFixedRows, gzFixedCells);
 
   TUpdateOption = (uoNone, uoQuick, uoFull);
-  TAutoAdvance = (aaNone,aaDown,aaRight,aaLeft);
+  TAutoAdvance = (aaNone,aaDown,aaRight,aaLeft, aaRightDown, aaLeftDown);
 
   TItemType = (itNormal,itCell,itColumn,itRow,itFixed,itFixedColumn,itFixedRow,itSelected);
   
@@ -692,6 +692,7 @@ type
     function  GetColumnReadonly(Column: Integer): boolean;
     function  GetColumnTitle(Column: Integer): string;
     function  GetColumnWidth(Column: Integer): Integer;
+    function  GetDeltaMoveNext(const Inverse: boolean; var ACol,ARow: Integer): boolean; virtual;
     function  GetDefaultColumnAlignment(Column: Integer): TAlignment; virtual;
     function  GetDefaultColumnWidth(Column: Integer): Integer; virtual;
     function  GetDefaultColumnLayout(Column: Integer): TTextLayout; virtual;
@@ -722,7 +723,7 @@ type
     procedure MouseMove(Shift: TShiftState; X,Y: Integer);override;
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     function  MoveExtend(Relative: Boolean; DCol, DRow: Integer): Boolean;
-    function  MoveNextAuto: boolean;
+    function  MoveNextAuto(const Inverse: boolean): boolean;
     function  MoveNextSelectable(Relative:Boolean; DCol, DRow: Integer): Boolean;
     procedure MoveSelection; virtual;
     function  OffsetToColRow(IsCol,Fisical:Boolean; Offset:Integer; var Rest:Integer): Integer;
@@ -4066,6 +4067,9 @@ end;
 
 procedure TCustomGrid.DblClick;
 begin
+  {$IfDef dbgGrid}DebugLn('DoubleClick INIT');{$Endif}
+  SelectActive:=False;
+  fGridState:=gsNormal;
   if (goColSizing in Options) and (Cursor=crHSplit) then begin
     if (goDblClickAutoSize in Options) then begin
       AutoAdjustColumn( FSplitter.X );
@@ -4081,6 +4085,7 @@ begin
   end
   else
     Inherited DblClick;
+  {$IfDef dbgGrid}DebugLn('DoubleClick END');{$Endif}
 end;
 
 procedure TCustomGrid.DefineProperties(Filer: TFiler);
@@ -4279,6 +4284,9 @@ end;
 procedure TCustomGrid.KeyDown(var Key: Word; Shift: TShiftState);
 var
   Sh: Boolean;
+  R: TRect;
+  Relaxed: Boolean;
+  DeltaCol,DeltaRow: Integer;
 
   procedure MoveSel(Rel: Boolean; aCol,aRow: Integer);
   begin
@@ -4289,10 +4297,6 @@ var
     MoveNextSelectable(Rel, aCol, aRow);
     Key:=0;
   end;
-var
-  R: TRect;
-  Relaxed: Boolean;
-  //PF: TCustomForm;
 begin
   {$ifdef dbgGrid}DebugLn('Grid.KeyDown INIT Key=',IntToStr(Key));{$endif}
   inherited KeyDown(Key, Shift);
@@ -4302,6 +4306,7 @@ begin
   Sh:=(ssShift in Shift);
   Relaxed:=not (goRowSelect in Options) or (goRelaxedRowSelect in Options);
 
+  (*
   if (Key=Vk_TAB) then begin
     if (goTabs in Options) then begin
       case FAutoAdvance of
@@ -4319,15 +4324,25 @@ begin
       end;
     end else begin
       // TODO
-      (*
+      {
       Pf:=GetParentForm(Self);
       if (Pf<>nil) then Pf.FocusControl(Self);
       PerformTab;
-      *)
+      }
     end;
   end;
-
+  *)
   case Key of
+    VK_TAB:
+      begin
+        if goTabs in Options then begin
+          if GetDeltaMoveNext(Sh, DeltaCol,DeltaRow) then begin
+            Sh := False;
+            MoveSel(True, DeltaCol, DeltaRow);
+          end;
+          Key:=0;
+        end;
+      end;
     VK_LEFT:
       begin
         if Relaxed then MoveSel(True,-1, 0)
@@ -4566,18 +4581,11 @@ begin
   {$IfDef dbgGrid}DebugLn(' MoveExtend FIN FCol= ',IntToStr(FCol), ' FRow= ',IntToStr(FRow));{$Endif}
 end;
 
-function TCustomGrid.MoveNextAuto: boolean;
+function TCustomGrid.MoveNextAuto(const Inverse: boolean): boolean;
 var
   aCol,aRow: Integer;
 begin
-  aCol := 0;
-  aRow := 0;
-  case FAutoAdvance of
-    aaRight: ACol := integer(FCol<ColCount-1);
-    aaDown : ARow := integer(FRow<RowCount-1);
-    aaLeft : ACol := -integer(FCol>FixedCols);
-  end;
-  result := (aCol<>0) or (aRow<>0);
+  Result := GetDeltaMoveNext(Inverse, ACol, ARow);
   if result then begin
     FGCache.TLColOff:=0;
     FGCache.TLRowOff:=0;
@@ -4617,8 +4625,8 @@ begin
   SelOk:=SelectCell(NCol,NRow);
   Result:=False;
   while not SelOk do begin
-    if  (NRow>RowCount-1)or(NRow<FFixedRows) or
-        (NCol>ColCount-1)or(NCol<FFixedCols) then Exit;
+    if  (NRow+RInc>RowCount-1)or(NRow+RInc<FFixedRows) or
+        (NCol+CInc>ColCount-1)or(NCol+CInc<FFixedCols) then Exit;
     Inc(NCol, CInc);
     Inc(NRow, RInc);
     SelOk:=SelectCell(NCol, NRow);
@@ -4988,6 +4996,7 @@ begin
         exit;
       end;
     end;
+    {
     VK_TAB:
       begin
         if GoTabs in Options then begin
@@ -4995,10 +5004,11 @@ begin
           Key := 0;
         end;
       end;
+    }
     VK_RETURN:
       begin
         Key := 0;
-        if not MoveNextAuto then begin
+        if not MoveNextAuto(ssShift in Shift) then begin
           EditorGetValue;
           if EditorAlwaysShown then
             EditorShow(True);
@@ -5223,6 +5233,63 @@ begin
     Result := C.Width
   else
     Result := GetDefaultColumnWidth(Column);
+end;
+
+function TCustomGrid.GetDeltaMoveNext(const Inverse: boolean;
+  var ACol, ARow: Integer): boolean;
+var
+  aa: TAutoAdvance;
+begin
+
+  aCol := 0;
+  aRow := 0;
+
+  aa := FAutoAdvance;
+  if Inverse then
+    case FAutoAdvance of
+      aaRight:      aa := aaLeft;
+      aaLeft:       aa := aaRight;
+      aaRightDown:  aa := aaLeftDown;
+      aaLeftDown:   aa := aaRightDown;
+    end;
+    
+  case aa of
+    aaRight,aaRightDown: ACol := integer(FCol<ColCount-1);
+    aaLeft, aaLeftDown : ACol := -integer(FCol>FixedCols);
+    aaDown:
+      if Inverse then
+        ARow := -Integer(FRow>FixedRows)
+      else
+        ARow := integer(FRow<RowCount-1);
+  end;
+
+  if (aCol=0) and ((aa=aaLeftDown) or (aa=aaRightDown)) then begin
+    if FAutoAdvance=aaLeftDown then
+      if Inverse then begin
+        aRow := -1;
+        Result := FRow>0;
+        aCol := FixedCols-FCol;
+      end else begin
+        Result := FRow<RowCount-1;
+        aRow := 1;
+        aCol := ColCount-FCol-1;
+      end
+    else
+      if Inverse then begin
+        aRow := -1;
+        Result := FRow>0;
+        aCol := ColCount-FCol-1;
+      end else begin
+        aRow := 1;
+        Result := FRow<RowCount-1;
+        aCol := FixedCols-FCol;
+      end
+  end else
+  if (ARow=0) and (aa=aaDown) then begin
+    Result := False;
+    ARow := 1 - 2 * Integer(Inverse);
+  end else
+    result := (aCol<>0) or (aRow<>0);
 end;
 
 function TCustomGrid.GetDefaultColumnAlignment(Column: Integer): TAlignment;

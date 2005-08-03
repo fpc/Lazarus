@@ -256,6 +256,7 @@ type
     function GetCurrentField: TField;
     function GetDataSource: TDataSource;
     function GetRecordCount: Integer;
+    function GetSelectedIndex: Integer;
     function GetThumbTracking: boolean;
     procedure OnRecordChanged(Field:TField);
     procedure OnDataSetChanged(aDataSet: TDataSet);
@@ -274,6 +275,7 @@ type
     procedure SetDataSource(const AValue: TDataSource);
     procedure SetExtraOptions(const AValue: TDbgridExtraOptions);
     procedure SetOptions(const AValue: TDbGridOptions);
+    procedure SetSelectedIndex(const AValue: Integer);
     procedure SetThumbTracking(const AValue: boolean);
     procedure UpdateBufferCount;
     procedure UpdateData;
@@ -382,6 +384,7 @@ type
     procedure ResetColWidths;
     destructor Destroy; override;
     property SelectedField: TField read GetCurrentField write SetCurrentField;
+    property SelectedIndex: Integer read GetSelectedIndex write SetSelectedIndex;
     property ThumbTracking: boolean read GetThumbTracking write SetThumbTracking;
   end;
   
@@ -402,7 +405,7 @@ type
   published
     property Align;
     property Anchors;
-    property AutoAdvance;
+    property AutoAdvance default aaRightDown;
     property AutoFillColumns;
     //property BiDiMode;
     property BorderSpacing;
@@ -622,6 +625,14 @@ end;
 function TCustomDbGrid.GetRecordCount: Integer;
 begin
   result := FDataLink.DataSet.RecordCount;
+end;
+
+function TCustomDbGrid.GetSelectedIndex: Integer;
+begin
+  if Columns.Enabled then
+    Result := ColumnIndexFromGridColumn( Col )
+  else
+    Result := FieldIndexFromGridColumn( Col );
 end;
 
 function TCustomDbGrid.GetThumbTracking: boolean;
@@ -856,6 +867,11 @@ begin
     
     EndLayout;
   end;
+end;
+
+procedure TCustomDbGrid.SetSelectedIndex(const AValue: Integer);
+begin
+  Col := FixedCols + AValue;
 end;
 
 procedure TCustomDbGrid.SetThumbTracking(const AValue: boolean);
@@ -1548,13 +1564,17 @@ begin
 end;
 
 procedure TCustomDbGrid.KeyDown(var Key: Word; Shift: TShiftState);
+var
+  DeltaCol,DeltaRow: Integer;
+  WasCancelled: boolean;
+  
   procedure DoOnKeyDown;
   begin
     if Assigned(OnKeyDown) then
       OnKeyDown(Self, Key, Shift);
   end;
   procedure DoMoveBy(amount: Integer);
-begin
+  begin
     {$IfDef dbgGrid}DebugLn('KeyDown.DoMoveBy(',IntToStr(Amount),')');{$Endif}
     FDatalink.MoveBy(Amount);
     {$IfDef dbgGrid}DebugLn('KeyDown.DoMoveBy FIN');{$Endif}
@@ -1589,115 +1609,174 @@ begin
     {$IfDef dbgGrid}DebugLn('KeyDown.doAppend FIN');{$Endif}
   end;
   procedure DoInsert;
-begin
+  begin
     {$IfDef dbgGrid}DebugLn('KeyDown.doInsert INIT');{$Endif}
     FDatalink.Dataset.Insert;
     {$IfDef dbgGrid}DebugLn('KeyDown.doInsert FIN');{$Endif}
   end;
-
+  function doVKDown: boolean;
+  begin
+    if InsertCancelable then
+    begin
+      if IsEOF then
+        //exit
+      else
+        doCancel;
+      result := true;
+    end else begin
+      doMoveBySmall(1);
+      if GridCanModify and FDataLink.EOF then
+        doAppend;
+      result := false;
+    end;
+  end;
+  function DoVKUP: boolean;
+  begin
+    Result := InsertCancelable and IsEOF;
+    if Result then
+      doCancel
+    else
+      doMoveBySmall(-1);
+  end;
 begin
   {$IfDef dbgGrid}DebugLn('DbGrid.KeyDown INIT Key= ',IntToStr(Key));{$Endif}
   case Key of
-    VK_DELETE:
-      if (ssCtrl in Shift) and GridCanModify then begin
-        if not (dgConfirmDelete in Options) or
-          (MessageDlg('Delete record?',mtConfirmation,mbOKCancel,0)<>mrCancel)
-        then
-          doDelete;
+  
+    VK_TAB:
+      begin
+        doOnKeyDown;
+        if Key<>0 then begin
+          if dgTabs in Options then begin
+          
+            GetDeltaMoveNext(ssShift in Shift, DeltaCol, DeltaRow);
+            
+            if DeltaRow > 0 then
+              WasCancelled := doVkDown
+            else
+            if DeltaRow < 0 then
+              WasCancelled := doVKUp
+            else
+              WasCancelled := false;
+              
+            if not WasCancelled and (DeltaCol<>0) then
+              Col := Col + DeltaCol;
+
+            Key := 0;
+          end;
+        end;
       end;
+      
+    VK_DELETE:
+      begin
+        doOnKeyDown;
+        if Key<>0 then begin
+          if (ssCtrl in Shift) and GridCanModify then begin
+            if not (dgConfirmDelete in Options) or
+              (MessageDlg('Delete record?',mtConfirmation,mbOKCancel,0)<>mrCancel)
+            then
+              doDelete;
+          end;
+          Key := 0;
+        end;
+      end;
+      
     VK_DOWN:
-      if ValidDataSet then
-      with FDatalink.Dataset do begin
+      if ValidDataSet then begin
         DoOnKeyDown;
-        Key := 0;
-        if InsertCancelable then
-        begin
-          if IsEOF then
-            //exit
-          else
-            doCancel;
-        end else begin
-          doMoveBySmall(1);
-          if GridCanModify and FDataLink.EOF then
-            doAppend;
+        if Key<>0 then begin
+          doVKDown;
+          Key := 0;
         end;
       end;
       
     VK_UP:
-      if ValidDataSet then
-      with FDataLink.DataSet do begin
+      if ValidDataSet then begin
         doOnKeyDown;
-        if InsertCancelable and IsEOF then
-          doCancel
-        else
-          doMoveBySmall(-1);
-        key := 0;
+        if Key<>0 then begin
+          doVKUp;
+          key := 0;
+         end;
       end;
       
     VK_NEXT:
       begin
         doOnKeyDown;
-        doMoveBy( VisibleRowCount );
-        Key := 0;
+        if Key<>0 then begin
+          doMoveBy( VisibleRowCount );
+          Key := 0;
+        end;
       end;
       
     VK_PRIOR:
       begin
         doOnKeyDown;
-        doMoveBy( -VisibleRowCount );
-        key := 0;
+        if Key<>0 then begin
+          doMoveBy( -VisibleRowCount );
+          key := 0;
+        end;
       end;
       
     VK_ESCAPE:
       begin
         doOnKeyDown;
-        if EditorMode then begin
-          EditorCancelEditing;
-          if FDatalink.Active and not FDatalink.Dataset.Modified then
-            FDatalink.Modified := False;
-        end else
-          if FDataLink.Active then
-            doCancel;
-        Key:=0;
+        if Key<>0 then begin
+          if EditorMode then begin
+            EditorCancelEditing;
+            if FDatalink.Active and not FDatalink.Dataset.Modified then
+              FDatalink.Modified := False;
+          end else
+            if FDataLink.Active then
+              doCancel;
+          Key:=0;
+        end;
       end;
       
     VK_INSERT:
       begin
         doOnKeyDown;
-        if GridCanModify then
-          doInsert;
-        Key:=0;
+        if Key<>0 then begin
+          if GridCanModify then
+            doInsert;
+          Key:=0;
+        end;
       end;
       
     VK_HOME:
       begin
         doOnKeyDown;
-        if FDatalink.Active then begin
-          if ssCTRL in Shift then
-            FDataLink.DataSet.First
-          else
-            MoveNextSelectable(False, FixedCols, Row);
+        if Key<>0 then begin
+          if FDatalink.Active then begin
+            if ssCTRL in Shift then
+              FDataLink.DataSet.First
+            else
+              MoveNextSelectable(False, FixedCols, Row);
+          end;
+          Key:=0;
         end;
-        Key:=0;
       end;
       
     VK_END:
       begin
         doOnKeyDown;
-        if FDatalink.Active then begin
-          if ssCTRL in shift then
-            FDatalink.DataSet.Last
-          else
-            MoveNextSelectable(False, ColCount-1, Row);
+        if Key<>0 then begin
+          if FDatalink.Active then begin
+            if ssCTRL in shift then
+              FDatalink.DataSet.Last
+            else
+              MoveNextSelectable(False, ColCount-1, Row);
+          end;
+          Key:=0;
         end;
-        Key:=0;
       end;
       
     VK_SPACE:
       begin
-        if ColumnEditorStyle(Col, SelectedField) = cbsCheckboxColumn then begin
-      		SwapCheckBox;
-          Key:=0;
+        doOnKeyDown;
+        if Key<>0 then begin
+          if ColumnEditorStyle(Col, SelectedField) = cbsCheckboxColumn then begin
+        		SwapCheckBox;
+            Key:=0;
+          end;
         end;
       end;
 
@@ -2265,6 +2344,8 @@ begin
      goColSizing ];
 
   FExtraOptions := [dgeAutoColumns, dgeCheckboxColumn];
+  
+  AutoAdvance := aaRightDown;
   
   // What a dilema!, we need ssAutoHorizontal and ssVertical!!!
   ScrolLBars:=ssBoth;
