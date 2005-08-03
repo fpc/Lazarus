@@ -1268,11 +1268,11 @@ msgstr "Файлы настроек:"
 
 #: lazarusidestrconsts:lisconfigurebuildlazarus
 msgid "Configure %sBuild Lazarus%s"
-msgstr "Настроить %sСобрать Lazarus%s"
+msgstr "Настроить сборку Lazarus'а"
 
 #: lazarusidestrconsts:lismenuconfigbuildfile
 msgid "Configure Build+Run File"
-msgstr "Настроить Собрать+Запустить Файл"
+msgstr "Настроить сборку+Запустить Файл"
 
 #: lazarusidestrconsts:lismenuconfigurehelp
 msgid "Configure Help"
@@ -1280,7 +1280,7 @@ msgstr "Настроить Справку"
 
 #: lazarusidestrconsts:lismenuconfigurebuildlazarus
 msgid "Configure \"Build Lazarus\""
-msgstr "Настроить \"Собрать Lazarus\""
+msgstr "Настроить сборку Lazarus'а"
 
 #: lazarusidestrconsts:lismenuconfigcustomcomps
 msgid "Configure custom components"
@@ -2396,11 +2396,11 @@ msgstr "Найти"
 
 #: lazarusidestrconsts:lismenufindnext
 msgid "Find &Next"
-msgstr "Найти впереди"
+msgstr "Найти далее"
 
 #: lazarusidestrconsts:lismenufindprevious
 msgid "Find &Previous"
-msgstr "Найти сзади"
+msgstr "Найти предыдущее совпадение"
 
 #: lazarusidestrconsts:lismenufindinfiles
 msgid "Find &in files"
@@ -3508,7 +3508,7 @@ msgstr "Тип элемента управления LCL"
 
 #: lazarusidestrconsts:lislazbuildlclinterface
 msgid "LCL interface"
-msgstr "интерфейс LCL"
+msgstr "Интерфейс LCL"
 
 #: lazarusidestrconsts:lislclunitpathmissing
 msgid "LCL unit path missing"
@@ -3792,7 +3792,7 @@ msgstr "Не найден Make"
 
 #: lazarusidestrconsts:dlgmakepath
 msgid "Make path"
-msgstr "путь к Make"
+msgstr "Путь к Make"
 
 #: lazarusidestrconsts:srkmecmakeresourcestring
 msgid "Make resource string"
@@ -5084,7 +5084,7 @@ msgstr "Удалить файлы по фильтру"
 
 #: lazarusidestrconsts:lismenuremovefromproject
 msgid "Remove from Project"
-msgstr "Убрать из проекта"
+msgstr "Удалить из проекта"
 
 #: lazarusidestrconsts:lisoifremovefromfavouriteproperties
 msgid "Remove from favourite properties"
@@ -5148,7 +5148,7 @@ msgstr "Переименовать в"
 
 #: lazarusidestrconsts:lismenureplace
 msgid "Replace"
-msgstr "Замена"
+msgstr "Заменить"
 
 #: lazarusidestrconsts:dlgreplaceall
 msgid "Replace All"
