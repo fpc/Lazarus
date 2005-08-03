@@ -40,7 +40,7 @@ uses
 {$ENDIF}
   // LCL+FCL
   Classes, SysUtils, TypInfo, Math,
-  {$IFNDEF Ver1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF},
+  AVL_Tree,
   LCLProc, Graphics, Controls, Forms, Menus, Dialogs,
   // components
   PropEdits, ObjectInspector, IDECommands,
@@ -1733,10 +1733,6 @@ begin
     Result:=AClassName;
     if (length(Result)>1) and (Result[1]='T') then
       Result:=RightStr(Result,length(Result)-1);
-    {$IfDef VER1_0}
-    //make it more presentable
-    Result := Result[1] + lowercase(Copy(Result,2,length(Result)));
-    {$EndIf}
     Result:=Result+IntToStr(i);
     while (j>=0)
     and (AnsiCompareText(Result,OwnerComponent.Components[j].Name)<>0) do

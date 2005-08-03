@@ -28,11 +28,7 @@
 }
 uses
   Dos,
-  {$IFNDEF VER1_0}
   Unix, BaseUnix;
-  {$ELSE}
-  Linux;
-  {$ENDIF}
 
 function GetDefaultTargetOS: string;
 begin

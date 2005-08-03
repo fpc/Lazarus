@@ -208,11 +208,7 @@ implementation
 uses
   Dos
   {$IfNDef Win32}
-     {$IFDEF Ver1_0}
-       ,Linux
-     {$ELSE}
        ,Unix,BaseUnix
-     {$ENDIF}
   {$EndIf};
 
 function AddToRecentList(const s: string; RecentList: TStrings;
@@ -1285,7 +1281,7 @@ begin
   {$IFDEF Win32}
   OldAttr:=FileGetAttr(Filename);
   {$ELSE}
-  {$IFDEF Ver1_0}FStat{$ELSE}FpStat{$ENDIF}(Filename,OldInfo);
+  FpStat(Filename,OldInfo);
   {$ENDIF}
   
   if not FileIsSymlink(Filename) then begin
@@ -1307,8 +1303,7 @@ begin
   {$IFDEF Win32}
   FileSetAttr(FileName,OldAttr);
   {$ELSE}
-  {$IFDEF Ver1_0}Chmod{$ELSE}FpChmod{$ENDIF}(Filename,
-     {$IFDEF VER1_0}OldInfo.Mode{$ELSE} OldInfo.st_Mode{$endif} and (STAT_IRWXO+STAT_IRWXG+STAT_IRWXU
+  FpChmod(Filename, OldInfo.st_Mode and (STAT_IRWXO+STAT_IRWXG+STAT_IRWXU
                            +STAT_ISUID+STAT_ISGID+STAT_ISVTX));
   {$ENDIF}
 
@@ -2052,7 +2047,7 @@ begin
   {$IFDEF Win32}
   OldAttr:=FileGetAttr(SrcFilename);
   {$ELSE}
-  {$IFDEF Ver1_0}FStat{$ELSE}FpStat{$ENDIF}(SrcFilename,OldInfo);
+  FpStat(SrcFilename,OldInfo);
   {$ENDIF}
   
   //writeln('CopyFileWithMethods ',SrcFilename,' ',DestFilename);
@@ -2078,8 +2073,7 @@ begin
   {$IFDEF Win32}
   FileSetAttr(DestFileName,OldAttr);
   {$ELSE}
-  {$IFDEF Ver1_0}Chmod{$ELSE}FpChmod{$ENDIF}(DestFilename,
-     {$IFDEF VER1_0}OldInfo.Mode{$ELSE} OldInfo.st_Mode{$endif} and (STAT_IRWXO+STAT_IRWXG+STAT_IRWXU
+  FpChmod(DestFilename, OldInfo.st_Mode and (STAT_IRWXO+STAT_IRWXG+STAT_IRWXU
                            +STAT_ISUID+STAT_ISGID+STAT_ISVTX));
   {$ENDIF}
 

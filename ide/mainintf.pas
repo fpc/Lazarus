@@ -62,7 +62,7 @@ uses
 {$ENDIF}
   Classes, LCLType, LCLIntf, StdCtrls, Buttons, Menus, ComCtrls, SysUtils,
   Controls, Graphics, ExtCtrls, Dialogs, FileUtil, Forms, CodeToolManager,
-  CodeCache, {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF}, SynEditKeyCmds,
+  CodeCache, AVL_Tree, SynEditKeyCmds,
   // IDE
   ObjectInspector,
   LazConf, LazarusIDEStrConsts, MacroIntf,

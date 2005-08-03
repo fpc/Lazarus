@@ -299,9 +299,7 @@ end;
 procedure TLazarusProcess.Execute;
 begin
   FProcess.Execute;
-  {$IFNDEF VER1_0}
   Sleep(2000);
-  {$ENDIF}
   if Assigned(FOnStart) then
     FOnStart(Self);
 end;

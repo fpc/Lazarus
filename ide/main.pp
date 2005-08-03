@@ -66,7 +66,7 @@ uses
   Forms, Buttons, Menus, FileUtil, Controls, GraphType, Graphics, ExtCtrls,
   Dialogs, InterfaceBase,
   // codetools
-  {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF}, Laz_XMLCfg,
+  AVL_Tree, Laz_XMLCfg,
   CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
   // IDE interface
   AllIDEIntf, ObjectInspector, PropEdits, MacroIntf, IDECommands, SrcEditorIntf,
@@ -6861,7 +6861,6 @@ procedure TMainIDE.DoRestart;
     StartLazProcess: TProcess;
     ExeName: string;
   begin
-{$IFNDEF VER1_0}
     StartLazProcess := TProcess.Create(nil);
     try
       // TODO: use the target directory, where the new startlazarus is
@@ -6879,17 +6878,10 @@ procedure TMainIDE.DoRestart;
     finally
       StartLazProcess.Free;
     end;
-{$ENDIF}
   end;
 
 var CanClose: boolean;
 begin
-{$IFDEF VER1_0}
-  if not StartedByStartLazarus then begin
-    DebugLn('Restarting Lazarus not supported, if compiled with fpc 1.0.x');
-    exit;
-  end;
-{$ENDIF}
   CanClose:=true;
   MainIDEBar.OnCloseQuery(Self, CanClose);
   if not CanClose then exit;

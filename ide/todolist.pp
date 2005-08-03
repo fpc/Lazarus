@@ -106,9 +106,7 @@ var
 implementation
 
 uses
-{$ifndef ver1_0}
   StrUtils,
-{$endif}
   FileUtil;
 
 Type
@@ -542,13 +540,6 @@ Var
     TodoFLag := Flag;
     Result := Pos(UpperCase(Flag),UpperCase(TokenString)) > 1;
   end;
-  {$ifdef ver1_0}
-  //fpc 1.0.x has no strutils unit.
-  Function AnsiStartsText(const ASubText, AText: string): Boolean;
-  begin
-    Result:=Copy(AText,1,Length(AsubText))=ASubText;
-  end;
-  {$endif}
 begin
   if IsTodoFlag(cTodoFlag) or  IsTodoFlag(cAltTodoFlag) then
   begin

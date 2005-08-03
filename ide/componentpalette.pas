@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Controls, Dialogs, Graphics, ExtCtrls, Buttons,
-  Menus, LResources, {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF},
+  Menus, LResources, AVL_Tree,
   PropEdits, FormEditingIntf,
   {$IFDEF CustomIDEComps}
   CustomIDEComps,

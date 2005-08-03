@@ -39,7 +39,7 @@ unit FileReferenceList;
 interface
 
 uses
-  Classes, SysUtils, {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF}, FileUtil,
+  Classes, SysUtils, AVL_Tree, FileUtil,
   IDEProcs;
   
 type
