@@ -30,11 +30,7 @@
 {Should become unit Unix in the future. For both Linux and FreeBSD}
 uses
   Dos,
-  {$IFDEF VER1_1}
-  unix;
-  {$ELSE}
-  linux;
-  {$ENDIF}
+  baseunix, unix;
 
 function GetDefaultTargetOS: string;
 begin
