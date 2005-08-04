@@ -55,6 +55,7 @@ Razvan Adrian Bogdan
 Reimar Grabowski
 Rostislav Okulov
 Salvatore Coppola
+Samuel Herzog
 Samuel Liddicott
 Seppo Suutarla - finnish translation
 Sergio Marcelo
