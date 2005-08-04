@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, GetText, FileUtil, LazarusIDEStrConsts,
   StringHashList
-  {$IFNDEF win32}{$IFDEF UseUTF8Translations}
+  {$IFNDEF win32}{$IFNDEF NoUTF8Translations}
   ,cwstring
   {$ENDIF}{$ENDIF};
   
@@ -195,7 +195,7 @@ end;
 function UTF8ToSystemCharSet(const s: string): string;
 begin
   Result:=s;
-  {$IFDEF UseUTF8Translations}
+  {$IFNDEF NoUTF8Translations}
   Result:=Utf8ToAnsi(Result);
   {$ENDIF}
 end;
