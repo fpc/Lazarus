@@ -20,6 +20,11 @@
 }
 unit AllLCLUnits;
 
+{ At least 2.0.0 is required }
+{$ifdef VER1}
+  {$fatal You need at least FPC 2.0.0}
+{$endif}
+
 {$mode objfpc}{$H+}
 
 interface
