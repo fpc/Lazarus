@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, FileProcs, BasicCodeTools, CodeTree, LinkScanner,
-  {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF}, PascalParserTool,
+  AVL_Tree, PascalParserTool,
   CodeToolMemManager;
 
 type

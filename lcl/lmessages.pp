@@ -31,9 +31,7 @@ interface
 
 uses Classes, SysUtils, FPCAdds, LCLType, GraphType
   {$ifdef win32}
-  {$ifndef ver1_0}
   ,messages
-  {$endif ver1_0}
   {$endif win32}
   ;
 

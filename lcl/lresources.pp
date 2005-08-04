@@ -267,9 +267,6 @@ procedure WriteLRSReversedWords(s: TStream; p: Pointer; Count: integer);
 
 implementation
 
-{$IFDEF HASWIDESTRING}{$IFNDEF VER1_9_8}
-{$DEFINE HASTOKENWIDESTRING}
-{$ENDIF}{$ENDIF}
 
 const
   LineEnd: ShortString = LineEnding;
@@ -1704,7 +1701,7 @@ var
         end;
       toString:
         begin
-          {$IFDEF HASTOKENWIDESTRING}
+          {$IFDEF HASWIDESTRING}
           toStringBuf := parser.TokenWideString;
           {$ELSE}
           toStringBuf := parser.TokenString;
@@ -1713,7 +1710,7 @@ var
           begin
             parser.NextToken;   // Get next string fragment
             parser.CheckToken(toString);
-            {$IFDEF HASTOKENWIDESTRING}
+            {$IFDEF HASWIDESTRING}
             toStringBuf := toStringBuf + parser.TokenWideString;
             {$ELSE}
             toStringBuf := toStringBuf + parser.TokenString;

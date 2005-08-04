@@ -947,9 +947,7 @@ begin
             L:=L+' ';
           L:=L+TField(LF[i]).AsString;
           end;
-        BC.AddBar(L,
-          {$IFDEF VER1_0}StrToIntDef(VF.AsString,0){$ELSE}VF.AsInteger{$ENDIF},
-          AColor);
+        BC.AddBar(L, VF.AsInteger, AColor);
         Next;
         end;
       end;

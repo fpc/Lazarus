@@ -608,11 +608,9 @@ begin
           vtAnsiString: CurBtnCaption:=AnsiString(Buttons[i].VAnsiString);
           vtChar: CurBtnCaption:=Buttons[i].VChar;
           vtPChar: CurBtnCaption:=Buttons[i].VPChar;
-          {$ifndef VER1_0}
           vtPWideChar: CurBtnCaption:=Buttons[i].VPWideChar;
           vtWideChar: CurBtnCaption:=Buttons[i].VWideChar;
           vtWidestring: CurBtnCaption:=WideString(Buttons[i].VWideString);
-          {$endif VER1_0}
           else
             dec(i);
           end;

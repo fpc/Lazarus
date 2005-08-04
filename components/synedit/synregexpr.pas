@@ -807,7 +807,7 @@ type
     //     else ExecPos (MatchPos [0] + MatchLen [0]);
     // but it's more simpler !
 
-    function ExecPos (AOffset: integer {$IFDEF D4_}{$IFNDEF VER1_0}= 1{$ENDIF}{$ENDIF}) : boolean;
+    function ExecPos (AOffset: integer {$IFDEF D4_}= 1{$ENDIF}) : boolean;
     // find match for InputString starting from AOffset position
     // (AOffset=1 - first char of InputString)
 
@@ -834,7 +834,7 @@ type
 
     function Replace (AInputStr : RegExprString;
       const AReplaceStr : RegExprString;
-      AUseSubstitution : boolean{$IFDEF D4_}{$IFNDEF VER1_0}= False{$ENDIF}{$ENDIF}) //###0.946
+      AUseSubstitution : boolean{$IFDEF D4_}= False{$ENDIF}) //###0.946
      : RegExprString;
     // Returns AInputStr with r.e. occurencies replaced by AReplaceStr
     // If AUseSubstitution is true, then AReplaceStr will be used
@@ -944,7 +944,7 @@ procedure SplitRegExpr (const ARegExpr, AInputStr : RegExprString; APieces : TSt
 // Split AInputStr into APieces by r.e. ARegExpr occurencies
 
 function ReplaceRegExpr (const ARegExpr, AInputStr, AReplaceStr : RegExprString;
-      AUseSubstitution : boolean{$IFDEF D4_}{$IFNDEF VER1_0}= False{$ENDIF}{$ENDIF}) : RegExprString; //###0.947
+      AUseSubstitution : boolean{$IFDEF D4_}= False{$ENDIF}) : RegExprString; //###0.947
 // Returns AInputStr with r.e. occurencies replaced by AReplaceStr
 // If AUseSubstitution is true, then AReplaceStr will be used
 // as template for Substitution methods.
@@ -963,7 +963,7 @@ function QuoteRegExprMetaChars (const AStr : RegExprString) : RegExprString;
 // user input
 
 function RegExprSubExpressions (const ARegExpr : string;
- ASubExprs : TStrings; AExtendedSyntax : boolean{$IFDEF D4_}{$IFNDEF VER1_0}= False{$ENDIF}{$ENDIF}) : integer;
+ ASubExprs : TStrings; AExtendedSyntax : boolean{$IFDEF D4_}= False{$ENDIF}) : integer;
 // Makes list of subexpressions found in ARegExpr r.e.
 // In ASubExps every item represent subexpression,
 // from first to last, in format:
@@ -1116,7 +1116,7 @@ procedure SplitRegExpr (const ARegExpr, AInputStr : RegExprString; APieces : TSt
 --------------------------------------------------------------}
 
 function ReplaceRegExpr (const ARegExpr, AInputStr, AReplaceStr : RegExprString;
-      AUseSubstitution : boolean{$IFDEF D4_}{$IFNDEF VER1_0}= False{$ENDIF}{$ENDIF}) : RegExprString;
+      AUseSubstitution : boolean{$IFDEF D4_}= False{$ENDIF}) : RegExprString;
  var r : TRegExpr;
  begin
   r := TRegExpr.Create;
@@ -1155,7 +1155,7 @@ function QuoteRegExprMetaChars (const AStr : RegExprString) : RegExprString;
 
 function RegExprSubExpressions (const ARegExpr : string;
  ASubExprs : TStrings;
- AExtendedSyntax : boolean{$IFDEF D4_}{$IFNDEF VER1_0}= False{$ENDIF}{$ENDIF}) : integer;
+ AExtendedSyntax : boolean{$IFDEF D4_}= False{$ENDIF}) : integer;
  type
   TStackItemRec =  record //###0.945
     SubExprIdx : integer;
@@ -3846,7 +3846,7 @@ function TRegExpr.ExecNext : boolean;
  end; { of function TRegExpr.ExecNext
 --------------------------------------------------------------}
 
-function TRegExpr.ExecPos (AOffset: integer {$IFDEF D4_}{$IFNDEF VER1_0}= 1{$ENDIF}{$ENDIF}) : boolean;
+function TRegExpr.ExecPos (AOffset: integer {$IFDEF D4_}= 1{$ENDIF}) : boolean;
  begin
   Result := ExecPrim (AOffset);
  end; { of function TRegExpr.ExecPos
@@ -4089,7 +4089,7 @@ procedure TRegExpr.Split (AInputStr : RegExprString; APieces : TStrings);
 --------------------------------------------------------------}
 
 function TRegExpr.Replace (AInputStr : RegExprString; const AReplaceStr : RegExprString;
-      AUseSubstitution : boolean{$IFDEF D4_}{$IFNDEF VER1_0}= False{$ENDIF}{$ENDIF}) : RegExprString;
+      AUseSubstitution : boolean{$IFDEF D4_}= False{$ENDIF}) : RegExprString;
  var PrevPos : integer;
  begin
   Result := '';

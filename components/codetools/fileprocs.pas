@@ -35,7 +35,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF},
+  Classes, SysUtils, AVL_Tree,
   CodeToolsStrConsts;
   
 type
@@ -213,7 +213,7 @@ implementation
 // to get more detailed error messages consider the os
 {$IFNDEF win32}
 uses
-  {$IFDEF Ver1_0} Linux {$ELSE} Unix,BaseUnix {$ENDIF};
+  Unix,BaseUnix;
 {$ENDIF}
 
 var
@@ -294,11 +294,7 @@ begin
   {$IFDEF win32}
   Result:=true;
   {$ELSE}
-  {$IFDEF Ver1_0}
-  Result:= Linux.Access(AFilename,Linux.X_OK);
-  {$ELSE}
   Result:= BaseUnix.FpAccess(AFilename,BaseUnix.X_OK)=0;
-  {$ENDIF}
   {$ENDIF}
 end;
 
@@ -313,21 +309,20 @@ begin
     raise Exception.CreateFmt(ctsFileDoesNotExists,[AFilename]);
   end;
   {$IFNDEF win32}
-  if not{$IFDEF Ver1_0}Linux.Access{$ELSE}(BaseUnix.FpAccess{$ENDIF}(
-    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}BaseUnix{$ENDIF}.X_OK){$IFNDEF Ver1_0}=0){$ENDIF} then
+  if not(BaseUnix.FpAccess(AFilename,BaseUnix.X_OK)=0) then
   begin
     AText:='"'+AFilename+'"';
-    case {$ifdef ver1_0} LinuxError {$else} fpGetErrno {$endif} of
-    {$IFDEF Ver1_0}sys_eacces{$ELSE}ESysEAcces{$ENDIF}:
+    case fpGetErrno of
+    ESysEAcces:
       AText:='read access denied for '+AText;
-    {$IFDEF Ver1_0}sys_enoent{$ELSE}ESysENoEnt{$ENDIF}:
+    ESysENoEnt:
       AText:='a directory component in '+AText
                           +' does not exist or is a dangling symlink';
-    {$IFDEF Ver1_0}sys_enotdir{$ELSE}ESysENotDir{$ENDIF}:
+    ESysENotDir:
       AText:='a directory component in '+Atext+' is not a directory';
-    {$IFDEF Ver1_0}sys_enomem{$ELSE}ESysENoMem{$ENDIF}:
+    ESysENoMem:
       AText:='insufficient memory';
-    {$IFDEF Ver1_0}sys_eloop{$ELSE}ESysELoop{$ENDIF}:
+    ESysELoop:
       AText:=AText+' has a circular symbolic link';
     else
       AText:=Format(ctsFileIsNotExecutable,[AText]);
@@ -413,11 +408,7 @@ begin
   {$IFDEF win32}
   Result:=true;
   {$ELSE}
-  {$IFDEF Ver1_0}
-  Result:= Linux.Access(AFilename,Linux.R_OK);
-  {$ELSE}
   Result:= BaseUnix.FpAccess(AFilename,BaseUnix.R_OK)=0;
-  {$ENDIF}
   {$ENDIF}
 end;
 
@@ -426,11 +417,7 @@ begin
   {$IFDEF win32}
   Result:=((FileGetAttr(AFilename) and faReadOnly)=0);
   {$ELSE}
-  {$IFDEF Ver1_0}
-  Result:= Linux.Access(AFilename,Linux.W_OK);
-  {$ELSE}
   Result:= BaseUnix.FpAccess(AFilename,BaseUnix.W_OK)=0;
-  {$ENDIF}
   {$ENDIF}
 end;
 

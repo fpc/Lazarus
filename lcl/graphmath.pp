@@ -124,9 +124,7 @@ Operator = (Compare1, Compare2  : TFloatPoint) : Boolean;
 
 Operator := (Value : TFloatPoint) : TPoint;
 
-{$IfNdef ver1_0}
 Operator := (Value : TPoint) : TFloatPoint;
-{$EndIf}
 
 Operator = (Compare1, Compare2  : TRect) : Boolean;
 
@@ -284,7 +282,6 @@ begin
   end;
 end;
 
-{$IfNdef ver1_0}
 Operator := (Value : TPoint) : TFloatPoint;
 begin
   With Result do begin
@@ -292,7 +289,6 @@ begin
     Y := Value.Y;
   end;
 end;
-{$EndIf}
 
 Operator = (Compare1, Compare2  : TRect) : Boolean;
 begin

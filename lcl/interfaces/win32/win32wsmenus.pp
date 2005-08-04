@@ -162,11 +162,7 @@ var
       OldCheckmark   := SelectObject(hdcNewBitmap, hbmpCheck);
       OldTransBitmap := SelectObject(hdcTransBitmap, hbmpTrans);
       // fill transparent-bitmap with transparent color
-      {$IFNDEF VER1_0}
       rectBitmap := RECT(0, 0, bmpWidth, bmpHeight);
-      {$ELSE}
-      rectBitmap := Windows.Rect(RECT(0, 0, bmpWidth, bmpHeight));
-      {$ENDIF}
       FillRect(hdcTransBitmap, rectBitmap, hbrTrans);
       // blit menu icon transparently
       TWin32WidgetSet(InterfaceObject).MaskBlt(hdcTransBitmap, 0, 0, bmpWidth, 
@@ -217,11 +213,7 @@ begin
     if AMenuItem.Checked then fState:=fState or MFS_CHECKED;
     fMask:=MIIM_ID or MIIM_DATA or MIIM_STATE or MIIM_TYPE;
     wID:=AMenuItem.Command; {value may only be 16 bit wide!}
-    {$IFNDEF VER1_0}
     dwItemData:=PtrInt(AMenuItem);
-    {$ELSE}
-    dwItemData:=Integer(AMenuItem);
-    {$ENDIF}
     // Note: can't use "and MFT_STRING", because MFT_STRING is zero :-)
     if (AMenuItem.Count > 0) then 
     begin

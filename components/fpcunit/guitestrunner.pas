@@ -23,9 +23,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   Buttons, ComCtrls, ActnList, Menus, Clipbrd, StdCtrls,
-  {$IFNDEF VER1_9_8}
   testdecorator,
-  {$ENDIF}
   testreport, fpcunit, testregistry;
 
 type
@@ -252,11 +250,9 @@ begin
     node := TestTree.Items.AddChildObject(rootNode, ASuite.Test[i].TestName, ASuite.Test[i]);
     if ASuite.Test[i] is TTestSuite then
       BuildTree(Node, TTestSuite(ASuite.Test[i]))
-    {$IFNDEF VER1_9_8}
     else
       if TObject(ASuite.Test[i]).InheritsFrom(TTestDecorator) then
         BuildTree(Node, TTestSuite(TTestDecorator(ASuite.Test[i]).Test))
-    {$ENDIF};
     node.ImageIndex := 12;
     node.SelectedIndex := 12;
   end;
@@ -387,22 +383,14 @@ begin
     node.ImageIndex := 4;
     node.SelectedIndex := 4;
     if (AError.SourceUnitName <> '') and
-    {$IFNDEF VER1_9_8}
       (AError.FailedMethodName <> '')
-    {$ELSE}
-      (AError.MethodName <> '')
-    {$ENDIF}
-          then
+    then
     begin
       node := TestTree.Items.AddChild(ErrorNode, 'Unit name: ' + AError.SourceUnitName);
       node.ImageIndex := 11;
       node.SelectedIndex := 11;
       node := TestTree.Items.AddChild(ErrorNode, 'Method name: ' +
-      {$IFNDEF VER1_9_8}
       AError.FailedMethodName);
-      {$ELSE}
-      AError.MethodName);
-      {$ENDIF}
       node.ImageIndex := 11;
       node.SelectedIndex := 11;
       node := TestTree.Items.AddChild(ErrorNode, 'Line number: ' + IntToStr(AError.LineNumber));

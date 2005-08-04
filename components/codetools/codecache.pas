@@ -39,7 +39,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, SourceLog, LinkScanner, FileProcs,
-  {$IFNDEF VER1_0}Avl_Tree{$ELSE}OldAvLTree{$ENDIF}, Laz_XMLCfg;
+  Avl_Tree, Laz_XMLCfg;
 
 type
   TCodeCache = class;

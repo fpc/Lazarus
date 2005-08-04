@@ -35,13 +35,7 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils,
-  {$ifdef VER1_0}
-  // fpc 1.0.x needs unit in which redefined property originally is defined
-  // otherwise IE 55665566 occurs.
-  Controls,
-  {$endif}
-  StdCtrls, FileUtil;
+  Classes, SysUtils, StdCtrls, FileUtil;
 
 Type
 

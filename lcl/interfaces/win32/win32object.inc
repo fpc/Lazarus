@@ -199,10 +199,8 @@ begin
   ReleaseDC(Handle, DC);
   
   // Thread.Synchronize support
-  {$IFNDEF VER1_0}{$IFNDEF VER1_9_8}
   WakeMainThread := @HandleWakeMainThread;
-  {$ENDIF}{$ENDIF}
-
+  
   Assert(False, 'Trace:Win32Object.Init - Exit');
 end;
 
@@ -311,10 +309,8 @@ Begin
       TranslateMessage(@AMessage);
       DispatchMessage(@AMessage);
     End;
-{$ifndef VER1_0}
     // check for pending to-be synchronized methods
     CheckSynchronize;
-{$endif}
   End;
 End;
 

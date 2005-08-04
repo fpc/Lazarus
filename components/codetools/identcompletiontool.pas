@@ -54,7 +54,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeTree, CodeAtom, CustomCodeTool,
   KeywordFuncLists, BasicCodeTools, LinkScanner,
-  {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF}, CodeToolMemManager,
+  AVL_Tree, CodeToolMemManager,
   SourceChanger, FindDeclarationTool, PascalParserTool;
   
 

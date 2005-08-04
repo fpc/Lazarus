@@ -21,9 +21,6 @@ uses
   CodeTree, CodeAtom, SourceChanger, CodeToolMemManager, CodeCache,
   KeywordFuncLists, SourceLog, ExprEval, DefineTemplates, FileProcs, CodeToolsStrConsts,
   MultiKeyWordListTool, ResourceCodeTool, CodeToolsStructs,
-  {$IFDEF VER1_0}
-  OldAvLTree,
-  {$ENDIF}
   // fast xml units, changes not merged in current fpc
   Laz_DOM, Laz_XMLCfg, Laz_XMLRead, Laz_XMLWrite;
 

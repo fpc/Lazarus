@@ -268,12 +268,6 @@ Initialization
   MouseDownTime := GetTickCount - 5000;
   MouseDownWindow := 0;
 
-{$ifndef VER1_0}
-  { TThread.Synchronize support }
-  {$ifdef ver1_9_8}
-  SynchronizeMethodProc := @PrepareSynchronize;
-  {$endif}
-{$endif}
 
 Finalization
 

@@ -73,9 +73,7 @@ type
 
   TCriticalSection = longint;
   PCriticalSection = ^TCriticalSection;
-{$IFNDEF VER1_0}
   TRTLCriticalSection = pointer;
-{$ENDIF}
 
 
 {$ifndef win32}

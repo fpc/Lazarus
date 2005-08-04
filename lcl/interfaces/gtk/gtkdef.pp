@@ -371,14 +371,6 @@ const
   GDKX_KEY_LaunchE          = $1008FF4E;
   GDKX_KEY_LaunchF          = $1008FF4F;
 
-// fpc 1.0.10 doesn't link exported variables correctly
-// we fix this for gtk1 and define a constant
-{$IFDEF VER1_0}
-{$IFDEF gtk1}
-   GTK_MAJOR_VERSION = 1;
-   GTK_MINOR_VERSION = 2;
-{$ENDIF}
-{$ENDIF}  
 
 function NewPGDIObject: PGDIObject;
 procedure DisposePGDIObject(GDIObject: PGdiObject);

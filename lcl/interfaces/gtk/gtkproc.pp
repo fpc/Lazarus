@@ -37,9 +37,7 @@ uses
   {$endif}
   SysUtils, Classes, FPCAdds,
   {$IFDEF UNIX}
-    {$ifndef VER1_0}
       baseunix, unix,
-    {$endif}
     {$IFDEF GTK1}
       X, XLib, XUtil, XAtom, //Font retrieval and Keyboard handling
     {$ENDIF not Gtk1}
@@ -977,7 +975,6 @@ var
   threadsync_pipein, threadsync_pipeout: cint;
   threadsync_giochannel: pgiochannel;
 
-{$ifndef VER1_9_8}
 type
   TSynchronizeGlue = class(TObject)
   public
@@ -985,9 +982,6 @@ type
   end;
   
 procedure TSynchronizeGlue.PrepareSynchronize(AObject: TObject);
-{$else}
-procedure PrepareSynchronize;
-{$endif}
 begin
   // wake up GUI thread by send a byte through the threadsync pipe
   fpwrite(threadsync_pipeout, ' ', 1);
@@ -1011,9 +1005,7 @@ procedure InitGTKProc;
 var
   lgs: TLazGtkStyle;
 {$ifdef USE_SYNCHRONIZE}
-{$ifndef VER1_9_8}
   needInstancePtr: TSynchronizeGlue;
-{$endif}
 {$endif}
 begin
 
@@ -1033,11 +1025,7 @@ begin
 
 {$ifdef USE_SYNCHRONIZE}
   { TThread.Synchronize ``glue'' }
-{$ifdef VER1_9_8}
-  SynchronizeMethodProc := @PrepareSynchronize;
-{$else}
   WakeMainThread := @needInstancePtr.PrepareSynchronize;
-{$endif}
   assignpipe(threadsync_pipein, threadsync_pipeout);
   threadsync_giochannel := g_io_channel_unix_new(threadsync_pipein);
   g_io_add_watch(threadsync_giochannel, G_IO_IN, @threadsync_iocallback, nil);
@@ -1049,11 +1037,7 @@ begin
   DoneKeyboardTables;
 
 {$ifdef USE_SYNCHRONIZE}
-{$ifdef VER1_9_8}
-  SynchronizeMethodProc := nil;
-{$else}
   WakeMainThread := nil;
-{$endif}
 {$endif}
 end;
 

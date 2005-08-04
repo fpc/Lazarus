@@ -368,12 +368,6 @@ end;
 {------------------------------------------------------------------------------}
 destructor TCustomListView.Destroy;
 begin
-  {$IFDEF VER1_0}
-  // we need the csDestroying flag. 
-  // FPC 1.0.x doesnt call BeforeDestruction
-  BeforeDestruction;
-  {$ENDIF}
-  
   FreeAndNil(FColumns);
   FreeAndNil(FImageChangeLink);
   FreeAndNil(FListItems);

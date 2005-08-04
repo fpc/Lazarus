@@ -81,11 +81,7 @@ uses
   Windows,
 {$ENDIF}
 {$IFDEF UNIX}
- {$IFDEF Ver1_0}
-   Linux,
- {$ELSE}
    Unix,BaseUnix,
- {$ENDIF}     
 {$ENDIF}
   SysUtils;
   
@@ -108,14 +104,14 @@ begin
   if Count > 31 then Count := 31;
   
   // zero the whole bit set of handles
-  {$IFDEF Ver1_0}FD_ZERO{$ELSE}FpFD_ZERO{$ENDIF}(FDS);
+  FpFD_ZERO(FDS);
 
   // set bits for all waiting handles
   for n := 0 to Count do   
   begin
     if Max < AHandles[n] then Max := AHandles[n];
     if AHandles[n] <> 0 then
-      {$IFDEF Ver1_0}FD_Set{$ELSE}FpFD_Set{$ENDIF}(AHandles[n], FDS);
+      FpFD_Set(AHandles[n], FDS);
   end;
   if Max=0 then begin
     // no valid handle, so no change possible
@@ -130,8 +126,7 @@ begin
     // Select:
     // R = -1 on error, 0 on timeout, >0 on success and is number of handles
     // FDSWait is changed, and indicates what descriptors have changed
-    R := {$IFDEF Ver1_0}Select{$ELSE}FpSelect{$ENDIF}(Max + 1, @FDSWait,
-                                                      nil, nil, TimeOut);
+    R := FpSelect(Max + 1, @FDSWait, nil, nil, TimeOut);
     Application.ProcessMessages;
     if Application.Terminated then Break;
   until R <> 0;
@@ -141,11 +136,7 @@ begin
   then begin
     for n := 0 to Count do   
       if  (AHandles[n] <> 0) 
-      and {$IFDEF Ver1_0}
-          FD_ISSET(AHandles[n],FDSWait)
-          {$ELSE}
-          (FpFD_ISSET(AHandles[n],FDSWait)=1)
-          {$ENDIF}
+      and (FpFD_ISSET(AHandles[n],FDSWait)=1)
       then begin
         Result := Result or 1 shl n;
         Dec(R);

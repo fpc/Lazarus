@@ -3072,36 +3072,14 @@ end;
 
 procedure TLazReaderBMP.SetupRead(nPalette, nRowBits: Integer; Stream: TStream;
   ReadPalette: Boolean);
-{$ifdef VER1_0}
-type
-  tcolinfo = ARRAY [0..0] OF TColorRGBA;
-  pcolinfo = ^tcolinfo;
-var
-  ColInfo: pcolinfo;
-{$else}
 var
   ColInfo: ARRAY OF TColorRGBA;
-{$endif}
   i: Integer;
   FPcolor: TFPcolor;
 begin
   if nPalette > 0
   then begin
     GetMem(FPalette, nPalette*SizeOf(TFPColor));
-    {$ifdef VER1_0}
-    GetMem(ColInfo, nPalette*Sizeof(TColorRGBA));
-    if ReadPalette then begin
-      if BFI.biClrUsed>0 then
-        Stream.Read(ColInfo^[0],BFI.biClrUsed*SizeOf(TColorRGBA))
-      else // Seems to me that this is dangerous.
-        Stream.Read(ColInfo^[0],nPalette*SizeOf(TColorRGBA));
-      for i := 0 to nPalette-1 do begin
-        FPcolor := BmpRGBAToFPColor(ColInfo^[i]);
-        FPcolor.alpha := alphaOpaque; { No transparency info in palette }
-        FPalette[i] := FPcolor;
-      end;
-    end;
-    {$else}
     SetLength(ColInfo, nPalette);
     if ReadPalette then begin
       if  (BFI.biClrUsed > 0)
@@ -3115,7 +3093,6 @@ begin
         FPalette[i] := FPcolor;
       end;
     end;
-    {$endif}
   end
   else begin
     { Skip palette }
@@ -3125,9 +3102,6 @@ begin
   end;
   ReadSize:=((nRowBits + 31) div 32) shl 2;
   GetMem(LineBuf,ReadSize);
-  {$ifdef VER1_0}
-  FreeMem(ColInfo, nPalette*Sizeof(TColorRGBA));
-  {$endif}
 end;
 
 procedure TLazReaderBMP.ReadScanLine(Row: Integer; Stream: TStream);

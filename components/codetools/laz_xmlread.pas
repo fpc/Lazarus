@@ -373,10 +373,8 @@ begin
 end;
 
 {$IFDEF FPC}
-  {$IFNDEF VER1_0}
   // widestrings ansistring conversion is slow and we only use ansistring anyway
     {off $DEFINE UsesFPCWidestrings}
-  {$ENDIF}
 {$ENDIF}
 
 {$IFDEF UsesFPCWidestrings}

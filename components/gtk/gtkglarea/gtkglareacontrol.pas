@@ -21,7 +21,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LCLType, LCLIntf,
-  {$IFDEF VER1_0}Linux{$ELSE}Unix{$ENDIF},
+  Unix,
   Forms, Controls, Graphics, LMessages, InterfaceBase, WSLCLClasses, WSControls,
   LResources, GTKInt, Gtk, NVGL,
   {$IFDEF UseGtkGlAreaLib}

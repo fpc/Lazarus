@@ -79,7 +79,7 @@ uses
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
   PascalParserTool, MethodJumpTool, FindDeclarationTool, KeywordFuncLists,
   CodeToolsStructs, BasicCodeTools, LinkScanner, SourceChanger,
-  {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF};
+  AVL_Tree;
 
 type
   TNewClassPart = (ncpPrivateProcs, ncpPrivateVars,

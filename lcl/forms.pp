@@ -1107,7 +1107,6 @@ type
   end;
   
   
-  {$IFNDEF VER1_0}
   { TFormPropertyStorage }
   
   TFormPropertyStorage = class(TControlPropertyStorage)
@@ -1118,7 +1117,6 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
   end;
-  {$ENDIF not VER1_0}
 
 
 {$IFNDEF UseFCLDataModule}

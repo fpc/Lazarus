@@ -123,20 +123,9 @@ end;
 procedure TListItemSubItems.Clear;
 var 
   n: Integer;
-{$ifdef ver1_0}
-// fpc 1.0.x needs a var parameter for dispose.
-  io: PListItemImageObject;
-{$endif}
 begin
   for n := 0 to Count - 1 do
-  {$ifdef ver1_0}
-  begin
-    io := PListItemImageObject(inherited GetObject(n));
-    Dispose(io);
-  end;
-  {$else}
     Dispose(PListItemImageObject(pointer(inherited GetObject(n))));
-  {$endif}
   inherited;
 end;
 
@@ -149,23 +138,13 @@ begin
 end;
 
 procedure TListItemSubItems.Delete(AIndex: Integer);
-{$ifdef ver1_0}
-// fpc 1.0.x needs a var parameter for dispose.
-var
-  io: PListItemImageObject;
-{$endif}
 begin
   if AIndex = Count
   then FChangeIndex := AIndex
   else FChangeIndex := -1;
   FUpdate := [siuText, siuImage];
   try
-    {$ifdef ver1_0}
-    io := PListItemImageObject(inherited GetObject(AIndex));
-    Dispose(io);
-    {$else}
     Dispose(PListItemImageObject(inherited GetObject(AIndex)));
-    {$endif}
     inherited;
   finally
     FUpdate := [];

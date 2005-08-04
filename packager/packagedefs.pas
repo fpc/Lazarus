@@ -46,7 +46,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Graphics,
-  {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF}, Laz_XMLCfg,
+  AVL_Tree, Laz_XMLCfg,
   DefineTemplates, CodeToolManager, EditDefineTree, CompilerOptions, Forms,
   FileUtil, PropEdits, LazIDEIntf,
   LazarusIDEStrConsts, IDEProcs, ComponentReg,

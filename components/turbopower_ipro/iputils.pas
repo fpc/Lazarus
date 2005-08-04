@@ -896,7 +896,7 @@ asm
 end;
 
 function IpCharCount(const Buffer; BufSize : DWORD; C : AnsiChar) : DWORD;
-  {$IFNDEF VER1_0  lazarus}register;{$ENDIF}
+  register;
 asm
   push  ebx
   xor   ebx, ebx

@@ -83,7 +83,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom, CustomCodeTool,
   KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache,
-  {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF}, PascalParserTool,
+  AVL_Tree, PascalParserTool,
   PascalReaderTool, FileProcs, DefineTemplates, FindDeclarationCache;
 
 type

@@ -42,7 +42,7 @@ uses
 
 type
   // datatype pointing to data on the target
-  TDBGPtr = type {$IFNDEF VER1_0}QWord{$ELSE}DWord{$ENDIF};
+  TDBGPtr = type QWord;
 
   TDBGLocationRec = record
     Address: TDBGPtr;

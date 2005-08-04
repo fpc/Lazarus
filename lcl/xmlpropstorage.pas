@@ -19,11 +19,7 @@ unit XMLPropStorage;
 
 interface
 
-{$IFNDEF VER1_0}
-  {$DEFINE EnableSessionProps}
-{$ENDIF}
 
-{$IFNDEF VER1_0}
 uses
   Classes, SysUtils, LCLProc, Forms, PropertyStorage, XMLCfg, DOM;
 
@@ -69,7 +65,6 @@ type
     property OnRestoringProperties;
     property OnRestoreProperties;
   end;
-{$ENDIF not VER1_0}
 
 procedure Register;
 
@@ -79,12 +74,9 @@ implementation
 
 procedure Register;
 begin
-  {$IFDEF EnableSessionProps}
   RegisterComponents('Misc',[TXMLPropStorage]);
-  {$ENDIF}
 end;
 
-{$IFNDEF VER1_0}
 { TCustomXMLPropStorage }
 
 procedure TCustomXMLPropStorage.StorageNeeded(ReadOnly: Boolean);
@@ -180,5 +172,4 @@ begin
   end;
 end;
 
-{$ENDIF not VER1_0}
 end.

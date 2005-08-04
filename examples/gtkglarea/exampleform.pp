@@ -29,7 +29,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, LResources, Buttons,
-  StdCtrls, Dialogs, NVGL, {$IFDEF VER1_0}Linux{$ELSE}Unix{$ENDIF},
+  StdCtrls, Dialogs, NVGL, Unix,
   GTKGLAreaControl;
 
 type

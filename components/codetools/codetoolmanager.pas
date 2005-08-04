@@ -43,7 +43,7 @@ uses
   Classes, SysUtils, FileProcs, BasicCodeTools, CodeToolsStrConsts,
   EventCodeTool, CodeTree, CodeAtom, SourceChanger, DefineTemplates, CodeCache,
   ExprEval, LinkScanner, KeywordFuncLists, TypInfo,
-  {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF}, LFMTrees,
+  AVL_Tree, LFMTrees,
   CustomCodeTool, FindDeclarationTool, IdentCompletionTool, StdCodeTools,
   ResourceCodeTool, CodeToolsStructs, CodeTemplatesTool, ExtractProcTool;
 

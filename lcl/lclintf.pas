@@ -82,7 +82,7 @@ implementation
 
 {$IFNDEF Win32}
 uses
-  {$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF};
+  Unix;
 {$ENDIF}
 
 var

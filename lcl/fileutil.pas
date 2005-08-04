@@ -96,7 +96,7 @@ uses
 {$IFDEF win32}
   Dos;
 {$ELSE}
-  {$IFDEF Ver1_0}Linux{$ELSE}Unix,BaseUnix{$ENDIF};
+  Unix,BaseUnix;
 {$ENDIF}
 
 var

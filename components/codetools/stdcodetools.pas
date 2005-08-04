@@ -51,7 +51,7 @@ uses
   Classes, SysUtils, CodeToolsStrConsts, FileProcs, CodeTree, CodeAtom,
   FindDeclarationTool, IdentCompletionTool, PascalReaderTool, PascalParserTool,
   KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache,
-  {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF}, LFMTrees, SourceChanger,
+  AVL_Tree, LFMTrees, SourceChanger,
   CustomCodeTool, CodeToolsStructs;
 
 type

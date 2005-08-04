@@ -3821,18 +3821,7 @@ function GetPropertyValue(PI: PPropInfo; const AObject: TObject): string;
 
   function GetFloatProperty : string;
   const
-    Precisions : array[TFloatType] of Integer =
-      {$IFDEF IP_LAZARUS}
-      {$IFDEF Ver1_0}
-      // ftSingle,ftDouble,ftExtended,ftComp,ftCurr,ftFixed16,ftFixed32
-      (7, 15, 18, 18, 19, 4, 8);
-      {$ELSE}
-      // ftSingle,ftDouble,ftExtended,ftComp,ftCurr
-      (7, 15, 18, 18, 19);
-      {$ENDIF}
-      {$ELSE}
-      (7, 15, 18, 18, 19);
-      {$ENDIF}
+    Precisions : array[TFloatType] of Integer = (7, 15, 18, 18, 19);
   begin
     Result := FloatToStrF(GetFloatProp(AObject, PI), ffGeneral,
       Precisions[GetTypeData(GetPropType)^.FloatType], 0);
@@ -3851,12 +3840,7 @@ function GetPropertyValue(PI: PPropInfo; const AObject: TObject): string;
   function GetVariantProperty : string;
   begin
     {$IFDEF FPC}
-    {$IFDEF VER1_0}
-    // 1.0.x does not support variants
-    Result := '';
-    {$ELSE}
     Result := AnsiString(GetVariantProp(AObject, PI));
-    {$ENDIF}
     {$ELSE}
     Result := GetVariantProp(AObject, PI);
     {$ENDIF}

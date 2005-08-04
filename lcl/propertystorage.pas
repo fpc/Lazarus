@@ -19,15 +19,9 @@ unit PropertyStorage;
 
 interface
 
-{$IFNDEF VER1_0}
-  {$DEFINE EnableSessionProps}
-{$ENDIF}
 
-{$IFNDEF VER1_0}
 uses
-  Classes, SysUtils,
-  {$IFDEF VER1_9_8}RTLConst{$ELSE}RTLConsts{$ENDIF}
-  {$IFDEF EnableSessionProps}, RTTIUtils{$ENDIF};
+  Classes, SysUtils, RTLConsts, RTTIUtils;
 
 Type
   TPlacementOperation = (poSave, poRestore);
@@ -172,10 +166,8 @@ Type
     property OnRestoreProperties : TNotifyEvent read FOnRestoreProperties  write FOnRestoreProperties;
   end;
   
-{$ENDIF not VER1_0}
 implementation
 
-{$IFNDEF VER1_0}
 function XorEncode(const Key, Source: string): string;
 var
   I: Integer;
@@ -577,7 +569,6 @@ begin
     FinishPropertyList(AStoredList);
     StorageNeeded(False);
     Try
-      {$IFDEF EnableSessionProps}
       with TPropsStorage.Create do
         try
           Section := RootSection;
@@ -592,7 +583,6 @@ begin
         finally
           Free;
         end;
-      {$ENDIF}
     Finally
       FreeStorage;
     end;
@@ -613,7 +603,6 @@ begin
     FinishPropertyList(L);
     StorageNeeded(True);
     Try
-      {$IFDEF EnableSessionProps}
       with TPropsStorage.Create do
         try
           Section := RootSection;
@@ -626,7 +615,6 @@ begin
         finally
           Free;
         end;
-      {$ENDIF}
     Finally
       FreeStorage;
     end;
@@ -636,16 +624,13 @@ begin
 end;
 
 procedure TCustomPropertyStorage.FinishPropertyList(List: TStrings);
-{$IFDEF EnableSessionProps}
 var
   i: Integer;
   CompName: string;
   PropName: string;
   ARoot: TComponent;
   AComponent: TComponent;
-{$ENDIF}
 begin
-  {$IFDEF EnableSessionProps}
   // set Objects (i.e. the component of each property)
   ARoot:=Root;
   for i:=List.Count-1 downto 0 do begin
@@ -663,7 +648,6 @@ begin
       List.Delete(i);
     end;
   end;
-  {$ENDIF}
 end;
 
 function TCustomPropertyStorage.DoReadInteger(const Section, Ident: String;
@@ -726,7 +710,6 @@ begin
   StoredValues.StoredValue[AName] := Value;
 end;
 
-{$ENDIF not VER1_0}
 
 end.
 

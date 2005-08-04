@@ -47,9 +47,6 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  {$IFDEF VER1_0}
-  FPCAdds,
-  {$ENDIF}
   Classes, SysUtils, TypInfo, LCLProc, LResources, Forms, Controls, LCLIntf,
   Dialogs, JITForm, ComponentReg, IDEProcs;
 
@@ -107,12 +104,10 @@ type
     // TReader events
     procedure ReaderFindMethod(Reader: TReader; const FindMethodName: Ansistring;
       var Address: Pointer; var Error: Boolean);
-    {$IFNDEF VER1_0}
     procedure ReaderSetMethodProperty(Reader: TReader; Instance: TPersistent;
       PropInfo: PPropInfo; const TheMethodName: string; var Handled: boolean);
     procedure ReaderPropertyNotFound(Reader: TReader; Instance: TPersistent;
       var PropName: string; IsPath: Boolean; var Handled, Skip: Boolean);
-    {$ENDIF}
     procedure ReaderSetName(Reader: TReader; Component: TComponent;
       var NewName: Ansistring);
     procedure ReaderReferenceName(Reader: TReader; var RefName: Ansistring);
@@ -345,25 +340,11 @@ begin
     Designer.ValidateRename(AComponent, CurName, NewName);
 end;
 
-{$IFDEF VER1_0}
-type
-  TMyComponent = class(TComponent)
-    function GetValidateRenameAddress: pointer;
-  end;
-
-{ TMyComponent }
-
-class function TMyComponent.GetValidateRenameAddress: pointer;
-begin
-  Result := @TComponent.ValidateRename;
-end;
-{$ENDIF}
 
 function GetTComponentValidateRenameVMTOffset: integer;
 begin
   Result:=GetVMTVirtualMethodOffset(TComponent,
-    {$IFNDEF VER1_0}@TComponent.ValidateRename
-    {$ELSE}TMyComponent.GetValidateRenameAddress{$ENDIF},
+    @TComponent.ValidateRename,
     TComponentWithOverrideValidateRename,
     @TComponentWithOverrideValidateRename.ValidateRename);
 end;
@@ -723,10 +704,8 @@ begin
   // connect TReader events
   Reader.OnError:=@ReaderError;
   Reader.OnFindMethod:=@ReaderFindMethod;
-  {$IFNDEF VER1_0}
   Reader.OnPropertyNotFound:=@ReaderPropertyNotFound;
   Reader.OnSetMethodProperty:=@ReaderSetMethodProperty;
-  {$ENDIF}
   Reader.OnSetName:=@ReaderSetName;
   Reader.OnReferenceName:=@ReaderReferenceName;
   Reader.OnAncestorNotFound:=@ReaderAncestorNotFound;
@@ -1230,7 +1209,6 @@ begin
   end;
 end;
 
-{$IFNDEF VER1_0}
 procedure TJITComponentList.ReaderPropertyNotFound(Reader: TReader;
   Instance: TPersistent; var PropName: string; IsPath: Boolean;
   var Handled, Skip: Boolean);
@@ -1246,7 +1224,6 @@ procedure TJITComponentList.ReaderSetMethodProperty(Reader: TReader;
 begin
   //writeln('TJITComponentList.ReaderSetMethodProperty ',PropInfo^.Name,':=',TheMethodName);
 end;
-{$ENDIF}
 
 procedure TJITComponentList.ReaderSetName(Reader: TReader;
   Component: TComponent; var NewName: Ansistring);

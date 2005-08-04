@@ -43,7 +43,7 @@ interface
 
 uses
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeCache, BasicCodeTools,
-  LinkScanner, {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF},
+  LinkScanner, AVL_Tree,
   KeywordFuncLists;
   
 type

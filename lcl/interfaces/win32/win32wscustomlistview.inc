@@ -397,7 +397,7 @@ begin
   if not WSCheckHandleAllocated(ALV, 'GetBoundingRect')
   then Exit;
 
-  ListView_GetViewRect(ALV.Handle, {$IFDEF VER1_0}Windows.TRect(Result){$ELSE}Result{$ENDIF});
+  ListView_GetViewRect(ALV.Handle, Result);
 end;
 
 function TWin32WSCustomListView.GetDropTarget(const ALV: TCustomListView): Integer;
@@ -487,7 +487,7 @@ procedure TWin32WSCustomListView.PositionHeader(const AHandle: THandle);
 var
   hwndHeader: HWND;
   dwStyle: DWORD;
-  rc: {$IFDEF VER1_0}Windows.{$ENDIF}TRect;
+  rc: TRect;
   hdLayout: THDLAYOUT;
   wpos: TWINDOWPOS;
 begin

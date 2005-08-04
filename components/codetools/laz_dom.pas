@@ -73,16 +73,10 @@ type
 // -------------------------------------------------------
 //   DOMString
 // -------------------------------------------------------
-
-{$IFDEF ver1_0}
-  DOMString = String;
-  DOMPChar = PChar;
-{$ELSE}
   DOMString = String;
   DOMPChar = PChar;
 //  DOMString = WideString;
 //  DOMPChar = PWideChar;
-{$ENDIF}
 
 
 // -------------------------------------------------------

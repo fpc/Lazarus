@@ -1688,14 +1688,12 @@ type
   end;
 
 
-  {$IFNDEF VER1_0}
   { TControlPropertyStorage }
 
   TControlPropertyStorage = class(TCustomPropertyStorage)
   protected
     procedure GetPropertyList(List: TStrings); override;
   end;
-  {$ENDIF not VER1_0}
   
   
   { TDockZone }
@@ -2890,7 +2888,6 @@ begin
     inherited Assign(Source);
 end;
 
-{$IFNDEF VER1_0}
 { TControlPropertyStorage }
 
 procedure TControlPropertyStorage.GetPropertyList(List: TStrings);
@@ -2930,7 +2927,6 @@ begin
     end;
   end;
 end;
-{$ENDIF not VER1_0}
 
 initialization
   //DebugLn('controls.pp - initialization');

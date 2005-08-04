@@ -858,22 +858,22 @@ type
     property AllocBy: Integer read FAllocBy write SetAllocBy default 0;
     property BorderStyle default bsSingle;
     property Columns: TListColumns read FColumns write SetColumns;
-    property ColumnClick: Boolean index Ord(lvpColumnClick) read GetProperty write SetProperty {$IFNDEF VER1_0}default True{$ENDIF};
+    property ColumnClick: Boolean index Ord(lvpColumnClick) read GetProperty write SetProperty default True;
     property DefaultItemHeight: integer read FDefaultItemHeight write SetDefaultItemHeight;
-    property HideSelection: Boolean index Ord(lvpHideSelection) read GetProperty write SetProperty {$IFNDEF VER1_0}default True{$ENDIF};
+    property HideSelection: Boolean index Ord(lvpHideSelection) read GetProperty write SetProperty default True;
     property HoverTime: Integer read GetHoverTime write SetHoverTime default -1;
 //    property IconOptions: TIconOptions read FIconOptions write SetIconOptions;
     property Items: TListItems read FListItems write SetItems;
     property LargeImages: TCustomImageList index Ord(lvilLarge) read GetImageList write SetImageList;
-    property MultiSelect: Boolean index Ord(lvpMultiselect) read GetProperty write SetProperty {$IFNDEF VER1_0}default False{$ENDIF};
+    property MultiSelect: Boolean index Ord(lvpMultiselect) read GetProperty write SetProperty default False;
     property OwnerData: Boolean read FOwnerData write SetOwnerData default False;
-    property OwnerDraw: Boolean index Ord(lvpOwnerDraw) read GetProperty write SetProperty {$IFNDEF VER1_0}default False{$ENDIF};
-    property ReadOnly: Boolean index Ord(lvpReadOnly) read GetProperty write SetProperty {$IFNDEF VER1_0}default False{$ENDIF};
+    property OwnerDraw: Boolean index Ord(lvpOwnerDraw) read GetProperty write SetProperty default False;
+    property ReadOnly: Boolean index Ord(lvpReadOnly) read GetProperty write SetProperty default False;
     property ScrolledLeft: integer read FScrolledLeft write SetScrolledLeft;
     property ScrolledTop: integer read FScrolledTop write SetScrolledTop;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssBoth;
-    property ShowColumnHeaders: Boolean index Ord(lvpShowColumnHeaders) read GetProperty write SetProperty {$IFNDEF VER1_0}default True{$ENDIF};
-    property ShowWorkAreas: Boolean index Ord(lvpShowWorkAreas) read GetProperty write SetProperty {$IFNDEF VER1_0}default False{$ENDIF};
+    property ShowColumnHeaders: Boolean index Ord(lvpShowColumnHeaders) read GetProperty write SetProperty default True;
+    property ShowWorkAreas: Boolean index Ord(lvpShowWorkAreas) read GetProperty write SetProperty default False;
     property SmallImages: TCustomImageList index Ord(lvilSmall) read GetImageList write SetImageList;
     property SortType: TSortType read FSortType write SetSortType;
     property SortColumn: Integer read FSortColumn write SetSortColumn;
@@ -885,11 +885,6 @@ type
     property OnDeletion: TLVDeletedEvent read FOnDeletion write FOnDeletion;
     property OnInsert: TLVInsertEvent read FOnInsert write FOnInsert;
     property OnSelectItem: TLVSelectItemEvent read FOnSelectItem write FOnSelectItem;
-    {$ifdef ver1_0}
-    // repeated as workaround for fpc 1.0.x bug,
-    // which can't access a protected property defined in another unit.
-    property WidgetSetClass;
-    {$endif}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -898,16 +893,16 @@ type
     function FindCaption(StartIndex: Integer; Value: string; Partial, Inclusive, Wrap: Boolean; PartStart: Boolean = True): TListItem;
     property BoundingRect: TRect read GetBoundingRect;
     property Canvas: TCanvas read FCanvas;
-    property Checkboxes: Boolean index Ord(lvpCheckboxes) read GetProperty write SetProperty {$IFNDEF VER1_0}default False{$ENDIF};
+    property Checkboxes: Boolean index Ord(lvpCheckboxes) read GetProperty write SetProperty default False;
     property Column[AIndex: Integer]: TListColumn read GetColumnFromIndex;
     property DropTarget: TListItem read GetDropTarget write SetDropTarget;
-    property FlatScrollBars: Boolean index Ord(lvpFlatScrollBars) read GetProperty write SetProperty {$IFNDEF VER1_0}default False{$ENDIF};
-    property FullDrag: Boolean index Ord(lvpFullDrag) read GetProperty write SetProperty {$IFNDEF VER1_0}default False{$ENDIF};
-    property GridLines: Boolean index Ord(lvpGridLines) read GetProperty write SetProperty {$IFNDEF VER1_0}default False{$ENDIF};
-    property HotTrack: Boolean index Ord(lvpHotTrack) read GetProperty write SetProperty {$IFNDEF VER1_0}default False{$ENDIF};
+    property FlatScrollBars: Boolean index Ord(lvpFlatScrollBars) read GetProperty write SetProperty default False;
+    property FullDrag: Boolean index Ord(lvpFullDrag) read GetProperty write SetProperty default False;
+    property GridLines: Boolean index Ord(lvpGridLines) read GetProperty write SetProperty default False;
+    property HotTrack: Boolean index Ord(lvpHotTrack) read GetProperty write SetProperty default False;
     property HotTrackStyles: TListHotTrackStyles read FHotTrackStyles write SetHotTrackStyles default [];
     property ItemFocused: TListItem read GetFocused write SetFocused;
-    property RowSelect: Boolean index Ord(lvpRowSelect) read GetProperty write SetProperty {$IFNDEF VER1_0}default False{$ENDIF};
+    property RowSelect: Boolean index Ord(lvpRowSelect) read GetProperty write SetProperty default False;
     property SelCount: Integer read GetSelCount;
     property Selected: TListItem read GetSelection write SetSelection;
     property TabStop default true;

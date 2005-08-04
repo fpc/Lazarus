@@ -3930,11 +3930,7 @@ begin
   end;
 end;
 
-{$ifndef VER1_0}
 var
-{$else}
-const
-{$endif}
   {$IFDef GTK1}
   NoteBookCloseBtnPixmapImg: PGdkPixmap = nil;
   NoteBookCloseBtnPixmapMask: PGdkPixmap = nil;
@@ -8176,11 +8172,7 @@ begin
 end;
 
 {$IFDEF GTK1}
-{$IFNDEF VER1_0}
 var
-{$ELSE}
-const
-{$ENDIF}
   FirstScreenCalled: Boolean = False;
   FirstScreenResult: Boolean = False;
 {$IFDEF UseXinerama}

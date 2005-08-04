@@ -41,7 +41,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeToolsStructs, BasicCodeTools,
-  {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF}, CodeToolMemManager;
+  AVL_Tree, CodeToolMemManager;
 
 //-----------------------------------------------------------------------------
 

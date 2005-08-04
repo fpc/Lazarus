@@ -205,12 +205,7 @@ type
 
 implementation
 
-uses SysUtils, AppUtils,
-{$IFDEF VER1_9_8}
-  RTLConst;
-{$ELSE}
-  RTLConsts;
-{$ENDIF}
+uses SysUtils, AppUtils, RTLConsts;
 
 const
 { The following strings should not be localized }

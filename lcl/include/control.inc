@@ -2119,11 +2119,7 @@ var
 begin
   // Check if GetTextBuf is overridden, otherwise
   // we can call RealGetText directly
-{$IFDEF VER1_0}
-  if Pointer(@Self.GetTextBuf) = Pointer(@TControl.GetTextBuf)
-{$ELSE}
   if TMethod(@Self.GetTextBuf).Code = Pointer(@TControl.GetTextBuf)
-{$ENDIF}
   then begin
     Result := RealGetText;
   end
@@ -3130,11 +3126,7 @@ begin
   
   // Check if SetTextBuf is overridden, otherwise
   // we can call RealSetText directly
-{$IFDEF VER1_0}
-  if Pointer(@Self.GetTextBuf) = Pointer(@TControl.GetTextBuf)
-{$ELSE}
   if TMethod(@Self.SetTextBuf).Code = Pointer(@TControl.SetTextBuf)
-{$ENDIF}
   then begin
     RealSetText(Value);
   end

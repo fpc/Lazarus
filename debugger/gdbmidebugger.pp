@@ -43,11 +43,7 @@ uses
   Windows,
 {$ENDIF}
 {$IFDEF UNIX}
- {$IFDEF Ver1_0}
-   Linux,
- {$ELSE}
    Unix,BaseUnix,
- {$ENDIF}     
 {$ENDIF}
   BaseDebugManager;
 
@@ -285,11 +281,7 @@ type
 { Some win32 stuff }
 { =========================================================================== }
 {$IFDEF WIN32}
-{$IFNDEF VER1_0}
 var
-{$ELSE}
-const
-{$ENDIF}
   DebugBreakAddr: Pointer = nil;
   // use our own version. Win9x doesn't support this, so it is a nice check
   _CreateRemoteThread: function(hProcess: THandle; lpThreadAttributes: Pointer; dwStackSize: DWORD; lpStartAddress: TFNThreadStartRoutine; lpParameter: Pointer; dwCreationFlags: DWORD; var lpThreadId: DWORD): THandle; stdcall = nil;
@@ -1365,7 +1357,7 @@ procedure TGDBMIDebugger.InterruptTarget;
 begin
   if TargetPID = 0 then Exit;
 {$IFDEF UNIX}
-  {$IFDEF Ver1_0}Kill{$ELSE}FpKill{$ENDIF}(TargetPID, SIGINT);
+  FpKill(TargetPID, SIGINT);
 {$ENDIF}
 
 {$IFDEF WIN32}

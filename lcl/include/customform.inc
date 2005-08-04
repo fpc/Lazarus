@@ -112,11 +112,6 @@ begin
   //DebugLn('[TCustomForm.Destroy] A ',Name,':',ClassName);
   if not (csDestroying in ComponentState) then ;//GlobalNameSpace.BeginWrite;
   try
-    // ------
-    // Temp hack to get Beforedestruction called
-    // FPC1.0.x doesn't call itself before destruction
-    {$IFDEF VER1_0}BeforeDestruction;{$ENDIF}
-    // ------
     FreeThenNil(FMenu);
     FreeThenNil(FIcon);
     Screen.RemoveForm(Self);
@@ -1936,7 +1931,6 @@ begin
 end;
 
 //==============================================================================
-{$IFNDEF VER1_0}
 
 { TFormPropertyStorage }
 
@@ -1968,7 +1962,6 @@ begin
     TControl(Owner).RemoveAllHandlersOfObject(Self);
   inherited Destroy;
 end;
-{$ENDIF not VER1_0}
 
 
 // included by forms.pp

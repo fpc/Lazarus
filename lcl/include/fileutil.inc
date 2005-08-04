@@ -442,19 +442,19 @@ begin
   {$IFDEF win32}
   raise Exception.Create('"'+AFilename+'" is not symlink');
   {$ELSE}
-  if {$IFDEF Ver1_0}Linux.ReadLink{$ELSE}FpReadLink{$ENDIF}(AFilename)='' then begin
+  if FpReadLink(AFilename)='' then begin
     AText:='"'+AFilename+'"';
-    case {$ifdef ver1_0} LinuxError {$else} fpGetErrno() {$endif} of
-    {$IFDEF Ver1_0}sys_eacces{$ELSE}ESysEAcces{$ENDIF}:
+    case fpGetErrno() of
+    ESysEAcces:
       AText:='read access denied for '+AText;
-    {$IFDEF Ver1_0}sys_enoent{$ELSE}ESysENoEnt{$ENDIF}:
+    ESysENoEnt:
       AText:='a directory component in '+AText
                           +' does not exist or is a dangling symlink';
-    {$IFDEF Ver1_0}sys_enotdir{$ELSE}ESysENotDir{$ENDIF}:
+    ESysENotDir:
       AText:='a directory component in '+Atext+' is not a directory';
-    {$IFDEF Ver1_0}sys_enomem{$ELSE}ESysENoMem{$ENDIF}:
+    ESysENoMem:
       AText:='insufficient memory';
-    {$IFDEF Ver1_0}sys_eloop{$ELSE}ESysELoop{$ENDIF}:
+    ESysELoop:
       AText:=AText+' has a circular symbolic link';
     else
       AText:=AText+' is not a symbolic link';
@@ -472,7 +472,7 @@ begin
   {$IFDEF win32}
   Result:=false;
   {$ELSE}
-  Result:=({$IFDEF Ver1_0}Linux.ReadLink{$ELSE}FpReadLink{$ENDIF}(AFilename)<>'');
+  Result:=(FpReadLink(AFilename)<>'');
   {$ENDIF}
 end;
 
@@ -484,11 +484,7 @@ begin
   {$IFDEF win32}
   Result:=true;
   {$ELSE}
-  {$IFDEF Ver1_0}
-  Result:= Linux.Access(AFilename,Linux.R_OK);
-  {$ELSE}
   Result:= BaseUnix.FpAccess(AFilename,BaseUnix.R_OK)=0;
-  {$ENDIF}
   {$ENDIF}
 end;
 
@@ -500,11 +496,7 @@ begin
   {$IFDEF win32}
   Result:=((FileGetAttr(AFilename) and faReadOnly)=0);
   {$ELSE}
-  {$IFDEF Ver1_0}
-  Result:= Linux.Access(AFilename,Linux.W_OK);
-  {$ELSE}
   Result:= BaseUnix.FpAccess(AFilename,BaseUnix.W_OK)=0;
-  {$ENDIF}
   {$ENDIF}
 end;
 
@@ -522,18 +514,18 @@ var
   // size
   // date
   // time
-  mode: {$ifdef ver1_0}longint{$else}mode_t {$endif};
+  mode: mode_t;
 {$ENDIF}
 begin
   Result:='';
   {$IFDEF win32}
 
   {$ELSE}
-  if not {$IFDEF Ver1_0}FStat{$ELSE}(FpStat{$ENDIF}(AFilename,info){$IFNDEF Ver1_0}=0){$ENDIF} then exit;
+  if not (FpStat(AFilename,info)=0) then exit;
   
   // permissions
   // file type
-  mode:={$ifdef ver1_0} info.mode {$else} info.st_mode {$endif};
+  mode:= info.st_mode;
   if STAT_IFLNK and mode=STAT_IFLNK then
     Result:=Result+'l'
   else
@@ -592,7 +584,7 @@ begin
   //Result:=Result+' Owner: '+IntToStr(info.uid)+'.'+IntToStr(info.gid);
 
   // size
-  Result:=Result+rsSize+IntToStr({$ifdef ver1_0}info.size{$else}info.st_size{$endif});
+  Result:=Result+rsSize+IntToStr(info.st_size);
   
   {$ENDIF}
   // date + time
@@ -622,20 +614,20 @@ begin
 
   {$ELSE}
   repeat
-    LinkFilename:={$IFDEF Ver1_0}Linux.ReadLink{$ELSE}FpReadLink{$ENDIF}(Result);
+    LinkFilename:=FpReadLink(Result);
     if LinkFilename='' then begin
       AText:='"'+Filename+'"';
-      case {$ifdef ver1_0} LinuxError {$else} fpGetErrno() {$endif} of
-      {$IFDEF Ver1_0}sys_eacces{$ELSE}ESysEAcces{$ENDIF}:
+      case fpGetErrno() of
+      ESysEAcces:
         AText:='read access denied for '+AText;
-      {$IFDEF Ver1_0}sys_enoent{$ELSE}ESysENoEnt{$ENDIF}:
+      ESysENoEnt:
         AText:='a directory component in '+AText
                             +' does not exist or is a dangling symlink';
-      {$IFDEF Ver1_0}sys_enotdir{$ELSE}ESysENotDir{$ENDIF}:
+      ESysENotDir:
         AText:='a directory component in '+Atext+' is not a directory';
-      {$IFDEF Ver1_0}sys_enomem{$ELSE}ESysENoMem{$ENDIF}:
+      ESysENoMem:
         AText:='insufficient memory';
-      {$IFDEF Ver1_0}sys_eloop{$ELSE}ESysELoop{$ENDIF}:
+      ESysELoop:
         AText:=AText+' has a circular symbolic link';
       else
         // not a symbolic link, just a regular file
@@ -675,11 +667,7 @@ begin
   {$IFDEF win32}
   Result:=FileExists(AFilename);
   {$ELSE}
-  {$IFDEF Ver1_0}
-  Result:= Linux.Access(AFilename,Linux.X_OK);
-  {$ELSE}
   Result:= BaseUnix.FpAccess(AFilename,BaseUnix.X_OK)=0;
-  {$ENDIF}
   {$ENDIF}
 end;
 
@@ -703,17 +691,17 @@ begin
   if not FileIsExecutable(AFilename) then
   begin
     AText:='"'+AFilename+'"';
-    case {$ifdef ver1_0} LinuxError {$else} fpGetErrno() {$endif} of
-    {$IFDEF Ver1_0}sys_eacces{$ELSE}ESysEAcces{$ENDIF}:
+    case fpGetErrno() of
+    ESysEAcces:
       AText:='read access denied for '+AText;
-    {$IFDEF Ver1_0}sys_enoent{$ELSE}ESysENoEnt{$ENDIF}:
+    ESysENoEnt:
       AText:='a directory component in '+AText
              +' does not exist or is a dangling symlink';
-    {$IFDEF Ver1_0}sys_enotdir{$ELSE}ESysENotDir{$ENDIF}:
+    ESysENotDir:
       AText:='a directory component in '+Atext+' is not a directory';
-    {$IFDEF Ver1_0}sys_enomem{$ELSE}ESysENoMem{$ENDIF}:
+    ESysENoMem:
       AText:='insufficient memory';
-    {$IFDEF Ver1_0}sys_eloop{$ELSE}ESysELoop{$ENDIF}:
+    ESysELoop:
       AText:=AText+' has a circular symbolic link';
     else
       AText:=AText+' is not executable';
@@ -784,7 +772,7 @@ begin
   Result:=ParamStr(0);
   if ExtractFilePath(Result)='' then begin
     // program was started via PATH
-    Result:=SearchFileInPath(Result,'',{$IFDEF Ver1_0}GetEnv{$ELSE}{$ifdef Unix}FpGetEnv{$else}GetEnv{$endif}{$ENDIF}('PATH'),':',
+    Result:=SearchFileInPath(Result,'',{$ifdef Unix}FpGetEnv{$else}GetEnv{$endif}('PATH'),':',
                              [sffDontSearchInBasePath]);
   end;
   // resolve links

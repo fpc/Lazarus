@@ -20,13 +20,6 @@
 
 type
   TLVHack = class(TCustomListView)
-  {$IFDEF VER1_0}
-  protected
-    property Columns;
-    property MultiSelect;
-    property SmallImages;
-    property ViewStyle;
-  {$ENDIF}
   end;
   
   PCustomListViewData = ^TCustomListViewData;
