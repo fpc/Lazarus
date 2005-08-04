@@ -82,7 +82,7 @@ msgstr "%s%sDateiname: %s%s%s"
 
 #: lazarusidestrconsts:lisunabletochangeclassofto
 msgid "%s%sUnable to change class of %s to %s"
-msgstr ""
+msgstr "%s%sDie Klasse konnte nicht von %s nach %s geändert werden."
 
 #: lazarusidestrconsts:lispkgsysunitname
 msgid "%s%sUnit Name: %s%s%s"
@@ -1402,7 +1402,7 @@ msgstr "Kopiere die ausgewählten Komponenten in die Zwischenablage"
 
 #: lazarusidestrconsts:liscopyselectedmessagestoclipboard
 msgid "Copy selected messages to clipboard"
-msgstr ""
+msgstr "Ausgewählte Meldungen in die Zwischenablage kopieren"
 
 #: lazarusidestrconsts:srkmeccopy
 msgid "Copy selection to clipboard"
@@ -1518,7 +1518,7 @@ msgstr "Erzeugen Sie zuerst ein Projekt!"
 
 #: lazarusidestrconsts:lisa2pcreatenewfile
 msgid "Create new file"
-msgstr ""
+msgstr "Neue Datei erzeugen"
 
 #: lazarusidestrconsts:dlgruberbandcreationcolor
 msgid "Creation"
@@ -1778,7 +1778,7 @@ msgstr "Delphi-kompatibel"
 
 #: lazarusidestrconsts:lisdelphiproject
 msgid "Delphi project"
-msgstr ""
+msgstr "Delphi-Projekt"
 
 #: lazarusidestrconsts:lisa2pdependency
 msgid "Dependency"
@@ -1894,7 +1894,7 @@ msgstr "Groß- und Kleinschreibung unterscheiden"
 
 #: lazarusidestrconsts:lisdonotshowsplashscreen
 msgid "Do not show splash screen"
-msgstr ""
+msgstr "Splash Screen nicht anzeigen"
 
 #: lazarusidestrconsts:dlgnotsplitlinefront
 msgid "Do not split line In front of:"
@@ -2102,7 +2102,7 @@ msgstr "Fehler beim Verschieben der Komponente %s:%s"
 
 #: lazarusidestrconsts:liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
-msgstr ""
+msgstr "Fehler beim Parsen des LFM Komponentenstreams."
 
 #: lazarusidestrconsts:liscodetoolsdefserrorreading
 msgid "Error reading %s%s%s%s%s"
@@ -3218,11 +3218,11 @@ msgstr "Installierte Pakete"
 
 #: lazarusidestrconsts:lispkgmanginstallingthepackagewillautomaticallyinstallthepac
 msgid "Installing the package %s will automatically install the package:"
-msgstr ""
+msgstr "Bei Installation des Paketes %s wird automatisch das folgendes Paket installiert:"
 
 #: lazarusidestrconsts:lispkgmanginstallingthepackagewillautomaticallyinstallthepac2
 msgid "Installing the package %s will automatically install the packages:"
-msgstr ""
+msgstr "Bei Installation des Paketes %s werden automatisch die folgenden Pakete installiert:"
 
 #: lazarusidestrconsts:dlgintvinsec
 msgid "Interval in secs"
@@ -3582,7 +3582,7 @@ msgstr "Lazarus"
 
 #: lazarusidestrconsts:lislazarusdesktopsettings
 msgid "Lazarus Desktop Settings"
-msgstr ""
+msgstr "Lazarus Desktopeinstellungen"
 
 #: lazarusidestrconsts:liscodetoolsdefslazarusdirectory
 msgid "Lazarus Directory"
@@ -3594,7 +3594,7 @@ msgstr "Lazarus-Editor v%s"
 
 #: lazarusidestrconsts:lislazarusfile
 msgid "Lazarus File"
-msgstr ""
+msgstr "Lazarus-Datei"
 
 #: lazarusidestrconsts:lislazarusprojectinfofile
 msgid "Lazarus Project Info file"
@@ -3630,11 +3630,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lislazaruspackage
 msgid "Lazarus package"
-msgstr ""
+msgstr "Lazarus-Paket"
 
 #: lazarusidestrconsts:lislazarusproject
 msgid "Lazarus project"
-msgstr ""
+msgstr "Lazarus-Projekt"
 
 #: lazarusidestrconsts:lislazarusprojectsource
 msgid "Lazarus project source"
@@ -3770,7 +3770,7 @@ msgstr "Hauptmenü"
 
 #: lazarusidestrconsts:lismainunithasapplicationcreateformstatements
 msgid "Main Unit has Application.CreateForm statements"
-msgstr "Die Huaptunit enthält die Anweisung \"Application.CreateForm\"."
+msgstr "Die Haupt-Unit enthält die Anweisung \"Application.CreateForm\"."
 
 #: lazarusidestrconsts:lismainunithasapplicationtitlestatements
 msgid "Main Unit has Application.Title statements"
@@ -3778,7 +3778,7 @@ msgstr "Die Hauptunit enthält die Anweisung \"Application.Title\"."
 
 #: lazarusidestrconsts:lismainunithasusessectioncontainingallunitsofproject
 msgid "Main Unit has Uses Section containing all Units of project"
-msgstr "Die Hauptunit enthält einen Uses-Abschnitt mit allen Units des Projekt"
+msgstr "Die Haupt-Unit enthält einen Uses-Abschnitt mit allen Units des Projekt"
 
 #: lazarusidestrconsts:lismainunitispascalsource
 msgid "Main Unit is Pascal Source"
@@ -3826,7 +3826,7 @@ msgstr "Markierungsfarbe"
 
 #: lazarusidestrconsts:lissmatches
 msgid "Matches"
-msgstr ""
+msgstr "Treffer"
 
 #: lazarusidestrconsts:dlgmaxlinelength
 msgid "Max line length:"
@@ -3974,11 +3974,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdsgordermovetoback
 msgid "Move component to back"
-msgstr ""
+msgstr "Komponente in den Hintergrund"
 
 #: lazarusidestrconsts:lisdsgordermovetofront
 msgid "Move component to front"
-msgstr ""
+msgstr "Komponente in den Vordergrund"
 
 #: lazarusidestrconsts:srkmecpagedown
 msgid "Move cursor down one page"
@@ -4070,11 +4070,11 @@ msgstr "Pfad nach oben bewegen"
 
 #: lazarusidestrconsts:fdmordermovetoback
 msgid "Move to back"
-msgstr ""
+msgstr "In den Hintergrund"
 
 #: lazarusidestrconsts:fdmordermovetofront
 msgid "Move to front"
-msgstr ""
+msgstr "In den Vordergrund"
 
 #: lazarusidestrconsts:dlgmulti
 msgid "Multi"
@@ -4130,7 +4130,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisnewclass
 msgid "New Class"
-msgstr ""
+msgstr "Neue Klasse"
 
 #: lazarusidestrconsts:lisa2pnewcomponent
 msgid "New Component"
@@ -4138,7 +4138,7 @@ msgstr "Neue Komponente"
 
 #: lazarusidestrconsts:lisa2pnewfile
 msgid "New File"
-msgstr ""
+msgstr "Neue Datei"
 
 #: lazarusidestrconsts:lismenunewform
 msgid "New Form"
@@ -4318,7 +4318,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisoldclass
 msgid "Old Class"
-msgstr ""
+msgstr "Alte Klasse"
 
 #: lazarusidestrconsts:lismenuonlinehelp
 msgid "Online Help"
@@ -4454,7 +4454,7 @@ msgstr "Einstellungen:"
 
 #: lazarusidestrconsts:fdmorder
 msgid "Order"
-msgstr ""
+msgstr "Reihenfolge"
 
 #: lazarusidestrconsts:dlgsrorigin
 msgid "Origin"
@@ -4470,7 +4470,7 @@ msgstr "Andere Quellen (.pp-/.pas-Dateien, nur von der IDE benutzt, nicht vom Co
 
 #: lazarusidestrconsts:dlgotherunitfiles
 msgid "Other Unit Files (-Fu) (Delimiter is semicolon):"
-msgstr "Andere Unitdateien (-FU) (Trenner ist der Strichpunkt):"
+msgstr "Andere Unit-Dateien (-FU) (Trennzeichen ist der Strichpunkt):"
 
 #: lazarusidestrconsts:dlgenvotherfiles
 msgid "Other files"
@@ -4490,7 +4490,7 @@ msgstr "Überlauf"
 
 #: lazarusidestrconsts:lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
-msgstr ""
+msgstr "Sprache überscheiben. Zum Beispiel --language=de. Für mögliche Werte die Dateien im Verzeichnis <languages> beachten."
 
 #: lazarusidestrconsts:lissvuooverridesystemvariable
 msgid "Override system variable"
@@ -4506,7 +4506,7 @@ msgstr "Datei überschreiben?"
 
 #: lazarusidestrconsts:lispackage
 msgid "Package"
-msgstr ""
+msgstr "Paket"
 
 #: lazarusidestrconsts:lispckeditpackage
 msgid "Package %s"
@@ -4698,7 +4698,7 @@ msgstr "Bitte wählen Sie einen Ressourcenstring aus der Liste"
 
 #: lazarusidestrconsts:lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."
-msgstr "Btte öffnen Sie eine Unit vor dem Starten."
+msgstr "Bitte öffnen Sie eine Unit vor dem Starten."
 
 #: lazarusidestrconsts:srkmpresskey
 msgid "Please press a key ..."
@@ -4710,7 +4710,7 @@ msgstr "Bitte speichern Sie die Datei vor dem Hinzufügen in ein Paket."
 
 #: lazarusidestrconsts:lispkgmangpleasesavethepackagefirst
 msgid "Please save the package first."
-msgstr ""
+msgstr "Bitte speichern Sie das Paket zuerst."
 
 #: lazarusidestrconsts:lisoippleaseselectapackage
 msgid "Please select a package"
@@ -4822,7 +4822,7 @@ msgstr "Projekt %s%s%s erfolgreich gebaut. :)"
 
 #: lazarusidestrconsts:lisedtdefprojectincpath
 msgid "Project IncPath"
-msgstr "Projekt-Includepfad"
+msgstr "Projekt-Include-Pfad"
 
 #: lazarusidestrconsts:lisprojectincpath
 msgid "Project Include Path"
@@ -4906,7 +4906,7 @@ msgstr "Eigenschaften"
 
 #: lazarusidestrconsts:dlgpropertycompletion
 msgid "Property completion"
-msgstr "Eigenschaftenvervollständigung"
+msgstr "Eigenschaften-Vervollständigung"
 
 #: lazarusidestrconsts:dlgpropnamecolor
 msgid "Property name"
@@ -4950,11 +4950,11 @@ msgstr "Bereich"
 
 #: lazarusidestrconsts:lispckeditreadddependency
 msgid "Re-Add dependency"
-msgstr "Neuhinzufügen der Abhängigkeit"
+msgstr "Erneutes Hinzufügen der Abhängigkeit"
 
 #: lazarusidestrconsts:lispckeditreaddfile
 msgid "Re-Add file"
-msgstr "Neuhinzufügen der Datei"
+msgstr "Erneutes Hinzufügen der Datei"
 
 #: lazarusidestrconsts:lispckeditrecompilethisandallrequiredpackages
 msgid "Re-Compile this and all required packages?"
@@ -4986,7 +4986,7 @@ msgstr "Schreibgeschützt"
 
 #: lazarusidestrconsts:lispkgmangrebuildlazarus
 msgid "Rebuild Lazarus?"
-msgstr "Lazarus neu bauen?"
+msgstr "Lazarus neu erstellen?"
 
 #: lazarusidestrconsts:lispckeditrecompileallrequired
 msgid "Recompile all required"
@@ -5050,7 +5050,7 @@ msgstr "Reguläre Ausdrücke"
 
 #: lazarusidestrconsts:lispckoptsrelease
 msgid "Release"
-msgstr "Release"
+msgstr "Freigeben"
 
 #: lazarusidestrconsts:lisdiskdiffrevertall
 msgid "Reload from disk"
@@ -5126,7 +5126,7 @@ msgstr "Benötigtes Paket entfernt (diese Einträge werden nicht in die lpk-Datei 
 
 #: lazarusidestrconsts:lisfrirename
 msgid "Rename"
-msgstr "Umnennen"
+msgstr "Umbenennen"
 
 #: lazarusidestrconsts:lispkgmangrenamefilelowercase
 msgid "Rename File lowercase?"
@@ -5314,7 +5314,7 @@ msgstr "Start bis Cursor"
 
 #: lazarusidestrconsts:lisruntofailed
 msgid "Run-to failed"
-msgstr "Gehezu fehlgeschlagen"
+msgstr "Gehe zu Fehler"
 
 #: lazarusidestrconsts:lispckoptsruntimeonly
 msgid "Runtime only"
@@ -5354,7 +5354,7 @@ msgstr "Speichern unter..."
 
 #: lazarusidestrconsts:dlgcharcasefileact
 msgid "Save As - auto rename pascal files lower case"
-msgstr "Speichern unter "
+msgstr "Speichern unter - Den Namen von Pascal Dateien automatisch in Kleinbuchstaben umwandeln"
 
 #: lazarusidestrconsts:lismenueditorsaveastemplate
 msgid "Save As Template..."
@@ -5402,7 +5402,7 @@ msgstr "Speichern und Dialog beenden"
 
 #: lazarusidestrconsts:lissaveandrebuildide
 msgid "Save and rebuild IDE"
-msgstr "Speichern und IDE neu bauen"
+msgstr "Speichern und IDE neu erstellen"
 
 #: lazarusidestrconsts:srkmecsaveas
 msgid "Save as"
@@ -5534,7 +5534,7 @@ msgstr "Suche vom Benutzer abgebrochen"
 
 #: lazarusidestrconsts:lisssearchtext
 msgid "Search text"
-msgstr ""
+msgstr "Suche Text"
 
 #: lazarusidestrconsts:lisfrisearchwhere
 msgid "Search where"
@@ -5542,7 +5542,7 @@ msgstr "Wo suchen"
 
 #: lazarusidestrconsts:lisssearching
 msgid "Searching"
-msgstr ""
+msgstr "Suche"
 
 #: lazarusidestrconsts:dlgsearchcaption
 msgid "Searching..."
@@ -5690,7 +5690,7 @@ msgstr "Bis zu Klammer"
 
 #: lazarusidestrconsts:lismenuselectword
 msgid "Select word"
-msgstr ""
+msgstr "Wort wählen"
 
 #: lazarusidestrconsts:liscodetoolsdefsselectednode
 msgid "Selected Node:"
@@ -5854,11 +5854,11 @@ msgstr "Gitter anzeigen"
 
 #: lazarusidestrconsts:dlgshowgutterhints
 msgid "Show gutter hints"
-msgstr "Leistenhinweise zeigen"
+msgstr "Leisten-Hinweise zeigen"
 
 #: lazarusidestrconsts:lisshowhintsinobjectinspector
 msgid "Show hints in Object Inspector"
-msgstr ""
+msgstr "Hinweise im Objektinspektor anzeigen"
 
 #: lazarusidestrconsts:dlgshowlinenumbers
 msgid "Show line numbers"
@@ -5918,7 +5918,7 @@ msgstr "An Hilfslinien ausrichten"
 
 #: lazarusidestrconsts:dlgqsnaptogrid
 msgid "Snap to grid"
-msgstr "Ans Gitter kleben"
+msgstr "Am Gitter ausrichten"
 
 #: lazarusidestrconsts:srvk_snapshot
 msgid "Snapshot"
@@ -5958,7 +5958,7 @@ msgstr "Quelltext-Haltepunkt"
 
 #: lazarusidestrconsts:lissourcedirectorydoesnotexist
 msgid "Source directory %s%s%s does not exist."
-msgstr ""
+msgstr "Das Quelltextverzeichnis %s%s%s existiert nicht."
 
 #: lazarusidestrconsts:lissourcemodified
 msgid "Source modified"
@@ -6146,7 +6146,7 @@ msgstr "Tab rückt ganze Blöcke ein"
 
 #: lazarusidestrconsts:fdmtaborder
 msgid "Tab order..."
-msgstr ""
+msgstr "Tabulatorreihenfolge..."
 
 #: lazarusidestrconsts:dlgtabwidths
 msgid "Tab widths:"
@@ -6506,11 +6506,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthefollowingpackagefailedtoload
 msgid "The following package failed to load:"
-msgstr ""
+msgstr "Folgendes Paket konnte nicht geladen werden:"
 
 #: lazarusidestrconsts:lispkgmangthefollowingpackagesfailedtoload
 msgid "The following packages failed to load:"
-msgstr ""
+msgstr "Folgende Pakete konnten nicht geladen werden:"
 
 #: lazarusidestrconsts:listhefollowingunitswerenotfound1eithertheseunitsaren
 msgid "The following units were not found:%s%s%s%s1) Either these units are not in the unit path, then you can abort now, fix the unit path and try again.%s2) Or the units came from a case insensitive file system (windows/Delphi) and are now on a case sensitive filesystem (linux, bsd, macosx). In this case you should abort now, rename the units all lowercase and try again.%s3) Or you can ignore the missing units and continue.%s%sShould the missing units be commented out?"
@@ -6518,11 +6518,11 @@ msgstr "Die folgenden Units wurden nicht gefunden:%s%s%s%s1) Entweder sind sie n
 
 #: lazarusidestrconsts:lisrunparamsthehostapplicationisnotexecutable
 msgid "The host application %s%s%s is not executable."
-msgstr "Die Hostapplikation %s%s%s ist nicht ausführbar"
+msgstr "Die Host-Anwendung %s%s%s ist nicht ausführbar"
 
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
-msgstr ""
+msgstr "Die zu startende Anwendung %s%s%s%s existiert nicht oder ist nicht ausführbar.%s%sSiehe Ausführen -> Parameter -> Lokal"
 
 #: lazarusidestrconsts:lisenvoptdlginvalidlazarusdir
 msgid "The lazarus directory \"%s\" does not look correct. Normally it contains directories like lcl, debugger, designer, components, ... ."
@@ -6542,11 +6542,11 @@ msgstr "Die minimale Version %s%s%s ist keine gültige Paketversion.%s(Ein gutes 
 
 #: lazarusidestrconsts:listhenameisnotavalidpascalidentifier
 msgid "The name %s%s%s is not a valid pascal identifier."
-msgstr "Der Name %s%s%s ist kein gültiger Pascalbezeichner."
+msgstr "Der Name %s%s%s ist kein gültiger Pascal Bezeichner."
 
 #: lazarusidestrconsts:lisinvalidpascalidentifiertext
 msgid "The name \"%s\" is not a valid pascal identifier."
-msgstr "The name \"%s\" is not a valid pascal identifier."
+msgstr "Der Name \"%s\" ist kein gültiger Pascal-Bezeichner."
 
 #: lazarusidestrconsts:lispkgmangthepackageisaruntimeonlypackageruntimeonlypackages
 msgid "The package %s is a runtime only package.%sRuntime only packages can not be installed in the IDE."
@@ -6634,7 +6634,7 @@ msgstr "Die Projekt-Infodatei %s%s%s%sist identisch zur Haupt-Quelltextdatei des
 
 #: lazarusidestrconsts:listheprojectmustbesavedbeforebuildingifyousetthetest
 msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
-msgstr "Das Projekt muß vor der Erstellung gesichert werden.%sWenn Sie das Testverzeichnis in den Umgebungseinstellungen setzen,%können Sie neue Projekte erzeugen und sofort erstellen.%sProjekt speichern?"
+msgstr "Das Projekt muss vor der Erstellung gesichert werden.%sWenn Sie das Testverzeichnis in den Umgebungseinstellungen setzen,%können Sie neue Projekte erzeugen und sofort erstellen.%sProjekt speichern?"
 
 #: lazarusidestrconsts:lispkgmangtheprojectrequiresthepackagebutitwasnotfound
 msgid "The project requires the package %s%s%s.%sBut it was not found. See Project -> Project Inspector."
@@ -6762,7 +6762,7 @@ msgstr "Es trat ein Fehler beim Konvertieren des binären Streams der gewählten K
 
 #: lazarusidestrconsts:listherewasanerrorwhilecopyingthecomponentstreamtocli
 msgid "There was an error while copying the component stream to clipboard:%s%s"
-msgstr "Es trat ein Fehler beim Kopieren des Komponentenstroms in die Zwischenablage auf:%s%s"
+msgstr "Es trat ein Fehler beim Kopieren des Komponenten-Streams in die Zwischenablage auf:%s%s"
 
 #: lazarusidestrconsts:lispkgthisfileisnotinanyloadedpackage
 msgid "This file is not in any loaded package."
@@ -6770,11 +6770,11 @@ msgstr "Datei ist in keinem der geladenen Pakete vorhanden."
 
 #: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
 msgid "This file was automatically created by Lazarus. Do not edit!"
-msgstr ""
+msgstr "Diese Datei wurde von Lazarus automatisch erzeugt. Nicht editieren!"
 
 #: lazarusidestrconsts:lispkgmangthisisavirtualpackageithasnosourceyetpleasesavethe
 msgid "This is a virtual package. It has no source yet. Please save the package first."
-msgstr ""
+msgstr "Dies ist ein virtuelles Paket und hat noch keinen Source-Code. Bitte das Paket zuerst speichern."
 
 #: lazarusidestrconsts:lisresourcefilecomment
 msgid "This is an automatically generated lazarus resource file"
@@ -6794,7 +6794,7 @@ msgstr "Dieses Paket ist installiert, aber die .LPK-Datei wurde nicht gefunden. 
 
 #: lazarusidestrconsts:lispkgmangthissourceisonlyusedtocompileandinstallthepackage
 msgid "This source is only used to compile and install the package."
-msgstr ""
+msgstr "Dieser Code wird nur zum kompilieren und installieren des Paketes verwendet."
 
 #: lazarusidestrconsts:listhisstatementcannotbeextractedpleaseselectsomecode
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
@@ -6862,7 +6862,7 @@ msgstr "Obere Kanten"
 
 #: lazarusidestrconsts:dlgtrimtrailingspaces
 msgid "Trim trailing spaces"
-msgstr "Zurechtschneiden überflüssiger Leerzeichen"
+msgstr "Überflüssige Leerzeichen entfernen"
 
 #: lazarusidestrconsts:lismenutemplatetutorial
 msgid "Tutorial"
@@ -6910,7 +6910,7 @@ msgstr "Kann die Formularliste für automatische Erzeugung im Programmquelltext n
 
 #: lazarusidestrconsts:lisunabletocleanuppleasecheckpermissions
 msgid "Unable to clean up %s%s%s.%sPlease check permissions."
-msgstr "Kann %s%s%s nicht reinigen.%sÜberprüfen Sie die Dateirechte."
+msgstr "Kann %s%s%s nicht entfernen.%sÜberprüfen Sie die Dateirechte."
 
 #: lazarusidestrconsts:lisunabletocleanupdestinationdirectory
 msgid "Unable to clean up destination directory"
@@ -6926,7 +6926,7 @@ msgstr "Datei %s%s%skann nicht konvertiert werden%sFehler: %s"
 
 #: lazarusidestrconsts:lisunabletoconvertlfmtolrsandwritelrsfile
 msgid "Unable to convert lfm to lrs and write lrs file."
-msgstr "lfm kann nicht nicht in lrs konvertiert und lrs-Datei geschrieben werden"
+msgstr ".lfm kann nicht nicht in .lrs konvertiert und als .lrs-Datei geschrieben werden"
 
 #: lazarusidestrconsts:lisunabletoconverttextformdataoffileintobinarystream
 msgid "Unable to convert text form data of file %s%s%s%s%sinto binary stream. (%s)"
@@ -6978,7 +6978,7 @@ msgstr "Kann Datei %s%s%s%s nicht erzeugen"
 
 #: lazarusidestrconsts:lisunabletocreatenewmethodplzfixtheerrorshownin
 msgid "Unable to create new method. Plz fix the error shown in the message window."
-msgstr "Kann neue Methode nicht erzeugen. Bitte beheben Sie dem im Meldungsfehler gezeigten Fehler."
+msgstr "Kann neue Methode nicht erzeugen. Bitte beheben Sie dem im Meldungsfenster gezeigten Fehler."
 
 #: lazarusidestrconsts:lispkgmangunabletocreateoutputdirectoryforpackage
 msgid "Unable to create output directory %s%s%s%sfor package %s."
@@ -6994,7 +6994,7 @@ msgstr "Kann kein Zielverzeichnis für Lazarus erzeugen:%s%s%s%s.%sDieses Verzeic
 
 #: lazarusidestrconsts:lisunabletocreatetemporarylfmbuffer
 msgid "Unable to create temporary lfm buffer."
-msgstr ""
+msgstr "Es konnte kein temporärer LFM-Puffer erzeugt werden."
 
 #: lazarusidestrconsts:lisunabletodeleteambiguousfile
 msgid "Unable to delete ambiguous file %s%s%s"
@@ -7014,7 +7014,7 @@ msgstr "Die alte Statusdatei %s%s%s%sdes Pakets %s konnte nicht gelöscht werden.
 
 #: lazarusidestrconsts:lisunabletofindinlfmstream
 msgid "Unable to find %s in LFM Stream."
-msgstr ""
+msgstr "%s konnte im .LFM-Stream nicht gefunden werden."
 
 #: lazarusidestrconsts:lisunabletofindaresourcestringsectioninthisoranyofthe
 msgid "Unable to find a ResourceString section in this or any of the used units."
@@ -7062,7 +7062,7 @@ msgstr "Das Paket konnte nicht geladen werden"
 
 #: lazarusidestrconsts:lispkgmangunabletoopenthepackage
 msgid "Unable to open the package %s%s%s.%sThis package was marked for installation."
-msgstr ""
+msgstr "Das Paket %s%s%s konnte nicht geöffnet werden. Das Paket ist für die Installation markiert."
 
 #: lazarusidestrconsts:lisunabletoreadfile
 msgid "Unable to read file"
@@ -7142,7 +7142,7 @@ msgstr "Konnte die gewählten Komponenten nicht streamen"
 
 #: lazarusidestrconsts:lisunabletostreamselectedcomponents2
 msgid "Unable to stream selected components."
-msgstr ""
+msgstr "Konnte die gewählten Komponenten nicht streamen."
 
 #: lazarusidestrconsts:lisunabletotransformbinarycomponentstreamoftintotext
 msgid "Unable to transform binary component stream of %s:T%s into text."
@@ -7314,7 +7314,7 @@ msgstr "Unitname ist bereits vorhanden"
 
 #: lazarusidestrconsts:lisunitnotfound
 msgid "Unit not found"
-msgstr ""
+msgstr "Unit nicht gefunden"
 
 #: lazarusidestrconsts:lispkgsysunitnotfound
 msgid "Unit not found: %s%s%s"
@@ -7338,7 +7338,7 @@ msgstr "Unitname existiert bereits im Projekt"
 
 #: lazarusidestrconsts:lisunitsnotfound2
 msgid "Units not found"
-msgstr ""
+msgstr "Units nicht gefunden"
 
 #: lazarusidestrconsts:lismenuviewunits
 msgid "Units..."
@@ -7406,7 +7406,7 @@ msgstr "Verwende Syntaxhervorhebung"
 
 #: lazarusidestrconsts:lispkgmanguseunit
 msgid "Use unit"
-msgstr ""
+msgstr "Unit verwenden"
 
 #: lazarusidestrconsts:rsiwpusewindowmanagersetting
 msgid "Use windowmanager setting"
@@ -7478,7 +7478,7 @@ msgstr "Vertikale Rasterschrittweite"
 
 #: lazarusidestrconsts:lismenuviewanchoreditor
 msgid "View Anchor Editor"
-msgstr "Ankereditor anzeigen"
+msgstr "Anker-Editor anzeigen"
 
 #: lazarusidestrconsts:uemviewcallstack
 msgid "View Call Stack"
@@ -7538,7 +7538,7 @@ msgstr "Units anzeigen"
 
 #: lazarusidestrconsts:srkmecviewanchoreditor
 msgid "View anchor editor"
-msgstr "Ankereditor anzeigen"
+msgstr "Anker-Editor anzeigen"
 
 #: lazarusidestrconsts:srkmectogglebreakpoints
 msgid "View breakpoints"
@@ -7702,7 +7702,7 @@ msgstr "Präfix schreiben"
 
 #: lazarusidestrconsts:lisxmlfiles
 msgid "XML files"
-msgstr ""
+msgstr "XML-Dateien"
 
 #: lazarusidestrconsts:lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."
@@ -7714,7 +7714,7 @@ msgstr "\" nicht gefunden."
 
 #: lazarusidestrconsts:uefilerotext2
 msgid "\" is not writable."
-msgstr "\" ist schreibgeschuetzt."
+msgstr "\" ist schreibgeschützt."
 
 #: lazarusidestrconsts:srkmecabortbuild
 msgid "abort build"
@@ -7882,7 +7882,7 @@ msgstr "Paket %s nicht gesichert"
 
 #: lazarusidestrconsts:lispkgmangpackagemainsourcefile
 msgid "package main source file"
-msgstr "Pakethauptquelldatei"
+msgstr "Paket-Hauptquelldatei"
 
 #: lazarusidestrconsts:srkmecpause
 msgid "pause program"
