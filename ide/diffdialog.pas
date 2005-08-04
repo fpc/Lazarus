@@ -1,8 +1,8 @@
 {  $Id$  }
 {
  /***************************************************************************
-                              diffdialog.pp
-                              -------------
+                              diffdialog.pas
+                              --------------
 
 
  ***************************************************************************/
@@ -29,9 +29,10 @@
   Author: Mattias Gaertner
   
   Abstract:
-    The TDiffDialog is the dialog for showing the differences between two files.
+    The TDiffDlg is the dialog for showing the differences between two files.
 
 }
+
 unit DiffDialog;
 
 {$mode objfpc}{$H+}
@@ -40,8 +41,8 @@ interface
 
 uses
   Classes, SysUtils, Math, Forms, Controls, Buttons, StdCtrls,
-  SynEdit, LResources, LazarusIDEStrConsts, EditorOptions, IDEWindowIntf,
-  InputHistory, DiffPatch;
+  LResources, LazarusIDEStrConsts, EditorOptions, IDEWindowIntf,
+  InputHistory, DiffPatch, ExtCtrls, Dialogs, SynEdit;
 
 type
   TOnGetDiffFile = procedure(TextID: integer; OnlySelection: boolean;
@@ -75,9 +76,20 @@ type
   end;
 
 
-  { TDiffDialog }
+  { TDiffDlg }
   
-  TDiffDialog = class(TForm)
+  TDiffDlg = class(TForm)
+    DiffSynEdit: TSynEdit;
+    Text1FileOpenButton: TButton;
+    dlgSave: TSaveDialog;
+    dlgOpen: TOpenDialog;
+
+    //buttons
+    SaveDiffButton: TButton;
+    OpenInEditorButton: TButton;
+    CloseButton: TButton;
+    Text2FileOpenButton: TButton;
+
     // text 1
     Text1GroupBox: TGroupBox;
     Text1Combobox: TComboBox;
@@ -87,34 +99,16 @@ type
     Text2GroupBox: TGroupBox;
     Text2Combobox: TComboBox;
     Text2OnlySelectionCheckBox: TCheckBox;
-    
-    // diff preview
-    DiffGroupbox: TGroupBox;
-    DiffSynEdit: TSynEdit;
-    
-    // options
-    OptionsGroupBox: TGroupBox;
-    IgnoreCaseCheckBox: TCheckBox;
-    IgnoreEmptyLineChangesCheckBox: TCheckBox;
-    IgnoreHeadingSpacesCheckBox: TCheckBox;
-    IgnoreLineEndsCheckBox: TCheckBox;
-    IgnoreSpaceCharAmountCheckBox: TCheckBox;
-    IgnoreSpaceCharsCheckBox: TCheckBox;
-    IgnoreTrailingSpacesCheckBox: TCheckBox;
-    
-    // buttons
-    CloseButton: TButton;
-    OpenInEditorButton: TButton;
 
-    procedure CloseButtonClick(Sender: TObject);
-    procedure DiffDialogResize(Sender: TObject);
+
+    // options
+    OptionsGroupBox: TCheckGroup;
+
+    procedure FileOpenClick(Sender: TObject);
     procedure OnChangeFlag(Sender: TObject);
-    procedure OpenInEditorButtonClick(Sender: TObject);
-    procedure OptionsGroupBoxResize(Sender: TObject);
+    procedure SaveDiffButtonClick(Sender: TObject);
     procedure Text1ComboboxChange(Sender: TObject);
-    procedure Text1GroupBoxResize(Sender: TObject);
     procedure Text2ComboboxChange(Sender: TObject);
-    procedure Text2GroupBoxResize(Sender: TObject);
   private
     FOnGetDiffFile: TOnGetDiffFile;
     fDiffNeedsUpdate: boolean;
@@ -145,18 +139,25 @@ function ShowDiffDialog(Files: TDiffFiles; Text1Index: integer;
   OnGetDiffFile: TOnGetDiffFile;
   var OpenDiffInEditor: boolean; var Diff: string): TModalResult;
 
+const
+  IgnoreCaseCheckBox = 0;
+  IgnoreEmptyLineChangesCheckBox = 1;
+  IgnoreHeadingSpacesCheckBox = 2;
+  IgnoreLineEndsCheckBox = 3;
+  IgnoreSpaceCharAmountCheckBox = 4;
+  IgnoreSpaceCharsCheckBox = 5;
+  IgnoreTrailingSpacesCheckBox = 6;
 
 implementation
-
 
 function ShowDiffDialog(Files: TDiffFiles; Text1Index: integer;
   OnGetDiffFile: TOnGetDiffFile;
   var OpenDiffInEditor: boolean; var Diff: string): TModalResult;
 var
-  DiffDlg: TDiffDialog;
+  DiffDlg: TDiffDlg;
 begin
   OpenDiffInEditor:=false;
-  DiffDlg:=TDiffDialog.Create(nil);
+  DiffDlg:=TDiffDlg.Create(nil);
   DiffDlg.BeginUpdate;
   DiffDlg.OnGetDiffFile:=OnGetDiffFile;
   DiffDlg.Files:=Files;
@@ -175,295 +176,90 @@ begin
   DiffDlg.Free;
 end;
 
-{ TDiffDialog }
+{ TDiffDlg }
 
-procedure TDiffDialog.DiffDialogResize(Sender: TObject);
-begin
-  // text 1
-  with Text1GroupBox do begin
-    SetBounds(3,3,(Parent.ClientWidth-3*3) div 2,70);
-  end;
-
-  // text 2
-  with Text2GroupBox do begin
-    SetBounds(Text1GroupBox.Left+Text1GroupBox.Width+3,Text1GroupBox.Top,
-              Text1GroupBox.Width,Text1GroupBox.Height);
-  end;
-
-  // diff preview
-  with DiffGroupbox do begin
-    SetBounds(Text1GroupBox.Left,Text1GroupBox.Top+Text1GroupBox.Height+5,
-              Parent.ClientWidth-2*Text1GroupBox.Left,
-              Max(30,Parent.ClientHeight-Text1GroupBox.Height-Text1GroupBox.Top
-                          -170));
-  end;
-
-  // options
-  with OptionsGroupBox do begin
-    SetBounds(Text1GroupBox.Left,DiffGroupbox.Top+DiffGroupbox.Height+5,
-              DiffGroupbox.Width,116);
-  end;
-
-  // buttons
-  with CloseButton do begin
-    SetBounds(Parent.ClientWidth-300,Parent.ClientHeight-32,80,Height);
-  end;
-  
-  with OpenInEditorButton do begin
-    SetBounds(CloseButton.Left+CloseButton.Width+10,CloseButton.Top,
-              200,CloseButton.Height);
-  end;
-end;
-
-procedure TDiffDialog.OnChangeFlag(Sender: TObject);
+procedure TDiffDlg.OnChangeFlag(Sender: TObject);
 begin
   UpdateDiff;
 end;
 
-procedure TDiffDialog.OpenInEditorButtonClick(Sender: TObject);
+procedure TDiffDlg.FileOpenClick(Sender: TObject);
 begin
-  ModalResult:=mrYes;
-end;
-
-procedure TDiffDialog.CloseButtonClick(Sender: TObject);
-begin
-  ModalResult:=mrOk;
-end;
-
-procedure TDiffDialog.OptionsGroupBoxResize(Sender: TObject);
-var
-  y: Integer;
-  x: Integer;
-  W: Integer;
-begin
-  y:=0;
-  x:=4;
-  W:=(OptionsGroupBox.ClientWidth div 2)-8;
-  
-  with IgnoreCaseCheckBox do begin
-    SetBounds(x,y,w,Height);
-    inc(y,Height+2);
-  end;
-
-  with IgnoreEmptyLineChangesCheckBox do begin
-    SetBounds(x,y,w,Height);
-    inc(y,Height+2);
-  end;
-  
-  with IgnoreHeadingSpacesCheckBox do begin
-    SetBounds(x,y,w,Height);
-    inc(y,Height+2);
-  end;
-
-  with IgnoreLineEndsCheckBox do begin
-    SetBounds(x,y,w+w,Height);
-    inc(y,Height+2);
-  end;
-
-  x:=(OptionsGroupBox.ClientWidth div 2)+4;
-  y:=2;
-  with IgnoreSpaceCharAmountCheckBox do begin
-    SetBounds(x,y,w,Height);
-    inc(y,Height+2);
-  end;
-
-  with IgnoreSpaceCharsCheckBox do begin
-    SetBounds(x,y,w,Height);
-    inc(y,Height+2);
-  end;
-
-  with IgnoreTrailingSpacesCheckBox do begin
-    SetBounds(x,y,w,Height);
+  if dlgOpen.Execute then
+  begin
+    //only add new files
+    if Text1ComboBox.Items.IndexOf(dlgOpen.FileName) = -1 then
+    begin
+      Files.Add(TDiffFile.Create(dlgOpen.FileName,-1,False));
+      Text1ComboBox.Items.Add(dlgOpen.FileName);
+      Text2ComboBox.Items.Add(dlgOpen.FileName);
+    end;
+    
+    //set the combobox and make the diff
+    if TButton(Sender).Name = 'Text1FileOpenButton'then
+    with Text1ComboBox do
+    begin
+      ItemIndex := Items.IndexOf(dlgOpen.FileName);
+      SetText1Index(Items.IndexOf(dlgOpen.FileName));
+    end
+    else
+    with Text2ComboBox do
+    begin
+      ItemIndex := Items.IndexOf(dlgOpen.FileName);
+      SetText2Index(Items.IndexOf(dlgOpen.FileName));
+    end;
   end;
 end;
 
-procedure TDiffDialog.Text1ComboboxChange(Sender: TObject);
+procedure TDiffDlg.SaveDiffButtonClick(Sender: TObject);
+begin
+  if dlgSave.Execute then
+    DiffSynEdit.Lines.SaveToFile(dlgSave.FileName);
+end;
+
+procedure TDiffDlg.Text1ComboboxChange(Sender: TObject);
 begin
   SetText1Index(Text1Combobox.Items.IndexOf(Text1Combobox.Text));
 end;
 
-procedure TDiffDialog.Text1GroupBoxResize(Sender: TObject);
-begin
-  with Text1Combobox do begin
-    SetBounds(0,0,Parent.ClientWidth,Height);
-  end;
-  
-  with Text1OnlySelectionCheckBox do begin
-    SetBounds(10,Text1Combobox.Top+Text1Combobox.Height+1,
-              Parent.ClientWidth-20,Height);
-  end;
-end;
-
-procedure TDiffDialog.Text2ComboboxChange(Sender: TObject);
+procedure TDiffDlg.Text2ComboboxChange(Sender: TObject);
 begin
   SetText2Index(Text2Combobox.Items.IndexOf(Text2Combobox.Text));
 end;
 
-procedure TDiffDialog.Text2GroupBoxResize(Sender: TObject);
-begin
-  with Text2Combobox do begin
-    SetBounds(0,0,Parent.ClientWidth,Height);
-  end;
-
-  with Text2OnlySelectionCheckBox do begin
-    SetBounds(10,Text1Combobox.Top+Text1Combobox.Height+1,
-              Parent.ClientWidth-20,Height);
-  end;
-end;
-
-procedure TDiffDialog.SetupComponents;
+procedure TDiffDlg.SetupComponents;
 begin
   // text 1
-  Text1GroupBox:=TGroupBox.Create(Self);
-  with Text1GroupBox do begin
-    Name:='Text1GroupBox';
-    Parent:=Self;
-    Caption:=lisDiffDlgText1;
-    OnResize:=@Text1GroupBoxResize;
-  end;
-  
-  Text1Combobox:=TComboBox.Create(Self);
-  with Text1Combobox do begin
-    Name:='Text1Combobox';
-    Parent:=Text1GroupBox;
-    OnChange:=@Text1ComboboxChange;
-  end;
-  
-  Text1OnlySelectionCheckBox:=TCheckBox.Create(Self);
-  with Text1OnlySelectionCheckBox do begin
-    Name:='Text1OnlySelectionCheckBox';
-    Parent:=Text1GroupBox;
-    Caption:=lisDiffDlgOnlySelection;
-    OnClick:=@OnChangeFlag;
-  end;
+  Text1GroupBox.Caption:=lisDiffDlgText1;
+  Text1OnlySelectionCheckBox.Caption:=lisDiffDlgOnlySelection;
 
   // text 2
-  Text2GroupBox:=TGroupBox.Create(Self);
-  with Text2GroupBox do begin
-    Name:='Text2GroupBox';
-    Parent:=Self;
-    Caption:=lisDiffDlgText2;
-    OnResize:=@Text2GroupBoxResize;
-  end;
-
-  Text2Combobox:=TComboBox.Create(Self);
-  with Text2Combobox do begin
-    Name:='Text2Combobox';
-    Parent:=Text2GroupBox;
-    OnChange:=@Text2ComboboxChange;
-  end;
-
-  Text2OnlySelectionCheckBox:=TCheckBox.Create(Self);
-  with Text2OnlySelectionCheckBox do begin
-    Name:='Text2OnlySelectionCheckBox';
-    Parent:=Text2GroupBox;
-    Caption:=lisDiffDlgOnlySelection;
-    OnClick:=@OnChangeFlag;
-  end;
-
-  // diff preview
-  DiffGroupbox:=TGroupBox.Create(Self);
-  with DiffGroupbox do begin
-    Name:='DiffGroupbox';
-    Parent:=Self;
-    Caption:=lisMenuDiff;
-  end;
-  
-  DiffSynEdit:=TSynEdit.Create(Self);
-  with DiffSynEdit do begin
-    Name:='DiffSynEdit';
-    Parent:=DiffGroupbox;
-    Gutter.Visible:=false;
-    Align:=alClient;
-  end;
+  Text2GroupBox.Caption:=lisDiffDlgText2;
+  Text2OnlySelectionCheckBox.Caption:=lisDiffDlgOnlySelection;
 
   // options
-  OptionsGroupBox:=TGroupBox.Create(Self);
-  with OptionsGroupBox do begin
-    Name:='OptionsGroupBox';
-    Parent:=Self;
+  with OptionsGroupBox do
+  begin
     Caption:=dlgFROpts;
-    OnResize:=@OptionsGroupBoxResize;
-  end;
-  
-  IgnoreCaseCheckBox:=TCheckBox.Create(Self);
-  with IgnoreCaseCheckBox do begin
-    Name:='IgnoreCaseCheckBox';
-    Parent:=OptionsGroupBox;
-    Caption:=lisDiffDlgCaseInsensitive;
-    OnClick:=@OnChangeFlag;
-  end;
-  
-  IgnoreEmptyLineChangesCheckBox:=TCheckBox.Create(Self);
-  with IgnoreEmptyLineChangesCheckBox do begin
-    Name:='IgnoreEmptyLineChangesCheckBox';
-    Parent:=OptionsGroupBox;
-    Caption:=lisDiffDlgIgnoreIfEmptyLinesWereAdd;
-    OnClick:=@OnChangeFlag;
-  end;
-  
-  IgnoreHeadingSpacesCheckBox:=TCheckBox.Create(Self);
-  with IgnoreHeadingSpacesCheckBox do begin
-    Name:='IgnoreHeadingSpacesCheckBox';
-    Parent:=OptionsGroupBox;
-    Caption:=lisDiffDlgIgnoreSpacesAtStartOfLine;
-    OnClick:=@OnChangeFlag;
-  end;
-
-  IgnoreTrailingSpacesCheckBox:=TCheckBox.Create(Self);
-  with IgnoreTrailingSpacesCheckBox do begin
-    Name:='IgnoreTrailingSpacesCheckBox';
-    Parent:=OptionsGroupBox;
-    Caption:=lisDiffDlgIgnoreSpacesAtEndOfLine;
-    OnClick:=@OnChangeFlag;
-  end;
-
-  IgnoreLineEndsCheckBox:=TCheckBox.Create(Self);
-  with IgnoreLineEndsCheckBox do begin
-    Name:='IgnoreLineEndsCheckBox';
-    Parent:=OptionsGroupBox;
-    Caption:=lisDiffDlgIgnoreIfLineEndCharsDiffe;
-    OnClick:=@OnChangeFlag;
-  end;
-
-  IgnoreSpaceCharAmountCheckBox:=TCheckBox.Create(Self);
-  with IgnoreSpaceCharAmountCheckBox do begin
-    Name:='IgnoreSpaceCharAmountCheckBox';
-    Parent:=OptionsGroupBox;
-    Caption:=lisDiffDlgIgnoreIfSpaceCharsWereAdd;
-    OnClick:=@OnChangeFlag;
-  end;
-
-  IgnoreSpaceCharsCheckBox:=TCheckBox.Create(Self);
-  with IgnoreSpaceCharsCheckBox do begin
-    Name:='IgnoreSpaceCharsCheckBox';
-    Parent:=OptionsGroupBox;
-    Caption:=lisDiffDlgIgnoreSpaces;
-    OnClick:=@OnChangeFlag;
+    Items.Add(lisDiffDlgCaseInsensitive);
+    Items.Add(lisDiffDlgIgnoreIfEmptyLinesWereAdd);
+    Items.Add(lisDiffDlgIgnoreSpacesAtStartOfLine);
+    Items.Add(lisDiffDlgIgnoreSpacesAtEndOfLine);
+    Items.Add(lisDiffDlgIgnoreIfLineEndCharsDiffe);
+    Items.Add(lisDiffDlgIgnoreIfSpaceCharsWereAdd);
+    Items.Add(lisDiffDlgIgnoreSpaces);
   end;
 
   // buttons
-  CloseButton:=TButton.Create(Self);
-  with CloseButton do begin
-    Name:='CloseButton';
-    Parent:=Self;
-    Caption:=lisMenuClose;
-    OnClick:=@CloseButtonClick;
-  end;
-  
-  OpenInEditorButton:=TButton.Create(Self);
-  with OpenInEditorButton do begin
-    Name:='OpenInEditorButton';
-    Parent:=Self;
-    Caption:=lisDiffDlgOpenDiffInEditor;
-    OnClick:=@OpenInEditorButtonClick;
-  end;
+  CloseButton.Caption:=lisMenuClose;
+  OpenInEditorButton.Caption:=lisDiffDlgOpenDiffInEditor;
 end;
 
-procedure TDiffDialog.UpdateDiff;
+procedure TDiffDlg.UpdateDiff;
 var
   Text1Src, Text2Src: string;
   DiffTxt: String;
+  dat : TStrings;
 begin
   if FLockCount>0 then begin
     fDiffNeedsUpdate:=true;
@@ -473,37 +269,50 @@ begin
   if (Text1=nil) or (Text2=nil) then begin
     DiffSynEdit.Lines.Text:='';
   end else begin
-    OnGetDiffFile(Text1.ID,
-      Text1.SelectionAvailable and Text1OnlySelectionCheckBox.Checked,
-      Text1Src);
-    OnGetDiffFile(Text2.ID,
-      Text2.SelectionAvailable and Text2OnlySelectionCheckBox.Checked,
-      Text2Src);
+    if Text1.ID = -1 then
+      begin
+        dat := TStringList.Create;
+        dat.LoadFromFile(Text1.Name);
+        Text1Src := dat.Text;
+        dat.Free;
+      end
+    else
+      OnGetDiffFile(Text1.ID,
+        Text1.SelectionAvailable and Text1OnlySelectionCheckBox.Checked,
+        Text1Src);
+
+    if Text2.ID = -1 then
+      begin
+        dat := TStringList.Create;
+        dat.LoadFromFile(Text2.Name);
+        Text2Src := dat.Text;
+        dat.Free;
+      end
+    else
+      OnGetDiffFile(Text2.ID,
+        Text2.SelectionAvailable and Text2OnlySelectionCheckBox.Checked,
+        Text2Src);
+
     DiffTxt:=CreateTextDiff(Text1Src,Text2Src,GetDiffOptions,tdoContext);
+    
     DiffSynEdit.Lines.Text:=DiffTxt;
   end;
 end;
 
-constructor TDiffDialog.Create(TheOwner: TComponent);
+constructor TDiffDlg.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  Name:='DiffDialog';
   Caption := lisMenuDiff;
-  Width:=600;
-  Height:=400;
-  Position:=poScreenCenter;
-  IDEDialogLayoutList.ApplyLayout(Self,600,400);
-  OnResize:=@DiffDialogResize;
+  IDEDialogLayoutList.ApplyLayout(Self,600,500);
   SetupComponents;
-  OnResize(nil);
 end;
 
-destructor TDiffDialog.Destroy;
+destructor TDiffDlg.Destroy;
 begin
   inherited Destroy;
 end;
 
-procedure TDiffDialog.Init;
+procedure TDiffDlg.Init;
 var
   LastText2Name: String;
   i: Integer;
@@ -526,7 +335,7 @@ begin
   UpdateDiff;
 end;
 
-procedure TDiffDialog.FillTextComboBoxes;
+procedure TDiffDlg.FillTextComboBoxes;
 var
   i: Integer;
 begin
@@ -545,7 +354,7 @@ begin
   Text2Combobox.Items.EndUpdate;
 end;
 
-procedure TDiffDialog.SetText1Index(NewIndex: integer);
+procedure TDiffDlg.SetText1Index(NewIndex: integer);
 var
   OldText1: TDiffFile;
 begin
@@ -562,7 +371,7 @@ begin
   if Text1<>OldText1 then UpdateDiff;
 end;
 
-procedure TDiffDialog.SetText2Index(NewIndex: integer);
+procedure TDiffDlg.SetText2Index(NewIndex: integer);
 var
   OldText2: TDiffFile;
 begin
@@ -579,7 +388,7 @@ begin
   if Text2<>OldText2 then UpdateDiff;
 end;
 
-procedure TDiffDialog.SaveSettings;
+procedure TDiffDlg.SaveSettings;
 begin
   InputHistories.DiffFlags:=GetDiffOptions;
   if Text2<>nil then begin
@@ -592,42 +401,42 @@ begin
   IDEDialogLayoutList.SaveLayout(Self);
 end;
 
-procedure TDiffDialog.SetDiffOptions(NewOptions: TTextDiffFlags);
+procedure TDiffDlg.SetDiffOptions(NewOptions: TTextDiffFlags);
 begin
-  IgnoreCaseCheckBox.Checked:=tdfIgnoreCase in NewOptions;
-  IgnoreEmptyLineChangesCheckBox.Checked:=tdfIgnoreEmptyLineChanges in NewOptions;
-  IgnoreHeadingSpacesCheckBox.Checked:=tdfIgnoreHeadingSpaces in NewOptions;
-  IgnoreLineEndsCheckBox.Checked:=tdfIgnoreLineEnds in NewOptions;
-  IgnoreSpaceCharAmountCheckBox.Checked:=tdfIgnoreSpaceCharAmount in NewOptions;
-  IgnoreSpaceCharsCheckBox.Checked:=tdfIgnoreSpaceChars in NewOptions;
-  IgnoreTrailingSpacesCheckBox.Checked:=tdfIgnoreTrailingSpaces in NewOptions;
+  OptionsGroupBox.Checked[IgnoreCaseCheckBox]:=tdfIgnoreCase in NewOptions;
+  OptionsGroupBox.Checked[IgnoreEmptyLineChangesCheckBox]:=tdfIgnoreEmptyLineChanges in NewOptions;
+  OptionsGroupBox.Checked[IgnoreHeadingSpacesCheckBox]:=tdfIgnoreHeadingSpaces in NewOptions;
+  OptionsGroupBox.Checked[IgnoreLineEndsCheckBox]:=tdfIgnoreLineEnds in NewOptions;
+  OptionsGroupBox.Checked[IgnoreSpaceCharAmountCheckBox]:=tdfIgnoreSpaceCharAmount in NewOptions;
+  OptionsGroupBox.Checked[IgnoreSpaceCharsCheckBox]:=tdfIgnoreSpaceChars in NewOptions;
+  OptionsGroupBox.Checked[IgnoreTrailingSpacesCheckBox]:=tdfIgnoreTrailingSpaces in NewOptions;
 end;
 
-function TDiffDialog.GetDiffOptions: TTextDiffFlags;
+function TDiffDlg.GetDiffOptions: TTextDiffFlags;
 begin
   Result:=[];
-  if IgnoreCaseCheckBox.Checked then
+  if OptionsGroupBox.Checked[IgnoreCaseCheckBox] then
     Include(Result,tdfIgnoreCase);
-  if IgnoreEmptyLineChangesCheckBox.Checked then
+  if OptionsGroupBox.Checked[IgnoreEmptyLineChangesCheckBox] then
     Include(Result,tdfIgnoreEmptyLineChanges);
-  if IgnoreHeadingSpacesCheckBox.Checked then
+  if OptionsGroupBox.Checked[IgnoreHeadingSpacesCheckBox] then
     Include(Result,tdfIgnoreHeadingSpaces);
-  if IgnoreLineEndsCheckBox.Checked then
+  if OptionsGroupBox.Checked[IgnoreLineEndsCheckBox] then
     Include(Result,tdfIgnoreLineEnds);
-  if IgnoreSpaceCharAmountCheckBox.Checked then
+  if OptionsGroupBox.Checked[IgnoreSpaceCharAmountCheckBox] then
     Include(Result,tdfIgnoreSpaceCharAmount);
-  if IgnoreSpaceCharsCheckBox.Checked then
+  if OptionsGroupBox.Checked[IgnoreSpaceCharsCheckBox] then
     Include(Result,tdfIgnoreSpaceChars);
-  if IgnoreTrailingSpacesCheckBox.Checked then
+  if OptionsGroupBox.Checked[IgnoreTrailingSpacesCheckBox] then
     Include(Result,tdfIgnoreTrailingSpaces);
 end;
 
-procedure TDiffDialog.BeginUpdate;
+procedure TDiffDlg.BeginUpdate;
 begin
   inc(FLockCount);
 end;
 
-procedure TDiffDialog.EndUpdate;
+procedure TDiffDlg.EndUpdate;
 begin
   dec(FLockCount);
   if (FLockCount=0) and fDiffNeedsUpdate then UpdateDiff;
@@ -674,6 +483,9 @@ begin
   Result:=Count-1;
   while (Result>=0) and (Items[Result].Name<>Name) do dec(Result);
 end;
+
+initialization
+  {$I diffdialog.lrs}
 
 end.
 
