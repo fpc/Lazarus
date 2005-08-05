@@ -26,9 +26,6 @@
 unit Translations;
 
 {$mode objfpc}{$H+}
-{$ifdef ver2_0_0}{$ifndef win32}
-  {$define NoUTF8Translations}
-{$endif}{$endif}
 
 interface
 
