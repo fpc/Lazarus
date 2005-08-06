@@ -30,9 +30,6 @@ unit Translations;
 {$ifdef ver2_0_0}
   {$define NoUTF8Translations}
 {$endif}
-{$ifdef darwin}
-  {$define NoUTF8Translations}
-{$endif}
 
 interface
 
