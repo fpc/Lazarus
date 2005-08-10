@@ -394,6 +394,7 @@ type
     property Canvas;
     property DefaultTextStyle;
     property EditorBorderStyle;
+    property EditorMode;
     property ExtendedColSizing;
     property FastEditing;
     property FocusColor;

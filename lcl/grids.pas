@@ -1148,6 +1148,7 @@ type
       procedure Clean(StartCol,StartRow,EndCol,EndRow: integer; CleanOptions: TCleanOptions); overload;
       property Cells[ACol, ARow: Integer]: string read GetCells write SetCells;
       property Cols[index: Integer]: TStrings read GetCols write SetCols;
+      property EditorMode;
       property ExtendedSelect;
       property Objects[ACol, ARow: Integer]: TObject read GetObjects write SetObjects;
       property Rows[index: Integer]: TStrings read GetRows write SetRows;
@@ -4306,32 +4307,6 @@ begin
   Sh:=(ssShift in Shift);
   Relaxed:=not (goRowSelect in Options) or (goRelaxedRowSelect in Options);
 
-  (*
-  if (Key=Vk_TAB) then begin
-    if (goTabs in Options) then begin
-      case FAutoAdvance of
-        aaRight:
-          if Sh then Key:=VK_LEFT
-          else       Key:=VK_RIGHT;
-        aaDown:
-          if Sh then Key:=VK_UP
-          else       Key:=VK_DOWN;
-        aaLeft:
-          if sh then Key:=VK_RIGHT
-          else       Key:=VK_LEFT;
-        aaNone:
-          Key:=0;
-      end;
-    end else begin
-      // TODO
-      {
-      Pf:=GetParentForm(Self);
-      if (Pf<>nil) then Pf.FocusControl(Self);
-      PerformTab;
-      }
-    end;
-  end;
-  *)
   case Key of
     VK_TAB:
       begin
