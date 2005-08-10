@@ -217,8 +217,8 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TCommonDialog">
-        <short>The base class of which all dialogs are derived.</short>
-        <descr>The base type dialog of which all other dialogs are derived. Use the "Create" method to make an instance of the dialog, the "Execute" method to show it to the user and the "Free" method to release it and free the used resources.</descr>
+        <short>Common Dialog</short>
+        <descr>Common Dialog: the base type fromwhich all other dialogs are derived. Use the "Create" method to make an instance of the dialog, the "Execute" method to show it to the user and the "Free" method to release it and free the used resources.</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCommonDialog.FHandle">
@@ -432,8 +432,8 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TFileDialog">
-        <short>The base class of which all file handling dialogs are derived.</short>
-        <descr>The base class of which all file handling dialogs are derived.</descr>
+        <short>File Dialog</short>
+        <descr>File Dialog: allows selection of a file from the current directory.</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TFileDialog.FDefaultExt">
@@ -720,7 +720,8 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TOpenDialog">
-        <short>A dialog to prompt the user for the name of a file to open.</short>
+        <short>Open Dialog</short>
+        <descr>Open Dialog: open a file in the current directory, selected by File Dialog. If the required file is not in the current directory, another directory can be selected with Select Directory</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TOpenDialog.FOnFolderChange">
@@ -821,8 +822,8 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TSaveDialog">
-        <short>A dialog to prompt the user for the name to save a file.</short>
-        <descr>TSaveDialog is a descendant of TFileDialog</descr>
+        <short>Save Dialog</short>
+        <descr>Save Dialog:  invoked when the application requires to save a file. If the file is already open or a filename has been specified, then the current buffer is written to that file; if no file is specified, the Save File As dialog is invoked and the buffer is saved to that file.</descr>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TSaveDialog.Create">
@@ -837,7 +838,8 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TSelectDirectoryDialog">
-        <short>A dialog to prompt the user for a folder (directory)</short>
+        <short>Select Directory Dialog</short>
+        <descr>Select Directory Dialog: allows the user to select a directory when the diredtory structure is displayed as a tree.</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TSelectDirectoryDialog.CheckFile">
@@ -867,8 +869,8 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TColorDialog">
-        <short>A dialog to prompt the user for a color.</short>
-        <descr>TColorDialog is an ancestor of TCommonDialog and presents a palette of colours to allow the user to select the required colour for text or graphics. 
+        <short>Colour Dialog</short>
+        <descr>Colour Dialog:  presents a palette of colours to allow the user to select the required colour for text or graphics. 
 
 Call the Execute function to show the color dialog.</descr>
       </element>
@@ -896,9 +898,8 @@ Call the Execute function to show the color dialog.</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TColorButton">
-        <short>A special button which displays the Color dialog</short>
-        <descr>Pressing this button causes the Colour Dialog to be presented, allowing a
-choice of colour for text or graphics.</descr>
+        <short>Colour Button</short>
+        <descr>Colour Button: Pressing this button causes the Colour Dialog to be presented, allowing a choice of colour for text or graphics.</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TColorButton.FBorderWidth">
@@ -1163,7 +1164,8 @@ choice of colour for text or graphics.</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TFontDialog">
-        <short>A dialog to prompt the user for a font to use.</short>
+        <short>Font Dialog</short>
+        <descr>Font Dialog: opens a dialog allowing choice of a font for textual displays</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TFontDialog.FFont">
@@ -1357,10 +1359,22 @@ There are two versions of this function. The first version displays a dialog wit
       </element>
       <!-- function Visibility: default -->
       <element name="MessageDlg">
-        <short>Show a message to the user and receive his response.</short>
-        <descr>A MessageDlg can be used to show a message to the user and receive his response. The MessageDlg can be one of several types.
+        <short>Message Dialog</short>
+        <descr>Message Dialog:  show a message to the user and receive his response. 
 
-There are two versions of this function. The first version displays a dialog with the standard caption, the second version enables you to set the caption.</descr>
+There are two versions of this function. The first version displays a dialog with the standard caption, the second version enables you to set the caption.
+
+function MessageDlg(const aMsg: string; DlgType: TMsgDlgType; 
+                    Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
+function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType; 
+                    Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
+
+    Two versions of this function, ie first 'Caption' argument is optional; if omitted, caption is missing from box
+
+    This is the most complete and elaborate of the message dialogs, and allows the programmer considerable control over the appearance of the dialog box.
+    The arguments defining the kind of box and its icon are types rather than integer constants, and the buttons can be specified as a set in square brackets eg [mbRetry, mbIgnore, mbAbort, mbCancel].
+    The HelpCtx argument is not currently implemented and should be set to zero.
+    The return value from the Function is the identity of the button pressed, expressed as an integer (see the definitions below, [mrNone..mrAll]).</descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="MessageDlg.Result">
@@ -1516,8 +1530,21 @@ The strength of this functions is however that you can fill the array like: [400
       </element>
       <!-- procedure Visibility: default -->
       <element name="ShowMessage">
-        <short>A procedure which shows a messagebox with an OK button.</short>
-        <descr>Use this procedure to show a message to the user. This is a modal procedure call, that is the message box is displayed and keeps focused until the user closes it by clicking OK.</descr>
+        <short>Show Message</short>
+        <descr>Procedure ShowMessage (const Msg: string);
+
+{ Defined in Dialogs.pp }
+
+    The simplest message dialog: takes a simple string as argument, displays it in a stereotyped box, and waits for a mouse-click or enter-key event before returning to the calling routine or program.
+    This is a modal procedure call, that is the box is displayed, receives focus, and does not relinquish focus until the OK box is clicked or otherwise selected.
+
+Example
+
+Program LazMessage;
+Uses Dialogs;
+begin
+  ShowMessage ('This is a message from Lazarus')
+end.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="ShowMessage.aMsg">
@@ -1557,10 +1584,13 @@ The strength of this functions is however that you can fill the array like: [400
       </element>
       <!-- function Visibility: default -->
       <element name="InputQuery">
-        <short>Use InputQuery to show a dialog box to get some input from the user</short>
-        <descr>InputQuery works a lot like InputBox, however the result of InputQuery is a Boolean indicating wether the user pressed OK. If the result is false the user pressed Cancel.
-If you want a default value to be returned if the user presses Cancel, use InputBox.
-There are two versions of this function, the difference between them is the ability to mask the users input.</descr>
+        <short>Input Query</short>
+        <descr>Function InputQuery(const ACaption, APrompt : String; 
+                    MaskInput : Boolean; var Value : String) : Boolean;
+Function InputQuery(const ACaption, APrompt : String; 
+                                         var Value : String) : Boolean;
+
+    Two versions of this function which displays a prompt and expects user input of textual data; the first includes a MaskInput boolean argument which determines whether the user input is masked out by asterisks in the text-input box (like during entry of a password), while the second omits this property. The text entered by the user is returned in the variable argument 'Value'; the function result is a boolean which returns TRUE if the OK button was pressed, or FALSE if the box was closed by any other mechanism (such as clicking the 'Close' icon on the top title bar). Omitting the MaskInput argument is equivalent to setting it FALSE.</descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="InputQuery.Result">
@@ -1612,8 +1642,21 @@ There are two versions of this function, the difference between them is the abil
       </element>
       <!-- function Visibility: default -->
       <element name="InputBox">
-        <short>Use InputBox to show a dialogbox to get a string from the user.</short>
-        <descr>InputBox will show a dialog in which the user can enter a value. The entered value is the result of this function. When the user doesnot enter a value, the value from ADefault will be used as result.</descr>
+        <short>InputBox</short>
+        <descr>Function InputBox(const ACaption, APrompt, ADefault : String) : String;
+
+    Displays a box with defined title and prompt, and expects user input in a text box. A default string can optionally be displayed in the text box. The user-entered or default string is returned as the function result.
+
+Example
+
+Uses forms, lcltype, dialogs, controls;
+procedure TryInputBox;
+var userstring: string;
+begin
+  userstring := InputBox ('Get some text input', 
+                          'Please type in some information', 'Some sample text');
+  ShowMessage (userstring)
+end;</descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="InputBox.Result">
@@ -1635,8 +1678,12 @@ There are two versions of this function, the difference between them is the abil
       </element>
       <!-- function Visibility: default -->
       <element name="PasswordBox">
-        <short>A special dialog to ask for passwords</short>
-        <descr>PasswordBox is a specialised form of the InputQuery. The editbox on the dialog box will mask the input. The only parameters are aCaption and aPrompt.</descr>
+        <short>Password Box</short>
+        <descr>PasswordBox:  a specialised form of the InputQuery. The editbox on the dialog box will mask the input. The only parameters are aCaption and aPrompt.
+
+Function PasswordBox(const ACaption, APrompt : String) : String;
+
+    Behaves very similarly to the InputQuery function with MaskInput = TRUE; the difference is that the password that was typed in is returned as the result of the function (like InputBox).</descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="PasswordBox.Result">

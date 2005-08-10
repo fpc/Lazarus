@@ -4777,7 +4777,8 @@
       <element name="TApplication">
         <short>Application</short>
         <descr>Application - the whole current program, described as an object.<b/>
-Includes useful function ShowMessage, a simple dialog</descr>
+
+Includes useful function MessageBox, a simple dialog</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TApplication.FApplicationHandlers">
