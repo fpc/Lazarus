@@ -2270,6 +2270,7 @@ function TDesigner.ControlClassAtPos(const AClass: TControlClass; const APos: TP
       Result := TControl(FLookupRoot.Components[i]); // bit tricky, but we set it to nil anyhow
       if not Result.InheritsFrom(AClass) then Continue;
       if IgnoreHidden and not ControlIsInDesignerVisible(TControl(Result)) then Continue;
+      if csNoDesignSelectable in Result.ControlStyle then continue;
 
       Bounds := GetParentFormRelativeBounds(Result);
       if PtInRect(Bounds, APos) then Exit;
@@ -2292,6 +2293,7 @@ function TDesigner.ControlClassAtPos(const AClass: TControlClass; const APos: TP
       Dec(i);
       Control := WinControl.Controls[i];
       if IgnoreHidden and (csNoDesignVisible in Control.ControlStyle) then Continue;
+      if csNoDesignSelectable in Control.ControlStyle then continue;
       Bounds := GetParentFormRelativeBounds(Control);
       if not PtInRect(Bounds, APos) then Continue;
 

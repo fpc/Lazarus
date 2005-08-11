@@ -120,6 +120,7 @@ begin
     Temp.AutoSize := False;
     Temp.OnClick := @Clicked;
     Temp.OnChange := @Changed;
+    include(temp.ControlStyle, csNoDesignSelectable);
     FButtonList.Add(Temp);
   end;
   if FHiddenButton=nil then begin
@@ -127,6 +128,7 @@ begin
     with FHiddenButton do begin
       Name:='HiddenRadioButton';
       Visible:=false;
+      include(ControlStyle, csNoDesignSelectable);
     end;
   end;
     

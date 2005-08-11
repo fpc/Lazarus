@@ -459,6 +459,7 @@ begin
   CheckButtonVisible;
   FButton.OnClick := @DoButtonClick;
   FButton.Cursor := crArrow;
+  FButton.ControlStyle := FButton.ControlStyle + [csNoDesignSelectable];
   ControlStyle := ControlStyle - [csSetCaption];
   FDirectInput := True;
 end;

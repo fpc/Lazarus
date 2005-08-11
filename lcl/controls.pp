@@ -196,7 +196,8 @@ type
     csDesignNoSmoothResize, // no WYSIWYG resizing in designer
     csDesignFixedBounds, // control can not be moved nor resized in designer
     csHasDefaultAction, // control implements useful ExecuteDefaultAction
-    csHasCancelAction   // control implements useful ExecuteCancelAction
+    csHasCancelAction,   // control implements useful ExecuteCancelAction
+    csNoDesignSelectable // control can not be selected at design time
     );
   TControlStyle = set of TControlStyleType;
 

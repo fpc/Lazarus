@@ -85,6 +85,7 @@ begin
       AutoSize := False;
       Parent := Self;
       OnClick :=@Clicked;
+      include(ControlStyle, csNoDesignSelectable);
     end;
     FButtonList.Add(CheckBox);
   end;
