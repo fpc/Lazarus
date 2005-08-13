@@ -225,7 +225,7 @@ begin
     begin
       fType:=MFT_STRING;
       newCaption:=AMenuItem.Caption;
-      if AMenuItem.ShortCut <> 0 then
+      if AMenuItem.ShortCut <> scNone then
         newCaption:=newCaption+#9+ShortCutToText(AMenuItem.ShortCut);
       dwTypeData:=LPSTR(newCaption);
       cch:=Length(newCaption);
@@ -280,7 +280,7 @@ procedure TWin32WSMenuItem.SetCaption(const AMenuItem: TMenuItem; const ACaption
 var newCaption: string;
 begin
   newCaption := ACaption;  
-  if AMenuItem.ShortCut <> 0 then
+  if AMenuItem.ShortCut <> scNone then
     newCaption := newCaption+#9+ShortCutToText(AMenuItem.ShortCut);
   UpdateCaption(AMenuItem, newCaption);
 end;
@@ -288,17 +288,12 @@ end;
 procedure TWin32WSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
   const OldShortCut, NewShortCut: TShortCut);
 var
-  NewKey: word;
-  NewModifier: TShiftState;
+  NewCaption: string;
 begin
-  UpdateCaption(AMenuItem, AMenuItem.Caption+#9+ShortCutToText(NewShortCut));
-  if (AMenuItem.Owner is TWinControl) and AMenuItem.HandleAllocated then
-  begin
-    ShortCutToKey(NewShortCut, NewKey, NewModifier);
-    SetAccelKey(TWinControl(AMenuItem.Owner).Handle, AMenuItem.Command, NewKey, NewModifier);
-  end else begin
-    DebugLn('TWin32WSMenuItem.SetShortCut: unable to set shortcut, menu has no window handle');
-  end;
+  NewCaption := AMenuItem.Caption;
+  if NewShortCut <> scNone then
+    NewCaption := NewCaption + #9 + ShortCutToText(NewShortCut);
+  UpdateCaption(AMenuItem, NewCaption);
 end;
 
 function TWin32WSMenuItem.SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean;
