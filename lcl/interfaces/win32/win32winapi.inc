@@ -1735,7 +1735,7 @@ begin
     ARect.Right := BitmapInfo.bmWidth;
 
   // copy bitmap
-  AllocAndCopy(BitmapInfo, ARect, NewRawImage.Data, NewRawImage.MaskSize);
+  AllocAndCopy(BitmapInfo, ARect, NewRawImage.Data, NewRawImage.DataSize);
 
   // check mask
   if SrcMaskBitmap <> 0 then
