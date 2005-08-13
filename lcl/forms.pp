@@ -857,6 +857,7 @@ type
   private
     FApplicationHandlers: array[TApplicationHandlerType] of TMethodList;
     FCaptureExceptions: boolean;
+    FFindGlobalComponentEnabled: boolean;
     FFlags: TApplicationFlags;
     FHint: string;
     FHintColor: TColor;
@@ -997,6 +998,8 @@ type
     procedure DoTabKey(AControl: TWinControl; var Key: Word;Shift: TShiftState);
     property CaptureExceptions: boolean read FCaptureExceptions
                                         write SetCaptureExceptions;
+    property FindGlobalComponentEnabled: boolean read FFindGlobalComponentEnabled
+                                               write FFindGlobalComponentEnabled;
     //property HelpSystem : IHelpSystem read FHelpSystem;
     property Hint: string read FHint write SetHint;
     property HintColor: TColor read FHintColor write SetHintColor;

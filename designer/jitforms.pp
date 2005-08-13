@@ -670,6 +670,7 @@ begin
       DoFinishReading;
     finally
       UnregisterFindGlobalComponentProc(@MyFindGlobalComponent);
+      Application.FindGlobalComponentEnabled:=true;
       if DestroyDriver then Reader.Driver.Free;
       Reader.Free;
     end;
@@ -697,6 +698,7 @@ begin
   Reader:=CreateLRSReader(BinStream,DestroyDriver);
   MyFindGlobalComponentProc:=@OnFindGlobalComponent;
   RegisterFindGlobalComponentProc(@MyFindGlobalComponent);
+  Application.FindGlobalComponentEnabled:=false;
 
   {$IFDEF VerboseJITForms}
   writeln('[TJITComponentList.InitReading] A');
@@ -867,6 +869,7 @@ begin
       DoFinishReading;
     finally
       UnregisterFindGlobalComponentProc(@MyFindGlobalComponent);
+      Application.FindGlobalComponentEnabled:=true;
       if DestroyDriver then Reader.Driver.Free;
       Reader.Free;
     end;

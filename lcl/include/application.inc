@@ -27,7 +27,10 @@ const
 
 function FindApplicationComponent(const ComponentName: string): TComponent;
 begin
-  Result:=Application.FindComponent(ComponentName);
+  if Application.FindGlobalComponentEnabled then
+    Result:=Application.FindComponent(ComponentName)
+  else
+    Result:=nil;
 end;
 
 function GetHintControl(Control: TControl): TControl;
@@ -93,6 +96,8 @@ begin
   ApplicationActionComponent:=Self;
   OnMenuPopupHandler:=@MenuPopupHandler;
 
+  FFindGlobalComponentEnabled:=true;
+  RegisterFindGlobalComponentProc(@FindApplicationComponent);
 
   inherited Create(AOwner);
   CaptureExceptions:=true;
@@ -132,6 +137,9 @@ begin
   for HandlerType:=Low(TApplicationHandlerType) to High(TApplicationHandlerType)
   do
     FreeThenNil(FApplicationHandlers[HandlerType]);
+
+  UnregisterFindGlobalComponentProc(@FindApplicationComponent);
+
   inherited Destroy;
   
   Include(FFlags,AppDoNotReleaseComponents);
@@ -1414,7 +1422,6 @@ begin
   // events and constructors can refer to it
   TComponent(Reference) := Instance;
 
-  RegisterFindGlobalComponentProc(@FindApplicationComponent);
   ok:=false;
   try
     Instance.Create(Self);
@@ -1422,7 +1429,6 @@ begin
   finally
     if not ok then
       TComponent(Reference) := nil;
-    UnregisterFindGlobalComponentProc(@FindApplicationComponent);
   end;
 
   if (Instance is TForm) then begin
