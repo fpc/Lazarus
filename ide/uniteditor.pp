@@ -741,7 +741,7 @@ begin
   SrcEditMenuSectionFirstDynamic:=RegisterIDEMenuSection(Path,
                                                          'First dynamic section');
   // register the first static section
-  SrcEditMenuSectionFirstStatic:=RegisterIDEMenuSection(Path,'First Static section');
+  SrcEditMenuSectionFirstStatic:=RegisterIDEMenuSection(Path,'First static section');
   SubPath:=SrcEditMenuSectionFirstStatic.GetPath;
   SrcEditMenuFindDeclaration:=RegisterIDEMenuCommand(SubPath,'Find Declaration',
                                             uemFindDeclaration);
@@ -765,33 +765,33 @@ begin
   SrcEditMenuSectionMarks:=RegisterIDEMenuSection(Path,'Marks section');
   SubPath:=SrcEditMenuSectionMarks.GetPath;
 
-  // register the Goto Bookmarks Submenu
-  SrcEditSubMenuGotoBookmarks:=RegisterIDESubMenu(Path,'Goto bookmarks',
-                                                  uemGotoBookmark);
-  SubSubPath:=SrcEditSubMenuGotoBookmarks.GetPath;
-  for I := 0 to 9 do
-    RegisterIDEMenuCommand(SubSubPath,'GotoBookmark'+IntToStr(I),
-                           uemBookmarkN+IntToStr(i));
+    // register the Goto Bookmarks Submenu
+    SrcEditSubMenuGotoBookmarks:=RegisterIDESubMenu(SubPath,'Goto bookmarks',
+                                                    uemGotoBookmark);
+    SubSubPath:=SrcEditSubMenuGotoBookmarks.GetPath;
+    for I := 0 to 9 do
+      RegisterIDEMenuCommand(SubSubPath,'GotoBookmark'+IntToStr(I),
+                             uemBookmarkN+IntToStr(i));
 
-  // register the Set Bookmarks Submenu
-  SrcEditSubMenuSetBookmarks:=RegisterIDESubMenu(Path,'Set bookmarks',
-                                                  uemSetBookmark);
-  SubSubPath:=SrcEditSubMenuSetBookmarks.GetPath;
-  for I := 0 to 9 do
-    RegisterIDEMenuCommand(SubSubPath,'SetBookmark'+IntToStr(I),
-                           uemBookmarkN+IntToStr(i));
+    // register the Set Bookmarks Submenu
+    SrcEditSubMenuSetBookmarks:=RegisterIDESubMenu(SubPath,'Set bookmarks',
+                                                   uemSetBookmark);
+    SubSubPath:=SrcEditSubMenuSetBookmarks.GetPath;
+    for I := 0 to 9 do
+      RegisterIDEMenuCommand(SubSubPath,'SetBookmark'+IntToStr(I),
+                             uemBookmarkN+IntToStr(i));
 
-  // register the Debug submenu
-  SrcEditSubMenuDebug:=RegisterIDESubMenu(Path,'Debug',uemDebugWord);
-  SubSubPath:=SrcEditSubMenuDebug.GetPath;
-  SrcEditMenuAddBreakpoint:=RegisterIDEMenuCommand(SubSubPath,'Add Breakpoint',
-                                                   uemAddBreakpoint);
-  SrcEditMenuAddWatchAtCursor:=RegisterIDEMenuCommand(SubSubPath,
-                                     'Add Watch at Cursor',uemAddWatchAtCursor);
-  SrcEditMenuRunToCursor:=RegisterIDEMenuCommand(SubSubPath,
-                                                'Run to cursor',uemRunToCursor);
-  SrcEditMenuViewCallStack:=RegisterIDEMenuCommand(SubSubPath,
-                                        'View Call Stack',uemViewCallStack);
+    // register the Debug submenu
+    SrcEditSubMenuDebug:=RegisterIDESubMenu(SubPath,'Debug',uemDebugWord);
+    SubSubPath:=SrcEditSubMenuDebug.GetPath;
+    SrcEditMenuAddBreakpoint:=RegisterIDEMenuCommand(SubSubPath,'Add Breakpoint',
+                                                     uemAddBreakpoint);
+    SrcEditMenuAddWatchAtCursor:=RegisterIDEMenuCommand(SubSubPath,
+                                       'Add Watch at Cursor',uemAddWatchAtCursor);
+    SrcEditMenuRunToCursor:=RegisterIDEMenuCommand(SubSubPath,
+                                                  'Run to cursor',uemRunToCursor);
+    SrcEditMenuViewCallStack:=RegisterIDEMenuCommand(SubSubPath,
+                                          'View Call Stack',uemViewCallStack);
 
   // register the Move Page section
   SrcEditMenuSectionMovePage:=RegisterIDEMenuSection(Path,'Move Page section');
@@ -801,8 +801,8 @@ begin
   SrcEditMenuMoveEditorRight:=RegisterIDEMenuCommand(SubPath,'MoveEditorRight',
                                                     uemMoveEditorRight);
 
-  // register the Refactor submenu
-  SrcEditSubMenuRefactor:=RegisterIDESubMenu(Path,'Refactor',uemRefactor);
+  // register the Refactoring submenu
+  SrcEditSubMenuRefactor:=RegisterIDESubMenu(Path,'Refactoring',uemRefactor);
   SubSubPath:=SrcEditSubMenuRefactor.GetPath;
   SrcEditMenuCompleteCode:=RegisterIDEMenuCommand(SubSubPath,'CompleteCode',
                                                   uemCompleteCode);

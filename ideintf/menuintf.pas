@@ -108,12 +108,14 @@ type
     FSubMenuImages: TCustomImageList;
     FItems: TFPList;
     FTopSeparator: TMenuItem;
+    FChildMenuItemsCreated: boolean;
     function GetItems(Index: Integer): TIDEMenuItem;
   protected
     procedure SetMenuItem(const AValue: TMenuItem); override;
     procedure SetChildsAsSubMenu(const AValue: boolean); virtual;
     procedure SetSubMenuImages(const AValue: TCustomImageList); virtual;
     procedure ClearMenuItems; override;
+    procedure CreateChildMenuItems;
   public
     constructor Create(const TheName: string); override;
     destructor Destroy; override;
@@ -123,7 +125,9 @@ type
     procedure AddLast(AnItem: TIDEMenuItem);
     procedure Insert(Index: Integer; AnItem: TIDEMenuItem);
     procedure CreateChildMenuItem(Index: Integer); virtual;
-    function GetChildsStartIndex: Integer;
+    procedure CreateMenuItem; override;
+    function GetContainerIndex(BehindSeparator: boolean): Integer;
+    function GetChildContainerIndex(Index: integer): Integer;
     function Size: Integer; override;
     function IndexOf(AnItem: TIDEMenuItem): Integer;
     function NeedTopSeparator: Boolean;
@@ -255,7 +259,7 @@ function RegisterIDEMenuRoot(const Name: string; MenuItem: TMenuItem
   ): TIDEMenuSection;
 begin
   {$IFDEF VerboseMenuIntf}
-  debugln('RegisterIDEMenuRoot Name="',Name,'"');
+  //debugln('RegisterIDEMenuRoot Name="',Name,'"');
   {$ENDIF}
   Result:=TIDEMenuSection.Create(Name);
   IDEMenuRoots.RegisterMenuRoot(Result);
@@ -267,7 +271,7 @@ var
   Parent: TIDEMenuSection;
 begin
   {$IFDEF VerboseMenuIntf}
-  debugln('RegisterIDEMenuSection Path="',Path,'" Name="',Name,'"');
+  //debugln('RegisterIDEMenuSection Path="',Path,'" Name="',Name,'"');
   {$ENDIF}
   Parent:=IDEMenuRoots.FindByPath(Path,true) as TIDEMenuSection;
   Result:=TIDEMenuSection.Create(Name);
@@ -282,7 +286,7 @@ var
   Parent: TIDEMenuSection;
 begin
   {$IFDEF VerboseMenuIntf}
-  debugln('RegisterIDESubMenu Path="',Path,'" Name="',Name,'"');
+  //debugln('RegisterIDESubMenu Path="',Path,'" Name="',Name,'"');
   {$ENDIF}
   Parent:=IDEMenuRoots.FindByPath(Path,true) as TIDEMenuSection;
   Result:=TIDEMenuSection.Create(Name);
@@ -300,7 +304,7 @@ var
   Parent: TIDEMenuSection;
 begin
   {$IFDEF VerboseMenuIntf}
-  debugln('RegisterIDEMenuCommand Path="',Path,'" Name="',Name,'"');
+  //debugln('RegisterIDEMenuCommand Path="',Path,'" Name="',Name,'"');
   {$ENDIF}
   Parent:=IDEMenuRoots.FindByPath(Path,true) as TIDEMenuSection;
   Result:=TIDEMenuCommand.Create(Name);
@@ -428,7 +432,7 @@ begin
   FVisible:=true;
   FMenuItemClass:=TMenuItem;
   {$IFDEF VerboseMenuIntf}
-  debugln('TIDEMenuItem.Create ',dbgsName(Self),' Name="',Name,'"');
+  //debugln('TIDEMenuItem.Create ',dbgsName(Self),' Name="',Name,'"');
   {$ENDIF}
 end;
 
@@ -447,6 +451,9 @@ end;
 procedure TIDEMenuItem.CreateMenuItem;
 begin
   if FMenuItem<>nil then exit;
+  {$IFDEF VerboseMenuIntf}
+  //debugln('TIDEMenuItem.CreateMenuItem ',dbgsName(Self),' Name="',Name,'"');
+  {$ENDIF}
   MenuItem:=MenuItemClass.Create(nil);
 end;
 
@@ -486,6 +493,46 @@ begin
   for i:=0 to Count-1 do Items[i].MenuItem:=nil;
 end;
 
+procedure TIDEMenuSection.CreateChildMenuItems;
+var
+  i: Integer;
+  ContainerMenuItem: TMenuItem;
+  StartIndex: LongInt;
+begin
+  if FChildMenuItemsCreated then exit;
+  FChildMenuItemsCreated:=true;
+
+  ContainerMenuItem:=GetContainerMenuItem;
+  if (ContainerMenuItem=nil) then exit;
+
+  if ChildsAsSubMenu then
+    StartIndex:=0
+  else
+    StartIndex:=GetContainerIndex(false);
+
+  debugln('TIDEMenuSection.CreateChildMenuItems Name="',Name,'" Container="',ContainerMenuItem.Caption,'" ContainerMenuItem.Count=',dbgs(ContainerMenuItem.Count),' StartIndex=',dbgs(StartIndex),' Size=',dbgs(Size),' NeedTopSeparator=',dbgs(NeedTopSeparator),' NeedBottomSeparator=',dbgs(NeedBottomSeparator));
+
+  if NeedTopSeparator then begin
+    if (TopSeparator=nil) then begin
+      // create TopSeparator
+      FTopSeparator:=MenuItemClass.Create(nil);
+      FTopSeparator.Caption:='-';
+      debugln('TIDEMenuSection.CreateChildMenuItem Insert TopSeparator: Container="',ContainerMenuItem.Caption,'" ContainerMenuItem.Count=',dbgs(ContainerMenuItem.Count),' StartIndex=',dbgs(StartIndex));
+      ContainerMenuItem.Insert(StartIndex,FTopSeparator);
+    end;
+  end;
+
+  // create childs
+  for i:=0 to Count-1 do CreateChildMenuItem(i);
+
+  if NeedBottomSeparator and (BottomSeparator=nil) then begin
+    // create bottom separator
+    FBottomSeparator:=MenuItemClass.Create(nil);
+    FBottomSeparator.Caption:='-';
+    ContainerMenuItem.Insert(StartIndex+Size-1,FBottomSeparator);
+  end;
+end;
+
 constructor TIDEMenuSection.Create(const TheName: string);
 begin
   inherited Create(TheName);
@@ -506,6 +553,7 @@ var
 begin
   for i:=FItems.Count-1 downto 0 do TObject(FItems[i]).Free;
   FItems.Clear;
+  FChildMenuItemsCreated:=false;
 end;
 
 function TIDEMenuSection.Count: Integer;
@@ -534,63 +582,69 @@ end;
 procedure TIDEMenuSection.CreateChildMenuItem(Index: Integer);
 var
   Item: TIDEMenuItem;
-  SubSection: TIDEMenuSection;
-  i: Integer;
   ContainerMenuItem: TMenuItem;
   MenuIndex: Integer;
 begin
+  if not Visible then exit;
+  
   ContainerMenuItem:=GetContainerMenuItem;
   if (ContainerMenuItem=nil) then exit;
-
+  
   Item:=Items[Index];
   {$IFDEF VerboseMenuIntf}
-  debugln('TIDEMenuSection.CreateChildMenuItem ',dbgsName(Self),' Name=',Name,' Index=',dbgs(Index),' Item=',Item.Name,' Container=',ContainerMenuItem.Name);
+  //debugln('TIDEMenuSection.CreateChildMenuItem ',dbgsName(Self),' Name="',Name,'" Index=',dbgs(Index),' Item="',Item.Name,'" Container="',ContainerMenuItem.Caption,'"');
   {$ENDIF}
 
-  MenuIndex:=GetChildsStartIndex+Index;
-
-  if NeedTopSeparator then begin
-    if (TopSeparator=nil) then begin
-      // create TopSeparator
-      FTopSeparator:=MenuItemClass.Create(nil);
-      FTopSeparator.Caption:='-';
-      MenuItem.Insert(GetChildsStartIndex,FTopSeparator);
-    end;
-    inc(MenuIndex);
-  end;
-  
   // create the child TMenuItem
   Item.CreateMenuItem;
-  MenuItem.Insert(MenuIndex,Item.MenuItem);
+  if Item.MenuItem<>nil then begin
+    MenuIndex:=GetChildContainerIndex(Index);
+    debugln('TIDEMenuSection.CreateChildMenuItem Insert Item="',Item.Caption,'" ContainerMenuItem="',ContainerMenuItem.Caption,'" ContainerMenuItem.Count=',dbgs(ContainerMenuItem.Count),' MenuIndex=',dbgs(MenuIndex));
+    ContainerMenuItem.Insert(MenuIndex,Item.MenuItem);
+  end;
   // create the subsections
   if Item is TIDEMenuSection then begin
-    SubSection:=TIDEMenuSection(Item);
-    for i:=0 to SubSection.Count-1 do
-      SubSection.CreateChildMenuItem(i);
-  end;
-  
-  if (Index=Count-1) and NeedBottomSeparator and (BottomSeparator=nil) then
-  begin
-    // create bottom separator
-    FBottomSeparator:=MenuItemClass.Create(nil);
-    FBottomSeparator.Caption:='-';
-    MenuItem.Insert(MenuIndex+1,FBottomSeparator);
+    TIDEMenuSection(Item).CreateChildMenuItems;
   end;
 end;
 
-function TIDEMenuSection.GetChildsStartIndex: Integer;
+procedure TIDEMenuSection.CreateMenuItem;
+begin
+  if ChildsAsSubMenu then
+    inherited CreateMenuItem;
+end;
+
+function TIDEMenuSection.GetContainerIndex(BehindSeparator: boolean): Integer;
 var
   SiblingIndex: Integer;
 begin
   Result:=0;
-  if ChildsAsSubMenu or (Section=nil) then exit;
+  if (Section=nil) then exit;
+
+  // get the start of the parent Section
+  if not Section.ChildsAsSubMenu then
+    inc(Result,Section.GetContainerIndex(true));
+  // add all siblings in front
   SiblingIndex:=0;
   while (Section[SiblingIndex]<>Self) do begin
     inc(Result,Section[SiblingIndex].Size);
     inc(SiblingIndex);
   end;
-  if not Section.ChildsAsSubMenu then
-    inc(Result,Section.GetChildsStartIndex);
+  // add separator
+  if BehindSeparator and NeedTopSeparator then
+    inc(Result);
+end;
+
+function TIDEMenuSection.GetChildContainerIndex(Index: integer): Integer;
+var
+  i: Integer;
+begin
+  if ChildsAsSubMenu then
+    Result:=0
+  else
+    Result:=GetContainerIndex(true);
+  for i:=0 to Index-1 do
+    inc(Result,Items[i].Size);
 end;
 
 function TIDEMenuSection.Size: Integer;
@@ -630,9 +684,9 @@ begin
   if (not ChildsAsSubMenu) and (Section<>nil)
   and (Section.Items[Section.Count-1]<>Self) then begin
     SelfIndex:=Section.IndexOf(Self);
-    NextSibling:=Section[SelfIndex-1];
+    NextSibling:=Section[SelfIndex+1];
     if (not (NextSibling is TIDEMenuSection))
-    or (not TIDEMenuSection(NextSibling).ChildsAsSubMenu) then begin
+    or (TIDEMenuSection(NextSibling).ChildsAsSubMenu) then begin
       // a bottom separator is needed
       Result:=true;
     end;
@@ -683,14 +737,16 @@ begin
 end;
 
 procedure TIDEMenuSection.SetMenuItem(const AValue: TMenuItem);
-var
-  i: Integer;
 begin
   if MenuItem=AValue then exit;
   inherited SetMenuItem(AValue);
   if MenuItem<>nil then begin
-    for i:=0 to Count-1 do CreateChildMenuItem(i);
-  end;
+    {$IFDEF VerboseMenuIntf}
+    //debugln('TIDEMenuItem.SetMenuItem ',dbgsName(Self),' Name=',Name,' Count=',dbgs(Count));
+    {$ENDIF}
+    CreateChildMenuItems;
+  end else
+    FChildMenuItemsCreated:=false;
 end;
 
 procedure TIDEMenuSection.SetChildsAsSubMenu(const AValue: boolean);
