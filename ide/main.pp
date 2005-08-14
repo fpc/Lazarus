@@ -6705,8 +6705,8 @@ begin
     end;
 
     // add success message
-    MessagesView.AddMsg(
-         Format(lisProjectSuccessfullyBuilt, ['"', Project1.Title, '"']),'',-1);
+    MessagesView.AddMsg(Format(lisProjectSuccessfullyBuilt, ['"',
+                                        Project1.ShortDescription, '"']),'',-1);
 
   finally
     // check sources

@@ -498,6 +498,7 @@ type
     function GetFileCount: integer; virtual; abstract;
     procedure AddSrcPath(const SrcPathAddition: string); virtual; abstract;
     procedure AddPackageDependency(const PackageName: string); virtual; abstract;
+    function ShortDescription: string;
   public
     property MainFileID: Integer read GetMainFileID write SetMainFileID;
     property Files[Index: integer]: TLazProjectFile read GetFiles write SetFiles;
@@ -947,6 +948,14 @@ end;
 constructor TLazProject.Create(ProjectDescription: TProjectDescriptor);
 begin
   inherited Create;
+end;
+
+function TLazProject.ShortDescription: string;
+begin
+  if Title<>'' then
+    Result:=Title
+  else
+    Result:=ExtractFileNameOnly(ProjectInfoFile);
 end;
 
 { TLazProjectFile }
