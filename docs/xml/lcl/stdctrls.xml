@@ -4552,19 +4552,19 @@ radio buttons will be mutually exclusive within the group.</descr>
       <element name="TLabel">
         <short>Label</short>
         <descr>Label: a brief text label to be placed in the Form near any object that needs to be identified.
-<b/>
+<br/>
 Can also be used for displaying text messages, eg
-<b/>
-... <b/>
-  Label.Caption := 'Please select one of these options'; <b/>
-... <b/>
+<br/>
+... <br/>
+  Label.Caption := 'Please select one of these options'; <br/>
+... <br/>
 
-or the message may be changed dynamically, eg <b/>
+or the message may be changed dynamically, eg <br/>
 
-  var Lies: boolean; <b/>
-... <b/>
-  if (Lies=true) then Label.caption := 'Lies are true'  <b/>
-  else Label.caption := 'Lies are false'; <b/>
+  var Lies: boolean; <br/>
+... <br/>
+  if (Lies=true) then Label.caption := 'Lies are true'  <br/>
+  else Label.caption := 'Lies are false'; <br/>
 ...</descr>
       </element>
       <!-- property Visibility: published -->
@@ -5042,7 +5042,7 @@ and which usually has an informative caption. It is designed to be pressed or se
       <!-- object Visibility: default -->
       <element name="TCheckBox">
         <short>Check Box</short>
-        <descr>Check Box: a small box which can contain a check mark to indicate that it has been selected by a mouse click. May be associated with a Caption that describes its function. <b/>
+        <descr>Check Box: a small box which can contain a check mark to indicate that it has been selected by a mouse click. May be associated with a Caption that describes its function. <br/>
 Toggles between being checked and unchecked on successive clicks of the mouse, and usually initiates some action associated with OnChecked.</descr>
       </element>
       <!-- procedure Visibility: protected -->
