@@ -41,7 +41,7 @@ for unit in $UnitList; do
   echo ../${PasSrcDir}$unit -Fi../${PasSrcDir}include >> $CurInputFileList
 done
 
-FPDocParams='--content=lcl.cnt --package=lcl --format=html'
+FPDocParams="--content=lcl.cnt --package=lcl --descr=../${XMLSrcDir}lcl.xml --format=html"
 if [ -n "$FPDocFooter" ]; then
   FPDocParams="$FPDocParams --footer=$FPDocFooter"
 fi
