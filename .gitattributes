@@ -590,6 +590,7 @@ docs/xml/lcl/interfaces/gtk/gtkwstoolwin.xml svneol=native#text/xml
 docs/xml/lcl/interfaces/gtk/interfaces.xml svneol=native#text/xml
 docs/xml/lcl/intfgraphics.xml svneol=native#text/xml
 docs/xml/lcl/lazlinkedlist.xml svneol=native#text/xml
+docs/xml/lcl/lcl.xml svneol=native#text/plain
 docs/xml/lcl/lclclasses.xml svneol=native#text/xml
 docs/xml/lcl/lclintf.xml svneol=native#text/xml
 docs/xml/lcl/lclmemmanager.xml svneol=native#text/xml

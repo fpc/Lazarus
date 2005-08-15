@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ISO8859-1"?>
+<fpdoc-descriptions>
+<package name="lcl">
+<short>Lazarus Component Library</short>
+<descr>
+<p>
+The Lazarus Component Library is a set of visual components to create gui applications.
+</p>
+</descr>
+</package>
+</fpdoc-descriptions>
