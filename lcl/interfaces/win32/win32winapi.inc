@@ -1690,28 +1690,36 @@ begin
   Windows.DeleteObject(hMemBitmap);
 end;
 
-procedure TWin32WidgetSet.AllocAndCopy(const BitmapInfo: Windows.TBitmap; const SrcRect: TRect; var Data: PByte; var Size: Cardinal);
+procedure TWin32WidgetSet.AllocAndCopy(const BitmapInfo: Windows.TBitmap; 
+  const BitmapHandle: HBITMAP; const SrcRect: TRect; var Data: PByte; 
+  var Size: Cardinal);
 var
-  SrcLine, DestLine: PByte;
-  LineLen: Cardinal;
-  I: Integer;
+  bmInfo: TBitmapInfo;
+  ScreenDC: HDC;
 begin
+  // initialize bitmapinfo structure
+  bmInfo.bmiHeader.biSize := sizeof(bmInfo.bmiHeader);
+  bmInfo.bmiHeader.biWidth := BitmapInfo.bmWidth;
+  bmInfo.bmiHeader.biHeight := BitmapInfo.bmHeight;
+  // request a top-down DIB
+  if bmInfo.bmiHeader.biHeight > 0 then
+    bmInfo.bmiHeader.biHeight := -bmInfo.bmiHeader.biHeight;
+  bmInfo.bmiHeader.biPlanes := 1;
+  bmInfo.bmiHeader.biBitCount := BitmapInfo.bmBitsPixel;
+  bmInfo.bmiHeader.biCompression := BI_RGB;
+  ScreenDC := GetDC(0);
   // allocate memory for pixel data, N scanlines
-  Size := (SrcRect.Bottom-SrcRect.Top)*BitmapInfo.bmWidthBytes;
-  GetMem(Data, Size);
-  // copy lines
-  if BitmapInfo.bmBits <> nil then
+  if GetDIBits(ScreenDC, BitmapHandle, SrcRect.Top, SrcRect.Bottom-SrcRect.Top, nil, bmInfo, DIB_RGB_COLORS) <> 0 then
   begin
-    SrcLine := BitmapInfo.bmBits + SrcRect.Top*BitmapInfo.bmWidthBytes + SrcRect.Left*BitmapInfo.bmBitsPixel;
-    DestLine := Data;
-    LineLen := (SrcRect.Right-SrcRect.Left)*BitmapInfo.bmBitsPixel;
-    for I := SrcRect.Top to SrcRect.Bottom - 1 do
-    begin
-      Move(SrcLine^, DestLine^, LineLen);
-      Inc(SrcLine, BitmapInfo.bmWidthBytes);
-      Inc(DestLine, LineLen);
-    end;
+    Size := bmInfo.bmiHeader.biSizeImage;
+    GetMem(Data, Size);
+    GetDIBits(ScreenDC, BitmapHandle, SrcRect.Top, SrcRect.Bottom-SrcRect.Top, Data, bmInfo, DIB_RGB_COLORS);
+  end else begin
+    Data := nil;
+    Size := 0;
   end;
+  // release resources
+  ReleaseDC(0, ScreenDC);
 end;
 
 function TWin32WidgetSet.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP; const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
@@ -1735,7 +1743,7 @@ begin
     ARect.Right := BitmapInfo.bmWidth;
 
   // copy bitmap
-  AllocAndCopy(BitmapInfo, ARect, NewRawImage.Data, NewRawImage.DataSize);
+  AllocAndCopy(BitmapInfo, SrcBitmap, ARect, NewRawImage.Data, NewRawImage.DataSize);
 
   // check mask
   if SrcMaskBitmap <> 0 then
@@ -1743,7 +1751,7 @@ begin
     Result := Windows.GetObject(SrcMaskBitmap, SizeOf(BitmapInfo), @BitmapInfo) > 0;
     if not Result then exit;
 
-    AllocAndCopy(BitmapInfo, ARect, NewRawImage.Mask, NewRawImage.MaskSize);
+    AllocAndCopy(BitmapInfo, SrcMaskBitmap, ARect, NewRawImage.Mask, NewRawImage.MaskSize);
     NewRawImage.Description.AlphaSeparate := true;
   end;
 end;
