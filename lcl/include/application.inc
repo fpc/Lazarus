@@ -36,7 +36,7 @@ end;
 function GetHintControl(Control: TControl): TControl;
 begin
   Result := Control;
-  while (Result <> nil) and (not Result.ShowHint) do
+  while (Result <> nil) and (not (Result.ShowHint and Result.Enabled)) do
     Result := Result.Parent;
   if (Result <> nil)
   and ([csDesigning,csDestroying,csLoading]*Result.ComponentState<>[]) then

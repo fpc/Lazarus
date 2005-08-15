@@ -1210,7 +1210,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TControl.DoOnShowHint(var HintInfo: THintInfo);
+  procedure TControl.DoOnShowHint(HintInfo: Pointer);
 ------------------------------------------------------------------------------}
 procedure TControl.DoOnShowHint(HintInfo: Pointer);
 begin
