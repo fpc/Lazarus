@@ -749,6 +749,7 @@ type
     function GetCurrentModalForm: TCustomForm;
     function GetCurrentModalFormZIndex: Integer;
     function CustomFormBelongsToActiveGroup(AForm: TCustomForm): Boolean;
+    function FindForm(const FormName: string): TCustomForm;
     procedure UpdateScreen;
     // handler
     procedure AddHandlerFormAdded(OnFormAdded: TScreenFormEvent;

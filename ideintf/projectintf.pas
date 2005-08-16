@@ -412,7 +412,7 @@ type
   
   TProjectFlag = (
     pfSaveClosedUnits,     // save info about closed files (not part of project)
-    pfSaveOnlyProjectUnits, // save no info about foreign files
+    pfSaveOnlyProjectUnits, // save no info about foreign files (not part of project)
     pfMainUnitIsPascalSource,// main unit is pascal, even it does not end in .pas/.pp
     pfMainUnitHasUsesSectionForAllUnits,// add/remove pascal units to main uses section
     pfMainUnitHasCreateFormStatements,// add/remove Application.CreateForm statements
@@ -420,6 +420,14 @@ type
     pfRunnable // project can be run
     );
   TProjectFlags = set of TProjectFlag;
+  
+  TProjectSessionStorage = (
+     pssInProjectInfo, // save session info in .lpi file
+     pssInProjectDir, // save session info in .lps file in project directory
+     pssInIDEConfig, // save session info in IDE config directory
+     pssNone         // do not save any session info
+    );
+  TProjectSessionStorages = set of TProjectSessionStorage;
 
   { TProjectDescriptor
     - to show an option dialog to the user override the DoInitDescriptor
@@ -449,7 +457,8 @@ type
     function CreateStartFiles(AProject: TLazProject): TModalResult; virtual;
   public
     property Name: string read FName write SetName;
-    property VisibleInNewDialog: boolean read FVisibleInNewDialog write FVisibleInNewDialog;
+    property VisibleInNewDialog: boolean read FVisibleInNewDialog
+                                         write FVisibleInNewDialog;
     property Flags: TProjectFlags read FFlags write SetFlags;
     property DefaultExt: string read FDefaultExt write FDefaultExt;
   end;
@@ -476,6 +485,7 @@ type
   private
     FLazCompilerOptions: TLazCompilerOptions;
     fTitle: String;
+    FSessionStorage: TProjectSessionStorage;
   protected
     FFlags: TProjectFlags;
     procedure SetLazCompilerOptions(const AValue: TLazCompilerOptions);
@@ -488,6 +498,7 @@ type
     procedure SetFlags(const AValue: TProjectFlags); virtual;
     function GetProjectInfoFile: string; virtual; abstract;
     procedure SetProjectInfoFile(const NewFilename: string); virtual; abstract;
+    procedure SetSessionStorage(const AValue: TProjectSessionStorage); virtual;
   public
     constructor Create(ProjectDescription: TProjectDescriptor); virtual;
     function CreateProjectFile(const Filename: string
@@ -510,6 +521,8 @@ type
                                                      write SetLazCompilerOptions;
     property ProjectInfoFile: string
                                read GetProjectInfoFile write SetProjectInfoFile;
+    property SessionStorage: TProjectSessionStorage read FSessionStorage
+                                                    write SetSessionStorage;
   end;
   TLazProjectClass = class of TLazProject;
 
@@ -555,8 +568,16 @@ const
       'MainUnitHasTitleStatement',
       'Runnable'
     );
+    
+  ProjectSessionStorageNames: array[TProjectSessionStorage] of string = (
+    'InProjectInfo',
+    'InProjectDir',
+    'InIDEConfig',
+    'None'
+    );
 
 function ProjectFlagsToStr(Flags: TProjectFlags): string;
+function StrToProjectSessionStorage(const s: string): TProjectSessionStorage;
 
 
 procedure RegisterProjectFileDescriptor(FileDesc: TProjectFileDescriptor);
@@ -649,6 +670,13 @@ begin
       Result:=Result+ProjectFlagNames[f];
     end;
   end;
+end;
+
+function StrToProjectSessionStorage(const s: string): TProjectSessionStorage;
+begin
+  for Result:=Low(TProjectSessionStorage) to High(TProjectSessionStorage) do
+    if CompareText(s,ProjectSessionStorageNames[Result])=0 then exit;
+  Result:=pssInProjectInfo;
 end;
 
 { TProjectFileDescriptor }
@@ -933,6 +961,12 @@ begin
   FFlags:=AValue;
 end;
 
+procedure TLazProject.SetSessionStorage(const AValue: TProjectSessionStorage);
+begin
+  if FSessionStorage=AValue then exit;
+  FSessionStorage:=AValue;
+end;
+
 procedure TLazProject.SetLazCompilerOptions(const AValue: TLazCompilerOptions);
 begin
   if FLazCompilerOptions=AValue then exit;
@@ -948,6 +982,7 @@ end;
 constructor TLazProject.Create(ProjectDescription: TProjectDescriptor);
 begin
   inherited Create;
+  FSessionStorage:=pssInProjectInfo;
 end;
 
 function TLazProject.ShortDescription: string;

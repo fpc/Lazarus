@@ -27,10 +27,13 @@ const
 
 function FindApplicationComponent(const ComponentName: string): TComponent;
 begin
-  if Application.FindGlobalComponentEnabled then
-    Result:=Application.FindComponent(ComponentName)
-  else
+  if Application.FindGlobalComponentEnabled then begin
+    Result:=Application.FindComponent(ComponentName);
+    if Result=nil then
+      Result:=Screen.FindForm(ComponentName);
+  end else
     Result:=nil;
+  //debugln('FindApplicationComponent ComponentName="',ComponentName,'" Result=',DbgSName(Result));
 end;
 
 function GetHintControl(Control: TControl): TControl;

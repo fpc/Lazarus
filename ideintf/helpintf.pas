@@ -612,6 +612,8 @@ type
   protected
     procedure SetBasePath(const AValue: string); virtual;
   public
+    constructor Create;
+    constructor Create(const TheBasePath: string);
     property BasePath: string read FBasePath write SetBasePath;
   end;
   
@@ -2293,6 +2295,16 @@ procedure THelpBasePathObject.SetBasePath(const AValue: string);
 begin
   if FBasePath=AValue then exit;
   FBasePath:=AValue;
+end;
+
+constructor THelpBasePathObject.Create;
+begin
+
+end;
+
+constructor THelpBasePathObject.Create(const TheBasePath: string);
+begin
+  BasePath:=TheBasePath;
 end;
 
 { THelpDBIRegExprMessage }

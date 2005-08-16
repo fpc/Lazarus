@@ -168,7 +168,7 @@ type
     procedure ImproveUnitNameCache(const NewUnitName: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure UpdateUsageCount(Min, IfBelowThis, IncIfBelow: extended);
-    procedure UpdateUsageCount(TheUsage: TUnitUsage; Factor: extended);
+    procedure UpdateUsageCount(TheUsage: TUnitUsage; const Factor: extended);
 
     procedure SetSourceText(const SourceText: string); override;
     function GetSourceText: string; override;
@@ -977,7 +977,8 @@ begin
   if fUsageCount<Min then fUsageCount:=Min;
 end;
 
-procedure TUnitInfo.UpdateUsageCount(TheUsage: TUnitUsage; Factor: extended);
+procedure TUnitInfo.UpdateUsageCount(TheUsage: TUnitUsage;
+  const Factor: extended);
 begin
   case TheUsage of
   uuIsPartOfProject: UpdateUsageCount(20,200,2*Factor);
@@ -1343,9 +1344,10 @@ begin
       xmlconfig.SetValue(Path+'PathDelim/Value',PathDelim);
       xmlconfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
       SaveFlags;
+      xmlconfig.SetDeleteValue(Path+'General/SessionStorage/Value',
+                               ProjectSessionStorageNames[SessionStorage],
+                               ProjectSessionStorageNames[pssInProjectInfo]);
       xmlconfig.SetDeleteValue(Path+'General/MainUnit/Value', MainUnitID,-1);
-      xmlconfig.SetDeleteValue(Path+'General/ActiveEditorIndexAtStart/Value'
-          ,ActiveEditorIndexAtStart,-1);
       xmlconfig.SetDeleteValue(Path+'General/AutoCreateForms/Value'
           ,AutoCreateForms,true);
       xmlconfig.SetDeleteValue(Path+'General/IconPath/Value',
@@ -1353,11 +1355,6 @@ begin
       xmlconfig.SetValue(Path+'General/TargetFileExt/Value'
           ,TargetFileExt);
       xmlconfig.SetDeleteValue(Path+'General/Title/Value', Title,'');
-      if (not (pfSaveOnlyProjectUnits in Flags))
-      and (not (pwfSkipJumpPoints in ProjectWriteFlags)) then begin
-        fJumpHistory.DeleteInvalidPositions;
-        fJumpHistory.SaveToXMLConfig(xmlconfig,Path);
-      end;
 
       SaveUnits;
 
@@ -1374,6 +1371,16 @@ begin
       SavePkgDependencyList(XMLConfig,Path+'RequiredPackages/',
         FFirstRequiredDependency,pdlRequires);
         
+      // save session info
+      xmlconfig.SetDeleteValue(Path+'General/ActiveEditorIndexAtStart/Value',
+                               ActiveEditorIndexAtStart,-1);
+
+      if (not (pfSaveOnlyProjectUnits in Flags))
+      and (not (pwfSkipJumpPoints in ProjectWriteFlags)) then begin
+        fJumpHistory.DeleteInvalidPositions;
+        fJumpHistory.SaveToXMLConfig(xmlconfig,Path);
+      end;
+
       if Assigned(OnSaveProjectInfo) then
         OnSaveProjectInfo(Self,XMLConfig,ProjectWriteFlags);
 
@@ -1517,16 +1524,16 @@ begin
       FileVersion:= XMLConfig.GetValue(Path+'Version/Value',0);
       ReadOldProjectType;
       LoadFlags;
+      SessionStorage:=StrToProjectSessionStorage(
+                        XMLConfig.GetValue(Path+'General/SessionStorage/Value',
+                                 ProjectSessionStorageNames[pssInProjectInfo]));
       MainUnitID := xmlconfig.GetValue(Path+'General/MainUnit/Value', -1);
-      ActiveEditorIndexAtStart := xmlconfig.GetValue(
-         Path+'General/ActiveEditorIndexAtStart/Value', -1);
       AutoCreateForms := xmlconfig.GetValue(
          Path+'General/AutoCreateForms/Value', true);
       IconPath := xmlconfig.GetValue(Path+'General/IconPath/Value', './');
       TargetFileExt := xmlconfig.GetValue(
          Path+'General/TargetFileExt/Value', GetDefaultExecutableExt);
       Title := xmlconfig.GetValue(Path+'General/Title/Value', '');
-      fJumpHistory.LoadFromXMLConfig(xmlconfig,Path+'');
       if FileVersion<2 then
         OldSrcPath := xmlconfig.GetValue(Path+'General/SrcPath/Value','');
 
@@ -1558,6 +1565,11 @@ begin
       // load the dependencies
       LoadPkgDependencyList(XMLConfig,Path+'RequiredPackages/',
         FFirstRequiredDependency,pdlRequires,Self,true);
+
+      // load session info
+      ActiveEditorIndexAtStart := xmlconfig.GetValue(
+         Path+'General/ActiveEditorIndexAtStart/Value', -1);
+      fJumpHistory.LoadFromXMLConfig(xmlconfig,Path+'');
 
       if Assigned(OnLoadProjectInfo) then OnLoadProjectInfo(Self,XMLConfig);
 

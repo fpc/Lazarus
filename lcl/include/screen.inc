@@ -150,6 +150,16 @@ begin
   end;
 end;
 
+function TScreen.FindForm(const FormName: string): TCustomForm;
+var
+  i: Integer;
+begin
+  for i:=0 to FCustomForms.Count-1 do
+    if CompareText(TCustomForm(FCustomForms[i]).Name,FormName)=0 then
+      exit(TCustomForm(FCustomForms[i]));
+  Result:=nil;
+end;
+
 procedure TScreen.UpdateScreen;
 var
   DC: HDC;
@@ -322,8 +332,7 @@ var
 begin
   FCustomForms.Add(AForm);
   FCustomFormsZOrdered.Add(AForm);
-  if AForm is TForm then
-  begin
+  if AForm is TForm then begin
     FFormList.Add(AForm);
     Application.UpdateVisible;
   end;

@@ -126,13 +126,12 @@ const
   lihcRTLUnits = 'RTLUnits';
   lihcFCLUnits = 'FCLUnits';
   lihcLCLUnits = 'LCLUnits';
+  
+  lihBaseUrl = 'http://lazarus-ccr.sourceforge.net/docs/';
 
-  lihRTLURL = 'http://lazarus-ccr.sourceforge.net/docs/rtl/';
-  lihFCLURL = 'http://lazarus-ccr.sourceforge.net/docs/fcl/';
-  lihLCLURL = 'http://lazarus-ccr.sourceforge.net/docs/lcl/';
-  //lihRTLURL = 'http://www.freepascal.org/docs-html/rtl/';
-  //lihFCLURL = 'http://www.freepascal.org/docs-html/fcl/';
-  //lihLCLURL = 'http://www.freepascal.org/docs-html/lcl/';
+  lihRTLURL = lihBaseUrl+'rtl/';
+  lihFCLURL = lihBaseUrl+'fcl/';
+  lihLCLURL = lihBaseUrl+'lcl/';
 
 var
   HelpBoss: TBaseHelpManager;
@@ -353,8 +352,7 @@ procedure THelpManager.RegisterIDEHelpDatabases;
     FMainHelpDB:=HelpDatabases.CreateHelpDatabase(lihcStartPage,
                                                   THTMLHelpDatabase,true);
     HTMLHelp:=FMainHelpDB as THTMLHelpDatabase;
-    FMainHelpDBPath:=THelpBasePathObject.Create;
-    FMainHelpDBPath.BasePath:='$(LazarusDir)';
+    FMainHelpDBPath:=THelpBasePathObject.Create('$(LazarusDir)');
     HTMLHelp.BasePathObject:=FMainHelpDBPath;
 
     // HTML nodes for the IDE
