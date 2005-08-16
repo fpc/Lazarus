@@ -528,11 +528,6 @@ Begin
   Assert(False, Format('Trace:WindowProc - Window Value: $%S-%d; Msg Value: %S; WParam: $%S; LParam: $%S', [IntToHex(Window, 4), Window, WM_To_String(Msg), IntToHex(WParam, 4), IntToHex(LParam, 4)]));
 
   Case Msg Of
-    LM_MONTHCHANGED..LM_DAYCHANGED:
-    Begin
-      If lWinControl Is TCalendar Then
-        LMessage.Msg := Msg;
-    End;
     WM_ACTIVATE:
     Begin
       Case Lo(WParam) Of
@@ -1087,23 +1082,31 @@ Begin
     End;
     WM_NOTIFY:
     Begin
-      PLMsg:=@LMNotify;
-      With LMNotify Do
-      Begin
-        Msg := LM_NOTIFY;
-        IDCtrl := WParam;
-        NMHdr := PNMHDR(LParam);
-        With NMHdr^ do
-        case code of
-          TCN_SELCHANGING:
-            ShowHideTabPage(HWndFrom, False);
-          TCN_SELCHANGE:
-          begin
-            ShowHideTabPage(HWndFrom, True);
-            idFrom := Windows.SendMessage(HWndFrom, TCM_GETCURSEL, 0, 0);
+      if PNMHdr(LParam)^.code=MCN_SELCHANGE then begin
+        LMessage.Msg := LM_CHANGED;
+        WindowInfo := GetWindowInfo(PNMHdr(LParam)^.hwndFrom);
+        if WindowInfo^.WinControl<>nil then
+          lWinControl := WindowInfo^.WinControl;
+      end
+      else begin
+        PLMsg:=@LMNotify;
+        With LMNotify Do
+        Begin
+          Msg := LM_NOTIFY;
+          IDCtrl := WParam;
+          NMHdr := PNMHDR(LParam);
+          With NMHdr^ do
+          case code of
+            TCN_SELCHANGING:
+              ShowHideTabPage(HWndFrom, False);
+            TCN_SELCHANGE:
+            begin
+              ShowHideTabPage(HWndFrom, True);
+              idFrom := Windows.SendMessage(HWndFrom, TCM_GETCURSEL, 0, 0);
+            end;
           end;
-        end;
-      End;
+        End;
+      end;
     End;
     WM_PAINT:
     Begin

@@ -142,6 +142,10 @@ Const
   LVS_EX_SNAPTOGRID       = $00080000;
   LVS_EX_SIMPLESELECT     = $00100000;
   
+// for calendar control
+  MCN_FIRST               = (0-750);          // monthcal
+  MCN_SELCHANGE           = (MCN_FIRST + 1);
+  
 // missing listview macros
 function ListView_GetHeader(hwndLV: HWND): HWND;
 function ListView_GetExtendedListViewStyle(hwndLV: HWND): DWORD;

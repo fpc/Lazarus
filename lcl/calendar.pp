@@ -67,6 +67,7 @@ Type
     function GetDate: String;
     procedure SetDate(const AValue: String);
   protected
+    procedure LMChanged(var Message: TLMessage); message LM_CHANGED;
     procedure LMMonthChanged(var Message: TLMessage); message LM_MONTHCHANGED;
     procedure LMYearChanged(var Message: TLMessage); message LM_YEARCHANGED;
     procedure LMDayChanged(var Message: TLMessage); message LM_DAYCHANGED;
@@ -268,6 +269,23 @@ begin
   end else begin
     FPropsChanged:=true;
   end;
+end;
+
+procedure TCustomCalendar.LMChanged(var Message: TLMessage);
+var
+  NewDate: TDateTime;
+  OldDay, OldMonth, OldYear: word;
+  NewDay, NewMonth, NewYear: word;
+begin
+  NewDate := TWSCalendarClass(WidgetSetClass).GetDateTime(Self);
+  if (NewDate=FDate) then exit;
+  DecodeDate(NewDate, NewYear, NewMonth, NewDay);
+  DecodeDate(FDate, OldYear, OldMonth, OldDay);
+  FDate:= NewDate;
+  if (OldYear<>NewYear) and Assigned(OnYearChanged) then OnYearChanged(self);
+  if (OldMonth<>NewMonth) and Assigned(OnMonthChanged) then OnMonthChanged(self);
+  if (OldDay<>NewDay) and Assigned(OnDayChanged) then OnDayChanged(self);
+  if Assigned(OnChange) then OnChange(self);
 end;
 
 procedure TCustomCalendar.LMDAYChanged(var Message: TLMessage);
