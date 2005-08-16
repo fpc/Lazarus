@@ -1790,15 +1790,14 @@ var
 begin
   Position := Stream.Position;
   Stream.Read(Size, 4); // Beware BigEndian and LowEndian sytems
-  {$IFDEF FPC_BIG_ENDIAN}
-  Size := LEtoN(Size);
-  {$ENDIF}
   if CompareMem(@Size,@IconSignature,4) then begin
     // Assume Icon - stream without explicit size
     Stream.Position := Position;
     ReadStream(Stream, false, Size);
-  end else
+  end else begin
+    Size := LEtoN(Size);
     ReadStream(Stream, true, Size);
+  end;
 end;
 
 procedure TIcon.InitFPImageReader(ImgReader: TFPCustomImageReader);
