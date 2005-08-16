@@ -3,26 +3,27 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
   ClientHeight = 345
   ClientWidth = 502
   OnCreate = CleanDirectoryDialogCreate
-  HorzScrollBar.Page = 503
-  VertScrollBar.Page = 346
+  PixelsPerInch = 96
+  HorzScrollBar.Page = 501
+  VertScrollBar.Page = 344
   Left = 316
   Height = 345
   Top = 212
   Width = 502
   object OkButton: TButton
+    BorderSpacing.OnChange = nil
     Caption = 'Ok'
-    TabStop = True
-    TabOrder = 0
     OnClick = OkButtonClick
+    TabOrder = 0
     Left = 128
     Height = 25
     Top = 312
     Width = 97
   end
   object CancelButton: TButton
-    ModalResult = 2
+    BorderSpacing.OnChange = nil
     Caption = 'Cancel'
-    TabStop = True
+    ModalResult = 2
     TabOrder = 1
     Left = 269
     Height = 25
@@ -30,9 +31,10 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     Width = 97
   end
   object DirGroupbox: TGroupBox
-    Anchors = [AKTOP, AKLEFT, AKRIGHT]
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.OnChange = nil
     Caption = 'Directory'
-    ClientHeight = 63
+    ClientHeight = 62
     ClientWidth = 482
     ParentColor = True
     ParentCtl3D = False
@@ -42,25 +44,22 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     Top = 8
     Width = 486
     object DirCombobox: TComboBox
-      Anchors = [AKTOP, AKLEFT, AKRIGHT]
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.OnChange = nil
       MaxLength = 0
       ParentCtl3D = False
       TabOrder = 0
-      TabStop = True
       Text = 'DirCombobox'
       Left = 6
-      Height = 25
+      Height = 21
       Top = 9
       Width = 468
     end
     object SubDirsCheckbox: TCheckBox
-      AllowGrayed = True
-      Anchors = [AKTOP, AKLEFT, AKRIGHT]
-      AutoSize = True
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.OnChange = nil
       Caption = 'Clean sub directories'
-      DragCursor = 65524
       TabOrder = 1
-      TabStop = True
       Left = 6
       Height = 20
       Top = 39
@@ -68,9 +67,10 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     end
   end
   object RemoveGroupbox: TGroupBox
-    Anchors = [AKTOP, AKLEFT, AKRIGHT]
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.OnChange = nil
     Caption = 'Remove files matching filter:'
-    ClientHeight = 68
+    ClientHeight = 67
     ClientWidth = 482
     ParentColor = True
     ParentCtl3D = False
@@ -80,24 +80,21 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     Top = 96
     Width = 486
     object RemoveCombobox: TComboBox
-      Anchors = [AKTOP, AKLEFT, AKRIGHT]
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.OnChange = nil
       MaxLength = 0
       ParentCtl3D = False
       TabOrder = 0
-      TabStop = True
       Text = 'RemoveCombobox'
       Left = 6
-      Height = 25
+      Height = 21
       Top = 8
       Width = 468
     end
     object SimpleSyntaxRemoveCheckbox: TCheckBox
-      AllowGrayed = True
-      AutoSize = True
+      BorderSpacing.OnChange = nil
       Caption = 'Simple syntax (e.g. * instead of .*)'
-      DragCursor = 65524
       TabOrder = 1
-      TabStop = True
       Left = 6
       Height = 20
       Top = 37
@@ -105,9 +102,10 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     end
   end
   object KeepGroupbox: TGroupBox
-    Anchors = [AKTOP, AKLEFT, AKRIGHT]
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.OnChange = nil
     Caption = 'Keep files matching filter:'
-    ClientHeight = 89
+    ClientHeight = 88
     ClientWidth = 482
     ParentColor = True
     ParentCtl3D = False
@@ -117,36 +115,30 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     Top = 190
     Width = 486
     object KeepCombobox: TComboBox
-      Anchors = [AKTOP, AKLEFT, AKRIGHT]
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.OnChange = nil
       MaxLength = 0
       ParentCtl3D = False
       TabOrder = 0
-      TabStop = True
       Text = 'KeepCombobox'
       Left = 6
-      Height = 25
+      Height = 21
       Top = 8
       Width = 468
     end
     object SimpleSyntaxKeepCheckbox: TCheckBox
-      AllowGrayed = True
-      AutoSize = True
+      BorderSpacing.OnChange = nil
       Caption = 'Simple syntax (e.g. * instead of .*)'
-      DragCursor = 65524
       TabOrder = 1
-      TabStop = True
       Left = 6
       Height = 20
       Top = 35
       Width = 468
     end
     object KeepTextFilesCheckbox: TCheckBox
-      AllowGrayed = True
-      AutoSize = True
+      BorderSpacing.OnChange = nil
       Caption = 'Keep Text Files'
-      DragCursor = 65524
       TabOrder = 2
-      TabStop = True
       Left = 6
       Height = 20
       Top = 61

@@ -1,77 +1,78 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TBuildFileDialog','FORMDATA',[
-  'TPF0'#16'TBuildFileDialog'#15'BuildFileDialog'#7'Caption'#6#15'BuildFileDial'
-  +'og'#12'ClientHeight'#3'X'#1#11'ClientWidth'#3#158#1#10'KeyPreview'#9#8'OnCr'
-  +'eate'#7#21'BuildFileDialogCREATE'#9'OnKeyDown'#7#22'BuildFileDialogKEYDOWN'
-  +#8'Position'#7#14'POSCREENCENTER'#18'HorzScrollBar.Page'#3#159#1#18'VertScro'
-  +'llBar.Page'#3'Y'#1#4'Left'#3'P'#1#6'Height'#3'X'#1#3'Top'#3#221#0#5'Width'#3
-  +#158#1#0#7'TButton'#8'OkButton'#7'Anchors'#11#6'AKLEFT'#8'AKBOTTOM'#0#7'Capt'
-  +'ion'#6#2'Ok'#7'TabStop'#9#8'TabOrder'#2#0#7'OnClick'#7#13'OkButtonCLICK'#4
-  +'Left'#2'j'#6'Height'#2#25#3'Top'#3'6'#1#5'Width'#2'K'#0#0#7'TButton'#12'Can'
-  +'celButton'#7'Anchors'#11#6'AKLEFT'#8'AKBOTTOM'#0#11'ModalResult'#2#2#7'Capt'
-  +'ion'#6#6'Cancel'#7'TabStop'#9#8'TabOrder'#2#1#4'Left'#3#234#0#6'Height'#2#25
-  +#3'Top'#3'6'#1#5'Width'#2'K'#0#0#9'TNotebook'#9'Notebook1'#5'Align'#7#5'ALTO'
-  +'P'#7'Anchors'#11#5'AKTOP'#6'AKLEFT'#7'AKRIGHT'#8'AKBOTTOM'#0#9'PageIndex'#2
-  +#2#6'Height'#3'0'#1#5'Width'#3#158#1#0#5'TPage'#11'GeneralPage'#7'Caption'#6
-  +#7'Options'#11'ClientWidth'#3#154#1#12'ClientHeight'#3#18#1#4'Left'#2#2#6'He'
-  +'ight'#3#18#1#3'Top'#2#28#5'Width'#3#154#1#0#9'TGroupBox'#24'WhenFileIsActiv'
-  +'eGroupbox'#7'Caption'#6'-When this file is active in source editor ...'#12
-  +'ClientHeight'#2'@'#11'ClientWidth'#3#141#1#11'ParentColor'#9#11'ParentCtl3D'
-  +#8#8'TabOrder'#2#0#4'Left'#2#6#6'Height'#2'Q'#3'Top'#2#12#5'Width'#3#145#1#0
-  +#9'TCheckBox'#28'OverrideBuildProjectCheckbox'#11'AllowGrayed'#9#8'AutoSize'
-  +#9#7'Caption'#6'7On build project execute the Build File command instead'#10
-  +'DragCursor'#4#244#255#0#0#8'TabOrder'#2#0#7'TabStop'#9#4'Left'#2#6#6'Height'
-  +#2#20#3'Top'#2#9#5'Width'#3#128#1#0#0#9'TCheckBox'#26'OverrideRunProjectChec'
-  +'kbox'#11'AllowGrayed'#9#8'AutoSize'#9#7'Caption'#6'3On run project execute '
-  +'the Run File command instead'#10'DragCursor'#4#244#255#0#0#8'TabOrder'#2#1#7
-  +'TabStop'#9#4'Left'#2#6#6'Height'#2#20#3'Top'#2'!'#5'Width'#3#128#1#0#0#0#0#5
-  +'TPage'#9'BuildPage'#7'Caption'#6#5'Build'#11'ClientWidth'#3#154#1#12'Client'
-  +'Height'#3#18#1#8'OnResize'#7#15'BuildPageRESIZE'#4'Left'#2#2#6'Height'#3#18
-  +#1#3'Top'#2#28#5'Width'#3#154#1#0#9'TGroupBox'#20'BuildCommandGroupbox'#7'An'
-  +'chors'#11#5'AKTOP'#6'AKLEFT'#7'AKRIGHT'#0#7'Caption'#6#13'Build Command'#12
-  +'ClientHeight'#2'5'#11'ClientWidth'#3#142#1#11'ParentColor'#9#11'ParentCtl3D'
-  +#8#8'TabOrder'#2#0#4'Left'#2#4#6'Height'#2'F'#3'Top'#2'4'#5'Width'#3#146#1#0
-  +#5'TMemo'#16'BuildCommandMemo'#5'Align'#7#8'ALCLIENT'#13'Lines.Strings'#1#6
-  +#18'CompileCommandMemo'#0#7'Tabstop'#9#7'TabStop'#9#8'TabOrder'#2#0#6'Height'
-  +#2'5'#5'Width'#3#142#1#0#0#0#9'TCheckBox'#26'BuildScanForFPCMsgCheckbox'#11
-  +'AllowGrayed'#9#7'Anchors'#11#5'AKTOP'#6'AKLEFT'#7'AKRIGHT'#0#8'AutoSize'#9#7
-  +'Caption'#6#21'Scan for FPC messages'#10'DragCursor'#4#244#255#0#0#8'TabOrde'
-  +'r'#2#1#7'TabStop'#9#4'Left'#2#10#6'Height'#2#20#3'Top'#2'z'#5'Width'#3#132#1
-  +#0#0#9'TCheckBox'#27'BuildScanForMakeMsgCheckbox'#11'AllowGrayed'#9#7'Anchor'
-  +'s'#11#5'AKTOP'#6'AKLEFT'#7'AKRIGHT'#0#8'AutoSize'#9#7'Caption'#6#22'Scan fo'
-  +'r Make messages'#10'DragCursor'#4#244#255#0#0#8'TabOrder'#2#2#7'TabStop'#9#4
-  +'Left'#2#10#6'Height'#2#20#3'Top'#3#146#0#5'Width'#3#132#1#0#0#9'TGroupBox'
-  +#23'BuildWorkingDirGroupbox'#7'Caption'#6'-Working directory (Leave empty fo'
-  +'r file path)'#12'ClientHeight'#2#31#11'ClientWidth'#3#142#1#11'ParentColor'
-  +#9#11'ParentCtl3D'#8#8'TabOrder'#2#3#4'Left'#2#4#6'Height'#2'0'#3'Top'#2#4#5
-  +'Width'#3#146#1#0#9'TComboBox'#20'BuildWorkDirCombobox'#7'Anchors'#11#5'AKTO'
-  +'P'#6'AKLEFT'#7'AKRIGHT'#0#9'MaxLength'#2#0#11'ParentCtl3D'#8#8'TabOrder'#2#0
-  +#7'TabStop'#9#4'Text'#6#20'BuildWorkDirCombobox'#6'Height'#2#25#5'Width'#3'p'
-  +#1#0#0#7'TButton'#24'BuildBrowseWorkDirButton'#7'Anchors'#11#5'AKTOP'#7'AKRI'
-  +'GHT'#0#7'Caption'#6#3'...'#7'TabStop'#9#8'TabOrder'#2#1#7'OnClick'#7#29'Bui'
-  +'ldBrowseWorkDirButtonCLICK'#4'Left'#3'p'#1#6'Height'#2#23#5'Width'#2#24#0#0
-  +#0#0#5'TPage'#7'RunPage'#7'Caption'#6#3'Run'#11'ClientWidth'#3#154#1#12'Clie'
-  +'ntHeight'#3#18#1#8'OnResize'#7#13'RunPageRESIZE'#4'Left'#2#2#6'Height'#3#18
-  +#1#3'Top'#2#28#5'Width'#3#154#1#0#9'TCheckBox'#26'AlwaysCompileFirstCheckbox'
-  +#11'AllowGrayed'#9#7'Anchors'#11#5'AKTOP'#6'AKLEFT'#7'AKRIGHT'#0#8'AutoSize'
-  +#9#7'Caption'#6#23'Always Build before Run'#10'DragCursor'#4#244#255#0#0#8'T'
-  +'abOrder'#2#0#7'TabStop'#9#4'Left'#2#10#6'Height'#2#20#3'Top'#2#4#5'Width'#3
-  +#136#1#0#0#9'TGroupBox'#18'RunCommandGroupbox'#7'Anchors'#11#5'AKTOP'#6'AKLE'
-  +'FT'#7'AKRIGHT'#0#7'Caption'#6#11'Run Command'#12'ClientHeight'#2'5'#11'Clie'
-  +'ntWidth'#3#144#1#11'ParentColor'#9#11'ParentCtl3D'#8#8'TabOrder'#2#1#4'Left'
-  +#2#4#6'Height'#2'F'#3'Top'#2'\'#5'Width'#3#148#1#0#5'TMemo'#14'RunCommandMem'
-  +'o'#5'Align'#7#8'ALCLIENT'#13'Lines.Strings'#1#6#18'CompileCommandMemo'#0#7
-  +'Tabstop'#9#7'TabStop'#9#8'TabOrder'#2#0#6'Height'#2'5'#5'Width'#3#144#1#0#0
-  +#0#9'TGroupBox'#18'RunWorkDirGroupbox'#7'Anchors'#11#5'AKTOP'#6'AKLEFT'#7'AK'
-  +'RIGHT'#0#7'Caption'#6'-Working Directory (Leave empty for file path)'#12'Cl'
-  ,'ientHeight'#2' '#11'ClientWidth'#3#144#1#11'ParentColor'#9#11'ParentCtl3D'#8
-  +#8'TabOrder'#2#2#4'Left'#2#4#6'Height'#2'1'#3'Top'#2'$'#5'Width'#3#148#1#0#9
-  +'TComboBox'#18'RunWorkDirCombobox'#7'Anchors'#11#5'AKTOP'#6'AKLEFT'#7'AKRIGH'
-  +'T'#0#9'MaxLength'#2#0#11'ParentCtl3D'#8#8'TabOrder'#2#0#7'TabStop'#9#4'Text'
-  +#6#18'RunWorkDirCombobox'#6'Height'#2#25#5'Width'#3'l'#1#0#0#7'TButton'#22'R'
-  +'unBrowseWorkDirButton'#7'Anchors'#11#5'AKTOP'#7'AKRIGHT'#0#7'Caption'#6#3'.'
-  +'..'#7'TabStop'#9#8'TabOrder'#2#1#7'OnClick'#7#29'BuildBrowseWorkDirButtonCL'
-  +'ICK'#4'Left'#3'p'#1#6'Height'#2#23#5'Width'#2#27#8'HelpType'#7#9'HTKEYWORD'
-  +#0#0#0#0#0#0
+  'TPF0'#16'TBuildFileDialog'#15'BuildFileDialog'#13'ActiveControl'#7#7'RunPage'
+  +#7'Caption'#6#15'BuildFileDialog'#12'ClientHeight'#3'X'#1#11'ClientWidth'#3
+  +#158#1#10'KeyPreview'#9#8'OnCreate'#7#21'BuildFileDialogCREATE'#9'OnKeyDown'
+  +#7#22'BuildFileDialogKEYDOWN'#13'PixelsPerInch'#2'`'#8'Position'#7#14'poScre'
+  +'enCenter'#18'HorzScrollBar.Page'#3#157#1#18'VertScrollBar.Page'#3'W'#1#4'Le'
+  +'ft'#3'P'#1#6'Height'#3'X'#1#3'Top'#3#221#0#5'Width'#3#158#1#0#7'TButton'#8
+  +'OkButton'#7'Anchors'#11#6'akLeft'#8'akBottom'#0#22'BorderSpacing.OnChange'
+  +#13#7'Caption'#6#2'Ok'#7'OnClick'#7#13'OkButtonCLICK'#8'TabOrder'#2#0#4'Left'
+  +#2'j'#6'Height'#2#25#3'Top'#3'6'#1#5'Width'#2'K'#0#0#7'TButton'#12'CancelBut'
+  +'ton'#7'Anchors'#11#6'akLeft'#8'akBottom'#0#22'BorderSpacing.OnChange'#13#7
+  +'Caption'#6#6'Cancel'#11'ModalResult'#2#2#8'TabOrder'#2#1#4'Left'#3#234#0#6
+  +'Height'#2#25#3'Top'#3'6'#1#5'Width'#2'K'#0#0#9'TNotebook'#9'Notebook1'#5'Al'
+  +'ign'#7#5'alTop'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#22
+  +'BorderSpacing.OnChange'#13#9'PageIndex'#2#2#6'Height'#3'0'#1#5'Width'#3#158
+  +#1#0#5'TPage'#11'GeneralPage'#7'Caption'#6#7'Options'#11'ClientWidth'#3#150#1
+  +#12'ClientHeight'#3'('#1#7'Visible'#8#6'Height'#3'('#1#5'Width'#3#150#1#0#9
+  +'TGroupBox'#24'WhenFileIsActiveGroupbox'#22'BorderSpacing.OnChange'#13#7'Cap'
+  +'tion'#6'-When this file is active in source editor ...'#12'ClientHeight'#2
+  +'?'#11'ClientWidth'#3#141#1#11'ParentColor'#9#11'ParentCtl3D'#8#8'TabOrder'#2
+  +#0#4'Left'#2#6#6'Height'#2'Q'#3'Top'#2#12#5'Width'#3#145#1#0#9'TCheckBox'#28
+  +'OverrideBuildProjectCheckbox'#22'BorderSpacing.OnChange'#13#7'Caption'#6'7O'
+  +'n build project execute the Build File command instead'#8'TabOrder'#2#0#4'L'
+  +'eft'#2#6#6'Height'#2#20#3'Top'#2#9#5'Width'#3#128#1#0#0#9'TCheckBox'#26'Ove'
+  +'rrideRunProjectCheckbox'#22'BorderSpacing.OnChange'#13#7'Caption'#6'3On run'
+  +' project execute the Run File command instead'#8'TabOrder'#2#1#4'Left'#2#6#6
+  +'Height'#2#20#3'Top'#2'!'#5'Width'#3#128#1#0#0#0#0#5'TPage'#9'BuildPage'#7'C'
+  +'aption'#6#5'Build'#11'ClientWidth'#3#150#1#12'ClientHeight'#3'('#1#8'OnResi'
+  +'ze'#7#15'BuildPageRESIZE'#7'Visible'#8#6'Height'#3'('#1#5'Width'#3#150#1#0#9
+  +'TGroupBox'#20'BuildCommandGroupbox'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRi'
+  +'ght'#0#22'BorderSpacing.OnChange'#13#7'Caption'#6#13'Build Command'#12'Clie'
+  +'ntHeight'#2'F'#11'ClientWidth'#3#146#1#11'ParentColor'#9#11'ParentCtl3D'#8#8
+  +'TabOrder'#2#0#4'Left'#2#4#6'Height'#2'F'#3'Top'#2'4'#5'Width'#3#146#1#0#5'T'
+  +'Memo'#16'BuildCommandMemo'#5'Align'#7#8'alClient'#22'BorderSpacing.OnChange'
+  +#13#13'Lines.Strings'#1#6#18'CompileCommandMemo'#0#8'TabOrder'#2#0#6'Height'
+  +#2'5'#5'Width'#3#142#1#0#0#0#9'TCheckBox'#26'BuildScanForFPCMsgCheckbox'#7'A'
+  +'nchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#22'BorderSpacing.OnChange'#13#7
+  +'Caption'#6#21'Scan for FPC messages'#8'TabOrder'#2#1#4'Left'#2#10#6'Height'
+  +#2#20#3'Top'#2'z'#5'Width'#3#132#1#0#0#9'TCheckBox'#27'BuildScanForMakeMsgCh'
+  +'eckbox'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#22'BorderSpacing.OnCh'
+  +'ange'#13#7'Caption'#6#22'Scan for Make messages'#8'TabOrder'#2#2#4'Left'#2
+  +#10#6'Height'#2#20#3'Top'#3#146#0#5'Width'#3#132#1#0#0#9'TGroupBox'#23'Build'
+  +'WorkingDirGroupbox'#22'BorderSpacing.OnChange'#13#7'Caption'#6'-Working dir'
+  +'ectory (Leave empty for file path)'#12'ClientHeight'#2'0'#11'ClientWidth'#3
+  +#146#1#11'ParentColor'#9#11'ParentCtl3D'#8#8'TabOrder'#2#3#4'Left'#2#4#6'Hei'
+  +'ght'#2'0'#3'Top'#2#4#5'Width'#3#146#1#0#9'TComboBox'#20'BuildWorkDirCombobo'
+  +'x'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#22'BorderSpacing.OnChange'
+  +#13#9'MaxLength'#2#0#11'ParentCtl3D'#8#8'TabOrder'#2#0#4'Text'#6#20'BuildWor'
+  +'kDirCombobox'#6'Height'#2#25#5'Width'#3'p'#1#0#0#7'TButton'#24'BuildBrowseW'
+  +'orkDirButton'#7'Anchors'#11#5'akTop'#7'akRight'#0#22'BorderSpacing.OnChange'
+  +#13#7'Caption'#6#3'...'#7'OnClick'#7#29'BuildBrowseWorkDirButtonCLICK'#8'Tab'
+  +'Order'#2#1#4'Left'#3'p'#1#6'Height'#2#23#5'Width'#2#24#0#0#0#0#5'TPage'#7'R'
+  +'unPage'#7'Caption'#6#3'Run'#11'ClientWidth'#3#150#1#12'ClientHeight'#3'('#1
+  +#8'OnResize'#7#13'RunPageRESIZE'#6'Height'#3'('#1#5'Width'#3#150#1#0#9'TChec'
+  +'kBox'#26'AlwaysCompileFirstCheckbox'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akR'
+  +'ight'#0#22'BorderSpacing.OnChange'#13#7'Caption'#6#23'Always Build before R'
+  +'un'#8'TabOrder'#2#0#4'Left'#2#10#6'Height'#2#20#3'Top'#2#4#5'Width'#3#132#1
+  +#0#0#9'TGroupBox'#18'RunCommandGroupbox'#7'Anchors'#11#5'akTop'#6'akLeft'#7
+  +'akRight'#0#22'BorderSpacing.OnChange'#13#7'Caption'#6#11'Run Command'#12'Cl'
+  +'ientHeight'#2'4'#11'ClientWidth'#3#140#1#11'ParentColor'#9#11'ParentCtl3D'#8
+  +#8'TabOrder'#2#1#4'Left'#2#4#6'Height'#2'F'#3'Top'#2'\'#5'Width'#3#144#1#0#5
+  +'TMemo'#14'RunCommandMemo'#5'Align'#7#8'alClient'#22'BorderSpacing.OnChange'
+  +#13#13'Lines.Strings'#1#6#18'CompileCommandMemo'#0#8'TabOrder'#2#0#6'Height'
+  +#2'4'#5'Width'#3#140#1#0#0#0#9'TGroupBox'#18'RunWorkDirGroupbox'#7'Anchors'
+  +#11#5'akTop'#6'akLeft'#7'akRight'#0#22'BorderSpacing.OnChange'#13#7'Caption'
+  ,#6'-Working Directory (Leave empty for file path)'#12'ClientHeight'#2#31#11
+  +'ClientWidth'#3#140#1#11'ParentColor'#9#11'ParentCtl3D'#8#8'TabOrder'#2#2#4
+  +'Left'#2#4#6'Height'#2'1'#3'Top'#2'$'#5'Width'#3#144#1#0#9'TComboBox'#18'Run'
+  +'WorkDirCombobox'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#22'BorderSpa'
+  +'cing.OnChange'#13#9'MaxLength'#2#0#11'ParentCtl3D'#8#8'TabOrder'#2#0#4'Text'
+  +#6#18'RunWorkDirCombobox'#6'Height'#2#21#5'Width'#3'h'#1#0#0#7'TButton'#22'R'
+  +'unBrowseWorkDirButton'#7'Anchors'#11#5'akTop'#7'akRight'#0#22'BorderSpacing'
+  +'.OnChange'#13#7'Caption'#6#3'...'#7'OnClick'#7#29'BuildBrowseWorkDirButtonC'
+  +'LICK'#8'TabOrder'#2#1#4'Left'#3'l'#1#6'Height'#2#23#5'Width'#2#27#8'HelpTyp'
+  +'e'#7#9'htKeyword'#0#0#0#0#0#0
 ]);
