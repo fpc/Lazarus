@@ -5639,8 +5639,9 @@ var
 begin
   if FileExists(FileName) then DeleteFile(FileName);
 
-  Cfg:=TXMLConfig.Create(FileName);
+  Cfg:=TXMLConfig.Create(nil);
   Try
+    Cfg.FileName := FileName;
     SaveContent(Cfg);
   Finally
     Cfg.Flush;
@@ -5656,8 +5657,9 @@ begin
   if not FileExists(FileName) then
     raise Exception.Create(rsGridFileDoesNotExists);
 
-  Cfg:=TXMLConfig.Create(FileName);
+  Cfg:=TXMLConfig.Create(nil);
   Try
+    Cfg.Filename := FileName;
     Version:=cfg.GetValue('grid/version',-1);
     if Version=-1 then raise Exception.Create(rsNotAValidGridFile);
     BeginUpdate;

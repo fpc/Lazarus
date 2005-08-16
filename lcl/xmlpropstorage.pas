@@ -81,8 +81,10 @@ end;
 
 procedure TCustomXMLPropStorage.StorageNeeded(ReadOnly: Boolean);
 begin
-  If (FXML=Nil) then
-    FXML:=TPropStorageXMLConfig.Create(GetXMLFileName);
+  If (FXML=Nil) then begin
+    FXML:=TPropStorageXMLConfig.Create(nil);
+    FXML.FileName := GetXMLFileName;
+  end;
   Inc(FCount);
   //debugln('TCustomXMLPropStorage.StorageNeeded ',dbgsname(FXML),' ',dbgs(FXML),' FCount=',dbgs(FCount));
 end;
