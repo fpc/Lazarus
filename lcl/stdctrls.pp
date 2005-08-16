@@ -887,8 +887,6 @@ type
     procedure RealSetText(const Value: TCaption); override;
     procedure ApplyChanges; virtual;
     procedure Loaded; override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-                      X, Y: Integer); override;
   public
     constructor Create(TheOwner: TComponent); override;
   public

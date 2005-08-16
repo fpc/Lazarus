@@ -185,13 +185,6 @@ begin
   inherited Loaded;
 end;
 
-procedure TCustomCheckBox.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
-  Y: Integer);
-begin
-  inherited MouseUp(Button, Shift, X, Y);
-  if State=cbGrayed then State:=cbChecked;
-end;
-
 {------------------------------------------------------------------------------
   procedure TCustomCheckBox.RealSetText(const Value: TCaption);
  ------------------------------------------------------------------------------}
