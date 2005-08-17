@@ -32,7 +32,7 @@ interface
 
 {$I codetools.inc}
 
-{ $DEFINE IgnoreErrorAfterCursor}
+{ $DEFINE DisableIgnoreErrorAfter}
 
 uses
   {$IFDEF MEM_CHECK}

@@ -144,6 +144,9 @@ function CompareCodeXYPositions(Pos1, Pos2: PCodeXYPosition): integer;
 
 var
   WordToAtomFlag: TWordToAtomFlag;
+  
+function DbgsCXY(const p: TCodeXYPosition): string;
+function DbgsCP(const p: TCodePosition): string;
 
 
 implementation
@@ -179,6 +182,26 @@ begin
   else if Pos1^.X<Pos2^.X then Result:=1
   else if Pos1^.Y<Pos2^.Y then Result:=-1
   else Result:=0;
+end;
+
+function DbgsCXY(const p: TCodeXYPosition): string;
+begin
+  if p.Code=nil then
+    Result:='(none)'
+  else
+    Result:=p.Code.Filename+'(y='+dbgs(p.y)+',x='+dbgs(p.x)+')';
+end;
+
+function DbgsCP(const p: TCodePosition): string;
+var
+  CodeXYPosition: TCodeXYPosition;
+begin
+  FillChar(CodeXYPosition,SizeOf(TCodeXYPosition),0);
+  CodeXYPosition.Code:=p.Code;
+  if CodeXYPosition.Code<>nil then begin
+    CodeXYPosition.Code.AbsoluteToLineCol(p.P,CodeXYPosition.Y,CodeXYPosition.X);
+  end;
+  Result:=DbgsCXY(CodeXYPosition);
 end;
 
 { TAtomRing }

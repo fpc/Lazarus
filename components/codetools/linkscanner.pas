@@ -1470,12 +1470,12 @@ begin
   FIgnoreErrorAfterCursorPos:=ACursorPos;
   LastErrorCheckedForIgnored:=false;
   {$IFDEF ShowIgnoreErrorAfter}
-  DbgOut'TLinkScanner.SetIgnoreErrorAfter ');
+  DbgOut('TLinkScanner.SetIgnoreErrorAfter ');
   if FIgnoreErrorAfterCode<>nil then
-    DbgOutOnGetFileName(Self,FIgnoreErrorAfterCode))
+    DbgOut(OnGetFileName(Self,FIgnoreErrorAfterCode))
   else
-    DbgOut'nil');
-  DbgOut' ',IntToStr(FIgnoreErrorAfterCursorPos));
+    DbgOut('nil');
+  DbgOut(' ',dbgs(FIgnoreErrorAfterCursorPos));
   DebugLn('');
   {$ENDIF}
 end;
@@ -1516,7 +1516,7 @@ begin
     LastErrorCheckedForIgnored:=true;
   end;
   {$IFDEF ShowIgnoreErrorAfter}
-  DebugLn('TLinkScanner.IgnoreErrAfterPositionIsInFrontOfLastErrMessage Result=',Result);
+  DebugLn('TLinkScanner.IgnoreErrAfterPositionIsInFrontOfLastErrMessage Result=',dbgs(Result));
   {$ENDIF}
 end;
 
@@ -1527,7 +1527,7 @@ begin
   else
     Result:=-1;
   {$IFDEF ShowIgnoreErrorAfter}
-  DebugLn('TLinkScanner.IgnoreErrorAfterCleanedPos Result=',Result);
+  DebugLn('TLinkScanner.IgnoreErrorAfterCleanedPos Result=',dbgs(Result));
   {$ENDIF}
 end;
 
@@ -1535,7 +1535,7 @@ function TLinkScanner.IgnoreErrorAfterValid: boolean;
 begin
   Result:=(FIgnoreErrorAfterCode<>nil);
   {$IFDEF ShowIgnoreErrorAfter}
-  DebugLn('TLinkScanner.IgnoreErrorAfterValid Result=',Result);
+  DebugLn('TLinkScanner.IgnoreErrorAfterValid Result=',dbgs(Result));
   {$ENDIF}
 end;
 
@@ -1544,7 +1544,7 @@ function TLinkScanner.LastErrorsInFrontOfCleanedPos(ACleanedPos: integer
 begin
   Result:=LastErrorIsValid and (CleanedLen>ACleanedPos);
   {$IFDEF ShowIgnoreErrorAfter}
-  DebugLn('TLinkScanner.LastErrorsInFrontOfCleanedPos Result=',Result);
+  DebugLn('TLinkScanner.LastErrorsInFrontOfCleanedPos Result=',dbgs(Result));
   {$ENDIF}
 end;
 

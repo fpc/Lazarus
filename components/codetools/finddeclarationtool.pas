@@ -75,7 +75,7 @@ interface
 {$IFDEF ShowTriedContexts}{$DEFINE DebugPrefix}{$ENDIF}
 
 // new features
-{ $DEFINE IgnoreErrorAfterCursor}
+{ $DEFINE DisableIgnoreErrorAfter}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -1026,16 +1026,16 @@ begin
   ActivateGlobalWriteLock;
   try
     // build code tree
-    {$IFDEF CTDEBUG}
-    DebugLn(DebugPrefix,'TFindDeclarationTool.FindDeclaration A CursorPos=',dbgs(CursorPos.X),',',dbgs(CursorPos.Y));
-    {$ENDIF}
+    { $IFDEF CTDEBUG}
+    DebugLn('TFindDeclarationTool.FindDeclaration A CursorPos=X',dbgs(CursorPos.X),',Y',dbgs(CursorPos.Y));
+    { $ENDIF}
     if DirtySrc<>nil then DirtySrc.Clear;
     BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
-                  [{$IFDEF IgnoreErrorAfterCursor}btSetIgnoreErrorPos{$ENDIF}
+                  [{$IFNDEF DisableIgnoreErrorAfter}btSetIgnoreErrorPos,{$ENDIF}
                    btLoadDirtySource,btCursorPosOutAllowed]);
-    {$IFDEF CTDEBUG}
-    DebugLn(DebugPrefix,'TFindDeclarationTool.FindDeclaration C CleanCursorPos=',dbgs(CleanCursorPos));
-    {$ENDIF}
+    { $IFDEF CTDEBUG}
+    DebugLn('TFindDeclarationTool.FindDeclaration C CleanCursorPos=',dbgs(CleanCursorPos));
+    { $ENDIF}
     // find CodeTreeNode at cursor
     if (Tree.Root<>nil) and (Tree.Root.StartPos<=CleanCursorPos) then begin
       CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(Tree.Root,CleanCursorPos,

@@ -41,7 +41,7 @@ interface
 
 {$I codetools.inc}
 
-{ $DEFINE IgnoreErrorAfterCursor}
+{ $DEFINE DisableIgnoreErrorAfter}
 { $DEFINE VerboseGetStringConstBounds}
 
 uses
@@ -3791,7 +3791,7 @@ begin
   Result:=false;
   try
     BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
-             [{$IFDEF IgnoreErrorAfterCursor}btSetIgnoreErrorPos{$ENDIF}]);
+             [{$IFNDEF DisableIgnoreErrorAfter}btSetIgnoreErrorPos{$ENDIF}]);
     LinkIndex:=Scanner.LinkIndexAtCleanPos(CleanCursorPos);
     LinkIndex:=Scanner.FindParentLink(LinkIndex);
     if LinkIndex<0 then

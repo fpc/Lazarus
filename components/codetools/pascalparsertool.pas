@@ -3438,6 +3438,7 @@ begin
       IgnorePos.Code:=CursorPos.Code;
       IgnorePos.Code.LineColToPosition(CursorPos.Y,CursorPos.X,IgnorePos.P);
       if IgnorePos.P<1 then IgnorePos.Code:=nil;
+      debugln('TPascalParserTool.BuildTreeAndGetCleanPos IgnorePos=',dbgsCP(IgnorePos));
       IgnoreErrorAfter:=IgnorePos;
     end else
       ClearIgnoreErrorAfter;
@@ -3474,7 +3475,7 @@ begin
   CaretType:=CaretToCleanPos(CursorPos, CleanCursorPos);
   if (CaretType=0) or (CaretType=-1) then begin
     BuildSubTree(CleanCursorPos);
-      if (CaretType=-1) and (btLoadDirtySource in BuildTreeFlags) then begin
+    if (CaretType=-1) and (btLoadDirtySource in BuildTreeFlags) then begin
       // cursor position lies in dead code (skipped code between IFDEF/ENDIF)
       LoadDirtySource(CursorPos);
     end;

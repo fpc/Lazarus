@@ -45,7 +45,7 @@ interface
 { $DEFINE ShowHistory}
 
 // new features
-{ $DEFINE IgnoreErrorAfterCursor}
+{ $DEFINE DisableIgnoreErrorAfter}
 
 
 uses
@@ -855,7 +855,7 @@ begin
     DebugLn('TIdentCompletionTool.GatherIdentifiers A CursorPos=',dbgs(CursorPos.X),',',dbgs(CursorPos.Y));
     {$ENDIF}
     BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
-                 [{$IFDEF IgnoreErrorAfterCursor}btSetIgnoreErrorPos,{$ENDIF}]);
+                  [{$IFNDEF DisableIgnoreErrorAfter}btSetIgnoreErrorPos{$ENDIF}]);
                   
     // find node at position
     CursorNode:=FindDeepestExpandedNodeAtPos(CleanCursorPos,true);

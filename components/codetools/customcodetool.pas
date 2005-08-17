@@ -1654,7 +1654,7 @@ begin
     LastErrorCheckedForIgnored:=true;
   end;
   {$IFDEF ShowIgnoreErrorAfter}
-  DebugLn('TCustomCodeTool.IgnoreErrAfterPositionIsInFrontOfLastErrMessage ',Result);
+  DebugLn('TCustomCodeTool.IgnoreErrAfterPositionIsInFrontOfLastErrMessage ',dbgs(Result));
   {$ENDIF}
 end;
 
@@ -1662,7 +1662,7 @@ function TCustomCodeTool.IgnoreErrorAfterValid: boolean;
 begin
   Result:=(Scanner<>nil) and (Scanner.IgnoreErrorAfterValid);
   {$IFDEF ShowIgnoreErrorAfter}
-  DebugLn('TCustomCodeTool.IgnoreErrorAfterValid ',Result);
+  DebugLn('TCustomCodeTool.IgnoreErrorAfterValid ',dbgs(Result));
   {$ENDIF}
 end;
 
@@ -1673,7 +1673,7 @@ begin
   else
     Result:=-1;
   {$IFDEF ShowIgnoreErrorAfter}
-  DebugLn('TCustomCodeTool.IgnoreErrorAfterCleanedPos ',Result);
+  DebugLn('TCustomCodeTool.IgnoreErrorAfterCleanedPos ',dbgs(Result));
   {$ENDIF}
 end;
 
@@ -1689,8 +1689,7 @@ begin
   else
     Result:=false;
   {$IFDEF ShowIgnoreErrorAfter}
-  DebugLn('TCustomCodeTool.LastErrorsInFrontOfCleanedPos ACleanedPos=',ACleanedPos,
-    Result);
+  DebugLn('TCustomCodeTool.LastErrorsInFrontOfCleanedPos ACleanedPos=',dbgs(ACleanedPos),' ',dbgs(Result));
   {$ENDIF}
 end;
 
@@ -1698,8 +1697,7 @@ procedure TCustomCodeTool.RaiseLastErrorIfInFrontOfCleanedPos(
   ACleanedPos: integer);
 begin
   {$IFDEF ShowIgnoreErrorAfter}
-  DebugLn('TCustomCodeTool.RaiseLastErrorIfInFrontOfCleanedPos A ACleanedPos=',ACleanedPos,
-    ' ');
+  DebugLn('TCustomCodeTool.RaiseLastErrorIfInFrontOfCleanedPos A ACleanedPos=',dbgs(ACleanedPos));
   {$ENDIF}
   if Scanner<>nil then Scanner.RaiseLastErrorIfInFrontOfCleanedPos(ACleanedPos);
   //DebugLn('TCustomCodeTool.RaiseLastErrorIfInFrontOfCleanedPos B ',LastErrorPhase<CodeToolPhaseTool,' ',LastErrorCurPos.EndPos);
@@ -1844,13 +1842,7 @@ begin
   FIgnoreErrorAfter:=AValue;
   LastErrorCheckedForIgnored:=false;
   {$IFDEF ShowIgnoreErrorAfter}
-  DbgOut'TCustomCodeTool.SetIgnoreErrorAfter ');
-  if FIgnoreErrorAfter.Code<>nil then
-    DbgOutFIgnoreErrorAfter.Code.Filename)
-  else
-    DbgOut'nil');
-  DbgOut' ',FIgnoreErrorAfter.P);
-  DebugLn('');
+  DebugLn('TCustomCodeTool.SetIgnoreErrorAfter ',dbgsCP(FIgnoreErrorAfter));
   {$ENDIF}
   if Scanner<>nil then
     Scanner.SetIgnoreErrorAfter(IgnoreErrorAfter.P,IgnoreErrorAfter.Code);
