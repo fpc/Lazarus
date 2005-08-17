@@ -32,8 +32,8 @@ unit Designer;
 
 interface
 
-{$DEFINE VerboseDesigner}
-{ $DEFINE VerboseDesignerDraw}
+{off $DEFINE VerboseDesigner}
+{off $DEFINE VerboseDesignerDraw}
 
 uses
   Classes, SysUtils, Math, LCLProc, LCLType, LResources, LCLIntf, LMessages,

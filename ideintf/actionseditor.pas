@@ -14,7 +14,7 @@
 
   implementing ActionList Editor
 
-  author:
+  authors:
      Radek Cervinka, radek.cervinka@centrum.cz
      Mattias Gaertner
      Pawel Piwowar, alfapawel@tlen.pl
@@ -835,6 +835,7 @@ var
   iNameIndex: Integer;
   OldName: String;
   OldAction: TContainedAction;
+  OldIndex: LongInt;
 begin
   iNameIndex := lstActionName.ItemIndex;
   if iNameIndex < 0 then Exit;
@@ -848,8 +849,8 @@ begin
   if Assigned(OldAction) then
   begin
     try
-      FDesigner.PropertyEditorHook.PersistentDeleting(OldAction);
-      OldAction.Free;
+      FDesigner.PropertyEditorHook.DeletePersistent(OldAction);
+      OldAction:=nil;
     except
       on E: Exception do begin
         MessageDlg('Error deleting action',
@@ -871,8 +872,11 @@ begin
        FActionList.ActionByName(lstActionName.Items[lstActionName.ItemIndex]));
   end;
 
-  If not IsCategory(OldName)
-  then lstCategory.Items.Delete(lstCategory.Items.IndexOf(OldName));
+  If not IsCategory(OldName) then begin
+    OldIndex:=lstCategory.Items.IndexOf(OldName);
+    if OldIndex>=0 then
+      lstCategory.Items.Delete(OldIndex);
+  end;
   if lstActionName.ItemIndex < 0
   then FDesigner.SelectOnlyThisComponent(FActionList);
 end;
