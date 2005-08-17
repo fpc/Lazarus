@@ -1166,9 +1166,10 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
             NewInString := False;
             NewStr := '#' + IntToStr(Ord(s[i]));
           end;
-        '''':
-            if InString then NewStr := ''''''
-            else NewStr := '''''''';
+        '''': begin
+            NewInString := True;
+            NewStr:='''''';
+          end;
         else begin
           NewInString := True;
           NewStr := s[i];
