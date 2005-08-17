@@ -3793,13 +3793,21 @@ end;
 
 function TMethodPropertyEditor.GetFormMethodName: shortstring;
 var I: Integer;
+  Root: TPersistent;
 begin
   Result:='';
   if PropertyHook.LookupRoot=nil then exit;
   if GetComponent(0) = PropertyHook.LookupRoot then begin
-    Result := PropertyHook.GetRootClassName;
-    if (Result <> '') and (Result[1] = 'T') then
-      System.Delete(Result, 1, 1);
+    Root:=PropertyHook.LookupRoot;
+    if Root is TCustomForm then
+      Result:='Form'
+    else if Root is TDataModule then
+      Result:='DataModule'
+    else begin;
+      Result := PropertyHook.GetRootClassName;
+      if (Result <> '') and (Result[1] = 'T') then
+        System.Delete(Result, 1, 1);
+    end;
   end else begin
     Result := PropertyHook.GetObjectName(GetComponent(0));
     for I := Length(Result) downto 1 do
