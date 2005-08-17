@@ -170,7 +170,7 @@ type
     function FindFormAncestor(const UpperClassName: string;
           var AncestorClassName: string): boolean;
 
-    // form components
+    // published variables
     function FindPublishedVariable(const UpperClassName, UpperVarName: string;
           ExceptionOnClassNotFound: boolean): TCodeTreeNode;
     function AddPublishedVariable(const UpperClassName,VarName, VarType: string;
@@ -258,6 +258,12 @@ type
     function GetIDEDirectives(DirectiveList: TStrings): boolean;
     function SetIDEDirectives(DirectiveList: TStrings;
           SourceChangeCache: TSourceChangeCache): boolean;
+          
+    // comments
+    function FindCommentInFront(const StartPos: TCodeXYPosition;
+          const CommentText: string; InvokeBuildTree, SearchInParentNode,
+          WithCommentBounds, CaseSensitive, IgnoreSpaces: boolean;
+          out CommentStart, CommentEnd: TCodeXYPosition): boolean;
   end;
 
 
@@ -3161,6 +3167,186 @@ begin
   if not SourceChangeCache.Apply then exit;
 
   Result:=true;
+end;
+
+function TStandardCodeTool.FindCommentInFront(const StartPos: TCodeXYPosition;
+  const CommentText: string;
+  InvokeBuildTree, SearchInParentNode, WithCommentBounds, CaseSensitive,
+  IgnoreSpaces: boolean;
+  out CommentStart, CommentEnd: TCodeXYPosition): boolean;
+// searches a comment in front.
+var
+  FoundStartPos: LongInt;
+  FoundEndPos: LongInt;
+
+  procedure CompareComment(StartPos, EndPos: integer);
+  var
+    Found: LongInt;
+    CompareStartPos: LongInt;
+    CompareEndPos: LongInt;
+  begin
+    //debugln('CompareComment "',copy(Src,StartPos,EndPos-StartPos),'"');
+
+    CompareStartPos:=StartPos;
+    CompareEndPos:=EndPos;
+    if not WithCommentBounds then begin
+      // chomp comment boundaries
+      case Src[CompareStartPos] of
+      '/','(': inc(CompareStartPos,2);
+      '{': inc(CompareStartPos,1);
+      end;
+      case Src[CompareEndPos-1] of
+      '}': dec(CompareEndPos);
+      ')': dec(CompareEndPos,2);
+      #10,#13:
+        begin
+          dec(CompareEndPos);
+          if (Src[CompareEndPos-1] in [#10,#13])
+          and (Src[CompareEndPos-1]<>Src[CompareEndPos]) then
+            dec(CompareEndPos);
+        end;
+      end;
+    end;
+    
+    if IgnoreSpaces then begin
+      //debugln('Compare: "',copy(Src,CompareStartPos,CompareEndPos-CompareStartPos),'"',
+      //  ' "',CommentText,'"');
+      Found:=CompareTextIgnoringSpace(
+                          @Src[CompareStartPos],CompareEndPos-CompareStartPos,
+                          @CommentText[1],length(CommentText),
+                          CaseSensitive);
+    end else begin
+      Found:=CompareText(@Src[CompareStartPos],CompareEndPos-CompareStartPos,
+                          @CommentText[1],length(CommentText),
+                          CaseSensitive);
+    end;
+    if Found=0 then begin
+      FoundStartPos:=StartPos;
+      FoundEndPos:=EndPos;
+    end;
+  end;
+
+var
+  CleanCursorPos: integer;
+  ANode: TCodeTreeNode;
+  PrevNode: TCodeTreeNode;
+  p: LongInt;
+  CommentLvl: Integer;
+  CommentStartPos: LongInt;
+begin
+  Result:=false;
+  if CommentText='' then exit;
+
+  {debugln('TStandardCodeTool.FindCommentInFront A CommentText="',CommentText,'" ',
+    ' InvokeBuildTree='+dbgs(InvokeBuildTree),
+    ' SearchInParentNode='+dbgs(SearchInParentNode),
+    ' WithCommentBounds='+dbgs(WithCommentBounds),
+    ' CaseSensitive='+dbgs(CaseSensitive),
+    ' IgnoreSpaces='+dbgs(IgnoreSpaces));}
+
+  // parse source and find clean positions
+  if InvokeBuildTree then
+    BuildTreeAndGetCleanPos(trAll,StartPos,CleanCursorPos,[])
+  else
+    if CaretToCleanPos(StartPos,CleanCursorPos)<>0 then
+      exit;
+
+  // find node
+  ANode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+  if (ANode=nil) then exit;
+
+  if SearchInParentNode and (ANode.Parent<>nil) then
+    ANode:=ANode.Parent;
+  { find end of last atom in front of node
+    for example:
+      uses classes;
+      
+      // Comment
+      type
+      
+    If ANode is the 'type' block, the position after the semicolon is searched
+  }
+  PrevNode:=ANode.Prior;
+  if PrevNode<>nil then begin
+    MoveCursorToLastNodeAtom(PrevNode);
+  end else begin
+    MoveCursorToCleanPos(ANode.StartPos);
+  end;
+
+  //debugln('TStandardCodeTool.FindCommentInFront B Area="',copy(Src,CurPos.StartPos,CleanCursorPos-CurPos.StartPos),'"');
+
+  FoundStartPos:=-1;
+  repeat
+    p:=CurPos.EndPos;
+    //debugln('TStandardCodeTool.FindCommentInFront Atom=',GetAtom);
+
+    // read space and comment till next atom
+    CommentLvl:=0;
+    while true do begin
+      case Src[p] of
+      #0:
+        if p>SrcLen then
+          break
+        else
+          inc(p);
+      #1..#32:
+        inc(p);
+      '{': // pascal comment
+        begin
+          CommentLvl:=1;
+          CommentStartPos:=p;
+          inc(p);
+          while true do begin
+            case Src[p] of
+            #0:  if p>SrcLen then break;
+            '{': if Scanner.NestedComments then inc(CommentLvl);
+            '}':
+              begin
+                dec(CommentLvl);
+                if CommentLvl=0 then break;
+              end;
+            end;
+            inc(p);
+          end;
+          inc(p);
+          CompareComment(CommentStartPos,p);
+        end;
+      '/':  // Delphi comment
+        if (Src[p+1]<>'/') then begin
+          break;
+        end else begin
+          CommentStartPos:=p;
+          inc(p,2);
+          while (not (Src[p] in [#10,#13,#0])) do
+            inc(p);
+          inc(p);
+          if (p<=SrcLen) and (Src[p] in [#10,#13])
+          and (Src[p-1]<>Src[p]) then
+            inc(p);
+          CompareComment(CommentStartPos,p);
+        end;
+      '(': // old turbo pascal comment
+        if (Src[p+1]<>'*') then begin
+          break;
+        end else begin
+          CommentStartPos:=p;
+          inc(p,3);
+          while (p<=SrcLen)
+          and ((Src[p-1]<>'*') or (Src[p]<>')')) do
+            inc(p);
+          inc(p);
+          CompareComment(CommentStartPos,p);
+        end;
+      else
+        break;
+      end;
+    end;
+    ReadNextAtom;
+  until (CurPos.EndPos>=CleanCursorPos) or (CurPos.EndPos>=SrcLen);
+  
+  Result:=(FoundStartPos>=1)
+          and CleanPosToCaret(FoundStartPos,CommentStart)
+          and CleanPosToCaret(FoundEndPos,CommentEnd);
 end;
 
 function TStandardCodeTool.GatherResourceStringsWithValue(

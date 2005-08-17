@@ -223,6 +223,7 @@ type
     procedure MoveCursorToCleanPos(ACleanPos: PChar);
     procedure MoveCursorToAtomPos(const AnAtomPos: TAtomPosition);
     procedure MoveCursorToNearestAtom(ACleanPos: integer);
+    procedure MoveCursorToLastNodeAtom(ANode: TCodeTreeNode);
     function IsPCharInSrc(ACleanPos: PChar): boolean;
     procedure MoveHybridCursorToPos(DirtyPos: PChar);
     function GetHybridCursorStart: integer;
@@ -1770,6 +1771,19 @@ begin
   MoveCursorToNodeStart(ANode);
   BestPos:=CurPos.StartPos;
   while (CurPos.StartPos<=ACleanPos) and (CurPos.StartPos<=SrcLen) do begin
+    BestPos:=CurPos.StartPos;
+    ReadNextAtom;
+  end;
+  MoveCursorToCleanPos(BestPos);
+end;
+
+procedure TCustomCodeTool.MoveCursorToLastNodeAtom(ANode: TCodeTreeNode);
+var
+  BestPos: LongInt;
+begin
+  MoveCursorToNodeStart(ANode);
+  BestPos:=CurPos.StartPos;
+  while (CurPos.EndPos<=ANode.EndPos) and (CurPos.StartPos<=SrcLen) do begin
     BestPos:=CurPos.StartPos;
     ReadNextAtom;
   end;

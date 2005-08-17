@@ -1707,28 +1707,34 @@ function TCodeCompletionCodeTool.InsertClassHeaderComment: boolean;
 var
   ClassNode: TCodeTreeNode;
   ClassIdentifierNode: TCodeTreeNode;
-  NonSpacePos: LongInt;
   Code: String;
   InsertPos: LongInt;
   Indent: LongInt;
+  StartPos, CommentStart, CommentEnd: TCodeXYPosition;
 begin
   Result:=true;
   if not ASourceChangeCache.BeautifyCodeOptions.ClassHeaderComments then exit;
   // check if there is already a comment in front of the class
+  
+  // find the start of the class (the position in front of the class name)
   ClassNode:=CodeCompleteClassNode;
   if ClassNode=nil then exit;
   ClassIdentifierNode:=ClassNode.Parent;
   if ClassIdentifierNode=nil then exit;
-  NonSpacePos:=FindPrevNonSpace(Src,ClassIdentifierNode.StartPos-1);
-  if IsCommentEnd(Src,NonSpacePos) then begin
-    // there is already a comment in front
+  if not CleanPosToCaret(ClassIdentifierNode.StartPos,StartPos) then exit;
+  Code:=ExtractIdentifier(ClassIdentifierNode.StartPos);
+  
+  // check if there is already a comment in front
+  if FindCommentInFront(StartPos,Code,false,true,false,false,true,
+          CommentStart,CommentEnd)
+  then
+    // comment already exists
     exit;
-  end;
+
   // insert comment in front
   InsertPos:=ClassIdentifierNode.StartPos;
   Indent:=GetLineIndent(Src,InsertPos);
-  Code:=GetIndentStr(Indent)
-        +'{ '+ExtractIdentifier(ClassIdentifierNode.StartPos)+' }';
+  Code:=GetIndentStr(Indent)+'{ '+Code+' }';
   ASourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,
                              InsertPos,InsertPos,Code);
 end;
@@ -1981,14 +1987,28 @@ var
   end;
   
   procedure InsertClassMethodsComment;
+  var
+    Code: String;
+    InsertXYPos, CommentStart, CommentEnd: TCodeXYPosition;
   begin
     // insert class comment
-    if ClassProcs.Count>0 then begin
-      ClassStartComment:=GetIndentStr(Indent)
-                         +'{ '+ExtractClassName(FCodeCompleteClassNode,false)+' }';
-      ASourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
-         ClassStartComment);
+    if ClassProcs.Count=0 then exit;
+    // find the start of the class (the position in front of the class name)
+    if not CleanPosToCaret(InsertPos,InsertXYPos) then exit;
+    
+    Code:=ExtractClassName(CodeCompleteClassNode,false);
+    // check if there is already a comment in front
+    if FindCommentInFront(InsertXYPos,Code,false,true,false,false,true,
+                          CommentStart,CommentEnd)
+    then begin
+      // comment already exists
+      exit;
     end;
+
+    ClassStartComment:=GetIndentStr(Indent)
+                       +'{ '+ExtractClassName(CodeCompleteClassNode,false)+' }';
+    ASourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
+                               ClassStartComment);
   end;
   
 begin
