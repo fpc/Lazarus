@@ -87,6 +87,10 @@ type
                    ncpPublicProcs, ncpPublicVars,
                    ncpPublishedProcs, ncpPublishedVars);
                    
+  TNewVarLocation = (
+    ncpvPrivate,ncpvProtected,ncpvPublic,ncpvPublished,ncpvLocal
+    );
+                   
 const
   NewClassPartVisibilty: array[TNewClassPart] of TPascalClassSection = (
     pcsPrivate, pcsPrivate,
@@ -96,6 +100,15 @@ const
     );
   
 type
+  TCodeCompletionCodeTool = class;
+
+  TOnGetNewVariableLocation = function(Tool: TCodeCompletionCodeTool;
+                           const VariableName: string; var VariableType: string;
+                           IsMethod: boolean; NewLocation: TNewVarLocation
+                           ): boolean;
+
+  { TCodeCompletionCodeTool }
+
   TCodeCompletionCodeTool = class(TMethodJumpingCodeTool)
   private
     ASourceChangeCache: TSourceChangeCache;
@@ -104,6 +117,7 @@ type
     FAddInheritedCodeToOverrideMethod: boolean;
     FCompleteProperties: boolean;
     FirstInsert: TCodeTreeNodeExtension; // list of insert requests
+    FOnGetNewVariableLocation: TOnGetNewVariableLocation;
     FSetPropertyVariablename: string;
     JumpToProcName: string;
     NewClassSectionIndent: array[TPascalClassSection] of integer;
@@ -168,6 +182,8 @@ type
     property AddInheritedCodeToOverrideMethod: boolean
                                         read FAddInheritedCodeToOverrideMethod
                                         write FAddInheritedCodeToOverrideMethod;
+    property OnGetNewVariableLocation: TOnGetNewVariableLocation
+                 read FOnGetNewVariableLocation write FOnGetNewVariableLocation;
   end;
 
   
@@ -744,6 +760,9 @@ var
   VarNameAtom, AssignmentOperator, TermAtom: TAtomPosition;
   NewType: string;
   Params: TFindDeclarationParams;
+  VarLocation: TNewVarLocation;
+  IsMethod: Boolean;
+  VariableName: String;
 begin
   Result:=false;
 
@@ -792,6 +811,15 @@ begin
   finally
     Params.Free;
     DeactivateGlobalWriteLock;
+  end;
+  
+  // ask what for location of new variable
+  VarLocation:=ncpvLocal;
+  VariableName:=GetAtom(VarNameAtom);
+  if Assigned(OnGetNewVariableLocation) then begin
+    IsMethod:=NodeIsInAMethod(CursorNode);
+    if not OnGetNewVariableLocation(Self,VariableName,NewType,
+                                    IsMethod,VarLocation) then exit;
   end;
 
   // all needed parameters found

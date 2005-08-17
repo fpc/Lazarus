@@ -856,7 +856,7 @@ begin
     {$ENDIF}
     BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
                   [{$IFNDEF DisableIgnoreErrorAfter}btSetIgnoreErrorPos{$ENDIF}]);
-                  
+
     // find node at position
     CursorNode:=FindDeepestExpandedNodeAtPos(CleanCursorPos,true);
     CurrentIdentifierList.StartContext.Node:=CursorNode;

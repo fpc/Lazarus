@@ -510,14 +510,14 @@ begin
   else
     StartIndex:=GetContainerIndex(false);
 
-  debugln('TIDEMenuSection.CreateChildMenuItems Name="',Name,'" Container="',ContainerMenuItem.Caption,'" ContainerMenuItem.Count=',dbgs(ContainerMenuItem.Count),' StartIndex=',dbgs(StartIndex),' Size=',dbgs(Size),' NeedTopSeparator=',dbgs(NeedTopSeparator),' NeedBottomSeparator=',dbgs(NeedBottomSeparator));
+  //debugln('TIDEMenuSection.CreateChildMenuItems Name="',Name,'" Container="',ContainerMenuItem.Caption,'" ContainerMenuItem.Count=',dbgs(ContainerMenuItem.Count),' StartIndex=',dbgs(StartIndex),' Size=',dbgs(Size),' NeedTopSeparator=',dbgs(NeedTopSeparator),' NeedBottomSeparator=',dbgs(NeedBottomSeparator));
 
   if NeedTopSeparator then begin
     if (TopSeparator=nil) then begin
       // create TopSeparator
       FTopSeparator:=MenuItemClass.Create(nil);
       FTopSeparator.Caption:='-';
-      debugln('TIDEMenuSection.CreateChildMenuItem Insert TopSeparator: Container="',ContainerMenuItem.Caption,'" ContainerMenuItem.Count=',dbgs(ContainerMenuItem.Count),' StartIndex=',dbgs(StartIndex));
+      //debugln('TIDEMenuSection.CreateChildMenuItem Insert TopSeparator: Container="',ContainerMenuItem.Caption,'" ContainerMenuItem.Count=',dbgs(ContainerMenuItem.Count),' StartIndex=',dbgs(StartIndex));
       ContainerMenuItem.Insert(StartIndex,FTopSeparator);
     end;
   end;
@@ -599,7 +599,7 @@ begin
   Item.CreateMenuItem;
   if Item.MenuItem<>nil then begin
     MenuIndex:=GetChildContainerIndex(Index);
-    debugln('TIDEMenuSection.CreateChildMenuItem Insert Item="',Item.Caption,'" ContainerMenuItem="',ContainerMenuItem.Caption,'" ContainerMenuItem.Count=',dbgs(ContainerMenuItem.Count),' MenuIndex=',dbgs(MenuIndex));
+    //debugln('TIDEMenuSection.CreateChildMenuItem Insert Item="',Item.Caption,'" ContainerMenuItem="',ContainerMenuItem.Caption,'" ContainerMenuItem.Count=',dbgs(ContainerMenuItem.Count),' MenuIndex=',dbgs(MenuIndex));
     ContainerMenuItem.Insert(MenuIndex,Item.MenuItem);
   end;
   // create the subsections

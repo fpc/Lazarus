@@ -620,8 +620,18 @@ begin
       CurKeyWordFuncList:=DefaultKeyWordFuncList;
     end;
     ClassNode.SubDesc:=ClassNode.SubDesc and (not ctnsNeedJITParsing);
-  finally
     CurrentPhase:=OldPhase;
+  except
+    CurrentPhase:=OldPhase;
+    {$IFDEF ShowIgnoreErrorAfter}
+    DebugLn('TPascalParserTool.BuildSubTreeForClass ',MainFilename,' ERROR: ',LastErrorMessage);
+    {$ENDIF}
+    if (not IgnoreErrorAfterValid)
+    or (not IgnoreErrAfterPositionIsInFrontOfLastErrMessage) then
+      raise;
+    {$IFDEF ShowIgnoreErrorAfter}
+    DebugLn('TPascalParserTool.BuildSubTreeForClass',MainFilename,' IGNORING ERROR: ',LastErrorMessage);
+    {$ENDIF}
   end;
 end;
 
@@ -670,8 +680,18 @@ begin
       end;
     until (CurPos.StartPos>=MaxPos);
     BeginNode.SubDesc:=ctnNone;
-  finally
     CurrentPhase:=OldPhase;
+  except
+    CurrentPhase:=OldPhase;
+    {$IFDEF ShowIgnoreErrorAfter}
+    DebugLn('TPascalParserTool.BuildSubTreeForBeginBlock ',MainFilename,' ERROR: ',LastErrorMessage);
+    {$ENDIF}
+    if (not IgnoreErrorAfterValid)
+    or (not IgnoreErrAfterPositionIsInFrontOfLastErrMessage) then
+      raise;
+    {$IFDEF ShowIgnoreErrorAfter}
+    DebugLn('TPascalParserTool.BuildSubTreeForBeginBlock ',MainFilename,' IGNORING ERROR: ',LastErrorMessage);
+    {$ENDIF}
   end;
 end;
 
@@ -3438,7 +3458,7 @@ begin
       IgnorePos.Code:=CursorPos.Code;
       IgnorePos.Code.LineColToPosition(CursorPos.Y,CursorPos.X,IgnorePos.P);
       if IgnorePos.P<1 then IgnorePos.Code:=nil;
-      debugln('TPascalParserTool.BuildTreeAndGetCleanPos IgnorePos=',dbgsCP(IgnorePos));
+      //debugln('TPascalParserTool.BuildTreeAndGetCleanPos IgnorePos=',dbgsCP(IgnorePos));
       IgnoreErrorAfter:=IgnorePos;
     end else
       ClearIgnoreErrorAfter;
@@ -3571,8 +3591,18 @@ begin
     if IsOperator then Include(ParseAttr,pphIsOperator);
     ReadTilProcedureHeadEnd(ParseAttr,HasForwardModifier);
     ProcNode.FirstChild.SubDesc:=ctnsNone;
-  finally
     CurrentPhase:=OldPhase;
+  except
+    CurrentPhase:=OldPhase;
+    {$IFDEF ShowIgnoreErrorAfter}
+    DebugLn('TPascalParserTool.BuildSubTreeForProcHead ',MainFilename,' ERROR: ',LastErrorMessage);
+    {$ENDIF}
+    if (not IgnoreErrorAfterValid)
+    or (not IgnoreErrAfterPositionIsInFrontOfLastErrMessage) then
+      raise;
+    {$IFDEF ShowIgnoreErrorAfter}
+    DebugLn('TPascalParserTool.BuildSubTreeForProcHead ',MainFilename,' IGNORING ERROR: ',LastErrorMessage);
+    {$ENDIF}
   end;
 end;
 
