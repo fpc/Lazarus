@@ -2373,20 +2373,20 @@ var CleanCursorPos, Indent, insertPos: integer;
         ProcCode:=ExtractProcHead(CurProcNode,[phpWithStart,
                     phpWithoutClassKeyword,
                     phpWithVarModifiers,phpWithParameterNames,phpWithResultType,
-                    phpWithComments,phpWithCallingSpecs]);
+                    phpWithCallingSpecs]);
         if ProcCode='' then
-          RaiseException('unable to parse forward proc node');
+          RaiseException('CompleteForwardProcs: unable to parse forward proc node');
         ProcCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyProc(ProcCode,
                                                                    Indent,true);
         if not SourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,
           InsertPos,InsertPos,ProcCode) then
-            RaiseException('unable to insert new proc body');
+            RaiseException('CompleteForwardProcs: unable to insert new proc body');
         // next
         if CurProcNode=EndProcNode then break;
         CurProcNode:=FindNextNodeOnSameLvl(CurProcNode);
       until false;
       if not SourceChangeCache.Apply then
-        RaiseException('unable to apply changes');
+        RaiseException('CompleteForwardProcs: unable to apply changes');
 
       // reparse code and find jump point into new proc
       Result:=FindJumpPoint(CursorPos,NewPos,NewTopLine,RevertableJump);
