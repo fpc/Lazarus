@@ -106,7 +106,6 @@ procedure ShowMenuEditor(AMenu: TMenu);
 begin
   if AMenu=nil then RaiseGDBException('ShowMenuEditor AMenu=nil');
   if MainMenuEditorForm=nil then begin
-  
     MainMenuEditorForm:=TMainMenuEditorForm.CreateWithMenu(Application,AMenu);
   end;
   MainMenuEditorForm.SetMenu(AMenu);
@@ -159,6 +158,7 @@ begin
   for i:=0 to fDesigner.Form.ComponentCount - 1 do
   begin
     CurComponent:=fDesigner.Form.Components[i];
+    debugln('TMainMenuEditorForm.UpdateListOfMenus A ',dbgsName(CurComponent));
     if (CurComponent is TMainMenu) or (CurComponent is TPopupMenu) then
     begin
       List_menus.Items.Add(CurComponent.Name);
@@ -303,7 +303,8 @@ end;
 
 { TMainMenuComponentEditor}
 
-constructor TMainMenuComponentEditor.Create(AComponent: TComponent; aDesigner: TComponentEditorDesigner);
+constructor TMainMenuComponentEditor.Create(AComponent: TComponent;
+  aDesigner: TComponentEditorDesigner);
 begin
   inherited Create(AComponent,ADesigner);
   fDesigner:=aDesigner;

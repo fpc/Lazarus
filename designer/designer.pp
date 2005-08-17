@@ -106,6 +106,7 @@ type
     FOnSetDesigning: TOnSetDesigning;
     FOnShowOptions: TNotifyEvent;
     FOnUnselectComponentClass: TNotifyEvent;
+    FOnViewLFM: TNotifyEvent;
     FOrderSubMenu: TMenuItem;
     FOrderMoveToFrontMenuItem: TMenuItem;
     FOrderMoveToBackMenuItem: TMenuItem;
@@ -121,6 +122,7 @@ type
     FSnapToGuideLinesOptionMenuItem: TMenuItem;
     FTabOrderMenuItem: TMenuItem;
     FTheFormEditor: TCustomFormEditor;
+    fViewLFMMenuItem: TMenuItem;
 
     //hint stuff
     FHintTimer : TTimer;
@@ -217,6 +219,7 @@ type
     procedure OnSnapToGridOptionMenuClick(Sender: TObject);
     procedure OnShowOptionsMenuItemClick(Sender: TObject);
     procedure OnSnapToGuideLinesOptionMenuClick(Sender: TObject);
+    procedure OnViewLFMMenuClick(Sender: TObject);
 
     // hook
     function GetPropertyEditorHook: TPropertyEditorHook; override;
@@ -311,6 +314,7 @@ type
                                                 write FOnUnselectComponentClass;
     property OnShowOptions: TNotifyEvent
                                        read FOnShowOptions write FOnShowOptions;
+    property OnViewLFM: TNotifyEvent read FOnViewLFM write FOnViewLFM;
     property ShowGrid: boolean read GetShowGrid write SetShowGrid;
     property ShowEditorHints: boolean
                                read GetShowEditorHints write SetShowEditorHints;
@@ -1995,6 +1999,11 @@ begin
   EnvironmentOptions.SnapToGuideLines:=not EnvironmentOptions.SnapToGuideLines;
 end;
 
+procedure TDesigner.OnViewLFMMenuClick(Sender: TObject);
+begin
+  if Assigned(OnViewLFM) then OnViewLFM(Self);
+end;
+
 procedure TDesigner.OnCopyMenuClick(Sender: TObject);
 begin
   CopySelection;
@@ -2517,6 +2526,13 @@ begin
     Enabled:= CompsAreSelected and (ControlSelection.Count=1);
   end;
   FPopupMenu.Items.Add(fChangeClassMenuItem);
+
+  fViewLFMMenuItem:=TMenuItem.Create(FPopupMenu);
+  with fViewLFMMenuItem do begin
+    Caption:= lisViewSourceLfm;
+    OnClick:=@OnViewLFMMenuClick;
+  end;
+  FPopupMenu.Items.Add(fViewLFMMenuItem);
 
   AddSeparator;
   

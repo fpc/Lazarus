@@ -376,6 +376,7 @@ type
     procedure OnDesignerCloseQuery(Sender: TObject);
     procedure OnDesignerRenameComponent(ADesigner: TDesigner;
                                  AComponent: TComponent; const NewName: string);
+    procedure OnDesignerViewLFM(Sender: TObject);
 
     // control selection
     procedure OnControlSelectionChanged(Sender: TObject);
@@ -2504,6 +2505,7 @@ Begin
     OnSetDesigning:=@OnDesignerSetDesigning;
     OnShowOptions:=@OnDesignerShowOptions;
     OnUnselectComponentClass:=@OnDesignerUnselectComponentClass;
+    OnViewLFM:=@OnDesignerViewLFM;
     ShowEditorHints:=EnvironmentOptions.ShowEditorHints;
     ShowComponentCaptionHints:=EnvironmentOptions.ShowComponentCaptions;
   end;
@@ -10935,6 +10937,20 @@ begin
   end else begin
     RaiseException('TMainIDE.OnDesignerRenameComponent internal error:'+AComponent.Name+':'+AComponent.ClassName);
   end;
+end;
+
+procedure TMainIDE.OnDesignerViewLFM(Sender: TObject);
+var
+  ADesigner: TDesigner;
+  ASrcEdit: TSourceEditor;
+  AnUnitInfo: TUnitInfo;
+begin
+  ADesigner:=TDesigner(Sender);
+  GetDesignerUnit(ADesigner,ASrcEdit,AnUnitInfo);
+  debugln('TMainIDE.OnDesignerViewLFM ',AnUnitInfo.Filename);
+  OnDesignerCloseQuery(Sender);
+  DoOpenEditorFile(ChangeFileExt(AnUnitInfo.Filename,'.lfm'),
+                   AnUnitInfo.EditorIndex+1,[]);
 end;
 
 Procedure TMainIDE.OnSrcNoteBookAddJumpPoint(ACaretXY: TPoint;

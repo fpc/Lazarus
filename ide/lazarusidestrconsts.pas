@@ -1214,6 +1214,7 @@ resourcestring
   fdmDeleteSelection='Delete selection';
   lisChangeClass = 'Change Class';
   fdmSnapToGridOption='Option: Snap to grid';
+  lisViewSourceLfm = 'View Source (.lfm)';
   fdmSnapToGuideLinesOption='Option: Snap to guide lines';
   fdmShowOptions='Show Options for form editing';
 
