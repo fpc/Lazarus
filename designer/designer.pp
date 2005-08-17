@@ -2180,7 +2180,8 @@ begin
   DrawNonVisualComponents(DDC);
   // guidelines and grabbers
   if (ControlSelection.SelectionForm=Form) then begin
-    ControlSelection.DrawGuideLines(DDC);
+    if EnvironmentOptions.ShowGuideLines then
+      ControlSelection.DrawGuideLines(DDC);
     ControlSelection.DrawGrabbers(DDC);
   end;
   // rubberband

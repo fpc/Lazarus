@@ -2290,8 +2290,6 @@ var
   FileWasAbsolute: Boolean;
 begin
   if AFileName='' then exit;
-  ProjectPath:=ProjectDirectory;
-  if ProjectPath='' then ProjectPath:=GetCurrentDir;
   //debugln('TProject.OnLoadSaveFilename A "',AFilename,'"');
   if not fPathDelimChanged then begin
     FileWasAbsolute:=FilenameIsAbsolute(AFileName);
@@ -2306,14 +2304,18 @@ begin
     DoDirSeparators(AFilename);
   end;
   AFilename:=TrimFilename(AFilename);
-  if Load then begin
-    // make filename absolute
-    if not FileWasAbsolute then
-      AFilename:=TrimFilename(ProjectPath+AFilename);
-  end else begin
-    // try making filename relative to project file
-    if FileWasAbsolute and FileIsInPath(AFilename,ProjectPath) then
-      AFilename:=CreateRelativePath(AFilename,ProjectPath);
+  
+  ProjectPath:=ProjectDirectory;
+  if ProjectPath<>'' then begin
+    if Load then begin
+      // make filename absolute
+      if not FileWasAbsolute then
+        AFilename:=TrimFilename(ProjectPath+AFilename);
+    end else begin
+      // try making filename relative to project file
+      if FileWasAbsolute and FileIsInPath(AFilename,ProjectPath) then
+        AFilename:=CreateRelativePath(AFilename,ProjectPath);
+    end;
   end;
   //debugln('TProject.OnLoadSaveFilename END "',AFilename,'" FileWasAbsolute=',dbgs(FileWasAbsolute));
 end;

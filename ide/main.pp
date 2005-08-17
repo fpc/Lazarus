@@ -4552,6 +4552,8 @@ begin
         exit;
       end;
       NewFilename:=ExpandFilename(SaveDialog.Filename);
+      if not FilenameIsAbsolute(NewFilename) then
+        RaiseException('TMainIDE.DoShowSaveProjectAsDialog: buggy ExpandFileName');
       NewProgramName:=ExtractFileNameOnly(NewFilename);
 
       // check programname
@@ -6102,6 +6104,8 @@ begin
   if ExtractFileNameOnly(AFileName)='' then exit;
 
   AFilename:=ExpandFileName(TrimFilename(AFilename));
+  if not FilenameIsAbsolute(AFilename) then
+    RaiseException('TMainIDE.DoOpenProjectFile: buggy ExpandFileName');
   Ext:=lowercase(ExtractFileExt(AFilename));
 
   // check if file exists
