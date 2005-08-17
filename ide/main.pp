@@ -314,7 +314,7 @@ type
     procedure OnSrcNotebookFileClose(Sender: TObject);
     procedure OnSrcNotebookFindDeclaration(Sender: TObject);
     procedure OnSrcNotebookInitIdentCompletion(Sender: TObject;
-      var Handled, Abort: boolean);
+      JumpToError: boolean; out Handled, Abort: boolean);
     procedure OnSrcNotebookJumpToHistoryPoint(var NewCaretXY: TPoint;
       var NewTopLine, NewPageIndex: integer; JumpAction: TJumpHistoryAction);
     procedure OnSrcNotebookMovingPage(Sender: TObject;
@@ -730,7 +730,7 @@ type
     procedure DoFindDeclarationAtCursor;
     procedure DoFindDeclarationAtCaret(const LogCaretXY: TPoint);
     function DoFindRenameIdentifier(Rename: boolean): TModalResult;
-    function DoInitIdentCompletion: boolean;
+    function DoInitIdentCompletion(JumpToError: boolean): boolean;
     procedure DoCompleteCodeAtCursor;
     procedure DoExtractProcFromSelection;
     function DoCheckSyntax: TModalResult;
@@ -2152,10 +2152,10 @@ begin
 end;
 
 procedure TMainIDE.OnSrcNotebookInitIdentCompletion(Sender: TObject;
-  var Handled, Abort: boolean);
+  JumpToError: boolean; out Handled, Abort: boolean);
 begin
   Handled:=true;
-  Abort:=not DoInitIdentCompletion;
+  Abort:=not DoInitIdentCompletion(JumpToError);
 end;
 
 Procedure TMainIDE.OnSrcNotebookSaveAll(Sender: TObject);
@@ -10306,9 +10306,9 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  function TMainIDE.DoInitIdentCompletion: boolean;
+  function TMainIDE.DoInitIdentCompletion(JumpToError: boolean): boolean;
 -------------------------------------------------------------------------------}
-function TMainIDE.DoInitIdentCompletion: boolean;
+function TMainIDE.DoInitIdentCompletion(JumpToError: boolean): boolean;
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
@@ -10324,7 +10324,8 @@ begin
   Result:=CodeToolBoss.GatherIdentifiers(ActiveUnitInfo.Source,
                                          LogCaretXY.X,LogCaretXY.Y);
   if not Result then begin
-    DoJumpToCodeToolBossError;
+    if JumpToError then
+      DoJumpToCodeToolBossError;
     exit;
   end;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoInitIdentCompletion B');{$ENDIF}

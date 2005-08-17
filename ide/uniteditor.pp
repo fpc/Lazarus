@@ -188,7 +188,7 @@ type
     procedure SetExecutionLine(NewLine: integer);
     procedure OnCodeBufferChanged(Sender: TSourceLog;
       SrcLogEntry: TSourceLogEntry);
-    procedure StartIdentCompletion;
+    procedure StartIdentCompletion(JumpToError: boolean);
 
     procedure LinesInserted(sender: TObject; FirstLine,Count: Integer);
     procedure LinesDeleted(sender: TObject; FirstLine,Count: Integer);
@@ -320,8 +320,8 @@ type
                             OldPageIndex, NewPageIndex: integer) of object;
   TOnShowHintForSource = procedure(SrcEdit: TSourceEditor; ClientPos: TPoint;
                                    CaretPos: TPoint) of object;
-  TOnInitIdentCompletion = procedure(Sender: TObject;
-                                     var Handled, Abort: boolean) of object;
+  TOnInitIdentCompletion = procedure(Sender: TObject; JumpToError: boolean;
+                                     out Handled, Abort: boolean) of object;
   TSrcEditPopupMenuEvent = procedure(AddMenuItemProc: TAddMenuItemProc
                                      ) of object;
 
@@ -397,6 +397,7 @@ type
     FCodeTemplateModul: TSynEditAutoComplete;
     fCustomPopupMenuItems: TList;
     fContextPopupMenuItems: TList;
+    fIdentCompletionJumpToError: boolean;
     FIncrementalSearchPos: TPoint; // last set position
     fIncrementalSearchStartPos: TPoint; // position where to start searching
     fIncrementalSearchCancelPos: TPoint;// position where to jump on cancel
@@ -1180,7 +1181,7 @@ Begin
     FindHelpForSourceAtCursor;
 
   ecIdentCompletion :
-    StartIdentCompletion;
+    StartIdentCompletion(true);
 
   ecWordCompletion :
     if not TCustomSynEdit(Sender).ReadOnly then begin
@@ -1911,32 +1912,33 @@ writeln('[TSourceEditor.OnCodeBufferChanged] A ',FIgnoreCodeBufferLock,' ',SrcLo
   end;
 end;
 
-procedure TSourceEditor.StartIdentCompletion;
+procedure TSourceEditor.StartIdentCompletion(JumpToError: boolean);
 var
   I: Integer;
   P: TPoint;
   TextS, TextS2: String;
   LogCaret: TPoint;
 begin
-  debugln('TSourceEditor.StartIdentCompletion');
-  if not FEditor.ReadOnly then begin
-    CurrentCompletionType:=ctIdentCompletion;
-    TextS := FEditor.LineText;
-    LogCaret:=FEditor.LogicalCaretXY;
-    i := LogCaret.X - 1;
-    if i > length(TextS) then
-      TextS2 := ''
-    else begin
-      while (i > 0) and (TextS[i] in ['a'..'z','A'..'Z','0'..'9','_']) do
-        dec(i);
-      TextS2 := Trim(copy(TextS, i + 1, LogCaret.X - i - 1));
-    end;
-    with FEditor do
-      P := ClientToScreen(Point(CaretXPix - length(TextS2)*CharWidth
-              ,CaretYPix + LineHeight));
-    aCompletion.Editor:=FEditor;
-    aCompletion.Execute(TextS2,P.X,P.Y);
+  //debugln('TSourceEditor.StartIdentCompletion');
+  if FEditor.ReadOnly then exit;
+  SourceNoteBook.fIdentCompletionJumpToError:=JumpToError;
+  
+  CurrentCompletionType:=ctIdentCompletion;
+  TextS := FEditor.LineText;
+  LogCaret:=FEditor.LogicalCaretXY;
+  i := LogCaret.X - 1;
+  if i > length(TextS) then
+    TextS2 := ''
+  else begin
+    while (i > 0) and (TextS[i] in ['a'..'z','A'..'Z','0'..'9','_']) do
+      dec(i);
+    TextS2 := Trim(copy(TextS, i + 1, LogCaret.X - i - 1));
   end;
+  with FEditor do
+    P := ClientToScreen(Point(CaretXPix - length(TextS2)*CharWidth
+            ,CaretYPix + LineHeight));
+  aCompletion.Editor:=FEditor;
+  aCompletion.Execute(TextS2,P.X,P.Y);
 end;
 
 procedure TSourceEditor.IncreaseIgnoreCodeBufferLock;
@@ -2525,7 +2527,7 @@ begin
   IdentCompletionTimer.Enabled:=false;
   IdentCompletionTimer.AutoEnabled:=false;
   TempEditor:=GetActiveSE;
-  if TempEditor<>nil then TempEditor.StartIdentCompletion;
+  if TempEditor<>nil then TempEditor.StartIdentCompletion(false);
 end;
 
 procedure TSourceNotebook.OnCodeTemplateTokenNotFound(Sender: TObject;
@@ -2683,7 +2685,7 @@ var
 begin
   Prefix := CurCompletionControl.CurrentString;
   if Assigned(OnInitIdentCompletion) then begin
-    OnInitIdentCompletion(Self,Handled,Abort);
+    OnInitIdentCompletion(Self,fIdentCompletionJumpToError,Handled,Abort);
     if Handled then begin
       if Abort then exit;
       // add one entry per item
