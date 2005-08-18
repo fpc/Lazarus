@@ -61,6 +61,7 @@ const
   ctnImplementation  = 6;
   ctnInitialization  = 7;
   ctnFinalization    = 8;
+  ctnEndPoint        = 9;
 
   ctnTypeSection     = 10;
   ctnVarSection      = 11;
@@ -307,6 +308,7 @@ begin
   ctnImplementation: Result:='Implementation';
   ctnInitialization: Result:='Initialization';
   ctnFinalization: Result:='Finalization';
+  ctnEndPoint: Result:='End.';
 
   ctnTypeSection: Result:='Type Section';
   ctnVarSection: Result:='Var Section';

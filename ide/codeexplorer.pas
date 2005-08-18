@@ -426,6 +426,10 @@ begin
       ctnVariantType]
     then
       ShowNode:=false;
+      
+    // don't show End.
+    if CodeNode.Desc=ctnEndPoint then
+      ShowNode:=false;
 
     ViewNode:=ParentViewNode;
     if ShowNode then begin

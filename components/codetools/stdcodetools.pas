@@ -3238,6 +3238,7 @@ begin
   if CommentText='' then exit;
 
   {debugln('TStandardCodeTool.FindCommentInFront A CommentText="',CommentText,'" ',
+    ' StartPos=Y='+dbgs(StartPos.Y)+',X='+dbgs(StartPos.X),
     ' InvokeBuildTree='+dbgs(InvokeBuildTree),
     ' SearchInParentNode='+dbgs(SearchInParentNode),
     ' WithCommentBounds='+dbgs(WithCommentBounds),

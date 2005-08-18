@@ -1753,6 +1753,8 @@ end;
 
 function TPascalParserTool.KeyWordFuncEndPoint: boolean;
 // keyword 'end' or '.'  (source end.)
+var
+  LastNodeEnd: LongInt;
 begin
   if CurPos.Flag=cafPoint then begin
     if not LastUpAtomIs(0,'END') then
@@ -1776,14 +1778,19 @@ begin
     end;
   end else
     SaveRaiseException('[TPascalParserTool.KeyWordFuncEndPoint] internal error');
-  if CurNode.Desc in [ctnImplementation,ctnInterface] then
-    CurNode.EndPos:=CurPos.StartPos
+  if CurNode.Desc in [ctnBeginBlock] then
+    CurNode.EndPos:=CurPos.EndPos
   else
-    CurNode.EndPos:=CurPos.EndPos;
+    CurNode.EndPos:=CurPos.StartPos;
+  LastNodeEnd:=CurNode.EndPos;
   EndChildNode;
+  CreateChildNode;
+  CurNode.Desc:=ctnEndPoint;
+  CurNode.StartPos:=LastNodeEnd;
   ReadNextAtom;
   if CurPos.Flag<>cafPoint then
     RaiseCharExpectedButAtomFound('.');
+  EndChildNode;
   CurSection:=ctnNone;
   Result:=true;
 end;
