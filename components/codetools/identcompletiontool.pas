@@ -873,6 +873,8 @@ begin
     {$ENDIF}
     GatherContext:=CreateFindContext(Self,CursorNode);
     ContextExprStartPos:=GetContextExprStartPos(IdentStartPos,CursorNode);
+    if GatherContext.Node.Desc=ctnWithVariable then
+      GatherContext.Node:=GatherContext.Node.Parent;
 
     {$IFDEF CTDEBUG}
     DebugLn('TIdentCompletionTool.GatherIdentifiers C',
