@@ -142,11 +142,18 @@ function CodePosition(P: integer; Code: TCodeBuffer): TCodePosition;
 function CodeXYPosition(X, Y: integer; Code: TCodeBuffer): TCodeXYPosition;
 function CompareCodeXYPositions(Pos1, Pos2: PCodeXYPosition): integer;
 
+procedure AddCodePosition(var ListOfPCodeXYPosition: TFPList;
+  const NewCodePos: TCodeXYPosition);
+function IndexOfCodePosition(var ListOfPCodeXYPosition: TFPList;
+  const APosition: PCodeXYPosition): integer;
+procedure FreeListOfPCodeXYPosition(ListOfPCodeXYPosition: TFPList);
+
 var
   WordToAtomFlag: TWordToAtomFlag;
   
 function DbgsCXY(const p: TCodeXYPosition): string;
 function DbgsCP(const p: TCodePosition): string;
+function ListOfPCodeXYPositionToStr(const ListOfPCodeXYPosition: TFPList): string;
 
 
 implementation
@@ -184,6 +191,45 @@ begin
   else Result:=0;
 end;
 
+procedure AddCodePosition(var ListOfPCodeXYPosition: TFPList;
+  const NewCodePos: TCodeXYPosition);
+var
+  AddCodePos: PCodeXYPosition;
+begin
+  if ListOfPCodeXYPosition=nil then ListOfPCodeXYPosition:=TFPList.Create;
+  New(AddCodePos);
+  AddCodePos^:=NewCodePos;
+  ListOfPCodeXYPosition.Add(AddCodePos);
+end;
+
+function IndexOfCodePosition(var ListOfPCodeXYPosition: TFPList;
+  const APosition: PCodeXYPosition): integer;
+begin
+  if ListOfPCodeXYPosition=nil then
+    Result:=-1
+  else begin
+    Result:=ListOfPCodeXYPosition.Count-1;
+    while (Result>=0)
+    and (CompareCodeXYPositions(APosition,
+                             PCodeXYPosition(ListOfPCodeXYPosition[Result]))<>0)
+    do
+      dec(Result);
+  end;
+end;
+
+procedure FreeListOfPCodeXYPosition(ListOfPCodeXYPosition: TFPList);
+var
+  CurCodePos: PCodeXYPosition;
+  i: Integer;
+begin
+  if ListOfPCodeXYPosition=nil then exit;
+  for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
+    CurCodePos:=PCodeXYPosition(ListOfPCodeXYPosition[i]);
+    Dispose(CurCodePos);
+  end;
+  ListOfPCodeXYPosition.Free;
+end;
+
 function DbgsCXY(const p: TCodeXYPosition): string;
 begin
   if p.Code=nil then
@@ -202,6 +248,23 @@ begin
     CodeXYPosition.Code.AbsoluteToLineCol(p.P,CodeXYPosition.Y,CodeXYPosition.X);
   end;
   Result:=DbgsCXY(CodeXYPosition);
+end;
+
+function ListOfPCodeXYPositionToStr(const ListOfPCodeXYPosition: TFPList
+  ): string;
+var
+  p: TCodeXYPosition;
+  i: Integer;
+begin
+  if ListOfPCodeXYPosition=nil then
+    Result:='nil'
+  else begin
+    Result:='';
+    for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
+      p:=PCodeXYPosition(ListOfPCodeXYPosition[i])^;
+      Result:=Result+'  '+DbgsCXY(p)+LineEnding;
+    end;
+  end;
 end;
 
 { TAtomRing }

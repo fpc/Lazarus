@@ -215,6 +215,7 @@ type
     Node: TCodeTreeNode;
     Tool: TFindDeclarationTool;
   end;
+  PFindContext = ^TFindContext;
   
 const
   CleanFindContext: TFindContext = (Node:nil; Tool:nil);
@@ -662,10 +663,14 @@ type
     function BaseTypeOfNodeHasSubIdents(ANode: TCodeTreeNode): boolean;
     function FindBaseTypeOfNode(Params: TFindDeclarationParams;
       Node: TCodeTreeNode): TFindContext;
-    function FindDeclarationsAndAncestors(const CursorPos: TCodeXYPosition;
-      var ListOfPCodeXYPosition: TFPList): boolean;
+    function FindDeclarationAndOverload(const CursorPos: TCodeXYPosition;
+      out ListOfPCodeXYPosition: TFPList): boolean;
+    function FindClassAndAncestors(ClassNode: TCodeTreeNode;
+      out ListOfPFindContext: TFPList): boolean;
+    function FindContextClassAndAncestors(const CursorPos: TCodeXYPosition;
+      var ListOfPFindContext: TFPList): boolean;
     function FindReferences(const CursorPos: TCodeXYPosition;
-      SkipComments: boolean; var ListOfPCodeXYPosition: TFPList): boolean;
+      SkipComments: boolean; out ListOfPCodeXYPosition: TFPList): boolean;
     function CleanPosIsDeclarationIdentifier(CleanPos: integer;
                                  Node: TCodeTreeNode): boolean;
 
@@ -698,6 +703,16 @@ function CreateFindContext(NewTool: TFindDeclarationTool;
 function CreateFindContext(Params: TFindDeclarationParams): TFindContext;
 function CreateFindContext(BaseTypeCache: TBaseTypeCache): TFindContext;
 function FindContextAreEqual(const Context1, Context2: TFindContext): boolean;
+function CompareFindContexts(const Context1, Context2: PFindContext): integer;
+procedure AddFindContext(var ListOfPFindContext: TFPList;
+  const NewContext: TFindContext);
+function IndexOfFindContext(var ListOfPFindContext: TFPList;
+  const AContext: PFindContext): integer;
+procedure FreeListOfPFindContext(ListOfPFindContext: TFPList);
+
+function ListOfPFindContextToStr(const ListOfPFindContext: TFPList): string;
+function DbgsFC(const Context: TFindContext): string;
+
 function PredefinedIdentToExprTypeDesc(Identifier: PChar): TExpressionTypeDesc;
 function FindDeclarationFlagsAsString(
   const Flags: TFindDeclarationFlags): string;
@@ -732,6 +747,39 @@ begin
       if Result<>'' then
         Result:=Result+', ';
       Result:=Result+FoundDeclarationFlagNames[Flag];
+    end;
+  end;
+end;
+
+function ListOfPFindContextToStr(const ListOfPFindContext: TFPList): string;
+var
+  Context: TFindContext;
+  i: Integer;
+begin
+  if ListOfPFindContext=nil then
+    Result:='nil'
+  else begin
+    Result:='';
+    for i:=0 to ListOfPFindContext.Count-1 do begin
+      Context:=PFindContext(ListOfPFindContext[i])^;
+      Result:=Result+'  '+DbgsFC(Context)+LineEnding;
+    end;
+  end;
+end;
+
+function DbgsFC(const Context: TFindContext): string;
+var
+  CursorPos: TCodeXYPosition;
+begin
+  if Context.Tool=nil then
+    Result:='nil'
+  else begin
+    Result:=Context.Tool.MainFilename;
+    if Context.Node=nil then
+      Result:=Result+'()'
+    else begin
+      Context.Tool.CleanPosToCaret(Context.Node.StartPos,CursorPos);
+      Result:=Result+'(y='+dbgs(CursorPos.Y)+',x='+dbgs(CursorPos.X)+')';
     end;
   end;
 end;
@@ -860,6 +908,59 @@ end;
 function FindContextAreEqual(const Context1, Context2: TFindContext): boolean;
 begin
   Result:=(Context1.Tool=Context2.Tool) and (Context1.Node=Context2.Node);
+end;
+
+function CompareFindContexts(const Context1, Context2: PFindContext): integer;
+begin
+  if Pointer(Context1^.Tool)>Pointer(Context2^.Tool) then
+    Result:=1
+  else if Pointer(Context1^.Tool)<Pointer(Context2^.Tool) then
+    Result:=-1
+  else if Pointer(Context1^.Node)>Pointer(Context2^.Node) then
+    Result:=1
+  else if Pointer(Context1^.Node)<Pointer(Context2^.Node) then
+    Result:=-1
+  else
+    Result:=0;
+end;
+
+procedure AddFindContext(var ListOfPFindContext: TFPList;
+  const NewContext: TFindContext);
+var
+  AddContext: PFindContext;
+begin
+  if ListOfPFindContext=nil then ListOfPFindContext:=TFPList.Create;
+  New(AddContext);
+  AddContext^:=NewContext;
+  ListOfPFindContext.Add(AddContext);
+end;
+
+function IndexOfFindContext(var ListOfPFindContext: TFPList;
+  const AContext: PFindContext): integer;
+begin
+  if ListOfPFindContext=nil then
+    Result:=-1
+  else begin
+    Result:=ListOfPFindContext.Count-1;
+    while (Result>=0)
+    and (CompareFindContexts(AContext,
+                             PFindContext(ListOfPFindContext[Result]))<>0)
+    do
+      dec(Result);
+  end;
+end;
+
+procedure FreeListOfPFindContext(ListOfPFindContext: TFPList);
+var
+  CurContext: PFindContext;
+  i: Integer;
+begin
+  if ListOfPFindContext=nil then exit;
+  for i:=0 to ListOfPFindContext.Count-1 do begin
+    CurContext:=PFindContext(ListOfPFindContext[i]);
+    Dispose(CurContext);
+  end;
+  ListOfPFindContext.Free;
 end;
 
 
@@ -2896,34 +2997,9 @@ begin
   {$ENDIF}
 end;
 
-function TFindDeclarationTool.FindDeclarationsAndAncestors(
-  const CursorPos: TCodeXYPosition; var ListOfPCodeXYPosition: TFPList
+function TFindDeclarationTool.FindDeclarationAndOverload(
+  const CursorPos: TCodeXYPosition; out ListOfPCodeXYPosition: TFPList
   ): boolean;
-  
-  procedure AddCodePosition(const NewCodePos: TCodeXYPosition);
-  var
-    AddCodePos: PCodeXYPosition;
-  begin
-    if ListOfPCodeXYPosition=nil then ListOfPCodeXYPosition:=TFPList.Create;
-    New(AddCodePos);
-    AddCodePos^:=NewCodePos;
-    ListOfPCodeXYPosition.Add(AddCodePos);
-  end;
-  
-  function IndexOfCodePosition(APosition: PCodeXYPosition): integer;
-  begin
-    if ListOfPCodeXYPosition=nil then
-      Result:=-1
-    else begin
-      Result:=ListOfPCodeXYPosition.Count-1;
-      while (Result>=0)
-      and (CompareCodeXYPositions(APosition,
-                             PCodeXYPosition(ListOfPCodeXYPosition[Result]))<>0)
-      do
-        dec(Result);
-    end;
-  end;
-  
 var
   CurCursorPos: TCodeXYPosition;
   NewTool: TFindDeclarationTool;
@@ -2934,7 +3010,7 @@ var
 begin
   Result:=true;
   ListOfPCodeXYPosition:=nil;
-  AddCodePosition(CursorPos);
+  AddCodePosition(ListOfPCodeXYPosition,CursorPos);
   NewTool:=nil;
   NewNode:=nil;
 
@@ -2947,18 +3023,16 @@ begin
         +[fsfSearchSourceName],
         NewTool,NewNode,NewPos,NewTopLine) do
       begin
-        if IndexOfCodePosition(@NewPos)>=0 then break;
-        AddCodePosition(NewPos);
+        if IndexOfCodePosition(ListOfPCodeXYPosition,@NewPos)>=0 then break;
+        AddCodePosition(ListOfPCodeXYPosition,NewPos);
         CurCursorPos:=NewPos;
         CurTool:=NewTool;
-        {$IFDEF VerboseFindWithAncestors}
-        debugln('TFindDeclarationTool.FindDeclarationsAndAncestors ',
+        {debugln('TFindDeclarationTool.FindDeclarationAndOverload ',
           ' Self="',MainFilename,'" ');
         if CurCursorPos.Code<>nil then
           debugln('  CurCursorPos=',CurCursorPos.Code.Filename,' ',dbgs(CurCursorPos.X),',',dbgs(CurCursorPos.Y));
         if CurTool<>nil then
-          debugln('  CurTool=',CurTool.MainFilename);
-        {$ENDIF}
+          debugln('  CurTool=',CurTool.MainFilename);}
         if (CurTool=nil) then exit;
       end;
     except
@@ -2971,6 +3045,83 @@ begin
   end;
 end;
 
+function TFindDeclarationTool.FindClassAndAncestors(ClassNode: TCodeTreeNode;
+  out ListOfPFindContext: TFPList): boolean;
+var
+  FoundContext: TFindContext;
+  CurTool: TFindDeclarationTool;
+  Params: TFindDeclarationParams;
+begin
+  Result:=true;
+  ListOfPFindContext:=nil;
+  if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (ClassNode.Parent=nil)
+  or (ClassNode.Parent.Desc<>ctnTypeDefinition) then exit;
+
+  AddFindContext(ListOfPFindContext,CreateFindContext(Self,ClassNode));
+
+  Params:=TFindDeclarationParams.Create;
+  try
+    try
+      CurTool:=Self;
+      while CurTool.FindAncestorOfClass(ClassNode,Params,true) do begin
+        if (Params.NewCodeTool=nil) then break;
+        FoundContext.Tool:=Params.NewCodeTool;
+        FoundContext.Node:=Params.NewNode;
+        if IndexOfFindContext(ListOfPFindContext,@FoundContext)>=0 then break;
+        AddFindContext(ListOfPFindContext,FoundContext);
+        //debugln('TFindDeclarationTool.FindClassAndAncestors FoundContext=',DbgsFC(FoundContext));
+        CurTool:=Params.NewCodeTool;
+        ClassNode:=Params.NewNode;
+        if (ClassNode=nil)
+        or (not (ClassNode.Desc in [ctnClass,ctnClassInterface])) then
+          break;
+      end;
+    except
+      // just stop on errors
+      on E: ECodeToolError do ;
+      on E: ELinkScannerError do ;
+    end;
+  finally
+    Params.Free;
+  end;
+end;
+
+function TFindDeclarationTool.FindContextClassAndAncestors(
+  const CursorPos: TCodeXYPosition; var ListOfPFindContext: TFPList
+  ): boolean;
+// returns a list of nodes of ctnClass
+var
+  CleanCursorPos: integer;
+  ANode: TCodeTreeNode;
+  ClassNode: TCodeTreeNode;
+begin
+  Result:=false;
+  ListOfPFindContext:=nil;
+
+  ActivateGlobalWriteLock;
+  try
+    BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
+                [{$IFNDEF DisableIgnoreErrorAfter}btSetIgnoreErrorPos{$ENDIF}]);
+
+    // find class node
+    ANode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+    ClassNode:=FindClassNode(ANode);
+    if (ClassNode=nil) or (ClassNode.Parent=nil)
+    or (ClassNode.Parent.Desc<>ctnTypeDefinition) then exit;
+
+    //debugln('TFindDeclarationTool.FindContextClassAndAncestors A ClassName=',ExtractClassName(ClassNode,false));
+    // add class and ancestors type definition to ListOfPCodeXYPosition
+    if not FindClassAndAncestors(ClassNode,ListOfPFindContext)
+    then exit;
+    
+    //debugln('TFindDeclarationTool.FindContextClassAndAncestors List: ',ListOfPFindContextToStr(ListOfPFindContext));
+    
+  finally
+    DeactivateGlobalWriteLock;
+  end;
+  Result:=true;
+end;
+
 {-------------------------------------------------------------------------------
   function TFindDeclarationTool.FindReferences(const CursorPos: TCodeXYPosition;
     SkipComments: boolean; var ListOfPCodeXYPosition: TFPList): boolean;
@@ -2979,7 +3130,7 @@ end;
   at CursorPos.
 -------------------------------------------------------------------------------}
 function TFindDeclarationTool.FindReferences(const CursorPos: TCodeXYPosition;
-  SkipComments: boolean; var ListOfPCodeXYPosition: TFPList): boolean;
+  SkipComments: boolean; out ListOfPCodeXYPosition: TFPList): boolean;
 var
   Identifier: string;
   DeclarationTool: TFindDeclarationTool;

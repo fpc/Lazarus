@@ -23,7 +23,6 @@
   Abstract:
     TIdentCompletionTool enhances the TFindDeclarationTool with the ability
     to create lists of valid identifiers at a specific code position.
-
 }
 unit IdentCompletionTool;
 
@@ -216,6 +215,7 @@ type
   private
     LastGatheredIdentParent: TCodeTreeNode;
     LastGatheredIdentLevel: integer;
+    ClassAndAncestors: TFPList;// list of PCodeXYPosition
   protected
     CurrentIdentifierList: TIdentifierList;
     function CollectAllIdentifiers(Params: TFindDeclarationParams;
@@ -623,6 +623,28 @@ end;
 function TIdentCompletionTool.CollectAllIdentifiers(
   Params: TFindDeclarationParams; const FoundContext: TFindContext
   ): TIdentifierFoundResult;
+  
+  function ProtectedNodeIsInAllowedClass: boolean;
+  var
+    CurClassNode: TCodeTreeNode;
+    p: TFindContext;
+  begin
+    Result:=true;
+    if ClassAndAncestors=nil then exit;
+    CurClassNode:=FoundContext.Node;
+    while (CurClassNode<>nil)
+    and (not (CurClassNode.Desc in [ctnClass,ctnClassInterface])) do
+      CurClassNode:=CurClassNode.Parent;
+    if CurClassNode=nil then exit;
+    p:=CreateFindContext(Params.NewCodeTool,CurClassNode);
+    if IndexOfFindContext(ClassAndAncestors,@p)>=0 then begin
+      // this class node is the class or on of the ancestors of the class
+      // of the start context of the identifier completion
+      exit;
+    end;
+    Result:=false;
+  end;
+  
 var
   NewItem: TIdentifierListItem;
   Ident: PChar;
@@ -650,6 +672,15 @@ begin
       if (FoundContext.Node.Parent.Desc=ctnClassPrivate) then begin
         // skip private definitions in other units
         exit;
+      end;
+      if (FoundContext.Node.Parent.Desc=ctnClassProtected) then begin
+        // protected defnitions are only accessible from descendants
+        if ProtectedNodeIsInAllowedClass then begin
+          //debugln('TIdentCompletionTool.CollectAllIdentifiers ALLOWED Protected '+StringToPascalConst(copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50)));
+        end else begin
+          //debugln('TIdentCompletionTool.CollectAllIdentifiers FORBIDDEN Protected '+StringToPascalConst(copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50)));
+          exit;
+        end;
       end;
     end;
   end;
@@ -861,6 +892,9 @@ begin
     CursorNode:=FindDeepestExpandedNodeAtPos(CleanCursorPos,true);
     CurrentIdentifierList.StartContext.Node:=CursorNode;
 
+    // find class and ancestors if existing (needed for protected identifiers)
+    FindContextClassAndAncestors(CursorPos,ClassAndAncestors);
+
     // get identifier position
     GetIdentStartEndAtPosition(Src,CleanCursorPos,IdentStartPos,IdentEndPos);
     
@@ -963,6 +997,7 @@ begin
 
     Result:=true;
   finally
+    FreeListOfPFindContext(ClassAndAncestors);
     Params.Free;
     ClearIgnoreErrorAfter;
     DeactivateGlobalWriteLock;

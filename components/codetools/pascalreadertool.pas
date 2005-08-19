@@ -42,6 +42,9 @@ uses
   LinkScanner, AVL_Tree;
 
 type
+
+  { TPascalReaderTool }
+
   TPascalReaderTool = class(TPascalParserTool)
   public
     function FindDeepestExpandedNodeAtPos(CleanCursorPos: integer;
@@ -106,6 +109,12 @@ type
         Attr: TProcHeadAttributes): string;
     function FindClassNode(StartNode: TCodeTreeNode;
         const AClassName: string;
+        IgnoreForwards, IgnoreNonForwards: boolean): TCodeTreeNode;
+    function FindClassNodeBackwards(StartNode: TCodeTreeNode;
+        const AClassName: string;
+        IgnoreForwards, IgnoreNonForwards: boolean): TCodeTreeNode;
+    function FindClassNode(CursorNode: TCodeTreeNode): TCodeTreeNode;
+    function FindClassNodeForMethodBody(ProcNode: TCodeTreeNode;
         IgnoreForwards, IgnoreNonForwards: boolean): TCodeTreeNode;
     function FindClassSection(ClassNode: TCodeTreeNode;
         NodeDesc: TCodeTreeNodeDesc): TCodeTreeNode;
@@ -1068,6 +1077,71 @@ begin
   end;
 end;
 
+function TPascalReaderTool.FindClassNodeBackwards(StartNode: TCodeTreeNode;
+  const AClassName: string; IgnoreForwards, IgnoreNonForwards: boolean
+  ): TCodeTreeNode;
+var
+  ANode: TCodeTreeNode;
+  CurClassNode: TCodeTreeNode;
+begin
+  ANode:=StartNode;
+  while ANode<>nil do begin
+    if ANode.Desc=ctnTypeDefinition then begin
+      CurClassNode:=ANode.FirstChild;
+      if (CurClassNode<>nil) and (CurClassNode.Desc=ctnClass) then begin
+        if (not (IgnoreForwards
+                 and ((CurClassNode.SubDesc and ctnsForwardDeclaration)>0)))
+        and (not (IgnoreNonForwards
+                 and ((CurClassNode.SubDesc and ctnsForwardDeclaration)=0)))
+        then begin
+          if CompareIdentifiers(PChar(AClassName),@Src[ANode.StartPos])=0
+          then begin
+            Result:=CurClassNode;
+            exit;
+          end;
+        end;
+      end;
+    end;
+    if ANode.PriorBrother<>nil then begin
+      ANode:=ANode.PriorBrother;
+      if (ANode.FirstChild<>nil) and (ANode.Desc in AllCodeSections) then
+        ANode:=ANode.LastChild;
+      if (ANode.FirstChild<>nil) and (ANode.Desc in AllDefinitionSections) then
+        ANode:=ANode.LastChild;
+    end else begin
+      ANode:=ANode.Parent;
+    end;
+  end;
+end;
+
+function TPascalReaderTool.FindClassNode(CursorNode: TCodeTreeNode
+  ): TCodeTreeNode;
+begin
+  while CursorNode<>nil do begin
+    if CursorNode.Desc=ctnClass then begin
+      Result:=CursorNode;
+      exit;
+    end else if NodeIsMethodBody(CursorNode) then begin
+      Result:=FindClassNodeForMethodBody(CursorNode,true,false);
+      exit;
+    end;
+    CursorNode:=CursorNode.Parent;
+  end;
+  Result:=nil;
+end;
+
+function TPascalReaderTool.FindClassNodeForMethodBody(ProcNode: TCodeTreeNode;
+  IgnoreForwards, IgnoreNonForwards: boolean): TCodeTreeNode;
+var
+  ProcClassName: String;
+begin
+  Result:=nil;
+  ProcClassName:=ExtractClassNameOfProcNode(ProcNode);
+  if ProcClassName='' then exit;
+  Result:=FindClassNodeBackwards(ProcNode,ProcClassName,IgnoreForwards,
+                                 IgnoreNonForwards);
+end;
+
 function TPascalReaderTool.FindClassSection(ClassNode: TCodeTreeNode;
   NodeDesc: TCodeTreeNodeDesc): TCodeTreeNode;
 begin
@@ -1260,7 +1334,8 @@ end;
 function TPascalReaderTool.NodeIsMethodBody(ProcNode: TCodeTreeNode): boolean;
 begin
   Result:=false;
-  if (ProcNode<>nil) and (ProcNode.Desc=ctnProcedure) then begin
+  if (ProcNode<>nil) and (ProcNode.Desc=ctnProcedure)
+  and (ProcNode.FirstChild<>nil) then begin
 
     // ToDo: ppu, ppw, dcu
 

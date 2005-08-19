@@ -296,7 +296,7 @@ type
     function FindDeclarationInInterface(Code: TCodeBuffer;
           const Identifier: string; var NewCode: TCodeBuffer;
           var NewX, NewY, NewTopLine: integer): boolean;
-    function FindDeclarationsAndAncestors(Code: TCodeBuffer; X,Y: integer;
+    function FindDeclarationAndOverload(Code: TCodeBuffer; X,Y: integer;
           var ListOfPCodeXYPosition: TFPList): boolean;
     function FindMainDeclaration(Code: TCodeBuffer; X,Y: integer;
           var NewCode: TCodeBuffer;
@@ -1367,30 +1367,30 @@ begin
   {$ENDIF}
 end;
 
-function TCodeToolManager.FindDeclarationsAndAncestors(Code: TCodeBuffer; X,
+function TCodeToolManager.FindDeclarationAndOverload(Code: TCodeBuffer; X,
   Y: integer; var ListOfPCodeXYPosition: TFPList): boolean;
 var
   CursorPos: TCodeXYPosition;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.FindDeclarationsAndAncestors A ',Code.Filename,' x=',dbgs(x),' y=',dbgs(y));
+  DebugLn('TCodeToolManager.FindDeclarationAndOverload A ',Code.Filename,' x=',dbgs(x),' y=',dbgs(y));
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   CursorPos.X:=X;
   CursorPos.Y:=Y;
   CursorPos.Code:=Code;
   {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.FindDeclarationsAndAncestors B ',dbgs(FCurCodeTool.Scanner<>nil));
+  DebugLn('TCodeToolManager.FindDeclarationAndOverload B ',dbgs(FCurCodeTool.Scanner<>nil));
   {$ENDIF}
   try
-    Result:=FCurCodeTool.FindDeclarationsAndAncestors(CursorPos,
+    Result:=FCurCodeTool.FindDeclarationAndOverload(CursorPos,
                                                       ListOfPCodeXYPosition);
   except
     on e: Exception do Result:=HandleException(e);
   end;
   {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.FindDeclarationsAndAncestors END ');
+  DebugLn('TCodeToolManager.FindDeclarationAndOverload END ');
   {$ENDIF}
 end;
 

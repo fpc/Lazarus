@@ -628,7 +628,7 @@ begin
   PascalHelpContextLists:=nil;
   try
     // get all possible declarations for this identifier
-    if CodeToolBoss.FindDeclarationsAndAncestors(CodeBuffer,CodePos.X,CodePos.Y,
+    if CodeToolBoss.FindDeclarationAndOverload(CodeBuffer,CodePos.X,CodePos.Y,
       ListOfPCodeXYPosition) then
     begin
       debugln('THelpManager.ShowHelpForSourcePosition B Success ',dbgs(ListOfPCodeXYPosition.Count));
@@ -653,13 +653,7 @@ begin
       MainIDEInterface.DoJumpToCodeToolBossError;
     end;
   finally
-    if ListOfPCodeXYPosition<>nil then begin
-      for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
-        CurCodePos:=PCodeXYPosition(ListOfPCodeXYPosition[i]);
-        Dispose(CurCodePos);
-      end;
-      ListOfPCodeXYPosition.Free;
-    end;
+    FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
     if PascalHelpContextLists<>nil then begin
       for i:=0 to PascalHelpContextLists.Count-1 do
         TObject(PascalHelpContextLists[i]).Free;
