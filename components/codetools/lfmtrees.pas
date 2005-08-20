@@ -30,7 +30,7 @@ unit LFMTrees;
 interface
 
 uses
-  Classes, SysUtils, FileProcs, CodeCache, CodeAtom;
+  Classes, SysUtils, FileProcs, CodeCache, CodeAtom, TypInfo;
   
 type
   { TLFMTreeNode }
@@ -257,6 +257,12 @@ type
     function FirstErrorAsString: string;
   end;
   
+  TInstancePropInfo = record
+    Instance: TPersistent;
+    PropInfo: PPropInfo;
+  end;
+  PInstancePropInfo = ^TInstancePropInfo;
+
 const
   LFMErrorTypeNames: array[TLFMErrorType] of string = (
     'NoError',
@@ -269,8 +275,23 @@ const
     'PropertyHasNoSubProperties',
     'IdentifierNotPublished'
     );
+    
+procedure FreeListOfPInstancePropInfo(List: TFPList);
 
 implementation
+
+procedure FreeListOfPInstancePropInfo(List: TFPList);
+var
+  i: Integer;
+  p: PInstancePropInfo;
+begin
+  if List=nil then exit;
+  for i:=0 to List.Count-1 do begin
+    p:=PInstancePropInfo(List[i]);
+    Dispose(p);
+  end;
+  List.Free;
+end;
 
 { TLFMTree }
 

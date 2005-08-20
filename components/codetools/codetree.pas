@@ -264,6 +264,11 @@ var
 //-----------------------------------------------------------------------------
 // useful functions
 function NodeDescriptionAsString(Desc: TCodeTreeNodeDesc): string;
+function FindCodeTreeNodeExt(Tree: TAVLTree; const Txt: string
+                             ): TCodeTreeNodeExtension;
+function FindCodeTreeNodeExtAVLNode(Tree: TAVLTree; const Txt: string): TAVLTreeNode;
+function CompareTxtWithCodeTreeNodeExt(p: Pointer;
+                                       NodeData: pointer): integer;
 function CompareCodeTreeNodeExt(NodeData1, NodeData2: pointer): integer;
 function CompareCodeTreeNodeExtWithPos(NodeData1, NodeData2: pointer): integer;
 function CompareCodeTreeNodeExtWithNodeStartPos(
@@ -352,6 +357,36 @@ begin
   else
     Result:='invalid descriptor';
   end;
+end;
+
+function FindCodeTreeNodeExt(Tree: TAVLTree; const Txt: string
+  ): TCodeTreeNodeExtension;
+var
+  AVLNode: TAVLTreeNode;
+begin
+  AVLNode:=FindCodeTreeNodeExtAVLNode(Tree,Txt);
+  if AVLNode<>nil then
+    Result:=TCodeTreeNodeExtension(AVLNode.Data)
+  else
+    Result:=nil;
+end;
+
+function FindCodeTreeNodeExtAVLNode(Tree: TAVLTree; const Txt: string
+  ): TAVLTreeNode;
+begin
+  Result:=Tree.FindKey(@Txt,@CompareTxtWithCodeTreeNodeExt);
+end;
+
+function CompareTxtWithCodeTreeNodeExt(p: Pointer; NodeData: pointer
+  ): integer;
+var
+  s: String;
+  NodeExt: TCodeTreeNodeExtension;
+begin
+  NodeExt:=TCodeTreeNodeExtension(NodeData);
+  s:=PAnsistring(p)^;
+  Result:=CompareTextIgnoringSpace(s,NodeExt.Txt,false);
+  //debugln('CompareTxtWithCodeTreeNodeExt ',NodeExt.Txt,' ',s,' ',dbgs(Result));
 end;
 
 function CompareCodeTreeNodeExt(NodeData1, NodeData2: pointer): integer;

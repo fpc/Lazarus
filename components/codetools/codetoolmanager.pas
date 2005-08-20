@@ -482,7 +482,11 @@ type
     function RenamePublishedVariable(Code: TCodeBuffer;
           const AClassName, OldVariableName, NewVarName,
           VarType: shortstring; ErrorOnClassNotFound: boolean): boolean;
-          
+    function FindDanglingComponentEvents(Code: TCodeBuffer;
+          const AClassName: string;
+          RootComponent: TComponent; ExceptionOnClassNotFound: boolean;
+          out ListOfPInstancePropInfo: TFPList): boolean;
+
     // functions for events in the object inspector
     function GetCompatiblePublishedMethods(Code: TCodeBuffer;
           const AClassName: string; TypeData: PTypeData;
@@ -2935,6 +2939,24 @@ begin
     Result:=FCurCodeTool.RenamePublishedVariable(UpperCaseStr(AClassName),
                UpperCaseStr(OldVariableName),NewVarName,VarType,
                ErrorOnClassNotFound,SourceChangeCache);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.FindDanglingComponentEvents(Code: TCodeBuffer;
+  const AClassName: string; RootComponent: TComponent;
+  ExceptionOnClassNotFound: boolean; out ListOfPInstancePropInfo: TFPList
+  ): boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindDanglingComponentEvents A ',Code.Filename,' ',AClassName);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.FindDanglingComponentEvents(AClassName,RootComponent,
+                              ExceptionOnClassNotFound,ListOfPInstancePropInfo);
   except
     on e: Exception do Result:=HandleException(e);
   end;

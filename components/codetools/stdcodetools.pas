@@ -48,7 +48,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, CodeToolsStrConsts, FileProcs, CodeTree, CodeAtom,
+  Classes, SysUtils, TypInfo, CodeToolsStrConsts, FileProcs, CodeTree, CodeAtom,
   FindDeclarationTool, IdentCompletionTool, PascalReaderTool, PascalParserTool,
   KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache,
   AVL_Tree, LFMTrees, SourceChanger,
@@ -182,6 +182,13 @@ type
           UpperOldVarName: string; const NewVarName, VarType: shortstring;
           ExceptionOnClassNotFound: boolean;
           SourceChangeCache: TSourceChangeCache): boolean;
+    function GatherPublishedClassElements(const TheClassName: string;
+          ExceptionOnClassNotFound, WithVariables, WithMethods,
+          WithProperties: boolean;
+          out TreeOfCodeTreeNodeExtension: TAVLTree): boolean;
+    function FindDanglingComponentEvents(const TheClassName: string;
+          RootComponent: TComponent; ExceptionOnClassNotFound: boolean;
+          out ListOfPInstancePropInfo: TFPList): boolean;
 
     // blocks (e.g. begin..end)
     function FindBlockCounterPart(const CursorPos: TCodeXYPosition;
@@ -3725,6 +3732,158 @@ begin
     // old variable not found -> add it
     Result:=AddPublishedVariable(UpperClassName,NewVarName,VarType,
                                  SourceChangeCache);
+  end;
+end;
+
+function TStandardCodeTool.GatherPublishedClassElements(
+  const TheClassName: string;
+  ExceptionOnClassNotFound, WithVariables, WithMethods, WithProperties: boolean;
+  out TreeOfCodeTreeNodeExtension: TAVLTree): boolean;
+var
+  ClassNode, SectionNode: TCodeTreeNode;
+  ANode: TCodeTreeNode;
+  CurProcName: String;
+  NewNodeExt: TCodeTreeNodeExtension;
+  CurVarName: String;
+  CurPropName: String;
+begin
+  Result:=false;
+  TreeOfCodeTreeNodeExtension:=nil;
+  if (TheClassName='') or (length(TheClassName)>255) then
+    RaiseException(Format(ctsInvalidClassName, ['"', TheClassName, '"']));
+  BuildTree(true);
+  ClassNode:=FindClassNodeInInterface(TheClassName,true,false,
+    ExceptionOnClassNotFound);
+  if ClassNode=nil then exit;
+  TreeOfCodeTreeNodeExtension:=TAVLTree.Create(@CompareCodeTreeNodeExt);
+  BuildSubTreeForClass(ClassNode);
+  SectionNode:=ClassNode.FirstChild;
+  while (SectionNode<>nil) do begin
+    if SectionNode.Desc=ctnClassPublished then begin
+      ANode:=SectionNode.FirstChild;
+      while ANode<>nil do begin
+        if (ANode.Desc=ctnProcedure) and WithMethods then begin
+          CurProcName:=ExtractProcName(ANode,[]);
+          //debugln('TStandardCodeTool.GatherPublishedClassElements CurProcName="',CurProcName,'"');
+          NewNodeExt:=NodeExtMemManager.NewNode;
+          with NewNodeExt do begin
+            Node:=ANode;
+            Txt:=CurProcName;
+          end;
+          TreeOfCodeTreeNodeExtension.Add(NewNodeExt);
+        end
+        else if (ANode.Desc=ctnVarDefinition) and WithVariables then begin
+          CurVarName:=ExtractDefinitionName(ANode);
+          NewNodeExt:=NodeExtMemManager.NewNode;
+          with NewNodeExt do begin
+            Node:=ANode;
+            Txt:=CurVarName;
+          end;
+          TreeOfCodeTreeNodeExtension.Add(NewNodeExt);
+        end
+        else if (ANode.Desc=ctnProperty) and WithProperties then begin
+          CurPropName:=ExtractPropName(ANode,false);
+          NewNodeExt:=NodeExtMemManager.NewNode;
+          with NewNodeExt do begin
+            Node:=ANode;
+            Txt:=CurPropName;
+          end;
+          TreeOfCodeTreeNodeExtension.Add(NewNodeExt);
+        end;
+        ANode:=ANode.NextBrother;
+      end;
+    end;
+    SectionNode:=SectionNode.NextBrother;
+  end;
+  Result:=true;
+end;
+
+function TStandardCodeTool.FindDanglingComponentEvents(
+  const TheClassName: string; RootComponent: TComponent;
+  ExceptionOnClassNotFound: boolean;
+  out ListOfPInstancePropInfo: TFPList): boolean;
+var
+  PublishedMethods: TAVLTree;
+  
+  procedure AddDanglingEvent(Instance: TPersistent; PropInfo: PPropInfo);
+  var
+    NewItem: PInstancePropInfo;
+  begin
+    New(NewItem);
+    NewItem^.Instance:=Instance;
+    NewItem^.PropInfo:=PropInfo;
+    if ListOfPInstancePropInfo=nil then ListOfPInstancePropInfo:=TFPList.Create;
+    ListOfPInstancePropInfo.Add(NewItem);
+    //debugln('AddDanglingEvent ',DbgSName(Instance),' ',PropInfo^.Name);
+  end;
+
+  procedure CheckMethodsInComponent(AComponent: TComponent);
+  var
+    TypeInfo: PTypeInfo;
+    TypeData: PTypeData;
+    PropInfo: PPropInfo;
+    CurCount: integer;
+    PropType: PTypeInfo;
+    NodeExt: TCodeTreeNodeExtension;
+    CurMethod: TMethod;
+    CurMethodName: String;
+  begin
+    if AComponent=nil then exit;
+    //debugln('TStandardCodeTool.FindDanglingComponentEvents Checking ',DbgSName(AComponent));
+    // read all properties and remove doubles
+    TypeInfo:=AComponent.ClassInfo;
+    repeat
+      // read all property infos of current class
+      TypeData:=GetTypeData(TypeInfo);
+      // skip unitname
+      PropInfo:=(@TypeData^.UnitName+Length(TypeData^.UnitName)+1);
+      // read property count
+      CurCount:=PWord(PropInfo)^;
+      inc(PtrInt(PropInfo),SizeOf(Word));
+      //debugln('    UnitName=',TypeData^.UnitName,' Type=',TypeInfo^.Name,' CurPropCount=',dbgs(CurCount));
+      // read properties
+      while CurCount>0 do begin
+        // point PropInfo to next propinfo record.
+        // Located at Name[Length(Name)+1] !
+        //debugln('      Property ',PropInfo^.Name,' Type=',PropInfo^.PropType^.Name);
+        PropType:=PropInfo^.PropType;
+        if PropType^.Kind=tkMethod then begin
+          // RTTI property is method
+          // -> search method in source
+          CurMethod:=GetMethodProp(AComponent,PropInfo);
+          CurMethodName:=RootComponent.MethodName(CurMethod.Code);
+          if CurMethodName<>'' then begin
+            NodeExt:=FindCodeTreeNodeExt(PublishedMethods,CurMethodName);
+            if NodeExt=nil then begin
+              // method not found -> dangling event
+              AddDanglingEvent(AComponent,PropInfo);
+            end;
+          end;
+        end;
+        PropInfo:=PPropInfo(pointer(@PropInfo^.Name)+PByte(@PropInfo^.Name)^+1);
+        dec(CurCount);
+      end;
+      TypeInfo:=TypeData^.ParentInfo;
+    until TypeInfo=nil;
+  end;
+
+var
+  i: Integer;
+begin
+  PublishedMethods:=nil;
+  ListOfPInstancePropInfo:=nil;
+  try
+    // search all available published methods
+    //debugln('TStandardCodeTool.FindDanglingComponentEvents A ',MainFilename,' ',DbgSName(RootComponent));
+    Result:=GatherPublishedClassElements(TheClassName,ExceptionOnClassNotFound,
+                                         false,true,false,PublishedMethods);
+    if not Result then exit;
+    // go through all components
+    CheckMethodsInComponent(RootComponent);
+    for i:=0 to RootComponent.ComponentCount-1 do
+      CheckMethodsInComponent(RootComponent.Components[i]);
+  finally
+    NodeExtMemManager.DisposeAVLTree(PublishedMethods);
   end;
 end;
 

@@ -509,6 +509,8 @@ type
         var ResourceCode: TCodeBuffer): TModalResult;
     function DoSaveFileResources(AnUnitInfo: TUnitInfo;
         ResourceCode, LFMCode: TCodeBuffer; Flags: TSaveFlags): TModalResult;
+    function DoRemoveDanglingEvents(AnUnitInfo: TUnitInfo;
+        OkOnCodeErrors: boolean): TModalResult;
     function DoRenameUnit(AnUnitInfo: TUnitInfo;
         NewFilename, NewUnitName: string;
         var ResourceCode: TCodeBuffer): TModalresult;
@@ -3659,6 +3661,10 @@ begin
     // stream component to resource code and to lfm file
     ComponentSavingOk:=true;
 
+    // clean up component
+    Result:=DoRemoveDanglingEvents(AnUnitInfo,true);
+    if Result<>mrOk then exit;
+
     // save designer form properties to the component
     FormEditor1.SaveHiddenDesignerFormProperties(AnUnitInfo.Component);
 
@@ -3881,6 +3887,34 @@ begin
   {$IFDEF IDE_DEBUG}
   writeln('TMainIDE.SaveFileResources G ',LFMCode<>nil);
   {$ENDIF}
+end;
+
+function TMainIDE.DoRemoveDanglingEvents(AnUnitInfo: TUnitInfo;
+  OkOnCodeErrors: boolean): TModalResult;
+var
+  ComponentModified: boolean;
+  ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+begin
+  Result:=mrOk;
+  if (AnUnitInfo.Component=nil) then exit;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
+  // unselect methods in ObjectInspector1
+  if (ObjectInspector1.PropertyEditorHook.LookupRoot=AnUnitInfo.Component) then
+  begin
+    ObjectInspector1.EventGrid.ItemIndex:=-1;
+    ObjectInspector1.FavouriteGrid.ItemIndex:=-1;
+  end;
+  // remove dangling methods
+  Result:=RemoveDanglingEvents(AnUnitInfo.Component,AnUnitInfo.Source,true,
+                               ComponentModified);
+  // update ObjectInspector1
+  if ComponentModified
+  and (ObjectInspector1.PropertyEditorHook.LookupRoot=AnUnitInfo.Component) then
+  begin
+    ObjectInspector1.EventGrid.RefreshPropertyValues;
+    ObjectInspector1.FavouriteGrid.RefreshPropertyValues;
+  end;
 end;
 
 function TMainIDE.DoRenameUnit(AnUnitInfo: TUnitInfo;

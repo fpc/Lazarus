@@ -33,8 +33,8 @@ interface
 
 uses
   // FCL+LCL
-  Classes, SysUtils, Math, LCLProc, LResources, Forms, Controls, Graphics,
-  Dialogs, Buttons, StdCtrls,
+  Classes, SysUtils, Math, TypInfo, LCLProc, LResources, Forms, Controls,
+  Graphics, Dialogs, Buttons, StdCtrls,
   // components
   SynHighlighterLFM, SynEdit, BasicCodeTools, CodeCache, CodeToolManager,
   LFMTrees,
@@ -87,6 +87,10 @@ function CheckLFMText(PascalBuffer: TCodeBuffer; var LFMText: string;
 function ShowRepairLFMWizard(LFMBuffer: TCodeBuffer;
   LFMTree: TLFMTree): TModalResult;
 
+function RemoveDanglingEvents(RootComponent: TComponent;
+  PascalBuffer: TCodeBuffer; OkOnCodeErrors: boolean;
+  out ComponentModified: boolean): TModalResult;
+procedure ClearDanglingEvents(ListOfPInstancePropInfo: TFPList);
 
 implementation
 
@@ -222,6 +226,84 @@ begin
   CheckLFMDialog.LoadLFM;
   Result:=CheckLFMDialog.ShowModal;
   CheckLFMDialog.Free;
+end;
+
+function RemoveDanglingEvents(RootComponent: TComponent;
+  PascalBuffer: TCodeBuffer; OkOnCodeErrors: boolean; out
+  ComponentModified: boolean): TModalResult;
+var
+  ListOfPInstancePropInfo: TFPList;
+  p: PInstancePropInfo;
+  i: Integer;
+  CurMethod: TMethod;
+  CurMethodName: String;
+  PropName: String;
+  s: String;
+  MsgResult: TModalResult;
+begin
+  try
+    // find all dangling events
+    //debugln('RemoveDanglingEvents A ',PascalBuffer.Filename,' ',DbgSName(RootComponent));
+    if not CodeToolBoss.FindDanglingComponentEvents(PascalBuffer,
+      RootComponent.ClassName,RootComponent,false,ListOfPInstancePropInfo)
+    then begin
+      //debugln('RemoveDanglingEvents Errors in code');
+      if OkOnCodeErrors then
+        exit(mrOk)
+      else
+        exit(mrCancel);
+    end;
+    if ListOfPInstancePropInfo=nil then
+      exit(mrOk);
+
+    // show the user the list of dangling events
+    //debugln('RemoveDanglingEvents Dangling Events: Count=',dbgs(ListOfPInstancePropInfo.Count));
+    s:='';
+    for i:=0 to ListOfPInstancePropInfo.Count-1 do begin
+      p:=PInstancePropInfo(ListOfPInstancePropInfo[i]);
+      PropName:=p^.PropInfo^.Name;
+      CurMethod:=GetMethodProp(p^.Instance,p^.PropInfo);
+      CurMethodName:=RootComponent.MethodName(CurMethod.Code);
+      s:=s+DbgSName(p^.Instance)+' '+PropName+'='+CurMethodName+#13;
+    end;
+    //debugln('RemoveDanglingEvents ',s);
+
+    MsgResult:=QuestionDlg('Missing Events',
+      'The following methods used by '+DbgSName(RootComponent)
+       +' are not in the source'#13
+       +PascalBuffer.Filename+#13
+       +#13
+       +s
+       +#13
+       +'Remove the dangling references?'
+       ,mtConfirmation,
+       [mrYes,'Remove',mrIgnore,'Keep them and continue',mrCancel],0);
+     if MsgResult=mrYes then begin
+       ClearDanglingEvents(ListOfPInstancePropInfo);
+       ComponentModified:=true;
+     end else if MsgResult=mrIgnore then
+       exit(mrOk)
+     else
+       exit(mrCancel);
+  finally
+    FreeListOfPInstancePropInfo(ListOfPInstancePropInfo);
+  end;
+  Result:=mrOk;
+end;
+
+procedure ClearDanglingEvents(ListOfPInstancePropInfo: TFPList);
+const
+  EmtpyMethod: TMethod = (code:nil; data:nil);
+var
+  i: Integer;
+  p: PInstancePropInfo;
+begin
+  if ListOfPInstancePropInfo=nil then exit;
+  for i:=0 to ListOfPInstancePropInfo.Count-1 do begin
+    p:=PInstancePropInfo(ListOfPInstancePropInfo[i]);
+    debugln('ClearDanglingEvents ',DbgSName(p^.Instance),' ',p^.PropInfo^.Name);
+    SetMethodProp(p^.Instance,p^.PropInfo,EmtpyMethod);
+  end;
 end;
 
 { TCheckLFMDialog }
