@@ -83,6 +83,8 @@ type
     FBackgroundColor: TColor;
     FOnSearchPosition: TSynBaseCompletionSearchPosition;
     FOnKeyCompletePrefix: TNotifyEvent;
+    FOnKeyNextChar: TNotifyEvent;
+    FOnKeyPrevChar: TNotifyEvent;
     FTextColor: TColor;
     FTextSelectedColor: TColor;
     procedure UTF8KeyPress(var UTF8Key: TUTF8Char); override;
@@ -131,6 +133,8 @@ type
     property OnSearchPosition:TSynBaseCompletionSearchPosition
       read FOnSearchPosition write FOnSearchPosition;
     property OnKeyCompletePrefix: TNotifyEvent read FOnKeyCompletePrefix write FOnKeyCompletePrefix;
+    property OnKeyNextChar: TNotifyEvent read FOnKeyNextChar write FOnKeyNextChar;
+    property OnKeyPrevChar: TNotifyEvent read FOnKeyPrevChar write FOnKeyPrevChar;
     property BackgroundColor: TColor read FBackgroundColor write FBackgroundColor;
     property TextColor: TColor read FTextColor write FTextColor;
     property TextSelectedColor: TColor
@@ -178,6 +182,10 @@ type
     procedure SetOnSearchPosition(NewValue :TSynBaseCompletionSearchPosition);
     function GetOnKeyCompletePrefix: TNotifyEvent;
     procedure SetOnKeyCompletePrefix(const AValue: TNotifyEvent);
+    function GetOnKeyNextChar: TNotifyEvent;
+    procedure SetOnKeyNextChar(const AValue: TNotifyEvent);
+    function GetOnKeyPrevChar: TNotifyEvent;
+    procedure SetOnKeyPrevChar(const AValue: TNotifyEvent);
     {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
@@ -209,6 +217,10 @@ type
       read GetOnSearchPosition write SetOnSearchPosition;
     property OnKeyCompletePrefix: TNotifyEvent read GetOnKeyCompletePrefix
                                                write SetOnKeyCompletePrefix;
+    property OnKeyNextChar: TNotifyEvent read GetOnKeyNextChar
+                                         write SetOnKeyNextChar;
+    property OnKeyPrevChar: TNotifyEvent read GetOnKeyPrevChar
+                                         write SetOnKeyPrevChar;
     {$ENDIF}
     property ClSelect: TColor read GetClSelect write SetClSelect;
     property AnsiStrings: boolean read SFAnsi write RFAnsi;
@@ -406,6 +418,18 @@ begin
     VK_TAB:
       begin
         if Assigned(OnKeyCompletePrefix) then OnKeyCompletePrefix(Self);
+        Key:=VK_UNKNOWN;
+      end;
+    VK_LEFT:
+      begin
+        if (Shift = []) and (Length(CurrentString) > 0) then begin
+          if Assigned(OnKeyPrevChar) then OnKeyPrevChar(Self);
+          Key:=VK_UNKNOWN;
+        end;
+      end;
+    VK_Right:
+      begin
+        if Assigned(OnKeyNextChar) then OnKeyNextChar(Self);
         Key:=VK_UNKNOWN;
       end;
     {$ENDIF}
@@ -730,6 +754,26 @@ end;
 procedure TSynBaseCompletion.SetOnKeyCompletePrefix(const AValue: TNotifyEvent);
 begin
   Form.OnKeyCompletePrefix:=AValue;
+end;
+
+function TSynBaseCompletion.GetOnKeyNextChar: TNotifyEvent;
+begin
+  Result:=Form.OnKeyNextChar;
+end;
+
+procedure TSynBaseCompletion.SetOnKeyNextChar(const AValue: TNotifyEvent);
+begin
+  Form.OnKeyNextChar:=AValue;
+end;
+
+function TSynBaseCompletion.GetOnKeyPrevChar: TNotifyEvent;
+begin
+  Result:=Form.OnKeyPrevChar;
+end;
+
+procedure TSynBaseCompletion.SetOnKeyPrevChar(const AValue: TNotifyEvent);
+begin
+  Form.OnKeyPrevChar:=AValue;
 end;
 {$ENDIF}
 

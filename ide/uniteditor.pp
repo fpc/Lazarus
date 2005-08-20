@@ -471,6 +471,8 @@ type
        X, Y: integer; ItemSelected: boolean; Index: integer): boolean;
     procedure OnSynCompletionSearchPosition(var APosition: integer);
     procedure OnSynCompletionCompletePrefix(Sender: TObject);
+    procedure OnSynCompletionNextChar(Sender: TObject);
+    procedure OnSynCompletionPrevChar(Sender: TObject);
     procedure OnSynCompletionKeyPress(Sender: TObject; var Key: Char);
     procedure DeactivateCompletionForm;
     procedure InitIdentCompletion(S: TStrings);
@@ -2388,6 +2390,8 @@ begin
         OnPaintItem:=@OnSynCompletionPaintItem;
         OnSearchPosition:=@OnSynCompletionSearchPosition;
         OnKeyCompletePrefix:=@OnSynCompletionCompletePrefix;
+        OnKeyNextChar:=@OnSynCompletionNextChar;
+        OnKeyPrevChar:=@OnSynCompletionPrevChar;
         OnKeyPress:=@OnSynCompletionKeyPress;
         ShortCut:=Menus.ShortCut(VK_UNKNOWN,[]);
       end;
@@ -2639,15 +2643,64 @@ begin
     CurCompletionControl.Editor.SelText:=AddPrefix;
     CurCompletionControl.Editor.LogicalCaretXY:=
       CurCompletionControl.Editor.BlockBegin;
-    SL:=TStringList.Create;
-    try
-      aWordCompletion.GetWordList(SL, NewPrefix, false, 100);
-      CurCompletionControl.ItemList:=SL;
-    finally
-      SL.Free;
+    if CurrentCompletionType=ctWordCompletion then begin
+      SL:=TStringList.Create;
+      try
+        aWordCompletion.GetWordList(SL, NewPrefix, false, 100);
+        CurCompletionControl.ItemList:=SL;
+      finally
+        SL.Free;
+      end;
     end;
     CurCompletionControl.CurrentString:=NewPrefix;
   end;
+end;
+
+procedure TSourceNotebook.OnSynCompletionNextChar(Sender: TObject);
+var
+  NewPrefix: String;
+  SrcEdit: TSourceEditor;
+  Line: String;
+  Editor: TSynEdit;
+  LogCaret: TPoint;
+  CharLen: LongInt;
+  AddPrefix: String;
+begin
+  if CurCompletionControl=nil then exit;
+  SrcEdit:=GetActiveSE;
+  if SrcEdit=nil then exit;
+  Editor:=SrcEdit.EditorComponent;
+  LogCaret:=Editor.LogicalCaretXY;
+  if LogCaret.Y>=Editor.Lines.Count then exit;
+  Line:=SrcEdit.EditorComponent.Lines[LogCaret.Y-1];
+  if LogCaret.X>length(Line) then exit;
+  CharLen:=UTF8CharacterLength(@Line[LogCaret.X]);
+  AddPrefix:=copy(Line,LogCaret.X,CharLen);
+  NewPrefix:=CurCompletionControl.CurrentString+AddPrefix;
+  //debugln('TSourceNotebook.OnSynCompletionNextChar NewPrefix="',NewPrefix,'" LogCaret.X=',dbgs(LogCaret.X));
+  inc(LogCaret.X);
+  CurCompletionControl.Editor.LogicalCaretXY:=LogCaret;
+  CurCompletionControl.CurrentString:=NewPrefix;
+end;
+
+procedure TSourceNotebook.OnSynCompletionPrevChar(Sender: TObject);
+var
+  NewPrefix: String;
+  SrcEdit: TSourceEditor;
+  Editor: TSynEdit;
+  NewLen: LongInt;
+begin
+  if CurCompletionControl=nil then exit;
+  NewPrefix:=CurCompletionControl.CurrentString;
+  if NewPrefix='' then exit;
+  SrcEdit:=GetActiveSE;
+  if SrcEdit=nil then exit;
+  Editor:=SrcEdit.EditorComponent;
+  Editor.CaretX:=Editor.CaretX-1;
+  NewLen:=UTF8FindNearestCharStart(PChar(NewPrefix),length(NewPrefix),
+                                   length(NewPrefix))-1;
+  NewPrefix:=copy(NewPrefix,1,NewLen);
+  CurCompletionControl.CurrentString:=NewPrefix;
 end;
 
 procedure TSourceNotebook.OnSynCompletionKeyPress(Sender: TObject;

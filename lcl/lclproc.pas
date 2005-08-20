@@ -238,7 +238,7 @@ function NtoLE(const AValue: QWord): QWord;
 implementation
 
 var
-  InterfaceFinalizationHandlers: TList;
+  InterfaceFinalizationHandlers: TFPList;
   DebugTextAlloced: boolean;
   DebugText: ^Text;
 
@@ -1926,7 +1926,7 @@ end;
 
 initialization
   InitializeDebugOutput;
-  InterfaceFinalizationHandlers:=TList.Create;
+  InterfaceFinalizationHandlers:=TFPList.Create;
 finalization
   InterfaceFinalizationHandlers.Free;
   InterfaceFinalizationHandlers:=nil;

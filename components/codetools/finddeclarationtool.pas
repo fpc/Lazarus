@@ -1127,16 +1127,16 @@ begin
   ActivateGlobalWriteLock;
   try
     // build code tree
-    { $IFDEF CTDEBUG}
+    {$IFDEF CTDEBUG}
     DebugLn('TFindDeclarationTool.FindDeclaration A CursorPos=X',dbgs(CursorPos.X),',Y',dbgs(CursorPos.Y));
-    { $ENDIF}
+    {$ENDIF}
     if DirtySrc<>nil then DirtySrc.Clear;
     BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
                   [{$IFNDEF DisableIgnoreErrorAfter}btSetIgnoreErrorPos,{$ENDIF}
                    btLoadDirtySource,btCursorPosOutAllowed]);
-    { $IFDEF CTDEBUG}
+    {$IFDEF CTDEBUG}
     DebugLn('TFindDeclarationTool.FindDeclaration C CleanCursorPos=',dbgs(CleanCursorPos));
-    { $ENDIF}
+    {$ENDIF}
     // find CodeTreeNode at cursor
     if (Tree.Root<>nil) and (Tree.Root.StartPos<=CleanCursorPos) then begin
       CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(Tree.Root,CleanCursorPos,
