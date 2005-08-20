@@ -7767,6 +7767,7 @@ begin
               if SelectionMode = smLine then
                 StartOfBlock.X := 1;
               SetSelText(AChar);
+              //debugln('ecChar SelAvail StartOfBlock=',dbgs(StartOfBlock),' fBlockEnd=',dbgs(fBlockEnd));
               fUndoList.AddChange(crInsert, StartOfBlock, fBlockEnd, '',
                 smNormal);
             finally
@@ -9236,11 +9237,42 @@ begin
   {$IFDEF SYN_LAZARUS}
   // i now contains the needed spaces
   Spaces := CreateTabsAndSpaces(CaretX,i,TabWidth,
-                                not (eoTabsToSpaces in Options));
+                                not (eoTabsToSpaces in Options))+'|';
+  Spaces := StringOfChar(' ', i);
+  //debugln('TCustomSynEdit.DoTabKey Spaces="',DbgStr(Spaces),'" TabChar=',DbgStr(TabChar));
+
+  BeginUndoBlock;
+  try
+    if SelAvail then begin
+      fUndoList.AddChange(crDelete, fBlockBegin, fBlockEnd, SelText,
+        SelectionMode);
+    end;
+
+    StartOfBlock := BlockBegin;
+    if SelectionMode = smLine then
+      StartOfBlock.X := 1;
+    NewCaretX := CaretX + i;
+    //debugln('TCustomSynEdit.DoTabKey Before SetSelText Line="',DbgStr(GetLineText),'"');
+    SetSelText(Spaces);
+    //debugln('TCustomSynEdit.DoTabKey After SetSelText Line="',DbgStr(GetLineText),'"');
+    ChangeScroll := not (eoScrollPastEol in fOptions);
+    try
+      Include(fOptions, eoScrollPastEol);
+      CaretX := NewCaretX;
+    finally
+      if ChangeScroll then
+        Exclude(fOptions, eoScrollPastEol);
+    end;
+    //debugln('TCustomSynEdit.DoTabKey StartOfBlock=',dbgs(StartOfBlock),' fBlockEnd=',dbgs(fBlockEnd),' Spaces="',Spaces,'"');
+    fUndoList.AddChange(crInsert, StartOfBlock, fBlockEnd, '', smNormal);
+  finally
+    EndUndoBlock;
+  end;
+  EnsureCursorPosVisible;
   {$ELSE}
   Spaces := StringOfChar(' ', i);
-  {$ENDIF}
   //debugln('TCustomSynEdit.DoTabKey Spaces="',DbgStr(Spaces),'" TabChar=',DbgStr(TabChar));
+
   if SelAvail then begin
     fUndoList.AddChange(crDelete, fBlockBegin, fBlockEnd, SelText,
       SelectionMode);
@@ -9248,9 +9280,7 @@ begin
 {begin}                                                                         //mh 2000-10-01
   StartOfBlock := CaretXY;
   NewCaretX := StartOfBlock.X + i;
-  //debugln('TCustomSynEdit.DoTabKey Before SetSelText Line="',DbgStr(GetLineText),'"');
   SetSelText(Spaces);
-  //debugln('TCustomSynEdit.DoTabKey After SetSelText Line="',DbgStr(GetLineText),'"');
   ChangeScroll := not (eoScrollPastEol in fOptions);
   try
     Include(fOptions, eoScrollPastEol);
@@ -9264,16 +9294,10 @@ begin
 //    Lines[i] := TrimRight(Lines[i]);
 //  EnsureCursorPosVisible;
 //  if Length(Lines[i]) >= StartOfBlock.X then
-    fUndoList.AddChange(crInsert, StartOfBlock,
-      {$IFDEF SYN_LAZARUS}
-      PhysicalToLogicalPos(CaretXY),
-      {$ELSE}
-      CaretXY,
-      {$ENDIF}
-      GetSelText,
-      SelectionMode);
+  fUndoList.AddChange(crInsert, StartOfBlock, CaretXY, Spaces, SelectionMode);
   EnsureCursorPosVisible;
 {end}                                                                           //mh 2000-10-01
+  {$ENDIF}
 end;
 
 procedure TCustomSynEdit.CreateWnd;
