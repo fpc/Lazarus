@@ -2280,7 +2280,7 @@ msgstr "Tiedostoa %s%s%s ei löytynyt.%s"
 
 #: lazarusidestrconsts:lisfilenotfounddoyouwanttocreateit
 msgid "File %s%s%s not found.%sDo you want to create it?%s"
-msgstr ""
+msgstr "Tiedostoa %s%s%s ei löytynyt.%sHaluatko luoda sen?%s"
 
 #: lazarusidestrconsts:lisfiledoesnotlooklikeatextfileopenitanyway
 msgid "File %s%s%s%sdoes not look like a text file.%sOpen it anyway?"
@@ -4732,7 +4732,7 @@ msgstr "puola (ISO 8859-2)"
 
 #: lazarusidestrconsts:rslanguageportugues
 msgid "Portuguese"
-msgstr ""
+msgstr "portugali"
 
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"
@@ -6468,7 +6468,7 @@ msgstr ""
 
 #: lazarusidestrconsts:listhefilewasnotfoundignorewillgoonloadingtheproject
 msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
-msgstr ""
+msgstr "Tiedostoa %s%s%s%sei löytynyt.%sOhita-näppäimen nainallus jatkaa projektin lataamista,%sKeskeytä-näppäin keskeyttää sen."
 
 #: lazarusidestrconsts:uefilerotext1
 msgid "The file \""
@@ -6648,7 +6648,7 @@ msgstr "Käännösyksikkö (unit) on jo nimeltään %s%s%s. Pascal:ssa tunnukset
 
 #: lazarusidestrconsts:lisprojaddtheunitnamealreadyexistsintheproject
 msgid "The unit name %s%s%s already exists in the project%swith file: %s%s%s."
-msgstr ""
+msgstr "Käännösyksikkö (unit) %s%s%s on jo olemassa projektissa%stiedostona: %s%s%s."
 
 #: lazarusidestrconsts:lisprojaddtheunitnamealreadyexistsintheselection
 msgid "The unit name %s%s%s already exists in the selection%swith file: %s%s%s."
@@ -7296,7 +7296,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisprojaddunitnamealreadyexists
 msgid "Unit name already exists"
-msgstr ""
+msgstr "Käännösyksikön (Unit) nimi on jo olemassa"
 
 #: lazarusidestrconsts:lisunitnotfound
 msgid "Unit not found"

@@ -2689,11 +2689,11 @@ begin
     if AButton=OtherUnitsPathEditBtn then begin
       OldPath:=edtOtherUnits.Text;
       Templates:=SetDirSeparators(
-            '$(LazarusDir)/lcl/units/$(TargetCPU)/$(TargetOS)'
-          +';$(LazarusDir)/lcl/units/$(TargetCPU)/$(TargetOS)/$(LCLWidgetType)'
-          +';$(LazarusDir)/components/units/$(TargetCPU)/$(TargetOS)'
+            '$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)'
+          +';$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)'
+          +';$(LazarusDir)/components/codetools/units/$(TargetCPU)-$(TargetOS)'
           +';$(LazarusDir)/components/custom'
-          +';$(LazarusDir)/packager/units/$(TargetCPU)/$(TargetOS)'
+          +';$(LazarusDir)/packager/units/$(TargetCPU)-$(TargetOS)'
           );
     end else
     if AButton=IncludeFilesPathEditBtn then begin
@@ -2718,7 +2718,7 @@ begin
       Templates:=SetDirSeparators(
             '$(LazarusDir)/lcl/include'
           +';$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)'
-          +';$(LazarusDir)/include/'
+          +';$(LazarusDir)/include'
           );
     end else
       exit;
