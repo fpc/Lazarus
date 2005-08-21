@@ -457,10 +457,9 @@ begin
   with PreviewGroupBox do begin
     Name:='PreviewGroupBox';
     Parent:=Self;
-    Left:=5;
-    Top:=5;
-    Width:=Self.ClientWidth-2*Left;
-    Height:=Self.ClientHeight-Top-135;
+    BorderSpacing.Around:=5;
+    Align:=alTop;
+    Height:=Self.ClientHeight-Top-140;
     Caption:=lisSortSelPreview;
   end;
 
@@ -479,7 +478,7 @@ begin
     Left:=5;
     Top:=PreviewGroupBox.Top+PreviewGroupBox.Height+5;
     Width:=((Self.ClientWidth-5) div 2)-Left;
-    Height:=40;
+    Height:=45;
     Caption:=dlgDirection;
     with Items do begin
       BeginUpdate;
