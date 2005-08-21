@@ -1,35 +1,40 @@
 object PublishProjectDialog: TPublishProjectDialog
   Caption = 'Publish Project'
-  ClientHeight = 465
+  ClientHeight = 499
   ClientWidth = 469
+  OnCreate = FormCreate
   OnResize = PublishProjectDialogRESIZE
-  PixelsPerInch = 90
+  PixelsPerInch = 112
   Position = poScreenCenter
-  HorzScrollBar.Page = 470
-  VertScrollBar.Page = 466
+  HorzScrollBar.Page = 468
+  VertScrollBar.Page = 498
   Left = 307
-  Height = 465
+  Height = 499
   Top = 165
   Width = 469
   object OkButton: TButton
-    Anchors = [akTop, akRight]
+    Anchors = [akTop, akRight, akBottom]
     Caption = 'Ok'
     ModalResult = 1
     OnClick = OkButtonCLICK
     TabOrder = 0
+    AnchorSideBottom.Control = SaveSettingsButton
+    AnchorSideBottom.Side = asrBottom
     Left = 72
     Height = 25
-    Top = 432
+    Top = 464
     Width = 75
   end
   object CancelButton: TButton
-    Anchors = [akTop, akRight]
+    Anchors = [akTop, akRight, akBottom]
     Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 1
+    AnchorSideBottom.Control = SaveSettingsButton
+    AnchorSideBottom.Side = asrBottom
     Left = 371
     Height = 25
-    Top = 432
+    Top = 464
     Width = 75
   end
   object DestDirGroupBox: TGroupBox
@@ -45,6 +50,15 @@ object PublishProjectDialog: TPublishProjectDialog
     Height = 111
     Top = 8
     Width = 450
+    object CommandAfterLabel: TLabel
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'Command after:'
+      Color = clNone
+      Left = 6
+      Height = 17
+      Top = 33
+      Width = 428
+    end
     object DestDirComboBox: TComboBox
       Anchors = [akTop, akLeft, akRight]
       MaxLength = 0
@@ -54,17 +68,20 @@ object PublishProjectDialog: TPublishProjectDialog
       Left = 6
       Height = 25
       Top = 1
-      Width = 350
+      Width = 376
     end
     object BrowseDestDirBitBtn: TBitBtn
-      Anchors = [akTop, akRight]
-      Caption = 'Browse'
+      Anchors = [akTop, akRight, akBottom]
+      AutoSize = True
+      Caption = '...'
       OnClick = BrowseDestDirBitBtnCLICK
       TabOrder = 1
-      Left = 366
+      AnchorSideBottom.Control = DestDirComboBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 390
       Height = 25
       Top = 1
-      Width = 72
+      Width = 48
     end
     object CommandAfterCombobox: TComboBox
       Anchors = [akTop, akLeft, akRight]
@@ -77,32 +94,23 @@ object PublishProjectDialog: TPublishProjectDialog
       Top = 58
       Width = 430
     end
-    object CommandAfterLabel: TLabel
-      Anchors = [akTop, akLeft, akRight]
-      Caption = 'Command after:'
-      Left = 6
-      Height = 17
-      Top = 33
-      Width = 428
-    end
   end
   object FilesGroupbox: TGroupBox
     Anchors = [akTop, akLeft, akRight]
     Caption = 'Files'
-    ClientHeight = 27
+    ClientHeight = 31
     ClientWidth = 446
     ParentColor = True
     ParentCtl3D = False
     TabOrder = 3
     OnResize = FilesGroupboxRESIZE
     Left = 8
-    Height = 44
+    Height = 48
     Top = 128
     Width = 450
     object IgnoreBinariesCheckbox: TCheckBox
       AllowGrayed = True
       Anchors = [akTop, akLeft, akRight]
-      AutoSize = True
       Caption = 'Ignore binaries'
       TabOrder = 0
       Left = 6
@@ -114,20 +122,19 @@ object PublishProjectDialog: TPublishProjectDialog
   object ProjectInfoGroupbox: TGroupBox
     Anchors = [akTop, akLeft, akRight]
     Caption = 'Project Information'
-    ClientHeight = 52
+    ClientHeight = 55
     ClientWidth = 446
     ParentColor = True
     ParentCtl3D = False
     TabOrder = 4
     OnResize = ProjectInfoGroupboxRESIZE
     Left = 8
-    Height = 69
-    Top = 344
+    Height = 72
+    Top = 376
     Width = 450
     object SaveClosedEditorFilesInfoCheckbox: TCheckBox
       AllowGrayed = True
       Anchors = [akTop, akLeft, akRight]
-      AutoSize = True
       Caption = 'Save editor info of closed files'
       TabOrder = 0
       Left = 4
@@ -138,7 +145,6 @@ object PublishProjectDialog: TPublishProjectDialog
     object SaveEditorInfoOfNonProjectFilesCheckbox: TCheckBox
       AllowGrayed = True
       Anchors = [akTop, akLeft, akRight]
-      AutoSize = True
       Caption = 'Save editor info of non project files'
       TabOrder = 1
       Left = 4
@@ -149,18 +155,19 @@ object PublishProjectDialog: TPublishProjectDialog
   end
   object SaveSettingsButton: TButton
     Anchors = [akTop, akRight]
+    AutoSize = True
     Caption = 'Save settings'
     OnClick = SaveSettingsButtonCLICK
     TabOrder = 5
     Left = 198
     Height = 25
-    Top = 432
+    Top = 464
     Width = 120
   end
   object IncludeFilterGroupbox: TGroupBox
     Anchors = [akTop, akLeft, akRight]
     Caption = 'Include Filter'
-    ClientHeight = 58
+    ClientHeight = 71
     ClientWidth = 446
     ParentColor = True
     ParentCtl3D = False
@@ -168,12 +175,11 @@ object PublishProjectDialog: TPublishProjectDialog
     TabStop = True
     OnResize = IncludeFilterGroupboxRESIZE
     Left = 8
-    Height = 75
-    Top = 176
+    Height = 88
+    Top = 184
     Width = 450
     object UseIncludeFilterCheckbox: TCheckBox
       AllowGrayed = True
-      AutoSize = True
       Caption = 'Use Include Filter'
       TabOrder = 0
       Left = 6
@@ -183,12 +189,13 @@ object PublishProjectDialog: TPublishProjectDialog
     end
     object IncFilterSimpleSyntaxCheckbox: TCheckBox
       AllowGrayed = True
-      AutoSize = True
       Caption = 'Simple Syntax'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 1
-      Left = 196
+      Left = 199
       Height = 20
-      Top = 2
+      Top = 1
       Width = 215
     end
     object IncludeFilterCombobox: TComboBox
@@ -199,14 +206,14 @@ object PublishProjectDialog: TPublishProjectDialog
       Text = 'IncludeFilterCombobox'
       Left = 6
       Height = 25
-      Top = 25
+      Top = 33
       Width = 430
     end
   end
   object ExcludeFilterGroupbox: TGroupBox
     Anchors = [akTop, akLeft, akRight]
     Caption = 'Exclude Filter'
-    ClientHeight = 62
+    ClientHeight = 71
     ClientWidth = 444
     ParentColor = True
     ParentCtl3D = False
@@ -214,27 +221,27 @@ object PublishProjectDialog: TPublishProjectDialog
     TabStop = True
     OnResize = ExcludeFilterGroupboxRESIZE
     Left = 8
-    Height = 79
-    Top = 256
+    Height = 88
+    Top = 280
     Width = 448
     object UseExcludeFilterCheckbox: TCheckBox
       AllowGrayed = True
-      AutoSize = True
       Caption = 'Use Exclude Filter'
       TabOrder = 0
       Left = 6
       Height = 20
-      Top = 5
+      Top = 1
       Width = 184
     end
     object ExcFilterSimpleSyntaxCheckbox: TCheckBox
       AllowGrayed = True
-      AutoSize = True
       Caption = 'Simple Syntax'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 1
       Left = 199
       Height = 20
-      Top = 6
+      Top = 1
       Width = 212
     end
     object ExcludeFilterCombobox: TComboBox
@@ -245,7 +252,7 @@ object PublishProjectDialog: TPublishProjectDialog
       Text = 'ExcludeFilterCombobox'
       Left = 6
       Height = 25
-      Top = 30
+      Top = 33
       Width = 430
     end
   end

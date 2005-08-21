@@ -553,6 +553,8 @@ resourcestring
   lisSaveSpace = 'Save ';
   lisSelectDFMFiles = 'Select Delphi form files (*.dfm)';
   lisChooseDirectory = 'Choose directory';
+  lisDestinationDirectory = 'Destination directory';
+  lisCommandAfter = 'Command after';
   lisChooseLazarusSourceDirectory = 'Choose Lazarus Directory';
   lisChooseCompilerPath = 'Choose compiler filename (%s)';
   lisChooseFPCSourceDir = 'Choose FPC source directory';
@@ -663,6 +665,20 @@ resourcestring
   dlgFrmEditor = 'Form Editor';
   dlgObjInsp = 'Object Inspector';
   dlgEnvFiles = 'Files';
+  lisIgnoreBinaries = 'Ignore binaries';
+  lisSimpleSyntax = 'Simple Syntax';
+  lisNormallyTheFilterIsARegularExpressionInSimpleSynta = 'Normally the '
+    +'filter is a regular expression. In Simple Syntax a . is a normal '
+    +'character, a * stands for anything, a ? stands for any character, and '
+    +'comma and semicolon separates alternatives. For example: Simple '
+    +'Syntax *.pas;*.pp corresponds to ^(.*\.pas|.*\.pp)$';
+  lisUseExcludeFilter = 'Use Exclude Filter';
+  lisExcludeFilter = 'Exclude Filter';
+  lisProjectInformation = 'Project Information';
+  lisSaveEditorInfoOfNonProjectFiles = 'Save editor info of non project files';
+  lisSaveInfoOfClosedEditorFiles = 'Save info of closed editor files';
+  lisUseIncludeFilter = 'Use Include Filter';
+  lisIncludeFilter = 'Include Filter';
   dlgEnvBckup = 'Backup';
   dlgNaming = 'Naming';
   dlgCancel = 'Cancel';
@@ -1546,6 +1562,7 @@ resourcestring
   lisLazBuildWithStaticPackages = 'With Packages';
   lisLazBuildRestartAfterBuild = 'Restart After Successfull Build';
   lisLazBuildOk = 'Ok';
+  lisSaveSettings = 'Save Settings';
   lisLazBuildCancel = 'Cancel';
   lisLazBuildNone = 'None';
   lisLazBuildBuild = 'Build';

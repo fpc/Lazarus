@@ -47,36 +47,37 @@ type
   { TPublishProjectDialog }
 
   TPublishProjectDialog = class(TForm)
-    DestDirGroupBox: TGROUPBOX;
-    DestDirComboBox: TCOMBOBOX;
-    BrowseDestDirBitBtn: TBITBTN;
-    CommandAfterLabel: TLABEL;
-    CommandAfterCombobox: TCOMBOBOX;
+    DestDirGroupBox: TGroupBox;
+    DestDirComboBox: TComboBox;
+    BrowseDestDirBitBtn: TBitBtn;
+    CommandAfterLabel: TLabel;
+    CommandAfterCombobox: TComboBox;
 
-    FilesGroupbox: TGROUPBOX;
-    IgnoreBinariesCheckbox: TCHECKBOX;
+    FilesGroupbox: TGroupBox;
+    IgnoreBinariesCheckbox: TCheckBox;
 
-    ExcludeFilterCombobox: TCOMBOBOX;
-    ExcFilterSimpleSyntaxCheckbox: TCHECKBOX;
-    UseExcludeFilterCheckbox: TCHECKBOX;
-    ExcludeFilterGroupbox: TGROUPBOX;
+    IncludeFilterCombobox: TComboBox;
+    IncFilterSimpleSyntaxCheckbox: TCheckBox;
+    UseIncludeFilterCheckbox: TCheckBox;
+    IncludeFilterGroupbox: TGroupBox;
 
-    IncludeFilterCombobox: TCOMBOBOX;
-    IncFilterSimpleSyntaxCheckbox: TCHECKBOX;
-    UseIncludeFilterCheckbox: TCHECKBOX;
-    IncludeFilterGroupbox: TGROUPBOX;
+    ExcludeFilterCombobox: TComboBox;
+    ExcFilterSimpleSyntaxCheckbox: TCheckBox;
+    UseExcludeFilterCheckbox: TCheckBox;
+    ExcludeFilterGroupbox: TGroupBox;
 
-    ProjectInfoGroupbox: TGROUPBOX;
-    SaveEditorInfoOfNonProjectFilesCheckbox: TCHECKBOX;
-    SaveClosedEditorFilesInfoCheckbox: TCHECKBOX;
+    ProjectInfoGroupbox: TGroupBox;
+    SaveEditorInfoOfNonProjectFilesCheckbox: TCheckBox;
+    SaveClosedEditorFilesInfoCheckbox: TCheckBox;
 
-    OkButton: TBUTTON;
-    SaveSettingsButton: TBUTTON;
-    CancelButton: TBUTTON;
+    OkButton: TButton;
+    SaveSettingsButton: TButton;
+    CancelButton: TButton;
     procedure BrowseDestDirBitBtnCLICK(Sender: TObject);
     procedure DestDirGroupBoxRESIZE(Sender: TObject);
     procedure ExcludeFilterGroupboxRESIZE(Sender: TObject);
     procedure FilesGroupboxRESIZE(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure IncludeFilterGroupboxRESIZE(Sender: TObject);
     procedure OkButtonCLICK(Sender: TObject);
     procedure ProjectInfoGroupboxResize(Sender: TObject);
@@ -85,7 +86,7 @@ type
   private
     FOptions: TPublishModuleOptions;
     procedure SetComboBox(AComboBox: TComboBox; const NewText: string;
-      MaxItemCount: integer);
+                          MaxItemCount: integer);
     procedure LoadHistoryLists;
     procedure SaveHistoryLists;
     procedure SetOptions(const AValue: TPublishModuleOptions);
@@ -141,7 +142,7 @@ begin
   SelectDirDialog.Title:=lisChooseDirectory;
   if SelectDirDialog.Execute then begin
     NewDir:=ExpandFilename(SelectDirDialog.Filename);
-    SetComboBox(DestDirComboBox,NewDir,20);
+    SeTComboBox(DestDirComboBox,NewDir,20);
   end;
   SelectDirDialog.Free;
 end;
@@ -152,6 +153,36 @@ end;
 
 procedure TPublishProjectDialog.FilesGroupboxRESIZE(Sender: TObject);
 begin
+end;
+
+procedure TPublishProjectDialog.FormCreate(Sender: TObject);
+begin
+  DestDirGroupBox.Caption:=lisDestinationDirectory;
+  CommandAfterLabel.Caption:=lisCommandAfter;
+
+  FilesGroupbox.Caption:=dlgEnvFiles;
+  IgnoreBinariesCheckbox.Caption:=lisIgnoreBinaries;
+
+  IncFilterSimpleSyntaxCheckbox.Caption:=lisSimpleSyntax;
+  IncFilterSimpleSyntaxCheckbox.Hint:=
+    lisNormallyTheFilterIsARegularExpressionInSimpleSynta;
+  UseIncludeFilterCheckbox.Caption:=lisUseIncludeFilter;
+  IncludeFilterGroupbox.Caption:=lisIncludeFilter;
+
+  ExcFilterSimpleSyntaxCheckbox.Caption:=lisSimpleSyntax;
+  ExcFilterSimpleSyntaxCheckbox.Hint:=
+    lisNormallyTheFilterIsARegularExpressionInSimpleSynta;
+  UseExcludeFilterCheckbox.Caption:=lisUseExcludeFilter;
+  ExcludeFilterGroupbox.Caption:=lisExcludeFilter;
+
+  ProjectInfoGroupbox.Caption:=lisProjectInformation;
+  SaveEditorInfoOfNonProjectFilesCheckbox.Caption:=
+                                        lisSaveEditorInfoOfNonProjectFiles;
+  SaveClosedEditorFilesInfoCheckbox.Caption:=lisSaveInfoOfClosedEditorFiles;
+
+  OkButton.Caption:=lisLazBuildOk;
+  SaveSettingsButton.Caption:=lisSaveSettings;
+  CancelButton.Caption:=dlgCancel;
 end;
 
 procedure TPublishProjectDialog.IncludeFilterGroupboxRESIZE(Sender: TObject);
@@ -224,20 +255,20 @@ end;
 procedure TPublishProjectDialog.SaveHistoryLists;
 begin
   // destination directories
-  SetComboBox(DestDirComboBox,DestDirComboBox.Text,20);
+  SeTComboBox(DestDirComboBox,DestDirComboBox.Text,20);
   InputHistories.HistoryLists.GetList(hlPublishProjectDestDirs,true).Assign(
     DestDirComboBox.Items);
     
   // command after
-  SetComboBox(CommandAfterCombobox,CommandAfterCombobox.Text,20);
+  SeTComboBox(CommandAfterCombobox,CommandAfterCombobox.Text,20);
   InputHistories.HistoryLists.GetList(hlPublishProjectCommandsAfter,true).Assign(
     CommandAfterCombobox.Items);
 
   // file filter
-  SetComboBox(IncludeFilterCombobox,IncludeFilterCombobox.Text,20);
+  SeTComboBox(IncludeFilterCombobox,IncludeFilterCombobox.Text,20);
   InputHistories.HistoryLists.GetList(hlPublishProjectIncludeFileFilter,true).Assign(
     IncludeFilterCombobox.Items);
-  SetComboBox(ExcludeFilterCombobox,ExcludeFilterCombobox.Text,20);
+  SeTComboBox(ExcludeFilterCombobox,ExcludeFilterCombobox.Text,20);
   InputHistories.HistoryLists.GetList(hlPublishProjectExcludeFileFilter,true).Assign(
     ExcludeFilterCombobox.Items);
 end;
@@ -278,7 +309,8 @@ constructor TPublishProjectDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   Position:=poScreenCenter;
-  IDEDialogLayoutList.ApplyLayout(Self,500,470);
+  IDEDialogLayoutList.ApplyLayout(Self,500,500);
+  if Height<500 then Height:=500;
   LoadHistoryLists;
 end;
 
@@ -294,17 +326,17 @@ var
   ProjSrcOpts: TPublishProjectOptions;
 begin
   // destination
-  SetComboBox(DestDirComboBox,SrcOpts.DestinationDirectory,20);
-  SetComboBox(CommandAfterCombobox,SrcOpts.CommandAfter,20);
+  SeTComboBox(DestDirComboBox,SrcOpts.DestinationDirectory,20);
+  SeTComboBox(CommandAfterCombobox,SrcOpts.CommandAfter,20);
 
   // file filter
   IgnoreBinariesCheckbox.Checked:=SrcOpts.IgnoreBinaries;
   UseIncludeFilterCheckbox.Checked:=SrcOpts.UseIncludeFileFilter;
   IncFilterSimpleSyntaxCheckbox.Checked:=SrcOpts.IncludeFilterSimpleSyntax;
-  SetComboBox(IncludeFilterCombobox,SrcOpts.IncludeFileFilter,20);
+  SeTComboBox(IncludeFilterCombobox,SrcOpts.IncludeFileFilter,20);
   UseExcludeFilterCheckbox.Checked:=SrcOpts.UseExcludeFileFilter;
   ExcFilterSimpleSyntaxCheckbox.Checked:=SrcOpts.ExcludeFilterSimpleSyntax;
-  SetComboBox(ExcludeFilterCombobox,SrcOpts.ExcludeFileFilter,20);
+  SeTComboBox(ExcludeFilterCombobox,SrcOpts.ExcludeFileFilter,20);
 
   // project info
   if SrcOpts is TPublishProjectOptions then begin
