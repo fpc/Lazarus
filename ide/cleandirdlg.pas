@@ -395,8 +395,8 @@ begin
         if DeleteFile(Filename) then begin
           break;
         end else begin
-          MsgResult:=MessageDlg('Error deleting file',
-            'Unable to delete file "'+Filename+'".',
+          MsgResult:=MessageDlg(lisErrorDeletingFile,
+            Format(lisPkgMangUnableToDeleteFile, ['"', Filename, '"']),
             mtError,[mbAbort,mbIgnore,mbRetry],0);
           if (MsgResult=mrIgnore) then break;
           if MsgResult=mrAbort then exit;
@@ -417,7 +417,7 @@ end;
 constructor TShowDeletingFilesDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  Caption:='Delete all these files?';
+  Caption:=lisDeleteAllTheseFiles;
   Width:=400;
   Height:=350;
   Position:=poScreenCenter;
@@ -440,7 +440,7 @@ begin
     Width:=100;
     Height:=25;
     Anchors:=[akLeft,akBottom];
-    Caption:='Delete';
+    Caption:=dlgEdDelete;
     ModalResult:=mrOk;
   end;
   
@@ -453,7 +453,7 @@ begin
     Width:=100;
     Height:=25;
     Anchors:=[akLeft,akBottom];
-    Caption:='Cancel';
+    Caption:=dlgCancel;
     ModalResult:=mrCancel;
   end;
 end;

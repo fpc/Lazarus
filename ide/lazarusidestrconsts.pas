@@ -2120,6 +2120,7 @@ resourcestring
     +'the package, otherwise other packages can get problems using this '
     +'package.%s%sDelete ambiguous file?';
   lisPkgMangUnableToDeleteFile = 'Unable to delete file %s%s%s.';
+  lisDeleteAllTheseFiles = 'Delete all these files?';
   lisPkgMangUnsavedPackage = 'Unsaved package';
   lisPkgMangThereIsAnUnsavedPackageInTheRequiredPackages = 'There is an '
     +'unsaved package in the required packages. See package graph.';
