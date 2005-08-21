@@ -2136,6 +2136,7 @@ begin
   if Button=mbMiddle then begin
     if ssDouble in Shift then Exit;
     PrimarySelText:=PrimarySelection.AsText;
+    debugln('TCustomSynEdit.MouseDown PrimarySelText="',DbgStr(PrimarySelText),'"');
   end;
   {$ENDIF}
   inherited MouseDown(Button, Shift, X, Y);
@@ -2187,19 +2188,13 @@ begin
     {$IFDEF SYN_LAZARUS}
     if (Button=mbMiddle)
     and ([sfDblClicked,sfTripleClicked,sfQuadClicked]*fStateFlags=[])
+    and ((PrimarySelText<>'') or SelAvail)
     then begin
-      if SelAvail then begin
-        fUndoList.AddChange(crDelete, fBlockBegin, fBlockEnd, SelText,
-          SelectionMode);
-      end;
-      StartOfBlock := minPoint(fBlockBegin, fBlockEnd);
-      EndOfBlock := maxPoint(fBlockBegin, fBlockEnd);
-      fBlockBegin := StartOfBlock;
-      fBlockEnd := EndOfBlock;
-      LockUndo;
-      SelText := PrimarySelText;
-      UnlockUndo;
-      fUndoList.AddChange(crPaste, StartOfBlock, BlockEnd, SelText, smNormal);
+      fBlockBegin := LogCaretXY;
+      fBlockEnd := LogCaretXY;
+      //debugln('TCustomSynEdit.MouseDown Old SelText="',DbgStr(SelText),'" fBlockBegin=',dbgs(fBlockBegin),' fBlockEnd=',dbgs(fBlockEnd),' LogCaretXY=',dbgs(LogCaretXY));
+      SelText:=PrimarySelText;
+      //debugln('TCustomSynEdit.MouseDown New SelText="',DbgStr(SelText),'" fBlockBegin=',dbgs(fBlockBegin),' fBlockEnd=',dbgs(fBlockEnd),' LogCaretXY=',dbgs(LogCaretXY));
     end;
     {$ENDIF}
   end;
@@ -8482,7 +8477,8 @@ begin
     LockUndo;
     SetSelText(Value);
     UnlockUndo;
-    fUndoList.AddChange(crInsert, StartOfBlock, BlockEnd, SelText, smNormal);
+    fUndoList.AddChange(crInsert, StartOfBlock, BlockEnd,
+      {$IFDEF SYN_LAZARUS}''{$ELSE}SelText{$ENDIF}, smNormal);
   finally
     EndUndoBlock;
   end;
