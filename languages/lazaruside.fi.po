@@ -7502,6 +7502,10 @@ msgstr ""
 msgid "View Source"
 msgstr "Näytä pääohjelma"
 
+#: lazarusidestrconsts:lisviewsourcelfm
+msgid "View Source (.lfm)"
+msgstr ""
+
 #: lazarusidestrconsts:srkmectogglesourceeditor
 msgid "View Source Editor"
 msgstr ""

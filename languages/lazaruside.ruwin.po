@@ -7502,6 +7502,10 @@ msgstr "Показать результаты поиска"
 msgid "View Source"
 msgstr "Просмотр исходника"
 
+#: lazarusidestrconsts:lisviewsourcelfm
+msgid "View Source (.lfm)"
+msgstr ""
+
 #: lazarusidestrconsts:srkmectogglesourceeditor
 msgid "View Source Editor"
 msgstr "Показать редактор исходников"

@@ -3762,6 +3762,10 @@ msgstr ""
 msgid "Option: Snap to grid"
 msgstr ""
 
+#: lazarusidestrconsts:lisviewsourcelfm
+msgid "View Source (.lfm)"
+msgstr ""
+
 #: lazarusidestrconsts:fdmsnaptoguidelinesoption
 msgid "Option: Snap to guide lines"
 msgstr ""

@@ -8,6 +8,13 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Hilfedatenbank %s%s%s konnte keinen Betrachter für die Hilfeseite des Typs %"
+"s finden"
+"Schlüsselwort %s%s%s konnte nicht in Hilfedatenbank %s%s%s gefunden werden."
+"No HTML Browser found.%sPlease define one in Help -> Configure Help -> "
+"Viewers"
+"Das Makro %s in 'Hilfe -> Hilfe einstellen -> Betrachter -> BrowserParams' wird "
+"durch die URL ersetzt."
 
 #: objinspstrconsts:sccsilcmbimglist
 msgid " Images "
@@ -400,8 +407,6 @@ msgstr "Hilfeinhalt"
 #: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
 msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
 msgstr ""
-"Hilfedatenbank %s%s%s konnte keinen Betrachter für die Hilfeseite des Typs %"
-"s finden"
 
 #: objinspstrconsts:oishelphelpdatabasenotfound
 msgid "Help Database %s%s%s not found"
@@ -418,7 +423,6 @@ msgstr "Hilfekontext %s nicht gefunden."
 #: objinspstrconsts:oishelphelpkeywordnotfoundindatabase
 msgid "Help keyword %s%s%s not found in Database %s%s%s."
 msgstr ""
-"Schlüsselwort %s%s%s konnte nicht in Hilfedatenbank %s%s%s gefunden werden."
 
 #: objinspstrconsts:oishelphelpkeywordnotfound
 msgid "Help keyword %s%s%s not found."
@@ -525,12 +529,8 @@ msgid "Next"
 msgstr "Nächstes"
 
 #: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
-msgid ""
-"No HTML Browser found.%sPlease define one in Help -> Configure Help -> "
-"Viewers"
+msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
 msgstr ""
-"Kein HTML-Browser gefunden%s Bitte definieren Sie einen in 'Hilfe -> Hilfe "
-"konfigurieren -> Betrachter'"
 
 #: objinspstrconsts:oishelpnohelpfoundforsource
 msgid "No help found for line %d, column %d of %s."
@@ -683,8 +683,6 @@ msgstr "Die Hilfedatenbank %s%s%s konnte die Datei %s%s%s nicht finden."
 #: objinspstrconsts:oishelpthemacrosinbrowserparamswillbereplacedbytheurl
 msgid "The macro %s in BrowserParams will be replaced by the URL."
 msgstr ""
-"Das Makro %s in 'Hilfe -> Hilfe einstellen -> Betrachter -> BrowserParams' wird "
-"durch die URL ersetzt."
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar
 msgid "Toolbar"
@@ -713,3 +711,4 @@ msgstr "Variant"
 #: objinspstrconsts:oisword
 msgid "Word"
 msgstr "Word"
+

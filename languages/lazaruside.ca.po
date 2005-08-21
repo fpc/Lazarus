@@ -7502,6 +7502,10 @@ msgstr "Mostra els resultats de recerca"
 msgid "View Source"
 msgstr "Mostra les font"
 
+#: lazarusidestrconsts:lisviewsourcelfm
+msgid "View Source (.lfm)"
+msgstr ""
+
 #: lazarusidestrconsts:srkmectogglesourceeditor
 msgid "View Source Editor"
 msgstr "Mostra l'editor del codi font"

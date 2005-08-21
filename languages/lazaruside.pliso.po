@@ -7513,6 +7513,10 @@ msgstr "Poka¿ wyniki wyszukiwania"
 msgid "View Source"
 msgstr "Poka¿ ¼ród³o projektu"
 
+#: lazarusidestrconsts:lisviewsourcelfm
+msgid "View Source (.lfm)"
+msgstr ""
+
 #: lazarusidestrconsts:srkmectogglesourceeditor
 msgid "View Source Editor"
 msgstr "Poka¿ edytor ¼róde³"
