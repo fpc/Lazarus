@@ -1145,6 +1145,7 @@ resourcestring
   uemPaste = 'Paste';
   uemGotoBookmark = '&Goto Bookmark';
   uemBookmarkN = 'Bookmark';
+  lisOpenLfm = 'Open %s';
   uemSetBookmark = '&Set Bookmark';
   uemReadOnly = 'Read Only';
   uemShowLineNumbers = 'Show Line Numbers';

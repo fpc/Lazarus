@@ -3199,22 +3199,26 @@ begin
   and (FilenameIsAbsolute(CurFilename)) then begin
     if FileExists(ChangeFileExt(CurFilename,'.lfm')) then
       AddContextPopupMenuItem(
-        'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.lfm'),
+        Format(lisOpenLfm, [ChangeFileExt(ExtractFileName(CurFilename), '.lfm')]
+          ),
         true,@OnPopupMenuOpenLFMFile);
     if FileExists(ChangeFileExt(CurFilename,'.lrs')) then
       AddContextPopupMenuItem(
-        'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.lrs'),
+        Format(lisOpenLfm, [ChangeFileExt(ExtractFileName(CurFilename), '.lrs')]
+          ),
         true,@OnPopupMenuOpenLRSFile);
   end;
   if (CompareFileExt(CurFilename,'.lfm',true)=0)
   and (FilenameIsAbsolute(CurFilename)) then begin
     if FileExists(ChangeFileExt(CurFilename,'.pas')) then
       AddContextPopupMenuItem(
-        'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.pas'),
+        Format(lisOpenLfm, [ChangeFileExt(ExtractFileName(CurFilename), '.pas')]
+          ),
         true,@OnPopupMenuOpenPasFile);
     if FileExists(ChangeFileExt(CurFilename,'.pp')) then
       AddContextPopupMenuItem(
-        'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.pp'),
+        Format(lisOpenLfm, [ChangeFileExt(ExtractFileName(CurFilename), '.pp')]
+          ),
         true,@OnPopupMenuOpenPPFile);
   end;
 
