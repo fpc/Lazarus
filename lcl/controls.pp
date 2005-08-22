@@ -2168,7 +2168,7 @@ end;
 
   Returns the TWinControl owning the Handle. Handle can also be a child handle,
   and does not need to be the Handle property of the Result.
-  IMPORTANT: Hence, in most cases: parameter Handle <> Result.Handle
+  IMPORTANT: Therefore, in most cases: parameter Handle <> Result.Handle
 ------------------------------------------------------------------------------}
 function FindOwnerControl(Handle: hwnd): TWinControl;
 begin

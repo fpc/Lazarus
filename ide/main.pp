@@ -11180,6 +11180,8 @@ end;
 procedure TMainIDE.OnApplicationIdle(Sender: TObject);
 var
   SrcEdit: TSourceEditor;
+  AnUnitInfo: TUnitInfo;
+  AnIDesigner: TIDesigner;
 begin
   UpdateWindowsMenu;
   GetDefaultProcessList.FreeStoppedProcesses;
@@ -11187,9 +11189,17 @@ begin
   if (SplashForm<>nil) then FreeThenNil(SplashForm);
   FormEditor1.CheckDesignerPositions;
   FormEditor1.PaintAllDesignerItems;
-  SrcEdit:=SourceNotebook.GetActiveSe;
+  GetCurrentUnit(SrcEdit,AnUnitInfo);
   MainIDEBar.SaveSpeedBtn.Enabled := (SrcEdit<>nil)
                                         and SourceNotebook.GetActiveSe.Modified;
+  if Screen.ActiveForm<>nil then begin
+    AnIDesigner:=Screen.ActiveForm.Designer;
+    if AnIDesigner is TDesigner then begin
+      MainIDEBar.ToggleFormSpeedBtn.Enabled:=true;
+    end else begin
+      MainIDEBar.ToggleFormSpeedBtn.Enabled:=AnUnitInfo.HasResources;
+    end;
+  end;
 end;
 
 procedure TMainIDE.OnScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
