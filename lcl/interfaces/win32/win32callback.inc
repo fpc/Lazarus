@@ -1417,7 +1417,7 @@ Begin
     CN_KEYDOWN, CN_KEYUP, CN_SYSKEYDOWN, CN_SYSKEYUP:
     begin
       // if key not yet processed, let windows process it
-      WinProcess := (LMKey.CharCode <> VK_UNKNOWN) and (LMChar.Result = 0);
+      WinProcess := (LMKey.CharCode <> VK_UNKNOWN) and (LMKey.Result = 0);
       WParam := LMKey.CharCode;
     end;
 
