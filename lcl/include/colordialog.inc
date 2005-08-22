@@ -30,8 +30,7 @@ begin
   FTitle:= rsSelectcolorTitle;
 end;
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.6  2004/04/10 17:58:56  mattias
   implemented mainunit hints for include files

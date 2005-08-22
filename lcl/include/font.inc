@@ -1050,8 +1050,7 @@ end;
 
 // included by graphics.pp
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.30  2005/03/07 21:59:44  vincents
   changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman

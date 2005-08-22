@@ -279,8 +279,7 @@ begin
 end;
 
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.23  2005/07/18 21:23:06  mattias
   fixed TSaveDialog.Options ofNoReadOnlyReturn  fr omColin Western

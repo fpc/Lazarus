@@ -87,8 +87,7 @@ end;
 // included by controls.pp
 
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.10  2005/01/16 11:40:10  mattias
   fixed TGtkWidgetSet.ExtSelectClipRGN for DCOrigin

@@ -145,8 +145,7 @@ procedure RaiseLastOSError;
 
 {$ENDIF}
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.32  2005/07/17 01:27:22  mattias
   removed %MainUnit directive

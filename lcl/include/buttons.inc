@@ -293,8 +293,7 @@ begin
 end;
 
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.46  2005/06/03 20:58:23  mattias
   fixed focussing modal forms on gtk intf

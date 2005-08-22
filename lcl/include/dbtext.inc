@@ -103,8 +103,7 @@ begin
   inherited Destroy;
 end;
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.4  2004/08/22 22:57:35  mattias
   added OnActiveChange  from Joost

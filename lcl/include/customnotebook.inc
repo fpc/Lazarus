@@ -795,8 +795,7 @@ begin
 end;
 
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.71  2005/03/31 21:29:45  micha
   move GetNotebookTabIndexAtPos to the widgetset interface

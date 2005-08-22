@@ -2995,8 +2995,7 @@ end;
 {$ENDIF}
 
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.283  2005/07/23 23:15:19  mattias
   fixed sending UTF8 key presses in gtk intf

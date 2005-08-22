@@ -2406,8 +2406,7 @@ end;
 
 end.
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.173  2005/06/22 23:04:44  mattias
   implemented default height for gtk TStatusBar and set TStatusBar.AutoSize to true

@@ -434,8 +434,7 @@ finalization
 
 end.
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.61  2005/03/23 10:45:06  mattias
   fixed ambigious with ambiguous

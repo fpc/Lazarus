@@ -360,7 +360,7 @@ end;
 
 // included by controls.pp
 
-{ =============================================================================
+{
   $Log$
   Revision 1.9  2005/07/26 08:45:15  vincents
   initialize variables at declaration instead in the unit initialization   from Florian Köberle

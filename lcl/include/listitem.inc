@@ -541,8 +541,7 @@ begin
   SubItems.Assign(AValue);
 end;
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.22  2005/07/01 18:20:41  mattias
   added ldocktree.pas

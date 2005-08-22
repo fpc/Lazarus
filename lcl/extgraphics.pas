@@ -393,8 +393,7 @@ end;
  
 end.
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.4  2004/11/10 15:25:32  mattias
   updated memcheck.pas from heaptrc.pp

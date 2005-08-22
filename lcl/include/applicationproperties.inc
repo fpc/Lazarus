@@ -191,8 +191,7 @@ end;
 
 // included by forms.pp
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.1  2004/07/25 01:04:45  mattias
   TXMLPropStorage basically working

@@ -37,8 +37,7 @@ procedure TWidgetSet.PassCmdLineOptions;
 begin
 end;
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.117  2004/09/24 21:34:14  micha
   convert LM_CREATE message to interface methods

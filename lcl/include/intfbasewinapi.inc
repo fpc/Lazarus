@@ -1429,8 +1429,7 @@ begin
 end;
 
 //##apiwiz##eps##   // Do not remove
-{ =============================================================================
-
+{
   $Log$
   Revision 1.23  2005/06/22 17:37:06  mattias
   implemented TMouse.SetCursorPos  from Andrew

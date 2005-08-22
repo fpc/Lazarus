@@ -4,7 +4,6 @@
                          ----------------------------------------
 
  @created(Wed Feb 25st WET 2001)
- @lastmod($Date$)
  @author(Marc Weustink <marc@@dommelstein.net>)
 
  This unit contains the base class definitions of the debugger. These

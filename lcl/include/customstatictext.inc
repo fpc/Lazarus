@@ -143,8 +143,7 @@ end;
 
 // included by stdctrls.pp
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.15  2005/06/25 01:42:38  mattias
   moved InvalidatePreferredSize from gtk intf to lcl

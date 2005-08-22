@@ -238,8 +238,7 @@ begin
   inherited Destroy;
 end;
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.12  2005/04/03 10:13:34  mattias
   dbgrids: Stops propagating ENTER key when modifying a field  from Jesus

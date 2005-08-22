@@ -744,8 +744,7 @@ end;
 
 // included by comctrls.pp
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.47  2005/06/25 15:34:03  mattias
   fixed a few fpc over warnings  from Andrew Haines

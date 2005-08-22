@@ -119,8 +119,7 @@ end;
 
 // included by controls.pp
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.12  2005/01/22 22:26:16  mattias
   added sprite example

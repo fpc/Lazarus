@@ -3524,7 +3524,7 @@ end;
 
 // included by controls.pp
 
-{ =============================================================================
+{
   $Log$
   Revision 1.269  2005/07/19 20:58:15  mattias
   fixed reading vaInt16
