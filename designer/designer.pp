@@ -195,8 +195,9 @@ type
 
     procedure GiveComponentsNames;
     procedure NotifyPersistentAdded(APersistent: TPersistent);
-    function  ControlClassAtPos(const AClass: TControlClass; const APos: TPoint;
-                         const UseFormAsDefault, IgnoreHidden: boolean): TControl;
+    function  ComponentClassAtPos(const AClass: TComponentClass;
+                                  const APos: TPoint; const UseRootAsDefault,
+                                  IgnoreHidden: boolean): TComponent;
 
     // popup menu
     procedure BuildPopupMenu;
@@ -251,10 +252,12 @@ type
 
     function NonVisualComponentLeftTop(AComponent: TComponent): TPoint;
     function NonVisualComponentAtPos(x,y: integer): TComponent;
-    function WinControlAtPos(x,y: integer; UseFormAsDefault,
+    function WinControlAtPos(x,y: integer; UseRootAsDefault,
                              IgnoreHidden: boolean): TWinControl;
-    function ControlAtPos(x,y: integer; UseFormAsDefault,
+    function ControlAtPos(x,y: integer; UseRootAsDefault,
                           IgnoreHidden: boolean): TControl;
+    function ComponentAtPos(x,y: integer; UseRootAsDefault,
+                            IgnoreHidden: boolean): TComponent;
     function GetDesignedComponent(AComponent: TComponent): TComponent;
     function GetComponentEditorForSelection: TBaseComponentEditor;
     function GetShiftState: TShiftState; override;
@@ -1114,9 +1117,9 @@ Begin
   NonVisualComp:=NonVisualComponentAtPos(MouseDownPos.X,MouseDownPos.Y);
   if NonVisualComp<>nil then MouseDownComponent:=NonVisualComp;
 
-  if MouseDownComponent=nil then begin
-    MouseDownComponent:=ControlAtPos(MouseDownPos.X,MouseDownPos.Y,true,true);
-    if MouseDownComponent=nil then exit;
+  if (MouseDownComponent=nil) then begin
+    MouseDownComponent:=ComponentAtPos(MouseDownPos.X,MouseDownPos.Y,true,true);
+    if (MouseDownComponent=nil) then exit;
   end;
   MouseDownSender:=Sender;
 
@@ -1146,7 +1149,7 @@ Begin
   {$IFDEF VerboseDesigner}
   DebugLn('************************************************************');
   DbgOut('MouseDownOnControl');
-  DbgOut(' ',Sender.Name,':',Sender.ClassName);
+  DbgOut(' Sender=',dbgsName(Sender));
   //write(' Msg=',TheMessage.Pos.X,',',TheMessage.Pos.Y);
   //write(' Mouse=',MouseDownPos.X,',',MouseDownPos.Y);
   //writeln('');
@@ -2269,26 +2272,32 @@ begin
   Result:=nil;
 end;
 
-function TDesigner.ControlClassAtPos(const AClass: TControlClass; const APos: TPoint; const UseFormAsDefault, IgnoreHidden: boolean): TControl;
-  function DoComponent: TControl;
+function TDesigner.ComponentClassAtPos(const AClass: TComponentClass;
+  const APos: TPoint; const UseRootAsDefault, IgnoreHidden: boolean): TComponent;
+
+  function DoComponent: TComponent;
   var
     i: integer;
     Bounds: TRect;
   begin
     for i := FLookupRoot.ComponentCount - 1 downto 0 do
     begin
-      Result := TControl(FLookupRoot.Components[i]); // bit tricky, but we set it to nil anyhow
+      Result := FLookupRoot.Components[i]; // bit tricky, but we set it to nil anyhow
       if not Result.InheritsFrom(AClass) then Continue;
-      if IgnoreHidden and not ControlIsInDesignerVisible(TControl(Result)) then Continue;
-      if csNoDesignSelectable in Result.ControlStyle then continue;
-
+      if Result is TControl then begin
+        if IgnoreHidden and (not ControlIsInDesignerVisible(TControl(Result)))
+        then
+          Continue;
+        if csNoDesignSelectable in TControl(Result).ControlStyle then
+          continue;
+      end;
       Bounds := GetParentFormRelativeBounds(Result);
       if PtInRect(Bounds, APos) then Exit;
     end;
     Result := nil;
   end;
 
-  function DoWinControl: TControl;
+  function DoWinControl: TComponent;
   var
     i: integer;
     Bounds: TRect;
@@ -2296,6 +2305,7 @@ function TDesigner.ControlClassAtPos(const AClass: TControlClass; const APos: TP
     WinControl: TWinControl;
   begin
     Result := nil;
+    if not (FLookupRoot is TWinControl) then exit;
     WinControl := TWinControl(FLookupRoot);
     i := WinControl.ControlCount;
     while i > 0 do
@@ -2330,18 +2340,30 @@ begin
   then Result := DoWinControl
   else Result := DoComponent;
   
-  if (Result = nil) and UseFormAsDefault
-  then Result := Form;
+  if (Result = nil) and UseRootAsDefault and (FLookupRoot.InheritsFrom(AClass))
+  then
+    Result := LookupRoot;
 end;
 
-function TDesigner.WinControlAtPos(x, y: integer; UseFormAsDefault, IgnoreHidden: boolean): TWinControl;
+function TDesigner.WinControlAtPos(x, y: integer; UseRootAsDefault,
+  IgnoreHidden: boolean): TWinControl;
 begin
-  Result := TWinControl(ControlClassAtPos(TWinControl, Point(x,y), UseFormAsDefault, IgnoreHidden));
+  Result := TWinControl(ComponentClassAtPos(TWinControl, Point(x,y),
+                                            UseRootAsDefault, IgnoreHidden));
 end;
 
-function TDesigner.ControlAtPos(x, y: integer; UseFormAsDefault, IgnoreHidden: boolean): TControl;
+function TDesigner.ControlAtPos(x, y: integer; UseRootAsDefault,
+  IgnoreHidden: boolean): TControl;
 begin
-  Result := ControlClassAtPos(TControl, Point(x,y), UseFormAsDefault, IgnoreHidden);
+  Result := TControl(ComponentClassAtPos(TControl, Point(x,y), UseRootAsDefault,
+                                IgnoreHidden));
+end;
+
+function TDesigner.ComponentAtPos(x, y: integer; UseRootAsDefault,
+  IgnoreHidden: boolean): TComponent;
+begin
+  Result := ComponentClassAtPos(TComponent, Point(x,y), UseRootAsDefault,
+                                IgnoreHidden);
 end;
 
 procedure TDesigner.BuildPopupMenu;
@@ -2684,7 +2706,7 @@ begin
   AComponent:=NonVisualComponentAtPos(ClientPos.X,ClientPos.Y);
   if AComponent=nil then begin
     // then search a control at the position
-    AComponent := ControlAtPos(ClientPos.X,ClientPos.Y,true,true);
+    AComponent := ComponentAtPos(ClientPos.X,ClientPos.Y,true,true);
     if not Assigned(AComponent) then
       AComponent := AWinControl;
   end;
