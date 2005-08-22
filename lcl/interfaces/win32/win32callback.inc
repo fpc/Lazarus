@@ -598,6 +598,7 @@ Begin
         Msg := CN_CHAR;
         KeyData := LParam;
         CharCode := Word(WParam);
+        Result := 0;
         Assert(False,Format('WM_CHAR KeyData= %d CharCode= %d ',[KeyData,CharCode]));
       End;
       WinProcess := false;
@@ -1208,6 +1209,7 @@ Begin
         Msg := CN_SYSCHAR;
         KeyData := LParam;
         CharCode := Word(WParam);
+        Result := 0;
         Assert(False,Format('WM_CHAR KeyData= %d CharCode= %d ',[KeyData,CharCode]));
       End;
       WinProcess := false;
