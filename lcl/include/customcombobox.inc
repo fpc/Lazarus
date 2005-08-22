@@ -46,8 +46,8 @@ begin
     TWSCustomComboBoxClass(WidgetSetClass).SetItemIndex(Self, FItemIndex);
   TWSCustomComboBoxClass(WidgetSetClass).SetStyle(Self, FStyle);
   TWSCustomComboBoxClass(WidgetSetClass).SetArrowKeysTraverseList(Self, FArrowKeysTraverseList);
+  TWSCustomComboBoxClass(WidgetSetClass).SetReadOnly(Self, FReadOnly);
 end;
-
 
 {------------------------------------------------------------------------------
   Method: TCustomComboBox.DestroyWnd
@@ -213,7 +213,8 @@ end;
 procedure TCustomComboBox.CloseUp;
 begin
   if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then exit;
-  EditingDone;
+  if not ReadOnly then
+    EditingDone;
   if Assigned(FOnCloseUp) then FOnCloseUp(Self);
 end;
 
@@ -376,7 +377,7 @@ procedure TCustomComboBox.WMChar(var Message: TLMChar);
 begin
   // all normal characters are handled by the ComboBox
   //debugln('TCustomEdit.WMChar ',DbgSName(Self),' ',dbgs(Message.CharCode));
-  if Message.CharCode in [ord('A')..ord('Z'),ord('a')..ord('z')] then
+  if (Message.CharCode in [ord('A')..ord('Z'),ord('a')..ord('z')]) then
     // eat normal keys, so they don't trigger accelerators
     Message.Result := 1
   else
@@ -815,6 +816,14 @@ begin
         CloseUp;
       end;
   end;
+end;
+
+procedure TCustomComboBox.SetReadOnly(const AValue: Boolean);
+begin
+  if FReadOnly=AValue then exit;
+  FReadOnly:=AValue;
+  if HandleAllocated then
+    TWSCustomComboBoxClass(WidgetSetClass).SetReadOnly(Self, AValue);
 end;
 
 {------------------------------------------------------------------------------

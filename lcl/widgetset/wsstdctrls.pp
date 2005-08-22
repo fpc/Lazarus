@@ -81,6 +81,7 @@ type
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); virtual;
     class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); virtual;
     class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); virtual;
+    class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); virtual;
 
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; virtual;
     class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); virtual;
@@ -251,67 +252,85 @@ procedure TWSCustomListBox.SetStyle(const ACustomListBox: TCustomListBox);
 begin
 end;
 
-procedure TWSCustomListBox.SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean);
+procedure TWSCustomListBox.SetSorted(const ACustomListBox: TCustomListBox;
+  AList: TStrings; ASorted: boolean);
 begin
 end;
 
-procedure TWSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer);
+procedure TWSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox;
+  const NewTopIndex: integer);
 begin
 end;
 
 { TWSCustomComboBox }
 
-function  TWSCustomComboBox.GetSelStart(const ACustomComboBox: TCustomComboBox): integer;
+function  TWSCustomComboBox.GetSelStart(const ACustomComboBox: TCustomComboBox
+  ): integer;
 begin
-  result := -1;
+  Result := -1;
 end;
 
-function  TWSCustomComboBox.GetSelLength(const ACustomComboBox: TCustomComboBox): integer;
+function  TWSCustomComboBox.GetSelLength(const ACustomComboBox: TCustomComboBox
+  ): integer;
 begin
-  result := 0;
+  Result := 0;
 end;
 
-function  TWSCustomComboBox.GetItemIndex(const ACustomComboBox: TCustomComboBox): integer;
+function  TWSCustomComboBox.GetItemIndex(const ACustomComboBox: TCustomComboBox
+  ): integer;
 begin
-  result := -1;
+  Result := -1;
 end;
 
-function  TWSCustomComboBox.GetMaxLength(const ACustomComboBox: TCustomComboBox): integer;
+function  TWSCustomComboBox.GetMaxLength(const ACustomComboBox: TCustomComboBox
+  ): integer;
 begin
-  result := 0;
+  Result := 0;
 end;
 
-procedure TWSCustomComboBox.SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox; 
-  NewTraverseList: boolean);
-begin
-end;
-
-procedure TWSCustomComboBox.SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer);
-begin
-end;
-
-procedure TWSCustomComboBox.SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer);
+procedure TWSCustomComboBox.SetArrowKeysTraverseList(
+  const ACustomComboBox: TCustomComboBox; NewTraverseList: boolean);
 begin
 end;
 
-procedure TWSCustomComboBox.SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer);
+procedure TWSCustomComboBox.SetMaxLength(const ACustomComboBox: TCustomComboBox;
+  NewLength: integer);
 begin
 end;
 
-procedure TWSCustomComboBox.SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer);
+procedure TWSCustomComboBox.SetSelStart(const ACustomComboBox: TCustomComboBox;
+  NewStart: integer);
 begin
 end;
 
-procedure TWSCustomComboBox.SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle);
+procedure TWSCustomComboBox.SetSelLength(const ACustomComboBox: TCustomComboBox;
+  NewLength: integer);
 begin
 end;
 
-function  TWSCustomComboBox.GetItems(const ACustomComboBox: TCustomComboBox): TStrings;
+procedure TWSCustomComboBox.SetItemIndex(const ACustomComboBox: TCustomComboBox;
+  NewIndex: integer);
 begin
-  result := nil;
 end;
 
-procedure TWSCustomComboBox.Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean);
+procedure TWSCustomComboBox.SetStyle(const ACustomComboBox: TCustomComboBox;
+  NewStyle: TComboBoxStyle);
+begin
+end;
+
+procedure TWSCustomComboBox.SetReadOnly(const ACustomComboBox: TCustomComboBox;
+  NewReadOnly: boolean);
+begin
+end;
+
+function  TWSCustomComboBox.GetItems(const ACustomComboBox: TCustomComboBox
+  ): TStrings;
+begin
+  Result := nil;
+end;
+
+procedure TWSCustomComboBox.Sort(const ACustomComboBox: TCustomComboBox;
+  AList: TStrings; IsSorted: boolean);
 begin
 end;
 

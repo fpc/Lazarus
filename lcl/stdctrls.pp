@@ -238,6 +238,7 @@ type
     FOnDropDown: TNotifyEvent;
     FOnMeasureItem: TMeasureItemEvent;
     FOnSelect: TNotifyEvent;
+    FReadOnly: Boolean;
     FSelLength: integer;
     FSelStart: integer;
     FSorted: boolean;
@@ -251,6 +252,7 @@ type
     procedure LMDrawListItem(var TheMessage: TLMDrawListItem); message LM_DrawListItem;
     procedure LMMeasureItem(var TheMessage: TLMMeasureItem); message LM_MeasureItem;
     procedure CNCommand(var TheMessage: TLMCommand); message CN_Command;
+    procedure SetReadOnly(const AValue: Boolean);
     procedure UpdateSorted;
     procedure SetArrowKeysTraverseList(Value: Boolean);
     procedure WMChar(var Message: TLMChar); message LM_CHAR;
@@ -258,7 +260,7 @@ type
     procedure CreateWnd; override;
     procedure DestroyWnd; override;
     procedure DrawItem(Index: Integer; ARect: TRect;
-      State: TOwnerDrawState); virtual;
+                       State: TOwnerDrawState); virtual;
     procedure LMChange(var msg); message LM_CHANGED;
     procedure Change; dynamic;
     procedure Select; dynamic;
@@ -321,6 +323,7 @@ type
     property Canvas: TCanvas read FCanvas;
     property Items: TStrings read FItems write SetItems;
     property ItemIndex: integer read GetItemIndex write SetItemIndex default -1;
+    property ReadOnly: Boolean read FReadOnly write SetReadOnly default false;
     property SelLength: integer read GetSelLength write SetSelLength;
     property SelStart: integer read GetSelStart write SetSelStart;
     property SelText: String read GetSelText write SetSelText;
@@ -370,6 +373,7 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
+    property ReadOnly;
     property ShowHint;
     property Sorted;
     property Style;

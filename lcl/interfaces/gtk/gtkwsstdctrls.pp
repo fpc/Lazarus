@@ -84,7 +84,8 @@ type
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
     class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;
-    
+    class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); override;
+
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
     class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
   end;
@@ -690,6 +691,16 @@ begin
         gtk_combo_set_case_sensitive(GtkCombo,GdkTrue);
       end;
   end;
+end;
+
+procedure TGtkWSCustomComboBox.SetReadOnly(const ACustomComboBox: TCustomComboBox;
+  NewReadOnly: boolean);
+var
+  Widget: PGtkWidget;
+begin
+  Widget:=PGtkCombo(ACustomComboBox.Handle)^.entry;
+  if GtkWidgetIsA(Widget,{$ifdef GTK1}GTK_ENTRY_TYPE{$else}GTK_TYPE_ENTRY{$endif}) then
+    gtk_entry_set_editable(PGtkEntry(Widget), not ACustomComboBox.ReadOnly);
 end;
 
 function  TGtkWSCustomComboBox.GetItems(
