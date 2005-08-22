@@ -381,7 +381,13 @@ procedure TSynBaseCompletionForm.KeyDown(var Key: Word;
   Shift: TShiftState);
 var
   i: integer;
+  {$IFDEF SYN_LAZARUS}
+  Handled: Boolean;
+  {$ENDIF}
 begin
+  {$IFDEF SYN_LAZARUS}
+  Handled:=true;
+  {$ENDIF}
   case Key of
 // added the VK_XXX codes to make it more readable / maintainable
     VK_RETURN:
@@ -418,23 +424,23 @@ begin
     VK_TAB:
       begin
         if Assigned(OnKeyCompletePrefix) then OnKeyCompletePrefix(Self);
-        Key:=VK_UNKNOWN;
       end;
     VK_LEFT:
       begin
         if (Shift = []) and (Length(CurrentString) > 0) then begin
           if Assigned(OnKeyPrevChar) then OnKeyPrevChar(Self);
-          Key:=VK_UNKNOWN;
         end;
       end;
     VK_Right:
       begin
         if Assigned(OnKeyNextChar) then OnKeyNextChar(Self);
-        Key:=VK_UNKNOWN;
       end;
+  else
+    Handled:=false;
     {$ENDIF}
   end;
   {$ifdef SYN_LAZARUS}
+  if Handled then Key:=VK_UNKNOWN;
   Invalidate;
   {$ENDIF}
 end;
@@ -451,9 +457,14 @@ begin
           CurrentString := CurrentString + key;
       end;
     #8:
-      if Assigned(OnKeyPress) then OnKeyPress(self, Key); 
-  else if Assigned(OnCancel) then
-    OnCancel(Self);
+      if Assigned(OnKeyPress) then OnKeyPress(self, Key);
+  else
+    {$ifdef SYN_LAZARUS}
+    if (ord(key)>=32) and Assigned(OnValidate) then
+      OnValidate(Self, [])
+    else
+    {$ENDIF}
+      if Assigned(OnCancel) then OnCancel(Self);
   end; // case
   {$ifdef SYN_LAZARUS}
   Key:=#0;
@@ -593,15 +604,20 @@ begin
   //debugln('TSynBaseCompletionForm.UTF8KeyPress UTF8Key="',DbgStr(UTF8Key),'"');
   if UTF8Key=#8 then begin
     if Assigned(OnUTF8KeyPress) then OnUTF8KeyPress(Self, UTF8Key);
-  end else if (length(UTF8Key)>=1) and (not (UTF8Key[1] in [#33..'z'])) then
-  begin
-    if Assigned(OnCancel) then
-      OnCancel(Self);
   end else begin
-    if Assigned(OnUTF8KeyPress) then
-      OnUTF8KeyPress(Self, UTF8Key);
-    if UTF8Key<>'' then
+    if (length(UTF8Key)>=1)
+    and (not (UTF8Key[1] in ['a'..'z','A'..'Z','0'..'9'])) then begin
+      // non identifier character
+      if Assigned(OnValidate) then
+        OnValidate(Self,[]);
+      if Assigned(OnUTF8KeyPress) then
+        OnUTF8KeyPress(Self, UTF8Key);
+    end else if (UTF8Key<>'') then begin
+      // identifier character
+      if Assigned(OnUTF8KeyPress) then
+        OnUTF8KeyPress(Self, UTF8Key);
       CurrentString := CurrentString + UTF8Key;
+    end;
   end;
   UTF8Key:='';
 end;
