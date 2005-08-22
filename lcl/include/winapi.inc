@@ -1112,8 +1112,7 @@ end;
 Function IsCharAlphaNumeric(c : Char) : Boolean;
 begin
   // your code here
-  Result := False;
-  Result :=  ((ord(c) >= 65) and (ord(c) <=90) ) or ((ord(c) >= 97) and (ord(c) <=122) );
+  Result := c in ['a'..'z','A'..'Z','0'..'9'];
 end;
 
 {------------------------------------------------------------------------------
