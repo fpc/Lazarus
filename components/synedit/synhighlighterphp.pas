@@ -83,6 +83,9 @@ type
   private
     fRange: TRangeState;
     fLine: PChar;
+    {$IFDEF SYN_LAZARUS}
+    fLineLen: integer;
+    {$ENDIF}
     fLineNumber: Integer;
     fProcTable: array[#0..#255] of TProcTableProc;
     Run: LongInt;
@@ -694,6 +697,9 @@ end;
 procedure TSynPHPSyn.SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String; LineNumber: Integer);
 begin
   fLine := PChar(NewValue);
+  {$IFDEF SYN_LAZARUS}
+  fLineLen := length(NewValue);
+  {$ENDIF}
   Run := 0;
   fLineNumber := LineNumber;
   Next;
@@ -903,6 +909,10 @@ end;
 procedure TSynPHPSyn.NullProc;
 begin
   fTokenID := tkNull;
+  {$IFDEF SYN_LAZARUS}
+  if Run<fLineLen then
+    inc(Run);
+  {$ENDIF}
 end;
 
 procedure TSynPHPSyn.NumberProc;
@@ -1348,7 +1358,7 @@ end;
 
 function TSynPHPSyn.GetEol: Boolean;
 begin
-  Result := fTokenID = tkNull;
+  Result := (fTokenID = tkNull) and (Run>=fLineLen);
 end;
 
 function TSynPHPSyn.GetRange: Pointer;

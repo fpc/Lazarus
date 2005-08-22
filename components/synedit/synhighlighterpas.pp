@@ -1281,6 +1281,9 @@ end;
 procedure TSynPasSyn.NullProc;
 begin
   fTokenID := tkNull;
+  {$IFDEF SYN_LAZARUS}
+  if Run<=fLineLen then inc(Run);
+  {$ENDIF}
 end;
 
 procedure TSynPasSyn.NumberProc;
@@ -1496,7 +1499,7 @@ end;
 
 function TSynPasSyn.GetEol: Boolean;
 begin
-  Result := fTokenID = tkNull;
+  Result := (fTokenID = tkNull) {$IFDEF SYN_LAZARUS}and (Run > fLineLen){$ENDIF};
 end;
 
 function TSynPasSyn.GetToken: string;

@@ -40,7 +40,7 @@ uses
   SynEdit, SynEditHighlighter, SynEditAutoComplete, SynEditKeyCmds,
   SynHighlighterPas, SynHighlighterHTML, SynHighlighterCPP, SynHighlighterXML,
   SynHighlighterLFM, SynHighlighterPerl, SynHighlighterJava,
-  SynHighlighterPython, SynHighlighterUNIXShellScript,
+  SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterPHP,
   Laz_XMLCfg, IDEWindowIntf,
   IDECommands, CodeTemplateDialog, KeyMapping, InputHistory, IDEOptionDefs,
   LazarusIDEStrConsts, KeymapSchemeDlg;
@@ -54,7 +54,7 @@ type
 
   TLazSyntaxHighlighter =
     (lshNone, lshText, lshFreePascal, lshDelphi, lshLFM, lshXML, lshHTML,
-     lshCPP, lshPerl, lshJava, lshBash, lshPython);
+     lshCPP, lshPerl, lshJava, lshBash, lshPython, lshPHP);
 
   TAdditionalHilightAttribute = (ahaNone, ahaTextBlock, ahaExecutionPoint,
     ahaEnabledBreakpoint, ahaDisabledBreakpoint,
@@ -79,7 +79,7 @@ const
   LazSyntaxHighlighterClasses: array[TLazSyntaxHighlighter] of TCustomSynClass =
     (nil, nil, TSynPasSyn, TSynPasSyn, TSynLFMSyn, TSynXMLSyn, TSynHTMLSyn,
      TSynCPPSyn, TSynPerlSyn, TSynJavaSyn, TSynUNIXShellScriptSyn,
-     TSynPythonSyn);
+     TSynPythonSyn, TSynPHPSyn);
     
 
   { Comments }
@@ -96,7 +96,8 @@ const
       comtPerl,  // lshPerl
       comtCPP,   // lshJava
       comtPerl,  // lshBash
-      comtPerl   // lshPython
+      comtPerl,  // lshPython
+      comtHTML   // lshPHP
     );
     
 const
@@ -521,7 +522,8 @@ const
      'Perl',
      'Java',
      'Bash',
-     'Python'
+     'Python',
+     'PHP'
    );
 
 var
@@ -555,7 +557,8 @@ const
         lshPerl,
         lshJava,
         lshBash,
-        lshPython
+        lshPython,
+        lshPHP
       );
       
   DefaultColorScheme = 'Default';
@@ -1043,6 +1046,34 @@ begin
       Add('Space=Space');
       Add('String=String');
       Add('Symbol=Symbol');
+    end;
+  end;
+  Add(NewInfo);
+
+  // create info for PHP
+  NewInfo:=TEditOptLanguageInfo.Create;
+  with NewInfo do begin
+    TheType:=lshPHP;
+    DefaultCommentType:=DefaultCommentTypes[TheType];
+    SynClass:=LazSyntaxHighlighterClasses[TheType];
+    FileExtensions:='php;php3;php4';
+    SampleSource:=
+      '<?if ( ($HTTP_HOST == "www.lazarus.com") || ($HTTP_HOST == "lazarus.com") ){'#10
+      +'   HEADER("Location:http://www.lazarus.freepascal.org/\n\n");'#10
+      +'};'#10
+      +'?>'#10
+      +#10;
+    AddAttrSampleLines[ahaTextBlock]:=8;
+    MappedAttributes:=TStringList.Create;
+    with MappedAttributes do begin
+      Add('Element=Reserved_word');
+      Add('Comment=Comment');
+      Add('Variable=Identifier');
+      Add('Space=Space');
+      Add('Symbol=Symbol');
+      Add('Number=Number');
+      Add('Key=Key');
+      Add('String=String');
     end;
   end;
   Add(NewInfo);

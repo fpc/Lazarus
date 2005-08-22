@@ -144,6 +144,9 @@ type
       {$IFDEF SYN_COMPILER_3_UP} override; {$ENDIF}                             //mh 2000-10-18
     procedure SetTabWidth(Value: integer);                                      //mh 2000-10-19
     procedure SetUpdateState(Updating: Boolean); override;
+    {$IFDEF SYN_LAZARUS}
+    procedure SetTextStr(const Value: string); override;
+    {$ENDIF}
   public
     constructor Create;
     destructor Destroy; override;
@@ -319,8 +322,13 @@ end;
 type
   TSynEditFileReader = class(TSynEditFiler)
   protected
-    fFilePos: {$IFDEF SYN_LAZARUS}TStreamSeekType{$ELSE}Cardinal{$ENDIF};
-    fFileSize: {$IFDEF SYN_LAZARUS}TStreamSeekType{$ELSE}Cardinal{$ENDIF};
+    {$IFDEF SYN_LAZARUS}
+    fFilePos: TStreamSeekType;
+    fFileSize: TStreamSeekType;
+    {$ELSE}
+    fFilePos: Cardinal;
+    fFileSize: Cardinal;
+    {$ENDIF}
     procedure FillBuffer;
   public
     constructor Create(const FileName: string);
@@ -1012,7 +1020,38 @@ begin
       fOnChange(Self);
   end;
 end;
-{end}                                                                           //mh 2000-10-10
+
+{$IFDEF SYN_LAZARUS}
+procedure TSynEditStringList.SetTextStr(const Value: string);
+var
+  StartPos: Integer;
+  p: Integer;
+  Len: Integer;
+begin
+  BeginUpdate;
+  try
+    Clear;
+    p:=1;
+    StartPos:=p;
+    Len:=length(Value);
+    while p<=Len do begin
+      if not (Value[p] in [#10,#13]) then begin
+        inc(p);
+      end else begin
+        Add(copy(Value,StartPos,p-StartPos));
+        inc(p);
+        if (p<=Len) and (Value[p] in [#10,#13]) and (Value[p-1]<>Value[p]) then
+          inc(p);
+        StartPos:=p;
+      end;
+    end;
+    if StartPos<=Len then
+      Add(copy(Value,StartPos,Len-StartPos+1));
+  finally
+    EndUpdate;
+  end;
+end;
+{$ENDIF}
 
 { TSynEditUndoList }
 

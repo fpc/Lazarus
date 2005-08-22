@@ -2104,8 +2104,6 @@ var
   bStartDrag: boolean;
   {$IFDEF SYN_LAZARUS}
   PrimarySelText: string;
-  StartOfBlock: TPoint;
-  EndOfBlock: TPoint;
   LogCaretXY: TPoint;
   {$ENDIF}
 begin
