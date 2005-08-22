@@ -346,7 +346,8 @@ type
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
     procedure KeyGrabButtonClick(Sender: TObject);
-    procedure FormKeyUp(Sender: TObject; var Key: Word; Shift:TShiftState);
+  protected
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
   private
     GrabbingKey: integer; { 0=none,
                             1=Default key (1st in sequence),
@@ -1764,7 +1765,6 @@ begin
   begin
     SetBounds((Screen.Width-432) div 2, (Screen.Height-310) div 2, 432, 340);
     Caption := srkmEditForCmd;
-    OnKeyUp:=@FormKeyUp;
 
     OkButton := TButton.Create(Self);
     with OkButton do begin
@@ -2149,21 +2149,24 @@ begin
   KeyGrabButton[GrabbingKey-1].Caption:=srkmPressKey;
 end;
 
-procedure TKeyMappingEditForm.FormKeyUp(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TKeyMappingEditForm.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   {writeln('TKeyMappingEditForm.FormKeyUp Sender=',Classname
      ,' Key=',Key,' Ctrl=',ssCtrl in Shift,' Shift=',ssShift in Shift
      ,' Alt=',ssAlt in Shift,' AsString=',KeyAndShiftStateToEditorKeyString(Key),
      '');}
-  if Key in [VK_CONTROL, VK_SHIFT, VK_LCONTROL, VK_RCONTROL,
-             VK_LSHIFT, VK_RSHIFT] then exit;
-  KeyCtrlCheckBox[GrabbingKey-1].Checked:=(ssCtrl in Shift);
-  KeyShiftCheckBox[GrabbingKey-1].Checked:=(ssShift in Shift);
-  KeyAltCheckBox[GrabbingKey-1].Checked:=(ssAlt in Shift);
-  SetComboBox(KeyComboBox[GrabbingKey-1], KeyAndShiftStateToEditorKeyString(Key,[]));
-  Key:=0;
-  DeactivateGrabbing;
+  if not (Key in [VK_CONTROL, VK_LCONTROL, VK_RCONTROL,
+             VK_SHIFT, VK_LSHIFT, VK_RSHIFT,
+             VK_MENU, VK_LMENU, VK_RMENU]) then
+  begin
+    KeyCtrlCheckBox[GrabbingKey-1].Checked:=(ssCtrl in Shift);
+    KeyShiftCheckBox[GrabbingKey-1].Checked:=(ssShift in Shift);
+    KeyAltCheckBox[GrabbingKey-1].Checked:=(ssAlt in Shift);
+    SetComboBox(KeyComboBox[GrabbingKey-1], KeyAndShiftStateToEditorKeyString(Key,[]));
+    Key:=0;
+    DeactivateGrabbing;
+  end;
+  inherited;
 end;
 
 
