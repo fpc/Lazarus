@@ -407,6 +407,7 @@ begin
   if FLastDrawFlags <> 0 then
     DrawFrameControl(Canvas.GetUpdatedHandle([csBrushValid,csPenValid]),
       PaintRect, DFC_BUTTON, FLastDrawFlags);
+
   //writeln('TCustomSpeedButton.Paint ',Name,':',ClassName,' Parent.Name=',Parent.Name,
   //  ' DFCS_BUTTONPUSH=',FLastDrawFlags and DFCS_BUTTONPUSH,
   //  ' DFCS_PUSHED=',FLastDrawFlags and DFCS_PUSHED,

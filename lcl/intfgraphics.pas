@@ -186,7 +186,7 @@ type
     procedure CreateBitmap(var Bitmap, MaskBitmap: HBitmap;
                            AlwaysCreateMask: boolean); virtual;
     procedure SetRawImage(const RawImage: TRawImage); virtual;
-    procedure GetRawImage(var RawImage: TRawImage); virtual;
+    procedure GetRawImage(out RawImage: TRawImage); virtual;
     procedure FillPixels(const Color: TFPColor); virtual;
     procedure GetXYDataPostion(x, y: integer; var Position: TRawImagePosition);
     procedure GetXYMaskPostion(x, y: integer; var Position: TRawImagePosition);
@@ -1713,7 +1713,7 @@ begin
   end;
 end;
 
-procedure TLazIntfImage.GetRawImage(var RawImage: TRawImage);
+procedure TLazIntfImage.GetRawImage(out RawImage: TRawImage);
 begin
   FillChar(RawImage,SizeOf(TRawImage),0);
   RawImage.Description:=FDataDescription;

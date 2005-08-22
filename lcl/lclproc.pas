@@ -156,7 +156,7 @@ function DbgS(const b: boolean): string;
 function DbgSName(const p: TObject): string;
 function DbgSName(const p: TClass): string;
 function DbgStr(const StringWithSpecialChars: string): string;
-function dbgMemRange(P: PByte; Count: integer): string;
+function dbgMemRange(P: PByte; Count: integer; Width: integer = 0): string;
 function dbgMemStream(MemStream: TCustomMemoryStream; Count: integer): string;
 function dbgObjMem(AnObject: TObject): string;
 
@@ -1138,18 +1138,39 @@ begin
   end;
 end;
 
-function dbgMemRange(P: PByte; Count: integer): string;
+function dbgMemRange(P: PByte; Count: integer; Width: integer): string;
 const
   HexChars: array[0..15] of char = '0123456789ABCDEF';
+  LineEnd: shortstring = LineEnding;
 var
   i: Integer;
+  NewLen: Integer;
+  Dest: PChar;
+  Col: Integer;
+  j: Integer;
 begin
   Result:='';
   if (p=nil) or (Count<=0) then exit;
-  SetLength(Result,Count*2);
+  NewLen:=Count*2;
+  if Width>0 then begin
+    inc(NewLen,(Count div Width)*length(LineEnd));
+  end;
+  SetLength(Result,NewLen);
+  Dest:=PChar(Result);
+  Col:=1;
   for i:=0 to Count-1 do begin
-    Result[i*2+1]:=HexChars[PByte(P)[i] shr 4];
-    Result[i*2+2]:=HexChars[PByte(P)[i] and $f];
+    Dest^:=HexChars[PByte(P)[i] shr 4];
+    inc(Dest);
+    Dest^:=HexChars[PByte(P)[i] and $f];
+    inc(Dest);
+    inc(Col);
+    if (Width>0) and (Col>Width) then begin
+      Col:=1;
+      for j:=1 to length(LineEnd) do begin
+        Dest^:=LineEnd[j];
+        inc(Dest);
+      end;
+    end;
   end;
 end;
 

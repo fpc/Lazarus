@@ -171,16 +171,18 @@ procedure CreateRawImageLineStarts(Width, Height, BitsPerPixel: cardinal;
                                    LineEnd: TRawImageLineEnd;
                                    var LineStarts: PRawImagePosition);
 procedure CreateRawImageDescFromMask(SrcRawImageDesc,
-  DestRawImageDesc: PRawImageDescription);
+                                     DestRawImageDesc: PRawImageDescription);
 procedure GetRawImageXYPosition(RawImageDesc: PRawImageDescription;
                                 LineStarts: PRawImagePosition; x, y: cardinal;
                                 var Position: TRawImagePosition);
 procedure ExtractRawImageRect(SrcRawImage: PRawImage; const SrcRect: TRect;
                               DestRawImage: PRawImage);
 procedure ExtractRawImageDataRect(SrcRawImageDesc: PRawImageDescription;
-  const SrcRect: TRect; SrcData: Pointer;
-  DestRawImageDesc: PRawImageDescription;
-  var DestData: Pointer; var DestDataSize: cardinal);
+                             const SrcRect: TRect; SrcData: Pointer;
+                             DestRawImageDesc: PRawImageDescription;
+                             var DestData: Pointer; var DestDataSize: cardinal);
+function GetBytesPerLine(Width, BitsPerPixel: cardinal;
+                         LineEnd: TRawImageLineEnd): cardinal;
 function GetBitsPerLine(Width, BitsPerPixel: cardinal;
                         LineEnd: TRawImageLineEnd): cardinal;
 procedure ReadRawImageBits(TheData: PByte; const Position: TRawImagePosition;
@@ -353,6 +355,7 @@ begin
       +' LineOrder='+RawImageLineOrderNames[LineOrder]
       +' ColorCount='+IntToStr(ColorCount)
       +' BitsPerPixel='+IntToStr(BitsPerPixel)
+      +' BytesPerLine='+IntToStr(GetBytesPerLine(Width,BitsPerPixel,LineEnd))
       +' LineEnd='+RawImageLineEndNames[LineEnd]
       +' RedPrec='+IntToStr(RedPrec)
       +' RedShift='+IntToStr(RedShift)
@@ -367,6 +370,7 @@ begin
       +' AlphaLineEnd='+RawImageLineEndNames[AlphaLineEnd]
       +' AlphaBitOrder='+RawImageBitOrderNames[AlphaBitOrder]
       +' AlphaByteOrder='+RawImageByteOrderNames[AlphaByteOrder]
+      +' AlphaBytesPerLine='+IntToStr(GetBytesPerLine(Width,AlphaBitsPerPixel,AlphaLineEnd))
       +'';
   end;
 end;
@@ -621,6 +625,12 @@ begin
                                  +(CurBitOffset shr 3);
     LineStarts[CurLine].Bit:=CurBitOffset and 7;
   end;
+end;
+
+function GetBytesPerLine(Width, BitsPerPixel: cardinal;
+  LineEnd: TRawImageLineEnd): cardinal;
+begin
+  Result:=(GetBitsPerLine(Width,BitsPerPixel,LineEnd)+7) shr 3;
 end;
 
 function GetBitsPerLine(Width, BitsPerPixel: cardinal;

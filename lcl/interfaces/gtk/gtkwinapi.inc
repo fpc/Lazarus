@@ -1037,6 +1037,7 @@ begin
       {$IFDEF VerboseRawImage}
       DebugLn('TGtkWidgetSet.CreateBitmapFromRawImage creating mask .. ');
       {$ENDIF}
+      // gdk_bitmap_create_from_data expects rileByteBoundary
       GdiObject^.GDIBitmapMaskObject :=
           gdk_bitmap_create_from_data(DefGdkWindow,PGChar(RawImage.Mask),
                        RawImage.Description.Width, RawImage.Description.Height);

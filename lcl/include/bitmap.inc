@@ -592,7 +592,7 @@ end;
 
 procedure TBitmap.WriteStream(Stream: TStream; WriteSize: Boolean);
 begin
-  WriteStreamWithFPImage(Stream,WriteSize,TFPWriterBMP);
+  WriteStreamWithFPImage(Stream,WriteSize,nil);
 end;
 
 procedure TBitmap.StoreOriginalStream(Stream: TStream; Size: integer);
@@ -731,6 +731,7 @@ var
   MemStream: TMemoryStream;
   IntfImg: TLazIntfImage;
   ImgWriter: TFPCustomImageWriter;
+  RawImage: TRawImage;
 begin
   //DebugLn('WriteStreamWithFPImage Self=',DbgS(Self),' ',Width,',',Height,' Using SaveStream=',(FImage.SaveStream<>nil) and (FImage.SaveStream.Size>0));
   if (FImage.SaveStream<>nil) and (FImage.SaveStream.Size>0)
@@ -751,6 +752,27 @@ begin
   try
     IntfImg:=TLazIntfImage.Create(0,0);
     IntfImg.LoadFromBitmap(Handle,0);
+    
+    if WriterClass=nil then begin
+      // automatically use a TFPCustomImageWriterClass
+      // .bmp does not support transparency
+      // Delphi uses a trick and stores the transparent color in the bottom, left
+      // pixel. This changes the bitmap and requires to know the transparency
+      // on load.
+      // The LCL TBitmap is able to load .xpm and .bmp images. .xpm supports
+      // transparency. So, if the images has transparency use .xpm.
+      IntfImg.GetRawImage(RawImage);
+      if RawImageMaskIsEmpty(@RawImage,true) then
+        WriterClass:=TFPWriterBMP
+      else
+        WriterClass:=TLazWriterXPM;
+      //debugln('WriteStreamWithFPImage WriterClass=',WriterClass.ClassName,' ',RawImageDescriptionAsString(@RawImage),' MaskSize=',dbgs(RawImage.MaskSize));
+      //debugln(dbgMemRange(RawImage.Mask,RawImage.MaskSize,
+      //                    GetBytesPerLine(RawImage.Description.Width,
+      //                                   RawImage.Description.AlphaBitsPerPixel,
+      //                                   RawImage.Description.AlphaLineEnd)));
+    end;
+
     ImgWriter:=WriterClass.Create;
     InitFPImageWriter(ImgWriter);
     IntfImg.SaveToStream(MemStream,ImgWriter);
