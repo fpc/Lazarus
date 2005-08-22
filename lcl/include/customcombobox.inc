@@ -437,12 +437,6 @@ begin
     inherited KeyDown(Key, Shift);
 end;
 
-procedure TCustomComboBox.ControlKeyDown(var Key: Word; Shift: TShiftState);
-begin
-  if Application<>nil then Application.DoTabKey(Self,Key,Shift);
-  inherited ControlKeyDown(Key, Shift);
-end;
-
 {------------------------------------------------------------------------------
   function TCustomComboBox.SelectItem(const AnItem: String): Boolean;
 

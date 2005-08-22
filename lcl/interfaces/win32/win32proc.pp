@@ -50,6 +50,7 @@ Type
     isComboEdit: boolean;     // is buddy of combobox, the edit control
     isChildEdit: boolean;     // is buddy of combobox, the edit control
     isGroupBox: boolean;      // is groupbox, and does not have themed tabpage as parent
+    ignoreNextChar: boolean;  // ignore next WM_(SYS)CHAR message
     MaxLength: dword;
     MouseX, MouseY: word; // noticing spurious WM_MOUSEMOVE messages
   end;

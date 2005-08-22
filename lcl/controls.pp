@@ -1451,7 +1451,6 @@ type
     procedure WMKeyUp(var Message: TLMKeyUp); message LM_KEYUP;
     procedure WMSysKeyUp(var Message: TLMKeyUp); message LM_SYSKEYUP;
     procedure WMChar(var Message: TLMChar); message LM_CHAR;
-    procedure WMSysChar(var Message: TLMChar); message LM_SYSCHAR;
     procedure WMPaint(var Msg: TLMPaint); message LM_PAINT;
     procedure WMDestroy(var Message: TLMDestroy); message LM_DESTROY;
     procedure WMMove(var Message: TLMMove); message LM_MOVE;
@@ -1486,12 +1485,12 @@ type
     function  DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; dynamic;
     function  DoKeyDownBeforeInterface(var Message: TLMKey): Boolean;
     function  DoRemainingKeyDown(var Message: TLMKeyDown): Boolean;
-    function  DoRemainingKeyPress(var Message: TLMKey): Boolean;
     function  DoRemainingKeyUp(var Message: TLMKeyDown): Boolean;
     function  DoKeyPress(var Message: TLMKey): Boolean;
     function  DoUTF8KeyPress(var UTF8Key: TUTF8Char): boolean; dynamic;
     function  DoKeyUpBeforeInterface(var Message: TLMKey): Boolean;
     function  ChildKey(var Message: TLMKey): boolean; dynamic;
+    function  SendDialogChar(var Message: TLMKey): Boolean;
     function  DialogChar(var Message: TLMKey): boolean; override;
     procedure ControlKeyDown(var Key: Word; Shift: TShiftState); dynamic;
     procedure ControlKeyUp(var Key: Word; Shift: TShiftState); dynamic;

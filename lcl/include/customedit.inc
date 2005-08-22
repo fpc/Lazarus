@@ -314,12 +314,6 @@ begin
   Result:=false;
 end;
 
-procedure TCustomEdit.ControlKeyDown(var Key: Word; Shift: TShiftState);
-begin
-  if Application<>nil then Application.DoTabKey(Self,Key,Shift);
-  inherited ControlKeyDown(Key, Shift);
-end;
-
 procedure TCustomEdit.KeyUp(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyUp(Key, Shift);

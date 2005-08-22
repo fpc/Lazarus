@@ -287,7 +287,6 @@ type
     procedure SetStyle(Val: TComboBoxStyle); virtual;
     procedure RealSetText(const AValue: TCaption); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure ControlKeyDown(var Key: Word; Shift: TShiftState); override;
 
     property DropDownCount: Integer read FDropDownCount write SetDropDownCount default 8;
     property ItemHeight: Integer read GetItemHeight write SetItemHeight;
@@ -599,7 +598,6 @@ type
     procedure SetSelText(const Val: string); virtual;
     procedure RealSetText(const Value: TCaption); override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
-    procedure ControlKeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure WMChar(var Message: TLMChar); message LM_CHAR;
   public

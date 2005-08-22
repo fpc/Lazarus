@@ -1204,6 +1204,9 @@ begin
     if AControl=nil then ;
     //debugln('TApplication.ControlKeyDown A ',DbgSName(AControl));
     FLastKeyDownSender:=AControl;
+
+    // handle navigation key
+    DoTabKey(AControl, Key, Shift);
   end else
     FLastKeyDownSender:=nil;
   FLastKeyDownKey:=Key;
@@ -1233,7 +1236,6 @@ begin
     end;
 
     // handle special navigation keys
-    DoTabKey(AControl, Key, Shift);
     DoReturnKey(AControl, Key, Shift);
     DoEscapeKey(AControl, Key, Shift);
   end;

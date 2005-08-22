@@ -2677,7 +2677,7 @@ End;
   
   Returns True if key handled
 ------------------------------------------------------------------------------}
-function TWinControl.DoRemainingKeyPress(var Message : TLMKey): Boolean;
+function TWinControl.SendDialogChar(var Message : TLMKey): Boolean;
 var
   ParentForm: TCustomForm;
 begin
@@ -2685,7 +2685,11 @@ begin
   if ParentForm <> nil then
   begin
     Result := ParentForm.DialogChar(Message);
-    if Result then exit;
+    if Result then 
+    begin
+      Message.CharCode := VK_UNKNOWN;
+      exit;
+    end;
   end;
 end;
 
@@ -3616,7 +3620,10 @@ end;
 
 procedure TWinControl.CNSysChar(var Message: TLMKeyUp);
 begin
-  if not DoKeyPress(Message) then {inherited}; // there is nothing to inherit
+  if SendDialogChar(Message) then 
+    Message.Result := 1
+  else
+    {inherited}; // there is nothing to inherit
 end;
 
 {------------------------------------------------------------------------------
@@ -3716,16 +3723,9 @@ end;
 procedure TWinControl.WMChar(var Message: TLMChar);
 begin
   //debugln('TWinControl.WMChar ',DbgSName(Self),' ',dbgs(Message.CharCode));
-  if DoRemainingKeyPress(Message) then
+  if SendDialogChar(Message) then
     Message.Result := 1;
   Assert(False, Format('Trace:[TWinControl.WMChar] %s', [ClassName]));
-end;
-
-procedure TWinControl.WMSysChar(var Message: TLMChar);
-begin
-  //debugln('TWinControl.WMSysChar ',DbgSName(Self),' ',dbgs(Message.CharCode));
-  if DoRemainingKeyPress(Message) then
-    Message.Result := 1;
 end;
 
 {------------------------------------------------------------------------------
@@ -3737,12 +3737,14 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TWinControl.WMKeyDown(Var Message: TLMKeyDown);
 begin
-  DoRemainingKeyDown(Message);
+  if DoRemainingKeyDown(Message) then
+    Message.Result := 1;
 end;
 
 procedure TWinControl.WMSysKeyDown(var Message: TLMKeyDown);
 begin
-  DoRemainingKeyDown(Message);
+  if DoRemainingKeyDown(Message) then
+    Message.Result := 1;
 end;
 
 {------------------------------------------------------------------------------
@@ -3751,7 +3753,8 @@ end;
 procedure TWinControl.WMSysKeyUp(var Message: TLMKeyUp);
 begin
   //debugln('TWinControl.WMSysKeyUp ',DbgSName(Self));
-  DoRemainingKeyUp(Message);
+  if DoRemainingKeyUp(Message) then
+    Message.Result := 1;
 end;
 
 {------------------------------------------------------------------------------
@@ -3764,7 +3767,8 @@ end;
 Procedure TWinControl.WMKeyUp(Var Message: TLMKeyUp);
 begin
   //debugln('TWinControl.WMKeyUp ',DbgSName(Self));
-  DoRemainingKeyUp(Message);
+  if DoRemainingKeyUp(Message) then
+    Message.Result := 1;
 end;
 
 {------------------------------------------------------------------------------
