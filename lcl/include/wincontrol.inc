@@ -3553,7 +3553,10 @@ end;
 procedure TWinControl.CNKeyDown(var Message: TLMKeyDown);
 begin
   //DebugLn('TWinControl.CNKeyDown ',Name,':',ClassName);
-  if not DoKeyDownBeforeInterface(Message) then {inherited};  // there is nothing to inherit
+  if DoKeyDownBeforeInterface(Message) then 
+    Message.Result := 1
+  else
+    {inherited};  // there is nothing to inherit
 end;
 
 {------------------------------------------------------------------------------
@@ -3561,7 +3564,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.CNSysKeyDown(var Message: TLMKeyDown);
 begin
-  if not DoKeyDownBeforeInterface(Message) then {inherited};  // there is nothing to inherit
+  if DoKeyDownBeforeInterface(Message) then 
+    Message.Result := 1
+  else
+    {inherited};  // there is nothing to inherit
 end;
 
 {------------------------------------------------------------------------------
@@ -3569,7 +3575,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.CNSysKeyUp(var Message: TLMKeyUp);
 begin
-  if not DoKeyUpBeforeInterface(Message) then {inherited}; // there is nothing to inherit
+  if DoKeyUpBeforeInterface(Message) then 
+    Message.Result := 1
+  else
+    {inherited}; // there is nothing to inherit
 end;
 
 {------------------------------------------------------------------------------
@@ -3581,7 +3590,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.CNKeyUp(var Message: TLMKeyUp);
 begin
-  if not DoKeyUpBeforeInterface(Message) then {inherited}; // there is nothing to inherit
+  if DoKeyUpBeforeInterface(Message) then 
+    Message.Result := 1
+  else
+    {inherited}; // there is nothing to inherit
 end;
 
 {------------------------------------------------------------------------------
@@ -3611,11 +3623,18 @@ begin
           Message.CharCode:=0;
       end;
     end;
-    if Message.CharCode=0 then exit;
+    if Message.CharCode=0 then 
+    begin
+      Message.Result := 1;
+      exit;
+    end;
   end;
 
   //debugln('TWinControl.CNChar A ',DbgSName(Self),' ',dbgs(Message.CharCode),' ',dbgs(IntfSendsUTF8KeyPress));
-  if not DoKeyPress(Message) then {inherited}; // there is nothing to inherit
+  if DoKeyPress(Message) then 
+    Message.Result := 1
+  else
+    {inherited}; // there is nothing to inherit
 end;
 
 procedure TWinControl.CNSysChar(var Message: TLMKeyUp);

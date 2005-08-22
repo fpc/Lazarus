@@ -1412,14 +1412,14 @@ Begin
     CN_CHAR, CN_SYSCHAR:
     begin
       // if key not yet processed, let windows process it
-      WinProcess := (LMChar.CharCode <> VK_UNKNOWN) and (LMChar.Result = 0);
+      WinProcess := LMChar.Result = 0;
       WParam := LMChar.CharCode;
     end;
    
     CN_KEYDOWN, CN_KEYUP, CN_SYSKEYDOWN, CN_SYSKEYUP:
     begin
       // if key not yet processed, let windows process it
-      WinProcess := (LMKey.CharCode <> VK_UNKNOWN) and (LMKey.Result = 0);
+      WinProcess := LMKey.Result = 0;
       WParam := LMKey.CharCode;
     end;
 
@@ -1501,15 +1501,15 @@ Begin
             Windows.SendMessage(Window, EM_SETSEL, 0, -1);
           end;
         end;
-        
-        // ignore WM_(SYS)CHAR message if LCL handled WM_(SYS)KEYDOWN
-        if ((PLMsg^.Msg = WM_KEYDOWN) or (PLMsg^.Msg = WM_SYSKEYDOWN)) 
-            and (WindowInfo <> @DefaultWindowInfo) 
-            and (PLMsg^.Result <> 0) then
-          WindowInfo^.ignoreNextChar := true;
-        end;
+      end;
     end;
   end;
+        
+  // ignore WM_(SYS)CHAR message if LCL handled WM_(SYS)KEYDOWN
+  if ((Msg = WM_KEYDOWN) or (Msg = WM_SYSKEYDOWN)) 
+      and (WindowInfo <> @DefaultWindowInfo) 
+      and (PLMsg^.Result <> 0) then
+    WindowInfo^.ignoreNextChar := true;
   
   { LMMouseEvent and LMInsertText have no Result field }
 
