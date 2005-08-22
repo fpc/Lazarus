@@ -995,8 +995,7 @@ end;
 // included by graphics.pp
 
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.99  2005/07/19 19:18:17  mattias
   made addfiletoapackage dialog more compact

@@ -94,8 +94,7 @@ type
     property Sorted : boolean read FSorted write SetSorted;
   end;
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.11  2005/03/21 08:12:10  mattias
   fixed removing focus of a gtk listbox on delete item  from Collin Western

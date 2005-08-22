@@ -7003,8 +7003,7 @@ end;
   {$C-}
 {$ENDIF}
 
- { =============================================================================
-
+ {
   $Log$
   Revision 1.648  2005/07/23 09:27:30  mattias
   replaced codetools+gtk intf TList with faster TFPList

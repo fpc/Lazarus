@@ -785,8 +785,7 @@ initialization
 
 end.
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.40  2005/03/07 21:59:44  vincents
   changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman

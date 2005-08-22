@@ -2785,7 +2785,7 @@ initialization
   RegisterDebugger(TGDBMIDebugger);
   
 end.
-{ =============================================================================
+{
   $Log$
   Revision 1.66  2005/07/17 22:22:00  marc
   * Patch from Colin Western

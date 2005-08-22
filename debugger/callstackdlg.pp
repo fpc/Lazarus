@@ -198,7 +198,7 @@ initialization
 
 end.
 
-{ =============================================================================
+{
   $Log$
   Revision 1.6  2005/02/05 14:06:13  marc
   * Applied (modified) patch from Colin Western

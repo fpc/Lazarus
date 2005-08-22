@@ -106,8 +106,7 @@ end;
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
 // included by carbonint.pas
-{ =============================================================================
-
+{
   $Log$
   Revision 1.4  2005/07/01 12:07:50  mattias
   moved some menu intf methods to the TXXXWSMenuItem class  from Martin Smat

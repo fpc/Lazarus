@@ -204,8 +204,7 @@ end;
 
 end.
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.11  2005/07/02 09:24:51  mattias
   replaced some strings with resource strings  from George Lober

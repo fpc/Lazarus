@@ -395,7 +395,7 @@ end;
 
 initialization
 end.
-{ =============================================================================
+{
   $Log$
   Revision 1.39  2005/05/14 12:09:36  marc
   * included debugger result tye in execcommand (start fixing debugging on Mac OSX)

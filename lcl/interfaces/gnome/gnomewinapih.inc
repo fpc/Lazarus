@@ -32,7 +32,7 @@ Function PromptUserAtXY(const DialogCaption, DialogMessage : String; DialogType 
 Function RequestInput(const InputCaption, InputPrompt : String; MaskInput : Boolean; var Value : String) : Boolean; override;
 
 //##apiwiz##eps##   // Do not remove
-{ =============================================================================
+{
   $Log$
   Revision 1.9  2005/02/23 01:12:46  marc
   + Added RemoveProp winapi call

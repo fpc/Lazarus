@@ -66,8 +66,7 @@ implementation
 
 end.
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.28  2005/07/19 08:31:21  vincents
   added ColorBox (from Darius) to LCL

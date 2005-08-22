@@ -1945,7 +1945,7 @@ end;
 
 end.
 
-{ =============================================================================
+{
   $Log$
   Revision 1.85  2005/02/10 21:06:45  micha
   map evaluate command to show evaluate dialog

@@ -98,8 +98,7 @@ begin
   if Assigned(FOnClose) then FOnClose(Self);
 end;
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.20  2005/07/04 13:49:18  micha
   fix bug 936: waits for event after dialog

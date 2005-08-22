@@ -211,8 +211,7 @@ function WindowFromPoint(Point : TPoint) : HWND; override;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.4  2005/05/21 15:58:44  mattias
   implemented right justification for menuitems for winapi intf  from Martin Smat

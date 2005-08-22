@@ -199,7 +199,7 @@ initialization
   LastSmartWritelnCount:=0;
 
 end.
-{ =============================================================================
+{
   $Log$
   Revision 1.14  2005/05/14 12:09:36  marc
   * included debugger result tye in execcommand (start fixing debugging on Mac OSX)

@@ -640,8 +640,7 @@ end;
 
 // included by comctrls.pp
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.6  2004/09/24 13:45:32  mattias
   fixed TCanvas.TextRect Delphi compatible Rect and added TBarChart from Michael VC

@@ -48,8 +48,7 @@ function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.1  2005/02/23 01:12:47  marc
   + Added RemoveProp winapi call

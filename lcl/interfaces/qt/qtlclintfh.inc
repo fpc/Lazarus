@@ -32,8 +32,7 @@
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.3  2005/02/23 01:12:47  marc
   + Added RemoveProp winapi call

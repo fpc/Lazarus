@@ -307,7 +307,7 @@ initialization
 
 end.
 
-{ =============================================================================
+{
   $Log$
   Revision 1.11  2005/07/17 01:05:04  mattias
   started basic docking anchoring and made Contributors.txt ASCII to show everywhere

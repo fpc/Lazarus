@@ -3,44 +3,47 @@ object ApiWizForm: TApiWizForm
   ClientHeight = 383
   ClientWidth = 583
   OnCreate = ApiWizFormCreate
-  Position = PODEFAULTPOSONLY
-  HorzScrollBar.Page = 584
-  VertScrollBar.Page = 384
+  PixelsPerInch = 96
+  Position = poDefaultPosOnly
+  HorzScrollBar.Page = 582
+  VertScrollBar.Page = 382
   Left = 392
   Height = 383
   Top = 134
   Width = 583
   object lblDeclare: TLabel
-    Anchors = [AKTOP, AKLEFT, AKRIGHT]
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.OnChange = nil
     Caption = 'Declaration (each line is a separate entry):'
-    Layout = TLTOP
+    Color = clNone
     Left = 4
     Height = 16
     Top = 56
     Width = 404
   end
   object lblLazarus: TLabel
+    BorderSpacing.OnChange = nil
     Caption = 'Lazarus dir:'
-    Layout = TLTOP
+    Color = clNone
     Left = 4
     Height = 16
     Top = 8
     Width = 120
   end
   object cmdGenerate: TButton
-    Anchors = [AKTOP, AKRIGHT]
+    Anchors = [akTop, akRight]
+    BorderSpacing.OnChange = nil
     Caption = 'Generate'
-    TabStop = True
-    TabOrder = 1
     OnClick = cmdGenerateClick
+    TabOrder = 1
     Left = 416
     Height = 28
     Top = 256
     Width = 162
   end
   object txtLazarus: TEdit
-    Anchors = [AKTOP, AKLEFT, AKRIGHT]
-    TabStop = True
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.OnChange = nil
     TabOrder = 0
     Left = 4
     Height = 24
@@ -49,7 +52,8 @@ object ApiWizForm: TApiWizForm
     Tag = 493
   end
   object rdgApiType: TRadioGroup
-    Anchors = [AKTOP, AKRIGHT]
+    Anchors = [akTop, akRight]
+    BorderSpacing.OnChange = nil
     Caption = 'Api type'
     ItemIndex = 0
     Items.Strings = (
@@ -57,39 +61,40 @@ object ApiWizForm: TApiWizForm
       'LCL interface'
     )
     OnClick = rdgApiTypeClick
+    ParentColor = True
     Left = 416
     Height = 72
     Top = 176
     Width = 162
   end
   object Groupbox1: TGroupBox
-    Anchors = [AKTOP, AKRIGHT]
+    Anchors = [akTop, akRight]
+    BorderSpacing.OnChange = nil
     Caption = 'LCL Platform'
-    ClientHeight = 143
+    ClientHeight = 142
     ClientWidth = 158
     ParentColor = True
     ParentCtl3D = False
-    TabOrder = 5
+    TabOrder = 3
     Left = 416
     Height = 160
     Top = 8
     Width = 162
     object rbIndependent: TRadioButton
-      AutoSize = True
       AllowGrayed = True
+      BorderSpacing.OnChange = nil
       Caption = 'Independent'
       Checked = True
-      State = CBCHECKED
-      DragCursor = 65524
-      TabOrder = 0
-      TabStop = True
       OnClick = rbPlatformDependencyClick
+      State = cbChecked
+      TabOrder = 0
       Left = 10
       Height = 20
       Top = 3
       Width = 115
     end
     object cbgLCLPlatform: TCheckGroup
+      BorderSpacing.OnChange = nil
       Enabled = False
       Items.Strings = (
         'gnome'
@@ -98,6 +103,7 @@ object ApiWizForm: TApiWizForm
         'qt'
         'win32'
       )
+      ParentColor = True
       Left = 26
       Height = 107
       Top = 30
@@ -107,13 +113,11 @@ object ApiWizForm: TApiWizForm
       }
     end
     object rbDependent: TRadioButton
-      AutoSize = True
       AllowGrayed = True
+      BorderSpacing.OnChange = nil
       Caption = 'Dependent'
-      DragCursor = 65524
-      TabOrder = 1
-      TabStop = True
       OnClick = rbPlatformDependencyClick
+      TabOrder = 1
       Left = 10
       Height = 20
       Top = 30
@@ -121,12 +125,11 @@ object ApiWizForm: TApiWizForm
     end
   end
   object txtDeclarations: TMemo
-    Anchors = [AKTOP, AKLEFT, AKRIGHT, AKBOTTOM]
-    ScrollBars = SSBOTH
-    Tabstop = True
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.OnChange = nil
+    ScrollBars = ssBoth
+    TabOrder = 4
     WordWrap = False
-    TabStop = True
-    TabOrder = 6
     Left = 4
     Height = 303
     Top = 72

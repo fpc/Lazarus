@@ -237,8 +237,7 @@ end;
 
 // included by stdctrls.pp
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.36  2005/07/25 23:11:48  mattias
   fixed TEdit to eat normal keys and avoid triggering accelerators

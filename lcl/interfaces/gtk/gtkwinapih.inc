@@ -214,8 +214,7 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 
 // included by gtkint.pp
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.98  2005/06/22 17:37:06  mattias
   implemented TMouse.SetCursorPos  from Andrew

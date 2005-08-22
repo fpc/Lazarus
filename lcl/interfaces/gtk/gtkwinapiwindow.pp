@@ -1124,8 +1124,7 @@ initialization
 
 end.
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.69  2005/05/02 08:39:29  mattias
   removed obsolete focussing after buttonpress on gtkapiwidget

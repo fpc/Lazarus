@@ -1851,8 +1851,7 @@ finalization
 
 end.
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.179  2005/07/26 08:45:15  vincents
   initialize variables at declaration instead in the unit initialization   from Florian Köberle

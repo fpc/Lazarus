@@ -152,8 +152,7 @@ end;
 
 // included by stdctrls.pp
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.12  2005/01/01 14:38:36  mattias
   fixed loading TMemo.Lines - During Loading

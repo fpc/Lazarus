@@ -3574,7 +3574,7 @@ finalization
 
 
 end.
-{ =============================================================================
+{
   $Log$
   Revision 1.70  2005/03/17 00:09:36  marc
   * 64bit patch (partial) from Peter Vreman

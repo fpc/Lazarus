@@ -509,8 +509,7 @@ begin
   end;
 end;
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.30  2005/04/22 08:19:39  mattias
   added TListItems.FindCaption partstart parameter

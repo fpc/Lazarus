@@ -173,7 +173,7 @@ initialization
 
 end.
 
-{ =============================================================================
+{
   $Log$
   Revision 1.5  2004/08/26 23:50:05  marc
   * Restructured debugger view classes

@@ -138,8 +138,7 @@ Type
   {$H-}
 {$ENDIF}
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.19  2005/06/10 18:57:12  vincents
   fixed objects with a sorted listbox   from Jesus

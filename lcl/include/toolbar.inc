@@ -613,8 +613,7 @@ begin
   Button.Click;
 end;
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.37  2005/03/09 11:44:25  mattias
   added TSynCustomLineIndenter, implemented eoEnhanceHomeKey for synedit

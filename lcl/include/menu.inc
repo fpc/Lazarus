@@ -264,8 +264,7 @@ end;
 
 // included by menus.pp
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.31  2005/03/07 00:52:51  mattias
   various Delphi compatibilities  from C Western

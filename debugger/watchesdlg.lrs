@@ -5,20 +5,20 @@ LazarusResources.Add('TWatchesDlg','FORMDATA',[
   +'ight'#3#200#0#11'ClientWidth'#3#244#1#13'PixelsPerInch'#2'`'#18'HorzScrollB'
   +'ar.Page'#3#243#1#18'VertScrollBar.Page'#3#199#0#4'Left'#3':'#1#6'Height'#3
   +#200#0#3'Top'#3#182#1#5'Width'#3#244#1#0#9'TListView'#9'lvWatches'#5'Align'#7
-  +#8'alClient'#22'BorderSpacing.OnChange'#13#7'Columns'#14#1#7'Caption'#6#10'E'
-  +'xpression'#5'Width'#2#10#0#1#7'Caption'#6#5'Value'#5'Width'#2#10#0#0#11'Mul'
-  +'tiSelect'#9#9'PopupMenu'#7#8'mnuPopup'#9'ViewStyle'#7#8'vsReport'#10'OnDblC'
-  +'lick'#7#17'lvWatchesDblClick'#11'OnMouseDown'#7#18'lvWatchesMouseDown'#9'On'
-  +'KeyDown'#7#16'lvWatchesKeyDown'#12'OnSelectItem'#7#19'lvWatchesSelectItem'#6
-  +'Height'#3#200#0#5'Width'#3#244#1#0#0#10'TPopupMenu'#8'mnuPopup'#4'left'#2'd'
-  +#3'top'#2'`'#0#9'TMenuItem'#6'popAdd'#7'Caption'#6#4'&Add'#7'OnClick'#7#11'p'
-  +'opAddClick'#0#0#9'TMenuItem'#2'N1'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#13'po'
-  +'pProperties'#7'Caption'#6#11'&Properties'#7'OnClick'#7#18'popPropertiesClic'
-  +'k'#0#0#9'TMenuItem'#10'popEnabled'#7'Caption'#6#8'&Enabled'#7'OnClick'#7#15
-  +'popEnabledClick'#0#0#9'TMenuItem'#9'popDelete'#7'Caption'#6#7'&Delete'#7'On'
-  +'Click'#7#14'popDeleteClick'#0#0#9'TMenuItem'#2'N2'#7'Caption'#6#1'-'#0#0#9
-  +'TMenuItem'#13'popDisableAll'#7'Caption'#6#12'D&isable All'#7'OnClick'#7#18
-  +'popDisableAllClick'#0#0#9'TMenuItem'#12'popEnableAll'#7'Caption'#6#11'E&nab'
-  +'le All'#7'OnClick'#7#17'popEnableAllClick'#0#0#9'TMenuItem'#12'popDeleteAll'
-  +#7'Caption'#6#11'De&lete All'#7'OnClick'#7#17'popDeleteAllClick'#0#0#0#0
+  +#8'alClient'#7'Columns'#14#1#7'Caption'#6#10'Expression'#5'Width'#2#10#0#1#7
+  +'Caption'#6#5'Value'#5'Width'#2#10#0#0#11'MultiSelect'#9#9'PopupMenu'#7#8'mn'
+  +'uPopup'#9'ViewStyle'#7#8'vsReport'#10'OnDblClick'#7#17'lvWatchesDblClick'#11
+  +'OnMouseDown'#7#18'lvWatchesMouseDown'#9'OnKeyDown'#7#16'lvWatchesKeyDown'#12
+  +'OnSelectItem'#7#19'lvWatchesSelectItem'#6'Height'#3#200#0#5'Width'#3#244#1#0
+  +#0#10'TPopupMenu'#8'mnuPopup'#4'left'#2'd'#3'top'#2'`'#0#9'TMenuItem'#6'popA'
+  +'dd'#7'Caption'#6#4'&Add'#7'OnClick'#7#11'popAddClick'#0#0#9'TMenuItem'#2'N1'
+  +#7'Caption'#6#1'-'#0#0#9'TMenuItem'#13'popProperties'#7'Caption'#6#11'&Prope'
+  +'rties'#7'OnClick'#7#18'popPropertiesClick'#0#0#9'TMenuItem'#10'popEnabled'#7
+  +'Caption'#6#8'&Enabled'#7'OnClick'#7#15'popEnabledClick'#0#0#9'TMenuItem'#9
+  +'popDelete'#7'Caption'#6#7'&Delete'#7'OnClick'#7#14'popDeleteClick'#0#0#9'TM'
+  +'enuItem'#2'N2'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#13'popDisableAll'#7'Capti'
+  +'on'#6#12'D&isable All'#7'OnClick'#7#18'popDisableAllClick'#0#0#9'TMenuItem'
+  +#12'popEnableAll'#7'Caption'#6#11'E&nable All'#7'OnClick'#7#17'popEnableAllC'
+  +'lick'#0#0#9'TMenuItem'#12'popDeleteAll'#7'Caption'#6#11'De&lete All'#7'OnCl'
+  +'ick'#7#17'popDeleteAllClick'#0#0#0#0
 ]);

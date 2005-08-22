@@ -36,8 +36,7 @@ begin
   Application.CreateForm(TApiWizForm, ApiWizForm);
   Application.Run;
 end.
-{ =============================================================================
-
+{
   $Log$
   Revision 1.4  2003/12/13 01:12:01  marc
   * Applied patch from Vincent Snijders

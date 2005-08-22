@@ -104,7 +104,7 @@ initialization
 
 end.
 
-{ =============================================================================
+{
   $Log$
   Revision 1.1  2004/11/23 00:57:05  marc
   + Added Evaluate/Modify dialog

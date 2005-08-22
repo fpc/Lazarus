@@ -299,8 +299,7 @@ function RGB(R, G, B : Byte) : TColorRef; inline;
 
 {$ENDIF}
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.109  2005/07/16 00:08:26  marc
   * Reimplemented ZOrder

@@ -139,8 +139,7 @@ initialization
 
 end.
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.21  2005/01/14 15:24:51  mattias
   using logo size for splashform

@@ -596,7 +596,7 @@ begin
 end;
 
 end.
-{ =============================================================================
+{
   $Log$
   Revision 1.13  2005/01/16 19:02:02  micha
   fix bug 506: pass quoted files and paths to gdb that possibly contain spaces

@@ -101,8 +101,7 @@ end;
 
 // included by comctrls.pp
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.10  2005/02/26 17:08:41  marc
   * Reworked listviews to match new interface

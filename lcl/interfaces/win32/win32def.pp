@@ -137,8 +137,7 @@ Implementation
 
 End.
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.11  2004/08/18 09:31:21  mattias
   removed obsolete unit vclglobals

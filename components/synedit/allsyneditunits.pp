@@ -30,8 +30,7 @@ implementation
 
 end.
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.4  2005/03/23 10:45:05  mattias
   fixed ambigious with ambiguous

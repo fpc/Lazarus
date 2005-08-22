@@ -1501,8 +1501,7 @@ begin
   DeselectHandles;
 end;
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.94  2005/05/21 13:24:58  mattias
   TextRect clipping patch  from Jesus

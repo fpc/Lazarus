@@ -1321,8 +1321,7 @@ finalization
 
 end.
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.30  2005/06/13 18:34:21  mattias
   added DB Fields Editor for the IDE  from Alexandrov Alexandru - needs FPC 2.1

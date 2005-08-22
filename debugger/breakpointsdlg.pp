@@ -518,7 +518,7 @@ initialization
 
 end.
 
-{ =============================================================================
+{
   $Log$
   Revision 1.23  2005/02/18 16:59:39  mattias
   fixed note about jpeg bug

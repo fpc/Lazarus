@@ -628,8 +628,7 @@ End;
   {$H-}
 {$ENDIF}
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.41  2005/07/18 12:37:58  micha
   remove TWin32WidgetSet.RecreateWnd, use the one from Controls unit

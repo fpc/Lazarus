@@ -3163,8 +3163,7 @@ end;
   {$C-}
 {$ENDIF}
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.148  2005/07/18 13:49:54  micha
   split up implementation of ResizeChild

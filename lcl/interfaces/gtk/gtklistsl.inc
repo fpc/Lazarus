@@ -996,8 +996,7 @@ begin
   gtk_clist_set_row_data(FGtkCList, Index, AObject);
 end;
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.33  2005/07/23 09:35:00  mattias
   fixed gtk2 intf compilation

@@ -195,8 +195,7 @@ Procedure LeaveCriticalSection(var CritSection: TCriticalSection); Override;
 Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 
 //##apiwiz##eps##   // Do not remove
-{ =============================================================================
-
+{
   $Log$
   Revision 1.57  2005/06/22 17:37:06  mattias
   implemented TMouse.SetCursorPos  from Andrew

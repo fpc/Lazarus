@@ -105,7 +105,7 @@ initialization
   {$I dbgoutputform.lrs}
 
 end.
-{ =============================================================================
+{
   $Log$
   Revision 1.10  2004/02/02 16:59:27  mattias
   more Actions  TAction, TBasicAction, ...

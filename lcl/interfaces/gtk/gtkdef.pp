@@ -587,8 +587,7 @@ finalization
 
 end.
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.67  2005/04/25 07:55:33  mattias
   backtraces for gtk gdi objects  -dTraceGdiCalls  from Jesus

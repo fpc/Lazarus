@@ -169,7 +169,7 @@ finalization
   
 end.
 
-{ =============================================================================
+{
   $Log$
   Revision 1.25  2005/01/29 14:36:02  mattias
   reactivated fast xml units without widestrings

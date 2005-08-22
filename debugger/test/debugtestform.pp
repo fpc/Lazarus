@@ -321,7 +321,7 @@ initialization
   {$I debugtestform.lrs}
 
 end.
-{ =============================================================================
+{
   $Log$
   Revision 1.9  2003/05/22 23:08:19  marc
   MWE: = Moved and renamed debuggerforms so that they can be

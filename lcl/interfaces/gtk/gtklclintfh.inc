@@ -48,8 +48,7 @@ function ReplaceBitmapMask(var Image, Mask: HBitmap; NewMask: HBitmap): boolean;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.25  2005/07/01 12:07:50  mattias
   moved some menu intf methods to the TXXXWSMenuItem class  from Martin Smat

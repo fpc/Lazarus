@@ -149,8 +149,7 @@ begin
   inherited Destroy;
 end;
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.4  2004/08/30 10:49:20  mattias
   fixed focus catch for combobox csDropDownList

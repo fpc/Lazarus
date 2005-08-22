@@ -187,8 +187,7 @@ begin
   inherited Destroy;
 end;
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.8  2004/09/01 11:12:04  mattias
   replaced KeyPress dependencies with KeyDown

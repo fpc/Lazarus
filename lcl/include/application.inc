@@ -1482,8 +1482,7 @@ end;
 
 // included by forms.pp
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.127  2005/07/24 08:01:57  mattias
   fixed application modal for shortcut delegation  from Martin Smat

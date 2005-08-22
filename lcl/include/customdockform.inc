@@ -62,8 +62,7 @@ end;
 
 // included by forms.pp
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.1  2004/08/16 22:09:18  mattias
   started TCustomDockForm

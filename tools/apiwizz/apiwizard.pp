@@ -603,8 +603,7 @@ initialization
   {$I apiwizard.lrs}
 
 end.
-{ =============================================================================
-
+{
   $Log$
   Revision 1.7  2004/04/01 20:58:38  mattias
   fixed compilation of apiwiz

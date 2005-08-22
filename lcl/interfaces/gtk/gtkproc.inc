@@ -8240,8 +8240,7 @@ end;
 
 // included by gtkproc.pp
 
-{ =============================================================================
-
+{
   $Log$
   Revision 1.371  2005/07/23 23:15:19  mattias
   fixed sending UTF8 key presses in gtk intf
