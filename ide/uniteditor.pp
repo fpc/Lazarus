@@ -1922,7 +1922,7 @@ var
   LogCaret: TPoint;
 begin
   //debugln('TSourceEditor.StartIdentCompletion');
-  if FEditor.ReadOnly then exit;
+  if (FEditor.ReadOnly) or (CurrentCompletionType<>ctNone) then exit;
   SourceNoteBook.fIdentCompletionJumpToError:=JumpToError;
   
   CurrentCompletionType:=ctIdentCompletion;

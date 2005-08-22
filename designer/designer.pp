@@ -85,6 +85,9 @@ type
     fChangeClassMenuItem: TMenuItem;
     FCopyMenuItem: TMenuItem;
     FCutMenuItem: TMenuItem;
+    FDefaultFormBounds: TRect;
+    FLastFormBounds: TRect;
+    FDefaultFormBoundsValid: boolean;
     FDeleteSelectionMenuItem: TMenuItem;
     FFlags: TDesignerFlags;
     FGridColor: TColor;
@@ -138,6 +141,7 @@ type
     function GetSnapToGrid: boolean;
     Procedure HintTimer(sender : TObject);
     procedure InvalidateWithParent(AComponent: TComponent);
+    procedure SetDefaultFormBounds(const AValue: TRect);
     procedure SetGridColor(const AValue: TColor);
     procedure SetShowComponentCaptionHints(const AValue: boolean);
     procedure SetShowGrid(const AValue: boolean);
@@ -280,6 +284,7 @@ type
        aDDC: TDesignerDeviceContext);
     procedure DrawNonVisualComponents(aDDC: TDesignerDeviceContext);
     procedure DrawDesignerItems(OnlyIfNeeded: boolean); override;
+    procedure CheckFormBounds;
     procedure DoPaintDesignerItems;
   public
     property Flags: TDesignerFlags read FFlags;
@@ -327,6 +332,9 @@ type
     property SnapToGrid: boolean read GetSnapToGrid write SetSnapToGrid;
     property TheFormEditor: TCustomFormEditor
                                        read FTheFormEditor write FTheFormEditor;
+    property DefaultFormBounds: TRect read FDefaultFormBounds write SetDefaultFormBounds;
+    property DefaultFormBoundsValid: boolean read FDefaultFormBoundsValid
+                                             write FDefaultFormBoundsValid;
   end;
 
 
@@ -990,6 +998,11 @@ begin
   end else begin
     FForm.Invalidate;
   end;
+end;
+
+procedure TDesigner.SetDefaultFormBounds(const AValue: TRect);
+begin
+  FDefaultFormBounds:=AValue;
 end;
 
 procedure TDesigner.SetGridColor(const AValue: TColor);
@@ -2179,6 +2192,29 @@ begin
   DoPaintDesignerItems;
   DDC.Clear;
   ReleaseDesignerDC(Form.Handle,DesignerDC);
+end;
+
+procedure TDesigner.CheckFormBounds;
+// check if the Form was moved or resized
+// Note: During form loading the window manager can resize and position
+//       the Form. Such initial changes are ignored, by waiting and comparing
+//       not before the IDE becomes idle. When the IDE becomes the first time
+//       idle, the form bounds are stored and used as default.
+//       After that any change of the Form Bounds is treated as a user move
+//       and thus calls Modified.
+var
+  NewFormBounds: TRect;
+begin
+  NewFormBounds:=Form.BoundsRect;
+  if FDefaultFormBoundsValid then begin
+    if not CompareRect(@FDefaultFormBounds,@FLastFormBounds) then begin
+      Modified;
+    end;
+  end else begin
+    FDefaultFormBoundsValid:=true;
+    FDefaultFormBounds:=NewFormBounds;
+  end;
+  FLastFormBounds:=NewFormBounds;
 end;
 
 procedure TDesigner.DoPaintDesignerItems;

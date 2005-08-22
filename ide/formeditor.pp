@@ -35,11 +35,15 @@ uses
   ObjectInspector, Designer, FormEditingIntf;
 
 type
+
+  { TFormEditor }
+
   TFormEditor = class(TCustomFormEditor)
   protected
     procedure SetObj_Inspector(AnObjectInspector: TObjectInspector); override;
   public
     procedure PaintAllDesignerItems;
+    procedure CheckDesignerPositions;
   end;
 
 var
@@ -78,17 +82,31 @@ var
 begin
   for i:=0 to JITFormList.Count-1 do begin
     ADesigner:=TDesigner(JITFormList[i].Designer);
-    if ADesigner<>nil then begin
-      ADesigner.DrawDesignerItems(true);
-    end;
+    if ADesigner<>nil then ADesigner.DrawDesignerItems(true);
   end;
   for i:=0 to JITNonFormList.Count-1 do begin
     AForm:=GetDesignerForm(JITNonFormList[i]);
     if AForm=nil then continue;
     ADesigner:=TDesigner(AForm.Designer);
-    if ADesigner<>nil then begin
-      ADesigner.DrawDesignerItems(true);
-    end;
+    if ADesigner<>nil then ADesigner.DrawDesignerItems(true);
+  end;
+end;
+
+procedure TFormEditor.CheckDesignerPositions;
+var
+  i: Integer;
+  ADesigner: TDesigner;
+  AForm: TCustomForm;
+begin
+  for i:=0 to JITFormList.Count-1 do begin
+    ADesigner:=TDesigner(JITFormList[i].Designer);
+    if ADesigner<>nil then ADesigner.CheckFormBounds;
+  end;
+  for i:=0 to JITNonFormList.Count-1 do begin
+    AForm:=GetDesignerForm(JITNonFormList[i]);
+    if AForm=nil then continue;
+    ADesigner:=TDesigner(AForm.Designer);
+    if ADesigner<>nil then ADesigner.CheckFormBounds;
   end;
 end;
 

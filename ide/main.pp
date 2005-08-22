@@ -11179,6 +11179,7 @@ begin
   GetDefaultProcessList.FreeStoppedProcesses;
   EnvironmentOptions.ExternalTools.FreeStoppedProcesses;
   if (SplashForm<>nil) then FreeThenNil(SplashForm);
+  FormEditor1.CheckDesignerPositions;
   FormEditor1.PaintAllDesignerItems;
   SrcEdit:=SourceNotebook.GetActiveSe;
   MainIDEBar.SaveSpeedBtn.Enabled := (SrcEdit<>nil)
