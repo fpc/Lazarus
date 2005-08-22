@@ -163,20 +163,4 @@ begin
 end;
 
 
-{
-  $Log$
-  Revision 1.2  2002/05/10 06:05:55  lazarus
-  MG: changed license to LGPL
-
-  Revision 1.1  2000/07/13 10:28:27  michael
-  + Initial import
-
-  Revision 1.1  2000/04/02 20:49:56  lazarus
-  MWE:
-    Moved lazarus/lcl/*.inc files to lazarus/lcl/include
-
-  Revision 1.1  1999/10/18 07:31:24  lazarus
-  Implementation for RegIniFile class.                     CAW
-
-}
 

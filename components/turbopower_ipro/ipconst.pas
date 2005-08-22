@@ -734,13 +734,4 @@ resourcestring
 
 implementation
 
-{
-  $Log$
-  Revision 1.1  2003/03/27 18:25:34  mattias
-  added ipro html components, compilable but not yet working
-
-  Revision 1.2  2003/02/17 21:24:50  mkaemmerer
-  - added SNoMemoryStreamErr
-
-}
 end.

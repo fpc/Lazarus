@@ -298,37 +298,3 @@ begin
    Application.CreateForm(TForm1, Form1);
    Application.Run;
 end.
-{
-  $Log$
-  Revision 1.7  2002/10/30 13:44:29  lazarus
-  MG: fixed examples
-
-  Revision 1.6  2002/10/30 12:37:25  lazarus
-  MG: mouse cursors are now allocated on demand
-
-  Revision 1.5  2002/10/29 08:22:33  lazarus
-  MG: added interfaces unit
-
-  Revision 1.4  2002/05/10 06:57:50  lazarus
-  MG: updated licenses
-
-  Revision 1.3  2002/02/01 10:13:09  lazarus
-  Keith: Fixes for Win32
-
-  Revision 1.2  2000/07/23 19:04:42  lazarus
-  enhanced examples, stoppok
-
-  Revision 1.3  2000/06/18 08:07:18  lazarus
-   Enhanced trackbar example. stoppok
-
-  Revision 1.2  1999/12/29 00:40:27  lazarus
-
-    Changes to make trackbar/progressbar working again.
-        stopppok
-
-  Revision 1.1  1999/09/17 20:54:02  lazarus
-
-    Added example for TTrackbar.
-      stoppok
-
-}

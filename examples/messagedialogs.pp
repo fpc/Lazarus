@@ -83,26 +83,3 @@ begin
    Application.CreateForm(TMainForm, MainForm);
    Application.Run;
 end.
-{
-   $Log$
-   Revision 1.6  2002/10/29 08:22:32  lazarus
-   MG: added interfaces unit
-
-   Revision 1.5  2002/09/03 20:02:01  lazarus
-   Intermediate UI patch to show a bug.
-
-   Revision 1.4  2002/08/30 10:06:07  lazarus
-   Fixed alignment of multiline TLabel.
-   Simplified and prettified MessageBoxen.
-
-   Revision 1.3  2002/05/10 06:57:50  lazarus
-   MG: updated licenses
-
-   Revision 1.2  2001/07/31 18:40:24  lazarus
-   MG: added unit info, arrow xpms, and many changes from jens arm
-
-   Revision 1.1  2001/03/03 00:51:54  lazarus
-   + new sample to show Message dialogs
-   stoppok
-
-}   

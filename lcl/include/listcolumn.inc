@@ -268,41 +268,4 @@ begin
   WSC.ColumnSetVisible(LV, Index, Self, FVisible);
 end;
 
-{
-  $Log$
-  Revision 1.10  2005/02/26 17:08:41  marc
-  * Reworked listviews to match new interface
-
-  Revision 1.9  2004/07/24 00:00:33  mattias
-  started TCollectionPropertyEditor
-
-  Revision 1.8  2004/07/11 17:20:47  marc
-  * Implemented most of TListColoum/Item in the Ws for gtk and win32
-
-  Revision 1.7  2004/04/10 17:58:57  mattias
-  implemented mainunit hints for include files
-
-  Revision 1.6  2003/12/26 15:23:30  mattias
-  started message editor and fixed some range checks
-
-  Revision 1.5  2003/12/21 16:01:58  mattias
-  workaround for inherited bug in fpc 1.9
-
-  Revision 1.4  2002/10/09 11:46:04  lazarus
-  MG: fixed loading TListView from stream
-
-  Revision 1.3  2002/05/10 06:05:53  lazarus
-  MG: changed license to LGPL
-
-  Revision 1.2  2002/03/23 15:49:22  lazarus
-  MWE: Fixed more compatebility issues (Sort, SelectedItem)
-
-  Revision 1.1  2002/03/12 23:55:37  lazarus
-  MWE:
-    * More delphi compatibility added/updated to TListView
-    * Introduced TDebugger.locals
-    * Moved breakpoints dialog to debugger dir
-    * Changed breakpoints dialog to read from resource
-
-}
 

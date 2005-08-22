@@ -1786,32 +1786,5 @@ begin
   Result := FStream.Size;
 end;
 
-{
-  $Log$
-  Revision 1.4  2004/10/04 09:36:23  mattias
-  fixed compilation of ipro
-
-  Revision 1.3  2004/02/04 22:17:59  mattias
-  TipHtmlPanel can now show fpdoc html output
-
-  Revision 1.2  2003/09/18 09:21:03  mattias
-  renamed LCLLinux to LCLIntf
-
-  Revision 1.1  2003/03/27 18:25:35  mattias
-  added ipro html components, compilable but not yet working
-
-  Revision 1.4  2003/02/17 21:30:07  mkaemmerer
-  - added property Memory
-  - removed private function CheckOpen and reimplemented
-    the check directly (for performance reasons)
-
-  Revision 1.3  2003/02/16 20:22:05  mkaemmerer
-  - increased BufferSize in IpStrms for more speed from 4096 to 16384 Bytes
-  - fixed two range check errors in TIpBufferedStream.Write
-
-  Revision 1.2  2003/01/24 22:54:37  mkaemmerer
-  - performance update for atsGetLine (around 20%)
-
-}
 end.
 

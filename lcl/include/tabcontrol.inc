@@ -640,25 +640,4 @@ end;
 
 // included by comctrls.pp
 
-{
-  $Log$
-  Revision 1.6  2004/09/24 13:45:32  mattias
-  fixed TCanvas.TextRect Delphi compatible Rect and added TBarChart from Michael VC
-
-  Revision 1.5  2004/09/12 20:59:05  vincents
-  fix fpc 1.0.x compilation
-
-  Revision 1.4  2004/09/10 16:28:50  mattias
-  implemented very rudimentary TTabControl
-
-  Revision 1.3  2004/09/09 22:00:37  mattias
-  started TTabControlNotebookStrings
-
-  Revision 1.2  2004/09/09 09:35:44  mattias
-  renamed customradiogroup.inc to radiogroup.inc
-
-  Revision 1.1  2004/09/08 22:59:54  mattias
-  started TTabControl
-
-}
 

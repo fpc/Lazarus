@@ -203,41 +203,5 @@ initialization
   RegisterDebugger(TSSHGDBMIDebugger);
 
 end.
-{
-  $Log$
-  Revision 1.10  2005/05/14 12:09:36  marc
-  * included debugger result tye in execcommand (start fixing debugging on Mac OSX)
-
-  Revision 1.9  2004/01/17 13:29:04  mattias
-  using now fpc constant LineEnding   from Vincent
-
-  Revision 1.8  2004/01/09 00:10:51  marc
-  * More debugger properties
-  * Fixed debugger for regcall callingconvention in RTL
-
-  Revision 1.7  2004/01/04 03:53:36  marc
-  * Changed TComponentSelectionList to TPersistentSelectionList
-  + Added SSHdebugger property
-
-  Revision 1.6  2003/12/27 11:22:37  mattias
-  minor fixes
-
-  Revision 1.5  2003/10/22 17:50:16  mattias
-  updated rpm scripts
-
-  Revision 1.4  2003/10/16 23:54:27  marc
-  Implemented new gtk keyevent handling
-
-  Revision 1.3  2003/08/15 14:28:48  mattias
-  clean up win32 ifdefs
-
-  Revision 1.2  2003/07/30 23:15:39  marc
-  * Added RegisterDebugger
-
-  Revision 1.1  2003/07/24 08:52:46  marc
-  + Added SSHGDB debugger
-
-  
-}
 
 

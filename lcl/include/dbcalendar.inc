@@ -149,20 +149,4 @@ begin
   inherited Destroy;
 end;
 
-{
-  $Log$
-  Revision 1.4  2004/08/30 10:49:20  mattias
-  fixed focus catch for combobox csDropDownList
-
-  Revision 1.3  2004/04/10 17:58:57  mattias
-  implemented mainunit hints for include files
-
-  Revision 1.2  2003/09/22 15:03:19  ajgenius
-  partly fixed streaming of DBCalendar, and opRemove notification of DBText DBEdit DBCalendar
-
-  Revision 1.1  2003/09/18 15:27:07  ajgenius
-  added initial TDBCalendar
-
-
-}
 

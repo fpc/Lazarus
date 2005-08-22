@@ -1561,18 +1561,3 @@ end;
 
 
 end.
-{
-  $Log$
-  Revision 1.16  2005/05/02 13:06:38  vincents
-  fixed parsing of &quot;
-
-  Revision 1.15  2005/01/29 14:36:04  mattias
-  reactivated fast xml units without widestrings
-
-  Revision 1.13  2005/01/22 20:54:51  michael
-  * Patch from Colin Western to correctly read CDATA
-
-  Revision 1.12  2004/11/05 22:32:28  peter
-    * merged xml updates from lazarus
-
-}

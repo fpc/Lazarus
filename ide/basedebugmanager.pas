@@ -169,41 +169,5 @@ finalization
   
 end.
 
-{
-  $Log$
-  Revision 1.25  2005/01/29 14:36:02  mattias
-  reactivated fast xml units without widestrings
-
-  Revision 1.24  2005/01/15 13:44:03  vincents
-  use xml units from fpc, if not compiling with fpc 1.0
-
-  Revision 1.23  2004/11/23 11:01:10  mattias
-  added key handling for debug manager
-
-  Revision 1.22  2004/09/23 07:45:53  vincents
-  moved FDebugger field from BaseDebugManager to DebugManager
-
-  Revision 1.21  2004/09/04 21:54:08  marc
-  + Added option to skip compiler step on compile, build or run
-  * Fixed adding of runtime watches
-  * Fixed runnerror reporting (correct number and location is shown)
-
-  Revision 1.20  2004/08/26 23:50:04  marc
-  * Restructured debugger view classes
-  * Fixed help
-
-  Revision 1.19  2004/01/05 15:22:41  mattias
-  improved debugger: saved log, error handling in initialization, better reinitialize
-
-  Revision 1.18  2003/08/08 10:24:47  mattias
-  fixed initialenabled, debuggertype, linkscaner open string constant
-
-  Revision 1.17  2003/07/31 00:42:20  marc
-  * Fixed classof to object cast
-
-  Revision 1.16  2003/07/30 23:15:38  marc
-  * Added RegisterDebugger
-
-}
 
 

@@ -360,32 +360,3 @@ end;
 
 // included by controls.pp
 
-{
-  $Log$
-  Revision 1.9  2005/07/26 08:45:15  vincents
-  initialize variables at declaration instead in the unit initialization   from Florian Köberle
-
-  Revision 1.8  2005/02/05 16:09:52  marc
-  * first 64bit changes
-
-  Revision 1.7  2005/01/13 00:13:36  mattias
-  fixed dragging over nil
-
-  Revision 1.6  2004/09/20 20:22:12  mattias
-  implemented Refactoring Tool: Find Identfier References
-
-  Revision 1.5  2004/06/01 09:58:35  mattias
-  implemented setting TCustomPage.PageIndex  from Andrew Haines
-
-  Revision 1.4  2004/05/11 12:16:47  mattias
-  replaced writeln by debugln
-
-  Revision 1.3  2004/04/10 17:58:57  mattias
-  implemented mainunit hints for include files
-
-  Revision 1.2  2004/03/19 16:37:55  mattias
-  renamed internal FindDragTarget to GetDragTargetAt
-
-  Revision 1.1  2004/02/28 00:34:35  mattias
-  fixed CreateComponent for buttons, implemented basic Drag And Drop
-}

@@ -119,25 +119,4 @@ initialization
 
 end.
 
-{
-  $Log$
-  Revision 1.7  2005/03/24 09:50:03  mattias
-  checking HandleAllocated for dbgrid   from Jesus
-
-  Revision 1.6  2005/01/27 00:55:04  mattias
-  implemented allowing parent as AnchorSide.Control
-
-  Revision 1.5  2005/01/12 23:58:31  mattias
-  improved project: recognizing if filename was fixed before pathdelim changed
-
-  Revision 1.4  2004/12/18 23:46:16  mattias
-  added resurce strings for gtk file dlg
-
-  Revision 1.3  2004/12/04 01:17:41  mattias
-  implemented Target Directory for IDE
-
-  Revision 1.2  2004/09/27 22:16:04  vincents
-  renamed filectrl.inc to fileutil.inc
-
-}
 

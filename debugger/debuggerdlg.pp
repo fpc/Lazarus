@@ -136,46 +136,4 @@ begin
 
 end;
 
-{
-  $Log$
-  Revision 1.10  2004/08/26 23:50:05  marc
-  * Restructured debugger view classes
-  * Fixed help
-
-  Revision 1.9  2004/02/02 16:59:28  mattias
-  more Actions  TAction, TBasicAction, ...
-
-  Revision 1.8  2004/01/05 15:22:42  mattias
-  improved debugger: saved log, error handling in initialization, better reinitialize
-
-  Revision 1.7  2003/06/16 00:07:28  marc
-  MWE:
-    + Implemented DebuggerOptions-ExceptonAdd
-    * fixed inputquery (cannot setfocus while dialog is invisuible)
-
-  Revision 1.6  2003/05/29 23:14:17  mattias
-  implemented jump to code on double click for breakpoints and callstack dlg
-
-  Revision 1.5  2003/05/28 08:46:24  mattias
-  break;points dialog now gets the items without debugger
-
-  Revision 1.4  2003/05/27 20:58:12  mattias
-  implemented enable and deleting breakpoint in breakpoint dlg
-
-  Revision 1.3  2003/05/18 10:42:58  mattias
-  implemented deleting empty submenus
-
-  Revision 1.2  2002/05/10 06:57:48  lazarus
-  MG: updated licenses
-
-  Revision 1.1  2002/03/23 15:54:30  lazarus
-  MWE:
-    + Added locals dialog
-    * Modified breakpoints dialog (load as resource)
-    + Added generic debuggerdlg class
-    = Reorganized main.pp, all debbugger relater routines are moved
-      to include/ide_debugger.inc
-
-  
-}
 end.

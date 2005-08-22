@@ -590,18 +590,3 @@ begin
 end;
 
 end.
-{
-  $Log$
-  Revision 1.9  2005/01/30 21:53:26  vincents
-  fpc 1.0.x doesn't have threadvar
-
-  Revision 1.8  2005/01/29 14:36:04  mattias
-  reactivated fast xml units without widestrings
-
-  Revision 1.16  2005/01/08 01:32:06  michael
-  + Fixed writing of fragments
-
-  Revision 1.15  2004/11/05 22:32:28  peter
-    * merged xml updates from lazarus
-
-}

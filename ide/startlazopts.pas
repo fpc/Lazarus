@@ -55,10 +55,4 @@ begin
 end;
 
 end.
-{
-  $Log$
-  Revision 1.3  2004/09/03 21:14:50  vincents
-  fix showing splash screen on restart
-
-}
 

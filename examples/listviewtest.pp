@@ -164,30 +164,3 @@ begin
   Application.Run;
 end.
 
-{
-  $Log$
-  Revision 1.7  2004/07/11 17:20:47  marc
-  * Implemented most of TListColoum/Item in the Ws for gtk and win32
-
-  Revision 1.6  2004/05/20 21:28:54  marc
-  * Fixed win32 listview
-
-  Revision 1.5  2004/05/18 23:10:41  marc
-  * Started to move TListview to the WS interface
-
-  Revision 1.4  2002/10/29 08:22:32  lazarus
-  MG: added interfaces unit
-
-  Revision 1.3  2002/05/10 06:57:50  lazarus
-  MG: updated licenses
-
-  Revision 1.2  2002/02/08 00:44:06  lazarus
-  Keith: Fixed form size for listviewtest.pp, kind changing for scrollbar.pp
-
-  Revision 1.1  2002/02/04 10:54:33  lazarus
-  Keith:
-    * Fixes for Win32
-    * Added new listviewtest.pp example
-
-
-}

@@ -34,19 +34,4 @@ begin
   Application.Run;
 end.
 
-{
-  $Log$
-  Revision 1.3  2002/10/29 08:22:32  lazarus
-  MG: added interfaces unit
-
-  Revision 1.2  2002/05/10 06:57:50  lazarus
-  MG: updated licenses
-
-  Revision 1.1  2000/07/13 10:28:21  michael
-  + Initial import
-
-  Revision 1.3  1999/08/03 06:35:13  lazarus
-  Added cvs logging to bottom of unit
-
-}
 

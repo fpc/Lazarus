@@ -251,12 +251,4 @@ begin
 end;
 
 end.
-{
-$Log$
-Revision 1.1  2004/12/27 12:56:41  mattias
-started TTranslateStrings and .lrt files support  from Vasily
-
-Revision 1.1 2004/10/18 20:19 VVI
-first implementation
-}
 

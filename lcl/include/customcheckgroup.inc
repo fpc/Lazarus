@@ -274,43 +274,4 @@ end;
 
 // included by extctrls.pp
 
-{
-  $Log$
-  Revision 1.12  2005/07/02 09:17:20  mattias
-  implemented streaming TCheckListBox checked states  from Salvatore
-
-  Revision 1.11  2005/02/26 17:08:41  marc
-  * Reworked listviews to match new interface
-
-  Revision 1.10  2004/09/04 22:24:16  mattias
-  added default values for compiler skip options and improved many parts of synedit for UTF8
-
-  Revision 1.9  2004/08/15 17:00:58  mattias
-  improved DefineProperties to read/write endian independent
-
-  Revision 1.8  2004/07/16 21:49:00  mattias
-  added RTTI controls
-
-  Revision 1.7  2004/07/13 10:34:15  mattias
-  fixed lcl package unit file name checklist.pas
-
-  Revision 1.6  2004/07/12 21:32:07  mattias
-  added TCheckGroup.ColumnLayout
-
-  Revision 1.5  2004/04/10 17:58:57  mattias
-  implemented mainunit hints for include files
-
-  Revision 1.4  2004/02/08 11:31:32  mattias
-  TMenuItem.Bitmap is now auto created on read. Added TMenuItem.HasBitmap
-
-  Revision 1.3  2003/12/21 16:01:58  mattias
-  workaround for inherited bug in fpc 1.9
-
-  Revision 1.2  2003/03/18 00:00:05  mattias
-  added TCheckGroup.CheckEnabled
-
-  Revision 1.1  2003/03/17 23:39:30  mattias
-  added TCheckGroup
-
-}
 

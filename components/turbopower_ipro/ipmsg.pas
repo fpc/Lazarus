@@ -3907,44 +3907,4 @@ begin
 end;
 
 
-{
-  $Log$
-  Revision 1.2  2003/09/18 09:21:03  mattias
-  renamed LCLLinux to LCLIntf
-
-  Revision 1.1  2003/03/27 18:25:35  mattias
-  added ipro html components, compilable but not yet working
-
-  Revision 1.6  2003/02/18 01:46:07  mkaemmerer
-  - fix for last commit
-
-  Revision 1.5  2003/02/17 23:18:50  mkaemmerer
-  - commented out direct stream saveing for TMemoryStream in EncodeEntity
-
-  Revision 1.4  2003/02/17 21:56:35  mkaemmerer
-  - changed IpLgAttachSizeBoundry to 5MB, because new functions are
-    twice as fast with in memory streaming compared to memory mapped files
-  - presize both TIpMemMapStream and TMemoryStream now with factor 1.3695
-    instead of 1.5 to reduce memory waste
-  - in TIpMimeEntity.EncodeEntity
-    - presize stream to final size before copying
-    - make use of .Memory when copying
-    - instead copy line by line do copy with CopyFrom
-    - this will speed up EncodeMessage by factor three
-  - complete rewrite of TIpMimeEntity.OctetStreamToHextetStream
-    - use direct memory access for InStream instead of InStream.Read
-    - optimized inner loop for speed
-    - raise error SNoMemoryStreamErr if InStream is not
-      TMemoryStream or TIpMemMapStream
-  - use TIpMemMapStream instead of TFileStream in TIpFormDataEntity.AddFile
-  - attaching a file is now 3 to 125 times faster (depending on file size)
-  - EncodeMessage is about three to four times faster now
-
-  Revision 1.3  2003/01/19 14:23:54  mkaemmerer
-  - HeaderFileName can ony be 256 Bytes long, fixed
-
-  Revision 1.2  2003/01/18 22:17:20  mkaemmerer
-  - TIpMessage.DecodeBase64 is more than 20 times faster now
-
-}
 end.

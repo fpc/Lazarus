@@ -244,22 +244,6 @@ initialization
 finalization
 end.
 {
-$Log$
-Revision 1.2  2005/01/10 19:01:36  mattias
-updated russian translation  from VVI
-
-Revision 1.2 2005/01/09  19:01:28  VVI
-Moved all independend translation stuff out form $IFDEFs.
-If found, translate LCL stuff of user program too.
-Added some win32 stuff, like in lazconf.inc
-
-Revision 1.1  2004/12/27 12:56:42  mattias
-started TTranslateStrings and .lrt files support  from Vasily
-
-Revision 1.1 2004/10/17 13:49 VVI
-added <project_name>.<full language>.mo file search
-}
-{
 No revision (not in LOG)
  2004/10/09 Sent as is to Lazarus Team - VVI
 }

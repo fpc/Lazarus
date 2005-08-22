@@ -107,26 +107,4 @@ begin
    Application.Run;
 end.
 
-{
-  $Log$
-  Revision 1.5  2002/10/29 08:22:32  lazarus
-  MG: added interfaces unit
-
-  Revision 1.4  2002/05/10 06:57:50  lazarus
-  MG: updated licenses
-
-  Revision 1.3  2002/02/05 23:16:48  lazarus
-  MWE: * Updated tebugger
-       + Added debugger to IDE
-
-  Revision 1.2  2002/02/04 10:54:33  lazarus
-  Keith:
-    * Fixes for Win32
-    * Added new listviewtest.pp example
-
-  Revision 1.1  2000/12/31 15:48:41  lazarus
-  MWE:
-    + Added Editor test app.
-
-}
 

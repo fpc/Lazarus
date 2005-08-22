@@ -78,20 +78,4 @@ finalization
 
 end.
 
-{
-  $Log$
-  Revision 1.2  2004/08/18 09:31:21  mattias
-  removed obsolete unit vclglobals
-
-  Revision 1.1  2000/07/13 10:28:31  michael
-  + Initial import
-
-  Revision 1.2  1999/10/19 19:59:15  lazarus
-  Added clipbrd.pp and clipbrd.inc.  Nothing done to them yet.
-  Shane
-
-  Revision 1.1  1999/08/12 16:21:54  lazarus
-  Templates initially created    CAW
-
-}
 

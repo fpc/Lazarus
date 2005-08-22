@@ -137,39 +137,3 @@ Implementation
 
 End.
 
-{
-  $Log$
-  Revision 1.11  2004/08/18 09:31:21  mattias
-  removed obsolete unit vclglobals
-
-  Revision 1.10  2003/12/29 14:22:22  micha
-  fix a lot of range check errors win32
-
-  Revision 1.9  2003/10/02 11:18:09  mattias
-  clean ups from Karl
-
-  Revision 1.8  2003/09/27 09:52:44  mattias
-  TScrollBox for win32 intf from Karl
-
-  Revision 1.7  2003/09/08 12:21:48  mattias
-  added fpImage reader/writer hooks to TBitmap
-
-  Revision 1.6  2003/08/17 12:26:00  mattias
-  fixed parts of the win32 intf size system
-
-  Revision 1.5  2002/11/23 13:48:48  mattias
-  added Timer patch from Vincent Snijders
-
-  Revision 1.4  2002/05/10 07:43:48  lazarus
-  MG: updated licenses
-
-  Revision 1.3  2002/01/05 13:16:09  lazarus
-  MG: win32 interface update from Keith Bowes
-
-  Revision 1.2  2001/11/01 22:40:13  lazarus
-  MG: applied Keith Bowes win32 interface updates
-
-  Revision 1.1  2001/08/02 12:58:35  lazarus
-  MG: win32 interface patch from Keith Bowes
-
-}

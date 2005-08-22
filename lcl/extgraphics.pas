@@ -393,21 +393,5 @@ end;
  
 end.
 
-{
-  $Log$
-  Revision 1.4  2004/11/10 15:25:32  mattias
-  updated memcheck.pas from heaptrc.pp
-
-  Revision 1.3  2004/10/01 13:31:23  mattias
-  updated finnish translation from Seppo
-
-  Revision 1.3 2004/09/30 00:00:00 seppo
-  added PaintHalfEllipse, PaintFivePointStar, PaintFivePointLineStar,
-  PaintStarN, CalculatePentagonPoints & LinesPointOfIntersection
-  
-  Revision 1.2 2004/05/07 08:07:57 mattias
-  
-  Revision 1.1 2004/04/09 15:03:00 seppo
-    }
 
 

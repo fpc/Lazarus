@@ -618,26 +618,3 @@ begin
 end;
 
 end.
-{
-  $Log$
-  Revision 1.5  2005/05/14 12:09:36  marc
-  * included debugger result tye in execcommand (start fixing debugging on Mac OSX)
-
-  Revision 1.4  2004/11/21 15:19:08  marc
-  * worked aound lack of %u as formatspecifier
-  + introduced dbgptr for dealing with pointers on the target
-  + added classnames to pointer evaluation
-
-  Revision 1.3  2003/12/05 08:39:53  mattias
-  fixed memleak in debugger  from Vincent
-
-  Revision 1.2  2003/05/23 14:12:51  mattias
-  implemented restoring breakpoints
-
-  Revision 1.1  2003/05/22 23:08:19  marc
-  MWE: = Moved and renamed debuggerforms so that they can be
-         modified by the ide
-       + Added some parsing to evaluate complex expressions
-         not understood by the debugger
-
-}

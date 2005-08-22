@@ -94,10 +94,4 @@ end;
 
 
 // included by carbonint.pas
-{
-  $Log$
-  Revision 1.1  2004/09/06 22:24:52  mattias
-  started the carbon LCL interface
-
-}
 

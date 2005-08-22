@@ -48,16 +48,4 @@ begin
   ALazarusManager.Run;
   FreeAndNil(ALazarusManager);
 end.
-{
-  $Log$
-  Revision 1.4  2004/10/27 20:49:26  vincents
-  Lazarus can be restarted, even if not started by startlazarus (only win32 implemented).
-
-  Revision 1.3  2004/10/01 21:33:36  vincents
-  Added icon to startlazarus.
-
-  Revision 1.2  2004/09/03 21:14:50  vincents
-  fix showing splash screen on restart
-
-}
 

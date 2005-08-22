@@ -106,20 +106,4 @@ end;
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
 // included by carbonint.pas
-{
-  $Log$
-  Revision 1.4  2005/07/01 12:07:50  mattias
-  moved some menu intf methods to the TXXXWSMenuItem class  from Martin Smat
-
-  Revision 1.3  2005/05/21 15:58:44  mattias
-  implemented right justification for menuitems for winapi intf  from Martin Smat
-
-  Revision 1.2  2005/02/23 01:12:46  marc
-  + Added RemoveProp winapi call
-  * Some maintenace on winapi/lclintf files
-
-  Revision 1.1  2004/09/06 22:24:52  mattias
-  started the carbon LCL interface
-
-}
 

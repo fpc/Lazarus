@@ -187,32 +187,4 @@ begin
   inherited Destroy;
 end;
 
-{
-  $Log$
-  Revision 1.8  2004/09/01 11:12:04  mattias
-  replaced KeyPress dependencies with KeyDown
-
-  Revision 1.7  2004/08/30 16:37:58  mattias
-  added OnUTF8KeyPresss
-
-  Revision 1.6  2004/08/30 10:49:20  mattias
-  fixed focus catch for combobox csDropDownList
-
-  Revision 1.5  2004/08/13 16:40:47  mazen
-  + TCharater type used to allow UTF8 keyboard with gtk2
-
-  Revision 1.4  2004/04/10 17:58:57  mattias
-  implemented mainunit hints for include files
-
-  Revision 1.3  2003/09/22 15:03:19  ajgenius
-  partly fixed streaming of DBCalendar, and opRemove notification of DBText DBEdit DBCalendar
-
-  Revision 1.2  2003/09/18 14:36:17  ajgenius
-  added TFieldDataLink.FocusControl/OnFocusRequest
-
-  Revision 1.1  2003/09/15 01:56:48  ajgenius
-  Added TDBListBox. needs more work for ReadOnly
-
-
-}
 

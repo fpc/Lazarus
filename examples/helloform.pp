@@ -69,37 +69,3 @@ end;
 
 end.
 
-{
-  $Log$
-  Revision 1.7  2002/10/30 13:44:29  lazarus
-  MG: fixed examples
-
-  Revision 1.6  2002/10/29 19:33:42  lazarus
-  MG: removed interfaces
-
-  Revision 1.5  2002/10/29 08:22:32  lazarus
-  MG: added interfaces unit
-
-  Revision 1.4  2002/09/10 06:49:18  lazarus
-  MG: scrollingwincontrol from Andrew
-
-  Revision 1.3  2002/05/10 06:57:50  lazarus
-  MG: updated licenses
-
-  Revision 1.2  2002/03/13 22:48:16  lazarus
-  Constraints implementation (first cut) and sizig - moving system rework to
-  better match Delphi/Kylix way of doing things (the existing implementation
-  worked by acident IMHO :-)
-
-  Revision 1.1  2000/07/13 10:28:20  michael
-  + Initial import
-
-  Revision 1.5  1999/12/10 00:47:00  lazarus
-  MWE:
-    Fixed some samples
-    Fixed Dialog parent is no longer needed
-    Fixed (Win)Control Destruction
-    Fixed MenuClick
-
-
-}

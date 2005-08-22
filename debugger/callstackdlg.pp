@@ -198,28 +198,3 @@ initialization
 
 end.
 
-{
-  $Log$
-  Revision 1.6  2005/02/05 14:06:13  marc
-  * Applied (modified) patch from Colin Western
-
-  Revision 1.5  2004/08/26 23:50:05  marc
-  * Restructured debugger view classes
-  * Fixed help
-
-  Revision 1.4  2004/05/02 12:01:15  mattias
-  removed unneeded units in uses sections
-
-  Revision 1.3  2003/05/29 23:14:17  mattias
-  implemented jump to code on double click for breakpoints and callstack dlg
-
-  Revision 1.2  2002/05/10 06:57:47  lazarus
-  MG: updated licenses
-
-  Revision 1.1  2002/04/30 15:57:39  lazarus
-  MWE:
-    + Added callstack object and dialog
-    + Added checks to see if debugger = nil
-    + Added dbgutils
-
-}

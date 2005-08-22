@@ -103,22 +103,3 @@ begin
   end;
 end;
 
-{
- $Log$
- Revision 1.5  2005/03/04 12:21:55  mattias
- fixed TShape FPCanvas issue
-
- Revision 1.4  2004/04/10 17:58:57  mattias
- implemented mainunit hints for include files
-
- Revision 1.3  2004/02/10 10:13:09  mattias
- added diamonds to TShape
-
- Revision 1.2  2002/08/18 04:57:01  mattias
- fixed csDashDot
-
- Revision 1.1  2002/10/31 04:27:59  lazarus
- AJ: added TShape
-
-
-}

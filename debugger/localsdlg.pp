@@ -173,32 +173,3 @@ initialization
 
 end.
 
-{
-  $Log$
-  Revision 1.5  2004/08/26 23:50:05  marc
-  * Restructured debugger view classes
-  * Fixed help
-
-  Revision 1.4  2004/05/02 12:01:15  mattias
-  removed unneeded units in uses sections
-
-  Revision 1.3  2002/05/10 06:57:48  lazarus
-  MG: updated licenses
-
-  Revision 1.2  2002/04/24 20:42:29  lazarus
-  MWE:
-    + Added watches
-    * Updated watches and watchproperty dialog to load as resource
-    = renamed debugger resource files from *.lrc to *.lrs
-    * Temporary fixed language problems on GDB (bug #508)
-    * Made Debugmanager dialog handling more generic
-
-  Revision 1.1  2002/03/23 15:54:30  lazarus
-  MWE:
-    + Added locals dialog
-    * Modified breakpoints dialog (load as resource)
-    + Added generic debuggerdlg class
-    = Reorganized main.pp, all debbugger relater routines are moved
-      to include/ide_debugger.inc
-
-}

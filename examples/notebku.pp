@@ -339,49 +339,4 @@ end;
 
 end.
 
-{
-  $Log$
-  Revision 1.7  2004/11/05 10:47:57  micha
-  extend with more controls to test painting interactions
-
-  Revision 1.6  2003/07/25 08:52:43  mattias
-  fixed nested notebook example
-
-  Revision 1.5  2002/10/30 13:23:48  lazarus
-  MG: fixed example
-
-  Revision 1.4  2002/09/10 14:08:54  lazarus
-  MG: fixed compiling examples
-
-  Revision 1.3  2002/09/02 19:10:27  lazarus
-  MG: TNoteBook now starts with no Page and TPage has no auto names
-
-  Revision 1.2  2002/05/10 06:57:50  lazarus
-  MG: updated licenses
-
-  Revision 1.1  2000/07/13 10:28:21  michael
-  + Initial import
-
-  Revision 1.9  2000/04/17 23:39:23  lazarus
-  MWE:
-    * Updated examples makefile
-    * Reviewd the notebook example
-    + Added Listbox example (crashes on startup)
-
-  Revision 1.8  1999/10/05 02:41:34  lazarus
-  *** empty log message ***
-
-  Revision 1.7  1999/09/22 20:29:53  lazarus
-  *** empty log message ***
-
-  Revision 1.6  1999/09/13 03:36:26  lazarus
-  Fixed some bugs and added a couple more features to the example.     caw
-
-  Revision 1.5  1999/08/17 13:31:35  lazarus
-  Modified the examples to say "OnClick" insterad of "OnClicked"
-
-  Revision 1.4  1999/08/04 05:27:44  lazarus
-  Changed to test both TNotebook and TTabbedNotebook.   CAW
-
-}
 

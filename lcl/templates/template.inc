@@ -49,13 +49,4 @@ begin
 
 end;
 
-{
-  $Log$
-  Revision 1.1  2000/07/13 10:28:31  michael
-  + Initial import
-
-  Revision 1.1  1999/08/12 16:22:19  lazarus
-  Templates initially created      CAW
-
-}
 

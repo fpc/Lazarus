@@ -204,35 +204,3 @@ end;
 
 end.
 
-{
-  $Log$
-  Revision 1.11  2005/07/02 09:24:51  mattias
-  replaced some strings with resource strings  from George Lober
-
-  Revision 1.10  2005/07/02 09:17:20  mattias
-  implemented streaming TCheckListBox checked states  from Salvatore
-
-  Revision 1.9  2004/12/27 19:40:59  mattias
-  published BorderSpacing for many controls
-
-  Revision 1.8  2004/09/10 20:19:13  micha
-  convert LM_CLB_G/SETCHECKED to interface methods
-
-  Revision 1.7  2004/08/18 09:31:21  mattias
-  removed obsolete unit vclglobals
-
-  Revision 1.6  2004/07/13 10:34:15  mattias
-  fixed lcl package unit file name checklist.pas
-
-  Revision 1.5  2004/02/23 08:19:04  micha
-  revert intf split
-
-  Revision 1.3  2003/07/09 00:13:18  marc
-  * fixed cached items.object storage if TCustomCheckListBox
-  * Changed DebuggerOptions dialog to use new TCustomCheckListBox
-
-  Revision 1.2  2003/07/07 23:58:43  marc
-  + Implemented TCustomCheckListBox.Checked[] property
-
-
-}
