@@ -3641,6 +3641,7 @@ var
   ACaption, AText: string;
   CompResourceCode, LFMFilename, TestFilename, ResTestFilename: string;
   UnitSaveFilename: String;
+  ADesigner: TDesigner;
   {$IFDEF TRANSLATESTRING}Grubber:TLRTGrubber;{$ENDIF}
 begin
   Result:=mrCancel;
@@ -3883,6 +3884,11 @@ begin
       if not Result=mrOk then exit;
     end;
   end;
+  // mark designer unmodified
+  ADesigner:=FindRootDesigner(AnUnitInfo.Component) as TDesigner;
+  if ADesigner<>nil then
+    ADesigner.DefaultFormBoundsValid:=false;
+
   Result:=mrOk;
   {$IFDEF IDE_DEBUG}
   writeln('TMainIDE.SaveFileResources G ',LFMCode<>nil);

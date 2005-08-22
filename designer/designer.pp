@@ -2207,8 +2207,11 @@ var
 begin
   NewFormBounds:=Form.BoundsRect;
   if FDefaultFormBoundsValid then begin
-    if not CompareRect(@FDefaultFormBounds,@FLastFormBounds) then begin
+    if not CompareRect(@NewFormBounds,@FDefaultFormBounds) then begin
       Modified;
+      if ControlSelection.SelectionForm=Form then begin
+        ControlSelection.CheckForLCLChanges(true);
+      end;
     end;
   end else begin
     FDefaultFormBoundsValid:=true;
