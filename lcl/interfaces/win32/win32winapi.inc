@@ -1649,7 +1649,7 @@ begin
   Desc^.AlphaBitsPerPixel := 1; // bits per alpha mask pixel.
   Desc^.AlphaBitOrder := riboReversedBits;
   Desc^.AlphaByteOrder := riboLSBFirst;
-  Desc^.AlphaLineEnd := rileWordBoundary;
+  Desc^.AlphaLineEnd := rileDWordBoundary;
   Desc^.AlphaPrec := 1;
 end;
 
