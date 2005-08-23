@@ -1643,14 +1643,15 @@ begin
     Desc^.BitsPerPixel := Desc^.Depth;
   Desc^.LineEnd := rileDWordBoundary;
   FillRawImageDescriptionColors(Desc);
-  Desc^.AlphaShift := 0;
+  Desc^.AlphaPrec := 1;
   Desc^.AlphaSeparate := true; // the alpha is stored as separate Mask
   // The next values are only valid, if there is a separate alpha mask
   Desc^.AlphaBitsPerPixel := 1; // bits per alpha mask pixel.
   Desc^.AlphaBitOrder := riboReversedBits;
   Desc^.AlphaByteOrder := riboLSBFirst;
-  Desc^.AlphaLineEnd := rileDWordBoundary;
-  Desc^.AlphaPrec := 1;
+  // CreateBitmap winapi call wants word-aligned data
+  Desc^.AlphaLineEnd := rileWordBoundary;
+  Desc^.AlphaShift := 0;
 end;
 
 function TWin32WidgetSet.GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
