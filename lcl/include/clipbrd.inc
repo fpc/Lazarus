@@ -244,6 +244,8 @@ begin
         Result:=false
       else begin
         FData[i].Stream.Position:=0;
+        if Stream is TMemoryStream then
+          TMemoryStream(Stream).SetSize(Stream.Position+FData[i].Stream.Size);
         Stream.CopyFrom(FData[i].Stream,FData[i].Stream.Size);
         Result:=true;
       end;

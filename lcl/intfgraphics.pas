@@ -428,6 +428,9 @@ begin
   or (SrcStream is TStringStream)
   then begin
     // read as one block
+    if DestStream is TMemoryStream then
+      TMemoryStream(DestStream).SetSize(DestStream.Size
+                                        +(SrcStream.Size-SrcStream.Position));
     DestStream.CopyFrom(SrcStream,SrcStream.Size-SrcStream.Position);
   end else begin
     // read exponential

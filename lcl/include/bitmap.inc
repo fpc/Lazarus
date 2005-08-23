@@ -529,6 +529,7 @@ begin
       CacheStream:=Stream;
     end else if UseSize then begin
       CacheStream:=TMemoryStream.Create;
+      TMemoryStream(CacheStream).SetSize(Size);
       CacheStream.CopyFrom(Stream,Size);
       CacheStream.Position:=0;
     end else begin
@@ -602,6 +603,7 @@ begin
   if Stream<>FImage.SaveStream then begin
     MemStream:=TMemoryStream.Create;
     //debugln('TBitmap.StoreOriginalStream Size=',dbgs(Size),' Stream.Position=',dbgs(Stream.Position),' Stream.Size=',dbgs(Stream.Size));
+    MemStream.SetSize(Size);
     MemStream.CopyFrom(Stream,Size);
     FreeSaveStream;
     FImage.FSaveStream:=MemStream;
@@ -724,6 +726,8 @@ procedure TBitmap.WriteStreamWithFPImage(Stream: TStream; WriteSize: boolean;
   begin
     DoWriteStreamSize(Stream,longint(FImage.SaveStream.Size));
     FImage.SaveStream.Position:=0;
+    if Stream is TMemoryStream then
+      TMemoryStream(Stream).SetSize(Stream.Position+FImage.SaveStream.Size);
     Stream.CopyFrom(FImage.SaveStream,FImage.SaveStream.Size);
   end;
 

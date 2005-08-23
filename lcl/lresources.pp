@@ -506,6 +506,7 @@ begin
     LFMMemStream:=TMemoryStream.Create;
     LRSMemStream:=TMemoryStream.Create;
     try
+      LFMMemStream.SetSize(LFMFileStream.Size);
       LFMMemStream.CopyFrom(LFMFileStream,LFMFileStream.Size);
       LFMMemStream.Position:=0;
       LFMfilenameExt:=ExtractFileExt(LFMfilename);
@@ -1558,9 +1559,11 @@ begin
   Input.Position := Pos;
   if Signature = BinarySignature then
   begin     // definitely binary format
-    if OriginalFormat = sofBinary then
+    if OriginalFormat = sofBinary then begin
+      if Output is TMemoryStream then
+        TMemoryStream(Output).SetSize(Output.Position+(Input.Size-Input.Position));
       Output.CopyFrom(Input, Input.Size - Input.Position)
-    else
+    end else
     begin
       if OriginalFormat = sofUnknown then
         Originalformat := sofBinary;
@@ -1583,8 +1586,12 @@ begin
           Exit;
         end;
       end;
-      if OriginalFormat = sofText then
+      if OriginalFormat = sofText then begin
+        if Output is TMemoryStream then
+          TMemoryStream(Output).SetSize(Output.Position
+                                        +(Input.Size - Input.Position));
         Output.CopyFrom(Input, Input.Size - Input.Position);
+      end;
     end;
   end;
 end;
@@ -1923,7 +1930,11 @@ begin
     LRSObjectResourceToText(FormStream, TextStream);
 
   sofText:
-    TextStream.CopyFrom(FormStream,FormStream.Size);
+    begin
+      if TextStream is TMemoryStream then
+        TMemoryStream(TextStream).SetSize(TextStream.Position+FormStream.Size);
+      TextStream.CopyFrom(FormStream,FormStream.Size);
+    end;
 
   else
     raise Exception.Create(rsInvalidFormObjectStream);
