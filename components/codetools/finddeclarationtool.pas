@@ -2190,7 +2190,8 @@ var
       // identifier found
       Params.SetResult(Self,ContextNode);
       Result:=CheckResult(true,true);
-      exit;
+      if not (fdfCollect in Params.Flags) then
+        exit;
     end;
     // search for enums
     Params.ContextNode:=ContextNode;
@@ -2589,35 +2590,45 @@ function TFindDeclarationTool.FindEnumInContext(
     true, if enum found
  }
 var OldContextNode, CurContextNode: TCodeTreeNode;
+  CollectResult: TIdentifierFoundResult;
 begin
   Result:=false;
   if Params.ContextNode=nil then exit;
-  OldContextNode:=Params.ContextNode;
-  CurContextNode:=OldContextNode;
+  CurContextNode:=Params.ContextNode;
   if CurContextNode.Desc=ctnClass then
     BuildSubTreeForClass(CurContextNode);
   CurContextNode:=CurContextNode.FirstChild;
   while CurContextNode<>nil do begin
-    if (CurContextNode.Desc in [ctnEnumIdentifier])
-    and ((fdfCollect in Params.Flags)
-      or CompareSrcIdentifiers(CurContextNode.StartPos,Params.Identifier))
-    then begin
-      // identifier found
-      
-      // ToDo: fdfCollect
-      
-      Result:=true;
-      Params.SetResult(Self,CurContextNode);
-      exit;
+    if (CurContextNode.Desc=ctnEnumIdentifier) then begin
+      if (fdfCollect in Params.Flags) then begin
+        //debugln('TFindDeclarationTool.FindEnumInContext ',GetIdentifier(@Src[CurContextNode.StartPos]));
+        CollectResult:=DoOnIdentifierFound(Params,CurContextNode);
+        if CollectResult=ifrAbortSearch then begin
+          Result:=false;
+          exit;
+        end else if CollectResult=ifrSuccess then begin
+          Result:=true;
+          Params.SetResult(Self,CurContextNode);
+          exit;
+        end;
+      end else if CompareSrcIdentifiers(CurContextNode.StartPos,Params.Identifier)
+      then begin
+        // identifier found
+        Result:=true;
+        Params.SetResult(Self,CurContextNode);
+        exit;
+      end;
     end;
     OldContextNode:=Params.ContextNode;
-    try
-      Params.ContextNode:=CurContextNode;
-      Result:=FindEnumInContext(Params);
-    finally
-      Params.ContextNode:=OldContextNode;
+    if OldContextNode.FirstChild<>nil then begin
+      try
+        Params.ContextNode:=CurContextNode;
+        Result:=FindEnumInContext(Params);
+      finally
+        Params.ContextNode:=OldContextNode;
+      end;
+      if Result then exit;
     end;
-    if Result then exit;
     CurContextNode:=CurContextNode.NextBrother;
   end;
 end;
@@ -6242,9 +6253,6 @@ function TFindDeclarationTool.DoOnIdentifierFound(
 // this internal function is called, whenever an identifier is found
 var IsTopLvlIdent: boolean;
 begin
-
-  // ToDo: check if identifier is in a forbidden class visibility section
-
   IsTopLvlIdent:=(fdfTopLvlResolving in Params.Flags);
   if Assigned(Params.OnIdentifierFound) then
     Result:=Params.OnIdentifierFound(Params,CreateFindContext(Self,FoundNode))

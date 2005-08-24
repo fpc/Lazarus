@@ -143,7 +143,7 @@ begin
         s:='var';
       end;
 
-    ctnTypeDefinition:
+    ctnTypeDefinition, ctnEnumerationType:
       begin
         AColor:=clDkGray;
         s:='type';
@@ -154,7 +154,7 @@ begin
         AColor:=clOlive;
         s:='const';
       end;
-
+      
     ctnProcedure:
       if (IdentItem.Node<>nil)
       and IdentItem.Tool.NodeIsFunction(IdentItem.Node) then begin
@@ -169,6 +169,12 @@ begin
       begin
         AColor:=clPurple;
         s:='property';
+      end;
+      
+    ctnEnumIdentifier:
+      begin
+        AColor:=clOlive;
+        s:='enum';
       end;
 
     else

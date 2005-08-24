@@ -656,7 +656,7 @@ begin
   {$IFDEF ShowFoundIdents}
   DebugLn('::: COLLECT IDENT ',FoundContext.Node.DescAsString,
     ' "',StringToPascalConst(copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50)),'"'
-    ,' ',fdfIgnoreUsedUnits in Params.Flags);
+    ,' '+dbgs(fdfIgnoreUsedUnits in Params.Flags));
   {$ENDIF}
 
   CurContextParent:=FoundContext.Node.GetFindContextParent;
@@ -666,7 +666,12 @@ begin
     inc(LastGatheredIdentLevel);
   end;
   
-  if FoundContext.Tool<>Self then begin
+  if FoundContext.Tool=Self then begin
+    // identifier is in the same unit
+    //DebugLn('::: COLLECT IDENT in SELF ',FoundContext.Node.DescAsString,
+    //  ' "',StringToPascalConst(copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50)),'"'
+    //  ,' '+dbgs(fdfIgnoreUsedUnits in Params.Flags));
+  end else begin
     // identifier is in another unit
     if (FoundContext.Node.Parent<>nil) then begin
       if (FoundContext.Node.Parent.Desc=ctnClassPrivate) then begin
