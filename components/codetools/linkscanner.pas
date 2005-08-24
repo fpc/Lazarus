@@ -72,11 +72,11 @@ type
   TOnGetFileName = function(Sender: TObject; Code: Pointer): string of object;
   TOnCheckFileOnDisk = function(Code: Pointer): boolean of object;
   TOnGetInitValues = function(Code: Pointer;
-                       var ChangeStep: integer): TExpressionEvaluator of object;
+                       out ChangeStep: integer): TExpressionEvaluator of object;
   TOnIncludeCode = procedure(ParentCode, IncludeCode: Pointer) of object;
   TOnSetWriteLock = procedure(Lock: boolean) of object;
-  TOnGetWriteLockInfo = procedure(var WriteLockIsSet: boolean;
-    var WriteLockStep: integer) of object;
+  TOnGetWriteLockInfo = procedure(out WriteLockIsSet: boolean;
+    out WriteLockStep: integer) of object;
 
   { TSourceLink is used to map between the codefiles and the cleaned source }
   PSourceLink = ^TSourceLink;

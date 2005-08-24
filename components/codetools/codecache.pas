@@ -152,7 +152,7 @@ type
     function LoadIncludeLinksFromXML(XMLConfig: TXMLConfig;
                                      const XMLPath: string): boolean;
     function SaveBufferAs(OldBuffer: TCodeBuffer; const AFilename: string;
-                          var NewBuffer: TCodeBuffer): boolean;
+                          out NewBuffer: TCodeBuffer): boolean;
     function SaveIncludeLinksToFile(const AFilename: string;
                                     OnlyIfChanged: boolean): boolean;
     function SaveIncludeLinksToXML(XMLConfig: TXMLConfig;
@@ -317,7 +317,7 @@ begin
 end;
 
 function TCodeCache.SaveBufferAs(OldBuffer: TCodeBuffer; 
-  const AFilename: string; var NewBuffer: TCodeBuffer): boolean;
+  const AFilename: string; out NewBuffer: TCodeBuffer): boolean;
 begin
   //DebugLn('[TCodeCache.SaveBufferAs] ',OldBuffer.Filename,' ',AFilename);
   if (OldBuffer=nil) then begin

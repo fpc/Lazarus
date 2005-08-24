@@ -101,7 +101,7 @@ type
     FWriteLockCount: integer;// Set/Unset counter
     FWriteLockStep: integer; // current write lock ID
     function OnScannerGetInitValues(Code: Pointer;
-      var AChangeStep: integer): TExpressionEvaluator;
+      out AChangeStep: integer): TExpressionEvaluator;
     procedure OnDefineTreeReadValue(Sender: TObject; const VariableName: string;
                                     var Value: string; var Handled: boolean);
     procedure OnGlobalValuesChanged;
@@ -135,8 +135,8 @@ type
     function OnGetCodeToolForBuffer(Sender: TObject;
       Code: TCodeBuffer; GoToMainCode: boolean): TFindDeclarationTool;
     procedure OnToolSetWriteLock(Lock: boolean);
-    procedure OnToolGetWriteLockInfo(var WriteLockIsSet: boolean;
-      var WriteLockStep: integer);
+    procedure OnToolGetWriteLockInfo(out WriteLockIsSet: boolean;
+      out WriteLockStep: integer);
     function OnParserProgress(Tool: TCustomCodeTool): boolean;
     function OnScannerProgress(Sender: TLinkScanner): boolean;
     function GetResourceTool: TResourceCodeTool;
@@ -167,12 +167,12 @@ type
     function CreateTempFile(const AFilename: string): TCodeBuffer;
     procedure ReleaseTempFile(Buffer: TCodeBuffer);
     function SaveBufferAs(OldBuffer: TCodeBuffer;const ExpandedFilename: string;
-                          var NewBuffer: TCodeBuffer): boolean;
+                          out NewBuffer: TCodeBuffer): boolean;
     function FilenameHasSourceExt(const AFilename: string): boolean;
     function GetMainCode(Code: TCodeBuffer): TCodeBuffer;
     function GetIncludeCodeChain(Code: TCodeBuffer;
                                  RemoveFirstCodesWithoutTool: boolean;
-                                 var ListOfCodeBuffer: TFPList): boolean;
+                                 out ListOfCodeBuffer: TFPList): boolean;
     function FindCodeToolForSource(Code: TCodeBuffer): TCustomCodeTool;
     property OnSearchUsedUnit: TOnSearchUsedUnit
                                  read FOnSearchUsedUnit write FOnSearchUsedUnit;
@@ -241,7 +241,7 @@ type
     function FindUnitInUnitLinks(const Directory, UnitName: string): string;
     function GetUnitLinksForDirectory(const Directory: string): string;
     procedure GetFPCVersionForDirectory(const Directory: string;
-                                 var FPCVersion, FPCRelease, FPCPatch: integer);
+                                 out FPCVersion, FPCRelease, FPCPatch: integer);
 
     // data function
     procedure FreeListOfPCodeXYPosition(var List: TFPList);
@@ -253,10 +253,10 @@ type
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     
     // code exploring
-    function Explore(Code: TCodeBuffer; var ACodeTool: TCodeTool;
+    function Explore(Code: TCodeBuffer; out ACodeTool: TCodeTool;
           WithStatements: boolean): boolean;
-    function CheckSyntax(Code: TCodeBuffer; var NewCode: TCodeBuffer;
-          var NewX, NewY, NewTopLine: integer; var ErrorMsg: string): boolean;
+    function CheckSyntax(Code: TCodeBuffer; out NewCode: TCodeBuffer;
+          out NewX, NewY, NewTopLine: integer; out ErrorMsg: string): boolean;
 
     // compiler directives
     function GuessMisplacedIfdefEndif(Code: TCodeBuffer; X,Y: integer;
@@ -688,7 +688,7 @@ begin
 end;
 
 function TCodeToolManager.SaveBufferAs(OldBuffer: TCodeBuffer;
-  const ExpandedFilename: string; var NewBuffer: TCodeBuffer): boolean;
+  const ExpandedFilename: string; out NewBuffer: TCodeBuffer): boolean;
 begin
   Result:=SourceCache.SaveBufferAs(OldBuffer,ExpandedFilename,NewBuffer);
 end;
@@ -749,7 +749,7 @@ begin
 end;
 
 function TCodeToolManager.GetIncludeCodeChain(Code: TCodeBuffer;
-  RemoveFirstCodesWithoutTool: boolean; var ListOfCodeBuffer: TFPList): boolean;
+  RemoveFirstCodesWithoutTool: boolean; out ListOfCodeBuffer: TFPList): boolean;
 var
   OldCode: TCodeBuffer;
 begin
@@ -979,7 +979,7 @@ begin
 end;
 
 procedure TCodeToolManager.GetFPCVersionForDirectory(const Directory: string;
-  var FPCVersion, FPCRelease, FPCPatch: integer);
+  out FPCVersion, FPCRelease, FPCPatch: integer);
 var
   Evaluator: TExpressionEvaluator;
   i: Integer;
@@ -1093,7 +1093,7 @@ begin
 end;
 
 function TCodeToolManager.Explore(Code: TCodeBuffer;
-  var ACodeTool: TCodeTool; WithStatements: boolean): boolean;
+  out ACodeTool: TCodeTool; WithStatements: boolean): boolean;
 begin
   Result:=false;
   ACodeTool:=nil;
@@ -1224,8 +1224,8 @@ begin
 end;
 
 function TCodeToolManager.CheckSyntax(Code: TCodeBuffer;
-  var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer;
-  var ErrorMsg: string): boolean;
+  out NewCode: TCodeBuffer; out NewX, NewY, NewTopLine: integer;
+  out ErrorMsg: string): boolean;
 // returns true on syntax correct
 var
   ACodeTool: TCodeTool;
@@ -2953,6 +2953,7 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.FindDanglingComponentEvents A ',Code.Filename,' ',AClassName);
   {$ENDIF}
+  ListOfPInstancePropInfo:=nil;
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.FindDanglingComponentEvents(AClassName,RootComponent,
@@ -3033,7 +3034,7 @@ begin
 end;
 
 function TCodeToolManager.OnScannerGetInitValues(Code: Pointer;
-  var AChangeStep: integer): TExpressionEvaluator;
+  out AChangeStep: integer): TExpressionEvaluator;
 begin
   Result:=nil;
   AChangeStep:=DefineTree.ChangeStep;
@@ -3266,8 +3267,8 @@ begin
   {$ENDIF}
 end;
 
-procedure TCodeToolManager.OnToolGetWriteLockInfo(var WriteLockIsSet: boolean;
-  var WriteLockStep: integer);
+procedure TCodeToolManager.OnToolGetWriteLockInfo(out WriteLockIsSet: boolean;
+  out WriteLockStep: integer);
 begin
   WriteLockIsSet:=FWriteLockCount>0;
   WriteLockStep:=FWriteLockStep;

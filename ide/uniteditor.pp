@@ -98,6 +98,9 @@ type
 {---- TSource Editor ---
   TSourceEditor is the class that controls access for the Editor.
  ---- TSource Editor ---}
+
+  { TSourceEditor }
+
   TSourceEditor = class(TSourceEditorInterface)
   private
     //FAOwner is normally a TSourceNotebook.  This is set in the Create constructor.
@@ -189,6 +192,7 @@ type
     procedure OnCodeBufferChanged(Sender: TSourceLog;
       SrcLogEntry: TSourceLogEntry);
     procedure StartIdentCompletion(JumpToError: boolean);
+    procedure StartShowCodeContext(JumpToError: boolean);
 
     procedure LinesInserted(sender: TObject; FirstLine,Count: Integer);
     procedure LinesDeleted(sender: TObject; FirstLine,Count: Integer);
@@ -1185,6 +1189,9 @@ Begin
   ecIdentCompletion :
     StartIdentCompletion(true);
 
+  ecShowCodeContext :
+    StartShowCodeContext(true);
+
   ecWordCompletion :
     if not TCustomSynEdit(Sender).ReadOnly then begin
       CurrentCompletionType:=ctWordCompletion;
@@ -1941,6 +1948,11 @@ begin
             ,CaretYPix + LineHeight));
   aCompletion.Editor:=FEditor;
   aCompletion.Execute(TextS2,P.X,P.Y);
+end;
+
+procedure TSourceEditor.StartShowCodeContext(JumpToError: boolean);
+begin
+
 end;
 
 procedure TSourceEditor.IncreaseIgnoreCodeBufferLock;

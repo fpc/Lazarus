@@ -241,6 +241,7 @@ var
   s: String;
   MsgResult: TModalResult;
 begin
+  ListOfPInstancePropInfo:=nil;
   try
     // find all dangling events
     //debugln('RemoveDanglingEvents A ',PascalBuffer.Filename,' ',DbgSName(RootComponent));

@@ -128,6 +128,7 @@ const
   ecFindIdentifierRefs   = ecUserFirst + 113;
   ecRenameIdentifier     = ecUserFirst + 114;
   ecInvertAssignment     = ecUserFirst + 115;
+  ecShowCodeContext      = ecUserFirst + 116;
 
   // file menu
   ecNew                  = ecUserFirst + 201;
@@ -575,6 +576,7 @@ begin
   ecWordCompletion: SetResult(VK_W,[ssCtrl],VK_UNKNOWN,[]);
   ecCompleteCode: SetResult(VK_C,[ssCtrl,ssShift],VK_UNKNOWN,[]);
   ecIdentCompletion: SetResult(VK_SPACE,[ssCtrl],VK_UNKNOWN,[]);
+  ecShowCodeContext: SetResult(VK_SPACE,[ssCtrl,ssShift],VK_UNKNOWN,[]);
   ecExtractProc: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecFindIdentifierRefs: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRenameIdentifier: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -877,6 +879,7 @@ begin
   ecWordCompletion: SetResult(VK_W,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecCompleteCode: SetResult(VK_C,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecIdentCompletion: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecShowCodeContext: SetResult(VK_SPACE,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecExtractProc: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecFindIdentifierRefs: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRenameIdentifier: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1490,6 +1493,7 @@ begin
     ecWordCompletion        : Result:= srkmecWordCompletion;
     ecCompleteCode          : Result:= srkmecCompleteCode;
     ecIdentCompletion       : Result:= dlgedidcomlet;
+    ecShowCodeContext       : Result:= srkmecShowCodeContext;
     ecExtractProc           : Result:= srkmecExtractProc;
     ecFindIdentifierRefs    : Result:= srkmecFindIdentifierRefs;
     ecRenameIdentifier      : Result:= srkmecRenameIdentifier;
@@ -2336,6 +2340,7 @@ begin
   AddDefault(C,'Word completion',ecWordCompletion);
   AddDefault(C,'Complete code',ecCompleteCode);
   AddDefault(C,'Identifier completion',ecIdentCompletion);
+  AddDefault(C,'Show code context',ecShowCodeContext);
   AddDefault(C,'Extract proc',ecExtractProc);
   AddDefault(C,'Find identifier references',ecFindIdentifierRefs);
   AddDefault(C,'Invert assignment',ecInvertAssignment);

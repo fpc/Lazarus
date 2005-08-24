@@ -1384,6 +1384,7 @@ resourcestring
   // codetools
   srkmecWordCompletion            = 'Word completion';
   srkmecCompletecode              = 'Complete code';
+  srkmecShowCodeContext           = 'Show code context';
   srkmecExtractProc               = 'Extract procedure';
   srkmecFindIdentifierRefs        = 'Find identifier references';
   srkmecRenameIdentifier          = 'Rename identifier';
