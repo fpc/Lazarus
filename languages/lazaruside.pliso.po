@@ -1157,6 +1157,10 @@ msgstr "Kropka"
 msgid "Command "
 msgstr "Polecenie "
 
+#: lazarusidestrconsts:liscommandafter
+msgid "Command after"
+msgstr ""
+
 #: lazarusidestrconsts:liscommandafterinvalid
 msgid "Command after invalid"
 msgstr ""
@@ -1697,6 +1701,10 @@ msgstr "Usuñ ostatni znak"
 msgid "Delete Old Package File?"
 msgstr "Chcesz usun±æ stary plik pakietu?"
 
+#: lazarusidestrconsts:lisdeleteallthesefiles
+msgid "Delete all these files?"
+msgstr ""
+
 #: lazarusidestrconsts:lisdeleteambiguousfile
 msgid "Delete ambiguous file?"
 msgstr "Chcesz usun±æ niejasny plik?"
@@ -1836,6 +1844,10 @@ msgstr "Ustawienia pulpitu"
 #: lazarusidestrconsts:lisaf2pdestinationpackage
 msgid "Destination Package"
 msgstr "Pakiet docelowy"
+
+#: lazarusidestrconsts:lisdestinationdirectory
+msgid "Destination directory"
+msgstr ""
 
 #: lazarusidestrconsts:lisdestinationdirectoryisinvalidpleasechooseacomplete
 msgid "Destination directory %s%s%s is invalid.%sPlease choose a complete path."
@@ -2159,6 +2171,10 @@ msgstr "Escape"
 
 #: lazarusidestrconsts:lismenuevaluate
 msgid "Evaluate/Modify ..."
+msgstr ""
+
+#: lazarusidestrconsts:lisexcludefilter
+msgid "Exclude Filter"
 msgstr ""
 
 #: lazarusidestrconsts:srvk_execute
@@ -2917,6 +2933,10 @@ msgstr "Ignoruj odstêpy"
 msgid "Ignore amount of space chars"
 msgstr "Ignoruj ilo¶æ znaków odstêpu"
 
+#: lazarusidestrconsts:lisignorebinaries
+msgid "Ignore binaries"
+msgstr ""
+
 #: lazarusidestrconsts:lisdiffdlgignoreiflineendcharsdiffe
 msgid "Ignore difference in line ends (e.g. #10 = #13#10)"
 msgstr "Ignoruj ró¿ne znaki koñca wiersza (np. #10 = #13#10)"
@@ -2963,6 +2983,10 @@ msgstr "Do³±cz kod zabezpieczaj±cy"
 
 #: lazarusidestrconsts:dlgcoincfiles
 msgid "Include Files (-Fi):"
+msgstr ""
+
+#: lazarusidestrconsts:lisincludefilter
+msgid "Include Filter"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgfiletypeinclude
@@ -4257,6 +4281,10 @@ msgstr ""
 msgid "Normal selection mode"
 msgstr "Normalny tryb wyboru"
 
+#: lazarusidestrconsts:lisnormallythefilterisaregularexpressioninsimplesynta
+msgid "Normally the filter is a regular expression. In Simple Syntax a . is a normal character, a * stands for anything, a ? stands for any character, and comma and semicolon separates alternatives. For example: Simple Syntax *.pas;*.pp corresponds to ^(.*\\.pas|.*\\.pp)$"
+msgstr ""
+
 #: lazarusidestrconsts:lisnotadelphiproject
 msgid "Not a Delphi project"
 msgstr ""
@@ -4340,6 +4368,10 @@ msgstr "Tylko pliki tekstowe"
 #: lazarusidestrconsts:lismenuopen
 msgid "Open"
 msgstr "Otwórz ..."
+
+#: lazarusidestrconsts:lisopenlfm
+msgid "Open %s"
+msgstr ""
 
 #: lazarusidestrconsts:lisdiffdlgopendiffineditor
 msgid "Open Diff in editor"
@@ -4824,6 +4856,10 @@ msgstr "cie¿ka plików do³±czanych projektu"
 #: lazarusidestrconsts:lisprojectincpath
 msgid "Project Include Path"
 msgstr "¦cie¿ka do³±czanych plików projektu"
+
+#: lazarusidestrconsts:lisprojectinformation
+msgid "Project Information"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuprojectinspector
 msgid "Project Inspector"
@@ -5381,6 +5417,10 @@ msgstr "Zapisz projekt %s (*.lpi)"
 msgid "Save Project As..."
 msgstr "Zapisz projekt jako..."
 
+#: lazarusidestrconsts:lissavesettings
+msgid "Save Settings"
+msgstr ""
+
 #: lazarusidestrconsts:lishintsaveall
 msgid "Save all"
 msgstr ""
@@ -5421,12 +5461,20 @@ msgstr "Zapisz do pliku"
 msgid "Save editor info for closed files"
 msgstr "Zapisuj informacjê edytora dla zamykanych plików"
 
+#: lazarusidestrconsts:lissaveeditorinfoofnonprojectfiles
+msgid "Save editor info of non project files"
+msgstr ""
+
 #: lazarusidestrconsts:dlgsaveeditorinfoproject
 msgid "Save editor info only for project files"
 msgstr "Zapisuj informacjê edytora tylko dla plików projektu"
 
 #: lazarusidestrconsts:lissavefilebeforeclosingform
 msgid "Save file %s%s%s%sbefore closing form %s%s%s?"
+msgstr ""
+
+#: lazarusidestrconsts:lissaveinfoofclosededitorfiles
+msgid "Save info of closed editor files"
 msgstr ""
 
 #: lazarusidestrconsts:lispckeditsavepackage
@@ -5879,6 +5927,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgshowusedfiles
 msgid "Show used files"
+msgstr ""
+
+#: lazarusidestrconsts:lissimplesyntax
+msgid "Simple Syntax"
 msgstr ""
 
 #: lazarusidestrconsts:liscldirsimplesyntaxeginsteadof
@@ -7373,9 +7425,17 @@ msgstr "U¿ycie"
 msgid "Use Ansi Strings"
 msgstr "U¿ywaj napisów typu Ansi"
 
+#: lazarusidestrconsts:lisuseexcludefilter
+msgid "Use Exclude Filter"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcoheaptrc
 msgid "Use Heaptrc Unit"
 msgstr "U¿yj modu³u Heaptrc"
+
+#: lazarusidestrconsts:lisuseincludefilter
+msgid "Use Include Filter"
+msgstr ""
 
 #: lazarusidestrconsts:dlgusecustomconfig
 msgid "Use addional Compiler Config File"

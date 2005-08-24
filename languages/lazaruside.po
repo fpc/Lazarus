@@ -1570,6 +1570,14 @@ msgstr ""
 msgid "Choose directory"
 msgstr ""
 
+#: lazarusidestrconsts:lisdestinationdirectory
+msgid "Destination directory"
+msgstr ""
+
+#: lazarusidestrconsts:liscommandafter
+msgid "Command after"
+msgstr ""
+
 #: lazarusidestrconsts:lischooselazarussourcedirectory
 msgid "Choose Lazarus Directory"
 msgstr ""
@@ -1768,6 +1776,46 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgenvfiles
 msgid "Files"
+msgstr ""
+
+#: lazarusidestrconsts:lisignorebinaries
+msgid "Ignore binaries"
+msgstr ""
+
+#: lazarusidestrconsts:lissimplesyntax
+msgid "Simple Syntax"
+msgstr ""
+
+#: lazarusidestrconsts:lisnormallythefilterisaregularexpressioninsimplesynta
+msgid "Normally the filter is a regular expression. In Simple Syntax a . is a normal character, a * stands for anything, a ? stands for any character, and comma and semicolon separates alternatives. For example: Simple Syntax *.pas;*.pp corresponds to ^(.*\\.pas|.*\\.pp)$"
+msgstr ""
+
+#: lazarusidestrconsts:lisuseexcludefilter
+msgid "Use Exclude Filter"
+msgstr ""
+
+#: lazarusidestrconsts:lisexcludefilter
+msgid "Exclude Filter"
+msgstr ""
+
+#: lazarusidestrconsts:lisprojectinformation
+msgid "Project Information"
+msgstr ""
+
+#: lazarusidestrconsts:lissaveeditorinfoofnonprojectfiles
+msgid "Save editor info of non project files"
+msgstr ""
+
+#: lazarusidestrconsts:lissaveinfoofclosededitorfiles
+msgid "Save info of closed editor files"
+msgstr ""
+
+#: lazarusidestrconsts:lisuseincludefilter
+msgid "Use Include Filter"
+msgstr ""
+
+#: lazarusidestrconsts:lisincludefilter
+msgid "Include Filter"
 msgstr ""
 
 #: lazarusidestrconsts:dlgenvbckup
@@ -3526,6 +3574,10 @@ msgstr ""
 msgid "Bookmark"
 msgstr ""
 
+#: lazarusidestrconsts:lisopenlfm
+msgid "Open %s"
+msgstr ""
+
 #: lazarusidestrconsts:uemsetbookmark
 msgid "&Set Bookmark"
 msgstr ""
@@ -4904,6 +4956,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lislazbuildok
 msgid "Ok"
+msgstr ""
+
+#: lazarusidestrconsts:lissavesettings
+msgid "Save Settings"
 msgstr ""
 
 #: lazarusidestrconsts:lislazbuildcancel
@@ -6516,6 +6572,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangunabletodeletefile
 msgid "Unable to delete file %s%s%s."
+msgstr ""
+
+#: lazarusidestrconsts:lisdeleteallthesefiles
+msgid "Delete all these files?"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangunsavedpackage

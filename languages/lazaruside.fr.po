@@ -1157,6 +1157,10 @@ msgstr "Virgule"
 msgid "Command "
 msgstr "Commande "
 
+#: lazarusidestrconsts:liscommandafter
+msgid "Command after"
+msgstr ""
+
 #: lazarusidestrconsts:liscommandafterinvalid
 msgid "Command after invalid"
 msgstr "Commande suivante invalide"
@@ -1697,6 +1701,10 @@ msgstr "Supprimer le dernier caractère"
 msgid "Delete Old Package File?"
 msgstr "Supprimer l'ancien fichier paquet ?"
 
+#: lazarusidestrconsts:lisdeleteallthesefiles
+msgid "Delete all these files?"
+msgstr ""
+
 #: lazarusidestrconsts:lisdeleteambiguousfile
 msgid "Delete ambiguous file?"
 msgstr "Supprimer les fichier ambigus ?"
@@ -1836,6 +1844,10 @@ msgstr "Fichiers du bureau"
 #: lazarusidestrconsts:lisaf2pdestinationpackage
 msgid "Destination Package"
 msgstr "Paquet de destination"
+
+#: lazarusidestrconsts:lisdestinationdirectory
+msgid "Destination directory"
+msgstr ""
 
 #: lazarusidestrconsts:lisdestinationdirectoryisinvalidpleasechooseacomplete
 msgid "Destination directory %s%s%s is invalid.%sPlease choose a complete path."
@@ -2160,6 +2172,10 @@ msgstr "Echap"
 #: lazarusidestrconsts:lismenuevaluate
 msgid "Evaluate/Modify ..."
 msgstr "Evaluer/Modifier..."
+
+#: lazarusidestrconsts:lisexcludefilter
+msgid "Exclude Filter"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_execute
 msgid "Execute"
@@ -2917,6 +2933,10 @@ msgstr "Ignorer les espaces"
 msgid "Ignore amount of space chars"
 msgstr "Ignorer le nombre d'espaces"
 
+#: lazarusidestrconsts:lisignorebinaries
+msgid "Ignore binaries"
+msgstr ""
+
 #: lazarusidestrconsts:lisdiffdlgignoreiflineendcharsdiffe
 msgid "Ignore difference in line ends (e.g. #10 = #13#10)"
 msgstr "Ignorer les différences de fin de lignes (#10 = #13#10)"
@@ -2964,6 +2984,10 @@ msgstr "Inclure le code d'assertion"
 #: lazarusidestrconsts:dlgcoincfiles
 msgid "Include Files (-Fi):"
 msgstr "Inclusion des fichiers (-Fi):"
+
+#: lazarusidestrconsts:lisincludefilter
+msgid "Include Filter"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgfiletypeinclude
 msgid "Include file"
@@ -4257,6 +4281,10 @@ msgstr "Code normal"
 msgid "Normal selection mode"
 msgstr "Mode de sélection normal"
 
+#: lazarusidestrconsts:lisnormallythefilterisaregularexpressioninsimplesynta
+msgid "Normally the filter is a regular expression. In Simple Syntax a . is a normal character, a * stands for anything, a ? stands for any character, and comma and semicolon separates alternatives. For example: Simple Syntax *.pas;*.pp corresponds to ^(.*\\.pas|.*\\.pp)$"
+msgstr ""
+
 #: lazarusidestrconsts:lisnotadelphiproject
 msgid "Not a Delphi project"
 msgstr "Pas un projet Delphi"
@@ -4340,6 +4368,10 @@ msgstr "Seulement les fichiers texte"
 #: lazarusidestrconsts:lismenuopen
 msgid "Open"
 msgstr "Ouvrir"
+
+#: lazarusidestrconsts:lisopenlfm
+msgid "Open %s"
+msgstr ""
 
 #: lazarusidestrconsts:lisdiffdlgopendiffineditor
 msgid "Open Diff in editor"
@@ -4824,6 +4856,10 @@ msgstr "Chemin des fichier inc du projet"
 #: lazarusidestrconsts:lisprojectincpath
 msgid "Project Include Path"
 msgstr "Chemin des 'Include' du projet"
+
+#: lazarusidestrconsts:lisprojectinformation
+msgid "Project Information"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuprojectinspector
 msgid "Project Inspector"
@@ -5381,6 +5417,10 @@ msgstr "Enregistrer le projet %s (*.lpi)"
 msgid "Save Project As..."
 msgstr "Enregistrer le projet sous..."
 
+#: lazarusidestrconsts:lissavesettings
+msgid "Save Settings"
+msgstr ""
+
 #: lazarusidestrconsts:lishintsaveall
 msgid "Save all"
 msgstr "Tout enregistrer"
@@ -5421,6 +5461,10 @@ msgstr "Enregistrer les paramètres du bureau"
 msgid "Save editor info for closed files"
 msgstr "Enregistrer les infos de l'éditeur pour les fichiers fermés"
 
+#: lazarusidestrconsts:lissaveeditorinfoofnonprojectfiles
+msgid "Save editor info of non project files"
+msgstr ""
+
 #: lazarusidestrconsts:dlgsaveeditorinfoproject
 msgid "Save editor info only for project files"
 msgstr "Enregistrer les infos de l'éditeur seulement pour les fichiers projet"
@@ -5428,6 +5472,10 @@ msgstr "Enregistrer les infos de l'éditeur seulement pour les fichiers projet"
 #: lazarusidestrconsts:lissavefilebeforeclosingform
 msgid "Save file %s%s%s%sbefore closing form %s%s%s?"
 msgstr "Enregistrer le fichier %s%s%s%savant de fermer la fiche %s%s%s ?"
+
+#: lazarusidestrconsts:lissaveinfoofclosededitorfiles
+msgid "Save info of closed editor files"
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditsavepackage
 msgid "Save package"
@@ -5880,6 +5928,10 @@ msgstr "Afficher les fichiers essayés"
 #: lazarusidestrconsts:dlgshowusedfiles
 msgid "Show used files"
 msgstr "Afficher les fichiers utilisés"
+
+#: lazarusidestrconsts:lissimplesyntax
+msgid "Simple Syntax"
+msgstr ""
 
 #: lazarusidestrconsts:liscldirsimplesyntaxeginsteadof
 msgid "Simple Syntax (e.g. * instead of .*)"
@@ -7373,9 +7425,17 @@ msgstr "Utilisation"
 msgid "Use Ansi Strings"
 msgstr "Utiliser les chaînes ANSI"
 
+#: lazarusidestrconsts:lisuseexcludefilter
+msgid "Use Exclude Filter"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcoheaptrc
 msgid "Use Heaptrc Unit"
 msgstr "Utiliser l'unité \"Heaptrc\""
+
+#: lazarusidestrconsts:lisuseincludefilter
+msgid "Use Include Filter"
+msgstr ""
 
 #: lazarusidestrconsts:dlgusecustomconfig
 msgid "Use addional Compiler Config File"

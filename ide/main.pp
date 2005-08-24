@@ -2832,16 +2832,16 @@ begin
   if DoSaveAll([sfCheckAmbiguousFiles])<>mrOk then exit;
   LNG:=InputBox(lisEnterTransla, lisLeaveEmptyFo, '');
   SL:=TStringList.Create;
-  if LNG='' then ext:='.po' else ext:='.'+LNG+'.po';
-  for i:=0 to Project1.FileCount-1 do
-  begin
-    if not Project1.Files[i].IsPartOfProject then continue;
-    if ChangeFileExt(Project1.Files[i].Filename,'.po')=ChangeFileExt(Project1.MainFilename,'.po')
-      then continue;
-    if FileExists(ChangeFileExt(Project1.Files[i].Filename,ext)) then
-    SL.Add(ChangeFileExt(Project1.Files[i].Filename,ext));
-  end;
-  try//If I haven't made mistake, this try is not needed
+  try
+    if LNG='' then ext:='.po' else ext:='.'+LNG+'.po';
+    for i:=0 to Project1.FileCount-1 do
+    begin
+      if not Project1.Files[i].IsPartOfProject then continue;
+      if ChangeFileExt(Project1.Files[i].Filename,'.po')=ChangeFileExt(Project1.MainFilename,'.po')
+        then continue;
+      if FileExists(ChangeFileExt(Project1.Files[i].Filename,ext)) then
+      SL.Add(ChangeFileExt(Project1.Files[i].Filename,ext));
+    end;
     CombinePoFiles(SL,ChangeFileExt(Project1.MainFilename,ext));
   finally
     SL.Free;

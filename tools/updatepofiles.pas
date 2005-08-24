@@ -121,11 +121,11 @@ begin
   if ParamCount<1 then exit;
   for i:=1 to ParamCount do begin
     Filename:=ParamStr(1);
-    Ext:=ExtractFileExt(Filename);
     if not FileExists(Filename) then begin
       writeln('ERROR: file not found: ',FileName);
       exit;
     end;
+    Ext:=ExtractFileExt(Filename);
     if (Ext<>'.po') then begin
       writeln('ERROR: invalid extension: ',Filename);
       exit;
@@ -145,41 +145,93 @@ end;
 function ReadMessageItem(SrcFile: TStringList; var Line: integer): PMsgItem;
 var
   s: string;
-  CommentStarted: boolean;
 begin
   New(Result);
-  CommentStarted:=false;
   while Line<SrcFile.Count do begin
     s:=SrcFile[Line];
-    if (LeftStr(s,7)='msgid "') then begin
+    if (s<>'') and (s[1]='#') then begin
+      Result^.Comment:=Result^.Comment+copy(s,2,length(s));
+    end
+    else if (LeftStr(s,7)='msgid "') then begin
+      // read ID
       Result^.ID:=copy(s,8,length(s)-8);
       inc(Line);
+      while Line<SrcFile.Count do begin
+        s:=SrcFile[Line];
+        if (s<>'') and (s[1]='"') then begin
+          Result^.ID:=Result^.ID+copy(s,2,length(s)-2);
+          inc(Line);
+        end else
+          break;
+      end;
+      // read Str
       if Line<SrcFile.Count then begin
         s:=SrcFile[Line];
         if LeftStr(s,8)='msgstr "' then begin
           Result^.Str:=copy(s,9,length(s)-9);
           inc(Line);
+          while Line<SrcFile.Count do begin
+            s:=SrcFile[Line];
+            if (s<>'') and (s[1]='"') then begin
+              Result^.Str:=Result^.Str+copy(s,2,length(s)-2);
+              inc(Line);
+            end else
+              break;
+          end;
         end;
       end;
       exit;
-    end;
-    if s<>'' then begin
-      if CommentStarted then
-        Result^.Comment:=Result^.Comment+#10+s
-      else begin
-        Result^.Comment:=s;
-        CommentStarted:=true;
-      end;
     end;
     inc(Line);
   end;
 end;
 
 procedure WriteMessageItem(MsgItem: PMsgItem; DestFile: TStringList);
+
+  procedure WriteItem(const Prefix: string; Str: string);
+  var
+    s: String;
+    p: Integer;
+    PrefixWritten: Boolean;
+  begin
+    s:=Prefix+' "';
+    PrefixWritten:=false;
+    p:=1;
+    while (p<=length(Str)) do begin
+      if Str[p]='\' then begin
+        inc(p,2);
+        if (p<=length(Str)+1) and (Str[p-1]='n') then begin
+          // a new line \n
+          // -> break line
+          if not PrefixWritten then begin
+            // end last line and add it
+            s:=s+'"';
+            DestFile.Add(s);
+            PrefixWritten:=true;
+            s:='"';
+          end;
+          // add line
+          s:=s+copy(Str,1,p-1)+'"';
+          DestFile.Add(s);
+          Str:=copy(Str,p,length(Str));
+          p:=1;
+          // start new line
+          s:='"';
+        end;
+      end else
+        inc(p);
+    end;
+    if (Str<>'') or (not PrefixWritten) then begin
+      s:=s+Str+'"';
+      DestFile.Add(s);
+    end;
+  end;
+
 begin
-  DestFile.Add(MsgItem^.Comment);
-  DestFile.Add('msgid "'+MsgItem^.ID+'"');
-  DestFile.Add('msgstr "'+MsgItem^.Str+'"');
+  if MsgItem^.Comment<>'' then
+    DestFile.Add('#'+MsgItem^.Comment);
+  WriteItem('msgid',MsgItem^.ID);
+  WriteItem('msgstr',MsgItem^.Str);
   DestFile.Add('');
 end;
 
@@ -202,17 +254,11 @@ begin
       // empty line
       inc(Line);
     end
-    else if (length(SrcFile[Line])>=2) and (SrcFile[Line][1]='"') then begin
-      // header line
-      Result.Header.Add(SrcFile[Line]);
-      inc(Line);
-    end
     else begin
       // message
       MsgItem:=ReadMessageItem(SrcFile,Line);
       // ignore doubles
-      if (MsgItem^.ID='')
-      or (Result.Tree.FindKey(MsgItem,@CompareMsgItems)<>nil) then begin
+      if (Result.Tree.FindKey(MsgItem,@CompareMsgItems)<>nil) then begin
         Dispose(MsgItem);
         continue;
       end;
@@ -324,10 +370,10 @@ begin
     DestMsgItem:=PMsgItem(DestNode.Data);
     OldNode:=DestNode;
     DestNode:=DestTree.FindSuccessor(DestNode);
-    if SrcTree.FindKey(DestMsgItem,@CompareMsgItems)=nil then begin
+    if (DestMsgItem^.ID<>'')
+    and (SrcTree.FindKey(DestMsgItem,@CompareMsgItems)=nil) then begin
       // unused message -> delete it
-      writeln('Deleting unused message "',DestMsgItem^.ID,
-        '" Comment="',DestMsgItem^.Comment,'"');
+      writeln('Deleting unused message "',DestMsgItem^.ID,'"');
       Dispose(DestMsgItem);
       DestTree.Delete(OldNode);
     end;

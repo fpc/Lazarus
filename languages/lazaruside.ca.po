@@ -1146,6 +1146,10 @@ msgstr "Coma"
 msgid "Command "
 msgstr "Ordre"
 
+#: lazarusidestrconsts:liscommandafter
+msgid "Command after"
+msgstr ""
+
 #: lazarusidestrconsts:liscommandafterinvalid
 msgid "Command after invalid"
 msgstr "Ordre no vàlida"
@@ -1686,6 +1690,10 @@ msgstr "Elimina l'últim caràcter"
 msgid "Delete Old Package File?"
 msgstr "Voleu eliminar el fitxer de paquet antic?"
 
+#: lazarusidestrconsts:lisdeleteallthesefiles
+msgid "Delete all these files?"
+msgstr ""
+
 #: lazarusidestrconsts:lisdeleteambiguousfile
 msgid "Delete ambiguous file?"
 msgstr ""
@@ -1825,6 +1833,10 @@ msgstr "Fitxers de l'escriptori"
 #: lazarusidestrconsts:lisaf2pdestinationpackage
 msgid "Destination Package"
 msgstr "Paquet de destinació"
+
+#: lazarusidestrconsts:lisdestinationdirectory
+msgid "Destination directory"
+msgstr ""
 
 #: lazarusidestrconsts:lisdestinationdirectoryisinvalidpleasechooseacomplete
 msgid "Destination directory %s%s%s is invalid.%sPlease choose a complete path."
@@ -2149,6 +2161,10 @@ msgstr "Escapament"
 #: lazarusidestrconsts:lismenuevaluate
 msgid "Evaluate/Modify ..."
 msgstr "Avalua/Modifica ..."
+
+#: lazarusidestrconsts:lisexcludefilter
+msgid "Exclude Filter"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_execute
 msgid "Execute"
@@ -2906,6 +2922,10 @@ msgstr "Ignora l'espai"
 msgid "Ignore amount of space chars"
 msgstr "Ignora la quantitat d'espais"
 
+#: lazarusidestrconsts:lisignorebinaries
+msgid "Ignore binaries"
+msgstr ""
+
 #: lazarusidestrconsts:lisdiffdlgignoreiflineendcharsdiffe
 msgid "Ignore difference in line ends (e.g. #10 = #13#10)"
 msgstr "Ignora les diferències al final de la línia (p.ex. #10 = #13#10)"
@@ -2953,6 +2973,10 @@ msgstr "Inclou el codi afirmat"
 #: lazarusidestrconsts:dlgcoincfiles
 msgid "Include Files (-Fi):"
 msgstr "Fitxers Inclosos (-Fi):"
+
+#: lazarusidestrconsts:lisincludefilter
+msgid "Include Filter"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgfiletypeinclude
 msgid "Include file"
@@ -4246,6 +4270,10 @@ msgstr "Codi normal"
 msgid "Normal selection mode"
 msgstr "Mode de selecció normal"
 
+#: lazarusidestrconsts:lisnormallythefilterisaregularexpressioninsimplesynta
+msgid "Normally the filter is a regular expression. In Simple Syntax a . is a normal character, a * stands for anything, a ? stands for any character, and comma and semicolon separates alternatives. For example: Simple Syntax *.pas;*.pp corresponds to ^(.*\\.pas|.*\\.pp)$"
+msgstr ""
+
 #: lazarusidestrconsts:lisnotadelphiproject
 msgid "Not a Delphi project"
 msgstr "No un projecte Delphi"
@@ -4329,6 +4357,10 @@ msgstr "Només fitxers de text"
 #: lazarusidestrconsts:lismenuopen
 msgid "Open"
 msgstr "Obre"
+
+#: lazarusidestrconsts:lisopenlfm
+msgid "Open %s"
+msgstr ""
 
 #: lazarusidestrconsts:lisdiffdlgopendiffineditor
 msgid "Open Diff in editor"
@@ -4813,6 +4845,10 @@ msgstr "IncPath del projecte"
 #: lazarusidestrconsts:lisprojectincpath
 msgid "Project Include Path"
 msgstr "Trajectòria dels inclosos del projecte"
+
+#: lazarusidestrconsts:lisprojectinformation
+msgid "Project Information"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuprojectinspector
 msgid "Project Inspector"
@@ -5370,6 +5406,10 @@ msgstr "Desa el projecte %s (*.pli)"
 msgid "Save Project As..."
 msgstr "Anomena i desa el projecte"
 
+#: lazarusidestrconsts:lissavesettings
+msgid "Save Settings"
+msgstr ""
+
 #: lazarusidestrconsts:lishintsaveall
 msgid "Save all"
 msgstr "Desa-ho tot"
@@ -5410,6 +5450,10 @@ msgstr "Desa els paràmetres de l'escriptori al fitxer"
 msgid "Save editor info for closed files"
 msgstr "Desa l'informació de l'editor pels fitxers tancats"
 
+#: lazarusidestrconsts:lissaveeditorinfoofnonprojectfiles
+msgid "Save editor info of non project files"
+msgstr ""
+
 #: lazarusidestrconsts:dlgsaveeditorinfoproject
 msgid "Save editor info only for project files"
 msgstr "Desa l'informació de l'editor només per fitxers del projecte"
@@ -5417,6 +5461,10 @@ msgstr "Desa l'informació de l'editor només per fitxers del projecte"
 #: lazarusidestrconsts:lissavefilebeforeclosingform
 msgid "Save file %s%s%s%sbefore closing form %s%s%s?"
 msgstr "Voleu desar el fitxer %s%s%s%sabans de tancar la forma %s%s%s?"
+
+#: lazarusidestrconsts:lissaveinfoofclosededitorfiles
+msgid "Save info of closed editor files"
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditsavepackage
 msgid "Save package"
@@ -5869,6 +5917,10 @@ msgstr "Mostra els fitxers escollits"
 #: lazarusidestrconsts:dlgshowusedfiles
 msgid "Show used files"
 msgstr "Mostra els fitxers utilitzats"
+
+#: lazarusidestrconsts:lissimplesyntax
+msgid "Simple Syntax"
+msgstr ""
 
 #: lazarusidestrconsts:liscldirsimplesyntaxeginsteadof
 msgid "Simple Syntax (e.g. * instead of .*)"
@@ -7362,9 +7414,17 @@ msgstr "Utilització"
 msgid "Use Ansi Strings"
 msgstr "Utilitza Ansi Strings"
 
+#: lazarusidestrconsts:lisuseexcludefilter
+msgid "Use Exclude Filter"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcoheaptrc
 msgid "Use Heaptrc Unit"
 msgstr "Utilitza unitat Heaptrc"
+
+#: lazarusidestrconsts:lisuseincludefilter
+msgid "Use Include Filter"
+msgstr ""
 
 #: lazarusidestrconsts:dlgusecustomconfig
 msgid "Use addional Compiler Config File"

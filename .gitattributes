@@ -876,6 +876,7 @@ ide/lazarus_dci.lrs svneol=native#text/pascal
 ide/lazarusidestrconsts.pas svneol=native#text/pascal
 ide/lazarusmanager.pas svneol=native#text/pascal
 ide/lazconf.pp svneol=native#text/pascal
+ide/lazcwstring.pas svneol=native#text/plain
 ide/lrtpotools.pas svneol=native#text/pascal
 ide/macropromptdlg.pas svneol=native#text/pascal
 ide/main.pp svneol=native#text/pascal

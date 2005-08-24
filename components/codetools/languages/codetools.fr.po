@@ -7,6 +7,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.0.2\n"
 "Project-Id-Version: codetools\n"
+"mot-clé \n"
+"%s\" non prévu"
 
 #: codetoolsstrconsts:ctsothercompilerdefines
 msgid "%s Compiler Defines"
@@ -710,7 +712,7 @@ msgstr "fin inattendue du source"
 
 #: codetoolsstrconsts:ctsunexpectedkeyword
 msgid "unexpected keyword \"%s\""
-msgstr "mot-clé \n%s\" non prévu"
+msgstr ""
 
 #: codetoolsstrconsts:ctsunexpectedkeywordwhilereadingbackwards
 msgid "unexpected keyword \"%s\" found while reading blocks backwards"

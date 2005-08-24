@@ -1,6 +1,5 @@
 msgid ""
 msgstr ""
-""
 "Last-Translator: Luis R. Hilario B. <l_hilario@yahoo.com>\n"
 "PO-Revision-Date: 2004-02-27 23:02-0400\n"
 "Project-Id-Version: codetools\n"

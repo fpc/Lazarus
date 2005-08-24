@@ -145,7 +145,7 @@ begin
    p:=pos(SL1[i],'=');
    SL2.Add('#'+copy(SL1[i],1,p-1));
    SL2.Add('msgid  "'+s+'"');
-   SL2.Add('msgstr ""');//Should we add non-translated string instead?
+   SL2.Add('msgstr ""');
    SL2.Add('');
   end;
   s:=ChangeFileExt(LRTFile,'.po');

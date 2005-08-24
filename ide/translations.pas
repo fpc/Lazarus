@@ -27,9 +27,6 @@
 unit Translations;
 
 {$mode objfpc}{$H+}
-{$ifdef ver2_0_0}
-  {$define NoUTF8Translations}
-{$endif}
 
 interface
 
@@ -37,9 +34,9 @@ uses
   Classes, SysUtils, LCLProc, GetText, FileUtil, LazarusIDEStrConsts,
   StringHashList
   {$IFNDEF win32}{$IFNDEF NoUTF8Translations}
-  ,cwstring
+  ,LazCWString
   {$ENDIF}{$ENDIF};
-  
+
   { IDE Language (Human, not computer) }
 
 type

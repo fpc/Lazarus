@@ -1,6 +1,5 @@
 msgid ""
 msgstr ""
-""
 "Last-Translator: Vasily <vvi@localhost.localdomain>\n"
 "PO-Revision-Date: 2003-01-15 22:38+0300\n"
 "Language-Team: ru_RU.cp1251 \n"
