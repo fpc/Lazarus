@@ -1510,6 +1510,10 @@ Begin
       and (WindowInfo <> @DefaultWindowInfo) 
       and (PLMsg^.Result <> 0) then
     WindowInfo^.ignoreNextChar := true;
+  // stop ignoring if KEYUP has come by (not all keys generate CHAR)
+  if ((Msg = WM_KEYUP) or (Msg = WM_SYSKEYUP))
+      and (WindowInfo <> @DefaultWindowInfo) then
+    WindowInfo^.ignoreNextChar := false;
   
   { LMMouseEvent and LMInsertText have no Result field }
 
