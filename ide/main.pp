@@ -315,6 +315,8 @@ type
     procedure OnSrcNotebookFindDeclaration(Sender: TObject);
     procedure OnSrcNotebookInitIdentCompletion(Sender: TObject;
       JumpToError: boolean; out Handled, Abort: boolean);
+    procedure OnSrcNotebookShowCodeContext(JumpToError: boolean;
+                                           out Abort: boolean);
     procedure OnSrcNotebookJumpToHistoryPoint(var NewCaretXY: TPoint;
       var NewTopLine, NewPageIndex: integer; JumpAction: TJumpHistoryAction);
     procedure OnSrcNotebookMovingPage(Sender: TObject;
@@ -734,6 +736,7 @@ type
     procedure DoFindDeclarationAtCaret(const LogCaretXY: TPoint);
     function DoFindRenameIdentifier(Rename: boolean): TModalResult;
     function DoInitIdentCompletion(JumpToError: boolean): boolean;
+    function DoShowCodeContext(JumpToError: boolean): boolean;
     procedure DoCompleteCodeAtCursor;
     procedure DoExtractProcFromSelection;
     function DoCheckSyntax: TModalResult;
@@ -1428,6 +1431,7 @@ begin
   SourceNotebook.OnEditorPropertiesClicked := @mnuEnvEditorOptionsClicked;
   SourceNotebook.OnFindDeclarationClicked := @OnSrcNotebookFindDeclaration;
   SourceNotebook.OnInitIdentCompletion :=@OnSrcNotebookInitIdentCompletion;
+  SourceNotebook.OnShowCodeContext :=@OnSrcNotebookShowCodeContext;
   SourceNotebook.OnJumpToHistoryPoint := @OnSrcNotebookJumpToHistoryPoint;
   SourceNotebook.OnMovingPage := @OnSrcNotebookMovingPage;
   SourceNotebook.OnOpenFileAtCursorClicked := @OnSrcNotebookFileOpenAtCursor;
@@ -2159,6 +2163,12 @@ procedure TMainIDE.OnSrcNotebookInitIdentCompletion(Sender: TObject;
 begin
   Handled:=true;
   Abort:=not DoInitIdentCompletion(JumpToError);
+end;
+
+procedure TMainIDE.OnSrcNotebookShowCodeContext(
+  JumpToError: boolean; out Abort: boolean);
+begin
+  Abort:=not DoShowCodeContext(JumpToError);
 end;
 
 Procedure TMainIDE.OnSrcNotebookSaveAll(Sender: TObject);
@@ -10375,6 +10385,26 @@ begin
     exit;
   end;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoInitIdentCompletion B');{$ENDIF}
+end;
+
+function TMainIDE.DoShowCodeContext(JumpToError: boolean): boolean;
+var
+  ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+begin
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
+  {$IFDEF IDE_DEBUG}
+  writeln('');
+  writeln('[TMainIDE.DoShowCodeContext] ************');
+  {$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoShowCodeContext A');{$ENDIF}
+  Result:=false; //ShowCodeContext(ActiveUnitInfo.Source,ActiveSrcEdit.EditorComponent);
+  if not Result then begin
+    if JumpToError then
+      DoJumpToCodeToolBossError;
+    exit;
+  end;
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoShowCodeContext B');{$ENDIF}
 end;
 
 procedure TMainIDE.DoGoToPascalBlockOtherEnd;

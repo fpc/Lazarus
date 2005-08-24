@@ -302,12 +302,16 @@ type
           var NewCode: TCodeBuffer;
           var NewX, NewY, NewTopLine: integer): boolean;
 
+    // get code context
+    //function FindCodeContext(Code: TCodeBuffer; X,Y: integer;
+    //      out CodeContext: TCodeContext): boolean;
+
     // gather identifiers (i.e. all visible)
     function GatherIdentifiers(Code: TCodeBuffer; X,Y: integer): boolean;
     function GetIdentifierAt(Code: TCodeBuffer; X,Y: integer;
           var Identifier: string): boolean;
     function IdentItemCheckHasChilds(IdentItem: TIdentifierListItem): boolean;
-
+    
     // rename identifier
     function FindReferences(IdentifierCode: TCodeBuffer;
           X, Y: integer; TargetCode: TCodeBuffer; SkipComments: boolean;

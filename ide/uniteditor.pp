@@ -192,7 +192,6 @@ type
     procedure OnCodeBufferChanged(Sender: TSourceLog;
       SrcLogEntry: TSourceLogEntry);
     procedure StartIdentCompletion(JumpToError: boolean);
-    procedure StartShowCodeContext(JumpToError: boolean);
 
     procedure LinesInserted(sender: TObject; FirstLine,Count: Integer);
     procedure LinesDeleted(sender: TObject; FirstLine,Count: Integer);
@@ -328,6 +327,8 @@ type
                                      out Handled, Abort: boolean) of object;
   TSrcEditPopupMenuEvent = procedure(AddMenuItemProc: TAddMenuItemProc
                                      ) of object;
+  TOnShowCodeContext = procedure(JumpToError: boolean;
+                                 out Abort: boolean) of object;
 
   TSourceNotebookState = (snIncrementalFind, snIncrementalSearching);
   TSourceNotebookStates = set of TSourceNotebookState;
@@ -445,6 +446,7 @@ type
     FActiveEditKeyBGColor: TColor;
     FActiveEditSymbolFGColor: TColor;
     FActiveEditSymbolBGColor: TColor;
+    FOnShowCodeContext: TOnShowCodeContext;
 
     // PopupMenu
     procedure BuildPopupMenu;
@@ -585,8 +587,10 @@ type
     function FIFCreateSearchForm(ADialog:TLazFindInFilesDialog): TSearchForm;
     procedure DoFindInFiles(ASearchForm: TSearchForm);
 
+    // goto line number
     procedure GotoLineClicked(Sender: TObject);
 
+    // history jumping
     procedure HistoryJump(Sender: TObject; CloseAction: TJumpHistoryAction);
     procedure JumpBackClicked(Sender: TObject);
     procedure JumpForwardClicked(Sender: TObject);
@@ -594,8 +598,10 @@ type
     procedure DeleteLastJumpPointClicked(Sender: TObject);
     procedure ViewJumpHistoryClicked(Sender: TObject);
 
+    // hints
     procedure ActivateHint(const ScreenPos: TPoint; const TheHint: string);
     procedure HideHint;
+    procedure StartShowCodeContext(JumpToError: boolean);
 
     Procedure NewFile(const NewShortName: String; ASource: TCodeBuffer;
                       FocusIt: boolean);
@@ -644,6 +650,8 @@ type
                  read FOnFindDeclarationClicked write FOnFindDeclarationClicked;
     property OnInitIdentCompletion: TOnInitIdentCompletion
                        read FOnInitIdentCompletion write FOnInitIdentCompletion;
+    property OnShowCodeContext: TOnShowCodeContext
+                               read FOnShowCodeContext write FOnShowCodeContext;
     property OnJumpToHistoryPoint: TOnJumpToHistoryPoint
                          read FOnJumpToHistoryPoint write FOnJumpToHistoryPoint;
     property OnMovingPage: TOnMovingPage read FOnMovingPage write FOnMovingPage;
@@ -1190,7 +1198,7 @@ Begin
     StartIdentCompletion(true);
 
   ecShowCodeContext :
-    StartShowCodeContext(true);
+    SourceNoteBook.StartShowCodeContext(true);
 
   ecWordCompletion :
     if not TCustomSynEdit(Sender).ReadOnly then begin
@@ -1948,11 +1956,6 @@ begin
             ,CaretYPix + LineHeight));
   aCompletion.Editor:=FEditor;
   aCompletion.Execute(TextS2,P.X,P.Y);
-end;
-
-procedure TSourceEditor.StartShowCodeContext(JumpToError: boolean);
-begin
-
 end;
 
 procedure TSourceEditor.IncreaseIgnoreCodeBufferLock;
@@ -4309,6 +4312,15 @@ begin
     FHintWindow.Visible:=false;
 end;
 
+procedure TSourceNotebook.StartShowCodeContext(JumpToError: boolean);
+var
+  Abort: boolean;
+begin
+  if OnShowCodeContext<>nil then begin
+    OnShowCodeContext(JumpToError,Abort);
+  end;
+end;
+
 Procedure TSourceNotebook.BookMarkSetClicked(Sender: TObject);
 // popup menu:  set bookmark clicked
 var
@@ -5026,7 +5038,7 @@ Begin
 
     ecSetMarker0..ecSetMarker9:
       begin
-	BookMarkSet(Command - ecSetMarker0);
+        BookMarkSet(Command - ecSetMarker0);
         Key:=0;
       end;
 
