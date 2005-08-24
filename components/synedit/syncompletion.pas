@@ -105,7 +105,8 @@ type
       X, Y: Integer); override;
     procedure StringListChange(Sender: TObject);
     {$IFDEF SYN_LAZARUS}
-    procedure SetFontHeight(NewFontHeight :integer);
+    procedure SetFontHeight(NewFontHeight: integer);
+    procedure DoOnResize; override;
     {$ENDIF}
   private
     Bitmap: TBitmap; // used for drawing
@@ -663,6 +664,24 @@ begin
   if NewFontHeight<>FFontHeight then begin
     FFontHeight:=NewFontHeight;
     SetNblinesInWindow(FNbLinesInWindow);
+  end;
+end;
+
+procedure TSynBaseCompletionForm.DoOnResize;
+var
+  OldHeight: Integer;
+  OldWidth: LongInt;
+begin
+  inherited DoOnResize;
+  if ([csLoading,csDestroying,csCreating]*ComponentState<>[])
+  or (Bitmap=nil) or (Scroll=nil) then exit;
+  OldHeight:=Bitmap.Height+2;
+  OldWidth:=Bitmap.Width+Scroll.Width;
+  if (OldHeight<>Height) or (OldWidth<>Width) then begin
+    FNbLinesInWindow := (Height-2+(fFontHeight-1)) div fFontHeight;
+    Bitmap.Width := Scroll.Left;
+    Bitmap.Height := Height - 2;
+    Invalidate;
   end;
 end;
 {$ENDIF}
