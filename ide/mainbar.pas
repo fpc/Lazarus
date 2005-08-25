@@ -157,6 +157,8 @@ type
     itmJumpHistory: TMenuItem;
     itmJumpToNextError: TMenuItem;
     itmJumpToPrevError: TMenuItem;
+    itmJumpToNextBookmark: TMenuItem;
+    itmJumpToPrevBookmark: TMenuItem;
     itmFindBlockOtherEnd: TMenuItem;
     itmFindBlockStart: TMenuItem;
     itmFindDeclaration: TMenuItem;

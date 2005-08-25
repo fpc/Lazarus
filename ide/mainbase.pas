@@ -479,8 +479,10 @@ begin
     CreateMenuItem(ParentMI,itmJumpForward,'itmJumpForward',lisMenuJumpForward);
     CreateMenuItem(ParentMI,itmAddJumpPoint,'itmAddJumpPoint',lisMenuAddJumpPointToHistory);
     CreateMenuItem(ParentMI,itmJumpHistory,'itmJumpHistory',lisMenuViewJumpHistory);
-    CreateMenuItem(ParentMI,itmJumpHistory,'itmJumpToNextError',lisMenuJumpToNextError);
-    CreateMenuItem(ParentMI,itmJumpHistory,'itmJumpToPrevError',lisMenuJumpToPrevError);
+    CreateMenuItem(ParentMI,itmJumpToNextError,'itmJumpToNextError',lisMenuJumpToNextError);
+    CreateMenuItem(ParentMI,itmJumpToPrevError,'itmJumpToPrevError',lisMenuJumpToPrevError);
+    CreateMenuItem(ParentMI,itmJumpToNextBookmark,'itmJumpToNextBookmark',lisMenuJumpToNextBookmark);
+    CreateMenuItem(ParentMI,itmJumpToPrevBookmark,'itmJumpToPrevBookmark',lisMenuJumpToNextBookmark);
 
     ParentMI.Add(CreateMenuSeparator);
 
@@ -779,6 +781,8 @@ begin
     itmJumpHistory.ShortCut:=CommandToShortCut(ecViewJumpHistory);
     itmJumpToNextError.ShortCut:=CommandToShortCut(ecJumpToNextError);
     itmJumpToPrevError.ShortCut:=CommandToShortCut(ecJumpToPrevError);
+    itmJumpToNextBookmark.ShortCut:=CommandToShortCut(ecNextBookmark);
+    itmJumpToPrevBookmark.ShortCut:=CommandToShortCut(ecPrevBookmark);
     itmFindBlockOtherEnd.ShortCut:=CommandToShortCut(ecFindBlockOtherEnd);
     itmFindBlockStart.ShortCut:=CommandToShortCut(ecFindBlockStart);
     itmFindDeclaration.ShortCut:=CommandToShortCut(ecFindDeclaration);

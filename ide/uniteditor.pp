@@ -350,6 +350,8 @@ type
     CopyMenuItem: TMenuItem;
     PasteMenuItem: TMenuItem;
     GotoBookmarkMenuItem: TMenuItem;
+    NextBookmarkMenuItem: TMenuItem;
+    PrevBookmarkMenuItem: TMenuItem;
     MoveEditorLeftMenuItem: TMenuItem;
     MoveEditorRightMenuItem: TMenuItem;
     OpenFileAtCursorMenuItem: TMenuItem;
@@ -366,9 +368,9 @@ type
     SrcPopUpMenu: TPopupMenu;
     StatusBar: TStatusBar;
     Notebook: TNotebook;
-    Procedure AddBreakpointClicked(Sender: TObject);
+    procedure AddBreakpointClicked(Sender: TObject);
     procedure CompleteCodeMenuItemClick(Sender: TObject);
-    Procedure DeleteBreakpointClicked(Sender: TObject);
+    procedure DeleteBreakpointClicked(Sender: TObject);
     procedure EncloseSelectionMenuItemClick(Sender: TObject);
     procedure ExtractProcMenuItemClick(Sender: TObject);
     procedure InvertAssignmentMenuItemClick(Sender: TObject);
@@ -376,27 +378,30 @@ type
     procedure RenameIdentifierMenuItemClick(Sender: TObject);
     procedure RunToClicked(Sender: TObject);
     procedure ViewCallStackClick(Sender: TObject);
-    Procedure AddWatchAtCursor(Sender: TObject);
-    Procedure BookmarkGoTo(Index: Integer);
-    Procedure BookMarkGotoClicked(Sender: TObject);
-    Procedure BookMarkSet(Value: Integer);
-    Procedure BookMarkSetClicked(Sender: TObject);
-    Procedure BookMarkToggle(Value: Integer);
+    procedure AddWatchAtCursor(Sender: TObject);
+    procedure BookmarkGoTo(Index: Integer);
+    procedure BookmarkGotoNext(GoForward: boolean);
+    procedure BookMarkNextClicked(Sender: TObject);
+    procedure BookMarkPrevClicked(Sender: TObject);
+    procedure BookMarkGotoClicked(Sender: TObject);
+    procedure BookMarkSet(Value: Integer);
+    procedure BookMarkSetClicked(Sender: TObject);
+    procedure BookMarkToggle(Value: Integer);
     procedure EditorPropertiesClicked(Sender: TObject);
-    Procedure FindDeclarationClicked(Sender: TObject);
+    procedure FindDeclarationClicked(Sender: TObject);
     procedure MoveEditorLeftClicked(Sender: TObject);
     procedure MoveEditorRightClicked(Sender: TObject);
-    Procedure NotebookPageChanged(Sender: TObject);
+    procedure NotebookPageChanged(Sender: TObject);
     procedure NotebookShowTabHint(Sender: TObject; HintInfo: PHintInfo);
-    Procedure OpenAtCursorClicked(Sender: TObject);
-    Procedure ReadOnlyClicked(Sender: TObject);
+    procedure OpenAtCursorClicked(Sender: TObject);
+    procedure ReadOnlyClicked(Sender: TObject);
     procedure OnPopupMenuOpenPasFile(Sender: TObject);
     procedure OnPopupMenuOpenPPFile(Sender: TObject);
     procedure OnPopupMenuOpenLFMFile(Sender: TObject);
     procedure OnPopupMenuOpenLRSFile(Sender: TObject);
-    Procedure ShowUnitInfo(Sender: TObject);
+    procedure ShowUnitInfo(Sender: TObject);
     procedure SrcPopUpMenuPopup(Sender: TObject);
-    Procedure ToggleLineNumbersClicked(Sender: TObject);
+    procedure ToggleLineNumbersClicked(Sender: TObject);
   private
     fAutoFocusLock: integer;
     FCodeTemplateModul: TSynEditAutoComplete;
@@ -3303,6 +3308,8 @@ begin
     SrcEditSubMenuSetBookmarks.FindByName('SetBookmark'+IntToStr(i))
                                             .OnClickMethod:=@BookMarkSetClicked;
   end;
+  SrcEditMenuNextBookmark.OnClickMethod:=@NextBookmarkClicked;
+  SrcEditMenuPrevBookmark.OnClickMethod:=@PrevBookmarkClicked;
 
   SrcEditMenuAddBreakpoint.OnClickMethod:=@AddBreakpointClicked;
   SrcEditMenuAddWatchAtCursor.OnClickMethod:=@AddWatchAtCursor;
@@ -3408,7 +3415,8 @@ Begin
   end;
   SrcPopupMenu.Items.Add(GotoBookmarkMenuItem);
 
-  for I := 0 to 9 do
+  begin
+    for I := 0 to 9 do
     Begin
       SubMenuItem := TMenuItem.Create(Self);
       with SubmenuItem do begin
@@ -3418,6 +3426,23 @@ Begin
       end;
       GotoBookmarkMenuItem.Add(SubMenuItem);
     end;
+
+    NextBookmarkMenuItem := TMenuItem.Create(Self);
+    with NextBookmarkMenuItem do begin
+      Name:='NextBookmarkMenuItem';
+      Caption := uemNextBookmark;
+      OnClick := @BookmarkNextClicked;
+    end;
+    GotoBookmarkMenuItem.Add(NextBookmarkMenuItem);
+
+    PrevBookmarkMenuItem := TMenuItem.Create(Self);
+    with PrevBookmarkMenuItem do begin
+      Name:='PrevBookmarkMenuItem';
+      Caption := uemPrevBookmark;
+      OnClick := @BookmarkPrevClicked;
+    end;
+    GotoBookmarkMenuItem.Add(PrevBookmarkMenuItem);
+  end;
 
   SetBookmarkMenuItem := TMenuItem.Create(Self);
   with SetBookmarkMenuItem do begin
@@ -4581,12 +4606,101 @@ Begin
 end;
 
 {This is called from outside to set a bookmark}
-Procedure TSourceNotebook.SetBookmark(Value: Integer);
+procedure TSourceNotebook.SetBookmark(Value: Integer);
 Begin
   BookMarkSet(Value);
 End;
 
-Procedure TSourceNotebook.BookMarkGoto(Index: Integer);
+procedure TSourceNotebook.BookmarkGotoNext(GoForward: boolean);
+var
+  CurBookmarkID: Integer;
+  x: Integer;
+  y: Integer;
+  SrcEdit: TSourceEditor;
+  StartY: LongInt;
+  CurEditorComponent: TSynEdit;
+  StartEditorComponent: TSynEdit;
+  BestBookmarkID: Integer;
+  BestY: Integer;
+  CurPageIndex: Integer;
+  CurSrcEdit: TSourceEditor;
+  StartPageIndex: LongInt;
+  BetterFound: Boolean;
+  PageDistance: Integer;
+  BestPageDistance: Integer;
+begin
+  if Notebook=nil then exit;
+  SrcEdit:=GetActiveSE;
+  if SrcEdit=nil then exit;
+  // init best bookmark
+  BestBookmarkID:=-1;
+  BestY:=-1;
+  BestPageDistance:=-1;
+  // where is the cursor
+  StartPageIndex:=Notebook.PageIndex;
+  StartEditorComponent:=SrcEdit.EditorComponent;
+  StartY:=StartEditorComponent.CaretY;
+  // go through all bookmarks
+  for CurPageIndex:=0 to Notebook.PageCount-1 do begin
+    CurSrcEdit:=FindSourceEditorWithPageIndex(CurPageIndex);
+    CurEditorComponent:=CurSrcEdit.EditorComponent;
+    for CurBookmarkID:=0 to 9 do begin
+      if CurEditorComponent.GetBookmark(CurBookmarkID,x,y) then begin
+        if (CurPageIndex=StartPageIndex) and (y=StartY) then
+          continue;
+
+        // for GoForward=true we are searching the nearest bookmark down the
+        // current page, then the pages from left to right, starting at the
+        // current page. That means the lines above the cursor are the most
+        // far away.
+
+        // calculate the distance of pages between the current bookmark
+        // and the current page
+        PageDistance:=(StartPageIndex-CurPageIndex);
+        if GoForward then PageDistance:=-PageDistance;
+        if PageDistance<0 then
+          // for GoForward=true the pages on the left are farer than the pages
+          // on the right (and vice versus)
+          inc(PageDistance,Notebook.PageCount);
+        if (PageDistance=0) then begin
+          // for GoForward=true the lines in front are farer than the pages
+          // on the left side
+          if (GoForward and (y<StartY))
+          or ((not GoForward) and (y>StartY)) then
+            inc(PageDistance,Notebook.PageCount);
+        end;
+
+        BetterFound:=false;
+        if BestBookmarkID<0 then
+          BetterFound:=true
+        else if PageDistance<BestPageDistance then begin
+          BetterFound:=true;
+        end else if PageDistance=BestPageDistance then begin
+          if (GoForward and (y<BestY))
+          or ((not GoForward) and (y>BestY)) then
+            BetterFound:=true;
+        end;
+        //debugln('TSourceNotebook.BookmarkGotoNext GoForward=',dbgs(GoForward),
+        //  ' CurBookmarkID=',dbgs(CurBookmarkID),
+        //  ' PageDistance=',dbgs(PageDistance),' BestPageDistance='+dbgs(BestPageDistance),
+        //  ' y='+dbgs(y),' BestY='+dbgs(BestY),' StartY=',dbgs(StartY),
+        //  ' StartPageIndex='+dbgs(StartPageIndex),' CurPageIndex='+dbgs(CurPageIndex),
+        //  ' BetterFound='+dbgs(BetterFound));
+        
+        if BetterFound then begin
+          // nearer bookmark found
+          BestBookmarkID:=CurBookmarkID;
+          BestY:=y;
+          BestPageDistance:=PageDistance;
+        end;
+      end;
+    end;
+  end;
+  if BestBookmarkID>=0 then
+    BookMarkGoto(BestBookmarkID);
+end;
+
+procedure TSourceNotebook.BookMarkGoto(Index: Integer);
 var
   AnEditor:TSourceEditor;
 begin
@@ -4597,6 +4711,16 @@ begin
     AnEditor.CenterCursor;
     Notebook.PageIndex:=FindPageWithEditor(AnEditor);
   end;
+end;
+
+procedure TSourceNotebook.BookMarkNextClicked(Sender: TObject);
+begin
+  BookmarkGotoNext(true);
+end;
+
+procedure TSourceNotebook.BookMarkPrevClicked(Sender: TObject);
+begin
+  BookmarkGotoNext(false);
 end;
 
 {This is called from outside to Go to a bookmark}
@@ -4946,12 +5070,18 @@ begin
 
   ecToggleObjectInsp:
     ToggleObjectInspClicked(Self);
+    
+  ecPrevBookmark:
+    BookmarkGotoNext(false);
+
+  ecNextBookmark:
+    BookmarkGotoNext(true);
 
   ecGotoMarker0..ecGotoMarker9:
-    BookMarkGoto(Command - ecGotoMarker0);
+    BookmarkGoto(Command - ecGotoMarker0);
 
   ecSetMarker0..ecSetMarker9:
-    BookMarkSet(Command - ecSetMarker0);
+    BookmarkSet(Command - ecSetMarker0);
 
   ecJumpBack:
     HistoryJump(Self,jhaBack);
