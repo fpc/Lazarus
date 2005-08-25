@@ -1399,7 +1399,8 @@ begin
     ecLineSelect            : Result:= srkmecLineSelect;
     ecAutoCompletion        : Result:= srkmecAutoCompletion;
     ecUserFirst             : Result:= srkmecPrevBookmark;
-    ecPrevBookmark          : Result:= srkmecNextBookmark;
+    ecPrevBookmark          : Result:= srkmecPrevBookmark;
+    ecNextBookmark          : Result:= srkmecNextBookmark;
     ecGotoMarker0 ..
     ecGotoMarker9           : Result:= Format(srkmecGotoMarker,[cmd-ecGotoMarker0]);
     ecSetMarker0 ..
