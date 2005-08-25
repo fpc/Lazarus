@@ -11230,7 +11230,8 @@ begin
     if AnIDesigner is TDesigner then begin
       MainIDEBar.ToggleFormSpeedBtn.Enabled:=true;
     end else begin
-      MainIDEBar.ToggleFormSpeedBtn.Enabled:=AnUnitInfo.HasResources;
+      MainIDEBar.ToggleFormSpeedBtn.Enabled:=(AnUnitInfo<>nil)
+                                             and AnUnitInfo.HasResources;
     end;
   end;
 end;
