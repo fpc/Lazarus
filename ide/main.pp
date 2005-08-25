@@ -1458,6 +1458,8 @@ begin
   MainIDEBar.itmJumpForward.OnClick := @SourceNotebook.JumpForwardClicked;
   MainIDEBar.itmAddJumpPoint.OnClick := @SourceNotebook.AddJumpPointClicked;
   MainIDEBar.itmJumpHistory.OnClick := @SourceNotebook.ViewJumpHistoryClicked;
+  MainIDEBar.itmJumpToNextBookmark.OnClick := @SourceNotebook.BookMarkNextClicked;
+  MainIDEBar.itmJumpToPrevBookmark.OnClick := @SourceNotebook.BookMarkPrevClicked;
   MainIDEBar.itmFindBlockStart.OnClick:=@mnuSearchFindBlockStart;
   MainIDEBar.itmFindBlockOtherEnd.OnClick:=@mnuSearchFindBlockOtherEnd;
   MainIDEBar.itmFindDeclaration.OnClick:=@mnuSearchFindDeclaration;
