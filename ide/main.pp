@@ -7544,15 +7544,17 @@ begin
       exit;
     end;
 
-    // save LFM file
-    DebugLn('TMainIDE.DoConvertDelphiUnit Save LFM');
-    Result:=DoSaveCodeBufferToFile(LFMCode,LFMCode.Filename,false);
-    if Result<>mrOk then exit;
+    if LFMCode<>nil then begin
+      // save LFM file
+      DebugLn('TMainIDE.DoConvertDelphiUnit Save LFM');
+      Result:=DoSaveCodeBufferToFile(LFMCode,LFMCode.Filename,false);
+      if Result<>mrOk then exit;
 
-    // convert lfm to lrs
-    DebugLn('TMainIDE.DoConvertDelphiUnit Convert lfm to lrs');
-    Result:=ConvertLFMtoLRSfile(LFMCode.Filename);
-    if Result<>mrOk then exit;
+      // convert lfm to lrs
+      DebugLn('TMainIDE.DoConvertDelphiUnit Convert lfm to lrs');
+      Result:=ConvertLFMtoLRSfile(LFMCode.Filename);
+      if Result<>mrOk then exit;
+    end;
   finally
     FOpenEditorsOnCodeToolChange:=OldOpenEditorsOnCodeToolChange;
   end;

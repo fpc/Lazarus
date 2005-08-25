@@ -607,7 +607,7 @@ begin
     if Assigned(OnUTF8KeyPress) then OnUTF8KeyPress(Self, UTF8Key);
   end else begin
     if (length(UTF8Key)>=1)
-    and (not (UTF8Key[1] in ['a'..'z','A'..'Z','0'..'9'])) then begin
+    and (not (UTF8Key[1] in ['a'..'z','A'..'Z','0'..'9','_'])) then begin
       // non identifier character
       if Assigned(OnValidate) then
         OnValidate(Self,[]);
