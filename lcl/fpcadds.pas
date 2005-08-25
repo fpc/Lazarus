@@ -76,5 +76,52 @@ begin
 end;
 {$ENDIF}
 
+// fpc 2.0.0 widestringmanager is incomplete for win32
+{$IFDEF VER2_0_0}{$IFDEF win32}
+//copied from rtl/win32/system.pp
+type
+  UINT=cardinal;
+const
+  { MultiByteToWideChar  }
+     MB_PRECOMPOSED = 1;
+     CP_ACP = 0;
+
+function MultiByteToWideChar(CodePage:UINT; dwFlags:DWORD; lpMultiByteStr:PChar; cchMultiByte:longint; lpWideCharStr:PWideChar;cchWideChar:longint):longint;
+    stdcall; external 'kernel32' name 'MultiByteToWideChar';
+function WideCharToMultiByte(CodePage:UINT; dwFlags:DWORD; lpWideCharStr:PWideChar; cchWideChar:longint; lpMultiByteStr:PChar;cchMultiByte:longint; lpDefaultChar:PChar; lpUsedDefaultChar:pointer):longint;
+    stdcall; external 'kernel32' name 'WideCharToMultiByte';
+
+procedure Win32Wide2AnsiMove(source:pwidechar;var dest:ansistring;len:SizeInt);
+var
+  destlen: SizeInt;
+begin
+  // retrieve length including trailing #0
+  destlen:=WideCharToMultiByte(CP_ACP, 0, source, len+1, nil, 0, nil, nil);
+  setlength(dest, destlen-1);
+  WideCharToMultiByte(CP_ACP, 0, source, len+1, @dest[1], destlen, nil, nil);
+end;
+   
+procedure Win32Ansi2WideMove(source:pchar;var dest:widestring;len:SizeInt);
+var
+  destlen: SizeInt;
+begin
+  // retrieve length including trailing #0
+  destlen:=MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, source, len+1, nil, 0);
+  setlength(dest, destlen-1);
+  MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, source, len+1, @dest[1], destlen);
+end;
+
+procedure InitWin32Widestrings;
+begin
+  widestringmanager.Wide2AnsiMoveProc:=@Win32Wide2AnsiMove;
+  widestringmanager.Ansi2WideMoveProc:=@Win32Ansi2WideMove;
+end;
+{$ENDIF}{$ENDIF}
+
+{$IFDEF VER2_0_0}{$IFDEF win32}
+initialization
+  InitWin32Widestrings;
+{$ENDIF}{$ENDIF}
+
 end.
 
