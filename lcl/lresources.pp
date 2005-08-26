@@ -104,9 +104,7 @@ type
     procedure ReadBinary(const DestData: TMemoryStream); override;
     function ReadFloat: Extended; override;
     function ReadSingle: Single; override;
-    {$ifdef HASCURRENCY}
     function ReadCurrency: Currency; override;
-    {$endif HASCURRENCY}
     function ReadDate: TDateTime; override;
     function ReadIdent(ValueType: TValueType): String; override;
     function ReadInt8: ShortInt; override;
@@ -116,9 +114,7 @@ type
     function ReadSet(EnumType: Pointer): Integer; override;
     function ReadStr: String; override;
     function ReadString(StringType: TValueType): String; override;
-    {$ifdef HASWIDESTRING}
     function ReadWideString: WideString;override;
-    {$endif HASWIDESTRING}
     procedure SkipComponent(SkipComponentInfos: Boolean); override;
     procedure SkipValue; override;
   end;
@@ -145,12 +141,8 @@ type
     procedure WriteSingleContent(s: single);
     procedure WriteDoubleContent(d: Double);
     procedure WriteExtendedContent(e: Extended);
-    {$ifdef HASCURRENCY}
     procedure WriteCurrencyContent(c: Currency);
-    {$endif HASCURRENCY}
-    {$ifdef HASWIDESTRING}
     procedure WriteWideStringContent(ws: WideString);
-    {$endif HASWIDESTRING}
     procedure WriteWordsReversed(p: PWord; Count: integer);
     procedure WriteNulls(Count: integer);
   public
@@ -169,18 +161,14 @@ type
     procedure WriteBoolean(Value: Boolean); override;
     procedure WriteFloat(const Value: Extended); override;
     procedure WriteSingle(const Value: Single); override;
-    {$ifdef HASCURRENCY}
     procedure WriteCurrency(const Value: Currency); override;
-    {$endif HASCURRENCY}
     procedure WriteDate(const Value: TDateTime); override;
     procedure WriteIdent(const Ident: string); override;
     procedure WriteInteger(Value: Int64); override;
     procedure WriteMethodName(const Name: String); override;
     procedure WriteSet(Value: LongInt; SetType: Pointer); override;
     procedure WriteString(const Value: String); override;
-    {$ifdef HASWIDESTRING}
     procedure WriteWideString(const Value: WideString); override;
-    {$endif HASWIDESTRING}
   end;
   TLRSObjectWriterClass = class of TLRSObjectWriter;
   
@@ -233,12 +221,8 @@ function ReadLRSInt64(s: TStream): int64;
 function ReadLRSSingle(s: TStream): Single;
 function ReadLRSDouble(s: TStream): Double;
 function ReadLRSExtended(s: TStream): Extended;
-{$ifdef HASCURRENCY}
 function ReadLRSCurrency(s: TStream): Currency;
-{$endif HASCURRENCY}
-{$ifdef HASWIDESTRING}
 function ReadLRSWideString(s: TStream): WideString;
-{$endif HASWIDESTRING}
 function ReadLRSEndianLittleExtendedAsDouble(s: TStream): Double;
 
 procedure WriteLRSWord(s: TStream; const w: word);
@@ -248,12 +232,8 @@ procedure WriteLRSSingle(s: TStream; const si: Single);
 procedure WriteLRSDouble(s: TStream; const d: Double);
 procedure WriteLRSExtended(s: TStream; const e: extended);
 procedure WriteLRSInt64(s: TStream; const i: int64);
-{$ifdef HASCURRENCY}
 procedure WriteLRSCurrency(s: TStream; const c: Currency);
-{$endif HASCURRENCY}
-{$ifdef HASWIDESTRING}
 procedure WriteLRSWideStringContent(s: TStream; const w: WideString);
-{$endif HASWIDESTRING}
 
 procedure WriteLRSReversedWord(s: TStream; w: word);
 procedure WriteLRS4BytesReversed(s: TStream; p: Pointer);
@@ -1347,12 +1327,8 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
       ext: Extended;
       ASingle: single;
       ADate: TDateTime;
-      {$ifdef HASCURRENCY}
       ACurrency: Currency;
-      {$endif HASCURRENCY}
-      {$ifdef HASWIDESTRING}
       AWideString: WideString;
-      {$endif HASWIDESTRING}
 
     begin
       //DbgOut('ValueType="',dbgs(ord(ValueType)),'"');
@@ -1432,19 +1408,15 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
             ADate:=TDateTime(ReadLRSDouble(Input));
             OutLn(FloatToStr(ADate));
           end;
-        {$ifdef HASCURRENCY}
         vaCurrency: begin
             ACurrency:=ReadLRSCurrency(Input);
             OutLn(FloatToStr(ACurrency));
           end;
-        {$endif HASCURRENCY}
-        {$ifdef HASWIDESTRING}
         vaWString: begin
             AWideString:=ReadLRSWideString(Input);
             OutWideString(AWideString);
             OutLn('');
           end;
-        {$endif HASWIDESTRING}
         else
           if ord(ValueType)=20 then begin
             // vaUTF8String
@@ -1620,14 +1592,12 @@ var
       Output.Write(s[1], Length(s));
   end;
 
-  {$IFDEF HASWIDESTRING}
   procedure WriteWideString(const s: String);
   begin
     WriteLRSInteger(Output,Length(s));
     if Length(s) > 0 then
       Output.Write(s[1], Length(s)*2);
   end;
-  {$ENDIF}
 
   procedure WriteInteger(value: LongInt);
   begin
@@ -2200,7 +2170,6 @@ begin
   {$ENDIF}
 end;
 
-{$ifdef HASCURRENCY}
 function ReadLRSCurrency(s: TStream): Currency;
 begin
   s.Read(Result,8);
@@ -2208,9 +2177,7 @@ begin
   ReverseBytes(@Result,8);
   {$ENDIF}
 end;
-{$endif HASCURRENCY}
 
-{$ifdef HASWIDESTRING}
 function ReadLRSWideString(s: TStream): WideString;
 var
   Len: LongInt;
@@ -2224,7 +2191,6 @@ begin
     {$ENDIF}
   end;
 end;
-{$endif HASWIDESTRING}
 
 function ReadLRSEndianLittleExtendedAsDouble(s: TStream): Double;
 var
@@ -2372,7 +2338,6 @@ begin
   {$ENDIF}
 end;
 
-{$ifdef HASCURRENCY}
 procedure WriteLRSCurrency(s: TStream; const c: Currency);
 begin
   {$IFDEF Endian_Little}
@@ -2381,9 +2346,7 @@ begin
   WriteLRS8BytesReversed(s,@c);
   {$ENDIF}
 end;
-{$endif HASCURRENCY}
 
-{$ifdef HASWIDESTRING}
 procedure WriteLRSWideStringContent(s: TStream; const w: WideString);
 var
   Size: Integer;
@@ -2396,7 +2359,6 @@ begin
   WriteLRSReversedWords(s,@w[1],Size);
   {$ENDIF}
 end;
-{$endif HASWIDESTRING}
 
 { TLRSObjectReader }
 
@@ -2562,7 +2524,6 @@ begin
   {$endif}
 end;
 
-{$ifdef HASCURRENCY}
 function TLRSObjectReader.ReadCurrency: Currency;
 begin
   Read(Result, 8);
@@ -2570,7 +2531,6 @@ begin
   ReverseBytes(@Result,8);
   {$endif}
 end;
-{$endif  HASCURRENCY}
 
 function TLRSObjectReader.ReadDate: TDateTime;
 begin
@@ -2686,7 +2646,6 @@ begin
 end;
 
 
-{$ifdef HASWIDESTRING}
 function TLRSObjectReader.ReadWideString: WideString;
 var
   i: Integer;
@@ -2697,7 +2656,6 @@ begin
     Read(Pointer(@Result[1])^, i*2);
   //debugln('TLRSObjectReader.ReadWideString ',Result);
 end;
-{$endif HASWIDESTRING}
 
 
 procedure TLRSObjectReader.SkipComponent(SkipComponentInfos: Boolean);
@@ -2783,10 +2741,8 @@ begin
       end;
     vaSingle:
       SkipBytes(4);
-    {$ifdef HASCURRENCY}
     vaCurrency:
       SkipBytes(SizeOf(Currency));
-    {$endif}
     vaDate:
       SkipBytes(8);
     vaInt64:
@@ -2904,7 +2860,6 @@ begin
   Write(e,10);
 end;
 
-{$ifdef HASCURRENCY}
 procedure TLRSObjectWriter.WriteCurrencyContent(c: Currency);
 begin
   {$IFDEF Endian_BIG}
@@ -2912,9 +2867,7 @@ begin
   {$ENDIF}
   Write(c,8);
 end;
-{$endif HASCURRENCY}
 
-{$ifdef HASWIDESTRING}
 procedure TLRSObjectWriter.WriteWideStringContent(ws: WideString);
 begin
   {$IFDEF Endian_BIG}
@@ -2923,7 +2876,6 @@ begin
   Write(ws[1],length(ws)*2);
   {$ENDIF}
 end;
-{$endif HASWIDESTRING}
 
 procedure TLRSObjectWriter.WriteWordsReversed(p: PWord; Count: integer);
 var
@@ -3041,13 +2993,11 @@ begin
   WriteSingleContent(Value);
 end;
 
-{$ifdef HASCURRENCY}
 procedure TLRSObjectWriter.WriteCurrency(const Value: Currency);
 begin
   WriteValue(vaCurrency);
   WriteCurrencyContent(Value);
 end;
-{$endif HASCURRENCY}
 
 procedure TLRSObjectWriter.WriteDate(const Value: TDateTime);
 begin
@@ -3149,7 +3099,6 @@ begin
     Write(Value[1], i);
 end;
 
-{$ifdef HASWIDESTRING}
 procedure TLRSObjectWriter.WriteWideString(const Value: WideString);
 var
   i: Integer;
@@ -3159,7 +3108,6 @@ begin
   WriteIntegerContent(i);
   WriteWideStringContent(Value);
 end;
-{$endif HASWIDESTRING}
 
 
 //------------------------------------------------------------------------------
