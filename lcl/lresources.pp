@@ -1661,7 +1661,6 @@ var
       WriteInteger(StrToInt(s));
   end;
   
-  {$IFDEF HASWIDESTRING}
   function WideStringNeeded(const s: widestring): Boolean;
   var
     i: Integer;
@@ -1670,7 +1669,24 @@ var
     while (i>=1) and (ord(s[i])<256) do dec(i);
     Result:=i>=1;
   end;
-  {$ENDIF}
+
+  function WideStrToAnsiStrWithoutConversion(const s: widestring): string;
+  var
+    i: Integer;
+  begin
+    SetLength(Result,length(s));
+    for i:=1 to length(Result) do
+      Result[i]:=chr(ord(s[i]));
+  end;
+
+  function WideStrToShortStrWithoutConversion(const s: widestring): shortstring;
+  var
+    i: Integer;
+  begin
+    SetLength(Result,length(s));
+    for i:=1 to length(Result) do
+      Result[i]:=chr(ord(s[i]));
+  end;
 
   procedure ProcessProperty; forward;
 
@@ -1683,11 +1699,7 @@ var
   
   var
     flt: Extended;
-    {$IFDEF HASWIDESTRING}
     toStringBuf: WideString;
-    {$ELSE}
-    toStringBuf: String;
-    {$ENDIF}
     stream: TMemoryStream;
     BinDataSize: LongInt;
   begin
@@ -1709,37 +1721,27 @@ var
         end;
       toString:
         begin
-          {$IFDEF HASWIDESTRING}
           toStringBuf := parser.TokenWideString;
-          {$ELSE}
-          toStringBuf := parser.TokenString;
-          {$ENDIF}
           while parser.NextToken = '+' do
           begin
             parser.NextToken;   // Get next string fragment
             parser.CheckToken(toString);
-            {$IFDEF HASWIDESTRING}
             toStringBuf := toStringBuf + parser.TokenWideString;
-            {$ELSE}
-            toStringBuf := toStringBuf + parser.TokenString;
-            {$ENDIF}
           end;
-          {$IFDEF HASWIDESTRING}
           if WideStringNeeded(toStringBuf) then begin
             //debugln('LRSObjectTextToBinary.ProcessValue WriteWideString');
             Output.WriteByte(Ord(vaWString));
             WriteWideString(toStringBuf);
           end
           else
-          {$ENDIF}
           if length(toStringBuf)<256 then begin
             //debugln('LRSObjectTextToBinary.ProcessValue WriteShortString');
             Output.WriteByte(Ord(vaString));
-            WriteShortString(toStringBuf);
+            WriteShortString(WideStrToShortStrWithoutConversion(toStringBuf));
           end else begin
             //debugln('LRSObjectTextToBinary.ProcessValue WriteLongString');
             Output.WriteByte(Ord(vaLString));
-            WriteLongString(toStringBuf);
+            WriteLongString(WideStrToAnsiStrWithoutConversion(toStringBuf));
           end;
         end;
       toSymbol:

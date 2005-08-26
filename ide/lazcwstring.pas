@@ -35,7 +35,8 @@ Uses
   unix,
   unixtype,
   sysutils,
-  initc;
+  initc,
+  LCLProc;
 
 Const
 {$ifdef Linux}
@@ -154,6 +155,8 @@ procedure Wide2AnsiMove(source:pwidechar;var dest:ansistring;len:SizeInt);
       end;
     // truncate string
     setlength(dest,cardinal(length(dest))-outleft);
+    //if Source<>nil then
+    //  writeln('Wide2AnsiMove Source="',DbgWideStr(source),'" Dest="',DbgStr(Dest),'"');
   end;
 
 
@@ -195,6 +198,8 @@ procedure Ansi2WideMove(source:pchar;var dest:widestring;len:SizeInt);
       end;
     // truncate string
     setlength(dest,cardinal(length(dest))-outleft div 2);
+    //if Source<>nil then
+    //  debugln('Ansi2WideMove Source="',DbgStr(source),'" Dest="',DbgWideStr(Dest),'"');
   end;
 
 

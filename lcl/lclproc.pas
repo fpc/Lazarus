@@ -156,6 +156,7 @@ function DbgS(const b: boolean): string;
 function DbgSName(const p: TObject): string;
 function DbgSName(const p: TClass): string;
 function DbgStr(const StringWithSpecialChars: string): string;
+function DbgWideStr(const StringWithSpecialChars: widestring): string;
 function dbgMemRange(P: PByte; Count: integer; Width: integer = 0): string;
 function dbgMemStream(MemStream: TCustomMemoryStream; Count: integer): string;
 function dbgObjMem(AnObject: TObject): string;
@@ -1131,9 +1132,37 @@ begin
     case Result[i] of
     ' '..#126: inc(i);
     else
-      s:='#'+IntToStr(ord(Result[i]));
+      s:='#'+HexStr(ord(Result[i]),2);
       Result:=copy(Result,1,i-1)+s+copy(Result,i+1,length(Result)-i);
       inc(i,length(s));
+    end;
+  end;
+end;
+
+function DbgWideStr(const StringWithSpecialChars: widestring): string;
+var
+  s: String;
+  SrcPos: Integer;
+  DestPos: Integer;
+  i: Integer;
+begin
+  SetLength(Result,length(StringWithSpecialChars));
+  SrcPos:=1;
+  DestPos:=1;
+  while SrcPos<=length(StringWithSpecialChars) do begin
+    i:=ord(StringWithSpecialChars[SrcPos]);
+    case i of
+    32..126:
+      begin
+        Result[DestPos]:=chr(i);
+        inc(SrcPos);
+        inc(DestPos);
+      end;
+    else
+      s:='#'+HexStr(i,4);
+      inc(SrcPos);
+      Result:=copy(Result,1,DestPos-1)+s+copy(Result,DestPos+1,length(Result));
+      inc(DestPos,length(s));
     end;
   end;
 end;
