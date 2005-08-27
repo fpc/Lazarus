@@ -387,6 +387,7 @@ var
   Handled: Boolean;
   {$ENDIF}
 begin
+  //debugln('TSynBaseCompletionForm.KeyDown A Key=',dbgs(Key));
   {$IFDEF SYN_LAZARUS}
   Handled:=true;
   {$ENDIF}
@@ -449,8 +450,10 @@ end;
 
 procedure TSynBaseCompletionForm.KeyPress(var Key: char);
 begin
+  //debugln('TSynBaseCompletionForm.KeyPress A Key="',DbgStr(Key),'"');
   if Assigned(OnKeyPress) then
     OnKeyPress(Self, Key);
+  //debugln('TSynBaseCompletionForm.KeyPress B Key="',DbgStr(Key),'"');
   if Key=#0 then exit;
   case key of //
     #33..'z':
@@ -463,16 +466,21 @@ begin
     #8: ;
   else
     {$ifdef SYN_LAZARUS}
-    if (ord(key)>=32) and Assigned(OnValidate) then
-      OnValidate(Self, [])
-    else
-    {$ENDIF}
+    if (ord(key)>=32) and Assigned(OnValidate) then begin
+      OnValidate(Self, []);
+      Key:=#0;
+    end else begin
       if Assigned(OnCancel) then OnCancel(Self);
+      Key:=#0;
+    end;
+    {$ELSE}
+    if Assigned(OnCancel) then OnCancel(Self);
+    {$ENDIF}
   end; // case
   {$ifdef SYN_LAZARUS}
-  Key:=#0;
   Invalidate;
   {$ENDIF}
+  //debugln('TSynBaseCompletionForm.KeyPress END Key="',DbgStr(Key),'"');
 end;
 
 procedure TSynBaseCompletionForm.MouseDown(Button: TMouseButton;
@@ -604,9 +612,7 @@ end;
 {$IFDEF SYN_LAZARUS}
 procedure TSynBaseCompletionForm.UTF8KeyPress(var UTF8Key: TUTF8Char);
 begin
-  //debugln('TSynBaseCompletionForm.UTF8KeyPress UTF8Key="',DbgStr(UTF8Key),'"');
-  if Assigned(OnUTF8KeyPress) then OnUTF8KeyPress(Self, UTF8Key);
-  if (UTF8Key='') or (UTF8Key=#0) then exit;
+  //debugln('TSynBaseCompletionForm.UTF8KeyPress A UTF8Key="',DbgStr(UTF8Key),'" ',dbgsName(TObject(TMethod(OnUTF8KeyPress).Data)));
   if UTF8Key=#8 then begin
     // backspace
   end else begin
@@ -615,16 +621,15 @@ begin
       // non identifier character
       if Assigned(OnValidate) then
         OnValidate(Self,[]);
-      if Assigned(OnUTF8KeyPress) then
-        OnUTF8KeyPress(Self, UTF8Key);
+      UTF8Key:='';
     end else if (UTF8Key<>'') then begin
       // identifier character
+      CurrentString := CurrentString + UTF8Key;
       if Assigned(OnUTF8KeyPress) then
         OnUTF8KeyPress(Self, UTF8Key);
-      CurrentString := CurrentString + UTF8Key;
     end;
   end;
-  UTF8Key:='';
+  //debugln('TSynBaseCompletionForm.UTF8KeyPress END UTF8Key="',DbgStr(UTF8Key),'"');
 end;
 {$ENDIF}
 
@@ -633,6 +638,7 @@ var
   i: integer;
 begin
   FCurrentString := Value;
+  //debugln('TSynBaseCompletionForm.SetCurrentString FCurrentString=',FCurrentString);
   {$IFDEF SYN_LAZARUS}
   if Assigned(FOnSearchPosition) then begin
     i:=Position;
@@ -1074,7 +1080,7 @@ end;
 
 procedure TSynCompletion.OnFormPaint(Sender: TObject);
 begin
-  //LCLLinux.ShowCaret(Editor.Handle);
+
 end;
 
 procedure TSynCompletion.Cancel(Sender: TObject);
@@ -1186,7 +1192,7 @@ constructor TSynCompletion.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   {$IFDEF SYN_LAZARUS}
-  Form.OnUTF8KeyPress := {$IFDEF FPC}@{$ENDIF}UTF8KeyPress;
+  Form.OnUTF8KeyPress := @UTF8KeyPress;
   {$ELSE}
   Form.OnKeyPress := {$IFDEF FPC}@{$ENDIF}KeyPress;
   {$ENDIF}
@@ -1215,12 +1221,14 @@ var
 begin
   if Key=VK_UNKNOWN then exit;
   {$IFDEF SYN_LAZARUS}
+  //debugln('TSynCompletion.EditorKeyDown A ',dbgs(Key));
   if (Form<>nil) and (Form.Visible) then begin
     // completion form is visible, but the synedit got a key
     // -> redirect to form
     Form.KeyDown(Key,Shift);
     // eat it
     Key:=VK_UNKNOWN;
+    //debugln('TSynCompletion.EditorKeyDown B ',dbgs(Key));
   end;
   {$ENDIF}
   ShortCutToKey(FShortCut, ShortCutKey, ShortCutShift);

@@ -248,10 +248,16 @@ type
   TOIPropertyGridStates = set of TOIPropertyGridState;
   
   { TOICustomPropertyGrid }
+  
+  TOICustomPropertyGridColumn = (
+    oipgcName,
+    oipgcValue
+  );
 
   TOICustomPropertyGrid = class(TCustomControl)
   private
     FBackgroundColor:TColor;
+    FColumn: TOICustomPropertyGridColumn;
     FReferencesColor: TColor;
     FSubPropertiesColor: TColor;
     FChangeStep: integer;
@@ -290,6 +296,7 @@ type
     function GetRowCount:integer;
     procedure ClearRows;
     function GetCurrentEditValue: string;
+    procedure SetColumn(const AValue: TOICustomPropertyGridColumn);
     procedure SetCurrentEditValue(const NewValue: string);
     procedure SetFavourites(const AValue: TOIFavouriteProperties);
     procedure SetItemIndex(NewIndex:integer);
@@ -352,6 +359,7 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure HandleStandardKeys(var Key: Word; Shift: TShiftState); virtual;
     procedure HandleKeyUp(var Key: Word; Shift: TShiftState); virtual;
+    procedure DoTabKey; virtual;
 
     procedure EraseBackground(DC: HDC); override;
     
@@ -393,6 +401,7 @@ type
     property SubPropertiesColor: TColor read FSubPropertiesColor
                                      write SetSubPropertiesColor default clGreen;
     property BorderStyle default bsSingle;
+    property Column: TOICustomPropertyGridColumn read FColumn write SetColumn;
     property CurrentEditValue: string read GetCurrentEditValue
                                       write SetCurrentEditValue;
     property DefaultItemHeight:integer read FDefaultItemHeight
@@ -1221,7 +1230,10 @@ begin
       if (FDragging=false) and (FCurrentEdit.Showing)
       and FCurrentEdit.Enabled
       and (not NewRow.IsReadOnly) then begin
-        FCurrentEdit.SetFocus;
+        if (Column=oipgcValue) then
+          FCurrentEdit.SetFocus
+        else
+          Self.SetFocus;
       end;
     end;
     if FCurrentButton<>nil then
@@ -1622,9 +1634,8 @@ begin
     if (ItemIndex<FRows.Count-1) then ItemIndex:=ItemIndex+1;
     
   VK_TAB:
-    // ToDo: implement completion
-    if (ItemIndex<FRows.Count-1) then ItemIndex:=ItemIndex+1;
-    
+    DoTabKey;
+
   VK_LEFT:
     if (FCurrentEdit=nil)
     and (ItemIndex>=0) and (Rows[ItemIndex].Expanded) then
@@ -1652,6 +1663,17 @@ end;
 procedure TOICustomPropertyGrid.HandleKeyUp(var Key: Word; Shift: TShiftState);
 begin
   if (Key<>VK_UNKNOWN) and Assigned(OnKeyUp) then OnKeyUp(Self,Key,Shift);
+end;
+
+procedure TOICustomPropertyGrid.DoTabKey;
+begin
+  if Column=oipgcValue then begin
+    //Column:=
+  end else begin
+
+  end;
+  // ToDo: implement completion
+  if (ItemIndex<FRows.Count-1) then ItemIndex:=ItemIndex+1;
 end;
 
 procedure TOICustomPropertyGrid.EraseBackground(DC: HDC);
@@ -1683,7 +1705,10 @@ begin
     FPreferredSplitterX:=FSplitterX;
     if FCurrentEdit<>nil then begin
       SetCaptureControl(nil);
-      FCurrentEdit.SetFocus;
+      if Column=oipgcValue then
+        FCurrentEdit.SetFocus
+      else
+        Self.SetFocus;
     end;
   end;
 end;
@@ -2025,6 +2050,13 @@ begin
     Result:=ValueComboBox.Text
   else
     Result:='';
+end;
+
+procedure TOICustomPropertyGrid.SetColumn(
+  const AValue: TOICustomPropertyGridColumn);
+begin
+  if FColumn=AValue then exit;
+  FColumn:=AValue;
 end;
 
 procedure TOICustomPropertyGrid.SetCurrentEditValue(const NewValue: string);

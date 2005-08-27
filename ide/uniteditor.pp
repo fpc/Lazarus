@@ -2757,11 +2757,15 @@ begin
   if (length(UTF8Key)=1)
   and (System.Pos(UTF8Key[1],CurCompletionControl.EndOfTokenChr)>0) then begin
     // identifier completed
-    //debugln('TSourceNotebook.OnSynCompletionKeyPress A');
+    //debugln('TSourceNotebook.OnSynCompletionUTF8KeyPress A');
     CurCompletionControl.TheForm.OnValidate(Sender,[]);
     //debugln('TSourceNotebook.OnSynCompletionKeyPress B');
     UTF8Key:='';
+  end else begin
+    aCompletion.Editor.CommandProcessor(ecChar,UTF8Key,nil);
+    UTF8Key:='';
   end;
+  //debugln('TSourceNotebook.OnSynCompletionKeyPress B UTF8Key=',dbgstr(UTF8Key));
 end;
 
 procedure TSourceNotebook.DeactivateCompletionForm;
