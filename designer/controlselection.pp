@@ -2026,7 +2026,9 @@ begin
   if (Count=0) or (IsResizing) then exit;
   {$IFDEF VerboseDesigner}
   DebugLn('[TControlSelection.MoveSelectionWithSnapping] A  ',
-    TotalDX,',',TotalDY,' OldBounds=',FLeft,',',FTop,',',FWidth,',',FHeight);
+    'TotalD='+dbgs(TotalDX)+','+dbgs(TotalDY),
+    ' CurBounds='+dbgs(FLeft)+','+dbgs(FTop)+','+dbgs(FWidth)+','+dbgs(FHeight),
+    ' OldBounds='+dbgs(FOldLeft)+','+dbgs(FOldTop)+','+dbgs(FOldWidth)+','+dbgs(FOldHeight));
   {$ENDIF}
   NewLeft:=FindNearestSnapLeft(FOldLeft+TotalDX,FWidth);
   NewTop:=FindNearestSnapTop(FOldTop+TotalDY,FHeight);
@@ -2037,7 +2039,7 @@ begin
     FTop:=NewTop;
     {$IFDEF VerboseDesigner}
     DebugLn('[TControlSelection.MoveSelectionWithSnapping] B  ',
-      FLeft,',',FTop,',',FWidth,',',FHeight);
+      ' Bounds='+dbgs(FLeft)+','+dbgs(FTop)+','+dbgs(FWidth)+','+dbgs(FHeight));
     {$ENDIF}
     EndResizing(true);
   end;

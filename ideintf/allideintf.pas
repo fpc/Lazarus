@@ -40,6 +40,7 @@ uses
   LazIDEIntf,
   ListViewPropEdit,
   MacroIntf,
+  MaskPropEdit,
   MenuIntf,
   NewItemIntf,
   ObjectInspector,

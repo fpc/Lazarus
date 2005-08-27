@@ -256,6 +256,8 @@ type
 
     function NonVisualComponentLeftTop(AComponent: TComponent): TPoint;
     function NonVisualComponentAtPos(x,y: integer): TComponent;
+    procedure MoveNonVisualComponentIntoForm(AComponent: TComponent);
+    procedure MoveNonVisualComponentsIntoForm;
     function WinControlAtPos(x,y: integer; UseRootAsDefault,
                              IgnoreHidden: boolean): TWinControl;
     function ControlAtPos(x,y: integer; UseRootAsDefault,
@@ -1128,7 +1130,10 @@ Begin
   MouseDownSender:=nil;
 
   NonVisualComp:=NonVisualComponentAtPos(MouseDownPos.X,MouseDownPos.Y);
-  if NonVisualComp<>nil then MouseDownComponent:=NonVisualComp;
+  if NonVisualComp<>nil then begin
+    MouseDownComponent:=NonVisualComp;
+    MoveNonVisualComponentIntoForm(NonVisualComp);
+  end;
 
   if (MouseDownComponent=nil) then begin
     MouseDownComponent:=ComponentAtPos(MouseDownPos.X,MouseDownPos.Y,true,true);
@@ -1384,6 +1389,8 @@ var
     // check if start new selection or add/remove:
     NewRubberbandSelection:= (not (ssShift in Shift))
       or (ControlSelection.SelectionForm<>Form);
+    // update non visual components
+    MoveNonVisualComponentsIntoForm;
     // if user press the Control key, then component candidates are only
     // childs of the control, where the mouse started
     if (ssCtrl in shift) and (MouseDownComponent is TControl) then
@@ -1529,7 +1536,7 @@ begin
   LastMouseMovePos:= GetFormRelativeMousePosition(Form);
   if (OldMouseMovePos.X=LastMouseMovePos.X)
   and (OldMouseMovePos.Y=LastMouseMovePos.Y) then exit;
-
+  
   if ControlSelection.SelectionForm=Form then
     Grabber:=ControlSelection.GrabberAtPos(
                          LastMouseMovePos.X, LastMouseMovePos.Y)
@@ -1589,6 +1596,7 @@ begin
             ControlSelection.SaveBounds;
             Include(FFlags,dfHasSized);
           end;
+          //debugln('TDesigner.MouseMoveOnControl Move MouseDownComponent=',dbgsName(MouseDownComponent),' OldMouseMovePos=',dbgs(OldMouseMovePos),' MouseMovePos',dbgs(LastMouseMovePos),' MouseDownPos=',dbgs(MouseDownPos));
           if ControlSelection.MoveSelectionWithSnapping(
             LastMouseMovePos.X-MouseDownPos.X,LastMouseMovePos.Y-MouseDownPos.Y)
           then begin
@@ -2309,6 +2317,29 @@ begin
     end;
   end;
   Result:=nil;
+end;
+
+procedure TDesigner.MoveNonVisualComponentIntoForm(AComponent: TComponent);
+var
+  p: TPoint;
+begin
+  p:=NonVisualComponentLeftTop(AComponent);
+  LongRec(AComponent.DesignInfo).Lo:=p.x;
+  LongRec(AComponent.DesignInfo).Hi:=p.y;
+end;
+
+procedure TDesigner.MoveNonVisualComponentsIntoForm;
+var
+  i: Integer;
+  AComponent: TComponent;
+begin
+  for i:=0 to FLookupRoot.ComponentCount-1 do begin
+    AComponent:=FLookupRoot.Components[i];
+    if (not (AComponent is TControl))
+    and (not ComponentIsInvisible(AComponent)) then begin
+      MoveNonVisualComponentIntoForm(AComponent);
+    end;
+  end;
 end;
 
 function TDesigner.ComponentClassAtPos(const AClass: TComponentClass;

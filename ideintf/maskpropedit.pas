@@ -17,7 +17,7 @@
     Property Editors for TMaskEdit.EditMask of FCL and LCL.
 }
 
-unit MaskEditorUnit;
+unit MaskPropEdit;
 
 {$mode objfpc}{$H+}
 
@@ -25,33 +25,33 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, ExtCtrls, MaskEdit, PropEdits, Componenteditors, TypInfo;
+  Buttons, ExtCtrls, FileUtil, MaskEdit, LazIDEIntf, PropEdits, TypInfo;
 
 type
 
   { TMaskEditorForm }
 
   TMaskEditorForm = class(TForm)
-    Button1: TButton;
-    Button2: TButton;
-    Button3: TButton;
-    BtnLoadDem: TButton;
-    CheckBox1: TCheckBox;
-    Edit1: TEdit;
-    Edit2: TEdit;
-    Label1: TLabel;
-    Label2: TLabel;
-    Label3: TLabel;
-    Label4: TLabel;
-    ListBox1: TListBox;
+    OkButton: TButton;
+    CancelButton: TButton;
+    HelpButton: TButton;
+    LoadSampleMasksButton: TButton;
+    SaveLiteralCheckBox: TCheckBox;
+    InputMaskEdit: TEdit;
+    CharactersForBlanksEdit: TEdit;
+    InputMaskLabel: TLabel;
+    SampleMasksLabel: TLabel;
+    CharactersForBlanksLabel: TLabel;
+    TestInputLabel: TLabel;
+    SampleMasksListBox: TListBox;
     TestMaskEdit: TMaskEdit;
     OpenDialog1: TOpenDialog;
     Panel1: TPanel;
-    procedure BtnLoadDemClick(Sender: TObject);
-    procedure CheckBox1Click(Sender: TObject);
-    procedure Edit1Change(Sender: TObject);
-    procedure Edit2Change(Sender: TObject);
-    procedure ListBox1Click(Sender: TObject);
+    procedure LoadSampleMasksButtonClick(Sender: TObject);
+    procedure SaveLiteralCheckBoxClick(Sender: TObject);
+    procedure InputMaskEditChange(Sender: TObject);
+    procedure CharactersForBlankEditChange(Sender: TObject);
+    procedure SampleMasksListBoxClick(Sender: TObject);
     procedure MaskEditorFormCreate(Sender: TObject);
   private
     function GetEditMask: string;
@@ -62,8 +62,8 @@ type
     property EditMask:string read GetEditMask write SetEditMask;
   end; 
 
-type
   { TEditMaskProperty }
+
   TEditMaskProperty = class(TStringPropertyEditor)
   public
     function  GetAttributes: TPropertyAttributes; override;
@@ -71,96 +71,101 @@ type
   end;
 
 implementation
+
 uses StrUtils;
 
 { TMaskEditorForm }
 
-procedure TMaskEditorForm.BtnLoadDemClick(Sender: TObject);
+procedure TMaskEditorForm.LoadSampleMasksButtonClick(Sender: TObject);
 begin
   OpenDialog1.InitialDir:=ExtractFileDir(ParamStr(0));
   if OpenDialog1.Execute then
     LoadDEMFile(OpenDialog1.FileName);
 end;
 
-procedure TMaskEditorForm.CheckBox1Click(Sender: TObject);
+procedure TMaskEditorForm.SaveLiteralCheckBoxClick(Sender: TObject);
 var
   I:integer;
   S1:string;
 begin
-  S1:=Edit1.Text;
+  S1:=InputMaskEdit.Text;
   I:=Pos(';', S1);
   if (I>0) and (I<Length(S1)) then
   begin
-    S1[i+1]:=IntToStr(Ord(CheckBox1.Checked))[1];
-    Edit1.Text:=S1;
+    S1[i+1]:=IntToStr(Ord(SaveLiteralCheckBox.Checked))[1];
+    InputMaskEdit.Text:=S1;
   end;
 end;
 
-procedure TMaskEditorForm.Edit1Change(Sender: TObject);
+procedure TMaskEditorForm.InputMaskEditChange(Sender: TObject);
 begin
   UpdateTestEditor;
 end;
 
-procedure TMaskEditorForm.Edit2Change(Sender: TObject);
+procedure TMaskEditorForm.CharactersForBlankEditChange(Sender: TObject);
 var
   I:integer;
   S1:string;
 begin
-  S1:=Edit1.Text;
+  S1:=InputMaskEdit.Text;
   I:=NPos(';', S1, 2);
-  if (I>0) and (I<Length(S1)) and (Edit2.Text<>'') then
+  if (I>0) and (I<Length(S1)) and (CharactersForBlanksEdit.Text<>'') then
   begin
-    S1[i+1]:=Edit2.Text[1];
-    Edit1.Text:=S1;
+    S1[i+1]:=CharactersForBlanksEdit.Text[1];
+    InputMaskEdit.Text:=S1;
   end;
 end;
 
-procedure TMaskEditorForm.ListBox1Click(Sender: TObject);
+procedure TMaskEditorForm.SampleMasksListBoxClick(Sender: TObject);
 var
   S1, S2:string;
 begin
   TestMaskEdit.Text:='';
-  S1:=ListBox1.Items[ListBox1.ItemIndex];
+  S1:=SampleMasksListBox.Items[SampleMasksListBox.ItemIndex];
   Delete(S1, 1, Pos('|', S1));
   S2:=Copy(S1, 1, Pos('|', S1)-1);
   Delete(S1, 1, Pos('|', S1));
-  EditMask:=S1;
+  EditMask:=S2;
 end;
 
 procedure TMaskEditorForm.MaskEditorFormCreate(Sender: TObject);
 var
   aDemFile:string;
 begin
-  aDemFile:=ExtractFileDir(ParamStr(0))+DirectorySeparator+'us.dem';
+  if LazarusIDE<>nil then
+    aDemFile:=LazarusIDE.GetPrimaryConfigPath
+  else
+    aDemFile:=ExtractFileDir(ParamStr(0));
+  aDemFile:=CleanAndExpandDirectory(aDemFile)+'maskeditmasks.txt';
   if FileExists(aDemFile) then
     LoadDEMFile(aDemFile);
 end;
 
 function TMaskEditorForm.GetEditMask: string;
 begin
-  Result:=Edit1.Text;
+  Result:=InputMaskEdit.Text;
 end;
 
 procedure TMaskEditorForm.LoadDEMFile(AFileName: string);
 begin
-  ListBox1.Items.Clear;
-  ListBox1.Items.LoadFromFile(AFileName);
+  SampleMasksListBox.Items.Clear;
+  SampleMasksListBox.Items.LoadFromFile(AFileName);
 end;
 
 procedure TMaskEditorForm.SetEditMask(AValue: string);
 begin
-  Edit1.Text:=AValue;
+  InputMaskEdit.Text:=AValue;
   Delete(AValue, 1, Pos(';', AValue));
   if AValue<>'' then
-    CheckBox1.Checked:=AValue[1]='1';
+    SaveLiteralCheckBox.Checked:=AValue[1]='1';
   Delete(AValue, 1, Pos(';', AValue));
-  Edit2.Text:=AValue;
+  CharactersForBlanksEdit.Text:=AValue;
   UpdateTestEditor;
 end;
 
 procedure TMaskEditorForm.UpdateTestEditor;
 begin
-  TestMaskEdit.EditMask:=Edit1.Text;
+  TestMaskEdit.EditMask:=InputMaskEdit.Text;
 end;
 
 { TEditMaskProperty }
@@ -186,8 +191,9 @@ end;
 
 
 initialization
-  {$I maskeditorunit.lrs}
-  RegisterPropertyEditor(TypeInfo(string), TCustomMaskEdit, 'EditMask', TEditMaskProperty);
+  {$I maskpropedit.lrs}
+  RegisterPropertyEditor(TypeInfo(string), TCustomMaskEdit, 'EditMask',
+                         TEditMaskProperty);
 
 end.
 

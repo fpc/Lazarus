@@ -1630,7 +1630,7 @@ var
     else
       WriteInteger(StrToInt(s));
   end;
-  
+
   function WideStringNeeded(const s: widestring): Boolean;
   var
     i: Integer;

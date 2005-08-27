@@ -1382,7 +1382,7 @@ begin
   {  for i:= 0 to MDIChildCount - 1 do begin
       if not MDIChildren[i].CloseQuery then begin
         Result:= false;
-	Exit;
+        Exit;
        end;
     end;}
   end;
