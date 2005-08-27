@@ -1892,7 +1892,9 @@ end;
 {------------------------------------------------------------------------------
   function TControl.AutoSizeCanStart: boolean;
   
-  Returns true if DoAutoSize can start.
+  Returns true if DoAutoSize can start. That means, it tests the minimum
+  requirements to start. Some controls need even more.
+
   It returns false if
   - AutoSize=false
   - or the control is currently autosizing

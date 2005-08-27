@@ -7817,8 +7817,12 @@ begin
                 //utf8bidi.insert(Temp,AChar,CaretNew.X);
                 CaretX := CaretNew.X;
                 {$ELSE}
-                Temp:=copy(Temp,1,LogCaretXY.X-1)+AChar
-                     +copy(Temp,LogCaretXY.X+Counter,length(Temp));
+                Len := Length(Temp);
+                if LogCaretXY.X<=Len then
+                  Temp:=copy(Temp,1,LogCaretXY.X-1)+AChar
+                       +copy(Temp,LogCaretXY.X+Counter,length(Temp))
+                else
+                  Temp:=Temp+StringOfChar(' ', LogCaretXY.X-1-Len)+AChar;
                 {$ENDIF}
                 CaretNew := Point((CaretX + 1), CaretY);
                 TrimmedSetLine(CaretY - 1, Temp);
