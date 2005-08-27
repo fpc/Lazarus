@@ -545,19 +545,19 @@ procedure TPascalParserTool.BuildSubTreeForClass(ClassNode: TCodeTreeNode);
 
   procedure RaiseClassNodeNil;
   begin
-    SaveRaiseException(
+    RaiseException(
        'TPascalParserTool.BuildSubTreeForClass: Classnode=nil');
   end;
   
   procedure RaiseClassDescInvalid;
   begin
-    SaveRaiseException('[TPascalParserTool.BuildSubTreeForClass] ClassNode.Desc='
+    RaiseException('[TPascalParserTool.BuildSubTreeForClass] ClassNode.Desc='
                    +ClassNode.DescAsString);
   end;
 
   procedure RaiseClassKeyWordExpected;
   begin
-    SaveRaiseException(
+    RaiseException(
         'TPascalParserTool.BuildSubTreeForClass:'
        +' class/object keyword expected, but '+GetAtom+' found');
   end;
@@ -570,6 +570,8 @@ begin
   then
     // class already parsed
     exit;
+  // avoid endless loop
+  ClassNode.SubDesc:=ClassNode.SubDesc and (not ctnsNeedJITParsing);
   OldPhase:=CurrentPhase;
   CurrentPhase:=CodeToolPhaseParse;
   try
@@ -619,7 +621,6 @@ begin
     finally
       CurKeyWordFuncList:=DefaultKeyWordFuncList;
     end;
-    ClassNode.SubDesc:=ClassNode.SubDesc and (not ctnsNeedJITParsing);
     CurrentPhase:=OldPhase;
   except
     CurrentPhase:=OldPhase;
@@ -649,16 +650,19 @@ procedure TPascalParserTool.BuildSubTreeForBeginBlock(BeginNode: TCodeTreeNode);
 var MaxPos, OldPhase: integer;
 begin
   if BeginNode=nil then
-    SaveRaiseException(
+    RaiseException(
        'TPascalParserTool.BuildSubTreeForBeginBlock: BeginNode=nil');
   if BeginNode.Desc<>ctnBeginBlock then
-    SaveRaiseException(
+    RaiseException(
        'TPascalParserTool.BuildSubTreeForBeginBlock: BeginNode.Desc='
        +BeginNode.DescAsString);
   if (BeginNode.FirstChild<>nil)
   or ((BeginNode.SubDesc and ctnsNeedJITParsing)=0) then
     // block already parsed
     exit;
+  // avoid endless loop
+  BeginNode.SubDesc:=BeginNode.SubDesc and (not ctnsNeedJITParsing);
+
   OldPhase:=CurrentPhase;
   CurrentPhase:=CodeToolPhaseParse;
   try
@@ -679,7 +683,6 @@ begin
         // ToDo
       end;
     until (CurPos.StartPos>=MaxPos);
-    BeginNode.SubDesc:=ctnNone;
     CurrentPhase:=OldPhase;
   except
     CurrentPhase:=OldPhase;
@@ -3566,9 +3569,11 @@ begin
   if ProcNode.Desc=ctnProcedureHead then ProcNode:=ProcNode.Parent;
   if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedure)
   or (ProcNode.FirstChild=nil) then
-    SaveRaiseException('[TPascalParserTool.BuildSubTreeForProcHead] '
+    RaiseException('[TPascalParserTool.BuildSubTreeForProcHead] '
       +'internal error: invalid ProcNode');
   if (ProcNode.FirstChild.SubDesc and ctnsNeedJITParsing)=0 then exit;
+  ProcNode.FirstChild.SubDesc:=
+                       ProcNode.FirstChild.SubDesc and (not ctnsNeedJITParsing);
   OldPhase:=CurrentPhase;
   CurrentPhase:=CodeToolPhaseParse;
   try
@@ -3597,7 +3602,6 @@ begin
     if IsFunction then Include(ParseAttr,pphIsFunction);
     if IsOperator then Include(ParseAttr,pphIsOperator);
     ReadTilProcedureHeadEnd(ParseAttr,HasForwardModifier);
-    ProcNode.FirstChild.SubDesc:=ctnsNone;
     CurrentPhase:=OldPhase;
   except
     CurrentPhase:=OldPhase;
