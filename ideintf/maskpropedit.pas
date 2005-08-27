@@ -25,7 +25,8 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, ExtCtrls, FileUtil, MaskEdit, LazIDEIntf, PropEdits, TypInfo;
+  Buttons, ExtCtrls, FileUtil, MaskEdit, LazIDEIntf, PropEdits,
+  ObjInspStrConsts;
 
 type
 
@@ -46,7 +47,7 @@ type
     SampleMasksListBox: TListBox;
     TestMaskEdit: TMaskEdit;
     OpenDialog1: TOpenDialog;
-    Panel1: TPanel;
+    TestInputPanel: TPanel;
     procedure LoadSampleMasksButtonClick(Sender: TObject);
     procedure SaveLiteralCheckBoxClick(Sender: TObject);
     procedure InputMaskEditChange(Sender: TObject);
@@ -132,6 +133,16 @@ procedure TMaskEditorForm.MaskEditorFormCreate(Sender: TObject);
 var
   aDemFile:string;
 begin
+  OkButton.Caption:=oisOk2;
+  CancelButton.Caption:=oiStdActDataSetCancel1Hint;
+  HelpButton.Caption:=cActionListEditorHelpCategory;
+  LoadSampleMasksButton.Caption:=oisMasks;
+  SaveLiteralCheckBox.Caption:=oisSaveLiteralCharacters;
+  InputMaskLabel.Caption:=oisInputMask;
+  SampleMasksLabel.Caption:=oisSampleMasks;
+  CharactersForBlanksLabel.Caption:=oisCharactersForBlanks;
+  TestInputLabel.Caption:=oisTestInput;
+
   if LazarusIDE<>nil then
     aDemFile:=LazarusIDE.GetPrimaryConfigPath
   else

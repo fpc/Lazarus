@@ -116,6 +116,12 @@ resourcestring
   cActionListEditorAllCategory = '(All)';
   cActionListEditorEditCategory = 'Edit';
   cActionListEditorHelpCategory = 'Help';
+  oisMasks = 'Masks...';
+  oisSaveLiteralCharacters = 'Save Literal Characters';
+  oisInputMask = 'Input Mask:';
+  oisSampleMasks = 'Sample Masks:';
+  oisCharactersForBlanks = 'Characters for Blanks';
+  oisTestInput = 'Test Input';
   cActionListEditorDialogCategory = 'Dialog';
   cActionListEditorFileCategory = 'File';
   cActionListEditorDatabaseCategory = 'Database';
@@ -242,6 +248,7 @@ resourcestring
   oisClear = 'C&lear';
   oisErrorLoadingImage = 'Error loading image';
   oisErrorLoadingImage2 = 'Error loading image %s%s%s:%s%s';
+  oisOk2 = 'Ok';
 
 implementation
 

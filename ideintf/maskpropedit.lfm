@@ -13,7 +13,6 @@ object MaskEditorForm: TMaskEditorForm
   Top = 248
   Width = 507
   object InputMaskLabel: TLabel
-    BorderSpacing.OnChange = nil
     Caption = '&Input Mask:'
     Color = clNone
     FocusControl = InputMaskEdit
@@ -23,7 +22,6 @@ object MaskEditorForm: TMaskEditorForm
     Width = 65
   end
   object SampleMasksLabel: TLabel
-    BorderSpacing.OnChange = nil
     Caption = '&Sample Masks:'
     Color = clNone
     Left = 208
@@ -32,7 +30,6 @@ object MaskEditorForm: TMaskEditorForm
     Width = 192
   end
   object CharactersForBlanksLabel: TLabel
-    BorderSpacing.OnChange = nil
     Caption = 'Character for Blanks:'
     Color = clNone
     FocusControl = CharactersForBlanksEdit
@@ -42,7 +39,6 @@ object MaskEditorForm: TMaskEditorForm
     Width = 118
   end
   object InputMaskEdit: TEdit
-    BorderSpacing.OnChange = nil
     OnChange = InputMaskEditChange
     TabOrder = 0
     Left = 8
@@ -52,7 +48,6 @@ object MaskEditorForm: TMaskEditorForm
   end
   object SampleMasksListBox: TListBox
     Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.OnChange = nil
     OnClick = SampleMasksListBoxClick
     TabOrder = 1
     TopIndex = -1
@@ -63,7 +58,6 @@ object MaskEditorForm: TMaskEditorForm
   end
   object OkButton: TButton
     Anchors = [akRight, akBottom]
-    BorderSpacing.OnChange = nil
     Caption = 'OK'
     ModalResult = 1
     TabOrder = 2
@@ -74,7 +68,6 @@ object MaskEditorForm: TMaskEditorForm
   end
   object CancelButton: TButton
     Anchors = [akRight, akBottom]
-    BorderSpacing.OnChange = nil
     Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 3
@@ -85,7 +78,6 @@ object MaskEditorForm: TMaskEditorForm
   end
   object HelpButton: TButton
     Anchors = [akRight, akBottom]
-    BorderSpacing.OnChange = nil
     Caption = '&Help'
     TabOrder = 4
     Left = 423
@@ -95,7 +87,6 @@ object MaskEditorForm: TMaskEditorForm
   end
   object LoadSampleMasksButton: TButton
     Anchors = [akLeft, akBottom]
-    BorderSpacing.OnChange = nil
     Caption = '&Masks...'
     OnClick = LoadSampleMasksButtonClick
     TabOrder = 5
@@ -106,7 +97,6 @@ object MaskEditorForm: TMaskEditorForm
   end
   object CharactersForBlanksEdit: TEdit
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.OnChange = nil
     BorderSpacing.Left = 3
     MaxLength = 1
     OnChange = CharactersForBlankEditChange
@@ -120,7 +110,6 @@ object MaskEditorForm: TMaskEditorForm
     Width = 71
   end
   object SaveLiteralCheckBox: TCheckBox
-    BorderSpacing.OnChange = nil
     Caption = 'Save &Literal Characters'
     OnClick = SaveLiteralCheckBoxClick
     TabOrder = 7
@@ -130,8 +119,7 @@ object MaskEditorForm: TMaskEditorForm
     Top = 88
     Width = 194
   end
-  object Panel1: TPanel
-    BorderSpacing.OnChange = nil
+  object TestInputPanel: TPanel
     BevelInner = bvRaised
     BevelOuter = bvLowered
     ClientHeight = 66
@@ -143,7 +131,6 @@ object MaskEditorForm: TMaskEditorForm
     Top = 118
     Width = 192
     object TestInputLabel: TLabel
-      BorderSpacing.OnChange = nil
       Caption = '&Test Input:'
       Color = clNone
       Left = 8
@@ -152,7 +139,6 @@ object MaskEditorForm: TMaskEditorForm
       Width = 65
     end
     object TestMaskEdit: TMaskEdit
-      BorderSpacing.OnChange = nil
       TabOrder = 0
       Left = 8
       Height = 23
