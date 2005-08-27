@@ -350,6 +350,7 @@ type
     CopyMenuItem: TMenuItem;
     PasteMenuItem: TMenuItem;
     GotoBookmarkMenuItem: TMenuItem;
+    SetFreeBookmarkMenuItem: TMenuItem;
     NextBookmarkMenuItem: TMenuItem;
     PrevBookmarkMenuItem: TMenuItem;
     MoveEditorLeftMenuItem: TMenuItem;
@@ -385,7 +386,9 @@ type
     procedure BookMarkPrevClicked(Sender: TObject);
     procedure BookMarkGotoClicked(Sender: TObject);
     procedure BookMarkSet(Value: Integer);
+    procedure BookMarkSetFree;
     procedure BookMarkSetClicked(Sender: TObject);
+    procedure BookmarkSetFreeClicked(Sender: TObject);
     procedure BookMarkToggle(Value: Integer);
     procedure EditorPropertiesClicked(Sender: TObject);
     procedure FindDeclarationClicked(Sender: TObject);
@@ -711,6 +714,9 @@ var
   SrcEditMenuCut: TIDEMenuCommand;
   SrcEditMenuCopy: TIDEMenuCommand;
   SrcEditMenuPaste: TIDEMenuCommand;
+  SrcEditMenuNextBookmark: TIDEMenuCommand;
+  SrcEditMenuPrevBookmark: TIDEMenuCommand;
+  SrcEditMenuSetFreeBookmark: TIDEMenuCommand;
   SrcEditMenuAddBreakpoint: TIDEMenuCommand;
   SrcEditMenuRunToCursor: TIDEMenuCommand;
   SrcEditMenuAddWatchAtCursor: TIDEMenuCommand;
@@ -793,6 +799,10 @@ begin
     for I := 0 to 9 do
       RegisterIDEMenuCommand(SubSubPath,'GotoBookmark'+IntToStr(I),
                              uemBookmarkN+IntToStr(i));
+    SrcEditMenuNextBookmark:=RegisterIDEMenuCommand(SubSubPath,
+                                          'Goto next Bookmark',uemNextBookmark);
+    SrcEditMenuPrevBookmark:=RegisterIDEMenuCommand(SubSubPath,
+                                      'Goto previous Bookmark',uemPrevBookmark);
 
     // register the Set Bookmarks Submenu
     SrcEditSubMenuSetBookmarks:=RegisterIDESubMenu(SubPath,'Set bookmarks',
@@ -801,6 +811,8 @@ begin
     for I := 0 to 9 do
       RegisterIDEMenuCommand(SubSubPath,'SetBookmark'+IntToStr(I),
                              uemBookmarkN+IntToStr(i));
+    SrcEditMenuSetFreeBookmark:=RegisterIDEMenuCommand(SubSubPath,
+                                      'Set a free Bookmark',uemSetFreeBookmark);
 
     // register the Debug submenu
     SrcEditSubMenuDebug:=RegisterIDESubMenu(SubPath,'Debug',uemDebugWord);
@@ -3330,6 +3342,7 @@ begin
     SrcEditSubMenuSetBookmarks.FindByName('SetBookmark'+IntToStr(i))
                                             .OnClickMethod:=@BookMarkSetClicked;
   end;
+  SrcEditMenuSetFreeBookmark.OnClickMethod:=@SetFreeBookmarkClicked;
   SrcEditMenuNextBookmark.OnClickMethod:=@NextBookmarkClicked;
   SrcEditMenuPrevBookmark.OnClickMethod:=@PrevBookmarkClicked;
 
@@ -3473,16 +3486,26 @@ Begin
   end;
   SrcPopupMenu.Items.Add(SetBookmarkMenuItem);
 
-  for I := 0 to 9 do
-    Begin
-      SubMenuItem := TMenuItem.Create(Self);
-      with SubMenuItem do begin
-        Name:='SubSetBookmarkMenuItem'+IntToStr(I);
-        Caption := uemBookmarkN+IntToStr(i);
-        OnClick := @BookmarkSetClicked;
+  begin
+    for I := 0 to 9 do
+      Begin
+        SubMenuItem := TMenuItem.Create(Self);
+        with SubMenuItem do begin
+          Name:='SubSetBookmarkMenuItem'+IntToStr(I);
+          Caption := uemBookmarkN+IntToStr(i);
+          OnClick := @BookmarkSetClicked;
+        end;
+        SetBookmarkMenuItem.Add(SubMenuItem);
       end;
-      SetBookmarkMenuItem.Add(SubMenuItem);
+
+    SetFreeBookmarkMenuItem := TMenuItem.Create(Self);
+    with SetFreeBookmarkMenuItem do begin
+      Name:='SetFreeBookmarkMenuItem';
+      Caption := uemSetFreeBookmark;
+      OnClick := @BookmarkSetFreeClicked;
     end;
+    SetBookmarkMenuItem.Add(SetFreeBookmarkMenuItem);
+  end;
 
   SrcPopupMenu.Items.Add(Seperator);
 
@@ -4377,6 +4400,11 @@ Begin
   BookMarkSet(MenuItem.MenuIndex);
 end;
 
+procedure TSourceNotebook.BookmarkSetFreeClicked(Sender: TObject);
+begin
+  BookMarkSetFree;
+end;
+
 Procedure TSourceNotebook.BookMarkGotoClicked(Sender: TObject);
 // popup menu goto bookmark clicked
 var
@@ -4625,6 +4653,17 @@ Begin
      ActEdit.EditorComponent.CaretX,ActEdit.EditorComponent.CaretY);
   MenuItem.Checked := true;
   GotoBookmarkMenuItem[Value].Checked:=true;
+end;
+
+procedure TSourceNotebook.BookMarkSetFree;
+var
+  i: Integer;
+begin
+  for i:=0 to 9 do
+    if (FindBookmark(i)=nil) then begin
+      BookMarkSet(i);
+      exit;
+    end;
 end;
 
 {This is called from outside to set a bookmark}

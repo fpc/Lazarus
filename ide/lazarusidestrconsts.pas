@@ -184,6 +184,7 @@ resourcestring
   lisMenuGotoIncludeDirective = 'Goto include directive';
   lisMenuJumpToNextError = 'Jump to next error';
   lisMenuJumpToPrevError = 'Jump to previous error';
+  lisMenuSetFreeBookmark = 'Set a free bookmark';
   lisMenuJumpToNextBookmark = 'Jump to next bookmark';
   lisMenuJumpToPrevBookmark = 'Jump to previous bookmark';
 
@@ -1162,6 +1163,7 @@ resourcestring
   uemCopy = 'Copy';
   uemPaste = 'Paste';
   uemGotoBookmark = '&Goto Bookmark';
+  uemSetFreeBookmark = 'Set a free Bookmark';
   uemNextBookmark = 'Goto next Bookmark';
   uemPrevBookmark = 'Goto previous Bookmark';
   uemBookmarkN = 'Bookmark';
@@ -1318,6 +1320,7 @@ resourcestring
   srkmecLineSelect            = 'Line selection mode';
   srkmecAutoCompletion        = 'Code template completion';
   srkmecUserFirst             = 'User First';
+  srkmecSetFreeBookmark       = 'Set a free Bookmark';
   srkmecPrevBookmark          = 'Previous Bookmark';
   srkmecNextBookmark          = 'Next Bookmark';
   srkmecGotoMarker            = 'Go to Marker %d';

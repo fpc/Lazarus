@@ -183,8 +183,9 @@ const
   ecGotoEditor0          = ecGotoEditor9 + 1;
   
   // marker
-  ecPrevBookmark         = ecUserFirst + 381;
-  ecNextBookmark         = ecUserFirst + 382;
+  ecSetFreeBookmark      = ecUserFirst + 381;
+  ecPrevBookmark         = ecUserFirst + 382;
+  ecNextBookmark         = ecUserFirst + 383;
 
   // compile menu
   ecBuild                = ecUserFirst + 400;
@@ -554,6 +555,7 @@ begin
   ecOpenFileAtCursor: SetResult(VK_RETURN,[ssCtrl],VK_UNKNOWN,[]);
 
   // marker
+  ecSetFreeBookmark: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecPrevBookmark: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecNextBookmark: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGotoMarker0: SetResult(VK_0,[ssCtrl],VK_UNKNOWN,[]);
@@ -859,6 +861,7 @@ begin
   ecOpenFileAtCursor: SetResult(VK_RETURN,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // marker
+  ecSetFreeBookmark: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecPrevBookmark: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecNextBookmark: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGotoMarker0: SetResult(VK_Q,[ssCtrl],VK_0,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1399,6 +1402,7 @@ begin
     ecLineSelect            : Result:= srkmecLineSelect;
     ecAutoCompletion        : Result:= srkmecAutoCompletion;
     ecUserFirst             : Result:= srkmecPrevBookmark;
+    ecSetFreeBookmark       : Result:= srkmecSetFreeBookmark;
     ecPrevBookmark          : Result:= srkmecPrevBookmark;
     ecNextBookmark          : Result:= srkmecNextBookmark;
     ecGotoMarker0 ..
@@ -2323,6 +2327,7 @@ begin
 
   // marker - without menu items in the IDE bar
   C:=Categories[AddCategory('Marker',srkmCatMarker,caSrcEditOnly)];
+  AddDefault(C,'Set free Bookmark',ecSetFreeBookmark);
   AddDefault(C,'Previous Bookmark',ecPrevBookmark);
   AddDefault(C,'Next Bookmark',ecNextBookmark);
   AddDefault(C,'Go to marker 0',ecGotoMarker0);
