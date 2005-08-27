@@ -29,8 +29,8 @@
   Possible improvements:
        - The current implementation often recreates the group even
          if it might not be neccessary. This could be solved if with
-	 an approach like Marc Weustink suggested:
-	 
+         an approach like Marc Weustink suggested:
+
          "Why not on SetColumn/SetItems/FItems.Onchange create the necessary
          checkboxes and align them. This way the RadioGroup is just a control
          with other controls in it. It doesn't matter if the the gtk control is
@@ -43,10 +43,10 @@
   
          On the other side this might have the following disadvantages:
            - requires some work to find out which buttons to add/delete
-	   - the TButtonList and the group property of affected buttons
-	     have to be updated according to the new order of buttons
-	   - works only if the interface library supports reordering of
-	     radiobuttons
+           - the TButtonList and the group property of affected buttons
+             have to be updated according to the new order of buttons
+           - works only if the interface library supports reordering of
+             radiobuttons
 
 }
 
@@ -120,6 +120,8 @@ begin
     Temp.AutoSize := False;
     Temp.OnClick := @Clicked;
     Temp.OnChange := @Changed;
+    Temp.OnEnter :=@ItemEnter;
+    Temp.OnExit :=@ItemExit;
     include(temp.ControlStyle, csNoDesignSelectable);
     FButtonList.Add(Temp);
   end;
@@ -172,6 +174,16 @@ begin
     Result:=((FItems.Count-1) div Columns)+1
   else
     Result:=0;
+end;
+
+procedure TCustomRadioGroup.ItemEnter(Sender: TObject);
+begin
+  DoEnter;
+end;
+
+procedure TCustomRadioGroup.ItemExit(Sender: TObject);
+begin
+  DoExit;
 end;
 
 {------------------------------------------------------------------------------

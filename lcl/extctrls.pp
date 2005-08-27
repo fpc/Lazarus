@@ -622,6 +622,7 @@ type
   { TCustomRadioGroup }
 
   TCustomRadioGroup = class(TCustomGroupBox)
+    procedure ItemExit(Sender: TObject);
   private
     FButtonList: TList; // list of TRadioButton
     FColumnLayout: TColumnLayout;
@@ -637,6 +638,7 @@ type
     procedure ItemsChanged(Sender: TObject);
     procedure Clicked(Sender: TObject);
     procedure Changed(Sender: TObject);
+    procedure ItemEnter(Sender: TObject);
     procedure DoPositionButtons;
     procedure SetColumnLayout(const AValue: TColumnLayout);
   protected
