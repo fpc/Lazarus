@@ -364,6 +364,7 @@ procedure TSynBaseCompletionForm.Deactivate;
 begin
   Visible := False;
   {$IFDEF SYN_LAZARUS}
+  if Assigned(OnCancel) then OnCancel(Self);
   if (FCurrentEditor<>nil) and (TCustomSynEdit(fCurrentEditor).HandleAllocated)
   then
     SetCaretRespondToFocus(TCustomSynEdit(FCurrentEditor).Handle,true);
@@ -448,17 +449,18 @@ end;
 
 procedure TSynBaseCompletionForm.KeyPress(var Key: char);
 begin
+  if Assigned(OnKeyPress) then
+    OnKeyPress(Self, Key);
+  if Key=#0 then exit;
   case key of //
-    #33..'z': begin
-        if Assigned(OnKeyPress) then
-          OnKeyPress(Self, Key);
+    #33..'z':
+      begin
         {$ifdef SYN_LAZARUS}
         if Key<>#0 then
         {$ENDIF}
           CurrentString := CurrentString + key;
       end;
-    #8:
-      if Assigned(OnKeyPress) then OnKeyPress(self, Key);
+    #8: ;
   else
     {$ifdef SYN_LAZARUS}
     if (ord(key)>=32) and Assigned(OnValidate) then
@@ -603,8 +605,10 @@ end;
 procedure TSynBaseCompletionForm.UTF8KeyPress(var UTF8Key: TUTF8Char);
 begin
   //debugln('TSynBaseCompletionForm.UTF8KeyPress UTF8Key="',DbgStr(UTF8Key),'"');
+  if Assigned(OnUTF8KeyPress) then OnUTF8KeyPress(Self, UTF8Key);
+  if (UTF8Key='') or (UTF8Key=#0) then exit;
   if UTF8Key=#8 then begin
-    if Assigned(OnUTF8KeyPress) then OnUTF8KeyPress(Self, UTF8Key);
+    // backspace
   end else begin
     if (length(UTF8Key)>=1)
     and (not (UTF8Key[1] in ['a'..'z','A'..'Z','0'..'9','_'])) then begin

@@ -485,6 +485,7 @@ type
     procedure OnSynCompletionNextChar(Sender: TObject);
     procedure OnSynCompletionPrevChar(Sender: TObject);
     procedure OnSynCompletionKeyPress(Sender: TObject; var Key: Char);
+    procedure OnSynCompletionUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
     procedure DeactivateCompletionForm;
     procedure InitIdentCompletion(S: TStrings);
 
@@ -2413,6 +2414,7 @@ begin
         OnKeyNextChar:=@OnSynCompletionNextChar;
         OnKeyPrevChar:=@OnSynCompletionPrevChar;
         OnKeyPress:=@OnSynCompletionKeyPress;
+        OnUTF8KeyPress:=@OnSynCompletionUTF8KeyPress;
         ShortCut:=Menus.ShortCut(VK_UNKNOWN,[]);
       end;
 
@@ -2732,14 +2734,34 @@ begin
     //debugln('TSourceNotebook.OnSynCompletionKeyPress A');
     CurCompletionControl.TheForm.OnValidate(Sender,[]);
     //debugln('TSourceNotebook.OnSynCompletionKeyPress B');
+    Key:=#0;
+  end;
+end;
+
+procedure TSourceNotebook.OnSynCompletionUTF8KeyPress(Sender: TObject;
+  var UTF8Key: TUTF8Char);
+begin
+  if CurCompletionControl=nil then exit;
+  if (length(UTF8Key)=1)
+  and (System.Pos(UTF8Key[1],CurCompletionControl.EndOfTokenChr)>0) then begin
+    // identifier completed
+    //debugln('TSourceNotebook.OnSynCompletionKeyPress A');
+    CurCompletionControl.TheForm.OnValidate(Sender,[]);
+    //debugln('TSourceNotebook.OnSynCompletionKeyPress B');
+    UTF8Key:='';
   end;
 end;
 
 procedure TSourceNotebook.DeactivateCompletionForm;
-var ActSE: TSourceEditor;
+var
+  ActSE: TSourceEditor;
+  OldCompletionControl: TSynCompletion;
 begin
-  CurCompletionControl.Deactivate;
+  if CurCompletionControl=nil then exit;
+  OldCompletionControl:=CurCompletionControl;
   CurCompletionControl:=nil;
+
+  OldCompletionControl.Deactivate;
   CurrentCompletionType:=ctNone;
   ActSE:=GetActiveSE;
   if ActSE<>nil then begin
